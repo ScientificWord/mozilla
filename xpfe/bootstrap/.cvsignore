@@ -1,0 +1,8 @@
+Makefile
+apprunner
+mozilla-bin
+mozilla-bin.pure
+nsStaticComponents.cpp
+mozilla.1
+mozilla
+ldscript
