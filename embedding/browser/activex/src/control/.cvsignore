@@ -1,0 +1,5 @@
+MozillaControl.tlb
+MozillaControl_i.c
+MozillaControl.h
+mozctl.def
+Makefile

@@ -1,0 +1,21 @@
+Snapshots of cairo and glitz for mozilla usage.  A git branch
+of this version of cairo is available at
+
+	vladimir@git.cairographics.org:~vladimir/cairo
+
+in the 'mozilla-tree-cairo' branch.
+
+We only include the relevant parts of each release (generally, src/*.[ch]),
+as we have Makefile.in's that integrate into the Mozilla build system.  For
+documentation and similar, please see the official tarballs at
+http://www.cairographics.org/.
+
+VERSIONS:
+
+  cairo 1.1.1 (cvs - 2006-06-03)
+  glitz 0.5.2 (cvs - 2006-01-10)
+
+***** NOTE FOR VISUAL C++ 6.0 *****
+
+VC6 is not supported.  Please upgrade to VC8.
+

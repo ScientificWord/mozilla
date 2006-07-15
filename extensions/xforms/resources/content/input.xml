@@ -1,0 +1,304 @@
+<?xml version="1.0"?>
+
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Mozilla XForms support.
+   -
+   - The Initial Developer of the Original Code is
+   - Novell, Inc.
+   - Portions created by the Initial Developer are Copyright (C) 2005
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -  Allan Beaufour <abeaufour@novell.com>
+   -  Olli Pettay <Olli.Pettay@helsinki.fi>
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the GPL or the LGPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+<!--
+  This file implements the "abstract" UI classes for XForms input, secret and
+  textarea controls. They all have "pure virtual" functions that they expect to
+  be implemented by concrete application and returned in the getElementControl()
+  call. An example is the controls for XHTML in input-xhtml.xml.
+--> 
+
+
+<bindings id="xformsInputBindings"
+          xmlns="http://www.mozilla.org/xbl"
+          xmlns:html="http://www.w3.org/1999/xhtml"
+          xmlns:xbl="http://www.mozilla.org/xbl">
+
+
+  <!-- INPUT: <DEFAULT>
+    The input widget assumes successors bindings implement getElementControl()
+    method what returns the object:
+    {
+      set value(); // set "string" value
+      get value(); // return "string" value
+      set readonly(); // set readonly state
+      focus(); // set focus
+    }
+  -->
+  <binding id="xformswidget-input-base"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-base">
+
+    <implementation implements="nsIXFormsUIWidget">
+
+      <method name="refresh">
+        <body>
+          this.control.readonly = this.accessors.isReadonly();
+          // If the value has not changed, no need to update the
+          // value of the control, because f.x. that makes the textarea widget
+          // to scroll up.
+          if (this.control.value != this.stringValue) {
+            this.control.value = this.stringValue;
+          }
+
+          return true;
+        </body>
+      </method>
+
+      <method name="focus">
+        <body>
+          this.control.focus();
+          return true;
+        </body>
+      </method>
+
+      <method name="updateInstanceData">
+        <parameter name="aIncremental"/>
+        <body>
+          if (!aIncremental || this.getAttribute("incremental") == "true")
+            this.accessors.setValue(this.control.value);
+        </body>
+      </method>
+
+    </implementation>
+  </binding>
+
+
+  <!-- INPUT: BOOLEAN
+    The input[type="xsd:boolean"] widget assumes successors bindings implement
+    getElementControl() method what returns the object:
+    {
+      set value(); // set "boolean" value
+      get value(); // return "boolean" value
+      set readonly(); // set readonly state
+      focus(); // set focus
+    }
+  -->
+  <binding id="xformswidget-input-boolean-base"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-base">
+
+    <implementation>
+      <method name="refresh">
+        <body>
+          var value = this.stringValue;
+          if (value == "true" || value == "1") {
+            this.control.value = true;
+          } else {
+            this.control.value = false;
+          }
+
+          this.control.readonly = this.accessors.isReadonly();
+          return true;
+        </body>
+      </method>
+
+      <method name="focus">
+        <body>
+          this.control.focus();
+          return true;
+        </body>
+      </method>
+
+      <method name="updateInstanceData">
+        <parameter name="aIncremental"/>
+        <body>
+          <![CDATA[
+          if (!aIncremental || this.getAttribute("incremental") != "false") {
+            if (this.control.value) {
+              this.accessors.setValue("true");
+            } else {
+              this.accessors.setValue("false");
+            }
+          }
+          ]]>
+        </body>
+      </method>
+
+    </implementation>
+
+  </binding>
+
+
+  <!-- INPUT: Month
+    The input[type="xsd:gMonth"] widget assumes successors bindings implement
+    getElementControl() method what returns the object:
+    {
+      set value(); // set "string" value
+      get value(); // return "string" value
+      set readonly(); // set readonly state
+      focus(); // set focus
+      appendMonth(name, value); // append a month
+    }
+  -->
+  <binding id="xformswidget-input-month-base"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-base">
+    <implementation implements="nsIXFormsUIWidget">
+
+      <method name="refresh">
+        <body>
+        <![CDATA[
+          this.control.readonly = this.accessors.isReadonly();
+
+          if (this.accessors.isValid())
+            this.control.value = this.stringValue.substr(2,2);
+          else
+            this.control.value = "";
+
+          return true;
+        ]]>
+        </body>
+      </method>
+
+      <method name="focus">
+        <body>
+          this.control.focus();
+          return true;
+        </body>
+      </method>
+
+      <method name="updateInstanceData">
+        <parameter name="aIncremental"/>
+        <body>
+          if (!aIncremental || this.getAttribute("incremental") == "true") {
+            if (this.control.value != "") {
+              this.accessors.setValue("--" + this.control.value);
+            } else {
+              this.accessors.setValue("");
+            }
+          }
+        </body>
+      </method>
+
+      <constructor>
+      <![CDATA[
+        var date = new Date();
+        for (var i = 0; i < 12; i++) {
+          var value = i + 1;
+          if (value < 10)
+            value = "0" + value;
+
+          date.setMonth(i);
+          this.control.appendMonth(date.toLocaleFormat("%B"), value);
+        }
+
+        this.refresh();
+      ]]>
+      </constructor>
+    </implementation>
+  </binding>
+
+
+  <!-- INPUT: Day
+    The input[type="xsd:gDay"] widget assumes successors bindings implement
+    getElementControl() method what returns the object:
+    {
+      set value(); // set "string" value
+      get value(); // return "string" value
+      set readonly(); // set readonly state
+      focus(); // set focus
+      appendDay(name, value); // append a day
+    }
+  -->
+  <binding id="xformswidget-input-day-base"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-base">
+    <implementation implements="nsIXFormsUIWidget">
+      <method name="refresh">
+        <body>
+        <![CDATA[
+          this.control.readonly = this.accessors.isReadonly();
+
+          if (this.accessors.isValid())
+            this.control.value = this.stringValue.substr(3,2);
+          else
+            this.control.value = "";
+
+          return true;
+        ]]>
+        </body>
+      </method>
+
+      <method name="focus">
+        <body>
+          this.control.focus();
+          return true;
+        </body>
+      </method>
+
+      <method name="updateInstanceData">
+        <parameter name="aIncremental"/>
+        <body>
+          if (!aIncremental || this.getAttribute("incremental") == "true") {
+            if (this.control.value != "") {
+              this.accessors.setValue("---" + this.control.value);
+            } else {
+              this.accessors.setValue("");
+            }
+          }
+        </body>
+      </method>
+
+      <constructor>
+      <![CDATA[
+        var date = new Date();
+         for (var i = 0; i < 31; i++) {
+           var value = i + 1;
+           if (value < 10)
+             value = "0" + value;
+
+           this.control.appendDay(i + 1, value);
+         }
+
+         this.refresh();
+      ]]>
+      </constructor>
+    </implementation>
+  </binding>
+
+
+  <!-- SECRET: <DEFAULT>
+    We don't need in any special base binding for secret widget. All
+    successors bindings should be extended from base binding for input widget.
+  -->
+
+  <!-- TEXTAREA: <DEFAULT>
+    We don't need in any special base binding for textarea widget. All
+    successors bindings should be extended from base binding for input widget.
+  -->
+
+</bindings>

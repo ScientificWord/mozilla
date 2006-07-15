@@ -1,0 +1,72 @@
+<?xml version="1.0"?> 
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Mozilla Communicator client code, released
+   - March 31, 1998.
+   -
+   - The Initial Developer of the Original Code is
+   - Netscape Communications Corporation.
+   - Portions created by the Initial Developer are Copyright (C) 2002
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -   Scott MacGregor <mscott@netscape.com>
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either of the GNU General Public License Version 2 or later (the "GPL"),
+   - or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the GPL or the LGPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+<!DOCTYPE overlay SYSTEM "chrome://messenger/locale/msgViewPickerOverlay.dtd">
+
+<overlay
+  xmlns:nc="http://home.netscape.com/NC-rdf#"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script src="chrome://messenger/content/msgViewPickerOverlay.js"/>
+  
+  <hbox id="searchBox">
+    <hbox id="viewPickerBox" insertbefore="searchCriteria" align="center">
+      <label value="&viewPicker.label;" control="viewPicker"  accesskey="&viewPicker.accesskey;"/>
+      <menulist id="viewPicker" oncreate="FillLabelValues();" oncommand="viewChange(this, this.value);">
+       <menupopup id="viewPickerPopup">
+         <menuitem value="0" id="viewPickerAll" label="&viewPickerAll.label;"/>
+         <menuitem value="1" id="viewPickerUnread" label="&viewPickerUnread.label;"/>
+         <menuseparator/>
+         <menuitem value="2" id="labelMenuItem1"/>
+         <menuitem value="3" id="labelMenuItem2"/>
+         <menuitem value="4" id="labelMenuItem3"/>
+         <menuitem value="5" id="labelMenuItem4"/>
+         <menuitem value="6" id="labelMenuItem5"/>
+         <menuseparator id="lastDefaultView"/>
+         <menuseparator id="createCustomViewSeparator"/>
+         <menuitem id="saveAsVirtualFolder" value="7" label="&viewPickerSaveAsVirtualFolder.label;"/>
+         <menuitem id="createCustomView" value="8" label="&viewPickerCustomView.label;"/>
+       </menupopup>
+      </menulist>
+    </hbox>
+    <!-- overlay the advanced button to save space -->
+    <button id="advancedButton" hidden="true"/>
+  </hbox>
+
+</overlay>

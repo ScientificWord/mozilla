@@ -1,0 +1,490 @@
+<?xml version="1.0"?>
+
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Mozilla XForms support.
+   -
+   - The Initial Developer of the Original Code is
+   - Novell, Inc.
+   - Portions created by the Initial Developer are Copyright (C) 2005
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -  Allan Beaufour <abeaufour@novell.com>
+   -  Olli Pettay <Olli.Pettay@helsinki.fi>
+   -  Alexander Surkov <surkov@dc.baikal.ru>
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the GPL or the LGPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+
+<!--
+  This file contains xforms controls implementation for XHTML. All controls
+  are inherited from interface bindings realized in xforms.xml.
+-->
+
+<!DOCTYPE bindings [
+<!ENTITY % xformsDTD SYSTEM "chrome://xforms/locale/xforms.dtd">
+  %xformsDTD;
+]>
+
+<bindings id="xformsBindingsForXHTML"
+          xmlns="http://www.mozilla.org/xbl"
+          xmlns:html="http://www.w3.org/1999/xhtml"
+          xmlns:xbl="http://www.mozilla.org/xbl"
+          xmlns:mozType="http://www.mozilla.org/projects/xforms/2005/type">
+
+
+  <!-- OUTPUT: <DEFAULT> -->
+  <binding id="xformswidget-output"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-output-base">
+    <content>
+      <children includes="label"/>
+      <!-- XXX initialize span with a space until repeat is xbl-ized.  Part
+           of workaround for bug 322975
+      -->
+      <html:span class="xf-value" anonid="control"> </html:span>
+      <children/>
+    </content>
+
+    <implementation>
+      <method name="getControlElement">
+        <body>
+          return {
+            __proto__: this.ownerDocument.
+              getAnonymousElementByAttribute(this, 'anonid', 'control'),
+
+          // XXX changing from setting textContent to setting nodeValue of
+          // first child (text node created by space character initializer
+          // above).  Workaround for bug 322975.  Probably should be changed
+          // back after repeat is xbl-ized
+
+            set value(val) {
+              this.firstChild.nodeValue = val;
+            }
+          };
+        </body>
+      </method>
+
+    </implementation>
+  </binding>
+
+
+  <!-- OUTPUT: <DATE, APPEARANCE='FULL'> -->
+  <binding id="xformswidget-output-date-full"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-output-base">
+    <content>
+      <children includes="label"/>
+      <html:span mozType:calendar="true" anonid="control" readonly="true"/>
+      <children/>
+    </content>
+    <implementation>
+      <method name="getControlElement">
+        <body>
+          return this.ownerDocument.
+            getAnonymousElementByAttribute(this, "anonid", "control");
+        </body>
+      </method>
+    </implementation>
+  </binding>
+
+
+  <!-- LABEL: <DEFAULT> -->
+  <binding id="xformswidget-label"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-label-base">
+    <content>
+      <html:span anonid="implicitcontent"/>
+      <html:span anonid="explicitcontent"><children/></html:span>
+    </content>
+
+    <implementation>
+      <method name="getControlElement">
+        <body>
+          return {
+            _implicitContent: this.ownerDocument.
+              getAnonymousElementByAttribute(this, "anonid", 'implicitcontent'),
+            _explicitContent: this.ownerDocument.
+              getAnonymousElementByAttribute(this, 'anonid', 'explicitcontent'),
+            __proto__: this,
+
+            set value(val) {
+              if (val != null) {
+                this._implicitContent.textContent = val;
+                this._explicitContent.style.display = 'none';
+              } else {
+                this._implicitContent.textContent = '';
+                this._explicitContent.style.display = 'inline';
+              }
+            },
+
+            get textValue() {
+              if (this._explicitContent.style.display == 'none')
+                return this._implicitContent.textContent;
+              return this.textContent;
+            },
+            get nodeValue() {
+              var fragment = this.ownerDocument.createDocumentFragment();
+
+              var container = null;
+              if (this._explicitContent.style.display == 'none')
+                container = this._implicitContent;
+              else
+                container = this;
+
+              for (var node = container.firstChild; node; node = node.nextSibling) {
+                fragment.appendChild(node.cloneNode(true));
+              }
+              return fragment;
+            }
+          };
+        </body>
+      </method>
+
+    </implementation>
+  </binding>
+
+
+  <!-- LABEL: <ACCESKEY SUPPORT> -->
+  <binding id="xformswidget-label-accesskey"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-label-base">
+    <content>
+      <html:span anonid="implicitcontent"/>
+      <html:span anonid="explicitcontent"><children/></html:span>
+    </content>
+
+    <implementation>
+      <method name="getControlElement">
+        <body>
+        <![CDATA[
+          return {
+            _labelControl: this,
+            _implicitContent: this.ownerDocument.
+              getAnonymousElementByAttribute(this, 'anonid', 'implicitcontent'),
+            _explicitContent: this.ownerDocument.
+              getAnonymousElementByAttribute(this, 'anonid', 'explicitcontent'),
+
+            _ownerDocument: this.ownerDocument,
+
+            set value(val) {
+              var textnode = null;
+
+              if (val != null) {
+                this._implicitContent.textContent = val;
+                this._explicitContent.style.display = 'none';
+                textnode = this._implicitContent.firstChild;
+              } else {
+                // XXX: if label has element node children, we skip accesskey
+                // underlining.
+                var underline = true;
+                for (var node = this._labelControl.firstChild; node; node = node.nextSibling) {
+                  if (node.nodeType == Node.ELEMENT_NODE) {
+                    underline = false;
+                    break;
+                  }
+                }
+                if (!underline) {
+                  this._implicitContent.textContent = '';
+                  this._explicitContent.style.display = 'inline';
+                  return;
+                }
+
+                this._implicitContent.textContent = this._labelControl.textContent;
+                this._explicitContent.style.display = 'none';
+                textnode = this._implicitContent.firstChild;
+              }
+
+              var accesskey = this._labelControl.parentNode.getAttribute("accesskey");
+              if (accesskey.length == 1 && textnode) {
+                this.setAccesskeyOnNode(accesskey, textnode);
+              }
+            },
+
+            setAccesskeyOnNode: function(aAccesskey, aTextNode) {
+              var text = aTextNode.nodeValue;
+              var location = text.indexOf(aAccesskey);
+
+              if (location > -1) {
+                // we create a range around the character we want and surround
+                // it with an <html:u>
+                var range = this._ownerDocument.createRange();
+                range.setStart(aTextNode, location);
+                range.setEnd(aTextNode, location + 1);
+
+                var span = this._ownerDocument.
+                  createElementNS("http://www.w3.org/1999/xhtml", "span");
+                span.setAttribute("class", "xf-accesskey-inline");
+                range.surroundContents(span);
+              } else {
+                // if we didn't find the accesskey, append it to the end
+                var span = this._ownerDocument.
+                  createElementNS("http://www.w3.org/1999/xhtml", "span");
+                span.setAttribute("class", "xf-accesskey-appended");
+                span.textContent = aAccesskey;
+                if (aTextNode.nextSibling) {
+                  aTextNode.parentNode.insertBefore(span,
+                                                    aTextNode.nextSibling);
+                } else {
+                  aTextNode.parentNode.appendChild(span);
+                }
+              }
+            }
+          };
+        ]]>
+        </body>
+      </method>
+    </implementation>
+  </binding>
+
+
+  <!-- TRIGGER: <DEFAULT> -->
+  <binding id="xformswidget-trigger"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-trigger-base">
+    <content>
+      <html:button anonid="control" xbl:inherits="accesskey">
+        <children/>
+      </html:button>
+    </content>
+
+    <implementation>
+      <method name="getControlElement">
+      <body>
+        return {
+          __proto__: this.ownerDocument.
+            getAnonymousElementByAttribute(this, 'anonid', 'control'),
+
+          set disabled(val) {
+            if (val) {
+              this.setAttribute('disabled', 'disabled');
+            } else {
+              this.removeAttribute('disabled');
+            }
+          }
+        };
+      </body>
+      </method>
+    </implementation>
+
+    <handlers>
+      <handler event="focus" phase="capturing">
+        if (event.originalTarget == this.control) {
+          this.dispatchDOMUIEvent("DOMFocusIn");
+        }
+      </handler>
+
+      <handler event="blur" phase="capturing">
+        if (event.originalTarget == this.control) {
+          this.dispatchDOMUIEvent("DOMFocusOut");
+        }
+      </handler>
+
+    </handlers>
+  </binding>
+
+
+  <!-- TRIGGER: MINIMAL -->
+  <binding id="xformswidget-trigger-minimal"
+            extends="chrome://xforms/content/xforms.xml#xformswidget-trigger-base">
+    <content>
+      <html:span tabindex="0" anonid="control" xbl:inherits="accesskey">
+        <children/>
+      </html:span>
+    </content>
+
+    <implementation>
+      <method name="getControlElement">
+      <body>
+        return {
+          __proto__: this.ownerDocument.
+            getAnonymousElementByAttribute(this, 'anonid', 'control'),
+
+          set disabled(val) {
+            this.isDisabled = val;
+          },
+          isDisabled: false
+        };
+      </body>
+      </method>
+
+    </implementation>
+
+    <handlers>
+      <handler event="click">
+        if (!this.control.isDisabled) 
+          this.dispatchDOMUIEvent("DOMActivate");
+      </handler>
+
+      <handler event="focus" phase="capturing">
+        if (event.originalTarget == this.control) {
+          this.dispatchDOMUIEvent("DOMFocusIn");
+        }
+      </handler>
+
+      <handler event="blur" phase="capturing">
+        if (event.originalTarget == this.control) {
+          this.dispatchDOMUIEvent("DOMFocusOut");
+        }
+      </handler>
+
+    </handlers>
+  </binding>
+
+
+  <!-- CASE -->
+  <binding id="xformswidget-case"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-case-base">
+    <content>
+      <html:div anonid="container" class="-moz-xforms-case-container">
+        <children/>
+      </html:div>
+    </content>
+
+    <implementation>
+      <method name="getControlElement">
+        <body>
+          return {
+            __proto__: this.ownerDocument.
+              getAnonymousElementByAttribute(this, 'anonid', 'container'),
+
+            set selected(val) {
+              this.style.display = val ? "inherit" : "none";
+            }
+          };
+        </body>
+      </method>
+    </implementation>
+  </binding>
+
+
+  <!-- UPLOAD: <DEFAULT> -->
+  <binding id="xformswidget-upload"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-upload-base">
+    <content>
+      <children includes="label"/>
+      <html:input anonid="text_control" class="xf-value" readonly="readonly"/>
+      <html:button anonid="browse_button" xbl:inherits="accesskey">
+        &xforms.upload.browsetext;
+      </html:button>
+      <html:button anonid="clear_button">
+        &xforms.upload.cleartext;
+      </html:button>
+      <children/>
+    </content>
+
+    <implementation implements="nsIXFormsUIWidget, nsIXFormsUploadUIElement">
+      <method name="getControlElement">
+        <body>
+          return {
+            set value(val) {
+              this._textControl.value = val;
+            },
+            set readonly(val) {
+              if (val) {
+                this._browseButton.setAttribute('disabled', 'disabled');
+                this._clearButton.setAttribute('disabled', 'disabled');
+              } else {
+                this._browseButton.removeAttribute('disabled');
+                this._clearButton.removeAttribute('disabled');
+              }
+            },
+            focus: function() {
+              this._browseButton.focus();
+            },
+
+            _browseButton: this.ownerDocument.
+              getAnonymousElementByAttribute(this, 'anonid', 'browse_button'),
+            _clearButton: this.ownerDocument.
+              getAnonymousElementByAttribute(this, 'anonid', 'clear_button'),
+            _textControl: this.ownerDocument.
+              getAnonymousElementByAttribute(this, 'anonid', 'text_control'),
+          };
+        </body>
+      </method>
+    </implementation>
+
+    <handlers>
+      <handler event="click">
+        switch (event.originalTarget.getAttribute("anonid")) {
+        case "browse_button":
+          this.uploadElement.pickFile();
+          break;
+        case "clear_button":
+          this.uploadElement.clearFile();
+          break;
+        }
+      </handler>
+
+      <handler event="keypress" keycode="VK_RETURN">
+        switch (event.originalTarget.getAttribute("anonid")) {
+        case "browse_button":
+        case "clear_button":
+          this.dispatchDOMUIEvent('DOMActivate');
+          break;
+        }
+      </handler>
+    </handlers>
+  </binding>
+
+
+  <!-- UPLOAD: DISABLED -->
+  <binding id="xformswidget-upload-disabled"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-upload-base">
+    <content>
+      <children includes="label"/>
+      <html:input readonly="readonly" class="xf-value" xbl:inherits="accesskey"/>
+      <html:button disabled="disabled" xbl:inherits="accesskey">
+        &xforms.upload.browsetext;
+      </html:button>
+      <html:button disabled="disabled" xbl:inherits="accesskey">
+        &xforms.upload.cleartext;
+      </html:button>
+      <children/>
+    </content>
+
+    <implementation>
+      <method name="getControlElement">
+        <body>
+          return {
+            set value(val){},
+            set readonly(val){},
+            focus: function(){}
+          };
+        </body>
+      </method>
+    </implementation>
+  </binding>
+
+
+  <!-- REPEAT -->
+  <binding id="xformswidget-repeat"
+           extends="chrome://xforms/content/xforms.xml#xformswidget-repeat-base">
+    <content>
+      <html:div style="display:none;">
+        <children/>
+      </html:div>
+      <html:div anonid="insertion"/>
+    </content>
+  </binding>
+
+</bindings>

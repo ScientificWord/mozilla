@@ -1,0 +1,8 @@
+id=%id%
+OrganizationName=%OrganizationName%
+browser.throbber.url=%browser.throbber.url%
+cckhelp.url=%cckhelp.url%
+browser.startup.homepage=%browser.startup.homepage%
+startup.homepage_override_url=%startup.homepage_override_url%
+PopupAllowedSites=%PopupAllowedSites%
+InstallAllowedSites=%InstallAllowedSites%

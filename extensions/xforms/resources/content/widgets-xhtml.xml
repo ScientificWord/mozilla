@@ -1,0 +1,291 @@
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Mozilla XForms support.
+   -
+   - The Initial Developer of the Original Code is
+   - IBM Corporation.
+   - Portions created by the Initial Developer are Copyright (C) 2006
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -  Doron Rosenberg <doronr@us.ibm.com>
+   -  Alexander Surkov <surkov@dc.baikal.ru>
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the GPL or the LGPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+<!DOCTYPE bindings [
+<!ENTITY % xformsDTD SYSTEM "chrome://xforms/locale/xforms.dtd">
+  %xformsDTD;
+]>
+
+<!--
+  The file contains auxiliary controls implementations for XHTML context. The
+  controls are inherited from bindings defined in 'widgets.xml' file.
+-->
+
+<bindings id="widgetsBindingsForXHTML"
+          xmlns="http://www.mozilla.org/xbl"
+          xmlns:html="http://www.w3.org/1999/xhtml"
+          xmlns:xbl="http://www.mozilla.org/xbl">
+
+
+<!-- CALENDAR WIDGETS -->
+
+  <!-- COMPACT CALENDAR -->
+  <binding id="calendar-compact"
+           extends="chrome://xforms/content/widgets.xml#calendar-compact-base">
+
+    <resources>
+      <stylesheet src="chrome://xforms/skin/widgets-xhtml.css"/>
+    </resources>
+
+    <content>
+      <html:table>
+        <html:tbody anonid="dayContainer"/>
+      </html:table>
+    </content>
+
+    <implementation>
+    <!-- interface -->
+
+      <!-- Set type and label for the day control element -->
+      <method name="setDayControl">
+        <parameter name="aControl"/>
+        <parameter name="aType"/>
+        <parameter name="aLabel"/>
+        <body>
+          aControl.textContent = aLabel;
+          aControl.setAttribute("class", aType);
+        </body>
+      </method>
+
+      <!-- Select day control element -->
+      <method name="selectDayControl">
+        <parameter name="aControl"/>
+        <body>
+          if (aControl)
+            aControl.setAttribute("selected", "selected");
+        </body>
+      </method>
+
+      <!-- Unselect day control element -->
+      <method name="unselectDayControl">
+        <parameter name="aControl"/>
+        <body>
+          if (aControl)
+            aControl.removeAttribute("selected");
+        </body>
+      </method>
+
+      <!-- Return true if node is control element for a day -->
+      <method name="isDayControl">
+        <parameter name="aNode"/>
+        <body>
+          if (aNode.localName != "td" || aNode.namespaceURI != this.XHTML_NS)
+            return false;
+          return true;
+        </body>
+      </method>
+
+      <method name="buildUI">
+        <body>
+        <![CDATA[
+          var dayOfWeekNames = this.getDaysOfWeekNames();
+          var row = this.ownerDocument.createElementNS(this.XHTML_NS, "tr");
+
+          // create days of a week names
+          var header;
+          for (var i = 0; i < 7; i++) {
+            header = this.ownerDocument.createElementNS(this.XHTML_NS, "th");
+            header.textContent = dayOfWeekNames[i];
+            row.appendChild(header);
+          }
+          this.dayContainer.appendChild(row);
+
+          // create days
+          var cell;
+          for (var i = 0; i < 6; i++) {
+            row = document.createElementNS(this.XHTML_NS, "tr");
+
+            for (var y = 0; y < 7; y++) {
+              cell = this.ownerDocument.createElementNS(this.XHTML_NS, "td");
+              cell.setAttribute("tabindex", "-1");
+              this._dayElements.push(cell);
+              row.appendChild(cell);
+            }
+            this.dayContainer.appendChild(row);
+          }
+        ]]>
+        </body>
+      </method>
+
+      <property name="XHTML_NS" readonly="true"
+                onget="return 'http://www.w3.org/1999/xhtml';"/>
+
+      <!-- Return container of controls for days -->
+      <property name="dayContainer" readonly="true">
+        <getter>
+          if (!this._dayContainer)
+            this._dayContainer = this.ownerDocument.
+              getAnonymousElementByAttribute(this, "anonid", "dayContainer");
+          return this._dayContainer;
+        </getter>
+      </property>
+      <field name="_dayContainer">null</field>
+    </implementation>
+
+    <handlers>
+      <handler event="keydown" keycode="VK_SPACE">
+        var target = event.originalTarget;
+        if (this.isDayControl(target))
+          this.processAction(target.getAttribute("class"), target.textContent);
+      </handler>
+      <handler event="mousedown" button="0">
+        var target = event.originalTarget;
+        if (this.isDayControl(target))
+          this.processAction(target.getAttribute("class"), target.textContent);
+      </handler>
+    </handlers>
+  </binding>
+
+
+  <!-- FULL CALENDAR -->
+  <binding id="calendar-full" extends="#calendar-compact">
+    <content>
+      <html:table>
+        <html:tbody anonid="dayContainer">
+        <html:tr>
+          <html:td colspan="1">
+            <html:input type="button" anonid="back-button"
+                        class="-moz-date-back-button"
+                        title="&xforms.datepicker.prevMonth.title;"/>
+          </html:td>
+          <html:td colspan="5" align="center">
+            <html:span anonid="date-label"/>
+          </html:td>
+          <html:td colspan="1">
+            <html:input type="button" anonid="fwd-button"
+                        class="-moz-date-fwd-button"
+                        title="&xforms.datepicker.nextMonth.title;"/>
+          </html:td>
+        </html:tr>
+        </html:tbody>
+      </html:table>
+    </content>
+
+    <implementation>
+    <!-- interface -->
+      <!-- Update UI -->
+      <method name="refresh">
+        <parameter name="aCurrentDay"/>
+        <parameter name="aDaysRefreshOnly"/>
+        <body>
+          this.refreshInternal(aCurrentDay, aDaysRefreshOnly);
+          var dateLabel =
+            new Date(this.year, this.month - 1).toLocaleFormat("%B %Y");
+          this.dateLabel.textContent = dateLabel;
+        </body>
+      </method>
+
+    <!-- private -->
+      <property name="dateLabel" readonly="true">
+        <getter>
+          if (!this._dateLabel) {
+            this._dateLabel = this.ownerDocument.
+              getAnonymousElementByAttribute(this, "anonid", "date-label");
+          }
+          return this._dateLabel;
+        </getter>
+      </property>
+      <field name="_dateLabel">null</field>
+
+      <property name="backButton" readonly="true">
+        <getter>
+          if (!this._backButton) {
+            this._backButton = this.ownerDocument.
+              getAnonymousElementByAttribute(this, "anonid", "back-button");
+          }
+          return this._backButton;
+        </getter>
+      </property>
+      <field name="_backButton">null</field>
+
+      <property name="fwdButton" readonly="true">
+        <getter>
+          if (!this._fwdButton) {
+            this._fwdButton = this.ownerDocument.
+              getAnonymousElementByAttribute(this, "anonid", "fwd-button");
+          }
+          return this._fwdButton;
+        </getter>
+      </property>
+      <field name="_fwdButton">null</field>
+    </implementation>
+
+    <handlers>
+      <handler event="keypress">
+      <![CDATA[
+        var target = event.originalTarget;
+
+        switch (event.keyCode) {
+          case event.DOM_VK_DOWN:
+            if (target == this.backButton || target == this.fwdButton)
+              this.focus();
+            break;
+
+          case event.DOM_VK_UP:
+            if (this.isDayControl(target)) {
+              if (this.currentDayIndex - 3 <= 0) {
+                this.backButton.focus();
+              } else if (this.currentDayIndex - 7 <= 0) {
+                this.fwdButton.focus();
+              }
+            }
+            break;
+
+          case event.DOM_VK_LEFT: case event.DOM_VK_RIGHT:
+            if (target == this.backButton)
+              this.fwdButton.focus();
+            else if (target == this.fwdButton)
+              this.backButton.focus();
+            break;
+        }
+      ]]>
+      </handler>
+
+      <handler event="click" button="0">
+        switch (event.originalTarget) {
+          case this.backButton:
+            this.processAction("prevMonth", null, true);
+            break;
+          case this.fwdButton:
+            this.processAction("nextMonth", null, true);
+            break;
+        }
+      </handler>
+    </handlers>
+  </binding>
+</bindings>
