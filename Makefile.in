@@ -384,6 +384,10 @@ ifdef MOZ_STANDALONE_COMPOSER
 tier_99_dirs	+= composer
 endif
 
+ifdef MOZ_MSI_PRINCE
+tier_99_dirs	+= Prince
+endif
+
 ifdef MOZ_SUNBIRD
 tier_99_dirs	+= calendar/sunbird
 endif
