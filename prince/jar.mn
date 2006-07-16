@@ -1,0 +1,11 @@
+prince.jar:
+% content prince %content/
+* content/prince.xul                (content/prince.xul)
+  content/prince.js                 (content/prince.js)
+  content/aboutDialog.xul           (content/aboutDialog.xul)
+  content/aboutPrince.png           (content/aboutPrince.png)
+
+en-US.jar:
+% locale prince en-US %locale/en-US/
+  locale/en-US/prince.dtd           (locale/prince.dtd)
+  locale/en-US/aboutDialog.dtd      (locale/aboutDialog.dtd)

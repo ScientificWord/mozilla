@@ -1,0 +1,45 @@
+<!ENTITY prince.title       "Prince">
+
+<!ENTITY fileMenu.label    "File">
+<!ENTITY fileMenu.accesskey    "F">
+
+<!ENTITY newBlankPage.label    "New Blank Page">
+<!ENTITY newBlankPage.accesskey    "N">
+<!ENTITY fileopen.label    "Open">
+<!ENTITY fileopen.accesskey    "O">
+<!ENTITY filesave.label    "Save">
+<!ENTITY filesave.accesskey    "S">
+<!ENTITY fileprint.label    "Print">
+<!ENTITY fileprint.accesskey    "P">
+<!ENTITY filequit.label    "Exit">
+<!ENTITY filequit.accesskey    "x">
+
+<!ENTITY helpMenu.label    "Help">
+<!ENTITY helpMenu.accesskey    "H">
+
+<!ENTITY aboutCmd.label    "About Prince">
+<!ENTITY aboutCmd.accesskey    "A">
+
+<!ENTITY fileopen.accesskey    "O">
+<!ENTITY filenew.keybinding    "N">
+<!ENTITY fileopen.keybinding    "O">
+<!ENTITY filesave.keybinding    "S">
+<!ENTITY fileprint.keybinding    "P">
+<!ENTITY filequit.keybinding    "Q">
+
+<!ENTITY NormalModeTab.label "Normal">
+<!ENTITY NormalMode.tooltip "Normal Mode">
+<!ENTITY TagModeTab.label "Tag">
+<!ENTITY TagMode.tooltip "Tag Mode">
+<!ENTITY SourceModeTab.label "Source">
+<!ENTITY SourceMode.tooltip "Source Mode">
+<!ENTITY PreviewModeTab.label "Preview">
+<!ENTITY PreviewMode.tooltip "Preview Mode">
+
+<!ENTITY MSIComputeMenu.label "Compute">
+<!ENTITY MSIComputeMenu.accesskey "C">
+<!ENTITY MSIComputeEvalCmd.label "Evaluate">
+<!ENTITY MSIComputeEvalCmd.accesskey "E">
+<!ENTITY MSIComputeEvalCmd.keybinding "e">      
+<!ENTITY MSIComputeEvalNumCmd.label "Evaluate Numeric">
+<!ENTITY MSIComputeEvalNumCmd.accesskey "N">

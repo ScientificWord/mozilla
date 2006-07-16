@@ -1,0 +1,125 @@
+? Prince
+? obj-Debug
+? obj-Prince
+? obj-PrinceRelease
+? obj-SeaMonkey
+? obj-XULRunner
+? layout/mathml/base/src/bug325222.diff
+Index: Makefile.in
+===================================================================
+RCS file: /cvsroot/mozilla/Makefile.in,v
+retrieving revision 1.348
+diff -u -8 -r1.348 Makefile.in
+--- Makefile.in	30 May 2006 13:08:47 -0000	1.348
++++ Makefile.in	30 May 2006 14:48:19 -0000
+@@ -364,17 +364,17 @@
+ tier_99_dirs += $(MOZ_BRANDING_DIRECTORY)
+ endif
+ 
+ ifdef MOZ_PHOENIX
+ tier_99_dirs	+= browser xpfe/bootstrap/init.d
+ endif
+ 
+ ifdef MOZ_XULRUNNER
+-tier_99_dirs	+= xulrunner
++tier_99_dirs	+= xulrunner Prince
+ endif
+ 
+ ifdef MOZ_COMPOSER
+ tier_99_dirs	+= editor/ui
+ endif
+ 
+ ifdef MOZ_THUNDERBIRD
+ tier_99_dirs	+= mail xpfe/bootstrap/init.d
+Index: allmakefiles.sh
+===================================================================
+RCS file: /cvsroot/mozilla/allmakefiles.sh,v
+retrieving revision 1.624
+diff -u -8 -r1.624 allmakefiles.sh
+--- allmakefiles.sh	21 May 2006 19:50:15 -0000	1.624
++++ allmakefiles.sh	22 May 2006 16:55:56 -0000
+@@ -937,16 +937,18 @@
+ 
+ MAKEFILES_xulrunner="
+ xulrunner/Makefile
+ xulrunner/app/Makefile
+ xulrunner/app/profile/Makefile
+ xulrunner/app/profile/chrome/Makefile
+ xulrunner/app/profile/extensions/Makefile
+ xulrunner/installer/Makefile
++Prince/Makefile
++Prince/Compute/Makefile
+ "
+ 
+ MAKEFILES_xulapp="
+ toolkit/Makefile
+ toolkit/library/Makefile
+ toolkit/content/Makefile
+ toolkit/content/buildconfig.html
+ toolkit/obsolete/Makefile
+Index: editor/composer/src/nsEditingSession.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/editor/composer/src/nsEditingSession.cpp,v
+retrieving revision 1.44
+diff -u -8 -r1.44 nsEditingSession.cpp
+--- editor/composer/src/nsEditingSession.cpp	28 Nov 2005 23:56:24 -0000	1.44
++++ editor/composer/src/nsEditingSession.cpp	8 May 2006 16:10:04 -0000
+@@ -313,17 +313,17 @@
+       if (NS_SUCCEEDED(nsdoc->GetContentType(mimeType)))
+         AppendUTF16toUTF8(mimeType, mimeCType);
+ 
+       if (IsSupportedTextType(mimeCType.get()))
+       {
+         mEditorType.AssignLiteral("text");
+         mimeCType = "text/plain";
+       }
+-      else if (!mimeCType.EqualsLiteral("text/html"))
++      else if (!(mimeCType.EqualsLiteral("text/html") || mimeCType.EqualsLiteral("application/xhtml+xml")))
+       {
+         // Neither an acceptable text or html type.
+         mEditorStatus = eEditorErrorCantEditMimeType;
+ 
+         // Turn editor into HTML -- we will load blank page later
+         mEditorType.AssignLiteral("html");
+         mimeCType.AssignLiteral("text/html");
+       }
+Index: layout/mathml/base/src/nsMathMLContainerFrame.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/layout/mathml/base/src/nsMathMLContainerFrame.cpp,v
+retrieving revision 1.139
+diff -u -8 -r1.139 nsMathMLContainerFrame.cpp
+--- layout/mathml/base/src/nsMathMLContainerFrame.cpp	10 Apr 2006 00:16:27 -0000	1.139
++++ layout/mathml/base/src/nsMathMLContainerFrame.cpp	26 May 2006 22:18:23 -0000
+@@ -1001,24 +1001,31 @@
+                                            const nsHTMLReflowState& aReflowState,
+                                            nsReflowStatus&          aStatus)
+ {
+   // don't bother trying to span words as if they were non-breaking beyond this point
+   if (aReflowState.mLineLayout)
+     aReflowState.mLineLayout->ForgetWordFrames();
+ 
+   // provide a local, self-contained linelayout where to reflow the nsInlineFrame
++  nsSpaceManager* spaceManager =
++    new nsSpaceManager(aPresContext->PresShell(), this);
++  if (!spaceManager) {
++    NS_ERROR("Could not create space manager");
++    return NS_ERROR_OUT_OF_MEMORY;
++  }
+   nsSize availSize(NS_UNCONSTRAINEDSIZE, NS_UNCONSTRAINEDSIZE);
+-  nsLineLayout ll(aPresContext, aReflowState.mSpaceManager, aReflowState.parentReflowState,
++  nsLineLayout ll(aPresContext, spaceManager, aReflowState.parentReflowState,
+                   aDesiredSize.mComputeMEW);
+   ll.BeginLineReflow(0, 0, availSize.width, availSize.height, PR_FALSE, PR_FALSE);
+   PRBool pushedFrame;
+   ll.ReflowFrame(aChildFrame, aStatus, &aDesiredSize, pushedFrame);
+   NS_ASSERTION(!pushedFrame, "unexpected");
+   ll.EndLineReflow();
++  delete spaceManager;
+ 
+   // make up the bounding metrics from the reflow metrics.
+   aDesiredSize.mBoundingMetrics.ascent = aDesiredSize.ascent;
+   aDesiredSize.mBoundingMetrics.descent = aDesiredSize.descent;
+   aDesiredSize.mBoundingMetrics.width = aDesiredSize.width;
+   aDesiredSize.mBoundingMetrics.rightBearing = aDesiredSize.width;
+ 
+   // Note: MathML's vertical & horizontal alignments happen much later in 

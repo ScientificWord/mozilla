@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://prince/locale/prince.dtd">
+
+<window
+  id    = "prince"
+  title = "&prince.title;"
+  onload="EditorOnLoad()"
+  windowtype="composer:html"
+  screenX="10" screenY="10" width="640" height="480"
+  persist="screenX screenY width height sizemode"
+  xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script src="chrome://prince/content/prince.js"/>
+
+  <commandset id="tasksCommands">
+    <command id="cmd_open" oncommand="doOpen()"/>
+    <command id="cmd_print" oncommand="goDoCommand('cmd_print')"/>
+    <command id="cmd_quit" oncommand="doQuit()"/>
+    <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
+    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+  </commandset>
+
+  <keyset id="editorKeys">
+    <key id="key_newBlankPage" key="&filenew.keybinding;" observes="cmd_newEditor"  modifiers="accel"/>
+    <key id="openeditorkb"   key="&fileopen.keybinding;"  observes="cmd_open"  modifiers="accel"/>
+    <key id="savekb"         key="&filesave.keybinding;"  observes="cmd_save"  modifiers="accel"/>
+    <key id="printkb"        key="&fileprint.keybinding;" observes="cmd_print" modifiers="accel"/>
+    <key id="key_quit"       key="&filequit.keybinding;"  observes="cmd_quit" modifiers="accel"/>
+    <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
+  </keyset>
+
+  <toolbox class="toolbox-top" id="EditorToolbox">
+    <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed">
+      <menu id="fileMenu" label="&fileMenu.label;" accesskey="&fileMenu.accesskey;">
+        <menupopup id="menu_FilePopup">
+          <menuitem id="menu_newBlankPage" label="&newBlankPage.label;" accesskey="&newBlankPage.accesskey;" key="key_newBlankPage" command="cmd_newEditor"/>
+          <menuitem id="openMenuitem" accesskey="&fileopen.accesskey;" key="openeditorkb" observes="cmd_open" label="&fileopen.label;"/>
+          <menuitem id="saveMenuitem" accesskey="&filesave.accesskey;" key="savekb" observes="cmd_save"  label="&filesave.label;"/>
+          <menuitem id="printMenuItem" accesskey="&fileprint.accesskey;" key="printkb" observes="cmd_print" label="&fileprint.label;"/>
+          <menuseparator/>
+          <menuitem id="quitMenuItem" accesskey="&filequit.accesskey;" key="key_quit" observes="cmd_quit" label="&filequit.label;"/>
+        </menupopup>
+      </menu>
+
+      <menu id="editMenu"/>
+  
+      <menu id="insertMenu"/>
+  
+      <menu id="MSIComputeMenu" label="&MSIComputeMenu.label;" accesskey="&MSIComputeMenu.accesskey;">
+        <menupopup id="MSIComputePopup">
+          <menuitem label="&MSIComputeEvalCmd.label;"    accesskey="&MSIComputeEvalCmd.accesskey;"    key="MSIevalKey" observes="cmd_MSIComputeEval"/>
+          <menuitem label="&MSIComputeEvalNumCmd.label;" accesskey="&MSIComputeEvalNumCmd.accesskey;"                  observes="cmd_MSIComputeEvalNum"/>
+        </menupopup>
+      </menu>
+
+      <!-- DEBUG only -->
+      <menu id="debugMenu" /> 
+      <!-- end DEBUG only -->
+    
+      <menu id="menu_Help" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">
+        <menupopup id="helpPopup">
+          <menuitem accesskey="&aboutCmd.accesskey;" label="&aboutCmd.label;" id="aboutName" oncommand="goAboutDialog();"/>
+        </menupopup>
+      </menu>
+  
+      <spacer flex="1"/>
+    </menubar>
+  </toolbox>
+
+  <vbox id="appcontent" flex="1">
+    <deck id="ContentWindowDeck" selectedIndex="0" flex="1">
+      <stack>
+        <editor id="content-frame" type="content-primary" context="editorContentContext"
+                editortype="html" flex="1" tooltip="aHTMLTooltip"/>
+      </stack>
+      <vbox>
+        <label id="doctype-text" crop="right"/>
+        <editor id="content-source" type="content" context="editorSourceContext"
+                flex="1" tooltip="aSourceTooltip"/>
+      </vbox>
+    </deck>
+    <hbox id="EditModeToolbar" align="center" hidden="false" persist="collapsed">
+      <tabs id="EditModeTabs" class="tabs-bottom" flex="1">
+        <tab id="NormalModeButton" class="tab-bottom edit-mode _plain" type="text" selected="1"
+             label="&NormalModeTab.label;" tooltiptext="&NormalMode.tooltip;"/>
+        <tab id="TagModeButton" class="tab-bottom edit-mode _plain" type="text" selected="1"
+             label="&TagModeTab.label;" tooltiptext="&TagMode.tooltip;"/>
+        <tab id="SourceModeButton" class="tab-bottom edit-mode _plain" type="text" selected="1"
+             label="&SourceModeTab.label;" tooltiptext="&SourceMode.tooltip;"/>
+        <tab id="PreviewModeButton" class="tab-bottom edit-mode _plain" type="text" selected="1"
+             label="&PreviewModeTab.label;" tooltiptext="&PreviewMode.tooltip;"/>
+      </tabs>
+    </hbox>
+  </vbox>
+
+  <!-- Some of this is from globarOverlay.xul -->
+  <statusbar class="chromeclass-status" id="status-bar">
+    <statusbarpanel id="component-bar"/>
+    <statusbarpanel id="structToolbar" flex="1" pack="end">
+    <label id="structSpacer" value="" flex="1"/>
+    </statusbarpanel>
+    <statusbarpanel class="statusbarpanel-iconic" id="offline-status"/>
+  </statusbar>
+</window>
