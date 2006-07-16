@@ -1066,6 +1066,11 @@ composer/base/Makefile
 xpfe/components/build2/Makefile
 "
 
+MAKEFILES_prince="
+Prince/Makefile
+Prince/Compute/Makefile
+"
+
 MAKEFILES_calendar="
 calendar/Makefile
 calendar/resources/Makefile
@@ -1670,6 +1675,10 @@ fi
 
 if test -n "$MOZ_STANDALONE_COMPOSER"; then
     add_makefiles "$MAKEFILES_standalone_composer"
+fi
+
+if test -n "$MOZ_MSI_PRINCE"; then
+    add_makefiles "$MAKEFILES_prince"
 fi
 
 if test -n "$MOZ_SUNBIRD"; then

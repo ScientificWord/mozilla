@@ -12675,6 +12675,14 @@ EOF
 
 fi
 
+if test "$MOZ_MSI_PRINCE"; then
+  cat >> confdefs.h <<\EOF
+#define MOZ_MSI_PRINCE 1
+EOF
+
+fi
+
+
 # Toolkit Options
 
             	# Check whether --enable-default-toolkit or --disable-default-toolkit was given.
@@ -20927,6 +20935,7 @@ s%@MOZ_SUITE@%$MOZ_SUITE%g
 s%@MOZ_PHOENIX@%$MOZ_PHOENIX%g
 s%@MOZ_THUNDERBIRD@%$MOZ_THUNDERBIRD%g
 s%@MOZ_STANDALONE_COMPOSER@%$MOZ_STANDALONE_COMPOSER%g
+s%@MOZ_MSI_PRINCE@%$MOZ_MSI_PRINCE%g
 s%@MOZ_SUNBIRD@%$MOZ_SUNBIRD%g
 s%@MOZ_XULRUNNER@%$MOZ_XULRUNNER%g
 s%@GTK_CONFIG@%$GTK_CONFIG%g
