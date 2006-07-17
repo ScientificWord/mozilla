@@ -1,0 +1,372 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<title>CompTest Script/Command Output</title>
+</head>
+<body>
+<hr/>
+<p>
+SetClientPref(1,9,9)
+</p>
+<p>
+SetClientPref(1,15,0)
+</p>
+<p>
+SetClientPref(1,16,0)
+</p>
+<p>
+SetClientPref(1,17,0)
+</p>
+<p>
+SetClientPref(1,18,0)
+</p>
+<p>
+Test ID 100
+</p>
+<p><mml:math><mml:mn>1.41421356</mml:mn></mml:math></p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>1.41421356</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 101
+</p>
+<p>Render ASCII for e and i</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>e</mi>
+    <mo>+</mo>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>i</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+SetClientPref(1,9,5)
+</p>
+<p>
+SetClientPref(1,17,1)
+</p>
+<p>
+SetClientPref(1,18,2)
+</p>
+<p>
+Test ID 200
+</p>
+<p><mml:math><mml:mn>1.4142</mml:mn></mml:math></p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>1.4142</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 201
+</p>
+<p>Render Unicodes for e and i</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>&#x2147;</mi>
+    <mo>+</mo>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>&#x2148;</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 250
+</p>
+<p>test mfenced (default)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mrow>
+        <mo>(</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+        <mo>)</mo>
+      </mrow>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+SetClientPref(1,4,0)
+</p>
+<p>
+Test ID 251
+</p>
+<p>test mfenced (off)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mrow>
+        <mo>(</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+        <mo>)</mo>
+      </mrow>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+SetClientPref(1,4,1)
+</p>
+<p>
+Test ID 251
+</p>
+<p>test mfenced (on)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+SetClientPref(1,9,5)
+</p>
+<p>
+Test ID 300
+</p>
+<p><mml:math><mml:mn>1.4142</mml:mn></mml:math></p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>1.4142</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+SetClientPref(1,9,9)
+</p>
+<p>
+Test ID 400
+</p>
+<p><mml:math><mml:mn>1.41421356</mml:mn></mml:math></p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>1.41421356</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 500
+</p>
+<p>?</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="[" close="]">
+      <mtable>
+        <mtr>
+          <mtd>
+            <mn>1.41421356</mn>
+          </mtd>
+          <mtd>
+            <mn>14.1421356</mn>
+          </mtd>
+          <mtd>
+            <mn>141.421356</mn>
+          </mtd>
+          <mtd>
+            <mn>1414.21356</mn>
+          </mtd>
+          <mtd>
+            <mn>14142.1356</mn>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mn>0.141421356</mn>
+          </mtd>
+          <mtd>
+            <mn>1.41421356</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>-2</mn>
+            </msup>
+          </mtd>
+          <mtd>
+            <mn>1.41421356</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>-3</mn>
+            </msup>
+          </mtd>
+          <mtd>
+            <mn>1.41421356</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>-4</mn>
+            </msup>
+          </mtd>
+          <mtd>
+            <mn>1.41421356</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>-5</mn>
+            </msup>
+          </mtd>
+        </mtr>
+      </mtable>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+SetClientPref(1,9,5)
+</p>
+<p>
+SetClientPref(1,10,0)
+</p>
+<p>
+SetClientPref(1,11,1)
+</p>
+<p>
+Test ID 500
+</p>
+<p>Scientific Notation, 5 digits rendered</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="[" close="]">
+      <mtable>
+        <mtr>
+          <mtd>
+            <mn>1.4142</mn>
+          </mtd>
+          <mtd>
+            <mn>1.4142</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>1</mn>
+            </msup>
+          </mtd>
+          <mtd>
+            <mn>1.4142</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>2</mn>
+            </msup>
+          </mtd>
+          <mtd>
+            <mn>1.4142</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>3</mn>
+            </msup>
+          </mtd>
+          <mtd>
+            <mn>1.4142</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>4</mn>
+            </msup>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mn>1.4142</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>-1</mn>
+            </msup>
+          </mtd>
+          <mtd>
+            <mn>1.4142</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>-2</mn>
+            </msup>
+          </mtd>
+          <mtd>
+            <mn>1.4142</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>-3</mn>
+            </msup>
+          </mtd>
+          <mtd>
+            <mn>1.4142</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>-4</mn>
+            </msup>
+          </mtd>
+          <mtd>
+            <mn>1.4142</mn>
+            <mo>&#xd7;</mo>
+            <msup>
+              <mn>10</mn>
+              <mn>-5</mn>
+            </msup>
+          </mtd>
+        </mtr>
+      </mtable>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<hr/>
+</body>
+</html>

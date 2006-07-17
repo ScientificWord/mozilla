@@ -1,0 +1,1307 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<title>CompTest Script/Command Output</title>
+</head>
+<body>
+<hr/>
+<hr/><h2>No Definition Yet</h2>
+<p>
+Test ID b01 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mn>5</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b01 eval mfenced fixup result
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>5</mn>
+    <mo>&#x2062;</mo>
+    <mi>f</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b02 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mn>5</mn>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>f</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b02 eval fixup result
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>5</mn>
+    <mo>&#x2062;</mo>
+    <mi>f</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b03 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b04 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2062;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b05 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi mathcolor="gray">sin</mi>
+    <mo>&#x2061;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mrow>
+        <mi>f</mi>
+        <mo>&#x2062;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b06 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mo form="postfix">&#x2032;</mo>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b07 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mo form="postfix">&#x2032;</mo>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>y</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b08 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mover accent="true">
+    <mi>f</mi>
+    <mo form="postfix" accent="true">&#x2d9;</mo>
+  </mover>
+</math>
+
+</p>
+<p>
+Test ID b09 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mover accent="true">
+      <mi>f</mi>
+      <mo form="postfix" accent="true">&#x2d9;</mo>
+    </mover>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b10 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msub>
+    <mi>f</mi>
+    <mi>x</mi>
+  </msub>
+</math>
+
+</p>
+<p>
+Test ID b11 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mo form="infix">&#x2217;</mo>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b12 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mover accent="true">
+      <mi>f</mi>
+      <mo form="postfix" accent="true">&#xaf;</mo>
+    </mover>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b13 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mtext>b13 wrong, differential operator didn't bind correctly.</mtext>
+</math>
+
+</p>
+<p>
+Test ID b14 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mrow>
+        <mo form="postfix">&#x2032;</mo>
+        <mo form="postfix">&#x2032;</mo>
+      </mrow>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b15 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mfenced open="(" close=")">
+        <mn>2</mn>
+      </mfenced>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b16 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b17 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msup>
+    <mn>2</mn>
+    <mi>f</mi>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID b18 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msup>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mrow>
+        <mi>f</mi>
+        <mo>&#x2062;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
+      </mrow>
+    </mfenced>
+    <mn>2</mn>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID b19 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msup>
+    <mi>f</mi>
+    <mn>2</mn>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID b20 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mrow>
+      <mn>1</mn>
+      <mo form="infix">/</mo>
+      <mi>f</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b21 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mtable align="axis">
+        <mtr>
+          <mtd>
+            <mn>1</mn>
+          </mtd>
+          <mtd>
+            <mn>2</mn>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mn>3</mn>
+          </mtd>
+          <mtd>
+            <mn>3</mn>
+          </mtd>
+        </mtr>
+      </mtable>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID b22 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mi>f</mi>
+</math>
+
+</p>
+<hr/><h2>Make Definition</h2>
+<p>
+Test ID fixup defineit
+</p>
+<p>fixup f(m) = x^2 + 2x + 1</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mrow>
+      <mi>f</mi>
+      <mo>&#x2062;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mo form="infix">=</mo>
+    <mrow>
+      <mrow>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+        <mo form="infix">&#x2212;</mo>
+        <mrow>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+      <mo form="infix">+</mo>
+      <mn>1</mn>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID defineit
+</p>
+<p>define f(m) = x^2 + 2x + 1 after fixup</p>
+<hr/><h2>f Now Defined</h2>
+<p>
+Test ID d01 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mn>5</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d01 eval the fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>16</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d02 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mn>5</mn>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>f</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d03 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d04 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2061;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d05 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi mathcolor="gray">sin</mi>
+    <mo>&#x2061;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mrow>
+        <mi>f</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d06 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mo form="postfix">&#x2032;</mo>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d07 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mo form="postfix">&#x2032;</mo>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>y</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d08 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mover accent="true">
+    <mi>f</mi>
+    <mo form="postfix" accent="true">&#x2d9;</mo>
+  </mover>
+</math>
+
+</p>
+<p>
+Test ID d09 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mover accent="true">
+      <mi>f</mi>
+      <mo form="postfix" accent="true">&#x2d9;</mo>
+    </mover>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d10 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msub>
+    <mi>f</mi>
+    <mi>x</mi>
+  </msub>
+</math>
+
+</p>
+<p>
+Test ID d11 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mo form="infix">&#x2217;</mo>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d12 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mover accent="true">
+      <mi>f</mi>
+      <mo form="postfix" accent="true">&#xaf;</mo>
+    </mover>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d13 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msub>
+    <mfenced open="[" close="]">
+      <mfrac>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mrow>
+            <mi>f</mi>
+            <mo>&#x2061;</mo>
+            <mfenced open="(" close=")">
+              <mi>x</mi>
+            </mfenced>
+          </mrow>
+        </mrow>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mfrac>
+    </mfenced>
+    <mrow>
+      <mi>x</mi>
+      <mo form="infix">=</mo>
+      <mn>2</mn>
+    </mrow>
+  </msub>
+</math>
+
+</p>
+<p>
+Test ID d14 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mrow>
+        <mo form="postfix">&#x2032;</mo>
+        <mo form="postfix">&#x2032;</mo>
+      </mrow>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d15 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mfenced open="(" close=")">
+        <mn>2</mn>
+      </mfenced>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d16 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d17 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msup>
+    <mn>2</mn>
+    <mi>f</mi>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID d18 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msup>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mrow>
+        <mi>f</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
+      </mrow>
+    </mfenced>
+    <mn>2</mn>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID d19 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msup>
+    <mi>f</mi>
+    <mn>2</mn>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID d20 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mn>1</mn>
+    <mo form="infix">/</mo>
+    <mrow>
+      <mi>f</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d21 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mtable align="axis">
+        <mtr>
+          <mtd>
+            <mn>1</mn>
+          </mtd>
+          <mtd>
+            <mn>2</mn>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mn>3</mn>
+          </mtd>
+          <mtd>
+            <mn>3</mn>
+          </mtd>
+        </mtr>
+      </mtable>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID d22 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mi>f</mi>
+</math>
+
+</p>
+<hr/><h2>Do Undefine</h2>
+<p>
+Test ID fixup undefineit
+</p>
+<p>fixup f(m) = x^2 + 2x + 1</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mrow>
+      <mi>f</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mo form="infix">=</mo>
+    <mrow>
+      <mrow>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+        <mo form="infix">&#x2212;</mo>
+        <mrow>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+      <mo form="infix">+</mo>
+      <mn>1</mn>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID undefineit
+</p>
+<p>undefine f(m) = x^2 + 2x + 1 after fixup</p>
+<hr/><h2>f No Longer Defined</h2>
+<p>
+Test ID u01 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mn>5</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u01 eval of fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>5</mn>
+    <mo>&#x2062;</mo>
+    <mi>f</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u02 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mn>5</mn>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>f</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u03 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u04 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2062;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u05 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi mathcolor="gray">sin</mi>
+    <mo>&#x2061;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mrow>
+        <mi>f</mi>
+        <mo>&#x2062;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u06 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mo form="postfix">&#x2032;</mo>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u07 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mo form="postfix">&#x2032;</mo>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>y</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u08 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mover accent="true">
+    <mi>f</mi>
+    <mo form="postfix" accent="true">&#x2d9;</mo>
+  </mover>
+</math>
+
+</p>
+<p>
+Test ID u09 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mover accent="true">
+      <mi>f</mi>
+      <mo form="postfix" accent="true">&#x2d9;</mo>
+    </mover>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u10 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msub>
+    <mi>f</mi>
+    <mi>x</mi>
+  </msub>
+</math>
+
+</p>
+<p>
+Test ID u11 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mo form="infix">&#x2217;</mo>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u12 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mover accent="true">
+      <mi>f</mi>
+      <mo form="postfix" accent="true">&#xaf;</mo>
+    </mover>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u13 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msub>
+    <mfenced open="[" close="]">
+      <mfrac>
+        <mrow>
+          <mrow>
+            <mo form="prefix">&#x2146;</mo>
+            <mi>f</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mfenced open="(" close=")">
+            <mi>x</mi>
+          </mfenced>
+        </mrow>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mfrac>
+    </mfenced>
+    <mrow>
+      <mi>x</mi>
+      <mo form="infix">=</mo>
+      <mn>2</mn>
+    </mrow>
+  </msub>
+</math>
+
+</p>
+<p>
+Test ID u14 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mrow>
+        <mo form="postfix">&#x2032;</mo>
+        <mo form="postfix">&#x2032;</mo>
+      </mrow>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u15 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mfenced open="(" close=")">
+        <mn>2</mn>
+      </mfenced>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u16 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <msup>
+      <mi>f</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u17 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msup>
+    <mn>2</mn>
+    <mi>f</mi>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID u18 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msup>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mrow>
+        <mi>f</mi>
+        <mo>&#x2062;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
+      </mrow>
+    </mfenced>
+    <mn>2</mn>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID u19 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <msup>
+    <mi>f</mi>
+    <mn>2</mn>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID u20 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mrow>
+      <mn>1</mn>
+      <mo form="infix">/</mo>
+      <mi>f</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u21 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mtable align="axis">
+        <mtr>
+          <mtd>
+            <mn>1</mn>
+          </mtd>
+          <mtd>
+            <mn>2</mn>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mn>3</mn>
+          </mtd>
+          <mtd>
+            <mn>3</mn>
+          </mtd>
+        </mtr>
+      </mtable>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID u22 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mi>f</mi>
+</math>
+
+</p>
+<hr/>
+</body>
+</html>

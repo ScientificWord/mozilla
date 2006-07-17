@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<title>CompTest Script/Command Output</title>
+</head>
+<body>
+<hr/>
+<p>
+Test ID CCID_Solve_Exact
+</p>
+<p>
+needvars
+</p>
+Result code got 100 as expected
+<p>
+Test ID 207 fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 207 eval of fixup before define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 207 fixup the definition
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+    </mrow>
+    <mo>=</mo>
+    <mn>5</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 207 define fixup result
+</p>
+<p>
+Bad definition format
+</p>
+Result code got 107 as expected
+<p>
+Test ID 207 fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 207 eval of fixup after define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 207 fixup the definition for undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+    </mrow>
+    <mo>=</mo>
+    <mn>5</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 207 undefine fixup result
+</p>
+<p>
+Bad definition format
+</p>
+Result code got 107 as expected
+<p>
+Test ID 207 fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 207 eval of fixup after undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<hr/>
+</body>
+</html>
