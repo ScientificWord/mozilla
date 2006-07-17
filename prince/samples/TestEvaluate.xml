@@ -1,0 +1,6275 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<!-- The next lines of text are copied from the file htmlout.cfg, and can be modified there -->
+<style type="text/css">
+.displayed {text-align: center}
+.displayed { display: block !
+important}
+span.leadin {float: left}
+span.vspace {vertical-align: top}
+span.rule {display: inline; background-color: black}
+span.inline-math-graphics {white-space: nowrap}
+hr.pagebreak {color: green}
+table {border-collapse: collapse; border-color: black}
+table td {border-color: black}
+.inlineTable {display: inline}
+</style>
+<!-- End of lines from htmlout.cfg -->
+
+
+<link href="TestEvaluate.css" rel="stylesheet" type="text/css"/>
+<meta name="CREATED" content="Wednesday, January 28, 2004 20:22:52"/>
+<meta name="REVISED" content="Saturday, October 29, 2005 10:48:06"/>
+<meta name="GENERATOR" content="Scientific Word"/>
+<title>Test Prince Evaluation</title>
+</head>
+<body >
+<h1 class="section">Some expressions to evaluate</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>3</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mn>4</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mn>2</mml:mn>
+         <mml:mn>3</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msqrt>
+         <mml:mn>2.36</mml:mn>
+       </mml:msqrt>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mn>0.16</mml:mn>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix">&minus;</mml:mo>
+         <mml:mn>11.9</mml:mn>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftCeiling;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix">&minus;</mml:mo>
+         <mml:mn>11.9</mml:mn>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightCeiling;</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftFloor;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix">&minus;</mml:mo>
+         <mml:mn>11.9</mml:mn>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightFloor;</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>3</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mn>4</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mn>5</mml:mn>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>3</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mn>4</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>5</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>3</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>4</mml:mn>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>5</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>3</mml:mn>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>4</mml:mn>
+           </mml:mrow>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>5</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+       <mml:mrow>
+         <mml:mn>3</mml:mn>
+         <mml:mo form="infix">&minus;</mml:mo>
+         <mml:mn>4</mml:mn>
+         <mml:mo form="infix">&minus;</mml:mo>
+         <mml:mn>5</mml:mn>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mn>2</mml:mn>
+         <mml:mn>3</mml:mn>
+       </mml:mfrac>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mfrac>
+         <mml:mn>8</mml:mn>
+         <mml:mn>7</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>2</mml:mn>
+       <mml:mo form="infix">&midast;</mml:mo>
+       <mml:mfrac>
+         <mml:mn>7</mml:mn>
+         <mml:mn>8</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mn>71</mml:mn>
+         <mml:mn>8</mml:mn>
+       </mml:mfrac>
+       <mml:mo form="infix">&sdot;</mml:mo>
+       <mml:mn>5</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mn>2</mml:mn>
+         <mml:mn>3</mml:mn>
+       </mml:msup>
+       <mml:mo form="infix">&times;</mml:mo>
+       <mml:msup>
+         <mml:mn>3</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mi>&pi;</mml:mi>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mn>3</mml:mn>
+       </mml:msup>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mfrac>
+         <mml:mi>&pi;</mml:mi>
+         <mml:mn>4</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mfrac>
+         <mml:mi>&pi;</mml:mi>
+         <mml:mn>4</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munderover>
+         <mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+         <mml:mrow>
+           <mml:mi>i</mml:mi>
+           <mml:mo form="infix">=</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+         <mml:mn>9</mml:mn>
+       </mml:munderover>
+       <mml:mfrac>
+         <mml:mn>1</mml:mn>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:msup>
+             <mml:mi>i</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>50</mml:mn>
+       <mml:mo form="postfix">!</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>m</mml:mi>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>5</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="postfix">!</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mn>2</mml:mn>
+         <mml:mn>1234</mml:mn>
+       </mml:msup>
+       <mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+       <mml:mn>3</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi>x</mml:mi>
+           <mml:mn>12</mml:mn>
+         </mml:msup>
+         <mml:mo form="infix">+</mml:mo>
+         <mml:mn>1</mml:mn>
+       </mml:mrow>
+       <mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi>x</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+         <mml:mo form="infix">+</mml:mo>
+         <mml:mn>1</mml:mn>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mn>33</mml:mn>
+             <mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+             <mml:mn>9</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+       <mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+       <mml:mn>5</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mn>1</mml:mn>
+         <mml:mo form="infix">+</mml:mo>
+         <mml:msup>
+           <mml:mn>10</mml:mn>
+           <mml:mn>100</mml:mn>
+         </mml:msup>
+       </mml:mrow>
+       <mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+       <mml:mn>7</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mn>1</mml:mn>
+         <mml:mo form="infix">+</mml:mo>
+         <mml:msup>
+           <mml:mn>10</mml:mn>
+           <mml:msup>
+             <mml:mn>10</mml:mn>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:msup>
+       </mml:mrow>
+       <mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+       <mml:mn>7</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+       <mml:mfrac linethickness="0">
+         <mml:mn>12</mml:mn>
+         <mml:mn>4</mml:mn>
+       </mml:mfrac>
+       <mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+       <mml:mfrac linethickness="0">
+         <mml:mi>p</mml:mi>
+         <mml:mi>q</mml:mi>
+       </mml:mfrac>
+       <mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>35</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>25</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>65</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">lcm</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>35</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>25</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>65</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo mathcolor="gray" form="prefix">max</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>35</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>25</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>65</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">max</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">&le;</mml:mo>
+           <mml:mi>n</mml:mi>
+           <mml:mo form="infix">&le;</mml:mo>
+           <mml:mn>10</mml:mn>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>n</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo mathcolor="gray" form="prefix">min</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>35</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>25</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>65</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">log</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>e</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">ln</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mn>2</mml:mn>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mi mathcolor="gray">log</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msub>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mi mathcolor="gray">log</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msub>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:msup>
+         <mml:mi>x</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>y</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">cos</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">sin</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:msup>
+               <mml:mi>x</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+         </mml:mrow>
+         <mml:mn>1</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true"></mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">sin</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:msup>
+               <mml:mi>x</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+         </mml:mrow>
+         <mml:mn>1</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true"></mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">sin</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:msup>
+               <mml:mi>x</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">=</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mn>3</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:mfrac>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">gamma</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mfrac>
+             <mml:mi>&pi;</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:mfrac>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Complicated Forms</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>x</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:msup>
+         <mml:mi>y</mml:mi>
+         <mml:mn>3</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mn>2</mml:mn>
+         <mml:mi>k</mml:mi>
+       </mml:msup>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:msup>
+         <mml:mn>3</mml:mn>
+         <mml:mi>l</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mn>2</mml:mn>
+         <mml:mn>3</mml:mn>
+       </mml:mfrac>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mfrac>
+         <mml:mn>4</mml:mn>
+         <mml:mn>5</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mn>2</mml:mn>
+         <mml:mn>3</mml:mn>
+       </mml:mfrac>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mfrac>
+         <mml:mfrac>
+           <mml:mn>4</mml:mn>
+           <mml:mn>5</mml:mn>
+         </mml:mfrac>
+         <mml:mfrac>
+           <mml:mn>6</mml:mn>
+           <mml:mn>7</mml:mn>
+         </mml:mfrac>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mn>2</mml:mn>
+         <mml:mn>3</mml:mn>
+       </mml:mfrac>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mfrac>
+         <mml:mfrac>
+           <mml:mn>4</mml:mn>
+           <mml:mfrac>
+             <mml:mn>5</mml:mn>
+             <mml:mn>6</mml:mn>
+           </mml:mfrac>
+         </mml:mfrac>
+         <mml:mn>7</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mn>2</mml:mn>
+         <mml:mn>3</mml:mn>
+       </mml:mfrac>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mfrac>
+         <mml:mfrac>
+           <mml:mfrac>
+             <mml:mn>4</mml:mn>
+             <mml:mn>5</mml:mn>
+           </mml:mfrac>
+           <mml:mn>6</mml:mn>
+         </mml:mfrac>
+         <mml:mn>7</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mn>7</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mi>b</mml:mi>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mn>1</mml:mn>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>x</mml:mi>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mfrac>
+         <mml:mi>y</mml:mi>
+         <mml:mrow>
+           <mml:mi>z</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mfrac>
+             <mml:mi>a</mml:mi>
+             <mml:mi>b</mml:mi>
+           </mml:mfrac>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>x</mml:mi>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mfrac>
+             <mml:mfrac>
+               <mml:mi>b</mml:mi>
+               <mml:mrow>
+                 <mml:mi>n</mml:mi>
+                 <mml:mo form="infix">+</mml:mo>
+                 <mml:mn>1</mml:mn>
+               </mml:mrow>
+             </mml:mfrac>
+             <mml:mi>c</mml:mi>
+           </mml:mfrac>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Calculus</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+         <mml:mrow>
+           <mml:mi>n</mml:mi>
+           <mml:mo form="infix">&rarr;</mml:mo>
+           <mml:mi>&infin;</mml:mi>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>n</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mi>n</mml:mi>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>n</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>81</mml:mn>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">&rarr;</mml:mo>
+           <mml:msup>
+             <mml:mn>0</mml:mn>
+             <mml:mo>&minus;</mml:mo>
+           </mml:msup>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac>
+             <mml:mi>x</mml:mi>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+               <mml:mi>x</mml:mi>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+             </mml:mrow>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+         <mml:mrow>
+           <mml:mi>t</mml:mi>
+           <mml:mo form="infix">&rarr;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">tan</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mi>t</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">tan</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mn>1</mml:mn>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mi>t</mml:mi>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">&rarr;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>8</mml:mn>
+           </mml:mrow>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mroot>
+             <mml:mi>x</mml:mi>
+             <mml:mn>3</mml:mn>
+           </mml:mroot>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mn>8</mml:mn>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">&rarr;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>8</mml:mn>
+           </mml:mrow>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mfrac>
+               <mml:mn>1</mml:mn>
+               <mml:mn>3</mml:mn>
+             </mml:mfrac>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mn>8</mml:mn>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+         <mml:mrow>
+           <mml:mi>n</mml:mi>
+           <mml:mo form="infix">&rarr;</mml:mo>
+           <mml:mn>5</mml:mn>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>n</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:msup>
+             <mml:mi>e</mml:mi>
+             <mml:msup>
+               <mml:mi>x</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac>
+             <mml:msup>
+               <mml:mo form="prefix">&dd;</mml:mo>
+               <mml:mn>4</mml:mn>
+             </mml:msup>
+             <mml:mrow>
+               <mml:mo form="prefix">&dd;</mml:mo>
+               <mml:msup>
+                 <mml:mi>x</mml:mi>
+                 <mml:mn>4</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>8</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac>
+             <mml:mo form="prefix">&PartialD;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix">&PartialD;</mml:mo>
+               <mml:mi>x</mml:mi>
+             </mml:mrow>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:msup>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">cos</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mi>x</mml:mi>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>y</mml:mi>
+             </mml:mrow>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac>
+             <mml:msup>
+               <mml:mo form="prefix">&PartialD;</mml:mo>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mo form="prefix">&PartialD;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mrow>
+                 <mml:mo form="prefix">&PartialD;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:msup>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">cos</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mi>x</mml:mi>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>y</mml:mi>
+             </mml:mrow>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mo form="prefix">&DD;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:msub>
+       <mml:msup>
+         <mml:mi>x</mml:mi>
+         <mml:mi>a</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mo form="prefix">&dd;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mtable align="axis">
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mi>x</mml:mi>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mn>1</mml:mn>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mrow>
+                 <mml:mn>2</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:msup>
+                   <mml:mi>x</mml:mi>
+                   <mml:mn>3</mml:mn>
+                 </mml:msup>
+               </mml:mrow>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:mn>3</mml:mn>
+             </mml:mtd>
+           </mml:mtr>
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mo>&ApplyFunction;</mml:mo>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mn>3</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mrow>
+                 <mml:mi mathcolor="gray">sec</mml:mi>
+                 <mml:mo>&ApplyFunction;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+             </mml:mtd>
+           </mml:mtr>
+         </mml:mtable>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+       <mml:mrow>
+         <mml:msqrt>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mrow>
+             <mml:msup>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+         </mml:msqrt>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&Int;</mml:mo>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>y</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mo>&ApplyFunction;</mml:mo>
+               <mml:mi>x</mml:mi>
+             </mml:mrow>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>1</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>5</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>1</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>6</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>0</mml:mn>
+         <mml:mi>&infin;</mml:mi>
+       </mml:msubsup>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi>e</mml:mi>
+           <mml:mrow>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:msup>
+               <mml:mi>x</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+         </mml:msup>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>0</mml:mn>
+         <mml:mi>&infin;</mml:mi>
+       </mml:msubsup>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi>e</mml:mi>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:msup>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mo form="prefix">&dd;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+       <mml:mrow>
+         <mml:msubsup>
+           <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+           <mml:mn>0</mml:mn>
+           <mml:mi>x</mml:mi>
+         </mml:msubsup>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">tan</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:msup>
+               <mml:mi>t</mml:mi>
+               <mml:mn>3</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix">&dd;</mml:mo>
+             <mml:mi>t</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Special Functions</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mi>&Gamma;</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mfrac>
+               <mml:mn>5</mml:mn>
+               <mml:mn>3</mml:mn>
+             </mml:mfrac>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mi>&Gamma;</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mfrac>
+               <mml:mn>1</mml:mn>
+               <mml:mn>2</mml:mn>
+             </mml:mfrac>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi>&Gamma;</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mn>1</mml:mn>
+             <mml:mo form="infix">,</mml:mo>
+             <mml:mfrac>
+               <mml:mn>5</mml:mn>
+               <mml:mn>3</mml:mn>
+             </mml:mfrac>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mi>&Gamma;</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mfrac>
+               <mml:mn>5</mml:mn>
+               <mml:mn>3</mml:mn>
+             </mml:mfrac>
+             <mml:mo form="infix">,</mml:mo>
+             <mml:mn>1</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">bernoulli</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mn>12</mml:mn>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">bernoulli</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>12</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">Ci</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">Si</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">Psi</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mn>3</mml:mn>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">Psi</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">Psi</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>n</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">Beta</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>7</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">dilog</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mfrac>
+           <mml:mn>3</mml:mn>
+           <mml:mn>2</mml:mn>
+         </mml:mfrac>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&zeta;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mn>12</mml:mn>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msub>
+               <mml:mi mathcolor="gray">BesselI</mml:mi>
+               <mml:mn>1</mml:mn>
+             </mml:msub>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mn>2.0</mml:mn>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msub>
+               <mml:mi mathcolor="gray">BesselK</mml:mi>
+               <mml:mn>3</mml:mn>
+             </mml:msub>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mn>4.0</mml:mn>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msub>
+               <mml:mi mathcolor="gray">BesselJ</mml:mi>
+               <mml:mn>5</mml:mn>
+             </mml:msub>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mn>6.0</mml:mn>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msub>
+               <mml:mi mathcolor="gray">BesselY</mml:mi>
+               <mml:mn>7</mml:mn>
+             </mml:msub>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mn>8.0</mml:mn>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msub>
+               <mml:mi mathcolor="gray">BesselI</mml:mi>
+               <mml:mfrac>
+                 <mml:mn>7</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+             </mml:msub>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mi>x</mml:mi>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msub>
+               <mml:mi mathcolor="gray">BesselK</mml:mi>
+               <mml:mrow>
+                 <mml:mo form="prefix">&minus;</mml:mo>
+                 <mml:mfrac>
+                   <mml:mn>7</mml:mn>
+                   <mml:mn>2</mml:mn>
+                 </mml:mfrac>
+               </mml:mrow>
+             </mml:msub>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mi>x</mml:mi>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msub>
+               <mml:mi mathcolor="gray">BesselJ</mml:mi>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+             </mml:msub>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mi>x</mml:mi>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msub>
+               <mml:mi mathcolor="gray">BesselY</mml:mi>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+             </mml:msub>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+               <mml:mi>x</mml:mi>
+               <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Complex Numbers</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mn>3</mml:mn>
+             <mml:mo form="infix">&minus;</mml:mo>
+             <mml:mi>i</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mn>9</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">Im</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>a</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mrow>
+             <mml:mi>b</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>i</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">Re</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mrow>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>9</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">arg</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mrow>
+             <mml:mn>5</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>i</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+       <mml:mrow>
+         <mml:mn>3</mml:mn>
+         <mml:mo form="infix">+</mml:mo>
+         <mml:mrow>
+           <mml:mn>5</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>i</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">csgn</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mi>i</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">csgn</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>i</mml:mi>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">signum</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mi>i</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo form="infix">&midast;</mml:mo>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>a</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mi>b</mml:mi>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>i</mml:mi>
+             </mml:mrow>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo form="infix">&midast;</mml:mo>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mn>2</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mrow>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mo>&ApplyFunction;</mml:mo>
+               <mml:mi>y</mml:mi>
+             </mml:mrow>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo form="infix">&midast;</mml:mo>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mi>i</mml:mi>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo form="infix">&midast;</mml:mo>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mover>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+         <mml:mo stretchy="true" accent="true">&OverBar;</mml:mo>
+       </mml:mover>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mover>
+         <mml:mrow>
+           <mml:mi>a</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mrow>
+             <mml:mi>b</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>i</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo stretchy="true" accent="true">&OverBar;</mml:mo>
+       </mml:mover>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mover>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">sin</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo stretchy="true" accent="true">&OverBar;</mml:mo>
+       </mml:mover>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Matrices</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mo form="prefix">&minus;</mml:mo>
+                 <mml:mn>3</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mo form="prefix">&minus;</mml:mo>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mn>2</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">det</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mtable align="axis">
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mn>1</mml:mn>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>3</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+           </mml:mtr>
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>3</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>4</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+           </mml:mtr>
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>3</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>4</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>5</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+           </mml:mtr>
+         </mml:mtable>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mtable align="axis">
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mn>1</mml:mn>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mn>2</mml:mn>
+             </mml:mtd>
+           </mml:mtr>
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mn>3</mml:mn>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mn>4</mml:mn>
+             </mml:mtd>
+           </mml:mtr>
+         </mml:mtable>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>e</mml:mi>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mi>i</mml:mi>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mi>T</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mi>i</mml:mi>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mi>H</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Vector Calculus</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:msub>
+             <mml:mi>x</mml:mi>
+             <mml:mn>1</mml:mn>
+           </mml:msub>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msub>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msub>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msub>
+             <mml:mi>x</mml:mi>
+             <mml:mn>3</mml:mn>
+           </mml:msub>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:msub>
+             <mml:mi>y</mml:mi>
+             <mml:mn>1</mml:mn>
+           </mml:msub>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msub>
+             <mml:mi>y</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msub>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msub>
+             <mml:mi>y</mml:mi>
+             <mml:mn>3</mml:mn>
+           </mml:msub>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:msub>
+             <mml:mi>x</mml:mi>
+             <mml:mn>1</mml:mn>
+           </mml:msub>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msub>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msub>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msub>
+             <mml:mi>x</mml:mi>
+             <mml:mn>3</mml:mn>
+           </mml:msub>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&sdot;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:msub>
+             <mml:mi>y</mml:mi>
+             <mml:mn>1</mml:mn>
+           </mml:msub>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msub>
+             <mml:mi>y</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msub>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msub>
+             <mml:mi>y</mml:mi>
+             <mml:mn>3</mml:mn>
+           </mml:msub>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:msub>
+             <mml:mi>x</mml:mi>
+             <mml:mn>1</mml:mn>
+           </mml:msub>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msub>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msub>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msub>
+             <mml:mi>x</mml:mi>
+             <mml:mn>3</mml:mn>
+           </mml:msub>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&times;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:msub>
+             <mml:mi>y</mml:mi>
+             <mml:mn>1</mml:mn>
+           </mml:msub>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msub>
+             <mml:mi>y</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msub>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msub>
+             <mml:mi>y</mml:mi>
+             <mml:mn>3</mml:mn>
+           </mml:msub>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>0</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>0</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&times;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mfrac>
+             <mml:mn>3</mml:mn>
+             <mml:mn>2</mml:mn>
+           </mml:mfrac>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&times;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mfrac>
+             <mml:mn>3</mml:mn>
+             <mml:mn>2</mml:mn>
+           </mml:mfrac>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>0</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>0</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&times;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mn>1</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>2</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mfrac>
+                 <mml:mn>3</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="infix">&times;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mn>3</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mfrac>
+                 <mml:mn>3</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>1</mml:mn>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mn>1</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>0</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>0</mml:mn>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="infix">&times;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mn>1</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>2</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mfrac>
+                 <mml:mn>3</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&times;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mfrac>
+             <mml:mn>3</mml:mn>
+             <mml:mn>2</mml:mn>
+           </mml:mfrac>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>0</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>0</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&sdot;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mn>1</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>2</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mfrac>
+                 <mml:mn>3</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="infix">&times;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mn>3</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mfrac>
+                 <mml:mn>3</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>1</mml:mn>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mn>1</mml:mn>
+             <mml:mo form="infix">,</mml:mo>
+             <mml:mn>0</mml:mn>
+             <mml:mo form="infix">,</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo form="infix">&sdot;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mn>1</mml:mn>
+             <mml:mo form="infix">,</mml:mo>
+             <mml:mn>2</mml:mn>
+             <mml:mo form="infix">,</mml:mo>
+             <mml:mfrac>
+               <mml:mn>3</mml:mn>
+               <mml:mn>2</mml:mn>
+             </mml:mfrac>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">&times;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mfrac>
+             <mml:mn>3</mml:mn>
+             <mml:mn>2</mml:mn>
+           </mml:mfrac>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mn>1</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>0</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>0</mml:mn>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="infix">&times;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mn>1</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>2</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mfrac>
+                 <mml:mn>3</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&sdot;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mfrac>
+             <mml:mn>3</mml:mn>
+             <mml:mn>2</mml:mn>
+           </mml:mfrac>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix">&nabla;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>y</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>z</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix">&nabla;&sdot;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>z</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mrow>
+             <mml:mn>2</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>y</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>z</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msup>
+             <mml:mi>z</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix">&nabla;&times;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mi>y</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>z</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mrow>
+             <mml:mn>2</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>x</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>z</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mo form="prefix">&nabla;</mml:mo>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:msup>
+             <mml:mi>y</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mrow>
+             <mml:mn>2</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msup>
+               <mml:mi>z</mml:mi>
+               <mml:mn>3</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Norms</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">&Verbar;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mi>a</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>b</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>c</mml:mi>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mn>1</mml:mn>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="false">&Verbar;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>a</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>b</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>c</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="false">&Verbar;</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">&Verbar;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mi>a</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>b</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>c</mml:mi>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mn>3</mml:mn>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">&Verbar;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mo form="prefix">&minus;</mml:mo>
+                 <mml:mn>1</mml:mn>
+               </mml:mrow>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>2</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>1</mml:mn>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mn>5</mml:mn>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">&Verbar;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+             <mml:mrow>
+               <mml:mi>a</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>b</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>c</mml:mi>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mi>&infin;</mml:mi>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">&Verbar;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+             <mml:mrow>
+               <mml:mn>8</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mrow>
+                 <mml:mo form="prefix">&minus;</mml:mo>
+                 <mml:mn>10</mml:mn>
+               </mml:mrow>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>2</mml:mn>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mi>&infin;</mml:mi>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mtable align="axis">
+               <mml:mtr>
+                 <mml:mtd>
+                   <mml:mi>a</mml:mi>
+                 </mml:mtd>
+                 <mml:mtd>
+                   <mml:mi>b</mml:mi>
+                 </mml:mtd>
+                 <mml:mtd>
+                   <mml:mi>c</mml:mi>
+                 </mml:mtd>
+               </mml:mtr>
+             </mml:mtable>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mn>4</mml:mn>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>0.2</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>0.3</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>0.5</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>0.7</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>5</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>7</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mo form="prefix">&minus;</mml:mo>
+                 <mml:mn>13</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>6</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mn>1</mml:mn>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>5</mml:mn>
+                 <mml:mo form="infix">+</mml:mo>
+                 <mml:mrow>
+                   <mml:mn>3</mml:mn>
+                   <mml:mo>&InvisibleTimes;</mml:mo>
+                   <mml:mi>i</mml:mi>
+                 </mml:mrow>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>7</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mo form="prefix">&minus;</mml:mo>
+                 <mml:mn>13</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>6</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mrow>
+                   <mml:mn>5</mml:mn>
+                   <mml:mo>&InvisibleTimes;</mml:mo>
+                   <mml:mi>i</mml:mi>
+                 </mml:mrow>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mi>&infin;</mml:mi>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>5</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>7</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mo form="prefix">&minus;</mml:mo>
+                 <mml:mn>13</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>6</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mi>F</mml:mi>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Transforms</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&Fscr;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:mi>x</mml:mi>
+         </mml:mfrac>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&Fscr;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>e</mml:mi>
+             <mml:mrow>
+               <mml:mn>2</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>&pi;</mml:mi>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>i</mml:mi>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>t</mml:mi>
+             </mml:mrow>
+           </mml:msup>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>t</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>w</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>&Fscr;</mml:mi>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mfrac>
+               <mml:mrow>
+                 <mml:mn>2</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mrow>
+               <mml:mi>&omega;</mml:mi>
+             </mml:mfrac>
+           </mml:mrow>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>&omega;</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>t</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&Lscr;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>t</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:msup>
+             <mml:mi>e</mml:mi>
+             <mml:mi>t</mml:mi>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&Lscr;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mrow>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mo>&ApplyFunction;</mml:mo>
+               <mml:mrow>
+                 <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+                 <mml:mrow>
+                   <mml:mi>&omega;</mml:mi>
+                   <mml:mo>&InvisibleTimes;</mml:mo>
+                   <mml:mi>t</mml:mi>
+                 </mml:mrow>
+                 <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mrow>
+               <mml:mi mathcolor="gray">Heaviside</mml:mi>
+               <mml:mo>&ApplyFunction;</mml:mo>
+               <mml:mrow>
+                 <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+                 <mml:mi>t</mml:mi>
+                 <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+               </mml:mrow>
+             </mml:mrow>
+           </mml:mrow>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>t</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>u</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>&Lscr;</mml:mi>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:msup>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mrow>
+                 <mml:mi>s</mml:mi>
+                 <mml:mo form="infix">+</mml:mo>
+                 <mml:mi>&alpha;</mml:mi>
+               </mml:mrow>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:mfrac>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Mixed Numbers</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>193</mml:mn>
+       <mml:mfrac>
+         <mml:mn>87</mml:mn>
+         <mml:mn>94</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mn>3</mml:mn>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:mn>4</mml:mn>
+         </mml:mfrac>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mrow>
+         <mml:mn>4</mml:mn>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:mn>3</mml:mn>
+         </mml:mfrac>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mn>3</mml:mn>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:mn>4</mml:mn>
+         </mml:mfrac>
+       </mml:mrow>
+       <mml:mo form="infix">&divide;</mml:mo>
+       <mml:mrow>
+         <mml:mn>4</mml:mn>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:mn>3</mml:mn>
+         </mml:mfrac>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Mixed Numbers</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>8</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>8</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>4</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>4</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>2</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>2</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>1</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>1</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>3.141592</mml:mn>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mn>1.11</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>1</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>1</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>4</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>4</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>8</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>8</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>16</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>16</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Set Operations</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&setmn;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&bsol;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&cap;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&cup;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Text Style</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mstyle fontweight="bold" fontstyle="upright">
+             <mml:mi>x</mml:mi>
+           </mml:mstyle>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:msup>
+         <mml:mi>x</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mi fontstyle="upright">&pfr;</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi fontstyle="upright">&qfr;</mml:mi>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mi>p</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>q</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>a</mml:mi>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mover accent="true">
+         <mml:mi>a</mml:mi>
+         <mml:mo form="postfix" accent="true">&dot;</mml:mo>
+       </mml:mover>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mover accent="true">
+         <mml:mi>a</mml:mi>
+         <mml:mo form="postfix" accent="true">&die;</mml:mo>
+       </mml:mover>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mover accent="true">
+         <mml:mi>a</mml:mi>
+         <mml:mo form="postfix" accent="true">&macr;</mml:mo>
+       </mml:mover>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mover accent="true">
+         <mml:mi>a</mml:mi>
+         <mml:mo form="postfix" accent="true">&#x20D7;</mml:mo>
+       </mml:mover>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to evaluate numerically</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>3</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mn>4</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mn>2</mml:mn>
+         <mml:mn>3</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msqrt>
+         <mml:mn>2.36</mml:mn>
+       </mml:msqrt>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mn>0.16</mml:mn>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix">&minus;</mml:mo>
+         <mml:mn>11.9</mml:mn>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:msup>
+           <mml:mi>&pi;</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">max</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">&le;</mml:mo>
+           <mml:mi>n</mml:mi>
+           <mml:mo form="infix">&le;</mml:mo>
+           <mml:mn>10</mml:mn>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>n</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mn>3</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:mfrac>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">gamma</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mfrac>
+             <mml:mi>&pi;</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:mfrac>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">arg</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mrow>
+             <mml:mn>5</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>i</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+       <mml:mrow>
+         <mml:mn>3</mml:mn>
+         <mml:mo form="infix">+</mml:mo>
+         <mml:mrow>
+           <mml:mn>5</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>i</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mn>5</mml:mn>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mrow>
+             <mml:mn>3</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>i</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">Ei</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:mn>2</mml:mn>
+         </mml:mfrac>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>1</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>5</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>1</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>6</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>0</mml:mn>
+         <mml:mi>&infin;</mml:mi>
+       </mml:msubsup>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi>e</mml:mi>
+           <mml:mrow>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:msup>
+               <mml:mi>x</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+         </mml:msup>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>0</mml:mn>
+         <mml:mi>&infin;</mml:mi>
+       </mml:msubsup>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi>e</mml:mi>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:msup>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h2 class="subsection">Mixed Numbers</h2>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>8</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>8</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>4</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>4</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>2</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>2</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>1</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mrow>
+                   <mml:mo form="prefix">&minus;</mml:mo>
+                   <mml:mn>1</mml:mn>
+                 </mml:mrow>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>3.141592</mml:mn>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mn>1.11</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>1</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>1</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>4</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>4</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>8</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>8</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>3.141592</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>16</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>1.11</mml:mn>
+               <mml:mo form="infix">&times;</mml:mo>
+               <mml:msup>
+                 <mml:mn>10</mml:mn>
+                 <mml:mn>16</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to interpret</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>2</mml:mn>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>x</mml:mi>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mn>2</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>x</mml:mi>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mi>y</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>x</mml:mi>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mi>y</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo form="infix">+</mml:mo>
+         <mml:mi>y</mml:mi>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>2</mml:mn>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mi>x</mml:mi>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mi>y</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>2</mml:mn>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>2</mml:mn>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>2</mml:mn>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>2</mml:mn>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>2</mml:mn>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>1</mml:mn>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mn>2</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mn>3</mml:mn>
+         <mml:mo form="infix">&midast;</mml:mo>
+         <mml:mrow>
+           <mml:mn>4</mml:mn>
+           <mml:mo form="infix">/</mml:mo>
+           <mml:mrow>
+             <mml:mn>5</mml:mn>
+             <mml:mo form="postfix">!</mml:mo>
+           </mml:mrow>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>9</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>8</mml:mn>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>7</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mn>6</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>9</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mn>8</mml:mn>
+             <mml:mo form="infix">&minus;</mml:mo>
+             <mml:mn>7</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mn>6</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>9</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>8</mml:mn>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+             <mml:mrow>
+               <mml:mn>7</mml:mn>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:mn>6</mml:mn>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>9</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>8</mml:mn>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:msup>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+               <mml:mrow>
+                 <mml:mn>7</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mn>6</mml:mn>
+               </mml:mrow>
+               <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+             </mml:mrow>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>9</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mn>8</mml:mn>
+             <mml:mo form="infix">&minus;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+               <mml:mrow>
+                 <mml:mn>7</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mn>6</mml:mn>
+               </mml:mrow>
+               <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+             </mml:mrow>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>9</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+             <mml:mrow>
+               <mml:mn>8</mml:mn>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:mn>7</mml:mn>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>6</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>9</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+               <mml:mrow>
+                 <mml:mn>8</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mn>7</mml:mn>
+               </mml:mrow>
+               <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+             </mml:mrow>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>6</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>9</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+               <mml:mrow>
+                 <mml:mn>8</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mn>7</mml:mn>
+               </mml:mrow>
+               <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+             </mml:mrow>
+             <mml:mo form="infix">&minus;</mml:mo>
+             <mml:mn>6</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">/</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mn>4</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>1</mml:mn>
+       <mml:mo form="infix">/</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mn>3</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mn>4</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>1</mml:mn>
+       <mml:mo form="infix">/</mml:mo>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mrow>
+               <mml:mn>3</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>x</mml:mi>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mn>4</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mn>1</mml:mn>
+             <mml:mo form="infix">/</mml:mo>
+             <mml:mn>3</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mn>4</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mn>1</mml:mn>
+         <mml:mo form="infix">/</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mn>3</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mn>4</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mn>1</mml:mn>
+         <mml:mo form="infix">/</mml:mo>
+         <mml:mn>3</mml:mn>
+       </mml:mrow>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mn>4</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>x</mml:mi>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mrow>
+         <mml:mi>y</mml:mi>
+         <mml:mo form="infix">/</mml:mo>
+         <mml:mi>z</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mn>3.141592</mml:mn>
+         <mml:mo form="infix">&times;</mml:mo>
+         <mml:msup>
+           <mml:mn>10</mml:mn>
+           <mml:mrow>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>2</mml:mn>
+           </mml:mrow>
+         </mml:msup>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mrow>
+         <mml:mn>1.11</mml:mn>
+         <mml:mo form="infix">&times;</mml:mo>
+         <mml:msup>
+           <mml:mn>10</mml:mn>
+           <mml:mrow>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>3</mml:mn>
+           </mml:mrow>
+         </mml:msup>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix">&minus;</mml:mo>
+         <mml:mn>3.141592</mml:mn>
+       </mml:mrow>
+       <mml:mo form="infix">&times;</mml:mo>
+       <mml:msup>
+         <mml:mn>10</mml:mn>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&cap;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>a</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>b</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&cap;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>g</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>h</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">]</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&cap;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">[</mml:mo>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>4</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mn>1</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:msup>
+           <mml:mn>1</mml:mn>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+         <mml:msup>
+           <mml:mn>2</mml:mn>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+       </mml:msubsup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mi>p</mml:mi>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mi>p</mml:mi>
+         <mml:mi>q</mml:mi>
+       </mml:msubsup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+         </mml:mrow>
+         <mml:mi>p</mml:mi>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&Gamma;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mn>4</mml:mn>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&zeta;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mn>4</mml:mn>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>a</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">/</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>b</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>a</mml:mi>
+       </mml:mrow>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>b</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>a</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">sin</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mi>b</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>y</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo form="infix">/</mml:mo>
+         <mml:mi>y</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:msqrt>
+           <mml:mi>y</mml:mi>
+         </mml:msqrt>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mfrac>
+           <mml:mi>y</mml:mi>
+           <mml:mi>z</mml:mi>
+         </mml:mfrac>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:msup>
+           <mml:mi>y</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>y</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mi>z</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mn>2</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:msqrt>
+           <mml:mi>y</mml:mi>
+         </mml:msqrt>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mn>2</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mfrac>
+           <mml:mi>y</mml:mi>
+           <mml:mi>z</mml:mi>
+         </mml:mfrac>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mn>2</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:msup>
+           <mml:mi>y</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mn>2</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>y</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mi>z</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mi>y</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:msup>
+         <mml:mi>y</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo form="infix">/</mml:mo>
+       <mml:mi>y</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>y</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>y</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo form="infix">+</mml:mo>
+         <mml:mrow>
+           <mml:mi>y</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix">&dd;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mi>y</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+       <mml:mrow>
+         <mml:mi>a</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:msup>
+           <mml:mi>x</mml:mi>
+           <mml:mn>3</mml:mn>
+         </mml:msup>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+       <mml:mrow>
+         <mml:mi>a</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:msup>
+           <mml:mi>x</mml:mi>
+           <mml:mn>3</mml:mn>
+         </mml:msup>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi>x</mml:mi>
+           <mml:mn>3</mml:mn>
+         </mml:msup>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>a</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi>x</mml:mi>
+           <mml:mn>3</mml:mn>
+         </mml:msup>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>a</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mo form="prefix">&dd;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+       <mml:msup>
+         <mml:mi>x</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mfrac>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix">&dd;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+         </mml:mfrac>
+         <mml:msup>
+           <mml:mi>x</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:msup>
+         <mml:mi>e</mml:mi>
+         <mml:mi>x</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mo form="prefix">&dd;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:msup>
+             <mml:mi>e</mml:mi>
+             <mml:mi>x</mml:mi>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:msup>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+       </mml:mfrac>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:msup>
+             <mml:mi>e</mml:mi>
+             <mml:mi>x</mml:mi>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:msub>
+             <mml:mo form="prefix">&DD;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:msub>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>y</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:msup>
+         <mml:mi>e</mml:mi>
+         <mml:mi>x</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mo form="prefix">&DD;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:msub>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:msup>
+             <mml:mi>e</mml:mi>
+             <mml:mi>x</mml:mi>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mo form="prefix">&PartialD;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&PartialD;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mfrac>
+           <mml:mo form="prefix">&PartialD;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix">&PartialD;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+         </mml:mfrac>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mi>y</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mfrac>
+           <mml:mo form="prefix">&PartialD;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix">&PartialD;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+         </mml:mfrac>
+         <mml:msup>
+           <mml:mi>x</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:msup>
+         <mml:mi>e</mml:mi>
+         <mml:mi>y</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mo form="prefix">&PartialD;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&PartialD;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:msup>
+             <mml:mi>e</mml:mi>
+             <mml:mi>y</mml:mi>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:msup>
+           <mml:mo form="prefix">&PartialD;</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mo form="prefix">&PartialD;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix">&PartialD;</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+       </mml:mfrac>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:msup>
+             <mml:mi>e</mml:mi>
+             <mml:mi>y</mml:mi>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mo form="prefix">&dd;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:msubsup>
+             <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+             <mml:mn>1</mml:mn>
+             <mml:mi>x</mml:mi>
+           </mml:msubsup>
+           <mml:mfrac>
+             <mml:mrow>
+               <mml:mo form="prefix">&dd;</mml:mo>
+               <mml:mi>t</mml:mi>
+             </mml:mrow>
+             <mml:mi>t</mml:mi>
+           </mml:mfrac>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix">&nabla;&sdot;</mml:mo>
+       <mml:mi>f</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix">&nabla;&times;</mml:mo>
+       <mml:mi>f</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mo form="prefix">&nabla;</mml:mo>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+       <mml:mi>f</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&Fscr;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mi>f</mml:mi>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>&Fscr;</mml:mi>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mi>f</mml:mi>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&Lscr;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mi>f</mml:mi>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+</body>
+
+</html>

@@ -1,0 +1,601 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<!-- The next lines of text are copied from the file htmlout.cfg, and can be modified there -->
+<style type="text/css">
+.displayed {text-align: center}
+.displayed { display: block !
+important}
+span.leadin {float: left}
+span.vspace {vertical-align: top}
+span.rule {display: inline; background-color: black}
+span.inline-math-graphics {white-space: nowrap}
+hr.pagebreak {color: green}
+table {border-collapse: collapse; border-color: black}
+table td {border-color: black}
+.inlineTable {display: inline-table}
+</style>
+<!-- End of lines from htmlout.cfg -->
+
+
+<link href="TestSimplex.css" rel="stylesheet" type="text/css"/>
+<meta name="CREATED" content="Wednesday, January 28, 2004 20:22:52"/>
+<meta name="REVISED" content="Saturday, November 06, 2004 16:54:04"/>
+<meta name="GENERATOR" content="Scientific Word"/>
+<title>TestSimplex.xhtml</title>
+</head>
+<body >
+<h1 class="section">Some expressions to simplex maximize</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>6</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>4</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis" columnalign="right">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>3</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>y</mml:mi>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:mi>y</mml:mi>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>4</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>6</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mo form="prefix">&minus;</mml:mo>
+               <mml:mi>y</mml:mi>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mo form="prefix">&minus;</mml:mo>
+               <mml:mi>x</mml:mi>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions simplex minimize</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mo form="prefix">&minus;</mml:mo>
+               <mml:mi>x</mml:mi>
+             </mml:mrow>
+             <mml:mo form="infix">&minus;</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>6</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>4</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis" columnalign="left">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>6</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:msub>
+                 <mml:mi>s</mml:mi>
+                 <mml:mn>1</mml:mn>
+               </mml:msub>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>4</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:msub>
+                 <mml:mi>s</mml:mi>
+                 <mml:mn>2</mml:mn>
+               </mml:msub>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:msub>
+                   <mml:mi>s</mml:mi>
+                   <mml:mn>1</mml:mn>
+                 </mml:msub>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:msub>
+                   <mml:mi>s</mml:mi>
+                   <mml:mn>2</mml:mn>
+                 </mml:msub>
+               </mml:mrow>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:msub>
+                 <mml:mi>s</mml:mi>
+                 <mml:mn>4</mml:mn>
+               </mml:msub>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:msub>
+                   <mml:mi>s</mml:mi>
+                   <mml:mn>1</mml:mn>
+                 </mml:msub>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:msub>
+                   <mml:mi>s</mml:mi>
+                   <mml:mn>2</mml:mn>
+                 </mml:msub>
+               </mml:mrow>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:msub>
+                 <mml:mi>s</mml:mi>
+                 <mml:mn>3</mml:mn>
+               </mml:msub>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msub>
+               <mml:mi>s</mml:mi>
+               <mml:mn>1</mml:mn>
+             </mml:msub>
+             <mml:mo form="infix">&ge;</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msub>
+               <mml:mi>s</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msub>
+             <mml:mo form="infix">&ge;</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msub>
+               <mml:mi>s</mml:mi>
+               <mml:mn>3</mml:mn>
+             </mml:msub>
+             <mml:mo form="infix">&ge;</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msub>
+               <mml:mi>s</mml:mi>
+               <mml:mn>4</mml:mn>
+             </mml:msub>
+             <mml:mo form="infix">&ge;</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions simplex dual</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis" columnalign="right">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>6</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>4</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">&ge;</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mo form="prefix">&minus;</mml:mo>
+               <mml:mi>y</mml:mi>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions simplex feasible?</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis" columnalign="right">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>6</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>4</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">&ge;</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi>y</mml:mi>
+             <mml:mo form="infix">&ge;</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>6</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&ge;</mml:mo>
+             <mml:mn>7</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions simplex standardize</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis" columnalign="right">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>6</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">&le;</mml:mo>
+             <mml:mn>4</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">&ge;</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi>y</mml:mi>
+             <mml:mo form="infix">&ge;</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+</body>
+
+</html>

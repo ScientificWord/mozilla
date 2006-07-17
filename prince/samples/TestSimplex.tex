@@ -1,0 +1,126 @@
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsfonts}
+
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2616}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Wednesday, January 28, 2004 20:22:52}
+%TCIDATA{LastRevised=Saturday, November 06, 2004 16:54:04}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\input{tcilatex}
+
+\begin{document}
+
+
+\section{Some expressions to simplex maximize}
+
+$\left[ 
+\begin{array}{c}
+x+y \\ 
+4x+3y\leq 6 \\ 
+3x+4y\leq 4%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{r}
+x+3y \\ 
+3x-y\leq 4 \\ 
+4x+3y\leq 6 \\ 
+-y\leq 0 \\ 
+-x\leq 0%
+\end{array}%
+\right] $
+
+\section{Some expressions simplex minimize}
+
+$\left[ 
+\begin{array}{c}
+-x-y \\ 
+4x+3y\leq 6 \\ 
+3x+4y\leq 4%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{l}
+6s_{1}+4s_{2} \\ 
+1\leq 4s_{1}+3s_{2}-s_{4} \\ 
+1\leq 3s_{1}+4s_{2}-s_{3} \\ 
+s_{1}\geq 0 \\ 
+s_{2}\geq 0 \\ 
+s_{3}\geq 0 \\ 
+s_{4}\geq 0%
+\end{array}%
+\right] $
+
+\section{Some expressions simplex dual}
+
+$\left[ 
+\begin{array}{r}
+x+y \\ 
+4x+3y\leq 6 \\ 
+3x+4y\leq 4 \\ 
+x\geq 0 \\ 
+-y\leq 0%
+\end{array}%
+\right] $
+
+\section{Some expressions simplex feasible?}
+
+$\left[ 
+\begin{array}{r}
+4x+3y\leq 6 \\ 
+3x+4y\leq 4 \\ 
+x\geq 0 \\ 
+y\geq 0%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{c}
+4x+3y\leq 6 \\ 
+4x+3y\geq 7%
+\end{array}%
+\right] $
+
+\section{Some expressions simplex standardize}
+
+$\left[ 
+\begin{array}{r}
+4x+3y\leq 6 \\ 
+3x+4y\leq 4 \\ 
+x\geq 0 \\ 
+y\geq 0%
+\end{array}%
+\right] $
+
+\end{document}

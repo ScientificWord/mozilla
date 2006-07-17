@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<link href="TestExternalFunctions.css" rel="stylesheet" type="text/css"/>
+<meta name="CREATED" content="Wednesday, January 28, 2004 20:22:52"/>
+<meta name="REVISED" content="Friday, November 12, 2004 15:46:19"/>
+<meta name="GENERATOR" content="Scientific Word"/>
+<title>Test External Functions</title>
+</head>
+<body >
+<p>
+   Testing external MuPAD functions.
+   This file must be hand editted since SWP uses Define MuPAD Name which is not compatible.
+</p>
+<h1 class="section">Some expressions to evaluate</h1>
+<p>
+   Passthru: <code> fread("myfuncs.mu"): </code>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray" msiclass="enginefunction">myfunc1</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mn>100</mml:mn>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray" msiclass="enginefunction">myfunc1</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mi>x</mml:mi>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray" msiclass="enginefunction">myfunc2</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mn>10</mml:mn>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray" msiclass="enginefunction">myfunc2</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mn>10.0</mml:mn>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray" msiclass="enginefunction">myfunc2</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mi>x</mml:mi>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray" msiclass="enginefunction">myfunc2</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mfrac>
+             <mml:mn>1</mml:mn>
+             <mml:mi>x</mml:mi>
+           </mml:mfrac>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to Passthru</h1>
+<p>
+   Passthru: <code> 1+PI^2 </code>
+</p>
+<p>
+   Passthru: <code> for i from 1 to 5 do 1/i end_for; </code>
+</p>
+<p>
+   Passthru: <code> for i from 1 to 5 do print(1/i) end_for; </code>
+</p>
+<p>
+   Passthru: <code> l := []: for i from 1 to 5 do l := [op(l),1/i] end_for; </code>
+</p>
+</body>
+
+</html>

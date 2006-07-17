@@ -1,0 +1,263 @@
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsfonts}
+
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2773}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Wednesday, January 28, 2004 20:22:52}
+%TCIDATA{LastRevised=Thursday, March 17, 2005 11:47:24}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\input{tcilatex}
+
+\begin{document}
+
+
+\section{Some expressions to Solve ODE\ Exact}
+
+$\frac{dy}{dx}=\sin x$
+
+$\frac{d^{2}y}{dx^{2}}=y+x$
+
+$\left[ 
+\begin{array}{c}
+\frac{d^{2}y}{dt^{2}}=2\frac{dy}{dt}-y \\ 
+y^{\prime }\left( 0\right) =e \\ 
+y\left( 0\right) =1%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{c}
+\frac{d^{2}y}{dt^{2}}=2\frac{dy}{dt}-y \\ 
+\left. \frac{dy\left( t\right) }{dt}\right\vert _{0}=e \\ 
+y\left( 0\right) =1%
+\end{array}%
+\right] $
+
+$y^{\prime }=xy$ specify $x$
+
+$y^{\prime }=xy$ specify $t$
+
+$y^{\prime \prime }=y-2$ specify $t$
+
+$\left[ 
+\begin{array}{c}
+y^{\prime \prime }=2y^{\prime }-y \\ 
+y^{\prime }\left( 0\right) =e \\ 
+y\left( 0\right) =1%
+\end{array}%
+\right] $ specify $t$
+
+$\ddot{x}=a\sin \omega t$ specify $t$
+
+\section{Some expressions to Solve ODE\ Laplace}
+
+$\frac{dy}{dx}=\sin x$
+
+$\dfrac{dy}{dx}=y$
+
+$\dfrac{dy}{dx}=xy$
+
+$\frac{d^{2}y}{dx^{2}}=y+x$
+
+$\left[ 
+\begin{array}{c}
+\frac{d^{2}y}{dt^{2}}=2\frac{dy}{dt}-y \\ 
+y^{\prime }\left( 0\right) =e \\ 
+y\left( 0\right) =1%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{c}
+\frac{d^{2}y}{dt^{2}}=2\frac{dy}{dt}-y \\ 
+\left. \frac{dy\left( t\right) }{dt}\right\vert _{0}=e \\ 
+y\left( 0\right) =1%
+\end{array}%
+\right] $
+
+$y^{\prime }=xy$ specify $x$
+
+$y^{\prime }=xy$ specify $t$
+
+$y^{\prime }+y=x+\sin x$ specify $x$
+
+$y^{\prime \prime }=y-2$ specify $t$
+
+$\left[ 
+\begin{array}{c}
+y^{\prime \prime }=2y^{\prime }-y \\ 
+y^{\prime }\left( 0\right) =e \\ 
+y\left( 0\right) =1%
+\end{array}%
+\right] $ specify $t$
+
+$\ddot{x}=a\sin \omega t$ specify $t$
+
+\section{Some expressions to Solve ODE\ Numeric}
+
+$\left[ 
+\begin{array}{r}
+y^{\prime }=-y \\ 
+y(0)=1%
+\end{array}%
+\right] $
+
+Evaluate: $\left( 
+\begin{array}{r}
+y\left( 1\right) \\ 
+y\left( 10.7\right)%
+\end{array}%
+\right) $
+
+$\left[ 
+\begin{array}{c}
+\frac{d^{2}y}{dt^{2}}=2\frac{dy}{dt}-y \\ 
+y^{\prime }\left( 0\right) =e \\ 
+y\left( 0\right) =1%
+\end{array}%
+\right] $
+
+Evaluate: $\left( 
+\begin{array}{r}
+y\left( 0.1\right) \\ 
+y\left( 0.7\right)%
+\end{array}%
+\right) $
+
+$\left[ 
+\begin{array}{r}
+y^{\prime }=\sin \left( xy\right) \\ 
+y(0)=3%
+\end{array}%
+\right] $ specify $x$
+
+Evaluate: $\left( 
+\begin{array}{r}
+y\left( 0.1\right) \\ 
+y\left( 1.1\right) \\ 
+y\left( 2.1\right) \\ 
+y\left( 3.1\right)%
+\end{array}%
+\right) $
+
+$\left[ 
+\begin{array}{c}
+\frac{d^{2}y}{dt^{2}}=2\frac{dy}{dt}-y \\ 
+\left. \frac{dy\left( t\right) }{dt}\right\vert _{0}=e \\ 
+y\left( 0\right) =1%
+\end{array}%
+\right] $
+
+Evaluate: $\left( 
+\begin{array}{r}
+y\left( 0.1\right) \\ 
+y\left( 1.1\right) \\ 
+y\left( 2.1\right) \\ 
+y\left( 3.1\right)%
+\end{array}%
+\right) $
+
+$\left[ 
+\begin{array}{c}
+y^{\prime \prime }=2y^{\prime }-y \\ 
+y^{\prime }\left( 0\right) =e \\ 
+y\left( 0\right) =1%
+\end{array}%
+\right] $ specify $t$
+
+Evaluate: $\left( 
+\begin{array}{r}
+y\left( 0.1\right) \\ 
+y\left( 1.1\right) \\ 
+y\left( 2.1\right) \\ 
+y\left( 3.1\right)%
+\end{array}%
+\right) $
+
+$\left[ 
+\begin{array}{r}
+x^{\prime }=x+y-z \\ 
+y^{\prime }=-x+y+z \\ 
+z^{\prime }=-x-y+z \\ 
+x(0)=1 \\ 
+y(0)=1 \\ 
+z(0)=1%
+\end{array}%
+\right] $
+
+Evaluate: $\left( 
+\begin{array}{rrr}
+x\left( 0.1\right) & y\left( 0.1\right) & z\left( 0.1\right) \\ 
+x\left( 0.2\right) & y\left( 0.2\right) & z\left( 0.2\right) \\ 
+x\left( 0.3\right) & y\left( 0.3\right) & z\left( 0.3\right) \\ 
+x\left( 0.4\right) & y\left( 0.4\right) & z\left( 0.4\right)%
+\end{array}%
+\right) $
+
+\section{Some expressions to Solve ODE\ Series}
+
+$D_{x}y=y$ specify $x$ at $0$ order $10$
+
+$D_{x}y=y$ specify $x$ at $1$ order $5$
+
+$\dfrac{dy}{dx}+y=e^{-x^{2}}$ specify $x$ at $0$ order $5$
+
+$\left[ 
+\begin{array}{r}
+D_{xx}y_{1}-y_{1}=0 \\ 
+y_{1}(0)=1 \\ 
+y_{1}^{\prime }\left( 0\right) =0%
+\end{array}%
+\right] $ specify $x$ at $0$ order $5$
+
+$\left[ 
+\begin{array}{r}
+D_{xx}y_{1}-y_{1}=0 \\ 
+y_{1}(0)=1 \\ 
+\left. D_{x}y_{1}\left( t\right) \right\vert _{0}=0%
+\end{array}%
+\right] $ specify $x$ at $0$ order $5$
+
+$y^{\prime }=y$ specify $t$ at $0$ order $5$
+
+$y^{\prime \prime }-2y^{\prime }+t\allowbreak $ specify $t$ at $0$ order $5$
+
+$y^{\prime \prime }-2y^{\prime }+t\allowbreak $ specify $x$ at $t$ order $5$
+
+$\left( 2x+x^{3}\right) D_{xx}y-D_{x}y-6xy$ specify $x$ at $0$ order $5$
+
+$\left( 2x+x^{3}\right) D_{xx}y-D_{x}y-6xy$ specify $x$ at $1$ order $5$
+
+$\left( 2x+x^{3}\right) D_{xx}y-D_{x}y-6xy$ specify $x$ at $\infty $ order $%
+5 $
+
+\end{document}

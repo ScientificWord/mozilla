@@ -1,0 +1,1867 @@
+body {
+  background-color: transparent !
+  important
+}
+
+body {
+  background-color: rgb(255,255,255);
+  border: none;
+  font-family: Arial;
+  font-style: normal;
+  font-weight: 400;
+  text-align: left;
+  color: rgb(0,0,0)
+}
+body .graphicCaption {
+  font-style: normal;
+  font-weight: 400
+}
+body .leadin math {
+  color: rgb(255,0,0)
+}
+body .plotCaption {
+  font-style: normal;
+  font-weight: 400
+}
+body A {
+  font-family: Arial;
+  font-size: 100%;
+  font-style: normal;
+  font-weight: 400;
+  color: rgb(128,0,128)
+}
+body A math {
+  color: rgb(0,128,0)
+}
+body TABLE {
+  padding-left: 0pt;
+  padding-right: 0pt;
+  padding-top: 0pt;
+  padding-bottom: 0pt
+}
+body TD {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-top: 0.5ex;
+  padding-bottom: 0.5ex
+}
+ul {
+  list-style-type: disc
+}
+ul ul {
+  list-style-type: disc
+}
+ul ul ul {
+  list-style-type: disc
+}
+ul ul ul ul {
+  list-style-type: disc
+}
+ol {
+  list-style-type: decimal
+}
+ol ol {
+  list-style-type: lower-alpha
+}
+ol ol ol {
+  list-style-type: lower-roman
+}
+ol ol ol ol {
+  list-style-type: upper-alpha
+}
+p.error {
+  font-size: 167%;
+  font-weight: 700;
+  color: rgb(255,0,0)
+}
+p.flushleft {
+  background-color: rgb(165,255,165);
+  border: none;
+  font-size: 100%;
+  text-align: left;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 0pt
+}
+p.flushright {
+  background-color: rgb(255,255,165);
+  border: none;
+  font-size: 100%;
+  text-align: right;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 0pt
+}
+p {
+  font-size: 100%
+}
+p.Body-Math {
+  font-size: 100%;
+  color: rgb(64,64,64)
+}
+h1.part {
+  font-size: 183%;
+  color: rgb(9,62,125);
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 6pt;
+  padding-right: 0pt;
+  padding-bottom: 2pt;
+  text-indent: 0pt
+}
+h1.section {
+  font-size: 150%;
+  color: rgb(9,62,125);
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 6pt;
+  padding-right: 0pt;
+  padding-bottom: 2pt;
+  text-indent: 0pt
+}
+h2.subsection {
+  font-size: 133%;
+  color: rgb(9,62,125);
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 2pt;
+  padding-right: 0pt;
+  padding-bottom: 2pt;
+  text-indent: 7pt
+}
+h3.subsubsection {
+  font-size: 117%;
+  color: rgb(9,62,125);
+  margin-left: 7pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 6pt;
+  padding-right: 7pt;
+  padding-bottom: 4pt;
+  text-indent: 0pt
+}
+h4.paragraph {
+  font-size: 100%;
+  font-weight: 700;
+  color: rgb(9,62,125);
+  margin-left: 7pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 6pt;
+  padding-right: 7pt;
+  padding-bottom: 4pt;
+  text-indent: 0pt
+}
+h5.subparagraph {
+  font-size: 100%;
+  color: rgb(9,62,125);
+  margin-left: 7pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 6pt;
+  padding-right: 0pt;
+  padding-bottom: 4pt;
+  text-indent: 0pt
+}
+em {
+  font-style: italic;
+  color: rgb(9,62,125)
+}
+em span.inlineMath {
+  color: rgb(255,0,255)
+}
+span.rm {
+  font-family: Times New Roman;
+  color: rgb(0,0,255)
+}
+span.rm span.inlineMath {
+  color: rgb(0,0,255)
+}
+span.bs {
+  font-weight: 700
+}
+strong {
+  font-weight: 700
+}
+span.it {
+  font-style: italic
+}
+span.it span.inlineMath {
+  color: rgb(0,255,255)
+}
+span.sl {
+  font-style: italic;
+  font-weight: 700;
+  color: rgb(9,62,125)
+}
+span.sf {
+  font-family: Arial;
+  font-weight: 400;
+  color: rgb(9,62,125)
+}
+span.sf span.inlineMath {
+  color: rgb(255,0,0)
+}
+span.sc {
+  font-family: cmcsc10;
+  color: rgb(0,0,0)
+}
+span.sc span.inlineMath {
+  color: rgb(0,128,0)
+}
+span.tt {
+  font-family: Courier New;
+  font-weight: 700
+}
+span.tt span.inlineMath {
+  color: rgb(0,0,0)
+}
+span.cal {
+  font-family: cmsy10;
+  color: rgb(192,192,192)
+}
+span.frak {
+  font-family: eufm10;
+  font-style: normal;
+  color: rgb(192,192,192)
+}
+span.Bbb {
+  font-family: msbm10;
+  color: rgb(192,192,192)
+}
+span.tiny {
+  font-size: 50%
+}
+span.scriptsize {
+  font-size: 67%
+}
+span.footnotesize {
+  font-size: 75%
+}
+span.small {
+  font-size: 83%
+}
+span.normalsize {
+  font-size: 100%
+}
+span.large1 {
+  font-size: 117%
+}
+span.large2 {
+  font-size: 133%
+}
+span.large3 {
+  font-size: 150%
+}
+span.huge1 {
+  font-size: 167%
+}
+span.huge2 {
+  font-size: 183%
+}
+dl.description dd p {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 43pt;
+  padding-top: 4pt;
+  padding-right: 0pt;
+  padding-bottom: 4pt;
+  text-indent: 0pt
+}
+dl.description {
+  font-size: 100%
+}
+dl.description dt.leadin {
+  font-style: normal;
+  font-weight: 700;
+  color: rgb(9,62,125)
+}
+ol li p {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 4pt;
+  padding-right: 25pt;
+  padding-bottom: 4pt;
+  text-indent: 0pt
+}
+ol {
+  font-size: 100%
+}
+ol .leadin {
+  font-weight: 700;
+  color: rgb(9,62,125)
+}
+ul li p {
+  font-size: 100%;
+  text-align: left;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 18pt;
+  padding-top: 1pt;
+  padding-right: 18pt;
+  padding-bottom: 1pt;
+  text-indent: 0pt
+}
+ul {
+  font-size: 100%
+}
+ul .leadin {
+  font-size: 67%;
+  color: rgb(9,62,125)
+}
+ol.thebibliography li p {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 18pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 0pt
+}
+ol.thebibliography {
+  font-size: 100%
+}
+ol.thebibliography .leadin {
+  font-style: normal;
+  font-weight: 700;
+  color: rgb(9,62,125)
+}
+p.quote {
+  font-size: 100%;
+  text-align: left;
+  color: rgb(9,62,125);
+  margin-left: 40pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 40pt;
+  padding-bottom: 0pt;
+  text-indent: 18pt
+}
+p.quotation {
+  background-color: rgb(242,242,242);
+  border: none;
+  font-size: 100%;
+  color: rgb(9,62,125);
+  margin-left: 40pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 18pt;
+  padding-top: 7pt;
+  padding-right: 40pt;
+  padding-bottom: 7pt;
+  text-indent: 0pt
+}
+p.center {
+  font-size: 100%;
+  text-align: center;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 0pt
+}
+p.proof {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.proof {
+  font-size: 100%
+}
+div.proof span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.proof-FirstPara {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.acknowledgement {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.acknowledgement {
+  font-size: 100%
+}
+div.acknowledgement span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.acknowledgement-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.algorithm {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.algorithm {
+  font-size: 100%
+}
+div.algorithm span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.algorithm-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.axiom {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.axiom {
+  font-size: 100%
+}
+div.axiom span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.axiom-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.case {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.case {
+  font-size: 100%
+}
+div.case span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.case-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.claim {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.claim {
+  font-size: 100%
+}
+div.claim span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.claim-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.conclusion {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.conclusion {
+  font-size: 100%
+}
+div.conclusion span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.conclusion-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.condition {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.condition {
+  font-size: 100%
+}
+div.condition span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.condition-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.conjecture {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.conjecture {
+  font-size: 100%
+}
+div.conjecture span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.conjecture-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.corollary {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.corollary {
+  font-size: 100%
+}
+div.corollary span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.corollary-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.criterion {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.criterion {
+  font-size: 100%
+}
+div.criterion span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.criterion-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.definition {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.definition {
+  font-size: 100%
+}
+div.definition span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.definition-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.example {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.example {
+  font-size: 100%
+}
+div.example span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.example-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.exercise {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.exercise {
+  font-size: 100%
+}
+div.exercise span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.exercise-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.lemma {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.lemma {
+  font-size: 100%
+}
+div.lemma span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.lemma-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.notation {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.notation {
+  font-size: 100%
+}
+div.notation span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.notation-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.problem {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.problem {
+  font-size: 100%
+}
+div.problem span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.problem-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.proposition {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.proposition {
+  font-size: 100%
+}
+div.proposition span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.proposition-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.remark {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.remark {
+  font-size: 100%
+}
+div.remark span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.remark-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.solution {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.solution {
+  font-size: 100%
+}
+div.solution span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.solution-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.summary {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.summary {
+  font-size: 100%
+}
+div.summary span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.summary-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.theorem {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.theorem {
+  font-size: 100%
+}
+div.theorem span.leadin {
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.theorem-FirstPara {
+  font-size: 100%;
+  font-style: italic;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 0pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.f-0 {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.f-0 {
+  font-size: 100%
+}
+div.f-0 span.leadin {
+  background-color: rgb(255,225,225);
+  font-family: Arial;
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.f-0-FirstPara {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.f-1 {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.f-1 {
+  font-size: 100%
+}
+div.f-1 span.leadin {
+  background-color: rgb(255,225,225);
+  font-family: Arial;
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.f-1-FirstPara {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.f-2 {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.f-2 {
+  font-size: 100%
+}
+div.f-2 span.leadin {
+  background-color: rgb(255,225,225);
+  font-family: Arial;
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.f-2-FirstPara {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.f-7 {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.f-7 {
+  font-size: 100%
+}
+div.f-7 span.leadin {
+  background-color: rgb(255,225,225);
+  font-family: Arial;
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.f-7-FirstPara {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.abstract {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.abstract {
+  font-size: 100%
+}
+div.abstract span.leadin {
+  background-color: rgb(255,225,225);
+  font-family: Arial;
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.abstract-FirstPara {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.f-11 {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.f-11 {
+  font-size: 100%
+}
+div.f-11 span.leadin {
+  background-color: rgb(255,225,225);
+  font-family: Arial;
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.f-11-FirstPara {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.f-12 {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.f-12 {
+  font-size: 100%
+}
+div.f-12 span.leadin {
+  background-color: rgb(255,225,225);
+  font-family: Arial;
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.f-12-FirstPara {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.f-13 {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.f-13 {
+  font-size: 100%
+}
+div.f-13 span.leadin {
+  background-color: rgb(255,225,225);
+  font-family: Arial;
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.f-13-FirstPara {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+p.f-14 {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt
+}
+div.f-14 {
+  font-size: 100%
+}
+div.f-14 span.leadin {
+  background-color: rgb(255,225,225);
+  font-family: Arial;
+  font-weight: 700;
+  padding-top: 0pt
+}
+p.f-14-FirstPara {
+  font-size: 100%;
+  margin-left: 0pt;
+  margin-top: 0pt;
+  margin-right: 0pt;
+  margin-bottom: 0pt;
+  padding-left: 48pt;
+  padding-top: 0pt;
+  padding-right: 0pt;
+  padding-bottom: 0pt;
+  text-indent: 2pt
+}
+span.huge2 span.huge2 {
+  font-size: 100%
+}
+span.huge2 span.large3 {
+  font-size: 82%
+}
+span.huge2 span.large2 {
+  font-size: 73%
+}
+span.huge2 span.footnotesize {
+  font-size: 41%
+}
+span.huge2 span.huge1 {
+  font-size: 91%
+}
+span.huge2 span.large1 {
+  font-size: 64%
+}
+span.huge2 span.normalsize {
+  font-size: 55%
+}
+span.huge2 span.scriptsize {
+  font-size: 36%
+}
+span.huge2 span.small {
+  font-size: 45%
+}
+span.huge2 span.tiny {
+  font-size: 27%
+}
+span.large3 span.huge2 {
+  font-size: 122%
+}
+span.large3 span.large3 {
+  font-size: 100%
+}
+span.large3 span.large2 {
+  font-size: 89%
+}
+span.large3 span.footnotesize {
+  font-size: 50%
+}
+span.large3 span.huge1 {
+  font-size: 111%
+}
+span.large3 span.large1 {
+  font-size: 78%
+}
+span.large3 span.normalsize {
+  font-size: 67%
+}
+span.large3 span.scriptsize {
+  font-size: 44%
+}
+span.large3 span.small {
+  font-size: 56%
+}
+span.large3 span.tiny {
+  font-size: 33%
+}
+span.large2 span.huge2 {
+  font-size: 138%
+}
+span.large2 span.large3 {
+  font-size: 113%
+}
+span.large2 span.large2 {
+  font-size: 100%
+}
+span.large2 span.footnotesize {
+  font-size: 56%
+}
+span.large2 span.huge1 {
+  font-size: 125%
+}
+span.large2 span.large1 {
+  font-size: 88%
+}
+span.large2 span.normalsize {
+  font-size: 75%
+}
+span.large2 span.scriptsize {
+  font-size: 50%
+}
+span.large2 span.small {
+  font-size: 63%
+}
+span.large2 span.tiny {
+  font-size: 38%
+}
+p.error span.huge2 {
+  font-size: 110%
+}
+p.error span.large3 {
+  font-size: 90%
+}
+p.error span.large2 {
+  font-size: 80%
+}
+p.error span.footnotesize {
+  font-size: 45%
+}
+p.error span.huge1 {
+  font-size: 100%
+}
+p.error span.large1 {
+  font-size: 70%
+}
+p.error span.normalsize {
+  font-size: 60%
+}
+p.error span.scriptsize {
+  font-size: 40%
+}
+p.error span.small {
+  font-size: 50%
+}
+p.error span.tiny {
+  font-size: 30%
+}
+span.footnotesize span.huge2 {
+  font-size: 244%
+}
+span.footnotesize span.large3 {
+  font-size: 200%
+}
+span.footnotesize span.large2 {
+  font-size: 178%
+}
+span.footnotesize span.footnotesize {
+  font-size: 100%
+}
+span.footnotesize span.huge1 {
+  font-size: 222%
+}
+span.footnotesize span.large1 {
+  font-size: 156%
+}
+span.footnotesize span.normalsize {
+  font-size: 133%
+}
+span.footnotesize span.scriptsize {
+  font-size: 89%
+}
+span.footnotesize span.small {
+  font-size: 111%
+}
+span.footnotesize span.tiny {
+  font-size: 67%
+}
+span.huge1 span.huge2 {
+  font-size: 110%
+}
+span.huge1 span.large3 {
+  font-size: 90%
+}
+span.huge1 span.large2 {
+  font-size: 80%
+}
+span.huge1 span.footnotesize {
+  font-size: 45%
+}
+span.huge1 span.huge1 {
+  font-size: 100%
+}
+span.huge1 span.large1 {
+  font-size: 70%
+}
+span.huge1 span.normalsize {
+  font-size: 60%
+}
+span.huge1 span.scriptsize {
+  font-size: 40%
+}
+span.huge1 span.small {
+  font-size: 50%
+}
+span.huge1 span.tiny {
+  font-size: 30%
+}
+span.large1 span.huge2 {
+  font-size: 157%
+}
+span.large1 span.large3 {
+  font-size: 129%
+}
+span.large1 span.large2 {
+  font-size: 114%
+}
+span.large1 span.footnotesize {
+  font-size: 64%
+}
+span.large1 span.huge1 {
+  font-size: 143%
+}
+span.large1 span.large1 {
+  font-size: 100%
+}
+span.large1 span.normalsize {
+  font-size: 86%
+}
+span.large1 span.scriptsize {
+  font-size: 57%
+}
+span.large1 span.small {
+  font-size: 71%
+}
+span.large1 span.tiny {
+  font-size: 43%
+}
+h1.part span.huge2 {
+  font-size: 100%
+}
+h1.part span.large3 {
+  font-size: 82%
+}
+h1.part span.large2 {
+  font-size: 73%
+}
+h1.part span.footnotesize {
+  font-size: 41%
+}
+h1.part span.huge1 {
+  font-size: 91%
+}
+h1.part span.large1 {
+  font-size: 64%
+}
+h1.part span.normalsize {
+  font-size: 55%
+}
+h1.part span.scriptsize {
+  font-size: 36%
+}
+h1.part span.small {
+  font-size: 45%
+}
+h1.part span.tiny {
+  font-size: 27%
+}
+span.scriptsize span.huge2 {
+  font-size: 275%
+}
+span.scriptsize span.large3 {
+  font-size: 225%
+}
+span.scriptsize span.large2 {
+  font-size: 200%
+}
+span.scriptsize span.footnotesize {
+  font-size: 113%
+}
+span.scriptsize span.huge1 {
+  font-size: 250%
+}
+span.scriptsize span.large1 {
+  font-size: 175%
+}
+span.scriptsize span.normalsize {
+  font-size: 150%
+}
+span.scriptsize span.scriptsize {
+  font-size: 100%
+}
+span.scriptsize span.small {
+  font-size: 125%
+}
+span.scriptsize span.tiny {
+  font-size: 75%
+}
+h1.section span.huge2 {
+  font-size: 122%
+}
+h1.section span.large3 {
+  font-size: 100%
+}
+h1.section span.large2 {
+  font-size: 89%
+}
+h1.section span.footnotesize {
+  font-size: 50%
+}
+h1.section span.huge1 {
+  font-size: 111%
+}
+h1.section span.large1 {
+  font-size: 78%
+}
+h1.section span.normalsize {
+  font-size: 67%
+}
+h1.section span.scriptsize {
+  font-size: 44%
+}
+h1.section span.small {
+  font-size: 56%
+}
+h1.section span.tiny {
+  font-size: 33%
+}
+span.small span.huge2 {
+  font-size: 220%
+}
+span.small span.large3 {
+  font-size: 180%
+}
+span.small span.large2 {
+  font-size: 160%
+}
+span.small span.footnotesize {
+  font-size: 90%
+}
+span.small span.huge1 {
+  font-size: 200%
+}
+span.small span.large1 {
+  font-size: 140%
+}
+span.small span.normalsize {
+  font-size: 120%
+}
+span.small span.scriptsize {
+  font-size: 80%
+}
+span.small span.small {
+  font-size: 100%
+}
+span.small span.tiny {
+  font-size: 60%
+}
+h2.subsection span.huge2 {
+  font-size: 138%
+}
+h2.subsection span.large3 {
+  font-size: 113%
+}
+h2.subsection span.large2 {
+  font-size: 100%
+}
+h2.subsection span.footnotesize {
+  font-size: 56%
+}
+h2.subsection span.huge1 {
+  font-size: 125%
+}
+h2.subsection span.large1 {
+  font-size: 88%
+}
+h2.subsection span.normalsize {
+  font-size: 75%
+}
+h2.subsection span.scriptsize {
+  font-size: 50%
+}
+h2.subsection span.small {
+  font-size: 63%
+}
+h2.subsection span.tiny {
+  font-size: 38%
+}
+h3.subsubsection span.huge2 {
+  font-size: 157%
+}
+h3.subsubsection span.large3 {
+  font-size: 129%
+}
+h3.subsubsection span.large2 {
+  font-size: 114%
+}
+h3.subsubsection span.footnotesize {
+  font-size: 64%
+}
+h3.subsubsection span.huge1 {
+  font-size: 143%
+}
+h3.subsubsection span.large1 {
+  font-size: 100%
+}
+h3.subsubsection span.normalsize {
+  font-size: 86%
+}
+h3.subsubsection span.scriptsize {
+  font-size: 57%
+}
+h3.subsubsection span.small {
+  font-size: 71%
+}
+h3.subsubsection span.tiny {
+  font-size: 43%
+}
+span.tiny span.huge2 {
+  font-size: 367%
+}
+span.tiny span.large3 {
+  font-size: 300%
+}
+span.tiny span.large2 {
+  font-size: 267%
+}
+span.tiny span.footnotesize {
+  font-size: 150%
+}
+span.tiny span.huge1 {
+  font-size: 333%
+}
+span.tiny span.large1 {
+  font-size: 233%
+}
+span.tiny span.normalsize {
+  font-size: 200%
+}
+span.tiny span.scriptsize {
+  font-size: 133%
+}
+span.tiny span.small {
+  font-size: 167%
+}
+span.tiny span.tiny {
+  font-size: 100%
+}
+pre span.huge2 {
+  font-size: 220%
+}
+pre span.large3 {
+  font-size: 180%
+}
+pre span.large2 {
+  font-size: 160%
+}
+pre p.error {
+  font-size: 200%
+}
+pre span.footnotesize {
+  font-size: 90%
+}
+pre span.huge1 {
+  font-size: 200%
+}
+pre span.large1 {
+  font-size: 140%
+}
+pre span.normalsize {
+  font-size: 120%
+}
+pre h1.part {
+  font-size: 220%
+}
+pre span.scriptsize {
+  font-size: 80%
+}
+pre h1.section {
+  font-size: 180%
+}
+pre span.small {
+  font-size: 100%
+}
+pre h2.subsection {
+  font-size: 160%
+}
+pre h3.subsubsection {
+  font-size: 140%
+}
+pre span.tiny {
+  font-size: 60%
+}
+pre pre {
+  font-size: 100%
+}

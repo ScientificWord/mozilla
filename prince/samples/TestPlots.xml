@@ -1,0 +1,211 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<!-- The next lines of text are copied from the file htmlout.cfg, and can be modified there -->
+<style type="text/css">
+.displayed {text-align: center}
+.displayed { display: block !
+important}
+span.leadin {float: left}
+span.vspace {vertical-align: top}
+span.rule {display: inline; background-color: black}
+span.inline-math-graphics {white-space: nowrap}
+hr.pagebreak {color: green}
+table {border-collapse: collapse; border-color: black}
+table td {border-color: black}
+.inlineTable {display: inline}
+</style>
+<!-- End of lines from htmlout.cfg -->
+
+
+<link href="Plottests.css" rel="stylesheet" type="text/css"/>
+<meta name="CREATED" content="Monday, July 18, 2005 16:41:31"/>
+<meta name="REVISED" content="Wednesday, July 20, 2005 12:54:49"/>
+<meta name="GENERATOR" content="Scientific Word"/>
+<title>Test Plots</title>
+</head>
+<body >
+<p>
+   Plot 2D functions:
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mn>5</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mn>3</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <br/><br/><br/>
+</p>
+<p>
+   <br/><br/><br/><mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>4</mml:mn>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mn>7</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <br/><br/><br/><mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <br/><br/><br/><mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">cos</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <br/><br/><br/><mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:msup>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+             <mml:mrow>
+               <mml:mi>x</mml:mi>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:mn>1</mml:mn>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+           </mml:mrow>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">&minus;</mml:mo>
+             <mml:mn>2</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+       </mml:mfrac>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mn>7</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <br/><br/><br/>
+</p>
+<p>
+   Plot 3D functions
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>x</mml:mi>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mi>y</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <br/><br/><br/>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>x</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:msup>
+         <mml:mi>y</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <br/><br/><br/>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:msup>
+             <mml:mi>y</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <br/><br/><br/>
+</p>
+<p>
+   <br/><br/><br/><mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">&minus;</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">/</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <br/><br/><br/>
+</p>
+</body>
+
+</html>

@@ -1,0 +1,346 @@
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsfonts}
+
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.00.0.2606}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Wednesday, January 28, 2004 20:22:52}
+%TCIDATA{LastRevised=Thursday, September 09, 2004 09:03:52}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\input{tcilatex}
+
+\begin{document}
+
+
+\section{Some expressions to evaluate}
+
+$3-4$
+
+$\sqrt{2.36}$
+
+$\frac{2}{3}\frac{8}{7}$
+
+$\sin \left( \pi \right) $
+
+$\sum_{i=1}^{9}\frac{1}{1+i^{2}}$
+
+$50!$
+
+$2^{1234}\func{mod}3$
+
+$\zeta \left( 12\right) $
+
+$\binom{12}{4}$
+
+$\gcd \left( 35,25,65\right) $
+
+$\left[ \sin x^{2}\right] _{1}^{2}$
+
+\subsection{Calculus}
+
+$\lim_{t\rightarrow 1}\frac{\tan t-\tan 1}{t-1}$
+
+$\dfrac{d^{4}}{dx^{4}}\left( 3x^{8}\right) $
+
+$D_{x}x^{a}$
+
+$\int \sqrt{1-\sin ^{2}x}dx$
+
+\subsection{Complex Numbers}
+
+$\left( 3-i\right) ^{2}-9$
+
+$\func{Im}\left( a+bi\right) $
+
+$\left( a+bi\right) ^{\ast }$
+
+\subsection{Matrices}
+
+$\det \left( 
+\begin{array}{ccc}
+1 & \frac{1}{2} & \frac{1}{3} \\ 
+\frac{1}{2} & \frac{1}{3} & \frac{1}{4} \\ 
+\frac{1}{3} & \frac{1}{4} & \frac{1}{5}%
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) ^{-1}$
+
+\subsection{Vector Calculus}
+
+$\nabla \times (yz,2xz,xy)$
+
+\subsection{Norms}
+
+$\Vert \left( a,b,c\right) \Vert _{3}$
+
+$\left\Vert 
+\begin{array}{cc}
+5+3i & 7 \\ 
+-13 & 6-5i%
+\end{array}%
+\right\Vert _{\infty }$
+
+\subsection{Transforms}
+
+$\tciFourier \left( \frac{1}{x}\right) $
+
+$\tciLaplace \left( \sin \left( \omega t\right) \limfunc{Heaviside}\left(
+t\right) ,t,u\right) $
+
+\subsection{Mixed Numbers}
+
+$3\frac{1}{4}+4\frac{1}{3}$
+
+\subsection{Set Operations}
+
+$\left\{ 1,2,3\right\} \cap \left\{ 2,3\right\} $
+
+\subsection{Text Style}
+
+$x\mathbf{x}-x^{2}$
+
+\section{Some expressions to evaluate numerically}
+
+$2^{3}$
+
+$\sin \left( \pi ^{2}\right) $
+
+$\int_{1}^{2}\frac{dx}{x^{6}+x+2}$
+
+\section{Some expressions to simplify}
+
+$\frac{b-a}{a-b}$
+
+$1-\cos ^{2}x$
+
+$\dfrac{a^{x}}{a^{y}}$
+
+\section{Some expressions to expand}
+
+$\left( a+b\right) ^{5}$
+
+$a^{x-y}$
+
+$\frac{18229}{94}$
+
+\section{Some expressions to factor}
+
+$60$
+
+$x^{2}-2x+1$
+
+$x^{3}+y^{6}\func{mod}3$
+
+\section{Some expressions to check equality}
+
+$e^{i\pi }=\,-1$
+
+$\pi ^{e}-e^{\pi }=\left\vert \pi ^{e}-e^{\pi }\right\vert $
+
+\section{Some expressions to solve exact}
+
+$2x=3$
+
+$\left( 
+\begin{array}{c}
+2x-y=5 \\ 
+x+3y=4%
+\end{array}%
+\right) $
+
+\section{Some expressions to solve numerically}
+
+$x^{3}-3.8x-15.6=0$
+
+\section{Some expressions to solve recursion}
+
+$x_{n}+3x_{n+1}+x_{n+2}=0$
+
+\section{Some expressions to Solve ODE\ Exact}
+
+$\frac{dy}{dx}=\sin x$
+
+\section{Some expressions to Solve ODE\ Series}
+
+$D_{x}y=y$ use $x$ and $5$
+
+\section{Some expressions for Power Series}
+
+$e^{2n}$ use $n$ and $10$
+
+\section{Some expressions for Vector Calculus Jacobian}
+
+$(x^{2}z,x+z,xz^{2})$
+
+\section{Some expressions for Vector Calculus Hessian}
+
+$wxyz$
+
+\section{Some expressions for Vector Calculus Wronskian}
+
+$\left( x^{3}-3x^{2},3x^{2}-7,x^{4}+5x^{2}\right) $
+
+\section{Some expressions for Matrix characteristic polynomial}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) $
+
+\section{Some expressions for Matrix concat}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) \left( 
+\begin{array}{cc}
+5 & 6 \\ 
+7 & 8%
+\end{array}%
+\right) $
+
+\section{Some expressions for Matrix eigenvalues}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) $
+
+\section{Some expressions for Matrix eigenvectors}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) $
+
+\section{Some expressions for Matrix Gaussian elimination}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) $
+
+\section{Some expressions for Matrix inverse}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) $
+
+\section{Some expressions for Matrix norm}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) $
+
+\section{Some expressions for Matrix PLU decomposition}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) $
+
+\section{Some expressions for Matrix Reshape}
+
+$\left( 
+\begin{array}{ccc}
+1 & 2 & 11 \\ 
+3 & 4 & 13 \\ 
+-3 & -4 & 33 \\ 
+4 & 1-2 & 14%
+\end{array}%
+\right) $
+
+\section{Some expressions for Matrix QR decomposition}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) $
+
+\section{Some expressions for Matrix Smith normal form}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) $
+
+\section{Some expressions for Matrix stack}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) \left( 
+\begin{array}{cc}
+5 & 6 \\ 
+7 & 8%
+\end{array}%
+\right) $
+
+\section{Some expressions for Matrix trace}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) $
+
+\end{document}

@@ -1,0 +1,403 @@
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsfonts}
+
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2830}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Wednesday, January 28, 2004 20:22:52}
+%TCIDATA{LastRevised=Thursday, May 19, 2005 15:29:28}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\input{tcilatex}
+
+\begin{document}
+
+
+\section{Some expressions to solve exact}
+
+$2x=3$
+
+$\left\vert 3x-1\right\vert =17$
+
+$\dfrac{7-2x}{x-2}\geq 0$
+
+$\left( 
+\begin{array}{c}
+2x-y=5 \\ 
+x+3y=4%
+\end{array}%
+\right) $
+
+$5x^{4}-\cos x=-1$
+
+$a^{10}+1$
+
+$a^{11}+1$
+
+$a^{11}+11$
+
+$a^{10}+4a^{6}-a^{5}+1$
+
+$xy=3$ specify $x$
+
+$\left( 
+\begin{array}{c}
+2x-y=m \\ 
+x+3y=n%
+\end{array}%
+\right) $ specify $x,y$
+
+$Q=Pe^{kt}$ specify $t$
+
+$Q=Pb^{ac}$ specify $a$
+
+$Q=Pb^{ac}$ specify $b$ (watch out, takes forever)
+
+Has solution: $%
+\begin{array}{l}
+x+y-2z=1 \\ 
+2x-4y+z=0 \\ 
+2y-3z=-1%
+\end{array}%
+$
+
+No solution: $%
+\begin{array}{c}
+x+y=3 \\ 
+x+y=0%
+\end{array}%
+$
+
+\subsection{The following are expected to be run through solve system}
+
+Matrix equation: $\left[ 
+\begin{array}{rrr}
+1 & 1 & -2 \\ 
+2 & -4 & 1 \\ 
+0 & 2 & -3%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y \\ 
+z%
+\end{array}%
+\right] =\left[ 
+\begin{array}{c}
+1 \\ 
+0 \\ 
+-1%
+\end{array}%
+\right] $
+
+Underdetermined: $\left[ 
+\begin{array}{rrr}
+2 & -1 & 0 \\ 
+1 & 0 & 3%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y \\ 
+z%
+\end{array}%
+\right] =\left[ 
+\begin{array}{c}
+1 \\ 
+4%
+\end{array}%
+\right] $
+
+Very underdetermined: $\left[ 
+\begin{array}{rrrc}
+2 & -1 & 0 & 1 \\ 
+1 & 0 & 3 & 1%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y \\ 
+z \\ 
+w%
+\end{array}%
+\right] =\left[ 
+\begin{array}{c}
+1 \\ 
+4%
+\end{array}%
+\right] $
+
+Overdetermined: $\left[ 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4 \\ 
+5 & 6 \\ 
+7 & 8%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y%
+\end{array}%
+\right] =\left[ 
+\begin{array}{r}
+3 \\ 
+7 \\ 
+11 \\ 
+15%
+\end{array}%
+\right] $
+
+Inconsistent, eg. use least squares: $\left[ 
+\begin{array}{rrr}
+2 & -1 & 0 \\ 
+1 & 0 & 3 \\ 
+2 & 2 & 2 \\ 
+5 & 4 & 3%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y \\ 
+z%
+\end{array}%
+\right] =\left[ 
+\begin{array}{c}
+1 \\ 
+4 \\ 
+5 \\ 
+-1%
+\end{array}%
+\right] $
+
+\section{Some expressions to solve numerically}
+
+$\cos \pi n=0.2$
+
+$x^{2}+7x-5.2=0$
+
+$x^{3}-3.8x-15.6=0$
+
+$e^{x}=0$
+
+$\left( 
+\begin{array}{c}
+\tan x=10 \\ 
+x\in \left( -\frac{\pi }{2},\frac{\pi }{2}\right)%
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+x^{2}+y^{2}=5 \\ 
+x^{2}-y^{2}=1 \\ 
+x\in \left( -2,0\right) \\ 
+y\in \left( 0,2\right)%
+\end{array}%
+\right) $
+
+\section{Some expressions to solve recursion}
+
+$x_{n}+3x_{n+1}+x_{n+2}=0$
+
+$%
+\begin{array}{c}
+y\left( n+2\right) +3y\left( n+1\right) +2y\left( n\right) =0 \\ 
+y\left( 0\right) =-2 \\ 
+y\left( 1\right) =1%
+\end{array}%
+$
+
+\section{Some expressions to solve system}
+
+$\left[ 
+\begin{array}{rrr}
+1 & 1 & -2 \\ 
+2 & -4 & 1 \\ 
+0 & 2 & -3%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y \\ 
+z%
+\end{array}%
+\right] =\left[ 
+\begin{array}{c}
+1 \\ 
+0 \\ 
+-1%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{rrr}
+2 & -1 & 0 \\ 
+1 & 0 & 3%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y \\ 
+z%
+\end{array}%
+\right] =\left[ 
+\begin{array}{c}
+1 \\ 
+4%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{rrrc}
+2 & -1 & 0 & 1 \\ 
+1 & 0 & 3 & 1%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y \\ 
+z \\ 
+w%
+\end{array}%
+\right] =\left[ 
+\begin{array}{c}
+1 \\ 
+4%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{rrr}
+2 & -1 & 0 \\ 
+1 & 0 & 3 \\ 
+2 & 2 & 2%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y \\ 
+z%
+\end{array}%
+\right] =\left[ 
+\begin{array}{c}
+1 \\ 
+4 \\ 
+5%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{rrr}
+2 & -1 & 0 \\ 
+1 & 0 & 3 \\ 
+2 & 2 & 2 \\ 
+5 & 4 & 3%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y \\ 
+z%
+\end{array}%
+\right] =\left[ 
+\begin{array}{c}
+1 \\ 
+4 \\ 
+5 \\ 
+-1%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4 \\ 
+5 & 6 \\ 
+7 & 8%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y%
+\end{array}%
+\right] =\left[ 
+\begin{array}{r}
+3 \\ 
+7 \\ 
+11 \\ 
+15%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4 \\ 
+5 & 6 \\ 
+7 & 8%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y%
+\end{array}%
+\right] =\left[ 
+\begin{array}{r}
+3 \\ 
+7 \\ 
+11 \\ 
+16%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{rrr}
+2 & -1 & 0 \\ 
+1 & 0 & 3 \\ 
+2 & 2 & 2 \\ 
+5 & 4 & 3%
+\end{array}%
+\right] \left[ 
+\begin{array}{c}
+x \\ 
+y \\ 
+z%
+\end{array}%
+\right] =\left[ 
+\begin{array}{c}
+1 \\ 
+4 \\ 
+5 \\ 
+-1%
+\end{array}%
+\right] $
+
+\end{document}

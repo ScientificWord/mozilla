@@ -1,0 +1,631 @@
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsfonts}
+
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2616}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Wednesday, January 28, 2004 20:22:52}
+%TCIDATA{LastRevised=Wednesday, November 03, 2004 12:08:00}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{<META NAME="PrintViewPercent" CONTENT="100">}
+%TCIDATA{ComputeDefs=
+%$f\left( m\right) =\frac{1}{1+m}$
+%}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\input{tcilatex}
+
+\begin{document}
+
+
+\section{Some expressions for Statistics Fit Curve to Data}
+
+$\left( 
+\begin{array}{cc}
+x & y \\ 
+1 & 2 \\ 
+2 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) $ use last column, multiple regression
+
+$\left[ 
+\begin{array}{ccc}
+\mathbf{z} & \mathbf{x} & \mathbf{y} \\ 
+1 & 0 & 1.1 \\ 
+2 & 0.5 & 1.1 \\ 
+4 & 1 & 1.9 \\ 
+5 & 1.5 & 1.9 \\ 
+7 & 2 & 2.9%
+\end{array}%
+\right] $ use last column, multiple regression
+
+$\left( 
+\begin{array}{ccc}
+z & x & y \\ 
+1 & 0 & 1.1 \\ 
+2 & 0.5 & 1.1 \\ 
+4 & 1 & 1.9 \\ 
+5 & 1.5 & 1.9 \\ 
+7 & 2 & 2.9%
+\end{array}%
+\right) $ use first column, multiple regression
+
+$\left( 
+\begin{array}{ccc}
+z & x & y \\ 
+1 & 0 & 1.1 \\ 
+2 & 0.5 & 1.1 \\ 
+4 & 1 & 1.9 \\ 
+5 & 1.5 & 1.9 \\ 
+7 & 2 & 2.9%
+\end{array}%
+\right) $ use last column, multiple regression (no constant)
+
+$\left( 
+\begin{array}{rr}
+x & y \\ 
+0 & 6 \\ 
+1 & 0.1 \\ 
+2 & -3 \\ 
+3 & 2 \\ 
+4 & 8%
+\end{array}%
+\right) $ use last column, polynomial of degree $3$
+
+\section{Some input for Statistics random numbers}
+
+Beta $10$, Order $2$, Order $3$.
+
+Beta $5$, Order $1$, Order $2$.
+
+Binomial $10$, Number of Trials $10$, Probability of Success $0.5$.
+
+Binomial $6$, Number of Trials $100$, Probability of Success $0.9$.
+
+Cauchy $10$, Median $5$, Shape Parameter $2$.
+
+Cauchy $7$, Median $-5$, Shape Parameter $3$.
+
+Chi-Square $10$, Degrees of Freedom $7$.
+
+Chi-Square $8$, Degrees of Freedom $12$.
+
+Exponential $10$, Mean Time Between Arrivals $2$.
+
+Exponential $9$, Mean Time Between Arrivals $22$.
+
+F $10$, Degrees of Freedom $8$, Degrees of Freedom $9$.
+
+F $4$, Degrees of Freedom $9$, Degrees of Freedom $2$.
+
+Gamma $10$, Shape Parameter $1$, Scale Parameter $2$.
+
+Gamma $3$, Shape Parameter $1.2$, Scale Parameter $2.9$.
+
+Normal $10$, Mean $5$, Standard Deviation $2$.
+
+Normal $2$, Mean $0$, Standard Deviation $10$.
+
+Poisson $10$, Mean Number of Occurences $15$.
+
+Poisson $11$, Mean Number of Occurences $5$.
+
+Student's t $10$, Degrees of Freedom $10$.
+
+Student's t $3$, Degrees of Freedom $4$.
+
+Uniform $10$, Lower End of Range $2$, Upper End of Range $4$.
+
+Uniform $9$, Lower End of Range $12$, Upper End of Range $41$.
+
+Weibull $10$, Shape Parameter $2$, Scale Parameter $4$.
+
+Weibull $8$, Shape Parameter $20$, Scale Parameter $44$.
+
+\section{Some expressions for Statistics mean}
+
+$a,b,c$
+
+$23,5,-6,18,23,-22,5$
+
+$16.5,22.1,6.9,14.2,9.0$
+
+$\left[ 23,5,-6,18,23,-22,5\right] $
+
+$\left\{ 23,5,-6,18,23,-22,5\right\} $
+
+$\left[ 
+\begin{array}{ccc}
+23 & 5 & -6 \\ 
+18 & 23 & -22 \\ 
+5 & 0 & 0%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{ccc}
+x & y & z \\ 
+1 & 1 & 4 \\ 
+3 & 2 & 5 \\ 
+5 & 3 & 6 \\ 
+7 & 4 & 7%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{cc}
+a & b \\ 
+c & d \\ 
+f & g%
+\end{array}%
+\right] $
+
+\section{Some expressions for Statistics median}
+
+$23,5,-6,18,23,-22,5$
+
+$16.5,22.1,6.9,14.2,9.0$
+
+$\left[ 23,5,-6,18,23,-22,5\right] $
+
+$\left[ 
+\begin{array}{ccc}
+23 & 5 & -6 \\ 
+18 & 23 & -22 \\ 
+5 & 0 & 0%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{ccc}
+x & y & z \\ 
+1 & 1 & 4 \\ 
+3 & 2 & 5 \\ 
+5 & 3 & 6 \\ 
+7 & 4 & 7%
+\end{array}%
+\right] $
+
+\section{Some expressions for Statistics mode}
+
+$a,b,c$
+
+$23,5,-6,18,23,-22,5$
+
+$16.5,22.1,6.9,14.2,9.0$
+
+$\left[ 23,5,-6,18,23,-22,5\right] $
+
+$\left[ 
+\begin{array}{ccc}
+23 & 5 & -6 \\ 
+18 & 23 & -22 \\ 
+5 & 0 & 0%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{ccc}
+x & y & z \\ 
+1 & 1 & 4 \\ 
+3 & 2 & 5 \\ 
+5 & 3 & 6 \\ 
+7 & 4 & 7%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{cc}
+a & b \\ 
+c & d \\ 
+f & g%
+\end{array}%
+\right] $
+
+\section{Some expressions for Statistics correlation}
+
+$\left[ 
+\begin{array}{rr}
+43 & -62 \\ 
+77 & 66 \\ 
+54 & -5 \\ 
+99 & -61%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{rrr}
+-50 & -12 & -18 \\ 
+31 & -26 & -62 \\ 
+1 & -47 & -91%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{rr}
+-50 & -12 \\ 
+31 & -26 \\ 
+1 & -47%
+\end{array}%
+\right] $
+
+\section{Some expressions for Statistics covariance}
+
+$\left[ 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 5 \\ 
+4 & 3%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{rrr}
+8.5 & -5.5 & -3.7 \\ 
+-3.5 & 9.7 & 5.0 \\ 
+7.9 & 5.6 & 4.9%
+\end{array}%
+\right] $
+
+\section{Some expressions for Statistics geometric mean}
+
+$3,56,14,2$
+
+$5.19,7.3,2.77,3.67,8$
+
+$\left[ 
+\begin{array}{ccc}
+2.9 & 5.2 & 9.7 \\ 
+6.2 & 8.8 & 1.1%
+\end{array}%
+\right] \allowbreak $
+
+\section{Some expressions for Statistics harmonic mean}
+
+$a,b,c$
+
+$2,4,6,8$
+
+$0.67,1.9,6.2,5.8,4.7$
+
+$\left[ 
+\begin{array}{cccc}
+47 & 82 & 8 & 89 \\ 
+53 & 62 & 11 & 47%
+\end{array}%
+\right] $
+
+\section{Some expressions for Statistics mean deviation}
+
+$1,2,3,4,5$
+
+$\left[ 
+\begin{array}{ccc}
+-85 & -55 & -37 \\ 
+-35 & 97 & 50%
+\end{array}%
+\right] $
+
+\section{Some expressions for Statistics moment}
+
+\QTR{MenuDialog}{Moment Number}: $1$, \QTR{MenuDialog}{Moment Origin}: About 
+$0.5$,
+
+$\left( 0.1,0.5,0.8,0.4\right) $
+
+$\left[ 
+\begin{array}{r}
+8.5 \\ 
+-5.5 \\ 
+-3.7 \\ 
+3.5%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{ccc}
+8.5 & -3.5 & 7.9 \\ 
+-5.5 & 9.7 & 5.6 \\ 
+-3.7 & 5.0 & 4.9 \\ 
+3.5 & 2.7 & 9.4%
+\end{array}%
+\right] $
+
+$\left( 
+\begin{array}{cccc}
+0.123\, & 0.703\, & 0.445\, & 0.284\,%
+\end{array}%
+\right) $
+
+\QTR{MenuDialog}{Moment Number}: $2$, \QTR{MenuDialog}{Moment Origin}: About 
+$0$
+
+$\left( 0.1,0.5,0.8,0.4\right) $
+
+$\left[ 
+\begin{array}{r}
+8.5 \\ 
+-5.5 \\ 
+-3.7 \\ 
+3.5%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{rrr}
+8.5 & -5.5 & -3.7 \\ 
+-3.5 & 9.7 & 5.0 \\ 
+7.9 & 5.6 & 4.9%
+\end{array}%
+\right] $
+
+$\left( 
+\begin{array}{cccc}
+0.123\, & 0.703\, & 0.445\, & 0.284\,%
+\end{array}%
+\right) $
+
+\QTR{MenuDialog}{Moment Number}: $2$, \QTR{MenuDialog}{Moment Origin}: About
+the Mean,
+
+$\left( 0.1,0.5,0.8,0.4\right) $
+
+$\left[ 
+\begin{array}{r}
+8.5 \\ 
+-5.5 \\ 
+-3.7 \\ 
+3.5%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{rrr}
+8.5 & -5.5 & -3.7 \\ 
+-3.5 & 9.7 & 5.0 \\ 
+7.9 & 5.6 & 4.9%
+\end{array}%
+\right] $
+
+$\left( 
+\begin{array}{cccc}
+0.123\, & 0.703\, & 0.445\, & 0.284\,%
+\end{array}%
+\right) $
+
+\section{Some expressions for Statistics quantile}
+
+$\left( 
+\begin{array}{cc}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) $ quantile $0.1$
+
+$1,2,3,4,5,6,7,8,9,10$, $0.87$th Quantile(s):
+
+$\left\{ 5.6,7,8.3,57,1.4,37,2\right\} $, $0.25$th Quantile(s):
+
+$\left[ 
+\begin{array}{ccc}
+23 & 5 & -6 \\ 
+9 & -3 & 7 \\ 
+18 & 23 & -22%
+\end{array}%
+\right] $, $0.5$th Quantile(s):
+
+$\left[ 
+\begin{array}{ccc}
+23 & 5 & -6 \\ 
+18 & 23 & -22 \\ 
+5 & 0 & 0%
+\end{array}%
+\right] $, $0.33$th Quantile(s):
+
+$\left[ \frac{1137}{100},\frac{49}{20},-\frac{354}{25}\right] $, $0.75$th
+Quantile(s):
+
+\section{Some expressions for Statistics standard deviation}
+
+$\left[ 5,1,89,4,29,47,18\right] $
+
+$\left( 
+\begin{array}{r}
+18.1 \\ 
+5.3 \\ 
+7.6%
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{cc}
+x & y \\ 
+a & b \\ 
+c & d%
+\end{array}%
+\right) $
+
+$\left[ 
+\begin{array}{rrr}
+23 & 5 & -6 \\ 
+18 & 23 & -22 \\ 
+5 & 0 & 0%
+\end{array}%
+\right] $
+
+\section{Some expressions for Statistics variance}
+
+$5,1,89,4,29,47,18$
+
+$\left[ 
+\begin{array}{r}
+18.1 \\ 
+5.3 \\ 
+7.6%
+\end{array}%
+\right] $
+
+$\left[ 
+\begin{array}{rrr}
+23 & 5 & -6 \\ 
+18 & 23 & -22 \\ 
+5 & 0 & 0%
+\end{array}%
+\right] $
+
+$\left( 
+\begin{array}{cc}
+x & y \\ 
+a & b \\ 
+c & d%
+\end{array}%
+\right) $
+
+\section{Some expressions to test distribution functions}
+
+$\left( 
+\begin{array}{c}
+\func{BetaDist}\left( 0.5;2,3\right)  \\ 
+\func{BetaInv}\left( 0.6875;2,3\right)  \\ 
+\func{BetaDen}\left( 0.5;2,3\right) 
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+\func{NormalDist}(2.44) \\ 
+\func{NormalDist}(2.44;0,1) \\ 
+\func{NormalDist}(2.44;1,2) \\ 
+\func{NormalInv}\left( 0.99266;0,1\right)  \\ 
+\func{NormalInv}\left( 0.76424;1,2\right)  \\ 
+\func{NormalDen}(2.44;1,2)%
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+\func{TDist}(63.66;1) \\ 
+\func{TInv}(0.995;1) \\ 
+\func{TDist}(-0.97847;3) \\ 
+\func{TInv}(0.2;3) \\ 
+\func{TDen}(0.2;3)%
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+\func{ChiSquareDist}(1.6103;5) \\ 
+\func{ChiSquareInv}(0.1;5) \\ 
+\func{ChiSquareDist}\left( 2.366;3\right)  \\ 
+\func{ChiSquareInv}(0.5;3) \\ 
+\func{ChiSquareDen}(0.5;3)%
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+\func{FDist}(0.1;3,5) \\ 
+\func{FInv}(0.043419;3,5) \\ 
+\func{FDist}(3.7797;2,5) \\ 
+\func{FInv}(0.9;2,5) \\ 
+\func{FDen}(3.7797;2,5)%
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+\func{ExponentialInv}\left( 0.73;0.58\right)  \\ 
+\func{ExponentialDist}\left( 0.75941;0.58\right)  \\ 
+\func{ExponentialDen}\left( 0.75941;0.58\right) 
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+\func{WeibullDist}\left( 0.51431;0.5,0.3\right)  \\ 
+\func{WeibullInv}\left( 0.73;0.5,0.3\right)  \\ 
+\func{WeibullDen}\left( 0.51431;0.5,0.3\right) 
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+\func{GammaDen}\left( 0.51431;0.5,0.3\right)  \\ 
+\func{GammaDist}\left( 0.51431;0.5,0.3\right)  \\ 
+\func{GammaInv}\left( 0.935\,93;0.5,0.3\right) 
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+\func{CauchyDen}\left( 0.51431;0.5,0.3\right)  \\ 
+\func{CauchyDist}\left( 0.51431;0.5,0.3\right)  \\ 
+\func{CauchyInv}\left( 0.935\,93;0.5,0.3\right) 
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+\func{UniformDen}\left( 0.51431;0.5,1.3\right)  \\ 
+\func{UniformDist}\left( 0.51431;0.5,1.3\right)  \\ 
+\func{UniformInv}\left( 0.935\,93;0.5,1.3\right) 
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+\func{BinomialDen}(92;100,0.55) \\ 
+\func{BinomialDist}(2.44;100,0.55) \\ 
+\func{BinomialDist}(2.44;100,0.55) \\ 
+\func{BinomialInv}\left( 0.99266;100,0.55\right)  \\ 
+\func{BinomialInv}\left( 0.76424;100,0.55\right)  \\ 
+\func{BinomialDen}(2.44;100,0.55)%
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+\func{PoissonDen}\left( 2;3\right)  \\ 
+\func{PoissonDen}\left( 5;0.3\right)  \\ 
+\func{PoissonDen}\left( 10;4\right)  \\ 
+\func{PoissonInv}(0.7;5)%
+\end{array}%
+\right) $
+
+$\left( 
+\begin{array}{c}
+\func{HypergeomDist}\left( 5;100,30,10\right)  \\ 
+\func{HypergeomDen}\left( 5;100,30,10\right)  \\ 
+\func{HypergeomInv}\left( 0.5;100,30,10\right) 
+\end{array}%
+\right) $
+
+\end{document}

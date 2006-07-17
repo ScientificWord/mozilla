@@ -1,0 +1,1292 @@
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amssymb}
+
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2953}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Wednesday, January 11, 2006 13:01:05}
+%TCIDATA{LastRevised=Wednesday, January 18, 2006 15:41:47}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+%TCIDATA{ComputeDefs=
+%$f(x)=e^{-x^{2}}$
+%$g(x)=f^{\prime }(x)$
+%$\rho (\phi ,\theta )=(1.2)^{\phi }\sin (\theta )$
+%$h(a,b)=a^{2}+b^{3}$
+%}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\input{tcilatex}
+\begin{document}
+
+
+\section{Simple Function tests:}
+
+\subsection{\qquad 2D}
+
+\subsubsection{Plot 2D, Rectangular}
+
+$x\sin \dfrac{5}{x}$\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{\special%
+{language "Scientific Word";type "MAPLEPLOT";width 4.5in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-5";xmax "5";xviewmin "-5.0010000010002";xviewmax
+"5.0010000010002";yviewmin "-1.0852558745991";yviewmax
+"4.2078841327291";plottype 4;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$x\sin \dfrac{5}{x}$};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8AJ00.xvz';valid_file "T";tempfilename
+'ITB8AJ00.wmf';tempfile-properties "XPR";}}
+
+\subsubsection{Plot 2D, Implicit}
+
+$\left( x-2\right) ^{2}+\left( y-3\right) ^{2}=25$\FRAME{dtbpFX}{4.5in}{3in}{%
+0pt}{}{}{Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.5in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";ymin
+"-5";ymax "5";xviewmin "-5.001";xviewmax "5.001";yviewmin "-5.001";yviewmax
+"5.001";plottype 12;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 24;num-y-gridlines
+24;plotstyle "patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};yis
+\TEXUX{y};var1name \TEXUX{$x$};var2name \TEXUX{$y$};function \TEXUX{$\left(
+x-2\right) ^{2}+\left( y-3\right) ^{2}=25$};linecolor "black";linestyle
+1;pointstyle "point";linethickness 1;lineAttributes "Solid";var1range
+"-5,5";var2range "-5,5";num-x-gridlines 24;num-y-gridlines 24;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8AJ01.xvz';valid_file "T";tempfilename
+'ITB8AJ01.wmf';tempfile-properties "XPR";}}
+
+\subsubsection{Plot 2D, Inequality}
+
+\subsubsection{$x+y^{2}<5$\protect\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{%
+\special{language "Scientific Word";type "MAPLEPLOT";width 4.5in;height
+3in;depth 0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute
+FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";ymin "-5";ymax "5";xviewmin
+"-5.001";xviewmax "5.001";yviewmin "-5.001";yviewmax "5.001";plottype
+25;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 120;num-y-gridlines
+120;plotstyle "patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};yis
+\TEXUX{y};var1name \TEXUX{$x$};var2name \TEXUX{$y$};function
+\TEXUX{$x+y^{2}<5$};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";var1range "-5,5";var2range
+"-5,5";num-x-gridlines 120;num-y-gridlines 120;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";fillColor
+"[flat::RGB:0x00ffcd99]";fillColor2 "[flat::RGB:0x00ffffff]";fillStyle
+"Solid";VCamFile 'ITB8AN02.xvz';valid_file "T";tempfilename
+'ITB8AN03.wmf';tempfile-properties "XPR";}}Fill color blue, background
+magenta\protect\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special%
+{language "Scientific Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-5";xmax "5";ymin "-5";ymax "5";xviewmin "-5.001";xviewmax
+"5.001";yviewmin "-5.001";yviewmax "5.001";plottype 25;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 120;num-y-gridlines
+120;plotstyle "patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};yis
+\TEXUX{y};var1name \TEXUX{$x$};var2name \TEXUX{$y$};function
+\TEXUX{$x+y^{2}<5$};linecolor "magenta";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";var1range "-5,5";var2range
+"-5,5";num-x-gridlines 120;num-y-gridlines 120;curveColor
+"[flat::RGB:0x00ff00ff]";curveStyle "Line";fillColor
+"[flat::RGB:0x00ff0000]";fillColor2 "[flat::RGB:0x00ff00ff]";fillStyle
+"Solid";VCamFile 'ITB8AQ03.xvz';valid_file "T";tempfilename
+'ITB8AQ05.wmf';tempfile-properties "XPR";}}}
+
+\subsubsection{Plot 2D, Parametric}
+
+$\left( \sin 2t,\cos 3t\right) $\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{%
+\special{language "Scientific Word";type "MAPLEPLOT";width 4.5in;height
+3in;depth 0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute
+FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";xviewmin "-1";xviewmax
+"1";yviewmin "-1";yviewmax "1.00015585770157";plottype 19;axesFont "Times
+New Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{t};var1name
+\TEXUX{$t$};function \TEXUX{$\left( \sin 2t,\cos 3t\right) $};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8AR04.xvz';valid_file "T";tempfilename
+'ITB8AR06.wmf';tempfile-properties "XPR";}}
+
+\subsubsection{Plot 2D, Polar}
+
+$1-\sin \theta +2\sin 3\theta \qquad $\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{%
+Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.5in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-3.1416";xmax
+"3.1416";xviewmin "-2.27272652935265";xviewmax "2.28071430316265";yviewmin
+"-4";yviewmax "1.3624997567594";plottype 8;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{v58130};var1name
+\TEXUX{$\theta $};function \TEXUX{$1-\sin \theta +2\sin 3\theta $};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";coordinateSystem "polar";var1range "-3.1416,3.1416";num-x-gridlines
+100;curveColor "[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8AR05.xvz';valid_file "T";tempfilename
+'ITB8AR07.wmf';tempfile-properties "XPR";}}
+
+This one uses equal scaling on axes: $1-\sin \theta +2\sin 3\theta $\FRAME{%
+dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language "Scientific
+Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-3.1416";xmax "3.1416";xviewmin "-2.27272652935265";xviewmax
+"2.28071430316265";yviewmin "-4";yviewmax "1.3624997567594";plottype
+8;axesFont "Times New Roman,12,0000000000,useDefault,normal";constrained
+TRUE;numpoints 100;plotstyle "patch";axesstyle "normal";axestips FALSE;xis
+\TEXUX{v58130};var1name \TEXUX{$\theta $};function \TEXUX{$1-\sin \theta
++2\sin 3\theta $};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";coordinateSystem
+"polar";var1range "-3.1416,3.1416";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8AS06.xvz';valid_file "T";tempfilename
+'ITB8AS08.wmf';tempfile-properties "XPR";}}
+
+\bigskip Plot as parametric, then edit plot and change Items Plotted/Plot
+type to polar This one uses 400 points: $\left( r,r^{2}\right) $\FRAME{dtbpFX%
+}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language "Scientific Word";type
+"MAPLEPLOT";width 4.4996in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-5";xmax "5";xviewmin "-5";xviewmax "5";yviewmin
+"-4.84609122932098";yviewmax "4.84609122932098";plottype 22;axesFont "Times
+New Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{t};var1name
+\TEXUX{$t$};function \TEXUX{$\left( r,r^{2}\right) $};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";coordinateSystem "polar";var1range "-5,5";num-x-gridlines
+400;curveColor "[flat::RGB:0000000000]";curveStyle
+"Line";rangeset"X";VCamFile 'ITB8AS07.xvz';valid_file "T";tempfilename
+'ITB8AS09.wmf';tempfile-properties "XPR";}}
+
+\subsubsection{Plot 2D, Conformal}
+
+$\dfrac{z-1}{z+1}$\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{\special%
+{language "Scientific Word";type "MAPLEPLOT";width 4.5in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "0";xmax "1";ymin "0";ymax "1";xviewmin
+"-1.00012000010001";xviewmax "0.200120000020012";yviewmin
+"-0.00010000010002";yviewmax "1.00010000010002";plottype 9;axesFont "Times
+New Roman,12,0000000000,useDefault,normal";numpts-xgridline
+15;numpts-ygridline 15;num-x-gridlines 11;num-y-gridlines 11;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{z};var1name
+\TEXUX{$z$};function \TEXUX{$\dfrac{z-1}{z+1}$};linecolor "black";linestyle
+1;pointstyle "point";linethickness 1;lineAttributes "Solid";var1range
+"0,1";var2range "0,1";num-x-gridlines 11;num-y-gridlines 11;numpts-xgridline
+15;numpts-ygridline 15;curveColor "[flat::RGB:0000000000]";curveStyle
+"Line";curveColor2 "[flat::RGB:0x00000080]";VCamFile
+'ITB8AS08.xvz';valid_file "T";tempfilename
+'ITB8AS0A.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\subsubsection{Plot 2D, Gradient}
+
+(plot 3d rectangular, 2d gradient) $x^{2}+2y^{2}$\FRAME{dtbpFX}{4.5in}{3in}{%
+0pt}{}{}{Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.5in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";ymin
+"-5";ymax "5";xviewmin "-5.001";xviewmax "5.001";yviewmin "-5.001";yviewmax
+"5.001";plottype 10;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 10;num-y-gridlines
+10;plotstyle "patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};yis
+\TEXUX{y};var1name \TEXUX{$x$};var2name \TEXUX{$y$};function
+\TEXUX{$x^{2}+2y^{2}$};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";var1range "-5,5";var2range
+"-5,5";num-x-gridlines 10;num-y-gridlines 10;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8AU09.xvz';valid_file "T";tempfilename
+'ITB8AU0B.wmf';tempfile-properties "XPR";}}\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{%
+}{Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.5in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";ymin
+"-5";ymax "5";xviewmin "-5";xviewmax "5";yviewmin "-5";yviewmax "5";zviewmin
+"0";zviewmax "75";phi 45;theta 45;plottype 5;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "patch";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};var1name \TEXUX{$x$};var2name
+\TEXUX{$y$};function \TEXUX{$x^{2}+2y^{2}$};linestyle 1;pointstyle
+"point";lineAttributes "Solid";var1range "-5,5";var2range
+"-5,5";surfaceColor "[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle
+"Color Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh
+"Mesh";VCamFile 'ITB8AV0A.xvz';valid_file "T";tempfilename
+'ITB8AV0C.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\subsubsection{Plot 2D, Vector Field}
+
+$\left( \dfrac{1}{\sqrt{\left( 1+\left\vert y^{2}-t^{2}\right\vert
+^{2}\right) }},\dfrac{y^{2}-t^{2}}{\sqrt{\left( 1+\left\vert
+y^{2}-t^{2}\right\vert ^{2}\right) }}\right) $\FRAME{dtbpFX}{4.5in}{3in}{0pt%
+}{}{}{Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.5in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";ymin
+"-5";ymax "5";xviewmin "-5.001";xviewmax "5.001";yviewmin "-5.001";yviewmax
+"5.001";plottype 11;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 10;num-y-gridlines
+10;plotstyle "patch";axesstyle "normal";axestips FALSE;xis \TEXUX{t};yis
+\TEXUX{y};var1name \TEXUX{$t$};var2name \TEXUX{$y$};function \TEXUX{$\left(
+\dfrac{1}{\sqrt{\left( 1+\left\vert y^{2}-t^{2}\right\vert ^{2}\right)
+}},\dfrac{y^{2}-t^{2}}{\sqrt{\left( 1+\left\vert y^{2}-t^{2}\right\vert
+^{2}\right) }}\right) $};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";var1range "-5,5";var2range
+"-5,5";num-x-gridlines 10;num-y-gridlines 10;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8AW0B.xvz';valid_file "T";tempfilename
+'ITB8AW0D.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\section{\qquad 3D}
+
+\subsubsection{plotting curves in space}
+
+$\left[ 
+\begin{array}{ccc}
+t & 2\sin t & t^{2}%
+\end{array}%
+\right] $\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.5in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-5";xmax "5";ymin "-5";ymax "5";xviewmin "-5.000000001";xviewmax
+"5.000000001";yviewmin "-1.9908159159";yviewmax "1.9908159159";zviewmin
+"-2.5E-9";zviewmax "25.0000000025";phi 45;theta 45;plottype 5;axesFont
+"Times New Roman,12,0000000000,useDefault,normal";num-x-gridlines
+25;num-y-gridlines 25;axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{t};yis \TEXUX{y};var1name \TEXUX{$t$};var2name
+\TEXUX{$y$};function \TEXUX{$\left[
+\MATRIX{3,1}{c}\VR{,,c,,,}{,,c,,,}{,,c,,,}{,,,,,}\HR{,}\CELL{t}\CELL{2\sin
+t}\CELL{t^{2}}\right] $};linestyle 1;pointstyle "point";lineAttributes
+"Solid";var1range "-5,5";var2range "-5,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";num-x-gridlines 25;num-y-gridlines
+25;VCamFile 'ITB8AW0C.xvz';valid_file "T";tempfilename
+'ITB8AW0E.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\subsubsection{Plot 3D, Rectangular}
+
+$\sin x+\cos y$\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.5in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-5";xmax "5";ymin "-5";ymax "5";xviewmin "-5";xviewmax "5";yviewmin
+"-5";yviewmax "5";zviewmin "-1.97708196246";zviewmax "1.99540795775";phi
+45;theta 45;plottype 5;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "patch";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};var1name \TEXUX{$x$};var2name
+\TEXUX{$y$};function \TEXUX{$\sin x+\cos y$};linestyle 1;pointstyle
+"point";lineAttributes "Solid";var1range "-5,5";var2range
+"-5,5";surfaceColor "[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle
+"Color Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh
+"Mesh";VCamFile 'ITB8AX0D.xvz';valid_file "T";tempfilename
+'ITB8AX0F.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\subsubsection{Plot 3D, Cylindrical}
+
+X, y, z axis labels with grid lines, rotated with vcam $\left[ r,\theta
+,\theta \right] $\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special%
+{language "Scientific Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-3.1416";xmax "3.1416";ymin "0";ymax "5";xviewmin
+"-4.99999999987";xviewmax "5";yviewmin "-4.99999999997";yviewmax
+"4.99999999997";zviewmin "-3.1416";zviewmax "3.1416";phi 45;theta
+45;cameraOrientation "[0,0,0.106103]";cameraOrientationFixed TRUE;plottype
+14;labeloverrides 7;x-label "X axis";y-label "Y axis";z-label "Z axis
+label";axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "patch";axesstyle "normal";axestips TRUE;gridLines
+TRUE;plotshading "XYZ";lighting 0;xis \TEXUX{v58130};yis \TEXUX{r};var1name
+\TEXUX{$\theta $};var2name \TEXUX{$r$};function \TEXUX{$\left[ r,\theta
+,\theta \right] $};linestyle 1;pointstyle "point";lineAttributes
+"Solid";coordinateSystem "cylindrical";var1range "-3.1416,3.1416";var2range
+"0,5";surfaceColor "[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle
+"Color Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh
+"Mesh";VCamFile 'ITB8AY0E.xvz';valid_file "T";tempfilename
+'ITB8AY0G.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\subsubsection{Plot 3D, Gradient}
+
+\bigskip $xz+xy+yz$\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{\special%
+{language "Scientific Word";type "MAPLEPLOT";width 4.5in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-5";xmax "5";ymin "-5";ymax "5";zmin "-5";zmax "5";xviewmin
+"-5";xviewmax "5";yviewmin "-5";yviewmax "5";zviewmin "-5";zviewmax "5";phi
+45;theta 45;plottype 16;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 6;num-y-gridlines
+6;num-z-gridlines 6;plotstyle "line";axesstyle "normal";axestips
+FALSE;plotshading "XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};zis
+\TEXUX{z};var1name \TEXUX{$x$};var2name \TEXUX{$y$};var3name
+\TEXUX{$z$};function \TEXUX{$xz+xy+yz$};linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";var1range "-5,5";var2range
+"-5,5";var3range "-5,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";num-x-gridlines 6;num-y-gridlines
+6;num-z-gridlines 6;VCamFile 'ITB8AZ0F.xvz';valid_file "T";tempfilename
+'ITB8AZ0H.wmf';tempfile-properties "XPR";}}
+
+\subsubsection{Plot 3D, Implicit}
+
+\bigskip $xz+xy+yz=-1$\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{\special%
+{language "Scientific Word";type "MAPLEPLOT";width 4.5in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-5";xmax "5";ymin "-5";ymax "5";zmin "-5";zmax "5";xviewmin
+"-5";xviewmax "5";yviewmin "-5";yviewmax "5";zviewmin "-5";zviewmax "5";phi
+45;theta 45;plottype 18;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 10;num-y-gridlines
+10;num-z-gridlines 10;plotstyle "patch";axesstyle "normal";axestips
+FALSE;plotshading "XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};zis
+\TEXUX{z};var1name \TEXUX{$x$};var2name \TEXUX{$y$};var3name
+\TEXUX{$z$};function \TEXUX{$xz+xy+yz=-1$};linestyle 1;pointstyle
+"point";lineAttributes "Solid";var1range "-5,5";var2range "-5,5";var3range
+"-5,5";surfaceColor "[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle
+"Color Patch";num-x-gridlines 10;num-y-gridlines 10;num-z-gridlines
+10;surfaceMesh "Mesh";VCamFile 'ITB8B00G.xvz';valid_file "T";tempfilename
+'ITB8B00I.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\subsubsection{Plot 3D, Rectangular (parametric plots)}
+
+$\left[ s\sin s\cos t,s\cos s\cos t,s\sin t\right] $\FRAME{dtbpFX}{4.5in}{3in%
+}{0pt}{}{}{Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.5in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";ymin
+"-5";ymax "5";xviewmin "-4.79462137332";xviewmax "4.70675516462";yviewmin
+"-3.27224668237";yviewmax "3.27224668237";zviewmin "-4.97703978876";zviewmax
+"4.97703978876";phi 45;theta 45;plottype 5;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "patch";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{s};yis \TEXUX{t};var1name \TEXUX{$s$};var2name
+\TEXUX{$t$};function \TEXUX{$\left[ s\sin s\cos t,s\cos s\cos t,s\sin
+t\right] $};linestyle 1;pointstyle "point";lineAttributes "Solid";var1range
+"-5,5";var2range "-5,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Color
+Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh "Mesh";VCamFile
+'ITB8B50H.xvz';valid_file "T";tempfilename
+'ITB8B50J.wmf';tempfile-properties "XPR";}}
+
+\subsubsection{Plot 3D, Spherical}
+
+\bigskip $2$\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.5in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-3.1416";xmax "3.1416";ymin "0";ymax "3.1416";xviewmin
+"-1.99999999993";xviewmax "1.99999999999";yviewmin "-1.99999999997";yviewmax
+"1.99999999997";zviewmin "-1.99999999995";zviewmax "2";phi 45;theta
+45;plottype 15;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "patch";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{v58130};yis \TEXUX{v58144};var1name
+\TEXUX{$\theta $};var2name \TEXUX{$\phi $};function \TEXUX{$2$};linestyle
+1;pointstyle "point";lineAttributes "Solid";coordinateSystem
+"spherical";var1range "-3.1416,3.1416";var2range "0,3.1416";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Color
+Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh "Mesh";VCamFile
+'ITB8B60I.xvz';valid_file "T";tempfilename
+'ITB8B60K.wmf';tempfile-properties "XPR";}}Equal scaling, wireframe,
+gridlines\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-3.1416";xmax "3.1416";ymin "0";ymax "3.1416";xviewmin
+"-1.99999999993";xviewmax "1.99999999999";yviewmin "-1.99999999997";yviewmax
+"1.99999999997";zviewmin "-1.99999999995";zviewmax "2";phi 45;theta
+45;plottype 15;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";constrained TRUE;num-x-gridlines
+25;num-y-gridlines 25;plotstyle "wireframe";axesstyle "normal";axestips
+FALSE;gridLines TRUE;plotshading "XYZ";lighting 0;xis \TEXUX{v58130};yis
+\TEXUX{v58144};var1name \TEXUX{$\theta $};var2name \TEXUX{$\phi $};function
+\TEXUX{$2$};linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";coordinateSystem "spherical";var1range "-3.1416,3.1416";var2range
+"0,3.1416";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Wire
+Frame";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh "Mesh";VCamFile
+'ITB8B70J.xvz';valid_file "T";tempfilename
+'ITB8B70L.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\bigskip Use the ranges $-1\leq \theta \leq 2\pi $ and $0\leq \phi \leq \pi $
+and define $\rho (\phi ,\theta )=(1.2)^{\phi }\sin (\theta )$ and plot the
+expression $\rho (\theta ,\phi )$\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot%
+}{\special{language "Scientific Word";type "MAPLEPLOT";width 4.4996in;height
+3in;depth 0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute
+FALSE;lastEngine "MuPAD";animated TRUE;animationStartTime "0";
+animationEndTime "10"; animationFramesPerSecond "5";xmin "-1.0";xmax
+"6.28";ymin "0";ymax "3.14";animationParamMin "0";animationParamMax
+"10";xviewmin "-1.79751692243";xviewmax "3.14235861566";yviewmin
+"-2.38014042841";yviewmax "1.35349326697";zviewmin "-1.57118379138";zviewmax
+"1.57118777677";phi 45;theta 45;plottype 15;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "patch";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{v58130};yis \TEXUX{v58144};animationParam
+\TEXUX{t};var1name \TEXUX{$\theta $};var2name \TEXUX{$\phi
+$};animationParamList \TEXUX{$t$};function \TEXUX{$\rho (\theta ,\phi
+)$};linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";coordinateSystem "spherical";var1range "-1.0,6.28";var2range
+"0,3.14";animationParamRange "0,10";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Color
+Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh
+"Mesh";rangeset"XYA";VCamFile 'ITB8B70K.xvz';valid_file "T";tempfilename
+'ITB8B70M.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+More examples needed here:eg define f(x,y) and try to plot a plane tangent
+to f at some point. Ron will send some examples.
+
+\bigskip
+
+\subsubsection{Plot 3D, Tube}
+
+$\left[ 
+\begin{array}{c}
+-10\cos t-2\cos (5t)+15\sin (2t) \\ 
+-15\cos (2t)+10\sin t-2\sin (5t) \\ 
+10\cos (3t)%
+\end{array}%
+\right] $ \QTR{MenuDialog}{Radius} is set to $1$, the \QTR{MenuDialog}{Plot
+Interval} is set to $0\leq t\leq 6.28$ ($\approx 2\pi $) and 
+\QTR{MenuDialog}{Surface Style} is set to \QTR{MenuDialog}{Hidden }\FRAME{%
+dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language "Scientific
+Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"0";xmax "6.28";xviewmin "-21.6482506908";xviewmax "21.6198260833";yviewmin
+"-15.991880473";yviewmax "23.9800884112";zviewmin "-10.9651308421";zviewmax
+"10.9779288173";phi 45;theta 45;plottype 13;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 50;num-y-gridlines
+10;plotstyle "hidden";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{t};var1name \TEXUX{$t$};var2name
+\TEXUX{{}};function \TEXUX{$\left[
+\MATRIX{1,3}{c}\VR{,,c,,,}{,,,,,}\HR{,,,}\CELL{-10\cos t-2\cos (5t)+15\sin
+(2t)}\CELL{-15\cos (2t)+10\sin t-2\sin (5t)}\CELL{10\cos (3t)}\right]
+$};linestyle 1;radius \TEXUX{$1$};pointstyle "point";lineAttributes
+"Solid";var1range "0,6.28";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Hidden
+Line";num-x-gridlines 50;num-y-gridlines 10;surfaceMesh
+"Mesh";rangeset"X";VCamFile 'ITB8BQ0L.xvz';valid_file "T";tempfilename
+'ITB8BQ0N.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\subsubsection{Plot 3D, Vector field}
+
+\bigskip $\left[ -y/z,x/z,z\right] $\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot%
+}{\special{language "Scientific Word";type "MAPLEPLOT";width 4.5in;height
+3in;depth 0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute
+FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";ymin "-5";ymax "5";zmin
+"-5";zmax "5";xviewmin "-5";xviewmax "5";yviewmin "-5";yviewmax "5";zviewmin
+"-5";zviewmax "5";phi 54;theta 26;cameraDistance "8.45973";cameraOrientation
+"[0,0,0.0666667]";cameraOrientationFixed TRUE;plottype 17;axesFont "Times
+New Roman,12,0000000000,useDefault,normal";num-x-gridlines 6;num-y-gridlines
+6;num-z-gridlines 6;plotstyle "line";axesstyle "normal";axestips
+FALSE;plotshading "XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};zis
+\TEXUX{z};var1name \TEXUX{$x$};var2name \TEXUX{$y$};var3name
+\TEXUX{$z$};function \TEXUX{$\left[ -y/z,x/z,z\right] $};linestyle
+1;pointstyle "point";linethickness 1;lineAttributes "Solid";var1range
+"-5,5";var2range "-5,5";var3range "-5,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";num-x-gridlines 6;num-y-gridlines
+6;num-z-gridlines 6;VCamFile 'ITB8BR0M.xvz';valid_file "T";tempfilename
+'ITB8BR0O.wmf';tempfile-properties "XPR";}}
+
+\section{Multiple function Tests}
+
+\subsection{Bar chart.}
+
+Drag each group into the plot to create the bar chart
+
+$\left( 2,0,2,0.24\right) $\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{\special%
+{language "Scientific Word";type "MAPLEPLOT";width 4.5in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-5";xmax "5";xviewmin "1.9995";xviewmax "7.0005";yviewmin
+"-0.000028";yviewmax "0.280028";plottype 4;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$\left( 2,0,2,0.24\right) $};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";curveColor "[flat::RGB:0000000000]";curveStyle "Line";function
+\TEXUX{$\left( 3,0,3,0.28\right) $};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";function \TEXUX{$\left(
+4,0,4,0.21\right) $};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";function \TEXUX{$\left(
+5,0,5,0.1\right) $};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";function \TEXUX{$\left(
+6,0,6,0.031\right) $};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";function \TEXUX{$\left(
+2,0,2,0.24,3,0.24\right) $};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";function \TEXUX{$\left(
+3,0,3,0.28,4,0.28,4,0\right) $};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";function
+\TEXUX{$(4,0.21,5,0.21,5,0)$};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";function \TEXUX{$\left(
+5,0\allowbreak .1,6,0.1,6,0\right) $};linecolor "black";linestyle
+1;pointstyle "point";linethickness 1;lineAttributes "Solid";curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";function \TEXUX{$\left(
+6,0.031,7,0.031,7,0\right) .$};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";function \TEXUX{$\left(
+2,0,2,0.24\right) $};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8BS0N.xvz';valid_file "T";tempfilename
+'ITB8BS0P.wmf';tempfile-properties "XPR";}}, $\left( 3,0,3,0.28\right) $, $%
+\left( 4,0,4,0.21\right) $, $\left( 5,0,5,0.1\right) $, $\left(
+6,0,6,0.031\right) $
+
+\bigskip $\left( 2,0,2,0.24,3,0.24\right) $\quad $\left(
+3,0,3,0.28,4,0.28,4,0\right) $\quad $(4,0.21,5,0.21,5,0),$ $\ \left(
+5,0\allowbreak .1,6,0.1,6,0\right) $\quad $\left( 6,0.031,7,0.031,7,0\right)
+.$
+
+\subsection{Multiple 3D expressions}
+
+\bigskip $\sin x+\cos y$\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special%
+{language "Scientific Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-5";xmax "5";ymin "-5";ymax "5";xviewmin "-5";xviewmax
+"5";yviewmin "-5";yviewmax "5";zviewmin "-10";zviewmax "10";phi 45;theta
+45;plottype 5;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "wireframe";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};var1name \TEXUX{$x$};var2name
+\TEXUX{$y$};function \TEXUX{$\sin x+\cos y$};linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";var1range "-5,5";var2range
+"-5,5";surfaceColor "[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle
+"Wire Frame";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh
+"Mesh";function \TEXUX{$x+y$};linestyle 1;pointstyle "point";lineAttributes
+"Solid";var1range "-5,5";var2range "-5,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Color
+Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh "Mesh";VCamFile
+'ITB8BW0O.xvz';valid_file "T";tempfilename
+'ITB8BW0Q.wmf';tempfile-properties "XPR";}}
+
+$x+y$
+
+\bigskip
+
+\subsection{Mixed 2D and 3D expressions}
+
+\section{Input Variations}
+
+\subsection{defined functions}
+
+Define this \ \bigskip $f(x)=e^{-x^{2}}$
+
+Define this $g(x)=f^{\prime }(x)$
+
+\bigskip
+
+Plot $g$\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.5in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-5";xmax "5";xviewmin "-5.0010000010002";xviewmax
+"5.0010000010002";yviewmin "-0.853688639720452";yviewmax "1";plottype
+4;axesFont "Times New Roman,12,0000000000,useDefault,normal";numpoints
+100;plotstyle "patch";axesstyle "normal";axestips FALSE;xis
+\TEXUX{x};var1name \TEXUX{$x$};function \TEXUX{$g$};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";function \TEXUX{$f$};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8BX0P.xvz';valid_file "T";tempfilename
+'ITB8BX0R.wmf';tempfile-properties "XPR";}} and then drag $f$ onto it
+
+\subsection{2D Item List}
+
+Set the view limits from 0 to 3 in x and y: list: \ $\left(
+1,1,2,1,2,2,1,2,1,1\right) $\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{%
+\special{language "Scientific Word";type "MAPLEPLOT";width 4.4996in;height
+3in;depth 0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute
+FALSE;lastEngine "MuPAD";xmin "0";xmax "3";xviewmin "0";xviewmax
+"3";yviewmin "0";yviewmax "3";viewset"XY";rangeset"X";plottype 4;axesFont
+"Times New Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$\left( 1,1,2,1,2,2,1,2,1,1\right) $};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";curveColor "[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8BX0Q.xvz';valid_file "T";tempfilename
+'ITB8BX0S.wmf';tempfile-properties "XPR";}}
+
+matrix:
+
+\bigskip $\left[ 
+\begin{array}{cc}
+1 & 1 \\ 
+2 & 1 \\ 
+2 & 2 \\ 
+1 & 2%
+\end{array}%
+\right] $\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "0";xmax "3";xviewmin "0";xviewmax "3";yviewmin "0";yviewmax
+"3";viewset"XY";rangeset"X";plottype 4;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$\left[
+\MATRIX{2,4}{c}\VR{,,c,,,}{,,c,,,}{,,,,,}\HR{,,,,}\CELL{1}\CELL{1}\CELL{2}%
+\CELL{1}\CELL{2}\CELL{2}\CELL{1}\CELL{2}\right] $};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";curveColor "[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8BZ0R.xvz';valid_file "T";tempfilename
+'ITB8BZ0T.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+Set axis scale to be equal here
+
+$\left( 1,0,\cos \frac{2\pi }{5},\sin \frac{2\pi }{5},\cos \frac{4\pi }{5}%
+,\sin \frac{4\pi }{5},\cos \frac{6\pi }{5},\sin \frac{6\pi }{5},\cos \frac{%
+8\pi }{5},\sin \frac{8\pi }{5},1,0\right) $\FRAME{dtbpFX}{4.4996in}{3in}{0pt%
+}{}{}{Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.4996in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";xviewmin
+"-0.809197896074437";xviewmax "1.00018090169944";yviewmin
+"-0.951246727598259";yviewmax "0.951246727598259";plottype 4;axesFont "Times
+New Roman,12,0000000000,useDefault,normal";constrained TRUE;numpoints
+100;plotstyle "patch";axesstyle "normal";axestips FALSE;xis
+\TEXUX{x};var1name \TEXUX{$x$};function \TEXUX{$\left( 1,0,\cos \frac{2\pi
+}{5},\sin \frac{2\pi }{5},\cos \frac{4\pi }{5},\sin \frac{4\pi }{5},\cos
+\frac{6\pi }{5},\sin \frac{6\pi }{5},\cos \frac{8\pi }{5},\sin \frac{8\pi
+}{5},1,0\right) $};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8BZ0S.xvz';valid_file "T";tempfilename
+'ITB8BZ0U.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\bigskip
+
+\subsection{piecewise-defined functions}
+
+Piecewise defined: $\ \left\{ 
+\begin{array}{ccc}
+x^{2}-1 & \text{if} & x<-1 \\ 
+10-10x^{2} & \text{if} & -1\leq x\leq 1 \\ 
+x^{2}-1 & \text{if} & 1<x%
+\end{array}%
+\right. $\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.5in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-5";xmax "5";xviewmin "-5.0010000010002";xviewmax
+"5.0010000010002";yviewmin "-0.002197327879071";yviewmax
+"24.0023999821351";plottype 4;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$\ \left\{
+\MATRIX{3,3}{c}\VR{,,c,,,}{,,c,,,}{,,c,,,}{,,,,,}\HR{,,,}\CELL{x^{2}-1}%
+\CELL{\text{if}}\CELL{x<-1}\CELL{10-10x^{2}}\CELL{\text{if}}\CELL{-1\leq
+x\leq 1}\CELL{x^{2}-1}\CELL{\text{if}}\CELL{1<x}\right. $};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8C20T.xvz';valid_file "T";tempfilename
+'ITB8C10V.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\bigskip Piecewise discontinuous: $\left\{ 
+\begin{array}{ccc}
+x^{2}-1 & \text{if} & x<-1 \\ 
+20-x^{2} & \text{if} & -1\leq x\leq 1 \\ 
+x^{2}-1 & \text{if} & 1<x%
+\end{array}%
+\right. $\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.5in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-5";xmax "5";xviewmin "-5.0010000010002";xviewmax
+"5.0010000010002";yviewmin "-0.002197327879071";yviewmax
+"24.0023999821351";plottype 4;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$\left\{
+\MATRIX{3,3}{c}\VR{,,c,,,}{,,c,,,}{,,c,,,}{,,,,,}\HR{,,,}\CELL{x^{2}-1}%
+\CELL{\text{if}}\CELL{x<-1}\CELL{20-x^{2}}\CELL{\text{if}}\CELL{-1\leq x\leq
+1}\CELL{x^{2}-1}\CELL{\text{if}}\CELL{1<x}\right. $};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8C20U.xvz';valid_file "T";tempfilename
+'ITB8C20W.wmf';tempfile-properties "XPR";}}
+
+\subsection{\protect\bigskip}
+
+\bigskip
+
+\subsection{discontinuous plots}
+
+Adjust for discontinuities on: $\ \dfrac{x+1}{x-1}$\FRAME{dtbpFX}{4.5in}{3in%
+}{0pt}{}{}{Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.5in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";xviewmin
+"-5.0010000010002";xviewmax "5.0010000010002";yviewmin
+"-4.38381953749931";yviewmax "5.58382218528931";plottype 4;axesFont "Times
+New Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$\ \dfrac{x+1}{x-1}$};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8C20V.xvz';valid_file "T";tempfilename
+'ITB8C20X.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+adjust plot for discontinuities off: $\dfrac{x+1}{x-1}$\FRAME{dtbpFX}{%
+4.4996in}{3in}{0pt}{}{}{Plot}{\special{language "Scientific Word";type
+"MAPLEPLOT";width 4.4996in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-5";xmax "5";xviewmin "-5.0010000010002";xviewmax
+"5.0010000010002";yviewmin "-3.50375000375076";yviewmax
+"34.0037500038008";plottype 4;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$\dfrac{x+1}{x-1}$};linecolor "black";linestyle
+1;discont FALSE;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";discont FALSE;VCamFile
+'ITB8C30W.xvz';valid_file "T";tempfilename
+'ITB8C30Y.wmf';tempfile-properties "XPR";}}
+
+\subsection{Functions}
+
+\subsubsection{special functions}
+
+2D rectangular Gamma: $\Gamma (x)$\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{%
+\special{language "Scientific Word";type "MAPLEPLOT";width 4.5in;height
+3in;depth 0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute
+FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";xviewmin
+"-5.0008999910002";xviewmax "5.0009999910002";yviewmin
+"-11.5100945114081";yviewmax "13.6031262095081";plottype 4;axesFont "Times
+New Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$\Gamma (x)$};linecolor "black";linestyle
+1;pointstyle "point";linethickness 1;lineAttributes "Solid";var1range
+"-5,5";num-x-gridlines 100;curveColor "[flat::RGB:0000000000]";curveStyle
+"Line";VCamFile 'ITB8C30X.xvz';valid_file "T";tempfilename
+'ITB8C30Z.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\bigskip $\left\lfloor x\right\rfloor $\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{%
+Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.5in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";xviewmin
+"-5.0008999810002";xviewmax "5.0008999810002";yviewmin
+"-5.00090000090018";yviewmax "4.00090000090018";plottype 4;axesFont "Times
+New Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$\left\lfloor x\right\rfloor $};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8C40Y.xvz';valid_file "T";tempfilename
+'ITB8C410.wmf';tempfile-properties "XPR";}}
+
+\subsubsection{trigonometric functions of degrees}
+
+Set plot limits from -360 to 360 $\ \ \ \sin 2x\unit{%
+%TCIMACRO{\U{b0}}%
+%BeginExpansion
+{{}^\circ}%
+%EndExpansion
+}+\cos 3x\unit{%
+%TCIMACRO{\U{b0}}%
+%BeginExpansion
+{{}^\circ}%
+%EndExpansion
+}$\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language "Scientific
+Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-360";xmax "360";xviewmin "-360.072000072014";xviewmax
+"360.072000072014";yviewmin "-2";yviewmax "2";plottype 4;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$\sin 2x\unit{\U{b0}}+\cos
+3x\unit{\U{b0}}$};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";var1range
+"-360,360";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";rangeset"X";VCamFile
+'ITB8C40Z.xvz';valid_file "T";tempfilename
+'ITB8C411.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\subsubsection{Plot Approximate Integral}
+
+The following \QTR{MenuDialog}{Middle Boxes} plot uses $0<x<3$ and 
+\QTR{MenuDialog}{Number of Boxes }is 10.
+
+\begin{quote}
+$\blacktriangleright $\quad \QTR{MenuDialog}{Calculus + Plot Approximate
+Integral}
+\end{quote}
+
+$x\sin x$\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "0";xmax "5";xviewmin "-0.0005000005001";xviewmax
+"5.0005000005001";yviewmin "-4.81510158736084";yviewmax
+"1.82014320468084";plottype 3;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};boxtype 4;numboxes 10;function \TEXUX{$x\sin x$};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";numboxes 10;approxIntBoxType "middle";approxIntShowInfo
+"NoInfo";var1range "0,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";fillColor
+"[flat::RGB:0x00ffcd99]";fillStyle "Solid";rangeset"X";VCamFile
+'ITB8C510.xvz';valid_file "T";tempfilename
+'ITB8C512.wmf';tempfile-properties "XPR";}}
+
+\section{Plot properties Tests}
+
+\subsection{plotting a grid}
+
+Add Grid and Axes Tips, background cyan $\ x$\FRAME{dtbpFX}{4.4996in}{3in}{%
+0pt}{}{}{Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.4996in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";xviewmin
+"-5.0010000010002";xviewmax "5.0010000010002";yviewmin
+"-5.0010000010002";yviewmax "5.0010000010002";plottype 4;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips TRUE;gridLines TRUE;backgroundColor
+"[flat::RGB:0x00ffff80]";xis \TEXUX{x};var1name \TEXUX{$x$};function
+\TEXUX{$x$};linecolor "black";linestyle 1;pointstyle "point";linethickness
+1;lineAttributes "Solid";var1range "-5,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8C511.xvz';valid_file "T";tempfilename
+'ITB8C513.wmf';tempfile-properties "XPR";}}
+
+\subsection{Colors}
+
+\subsubsection{Line Styles, Colors, labels}
+
+Solid $x$\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-5";xmax "5";xviewmin "-5.0010000010002";xviewmax
+"5.0010000010002";yviewmin "-7.0014000010002";yviewmax
+"7.0014000010002";plottype 4;plotticks 1;num-x-ticks 10;num-y-ticks
+8;labeloverrides 3;x-label "This is X";y-label "This is Y";axesFont "Times
+New Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$x$};linecolor "black";linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";var1range
+"-5,5";num-x-gridlines 100;curveColor "[flat::RGB:0000000000]";curveStyle
+"Line";function \TEXUX{$x+1$};linecolor "blue";linestyle 2;pointstyle
+"point";linethickness 1;lineAttributes "Dash";var1range
+"-5,5";num-x-gridlines 100;curveColor "[flat::RGB:0x00000080]";curveStyle
+"Line";function \TEXUX{$x+2$};linecolor "maroon";linestyle 3;pointstyle
+"point";linethickness 2;lineAttributes "Dots";var1range
+"-5,5";num-x-gridlines 100;curveColor "[flat::RGB:0x00800000]";curveStyle
+"Line";function \TEXUX{$x-1$};linecolor "green";linestyle 4;pointstyle
+"point";linethickness 3;lineAttributes "DotDash";var1range
+"-5,5";num-x-gridlines 100;curveColor "[flat::RGB:0x00008000]";curveStyle
+"Line";function \TEXUX{$x-2$};linecolor "yellow";linestyle 1;pointstyle
+"point";linethickness 3;lineAttributes "Solid";var1range
+"-5,5";num-x-gridlines 100;curveColor "[flat::RGB:0x00ffff80]";curveStyle
+"Line";function \TEXUX{$(4,1,3,-1,2,-2)$};linecolor "magenta";linestyle
+1;pointplot TRUE;pointstyle "circle";linethickness 1;lineAttributes
+"Solid";curveColor "[flat::RGB:0x00800080]";curveStyle "Point";function
+\TEXUX{$(-4,4,-3,5,-2,6)$};linecolor "yellow";linestyle 1;pointplot
+TRUE;pointstyle "box";linethickness 1;lineAttributes "Solid";curveColor
+"[flat::RGB:0x00ffff00]";curveStyle "Point";VCamFile
+'ITB8C612.xvz';valid_file "T";tempfilename
+'ITB8C614.wmf';tempfile-properties "XPR";}}
+
+Dashed, red $x+1$
+
+Dots, blue, medium $x+2$
+
+dashdot, green, thick $x-1$
+
+cyan, thick $x-2$
+
+points, circles, purple $(4,1,3,-1,2,-2)$
+
+points, boxes, lt green blue $(-4,4,-3,5,-2,6)$
+
+Xaxis label: This is X
+
+Yaxis label:\ This is Y
+
+X axis ticks:\ 10
+
+Y axis ticks:\ 8
+
+\subsubsection{Plot variables}
+
+plot this as 3d cylindrical $\ \ h(a,b)=a^{2}+b^{3}$\FRAME{dtbpFX}{4.5in}{3in%
+}{0pt}{}{}{Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.5in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-3.1416";xmax
+"3.1416";ymin "0";ymax "5";xviewmin "-134.869650556";xviewmax "125";yviewmin
+"-127.467412639";yviewmax "127.467412639";zviewmin "0";zviewmax "5";phi
+45;theta 45;plottype 14;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "patch";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{a};yis \TEXUX{b};var1name \TEXUX{$a$};var2name
+\TEXUX{$b$};function \TEXUX{$a^{2}+b^{3}$};linestyle 1;pointstyle
+"point";lineAttributes "Solid";coordinateSystem "cylindrical";var1range
+"-3.1416,3.1416";var2range "0,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Color
+Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh "Mesh";VCamFile
+'ITB8C713.xvz';valid_file "T";tempfilename
+'ITB8C715.wmf';tempfile-properties "XPR";}}
+
+swap variables\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-3.1416";xmax "3.1416";ymin "0";ymax "5";xviewmin
+"-56.0064941978";xviewmax "31.0064941985";yviewmin "-21.9816436104";yviewmax
+"30.0930421903";zviewmin "0";zviewmax "5";phi 26;theta 1;cameraDistance
+"1.44593";cameraOrientation "[0,0,0.133333]";cameraOrientationFixed
+TRUE;plottype 14;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "patch";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{b};yis \TEXUX{a};var1name \TEXUX{$b$};var2name
+\TEXUX{$a$};function \TEXUX{$a^{2}+b^{3}$};linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";coordinateSystem
+"cylindrical";var1range "-3.1416,3.1416";var2range "0,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Color
+Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh
+"Mesh";rangeset"XY";VCamFile 'ITB8C814.xvz';valid_file "T";tempfilename
+'ITB8C816.wmf';tempfile-properties "XPR";}}
+
+$h(a,b)$\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-5";xmax "5";ymin "-5";ymax "5";xviewmin "-5";xviewmax
+"5";yviewmin "-5";yviewmax "5";zviewmin "-125";zviewmax "150";phi 45;theta
+45;plottype 5;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "patch";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{a};yis \TEXUX{b};var1name \TEXUX{$a$};var2name
+\TEXUX{$b$};function \TEXUX{$h(a,b)$};linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";var1range "-5,5";var2range
+"-5,5";surfaceColor "[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle
+"Color Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh
+"Mesh";rangeset"XY";VCamFile 'ITB8C915.xvz';valid_file "T";tempfilename
+'ITB8C917.wmf';tempfile-properties "XPR";}}
+
+\qquad
+
+\subsection{Plot Layout}
+
+\subsubsection{Height/width}
+
+\subsubsection{Display attributes:}
+
+\paragraph{\qquad In frame}
+
+\paragraph{\qquad Plot only\qquad}
+
+\paragraph{\qquad Frame only}
+
+\paragraph{\qquad Iconified}
+
+\subsubsection{Placement}
+
+\paragraph{\qquad Inline}
+
+\paragraph{\qquad Displayed}
+
+\paragraph{\qquad Floating}
+
+\qquad \qquad Here
+
+\qquad \qquad Separate page
+
+\qquad \qquad Top of page
+
+\qquad \qquad Bottom of page
+
+\subsubsection{Axes scales}
+
+\paragraph{\qquad Log}
+
+Plot log scale and add caption below $5\left( 2^{x}\right) $\FRAME{dtbpFUX}{%
+4.4996in}{3in}{0pt}{\Qcb{this is log plot of $5(2^{x})$}}{\Qlb{logplot}}{Plot%
+}{\special{language "Scientific Word";type "MAPLEPLOT";width 4.4996in;height
+3in;depth 0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute
+FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";xviewmin
+"-5.0010000010002";xviewmax "5.0010000010002";yviewmin "0.15723";yviewmax
+"161.60";plottype 20;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";numpoints 100;plotstyle
+"patch";axesstyle "normal";axestips FALSE;xis \TEXUX{x};var1name
+\TEXUX{$x$};function \TEXUX{$5\left( 2^{x}\right) $};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8CA16.xvz';valid_file "T";tempfilename
+'ITB8CA18.wmf';tempfile-properties "XPR";}}
+
+\paragraph{\qquad Log-log}
+
+Plot loglog scale and add caption $5x^{2/3}$\FRAME{dtbpFUX}{4.4996in}{3in}{%
+0pt}{\Qcb{This is caption for loglog $5x^{\frac{2}{3}}$}}{\Qlb{loglog}}{%
+loglogplot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.4996in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "5E-6";xmax "5";xviewmin
+"4.9998E-6";xviewmax "4.9996";yviewmin "1.4081";yviewmax "14.557";plottype
+21;axesFont "Times New Roman,12,0000000000,useDefault,normal";numpoints
+100;plotstyle "patch";axesstyle "normal";axestips FALSE;xis
+\TEXUX{x};var1name \TEXUX{$x$};function \TEXUX{$5x^{2/3}$};linecolor
+"black";linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "5E-6,5";num-x-gridlines 100;curveColor
+"[flat::RGB:0000000000]";curveStyle "Line";VCamFile
+'ITB8CS17.xvz';valid_file "T";tempfilename
+'ITB8CS19.wmf';tempfile-properties "XPR";}}
+
+\subsubsection{3D Specific}
+
+\subsubsection{background colors for 3D plots}
+
+\bigskip
+
+\paragraph{3D Lighting}
+
+\paragraph{3D Surface Style}
+
+Defaults $\ x\sin x\cos y+x+y$\FRAME{dtbpFX}{4.5in}{3in}{0pt}{}{}{Plot}{%
+\special{language "Scientific Word";type "MAPLEPLOT";width 4.5in;height
+3in;depth 0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute
+FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";ymin "-5";ymax "5";xviewmin
+"-5";xviewmax "5";yviewmin "-5";yviewmax "5";zviewmin
+"-11.3600527772";zviewmax "13.0400884979";phi 45;theta 45;plottype
+5;axesFont "Times New Roman,12,0000000000,useDefault,normal";num-x-gridlines
+25;num-y-gridlines 25;plotstyle "patch";axesstyle "normal";axestips
+FALSE;plotshading "XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};var1name
+\TEXUX{$x$};var2name \TEXUX{$y$};function \TEXUX{$x\sin x\cos
+y+x+y$};linestyle 1;pointstyle "point";lineAttributes "Solid";var1range
+"-5,5";var2range "-5,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Color
+Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh "Mesh";VCamFile
+'ITB8CT18.xvz';valid_file "T";tempfilename
+'ITB8CT1A.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+X range: -10..10, y range -7..7, 50 points in each direction $\ x\sin x\cos
+y+x+y$\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-10";xmax "10";ymin "-7";ymax "7";xviewmin "-10";xviewmax
+"10";yviewmin "-7";yviewmax "7";zviewmin "-21.8113885306";zviewmax
+"22.2194305408";phi 45;theta 45;plottype 5;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "patch";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};var1name \TEXUX{$x$};var2name
+\TEXUX{$y$};function \TEXUX{$x\sin x\cos y+x+y$};linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";var1range "-10,10";var2range
+"-7,7";surfaceColor "[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle
+"Color Patch";num-x-gridlines 50;num-y-gridlines 50;surfaceMesh
+"Mesh";rangeset"XY";VCamFile 'ITB8CU19.xvz';valid_file "T";tempfilename
+'ITB8CU1B.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+Wireframe, contour, -200\TEXTsymbol{<}x\TEXTsymbol{<}200, -300 \TEXTsymbol{<}
+y \TEXTsymbol{<} 150, 100 points x, 70 points y $\ \ x\sin x\cos y+x+y$%
+\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language "Scientific
+Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-199";xmax "200";ymin "-300";ymax "150";xviewmin "-199";xviewmax
+"200";yviewmin "-300";yviewmax "150";zviewmin "-585.905853913";zviewmax
+"473.234373927";phi 45;theta 45;plottype 5;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "wireframe";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};var1name \TEXUX{$x$};var2name
+\TEXUX{$y$};function \TEXUX{$\ \ x\sin x\cos y+x+y$};linestyle 1;pointstyle
+"point";linethickness 1;lineAttributes "Solid";var1range
+"-199,200";var2range "-300,150";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Wire
+Frame";num-x-gridlines 100;num-y-gridlines 70;surfaceMesh
+"Contour";rangeset"XY";VCamFile 'ITB8CV1A.xvz';valid_file "T";tempfilename
+'ITB8CV1C.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+Directonal shading zhue $\ \ x\sin x\cos y+x+y$\FRAME{dtbpFX}{4.4996in}{3in}{%
+0pt}{}{}{Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.4996in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";ymin
+"-5";ymax "5";xviewmin "-5";xviewmax "5";yviewmin "-5";yviewmax "5";zviewmin
+"-11.3600527772";zviewmax "13.0400884979";phi 45;theta 45;plottype
+5;axesFont "Times New Roman,12,0000000000,useDefault,normal";num-x-gridlines
+25;num-y-gridlines 25;plotstyle "patch";axesstyle "normal";axestips
+FALSE;plotshading "ZHUE";lighting 0;xis \TEXUX{x};yis \TEXUX{y};var1name
+\TEXUX{$x$};var2name \TEXUX{$y$};function \TEXUX{$x\sin x\cos
+y+x+y$};linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";var2range "-5,5";surfaceColor
+"[rainbow:Z:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Color
+Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh "ULines";VCamFile
+'ITB8D21B.xvz';valid_file "T";tempfilename
+'ITB8D21D.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+Surface style point $\ x\sin x\cos y+x+y$\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{%
+}{}{Plot}{\special{language "Scientific Word";type "MAPLEPLOT";width
+4.4996in;height 3in;depth 0pt;display "USEDEF";plot_snapshots
+TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";ymin
+"-5";ymax "5";xviewmin "-5";xviewmax "5";yviewmin "-5";yviewmax "5";zviewmin
+"-11.3600527772";zviewmax "13.0400884979";phi 45;theta 45;plottype
+5;axesFont "Times New Roman,12,0000000000,useDefault,normal";num-x-gridlines
+25;num-y-gridlines 25;plotstyle "point";axesstyle "normal";axestips
+FALSE;plotshading "XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};var1name
+\TEXUX{$x$};var2name \TEXUX{$y$};function \TEXUX{$x\sin x\cos
+y+x+y$};linestyle 1;pointplot TRUE;pointstyle "point";linethickness
+1;lineAttributes "Solid";var1range "-5,5";var2range "-5,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle
+"Point";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh "Mesh";VCamFile
+'ITB8D41C.xvz';valid_file "T";tempfilename
+'ITB8D41E.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+Axis boxed $\ x\sin x\cos y+x+y$\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{%
+\special{language "Scientific Word";type "MAPLEPLOT";width 4.4996in;height
+3in;depth 0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute
+FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";ymin "-5";ymax "5";xviewmin
+"-5";xviewmax "5";yviewmin "-5";yviewmax "5";zviewmin
+"-11.3600527772";zviewmax "13.0400884979";phi 45;theta 45;plottype
+5;axesFont "Times New Roman,12,0000000000,useDefault,normal";num-x-gridlines
+25;num-y-gridlines 25;plotstyle "patch";axesstyle "boxed";axestips
+FALSE;plotshading "XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};var1name
+\TEXUX{$x$};var2name \TEXUX{$y$};function \TEXUX{$x\sin x\cos
+y+x+y$};linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";var2range "-5,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Color
+Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh "Mesh";VCamFile
+'ITB8D41D.xvz';valid_file "T";tempfilename
+'ITB8D41F.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+Axis Framed $x\sin x\cos y+x+y$\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{%
+\special{language "Scientific Word";type "MAPLEPLOT";width 4.4996in;height
+3in;depth 0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute
+FALSE;lastEngine "MuPAD";xmin "-5";xmax "5";ymin "-5";ymax "5";xviewmin
+"-5";xviewmax "5";yviewmin "-5";yviewmax "5";zviewmin
+"-11.3600527772";zviewmax "13.0400884979";phi 45;theta 45;plottype
+5;axesFont "Times New Roman,12,0000000000,useDefault,normal";num-x-gridlines
+25;num-y-gridlines 25;plotstyle "patch";axesstyle "frame";axestips
+FALSE;plotshading "XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};var1name
+\TEXUX{$x$};var2name \TEXUX{$y$};function \TEXUX{$x\sin x\cos
+y+x+y$};linestyle 1;pointstyle "point";lineAttributes "Solid";var1range
+"-5,5";var2range "-5,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Color
+Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh "Mesh";VCamFile
+'ITB8D51E.xvz';valid_file "T";tempfilename
+'ITB8D51G.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+\bigskip
+
+\bigskip
+
+Turn 62, tilt 67, background $\ x\sin x\cos y+x+y$\FRAME{dtbpFX}{4.4996in}{%
+3in}{0pt}{}{}{Plot}{\special{language "Scientific Word";type
+"MAPLEPLOT";width 4.4996in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-5";xmax "5";ymin "-5";ymax "5";xviewmin "-5";xviewmax "5";yviewmin
+"-5";yviewmax "5";zviewmin "-11.3600527772";zviewmax "13.0400884979";phi
+67;theta 62;plottype 5;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "patch";axesstyle "normal";axestips FALSE;backgroundColor
+"[flat::RGB:0x00ffff00]";plotshading "XYZ";lighting 0;xis \TEXUX{x};yis
+\TEXUX{y};var1name \TEXUX{$x$};var2name \TEXUX{$y$};function \TEXUX{$\ x\sin
+x\cos y+x+y$};linestyle 1;pointstyle "point";linethickness 1;lineAttributes
+"Solid";var1range "-5,5";var2range "-5,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Color
+Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh "Mesh";VCamFile
+'ITB8D61F.xvz';valid_file "T";tempfilename
+'ITB8D61H.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+Turn 60, tilt 16, view intervals -10\TEXTsymbol{<}x\TEXTsymbol{<}10 $x\sin
+x\cos y+x+y$\FRAME{dtbpFX}{4.4996in}{3in}{0pt}{}{}{Plot}{\special{language
+"Scientific Word";type "MAPLEPLOT";width 4.4996in;height 3in;depth
+0pt;display "USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine
+"MuPAD";xmin "-10";xmax "10";ymin "-5";ymax "5";xviewmin "-10";xviewmax
+"10";yviewmin "-5";yviewmax "5";zviewmin "-11.36005";zviewmax
+"13.04009";viewset"XYZ";rangeset"XYZ";phi 16;theta 59;plottype 5;axesFont
+"Times New Roman,12,0000000000,useDefault,normal";num-x-gridlines
+25;num-y-gridlines 25;plotstyle "patch";axesstyle "normal";axestips
+FALSE;plotshading "XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};var1name
+\TEXUX{$x$};var2name \TEXUX{$y$};function \TEXUX{$x\sin x\cos
+y+x+y$};linestyle 1;pointstyle "point";lineAttributes "Solid";var1range
+"-10,10";var2range "-5,5";surfaceColor
+"[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle "Color
+Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh "Mesh";VCamFile
+'ITB8D61G.xvz';valid_file "T";tempfilename
+'ITB8D61I.wmf';tempfile-properties "XPR";}}
+
+\bigskip
+
+Plot labels at 5,5,7 and 0,0,8 $\ x\sin x\cos y+x+y$\FRAME{dtbpFX}{4.4996in}{%
+3in}{0pt}{}{}{Plot}{\special{language "Scientific Word";type
+"MAPLEPLOT";width 4.4996in;height 3in;depth 0pt;display
+"USEDEF";plot_snapshots TRUE;mustRecompute FALSE;lastEngine "MuPAD";xmin
+"-5";xmax "5";ymin "-5";ymax "5";xviewmin "-5";xviewmax "5";yviewmin
+"-5";yviewmax "5";zviewmin "-11.3600527772";zviewmax "13.0400884979";phi
+80;theta 59;cameraDistance "1.08273";cameraOrientation
+"[0,0,0.0273222]";cameraOrientationFixed TRUE;plottype 5;axesFont "Times New
+Roman,12,0000000000,useDefault,normal";num-x-gridlines 25;num-y-gridlines
+25;plotstyle "patch";axesstyle "normal";axestips FALSE;plotshading
+"XYZ";lighting 0;xis \TEXUX{x};yis \TEXUX{y};var1name \TEXUX{$x$};var2name
+\TEXUX{$y$};function \TEXUX{$x\sin x\cos y+x+y$};linestyle 1;pointstyle
+"point";lineAttributes "Solid";var1range "-5,5";var2range
+"-5,5";surfaceColor "[linear:XYZ:RGB:0x00ff0000:0x000000ff]";surfaceStyle
+"Color Patch";num-x-gridlines 25;num-y-gridlines 25;surfaceMesh
+"Mesh";plotText "Some text at 5,5";plotTextFont "Times New
+Roman,12,0000000000,normal";plotTextAlign "center,baseline";plotTextPosition
+"[5,5,7]";plotText "Some text at the origin";plotTextFont "Times New
+Roman,12,0000000000,normal";plotTextAlign "center,baseline";plotTextPosition
+"[0,0,8]";VCamFile 'ITB8D71H.xvz';valid_file "T";tempfilename
+'ITB8D71J.wmf';tempfile-properties "XPR";}}
+
+\end{document}

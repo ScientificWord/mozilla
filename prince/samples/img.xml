@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<bindings id="imgbindings"
+   xmlns="http://www.mozilla.org/xbl"
+   xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+   xmlns:xbl="http://www.mozilla.org/xbl">
+
+<binding id="plotimg">
+  <content onclick="alert('Hi!');">
+	  <children/>
+  </content>
+</binding>
+</bindings>

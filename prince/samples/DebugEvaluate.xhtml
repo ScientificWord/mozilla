@@ -1,0 +1,805 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+
+
+<link href="TestExpressions.css" rel="stylesheet" type="text/css"/>
+<title>Test Evaluation</title>
+</head>
+<body >
+<p princeCmd="Evaluate" princeResult="CompareExact">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow>
+      <mn>3</mn>
+      <mo form="infix">&minus;</mo>
+      <mn>4</mn>
+    </mrow>
+  </math>
+  <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+    <mrow>
+      <mn>3</mn>
+      <mo form="infix">&minus;</mo>
+      <mn>4</mn>
+    </mrow>
+    <mo>=</mo>
+    <mrow>
+      <mn>-1</mn>
+    </mrow>
+  </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow>
+      <msup>
+        <mn>2</mn>
+        <mn>3</mn>
+      </msup>
+    </mrow>
+  </math>
+  <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+    <mrow>
+      <msup>
+        <mn>2</mn>
+        <mn>3</mn>
+      </msup>
+    </mrow>
+    <mo>=</mo>
+    <mrow>
+      <mn>8</mn>
+    </mrow>
+  </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow>
+      <msqrt>
+        <mn>2.36</mn>
+      </msqrt>
+    </mrow>
+  </math>
+  <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+    <mrow>
+      <msqrt>
+        <mn>2.36</mn>
+      </msqrt>
+    </mrow>
+    <mo>=</mo>
+    <mrow>
+      <mn>1.53623</mn>
+    </mrow>
+  </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow>
+      <msup>
+        <mrow>
+          <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+          <mn>0.16</mn>
+          <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+        </mrow>
+        <mrow>
+          <mo form="prefix">&minus;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+    </mrow>
+  </math>
+  <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+    <mrow>
+      <msup>
+        <mrow>
+          <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+          <mn>0.16</mn>
+          <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+        </mrow>
+        <mrow>
+          <mo form="prefix">&minus;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+     </mrow>
+     <mo>=</mo>
+     <mrow>
+      <mn>6.25</mn>
+    </mrow>
+  </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow>
+      <mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mo>
+      <mrow>
+        <mo form="prefix">&minus;</mo>
+        <mn>11.9</mn>
+      </mrow>
+      <mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mo>
+    </mrow>
+  </math>
+  <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+    <mrow>
+      <mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mo>
+      <mrow>
+        <mo form="prefix">&minus;</mo>
+        <mn>11.9</mn>
+      </mrow>
+      <mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mo>
+     </mrow>
+      <mo>=</mo>
+    <mrow>
+      <mn>11.9</mn>
+    </mrow>
+  </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftCeiling;</mo>
+       <mrow>
+         <mo form="prefix">&minus;</mo>
+         <mn>11.9</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightCeiling;</mo>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftCeiling;</mo>
+       <mrow>
+         <mo form="prefix">&minus;</mo>
+         <mn>11.9</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightCeiling;</mo>
+      </mrow>
+       <mo>=</mo>
+      <mrow>
+       <mn>-11</mn>
+     </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftFloor;</mo>
+       <mrow>
+         <mo form="prefix">&minus;</mo>
+         <mn>11.9</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightFloor;</mo>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftFloor;</mo>
+       <mrow>
+         <mo form="prefix">&minus;</mo>
+         <mn>11.9</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightFloor;</mo>
+      </mrow>
+       <mo>=</mo>
+      <mrow>
+       <mn>-12</mn>
+     </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mfrac>
+         <mn>2</mn>
+         <mn>3</mn>
+       </mfrac>
+       <mo>&InvisibleTimes;</mo>
+       <mfrac>
+         <mn>8</mn>
+         <mn>7</mn>
+       </mfrac>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <mfrac>
+         <mn>2</mn>
+         <mn>3</mn>
+       </mfrac>
+       <mo>&InvisibleTimes;</mo>
+       <mfrac>
+         <mn>8</mn>
+         <mn>7</mn>
+       </mfrac>
+      </mrow>
+       <mo>=</mo>
+      <mrow>
+       <mfrac>
+         <mn>16</mn>
+         <mn>21</mn>
+       </mfrac>
+     </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mn>2</mn>
+       <mo form="infix">&midast;</mo>
+       <mfrac>
+         <mn>7</mn>
+         <mn>8</mn>
+       </mfrac>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <mn>2</mn>
+       <mo form="infix">&midast;</mo>
+       <mfrac>
+         <mn>7</mn>
+         <mn>8</mn>
+       </mfrac>
+      </mrow>
+       <mo>=</mo>
+      <mrow>
+       <mfrac>
+         <mn>7</mn>
+         <mn>4</mn>
+        </mfrac>
+     </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mfrac>
+         <mn>71</mn>
+         <mn>8</mn>
+       </mfrac>
+       <mo form="infix">&sdot;</mo>
+       <mn>5</mn>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <mfrac>
+         <mn>71</mn>
+         <mn>8</mn>
+       </mfrac>
+       <mo form="infix">&sdot;</mo>
+       <mn>5</mn>
+     </mrow>
+     <mo>=</mo>
+     <mrow>
+       <mfrac>
+         <mn>355</mn>
+         <mn>8</mn>
+       </mfrac>
+     </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mi>&pi;</mi>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mi>&pi;</mi>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+     </mrow>
+     <mo>=</mo>
+     <mrow>
+       <mn>0</mn>
+     </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <msup>
+         <mi mathcolor="gray">sin</mi>
+         <mn>3</mn>
+       </msup>
+       <mo>&ApplyFunction;</mo>
+       <mfrac>
+         <mi>&pi;</mi>
+         <mn>4</mn>
+       </mfrac>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <msup>
+         <mi mathcolor="gray">sin</mi>
+         <mn>3</mn>
+       </msup>
+       <mo>&ApplyFunction;</mo>
+       <mfrac>
+         <mi>&pi;</mi>
+         <mn>4</mn>
+       </mfrac>
+     </mrow>
+     <mo>=</mo>
+     <mrow>
+       <mfrac>
+         <mn>1</mn>
+         <mn>4</mn>
+       </mfrac>
+       <msqrt>
+         <mn>2</mn>
+       </msqrt>
+     </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <msup>
+         <mi mathcolor="gray">sin</mi>
+         <mrow>
+           <mo form="prefix">&minus;</mo>
+           <mn>1</mn>
+         </mrow>
+       </msup>
+       <mo>&ApplyFunction;</mo>
+       <mfrac>
+         <mi>&pi;</mi>
+         <mn>4</mn>
+       </mfrac>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <msup>
+         <mi mathcolor="gray">sin</mi>
+         <mrow>
+           <mo form="prefix">&minus;</mo>
+           <mn>1</mn>
+         </mrow>
+       </msup>
+       <mo>&ApplyFunction;</mo>
+       <mfrac>
+         <mi>&pi;</mi>
+         <mn>4</mn>
+       </mfrac>
+     </mrow>
+   <mo>=</mo>
+  <mrow>
+    <mi mathcolor="gray">arcsin</mi>
+    <mo>&ApplyFunction;</mo>
+    <mrow>
+      <mfrac>
+        <mn>1</mn>
+        <mn>4</mn>
+      </mfrac>
+      <mo>&InvisibleTimes;</mo>
+      <mi>&pi;</mi>
+    </mrow>
+  </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <munderover>
+         <mo form="prefix" movablelimits="true" largeop="true">&sum;</mo>
+         <mrow>
+           <mi>i</mi>
+           <mo form="infix">=</mo>
+           <mn>1</mn>
+         </mrow>
+         <mn>9</mn>
+       </munderover>
+       <mfrac>
+         <mn>1</mn>
+         <mrow>
+           <mn>1</mn>
+           <mo form="infix">+</mo>
+           <msup>
+             <mi>i</mi>
+             <mn>2</mn>
+           </msup>
+         </mrow>
+       </mfrac>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <munderover>
+         <mo form="prefix" movablelimits="true" largeop="true">&sum;</mo>
+         <mrow>
+           <mi>i</mi>
+           <mo form="infix">=</mo>
+           <mn>1</mn>
+         </mrow>
+         <mn>9</mn>
+       </munderover>
+       <mfrac>
+         <mn>1</mn>
+         <mrow>
+           <mn>1</mn>
+           <mo form="infix">+</mo>
+           <msup>
+             <mi>i</mi>
+             <mn>2</mn>
+           </msup>
+         </mrow>
+       </mfrac>
+     </mrow>
+   <mo>=</mo>
+  <mrow>
+    <mfrac>
+      <mn>16291677</mn>
+      <mn>16762850</mn>
+    </mfrac>
+  </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mfrac>
+         <mrow>
+           <mi>&Gamma;</mi>
+           <mo>&ApplyFunction;</mo>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+             <mfrac>
+               <mn>5</mn>
+               <mn>3</mn>
+             </mfrac>
+             <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+           </mrow>
+         </mrow>
+         <mrow>
+           <mi>&Gamma;</mi>
+           <mo>&ApplyFunction;</mo>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+             <mfrac>
+               <mn>1</mn>
+               <mn>2</mn>
+             </mfrac>
+             <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+           </mrow>
+         </mrow>
+       </mfrac>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <mfrac>
+         <mrow>
+           <mi>&Gamma;</mi>
+           <mo>&ApplyFunction;</mo>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+             <mfrac>
+               <mn>5</mn>
+               <mn>3</mn>
+             </mfrac>
+             <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+           </mrow>
+         </mrow>
+         <mrow>
+           <mi>&Gamma;</mi>
+           <mo>&ApplyFunction;</mo>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+             <mfrac>
+               <mn>1</mn>
+               <mn>2</mn>
+             </mfrac>
+             <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+           </mrow>
+         </mrow>
+       </mfrac>
+     </mrow>
+   <mo>=</mo>
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mn>2</mn>
+        <mo>&InvisibleTimes;</mo>
+        <mi fontstyle="upright">&Gamma;</mi>
+        <mo>&ApplyFunction;</mo>
+        <mfenced open="(" close=")">
+          <mfrac>
+            <mn>2</mn>
+            <mn>3</mn>
+          </mfrac>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <mn>3</mn>
+        <mo>&ApplyFunction;</mo>
+        <msqrt>
+          <mi>&pi;</mi>
+        </msqrt>
+      </mrow>
+    </mfrac>
+  </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow>
+      <mn>50</mn>
+      <mo form="postfix">!</mo>
+    </mrow>
+  </math>
+  <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+    <mrow>
+      <mn>50</mn>
+      <mo form="postfix">!</mo>
+    </mrow>
+  <mo>=</mo>
+    <mrow>
+      <mn>30414093201713378043612608166064768844377641568960512000000000000</mn>
+    </mrow>
+  </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <msup>
+         <mn>2</mn>
+         <mn>1234</mn>
+       </msup>
+       <mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mo>
+       <mn>3</mn>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <msup>
+         <mn>2</mn>
+         <mn>1234</mn>
+       </msup>
+       <mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mo>
+       <mn>3</mn>
+     </mrow>
+   <mo>=</mo>
+  <mrow>
+    <mn>1</mn>
+  </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mrow>
+         <msup>
+           <mi>x</mi>
+           <mn>12</mn>
+         </msup>
+         <mo form="infix">+</mo>
+         <mn>1</mn>
+       </mrow>
+       <mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mo>
+       <mrow>
+         <msup>
+           <mi>x</mi>
+           <mn>2</mn>
+         </msup>
+         <mo form="infix">+</mo>
+         <mn>1</mn>
+       </mrow>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <mrow>
+         <msup>
+           <mi>x</mi>
+           <mn>12</mn>
+         </msup>
+         <mo form="infix">+</mo>
+         <mn>1</mn>
+       </mrow>
+       <mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mo>
+       <mrow>
+         <msup>
+           <mi>x</mi>
+           <mn>2</mn>
+         </msup>
+         <mo form="infix">+</mo>
+         <mn>1</mn>
+       </mrow>
+     </mrow>
+   <mo>=</mo>
+  <mrow>
+    <mn>2</mn>
+  </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <msup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+           <mrow>
+             <mn>33</mn>
+             <mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mo>
+             <mn>9</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+         </mrow>
+         <mn>2</mn>
+       </msup>
+       <mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mo>
+       <mn>5</mn>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <msup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+           <mrow>
+             <mn>33</mn>
+             <mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mo>
+             <mn>9</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+         </mrow>
+         <mn>2</mn>
+       </msup>
+       <mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mo>
+       <mn>5</mn>
+     </mrow>
+   <mo>=</mo>
+  <mrow>
+    <mn>1</mn>
+  </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mi>&zeta;</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mn>12</mn>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <mi>&zeta;</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mn>12</mn>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+     </mrow>
+   <mo>=</mo>
+  <mrow>
+    <mfrac>
+      <mn>691</mn>
+      <mn>638512875</mn>
+    </mfrac>
+    <mo>&it;</mo>
+    <msup>
+      <mi>&pi;</mi>
+      <mn>12</mn>
+    </msup>
+  </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="true">(</mo>
+       <mfrac linethickness="0">
+         <mn>12</mn>
+         <mn>4</mn>
+       </mfrac>
+       <mo form="postfix" fence="true" stretchy="true">)</mo>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="true">(</mo>
+       <mfrac linethickness="0">
+         <mn>12</mn>
+         <mn>4</mn>
+       </mfrac>
+       <mo form="postfix" fence="true" stretchy="true">)</mo>
+     </mrow>
+     <mo>=</mo>
+     <mrow>
+       <mn>495</mn>
+     </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="true">(</mo>
+       <mfrac linethickness="0">
+         <mi>p</mi>
+         <mi>q</mi>
+       </mfrac>
+       <mo form="postfix" fence="true" stretchy="true">)</mo>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="true">(</mo>
+       <mfrac linethickness="0">
+         <mi>p</mi>
+         <mi>q</mi>
+       </mfrac>
+       <mo form="postfix" fence="true" stretchy="true">)</mo>
+     </mrow>
+     <mo>=</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="true">(</mo>
+       <mfrac linethickness="0">
+         <mi>p</mi>
+         <mi>q</mi>
+       </mfrac>
+       <mo form="postfix" fence="true" stretchy="true">)</mo>
+     </mrow>
+   </math>
+</p>
+<p princeCmd="Evaluate" princeResult="CompareExact">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo mathcolor="gray" form="prefix">gcd</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mrow>
+           <mn>35</mn>
+           <mo form="infix">,</mo>
+           <mn>25</mn>
+           <mo form="infix">,</mo>
+           <mn>65</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+   <math xmlns="http://www.w3.org/1998/Math/MathML" mathbackground="palegreen">
+     <mrow>
+       <mo mathcolor="gray" form="prefix">gcd</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mrow>
+           <mn>35</mn>
+           <mo form="infix">,</mo>
+           <mn>25</mn>
+           <mo form="infix">,</mo>
+           <mn>65</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+     </mrow>
+     <mo>=</mo>
+     <mrow>
+       <mn>5</mn>
+     </mrow>
+   </math>
+</p>
+</body>
+
+</html>

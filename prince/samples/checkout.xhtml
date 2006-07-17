@@ -1,0 +1,493 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<!-- The next lines of text are copied from the file htmlout.cfg, and can be modified there -->
+<style type="text/css">
+.displayed {text-align: center}
+.displayed { display: block !
+important}
+span.leadin {float: left}
+span.vspace {vertical-align: top}
+span.rule {display: inline; background-color: black}
+span.inline-math-graphics {white-space: nowrap}
+hr.pagebreak {color: green}
+table {border-collapse: collapse; border-color: black}
+table td {border-color: black}
+.inlineTable {display: inline-table}
+</style>
+<!-- End of lines from htmlout.cfg -->
+
+
+<link href="checkout.css" rel="stylesheet" type="text/css"/>
+<meta name="GENERATOR" content="Scientific Word"/>
+<title>checkout.xhtml</title>
+</head>
+<body >
+<h1 class="section">Integrating Term by Term</h1>
+<div class="theorem">
+   <span class="leadin">Theorem</span><p class="theorem-FirstPara">
+      Consider the power series
+      <math xmlns="http://www.w3.org/1998/Math/MathML" mode="display" display="block">
+     <mrow>
+       <mrow>
+         <mrow>
+           <mi>f</mi>
+           <mo>&ApplyFunction;</mo>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="false">(</mo>
+             <mi>z</mi>
+             <mo form="postfix" fence="true" stretchy="false">)</mo>
+           </mrow>
+         </mrow>
+         <mo form="infix">=</mo>
+         <mrow>
+           <munderover>
+             <mo form="prefix" movablelimits="true" largeop="true">&sum;</mo>
+             <mrow>
+               <mi>n</mi>
+               <mo form="infix">=</mo>
+               <mn>0</mn>
+             </mrow>
+             <mi>&infin;</mi>
+           </munderover>
+           <mrow>
+             <msub>
+               <mi>a</mi>
+               <mi>n</mi>
+             </msub>
+             <mo>&InvisibleTimes;</mo>
+             <msup>
+               <mi>z</mi>
+               <mi>n</mi>
+             </msup>
+           </mrow>
+         </mrow>
+       </mrow>
+       <mtext mathcolor="black">,&ensp;</mtext>
+       <mrow>
+         <mrow>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mo>
+             <mi>z</mi>
+             <mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mo>
+           </mrow>
+           <mo form="infix">&lt;</mo>
+           <mi>R</mi>
+         </mrow>
+         <mo>&InvisibleComma;</mo>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mi>R</mi>
+             <mo form="infix">&ne;</mo>
+             <mn>0</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+   </p>
+   <p class="theorem">
+      Let
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>C</mi>
+     </mrow>
+   </math>
+      be a simple piecewise smooth curve which lies inside the circle of
+      convergence. Then we can <strong>integrate the power series term by
+      term:</strong>
+      <math xmlns="http://www.w3.org/1998/Math/MathML" mode="display" display="block">
+     <mrow id="one">
+       <mrow>
+         <msub>
+           <mo form="prefix" largeop="true">&int;</mo>
+           <mi>C</mi>
+         </msub>
+         <mrow>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+             <mrow>
+               <munderover>
+                 <mo form="prefix" movablelimits="true" largeop="true">&sum;</mo>
+                 <mrow>
+                   <mi>n</mi>
+                   <mo form="infix">=</mo>
+                   <mn>0</mn>
+                 </mrow>
+                 <mi>&infin;</mi>
+               </munderover>
+               <mrow>
+                 <msub>
+                   <mi>a</mi>
+                   <mi>n</mi>
+                 </msub>
+                 <mo>&InvisibleTimes;</mo>
+                 <msup>
+                   <mi>z</mi>
+                   <mi>n</mi>
+                 </msup>
+               </mrow>
+             </mrow>
+             <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+           </mrow>
+           <mo>&InvisibleTimes;</mo>
+           <mrow>
+             <mo form="prefix">&dd;</mo>
+             <mi>z</mi>
+           </mrow>
+         </mrow>
+       </mrow>
+       <mo form="infix">=</mo>
+       <mrow>
+         <munderover>
+           <mo form="prefix" movablelimits="true" largeop="true">&sum;</mo>
+           <mrow>
+             <mi>n</mi>
+             <mo form="infix">=</mo>
+             <mn>0</mn>
+           </mrow>
+           <mi>&infin;</mi>
+         </munderover>
+         <mrow>
+           <msub>
+             <mi>a</mi>
+             <mi>n</mi>
+           </msub>
+           <mo>&InvisibleTimes;</mo>
+           <mrow>
+             <msub>
+               <mo form="prefix" largeop="true">&int;</mo>
+               <mi>C</mi>
+             </msub>
+             <mrow>
+               <msup>
+                 <mi>z</mi>
+                 <mi>n</mi>
+               </msup>
+               <mo>&InvisibleTimes;</mo>
+               <mrow>
+                 <mo form="prefix">&dd;</mo>
+                 <mi>z</mi>
+               </mrow>
+             </mrow>
+           </mrow>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+   </p>
+</div>
+<div class="proof">
+   <span class="leadin">Proof</span><p class="proof-FirstPara">
+      The function
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mi>z</mi>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+      defined by the power series is continuous on
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>C</mi>
+     </mrow>
+   </math>,
+      so the integrals in (<span class="ref">one</span>) are well-defined. We need
+      to show that
+   </p>
+   <p class="proof">
+      <math xmlns="http://www.w3.org/1998/Math/MathML" mode="display" display="block">
+     <mrow id="two">
+       <mrow>
+         <munder>
+           <mo mathcolor="gray" form="prefix" movablelimits="true">lim</mo>
+           <mrow>
+             <mi>n</mi>
+             <mo form="infix">&rarr;</mo>
+             <mi>&infin;</mi>
+           </mrow>
+         </munder>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mo>
+           <mrow>
+             <msub>
+               <mo form="prefix" largeop="true">&int;</mo>
+               <mi>C</mi>
+             </msub>
+             <mrow>
+               <mrow>
+                 <mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mo>
+                 <mrow>
+                   <mrow>
+                     <mi>f</mi>
+                     <mo>&ApplyFunction;</mo>
+                     <mrow>
+                       <mo form="prefix" fence="true" stretchy="false">(</mo>
+                       <mi>z</mi>
+                       <mo form="postfix" fence="true" stretchy="false">)</mo>
+                     </mrow>
+                   </mrow>
+                   <mo form="infix">&minus;</mo>
+                   <mrow>
+                     <munderover>
+                       <mo form="prefix" movablelimits="true" largeop="true">&sum;</mo>
+                       <mrow>
+                         <mi>k</mi>
+                         <mo form="infix">=</mo>
+                         <mn>0</mn>
+                       </mrow>
+                       <mi>n</mi>
+                     </munderover>
+                     <mrow>
+                       <msub>
+                         <mi>a</mi>
+                         <mi>k</mi>
+                       </msub>
+                       <mo>&InvisibleTimes;</mo>
+                       <msup>
+                         <mi>z</mi>
+                         <mi>k</mi>
+                       </msup>
+                     </mrow>
+                   </mrow>
+                 </mrow>
+                 <mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mo>
+               </mrow>
+               <mo>&InvisibleTimes;</mo>
+               <mrow>
+                 <mo form="prefix">&dd;</mo>
+                 <mi>z</mi>
+               </mrow>
+             </mrow>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mo>
+         </mrow>
+       </mrow>
+       <mo form="infix">=</mo>
+       <mn>0</mn>
+     </mrow>
+   </math>
+   </p>
+   <p class="proof">
+      Since
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>C</mi>
+     </mrow>
+   </math>
+      lies inside the circle of convergence, the series converges uniformly on
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>C</mi>
+     </mrow>
+   </math>
+      to
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mi>z</mi>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>.
+      For any
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>&epsi;</mi>
+     </mrow>
+   </math>,
+      there is an
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>N</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mi>&epsi;</mi>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+      so that, <span class="it">for all</span>
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>z</mi>
+     </mrow>
+   </math>
+      <span class="it">on</span>
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>C</mi>
+     </mrow>
+   </math>,
+      <math xmlns="http://www.w3.org/1998/Math/MathML" mode="display" display="block">
+     <mrow>
+       <mrow>
+         <mi>n</mi>
+         <mo form="infix">&ge;</mo>
+         <mrow>
+           <mi>N</mi>
+           <mo>&ApplyFunction;</mo>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="false">(</mo>
+             <mi>&epsi;</mi>
+             <mo form="postfix" fence="true" stretchy="false">)</mo>
+           </mrow>
+         </mrow>
+       </mrow>
+       <mo form="infix">&rArr;</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mo>
+           <mrow>
+             <mrow>
+               <mi>f</mi>
+               <mo>&ApplyFunction;</mo>
+               <mrow>
+                 <mo form="prefix" fence="true" stretchy="false">(</mo>
+                 <mi>z</mi>
+                 <mo form="postfix" fence="true" stretchy="false">)</mo>
+               </mrow>
+             </mrow>
+             <mo form="infix">&minus;</mo>
+             <mrow>
+               <munderover>
+                 <mo form="prefix" movablelimits="true" largeop="true">&sum;</mo>
+                 <mrow>
+                   <mi>k</mi>
+                   <mo form="infix">=</mo>
+                   <mn>0</mn>
+                 </mrow>
+                 <mi>n</mi>
+               </munderover>
+               <mrow>
+                 <msub>
+                   <mi>a</mi>
+                   <mi>k</mi>
+                 </msub>
+                 <mo>&InvisibleTimes;</mo>
+                 <msup>
+                   <mi>z</mi>
+                   <mi>k</mi>
+                 </msup>
+               </mrow>
+             </mrow>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mo>
+         </mrow>
+         <mo form="infix">&lt;</mo>
+         <mi>&epsi;</mi>
+       </mrow>
+     </mrow>
+   </math>
+   </p>
+   <p class="proof">
+      By the triangle inequality for integrals and the above inequalities,
+      <span class="it">for</span>
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mrow>
+         <mi>n</mi>
+         <mo form="infix">&ge;</mo>
+         <mi>N</mi>
+       </mrow>
+       <mtext>,</mtext>
+     </mrow>
+   </math>
+      <math xmlns="http://www.w3.org/1998/Math/MathML" mode="display" display="block">
+     <mrow>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mo>
+         <mrow>
+           <msub>
+             <mo form="prefix" largeop="true">&int;</mo>
+             <mi>C</mi>
+           </msub>
+           <mrow>
+             <mrow>
+               <mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mo>
+               <mrow>
+                 <mrow>
+                   <mi>f</mi>
+                   <mo>&ApplyFunction;</mo>
+                   <mrow>
+                     <mo form="prefix" fence="true" stretchy="false">(</mo>
+                     <mi>z</mi>
+                     <mo form="postfix" fence="true" stretchy="false">)</mo>
+                   </mrow>
+                 </mrow>
+                 <mo form="infix">&minus;</mo>
+                 <mrow>
+                   <munderover>
+                     <mo form="prefix" movablelimits="true" largeop="true">&sum;</mo>
+                     <mrow>
+                       <mi>k</mi>
+                       <mo form="infix">=</mo>
+                       <mn>0</mn>
+                     </mrow>
+                     <mi>n</mi>
+                   </munderover>
+                   <mrow>
+                     <msub>
+                       <mi>a</mi>
+                       <mi>k</mi>
+                     </msub>
+                     <mo>&InvisibleTimes;</mo>
+                     <msup>
+                       <mi>z</mi>
+                       <mi>k</mi>
+                     </msup>
+                   </mrow>
+                 </mrow>
+               </mrow>
+               <mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mo>
+             </mrow>
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mo form="prefix">&dd;</mo>
+               <mi>z</mi>
+             </mrow>
+           </mrow>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mo>
+       </mrow>
+       <mo form="infix">&le;</mo>
+       <mrow>
+         <mi>&epsi;</mi>
+         <mo form="infix">&sdot;</mo>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mtext mathcolor="black">length&ensp;of</mtext>
+           <mspace width="thickmathspace" />
+           <mi>C</mi>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+   </p>
+   <p class="proof">
+      Since
+      <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>&epsi;</mi>
+     </mrow>
+   </math>
+      is arbitrary, the limit in (<span class="ref">two</span>) is zero.
+   </p></div>
+</body>
+
+</html>

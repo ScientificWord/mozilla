@@ -1,0 +1,82 @@
+# In the samples directory, there are two kinds of .xhtml files: hand constructed 
+# files (e.g., DebugEvaluate) and files exported from ScientificWorkplace.
+# Most of the test files start as .tex source and are created/edited
+# using ScientificWorkplace. They are exported (File/Export) creating
+# a .xhtml file. The .xhtml files are renamed (by hand) to .xml.
+# This makefile runs the SWP2Mozilla.pl perl script to strip the mml:
+# and add the css headers. The result of running the perl script is
+# a .xhtml file usable by Prince.
+#
+# To add (or modify) a test file:
+#   0. Create/modify .tex file 
+#   1. Export Document (export settings: export math as MathML)
+#   2. Rename <file>.xhtml to <file>.xml
+#   3. For new files, add the file name to the SAMPLES list in this file
+#   4. Run make in  Prince/mozilla/obj-Prince/Prince/samples 
+#
+DEPTH		= ../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+%.xhtml: %.xml
+	echo Building $*.xhtml
+	@$(PERL) $(srcdir)/SWP2Mozilla.pl < $(_VPATH_SRCS) > $*.xhtml
+
+SAMPLES	:= \
+			$(srcdir)/DebugEvaluate.xhtml \
+			$(srcdir)/ForPrinceImport.xhtml \
+			$(srcdir)/shell.xhtml \
+			$(srcdir)/TestFancy.xhtml	\
+			$(srcdir)/img.xhtml	\
+			$(srcdir)/img.xml	\
+			$(srcdir)/TestPlotsWithImages.xhtml \
+			$(srcdir)/TestPlotsExtended.xhtml \
+			$(srcdir)/TestPlotsAnimated.xhtml \
+            $(wildcard $(srcdir)/TestPlot*.png) \
+			$(srcdir)/simpledocbook.xhtml \
+			$(wildcard) $(srcdir)/*.jvx \
+			$(wildcard) $(srcdir)/*.jvd \
+			$(wildcard) $(srcdir)/*.jpg \
+			$(wildcard $(srcdir)/*.css) \
+			$(wildcard $(srcdir)/*.gif) \
+			$(NULL)
+
+SWP_SAMPLES	:= \
+			TestComputation.xhtml \
+			TestCalculus.xhtml \
+			TestDefines.xhtml \
+			TestEngineFunctions.xhtml \
+			TestEnginePrefs.xhtml \
+			TestEvaluate.xhtml \
+			TestExternalFunctions.xhtml \
+			TestMatrix.xhtml \
+			TestNames.xhtml \
+			TestPolynomials.xhtml \
+			TestPowerSeries.xhtml \
+			TestODE.xhtml \
+			TestRewrite.xhtml \
+			TestSimplex.xhtml \
+			TestSimplifyExpand.xhtml \
+			TestSolve.xhtml \
+			TestStatistics.xhtml \
+			TestTransforms.xhtml \
+			TestUnits.xhtml \
+			TestUserPrefs.xhtml \
+			TestVectorCalculus.xhtml \
+			$(NULL)
+
+MUPAD_SAMPLES	:= $(srcdir)/myfuncs.mu
+
+GRAPHICS_SAMPLES  := $(wildcard $(srcdir)/graphics/TestPlot*.png)
+
+include $(topsrcdir)/config/rules.mk
+
+libs::	$(SAMPLES) $(SWP_SAMPLES) $(MUPAD_SAMPLES)
+	$(INSTALL) $(SAMPLES) $(DIST)/bin/samples
+	$(INSTALL) $(SWP_SAMPLES) $(DIST)/bin/samples
+	$(INSTALL) $(MUPAD_SAMPLES) $(DIST)/bin
+	$(INSTALL) $(GRAPHICS_SAMPLES) $(DIST)/bin/samples/graphics
+

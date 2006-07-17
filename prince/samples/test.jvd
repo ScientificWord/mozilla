@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE jv-disp SYSTEM "http://www.javaview.de/rsrc/jv-disp.dtd">
+<jv-disp>
+<meta generator="xvc2jvx vers 1.5"/>
+<meta date="Mon Feb 27 10:17:06 2006"/>
+<meta dtd="1.04.000"/>
+<version></version>
+<title></title>
+<authors>
+  <author>
+   <firstname></firstname>
+   <lastname></lastname>
+   <affiliation>
+     <organization></organization>
+     <address>
+       <line></line>
+     </address>
+   </affiliation>
+   <email></email>
+   <url></url>
+  </author>
+</authors>
+<description>
+  <abstract></abstract>
+</description>
+<displays>
+<display antiAlias="hide" border="hide" depthcue="hide" sorting="show">
+<axes autoHashing="show" autoBounds="hide" visible="hide" dim="3" type="center">
+<ruler visible="show" label="show" name="x" numbers="show" ticksMajor="show" ticksMinor="show">
+<minValue>-23.6322</minValue>
+<maxValue>23.6506</maxValue>
+<color>0 0 0</color>
+<thickness>1</thickness>
+</ruler>
+<ruler visible="show" label="show" name="y" numbers="show" ticksMajor="show" ticksMinor="show">
+<minValue>-17.9933</minValue>
+<maxValue>25.9977</maxValue>
+<color>0 0 0</color>
+<thickness>1</thickness>
+</ruler>
+<ruler visible="show" label="show" name="z" numbers="show" ticksMajor="show" ticksMinor="show">
+<minValue>-12.989</minValue>
+<maxValue>12.9933</maxValue>
+<color>0 0 0</color>
+<thickness>1</thickness>
+</ruler>
+</axes>
+<bndbox visible="hide">
+<color>0 0 0</color>
+<thickness>1</thickness>
+</bndbox>
+<boxRatio visible="show">1 1.07483 1.21321</boxRatio>
+<clipRange visible="show" autoBounds="hide">
+<range type="X">-23.6322 23.6506</range>
+<range type="Y">-17.9933 25.9977</range>
+<range type="Z">-12.989 12.9933</range>
+</clipRange>
+<cameras select="Perspective">
+<camera projection="Perspective">
+<position>-38.4622 -52.189 13.4138</position>
+<interest>0.0092 4.0022 0.00215</interest>
+<fieldOfView>0.174977</fieldOfView>
+</camera>
+</cameras>
+<lights lightingModel="Light">
+<ambient><color>255 255 255</color></ambient>
+<light type="ambient">
+<color>255 255 255</color>
+<intensity>0.125</intensity>
+</light>
+<light type="point">
+<position>118.216 135.975 -103.927</position>
+<interest>0.0092 4.0022 0.00215</interest>
+<color>255 255 255</color>
+<intensity>0.4</intensity>
+<exponent>50</exponent>
+</light>
+<light type="point">
+<position>-118.198 -127.971 103.931</position>
+<interest>0.0092 4.0022 0.00215</interest>
+<color>255 255 255</color>
+<intensity>0.5</intensity>
+<exponent>50</exponent>
+</light>
+<light type="point">
+<position>-118.198 135.975 -103.927</position>
+<interest>0.0092 4.0022 0.00215</interest>
+<color>255 255 255</color>
+<intensity>0.1</intensity>
+<exponent>50</exponent>
+</light>
+<light type="point">
+<position>118.216 -127.971 103.931</position>
+<interest>0.0092 4.0022 0.00215</interest>
+<color>255 255 255</color>
+<intensity>0.125</intensity>
+<exponent>50</exponent>
+</light>
+<light type="point">
+<position>118.216 -127.971 -103.927</position>
+<interest>0.0092 4.0022 0.00215</interest>
+<color>255 255 255</color>
+<intensity>0.1</intensity>
+<exponent>50</exponent>
+</light>
+<light type="point">
+<position>-118.198 135.975 103.931</position>
+<interest>0.0092 4.0022 0.00215</interest>
+<color>255 255 255</color>
+<intensity>0.125</intensity>
+<exponent>50</exponent>
+</light>
+</lights>
+<background>
+<color>255 255 255</color>
+</background>
+</display>
+</displays>
+</jv-disp>

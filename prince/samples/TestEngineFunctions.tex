@@ -1,0 +1,95 @@
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amsfonts}
+
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2643}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{Created=Wednesday, January 28, 2004 20:22:52}
+%TCIDATA{LastRevised=Friday, November 12, 2004 15:52:07}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{<META NAME="Title" CONTENT="Test Engine Functions">}
+%TCIDATA{<META NAME="DocumentShell" CONTENT="Standard LaTeX\Blank - Standard LaTeX Article">}
+%TCIDATA{CSTFile=40 LaTeX article.cst}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+\input{tcilatex}
+
+\begin{document}
+
+
+Testing msiclass="enginefunction". These only work in MuPAD. Because of lack
+of : in SWP mathnames and real markup, the final file needs to be hand
+edited.
+
+\section{Some expressions to evaluate}
+
+$\func{ithprime}\left( 100\right) $
+
+$\func{ithprime}\left( 101\right) $
+
+$\func{numlibcontfrac}(\frac{57}{55})$
+
+$\func{numlibcontfrac}(\pi )$
+
+$\func{numlibcontfrac}(\pi ,8)$
+
+$\func{numlibdivisors}(12)$
+
+$\func{numlibdivisors}(12345678)$
+
+$\func{groebnergbasis}(\left[ x^{2}-y^{2},x^{2}+y\right] )$
+
+$\func{groebnergbasis}(\left[ x^{2}-y^{2},x^{2}+y\right] ,\func{LexOrder})$
+
+\section{Some expressions to evaluate}
+
+$\func{combinatpartitionslist}\left( 4\right) $
+
+$\func{combinatribbons}\left( \left[ [2,3],[1,4]\right] \right) $
+
+$\func{combinattableauxlist}\left( [3,2]\right) $
+
+$\func{combinattreesrandom}\left( 19\right) $
+
+\section{Some expressions to evaluate}
+
+Define $g:=\func{GraphcreateRandomGraph}\left( 5,12\right) $
+
+$\func{GraphprintGraphInformation}\left( g\right) $
+
+$\func{GraphmaxFlow}\left( g,[1],[5]\right) $
+
+Define $s:=\func{GraphminimumSpanningTree}\left( g\right) $
+
+$\func{GraphprintGraphInformation}\left( s\right) $
+
+Define $u:=\func{GraphcreateRandomGraph}\left( 5,12,\func{Unidirected}%
+\right) $
+
+$\func{GraphchromaticPolynomial}\left( u,x\right) $
+
+\end{document}

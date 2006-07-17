@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin" type="text/css"?>
+<html xmlns:html="http://www.w3.org/1999/xhtml"	 xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<style>
+  .readonly { -moz-user-select: none;
+			  -moz-user-input: none;
+			  -moz-user-modify: read-only;
+			  background-color: rgb(200,200,200);
+			}
+  .inputarea { border-width: thin;
+			   border-color: black;
+			   border-style: solid;
+			   background-color: white;
+			   -moz-user-select: text;
+			  -moz-user-input: enabled;
+			  -moz-user-modify: read-write;
+			   }
+</style>
+
+</head>
+<body chrome="1">
+<window title="XUL Checkboxes" width="50%"
+        xmlns:html="http://www.w3.org/1999/xhtml"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <html:table 	 style="text-align: left; width: 50%;"
+	 border="0" cellpadding="2" cellspacing="0" chrome="1" >
+    <html:tbody>
+      <html:tr>
+        <html:td class="readonly"  style="width: 45%;">Name</html:td>
+        <html:td class="readonly"  style="width: 5%;"></html:td>
+        <html:td class="inputarea" style="width: 50%;"><p taborder="1">Name</p></html:td>
+      </html:tr>
+      <html:tr>
+        <html:td class="readonly"  style="width: 45%;">Rank</html:td>
+        <html:td class="readonly"  style="width: 5%;"></html:td>
+        <html:td class="inputarea" style="width: 50%;"><p taborder="2">Rank</p></html:td>
+      </html:tr>
+      <html:tr>
+        <html:td class="readonly"  style="width: 45%;">Serial number</html:td>
+        <html:td class="readonly"  style="width: 5%;"></html:td>
+        <html:td class="inputarea" style="width: 50%;"><p taborder="3">SN</p></html:td>
+      </html:tr>
+      <html:tr>
+        <html:td class="readonly"  style="width: 45%;">Favorite math expression</html:td>
+        <html:td class="readonly"  style="width: 5%;"></html:td>
+        <html:td class="inputarea" style="width: 50%;"><p taborder="4">x</p></html:td>
+      </html:tr>
+    </html:tbody>
+  </html:table>
+  
+</window>
+</body>
+</html>

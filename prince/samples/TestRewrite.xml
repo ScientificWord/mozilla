@@ -1,0 +1,1069 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<!-- The next lines of text are copied from the file htmlout.cfg, and can be modified there -->
+<style type="text/css">
+.displayed {text-align: center}
+.displayed { display: block !
+important}
+span.leadin {float: left}
+span.vspace {vertical-align: top}
+span.rule {display: inline; background-color: black}
+span.inline-math-graphics {white-space: nowrap}
+hr.pagebreak {color: green}
+table {border-collapse: collapse; border-color: black}
+table td {border-color: black}
+.inlineTable {display: inline-table}
+</style>
+<!-- End of lines from htmlout.cfg -->
+
+
+<link href="TestRewrite.css" rel="stylesheet" type="text/css"/>
+<meta name="CREATED" content="Wednesday, January 28, 2004 20:22:52"/>
+<meta name="REVISED" content="Tuesday, November 23, 2004 21:20:08"/>
+<meta name="GENERATOR" content="Scientific Word"/>
+<title>Test Combine and Rewrite Commands</title>
+</head>
+<body >
+<h1 class="section">Some expressions to combine exponentials</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:msup>
+             <mml:mi>e</mml:mi>
+             <mml:mi>x</mml:mi>
+           </mml:msup>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mi>y</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>e</mml:mi>
+         <mml:mi>x</mml:mi>
+       </mml:msup>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:msup>
+         <mml:mi>e</mml:mi>
+         <mml:mi>y</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to combine logs</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">ln</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+               <mml:mi>x</mml:mi>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mn>1</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">ln</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+               <mml:mi>y</mml:mi>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mn>2</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">ln</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+               <mml:mi>x</mml:mi>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mn>1</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">ln</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+               <mml:mi>y</mml:mi>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mn>2</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to combine powers</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:msup>
+             <mml:mi>b</mml:mi>
+             <mml:mi>x</mml:mi>
+           </mml:msup>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mi>y</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>b</mml:mi>
+         <mml:mi>x</mml:mi>
+       </mml:msup>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:msup>
+         <mml:mi>b</mml:mi>
+         <mml:mi>y</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to combine trigonometric functions</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">cos</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">cos</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">cos</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">cos</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to combine arctan</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">arctan</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">arctan</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>y</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">arctan</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">arctan</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>y</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to combine hyperbolic functions</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sinh</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">cosh</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">cosh</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sinh</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sinh</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">cosh</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">cosh</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sinh</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <hr class="hrulefill" />
+</p>
+<h1 class="section">Some expressions to rewrite rational</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>3.14</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mn>2</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:msup>
+                 <mml:mi>x</mml:mi>
+                 <mml:mn>2</mml:mn>
+               </mml:msup>
+             </mml:mrow>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mn>7</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mrow>
+               <mml:mn>2</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>x</mml:mi>
+             </mml:mrow>
+             <mml:mo form="infix">&minus;</mml:mo>
+             <mml:mn>5</mml:mn>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite float</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mn>22</mml:mn>
+         <mml:mn>7</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite mixed</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mn>22</mml:mn>
+         <mml:mn>7</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>12</mml:mn>
+       <mml:mo form="infix">&times;</mml:mo>
+       <mml:mfrac>
+         <mml:mn>11</mml:mn>
+         <mml:mn>9</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite exponential</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">tanh</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite factorial</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac linethickness="0">
+             <mml:mi>m</mml:mi>
+             <mml:mn>5</mml:mn>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite Gamma</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+       <mml:mfrac linethickness="0">
+         <mml:mi>m</mml:mi>
+         <mml:mi>n</mml:mi>
+       </mml:mfrac>
+       <mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite logarithm</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">arcsinh</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite sin and cos</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">cot</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi mathcolor="gray">tan</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi mathcolor="gray">sec</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite sinh and cosh</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sech</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">tanh</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi mathcolor="gray">csch</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite sin</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">cos</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mn>2</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sec</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">csc</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite cos</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">cos</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mn>2</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sec</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">csc</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite tan</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">cos</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mn>2</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sec</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">csc</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite arcsin</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">arccos</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">arctan</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite arccos</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">arctan</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">arccot</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite arctan</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">arccot</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">arcsin</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite arccot</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">arcsin</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">arccos</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite polar</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>3</mml:mn>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mrow>
+         <mml:mn>5</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>i</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite rectangular</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mroot>
+         <mml:mi>i</mml:mi>
+         <mml:mn>3</mml:mn>
+       </mml:mroot>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>i</mml:mi>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:mn>3</mml:mn>
+         </mml:mfrac>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite normal form</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:msup>
+                   <mml:mi>x</mml:mi>
+                   <mml:mn>2</mml:mn>
+                 </mml:msup>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>8</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:msup>
+                   <mml:mi>x</mml:mi>
+                   <mml:mn>2</mml:mn>
+                 </mml:msup>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mn>7</mml:mn>
+             </mml:mrow>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>5</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:msup>
+                   <mml:mi>x</mml:mi>
+                   <mml:mn>2</mml:mn>
+                 </mml:msup>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mn>3</mml:mn>
+             </mml:mrow>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>2</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:msup>
+                   <mml:mi>x</mml:mi>
+                   <mml:mn>2</mml:mn>
+                 </mml:msup>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mi>x</mml:mi>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mn>7</mml:mn>
+             </mml:mrow>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite equations as matrix</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mrow>
+             <mml:mn>2</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mrow>
+               <mml:mn>3</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>x</mml:mi>
+             </mml:mrow>
+             <mml:mo form="infix">&minus;</mml:mo>
+             <mml:mrow>
+               <mml:mn>5</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>y</mml:mi>
+             </mml:mrow>
+           </mml:mrow>
+           <mml:mo form="infix">=</mml:mo>
+           <mml:mn>0</mml:mn>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis" columnalign="left">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mi>x</mml:mi>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mi>y</mml:mi>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:mrow>
+                 <mml:mn>2</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>z</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">=</mml:mo>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>2</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:mrow>
+                 <mml:mn>4</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">+</mml:mo>
+               <mml:mi>z</mml:mi>
+             </mml:mrow>
+             <mml:mo form="infix">=</mml:mo>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mn>2</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>z</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo form="infix">=</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix">&minus;</mml:mo>
+               <mml:mn>1</mml:mn>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+</p>
+<h1 class="section">Some expressions to rewrite matrix as equations</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>2</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>3</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+   enter
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>x</mml:mi>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mi>y</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>2</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>2</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>4</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>0</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>2</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>3</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+   enter
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>x</mml:mi>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mi>y</mml:mi>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mi>z</mml:mi>
+     </mml:mrow>
+   </mml:math>
+</p>
+</body>
+
+</html>

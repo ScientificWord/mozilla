@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<!-- The next lines of text are copied from the file htmlout.cfg, and can be modified there -->
+<style type="text/css">
+.displayed {text-align: center}
+.displayed { display: block !
+important}
+span.leadin {float: left}
+span.vspace {vertical-align: top}
+span.rule {display: inline; background-color: black}
+span.inline-math-graphics {white-space: nowrap}
+hr.pagebreak {color: green}
+table {border-collapse: collapse; border-color: black}
+table td {border-color: black}
+.inlineTable {display: inline-table}
+</style>
+<!-- End of lines from htmlout.cfg -->
+
+
+<link href="TestPowerSeries.css" rel="stylesheet" type="text/css"/>
+<meta name="CREATED" content="Wednesday, January 28, 2004 20:22:52"/>
+<meta name="REVISED" content="Thursday, June 09, 2005 07:40:35"/>
+<meta name="GENERATOR" content="Scientific Word"/>
+<title>TestPowerSeries.xhtml</title>
+</head>
+<body >
+<h1 class="section">Some expressions for Power Series</h1>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+   use
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+   at
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>0</mml:mn>
+     </mml:mrow>
+   </mml:math>
+   and
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>5</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>e</mml:mi>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>n</mml:mi>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+   use
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>n</mml:mi>
+     </mml:mrow>
+   </mml:math>
+   at
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>0</mml:mn>
+     </mml:mrow>
+   </mml:math>
+   and
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>10</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+<p>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">ln</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+   use
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+   at
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>1</mml:mn>
+     </mml:mrow>
+   </mml:math>
+   and
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>5</mml:mn>
+     </mml:mrow>
+   </mml:math>
+</p>
+</body>
+
+</html>
