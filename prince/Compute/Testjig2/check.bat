@@ -1,7 +1,7 @@
 @echo off
 setlocal
 set C=TestJig2
-set D=\cygwin\bin\diff -w
+set D=diff -w
 
 set base=TestJigData\%1
 
