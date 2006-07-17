@@ -1,0 +1,57 @@
+# Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
+
+DEPTH		= ../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+%.gmr: %.gmx
+	echo Building $*.gmr
+	$(CPP) $(_VPATH_SRCS)  | sed "/^$$/d" | sed "/^#line/d" > $*.gmr
+
+MODULE = compute
+LIBRARY_NAME = enginelib
+
+DIRS		=  Maple MuPAD
+
+include $(topsrcdir)/config/config.mk
+
+CPPSRCS =				\
+  Analyzer.cpp \
+  CompEngine.cpp \
+  MML2Tree.cpp \
+  STree2MML.cpp \
+  Tree2StdMML.cpp \
+  fltutils.cpp \
+  grammar.cpp \
+	$(NULL)
+
+REQUIRES = \
+  string \
+  xpcom \
+  enginewrapper \
+  $(NULL)
+
+LOCAL_INCLUDES	= -I$(srcdir)/../libtci 
+
+# we don't want the shared lib, but we want to force the creation of a static lib.
+FORCE_STATIC_LIB = 1
+
+GMR_FILES := \
+      commands.gmr \
+      MuPAD.gmr \
+      MAPLE.gmr \
+      $(srcdir)/mplInstall.gmr \
+      $(srcdir)/mupInstall.gmr \
+      $(NULL)
+
+include $(topsrcdir)/config/rules.mk
+
+ifdef MOZ_DEBUG
+CXXFLAGS	+= /DTESTING
+endif
+
+export:: $(GMR_FILES)
+	$(INSTALL) $(GMR_FILES) $(DIST)/bin
