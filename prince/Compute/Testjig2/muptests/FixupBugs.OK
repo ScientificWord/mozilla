@@ -1,0 +1,720 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<title>CompTest Script/Command Output</title>
+</head>
+<body>
+<hr/>
+<p>
+SetClientPref(1,4,1)
+</p>
+<p>
+Test ID brokenVectorField
+</p>
+<p>worst case</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msqrt>
+    <mfenced open="(" close=")">
+      <mn>1</mn>
+    </mfenced>
+  </msqrt>
+</math>
+
+</p>
+<p>
+Test ID brokenVectorField
+</p>
+<p>closer case</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msqrt>
+    <mfenced open="(" close=")">
+      <mn>1</mn>
+    </mfenced>
+  </msqrt>
+</math>
+
+</p>
+<p>
+Test ID brokenVectorField.xhtml
+</p>
+<p>buggy plot input</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mstyle displaystyle="true" scriptlevel="0">
+      <mfrac>
+        <mn>1</mn>
+        <msqrt>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>1</mn>
+              <mo form="infix">+</mo>
+              <msup>
+                <mfenced open="|" close="|">
+                  <mrow>
+                    <msup>
+                      <mi>y</mi>
+                      <mn>2</mn>
+                    </msup>
+                    <mo form="infix">-</mo>
+                    <msup>
+                      <mi>t</mi>
+                      <mn>2</mn>
+                    </msup>
+                  </mrow>
+                </mfenced>
+                <mn>2</mn>
+              </msup>
+            </mrow>
+          </mfenced>
+        </msqrt>
+      </mfrac>
+    </mstyle>
+    <mstyle displaystyle="true" scriptlevel="0">
+      <mfrac>
+        <mrow>
+          <msup>
+            <mi>y</mi>
+            <mn>2</mn>
+          </msup>
+          <mo form="infix">-</mo>
+          <msup>
+            <mi>t</mi>
+            <mn>2</mn>
+          </msup>
+        </mrow>
+        <msqrt>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>1</mn>
+              <mo form="infix">+</mo>
+              <msup>
+                <mfenced open="|" close="|">
+                  <mrow>
+                    <msup>
+                      <mi>y</mi>
+                      <mn>2</mn>
+                    </msup>
+                    <mo form="infix">-</mo>
+                    <msup>
+                      <mi>t</mi>
+                      <mn>2</mn>
+                    </msup>
+                  </mrow>
+                </mfenced>
+                <mn>2</mn>
+              </msup>
+            </mrow>
+          </mfenced>
+        </msqrt>
+      </mfrac>
+    </mstyle>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID brokenVectorField.xhtml
+</p>
+<p>output from Fixup</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <msqrt>
+        <msup>
+          <mfenced open="|" close="|">
+            <mrow>
+              <msup>
+                <mi>y</mi>
+                <mn>2</mn>
+              </msup>
+              <mo>&#x2212;</mo>
+              <msup>
+                <mi>t</mi>
+                <mn>2</mn>
+              </msup>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+        <mo>+</mo>
+        <mn>1</mn>
+      </msqrt>
+    </mfrac>
+    <mo>,</mo>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mfenced open="(" close=")">
+        <mrow>
+          <msup>
+            <mi>t</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>&#x2212;</mo>
+          <msup>
+            <mi>y</mi>
+            <mn>2</mn>
+          </msup>
+        </mrow>
+      </mfenced>
+      <msqrt>
+        <msup>
+          <mfenced open="|" close="|">
+            <mrow>
+              <msup>
+                <mi>y</mi>
+                <mn>2</mn>
+              </msup>
+              <mo>&#x2212;</mo>
+              <msup>
+                <mi>t</mi>
+                <mn>2</mn>
+              </msup>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+        <mo>+</mo>
+        <mn>1</mn>
+      </msqrt>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID missingInvisibleTimes
+</p>
+<p>base</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mrow>
+      <mn>1</mn>
+      <mo>-</mo>
+      <mrow>
+        <mi msimathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b8;</mi>
+      </mrow>
+    </mrow>
+    <mo>+</mo>
+    <mrow>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi msimathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mrow>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <mi>&#x3b8;</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID missingInvisibleTimes
+</p>
+<p>base-</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mrow>
+      <mn>1</mn>
+      <mo>-</mo>
+      <mrow>
+        <mi msimathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b8;</mi>
+      </mrow>
+    </mrow>
+    <mo>+</mo>
+    <mrow>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi msimathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mrow>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <mi>&#x3b8;</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID missingInvisibleTimes
+</p>
+<p>minimal</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mrow>
+      <mi msimathname="true">sin</mi>
+      <mo>&#x2061;</mo>
+      <mi>&#x3b8;</mi>
+    </mrow>
+    <mo>+</mo>
+    <mrow>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi msimathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mrow>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <mi>&#x3b8;</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID hardBinding
+</p>
+<p>iterate this</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mfenced ilk="enclosed-list" open="[" close="]">
+    <mrow>
+      <mrow>
+        <mi>s</mi>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mi>sin</mi>
+          <mo>&#x2061;</mo>
+          <mi>s</mi>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>cos</mi>
+        <mo>&#x2061;</mo>
+        <mi>t</mi>
+      </mrow>
+    </mrow>
+    <mrow>
+      <mrow>
+        <mi>s</mi>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mi>cos</mi>
+          <mo>&#x2061;</mo>
+          <mi>s</mi>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>cos</mi>
+        <mo>&#x2061;</mo>
+        <mi>t</mi>
+      </mrow>
+    </mrow>
+    <mrow>
+      <mi>s</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>t</mi>
+      </mrow>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<p>
+SetClientPref(1,4,0)
+</p>
+<hr/><h3>New with &lt;mrow></h3>
+<p>
+Test ID absolute value as fence
+</p>
+<p>base</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mfenced ilk="enclosed-list" open="[" close="]">
+    <mfrac>
+      <mn>1</mn>
+      <msqrt>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>1</mn>
+            <mo>+</mo>
+            <msup>
+              <mfenced open="|" close="|">
+                <mrow>
+                  <msup>
+                    <mi>y</mi>
+                    <mn>2</mn>
+                  </msup>
+                  <mo>-</mo>
+                  <msup>
+                    <mi>t</mi>
+                    <mn>2</mn>
+                  </msup>
+                </mrow>
+              </mfenced>
+              <mn>2</mn>
+            </msup>
+          </mrow>
+        </mfenced>
+      </msqrt>
+    </mfrac>
+    <mfrac>
+      <mrow>
+        <msup>
+          <mi>y</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>-</mo>
+        <msup>
+          <mi>t</mi>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+      <msqrt>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>1</mn>
+            <mo>+</mo>
+            <msup>
+              <mfenced open="|" close="|">
+                <mrow>
+                  <msup>
+                    <mi>y</mi>
+                    <mn>2</mn>
+                  </msup>
+                  <mo>-</mo>
+                  <msup>
+                    <mi>t</mi>
+                    <mn>2</mn>
+                  </msup>
+                </mrow>
+              </mfenced>
+              <mn>2</mn>
+            </msup>
+          </mrow>
+        </mfenced>
+      </msqrt>
+    </mfrac>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID absolute value as fence
+</p>
+<p>eval the fixup</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mrow>
+      <mfrac>
+        <mn>1</mn>
+        <msqrt>
+          <msup>
+            <mrow>
+              <mo>|</mo>
+              <mrow>
+                <msup>
+                  <mi>y</mi>
+                  <mn>2</mn>
+                </msup>
+                <mo>&#x2212;</mo>
+                <msup>
+                  <mi>t</mi>
+                  <mn>2</mn>
+                </msup>
+              </mrow>
+              <mo>|</mo>
+            </mrow>
+            <mn>2</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>1</mn>
+        </msqrt>
+      </mfrac>
+      <mo>,</mo>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mfrac>
+          <mrow>
+            <mo>(</mo>
+            <mrow>
+              <msup>
+                <mi>t</mi>
+                <mn>2</mn>
+              </msup>
+              <mo>&#x2212;</mo>
+              <msup>
+                <mi>y</mi>
+                <mn>2</mn>
+              </msup>
+            </mrow>
+            <mo>)</mo>
+          </mrow>
+          <msqrt>
+            <msup>
+              <mrow>
+                <mo>|</mo>
+                <mrow>
+                  <msup>
+                    <mi>y</mi>
+                    <mn>2</mn>
+                  </msup>
+                  <mo>&#x2212;</mo>
+                  <msup>
+                    <mi>t</mi>
+                    <mn>2</mn>
+                  </msup>
+                </mrow>
+                <mo>|</mo>
+              </mrow>
+              <mn>2</mn>
+            </msup>
+            <mo>+</mo>
+            <mn>1</mn>
+          </msqrt>
+        </mfrac>
+      </mrow>
+    </mrow>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID absolute value as fence
+</p>
+<p>fixup the eval result</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mfenced ilk="enclosed-list" open="[" close="]">
+    <mfrac>
+      <mn>1</mn>
+      <msqrt>
+        <mrow>
+          <msup>
+            <mfenced open="|" close="|">
+              <mrow>
+                <msup>
+                  <mi>y</mi>
+                  <mn>2</mn>
+                </msup>
+                <mo>&#x2212;</mo>
+                <msup>
+                  <mi>t</mi>
+                  <mn>2</mn>
+                </msup>
+              </mrow>
+            </mfenced>
+            <mn>2</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>1</mn>
+        </mrow>
+      </msqrt>
+    </mfrac>
+    <mrow>
+      <mo form="prefix">&#x2212;</mo>
+      <mfrac>
+        <mfenced open="(" close=")">
+          <mrow>
+            <msup>
+              <mi>t</mi>
+              <mn>2</mn>
+            </msup>
+            <mo>&#x2212;</mo>
+            <msup>
+              <mi>y</mi>
+              <mn>2</mn>
+            </msup>
+          </mrow>
+        </mfenced>
+        <msqrt>
+          <mrow>
+            <msup>
+              <mfenced open="|" close="|">
+                <mrow>
+                  <msup>
+                    <mi>y</mi>
+                    <mn>2</mn>
+                  </msup>
+                  <mo>&#x2212;</mo>
+                  <msup>
+                    <mi>t</mi>
+                    <mn>2</mn>
+                  </msup>
+                </mrow>
+              </mfenced>
+              <mn>2</mn>
+            </msup>
+            <mo>+</mo>
+            <mn>1</mn>
+          </mrow>
+        </msqrt>
+      </mfrac>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID absolute value as fence
+</p>
+<p>eval the eval result</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mrow>
+      <mfrac>
+        <mn>1</mn>
+        <msqrt>
+          <msup>
+            <mrow>
+              <mo>|</mo>
+              <mrow>
+                <msup>
+                  <mi>y</mi>
+                  <mn>2</mn>
+                </msup>
+                <mo>&#x2212;</mo>
+                <msup>
+                  <mi>t</mi>
+                  <mn>2</mn>
+                </msup>
+              </mrow>
+              <mo>|</mo>
+            </mrow>
+            <mn>2</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>1</mn>
+        </msqrt>
+      </mfrac>
+      <mo>,</mo>
+      <mrow>
+        <mfrac>
+          <mrow>
+            <mo>(</mo>
+            <mrow>
+              <msup>
+                <mi>t</mi>
+                <mn>2</mn>
+              </msup>
+              <mo>&#x2212;</mo>
+              <msup>
+                <mi>y</mi>
+                <mn>2</mn>
+              </msup>
+            </mrow>
+            <mo>)</mo>
+          </mrow>
+          <msqrt>
+            <msup>
+              <mrow>
+                <mo>|</mo>
+                <mrow>
+                  <msup>
+                    <mi>y</mi>
+                    <mn>2</mn>
+                  </msup>
+                  <mo>&#x2212;</mo>
+                  <msup>
+                    <mi>t</mi>
+                    <mn>2</mn>
+                  </msup>
+                </mrow>
+                <mo>|</mo>
+              </mrow>
+              <mn>2</mn>
+            </msup>
+            <mo>+</mo>
+            <mn>1</mn>
+          </msqrt>
+        </mfrac>
+      </mrow>
+    </mrow>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID hardBinding
+</p>
+<p>iterate this</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mfenced ilk="enclosed-list" open="[" close="]">
+    <mrow>
+      <mrow>
+        <mi>s</mi>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mi>sin</mi>
+          <mo>&#x2061;</mo>
+          <mi>s</mi>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>cos</mi>
+        <mo>&#x2061;</mo>
+        <mi>t</mi>
+      </mrow>
+    </mrow>
+    <mrow>
+      <mrow>
+        <mi>s</mi>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mi>cos</mi>
+          <mo>&#x2061;</mo>
+          <mi>s</mi>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>cos</mi>
+        <mo>&#x2061;</mo>
+        <mi>t</mi>
+      </mrow>
+    </mrow>
+    <mrow>
+      <mi>s</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>t</mi>
+      </mrow>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,2607 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<title>CompTest Script/Command Output</title>
+</head>
+<body>
+<hr/>
+<p>
+SetClientPref(1,4,1)
+</p>
+<p>
+Test ID 101
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>3</mn>
+    <mo>&#x2212;</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 102
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mn>2</mn>
+      <mn>3</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 103
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msqrt>
+      <mn>2.36</mn>
+    </msqrt>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 104
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mn>0.16</mn>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 105
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="|" close="|">
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>11.9</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 106
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="&#x2308;" close="&#x2309;">
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>11.9</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 107
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="&#x230a;" close="&#x230b;">
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>11.9</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 108
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mn>2</mn>
+        <mo>&#xd7;</mo>
+        <mn>8</mn>
+      </mrow>
+      <mrow>
+        <mn>3</mn>
+        <mo>&#xd7;</mo>
+        <mn>7</mn>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 109
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>2</mn>
+      <mn>8</mn>
+    </mfrac>
+    <mo>&#x2217;</mo>
+    <mn>7</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 110
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>71</mn>
+      <mn>8</mn>
+    </mfrac>
+    <mo>&#x22c5;</mo>
+    <mn>5</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 111
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mn>2</mn>
+      <mn>3</mn>
+    </msup>
+    <mo>&#xd7;</mo>
+    <msup>
+      <mn>3</mn>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 112
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mi>&#x3c0;</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 113
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi msiMathname="true">sin</mi>
+      <mn>3</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mfrac>
+        <mn>1</mn>
+        <mn>4</mn>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mi>&#x3c0;</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 114
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi msiMathname="true">sin</mi>
+      <mn>&#x2212;1</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mfrac>
+        <mn>1</mn>
+        <mn>4</mn>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mi>&#x3c0;</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 115
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x2211;</mo>
+      <mrow>
+        <mi>i</mi>
+        <mo>=</mo>
+        <mn>1</mn>
+      </mrow>
+      <mn>9</mn>
+    </msubsup>
+    <mfrac>
+      <mn>1</mn>
+      <mrow>
+        <mrow>
+          <mn>1</mn>
+          <mo>+</mo>
+          <msup>
+            <mi>i</mi>
+            <mn>2</mn>
+          </msup>
+        </mrow>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 115prod1
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x220f;</mo>
+      <mrow>
+        <mi>i</mi>
+        <mo>=</mo>
+        <mn>1</mn>
+      </mrow>
+      <mn>9</mn>
+    </msubsup>
+    <mfrac>
+      <mn>1</mn>
+      <mrow>
+        <mrow>
+          <mn>1</mn>
+          <mo>+</mo>
+          <msup>
+            <mi>i</mi>
+            <mn>2</mn>
+          </msup>
+        </mrow>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 115prod2
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x220f;</mo>
+      <mrow>
+        <mi>i</mi>
+        <mo>=</mo>
+        <mn>2</mn>
+      </mrow>
+      <mi>&#x221e;</mi>
+    </msubsup>
+    <mfrac>
+      <msup>
+        <mi>i</mi>
+        <mn>2</mn>
+      </msup>
+      <mrow>
+        <mrow>
+          <msup>
+            <mi>i</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>-</mo>
+          <mn>1</mn>
+        </mrow>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 116
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi fontstyle="upright">&#x393;</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mfrac>
+            <mn>5</mn>
+            <mn>3</mn>
+          </mfrac>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <mi fontstyle="upright">&#x393;</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+        </mfenced>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 117
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>50</mn>
+    <mo>!</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 118
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mn>2</mn>
+      <mn>1234</mn>
+    </msup>
+    <mo>mod</mo>
+    <mn>3</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 119
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi>x</mi>
+      <mn>12</mn>
+    </msup>
+    <mo>+</mo>
+    <mn>1</mn>
+    <mo>mod</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>+</mo>
+    <mn>1</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 120
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mn>2</mn>
+      <mn>1234</mn>
+    </msup>
+    <mo>mod</mo>
+    <mn>3</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 121
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi fontstyle="upright">&#x3b6;</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mn>12</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 122
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="(" close=")">
+      <mfrac linethickness="0">
+        <mn>12</mn>
+        <mn>4</mn>
+      </mfrac>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 123
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="(" close=")">
+      <mfrac linethickness="0">
+        <mi>p</mi>
+        <mi>q</mi>
+      </mfrac>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 124
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">gcd</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mn>35</mn>
+      <mn>25</mn>
+      <mn>65</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 125
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">lcm</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mn>35</mn>
+      <mn>25</mn>
+      <mn>65</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 126
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">max</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mn>35</mn>
+      <mn>25</mn>
+      <mn>65</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 127
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <munder>
+      <mo form="prefix" msiMathname="true">max</mo>
+      <mfenced open="[" close="]">
+        <mn>1</mn>
+        <mn>10</mn>
+      </mfenced>
+    </munder>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>n</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 128
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">min</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mn>35</mn>
+      <mn>25</mn>
+      <mn>65</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 129
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">log</mi>
+    <mo>&#x2061;</mo>
+    <mi>e</mi>
+    <mo>&#x2212;</mo>
+    <mi msiMathname="true">log</mi>
+    <mo>&#x2061;</mo>
+    <mn>2</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 130
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mi msiMathname="true">log</mi>
+      <mn>2</mn>
+    </msub>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 131
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mi msiMathname="true">log</mi>
+      <mn>2</mn>
+    </msub>
+    <mo>&#x2061;</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 132
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 133
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mn>3</mn>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 134
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msubsup>
+      <mfenced open="[" close="]">
+        <mrow>
+          <mrow>
+            <mi msiMathname="true">sin</mi>
+            <mo>&#x2061;</mo>
+            <msup>
+              <mi>x</mi>
+              <mn>2</mn>
+            </msup>
+          </mrow>
+        </mrow>
+      </mfenced>
+      <mn>1</mn>
+      <mn>2</mn>
+    </msubsup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 135
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msubsup>
+      <mfenced open="[" close="]">
+        <mrow>
+          <mrow>
+            <mi msiMathname="true">sin</mi>
+            <mo>&#x2061;</mo>
+            <msup>
+              <mi>x</mi>
+              <mn>2</mn>
+            </msup>
+          </mrow>
+        </mrow>
+      </mfenced>
+      <mn>1</mn>
+      <mn>2</mn>
+    </msubsup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 136
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msubsup>
+      <mfenced open="[" close="]">
+        <mrow>
+          <mrow>
+            <mi msiMathname="true">sin</mi>
+            <mo>&#x2061;</mo>
+            <msup>
+              <mi>x</mi>
+              <mn>2</mn>
+            </msup>
+          </mrow>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mi>x</mi>
+        <mo>=</mo>
+        <mn>1</mn>
+      </mrow>
+      <mn>2</mn>
+    </msubsup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 201
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <munder>
+      <mo form="prefix" msiMathname="true">lim</mo>
+      <mrow>
+        <mi>n</mi>
+        <mo>&#x2192;</mo>
+        <mi>&#x221e;</mi>
+      </mrow>
+    </munder>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mfrac>
+          <mrow>
+            <mrow>
+              <msup>
+                <mi>n</mi>
+                <mn>2</mn>
+              </msup>
+              <mo>&#x2212;</mo>
+              <mi>n</mi>
+            </mrow>
+          </mrow>
+          <mrow>
+            <mrow>
+              <msup>
+                <mi>n</mi>
+                <mn>2</mn>
+              </msup>
+              <mo>&#x2212;</mo>
+              <mn>81</mn>
+            </mrow>
+          </mrow>
+        </mfrac>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 202
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <munder>
+      <mo form="prefix" msiMathname="true">lim</mo>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2192;</mo>
+        <msup>
+          <mn>0</mn>
+          <mo>&#x2212;</mo>
+        </msup>
+      </mrow>
+    </munder>
+    <mfrac>
+      <mi>x</mi>
+      <mfenced open="|" close="|">
+        <mi>x</mi>
+      </mfenced>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 203
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <munder>
+      <mo form="prefix" msiMathname="true">lim</mo>
+      <mrow>
+        <mi>t</mi>
+        <mo>&#x2192;</mo>
+        <mn>1</mn>
+      </mrow>
+    </munder>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mfrac>
+          <mrow>
+            <mrow>
+              <mi msiMathname="true">tan</mi>
+              <mo>&#x2061;</mo>
+              <mi>t</mi>
+              <mo>&#x2212;</mo>
+              <mi msiMathname="true">tan</mi>
+              <mo>&#x2061;</mo>
+              <mn>1</mn>
+            </mrow>
+          </mrow>
+          <mrow>
+            <mrow>
+              <mi>t</mi>
+              <mo>&#x2212;</mo>
+              <mn>1</mn>
+            </mrow>
+          </mrow>
+        </mfrac>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 204
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <munder>
+      <mo form="prefix" msiMathname="true">lim</mo>
+      <mrow>
+        <mi>n</mi>
+        <mo>&#x2192;</mo>
+        <mn>5</mn>
+      </mrow>
+    </munder>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>n</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 205
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <msup>
+          <mi>e</mi>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+        </msup>
+      </mrow>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 206
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <msup>
+          <mo form="prefix">&#x2146;</mo>
+          <mn>4</mn>
+        </msup>
+        <mrow>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>8</mn>
+          </msup>
+        </mrow>
+      </mrow>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>4</mn>
+        </msup>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 207
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>207 wrong, D missing parens</mtext>
+</math>
+
+</p>
+<p>
+Test ID 208
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+      </mrow>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi msiMathname="true">sin</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 209
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>209 wrong, missing 2nd order notation</mtext>
+</math>
+
+</p>
+<p>
+Test ID 210
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mo form="prefix">&#x2145;</mo>
+      <mi>x</mi>
+    </msub>
+    <msup>
+      <mi>x</mi>
+      <mi>a</mi>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 211
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mo form="prefix">&#x2145;</mo>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+    </msub>
+    <msup>
+      <mi msiMathname="true">sin</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 212
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <msqrt>
+        <mn>1</mn>
+        <mo>&#x2212;</mo>
+        <msup>
+          <mi msiMathname="true">sin</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </msqrt>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 213
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>213 wrong, strange differential</mtext>
+</math>
+
+</p>
+<p>
+Test ID 214
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
+      <mn>1</mn>
+      <mn>2</mn>
+    </msubsup>
+    <mrow>
+      <mfrac>
+        <mn>1</mn>
+        <mrow>
+          <mrow>
+            <msup>
+              <mi>x</mi>
+              <mn>5</mn>
+            </msup>
+            <mo>+</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 215
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
+      <mn>1</mn>
+      <mn>2</mn>
+    </msubsup>
+    <mrow>
+      <mfrac>
+        <mn>1</mn>
+        <mrow>
+          <mrow>
+            <msup>
+              <mi>x</mi>
+              <mn>6</mn>
+            </msup>
+            <mo>+</mo>
+            <mi>x</mi>
+            <mo>+</mo>
+            <mn>2</mn>
+          </mrow>
+        </mrow>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 216
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
+      <mn>0</mn>
+      <mi>&#x221e;</mi>
+    </msubsup>
+    <mrow>
+      <msup>
+        <mi>e</mi>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+      </msup>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 217
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <msubsup>
+          <mo form="prefix" largeop="true">&#x222b;</mo>
+          <mn>0</mn>
+          <mi>x</mi>
+        </msubsup>
+        <mrow>
+          <mrow>
+            <mi msiMathname="true">tan</mi>
+            <mo>&#x2061;</mo>
+            <msup>
+              <mi>t</mi>
+              <mn>3</mn>
+            </msup>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">&#x2146;</mo>
+            <mi>t</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 301
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>3</mn>
+          <mo>&#x2212;</mo>
+          <mi>i</mi>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mn>9</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 302
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">Im</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>a</mi>
+        <mo>+</mo>
+        <mi>i</mi>
+        <mo>&#x2062;</mo>
+        <mi>b</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 303
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">Re</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>3</mn>
+              <mo>&#x2212;</mo>
+              <mi>i</mi>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+        <mo>&#x2212;</mo>
+        <mn>9</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 304
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>&#x2062;</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mo>&#x2217;</mo>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 305
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>a</mi>
+          <mo>+</mo>
+          <mi>i</mi>
+          <mo>&#x2062;</mo>
+          <mi>b</mi>
+        </mrow>
+      </mfenced>
+      <mo>&#x2217;</mo>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 306
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi msiMathname="true">sin</mi>
+          <mo>&#x2061;</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mo>&#x2217;</mo>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 307
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mtable>
+          <mtr>
+            <mtd>
+              <mn>1</mn>
+            </mtd>
+            <mtd>
+              <mn>2</mn>
+            </mtd>
+          </mtr>
+          <mtr>
+            <mtd>
+              <mn>3</mn>
+              <mo>&#x2212;</mo>
+              <mi>i</mi>
+            </mtd>
+            <mtd>
+              <mi>i</mi>
+            </mtd>
+          </mtr>
+        </mtable>
+      </mfenced>
+      <mo>&#x2217;</mo>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 308
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mover>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+      <mo stretchy="true" accent="true">&#xaf;</mo>
+    </mover>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 309
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mover>
+      <mrow>
+        <mi>a</mi>
+        <mo>+</mo>
+        <mi>i</mi>
+        <mo>&#x2062;</mo>
+        <mi>b</mi>
+      </mrow>
+      <mo stretchy="true" accent="true">&#xaf;</mo>
+    </mover>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 310
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mover>
+      <mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>y</mi>
+      </mrow>
+      <mo stretchy="true" accent="true">&#xaf;</mo>
+    </mover>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 311
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mover>
+      <mfenced open="[" close="]">
+        <mtable>
+          <mtr>
+            <mtd>
+              <mn>1</mn>
+            </mtd>
+            <mtd>
+              <mn>2</mn>
+            </mtd>
+          </mtr>
+          <mtr>
+            <mtd>
+              <mn>3</mn>
+              <mo>&#x2212;</mo>
+              <mi>i</mi>
+            </mtd>
+            <mtd>
+              <mi>i</mi>
+            </mtd>
+          </mtr>
+        </mtable>
+      </mfenced>
+      <mo stretchy="true" accent="true">&#xaf;</mo>
+    </mover>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 401
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">det</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mtable>
+        <mtr>
+          <mtd>
+            <mn>1</mn>
+          </mtd>
+          <mtd>
+            <mfrac>
+              <mn>1</mn>
+              <mn>2</mn>
+            </mfrac>
+          </mtd>
+          <mtd>
+            <mfrac>
+              <mn>1</mn>
+              <mn>3</mn>
+            </mfrac>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mfrac>
+              <mn>1</mn>
+              <mn>2</mn>
+            </mfrac>
+          </mtd>
+          <mtd>
+            <mfrac>
+              <mn>1</mn>
+              <mn>3</mn>
+            </mfrac>
+          </mtd>
+          <mtd>
+            <mfrac>
+              <mn>1</mn>
+              <mn>4</mn>
+            </mfrac>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mfrac>
+              <mn>1</mn>
+              <mn>3</mn>
+            </mfrac>
+          </mtd>
+          <mtd>
+            <mfrac>
+              <mn>1</mn>
+              <mn>4</mn>
+            </mfrac>
+          </mtd>
+          <mtd>
+            <mfrac>
+              <mn>1</mn>
+              <mn>5</mn>
+            </mfrac>
+          </mtd>
+        </mtr>
+      </mtable>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 402
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mtable>
+          <mtr>
+            <mtd>
+              <mn>1</mn>
+            </mtd>
+            <mtd>
+              <mn>2</mn>
+            </mtd>
+          </mtr>
+          <mtr>
+            <mtd>
+              <mn>3</mn>
+            </mtd>
+            <mtd>
+              <mn>4</mn>
+            </mtd>
+          </mtr>
+        </mtable>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 403
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="[" close="]">
+        <mtable>
+          <mtr>
+            <mtd>
+              <mn>1</mn>
+            </mtd>
+            <mtd>
+              <mn>2</mn>
+            </mtd>
+          </mtr>
+          <mtr>
+            <mtd>
+              <mn>3</mn>
+            </mtd>
+            <mtd>
+              <mn>4</mn>
+            </mtd>
+          </mtr>
+        </mtable>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 404
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="[" close="]">
+        <mtable>
+          <mtr>
+            <mtd>
+              <mn>1</mn>
+            </mtd>
+            <mtd>
+              <mn>2</mn>
+            </mtd>
+          </mtr>
+          <mtr>
+            <mtd>
+              <mn>3</mn>
+            </mtd>
+            <mtd>
+              <mn>4</mn>
+            </mtd>
+          </mtr>
+        </mtable>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 405
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mtable>
+          <mtr>
+            <mtd>
+              <mn>1</mn>
+            </mtd>
+            <mtd>
+              <mn>2</mn>
+              <mo>&#x2062;</mo>
+              <mi>i</mi>
+            </mtd>
+          </mtr>
+          <mtr>
+            <mtd>
+              <mn>3</mn>
+              <mo>&#x2212;</mo>
+              <mi>i</mi>
+            </mtd>
+            <mtd>
+              <mi>i</mi>
+              <mo>&#x2212;</mo>
+              <mn>4</mn>
+            </mtd>
+          </mtr>
+        </mtable>
+      </mfenced>
+      <mi>T</mi>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 406
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mtable>
+          <mtr>
+            <mtd>
+              <mn>1</mn>
+            </mtd>
+            <mtd>
+              <mn>2</mn>
+              <mo>&#x2062;</mo>
+              <mi>i</mi>
+            </mtd>
+          </mtr>
+          <mtr>
+            <mtd>
+              <mn>3</mn>
+              <mo>&#x2212;</mo>
+              <mi>i</mi>
+            </mtd>
+            <mtd>
+              <mi>i</mi>
+              <mo>&#x2212;</mo>
+              <mn>4</mn>
+            </mtd>
+          </mtr>
+        </mtable>
+      </mfenced>
+      <mi>H</mi>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 501
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>grad</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+        <mo>&#x2062;</mo>
+        <mi>z</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 502
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>div</mo>
+    <mfenced open="[" close="]">
+      <mtable>
+        <mtr>
+          <mtd>
+            <mi>x</mi>
+            <mo>&#x2062;</mo>
+            <mi>z</mi>
+          </mtd>
+          <mtd>
+            <mn>2</mn>
+            <mo>&#x2062;</mo>
+            <mi>y</mi>
+            <mo>&#x2062;</mo>
+            <mi>z</mi>
+          </mtd>
+          <mtd>
+            <msup>
+              <mi>z</mi>
+              <mn>2</mn>
+            </msup>
+          </mtd>
+        </mtr>
+      </mtable>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 503
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>curl</mo>
+    <mfenced open="[" close="]">
+      <mtable>
+        <mtr>
+          <mtd>
+            <mi>y</mi>
+            <mo>&#x2062;</mo>
+            <mi>z</mi>
+          </mtd>
+          <mtd>
+            <mn>2</mn>
+            <mo>&#x2062;</mo>
+            <mi>x</mi>
+            <mo>&#x2062;</mo>
+            <mi>z</mi>
+          </mtd>
+          <mtd>
+            <mi>x</mi>
+            <mo>&#x2062;</mo>
+            <mi>y</mi>
+          </mtd>
+        </mtr>
+      </mtable>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 504
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>Laplacian</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <msup>
+          <mi>y</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>+</mo>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <msup>
+          <mi>z</mi>
+          <mn>3</mn>
+        </msup>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 601
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced open="[" close="]">
+          <mtable>
+            <mtr>
+              <mtd>
+                <mi>a</mi>
+              </mtd>
+              <mtd>
+                <mi>b</mi>
+              </mtd>
+              <mtd>
+                <mi>c</mi>
+              </mtd>
+            </mtr>
+          </mtable>
+        </mfenced>
+      </mfenced>
+      <mn>1</mn>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 602
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="&#x2016;" close="&#x2016;">
+      <mfenced open="[" close="]">
+        <mtable>
+          <mtr>
+            <mtd>
+              <mi>a</mi>
+            </mtd>
+            <mtd>
+              <mi>b</mi>
+            </mtd>
+            <mtd>
+              <mi>c</mi>
+            </mtd>
+          </mtr>
+        </mtable>
+      </mfenced>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 603
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced open="[" close="]">
+          <mtable>
+            <mtr>
+              <mtd>
+                <mi>a</mi>
+              </mtd>
+              <mtd>
+                <mi>b</mi>
+              </mtd>
+              <mtd>
+                <mi>c</mi>
+              </mtd>
+            </mtr>
+          </mtable>
+        </mfenced>
+      </mfenced>
+      <mn>3</mn>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 604
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced open="[" close="]">
+          <mtable>
+            <mtr>
+              <mtd>
+                <mo>&#x2212;</mo>
+                <mn>1</mn>
+              </mtd>
+              <mtd>
+                <mn>2</mn>
+              </mtd>
+              <mtd>
+                <mn>1</mn>
+              </mtd>
+            </mtr>
+          </mtable>
+        </mfenced>
+      </mfenced>
+      <mn>5</mn>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 605
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced open="[" close="]">
+          <mtable>
+            <mtr>
+              <mtd>
+                <mi>a</mi>
+              </mtd>
+              <mtd>
+                <mi>b</mi>
+              </mtd>
+              <mtd>
+                <mi>c</mi>
+              </mtd>
+            </mtr>
+          </mtable>
+        </mfenced>
+      </mfenced>
+      <mi>&#x221e;</mi>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 606
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced open="[" close="]">
+          <mtable>
+            <mtr>
+              <mtd>
+                <mn>8</mn>
+              </mtd>
+              <mtd>
+                <mo>&#x2212;</mo>
+                <mn>10</mn>
+              </mtd>
+              <mtd>
+                <mn>2</mn>
+              </mtd>
+            </mtr>
+          </mtable>
+        </mfenced>
+      </mfenced>
+      <mi>&#x221e;</mi>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 607
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced open="[" close="]">
+          <mtable>
+            <mtr>
+              <mtd>
+                <mi>a</mi>
+              </mtd>
+              <mtd>
+                <mi>b</mi>
+              </mtd>
+              <mtd>
+                <mi>c</mi>
+              </mtd>
+            </mtr>
+          </mtable>
+        </mfenced>
+      </mfenced>
+      <mn>4</mn>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 608
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="&#x2016;" close="&#x2016;">
+      <mfenced open="[" close="]">
+        <mtable>
+          <mtr>
+            <mtd>
+              <mn>0.2</mn>
+            </mtd>
+            <mtd>
+              <mn>0.3</mn>
+            </mtd>
+          </mtr>
+          <mtr>
+            <mtd>
+              <mn>0.5</mn>
+            </mtd>
+            <mtd>
+              <mn>0.7</mn>
+            </mtd>
+          </mtr>
+        </mtable>
+      </mfenced>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 609
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced open="[" close="]">
+          <mtable>
+            <mtr>
+              <mtd>
+                <mn>5</mn>
+              </mtd>
+              <mtd>
+                <mn>7</mn>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mo>&#x2212;</mo>
+                <mn>13</mn>
+              </mtd>
+              <mtd>
+                <mn>6</mn>
+              </mtd>
+            </mtr>
+          </mtable>
+        </mfenced>
+      </mfenced>
+      <mn>1</mn>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 610
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced open="[" close="]">
+          <mtable>
+            <mtr>
+              <mtd>
+                <mn>5</mn>
+                <mo>+</mo>
+                <mn>3</mn>
+                <mo>&#x2062;</mo>
+                <mi>i</mi>
+              </mtd>
+              <mtd>
+                <mn>7</mn>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mo>&#x2212;</mo>
+                <mn>13</mn>
+              </mtd>
+              <mtd>
+                <mn>6</mn>
+                <mo>&#x2212;</mo>
+                <mn>5</mn>
+                <mo>&#x2062;</mo>
+                <mi>i</mi>
+              </mtd>
+            </mtr>
+          </mtable>
+        </mfenced>
+      </mfenced>
+      <mi>&#x221e;</mi>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 611
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced open="[" close="]">
+          <mtable>
+            <mtr>
+              <mtd>
+                <mn>5</mn>
+              </mtd>
+              <mtd>
+                <mn>7</mn>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mn>13</mn>
+              </mtd>
+              <mtd>
+                <mn>6</mn>
+              </mtd>
+            </mtr>
+          </mtable>
+        </mfenced>
+      </mfenced>
+      <mi>F</mi>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 701
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi fontstyle="upright">&#x2131;</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mfrac>
+        <mn>1</mn>
+        <mi>x</mi>
+      </mfrac>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 702
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi fontstyle="upright">&#x2131;</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <msup>
+        <mi>e</mi>
+        <mrow>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi>&#x3c0;</mi>
+          <mo>&#x2062;</mo>
+          <mi>i</mi>
+          <mo>&#x2062;</mo>
+          <mi>t</mi>
+        </mrow>
+      </msup>
+      <mi>t</mi>
+      <mi>w</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 703
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi fontstyle="upright">&#x2131;</mi>
+      <mn>&#x2212;1</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mfrac>
+          <mrow>
+            <mn>2</mn>
+            <mo>&#x2062;</mo>
+            <mi>i</mi>
+          </mrow>
+          <mi>&#x3c9;</mi>
+        </mfrac>
+      </mrow>
+      <mi>&#x3c9;</mi>
+      <mi>t</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 704
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi fontstyle="upright">&#x2112;</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>t</mi>
+        <mo>&#x2062;</mo>
+        <msup>
+          <mi>e</mi>
+          <mi>t</mi>
+        </msup>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 705
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi fontstyle="upright">&#x2112;</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mi msiMathname="true">sin</mi>
+            <mo>&#x2061;</mo>
+            <mrow>
+              <mi>&#x3c9;</mi>
+              <mo>&#x2062;</mo>
+              <mi>t</mi>
+            </mrow>
+          </mrow>
+        </mfenced>
+        <mo>&#x2062;</mo>
+        <mi msiMathname="true">Heaviside</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mi>t</mi>
+        </mfenced>
+      </mrow>
+      <mi>t</mi>
+      <mi>u</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 706
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi fontstyle="upright">&#x2112;</mi>
+      <mn>&#x2212;1</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mfrac>
+        <mn>1</mn>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mi>s</mi>
+              <mo>+</mo>
+              <mi>&#x3b1;</mi>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+      </mfrac>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 801
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>18229</mn>
+      <mn>94</mn>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 802
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>13</mn>
+      <mn>4</mn>
+    </mfrac>
+    <mo>+</mo>
+    <mfrac>
+      <mn>13</mn>
+      <mn>3</mn>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 803
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mn>13</mn>
+        <mo>&#xd7;</mo>
+        <mn>3</mn>
+      </mrow>
+      <mrow>
+        <mn>4</mn>
+        <mo>&#xd7;</mo>
+        <mn>13</mn>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 901
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="{" close="}">
+      <mn>1</mn>
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfenced>
+    <mo>&#x2216;</mo>
+    <mfenced open="{" close="}">
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 902
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="{" close="}">
+      <mn>1</mn>
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfenced>
+    <mo>\</mo>
+    <mfenced open="{" close="}">
+      <mn>1</mn>
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 903
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="{" close="}">
+      <mn>1</mn>
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfenced>
+    <mo>&#x2229;</mo>
+    <mfenced open="{" close="}">
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 904
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="{" close="}">
+      <mn>1</mn>
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfenced>
+    <mo>&#x222a;</mo>
+    <mfenced open="{" close="}">
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID A01
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi fontweight="bold" fontstyle="upright">x</mi>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID A02
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi fontstyle="upright">&pfr;</mi>
+        <mo>&#x2062;</mo>
+        <mi fontstyle="upright">&qfr;</mi>
+      </mrow>
+      <mrow>
+        <mi>p</mi>
+        <mo>&#x2062;</mo>
+        <mi>q</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID A03
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>a</mi>
+    <mo>&#x2062;</mo>
+    <mover accent="true">
+      <mi>a</mi>
+      <mo form="postfix" accent="true">&#x2d9;</mo>
+    </mover>
+    <mo>&#x2062;</mo>
+    <mover accent="true">
+      <mi>a</mi>
+      <mo form="postfix" accent="true">&#xa8;</mo>
+    </mover>
+    <mo>&#x2062;</mo>
+    <mover>
+      <mi>a</mi>
+      <mo stretchy="true" accent="true">&#xaf;</mo>
+    </mover>
+    <mo>&#x2062;</mo>
+    <mover accent="true">
+      <mi>a</mi>
+      <mo form="postfix" accent="true">&#x20d7;</mo>
+    </mover>
+  </mrow>
+</math>
+
+</p>
+<hr/>
+</body>
+</html>

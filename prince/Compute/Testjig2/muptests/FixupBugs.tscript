@@ -1,0 +1,631 @@
+;Test script for "Comptest.exe".
+;
+;Bugs and other fringe cases.
+
+SetClientPref     1,use_mfenced,1
+
+Test ID     brokenVectorField
+Comment     worst case
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+ <math xmlns="http://www.w3.org/1998/Math/MathML">
+   <msqrt>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mn>1</mn>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </msqrt>
+ </math>
+End of test
+ 
+Test ID     brokenVectorField
+Comment     closer case
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+ <math xmlns="http://www.w3.org/1998/Math/MathML">
+   <msqrt>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>1</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </msqrt>
+ </math>
+End of test
+ 
+Test ID     brokenVectorField.xhtml
+Comment     buggy plot input
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+ <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+   <mrow>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+       <mrow>
+         <mrow>
+           <mstyle displaystyle="true" scriptlevel="0">
+             <mfrac>
+               <mn>1</mn>
+               <msqrt>
+                 <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+                   <mrow>
+                     <mn>1</mn>
+                     <mo form="infix">+</mo>
+                     <msup>
+                      <mrow>
+                       <mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mo>
+                       <mrow>
+                         <msup>
+                           <mi>y</mi>
+                           <mn>2</mn>
+                         </msup>
+                         <mo form="infix">-</mo>
+                         <msup>
+                           <mi>t</mi>
+                           <mn>2</mn>
+                         </msup>
+                       </mrow>
+                       <mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mo>
+                      </mrow>
+                      <mn>2</mn>
+                     </msup>
+                   </mrow>
+                 <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+               </msqrt>
+             </mfrac>
+           </mstyle>
+         </mrow>
+         <mo form="infix">,</mo>
+         <mrow>
+           <mstyle displaystyle="true" scriptlevel="0">
+             <mfrac>
+               <mrow>
+                 <msup>
+                   <mi>y</mi>
+                   <mn>2</mn>
+                 </msup>
+                 <mo form="infix">-</mo>
+                 <msup>
+                   <mi>t</mi>
+                   <mn>2</mn>
+                 </msup>
+               </mrow>
+               <msqrt>
+                 <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+                 <mrow>
+                   <mn>1</mn>
+                   <mo form="infix">+</mo>
+                   <msup>
+                     <mrow>
+                       <mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mo>
+                       <mrow>
+                         <msup>
+                           <mi>y</mi>
+                           <mn>2</mn>
+                         </msup>
+                         <mo form="infix">-</mo>
+                         <msup>
+                           <mi>t</mi>
+                           <mn>2</mn>
+                         </msup>
+                       </mrow>
+                       <mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mo>
+                     </mrow>
+                     <mn>2</mn>
+                   </msup>
+                 </mrow>
+                 <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+               </msqrt>
+             </mfrac>
+           </mstyle>
+         </mrow>
+       </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </mrow>
+ </math>
+End of test
+
+Test ID     brokenVectorField.xhtml
+Comment     output from Fixup
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+ <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mfrac>
+      <mn>1</mn>
+      <msqrt>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>1</mn>
+            <mo form="infix">+</mo>
+            <msup>
+              <mfenced open="|" close="|">
+                <mrow>
+                  <msup>
+                    <mi>y</mi>
+                    <mn>2</mn>
+                  </msup>
+                  <mo form="infix">-</mo>
+                  <msup>
+                    <mi>t</mi>
+                    <mn>2</mn>
+                  </msup>
+                </mrow>
+              </mfenced>
+              <mn>2</mn>
+            </msup>
+          </mrow>
+        </mfenced>
+      </msqrt>
+    </mfrac>
+    <mfrac>
+      <mrow>
+        <msup>
+          <mi>y</mi>
+          <mn>2</mn>
+        </msup>
+        <mo form="infix">-</mo>
+        <msup>
+          <mi>t</mi>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+      <msqrt>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>1</mn>
+            <mo form="infix">+</mo>
+            <msup>
+              <mfenced open="|" close="|">
+                <mrow>
+                  <msup>
+                    <mi>y</mi>
+                    <mn>2</mn>
+                  </msup>
+                  <mo form="infix">-</mo>
+                  <msup>
+                    <mi>t</mi>
+                    <mn>2</mn>
+                  </msup>
+                </mrow>
+              </mfenced>
+              <mn>2</mn>
+            </msup>
+          </mrow>
+        </mfenced>
+      </msqrt>
+    </mfrac>
+  </mfenced>
+ </math>
+End of test
+
+Test ID     missingInvisibleTimes
+Comment     base
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+ <math xmlns="http://www.w3.org/1998/Math/MathML">
+   <mrow>
+     <mn>1</mn>
+     <mo>-</mo>
+     <mi msimathname="true">sin</mi>
+     <mi>&theta;</mi>
+     <mo>+</mo>
+     <mn>2</mn>
+     <mi msimathname="true">sin</mi>
+     <mn>3</mn>
+     <mi>&theta;</mi>
+   </mrow>
+ </math>
+End of test
+ 
+Test ID     missingInvisibleTimes
+Comment     base-
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+ <math xmlns="http://www.w3.org/1998/Math/MathML">
+   <mn>1</mn>
+   <mo>-</mo>
+   <mi msimathname="true">sin</mi>
+   <mi>&theta;</mi>
+   <mo>+</mo>
+   <mn>2</mn>
+   <mi msimathname="true">sin</mi>
+   <mn>3</mn>
+   <mi>&theta;</mi>
+ </math>
+End of test
+ 
+Test ID     missingInvisibleTimes
+Comment     minimal
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+ <math xmlns="http://www.w3.org/1998/Math/MathML">
+   <mi msimathname="true">sin</mi>
+   <mi>&theta;</mi>
+   <mo>+</mo>
+   <mn>2</mn>
+   <mi msimathname="true">sin</mi>
+   <mn>3</mn>
+   <mi>&theta;</mi>
+ </math>
+End of test
+
+Test ID     hardBinding
+Comment     iterate this
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+ <math xmlns="http://www.w3.org/1998/Math/MathML">
+   <mo>[</mo>
+   <mi>s</mi>
+   <mi>sin</mi>
+   <mi>s</mi>
+   <mi>cos</mi>
+   <mi>t</mi>
+   <mo>,</mo>
+   <mi>s</mi>
+   <mi>cos</mi>
+   <mi>s</mi>
+   <mi>cos</mi>
+   <mi>t</mi>
+   <mo>,</mo>
+   <mi>s</mi>
+   <mi>sin</mi>
+   <mi>t</mi>
+   <mo>]</mo>
+ </math>
+End of test
+
+
+SetClientPref     1,use_mfenced,0
+
+Passthru    <hr/><h3>New with &lt;mrow></h3>
+Test ID     absolute value as fence
+Comment     base
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mfenced ilk="enclosed-list" open="[" close="]">
+      <mfrac>
+        <mn>1</mn>
+        <msqrt>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>1</mn>
+              <mo>+</mo>
+              <msup>
+                <mfenced open="|" close="|">
+                  <mrow>
+                    <msup>
+                      <mi>y</mi>
+                      <mn>2</mn>
+                    </msup>
+                    <mo>-</mo>
+                    <msup>
+                      <mi>t</mi>
+                      <mn>2</mn>
+                    </msup>
+                  </mrow>
+                </mfenced>
+                <mn>2</mn>
+              </msup>
+            </mrow>
+          </mfenced>
+        </msqrt>
+      </mfrac>
+      <mfrac>
+        <mrow>
+          <msup>
+            <mi>y</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>-</mo>
+          <msup>
+            <mi>t</mi>
+            <mn>2</mn>
+          </msup>
+        </mrow>
+        <msqrt>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>1</mn>
+              <mo>+</mo>
+              <msup>
+                <mfenced open="|" close="|">
+                  <mrow>
+                    <msup>
+                      <mi>y</mi>
+                      <mn>2</mn>
+                    </msup>
+                    <mo>-</mo>
+                    <msup>
+                      <mi>t</mi>
+                      <mn>2</mn>
+                    </msup>
+                  </mrow>
+                </mfenced>
+                <mn>2</mn>
+              </msup>
+            </mrow>
+          </mfenced>
+        </msqrt>
+      </mfrac>
+    </mfenced>
+  </math>
+End of test
+
+Test ID     absolute value as fence
+Comment     eval the fixup
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mfenced ilk="enclosed-list" open="[" close="]">
+      <mfrac>
+        <mn>1</mn>
+        <msqrt>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>1</mn>
+              <mo>+</mo>
+              <msup>
+                <mfenced open="|" close="|">
+                  <mrow>
+                    <msup>
+                      <mi>y</mi>
+                      <mn>2</mn>
+                    </msup>
+                    <mo>-</mo>
+                    <msup>
+                      <mi>t</mi>
+                      <mn>2</mn>
+                    </msup>
+                  </mrow>
+                </mfenced>
+                <mn>2</mn>
+              </msup>
+            </mrow>
+          </mfenced>
+        </msqrt>
+      </mfrac>
+      <mfrac>
+        <mrow>
+          <msup>
+            <mi>y</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>-</mo>
+          <msup>
+            <mi>t</mi>
+            <mn>2</mn>
+          </msup>
+        </mrow>
+        <msqrt>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>1</mn>
+              <mo>+</mo>
+              <msup>
+                <mfenced open="|" close="|">
+                  <mrow>
+                    <msup>
+                      <mi>y</mi>
+                      <mn>2</mn>
+                    </msup>
+                    <mo>-</mo>
+                    <msup>
+                      <mi>t</mi>
+                      <mn>2</mn>
+                    </msup>
+                  </mrow>
+                </mfenced>
+                <mn>2</mn>
+              </msup>
+            </mrow>
+          </mfenced>
+        </msqrt>
+      </mfrac>
+    </mfenced>
+  </math>
+End of test
+
+Test ID     absolute value as fence
+Comment     fixup the eval result
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow>
+      <mo>[</mo>
+      <mrow>
+        <mfrac>
+          <mn>1</mn>
+          <msqrt>
+            <msup>
+              <mrow>
+                <mo>|</mo>
+                <mrow>
+                  <msup>
+                    <mi>y</mi>
+                    <mn>2</mn>
+                  </msup>
+                  <mo>&#x2212;</mo>
+                  <msup>
+                    <mi>t</mi>
+                    <mn>2</mn>
+                  </msup>
+                </mrow>
+                <mo>|</mo>
+              </mrow>
+              <mn>2</mn>
+            </msup>
+            <mo>+</mo>
+            <mn>1</mn>
+          </msqrt>
+        </mfrac>
+        <mo>,</mo>
+        <mrow>
+          <mo>&#x2212;</mo>
+          <mfrac>
+            <mrow>
+              <mo>(</mo>
+              <mrow>
+                <msup>
+                  <mi>t</mi>
+                  <mn>2</mn>
+                </msup>
+                <mo>&#x2212;</mo>
+                <msup>
+                  <mi>y</mi>
+                  <mn>2</mn>
+                </msup>
+              </mrow>
+              <mo>)</mo>
+            </mrow>
+            <msqrt>
+              <msup>
+                <mrow>
+                  <mo>|</mo>
+                  <mrow>
+                    <msup>
+                      <mi>y</mi>
+                      <mn>2</mn>
+                    </msup>
+                    <mo>&#x2212;</mo>
+                    <msup>
+                      <mi>t</mi>
+                      <mn>2</mn>
+                    </msup>
+                  </mrow>
+                  <mo>|</mo>
+                </mrow>
+                <mn>2</mn>
+              </msup>
+              <mo>+</mo>
+              <mn>1</mn>
+            </msqrt>
+          </mfrac>
+        </mrow>
+      </mrow>
+      <mo>]</mo>
+    </mrow>
+  </math>
+End of test
+
+Test ID     absolute value as fence
+Comment     eval the eval result
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mrow>
+      <mo>[</mo>
+      <mrow>
+        <mfrac>
+          <mn>1</mn>
+          <msqrt>
+            <msup>
+              <mrow>
+                <mo>|</mo>
+                <mrow>
+                  <msup>
+                    <mi>y</mi>
+                    <mn>2</mn>
+                  </msup>
+                  <mo>&#x2212;</mo>
+                  <msup>
+                    <mi>t</mi>
+                    <mn>2</mn>
+                  </msup>
+                </mrow>
+                <mo>|</mo>
+              </mrow>
+              <mn>2</mn>
+            </msup>
+            <mo>+</mo>
+            <mn>1</mn>
+          </msqrt>
+        </mfrac>
+        <mo>,</mo>
+        <mrow>
+          <mo>&#x2212;</mo>
+          <mfrac>
+            <mrow>
+              <mo>(</mo>
+              <mrow>
+                <msup>
+                  <mi>t</mi>
+                  <mn>2</mn>
+                </msup>
+                <mo>&#x2212;</mo>
+                <msup>
+                  <mi>y</mi>
+                  <mn>2</mn>
+                </msup>
+              </mrow>
+              <mo>)</mo>
+            </mrow>
+            <msqrt>
+              <msup>
+                <mrow>
+                  <mo>|</mo>
+                  <mrow>
+                    <msup>
+                      <mi>y</mi>
+                      <mn>2</mn>
+                    </msup>
+                    <mo>&#x2212;</mo>
+                    <msup>
+                      <mi>t</mi>
+                      <mn>2</mn>
+                    </msup>
+                  </mrow>
+                  <mo>|</mo>
+                </mrow>
+                <mn>2</mn>
+              </msup>
+              <mo>+</mo>
+              <mn>1</mn>
+            </msqrt>
+          </mfrac>
+        </mrow>
+      </mrow>
+      <mo>]</mo>
+    </mrow>
+  </math>
+End of test
+
+Test ID     hardBinding
+Comment     iterate this
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+ <math xmlns="http://www.w3.org/1998/Math/MathML">
+   <mo>[</mo>
+   <mi>s</mi>
+   <mi>sin</mi>
+   <mi>s</mi>
+   <mi>cos</mi>
+   <mi>t</mi>
+   <mo>,</mo>
+   <mi>s</mi>
+   <mi>cos</mi>
+   <mi>s</mi>
+   <mi>cos</mi>
+   <mi>t</mi>
+   <mo>,</mo>
+   <mi>s</mi>
+   <mi>sin</mi>
+   <mi>t</mi>
+   <mo>]</mo>
+ </math>
+End of test
+
+
+

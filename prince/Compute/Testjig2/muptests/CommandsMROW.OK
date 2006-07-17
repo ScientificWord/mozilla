@@ -1,0 +1,5187 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<title>CompTest Script/Command Output</title>
+</head>
+<body>
+<hr/>
+<p>
+Test ID CCID_Evaluate
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>30414093201713378043612608166064768844377641568960512000000000000</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Evaluate_Numerically
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>1.5362</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Simplify
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi>a</mi>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2212;</mo>
+        <mi>y</mi>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Combine_Exponentials
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mrow>
+        <mo>(</mo>
+        <msup>
+          <mi>&#x2147;</mi>
+          <mi>x</mi>
+        </msup>
+        <mo>)</mo>
+      </mrow>
+      <mi>y</mi>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Combine_Logs
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">ln</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mo>(</mo>
+      <mrow>
+        <mrow>
+          <mo>|</mo>
+          <mi>x</mi>
+          <mo>|</mo>
+        </mrow>
+        <mo>+</mo>
+        <mn>1</mn>
+      </mrow>
+      <mo>)</mo>
+      <mo>&#x2062;</mo>
+      <mo>(</mo>
+      <mrow>
+        <mrow>
+          <mo>|</mo>
+          <mi>y</mi>
+          <mo>|</mo>
+        </mrow>
+        <mo>+</mo>
+        <mn>2</mn>
+      </mrow>
+      <mo>)</mo>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Combine_Powers
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mrow>
+        <mo>(</mo>
+        <msup>
+          <mi>b</mi>
+          <mi>x</mi>
+        </msup>
+        <mo>)</mo>
+      </mrow>
+      <mi>y</mi>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Combine_Trig_Functions
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mo>(</mo>
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mi>y</mi>
+      </mrow>
+      <mo>)</mo>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Combine_Arctan
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>&#x2212;</mo>
+    <mi msiMathname="true">arctan</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mfrac>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mi>x</mi>
+            <mo>+</mo>
+            <mi>y</mi>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mrow>
+          <mrow>
+            <mi>x</mi>
+            <mo>&#x2062;</mo>
+            <mi>y</mi>
+            <mo>&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </mrow>
+      </mfrac>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Combine_Hyp_Trig_Functions
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sinh</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mo>(</mo>
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mi>y</mi>
+      </mrow>
+      <mo>)</mo>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Factor
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mn>2</mn>
+      <mn>2</mn>
+    </msup>
+    <mo>&#xd7;</mo>
+    <mn>3</mn>
+    <mo>&#xd7;</mo>
+    <mn>5</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Expand
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi>a</mi>
+      <mn>5</mn>
+    </msup>
+    <mo>+</mo>
+    <mn>5</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>a</mi>
+      <mn>4</mn>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mi>b</mi>
+    <mo>+</mo>
+    <mn>10</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>a</mi>
+      <mn>3</mn>
+    </msup>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>b</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>+</mo>
+    <mn>10</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>a</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>b</mi>
+      <mn>3</mn>
+    </msup>
+    <mo>+</mo>
+    <mn>5</mn>
+    <mo>&#x2062;</mo>
+    <mi>a</mi>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>b</mi>
+      <mn>4</mn>
+    </msup>
+    <mo>+</mo>
+    <msup>
+      <mi>b</mi>
+      <mn>5</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_Rational
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>157</mn>
+      <mn>50</mn>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_Float
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>3.1429</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_Mixed
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>3</mn>
+    <mfrac>
+      <mn>1</mn>
+      <mn>7</mn>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_Exponential
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mrow>
+          <msup>
+            <mrow>
+              <mo>(</mo>
+              <msup>
+                <mi>&#x2147;</mi>
+                <mi>x</mi>
+              </msup>
+              <mo>)</mo>
+            </mrow>
+            <mn>2</mn>
+          </msup>
+          <mo>&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </mrow>
+      <mrow>
+        <mrow>
+          <msup>
+            <mrow>
+              <mo>(</mo>
+              <msup>
+                <mi>&#x2147;</mi>
+                <mi>x</mi>
+              </msup>
+              <mo>)</mo>
+            </mrow>
+            <mn>2</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>1</mn>
+        </mrow>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_Factorial
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi>m</mi>
+        <mo>!</mo>
+      </mrow>
+      <mrow>
+        <mn>120</mn>
+        <mo>&#x2062;</mo>
+        <mo>(</mo>
+        <mrow>
+          <mi>m</mi>
+          <mo>&#x2212;</mo>
+          <mn>5</mn>
+        </mrow>
+        <mo>)</mo>
+        <mo>!</mo>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_Gamma
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi fontstyle="upright">&#x393;</mi>
+        <mo>&#x2061;</mo>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mi>m</mi>
+            <mo>+</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+      <mrow>
+        <mi fontstyle="upright">&#x393;</mi>
+        <mo>&#x2061;</mo>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mi>n</mi>
+            <mo>+</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mi fontstyle="upright">&#x393;</mi>
+        <mo>&#x2061;</mo>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mi>m</mi>
+            <mo>&#x2212;</mo>
+            <mi>n</mi>
+            <mo>+</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_Logarithm
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">ln</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mo>(</mo>
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <msqrt>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>1</mn>
+        </msqrt>
+      </mrow>
+      <mo>)</mo>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_sin_and_cos
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi msiMathname="true">cos</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_sinh_and_cosh
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi msiMathname="true">sinh</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi msiMathname="true">cosh</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mrow>
+        <msup>
+          <mi msiMathname="true">sinh</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_sin
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>2</mn>
+      <mrow>
+        <mo>(</mo>
+        <mrow>
+          <mrow>
+            <mn>2</mn>
+            <mo>&#x2062;</mo>
+            <msup>
+              <mi msiMathname="true">sin</mi>
+              <mn>2</mn>
+            </msup>
+            <mo>&#x2061;</mo>
+            <mrow>
+              <mfrac>
+                <mn>1</mn>
+                <mn>2</mn>
+              </mfrac>
+              <mo>&#x2062;</mo>
+              <mi>x</mi>
+            </mrow>
+            <mo>&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </mrow>
+        <mo>)</mo>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mo>(</mo>
+    <mrow>
+      <mi msiMathname="true">sin</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>)</mo>
+    <mo>&#x2062;</mo>
+    <mo>(</mo>
+    <mrow>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mi msiMathname="true">sin</mi>
+        <mn>2</mn>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mfrac>
+          <mn>1</mn>
+          <mn>2</mn>
+        </mfrac>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2212;</mo>
+      <mn>1</mn>
+    </mrow>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_cos
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>2</mn>
+      <mrow>
+        <mi msiMathname="true">cos</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_tan
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <msup>
+              <mi msiMathname="true">tan</mi>
+              <mn>2</mn>
+            </msup>
+            <mo>&#x2061;</mo>
+            <mrow>
+              <mfrac>
+                <mn>1</mn>
+                <mn>2</mn>
+              </mfrac>
+              <mo>&#x2062;</mo>
+              <mi>x</mi>
+            </mrow>
+            <mo>+</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mn>2</mn>
+      </msup>
+      <mrow>
+        <mi msiMathname="true">tan</mi>
+        <mo>&#x2061;</mo>
+        <mrow>
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mo>(</mo>
+        <mrow>
+          <mrow>
+            <msup>
+              <mi msiMathname="true">tan</mi>
+              <mn>2</mn>
+            </msup>
+            <mo>&#x2061;</mo>
+            <mrow>
+              <mfrac>
+                <mn>1</mn>
+                <mn>2</mn>
+              </mfrac>
+              <mo>&#x2062;</mo>
+              <mi>x</mi>
+            </mrow>
+            <mo>&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </mrow>
+        <mo>)</mo>
+      </mrow>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mo>(</mo>
+        <mrow>
+          <mi msiMathname="true">tan</mi>
+          <mo>&#x2061;</mo>
+          <mrow>
+            <mfrac>
+              <mn>1</mn>
+              <mn>2</mn>
+            </mfrac>
+            <mo>&#x2062;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+        <mo>)</mo>
+        <mo>&#x2062;</mo>
+        <mo>(</mo>
+        <mrow>
+          <mrow>
+            <msup>
+              <mi msiMathname="true">tan</mi>
+              <mn>2</mn>
+            </msup>
+            <mo>&#x2061;</mo>
+            <mrow>
+              <mfrac>
+                <mn>1</mn>
+                <mn>2</mn>
+              </mfrac>
+              <mo>&#x2062;</mo>
+              <mi>x</mi>
+            </mrow>
+            <mo>&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </mrow>
+        <mo>)</mo>
+      </mrow>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <msup>
+              <mi msiMathname="true">tan</mi>
+              <mn>2</mn>
+            </msup>
+            <mo>&#x2061;</mo>
+            <mrow>
+              <mfrac>
+                <mn>1</mn>
+                <mn>2</mn>
+              </mfrac>
+              <mo>&#x2062;</mo>
+              <mi>x</mi>
+            </mrow>
+            <mo>+</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mn>2</mn>
+      </msup>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_arcsin
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>&#x3c0;</mi>
+    <mo>&#x2212;</mo>
+    <mi msiMathname="true">arcsin</mi>
+    <mo>&#x2061;</mo>
+    <mfrac>
+      <mi>x</mi>
+      <msqrt>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>+</mo>
+        <mn>1</mn>
+      </msqrt>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mi msiMathname="true">arcsin</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_arccos
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>&#x3c0;</mi>
+    <mo>&#x2212;</mo>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">arccos</mi>
+    <mo>&#x2061;</mo>
+    <mfrac>
+      <mi>x</mi>
+      <msqrt>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>+</mo>
+        <mn>1</mn>
+      </msqrt>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_arctan
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>&#x3c0;</mi>
+    <mo>&#x2212;</mo>
+    <mi msiMathname="true">arctan</mi>
+    <mo>&#x2061;</mo>
+    <mfrac>
+      <mi>x</mi>
+      <msqrt>
+        <mn>1</mn>
+        <mo>&#x2212;</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+      </msqrt>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mi msiMathname="true">arctan</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_arccot
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>&#x3c0;</mi>
+    <mo>&#x2212;</mo>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">arccot</mi>
+    <mo>&#x2061;</mo>
+    <mfrac>
+      <mi>x</mi>
+      <msqrt>
+        <mn>1</mn>
+        <mo>&#x2212;</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+      </msqrt>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_Polar
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msqrt>
+      <mn>34</mn>
+    </msqrt>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>&#x2147;</mi>
+      <mrow>
+        <mi>&#x2148;</mi>
+        <mo>&#x2062;</mo>
+        <mi msiMathname="true">arctan</mi>
+        <mo>&#x2061;</mo>
+        <mfrac>
+          <mn>5</mn>
+          <mn>3</mn>
+        </mfrac>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_Rectangular
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <msqrt>
+      <mn>3</mn>
+    </msqrt>
+    <mo>+</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>&#x2148;</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_Normal_Form
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mo>(</mo>
+        <mrow>
+          <mn>46</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>4</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>9</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>3</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>83</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>21</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mn>21</mn>
+        </mrow>
+        <mo>)</mo>
+      </mrow>
+      <mrow>
+        <mrow>
+          <mn>16</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>4</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>8</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>3</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>70</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>7</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mn>49</mn>
+        </mrow>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_Equations_as_Matrix
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>2</mn>
+        </mtd>
+        <mtd>
+          <mn>3</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>3</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>5</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rewrite_Matrix_as_Equations
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>{</mo>
+    <mrow>
+      <mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+        <mo>&#x2212;</mo>
+        <mn>3</mn>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+        <mo>=</mo>
+        <mn>1</mn>
+      </mrow>
+      <mo>,</mo>
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mi>y</mi>
+        <mo>=</mo>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </mrow>
+    <mo>}</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Check_Equality
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mtext>TRUE</mtext>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Solve_Exact
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>{</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mi fontstyle="upright">&#x2205;</mi>
+        </mtd>
+        <mtd>
+          <mtext>if</mtext>
+        </mtd>
+        <mtd>
+          <mi>P</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>Q</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mo>{</mo>
+          <mrow>
+            <mfrac>
+              <mrow>
+                <mo>(</mo>
+                <mrow>
+                  <mi msiMathname="true">ln</mi>
+                  <mo>&#x2061;</mo>
+                  <mfrac>
+                    <mi>Q</mi>
+                    <mi>P</mi>
+                  </mfrac>
+                  <mo>+</mo>
+                  <mn>2</mn>
+                  <mo>&#x2062;</mo>
+                  <mi>&#x2148;</mi>
+                  <mo>&#x2062;</mo>
+                  <mi>&#x3c0;</mi>
+                  <mo>&#x2062;</mo>
+                  <mi>l</mi>
+                </mrow>
+                <mo>)</mo>
+              </mrow>
+              <mi>k</mi>
+            </mfrac>
+            <mo>|</mo>
+            <mi>l</mi>
+            <mo>&#x220a;</mo>
+            <mi>&#x2124;</mi>
+          </mrow>
+          <mo>}</mo>
+        </mtd>
+        <mtd>
+          <mtext>if</mtext>
+        </mtd>
+        <mtd>
+          <mi>P</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>Q</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>k</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mi>&#x2102;</mi>
+        </mtd>
+        <mtd>
+          <mtext>if</mtext>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mrow>
+              <mi>&#x2148;</mi>
+              <mo>&#x2062;</mo>
+              <mi msiMathname="true">ln</mi>
+              <mo>&#x2061;</mo>
+              <mfrac>
+                <mi>Q</mi>
+                <mi>P</mi>
+              </mfrac>
+            </mrow>
+            <mrow>
+              <mn>2</mn>
+              <mo>&#x2062;</mo>
+              <mi>&#x3c0;</mi>
+            </mrow>
+          </mfrac>
+          <mo>&#x220a;</mo>
+          <mi>&#x2124;</mi>
+          <mo>&#x2227;</mo>
+          <mi>P</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>Q</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>k</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mi fontstyle="upright">&#x2205;</mi>
+        </mtd>
+        <mtd>
+          <mtext>if</mtext>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mrow>
+              <mi>&#x2148;</mi>
+              <mo>&#x2062;</mo>
+              <mi msiMathname="true">ln</mi>
+              <mo>&#x2061;</mo>
+              <mfrac>
+                <mi>Q</mi>
+                <mi>P</mi>
+              </mfrac>
+            </mrow>
+            <mrow>
+              <mn>2</mn>
+              <mo>&#x2062;</mo>
+              <mi>&#x3c0;</mi>
+            </mrow>
+          </mfrac>
+          <mo>&#x220a;</mo>
+          <mi>&#x2102;</mi>
+          <mo>&#x2216;</mo>
+          <mi>&#x2124;</mi>
+          <mo>&#x2227;</mo>
+          <mi>P</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>Q</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>k</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mi>&#x2102;</mi>
+        </mtd>
+        <mtd>
+          <mtext>if</mtext>
+        </mtd>
+        <mtd>
+          <mi>P</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>Q</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mi fontstyle="upright">&#x2205;</mi>
+        </mtd>
+        <mtd>
+          <mtext>if</mtext>
+        </mtd>
+        <mtd>
+          <mi>Q</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>P</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo></mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Solve_Integer
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>{</mo>
+    <mrow>
+      <mo>&#x2212;</mo>
+      <mn>1</mn>
+    </mrow>
+    <mo>}</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Solve_Numeric
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>{</mo>
+    <mrow>
+      <mrow>
+        <mo>[</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>=</mo>
+          <mo>&#x2212;</mo>
+          <mn>1.5</mn>
+          <mo>+</mo>
+          <mn>1.7176</mn>
+          <mo>&#x2062;</mo>
+          <mi>&#x2148;</mi>
+        </mrow>
+        <mo>]</mo>
+      </mrow>
+      <mo>,</mo>
+      <mrow>
+        <mo>[</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>=</mo>
+          <mo>&#x2212;</mo>
+          <mn>1.5</mn>
+          <mo>&#x2212;</mo>
+          <mn>1.7176</mn>
+          <mo>&#x2062;</mo>
+          <mi>&#x2148;</mi>
+        </mrow>
+        <mo>]</mo>
+      </mrow>
+      <mo>,</mo>
+      <mrow>
+        <mo>[</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>=</mo>
+          <mn>3.0</mn>
+        </mrow>
+        <mo>]</mo>
+      </mrow>
+    </mrow>
+    <mo>}</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Solve_Recursion
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>{</mo>
+    <mrow>
+      <msub>
+        <mi>x</mi>
+        <mi>n</mi>
+      </msub>
+      <mo>=</mo>
+      <msub>
+        <mi>C</mi>
+        <mn>1</mn>
+      </msub>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mo>&#x2212;</mo>
+            <mfrac>
+              <mn>1</mn>
+              <mn>2</mn>
+            </mfrac>
+            <mo>&#x2062;</mo>
+            <msqrt>
+              <mn>5</mn>
+            </msqrt>
+            <mo>&#x2212;</mo>
+            <mfrac>
+              <mn>3</mn>
+              <mn>2</mn>
+            </mfrac>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mi>n</mi>
+      </msup>
+      <mo>+</mo>
+      <msub>
+        <mi>C</mi>
+        <mn>2</mn>
+      </msub>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mfrac>
+              <mn>1</mn>
+              <mn>2</mn>
+            </mfrac>
+            <mo>&#x2062;</mo>
+            <msqrt>
+              <mn>5</mn>
+            </msqrt>
+            <mo>&#x2212;</mo>
+            <mfrac>
+              <mn>3</mn>
+              <mn>2</mn>
+            </mfrac>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mi>n</mi>
+      </msup>
+    </mrow>
+    <mo>}</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Polynomial_Collect
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi>t</mi>
+      <mn>3</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mn>16</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>t</mi>
+      <mn>5</mn>
+    </msup>
+    <mo>+</mo>
+    <mo>(</mo>
+    <mrow>
+      <mi>a</mi>
+      <mo>+</mo>
+      <mn>3</mn>
+    </mrow>
+    <mo>)</mo>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>t</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>+</mo>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>t</mi>
+    <mo>+</mo>
+    <mn>9</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Polynomial_Divide
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mn>1</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Polynomial_Partial_Fractions
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mrow>
+          <mfrac>
+            <mn>3</mn>
+            <mn>4</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mfrac>
+            <mn>3</mn>
+            <mn>4</mn>
+          </mfrac>
+        </mrow>
+      </mrow>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <msup>
+              <mi>x</mi>
+              <mn>2</mn>
+            </msup>
+            <mo>+</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mn>2</mn>
+      </msup>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mrow>
+        <mrow>
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>&#x2212;</mo>
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+        </mrow>
+      </mrow>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <msup>
+              <mi>x</mi>
+              <mn>2</mn>
+            </msup>
+            <mo>+</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mn>3</mn>
+      </msup>
+    </mfrac>
+    <mo>+</mo>
+    <mfrac>
+      <mrow>
+        <mrow>
+          <mfrac>
+            <mn>15</mn>
+            <mn>8</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>&#x2212;</mo>
+          <mfrac>
+            <mn>1</mn>
+            <mn>8</mn>
+          </mfrac>
+        </mrow>
+      </mrow>
+      <mrow>
+        <mrow>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>1</mn>
+        </mrow>
+      </mrow>
+    </mfrac>
+    <mo>+</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2062;</mo>
+        <mo>(</mo>
+        <mrow>
+          <mrow>
+            <mi>x</mi>
+            <mo>&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </mrow>
+        <mo>)</mo>
+      </mrow>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mrow>
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mn>1</mn>
+        </mrow>
+      </mrow>
+      <mrow>
+        <mrow>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>+</mo>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mn>1</mn>
+        </mrow>
+      </mrow>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mi>x</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Polynomial_Roots
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>3</mn>
+    <mo>,</mo>
+    <mn>5</mn>
+    <mo>+</mo>
+    <mn>3</mn>
+    <mo>&#x2062;</mo>
+    <mi>&#x2148;</mi>
+    <mo>,</mo>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>2</mn>
+      <mn>5</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>&#x2148;</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Polynomial_Sort
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>&#x2212;</mo>
+    <mn>16</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>t</mi>
+      <mn>5</mn>
+    </msup>
+    <mo>+</mo>
+    <msup>
+      <mi>t</mi>
+      <mn>3</mn>
+    </msup>
+    <mo>+</mo>
+    <msup>
+      <mi>t</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mo>(</mo>
+    <mrow>
+      <mi>a</mi>
+      <mo>+</mo>
+      <mn>3</mn>
+    </mrow>
+    <mo>)</mo>
+    <mo>+</mo>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>t</mi>
+    <mo>+</mo>
+    <mn>9</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Polynomial_Companion_Matrix
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>2</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>3</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Calculus_Integrate_by_Parts
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">ln</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+    <mo>&#x2212;</mo>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mfrac>
+          <mn>1</mn>
+          <mn>2</mn>
+        </mfrac>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Calculus_Change_Variable
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mfrac>
+          <mn>1</mn>
+          <mn>2</mn>
+        </mfrac>
+        <mo>&#x2062;</mo>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>u</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>u</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Calculus_Partial_Fractions
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>4</mn>
+      <mrow>
+        <mrow>
+          <mi>x</mi>
+          <mo>&#x2212;</mo>
+          <mn>2</mn>
+        </mrow>
+      </mrow>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>9</mn>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mi>x</mi>
+            <mo>&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mn>2</mn>
+      </msup>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>3</mn>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mi>x</mi>
+            <mo>+</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mn>2</mn>
+      </msup>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>4</mn>
+      <mrow>
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mn>1</mn>
+        </mrow>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Calculus_Approximate_Integral
+</p>
+<p>Calculus Approximate Integral... Left Boxes, 10</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>20</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>&#x3c0;</mi>
+    <mo>&#x2062;</mo>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x2211;</mo>
+      <mrow>
+        <msub>
+          <mi>i</mi>
+          <mn>3</mn>
+        </msub>
+        <mo>=</mo>
+        <mn>0</mn>
+      </mrow>
+      <mn>9</mn>
+    </msubsup>
+    <mrow>
+      <mfrac>
+        <mn>1</mn>
+        <mn>20</mn>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mi>&#x3c0;</mi>
+      <mo>&#x2062;</mo>
+      <msub>
+        <mi>i</mi>
+        <mn>3</mn>
+      </msub>
+      <mo>&#x2062;</mo>
+      <mi msiMathname="true">sin</mi>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mfrac>
+          <mn>1</mn>
+          <mn>20</mn>
+        </mfrac>
+        <mo>&#x2062;</mo>
+        <mi>&#x3c0;</mi>
+        <mo>&#x2062;</mo>
+        <msub>
+          <mi>i</mi>
+          <mn>3</mn>
+        </msub>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Define before Iterate
+</p>
+<p>Defining f(x) = cos(x)</p>
+<p>
+Test ID CCID_Calculus_Iterate
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1.0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0.54030</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0.85755</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0.65429</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0.79348</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0.70137</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0.76396</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0.72210</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0.75042</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0.73140</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0.74424</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Undefine after Iterate
+</p>
+<p>Undefining f(x) = cos(x)</p>
+<p>
+Test ID CCID_Calculus_Implicit_Differentiation
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>b</mi>
+    <mo>+</mo>
+    <msup>
+      <mi>y</mi>
+      <mo form="postfix">&#x2032;</mo>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mo>(</mo>
+      <mi>x</mi>
+      <mo>)</mo>
+    </mrow>
+    <mo>=</mo>
+    <mn>0</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Power_Series
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>&#x2212;</mo>
+    <mn>1</mn>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mrow>
+        <mo>(</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+        <mo>)</mo>
+      </mrow>
+      <mn>2</mn>
+    </msup>
+    <mo>+</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mrow>
+        <mo>(</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+        <mo>)</mo>
+      </mrow>
+      <mn>3</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mn>4</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mrow>
+        <mo>(</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+        <mo>)</mo>
+      </mrow>
+      <mn>4</mn>
+    </msup>
+    <mo>+</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mn>5</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mrow>
+        <mo>(</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+        <mo>)</mo>
+      </mrow>
+      <mn>5</mn>
+    </msup>
+    <mo>+</mo>
+    <mi>O</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mo>(</mo>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mi>x</mi>
+            <mo>&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mn>6</mn>
+      </msup>
+      <mo>)</mo>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Solve_ODE_Exact
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>{</mo>
+    <mrow>
+      <msub>
+        <mi>C</mi>
+        <mn>4</mn>
+      </msub>
+      <mo>&#x2212;</mo>
+      <mi msiMathname="true">cos</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>}</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Solve_ODE_Laplace
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>{</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2212;</mo>
+      <mfrac>
+        <mn>1</mn>
+        <mn>2</mn>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mi msiMathname="true">cos</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+      <mo>+</mo>
+      <mfrac>
+        <mn>1</mn>
+        <mn>2</mn>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mi msiMathname="true">sin</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+      <mo>+</mo>
+      <msup>
+        <mi>&#x2147;</mi>
+        <mrow>
+          <mo>&#x2212;</mo>
+          <mi>x</mi>
+        </mrow>
+      </msup>
+      <mo>&#x2062;</mo>
+      <mo>(</mo>
+      <mrow>
+        <mi>y</mi>
+        <mo>&#x2061;</mo>
+        <mrow>
+          <mo>(</mo>
+          <mn>0</mn>
+          <mo>)</mo>
+        </mrow>
+        <mo>+</mo>
+        <mfrac>
+          <mn>3</mn>
+          <mn>2</mn>
+        </mfrac>
+      </mrow>
+      <mo>)</mo>
+      <mo>&#x2212;</mo>
+      <mn>1</mn>
+    </mrow>
+    <mo>}</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Check that y not defined before Solve ODE Numeric
+</p>
+<p>y(0.1)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>y</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mo>(</mo>
+      <mn>0.10</mn>
+      <mo>)</mo>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Solve_ODE_Numeric
+</p>
+<p>defines y</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mi>y</mi>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Check that Solve ODE Numeric Worked
+</p>
+<p>y(0.1)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>0.90484</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Undefine after Solve ODE Numeric
+</p>
+<p>Undefines y</p>
+<p>
+Test ID CCID_Solve_ODE_Series
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>{</mo>
+    <mrow>
+      <mi>y</mi>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mo>(</mo>
+        <mn>1</mn>
+        <mo>)</mo>
+      </mrow>
+      <mo>+</mo>
+      <mi>y</mi>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mo>(</mo>
+        <mn>1</mn>
+        <mo>)</mo>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mo>(</mo>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+      <mo>)</mo>
+      <mo>+</mo>
+      <mfrac>
+        <mn>1</mn>
+        <mn>2</mn>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mo>(</mo>
+        <mn>1</mn>
+        <mo>)</mo>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mi>x</mi>
+            <mo>&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mn>2</mn>
+      </msup>
+      <mo>+</mo>
+      <mfrac>
+        <mn>1</mn>
+        <mn>6</mn>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mo>(</mo>
+        <mn>1</mn>
+        <mo>)</mo>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mi>x</mi>
+            <mo>&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mn>3</mn>
+      </msup>
+      <mo>+</mo>
+      <mfrac>
+        <mn>1</mn>
+        <mn>24</mn>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mo>(</mo>
+        <mn>1</mn>
+        <mo>)</mo>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mi>x</mi>
+            <mo>&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mn>4</mn>
+      </msup>
+      <mo>+</mo>
+      <mi>O</mi>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mo>(</mo>
+        <msup>
+          <mrow>
+            <mo>(</mo>
+            <mrow>
+              <mi>x</mi>
+              <mo>&#x2212;</mo>
+              <mn>1</mn>
+            </mrow>
+            <mo>)</mo>
+          </mrow>
+          <mn>5</mn>
+        </msup>
+        <mo>)</mo>
+      </mrow>
+    </mrow>
+    <mo>}</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Fourier_Transform
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>&#x3c0;</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">Dirac</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mo>(</mo>
+      <mrow>
+        <mi>w</mi>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+      <mo>)</mo>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Inverse_Fourier_Transform
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>1</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Laplace_Transform
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mn>3</mn>
+        <mo>&#x2062;</mo>
+        <msqrt>
+          <mi>&#x3c0;</mi>
+        </msqrt>
+      </mrow>
+      <mrow>
+        <mn>4</mn>
+        <mo>&#x2062;</mo>
+        <msup>
+          <mi>s</mi>
+          <mfrac>
+            <mn>5</mn>
+            <mn>2</mn>
+          </mfrac>
+        </msup>
+      </mrow>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mrow>
+        <mrow>
+          <mi>s</mi>
+          <mo>&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </mrow>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mi>a</mi>
+      <mrow>
+        <mrow>
+          <msup>
+            <mi>a</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>&#x2212;</mo>
+          <msup>
+            <mi>s</mi>
+            <mn>2</mn>
+          </msup>
+        </mrow>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Inverse_Laplace_Transform
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi>&#x2147;</mi>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mi>t</mi>
+        <mo>&#x2062;</mo>
+        <mi>&#x3b1;</mi>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Gradient
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <msup>
+            <mi>y</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>z</mi>
+            <mn>3</mn>
+          </msup>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>&#x2062;</mo>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>z</mi>
+            <mn>3</mn>
+          </msup>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>y</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>z</mi>
+            <mn>2</mn>
+          </msup>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Divergence
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>z</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Curl
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Laplacian
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>12</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Jacobian
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>&#x2062;</mo>
+          <mi>z</mi>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <msup>
+            <mi>z</mi>
+            <mn>2</mn>
+          </msup>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>&#x2062;</mo>
+          <mi>z</mi>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Hessian
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mi>w</mi>
+          <mo>&#x2062;</mo>
+          <mi>z</mi>
+        </mtd>
+        <mtd>
+          <mi>w</mi>
+          <mo>&#x2062;</mo>
+          <mi>y</mi>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mi>w</mi>
+          <mo>&#x2062;</mo>
+          <mi>z</mi>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mi>w</mi>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mi>w</mi>
+          <mo>&#x2062;</mo>
+          <mi>y</mi>
+        </mtd>
+        <mtd>
+          <mi>w</mi>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Wronskian
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <msup>
+            <mi>x</mi>
+            <mn>3</mn>
+          </msup>
+          <mo>&#x2212;</mo>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+        </mtd>
+        <mtd>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+        </mtd>
+        <mtd>
+          <msup>
+            <mi>x</mi>
+            <mn>4</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>5</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>&#x2212;</mo>
+          <mn>6</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mtd>
+        <mtd>
+          <mn>6</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mtd>
+        <mtd>
+          <mn>4</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>3</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>10</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>6</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>&#x2212;</mo>
+          <mn>6</mn>
+        </mtd>
+        <mtd>
+          <mn>6</mn>
+        </mtd>
+        <mtd>
+          <mn>12</mn>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>+</mo>
+          <mn>10</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Scalar_Potential
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>0</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Vector_Potential
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <msup>
+            <mi>x</mi>
+            <mn>2</mn>
+          </msup>
+          <mo>&#x2062;</mo>
+          <mi>y</mi>
+          <mo>&#x2212;</mo>
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msup>
+            <mi>z</mi>
+            <mn>2</mn>
+          </msup>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mi>z</mi>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Adjugate
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>4</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>2</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>3</mn>
+        </mtd>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Characteristic_Polynomial
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi>X</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mn>5</mn>
+    <mo>&#x2062;</mo>
+    <mi>X</mi>
+    <mo>&#x2212;</mo>
+    <mn>2</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Cholesky_Decomposition
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>3</mn>
+        </mtd>
+        <mtd>
+          <mi>&#x2148;</mi>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>5</mn>
+          </msqrt>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+    <mo>&#x2062;</mo>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>3</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mi>&#x2148;</mi>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>5</mn>
+          </msqrt>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Column_Basis
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mrow>
+      <mrow>
+        <mo>(</mo>
+        <mtable>
+          <mtr>
+            <mtd>
+              <mn>1</mn>
+            </mtd>
+          </mtr>
+          <mtr>
+            <mtd>
+              <mn>3</mn>
+            </mtd>
+          </mtr>
+        </mtable>
+        <mo>)</mo>
+      </mrow>
+      <mo>,</mo>
+      <mrow>
+        <mo>(</mo>
+        <mtable>
+          <mtr>
+            <mtd>
+              <mn>2</mn>
+            </mtd>
+          </mtr>
+          <mtr>
+            <mtd>
+              <mn>4</mn>
+            </mtd>
+          </mtr>
+        </mtable>
+        <mo>)</mo>
+      </mrow>
+    </mrow>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Concatenate
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>2</mn>
+        </mtd>
+        <mtd>
+          <mn>5</mn>
+        </mtd>
+        <mtd>
+          <mn>6</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>3</mn>
+        </mtd>
+        <mtd>
+          <mn>4</mn>
+        </mtd>
+        <mtd>
+          <mn>7</mn>
+        </mtd>
+        <mtd>
+          <mn>8</mn>
+          <mo>+</mo>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Condition_Number
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2.6180</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Definiteness_Tests
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>indef</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Determinant
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>&#x2212;</mo>
+    <mn>10</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Eigenvalues
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <msqrt>
+      <mn>33</mn>
+    </msqrt>
+    <mo>+</mo>
+    <mfrac>
+      <mn>5</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>,</mo>
+    <mfrac>
+      <mn>5</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <msqrt>
+      <mn>33</mn>
+    </msqrt>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Eigenvectors
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced class="msiEigenVectorSet" open="{" close="}">
+      <mfenced class="msiEigenTriple" open="[" close="]">
+        <mrow class="msiEigenValue">
+          <mrow>
+            <mfrac>
+              <mn>5</mn>
+              <mn>2</mn>
+            </mfrac>
+            <mo>&#x2212;</mo>
+            <mfrac>
+              <mn>1</mn>
+              <mn>2</mn>
+            </mfrac>
+            <mo>&#x2062;</mo>
+            <msqrt>
+              <mn>33</mn>
+            </msqrt>
+          </mrow>
+        </mrow>
+        <mrow class="msiMultiplicity">
+          <mn>1</mn>
+        </mrow>
+        <mrow class="msiEigenVector">
+          <mrow>
+            <mo>{</mo>
+            <mrow>
+              <mo>(</mo>
+              <mtable>
+                <mtr>
+                  <mtd>
+                    <mo>&#x2212;</mo>
+                    <mfrac>
+                      <mn>1</mn>
+                      <mn>6</mn>
+                    </mfrac>
+                    <mo>&#x2062;</mo>
+                    <msqrt>
+                      <mn>33</mn>
+                    </msqrt>
+                    <mo>&#x2212;</mo>
+                    <mfrac>
+                      <mn>1</mn>
+                      <mn>2</mn>
+                    </mfrac>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mn>1</mn>
+                  </mtd>
+                </mtr>
+              </mtable>
+              <mo>)</mo>
+            </mrow>
+            <mo>}</mo>
+          </mrow>
+        </mrow>
+      </mfenced>
+      <mfenced class="msiEigenTriple" open="[" close="]">
+        <mrow class="msiEigenValue">
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>33</mn>
+          </msqrt>
+          <mo>+</mo>
+          <mfrac>
+            <mn>5</mn>
+            <mn>2</mn>
+          </mfrac>
+        </mrow>
+        <mrow class="msiMultiplicity">
+          <mn>1</mn>
+        </mrow>
+        <mrow class="msiEigenVector">
+          <mrow>
+            <mo>{</mo>
+            <mrow>
+              <mo>(</mo>
+              <mtable>
+                <mtr>
+                  <mtd>
+                    <mfrac>
+                      <mn>1</mn>
+                      <mn>6</mn>
+                    </mfrac>
+                    <mo>&#x2062;</mo>
+                    <msqrt>
+                      <mn>33</mn>
+                    </msqrt>
+                    <mo>&#x2212;</mo>
+                    <mfrac>
+                      <mn>1</mn>
+                      <mn>2</mn>
+                    </mfrac>
+                  </mtd>
+                </mtr>
+                <mtr>
+                  <mtd>
+                    <mn>1</mn>
+                  </mtd>
+                </mtr>
+              </mtable>
+              <mo>)</mo>
+            </mrow>
+            <mo>}</mo>
+          </mrow>
+        </mrow>
+      </mfenced>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Fill_Matrix
+</p>
+<p>Fill Matrix... 2x2, Jordan Block*</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mi>&#x3bb;</mi>
+        </mtd>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mi>&#x3bb;</mi>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Fraction_Free_Gaussian_Elimination
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>12</mn>
+        </mtd>
+        <mtd>
+          <mn>5</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>17</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Gaussian_Elimination
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>2</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>2</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Hermite_Normal_Form
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>17</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Hermitian_Transpose
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>12</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>13</mn>
+          <mo>&#x2062;</mo>
+          <mi>&#x2148;</mi>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>5</mn>
+          <mo>&#x2062;</mo>
+          <mi>&#x2148;</mi>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>4</mn>
+          <mo>&#x2062;</mo>
+          <mi>&#x2148;</mi>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Inverse
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>2</mn>
+        </mtd>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mfrac>
+            <mn>3</mn>
+            <mn>2</mn>
+          </mfrac>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Jordan_Form
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mfrac>
+            <mn>3</mn>
+            <mn>4</mn>
+          </mfrac>
+          <mo>&#x2212;</mo>
+          <mfrac>
+            <mn>1</mn>
+            <mn>4</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>33</mn>
+          </msqrt>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>4</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>33</mn>
+          </msqrt>
+          <mo>+</mo>
+          <mfrac>
+            <mn>3</mn>
+            <mn>4</mn>
+          </mfrac>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+    <mo>&#x2062;</mo>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mfrac>
+            <mn>5</mn>
+            <mn>2</mn>
+          </mfrac>
+          <mo>&#x2212;</mo>
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>33</mn>
+          </msqrt>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>33</mn>
+          </msqrt>
+          <mo>+</mo>
+          <mfrac>
+            <mn>5</mn>
+            <mn>2</mn>
+          </mfrac>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+    <mo>&#x2062;</mo>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>22</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>33</mn>
+          </msqrt>
+          <mo>+</mo>
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mfrac>
+            <mn>2</mn>
+            <mn>33</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>33</mn>
+          </msqrt>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+          <mo>&#x2212;</mo>
+          <mfrac>
+            <mn>1</mn>
+            <mn>22</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>33</mn>
+          </msqrt>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>2</mn>
+            <mn>33</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>33</mn>
+          </msqrt>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Define before Map Entries
+</p>
+<p>define f(m) = 1/(1+m)</p>
+<p>
+Test ID CCID_Map_Entries
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>3</mn>
+          </mfrac>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>4</mn>
+          </mfrac>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>5</mn>
+          </mfrac>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Undefine after Map Entries
+</p>
+<p>undefine f(m) = 1/(1+m)</p>
+<p>
+Test ID CCID_Minimal_Polynomial
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi>X</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mn>5</mn>
+    <mo>&#x2062;</mo>
+    <mi>X</mi>
+    <mo>&#x2212;</mo>
+    <mn>2</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Norm
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>5.4650</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Nullspace_Basis
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mrow>
+      <mo>(</mo>
+      <mtable>
+        <mtr>
+          <mtd>
+            <mo>&#x2212;</mo>
+            <mn>3</mn>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mn>4</mn>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mn>1</mn>
+          </mtd>
+        </mtr>
+      </mtable>
+      <mo>)</mo>
+    </mrow>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Orthogonality_Test
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mtext msiMathname="true">FALSE</mtext>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Permanent
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>10</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_PLU_Decomposition
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+    <mo>,</mo>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>3</mn>
+        </mtd>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+    <mo>,</mo>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>2</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>2</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_QR_Decomposition
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>10</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>10</mn>
+          </msqrt>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>3</mn>
+            <mn>10</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>2</mn>
+          </msqrt>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>5</mn>
+          </msqrt>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mfrac>
+            <mn>3</mn>
+            <mn>10</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>10</mn>
+          </msqrt>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mfrac>
+            <mn>1</mn>
+            <mn>10</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>2</mn>
+          </msqrt>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>5</mn>
+          </msqrt>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+    <mo>,</mo>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <msqrt>
+            <mn>10</mn>
+          </msqrt>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>7</mn>
+            <mn>5</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>10</mn>
+          </msqrt>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>5</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>2</mn>
+          </msqrt>
+          <mo>&#x2062;</mo>
+          <msqrt>
+            <mn>5</mn>
+          </msqrt>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Random_Matrix
+</p>
+<p>Random Matrix...Triangular 3x4, (0 to 10)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>8</mn>
+        </mtd>
+        <mtd>
+          <mn>9</mn>
+        </mtd>
+        <mtd>
+          <mn>9</mn>
+        </mtd>
+        <mtd>
+          <mn>2</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>9</mn>
+        </mtd>
+        <mtd>
+          <mn>4</mn>
+        </mtd>
+        <mtd>
+          <mn>5</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>10</mn>
+        </mtd>
+        <mtd>
+          <mn>3</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rank
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Rational_Canonical_Form
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>3</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+    <mo>,</mo>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>2</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>5</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+    <mo>,</mo>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mfrac>
+            <mn>1</mn>
+            <mn>3</mn>
+          </mfrac>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>3</mn>
+          </mfrac>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Reduced_Row_Echelon_Form
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Reshape
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>2</mn>
+        </mtd>
+        <mtd>
+          <mn>11</mn>
+        </mtd>
+        <mtd>
+          <mn>3</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>4</mn>
+        </mtd>
+        <mtd>
+          <mn>13</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>3</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>4</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>33</mn>
+        </mtd>
+        <mtd>
+          <mn>4</mn>
+        </mtd>
+        <mtd>
+          <mn>1</mn>
+          <mo>&#x2212;</mo>
+          <mn>2</mn>
+        </mtd>
+        <mtd>
+          <mn>14</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Row_Basis
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mrow>
+      <mrow>
+        <mo>(</mo>
+        <mtable>
+          <mtr>
+            <mtd>
+              <mn>1</mn>
+            </mtd>
+            <mtd>
+              <mn>2</mn>
+            </mtd>
+          </mtr>
+        </mtable>
+        <mo>)</mo>
+      </mrow>
+      <mo>,</mo>
+      <mrow>
+        <mo>(</mo>
+        <mtable>
+          <mtr>
+            <mtd>
+              <mn>3</mn>
+            </mtd>
+            <mtd>
+              <mn>4</mn>
+            </mtd>
+          </mtr>
+        </mtable>
+        <mo>)</mo>
+      </mrow>
+    </mrow>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Singular_Values
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mrow>
+      <mn>5.4650</mn>
+      <mo>,</mo>
+      <mn>0.36597</mn>
+    </mrow>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Smith_Normal_Form
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>2</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Spectral_Radius
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>5.3723</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Stack
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mn>2</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>3</mn>
+        </mtd>
+        <mtd>
+          <mn>4</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>5</mn>
+        </mtd>
+        <mtd>
+          <mn>6</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>7</mn>
+        </mtd>
+        <mtd>
+          <mn>8</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_SVD
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>0.40455</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>0.91451</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0.91451</mn>
+        </mtd>
+        <mtd>
+          <mn>0.40455</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+    <mo>,</mo>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>5.4650</mn>
+        </mtd>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0</mn>
+        </mtd>
+        <mtd>
+          <mn>0.36597</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+    <mo>,</mo>
+    <mo>(</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>0.57605</mn>
+        </mtd>
+        <mtd>
+          <mn>0.81742</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>0.81742</mn>
+        </mtd>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>0.57605</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Trace
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>5</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Simplex_Dual
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>4</mn>
+          <mo>&#x2062;</mo>
+          <msub>
+            <mi>u</mi>
+            <mn>1</mn>
+          </msub>
+          <mo>+</mo>
+          <mn>6</mn>
+          <mo>&#x2062;</mo>
+          <msub>
+            <mi>u</mi>
+            <mn>2</mn>
+          </msub>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <msub>
+            <mi>u</mi>
+            <mn>3</mn>
+          </msub>
+          <mo>&#x2212;</mo>
+          <mn>4</mn>
+          <mo>&#x2062;</mo>
+          <msub>
+            <mi>u</mi>
+            <mn>2</mn>
+          </msub>
+          <mo>&#x2212;</mo>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <msub>
+            <mi>u</mi>
+            <mn>1</mn>
+          </msub>
+          <mo>&#x2264;</mo>
+          <mo>&#x2212;</mo>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <msub>
+            <mi>u</mi>
+            <mn>4</mn>
+          </msub>
+          <mo>&#x2212;</mo>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <msub>
+            <mi>u</mi>
+            <mn>2</mn>
+          </msub>
+          <mo>&#x2212;</mo>
+          <mn>4</mn>
+          <mo>&#x2062;</mo>
+          <msub>
+            <mi>u</mi>
+            <mn>1</mn>
+          </msub>
+          <mo>&#x2264;</mo>
+          <mo>&#x2212;</mo>
+          <mn>1</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Simplex_Feasible
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mtext msiMathname="true">TRUE</mtext>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Simplex_Maximize
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>{</mo>
+    <mrow>
+      <mrow>
+        <mi>y</mi>
+        <mo>=</mo>
+        <mo>&#x2212;</mo>
+        <mfrac>
+          <mn>2</mn>
+          <mn>7</mn>
+        </mfrac>
+      </mrow>
+      <mo>,</mo>
+      <mrow>
+        <mi>x</mi>
+        <mo>=</mo>
+        <mfrac>
+          <mn>12</mn>
+          <mn>7</mn>
+        </mfrac>
+      </mrow>
+    </mrow>
+    <mo>}</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Simplex_Minimize
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>{</mo>
+    <mrow>
+      <mrow>
+        <mi>y</mi>
+        <mo>=</mo>
+        <mo>&#x2212;</mo>
+        <mfrac>
+          <mn>2</mn>
+          <mn>7</mn>
+        </mfrac>
+      </mrow>
+      <mo>,</mo>
+      <mrow>
+        <mi>x</mi>
+        <mo>=</mo>
+        <mfrac>
+          <mn>12</mn>
+          <mn>7</mn>
+        </mfrac>
+      </mrow>
+    </mrow>
+    <mo>}</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Simplex_Minimize
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>{</mo>
+    <mrow>
+      <mrow>
+        <mn>3</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mn>4</mn>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+        <mo>&#x2264;</mo>
+        <mn>4</mn>
+      </mrow>
+      <mo>,</mo>
+      <mrow>
+        <mn>4</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mn>3</mn>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+        <mo>&#x2264;</mo>
+        <mn>6</mn>
+      </mrow>
+      <mo>,</mo>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mi>x</mi>
+        <mo>&#x2264;</mo>
+        <mn>0</mn>
+      </mrow>
+      <mo>,</mo>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mi>y</mi>
+        <mo>&#x2264;</mo>
+        <mn>0</mn>
+      </mrow>
+    </mrow>
+    <mo>}</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Fit_Curve_to_Data
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>y</mi>
+    <mo>=</mo>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mfrac>
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Random_Numbers
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>0.51096</mn>
+    <mo>,</mo>
+    <mn>0.46865</mn>
+    <mo>,</mo>
+    <mn>0.50477</mn>
+    <mo>,</mo>
+    <mn>0.46413</mn>
+    <mo>,</mo>
+    <mn>0.53229</mn>
+    <mo>,</mo>
+    <mn>0.14963</mn>
+    <mo>,</mo>
+    <mn>0.25689</mn>
+    <mo>,</mo>
+    <mn>0.60290</mn>
+    <mo>,</mo>
+    <mn>0.20550</mn>
+    <mo>,</mo>
+    <mn>8.3657</mn>
+    <mo>&#xd7;</mo>
+    <msup>
+      <mn>10</mn>
+      <mn>-2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Mean
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>a</mi>
+    <mo>+</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>b</mi>
+    <mo>+</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>c</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Median
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>5</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Mode
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mrow>
+      <mi>a</mi>
+      <mo>,</mo>
+      <mi>b</mi>
+      <mo>,</mo>
+      <mi>c</mi>
+    </mrow>
+    <mo>]</mo>
+    <mo>,</mo>
+    <mn>1</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Correlation
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>1.0</mn>
+        </mtd>
+        <mtd>
+          <mn>7.4831</mn>
+          <mo>&#xd7;</mo>
+          <msup>
+            <mn>10</mn>
+            <mn>-2</mn>
+          </msup>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>7.4831</mn>
+          <mo>&#xd7;</mo>
+          <msup>
+            <mn>10</mn>
+            <mn>-2</mn>
+          </msup>
+        </mtd>
+        <mtd>
+          <mn>1.0</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Covariance
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>[</mo>
+    <mtable>
+      <mtr>
+        <mtd>
+          <mn>2.3333</mn>
+        </mtd>
+        <mtd>
+          <mn>1.1667</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mn>1.1667</mn>
+        </mtd>
+        <mtd>
+          <mn>2.3333</mn>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>]</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Geometric_Mean
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mroot>
+      <mn>4704</mn>
+      <mn>4</mn>
+    </mroot>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Harmonic_Mean
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>3</mn>
+      <mrow>
+        <mrow>
+          <mfrac>
+            <mn>1</mn>
+            <mi>a</mi>
+          </mfrac>
+          <mo>+</mo>
+          <mfrac>
+            <mn>1</mn>
+            <mi>b</mi>
+          </mfrac>
+          <mo>+</mo>
+          <mfrac>
+            <mn>1</mn>
+            <mi>c</mi>
+          </mfrac>
+        </mrow>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Mean_Deviation
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>6</mn>
+      <mn>5</mn>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Moment
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>&#x2212;</mo>
+    <mn>5.0</mn>
+    <mo>&#xd7;</mo>
+    <msup>
+      <mn>10</mn>
+      <mn>-2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Quantile
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>0.10</mn>
+    <mo>,</mo>
+    <mrow>
+      <mo>[</mo>
+      <mrow>
+        <mn>1</mn>
+        <mo>,</mo>
+        <mn>2</mn>
+      </mrow>
+      <mo>]</mo>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Standard_Deviation
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>21</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <msqrt>
+      <mn>21</mn>
+    </msqrt>
+    <mo>&#x2062;</mo>
+    <msqrt>
+      <mn>21055</mn>
+    </msqrt>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Variance
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>21055</mn>
+      <mn>21</mn>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_PassThru
+</p>
+<p>Pass thru test, set MuPAD DIGITS to 50</p>
+<p>
+SetClientPref(1,9,50)
+</p>
+<p>
+Test ID CCID_Evaluate_Numerically after PassThru
+</p>
+<p>Root 2, with 50 sig figs</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>1.4142135623730950488016887242096980785696718753769</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Evaluate before Define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mo>(</mo>
+      <mn>5</mn>
+      <mo>)</mo>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Define
+</p>
+<p>Defining <mml:math display="inline"><mml:mrow><mml:mrow><mml:mi>f</mml:mi><mml:mo>&ApplyFunction;</mml:mo><mml:mrow><mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo><mml:mi>x</mml:mi><mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo></mml:mrow></mml:mrow><mml:mo form="infix">=</mml:mo><mml:mrow><mml:msup><mml:mi>x</mml:mi><mml:mn>2</mml:mn></mml:msup><mml:mo form="infix">&minus;</mml:mo><mml:mrow><mml:mn>2</mml:mn><mml:mo>&InvisibleTimes;</mml:mo><mml:mi>x</mml:mi></mml:mrow><mml:mo form="infix">+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:mrow></mml:math></p>
+<p>
+Test ID CCID_Evaluate after Define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>16</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Undefine
+</p>
+<p>Undefining <mml:math display="inline"><mml:mrow><mml:mi>f</mml:mi><mml:mo>&ApplyFunction;</mml:mo><mml:mrow><mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo><mml:mi>x</mml:mi><mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo></mml:mrow></mml:mrow></mml:math></p>
+<p>
+Test ID CCID_Evaluate after Undefine
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>f</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mo>(</mo>
+      <mn>5</mn>
+      <mo>)</mo>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Evaluate before Define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi>a</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mn>1</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Define
+</p>
+<p>Defining <mml:math><mml:mrow><mml:mi>a</mml:mi></mml:mrow></mml:math></p>
+<p>
+Test ID CCID_Evaluate after Define
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>8</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Cleanup
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>3.14</mn>
+</math>
+
+</p>
+<p>
+Test ID CCID_Fixup
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>sin</mi>
+    <mo>&#x2061;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_Interpret
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mi>y</mi>
+    <mo>*</mo>
+    <mi>z</mi>
+    <mo>-</mo>
+    <mfrac>
+      <mi>w</mi>
+      <mi>v</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID CCID_PlotFuncCmd
+</p>
+<p>Plot Function 2d</p>
+<hr/>
+</body>
+</html>

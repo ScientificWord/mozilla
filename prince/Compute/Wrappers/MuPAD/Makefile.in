@@ -1,0 +1,79 @@
+# Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+
+DEPTH		= ../../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE		    = mupadenginewrapper
+XPIDL_MODULE	= mupadenginewrapper
+LIBRARY_NAME	= mupadenginewrapper
+SHORT_LIBNAME	= mupwrap
+
+IS_COMPONENT	= 1
+MODULE_NAME	= msiMuPADEngineWrapperModule
+
+
+REQUIRES	= string \
+		  enginewrapper \
+		  xpcom \
+		  $(NULL)
+
+CPPSRCS		=		   \
+		msiMuPADEngineWrapper.cpp	   \
+		msiMuPADEngineWrapperModule.cpp \
+		$(NULL)
+
+include $(topsrcdir)/config/config.mk
+
+# separate libraries linked in.
+EXTRA_DSO_LDOPTS = \
+		$(DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
+		$(XPCOM_FROZEN_LDOPTS) \
+		$(NSPR_LIBS) \
+		$(NULL)
+
+LIBS            = \
+		$(DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
+		$(XPCOM_FROZEN_LDOPTS) \
+		$(NSPR_LIBS) \
+		$(NULL)
+
+ifeq ($(OS_ARCH)$(OS_RELEASE),FreeBSD2)
+LIBS		+= -lpcap
+endif
+
+ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
+EXTRA_DSO_LDOPTS += \
+		$(TK_LIBS) \
+		$(NULL)
+
+LIBS += \
+		$(TK_LIBS) \
+		$(NULL)
+endif
+
+SHARED_LIBRARY_LIBS += \
+      $(DIST)/lib/MuPWrapperDLL.$(LIB_SUFFIX) \
+      $(DIST)/lib/computelib.$(LIB_SUFFIX) \
+      $(DIST)/lib/enginelib.$(LIB_SUFFIX) \
+      $(DIST)/lib/libtci.$(LIB_SUFFIX) \
+  $(NULL)
+
+EXTRA_LIBS += \
+		ole32.lib \
+		oleaut32.lib \
+		oledlg.lib \
+		$(srcdir)/../../Engines/MuPAD/mupkern.lib \
+		$(NULL)
+include $(topsrcdir)/config/rules.mk
+
+LOCAL_INCLUDES = \
+  -I$(srcdir)/../.. \
+  -I$(srcdir)/../../libtci \
+  -I$(srcdir)/../../Engines/MuPAD \
+  $(NULL)
+
+                 
