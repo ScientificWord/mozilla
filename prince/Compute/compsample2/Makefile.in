@@ -1,0 +1,74 @@
+# Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+
+DEPTH		= ../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE		    = simplecomputeengine
+XPIDL_MODULE	= simplecomputeengine
+LIBRARY_NAME	= simplecomputeengine
+SHORT_LIBNAME	= compeng2
+
+IS_COMPONENT	= 1
+MODULE_NAME	= msiSimpleComputeEngine2Module
+
+REQUIRES = \
+  string \
+  xpcom \
+  simplecomputeengine \
+  $(NULL)
+
+CPPSRCS = \
+  msiSimpleComputeEngine2.cpp	   \
+  msiSimpleComputeEngine2Module.cpp \
+  ComputeDLL.cpp \
+  $(NULL)
+
+XPIDLSRCS	= msiISimpleComputeEngine.idl
+
+#TESTCPPSRCS	= msiTestSample2.cpp
+#
+#CPPSRCS += $(TESTCPPSRCS)
+#
+#SIMPLE_PROGRAMS	= $(TESTCPPSRCS:.cpp=$(BIN_SUFFIX))
+
+include $(topsrcdir)/config/config.mk
+
+# separate libraries linked in.
+EXTRA_DSO_LDOPTS = \
+  $(DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
+  $(XPCOM_FROZEN_LDOPTS) \
+  $(NSPR_LIBS) \
+  $(DIST)/lib/computelib.$(LIB_SUFFIX) \
+  $(DIST)/lib/enginelib.$(LIB_SUFFIX) \
+  $(DIST)/lib/libtci.$(LIB_SUFFIX) \
+  $(NULL)
+
+LIBS = \
+  $(DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
+  $(XPCOM_FROZEN_LDOPTS) \
+  $(NSPR_LIBS) \
+  $(NULL)
+
+include $(topsrcdir)/config/rules.mk
+
+LOCAL_INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../libtci
+
+ifdef MOZ_DEBUG
+CXXFLAGS	+= /DTESTING
+endif
+
+
+libs:: $(TARGETS)
+	$(INSTALL) $(srcdir)/simplecompute2.html $(DIST)/bin/res/samples
+
+install:: $(TARGETS)
+	$(SYSINSTALL) $(IFLAGS1) $(srcdir)/simplecompute2 $(DESTDIR)$(mozappdir)/res/samples
+
+msiISimpleComputeEngine.idl:: msiISimpleComputeEngine.idl.in ../iCmpIDs.h
+	$(CPP) $<  | sed "s/^IDLinclude/#include/" > msiISimpleComputeEngine.idl
+
+                 
