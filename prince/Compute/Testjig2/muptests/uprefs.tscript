@@ -1,0 +1,387 @@
+;Test script for "Comptest.exe". Written July, 2004, JBM.
+
+;Modified by SLS.  This script doesn't do much anymore.
+
+SetClientPref     1,Sig_digits_rendered,9
+SetClientPref     1,Output_differentialD,0
+SetClientPref     1,Output_differentiald,0
+SetClientPref     1,Output_ln_base,0
+SetClientPref     1,Output_imaginaryi,0
+
+Test ID     100
+Comment     <mml:math><mml:mn>1.41421356</mml:mn></mml:math>
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate Numerically
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msqrt>
+         <mml:mn>2</mml:mn>
+       </mml:msqrt>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     101
+Comment     Render ASCII for e and i
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>e</mi>
+       <mml:mo>+</mml:mo>
+       <mml:mi>&#x2147;</mi>
+       <mml:mo>+</mml:mo>
+       <mml:mi>i</mi>
+       <mml:mo>+</mml:mo>
+       <mml:mi>&#x2148;</mi>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+
+; Comptest creates Client 1 by default - we're creating client 2 here
+; The param is the parent of the client to be created
+
+;CreateNextClient  0
+
+SetClientPref     1,Sig_digits_rendered,5
+SetClientPref     1,Output_ln_base,1
+SetClientPref     1,Output_imaginaryi,2
+
+Test ID     200
+Comment     <mml:math><mml:mn>1.4142</mml:mn></mml:math>
+;Client ID   2
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate Numerically
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msqrt>
+         <mml:mn>2</mml:mn>
+       </mml:msqrt>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     201
+Comment     Render Unicodes for e and i
+;Client ID   2
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>e</mi>
+       <mml:mo>+</mml:mo>
+       <mml:mi>&#x2147;</mi>
+       <mml:mo>+</mml:mo>
+       <mml:mi>i</mi>
+       <mml:mo>+</mml:mo>
+       <mml:mi>&#x2148;</mi>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     250
+Comment     test mfenced (default)
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo>(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mi>
+             <mml:mo>+</mml:mo>
+             <mml:mi>y</mi>
+           </mml:mrow>
+           <mml:mo>)</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+SetClientPref     1,use_mfenced,0
+
+Test ID     251
+Comment     test mfenced (off)
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo>(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mi>
+             <mml:mo>+</mml:mo>
+             <mml:mi>y</mi>
+           </mml:mrow>
+           <mml:mo>)</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+SetClientPref     1,use_mfenced,1
+
+Test ID     251
+Comment     test mfenced (on)
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo>(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mi>
+             <mml:mo>+</mml:mo>
+             <mml:mi>y</mi>
+           </mml:mrow>
+           <mml:mo>)</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+; Comptest creates Client 1 by default - we're creating client 3 here
+
+;CreateNextClient  0
+
+SetClientPref     1,Sig_digits_rendered,5
+
+Test ID     300
+Comment     <mml:math><mml:mn>1.4142</mml:mn></mml:math>
+;Client ID   3
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate Numerically
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msqrt>
+         <mml:mn>2</mml:mn>
+       </mml:msqrt>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+
+; Comptest creates Client 1 by default - we're creating client 4 here
+
+;CreateNextClient  1
+
+SetClientPref     1,Sig_digits_rendered,9
+
+Test ID     400
+Comment     <mml:math><mml:mn>1.41421356</mml:mn></mml:math>
+;Client ID   4
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate Numerically
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msqrt>
+         <mml:mn>2</mml:mn>
+       </mml:msqrt>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+Test ID     500
+Comment     ?
+;Client ID   4
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate Numerically
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>10</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>100</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>1000</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>10000</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>0.1</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>0.01</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>0.001</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>0.0001</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:msqrt>
+                 <mml:mn>2</mml:mn>
+               </mml:msqrt>
+             </mml:mrow>
+             <mml:mtext>&emsp;&emsp;</mml:mtext>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>0.00001</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+SetClientPref     1,Sig_digits_rendered,5
+SetClientPref     1,SciNote_lower_thresh,0
+SetClientPref     1,SciNote_upper_thresh,1
+
+Test ID     500
+Comment     Scientific Notation, 5 digits rendered
+;Client ID   4
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate Numerically
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>10</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>100</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>1000</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>10000</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>0.1</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>0.01</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>0.001</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mrow>
+               <mml:mn>0.0001</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:msqrt>
+                 <mml:mn>2</mml:mn>
+               </mml:msqrt>
+             </mml:mrow>
+             <mml:mtext>&emsp;&emsp;</mml:mtext>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>0.00001</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msqrt>
+               <mml:mn>2</mml:mn>
+             </mml:msqrt>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+     </mml:mrow>
+   </mml:math>
+End of test

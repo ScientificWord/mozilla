@@ -1,0 +1,4171 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<title>CompTest Script/Command Output</title>
+</head>
+<body>
+<hr/>
+<p>
+SetClientPref(1,4,1)
+</p>
+<p>
+Test ID 101
+</p>
+<p>inert</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>3</mn>
+    <mo>&#x2212;</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 102
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>a</mi>
+      </mrow>
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>b</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 103
+</p>
+<p>should bind args, build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mfrac>
+      <mi>x</mi>
+      <mi>y</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 107
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 108a
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mn>4</mn>
+        </mrow>
+      </mfenced>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 108b
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <msup>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>3</mn>
+            <mo>&#x2062;</mo>
+            <mi>x</mi>
+            <mo>+</mo>
+            <mn>4</mn>
+          </mrow>
+        </mfenced>
+        <mn>2</mn>
+      </msup>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 109
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 110
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mrow>
+        <mn>3</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 111
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mn>4</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 112
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+      <mi>z</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 120
+</p>
+<p>should insert InvisibleTimes</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 121a
+</p>
+<p>should insert InvisibleTimes</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 121b
+</p>
+<p>should insert InvisibleTimes</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 122a
+</p>
+<p>inert</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 122b
+</p>
+<p>outer fence removed!</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mi>y</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 122c
+</p>
+<p>should insert InvisibleTimes</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 122d
+</p>
+<p>should insert InvisibleTimes</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 122e
+</p>
+<p>should insert InvisibleTimes</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>2</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 123
+</p>
+<p>should insert InvisibleTimes</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 124a
+</p>
+<p>should insert InvisibleTimes</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 124b
+</p>
+<p>should insert InvisibleTimes</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mi>y</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 125
+</p>
+<p>should insert InvisibleTimes</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 126
+</p>
+<p>should resolve precedence</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>1</mn>
+    <mo>+</mo>
+    <mn>2</mn>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mrow>
+        <mn>3</mn>
+        <mo>&#x2217;</mo>
+        <mn>4</mn>
+      </mrow>
+      <mrow>
+        <mn>5</mn>
+        <mo>!</mo>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 127a
+</p>
+<p>should group</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <mn>7</mn>
+      </mrow>
+    </mfenced>
+    <mo>&#x2212;</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 127a-
+</p>
+<p>should group</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>-</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>-</mo>
+        <mn>7</mn>
+      </mrow>
+    </mfenced>
+    <mo>-</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 127b
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 127c
+</p>
+<p>should group</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>7</mn>
+            <mo>&#x2212;</mo>
+            <mn>6</mn>
+          </mrow>
+        </mfenced>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 127d
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 127e
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 128a
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <mn>7</mn>
+        <mo>&#x2212;</mo>
+        <mn>6</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 128b
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>8</mn>
+              <mo>&#x2212;</mo>
+              <mn>7</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+        <mo>&#x2212;</mo>
+        <mn>6</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 128c
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+          <mo>&#x2212;</mo>
+          <mn>6</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 130
+</p>
+<p>should resolve precedence</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>3.1416</mn>
+    <mo>&#xd7;</mo>
+    <msup>
+      <mn>10</mn>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>2</mn>
+      </mrow>
+    </msup>
+    <mo>+</mo>
+    <mn>1.11</mn>
+    <mo>&#xd7;</mo>
+    <msup>
+      <mn>10</mn>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>3</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 131
+</p>
+<p>should resolve precedence</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>&#x2212;</mo>
+    <mn>3.1416</mn>
+  </mrow>
+  <mo>&#xd7;</mo>
+  <msup>
+    <mn>10</mn>
+    <mrow>
+      <mo>&#x2212;</mo>
+      <mn>2</mn>
+    </mrow>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID 132
+</p>
+<p>should resolve precedence, collect fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="{" close="}">
+      <mn>1</mn>
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfenced>
+    <mo>&#x2229;</mo>
+    <mfenced open="{" close="}">
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 133
+</p>
+<p>should resolve precedence, collect fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="(" close=")">
+      <mi>a</mi>
+      <mi>b</mi>
+    </mfenced>
+    <mo>&#x2229;</mo>
+    <mfenced open="(" close=")">
+      <mi>g</mi>
+      <mi>h</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 133u
+</p>
+<p>should resolve precedence, collect fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="[" close="]">
+      <mi>a</mi>
+      <mi>b</mi>
+    </mfenced>
+    <mo>&#x222a;</mo>
+    <mfenced open="[" close="]">
+      <mi>g</mi>
+      <mi>h</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 134
+</p>
+<p>should resolve precedence, collect fences (not SWP, doesn't compute)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="(" close="]">
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfenced>
+    <mo>&#x2229;</mo>
+    <mfenced open="[" close=")">
+      <mn>2</mn>
+      <mn>4</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 134u
+</p>
+<p>should resolve precedence, collect fences (not SWP, doesn't compute)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="[" close=")">
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfenced>
+    <mo>&#x222a;</mo>
+    <mfenced open="(" close="]">
+      <mn>2</mn>
+      <mn>4</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 135
+</p>
+<p>should insert ApplyFunction</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi fontstyle="upright">&#x393;</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mn>4</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 136
+</p>
+<p>should insert ApplyFunction</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi fontstyle="upright">&#x3b6;</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mn>4</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 140
+</p>
+<p>should bind arg</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mi>a</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mi>b</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 141
+</p>
+<p>should insert ApplyFunction</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mi>a</mi>
+      <mo>&#x2062;</mo>
+      <mi msiMathname="true">sin</mi>
+      <mo>&#x2061;</mo>
+      <mi>b</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 142
+</p>
+<p>should insert ApplyFunction</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 143
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <msqrt>
+        <mi>y</mi>
+      </msqrt>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 144
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mfrac>
+        <mrow>
+          <mi>x</mi>
+          <mo>&#x2062;</mo>
+          <mi>y</mi>
+        </mrow>
+        <mi>z</mi>
+      </mfrac>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 145
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mi>y</mi>
+        <mn>2</mn>
+      </msup>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 146
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>y</mi>
+          <mo>+</mo>
+          <mi>z</mi>
+        </mrow>
+      </mfenced>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 147
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <msqrt>
+        <mi>y</mi>
+      </msqrt>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 148
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mfrac>
+        <mrow>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi>y</mi>
+        </mrow>
+        <mi>z</mi>
+      </mfrac>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 149
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mi>y</mi>
+        <mn>2</mn>
+      </msup>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 150
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>y</mi>
+          <mo>+</mo>
+          <mi>z</mi>
+        </mrow>
+      </mfenced>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 151
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi msiMathname="true">sin</mi>
+      <mn>&#x2212;1</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 152
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi msiMathname="true">sin</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <msup>
+      <mi>y</mi>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 160
+</p>
+<p>should deal with fence</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced open="[" close="]">
+          <mtable>
+            <mtr>
+              <mtd>
+                <mn>1</mn>
+              </mtd>
+              <mtd>
+                <mn>2</mn>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mn>3</mn>
+              </mtd>
+              <mtd>
+                <mn>4</mn>
+              </mtd>
+            </mtr>
+          </mtable>
+        </mfenced>
+      </mfenced>
+      <mn>2</mn>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 161
+</p>
+<p>should deal with fence, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <msub>
+        <mfenced open="&#x2016;" close="&#x2016;">
+          <mfenced open="[" close="]">
+            <mtable>
+              <mtr>
+                <mtd>
+                  <mn>1</mn>
+                </mtd>
+                <mtd>
+                  <mn>2</mn>
+                </mtd>
+              </mtr>
+              <mtr>
+                <mtd>
+                  <mn>3</mn>
+                </mtd>
+                <mtd>
+                  <mn>4</mn>
+                </mtd>
+              </mtr>
+            </mtable>
+          </mfenced>
+        </mfenced>
+        <mn>1</mn>
+      </msub>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 162
+</p>
+<p>should deal with fence, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <msub>
+        <mfenced open="&#x2016;" close="&#x2016;">
+          <mfenced open="[" close="]">
+            <mtable>
+              <mtr>
+                <mtd>
+                  <mn>1</mn>
+                </mtd>
+                <mtd>
+                  <mn>2</mn>
+                </mtd>
+              </mtr>
+              <mtr>
+                <mtd>
+                  <mn>3</mn>
+                </mtd>
+                <mtd>
+                  <mn>4</mn>
+                </mtd>
+              </mtr>
+            </mtable>
+          </mfenced>
+        </mfenced>
+        <msup>
+          <mn>1</mn>
+          <mn>2</mn>
+        </msup>
+      </msub>
+      <msup>
+        <mn>2</mn>
+        <mn>2</mn>
+      </msup>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 163
+</p>
+<p>should deal with fence</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mi>x</mi>
+      </mfenced>
+      <mi>p</mi>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 164
+</p>
+<p>should deal with fence, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <msub>
+        <mfenced open="&#x2016;" close="&#x2016;">
+          <mi>x</mi>
+        </mfenced>
+        <mi>p</mi>
+      </msub>
+      <mi>q</mi>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 1000
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>3</mn>
+      <mn>4</mn>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 1001
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mi>x</mi>
+      <mi>y</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 1002
+</p>
+<p>none</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>*</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 1003
+</p>
+<p>insert InvisibleTimes</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 201
+</p>
+<p>- to &amp;minus;?</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>3</mn>
+    <mo>-</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 202
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>a</mi>
+      </mrow>
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>b</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 203
+</p>
+<p>should bind args, build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mfrac>
+      <mi>x</mi>
+      <mi>y</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 207
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 208
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mn>4</mn>
+        </mrow>
+      </mfenced>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 209
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 210
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mrow>
+        <mn>3</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 211
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mn>4</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 212
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+      <mi>z</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 222a
+</p>
+<p>inert</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 222b
+</p>
+<p>outer fence removed!</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mi>y</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 222c
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 222d
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 222e
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>2</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 227a
+</p>
+<p>should group</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <mn>7</mn>
+      </mrow>
+    </mfenced>
+    <mo>&#x2212;</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 227a-
+</p>
+<p>should group</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>-</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>-</mo>
+        <mn>7</mn>
+      </mrow>
+    </mfenced>
+    <mo>-</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 227bi
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 227bii
+</p>
+<p>should bind fences, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 227c
+</p>
+<p>should group</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>7</mn>
+            <mo>&#x2212;</mo>
+            <mn>6</mn>
+          </mrow>
+        </mfenced>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 227di
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 227dii
+</p>
+<p>should bind fences, exponents</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 227ei
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 227eii
+</p>
+<p>should bind fences, exponents</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 228a
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <mn>7</mn>
+        <mo>&#x2212;</mo>
+        <mn>6</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 228bi
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>8</mn>
+              <mo>&#x2212;</mo>
+              <mn>7</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+        <mo>&#x2212;</mo>
+        <mn>6</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 228bii
+</p>
+<p>should bind fences, exponents</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>8</mn>
+              <mo>&#x2212;</mo>
+              <mn>7</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+        <mo>&#x2212;</mo>
+        <mn>6</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 228ci
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+          <mo>&#x2212;</mo>
+          <mn>6</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 228cii
+</p>
+<p>should bind fences, exponents</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+          <mo>&#x2212;</mo>
+          <mn>6</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 251
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi msiMathname="true">sin</mi>
+      <mn>&#x2212;1</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 252
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi msiMathname="true">sin</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <msup>
+      <mi>y</mi>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 260
+</p>
+<p>should deal with fence</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced open="[" close="]">
+          <mtable>
+            <mtr>
+              <mtd>
+                <mn>1</mn>
+              </mtd>
+              <mtd>
+                <mn>2</mn>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mn>3</mn>
+              </mtd>
+              <mtd>
+                <mn>4</mn>
+              </mtd>
+            </mtr>
+          </mtable>
+        </mfenced>
+      </mfenced>
+      <mn>2</mn>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 261
+</p>
+<p>should deal with fence, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <msub>
+        <mfenced open="&#x2016;" close="&#x2016;">
+          <mfenced open="[" close="]">
+            <mtable>
+              <mtr>
+                <mtd>
+                  <mn>1</mn>
+                </mtd>
+                <mtd>
+                  <mn>2</mn>
+                </mtd>
+              </mtr>
+              <mtr>
+                <mtd>
+                  <mn>3</mn>
+                </mtd>
+                <mtd>
+                  <mn>4</mn>
+                </mtd>
+              </mtr>
+            </mtable>
+          </mfenced>
+        </mfenced>
+        <mn>1</mn>
+      </msub>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 262
+</p>
+<p>should deal with fence, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <msub>
+        <mfenced open="&#x2016;" close="&#x2016;">
+          <mfenced open="[" close="]">
+            <mtable>
+              <mtr>
+                <mtd>
+                  <mn>1</mn>
+                </mtd>
+                <mtd>
+                  <mn>2</mn>
+                </mtd>
+              </mtr>
+              <mtr>
+                <mtd>
+                  <mn>3</mn>
+                </mtd>
+                <mtd>
+                  <mn>4</mn>
+                </mtd>
+              </mtr>
+            </mtable>
+          </mfenced>
+        </mfenced>
+        <msup>
+          <mn>1</mn>
+          <mn>2</mn>
+        </msup>
+      </msub>
+      <msup>
+        <mn>2</mn>
+        <mn>2</mn>
+      </msup>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 263
+</p>
+<p>should deal with fence</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mi>x</mi>
+      </mfenced>
+      <mi>p</mi>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 264
+</p>
+<p>should deal with fence, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <msub>
+        <mfenced open="&#x2016;" close="&#x2016;">
+          <mi>x</mi>
+        </mfenced>
+        <mi>p</mi>
+      </msub>
+      <mi>q</mi>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 301
+</p>
+<p>- to &amp;minus?;</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>3</mn>
+    <mo>-</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 302a
+</p>
+<p>arg has mrow</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mi>a</mi>
+      <mo>&#x2062;</mo>
+      <mi>b</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 302b
+</p>
+<p>arg missing mrow</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>a</mi>
+      </mrow>
+    </mfenced>
+    <mo>&#x2062;</mo>
+    <mi>b</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 302c
+</p>
+<p>arg has mrow</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mfrac>
+      <mi>a</mi>
+      <mi>b</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 302d
+</p>
+<p>arg missing mrow</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>a</mi>
+      </mrow>
+      <mi>b</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 302e
+</p>
+<p>arg has mrow</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>a</mi>
+        <mo>+</mo>
+        <mi>b</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 302f
+</p>
+<p>arg missing mrow</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mi>a</mi>
+    <mo>+</mo>
+    <mi>b</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 302g
+</p>
+<p>arg has mrow</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>a</mi>
+        <mo>-</mo>
+        <mi>b</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 302h
+</p>
+<p>arg missing mrow</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mi>a</mi>
+    <mo>-</mo>
+    <mi>b</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 303
+</p>
+<p>should build mfrac, resolve trigargs</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>a</mi>
+      </mrow>
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>b</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 307
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 308
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mn>4</mn>
+        </mrow>
+      </mfenced>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 309
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 310
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mrow>
+        <mn>3</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 311
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mn>4</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 312
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+      <mi>z</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 322a
+</p>
+<p>inert</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 322b
+</p>
+<p>outer fence removed!</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mi>y</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 322c1i
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 322c1ii
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 322c2i
+</p>
+<p>should bind superscript, build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 322c2ii
+</p>
+<p>should bind superscript, build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 322d1
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 322d2
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 322e1
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>2</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 322e2
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>2</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 327a
+</p>
+<p>should group</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <mn>7</mn>
+      </mrow>
+    </mfenced>
+    <mo>&#x2212;</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 327a-
+</p>
+<p>should group</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>-</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>-</mo>
+        <mn>7</mn>
+      </mrow>
+    </mfenced>
+    <mo>-</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 327b1
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 327b2
+</p>
+<p>should bind fences, exponents</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 327c
+</p>
+<p>should group</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>7</mn>
+            <mo>&#x2212;</mo>
+            <mn>6</mn>
+          </mrow>
+        </mfenced>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 327d1
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 327d2
+</p>
+<p>should bind fences, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 327e1
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 327e2
+</p>
+<p>should bind fences, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 328a
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <mn>7</mn>
+        <mo>&#x2212;</mo>
+        <mn>6</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 328b1
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>8</mn>
+              <mo>&#x2212;</mo>
+              <mn>7</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+        <mo>&#x2212;</mo>
+        <mn>6</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 328b2
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>8</mn>
+              <mo>&#x2212;</mo>
+              <mn>7</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+        <mo>&#x2212;</mo>
+        <mn>6</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 328c1
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+          <mo>&#x2212;</mo>
+          <mn>6</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 328c2
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+          <mo>&#x2212;</mo>
+          <mn>6</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 351
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi msiMathname="true">sin</mi>
+      <mn>&#x2212;1</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 352
+</p>
+<p>should insert ApplyFunction, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi msiMathname="true">sin</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <msup>
+      <mi>y</mi>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 360
+</p>
+<p>should deal with fence</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced open="[" close="]">
+          <mtable>
+            <mtr>
+              <mtd>
+                <mn>1</mn>
+              </mtd>
+              <mtd>
+                <mn>2</mn>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mn>3</mn>
+              </mtd>
+              <mtd>
+                <mn>4</mn>
+              </mtd>
+            </mtr>
+          </mtable>
+        </mfenced>
+      </mfenced>
+      <mn>2</mn>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 361
+</p>
+<p>should deal with fence, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <msub>
+        <mfenced open="&#x2016;" close="&#x2016;">
+          <mfenced open="[" close="]">
+            <mtable>
+              <mtr>
+                <mtd>
+                  <mn>1</mn>
+                </mtd>
+                <mtd>
+                  <mn>2</mn>
+                </mtd>
+              </mtr>
+              <mtr>
+                <mtd>
+                  <mn>3</mn>
+                </mtd>
+                <mtd>
+                  <mn>4</mn>
+                </mtd>
+              </mtr>
+            </mtable>
+          </mfenced>
+        </mfenced>
+        <mn>1</mn>
+      </msub>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 362
+</p>
+<p>should deal with fence, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <msub>
+        <mfenced open="&#x2016;" close="&#x2016;">
+          <mfenced open="[" close="]">
+            <mtable>
+              <mtr>
+                <mtd>
+                  <mn>1</mn>
+                </mtd>
+                <mtd>
+                  <mn>2</mn>
+                </mtd>
+              </mtr>
+              <mtr>
+                <mtd>
+                  <mn>3</mn>
+                </mtd>
+                <mtd>
+                  <mn>4</mn>
+                </mtd>
+              </mtr>
+            </mtable>
+          </mfenced>
+        </mfenced>
+        <msup>
+          <mn>1</mn>
+          <mn>2</mn>
+        </msup>
+      </msub>
+      <msup>
+        <mn>2</mn>
+        <mn>2</mn>
+      </msup>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 363
+</p>
+<p>should deal with fence</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mi>x</mi>
+      </mfenced>
+      <mi>p</mi>
+    </msub>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 364
+</p>
+<p>should deal with fence, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <msub>
+        <mfenced open="&#x2016;" close="&#x2016;">
+          <mi>x</mi>
+        </mfenced>
+        <mi>p</mi>
+      </msub>
+      <mi>q</mi>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 402a
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>a</mi>
+      </mrow>
+    </mfenced>
+    <mo>&#x2062;</mo>
+    <mi>b</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 402c
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>a</mi>
+      </mrow>
+      <mi>b</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 402e
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mi>a</mi>
+    <mo>+</mo>
+    <mi>b</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 402h
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mi>a</mi>
+    <mo>-</mo>
+    <mi>b</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 403
+</p>
+<p>should build mfrac, bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>a</mi>
+      </mrow>
+      <mrow>
+        <mi msiMathname="true">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>b</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 407
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 408
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mn>4</mn>
+        </mrow>
+      </mfenced>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 409a
+</p>
+<p>should build mfrac w/ parens</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 409b
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 409c
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 409d
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 410a
+</p>
+<p>should resolve binding</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>3</mn>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>1</mn>
+        <mo>+</mo>
+        <mi>2</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 410b
+</p>
+<p>should resolve binding</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>3</mn>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>1</mn>
+        <mo>+</mo>
+        <mi>2</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 410c
+</p>
+<p>should resolve binding</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>1</mn>
+    <mo>+</mo>
+    <mi>2</mi>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 410d
+</p>
+<p>should resolve binding</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>1</mn>
+    <mo>+</mo>
+    <mi>2</mi>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 410e
+</p>
+<p>should resolve binding</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>1</mn>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 410f
+</p>
+<p>should change to mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>1</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 410g
+</p>
+<p>should change to mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="(" close=")">
+      <mn>1</mn>
+      <mn>2</mn>
+      <mn>3</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 410h
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mrow>
+        <mn>3</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+    <mo>+</mo>
+    <mn>4</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 411
+</p>
+<p>should build mfrac</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mn>4</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 412
+</p>
+<p>should build mfrac and insert InvisibleTimes</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+      <mi>z</mi>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 422a
+</p>
+<p>inert</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>x</mi>
+    <mo>+</mo>
+    <mi>y</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 422b
+</p>
+<p>outer fence removed!</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mi>y</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 422c1
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 422c2
+</p>
+<p>should bind superscript, build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 422d1
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 422d2
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 422e1
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>2</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 422e2
+</p>
+<p>should build mfenced</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mi>y</mi>
+        </mrow>
+      </mfenced>
+      <mrow>
+        <mo>&#x2212;</mo>
+        <mn>2</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 427a
+</p>
+<p>should group</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <mn>7</mn>
+      </mrow>
+    </mfenced>
+    <mo>&#x2212;</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 427a-
+</p>
+<p>should group</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>-</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>-</mo>
+        <mn>7</mn>
+      </mrow>
+    </mfenced>
+    <mo>-</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 427b
+</p>
+<p>should bind fences, exponents</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mn>6</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 427c
+</p>
+<p>should group</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>7</mn>
+            <mo>&#x2212;</mo>
+            <mn>6</mn>
+          </mrow>
+        </mfenced>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 427d1
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 427d2
+</p>
+<p>should bind fences, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 427e1
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 427e2
+</p>
+<p>should bind fences, exponent</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>7</mn>
+              <mo>&#x2212;</mo>
+              <mn>6</mn>
+            </mrow>
+          </mfenced>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 428a
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>8</mn>
+        <mo>&#x2212;</mo>
+        <mn>7</mn>
+        <mo>&#x2212;</mo>
+        <mn>6</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 428b1
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>8</mn>
+              <mo>&#x2212;</mo>
+              <mn>7</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+        <mo>&#x2212;</mo>
+        <mn>6</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 428b2
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <msup>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mn>8</mn>
+              <mo>&#x2212;</mo>
+              <mn>7</mn>
+            </mrow>
+          </mfenced>
+          <mn>2</mn>
+        </msup>
+        <mo>&#x2212;</mo>
+        <mn>6</mn>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 428c1
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+          <mo>&#x2212;</mo>
+          <mn>6</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 428c2
+</p>
+<p>should bind fences</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>9</mn>
+    <mo>&#x2212;</mo>
+    <msup>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>8</mn>
+          <mo>&#x2212;</mo>
+          <mn>7</mn>
+          <mo>&#x2212;</mo>
+          <mn>6</mn>
+        </mrow>
+      </mfenced>
+      <mn>2</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<hr/>
+</body>
+</html>

@@ -1,0 +1,147 @@
+;Test script for "Comptest.exe". Test all result codes
+
+Test ID     CCID_Solve_Exact
+Client ID   1
+Engine      MuPAD
+Result      100
+Command ID	Solve Exact
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>Q</mml:mi>
+       <mml:mo form="infix">=</mml:mo>
+       <mml:mrow>
+         <mml:mi>P</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:msup>
+           <mml:mi>e</mml:mi>
+           <mml:mrow>
+             <mml:mi>k</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>t</mml:mi>
+           </mml:mrow>
+         </mml:msup>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;The following was once a sequence in FixupDefs1.tscript, but is really more concerned with errors.
+; Define x y = 5 ==================================
+
+Test ID     207 fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>x</mi>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     207 eval of fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>x</mi>
+     <mo>&InvisibleTimes;</mo>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     207 fixup the definition
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>x</mi>
+     <mi>y</mi>
+     <mo>=</mo>
+     <mn>5</mn>
+   </math>
+End of test
+
+Test ID     207 define fixup result
+Client ID   1
+Engine      MuPAD
+Result      107
+Command ID	Define
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>x</mi>
+       <mo>&InvisibleTimes;</mo>
+       <mi>y</mi>
+     </mrow>
+     <mo>=</mo>
+     <mn>5</mn>
+   </math>
+End of test
+
+Test ID     207 fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>x</mi>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     207 eval of fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>x</mi>
+     <mo>&InvisibleTimes;</mo>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     207 fixup the definition for undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>x</mi>
+     <mi>y</mi>
+     <mo>=</mo>
+     <mn>5</mn>
+   </math>
+End of test
+
+Test ID     207 undefine fixup result
+Client ID   1
+Engine      MuPAD
+Result      107
+Command ID	Undefine
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>x</mi>
+     <mo>&InvisibleTimes;</mo>
+     <mi>y</mi>
+     <mo>=</mo>
+     <mn>5</mn>
+   </math>
+End of test
+
+Test ID     207 fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>x</mi>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     207 eval of fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>x</mi>
+     <mo>&InvisibleTimes;</mo>
+     <mi>y</mi>
+   </math>
+End of test
