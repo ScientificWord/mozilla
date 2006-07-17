@@ -1,0 +1,16 @@
+# Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+
+DEPTH		= ../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+DIRS		=  MuPAD Maple
+
+include $(DEPTH)/config/autoconf.mk
+
+include $(topsrcdir)/config/config.mk
+
+include $(topsrcdir)/config/rules.mk
+
+                 
