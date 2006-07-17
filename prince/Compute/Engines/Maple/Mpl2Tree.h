@@ -1,0 +1,43 @@
+// Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
+
+#ifndef Maple2Tree_H
+#define Maple2Tree_H
+
+#include "../fltutils.h"
+
+class Maple2Tree
+{
+public:
+  Maple2Tree();
+  ~Maple2Tree();
+
+  MNODE *MapleStr2Tree(const char *src);
+
+private:
+  MNODE * GetElementList(const char *z_src, int &advance, MNODE * parent,
+                         char *enders);
+
+  MNODE *GetDelimitedList(const char *z_src, int &bytes_done,
+                          char ender, char *group_ilk, char *bucket_ilk);
+  MNODE *GetParenedGroup(const char *z_src, int &bytes_done);
+  MNODE *GetNumber(const char *z_src, int &advance);
+  MNODE *GetOperator(const char *z_src, U32 op_len);
+
+  MNODE *DoPrecedenceBinds(MNODE * src_list);
+
+  MNODE *BindOperators(MNODE * src_tree, int targ_prec, OpIlk op_type);
+  MNODE *BindOp(MNODE * op_node, int targ_prec, OpIlk op_type);
+  int GetPrecedence(const char *targ_op);
+  MNODE *BindUnits(MNODE * op_node);
+
+  char *GetName(const char *z_src, int &bytes_spanned);
+  char *GetQuotedString(const char *z_src, int &bytes_spanned);
+
+  bool IsUnit(MNODE * src_tree);
+  bool IsOperatorName(char *nom);
+
+  int src_line_number;
+  const char *start_ptr;
+};
+
+#endif
