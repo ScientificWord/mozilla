@@ -1,0 +1,1057 @@
+;; MuPAD commands  -- edit only the .gmx file (and possibly iCmpIDs.h)
+
+#include "../iCmpIDs.h"
+
+<START_CONTEXT_RESET>
+;SetSeriesOrder 1..1000
+5<UID(EID_SeriesOrder,0)>ORDER := %s:
+;SetDigits 1..10000
+10<UID(EID_Digits,0)>DIGITS := %s:
+;SetSolveMaxDegree 1..4
+4<UID(EID_MaxDegree,0)>tciMaxDegree:=%s:
+;SetSolvePvalOnly 0..1
+FALSE<UID(EID_PvalOnly,0)>tciPrincipalValue:=%s:
+;SetSolveIgnoreSCases 0..1
+FALSE<UID(EID_IgnoreSCases,0)>tciIgnoreSpecialCases:=%s:
+;SetFloatFormat
+e<UID(EID_FloatFormat,0)>Pref::floatFormat("%s"):
+;Type::Real<UID(EID_VarType,0)>property::assume(%s): -- remove for Prince
+;Note: to undo the above command, you have to use property::unassume():
+END_OF_LIST<UID(EID_Last,0)>
+<END_CONTEXT_RESET>
+
+
+<START_CONTEXT_COMMANDS>
+Evaluate<UID(CCID_Evaluate,0)>eval(%s);
+
+Evaluate Numerically<UID(CCID_Evaluate_Numerically,0)>float(%s);
+Simplify<UID(CCID_Simplify,0)>tcisimplify(%s);
+Combine Exponentials<UID(CCID_Combine_Exponentials,0)>tcicombine(%s,1);
+Combine Logs<UID(CCID_Combine_Logs,0)>tcicombine(%s,3);
+Combine Powers<UID(CCID_Combine_Powers,0)>tcicombine(%s,2);
+Combine Trig Functions<UID(CCID_Combine_Trig_Functions,0)>tcicombine(%s,0);
+Combine Arctan<UID(CCID_Combine_Arctan,0)>tcicombine(%s,6);
+Combine Hyperbolic Trig Functions<UID(CCID_Combine_Hyp_Trig_Functions,0)>tcicombine(%s,7);
+Factor<UID(CCID_Factor,0)>tcifactor(%s);
+Expand<UID(CCID_Expand,0)>tciexpand(%s);
+Rewrite Rational<UID(CCID_Rewrite_Rational,0)>tcirewrite(1,%s);
+Rewrite Float<UID(CCID_Rewrite_Float,0)>tcirewrite(2,%s);
+Rewrite Mixed<UID(CCID_Rewrite_Mixed,0)>tcimixnum(%s);
+Rewrite Exponential<UID(CCID_Rewrite_Exponential,0)>tcirewrite(3,%s);
+Rewrite Factorial<UID(CCID_Rewrite_Factorial,0)>tcirewrite(4,%s);
+Rewrite Gamma<UID(CCID_Rewrite_Gamma,0)>tcirewrite(5,%s);
+Rewrite Logarithm<UID(CCID_Rewrite_Logarithm,0)>tcirewrite(6,%s);
+Rewrite sin and cos<UID(CCID_Rewrite_sin_and_cos,0)>tcirewrite(7,%s);
+Rewrite sinh and cosh<UID(CCID_Rewrite_sinh_and_cosh,0)>tcirewrite(8,%s);
+Rewrite sin<UID(CCID_Rewrite_sin,0)>tcirewrite(13,%s);
+Rewrite cos<UID(CCID_Rewrite_cos,0)>tcirewrite(14,%s);
+Rewrite tan<UID(CCID_Rewrite_tan,0)>tcirewrite(9,%s);
+Rewrite arcsin<UID(CCID_Rewrite_arcsin,0)>tcirewrite(15,%s);
+Rewrite arccos<UID(CCID_Rewrite_arccos,0)>tcirewrite(16,%s);
+Rewrite arctan<UID(CCID_Rewrite_arctan,0)>tcirewrite(17,%s);
+Rewrite arccot<UID(CCID_Rewrite_arccot,0)>tcirewrite(18,%s);
+Rewrite Polar<UID(CCID_Rewrite_Polar,0)>tcirewrite(10,%s);
+Rewrite Rectangular<UID(CCID_Rewrite_Rectangular,0)>tcirewrite(11,%s);
+Rewrite Normal Form<UID(CCID_Rewrite_Normal_Form,0)>tcirewrite(12,%s);
+Rewrite Equations as Matrix<UID(CCID_Rewrite_Equations_as_Matrix,0)>tciequationstomatrix(%eqns_or_mat%,SWPmatrix(1,%nvars%,[%var_list%]));
+Rewrite Matrix as Equations<UID(CCID_Rewrite_Matrix_as_Equations,0)>tcimatrixtoequations(%eqns_or_mat%,SWPmatrix(1,%nvars%,[%var_list%]));
+Check Equality<UID(CCID_Check_Equality,0)>tciistrue(%s);
+Solve Exact<UID(CCID_Solve_Exact,0)>tcisolve({%expr%});
+Solve Exact For<UID(CCID_Solve_Exact,1)>tcisolve({%expr%},{%which_var%});
+Solve Integer<UID(CCID_Solve_Integer,0)>tciisolve({%s});
+Solve Numeric<UID(CCID_Solve_Numeric,0)>tcifsolve(%s);
+Solve Recursion<UID(CCID_Solve_Recursion,0)>tcirsolve(%s);
+
+Polynomial Collect...<UID(CCID_Polynomial_Collect,0)>tcicollect(%expr%,{%var%});
+Polynomial Divide<UID(CCID_Polynomial_Divide,0)>tcidiv(%expr%);
+Polynomial Divide<UID(CCID_Polynomial_Divide,1)>tcidiv(%expr%,%which_var%);
+Polynomial Partial Fractions<UID(CCID_Polynomial_Partial_Fractions,0)>tciparfrac(%expr%);
+Polynomial Partial Fractions<UID(CCID_Polynomial_Partial_Fractions,1)>tciparfrac(%expr%,%which_var%);
+Polynomial Roots<UID(CCID_Polynomial_Roots,0)>tciroot(%expr%);
+Polynomial Roots<UID(CCID_Polynomial_Roots,1)>tciroot(%expr%,%which_var%);
+Polynomial Sort<UID(CCID_Polynomial_Sort,0)>tcisort(%expr%);
+Polynomial Sort<UID(CCID_Polynomial_Sort,1)>tcisort(%expr%,{%which_var%});
+Polynomial Companion Matrix<UID(CCID_Polynomial_Companion_Matrix,0)>tcicompanion(%expr%);
+Polynomial Companion Matrix<UID(CCID_Polynomial_Companion_Matrix,1)>tcicompanion(%expr%,%which_var%);
+Calculus Integrate by Parts...<UID(CCID_Calculus_Integrate_by_Parts,0)>tcibyparts(%integral%,%part%);
+Calculus Change Variable...<UID(CCID_Calculus_Change_Variable,0)>tcichangevar(%change%,%integral%);
+Calculus Partial Fractions<UID(CCID_Calculus_Partial_Fractions,0)>tciparfrac(%expr%);
+Calculus Partial Fractions<UID(CCID_Calculus_Partial_Fractions,1)>tciparfrac(%expr%,%which_var%);
+Calculus Approximate Integral...<UID(CCID_Calculus_Approximate_Integral,0)>tciaprxarea(%integral%,%subintervals%,%formula%);
+Calculus Plot Approximate Integral<UID(CCID_Calculus_Plot_Approximate_Integral,0)>
+Calculus Find Extrema<UID(CCID_Calculus_Find_Extrema,0)>tciextrema(%expr%);
+Calculus Find Extrema<UID(CCID_Calculus_Find_Extrema,1)>tciextrema(%expr%,{},{%which_var%});
+Calculus Iterate...<UID(CCID_Calculus_Iterate,0)>tciterate(%func%,%start%,%n_iters%);
+Calculus Implicit Differentiation...<UID(CCID_Calculus_Implicit_Differentiation,0)>
+Calculus Implicit Differentiation...<UID(CCID_Calculus_Implicit_Differentiation,1)>diff(%expr%,%which_var%);
+
+Power Series...<UID(CCID_Power_Series,0)>series(%expr%,%var%=%num%,%order%);
+Solve PDE<UID(CCID_Solve_PDE,0)>
+Solve ODE Exact<UID(CCID_Solve_ODE_Exact,0)>tcidsolve(%s);
+Solve ODE Laplace<UID(CCID_Solve_ODE_Laplace,0)>tcildsolve(%s);
+Solve ODE Numeric<UID(CCID_Solve_ODE_Numeric,0)>tcindsolve(%s);
+;Solve ODE Series<UID(CCID_Solve_ODE_Series,0)>tcisdsolve(%s);
+Solve ODE Series<UID(CCID_Solve_ODE_Series,0)>ode::series(%theODE_and_func%,%var%=%expand_at%,%order%);
+Fourier Transform<UID(CCID_Fourier_Transform,0)>transform::fourier(%expr%,%var%,%tvar%);
+Inverse Fourier Transform<UID(CCID_Inverse_Fourier_Transform,0)>transform::invfourier(%expr%,%var%,%tvar%);
+Laplace Transform<UID(CCID_Laplace_Transform,0)>transform::laplace(%expr%,%var%,%tvar%);
+Inverse Laplace Transform<UID(CCID_Inverse_Laplace_Transform,0)>transform::invlaplace(%expr%,%var%,%tvar%);
+Gradient<UID(CCID_Gradient,0)>tcigrad(%expr%,[%vector_basis%]);
+Divergence<UID(CCID_Divergence,0)>tcidiverge(%expr%,[%vector_basis%]);
+Curl<UID(CCID_Curl,0)>tcicurl(%expr%,[%vector_basis%]);
+Laplacian<UID(CCID_Laplacian,0)>tcilaplacian(%expr%,[%vector_basis%]);
+Jacobian<UID(CCID_Jacobian,0)>tcijacobian(%expr%,[%vector_basis%]);
+Hessian<UID(CCID_Hessian,0)>tcihessian(%expr%,[%vector_basis%]);
+Wronskian<UID(CCID_Wronskian,0)>tciwronskian(%expr%);
+Wronskian<UID(CCID_Wronskian,1)>tciwronskian(%expr%,%which_var%);
+Scalar Potential<UID(CCID_Scalar_Potential,0)>tcipotential(%expr%,[%vector_basis%]);
+Vector Potential<UID(CCID_Vector_Potential,0)>tcivecpotent(%expr%,[%vector_basis%]);
+
+Adjugate<UID(CCID_Adjugate,0)>linalg::adjoint(%s);
+Characteristic Polynomial<UID(CCID_Characteristic_Polynomial,0)>tcicharpoly(%expr%);
+Characteristic Polynomial<UID(CCID_Characteristic_Polynomial,1)>tcicharpoly(%expr%,%which_var%);
+Cholesky Decomposition<UID(CCID_Cholesky_Decomposition,0)>tcicholesky(%s);
+Column Basis<UID(CCID_Column_Basis,0)>tcicolspace(%s);
+Concatenate<UID(CCID_Concatenate,0)>linalg::concatMatrix(%s);
+Condition Number<UID(CCID_Condition_Number,0)>tcicond(%s);
+Definiteness Tests<UID(CCID_Definiteness_Tests,0)>tcideftest(%s);
+Determinant<UID(CCID_Determinant,0)>tcideterminant(%s);
+Eigenvalues<UID(CCID_Eigenvalues,0)>tcieigenvalues(%s);
+Eigenvectors<UID(CCID_Eigenvectors,0)>tcieigenvectors(%s);
+FillMatrix zero<UID(CCID_Fill_Matrix,0)>tcizmat(%nRows%,%nCols%);
+FillMatrix Identity<UID(CCID_Fill_Matrix,1)>tciimat(%nRows%,%nCols%);
+FillMatrix random<UID(CCID_Fill_Matrix,2)>linalg::randomMatrix(%nRows%,%nCols%,Dom::Integer);
+FillMatrix Jordan block<UID(CCID_Fill_Matrix,3)>tciJBmat(%diag_entry%,%nRows%,%nCols%);
+FillMatrix by function<UID(CCID_Fill_Matrix,4)>SWPmatrix(%nRows%,%nCols%,%func_nom%);
+FillMatrix band<UID(CCID_Fill_Matrix,5)>tciBand([%band_list%],%nRows%,%nCols%);
+Fraction-Free Gaussian Elimination<UID(CCID_Fraction_Free_Gaussian_Elimination,0)>tciffgausselim(%s);
+Gaussian Elimination<UID(CCID_Gaussian_Elimination,0)>linalg::gaussElim(%s);
+Hermite Normal Form<UID(CCID_Hermite_Normal_Form,0)>tcihermite(%s);
+Hermitian Transpose<UID(CCID_Hermitian_Transpose,0)>tcihtranspose(%s);
+Inverse<UID(CCID_Inverse,0)>tciinverse(%s);
+Jordan Form<UID(CCID_Jordan_Form,0)>tcijordan(%s);
+Map Entries...<UID(CCID_Map_Entries,0)>tcimap(%matrix%,%func%);
+Minimal Polynomial<UID(CCID_Minimal_Polynomial,0)>tciminpoly(%expr%);
+Minimal Polynomial<UID(CCID_Minimal_Polynomial,1)>tciminpoly(%expr%,%which_var%);
+Norm<UID(CCID_Norm,0)>tcinorm(%s,2);
+Nullspace Basis<UID(CCID_Nullspace_Basis,0)>linalg::nullspace(%s);
+Orthogonality Test<UID(CCID_Orthogonality_Test,0)>linalg::isUnitary(%s);
+Permanent<UID(CCID_Permanent,0)>linalg::permanent(%s);
+PLU Decomposition<UID(CCID_PLU_Decomposition,0)>tciLU(%s);
+QR Decomposition<UID(CCID_QR_Decomposition,0)>tciQR(%s);
+Random Matrix...<UID(CCID_Random_Matrix,0)>tcirandmat(%nRows%,%nCols%,%matr_type%,%ll%..%ul%);
+Rank<UID(CCID_Rank,0)>linalg::rank(%s);
+Rational Canonical Form<UID(CCID_Rational_Canonical_Form,0)>tcifrob(%s);
+Reduced Row Echelon Form<UID(CCID_Reduced_Row_Echelon_Form,0)>linalg::gaussJordan(%s);
+Reshape...<UID(CCID_Reshape,0)>NOT DONE BY ENGINE
+Row Basis<UID(CCID_Row_Basis,0)>tcirowspace(%s);
+Singular Values<UID(CCID_Singular_Values,0)>tcisingvals(%s);
+Smith Normal Form<UID(CCID_Smith_Normal_Form,0)>tcismith(%s);
+Spectral Radius<UID(CCID_Spectral_Radius,0)>tcispectralradius(%s);
+Stack<UID(CCID_Stack,0)>linalg::stackMatrix(%s);
+SVD<UID(CCID_SVD,0)>tciSVD(%s);
+Trace<UID(CCID_Trace,0)>linalg::tr(%s);
+Transpose<UID(CCID_Transpose,0)>linalg::transpose(%s);
+
+Simplex Dual<UID(CCID_Simplex_Dual,0)>tcidual(%s);
+Simplex Feasible<UID(CCID_Simplex_Feasible,0)>linopt::feasible(%s);
+Simplex Maximize<UID(CCID_Simplex_Maximize,0)>tcimaximize(%s);
+Simplex Minimize<UID(CCID_Simplex_Minimize,0)>tciminimize(%s);
+Simplex Standardize<UID(CCID_Simplex_Standardize,0)>linopt::standardForm(%s);
+Fit Curve to Data...<UID(CCID_Fit_Curve_to_Data,0)>tcimregress(%data_matrix%,%regress_type%,%depend_column%);
+Fit Curve to Data...<UID(CCID_Fit_Curve_to_Data,1)>tcipolyfit(%data_matrix%,%degree%,%depend_column%);
+Random Numbers...<UID(CCID_Random_Numbers,0)>tcirandomnumbers(%distID%,%param1%%comma%%param2%,%tally%);
+Mean<UID(CCID_Mean,0)>tcimean(%s);
+Median<UID(CCID_Median,0)>tcimedian(%s);
+Mode<UID(CCID_Mode,0)>tcimode(%s);
+Correlation<UID(CCID_Correlation,0)>tcicorr(%s);
+Covariance<UID(CCID_Covariance,0)>tcicovar(%s);
+Geometric Mean<UID(CCID_Geometric_Mean,0)>tcigeometricmean(%s);
+Harmonic Mean<UID(CCID_Harmonic_Mean,0)>tciharmonicmean(%s);
+Mean Deviation<UID(CCID_Mean_Deviation,0)>tcimdev(%s);
+Moment...<UID(CCID_Moment,0)>tcimoment(%data_set%,%mom_num%,%about%);
+Quantile...<UID(CCID_Quantile,0)>tciquantile(%stat_list%,%percent%);
+Standard Deviation<UID(CCID_Standard_Deviation,0)>tcisdev(%s);
+Variance<UID(CCID_Variance,0)>tcivariance(%s);
+
+Factor in ring<UID(CCID_Factor_in_ring,0)>tcifactor(%s);
+
+Solve System<UID(CCID_Solve_System,0)>tcisolve(%s);
+Pass Thru<UID(CCID_PassThru,0)>%s
+
+Define<UID(CCID_Define,0)>%s
+Undefine<UID(CCID_Undefine,0)>delete %s;
+
+;;Plot Function 2d <UID(CCID_PlotFunc2d,0)>plotfunc2d(%expr%,%plotvar1%=%ll1%..%ul1%);
+;;Plot Function 2d <UID(CCID_PlotFunc2d,1)>plot(plot::Function2d(%expr%,%plotvar1%=%ll1%..%ul1%),plot::Function2d(%expr2%,%plotvar2%=%ll2%..%ul2%,LineColor=RGB::Red));
+Plot Function 3d <UID(CCID_PlotFunc3d,0)>plotfunc3d(%expr%,%plotvar1%=%ll1%..%ul1%,%plotvar2%=%ll2%..%ul2%);
+
+END_OF_LIST<UID(CCID_Last,0)>
+<END_CONTEXT_COMMANDS>
+
+
+<START_CONTEXT_PREFIXFORMS>
+;;\vee
+&#x2228;<uIDx2228.0>tcimax%arg_list%
+;;\wedge
+&#x2227;<uIDx2227.0>tcimin%arg_list%
+mod<uIDx8063.0>tcimod%arg_list%
+<END_CONTEXT_PREFIXFORMS>
+
+
+<START_CONTEXT_PREFIXOPS>
++<uIDx002b.0>+
+-<uIDx2212.0>-
+&#x2212;<uIDx2212.0>-
+det<uID8010.0>tcideterminant%arg_list%
+grad<uID8176.0>tcigrad(%expr%,[%vector_basis%])
+div<uID8177.0>tcidiverge(%expr%,[%vector_basis%])
+curl<uID8178.0>tcicurl(%expr%,[%vector_basis%])
+Laplacian<uID8179.0>tcilaplacian(%expr%,[%vector_basis%])
+<END_CONTEXT_PREFIXOPS>
+
+
+<START_CONTEXT_INFIXOPS>
++<uIDx002b.0>+
+,<uIDx002c.0>,
+&#x2063;<uIDx002c.0>,
+=<uIDx003d.0>=
+-<uIDx2212.0>-
+/<uIDx2212.0>/
+&#x3c;<uIDx003c.0><
+\<uIDx005c.0>minus
+&#x3e;<uIDx003e.0>>
+&#x2208;<uIDx2212.0>=
+&#x2212;<uIDx2212.0>-
+&#x2264;<uIDx2264.0><=
+&#x2265;<uIDx2265.0>>=
+&#x2260;<uIDx2260.0><>
+;&plusmn;<uIDx00b1.0>+
+;&mnplus;<uIDx2213.0>-
+&#x2a;<uIDx002a.0>*
+*<uIDx002a.0>*
+&#xb7;<uIDx00b7.0>*
+&#xd7;<uIDx00d7.0>*
+&#x22c5;<uIDx22c5.0>*
+&#x2217;<uIDx2217.0>*
+&#x222a;<uIDx222a.0>union
+&#x2229;<uIDx2229.0>intersect
+&#x2218;<uIDx2218.0>@
+&#xf7;<uIDx00f7.0>/
+;&cir;<uIDx25ef.0>57351
+&#x2216;<uIDx2216.0>minus
+&#x22d3;<uIDx22d3.0>union
+&#x22d2;<uIDx22d2.0>intersect
+;&int;<uIDx222b.0>*
+;ApplyFunction
+&#x2061;<uIDx2061.0>
+;InvisibleTimes
+&#x2062;<uIDx2062.0>*
+<END_CONTEXT_INFIXOPS>
+
+
+<START_CONTEXT_POSTFIXOPS>
+!<uIDx0021.0>!
+<END_CONTEXT_POSTFIXOPS>
+
+
+
+<START_CONTEXT_MATRIXPREFIXFORMS>
++<uID1.0>tciadd%arg_list%
+&#x2062;<uID2.0>tcimpy%arg_list%
+&#x22c5;<uID3.1>tcimpy%arg_list%
+&#xd7;<uID4.1>tcimpy%arg_list%
+<END_CONTEXT_MATRIXPREFIXFORMS>
+
+<START_CONTEXT_DMATRIXPREFIXFORMS>
++<uID1.0>tciadd%arg_list%
+&#x2062;<uID2.0>tcimpy%arg_list%
+&#x22c5;<uID3.1>tcidprod%arg_list%
+&#xd7;<uID4.1>tcixprod%arg_list%
+<END_CONTEXT_DMATRIXPREFIXFORMS>
+
+
+<START_CONTEXT_LISTOPERATORS>
+gcd<uID1.0>tcigcd%arg_list%
+lcm<uID2.0>tcilcm%arg_list%
+max<uID3.0>tcimax%arg_list%
+min<uID4.0>tcimin%arg_list%
+<END_CONTEXT_LISTOPERATORS>
+
+
+<START_CONTEXT_VARIABLES>
+&#x3b1;<uIDx3b1.0>v58123
+&#x3b2;<uIDx3b2.0>v58124
+&#x3b3;<uIDx3b3.0>v58125
+&#x3b4;<uIDx3b4.0>v58126
+&#x3f5;<uIDx3f5.0>v58127
+&#x3b5;<uIDx3b5.0>v58154
+&#x3b6;<uIDx3b6.0>Zeta
+&#x3b7;<uIDx3b7.0>v58129
+&#x3b8;<uIDx3b8.0>v58130
+&#x3d1;<uIDx3d1.0>v58148
+&#x3b9;<uIDx3b9.0>v58131
+&#x3ba;<uIDx3ba.0>v58132
+&#x3bb;<uIDx3bb.0>v58133
+&#x3bc;<uIDx3bc.0>v58134
+&#x3bd;<uIDx3bd.0>v58135
+&#x3be;<uIDx3be.0>v58136
+&#x3c0;<uIDx3c0.0>Pi
+&#x3d6;<uIDx3d6.0>v58150
+&#x3c1;<uIDx3c1.0>v58139
+&#x3c3;<uIDx3c3.0>v58141
+&#x3c2;<uIDx3c2.0>v58140
+&#x3c4;<uIDx3c4.0>v58142
+&#x3c5;<uIDx3c5.0>v58143
+&#x3d5;<uIDx3d5.0>v58144
+&#x3c6;<uIDx3c6.0>v58149
+&#x3c7;<uIDx3c7.0>v58145
+&#x3c8;<uIDx3c8.0>v58146
+&#x3c9;<uIDx3c9.0>v58147
+&#x3f0;<uIDx3f0.0>v58152
+&#x3f1;<uIDx3f1.0>v58153
+<END_CONTEXT_VARIABLES>
+
+
+<START_CONTEXT_UCONSTANTS>
+e<uID1.0>exp(1)
+i<uID2.0>I
+&#x3c0;<uID3.0>PI
+&#x3b6;<uID4.0>Zeta
+&#x221e;<uID5.0>infinity
+gamma<uID6.0>EULER
+&#x2147;<uID7.0>exp(1)
+&#x2148;<uID8.0>I
+<END_CONTEXT_UCONSTANTS>
+
+
+<START_CONTEXT_LGREEK>
+&alpha;<uIDx3b1.0>v58123
+&beta;<uIDx3b2.0>v58124
+&gamma;<uIDx3b3.0>v58125
+&delta;<uIDx3b4.0>v58126
+&epsi;<uIDx3f5.0>v58127
+&epsiv;<uIDx3b5.0>v58154
+&zeta;<uIDx3b6.0>zeta
+&eta;<uIDx3b7.0>v58129
+&theta;<uIDx3b8.0>v58130
+&thetav;<uIDx3d1.0>v58148
+&iota;<uIDx3b9.0>v58131
+&kappa;<uIDx3ba.0>v58132
+&lambda;<uIDx3bb.0>v58133
+&mu;<uIDx3bc.0>v58134
+&nu;<uIDx3bd.0>v58135
+&xi;<uIDx3be.0>v58136
+&pi;<uIDx3c0.0>PI
+&piv;<uIDx3d6.0>v58150
+&rho;<uIDx3c1.0>v58139
+&sigma;<uIDx3c3.0>v58141
+&sigmav;<uIDx3c2.0>v58140
+&tau;<uIDx3c4.0>v58142
+&upsi;<uIDx3c5.0>v58143
+&phi;<uIDx3d5.0>v58144
+&phiv;<uIDx3c6.0>v58149
+&chi;<uIDx3c7.0>v58145
+&psi;<uIDx3c8.0>v58146
+&omega;<uIDx3c9.0>v58147
+&kappav;<uIDx3f0.0>v58152
+&rhov;<uIDx3f1.0>v58153
+<END_CONTEXT_LGREEK>
+
+
+<START_CONTEXT_FUNCTIONS>
+user_defined<uID7999.0>%fname%%arg_list%
+arccos<uID8000.0>arccos%arg_list%
+arcsin<uID8001.0>arcsin%arg_list%
+arctan<uID8002.0>arctan%arg_list%
+arg<uID8003.0>tciargument%arg_list%
+cos<uID8004.0>subs(cos%arg_list%,radQU=1)
+cosh<uID8005.0>cosh%arg_list%
+cot<uID8006.0>subs(cot%arg_list%,radQU=1)
+coth<uID8007.0>coth%arg_list%
+csc<uID8008.0>subs(csc%arg_list%,radQU=1)
+deg<uID8009.0>degree%arg_list%
+det<uID8010.0>tcideterminant%arg_list%
+dim<uID8011.0>linalg::matdim%arg_list%
+exp<uID8012.0>exp%arg_list%
+;hom<uID8014.0>
+;inf<uID8015.0>
+;injlim<uID8016.0>
+;ker<uID8017.0>
+;lg<uID8018.0>
+;lim<uID8019.0>
+;liminf<uID8020.0>
+;limsup<uID8021.0>
+ln<uID8022.0>ln%arg_list%
+log<uID8023.0>tcilog%arg_list%
+logwithbase<uID8023.1>tcilog(%base%,%arg_list%)
+;Pr<uID8026.0>
+;projlim<uID8027.0>
+sec<uID8028.0>subs(sec%arg_list%,radQU=1)
+sin<uID8029.0>subs(sin%arg_list%,radQU=1)
+sinh<uID8030.0>sinh%arg_list%
+;sup<uID8031.0>
+tan<uID8032.0>subs(tan%arg_list%,radQU=1)
+tanh<uID8033.0>tanh%arg_list%
+;varinjlim<uID8034.0>
+;varliminf<uID8035.0>
+;varlimsup<uID8036.0>
+;varprojlim<uID8037.0>
+
+
+arccosh<uID8038.0>arccosh%arg_list%
+arccot<uID8039.0>arccot%arg_list%
+arccoth<uID8040.0>arccoth%arg_list%
+arccsc<uID8041.0>arccsc%arg_list%
+arccsch<uID8042.0>arccsch%arg_list%
+arcsec<uID8043.0>arcsec%arg_list%
+arcsech<uID8044.0>arcsech%arg_list%
+arcsinh<uID8045.0>arcsinh%arg_list%
+arctanh<uID8046.0>arctanh%arg_list%
+Beta<uID8047.0>beta%arg_list%
+csch<uID8048.0>csch%arg_list%
+;gamma<uID8049.0>tcigamma%arg_list%
+&#x393;<uID8049.0>tcigamma%arg_list%
+sech<uID8050.0>sech%arg_list%
+&#x3b6;<uID8051.0>zeta%arg_list%
+binomial<uID8052.0>binomial%arg_list%
+Si<uID8053.0>Si%arg_list%
+Ci<uID8054.0>Ci%arg_list%
+Ei<uID8055.0>Ei%arg_list%
+dilog<uID8056.0>dilog%arg_list%
+abs<uID8057.0>abs%arg_list%
+
+norm<uID8058.0>norm%arg_list%
+erf<uID8059.0>erf%arg_list%
+erfc<uID8060.0>erfc%arg_list%
+euler<uID8061.0>euler%arg_list%
+mod<uID8063.0>mod%arg_list%
+signum<uID8064.0>sign%arg_list%
+csgn<uID8065.0>tcicsgn%arg_list%
+hypergeom<uID8066.0>hypergeom
+
+about<uID8067.0>property::getprop%arg_list%
+additionally<uID8068.0>tciadditionally%arg_list%
+assume<uID8069.0>property::assume%arg_list%
+unassume<uID8070.0>property::unassume%arg_list%
+
+AndProp<uID8071.0>AndProp
+Re<uID8072.0>Re%arg_list%
+Im<uID8073.0>Im%arg_list%
+floor<uID8074.0>floor%arg_list%
+ceil<uID8075.0>ceil%arg_list%
+;pow<uID8076.0>
+;DirInf<uID8077.0>
+rank<uID8078.0>linalg::rank%arg_list%
+
+BetaDist<uID8089.0>tcibetadist(%val%,%shape1%,%shape2%)
+BetaDen<uID8090.0>tcibetaden(%val%,%shape1%,%shape2%)
+BetaInv<uID8091.0>tcibetainv(%val%,%shape1%,%shape2%)
+
+BinomialDist<uID8092.0>tcibinomialdist(%val%,%shape1%,%shape2%)
+BinomialDen<uID8093.0>tcibinomialden(%val%,%shape1%,%shape2%)
+BinomialInv<uID8094.0>tcibininv(%val%,%shape1%,%shape2%)
+
+CauchyDist<uID8095.0>tcicauchydist(%val%,%shape1%,%shape2%)
+CauchyDen<uID8096.0>tcicauchyden(%val%,%shape1%,%shape2%)
+CauchyInv<uID8097.0>tcicauchyinv(%val%,%shape1%,%shape2%)
+
+ChiSquareDist<uID8098.0>tcichisquaredist(%val%,%shape1%)
+ChiSquareDen<uID8099.0>tcichisquareden(%val%,%shape1%)
+ChiSquareInv<uID8100.0>tcichisquareinv(%val%,%shape1%)
+
+ExponentialDist<uID8101.0>tciexpdist(%val%,%shape1%)
+ExponentialDen<uID8102.0>tciexpden(%val%,%shape1%)
+ExponentialInv<uID8103.0>tciexpinv(%val%,%shape1%)
+
+FDist<uID8104.0>tcifdist(%val%,%shape1%,%shape2%)
+FDen<uID8105.0>tcifden(%val%,%shape1%,%shape2%)
+FInv<uID8106.0>tcifinv(%val%,%shape1%,%shape2%)
+
+GammaDist<uID8107.0>tcigammadist(%val%,%shape1%,%shape2%)
+GammaDen<uID8108.0>tcigammaden(%val%,%shape1%,%shape2%)
+GammaInv<uID8109.0>tcigammainv(%val%,%shape1%,%shape2%)
+
+HypergeomDist<uID8110.0>tcihypdist(%val%,%shape1%,%shape2%,%shape3%)
+HypergeomDen<uID8111.0>tcihypden(%val%,%shape1%,%shape2%,%shape3%)
+HypergeomInv<uID8112.0>tcihypinv(%val%,%shape1%,%shape2%,%shape3%)
+
+NormalDist<uID8113.0>tcinormaldist(%val%,%shape1%,%shape2%)
+NormalDist<uID8113.1>tcinormaldist(%val%)
+NormalDen<uID8114.0>tcinormalden(%val%,%shape1%,%shape2%)
+NormalInv<uID8115.0>tcinormalinv(%val%,%shape1%,%shape2%)
+
+PoissonDist<uID8116.0>tcipoissondist(%val%,%shape1%)
+PoissonDen<uID8117.0>tcipoissonden(%val%,%shape1%)
+PoissonInv<uID8118.0>tcipoissoninv(%val%,%shape1%)
+
+TDist<uID8119.0>tcitdist(%val%,%shape1%)
+TDen<uID8120.0>tcitden(%val%,%shape1%)
+TInv<uID8121.0>tcitinv(%val%,%shape1%)
+
+UniformDist<uID8122.0>tciuniformdist(%val%,%shape1%,%shape2%)
+UniformDen<uID8123.0>tciuniformden(%val%,%shape1%,%shape2%)
+UniformInv<uID8124.0>tciuniforminv(%val%,%shape1%,%shape2%)
+
+WeibullDist<uID8125.0>tciweibulldist(%val%,%shape1%,%shape2%)
+WeibullDen<uID8126.0>tciweibullden(%val%,%shape1%,%shape2%)
+WeibullInv<uID8127.0>tciweibullinv(%val%,%shape1%,%shape2%)
+
+; Accept either form of the "airy" functions in the input
+Ai<uID8128.0>airyAi%arg_list%
+AiryAi<uID8128.1>airyAi%arg_list%
+Bi<uID8129.0>airyBi%arg_list%
+AiryBi<uID8129.1>airyBi%arg_list%
+BesselI<uID8130.0>besselI%arg_list%
+BesselK<uID8131.0>besselK%arg_list%
+BesselJ<uID8132.0>besselJ%arg_list%
+BesselY<uID8133.0>besselY%arg_list%
+;; The following don't appear to be implemented by MuPAD
+;Fresnelf<uID8134.0>Fresnelf%arg_list%
+;Fresnelg<uID8135.0>Fresnelg%arg_list%
+;FresnelC<uID8136.0>fresnelC%arg_list%
+;FresnelS<uID8137.0>FresnelS%arg_list%
+;EllipticE<uID8138.0>EllipticE%arg_list%
+;EllipticF<uID8139.0>EllipticF%arg_list%
+;MeijerG<uID8140.0>MeijerG%arg_list%
+Psi<uID8141.0>tcipsi%arg_list%
+;order<uID8146.0>%arg_list%
+;comp<uID8147.0>%arg_list%
+rand<uID8148.0>tcirand%arg_list%
+setseed<uID8149.0>tcisetseed%arg_list%
+setassigns<uID8150.0>tcisetassigns%arg_list%
+setconditions<uID8151.0>tcisetconditions%arg_list%
+satisfy<uID8152.0>tcisatisfy%arg_list%
+randmat<uID8153.0>tcirandmateg%arg_list%
+LambertW<uID8154.0>lambertW%arg_list%
+;FTcos<uID8155.0>fouriercos%arg_list%
+;FTsin<uID8156.0>fouriersin%arg_list%
+distinct<uID8158.0>tcidistinct%arg_list%
+;LommelS1<uID8159.0>LommelS1%arg_list%
+;LommelS2<uID8160.0>LommelS2%arg_list%
+bernoulli<uID8161.0>bernoulli%arg_list%
+;Chi<uID8162.0>Chi%arg_list%
+;Shi<uID8163.0>Shi%arg_list%
+polylog<uID8164.0>polylog%arg_list%
+Dirac<uID8165.0>dirac%arg_list%
+Heaviside<uID8166.0>heaviside%arg_list%
+seq<uID8167.0>seq%arg_list%
+
+tcimpy<uID8168.0>tcimpy%arg_list%
+factor<uID8169.0>tcifactor%arg_list%
+float<uID8170.0>float%arg_list%
+simplify<uID8171.0>simplify%arg_list%
+tcimax<uID8172.0>tcimax%arg_list%
+tcimin<uID8173.0>tcimin%arg_list%
+istrue<uID8174.0>tciistrue%arg_list%
+expand<uID8175.0>tciexpand%arg_list%
+solve<uID8176.0>solve%arg_list%
+
+real<uID8400.0>Type::Real
+complex<uID8401.0>Type::Complex
+integer<uID8402.0>Type::Integer
+negative<uID8403.0>Type::Negative
+positive<uID8404.0>Type::Positive
+nonzero<uID8405.0>Type::NonZero
+;gamma<uID88507.0>CONST_EULERgamma
+
+;MuPAD functions - just a sample so far - separate section?
+
+isprime<uID8410.0>isprime%arg_list%
+ithprime<uID8411.0>ithprime%arg_list%
+nextprime<uID8412.0>nextprime%arg_list%
+;;psi<uID8413.0>psi%arg_list%
+lllint<uID8414.0>lllint%arg_list%
+
+row<uID8420.0>linalg::row%arg_list%
+swapRow<uID8421.0>linalg::swapRow%arg_list%
+col<uID8422.0>linalg::col%arg_list%
+swapCol<uID8423.0>linalg::swapCol%arg_list%
+
+contfrac<uID8430.0>numlib::contfrac%arg_list%
+divisors<uID8431.0>numlib::divisors%arg_list%
+legendre<uID8432.0>numlib::legendre%arg_list%
+phi<uID8433.0>numlib::phi%arg_list%
+
+resultant<uID8440.0>polylib::resultant%arg_list%
+
+gcd<uID8601.0>tcigcd%arg_list%
+lcm<uID8602.0>tcilcm%arg_list%
+max<uID8603.0>tcimax%arg_list%
+min<uID8604.0>tcimin%arg_list%
+<END_CONTEXT_FUNCTIONS>
+
+
+
+<START_CONTEXT_INVERSES>
+cos<uID8500.0>arccos%arg_list%
+sin<uID8501.0>arcsin%arg_list%
+tan<uID8502.0>arctan%arg_list%
+cot<uID8503.0>arccot%arg_list%
+csc<uID8504.0>arccsc%arg_list%
+sec<uID8505.0>arcsec%arg_list%
+
+arccos<uID8510.0>subs(cos%arg_list%,radQU=1)
+arcsin<uID8511.0>subs(sin%arg_list%,radQU=1)
+arctan<uID8512.0>subs(tan%arg_list%,radQU=1)
+arccot<uID8513.0>subs(cot%arg_list%,radQU=1)
+arccsc<uID8514.0>subs(csc%arg_list%,radQU=1)
+arcsec<uID8515.0>subs(sec%arg_list%,radQU=1)
+
+cosh<uID8520.0>arccosh%arg_list%
+sinh<uID8521.0>arcsinh%arg_list%
+tanh<uID8522.0>arctanh%arg_list%
+coth<uID8523.0>arccoth%arg_list%
+csch<uID8524.0>arccsch%arg_list%
+sech<uID8525.0>arcsech%arg_list%
+
+arccosh<uID8530.0>cosh%arg_list%
+arcsinh<uID8531.0>sinh%arg_list%
+arctanh<uID8532.0>tanh%arg_list%
+arccoth<uID8533.0>coth%arg_list%
+arccsch<uID8534.0>csch%arg_list%
+arcsech<uID8535.0>sech%arg_list%
+<END_CONTEXT_INVERSES>
+
+
+<START_CONTEXT_LIMFUNCS>
+lim<uID1.1>limit(%arg_list%,%var%=%lim_exp%%direction%)
+;; tcimax(subs(sin(q1n),radQU=1) $ q1n=1..10)
+max<uID1.2>tcimax(%arg_list% $ %var%=%ll%..%ul%)
+min<uID1.3>tcimin(%arg_list% $ %var%=%ll%..%ul%)
+seq<uID1.4>(%arg_list% $ %var%=%ll%..%ul%)
+<END_CONTEXT_LIMFUNCS>
+
+
+<START_CONTEXT_SCHEMATA>
+superscript<uID1.0>%base%^%superscript%
+fraction<uID2.0>(%numerator%/%denominator%)
+sqrt<uID3.0>sqrt(%base%)
+surd<uID4.0>surd(%base%,%radicand%)
+binomial<uID5.0>binomial(%numerator%,%denominator%)
+matrix<uID6.0>SWPmatrix(%nrows%,%ncols%,[%row_list%])
+Simplex Dual<uID7.0>%expr%,{%condition_list%},%var%
+Simplex Feasible<uID8.0>{%condition_list%}
+Simplex Maximize<uID9.0>%expr%,{%condition_list%}
+Simplex Minimize<uID10.0>%expr%,{%condition_list%}
+Simplex Standardize<uID11.0>{%condition_list%}
+exp<uID12.0>exp(%exponent%)
+Assign Variable<uID13.0>%var%:=%expr%;
+Define Function<uID14.0>%f_nom%:=hold((%var_list%)->%expr%);
+piecewise<uID15.0>piecewise(%dr_list%)
+mixednumber<uID16.0>(%whole%+%frac%)
+differentiate<uID17.0>tcidiff(%expr%,%var%)
+substitution<uID18.0>evalAt(%expr%,%subst_list%)
+doublesubstitution<uID19.0>evalAt(%expr%,%usubst_list%)-evalAt(%expr%,%subst_list%)
+ODE Exact<uID20.0>{%exp_list%},{%sfor_func%}
+ODE Laplace<uID21.0>{%exp_list%},{%sfor_func%},method=laplace
+ODE Numeric<uID22.0>{%exp_list%},[%ODEfunc_list%],[%func_names%],%magic_num%
+ODE Series<uID23.0>{%exp_list%},{%sfor_func%}
+tciprime<uID24.0>tciprime(%func%,[%var%],%numprimes%)
+Polynomial Divide<uID30.0>%numerator%,%denominator%
+Qualified Variable<uID31.0>%var%[%q_list%]
+Kill command<uID32.0>delete %f_nom%;
+interval<uID33.0>%lower%..%upper%
+tcipwr<uID34.0>tcipwr(%base%,%superscript%)
+Numeric System<uID35.0>%eqn_set%%comma%%cond_set%
+Solve Recursion<uID36.0>%eqns%,{%rfunc%}
+Solve CRecursion<uID36.1>{%eqns%},{%rfunc%}
+Power Mod<uID37.0>tcipowermod(%base%,%superscript%,%modulus%)
+
+Laplace<uID38.0>transform::laplace(%expr%,%var%,%tvar%)
+LaplaceMapped<uID39.0>map(%expr%,transform::laplace,%var%,%tvar%)
+Fourier<uID40.0>transform::fourier(%expr%,%var%,%tvar%)
+FourierMapped<uID41.0>map(%expr%,transform::fourier,%var%,%tvar%)
+
+InvLaplace<uID42.0>transform::invlaplace(%expr%,%var%,%tvar%)
+InvLaplaceMapped<uID43.0>map(%expr%,transform::invlaplace,%var%,%tvar%)
+InvFourier<uID44.0>transform::invfourier(%expr%,%var%,%tvar%)
+InvFourierMapped<uID45.0>map(%expr%,transform::invfourier,%var%,%tvar%)
+
+
+
+Assign Variable Deferred<uID46.0>%var%:=hold(%expr%);
+Transpose<uID47.0>linalg::transpose(%matrix%)
+Hermitian Transpose<uID48.0>tcihtranspose(%matrix%)
+conjugate<uID49.0>conjugate%arg%
+norm<uID50.0>tcinorm(%matrix%,%num%)
+
+Solve System<uID60.0>%coeff_matrix%%comma%%col_matrix%
+
+testtypeMatrix<uID100.0>testtype(eval(%var%),Dom::Matrix);
+
+<END_CONTEXT_SCHEMATA>
+
+
+
+<START_CONTEXT_BIGOPS>
+&#x2211;<uID4.1>tcisum(%operand%,%variable%,%lower%,%upper%)
+&#x2211;<uID4.2>tcisum(%operand%,%variable%=%lower%..%upper%)
+
+integral<uID5.0>
+eval  integral<uID5.1>tciint(%integrand%,%variable%,%lower%,%upper%)
+evalf integral<uID5.2>hold(int)(%integrand%,%variable%=%lower%..%upper%)
+indefinite integral<uID5.3>tciint(%integrand%%comma%%variable%)
+indefinite integral<uID5.4>hold(int)(%integrand%%comma%%variable%)
+approximate integral<uID5.5>%integrand%,%variable%,%lower%..%upper%
+
+&#x220f;<uID6.1>tciprod(%operand%,%variable%,%lower%,%upper%)
+&#x220f;<uID6.2>tciprod(%operand%,%variable%=%lower%..%upper%)
+
+<END_CONTEXT_BIGOPS>
+
+
+
+<START_CONTEXT_SIBASEUNITS>
+mQU<uID1.0>m
+kgQU<uID2.0>kg
+sQU<uID3.0>s
+AQU<uID4.0>A
+tmpKQU<uID5.0>K
+radQU<uID6.0>rad
+srQU<uID7.0>sr
+cdQU<uID8.0>cd
+molQU<uID9.0>mol
+<END_CONTEXT_SIBASEUNITS>
+
+
+<START_CONTEXT_SICONVERSIONS>
+
+;; length
+in<uID24500.0>(.0254*mQU)
+ft<uID24501.0>(.3048*mQU)
+mi<uID24502.0>(1609.344*mQU)
+km<uID24503.0>(1000.0*mQU)
+m<uID24504.0>mQU
+cm<uID24505.0>(.01*mQU)
+mm<uID24506.0>(.001*mQU)
+&#xb5;m<uID24507.0>(1.0e-6*mQU)
+nm<uID24508.0>(1.0e-9*mQU)
+&#x212b;<uID24509.0>(1.0e-10*mQU)
+&#xc5;<uID24509.0>(1.0e-10*mQU)
+pm<uID24510.0>(1.0e-12*mQU)
+fm<uID24511.0>(1.0e-15*mQU)
+am<uID24512.0>(1.0e-18*mQU)
+dm<uID24513.0>(.1*mQU)
+
+
+;; mass
+g<uID24600.0>(.001*kgQU)
+kg<uID24601.0>kgQU
+mg<uID24602.0>(1.0e-6*kgQU)
+&#xb5;g<uID24603.0>(1.0e-9*kgQU)
+u<uID24604.0>(1.66054e-27*kgQU)
+cg<uID24605.0>(1.0e-5*kgQU)
+dg<uID24606.0>(1.0e-4*kgQU)
+lb<uID24607.0>(4.535924e-1*kgQU)
+slug<uID24608.0>(1.459390e1*kgQU)
+
+;; time
+d<uID24700.0>(86400*sQU)
+h<uID24701.0>(3600*sQU)
+min<uID24702.0>(60*sQU)
+s<uID24703.0>sQU
+y<uID24704.0>(31556926*sQU)
+ms<uID24705.0>(.001*sQU)
+&#xb5;s<uID24706.0>(1.0e-6*sQU)
+ns<uID24707.0>(1.0e-9*sQU)
+ps<uID24708.0>(1.0e-12*sQU)
+fs<uID24709.0>(1.0e-15*sQU)
+as<uID24710.0>(1.0e-18*sQU)
+
+;; force
+lbf<uID24800.0>(4.44822*kgQU*mQU/(sQU^2))
+N<uID24801.0>(kgQU*mQU/(sQU^2))
+dyn<uID24802.0>(1.0e-5*kgQU*mQU/(sQU^2))
+&#xb5;N<uID24803.0>(1.0e-6*(kgQU*mQU/(sQU^2)))
+mN<uID24804.0>(1.0e-3*(kgQU*mQU/(sQU^2)))
+kN<uID24805.0>(1.0e3*(kgQU*mQU/(sQU^2)))
+MN<uID24806.0>(1.0e6*(kgQU*mQU/(sQU^2)))
+ozf<uID24807.0>(2.780139e-5*(kgQU*mQU/(sQU^2)))
+
+;; energy (include heat)
+J<uID24900.0>(kgQU*mQU*mQU/(sQU^2))
+kcal<uID24901.0>(4186.8*kgQU*mQU*mQU/(sQU^2))
+Btu<uID24902.0>(1055.056*kgQU*mQU*mQU/(sQU^2))
+cal<uID24903.0>(4.1868*kgQU*mQU*mQU/(sQU^2))
+eV<uID24904.0>(1.60217733e-19*kgQU*mQU*mQU/(sQU^2))
+MeV<uID24905.0>(1.60217733e-13*kgQU*mQU*mQU/(sQU^2))
+GeV<uID24906.0>(1.60217733e-10*kgQU*mQU*mQU/(sQU^2))
+erg<uID24907.0>(1.0e-7*kgQU*mQU*mQU/(sQU^2))
+mJ<uID24908.0>(1.0e-3*kgQU*mQU*mQU/(sQU^2))
+&#xb5;J<uID24909.0>(1.0e-6*kgQU*mQU*mQU/(sQU^2))
+nJ<uID24910.0>(1.0e-9*kgQU*mQU*mQU/(sQU^2))
+kJ<uID24911.0>(1.0e3*kgQU*mQU*mQU/(sQU^2))
+MJ<uID24912.0>(1.0e6*kgQU*mQU*mQU/(sQU^2))
+GJ<uID24913.0>(1.0e9*kgQU*mQU*mQU/(sQU^2))
+
+;; power (energy / time)
+W<uID25000.0>(kgQU*mQU*mQU/(sQU^3))
+hp<uID25001.0>(745.69987*kgQU*mQU*mQU/(sQU^3))
+mW<uID25002.0>(1.0e-3*kgQU*mQU*mQU/(sQU^3))
+&#xb5;W<uID25003.0>(1.0e-6*kgQU*mQU*mQU/(sQU^3))
+kW<uID25004.0>(1.0e3*kgQU*mQU*mQU/(sQU^3))
+MW<uID25005.0>(1.0e6*kgQU*mQU*mQU/(sQU^3))
+GW<uID25006.0>(1.0e9*kgQU*mQU*mQU/(sQU^3))
+nW<uID25007.0>(1.0e-9*kgQU*mQU*mQU/(sQU^3))
+
+;; pressure ( force/area )
+atm<uID25100.0>(101325*kgQU/(mQU*sQU^2))
+Pa<uID25101.0>(kgQU/(mQU*sQU^2))
+bar<uID25102.0>(1.0E5*kgQU/(mQU*sQU^2))
+torr<uID25103.0>(133.322*kgQU/(mQU*sQU^2))
+mbar<uID25104.0>(100*kgQU/(mQU*sQU^2))
+&#xb5;Pa<uID25105.0>(1.0e-6*(kgQU/(mQU*sQU^2)))
+MPa<uID25106.0>(1.0e6*(kgQU/(mQU*sQU^2)))
+kPa<uID25107.0>(1.0e3*(kgQU/(mQU*sQU^2)))
+kbar<uID25108.0>(1.0e3*(1.0E5*kgQU/(mQU*sQU^2)))
+mmHg<uID25109.0>(133.322*kgQU/(mQU*sQU^2))
+
+;; electric current (charge / time)
+A<uID25200.0>AQU
+mA<uID25201.0>(1.0e-3*AQU)
+&#xb5;A<uID25202.0>(1.0e-6*AQU)
+nA<uID25203.0>(1.0e-9*AQU)
+kA<uID25204.0>(1.0e3*AQU)
+
+;; faraday
+F<uID25300.0>(AQU*AQU*sQU^4/(kgQU*mQU^2))
+mF<uID25301.0>(1.0e-3*AQU*AQU*sQU^4/(kgQU*mQU^2))
+&#xb5;F<uID25302.0>(1.0e-6*AQU*AQU*sQU^4/(kgQU*mQU^2))
+nF<uID25303.0>(1.0e-9*AQU*AQU*sQU^4/(kgQU*mQU^2))
+pF<uID25304.0>(1.0e-12*AQU*AQU*sQU^4/(kgQU*mQU^2))
+
+;; electric charge
+C<uID25400.0>(AQU*sQU)
+
+;; henry
+H<uID25500.0>(kgQU*mQU^2/(AQU*AQU*sQU^2))
+mH<uID25501.0>(1.0e-3*(kgQU*mQU^2/(AQU*AQU*sQU^2)))
+&#xb5;H<uID25502.0>(1.0e-6*(kgQU*mQU^2/(AQU*AQU*sQU^2)))
+
+;; tesla
+T<uID25600.0>(kgQU/(AQU*sQU^2))
+G<uID25601.0>(1.0e-4*kgQU/(AQU*sQU^2))
+mT<uID25602.0>(1.0e-3*(kgQU/(AQU*sQU^2)))
+&#xb5;T<uID25603.0>(1.0e-6*(kgQU/(AQU*sQU^2)))
+nT<uID25604.0>(1.0e-9*(kgQU/(AQU*sQU^2)))
+pT<uID25605.0>(1.0e-12*(kgQU/(AQU*sQU^2)))
+
+;; volts
+V<uID25700.0>(kgQU*mQU*mQU/(AQU*sQU^3))
+mV<uID25701.0>(1.0e-3*(kgQU*mQU*mQU/(AQU*sQU^3)))
+&#xb5;V<uID25702.0>(1.0e-6*(kgQU*mQU*mQU/(AQU*sQU^3)))
+nV<uID25703.0>(1.0e-9*(kgQU*mQU*mQU/(AQU*sQU^3)))
+pV<uID25704.0>(1.0e-12*(kgQU*mQU*mQU/(AQU*sQU^3)))
+kV<uID25705.0>(1.0e3*(kgQU*mQU*mQU/(AQU*sQU^3)))
+MV<uID25706.0>(1.0e6*(kgQU*mQU*mQU/(AQU*sQU^3)))
+
+;; temperature
+&#xb0;C<uID25800.0>tmpKQU+(273.15*tmpKQU)
+&#xb0;F<uID25801.0>1.0/1.8*tmpKQU - 160.0/9*tmpKQU+273.15*tmpKQU
+K<uID25802.0>tmpKQU
+
+;; 10 * tmpKQU + 273.15*tmpKQU
+;;+10 * 1.0/1.8*tmpKQU - 160.0/9*tmpKQU+273.15*tmpKQU
+;;-10 * tmpKQU
+
+;; plane angle measure
+rad<uID25900.0>radQU
+mrad<uID25901.0>(1.0e-3*radQU)
+&#xb5;rad<uID25902.0>(1.0e-6*radQU)
+&#xb0;<uID25903.0>(PI*radQU/180)
+&#x2032;<uID25904.0>(PI*radQU/(180*60))
+&#x2033;<uID25905.0>(PI*radQU/(180*3600))
+
+;; solid angle measure
+sr<uID26000.0>srQU
+
+;; rate of decay
+Bq<uID26100.0>(1.0/sQU)
+Ci<uID26101.0>(3.7e10/sQU)
+
+;; frequency
+Hz<uID26200.0>(1.0/sQU)
+kHz<uID26201.0>(1.0e3/sQU)
+MHz<uID26202.0>(1.0e6/sQU)
+GHz<uID26203.0>(1.0e9/sQU)
+THz<uID26204.0>(1.0e12/sQU)
+PHz<uID26205.0>(1.0e15/sQU)
+EHz<uID26206.0>(1.0e18/sQU)
+
+
+Wb<uID26300.0>(mQU^2*kgQU/(sQU^2*AQU))
+Mx<uID26301.0>(1.0e-8*mQU^2*kgQU/(sQU^2*AQU))
+mWb<uID26302.0>(1.0e-3*(mQU^2*kgQU/(sQU^2*AQU)))
+&#xb5;Wb<uID26303.0>(1.0e-6*(mQU^2*kgQU/(sQU^2*AQU)))
+nWb<uID26304.0>(1.0e-9*(mQU^2*kgQU/(sQU^2*AQU)))
+cd<uID26400.0>cdQU
+
+
+lx<uID26500.0>(cdQU*srQU/mQU^2)
+fc<uID26501.0>(10.764*cdQU*srQU/mQU^2)
+phot<uID26502.0>(1.0e4*cdQU*srQU/mQU^2)
+
+
+lm<uID26600.0>(cdQU*srQU)
+
+
+sb<uID26700.0>(1.0e4*cdQU/mQU^2)
+
+;; resistance
+&#x3a9;<uID26800.0>(mQU^2*kgQU/(sQU^3*AQU^2))
+m&#x3a9;<uID26801.0>(.001*mQU^2*kgQU/(sQU^3*AQU^2))
+k&#x3a9;<uID26802.0>(1.0e3*mQU^2*kgQU/(sQU^3*AQU^2))
+M&#x3a9;<uID26803.0>(1.0e6*mQU^2*kgQU/(sQU^3*AQU^2))
+G&#x3a9;<uID26804.0>(1.0e9*mQU^2*kgQU/(sQU^3*AQU^2))
+
+
+&#xb5;S<uID26900.0>(1.0e-6*sQU^3*AQU^2/(mQU^2*kgQU))
+mS<uID26901.0>(1.0e-3*sQU^3*AQU^2/(mQU^2*kgQU))
+kS<uID26902.0>(1000*sQU^3*AQU^2/(mQU^2*kgQU))
+S<uID26903.0>(sQU^3*AQU^2/(mQU^2*kgQU))
+
+;; amount of matter - by particle count
+mol<uID27000.0>molQU
+amol<uID27001.0>(1.0e-18*molQU)
+pmol<uID27002.0>(1.0e-12*molQU)
+nmol<uID27003.0>(1.0e-9*molQU)
+mmol<uID27004.0>(1.0e-3*molQU)
+kmol<uID27005.0>(1.0e3*molQU)
+Mmol<uID27006.0>(1.0e6*molQU)
+Gmol<uID27007.0>(1.0e9*molQU)
+Tmol<uID27008.0>(1.0e12*molQU)
+Emol<uID27009.0>(1.0e18*molQU)
+&#xb5;mol<uID27010.0>(1.0e-6*molQU)
+fmol<uID27011.0>(1.0e-15*molQU)
+Pmol<uID27012.0>(1.0e15*molQU)
+
+;; plain area
+;SQUARE_METERS<uID27100.0>(;)
+;SQUARE_FEET<uID27101.0>(;)
+acre<uID27102.0>(4.046873e3*mQU^2)
+;SQUARE_INCHES<uID27103.0>(;)
+hectare<uID27104.0>(1.0e4*mQU^2)
+
+;; volume
+;CUBIC_METERS<uID27200.0>(;)
+;CUBIC_FEET<uID27201.0>(;)
+;CUBIC_INCHES<uID27202.0>(;)
+l<uID27203.0>(1.0e-3*mQU^3)
+gal<uID27204.0>(3.785412e-3*mQU^3)
+qt<uID27205.0>(9.463529e-4*mQU^3)
+ml<uID27206.0>(1.0e-6*mQU^3)
+pint<uID27207.0>(4.731765e-4*mQU^3)
+<END_CONTEXT_SICONVERSIONS>
+
+
+<START_CONTEXT_USBASEUNITS>
+ftQU<uID1.0>ft
+kgQU<uID2.0>kg
+sQU<uID3.0>s
+AQU<uID4.0>A
+tmpKQU<uID5.0>K
+radQU<uID6.0>rad
+srQU<uID7.0>sr
+cdQU<uID8.0>cd
+molQU<uID9.0>mol
+<END_CONTEXT_USBASEUNITS>
+
+
+<START_CONTEXT_USCONVERSIONS>
+;; length
+in<uID24500.0>(.083333*ftQU)
+ft<uID24501.0>ftQU
+yd<uID24502.0>(3*ftQU)
+mi<uID24502.0>(5280*ftQU)
+
+;; mass
+lb<uID24607.0>lbQU
+slug<uID24608.0>slugQU
+
+;; time - same as SI
+
+;; force
+lbf<uID24800.0>lbfQU
+ozf<uID24807.0>
+
+;; energy (include heat) ft-lb
+Btu<uID24902.0>(1055.056*kgQU*mQU*mQU/(sQU^2))
+cal<uID24903.0>(4.1868*kgQU*mQU*mQU/(sQU^2))
+
+;; power (energy / time)
+hp<uID25001.0>(745.69987*kgQU*mQU*mQU/(sQU^3))
+
+;; pressure ( force/area )
+atm<uID25100.0>14.7*lbfQU/(ftQU^2)
+bar<uID25102.0>
+torr<uID25103.0>
+mbar<uID25104.0>
+kbar<uID25108.0>
+mmHg<uID25109.0>
+
+;; electric current (charge / time)
+
+;; faraday
+
+;; electric charge
+
+;; henry
+
+;; tesla
+
+;; volts
+
+;; temperature
+&#xb0;F<uID25801.0>1.0/1.8*tmpKQU - 160.0/9*tmpKQU+273.15*tmpKQU
+
+;; plane angle measure
+
+;; solid angle measure
+
+;; rate of decay
+
+;; frequency
+
+;; resistance
+
+;; conductivity - siemens
+
+;; amount of matter - by particle count
+
+;; plain area
+;SQUARE_FEET<uID27101.0>(;)
+acre<uID27102.0>(4.046873e3*mQU^2)
+;SQUARE_INCHES<uID27103.0>(;)
+
+;; volume
+;CUBIC_FEET<uID27201.0>(;)
+;CUBIC_INCHES<uID27202.0>(;)
+gal<uID27204.0>(3.785412e-3*mQU^3)
+qt<uID27205.0>(9.463529e-4*mQU^3)
+pint<uID27207.0>(4.731765e-4*mQU^3)
+<END_CONTEXT_USCONVERSIONS>
+
+
+<START_CONTEXT_MUPADSTRS>
+complex<uID8500.0>Type::Complex
+even<uID8501.0>Type::Even
+imaginary<uID8502.0>Type::Imaginary
+integer<uID8503.0>Type::Integer
+negative<uID8504.0>Type::Negative
+negint<uID8505.0>Type::NegInt
+negrat<uID8506.0>Type::NegRat
+nonnegative<uID8507.0>Type::NonNegative
+nonnegint<uID8508.0>Type::NonNegInt
+nonnegrat<uID8509.0>Type::NonNegRat
+nonzero<uID8510.0>Type::NonZero
+odd<uID8511.0>Type::Odd
+posint<uID8512.0>Type::PosInt
+positive<uID8513.0>Type::Positive
+posrat<uID8514.0>Type::PosRat
+prime<uID8515.0>Type::Prime
+rational<uID8516.0>Type::Rational
+real<uID8517.0>Type::Real
+zero<uID8518.0>Type::Zero
+gamma<uID8519.0>CONST_EULERgamma
+<END_CONTEXT_MUPADSTRS>

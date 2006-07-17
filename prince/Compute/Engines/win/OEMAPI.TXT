@@ -1,0 +1,1678 @@
+Maple V Release 4 OEM
+Application Programming Interface
+
+Stefan Vorkoetter
+Waterloo Maple Technologies
+
+Last Modified May 28, 1996
+
+----------------------------------------------------------------------------
+
+0. Overview
+
+The Maple V Release 3 and earlier OEM versions were based on a modified
+standard kernel, wherein the input and output routines were tapped into to
+provide characters to the kernel, collect output characters from the kernel,
+and return these to the calling application. From the kernel's point of
+view, it was business as usual. With Maple V Release 4, the kernel has been
+entirely rearchitected, having become a callable entity. With this new
+architecture, implementation of an OEM version has become much more
+straightforward.
+
+The design of the new OEM version was driven by the conflicting requirements
+of a cleaner implementation, satisfying the demands of OEM customers, and
+compatibility with the old OEM version.
+
+This document consists of the following sections:
+
+   * Section 1, The Interface in General, describes the three main entry
+     points to the Maple OEM API.
+   * Section 2, Call Back Functions, describes how results are returned from
+     Maple, and how to implement a call back function to process these
+     results.
+   * Section 3, Plotting, describes how Maple generated plots are returned
+     from Maple, and how to implement a call back function and plot driver
+     to process these plots.
+   * Section 4, Real Math Output, describes how to make use of 2-dimensional
+     mathematical notation.
+   * Section 5, Maple's On-line Help Database, describes how to access
+     Maple's on-line help information directly (instead of through Maple
+     commands).
+   * Section 6, Packaging describes how the OEM interface is delivered for
+     different platforms.
+
+1. The Interface in General
+
+The OEM version consists of a collection of data types, constants, and
+functions, along with several OEM-supplied call back functions. A minimal
+OEM application can be written by using just two of the functions and
+providing only one call back function. Additional functions and call backs
+can be used to increase functionality and versatility.
+
+1.1 Data Types
+
+Maple defines a few low-level data types to improve portability between
+machines. Some of these types are used for parameters or return values for
+OEM API functions. These types are:
+
+M_INT
+     An integer that is the same size as a pointer on the architecture.
+
+M_BOOL
+     An integer that can take on one of two values: TRUE or FALSE.
+
+M_EXPR
+     A Maple expression in native internal format. The actual format is not
+     documented, but some call backs (such as the real math call back) is
+     passed such an expression for further processing by other API
+     functions.
+
+The data type definitions are found in "moemtype.h".
+
+1.2 API Functions
+
+The OEM version general API consists of three basic functions:
+MapleInitialize, MapleEvaluate, and MapleRestart.
+
+MapleInitialize is used to create a Maple kernel, pass command line
+parameters to this kernel (equivalent to those passed to the stand-alone
+version of Maple), and to prepare the kernel for computation. The calling
+sequence is:
+
+int MapleInitialize( int argc, char **argv, char *error )
+
+     The argc parameter indicates the number of command line arguments
+     passed in argv. Although it is not strictly necessary, argc should be
+     at least 1.
+
+     The argv parameter is an array of string pointers giving the command
+     line parameters. This array should have at least argc + 1 elements, the
+     first of which (argv[0]) is ignored, but is usually passed the name of
+     the application or just the string "maple".
+
+     The command line options supported are a subset of those supported by
+     stand-alone versions of Maple. Options that take arguments (such as
+     "-b") may be passed as either a single parameter wherein the argument
+     immediately follows the option with no intervening space (eg.
+     "-b/usr/maple/lib"), or as a pair of parameters (eg. "-b" and
+     "/usr/maple/lib"). The following options are supported:
+
+     -a
+     -b libraryPath {, libraryPath}
+     -e errorBreakLevel
+     -g gcIncrement
+     -q
+     -s
+     -t
+     -T cpuLimit [, dataLimit [, stackLimit [, coreDumpLimit ]]]
+     -w warnLevel
+
+     The error parameter points to a memory area into which an error message
+     can be written if initialization should fail. This error message is
+     guaranteed not to exceed 256 characters in length (including the NUL
+     terminator).
+
+     MapleInitialize will return a Maple kernel identifier (a small positive
+     integer) if successful, or a zero if it fails (if, for example,
+     incorrect arguments were passed). In the latter case, an error message
+     will be written into the memory pointed to by the error parameter.
+     Currently, multiple kernels are not supported.
+
+The MapleEvaluate function is used to actually perform a computation. In the
+OEM version of Maple V Release 3 and earlier, the MapleEvaluate function
+(MAPLE actually) returned a complex structure giving the results (including
+any intermediate output) of the computation. In Release 4, results are
+returned via OEM supplied call back functions. Intermediate output is
+returned as it is generated instead of being returned at the end with the
+final results. This allows OEM applications to monitor the progress of a
+computation. The MapleEvaluate function is defined as follows:
+
+void MapleEvaluate( int mapleID,
+                    char *expr,
+                    MCallBack cb,
+                    void *data )
+
+     The mapleID parameter specifies the kernel to be used.
+
+     The expr parameter gives the statement to be evaluated, expressed in
+     Maple syntax. If the expression contains a syntax error, MapleEvaluate
+     will call the errorCallBack with a syntax error message and the offset
+     into expr of the error. Like in stand-alone Maple, statements ending in
+     a colon (":") will not return any results (in this case, to the
+     textCallBack function). Output caused by print or lprint commands,
+     errors, or help requests will still be produced.
+
+     The cb parameter specifies a collection of functions that Maple will
+     use to return results to the OEM application. Details of the call back
+     functions are described in section 2, Call Back Functions.
+
+     The data parameter is an arbitrary OEM supplied value. It is passed on
+     as the first argument to the call back functions. One use for the data
+     parameter is to pass a C++ object of which the call backs are member
+     functions. The data parameter then becomes this in the member
+     functions.
+
+     If an error is encountered while parsing the supplied expression,
+     MapleEvaluate will call the errorCallBack given in the cb vector.
+
+The MapleRestart function can be called at any time to re-initialize the
+state of a Maple kernel. This is nearly equivalent to starting over from
+scratch (ie. starting the application over), except that any memory that has
+been allocated will be allocated to the kernel's internal free-lists; it
+will not be returned to the operating system. If MapleRestart is called when
+no computation is active, it is equivalent to sending the statement
+"restart;" to the MapleEvaluate function. If MapleRestart is called when a
+computation is active (ie. MapleRestart is called from one of the call back
+functions), then the current computation is aborted, the active call to
+MapleEvaluate returns, and the call to MapleRestart does not return. The
+MapleRestart function is defined as follows:
+
+M_BOOL MapleRestart( int mapleID, char *error )
+
+     The mapleID parameter specifies the kernel to be restarted.
+
+     The error parameter points to a memory area into which an error message
+     can be written if reinitialization should fail. This error message is
+     guaranteed not to exceed 256 characters in length (including the NUL
+     terminator).
+
+     If an error occurs when MapleRestart is called when no computation is
+     active, MapleRestart returns FALSE, and an error message is written
+     into the memory pointed to by the error parameter. If no error occurs,
+     TRUE is returned.
+
+     If MapleRestart is called when a computation is active, MapleRestart
+     does not return. Instead, the currently active call to MapleEvaluate
+     will return. No error can occur in this situation.
+
+The MapleError function can be called at any time from any OEM supplied call
+back function to cause a Maple error (ie. as if Maple's ERROR function had
+been called). If a Maple traperror is in effect, it will catch the error,
+and execution of Maple code will continue after the traperror call.
+Otherwise, computation will stop, and a Maple error message will be
+generated (which will be sent to the errorCallBack, as defined in section 2,
+Call Back Functions). MapleError is defined as follows:
+
+void MapleError( char *message )
+
+     The message parameter is the text of the error message to produce
+     (unless trapped).
+
+The general OEM API is defined in "moemapi.h".
+
+2. Call Back Functions
+
+Results are returned from a Maple computation via a group of OEM supplied
+call back functions. Each piece of output is passed to one of the call back
+functions. The call back functions are passed to the MapleEvaluate function
+in a structure of type MCallBackVec, defined as follows:
+
+typedef struct {
+    void (*textCallBack)( void *data, int tag, char *output );
+
+    void (*errorCallBack)( void *data, M_INT offset, char *msg );
+
+    void (*statusCallBack)( void *data, long bytesUsed,
+                            long bytesAlloc, double cpuTime );
+
+    void (*plotCallBack)( void *data, MPlot plot );
+
+    void (*realMathCallBack)( void *data, M_EXPR expr );
+
+    char *(*readLineCallBack)( void *data );
+
+    M_BOOL (*redirectCallBack)( void *data, char *name,
+                                char *mode );
+
+    char *(*callBackCallBack)( void *data, char *output );
+
+    M_BOOL (*queryInterrupt)( void *data );
+} MCallBackVec, *MCallBack;
+
+Each of these functions takes one or more parameters, but all take a generic
+data parameter. The data parameter is passed the value that was passed as
+the data parameter of the MapleEvaluate function. If the call back functions
+are to be C++ member functions, the data parameter is not declared, and
+becomes the value of this instead.
+
+If it is required for the call backs to know the ID of the kernel from which
+they were called, it is the responsibility of the OEM application to make
+this information available via the data parameter. This could be done, for
+example, by passing a pointer to an object or structure containing the ID
+(among other things) as the data parameter.
+
+The functions in the call back vector are defined as follows:
+
+void (*textCallBack)( void *data, int tag, char *output )
+
+     The textCallBack is called with typical (ie. non-exceptional) Maple
+     output. Each piece of output that Maple generates (an intermediate
+     result, output from a printf statement, etc.) is passed to the
+     textCallBack function.
+
+     The tag parameter indicates the type of output being passed. The tag
+     parameter can take on one of the following values (as defined in
+     "moemapi.h"):
+
+     M_OUTPUT
+          A line-printed (1-D) Maple expression or statement.
+
+     M_DIAG
+          Diagnostic output (high printlevel or trace output).
+
+     M_MISC
+          Miscellaneous output, such as from the Maple printf function or
+          the debugger.
+
+     M_HELP
+          Textual help output. This is generated when a help request comes
+          from the kernel. For a more comprehensive help facility, refer to
+          section 5, Maple's On-line Help Database.
+
+     M_QUIT
+          Response to a Maple quit, done, or stop command.
+
+     M_WARNING
+          A warning message generated during a computation.
+
+     M_ERROR
+          An error message generated during parsing or processing. This is
+          only generated if no errorCallBack is specified (see below).
+
+     M_STATUS
+          Kernel resource usage status (a "bytes used" message). This is
+          only generated if no statusCallBack is specified (see below).
+
+     M_PRETTY
+          One line of a possibly multi-lined pretty-printed expression. This
+          is only generated if no realMathCallBack is specified (see below).
+
+     The output parameter contains the actual output of the type indicated
+     by the tag parameter. Unlike in earlier versions of the Maple OEM
+     version, each output string can be arbitrarily long.
+
+     The textCallBack is the one call back function that must be supplied.
+
+void (*errorCallBack)( void *data, M_INT offset, char *msg )
+
+     The errorCallBack is called whenever an error occurs during parsing or
+     processing.
+
+     The offset parameter is used to indicate the location of a parsing
+     error. If offset >= 0, the error was detected at the specified offset
+     in the string passed to MapleEvaluate. If offset < 0, the error is not
+     a parsing error; it is a computation error.
+
+     The msg parameter contains the actual text of the error message.
+
+     If no errorCallBack is specified, error messages are sent to the
+     textCallBack, with tag M_ERROR.
+
+void (*statusCallBack)( void *data, long bytesUsed,
+                        long bytesAlloc, double cpuTime )
+
+     The statusCallBack is called whenever Maple reports resource usage
+     information (equivalent to the "bytes used" messages in stand-alone
+     Maple).
+
+     The cpuTime parameter is the number of seconds of CPU time that has
+     been consumed since the Maple kernel was started. This includes time
+     spent in any call back functions.
+
+     The bytesUsed parameter indicates how many bytes of storage have been
+     allocated from Maple's internal storage manager.
+
+     The bytesAlloc parameter indicates how many bytes of storage have been
+     allocated from the operating system by Maple's internal storage
+     manager.
+
+     If no statusCallBack is specified, status information is sent to the
+     textCallBack in the form "bytes used=%ld, alloc=%ld, time=%1.2f", with
+     tag M_STATUS.
+
+void (*plotCallBack)( void *data, MPlot plot )
+
+     The plotCallBack is called when a plot is generated by Maple. Details
+     on the implementation of such a function are described in section 3,
+     Plotting.
+
+     If no plotCallBack is specified, any attempt to produce a plot results
+     in an error (reported via the errorCallBack or textCallBack).
+
+void (*realMathCallBack)( void *data, M_EXPR expr )
+
+     The realMathCallBack is called to provide 2-dimensional pretty printed
+     output. By default, the OEM version produces 1-dimensional output via
+     the textCallBack function, but if the command
+     "interface(prettyprint=true);" is sent to Maple, 2-dimensional output
+     is produced instead, via the realMathCallBack.
+
+     The expr parameter is the expression to be formatted This expression
+     must then be passed to a 2-dimensional renderer to produce a form
+     suitable for the OEM application. Several renderers are provided. Refer
+     to section 4, Real Math Output, for more information.
+
+     If no realMathCallBack is provided, any 2-dimensional math output is
+     formatted as text and sent to the textCallBack as one or more lines
+     with tag M_PRETTY.
+
+char *(*readLineCallBack)( void *data )
+
+     The readLineCallBack is called when the kernel executes the Maple
+     readline function (which is also used by readstat, history, etc.). The
+     intent is to obtain a line of input from the user. In most OEM
+     applications, this will probably not be used.
+
+     If no readLineCallBack is provided, any attempts to execute the Maple
+     readline function will produce an error (reported via the errorCallBack
+     or textCallBack).
+
+M_BOOL (*redirectCallBack)( void *data, char *name, char *mode )
+
+     The redirectCallBack is called when the kernel executes the Maple
+     writeto or appendto function. The intent is to redirect subsequent
+     output. What this means in the context of an OEM application is
+     obviously OEM specific.
+
+     The name parameter gives the name of the file to which output should be
+     appended, and the mode parameter specifies the file access mode to use:
+     "wt" for write or "at" for append. The name and mode parameters are
+     compatible with the C library function fopen.
+
+     If the name parameter is NULL (in which case the parameters will not be
+     compatible with fopen), Maple is signalling that redirection is to be
+     terminated (ie. subsequent output is to go back to the main output
+     stream). Again, what this means is OEM specific.
+
+     If no redirectCallBack is provided, any attempts to execute the Maple
+     writeto or appendto functions will produce an error (reported via the
+     errorCallBack or textCallBack).
+
+char *(*callBackCallBack)( void *data, char *output )
+
+     The callBackCallBack is called when the Maple function callback is
+     called by OEM supplied Maple code. The output parameter contains the
+     textual version of the parameters passed to the callback function.
+
+     On return, the callBackCallBack function should pass either a NULL
+     pointer, or a pointer to a string containing a valid Maple expression.
+     If NULL is passed, the Maple callback function returns nothing. If a
+     Maple expression is passed, it is parsed, and the Maple callback
+     function returns the expression (unevaluated).
+
+     This facility can be used to explicitly pass intermediate values of a
+     computation to OEM supplied code, and to return value to Maple.
+
+     If no callBackCallBack is provided, any attempts to execute the Maple
+     callback function will produce an error (reported via the errorCallBack
+     or textCallBack).
+
+M_BOOL (*queryInterrupt)( void *data )
+
+     The queryInterrupt call back is called periodically to allow the
+     computation to be halted. This function is called before each Maple
+     statement is executed. In general, this will be hundreds of times per
+     second, but some operations (notably large integer manipulations) may
+     cause this to be called only once every few seconds. If the computation
+     is to be halted, this function should return TRUE. If the computation
+     is to continue, this function should return FALSE.
+
+     If no queryInterrupt is provided, computations will not be
+     interruptable.
+
+The call back functions are defined in "moemapi.h".
+
+3. Plotting
+
+The only plotting facility available in the Maple V Release 3 OEM version
+was character plotting, wherein the stream of characters making up a plot
+were provided as part of the output.
+
+With Release 4, plotting has been made more flexible, with the ability to
+use OEM supplied plot drivers. Instead of returning the plot as a sequence
+of characters, or as a printed Maple PLOT data structure, Release 4 lets the
+OEM install a plot call back to which the plots are sent as a C plot data
+structure.
+
+The plot call back must be passed to the MapleEvaluate function, and must be
+defined as follows (the name need not be "plotCallBack" of course):
+
+void plotCallBack( void *data, MPlot plot )
+
+     The data parameter is passed the value that was passed as the data
+     parameter of the MapleEvaluate function. If plotCallBack is to be a C++
+     member function, the data parameter is not declared, and becomes the
+     value of this instead.
+
+     The plot parameter is a pointer to a plot data structure (a C struct).
+     The format of this structure is not documented for the OEM, and is
+     subject to change without notice.
+
+Once a plot has been received by the plot call back, it can be manipulated
+and rendered using tools provided in the OEM API.
+
+Several functions are provided to manipulate plots and to render them. The
+manipulation functions are:
+
+void PlotSetAttribute( MPlot plot,
+                       MPlotAttrib attr,
+                       int value )
+
+     This function is used to change the attributes (eg. color, style) of a
+     plot. A plot initially has attributes that were either specified in the
+     plot command sent to Maple, or are Maple's defaults.
+
+     The plot parameter indicates the plot whose attributes are to be
+     changed. This would be a plot that was sent to the OEM-supplied
+     plotCallBack function.
+
+     The attr parameter indicates which attribute to change. See section
+     3.5, Plot Attributes for details.
+
+     The value parameter indicates the new value the attribute is to
+     receive. See section 3.5, Plot Attributes for details.
+
+int PlotGetAttribute( MPlot plot,
+                      MPlotAttrib attr )
+
+     This function is used to query the attributes of a plot. The parameters
+     are the same as for PlotSetAttribute. See section 3.5, Plot Attributes
+     for details. The return value is that of the desired attribute.
+
+M_INT PlotGetDimensions( MPlot plot )
+
+     This function returns the number of dimensions (2 or 3) of a plot.
+
+void PlotDispose( MPlot plot )
+
+     Discards a plot data structure that is no longer needed.
+
+Rendering of plots is accomplished by Maple's universal plot driver. This
+driver is passed a plot and a device vector. The renderer is responsible for
+3D to 2D transformation and hidden line removal in the case of 3D plots. The
+renderer will call the functions defined in the device vector to perform 2D
+rendering of the plot. The attributes of the plot (shading, color model,
+etc.) will have been previously defined, either in the plot or plot3d
+command passed to Maple, or via the PlotSetAttribute function. The renderer
+is defined as:
+
+char *PlotRender( MPlot plot, MPlotDevice dev, void *data )
+
+     The plot parameter specifies the plot to be rendered. This will be a
+     plot that was passed to the plot call back.
+
+     The dev parameter specifies a structure containing various data needed
+     to render the plot, and functions for various rendering operations.
+     These are described in more detail below.
+
+     The data parameter is an OEM-specific parameter that is passed to all
+     the rendering call backs. This can be used to pass a plot identifier, a
+     C++ object, or any other desired value. The data parameter is passed to
+     the rendering call backs as the first parameter. This way, if the data
+     parameter is a C++ object, the rendering call backs can be member
+     functions of that object.
+
+     PlotRender will return NULL if successful, or a pointer to an error
+     message if unsuccessful (note that it may return the same pointer in
+     all cases of failure; if you need to save the message, make a copy of
+     it immediately).
+
+The actual graphics operations required to render a plot must be implemented
+by the OEM. The individual rendering functions are collected in a device
+vector, which is passed to the universal plot driver. A device vector has
+the following structure:
+
+typedef struct {
+    void (*drawPoint)( void *data, MPlotDevice dev, MPlot plot,
+                       M_INT x, M_INT y,
+                       M_INT attrib );
+
+    void (*drawLine)( void *data, MPlotDevice dev, MPlot plot,
+                      M_INT x1, M_INT y1, M_INT x2, M_INT y2,
+                      M_INT attrib );
+
+    void (*drawPolygon)( void *data, MPlotDevice dev, MPlot plot,
+                         M_INT numPoints, M_INT *x, M_INT *y,
+                         M_INT attrib );
+
+    void (*drawText)( void *data, MPlotDevice dev, MPlot plot,
+                      M_INT x, M_INT y, char *text,
+                      M_INT alignment, M_INT attrib, M_INT font );
+
+    void (*drawAxisLine)( void *data, MPlotDevice dev, MPlot plot,
+                          M_INT x1, M_INT y1, M_INT x2, M_INT y2,
+                          M_INT attrib );
+
+    void (*drawAxisText)( void *data, MPlotDevice dev, MPlot plot,
+                          M_INT x, M_INT y, char *text,
+                          M_INT alignment, M_INT attrib, M_INT font );
+
+    void (*drawTitleText)( void *data, MPlotDevice dev, MPlot plot,
+                           char *text );
+
+    void (*startImage)( void *data, MPlotDevice dev, MPlot plot );
+
+    void (*setColorMap)( void *data, MPlotDevice dev, MPlot plot,
+                         M_INT numColors, M_INT *rgb );
+
+    void (*endImage)( void *data, MPlotDevice dev, MPlot plot );
+
+    M_INT (*queryDevice)( void *data, MPlotDevice dev, MPlot plot,
+                          M_INT parameter );
+
+    M_BOOL (*queryInterrupt)( void *data, MPlotDevice dev,
+                              MPlot plot );
+
+    void (*outChar)( void *data, int c );
+} MPlotDeviceVec, *MPlotDevice;
+
+This structure is subject to change with new releases of Maple.
+
+The functions in the MPlotDeviceVec are used to perform different rendering
+operations. The parameters to these functions depend on the function, but
+some parameters are common to several of the functions. These are described
+below:
+
+void *data
+
+     The data parameter is passed the value that was passed as the data
+     parameter of the PlotRender function. If the call back functions are to
+     be C++ member functions, the data parameter is not declared, and
+     becomes the value of this instead.
+
+MPlotDevice dev
+
+     The actual device vector from which the called function was called. In
+     other words, the device vector that was passed to PlotRender. This is
+     passed to the individual call backs in case a call back wishes to call
+     another call back without naming the other call back explicitly.
+
+MPlot plot
+
+     The plot being rendered (which was passed to PlotRender). This is
+     passed to the call backs in case they want to refer to the plot in some
+     way (most notably to look up font information or query an attribute).
+
+M_INT x, M_INT y
+
+     Coordinates for points, lines, text, etc. The coordinates will be in
+     the ranges specified by queryDevice's response to the Q_WIDTH and
+     Q_HEIGHT queries. If the width was specified as width, and the height
+     as height, then 0 <= x < width and 0 <= y < height.
+
+M_INT attrib
+
+     This specifies the attributes of the object to be rendered. Several
+     macros are provided to extract various aspects of the attributes from
+     such a parameter. These support macros are:
+
+     DECODE_COLOR
+
+          Extracts the RGB value or color map entry index from the
+          attribute. See section 3.1, Color Handling in Plots for more
+          information.
+
+     DECODE_LINESTYLE
+
+          Extracts style information from the attribute. The style is
+          generally used to select dash patterns. The predefined line styles
+          are:
+
+          MPA_LINE_STYLE_SOLID
+          MPA_LINE_STYLE_DOTTED
+          MPA_LINE_STYLE_DASHED
+          MPA_LINE_STYLE_DASHDOT
+
+          User defined line styles can also appear in a plot (having been
+          put there by PlotSetAttribute). Internally, line styles are stored
+          in three bits, so the maximum ordinal value of a line style is 7.
+
+     DECODE_THICKNESS
+
+          Extracts line thickness information from the attribute. This is
+          usually the thickness in pixels, but can be in other units (eg.
+          for PostScript). A thickness of 1 is considered normal. The
+          predefined thicknesses are:
+
+          MPA_THICKNESS_THIN
+          MPA_THICKNESS_MEDIUM
+          MPA_THICKNESS_THICK
+
+          Used defined thicknesses (up to a value of 15) can also appear in
+          a plot.
+
+     DECODE_SYMBOL
+
+          Extracts symbol information from an attribute of a point. This is
+          used to draw symbols such as diamonds, circles, squares, etc. at
+          points. The predefined symbols are:
+
+          MPA_SYMBOL_CROSS
+          MPA_SYMBOL_DIAMOND
+          MPA_SYMBOL_BOX
+          MPA_SYMBOL_CIRCLE
+          MPA_SYMBOL_POINT
+
+          User defined symbols can also appear in a plot (having been put
+          there by PlotSetAttribute). Internally, symbols are stored in four
+          bits, so the maximum ordinal value of a symbol is 15.
+
+     M_INT alignment
+
+          This specifies the alignment (to left, centered, to right and
+          above, centered, below) of text relative to the specified point.
+          The alignment is specified using four bits in the parameter:
+
+          ALIGN_TO_LEFT
+
+               The text is to be aligned to the left of the specified point
+               (ie. the right side of the text touches the point).
+
+          ALIGN_TO_RIGHT
+
+               The text is to be aligned to the right of the specified point
+               (ie. the left side of the text touches the point).
+
+          ALIGN_ABOVE
+
+               The text is to be aligned above the specified point (ie. the
+               bottom of the text touches the point).
+
+          ALIGN_BELOW
+
+               The text is to be aligned below the specified point (ie. the
+               top of the text touches the point).
+
+          If neither ALIGN_TO_LEFT nor ALIGN_TO_RIGHT are specified, the
+          text is centered horizontally about the point. Likewise, if
+          neither ALIGN_ABOVE nor ALIGN_BELOW are specified, the text is
+          centered vertically about the point.
+
+     M_INT font
+
+          This specifies the font to be used to display text. A value of -1
+          indicates the default title font, a value of 0 indicates the
+          default font, and other values indicate an entry in the font table
+          for the plot. Information about the specified font can be obtained
+          by passing the Plot parameter and the font to PlotGetFont. See
+          section 3.2, Font Handling in Plots for more information.
+
+The functions in the device vector are:
+
+void (*drawPoint)( void *data, MPlotDevice dev, MPlot plot,
+                   M_INT x, M_INT y,
+                   M_INT attrib )
+
+     Draw a point at (x,y) with the specified attributes (color, thickness,
+     and symbol).
+
+void (*drawLine)( void *data, MPlotDevice dev, MPlot plot,
+                  M_INT x1, M_INT y1, M_INT x2, M_INT y2,
+                  M_INT attrib )
+
+     Draw a line from (x1,y1) to (x2,y2) with the specified attributes
+     (color, thickness, and style).
+
+void (*drawPolygon)( void *data, MPlotDevice dev, MPlot plot,
+                     M_INT numPoints, M_INT *x, M_INT *y,
+                     M_INT attrib )
+
+     Draw a closed filled polygon with numPoints vertices. The vertices are
+     numbered from 0 to numPoints - 1, and are given by the arrays x and y.
+     Use the specified attributes (color).
+
+void (*drawText)( void *data, MPlotDevice dev, MPlot plot,
+                  M_INT x, M_INT y, char *text,
+                  M_INT alignment, M_INT attrib, M_INT font )
+
+     Draw text at (x,y) with the specified alignment, attributes (color),
+     and font.
+
+void (*drawAxisLine)( void *data, MPlotDevice dev, MPlot plot,
+                      M_INT x1, M_INT y1, M_INT x2, M_INT y2,
+                      M_INT attrib )
+
+     Draw an axis line from (x1,y1) to (x2,y2) with the specified attributes
+     (color, thickness, and style).
+
+void (*drawAxisText)( void *data, MPlotDevice dev, MPlot plot,
+                      M_INT x, M_INT y, char *text,
+                      M_INT alignment, M_INT attrib, M_INT font )
+
+     Draw an axis label at (x,y) with the specified alignment, attributes
+     (color), and font.
+
+void (*drawTitleText)( void *data, MPlotDevice dev, MPlot plot,
+                       char *text )
+
+     Draw the title of the plot. Style and placement of the title is
+     entirely up to the OEM application.
+
+void (*startImage)( void *data, MPlotDevice dev, MPlot plot )
+
+     Initialize the OEM supplied rendering functions. For example, if
+     recording the plot in a file, this would be the place to open the file.
+
+void (*setColorMap)( void *data, MPlotDevice dev, MPlot plot,
+                     M_INT numColors, M_INT *rgb )
+
+     Register the set of colors that will be used for this plot. There will
+     be numColors colors, numbered from 0 to numColors - 1, given by the
+     array rgb. Each color value will be passed as a 24-bit value where the
+     most significant 8 bits represent red the next most significant 8 bits
+     represent green, and the 8 least significant bits represent blue.
+
+void (*endImage)( void *data, MPlotDevice dev, MPlot plot )
+
+     Do whatever is necessary to complete the rendering. For example, if
+     recording the plot in a file, this would be where the file is closed.
+
+M_INT (*queryDevice)( void *data, MPlotDevice dev, MPlot plot,
+                      M_INT devQuery )
+
+     Used by the Maple renderer to query attributes of the device. The
+     devQuery parameter specifies the feature being queried, and the
+     function must return a result appropriate to the query. The queries
+     supported are:
+
+     Q_WIDTH
+
+          What is the width of the device, in device dependent units.
+
+     Q_HEIGHT
+
+          What is the height of the device, in device dependent units.
+
+     Q_COLORMAP
+
+          Do the OEM supplied rendering commands want to use a color map?
+          See section 3.1, Color Handling in Plots for more information.
+
+     Q_BACKGROUND
+
+          What is the background color (eg. white for a plotter)? This is
+          specified as a 24-bit RGB value, independent of the color model
+          used by the device. The Maple renderer uses this to avoid using
+          that color in the plot.
+
+M_BOOL (*queryInterrupt)( void *data, MPlotDevice dev,
+                          MPlot plot )
+
+     This function is called periodically by the renderer to allow the OEM
+     application to perform background tasks such as mouse tracking, and to
+     interrupt the rendering operation if desired. The function is expected
+     to return TRUE. If it returns FALSE, rendering stops.
+
+void (*outChar)( void *data, int c )
+
+     This one is a bit unusual. The plot renderer (PlotRender) will never
+     call this function itself. However, OEM supplied call back functions
+     can (and are encouraged to) call this function when plotting involves
+     writing to an output device or stream (as a PostScript driver would do,
+     for example). That way, copying the device vector and changing the
+     outChar member is an easy way to redirect the plotting output.
+
+     All the sample drivers supplied by Waterloo Maple make use of this
+     function to perform output (where appropriate).
+
+The sequence of operations required to create a plot using OEM Maple is as
+follows:
+
+  1. A command such as "plot(sin(x),x=-5..5);" is sent to Maple for
+     evaluation.
+
+  2. Maple produces a PLOT data structure which is sent to the API, where it
+     is translated to a data structure private to Maple's plotting system,
+     and then passed on to the OEM's plot call back.
+
+  3. The OEM's plot call back function creates a device vector containing
+     all the rendering tools to be used, and then calls PlotRender, pasing
+     it the plot data structure and the device vector.
+
+  4. The rendering engine makes several queries via the queryDevice function
+     in the device vector.
+
+  5. The rendering image calls the startImage function in the device vector.
+
+  6. Depending on the result of the Q_COLORMAP query, the rendering engine
+     passes a color map to the setColorMap function in the device vector.
+
+  7. The rendering engine calls the various rendering functions in the
+     device vector. These functions may call various support functions such
+     as PlotGetFont. They may also call other rendering functions, such as
+     outChar.
+
+During the execution of the step 1, Maple will periodically call the
+queryInterrupt call back that was passed to the MapleEvaluate function.
+
+During the execution of steps 3 through 7, Maple will periodically call the
+queryInterrupt call back that was passed to PlotRender in the device vector.
+
+The OEM plotting interface is defined in "moemplot.h".
+
+3.1 Color Handling in Plots
+
+The OEM Maple rendering engine supports two color models: full color and
+mapped color. Before beginning a plot, the renderer queries the OEM supplied
+device (via the the Q_COLORMAP parameter to the queryDevice call back) which
+model is desired.
+
+If the device returns a non-zero integer N, the rendering engine will make a
+pre-pass over the plot to compute all the colors (at most N) that will be
+required. It will then inform the device of the required colors via the
+setColorMap call back. Any subsequent references to color will be indices
+into this color map.
+
+If the device returns 0 in response to Q_COLORMAP, the rendering engine will
+not make a pre-pass. Instead, it will use each 24-bit color as it needs it,
+and will pass color as 24-bit values.
+
+This approach allows for maximum flexibility. When working with 24-bit color
+devices, the full capabilities of the device are utilized. When working with
+any other device, the OEM application has control over how many colors are
+used, and how the colors are rendered. When it is given the color map (via
+setColorMap), it can do whatever processing is necessary to map this to the
+device's capabilities, and generate a table of the actual colors, grey
+scales, or dither patterns to be used. Further references to color by
+Maple's rendering engine can then be used as an index into this table.
+
+3.2 Font Handling in Plots
+
+Text in plots is generated by calls to the drawText and drawAxisText call
+backs. The font parameter indicates the font to be used to render the text.
+The values -1 and 0 refer to the default title and default axis fonts
+respectively. All other values refer to entries in a table of fonts that is
+specified as part of the plot.
+
+The font table contains information about each of the fonts within it. This
+information is generated by the Maple plotting library functions based on
+options specified by the user. For each font, the table contains the font's
+name, a style, and a point size.
+
+Given a font number, the definition of the font can be retrieved using the
+PlotGetFont function. This function is defined as:
+
+M_BOOL PlotGetFont( MPlot plot, M_INT font,
+                    char *name, int nameSize,
+                    char *style, int styleSize,
+                    M_INT *size )
+
+     The plot parameter specifies the plot for which a font is to be looked
+     up.
+
+     The font parameter is the font number of the font to look up. The
+     values -1 and 0 can be passed, in which case information about Maple's
+     idea of suitable default fonts is returned.
+
+     The name parameter specifies a buffer of nameSize characters into which
+     the font name is to be copied. No more than nameSize - 1 characters,
+     plus a NUL byte, will be copied into this buffer. Currently, Maple can
+     generate the following values for the name parameter: "times",
+     "courier", "helvetica", and "symbol".
+
+     The style parameter specifies a buffer of styleSize characters into
+     which the font style is to be copied. No more than styleSize - 1
+     characters, plus a NUL byte, will be copied into this buffer.
+     Currently, when the font name is "times", Maple can generate the
+     following values for the style parameter: "roman", "bold", "italic",
+     and "bolditalic". When the font name is "courier" or "helvetica", Maple
+     can generate the styles "", "bold", "oblique", and "boldoblique". For
+     the "symbol" font, the style is always "".
+
+     The size parameter is a pointer to an integer into which the font size,
+     in points, will be stored.
+
+     PlotGetFont returns TRUE if successful and FALSE if the specified font
+     index is not valid for the plot.
+
+Once information about a font has been retrieved, the OEM rendering system
+should select an available font that most closely matches the description of
+the font.
+
+3.3 Animation
+
+Animation is done through the same interface as static plotting. The
+startImage and endImage call backs are called once for each frame of the
+animation.
+
+The OEM application can determine in advance whether a plot is static or an
+animation using the PlotGetFrameCount function:
+
+M_INT PlotGetFrameCount( MPlot plot )
+
+     This function returns a count of the number of frames. A count of 0
+     indicates a static plot. A count of N > 1 indicates an animation with N
+     frames.
+
+3.4 Writing Interactive Plot Drivers
+
+Since the actual MPlot data structure remains in existence until explicitly
+disposed of by PlotDispose, writing an interactive plot driver is just a
+matter of writing an interface, changing the attributes of the plot using
+PlotSetAttribute in response to interface actions, and then re-rendering the
+plot.
+
+The stand-alone Maple interactive plot drivers have a useful bounding box
+feature, whereby rotation of the plot is performed by rotating the bounding
+box (since very few devices can rotate a complex plot in real-time). To
+facilitate implementation of something like this, a predefined MPlot
+structure is provided by the OEM API:
+
+MPlot boundingBox3D
+
+When passed to PlotRender, they will cause a 3D bounding box to be rendered.
+The orientation of the bounding box can be set by calling PlotSetAttribute
+with BoundingBox3D as the first parameter.
+
+3.5 Plot Attributes
+
+Attributes are passed to PlotSetAttribute using an attribute specifier (of
+type MPlotAttribute) and a value (of type int). Attributes are retrieved by
+PlotGetAttribute using an attribute specifier; a value of type int is
+returned.
+
+The available attributes for plots are:
+
+MPA_AXES (2D and 3D)
+
+     Controls the selection of the lines drawn for the axes on the plot. It
+     can take the five values MPA_BOX, MPA_FRAME, MPA_NORMAL, MPA_NONE, or
+     MPA_DEFAULT. MPA_BOX axes consist of a rectangular box surrounding the
+     plot with labels and tick marks on the left and lower lines. The
+     MPA_FRAME axes style only draws the left and lower axes of the box with
+     their associated tick marks and labels. MPA_NORMAL style draws two axes
+     lines and attempts to have them intersect at the zero position on the
+     axes. If 0 is not in the axes range, the axes intersect at the lower
+     bound of the range. Style MPA_NONE results in no lines or labels.
+
+MPA_COLOR (3D)
+
+     Several different color schemes can be specified for 3D plots.
+     MPA_COLOR_XYZ varies the color along all three axes. MPA_COLOR_XY
+     varies color as a function of x and y. MPA_COLOR_Z varies color from
+     blue to red as a function of z. MPA_COLOR_Z_HUE is similar to
+     MPA_COLOR_Z, but passes through the entire spectrum (giving a rainbow
+     effect). MPA_COLOR_Z_GRAY plots in gray scale, varying intensity as a
+     function of z. MPA_COLOR_NONE produces a monochrome plot.
+     MPA_COLOR_DEFAULT uses device specific colors.
+
+MPA_GRID (3D)
+
+     Specifies the type of grid to be superimposed on the plot (subject to
+     the MPA_STYLE attribute; see below). MPA_GRID_TRIANGULAR superimposes a
+     grid of right triangles. MPA_GRID_RECTANGULAR superimposes a grid of
+     rectangles (an equal number in each direction).
+
+MPA_LIGHTING (3D)
+
+     Controls the lighting model used. The lighting interacts with the
+     colors of the plot itself. MPA_LIGHTING_NONE specifies no special
+     lighting (ie. uniform ambient white light). MPA_LIGHTING_USER specifies
+     the lighting that was given in the plot3d command within Maple.
+     MPA_LIGHTING_1 through MPA_LIGHTING_4 specify one of four predefined
+     sets of colored or white lights.
+
+MPA_LINESTYLE (2D and 3D)
+
+     Specifies the type of line to be used in drawing the plot (not the
+     axes). The meanings of the line styles will vary from device to device,
+     but if possible, the different styles should be rendered distinctly.
+     The predefined line style values are MPA_LINESTYLE_SOLID,
+     MPA_LINESTYLE_DOTTED, MPA_LINESTYLE_DASHED, and MPA_LINESTYLE_DASH_DOT.
+     Application-defined line styles are also permitted, but the line style
+     must be represented by an integer value between 1 and 7 (1 through 4
+     correspond to the predefined styles). The rendering functions can
+     deterime the desired line style using the DECODE_LINESTYLE macro.
+
+MPA_ORIENTATION_PHI and MPA_ORIENTATION_THETA (3D)
+
+     Sets the orientation of the plot. Values can range from -180 to 180
+     degrees. MPA_ORIENTATION_THETA controls rotation around the z-axis.
+     MPA_ORIENTATION_PHI controls rotation around the horizontal axis.
+
+MPA_PROJECTION (3D)
+
+     Controls the projection used in the 3D to 2D transformation.
+     MPA_PROJECTION_ORTHOGONAL specifies an orthogonal projection (ie. the
+     viewer is infinitely far away). MPA_PROJECTION_FAR_PERSPECTIVE,
+     MPA_PROJECTION_MEDIUM_PERSPECTIVE, and MPA_PROJECTION_NEAR_PERSPECTIVE,
+     specify perspective projections, wherein FAR, MEDIUM, and NEAR refer to
+     the viewer's distance from the object. NEAR creates a sense of being
+     extremely close to the object.
+
+MPA_SCALING (2D and 3D)
+
+     Specifies if scaling of the axes is to be equal for all axes
+     (MPA_SCALING_CONSTRAINED, the object being scaled such that the largest
+     axis fits), or indepdentent for each axis (MPA_SCALING_UNCONSTRAINED,
+     the object being scaled so as to fill the display area in all
+     dimensions).
+
+MPA_STYLE (2D and 3D)
+
+     Controls the rendering style of the plot. Not all options apply to both
+     2D and 3D plots. MPA_STYLE_HIDDEN indicates that 3D plots are to be
+     plotted as a wire frame, with hidden lines removed. MPA_STYLE_PATCH,
+     MPA_STYLE_PATCH_NO_GRID, and MPA_STYLE_PATCH_CONTOUR indicate 3D plots
+     with surface patches with a grid, without a grid, and with contour
+     lines respectively. MPA_STYLE_POINT specifies that only vertices should
+     be rendered (for 2D and 3D plots). MPA_STYLE_LINE indicates that
+     consecutive points are joined by lines (a transparent wire frame for 3D
+     plots). MPA_STYLE_CONTOUR indicates that 3D plots should be drawn only
+     as contour lines, each contour line appearing at the level it
+     represents. MPA_STYLE_FLAT contour produces a plot where all the
+     contours are rendered in two dimensions.
+
+MPA_SYMBOL (2D and 3D)
+
+     Specifies the symbol to be used to draw points (vertices). The
+     predefined choices are MPA_SYMBOL_DEFAULT, MPA_SYMBOL_CROSS,
+     MPA_SYMBOL_DIAMOND, MPA_SYMBOL_BOX, MPA_SYMBOL_CIRCLE, and
+     MPA_SYMBOL_POINT. The rendering of these symbols is up to the rendering
+     functions, which can determine the desired symbol using the
+     DECODE_SYMBOL macro. Application specific symbols can be specified as
+     well, as an integer between 1 and 15 (1 through 6 correspond to the
+     predefined symbols).
+
+MPA_THICKNESS (2D and 3D)
+
+     Controls the thickness of line to use for rendering. The predefined
+     symbols MPA_THICKNESS_THIN, MPA_THICKNESS_MEDIUM, and
+     MPA_THICKNESS_THICK correspond to the thicknesses (1 through 3) usually
+     generated by Maple. Thicknesses of up to 15 can be specified. The
+     rendering functions can determine the desired thickness of a line using
+     the DECODE_THICKNESS macro.
+
+4. Real Math Output
+
+Output using real math notation is accomplished when the Maple kernel sends
+an expression to the realMathCallBack, which in turn passes the expression
+to the desired real math renderer. The form in which the output is produced
+depends on the renderer selected, and the formatting options passed to the
+renderer.
+
+The real math rendering interface is defined in "moem2d.h".
+
+4.1 Real Math Renderers
+
+Several real math renderers are provided. Not all renderers are available on
+all platforms. The calling sequence for the renderers vary for each
+renderer. However, several parameters are common to several of them:
+
+M_EXPR expr
+
+     This specifies the expression to be formatted, and will have been
+     obtained as the expr parameter to the realMathCallBack.
+
+RealMathOptions fmtOpts
+
+     This specifies various aspects of the formatting to be carried out. See
+     section 4.2, Real Math Formatting Options, for further details.
+
+void *data
+
+     The data parameter is an arbitrary OEM supplied value. It is passed on
+     as the first argument to any call back functions. One use for the data
+     parameter is to pass a C++ object of which the call backs are member
+     functions. The data parameter then becomes this in the member
+     functions.
+
+The remaining parameters to the renderers are described with the renderers.
+The available renderers are:
+
+char *RealMathText( M_EXPR expr,
+                    RealMathOptions fmtOpts,
+                    M_BOOL (*writeChar)( void *data, int c ),
+                    M_BOOL (*writeAttrib)( void *data, int a ),
+                    void *data )
+
+     This renderer formats expressions using printable characters in the
+     same way that TTY versions of Maple do. It is assumed that the
+     resulting character stream will be printed using a fixed pitch font
+     (such as Courier).
+
+     The writeChar parameter defines a call back function to which the
+     characters will be passed in turn. The characters will all be printable
+     characters. Leading spaces are added to achieve the appropriate
+     alignment. No trailing spaces are ever generated. A newline ('\n')
+     character is sent at the end of each line. The writeChar function can
+     terminate rendering by returning TRUE.
+
+     The writeAttrib parameter defines a call back function to which
+     attribute information will be passed (if enabled, see section 4.2, Real
+     Math Formatting Options). The attribute passed to writeAttrib applies
+     to all subsequent characters passed to writeChar until another
+     attribute is passed to writeAttrib. The possible values for the
+     attribute are:
+
+     FN_NORMAL
+
+          Normal text mode.
+
+     FN_BOLD
+
+          Boldfaced text mode. This is used for key words in Maple
+          procedures.
+
+     FN_ITAL
+
+          Italic text mode. This is used for variable names.
+
+     The writeAttrib function can terminate rendering by returning TRUE. The
+     writeAttrib function can be omitted by passing NULL for the writeAttrib
+     parameter.
+
+     RealMathText will return NULL if successful, or a pointer to an error
+     message if unsuccessful (note that it may return the same pointer in
+     all cases of failure; if you need to save the message, make a copy of
+     it immediately).
+
+char *RealMathLaTeX( M_EXPR expr,
+                     RealMathOptions fmtOpts,
+                     M_BOOL (*writeChar)( void *data, int c ),
+                     M_BOOL inLine,
+                     void *data )
+
+     This renderer formats expressions using LaTeX.
+
+     The writeChar parameter defines a call back function to which the
+     resulting stream of LaTeX output will be passed. The writeChar function
+     can terminate rendering by returning TRUE.
+
+     The inLine parameter specifies whether the generated LaTeX code is
+     intended for in-line math mode (when inLine is TRUE) or display math
+     mode (when inLine is FALSE).
+
+     RealMathLaTeX will return NULL if successful, or a pointer to an error
+     message if unsuccessful (note that it may return the same pointer in
+     all cases of failure; if you need to save the message, make a copy of
+     it immediately).
+
+char *RealMathMetaFile( M_EXPR expr,
+                        RealMathOptions fmtOpts,
+                        M_BOOL (*writeMetaFile)( void *data,
+                                                 RealMathMF mf )
+                        int metaFileType,
+                        char *fileName,
+                        HDC deviceContext,
+                        M_BOOL multiPage,
+                        void *data )
+
+     This renderer formats expressions into a Windows MetaFile.
+
+     The fmtOpts parameter is as described in section 4.2, Real Math
+     Formatting Options. Any measurements (eg. fontSize, deviceWidth) are
+     specified in points. The default fontName (if NULL is specified) is
+     "Times New Roman". The default fontSize (if 0 is specified) is 12
+     points.
+
+     The writeMetaFile parameter defines a call back function to which the
+     resulting metafile(s) will be passed. The writeMetaFile function can
+     terminate rendering by returning TRUE.
+
+     The metaFileType parameter specifies the type of metafile to generate:
+
+     MF_STANDARD
+
+          Standard 16-bit Windows metafile.
+
+     MF_ALDUS
+
+          Aldus Corporation placeable metafile.
+
+     MF_ENHANCED
+
+          Win32 enhanced metafile.
+
+     The fileName parameter indicates the name of the file(s) into which the
+     metafile should be written. If NULL is specified, the metafile is not
+     written to a file, and a handle is returned.
+
+     The deviceContext parameter indicates the device context that the
+     metafile is intended to be used with. If NULL is specified, the display
+     device context will be used. Generally, specifying NULL provides the
+     best results for most uses, although it may be necessary to specify an
+     appropriate printer device context when a printer font has been
+     specified.
+
+     The multiPage parameter indicates whether or not multiple-page output
+     is to be allowed. If set to FALSE and an expression will not fit on a
+     page, an error will be returned.
+
+     RealMathMetaFile will return NULL if successful, or a pointer to an
+     error message if unsuccessful (note that it may return the same pointer
+     in all cases of failure; if you need to save the message, make a copy
+     of it immediately).
+
+HANDLE RealMathPict( M_EXPR expr,
+                     RealMathOptions fmtOpts )
+
+     This renderer formats expressions into a Macintosh PICT. On success, it
+     returns a handle to the PICT. If it fails, zero is returned instead.
+
+4.1.1 The writeMetaFile Call Back
+
+The writeMetaFile call back function passed to RealMathMetaFile is defined
+as follows (but obviously need not be named "writeMetaFile"):
+
+M_BOOL writeMetaFile( void *data, RealMathMF mf )
+
+     The data parameter is passed the value that was passed as the data
+     parameter of the RealMathMetaFile function. If writeMetaFile is to be a
+     C++ member function, the data parameter is not declared, and becomes
+     the value of this instead.
+
+     The mf parameter is a pointer to a structure giving and describing the
+     metafile being written. This structure is defined as follows:
+
+     typedef struct {
+             int metaFileType;
+             int currentNumber, maximumNumber;
+             int resolution;
+             M_INT width, height;
+             union {
+                     char *fileName;
+                     HMETAFILE standard;
+                     HENHMETAFILE enhanced;
+             } metaFile;
+     } RealMathMFVec, *RealMathMF;
+
+     These fields give detailed information about the metafile. The fields
+     are defined as follows:
+
+     int metaFileType;
+
+          The type of metafile, as originally passed to the RealMathMetaFile
+          function. This is used to indicate which member of the metaFile
+          union (described below) is the appropriate one.
+
+     int currentNumber, maximumNumber;
+
+          The page number of a multi-page metafile, and the number of pages
+          that will be generated (the latter will never change in a sequence
+          of calls to writeMetaFile).
+
+     int resolution;
+
+          The number of metafile units per inch. This is generally 1440
+          (corresponding to the MS-Windows TWIPS mapping mode).
+
+     M_INT width, height;
+
+          The width and height of the metafile, in metafile units.
+
+     char *fileName;
+
+          If you specified a file name in the call to RealMathMetaFile, this
+          will be the actual file name that was used (including page number
+          and extension as appropriate). If you did not specify a file name,
+          this will be NULL.
+
+     HMETAFILE standard;
+     MENHMETAFILE enhanced;
+
+          If you did not specify a file name in the call to
+          RealMathMetaFile, this will be the handle to the generated
+          metafile. The ownership of this handle is considered to have been
+          passed to the OEM application, so you are responsible for freeing
+          it when you no longer need it. If you did specify a file name, the
+          handle will be NULL.
+
+     Note that only one of metaFile.fileName, metaFile.standard, or
+     metaFile.enhanced is valid, based on the value of the metaFileType
+     field.
+
+Note that although ownership of the metafile handle is considered to be with
+the OEM application, ownership of the memory occupied by the RealMathMF
+structure stays with Maple. Therefore, if you need to retain any information
+from this structure after the call to your writeMetaFile call back returns,
+you must make a copy of this information first. As a matter of fact,
+subsequent calls to your writeMetaFile call back could very well be passed a
+pointer to the same RealMathMFVec structure, with new values filled in.
+
+The writeMetaFile call back function can terminate rendering (of a multiple
+page output) by returning TRUE.
+
+4.2 Real Math Formatting Options
+
+Some aspects of formatting expressions using real math notation are
+controlled by a formatting control structure, defined as follows:
+
+typedef struct {
+        char *fontName;
+        int fontSize;
+        int numFontSizes;
+        int deviceWidth;
+        int deviceHeight;
+        int tabWidth;
+        int firstIndent;
+        int subsequentIndent;
+        int lineSpace;
+        M_BOOL labelling;
+        int minLabelWidth;
+        int verboseProc;
+} RealMathOptionsVec, *RealMathOptions;
+
+Not all of these fields are honoured by all of the renderers. For example,
+the fontName field is ignored by the RealMathText renderer. The fields of
+the structure are defined as follows:
+
+char *fontName
+
+     The name of the font to use in rendering. The format of the font name
+     is device dependent. Not all renderers respect the fontName. Passing
+     NULL for the fontName will use an appropriate default.
+
+int fontSize
+
+     The size, in points, of the largest font to be used in formatting. As
+     smaller sizes are required (eg. for exponents), they are selected
+     relative to this size automatically. Not all renderers respect the
+     fontSize. Passing 0 for the fontSize will use an appropriate default.
+
+int numFontSizes
+
+     The maximum number of distinct font sizes to be used in formatting
+     expressions.
+
+int deviceWidth
+int deviceHeight
+
+     The dimensions, in device dependent units, of the output device.
+     Expressions will be formatted to fit within the specified width. No
+     single "line" of an expression ("line" in the mathematical formatting
+     sense, not in the text file sense) will be higher than the specified
+     height.
+
+int tabWidth
+
+     The number of character widths (of the character "x" when a
+     proportionally spaced font is used) used to make up one level of
+     indendation when formatting procedures.
+
+int firstIndent
+
+     The amount of leading indentation, in device dependent units, for the
+     first line of a multi-line expression.
+
+int subsequentIndent
+
+     The amount of leading indentation, in device dependent units, for the
+     subsequent lines of a multi-line expression.
+
+int lineSpace
+
+     The spacing between lines of output, in device dependent units.
+
+M_BOOL labelling
+
+     Whether or not sub-expression labelling is to be used in the output. If
+     TRUE, labels of the form %n will be used for common sub-expressions,
+     with definitions for each label given at the end of the output.
+
+int minLabelWidth
+
+     The approximate minimum width, in device dependent units, for a common
+     sub-expression to be a candidate for sub-expression labelling.
+
+int verboseProc
+
+     The extent to which procedure bodies are printed. With a setting of 1,
+     only non-copyrighted procedures have their bodies printed. With a
+     setting of 2, all procedures have their bodies printed. With a setting
+     of 3, all procedures have their bodies printed, and the contents of a
+     procedure's remember table (if any) are printed after the procedure in
+     the form of Maple comments.
+
+int showAssumed
+
+     Controls how variables with assumptions should be printed. With a
+     setting of 0, assumed variables are printed the same way as plain
+     variables. With a setting of 1, assumed variables are printed with a
+     trailing tilde ("~"). With a setting of 2, they are printed as normal
+     variables, but a list of assumed variables is printed at the end of the
+     expression.
+
+Stand-alone Maple keeps track of formatting options using interface
+variables. These variables are examined and manipulated using the Maple
+interface function. There is one set of interface variables for each kernel
+that has been created (by MapleInitialize). The OEM interface does not use
+these settings for real math formatting; it uses the specified
+RealMathOptions instead. The DefaultRealMathOptions function can be used to
+obtain a set of RealMathOptions that is based on the interface variables
+corresponding to a specified kernel.
+
+RealMathOptions DefaultRealMathOptions( int mapleID )
+
+     This returns a pointer to a RealMathOptions structure containing
+     default settings based on the Maple interface variables corresponding
+     to the kernel specified by mapleID.
+
+     Note that RealMathOptions may return the same pointer to the same
+     static structure each time it is called. If you need to save the
+     returned formatting options, make a copy of the structure. For example:
+
+     RealMathOptionsVec saveOpts;
+     saveOpts = *DefaultRealMathOptions(1);
+
+4.3 Rendering an Unevaluated Expression
+
+In some applications, it may be desirable to render a mathematical
+expression that has not been processed (eg. simplified or evaluated) by
+Maple. This can be done by calling the MapleParse function, and passing the
+returned result to one of the real math renderers.
+
+The MapleParse function is defined as follows:
+
+M_EXPR MapleParse( char *expr,
+                   void (*errorCallBack)( void *data, M_INT offset,
+                                          char *msg ),
+                   void *data )
+
+     The expr parameter gives the statement to be parsed, expressed in Maple
+     syntax. If the expression contains a syntax error, MapleParse will call
+     the errorCallBack with a syntax error message and the offset into expr
+     of the error, and MapleParse will return NULL.
+
+     The data parameter is an arbitrary OEM supplied value. It is passed on
+     as the first argument to the errorCallBack function.
+
+ParseMaple will only parse the expression and convert it into Maple's
+internal form, suitable for passing to a real math renderer. It will not
+perform any evaluation or simplification on such an expression. For example,
+passing the expression 1/x*2+1/2*1/4 will result in a rendering like this:
+
+                           1       1   1
+                          --- 2 + --- ---
+                           x       2   4
+
+The lifetime of the returned expression is only until the next call to
+MapleParse. After that, the expression returned from the previous call is
+subject to garbage collection, and should no longer be referenced.
+
+5. Maple's On-line Help Database
+
+Maple's on-line help system is also available to the OEM application. In
+earlier releases of Maple, the on-line help pages were stored in the Maple
+library in Maple's ".m" format. Requests for help were made by passing a
+statement of the form "help(topic)" to the kernel. The kernel would then
+return the help page to the OEM application as a sequence of output lines.
+
+During the development of Maple V Release 4, the help system has been
+entirely rewritten, and is now completely independent of the kernel.
+Therefore, the help system is available to OEM applications directly; the
+kernel is not involved.
+
+The help system is accessed through a pair of functions:
+
+char *HelpSetPath( char *path )
+
+     Sets the search path for help databases.
+
+     The path parameter is a string of directory names, separated by commas.
+     When HelpLookup is called, the help system will look for a "maple.hdb"
+     file in each directory in turn, until it finds one that contains the
+     topic of interest.
+
+     HelpSetPath will return NULL if successful, or a pointer to an error
+     message if unsuccessful (note that it may return the same pointer in
+     all cases of failure; if you need to save the message, make a copy of
+     it immediately).
+
+char *HelpLookup( char *topic,
+                  char *section,
+                  M_BOOL (*writeChar)( void *data, int c ),
+                  M_BOOL (*writeAttrib)( void *data, int a ),
+                  int width,
+                  void *data )
+
+     This function is used to look up an actual topic. The results are
+     passed as a stream of characters and attributes to the specified call
+     back functions.
+
+     The topic parameter specifies the help page to be looked at. The topic
+     is generally a Maple keyword, function name, or symbol, or a pair of
+     such, separated by a comma (to refer to topics in sub-packages).
+
+     The section parameter indicates which section of the page to display.
+     If this is passed as "" or NULL, the entire page is displayed. To
+     restrict display to a particular section of the page, one of the
+     following values can be passed:
+
+     "usage"
+
+          Shows just the function name (one line description) and calling
+          sequence information.
+
+     "description"
+
+          Shows the detailed description of the function.
+
+     "examples"
+
+          Shows examples of the function's usage.
+
+     "seealso"
+
+          Shows a list of alternate topics that may be related to this
+          function.
+
+     The writeChar parameter defines a call back function to which the
+     characters will be passed in turn. The characters will all be printable
+     characters. Leading spaces are added to achieve the appropriate
+     alignment. No trailing spaces are ever generated. A newline ('\n')
+     character is sent at the end of each line. The writeChar function can
+     terminate rendering by returning TRUE.
+
+     The writeAttrib parameter defines a call back function to which
+     attribute information will be passed. The attribute passed to
+     writeAttrib applies to all characters passed to writeChar until another
+     attribute is passed to writeAttrib. The possible values for the
+     attribute are:
+
+     FN_NORMAL
+
+          Normal text mode.
+
+     FN_BOLD
+
+          Boldfaced text mode. This is used for key words in Maple
+          procedures in Maple example output, and for section headings.
+
+     FN_ITAL
+
+          Italic text mode. This is used for variable names in Maple example
+          output.
+
+     FN_REV
+
+          Reversed video text. This is used for links to other topics.
+
+     The writeAttrib function can terminate rendering by returning TRUE. The
+     writeAttrib function can be omitted by passing NULL for the writeAttrib
+     parameter.
+
+     The width parameter indicates the width, in characters, to which the
+     help information should be formatted.
+
+     The data parameter is an arbitrary OEM supplied value. It is passed on
+     as the first argument to the call back functions. One use for the data
+     parameter is to pass a C++ object of which the call backs are member
+     functions. The data parameter then becomes this in the member
+     functions.
+
+     HelpLookup will return NULL if successful, or a pointer to an error
+     message if unsuccessful (note that it may return the same pointer in
+     all cases of failure; if you need to save the message, make a copy of
+     it immediately).
+
+The on-line help interface is defined in "moemhelp.h".
+
+6. Packaging
+
+This section describes the form in which the OEM version is distributed on
+different platforms.
+
+The OEM version is shipped as five additional subdirectories to the main
+Maple directory: bin, example, inc, lib, and txt. The bin directory contains
+an example program. The example directory contains sample source, and a
+platform dependant makefile. The include directory will contain all the
+#include files described in this document. The libdirectory contains the
+necessary object library archive files. Note: thislib directory should not
+be confused with the Maple archive library directory; the latter contains
+the maple.ind, maple.lib, and maple.hdbfiles used by Maple at run-time. The
+txt directory contains this document.
+
+Sample plot drivers are included in the form of C source files. Each source
+file implements a single plot driver, and contains a plot device vector, a
+function to initialize it, and the actual functions implementing the
+components of the device vector. The sample drivers provided are for
+character plots and a simple platform specific interactive driver.
+
+The OEM API is not fully re-entrant. Although an OEM supplied call back
+function can recursively call MapleEvaluate, in implementations supporting
+multiple kernels, it must call the same kernel that called the call back.
+
+6.1 UNIX
+
+On UNIX platforms, the OEM version consists of a single object library
+(liboem.a) containing an OEM specific component, and all the components
+required to to support it and to communicate with a Maple kernel (the
+contents of our libxpp, libiplot, libplot, libhelp, libkapi, and
+libsupport). All these additional components are exactly the same as the
+ones we use; they are merely packaged into a single library for the
+convenience of the OEM user.
+
+A Motif-specific interactive UNIX plot driver is supplied, based on the
+hints given in section 3.4, Writing Interactive Plot Drivers.
+
+The UNIX version will support multiple kernels (currently not supported).
+
+6.2 Microsoft Windows
+
+Under Microsoft Windows, the OEM version consists of a DLL (liboem.dll)
+which exports the functions described in this document. The other components
+required to support the OEM interface are already shipped as DLLs as part of
+the stand-alone Maple product.
+
+A Windows-specific interactive plot driver is supplied, based on the hints
+given in section 3.4, Writing Interactive Plot Drivers.
+
+The Windows OEM version will support multiple kernels under Windows 95
+(currently not supported) and Windows NT (currently not supported), but not
+under Windows 3.1.
+
+6.3 Apple Macintosh
+
+On the Apple Macintosh and Power Macintosh, the OEM version will consist of
+of a single object library (liboem.lib) containing an OEM specific
+component, a Maple kernel, and all the required supporting components (the
+contents of our libxpp, libiplot, libplot, libhelp, libkapi, and
+libsupport). All these additional components are exactly the same as the
+ones we use; they are merely packaged into a single library for the
+convenience of the OEM user.
+
+A Macintosh-specific interactive plot driver is supplied, based on the hints
+given in section 3.4, Writing Interactive Plot Drivers.
+
+The Macintosh OEM version will not support multiple kernels.

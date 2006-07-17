@@ -1,0 +1,49 @@
+# Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
+
+DEPTH		= ../../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE = compute
+LIBRARY_NAME	= MuPWrapperDLL
+SHORT_LIBNAME	= MuPWrapperDLL
+MODULE_NAME		= compute
+
+include $(topsrcdir)/config/config.mk
+
+CPPSRCS =				\
+  MuAnalyzer.cpp \
+  mupd_eng.cpp \
+  MuP2Tree.cpp \
+  MuWrap.cpp \
+  MuWrapPlotCmd.cpp \
+  MuPADPlot.cpp \
+  OLEutils.cpp \
+	$(NULL)
+
+# we don't want the shared lib, but we want to force the creation of a static lib.
+FORCE_STATIC_LIB = 1
+
+LOCAL_INCLUDES	= -I$(srcdir)/../../libtci
+
+SHARED_LIBRARY_LIBS += \
+      $(DIST)/lib/computelib.$(LIB_SUFFIX) \
+      $(DIST)/lib/enginelib.$(LIB_SUFFIX) \
+      $(DIST)/lib/libtci.$(LIB_SUFFIX) \
+			$(NULL)
+
+EXTRA_LIBS += \
+		ole32.lib \
+		oleaut32.lib \
+		oledlg.lib \
+		$(srcdir)/mupkern.lib \
+		$(NULL)
+
+include $(topsrcdir)/config/rules.mk
+
+ifdef MOZ_DEBUG
+CXXFLAGS	+= /DTESTING
+endif

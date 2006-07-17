@@ -1,0 +1,7 @@
+// Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
+
+#define THIS_PRODUCTNAME "Maple Wrapper DLL" 
+#define THIS_ORIGFILENAME "MplWrapperDLL.cpp" 
+#define THIS_INTERNALNAME "Maple Wrapper" 
+
+//#include <vers_template.rc>
