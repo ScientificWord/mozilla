@@ -1,0 +1,656 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<title>CompTest Script/Command Output</title>
+</head>
+<body>
+<hr/>
+<p>
+Test ID 104
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 105
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mi>a</mi>
+        <mo>&#x2062;</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>3</mn>
+        </msup>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 106
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <msup>
+          <mi>x</mi>
+          <mn>3</mn>
+        </msup>
+        <mo>&#x2062;</mo>
+        <mi>a</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 160
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 161
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mi>x</mi>
+        <mo>+</mo>
+        <mi>y</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 162
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>162 clearly wrong!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 163
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>163 questionable!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 164
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mi>a</mi>
+        <mo>&#x2062;</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>3</mn>
+        </msup>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 165
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>165 questionable!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 166
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <msup>
+          <mi>x</mi>
+          <mn>3</mn>
+        </msup>
+        <mo>&#x2062;</mo>
+        <mi>a</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 167
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 168
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 169
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mfrac>
+    <mo>+</mo>
+    <msup>
+      <mi>e</mi>
+      <mi>x</mi>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 170
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>170 questionable!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 171
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>171 questionable!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 172
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mo form="prefix">&#x2145;</mo>
+      <mi>x</mi>
+    </msub>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
+    <mo>+</mo>
+    <msup>
+      <mi>e</mi>
+      <mi>x</mi>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 173
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>173 wrong!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 174
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>174 wrong!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 175
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>175 wrong!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 176
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>176 wrong!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 177
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>177 wrong!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 178
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>178 wrong!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 179
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>179 questionable!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 180
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>180 wrong notation!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 181
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>181 wrong notation!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 182
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>182 wrong notation!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 183
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi fontstyle="upright">&#x2131;</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>f</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 184
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msup>
+      <mi fontstyle="upright">&#x2131;</mi>
+      <mn>&#x2212;1</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>f</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 185
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi fontstyle="upright">&#x2112;</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>f</mi>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 204
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 205
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mi>a</mi>
+        <mo>&#x2062;</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>3</mn>
+        </msup>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 206
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <msup>
+          <mi>x</mi>
+          <mn>3</mn>
+        </msup>
+        <mo>&#x2062;</mo>
+        <mi>a</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 304
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>304 Questionable!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 305
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>305 Questionable!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 306
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>306 Questionable!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 404
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>404 Questionable!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 405
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>405 Questionable!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 406
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>406 Questionable!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 504
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>504 Wrong!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 505
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>505 Wrong!</mtext>
+</math>
+
+</p>
+<p>
+Test ID 506
+</p>
+<p>should bind args</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>505 Wrong!</mtext>
+</math>
+
+</p>
+<hr/>
+</body>
+</html>

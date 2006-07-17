@@ -1,0 +1,13 @@
+// xmlprint.mdg
+//
+// MuPAD procedures included in xmlprint module.
+//
+
+table( "include" = [
+
+// Print xml declaration to file 'fd'.
+"declaration" = proc(fd:DOM_INT) begin
+    xmlprint::raw(fd, "<?xml version=\"1.0\"?>\n")
+end_proc
+
+]):

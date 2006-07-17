@@ -1,0 +1,454 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+<title>CompTest Script/Command Output</title>
+</head>
+<body>
+<hr/>
+<p>
+Test ID 101
+</p>
+<p>change to 34</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>34</mn>
+</math>
+
+</p>
+<p>
+Test ID 102
+</p>
+<p>change to 34567</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>34567</mn>
+</math>
+
+</p>
+<p>
+Test ID 103
+</p>
+<p>change to 3.4</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>3.4</mn>
+</math>
+
+</p>
+<p>
+Test ID 104
+</p>
+<p>change to 3.4567</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>3.4567</mn>
+</math>
+
+</p>
+<p>
+Test ID 105
+</p>
+<p>change to 0.34567</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>0.34567</mn>
+</math>
+
+</p>
+<p>
+Test ID 106
+</p>
+<p>change to 34567.0</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>34567.0</mn>
+</math>
+
+</p>
+<p>
+Test ID 107
+</p>
+<p>change to .34567</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>.34567</mn>
+</math>
+
+</p>
+<p>
+Test ID 108
+</p>
+<p>change to 34567.</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>34567.</mn>
+</math>
+
+</p>
+<p>
+Test ID 109
+</p>
+<p>change to - 3.4</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo>-</mo>
+  <mn>3.4</mn>
+</math>
+
+</p>
+<p>
+Test ID 110
+</p>
+<p>change to + 3.4</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo>+</mo>
+  <mn>3.4</mn>
+</math>
+
+</p>
+<p>
+Test ID 111
+</p>
+<p>change to 3.4 .5</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>3.4</mn>
+  <mn>.5</mn>
+</math>
+
+</p>
+<p>
+Test ID 112
+</p>
+<p>change to 234.456 .678</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>234.456</mn>
+  <mn>.678</mn>
+</math>
+
+</p>
+<p>
+Test ID 301
+</p>
+<p>4</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>4</mn>
+</math>
+
+</p>
+<p>
+Test ID 302
+</p>
+<p>-4</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo>-</mo>
+  <mn>4</mn>
+</math>
+
+</p>
+<p>
+Test ID 303a
+</p>
+<p>34</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>34</mn>
+</math>
+
+</p>
+<p>
+Test ID 303b
+</p>
+<p>34</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>34</mn>
+</math>
+
+</p>
+<p>
+Test ID 303c
+</p>
+<p>34</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>34</mn>
+</math>
+
+</p>
+<p>
+Test ID 304
+</p>
+<p>xy (nothing missing here)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>x</mi>
+  <mi>y</mi>
+</math>
+
+</p>
+<p>
+Test ID 305
+</p>
+<p>y</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>y</mi>
+</math>
+
+</p>
+<p>
+Test ID 306
+</p>
+<p>x</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>x</mi>
+</math>
+
+</p>
+<p>
+Test ID 307a
+</p>
+<p>x y</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>x</mi>
+  <mi>y</mi>
+</math>
+
+</p>
+<p>
+Test ID 307b
+</p>
+<p>x y</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>x</mi>
+  <mi>y</mi>
+</math>
+
+</p>
+<p>
+Test ID 307c
+</p>
+<p>x y</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>x</mi>
+  <mi>y</mi>
+</math>
+
+</p>
+<p>
+Test ID 401
+</p>
+<p>should leave mroot (nothing missing)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mroot>
+    <mn>8</mn>
+    <mn>3</mn>
+  </mroot>
+</math>
+
+</p>
+<p>
+Test ID 402
+</p>
+<p>should not build msqrt</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mroot>
+    <mn>8</mn>
+    <mn></mn>
+  </mroot>
+</math>
+
+</p>
+<p>
+Test ID 403
+</p>
+<p>should not build msqrt</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mroot>
+    <mn>8</mn>
+    <mi></mi>
+  </mroot>
+</math>
+
+</p>
+<p>
+Test ID 404
+</p>
+<p>should not build msqrt</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mroot>
+    <mn>8</mn>
+    <mrow></mrow>
+  </mroot>
+</math>
+
+</p>
+<p>
+Test ID 410
+</p>
+<p>should do nothing</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mfrac>
+    <mn></mn>
+    <mn>8</mn>
+  </mfrac>
+</math>
+
+</p>
+<p>
+Test ID 411
+</p>
+<p>should do nothing</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mfrac>
+    <mn>8</mn>
+    <mn></mn>
+  </mfrac>
+</math>
+
+</p>
+<p>
+Test ID 501
+</p>
+<p>does nothing (no redundant mrows)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>a</mi>
+  <mo>/</mo>
+  <mi>b</mi>
+  <mo>+</mo>
+  <mi>c</mi>
+</math>
+
+</p>
+<p>
+Test ID 502
+</p>
+<p>might remove because of implied mrow</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>a</mi>
+    <mo>/</mo>
+    <mi>b</mi>
+    <mo>+</mo>
+    <mi>c</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 503
+</p>
+<p>each mi is redundantly nested</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>a</mi>
+  <mo>/</mo>
+  <mi>b</mi>
+  <mo>+</mo>
+  <mi>c</mi>
+</math>
+
+</p>
+<p>
+Test ID 504
+</p>
+<p>at least one outer redundant mrow</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>a</mi>
+    <mo>/</mo>
+    <mi>b</mi>
+    <mo>+</mo>
+    <mi>c</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 505
+</p>
+<p>each mi is redundantly nested</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>a</mi>
+    <mo>/</mo>
+    <mi>b</mi>
+    <mo>+</mo>
+    <mi>c</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 506
+</p>
+<p>each mi is redundantly nested twice</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>a</mi>
+  <mo>/</mo>
+  <mi>b</mi>
+  <mo>+</mo>
+  <mi>c</mi>
+</math>
+
+</p>
+<p>
+Test ID 507
+</p>
+<p>each mi is redundantly nested, operands nested</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>a</mi>
+    <mo>/</mo>
+    <mi>b</mi>
+  </mrow>
+  <mo>+</mo>
+  <mi>c</mi>
+</math>
+
+</p>
+<p>
+Test ID 508
+</p>
+<p>each mi is redundantly nested, operands nested</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mrow>
+      <mi>a</mi>
+      <mo>/</mo>
+      <mi>b</mi>
+    </mrow>
+    <mo>+</mo>
+    <mi>c</mi>
+  </mrow>
+</math>
+
+</p>
+<hr/>
+</body>
+</html>
