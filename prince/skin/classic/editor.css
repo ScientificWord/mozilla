@@ -1,0 +1,10 @@
+/* Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. */
+
+@import url("chrome://editor/skin/");
+@import url("chrome://editor/skin/editorPrimaryToolbar.css");
+@import url("chrome://editor/skin/editorFormatToolbar.css");
+@import url("chrome://editor/skin/editorModeToolbar.css");
+@import url("chrome://editor/skin/MathMLOverlay.css");
+
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+

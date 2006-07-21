@@ -1,0 +1,43 @@
+/* Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. */
+
+/* ===== maiMathDlgOverlay.css =====================================================
+  == Styles used by various math dialogs.
+  ======================================================================= */
+
+@namespace xul url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace mml url("http://www.w3.org/1998/Math/MathML");
+
+button[group] {
+  min-width: 0em;
+  min-height: 3em;
+  background-color: -moz-Dialog;
+  font-size: 125%;
+  -moz-box-pack: center;
+}
+
+button[group][checked="true"] > xul|*.button-box{
+  border: 1px solid ThreeDDarkShadow;
+  min-height: 1.5em;
+  min-width: 1em;
+}
+
+*[selectsOnFocus="false"] button[group][checked="true"] > .button-box {
+  background-color: rgb(255,222,222);
+}
+
+description.MSISample {
+  background-color: white;
+  min-width: 4em;
+  min-height: 3em;
+  /*  padding: .5em 0em .6em 2em; */
+  font-size: 200%;
+  /* border: 3px inset; */
+}
+
+description.MSISample > mml|* mml|*{
+  color: red;
+}
+
+description.MSISample  mml|*[tempinput="true"] {
+  color: green;
+}
