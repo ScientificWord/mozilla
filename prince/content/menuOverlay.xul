@@ -1,0 +1,110 @@
+<?xml version="1.0"?> 
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/toolbarbutton.css" type="text/css"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://prince/locale/menuOverlay.dtd">
+
+<overlay id="editorOverlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script src="chrome://prince/content/prince.js"/>
+  <script src="chrome://prince/content/toolbarsOverlay.js"/>
+  
+  <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
+    <menupopup id="menu_FilePopup" onpopupshowing="EditorInitFileMenu();">
+      <menuitem id="menu_newBlankPage" label="&newBlankPageCmd.label;" 
+                accesskey="&newBlankPage.accesskey;" key="key_newBlankPage"
+                command="cmd_newEditor"/>
+      <menuitem id="openMenuitem" accesskey="&fileopen.accesskey;"
+                  key="openeditorkb"
+                  observes="cmd_open" 
+                  label="&openFileCmd.label;"/>
+      <menuitem observes="cmd_openTeX" label="Import TeX ..."/>
+      <menuitem observes="cmd_exportTeX" label="Export TeX ..."/>
+      <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
+            onpopupshowing="BuildRecentPagesMenu();">
+        <menupopup id="menupopup_RecentFiles" oncommand="editPage(event.target.getAttribute('value'), window, false);"/>
+          <!-- menuitems appended at runtime -->
+      </menu>
+      <menuitem accesskey="&fileclose.accesskey;" key="closekb" observes="cmd_close"
+          label="&closeCmd.label;"/>
+      <menuseparator/>
+      <menuitem id="saveMenuitem" accesskey="&filesave.accesskey;" key="savekb" observes="cmd_save"
+        label="&saveCmd.label;" />
+      <menuitem accesskey="&filesaveas.accesskey;" observes="cmd_saveAs"
+        label="&saveAsCmd.label;"/>
+      <menuitem accesskey="&filerevert.accesskey;" observes="cmd_revert"
+        label="&fileRevert.label;" />
+      <menuseparator/>
+      <menuitem id="printMenuItem" accesskey="&fileprint.accesskey;" key="printkb" 
+       observes="cmd_print" label="&printCmd.label;"/>
+      <menuseparator/>
+      <menuitem id="quitMenuItem" accesskey="&fileexit.accesskey;" key="key_quit" 
+        observes="cmd_quit" label="&exitCmd.label;"/>
+    </menupopup>
+  </menu>
+  
+  <menu id="editMenu" label="&editMenu.label;" accesskey="&editmenu.accesskey;">
+    <menupopup id="edEditMenuPopup">
+      <menuitem id="menu_undo"
+                label="&undoCmd.label;"
+                key="key_undo"
+                accesskey="&undoCmd.accesskey;"
+                command="cmd_undo"/>
+      <menuitem id="menu_redo"
+                label="&redoCmd.label;"
+                key="key_redo"
+                accesskey="&redoCmd.accesskey;"
+                command="cmd_redo"/>
+      <menuseparator id="edEditMenuSep1" />
+      <menuitem id="menu_cut"
+                label="&cutCmd.label;"
+                key="key_cut"
+                accesskey="&cutCmd.accesskey;"
+                command="cmd_cut"/>
+      <menuitem id="menu_copy"
+                label="&copyCmd.label;"
+                key="key_copy"
+                accesskey="&copyCmd.accesskey;"
+                command="cmd_copy"/>
+      <menuitem id="menu_paste"
+                label="&pasteCmd.label;"
+                key="key_paste"
+                accesskey="&pasteCmd.accesskey;"
+                command="cmd_paste"/>
+      <menuitem id="menu_delete"
+                label="&deleteCmd.label;"
+                key="key_delete"
+                accesskey="&deleteCmd.accesskey;"
+                command="cmd_delete"/>
+      <menuseparator id="edEditMenuSep2" />
+      <menuitem id="menu_selectAll"
+                label="&selectAllCmd.label;"
+                key="key_selectAll"
+                accesskey="&selectAllCmd.accesskey;"
+                command="cmd_selectAll"/>
+      <menuseparator id="sep_find"/>
+      <menuitem id="menu_find"           accesskey="&editfind.accesskey;"            key="findkb"         observes="cmd_find" label="&findCmd.label;"/>
+      <menuitem id="menu_findnext"       accesskey="&editfindnext.accesskey;"        key="findnextkb"     observes="cmd_findNext"/>
+      <menuitem id="menu_findprev"       accesskey="&editfindprev.accesskey;"        key="findprevkb"     observes="cmd_findPrev"/>
+      <menuseparator id="sep_checkspelling"/>
+      <menuitem id="menu_checkspelling" accesskey="&editcheckspelling.accesskey;"
+                key="checkspellingkb"   observes="cmd_spelling" disabled="true"
+                label="&checkSpellingCmd.label;"/>
+    </menupopup>
+  </menu>
+  <menu id="MSIComputeMenu" 
+    label="&MSIComputeMenu.label;" accesskey="&MSIComputeMenu.accesskey;">
+    <menupopup id="MSIComputePopup">
+      <menuitem label="&MSIComputeEvalCmd.label;"    accesskey="&MSIComputeEvalCmd.accesskey;"    key="MSIevalKey" observes="cmd_MSIComputeEval"/>
+      <menuitem label="&MSIComputeEvalNumCmd.label;" accesskey="&MSIComputeEvalNumCmd.accesskey;"                  observes="cmd_MSIComputeEvalNum"/>
+    </menupopup>
+  </menu>
+  <menu id="helpMenu" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">
+    <menupopup id="helpPopup">
+      <menuitem accesskey="&aboutCmd.accesskey;" label="&aboutCmd.label;" id="aboutName" oncommand="goAboutDialog();"/>
+    </menupopup>
+  </menu>
+  
+</overlay>
