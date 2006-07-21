@@ -1,0 +1,11 @@
+/* Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. */
+
+/* ===== operatorsDialog.css =====================================================
+  == Styles used by the Operators dialog.
+  ======================================================================= */
+
+@namespace xul url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+button[group] {
+  max-width: 2.0em;
+}
