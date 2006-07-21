@@ -1,0 +1,35 @@
+/* Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. */
+
+/* ===== operatorsDialog.css =====================================================
+  == Styles used by the Decorations dialog.
+  ======================================================================= */
+
+@namespace xul url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace mml url("http://www.w3.org/1998/Math/MathML");
+
+button[group] {
+  max-width: 4.0em;
+}
+
+
+button[group] > .button-box {
+  max-width: 3.5em;
+}
+
+button[group] mml|*[class="phantomBox"], *[class="phantomBox"] {
+  border: 1px dotted ThreeDDarkShadow;
+  padding: 1px;
+  margin: 2px 1px 2px 1px;
+}
+
+*[class="fbox"] {
+  border: 1px solid ThreeDDarkShadow;
+  padding: 1px 1px 1px 1px;
+  margin: 1px 1px 1px 1px;
+}
+
+*[class="framebox"] {
+  border: 1px solid ;
+  padding: 2px 3px 2px 3px;
+  margin: 1px;
+}
