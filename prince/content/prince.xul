@@ -1,14 +1,17 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul" ?>
 
 <!DOCTYPE window SYSTEM "chrome://prince/locale/prince.dtd">
+
 
 <window
   id    = "prince"
   title = "&prince.title;"
   onload="EditorOnLoad()"
-  windowtype="composer:html"
+  windowtype="composer:html"     
   screenX="10" screenY="10" width="640" height="480"
   persist="screenX screenY width height sizemode"
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -35,41 +38,56 @@
 
   <toolbox class="toolbox-top" id="EditorToolbox">
     <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed">
-      <menu id="fileMenu" label="&fileMenu.label;" accesskey="&fileMenu.accesskey;">
-        <menupopup id="menu_FilePopup">
-          <menuitem id="menu_newBlankPage" label="&newBlankPage.label;" accesskey="&newBlankPage.accesskey;" key="key_newBlankPage" command="cmd_newEditor"/>
-          <menuitem id="openMenuitem" accesskey="&fileopen.accesskey;" key="openeditorkb" observes="cmd_open" label="&fileopen.label;"/>
-          <menuitem id="saveMenuitem" accesskey="&filesave.accesskey;" key="savekb" observes="cmd_save"  label="&filesave.label;"/>
-          <menuitem id="printMenuItem" accesskey="&fileprint.accesskey;" key="printkb" observes="cmd_print" label="&fileprint.label;"/>
-          <menuseparator/>
-          <menuitem id="quitMenuItem" accesskey="&filequit.accesskey;" key="key_quit" observes="cmd_quit" label="&filequit.label;"/>
-        </menupopup>
-      </menu>
-
-      <menu id="editMenu"/>
-  
-      <menu id="insertMenu"/>
-  
-      <menu id="MSIComputeMenu" label="&MSIComputeMenu.label;" accesskey="&MSIComputeMenu.accesskey;">
-        <menupopup id="MSIComputePopup">
-          <menuitem label="&MSIComputeEvalCmd.label;"    accesskey="&MSIComputeEvalCmd.accesskey;"    key="MSIevalKey" observes="cmd_MSIComputeEval"/>
-          <menuitem label="&MSIComputeEvalNumCmd.label;" accesskey="&MSIComputeEvalNumCmd.accesskey;"                  observes="cmd_MSIComputeEvalNum"/>
-        </menupopup>
-      </menu>
-
+      <menu id="fileMenu" />
+      <menu id="editMenu" />
+      <menu id="MSIComputeMenu" />
       <!-- DEBUG only -->
       <menu id="debugMenu" /> 
       <!-- end DEBUG only -->
-    
-      <menu id="menu_Help" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">
-        <menupopup id="helpPopup">
-          <menuitem accesskey="&aboutCmd.accesskey;" label="&aboutCmd.label;" id="aboutName" oncommand="goAboutDialog();"/>
-        </menupopup>
-      </menu>
-  
+      <menu id="helpMenu" />
       <spacer flex="1"/>
     </menubar>
   </toolbox>
+  <toolbox id="StandardToolbox" />
+  <toolbox id="MathToolbox" orient="horizontal" mode="icons" context="math-toolbar-context-menu">
+    <popup id="math-toolbar-context-menu" >
+      <menuitem oncommand="CustomizeMainToolbar('MathToolbox');"
+        label="Customize math toolbar" />
+    </popup>
+    <toolbarpalette id="MathToolbarPalette" >
+      <toolbarbutton id="evalButton"/>
+      <toolbarbutton id="evalnumButton"/>
+      <toolbarbutton id="solveButton" />
+      <toolbarbutton id="simplifyButton" />
+      <toolbarbutton id="expandButton" />
+      <toolbarbutton id="plotButton" />
+      <toolbarbutton id="plotButton3D" />
+      <toolbarbutton id="defineButton" />
+      <toolbarbutton id="showdefsButton" />
+      <toolbarbutton id="radicalButton"/>
+      <toolbarbutton id="fractionButton"/>
+      <toolbarbutton id="superscriptButton"/>
+      <toolbarbutton id="subscriptButton"/>
+      <toolbarbutton id="parenthesesButton"/>
+      <toolbarbutton id="bracketsButton"/>
+      <toolbarbutton id="sumButton"/>
+      <toolbarbutton id="integralButton"/>
+      <toolbarbutton id="unitnameButton"/>
+      <toolbarbutton id="displayButton"/>
+      <toolbarbutton id="bigopButton"/>
+      <toolbarbutton id="matrixButton"/>
+      <toolbarbutton id="mathnameButton"/>
+      <toolbarbutton id="binomialButton"/>
+      <toolbarbutton id="labelButton"/>
+      <toolbarbutton id="decorationButton"/>
+    </toolbarpalette >
+    
+    <toolbar id="MathToolbar" class="chromeclass-toolbar" persist="collapsed" 
+      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,matrixButton,mathnameButton,binomialButton,labelButton,decorationButton"
+      mode="icons" customizable="true" />
+  </toolbox>
+  <toolbox id="SymbolToolbox" />
+  <toolbox id="EditingToolbox" />
 
   <vbox id="appcontent" flex="1">
     <deck id="ContentWindowDeck" selectedIndex="0" flex="1">
@@ -97,7 +115,6 @@
     </hbox>
   </vbox>
 
-  <!-- Some of this is from globarOverlay.xul -->
   <statusbar class="chromeclass-status" id="status-bar">
     <statusbarpanel id="component-bar"/>
     <statusbarpanel id="structToolbar" flex="1" pack="end">
@@ -105,4 +122,6 @@
     </statusbarpanel>
     <statusbarpanel class="statusbarpanel-iconic" id="offline-status"/>
   </statusbar>
+
+ 
 </window>
