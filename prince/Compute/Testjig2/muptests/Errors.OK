@@ -20,11 +20,9 @@ Test ID 207 fixup before define
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
-    <mi>y</mi>
-  </mrow>
+  <mi>x</mi>
+  <mo>&#x2062;</mo>
+  <mi>y</mi>
 </math>
 
 </p>
@@ -47,14 +45,12 @@ Test ID 207 fixup the definition
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
   <mrow>
-    <mrow>
-      <mi>x</mi>
-      <mo>&#x2062;</mo>
-      <mi>y</mi>
-    </mrow>
-    <mo>=</mo>
-    <mn>5</mn>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
   </mrow>
+  <mo>=</mo>
+  <mn>5</mn>
 </math>
 
 </p>
@@ -70,11 +66,9 @@ Test ID 207 fixup after define
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
-    <mi>y</mi>
-  </mrow>
+  <mi>x</mi>
+  <mo>&#x2062;</mo>
+  <mi>y</mi>
 </math>
 
 </p>
@@ -97,14 +91,12 @@ Test ID 207 fixup the definition for undefine
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
   <mrow>
-    <mrow>
-      <mi>x</mi>
-      <mo>&#x2062;</mo>
-      <mi>y</mi>
-    </mrow>
-    <mo>=</mo>
-    <mn>5</mn>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi>y</mi>
   </mrow>
+  <mo>=</mo>
+  <mn>5</mn>
 </math>
 
 </p>
@@ -120,11 +112,9 @@ Test ID 207 fixup after undefine
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
-    <mi>y</mi>
-  </mrow>
+  <mi>x</mi>
+  <mo>&#x2062;</mo>
+  <mi>y</mi>
 </math>
 
 </p>
