@@ -17,13 +17,11 @@ Test ID 201 fixup before define
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mn>5</mn>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2062;</mo>
+  <mfenced open="(" close=")">
+    <mn>5</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -46,23 +44,21 @@ Test ID 201 fixup the definition
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
   <mrow>
-    <mrow>
-      <mi>f</mi>
-      <mo>&#x2062;</mo>
-      <mfenced open="(" close=")">
-        <mi>m</mi>
-      </mfenced>
-    </mrow>
-    <mo>=</mo>
-    <mfrac>
-      <mn>1</mn>
-      <mrow>
-        <mn>1</mn>
-        <mo>+</mo>
-        <mi>m</mi>
-      </mrow>
-    </mfrac>
+    <mi>f</mi>
+    <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
+      <mi>m</mi>
+    </mfenced>
   </mrow>
+  <mo>=</mo>
+  <mfrac>
+    <mn>1</mn>
+    <mrow>
+      <mn>1</mn>
+      <mo>+</mo>
+      <mi>m</mi>
+    </mrow>
+  </mfrac>
 </math>
 
 </p>
@@ -74,13 +70,11 @@ Test ID 201 fixup after define
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2061;</mo>
-    <mfenced open="(" close=")">
-      <mn>5</mn>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2061;</mo>
+  <mfenced open="(" close=")">
+    <mn>5</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -104,23 +98,21 @@ Test ID 201 fixup the definition for undefine
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
   <mrow>
-    <mrow>
-      <mi>f</mi>
-      <mo>&#x2061;</mo>
-      <mfenced open="(" close=")">
-        <mi>m</mi>
-      </mfenced>
-    </mrow>
-    <mo>=</mo>
-    <mfrac>
-      <mn>1</mn>
-      <mrow>
-        <mn>1</mn>
-        <mo>+</mo>
-        <mi>m</mi>
-      </mrow>
-    </mfrac>
+    <mi>f</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>m</mi>
+    </mfenced>
   </mrow>
+  <mo>=</mo>
+  <mfrac>
+    <mn>1</mn>
+    <mrow>
+      <mn>1</mn>
+      <mo>+</mo>
+      <mi>m</mi>
+    </mrow>
+  </mfrac>
 </math>
 
 </p>
@@ -132,13 +124,11 @@ Test ID 201 fixup after undefine
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mn>5</mn>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2062;</mo>
+  <mfenced open="(" close=")">
+    <mn>5</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -161,13 +151,11 @@ Test ID 202 fixup before define
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mn>5</mn>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2062;</mo>
+  <mfenced open="(" close=")">
+    <mn>5</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -189,13 +177,11 @@ Test ID 202 fixup the definition
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mi>m</mi>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2062;</mo>
+  <mfenced open="(" close=")">
+    <mi>m</mi>
+  </mfenced>
 </math>
 
 </p>
@@ -207,13 +193,11 @@ Test ID 202 fixup after define
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2061;</mo>
-    <mfenced open="(" close=")">
-      <mn>5</mn>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2061;</mo>
+  <mfenced open="(" close=")">
+    <mn>5</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -237,13 +221,11 @@ Test ID 202 fixup the definition for undefine
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2061;</mo>
-    <mfenced open="(" close=")">
-      <mi>m</mi>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2061;</mo>
+  <mfenced open="(" close=")">
+    <mi>m</mi>
+  </mfenced>
 </math>
 
 </p>
@@ -255,13 +237,11 @@ Test ID 202 fixup after undefine
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mn>5</mn>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2062;</mo>
+  <mfenced open="(" close=")">
+    <mn>5</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -283,13 +263,11 @@ Test ID 203 fixup before define
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mn>5</mn>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2062;</mo>
+  <mfenced open="(" close=")">
+    <mn>5</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -311,18 +289,16 @@ Test ID 203 fixup the definition
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>=</mo>
-    <mfrac>
+  <mi>f</mi>
+  <mo>=</mo>
+  <mfrac>
+    <mn>1</mn>
+    <mrow>
       <mn>1</mn>
-      <mrow>
-        <mn>1</mn>
-        <mo>+</mo>
-        <mi>m</mi>
-      </mrow>
-    </mfrac>
-  </mrow>
+      <mo>+</mo>
+      <mi>m</mi>
+    </mrow>
+  </mfrac>
 </math>
 
 </p>
@@ -334,13 +310,11 @@ Test ID 203 fixup after define
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mn>5</mn>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2062;</mo>
+  <mfenced open="(" close=")">
+    <mn>5</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -369,18 +343,16 @@ Test ID 203 fixup the definition for undefine
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>=</mo>
-    <mfrac>
+  <mi>f</mi>
+  <mo>=</mo>
+  <mfrac>
+    <mn>1</mn>
+    <mrow>
       <mn>1</mn>
-      <mrow>
-        <mn>1</mn>
-        <mo>+</mo>
-        <mi>m</mi>
-      </mrow>
-    </mfrac>
-  </mrow>
+      <mo>+</mo>
+      <mi>m</mi>
+    </mrow>
+  </mfrac>
 </math>
 
 </p>
@@ -392,13 +364,11 @@ Test ID 203 fixup after undefine
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mn>5</mn>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2062;</mo>
+  <mfenced open="(" close=")">
+    <mn>5</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -446,21 +416,19 @@ Test ID 204 fixup the definition
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <msub>
-      <mi>f</mi>
-      <mi>m</mi>
-    </msub>
-    <mo>=</mo>
-    <mfrac>
+  <msub>
+    <mi>f</mi>
+    <mi>m</mi>
+  </msub>
+  <mo>=</mo>
+  <mfrac>
+    <mn>1</mn>
+    <mrow>
       <mn>1</mn>
-      <mrow>
-        <mn>1</mn>
-        <mo>+</mo>
-        <mi>m</mi>
-      </mrow>
-    </mfrac>
-  </mrow>
+      <mo>+</mo>
+      <mi>m</mi>
+    </mrow>
+  </mfrac>
 </math>
 
 </p>
@@ -498,21 +466,19 @@ Test ID 204 fixup the definition for undefine
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <msub>
-      <mi>f</mi>
-      <mi>m</mi>
-    </msub>
-    <mo>=</mo>
-    <mfrac>
+  <msub>
+    <mi>f</mi>
+    <mi>m</mi>
+  </msub>
+  <mo>=</mo>
+  <mfrac>
+    <mn>1</mn>
+    <mrow>
       <mn>1</mn>
-      <mrow>
-        <mn>1</mn>
-        <mo>+</mo>
-        <mi>m</mi>
-      </mrow>
-    </mfrac>
-  </mrow>
+      <mo>+</mo>
+      <mi>m</mi>
+    </mrow>
+  </mfrac>
 </math>
 
 </p>
@@ -576,21 +542,19 @@ Test ID 205 fixup the definition
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <msub>
-      <mi>f</mi>
-      <mi>m</mi>
-    </msub>
-    <mo>=</mo>
-    <mfrac>
+  <msub>
+    <mi>f</mi>
+    <mi>m</mi>
+  </msub>
+  <mo>=</mo>
+  <mfrac>
+    <mn>1</mn>
+    <mrow>
       <mn>1</mn>
-      <mrow>
-        <mn>1</mn>
-        <mo>+</mo>
-        <mi>m</mi>
-      </mrow>
-    </mfrac>
-  </mrow>
+      <mo>+</mo>
+      <mi>m</mi>
+    </mrow>
+  </mfrac>
 </math>
 
 </p>
@@ -660,21 +624,19 @@ Test ID 205 fixup the definition for undefine
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <msub>
-      <mi>f</mi>
-      <mi>m</mi>
-    </msub>
-    <mo>=</mo>
-    <mfrac>
+  <msub>
+    <mi>f</mi>
+    <mi>m</mi>
+  </msub>
+  <mo>=</mo>
+  <mfrac>
+    <mn>1</mn>
+    <mrow>
       <mn>1</mn>
-      <mrow>
-        <mn>1</mn>
-        <mo>+</mo>
-        <mi>m</mi>
-      </mrow>
-    </mfrac>
-  </mrow>
+      <mo>+</mo>
+      <mi>m</mi>
+    </mrow>
+  </mfrac>
 </math>
 
 </p>
@@ -738,13 +700,11 @@ Test ID 206 fixup before define
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mn>5</mn>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2062;</mo>
+  <mfenced open="(" close=")">
+    <mn>5</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -778,13 +738,11 @@ Test ID 206 fixup after define
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mn>5</mn>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2062;</mo>
+  <mfenced open="(" close=")">
+    <mn>5</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -818,13 +776,11 @@ Test ID 206 fixup after undefine
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
-  <mrow>
-    <mi>f</mi>
-    <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mn>5</mn>
-    </mfenced>
-  </mrow>
+  <mi>f</mi>
+  <mo>&#x2062;</mo>
+  <mfenced open="(" close=")">
+    <mn>5</mn>
+  </mfenced>
 </math>
 
 </p>
