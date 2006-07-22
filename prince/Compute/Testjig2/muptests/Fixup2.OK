@@ -6848,7 +6848,21 @@ Test ID 802.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>802.3 wrong, mixed numbers not bound correctly.</mtext>
+  <mrow>
+    <mn>3</mn>
+    <mfrac>
+      <mn>1</mn>
+      <mn>4</mn>
+    </mfrac>
+  </mrow>
+  <mo>+</mo>
+  <mrow>
+    <mn>4</mn>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+  </mrow>
 </math>
 
 </p>
@@ -6857,7 +6871,21 @@ Test ID 803.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>803.3 wrong, mixed numbers not bound correctly.</mtext>
+  <mrow>
+    <mn>3</mn>
+    <mfrac>
+      <mn>1</mn>
+      <mn>4</mn>
+    </mfrac>
+  </mrow>
+  <mo>&#xf7;</mo>
+  <mrow>
+    <mn>4</mn>
+    <mfrac>
+      <mn>1</mn>
+      <mn>3</mn>
+    </mfrac>
+  </mrow>
 </math>
 
 </p>
