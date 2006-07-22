@@ -3430,6 +3430,14 @@ Test ID 1607
           <mo>&#x2227;</mo>
           <mo>(</mo>
           <mrow>
+            <mi>c</mi>
+            <mo>&#x2260;</mo>
+            <mn>0</mn>
+            <mo>&#x2227;</mo>
+            <mi>b</mi>
+            <mo>=</mo>
+            <mn>0</mn>
+            <mo>&#x2228;</mo>
             <mo>(</mo>
             <mrow>
               <mi>b</mi>
@@ -3471,14 +3479,6 @@ Test ID 1607
             <mi>&#x2102;</mi>
             <mo>&#x2216;</mo>
             <mi>&#x2124;</mi>
-            <mo>&#x2228;</mo>
-            <mi>c</mi>
-            <mo>&#x2260;</mo>
-            <mn>0</mn>
-            <mo>&#x2227;</mo>
-            <mi>b</mi>
-            <mo>=</mo>
-            <mn>0</mn>
             <mo>&#x2228;</mo>
             <mi>b</mi>
             <mo>&#x2260;</mo>
@@ -3647,6 +3647,14 @@ Test ID 1607
           <mo>&#x2227;</mo>
           <mo>(</mo>
           <mrow>
+            <mi>c</mi>
+            <mo>&#x2260;</mo>
+            <mn>0</mn>
+            <mo>&#x2227;</mo>
+            <mi>b</mi>
+            <mo>=</mo>
+            <mn>0</mn>
+            <mo>&#x2228;</mo>
             <mo>(</mo>
             <mrow>
               <mi>b</mi>
@@ -3688,14 +3696,6 @@ Test ID 1607
             <mi>&#x2102;</mi>
             <mo>&#x2216;</mo>
             <mi>&#x2124;</mi>
-            <mo>&#x2228;</mo>
-            <mi>c</mi>
-            <mo>&#x2260;</mo>
-            <mn>0</mn>
-            <mo>&#x2227;</mo>
-            <mi>b</mi>
-            <mo>=</mo>
-            <mn>0</mn>
             <mo>&#x2228;</mo>
             <mi>b</mi>
             <mo>&#x2260;</mo>
