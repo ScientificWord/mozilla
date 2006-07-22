@@ -634,6 +634,25 @@ void Tree2StdMML::BindScripts(MNODE * dMML_tree)
   }
 }
 
+MNODE *Tree2StdMML::BindMixedNumbers(MNODE * dMML_list)
+{
+  MNODE * rv = dMML_list;
+  MNODE* rover = rv;
+  while (rover && rover->next) {
+    MNODE* the_next = rover->next;
+    if (NodeIsTrueNumber(rover) && NodeIsRationalFraction(rover->next)) {
+      MNODE * new_row = MakeMROW(rover, rover->next);
+      if (new_row != rover) {
+        the_next = new_row;
+        if (rover == rv)
+          rv = the_next;
+      }
+    }
+    rover = the_next;
+  }
+  return rv;
+}
+
 // finish MathML bindings
 MNODE *Tree2StdMML::FinishFixup(MNODE * dMML_tree)
 {  
@@ -651,15 +670,16 @@ MNODE *Tree2StdMML::FinishFixup(MNODE * dMML_tree)
   // Now, resolve bindings for this list.
   AddOperatorInfo(rv);
   
+  if (rv->parent && HasPositionalChildren(rv->parent))
+    return rv;
+
   //TODO:
-  //BindMixedNumbers
+  rv = BindMixedNumbers(rv);
   //BindUnits
   //BindDegMinSec
   //may need to recognize differential operators here
   //BindDelimitedIntegrals
   
-  if (rv->parent && HasPositionalChildren(rv->parent))
-    return rv;
   rv = BindByOpPrecedence(rv, 68, 66);
   InsertApplyFunction(rv);  //65
   rv = BindApplyFunction(rv);
@@ -1895,8 +1915,9 @@ MNODE *Tree2StdMML::MakeMROW(MNODE * l_anchor, MNODE * r_anchor)
     TCI_ASSERT(!"Anchors are not siblings!");
     return NULL;
   }
-  if (!strcmp(l_anchor->parent->src_tok,"mrow") &&
-      l_anchor->prev == NULL && r_anchor->next == NULL)
+  bool inMrow = !strcmp(l_anchor->parent->src_tok,"mrow")
+                || HasInferedMROW(l_anchor->parent);
+  if (inMrow && l_anchor->prev == NULL && r_anchor->next == NULL)
     return l_anchor;  // already is in mrow
   
   MNODE *rv = MakeTNode(l_anchor->src_start_offset,

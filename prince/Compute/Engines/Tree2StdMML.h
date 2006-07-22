@@ -40,6 +40,7 @@ protected:
   void RemoveMixedNumbers(MNODE * dMML_tree,
                           INPUT_NOTATION_REC * in_notation);
   void AddOperatorInfo(MNODE * dMML_list);
+  MNODE *BindMixedNumbers(MNODE * dMML_list);
   MNODE *BindByOpPrecedence(MNODE * dMML_list, int high, int low);
   MNODE *BindApplyFunction(MNODE * dMML_list);
   void InsertInvisibleAddSigns(MNODE * dMML_list);
