@@ -452,6 +452,23 @@ bool HasScriptChildren(MNODE * mml_node)
   return false;
 }
 
+bool HasInferedMROW(MNODE * mml_node)
+{
+  if (mml_node) {
+    const char* p_elem = mml_node->src_tok;
+    if (!strcmp(p_elem, "math")
+        || !strcmp(p_elem, "msqrt")
+        || !strcmp(p_elem, "mstyle")
+        || !strcmp(p_elem, "merror")
+        || !strcmp(p_elem, "mpadded")
+        || !strcmp(p_elem, "mphantom")
+        || !strcmp(p_elem, "menclose")
+        || !strcmp(p_elem, "mtd"))
+      return true;
+  }
+  return false;
+}
+
 // Utility to make an attribute node
 
 ATTRIB_REC *MakeATTRIBNode(const char *attr_nom, const char *attr_val)
