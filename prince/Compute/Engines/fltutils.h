@@ -186,6 +186,7 @@ void DetachTList(MNODE * elem);
 bool HasPositionalChildren(MNODE * mml_node);
 bool HasRequiredChildren(MNODE * mml_node);
 bool HasScriptChildren(MNODE * mml_node);
+bool HasInferedMROW(MNODE * mml_node);
 
 ATTRIB_REC *MakeATTRIBNode(const char *attrib_name, const char *attrib_value);
 const char *GetATTRIBvalue(ATTRIB_REC * a_list, const char *attrib_name);
