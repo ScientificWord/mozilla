@@ -2,9 +2,12 @@
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
+<?xml-stylesheet href="chrome://global/skin/toolbar.css" type="text/css"?>
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul" ?>
-<?xul-overlay href="chrome://prince/content/mathmlOverlay.xul" ?>
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul" ?>
+<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul" ?>
+<?xul-overlay href="chrome://prince/content/typesetOverlay.xul" ?>
 
 <!DOCTYPE window SYSTEM "chrome://prince/locale/prince.dtd">
 
@@ -19,7 +22,8 @@
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script src="chrome://prince/content/prince.js"/>
-  <script src="chrome://prince/content/customizeToolbar.js"/>
+  <script src="chrome://prince/content/mainCore.js" />
+  <script src="chrome://global/content/customizeToolbar.js"/>
 
   <commandset id="tasksCommands">
     <command id="cmd_open" oncommand="doOpen()"/>
@@ -45,6 +49,7 @@
       <menu id="editMenu" />
       <menu id="MSIMathMenu" />
       <menu id="MSIComputeMenu" />
+      <menu id="MSITypesetMenu" />
       <!-- DEBUG only -->
       <menu id="debugMenu" /> 
       <!-- end DEBUG only -->

@@ -97,7 +97,7 @@ function GetCurrentEngine() {
   return compsample;
 }
 
-const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
+//const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
 // return node on RHS of =, if structure is that simple
 function GetRHS(math)

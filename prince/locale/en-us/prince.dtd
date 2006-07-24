@@ -16,8 +16,6 @@
 
 <!ENTITY MSIComputeEvalCmd.keybinding "e">      
 
-
-
 <!ENTITY fileopen.accesskey    "O">
 <!ENTITY filenew.keybinding    "N">
 <!ENTITY fileopen.keybinding    "O">
