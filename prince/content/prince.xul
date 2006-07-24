@@ -19,6 +19,7 @@
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script src="chrome://prince/content/prince.js"/>
+  <script src="chrome://prince/content/customizeToolbar.js"/>
 
   <commandset id="tasksCommands">
     <command id="cmd_open" oncommand="doOpen()"/>
@@ -53,9 +54,8 @@
   </toolbox>
   <toolbox id="StandardToolbox" />
   <toolbox id="MathToolbox" />
-  <toolbox id="SymbolToolbox" />
   <toolbox id="EditingToolbox" />
-  <tabbox  id="Symbol-tabbox" />
+  <toolbox id="SymbolToolbox" />
   
   <vbox id="appcontent" flex="1">
     <deck id="ContentWindowDeck" selectedIndex="0" flex="1">
