@@ -6,10 +6,10 @@
 <overlay id="mathmlOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+<?xul-stylesheet href="chrome://prince/skin/MathmlOverlay.css" type="text/css"?>
+<?xul-stylesheet href="chrome://prince/skin/toolbarsoverlay.css" type="text/css"?>
 #<?xml-stylesheet href="resource://gre/res/mathml.css" type="text/css"?>
 <?xml-stylesheet href="data:text/css,math[display='inline']{display:-moz-inline-box}" type="text/css"?>
-<?xul-stylesheet href="chrome://prince/skin/MathMLOverlay.css" type="text/css"?>
-<?xul-stylesheet href="chrome://prince/skin/toolbarsoverlay.css" type="text/css"?>
 
 <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
 
