@@ -117,14 +117,6 @@
 <!ENTITY editcheckspelling.accesskey "s">
 <!ENTITY editcheckspelling.keybinding "k">
 
-<!ENTITY MSIComputeMenu.label "Compute">
-<!ENTITY MSIComputeMenu.accesskey "C">
-<!ENTITY MSIComputeEvalCmd.label "Evaluate">
-<!ENTITY MSIComputeEvalCmd.accesskey "E">
-<!ENTITY MSIComputeEvalNumCmd.label "Evaluate Numeric">
-<!ENTITY MSIComputeEvalNumCmd.accesskey "N">
-
-
 <!ENTITY helpMenu.label    "Help">
 <!ENTITY helpMenu.accesskey    "H">
 
