@@ -9,6 +9,9 @@ prince.jar:
 * content/mathmlOverlay.js          (content/mathmlOverlay.js)
 * content/mathmlOverlay.xul         (content/mathmlOverlay.xul)
 * content/menuOverlay.xul           (content/menuOverlay.xul)
+* content/customizeToolbar.xul	    (content/customizeToolbar.xul)
+* content/customizeToolbar.js	    (content/customizeToolbar.js)
+* content/mainCore.js	    		(content/mainCore.js)
 
 en-US.jar:
 % locale prince en-US %locale/en-US/
