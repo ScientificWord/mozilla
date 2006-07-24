@@ -151,14 +151,14 @@
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     >
 	  <tabs class="tabs-top" align="baseline">
-			<tab id="symbol_lcGreekTab" image="chrome://editor/skin/icons/redarrow.png" dir="rtl" label="&#x03B1;&#x03B2;" tooltiptext="&MSISymbolTabLCGreek;" selected="1" />
-			<tab image="chrome://editor/skin/icons/redarrow.png" dir="rtl" label="&#x03A6;&#x03A8;" tooltiptext="&MSISymbolTabCCGreek;" selected="0" />
-			<tab image="chrome://editor/skin/icons/redarrow.png" dir="rtl" label="&#x00B1;&#x00F7;" tooltiptext="&MSISymbolTabBinaryOps;"   selected="0" />
-			<tab image="chrome://editor/skin/icons/redarrow.png" dir="rtl" label="&#x2264;&#x2282;" tooltiptext="&MSISymbolTabBinaryRels;"  selected="0" />
-			<tab image="chrome://editor/skin/icons/redarrow.png" dir="rtl" label="&#x2260;&#x228A;" tooltiptext="&MSISymbolTabNegatedRels;" selected="0" />
-			<tab image="chrome://editor/skin/icons/redarrow.png" dir="rtl" label="&#x2194;&#x2191;" tooltiptext="&MSISymbolTabArrows;"        selected="0" />
-			<tab image="chrome://editor/skin/icons/redarrow.png" dir="rtl" label="&#x221E;&#x2202;" tooltiptext="&MSISymbolTabMisc;"        selected="0" />
-			<tab image="chrome://editor/skin/icons/redarrow.png" dir="rtl" label="&#x232A;&#x2308;" tooltiptext="&MSISymbolTabDelimiters;"        selected="0" />
+			<tab id="symbol_lcGreekTab" image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x03B1;&#x03B2;" tooltiptext="&MSISymbolTabLCGreek;" selected="1" />
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x03A6;&#x03A8;" tooltiptext="&MSISymbolTabCCGreek;" selected="0" />
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x00B1;&#x00F7;" tooltiptext="&MSISymbolTabBinaryOps;"   selected="0" />
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x2264;&#x2282;" tooltiptext="&MSISymbolTabBinaryRels;"  selected="0" />
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x2260;&#x228A;" tooltiptext="&MSISymbolTabNegatedRels;" selected="0" />
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x2194;&#x2191;" tooltiptext="&MSISymbolTabArrows;"        selected="0" />
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x221E;&#x2202;" tooltiptext="&MSISymbolTabMisc;"        selected="0" />
+			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x232A;&#x2308;" tooltiptext="&MSISymbolTabDelimiters;"        selected="0" />
     </tabs>
     <tabpanels oncommand="doParamCommand('cmd_MSIsymbolCmd',event.target.getAttribute('msivalue'))">
 	  <tabpanel id="symbol_lcGreek" autostretch="never" align="baseline"> 
