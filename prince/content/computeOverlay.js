@@ -330,7 +330,7 @@ function GetComputeString(name)
       strBundleService = 
           strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
 
-      gComputeStringBundle = strBundleService.createBundle("chrome://editor/locale/compute.properties"); 
+      gComputeStringBundle = strBundleService.createBundle("chrome://prince/locale/compute.properties"); 
 
     } catch (ex) {}
   }
@@ -1060,7 +1060,7 @@ function doVarsComputation(math,label,func,title)
 {
   var o = new Object();
   o.title = title;
-  window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var vars = o.vars;
@@ -1085,7 +1085,7 @@ function doVarsEvalComputation(math,func,joiner,title,label)
   var o = new Object();
   o.title = title;
   o.label = label;
-  window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var vars = o.vars;
@@ -1128,7 +1128,7 @@ function doComputeSolveExact(math)
         done = true;
       } else if (ex.result == compsample.needvars) {
         var o = new Object();
-        window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1195,7 +1195,7 @@ function doComputePartialFractions(math)
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("ParFrac.title");
-        window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1223,7 +1223,7 @@ function doComputeDivide(math)
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("Divide.title");
-        window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1251,7 +1251,7 @@ function doComputeSort(math)
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("Sort.title");
-        window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1279,7 +1279,7 @@ function doComputeCompanionMatrix(math)
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("Companion.title");
-        window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1292,7 +1292,7 @@ function doComputeApproxIntegral(math)
   var o = new Object();
   o.intervals = 10;
   o.form = 1;
-  window.openDialog("chrome://editor/content/ComputeApproxIntegral.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeApproxIntegral.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel) {
     return;
   }
@@ -1325,7 +1325,7 @@ function doComputeIterate()
   o.prompt[2] 		= GetComputeString("Iterate.terms");                             
   o.initialvalue[2] = GetComputeString("Iterate.termsdefault");                      
                                                                                      
-  window.openDialog("chrome://editor/content/ComputeMathMLArgDialog.xul", "_blank",  
+  window.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank",  
                     "chrome,close,titlebar,modal", o);                               
   if (o.Cancel)                                                                      
     return;                                                                          
@@ -1354,7 +1354,7 @@ function doComputeImplicitDiff(math)
 
   var vars = "";
   var o = new Object();
-  window.openDialog("chrome://editor/content/ComputeImplicitDiff.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeImplicitDiff.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   msiComputeLogger.Sent4("implicit diff",mathstr,o.thevar,o.about);
@@ -1394,7 +1394,7 @@ function doComputeSolveODE(math,labelID,func,titleID)
         var o = new Object();
         o.title = GetComputeString(titleID);
         o.label = GetComputeString("ODE.label");
-        window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1408,7 +1408,7 @@ function doComputeSolveODESeries(math)
   var o = new Object();
   o.order = "5";  // sticky? But really, should be general content
   o.title = GetComputeString("ODESeries.title");
-  window.openDialog("chrome://editor/content/ComputePowerSeries.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputePowerSeries.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mathstr = GetFixedMath(math);
@@ -1440,7 +1440,7 @@ function doComputePowerSeries(math)
   o.prompt[2] 		= GetComputeString("PowerSeries.termsprompt");
   o.initialvalue[2] = GetComputeString("PowerSeries.termsdefault");
 
-  window.openDialog("chrome://editor/content/ComputeMathMLArgDialog.xul", "_blank", 
+  window.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank", 
                     "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
@@ -1482,7 +1482,7 @@ function doComputeWronskian(math)
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("Wronskian.title");
-        window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1511,7 +1511,7 @@ function doComputeCharPoly(math)
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("Charpoly.title");
-        window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1524,7 +1524,7 @@ function doComputeFillMatrix()
   var o = new Object();
   o.rows = "3";  // sticky?
   o.cols = "3";
-  window.openDialog("chrome://editor/content/ComputeFillMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeFillMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
 
@@ -1548,7 +1548,7 @@ function doComputeMap(math)
   var o = new Object();
   o.title = GetComputeString("Map.title");
   o.label = GetComputeString("Map.label");
-  window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mathstr = GetFixedMath(GetRHS(math));
@@ -1586,7 +1586,7 @@ function doComputeMinPoly(math)
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("Minpoly.title");
-        window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1602,7 +1602,7 @@ function doComputeRandomMatrix()
   o.cols = "3";
   o.min  = "-9";
   o.max  = "9";
-  window.openDialog("chrome://editor/content/ComputeRandomMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeRandomMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mRows = GetNumAsMathML(o.rows);
@@ -1626,7 +1626,7 @@ function doComputeReshape(math)
 {
   var o = new Object();
   o.ncols = "2";  // sticky?
-  window.openDialog("chrome://editor/content/ComputeReshape.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeReshape.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mCols = GetNumAsMathML(o.ncols);
@@ -1650,7 +1650,7 @@ function doComputeFitCurve(math)
   o.code   = 1;
   o.column = 1;
   o.degree = 2;
-  window.openDialog("chrome://editor/content/ComputeFitCurve.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeFitCurve.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mathstr = GetFixedMath(math);
@@ -1679,7 +1679,7 @@ function doComputeRandomNumbers()
   o.dist       = 0;
   o.param1     = "";
   o.param2     = "";
-  window.openDialog("chrome://editor/content/ComputeRandomNumbers.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mTally    = GetNumAsMathML(o.tally);
@@ -1704,7 +1704,7 @@ function doComputeMoment(math)
   o.title = GetComputeString("Moment.title");
   o.label = GetComputeString("Moment.label");
   o.remark = GetComputeString("Moment.remark");
-  window.openDialog("chrome://editor/content/ComputeMoment.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeMoment.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var num = o.thevar;
@@ -1729,7 +1729,7 @@ function doComputeQuantile(math)
   var o = new Object();
   o.title = GetComputeString("Quantile.title");
   o.label = GetComputeString("Quantile.label");
-  window.openDialog("chrome://editor/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var quantile = o.vars;
@@ -1765,7 +1765,7 @@ function doComputeDefine(math)
       RestoreCursor();
       if (ex.result == compsample.needsubinterp) {
         var o = new Object();
-        window.openDialog("chrome://editor/content/ComputeInterpretSubscript.xul", "_blank", "chrome,close,titlebar,modal", o);
+        window.openDialog("chrome://prince/content/ComputeInterpretSubscript.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel) {
           return;
         }
@@ -1801,7 +1801,7 @@ function doComputeShowDefs()
 
   var o = new Object();
   o.val = out;
-  window.openDialog("chrome://editor/content/ComputeShowDefs.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeShowDefs.xul", "_blank", "chrome,close,titlebar,modal", o);
 }
 
 function doComputeClearDefs()
@@ -1819,7 +1819,7 @@ function doComputeSetBasisVars()
   var o = new Object();
 
   o.vars = runFixup(compsample.getVectorBasis());
-  window.openDialog("chrome://editor/content/ComputeVarList.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeVarList.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel) {
     return;
   }
@@ -1859,7 +1859,7 @@ function doComputeUserSettings()
   o.j_imaginary  = compsample.getUserPref(compsample.Input_j_Imaginary);
   o.e_exp        = compsample.getUserPref(compsample.Input_e_Euler);
   
-  window.openDialog("chrome://editor/content/ComputeUserSettings.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeUserSettings.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
 
@@ -1902,7 +1902,7 @@ function doComputeSettings()
   o.logReceived = msiComputeLogger.logMMLReceived;
   o.engSent     = msiComputeLogger.logEngSent;
   o.engReceived = msiComputeLogger.logEngReceived;
-  window.openDialog("chrome://editor/content/ComputeSettings.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeSettings.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
 
@@ -1922,7 +1922,7 @@ function doComputeSwitchEngines()
 
   var o = new Object();
   o.engine      = compengine;
-  window.openDialog("chrome://editor/content/ComputeSwitchEngines.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeSwitchEngines.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
 

@@ -1551,11 +1551,6 @@ toolbar[iconsize="small"] #bibliographyButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_animation.gif");
 }
 
-
-toolbar[iconsize="small"] #gifsAnimatedButton {
-  list-style-image: url("chrome://prince/skin/icons/math_animation.gif");
-}
-
 #gifsAnimatedButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_animation-hover.png");
 }
@@ -1564,26 +1559,32 @@ toolbar[iconsize="small"] #gifsAnimatedButton {
   list-style-image: url("chrome://prince/skin/icons/math_animation-hover.gif");
 }
 
-toolbar[iconsize="small"] #gifsAnimatedButton:hover {
-  list-style-image: url("chrome://prince/skin/icons/math_animation.gif");
-}
-
-
-
 #gifsAnimatedButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_animation-active.png");
-}
-
-toolbar[iconsize="small"] #gifsAnimatedButton:hover:active {
-  list-style-image: url("chrome://prince/skin/icons/math_animation.gif");
 }
 
 #gifsAnimatedButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_animation-disabled.png");
 }
 
+toolbar[iconsize="small"] #gifsAnimatedButton {
+  list-style-image: url("chrome://prince/skin/icons/math_animation-sm.png");
+}
+
+toolbar[iconsize="small"] #gifsAnimatedButton[checked="true"] {
+  list-style-image: url("chrome://prince/skin/icons/math_animation-sm.gif");
+}
+
+toolbar[iconsize="small"] #gifsAnimatedButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/math_animation-hover-sm.png");
+}
+
+toolbar[iconsize="small"] #gifsAnimatedButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/math_animation-active-sm.png");
+}
+
 toolbar[iconsize="small"] #gifsAnimatedButton[disabled="true"] {
-  list-style-image: url("chrome://prince/skin/icons/math_animation.gif");
+  list-style-image: url("chrome://prince/skin/icons/math_animation-disabled-sm.gif");
 }
 
 #newButton {
