@@ -1,13 +1,15 @@
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 
-#include prince-doctype.inc 
+<!DOCTYPE window SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd">
 
 <overlay id="toolbarsOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  
   <script type="application/x-javascript" src="chrome://prince/content/toolbarsOverlay.js"/>
          
-  <toolbox id="StandardToolbox" orient="horizontal" mode="icons" context="standard-toolbar-context-menu">       
+  <toolbox id="StandardToolbox" orient="horizontal" mode="icons" persist="iconsize" context="standard-toolbar-context-menu">       
     <popup id="standard-toolbar-context-menu" >
       <menuitem oncommand="CustomizeMainToolbar('StandardToolbox');"
         label="Customize standard toolbar" />
@@ -31,11 +33,6 @@
       <toolbarbutton id="undoButton"/>
       <toolbarbutton id="redoButton"/>
       <toolbarbutton id="stopButton"/>
-      <!--
-      <textbox id="TextTagSelections"/>
-      <textbox id="ParaTagSelections"/>
-      <textbox id="StructTagSelections"/>
-      <textbox id="OtherTagSelections"/>  -->
     </toolbarpalette>
     <toolbar id="StandardToolbar" class="chromeclass-toolbar" persist="collapsed" 
       defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton" mode="icons" customizable="true" />
@@ -47,44 +44,6 @@
     </toolbar>
   </toolbox>
   
-  <toolbox id="MathToolbox" orient="horizontal" mode="icons" context="math-toolbar-context-menu">
-    <popup id="math-toolbar-context-menu" >
-      <menuitem oncommand="CustomizeMainToolbar('MathToolbox');"
-        label="Customize math toolbar" />
-    </popup>
-    <toolbarpalette id="MathToolbarPalette" >
-      <toolbarbutton id="evalButton"/>
-      <toolbarbutton id="evalnumButton"/>
-      <toolbarbutton id="solveButton" />
-      <toolbarbutton id="simplifyButton" />
-      <toolbarbutton id="expandButton" />
-      <toolbarbutton id="plotButton" />
-      <toolbarbutton id="plotButton3D" />
-      <toolbarbutton id="defineButton" />
-      <toolbarbutton id="showdefsButton" />
-      <toolbarbutton id="radicalButton"/>
-      <toolbarbutton id="fractionButton"/>
-      <toolbarbutton id="superscriptButton"/>
-      <toolbarbutton id="subscriptButton"/>
-      <toolbarbutton id="parenthesesButton"/>
-      <toolbarbutton id="bracketsButton"/>
-      <toolbarbutton id="sumButton"/>
-      <toolbarbutton id="integralButton"/>
-      <toolbarbutton id="unitnameButton"/>
-      <toolbarbutton id="displayButton"/>
-      <toolbarbutton id="bigopButton"/>
-      <toolbarbutton id="matrixButton"/>
-      <toolbarbutton id="mathnameButton"/>
-      <toolbarbutton id="binomialButton"/>
-      <toolbarbutton id="labelButton"/>
-      <toolbarbutton id="decorationButton"/>
-    </toolbarpalette >
-    
-    <toolbar id="MathToolbar" class="chromeclass-toolbar" persist="collapsed" 
-      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,matrixButton,mathnameButton,binomialButton,labelButton,decorationButton"
-      mode="icons" customizable="true" />
-  </toolbox>
-    
   <toolbox id="SymbolToolbox" orient="horizontal" mode="icons" persist="iconsize" context="symbol-palettes-context-menu" >
     <popup id="symbol-palettes-context-menu" >
       <menuitem oncommand="getElementById('Symbol-tabbox').setAttribute('textsize','small');"
@@ -146,7 +105,7 @@
   <toolbarbutton id="evalnumButton" class="toolbarbutton-1" tooltiptext="&MSIComputeEvalNum.tooltip;" 
     label="&MSIComputeEvalNum.label;" observes="cmd_MSIComputeEvalNum">
   </toolbarbutton>
-
+#
   <toolbarbutton id="solveButton" class="toolbarbutton-1" tooltiptext="&MSIComputeSolveExact.tooltip;" 
     label="&MSIComputeSolveExact.label;" observes="cmd_MSIComputeSolveExact">
   </toolbarbutton>
@@ -166,7 +125,7 @@
   <toolbarbutton id="plotButton3D" class="toolbarbutton-1" tooltiptext="&MSIComputePlot3D.tooltip;" 
     label="&MSIComputePlot3D.label;" observes="cmd_MSIComputePlot3DRectangular">
   </toolbarbutton>
-
+#
   <toolbarbutton id="defineButton" class="toolbarbutton-1" tooltiptext="&MSIComputeDefine.tooltip;" 
     label="&MSIComputeDefine.label;" observes="cmd_MSIComputeDefine">
   </toolbarbutton>
@@ -184,7 +143,7 @@
  
   <toolbarbutton id="radicalButton" class="toolbarbutton-1" tooltiptext="&radicalButton.tooltip;" 
     label="&radicalButton.label;" observes="cmd_MSIradicalCmd"/>
-  
+#  
   <toolbarbutton id="superscriptButton" class="toolbarbutton-1" tooltiptext="&superscriptButton.tooltip;" 
     label="&superscriptButton.label;" observes="cmd_MSIsupCmd"/>
   
@@ -205,7 +164,7 @@
  
   <toolbarbutton id="unitnameButton" class="toolbarbutton-1" tooltiptext="&unitnameButton.tooltip;" 
     label="&unitnameButton.label;" onclick="alert('Implement me!');"/>
-  
+#  
   <toolbarbutton id="displayButton" class="toolbarbutton-1" tooltiptext="&displayButton.tooltip;" 
     label="&displayButton.label;" observes="cmd_MSIdisplayMathCmd"/>
   
@@ -229,7 +188,7 @@
   
   <toolbarbutton id="decorationButton" class="toolbarbutton-1" tooltiptext="&decorationButton.tooltip;" 
     label="&decorationButton.label;" observes="cmd_MSIdecorationsCmd"/>
-  
+#  
   <toolbarbutton id="newButton" class="toolbarbutton-1"
                  label="&newMenu.label;" command="cmd_newEditor"
                  tooltiptext="&newToolbarCmd.tooltip;"/>
@@ -239,8 +198,9 @@
                  tooltiptext="&openToolbarCmd.tooltip;"/>
   
   <toolbarbutton id="saveButton" class="toolbarbutton-1" observes="cmd_save"
-                 tooltiptext="&saveToolbarCmd.tooltip;" />
-  
+                 tooltiptext="&saveToolbarCmd.tooltip;"
+                  label="&saveToolbarCmd.label;" />
+#  
   <toolbarbutton id="printButton" type="menu-button" class="toolbarbutton-1"
                  label="&printToolbarCmd.label;"
                  tooltiptext="&printToolbarCmd.tooltip;"
@@ -270,7 +230,7 @@
       </menu>
     </menupopup>
   </toolbarbutton>
-    
+#    
   <toolbarbutton id="printPreviewButton" type="menu-button" class="toolbarbutton-1"
                  label="&printPreviewToolbarCmd.label;" 
                  tooltiptext="&printPreviewToolbarCmd.tooltip;" 
@@ -299,14 +259,14 @@
       </menu>
     </menupopup>
   </toolbarbutton>
-  
+#  
   <toolbarbutton id="cutButton" class="toolbarbutton-1"
                  label="&cutCmd.label;" command="cmd_cut"
                  tooltiptext="&cutCmd.label;"/>
   
   <toolbarbutton id="copyButton" class="toolbarbutton-1"
                  label="&copyCmd.label;" command="cmd_copy"
-                 tooltiptext="&copyCmd.label;"/>
+                 tooltiptext="&copyCmd.tooltip;"/>
   
   <toolbarbutton id="pasteButton" class="toolbarbutton-1"
                  label="&pasteCmd.label;" command="cmd_paste"
