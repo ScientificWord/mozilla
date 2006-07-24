@@ -34,7 +34,6 @@ classic.jar:
 % skin prince classic %skin/classic/prince
   skin/classic/toolbarsOverlay.css       (skin/classic/toolbarsOverlay.css)
   skin/classic/MathmlOverlay.css         (skin/classic/MathmlOverlay.css)
-  skin/classic/typesetOverlay.css        (skin/classic/typesetOverlay.css)
   skin/classic/icons/background.png      (skin/classic/icons/background.png)
   skin/classic/icons/background-sm.png   (skin/classic/icons/background-sm.png)
   skin/classic/icons/btn1.gif            (skin/classic/icons/btn1.gif)
