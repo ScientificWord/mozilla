@@ -6,6 +6,8 @@ prince.jar:
   content/aboutPrince.png           (content/aboutPrince.png)
 * content/toolbarsOverlay.xul       (content/toolbarsOverlay.xul)
 * content/toolbarsOverlay.js        (content/toolbarsOverlay.js)
+* content/mathmlOverlay.js          (content/mathmlOverlay.js)
+* content/mathmlOverlay.xul         (content/mathmlOverlay.xul)
 * content/menuOverlay.xul           (content/menuOverlay.xul)
 
 en-US.jar:
@@ -13,11 +15,14 @@ en-US.jar:
   locale/en-US/prince.dtd           (locale/en-us/prince.dtd)
   locale/en-US/aboutDialog.dtd      (locale/en-us/aboutDialog.dtd)
   locale/en-US/toolbarsOverlay.dtd  (locale/en-us/toolbarsOverlay.dtd)
+  locale/en-US/toolbarsOverlay.dtd  (locale/en-us/toolbarsOverlay.dtd)
   locale/en-US/menuOverlay.dtd      (locale/en-us/menuOverlay.dtd)
+  locale/en-US/mathmlOverlay.dtd      (locale/en-us/mathmlOverlay.dtd)
 
 classic.jar:
 % skin prince classic %skin/classic/prince
   skin/classic/toolbarsOverlay.css       (skin/classic/toolbarsOverlay.css)
+  skin/classic/mathmlOverlay.css         (skin/classic/mathmlOverlay.css)
   skin/classic/toolbarbutton.css         (skin/classic/toolbarbutton.css)
   skin/classic/icons/background.png      (skin/classic/icons/background.png)
   skin/classic/icons/background-sm.png   (skin/classic/icons/background-sm.png)
@@ -457,7 +462,6 @@ classic.jar:
   skin/classic/icons/stop-hover-sm.png        (skin/classic/icons/stop-hover-sm.png)
   skin/classic/icons/stop-sm.png        (skin/classic/icons/stop-sm.png)
   skin/classic/icons/throbber-single.gif        (skin/classic/icons/throbber-single.gif)
-  skin/classic/icons/Thumbs.db        (skin/classic/icons/Thumbs.db)
   skin/classic/icons/type_bibliography.png        (skin/classic/icons/type_bibliography.png)
   skin/classic/icons/type_bibliography-active.png        (skin/classic/icons/type_bibliography-active.png)
   skin/classic/icons/type_bibliography-active-sm.png        (skin/classic/icons/type_bibliography-active-sm.png)
