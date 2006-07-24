@@ -106,6 +106,8 @@
 <!ENTITY formulaButton.label "Formula" >
 
 <!-- print buttons -->
+<!ENTITY printToolbarCmd.tooltip "Print" >
+<!ENTITY printToolbarCmd.label "Print" >
 
 <!ENTITY printButton.tooltip "Direct print" >
 <!ENTITY printButton.label "Direct print" >
@@ -118,8 +120,8 @@
 
 <!-- preview buttons -->
 
-<!ENTITY printPreviewToolbarCmd.tooltip "Dirct print preview" >
-<!ENTITY printPreviewToolbarCmd.label "Dirct print preview" >
+<!ENTITY printPreviewToolbarCmd.tooltip "Direct print preview" >
+<!ENTITY printPreviewToolbarCmd.label "Direct print preview" >
 
 <!ENTITY dvipreviewButton.tooltip "Typeset DVI preview" >
 <!ENTITY dvipreviewButton.label "Typeset DVI preview" >
@@ -212,3 +214,25 @@
 <!ENTITY direct "Direct">
 <!ENTITY pdf "PDF">
 <!ENTITY dvi "DVI">
+
+<!ENTITY newToolbarCmd.tooltip "New document">
+<!ENTITY newMenu.label "New">
+<!ENTITY openToolbarCmd.tooltip "Open">
+<!ENTITY openToolbarCmd.label "Open">
+<!ENTITY saveToolbarCmd.tooltip "Save">
+<!ENTITY saveToolbarCmd.label "Save">
+
+<!ENTITY cutCmd.tooltip "Cut">
+<!ENTITY cutCmd.label "Cut">
+<!ENTITY copyCmd.tooltip "Copy">
+<!ENTITY copyCmd.label "Copy">
+<!ENTITY pasteCmd.tooltip "Paste">
+<!ENTITY pasteCmd.label "Paste">
+<!ENTITY undoCmd.tooltip "Undo">
+<!ENTITY undoCmd.label "Undo">
+<!ENTITY redoCmd.tooltip "Redo">
+<!ENTITY redoCmd.label "Redo">
+<!ENTITY findToolbarCmd.tooltip "Find">
+<!ENTITY findToolbarCmd.label "Find">
+<!ENTITY spellToolbarCmd.tooltip "Check spelling">
+<!ENTITY spellToolbarCmd.label "Spell">

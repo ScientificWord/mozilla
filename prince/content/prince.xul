@@ -3,6 +3,8 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul" ?>
+<?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul" ?>
+<?xul-overlay href="chrome://prince/content/mathmlOverlay.xul" ?>
 
 <!DOCTYPE window SYSTEM "chrome://prince/locale/prince.dtd">
 
@@ -40,6 +42,7 @@
     <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed">
       <menu id="fileMenu" />
       <menu id="editMenu" />
+      <menu id="MSIMathMenu" />
       <menu id="MSIComputeMenu" />
       <!-- DEBUG only -->
       <menu id="debugMenu" /> 
@@ -49,46 +52,11 @@
     </menubar>
   </toolbox>
   <toolbox id="StandardToolbox" />
-  <toolbox id="MathToolbox" orient="horizontal" mode="icons" context="math-toolbar-context-menu">
-    <popup id="math-toolbar-context-menu" >
-      <menuitem oncommand="CustomizeMainToolbar('MathToolbox');"
-        label="Customize math toolbar" />
-    </popup>
-    <toolbarpalette id="MathToolbarPalette" >
-      <toolbarbutton id="evalButton"/>
-      <toolbarbutton id="evalnumButton"/>
-      <toolbarbutton id="solveButton" />
-      <toolbarbutton id="simplifyButton" />
-      <toolbarbutton id="expandButton" />
-      <toolbarbutton id="plotButton" />
-      <toolbarbutton id="plotButton3D" />
-      <toolbarbutton id="defineButton" />
-      <toolbarbutton id="showdefsButton" />
-      <toolbarbutton id="radicalButton"/>
-      <toolbarbutton id="fractionButton"/>
-      <toolbarbutton id="superscriptButton"/>
-      <toolbarbutton id="subscriptButton"/>
-      <toolbarbutton id="parenthesesButton"/>
-      <toolbarbutton id="bracketsButton"/>
-      <toolbarbutton id="sumButton"/>
-      <toolbarbutton id="integralButton"/>
-      <toolbarbutton id="unitnameButton"/>
-      <toolbarbutton id="displayButton"/>
-      <toolbarbutton id="bigopButton"/>
-      <toolbarbutton id="matrixButton"/>
-      <toolbarbutton id="mathnameButton"/>
-      <toolbarbutton id="binomialButton"/>
-      <toolbarbutton id="labelButton"/>
-      <toolbarbutton id="decorationButton"/>
-    </toolbarpalette >
-    
-    <toolbar id="MathToolbar" class="chromeclass-toolbar" persist="collapsed" 
-      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,matrixButton,mathnameButton,binomialButton,labelButton,decorationButton"
-      mode="icons" customizable="true" />
-  </toolbox>
+  <toolbox id="MathToolbox" />
   <toolbox id="SymbolToolbox" />
   <toolbox id="EditingToolbox" />
-
+  <tabbox  id="Symbol-tabbox" />
+  
   <vbox id="appcontent" flex="1">
     <deck id="ContentWindowDeck" selectedIndex="0" flex="1">
       <stack>
