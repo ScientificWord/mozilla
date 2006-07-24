@@ -1,0 +1,328 @@
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+
+<!ENTITY MSIComputeMenu.label "Compute">
+<!ENTITY MSIComputeMenu.accesskey "C">
+<!ENTITY MSIComputeEvalCmd.label "Evaluate">
+<!ENTITY MSIComputeEvalCmd.accesskey "E">
+<!ENTITY MSIComputeEvalNumCmd.label "Evaluate Numeric">
+<!ENTITY MSIComputeEvalNumCmd.accesskey "N">
+<!ENTITY MSIComputeSimplifyCmd.label "Simplify">
+<!ENTITY MSIComputeSimplifyCmd.accesskey "y">
+
+<!ENTITY MSICombineMenu.label     "Combine">
+<!ENTITY MSICombineMenu.accesskey "C">
+<!ENTITY MSIComputeCombineExponentialsCmd.label     "Exponentials">
+<!ENTITY MSIComputeCombineExponentialsCmd.accesskey "E">
+<!ENTITY MSIComputeCombineLogsCmd.label             "Logs">
+<!ENTITY MSIComputeCombineLogsCmd.accesskey         "L">
+<!ENTITY MSIComputeCombinePowersCmd.label           "Powers">
+<!ENTITY MSIComputeCombinePowersCmd.accesskey       "P">
+<!ENTITY MSIComputeCombineTrigCmd.label             "Trigonometric Functions">
+<!ENTITY MSIComputeCombineTrigCmd.accesskey         "T">
+<!ENTITY MSIComputeCombineArctanCmd.label           "Arctan">
+<!ENTITY MSIComputeCombineArctanCmd.accesskey       "A">
+<!ENTITY MSIComputeCombineHyperbolicsCmd.label      "Hyperbolic Trigonometric Functions">
+<!ENTITY MSIComputeCombineHyperbolicsCmd.accesskey  "H">
+
+<!ENTITY MSIComputeExpandCmd.label     "Expand">
+<!ENTITY MSIComputeExpandCmd.accesskey "x">
+<!ENTITY MSIComputeFactorCmd.label     "Factor">
+<!ENTITY MSIComputeFactorCmd.accesskey "F">
+
+<!ENTITY MSIRewriteMenu.label "Rewrite">
+<!ENTITY MSIRewriteMenu.accesskey "R">
+<!ENTITY MSIComputeRewriteRationalCmd.label "Rational">
+<!ENTITY MSIComputeRewriteRationalCmd.accesskey "R">
+<!ENTITY MSIComputeRewriteFloatCmd.label "Float">
+<!ENTITY MSIComputeRewriteFloatCmd.accesskey "F">
+<!ENTITY MSIComputeRewriteMixedCmd.label "Mixed">
+<!ENTITY MSIComputeRewriteMixedCmd.accesskey "M">
+<!ENTITY MSIComputeRewriteExponentialCmd.label "Exponential">
+<!ENTITY MSIComputeRewriteExponentialCmd.accesskey "E">
+<!ENTITY MSIComputeRewriteFactorialCmd.label "Factorial">
+<!ENTITY MSIComputeRewriteFactorialCmd.accesskey "c">  
+<!ENTITY MSIComputeRewriteGammaCmd.label "Gamma">
+<!ENTITY MSIComputeRewriteGammaCmd.accesskey "G">      
+<!ENTITY MSIComputeRewriteLogarithmCmd.label "Logarithm">
+<!ENTITY MSIComputeRewriteLogarithmCmd.accesskey "L">  
+<!ENTITY MSIComputeRewriteSinAndCosCmd.label "Sin and Cos">
+<!ENTITY MSIComputeRewriteSinAndCosCmd.accesskey "S">  
+<!ENTITY MSIComputeRewriteSinhAndCoshCmd.label "Sinh and Cosh">
+<!ENTITY MSIComputeRewriteSinhAndCoshCmd.accesskey "h">
+<!ENTITY MSIComputeRewriteSinCmd.label "Sin">
+<!ENTITY MSIComputeRewriteSinCmd.accesskey "S">       
+<!ENTITY MSIComputeRewriteCosCmd.label "Cos">
+<!ENTITY MSIComputeRewriteCosCmd.accesskey "C">       
+<!ENTITY MSIComputeRewriteTanCmd.label "Tan">
+<!ENTITY MSIComputeRewriteTanCmd.accesskey "T">       
+<!ENTITY MSIComputeRewriteArcsinCmd.label "Arcsin">
+<!ENTITY MSIComputeRewriteArcsinCmd.accesskey "A">       
+<!ENTITY MSIComputeRewriteArccosCmd.label "Arccos">
+<!ENTITY MSIComputeRewriteArccosCmd.accesskey "A">       
+<!ENTITY MSIComputeRewriteArctanCmd.label "Arctan">
+<!ENTITY MSIComputeRewriteArctanCmd.accesskey "A">       
+<!ENTITY MSIComputeRewriteArccotCmd.label "Arccot">
+<!ENTITY MSIComputeRewriteArccotCmd.accesskey "A">       
+<!ENTITY MSIComputeRewritePolarCmd.label "Polar">
+<!ENTITY MSIComputeRewritePolarCmd.accesskey "P">      
+<!ENTITY MSIComputeRewriteRectangularCmd.label "Rectangular">
+<!ENTITY MSIComputeRewriteRectangularCmd.accesskey "u">
+<!ENTITY MSIComputeRewriteNormalCmd.label "Normal Form">
+<!ENTITY MSIComputeRewriteNormalCmd.accesskey "N">     
+<!ENTITY MSIComputeRewriteEquationsAsMatrixCmd.label "Equations as Matrix">
+<!ENTITY MSIComputeRewriteEquationsAsMatrixCmd.accesskey "q">
+<!ENTITY MSIComputeRewriteMatrixAsEquationsCmd.label "Matrix as Equations">
+<!ENTITY MSIComputeRewriteMatrixAsEquationsCmd.accesskey "x">
+
+<!ENTITY MSIComputeCheckEqCmd.label "Check Equality">
+<!ENTITY MSIComputeCheckEqCmd.accesskey "k">
+
+<!ENTITY MSISolveMenu.label "Solve">
+<!ENTITY MSISolveMenu.accesskey "s">
+<!ENTITY MSIComputeSolveExactCmd.label         "Exact">
+<!ENTITY MSIComputeSolveExactCmd.accesskey     "E">
+<!ENTITY MSIComputeSolveNumericCmd.label       "Numeric">
+<!ENTITY MSIComputeSolveNumericCmd.accesskey   "n">
+<!ENTITY MSIComputeSolveRecursionCmd.label     "Recursion">
+<!ENTITY MSIComputeSolveRecursionCmd.accesskey "R">
+
+<!ENTITY MSIPolynomialMenu.label "Polynomials">
+<!ENTITY MSIPolynomialMenu.accesskey "l">
+<!ENTITY MSIComputeCollectCmd.label              "Collect...">
+<!ENTITY MSIComputeCollectCmd.accesskey          "C">
+<!ENTITY MSIComputeDivideCmd.label               "Divide">
+<!ENTITY MSIComputeDivideCmd.accesskey           "D">
+<!ENTITY MSIComputePartialFractionsCmd.label     "Partial Fractions">
+<!ENTITY MSIComputePartialFractionsCmd.accesskey "P">
+<!ENTITY MSIComputeRootsCmd.label                "Roots">
+<!ENTITY MSIComputeRootsCmd.accesskey            "R">
+<!ENTITY MSIComputeSortCmd.label                 "Sort">
+<!ENTITY MSIComputeSortCmd.accesskey             "S">
+<!ENTITY MSIComputeCompanionMatrixCmd.label      "Companion Matrix">
+<!ENTITY MSIComputeCompanionMatrixCmd.accesskey  "M">
+
+<!ENTITY MSICalculusMenu.label "Calculus">
+<!ENTITY MSICalculusMenu.accesskey "a">
+<!ENTITY MSIComputeByPartsCmd.label                 "Integrate by Parts...">
+<!ENTITY MSIComputeByPartsCmd.accesskey             "I">
+<!ENTITY MSIComputeChangeVariableCmd.label          "Change Variables...">
+<!ENTITY MSIComputeChangeVariableCmd.accesskey      "C">
+<!ENTITY MSIComputeApproximateIntegralCmd.label     "Approximate Integral...">
+<!ENTITY MSIComputeApproximateIntegralCmd.accesskey "A">
+<!ENTITY MSIComputePlotApproxIntegralCmd.label      "Plot Approximate Integral...">
+<!ENTITY MSIComputePlotApproxIntegralCmd.accesskey  "l">
+<!ENTITY MSIComputeIterateCmd.label                 "Iterate...">
+<!ENTITY MSIComputeIterateCmd.accesskey             "t">
+<!ENTITY MSIComputeImplicitDiffCmd.label            "Implicit Differentiation...">
+<!ENTITY MSIComputeImplicitDiffCmd.accesskey        "D">
+
+<!ENTITY MSISolveODEMenu.label "Solve ODE">
+<!ENTITY MSISolveODEMenu.accesskey "O">
+<!ENTITY MSIComputeSolveODEExactCmd.label       "Exact">
+<!ENTITY MSIComputeSolveODEExactCmd.accesskey   "E">
+<!ENTITY MSIComputeSolveODELaplaceCmd.label     "Laplace">
+<!ENTITY MSIComputeSolveODELaplaceCmd.accesskey "L">
+<!ENTITY MSIComputeSolveODENumericCmd.label     "Numeric">
+<!ENTITY MSIComputeSolveODENumericCmd.accesskey "N">
+<!ENTITY MSIComputeSolveODESeriesCmd.label      "Series...">
+<!ENTITY MSIComputeSolveODESeriesCmd.accesskey  "S">
+
+<!ENTITY MSIComputePowerSeriesCmd.label     "Power Series...">
+<!ENTITY MSIComputePowerSeriesCmd.accesskey "w">
+
+<!ENTITY MSITransformsMenu.label     "Transforms">
+<!ENTITY MSITransformsMenu.accesskey "n">
+<!ENTITY MSIComputeFourierCmd.label       "Fourier">
+<!ENTITY MSIComputeFourierCmd.accesskey   "F">
+<!ENTITY MSIComputeInverseFourierCmd.label       "Inverse Fourier">
+<!ENTITY MSIComputeInverseFourierCmd.accesskey   "I">
+<!ENTITY MSIComputeLaplaceCmd.label       "Laplace">
+<!ENTITY MSIComputeLaplaceCmd.accesskey   "L">
+<!ENTITY MSIComputeInverseLaplaceCmd.label       "Inverse Laplace">
+<!ENTITY MSIComputeInverseLaplaceCmd.accesskey   "n">
+
+<!ENTITY MSIVecCalcMenu.label "Vector Calculus">
+<!ENTITY MSIVecCalcMenu.accesskey "V">
+<!ENTITY MSIComputeGradientCmd.label "Gradient">
+<!ENTITY MSIComputeGradientCmd.accesskey "G">
+<!ENTITY MSIComputeDivergenceCmd.label "Divergence">
+<!ENTITY MSIComputeDivergenceCmd.accesskey "D">
+<!ENTITY MSIComputeCurlCmd.label "Curl">
+<!ENTITY MSIComputeCurlCmd.accesskey "C">
+<!ENTITY MSIComputeLaplacianCmd.label "Laplacian">
+<!ENTITY MSIComputeLaplacianCmd.accesskey "L">
+<!ENTITY MSIComputeJacobianCmd.label "Jacobian">
+<!ENTITY MSIComputeJacobianCmd.accesskey "J">
+<!ENTITY MSIComputeHessianCmd.label "Hessian">
+<!ENTITY MSIComputeHessianCmd.accesskey "H">
+<!ENTITY MSIComputeWronskianCmd.label "Wronskian">
+<!ENTITY MSIComputeWronskianCmd.accesskey "W">
+<!ENTITY MSIComputeScalarPotCmd.label "Scalar Potential">
+<!ENTITY MSIComputeScalarPotCmd.accesskey "S">
+<!ENTITY MSIComputeVectorPotCmd.label "Vector Potential">
+<!ENTITY MSIComputeVectorPotCmd.accesskey "V">
+<!ENTITY MSIComputeSetBasisVarsCmd.label "Set Basis Variables...">
+<!ENTITY MSIComputeSetBasisVarsCmd.accesskey "B">
+
+<!ENTITY MSIMatrixMenu.label      "Matrices">
+<!ENTITY MSIMatrixMenu.accesskey  "M">
+<!ENTITY MSIComputeMatrixAdjugateCmd.label     "Adjugate">
+<!ENTITY MSIComputeMatrixAdjugateCmd.accesskey "A">
+<!ENTITY MSIComputeCharPolyCmd.label           "Characteristic Polynomial">
+<!ENTITY MSIComputeCharPolyCmd.accesskey       "C">
+<!ENTITY MSIComputeCholeskyDecompCmd.label     "Cholesky Decomposition">
+<!ENTITY MSIComputeCholeskyDecompCmd.accesskey "C">
+<!ENTITY MSIComputeColBasisCmd.label           "Column Basis">
+<!ENTITY MSIComputeColBasisCmd.accesskey       "C">
+<!ENTITY MSIComputeMatrixConcatCmd.label       "Concat">
+<!ENTITY MSIComputeMatrixConcatCmd.accesskey   "C">
+<!ENTITY MSIComputeConditionNumCmd.label       "Condition Number">
+<!ENTITY MSIComputeConditionNumCmd.accesskey   "C">
+<!ENTITY MSIComputeDefinitenessTestsCmd.label     "Definiteness Tests">
+<!ENTITY MSIComputeDefinitenessTestsCmd.accesskey "D">
+<!ENTITY MSIComputeDeterminantCmd.label        "Determinant">
+<!ENTITY MSIComputeDeterminantCmd.accesskey    "D">
+<!ENTITY MSIComputeEigenvaluesCmd.label        "Eigenvalues">
+<!ENTITY MSIComputeEigenvaluesCmd.accesskey    "E">
+<!ENTITY MSIComputeEigenvectorsCmd.label       "Eigenvectors">
+<!ENTITY MSIComputeEigenvectorsCmd.accesskey   "E">
+<!ENTITY MSIComputeFillMatrixCmd.label         "Fill Matrix...">
+<!ENTITY MSIComputeFillMatrixCmd.accesskey     "F">
+<!ENTITY MSIComputeFFGECmd.label               "Fraction Free Gaussian Elimination">
+<!ENTITY MSIComputeFFGECmd.accesskey           "F">
+<!ENTITY MSIComputeGaussElimCmd.label          "Gaussian Elimination">
+<!ENTITY MSIComputeGaussElimCmd.accesskey      "G">
+<!ENTITY MSIComputeHermiteCmd.label            "Hermite Normal Form">
+<!ENTITY MSIComputeHermiteCmd.accesskey        "H">
+<!ENTITY MSIComputeHermitianTransposeCmd.label     "Hermitian Transpose">
+<!ENTITY MSIComputeHermitianTransposeCmd.accesskey "H">
+<!ENTITY MSIComputeMatrixInverseCmd.label      "Inverse">
+<!ENTITY MSIComputeMatrixInverseCmd.accesskey  "I">
+<!ENTITY MSIComputeJordanCmd.label             "Jordan Normal Form">
+<!ENTITY MSIComputeJordanCmd.accesskey         "J">
+<!ENTITY MSIComputeMatrixMapCmd.label          "Map Function...">
+<!ENTITY MSIComputeMatrixMapCmd.accesskey      "M">
+<!ENTITY MSIComputeMinPolyCmd.label            "Minimal Polynomial">
+<!ENTITY MSIComputeMinPolyCmd.accesskey        "M">
+<!ENTITY MSIComputeMatrixNormCmd.label         "Norm">
+<!ENTITY MSIComputeMatrixNormCmd.accesskey     "N">
+<!ENTITY MSIComputeNullspaceBasisCmd.label     "Nullspace Basis">
+<!ENTITY MSIComputeNullspaceBasisCmd.accesskey "N">
+<!ENTITY MSIComputeOrthogonalityTestCmd.label     "Orthogonality Test">
+<!ENTITY MSIComputeOrthogonalityTestCmd.accesskey "O">
+<!ENTITY MSIComputePermanentCmd.label          "Permanent">
+<!ENTITY MSIComputePermanentCmd.accesskey      "P">
+<!ENTITY MSIComputePLUDecompCmd.label          "PLU Decomposition">
+<!ENTITY MSIComputePLUDecompCmd.accesskey      "P">
+<!ENTITY MSIComputeRandomMatrixCmd.label       "Random Matrix...">
+<!ENTITY MSIComputeRandomMatrixCmd.accesskey   "R">
+<!ENTITY MSIComputeRankCmd.label               "Rank">
+<!ENTITY MSIComputeRankCmd.accesskey           "R">
+<!ENTITY MSIComputeRationalCanonicalCmd.label     "Rational Canonical Form">
+<!ENTITY MSIComputeRationalCanonicalCmd.accesskey "R">
+<!ENTITY MSIComputeRREFCmd.label               "Reduced Row Echelon Form">
+<!ENTITY MSIComputeRREFCmd.accesskey           "R">
+<!ENTITY MSIComputeReshapeCmd.label            "Reshape">
+<!ENTITY MSIComputeReshapeCmd.accesskey        "R">
+<!ENTITY MSIComputeRowBasisCmd.label           "Row Basis">
+<!ENTITY MSIComputeRowBasisCmd.accesskey       "R">
+<!ENTITY MSIComputeQRDecompCmd.label           "QR Decomposition">
+<!ENTITY MSIComputeQRDecompCmd.accesskey       "Q">
+<!ENTITY MSIComputeSingularValuesCmd.label     "Singular Values">
+<!ENTITY MSIComputeSingularValuesCmd.accesskey "S">
+<!ENTITY MSIComputeSVDDecompCmd.label          "Singular Value Decomposition">
+<!ENTITY MSIComputeSVDDecompCmd.accesskey      "S">
+<!ENTITY MSIComputeSmithCmd.label              "Smith Normal Form">
+<!ENTITY MSIComputeSmithCmd.accesskey          "S">
+<!ENTITY MSIComputeSpectralRadiusCmd.label     "Spectral Radius">
+<!ENTITY MSIComputeSpectralRadiusCmd.accesskey "S">
+<!ENTITY MSIComputeMatrixStackCmd.label        "Stack">
+<!ENTITY MSIComputeMatrixStackCmd.accesskey    "S">
+<!ENTITY MSIComputeMatrixTraceCmd.label        "Trace">
+<!ENTITY MSIComputeMatrixTraceCmd.accesskey    "T">
+<!ENTITY MSIComputeMatrixTransposeCmd.label     "Transpose">
+<!ENTITY MSIComputeMatrixTransposeCmd.accesskey "T">
+
+<!ENTITY MSISimplexMenu.label     "Simplex">
+<!ENTITY MSISimplexMenu.accesskey "x">
+<!ENTITY MSIComputeSimplexDualCmd.label     "Dual">
+<!ENTITY MSIComputeSimplexDualCmd.accesskey "D">
+<!ENTITY MSIComputeSimplexFeasibleCmd.label     "Feasible?">
+<!ENTITY MSIComputeSimplexFeasibleCmd.accesskey "F">
+<!ENTITY MSIComputeSimplexMaximizeCmd.label     "Maximize">
+<!ENTITY MSIComputeSimplexMaximizeCmd.accesskey "M">
+<!ENTITY MSIComputeSimplexMinimizeCmd.label     "Minimize">
+<!ENTITY MSIComputeSimplexMinimizeCmd.accesskey "n">
+<!ENTITY MSIComputeSimplexStandardizeCmd.label     "Standardize">
+<!ENTITY MSIComputeSimplexStandardizeCmd.accesskey "S">
+
+<!ENTITY MSIStatisticsMenu.label     "Statistics">
+<!ENTITY MSIStatisticsMenu.accesskey "t">
+<!ENTITY MSIComputeFitCurveCmd.label              "Fit Curve to Data...">
+<!ENTITY MSIComputeFitCurveCmd.accesskey          "F">
+<!ENTITY MSIComputeRandomNumbersCmd.label         "Random Numbers...">
+<!ENTITY MSIComputeRandomNumbersCmd.accesskey     "R">
+<!ENTITY MSIComputeMeanCmd.label                  "Mean">
+<!ENTITY MSIComputeMeanCmd.accesskey              "M">
+<!ENTITY MSIComputeMedianCmd.label                "Median">
+<!ENTITY MSIComputeMedianCmd.accesskey            "e">
+<!ENTITY MSIComputeModeCmd.label                  "Mode">
+<!ENTITY MSIComputeModeCmd.accesskey              "o">
+<!ENTITY MSIComputeCorrelationCmd.label           "Correlation">
+<!ENTITY MSIComputeCorrelationCmd.accesskey       "c">
+<!ENTITY MSIComputeCovarianceCmd.label            "Covariance">
+<!ENTITY MSIComputeCovarianceCmd.accesskey        "c">
+<!ENTITY MSIComputeGeometricMeanCmd.label         "Geometric Mean">
+<!ENTITY MSIComputeGeometricMeanCmd.accesskey     "g">
+<!ENTITY MSIComputeHarmonicMeanCmd.label          "Harmonic Mean">
+<!ENTITY MSIComputeHarmonicMeanCmd.accesskey      "h">
+<!ENTITY MSIComputeMeanDeviationCmd.label         "Mean Deviation">
+<!ENTITY MSIComputeMeanDeviationCmd.accesskey     "d">
+<!ENTITY MSIComputeMomentCmd.label                "Moment...">
+<!ENTITY MSIComputeMomentCmd.accesskey            "t">
+<!ENTITY MSIComputeQuantileCmd.label              "Quantile...">
+<!ENTITY MSIComputeQuantileCmd.accesskey          "Q">
+<!ENTITY MSIComputeStandardDeviationCmd.label     "Standard Deviation">
+<!ENTITY MSIComputeStandardDeviationCmd.accesskey "S">
+<!ENTITY MSIComputeVarianceCmd.label              "Variance">
+<!ENTITY MSIComputeVarianceCmd.accesskey          "V">
+
+<!ENTITY MSIComputePlotCmd2D.label     "Plot 2D Rectangular">
+<!ENTITY MSIComputePlotCmd2D.accesskey "p">
+<!ENTITY MSIComputePlotCmd3D.label     "Plot 3D Rectangular">
+<!ENTITY MSIComputePlotCmd3D.accesskey "3">
+<!ENTITY MSIComputePlotCmd.label     "Plot">
+<!ENTITY MSIComputePlotCmd.accesskey "p">
+
+<!ENTITY MSIDefinitionsMenu.label "Definitions">
+<!ENTITY MSIDefinitionsMenu.accesskey "d">
+<!ENTITY MSIComputeDefineCmd.label "New Definition">
+<!ENTITY MSIComputeDefineCmd.accesskey "d">
+<!ENTITY MSIComputeDefineCmd.keybinding "=">      
+<!ENTITY MSIComputeUndefineCmd.label "Undefine">
+<!ENTITY MSIComputeUndefineCmd.accesskey "u">
+<!ENTITY MSIComputeShowDefsCmd.label "Show Definitions...">
+<!ENTITY MSIComputeShowDefsCmd.accesskey "S">
+<!ENTITY MSIComputeClearDefsCmd.label "Clear Definitions">
+<!ENTITY MSIComputeClearDefsCmd.accesskey "c">
+
+<!ENTITY MSIComputeUserSettingsCmd.label "User Settings...">
+<!ENTITY MSIComputeUserSettingsCmd.accesskey "u">
+<!ENTITY MSIComputeSettingsCmd.label "Engine Settings...">
+<!ENTITY MSIComputeSettingsCmd.accesskey "g">
+<!ENTITY MSIComputeSwitchEnginesCmd.label "Switch Engines...">
+<!ENTITY MSIComputeSwitchEnginesCmd.accesskey "S">
+
+<!ENTITY MSIComputeInterpretCmd.label "Interpret">
+<!ENTITY MSIComputeInterpretCmd.accesskey "I">
+<!ENTITY MSIComputeInterpretCmd.keybinding "/">      
+<!ENTITY MSIComputeFixupCmd.label "Fixup">
+<!ENTITY MSIComputeFixupCmd.accesskey "F">
+<!ENTITY MSIComputePassthruCmd.label "Passthru Code to Engine">
+<!ENTITY MSIComputePassthruCmd.accesskey "P">
+
+
+      
+<!ENTITY MSItestEvaluationCmd.label "Test Evaluation">
+
