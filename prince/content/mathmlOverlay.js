@@ -705,7 +705,7 @@ function doMathnameDlg()
 {
   var o = new Object();
   o.val = "";
-  window.openDialog("chrome://editor/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.val.length > 0) {
     if (o.enginefunction)
       insertenginefunction(o.val);
@@ -720,7 +720,7 @@ function doMatrixDlg()
   o.rows = 0;
   o.cols = 0;
   o.rowsignature = "";
-  window.openDialog("chrome://editor/content/MathmlMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/MathmlMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.rows > 0 && o.cols > 0)
     insertmatrix(o.rows, o.cols, o.rowsignature);
 }
@@ -767,7 +767,7 @@ var msiColorObj =
 //XXX This shouldn't happen in Source View or Preview mode.
 function doColorsDlg()
 {
-  window.openDialog("chrome://editor/content/MathColors.xul", "_blank", "chrome,close,titlebar,modal", msiColorObj);
+  window.openDialog("chrome://prince/content/MathColors.xul", "_blank", "chrome,close,titlebar,modal", msiColorObj);
   if (msiColorObj.Cancel)
     return;
 
@@ -792,7 +792,7 @@ function doBracketsDlg(leftBrack, rightBrack, sep)
   bracketData.leftBracket = ""; //leftBrack;
   bracketData.rightBracket = ""; //rightBrack;
   bracketData.separator = sep;
-  window.openDialog("chrome://editor/content/Brackets.xul", "_blank", "chrome,close,titlebar,modal", bracketData);
+  window.openDialog("chrome://prince/content/Brackets.xul", "_blank", "chrome,close,titlebar,modal", bracketData);
   if (bracketData.Cancel)
     return;
   insertfence(bracketData.leftBracket, bracketData.rightBracket, bracketData.separator);
@@ -810,7 +810,7 @@ function doBinomialsDlg(leftBrack, rightBrack, line, size)
     binomialData.withDelimiters = true;
   binomialData.lineSpec = line;
   binomialData.sizeSpec = size;
-  window.openDialog("chrome://editor/content/Binomial.xul", "_blank", "chrome,close,titlebar,modal", binomialData);
+  window.openDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,modal", binomialData);
   if (binomialData.Cancel)
     return;
   if (!binomialData.withDelimiters)
@@ -831,7 +831,7 @@ function doOperatorsDlg(operatorStr, limitPlacement, size)
   operatorData.operator = operatorStr;
   operatorData.limitsSpec = limitPlacement;
   operatorData.sizeSpec = size;
-  window.openDialog("chrome://editor/content/Operators.xul", "_blank", "chrome,close,titlebar,modal", operatorData);
+  window.openDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,modal", operatorData);
   if (operatorData.Cancel)
     return;
   insertOperator(operatorData.operator, operatorData.limitsSpec, operatorData.sizeSpec);
@@ -844,7 +844,7 @@ function doDecorationsDlg(decorationAboveStr, decorationBelowStr, decorationArou
   decorationData.decorationAboveStr = decorationAboveStr;
   decorationData.decorationBelowStr = decorationBelowStr;
   decorationData.decorationAroundStr = decorationAroundStr;
-  window.openDialog("chrome://editor/content/Decorations.xul", "_blank", "chrome,close,titlebar,modal", decorationData);
+  window.openDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,close,titlebar,modal", decorationData);
   if (decorationData.Cancel)
     return;
   insertDecoration(decorationData.decorationAboveStr, decorationData.decorationBelowStr, decorationData.decorationAroundStr);
