@@ -2,7 +2,6 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/skin/toolbarbutton.css" type="text/css"?>
 
 <!DOCTYPE overlay SYSTEM "chrome://prince/locale/menuOverlay.dtd">
 
@@ -92,13 +91,6 @@
       <menuitem id="menu_checkspelling" accesskey="&editcheckspelling.accesskey;"
                 key="checkspellingkb"   observes="cmd_spelling" disabled="true"
                 label="&checkSpellingCmd.label;"/>
-    </menupopup>
-  </menu>
-  <menu id="MSIComputeMenu" 
-    label="&MSIComputeMenu.label;" accesskey="&MSIComputeMenu.accesskey;">
-    <menupopup id="MSIComputePopup">
-      <menuitem label="&MSIComputeEvalCmd.label;"    accesskey="&MSIComputeEvalCmd.accesskey;"    key="MSIevalKey" observes="cmd_MSIComputeEval"/>
-      <menuitem label="&MSIComputeEvalNumCmd.label;" accesskey="&MSIComputeEvalNumCmd.accesskey;"                  observes="cmd_MSIComputeEvalNum"/>
     </menupopup>
   </menu>
   <menu id="helpMenu" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">

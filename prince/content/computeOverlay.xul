@@ -1,0 +1,489 @@
+<?xml version="1.0"?> 
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!DOCTYPE overlay [
+<!ENTITY % DTD SYSTEM "chrome://prince/locale/ComputeOverlay.dtd" >
+%DTD;
+<!ENTITY % graphDTD SYSTEM "chrome://prince/locale/ComputeGraphSettings.dtd" >
+%graphDTD;
+]>
+
+<overlay id="computeOverlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeOverlay.js"/>
+#  <script type="application/x-javascript" src="chrome://editor/content/ComputeUtils.js"/>
+#  <script type="application/x-javascript" src="chrome://editor/content/WhitespaceUtils.js"/>
+#  <script type="application/x-javascript" src="chrome://editor/content/ComputeDebug.js"/>
+#  <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
+#  <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
+#  <script type="application/x-javascript" src="chrome://editor/content/GraphOverlay.js"/>
+#
+#  <commandset id="MSIcomputeMenuCommands"
+#                  commandupdater="true"
+#                  events="create, mode_switch"
+#                  oncommandupdate="goUpdateMSIcomputeMenuItems(this)">
+#    <command id="cmd_MSIComputeEval"                     oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+#    <command id="cmd_MSIComputeEvalNum"                  oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+#    <command id="cmd_MSIComputeSimplify"                 oncommand="doComputeCommand('cmd_compute_Simplify')"/>
+#    <command id="cmd_MSIComputeCombineExponentials"      oncommand="doComputeCommand('cmd_compute_CombineExponentials')"/>
+#    <command id="cmd_MSIComputeCombineLogs"              oncommand="doComputeCommand('cmd_compute_CombineLogs')"/>
+#    <command id="cmd_MSIComputeCombinePowers"            oncommand="doComputeCommand('cmd_compute_CombinePowers')"/>
+#    <command id="cmd_MSIComputeCombineTrig"              oncommand="doComputeCommand('cmd_compute_CombineTrig')"/>
+#    <command id="cmd_MSIComputeCombineArctan"            oncommand="doComputeCommand('cmd_compute_CombineArctan')"/>
+#    <command id="cmd_MSIComputeCombineHyperbolics"       oncommand="doComputeCommand('cmd_compute_CombineHyperbolics')"/>
+#    <command id="cmd_MSIComputeExpand"                   oncommand="doComputeCommand('cmd_compute_Expand')"/>
+#    <command id="cmd_MSIComputeFactor"                   oncommand="doComputeCommand('cmd_compute_Factor')"/>
+#    <command id="cmd_MSIComputeRewriteRational"          oncommand="doComputeCommand('cmd_compute_RewriteRational')"/>
+#    <command id="cmd_MSIComputeRewriteFloat"             oncommand="doComputeCommand('cmd_compute_RewriteFloat')"/>
+#    <command id="cmd_MSIComputeRewriteMixed"             oncommand="doComputeCommand('cmd_compute_RewriteMixed')"/>
+#    <command id="cmd_MSIComputeRewriteExponential"       oncommand="doComputeCommand('cmd_compute_RewriteExponential')"/>
+#    <command id="cmd_MSIComputeRewriteFactorial"         oncommand="doComputeCommand('cmd_compute_RewriteFactorial')"/>
+#    <command id="cmd_MSIComputeRewriteGamma"             oncommand="doComputeCommand('cmd_compute_RewriteGamma')"/>
+#    <command id="cmd_MSIComputeRewriteLogarithm"         oncommand="doComputeCommand('cmd_compute_RewriteLogarithm')"/>
+#    <command id="cmd_MSIComputeRewriteSinAndCos"         oncommand="doComputeCommand('cmd_compute_RewriteSinAndCos')"/>
+#    <command id="cmd_MSIComputeRewriteSinhAndCosh"       oncommand="doComputeCommand('cmd_compute_RewriteSinhAndCosh')"/>
+#    <command id="cmd_MSIComputeRewriteSin"               oncommand="doComputeCommand('cmd_compute_RewriteSin')"/>
+#    <command id="cmd_MSIComputeRewriteCos"               oncommand="doComputeCommand('cmd_compute_RewriteCos')"/>
+#    <command id="cmd_MSIComputeRewriteTan"               oncommand="doComputeCommand('cmd_compute_RewriteTan')"/>
+#    <command id="cmd_MSIComputeRewriteArcsin"            oncommand="doComputeCommand('cmd_compute_RewriteArcsin')"/>
+#    <command id="cmd_MSIComputeRewriteArccos"            oncommand="doComputeCommand('cmd_compute_RewriteArccos')"/>
+#    <command id="cmd_MSIComputeRewriteArctan"            oncommand="doComputeCommand('cmd_compute_RewriteArctan')"/>
+#    <command id="cmd_MSIComputeRewriteArccot"            oncommand="doComputeCommand('cmd_compute_RewriteArccot')"/>
+#    <command id="cmd_MSIComputeRewritePolar"             oncommand="doComputeCommand('cmd_compute_RewritePolar')"/>
+#    <command id="cmd_MSIComputeRewriteRectangular"       oncommand="doComputeCommand('cmd_compute_RewriteRectangular')"/>
+#    <command id="cmd_MSIComputeRewriteNormal"            oncommand="doComputeCommand('cmd_compute_RewriteNormal')"/>
+#    <command id="cmd_MSIComputeRewriteEquationsAsMatrix" oncommand="doComputeCommand('cmd_compute_RewriteEquationsAsMatrix')"/>
+#    <command id="cmd_MSIComputeRewriteMatrixAsEquations" oncommand="doComputeCommand('cmd_compute_RewriteMatrixAsEquations')"/>
+#    <command id="cmd_MSIComputeCheckEquality"            oncommand="doComputeCommand('cmd_compute_CheckEquality')"/>
+#    <command id="cmd_MSIComputeSolveExact"               oncommand="doComputeCommand('cmd_compute_SolveExact')"/>
+#    <command id="cmd_MSIComputeSolveNum"                 oncommand="doComputeCommand('cmd_compute_SolveNumeric')"/>
+#    <command id="cmd_MSIComputeSolveRecursion"           oncommand="doComputeCommand('cmd_compute_SolveRecursion')"/>
+#    <command id="cmd_MSIComputeCollect"                  oncommand="doComputeCommand('cmd_compute_Collect')"/>
+#    <command id="cmd_MSIComputeDivide"                   oncommand="doComputeCommand('cmd_compute_Divide')"/>
+#    <command id="cmd_MSIComputePartialFractions"         oncommand="doComputeCommand('cmd_compute_PartialFractions')"/>
+#    <command id="cmd_MSIComputeRoots"                    oncommand="doComputeCommand('cmd_compute_Roots')"/>
+#    <command id="cmd_MSIComputeSort"                     oncommand="doComputeCommand('cmd_compute_Sort')"/>
+#    <command id="cmd_MSIComputeCompanionMatrix"          oncommand="doComputeCommand('cmd_compute_CompanionMatrix')"/>
+#    <command id="cmd_MSIComputeByParts"                  oncommand="doComputeCommand('cmd_compute_ByParts')"/>
+#    <command id="cmd_MSIComputeChangeVariable"           oncommand="doComputeCommand('cmd_compute_ChangeVariable')"/>
+#    <command id="cmd_MSIComputeApproxIntegral"           oncommand="doComputeCommand('cmd_compute_ApproxIntegral')"/>
+#    <command id="cmd_MSIComputePlotApproxIntegral"       oncommand="doComputeCommand('cmd_compute_PlotApproxIntegral')"/>
+#    <command id="cmd_MSIComputeIterate"                  oncommand="doGlobalComputeCommand('cmd_compute_Iterate')"/>
+#    <command id="cmd_MSIComputeImplicitDiff"             oncommand="doComputeCommand('cmd_compute_ImplicitDiff')"/>
+#    <command id="cmd_MSIComputeSolveODEExact"            oncommand="doComputeCommand('cmd_compute_SolveODEExact')"/>
+#    <command id="cmd_MSIComputeSolveODELaplace"          oncommand="doComputeCommand('cmd_compute_SolveODELaplace')"/>
+#    <command id="cmd_MSIComputeSolveODENumeric"          oncommand="doComputeCommand('cmd_compute_SolveODENumeric')"/>
+#    <command id="cmd_MSIComputeSolveODESeries"           oncommand="doComputeCommand('cmd_compute_SolveODESeries')"/>
+#    <command id="cmd_MSIComputePowerSeries"              oncommand="doComputeCommand('cmd_compute_PowerSeries')"/>
+#    <command id="cmd_MSIComputeFourier"                  oncommand="doComputeCommand('cmd_compute_Fourier')"/>
+#    <command id="cmd_MSIComputeInverseFourier"           oncommand="doComputeCommand('cmd_compute_InverseFourier')"/>
+#    <command id="cmd_MSIComputeLaplace"                  oncommand="doComputeCommand('cmd_compute_Laplace')"/>
+#    <command id="cmd_MSIComputeInverseLaplace"           oncommand="doComputeCommand('cmd_compute_InverseLaplace')"/>
+#    <command id="cmd_MSIComputeGradient"                 oncommand="doComputeCommand('cmd_compute_Gradient')"/>
+#    <command id="cmd_MSIComputeDivergence"               oncommand="doComputeCommand('cmd_compute_Divergence')"/>
+#    <command id="cmd_MSIComputeCurl"                     oncommand="doComputeCommand('cmd_compute_Curl')"/>
+#    <command id="cmd_MSIComputeLaplacian"                oncommand="doComputeCommand('cmd_compute_Laplacian')"/>
+#    <command id="cmd_MSIComputeJacobian"                 oncommand="doComputeCommand('cmd_compute_Jacobian')"/>
+#    <command id="cmd_MSIComputeHessian"                  oncommand="doComputeCommand('cmd_compute_Hessian')"/>
+#    <command id="cmd_MSIComputeWronskian"                oncommand="doComputeCommand('cmd_compute_Wronskian')"/>
+#    <command id="cmd_MSIComputeScalarPot"                oncommand="doComputeCommand('cmd_compute_ScalarPot')"/>
+#    <command id="cmd_MSIComputeVectorPot"                oncommand="doComputeCommand('cmd_compute_VectorPot')"/>
+#    <command id="cmd_MSIComputeAdjugate"                 oncommand="doComputeCommand('cmd_MSIComputeAdjugate')"    />
+#    <command id="cmd_MSIComputeCharPoly"                 oncommand="doComputeCommand('cmd_MSIComputeCharPoly')"    />
+#    <command id="cmd_MSIComputeCholesky"                 oncommand="doComputeCommand('cmd_MSIComputeCholesky')"    />
+#    <command id="cmd_MSIComputeColBasis"                 oncommand="doComputeCommand('cmd_MSIComputeColBasis')"    />
+#    <command id="cmd_MSIComputeConcat"                   oncommand="doComputeCommand('cmd_MSIComputeConcat')"      />
+#    <command id="cmd_MSIComputeConditionNum"             oncommand="doComputeCommand('cmd_MSIComputeConditionNum')"/>
+#    <command id="cmd_MSIComputeDefinitenessTests"        oncommand="doComputeCommand('cmd_MSIComputeDefinitenessTests')"/>
+#    <command id="cmd_MSIComputeDeterminant"              oncommand="doComputeCommand('cmd_MSIComputeDeterminant')"/>
+#    <command id="cmd_MSIComputeEigenvalues"              oncommand="doComputeCommand('cmd_MSIComputeEigenvalues')" />
+#    <command id="cmd_MSIComputeEigenvectors"             oncommand="doComputeCommand('cmd_MSIComputeEigenvectors')"/>
+#    <command id="cmd_MSIComputeFillMatrix"               oncommand="doGlobalComputeCommand('cmd_MSIComputeFillMatrix')"/>
+#    <command id="cmd_MSIComputeFFGE"                     oncommand="doComputeCommand('cmd_MSIComputeFFGE')"   />
+#    <command id="cmd_MSIComputeGaussElim"                oncommand="doComputeCommand('cmd_MSIComputeGaussElim')"   />
+#    <command id="cmd_MSIComputeHermite"                  oncommand="doComputeCommand('cmd_MSIComputeHermite')"       />
+#    <command id="cmd_MSIComputeHermitianTranspose"       oncommand="doComputeCommand('cmd_MSIComputeHermitianTranspose')"/>
+#    <command id="cmd_MSIComputeInverse"                  oncommand="doComputeCommand('cmd_MSIComputeInverse')"     />
+#    <command id="cmd_MSIComputeJordan"                   oncommand="doComputeCommand('cmd_MSIComputeJordan')"       />
+#    <command id="cmd_MSIComputeMap"                      oncommand="doComputeCommand('cmd_MSIComputeMap')"         />
+#    <command id="cmd_MSIComputeMinPoly"                  oncommand="doComputeCommand('cmd_MSIComputeMinPoly')"     />
+#    <command id="cmd_MSIComputeNorm"                     oncommand="doComputeCommand('cmd_MSIComputeNorm')"        />
+#    <command id="cmd_MSIComputeNullspaceBasis"           oncommand="doComputeCommand('cmd_MSIComputeNullspaceBasis')"    />
+#    <command id="cmd_MSIComputeOrthogonalityTest"        oncommand="doComputeCommand('cmd_MSIComputeOrthogonalityTest')"/>
+#    <command id="cmd_MSIComputePermanent"                oncommand="doComputeCommand('cmd_MSIComputePermanent')"/>
+#    <command id="cmd_MSIComputePLU"                      oncommand="doComputeCommand('cmd_MSIComputePLU')"         />
+#    <command id="cmd_MSIComputeRandomMatrix"             oncommand="doGlobalComputeCommand('cmd_MSIComputeRandomMatrix')"/>
+#    <command id="cmd_MSIComputeRank"                     oncommand="doComputeCommand('cmd_MSIComputeRank')"/>
+#    <command id="cmd_MSIComputeRationalCanonical"        oncommand="doComputeCommand('cmd_MSIComputeRationalCanonical')"/>
+#    <command id="cmd_MSIComputeRREF"                     oncommand="doComputeCommand('cmd_MSIComputeRREF')"   />
+#    <command id="cmd_MSIComputeReshape"                  oncommand="doComputeCommand('cmd_MSIComputeReshape')"     />
+#    <command id="cmd_MSIComputeRowBasis"                 oncommand="doComputeCommand('cmd_MSIComputeRowBasis')"    />
+#    <command id="cmd_MSIComputeQR"                       oncommand="doComputeCommand('cmd_MSIComputeQR')"          />
+#    <command id="cmd_MSIComputeSingularValues"           oncommand="doComputeCommand('cmd_MSIComputeSingularValues')"/>
+#    <command id="cmd_MSIComputeSVD"                      oncommand="doComputeCommand('cmd_MSIComputeSVD')"         />
+#    <command id="cmd_MSIComputeSmith"                    oncommand="doComputeCommand('cmd_MSIComputeSmith')"       />
+#    <command id="cmd_MSIComputeSpectralRadius"           oncommand="doComputeCommand('cmd_MSIComputeSpectralRadius')"/>
+#    <command id="cmd_MSIComputeStack"                    oncommand="doComputeCommand('cmd_MSIComputeStack')"       />
+#    <command id="cmd_MSIComputeTrace"                    oncommand="doComputeCommand('cmd_MSIComputeTrace')"       />
+#    <command id="cmd_MSIComputeTranspose"                oncommand="doComputeCommand('cmd_MSIComputeTranspose')"       />
+#    <command id="cmd_MSIComputeSimplexDual"              oncommand="doComputeCommand('cmd_compute_SimplexDual')"       />
+#    <command id="cmd_MSIComputeSimplexFeasible"          oncommand="doComputeCommand('cmd_compute_SimplexFeasible')"       />
+#    <command id="cmd_MSIComputeSimplexMaximize"          oncommand="doComputeCommand('cmd_compute_SimplexMaximize')"       />
+#    <command id="cmd_MSIComputeSimplexMinimize"          oncommand="doComputeCommand('cmd_compute_SimplexMinimize')"       />
+#    <command id="cmd_MSIComputeSimplexStandardize"       oncommand="doComputeCommand('cmd_compute_SimplexStandardize')"       />
+#    <command id="cmd_MSIComputeFitCurve"                 oncommand="doComputeCommand('cmd_compute_FitCurve')"/>
+#    <command id="cmd_MSIComputeRandomNumbers"            oncommand="doGlobalComputeCommand('cmd_MSIComputeRandomNumbers')"/>
+#    <command id="cmd_MSIComputeMean"                     oncommand="doComputeCommand('cmd_compute_Mean')"/>
+#    <command id="cmd_MSIComputeMedian"                   oncommand="doComputeCommand('cmd_compute_Median')"/>
+#    <command id="cmd_MSIComputeMode"                     oncommand="doComputeCommand('cmd_compute_Mode')"/>
+#    <command id="cmd_MSIComputeCorrelation"              oncommand="doComputeCommand('cmd_compute_Correlation')"/>
+#    <command id="cmd_MSIComputeCovariance"               oncommand="doComputeCommand('cmd_compute_Covariance')"/>
+#    <command id="cmd_MSIComputeGeometricMean"            oncommand="doComputeCommand('cmd_compute_GeometricMean')"/>
+#    <command id="cmd_MSIComputeHarmonicMean"             oncommand="doComputeCommand('cmd_compute_HarmonicMean')"/>
+#    <command id="cmd_MSIComputeMeanDeviation"            oncommand="doComputeCommand('cmd_compute_MeanDeviation')"/>
+#    <command id="cmd_MSIComputeMoment"                   oncommand="doComputeCommand('cmd_compute_Moment')"/>
+#    <command id="cmd_MSIComputeQuantile"                 oncommand="doComputeCommand('cmd_compute_Quantile')"/>
+#    <command id="cmd_MSIComputeStandardDeviation"        oncommand="doComputeCommand('cmd_compute_StandardDeviation')"/>
+#    <command id="cmd_MSIComputeVariance"                 oncommand="doComputeCommand('cmd_compute_Variance')"/>
+#    <command id="cmd_MSIComputePlot2DRectangular"        oncommand="doComputeCommand('cmd_compute_Plot2DRectangular')"/>
+#    <command id="cmd_MSIComputePlot2DPolar"              oncommand="doComputeCommand('cmd_compute_Plot2DPolar')"/>
+#    <command id="cmd_MSIComputePlot2DImplicit"           oncommand="doComputeCommand('cmd_compute_Plot2DImplicit')"/>
+#    <command id="cmd_MSIComputePlot2DInequality"         oncommand="doComputeCommand('cmd_compute_Plot2DInequality')"/>
+#    <command id="cmd_MSIComputePlot2DParametric"         oncommand="doComputeCommand('cmd_compute_Plot2DParametric')"/>
+#    <command id="cmd_MSIComputePlot2DConformal"          oncommand="doComputeCommand('cmd_compute_Plot2DConformal')"/>
+#    <command id="cmd_MSIComputePlot2DGradient"           oncommand="doComputeCommand('cmd_compute_Plot2DGradient')"/>
+#    <command id="cmd_MSIComputePlot2DVector"             oncommand="doComputeCommand('cmd_compute_Plot2DVector')"/>
+#    <command id="cmd_MSIComputePlot2DAI"                 oncommand="doComputeCommand('cmd_compute_Plot2DAI')"/>
+#    <command id="cmd_MSIComputePlot2DODE"                oncommand="doComputeCommand('cmd_compute_Plot2DODE')"/>
+#    <command id="cmd_MSIComputePlot3DRectangular"        oncommand="doComputeCommand('cmd_compute_Plot3DRectangular')"/>
+#    <command id="cmd_MSIComputePlot3DCurve"              oncommand="doComputeCommand('cmd_compute_Plot3DCurve')"/>
+#    <command id="cmd_MSIComputePlot3DCylindrical"        oncommand="doComputeCommand('cmd_compute_Plot3DCylindrical')"/>
+#    <command id="cmd_MSIComputePlot3DSpherical"          oncommand="doComputeCommand('cmd_compute_Plot3DSpherical')"/>
+#    <command id="cmd_MSIComputePlot3DParametric"         oncommand="doComputeCommand('cmd_compute_Plot3DParametric')"/>
+#    <command id="cmd_MSIComputePlot3DImplicit"           oncommand="doComputeCommand('cmd_compute_Plot3DImplicit')"/>
+#    <command id="cmd_MSIComputePlot3DTube"               oncommand="doComputeCommand('cmd_compute_Plot3DTube')"/>
+#    <command id="cmd_MSIComputePlot3DGradient"           oncommand="doComputeCommand('cmd_compute_Plot3DGradient')"/>
+#    <command id="cmd_MSIComputePlot3DVector"             oncommand="doComputeCommand('cmd_compute_Plot3DVector')"/>
+#    <command id="cmd_MSIComputePlot2DARectangular"       oncommand="doComputeCommand('cmd_compute_Plot2DARectangular')"/>
+#    <command id="cmd_MSIComputePlot2DAPolar"             oncommand="doComputeCommand('cmd_compute_Plot2DAPolar')"/>
+#    <command id="cmd_MSIComputePlot2DAImplicit"          oncommand="doComputeCommand('cmd_compute_Plot2DAImplicit')"/>
+#    <command id="cmd_MSIComputePlot2DAInequality"        oncommand="doComputeCommand('cmd_compute_Plot2DAInequality')"/>
+#    <command id="cmd_MSIComputePlot2DAParametric"        oncommand="doComputeCommand('cmd_compute_Plot2DAParametric')"/>
+#    <command id="cmd_MSIComputePlot2DAConformal"         oncommand="doComputeCommand('cmd_compute_Plot2DAConformal')"/>
+#    <command id="cmd_MSIComputePlot2DAGradient"          oncommand="doComputeCommand('cmd_compute_Plot2DAGradient')"/>
+#    <command id="cmd_MSIComputePlot2DAVector"            oncommand="doComputeCommand('cmd_compute_Plot2DAVector')"/>
+#    <command id="cmd_MSIComputePlot3DARectangular"       oncommand="doComputeCommand('cmd_compute_Plot3DARectangular')"/>
+#    <command id="cmd_MSIComputePlot3DACurve"             oncommand="doComputeCommand('cmd_compute_Plot3DACurve')"/>
+#    <command id="cmd_MSIComputePlot3DACylindrical"       oncommand="doComputeCommand('cmd_compute_Plot3DACylindrical')"/>
+#    <command id="cmd_MSIComputePlot3DASpherical"         oncommand="doComputeCommand('cmd_compute_Plot3DASpherical')"/>
+#    <command id="cmd_MSIComputePlot3DAParametric"        oncommand="doComputeCommand('cmd_compute_Plot3DAParametric')"/>
+#    <command id="cmd_MSIComputePlot3DAImplicit"          oncommand="doComputeCommand('cmd_compute_Plot3DAImplicit')"/>
+#    <command id="cmd_MSIComputePlot3DATube"              oncommand="doComputeCommand('cmd_compute_Plot3DATube')"/>
+#    <command id="cmd_MSIComputePlot3DAGradient"          oncommand="doComputeCommand('cmd_compute_Plot3DAGradient')"/>
+#    <command id="cmd_MSIComputePlot3DAVector"            oncommand="doComputeCommand('cmd_compute_Plot3DAVector')"/>
+#    <command id="cmd_MSIComputeDefine"                   oncommand="doComputeCommand('cmd_compute_Define')"/>
+#    <command id="cmd_MSIComputeUndefine"                 oncommand="doComputeCommand('cmd_compute_Undefine')"/>
+#    <command id="cmd_MSIComputeSetBasisVariables"        oncommand="doGlobalComputeCommand('cmd_compute_SetBasisVariables')"/>
+#    <command id="cmd_MSIComputeShowDefs"                 oncommand="doGlobalComputeCommand('cmd_compute_ShowDefs')"/>
+#    <command id="cmd_MSIComputeClearDefs"                oncommand="doGlobalComputeCommand('cmd_compute_ClearDefs')"/>
+#    <command id="cmd_MSIComputeUserSettings"             oncommand="doGlobalComputeCommand('cmd_compute_UserSettings')"/>
+#    <command id="cmd_MSIComputeSettings"                 oncommand="doGlobalComputeCommand('cmd_compute_Settings')"/>
+#    <command id="cmd_MSIComputeSwitchEngines"            oncommand="doGlobalComputeCommand('cmd_compute_SwitchEngines')"/>
+#    <command id="cmd_MSIComputeInterpret"                oncommand="doComputeCommand('cmd_compute_Interpret')"/>
+#    <command id="cmd_MSIComputeFixup"                    oncommand="doComputeCommand('cmd_compute_Fixup')"/>
+#    <command id="cmd_MSIComputePassthru"                 oncommand="doGlobalComputeCommand('cmd_compute_Passthru')"/>
+#  </commandset>
+#  
+#  <broadcasterset id="broadcasterset">
+#    <command id="cmd_viewComputeToolbar"  oncommand="goToggleToolbar('ComputeToolbar','cmd_viewComputeToolbar');"   checked="true"/>
+#  </broadcasterset>
+#
+#  <keyset id="editorKeys">
+#    <keyset id="MSIKeySet">
+#      <key id="MSIevalKey"   modifiers="accel" key="&MSIComputeEvalCmd.keybinding;"   observes="cmd_MSIComputeEval"   />        
+#      <key id="MSIdefineKey" modifiers="accel" key="&MSIComputeDefineCmd.keybinding;" observes="cmd_MSIComputeDefine" />        
+#      <key id="MSIinterpretKey" modifiers="accel,shift" key="&MSIComputeInterpretCmd.keybinding;" observes="cmd_MSIComputeInterpret" />        
+#    </keyset>                                                                                                         
+#  </keyset>                                                                                                         
+#
+
+  <menu id="MSIComputeMenu" label="&MSIComputeMenu.label;" accesskey="&MSIComputeMenu.accesskey;">
+    <menupopup id="MSIComputePopup">
+      <menuitem label="&MSIComputeEvalCmd.label;"          accesskey="&MSIComputeEvalCmd.accesskey;"       key="MSIevalKey" observes="cmd_MSIComputeEval"/>
+      <menuitem label="&MSIComputeEvalNumCmd.label;"       accesskey="&MSIComputeEvalNumCmd.accesskey;"    observes="cmd_MSIComputeEvalNum"/>
+      <menuseparator/>                                                                                                                       
+      <menuitem label="&MSIComputeSimplifyCmd.label;"      accesskey="&MSIComputeSimplifyCmd.accesskey;"                    observes="cmd_MSIComputeSimplify"/>
+      <menu id="MSICombineMenu" label="&MSICombineMenu.label;" accesskey="&MSICombineMenu.accesskey;">
+        <menupopup id="MSICombinePopup">
+          <menuitem label="&MSIComputeCombineExponentialsCmd.label;" accesskey="&MSIComputeCombineExponentialsCmd.accesskey;"  observes="cmd_MSIComputeCombineExponentials"/>
+          <menuitem label="&MSIComputeCombineLogsCmd.label;"         accesskey="&MSIComputeCombineLogsCmd.accesskey;"          observes="cmd_MSIComputeCombineLogs"/>
+          <menuitem label="&MSIComputeCombinePowersCmd.label;"       accesskey="&MSIComputeCombinePowersCmd.accesskey;"        observes="cmd_MSIComputeCombinePowers"/>
+          <menuitem label="&MSIComputeCombineTrigCmd.label;"         accesskey="&MSIComputeCombineTrigCmd.accesskey;"          observes="cmd_MSIComputeCombineTrig"/>
+          <menuitem label="&MSIComputeCombineArctanCmd.label;"       accesskey="&MSIComputeCombineArctanCmd.accesskey;"        observes="cmd_MSIComputeCombineArctan"/>
+          <menuitem label="&MSIComputeCombineHyperbolicsCmd.label;"  accesskey="&MSIComputeCombineHyperbolicsCmd.accesskey;"   observes="cmd_MSIComputeCombineHyperbolics"/>
+        </menupopup>
+      </menu>
+      <menuitem label="&MSIComputeExpandCmd.label;"        accesskey="&MSIComputeExpandCmd.accesskey;"                      observes="cmd_MSIComputeExpand"/>
+      <menuitem label="&MSIComputeFactorCmd.label;"        accesskey="&MSIComputeFactorCmd.accesskey;"                      observes="cmd_MSIComputeFactor"/>
+      <menu id="MSIRewriteMenu" label="&MSIRewriteMenu.label;" accesskey="&MSIRewriteMenu.accesskey;">
+        <menupopup id="MSIRewritePopup">
+          <menuitem label="&MSIComputeRewriteRationalCmd.label;" accesskey="&MSIComputeRewriteRationalCmd.accesskey;"       observes="cmd_MSIComputeRewriteRational"/>
+          <menuitem label="&MSIComputeRewriteFloatCmd.label;"    accesskey="&MSIComputeRewriteFloatCmd.accesskey;"          observes="cmd_MSIComputeRewriteFloat"/>
+          <menuitem label="&MSIComputeRewriteMixedCmd.label;"    accesskey="&MSIComputeRewriteMixedCmd.accesskey;"          observes="cmd_MSIComputeRewriteMixed"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeRewriteExponentialCmd.label;" accesskey="&MSIComputeRewriteExponentialCmd.accesskey;" observes="cmd_MSIComputeRewriteExponential"/>
+          <menuitem label="&MSIComputeRewriteFactorialCmd.label;"   accesskey="&MSIComputeRewriteFactorialCmd.accesskey;"   observes="cmd_MSIComputeRewriteFactorial"/>
+          <menuitem label="&MSIComputeRewriteGammaCmd.label;"       accesskey="&MSIComputeRewriteGammaCmd.accesskey;"       observes="cmd_MSIComputeRewriteGamma"/>
+          <menuitem label="&MSIComputeRewriteLogarithmCmd.label;"   accesskey="&MSIComputeRewriteLogarithmCmd.accesskey;"   observes="cmd_MSIComputeRewriteLogarithm"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeRewriteSinAndCosCmd.label;"   accesskey="&MSIComputeRewriteSinAndCosCmd.accesskey;"   observes="cmd_MSIComputeRewriteSinAndCos"/>
+          <menuitem label="&MSIComputeRewriteSinhAndCoshCmd.label;" accesskey="&MSIComputeRewriteSinhAndCoshCmd.accesskey;" observes="cmd_MSIComputeRewriteSinhAndCosh"/>
+          <menuitem label="&MSIComputeRewriteSinCmd.label;"         accesskey="&MSIComputeRewriteSinCmd.accesskey;"         observes="cmd_MSIComputeRewriteSin"/>
+          <menuitem label="&MSIComputeRewriteCosCmd.label;"         accesskey="&MSIComputeRewriteCosCmd.accesskey;"         observes="cmd_MSIComputeRewriteCos"/>
+          <menuitem label="&MSIComputeRewriteTanCmd.label;"         accesskey="&MSIComputeRewriteTanCmd.accesskey;"         observes="cmd_MSIComputeRewriteTan"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeRewriteArcsinCmd.label;"      accesskey="&MSIComputeRewriteArcsinCmd.accesskey;"      observes="cmd_MSIComputeRewriteArcsin"/>
+          <menuitem label="&MSIComputeRewriteArccosCmd.label;"      accesskey="&MSIComputeRewriteArccosCmd.accesskey;"      observes="cmd_MSIComputeRewriteArccos"/>
+          <menuitem label="&MSIComputeRewriteArctanCmd.label;"      accesskey="&MSIComputeRewriteArctanCmd.accesskey;"      observes="cmd_MSIComputeRewriteArctan"/>
+          <menuitem label="&MSIComputeRewriteArccotCmd.label;"      accesskey="&MSIComputeRewriteArccotCmd.accesskey;"      observes="cmd_MSIComputeRewriteArccot"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeRewritePolarCmd.label;"       accesskey="&MSIComputeRewritePolarCmd.accesskey;"       observes="cmd_MSIComputeRewritePolar"/>
+          <menuitem label="&MSIComputeRewriteRectangularCmd.label;" accesskey="&MSIComputeRewriteRectangularCmd.accesskey;" observes="cmd_MSIComputeRewriteRectangular"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeRewriteNormalCmd.label;"      accesskey="&MSIComputeRewriteNormalCmd.accesskey;"      observes="cmd_MSIComputeRewriteNormal"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeRewriteEquationsAsMatrixCmd.label;" accesskey="&MSIComputeRewriteEquationsAsMatrixCmd.accesskey;"          observes="cmd_MSIComputeRewriteEquationsAsMatrix"/>
+          <menuitem label="&MSIComputeRewriteMatrixAsEquationsCmd.label;" accesskey="&MSIComputeRewriteMatrixAsEquationsCmd.accesskey;"          observes="cmd_MSIComputeRewriteMatrixAsEquations"/>
+        </menupopup>
+      </menu>
+      <menuitem label="&MSIComputeCheckEqCmd.label;"       accesskey="&MSIComputeCheckEqCmd.accesskey;"                     observes="cmd_MSIComputeCheckEquality"/>
+      <menu id="MSISolveMenu" label="&MSISolveMenu.label;" accesskey="&MSISolveMenu.accesskey;">
+        <menupopup id="MSISolvePopup">
+          <menuitem label="&MSIComputeSolveExactCmd.label;"     accesskey="&MSIComputeSolveExactCmd.accesskey;"              observes="cmd_MSIComputeSolveExact"/>
+          <menuitem label="&MSIComputeSolveNumericCmd.label;"   accesskey="&MSIComputeSolveNumericCmd.accesskey;"            observes="cmd_MSIComputeSolveNum"/>
+          <menuitem label="&MSIComputeSolveRecursionCmd.label;" accesskey="&MSIComputeSolveRecursionCmd.accesskey;"          observes="cmd_MSIComputeSolveRecursion"/>
+        </menupopup>
+      </menu>
+      <menu id="MSIPolynomialMenu" label="&MSIPolynomialMenu.label;" accesskey="&MSIPolynomialMenu.accesskey;">
+        <menupopup id="MSIPolynomialsPopup">
+          <menuitem label="&MSIComputeCollectCmd.label;"          accesskey="&MSIComputeCollectCmd.accesskey;"          observes="cmd_MSIComputeCollect"/>
+          <menuitem label="&MSIComputeDivideCmd.label;"           accesskey="&MSIComputeDivideCmd.accesskey;"           observes="cmd_MSIComputeDivide"/>
+          <menuitem label="&MSIComputePartialFractionsCmd.label;" accesskey="&MSIComputePartialFractionsCmd.accesskey;" observes="cmd_MSIComputePartialFractions"/>
+          <menuitem label="&MSIComputeRootsCmd.label;"            accesskey="&MSIComputeRootsCmd.accesskey;"            observes="cmd_MSIComputeRoots"/>
+          <menuitem label="&MSIComputeSortCmd.label;"             accesskey="&MSIComputeSortCmd.accesskey;"             observes="cmd_MSIComputeSort"/>
+          <menuitem label="&MSIComputeCompanionMatrixCmd.label;"  accesskey="&MSIComputeCompanionMatrixCmd.accesskey;"  observes="cmd_MSIComputeCompanionMatrix"/>
+        </menupopup>
+      </menu>
+      <menuseparator/>                                                                                                                                        
+      <menu id="MSICalculusMenu" label="&MSICalculusMenu.label;" accesskey="&MSICalculusMenu.accesskey;">
+        <menupopup id="MSICalculusPopup">
+          <menuitem label="&MSIComputeByPartsCmd.label;"             accesskey="&MSIComputeByPartsCmd.accesskey;"             observes="cmd_MSIComputeByParts"/>
+          <menuitem label="&MSIComputeChangeVariableCmd.label;"      accesskey="&MSIComputeChangeVariableCmd.accesskey;"      observes="cmd_MSIComputeChangeVariable"/>
+          <menuitem label="&MSIComputePartialFractionsCmd.label;"    accesskey="&MSIComputePartialFractionsCmd.accesskey;"    observes="cmd_MSIComputePartialFractions"/>
+          <menuitem label="&MSIComputeApproximateIntegralCmd.label;" accesskey="&MSIComputeApproximateIntegralCmd.accesskey;" observes="cmd_MSIComputeApproxIntegral"/>
+          <menuitem label="&MSIComputePlotApproxIntegralCmd.label;"  accesskey="&MSIComputePlotApproxIntegralCmd.accesskey;"  observes="cmd_MSIComputePlot2DAI"/>
+          <menuitem label="&MSIComputeIterateCmd.label;"             accesskey="&MSIComputeIterateCmd.accesskey;"             observes="cmd_MSIComputeIterate"/>
+          <menuitem label="&MSIComputeImplicitDiffCmd.label;"        accesskey="&MSIComputeImplicitDiffCmd.accesskey;"        observes="cmd_MSIComputeImplicitDiff"/>
+        </menupopup>
+      </menu>
+      <menu id="MSISolveODEMenu" label="&MSISolveODEMenu.label;" accesskey="&MSISolveODEMenu.accesskey;">
+        <menupopup id="MSISolveODEPopup">
+          <menuitem label="&MSIComputeSolveODEExactCmd.label;"   accesskey="&MSIComputeSolveODEExactCmd.accesskey;"           observes="cmd_MSIComputeSolveODEExact"/>
+          <menuitem label="&MSIComputeSolveODELaplaceCmd.label;" accesskey="&MSIComputeSolveODELaplaceCmd.accesskey;"         observes="cmd_MSIComputeSolveODELaplace"/>
+          <menuitem label="&MSIComputeSolveODENumericCmd.label;" accesskey="&MSIComputeSolveODENumericCmd.accesskey;"         observes="cmd_MSIComputeSolveODENumeric"/>
+          <menuitem label="&MSIComputeSolveODESeriesCmd.label;"  accesskey="&MSIComputeSolveODESeriesCmd.accesskey;"          observes="cmd_MSIComputeSolveODESeries"/>
+        </menupopup>
+      </menu>
+      <menuitem label="&MSIComputePowerSeriesCmd.label;"       accesskey="&MSIComputePowerSeriesCmd.accesskey;"              observes="cmd_MSIComputePowerSeries"/>
+      <menu id="MSITransformsMenu" label="&MSITransformsMenu.label;" accesskey="&MSITransformsMenu.accesskey;">
+        <menupopup id="MSITransformsPopup">
+          <menuitem label="&MSIComputeFourierCmd.label;"         accesskey="&MSIComputeFourierCmd.accesskey;"                observes="cmd_MSIComputeFourier"/>
+          <menuitem label="&MSIComputeInverseFourierCmd.label;"  accesskey="&MSIComputeInverseFourierCmd.accesskey;"         observes="cmd_MSIComputeInverseFourier"/>
+          <menuitem label="&MSIComputeLaplaceCmd.label;"         accesskey="&MSIComputeLaplaceCmd.accesskey;"                observes="cmd_MSIComputeLaplace"/>
+          <menuitem label="&MSIComputeInverseLaplaceCmd.label;"  accesskey="&MSIComputeInverseLaplaceCmd.accesskey;"         observes="cmd_MSIComputeInverseLaplace"/>
+        </menupopup>
+      </menu>
+      <menu id="MSIVecCalcMenu" label="&MSIVecCalcMenu.label;" accesskey="&MSIVecCalcMenu.accesskey;">
+        <menupopup id="MSIVecCalcPopup">
+          <menuitem label="&MSIComputeGradientCmd.label;"      accesskey="&MSIComputeGradientCmd.accesskey;"                 observes="cmd_MSIComputeGradient"/>
+          <menuitem label="&MSIComputeDivergenceCmd.label;"    accesskey="&MSIComputeDivergenceCmd.accesskey;"               observes="cmd_MSIComputeDivergence"/>
+          <menuitem label="&MSIComputeCurlCmd.label;"          accesskey="&MSIComputeCurlCmd.accesskey;"                     observes="cmd_MSIComputeCurl"/>
+          <menuitem label="&MSIComputeLaplacianCmd.label;"     accesskey="&MSIComputeLaplacianCmd.accesskey;"                observes="cmd_MSIComputeLaplacian"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeJacobianCmd.label;"      accesskey="&MSIComputeJacobianCmd.accesskey;"                 observes="cmd_MSIComputeJacobian"/>
+          <menuitem label="&MSIComputeHessianCmd.label;"       accesskey="&MSIComputeHessianCmd.accesskey;"                  observes="cmd_MSIComputeHessian"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeWronskianCmd.label;"     accesskey="&MSIComputeWronskianCmd.accesskey;"                observes="cmd_MSIComputeWronskian"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeScalarPotCmd.label;"     accesskey="&MSIComputeScalarPotCmd.accesskey;"                observes="cmd_MSIComputeScalarPot"/>
+          <menuitem label="&MSIComputeVectorPotCmd.label;"     accesskey="&MSIComputeVectorPotCmd.accesskey;"                observes="cmd_MSIComputeVectorPot"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeSetBasisVarsCmd.label;"  accesskey="&MSIComputeSetBasisVarsCmd.accesskey;"             observes="cmd_MSIComputeSetBasisVariables"/>
+        </menupopup>
+      </menu>
+      <menuseparator/>                                                                                                                                        
+      <menu id="MSIMatrixMenu" label="&MSIMatrixMenu.label;"   accesskey="&MSIMatrixMenu.accesskey;">
+        <menupopup id="MSIMatrixPopup">
+          <menuitem label="&MSIComputeMatrixAdjugateCmd.label;" accesskey="&MSIComputeMatrixAdjugateCmd.accesskey;"          observes="cmd_MSIComputeAdjugate"/>
+          <menuitem label="&MSIComputeCharPolyCmd.label;"       accesskey="&MSIComputeCharPolyCmd.accesskey;"                observes="cmd_MSIComputeCharPoly"/>
+          <menuitem label="&MSIComputeCholeskyDecompCmd.label;" accesskey="&MSIComputeCholeskyDecompCmd.accesskey;"          observes="cmd_MSIComputeCholesky"/>
+          <menuitem label="&MSIComputeColBasisCmd.label;"      accesskey="&MSIComputeColBasisCmd.accesskey;"                 observes="cmd_MSIComputeColBasis"/>
+          <menuitem label="&MSIComputeMatrixConcatCmd.label;"  accesskey="&MSIComputeMatrixConcatCmd.accesskey;"             observes="cmd_MSIComputeConcat"/>
+          <menuitem label="&MSIComputeConditionNumCmd.label;"  accesskey="&MSIComputeConditionNumCmd.accesskey;"             observes="cmd_MSIComputeConditionNum"/>
+          <menuitem label="&MSIComputeDefinitenessTestsCmd.label;"  accesskey="&MSIComputeDefinitenessTestsCmd.accesskey;"   observes="cmd_MSIComputeDefinitenessTests"/>
+          <menuitem label="&MSIComputeDeterminantCmd.label;"   accesskey="&MSIComputeDeterminantCmd.accesskey;"              observes="cmd_MSIComputeDeterminant"/>
+          <menuitem label="&MSIComputeEigenvaluesCmd.label;"   accesskey="&MSIComputeEigenvaluesCmd.accesskey;"              observes="cmd_MSIComputeEigenvalues"/>
+          <menuitem label="&MSIComputeEigenvectorsCmd.label;"  accesskey="&MSIComputeEigenvectorsCmd.accesskey;"             observes="cmd_MSIComputeEigenvectors"/>
+          <menuitem label="&MSIComputeFillMatrixCmd.label;"    accesskey="&MSIComputeFillMatrixCmd.accesskey;"               observes="cmd_MSIComputeFillMatrix"/>
+          <menuitem label="&MSIComputeFFGECmd.label;"          accesskey="&MSIComputeFFGECmd.accesskey;"                     observes="cmd_MSIComputeFFGE"/>
+          <menuitem label="&MSIComputeGaussElimCmd.label;"     accesskey="&MSIComputeGaussElimCmd.accesskey;"                observes="cmd_MSIComputeGaussElim"/>
+          <menuitem label="&MSIComputeHermiteCmd.label;"       accesskey="&MSIComputeHermiteCmd.accesskey;"                  observes="cmd_MSIComputeHermite"/>
+          <menuitem label="&MSIComputeHermitianTransposeCmd.label;" accesskey="&MSIComputeHermitianTransposeCmd.accesskey;"  observes="cmd_MSIComputeHermitianTranspose"/>
+          <menuitem label="&MSIComputeMatrixInverseCmd.label;" accesskey="&MSIComputeMatrixInverseCmd.accesskey;"            observes="cmd_MSIComputeInverse"/>
+          <menuitem label="&MSIComputeJordanCmd.label;"        accesskey="&MSIComputeJordanCmd.accesskey;"                   observes="cmd_MSIComputeJordan"/>
+          <menuitem label="&MSIComputeMinPolyCmd.label;"       accesskey="&MSIComputeMinPolyCmd.accesskey;"                  observes="cmd_MSIComputeMinPoly"/>
+          <menuitem label="&MSIComputeMatrixMapCmd.label;"     accesskey="&MSIComputeMatrixMapCmd.accesskey;"                observes="cmd_MSIComputeMap"/>
+          <menuitem label="&MSIComputeMatrixNormCmd.label;"    accesskey="&MSIComputeMatrixNormCmd.accesskey;"               observes="cmd_MSIComputeNorm"/>
+          <menuitem label="&MSIComputeNullspaceBasisCmd.label;" accesskey="&MSIComputeNullspaceBasisCmd.accesskey;"          observes="cmd_MSIComputeNullspaceBasis"/>
+          <menuitem label="&MSIComputeOrthogonalityTestCmd.label;"  accesskey="&MSIComputeOrthogonalityTestCmd.accesskey;"   observes="cmd_MSIComputeOrthogonalityTest"/>
+          <menuitem label="&MSIComputePermanentCmd.label;"     accesskey="&MSIComputePermanentCmd.accesskey;"                observes="cmd_MSIComputePermanent"/>
+          <menuitem label="&MSIComputePLUDecompCmd.label;"     accesskey="&MSIComputePLUDecompCmd.accesskey;"                observes="cmd_MSIComputePLU"/>
+          <menuitem label="&MSIComputeRandomMatrixCmd.label;"  accesskey="&MSIComputeRandomMatrixCmd.accesskey;"             observes="cmd_MSIComputeRandomMatrix"/>
+          <menuitem label="&MSIComputeRankCmd.label;"          accesskey="&MSIComputeRankCmd.accesskey;"                     observes="cmd_MSIComputeRank"/>
+          <menuitem label="&MSIComputeRationalCanonicalCmd.label;" accesskey="&MSIComputeRationalCanonicalCmd.accesskey;"    observes="cmd_MSIComputeRationalCanonical"/>
+          <menuitem label="&MSIComputeRREFCmd.label;"          accesskey="&MSIComputeRREFCmd.accesskey;"                     observes="cmd_MSIComputeRREF"/>
+          <menuitem label="&MSIComputeReshapeCmd.label;"       accesskey="&MSIComputeReshapeCmd.accesskey;"                  observes="cmd_MSIComputeReshape"/>
+          <menuitem label="&MSIComputeRowBasisCmd.label;"      accesskey="&MSIComputeRowBasisCmd.accesskey;"                 observes="cmd_MSIComputeRowBasis"/>
+          <menuitem label="&MSIComputeQRDecompCmd.label;"      accesskey="&MSIComputeQRDecompCmd.accesskey;"                 observes="cmd_MSIComputeQR"/>
+          <menuitem label="&MSIComputeSingularValuesCmd.label;"  accesskey="&MSIComputeSingularValuesCmd.accesskey;"         observes="cmd_MSIComputeSingularValues"/>
+          <menuitem label="&MSIComputeSVDDecompCmd.label;"       accesskey="&MSIComputeSVDDecompCmd.accesskey;"              observes="cmd_MSIComputeSVD"/>
+          <menuitem label="&MSIComputeSmithCmd.label;"           accesskey="&MSIComputeSmithCmd.accesskey;"                  observes="cmd_MSIComputeSmith"/>
+          <menuitem label="&MSIComputeSpectralRadiusCmd.label;"  accesskey="&MSIComputeSpectralRadiusCmd.accesskey;"         observes="cmd_MSIComputeSpectralRadius"/>
+          <menuitem label="&MSIComputeMatrixStackCmd.label;"     accesskey="&MSIComputeMatrixStackCmd.accesskey;"            observes="cmd_MSIComputeStack"/>
+          <menuitem label="&MSIComputeMatrixTraceCmd.label;"     accesskey="&MSIComputeMatrixTraceCmd.accesskey;"            observes="cmd_MSIComputeTrace"/>
+          <menuitem label="&MSIComputeMatrixTransposeCmd.label;" accesskey="&MSIComputeMatrixTransposeCmd.accesskey;"        observes="cmd_MSIComputeTranspose"/>
+        </menupopup>
+      </menu>
+      <menu id="MSISimplexMenu" label="&MSISimplexMenu.label;" accesskey="&MSISimplexMenu.accesskey;">
+        <menupopup id="MSISimplexPopup">
+          <menuitem label="&MSIComputeSimplexDualCmd.label;"        accesskey="&MSIComputeSimplexDualCmd.accesskey;"         observes="cmd_MSIComputeSimplexDual"/>
+          <menuitem label="&MSIComputeSimplexFeasibleCmd.label;"    accesskey="&MSIComputeSimplexFeasibleCmd.accesskey;"     observes="cmd_MSIComputeSimplexFeasible"/>
+          <menuitem label="&MSIComputeSimplexMaximizeCmd.label;"    accesskey="&MSIComputeSimplexMaximizeCmd.accesskey;"     observes="cmd_MSIComputeSimplexMaximize"/>
+          <menuitem label="&MSIComputeSimplexMinimizeCmd.label;"    accesskey="&MSIComputeSimplexMinimizeCmd.accesskey;"     observes="cmd_MSIComputeSimplexMinimize"/>
+          <menuitem label="&MSIComputeSimplexStandardizeCmd.label;" accesskey="&MSIComputeSimplexStandardizeCmd.accesskey;"  observes="cmd_MSIComputeSimplexStandardize"/>
+        </menupopup>
+      </menu>
+      <menuseparator/>                                                                                                                                        
+      <menu id="MSIStatisticsMenu" label="&MSIStatisticsMenu.label;" accesskey="&MSIStatisticsMenu.accesskey;">
+        <menupopup id="MSIStatisticsPopup">
+          <menuitem label="&MSIComputeFitCurveCmd.label;"      accesskey="&MSIComputeFitCurveCmd.accesskey;"          observes="cmd_MSIComputeFitCurve"/>
+          <menuitem label="&MSIComputeRandomNumbersCmd.label;" accesskey="&MSIComputeRandomNumbersCmd.accesskey;"     observes="cmd_MSIComputeRandomNumbers"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeMeanCmd.label;"   accesskey="&MSIComputeMeanCmd.accesskey;"          observes="cmd_MSIComputeMean"/>
+          <menuitem label="&MSIComputeMedianCmd.label;" accesskey="&MSIComputeMedianCmd.accesskey;"        observes="cmd_MSIComputeMedian"/>
+          <menuitem label="&MSIComputeModeCmd.label;"   accesskey="&MSIComputeModeCmd.accesskey;"          observes="cmd_MSIComputeMode"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeCorrelationCmd.label;"       accesskey="&MSIComputeCorrelationCmd.accesskey;"       observes="cmd_MSIComputeCorrelation"/>
+          <menuitem label="&MSIComputeCovarianceCmd.label;"        accesskey="&MSIComputeCovarianceCmd.accesskey;"        observes="cmd_MSIComputeCovariance"/>
+          <menuitem label="&MSIComputeGeometricMeanCmd.label;"     accesskey="&MSIComputeGeometricMeanCmd.accesskey;"     observes="cmd_MSIComputeGeometricMean"/>
+          <menuitem label="&MSIComputeHarmonicMeanCmd.label;"      accesskey="&MSIComputeHarmonicMeanCmd.accesskey;"      observes="cmd_MSIComputeHarmonicMean"/>
+          <menuitem label="&MSIComputeMeanDeviationCmd.label;"     accesskey="&MSIComputeMeanDeviationCmd.accesskey;"     observes="cmd_MSIComputeMeanDeviation"/>
+          <menuitem label="&MSIComputeMomentCmd.label;"            accesskey="&MSIComputeMomentCmd.accesskey;"            observes="cmd_MSIComputeMoment"/>
+          <menuitem label="&MSIComputeQuantileCmd.label;"          accesskey="&MSIComputeQuantileCmd.accesskey;"          observes="cmd_MSIComputeQuantile"/>
+          <menuitem label="&MSIComputeStandardDeviationCmd.label;" accesskey="&MSIComputeStandardDeviationCmd.accesskey;" observes="cmd_MSIComputeStandardDeviation"/>
+          <menuitem label="&MSIComputeVarianceCmd.label;"          accesskey="&MSIComputeVarianceCmd.accesskey;"          observes="cmd_MSIComputeVariance"/>
+        </menupopup>
+      </menu>
+      <menuseparator/>                                                                                                                                        
+      <menu id="MSIPlot2DMenu" label="&plot2dmenu.label;" accesskey="&MSIComputePlotCmd2D.accesskey;">
+        <menupopup id="MSIPlot2DPopup">
+          <menuitem label="&plottyperec.label;"         observes="cmd_MSIComputePlot2DRectangular"/>
+          <menuitem label="&plottypepolar.label;"       observes="cmd_MSIComputePlot2DPolar"/>
+          <menuitem label="&plottypeimplicit.label;"    observes="cmd_MSIComputePlot2DImplicit"/>
+          <menuitem label="&plottypeinequality.label;"  observes="cmd_MSIComputePlot2DInequality"/>
+          <menuitem label="&plottypeparametric.label;"  observes="cmd_MSIComputePlot2DParametric"/>
+          <menuseparator/>    
+          <menuitem label="&plottypeconformal.label;"   observes="cmd_MSIComputePlot2DConformal"/>
+          <menuitem label="&plottypegradient.label;"    observes="cmd_MSIComputePlot2DGradient"/>
+          <menuitem label="&plottypevector.label;"      observes="cmd_MSIComputePlot2DVector"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&plottypeode.label;"         observes="cmd_MSIComputePlot2DODE" disabled="true"/>
+          <menuitem label="&plottypeAI.label;"          observes="cmd_MSIComputePlot2DAI"  />
+        </menupopup>
+      </menu>   
+      <menu id="MSIPlot3DMenu" label="&plot3dmenu.label;" accesskey="&MSIComputePlotCmd3D.accesskey;">
+        <menupopup id="MSIPlot3DPopup">
+          <menuitem label="&plottyperec.label;"         observes="cmd_MSIComputePlot3DRectangular"/>
+          <menuitem label="&plottypecur.label;"         observes="cmd_MSIComputePlot3DCurve"/>
+          <menuitem label="&plottypecylindrical.label;" observes="cmd_MSIComputePlot3DCylindrical"/>
+          <menuitem label="&plottypesphere.label;"      observes="cmd_MSIComputePlot3DSpherical"/>
+          <menuitem label="&plottypeparametric.label;"  observes="cmd_MSIComputePlot3DParametric"/>
+          <menuitem label="&plottypeimplicit.label;"    observes="cmd_MSIComputePlot3DImplicit"/>
+          <menuitem label="&plottypetube.label;"        observes="cmd_MSIComputePlot3DTube"/>
+          <menuseparator/>    
+          <menuitem label="&plottypegradient.label;"    observes="cmd_MSIComputePlot3DGradient"/>
+          <menuitem label="&plottypevector.label;"      observes="cmd_MSIComputePlot3DVector"/>
+        </menupopup>
+      </menu>   
+      <menuseparator/>                                                                                                                                        
+      <menuseparator/>                                                                                                                                        
+      <menu id="MSIPlot2DAMenu" label="&plot2damenu.label;" accesskey="&MSIComputePlotCmd2D.accesskey;">
+        <menupopup id="MSIPlot2DPopup">
+          <menuitem label="&plottyperec.label;"         observes="cmd_MSIComputePlot2DARectangular"/>
+          <menuitem label="&plottypepolar.label;"       observes="cmd_MSIComputePlot2DAPolar"/>
+          <menuitem label="&plottypeimplicit.label;"    observes="cmd_MSIComputePlot2DAImplicit"/>
+          <menuitem label="&plottypeinequality.label;"  observes="cmd_MSIComputePlot2DAInequality"/>
+          <menuitem label="&plottypeparametric.label;"  observes="cmd_MSIComputePlot2DAParametric"/>
+          <menuseparator/>    
+          <menuitem label="&plottypeconformal.label;"   observes="cmd_MSIComputePlot2DAConformal"/>
+          <menuitem label="&plottypegradient.label;"    observes="cmd_MSIComputePlot2DAGradient"/>
+          <menuitem label="&plottypevector.label;"      observes="cmd_MSIComputePlot2DAVector"/>
+        </menupopup>
+      </menu>   
+      <menu id="MSIPlot3DAMenu" label="&plot3damenu.label;" accesskey="&MSIComputePlotCmd3D.accesskey;">
+        <menupopup id="MSIPlot3DPopup">
+          <menuitem label="&plottyperec.label;"         observes="cmd_MSIComputePlot3DARectangular"/>
+          <menuitem label="&plottypecur.label;"         observes="cmd_MSIComputePlot3DACurve"/>
+          <menuitem label="&plottypecylindrical.label;" observes="cmd_MSIComputePlot3DACylindrical"/>
+          <menuitem label="&plottypesphere.label;"      observes="cmd_MSIComputePlot3DASpherical"/>
+          <menuitem label="&plottypeparametric.label;"  observes="cmd_MSIComputePlot3DAParametric"/>
+          <menuitem label="&plottypeimplicit.label;"    observes="cmd_MSIComputePlot3DAImplicit"/>
+          <menuitem label="&plottypetube.label;"        observes="cmd_MSIComputePlot3DATube"/>
+          <menuseparator/>    
+          <menuitem label="&plottypegradient.label;"    observes="cmd_MSIComputePlot3DAGradient"/>
+          <menuitem label="&plottypevector.label;"      observes="cmd_MSIComputePlot3DAVector"/>
+        </menupopup>
+      </menu>   
+      <menuseparator/>                                                                                                                                        
+      <menu id="MSIDefinitionsMenu" label="&MSIDefinitionsMenu.label;" accesskey="&MSIDefinitionsMenu.accesskey;">
+        <menupopup id="MSIDefinitionsPopup">
+          <menuitem label="&MSIComputeDefineCmd.label;"    accesskey="&MSIComputeDefineCmd.accesskey;"     key="MSIdefineKey" observes="cmd_MSIComputeDefine"/>
+          <menuitem label="&MSIComputeUndefineCmd.label;"  accesskey="&MSIComputeUndefineCmd.accesskey;"                      observes="cmd_MSIComputeUndefine"/>
+          <menuseparator/>                                                                                                                                        
+          <menuitem label="&MSIComputeShowDefsCmd.label;"   accesskey="&MSIComputeShowDefsCmd.accesskey;"                   observes="cmd_MSIComputeShowDefs"/>
+          <menuitem label="&MSIComputeClearDefsCmd.label;"  accesskey="&MSIComputeClearDefsCmd.accesskey;"                  observes="cmd_MSIComputeClearDefs"/>
+        </menupopup>
+      </menu>
+      <menuseparator/>                                                                                                                                        
+      <menuitem label="&MSIComputeUserSettingsCmd.label;"   accesskey="&MSIComputeUserSettingsCmd.accesskey;"               observes="cmd_MSIComputeUserSettings"/>
+      <menuitem label="&MSIComputeSettingsCmd.label;"       accesskey="&MSIComputeSettingsCmd.accesskey;"                   observes="cmd_MSIComputeSettings"/>
+      <menuitem label="&MSIComputeSwitchEnginesCmd.label;"  accesskey="&MSIComputeSwitchEnginesCmd.accesskey;"              observes="cmd_MSIComputeSwitchEngines"/>
+      <menuseparator/>                                                                                                                                        
+      <menuitem label="&MSIComputeInterpretCmd.label;"  accesskey="&MSIComputeInterpretCmd.accesskey;" key="MSIinterpretKey" observes="cmd_MSIComputeInterpret"/>
+      <menuitem label="&MSIComputeFixupCmd.label;"      accesskey="&MSIComputeFixupCmd.accesskey;"     observes="cmd_MSIComputeFixup"/>
+      <menuitem label="&MSIComputePassthruCmd.label;"   accesskey="&MSIComputePassthruCmd.accesskey;"  observes="cmd_MSIComputePassthru"/>
+    </menupopup>
+  </menu>
+
+#  <!-- DEBUG only -->
+#  <menu id="debugMenu">
+#  <menupopup id="menu_debugPopup">
+#    <menuseparator />
+#    <menuseparator />
+#    <menuitem label="&MSItestEvaluationCmd.label;" oncommand="ComputeEvalTest()"/>
+#  </menupopup>
+#  </menu>
+#  <!-- end DEBUG only -->
+
+</overlay>
