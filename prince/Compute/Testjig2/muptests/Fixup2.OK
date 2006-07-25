@@ -1180,6 +1180,45 @@ Test ID 212
 
 </p>
 <p>
+Test ID 212+
+</p>
+<p>nested</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mrow>
+      <mn>5</mn>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <msqrt>
+            <mn>1</mn>
+            <mo form="infix">&#x2212;</mo>
+            <mrow>
+              <msup>
+                <mi mathcolor="gray">sin</mi>
+                <mn>2</mn>
+              </msup>
+              <mo>&#x2061;</mo>
+              <mi>x</mi>
+            </mrow>
+          </msqrt>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">&#x2146;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+    </mrow>
+    <mo>+</mo>
+    <mn>2</mn>
+  </mrow>
+</math>
+
+</p>
+<p>
 Test ID 213
 </p>
 <p><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>&InvisibleTimes;</mo><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow><mo form="infix">&minus;</mo><mrow><mi>y</mi><mo>&InvisibleTimes;</mo><mrow><mi mathcolor="gray">cos</mi><mo>&ApplyFunction;</mo><mi>x</mi></mrow></mrow></math></p>
@@ -1203,6 +1242,46 @@ Test ID 213
       <mrow>
         <mo form="prefix">&#x2146;</mo>
         <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 213i
+</p>
+<p>2 int not 1 Int</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mfenced open="(" close=")">
+            <mrow>
+              <mi>y</mi>
+              <mo form="infix">+</mo>
+              <mrow>
+                <mi mathcolor="gray">sin</mi>
+                <mo>&#x2061;</mo>
+                <mi>x</mi>
+              </mrow>
+            </mrow>
+          </mfenced>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">&#x2146;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
       </mrow>
       <mo>&#x2062;</mo>
       <mrow>
@@ -3726,6 +3805,43 @@ Test ID 212.2
 
 </p>
 <p>
+Test ID 212+.2
+</p>
+<p>nested</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mn>5</mn>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
+      <mrow>
+        <msqrt>
+          <mn>1</mn>
+          <mo form="infix">&#x2212;</mo>
+          <mrow>
+            <msup>
+              <mi mathcolor="gray">sin</mi>
+              <mn>2</mn>
+            </msup>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+        </msqrt>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo>+</mo>
+  <mn>2</mn>
+</math>
+
+</p>
+<p>
 Test ID 213.2
 </p>
 <p>
@@ -3747,6 +3863,44 @@ Test ID 213.2
     <mrow>
       <mo form="prefix">&#x2146;</mo>
       <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 213i.2
+</p>
+<p>2 int not 1 Int</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mo form="prefix" largeop="true">&#x222b;</mo>
+  <mrow>
+    <mrow>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
+      <mrow>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mi>y</mi>
+            <mo form="infix">+</mo>
+            <mrow>
+              <mi mathcolor="gray">sin</mi>
+              <mo>&#x2061;</mo>
+              <mi>x</mi>
+            </mrow>
+          </mrow>
+        </mfenced>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
     </mrow>
     <mo>&#x2062;</mo>
     <mrow>
@@ -5953,11 +6107,57 @@ Test ID 212.3
 
 </p>
 <p>
+Test ID 212+.3
+</p>
+<p>nested</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mn>5</mn>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
+      <mrow>
+        <msqrt>
+          <mn>1</mn>
+          <mo form="infix">&#x2212;</mo>
+          <mrow>
+            <msup>
+              <mi mathcolor="gray">sin</mi>
+              <mn>2</mn>
+            </msup>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+        </msqrt>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo>+</mo>
+  <mn>2</mn>
+</math>
+
+</p>
+<p>
 Test ID 213.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mtext>213.3 wrong, differential included in integrand</mtext>
+</math>
+
+</p>
+<p>
+Test ID 213i.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>213i.3 wrong, differential included in integrand</mtext>
 </math>
 
 </p>
