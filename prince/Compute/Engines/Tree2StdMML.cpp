@@ -451,7 +451,7 @@ void Tree2StdMML::InsertInvisibleTimes(MNODE * dMML_list)
 
 MNODE * Tree2StdMML::BindByOpPrecedence(MNODE * dMML_list, int high, int low)
 {
-  TCI_ASSERT(high>= low && low>0);
+  TCI_ASSERT(high>=low && low>0);
   MNODE * rv = dMML_list;
   for (int curr_prec = high; curr_prec >= low; curr_prec--) {
     MNODE* rover = rv;
@@ -471,14 +471,33 @@ MNODE * Tree2StdMML::BindByOpPrecedence(MNODE * dMML_list, int high, int low)
             break;
           case OP_infix:
             if (rover->prev && rover->next) {
-              MNODE * new_row = MakeMROW(rover->prev, rover->next);
+              MNODE * end = rover->next;
+              // scan forward until we hit one of different precedence
+              MNODE * inner = end;
+              while (inner) {
+                if (inner->form == OP_infix) {
+                  if (inner->precedence == curr_prec) {
+                    if (inner->next)
+                      inner = end = inner->next;
+                    else
+                      break;
+                  } else {
+                    break;
+                  }
+                } else if (inner->form != OP_none) {
+                  break;
+                } else {
+                  inner = inner->next;
+                }
+              }
+              the_next = end;
+              MNODE * new_row = MakeMROW(rover->prev, end);
               if (new_row != rover->prev) {
                 the_next = new_row;
                 if (rover->prev == rv)
                   rv = the_next;
               }
             }
-            // it's possible left operand has same precedence, in which case we should coalesce
             break;
           case OP_postfix:
             if (rover->prev && rover->prev->form != OP_postfix && rover->prev->precedence != curr_prec) {
@@ -653,6 +672,33 @@ MNODE *Tree2StdMML::BindMixedNumbers(MNODE * dMML_list)
   return rv;
 }
 
+// \int ... dx
+
+MNODE *Tree2StdMML::BindDelimitedIntegrals(MNODE * dMML_list)
+{
+  MNODE * rv = dMML_list;
+  MNODE* rover = rv;
+  while (rover) {
+    MNODE* the_next = rover->next;
+    if (NodeIsIntegral(rover)) {
+      MNODE * new_row = BindIntegral(rover);
+      if (new_row != rover) {
+        the_next = new_row;
+        if (rover == rv)
+          rv = the_next;
+      }
+    }
+    rover = the_next;
+  }
+  return rv;
+}
+
+MNODE *Tree2StdMML::BindIntegral(MNODE * dMML_list)
+{
+  //TODO implement this!
+  return dMML_list;
+}
+
 // finish MathML bindings
 MNODE *Tree2StdMML::FinishFixup(MNODE * dMML_tree)
 {  
@@ -678,7 +724,7 @@ MNODE *Tree2StdMML::FinishFixup(MNODE * dMML_tree)
   //BindUnits
   //BindDegMinSec
   //may need to recognize differential operators here
-  //BindDelimitedIntegrals
+  rv = BindDelimitedIntegrals(rv);
   
   rv = BindByOpPrecedence(rv, 68, 66);
   InsertApplyFunction(rv);  //65
@@ -1369,6 +1415,27 @@ bool Tree2StdMML::NodeIsOperator(MNODE * mml_node)
   } else {
     return false;
   }
+}
+
+// This looks a lot like Analyzer::GetBigOpType()
+bool Tree2StdMML::NodeIsIntegral(MNODE * mml_node)
+{
+  if (strcmp(mml_node->src_tok,"mo"))
+    return false;
+  //TODO study Unicode list (this list from SWP)
+  char *ptr = strstr(mml_node->p_chdata, "&#x");
+  if (ptr) {
+    U32 unicode = ASCII2U32(ptr + 3, 16);
+    switch (unicode) {
+      case 0x222b: //&int;<uID7.1.1>prefix,31,U0222B
+      case 0x222c: //&Int;<uID7.1.2>prefix,31,U0222C
+      case 0x222d: //&tint;<uID7.1.3>prefix,31,U0222D
+      case 0x2a0c: //&qint;<uID7.1.4>prefix,31,U02A0C
+      case 0x222e: //&conint;<uID7.1.6>prefix,31,U0222E
+        return true;
+    }
+  }
+  return false;
 }
 
 // Quite different from the corresponding function in LTeX2MML.cpp

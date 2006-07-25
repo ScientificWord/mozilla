@@ -40,9 +40,13 @@ protected:
   void RemoveMixedNumbers(MNODE * dMML_tree,
                           INPUT_NOTATION_REC * in_notation);
   void AddOperatorInfo(MNODE * dMML_list);
+
   MNODE *BindMixedNumbers(MNODE * dMML_list);
+  MNODE *BindDelimitedIntegrals(MNODE * dMML_list);
+  MNODE *BindIntegral(MNODE * dMML_list);
   MNODE *BindByOpPrecedence(MNODE * dMML_list, int high, int low);
   MNODE *BindApplyFunction(MNODE * dMML_list);
+
   void InsertInvisibleAddSigns(MNODE * dMML_list);
   void InsertApplyFunction(MNODE * dMML_list);
   void InsertInvisibleTimes(MNODE * dMML_list);
@@ -94,6 +98,7 @@ protected:
   bool NodeIsFunction(MNODE * mml_node);
   MNODE *GetBaseFunction(MNODE * mml_node);
   bool NodeIsOperator(MNODE * mml_node);
+  bool NodeIsIntegral(MNODE * mml_node);
   bool NodeIsFactor(MNODE * mml_node);
 
   MNODE *MakeItem(MNODE * l_anchor, MNODE * r_anchor);
