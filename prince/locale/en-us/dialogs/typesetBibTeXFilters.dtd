@@ -1,0 +1,16 @@
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Key Filters">
+
+<!ENTITY entryTypesDescription.label "Displayed Entry Types">
+<!ENTITY entryTypesDescription.accessKey "T">
+<!ENTITY filtersFieldsDescription.label "Fields and Filters">
+<!ENTITY filtersFieldsDescription.accessKey "F">
+
+<!ENTITY fieldNameHeader.label "Field">
+<!ENTITY displayFieldHeader.label "Displayed">
+<!ENTITY fieldFilterHeader.label "Match Field Substring">
+<!ENTITY fieldFilterExactCaseHeader.label "Exact Case">
+<!ENTITY fieldFilterRegExpHeader.label "Regular Expression">
+
+<!-- <!ENTITY .tooltip "">  -->
