@@ -8247,13 +8247,9 @@ Test ID 524
     <mo>&#x2061;</mo>
     <mi>x</mi>
     <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mrow>
-        <mi msiMathname="true">arctan</mi>
-        <mo>&#x2061;</mo>
-        <mi>x</mi>
-      </mrow>
-    </mfenced>
+    <mi msiMathname="true">arctan</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
     <mo>&#x2062;</mo>
     <msup>
       <mi msiMathname="true">tan</mi>
@@ -9432,13 +9428,9 @@ Test ID 624
     <mo>&#x2061;</mo>
     <mi>x</mi>
     <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mrow>
-        <mi msiMathname="true">arctan</mi>
-        <mo>&#x2061;</mo>
-        <mi>x</mi>
-      </mrow>
-    </mfenced>
+    <mi msiMathname="true">arctan</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
     <mo>&#x2062;</mo>
     <msup>
       <mi msiMathname="true">tan</mi>
@@ -10084,13 +10076,9 @@ Test ID 724
     <mo>&#x2061;</mo>
     <mi>x</mi>
     <mo>&#x2062;</mo>
-    <mfenced open="(" close=")">
-      <mrow>
-        <mi msiMathname="true">arctan</mi>
-        <mo>&#x2061;</mo>
-        <mi>x</mi>
-      </mrow>
-    </mfenced>
+    <mi msiMathname="true">arctan</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
     <mo>&#x2062;</mo>
     <msup>
       <mi msiMathname="true">tan</mi>

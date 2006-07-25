@@ -287,14 +287,12 @@ Test ID hardBinding
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mfenced ilk="enclosed-list" open="[" close="]">
     <mrow>
+      <mi>s</mi>
+      <mo>&#x2062;</mo>
       <mrow>
+        <mi>sin</mi>
+        <mo>&#x2061;</mo>
         <mi>s</mi>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi>sin</mi>
-          <mo>&#x2061;</mo>
-          <mi>s</mi>
-        </mrow>
       </mrow>
       <mo>&#x2062;</mo>
       <mrow>
@@ -304,14 +302,12 @@ Test ID hardBinding
       </mrow>
     </mrow>
     <mrow>
+      <mi>s</mi>
+      <mo>&#x2062;</mo>
       <mrow>
+        <mi>cos</mi>
+        <mo>&#x2061;</mo>
         <mi>s</mi>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi>cos</mi>
-          <mo>&#x2061;</mo>
-          <mi>s</mi>
-        </mrow>
       </mrow>
       <mo>&#x2062;</mo>
       <mrow>
@@ -657,14 +653,12 @@ Test ID hardBinding
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mfenced ilk="enclosed-list" open="[" close="]">
     <mrow>
+      <mi>s</mi>
+      <mo>&#x2062;</mo>
       <mrow>
+        <mi>sin</mi>
+        <mo>&#x2061;</mo>
         <mi>s</mi>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi>sin</mi>
-          <mo>&#x2061;</mo>
-          <mi>s</mi>
-        </mrow>
       </mrow>
       <mo>&#x2062;</mo>
       <mrow>
@@ -674,14 +668,12 @@ Test ID hardBinding
       </mrow>
     </mrow>
     <mrow>
+      <mi>s</mi>
+      <mo>&#x2062;</mo>
       <mrow>
+        <mi>cos</mi>
+        <mo>&#x2061;</mo>
         <mi>s</mi>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi>cos</mi>
-          <mo>&#x2061;</mo>
-          <mi>s</mi>
-        </mrow>
       </mrow>
       <mo>&#x2062;</mo>
       <mrow>

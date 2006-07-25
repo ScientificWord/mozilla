@@ -6712,7 +6712,7 @@ Comment     nested
 Client ID   1
 Engine      MuPAD
 Command ID	Fixup
-   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
      <mn>5</mn>
      <mo form="prefix" largeop="true">&int;</mo>
      <msqrt>
@@ -6755,7 +6755,7 @@ Comment     2 int not 1 Int
 Client ID   1
 Engine      MuPAD
 Command ID	Fixup
-   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
      <mo largeop="true">&int;</mo>
      <mo largeop="true">&int;</mo>
      <mo>(</mo>
