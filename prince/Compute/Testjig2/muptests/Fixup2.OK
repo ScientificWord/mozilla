@@ -558,11 +558,9 @@ Test ID 127
     <munder>
       <mo mathcolor="gray" form="prefix" movablelimits="true">max</mo>
       <mrow>
-        <mrow>
-          <mn>1</mn>
-          <mo form="infix">&#x2264;</mo>
-          <mi>n</mi>
-        </mrow>
+        <mn>1</mn>
+        <mo form="infix">&#x2264;</mo>
+        <mi>n</mi>
         <mo form="infix">&#x2264;</mo>
         <mn>10</mn>
       </mrow>
@@ -1190,23 +1188,21 @@ Test ID 213
   <mrow>
     <mo form="prefix" largeop="true">&#x222c;</mo>
     <mrow>
-      <mrow>
-        <mfenced open="(" close=")">
-          <mrow>
-            <mi>y</mi>
-            <mo form="infix">+</mo>
-            <mrow>
-              <mi mathcolor="gray">sin</mi>
-              <mo>&#x2061;</mo>
-              <mi>x</mi>
-            </mrow>
-          </mrow>
-        </mfenced>
-        <mo>&#x2062;</mo>
+      <mfenced open="(" close=")">
         <mrow>
-          <mo form="prefix">&#x2146;</mo>
-          <mi>x</mi>
+          <mi>y</mi>
+          <mo form="infix">+</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
         </mrow>
+      </mfenced>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
       </mrow>
       <mo>&#x2062;</mo>
       <mrow>
@@ -1266,14 +1262,12 @@ Test ID 215
         <mi>x</mi>
       </mrow>
       <mrow>
-        <mrow>
-          <msup>
-            <mi>x</mi>
-            <mn>6</mn>
-          </msup>
-          <mo form="infix">+</mo>
+        <msup>
           <mi>x</mi>
-        </mrow>
+          <mn>6</mn>
+        </msup>
+        <mo form="infix">+</mo>
+        <mi>x</mi>
         <mo form="infix">+</mo>
         <mn>2</mn>
       </mrow>
@@ -1881,11 +1875,9 @@ Test ID 501
     <mo form="prefix">&#x2207;</mo>
     <mfenced open="(" close=")">
       <mrow>
-        <mrow>
-          <mi>x</mi>
-          <mo>&#x2062;</mo>
-          <mi>y</mi>
-        </mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
         <mo>&#x2062;</mo>
         <mi>z</mi>
       </mrow>
@@ -1909,11 +1901,9 @@ Test ID 502
         <mi>z</mi>
       </mrow>
       <mrow>
-        <mrow>
-          <mn>2</mn>
-          <mo>&#x2062;</mo>
-          <mi>y</mi>
-        </mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
         <mo>&#x2062;</mo>
         <mi>z</mi>
       </mrow>
@@ -1941,11 +1931,9 @@ Test ID 503
         <mi>z</mi>
       </mrow>
       <mrow>
-        <mrow>
-          <mn>2</mn>
-          <mo>&#x2062;</mo>
-          <mi>x</mi>
-        </mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
         <mo>&#x2062;</mo>
         <mi>z</mi>
       </mrow>
@@ -1972,14 +1960,12 @@ Test ID 504
     </msup>
     <mfenced open="(" close=")">
       <mrow>
-        <mrow>
-          <mi>x</mi>
-          <mo form="infix">+</mo>
-          <msup>
-            <mi>y</mi>
-            <mn>2</mn>
-          </msup>
-        </mrow>
+        <mi>x</mi>
+        <mo form="infix">+</mo>
+        <msup>
+          <mi>y</mi>
+          <mn>2</mn>
+        </msup>
         <mo form="infix">+</mo>
         <mrow>
           <mn>2</mn>
@@ -2302,15 +2288,11 @@ Test ID 702
       <msup>
         <mi>e</mi>
         <mrow>
-          <mrow>
-            <mrow>
-              <mn>2</mn>
-              <mo>&#x2062;</mo>
-              <mi>&#x3c0;</mi>
-            </mrow>
-            <mo>&#x2062;</mo>
-            <mi>i</mi>
-          </mrow>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi>&#x3c0;</mi>
+          <mo>&#x2062;</mo>
+          <mi>i</mi>
           <mo>&#x2062;</mo>
           <mi>t</mi>
         </mrow>
@@ -2671,28 +2653,22 @@ Test ID A03
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
   <mrow>
-    <mrow>
-      <mrow>
-        <mrow>
-          <mi>a</mi>
-          <mo>&#x2062;</mo>
-          <mover accent="true">
-            <mi>a</mi>
-            <mo form="postfix" accent="true">&#x2d9;</mo>
-          </mover>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mover accent="true">
-          <mi>a</mi>
-          <mo form="postfix" accent="true">&#xa8;</mo>
-        </mover>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mover accent="true">
-        <mi>a</mi>
-        <mo form="postfix" accent="true">&#xaf;</mo>
-      </mover>
-    </mrow>
+    <mi>a</mi>
+    <mo>&#x2062;</mo>
+    <mover accent="true">
+      <mi>a</mi>
+      <mo form="postfix" accent="true">&#x2d9;</mo>
+    </mover>
+    <mo>&#x2062;</mo>
+    <mover accent="true">
+      <mi>a</mi>
+      <mo form="postfix" accent="true">&#xa8;</mo>
+    </mover>
+    <mo>&#x2062;</mo>
+    <mover accent="true">
+      <mi>a</mi>
+      <mo form="postfix" accent="true">&#xaf;</mo>
+    </mover>
     <mo>&#x2062;</mo>
     <mover accent="true">
       <mi>a</mi>
@@ -3184,11 +3160,9 @@ Test ID 127.2
   <munder>
     <mo mathcolor="gray" form="prefix" movablelimits="true">max</mo>
     <mrow>
-      <mrow>
-        <mn>1</mn>
-        <mo form="infix">&#x2264;</mo>
-        <mi>n</mi>
-      </mrow>
+      <mn>1</mn>
+      <mo form="infix">&#x2264;</mo>
+      <mi>n</mi>
       <mo form="infix">&#x2264;</mo>
       <mn>10</mn>
     </mrow>
@@ -3758,23 +3732,21 @@ Test ID 213.2
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mo form="prefix" largeop="true">&#x222c;</mo>
   <mrow>
-    <mrow>
-      <mfenced open="(" close=")">
-        <mrow>
-          <mi>y</mi>
-          <mo form="infix">+</mo>
-          <mrow>
-            <mi mathcolor="gray">sin</mi>
-            <mo>&#x2061;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mrow>
-      </mfenced>
-      <mo>&#x2062;</mo>
+    <mfenced open="(" close=")">
       <mrow>
-        <mo form="prefix">&#x2146;</mo>
-        <mi>x</mi>
+        <mi>y</mi>
+        <mo form="infix">+</mo>
+        <mrow>
+          <mi mathcolor="gray">sin</mi>
+          <mo>&#x2061;</mo>
+          <mi>x</mi>
+        </mrow>
       </mrow>
+    </mfenced>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>x</mi>
     </mrow>
     <mo>&#x2062;</mo>
     <mrow>
@@ -3828,14 +3800,12 @@ Test ID 215.2
       <mi>x</mi>
     </mrow>
     <mrow>
-      <mrow>
-        <msup>
-          <mi>x</mi>
-          <mn>6</mn>
-        </msup>
-        <mo form="infix">+</mo>
+      <msup>
         <mi>x</mi>
-      </mrow>
+        <mn>6</mn>
+      </msup>
+      <mo form="infix">+</mo>
+      <mi>x</mi>
       <mo form="infix">+</mo>
       <mn>2</mn>
     </mrow>
@@ -4409,11 +4379,9 @@ Test ID 501.2
   <mo form="prefix">&#x2207;</mo>
   <mfenced open="(" close=")">
     <mrow>
-      <mrow>
-        <mi>x</mi>
-        <mo>&#x2062;</mo>
-        <mi>y</mi>
-      </mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
       <mo>&#x2062;</mo>
       <mi>z</mi>
     </mrow>
@@ -4434,11 +4402,9 @@ Test ID 502.2
       <mi>z</mi>
     </mrow>
     <mrow>
-      <mrow>
-        <mn>2</mn>
-        <mo>&#x2062;</mo>
-        <mi>y</mi>
-      </mrow>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
       <mo>&#x2062;</mo>
       <mi>z</mi>
     </mrow>
@@ -4463,11 +4429,9 @@ Test ID 503.2
       <mi>z</mi>
     </mrow>
     <mrow>
-      <mrow>
-        <mn>2</mn>
-        <mo>&#x2062;</mo>
-        <mi>x</mi>
-      </mrow>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mi>x</mi>
       <mo>&#x2062;</mo>
       <mi>z</mi>
     </mrow>
@@ -4491,14 +4455,12 @@ Test ID 504.2
   </msup>
   <mfenced open="(" close=")">
     <mrow>
-      <mrow>
-        <mi>x</mi>
-        <mo form="infix">+</mo>
-        <msup>
-          <mi>y</mi>
-          <mn>2</mn>
-        </msup>
-      </mrow>
+      <mi>x</mi>
+      <mo form="infix">+</mo>
+      <msup>
+        <mi>y</mi>
+        <mn>2</mn>
+      </msup>
       <mo form="infix">+</mo>
       <mrow>
         <mn>2</mn>
@@ -4804,15 +4766,11 @@ Test ID 702.2
     <msup>
       <mi>e</mi>
       <mrow>
-        <mrow>
-          <mrow>
-            <mn>2</mn>
-            <mo>&#x2062;</mo>
-            <mi>&#x3c0;</mi>
-          </mrow>
-          <mo>&#x2062;</mo>
-          <mi>i</mi>
-        </mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>&#x3c0;</mi>
+        <mo>&#x2062;</mo>
+        <mi>i</mi>
         <mo>&#x2062;</mo>
         <mi>t</mi>
       </mrow>
@@ -5130,28 +5088,22 @@ Test ID A03.2
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mrow>
-      <mrow>
-        <mi>a</mi>
-        <mo>&#x2062;</mo>
-        <mover accent="true">
-          <mi>a</mi>
-          <mo form="postfix" accent="true">&#x2d9;</mo>
-        </mover>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mover accent="true">
-        <mi>a</mi>
-        <mo form="postfix" accent="true">&#xa8;</mo>
-      </mover>
-    </mrow>
-    <mo>&#x2062;</mo>
-    <mover accent="true">
-      <mi>a</mi>
-      <mo form="postfix" accent="true">&#xaf;</mo>
-    </mover>
-  </mrow>
+  <mi>a</mi>
+  <mo>&#x2062;</mo>
+  <mover accent="true">
+    <mi>a</mi>
+    <mo form="postfix" accent="true">&#x2d9;</mo>
+  </mover>
+  <mo>&#x2062;</mo>
+  <mover accent="true">
+    <mi>a</mi>
+    <mo form="postfix" accent="true">&#xa8;</mo>
+  </mover>
+  <mo>&#x2062;</mo>
+  <mover accent="true">
+    <mi>a</mi>
+    <mo form="postfix" accent="true">&#xaf;</mo>
+  </mover>
   <mo>&#x2062;</mo>
   <mover accent="true">
     <mi>a</mi>
@@ -5505,11 +5457,9 @@ Test ID 127.3
   <munder>
     <mo form="prefix" mathcolor="gray">max</mo>
     <mrow>
-      <mrow>
-        <mn>1</mn>
-        <mo>&#x2264;</mo>
-        <mi>n</mi>
-      </mrow>
+      <mn>1</mn>
+      <mo>&#x2264;</mo>
+      <mi>n</mi>
       <mo>&#x2264;</mo>
       <mn>10</mn>
     </mrow>
@@ -6054,14 +6004,12 @@ Test ID 215.3
       <mi>x</mi>
     </mrow>
     <mrow>
-      <mrow>
-        <msup>
-          <mi>x</mi>
-          <mn>6</mn>
-        </msup>
-        <mo>+</mo>
+      <msup>
         <mi>x</mi>
-      </mrow>
+        <mn>6</mn>
+      </msup>
+      <mo>+</mo>
+      <mi>x</mi>
       <mo>+</mo>
       <mn>2</mn>
     </mrow>
@@ -6653,14 +6601,12 @@ Test ID 504.3
   </msup>
   <mfenced open="(" close=")">
     <mrow>
-      <mrow>
-        <mi>x</mi>
-        <mo>+</mo>
-        <msup>
-          <mi>y</mi>
-          <mn>2</mn>
-        </msup>
-      </mrow>
+      <mi>x</mi>
+      <mo>+</mo>
+      <msup>
+        <mi>y</mi>
+        <mn>2</mn>
+      </msup>
       <mo>+</mo>
       <mrow>
         <mn>2</mn>
@@ -7006,35 +6952,33 @@ Test ID Op102
     <mtable align="axis">
       <mtr>
         <mtd>
-          <mrow>
-            <mfenced open="(" close=")">
-              <mrow>
-                <msup>
-                  <mn>5</mn>
-                  <mn>6</mn>
-                </msup>
-                <mo form="infix">&#x3c;</mo>
-                <msup>
-                  <mn>6</mn>
-                  <mn>5</mn>
-                </msup>
-              </mrow>
-            </mfenced>
-            <mo form="infix">&#x2228;</mo>
-            <mfenced open="(" close=")">
-              <mrow>
-                <msup>
-                  <mn>5</mn>
-                  <mn>6</mn>
-                </msup>
-                <mo form="infix">&#x3e;</mo>
-                <msup>
-                  <mn>6</mn>
-                  <mn>5</mn>
-                </msup>
-              </mrow>
-            </mfenced>
-          </mrow>
+          <mfenced open="(" close=")">
+            <mrow>
+              <msup>
+                <mn>5</mn>
+                <mn>6</mn>
+              </msup>
+              <mo form="infix">&#x3c;</mo>
+              <msup>
+                <mn>6</mn>
+                <mn>5</mn>
+              </msup>
+            </mrow>
+          </mfenced>
+          <mo form="infix">&#x2228;</mo>
+          <mfenced open="(" close=")">
+            <mrow>
+              <msup>
+                <mn>5</mn>
+                <mn>6</mn>
+              </msup>
+              <mo form="infix">&#x3e;</mo>
+              <msup>
+                <mn>6</mn>
+                <mn>5</mn>
+              </msup>
+            </mrow>
+          </mfenced>
           <mo form="infix">&#x2228;</mo>
           <mfenced open="(" close=")">
             <mrow>
@@ -7211,35 +7155,33 @@ Test ID Op102
       </mtr>
       <mtr>
         <mtd>
-          <mrow>
-            <mfenced open="(" close=")">
-              <mrow>
-                <msup>
-                  <mn>5</mn>
-                  <mn>6</mn>
-                </msup>
-                <mo form="infix">&#x2264;</mo>
-                <msup>
-                  <mn>6</mn>
-                  <mn>5</mn>
-                </msup>
-              </mrow>
-            </mfenced>
-            <mo form="infix">&#x2228;</mo>
-            <mfenced open="(" close=")">
-              <mrow>
-                <msup>
-                  <mn>5</mn>
-                  <mn>6</mn>
-                </msup>
-                <mo form="infix">&#x2265;</mo>
-                <msup>
-                  <mn>6</mn>
-                  <mn>5</mn>
-                </msup>
-              </mrow>
-            </mfenced>
-          </mrow>
+          <mfenced open="(" close=")">
+            <mrow>
+              <msup>
+                <mn>5</mn>
+                <mn>6</mn>
+              </msup>
+              <mo form="infix">&#x2264;</mo>
+              <msup>
+                <mn>6</mn>
+                <mn>5</mn>
+              </msup>
+            </mrow>
+          </mfenced>
+          <mo form="infix">&#x2228;</mo>
+          <mfenced open="(" close=")">
+            <mrow>
+              <msup>
+                <mn>5</mn>
+                <mn>6</mn>
+              </msup>
+              <mo form="infix">&#x2265;</mo>
+              <msup>
+                <mn>6</mn>
+                <mn>5</mn>
+              </msup>
+            </mrow>
+          </mfenced>
           <mo form="infix">&#x2228;</mo>
           <mfenced open="(" close=")">
             <mrow>
@@ -7309,21 +7251,19 @@ Test ID Op104
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <mfenced open="&#x230a;" close="&#x230b;">
-        <mfrac>
-          <mn>123</mn>
-          <mn>34</mn>
-        </mfrac>
-      </mfenced>
-      <mo form="infix">+</mo>
-      <mfenced open="&#x2308;" close="&#x2309;">
-        <mfrac>
-          <mn>123</mn>
-          <mn>34</mn>
-        </mfrac>
-      </mfenced>
-    </mrow>
+    <mfenced open="&#x230a;" close="&#x230b;">
+      <mfrac>
+        <mn>123</mn>
+        <mn>34</mn>
+      </mfrac>
+    </mfenced>
+    <mo form="infix">+</mo>
+    <mfenced open="&#x2308;" close="&#x2309;">
+      <mfrac>
+        <mn>123</mn>
+        <mn>34</mn>
+      </mfrac>
+    </mfenced>
     <mo form="infix">&#x2212;</mo>
     <msubsup>
       <mfenced open="[" close="]">
@@ -7401,38 +7341,34 @@ Test ID Op106
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
+      <mn>2</mn>
+      <mo form="postfix">!</mo>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
       <mrow>
-        <mrow>
-          <mn>2</mn>
-          <mo form="postfix">!</mo>
-        </mrow>
-        <mo form="infix">+</mo>
-        <mrow>
-          <mrow>
-            <mn>3</mn>
-            <mo form="postfix">!</mo>
-          </mrow>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mn>4</mn>
-            <mo form="postfix">!</mo>
-          </mrow>
-        </mrow>
-      </mrow>
-      <mo form="infix">&#x2212;</mo>
-      <mrow>
-        <mfenced open="(" close=")">
-          <mrow>
-            <mn>1</mn>
-            <mo form="infix">+</mo>
-            <mrow>
-              <mn>2</mn>
-              <mo form="postfix">!</mo>
-            </mrow>
-          </mrow>
-        </mfenced>
+        <mn>3</mn>
         <mo form="postfix">!</mo>
       </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mn>4</mn>
+        <mo form="postfix">!</mo>
+      </mrow>
+    </mrow>
+    <mo form="infix">&#x2212;</mo>
+    <mrow>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>1</mn>
+          <mo form="infix">+</mo>
+          <mrow>
+            <mn>2</mn>
+            <mo form="postfix">!</mo>
+          </mrow>
+        </mrow>
+      </mfenced>
+      <mo form="postfix">!</mo>
     </mrow>
     <mo form="infix">+</mo>
     <mrow>
@@ -7582,21 +7518,19 @@ Test ID Op110a
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
-      <mrow>
+      <mn>3</mn>
+      <mfrac>
         <mn>3</mn>
-        <mfrac>
-          <mn>3</mn>
-          <mn>4</mn>
-        </mfrac>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
+        <mn>4</mn>
+      </mfrac>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <mn>1</mn>
+      <mfrac>
         <mn>1</mn>
-        <mfrac>
-          <mn>1</mn>
-          <mn>2</mn>
-        </mfrac>
-      </mrow>
+        <mn>2</mn>
+      </mfrac>
     </mrow>
     <mo form="infix">&#x2212;</mo>
     <mfrac>
@@ -7654,34 +7588,32 @@ Test ID Op111
     </mrow>
     <mo form="infix">&#x2212;</mo>
     <mrow>
-      <mrow>
-        <mfrac>
-          <mn>1</mn>
-          <mrow>
-            <msup>
-              <mi>b</mi>
-              <mi>a</mi>
-            </msup>
-            <mo>&#x2062;</mo>
-            <mrow>
-              <mi>&#x393;</mi>
-              <mo>&#x2061;</mo>
-              <mfenced open="(" close=")">
-                <mi>a</mi>
-              </mfenced>
-            </mrow>
-          </mrow>
-        </mfrac>
-        <mo>&#x2062;</mo>
-        <msup>
-          <mi>u</mi>
-          <mrow>
+      <mfrac>
+        <mn>1</mn>
+        <mrow>
+          <msup>
+            <mi>b</mi>
             <mi>a</mi>
-            <mo form="infix">&#x2212;</mo>
-            <mn>1</mn>
+          </msup>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi>&#x393;</mi>
+            <mo>&#x2061;</mo>
+            <mfenced open="(" close=")">
+              <mi>a</mi>
+            </mfenced>
           </mrow>
-        </msup>
-      </mrow>
+        </mrow>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mi>u</mi>
+        <mrow>
+          <mi>a</mi>
+          <mo form="infix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
       <mo>&#x2062;</mo>
       <msup>
         <mi>e</mi>
@@ -7707,14 +7639,12 @@ Test ID Op112
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
-      <mrow>
-        <msup>
-          <mi>x</mi>
-          <mn>2</mn>
-        </msup>
-        <mo form="infix">+</mo>
+      <msup>
         <mi>x</mi>
-      </mrow>
+        <mn>2</mn>
+      </msup>
+      <mo form="infix">+</mo>
+      <mi>x</mi>
       <mo form="infix">+</mo>
       <mn>1</mn>
     </mrow>
@@ -7876,36 +7806,30 @@ Test ID Op116
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
-      <mrow>
-        <mrow>
-          <mrow>
-            <mn>2</mn>
-            <mo form="infix">&#x22c6;</mo>
-            <mn>3</mn>
-          </mrow>
-          <mo form="infix">+</mo>
-          <mrow>
-            <mn>3</mn>
-            <mo form="infix">&#x22c5;</mo>
-            <mn>4</mn>
-          </mrow>
-        </mrow>
-        <mo form="infix">+</mo>
-        <mrow>
-          <mn>4</mn>
-          <mo form="infix">&#xd7;</mo>
-          <mn>5</mn>
-        </mrow>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
-        <msup>
-          <mn>2</mn>
-          <mn>2</mn>
-        </msup>
-        <mo>&#x2062;</mo>
-        <mn>5</mn>
-      </mrow>
+      <mn>2</mn>
+      <mo form="infix">&#x22c6;</mo>
+      <mn>3</mn>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <mn>3</mn>
+      <mo form="infix">&#x22c5;</mo>
+      <mn>4</mn>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <mn>4</mn>
+      <mo form="infix">&#xd7;</mo>
+      <mn>5</mn>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <msup>
+        <mn>2</mn>
+        <mn>2</mn>
+      </msup>
+      <mo>&#x2062;</mo>
+      <mn>5</mn>
     </mrow>
     <mo form="infix">+</mo>
     <mrow>
@@ -7997,23 +7921,21 @@ Test ID Op120
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">sin</mi>
-          <mn>2</mn>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mi>&#x3b8;</mi>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">cos</mi>
-          <mn>2</mn>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mi>&#x3b8;</mi>
-      </mrow>
+      <msup>
+        <mi mathcolor="gray">sin</mi>
+        <mn>2</mn>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mi>&#x3b8;</mi>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cos</mi>
+        <mn>2</mn>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mi>&#x3b8;</mi>
     </mrow>
     <mo form="infix">+</mo>
     <mrow>
@@ -8069,24 +7991,22 @@ Test ID Op122
   <mrow>
     <mrow>
       <mrow>
+        <mi mathcolor="gray">cot</mi>
+        <mo>&#x2061;</mo>
         <mrow>
-          <mi mathcolor="gray">cot</mi>
-          <mo>&#x2061;</mo>
-          <mrow>
-            <mn>2</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
         </mrow>
-        <mo>&#x2062;</mo>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sec</mi>
+        <mo>&#x2061;</mo>
         <mrow>
-          <mi mathcolor="gray">sec</mi>
-          <mo>&#x2061;</mo>
-          <mrow>
-            <mn>2</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
         </mrow>
       </mrow>
       <mo>&#x2062;</mo>
@@ -8103,21 +8023,19 @@ Test ID Op122
     <mo form="infix">&#x2212;</mo>
     <mrow>
       <mrow>
-        <mrow>
-          <mi mathcolor="gray">cot</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">sec</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
+        <mi mathcolor="gray">cot</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sec</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
       </mrow>
       <mo>&#x2062;</mo>
       <mrow>
@@ -8182,106 +8100,96 @@ Test ID Op124
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
+      <mi mathcolor="gray">arcsin</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
       <mrow>
-        <mrow>
-          <mi mathcolor="gray">arcsin</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-        <mo form="infix">+</mo>
-        <mrow>
+        <msup>
+          <mi mathcolor="gray">sin</mi>
           <mrow>
-            <msup>
-              <mi mathcolor="gray">sin</mi>
-              <mrow>
-                <mo form="prefix">&#x2212;</mo>
-                <mn>1</mn>
-              </mrow>
-            </msup>
-            <mo>&#x2061;</mo>
-            <mfenced open="(" close=")">
-              <mi>x</mi>
-            </mfenced>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
           </mrow>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mi mathcolor="gray">arccos</mi>
-            <mo>&#x2061;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
       </mrow>
-      <mo form="infix">+</mo>
+      <mo>&#x2062;</mo>
       <mrow>
-        <mrow>
-          <mrow>
-            <msup>
-              <mi mathcolor="gray">cos</mi>
-              <mrow>
-                <mo form="prefix">&#x2212;</mo>
-                <mn>1</mn>
-              </mrow>
-            </msup>
-            <mo>&#x2061;</mo>
-            <mi>x</mi>
-          </mrow>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mi mathcolor="gray">arccos</mi>
-            <mo>&#x2061;</mo>
-            <mfenced open="(" close=")">
-              <mi>x</mi>
-            </mfenced>
-          </mrow>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cos</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
+        <mi mathcolor="gray">arccos</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
       </mrow>
     </mrow>
     <mo form="infix">+</mo>
     <mrow>
       <mrow>
-        <mrow>
+        <msup>
+          <mi mathcolor="gray">cos</mi>
           <mrow>
-            <mi mathcolor="gray">arctan</mi>
-            <mo>&#x2061;</mo>
-            <mi>x</mi>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
           </mrow>
-          <mo>&#x2062;</mo>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">arccos</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cos</mi>
           <mrow>
-            <msup>
-              <mi mathcolor="gray">tan</mi>
-              <mrow>
-                <mo form="prefix">&#x2212;</mo>
-                <mn>1</mn>
-              </mrow>
-            </msup>
-            <mo>&#x2061;</mo>
-            <mi>x</mi>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
           </mrow>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arctan</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
+      </mrow>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <mrow>
+        <mi mathcolor="gray">arctan</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">tan</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">arctan</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
       </mrow>
       <mo>&#x2062;</mo>
       <mrow>
@@ -8310,93 +8218,91 @@ Test ID Op125
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
-      <mrow>
-        <mfrac>
-          <mrow>
-            <mi mathcolor="gray">arccot</mi>
-            <mo>&#x2061;</mo>
+      <mfrac>
+        <mrow>
+          <mi mathcolor="gray">arccot</mi>
+          <mo>&#x2061;</mo>
+          <mi>&#x3b2;</mi>
+        </mrow>
+        <mrow>
+          <msup>
+            <mi mathcolor="gray">cot</mi>
+            <mrow>
+              <mo form="prefix">&#x2212;</mo>
+              <mn>1</mn>
+            </mrow>
+          </msup>
+          <mo>&#x2061;</mo>
+          <mi>&#x3b2;</mi>
+        </mrow>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mfrac>
+        <mrow>
+          <mi mathcolor="gray">arccot</mi>
+          <mo>&#x2061;</mo>
+          <mfenced open="(" close=")">
             <mi>&#x3b2;</mi>
-          </mrow>
-          <mrow>
-            <msup>
-              <mi mathcolor="gray">cot</mi>
-              <mrow>
-                <mo form="prefix">&#x2212;</mo>
-                <mn>1</mn>
-              </mrow>
-            </msup>
-            <mo>&#x2061;</mo>
+          </mfenced>
+        </mrow>
+        <mrow>
+          <msup>
+            <mi mathcolor="gray">cot</mi>
+            <mrow>
+              <mo form="prefix">&#x2212;</mo>
+              <mn>1</mn>
+            </mrow>
+          </msup>
+          <mo>&#x2061;</mo>
+          <mfenced open="(" close=")">
             <mi>&#x3b2;</mi>
-          </mrow>
-        </mfrac>
-        <mo>&#x2062;</mo>
-        <mfrac>
-          <mrow>
-            <mi mathcolor="gray">arccot</mi>
-            <mo>&#x2061;</mo>
-            <mfenced open="(" close=")">
-              <mi>&#x3b2;</mi>
-            </mfenced>
-          </mrow>
-          <mrow>
-            <msup>
-              <mi mathcolor="gray">cot</mi>
-              <mrow>
-                <mo form="prefix">&#x2212;</mo>
-                <mn>1</mn>
-              </mrow>
-            </msup>
-            <mo>&#x2061;</mo>
-            <mfenced open="(" close=")">
-              <mi>&#x3b2;</mi>
-            </mfenced>
-          </mrow>
-        </mfrac>
-      </mrow>
-      <mo form="infix">&#x2212;</mo>
-      <mrow>
-        <mfrac>
-          <mrow>
-            <mi mathcolor="gray">arcsec</mi>
-            <mo>&#x2061;</mo>
+          </mfenced>
+        </mrow>
+      </mfrac>
+    </mrow>
+    <mo form="infix">&#x2212;</mo>
+    <mrow>
+      <mfrac>
+        <mrow>
+          <mi mathcolor="gray">arcsec</mi>
+          <mo>&#x2061;</mo>
+          <mi>&#x3b2;</mi>
+        </mrow>
+        <mrow>
+          <msup>
+            <mi mathcolor="gray">sec</mi>
+            <mrow>
+              <mo form="prefix">&#x2212;</mo>
+              <mn>1</mn>
+            </mrow>
+          </msup>
+          <mo>&#x2061;</mo>
+          <mi>&#x3b2;</mi>
+        </mrow>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mfrac>
+        <mrow>
+          <mi mathcolor="gray">arcsec</mi>
+          <mo>&#x2061;</mo>
+          <mfenced open="(" close=")">
             <mi>&#x3b2;</mi>
-          </mrow>
-          <mrow>
-            <msup>
-              <mi mathcolor="gray">sec</mi>
-              <mrow>
-                <mo form="prefix">&#x2212;</mo>
-                <mn>1</mn>
-              </mrow>
-            </msup>
-            <mo>&#x2061;</mo>
+          </mfenced>
+        </mrow>
+        <mrow>
+          <msup>
+            <mi mathcolor="gray">sec</mi>
+            <mrow>
+              <mo form="prefix">&#x2212;</mo>
+              <mn>1</mn>
+            </mrow>
+          </msup>
+          <mo>&#x2061;</mo>
+          <mfenced open="(" close=")">
             <mi>&#x3b2;</mi>
-          </mrow>
-        </mfrac>
-        <mo>&#x2062;</mo>
-        <mfrac>
-          <mrow>
-            <mi mathcolor="gray">arcsec</mi>
-            <mo>&#x2061;</mo>
-            <mfenced open="(" close=")">
-              <mi>&#x3b2;</mi>
-            </mfenced>
-          </mrow>
-          <mrow>
-            <msup>
-              <mi mathcolor="gray">sec</mi>
-              <mrow>
-                <mo form="prefix">&#x2212;</mo>
-                <mn>1</mn>
-              </mrow>
-            </msup>
-            <mo>&#x2061;</mo>
-            <mfenced open="(" close=")">
-              <mi>&#x3b2;</mi>
-            </mfenced>
-          </mrow>
-        </mfrac>
-      </mrow>
+          </mfenced>
+        </mrow>
+      </mfrac>
     </mrow>
     <mo form="infix">&#x2212;</mo>
     <mfrac>
@@ -8483,14 +8389,12 @@ Test ID Op126
       <mo>&#x2061;</mo>
       <mfenced open="(" close=")">
         <mrow>
+          <mi>t</mi>
+          <mo>&#x2062;</mo>
           <mrow>
+            <mi mathcolor="gray">tanh</mi>
+            <mo>&#x2061;</mo>
             <mi>t</mi>
-            <mo>&#x2062;</mo>
-            <mrow>
-              <mi mathcolor="gray">tanh</mi>
-              <mo>&#x2061;</mo>
-              <mi>t</mi>
-            </mrow>
           </mrow>
           <mo>&#x2062;</mo>
           <mrow>
@@ -8522,124 +8426,118 @@ Test ID Op127
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">coth</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cosh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">coth</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cosh</mi>
           <mrow>
-            <mn>2</mn>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mrow>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mfrac>
+    <mo form="infix">+</mo>
+    <mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cosh</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>3</mn>
             <mo>&#x2062;</mo>
             <mi>x</mi>
           </mrow>
-        </mrow>
-      </mfrac>
-      <mo form="infix">+</mo>
+        </mfenced>
+      </mrow>
+      <mo>&#x2062;</mo>
       <mrow>
-        <mrow>
+        <msup>
+          <mi mathcolor="gray">sinh</mi>
           <mrow>
-            <msup>
-              <mi mathcolor="gray">cosh</mi>
-              <mrow>
-                <mo form="prefix">&#x2212;</mo>
-                <mn>1</mn>
-              </mrow>
-            </msup>
-            <mo>&#x2061;</mo>
-            <mfenced open="(" close=")">
-              <mrow>
-                <mn>3</mn>
-                <mo>&#x2062;</mo>
-                <mi>x</mi>
-              </mrow>
-            </mfenced>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
           </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mrow>
+          <mn>4</mn>
           <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sinh</mi>
           <mrow>
-            <msup>
-              <mi mathcolor="gray">sinh</mi>
-              <mrow>
-                <mo form="prefix">&#x2212;</mo>
-                <mn>1</mn>
-              </mrow>
-            </msup>
-            <mo>&#x2061;</mo>
-            <mrow>
-              <mn>4</mn>
-              <mo>&#x2062;</mo>
-              <mi>x</mi>
-            </mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
           </mrow>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sinh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mrow>
-              <mn>5</mn>
-              <mo>&#x2062;</mo>
-              <mi>x</mi>
-            </mrow>
-          </mfenced>
-        </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>5</mn>
+            <mo>&#x2062;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mfenced>
       </mrow>
     </mrow>
     <mo form="infix">+</mo>
     <mrow>
       <mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">tanh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        <msup>
+          <mi mathcolor="gray">tanh</mi>
           <mrow>
-            <mn>6</mn>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mrow>
+          <mn>6</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">tanh</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mn>7</mn>
             <mo>&#x2062;</mo>
             <mi>x</mi>
           </mrow>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">tanh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mrow>
-              <mn>7</mn>
-              <mo>&#x2062;</mo>
-              <mi>x</mi>
-            </mrow>
-          </mfenced>
-        </mrow>
+        </mfenced>
       </mrow>
       <mo>&#x2062;</mo>
       <mrow>
@@ -8663,30 +8561,26 @@ Test ID Op128
 <p>
 <math display="inline">
   <mrow>
-    <mrow>
+    <msup>
+      <mi>e</mi>
+      <mi>x</mi>
+    </msup>
+    <mo form="infix">+</mo>
+    <msup>
+      <mi>e</mi>
       <mrow>
-        <msup>
-          <mi>e</mi>
-          <mi>x</mi>
-        </msup>
-        <mo form="infix">+</mo>
-        <msup>
-          <mi>e</mi>
-          <mrow>
-            <mi mathcolor="gray">exp</mi>
-            <mo>&#x2061;</mo>
-            <mfenced open="(" close=")">
-              <mi>x</mi>
-            </mfenced>
-          </mrow>
-        </msup>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
-        <mi mathcolor="gray">log</mi>
+        <mi mathcolor="gray">exp</mi>
         <mo>&#x2061;</mo>
-        <mi>x</mi>
+        <mfenced open="(" close=")">
+          <mi>x</mi>
+        </mfenced>
       </mrow>
+    </msup>
+    <mo form="infix">+</mo>
+    <mrow>
+      <mi mathcolor="gray">log</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
     </mrow>
     <mo form="infix">+</mo>
     <mrow>
@@ -8857,31 +8751,27 @@ Test ID Op131
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
+    <msup>
+      <mi>f</mi>
+      <mo form="postfix">&#x2032;</mo>
+    </msup>
+    <mo form="infix">+</mo>
+    <msup>
+      <mi>f</mi>
       <mrow>
-        <msup>
-          <mi>f</mi>
-          <mo form="postfix">&#x2032;</mo>
-        </msup>
-        <mo form="infix">+</mo>
-        <msup>
-          <mi>f</mi>
-          <mrow>
-            <mo form="postfix">&#x2032;</mo>
-            <mo form="postfix">&#x2032;</mo>
-          </mrow>
-        </msup>
+        <mo form="postfix">&#x2032;</mo>
+        <mo form="postfix">&#x2032;</mo>
       </mrow>
-      <mo form="infix">+</mo>
-      <msup>
-        <mi>f</mi>
-        <mrow>
-          <mo form="postfix">&#x2032;</mo>
-          <mo form="postfix">&#x2032;</mo>
-          <mo form="postfix">&#x2032;</mo>
-        </mrow>
-      </msup>
-    </mrow>
+    </msup>
+    <mo form="infix">+</mo>
+    <msup>
+      <mi>f</mi>
+      <mrow>
+        <mo form="postfix">&#x2032;</mo>
+        <mo form="postfix">&#x2032;</mo>
+        <mo form="postfix">&#x2032;</mo>
+      </mrow>
+    </msup>
     <mo form="infix">+</mo>
     <msup>
       <mi>f</mi>
@@ -8965,38 +8855,34 @@ Test ID Op132b
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
-      <mrow>
+      <msub>
+        <mo form="prefix">&#x2145;</mo>
+        <mi>x</mi>
+      </msub>
+      <mi>f</mi>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <msub>
+        <mo form="prefix">&#x2145;</mo>
         <mrow>
-          <msub>
-            <mo form="prefix">&#x2145;</mo>
-            <mi>x</mi>
-          </msub>
-          <mi>f</mi>
+          <mi>x</mi>
+          <mo>&#x2063;</mo>
+          <mi>x</mi>
         </mrow>
-        <mo form="infix">+</mo>
-        <mrow>
-          <msub>
-            <mo form="prefix">&#x2145;</mo>
-            <mrow>
-              <mi>x</mi>
-              <mo>&#x2063;</mo>
-              <mi>x</mi>
-            </mrow>
-          </msub>
-          <mi>f</mi>
-        </mrow>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
-        <msub>
-          <mo form="prefix">&#x2145;</mo>
-          <msup>
-            <mi>x</mi>
-            <mn>2</mn>
-          </msup>
-        </msub>
-        <mi>f</mi>
-      </mrow>
+      </msub>
+      <mi>f</mi>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <msub>
+        <mo form="prefix">&#x2145;</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+      </msub>
+      <mi>f</mi>
     </mrow>
     <mo form="infix">+</mo>
     <mrow>
@@ -9025,35 +8911,33 @@ Test ID Op132c
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
-      <mrow>
-        <msub>
-          <mo form="prefix">D</mo>
+      <msub>
+        <mo form="prefix">D</mo>
+        <mi>x</mi>
+      </msub>
+      <mfenced open="(" close=")">
+        <msup>
           <mi>x</mi>
-        </msub>
-        <mfenced open="(" close=")">
-          <msup>
-            <mi>x</mi>
-            <mn>2</mn>
-          </msup>
-        </mfenced>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
-        <msub>
-          <mo form="prefix">D</mo>
-          <mrow>
-            <mi>x</mi>
-            <mo>&#x2063;</mo>
-            <mi>x</mi>
-          </mrow>
-        </msub>
-        <mfenced open="(" close=")">
-          <msup>
-            <mi>x</mi>
-            <mn>4</mn>
-          </msup>
-        </mfenced>
-      </mrow>
+          <mn>2</mn>
+        </msup>
+      </mfenced>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <msub>
+        <mo form="prefix">D</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>&#x2063;</mo>
+          <mi>x</mi>
+        </mrow>
+      </msub>
+      <mfenced open="(" close=")">
+        <msup>
+          <mi>x</mi>
+          <mn>4</mn>
+        </msup>
+      </mfenced>
     </mrow>
     <mo form="infix">+</mo>
     <mrow>
@@ -9219,53 +9103,47 @@ Test ID Op135a
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
       <mrow>
-        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
         <mrow>
+          <mi mathcolor="gray">sin</mi>
+          <mo>&#x2061;</mo>
+          <mi>x</mi>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
+      <mrow>
+        <mrow>
+          <mo form="prefix" largeop="true">&#x222b;</mo>
           <mrow>
-            <mi>x</mi>
+            <mi>y</mi>
             <mo>&#x2062;</mo>
             <mrow>
               <mi mathcolor="gray">sin</mi>
               <mo>&#x2061;</mo>
               <mi>x</mi>
             </mrow>
-          </mrow>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mo form="prefix">&#x2146;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mrow>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
-        <mo form="prefix" largeop="true">&#x222b;</mo>
-        <mrow>
-          <mrow>
-            <mo form="prefix" largeop="true">&#x222b;</mo>
+            <mo>&#x2062;</mo>
             <mrow>
-              <mrow>
-                <mi>y</mi>
-                <mo>&#x2062;</mo>
-                <mrow>
-                  <mi mathcolor="gray">sin</mi>
-                  <mo>&#x2061;</mo>
-                  <mi>x</mi>
-                </mrow>
-              </mrow>
-              <mo>&#x2062;</mo>
-              <mrow>
-                <mo form="prefix">&#x2146;</mo>
-                <mi>x</mi>
-              </mrow>
+              <mo form="prefix">&#x2146;</mo>
+              <mi>x</mi>
             </mrow>
           </mrow>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mo form="prefix">&#x2146;</mo>
-            <mi>y</mi>
-          </mrow>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>y</mi>
         </mrow>
       </mrow>
     </mrow>
@@ -9273,17 +9151,13 @@ Test ID Op135a
     <mrow>
       <mo form="prefix" largeop="true">&#x222c;</mo>
       <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+        <mo>&#x2062;</mo>
         <mrow>
-          <mrow>
-            <mi>x</mi>
-            <mo>&#x2062;</mo>
-            <mi>y</mi>
-          </mrow>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mo form="prefix">&#x2146;</mo>
-            <mi>x</mi>
-          </mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
         </mrow>
         <mo>&#x2062;</mo>
         <mrow>
@@ -9304,53 +9178,47 @@ Test ID Op135b
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
       <mrow>
-        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
         <mrow>
+          <mi mathcolor="gray">sin</mi>
+          <mo>&#x2061;</mo>
+          <mi>x</mi>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">d</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
+      <mrow>
+        <mrow>
+          <mo form="prefix" largeop="true">&#x222b;</mo>
           <mrow>
-            <mi>x</mi>
+            <mi>y</mi>
             <mo>&#x2062;</mo>
             <mrow>
               <mi mathcolor="gray">sin</mi>
               <mo>&#x2061;</mo>
               <mi>x</mi>
             </mrow>
-          </mrow>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mo form="prefix">d</mo>
-            <mi>x</mi>
-          </mrow>
-        </mrow>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
-        <mo form="prefix" largeop="true">&#x222b;</mo>
-        <mrow>
-          <mrow>
-            <mo form="prefix" largeop="true">&#x222b;</mo>
+            <mo>&#x2062;</mo>
             <mrow>
-              <mrow>
-                <mi>y</mi>
-                <mo>&#x2062;</mo>
-                <mrow>
-                  <mi mathcolor="gray">sin</mi>
-                  <mo>&#x2061;</mo>
-                  <mi>x</mi>
-                </mrow>
-              </mrow>
-              <mo>&#x2062;</mo>
-              <mrow>
-                <mo form="prefix">d</mo>
-                <mi>x</mi>
-              </mrow>
+              <mo form="prefix">d</mo>
+              <mi>x</mi>
             </mrow>
           </mrow>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mo form="prefix">d</mo>
-            <mi>y</mi>
-          </mrow>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">d</mo>
+          <mi>y</mi>
         </mrow>
       </mrow>
     </mrow>
@@ -9358,17 +9226,13 @@ Test ID Op135b
     <mrow>
       <mo form="prefix" largeop="true">&#x222c;</mo>
       <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+        <mo>&#x2062;</mo>
         <mrow>
-          <mrow>
-            <mi>x</mi>
-            <mo>&#x2062;</mo>
-            <mi>y</mi>
-          </mrow>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mo form="prefix">d</mo>
-            <mi>x</mi>
-          </mrow>
+          <mo form="prefix">d</mo>
+          <mi>x</mi>
         </mrow>
         <mo>&#x2062;</mo>
         <mrow>
@@ -9389,56 +9253,50 @@ Test ID Op135c
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
       <mrow>
-        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
         <mrow>
+          <mi mathcolor="gray">sin</mi>
+          <mo>&#x2061;</mo>
+          <mi>x</mi>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mi>d</mi>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
+      <mrow>
+        <mrow>
+          <mo form="prefix" largeop="true">&#x222b;</mo>
           <mrow>
-            <mi>x</mi>
+            <mi>y</mi>
             <mo>&#x2062;</mo>
             <mrow>
               <mi mathcolor="gray">sin</mi>
               <mo>&#x2061;</mo>
               <mi>x</mi>
             </mrow>
-          </mrow>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mi>d</mi>
             <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mrow>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
-        <mo form="prefix" largeop="true">&#x222b;</mo>
-        <mrow>
-          <mrow>
-            <mo form="prefix" largeop="true">&#x222b;</mo>
             <mrow>
-              <mrow>
-                <mi>y</mi>
-                <mo>&#x2062;</mo>
-                <mrow>
-                  <mi mathcolor="gray">sin</mi>
-                  <mo>&#x2061;</mo>
-                  <mi>x</mi>
-                </mrow>
-              </mrow>
+              <mi>d</mi>
               <mo>&#x2062;</mo>
-              <mrow>
-                <mi>d</mi>
-                <mo>&#x2062;</mo>
-                <mi>x</mi>
-              </mrow>
+              <mi>x</mi>
             </mrow>
           </mrow>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mi>d</mi>
           <mo>&#x2062;</mo>
-          <mrow>
-            <mi>d</mi>
-            <mo>&#x2062;</mo>
-            <mi>y</mi>
-          </mrow>
+          <mi>y</mi>
         </mrow>
       </mrow>
     </mrow>
@@ -9446,18 +9304,14 @@ Test ID Op135c
     <mrow>
       <mo form="prefix" largeop="true">&#x222c;</mo>
       <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+        <mo>&#x2062;</mo>
         <mrow>
-          <mrow>
-            <mi>x</mi>
-            <mo>&#x2062;</mo>
-            <mi>y</mi>
-          </mrow>
+          <mi>d</mi>
           <mo>&#x2062;</mo>
-          <mrow>
-            <mi>d</mi>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
+          <mi>x</mi>
         </mrow>
         <mo>&#x2062;</mo>
         <mrow>
@@ -9491,14 +9345,12 @@ Test ID Op136
           <mn>1</mn>
         </msubsup>
         <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
           <mrow>
-            <mi>y</mi>
-            <mo>&#x2062;</mo>
-            <mrow>
-              <mi mathcolor="gray">sin</mi>
-              <mo>&#x2061;</mo>
-              <mi>x</mi>
-            </mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
           </mrow>
           <mo>&#x2062;</mo>
           <mrow>
@@ -9525,82 +9377,60 @@ Test ID Op137
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mrow>
+      <mo form="prefix" largeop="true">&#x222d;</mo>
       <mrow>
-        <mo form="prefix" largeop="true">&#x222d;</mo>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+        <mo>&#x2062;</mo>
+        <mi>z</mi>
+        <mo>&#x2062;</mo>
         <mrow>
-          <mrow>
-            <mrow>
-              <mrow>
-                <mrow>
-                  <mi>x</mi>
-                  <mo>&#x2062;</mo>
-                  <mi>y</mi>
-                </mrow>
-                <mo>&#x2062;</mo>
-                <mi>z</mi>
-              </mrow>
-              <mo>&#x2062;</mo>
-              <mrow>
-                <mo form="prefix">&#x2146;</mo>
-                <mi>x</mi>
-              </mrow>
-            </mrow>
-            <mo>&#x2062;</mo>
-            <mrow>
-              <mo form="prefix">&#x2146;</mo>
-              <mi>y</mi>
-            </mrow>
-          </mrow>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mo form="prefix">&#x2146;</mo>
-            <mi>z</mi>
-          </mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>y</mi>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>z</mi>
         </mrow>
       </mrow>
-      <mo form="infix">+</mo>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <mo form="prefix" largeop="true">&#xe378;</mo>
       <mrow>
-        <mo form="prefix" largeop="true">&#xe378;</mo>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+        <mo>&#x2062;</mo>
+        <mi>z</mi>
+        <mo>&#x2062;</mo>
+        <mi>w</mi>
+        <mo>&#x2062;</mo>
         <mrow>
-          <mrow>
-            <mrow>
-              <mrow>
-                <mrow>
-                  <mrow>
-                    <mrow>
-                      <mi>x</mi>
-                      <mo>&#x2062;</mo>
-                      <mi>y</mi>
-                    </mrow>
-                    <mo>&#x2062;</mo>
-                    <mi>z</mi>
-                  </mrow>
-                  <mo>&#x2062;</mo>
-                  <mi>w</mi>
-                </mrow>
-                <mo>&#x2062;</mo>
-                <mrow>
-                  <mo form="prefix">&#x2146;</mo>
-                  <mi>x</mi>
-                </mrow>
-              </mrow>
-              <mo>&#x2062;</mo>
-              <mrow>
-                <mo form="prefix">&#x2146;</mo>
-                <mi>y</mi>
-              </mrow>
-            </mrow>
-            <mo>&#x2062;</mo>
-            <mrow>
-              <mo form="prefix">&#x2146;</mo>
-              <mi>z</mi>
-            </mrow>
-          </mrow>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mo form="prefix">&#x2146;</mo>
-            <mi>w</mi>
-          </mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>y</mi>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>z</mi>
+        </mrow>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>w</mi>
         </mrow>
       </mrow>
     </mrow>
@@ -9631,52 +9461,50 @@ Test ID Op140
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <mfenced ilk="enclosed-list" open="(" close=")">
-        <mrow>
-          <munder>
-            <mo mathcolor="gray" form="prefix" movablelimits="true">lim</mo>
-            <mrow>
-              <mi>x</mi>
-              <mo form="infix">&#x2192;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mrow>
+        <munder>
+          <mo mathcolor="gray" form="prefix" movablelimits="true">lim</mo>
+          <mrow>
+            <mi>x</mi>
+            <mo form="infix">&#x2192;</mo>
+            <mn>0</mn>
+          </mrow>
+        </munder>
+        <mfrac>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mi>x</mi>
+        </mfrac>
+      </mrow>
+    </mfenced>
+    <mo>&#x2062;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mrow>
+        <munder>
+          <mo mathcolor="gray" form="prefix" movablelimits="true">lim</mo>
+          <mrow>
+            <mi>x</mi>
+            <mo form="infix">&#x2192;</mo>
+            <msup>
               <mn>0</mn>
-            </mrow>
-          </munder>
-          <mfrac>
-            <mrow>
-              <mi mathcolor="gray">sin</mi>
-              <mo>&#x2061;</mo>
-              <mi>x</mi>
-            </mrow>
+              <mo>+</mo>
+            </msup>
+          </mrow>
+        </munder>
+        <mfrac>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
             <mi>x</mi>
-          </mfrac>
-        </mrow>
-      </mfenced>
-      <mo>&#x2062;</mo>
-      <mfenced ilk="enclosed-list" open="(" close=")">
-        <mrow>
-          <munder>
-            <mo mathcolor="gray" form="prefix" movablelimits="true">lim</mo>
-            <mrow>
-              <mi>x</mi>
-              <mo form="infix">&#x2192;</mo>
-              <msup>
-                <mn>0</mn>
-                <mo>+</mo>
-              </msup>
-            </mrow>
-          </munder>
-          <mfrac>
-            <mrow>
-              <mi mathcolor="gray">sin</mi>
-              <mo>&#x2061;</mo>
-              <mi>x</mi>
-            </mrow>
-            <mi>x</mi>
-          </mfrac>
-        </mrow>
-      </mfenced>
-    </mrow>
+          </mrow>
+          <mi>x</mi>
+        </mfrac>
+      </mrow>
+    </mfenced>
     <mo>&#x2062;</mo>
     <mfenced ilk="enclosed-list" open="(" close=")">
       <mrow>
@@ -9959,27 +9787,23 @@ Test ID Op160
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
+    <msup>
+      <mi>A</mi>
       <mrow>
-        <msup>
-          <mi>A</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo form="infix">+</mo>
-        <msup>
-          <mi>A</mi>
-          <mi>T</mi>
-        </msup>
+        <mo form="prefix">&#x2212;</mo>
+        <mn>1</mn>
       </mrow>
-      <mo form="infix">&#x2212;</mo>
-      <msup>
-        <mi>A</mi>
-        <mi>H</mi>
-      </msup>
-    </mrow>
+    </msup>
+    <mo form="infix">+</mo>
+    <msup>
+      <mi>A</mi>
+      <mi>T</mi>
+    </msup>
+    <mo form="infix">&#x2212;</mo>
+    <msup>
+      <mi>A</mi>
+      <mi>H</mi>
+    </msup>
     <mo form="infix">+</mo>
     <mrow>
       <mi>A</mi>
@@ -10003,30 +9827,26 @@ Test ID Op161
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <mrow>
-        <msub>
-          <mfenced open="&#x2016;" close="&#x2016;">
-            <mi>x</mi>
-          </mfenced>
-          <mn>1</mn>
-        </msub>
-        <mo>&#x2062;</mo>
-        <msub>
-          <mfenced open="&#x2016;" close="&#x2016;">
-            <mi>x</mi>
-          </mfenced>
-          <mi>n</mi>
-        </msub>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <msub>
-        <mfenced open="&#x2016;" close="&#x2016;">
-          <mi>x</mi>
-        </mfenced>
-        <mi>F</mi>
-      </msub>
-    </mrow>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mi>x</mi>
+      </mfenced>
+      <mn>1</mn>
+    </msub>
+    <mo>&#x2062;</mo>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mi>x</mi>
+      </mfenced>
+      <mi>n</mi>
+    </msub>
+    <mo>&#x2062;</mo>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mi>x</mi>
+      </mfenced>
+      <mi>F</mi>
+    </msub>
     <mo>&#x2062;</mo>
     <msub>
       <mfenced open="&#x2016;" close="&#x2016;">
@@ -10047,11 +9867,9 @@ Test ID Op170
   <mrow>
     <mo form="prefix">&#x2207;</mo>
     <mrow>
-      <mrow>
-        <mi>x</mi>
-        <mo>&#x2062;</mo>
-        <mi>y</mi>
-      </mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
       <mo>&#x2062;</mo>
       <mi>z</mi>
     </mrow>
@@ -10066,35 +9884,33 @@ Test ID Op171
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <msub>
-        <mfenced open="&#x2016;" close="&#x2016;">
-          <mfenced ilk="enclosed-list" open="(" close=")">
-            <mn>1</mn>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>3</mn>
-            </mrow>
-            <mn>4</mn>
-          </mfenced>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced ilk="enclosed-list" open="(" close=")">
+          <mn>1</mn>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>3</mn>
+          </mrow>
+          <mn>4</mn>
         </mfenced>
-        <mn>2</mn>
-      </msub>
-      <mo form="infix">+</mo>
-      <msub>
-        <mfenced open="&#x2016;" close="&#x2016;">
-          <mfenced ilk="enclosed-list" open="(" close=")">
-            <mn>1</mn>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>3</mn>
-            </mrow>
-            <mn>4</mn>
-          </mfenced>
+      </mfenced>
+      <mn>2</mn>
+    </msub>
+    <mo form="infix">+</mo>
+    <msub>
+      <mfenced open="&#x2016;" close="&#x2016;">
+        <mfenced ilk="enclosed-list" open="(" close=")">
+          <mn>1</mn>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>3</mn>
+          </mrow>
+          <mn>4</mn>
         </mfenced>
-        <mn>1</mn>
-      </msub>
-    </mrow>
+      </mfenced>
+      <mn>1</mn>
+    </msub>
     <mo form="infix">+</mo>
     <msub>
       <mfenced open="&#x2016;" close="&#x2016;">
@@ -10242,14 +10058,12 @@ Test ID Op176
     </msup>
     <mfenced open="(" close=")">
       <mrow>
-        <mrow>
-          <msup>
-            <mi>x</mi>
-            <mn>2</mn>
-          </msup>
-          <mo>&#x2062;</mo>
-          <mi>y</mi>
-        </mrow>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
         <mo>&#x2062;</mo>
         <msup>
           <mi>z</mi>
@@ -10345,106 +10159,96 @@ Test ID Op224
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
+    <mi mathcolor="gray">arcsin</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
     <mrow>
-      <mrow>
-        <mi mathcolor="gray">arcsin</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">sin</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">sin</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arccos</mi>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
-        </mrow>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
-    <mo form="infix">+</mo>
+    <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cos</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arccos</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">cos</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
+      <mi mathcolor="gray">arccos</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
     </mrow>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
     <mrow>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">cos</mi>
         <mrow>
-          <mi mathcolor="gray">arctan</mi>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-        <mo>&#x2062;</mo>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mi mathcolor="gray">arccos</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cos</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">tan</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <mi mathcolor="gray">arctan</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mrow>
+      <mi mathcolor="gray">arctan</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">tan</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mi mathcolor="gray">arctan</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
     <mo>&#x2062;</mo>
     <mrow>
@@ -10471,93 +10275,91 @@ Test ID Op225
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arccot</mi>
-          <mo>&#x2061;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arccot</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cot</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arccot</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cot</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cot</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-      </mfrac>
-      <mo>&#x2062;</mo>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arccot</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cot</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-      </mfrac>
-    </mrow>
-    <mo form="infix">&#x2212;</mo>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arcsec</mi>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+    </mfrac>
+  </mrow>
+  <mo form="infix">&#x2212;</mo>
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arcsec</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sec</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arcsec</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sec</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sec</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-      </mfrac>
-      <mo>&#x2062;</mo>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arcsec</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sec</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-      </mfrac>
-    </mrow>
+        </mfenced>
+      </mrow>
+    </mfrac>
   </mrow>
   <mo form="infix">&#x2212;</mo>
   <mfrac>
@@ -10642,14 +10444,12 @@ Test ID Op226
     <mo>&#x2061;</mo>
     <mfenced open="(" close=")">
       <mrow>
+        <mi>t</mi>
+        <mo>&#x2062;</mo>
         <mrow>
+          <mi mathcolor="gray">tanh</mi>
+          <mo>&#x2061;</mo>
           <mi>t</mi>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mi mathcolor="gray">tanh</mi>
-            <mo>&#x2061;</mo>
-            <mi>t</mi>
-          </mrow>
         </mrow>
         <mo>&#x2062;</mo>
         <mrow>
@@ -10679,124 +10479,118 @@ Test ID Op227
 <p>inverse sinh and cosh etc.</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mfrac>
-      <mrow>
-        <mi mathcolor="gray">coth</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">cosh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
+  <mfrac>
+    <mrow>
+      <mi mathcolor="gray">coth</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cosh</mi>
         <mrow>
-          <mn>2</mn>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mfrac>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cosh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>3</mn>
           <mo>&#x2062;</mo>
           <mi>x</mi>
         </mrow>
-      </mrow>
-    </mfrac>
-    <mo form="infix">+</mo>
+      </mfenced>
+    </mrow>
+    <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">sinh</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">cosh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mrow>
-              <mn>3</mn>
-              <mo>&#x2062;</mo>
-              <mi>x</mi>
-            </mrow>
-          </mfenced>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mn>4</mn>
         <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">sinh</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">sinh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mrow>
-            <mn>4</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">sinh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mrow>
-            <mn>5</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mfenced>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>5</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mfenced>
     </mrow>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
     <mrow>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tanh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
+      <msup>
+        <mi mathcolor="gray">tanh</mi>
         <mrow>
-          <mn>6</mn>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mn>6</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">tanh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>7</mn>
           <mo>&#x2062;</mo>
           <mi>x</mi>
         </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tanh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mrow>
-            <mn>7</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mfenced>
-      </mrow>
+      </mfenced>
     </mrow>
     <mo>&#x2062;</mo>
     <mrow>
@@ -10818,30 +10612,26 @@ Test ID Op228
 <p>exp log ln</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
+  <msup>
+    <mi>e</mi>
+    <mi>x</mi>
+  </msup>
+  <mo form="infix">+</mo>
+  <msup>
+    <mi>e</mi>
     <mrow>
-      <msup>
-        <mi>e</mi>
-        <mi>x</mi>
-      </msup>
-      <mo form="infix">+</mo>
-      <msup>
-        <mi>e</mi>
-        <mrow>
-          <mi mathcolor="gray">exp</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-      </msup>
-    </mrow>
-    <mo form="infix">+</mo>
-    <mrow>
-      <mi mathcolor="gray">log</mi>
+      <mi mathcolor="gray">exp</mi>
       <mo>&#x2061;</mo>
-      <mi>x</mi>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
+  </msup>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mi mathcolor="gray">log</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
@@ -11233,27 +11023,23 @@ Test ID Op260
 <p>transpose</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
+  <msup>
+    <mi>A</mi>
     <mrow>
-      <msup>
-        <mi>A</mi>
-        <mrow>
-          <mo form="prefix">&#x2212;</mo>
-          <mn>1</mn>
-        </mrow>
-      </msup>
-      <mo form="infix">+</mo>
-      <msup>
-        <mi>A</mi>
-        <mi>T</mi>
-      </msup>
+      <mo form="prefix">&#x2212;</mo>
+      <mn>1</mn>
     </mrow>
-    <mo form="infix">&#x2212;</mo>
-    <msup>
-      <mi>A</mi>
-      <mi>H</mi>
-    </msup>
-  </mrow>
+  </msup>
+  <mo form="infix">+</mo>
+  <msup>
+    <mi>A</mi>
+    <mi>T</mi>
+  </msup>
+  <mo form="infix">&#x2212;</mo>
+  <msup>
+    <mi>A</mi>
+    <mi>H</mi>
+  </msup>
   <mo form="infix">+</mo>
   <mrow>
     <mi>A</mi>
@@ -11275,37 +11061,33 @@ Test ID Op261
 <p>norm</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <msub>
-      <mfenced open="&#x2016;" close="&#x2016;">
-        <mi>x</mi>
-      </mfenced>
-      <mn>1</mn>
-    </msub>
-    <mo>&#x2062;</mo>
-    <msub>
-      <mfenced open="&#x2016;" close="&#x2016;">
-        <mi>x</mi>
-      </mfenced>
-      <mi>n</mi>
-    </msub>
-  </mrow>
+  <msub>
+    <mfenced open="&#x2016;" close="&#x2016;">
+      <mi>x</mi>
+    </mfenced>
+    <mn>1</mn>
+  </msub>
   <mo>&#x2062;</mo>
-  <mrow>
-    <msub>
-      <mfenced open="&#x2016;" close="&#x2016;">
-        <mi>x</mi>
-      </mfenced>
-      <mi>F</mi>
-    </msub>
-    <mo>&#x2062;</mo>
-    <msub>
-      <mfenced open="&#x2016;" close="&#x2016;">
-        <mi>x</mi>
-      </mfenced>
-      <mi>&#x221e;</mi>
-    </msub>
-  </mrow>
+  <msub>
+    <mfenced open="&#x2016;" close="&#x2016;">
+      <mi>x</mi>
+    </mfenced>
+    <mi>n</mi>
+  </msub>
+  <mo>&#x2062;</mo>
+  <msub>
+    <mfenced open="&#x2016;" close="&#x2016;">
+      <mi>x</mi>
+    </mfenced>
+    <mi>F</mi>
+  </msub>
+  <mo>&#x2062;</mo>
+  <msub>
+    <mfenced open="&#x2016;" close="&#x2016;">
+      <mi>x</mi>
+    </mfenced>
+    <mi>&#x221e;</mi>
+  </msub>
 </math>
 
 </p>
@@ -11356,106 +11138,96 @@ Test ID Op324
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
+    <mi mathcolor="gray">arcsin</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
     <mrow>
-      <mrow>
-        <mi mathcolor="gray">arcsin</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">sin</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">sin</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arccos</mi>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
-        </mrow>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
-    <mo form="infix">+</mo>
+    <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cos</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arccos</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">cos</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
+      <mi mathcolor="gray">arccos</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
     </mrow>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
     <mrow>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">cos</mi>
         <mrow>
-          <mi mathcolor="gray">arctan</mi>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-        <mo>&#x2062;</mo>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mi mathcolor="gray">arccos</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cos</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">tan</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <mi mathcolor="gray">arctan</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mrow>
+      <mi mathcolor="gray">arctan</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">tan</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mi mathcolor="gray">arctan</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
     <mo>&#x2062;</mo>
     <mrow>
@@ -11482,93 +11254,91 @@ Test ID Op325
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arccot</mi>
-          <mo>&#x2061;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arccot</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cot</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arccot</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cot</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cot</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-      </mfrac>
-      <mo>&#x2062;</mo>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arccot</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cot</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-      </mfrac>
-    </mrow>
-    <mo form="infix">&#x2212;</mo>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arcsec</mi>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+    </mfrac>
+  </mrow>
+  <mo form="infix">&#x2212;</mo>
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arcsec</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sec</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arcsec</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sec</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sec</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-      </mfrac>
-      <mo>&#x2062;</mo>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arcsec</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sec</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-      </mfrac>
-    </mrow>
+        </mfenced>
+      </mrow>
+    </mfrac>
   </mrow>
   <mo form="infix">&#x2212;</mo>
   <mfrac>
@@ -11653,14 +11423,12 @@ Test ID Op326
     <mo>&#x2061;</mo>
     <mfenced open="(" close=")">
       <mrow>
+        <mi>t</mi>
+        <mo>&#x2062;</mo>
         <mrow>
+          <mi mathcolor="gray">tanh</mi>
+          <mo>&#x2061;</mo>
           <mi>t</mi>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mi mathcolor="gray">tanh</mi>
-            <mo>&#x2061;</mo>
-            <mi>t</mi>
-          </mrow>
         </mrow>
         <mo>&#x2062;</mo>
         <mrow>
@@ -11690,124 +11458,118 @@ Test ID Op327
 <p>inverse sinh and cosh etc.</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mfrac>
-      <mrow>
-        <mi mathcolor="gray">coth</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">cosh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
+  <mfrac>
+    <mrow>
+      <mi mathcolor="gray">coth</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cosh</mi>
         <mrow>
-          <mn>2</mn>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mfrac>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cosh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>3</mn>
           <mo>&#x2062;</mo>
           <mi>x</mi>
         </mrow>
-      </mrow>
-    </mfrac>
-    <mo form="infix">+</mo>
+      </mfenced>
+    </mrow>
+    <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">sinh</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">cosh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mrow>
-              <mn>3</mn>
-              <mo>&#x2062;</mo>
-              <mi>x</mi>
-            </mrow>
-          </mfenced>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mn>4</mn>
         <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">sinh</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">sinh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mrow>
-            <mn>4</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">sinh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mrow>
-            <mn>5</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mfenced>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>5</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mfenced>
     </mrow>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
     <mrow>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tanh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
+      <msup>
+        <mi mathcolor="gray">tanh</mi>
         <mrow>
-          <mn>6</mn>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mn>6</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">tanh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>7</mn>
           <mo>&#x2062;</mo>
           <mi>x</mi>
         </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tanh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mrow>
-            <mn>7</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mfenced>
-      </mrow>
+      </mfenced>
     </mrow>
     <mo>&#x2062;</mo>
     <mrow>
@@ -11829,30 +11591,26 @@ Test ID Op328
 <p>exp log ln</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
+  <msup>
+    <mi>e</mi>
+    <mi>x</mi>
+  </msup>
+  <mo form="infix">+</mo>
+  <msup>
+    <mi>e</mi>
     <mrow>
-      <msup>
-        <mi>e</mi>
+      <mi mathcolor="gray">exp</mi>
+      <mo>&#x2062;</mo>
+      <mfenced open="(" close=")">
         <mi>x</mi>
-      </msup>
-      <mo form="infix">+</mo>
-      <msup>
-        <mi>e</mi>
-        <mrow>
-          <mi mathcolor="gray">exp</mi>
-          <mo>&#x2062;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-      </msup>
+      </mfenced>
     </mrow>
-    <mo form="infix">+</mo>
-    <mrow>
-      <mi mathcolor="gray">log</mi>
-      <mo>&#x2061;</mo>
-      <mi>x</mi>
-    </mrow>
+  </msup>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mi mathcolor="gray">log</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
@@ -12165,27 +11923,23 @@ Test ID Op360
 <p>transpose</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
+  <msup>
+    <mi>A</mi>
     <mrow>
-      <msup>
-        <mi>A</mi>
-        <mrow>
-          <mo form="prefix">&#x2212;</mo>
-          <mn>1</mn>
-        </mrow>
-      </msup>
-      <mo form="infix">+</mo>
-      <msup>
-        <mi>A</mi>
-        <mi>T</mi>
-      </msup>
+      <mo form="prefix">&#x2212;</mo>
+      <mn>1</mn>
     </mrow>
-    <mo form="infix">&#x2212;</mo>
-    <msup>
-      <mi>A</mi>
-      <mi>H</mi>
-    </msup>
-  </mrow>
+  </msup>
+  <mo form="infix">+</mo>
+  <msup>
+    <mi>A</mi>
+    <mi>T</mi>
+  </msup>
+  <mo form="infix">&#x2212;</mo>
+  <msup>
+    <mi>A</mi>
+    <mi>H</mi>
+  </msup>
   <mo form="infix">+</mo>
   <mrow>
     <mi>A</mi>
@@ -12207,37 +11961,33 @@ Test ID Op361
 <p>norm</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <msub>
-      <mfenced open="&#x2016;" close="&#x2016;">
-        <mi>x</mi>
-      </mfenced>
-      <mn>1</mn>
-    </msub>
-    <mo>&#x2062;</mo>
-    <msub>
-      <mfenced open="&#x2016;" close="&#x2016;">
-        <mi>x</mi>
-      </mfenced>
-      <mi>n</mi>
-    </msub>
-  </mrow>
+  <msub>
+    <mfenced open="&#x2016;" close="&#x2016;">
+      <mi>x</mi>
+    </mfenced>
+    <mn>1</mn>
+  </msub>
   <mo>&#x2062;</mo>
-  <mrow>
-    <msub>
-      <mfenced open="&#x2016;" close="&#x2016;">
-        <mi>x</mi>
-      </mfenced>
-      <mi>F</mi>
-    </msub>
-    <mo>&#x2062;</mo>
-    <msub>
-      <mfenced open="&#x2016;" close="&#x2016;">
-        <mi>x</mi>
-      </mfenced>
-      <mi>&#x221e;</mi>
-    </msub>
-  </mrow>
+  <msub>
+    <mfenced open="&#x2016;" close="&#x2016;">
+      <mi>x</mi>
+    </mfenced>
+    <mi>n</mi>
+  </msub>
+  <mo>&#x2062;</mo>
+  <msub>
+    <mfenced open="&#x2016;" close="&#x2016;">
+      <mi>x</mi>
+    </mfenced>
+    <mi>F</mi>
+  </msub>
+  <mo>&#x2062;</mo>
+  <msub>
+    <mfenced open="&#x2016;" close="&#x2016;">
+      <mi>x</mi>
+    </mfenced>
+    <mi>&#x221e;</mi>
+  </msub>
 </math>
 
 </p>
@@ -12248,23 +11998,21 @@ Test ID Op420
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <msup>
-        <mi mathcolor="gray">sin</mi>
-        <mn>2</mn>
-      </msup>
-      <mo>&#x2061;</mo>
-      <mi>&#x3b8;</mi>
-    </mrow>
-    <mo form="infix">+</mo>
-    <mrow>
-      <msup>
-        <mi mathcolor="gray">cos</mi>
-        <mn>2</mn>
-      </msup>
-      <mo>&#x2061;</mo>
-      <mi>&#x3b8;</mi>
-    </mrow>
+    <msup>
+      <mi mathcolor="gray">sin</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>&#x3b8;</mi>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <msup>
+      <mi mathcolor="gray">cos</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>&#x3b8;</mi>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
@@ -12427,106 +12175,96 @@ Test ID Op424
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
+    <mi mathcolor="gray">arcsin</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
     <mrow>
-      <mrow>
-        <mi mathcolor="gray">arcsin</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">sin</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">sin</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arccos</mi>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
-        </mrow>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
-    <mo form="infix">+</mo>
+    <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cos</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arccos</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">cos</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
+      <mi mathcolor="gray">arccos</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
     </mrow>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
     <mrow>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">cos</mi>
         <mrow>
-          <mi mathcolor="gray">arctan</mi>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-        <mo>&#x2062;</mo>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mi mathcolor="gray">arccos</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cos</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">tan</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <mi mathcolor="gray">arctan</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mrow>
+      <mi mathcolor="gray">arctan</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">tan</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mi mathcolor="gray">arctan</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
     <mo>&#x2062;</mo>
     <mrow>
@@ -12553,93 +12291,91 @@ Test ID Op425
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arccot</mi>
-          <mo>&#x2061;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arccot</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cot</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arccot</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cot</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cot</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-      </mfrac>
-      <mo>&#x2062;</mo>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arccot</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cot</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-      </mfrac>
-    </mrow>
-    <mo form="infix">&#x2212;</mo>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arcsec</mi>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+    </mfrac>
+  </mrow>
+  <mo form="infix">&#x2212;</mo>
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arcsec</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sec</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arcsec</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sec</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sec</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-      </mfrac>
-      <mo>&#x2062;</mo>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arcsec</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sec</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-      </mfrac>
-    </mrow>
+        </mfenced>
+      </mrow>
+    </mfrac>
   </mrow>
   <mo form="infix">&#x2212;</mo>
   <mfrac>
@@ -12724,14 +12460,12 @@ Test ID Op426
     <mo>&#x2061;</mo>
     <mfenced open="(" close=")">
       <mrow>
+        <mi>t</mi>
+        <mo>&#x2062;</mo>
         <mrow>
+          <mi mathcolor="gray">tanh</mi>
+          <mo>&#x2061;</mo>
           <mi>t</mi>
-          <mo>&#x2062;</mo>
-          <mrow>
-            <mi mathcolor="gray">tanh</mi>
-            <mo>&#x2061;</mo>
-            <mi>t</mi>
-          </mrow>
         </mrow>
         <mo>&#x2062;</mo>
         <mrow>
@@ -12761,124 +12495,118 @@ Test ID Op427
 <p>inverse sinh and cosh etc.</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mfrac>
-      <mrow>
-        <mi mathcolor="gray">coth</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">cosh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
+  <mfrac>
+    <mrow>
+      <mi mathcolor="gray">coth</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cosh</mi>
         <mrow>
-          <mn>2</mn>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mfrac>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cosh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>3</mn>
           <mo>&#x2062;</mo>
           <mi>x</mi>
         </mrow>
-      </mrow>
-    </mfrac>
-    <mo form="infix">+</mo>
+      </mfenced>
+    </mrow>
+    <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">sinh</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">cosh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mrow>
-              <mn>3</mn>
-              <mo>&#x2062;</mo>
-              <mi>x</mi>
-            </mrow>
-          </mfenced>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mn>4</mn>
         <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">sinh</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">sinh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mrow>
-            <mn>4</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">sinh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mrow>
-            <mn>5</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mfenced>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>5</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mfenced>
     </mrow>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
     <mrow>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tanh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
+      <msup>
+        <mi mathcolor="gray">tanh</mi>
         <mrow>
-          <mn>6</mn>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mn>6</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">tanh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>7</mn>
           <mo>&#x2062;</mo>
           <mi>x</mi>
         </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tanh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mrow>
-            <mn>7</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mfenced>
-      </mrow>
+      </mfenced>
     </mrow>
     <mo>&#x2062;</mo>
     <mrow>
@@ -12900,30 +12628,26 @@ Test ID Op428
 <p>exp log ln</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
+  <msup>
+    <mi>e</mi>
+    <mi>x</mi>
+  </msup>
+  <mo form="infix">+</mo>
+  <msup>
+    <mi>e</mi>
     <mrow>
-      <msup>
-        <mi>e</mi>
+      <mi mathcolor="gray">exp</mi>
+      <mo>&#x2062;</mo>
+      <mfenced open="(" close=")">
         <mi>x</mi>
-      </msup>
-      <mo form="infix">+</mo>
-      <msup>
-        <mi>e</mi>
-        <mrow>
-          <mi mathcolor="gray">exp</mi>
-          <mo>&#x2062;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-      </msup>
+      </mfenced>
     </mrow>
-    <mo form="infix">+</mo>
-    <mrow>
-      <mi mathcolor="gray">log</mi>
-      <mo>&#x2061;</mo>
-      <mi>x</mi>
-    </mrow>
+  </msup>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mi mathcolor="gray">log</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
@@ -13209,23 +12933,21 @@ Test ID Op520
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <msup>
-        <mi mathcolor="gray">sin</mi>
-        <mn>2</mn>
-      </msup>
-      <mo>&#x2061;</mo>
-      <mi>&#x3b8;</mi>
-    </mrow>
-    <mo>+</mo>
-    <mrow>
-      <msup>
-        <mi mathcolor="gray">cos</mi>
-        <mn>2</mn>
-      </msup>
-      <mo>&#x2061;</mo>
-      <mi>&#x3b8;</mi>
-    </mrow>
+    <msup>
+      <mi mathcolor="gray">sin</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>&#x3b8;</mi>
+  </mrow>
+  <mo>+</mo>
+  <mrow>
+    <msup>
+      <mi mathcolor="gray">cos</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>&#x3b8;</mi>
   </mrow>
   <mo>+</mo>
   <mrow>
@@ -13388,61 +13110,37 @@ Test ID Op524
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
+    <mi mathcolor="gray">arcsin</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
     <mrow>
-      <mrow>
-        <mi mathcolor="gray">arcsin</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">sin</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">sin</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arccos</mi>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
-        </mrow>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
-    <mo form="infix">+</mo>
+    <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cos</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arccos</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
+      <mi mathcolor="gray">arccos</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mrow>
       <mrow>
         <msup>
           <mi mathcolor="gray">cos</mi>
@@ -13452,56 +13150,71 @@ Test ID Op524
           </mrow>
         </msup>
         <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">arccos</mi>
+        <mo>&#x2061;</mo>
         <mfenced open="(" close=")">
           <mi>x</mi>
         </mfenced>
       </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cos</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
     <mrow>
-      <mrow>
-        <mi mathcolor="gray">arctan</mi>
-        <mo>&#x2061;</mo>
-        <mi>x</mi>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tan</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mi>x</mi>
-      </mrow>
+      <mi mathcolor="gray">arctan</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
     </mrow>
     <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
-        <mi mathcolor="gray">arctan</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tan</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
+      <msup>
+        <mi mathcolor="gray">tan</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mrow>
+      <mi mathcolor="gray">arctan</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">tan</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
   </mrow>
 </math>
@@ -13514,93 +13227,91 @@ Test ID Op525
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arccot</mi>
-          <mo>&#x2061;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arccot</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cot</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arccot</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cot</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cot</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-      </mfrac>
-      <mo>&#x2062;</mo>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arccot</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cot</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-      </mfrac>
-    </mrow>
-    <mo form="infix">&#x2212;</mo>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arcsec</mi>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+    </mfrac>
+  </mrow>
+  <mo form="infix">&#x2212;</mo>
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arcsec</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sec</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arcsec</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sec</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sec</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-      </mfrac>
-      <mo>&#x2062;</mo>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arcsec</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sec</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-      </mfrac>
-    </mrow>
+        </mfenced>
+      </mrow>
+    </mfrac>
   </mrow>
   <mo form="infix">&#x2212;</mo>
   <mfrac>
@@ -13722,124 +13433,118 @@ Test ID Op527
 <p>inverse sinh and cosh etc.</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mfrac>
-      <mrow>
-        <mi mathcolor="gray">coth</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">cosh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
+  <mfrac>
+    <mrow>
+      <mi mathcolor="gray">coth</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cosh</mi>
         <mrow>
-          <mn>2</mn>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mfrac>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cosh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>3</mn>
           <mo>&#x2062;</mo>
           <mi>x</mi>
         </mrow>
-      </mrow>
-    </mfrac>
-    <mo form="infix">+</mo>
+      </mfenced>
+    </mrow>
+    <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">sinh</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">cosh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mrow>
-              <mn>3</mn>
-              <mo>&#x2062;</mo>
-              <mi>x</mi>
-            </mrow>
-          </mfenced>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mn>4</mn>
         <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">sinh</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">sinh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mrow>
-            <mn>4</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">sinh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mrow>
-            <mn>5</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mfenced>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>5</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mfenced>
     </mrow>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
     <mrow>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tanh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
+      <msup>
+        <mi mathcolor="gray">tanh</mi>
         <mrow>
-          <mn>6</mn>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mrow>
+        <mn>6</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">tanh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mrow>
+          <mn>7</mn>
           <mo>&#x2062;</mo>
           <mi>x</mi>
         </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tanh</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mrow>
-            <mn>7</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mfenced>
-      </mrow>
+      </mfenced>
     </mrow>
     <mo>&#x2062;</mo>
     <mrow>
@@ -13861,30 +13566,26 @@ Test ID Op528
 <p>exp log ln</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
+  <msup>
+    <mi>e</mi>
+    <mi>x</mi>
+  </msup>
+  <mo>+</mo>
+  <msup>
+    <mi>e</mi>
     <mrow>
-      <msup>
-        <mi>e</mi>
+      <mi mathcolor="gray">exp</mi>
+      <mo>&#x2062;</mo>
+      <mfenced open="(" close=")">
         <mi>x</mi>
-      </msup>
-      <mo>+</mo>
-      <msup>
-        <mi>e</mi>
-        <mrow>
-          <mi mathcolor="gray">exp</mi>
-          <mo>&#x2062;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-      </msup>
+      </mfenced>
     </mrow>
-    <mo>+</mo>
-    <mrow>
-      <mi mathcolor="gray">log</mi>
-      <mo>&#x2061;</mo>
-      <mi>x</mi>
-    </mrow>
+  </msup>
+  <mo>+</mo>
+  <mrow>
+    <mi mathcolor="gray">log</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
   </mrow>
   <mo>+</mo>
   <mrow>
@@ -14216,61 +13917,37 @@ Test ID Op624
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
+    <mi mathcolor="gray">arcsin</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
     <mrow>
-      <mrow>
-        <mi mathcolor="gray">arcsin</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mo form="infix">+</mo>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">sin</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">sin</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arccos</mi>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
-        </mrow>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
-    <mo form="infix">+</mo>
+    <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cos</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arccos</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
+      <mi mathcolor="gray">arccos</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mrow>
       <mrow>
         <msup>
           <mi mathcolor="gray">cos</mi>
@@ -14280,56 +13957,71 @@ Test ID Op624
           </mrow>
         </msup>
         <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">arccos</mi>
+        <mo>&#x2061;</mo>
         <mfenced open="(" close=")">
           <mi>x</mi>
         </mfenced>
       </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cos</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
     <mrow>
-      <mrow>
-        <mi mathcolor="gray">arctan</mi>
-        <mo>&#x2061;</mo>
-        <mi>x</mi>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tan</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mi>x</mi>
-      </mrow>
+      <mi mathcolor="gray">arctan</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
     </mrow>
     <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
-        <mi mathcolor="gray">arctan</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tan</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
+      <msup>
+        <mi mathcolor="gray">tan</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mrow>
+      <mi mathcolor="gray">arctan</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">tan</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
   </mrow>
 </math>
@@ -14342,93 +14034,91 @@ Test ID Op625
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arccot</mi>
-          <mo>&#x2061;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arccot</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cot</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arccot</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cot</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cot</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-      </mfrac>
-      <mo>&#x2062;</mo>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arccot</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cot</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-      </mfrac>
-    </mrow>
-    <mo form="infix">&#x2212;</mo>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arcsec</mi>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+    </mfrac>
+  </mrow>
+  <mo form="infix">&#x2212;</mo>
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arcsec</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sec</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arcsec</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sec</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sec</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-      </mfrac>
-      <mo>&#x2062;</mo>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arcsec</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sec</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-      </mfrac>
-    </mrow>
+        </mfenced>
+      </mrow>
+    </mfrac>
   </mrow>
   <mo form="infix">&#x2212;</mo>
   <mfrac>
@@ -14550,15 +14240,33 @@ Test ID Op627
 <p>inverse sinh and cosh etc.</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mfrac>
+  <mfrac>
+    <mrow>
+      <mi mathcolor="gray">coth</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cosh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
       <mrow>
-        <mi mathcolor="gray">coth</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
       </mrow>
+    </mrow>
+  </mfrac>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mrow>
       <mrow>
         <msup>
           <mi mathcolor="gray">cosh</mi>
@@ -14568,49 +14276,13 @@ Test ID Op627
           </mrow>
         </msup>
         <mo>&#x2061;</mo>
-        <mrow>
-          <mn>2</mn>
-          <mo>&#x2062;</mo>
-          <mi>x</mi>
-        </mrow>
-      </mrow>
-    </mfrac>
-    <mo form="infix">+</mo>
-    <mrow>
-      <mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cosh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mrow>
-              <mn>3</mn>
-              <mo>&#x2062;</mo>
-              <mi>x</mi>
-            </mrow>
-          </mfenced>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sinh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mrow>
-            <mn>4</mn>
+            <mn>3</mn>
             <mo>&#x2062;</mo>
             <mi>x</mi>
           </mrow>
-        </mrow>
+        </mfenced>
       </mrow>
       <mo>&#x2062;</mo>
       <mrow>
@@ -14622,14 +14294,30 @@ Test ID Op627
           </mrow>
         </msup>
         <mo>&#x2061;</mo>
-        <mfenced ilk="enclosed-list" open="(" close=")">
-          <mrow>
-            <mn>5</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mfenced>
+        <mrow>
+          <mn>4</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
       </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">sinh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced ilk="enclosed-list" open="(" close=")">
+        <mrow>
+          <mn>5</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mfenced>
     </mrow>
   </mrow>
   <mo form="infix">+</mo>
@@ -14835,61 +14523,37 @@ Test ID Op724
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
+    <mi mathcolor="gray">arcsin</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mi>x</mi>
+    </mfenced>
+  </mrow>
+  <mo>+</mo>
+  <mrow>
     <mrow>
-      <mrow>
-        <mi mathcolor="gray">arcsin</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mo>+</mo>
-      <mrow>
+      <msup>
+        <mi mathcolor="gray">sin</mi>
         <mrow>
-          <msup>
-            <mi mathcolor="gray">sin</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
         </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arccos</mi>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
-        </mrow>
-      </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
-    <mo>+</mo>
+    <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cos</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mi>x</mi>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <mi mathcolor="gray">arccos</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>x</mi>
-          </mfenced>
-        </mrow>
-      </mrow>
-      <mo>&#x2062;</mo>
+      <mi mathcolor="gray">arccos</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+  </mrow>
+  <mo>+</mo>
+  <mrow>
+    <mrow>
       <mrow>
         <msup>
           <mi mathcolor="gray">cos</mi>
@@ -14899,56 +14563,71 @@ Test ID Op724
           </mrow>
         </msup>
         <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">arccos</mi>
+        <mo>&#x2061;</mo>
         <mfenced open="(" close=")">
           <mi>x</mi>
         </mfenced>
       </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cos</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
   </mrow>
   <mo form="infix">+</mo>
   <mrow>
     <mrow>
-      <mrow>
-        <mi mathcolor="gray">arctan</mi>
-        <mo>&#x2061;</mo>
-        <mi>x</mi>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tan</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mi>x</mi>
-      </mrow>
+      <mi mathcolor="gray">arctan</mi>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
     </mrow>
     <mo>&#x2062;</mo>
     <mrow>
-      <mrow>
-        <mi mathcolor="gray">arctan</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
-      <mo>&#x2062;</mo>
-      <mrow>
-        <msup>
-          <mi mathcolor="gray">tan</mi>
-          <mrow>
-            <mo form="prefix">&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-        </msup>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
-      </mrow>
+      <msup>
+        <mi mathcolor="gray">tan</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mrow>
+      <mi mathcolor="gray">arctan</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">tan</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
     </mrow>
   </mrow>
 </math>
@@ -14961,93 +14640,91 @@ Test ID Op725
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arccot</mi>
-          <mo>&#x2061;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arccot</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cot</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arccot</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cot</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">cot</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-      </mfrac>
-      <mo>&#x2062;</mo>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arccot</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cot</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-      </mfrac>
-    </mrow>
-    <mo form="infix">&#x2212;</mo>
-    <mrow>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arcsec</mi>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+    </mfrac>
+  </mrow>
+  <mo form="infix">&#x2212;</mo>
+  <mrow>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arcsec</mi>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sec</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mfrac>
+      <mrow>
+        <mi mathcolor="gray">arcsec</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sec</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        </mfenced>
+      </mrow>
+      <mrow>
+        <msup>
+          <mi mathcolor="gray">sec</mi>
+          <mrow>
+            <mo form="prefix">&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mi>&#x3b2;</mi>
-        </mrow>
-      </mfrac>
-      <mo>&#x2062;</mo>
-      <mfrac>
-        <mrow>
-          <mi mathcolor="gray">arcsec</mi>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sec</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mi>&#x3b2;</mi>
-          </mfenced>
-        </mrow>
-      </mfrac>
-    </mrow>
+        </mfenced>
+      </mrow>
+    </mfrac>
   </mrow>
   <mo form="infix">&#x2212;</mo>
   <mfrac>
@@ -15169,15 +14846,33 @@ Test ID Op727
 <p>inverse sinh and cosh etc.</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mfrac>
+  <mfrac>
+    <mrow>
+      <mi mathcolor="gray">coth</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cosh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
       <mrow>
-        <mi mathcolor="gray">coth</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
       </mrow>
+    </mrow>
+  </mfrac>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mrow>
       <mrow>
         <msup>
           <mi mathcolor="gray">cosh</mi>
@@ -15187,49 +14882,13 @@ Test ID Op727
           </mrow>
         </msup>
         <mo>&#x2061;</mo>
-        <mrow>
-          <mn>2</mn>
-          <mo>&#x2062;</mo>
-          <mi>x</mi>
-        </mrow>
-      </mrow>
-    </mfrac>
-    <mo form="infix">+</mo>
-    <mrow>
-      <mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cosh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced open="(" close=")">
-            <mrow>
-              <mn>3</mn>
-              <mo>&#x2062;</mo>
-              <mi>x</mi>
-            </mrow>
-          </mfenced>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sinh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
           <mrow>
-            <mn>4</mn>
+            <mn>3</mn>
             <mo>&#x2062;</mo>
             <mi>x</mi>
           </mrow>
-        </mrow>
+        </mfenced>
       </mrow>
       <mo>&#x2062;</mo>
       <mrow>
@@ -15241,14 +14900,30 @@ Test ID Op727
           </mrow>
         </msup>
         <mo>&#x2061;</mo>
-        <mfenced ilk="enclosed-list" open="(" close=")">
-          <mrow>
-            <mn>5</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mfenced>
+        <mrow>
+          <mn>4</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
       </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">sinh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced ilk="enclosed-list" open="(" close=")">
+        <mrow>
+          <mn>5</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mfenced>
     </mrow>
   </mrow>
   <mo form="infix">+</mo>
@@ -15444,15 +15119,33 @@ Test ID Op827
 <p>inverse sinh and cosh etc.</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mrow>
-    <mfrac>
+  <mfrac>
+    <mrow>
+      <mi mathcolor="gray">coth</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mi>x</mi>
+      </mfenced>
+    </mrow>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">cosh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
       <mrow>
-        <mi mathcolor="gray">coth</mi>
-        <mo>&#x2061;</mo>
-        <mfenced open="(" close=")">
-          <mi>x</mi>
-        </mfenced>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
       </mrow>
+    </mrow>
+  </mfrac>
+  <mo>+</mo>
+  <mrow>
+    <mrow>
       <mrow>
         <msup>
           <mi mathcolor="gray">cosh</mi>
@@ -15462,49 +15155,13 @@ Test ID Op827
           </mrow>
         </msup>
         <mo>&#x2061;</mo>
-        <mrow>
-          <mn>2</mn>
-          <mo>&#x2062;</mo>
-          <mi>x</mi>
-        </mrow>
-      </mrow>
-    </mfrac>
-    <mo>+</mo>
-    <mrow>
-      <mrow>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">cosh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
-          <mfenced ilk="enclosed-list" open="(" close=")">
-            <mrow>
-              <mn>3</mn>
-              <mo>&#x2062;</mo>
-              <mi>x</mi>
-            </mrow>
-          </mfenced>
-        </mrow>
-        <mo>&#x2062;</mo>
-        <mrow>
-          <msup>
-            <mi mathcolor="gray">sinh</mi>
-            <mrow>
-              <mo form="prefix">&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
-          </msup>
-          <mo>&#x2061;</mo>
+        <mfenced ilk="enclosed-list" open="(" close=")">
           <mrow>
-            <mn>4</mn>
+            <mn>3</mn>
             <mo>&#x2062;</mo>
             <mi>x</mi>
           </mrow>
-        </mrow>
+        </mfenced>
       </mrow>
       <mo>&#x2062;</mo>
       <mrow>
@@ -15516,14 +15173,30 @@ Test ID Op827
           </mrow>
         </msup>
         <mo>&#x2061;</mo>
-        <mfenced ilk="enclosed-list" open="(" close=")">
-          <mrow>
-            <mn>5</mn>
-            <mo>&#x2062;</mo>
-            <mi>x</mi>
-          </mrow>
-        </mfenced>
+        <mrow>
+          <mn>4</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
       </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <msup>
+        <mi mathcolor="gray">sinh</mi>
+        <mrow>
+          <mo form="prefix">&#x2212;</mo>
+          <mn>1</mn>
+        </mrow>
+      </msup>
+      <mo>&#x2061;</mo>
+      <mfenced ilk="enclosed-list" open="(" close=")">
+        <mrow>
+          <mn>5</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mfenced>
     </mrow>
   </mrow>
   <mo>+</mo>
