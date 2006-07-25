@@ -196,14 +196,12 @@ Test ID missingInvisibleTimes
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
+    <mn>1</mn>
+    <mo>-</mo>
     <mrow>
-      <mn>1</mn>
-      <mo>-</mo>
-      <mrow>
-        <mi msimathname="true">sin</mi>
-        <mo>&#x2061;</mo>
-        <mi>&#x3b8;</mi>
-      </mrow>
+      <mi msimathname="true">sin</mi>
+      <mo>&#x2061;</mo>
+      <mi>&#x3b8;</mi>
     </mrow>
     <mo>+</mo>
     <mrow>
@@ -229,14 +227,12 @@ Test ID missingInvisibleTimes
 <p>base-</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mn>1</mn>
+  <mo>-</mo>
   <mrow>
-    <mn>1</mn>
-    <mo>-</mo>
-    <mrow>
-      <mi msimathname="true">sin</mi>
-      <mo>&#x2061;</mo>
-      <mi>&#x3b8;</mi>
-    </mrow>
+    <mi msimathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mi>&#x3b8;</mi>
   </mrow>
   <mo>+</mo>
   <mrow>
