@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetAddPackage.dtd">
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <script type="application/x-javascript" src="chrome://prince/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/typesetAddPackage.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/ -->
+
+  <!-- keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset -->
+
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <!-- broadcasterset>
+    <broadcaster id="enableDecorationsAround" disabled="false"/>
+    <broadcaster id="enableDecorationsAboveBelow" disabled="false"/>
+  </broadcasterset -->
+	
+	<vbox>
+		<description value='&classLabel.label;'/>
+		<description id='classNameDescription'/>
+		<spacer flex='1'/>
+		<description value='&packagesLabel.label;' accesskey='&packagesLabel.accessKey;'/>
+		<listbox id='packagesListbox' datasources='chrome://prince/content/texOptions.rdf' ref='urn:texoptions:class:__className__:packages' onselect='checkDisabledControls();'>
+			<template>
+			  <listitem uri="rdf:*" label='rdf:http://www.sciword.com/namespaces/texoptions-rdf#name' value='http://www.sciword.com/namespaces/texoptions-rdf#optionValues'/>
+			</template>
+		</listbox>
+	</vbox>
+
+</dialog>
