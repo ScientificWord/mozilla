@@ -431,8 +431,8 @@ void Tree2StdMML::InsertInvisibleTimes(MNODE * dMML_list)
   while (rover) {
     bool do_insert = false;
     MNODE * candidate = rover;
+    rover = rover->next;
     if (NodeIsNumber(candidate) || NodeIsFactor(candidate)) {
-      rover = rover->next;
       if (!rover)
         break;
       if (NodeIsTrueNumber(candidate) && NodeIsRationalFraction(rover))
@@ -445,7 +445,6 @@ void Tree2StdMML::InsertInvisibleTimes(MNODE * dMML_list)
       InsertIT(candidate);
       AddOperatorInfo(candidate->next);
     }
-    rover = rover->next;
   }
 }
 
@@ -695,8 +694,61 @@ MNODE *Tree2StdMML::BindDelimitedIntegrals(MNODE * dMML_list)
 
 MNODE *Tree2StdMML::BindIntegral(MNODE * dMML_list)
 {
-  //TODO implement this!
-  return dMML_list;
+  MNODE * rv = dMML_list;
+  int n_integrals = GetIntegralCount(dMML_list);
+
+  bool is_delimited = false;
+  MNODE* dd_node = NULL;
+
+  bool done = false;
+  MNODE* i_rover = dMML_list;
+  while (i_rover && !done) {
+    i_rover = i_rover->next;
+    if (!i_rover)
+      break;
+
+    if (NodeIsIntegral(i_rover)) { // Handle nested integrals recursively
+      MNODE* tmp = BindIntegral(i_rover);
+	    if (tmp)
+	      i_rover =  tmp;
+	  } else {	// non-nested integral clause
+		  if (NodeIsDifferential(i_rover)) {
+        dd_node = i_rover;
+			  if (i_rover->next) {
+				  i_rover = i_rover->next;
+        n_integrals--;
+  	    while (n_integrals) {
+			    if (i_rover->next) {
+			      if (NodeIsDifferential(i_rover)) {
+			        i_rover = i_rover->next;
+			        n_integrals--;
+				    } else {
+				      i_rover = i_rover->next;
+					  }
+          } else {
+				    break;
+          }
+			  }
+        is_delimited = true;
+			  done = true;
+				}
+      }
+    }
+  }
+
+  // At this point, we've spanned \int ... dx
+  if (is_delimited) {		// we nest
+    MNODE *arg = dMML_list->next;
+    MNODE * new_row = MakeMROW(arg, i_rover);  // bind integrand
+    if (new_row != arg) {
+      FinishFixup(new_row->first_kid);
+    }
+    new_row = MakeMROW(dMML_list, new_row);  // bind integral
+    if (new_row != dMML_list)
+      rv = new_row;
+  }
+
+  return rv;
 }
 
 // finish MathML bindings
@@ -1436,6 +1488,42 @@ bool Tree2StdMML::NodeIsIntegral(MNODE * mml_node)
     }
   }
   return false;
+}
+
+int Tree2StdMML::GetIntegralCount(MNODE * mml_node)
+{
+  if (strcmp(mml_node->src_tok,"mo"))
+    return 0;
+  //TODO sync with above
+  char *ptr = strstr(mml_node->p_chdata, "&#x");
+  if (ptr) {
+    U32 unicode = ASCII2U32(ptr + 3, 16);
+    switch (unicode) {
+      case 0x222b: //&int;<uID7.1.1>prefix,31,U0222B
+        return 1;
+      case 0x222c: //&Int;<uID7.1.2>prefix,31,U0222C
+        return 2;
+      case 0x222d: //&tint;<uID7.1.3>prefix,31,U0222D
+        return 3;
+      case 0x2a0c: //&qint;<uID7.1.4>prefix,31,U02A0C
+        return 4;
+      case 0x222e: //&conint;<uID7.1.6>prefix,31,U0222E
+        return 1;
+    }
+  }
+  return 0;
+}
+
+bool Tree2StdMML::NodeIsDifferential(MNODE * mml_node)
+{
+  if (!strcmp(mml_node->src_tok,"mrow"))
+    return NodeIsDifferential(mml_node->first_kid);
+  else if (!strcmp(mml_node->src_tok,"mo"))
+    return !strcmp(mml_node->p_chdata,"&#x2146;"); // differentiald
+  else if (!strcmp(mml_node->src_tok,"mi"))
+    return !strcmp(mml_node->p_chdata,"d");
+  else
+    return false;
 }
 
 // Quite different from the corresponding function in LTeX2MML.cpp
