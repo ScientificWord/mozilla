@@ -392,17 +392,15 @@ Test ID fixup defineit
   </mrow>
   <mo form="infix">=</mo>
   <mrow>
+    <msup>
+      <mi>x</mi>
+      <mn>2</mn>
+    </msup>
+    <mo form="infix">&#x2212;</mo>
     <mrow>
-      <msup>
-        <mi>x</mi>
-        <mn>2</mn>
-      </msup>
-      <mo form="infix">&#x2212;</mo>
-      <mrow>
-        <mn>2</mn>
-        <mo>&#x2062;</mo>
-        <mi>x</mi>
-      </mrow>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mi>x</mi>
     </mrow>
     <mo form="infix">+</mo>
     <mn>1</mn>
@@ -807,17 +805,15 @@ Test ID fixup undefineit
   </mrow>
   <mo form="infix">=</mo>
   <mrow>
+    <msup>
+      <mi>x</mi>
+      <mn>2</mn>
+    </msup>
+    <mo form="infix">&#x2212;</mo>
     <mrow>
-      <msup>
-        <mi>x</mi>
-        <mn>2</mn>
-      </msup>
-      <mo form="infix">&#x2212;</mo>
-      <mrow>
-        <mn>2</mn>
-        <mo>&#x2062;</mo>
-        <mi>x</mi>
-      </mrow>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mi>x</mi>
     </mrow>
     <mo form="infix">+</mo>
     <mn>1</mn>
