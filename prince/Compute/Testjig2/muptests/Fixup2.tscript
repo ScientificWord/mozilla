@@ -1265,6 +1265,45 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     212+
+Comment     nested
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mrow>
+         <mn>5</mn>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix" largeop="true">&int;</mo>
+           <mrow>
+             <msqrt>
+               <mn>1</mn>
+               <mo form="infix">&minus;</mo>
+               <mrow>
+                 <msup>
+                   <mi mathcolor="gray">sin</mi>
+                   <mn>2</mn>
+                 </msup>
+                 <mo>&ApplyFunction;</mo>
+                 <mi>x</mi>
+               </mrow>
+             </msqrt>
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mo form="prefix">&dd;</mo>
+               <mi>x</mi>
+             </mrow>
+           </mrow>
+         </mrow>
+       </mrow>
+       <mo>+</mo>
+       <mn>2</mn>
+     </mrow>
+   </math>
+End of test
+
 Test ID     213
 Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>&InvisibleTimes;</mo><mi>x</mi><mo>&InvisibleTimes;</mo><msup><mi>y</mi><mn>2</mn></msup></mrow><mo form="infix">&minus;</mo><mrow><mi>y</mi><mo>&InvisibleTimes;</mo><mrow><mi mathcolor="gray">cos</mi><mo>&ApplyFunction;</mo><mi>x</mi></mrow></mrow></math>
 Client ID   1
@@ -1291,6 +1330,48 @@ Command ID	Fixup
          <mrow>
            <mo form="prefix">&dd;</mo>
            <mi>x</mi>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     213i
+Comment     2 int not 1 Int
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" largeop="true">&int;</mo>
+           <mrow>
+             <mrow>
+               <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+                 <mrow>
+                   <mi>y</mi>
+                   <mo form="infix">+</mo>
+                   <mrow>
+                     <mi mathcolor="gray">sin</mi>
+                     <mo>&ApplyFunction;</mo>
+                     <mi>x</mi>
+                   </mrow>
+                 </mrow>
+               <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+             </mrow>
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mo form="prefix">&dd;</mo>
+               <mi>x</mi>
+             </mrow>
+           </mrow>
          </mrow>
          <mo>&InvisibleTimes;</mo>
          <mrow>
@@ -4126,6 +4207,43 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     212+.2
+Comment     nested
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>5</mn>
+       <mo>&InvisibleTimes;</mo>
+       <mrow>
+         <mo form="prefix" largeop="true">&int;</mo>
+         <mrow>
+           <msqrt>
+             <mn>1</mn>
+             <mo form="infix">&minus;</mo>
+             <mrow>
+               <msup>
+                 <mi mathcolor="gray">sin</mi>
+                 <mn>2</mn>
+               </msup>
+               <mo>&ApplyFunction;</mo>
+               <mi>x</mi>
+             </mrow>
+           </msqrt>
+           <mo>&InvisibleTimes;</mo>
+           <mrow>
+             <mo form="prefix">&dd;</mo>
+             <mi>x</mi>
+           </mrow>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo>+</mo>
+     <mn>2</mn>
+   </math>
+End of test
+
 Test ID     213.2
 Client ID   1
 Engine      MuPAD
@@ -4150,6 +4268,46 @@ Command ID	Fixup
        <mrow>
          <mo form="prefix">&dd;</mo>
          <mi>x</mi>
+       </mrow>
+       <mo>&InvisibleTimes;</mo>
+       <mrow>
+         <mo form="prefix">&dd;</mo>
+         <mi>y</mi>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     213i.2
+Comment     2 int not 1 Int
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo form="prefix" largeop="true">&int;</mo>
+     <mrow>
+       <mrow>
+         <mo form="prefix" largeop="true">&int;</mo>
+         <mrow>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+               <mrow>
+                 <mi>y</mi>
+                 <mo form="infix">+</mo>
+                 <mrow>
+                   <mi mathcolor="gray">sin</mi>
+                   <mo>&ApplyFunction;</mo>
+                   <mi>x</mi>
+                 </mrow>
+               </mrow>
+             <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+           </mrow>
+           <mo>&InvisibleTimes;</mo>
+           <mrow>
+             <mo form="prefix">&dd;</mo>
+             <mi>x</mi>
+           </mrow>
+         </mrow>
        </mrow>
        <mo>&InvisibleTimes;</mo>
        <mrow>
@@ -6549,6 +6707,30 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     212+.3
+Comment     nested
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>5</mn>
+     <mo form="prefix" largeop="true">&int;</mo>
+     <msqrt>
+       <mn>1</mn>
+       <mo form="infix">&minus;</mo>
+       <msup>
+         <mi mathcolor="gray">sin</mi>
+         <mn>2</mn>
+       </msup>
+       <mi>x</mi>
+     </msqrt>
+     <mo form="prefix">&dd;</mo>
+     <mi>x</mi>
+     <mo>+</mo>
+     <mn>2</mn>
+   </math>
+End of test
+
 Test ID     213.3
 Client ID   1
 Engine      MuPAD
@@ -6560,6 +6742,27 @@ Command ID	Fixup
        <mo>+</mo>
        <mi mathcolor="gray">sin</mi>
        <mi>x</mi>
+     <mo>)</mo>
+     <mo>&dd;</mo>
+     <mi>x</mi>
+     <mo>&dd;</mo>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     213i.3
+Comment     2 int not 1 Int
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo largeop="true">&int;</mo>
+     <mo largeop="true">&int;</mo>
+     <mo>(</mo>
+     <mi>y</mi>
+     <mo>+</mo>
+     <mi mathcolor="gray">sin</mi>
+     <mi>x</mi>
      <mo>)</mo>
      <mo>&dd;</mo>
      <mi>x</mi>
