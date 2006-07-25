@@ -1,0 +1,16 @@
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Keys from __fileName__">
+
+<!ENTITY entriesListboxDescription.label "__numKeys__ keys">
+<!ENTITY entriesListboxDescription.accessKey "k">
+<!ENTITY entryHeader.label "Entry">
+
+<!ENTITY filtersDescription.label "Filters:">
+<!ENTITY matchExpressionDescription.label "Field '__fieldName__' matches: '__matchExpression__'">
+<!ENTITY keyFiltersButton.label "Key Filters...">
+<!ENTITY keyFiltersButton.accessKey "F">
+<!ENTITY viewEntryButton.label "View Entry...">
+<!ENTITY viewEntryButton.accessKey "V">
+
+<!-- <!ENTITY .tooltip "">  -->
