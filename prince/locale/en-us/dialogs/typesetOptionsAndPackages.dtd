@@ -1,0 +1,30 @@
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Options and Packages">
+
+<!ENTITY classOptionsTab.label "Class Options">
+<!ENTITY packageOptionsTab.label "Package Options">
+<!ENTITY classDescription.label "LaTeX documentclass is __classname__.">
+<!ENTITY classDescription.templateStr "__classname__">
+<!ENTITY classOptions.label "Options are:">
+<!ENTITY packagesInUse.label "Packages in use:">
+<!ENTITY packagesInUse.accessKey "P">
+<!ENTITY moveUpButton.label "Move Up">
+<!ENTITY moveUpButton.accessKey "U">
+<!ENTITY moveDownButton.label "Move Down">
+<!ENTITY moveDownButton.accessKey "D">
+<!ENTITY addPackageButton.label "Add Package...">
+<!ENTITY addPackageButton.accessKey "A">
+<!ENTITY removePackageButton.label "Remove Package...">
+<!ENTITY removePackageButton.accessKey "R">
+<!ENTITY goNativeButton.label "Go Native...">
+<!ENTITY goNativeButton.accessKey "N">
+<!ENTITY modifyPackageButton.label "Modify Package...">
+<!ENTITY modifyPackageButton.accessKey "M">
+<!ENTITY modifyClassOptionsButton.label "Modify...">
+<!ENTITY modifyClassOptionsButton.accessKey "M">
+<!ENTITY currentPackageDescription.label "Currently Selected Options for the Package __packagename__">
+<!ENTITY currentPackageDescription.templateStr "__packagename__">
+   
+
+<!-- <!ENTITY .tooltip "">  -->
