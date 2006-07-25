@@ -38,6 +38,7 @@ public:
 
 private:
   nsCOMPtr<msiISimpleComputeEngine> mysample;
+  nsString lastresult;
 };
 
 int ProcessTestScript(CompEngine &aEngine, const char *aFile);
@@ -278,7 +279,11 @@ int CompEngine::DoComputation(FILE * outfile,
 {
   NS_ASSERTION(client_ID == 1, "don't know how to switch clients");
 
-  nsAutoString wide_markup = NS_ConvertUTF8toUTF16(src_markup);
+  nsAutoString wide_markup;
+  if (src_markup.Equals(NS_LITERAL_CSTRING("  <math>%</math>")))  // magic token
+    wide_markup = lastresult;
+  else
+    wide_markup = NS_ConvertUTF8toUTF16(src_markup);
   nsAutoString arg, arg2, arg3, arg4, arg5;
   PRUnichar* res_str;
   U32 res = 0;
@@ -596,6 +601,7 @@ int CompEngine::DoComputation(FILE * outfile,
           fputs(res.get(), outfile);
           fputs("\n</p>\n", outfile);
         }
+        lastresult = res_str;
         break;
 
       default:
@@ -611,6 +617,7 @@ int CompEngine::DoComputation(FILE * outfile,
     fputs("<p>\n", outfile);
     fputs(res.get(), outfile);
     fputs("\n</p>\n", outfile);
+    lastresult = res_str;
   }
   return res;
 }
