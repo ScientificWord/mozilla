@@ -12058,6 +12058,233 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     Op235a
+Comment     integrals 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mi mathcolor="gray">sin</mi>
+           <mo>&ApplyFunction;</mo>
+           <mi>x</mi>
+         </mrow>
+         <mspace width="thinmathspace" />
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>x</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" largeop="true">&int;</mo>
+           <mrow>
+             <mi>y</mi>
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mi mathcolor="gray">sin</mi>
+               <mo>&ApplyFunction;</mo>
+               <mi>x</mi>
+             </mrow>
+             <mspace width="thinmathspace" />
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mo form="prefix">&dd;</mo>
+               <mi>x</mi>
+             </mrow>
+           </mrow>
+         </mrow>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&Int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mi>y</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>x</mi>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     Op235b
+Comment     integrals with mo d 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mi mathcolor="gray">sin</mi>
+           <mo>&ApplyFunction;</mo>
+           <mi>x</mi>
+         </mrow>
+         <mspace width="thinmathspace" />
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">d</mo>
+           <mi>x</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" largeop="true">&int;</mo>
+           <mrow>
+             <mi>y</mi>
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mi mathcolor="gray">sin</mi>
+               <mo>&ApplyFunction;</mo>
+               <mi>x</mi>
+             </mrow>
+             <mspace width="thinmathspace" />
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mo form="prefix">d</mo>
+               <mi>x</mi>
+             </mrow>
+           </mrow>
+         </mrow>
+         <mrow>
+           <mo form="prefix">d</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&Int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mi>y</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">d</mo>
+           <mi>x</mi>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">d</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     Op235c
+Comment     integrals with mi d 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mi mathcolor="gray">sin</mi>
+           <mo>&ApplyFunction;</mo>
+           <mi>x</mi>
+         </mrow>
+         <mspace width="thinmathspace" />
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mi>d</mi>
+           <mo>&InvisibleTimes;</mo>
+           <mi>x</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" largeop="true">&int;</mo>
+           <mrow>
+             <mi>y</mi>
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mi mathcolor="gray">sin</mi>
+               <mo>&ApplyFunction;</mo>
+               <mi>x</mi>
+             </mrow>
+             <mspace width="thinmathspace" />
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mi>d</mi>
+               <mo>&InvisibleTimes;</mo>
+               <mi>x</mi>
+             </mrow>
+           </mrow>
+         </mrow>
+         <mrow>
+           <mi>d</mi>
+           <mo>&InvisibleTimes;</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&Int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mi>y</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mi>d</mi>
+           <mo>&InvisibleTimes;</mo>
+           <mi>x</mi>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mi>d</mi>
+           <mo>&InvisibleTimes;</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
 Test ID     Op240
 Comment     limits 
 Client ID   1
@@ -13052,6 +13279,227 @@ Command ID	Fixup
        </mrow>
        <mn>2</mn>
      </msup>
+   </math>
+End of test
+
+Test ID     Op335a
+Comment     integrals 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mi mathcolor="gray">sin</mi>
+           <mo>&ApplyFunction;</mo>
+           <mi>x</mi>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>x</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" largeop="true">&int;</mo>
+           <mrow>
+             <mi>y</mi>
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mi mathcolor="gray">sin</mi>
+               <mo>&ApplyFunction;</mo>
+               <mi>x</mi>
+             </mrow>
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mo form="prefix">&dd;</mo>
+               <mi>x</mi>
+             </mrow>
+           </mrow>
+         </mrow>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&Int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mi>y</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>x</mi>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     Op335b
+Comment     integrals with mo d 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mi mathcolor="gray">sin</mi>
+           <mo>&ApplyFunction;</mo>
+           <mi>x</mi>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">d</mo>
+           <mi>x</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" largeop="true">&int;</mo>
+           <mrow>
+             <mi>y</mi>
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mi mathcolor="gray">sin</mi>
+               <mo>&ApplyFunction;</mo>
+               <mi>x</mi>
+             </mrow>
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mo form="prefix">d</mo>
+               <mi>x</mi>
+             </mrow>
+           </mrow>
+         </mrow>
+         <mrow>
+           <mo form="prefix">d</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&Int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mi>y</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">d</mo>
+           <mi>x</mi>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix">d</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     Op335c
+Comment     integrals with mi d 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mi mathcolor="gray">sin</mi>
+           <mo>&ApplyFunction;</mo>
+           <mi>x</mi>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mi>d</mi>
+           <mo>&InvisibleTimes;</mo>
+           <mi>x</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" largeop="true">&int;</mo>
+           <mrow>
+             <mi>y</mi>
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mi mathcolor="gray">sin</mi>
+               <mo>&ApplyFunction;</mo>
+               <mi>x</mi>
+             </mrow>
+             <mo>&InvisibleTimes;</mo>
+             <mrow>
+               <mi>d</mi>
+               <mo>&InvisibleTimes;</mo>
+               <mi>x</mi>
+             </mrow>
+           </mrow>
+         </mrow>
+         <mrow>
+           <mi>d</mi>
+           <mo>&InvisibleTimes;</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&Int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mi>y</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mi>d</mi>
+           <mo>&InvisibleTimes;</mo>
+           <mi>x</mi>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mi>d</mi>
+           <mo>&InvisibleTimes;</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
    </math>
 End of test
 
@@ -14078,6 +14526,195 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     Op435a
+Comment     integrals 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mrow>
+           <mi mathcolor="gray">sin</mi>
+           <mi>x</mi>
+         </mrow>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>x</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" largeop="true">&int;</mo>
+           <mrow>
+             <mi>y</mi>
+             <mrow>
+               <mi mathcolor="gray">sin</mi>
+               <mi>x</mi>
+             </mrow>
+             <mrow>
+               <mo form="prefix">&dd;</mo>
+               <mi>x</mi>
+             </mrow>
+           </mrow>
+         </mrow>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&Int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mi>y</mi>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>x</mi>
+         </mrow>
+         <mrow>
+           <mo form="prefix">&dd;</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     Op435b
+Comment     integrals with mo d 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mrow>
+           <mi mathcolor="gray">sin</mi>
+           <mi>x</mi>
+         </mrow>
+         <mrow>
+           <mo form="prefix">d</mo>
+           <mi>x</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" largeop="true">&int;</mo>
+           <mrow>
+             <mi>y</mi>
+             <mrow>
+               <mi mathcolor="gray">sin</mi>
+               <mi>x</mi>
+             </mrow>
+             <mrow>
+               <mo form="prefix">d</mo>
+               <mi>x</mi>
+             </mrow>
+           </mrow>
+         </mrow>
+         <mrow>
+           <mo form="prefix">d</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&Int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mi>y</mi>
+         <mrow>
+           <mo form="prefix">d</mo>
+           <mi>x</mi>
+         </mrow>
+         <mrow>
+           <mo form="prefix">d</mo>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     Op435c
+Comment     integrals with mi d 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mrow>
+           <mi mathcolor="gray">sin</mi>
+           <mi>x</mi>
+         </mrow>
+         <mrow>
+           <mi>d</mi>
+           <mi>x</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" largeop="true">&int;</mo>
+           <mrow>
+             <mi>y</mi>
+             <mrow>
+               <mi mathcolor="gray">sin</mi>
+               <mi>x</mi>
+             </mrow>
+             <mrow>
+               <mi>d</mi>
+               <mi>x</mi>
+             </mrow>
+           </mrow>
+         </mrow>
+         <mrow>
+           <mi>d</mi>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mrow>
+       <mo form="prefix" largeop="true">&Int;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mi>y</mi>
+         <mrow>
+           <mi>d</mi>
+           <mi>x</mi>
+         </mrow>
+         <mrow>
+           <mi>d</mi>
+           <mi>y</mi>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
 Test ID     Op440
 Comment     limits 
 Client ID   1
@@ -14915,6 +15552,177 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     Op535a
+Comment     integrals 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" largeop="true">&int;</mo>
+     <mrow>
+       <mi>x</mi>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mi>x</mi>
+       </mrow>
+       <mrow>
+         <mo form="prefix">&dd;</mo>
+         <mi>x</mi>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&int;</mo>
+     <mrow>
+       <mrow>
+         <mo form="prefix" largeop="true">&int;</mo>
+         <mrow>
+           <mi>y</mi>
+           <mrow>
+             <mi mathcolor="gray">sin</mi>
+             <mi>x</mi>
+           </mrow>
+           <mrow>
+             <mo form="prefix">&dd;</mo>
+             <mi>x</mi>
+           </mrow>
+         </mrow>
+       </mrow>
+       <mrow>
+         <mo form="prefix">&dd;</mo>
+         <mi>y</mi>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&Int;</mo>
+     <mrow>
+       <mi>x</mi>
+       <mi>y</mi>
+       <mrow>
+         <mo form="prefix">&dd;</mo>
+         <mi>x</mi>
+       </mrow>
+       <mrow>
+         <mo form="prefix">&dd;</mo>
+         <mi>y</mi>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     Op535b
+Comment     integrals with mo d 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" largeop="true">&int;</mo>
+     <mrow>
+       <mi>x</mi>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mi>x</mi>
+       </mrow>
+       <mrow>
+         <mo form="prefix">d</mo>
+         <mi>x</mi>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&int;</mo>
+     <mrow>
+       <mrow>
+         <mo form="prefix" largeop="true">&int;</mo>
+         <mrow>
+           <mi>y</mi>
+           <mrow>
+             <mi mathcolor="gray">sin</mi>
+             <mi>x</mi>
+           </mrow>
+           <mrow>
+             <mo form="prefix">d</mo>
+             <mi>x</mi>
+           </mrow>
+         </mrow>
+       </mrow>
+       <mrow>
+         <mo form="prefix">d</mo>
+         <mi>y</mi>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&Int;</mo>
+     <mrow>
+       <mi>x</mi>
+       <mi>y</mi>
+       <mrow>
+         <mo form="prefix">d</mo>
+         <mi>x</mi>
+       </mrow>
+       <mrow>
+         <mo form="prefix">d</mo>
+         <mi>y</mi>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     Op535c
+Comment     integrals with mi d 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" largeop="true">&int;</mo>
+     <mrow>
+       <mi>x</mi>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mi>x</mi>
+       </mrow>
+       <mrow>
+         <mi>d</mi>
+         <mi>x</mi>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&int;</mo>
+     <mrow>
+       <mrow>
+         <mo form="prefix" largeop="true">&int;</mo>
+         <mrow>
+           <mi>y</mi>
+           <mrow>
+             <mi mathcolor="gray">sin</mi>
+             <mi>x</mi>
+           </mrow>
+           <mrow>
+             <mi>d</mi>
+             <mi>x</mi>
+           </mrow>
+         </mrow>
+       </mrow>
+       <mrow>
+         <mi>d</mi>
+         <mi>y</mi>
+       </mrow>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&Int;</mo>
+     <mrow>
+       <mi>x</mi>
+       <mi>y</mi>
+       <mrow>
+         <mi>d</mi>
+         <mi>x</mi>
+       </mrow>
+       <mrow>
+         <mi>d</mi>
+         <mi>y</mi>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
 Test ID     Op550
 Comment     abs, Re, Im 
 Client ID   1
@@ -15452,6 +16260,153 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     Op635a
+Comment     integrals 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" largeop="true">&int;</mo>
+       <mi>x</mi>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mi>x</mi>
+       </mrow>
+       <mrow>
+         <mo form="prefix">&dd;</mo>
+         <mi>x</mi>
+       </mrow>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mo form="prefix" largeop="true">&int;</mo>
+           <mi>y</mi>
+           <mrow>
+             <mi mathcolor="gray">sin</mi>
+             <mi>x</mi>
+           </mrow>
+           <mrow>
+             <mo form="prefix">&dd;</mo>
+             <mi>x</mi>
+           </mrow>
+       </mrow>
+       <mrow>
+         <mo form="prefix">&dd;</mo>
+         <mi>y</mi>
+       </mrow>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&Int;</mo>
+       <mi>x</mi>
+       <mi>y</mi>
+       <mrow>
+         <mo form="prefix">&dd;</mo>
+         <mi>x</mi>
+       </mrow>
+       <mrow>
+         <mo form="prefix">&dd;</mo>
+         <mi>y</mi>
+       </mrow>
+   </math>
+End of test
+
+Test ID     Op635b
+Comment     integrals with mo d 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" largeop="true">&int;</mo>
+       <mi>x</mi>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mi>x</mi>
+       </mrow>
+       <mrow>
+         <mo form="prefix">d</mo>
+         <mi>x</mi>
+       </mrow>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mo form="prefix" largeop="true">&int;</mo>
+           <mi>y</mi>
+           <mrow>
+             <mi mathcolor="gray">sin</mi>
+             <mi>x</mi>
+           </mrow>
+           <mrow>
+             <mo form="prefix">d</mo>
+             <mi>x</mi>
+           </mrow>
+       </mrow>
+       <mrow>
+         <mo form="prefix">d</mo>
+         <mi>y</mi>
+       </mrow>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&Int;</mo>
+       <mi>x</mi>
+       <mi>y</mi>
+       <mrow>
+         <mo form="prefix">d</mo>
+         <mi>x</mi>
+       </mrow>
+       <mrow>
+         <mo form="prefix">d</mo>
+         <mi>y</mi>
+       </mrow>
+   </math>
+End of test
+
+Test ID     Op635c
+Comment     integrals with mi d 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" largeop="true">&int;</mo>
+       <mi>x</mi>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mi>x</mi>
+       </mrow>
+       <mrow>
+         <mi>d</mi>
+         <mi>x</mi>
+       </mrow>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&int;</mo>
+       <mrow>
+         <mo form="prefix" largeop="true">&int;</mo>
+           <mi>y</mi>
+           <mrow>
+             <mi mathcolor="gray">sin</mi>
+             <mi>x</mi>
+           </mrow>
+           <mrow>
+             <mi>d</mi>
+             <mi>x</mi>
+           </mrow>
+       </mrow>
+       <mrow>
+         <mi>d</mi>
+         <mi>y</mi>
+       </mrow>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&Int;</mo>
+       <mi>x</mi>
+       <mi>y</mi>
+       <mrow>
+         <mi>d</mi>
+         <mi>x</mi>
+       </mrow>
+       <mrow>
+         <mi>d</mi>
+         <mi>y</mi>
+       </mrow>
+   </math>
+End of test
+
 Test ID     Op721
 Comment     sin and cos and tan w/ parens
 Client ID   1
@@ -15839,6 +16794,105 @@ Command ID	Fixup
        <mi mathcolor="gray">tanh</mi>
          <mn>13</mn>
          <mi>x</mi>
+   </math>
+End of test
+
+Test ID     Op735a
+Comment     integrals 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" largeop="true">&int;</mo>
+       <mi>x</mi>
+       <mi mathcolor="gray">sin</mi>
+       <mi>x</mi>
+       <mo form="prefix">&dd;</mo>
+       <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&int;</mo>
+       <mo form="prefix" largeop="true">&int;</mo>
+         <mi>y</mi>
+         <mi mathcolor="gray">sin</mi>
+         <mi>x</mi>
+         <mo form="prefix">&dd;</mo>
+         <mi>x</mi>
+       <mo form="prefix">&dd;</mo>
+       <mi>y</mi>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&Int;</mo>
+       <mi>x</mi>
+       <mi>y</mi>
+       <mo form="prefix">&dd;</mo>
+       <mi>x</mi>
+       <mo form="prefix">&dd;</mo>
+       <mi>y</mi>
+   </math>
+End of test
+
+Test ID     Op735b
+Comment     integrals with mo d 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" largeop="true">&int;</mo>
+       <mi>x</mi>
+       <mi mathcolor="gray">sin</mi>
+       <mi>x</mi>
+       <mo form="prefix">d</mo>
+       <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&int;</mo>
+       <mo form="prefix" largeop="true">&int;</mo>
+         <mi>y</mi>
+         <mi mathcolor="gray">sin</mi>
+         <mi>x</mi>
+         <mo form="prefix">d</mo>
+         <mi>x</mi>
+       <mo form="prefix">d</mo>
+       <mi>y</mi>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&Int;</mo>
+       <mi>x</mi>
+       <mi>y</mi>
+       <mo form="prefix">d</mo>
+       <mi>x</mi>
+       <mo form="prefix">d</mo>
+       <mi>y</mi>
+   </math>
+End of test
+
+Test ID     Op735c
+Comment     integrals with mi d 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" largeop="true">&int;</mo>
+       <mi>x</mi>
+       <mi mathcolor="gray">sin</mi>
+       <mi>x</mi>
+       <mi>d</mi>
+       <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&int;</mo>
+       <mo form="prefix" largeop="true">&int;</mo>
+       <mi>y</mi>
+         <mi mathcolor="gray">sin</mi>
+         <mi>x</mi>
+         <mi>d</mi>
+         <mi>x</mi>
+       <mi>d</mi>
+       <mi>y</mi>
+     <mo form="infix">+</mo>
+     <mo form="prefix" largeop="true">&Int;</mo>
+       <mi>x</mi>
+       <mi>y</mi>
+       <mi>d</mi>
+       <mi>x</mi>
+       <mi>d</mi>
+       <mi>y</mi>
    </math>
 End of test
 
