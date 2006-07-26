@@ -1,4 +1,7 @@
-venkman.jar:
+venkman.jar:  
+% content venkman %content/venkman/
+% locale venkman en-US %locale/en-US/venkman/
+% skin venkman modern %skin/modern/venkman/
 * content/venkman/contents.rdf          (content/contents.rdf)
 * locale/en-US/venkman/contents.rdf     (locale/en-US/contents.rdf)
   skin/modern/venkman/contents.rdf      (skin/contents.rdf)
