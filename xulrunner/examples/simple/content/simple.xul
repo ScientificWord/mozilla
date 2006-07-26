@@ -37,6 +37,7 @@
 # ***** END LICENSE BLOCK *****
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://simple/skin/simple.css" type="text/css"?>
 
 <!DOCTYPE window SYSTEM "chrome://simple/locale/simple.dtd">
 
