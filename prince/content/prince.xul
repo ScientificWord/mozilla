@@ -50,6 +50,7 @@
       <menu id="MSIMathMenu" />
       <menu id="MSIComputeMenu" />
       <menu id="MSITypesetMenu" />
+      <menu id="toolsMenu" />
       <!-- DEBUG only -->
       <menu id="debugMenu" /> 
       <!-- end DEBUG only -->

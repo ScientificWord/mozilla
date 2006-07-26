@@ -9,6 +9,7 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="chrome://prince/content/prince.js"/>
   <script src="chrome://prince/content/toolbarsOverlay.js"/>
+  <script src="chrome://venkman/content/venkman-overlay.js"/>
   
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
     <menupopup id="menu_FilePopup" onpopupshowing="EditorInitFileMenu();">
@@ -93,6 +94,13 @@
                 label="&checkSpellingCmd.label;"/>
     </menupopup>
   </menu>
+
+  <menu id="toolsMenu" label="Tools" >
+    <menupopup id="toolPopup">
+      <menuitem  label="JavaScript debugger" id="venkmanName" oncommand="start_venkman();"/>
+    </menupopup>
+  </menu>
+  
   <menu id="helpMenu" label="&helpMenu.label;" accesskey="&helpMenu.accesskey;">
     <menupopup id="helpPopup">
       <menuitem accesskey="&aboutCmd.accesskey;" label="&aboutCmd.label;" id="aboutName" oncommand="goAboutDialog();"/>
