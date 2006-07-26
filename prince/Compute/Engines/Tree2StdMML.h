@@ -112,6 +112,7 @@ protected:
   bool IsNumberOrPeriod(MNODE * num);
   bool HasPeriod(MNODE * num);
   void PermuteMixedNumber(MNODE * num);
+  void PermuteDifferential(MNODE * diff);
 
   bool NeedsInvisiblePlus(MNODE * dMML_mrow);
 
