@@ -439,7 +439,7 @@ function doBibChoiceDlg()
 {
   var bibChoiceData = new Object();
   bibChoiceData.bBibTeX = false;
-  if (gBibChoice = "BibTeX")  //a kludge - must get hooked up to editor to really work
+  if (gBibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
     bibChoiceData.bBibTeX = true;
   window.openDialog("chrome://prince/content/typesetBibChoice.xul", "_blank", "chrome,close,titlebar,modal", bibChoiceData);
   if (!bibChoiceData.Cancel)
@@ -548,7 +548,7 @@ function doInsertCrossReference()
 
 function doInsertCitation()
 {
-  if (gBibChoice = "BibTeX")  //a kludge - must get hooked up to editor to really work
+  if (gBibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
   {
     var bibCiteData = new Object();
     bibCiteData.databaseFile = "";
