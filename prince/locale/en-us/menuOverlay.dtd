@@ -464,10 +464,13 @@
 <!ENTITY tableProperties.accesskey "o">
 
 <!-- Tools menu -->
+<!ENTITY toolsmenu.label "Tools">
 <!ENTITY toolsmenu.accesskey "l">
 <!ENTITY toolbrowser.accesskey "b">
 <!ENTITY toolplaineditor.accesskey "p">
 <!ENTITY toolsetfocus.accesskey "f">
+<!ENTITY venkman.label "JavaScript debugger">
+<!ENTITY venkman.accesskey "d">
 
 <!-- Debug menu items -->
 <!ENTITY debugMenu.label "Debug">
