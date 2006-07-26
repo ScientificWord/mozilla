@@ -106,3 +106,56 @@ Command ID	Evaluate
   <math>%</math>
 End of test
 
+Test ID     213mod.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo largeop="true">&Int;</mo>
+     <mo>(</mo>
+       <mi>y</mi>
+       <mo>+</mo>
+       <mi mathcolor="gray">sin</mi>
+       <mi>x</mi>
+     <mo>)</mo>
+     <mo>d</mo>
+     <mi>x</mi>
+     <mo>d</mo>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     213mod.3e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     213imod.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo largeop="true">&int;</mo>
+     <mo largeop="true">&int;</mo>
+     <mo>(</mo>
+       <mi>y</mi>
+       <mo>+</mo>
+       <mi mathcolor="gray">sin</mi>
+       <mi>x</mi>
+     <mo>)</mo>
+     <mo>d</mo>
+     <mi>x</mi>
+     <mo>d</mo>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     213imod.3e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
