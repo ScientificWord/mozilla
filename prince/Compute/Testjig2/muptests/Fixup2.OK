@@ -6177,8 +6177,8 @@ Test ID 213.3
 </p>
 <p>
 Test ID 213i.3
-<p>2 int not 1 Int</p>
 </p>
+<p>2 int not 1 Int</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mo form="prefix" largeop="true">&#x222b;</mo>
@@ -10950,6 +10950,230 @@ Test ID Op229
 
 </p>
 <p>
+Test ID Op235a
+</p>
+<p>integrals</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">&#x2146;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op235b
+</p>
+<p>integrals with mo d</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">d</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op235c
+</p>
+<p>integrals with mi d</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi>d</mi>
+            <mo>&#x2062;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
 Test ID Op240
 </p>
 <p>limits</p>
@@ -11927,12 +12151,235 @@ Test ID Op329
 
 </p>
 <p>
+Test ID Op335a
+</p>
+<p>integrals</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">&#x2146;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op335b
+</p>
+<p>integrals with mo d</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">d</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op335c
+</p>
+<p>integrals with mi d</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi>d</mi>
+            <mo>&#x2062;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
 Test ID Op340
 </p>
 <p>limits</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-
   <mfenced ilk="enclosed-list" open="(" close=")">
     <mrow>
       <munder>
@@ -12959,6 +13406,230 @@ Test ID Op429
 
 </p>
 <p>
+Test ID Op435a
+</p>
+<p>integrals</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">&#x2146;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op435b
+</p>
+<p>integrals with mo d</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">d</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op435c
+</p>
+<p>integrals with mi d</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi>d</mi>
+            <mo>&#x2062;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
 Test ID Op440
 </p>
 <p>limits</p>
@@ -13888,6 +14559,230 @@ Test ID Op529
 
 </p>
 <p>
+Test ID Op535a
+</p>
+<p>integrals</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">&#x2146;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op535b
+</p>
+<p>integrals with mo d</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">d</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op535c
+</p>
+<p>integrals with mi d</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi>d</mi>
+            <mo>&#x2062;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
 Test ID Op550
 </p>
 <p>abs, Re, Im</p>
@@ -14591,6 +15486,230 @@ Test ID Op627
 
 </p>
 <p>
+Test ID Op635a
+</p>
+<p>integrals</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">&#x2146;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op635b
+</p>
+<p>integrals with mo d</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">d</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">d</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op635c
+</p>
+<p>integrals with mi d</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi>d</mi>
+            <mo>&#x2062;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi>d</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
 Test ID Op721
 </p>
 <p>sin and cos and tan w/ parens</p>
@@ -15179,6 +16298,225 @@ Test ID Op727
         <mn>13</mn>
         <mo>&#x2062;</mo>
         <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op735a
+</p>
+<p>integrals</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">&#x2146;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op735b
+</p>
+<p>integrals with mo d</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">&#x2146;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op735c
+</p>
+<p>integrals with mi d</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mrow>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mrow>
+          <mi>y</mi>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mi mathcolor="gray">sin</mi>
+            <mo>&#x2061;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>&#x2062;</mo>
+          <mrow>
+            <mo form="prefix">&#x2146;</mo>
+            <mi>x</mi>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <mo form="prefix" largeop="true">&#x222c;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
       </mrow>
     </mrow>
   </mrow>
