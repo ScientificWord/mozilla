@@ -100,7 +100,7 @@ protected:
   bool NodeIsOperator(MNODE * mml_node);
   bool NodeIsIntegral(MNODE * mml_node);
   int GetIntegralCount(MNODE * mml_node);
-  bool NodeIsDifferential(MNODE * mml_node);
+  bool NodeIsDifferential(MNODE * mml_node, bool & nested);
   bool NodeIsFactor(MNODE * mml_node);
 
   MNODE *MakeItem(MNODE * l_anchor, MNODE * r_anchor);
