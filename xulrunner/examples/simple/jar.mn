@@ -6,3 +6,7 @@ simple.jar:
 en-US.jar:
 % locale simple en-US %locale/en-US/
   locale/en-US/simple.dtd           (locale/simple.dtd)
+
+classic.jar:
+% skin simple classic %skin/classic/
+  skin/classic/simple.css			(skin/classic/simple.css)
