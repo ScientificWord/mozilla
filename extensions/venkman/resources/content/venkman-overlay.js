@@ -36,7 +36,20 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+ 
+const nsIWindowMediator = Components.interfaces.nsIWindowMediator;
 
+function toOpenWindowByType(inType, uri)
+{
+    var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService();
+    var windowManagerInterface = windowManager.QueryInterface(nsIWindowMediator);
+    var topWindow = windowManagerInterface.getMostRecentWindow(inType);
+
+    if (topWindow)
+        topWindow.focus();
+    else
+        window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");
+}
 
 function start_venkman() 
 {
