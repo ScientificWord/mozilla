@@ -131,6 +131,252 @@ Test ID 213i.3e
 </math>
 
 </p>
+<p>
+Test ID 213d.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo form="prefix" largeop="true">&#x222c;</mo>
+  <mrow>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>y</mi>
+        <mo>+</mo>
+        <mrow>
+          <mi mathcolor="gray">sin</mi>
+          <mo>&#x2061;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mfenced>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 213d.3e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>y</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mi>y</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 213id.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo form="prefix" largeop="true">&#x222b;</mo>
+  <mrow>
+    <mrow>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
+      <mrow>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mi>y</mi>
+            <mo>+</mo>
+            <mrow>
+              <mi mathcolor="gray">sin</mi>
+              <mo>&#x2061;</mo>
+              <mi>x</mi>
+            </mrow>
+          </mrow>
+        </mfenced>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 213id.3e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>y</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mi>y</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 213mod.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo form="prefix" largeop="true">&#x222c;</mo>
+  <mrow>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>y</mi>
+        <mo>+</mo>
+        <mrow>
+          <mi mathcolor="gray">sin</mi>
+          <mo>&#x2061;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mfenced>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 213mod.3e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>y</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mi>y</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 213imod.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mo form="prefix" largeop="true">&#x222b;</mo>
+  <mrow>
+    <mrow>
+      <mo form="prefix" largeop="true">&#x222b;</mo>
+      <mrow>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mi>y</mi>
+            <mo>+</mo>
+            <mrow>
+              <mi mathcolor="gray">sin</mi>
+              <mo>&#x2061;</mo>
+              <mi>x</mi>
+            </mrow>
+          </mrow>
+        </mfenced>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 213imod.3e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>y</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2212;</mo>
+    <mi>y</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
 <hr/>
 </body>
 </html>
