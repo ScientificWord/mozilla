@@ -713,6 +713,7 @@ MNODE *Tree2StdMML::BindIntegral(MNODE * dMML_list)
 	      i_rover =  tmp;
 	  } else {	// non-nested integral clause
 		  if (NodeIsDifferential(i_rover)) {
+        PermuteDifferential(i_rover);
         dd_node = i_rover;
 			  if (i_rover->next) {
 				  i_rover = i_rover->next;
@@ -720,7 +721,8 @@ MNODE *Tree2StdMML::BindIntegral(MNODE * dMML_list)
   	    while (n_integrals) {
 			    if (i_rover->next) {
 			      if (NodeIsDifferential(i_rover)) {
-			        i_rover = i_rover->next;
+			        PermuteDifferential(i_rover);
+              i_rover = i_rover->next;
 			        n_integrals--;
 				    } else {
 				      i_rover = i_rover->next;
@@ -1519,11 +1521,28 @@ bool Tree2StdMML::NodeIsDifferential(MNODE * mml_node)
   if (!strcmp(mml_node->src_tok,"mrow"))
     return NodeIsDifferential(mml_node->first_kid);
   else if (!strcmp(mml_node->src_tok,"mo"))
-    return !strcmp(mml_node->p_chdata,"&#x2146;"); // differentiald
+    return !strcmp(mml_node->p_chdata,"&#x2146;") || // differentiald
+           !strcmp(mml_node->p_chdata,"d");
   else if (!strcmp(mml_node->src_tok,"mi"))
     return !strcmp(mml_node->p_chdata,"d");
   else
     return false;
+}
+
+// Assuming NodeIsDifferential() is true, change d to &dd;
+void Tree2StdMML::PermuteDifferential(MNODE * mml_node)
+{
+  if ((!strcmp(mml_node->src_tok,"mi") && !strcmp(mml_node->p_chdata,"d")) ||
+      (!strcmp(mml_node->src_tok,"mo") && !strcmp(mml_node->p_chdata,"d"))) {
+    strcpy(mml_node->src_tok,"mo");
+    const char * dd = "&#x2146;";
+    size_t ln = strlen(dd);
+    char *tmp = TCI_NEW(char[ln + 1]);
+    strcpy(tmp, dd);
+    delete mml_node->p_chdata;
+    mml_node->p_chdata = tmp;
+    LookupMOInfo(mml_node);
+  }
 }
 
 // Quite different from the corresponding function in LTeX2MML.cpp
