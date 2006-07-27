@@ -1,5 +1,6 @@
 ;Test script for "Comptest.exe". Behavior of Fixup WRT calculus
 
+Passthru    <h3>Integrals with various differential markups</h3>
 Test ID     213.3
 Client ID   1
 Engine      MuPAD
@@ -153,6 +154,121 @@ Command ID	Fixup
 End of test
 
 Test ID     213imod.3e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Passthru    <hr/><h3>Now with limits</h3>
+Test ID     l213i.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msubsup>
+       <mo largeop="true">&int;</mo>
+       <mrow>
+         <mo>-</mo>
+         <mn>1</mn>
+       </mrow>
+       <mi>&pi;</mi>
+     </msubsup>
+     <msubsup>
+       <mo largeop="true">&int;</mo>
+       <mi>c</mi>
+       <mi>d</mi>
+     </msubsup>
+     <mo>(</mo>
+       <mi>y</mi>
+       <mo>+</mo>
+       <mi mathcolor="gray">sin</mi>
+       <mi>x</mi>
+     <mo>)</mo>
+     <mo>&dd;</mo>
+     <mi>x</mi>
+     <mo>&dd;</mo>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     l213i.3e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     l213id.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msubsup>
+       <mo largeop="true">&int;</mo>
+       <mrow>
+         <mo>-</mo>
+         <mn>1</mn>
+       </mrow>
+       <mi>&pi;</mi>
+     </msubsup>
+     <msubsup>
+       <mo largeop="true">&int;</mo>
+       <mi>c</mi>
+       <mi>d</mi>
+     </msubsup>
+     <mo>(</mo>
+       <mi>y</mi>
+       <mo>+</mo>
+       <mi mathcolor="gray">sin</mi>
+       <mi>x</mi>
+     <mo>)</mo>
+     <mi>d</mi>
+     <mi>x</mi>
+     <mi>d</mi>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     l213id.3e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     l213imod.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msubsup>
+       <mo largeop="true">&int;</mo>
+       <mrow>
+         <mo>-</mo>
+         <mn>1</mn>
+       </mrow>
+       <mi>&pi;</mi>
+     </msubsup>
+     <msubsup>
+       <mo largeop="true">&int;</mo>
+       <mi>c</mi>
+       <mi>d</mi>
+     </msubsup>
+     <mo>(</mo>
+       <mi>y</mi>
+       <mo>+</mo>
+       <mi mathcolor="gray">sin</mi>
+       <mi>x</mi>
+     <mo>)</mo>
+     <mo>d</mo>
+     <mi>x</mi>
+     <mo>d</mo>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     l213imod.3e
 Client ID   1
 Engine      MuPAD
 Command ID	Evaluate
