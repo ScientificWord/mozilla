@@ -31,10 +31,8 @@ public:
                              INPUT_NOTATION_REC * in_notation);
   MNODE *TreeToInterpretForm(MNODE * dMML_tree,
                              INPUT_NOTATION_REC * in_notation);
-  MNODE *TreeToFixupForm(MNODE * dMML_tree,
-                             INPUT_NOTATION_REC * in_notation);
-  MNODE *TreeToCleanupForm(MNODE * dMML_tree,
-                             INPUT_NOTATION_REC * in_notation);
+  MNODE *TreeToFixupForm(MNODE * dMML_tree, bool D_is_derivative);
+  MNODE *TreeToCleanupForm(MNODE * dMML_tree);
 protected:
   MNODE * ChDataToCanonicalForm(MNODE * MML_list);
   void RemoveMixedNumbers(MNODE * dMML_tree,

@@ -1128,6 +1128,8 @@ U32 PrefNameToID(char *p_name)
     case 12:
       if (!strcmp(p_name, "Vector_basis"))
         rv = CLPF_Vector_basis;
+      else if (!strcmp(p_name, "D_derivative"))
+        rv = CLPF_D_derivative;
       break;
     case 13:
       if (!strcmp(p_name, "clr_math_attr"))
