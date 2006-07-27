@@ -676,6 +676,276 @@ Test ID l213imod.3e
 </math>
 
 </p>
+<hr/><h3>Behavior of D</h3>
+<p>
+Test ID 210.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msub>
+    <mo form="prefix">&#x2145;</mo>
+    <mi>x</mi>
+  </msub>
+  <msup>
+    <mi>x</mi>
+    <mi>a</mi>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID 210.3e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>a</mi>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>x</mi>
+      <mrow>
+        <mi>a</mi>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 210D.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msub>
+    <mo form="prefix">&#x2145;</mo>
+    <mi>x</mi>
+  </msub>
+  <msup>
+    <mi>x</mi>
+    <mi>a</mi>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID 210D.3e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>a</mi>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>x</mi>
+      <mrow>
+        <mi>a</mi>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 210moD.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msub>
+    <mo form="prefix">&#x2145;</mo>
+    <mi>x</mi>
+  </msub>
+  <msup>
+    <mi>x</mi>
+    <mi>a</mi>
+  </msup>
+</math>
+
+</p>
+<p>
+Test ID 210moD.3e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi>a</mi>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>x</mi>
+      <mrow>
+        <mi>a</mi>
+        <mo>&#x2212;</mo>
+        <mn>1</mn>
+      </mrow>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op132c
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mo form="prefix">&#x2145;</mo>
+      <mi>x</mi>
+    </msub>
+    <mfenced open="(" close=")">
+      <msup>
+        <mi>x</mi>
+        <mn>2</mn>
+      </msup>
+    </mfenced>
+  </mrow>
+  <mo>+</mo>
+  <mrow>
+    <msub>
+      <mo form="prefix">&#x2145;</mo>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2063;</mo>
+        <mi>x</mi>
+      </mrow>
+    </msub>
+    <mfenced open="(" close=")">
+      <msup>
+        <mi>x</mi>
+        <mn>4</mn>
+      </msup>
+    </mfenced>
+  </mrow>
+  <mo>+</mo>
+  <mrow>
+    <msub>
+      <mo form="prefix">&#x2145;</mo>
+      <msup>
+        <mi>x</mi>
+        <mn>2</mn>
+      </msup>
+    </msub>
+    <mfenced open="(" close=")">
+      <msup>
+        <mi>x</mi>
+        <mn>8</mn>
+      </msup>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op132c.e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>56</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>6</mn>
+    </msup>
+    <mo>+</mo>
+    <mn>12</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>+</mo>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op132d
+</p>
+<p>mi D notation /w expr</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <msub>
+      <mo form="prefix">&#x2145;</mo>
+      <mi>x</mi>
+    </msub>
+    <mfenced open="(" close=")">
+      <msup>
+        <mi>x</mi>
+        <mn>2</mn>
+      </msup>
+    </mfenced>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <msub>
+      <mo form="prefix">&#x2145;</mo>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2063;</mo>
+        <mi>x</mi>
+      </mrow>
+    </msub>
+    <mfenced open="(" close=")">
+      <msup>
+        <mi>x</mi>
+        <mn>4</mn>
+      </msup>
+    </mfenced>
+  </mrow>
+  <mo form="infix">+</mo>
+  <mrow>
+    <msub>
+      <mo form="prefix">&#x2145;</mo>
+      <msup>
+        <mi>x</mi>
+        <mn>2</mn>
+      </msup>
+    </msub>
+    <mfenced open="(" close=")">
+      <msup>
+        <mi>x</mi>
+        <mn>8</mn>
+      </msup>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op132d.e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>56</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>6</mn>
+    </msup>
+    <mo>+</mo>
+    <mn>12</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>+</mo>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
 <hr/>
 </body>
 </html>
