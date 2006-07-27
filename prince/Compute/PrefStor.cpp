@@ -47,6 +47,7 @@ const char *default_prefs[] = {
   "1",                                            // CLPF_Input_e_Euler
   "<math><mi>x</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>z</mi></math>", //CLPF_Vector_basis
   "1",                                            // CLPF_Prime_derivative
+  "1",                                            // CLPF_D_derivative
   0                                               // CLPF_last
 };
 

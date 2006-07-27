@@ -303,6 +303,7 @@ interface msiISimpleComputeEngine : nsISupports
     const unsigned long Input_j_Imaginary          = CLPF_Input_j_Imaginary;
     const unsigned long Input_e_Euler              = CLPF_Input_e_Euler;
     const unsigned long Prime_means_derivative     = CLPF_Prime_derivative;
+    const unsigned long D_is_derivative            = CLPF_D_derivative;
     const unsigned long Vector_basis               = CLPF_Vector_basis;
   /**
    * Set the user pref.  Some prefs need string values, but we don't use those yet.

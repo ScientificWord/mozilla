@@ -38,10 +38,8 @@ public:
                                      INPUT_NOTATION_REC* p_input_notation);
   LOG_MSG_REC* GetMsgs();
   MIC2MMLNODE_REC* GetBackMap();
-  void TreeToCleanupForm(MNODE * dMML_tree,
-                         INPUT_NOTATION_REC * in_notation);
-  void TreeToFixupForm(MNODE * dMML_tree,
-                       INPUT_NOTATION_REC * in_notation);
+  void TreeToCleanupForm(MNODE * dMML_tree);
+  void TreeToFixupForm(MNODE * dMML_tree);
   bool IsDefinedFunction(MNODE * mnode);
 
 private:
@@ -352,6 +350,7 @@ private:
   bool overbar_conj;
   bool dot_is_derivative;
   bool prime_is_derivative;
+  bool D_is_derivative;
 
   U32 cmd_ID;
 };
