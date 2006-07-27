@@ -1524,7 +1524,7 @@ Test ID 132c
 <p>D notation /w expr</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>132c wrong, munder instead of msub</mtext>
+  <mtext>132c wrong, InvisibleComma changes to InvisibleTimes!</mtext>
 </math>
 
 </p>
@@ -1534,7 +1534,7 @@ Test ID 132d
 <p>mi D notation /w expr</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>132d wrong, totally bogus!</mtext>
+  <mtext>132d wrong, InvisibleComma changes to InvisibleTimes!</mtext>
 </math>
 
 </p>
