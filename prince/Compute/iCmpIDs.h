@@ -401,7 +401,8 @@
 #define CLPF_Input_e_Euler              28
 #define CLPF_Vector_basis               29
 #define CLPF_Prime_derivative           30
-#define CLPF_last                       31
+#define CLPF_D_derivative               31
+#define CLPF_last                       32
 
 // IDs for components of structured results
 

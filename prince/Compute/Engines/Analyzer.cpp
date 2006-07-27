@@ -103,6 +103,18 @@ void Analyzer::SetInputPrefs(DefStore * ds, U32 engine_ID)
     dot_is_derivative = false;
   }
 
+  pref_val = ds->GetPref(CLPF_D_derivative, 0);
+  if (!pref_val)
+    pref_val = uprefs_store->GetPref(CLPF_D_derivative);
+  if (pref_val) {
+    // Dot accent is derivative<uID19.0>1
+    int db_val = atoi(pref_val);
+    D_is_derivative = db_val ? true : false;
+  } else {
+    TCI_ASSERT(0);
+    D_is_derivative = true;
+  }
+
   pref_val = ds->GetPref(CLPF_Prime_derivative, 0);
   if (!pref_val)
     pref_val = uprefs_store->GetPref(CLPF_Prime_derivative);
@@ -199,7 +211,7 @@ SEMANTICS_NODE *Analyzer::BuildSemanticsTree(MathServiceRequest & msr,
   switch (curr_cmd_ID) {
     case CCID_Cleanup:
     case CCID_Fixup:
-      dMML_tree = CanonicalTreeGen->TreeToCleanupForm(dMML_tree, in_notation);
+      dMML_tree = CanonicalTreeGen->TreeToCleanupForm(dMML_tree);
       break;
     case CCID_Interpret:
       dMML_tree = CanonicalTreeGen->TreeToInterpretForm(dMML_tree, in_notation);
@@ -274,17 +286,15 @@ SEMANTICS_NODE *Analyzer::BuildSemanticsTree(MathServiceRequest & msr,
   return rv;
 }
 
-void Analyzer::TreeToCleanupForm(MNODE * dMML_tree,
-                                  INPUT_NOTATION_REC * in_notation)
+void Analyzer::TreeToCleanupForm(MNODE * dMML_tree)
 {
-  CanonicalTreeGen->TreeToCleanupForm(dMML_tree, in_notation);
+  CanonicalTreeGen->TreeToCleanupForm(dMML_tree);
   JBM::DumpTList(dMML_tree, 0);
 }
 
-void Analyzer::TreeToFixupForm(MNODE * dMML_tree,
-                               INPUT_NOTATION_REC * in_notation)
+void Analyzer::TreeToFixupForm(MNODE * dMML_tree)
 {
-  CanonicalTreeGen->TreeToFixupForm(dMML_tree, in_notation);
+  CanonicalTreeGen->TreeToFixupForm(dMML_tree, D_is_derivative);
   JBM::DumpTList(dMML_tree, 0);
 }
 
