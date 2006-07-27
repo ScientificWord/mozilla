@@ -113,8 +113,8 @@ MNODE *Tree2StdMML::TreeToInterpretForm(MNODE * dMML_tree,
 }
 
 // The input to CCID_Fixup may be less well-formed than that for other commands.  Resolve that here.
-MNODE *Tree2StdMML::TreeToFixupForm(MNODE * dMML_tree,
-                                    INPUT_NOTATION_REC * in_notation)
+//XXX second arg is in place of general user prefs parameter
+MNODE *Tree2StdMML::TreeToFixupForm(MNODE * dMML_tree, bool D_is_derivative)
 {
   MNODE *rv = ChDataToCanonicalForm(dMML_tree);
   BindDelimitedGroups(rv);
@@ -133,8 +133,7 @@ MNODE *Tree2StdMML::TreeToFixupForm(MNODE * dMML_tree,
 }
 
 // The input to CCID_Cleanup may be ugly.  Resolve that here.
-MNODE *Tree2StdMML::TreeToCleanupForm(MNODE * dMML_tree,
-                                      INPUT_NOTATION_REC * in_notation)
+MNODE *Tree2StdMML::TreeToCleanupForm(MNODE * dMML_tree)
 {
   TCI_ASSERT(strcmp(dMML_tree->src_tok,"math") == 0);
 

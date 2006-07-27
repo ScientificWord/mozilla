@@ -680,6 +680,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::SetUserPref(PRUint32 attrID, PRInt32 valu
   case CLPF_Input_i_Imaginary:
   case CLPF_Input_j_Imaginary:
   case CLPF_Input_e_Euler:
+  case CLPF_D_derivative:     
     sprintf( buf, "%d", value );
     break;
   case CLPF_Output_imaginaryi:
@@ -749,6 +750,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::GetUserPref(PRUint32 attrID, PRInt32 *_re
   case CLPF_Input_i_Imaginary:
   case CLPF_Input_j_Imaginary:
   case CLPF_Input_e_Euler:
+  case CLPF_D_derivative:     
     break;
   default:
     return NS_ERROR_ILLEGAL_VALUE;
@@ -775,6 +777,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::GetUserPref(PRUint32 attrID, PRInt32 *_re
   case CLPF_Input_i_Imaginary:
   case CLPF_Input_j_Imaginary:
   case CLPF_Input_e_Euler:
+  case CLPF_D_derivative:     
     if (sscanf( str_value, "%d", _retval ) < 1)
       return NS_ERROR_FAILURE;
     else
