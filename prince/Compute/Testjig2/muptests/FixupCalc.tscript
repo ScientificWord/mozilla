@@ -275,3 +275,190 @@ Command ID	Evaluate
   <math>%</math>
 End of test
 
+Passthru    <hr/><h3>Behavior of D</h3>
+Test ID     210.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msub>
+       <mo>&DD;</mo>
+       <mi>x</mi>
+     </msub>
+     <msup>
+       <mi>x</mi>
+       <mi>a</mi>
+     </msup>
+   </math>
+End of test
+
+Test ID     210.3e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     210D.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msub>
+       <mi>D</mi>
+       <mi>x</mi>
+     </msub>
+     <msup>
+       <mi>x</mi>
+       <mi>a</mi>
+     </msup>
+   </math>
+End of test
+
+Test ID     210D.3e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     210moD.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msub>
+       <mo>D</mo>
+       <mi>x</mi>
+     </msub>
+     <msup>
+       <mi>x</mi>
+       <mi>a</mi>
+     </msup>
+   </math>
+End of test
+
+Test ID     210moD.3e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     Op132c
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+       <msub>
+         <mo>D</mo>
+         <mi>x</mi>
+       </msub>
+       <mo>(</mo>
+       <msup>
+         <mi>x</mi>
+         <mn>2</mn>
+       </msup>
+       <mo>)</mo>
+     <mo>+</mo>
+       <msub>
+         <mo>D</mo>
+         <mrow>
+           <mi>x</mi>
+           <mo>&InvisibleComma;</mo>
+           <mi>x</mi>
+         </mrow>
+       </msub>
+       <mo>(</mo>
+       <msup>
+         <mi>x</mi>
+         <mn>4</mn>
+       </msup>
+       <mo>)</mo>
+     <mo>+</mo>
+       <msub>
+         <mo>D</mo>
+         <msup>
+           <mi>x</mi>
+           <mn>2</mn>
+         </msup>
+       </msub>
+       <mo>(</mo>
+       <msup>
+         <mi>x</mi>
+         <mn>8</mn>
+       </msup>
+       <mo>)</mo>
+   </math>
+End of test
+
+Test ID     Op132c.e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     Op132d
+Comment     mi D notation /w expr
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+       <msub>
+         <mi>D</mi>
+         <mi>x</mi>
+       </msub>
+       <mrow>
+         <mo>(</mo>
+         <msup>
+           <mi>x</mi>
+           <mn>2</mn>
+         </msup>
+         <mo>)</mo>
+       </mrow>
+     <mo form="infix">+</mo>
+       <msub>
+         <mi>D</mi>
+         <mrow>
+           <mi>x</mi>
+           <mo>&InvisibleComma;</mo>
+           <mi>x</mi>
+         </mrow>
+       </msub>
+       <mrow>
+         <mo>(</mo>
+         <msup>
+           <mi>x</mi>
+           <mn>4</mn>
+         </msup>
+         <mo>)</mo>
+       </mrow>
+     <mo form="infix">+</mo>
+       <msub>
+         <mi>D</mi>
+         <msup>
+           <mi>x</mi>
+           <mn>2</mn>
+         </msup>
+       </msub>
+       <mrow>
+         <mo>(</mo>
+         <msup>
+           <mi>x</mi>
+           <mn>8</mn>
+         </msup>
+         <mo>)</mo>
+       </mrow>
+   </math>
+End of test
+
+Test ID     Op132d.e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+
+
