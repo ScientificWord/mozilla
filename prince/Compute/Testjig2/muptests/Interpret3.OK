@@ -1093,7 +1093,7 @@ Test ID 213
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>213 wrong, strange differential</mtext>
+  <mtext>213 wrong, should be double integral</mtext>
 </math>
 
 </p>
