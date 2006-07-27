@@ -401,9 +401,9 @@ void CompEngine::Execute(MathServiceRequest & msr, MathResult & mr)
       INPUT_NOTATION_REC *p_input_notation = CreateNotationRec();
 
       if (UI_cmd_ID == CCID_Cleanup) {
-        semantic_analyzer->TreeToCleanupForm(dMML_tree, p_input_notation);
+        semantic_analyzer->TreeToCleanupForm(dMML_tree);
       } else if (UI_cmd_ID == CCID_Fixup) {
-        semantic_analyzer->TreeToFixupForm(dMML_tree, p_input_notation);
+        semantic_analyzer->TreeToFixupForm(dMML_tree);
       } else {
         semantics_tree =
           semantic_analyzer->BuildSemanticsTree(msr,
