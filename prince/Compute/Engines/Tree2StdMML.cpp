@@ -1473,32 +1473,20 @@ bool Tree2StdMML::NodeIsOperator(MNODE * mml_node)
   }
 }
 
-// This looks a lot like Analyzer::GetBigOpType()
 bool Tree2StdMML::NodeIsIntegral(MNODE * mml_node)
 {
-  if (strcmp(mml_node->src_tok,"mo"))
-    return false;
-  //TODO study Unicode list (this list from SWP)
-  char *ptr = strstr(mml_node->p_chdata, "&#x");
-  if (ptr) {
-    U32 unicode = ASCII2U32(ptr + 3, 16);
-    switch (unicode) {
-      case 0x222b: //&int;<uID7.1.1>prefix,31,U0222B
-      case 0x222c: //&Int;<uID7.1.2>prefix,31,U0222C
-      case 0x222d: //&tint;<uID7.1.3>prefix,31,U0222D
-      case 0x2a0c: //&qint;<uID7.1.4>prefix,31,U02A0C
-      case 0x222e: //&conint;<uID7.1.6>prefix,31,U0222E
-        return true;
-    }
-  }
-  return false;
+  return GetIntegralCount(mml_node) > 0;
 }
 
+// This looks a lot like Analyzer::GetBigOpType()
 int Tree2StdMML::GetIntegralCount(MNODE * mml_node)
 {
+  if (!strcmp(mml_node->src_tok, "msubsup") ||
+      !strcmp(mml_node->src_tok, "munderover"))
+    return GetIntegralCount(mml_node->first_kid);
   if (strcmp(mml_node->src_tok,"mo"))
     return 0;
-  //TODO sync with above
+  //TODO study Unicode list (this list from SWP)
   char *ptr = strstr(mml_node->p_chdata, "&#x");
   if (ptr) {
     U32 unicode = ASCII2U32(ptr + 3, 16);
