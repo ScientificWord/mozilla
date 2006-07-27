@@ -8,6 +8,7 @@ xmlns:mml="http://www.w3.org/1998/Math/MathML">
 </head>
 <body>
 <hr/>
+<h3>Integrals with various differential markups</h3>
 <p>
 Test ID 213.3
 </p>
@@ -373,6 +374,304 @@ Test ID 213imod.3e
     <mi msiMathname="true">cos</mi>
     <mo>&#x2061;</mo>
     <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<hr/><h3>Now with limits</h3>
+<p>
+Test ID l213i.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msubsup>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mo>-</mo>
+      <mn>1</mn>
+    </mrow>
+    <mi>&#x3c0;</mi>
+  </msubsup>
+  <mrow>
+    <mrow>
+      <msubsup>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mi>c</mi>
+        <mi>d</mi>
+      </msubsup>
+      <mrow>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mi>y</mi>
+            <mo>+</mo>
+            <mrow>
+              <mi mathcolor="gray">sin</mi>
+              <mo>&#x2061;</mo>
+              <mi>x</mi>
+            </mrow>
+          </mrow>
+        </mfenced>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID l213i.3e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mo>(</mo>
+    <mrow>
+      <mi>&#x3c0;</mi>
+      <mo>&#x2212;</mo>
+      <mn>1</mn>
+    </mrow>
+    <mo>)</mo>
+    <mo>&#x2062;</mo>
+    <mo>(</mo>
+    <mrow>
+      <mi>c</mi>
+      <mo>&#x2212;</mo>
+      <mi>d</mi>
+      <mo>&#x2212;</mo>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mi msiMathname="true">cos</mi>
+      <mo>&#x2061;</mo>
+      <mi>c</mi>
+      <mo>+</mo>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mi msiMathname="true">cos</mi>
+      <mo>&#x2061;</mo>
+      <mi>d</mi>
+      <mo>+</mo>
+      <mi>&#x3c0;</mi>
+      <mo>&#x2062;</mo>
+      <mi>c</mi>
+      <mo>&#x2212;</mo>
+      <mi>&#x3c0;</mi>
+      <mo>&#x2062;</mo>
+      <mi>d</mi>
+    </mrow>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID l213id.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msubsup>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mo>-</mo>
+      <mn>1</mn>
+    </mrow>
+    <mi>&#x3c0;</mi>
+  </msubsup>
+  <mrow>
+    <mrow>
+      <msubsup>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mi>c</mi>
+        <mi>d</mi>
+      </msubsup>
+      <mrow>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mi>y</mi>
+            <mo>+</mo>
+            <mrow>
+              <mi mathcolor="gray">sin</mi>
+              <mo>&#x2061;</mo>
+              <mi>x</mi>
+            </mrow>
+          </mrow>
+        </mfenced>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID l213id.3e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mo>(</mo>
+    <mrow>
+      <mi>&#x3c0;</mi>
+      <mo>&#x2212;</mo>
+      <mn>1</mn>
+    </mrow>
+    <mo>)</mo>
+    <mo>&#x2062;</mo>
+    <mo>(</mo>
+    <mrow>
+      <mi>c</mi>
+      <mo>&#x2212;</mo>
+      <mi>d</mi>
+      <mo>&#x2212;</mo>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mi msiMathname="true">cos</mi>
+      <mo>&#x2061;</mo>
+      <mi>c</mi>
+      <mo>+</mo>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mi msiMathname="true">cos</mi>
+      <mo>&#x2061;</mo>
+      <mi>d</mi>
+      <mo>+</mo>
+      <mi>&#x3c0;</mi>
+      <mo>&#x2062;</mo>
+      <mi>c</mi>
+      <mo>&#x2212;</mo>
+      <mi>&#x3c0;</mi>
+      <mo>&#x2062;</mo>
+      <mi>d</mi>
+    </mrow>
+    <mo>)</mo>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID l213imod.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <msubsup>
+    <mo form="prefix" largeop="true">&#x222b;</mo>
+    <mrow>
+      <mo>-</mo>
+      <mn>1</mn>
+    </mrow>
+    <mi>&#x3c0;</mi>
+  </msubsup>
+  <mrow>
+    <mrow>
+      <msubsup>
+        <mo form="prefix" largeop="true">&#x222b;</mo>
+        <mi>c</mi>
+        <mi>d</mi>
+      </msubsup>
+      <mrow>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mi>y</mi>
+            <mo>+</mo>
+            <mrow>
+              <mi mathcolor="gray">sin</mi>
+              <mo>&#x2061;</mo>
+              <mi>x</mi>
+            </mrow>
+          </mrow>
+        </mfenced>
+        <mo>&#x2062;</mo>
+        <mrow>
+          <mo form="prefix">&#x2146;</mo>
+          <mi>x</mi>
+        </mrow>
+      </mrow>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>y</mi>
+    </mrow>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID l213imod.3e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mo>&#x2212;</mo>
+    <mfrac>
+      <mn>1</mn>
+      <mn>2</mn>
+    </mfrac>
+    <mo>&#x2062;</mo>
+    <mo>(</mo>
+    <mrow>
+      <mi>&#x3c0;</mi>
+      <mo>&#x2212;</mo>
+      <mn>1</mn>
+    </mrow>
+    <mo>)</mo>
+    <mo>&#x2062;</mo>
+    <mo>(</mo>
+    <mrow>
+      <mi>c</mi>
+      <mo>&#x2212;</mo>
+      <mi>d</mi>
+      <mo>&#x2212;</mo>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mi msiMathname="true">cos</mi>
+      <mo>&#x2061;</mo>
+      <mi>c</mi>
+      <mo>+</mo>
+      <mn>2</mn>
+      <mo>&#x2062;</mo>
+      <mi msiMathname="true">cos</mi>
+      <mo>&#x2061;</mo>
+      <mi>d</mi>
+      <mo>+</mo>
+      <mi>&#x3c0;</mi>
+      <mo>&#x2062;</mo>
+      <mi>c</mi>
+      <mo>&#x2212;</mo>
+      <mi>&#x3c0;</mi>
+      <mo>&#x2062;</mo>
+      <mi>d</mi>
+    </mrow>
+    <mo>)</mo>
   </mrow>
 </math>
 
