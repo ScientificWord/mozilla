@@ -38,10 +38,13 @@ protected:
   void RemoveMixedNumbers(MNODE * dMML_tree,
                           INPUT_NOTATION_REC * in_notation);
   void AddOperatorInfo(MNODE * dMML_list);
+  void AddDDOperatorInfo(MNODE * dMML_list);
 
   MNODE *BindMixedNumbers(MNODE * dMML_list);
   MNODE *BindDelimitedIntegrals(MNODE * dMML_list);
   MNODE *BindIntegral(MNODE * dMML_list);
+  void FixupCapitalD(MNODE * dMML_list);
+  void FixupSmalld(MNODE * dMML_list);
   MNODE *BindByOpPrecedence(MNODE * dMML_list, int high, int low);
   MNODE *BindApplyFunction(MNODE * dMML_list);
 
@@ -55,7 +58,8 @@ protected:
   MNODE *FixAdjacentMNs(MNODE * dMML_tree);
   void BindDelimitedGroups(MNODE * dMML_tree);
   void BindScripts(MNODE * dMML_tree);
-  MNODE * FinishFixup(MNODE * dMML_tree);
+
+  MNODE *FinishFixup(MNODE * dMML_tree);
   MNODE *InfixDivideToMFRAC(MNODE * dMML_tree);
   MNODE *RemoveRedundantMROWs(MNODE * MML_list);
   MNODE *RemoveEmptyTags(MNODE * MML_list);
@@ -99,6 +103,8 @@ protected:
   bool NodeIsIntegral(MNODE * mml_node);
   int GetIntegralCount(MNODE * mml_node);
   bool NodeIsDifferential(MNODE * mml_node, bool & nested);
+  bool NodeIsCapitalDifferential(MNODE * mml_node);
+  bool NodeIsVariableList(MNODE * mml_node);
   bool NodeIsFactor(MNODE * mml_node);
 
   MNODE *MakeItem(MNODE * l_anchor, MNODE * r_anchor);
@@ -111,6 +117,7 @@ protected:
   bool HasPeriod(MNODE * num);
   void PermuteMixedNumber(MNODE * num);
   void PermuteDifferential(MNODE * diff);
+  void PermuteCapitalDifferential(MNODE * diff);
 
   bool NeedsInvisiblePlus(MNODE * dMML_mrow);
 
@@ -126,6 +133,8 @@ private:
 
   ATTRIB_REC *mv_stack;
   ATTRIB_REC *lt_stack;
+
+  bool mDisDerivative;
 };
 
 #endif

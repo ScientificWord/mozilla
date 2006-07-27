@@ -56,7 +56,7 @@ static char THIS_FILE[] = __FILE__;
 
 
 Tree2StdMML::Tree2StdMML(Grammar * mml_grammar, Analyzer * analyzer) :
-   mml_entities(mml_grammar), my_analyzer(analyzer), mv_stack(NULL), lt_stack(NULL)
+   mml_entities(mml_grammar), my_analyzer(analyzer), mv_stack(NULL), lt_stack(NULL), mDisDerivative(true)
 {
 }
 
@@ -122,6 +122,7 @@ MNODE *Tree2StdMML::TreeToFixupForm(MNODE * dMML_tree, bool D_is_derivative)
   
   rv = FixMFENCEDs(rv);
 
+  mDisDerivative = D_is_derivative;
   FinishFixup(rv);
   
   rv = RemoveRedundantMROWs(rv);
@@ -381,6 +382,23 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
 
   mml_node->precedence = precedence;
   mml_node->form = op_ilk;
+}
+
+//CapitalDifferentialD is a special kind of operator
+void Tree2StdMML::AddDDOperatorInfo(MNODE * dMML_tree)
+{
+  MNODE *rover = dMML_tree;
+  while (rover) {
+    if (!strcmp(rover->src_tok,"msub")) {
+      MNODE *base = rover->first_kid;
+      if (!strcmp(base->src_tok,"mo") && !strcmp(base->p_chdata,"&#x2145;")) { // &DD;
+        LookupMOInfo(base);  //probably not necessary
+        rover->precedence = base->precedence;
+        rover->form = base->form;
+      }
+    }
+    rover = rover->next;
+  }
 }
 
 void Tree2StdMML::InsertApplyFunction(MNODE * dMML_list)
@@ -754,6 +772,29 @@ MNODE *Tree2StdMML::BindIntegral(MNODE * dMML_list)
   return rv;
 }
 
+// Recognize D_x as differential operator
+void Tree2StdMML::FixupCapitalD(MNODE * dMML_list)
+{
+  MNODE* rover = dMML_list;
+  while (rover) {
+    if (NodeIsCapitalDifferential(rover) && rover->next)
+      PermuteCapitalDifferential(rover);
+    rover = rover->next;
+  }
+}
+
+// Recognize d/dx as differential operator
+void Tree2StdMML::FixupSmalld(MNODE * dMML_list)
+{
+  MNODE* rover = dMML_list;
+  while (rover) {
+    MNODE* the_next = rover->next;
+    //TODO implementation
+    rover = the_next;
+  }
+}
+
+
 // finish MathML bindings
 MNODE *Tree2StdMML::FinishFixup(MNODE * dMML_tree)
 {  
@@ -774,13 +815,16 @@ MNODE *Tree2StdMML::FinishFixup(MNODE * dMML_tree)
   if (rv->parent && HasPositionalChildren(rv->parent))
     return rv;
 
-  //TODO:
   rv = BindMixedNumbers(rv);
-  //BindUnits
-  //BindDegMinSec
-  //may need to recognize differential operators here
+  //TODO: BindUnits
+  //TODO: BindDegMinSec
+  if (mDisDerivative)
+    FixupCapitalD(rv);  // D_x
+  FixupSmalld(rv);  // d/dx
   rv = BindDelimitedIntegrals(rv);
   
+  AddDDOperatorInfo(rv);
+
   rv = BindByOpPrecedence(rv, 68, 66);
   InsertApplyFunction(rv);  //65
   rv = BindApplyFunction(rv);
@@ -1529,7 +1573,7 @@ void Tree2StdMML::PermuteDifferential(MNODE * mml_node)
   if ((!strcmp(mml_node->src_tok,"mi") && !strcmp(mml_node->p_chdata,"d")) ||
       (!strcmp(mml_node->src_tok,"mo") && !strcmp(mml_node->p_chdata,"d"))) {
     strcpy(mml_node->src_tok,"mo");
-    const char * dd = "&#x2146;";
+    const char * dd = "&#x2146;";   // &dd;
     size_t ln = strlen(dd);
     char *tmp = TCI_NEW(char[ln + 1]);
     strcpy(tmp, dd);
@@ -1537,6 +1581,47 @@ void Tree2StdMML::PermuteDifferential(MNODE * mml_node)
     mml_node->p_chdata = tmp;
     LookupMOInfo(mml_node);
   }
+}
+
+bool Tree2StdMML::NodeIsCapitalDifferential(MNODE * mml_node)
+{
+  if (strcmp(mml_node->src_tok,"msub")) {
+    return false;
+  } else {
+    return NodeIsVariableList(mml_node->first_kid->next);
+  }
+}
+
+// Assuming NodeIsCapitalDifferential() is true, change D to &DD;
+void Tree2StdMML::PermuteCapitalDifferential(MNODE * mml_node)
+{
+  if (strcmp(mml_node->src_tok,"msub"))
+    return;  //shouldn't get here
+  
+  MNODE *theD = mml_node->first_kid;
+  if ((!strcmp(theD->src_tok,"mi") && !strcmp(theD->p_chdata,"D")) ||
+      (!strcmp(theD->src_tok,"mo") && !strcmp(theD->p_chdata,"D"))) {
+    strcpy(theD->src_tok,"mo");
+    const char * DD = "&#x2145;";  // &DD;
+    size_t ln = strlen(DD);
+    char *tmp = TCI_NEW(char[ln + 1]);
+    strcpy(tmp, DD);
+    delete theD->p_chdata;
+    theD->p_chdata = tmp;
+    LookupMOInfo(theD);
+  }
+}
+
+//TODO: check the end of the list
+//TODO: decorated variables?
+bool Tree2StdMML::NodeIsVariableList(MNODE * mml_node)
+{
+  if (!strcmp(mml_node->src_tok,"mi"))
+    return true;
+  else if (!strcmp(mml_node->src_tok,"mrow") || !strcmp(mml_node->src_tok,"msup"))
+    return NodeIsVariableList(mml_node->first_kid);
+  else
+    return false;
 }
 
 // Quite different from the corresponding function in LTeX2MML.cpp
