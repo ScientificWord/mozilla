@@ -9158,7 +9158,7 @@ Test ID Op132c
   <mrow>
     <mrow>
       <msub>
-        <mo form="prefix">D</mo>
+        <mo form="prefix">&#x2145;</mo>
         <mi>x</mi>
       </msub>
       <mfenced open="(" close=")">
@@ -9171,7 +9171,7 @@ Test ID Op132c
     <mo form="infix">+</mo>
     <mrow>
       <msub>
-        <mo form="prefix">D</mo>
+        <mo form="prefix">&#x2145;</mo>
         <mrow>
           <mi>x</mi>
           <mo>&#x2063;</mo>
@@ -9188,7 +9188,7 @@ Test ID Op132c
     <mo form="infix">+</mo>
     <mrow>
       <msub>
-        <mo form="prefix">D</mo>
+        <mo form="prefix">&#x2145;</mo>
         <msup>
           <mi>x</mi>
           <mn>2</mn>
@@ -9211,7 +9211,53 @@ Test ID Op132d
 <p>mi D notation /w expr</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>Op132d Wrong, D should be recognized as differential operator.</mtext>
+  <mrow>
+    <mrow>
+      <msub>
+        <mo form="prefix">&#x2145;</mo>
+        <mi>x</mi>
+      </msub>
+      <mfenced open="(" close=")">
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+      </mfenced>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <msub>
+        <mo form="prefix">&#x2145;</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>&#x2063;</mo>
+          <mi>x</mi>
+        </mrow>
+      </msub>
+      <mfenced open="(" close=")">
+        <msup>
+          <mi>x</mi>
+          <mn>4</mn>
+        </msup>
+      </mfenced>
+    </mrow>
+    <mo form="infix">+</mo>
+    <mrow>
+      <msub>
+        <mo form="prefix">&#x2145;</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+      </msub>
+      <mfenced open="(" close=")">
+        <msup>
+          <mi>x</mi>
+          <mn>8</mn>
+        </msup>
+      </mfenced>
+    </mrow>
+  </mrow>
 </math>
 
 </p>
