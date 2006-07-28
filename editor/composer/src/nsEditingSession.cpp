@@ -166,21 +166,21 @@ nsEditingSession::MakeWindowEditable(nsIDOMWindow *aWindow,
   rv = docShell->GetAllowJavascript(&tmp);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  mScriptsEnabled = tmp;
+  mScriptsEnabled = PR_TRUE;
 
 //  rv = docShell->SetAllowJavascript(PR_FALSE);
   rv = docShell->SetAllowJavascript(PR_TRUE);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  // Disable plugins in this document:
-  rv = docShell->GetAllowPlugins(&tmp);
-  NS_ENSURE_SUCCESS(rv, rv);
+  // Disable plugins in this document:  Why is the code doing this twice?
+  //rv = docShell->GetAllowPlugins(&tmp);
+  //NS_ENSURE_SUCCESS(rv, rv);
 
-  mPluginsEnabled = tmp;
+  mPluginsEnabled = PR_TRUE;
 
 //  rv = docShell->SetAllowPlugins(PR_FALSE);
- rv = docShell->SetAllowPlugins(PR_TRUE);
- NS_ENSURE_SUCCESS(rv, rv);
+  rv = docShell->SetAllowPlugins(PR_TRUE);
+  NS_ENSURE_SUCCESS(rv, rv);
 
   // Always remove existing editor
   TearDownEditorOnWindow(aWindow);
