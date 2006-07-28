@@ -1,0 +1,42 @@
+@namespace sw url("http://www.sciword.com/namespaces/sciword");
+
+latex2 {
+  font-family: "Times-Roman";
+  letter-spacing: -0.2em;
+  visibility: visible;
+
+}
+
+latexa {
+  font-size: smaller;
+  position: relative;
+  bottom: .15em;
+  left: -0.20em;
+}
+
+latext {
+  position: relative;
+  left: -0.13em;
+  }
+
+latexe {
+  position: relative;
+  bottom: -0.2em;
+  left: -0.09em;
+  }
+
+tex2 {
+  font-family: "Times-Roman";
+  letter-spacing: -0.14em;
+  visibility: visible;
+}
+
+texe {
+  position: relative;
+  bottom: -0.2em;
+  left: -.02em;
+  }
+
+invis {
+  display: none;
+}
