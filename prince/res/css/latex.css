@@ -1,0 +1,8 @@
+latex {
+  -moz-binding: url("resource://xbl/latex.xml#latex");
+}
+
+tex {
+  -moz-binding: url("resource://xbl/latex.xml#tex");
+}
+
