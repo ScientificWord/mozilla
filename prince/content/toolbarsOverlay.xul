@@ -9,6 +9,8 @@
 <overlay id="toolbarsOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   
+  <script type="application/x-javascript" src="chrome://editor/content/EditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/toolbarsOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/customizeToolbar.js"/>
          
@@ -246,21 +248,21 @@
   <toolbarbutton id="printButton" type="menu-button" class="toolbarbutton-1"
                  label="&printToolbarCmd.label;"
                  tooltiptext="&printToolbarCmd.tooltip;"
-                 persist="defaultcompiler oncommand" 
+                 persist="defcomp oncommand" 
                  oncommand="alert('Default to Direct print');" >
-    <observes id="printButtonObs" element="defaultCompiler" attribute="defaultcompiler" />
+    <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp" />
     <menupopup id="printMenu" tooltiptext="" >
       <menuitem id="printMenuItem1" label="&printButton.label;" persist="default" default="true"
                 oncommand="alert('Direct print');event.stopPropagation();" for="" onbroadcast="setDefault(this);" >
-        <observes id="pmitb1" element="defaultCompiler" attribute="defaultcompiler" />
+        <observes id="pmitb1" element="defaultCompiler" attribute="defcomp" />
       </menuitem>        
       <menuitem id="printMenuItem1pdf" label="&pdfprintButton.label;" persist="default" default="false"
                 oncommand="alert('PDF print');event.stopPropagation();"  for="pdf" onbroadcast="setDefault(this);">
-        <observes id="pmitb2" element="defaultCompiler" attribute="defaultcompiler"  />
+        <observes id="pmitb2" element="defaultCompiler" attribute="defcomp"  />
       </menuitem>        
       <menuitem id="printMenuItem1dvi" label="&dviprintButton.label;" persist="default" default="false"
                 oncommand="alert('DVI print');event.stopPropagation();"  for="dvi" onbroadcast="setDefault(this);">
-        <observes id="pmitb3" element="defaultCompiler" attribute="defaultcompiler"  />
+        <observes id="pmitb3" element="defaultCompiler" attribute="defcomp"  />
       </menuitem>        
       <menuseparator/>
       <menu id="chooseDefPrinter" label="&chooseDefPrinter.label;" >
@@ -276,20 +278,20 @@
   <toolbarbutton id="printPreviewButton" type="menu-button" class="toolbarbutton-1"
                  label="&printPreviewToolbarCmd.label;" 
                  tooltiptext="&printPreviewToolbarCmd.tooltip;" 
-                 persist="defaultcompiler oncommand" oncommand="alert('Default to direct print preview');">
-    <observes id="printButtonObs" element="defaultCompiler" attribute="defaultcompiler" />
+                 persist="defcomp oncommand" oncommand="alert('Default to direct print preview');">
+    <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp" />
     <menupopup id="previewMenu">
       <menuitem id="directPreviewMenuItem" label="&printPreviewToolbarCmd.label;" persist="default" default="true"
                 oncommand="alert('Direct print preview');event.stopPropagation();" for="" onbroadcast="setDefault(this);" >
-        <observes id="pmitb4" element="defaultCompiler" attribute="defaultcompiler" />
+        <observes id="pmitb4" element="defaultCompiler" attribute="defcomp" />
       </menuitem>        
       <menuitem id="pdfPreviewMenuItem" label="&pdfpreviewButton.label;" persist="default" default="false"
                 oncommand="alert('PDF print preview');event.stopPropagation();" for="pdf" onbroadcast="setDefault(this);">
-        <observes id="pmitb5" element="defaultCompiler" attribute="defaultcompiler" />
+        <observes id="pmitb5" element="defaultCompiler" attribute="defcomp" />
       </menuitem>        
       <menuitem id="dviPreviewMenuItem" label="&dvipreviewButton.label;" persist="default" default="false"
                 oncommand="alert('DVI print preview');event.stopPropagation();" for="dvi" onbroadcast="setDefault(this);">  
-        <observes id="pmitb6" element="defaultCompiler" attribute="defaultcompiler" />
+        <observes id="pmitb6" element="defaultCompiler" attribute="defcomp" />
       </menuitem>        
       <menuseparator/>
       <menu id="chooseDefPrinter2" label="&chooseDefPrinter.label;" >
@@ -381,7 +383,7 @@
     <command id="cmd_viewEditingToolbar"  oncommand="goToggleToolbar('EditingToolbar','cmd_viewEditingToolbar');"   checked="true"/>
     <command id="cmd_viewSymbolToolbar"  oncommand="goToggleToolbar('SymbolToolbar','cmd_viewSymbolToolbar');"   checked="true"/>
     <command id="cmd_compactSymbolPanels"  oncommand="setCompact('menuCompactSymbolPanels','cmd_compactSymbolPanels');"   checked="false"/>
-    <broadcaster id="defaultCompiler" persist="defaultcompiler" defaultcompiler="" />
+    <broadcaster id="defaultCompiler" persist="defcomp" defcomp="" />
   </broadcasterset>
  
       
