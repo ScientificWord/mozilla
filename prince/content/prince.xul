@@ -3,27 +3,63 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/toolbar.css" type="text/css"?>
+
+#<?xml-stylesheet href="chrome://editor/skin/editorPrimaryToolbar.css" type="text/css"?> 
+#<?xml-stylesheet href="chrome://editor/skin/editorFormatToolbar.css" type="text/css"?> 
+#<?xml-stylesheet href="chrome://editor/skin/editorModeToolbar.css" type="text/css"?> 
+#<?xul-overlay href="chrome://editor/content/composerOverlay.xul"?>
+#<?xul-overlay href="chrome://editor/content/EditorContextMenuOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/charsetOverlay.xul"?>
+#<?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"?>
+#<?xul-overlay href="chrome://communicator/content/tasksOverlay.xul"?>
+#<?xul-overlay href="chrome://communicator/content/contentAreaContextOverlay.xul"?>
+#<?xul-overlay href="chrome://communicator/content/sidebar/sidebarOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/ComputeOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/typesetOverlay.xul" ?>
 
-<!DOCTYPE window SYSTEM "chrome://prince/locale/prince.dtd">
+<!DOCTYPE window [
+<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
+%editorDTD;
+#<!ENTITY % brandDTD SYSTEM "chrome://prince/locale/brand.dtd" >
+#%brandDTD;
+]> 
 
 
 <window
   id    = "prince"
   title = "&prince.title;"
   onload="EditorOnLoad()"
+        onclose="return EditorCanClose()"
+        onfocus="EditorOnFocus()"
+        contenttitlesetting="true"
+        titlemodifier="&editorWindow.titlemodifier;"
+        titlemenuseparator="&editorWindow.titlemodifiermenuseparator;"
   windowtype="composer:html"     
   screenX="10" screenY="10" width="640" height="480"
   persist="screenX screenY width height sizemode"
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script src="chrome://prince/content/prince.js"/>
-  <script src="chrome://prince/content/mainCore.js" />
-  <script src="chrome://global/content/customizeToolbar.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/prince.js"/>
+#  <script type="application/x-javascript" src="chrome://editor/content/EditorCommandsDebug.js"/>
+#  <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
+#  <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
+#  <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
+#  <script type="application/x-javascript" src="chrome://editor/content/publishprefs.js"/>
+#  <script type="application/x-javascript" src="chrome://communicator/content/contentAreaDD.js"/>
+#  <script type="application/x-javascript" src="chrome://communicator/content/contentAreaClick.js"/>
+#  <script type="application/x-javascript" src="chrome://communicator/content/printing.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js" />
+  <script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/>
+
+  <popupset id="editorContentContextSet"/>
+  <popup id="sidebarPopup"/>
 
   <commandset id="tasksCommands">
     <command id="cmd_open" oncommand="doOpen()"/>
@@ -33,8 +69,18 @@
     <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
     <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
-
+  
+  <broadcasterset id="broadcasterset"/>
+  <broadcaster id="args" value="about:blank"/>
+  <broadcaster id="canPrint"/>
+  
   <keyset id="editorKeys">
+    <keyset id="tasksKeys"/>
+    <key id="showHideSidebar"/>
+    <key keycode="VK_TAB" oncommand="return true;"/>
+    <key keycode="VK_TAB" modifiers="shift" oncommand="return true;"/>
+    <key keycode="VK_TAB" modifiers="control" oncommand="return true;"/>
+    <key keycode="VK_TAB" modifiers="control,shift" oncommand="return true;"/>
     <key id="key_newBlankPage" key="&filenew.keybinding;" observes="cmd_newEditor"  modifiers="accel"/>
     <key id="openeditorkb"   key="&fileopen.keybinding;"  observes="cmd_open"  modifiers="accel"/>
     <key id="savekb"         key="&filesave.keybinding;"  observes="cmd_save"  modifiers="accel"/>
@@ -63,6 +109,12 @@
   <toolbox id="EditingToolbox" />
   <toolbox id="SymbolToolbox" />
   
+<!-- sidebar/toolbar/content/status -->
+<hbox id="sidebar-parent" flex="1">
+  <!-- From sidebarOverlay.xul -->
+  <vbox id="sidebar-box" class="chromeclass-extrachrome" hidden="true"/>
+  <splitter id="sidebar-splitter" class="chromeclass-extrachrome" hidden="true"/>
+
   <vbox id="appcontent" flex="1">
     <deck id="ContentWindowDeck" selectedIndex="0" flex="1">
       <stack>
@@ -88,6 +140,7 @@
       </tabs>
     </hbox>
   </vbox>
+</hbox><!-- sidebar-parent -->
 
   <statusbar class="chromeclass-status" id="status-bar">
     <statusbarpanel id="component-bar"/>
@@ -97,5 +150,13 @@
     <statusbarpanel class="statusbarpanel-iconic" id="offline-status"/>
   </statusbar>
 
+<!-- command sets -->
+  <commandset id="commonEditorMenuItems" />
+  <commandset id="composerMenuItems" />
+  <commandset id="composerSaveMenuItems" />
+  <commandset id="composerEditMenuItems" />
+  <commandset id="composerStyleMenuItems" />
+  <commandset id="composerListMenuItems" />
+  <commandset id="composerTableMenuItems" />
  
 </window>
