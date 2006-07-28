@@ -45,5 +45,11 @@ include $(DEPTH)/config/autoconf.mk
 MODULE		= editor
 DIRS		= public idl txtsvc libeditor txmgr composer
 
+ifdef MOZ_MSI_PRINCE
+DIRS += ui
+# DIRS += msiediting
+endif
+
+
 include $(topsrcdir)/config/rules.mk
 
