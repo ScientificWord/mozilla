@@ -1412,15 +1412,17 @@ Test ID 130b
   <mrow>
     <mfrac>
       <mrow>
-        <mo>d</mo>
-        <mi>x</mi>
-        <mo>&#x2062;</mo>
-        <mi msiMathname="true">sin</mi>
-        <mo>&#x2061;</mo>
-        <mi>x</mi>
+        <mo form="prefix">&#x2146;</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>&#x2062;</mo>
+          <mi msiMathname="true">sin</mi>
+          <mo>&#x2061;</mo>
+          <mi>x</mi>
+        </mrow>
       </mrow>
       <mrow>
-        <mo>d</mo>
+        <mo form="prefix">&#x2146;</mo>
         <mi>x</mi>
       </mrow>
     </mfrac>
@@ -1437,17 +1439,17 @@ Test ID 130c
   <mrow>
     <mfrac>
       <mrow>
-        <mi>d</mi>
-        <mo>&#x2062;</mo>
-        <mi>x</mi>
-        <mo>&#x2062;</mo>
-        <mi msiMathname="true">sin</mi>
-        <mo>&#x2061;</mo>
-        <mi>x</mi>
+        <mo form="prefix">&#x2146;</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>&#x2062;</mo>
+          <mi msiMathname="true">sin</mi>
+          <mo>&#x2061;</mo>
+          <mi>x</mi>
+        </mrow>
       </mrow>
       <mrow>
-        <mi>d</mi>
-        <mo>&#x2062;</mo>
+        <mo form="prefix">&#x2146;</mo>
         <mi>x</mi>
       </mrow>
     </mfrac>
