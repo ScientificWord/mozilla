@@ -460,5 +460,303 @@ Command ID	Evaluate
   <math>%</math>
 End of test
 
+Passthru    <hr/><h3>Leibnitz notation</h3>
+Test ID     205
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mfrac>
+       <mrow>
+         <mo>&dd;</mo>
+         <msup>
+           <mi>e</mi>
+           <msup>
+             <mi>x</mi>
+             <mn>2</mn>
+           </msup>
+         </msup>
+       </mrow>
+       <mrow>
+         <mo>&dd;</mo>
+         <mi>x</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
 
+Test ID     205e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
 
+Test ID     205mo
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mfrac>
+       <mrow>
+         <mo>d</mo>
+         <msup>
+           <mi>e</mi>
+           <msup>
+             <mi>x</mi>
+             <mn>2</mn>
+           </msup>
+         </msup>
+       </mrow>
+       <mrow>
+         <mo>d</mo>
+         <mi>x</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     205moe
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     205mi
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mfrac>
+       <mrow>
+         <mi>d</mi>
+         <msup>
+           <mi>e</mi>
+           <msup>
+             <mi>x</mi>
+             <mn>2</mn>
+           </msup>
+         </msup>
+       </mrow>
+       <mrow>
+         <mi>d</mi>
+         <mi>x</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     205mie
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     206
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mfrac>
+       <msup>
+         <mo>&dd;</mo>
+         <mn>4</mn>
+       </msup>
+       <mrow>
+         <mo>&dd;</mo>
+         <msup>
+           <mi>x</mi>
+           <mn>4</mn>
+         </msup>
+       </mrow>
+     </mfrac>
+     <mo>(</mo>
+       <mn>3</mn>
+       <msup>
+         <mi>x</mi>
+         <mn>8</mn>
+       </msup>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     206e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     206mo
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mfrac>
+       <msup>
+         <mo>d</mo>
+         <mn>4</mn>
+       </msup>
+       <mrow>
+         <mo>d</mo>
+         <msup>
+           <mi>x</mi>
+           <mn>4</mn>
+         </msup>
+       </mrow>
+     </mfrac>
+     <mo>(</mo>
+       <mn>3</mn>
+       <msup>
+         <mi>x</mi>
+         <mn>8</mn>
+       </msup>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     206moe
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     206mi
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mfrac>
+       <msup>
+         <mi>d</mi>
+         <mn>4</mn>
+       </msup>
+       <mrow>
+         <mi>d</mi>
+         <msup>
+           <mi>x</mi>
+           <mn>4</mn>
+         </msup>
+       </mrow>
+     </mfrac>
+     <mo>(</mo>
+       <mn>3</mn>
+       <msup>
+         <mi>x</mi>
+         <mn>8</mn>
+       </msup>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     206mie
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     Op134
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mfrac>
+       <msup>
+         <mo>&dd;</mo>
+         <mn>2</mn>
+       </msup>
+       <mrow>
+         <mo>&dd;</mo>
+         <mi>x</mi>
+         <mo>&dd;</mo>
+         <mi>y</mi>
+       </mrow>
+     </mfrac>
+     <mo>(</mo>
+       <mi>y</mi>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mi>x</mi>
+       </mrow>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     Op134e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     Op134mo
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mfrac>
+       <msup>
+         <mo>d</mo>
+         <mn>2</mn>
+       </msup>
+       <mrow>
+         <mo>d</mo>
+         <mi>x</mi>
+         <mo>d</mo>
+         <mi>y</mi>
+       </mrow>
+     </mfrac>
+     <mo>(</mo>
+       <mi>y</mi>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mi>x</mi>
+       </mrow>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     Op134moe
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+Test ID     Op134mi
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mfrac>
+       <msup>
+         <mi>d</mi>
+         <mn>2</mn>
+       </msup>
+       <mrow>
+         <mi>d</mi>
+         <mi>x</mi>
+         <mi>d</mi>
+         <mi>y</mi>
+       </mrow>
+     </mfrac>
+     <mo>(</mo>
+       <mi>y</mi>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mi>x</mi>
+       </mrow>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     Op134mie
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test

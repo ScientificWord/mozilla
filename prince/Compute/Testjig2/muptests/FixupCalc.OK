@@ -946,6 +946,430 @@ Test ID Op132d.e
 </math>
 
 </p>
+<hr/><h3>Leibnitz notation</h3>
+<p>
+Test ID 205
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mfrac>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <msup>
+        <mi>e</mi>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+      </msup>
+    </mrow>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>x</mi>
+    </mrow>
+  </mfrac>
+</math>
+
+</p>
+<p>
+Test ID 205e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>&#x2147;</mi>
+      <msup>
+        <mi>x</mi>
+        <mn>2</mn>
+      </msup>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 205mo
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mfrac>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <msup>
+        <mi>e</mi>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+      </msup>
+    </mrow>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>x</mi>
+    </mrow>
+  </mfrac>
+</math>
+
+</p>
+<p>
+Test ID 205moe
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>&#x2147;</mi>
+      <msup>
+        <mi>x</mi>
+        <mn>2</mn>
+      </msup>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 205mi
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mfrac>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <msup>
+        <mi>e</mi>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+      </msup>
+    </mrow>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <mi>x</mi>
+    </mrow>
+  </mfrac>
+</math>
+
+</p>
+<p>
+Test ID 205mie
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>&#x2147;</mi>
+      <msup>
+        <mi>x</mi>
+        <mn>2</mn>
+      </msup>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 206
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mfrac>
+    <msup>
+      <mo form="prefix">&#x2146;</mo>
+      <mn>4</mn>
+    </msup>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <msup>
+        <mi>x</mi>
+        <mn>4</mn>
+      </msup>
+    </mrow>
+  </mfrac>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mrow>
+      <mn>3</mn>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mi>x</mi>
+        <mn>8</mn>
+      </msup>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID 206e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>5040</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>4</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 206mo
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mfrac>
+    <msup>
+      <mo form="prefix">&#x2146;</mo>
+      <mn>4</mn>
+    </msup>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <msup>
+        <mi>x</mi>
+        <mn>4</mn>
+      </msup>
+    </mrow>
+  </mfrac>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mrow>
+      <mn>3</mn>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mi>x</mi>
+        <mn>8</mn>
+      </msup>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID 206moe
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>5040</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>4</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID 206mi
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mfrac>
+    <msup>
+      <mo form="prefix">&#x2146;</mo>
+      <mn>4</mn>
+    </msup>
+    <mrow>
+      <mo form="prefix">&#x2146;</mo>
+      <msup>
+        <mi>x</mi>
+        <mn>4</mn>
+      </msup>
+    </mrow>
+  </mfrac>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mrow>
+      <mn>3</mn>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mi>x</mi>
+        <mn>8</mn>
+      </msup>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID 206mie
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>5040</mn>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi>x</mi>
+      <mn>4</mn>
+    </msup>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op134
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mfrac>
+    <msup>
+      <mo form="prefix">&#x2146;</mo>
+      <mn>2</mn>
+    </msup>
+    <mrow>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mfrac>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mrow>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID Op134e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op134mo
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mfrac>
+    <msup>
+      <mo form="prefix">&#x2146;</mo>
+      <mn>2</mn>
+    </msup>
+    <mrow>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mfrac>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mrow>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID Op134moe
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op134mi
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mfrac>
+    <msup>
+      <mo form="prefix">&#x2146;</mo>
+      <mn>2</mn>
+    </msup>
+    <mrow>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>x</mi>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mo form="prefix">&#x2146;</mo>
+        <mi>y</mi>
+      </mrow>
+    </mrow>
+  </mfrac>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mrow>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
+      </mrow>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID Op134mie
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+  </mrow>
+</math>
+
+</p>
 <hr/>
 </body>
 </html>
