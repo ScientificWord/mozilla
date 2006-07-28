@@ -30,7 +30,6 @@ function setDefault(obj)
   }
   else
     obj.setAttribute('default','false');
-  x = 3+4;
 }
 
 function setAnimation()
