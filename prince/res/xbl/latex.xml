@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<bindings id="latexbindings"
+	xmlns="http://www.mozilla.org/xbl" xmlns:sw="http://www.sciword.com/namespaces/sciword"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml" >
+
+
+	<binding id="latex">
+	  <resources>
+	    <stylesheet src="resource://css/latex_internal.css"/>
+	  </resources>
+	  <content>
+      <!-- we include the children invisibly. Omitting the children doesn't work. The tag generally will contain the 
+      text 'LaTeX' so it displays something approximated correct when this xbl file is not available. -->
+      <sw:invis><children/></sw:invis>
+      <sw:latex2>L<sw:latexa>A</sw:latexa><sw:latext>T</sw:latext><sw:latexe>E</sw:latexe>X</sw:latex2>
+    </content>
+  </binding>
+
+	<binding id="tex">
+	  <resources>
+	    <stylesheet src="resource://css/latex_internal.css"/>
+	  </resources>
+
+	  <content>
+      <sw:invis><children/></sw:invis>
+      <sw:tex2>T<sw:texe>E</sw:texe>X</sw:tex2>
+    </content>
+  </binding>
+
+</bindings>
+
+			
