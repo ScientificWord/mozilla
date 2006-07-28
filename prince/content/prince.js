@@ -2,10 +2,6 @@ function goAboutDialog() {
   window.openDialog("chrome://prince/content/aboutDialog.xul", "About", "modal,chrome,resizable=yes");
 }
 
-function EditorOnLoad() {
-  var contentWindow = document.getElementById("content-frame");
-  contentWindow.makeEditable("html",false);
-}
 
 function doOpen() {
   var fp = Components.classes["@mozilla.org/filepicker;1"].
