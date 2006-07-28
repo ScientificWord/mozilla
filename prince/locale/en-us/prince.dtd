@@ -1,4 +1,7 @@
 <!ENTITY prince.title       "Scientific WorkPlace">
+<!ENTITY editorWindow.titlemodifier	"file name here...">
+<!ENTITY editorWindow.titlemodifiermenuseparator	" - ">
+
 
 <!ENTITY fileMenu.label    "File">
 <!ENTITY fileMenu.accesskey    "F">
