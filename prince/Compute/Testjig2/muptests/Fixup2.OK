@@ -8938,9 +8938,9 @@ Test ID Op130b
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mfrac>
-      <mo form="prefix">d</mo>
+      <mo form="prefix">&#x2146;</mo>
       <mrow>
-        <mo form="prefix">d</mo>
+        <mo form="prefix">&#x2146;</mo>
         <mi>x</mi>
       </mrow>
     </mfrac>
@@ -8967,14 +8967,12 @@ Test ID Op130c
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mfrac>
-      <mi>d</mi>
+      <mo form="prefix">&#x2146;</mo>
       <mrow>
-        <mi>d</mi>
-        <mo>&#x2062;</mo>
+        <mo form="prefix">&#x2146;</mo>
         <mi>x</mi>
       </mrow>
     </mfrac>
-    <mo>&#x2062;</mo>
     <mfenced open="(" close=")">
       <mrow>
         <mi>x</mi>
