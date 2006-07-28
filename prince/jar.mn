@@ -1,5 +1,5 @@
 prince.jar:
-% content prince %content/
+% content prince %content/	 
 * content/prince.xul                (content/prince.xul)
 * content/prince.js                 (content/prince.js)
 * content/aboutDialog.xul           (content/aboutDialog.xul)
@@ -50,6 +50,7 @@ prince.jar:
 
 en-US.jar:
 % locale prince en-US %locale/en-US/
+% locale branding en-US %locale/en-US/
   locale/en-US/prince.dtd           (locale/en-us/prince.dtd)
   locale/en-US/aboutDialog.dtd      (locale/en-us/aboutDialog.dtd)
   locale/en-US/toolbarsOverlay.dtd  (locale/en-us/toolbarsOverlay.dtd)
@@ -73,6 +74,8 @@ en-US.jar:
   locale/en-US/typesetOutputChoice.dtd	(locale/en-US/Dialogs/typesetOutputChoice.dtd)
   locale/en-US/typesetPreamble.dtd		(locale/en-US/Dialogs/typesetPreamble.dtd)
   locale/en-US/typesetStyleOptions.dtd	(locale/en-US/Dialogs/typesetStyleOptions.dtd)
+  locale/en-US/brand.dtd				(locale/en-US/brand.dtd)
+  locale/en-US/brand.properties				(locale/en-US/brand.properties)
  
 classic.jar:
 % skin prince classic %skin/classic/prince
