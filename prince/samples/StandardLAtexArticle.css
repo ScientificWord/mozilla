@@ -255,11 +255,11 @@ subparagraph defaulttitletag:after { content: "Replace this subsubsubsubsection 
 }
 
 latex {
-  -moz-binding: url("chrome://editor/content/latex.xml#latex");
+  -moz-binding: url("resource://xbl/latex.xml#latex");
 }
 
 tex {
-  -moz-binding: url("chrome://editor/content/latex.xml#tex");
+  -moz-binding: url("resource://xbl/latex.xml#tex");
 }
 
 
