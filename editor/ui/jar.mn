@@ -1,4 +1,6 @@
 comm.jar:
+#ifdef MOZ_MSI_PRINCE
+% content editor %content/editor/ xpcnativewrappers=yes
 #ifdef MOZ_XUL_APP
 % content editor %content/editor/ xpcnativewrappers=yes
 % overlay chrome://communicator/content/tasksOverlay.xul chrome://editor/content/editorTasksOverlay.xul
