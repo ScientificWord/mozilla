@@ -788,9 +788,13 @@ void Tree2StdMML::FixupSmalld(MNODE * dMML_list)
 {
   MNODE* rover = dMML_list;
   while (rover) {
-    MNODE* the_next = rover->next;
-    //TODO implementation
-    rover = the_next;
+    if (!strcmp(rover->src_tok, "mfrac")) {
+      if (NodeIsDiffNumerator(rover->first_kid) && NodeIsDiffDenominator(rover->first_kid->next)) {
+        PermuteDiffNumerator(rover->first_kid);
+        PermuteDiffDenominator(rover->first_kid->next);
+      }
+    }
+    rover = rover->next;
   }
 }
 
@@ -801,6 +805,11 @@ MNODE *Tree2StdMML::FinishFixup(MNODE * dMML_tree)
   if (!dMML_tree)
     return dMML_tree;
   MNODE * rv = dMML_tree;
+
+  if (mDisDerivative)
+    FixupCapitalD(rv);  // D_x
+  FixupSmalld(rv);  // d/dx
+
   // depth first recursion
   MNODE * rover = dMML_tree;
   while (rover) {
@@ -818,9 +827,6 @@ MNODE *Tree2StdMML::FinishFixup(MNODE * dMML_tree)
   rv = BindMixedNumbers(rv);
   //TODO: BindUnits
   //TODO: BindDegMinSec
-  if (mDisDerivative)
-    FixupCapitalD(rv);  // D_x
-  FixupSmalld(rv);  // d/dx
   rv = BindDelimitedIntegrals(rv);
   
   AddDDOperatorInfo(rv);
@@ -1587,8 +1593,13 @@ bool Tree2StdMML::NodeIsCapitalDifferential(MNODE * mml_node)
 {
   if (strcmp(mml_node->src_tok,"msub")) {
     return false;
+  }
+  MNODE *base = mml_node->first_kid;
+  if ((!strcmp(base->src_tok,"mi") && !strcmp(base->p_chdata,"D")) ||
+      (!strcmp(base->src_tok,"mo") && !strcmp(base->p_chdata,"D"))) {
+    return NodeIsVariableList(base->next);
   } else {
-    return NodeIsVariableList(mml_node->first_kid->next);
+    return false;
   }
 }
 
@@ -1610,6 +1621,69 @@ void Tree2StdMML::PermuteCapitalDifferential(MNODE * mml_node)
     theD->p_chdata = tmp;
     LookupMOInfo(theD);
   }
+}
+
+// Assuming NodeIsDiffNumerator() is true, change d to &dd;
+void Tree2StdMML::PermuteDiffNumerator(MNODE * mml_node)
+{
+  MNODE *rover = mml_node;
+  if (!strcmp(rover->src_tok,"mrow"))
+    rover = rover->first_kid;
+  if (!strcmp(rover->src_tok,"msup"))
+    rover = rover->first_kid;
+  PermuteDifferential(rover);
+}
+
+// Assuming NodeIsDiffDenominator() is true, change d to &dd;
+void Tree2StdMML::PermuteDiffDenominator(MNODE * mml_node)
+{
+  MNODE *rover = mml_node;
+  if (!strcmp(rover->src_tok,"mrow"))
+    PermuteDiffDenominator(rover->first_kid);
+  if (!strcmp(rover->src_tok,"msup"))
+    PermuteDifferential(rover->first_kid);
+  else
+    PermuteDifferential(rover);
+  rover = rover->next;
+  if (rover)
+    rover = rover->next;
+  if (rover)
+    PermuteDiffDenominator(rover);
+}
+
+bool Tree2StdMML::NodeIsDiffNumerator(MNODE * mml_node)
+{
+  if (!strcmp(mml_node->src_tok,"mrow") || !strcmp(mml_node->src_tok,"msup")) {
+    return NodeIsDiffNumerator(mml_node->first_kid);
+  } else {
+    bool nested; // unused
+    return NodeIsDifferential(mml_node,nested);
+  }
+}
+
+// dx dy or dx^3 or d^3x
+bool Tree2StdMML::NodeIsDiffDenominator(MNODE * mml_node)
+{
+  if (!strcmp(mml_node->src_tok,"mrow")) {
+    return NodeIsDiffNumerator(mml_node->first_kid);
+  } else if (!strcmp(mml_node->src_tok,"msup")) {
+    if (!NodeIsDiffNumerator(mml_node->first_kid))
+      return false;
+  } else {
+    bool nested; // unused
+    if (!NodeIsDifferential(mml_node,nested))
+      return false;
+  }
+  MNODE *rover = mml_node->next;
+  if (!rover)
+    return false;
+  if (!NodeIsVariableList(rover))
+    return false;
+  rover = rover->next;
+  if (!rover)
+    return true;
+  else
+    return NodeIsDiffDenominator(rover);
 }
 
 //TODO: check the end of the list
