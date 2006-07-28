@@ -110,6 +110,12 @@ function SetupHTMLEditorCommands()
   commandTable.registerCommand("cmd_NormalizeTable",     nsNormalizeTableCommand);
   commandTable.registerCommand("cmd_smiley",             nsSetSmiley);
   commandTable.registerCommand("cmd_ConvertToTable",     nsConvertToTable);
+  commandTable.registerCommand("cmd_MSIAnimateGifsOn",   nsGIFAnimation);
+  commandTable.registerCommand("cmd_MSIAnimateGifsOff",  nsGIFAnimation);
+//  commandTable.registerCommand("cmd_texttag",            nsTextTagUpdatingCommand);
+//  commandTable.registerCommand("cmd_paratag",            nsParaTagUpdatingCommand);
+//  commandTable.registerCommand("cmd_secttag",            nsSectTagUpdatingCommand);
+//  commandTable.registerCommand("cmd_othertag",           nsOtherTagUpdatingCommand);
 }
 
 function SetupTextEditorCommands()
@@ -277,6 +283,7 @@ function goUpdateCommandState(command)
       case "cmd_nobreak":
       case "cmd_ul":
       case "cmd_ol":
+      case "cmd_MSImathtext":
         pokeStyleUI(command, params.getBooleanValue("state_all"));
         break;
 
@@ -291,6 +298,13 @@ function goUpdateCommandState(command)
         pokeMultiStateUI(command, params);
         break;
 
+      case "cmd_texttag":
+      case "cmd_paratag":
+      case "cmd_structtag":
+      case "cmd_othertag":
+        pokeTagStateUI(command, params);
+        break;
+
       case "cmd_decreaseZIndex":
       case "cmd_increaseZIndex":
       case "cmd_indent":
@@ -298,6 +312,7 @@ function goUpdateCommandState(command)
       case "cmd_increaseFont":
       case "cmd_decreaseFont":
       case "cmd_removeStyles":
+      
       case "cmd_smiley":
         break;
 
@@ -308,6 +323,23 @@ function goUpdateCommandState(command)
 }
 
 function goUpdateComposerMenuItems(commandset)
+{
+  //dump("Updating commands for " + commandset.id + "\n");
+
+  for (var i = 0; i < commandset.childNodes.length; i++)
+  {
+    var commandNode = commandset.childNodes[i];
+    var commandID = commandNode.id;
+    if (commandID)
+    {
+      goUpdateCommand(commandID);  // enable or disable
+      if (commandNode.hasAttribute("state"))
+        goUpdateCommandState(commandID);
+    }
+  }
+}
+
+function goUpdateTagSelectors(commandset)
 {
   //dump("Updating commands for " + commandset.id + "\n");
 
@@ -349,7 +381,7 @@ function goDoCommandParams(command, params)
   }
   catch (e)
   {
-    dump("An error occurred executing the "+command+" command\n");
+    dump("An error occurred executing the "+command+" command\n"+e);
   }
 }
 
@@ -398,15 +430,8 @@ function pokeMultiStateUI(uiID, cmdParams)
     var desiredAttrib;
     if (isMixed)
       desiredAttrib = "mixed";
-    else {
-      var valuetype = cmdParams.getValueType("state_attribute");
-      if (valuetype == Components.interfaces.nsICommandParams.eStringType) {
-        desiredAttrib = cmdParams.getCStringValue("state_attribute");      
-      } else {
-        desiredAttrib = cmdParams.getStringValue("state_attribute");      
-      }
-
-    }
+    else
+      desiredAttrib = cmdParams.getCStringValue("state_attribute");
 
     var uiState = commandNode.getAttribute("state");
     if (desiredAttrib != uiState)
@@ -415,6 +440,47 @@ function pokeMultiStateUI(uiID, cmdParams)
     }
   } catch(e) {}
 }
+
+function pokeTagStateUI(uiID, cmdParams)
+{
+  try
+  {
+    var commandNode = document.getElementById(uiID);
+    if (!commandNode)
+      return;
+
+    var desiredAttrib;
+    desiredAttrib = cmdParams.getStringValue("state_attribute");
+
+    var uiState = commandNode.getAttribute("state");
+    if (desiredAttrib != uiState)
+    {
+      commandNode.setAttribute("state", desiredAttrib);
+//      commandNode.setAttribute("value", desiredAttrib);
+      var textboxName;
+      switch (uiID)
+      {
+        case "cmd_texttag":
+          textboxName = "TextTagSelections";
+          break;
+        case "cmd_paratag":
+          textboxName = "ParaTagSelections";
+          break;
+        case "cmd_secttag":
+          textboxName = "SectTagSelections";
+          break;
+        case "cmd_othertag":
+          textboxName = "OtherTagSelections";
+          break;
+        default:
+          return;
+      }   
+      var textbox = document.getElementById(textboxName);
+      textbox.textValue = desiredAttrib;
+    }
+  } catch(e) {}
+}
+
 
 function doStatefulCommand(commandID, newState)
 {
@@ -428,7 +494,7 @@ function doStatefulCommand(commandID, newState)
     var cmdParams = newCommandParams();
     if (!cmdParams) return;
 
-    cmdParams.setStringValue("state_attribute", newState);
+    cmdParams.setCStringValue("state_attribute", newState);
     goDoCommandParams(commandID, cmdParams);
 
     pokeMultiStateUI(commandID, cmdParams);
@@ -479,6 +545,27 @@ var nsDummyHTMLCommand =
   }
 
 };
+
+var mCurrentMode = 1;
+
+//-----------------------------------------------------------------------------------
+var nsGIFAnimation = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (IsDocumentEditable() && IsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon){},
+  doCommand: function(aCommand) {
+    if (aCommand == "cmd_MSIAnimateGifsOff") stopAnimation();
+    else if (aCommand == "cmd_MSIAnimateGifsOn") startAnimation();
+    // else some registration screw-up
+  }
+};
+
+
 
 //-----------------------------------------------------------------------------------
 var nsOpenCommand =
@@ -936,7 +1023,7 @@ function OutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFiles
   var editor = GetCurrentEditor();
   try {
     var imeEditor = editor.QueryInterface(Components.interfaces.nsIEditorIMESupport);
-    imeEditor.forceCompositionEnd();
+    imeEditor.ForceCompositionEnd();
     } catch (e) {}
 
   var isLocalFile = false;
@@ -1634,9 +1721,6 @@ const kSupportedTextMimeTypes =
   "text/rdf",
   "text/xsl",
   "text/javascript",
-  "text/ecmascript",
-  "application/javascript",
-  "application/ecmascript",
   "application/x-javascript",
   "text/xul",
   "application/vnd.mozilla.xul+xml"
@@ -1672,7 +1756,7 @@ function SaveDocument(aSaveAs, aSaveCopy, aMimeType)
   var saveAsTextFile = IsSupportedTextMimeType(aMimeType);
 
   // check if the file is to be saved is a format we don't understand; if so, bail
-  if (aMimeType != "text/html" && !saveAsTextFile)
+  if (aMimeType != "text/html" && aMimeType != "application/xhtml+xml" && !saveAsTextFile)
     throw NS_ERROR_NOT_IMPLEMENTED;
 
   if (saveAsTextFile)
@@ -1928,8 +2012,9 @@ function StartPublishing()
     if (gPublishData.otherFilesURI)
     {
       try {
+        // (256 = Output encoded entities)
         gRestoreDocumentSource = 
-          editor.outputToString(editor.contentsMIMEType, kOutputEncodeW3CEntities);
+          editor.outputToString(editor.contentsMIMEType, 256);
       } catch (e) {}
     }
 
@@ -2419,7 +2504,7 @@ var nsSpellingCommand =
   {
     window.cancelSendMessage = false;
     try {
-      var skipBlockQuotes = (window.document.documentElement.getAttribute("windowtype") == "msgcompose");
+      var skipBlockQuotes = (window.document.firstChild.getAttribute("windowtype") == "msgcompose");
       window.openDialog("chrome://editor/content/EdSpellCheck.xul", "_blank",
               "chrome,close,titlebar,modal", false, skipBlockQuotes, true);
     }
@@ -2677,7 +2762,7 @@ var nsIsIndexCommand =
     try {
       var editor = GetCurrentEditor();
       var isindexElement = editor.createElementWithDefaults("isindex");
-      isindexElement.setAttribute("prompt", editor.outputToString("text/plain", kOutputSelectionOnly));
+      isindexElement.setAttribute("prompt", editor.outputToString("text/plain", 1)); // OutputSelectionOnly
       editor.insertElementAtSelection(isindexElement, true);
     } catch (e) {}
   }
@@ -3056,7 +3141,7 @@ var nsSetSmiley =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
-    var smileyCode = aParams.getStringValue("state_attribute");
+    var smileyCode = aParams.getCStringValue("state_attribute");
 
     var strSml;
     switch(smileyCode)
@@ -3075,8 +3160,6 @@ var nsSetSmiley =
         break;
         case ":-[": strSml="s6";
         break;
-        case ":-/":
-        case ":/":
         case ":-\\":
         case ":\\": strSml="s7";
         break;
@@ -3143,13 +3226,64 @@ var nsSetSmiley =
   doCommand: function(aCommand) {}
 };
 
-
 function doAdvancedProperties(element)
 {
+  var data = new Object();
   if (element)
   {
-    window.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", "", element);
-    window.content.focus();
+    if (element.role){
+      if (element.role == "texbutton") {
+      // security restrictions prohibit calling openDialog from within XBL code,
+      // but we don't want to hard-wire tag names in this code. Thus, the compromise
+      // is to create 'roles' for elements, attach behavior to roles (as we do here)
+      // and the XBL code will then assign a role to an element. Thus we have 'texbutton'
+      // as a role, and currently that role is played by texb tags, but any other tag
+      // could play this role as well. 
+        try {
+          data.tex = element.value;
+          window.openDialog("chrome://editor/content/texbuttoncontents.xul","_blank","chrome,close,titlebar,resizable=yes,modal", data);
+          window.content.focus();
+          if (!data.Cancel)
+          {
+            element.value = data.tex;
+          }
+        }
+        catch (e)
+        { dump(e); }
+      } else if (element.role == "latexstylebutton") {
+        if (element.prop == "pagenumber") {
+          try {
+            data.numstyle = element.value;
+            window.openDialog("chrome://editor/content/latexpagenumberstyle.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", data);
+            window.content.focus();
+            if (!data.Cancel)
+            {
+              element.value = data.numstyle;
+            }
+          }
+          catch (e)
+          { dump(e); }
+        } else if (element.prop == "headers") {
+          try {
+            data.lheader = element.value;
+            data.rheader = element.value2;
+            window.openDialog("chrome://editor/content/latexheaders.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", data);
+            window.content.focus();
+            if (!data.Cancel)
+            {
+              element.value = data.lheader;
+              element.value2 = data.rheader;
+            }
+          }
+          catch (e)
+          { dump(e); }
+        }
+      }
+    }      
+    else {
+      window.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", "", element);
+      window.content.focus();
+    }
   }
 }
 
@@ -3925,7 +4059,7 @@ var nsConvertToTable =
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
   doCommand: function(aCommand)
-  {
+{
     if (this.isCommandEnabled())
     {
       window.openDialog("chrome://editor/content/EdConvertToTable.xul","_blank", "chrome,close,titlebar,modal")
@@ -3933,4 +4067,30 @@ var nsConvertToTable =
     window.content.focus();
   }
 };
+
+
+function stopAnimation()
+{
+  var cmdParams = newCommandParams();
+  if (!cmdParams) return;
+  cmdParams.setLongValue("imageAnimation", 1);
+  goDoCommandParams("cmd_setDocumentOptions", cmdParams);
+};
+
+function startAnimation()
+{
+  var cmdParams = newCommandParams();
+  if (!cmdParams) return;
+  cmdParams.setLongValue("imageAnimation", 0);
+  goDoCommandParams("cmd_setDocumentOptions", cmdParams);
+};
+
+
+
+function test(firstNode, secondNode) // the nodes come from a split, so the node types should be the same
+// If the firstNode has a 'nexttag' defined, then we should convert the second node to that type. 
+{
+  var nodeName = firstNode.nodeName
+};
+
 
