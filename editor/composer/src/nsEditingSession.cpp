@@ -141,12 +141,17 @@ nsEditingSession::MakeWindowEditable(nsIDOMWindow *aWindow,
   mWindowToBeEdited = do_GetWeakReference(aWindow);
 
   // disable plugins
+  // no, enable plugins! --BBM
+  // We may want to revisit this and allow for the choice in the UI --BBM
   nsIDocShell *docShell = GetDocShellFromWindow(aWindow);
   if (!docShell) return NS_ERROR_FAILURE;
+ 
+  nsresult rv = docShell->SetAllowPlugins(PR_TRUE);
+  if (NS_FAILED(rv)) return rv;
+
 
   // register as a content listener, so that we can fend off URL
   // loads from sidebar
-  nsresult rv;
   nsCOMPtr<nsIURIContentListener> listener = do_GetInterface(docShell, &rv);
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -154,13 +159,17 @@ nsEditingSession::MakeWindowEditable(nsIDOMWindow *aWindow,
   NS_ENSURE_SUCCESS(rv, rv);
 
   // Disable JavaScript in this document:
+  // no, enable JavaScript! --BBM
+  // We may want to revisit this and allow for the choice in the UI. Editing scriptable
+  // objects can be difficult if the scripts are running
   PRBool tmp;
   rv = docShell->GetAllowJavascript(&tmp);
   NS_ENSURE_SUCCESS(rv, rv);
 
   mScriptsEnabled = tmp;
 
-  rv = docShell->SetAllowJavascript(PR_FALSE);
+//  rv = docShell->SetAllowJavascript(PR_FALSE);
+  rv = docShell->SetAllowJavascript(PR_TRUE);
   NS_ENSURE_SUCCESS(rv, rv);
 
   // Disable plugins in this document:
@@ -169,8 +178,9 @@ nsEditingSession::MakeWindowEditable(nsIDOMWindow *aWindow,
 
   mPluginsEnabled = tmp;
 
-  rv = docShell->SetAllowPlugins(PR_FALSE);
-  NS_ENSURE_SUCCESS(rv, rv);
+//  rv = docShell->SetAllowPlugins(PR_FALSE);
+ rv = docShell->SetAllowPlugins(PR_TRUE);
+ NS_ENSURE_SUCCESS(rv, rv);
 
   // Always remove existing editor
   TearDownEditorOnWindow(aWindow);
