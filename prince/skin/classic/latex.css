@@ -1,13 +1,13 @@
 latex {
-  -moz-binding: url("chrome://editor/content/latex.xml#latex");
+  -moz-binding: url("resource://xbl/latex.xml#latex");
 }
 
 tex {
-  -moz-binding: url("chrome://editor/content/latex.xml#tex");
+  -moz-binding: url("resource://xbl/latex.xml#tex");
 }
 
 texb { 
-  -moz-binding: url("chrome://editor/content/latex.xml#texb");
+  -moz-binding: url("resource://xbl/latex.xml#texb");
   -moz-appearance: button;
   margin: 1px 5px 2px 5px;
   min-width: 6.3em;
