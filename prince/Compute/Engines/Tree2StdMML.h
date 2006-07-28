@@ -106,6 +106,8 @@ protected:
   bool NodeIsCapitalDifferential(MNODE * mml_node);
   bool NodeIsVariableList(MNODE * mml_node);
   bool NodeIsFactor(MNODE * mml_node);
+  bool NodeIsDiffNumerator(MNODE * mml_node);
+  bool NodeIsDiffDenominator(MNODE * mml_node);
 
   MNODE *MakeItem(MNODE * l_anchor, MNODE * r_anchor);
   MNODE *MakeMROW(MNODE * l_anchor, MNODE * r_anchor);
@@ -118,6 +120,8 @@ protected:
   void PermuteMixedNumber(MNODE * num);
   void PermuteDifferential(MNODE * diff);
   void PermuteCapitalDifferential(MNODE * diff);
+  void PermuteDiffNumerator(MNODE * diff);
+  void PermuteDiffDenominator(MNODE * diff);
 
   bool NeedsInvisiblePlus(MNODE * dMML_mrow);
 
