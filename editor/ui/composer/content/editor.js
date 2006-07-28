@@ -1,46 +1,4 @@
-/* -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
-/* ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * The Original Code is mozilla.org code.
- *
- * The Initial Developer of the Original Code is
- * Netscape Communications Corporation.
- * Portions created by the Initial Developer are Copyright (C) 1998-1999
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- *   Sammy Ford (sford@swbell.net)
- *   Dan Haddix (dan6992@hotmail.com)
- *   John Ratke (jratke@owc.net)
- *   Ryan Cassin (rcassin@supernova.org)
- *   Daniel Glazman (glazman@netscape.com)
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either of the GNU General Public License Version 2 or later (the "GPL"),
- * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
- *
- * ***** END LICENSE BLOCK ***** */
-
-/* Main Composer window UI control */
+// Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 
 var gComposerWindowControllerID = 0;
 var prefAuthorString = "";
@@ -67,8 +25,7 @@ var gContentWindow = 0;
 var gSourceContentWindow = 0;
 var gSourceTextEditor = null;
 var gContentWindowDeck;
-var gFormatToolbar;
-var gFormatToolbarHidden = false;
+var gTagSelectBar;
 var gViewFormatToolbar;
 var gColorObj = { LastTextColor:"", LastBackgroundColor:"", LastHighlightColor:"",
                   Type:"", SelectedType:"", NoDefault:false, Cancel:false,
@@ -78,8 +35,6 @@ var gColorObj = { LastTextColor:"", LastBackgroundColor:"", LastHighlightColor:"
 var gDefaultTextColor = "";
 var gDefaultBackgroundColor = "";
 var gCSSPrefListener;
-var gEditorToolbarPrefListener;
-var gReturnInParagraphPrefListener;
 var gPrefs;
 var gLocalFonts = null;
 
@@ -89,19 +44,16 @@ var gLastFocusNodeWasSelected = false;
 // These must be kept in synch with the XUL <options> lists
 var gFontSizeNames = ["xx-small","x-small","small","medium","large","x-large","xx-large"];
 
+//MSI stuff, see msiColorObj::Format() for more comprehensive value.
+var gMathStyleSheet = "data:text/css,math { color: #FF0000; }";
+
 const nsIFilePicker = Components.interfaces.nsIFilePicker;
 
 const kEditorToolbarPrefs = "editor.toolbars.showbutton.";
-const kUseCssPref         = "editor.use_css";
-const kCRInParagraphsPref = "editor.CR_creates_new_p";
-
-function getEngineWebBrowserPrint()
-{
-  return content.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                .getInterface(Components.interfaces.nsIWebBrowserPrint);
-}
 
 function ShowHideToolbarSeparators(toolbar) {
+  dump("===> ShowHideToolbarSeparators\n");
+
   var childNodes = toolbar.childNodes;
   var separator = null;
   var hideSeparator = true;
@@ -121,7 +73,9 @@ function ShowHideToolbarSeparators(toolbar) {
 
 function ShowHideToolbarButtons()
 {
-  var array = gPrefs.getChildList(kEditorToolbarPrefs, {});
+  dump("===> ShowHideToolbarButtons\n");
+
+  var array = GetPrefs().getChildList(kEditorToolbarPrefs, {});
   for (var i in array) {
     var prefName = array[i];
     var id = prefName.substr(kEditorToolbarPrefs.length) + "Button";
@@ -133,29 +87,66 @@ function ShowHideToolbarButtons()
   ShowHideToolbarSeparators(document.getElementById("FormatToolbar"));
 }
   
-function nsPrefListener(prefName)
+function AddToolbarPrefListener()
 {
-  this.startup(prefName);
+  try {
+    var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+    pbi.addObserver(kEditorToolbarPrefs, gEditorToolbarPrefListener, false);
+  } catch(ex) {
+    dump("Failed to observe prefs: " + ex + "\n");
+  }
+}
+
+function RemoveToolbarPrefListener()
+{
+  try {
+    var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+    pbi.removeObserver(kEditorToolbarPrefs, gEditorToolbarPrefListener);
+  } catch(ex) {
+    dump("Failed to remove pref observer: " + ex + "\n");
+  }
+}
+
+// Pref listener constants
+const gEditorToolbarPrefListener =
+{
+  observe: function(subject, topic, prefName)
+  {
+    // verify that we're changing a button pref
+    if (topic != "nsPref:changed")
+      return;
+
+    var id = prefName.substr(kEditorToolbarPrefs.length) + "Button";
+    var button = document.getElementById(id);
+    if (button) {
+      button.hidden = !gPrefs.getBoolPref(prefName);
+      ShowHideToolbarSeparators(button.parentNode);
+    }
+  }
+};
+
+function nsButtonPrefListener()
+{
+  this.startup();
 }
 
 // implements nsIObserver
-nsPrefListener.prototype =
+nsButtonPrefListener.prototype =
 {
-  domain: "",
-  startup: function(prefName)
+  domain: "editor.use_css",
+  startup: function()
   {
-    this.domain = prefName;
     try {
-      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranch2);
+      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
       pbi.addObserver(this.domain, this, false);
     } catch(ex) {
-      dump("Failed to observe prefs: " + ex + "\n");
+      dump("Failed to observe prefs (nsButtonPrefListener): " + ex + "\n");
     }
   },
   shutdown: function()
   {
     try {
-      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranch2);
+      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
       pbi.removeObserver(this.domain, this);
     } catch(ex) {
       dump("Failed to remove pref observers: " + ex + "\n");
@@ -167,40 +158,27 @@ nsPrefListener.prototype =
       return;
     // verify that we're changing a button pref
     if (topic != "nsPref:changed") return;
-    
-    var editor = GetCurrentEditor();
-    if (prefName == kUseCssPref)
-    {
-      var cmd = document.getElementById("cmd_highlight");
-      if (cmd) {
-        var useCSS = gPrefs.getBoolPref(prefName);
+    if (prefName.substr(0, this.domain.length) != this.domain) return;
 
-        if (useCSS && editor) {
-          var mixedObj = {};
-          var state = editor.getHighlightColorState(mixedObj);
-          cmd.setAttribute("state", state);
-          cmd.collapsed = false;
-        }      
-        else {
-          cmd.setAttribute("state", "transparent");
-          cmd.collapsed = true;
-        }
+    var cmd = document.getElementById("cmd_highlight");
+    if (cmd) {
+      var prefs = GetPrefs();
+      var useCSS = prefs.getBoolPref(prefName);
+      var editor = GetCurrentEditor();
+      if (useCSS && editor) {
+        var mixedObj = {};
+        var state = editor.getHighlightColorState(mixedObj);
+        cmd.setAttribute("state", state);
+        cmd.collapsed = false;
+      }      
+      else {
+        cmd.setAttribute("state", "transparent");
+        cmd.collapsed = true;
+      }
 
-        if (editor)
-          editor.isCSSEnabled = useCSS;
-      }
+      if (editor)
+        editor.isCSSEnabled = useCSS;
     }
-    else if (prefName.substr(0, kEditorToolbarPrefs.length) == kEditorToolbarPrefs)
-    {
-      var id = prefName.substr(kEditorToolbarPrefs.length) + "Button";
-      var button = document.getElementById(id);
-      if (button) {
-        button.hidden = !gPrefs.getBoolPref(prefName);
-        ShowHideToolbarSeparators(button.parentNode);
-      }
-    }
-    else if (editor && (prefName == kCRInParagraphsPref))
-      editor.returnInParagraphCreatesNewParagraph = gPrefs.getBoolPref(prefName);
   }
 }
 
@@ -255,6 +233,7 @@ function EditorOnLoad()
       gSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
       gSourceTextEditor.rootElement.style.whiteSpace = "pre";
       gSourceTextEditor.rootElement.style.margin = 0;
+      //ljh I don't understand why a new instance of the controller is being created?????
       var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
                                  .createInstance(Components.interfaces.nsIControllerContext);
       controller.init(null);
@@ -265,6 +244,11 @@ function EditorOnLoad()
       commandTable.registerCommand("cmd_find",        nsFindCommand);
       commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
       commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
+      
+      SetupMSIMathMenuCommands();
+      SetupMSIComputeMenuCommands();
+      SetupMSITypesetMenuCommands();
+      SetupMSITypesetInsertMenuCommands();
     } catch (e) { dump("makeEditable failed: "+e+"\n"); }
 }
 
@@ -365,7 +349,7 @@ var gEditorDocumentObserver =
           if (!editor && editorStatus == nsIEditingSession.eEditorOK)
           {
             dump("\n ****** NO EDITOR BUT NO EDITOR ERROR REPORTED ******* \n\n");
-            editorStatus = nsIEditingSession.eEditorErrorUnknown;
+            editorStatus = nsIEditingSession.eEditorErrorUnkown;
           }
 
           switch (editorStatus)
@@ -376,7 +360,7 @@ var gEditorDocumentObserver =
             case nsIEditingSession.eEditorErrorCantEditMimeType:
               errorStringId = "CantEditMimeTypeMsg";
               break;
-            case nsIEditingSession.eEditorErrorUnknown:
+            case nsIEditingSession.eEditorErrorUnkown:
               errorStringId = "CantEditDocumentMsg";
               break;
             // Note that for "eEditorErrorFileNotFound, 
@@ -399,13 +383,12 @@ var gEditorDocumentObserver =
 
           //  and extra styles for showing anchors, table borders, smileys, etc
           editor.addOverrideStyleSheet(kNormalStyleSheet);
+          editor.addOverrideStyleSheet(gMathStyleSheet);
         } catch (e) {}
 
         // Things for just the Web Composer application
         if (IsWebComposer())
         {
-          editor.returnInParagraphCreatesNewParagraph = gPrefs.getBoolPref(kCRInParagraphsPref);
-
           // Set focus to content window if not a mail composer
           // Race conditions prevent us from setting focus here
           //   when loading a url into blank window
@@ -456,6 +439,17 @@ var gEditorDocumentObserver =
 
             HideItem("structSpacer");
 
+            // from mathmlOverlay
+            HideItem("MSIMathMenu");
+            // from computeOverlay
+            HideItem("MathToolbar");
+            HideItem("cmd_viewComputeToolbar");
+            HideItem("TagSelectBar");
+            HideItem("MSIComputeMenu");
+            HideItem("SymbolToolbar");
+            HideItem("MSITypesetMenu");
+            HideItem("MSIInsertTypesetObjectMenu");
+            
             // Hide everything in "Insert" except for "Symbols"
             var menuPopup = document.getElementById("insertMenuPopup");
             if (menuPopup)
@@ -480,6 +474,7 @@ var gEditorDocumentObserver =
           // Start in "Normal" edit mode
           SetDisplayMode(kDisplayModeNormal);
         }
+//        initFastCursorBar();
 
         // Add mouse click watcher if right type of editor
         if (IsHTMLEditor())
@@ -489,6 +484,9 @@ var gEditorDocumentObserver =
           // Force color widgets to update
           onFontColorChange();
           onBackgroundColorChange();
+//          editor.SetTagListPath("chrome://editor/content/default.xml");
+          // the order here is important, since the autocomplete component has to read the tag names 
+//          initializeAutoCompleteStringArray();
         }
         break;
 
@@ -521,25 +519,17 @@ var gEditorDocumentObserver =
 
 function SetFocusOnStartup()
 {
+  setZoom();
   gContentWindow.focus();
 }
 
 function EditorStartup()
 {
-  var ds = GetCurrentEditorElement().docShell;
-  ds.useErrorPages = false;
-  var root = ds.QueryInterface(Components.interfaces.nsIDocShellTreeItem).
-    rootTreeItem.QueryInterface(Components.interfaces.nsIDocShell);
-
-  root.QueryInterface(Components.interfaces.nsIDocShell).appType =
-    Components.interfaces.nsIDocShell.APP_TYPE_EDITOR;
-
   var is_HTMLEditor = IsHTMLEditor();
   if (is_HTMLEditor)
   {
     // XUL elements we use when switching from normal editor to edit source
     gContentWindowDeck = document.getElementById("ContentWindowDeck");
-    gFormatToolbar = document.getElementById("FormatToolbar");
     gViewFormatToolbar = document.getElementById("viewFormatToolbar");
   }
 
@@ -554,17 +544,18 @@ function EditorStartup()
   //  such as file-related commands, HTML Source editing, Edit Modes...
   SetupComposerWindowCommands();
 
-  ShowHideToolbarButtons();
-  gEditorToolbarPrefListener = new nsPrefListener(kEditorToolbarPrefs);
+  // ShowHideToolbarButtons();
+  AddToolbarPrefListener();
+  var toolbox = document.getElementById("EditorToolbox");
+  toolbox.customizeDone = MainToolboxCustomizeDone;
 
-  gCSSPrefListener = new nsPrefListener(kUseCssPref);
-  gReturnInParagraphPrefListener = new nsPrefListener(kCRInParagraphsPref);
+  gCSSPrefListener = new nsButtonPrefListener();
 
   // hide Highlight button if we are in an HTML editor with CSS mode off
-  // and tell the editor if a CR in a paragraph creates a new paragraph
   var cmd = document.getElementById("cmd_highlight");
   if (cmd) {
-    var useCSS = gPrefs.getBoolPref(kUseCssPref);
+    var prefs = GetPrefs();
+    var useCSS = prefs.getBoolPref("editor.use_css");
     if (!useCSS && is_HTMLEditor) {
       cmd.collapsed = true;
     }
@@ -665,12 +656,23 @@ function EditorSharedStartup()
 function EditorResetFontAndColorAttributes()
 {
   try {  
-    var editor = GetCurrentEditor();
-    editor.rebuildDocumentFromSource("");
-    // Because the selection is now collapsed, the following line
-    // clears the typing state to discontinue all inline styles
-    editor.removeAllInlineProperties();
     document.getElementById("cmd_fontFace").setAttribute("state", "");
+    EditorRemoveTextProperty("font", "color");
+    EditorRemoveTextProperty("font", "bgcolor");
+    EditorRemoveTextProperty("font", "size");
+    EditorRemoveTextProperty("small", "");
+    EditorRemoveTextProperty("big", "");
+    var bodyelement = GetBodyElement();
+    if (bodyelement)
+    {
+      var editor = GetCurrentEditor();
+      editor.removeAttributeOrEquivalent(bodyelement, "text", true);
+      editor.removeAttributeOrEquivalent(bodyelement, "bgcolor", true);
+      bodyelement.removeAttribute("link");
+      bodyelement.removeAttribute("alink");
+      bodyelement.removeAttribute("vlink");
+      editor.removeAttributeOrEquivalent(bodyelement, "background", true);
+    }
     gColorObj.LastTextColor = "";
     gColorObj.LastBackgroundColor = "";
     gColorObj.LastHighlightColor = "";
@@ -682,9 +684,10 @@ function EditorResetFontAndColorAttributes()
 
 function EditorShutdown()
 {
-  gEditorToolbarPrefListener.shutdown();
+  SetUnicharPref("prince.zoom_factor",getMarkupDocumentViewer().textZoom);
+
+  RemoveToolbarPrefListener();
   gCSSPrefListener.shutdown();
-  gReturnInParagraphPrefListener.shutdown();
 
   try {
     var commandManager = GetCurrentCommandManager();
@@ -816,7 +819,7 @@ function CheckAndSaveDocument(command, allowDontSave)
     // Save to local disk
     var contentsMIMEType;
     if (IsHTMLEditor())
-      contentsMIMEType = kHTMLMimeType;
+      contentsMIMEType = editor.contentsMIMEType;
     else
       contentsMIMEType = kTextMimeType;
     var success = SaveDocument(false, false, contentsMIMEType);
@@ -868,6 +871,29 @@ function EditorCanClose()
 }
 
 // --------------------------- View menu ---------------------------
+
+// used by viewZoomOverlay.js
+function getMarkupDocumentViewer()
+{
+  var contentViewer = GetCurrentEditorElement().docShell.contentViewer;
+  contentViewer.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
+  return contentViewer;
+}
+
+function setZoom()
+{
+  var zoomfactor = 1.0;
+  try {
+    var zoomstr;
+    zoomstr = gPrefs.getCharPref("prince.zoom_factor");
+    zoomfactor = parseFloat(zoomstr);
+  }
+  catch(ex) {
+    dump("\nfailed to get zoom_factor pref!\n");
+  }
+  getMarkupDocumentViewer().textZoom = zoomfactor;
+}
+
 
 function EditorSetDocumentCharacterSet(aCharset)
 {
@@ -1322,7 +1348,8 @@ function GetBackgroundElementWithColor()
   }
   else
   {
-    var IsCSSPrefChecked = gPrefs.getBoolPref(kUseCssPref);
+    var prefs = GetPrefs();
+    var IsCSSPrefChecked = prefs.getBoolPref("editor.use_css");
     if (IsCSSPrefChecked && IsHTMLEditor())
     {
       var selection = editor.selection;
@@ -1537,7 +1564,7 @@ function EditorSelectColor(colorType, mouseEvent)
                 editor.setAttribute(bodyelement, "link", defColors.LinkColor);
 
               if (!bodyelement.getAttribute("alink"))
-                editor.setAttribute(bodyelement, "alink", defColors.ActiveLinkColor);
+                editor.setAttribute(bodyelement, "alink", defColors.LinkColor);
 
               if (!bodyelement.getAttribute("vlink"))
                 editor.setAttribute(bodyelement, "vlink", defColors.VisitedLinkColor);
@@ -1602,7 +1629,7 @@ function EditorDblClick(event)
 
     if (element)
     {
-      goDoCommand("cmd_objectProperties");  
+      goDoPrinceCommand("cmd_objectProperties", element);  
       event.preventDefault();
     }
   }
@@ -1752,14 +1779,14 @@ function SetEditMode(mode)
     // Get the entire document's source string
 
     var flags = (editor.documentCharacterSet == "ISO-8859-1")
-      ? kOutputEncodeLatin1Entities
-      : kOutputEncodeBasicEntities;
+      ? 32768  // OutputEncodeLatin1Entities
+      : 16384; // OutputEncodeBasicEntities
     try { 
       var encodeEntity = gPrefs.getCharPref("editor.encode_entity");
       switch (encodeEntity) {
-        case "basic"  : flags = kOutputEncodeBasicEntities; break;
-        case "latin1" : flags = kOutputEncodeLatin1Entities; break;
-        case "html"   : flags = kOutputEncodeHTMLEntities; break;
+        case "basic"  : flags = 16384; break; // OutputEncodeBasicEntities
+        case "latin1" : flags = 32768; break; // OutputEncodeLatin1Entities
+        case "html"   : flags = 65536; break; // OutputEncodeHTMLEntities
         case "none"   : flags = 0;     break;
       }
     } catch (e) { }
@@ -1767,11 +1794,11 @@ function SetEditMode(mode)
     try { 
       var prettyPrint = gPrefs.getBoolPref("editor.prettyprint");
       if (prettyPrint)
-        flags |= kOutputFormatted;
+        flags |= 2; // OutputFormatted
 
     } catch (e) {}
 
-    flags |= kOutputLFLineBreak;
+    flags |= 1024; // OutputLFLineBreak
     var source = editor.outputToString(kHTMLMimeType, flags);
     var start = source.search(/<html/i);
     if (start == -1) start = 0;
@@ -1799,7 +1826,7 @@ function SetEditMode(mode)
       try {
         // We are coming from edit source mode,
         //   so transfer that back into the document
-        source = gSourceTextEditor.outputToString(kTextMimeType, kOutputLFLineBreak);
+        source = gSourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
         editor.rebuildDocumentFromSource(source);
 
         // Get the text for the <title> from the newly-parsed document
@@ -1851,7 +1878,7 @@ function FinishHTMLSource()
   //Or RebuildDocumentFromSource() will fail.
   if (IsInHTMLSourceMode())
   {
-    var htmlSource = gSourceTextEditor.outputToString(kTextMimeType, kOutputLFLineBreak);
+    var htmlSource = gSourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
     if (htmlSource.length > 0)
     {
       var beginHead = htmlSource.indexOf("<head");
@@ -1900,10 +1927,13 @@ function SetDisplayMode(mode)
     gContentWindowDeck.selectedIndex = 1;
 
     //Hide the formatting toolbar if not already hidden
-    gFormatToolbarHidden = gFormatToolbar.hidden;
-    gFormatToolbar.hidden = true;
     gViewFormatToolbar.hidden = true;
-
+    HideItem("MSIMathMenu");
+    HideItem("cmd_viewComputeToolbar");
+    HideItem("MSIComputeMenu");
+    HideItem("SymbolToolbar");
+    HideItem("MSITypesetMenu");
+    HideItem("MSIInsertTypesetObjectMenu");
     gSourceContentWindow.contentWindow.focus();
   }
   else
@@ -1922,22 +1952,27 @@ function SetDisplayMode(mode)
         case kDisplayModePreview:
           // Disable all extra "edit mode" style sheets 
           editor.enableStyleSheet(kNormalStyleSheet, false);
+          editor.enableStyleSheet(gMathStyleSheet, false);
           editor.enableStyleSheet(kAllTagsStyleSheet, false);
           editor.isImageResizingEnabled = true;
           break;
 
         case kDisplayModeNormal:
           editor.addOverrideStyleSheet(kNormalStyleSheet);
+          editor.addOverrideStyleSheet(gMathStyleSheet);
           // Disable ShowAllTags mode
           editor.enableStyleSheet(kAllTagsStyleSheet, false);
           editor.isImageResizingEnabled = true;
-          break;
+          initializeAutoCompleteStringArray();
+        break;
 
         case kDisplayModeAllTags:
           editor.addOverrideStyleSheet(kNormalStyleSheet);
+          editor.addOverrideStyleSheet(gMathStyleSheet);
           editor.addOverrideStyleSheet(kAllTagsStyleSheet);
           // don't allow resizing in AllTags mode because the visible tags
           // change the computed size of images and tables...
+          initializeAutoCompleteStringArray();
           if (editor.resizedObject) {
             editor.hideResizers();
           }
@@ -1950,9 +1985,13 @@ function SetDisplayMode(mode)
     gContentWindowDeck.selectedIndex = 0;
 
     // Restore menus and toolbars
-    gFormatToolbar.hidden = gFormatToolbarHidden;
     gViewFormatToolbar.hidden = false;
-
+    ShowItem("MSIMathMenu");
+    ShowItem("cmd_viewComputeToolbar");
+    ShowItem("MSIComputeMenu");
+    ShowItem("SymbolToolbar");
+    ShowItem("MSITypesetMenu");
+    ShowItem("MSIInsertTypesetObjectMenu");
     gContentWindow.focus();
   }
 
@@ -2026,9 +2065,9 @@ function UpdateWindowTitle()
       SaveRecentFilesPrefs();
     }
     // Set window title with " - Composer" appended
-    var xulWin = document.documentElement;
-    document.title = windowTitle + xulWin.getAttribute("titlemenuseparator") + 
-                     xulWin.getAttribute("titlemodifier");
+    xulWin = document.documentElement;
+    window.title = windowTitle + xulWin.getAttribute("titlemenuseparator") + 
+                   xulWin.getAttribute("titlemodifier");
   } catch (e) { dump(e); }
 }
 
@@ -2475,7 +2514,7 @@ function EditorSetDefaultPrefsAndDoctype()
         if ( element )
         {
           element.setAttribute("http-equiv", "content-type");
-          element.setAttribute("content", "text/html; charset=" + prefCharsetString);
+          element.setAttribute("content", editor.contentsMIMEType + "; charset=" + prefCharsetString);
           headelement.insertBefore( element, headelement.firstChild );
         }
     }
@@ -2731,7 +2770,7 @@ function RemoveInapplicableUIElements()
    // if no spell checker, remove spell checker ui
   if (!IsSpellCheckerInstalled())
   {
-    HideItem("spellingButton");
+    SetElementEnabled(document.getElementById("spellingButton"), false);
     HideItem("menu_checkspelling");
     RemoveItem("sep_checkspelling");
   }
@@ -2762,6 +2801,13 @@ function HideItem(id)
   var item = document.getElementById(id);
   if (item)
     item.hidden = true;
+}
+
+function ShowItem(id)
+{
+  var item = document.getElementById(id);
+  if (item)
+    item.hidden = false;
 }
 
 function RemoveItem(id)
@@ -3212,6 +3258,7 @@ function newContextmenuListener(button, element)
   return function() { return InitStructBarContextMenu(button, element); };
 }
 
+
 function UpdateStructToolbar()
 {
   var editor = GetCurrentEditor();
@@ -3237,9 +3284,8 @@ function UpdateStructToolbar()
   var childNodesLength = childNodes.length;
   // We need to leave the <label> to flex the buttons to the left
   // so, don't remove the last child at position length - 1
-  while (childNodes.length > 1) {
-    // Remove back to front so there's less moving about.
-    toolbar.removeChild(childNodes.item(childNodes.length - 2));
+  for (var i = childNodesLength - 2; i >= 0; i--) {
+    toolbar.removeChild(childNodes.item(i));
   }
 
   toolbar.removeAttribute("label");
@@ -3255,6 +3301,10 @@ function UpdateStructToolbar()
   var bodyElement = GetBodyElement();
   var isFocusNode = true;
   var tmp;
+
+  // the theory here is that by following up the chain of parentNodes, 
+  // we will eventually get to the root <body> tag. But due to some bug, 
+  // there may be multiple <body> elements in the document. 
   do {
     tag = element.nodeName.toLowerCase();
 
@@ -3278,7 +3328,7 @@ function UpdateStructToolbar()
     tmp = element;
     element = element.parentNode;
 
-  } while (tmp != bodyElement);
+  } while (element && (tmp != bodyElement) && (tag != "body"));
 }
 
 function SelectFocusNodeAncestor(element)
@@ -3374,9 +3424,8 @@ function FillInHTMLTooltip(tooltip)
 {
   const XLinkNS = "http://www.w3.org/1999/xlink";
   var tooltipText = null;
-  var node;
   if (gEditorDisplayMode == kDisplayModePreview) {
-    for (node = document.tooltipNode; node; node = node.parentNode) {
+    for (var node = document.tooltipNode; node; node = node.parentNode) {
       if (node.nodeType == Node.ELEMENT_NODE) {
         tooltipText = node.getAttributeNS(XLinkNS, "title");
         if (tooltipText && /\S/.test(tooltipText)) {
@@ -3391,7 +3440,7 @@ function FillInHTMLTooltip(tooltip)
       }
     }
   } else {
-    for (node = document.tooltipNode; node; node = node.parentNode) {
+    for (var node = document.tooltipNode; node; node = node.parentNode) {
       if (node instanceof Components.interfaces.nsIDOMHTMLImageElement ||
           node instanceof Components.interfaces.nsIDOMHTMLInputElement)
         tooltipText = node.getAttribute("src");
@@ -3410,7 +3459,7 @@ function UpdateTOC()
 {
   window.openDialog("chrome://editor/content/EdInsertTOC.xul",
                     "_blank", "chrome,close,modal,titlebar");
-  window.content.focus();
+  window._content.focus();
 }
 
 function InitTOCMenu()
@@ -3463,4 +3512,167 @@ function RemoveTOC()
       anchorNode = tmp;
     }
   }
+}
+
+
+function openTeX()
+{
+    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+    fp.init(window, "Open TeX File", nsIFilePicker.modeOpen);
+
+    SetFilePickerDirectory(fp, "tex");
+
+    fp.appendFilters(nsIFilePicker.filterTeX);
+    fp.appendFilters(nsIFilePicker.filterAll);
+
+    try {
+      fp.show();
+      /* need to handle cancel (uncaught exception at present) */
+    }
+    catch (ex) {
+      dump("filePicker.chooseInputFile threw an exception\n");
+    }
+  
+    /* This checks for already open window and activates it... 
+     * note that we have to test the native path length
+     *  since file.URL will be "file:///" if no filename picked (Cancel button used)
+     */
+    if (fp.file && fp.file.path.length > 0) {
+      SaveFilePickerDirectory(fp, "tex");
+      //editPage(fp.fileURL.spec, window, false);
+      
+      var infile =  fp.file.path;
+      dump("Open Tex: " + infile);
+      var end = infile.lastIndexOf(".");
+      var outdir = infile.substring(0, end);
+      var outfile = outdir + "\\doc.xhtml";
+      const nsILocalFile = Components.interfaces.nsILocalFile;
+      // do we need to create the directory now?
+      var aDir = Components.classes["@mozilla.org/file/local;1"].createInstance(nsILocalFile);
+      var aFile = Components.classes["@mozilla.org/file/local;1"].createInstance(nsILocalFile);
+//      outdir = outdir.replace(/\\\"/g, "\"");
+      aDir.initWithPath(outdir);
+      aFile.initWithPath(outdir+"\\my.css");
+      try {
+        aDir.create(1 /*DIRECTORY_TYPE */, 0755);
+        aFile.create(0 /*FILE_TYPE */, 0755);
+      }
+      catch (ex) {
+        dump("aDir.create threw an exception\n");
+        alert("An exception occurred in the script. Error name: " + ex.name + ". Error message: " + ex.message);
+      }
+
+
+      dump("\nOutput file: " + outfile);
+      
+      // run pretex.exe
+      
+      try {
+        var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+
+        var exe = dsprops.get("CurProcD", Components.interfaces.nsIFile);
+        exe.append("pretex.exe");
+
+        var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+        theProcess.init(exe);
+        
+        var dataDir = dsprops.get("CurProcD", Components.interfaces.nsIFile);
+        dataDir.append("ptdata");
+
+        theProcess.run(true, ['-i'+dataDir.target, '-flatex2xml.tex', '-o'+outdir, infile, outfile], 5, {});
+      } catch (ex) {
+           dump("\nUnable to open TeX:\n");
+           dump(ex);
+      }      
+      
+      editPage("file:///" + outfile.replace(/\\/g,"/"), window, true);
+    }                       
+  }
+  
+  
+  
+  function exportTeX()
+  {
+     dump("\nExport TeX\n");
+     
+     var docUrl = GetDocumentUrl();
+     dump('\nThis doc url = ' + docUrl);
+
+     var scheme, filename;
+     if (docUrl && !IsUrlAboutBlank(docUrl))
+     {
+       scheme = GetScheme(docUrl);
+       filename = GetFilename(docUrl);
+     }
+     dump('\nThis doc = ' + filename);
+
+     if (filename.length < 0)
+        return;
+        
+     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+     fp.init(window, "Export TeX File", nsIFilePicker.modeSave);
+
+     fp.appendFilters(nsIFilePicker.filterAll);
+
+     /* doesn't handle *.shtml files */
+     try {
+       fp.show();
+       /* need to handle cancel (uncaught exception at present) */
+     }
+     catch (ex) {
+       dump("filePicker threw an exception\n");
+     }
+     
+     if (fp.file && fp.file.path.length > 0) {
+      
+        var exportfile =  fp.file.path;
+        dump("\nExport Tex: " + exportfile);
+      
+        // run saxon.exe
+        //    saxon thisdoc.xml prince.xsl >exportfile.tex
+      
+        try {
+          var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+
+          var exe = dsprops.get("CurProcD", Components.interfaces.nsIFile);
+          exe.append("runsax.bat");
+
+          var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+          theProcess.init(exe);
+        
+          var dataDir = dsprops.get("CurProcD", Components.interfaces.nsIFile);
+          dataDir.append("todata");
+          
+          var xslfile = "prince.xsl";
+          dump('\ncmdline args = ' + filename + ' ' + dataDir.target + '/' + xslfile +' ' + '>'+exportfile);
+          theProcess.run(true, [docUrl, exportfile], 2, {});
+        } catch (ex) {
+             dump("\nUnable to run saxon:\n");
+             dump(ex);
+        }      
+
+    } 
+  }
+  
+
+ function initializeAutoCompleteStringArray()
+ 
+ { 
+   dump("===> initializeAutoCompleteStringArray\n");
+                              
+//   var stringArraySearch = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//   stringArraySearch.editor = GetCurrentEditor(); 
+ }
+ 
+ 
+ 
+// handle events on prince-specific elements here, or call the default goDoCommand() 
+function goDoPrinceCommand (cmdstr, element) 
+{
+   if ((element.localName.toLowerCase() == "img") && (element.getAttribute("msigraph") == "true"))
+     { graphClickEvent(cmdstr);
+     }
+   else 
+     { goDoCommand(cmdstr);  
+     }
 }
