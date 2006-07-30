@@ -10,10 +10,8 @@ include $(topsrcdir)/config/rules.mk
 CSS_RESOURCES := $(wildcard	$(srcdir)/css/*.css)
 XBL_RESOURCES := $(wildcard $(srcdir)/xbl/*.xml)
 
-libs::	$(CSS_RESOURCES)
+libs::	$(CSS_RESOURCES) $(XBL_RESOURCES)
 	$(INSTALL)	$(CSS_RESOURCES)	$(DIST)/bin/res/css
-
-libs::	$(XBL_RESOURCES)
 	$(INSTALL)	$(XBL_RESOURCES)	$(DIST)/bin/res/xbl
 
 
