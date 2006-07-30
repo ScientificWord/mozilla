@@ -35,6 +35,7 @@ SAMPLES	:= \
 			$(srcdir)/TestPlotsWithImages.xhtml \
 			$(srcdir)/TestPlotsExtended.xhtml \
 			$(srcdir)/TestPlotsAnimated.xhtml \
+			$(srcdir)/vcamdemo.xhtml \
             $(wildcard $(srcdir)/TestPlot*.png) \
 			$(srcdir)/simpledocbook.xhtml \
 			$(wildcard) $(srcdir)/*.jvx \
@@ -42,6 +43,7 @@ SAMPLES	:= \
 			$(wildcard) $(srcdir)/*.jpg \
 			$(wildcard $(srcdir)/*.css) \
 			$(wildcard $(srcdir)/*.gif) \
+			$(wildcard $(srcdir)/*.xvz) \
 			$(NULL)
 
 SWP_SAMPLES	:= \
