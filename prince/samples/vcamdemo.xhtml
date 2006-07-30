@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<head>
+  <title>vcamdemo.xhtml</title>
+  <script>
+    var plot;
+    var plot2;
+    function init()
+    {
+	    plot = document.getElementById("plot");
+	    plot2 = document.getElementById("plot2");
+	    startstop = document.getElementById("animateStartStop");
+	    plot.addEvent('currentTimeChange', onTick);
+	    plot.currentTime = plot.beginTime;
+	    plot2.currentTime = plot.beginTime;
+    }
+    function onTick( )
+    {
+	    // synchronize the two plots
+      plot2.currentTime = plot.currentTime;
+	    // print out the current value of x_0
+      document.getElementById("a").textContent = Number(-2+4*plot.currentTime/10).toFixed(2).toString();
+	    // this detail will probably be taken care of in some XUL code
+      if (plot.currentTime == plot.endTime) startStop();
+    }
+
+    function startStop()
+    {
+      if (startstop.getAttribute("running")=="false")
+      {
+        plot.startAnimation();
+	      startstop.setAttribute("running","true");
+	      startstop.value="||";
+	    }
+	    else
+	    {
+	      plot.stopAnimation();
+	      startstop.setAttribute("running","false");
+	      startstop.value=">>";
+	    }
+    }
+  </script>
+</head>
+
+<body onload="init();">
+  <p>Here are two animated plots with their animations tied together with JavaScript.</p>
+  <p>These are the second order and first order approximations of the function around 
+    <mml:math><mml:msub><mml:mi>x</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math> as 
+    <mml:math><mml:msub><mml:mi>x</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math> ranges from
+    <mml:math><mml:mo>-</mml:mo><mml:mn>2</mml:mn></mml:math>  to <mml:math><mml:mn>2</mml:mn></mml:math>.</p>
+
+  <p><mml:math><mml:msub><mml:mi>x</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mo>=</mml:mo><mml:mn id="a">7</mml:mn></mml:math></p>
+
+
+	<object type="application/x-mupad-graphics+gzip"
+	     id="plot" width="300" height="400" data="file:///c:/data/demos/plot.xvz">
+	</object>
+	<object type="application/x-mupad-graphics+gzip"
+	     id="plot2" width="300" height="400" data="file:///c:/data/demos/plot2.xvz">
+	</object>
+  
+  <form name="formname">
+    <input type="button"  id="animateReset" onclick="plot.currentTime=plot.beginTime;" value="|&lt;" />
+    <input type="button"  id="animateStartStop" running="false" onclick="startStop();" value="&gt;&gt;" />
+    <input type="button"  id="animateEnd"   onclick="plot.currentTime=plot.endTime;" value="&gt;|"/>
+  </form>
+  <br/>
+	<object type="application/x-mupad-graphics+gzip"
+	     id="plot2" width="300" height="400" data="file:///c:/data/demos/tube.xvz">
+	</object>
+
+</body>
+
+</html>
