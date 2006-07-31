@@ -70,7 +70,45 @@ Copy Prince/compute directory from old project.  Get it to compile.
 
 
 
+======================================================================
 
+Now, update from Mozilla trunk.
+
+Pull clean tree, combining SeaMonkey and XULRunner.
+
+Import with
+
+D:\Mozilla\mozilla>cvs import -ko -m "update to Mozilla 20060730" mozilla MOZILL
+A MOZ_19a0+
+
+(Might want to capture output of this command.  There's also a strange 10 minute
+wait for the command to complete.)
+
+This reports:  
+
+7 conflicts created by this import.
+Use the following command to help the merge:
+
+        cvs checkout -jMOZILLA:yesterday -jMOZILLA mozilla
+
+
+
+D:\Prince>cvs checkout -jMOZILLA:yesterday -jMOZILLA mozilla
+
+(Might want to capture the output of this command.)
+
+
+Grep for >>> in files.
+Sync nsMathMLChar.cpp with trunk.
+
+cvs commit these changes.
+
+d:\Prince\mozilla>cvs update
+
+
+Should build.  Might want to do a clean build just in case.
+
+FAILED.  nsDocument.cpp won't compile.  argh.
 
 
 
