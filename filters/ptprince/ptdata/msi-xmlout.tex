@@ -1,0 +1,1474 @@
+\makeatletter
+
+   \def\css{2}	  % the css output file
+   \openout\css=my.css %% the CSS style file for this document
+   \write\css{@import url("resource://gre/res/css/baselatex.css");}
+   \closeout\css
+
+\msi@dollar=`\$
+
+\def\msi@pass#1{\def#1{\msitag{<texb>#1</texb>}}}
+\def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb>#1</texb>}}}
+\def\msitexb#1{\msitag{<texb>#1</texb>}}
+
+
+\msi@pass@newline{\@settodim}
+\msi@pass@newline{\settoheight}
+\msi@pass@newline{\settodepth}
+\msi@pass@newline{\settowidth}
+
+
+% \newcounter{#1}[#2]
+
+\def\out@newcounterA#1{%
+  \br\msitag{<texb>\newcounter{#1}</texb>}%   
+}
+
+\def\out@newcounterB#1[#2]{%
+  \br\msitag{<texb>\newcounter{#1}[#2]</texb>}%
+}
+
+\msi@inline@proc={jbm}
+\msi@display@proc{jbm}
+\msi@everyrowstart{<tr>}
+\msi@everyrowend{</tr>}
+\msi@everycellstart{<td>}
+\msi@everycellend{</td>}
+
+\def\msi@stylesheets{\msitag{<?xml-stylesheet href="my.css" type="text/css"?>}\br}
+
+
+\def\@brace#1{\char123\relax#1\char125\relax}
+
+\def\br{\char10}
+
+
+%% \documentclass.  
+  
+\def\out@documentclassA[#1]#2{%
+   \msi@opendocument
+   \br\msitag{<documentclass class="#2" options="#1"/>}%
+}
+
+\def\out@documentclassB#1{%
+   \msi@opendocument
+   \br\msitag{<documentclass class="#1"/>}%
+}
+
+
+%% \document and \enddocument
+
+\def\out@begin@document{%
+   \msiclosetag{preamble}{</sw:preamble>}%
+   \msihmode\br\msiopentag{docbody}{<sw:docbody>}%
+   \@paragraphs
+   \msivmode
+}
+
+\def\out@end@document{%
+   \br\msiclosetag{docbody}{</sw:docbody>}%
+   \br\msitag{</html:body>}
+   \br\msitag{</html:html>}%
+   \endinput
+   \closeout\csi
+}
+
+
+
+
+
+%% \usepackage
+\def\out@usepackageA[#1]#2{%
+   \br\msitag{<usepackage package="#2" options="#1"/>}%
+}
+\def\out@usepackageB#1{%
+   \br\msitag{<usepackage package="#1"/>}%
+}
+
+
+%% Frontmatter
+
+\def\out@title#1{%
+   {\everypar={}\msitag{^^0a}\msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}}
+   
+\def\out@author#1{%
+  \begingroup
+   \def\\{\msitag{^^0a}\msiopentag{address}{<address>}\ignorespaces}%
+   \def\and{\msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
+   \msitag{^^0a}\msiopentag{author}{<author>}#1\msiclosetag{author}{</author>}%
+  \endgroup
+}
+
+\def\out@date#1{%
+   \msihmode\br\msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}}
+
+\def\out@maketitle{%
+   \br\msitag{<maketitle />}%
+}
+
+\def\out@thanks#1{%
+   \msitag{^^0a}\msiopentag{thanks}{<thanks>}#1\msiclosetag{thanks}{</thanks>}}
+
+
+\def\out@begin@abstract{%
+   \msitag{^^0a}\msiopentag{abstract}{<abstract>}
+}
+
+\def\out@end@abstract{%
+   \msitag{^^0a}\msiclosetag{abstract}{</abstract>}
+}
+
+
+
+\def\out@newtheorema#1[#2]#3{%
+   \br\msitag{<newtheorem name="#1" counter="#2" label="#3"/>}%
+   \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
+   \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}
+}
+
+\def\out@newtheoremb#1#2{%
+   \br\msitag{<newtheorem name="#1" label="#2"/>}%
+   \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
+   \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}
+}
+
+
+
+% Two forms of the \newenvironment command
+
+
+
+\def\@declarenewenva#1[#2][#3]#4#5{%
+   \br\msitag{<newenvironment name="#1" nargs="#2" opt="#3" start="#4" end="#5" />}
+}
+\def\@declarenewenvb#1#2#3{%
+   \br\msitag{<newenvironment name="#1" start="#4" end="#5" />}
+}
+
+
+
+
+
+
+\def\ref#1{\msiopentag{ref}{<xhtml:a>}#1\msiclosetag{ref}{</xhtml:a>}}
+\def\pageref#1{\msiopentag{pageref}{<pageref>}#1\msiclosetag{pageref}{</pageref>}}
+\def\pagenumbering#1{\msiopentag{latexstyleb}{<latexstyleb>}\msitag{<styleprop>pagenumber</styleprop>}\msiopentag{styledata}{<styledata>}#1\msiclosetag{styledata}{</styledata>}\msiclosetag{latexstyleb}{</latexstyleb>}}
+\def\markboth#1#2{\msiopentag{latexstyleb}{<latexstyleb>}\msitag{<styleprop>headers</styleprop>}\msiopentag{styledata}
+	{<styledata>}#1\msiclosetag{styledata}{</styledata>}\msiopentag{styledata}
+	{<styledata>}#1\msiclosetag{styledata}{</styledata>}\msiclosetag{latexstyleb}{</latexstyleb>}}
+\def\addcontentsline#1#2#3{\msiopentag{latexstyleb}{<latexstyleb>}\msitag{<styleprop>contentsline</styleprop>}
+	\msitag{<styledata>#1</styledata>}
+	\msitag{<styledata>#2</styledata>}
+	\msitag{<styledata>#3</styledata>}
+	\msiclosetag{latexstyleb}{</latexstyleb>}}
+
+\def\msi@pass#1{\def#1{\msitag{#1}}}
+\def\msi@mathmlpass#1{\def#1{\string#1\char32\relax}}
+
+\newif\if@first@item
+
+
+\def\out@itema[#1]{
+   \if@first@item
+     \@first@itemfalse
+   \else
+     \msiclosetag{item}{</item>}%
+   \fi
+   \br\msihmode\msiopentag{item}{<item>}
+   \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
+}
+
+\def\out@itemb{
+   \if@first@item
+     \@first@itemfalse
+   \else
+     \msiclosetag{item}{</item>}%
+   \fi
+   \br\msihmode\msiopentag{item}{<item>}%
+}
+
+
+\def\out@bibitemA[#1]#2{
+   \if@first@item
+     \@first@itemfalse
+   \else
+     \msiclosetag{item}{</bibitem>}%
+   \fi
+   \br\msihmode\msiopentag{bibitem}{<bibitem label="#1" ref="#2">}
+   \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
+}
+
+\def\out@bibitemB#1{
+   \if@first@item
+     \@first@itemfalse
+   \else
+     \msiclosetag{bibitem}{</bibitem>}%
+   \fi
+   \br\msihmode\msiopentag{bibitem}{<bibitem ref="#1">}%
+}
+
+
+\def\@closeitem{\msiclosetag{li}{</li>}}
+\def\@openitem{\msiopentag{li}{<li>}}
+
+\def\msi@begin@enumerate{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue \msiopentag{enumerate}{<enumerate>}}
+\def\msi@end@enumerate{\br\msiclosetag{enumerate}{</enumerate>}}
+
+\def\msi@begin@itemize{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{itemize}{<itemize>}}
+\def\msi@end@itemize{\br\msiclosetag{itemize}{</itemize>}}
+
+\def\msi@begin@description{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{description}{<description>}}
+\def\msi@end@description{\br\msiclosetag{description}{</description>}}
+
+
+
+
+\def\msi@thm@like#1{}
+
+
+\def\msi@begin@quote{\br\msiopentag{quote}{<quote>}}
+\def\msi@end@quote{\br\msiclosetag{quote}{</quote>}}
+
+
+\def\msi@begin@quotation{\br\msiopentag{quotation}{<quotation>}}
+\def\msi@end@quotation{\br\msiclosetag{quotation}{</quotation>}}
+
+\def\msi@begin@subequations{\br\msiopentag{subequations}{<subequations>}}
+\def\msi@end@subequations{\br\msiclosetag{subequations}{</subequations>}}
+
+
+
+\def\@end@footnote{\msiclosetag{footnote}{</footnote>}}
+\def\footnote#{\br\msiopentag{footnote}{<footnote>}\aftergroup\@end@footnote}
+
+%\input msiframe.tex
+
+
+\def\msi@begin@equation{$$}
+\def\msi@end@endequation{$$}
+
+\def\[#1\]{%
+  \ %
+  %%\temptoksa={\[#1\]}%
+  %%\msiextproc{jbm}{\the\temptoksa}%
+  \msiextproc{jbm}{\[#1\]}%
+}
+
+
+
+\newcount\seclevel
+\seclevel=0
+
+\newif\if@starred
+\def\@gobble#1{}
+
+\def\newsection#1#2#3#4{%
+  \expandafter\newcount\csname#1number\endcsname
+  \csname#1number\endcsname=0
+  \expandafter\def\csname the#1\endcsname{#3}%
+  \expandafter\def\csname #1\endcsname{%
+     \@ifnextchar*{\@starredtrue\csname @#1\endcsname}%
+                  {\@starredfalse\csname @#1\endcsname *}%
+  }
+  \expandafter\def\csname @#1\endcsname*{%
+     \@ifnextchar[{\csname @@#1\endcsname}%
+                  {\csname @@#1\endcsname[]}%
+  }
+  \expandafter\def\csname @@#1\endcsname[##1]##2{%
+     \seclevel=#2%
+     \expandafter\advance\csname #1number\endcsname by 1%
+     \let\protect\relax
+     \msiclosetag{#1}{</#1>}%
+     \msitag{^^0a}\msiopentag{#1}{<#1>}%
+     {\everypar={}\msitag{^^0a}\msiopentag{#4}{<#4>}##2\msiclosetag{#4}{</#4>}}
+  }%
+}
+
+
+\newsection{part}{1}{Part \the\partnumber}{sectiontitle}%
+\newsection{chapter}{1}{Chapter \the\chapternumber}{sectiontitle}%
+
+\def\appendix{%
+%
+}
+
+
+\def\out@marginparA#1#2{%
+  \msiopentag{marginpar}{<marginpar opt="#1">}#2\msiclosetag{marginpar}{</marginpar>}%
+}
+
+\def\out@marginparB#1{%
+  \msiopentag{marginpar}{<marginpar>}#1\msiclosetag{marginpar}{</marginpar>}%
+}
+
+\def\rule{%
+  \@ifnextchar[{\@rule}{\@rule[0pt]}%
+}
+\def\@rule[#1]#2#3{%
+   \ifmmode
+      \string\rule[#1]\char123#2\char125\char123#3\char125
+   \else
+      \msitag{<rule width="#2" height="#3" depth="#1"/>}%
+   \fi
+}
+
+\def\hspace#1{%
+   \ifmmode
+     \string\hspace\@brace{#1}%
+   \else
+     \msitag{<hspace width="#1"/>}%
+   \fi
+}
+
+\def\@paragraphs{%
+  \let\@par\par
+  \def\par{\msiclosetag{p}{</p>}\@par}%
+  \everypar{\msihmode\br\msiopentag{p}{<p>}}%
+}
+
+
+\everymath{%
+   \aftergroup\endmath
+}
+\def\endmath{}
+
+\everydisplay{%
+  \aftergroup\enddisplay
+}
+\def\enddisplay{}
+
+
+\def\@make@braces@other{%
+  \catcode`\{=12%
+  \catcode`\}=12%
+  \relax
+}
+\def\@make@braces@normal{%
+  \catcode`\{=1%
+  \catcode`\}=2%
+  \relax
+}
+
+\bgroup
+  \catcode`\^^M=13\relax
+  \gdef^^M{\char13\char10\relax}%
+\egroup
+
+
+%  \def\@make@linebreak@other{%
+%    \catcode`\^^M=13\relax
+%  }
+%  
+%  \def\@make@linebreak@normal{%
+%    \catcode`\^^M=5\relax
+%  }
+
+\newtoks\temptoksa
+
+\bgroup
+  \@make@braces@other
+  \catcode`\[=1
+  \catcode`\]=2
+  \gdef\@scan@eqnarray@star#1\end{eqnarray*}[%
+     \egroup
+     \@make@braces@normal
+     %\temptoksa=[\begin{eqnarray*}#1\end{eqnarray*}]%
+     \msiextproc[jbm][\begin{eqnarray*}#1\end{eqnarray*}]%
+  ]
+  \gdef\@scan@eqnarray#1\end{eqnarray}[%
+     \egroup
+     \@make@braces@normal
+     %\temptoksa=[\begin{eqnarray}#1\end{eqnarray}]%     
+     \msiextproc[jbm][\begin{eqnarray}#1\end{eqnarray}]%
+  ]
+  \gdef\@scan@align@star#1\end{align*}[%
+     \egroup
+     \@make@braces@normal
+     %\temptoksa=[\begin{align*}#1\end{align*}]%
+     \msiextproc[jbm][\begin{align*}#1\end{align*}]%
+  ]  
+  \gdef\@scan@equation@star#1\end{equation*}[%
+     \egroup
+     \@make@braces@normal
+     %\temptoksa=[\begin{equation*}#1\end{equation*}]%
+     \msiextproc[jbm][\begin{equation*}#1\end{equation*}]%
+  ]
+  \gdef\msi@mtabular#1#2\end{tabular}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{tabular}{#1}#2\end{tabular}]
+     %\temptoksa=[\begin{tabular}{#1}#2\end{tabular}]
+     %\the\temptoksa
+  ]
+  \gdef\@scan@array#1\end{array}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{array}#1\end{array}]
+     %\temptoksa=[\begin{array}#1\end{array}]%
+     %\the\temptoksa
+  ]
+  \def\endarray[\cr\egroup\string\end\char`\{array\char`\}]
+  \gdef\@scan@bmatrix#1\end{bmatrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{bmatrix}#1\end{bmatrix}]
+     %\temptoksa=[\begin{bmatrix}#1\end{bmatrix}]%
+     %\the\temptoksa
+  ]
+  \gdef\@scan@Bmatrix#1\end{Bmatrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{Bmatrix}#1\end{Bmatrix}]
+     %\temptoksa=[\begin{Bmatrix}#1\end{Bmatrix}]%
+     %\the\temptoksa
+  ]
+  \gdef\@scan@vmatrix#1\end{vmatrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{vmatrix}#1\end{vmatrix}]
+     %\temptoksa=[\begin{vmatrix}#1\end{vmatrix}]%
+     %\the\temptoksa
+  ]
+  \gdef\@scan@Vmatrix#1\end{Vmatrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{Vmatrix}#1\end{Vmatrix}]
+     %\temptoksa=[\begin{Vmatrix}#1\end{Vmatrix}]%
+     %\the\temptoksa
+  ]
+  \gdef\@scan@pmatrix#1\end{pmatrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{pmatrix}#1\end{pmatrix}]
+     %\temptoksa=[\begin{pmatrix}#1\end{pmatrix}]%
+     %\the\temptoksa
+  ]
+\egroup
+
+\@namedef{msi@begin@eqnarray*}{\ \@make@braces@other\relax\@scan@eqnarray@star}
+\@namedef{msi@begin@eqnarray}{\ \@make@braces@other\relax\@scan@eqnarray}
+
+\@namedef{msi@begin@align*}{\ \@make@braces@other\relax\@scan@align@star}
+
+\@namedef{msi@begin@equation*}{\ \@make@braces@other\relax\@scan@equation@star}
+\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
+
+\def\msi@begin@bmatrix{\@make@braces@other\relax\@scan@bmatrix} 
+\def\msi@begin@Bmatrix{\@make@braces@other\relax\@scan@Bmatrix} 
+\def\msi@begin@vmatrix{\@make@braces@other\relax\@scan@vmatrix} 
+\def\msi@begin@Vmatrix{\@make@braces@other\relax\@scan@Vmatrix} 
+\def\msi@begin@pmatrix{\@make@braces@other\relax\@scan@pmatrix}
+
+
+
+{\catcode`\^^M=\active % these lines must end with %
+  \gdef\obeylines{\catcode`\^^M\active \let^^M\par}%
+  \global\let^^M\par} % this is in case ^^M appears in a \write
+\def\obeyspaces{\catcode`\ \active}
+\def\space{ }
+{\obeyspaces\global\let =\space}
+
+ 
+
+
+
+\def\@cr{\@ifnextchar[{\@cra}{\@crb}}
+\def\@cra[#1]{\cr}%
+\def\@crb{\cr}%
+\def\msi@begin@tabular#1{
+   \ifmmode
+      \def\donext{\@make@braces@other\relax\msi@mtabular{#1}}%
+   \else
+      \def\donext{%
+         \begingroup
+            \msiopentag{tabular}{<tabular opt="#1">}%
+            \aftergroup\msi@closetabular
+            \hbox\bgroup
+              \let\\=\@cr
+              \halign\bgroup&####\cr
+      }%
+   \fi
+   \donext
+}
+
+\def\msi@closetabular{\msiclosetag{tabular}{</tabular>}}
+
+\def\msi@end@tabular{\crcr
+     \egroup %halign
+   \egroup   %hbox
+ \endgroup   %donext
+}
+
+\def\cline#1{}
+\def\hline{}
+\def\multicolumn#1#2#3{%
+   \count0=#1\relax
+   \ifnum\count0=1
+      #3
+   \else
+      \msitag{ Unimplemented multicol }
+   \fi
+}
+
+\def\endbrace{\char`\}}
+\chardef\other=12
+\chardef\active=13
+\bgroup
+   \catcode`&=\active
+   \gdef&{\char`&amp;}%
+\egroup
+
+
+\def\out@verbatim#1{%
+  \br\msitag{<pre>}#1\msitag{</pre>}}
+
+\def\verb{%
+   \bgroup
+      \catcode`\\=\other
+      \catcode`{=\other
+      \catcode`}=\other
+      \catcode`&=\active
+      \catcode`$=\other
+      \msiopentag{verb}{<verb>}%
+      \@sverb   
+}
+\def\verb@egroup{\msiclosetag{verb}{</verb>}\egroup}
+\def\@sverb#1{%
+  \catcode`#1\active
+  \lccode`\~`#1\relax
+  \lowercase{\let~\verb@egroup}%
+}
+
+\def\fbox#1{\ifmmode\temptoksa={#1}\string\fbox\char`\{\the\temptoksa\char`\}\fi}
+\def\{{\char123\relax}
+\def\}{\char125\relax}
+\let\@hbox\hbox
+\def\hbox{%
+   \def\@after{}
+   \ifmmode
+      \string\hbox\char`\{\aftergroup\endbrace
+   \else
+      \def\@after{\@hbox}%
+   \fi
+   \@after
+}
+
+
+\def\mathbf#1{\string\mathbf\char123#1\char125}
+\def\mathfrak#1{\string\mathfrak\char123#1\char125}
+
+\def\LaTeX{<latex>LaTeX</latex>}
+\def\TeX{<tex>TeX</tex>}
+\def\tableofcontents{<tableofcontents/>}
+\def\textquotedblleft{<leftquote/>}
+\def\textquotedblright{<rightquote/>}
+\def\textbackslash{<textbackslash/>}
+
+\msi@mathmlpass{\dot}
+\msi@mathmlpass{\boldsymbol}
+
+\msi@mathmlpass{\allowbreak}
+\msi@mathmlpass{\epsilon}
+\msi@mathmlpass{\cup}
+\msi@mathmlpass{\cap}
+
+% Operators
+
+\msi@mathmlpass{\int}
+\msi@mathmlpass{\iint}
+\msi@mathmlpass{\iiint}
+\msi@mathmlpass{\iiiint}
+\msi@mathmlpass{\idotsint}
+\msi@mathmlpass{\oint}
+\msi@mathmlpass{\sum}
+\msi@mathmlpass{\prod}
+\msi@mathmlpass{\bigcap}
+\msi@mathmlpass{\bigwedge}
+\msi@mathmlpass{\bigoplus}
+\msi@mathmlpass{\bigodot}
+\msi@mathmlpass{\bigsqcup}
+\msi@mathmlpass{\coprod}
+\msi@mathmlpass{\bigcup}
+\msi@mathmlpass{\bigvee}
+\msi@mathmlpass{\bigotimes}
+\msi@mathmlpass{\biguplus}
+
+\msi@mathmlpass{\nolimits}
+\msi@mathmlpass{\dint}
+\msi@mathmlpass{\diint}
+\msi@mathmlpass{\diiint}
+\msi@mathmlpass{\diiiint}
+\msi@mathmlpass{\didotsint}
+\msi@mathmlpass{\dbigwedge}
+\msi@mathmlpass{\dbigoplus}
+\msi@mathmlpass{\dbigodot}
+\msi@mathmlpass{\dbigsqcup}
+\msi@mathmlpass{\dcoprod}
+
+\msi@mathmlpass{\doint}
+\msi@mathmlpass{\dsum}
+\msi@mathmlpass{\dprod}
+\msi@mathmlpass{\dbigcap}
+\msi@mathmlpass{\dbigcup}
+\msi@mathmlpass{\dbigvee}
+\msi@mathmlpass{\dbigotimes}
+\msi@mathmlpass{\dbiguplus}
+\msi@mathmlpass{\tint}
+\msi@mathmlpass{\tiint}
+\msi@mathmlpass{\tiiint}
+\msi@mathmlpass{\tiiiint}
+\msi@mathmlpass{\tidotsint}
+\msi@mathmlpass{\tbigwedge}
+\msi@mathmlpass{\tbigoplus}
+\msi@mathmlpass{\tbigodot}
+\msi@mathmlpass{\tbigsqcup}
+\msi@mathmlpass{\tcoprod}
+\msi@mathmlpass{\toint}
+\msi@mathmlpass{\tsum}
+\msi@mathmlpass{\tprod}
+\msi@mathmlpass{\tbigcap}
+\msi@mathmlpass{\tbigcup}
+\msi@mathmlpass{\tbigvee}
+\msi@mathmlpass{\tbigotimes}
+\msi@mathmlpass{\tbiguplus}
+
+
+\msi@mathmlpass{\infty}
+\msi@mathmlpass{\neq}
+\msi@mathmlpass{\leq}
+\msi@mathmlpass{\geq}
+\msi@mathmlpass{\det}
+
+\msi@mathmlpass{\lfloor}
+\msi@mathmlpass{\rfloor}
+\msi@mathmlpass{\lceil}
+\msi@mathmlpass{\rceil}
+
+\msi@mathmlpass{\sin}
+\msi@mathmlpass{\cos}
+
+
+% Lowercase Greek 
+\msi@mathmlpass{\alpha}
+\msi@mathmlpass{\beta}
+\msi@mathmlpass{\chi}
+\msi@mathmlpass{\delta}
+\msi@mathmlpass{\eta}
+\msi@mathmlpass{\gamma}
+\msi@mathmlpass{\iota}
+\msi@mathmlpass{\kappa}
+\msi@mathmlpass{\lambda}
+\msi@mathmlpass{\mu}
+\msi@mathmlpass{\nu}
+\msi@mathmlpass{\omega}
+\msi@mathmlpass{\phi}
+\msi@mathmlpass{\pi}
+\msi@mathmlpass{\psi}
+\msi@mathmlpass{\rho}
+\msi@mathmlpass{\sigma}
+\msi@mathmlpass{\tau}
+\msi@mathmlpass{\theta}
+\msi@mathmlpass{\upsilon}
+\msi@mathmlpass{\varepsilon}
+\msi@mathmlpass{\varkappa}
+\msi@mathmlpass{\varphi}
+\msi@mathmlpass{\varpi}
+\msi@mathmlpass{\varrho}
+\msi@mathmlpass{\varsigma}
+\msi@mathmlpass{\vartheta}
+\msi@mathmlpass{\xi}
+\msi@mathmlpass{\zeta}
+
+
+
+% Uppercase Greek
+
+\msi@mathmlpass{\Delta}
+\msi@mathmlpass{\digamma}
+\msi@mathmlpass{\Gamma}
+\msi@mathmlpass{\Lambda}
+\msi@mathmlpass{\Omega}
+\msi@mathmlpass{\Phi}
+\msi@mathmlpass{\Pi}
+\msi@mathmlpass{\Psi}
+\msi@mathmlpass{\Sigma}
+\msi@mathmlpass{\Theta}
+\msi@mathmlpass{\Upsilon}
+\msi@mathmlpass{\Xi}
+
+% Binary Operations
+
+\msi@mathmlpass{\amalg}
+\msi@mathmlpass{\And}
+\msi@mathmlpass{\ast}
+\msi@mathmlpass{\bullet}
+\msi@mathmlpass{\bigcirc}
+\msi@mathmlpass{\barwedge}
+\msi@mathmlpass{\bigtriangledown}
+\msi@mathmlpass{\bigtriangleup}
+\msi@mathmlpass{\boxplus}
+\msi@mathmlpass{\boxminus}
+\msi@mathmlpass{\boxtimes}
+\msi@mathmlpass{\boxdot}
+\msi@mathmlpass{\cdot}
+\msi@mathmlpass{\cup}
+\msi@mathmlpass{\cap}
+\msi@mathmlpass{\circ}
+\msi@mathmlpass{\circledast}
+\msi@mathmlpass{\circledcirc}
+\msi@mathmlpass{\Cup}
+\msi@mathmlpass{\Cap}
+\msi@mathmlpass{\curlyvee}
+\msi@mathmlpass{\curlywedge}
+\msi@mathmlpass{\circleddash}
+\msi@mathmlpass{\centerdot}
+\msi@mathmlpass{\div}
+\msi@mathmlpass{\doublebarwedge}
+\msi@mathmlpass{\diamond}
+\msi@mathmlpass{\dagger}
+\msi@mathmlpass{\ddagger}
+\msi@mathmlpass{\dotplus}
+\msi@mathmlpass{\divideontimes}
+\msi@mathmlpass{\intercal}
+\msi@mathmlpass{\leftthreetimes}
+\msi@mathmlpass{\lhd}
+\msi@mathmlpass{\ltimes}
+\msi@mathmlpass{\mp} 
+\msi@mathmlpass{\oplus}
+\msi@mathmlpass{\odot}
+\msi@mathmlpass{\oslash}
+\msi@mathmlpass{\otimes}
+\msi@mathmlpass{\ominus}
+\msi@mathmlpass{\pm}
+\msi@mathmlpass{\rhd}
+\msi@mathmlpass{\rightthreetimes}
+\msi@mathmlpass{\rtimes}   
+\msi@mathmlpass{\sqcup}
+\msi@mathmlpass{\sqcap}
+\msi@mathmlpass{\setminus}
+\msi@mathmlpass{\smallsetminus}
+\msi@mathmlpass{\smallint}
+\msi@mathmlpass{\star}
+\msi@mathmlpass{\times}
+\msi@mathmlpass{\triangleleft}
+\msi@mathmlpass{\triangleright}
+\msi@mathmlpass{\uplus}
+\msi@mathmlpass{\unlhd}
+\msi@mathmlpass{\unrhd}
+\msi@mathmlpass{\vee}
+\msi@mathmlpass{\veebar}
+\msi@mathmlpass{\wedge}
+\msi@mathmlpass{\wr}
+
+
+
+%\msi@mathmlpass{\}
+%\msi@mathmlpass{\}
+%\msi@mathmlpass{\}
+
+
+% Binary Relations
+
+\msi@mathmlpass{\leq}
+\msi@mathmlpass{\prec}
+\msi@mathmlpass{\preceq}
+\msi@mathmlpass{\ll}
+\msi@mathmlpass{\subset}
+\msi@mathmlpass{\subseteq}
+\msi@mathmlpass{\sqsubset}
+\msi@mathmlpass{\sqsubseteq}
+\msi@mathmlpass{\in}
+\msi@mathmlpass{\vdash}
+\msi@mathmlpass{\smile}
+\msi@mathmlpass{\frown}
+\msi@mathmlpass{\equiv}
+\msi@mathmlpass{\sim}
+\msi@mathmlpass{\simeq}
+\msi@mathmlpass{\asymp}
+\msi@mathmlpass{\approx}
+\msi@mathmlpass{\geq}
+\msi@mathmlpass{\succ}
+\msi@mathmlpass{\succeq}
+\msi@mathmlpass{\gg}
+\msi@mathmlpass{\supset}
+\msi@mathmlpass{\supseteq}
+\msi@mathmlpass{\sqsupset}
+\msi@mathmlpass{\sqsupseteq}
+\msi@mathmlpass{\ni}
+\msi@mathmlpass{\dashv}
+\msi@mathmlpass{\mid}
+\msi@mathmlpass{\parallel}
+\msi@mathmlpass{\perp}
+\msi@mathmlpass{\cong}
+\msi@mathmlpass{\bowtie}
+\msi@mathmlpass{\propto}
+\msi@mathmlpass{\models}
+\msi@mathmlpass{\doteq}
+\msi@mathmlpass{\Join}
+\msi@mathmlpass{\Vdash}
+\msi@mathmlpass{\Vvdash}
+\msi@mathmlpass{\vDash}
+\msi@mathmlpass{\circeq}
+\msi@mathmlpass{\succsim}
+\msi@mathmlpass{\gtrsim}
+\msi@mathmlpass{\gtrapprox}
+\msi@mathmlpass{\therefore}
+\msi@mathmlpass{\because}
+\msi@mathmlpass{\doteqdot}
+\msi@mathmlpass{\triangleq}
+\msi@mathmlpass{\precsim}
+\msi@mathmlpass{\lesssim}
+\msi@mathmlpass{\lessapprox}
+\msi@mathmlpass{\eqslantless}
+\msi@mathmlpass{\eqslantgtr}
+\msi@mathmlpass{\curlyeqprec}
+\msi@mathmlpass{\curlyeqsucc}
+\msi@mathmlpass{\preccurlyeq}
+\msi@mathmlpass{\leqq}
+\msi@mathmlpass{\leqslant}
+\msi@mathmlpass{\lessgtr}
+\msi@mathmlpass{\risingdotseq}
+\msi@mathmlpass{\fallingdotseq}
+\msi@mathmlpass{\succcurlyeq}
+\msi@mathmlpass{\geqq}
+\msi@mathmlpass{\geqslant}
+\msi@mathmlpass{\gtrless}
+\msi@mathmlpass{\vartriangleright}
+\msi@mathmlpass{\vartriangleleft}
+\msi@mathmlpass{\trianglerighteq}
+\msi@mathmlpass{\trianglelefteq}
+\msi@mathmlpass{\between}
+\msi@mathmlpass{\blacktriangleright}
+\msi@mathmlpass{\blacktriangleleft}
+\msi@mathmlpass{\eqcirc}
+\msi@mathmlpass{\lesseqgtr}
+\msi@mathmlpass{\gtreqless}
+\msi@mathmlpass{\lesseqqgtr}
+\msi@mathmlpass{\gtreqqless}
+\msi@mathmlpass{\varpropto}
+\msi@mathmlpass{\eqcirc}
+\msi@mathmlpass{\smallfrown}
+\msi@mathmlpass{\Subset}
+\msi@mathmlpass{\Supset}
+\msi@mathmlpass{\subseteqq}
+\msi@mathmlpass{\supseteqq}
+\msi@mathmlpass{\bumpeq}
+\msi@mathmlpass{\Bumpeq}
+\msi@mathmlpass{\lll}
+\msi@mathmlpass{\ggg}
+\msi@mathmlpass{\pitchfork}
+\msi@mathmlpass{\backsim}
+\msi@mathmlpass{\backsimeq}
+\msi@mathmlpass{\eqsim}
+\msi@mathmlpass{\lessdot}
+\msi@mathmlpass{\gtrdot}
+\msi@mathmlpass{\shortmid}
+\msi@mathmlpass{\shortparallel}
+\msi@mathmlpass{\thicksim}
+\msi@mathmlpass{\thickapprox}
+\msi@mathmlpass{\approxeq}
+\msi@mathmlpass{\succapprox}
+\msi@mathmlpass{\precapprox}
+\msi@mathmlpass{\backepsilon}
+\msi@mathmlpass{\vartriangle}
+
+
+% Negated relations
+
+\msi@mathmlpass{\neq}
+\msi@mathmlpass{\notin}
+\msi@mathmlpass{\lvertneqq}
+\msi@mathmlpass{\gvertneqq}
+\msi@mathmlpass{\nleq}
+\msi@mathmlpass{\ngeq}
+\msi@mathmlpass{\nless}
+\msi@mathmlpass{\ngtr}
+\msi@mathmlpass{\nprec}
+\msi@mathmlpass{\nsucc}
+\msi@mathmlpass{\lneqq}
+\msi@mathmlpass{\gneqq}
+\msi@mathmlpass{\nleqslant}
+\msi@mathmlpass{\ngeqslant}
+\msi@mathmlpass{\lneq}
+\msi@mathmlpass{\gneq}
+\msi@mathmlpass{\npreceq}
+\msi@mathmlpass{\nsucceq}
+\msi@mathmlpass{\precnsim}
+\msi@mathmlpass{\succnsim}
+\msi@mathmlpass{\lnsim}
+\msi@mathmlpass{\gnsim}
+\msi@mathmlpass{\nleqq}
+\msi@mathmlpass{\ngeqq}
+\msi@mathmlpass{\precneqq}
+\msi@mathmlpass{\succneqq}
+\msi@mathmlpass{\precnapprox}
+\msi@mathmlpass{\succnapprox}
+\msi@mathmlpass{\lnapprox}
+\msi@mathmlpass{\gnapprox}
+\msi@mathmlpass{\nsim}
+\msi@mathmlpass{\ncong}
+\msi@mathmlpass{\varsubsetneq}
+\msi@mathmlpass{\varsupsetneq}
+\msi@mathmlpass{\nsubseteqq}
+\msi@mathmlpass{\nsupseteqq}
+\msi@mathmlpass{\subsetneqq}
+\msi@mathmlpass{\supsetneqq}
+\msi@mathmlpass{\varsubsetneqq}
+\msi@mathmlpass{\varsupsetneqq}
+\msi@mathmlpass{\subsetneq}
+\msi@mathmlpass{\supsetneq}
+\msi@mathmlpass{\nsubseteq}
+\msi@mathmlpass{\nsupseteq}
+\msi@mathmlpass{\nparallel}
+\msi@mathmlpass{\nmid}
+\msi@mathmlpass{\nshortmid}
+\msi@mathmlpass{\nshortparallel}
+\msi@mathmlpass{\nvdash}
+\msi@mathmlpass{\nVdash}
+\msi@mathmlpass{\nvDash}
+\msi@mathmlpass{\nVDash}
+\msi@mathmlpass{\ntrianglerighteq}
+\msi@mathmlpass{\ntrianglelefteq}
+\msi@mathmlpass{\ntriangleright}
+\msi@mathmlpass{\ntriangleleft}
+\msi@mathmlpass{\nleftarrow}
+\msi@mathmlpass{\nrightarrow}
+\msi@mathmlpass{\nLeftarrow}
+\msi@mathmlpass{\nRightarrow}
+\msi@mathmlpass{\nLeftrightarrow}
+\msi@mathmlpass{\nleftrightarrow}
+
+
+%Arrows
+\msi@mathmlpass{\leftarrow}
+\msi@mathmlpass{\Leftarrow}
+\msi@mathmlpass{\rightarrow}
+\msi@mathmlpass{\Rightarrow}
+\msi@mathmlpass{\leftrightarrow}
+\msi@mathmlpass{\Leftrightarrow}
+\msi@mathmlpass{\mapsto}
+\msi@mathmlpass{\hookleftarrow}
+\msi@mathmlpass{\leftharpoonup}
+\msi@mathmlpass{\leftharpoondown}
+\msi@mathmlpass{\uparrow}
+\msi@mathmlpass{\Uparrow}
+\msi@mathmlpass{\downarrow}
+\msi@mathmlpass{\Downarrow}
+\msi@mathmlpass{\updownarrow}
+\msi@mathmlpass{\longleftarrow}
+\msi@mathmlpass{\Longleftarrow}
+\msi@mathmlpass{\longrightarrow}
+\msi@mathmlpass{\Longrightarrow}
+\msi@mathmlpass{\longleftrightarrow}
+\msi@mathmlpass{\Longleftrightarrow}
+\msi@mathmlpass{\longmapsto}
+\msi@mathmlpass{\hookrightarrow}
+\msi@mathmlpass{\rightharpoonup}
+\msi@mathmlpass{\rightharpoondown}
+\msi@mathmlpass{\leadsto}
+\msi@mathmlpass{\Updownarrow}
+\msi@mathmlpass{\nearrow}
+\msi@mathmlpass{\searrow}
+\msi@mathmlpass{\swarrow}
+\msi@mathmlpass{\nwarrow}
+\msi@mathmlpass{\circlearrowright}
+\msi@mathmlpass{\circlearrowleft}
+\msi@mathmlpass{\rightleftharpoons}
+\msi@mathmlpass{\leftrightharpoons}
+\msi@mathmlpass{\twoheadrightarrow}
+\msi@mathmlpass{\twoheadleftarrow}
+\msi@mathmlpass{\leftleftarrows}
+\msi@mathmlpass{\rightrightarrows}
+\msi@mathmlpass{\upuparrows}
+\msi@mathmlpass{\downdownarrows}
+\msi@mathmlpass{\upharpoonright}
+\msi@mathmlpass{\downharpoonright}
+\msi@mathmlpass{\upharpoonleft}
+\msi@mathmlpass{\downharpoonleft}
+\msi@mathmlpass{\rightarrowtail}
+\msi@mathmlpass{\leftarrowtail}
+\msi@mathmlpass{\leftrightarrows}
+\msi@mathmlpass{\rightleftarrows}
+\msi@mathmlpass{\Lsh}
+\msi@mathmlpass{\Rsh}
+\msi@mathmlpass{\rightsquigarrow}
+\msi@mathmlpass{\leftrightsquigarrow}
+\msi@mathmlpass{\looparrowleft}
+\msi@mathmlpass{\looparrowright}
+\msi@mathmlpass{\multimap}
+\msi@mathmlpass{\Rrightarrow}
+\msi@mathmlpass{\Lleftarrow}
+\msi@mathmlpass{\curvearrowleft}
+\msi@mathmlpass{\curvearrowright}
+\msi@mathmlpass{\dashrightarrow}
+\msi@mathmlpass{\dashleftarrow}
+\msi@mathmlpass{\implies}
+\msi@mathmlpass{\impliedby}
+\msi@mathmlpass{\iff}
+
+
+%Miscellaneous
+
+\msi@mathmlpass{\infty}
+\msi@mathmlpass{\partial}
+\msi@mathmlpass{\ldots}
+\msi@mathmlpass{\cdots}
+\msi@mathmlpass{\vdots}
+\msi@mathmlpass{\ddots}
+%\msi@mathmlpass{\i}
+%\msi@mathmlpass{\j}
+\msi@mathmlpass{\ell}
+\msi@mathmlpass{\wp}
+\msi@mathmlpass{\hbar}
+\msi@mathmlpass{\hslash}
+\msi@mathmlpass{\forall}
+\msi@mathmlpass{\exists}
+\msi@mathmlpass{\nexists}
+\msi@mathmlpass{\Re}
+\msi@mathmlpass{\Im}
+\msi@mathmlpass{\aleph}
+\msi@mathmlpass{\prime}
+\msi@mathmlpass{\backprime}
+\msi@mathmlpass{\emptyset}
+\msi@mathmlpass{\varnothing}
+\msi@mathmlpass{\diagup}
+\msi@mathmlpass{\diagdown}
+\msi@mathmlpass{\nabla}
+\msi@mathmlpass{\surd}
+\msi@mathmlpass{\top}
+\msi@mathmlpass{\bot}
+\msi@mathmlpass{\eth}
+\msi@mathmlpass{\lambdabar}
+\msi@mathmlpass{\angle}
+\msi@mathmlpass{\measuredangle}
+\msi@mathmlpass{\sphericalangle}
+\msi@mathmlpass{\circledS}
+\msi@mathmlpass{\tciLaplace}
+\msi@mathmlpass{\tciFourier}
+\msi@mathmlpass{\lnot}
+\msi@mathmlpass{\complement}
+\msi@mathmlpass{\Finv}
+\msi@mathmlpass{\Game}
+\msi@mathmlpass{\bigstar}
+\msi@mathmlpass{\Vert}
+\msi@mathmlpass{\square}
+\msi@mathmlpass{\blacksquare}
+\msi@mathmlpass{\Diamond}
+\msi@mathmlpass{\lozenge}
+\msi@mathmlpass{\blacklozenge}
+\msi@mathmlpass{\triangle}
+\msi@mathmlpass{\blacktriangle}
+\msi@mathmlpass{\triangledown}
+\msi@mathmlpass{\blacktriangledown}
+\msi@mathmlpass{\dag}
+\msi@mathmlpass{\ddag}
+\msi@mathmlpass{\beth}
+\msi@mathmlpass{\gimel}
+\msi@mathmlpass{\daleth}
+\msi@mathmlpass{\sharp}
+\msi@mathmlpass{\flat}
+\msi@mathmlpass{\natural}
+\msi@mathmlpass{\clubsuit}
+\msi@mathmlpass{\diamondsuit}
+\msi@mathmlpass{\heartsuit}
+\msi@mathmlpass{\spadesuit}
+\msi@mathmlpass{\checkmark}
+\msi@mathmlpass{\maltese}
+\msi@mathmlpass{\Bbbk}
+\msi@mathmlpass{\cents}
+\msi@mathmlpass{\pounds}
+\msi@mathmlpass{\textcurrency}
+\msi@mathmlpass{\yen}
+\msi@mathmlpass{\euro}
+\msi@mathmlpass{\textfranc}
+\msi@mathmlpass{\textlira}
+\msi@mathmlpass{\textpeseta}
+\msi@mathmlpass{\texttrademark}
+\msi@mathmlpass{\mho}
+\msi@mathmlpass{\colon}
+
+% Delimiters
+
+\msi@mathmlpass{\lfloor}
+\msi@mathmlpass{\rfloor}
+\msi@mathmlpass{\lceil}
+\msi@mathmlpass{\rceil}
+\msi@mathmlpass{\langle}
+\msi@mathmlpass{\rangle}
+\msi@mathmlpass{\ulcorner}
+\msi@mathmlpass{\urcorner}
+\msi@mathmlpass{\llcorner}
+\msi@mathmlpass{\lrcorner}
+
+
+\def\TEXTsymbol#1{%
+  \ifmmode
+    \temptoksa={\TEXTsymbol{#1}}%
+    \the\temptoksa
+  \else
+    #1%
+  \fi
+}
+
+\def\backslash{\@hex{5c}}
+
+{catecode`\$=11\relax
+ \gdef\${\char`\$}
+}
+
+
+\def\/{\msitag{<italic-correction/>}}
+
+\def\@hex#1{\char38\char35x#1;}
+\def\@accent#1#2{%
+  \ifx#1\i
+    \csname dotlessi-#2\endcsname
+  \else\ifx#1\j
+    \csname dotlessj-#2\endcsname
+  \else 
+    \csname #1-#2\endcsname
+  \fi\fi\fi
+}
+
+\def\`#1{\@accent{#1}{grave}}
+
+\def\'#1{\@accent{#1}{acute}}
+
+\def\~#1{\@accent{#1}{tilde}}
+
+\def\^#1{\@accent{#1}{caret}}
+
+\def\=#1{\@accent{#1}{bar}}
+
+\def\"#1{\@accent{#1}{umlat}}
+
+\def\c#1{\@accent{#1}{ced}}
+
+\def\.#1{\@accent{#1}{dot}}
+
+
+\def\i{\@hex{131}}
+%\def\j{\@hex{132}}
+
+
+\@namedef{A-grave}{\@hex{c0}}
+\def\DH{\@hex{d0}}
+\@namedef{a-grave}{\@hex{e0}}
+\def\dh{\@hex{f0}}
+
+\def\textexclamdown{\@hex{a1}}
+
+\@namedef{A-acute}{\@hex{c1}}
+\@namedef{N-tilde}{\@hex{d1}}
+\@namedef{a-acute}{\@hex{e1}}
+\@namedef{n-tilde}{\@hex{f1}}
+
+\def\cents{\@hex{a2}}
+\@namedef{A-caret}{\@hex{c2}}
+\@namedef{O-grave}{\@hex{d2}}
+\@namedef{a-caret}{\@hex{e2}}
+\@namedef{o-grave}{\@hex{f2}}
+
+\def\pounds{\@hex{a3}}
+
+\@namedef{A-tilde}{\@hex{c3}}
+\@namedef{O-acute}{\@hex{d3}}
+\@namedef{a-tilde}{\@hex{e3}}
+\@namedef{o-acute}{\@hex{f3}}
+
+
+\def\textcurrency{\@hex{a4}}
+\@namedef{-acute}{\@hex{b4}}
+\@namedef{A-umlat}{\@hex{c4}}
+\@namedef{O-caret}{\@hex{d4}}
+\@namedef{a-umlat}{\@hex{e4}}
+\@namedef{o-caret}{\@hex{f4}}
+
+
+\def\yen{\@hex{a5}}
+
+\def\AA{\@hex{c5}}
+\@namedef{O-tilde}{\@hex{d5}}
+\def\aa{\@hex{e5}}
+\@namedef{o-tilde}{\@hex{f5}}
+
+\def\P{\@hex{b6}}
+\def\AE{\@hex{c6}}
+\@namedef{O-umlat}{\@hex{d6}}
+\def\ae{\@hex{e6}}
+\@namedef{o-umlat}{\@hex{f6}}
+
+\def\S{\@hex{a7}}
+\def\textperiodcentered{\@hex{b7}}
+\@namedef{C-ced}{\@hex{c7}}
+\@namedef{c-ced}{\@hex{e7}}
+
+\@namedef{-umlat}{\@hex{a8}}
+\@namedef{-ced}{\@hex{b8}}
+\@namedef{E-grave}{\@hex{c8}}
+\def\O{\@hex{d8}}
+\@namedef{e-grave}{\@hex{e8}}
+\def\o{\@hex{f8}}
+
+
+\def\copyright{\@hex{a9}}
+\@namedef{E-acute}{\@hex{c9}}
+\@namedef{U-grave}{\@hex{d9}}
+\@namedef{e-acute}{\@hex{e9}}
+\@namedef{u-grave}{\@hex{f9}}
+
+\@namedef{E-caret}{\@hex{ca}}
+\@namedef{U-acute}{\@hex{da}}
+\@namedef{e-caret}{\@hex{ea}}
+\@namedef{u-acute}{\@hex{fa}}
+
+
+\def\guillemotleft{\@hex{ab}}
+\def\guillemotright{\@hex{bb}}
+\@namedef{E-umlat}{\@hex{cb}}
+\@namedef{U-caret}{\@hex{db}}
+\@namedef{e-umlat}{\@hex{eb}}
+\@namedef{u-caret}{\@hex{fb}}
+
+\@namedef{I-grave}{\@hex{cc}}
+\@namedef{U-umlat}{\@hex{dc}}
+\@namedef{dotlessi-grave}{\@hex{ec}}
+\@namedef{u-umlat}{\@hex{fc}}
+
+\@namedef{I-acute}{\@hex{cd}}
+\@namedef{Y-acute}{\@hex{dd}}
+\@namedef{dotlessi-acute}{\@hex{ed}}
+\@namedef{y-acute}{\@hex{fd}}
+
+\def\registered{\@hex{ae}}
+\@namedef{I-caret}{\@hex{ce}}
+\def\TH{\@hex{de}}
+\@namedef{dotlessi-caret}{\@hex{ee}}    
+\def\th{\@hex{fe}}
+
+\@namedef{-bar}{\@hex{af}}
+\def\textquestiondown{\@hex{bf}}
+\@namedef{I-umlat}{\@hex{cf}}
+\def\ss{\@hex{df}}
+\@namedef{dotlessi-umlat}{\@hex{ef}}
+\@namedef{y-umlat}{\@hex{ff}}
+
+
+% Latin-extended
+
+\@namedef{A-bar}{\@hex{100}}
+\def\DJ{\@hex{110}}
+\@namedef{G-dot}{\@hex{120}}
+\@namedef{I-dot}{\@hex{130}}
+
+
+
+
+
+\def\label#1{%
+   \ifmmode
+      \string\label\@brace{#1}%
+   \else
+      %\msiopentag{<a name="#1">}[label here]\msiclosetag{</a>}
+   \fi
+}
+\def\frac#1#2{\string\frac\@brace{#1}\@brace{#2}}
+\def\dfrac#1#2{\string\dfrac\@brace{#1}\@brace{#2}}
+
+\def\unit#1{\string\unit\@brace{#1}}
+
+\def\mathbf#1{\string\mathbf\@brace{#1}}
+\def\mathit#1{\string\mathit\@brace{#1}}
+\def\mathsf#1{\string\mathsf\@brace{#1}}
+\def\mathtt#1{\string\mathtt\@brace{#1}}
+\def\mathrm#1{\string\mathrm\@brace{#1}}
+
+
+
+\msi@mathmlpass{\lim}
+
+\def\func#1{\string\func\@brace{#1}}
+\def\limfunc#1{\string\limfunc\@brace{#1}}
+
+
+\def\sqrt{%
+  \@ifnextchar[%
+    {\@nthroot}%
+    {\@sqrt}}
+
+\def\@sqrt#1{%
+   \string\sqrt\@brace{#1}%
+}
+
+\def\@nthroot[#1]#2{%
+   \string\sqrt[#1]\@brace{#2}%
+}
+
+\msi@mathmlpass{\vert}
+\msi@mathmlpass{\Vert}
+
+
+
+\msi@mathmlpass{\blacktriangleright}
+\msi@mathmlpass{\max}
+\msi@mathmlpass{\min}
+\msi@mathmlpass{\prime}
+
+
+%\msi@mathmlpass{\thinspace}
+
+\def\thinspace{\ifmmode\string\thinspace\else\ \fi}
+
+
+\def\mathpass@arg#1{%
+  \def#1##1{\string#1\@brace{##1}}
+}
+
+\def\mathpass@arg@arg#1{%
+  \def#1##1##2{\string#1\@brace{##1}\@brace{##2}}
+}
+\def\mathpass@arg@arg@arg#1{%
+  \def#1##1##2##3{\string#1\@brace{##1}\@brace{##2}\@brace{##3}}
+}
+\def\mathpass@arg@arg@arg@arg#1{%
+  \def#1##1##2##3##4{\string#1\@brace{##1}\@brace{##2}\@brace{##3}\@brace{##4}}
+}
+
+\def\mathpass@arg@arg@arg@arg@arg#1{%
+  \def#1##1##2##3##4##5{\string#1\@brace{##1}\@brace{##2}\@brace{##3}\@brace{##4}\@brace{##5}}
+}
+
+
+
+\mathpass@arg{\tag}
+
+
+\mathpass@arg{\mathbb}
+\mathpass@arg{\mathcal}
+
+
+\mathpass@arg@arg{\binom}
+\mathpass@arg@arg{\dbinom}
+\mathpass@arg@arg{\tbinom}
+
+\mathpass@arg@arg{\QATOP}
+\mathpass@arg@arg{\QTATOP}
+\mathpass@arg@arg{\QDATOP}
+
+\mathpass@arg@arg@arg{\QABOVE}
+\mathpass@arg@arg@arg{\QTABOVE}
+\mathpass@arg@arg@arg{\QDABOVE}
+\mathpass@arg@arg@arg@arg{\QOVERD}
+\mathpass@arg@arg@arg@arg{\QTOVERD}
+\mathpass@arg@arg@arg@arg{\QDOVERD}
+\mathpass@arg@arg@arg@arg{\QATOPD}
+\mathpass@arg@arg@arg{\QTATOPD}
+\mathpass@arg@arg@arg{\QDATOPD}
+%  \mathpass@arg@arg@arg{}
+%  \mathpass@arg@arg@arg{}
+%  \mathpass@arg@arg@arg{}
+%  
+
+%  \def\QABOVED#1#2#3#4#5{{#4 \abovewithdelims#1#2#3 #5}}%
+%  \def\QTABOVED#1#2#3#4#5{{\textstyle 
+%     {#4 \abovewithdelims#1#2#3 #5}}}%
+%  \def\QDABOVED#1#2#3#4#5{{\displaystyle 
+%     {#4 \abovewithdelims#1#2#3 #5}}}%
+%  
+
+\def\unit#1{\string\unit\@brace{#1}}
+
+
+\msi@mathmlpass{\left}
+\msi@mathmlpass{\right}
+\msi@mathmlpass{\in}
+\def\text#1{\msitag{\text{#1}}}
+
+\def\vspace#1{\ifmmode\else\msitag{<vspace/>}\fi}
+\def\ {\ifmmode\char92\char32\else\msitag{<nbsp/>}\fi}
+
+\def\QTR#1#2{%
+   \ifmmode
+      \string\QTR\@brace{#1}\@brace{#2}%
+   \else
+      \msiopentag{QTR}{<QTR type="#1">}#2\msiclosetag{QTR}{</QTR>}%
+   \fi
+}
+
+
+%%\def\msi@textsmall#1{\msiopentag{<small>}#1\msiclosetag{</small>}}
+
+\def\emph#1{\msiopentag{em}{<em>}#1\msiclosetag{em}{</em>}}
+
+\def\@writehyperref#1#2#3#4{%
+   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}
+}
+
+\newif\if@in@texttag
+\@in@texttagfalse
+
+\def\QTP#1{%
+  \par
+  \msihmode
+  \msiopentag{QTP}{<QTP type="#1">}%
+  \begingroup
+    \def\par{\msiclosetag{QTP}{</QTP>}\endgroup}%
+}
+
+\def\@ttclose#1{\msiclosetag{#1}{</#1>}}
+\def\@closelasttexttag{\expandafter\@ttclose\expandafter{\@lasttexttag}}
+
+
+\def\@text@tag#1{%
+   \expandafter\def\csname#1\endcsname{%
+      \if@in@texttag
+         \expandafter\@ttclose\expandafter{\@lasttexttag}%
+      \else
+         \@in@texttagtrue
+      \fi
+      \gdef\@lasttexttag{#1}%
+      \msiopentag{#1}{<#1>}%
+      \aftergroup\@closelasttexttag
+   }
+}
+
+%% \def\msi@opendocument{%
+%%    \msitag{<?xml version="1.0"?>}\br
+%%    
+%%    \msitag{<!DOCTYPE swxml PUBLIC
+%%      "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+%%      "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd"
+%%      [
+%%       <!ATTLIST maction id ID ##IMPLIED>
+%%       <!ENTITY mathml "http://www.w3.org/1998/Math/MathML">
+%%      ]>}\br
+%%    
+%%    \msitag{<?xml-stylesheet href="StandardLaTeXArticle.css" type="text/css"?>}\br
+%%    \msiopentag{document}{<document xmlns:sw="http://www.sciword.com/namespaces/sciword" xmlns:mml="http://www.w3.org/1998/Math/MathML" sw:type="latex">}\br
+%%    \msiopentag{preamble}{<preamble>}
+%% }
+
+%% Temporary until prince can read xml
+
+\def\msi@opendocument{%
+   \msitag{<?xml version="1.0"?>}\br
+   \msitag{<?xml-stylesheet href="my.css" type="text/css"?>}\br
+   \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">}
+   
+   
+   \br\msitag{<html:html xmlns:html="http://www.w3.org/1999/xhtml" 
+      xmlns:mml="http://www.w3.org/1998/Math/MathML"
+      xmlns:sw="http://www.sciword.com/namespaces/sciword">}
+   
+   \br\msitag{<html:head>}
+   \br\msitag{</html:head>}
+   \br\msitag{<html:body>}
+   \br\msiopentag{preamble}{<sw:preamble>}
+}
+
+
+
+
+
+				 
+

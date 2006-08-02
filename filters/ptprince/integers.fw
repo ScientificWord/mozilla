@@ -1,0 +1,248 @@
+@!@A@<Integer commands@>
+
+@B@<Integer parameter assignments@>
+
+The integer parameters are things like @{\tolerance@}.
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_ASSIGN_INTEGER,
+@}
+
+
+Each integer parameter is associated with a memory location that
+holds an integer.
+
+@$@<Declare MakeIntegerParameter@>==@{@-
+void MakeIntegerParameter(const char* name, int* addr)
+{
+   Primitive* pc = new Primitive(CMD_ASSIGN_INTEGER, true, (int)addr);
+   Symbols::CreateSymbol(name, pc);
+}
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+MakeIntegerParameter("pretolerance",   &Global::pretolerance);
+MakeIntegerParameter("tolerance",      &Global::tolerance);
+MakeIntegerParameter("hbadness",       &Global::hbadness);
+MakeIntegerParameter("vbadness",       &Global::vbadness);
+MakeIntegerParameter("linepenalty",    &Global::linepenalty);
+MakeIntegerParameter("hyphenpenalty",  &Global::hyphenpenalty);
+MakeIntegerParameter("exhyphenpenalty",&Global::exhyphenpenalty);
+MakeIntegerParameter("binoppenalty",   &Global::binoppenalty);
+MakeIntegerParameter("relpenalty",     &Global::relpenalty);
+MakeIntegerParameter("clubpenalty",    &Global::clubpenalty);
+MakeIntegerParameter("widowpenalty",   &Global::widowpenalty);
+MakeIntegerParameter("displaywidowpenalty", &Global::displaywidowpenalty);
+MakeIntegerParameter("brokenpenalty",       &Global::brokenpenalty);
+MakeIntegerParameter("predisplaypenalty",   &Global::predisplaypenalty);
+MakeIntegerParameter("postdisplaypenalty",  &Global::postdisplaypenalty);
+MakeIntegerParameter("interlinepenalty",    &Global::interlinepenalty);
+MakeIntegerParameter("floatingpenalty",     &Global::floatingpenalty);
+MakeIntegerParameter("outputpenalty",       &Global::outputpenalty);
+MakeIntegerParameter("doublehyphendemerits",&Global::doublehyphendemerits);
+MakeIntegerParameter("finalhyphendemerits", &Global::finalhyphendemerits);
+MakeIntegerParameter("adjdemerits",         &Global::adjdemerits);
+MakeIntegerParameter("looseness",           &Global::looseness);
+MakeIntegerParameter("pausing",             &Global::pausing);
+MakeIntegerParameter("holdinginserts",      &Global::holdinginserts);
+MakeIntegerParameter("tracingonline",      &Global::tracingonline);
+MakeIntegerParameter("tracingmacros",      &Global::tracingmacros);
+MakeIntegerParameter("tracingstats",       &Global::tracingstats);
+MakeIntegerParameter("tracingparagraphs",  &Global::tracingparagraphs);
+MakeIntegerParameter("tracingpages",       &Global::tracingpages);
+MakeIntegerParameter("tracingoutput",      &Global::tracingoutput);
+MakeIntegerParameter("tracinglostchars",   &Global::tracinglostchars);
+MakeIntegerParameter("tracingcommands",    &Global::tracingcommands);
+MakeIntegerParameter("tracingrestores",    &Global::tracingrestores);
+MakeIntegerParameter("language",          &Global::language);
+MakeIntegerParameter("uchyph",            &Global::uchyph);
+MakeIntegerParameter("lefthyphenmin",     &Global::lefthyphenmin);
+MakeIntegerParameter("righthyphenmin",    &Global::righthyphenmin);
+MakeIntegerParameter("globaldefs",        &Global::globaldefs);
+MakeIntegerParameter("defaulthyphenchar", &Global::defaulthyphenchar);
+MakeIntegerParameter("defaultskewchar",   &Global::defaultskewchar);
+MakeIntegerParameter("escapechar",        &Global::escapechar);
+MakeIntegerParameter("endlinechar",       &Global::endlinechar);
+MakeIntegerParameter("newlinechar",       &Global::newlinechar);
+MakeIntegerParameter("showboxbreadth",    &Global::showboxbreadth);
+MakeIntegerParameter("showboxdepth",      &Global::showboxdepth);
+MakeIntegerParameter("errorcontextlines", &Global::errorcontextlines);
+MakeIntegerParameter("delimiterfactor",   &Global::delimiterfactor);
+MakeIntegerParameter("fam",               &Global::fam);
+MakeIntegerParameter("maxdeadcycles",     &Global::maxdeadcycles);
+MakeIntegerParameter("hangafter",         &Global::hangafter);
+MakeIntegerParameter("mag",               &Global::mag);
+MakeIntegerParameter("time",              &Global::time);
+MakeIntegerParameter("day",               &Global::day);
+MakeIntegerParameter("month",             &Global::month);
+MakeIntegerParameter("year",              &Global::year);
+MakeIntegerParameter("inputlineno",       &Global::inputlineno);
+MakeIntegerParameter("lastpenalty",       &Global::lastpenalty);
+MakeIntegerParameter("deadcycles",        &Global::deadcycles);
+MakeIntegerParameter("spacefactor",       &Global::spacefactor);
+MakeIntegerParameter("msi@@dobraces",     &Global::msidobraces);
+MakeIntegerParameter("msi@@dollar",       &Global::msidollar);
+MakeIntegerParameter("msi@@output",       &Global::msioutput);
+@}
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_ASSIGN_INTEGER:{
+   DoAssignment(0);
+   break;
+};
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_ASSIGN_INTEGER: {
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   int* loc = (int*) prim -> Data();
+   TeXToken defining = CurTok();
+   int n;
+   ScanOptionalEquals();
+   ScanInt(&n);
+   LOG("\n----Set " << defining << " = " << n);
+   SaveRestoration(new IntRestoration(loc, "an integer"), bGlobal);
+   *loc = n;
+   break;
+};
+@}
+
+These commands can also appear while doing @{ScanSomethingInternal@}.
+
+@$@<ScanSomethingInternal cases@>+=@{@-
+case CMD_ASSIGN_INTEGER: {
+   res.m_type = SCAN_INT;
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   res.m_int = * (int*) prim -> Data();
+   break;
+}
+@}
+
+
+@B@<Integer register assignments@>
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_COUNT,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("count", CMD_COUNT, true, NULL);
+@}
+
+There are two main ways the @{\count@} command can have
+significance. First, it can be the beginning of a top-level
+command, e.g. @{\count5=12@}, and second, it can be the
+start of an integer parameter, e.g. @{\tolerance=\count4@}.
+Recursion is allowed so we can have things like
+@{\count\count3=10@} and @{\tolerance=\count\count4@}.
+
+Here is the first case.
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_COUNT: {
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_COUNT: {
+   int n,m;
+   ScanInt(&n);
+   ScanOptionalEquals();
+   ScanInt(&m);
+   int* loc = &Global::CountReg[n];
+   SaveRestoration(
+            new IntRestoration(loc, "an integer register"),
+            false
+          );
+   *loc = m;
+   LOG("\n----Set \\count" << n << " = " << m);
+   break;
+}
+@}
+
+And here is the second case
+
+@$@<ScanSomethingInternal cases@>+=@{@-
+case CMD_COUNT: {
+   int m;
+   if (ScanInt(&m)){
+      res.m_type = SCAN_INT;
+      res.m_int =  Global::CountReg[m];
+   }
+   break;
+}
+@}
+
+@B@<Counter shorthand commands@>
+There is another kind of integer assignment. The @{\countdef@}
+command associates a command like @{\count12@} with a control
+sequence.
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_COUNTDEF,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("countdef", CMD_COUNTDEF);
+@}
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_COUNTDEF:{
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_COUNTDEF:{
+   TeXToken defining;
+   int n;
+   ScanShorthand(&defining, &n);
+   void* addr = &Global::CountReg[n];
+   Primitive* cmd = new Primitive(CMD_ASSIGN_INTEGER, true, (int)addr);
+   Symbols::SetDef(defining.Symbol(), cmd, bGlobal);
+   LOG("\n----Set " << defining << " = shorthand for \\count" << n);
+   break;
+}
+@}
+
+
+
+
+
+@B@<Tests@>
+
+@$@<Interprt TestTable@>+=@{@-
+{"int", TestIntCmds},
+@}
+
+@$@<Interprt tests@>+=@{@-
+bool TestIntCmds()
+{
+   Interpretter::InitializeSymbolTable();
+   InitializeKeywords();
+   InputFile("intassign.tex");
+   Interpretter::MainLoop();
+   return CompareLog("intassign.log", "Interpretter int test 1");
+}
+@}
+
+@o@<intassign.tex@>==@{@-
+\count12=22
+\count10=\count12 % now \count10=22
+{\count10=33 % now \count10=33
+}
+\count12=\count10 % should be back to 22
+\countdef\chapno=28
+\chapno=16
+\count12\chapno
+\end
+@}
