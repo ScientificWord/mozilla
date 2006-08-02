@@ -1,0 +1,116 @@
+# Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
+
+DEPTH		= ../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+PROGRAM		= pretex$(BIN_SUFFIX)
+RESFILE		= pretex.res
+
+MODULE = pretex
+
+MathMLDLL = \
+    $(srcdir)/mmldll.dll \
+    $(srcdir)/MATHML.gmr \
+    $(srcdir)/MathType.gmr \
+    $(srcdir)/MTEF5.gmr \
+    $(srcdir)/NOTEBOOK.gmr \
+    $(NULL)
+
+SAMPLES	:= \
+    $(srcdir)/article.shl \
+    $(srcdir)/standardLatexArticle.css \
+    $(NULL)
+
+CPPSRCS		=		   \
+	basicdata.cpp \
+	conditionals.cpp \
+	expandables.cpp \
+	interpretter.cpp \
+	macros.cpp \
+	platform.cpp \
+	restore.cpp \
+	scanutils.cpp \
+	symbols.cpp \
+	tex.cpp \
+	textio.cpp \
+	tokens.cpp \
+	typesetter.cpp \
+	$(NULL)
+
+# not right, but compiles
+EXPORTS=mmldll.h
+
+FWSRCS  =  \
+  $(srcdir)/alignment.fw     \
+  $(srcdir)/assignment.fw    \
+  $(srcdir)/basicdata.fw     \
+  $(srcdir)/boxes.fw         \
+  $(srcdir)/build.fw         \
+  $(srcdir)/conditionals.fw  \
+  $(srcdir)/defs.fw          \
+  $(srcdir)/dimen.fw         \
+  $(srcdir)/expandables.fw   \
+  $(srcdir)/fonts.fw         \
+  $(srcdir)/front.fw         \
+  $(srcdir)/glue.fw          \
+  $(srcdir)/grammar.fw       \
+  $(srcdir)/integers.fw      \
+  $(srcdir)/interprt.fw      \
+  $(srcdir)/linebrk.fw       \
+  $(srcdir)/main.fw          \
+  $(srcdir)/math.fw          \
+  $(srcdir)/misctests.fw     \
+  $(srcdir)/moreassign.fw    \
+  $(srcdir)/nodes.fw         \
+  $(srcdir)/platform.fw      \
+  $(srcdir)/restore.fw       \
+  $(srcdir)/scanning.fw      \
+  $(srcdir)/symbols.fw       \
+  $(srcdir)/tables.fw        \
+  $(srcdir)/test.fw          \
+  $(srcdir)/tex.fw           \
+  $(srcdir)/texmac.fw        \
+  $(srcdir)/textio.fw        \
+  $(srcdir)/tokens.fw        \
+  $(srcdir)/toks.fw          \
+  $(srcdir)/typeset.fw       \
+  $(srcdir)/userface.fw      \
+  $(srcdir)/which.fw         \
+  $(NULL)
+
+OS_LIBS += \
+    urlmon.lib \
+    winspool.lib \
+    oldnames.lib \
+    ole32.lib \
+    oleaut32.lib \
+    uuid.lib \
+    oledlg.lib \
+	$(NULL)
+
+DIRS = ptdata
+
+include $(topsrcdir)/config/config.mk
+
+include $(topsrcdir)/config/rules.mk
+
+$(CPPSRCS):
+	-$(srcdir)/funnelweb +t +D tex
+
+# why doesn't this work?
+LOCAL_INCLUDES	= -I$(srcdir)
+CXXFLAGS	+= /GX /GR /DMOZILLA_VERSION=\"$(MOZILLA_VERSION)\"
+ifdef MOZ_DEBUG
+CXXFLAGS	+= /DTESTING    /DLOGGING
+endif
+
+export:: $(FWSRCS) $(MathMLDLL) $(SAMPLES)
+	$(INSTALL) $(FWSRCS) .
+	$(INSTALL) $(MathMLDLL) $(DIST)/bin
+	$(INSTALL) $(SAMPLES) $(DIST)/bin/samples
+
+

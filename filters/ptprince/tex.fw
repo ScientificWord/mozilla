@@ -1,0 +1,49 @@
+@!------------------------------------!
+@! SWPTeX main funnelweb document     !
+@!------------------------------------!
+@!
+@! Instructions:.....
+@!
+
+
+@! Set the typesetter to be TeX. This allows us to enter TeX commands
+@! directly into the funnelweb source.
+
+@p typesetter = tex
+\input docmacros
+
+@! Process all the sub files
+
+@i front.fw
+@i platform.fw
+@i textio.fw
+@i symbols.fw
+@i basicdata.fw
+@i restore.fw
+@i tokens.fw
+@i scanning.fw
+@i expandables.fw
+@i conditionals.fw
+@i fonts.fw
+@i interprt.fw
+@i assignment.fw
+@i integers.fw
+@i dimen.fw
+@i glue.fw
+@i toks.fw
+@i moreassign.fw
+@i boxes.fw
+@i defs.fw
+@i nodes.fw
+@i math.fw
+@i alignment.fw
+@i typeset.fw
+@i main.fw
+@i linebrk.fw
+@i tables.fw
+@i userface.fw
+@i grammar.fw
+
+
+
+

@@ -1,0 +1,1300 @@
+@A@<Basic scanning functions@>
+
+@B@<Overview@>
+Now we can begin the process of scanning and parsing.  Things become
+a bit more complicated at this point. One reason is that \TeX{}
+doesn't parse directly on the appearance of certain
+tokens but on the current (and changable) definitions of those tokens.
+Another reason is that processing takes place on two levels, the level
+of unexpandable tokens like most commands, and the level of expandable
+tokens like macros, conditionals, and a few others.
+A third reason is that these levels are mutually recursive.
+
+As an example of the first point, consider the \TeX{} command
+
+\noindent\null\hskip .4in @{\hskip 3pt plus 1pt@}.
+
+\noindent On the surface it seems that this should produce a
+horizontal skip in the output. However, it is possible that
+this command was preceeded somewhere by the command
+
+\noindent\null\hskip .4in @{\let\hskip=\vskip @}
+
+\noindent and in that case the token @{\hskip@} is no longer defined
+as the primitive @{hskip@} command. Furthermore, had the catcode of
+the letter `u' been changed, the characters `plus' would not be
+recognized as a keyword.
+
+\vskip12pt As an example of the second point, consider the \TeX{} command
+
+\noindent\null\hskip .4in @{\hskip 3p\iftrue t plu\else \foo\fi s 1pt@}.
+
+\noindent While parsing a primitive command, i.e.  @{\hskip@}, the scanner
+may run across an expandable token such as @{\iftrue@}. The code parsing
+the @{\hskip@}'s arguments is not supposed to see @{\iftrue@} but rather
+the result of expanding the entire conditional construct. In this case the
+conditional construct
+
+\noindent\null\hskip .4in @{\iftrue t plu\else \foo\fi@}
+
+\noindent is replaced with the tokens
+
+\noindent\null\hskip .4in @{t plu@}
+
+\noindent because those are the tokens of the true branch, and the
+else branch is skipped. Thus this example has the same affect as the first
+example.
+
+\vskip 12pt Finally, these levels are mutually recursive. An expandable
+token may require arguments. These arguments may have further expandable
+and unexpandable tokens. Consider the code
+
+\noindent\null\hskip .4in @{\count\ifnum\count5<\count4 1\else 2\fi=7@}.
+
+\noindent First \TeX{} sees the token @{\count@}. It knows that the next
+thing should be an integer, so that we have something like @{\count45@}.
+However, we have instead an @{\ifnum@}. This is an expandable token so it
+has to be replaced with it's expansion before continuing with the parse of
+@{\count@}. Now @{\ifnum@} requires three arguments, an integer, a relation,
+and another integer. The first integer argument starts with @{\count@}
+so we need to scan an integer as the argument to this @{\count@}. That
+integer is 5.  An so on. The upshot is that the conditional construct
+
+\noindent\null\hskip .4in @{\ifnum\count5<\count4 1\else 2\fi@}
+
+is replaced by the token @{1@} if counter 5 is less than counter
+4, and by the token @{2@} otherwise. So the initial assignment reduces to
+either of
+
+\noindent\null\hskip .4in @{\count1=7@}
+
+\noindent or
+
+\noindent\null\hskip .4in @{\count2=7@}.
+
+
+
+In this section we collect together several functions that
+perform parts of the parsing of \TeX{} primitive commands
+and expandables.
+
+
+@$@<Scanning declarations@>+=@{@-
+TeXToken& CurTok();
+CommandCode CurCmdCode();
+void SetCmdCode(CommandCode c);
+SymbolData* CurData();
+void SetCurData(SymbolData* pd);
+@}
+
+
+@$@<Some static scanning data@>+=@{@-
+static TeXToken s_curtok;
+static SymbolData* s_curdata;
+static CommandCode s_curcmdcode;
+
+
+TeXToken& CurTok()
+{
+   return s_curtok;
+}
+
+CommandCode CurCmdCode()
+{
+   return s_curcmdcode;
+}
+
+void SetCmdCode(CommandCode c)
+{
+   s_curcmdcode = c;
+}
+
+SymbolData* CurData()
+{
+   return s_curdata;
+}
+
+void SetCurData(SymbolData* pd)
+{
+   s_curdata = pd;
+}
+
+@}
+
+@B@<Expandable and Primitive symbol data@>
+
+
+@$@<class SymbolData@>==@{@-
+class SymbolData{
+public:
+   virtual ~SymbolData();
+};
+@}
+
+
+@$@<SymbolData implementation@>==@{@-
+SymbolData::~SymbolData()
+{}
+@}
+
+@$@<class Primitive@>==@{@-
+class Primitive : public SymbolData{
+private:
+   CommandCode m_curcmd;
+   bool        m_bInternalQuantity;
+   int         m_data;
+public:
+   Primitive(CommandCode cmd)
+     : m_curcmd(cmd), m_bInternalQuantity(false), m_data(0)
+   {}
+
+   Primitive(CommandCode cmd, bool bInternal, int data)
+     : m_curcmd(cmd), m_bInternalQuantity(bInternal), m_data(data)
+   {}
+
+   CommandCode curcmd() const
+   {
+      return m_curcmd;
+   }
+
+   int Data() const
+   {
+      return m_data;
+   }
+
+   bool bInternalQuantity() const
+   {
+      return m_bInternalQuantity;
+   }
+};
+@}
+
+@$@<Parsing helpers@>+=@{@-
+void NewPrimitive(const char* name,
+                  CommandCode cc,
+                  bool bInternal,
+                  int data)
+{
+   Symbols::CreateSymbol(name, new Primitive(cc, bInternal, data));
+}
+
+
+void NewPrimitive(const char* name, CommandCode cc)
+{
+   Symbols::CreateSymbol(name, new Primitive(cc, false, 0));
+}
+
+void NewExpandable(const char* name, EXPFUNC f, int data)
+{
+   Symbols::CreateSymbol(name, new Expandable(f, data));
+}
+
+@}
+
+
+
+This subsystem handles ``expandable" tokens.These are either
+(1) symbol tokens whose definition is an @{Expandable@} or (2)
+an active character token. These tokens are not executed by
+the command interpretter but are handled here instead. They
+are replaced in the input stream by their expansions. The
+expanded tokens go on to the command interpretter where they
+are parsed into commands.
+
+
+There are a number of ``Expansion functions" that can be called. These
+may scan for further tokens, put tokens back into the intput stream,
+and may decide to set the token and definition themselves. These
+functions return true if they do in fact set the token and definition.
+
+@$@<typedef EXPFUNC@>==@{@-
+typedef bool (*EXPFUNC)(int, TeXToken*, SymbolData**);
+@}
+
+The @{Expandable@} class is a derivation of a @{SymbolData@}. It
+holds a @{EXPFUNC@} which is a function to be executed when the token
+is expanded.  It also holds data to be passed to the function. An
+@{EXPFUNC@} requires two parameters. The first is a pointer to the
+@{MacroProcessor@} because expansion of a token is likely to require
+recursive work by that processor.
+
+
+@$@<class Expandable@>==@{@-
+class Expandable : public SymbolData {
+public:
+   EXPFUNC   m_fcnExpand;
+   int       m_data;
+
+   Expandable(EXPFUNC func, int data)
+      : m_fcnExpand(func),
+        m_data(data)
+   {}
+
+   virtual inline bool Expand(TeXToken* tok, SymbolData** ppData) const
+   {
+       return (*m_fcnExpand)(m_data, tok, ppData);
+   }
+};
+@}
+
+
+
+@$@<function bExpandable@>==@{@-
+inline bool bExpandable(const SymbolData* pDef)
+{
+   return 0 != dynamic_cast<const Expandable*>(pDef);
+}
+@}
+
+
+
+@B@<GetToken@>
+
+Here is the main function of this subsystem. The idea is to get the
+next raw token, and see if it is expandable or an active character.
+If so then we call the associated expansion function which results in
+the expansion being placed back into the input stream. Then we go back
+to the start and try again. If the token is not expandable we return
+it.
+
+@$@<Parsing helper declarations@>+=@{@-
+void GetToken();
+void GetRawToken();
+@}
+
+@$@<GetToken imp@>+=@{@-
+
+void GetToken()
+{
+   while (true) {
+      GetRawToken();
+      const Expandable* exp = dynamic_cast<const Expandable*>( s_curdata );
+      if (exp != 0){
+         LOG(" (expandable)");
+         // expand and put new tokens back into stream
+         // returns true if curtok and curdata are set (eg \noexpand)
+         if (exp -> Expand(&s_curtok, &s_curdata))
+            break;
+         else
+            continue;
+      } else {
+         break;
+      }
+      break;
+   }
+}
+@}
+
+
+@$@<GetRawToken imp@>==@{@-
+void GetRawToken()
+{
+   InputStack::GetRawToken();
+   s_curtok = InputStack::CurTok();
+   s_curdata = 0;
+   if (bSymbol(&s_curtok)){
+      Symbols::GetDef(s_curtok.Symbol(), &s_curdata);
+   } else if (bActive(&s_curtok)){
+      Symbols::GetActiveDef(s_curtok.ChrCode(), &s_curdata);
+   } else if (s_curtok.Type() == TT_TAB){
+      LOG("\n--- Got raw tab");
+      int id;
+      String tab = StringBuilder::Create("]&[");
+      Symbols::GetId(tab, &id, Symbols::NO_CREATE);
+      Symbols::GetDef(id, &s_curdata);
+      //StringBuilder::Discard(tab);
+   }
+}
+@}
+
+
+
+
+Some forward declarations:
+@$@<Parsing helper declarations@>+=@{@-
+enum ScanType {SCAN_INT, SCAN_DIMEN, SCAN_GLUE, SCAN_MU, SCAN_IDENT, SCAN_TOKS};
+
+struct ScanSomethingResult {
+   ScanType m_type;
+   int      m_int;
+   int      m_dim;
+   TokenList* m_toks;
+};
+
+void NewPrimitive(const char* name,
+                  CommandCode cc,
+                  bool bInternal,
+                  int data);
+void NewPrimitive(const char* name, CommandCode cc);
+
+void NewExpandable(const char* name, EXPFUNC f, int data);
+
+
+
+void GetNext_NonBlank_NonCall();
+void GetNext_NonBlank_NonRelax_NonCall();
+void ScanLeftBrace();
+void ScanRightBrace();
+bool ScanKeyword(String str, TokenList* pList = 0);
+bool ScanInt(int* n, TokenList* pList=0);
+bool ScanDim(bool mu, bool inf, bool bShortcut, int* dim, TokenList* pList = 0);
+void ScanSomethingInternal(int sign,
+                           ScanSomethingResult& r,
+                           TokenList* pList = 0 );
+bool ScanGlue();
+void ScanTokenList(TokenList* pTL, bool bExpand);
+RuleSpec* ScanRuleSpec();
+void ScanBox();
+void DetermineCommandCode();
+void InitializeKeywords();
+
+struct Keywords {
+   @<Keywords@>
+};
+@}
+
+
+The first functions of this subsystem are @{GetRawToken@} and @{GetToken@}
+just like in the @{tokens@} subsystem. But here we do a couple more things
+with the tokens.
+
+The first thing we have to do with a @{TeXToken@} is determine a
+command code.
+
+@$@<Parsing helpers@>+=@{@-
+void DetermineCommandCode()
+{
+   SetCmdCode(CMD_NONE);
+   if (CurTok().Type() == TT_SYMBOL || CurTok().Type() == TT_ACTIVE){
+      @<Get the command code associated with the symbol@>
+   }
+   switch (CurTok().Type()) {
+      case TT_SYMBOL: {
+         LOG("Can't happen");
+         break;
+      }
+      case TT_LETTER:
+         SetCmdCode(CMD_LETTER);
+         break;
+      case TT_SPACE:
+         SetCmdCode(CMD_SPACER);
+         break;
+      case TT_OTHER:
+         SetCmdCode(CMD_OTHER);
+         break;
+      case TT_LEFT_BRACE:
+         SetCmdCode(CMD_LEFT_BRACE);
+         break;
+      case TT_RIGHT_BRACE:
+         SetCmdCode(CMD_RIGHT_BRACE);
+         break;
+      case TT_PAR: { // This is a blank line.
+         @<Get the command code associated with the symbol@>
+         //SetCmdCode(CMD_END_PAR);
+         break;
+      }
+      case TT_MATH_SHIFT:
+         SetCmdCode(CMD_MATH_SHIFT);
+         break;
+      case TT_SUBSCRIPT:
+         SetCmdCode(CMD_SUBSCRIPT);
+         break;
+      case TT_SUPERSCRIPT:
+         SetCmdCode(CMD_SUPERSCRIPT);
+         break;
+      case TT_TAB:
+         SetCmdCode(CMD_ALIGN_TAB);
+         break;
+      case TT_ENDV:
+         SetCmdCode(CMD_ENDV);
+         break;
+      case TT_ENDR:
+         SetCmdCode(CMD_ENDR);
+         break;
+      default:
+         SetCmdCode(CMD_NONE);
+         break;
+   }
+}
+@}
+
+
+
+
+
+
+
+@$@<Get the command code associated with the symbol@>@M==@{
+// Is the def a primitive command?
+Primitive* prim = dynamic_cast<Primitive*>(CurData());
+if (prim != 0){
+    CommandCode cc = prim -> curcmd();
+    SetCmdCode(cc);
+    if (CurCmdCode() == CMD_LET_TOK){
+       TeXToken* pTok = (TeXToken*) prim -> Data();
+       LOG("\nReplacing " << CurTok()
+                          << " with " << *pTok);
+       s_curtok = *pTok;
+    } else {
+       return;
+    }
+} else {
+   LOG("\nUndefined symbol " << CurTok());
+   return;
+}
+@}
+
+
+The next couple find the next non-blank token.
+Sometimes @{\relax@} is counted among the blank tokens.
+
+@$@<Parsing helpers@>+=@{@-
+void GetNext_NonBlank_NonCall()
+{
+   do {
+     GetToken();
+     DetermineCommandCode();
+   } while (CurCmdCode() == CMD_SPACER);
+}
+@}
+
+@$@<Parsing helpers@>+=@{@-
+void GetNext_NonBlank_NonRelax_NonCall()
+{
+   do {
+     GetToken();
+     DetermineCommandCode();
+   } while (CurCmdCode() == CMD_SPACER ||
+            CurCmdCode() == CMD_RELAX);
+}
+@}
+
+
+@$@<Parsing helper declarations@>+=@{@-
+void ScanOptionalEquals(TokenList* pList = 0);
+void ScanOptionalSpaces(TokenList* pList = 0);
+@}
+
+@$@<Parsing helpers@>+=@{@-
+void ScanOptionalEquals(TokenList* pList)
+{
+   GetNext_NonBlank_NonCall();
+   if (CurTok() != TeXToken(TT_OTHER, '=', 0)){
+      InputStack::Putback(CurTok());
+   }
+}
+@}
+
+
+
+@$@<Parsing helpers@>+=@{@-
+void IgnoreCurrentSpace(TokenList* pList = 0)
+{
+    DetermineCommandCode();
+    if (CurCmdCode() != CMD_SPACER)
+       InputStack::Putback(CurTok());
+    else
+       if (pList)
+          pList -> push_back(CurTok());
+}
+@}
+
+@$@<Parsing helpers@>+=@{@-
+void ScanOptionalSpace(TokenList* pList = 0)
+{
+    GetToken();
+    IgnoreCurrentSpace();
+}
+@}
+
+
+@$@<Parsing helpers@>+=@{@-
+void ScanOptionalSpaces(TokenList* pList)
+{
+  do {
+    GetToken();
+    DetermineCommandCode();
+  } while (CurCmdCode() == CMD_SPACER);
+  InputStack::Putback(CurTok());
+}
+@}
+
+
+
+@$@<Parsing helpers@>+=@{@-
+void ScanLeftBrace()
+{
+   GetNext_NonBlank_NonRelax_NonCall();
+   DetermineCommandCode();
+   if (CurCmdCode() != CMD_LEFT_BRACE){
+      InputStack::Putback(CurTok());
+      LOG("\n! Missing `{' inserted.");
+      LOG(" -- todo: implement");
+      //curtok = TeXToken(TT_LEFT_BRACE, '{', 0);
+   }
+}
+@}
+@$@<Parsing helpers@>+=@{@-
+void ScanRightBrace()
+{
+   DetermineCommandCode();
+   if (CurCmdCode() != CMD_RIGHT_BRACE){
+      InputStack::Putback(CurTok());
+      LOG("\n! Missing `}' inserted.");
+      LOG(" -- todo: implement");
+      //curtok = TeXToken(TT_LEFT_BRACE, '{', 0);
+   } else {
+     GetToken();
+   }
+}
+@}
+
+
+This next function is used by @{\countdef@} etc. It scans a
+token to be defined, followed by an integer parameter.
+
+@$@<Parsing helper declarations@>+=@{@-
+bool ScanShorthand(TeXToken* defining, int* pn);
+@}
+
+@$@<Parsing helpers@>+=@{@-
+bool ScanShorthand(TeXToken* defining, int* pn)
+{
+   do {
+      GetToken();
+   } while(CurTok().Type() == TT_SPACE);
+   if (CurTok().Type() == TT_SYMBOL ||
+       CurTok().Type() == TT_ACTIVE) {
+      *defining = CurTok();
+      // Temporarily define to be \relax
+      // todo: remove this memory leak
+      Primitive* cmd = new Primitive(CMD_RELAX);
+      Symbols::SetDef(CurTok().Symbol(),
+                     cmd,
+                     false /* non-global*/);
+   } else {
+      LOG("ERROR -- can't define" << CurTok());
+      InputStack::Putback(CurTok());
+      return false;
+   }
+
+   ScanOptionalEquals();
+   ScanInt(pn);
+   return true;
+}
+@}
+
+
+
+@B@<Scan an integer: ScanInt@>
+
+@$@<Parsing helpers@>+=@{@-
+int ScanSign(TokenList* pList = 0)
+{
+   int sign = +1;
+   do {
+      GetNext_NonBlank_NonCall();
+      if (CurTok().Type() == TT_OTHER && CurTok().ChrCode() == '-'){
+         if (pList)
+           pList->push_back(CurTok());
+         sign = -sign;
+         CurTok().SetChrCode('+');
+      } else if (CurTok().Type() == TT_OTHER && CurTok().ChrCode() == '+'){
+         if (pList)
+           pList->push_back(CurTok());
+      }
+   } while (CurTok().Type() == TT_OTHER &&
+            CurTok().ChrCode() == '+');
+   return sign;
+}
+@}
+
+@$@<Parsing helpers@>+=@{@-
+bool bDecimalDigit(TeXToken tok, int* d)
+{
+   if (tok.Type() != TT_OTHER)
+     return false;
+   TeXChar ch = CurTok().ChrCode();
+   if (ch >= L'0' && ch <= L'9'){
+      *d = ch - L'0';
+      return true;
+   }
+   return false;
+}
+
+
+bool bHexadecimalDigit(TeXToken tok, int* d)
+{
+   if (tok.Type() == TT_OTHER){
+      TeXChar ch = CurTok().ChrCode();
+      if (ch >= L'0' && ch <= L'9'){
+         *d = ch - L'0';
+         return true;
+      } else if (ch >= L'A' && ch <= L'Z'){
+         *d = ch - L'A' + 10;
+         return true;
+      }
+      return false;
+   } else if (tok.Type() == TT_LETTER){
+      TeXChar ch = CurTok().ChrCode();
+      if (ch >= L'A' && ch <= L'Z'){
+         *d = ch - L'A' + 10;
+         return true;
+      }
+      return false;
+   }
+   return false;
+}
+
+@}
+
+
+@$@<Parsing helpers@>+=@{@-
+TeXToken alpha_token (TT_OTHER, '`',  0);
+TeXToken octal_token (TT_OTHER, '\'', 0);
+TeXToken hex_token   (TT_OTHER, '"',  0);
+
+bool ScanInt(int* n, TokenList* pList)
+{
+   int iVal = 0;
+   bool bOK = true;
+   int sign = ScanSign(pList);
+   DetermineCommandCode();
+   if (CurData() != 0 &&
+       ((Primitive*)CurData()) -> bInternalQuantity()){
+      @<Scan internal integer@>
+   } else {
+      @<Scan numeral@>
+   }
+
+   iVal = sign * iVal;
+
+   *n = iVal;
+   return true;
+}
+@}
+
+@$@<Scan internal integer@>==@{@-
+      // Scan something internal
+      ScanSomethingResult res;
+      ScanSomethingInternal(+1, res, pList);
+      if (res.m_type == SCAN_INT)
+        iVal = res.m_int;
+@}
+
+
+@$@<Scan numeral@>==@{@-
+   if (CurTok() == alpha_token){
+      if (pList)
+         pList -> push_back(CurTok());
+
+      // Scan alphabetic char code  TTP 442
+      GetRawToken();
+      if (pList)
+         pList -> push_back(CurTok());
+
+      if (CurTok().Type() == TT_SYMBOL){
+         // We should have something like '\$
+         Symbols::SymId symId = CurTok().Symbol();
+         String str = Symbols::GetName(symId);
+         if (str.Size() == 1){
+            iVal = str[0];
+         }
+      } else {
+         // We should have something like `a or `& ...
+         iVal = CurTok().ChrCode();
+      }
+      ScanOptionalSpace();
+   } else {
+       bool bVacuous = false;
+       if (CurTok() == octal_token) {
+          if (pList)
+             pList -> push_back(CurTok());
+          //scan octal digits
+          GetToken();
+          int max = 268435456;
+          int d = 0;
+          while (bDecimalDigit(CurTok(), &d) &&
+                   iVal <= max) {
+             if (d < 8){
+                if (pList)
+                   pList -> push_back(CurTok());
+                iVal = 8 * iVal + d;
+                GetToken();
+             } else
+                break;
+          }
+       } else if (CurTok() == hex_token) {
+          // scan hecadecimal digits
+          if (pList)
+             pList -> push_back(CurTok());
+
+          GetToken();
+          int max = 134217728;
+          int d = 0;
+          while (bHexadecimalDigit(CurTok(), &d) &&
+                 iVal <= max) {
+             if (pList)
+                pList -> push_back(CurTok());
+             bVacuous = false;
+             iVal = 16 * iVal + d;
+             GetToken();
+          }
+       } else {
+          //scan decimal constant();
+          int max = 214748364;
+          int d = 0;
+          while (bDecimalDigit(CurTok(), &d) &&
+                 iVal <= max) {
+             if (pList)
+                pList -> push_back(CurTok());
+             bVacuous = false;
+             iVal = 10 * iVal + d;
+             GetToken();
+          }
+       }
+       IgnoreCurrentSpace(pList);
+       if (bVacuous){
+          LOG("Error -- Missing number");
+          iVal = 0;
+       }
+   }
+@}
+
+
+@B@<ScanSomethingInternal@>
+
+@$@<Parsing helpers@>+=@{@-
+void ScanSomethingInternal(int sign, ScanSomethingResult& res, TokenList* pList)
+{
+   CommandCode cc = CurCmdCode();
+   if (pList)
+     pList -> push_back(CurTok());
+
+   switch (cc) {
+      @<ScanSomethingInternal cases@>
+      case CMD_DEFCODE : {
+         Primitive* prim = dynamic_cast<Primitive*>(CurData());
+         DefCode subtype = (DefCode) prim -> Data();
+         int m;
+         if (ScanInt(&m)){
+            if (subtype == CATCODE){
+               res.m_type = SCAN_INT;
+               res.m_int = GetCatcode(m);
+               //res.m_int = -res.m_int;
+            } else if (subtype == UCCODE){
+               res.m_type = SCAN_INT;
+               res.m_int = GetUccode(m);
+            } else if (subtype = SFCODE){
+               res.m_type = SCAN_INT;
+               res.m_int = GetSfcode(m);
+            } else
+               ASSERT(false);
+         }
+
+         break;
+      }
+
+      case CMD_CHAR_GIVEN :{
+         res.m_type = SCAN_INT;
+         Primitive* prim = dynamic_cast<Primitive*>(CurData());
+         res.m_int = prim -> Data();
+         break;
+      }
+
+      case CMD_MATH_GIVEN :{
+         res.m_type = SCAN_INT;
+         Primitive* prim = dynamic_cast<Primitive*>(CurData());
+         res.m_int = prim -> Data();
+         break;
+      }
+
+      case CMD_REGISTER: {
+         Primitive* prim = dynamic_cast<Primitive*>(CurData());
+         RegisterCode subtype = (RegisterCode) prim -> Data();
+         int n;
+         ScanInt(&n);
+         if (subtype == GLUE_REG){
+           res.m_type = SCAN_GLUE;
+         } else {
+           ASSERT(false);
+         }
+         break;
+      }
+      default:
+         ASSERT(false);
+         break;
+   }
+}
+@}
+
+@C@<ScanKeyword@>
+
+@$@<Parsing helpers@>+=@{@-
+bool ScanKeyword(String str, TokenList* pList)
+{
+   TokenList* tl = new TokenList();
+   int k = 0;
+   while (k < str.Size()){
+      GetToken();
+      DetermineCommandCode();
+      if (CurTok().ChrCode() == str[k] ||
+          CurTok().ChrCode() == str[k] - 'a' + 'A'){
+         tl -> push_back(CurTok());
+         ++k;
+      } else {
+         if (CurCmdCode() != CMD_SPACER || tl -> size() != 0){
+            InputStack::Putback(CurTok());
+            if (tl -> size() != 0){
+               InputStack::Putback(*tl);
+            }
+            return false;
+         }
+         // If we get here CurCmdCode() ==
+         //       CMD_SPACER and tl -> size() == 0
+         // continue, thus ignoring blanks at the start of a keyword
+      }
+   }
+   if (pList){
+      TokenList::const_iterator it;
+      for(it = tl -> begin(); it != tl -> end(); ++it){
+         pList -> push_back(*it);
+      }
+   }
+   delete tl;
+   return true;
+}
+@}
+
+
+
+@$@<Keywords@>+=@{@-
+static String KW_PT;
+static String KW_IN;
+static String KW_PC;
+static String KW_CM;
+static String KW_MM;
+static String KW_BP;
+static String KW_DD;
+static String KW_CC;
+static String KW_SP;
+static String KW_EM;
+static String KW_EX;
+static String KW_TRUE;
+static String KW_FIL;
+static String KW_L;
+static String KW_PLUS;
+static String KW_MINUS;
+static String KW_WIDTH;
+static String KW_HEIGHT;
+static String KW_DEPTH;
+static String KW_BY;
+static String KW_SPREAD;
+static String KW_TO;
+static String KW_MU;
+static String KW_SCALED;
+static String KW_AT;
+@}
+
+@$@<Define keywords@>==@{@-
+String Keywords::KW_PT;
+String Keywords::KW_IN;
+String Keywords::KW_PC;
+String Keywords::KW_CM;
+String Keywords::KW_MM;
+String Keywords::KW_BP;
+String Keywords::KW_DD;
+String Keywords::KW_CC;
+String Keywords::KW_SP;
+String Keywords::KW_EM;
+String Keywords::KW_EX;
+String Keywords::KW_TRUE;
+String Keywords::KW_FIL;
+String Keywords::KW_L;
+String Keywords::KW_PLUS;
+String Keywords::KW_MINUS;
+String Keywords::KW_WIDTH;
+String Keywords::KW_HEIGHT;
+String Keywords::KW_DEPTH;
+String Keywords::KW_BY;
+String Keywords::KW_SPREAD;
+String Keywords::KW_TO;
+String Keywords::KW_MU;
+String Keywords::KW_SCALED;
+String Keywords::KW_AT;
+@}
+
+
+@$@<Create keywords@>+=@{@-
+  Keywords::KW_PT   = StringBuilder::Create("pt");
+  Keywords::KW_IN   = StringBuilder::Create("in");
+  Keywords::KW_PC   = StringBuilder::Create("pc");
+  Keywords::KW_CM   = StringBuilder::Create("cm");
+  Keywords::KW_MM   = StringBuilder::Create("mm");
+  Keywords::KW_BP   = StringBuilder::Create("bp");
+  Keywords::KW_DD   = StringBuilder::Create("dd");
+  Keywords::KW_CC   = StringBuilder::Create("cc");
+  Keywords::KW_SP   = StringBuilder::Create("sp");
+  Keywords::KW_EM   = StringBuilder::Create("em");
+  Keywords::KW_EX   = StringBuilder::Create("ex");
+  Keywords::KW_TRUE = StringBuilder::Create("true");
+  Keywords::KW_FIL  = StringBuilder::Create("fil");
+  Keywords::KW_L    = StringBuilder::Create("l");
+  Keywords::KW_PLUS = StringBuilder::Create("plus");
+  Keywords::KW_MINUS= StringBuilder::Create("minus");
+  Keywords::KW_WIDTH= StringBuilder::Create("width");
+  Keywords::KW_HEIGHT= StringBuilder::Create("height");
+  Keywords::KW_DEPTH= StringBuilder::Create("depth");
+  Keywords::KW_BY   = StringBuilder::Create("by");
+  Keywords::KW_SPREAD = StringBuilder::Create("spread");
+  Keywords::KW_TO = StringBuilder::Create("to");
+  Keywords::KW_MU = StringBuilder::Create("mu");
+  Keywords::KW_SCALED = StringBuilder::Create("scaled");
+  Keywords::KW_AT = StringBuilder::Create("at");
+@}
+
+@$@<InitializeKeywords@>==@{@-
+void InitializeKeywords()
+{
+   @<Create keywords@>
+}
+@}
+
+
+@{ScanTokenList@} is responsible for the various methods of scanning
+and creating @{TokenList@}s. For some reason I didn't use this function
+for scanning bodies of macro definitions. Should I?
+
+@$@<Parsing helpers@>+=@{@-
+void ScanTokenList(TokenList* pTL, bool bExpand)
+{
+   ScanLeftBrace();
+   ASSERT(CurTok().Type() == TT_LEFT_BRACE);
+   bool scanning = true;
+   int balance = 1;
+   while (scanning) {
+      if (InputStack::bEmpty()){
+         ASSERT(false);
+         //SetError("End of file reached while scanning definition of "
+         //         << defining);
+         scanning = false;
+      }else{
+         if (bExpand){
+            GetToken();
+         } else {
+            GetRawToken();
+         }
+         if (CurTok().Type() == TT_LEFT_BRACE){
+            balance += 1;
+            pTL -> push_back(CurTok());
+         } else if (CurTok().Type() == TT_RIGHT_BRACE){
+            balance -= 1;
+            if (balance == 0){
+               scanning = false;
+               // Don't insert the final right brace
+            } else {
+               pTL -> push_back(CurTok());
+            }
+ //      } else if (CurTok().Type() == TT_PARAM){
+ //         CurTok().SetType(TT_OUTPARAM);
+ //         pTL -> push_back(CurTok());
+         }  else {
+            pTL -> push_back(CurTok());
+         }
+      }
+   }
+}
+@}
+
+
+@B@<Scan dimension@>
+
+@$@<Parsing helpers@>+=@{@-
+bool ScanDecimalFraction(int* res, TokenList* pList)
+{
+   int dig[17];
+   int k = 0;
+   int d;
+
+   GetRawToken(); // re-scan point_token
+   GetToken();
+   while(bDecimalDigit(CurTok(), &d)) {
+      if (pList)
+         pList -> push_back(CurTok());
+      if (k < 17){
+         dig[k] = d;
+         ++k;
+      }
+      GetToken();
+   }
+   DetermineCommandCode();
+   if (CurCmdCode() != CMD_SPACER){
+      InputStack::Putback(CurTok());
+   } else if (pList) {
+      pList -> push_back(CurTok());
+   }
+   int a = 0;
+   while (k > 0){
+      --k;
+      a = (a + dig[k] * 0x20000) / 10;
+   }
+   *res = (a + 1) / 2;
+   return true;
+}
+@}
+
+
+
+@$@<Parsing helpers@>+=@{@-
+
+TeXToken continental_point_token = TeXToken(TT_OTHER, ',', 0);
+TeXToken point_token = TeXToken(TT_OTHER, '.', 0);
+
+
+bool ScanDim(bool mu, bool inf, bool bShortcut, int* dim, TokenList* pList)
+{
+    bool arith_error = false;
+    int iVal = 0;
+    int sign = +1;
+    int f = 0;
+    bool bScanUnit = true;
+    if (! bShortcut){
+       int sign = ScanSign(pList);
+       DetermineCommandCode();
+       Primitive* prim = dynamic_cast<Primitive*>(CurData());
+       if (prim != 0 && prim -> bInternalQuantity()){
+          @<Scan internal dimension@>
+       } else {
+          InputStack::Putback(CurTok());
+          if (CurTok() == continental_point_token){
+             if (pList)
+                pList -> push_back(CurTok());
+             CurTok() = point_token;
+          } else if (CurTok() == point_token){
+             if (pList)
+                pList -> push_back(CurTok());
+          }
+
+          if (CurTok() != point_token) {
+             int d;
+             if (!bDecimalDigit(CurTok(), &d)){
+                ScanInt(&iVal, pList);
+             } else {
+                ScanInt(&iVal, pList);
+                if (CurTok() == continental_point_token){
+                   if (pList)
+                      pList -> push_back(CurTok());
+                   CurTok() = point_token;
+                } else if (CurTok() == point_token){
+                   if (pList)
+                      pList -> push_back(CurTok());
+                }
+                if (CurTok() == point_token){
+                   ScanDecimalFraction(&f, pList);
+                }
+             }
+          } else {
+             iVal = 0;
+             ScanDecimalFraction(&f, pList);
+          }
+       }
+    }
+
+    // We start here if there's a shortcut
+
+    if (iVal < 0){
+       sign = -sign;
+       iVal = -iVal;
+    }
+    *dim = sign * (iVal * 2^16 + f);
+    if (bScanUnit){
+      @<Scan unit@>
+    }
+
+    ScanOptionalSpace();
+
+    if (iVal > 0x4000){
+       // out of range
+       ASSERT(false);
+    } else {
+
+    }
+
+    return true;
+}
+@}
+
+
+@$@<Scan unit@>==@{@-
+bool bFoundInf = false;
+if (inf){
+   if (ScanKeyword(Keywords::KW_FIL, pList)){
+      bFoundInf = true;
+      while (ScanKeyword(Keywords::KW_L, pList)){
+      }
+   }
+}
+if (!bFoundInf){
+   int numer,denom;
+   if (ScanKeyword(Keywords::KW_TRUE, pList)){
+   }
+   if (ScanKeyword(Keywords::KW_PT, pList)){
+       numer = 1; denom = 1;
+   } else if (ScanKeyword(Keywords::KW_IN, pList)){
+       numer = 7227; denom = 100;
+   } else if (ScanKeyword(Keywords::KW_PC, pList)){
+       numer = 12; denom = 1;
+   } else if (ScanKeyword(Keywords::KW_CM, pList)){
+       numer = 7227; denom = 254;
+   } else if (ScanKeyword(Keywords::KW_MM, pList)){
+       numer = 7227; denom = 2540;
+   } else if (ScanKeyword(Keywords::KW_BP, pList)){
+       numer = 7227; denom = 7200;
+   } else if (ScanKeyword(Keywords::KW_DD, pList)){
+       numer = 1238; denom = 1157;
+   } else if (ScanKeyword(Keywords::KW_CC, pList)){
+       numer = 14856; denom = 1157;
+   } else if (ScanKeyword(Keywords::KW_SP, pList)){
+       numer = 1; denom = 1;
+   } else if (ScanKeyword(Keywords::KW_MU, pList)){
+       numer = 1; denom = 1;
+   } else if (ScanKeyword(Keywords::KW_EM, pList)){
+       numer = 1; denom = 1;
+   } else if (ScanKeyword(Keywords::KW_EX, pList)){
+       numer = 1; denom = 1;
+   } else {
+      GetToken();
+      ScanSomethingResult res;
+      ScanSomethingInternal(+1, res, pList);
+      if (res.m_type == SCAN_DIMEN){
+         numer = res.m_int;
+         denom = 1;
+      } else if (res.m_type == SCAN_GLUE){
+         numer = res.m_int;
+         denom = 1;
+      } else {
+         // Unknown unit
+         ASSERT(false);
+      }
+   }
+   *dim = (*dim) * numer / denom;
+}
+@}
+
+
+
+@$@<Scan internal dimension@>==@{@-
+ScanSomethingResult res;
+if (mu){
+   ScanSomethingInternal(+1, res);
+} else {
+   ScanSomethingInternal(+1, res);
+}
+if (res.m_type == SCAN_DIMEN || res.m_type == SCAN_GLUE){
+   bScanUnit = false;
+}
+@}
+
+
+
+
+@B@<ScanGlue@>
+
+@$@<Parsing helpers@>+=@{@-
+bool ScanGlue()
+{
+   int sign = ScanSign();
+   int dim = 0;
+   DetermineCommandCode();
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   if (prim && prim -> bInternalQuantity()){
+      ScanSomethingResult res;
+      ScanSomethingInternal(+1, res);
+      if (res.m_type == SCAN_INT){
+         ScanDim(false, false, true, &dim);
+      }
+   } else {
+      InputStack::Putback(CurTok());
+      ScanDim(false, false, false, &dim);
+   }
+   if (ScanKeyword(Keywords::KW_PLUS)){
+      ScanDim(false, true, false, &dim);
+   }
+   if (ScanKeyword(Keywords::KW_MINUS)){
+      ScanDim(false, true, false, &dim);
+   }
+   return true;
+}
+@}
+
+@B@<Rules@>
+
+@$@<Parsing helpers@>+=@{@-
+const int default_rule = 26214; // 0.4 pt
+
+RuleSpec* ScanRuleSpec()
+{
+   RuleSpec* rs = new RuleSpec;
+   Scaled dim;
+   if (CurCmdCode() == CMD_VRULE){
+      rs -> m_width = default_rule;
+   } else {
+      rs -> m_height = default_rule;
+      rs -> m_depth = 0;
+   }
+   while (true){
+      if (ScanKeyword(Keywords::KW_WIDTH)){
+        ScanDim(false, false, false, &dim);
+      } else if (ScanKeyword(Keywords::KW_HEIGHT)){
+        ScanDim(false, false, false, &dim);
+      } else if (ScanKeyword(Keywords::KW_DEPTH)){
+        ScanDim(false, false, false, &dim);
+      } else {
+        break;
+      }
+   }
+   return rs;
+}
+@}
+
+
+
+
+@o@<scanutils.h@>==@{@-
+#ifndef SCANUTILS_H
+#define SCANUTILS_H
+#include "platform.h"
+#include "basicdata.h"
+#include "tokens.h"
+
+enum CommandCode{
+   @<Command Codes@>
+   CMD_NONE
+};
+
+@<Command subcodes@>
+
+@<Scanning declarations@>
+@<class SymbolData@>
+@<class Primitive@>
+@<typedef EXPFUNC@>
+@<class Expandable@>
+@<Parsing helper declarations@>
+#endif
+@}
+
+
+@o@<scanutils.cpp@>==@{@-
+#include "scanutils.h"
+#include "tokens.h"
+@<Some static scanning data@>
+@<SymbolData implementation@>
+@<Define keywords@>
+@<InitializeKeywords@>
+@<function bExpandable@>
+@<GetToken imp@>
+@<GetRawToken imp@>
+@<Parsing helpers@>
+@}
+
+

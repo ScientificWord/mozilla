@@ -1,0 +1,1166 @@
+@A@<Commands to make macro definitions@>
+
+
+@B@<Macros@>
+
+
+When a symbol defined as a @{MacroDef@} is encountered it must be
+expanded. First any parameters are collected according to the tokens
+before the @{TT_END_MATCH@}. These are placed into a
+@{MacroExpansion@} @{TokenSource@} which is placed into the
+@{InputStack@}.  The @{MacroExpansion@} feeds the body and parameters.
+There are two member variables: @{m_list@} which is a pointer to the
+@{TokenList@} found in the @{MacroDef@} and an iterator that points
+to the current location in the expansion.
+
+It also has a pointer to its parameters. The parameters are saved on
+a static stack.
+
+It is a little difficult to tell whether a MacroExpansion is empty.
+There may still be tokens in the list, e.g. @{#1@} and so you'd think
+the token source is not empty. But @{#1@} refers to a parameter that
+may be empty. In that case we'd like to say the @{MacroExpansion@} is
+empty. So I've implemented a one token lookahead to handle this
+gracefully.
+
+@$@<class MacroExpansion@>==@{@-
+class MacroExpansion : public TokenSource {
+private:
+   const TokenList*  m_pList;         // The body
+   TokenList::const_iterator m_iter;  // The current position
+   int m_nParamCount;   // number of parameters
+   int m_paramStart;    // location of first param on s_paramStack:
+
+public:
+   MacroExpansion(const TokenList* ptr, TokenList::const_iterator);
+   ~MacroExpansion();
+   bool bEmpty() const;
+   void GetToken(TeXToken*);
+
+   void SetParam(TokenList* param);
+   void NextPosition();
+};
+@}
+
+
+@$@<The parameter stack@>==@{@-
+    std::vector<TokenList*> s_paramStack;
+    int s_paramTop;
+@}
+
+@$@<MacroExpansion::MacroExpansion@>==@{@-
+MacroExpansion::MacroExpansion(
+                   const TokenList* ptr,
+                   TokenList::const_iterator bodystart
+                )
+  : m_pList(ptr),
+    m_iter(bodystart),
+    m_nParamCount(0)
+{
+   m_pList -> AddReference();
+   m_paramStart = s_paramStack.size();
+}
+@}
+
+@$@<MacroExpansion::~MacroExpansion@>==@{@-
+MacroExpansion::~MacroExpansion()
+{
+   m_pList -> RemoveReference();
+}
+@}
+
+@$@<MacroExpansion::bEmpty@>==@{@-
+bool MacroExpansion::bEmpty() const
+{
+   return m_iter == m_pList -> end();
+}
+@}
+
+@$@<MacroExpansion::SetParam@>==@{@-
+void MacroExpansion::SetParam(TokenList* param)
+{
+   ++m_nParamCount;
+   s_paramStack.push_back(param);
+}
+@}
+
+@$@<MacroExpansion::GetToken@>==@{@-
+void MacroExpansion::GetToken(TeXToken* tt)
+{
+   ASSERT(m_iter != m_pList -> end() && (*m_iter).Type() != TT_OUTPARAM);
+   *tt = *m_iter++;
+   NextPosition();
+}
+@}
+
+@$@<MacroExpansion::NextPosition@>==@{@-
+void MacroExpansion::NextPosition()
+{
+   TokenList::const_iterator a = m_iter;
+   TokenList::const_iterator b = m_iter;
+
+   // Skip over output parameters.
+   // Find the next "real" token
+
+   while (b != m_pList -> end() && (*b).Type() == TT_OUTPARAM){
+      ++b;
+   }
+
+   // Push (in reverse order) any parameters onto the input
+   m_iter = b;
+   while (b != a){
+      --b;
+      TokenList* param = s_paramStack[m_paramStart + (*b).ChrCode()];
+      InputStack::Putback(*param);
+   }
+}
+@}
+
+
+
+
+
+
+@$@<Tokens generation utility@>@M==@{@-
+   #define TOK_END_MATCH TeXToken(TT_END_MATCH, 0, 0)
+   #define TOK_MATCH TeXToken(TT_MATCH, 0, 0)
+   #define TOK_LET(c) TeXToken(TT_LETTER, c, 0)
+   #define TOK_OTHER(c) TeXToken(TT_OTHER, c, 0)
+   #define TOK_OUT TeXToken(TT_OUTPARAM, 0, 0)
+   #define END_ARRAY  TeXToken(TT_OUTPARAM, 100, 0)
+
+   TokenList* TokenArrayToList(TeXToken tokArray[])
+   {
+      int i = 0;
+      TokenList* tl  = new TokenList;
+      while (tokArray[i] != END_ARRAY) {
+         tl -> push_back(tokArray[i]);
+         ++i;
+      }
+      return tl;
+   }
+@}
+
+
+@$@<Input file utility@>@M==@{@-
+void InputFile(const char* fname)
+{
+   Filename fn(fname);
+   InputByteFile* pbf = new InputByteFile;
+   pbf -> Open(fn);
+   Latin_1_in*  platin1filt = new Latin_1_in(*pbf);
+   LineSource* plineSource = new LineSource(*platin1filt);
+   Tokenizer* ts = new Tokenizer(plineSource);
+   InputStack::Push(ts);
+}
+@}
+
+@$@<Macrop TestTable@>+=@{@-
+{"macexp", TestMacroExpansion},
+@}
+
+@$@<Macrop tests@>+=@{@-
+bool TestMacroExpansion()
+{
+   TeXToken macexp1[] = { TOK_LET('A'),
+                          TOK_OUT,
+                          TOK_OTHER('1'),
+                          TOK_LET('B'),
+                          TOK_OUT,
+                          TOK_OTHER('2'),
+                          END_ARRAY};
+
+   TeXToken param1[] =  { TOK_LET('B'),
+                          TOK_LET('B'),
+                          TOK_LET('A'),
+                          TOK_LET('A'),
+                          END_ARRAY};
+
+   TeXToken param2[] =  { END_ARRAY }; // an empty param
+
+
+   TokenList* body = TokenArrayToList(macexp1);
+   MacroExpansion* me = new MacroExpansion(body, body -> begin());
+   me -> SetParam(TokenArrayToList(param1));
+   me -> SetParam(TokenArrayToList(param2));
+
+   me -> NextPosition();
+
+   InputStack::Push(me);
+   LogFile::Start();
+   while (! InputStack::bEmpty()){
+      GetToken();
+      LOG(CurTok() << "\n");
+   }
+   return CompareLog("macexp.log", "InputStack.TestMacroExpansion");
+}
+@}
+
+@o@<macexp.log@>==@{@-
+(A   Letter)
+(B   Letter)
+(B   Letter)
+(A   Letter)
+(A   Letter)
+(B   Letter)
+@}
+
+
+
+
+A @{MacroDef@} is a form of @{Expandable@} which is a kind of
+@{SymbolData@}. It contains a list of tokens that represent the
+parameters to be matched and the body to be replaced.  These are
+separated by a token of type @{TT_END_MATCH@}.
+
+@$@<struct Macro@>==@{@-
+struct MacroDef : public Expandable {
+private:
+   TokenList* m_pList;  // This is not a TokenListTokenSource
+public:
+   MacroDef(TokenList* ptr);
+   MacroDef(const TokenList&);
+   virtual ~MacroDef();
+
+   bool Expand(TeXToken*, SymbolData** ) const;
+   const TokenList& Toks() const;
+};
+@}
+
+@$@<MacroDef::MacroDef@>==@{@-
+MacroDef::MacroDef(TokenList* ptr)
+   : Expandable(0, 0),
+     m_pList(ptr)
+{
+   m_pList -> AddReference();
+}
+@}
+
+@$@<MacroDef::~MacroDef@>==@{@-
+MacroDef::~MacroDef()
+{
+   m_pList -> RemoveReference();
+}
+@}
+
+
+@$@<MacroDef::Toks@>==@{@-
+const TokenList& MacroDef::Toks() const
+{
+   ASSERT(m_pList != 0);
+   return *m_pList;
+}
+@}
+
+
+@$@<The temporary parameter stack@>==@{@-
+   TokenList* s_pstack[10]; // at most 10 parameters
+   int s_ptop;
+@}
+
+@$@<MacroDef::Expand imp@>==@{@-
+bool MacroDef::Expand(TeXToken*, SymbolData**) const
+{
+   TokenList::const_iterator r = m_pList -> begin();
+
+   // match parameters
+   if ((*r).Type() != TT_END_MATCH){
+      @<scan parameters@>
+   }
+
+   ASSERT((*r).Type() == TT_END_MATCH);
+   ++r;
+
+   // Create a MacroExpansion
+   MacroExpansion* me = new MacroExpansion(m_pList, r);
+
+   // Copy parameters from the temp stack to the parameter stack
+   LOG("\n--Parameters");
+   for (int i = 0; i < s_ptop; ++i){
+      // need code here to tidy up: remove surrounding braces
+      me -> SetParam(s_pstack[i]);
+      LOG("\n--    #" << (i+1) << " " << *s_pstack[i]);
+      s_pstack[i] = 0;
+   }
+   s_ptop = 0;
+
+   LOG("\n--Pushing back " << *m_pList);
+   // Feed macro expansion to input stack
+   InputStack::Push(me);
+   me -> NextPosition();
+   InputStack::Clean();
+
+   return false; // we don't set the next token.
+}
+@}
+
+@$@<scan parameters@>==@{@-
+if @<r doesn't point to a TT_MATCH or a TT_END_MATCH@> {
+   @<scan obligatory tokens@>
+}
+while @<r points to a TT_MATCH@> {
+   s_pstack[s_ptop] = new TokenList;
+   ++s_ptop;
+   ++r;
+   if @<r points to a TT_MATCH or a TT_END_MATCH@> {
+      @<scan undelimited parameter@>
+   } else {
+      @<scan delimited parameter@>
+   }
+   ASSERT(@<r points to a TT_MATCH or a TT_END_MATCH@>);
+   @<Tidy up parameter@>
+}
+@}
+
+
+@$@<r points to a TT_MATCH@>@M==@{((*r).Type() == TT_MATCH)@}
+
+@$@<r points to a TT_END_MATCH@>@M==@{((*r).Type() == TT_END_MATCH)@}
+
+@$@<r points to a TT_MATCH or a TT_END_MATCH@>@M==@{@-
+(@<r points to a TT_MATCH@>||
+ @<r points to a TT_END_MATCH@>)@}
+
+@$@<r doesn't point to a TT_MATCH or a TT_END_MATCH@>@M==@{@-
+(!@<r points to a TT_MATCH or a TT_END_MATCH@>)@}
+
+
+@$@<scan obligatory tokens@>==@{@-
+while (@<r doesn't point to a TT_MATCH or a TT_END_MATCH@>){
+   GetRawToken();
+   if (*r == CurTok()){
+      ++r;
+   } else {
+      LOG("\nERROR: unmatched obligatory token " << *r);
+      LOG("\nI see " << CurTok());
+      break;
+   }
+}
+@}
+
+@$@<scan undelimited parameter@>==@{@-
+do{
+  GetRawToken();
+} while (CurTok().Type() == TT_SPACE);
+
+if (CurTok().Type() == TT_LEFT_BRACE){
+   @<Contribute balanced token list@>
+} else {
+   @<Contribute current token to current parameter@>
+}
+@}
+
+
+@$@<Contribute current token to current parameter@>==@{@-
+s_pstack[s_ptop-1] -> push_back(CurTok());
+@}
+
+
+@$@<Contribute balanced token list@>@M==@{@-
+int balance = 1;
+s_pstack[s_ptop-1] -> push_back(CurTok());
+while (balance > 0){
+   GetRawToken();
+
+   s_pstack[s_ptop-1] -> push_back(CurTok());
+   if (CurTok().Type() == TT_LEFT_BRACE) {
+      ++balance;
+   } else if (CurTok().Type()==TT_RIGHT_BRACE){
+      --balance;
+   }
+}
+@}
+
+At this point @{r@} points to a regular token that needs to be matched
+by the input stream to delimit the parameter.
+
+We let @{s =@} the start of the delimiter to be matched, @{u =@} the
+beginning of the uncontributed recent input, and @{r =@} the end of the
+recently matched input.
+
+For the @{INPUT@} macro, the paramter @{x@} is an iterator into a
+TokenList of tokens that are supposed to delimit a macro parameter.
+
+
+
+@$@<Some defines@>+=@{@-
+#define INPUT(x) ( (x == r) ? CurTok() : *x )
+#define CURRENT_PARAM (s_pstack[s_ptop-1])
+@}
+
+
+@$@<scan delimited parameter@>==@{@-
+// s is the start of the pattern, r is the current position
+TokenList::const_iterator s = r;
+while @<r doesn't point to a TT_MATCH or a TT_END_MATCH@> {
+   GetRawToken();
+   if (*r == CurTok()){
+      ++r;
+   } else {
+      if (CurTok().Type() == TT_LEFT_BRACE){
+         @<Contribute balanced token list@>
+      } else {
+         // Contribute recent input tokens to the current parameter
+         // until a partial match is restored.
+         // Tokens have been matched from s to r-1. Current token
+         // doesn't match r.
+         TokenList::const_iterator u = s;
+         TokenList::const_iterator t = s;
+         TokenList::const_iterator v = s;
+         // Contribute an input token
+         CURRENT_PARAM -> push_back(INPUT(u));
+         while (u != r) {
+             ++u;
+             // See if there's a partial match:
+             //   s+0, s+1, ..., with u+0, u+1, ..., curTok
+             bool pm = false;
+             t = s; v = u;
+             TokenList::const_iterator next = r;
+             ++next;
+             while (v != next) {
+                if (INPUT(v) != *t){
+                   break;
+                } else
+                   pm = true;
+                ++v; ++t;
+             }
+             if (! pm ){
+               CURRENT_PARAM -> push_back(INPUT(u));
+             }
+         }
+         r = t;
+      }
+   }
+}
+@}
+
+
+Now we want to remove surrounding braces if the parameter consists
+of a single group.
+
+@$@<Tidy up parameter@>==@{@-
+if ((CURRENT_PARAM -> front().Type() == TT_LEFT_BRACE) &&
+    (CURRENT_PARAM -> back().Type() == TT_RIGHT_BRACE)){
+   CURRENT_PARAM -> pop_front();
+   CURRENT_PARAM -> pop_back();
+}
+@}
+
+
+
+@$@<Macrop TestTable@>+=@{@-
+{"noparams", TestNoParams},
+@}
+
+
+@$@<Macrop tests@>+=@{@-
+bool TestNoParams()
+{
+   TeXToken macdef[] =  { TOK_END_MATCH,
+                          TOK_LET('B'),
+                          TOK_LET('A'),
+                          TOK_LET('B'),
+                          END_ARRAY};
+
+   MacroDef* pMacroDef = new MacroDef(TokenArrayToList(macdef));
+   Symbols::CreateSymbol("mymac", pMacroDef);
+   InputFile("noparams.tex");
+   LogFile::Start();
+   while (! InputStack::bEmpty()) {
+      GetToken();
+      LOG("\n" << CurTok());
+   }
+   return CompareLog("noparams.log", "InputStack.NoParams");
+}
+@}
+
+@o@<noparams.tex@>==@{@-
+XXX\mymac YYY
+@}
+
+@o@<noparams.log@>==@{@-
+
+(X   Letter)
+(X   Letter)
+(X   Letter)
+(B   Letter)
+(A   Letter)
+(B   Letter)
+(Y   Letter)
+(Y   Letter)
+(Y   Letter)
+(    Space)@}
+
+
+
+
+@$@<Macrop TestTable@>+=@{@-
+{"undelim", TestUndelimitedParams},
+@}
+
+@$@<Macrop tests@>+=@{@-
+bool TestUndelimitedParams()
+{
+   TeXToken macdef[] =  { TOK_MATCH,
+                          TOK_MATCH,
+                          TOK_MATCH,
+                          TOK_END_MATCH,
+                          TOK_LET('T'),
+                          TOK_OUT,
+                          TOK_OTHER('1'),
+                          TOK_LET('A'),
+                          TOK_OUT,
+                          TOK_OTHER('2'),
+                          TOK_LET('B'),
+                          TOK_OUT,
+                          TOK_OTHER('3'),
+                          END_ARRAY};
+
+   MacroDef* pMacroDef = new MacroDef(TokenArrayToList(macdef));
+   Symbols::CreateSymbol("mymac", pMacroDef);
+   InputFile("undelim.tex");
+   LogFile::Start();
+   while (! InputStack::bEmpty()) {
+      GetToken();
+      LOG("\n" << CurTok());
+   }
+   return CompareLog("undelim.log", "v.UndelimitedParams");
+}
+@}
+
+@o@<undelim.tex@>==@{@-
+XXX\mymac 1{234}5ZZZ
+@}
+
+@o@<undelim.log@>==@{@-
+
+(X   Letter)
+(X   Letter)
+(X   Letter)
+(T   Letter)
+(1   Other)
+(A   Letter)
+(2   Other)
+(3   Other)
+(4   Other)
+(B   Letter)
+(5   Other)
+(Z   Letter)
+(Z   Letter)
+(Z   Letter)@}
+
+
+@$@<Macrop TestTable@>+=@{@-
+{"delim", TestDelimitedParams},
+@}
+
+
+@$@<Macrop tests@>+=@{@-
+bool TestDelimitedParams()
+{
+   TeXToken macdef[] =  { TOK_MATCH,
+                          TOK_OTHER('.'),
+                          TOK_END_MATCH,
+                          TOK_LET('T'),
+                          TOK_LET('A'),
+                          TOK_LET('B'),
+                          TOK_OTHER(':'),
+                          TOK_OUT,
+                          TOK_OTHER('1'),
+                          END_ARRAY};
+
+   MacroDef* pMacroDef = new MacroDef(TokenArrayToList(macdef));
+   Symbols::CreateSymbol("mymac", pMacroDef);
+   InputFile("delim.tex");
+   LogFile::Start();
+   while (! InputStack::bEmpty()) {
+      GetToken();
+      LOG("\n" << CurTok());
+   }
+   return CompareLog("delim.log", "InputStack.DelimitedParams");
+}
+@}
+
+
+@o@<delim.tex@>==@{@-
+XXX \mymac delimited parameter. YYY
+@}
+
+@o@<delim.log@>==@{@-
+
+(X   Letter)
+(X   Letter)
+(X   Letter)
+(    Space)
+(T   Letter)
+(A   Letter)
+(B   Letter)
+(:   Other)
+(d   Letter)
+(e   Letter)
+(l   Letter)
+(i   Letter)
+(m   Letter)
+(i   Letter)
+(t   Letter)
+(e   Letter)
+(d   Letter)
+(    Space)
+(p   Letter)
+(a   Letter)
+(r   Letter)
+(a   Letter)
+(m   Letter)
+(e   Letter)
+(t   Letter)
+(e   Letter)
+(r   Letter)
+(    Space)
+(Y   Letter)
+(Y   Letter)
+(Y   Letter)@}
+
+
+In this section we'll implement commands to make macro
+definitions. These are the @{\def@}, @{\gdef@}, , @{\edef@},
+@{\xdef@}, @{\global@}, and @{\long@} commands.
+
+First we add command codes for these things:
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_DEF,
+CMD_GDEF,
+CMD_EDEF,
+CMD_XDEF,
+@}
+
+And then we add symbols to the symbol table:
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("def",  CMD_DEF);
+NewPrimitive("gdef", CMD_GDEF);
+NewPrimitive("edef", CMD_EDEF);
+NewPrimitive("xdef", CMD_XDEF);
+@}
+
+
+\cmd{def}
+
+@$@<Macro definition commands@>+=@{@-
+case CMD_DEF: {
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Macro definition commands@>+=@{@-
+case CMD_GDEF: {
+   DoAssignment(PREFIX_GLOBAL);
+   break;
+}
+@}
+
+@$@<Macro definition commands@>+=@{@-
+case CMD_EDEF: {
+   DoAssignment(0);
+   break;
+}
+@}
+
+
+@$@<Macro definition commands@>+=@{@-
+case CMD_XDEF: {
+   DoAssignment(PREFIX_GLOBAL);
+   break;
+}
+@}
+
+
+
+@$@<Assignments@>+=@{@-
+case CMD_DEF:{
+   DefAssignment(CurCmdCode(), prefixes);
+   break;
+}
+case CMD_GDEF:{
+   DefAssignment(CurCmdCode(), prefixes | PREFIX_GLOBAL);
+   break;
+}
+@}
+
+
+@$@<Macro function delcarations@>==@{@-
+enum CommandCode;
+void DefAssignment(CommandCode, int prefixes);
+void EdefAssignment(CommandCode, int prefixes);
+@}
+
+@$@<Function to print macro defs into an auxiliary file@>@M==@{
+
+extern std::ofstream s_tapfile;
+extern std::string   s_tapfilename;
+extern bool s_bTapped;
+
+
+void PrintDefn(TokenList& tl)
+{
+   if (!s_bTapped){
+      Typesetter::AppendTag("\n\\input ");
+      Typesetter::AppendTag(s_tapfilename.c_str());
+      s_bTapped = true;
+   }
+
+   s_tapfile << "\n";
+   TokenList::const_iterator it;
+
+   for (it = tl.begin(); it != tl.end(); ++it){
+     TeXToken tt = *it;
+     switch (tt.Type()){
+      case TT_SYMBOL:
+         if (tt.Symbol() == Symbols::NullCS()){
+
+         }else{
+            s_tapfile << "\\";
+
+            String s = Symbols::GetName(tt.Symbol());
+            for (int i = 0; i < s.Size(); ++i){
+               if (s[i] >= 32 && s[i] <= 126){
+                  s_tapfile  << (char)s[i];
+               } else {
+                  s_tapfile  << "[chr " << (int) s[i] << "]";
+               }
+
+            }
+            if ((s.Size() > 1) || GetCatcode(s[0] == CC_LETTER)){
+               s_tapfile << " ";
+            }
+         }
+         break;
+
+      case TT_PAR:
+            s_tapfile << "\\par ";
+            break;
+      case TT_MATCH:
+           ++s_paramno;
+           s_tapfile << "#" << s_paramno;
+           break;
+      case TT_OUTPARAM:
+           s_tapfile << "#";
+           s_tapfile << 1+(int)tt.ChrCode()
+           ;break;
+      default:
+         s_tapfile << (char) tt.ChrCode();
+         break;
+      }
+   }
+}
+@}
+
+@$@<Def Assignments@>+=@{@-
+
+
+
+void DefAssignment(CommandCode curcmd, int prefixes){
+   TeXToken defining;
+   CommandCode thecmd = curcmd;
+   bool bGlobal = prefixes & PREFIX_GLOBAL;
+   bool bLong   = prefixes & PREFIX_LONG;
+   TokenList* pTL = 0;
+   MacroDef* pMD = 0;
+   TokenList* pTap = new TokenList();
+   bool tapping = (Global::msioutput == 0) &&
+                  InputStack::StartTap(pTap);
+   if (tapping){
+     if (bGlobal){
+       // push back \global
+       pTap -> AppendSymbol("global");
+     }
+     if (bLong){
+       // push back \long
+       pTap -> AppendSymbol("long");
+     }
+     pTap -> push_back(CurTok());
+   }
+   @<Scan definable symbol@>
+   pTL = new TokenList();
+   @<Scan parameter specification@>
+   bool bExpand = false;
+   @<Scan body@>
+   if (tapping){
+      InputStack::StopTap();
+      LOG("\nTapped tokens = " << *pTap);
+      PrintDefn(*pTap);
+   }
+   delete pTap;
+
+   if (bHashBrace){
+      pTL -> push_back(TeXToken(TT_LEFT_BRACE, '{', 0));
+   }
+   LOG("\n----Set " << defining << " = " << *pTL);
+   pMD = new MacroDef(pTL);
+   void* pDefLoc;
+   if (defining.Type() == TT_SYMBOL){
+      Symbols::GetDefLoc(defining.Symbol(), &pDefLoc);
+   } else {
+      Symbols::GetActiveDefLoc(defining.ChrCode(), &pDefLoc);
+   }
+   DefRestoration* restore =
+        new DefRestoration((SymbolData**)pDefLoc, "a def");
+   SaveRestoration(restore, bGlobal);
+
+   if (defining.Type() == TT_SYMBOL){
+      Symbols::SetDef(defining.Symbol(), pMD,
+                       bGlobal || thecmd == CMD_GDEF);
+   } else {
+      Symbols::SetActiveDef(defining.ChrCode(), pMD,
+                       bGlobal || thecmd == CMD_GDEF);
+   }
+
+}
+@}
+
+
+@$@<Def Assignments@>+=@{@-
+void EdefAssignment(CommandCode curcmd, int prefixes)
+{
+   CommandCode thecmd = curcmd;
+   TeXToken defining;
+   bool bGlobal = prefixes & PREFIX_GLOBAL;
+   bool bLong = prefixes & PREFIX_LONG;
+   TokenList* pTL = 0;
+   MacroDef* pMD = 0;
+
+   TokenList* pTap = new TokenList();
+   bool tapping = (Global::msioutput == 0) &&
+                  InputStack::StartTap(pTap);
+   if (tapping){
+     if (bGlobal){
+       // push back \global
+       pTap -> AppendSymbol("global");
+     }
+     if (bLong){
+       // push back \long
+       pTap -> AppendSymbol("long");
+     }
+     pTap -> push_back(CurTok());
+   }
+
+   @<Scan definable symbol@>
+   pTL = new TokenList();
+   @<Scan parameter specification@>
+   bool bExpand = true;
+   @<Scan body@>
+   InputStack::Clean();
+   if (tapping){
+      InputStack::StopTap();
+      LOG("\nTapped tokens = " << *pTap);
+      PrintDefn(*pTap);
+   }
+   delete pTap;
+
+   if (bHashBrace){
+      pTL -> push_back(TeXToken(TT_LEFT_BRACE, '{', 0));
+   }
+
+   LOG("\n----Set " << defining << " = " << *pTL);
+   pMD = new MacroDef(pTL);
+   void* pDefLoc;
+   Symbols::GetDefLoc(defining.Symbol(), &pDefLoc);
+   DefRestoration* restore =
+        new DefRestoration((SymbolData**)pDefLoc, "a def");
+   SaveRestoration(restore, bGlobal);
+
+   Symbols::SetDef(defining.Symbol(), pMD, bGlobal || thecmd == CMD_XDEF);
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_EDEF:
+   EdefAssignment(CurCmdCode(), prefixes);
+   break;
+case CMD_XDEF:
+   EdefAssignment(CurCmdCode(), prefixes | PREFIX_GLOBAL);
+   break;
+@}
+
+
+@$@<Scan definable symbol@>@M==@{@-
+do{
+  GetRawToken();
+} while (CurTok().Type() == TT_SPACE);
+if ( CurTok().Type() == TT_SYMBOL ||
+     CurTok().Type() == TT_ACTIVE){
+   defining = CurTok();
+} else {
+   LOG("ERROR -- can't define" << CurTok());
+   InputStack::Putback(CurTok());
+   return;
+}
+@}
+
+
+@$@<Scan parameter specification@>@M==@{@-
+bool bHashBrace = false;
+if (!InputStack::bEmpty()){
+   GetRawToken();
+   int expectedparam = 1;
+   while (CurTok().Type() != TT_LEFT_BRACE) {
+      if (CurTok().Type() == TT_PARAM){
+         GetRawToken();
+         if (CurTok().Type() == TT_OTHER)
+         {
+            if (CurTok().ChrCode() >= '0' &&
+                CurTok().ChrCode() <= '9')
+            {
+               int thisnum = CurTok().ChrCode() - '0';
+               if (thisnum == expectedparam){
+                  pTL -> push_back(TeXToken(TT_MATCH, '#', 0));
+                  ++expectedparam;
+               }
+            }
+         } else if (CurTok().Type() == TT_LEFT_BRACE){
+            LOG("\n-- i see  #{");
+            bHashBrace = true;
+            pTL -> push_back(CurTok());
+            InputStack::Putback(CurTok());
+            if (InputStack::bEmpty())
+              break;
+         } else {
+            ASSERT(false);
+         }
+      } else {
+         pTL -> push_back(CurTok());
+         if (InputStack::bEmpty())
+           break;
+      }
+      GetRawToken();
+   }
+   pTL -> push_back(TeXToken(TT_END_MATCH, 0, 0));
+}
+@}
+
+
+@$@<Scan body@>@M==@{@-
+if (CurTok().Type() != TT_LEFT_BRACE){
+   LOG("Missing left brace");
+   return;
+}else{
+   bool scanning_body = true;
+   int balance = 1;
+   while (scanning_body) {
+      if (InputStack::bEmpty()){
+         scanning_body = false;
+      }else{
+         if (!bExpand){
+            GetRawToken();
+         } else {
+            // During an edef we expand tokens, but the result
+            // of \the is not expanded again.
+            // Also, a parameter to \msitag should not be expanded.
+            GetRawToken();
+            const Expandable* exp =
+                dynamic_cast<const Expandable*>( CurData() );
+
+            if (exp != 0){
+              EXPFUNC fcn = exp -> m_fcnExpand;
+              if (fcn == xfcnThe){
+                 TokenListTokenSource* ts = xfcnThe_nopush(0, 0, 0);
+                 while(!ts -> bEmpty()){
+                    TeXToken tt;
+                    ts -> GetToken(&tt);
+                    pTL -> push_back(tt);
+                 }
+                 delete ts;
+                 continue;
+              } else {
+                 // Put it back and do GetToken
+                 InputStack::Putback(CurTok());
+                 GetToken();
+              }
+            }
+            // Watch for \msitag
+            DetermineCommandCode();
+            if (CurCmdCode() == CMD_TAG){
+               std::cout << "\n\\msitag in body of \\edef";
+               LOG("\n\\msitag in body of \\edef");
+               pTL -> push_back(CurTok());
+               GetRawToken();
+               if (CurTok().Type() != TT_LEFT_BRACE){
+                  LOG("\nError -- Expected left brace");
+                  ASSERT(false);
+               }
+               pTL -> push_back(CurTok());
+               int msitagbal = 1;
+               while (msitagbal > 0){
+                 GetRawToken();
+                 pTL -> push_back(CurTok());
+                 if (CurTok().Type() == TT_LEFT_BRACE) {
+                    ++msitagbal;
+                 } else if (CurTok().Type()==TT_RIGHT_BRACE){
+                    --msitagbal;
+                 }
+               }
+               GetRawToken();
+            }
+         }
+      }
+      if (CurTok().Type() == TT_LEFT_BRACE){
+         balance += 1;
+      } else if (CurTok().Type() == TT_RIGHT_BRACE){
+         balance -= 1;
+         if (balance == 0){
+           scanning_body = false;
+           break;
+         }
+      } else if (CurTok().Type() == TT_PARAM){
+         GetRawToken();
+         //Now we should either see a parameter number or another #
+         if (CurTok().Type() == TT_OTHER &&
+             CurTok().ChrCode() >= '1' &&
+             CurTok().ChrCode() <= '9')
+         {
+            CurTok().SetType(TT_OUTPARAM);
+            int n = CurTok().ChrCode() - '0' - 1;
+            CurTok().SetChrCode(n);
+         } else if (CurTok().Type() == TT_PARAM){
+         } else {
+            ASSERT(false);
+         }
+      }
+      pTL -> push_back(CurTok());
+   }
+}
+
+@}
+
+
+
+
+
+
+
+And here is a test to see if they work:
+
+@$@<Interprt TestTable@>+=@{@-
+{"defs1", TestDefs1},
+{"defs2", TestDefs2},
+@}
+
+@$@<Interprt tests@>+=@{@-
+bool TestDefs1()
+{
+   Interpretter::InitializeSymbolTable();
+   InitializeKeywords();
+   InputFile("deftest1.tex");
+   Interpretter::MainLoop();
+   return CompareLog("deftest1.log", "Interpretter Def test 1");
+}
+
+bool TestDefs2()
+{
+   Interpretter::InitializeSymbolTable();
+   InitializeKeywords();
+   InputFile("deftest2.tex");
+   Interpretter::MainLoop();
+   return CompareLog("deftest2.log", "Interpretter Def test 2");
+}
+
+@}
+
+
+@o@<macros.h@>==@{@-
+#ifndef MACROS_H
+#define MACROS_H
+#include "tokens.h"
+#include "scanutils.h"
+#include "typesetter.h"
+#include <iostream>
+
+@<struct Macro@>
+@<class MacroExpansion@>
+@<Macro function delcarations@>
+#endif
+
+@}
+
+@o@<macros.cpp@>==@{@-
+#include "macros.h"
+#include "scanutils.h"
+#include "restore.h"
+#include <fstream>
+
+// external decl
+bool xfcnThe(int /* ignored */, TeXToken*, SymbolData**);
+TokenListTokenSource* xfcnThe_nopush(
+                          int /* ignored */,
+                          TeXToken*,
+                          SymbolData**);
+
+
+
+// static data. The preferred way to introduce is to
+// use an anonymous namespace - see Stroustrup
+namespace{
+   @<The parameter stack@>
+   @<The temporary parameter stack@>
+}
+
+@<Some defines@>
+
+@<Function to print macro defs into an auxiliary file@>
+
+@<MacroExpansion::MacroExpansion@>
+@<MacroExpansion::~MacroExpansion@>
+@<MacroExpansion::SetParam@>
+@<MacroExpansion::bEmpty@>
+@<MacroExpansion::NextPosition@>
+@<MacroExpansion::GetToken@>
+
+@<MacroDef::MacroDef@>
+@<MacroDef::~MacroDef@>
+@<MacroDef::Toks@>
+@<MacroDef::Expand imp@>
+
+
+@<Def Assignments@>
+
+@}
+
+
+@o@<deftest1.tex@>==@{ABC\def\bazoo #1{A#1B} XYZ\bazoo{x} etc.@}
+
+@o@<deftest1.log@>==@{@-
+
+(A   Letter)  ERROR -- no command code.
+(B   Letter)  ERROR -- no command code.
+(C   Letter)  ERROR -- no command code.
+(\def,Symbol[704])
+   Defining... (\bazoo,Symbol[1388])
+(    Space)  ERROR -- no command code.
+(X   Letter)  ERROR -- no command code.
+(Y   Letter)  ERROR -- no command code.
+(Z   Letter)  ERROR -- no command code.
+(A   Letter)  ERROR -- no command code.
+(x   Letter)  ERROR -- no command code.
+(B   Letter)  ERROR -- no command code.
+(    Space)  ERROR -- no command code.
+(e   Letter)  ERROR -- no command code.
+(t   Letter)  ERROR -- no command code.
+(c   Letter)  ERROR -- no command code.
+(.   Other)  ERROR -- no command code.@}
+
+
+
+@o@<macros.t.cpp@>==@{@-
+#include <string>
+#include "platform.h"
+#include "textio.h"
+#include "tokens.h"
+@<CompareLog utility@>
+@<Input file utility@>
+@<Tokens generation utility@>
+@<Test jig@>@(@<Macrop tests@>@,@<Macrop TestTable@>@)
+
+@}

@@ -1,0 +1,1742 @@
+
+@A@<The Command Interpretter@>
+
+The Command Interpretter contains the main loop of \TeX{}. It gets
+unexpandable tokens from the macro processor and parses tokens until
+a command is recognized. The command is executed immediately.
+Most commands will be addressed to the Typesetter, but not all.
+Some, e.g. @{\catcode@} are addresed to the text io subsystem.
+Some change the state of the command interpretter itself.
+
+@$@<class Interpretter@>==@{@-
+class Interpretter {
+public:
+   static void InitializeSymbolTable();
+   static void MainLoop();
+};
+@}
+
+
+@$@<InitializeSymbolTable@>==@{@-
+void Interpretter::InitializeSymbolTable()
+{
+   @<Create symbols@>
+}
+@}
+
+
+
+Here are some variables global to the interpretter
+@$@<Declare interpretter global variables@>+=@{@-
+//static CommandCode curcmd;
+//static Primitive* curcmddata;
+@}
+
+
+
+@$@<Functions for inserting primitive hooks@>+=@{
+void hookA(const char* cmd)
+{
+   std::string idstr;
+   idstr = "msi@@hook@@";
+   idstr += cmd;
+
+   TeXToken tt;
+   String str = StringBuilder::Create(idstr.c_str());
+   // lookup cs in symbols table
+   Symbols::SymId id;
+   Symbols::GetId(str, &id, Symbols::CREATE);
+   tt.SetType(TT_SYMBOL);
+   tt.SetSymbol(id);
+   inp.Putback(tt);
+}
+@}
+
+
+@B@<Main Loop@>
+Here is the main loop. It fetches a token and jumps to a case in a
+big switch statement. The case depends also on the current mode.
+The case will parse the rest of the command and execute it.
+The action will likely include more parsing to get the arguments
+for the command.
+
+
+@$@<Main Loop@>==@{@-
+void Interpretter::MainLoop()
+{
+ bool running = true;
+ while (running && !inp.bEmpty()) {
+   LOG("\n----Start cycle");
+   GetToken();
+   DetermineCommandCode();
+   @<Execute the command@>
+ }
+}
+@}
+
+Each command processed by the command interpretter has a code
+that is listed in the enumerated type @{CommandCode@}.
+
+
+
+@$@<Execute the command@>==@{@-
+   switch (CurCmdCode()) {
+      @<Node creation commands@>
+      @<Prefix commands@>
+      @<Basic assignment commands@>
+      @<Macro definition commands@>
+      @<Assign box dimension commands@>
+      @<Register commands@>
+      @<Box building commands@>
+      @<Unboxing commands@>
+      @<Message commands@>
+      @<Stop commands@>
+      @<Grouping commands@>
+      @<Font commands@>
+      @<Math commands@>
+      @<Misc commands@>
+      @<Extensions@>
+      case CMD_NONE:{
+        LOG("\n----" << CurTok()
+                     << " ERROR -- no command code.");
+
+        std::cout << "\n-- Undefined " ;
+        String s = Symbols::GetName(CurTok().Symbol());
+        std::cout << "\\";
+        for (int i = 0; i < s.Size(); ++i){
+          if (s[i] >= 32 && s[i] <= 126){
+             std::cout << (char) s[i];
+          } else {
+             std::cout << "[chr " << (int) s[i] << "]";
+          }
+        }
+        // Give it a default definition and put back the token
+        TokenList* pTokenList = new TokenList;
+        pTokenList -> push_back(TeXToken(TT_END_MATCH,0,0));
+
+        pTokenList -> AppendSymbol("msitexb");
+        pTokenList -> push_back(TeXToken(TT_LEFT_BRACE,'{',0));
+        pTokenList -> push_back(TeXToken(CurTok()));
+        pTokenList -> push_back(TeXToken(TT_RIGHT_BRACE,'}',0));
+        MacroDef* pMacroDef = new MacroDef(pTokenList);
+
+        Symbols::SetDef(CurTok().Symbol(), pMacroDef, false);
+
+        // Let's just append the token to the
+        // output stream, and assume we go to hmode
+        if (Typesetter::GetMode() == MODE_VERTICAL){
+           inp.Putback(CurTok());
+           Typesetter::GotoHMode();
+           Typesetter::SetInner(false);
+           inp.Putback(Global::msieverypar);
+           inp.Putback(Global::everypar);
+        } else {
+           TokenList* pTL = new TokenList;
+           pTL->push_back(CurTok());
+           Typesetter::AppendTag(pTL);
+        }
+        break;
+      }
+      default:
+        LOG("\n----" << CurTok()
+                     << " ERROR -- can't happen");
+        break;
+   }
+@}
+
+
+
+The command interpretter must maintain a stack that records the current
+level and type of level.
+
+@$@<GroupStack@>+=@{@-
+enum GroupType {
+       SIMPLE_GROUP,
+       SEMISIMPLE_GROUP,
+       ALIGN_GROUP,
+       HBOX_GROUP,
+       VBOX_GROUP,
+       INLINE_GROUP,  // for $...$
+       DISPLAY_GROUP, // for $$...$$
+       MATH_GROUP,    // for {...} inside math
+       PROCESS_GROUP
+     };
+@}
+
+@$@<GroupStack@>+=@{@-
+struct GroupRecord {
+   GroupType  m_groupType;
+   TokenList* m_afterGroup;
+};
+
+const int MAX_GROUPS = 400;
+static GroupRecord s_groupStack[MAX_GROUPS];
+static int s_groupStackTop = -1;
+@}
+
+@$@<GroupStack@>+=@{@-
+void ShowGroupStack()
+{
+   LOG("\nGroups: ");
+   int lev = s_groupStackTop;
+   while (lev >= 0){
+      GroupType type = s_groupStack[lev].m_groupType;
+      if (type == HBOX_GROUP){
+         LOG("hbox ");
+      } else if (type == VBOX_GROUP){
+         LOG("vbox ");
+      } else if (type == SIMPLE_GROUP){
+         LOG("simple ");
+      } else if (type == SEMISIMPLE_GROUP){
+         LOG(" semi-simple ");
+      }  else if (type == INLINE_GROUP){
+         LOG("inline ");
+      }  else if (type == DISPLAY_GROUP){
+         LOG("display ");
+      }  else if (type == MATH_GROUP){
+         LOG("subformula ");
+      }  else if (type == ALIGN_GROUP){
+         LOG("align ");
+      } else if (type == PROCESS_GROUP){
+         LOG("process ");
+      } else {
+         LOG("ERROR");
+      }
+      --lev;
+   }
+}
+@}
+
+@$@<GroupStack@>+=@{@-
+void NewLevel(GroupType type)
+{
+   if (s_groupStackTop < MAX_GROUPS){
+      ++s_groupStackTop;
+      s_groupStack[s_groupStackTop].m_groupType = type;
+      s_groupStack[s_groupStackTop].m_afterGroup = 0;
+      NewSaveLevel();
+      if (type == HBOX_GROUP){
+         LOG("\n----Begin group: hbox ");
+      } else if (type == VBOX_GROUP){
+         LOG("\n----Begin group: vbox");
+      } else if (type == SIMPLE_GROUP){
+         LOG("\n----Begin group: simple");
+      } else if (type == SEMISIMPLE_GROUP){
+         LOG("\n----Begin group: semi-simple");
+      }  else if (type == INLINE_GROUP){
+         LOG("\n----Begin group: inline math");
+      }  else if (type == DISPLAY_GROUP){
+         LOG("\n----Begin group: display math");
+      }  else if (type == MATH_GROUP){
+         LOG("\n----Begin group: math subformula");
+      }  else if (type == ALIGN_GROUP){
+         LOG("\n----Begin group: align");
+      } else if (type == PROCESS_GROUP){
+         LOG("\n----Begin group: process");
+      } else {
+         LOG("\nERROR -- begin unknown group type");
+      }
+      ShowGroupStack();
+
+   } else {
+      ASSERT(false);
+   }
+}
+@}
+
+
+@$@<GroupStack@>+=@{@-
+bool bCurrentLevelType(GroupType type){
+   return s_groupStack[s_groupStackTop].m_groupType == type;
+}
+@}
+
+
+@$@<GroupStack@>+=@{@-
+void EndLevel()
+{
+   if (s_groupStackTop < 0){
+      ASSERT(false);
+   } else {
+      if (bCurrentLevelType(HBOX_GROUP)){
+         LOG("\n----End group: hbox");
+         Typesetter::EndBox();
+      } else if (bCurrentLevelType(VBOX_GROUP)){
+         LOG("\n----End group: vbox");
+         Typesetter::EndBox();
+      } else if (bCurrentLevelType(SIMPLE_GROUP)){
+         LOG("\n----End group: simple");
+      } else if (bCurrentLevelType(SEMISIMPLE_GROUP)){
+         LOG("\n----End group: semi-simple");
+      } else if (bCurrentLevelType(INLINE_GROUP)){
+         LOG("\n----End group: inline");
+         Typesetter::EndInline();
+      } else if (bCurrentLevelType(DISPLAY_GROUP)){
+         LOG("\n----End group: dispaly");
+         Typesetter::EndDisplay();
+      } else if (bCurrentLevelType(MATH_GROUP)){
+         Typesetter::EndSubformula();
+         LOG("\n----End group: math subformula");
+      } else if (bCurrentLevelType(ALIGN_GROUP)){
+         LOG("\n----End group: align");
+      } else if (bCurrentLevelType(PROCESS_GROUP)){
+         Typesetter::EndProcess();
+         LOG("\n----End group: process");
+      } else {
+         LOG("\n----End unknown group type");
+         ASSERT(false);
+      }
+      EndSaveLevel();
+      // Push the aftergroup tokens.
+      TokenList* afterGroup = s_groupStack[s_groupStackTop].m_afterGroup;
+      if (afterGroup != 0){
+         InputStack::Putback(*afterGroup);
+      }
+      --s_groupStackTop;
+      ShowGroupStack();
+   }
+}
+@}
+
+@B@<Some debugging aids@>
+
+\noseealso
+
+@$@<Command Codes@>+=@{@-
+CMD_BREAKPOINT,
+CMD_CHECKOUTER,
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("msibreak", CMD_BREAKPOINT);
+NewPrimitive("msicheckouter", CMD_CHECKOUTER);
+@}
+
+
+@$@<Misc commands@>+=@{@-
+case CMD_BREAKPOINT : {
+   LOG("\nSet breakpoint here");
+   break;
+}
+
+case CMD_CHECKOUTER: {
+   if (s_groupStackTop != -1){
+     LOG("\nERROR -- Check outer failed.");
+     ShowGroupStack();
+     ASSERT(false);
+   }
+   break;
+}
+@}
+
+
+
+
+
+
+@B@<Commands to insert nodes into the current list@>
+
+@C@<Character node creation@>
+
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_LETTER,
+CMD_OTHER,
+CMD_CHAR,
+CMD_CHAR_GIVEN,
+CMD_MATH_GIVEN,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("char", CMD_CHAR);
+@}
+
+If we encounter one of these commands in either horizontal mode
+or mathmode we call the typesetter's SetChar routine. Otherwise, if we
+are in vertical mode, we switch to @{HMODE@} first: when a token
+causes the switch to horizontal mode we first put the token back
+into the input stream. It has to be interpretted
+in the correct mode. Then we tell the typesetter to switch modes.
+This will cause a new paragraph to start, so we also have to push the
+the everypar tokens into the input stream.
+
+@$@<Node creation commands@>+=@{@-
+case CMD_LETTER :
+   if (Typesetter::GetMode() == MODE_VERTICAL){
+      // Goto HMODE, rescan token
+      inp.Putback(CurTok());
+      Typesetter::GotoHMode();
+      Typesetter::SetInner(false);
+      inp.Putback(Global::msieverypar);
+      inp.Putback(Global::everypar);
+   } else if (Typesetter::GetMode() == MODE_HORIZONTAL){
+      Typesetter::SetChar(CurTok().ChrCode());
+      LOG("\n----Character " << CurTok().ChrCode());
+   } else if (Typesetter::GetMode() == MODE_MATH){
+      if (CurTok().ChrCode() < 128){
+         Typesetter::SetMathChar(CurTok().ChrCode());
+      } else {
+         Typesetter::SetMathChar(CurTok().ChrCode());
+      }
+      LOG("\n----Character " << CurTok().ChrCode());
+   }
+   break;
+@}
+
+@$@<Node creation commands@>+=@{@-
+case CMD_OTHER :
+   if (Typesetter::GetMode() == MODE_VERTICAL){
+      // Goto HMODE, rescan token
+      inp.Putback(CurTok());
+      Typesetter::GotoHMode();
+      Typesetter::SetInner(false);
+      inp.Putback(Global::msieverypar);
+      inp.Putback(Global::everypar);
+   } else if (Typesetter::GetMode() == MODE_HORIZONTAL){
+      Typesetter::SetChar(CurTok().ChrCode());
+      LOG("\n----Character " << CurTok().ChrCode());
+   }  else if (Typesetter::GetMode() == MODE_MATH){
+      if (CurTok().ChrCode() < 128){
+         Typesetter::SetMathChar(CurTok().ChrCode());
+      } else {
+         Typesetter::SetMathChar(CurTok().ChrCode());
+      }
+      LOG("\n----Character " << CurTok().ChrCode());
+   }
+   break;
+@}
+
+@$@<Node creation commands@>+=@{@-
+case CMD_CHAR:{
+   if (Typesetter::GetMode() == MODE_VERTICAL){
+      // Goto HMODE, rescan token
+      inp.Putback(CurTok());
+      Typesetter::GotoHMode();
+      Typesetter::SetInner(false);
+      inp.Putback(Global::msieverypar);
+      inp.Putback(Global::everypar);
+   } else {
+      int n;
+      ScanInt(&n);
+      if (Typesetter::GetMode() == MODE_HORIZONTAL){
+         Typesetter::SetChar(n);
+      } else if (Typesetter::GetMode() == MODE_MATH){
+         if (CurTok().ChrCode() < 128){
+            Typesetter::SetMathChar(n);
+         } else {
+            Typesetter::SetMathChar(n);
+         }
+      }
+      LOG("\n----Character " << (TeXChar)n);
+   }
+   break;
+}
+@}
+
+
+@$@<Node creation commands@>+=@{@-
+case CMD_CHAR_GIVEN : {
+   LOG("\n----CMD_CHAR_GIVEN");
+   ASSERT(CurData());
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   Typesetter::SetChar((TeXChar) (prim -> Data()));
+   break;
+}
+@}
+
+@$@<Node creation commands@>+=@{@-
+case CMD_MATH_GIVEN : {
+   LOG("\n----CMD_MATH_GIVEN");
+   ASSERT(CurData());
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   Typesetter::SetChar((TeXChar) (prim -> Data()));
+   break;
+}
+@}
+
+
+@C@<Glue creation commands@>
+
+
+This is generated by a catcode 10 character. See TTP 1041-1045
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_SPACER,
+@}
+
+
+@$@<Node creation commands@>+=@{@-
+case CMD_SPACER :
+   if (Typesetter::GetMode() == MODE_HORIZONTAL){
+      LOG("\n----Space " << CurTok().ChrCode());
+      Typesetter::SetSpace();
+   }
+   break;
+@}
+
+
+The explicit space command.
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_EX_SPACE,
+@}
+
+
+\noseealso
+@$@<Node creation commands@>+=@{@-
+case CMD_EX_SPACE:{
+   LOG("\n---- explicit space");
+   ASSERT(false);
+   break;
+}
+@}
+
+
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_HSKIP,
+CMD_VSKIP,
+CMD_MSKIP,
+CMD_HFIL,
+CMD_HFILL,
+CMD_HFILNEG,
+CMD_HSS,
+CMD_VFIL,
+CMD_VFILL,
+CMD_VFILNEG,
+CMD_VSS,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("hskip", CMD_HSKIP);
+NewPrimitive("vskip", CMD_VSKIP);
+NewPrimitive("mskip", CMD_MSKIP);
+
+NewPrimitive("hfil",    CMD_HFIL);
+NewPrimitive("hfill",   CMD_HFILL);
+NewPrimitive("hfilneg", CMD_HFILNEG);
+NewPrimitive("hss",     CMD_HSS);
+NewPrimitive("vfil",    CMD_VFIL);
+NewPrimitive("vfill",   CMD_VFILL);
+NewPrimitive("vfilneg", CMD_VFILNEG);
+NewPrimitive("vss",     CMD_VSS);
+
+@}
+
+@$@<Node creation commands@>+=@{@-
+case CMD_VSKIP: {
+   ScanGlue();
+   LOG("\n----CMD_VSKIP");
+   Typesetter::AppendTag("\n\n");
+   break;
+}
+
+case CMD_HSKIP: {
+   ScanGlue();
+   LOG("\n----CMD_HSKIP");
+   break;
+}
+
+case CMD_MSKIP: {
+   ScanGlue();
+   LOG("\n----CMD_MSKIP");
+   break;
+}
+
+
+case CMD_HFIL:{
+   LOG("\n----\\hfil");
+   hookA("hfil");
+   break;
+}
+
+case CMD_HFILL:{
+   LOG("\n----\\hfill");
+   hookA("hfill");
+   break;
+}
+case CMD_HFILNEG:{
+   LOG("\n----\\hfilneg");
+   hookA("hfilneg");
+   break;
+}
+case CMD_HSS:{
+   LOG("\n----\\hss");
+   hookA("hss");
+   break;
+}
+case CMD_VFIL:{
+   LOG("\n----\\vfil");
+   hookA("vfil");
+   break;
+}
+case CMD_VFILL:{
+   LOG("\n----\\vfill");
+   hookA("vfill");
+   break;
+}
+case CMD_VFILNEG:{
+   LOG("\n----\\vfilneg");
+   hookA("vfilneg");
+   break;
+}
+case CMD_VSS:{
+   LOG("\n----\\vss");
+   hookA("vss");
+   break;
+}
+
+
+@}
+
+
+
+@C@<Kern node creation@>
+
+
+Insert a @{KernNode@} into the current list.  TTP 1057
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_KERN,
+CMD_MKERN,
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("kern", CMD_KERN);
+NewPrimitive("mkern", CMD_MKERN);
+@}
+
+
+@$@<Node creation commands@>+=@{@-
+case CMD_KERN:{
+   Scaled dim;
+   ScanDim(false, false, false, &dim);
+   LOG("\n----\\kern " << dim);
+   break;
+}
+@}
+
+@$@<Node creation commands@>+=@{@-
+case CMD_MKERN:{
+   Scaled dim;
+   ScanDim(false, false, false, &dim);
+   LOG("\n----\\mkern " << dim);
+   break;
+}
+@}
+
+
+@C@<Insert node creation@>
+
+Insert an @{InsertNode@} into the current list.
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_INSERT,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("insert", CMD_INSERT);
+@}
+
+@$@<Node creation commands@>+=@{@-
+case CMD_INSERT:{
+   int n;
+   ScanInt(&n);
+   TokenList* pTL = new TokenList;
+   ScanTokenList(pTL, false);
+   LOG("\n---- insert " << n << " : " << *pTL);
+   break;
+}
+@};
+
+
+
+@C@<Create mark node@>
+Insert a @{MarkNode@} into the current list.
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_MARK,
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("mark", CMD_MARK);
+@}
+
+
+@$@<Node creation commands@>+=@{@-
+case CMD_MARK:{
+   TokenList* pTL = new TokenList;
+   ScanTokenList(pTL, false);
+   LOG("\n---- mark: " << * pTL);
+   break;
+}
+@};
+
+
+
+@!-----------------------------------------
+@! \vadjust
+@!-----------------------------------------
+
+
+This inserts an @{AdjustNode@} into the current list.
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_VADJUST,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("vadjust", CMD_VADJUST);
+@}
+
+@$@<Node creation commands@>+=@{@-
+case CMD_VADJUST:{
+   TokenList* pTL = new TokenList;
+   ScanTokenList(pTL, false);
+   LOG("\n---- vadjust: " << *pTL);
+   break;
+}
+@};
+
+
+@C@<Create penalty nodes@>
+
+This command causes a penalty node to be inserted.
+
+\noseealso
+@$@<Command Codes@>+=@{CMD_PENALTY,@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("penalty", CMD_PENALTY);
+@}
+
+@$@<Node creation commands@>+=@{@-
+case CMD_PENALTY:{
+   int p;
+   ScanInt(&p);
+   LOG("\n---- penalty " << p);
+   break;
+}
+@};
+
+@C@<Create rule nodes@>
+
+See TTP 1056
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_HRULE,
+CMD_VRULE,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("hrule", CMD_HRULE);
+NewPrimitive("vrule", CMD_VRULE);
+@}
+
+@$@<Node creation commands@>+=@{@-
+case CMD_VRULE: {
+   RuleSpec* rs = ScanRuleSpec();
+   LOG("\n----CMD_VRULE");
+   break;
+}
+
+case CMD_HRULE: {
+   RuleSpec* rs = ScanRuleSpec();
+   LOG("\n----CMD_HRULE");
+   break;
+}
+@}
+
+
+
+
+
+@!----------------------------------
+@!  \end and \dump
+@!----------------------------------
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_END,
+CMD_DUMP,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("end", CMD_END);
+NewPrimitive("dump", CMD_DUMP);
+@}
+
+@$@<Stop commands@>==@{@-
+
+case CMD_DUMP: {
+   LOG("\n----CMD_DUMP");
+   running = false;
+   break;
+}
+
+case CMD_END: {
+   LOG("\n----\\end");
+   running = false;
+   break;
+}
+@}
+
+
+@!-----------------------------------------
+@! \/ Italic correction
+@!-----------------------------------------
+
+\cmda{\char92/ (Italic correction)}
+
+
+@!-----------------------------------------
+@! \- Discretionary
+@!-----------------------------------------
+
+\cmda{\char92- (Discretionary)}
+
+
+\cmda{\char92discretionary (Discretionary)}
+
+@!-----------------------------------------
+@! \accent
+@!-----------------------------------------
+
+\cmd{accent}
+
+\noseealso
+@$@<Command Codes@>+=@{CMD_ACCENT,@}
+
+
+@!-----------------------------------------
+@! \hbox
+@!-----------------------------------------
+
+\cmd{hbox}
+
+
+@!-----------------------------------------
+@! \vbox
+@!-----------------------------------------
+
+\cmd{vbox}
+
+
+
+@B@<More commands@>
+
+@C@<Tag creating commands@>
+@$@<Command Codes@>+=@{@-
+CMD_TAG,
+CMD_MSIHMODE,
+CMD_MSIVMODE,
+CMD_OPENTAG,
+CMD_CLOSETAG,
+@}
+
+@$@<Create symbols@>+=@{@-
+NewPrimitive("msitag", CMD_TAG);
+NewPrimitive("msihmode", CMD_MSIHMODE);
+NewPrimitive("msivmode", CMD_MSIVMODE);
+NewPrimitive("msiopentag", CMD_OPENTAG);
+NewPrimitive("msiclosetag", CMD_CLOSETAG);
+@}
+
+
+
+@$@<TagStack@>+=@{@-
+static std::list<std::string> s_tagStack;
+@}
+
+
+@$@<Misc commands@>+=@{@-
+case CMD_TAG : {
+   TokenList* pTL = new TokenList;
+   ScanTokenList(pTL, false);
+   LOG("\n----Create tag " << *pTL);
+   Typesetter::AppendTag(pTL);
+   break;
+}
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_MSIHMODE : {
+   LOG("\n----\\msihmode ");
+   if (Typesetter::GetMode() == MODE_VERTICAL){
+     Typesetter::GotoHMode();
+     inp.Putback(Global::msieverypar);
+     inp.Putback(Global::everypar);
+   }
+   break;
+}
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_MSIVMODE : {
+   LOG("\n----\\msivmode ");
+   Typesetter::GotoVMode();
+   break;
+}
+@}
+
+
+
+
+@$@<Command Codes@>+=@{@-
+CMD_ENDINPUT,
+@}
+
+@$@<Create symbols@>+=@{@-
+NewPrimitive("endinput",  CMD_ENDINPUT, 0, 1);
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_ENDINPUT : {
+   LOG("\n--- \\endinput");
+   InputStack::EndInput();
+   break;
+}
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_OPENTAG : {
+   TokenList* pTL = new TokenList;
+   TokenList* pTLoutput = new TokenList;
+   ScanTokenList(pTL, false);
+   ScanTokenList(pTLoutput, false);
+   LOG("\n----Create open tag " << *pTL << ", " << *pTLoutput);
+   Typesetter::AppendTag(pTLoutput);
+
+   StringUtils::AppendToks(*pTL);
+   String str = StringBuilder::Create();
+   std::string strTemp;
+   int i = 0;
+   while (i < str.Size()){
+      strTemp += (char) str[i];
+      ++i;
+   }
+   StringBuilder::Discard(str);
+   s_tagStack.push_back(strTemp);
+   break;
+}
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_CLOSETAG : {
+   TokenList* pTL = new TokenList;
+   TokenList* pTLoutput = new TokenList;
+
+   ScanTokenList(pTL, false);
+   ScanTokenList(pTLoutput, false);
+   LOG("\n----Create close tag " << *pTL << ", " << *pTLoutput);
+
+   StringUtils::AppendToks(*pTL);
+   String str = StringBuilder::Create();
+   std::string strTemp;
+   int i = 0;
+   while (i < str.Size()){
+       strTemp += (char) str[i];
+       ++i;
+   }
+   StringBuilder::Discard(str);
+   // look for the matching open tag
+   std::list<std::string>::reverse_iterator it = s_tagStack.rbegin();
+   bool found = false;
+   while (it != s_tagStack.rend()){
+      if (*it == strTemp){
+         found = true;
+         break;
+      } else {
+         ++it;
+      }
+   }
+   // don't let a </p> close anything except
+   // an immediately surrounding <p>
+   if (found && strTemp == "p"){
+      if (it != s_tagStack.rbegin()){
+         found = false;
+      }
+   }
+   if (!found){
+      LOG("\n----DISCARD Tag " << *pTL);
+   } else {
+      do {
+        if (s_tagStack.back() == strTemp){
+          Typesetter::AppendTag(pTLoutput);
+          s_tagStack.pop_back();
+          break;
+        } else {
+          LOG("\n----IMPLICIT CLOSING " << s_tagStack.back().c_str());
+          std::string closetag = "</";
+          closetag += s_tagStack.back();
+          closetag += ">";
+          Typesetter::AppendTag(closetag.c_str());
+          s_tagStack.pop_back();
+        }
+      } while (true);
+   }
+
+   break;
+}
+@}
+
+
+@C@<Paragraph starting and ending@>
+
+
+@$@<Command Codes@>+=@{@-
+CMD_END_PAR,
+@}
+
+
+@$@<Create symbols@>+=@{@-
+NewPrimitive("par", CMD_END_PAR);
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_END_PAR : {
+   LOG("\n----End Paragraph");
+   Typesetter::GotoVMode();
+   Typesetter::SetInner(false);
+   break;
+}
+@}
+
+\cmda{Left brace}
+
+This is generated by a catcode 1 character.
+@$@<Command Codes@>+=@{@-
+CMD_LEFT_BRACE,
+CMD_RIGHT_BRACE,
+@}
+
+@$@<Grouping commands@>+=@{@-
+case CMD_LEFT_BRACE : {
+   if (Typesetter::GetMode() == MODE_MATH){
+      LOG("\n----Begin math group " << CurTok());
+      InputStack::Putback(CurTok());
+      Typesetter::StartNucleus();
+      ScanMath();
+      break;
+      //Typesetter::StartSubformula();
+      //NewLevel(MATH_GROUP);
+   } else {
+      LOG("\n----Begin simple group " << CurTok());
+      NewLevel(SIMPLE_GROUP);
+   }
+   if (Global::msidobraces == 1){
+      if (Typesetter::GetMode() == MODE_VERTICAL){
+        // Goto HMODE, rescan token
+        inp.Putback(CurTok());
+        Typesetter::GotoHMode();
+        Typesetter::SetInner(false);
+        inp.Putback(Global::msieverypar);
+        inp.Putback(Global::everypar);
+      } else {
+        TeXToken lbrace(TT_LETTER, '{', 0);
+        TokenList* pTL = new TokenList;
+        pTL->push_back(lbrace);
+        Typesetter::AppendTag(pTL);
+      }
+   }
+   break;
+}
+@}
+
+@$@<Grouping commands@>+=@{@-
+case CMD_RIGHT_BRACE : {
+   if (Global::msidobraces == 1 || bCurrentLevelType(MATH_GROUP)){
+      TeXToken rbrace(TT_LETTER, '}', 0);
+      TokenList* pTL = new TokenList;
+      pTL->push_back(rbrace);
+      Typesetter::AppendTag(pTL);
+   }
+   EndLevel();
+   break;
+}
+@}
+
+
+
+@C@<Show@>
+
+
+@$@<Command Codes@>+=@{@-
+CMD_SHOW,
+@}
+
+
+@$@<Create symbols@>+=@{@-
+NewPrimitive("show", CMD_SHOW);
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_SHOW : {
+   GetRawToken();
+   LOG("\nShow " << CurTok() << " ");
+   if (CurTok().Type() == TT_SYMBOL){
+      SymbolData* pData = CurData();
+      const MacroDef* pMacDef = dynamic_cast<const MacroDef*>(pData);
+      if (pMacDef != 0){
+         LOG("macro " << pMacDef -> Toks());
+      }
+   }
+
+   break;
+}
+@}
+
+
+
+@!-----------------------------------------
+@! Superscript
+@!-----------------------------------------
+\cmda{Superscript}
+
+@!-----------------------------------------
+@! \unpenalty
+@!-----------------------------------------
+
+\cmd{unpenalty}
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+UNPENALTY,
+@}
+
+
+@!-----------------------------------------
+@! \moveleft
+@!-----------------------------------------
+
+\cmd{moveleft etc}
+
+See TTP 1071...
+
+@$@<Command Codes@>+=@{@-
+CMD_MOVELEFT, CMD_MOVERIGHT, CMD_RAISE, CMD_LOWER,
+@}
+
+
+
+
+@!--------------------------------
+@! Indent
+@!--------------------------------
+\cmda{\char92indent and \char92noindent}
+
+See TTP 1090.
+
+
+@$@<Command Codes@>+=@{@-
+CMD_START_PAR,
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_START_PAR:{
+   LOG("\n---Start paragraph");
+   break;
+}
+@}
+
+
+
+
+
+
+@B@<Message and errmessage@>
+@$@<Command Codes@>+=@{@-
+CMD_MESSAGE,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("message",  CMD_MESSAGE, 0, 1);
+NewPrimitive("errmessage", CMD_MESSAGE, 0, 2);
+@}
+
+@$@<Message commands@>==@{@-
+case CMD_MESSAGE: {
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   int type = prim -> Data();
+   TokenList* pTL = new TokenList;
+   ScanTokenList(pTL, false);
+   if (type == 1) {
+       LOG("\n\\message: ");
+   } else {
+       LOG("\n\\errmessage: ");
+   }
+   LOG(*pTL);
+   break;
+}
+@}
+
+
+
+@B@<Logging modes@>
+
+\cmd{batchmode}
+
+\cmd{nonstopmode}
+
+\cmd{scrollmode}
+
+\cmd{errorstopmode}
+
+
+
+@B@<Reading files@>
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_OPENIN,
+CMD_READ,
+CMD_CLOSEIN,
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("read", CMD_READ);
+NewPrimitive("openin", CMD_OPENIN);
+NewPrimitive("closein", CMD_CLOSEIN);
+@}
+
+
+@$@<Misc commands@>+=@{@-
+case CMD_READ: {
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+   case CMD_READ : {
+      int m;
+      ScanInt(&m);
+      ScanKeyword(Keywords::KW_TO);
+      //ScanOptionalSpaces();
+      TeXToken defining;
+      @<Scan definable symbol@>
+      LOG("\n----Read from " << m << " to " << defining);
+      break;
+   }
+@}
+
+
+@$@<Misc commands@>+=@{@-
+case CMD_OPENIN: {
+   int m;
+   ScanInt(&m);
+   ScanOptionalEquals();
+
+   Filename fn;
+   @<Scan filename@>
+   LOG("\n----Opening input "
+          << m << " as " << fn.GetNameString());
+   if (Global::g_readFile[m] != 0){
+      LOG("\nDeleting already open read file");
+      delete Global::g_readFile[m];
+   }
+
+   Global::g_readFile[m] = new InputByteFile;
+
+   if (!Global::g_readFile[m] -> Open(fn)){
+      LOG("\nFailed to open read file " << fn.GetNameString());
+   }
+   break;
+}
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_CLOSEIN: {
+   int m;
+   ScanInt(&m);
+   LOG("\n----Closing input " << m);
+   delete Global::g_readFile[m];
+   Global::g_readFile[m] = 0;
+   break;
+}
+@}
+
+
+
+
+
+@B@<Writing files@>
+These are implemented as extensions.
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_EXTENSION,
+@}
+
+
+@$@<Command subcodes@>+=@{@-
+enum ExtCode{
+   EXT_IMMED,
+   EXT_WRITE,
+   EXT_OPENOUT,
+   EXT_CLOSEOUT,
+   EXT_EXTPROC};
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("immediate",CMD_EXTENSION, false, EXT_IMMED);
+NewPrimitive("write", CMD_EXTENSION, false, EXT_WRITE);
+NewPrimitive("openout", CMD_EXTENSION, false, EXT_OPENOUT);
+NewPrimitive("closeout", CMD_EXTENSION, false, EXT_CLOSEOUT);
+NewPrimitive("msiextproc", CMD_EXTENSION, false, EXT_EXTPROC);
+@}
+
+
+@$@<Extensions@>+=@{@-
+case CMD_EXTENSION: {
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   ExtCode subtype = (ExtCode) prim -> Data();
+   switch(subtype){
+      case EXT_IMMED : {
+         LOG("\n----Immediate");
+         break;
+      }
+      case EXT_WRITE : {
+         int m;
+         TokenList* pTL = new TokenList;
+         ScanInt(&m);
+         ScanTokenList(pTL, true);
+         LOG("\n----Write to " << m << " the tokens " << *pTL);
+
+         StringUtils::AppendToks(*pTL);
+         String str = StringBuilder::Create();
+         if (m >= 0 && m <= 15){
+            if (Global::g_writeFile[m] == 0){
+               LOG("\nOutput file " << m << " is not open. ");
+               LOG("Writing to log.");
+               LOG("\n*** " << str);
+            } else {
+               Global::g_writeFile[m] -> Write(str);
+            }
+         } else {
+            LOG("\n*** " << str);
+         }
+         StringBuilder::Discard(str);
+
+         break;
+      }
+      case EXT_OPENOUT : {
+         int m;
+         ScanInt(&m);
+         ScanOptionalEquals();
+
+         Filename fn;
+         @<Scan filename@>
+         LOG("\n----Opening output "
+                     << m << " as "
+                     << fn.GetNameString());
+         if (Global::g_writeFile[m] != 0){
+            LOG("\nDeleting already open write file");
+            delete Global::g_writeFile[m];
+         }
+
+         Global::g_writeFile[m] = new OutputByteFile;
+
+         if (!Global::g_writeFile[m] -> Open(fn)){
+            LOG("\nFailed to open write file " << fn.GetNameString());
+         }
+
+         break;
+      }
+      case EXT_CLOSEOUT : {
+         int m;
+         ScanInt(&m);
+         LOG("\n----Closing output " << m);
+         if (m >= 0 && m <= 15){
+            delete Global::g_writeFile[m];
+            Global::g_writeFile[m] = 0;
+         }
+         break;
+      }
+      case EXT_EXTPROC : {
+         Filename fn;
+         @<Scan filename@>
+         LOG("\n----Starting processor " << fn.GetNameString());
+         //ScanLeftBrace();
+         Typesetter::StartProcess(fn.GetNameString());
+         //NewLevel(PROCESS_GROUP);
+         TokenList* tl = new TokenList;
+         ScanTokenList(tl, false);
+         Typesetter::AppendTag(tl);
+         //EndLevel();
+         Typesetter::EndProcess();
+         break;
+      };
+
+      default: {
+         LOG("ERROR --- unknown extension");
+         ASSERT(false);
+         break;
+      }
+
+   }
+   break;
+}
+@}
+
+
+
+
+
+@B@<\char92font@>
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_SET_FONT,
+CMD_FONT_SWITCH,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("font", CMD_SET_FONT);
+@}
+
+@$@<Font commands@>+=@{@-
+case CMD_SET_FONT:{
+   TeXToken defining;
+   @<Scan definable symbol@>
+   ScanOptionalEquals();
+   Filename fn;
+   @<Scan filename@>
+   if (ScanKeyword(Keywords::KW_SCALED)){
+      int n;
+      ScanInt(&n);
+   } else if (ScanKeyword(Keywords::KW_AT)){
+      int dim;
+      ScanDim(false, false, false, &dim);
+   }
+   Primitive* cmd = new Primitive(CMD_FONT_SWITCH, false, 0);
+   Symbols::SetDef(defining.Symbol(), cmd, false);
+   LOG("\n----Set " << defining <<
+      " = a font (todo: should this check global setting?)");
+   break;
+}
+@}
+
+
+@$@<Font commands@>+=@{@-
+case CMD_FONT_SWITCH : {
+   LOG("----switch to font " << CurTok());
+   break;
+}
+@}
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_SET_SKEWCHAR,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("skewchar", CMD_SET_SKEWCHAR);
+@}
+
+
+@$@<Font commands@>+=@{@-
+case CMD_SET_SKEWCHAR:{
+   GetRawToken();
+   TeXToken font = CurTok();
+   ScanOptionalEquals();
+   int n;
+   ScanInt(&n);
+   LOG("\nSet skewchar of " << font << " = " << n);
+   break;
+}
+@}
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_SET_TEXTFONT,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("textfont", CMD_SET_TEXTFONT);
+@}
+
+
+@$@<Font commands@>+=@{@-
+case CMD_SET_TEXTFONT:{
+   int n;
+   ScanInt(&n);
+   ScanOptionalEquals();
+   GetRawToken();
+   TeXToken font = CurTok();
+   LOG("\nSet textfont of " << n << " = " << font);
+   break;
+}
+@}
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_SET_SCRIPTFONT,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("scriptfont", CMD_SET_SCRIPTFONT);
+@}
+
+
+@$@<Font commands@>+=@{@-
+case CMD_SET_SCRIPTFONT:{
+   int n;
+   ScanInt(&n);
+   ScanOptionalEquals();
+   GetRawToken();
+   TeXToken font = CurTok();
+   LOG("\nSet scriptfont of " << n << " = " << font);
+   break;
+}
+@}
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_SET_SCRIPTSCRIPTFONT,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("scriptscriptfont", CMD_SET_SCRIPTFONT);
+@}
+
+
+@$@<Font commands@>+=@{@-
+case CMD_SET_SCRIPTSCRIPTFONT:{
+   int n;
+   ScanInt(&n);
+   ScanOptionalEquals();
+   GetRawToken();
+   TeXToken font = CurTok();
+   LOG("\nSet scriptscriptfont of " << n << " = " << font);
+   break;
+}
+@}
+
+
+@B@<\begingroup and \endgroup@>
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_BEGINGROUP,
+CMD_ENDGROUP,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("begingroup", CMD_BEGINGROUP);
+NewPrimitive("endgroup", CMD_ENDGROUP);
+@}
+
+
+@$@<Grouping commands@>+=@{@-
+case CMD_BEGINGROUP:{
+   NewLevel(SEMISIMPLE_GROUP);
+   LOG("\n----\\begingroup");
+   break;
+}
+
+case CMD_ENDGROUP:{
+   EndLevel();
+   LOG("\n----\\endgroup");
+   break;
+}
+
+@}
+
+
+
+
+@!-------------------------------
+@! \relax
+@!-------------------------------
+
+\cmd{relax}
+
+See TTP 1045.
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_RELAX,
+@}
+
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("relax", CMD_RELAX);
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_RELAX: {
+   LOG("\n----\\relax");
+   break;
+};
+@}
+
+
+
+@B@<\ignorespaces@>
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_IGNORESPACES,
+@}
+
+@$@<Create symbols@>+=@{@-
+NewPrimitive("ignorespaces", CMD_IGNORESPACES);
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_IGNORESPACES: {
+   GetNext_NonBlank_NonCall();
+   InputStack::Putback(CurTok());
+   break;
+}
+@}
+
+
+@B@<\aftergroup and \afterassignment@>
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_AFTERGROUP,
+CMD_AFTERASSIGNMENT,
+@}
+
+
+@$@<Create symbols@>+=@{@-
+NewPrimitive("aftergroup", CMD_AFTERGROUP);
+NewPrimitive("afterassignment", CMD_AFTERASSIGNMENT);
+@}
+
+
+@$@<Misc commands@>+=@{@-
+case CMD_AFTERGROUP: {
+   DoAssignment(0);
+   break;
+}
+@}
+
+
+@$@<Misc commands@>+=@{@-
+case CMD_AFTERASSIGNMENT: {
+   GetRawToken();
+   s_afterAssignment = CurTok();
+   LOG("\n----afterassignment insert " << CurTok());
+   break;
+}
+@}
+
+
+@$@<Assignments@>+=@{@-
+case CMD_AFTERGROUP:{
+   ASSERT(s_groupStackTop >= 0);
+   TokenList* afterGroup = s_groupStack[s_groupStackTop].m_afterGroup;
+   if (afterGroup == 0){
+      afterGroup = new TokenList;
+      s_groupStack[s_groupStackTop].m_afterGroup = afterGroup;
+   }
+   GetRawToken();
+   afterGroup -> push_back(CurTok());
+   LOG("\n----aftergroup insert " << CurTok());
+   break;
+}
+@}
+
+
+
+@B@<Physical layout@>
+
+@o@<interpretter.h@>==@{@-
+#ifndef INTERPRETTER_H
+#define INTERPRETTER_H
+@<class Interpretter@>
+#endif
+@}
+
+@o@<interpretter.cpp@>==@{@-
+#include "interpretter.h"
+#include "symbols.h"
+#include "restore.h"
+#include "typesetter.h"
+#include "scanutils.h"
+#include "expandables.h"
+#include "macros.h"
+#include "scanutils.h"
+#include <string>
+#include <list>
+#include <iostream>
+
+
+static InputStack inp;
+static TeXToken s_illegal(TT_PARAM, 11, 0); // an illegal token
+static TeXToken s_afterAssignment(s_illegal);
+Typesetter ts;
+SymbolData* frozen_relax;
+
+@<GroupStack@>
+@<TagStack@>
+@<Interpretter forward declarations@>
+@<Functions for inserting primitive hooks@>
+@<Some box scanning@>
+@<ScanMath@>
+@<Alignment implementation@>
+@<Declare MakeIntegerParameter@>
+@<Declare MakeDimenParam@>
+@<Declare MakeGlueParam@>
+@<Declare MakeToksParameter@>
+@<Declare interpretter global variables@>
+@<InitializeSymbolTable@>
+
+@<DoAssignments@>
+@<DoPrefixedCommand@>
+@<Main Loop@>
+@}
+
+
+@o@<interprt.t.cpp@>==@{@-
+#include <string>
+#include "platform.h"
+#include "textio.h"
+#include "tokens.h"
+#include "symbols.h"
+#include "scanutils.h"
+#include "interpretter.h"
+
+@<CompareLog utility@>
+@<Input file utility@>
+
+@<Test jig@>@(@<Interprt tests@>@,@<Interprt TestTable@>@)
+@}
+
+

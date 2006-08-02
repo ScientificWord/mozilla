@@ -1,0 +1,187 @@
+@A@<Box commands@>
+
+
+@B@<Scan boxes@>
+
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_HBOX,
+CMD_VBOX,
+CMD_LASTBOX,
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("hbox", CMD_HBOX);
+NewPrimitive("vbox", CMD_VBOX);
+NewPrimitive("raise", CMD_RAISE);
+NewPrimitive("lower", CMD_LOWER);
+NewPrimitive("lastbox", CMD_LASTBOX);
+@}
+
+
+
+@$@<Some box scanning@>+=@{@-
+void ScanBoxSpec()
+{
+   Scaled dim;
+   if (ScanKeyword(Keywords::KW_TO)){
+      ScanDim(false, false, false, &dim);
+   } else if (ScanKeyword(Keywords::KW_SPREAD)){
+      ScanDim(false, false, false, &dim);
+   }
+   ScanLeftBrace();
+}
+@}
+
+@$@<Some box scanning@>+=@{@-
+void ScanBox()
+{
+   GetToken();
+   DetermineCommandCode();
+   if (CurCmdCode() == CMD_VBOX){
+      ScanBoxSpec();
+      NewLevel(VBOX_GROUP);
+      ts.StartBox();
+      ts.AppendTag("{");
+      LOG("\nStart vbox");
+   } else if (CurCmdCode() == CMD_HBOX){
+      ScanBoxSpec();
+      NewLevel(HBOX_GROUP);
+      ts.StartBox();
+      ts.AppendTag("{");
+      LOG("\nStart hbox");
+   } else if (CurCmdCode() == CMD_LASTBOX){
+      LOG("\nUnimplemented handling of \\lastbox assignment");
+   }
+}
+@}
+
+
+
+@$@<Box building commands@>+=@{@-
+case CMD_HBOX:
+{
+   ScanBoxSpec();
+   NewLevel(HBOX_GROUP);
+   SaveRestoration(
+      new IntRestoration(&Global::msidollar, "msidollar"), false);
+   Global::msidollar = '$';
+   ts.StartBox();
+   ts.AppendTag("{");
+   Typesetter::GotoHMode();
+   Typesetter::SetInner(true);
+   LOG("\nStart hbox");
+   break;
+};
+@}
+
+
+@$@<Box building commands@>+=@{@-
+case CMD_VBOX:
+{
+   ScanBoxSpec();
+   NewLevel(VBOX_GROUP);
+   ts.StartBox();
+   ts.AppendTag("{");
+   Typesetter::GotoVMode();
+   Typesetter::SetInner(true);
+   LOG("\nStart vbox");
+   break;
+};
+@}
+
+@$@<Box building commands@>+=@{@-
+case CMD_RAISE:
+{
+   Scaled dim;
+   ScanDim(false, false, false, &dim);
+   break;
+}
+@}
+
+@$@<Box building commands@>+=@{@-
+case CMD_LOWER:
+{
+   Scaled dim;
+   ScanDim(false, false, false, &dim);
+   break;
+}
+@}
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_UNHBOX,
+CMD_UNHCOPY,
+CMD_UNVBOX,
+CMD_UNVCOPY,
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("unhbox",  CMD_UNHBOX);
+NewPrimitive("unvbox",  CMD_UNVBOX);
+NewPrimitive("unhcopy", CMD_UNHCOPY);
+NewPrimitive("unvcopy", CMD_UNVCOPY);
+@}
+
+@$@<Unboxing commands@>+=@{@-
+case CMD_UNHBOX:{
+   int m;
+   ScanInt(&m);
+   if (Typesetter::GetMode() == MODE_VERTICAL){
+      Typesetter::GotoHMode();
+      Typesetter::SetInner(true);
+      inp.Putback(Global::msieverypar);
+      inp.Putback(Global::everypar);
+   }
+   break;
+}
+case CMD_UNVBOX:{
+}
+case CMD_UNHCOPY:
+case CMD_UNVCOPY:{
+   int m;
+   ScanInt(&m);
+   ASSERT(false);
+   break;
+}
+@}
+
+
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_BOX,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("box", CMD_BOX, true, NULL);
+@}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
