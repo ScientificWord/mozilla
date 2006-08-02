@@ -1,0 +1,301 @@
+@A@<Saving and restoring definitions@>
+
+In this short section we describe the method for saving and
+restoring definitions. When we are inside a group and and make
+a definition the outside definition must be saved and restored
+when the group ends.
+
+@$@<Restore interface@>==@{@-
+#include "symbols.h"
+
+void NewSaveLevel();
+void SaveRestoration(Restoration*, bool bGlobal);
+void EndSaveLevel();
+@}
+
+
+
+Whenever we make a definition we have to decide whether the
+definition was made in the same level as the current level.
+If so the old definition is overwritten, otherwise it is
+pushed onto the restore stack.
+
+A @{Restoratation@} encapsulates the action taken to later
+restore data. It is a virtual class. When we later create
+for instance a derived @{IntegerRestoration@} we specify
+the old (integer) data to be restored. All @{Restorations@}
+have a @{void*@} member that points to the address where
+the restoration is to take place.
+
+@$@<class Restoration@>==@{@-
+class Restoration {
+private:
+   void* m_loc;
+   const char* m_id;
+public:
+   virtual ~Restoration() {};
+   virtual void Restore() = 0;
+   void* Loc()
+   {
+     return m_loc;
+   }
+   const char* Id()
+   {
+     return m_id;
+   }
+
+protected:
+   Restoration(void* loc, const char* id)
+      : m_loc(loc), m_id(id)
+   {};
+};
+@}
+
+
+The RestoreStack contains all the restorations created by the
+interpretter.  It is a stack of @{RestoreLevel@}s. Each @{RestoreLevel@}
+is a list of restorations created in a particular level.
+
+@$@<RestoreStack@>==@{@-
+#include <list>
+class RestoreLevel : public std::list<Restoration*> {
+
+};
+
+class RestoreStack : public std::list<RestoreLevel*> {
+
+};
+
+static RestoreStack s_restoreStack;
+
+@}
+
+
+We first have a function to start a new save level.
+@$@<Restore implementation@>+=@{@-
+void NewSaveLevel()
+{
+   RestoreLevel* newlevel = new RestoreLevel;
+   s_restoreStack.push_back(newlevel);
+}
+@}
+
+@$@<Restore implementation@>+=@{@-
+void SaveRestoration(Restoration* restoration, bool bGlobal)
+{
+   if (s_restoreStack.size() != 0){
+      if (bGlobal){
+         @<Kill all restorations of the same location@>
+      } else {
+         LOG("\nSaving restoration for " << restoration -> Id());
+         RestoreLevel* level = s_restoreStack.back();
+         // see if there's already a restoration
+         RestoreLevel::iterator it = level -> begin();
+         bool found = false;
+         while (it != level -> end()){
+            if ((*it) -> Loc() == restoration -> Loc()){
+               found = true;
+               break;
+            }
+            ++it;
+         }
+         if (!found)
+            level -> push_back(restoration);
+      }
+   }
+}
+@}
+
+
+The idea is that if we make a @{\global@} assignment then
+we don't want a restoration to happen at all.
+
+@$@<Kill all restorations of the same location@>==@{@-
+LOG("\n   Killing restorations for " << restoration -> Id());
+RestoreStack::iterator it;
+for (it = s_restoreStack.begin(); it != s_restoreStack.end(); ++it){
+   RestoreLevel* level = *it;
+   RestoreLevel::iterator j = level -> begin();
+   while (j != level -> end()){
+      RestoreLevel::iterator next = j;
+      ++next;
+      if ((*j) -> Loc() == restoration -> Loc()){
+        delete (*j);
+        level -> erase(j);
+      }
+      j = next;
+   }
+}
+@}
+
+Next, a function to leave a save level. This must
+traverse the restorations in reverse order and put
+definitions back the way they were.
+
+@$@<Restore implementation@>+=@{@-
+void EndSaveLevel()
+{
+   RestoreLevel* exitlevel = s_restoreStack.back();
+   s_restoreStack.pop_back();
+   std::list<Restoration*>::reverse_iterator it = exitlevel -> rbegin();
+   while (it != (exitlevel -> rend())){
+      (*it) -> Restore();
+      delete (*it);
+      ++it;
+   }
+   delete exitlevel;
+}
+@}
+
+Finally, here are the derived classes of @{Restoration@}.
+
+@$@<class IntRestoration@>==@{@-
+class IntRestoration  : public Restoration {
+private:
+   int m_oldValue;
+public:
+   IntRestoration(int* p, const char* id)
+       : Restoration(p, id),
+         m_oldValue(*p)
+   {}
+
+   void Restore();
+};
+@}
+
+
+@$@<IntRestoration implementation@>==@{@-
+   void IntRestoration::Restore()
+   {
+      LOG("\nRestoring " << Id() << " to " << m_oldValue);
+      int& loc = * (int*) Loc();
+      loc = m_oldValue;
+   }
+
+@}
+
+This is for token registers
+
+@$@<class ToksRestoration@>==@{@-
+class TokenList;
+
+class ToksRestoration  : public Restoration {
+private:
+   TokenList m_oldValue;
+public:
+   ToksRestoration(TokenList* p, const char* id)
+       : Restoration(p, id),
+         m_oldValue(*p)
+   {}
+
+   void Restore();
+};
+@}
+
+
+@$@<ToksRestoration implementation@>==@{@-
+   void ToksRestoration::Restore()
+   {
+      LOG("\nRestoring " << Id() << " to " << m_oldValue);
+      TokenList& loc = * (TokenList*) Loc();
+      loc = m_oldValue;
+   }
+
+@}
+
+
+
+This one is used to restore definitions of symbols
+
+@$@<class DefRestoration@>==@{@-
+class SymbolData;
+
+class DefRestoration  : public Restoration {
+private:
+   SymbolData* m_oldValue;
+public:
+   DefRestoration(SymbolData** p, const char* id)
+       : Restoration(p, id),
+         m_oldValue(*p)
+   {}
+
+   void Restore();
+};
+@}
+
+
+@$@<DefRestoration implementation@>==@{@-
+   void DefRestoration::Restore()
+   {
+      LOG("\nRestoring " << Id());
+      SymbolData*& loc = * (SymbolData**) Loc();
+      loc = m_oldValue;
+   }
+
+@}
+
+
+
+
+@o@<restore.h@>==@{@-
+#ifndef RESTORE_H
+#define RESTORE_H
+#include "basicdata.h"
+@<class Restoration@>
+@<class IntRestoration@>
+@<class ToksRestoration@>
+@<class DefRestoration@>
+@<Restore interface@>
+#endif
+@}
+
+@o@<restore.cpp@>==@{@-
+#include "restore.h"
+#include "platform.h"
+@<RestoreStack@>
+@<Restore implementation@>
+@<IntRestoration implementation@>
+@<ToksRestoration implementation@>
+@<DefRestoration implementation@>
+@}
+
+
+Some tests
+
+@$@<Restore tests@>+=@{@-
+
+bool TestStack()
+{
+   int x,y;
+   x = 5;
+   y = 7;
+   NewSaveLevel();
+     SaveRestoration(new IntRestoration(&x, "x"), false);
+     x = 2;
+
+     SaveRestoration(new IntRestoration(&y, "y"), false);
+     y = 3;
+     NewSaveLevel();
+       SaveRestoration(new IntRestoration(&x, "x"), false);
+       x = 0;
+
+       SaveRestoration(new IntRestoration(&y, "y"), true);
+       y = 0;
+     EndSaveLevel();
+     ASSERT(x == 2 && y == 0);
+     x = 1;
+   EndSaveLevel();
+   return (x == 5 && y == 0);
+}
+@}
+
+@$@<Restore TestTable entries@>==@{@-
+{"testa", TestStack},
+@}
+
+@o@<restore.t.cpp@>==@{@-
+#include "restore.h"
+#include <string>
+#include <iostream>
+@<Test jig@>@(@<Restore tests@>@,@<Restore TestTable entries@>@)
+@}

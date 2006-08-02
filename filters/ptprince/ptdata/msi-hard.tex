@@ -1,0 +1,1112 @@
+\def\br{\msitag{^^0a}}
+\def\makeatletter{\br\msitag{\makeatletter}\catcode`\@11\relax}
+\def\makeatother{\catcode`\@12\relax\br\msitag{\makeatother}}
+
+\input latex.tex
+
+\makeatletter
+\newif\if@clean
+%\@cleantrue
+\@cleanfalse
+
+\newtoks\temptoksa
+%% Some redefinitions of internal commands.
+%% We probably don't want these to do anything
+\let\check@mathfonts\relax
+\def~{\char`\~}
+
+%%
+\msi@dollar=`\$
+%%\msi@output = 0
+\msi@inline@proc={pass}
+\msi@display@proc={pass}
+\msi@everypar={\msitag{^^0a^^0a}}
+\begingroup
+   \msi@everyhbox={\msi@hbox}
+\endgroup
+\def\msi@blankline{\msitag{^^0a^^0a}}
+
+
+\def\msi@tcimacro{\begingroup\br\char`\%TCIMACRO\@brace}
+\def\msi@begin@expansion{\endgroup\br\char`\%BeginExpansion\br\begingroup}
+\def\msi@end@expansion{\endgroup\br\char`\%EndExpansion\br}
+
+
+\def\msi@hook@hfil{\msitag{\hfil}}
+\def\msi@hook@hfill{\msitag{\hfill}}
+\def\msi@hook@hss{\msitag{\hss}}
+
+
+\def\msi@hook@vfil{\msitag{\vfil}}
+\def\msi@hook@vfill{\msitag{\vfill}}
+\def\msi@hook@vss{\msitag{\vss}}
+
+
+\def\msi@hbox#1{%
+  \if@clean
+   \msi@tcimacro{\msitag{\text}%
+      \msi@dollar=`\$
+      \@brace{#1}}\char`\%
+   \msi@begin@expansion
+     \msitag{\hbox}\msi@dollar=`\$ \@brace{#1}
+   \msi@end@expansion
+  \else
+   \msitag{\hbox}{#1}%
+  \fi
+}
+
+
+\let\@@hbox\hbox
+\def\hbox#1#{%
+   \msitag{\hbox}\@@hbox#1%
+}
+
+
+\def\makebox{%
+  \msihmode
+  \@ifnextchar(%)
+    \@makepicbox
+    {\@ifnextchar[\@makebox\mbox}}
+
+\def\@makebox[#1]#2{
+  \msitag{\makebox[#1]}\@@hbox{#2}%
+}
+
+\def\@makepicbox(#1,#2){%
+  \@ifnextchar[{\@imakepicbox(#1,#2)}{\@imakepicbox(#1,#2)[]}}
+
+\def\@imakepicbox(#1,#2)[#3]#4{%
+  \msitag{\makebox(#1,#2)[#3]}\@@hbox{#4}%
+}
+
+
+\def\raisebox#1{%
+ \msihmode
+ \@ifnextchar[{\@rsbox{#1}}{\@irsbox{#1}[]}%
+}
+
+\def\@rsbox#1[#2]{%
+  \@ifnextchar[{\@iirsbox{#1}[#2]}{\@irsbox{#1}[#2]}}
+  
+\long\def\@irsbox#1[#2]#3{%
+  \msitag{\raisebox{#1}[#2]}\@@hbox{#3}
+}
+
+\long\def\@iirsbox#1[#2][#3]#4{%
+  \msitag{\raisebox{#1}[#2][#3]}\@@hbox{#4}
+}
+
+
+
+\def\underbar#1{\msihmode\msitag{\underbar}{#1}}
+
+\msi@pass{\nointerlineskip}
+\msi@pass{\offinterlineskip}
+
+\def\vglue{\afterassignment\vgl@\skip@=}
+\def\vgl@{\par \dimen@\prevdepth \hrule \@height\z@
+  \nobreak\vskip\skip@ \prevdepth\dimen@}
+\def\hglue{\afterassignment\hgl@\skip@=}
+\def\hgl@{\leavevmode \count@\spacefactor \vrule \@width\z@
+  \nobreak\hskip\skip@ \spacefactor\count@}
+\def\slash{/\penalty\exhyphenpenalty} % a `/' that acts like a `-'
+
+\msi@pass{\break}
+\msi@pass{\nobreak}
+\msi@pass{\allowbreak}
+\msi@pass{\filbreak}
+\msi@pass{\goodbreak}
+\msi@pass{\eject}
+
+\msi@pass{\removelastskip}
+\msi@pass{\medbreak}
+\msi@pass{\bigbreak}
+
+\def\m@th{\mathsurround\z@}
+
+\newbox\strutbox
+\msi@pass{\strut}
+\msi@pass{\hidewidth}
+\msi@pass{\narrower}
+
+%%%%
+
+\def\smash#1{\@@hbox{#1}}
+
+\def\mbox{\msitag{\mbox}\@@hbox}
+
+%%\def\text{\msitag{\text}\@@hbox}
+\def\text#1{{\temptoksa={#1}\msitag{\text}\expandafter\@@hbox\expandafter{\the\temptoksa}}}
+\def\rlap{\msitag{\rlap}\@@hbox}
+\def\llap{\msitag{\llap}\@@hbox}
+
+\def\lefteqn#1{\msitag{\lefteqn}{#1}}
+
+
+
+%% \def\msi@identity#1#2{%
+%%   
+%% %  \newcommand#1[#2]{\msitag{#1...
+%% 
+%% }
+
+%% Some font commands
+
+\newcommand\DeclareFontFamily[3]{\msitag{\DeclareFontFamily{#1}{#2}{#3}}}
+\newcommand\DeclareFontShape[6]{\msitag{\DeclareFontShape{#1}{#2}{#3}{#4}{#5}{#6}}}
+\newcommand\DeclareSymbolFont[5]{\msitag{\DeclareSymbolFont{#1}{#2}{#3}{#4}{#5}}}
+\newcommand\DeclareSymbolFontAlphabet[2]{\msitag{\DeclareSymbolFontAlphabet{#1}{#2}}}
+
+
+%% Index
+
+\def\index#1{\msitag{\index}{#1}}
+
+
+%%
+
+%% Pagestyle
+
+\def\pagestyle#1{\msitag{\pagestyle{#1}}}
+\def\thispagestyle#1{\msitag{\thispagestyle{#1}}}
+
+
+\newcount\msi@cellnumber
+\msi@everyrowstart{\msi@cellnumber=0\relax}
+%\msi@everyrowend{\msi@cellnumber=0\char92\char92}
+\msi@everyrowend{\msi@cellnumber=0\relax}
+\msi@everycellstart{%
+   \ifnum\msi@cellnumber=0
+   \else
+      \char`&
+   \fi
+   \advance\msi@cellnumber by 1\relax}
+\msi@everycellend{}
+
+
+%\edef\@lbrace{\expandafter\msitag\expandafter{\char123}}
+%\edef\@rbrace{\expandafter\msitag\expandafter{\char125}}
+\edef\@brace#1{\char123\relax#1\char125\relax}
+
+
+%
+
+%
+
+
+
+\def\bibitem{%
+   \@ifnextchar[{\@bibitema}{\@bibitemb}%
+}
+\def\@bibitema[#1]{%
+   \msi@blankline\msihmode\msitag{\bibitem}[#1]%
+}
+\def\@bibitemb{%
+   \msi@blankline\msihmode\msitag{\bibitem}%
+}
+
+
+
+%%\msi@environment{thebibliography}
+\def\msi@begin@thebibliography#1{
+  \par\msihmode\msitag{\begin{thebibliography}}{#1}%
+}
+
+\def\msi@end@thebibliography{
+  \par\msitag{\end{thebibliography}}%
+}
+
+
+
+
+
+\def\bibliography#1{\msitag{\bibliography{#1}}}
+\def\bibliographystyle#1{\msitag{\bibliographystyle{#1}}}
+
+
+
+
+%\msi@pass{\\}
+\def\\{%
+  \@ifnextchar[{\@linea}{\@lineb}}
+
+\def\@linea[#1]{\msitag{\\[#1]}\br}
+\def\@lineb{\msitag{\\}\br}
+
+
+\def\msi@fontswitch#1{%
+  \def#1{\msihmode\msitag{#1}}}
+
+
+
+
+
+\let\@@enddocument\enddocument
+\def\msi@end@document{%
+   \br\msitag{\end{document}}%
+   \global\msi@output=1\relax
+   \@@enddocument
+}
+
+\def\enddocument{\end{document}}
+
+%% Use package
+
+
+
+
+\def\@make@braces@other{%
+  \catcode`\{=12%
+  \catcode`\}=12%
+  \relax
+}
+\def\@make@braces@normal{%
+  \catcode`\{=1%
+  \catcode`\}=2%
+  \relax
+}
+
+\bgroup
+  \@make@braces@other
+  \catcode `|=0
+  \catcode`\[=1
+  \catcode`\]=2
+  \catcode`\\=12
+  |gdef|@scan@verbatim#1\end{verbatim}[|out@verbatim[#1]]%
+     |end[verbatim]%
+     |@make@braces@normal%
+  ] 
+|egroup
+
+
+\def\msi@begin@verbatim{%
+   \@make@braces@other
+   \def\par{\char10}
+   \obeylines
+   \obeyspaces
+   \catcode`\\=12
+   \catcode`\%=12
+   \catcode`\#=12
+   \catcode`\$=12
+   \catcode`\^=12
+   \catcode`\_=12
+   %%\catcode`\&=\active
+   %%\catcode`\<=\active
+   %%\catcode`\>=\active
+   \catcode`\&=12%
+   \relax\@scan@verbatim}
+\def\msi@end@verbatim{}
+
+\def\verb{%
+   \bgroup
+      \chardef\other=13
+      \catcode`\\=\other
+      \catcode`{=\other
+      \catcode`}=\other
+      \catcode`&=\active
+      \catcode`$=\other
+      \@sverb   
+}
+\def\@sverb#1{%
+  \msitag{\verb#1}%
+  \def\verb@egroup{#1\egroup}
+  \catcode`#1\active
+  \lccode`\~`#1\relax
+  \lowercase{\let~\verb@egroup}%
+}
+
+\def\verb#1{%
+  \def\scanverb##1#1{%
+     \egroup
+     \expandafter\msitag\expandafter{\string\verb#1##1#1}%
+  }
+  \bgroup
+     \chardef\other=13
+     \catcode`\\=\other
+     \catcode`{=\other
+     \catcode`}=\other
+     \catcode`&=\active
+     \catcode`$=\other
+     \scanverb
+}
+
+
+\def\special#1{%
+  \temptoksa={#1}%
+  \msitag{\special}{\the\temptoksa}%
+}
+
+%%
+
+\def\msi@verbatim@environment#1{%
+   \expandafter\def\csname msi@begin@#1\endcsname{%
+       \msihmode
+       \@make@braces@other
+       \def\par{\char10}%
+       \obeylines
+       \obeyspaces
+       \catcode`\\=12%
+       \catcode`\%=12%
+       \catcode`\#=12%
+       \catcode`\$=12%
+       \catcode`\^=12%
+       \catcode`\_=12%
+       %%\catcode`\&=\active
+       %%\catcode`\<=\active
+       %%\catcode`\>=\active
+       \catcode`\&=12%
+       \relax\@scan@to@end{#1}%
+   }
+}
+
+\bgroup
+  \@make@braces@other
+  \catcode `|=0
+  \catcode`\[=1
+  \catcode`\]=2
+  \catcode`\\=12
+  |gdef|@scan@to@end#1[%
+     |def|scanit##1\end{#1}[%
+        |temptoksa=[##1]%
+		|endgroup% This was started by the \begin{...}
+		|br|msitag[\begin{#1}]|the|temptoksa|msitag[\end{#1}]%
+		|@make@braces@normal%
+	 ]
+	 |scanit
+  ]
+  |gdef|@scan@to@cs#1[%
+     |def|scanit##1\#1[%
+        |global|temptoksa=[##1]%
+		|@make@braces@normal
+		|endgroup
+	 ]%
+	 |scanit
+  ]%
+|egroup
+
+
+
+%%
+
+
+
+\def\msi@accent#1{%
+   \def#1##1{\msitag{#1}{##1}}%
+}
+
+
+%\msi@pass{\ref}
+\def\ref#1{\msitag{\ref{#1}}}
+
+\def\footnote{%
+  \@ifnextchar[{\@footnotea}{\@footnoteb}%
+}
+\def\footnotetext{%
+  \@ifnextchar[{\@footnotetexta}{\@footnotetextb}%
+}
+
+\def\@footnotea[#1]#2{\msitag{\footnote}[#1]{#2}}%
+\def\@footnoteb#1{\msitag{\footnote}{#1}}%
+
+\def\@footnotetexta[#1]#2{\msitag{\footnotetext[#1]{#2}}}%
+\def\@footnotetextb#1{\msitag{\footnotetext{#1}}}%
+
+
+\def\msi@begin@equation{%
+   \msihmode\br\msitag{\begin{equation}}\br
+   \begingroup\msi@dollar=0\relax$$}
+\def\msi@end@equation{$$\endgroup
+   \br\msitag{\end{equation}}\br}
+
+\def\msi@begin@displaymath{%
+   \br\msitag{\begin{displaymath}}\br
+   \begingroup\msi@dollar=0\relax$$}
+\def\msi@end@displaymath{$$\endgroup
+   \br\msitag{\end{displaymath}}\br}
+
+
+\expandafter\def\csname msi@begin@equation*\endcsname
+{%
+   \msihmode\br\msitag{\begin{equation*}}
+   \begingroup\msi@dollar=0\relax$$%
+}
+\expandafter\def\csname msi@end@equation*\endcsname
+{%
+   $$\endgroup
+   \br\msitag{\end{equation*}}\br}
+
+\def\tag#1{\msitag{\tag{#1}}}
+
+\def\[{%
+  \msihmode\br\msitag{\[}\begingroup\msi@dollar=0
+   $$   
+}
+\def\]{%
+   $$
+   \endgroup
+   \msitag{\]}\br
+}
+
+\def\({%
+  \msihmode\msitag{\(}\begingroup\msi@dollar=0%
+  $%   
+}
+\def\){%
+   $%
+   \endgroup
+   \msitag{\)}%
+}
+
+
+\let\msi@begin@math=\(
+\let\msi@end@math=\)
+
+
+
+\newcount\seclevel
+\seclevel=0
+\newif\if@star
+
+
+\def\name@cursect#1#2{\edef\@cursect{\expandafter\noexpand\csname#1#2\endcsname}}%
+
+\def\newsection#1#2#3#4{%
+  \expandafter\newcount\csname#1number\endcsname
+  \csname#1number\endcsname=0
+  \expandafter\def\csname the#1\endcsname{#3}%
+  \expandafter\def\csname #1\endcsname{%
+     \@ifnextchar*{\name@cursect{#1}{*}\@starsect}%
+                  {\name@cursect{#1}{}\@nostarsect}%
+  }%
+}
+\def\@starsect*{\@startrue\@sectb}
+\def\@nostarsect{\@starfalse\@sectb}
+\def\@sectb{\@ifnextchar[{\@sectopt}{\@sectnoopt}}
+\def\@sectopt[#1]#2{%
+   \msi@blankline\msihmode\expandafter\msitag\expandafter{\@cursect}%
+   [#1]\@brace{#2}}
+\def\@sectnoopt#1{%
+   \msi@blankline\msihmode\expandafter\msitag\expandafter{\@cursect}%
+   \@brace{#1}}
+
+
+\def\@startsection#1#2#3#4#5#6{
+   %\newsection{#1}{}{}{}{}%
+      \@ifnextchar*{\name@cursect{#1}{*}\@starsect}%
+                   {\name@cursect{#1}{}\@nostarsect}%
+}
+\def\TEXTsymbol#1{\string\TEXTsymbol{\msitag{#1}}}
+
+\def\rule{%
+  \@ifnextchar[{\@rulea}{\@ruleb}%
+}
+\def\@rulea[#1]#2#3{%
+   \msitag{\rule[#1]{#2}{#3}}%
+}
+\def\@ruleb#1#2{%
+   \msitag{\rule{#1}{#2}}%
+}
+
+\def\hspace{%
+   \@ifnextchar*{\@hspace@star}{\@hspace@nostar}%
+}
+
+\def\@hspace@star*#1{%
+   \expandafter\msitag\expandafter{\csname hspace*\endcsname{#1}}%
+}
+\def\@hspace@nostar#1{%
+   \msitag{\hspace{#1}}}
+
+\def\vspace{%
+   \@ifnextchar*{\@vspace@star}{\@vspace}}
+
+\def\@vspace#1{\msitag{\vspace{#1}}}
+\def\@vspace@star*#1{%
+   \msitag{\vspace*{#1}}%
+}
+
+\def\@paragraphs{%
+  \let\@par\par
+  \def\par{\br\@par}%
+}
+
+\def\noindent{%
+  \msihmode\msitag{\noindent}%
+}
+
+
+
+
+%% Parbox
+
+\def\parbox{%
+  \msihmode
+  \@ifnextchar[%]
+    {\@iparbox}
+    {\@iiiparbox c}}
+
+
+\def\@iparbox[#1]{%	 #1 == pos
+  \@ifnextchar[%
+    {...}% SW has a problem with this case
+    {\@iiiparbox{#1}}
+}
+
+\def\@iiparbox#1[#2]{%
+  \@ifnextchar[%]
+    {...}% SW has a problem with this case
+    {\@iiiparbox{#1}{#2}[#1]}
+}
+
+
+\long\def\@iiiparbox#1#2#3{%
+	\msitag{\parbox[#1]{#2}}\@brace{#3}%
+}
+
+\long\def\sbox#1#2{\msihmode\msitag{\sbox{#1}}\@brace{#2}}
+\long\def\fbox#1{\msihmode\msitag{\fbox}{#1}}
+
+\long\gdef\put(#1,#2){\msihmode\msitag{\put(#1,#2)}}
+\long\gdef\line(#1,#2){\msihmode\msitag{\line(#1,#2)}}
+\long\gdef\vector(#1,#2){\msihmode\msitag{\vector(#1,#2)}}
+
+\def\framebox{\msihmode\msitag{\framebox}}
+
+
+\gdef\multiput(#1,#2)#3{%
+  \@xdim #1\unitlength
+  \@ydim #2\unitlength
+   \@multiput(}
+
+\long\gdef\@multiput(#1,#2)#3#4{%
+  \@killglue\@multicnt #3\relax
+  \@whilenum \@multicnt >\z@\do
+    {\raise\@ydim\hb@xt@\z@{\kern\@xdim #4\hss}%
+     \advance\@multicnt\m@ne
+     \advance\@xdim#1\unitlength\advance\@ydim#2\unitlength}%
+  \ignorespaces}
+
+
+
+
+
+
+
+
+
+
+
+%\everymath{%
+%   \aftergroup\endmath
+%}
+%\def\endmath{}
+%
+%\everydisplay{
+%  \aftergroup\enddisplay
+%}
+%\def\enddisplay{}
+%
+
+%\@namedef{align*}{\eqnarray}
+%\@namedef{endalign*}{\endeqnarray}
+%\@namedef{align}{\eqnarray}
+%\@namedef{endalign}{\endeqnarray}
+
+
+
+
+\def\@make@braces@other{%
+  \catcode`\{=12%
+  \catcode`\}=12%
+  \relax
+}
+\def\@make@braces@normal{%
+  \catcode`\{=1%
+  \catcode`\}=2%
+  \relax
+}
+
+\bgroup
+  \@make@braces@other
+  \catcode`\[=1%
+  \catcode`\]=2%
+  \gdef\@scan@eqnarray@star#1\end{eqnarray*}[%
+     \egroup
+     \@make@braces@normal
+     \temptoksa=[\begin{eqnarray*}#1\end{eqnarray*}]%
+     \msiextproc[pass][\the\temptoksa]%
+  ]
+  \gdef\@scan@eqnarray#1\end{eqnarray}[%
+     \egroup
+     \@make@braces@normal
+     \temptoksa=[\begin{eqnarray}#1\end{eqnarray}]%
+     \msiextproc[pass][\the\temptoksa]%
+  ]
+  \gdef\@scan@equation@star#1\end{equation*}[%
+     \egroup
+     \@make@braces@normal
+     \temptoksa=[\begin{equation*}#1\end{equation*}]%
+     \msiextproc[pass][\the\temptoksa]%
+  ]
+  \gdef\msi@mtabular#1#2\end{tabular}[%
+     \br\string\begin\@brace{tabular}\@brace{#1}%
+     \br#2%
+     \br\string\end\@brace{tabular}%
+     \end{tabular}%
+  ]
+  \gdef\@scan@array#1\end{array}[%
+     \egroup
+     \@make@braces@normal
+     \temptoksa=[\begin{array}#1\end{array}]%
+     \the\temptoksa
+  ]
+  \def\endarray[\cr\egroup\string\end\char`\{array\char`\}]
+\egroup
+
+%\@namedef{eqnarray}{\ \@make@braces@other\relax\@scan@eqnarray}
+%\@namedef{eqnarray*}{\ \@make@braces@other\relax\@scan@eqnarray@star}
+%\@namedef{equation*}{\ \@make@braces@other\relax\@scan@equation@star}
+
+
+\def\msi@startalignment{%
+	 \def\\{\@@cr\msitag{\\}\br}%
+	 \def\cr{\@@cr\msitag{\cr}\br}%
+	 \def\par{}%
+     \begingroup
+       \msi@dollar=0\relax
+       \halign\bgroup&&$##$\cr   
+}
+
+\def\msi@endalignment{%
+          \crcr
+       \egroup
+     \endgroup
+     \char`\%
+}
+\let\@@cr\cr
+\def\msi@alignment#1{%
+   \expandafter\def\csname msi@begin@#1\endcsname{%
+	 \br\msihmode\msitag{\begin{#1}}\br
+     \msi@startalignment
+   }
+   \expandafter\def\csname msi@end@#1\endcsname{%
+     \msi@endalignment
+   	 \br\msitag{\end{#1}}\br
+   }
+   \expandafter\def\csname #1\endcsname{
+     \begin{#1}
+   }
+   \expandafter\def\csname end#1\endcsname{
+     \end{#1}
+   }
+}
+
+
+
+
+\def\msi@tabular#1{%
+   \expandafter\def\csname msi@begin@#1\endcsname{%
+	 \br\msihmode\msitag{\begin{#1}}\br
+	 \def\\{\cr\msitag{\\}\br}%
+     \begingroup
+       \msi@dollar=`\$\relax
+       \halign\bgroup&&####\cr   
+   }
+   \expandafter\def\csname msi@end@#1\endcsname{%
+          \crcr
+       \egroup
+     \endgroup
+   	 \char`\%\br\msitag{\end{#1}}\br
+   }
+   \expandafter\def\csname #1\endcsname{
+     \begin{#1}
+   }
+   \expandafter\def\csname end#1\endcsname{
+     \end{#1}
+   }
+}
+
+%%% jcs\def\msi@begin@eqnarray{%
+%%% jcs	 \br\msitag{\begin{eqnarray}}\br
+%%% jcs	 \def\\{\msitag{\\}\br\cr}%
+%%% jcs     \halign\bgroup&&##\cr   
+%%% jcs}
+%%% jcs\def\msi@end@eqnarray{%
+%%% jcs     \cr
+%%% jcs     \egroup
+%%% jcs	 \br\msitag{\end{eqnarray}}\br
+%%% jcs}
+
+
+
+\def\array{\ \@make@braces@other\relax\@scan@array}
+
+%%\def\tabular#1{
+%%   \string\begin\@brace{tabular}\@brace{#1}%
+%%   \hbox\bgroup
+%%     \let\\=\cr
+%%     \halign\bgroup&####\cr
+%%}
+%%\def\endtabular{\crcr
+%%     \egroup
+%%   \string\end\@brace{tabular}%
+%%}
+
+\def\cline#1{}
+\def\hline{\ }
+\def\multicolumn#1#2#3{%
+   \count0=#1\relax
+   \ifnum\count0=1
+      #3
+   \else
+      \msitag{ Unimplemented multicol }
+   \fi
+}
+
+
+%%\def\align#1{
+%%   \string\begin\@brace{align}\@brace{#1}%
+%%   \hbox\bgroup
+%%     \let\\=\cr
+%%     \halign\bgroup&####\cr
+%%}
+%%\def\endalign{\crcr
+%%     \egroup
+%%   \string\end\@brace{align}%
+%%}
+
+\def\newsavebox#1{\msitag{\newsavebox{#1}}}
+\def\savebox#1{%
+   \@ifnextchar[{\@saveboxa#1}{\@saveboxa#1[]}%
+}
+\def\@saveboxa#1[#2]{%
+   \@ifnextchar[{\@saveboxb#1}{\@saveboxb#1[]}%
+}
+\def\@saveboxb#1[#2]#3{%
+   \def#1{\hbox{#3}}%
+}
+\def\usebox#1{#1}
+\def\settowidth#1#2{\relax}
+
+\def\endbrace{\char`\}}
+
+\def\fbox#1{%
+   \ifmmode
+      \begingroup
+         \msi@dollar=`\$%
+         \temptoksa={#1}%
+         \msitag{\fbox}\@brace{\hbox{\the\temptoksa}}%
+	   \endgroup
+   \fi
+}
+\def\{{\char92\char`\{\relax}
+\def\}{\char92\char`\}\relax}
+%\let\@hbox\hbox
+%\def\hbox{\ifmmode\string\hbox\char`\{\aftergroup\endbrace\else\@hbox\fi}
+
+
+%\msi@pass{\underline}
+\def\underline{\msihmode\msitag{\underline}}
+
+\def\label#1{\string\label\@brace{#1}}
+\def\refstepcounter#1{\msihmode\msitag{\refstepcounter}{#1}}
+\def\stepcounter#1{\msihmode\msitag{\stepcounter}{#1}}
+
+\def\@pagebreak[#1]{
+   \msitag{\pagebreak[#1]}%
+}
+
+\def\pagebreak{%
+   \@ifnextchar[{\@pagebreak}{\msitag{\pagebreak}}%
+}
+
+\def\@nopagebreak[#1]{
+   \msitag{\nopagebreak[#1]}%
+}
+
+\def\nopagebreak{%
+   \@ifnextchar[{\@nopagebreak}{\msitag{\nopagebreak}}%
+}
+
+\msi@pass{\linebreak}
+\msi@pass{\nolinebreak}
+\msi@pass{\samepage}
+
+
+\def\frac#1#2{\string\frac\char`\{#1\char`\}\char`\{#2\char`\}}
+\def\dfrac#1#2{\string\dfrac\char`\{#1\char`\}\char`\{#2\char`\}}
+\def\tfrac#1#2{\msitag{\tfrac}{#1}{#2}}
+
+
+\def\unit#1{\string\unit\char`\{#1\char1\}}
+
+%\def\func#1{\string\func\char`\{#1\char`\}}
+
+
+\def\sqrt{%
+  \@ifnextchar[%
+    {\@nthroot}%
+    {\@sqrt}}
+
+\def\@sqrt#1{%
+   \string\sqrt\char`\{#1\char`\}%
+}
+
+\def\@nthroot[#1]#2{%
+   \string\sqrt[#1]\char`\{#2\char`\}%
+}
+
+
+
+
+\def\thinspace{\ifmmode\string\thinspace\else\ \fi}
+
+
+\def\binom#1#2{\string\binom\@brace{#1}\@brace{#2}}
+\def\dbinom#1#2{\string\dbinom\@brace{#1}\@brace{#2}}
+\def\tbinom#1#2{\string\tbinom\@brace{#1}\@brace{#2}}
+
+\def\unit#1{\string\unit\@brace{#1}}
+
+
+
+%% \def\text#1{%
+%%      \br\char`\%TCIMACRO\@brace{\msitag{\text}%
+%%           \@brace{\msi@dollar=`\$ #1}}\char`\%
+%%      \br\char`\%BeginExpansion\br
+%%      \@brace{\msitag{\rm}\msi@dollar=`\$ #1}%
+%%      \br\char`\%EndExpansion\br
+%% }
+
+\def\null{\msihmode}
+
+
+
+%\def\vspace#1{\temptoksa={#1}\string\vspace\@brace{\the\temptoksa}}
+\def\ {\char92\char32\relax}
+
+\def\QTR#1#2{\string\QTR\@brace{#1}\@brace{#2}}
+\def\textrm#1{\string\textbf\@brace{#1}}
+\def\textbf#1{\string\textbf\@brace{#1}}
+\def\textit#1{\string\textit\@brace{#1}}
+\def\textsf#1{\string\textsf\@brace{#1}}
+\def\textsl#1{\string\textsl\@brace{#1}}
+\def\texttt#1{\string\texttt\@brace{#1}}
+\def\textsc#1{\string\textsc\@brace{#1}}
+
+
+\def\msi@math@run#1{%
+   \def#1##1{{\string#1\@brace{##1}}}
+}
+
+
+
+
+
+
+
+
+\def\dot#1{\string\dot\@brace{#1}}
+\def\substack#1{%
+  \begingroup
+     \def\\{\string\\}%
+     \string\substack\@brace{#1}%
+  \endgroup
+}
+
+
+\def\normalsize{\string\normalsize\char32}
+\def\tiny{\msihmode\msitag{\tiny}}
+\def\small{\msihmode\string\small\char32}
+\def\Large{\msihmode\string\Large\char32}
+\def\large{\msihmode\msitag{\large}}
+\def\LARGE{\msihmode\msitag{\LARGE}}
+\def\huge{\msihmode\msitag{\huge}}
+\def\Huge{\msihmode\msitag{\Huge}}
+
+
+
+\def\boldsymbol#1{\string\boldsymbol\@brace{#1}}
+\def\emph#1{\string\emph\@brace{#1}}
+
+
+%% \newtheorem
+
+\newif\if@msistar
+
+\def\newtheorem{%
+   \@ifnextchar*{\@starnewtheorem}{\@nostarnewtheorem}
+}
+
+\def\@starnewtheorem*#1{
+   \@msistartrue
+   \msi@environment{#1}%
+   \@ifnextchar[{\@newtheorema{#1}}{\@newtheoremb{#1}}%
+}
+
+\def\@nostarnewtheorem#1{%
+   \@msistarfalse
+   \msi@environment{#1}%
+   \@ifnextchar[{\@newtheorema{#1}}{\@newtheoremb{#1}}%
+}
+
+\def\@newtheorema#1[#2]#3{%
+   \if@msistar
+      \br\string\newtheorem*{#1}[#2]{#3}%
+   \else
+      \br\msitag{\newtheorem{#1}[#2]{#3}}%
+   \fi
+   \@ifnextchar[{\@final@opt}{}
+}
+
+\def\@newtheoremb#1#2{%
+   \if@msistar
+      \br\string\newtheorem*{#1}{#2}%
+   \else
+      \br\msitag{\newtheorem{#1}{#2}}%
+   \fi
+   \@ifnextchar[{\@final@opt}{}
+}
+
+\def\@final@opt[#1]{\msitag{[#1]}}
+
+
+%% newenvironment
+
+\def\newenvironment#1{%
+   \msi@environment{#1}%
+   \@ifnextchar[{\@newenva{\newenvironment}{#1}}{\@newenvb{\newenvironment}{#1}}%
+}
+
+\def\renewenvironment#1{%
+   \msi@environment{#1}%
+   \@ifnextchar[{\@newenva{\renewenvironment}{#1}}{\@newenvb{\renewenvironment}{#1}}%
+}
+
+\def\@newenva#1#2[#3]{%
+   \@ifnextchar[{\@newenvc{#1}{#2}[#3]}{\@newenvd{#1}{#2}[#3]}%
+}
+
+\def\@newenvc#1#2[#3][#4]#5#6{%
+  \msihmode\msitag{#1{#2}[#3][#4]{#5}{#6}}%
+}
+\def\@newenvd#1#2[#3]#4#5{%
+  \msihmode\msitag{#1{#2}[#3]{#4}{#5}}%
+}
+
+\def\@newenvb#1#2#3#4{%
+  \msihmode\msitag{#1{#2}{#3}{#4}}%
+}
+
+
+\def\markboth#1#2{\msihmode\msitag{\markboth}{#1}{#2}}
+\def\markright#1{\msihmode\msitag{\markright}{#1}}
+\def\leftmark{\msihmode\msitag{\leftmark}}
+\def\rightmark{\msihmode\msitag{\rightmark}}
+\msi@pass{\raggedbottom}
+\msi@pass{\flushbottom}
+\msi@pass{\sloppy}
+\msi@pass{\sloppypar}
+\msi@pass{\endsloppypar}
+\msi@pass{\fussy}
+
+
+%% page numbering
+
+\def\pagenumbering#1{\msihmode\msitag{\pagenumbering}{#1}}
+\msi@pass{\thepage}
+
+
+
+\def\overline#1{\msitag{\overline}\@brace{#1}}
+
+\def\msi@opendocument{}
+
+\def\msi@freeze#1{\temptoksa={#1}\the\temptoksa}
+\def\@writehyperref#1#2#3#4{%
+   \br\char`\%TCIMACRO\@brace{\string\hyperref\@brace{#1}\@brace{#2}\@brace{#3}\@brace{#4}}%
+   \br\char`\%BeginExpansion
+   \br\string\msihyperref\@brace{#1}\@brace{#2}\@brace{#3}\@brace{#4}%
+   \br\char`\%EndExpansion\br
+}
+
+
+
+%% Cites and references
+
+\DeclareRobustCommand\cite{%
+  \@ifnextchar [{\@tempswatrue\@citex}{\@tempswafalse\@citey}}
+
+\def\DeclareTextSymbol#1#2#3{\relax}
+\def\@citex[#1]#2{\msihmode\msitag{\cite}[#1]{#2}}
+
+\def\@citey#1{\msihmode\msitag{\cite}{#1}}
+
+
+\let\@@input\input
+
+\def\input{%
+  \@ifnextchar\bgroup{\@inputa}{\@inputb}}
+
+\def\@inputa#1{\@input{#1}}
+
+% Just scan until we see a space?
+\def\@inputb#1 {\@input{#1}}
+\def\@input#1{%
+  \br\msihmode\msitag{\input{#1}}\br
+  \advance \msi@output by 1\relax
+  \@@input #1%
+  \advance \msi@output by -1\relax
+}
+
+
+% mathop handling
+
+\def\mathop#1{%
+ \temptoksa={#1}%
+ \futurelet\@nextcs
+ \@finmathop
+}
+\def\@finmathop{%
+   \ifx\@nextcs\limits
+	  \def\@next{\@gobble}%
+	  \def\@lims{\limits}%
+   \else\ifx\@nextcs\nolimits
+	  \def\@next{\@gobble}%
+	  \def\@lims{\nolimits}%
+   \else
+      \def\@next{\relax}%
+	  \def\@lims{}%
+   \fi\fi
+   \begingroup
+     \let\rm\relax
+     \let\operator@font\relax
+     \br\char`\%TCIMACRO\@brace{\msitag{\operatorname}%
+          \@brace{\the\temptoksa}}\char`\%
+     \br\char`\%BeginExpansion\br
+     \msitag{\mathop}\@brace{\the\temptoksa}\@lims%
+     \br\char`\%EndExpansion\br
+   \endgroup
+   \@next
+}
+
+
+%% minipage
+
+\msi@environment{minipage}
+\def\msi@begin@minipage{%
+   \msihmode\br\msitag{\begin{minipage}}%
+   \@ifnextchar[{\@minipage@a}{\@minipage@b}
+}
+
+\def\@minipage@a[#1]{%
+   \msitag{[#1]}\@minipage@b
+}
+
+\def\@minipage@b#1{%
+   \msitag{{#1}}%
+}
+
+
+\makeatother
+

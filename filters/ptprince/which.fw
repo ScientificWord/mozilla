@@ -1,0 +1,9 @@
+@! This macro is defined so as to select one of its
+@! two arguments. The first argument will always be
+@! a linux particular, and the second will be a Windows
+@! particular.
+
+@!@$@<Platform@>@(@2@)@M==@{@1@}
+
+@! For windows comment the line above and uncomment this line
+@$@<Platform@>@(@2@)@M==@{@2@}

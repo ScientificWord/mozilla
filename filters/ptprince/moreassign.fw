@@ -1,0 +1,344 @@
+
+@B@<\advance etc@>
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_ADVANCE,
+CMD_MULTIPLY,
+CMD_DIVIDE,
+@}
+
+@$@<Create symbols@>+=@{@-
+NewPrimitive("advance", CMD_ADVANCE);
+NewPrimitive("multiply", CMD_MULTIPLY);
+NewPrimitive("divide", CMD_DIVIDE);
+@}
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_ADVANCE:
+case CMD_MULTIPLY:
+case CMD_DIVIDE:{
+   DoAssignment(0);
+   break;
+};
+@}
+
+
+@$@<Assignments@>+=@{@-
+case CMD_ADVANCE:
+case CMD_MULTIPLY:
+case CMD_DIVIDE: {
+   CommandCode cc = CurCmdCode();
+   GetToken();
+   DetermineCommandCode();
+   void* loc = 0;
+   ScanType type;
+   if (CurCmdCode() == CMD_ASSIGN_INTEGER){
+      LOG("\n----" << CurTok());
+      Primitive* prim = dynamic_cast<Primitive*>(CurData());
+      loc = (void*) prim -> Data();
+      type = SCAN_INT;
+   } else if (CurCmdCode() == CMD_COUNT){
+      int n;
+      ScanInt(&n);
+      LOG("\n----\\count" << n);
+      loc = (void*) &Global::CountReg[n];
+      type = SCAN_INT;
+   } else if (CurCmdCode() == CMD_ASSIGN_DIM){
+      LOG("\n----" << CurTok());
+      Primitive* prim = dynamic_cast<Primitive*>(CurData());
+      loc = (void*) prim -> Data();
+      type = SCAN_DIMEN;
+   } else if (CurCmdCode() == CMD_DIMEN){
+      int n;
+      ScanInt(&n);
+      LOG("\n----\\dimen" << n);
+      loc = (void*) &Global::DimenReg[n];
+      type = SCAN_DIMEN;
+   }  else if (CurCmdCode() == CMD_ASSIGN_GLUE){
+      LOG("\n----" << CurTok());
+      Primitive* prim = dynamic_cast<Primitive*>(CurData());
+      loc = (void*) prim -> Data();
+      type = SCAN_GLUE;
+   } else if (CurCmdCode() == CMD_SKIP){
+      int n;
+      ScanInt(&n);
+      LOG("\n----\\skip" << n);
+      loc = (void*) &Global::SkipReg[n];
+      type = SCAN_GLUE;
+   } else {
+      ASSERT(false);
+   }
+   if (ScanKeyword(Keywords::KW_BY)){
+   }
+   if (cc == CMD_ADVANCE){
+      if (type == SCAN_INT){
+         int a;
+         ScanInt(&a);
+         int* theint = (int*) loc;
+         SaveRestoration(
+            new IntRestoration(theint, "an integer"), bGlobal);
+         LOG(" += " << a);
+         *theint += a;
+      } else if (type == SCAN_DIMEN){
+         Scaled dim;
+         ScanDim(false, false, false, &dim);
+         LOG(dim);
+         LOG("\n---(Unimplemented arithmetic with dimensions)");
+      } else if (type == SCAN_GLUE){
+         ScanGlue();
+         LOG("\n---(Unimplemented arithmetic with glue)");
+      }
+   } else {
+      int a;
+      ScanInt(&a);
+      int* theint = (int*) loc;
+      SaveRestoration(
+         new IntRestoration(theint, "an integer"), bGlobal);
+      if (cc == CMD_DIVIDE){
+         LOG(" /= " << a);
+         *theint /= a;
+      } else {
+         LOG(" *= " << a);
+         *theint *= a;
+      }
+   }
+   break;
+}
+@}
+
+
+
+@B@<\let etc.@>
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_LET,
+CMD_FUTURE_LET,
+CMD_LET_TOK,
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("let", CMD_LET);
+NewPrimitive("futurelet", CMD_FUTURE_LET);
+@}
+
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_LET:{
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_LET:{
+   TeXToken defining;
+   @<Scan definable symbol@>
+   GetRawToken();
+   if (CurTok() == TeXToken(TT_OTHER, '=', 0)){
+      GetRawToken();
+   }
+   if (CurTok() == TeXToken(TT_SPACE, ' ', 0)){
+      GetRawToken();
+   }
+   SymbolData* pDef;
+   if (CurTok().Type() == TT_SYMBOL){
+      LOG("\n----Set " << defining
+                       << " = the defn of " << CurTok());
+      Symbols::GetDef(CurTok().Symbol(), &pDef);
+      void* pDefLoc;
+      if (defining.Type() == TT_SYMBOL){
+         Symbols::GetDefLoc(defining.Symbol(), &pDefLoc);
+         DefRestoration* restore =
+              new DefRestoration((SymbolData**)pDefLoc, "a def");
+         SaveRestoration(restore, bGlobal);
+         Symbols::SetDef(
+                    defining.Symbol(),
+                    pDef,
+                    false /*non-global*/);
+      } else if (defining.Type() == TT_ACTIVE){
+         Symbols::GetActiveDefLoc(defining.ChrCode(), &pDefLoc);
+         DefRestoration* restore =
+              new DefRestoration((SymbolData**)pDefLoc, "a def");
+         SaveRestoration(restore, bGlobal);
+         Symbols::SetActiveDef(
+                    defining.ChrCode(),
+                    pDef,
+                    false /*non-global*/);
+      } else {
+         ASSERT(false);
+      }
+   } else {
+      LOG("\n----Set " << defining
+                       << " = the defn of " << CurTok());
+      TeXToken* pTok = new TeXToken(CurTok());
+      pDef = new Primitive(CMD_LET_TOK, false, (int) pTok);
+      LOG("\n----WARNING: fix memory leak here");
+      void* pDefLoc;
+      if (defining.Type() == TT_SYMBOL){
+         Symbols::GetDefLoc(defining.Symbol(), &pDefLoc);
+         DefRestoration* restore =
+              new DefRestoration((SymbolData**)pDefLoc, "a def");
+         SaveRestoration(restore, bGlobal);
+         Symbols::SetDef(
+                    defining.Symbol(),
+                    pDef,
+                    false /*non-global*/);
+      } else if (defining.Type() == TT_ACTIVE){
+         Symbols::GetActiveDefLoc(defining.ChrCode(), &pDefLoc);
+         DefRestoration* restore =
+              new DefRestoration((SymbolData**)pDefLoc, "a def");
+         SaveRestoration(restore, bGlobal);
+         Symbols::SetActiveDef(
+                    defining.ChrCode(),
+                    pDef,
+                    false /*non-global*/);
+      } else {
+         ASSERT(false);
+      }
+   }
+
+
+   break;
+}
+@}
+
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_FUTURE_LET:{
+   DoAssignment(0);
+   break;
+}
+@}
+
+
+@$@<Assignments@>+=@{@-
+case CMD_FUTURE_LET:{
+   TeXToken defining;
+   @<Scan definable symbol@>
+   GetRawToken();
+   TeXToken skipped = CurTok();
+   GetRawToken();
+   SymbolData* pDef;
+   if (CurTok().Type() == TT_SYMBOL){
+      LOG("\n----Set " << defining
+                   << " = the defn of " << CurTok());
+      Symbols::GetDef(CurTok().Symbol(), &pDef);
+   } else {
+      LOG("\n----Set " << defining
+                       << " = the defn of " << CurTok());
+      TeXToken* pTok = new TeXToken(CurTok());
+      pDef = new Primitive(CMD_LET_TOK, false, (int) pTok);
+      LOG("\n----WARNING: fix memory leak here");
+   }
+
+   void* pDefLoc;
+   Symbols::GetDefLoc(defining.Symbol(), &pDefLoc);
+   DefRestoration* restore =
+        new DefRestoration((SymbolData**)pDefLoc, "a def");
+   SaveRestoration(restore, bGlobal);
+
+   Symbols::SetDef(
+              defining.Symbol(),
+              pDef,
+              false /*non-global*/);
+   InputStack::Putback(CurTok());
+   InputStack::Putback(skipped);
+   break;
+}
+@}
+
+
+@B@<Assign box register (\setbox)@>
+
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_SETBOX,
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("setbox", CMD_SETBOX);
+@}
+
+
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_SETBOX: {
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_SETBOX: {
+   int m;
+   ScanInt(&m);
+   ScanOptionalEquals();
+   ScanBox();
+   break;
+}
+@}
+
+
+
+@B@<Assign box dimensions (\wd, \ht, \dp)@>
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_BOX_DIM,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("wd", CMD_BOX_DIM, true, 1);
+NewPrimitive("ht", CMD_BOX_DIM, true, 2);
+NewPrimitive("dp", CMD_BOX_DIM, true, 3);
+@}
+
+@$@<Assign box dimension commands@>+=@{@-
+case CMD_BOX_DIM:{
+   DoAssignment(0);
+   break;
+};
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_BOX_DIM: {
+   int n;
+   ScanInt(&n);
+   LOG("\nERROR -- todo: implement box dimension assignments");
+   break;
+};
+@}
+
+
+These commands can also appear while doing @{ScanSomethingInternal@}.
+
+@$@<ScanSomethingInternal cases@>+=@{@-
+case CMD_BOX_DIM:
+   int m;
+   if (ScanInt(&m)){
+
+   }
+   LOG("\nERROR -- todo: implement box dimens in"
+       "scan something internal");
+   res.m_type = SCAN_DIMEN;
+   res.m_int = 0;
+
+   break;
+@}
+
+
+
+
+
+
+
+
+

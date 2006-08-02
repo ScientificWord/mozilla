@@ -1,0 +1,312 @@
+
+@A@<The symbols subsystem@>
+
+@B@<Interface@>
+
+For us a @{Symbol@} is something like a control sequence name.  Thus
+@{baselineskip@} and @{let@} are symbols, and when you execute
+@{\def\mymacro{blah blah blah}@} you create a new symbol @{mymacro@}.
+
+The @{SymbolTable@} associates a symbol with a pointer to some
+data. The pointer is opaque to the table. That is, the @{SymbolTable@}
+does not know what type of object it holds a pointer to.  The data
+associated with a symbol is unknown to the symbol subsystem.  So we
+define an abstract type @{SymbolData@} and let the @{SymbolTable@}
+operate with pointers to this type. The @{SymbolTable@}'s clients
+presumably know what they stored in the table and can cast the data to
+the appropriate type.
+
+
+Here is the interface
+@$@<Symbols interface@>==@{@-
+
+class SymbolData;
+
+struct Symbols {
+   @<enum CreateStatus@>
+   typedef int SymId;
+
+   // A way to directly enter into the symbol table
+   static void CreateSymbol(const char*, SymbolData*);
+
+   // Get an id from the name, create if needed
+   static void GetId(const String& name, SymId* id, CreateStatus create);
+
+   // Get a name from an id
+   static String GetName(SymId id);
+
+   static void SetDef(SymId id, SymbolData* pData, bool bGlobal);
+   static void GetDef(SymId id, SymbolData** pData);
+   static void GetDefLoc(SymId id, void** pLoc);
+
+   static void SetActiveDef(TeXChar c, SymbolData* pData, bool bGlobal);
+   static void GetActiveDef(TeXChar c, SymbolData** pData);
+   static void GetActiveDefLoc(TeXChar c, void** pLoc);
+
+   // Traverse symbols in alphabetical order
+   static void GetFirstSym(SymId* id);
+   static void GetNextSym(SymId* id);
+
+   // Traverse definitions from innermost to global
+   static void GetFirstDef(SymId id, SymbolData* pData);
+   static void GetNextDef(SymbolData* pData);
+
+   static SymId NullCS();
+
+   // Save and load the symbol information
+   static void Dump();
+   static void Load();
+};
+@}
+
+
+Symbols are entered into the system with the @{Symbols::GetID@}
+function. This takes a string of TeXChars and converts it to an
+identification number that is used to identify the symbol in other
+operations. @{GetID@} may be allowed to create a new symbol if it is
+passed a @{ALLOW_CREATE@}, otherwise it returns an undefined control
+sequence.
+
+
+
+
+
+@$@<enum CreateStatus@>==@{@-
+enum CreateStatus  {NO_CREATE, CREATE};
+@}
+
+
+
+
+@B@<Hash table implementation@>
+
+The @{TableEntry@} contains a @{m_defLevel@} member that records the
+(braces) level at which a definition occured. If a new definition is
+made at the same level it replaces the old one. If the new definition
+is made at a deeper level then the old definition is saved
+
+@$@<HashTable implementation@>==@{@-
+const int hash_size = 12000;
+const int hash_prime = 9973;
+const int UNDEFINED = 0;  // index reserved for undefined,
+                          // is it the same as NULL_CS?
+int hash_used = hash_size - 1;
+
+struct TableEntry {
+   String         m_str;
+   int            m_defLevel;
+   SymbolData*    m_data;
+   TableEntry*    m_next;
+};
+
+static TableEntry hash_table[hash_size];
+
+int Hash(const String& str)
+{
+   int h = 0;
+   for (unsigned int i = 0; i < str.Size(); ++i){
+      h = h + h + str[i];
+      while (h >= hash_prime) h = h - hash_prime;
+   }
+   ASSERT( h < hash_prime );
+   return h;
+}
+@}
+
+@$@<GetId imp@>==@{@-
+void Symbols::GetId(const String& str, SymId* id, CreateStatus create)
+{
+   int h = Hash(str);
+   TableEntry* pEntry = &hash_table[h];
+
+   bool found = false;
+   bool searching = true;
+   while ( searching ){
+      if (str == pEntry -> m_str){
+         found = true;
+         searching = false;
+      }else{
+         if (pEntry -> m_next == 0){
+            searching = false;
+         }else{
+            pEntry = pEntry -> m_next;
+         }
+      }
+   }
+
+   ASSERT(found || pEntry -> m_next == 0);
+
+   if (! found ){
+      if ( create == CREATE ){
+         // Create a new entry
+         if (pEntry -> m_str.Size() == 0){
+            // This space available
+         }else{
+            while (hash_table[hash_used].m_str.Size() != 0){
+               --hash_used;
+               if (hash_used == 0){
+                   throw TeXException("");
+               }
+            }
+            TableEntry* newEntry = &hash_table[hash_used];
+            pEntry -> m_next = newEntry;
+            pEntry = newEntry;
+         }
+         pEntry -> m_str = str;
+      }else{
+         pEntry = UNDEFINED;
+      }
+   } else {
+      StringBuilder::Discard(str);
+   }
+   *id = pEntry - &hash_table[0];
+}
+@}
+
+@$@<GetDef imp@>==@{@-
+void Symbols::GetDef(SymId id, SymbolData** pData)
+{
+   (*pData) = hash_table[id].m_data;
+}
+@}
+
+@$@<GetDefLoc imp@>==@{@-
+void Symbols::GetDefLoc(SymId id, void** pLoc)
+{
+   (*pLoc) = &hash_table[id].m_data;
+}
+@}
+
+
+@$@<SetDef imp@>==@{@-
+void Symbols::SetDef(SymId id, SymbolData* pData, bool bGlobal)
+{
+   hash_table[id].m_data = pData;
+}
+@}
+
+
+@C@<Active character definitions@>
+
+@$@<Symbols implementation@>+=@{@-
+static SymbolData* s_activeDef[NUM_TEX_CHARS];
+@}
+
+
+
+@$@<Symbols implementation@>+=@{@-
+void Symbols::SetActiveDef(TeXChar c, SymbolData* pData, bool bGlobal)
+{
+   s_activeDef[c] = pData;
+}
+
+void Symbols::GetActiveDef(TeXChar c, SymbolData** pData)
+{
+   *pData = s_activeDef[c];
+}
+
+void Symbols::GetActiveDefLoc(TeXChar c, void** pLoc)
+{
+   *pLoc = &s_activeDef[c];
+}
+@}
+
+
+@$@<GetName imp@>==@{@-
+String Symbols::GetName(Symbols::SymId id)
+{
+   return hash_table[id].m_str;
+}
+@}
+
+@$@<NullCS imp@>==@{@-
+Symbols::SymId Symbols::NullCS()
+{
+   return 0;
+}
+@}
+
+@$@<CreateSymbol imp@>==@{@-
+void Symbols::CreateSymbol(const char* name, SymbolData* data)
+{
+   for (int i  = 0; i < strlen(name); ++i){
+      StringBuilder::Append(name[i]);
+   }
+   String strName = StringBuilder::Create();
+   SymId id;
+   GetId(strName, &id, CREATE);
+   SetDef(id, data, true);
+}
+@}
+
+
+
+@C@<Tests@>
+
+To test the hash table we'll enter a bunch of symbols and then check
+that they are still correctly in the table
+
+
+@$@<Symbols TestTable entries@>+=@{@-
+{"hash", TestHashTable},
+@}
+
+
+@$@<Symbols test functions@>+=@{@-
+bool TestHashTable()
+{
+   try{
+      String name = StringBuilder::Create("immediate");
+      Symbols::SymId id1, id2;
+      Symbols::GetId(name, &id1, Symbols::CREATE);
+      Symbols::GetId(name, &id2, Symbols::CREATE);
+      ASSERT(id1 == id2);
+      String str = Symbols::GetName(id1);
+      ASSERT(str == name);
+   }
+   catch(...){
+       return false;
+   }
+   return true;
+}
+@}
+
+
+
+@B@<Physical layout@>
+
+This component consists of two files: @{symbols.h@} and
+@{symbols.cpp@}
+
+@o@<symbols.h@>==@{@-
+#ifndef SYMBOLS_H
+#define SYMBOLS_H
+
+#include "platform.h"
+@<Symbols interface@>
+
+#endif
+@}
+
+@o@<symbols.cpp@>==@{@-
+#include "symbols.h"
+#include <string> // for strlen
+@<HashTable implementation@>
+@<GetId imp@>
+@<GetDef imp@>
+@<GetDefLoc imp@>
+@<SetDef imp@>
+@<GetName imp@>
+@<CreateSymbol imp@>
+@<NullCS imp@>
+@<Symbols implementation@>
+@}
+
+@o@<symbols.t.cpp@>==@{@-
+#include "platform.h"
+#include "symbols.h"
+#include <string>
+#include <iostream>
+
+@<Test jig@>@(@<Symbols test functions@>@,@<Symbols TestTable entries@>@)
+@}
