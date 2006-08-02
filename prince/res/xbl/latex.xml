@@ -7,7 +7,7 @@
 
 	<binding id="latex">
 	  <resources>
-	    <stylesheet src="resource://css/latex_internal.css"/>
+	    <stylesheet src="resource://gre/res/css/latex_internal.css"/>
 	  </resources>
 	  <content>
       <!-- we include the children invisibly. Omitting the children doesn't work. The tag generally will contain the 
@@ -19,7 +19,7 @@
 
 	<binding id="tex">
 	  <resources>
-	    <stylesheet src="resource://css/latex_internal.css"/>
+	    <stylesheet src="resource://gre/res/css/latex_internal.css"/>
 	  </resources>
 
 	  <content>
