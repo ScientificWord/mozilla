@@ -1,0 +1,24 @@
+# Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
+
+DEPTH		= ../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+files = \
+		$(wildcard $(srcdir)/*.clo) \
+		$(wildcard $(srcdir)/*.cls) \
+		$(wildcard $(srcdir)/*.tex) \
+		$(wildcard $(srcdir)/*.cfg) \
+    $(NULL)
+
+include $(topsrcdir)/config/config.mk
+
+include $(topsrcdir)/config/rules.mk
+
+export:: $(files)
+	$(INSTALL) $(files) $(DIST)/bin/ptdata
+
+

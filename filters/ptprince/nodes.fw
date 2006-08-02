@@ -1,0 +1,828 @@
+
+@A@<The node data structures@>
+
+Most of the time \TeX{} is building lists of boxes, glue, and other
+kinds of things. Here are the main abstract types:
+
+@$@<TeXNode declaration@>+=@{@-
+#include <iostream>
+class OutputStream {
+public:
+  std::ostream& m_stream;
+  std::string m_str;
+
+  OutputStream(std::ostream& os)
+     : m_stream(os)
+  {}
+  //void Print(const char*);
+  OutputStream& operator<<(const char*);
+  OutputStream& operator<<(const char);
+  void Space();
+  void Flush();
+};
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+OutputStream& OutputStream::operator<<(const char* str)
+{
+   const char* p = str;
+   if (strlen(p) == 1 && *p == '\n'){
+      if (m_str.size() > 0){
+         m_stream << m_str.c_str() << "\n";
+         m_str = "";
+      }
+   } else if (strlen(p) == 2 && *p == '\n' && *(p+1) == '\n'){
+      if (m_str.size() > 0){
+         m_stream << m_str.c_str() << "\n\n";
+         m_str = "";
+      } else {
+         m_stream << m_str.c_str() << "\n";
+         m_str = "";
+      }
+   } else {
+      while (*p != 0){
+         if (*p != '\n'){
+            m_str += *p;
+         } else {
+            m_stream << m_str.c_str() << "\n";
+            m_str = "";
+         }
+         ++p;
+      }
+   }
+   return *this;
+}
+
+OutputStream& OutputStream::operator<<(const char ch)
+{
+   m_str += ch;
+   return *this;
+}
+
+void OutputStream::Space()
+{
+   if (m_str.size() > 70){
+      m_stream << m_str.c_str() << "\n";
+      m_str = "";
+   } else {
+      m_str += " ";
+   }
+}
+
+void OutputStream::Flush()
+{
+   m_stream << m_str.c_str();
+   m_stream.flush();
+}
+@}
+
+@$@<TeXNode declaration@>+=@{@-
+class TeXNode {
+public:
+   virtual ~TeXNode(){}
+   virtual void Print(OutputStream&) {}
+};
+@}
+
+
+
+@$@<TeXNode declaration@>+=@{@-
+class TeXNodeList : public std::list<TeXNode*> {
+public:
+    void Print(OutputStream&);
+};
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+void TeXNodeList::Print(OutputStream& out)
+{
+   TeXNodeList::const_iterator it;
+   for (it = begin(); it != end(); ++it){
+      (*it) -> Print(out);
+   }
+}
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class TagNode : public TeXNode {
+private:
+   char* m_str;
+public:
+   TagNode(const String& str);
+   TagNode(const char* str);
+   void Print(OutputStream&);
+};
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+TagNode::TagNode(const String& str)
+{
+   m_str = new char[str.Size()+1];
+   for (int k = 0; k < str.Size(); ++k)
+   {
+      m_str[k] = str[k];
+   }
+   m_str[str.Size()] = '\0';
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+TagNode::TagNode(const char* str)
+{
+   m_str = new char[strlen(str)+1];
+   if (m_str == 0){
+      throw;
+   }
+   strcpy(m_str,str);
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+void TagNode::Print(OutputStream& out)
+{
+   out << m_str;
+}
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class CharNode : public TeXNode {
+private:
+   FontCode m_font;
+   TeXChar  m_char;
+public:
+   CharNode(FontCode f, TeXChar c)
+     : m_font(f),
+       m_char(c)
+   {}
+
+   ~CharNode()
+   {}
+
+   void Print(OutputStream&);
+};
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void CharNode::Print(OutputStream& out)
+{
+  if (0 < m_char && m_char <= 126)
+     out << (char) m_char;
+  else {
+     //out << "\\u(" << m_char << ")";
+     out << (char) (m_char / 256) << (char)(m_char % 256);
+  }
+}
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class GlueNode : public TeXNode {
+public:
+   void Print(OutputStream&);
+};
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void GlueNode::Print(OutputStream& out)
+{
+   out.Space();
+}
+@}
+\noseealso
+@$@<Node declarations@>+=@{@-
+class HListNode : public TeXNode {
+private:
+   Scaled m_width;
+   Scaled m_height;
+   Scaled m_depth;
+   Scaled m_shift;
+   //GlueOrder m_glueOrder;
+   //GlueSign  m_glueSign;
+   //GlueRatio m_glueSet;
+   TeXNodeList* m_pList;
+public:
+   HListNode(TeXNodeList* list)
+      : m_pList(list)
+   {}
+
+   void Print(OutputStream&);
+
+};
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void HListNode::Print(OutputStream& out)
+{
+   m_pList -> Print(out);
+}
+@}
+
+
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class VListNode : public TeXNode {
+private:
+   Scaled m_width;
+   Scaled m_height;
+   Scaled m_depth;
+   Scaled m_shift;
+   //GlueOrder m_glueOrder;
+   //GlueSign  m_glueSign;
+   //GlueRatio m_glueSet;
+
+   TeXNodeList* m_pList;
+public:
+   VListNode(TeXNodeList* list)
+      : m_pList(list)
+   {}
+
+   void Print(OutputStream&);
+};
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void VListNode::Print(OutputStream& out)
+{
+   m_pList -> Print(out);
+}
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class RuleNode : public TeXNode {
+private:
+   Scaled m_width;
+   Scaled m_height;
+   Scaled m_depth;
+};
+@}
+
+@$@<Node declarations@>+=@{@-
+class AlignCellNode : public TeXNode {
+private:
+public:
+   TeXNodeList* m_pList;
+   void Print(OutputStream&);
+};
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void AlignCellNode::Print(OutputStream& out)
+{
+   m_pList -> Print(out);
+}
+@}
+
+
+@$@<Node declarations@>+=@{@-
+class AlignRowNode : public TeXNode {
+private:
+public:
+   void Print(OutputStream&);
+   TeXNodeList* m_pList;
+};
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void AlignRowNode::Print(OutputStream& out)
+{
+   TeXNodeList::const_iterator it = m_pList -> begin();
+   while (true){
+      (*it)->Print(out);
+      ++it;
+      if (it == m_pList -> end())
+         break;
+   }
+}
+@}
+
+
+@$@<Node declarations@>+=@{@-
+class AlignmentNode : public TeXNode {
+private:
+public:
+   void Print(OutputStream&);
+   TeXNodeList* m_pList;
+};
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void AlignmentNode::Print(OutputStream& out)
+{
+   //out << "<table>";
+   m_pList -> Print(out);
+   //out << "</table>";
+}
+@}
+
+
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class InsertNode : public TeXNode {
+private:
+   int m_boxNumber;
+   Scaled m_width; // I don't know if this is actually used
+   Scaled m_depthPlusHeight; // of vertical material beinbg inserted
+   Scaled  m_splitMaxDepth;
+   // Glue    m_splitTopSkip; // see TTP140
+   int     m_floatPenalty;
+   TeXNodeList m_list;
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class TokenList;
+
+class MarkNode : public TeXNode {
+private:
+  TokenList& m_tokList;
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class AdjustNode : public TeXNode {
+private:
+   TeXNodeList m_list;
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class LigNode : public TeXNode {
+private:
+   //CharCode m_ligChar;
+   //CharList m_charList;
+};
+@}
+\noseealso
+@$@<Node declarations@>+=@{@-
+class DiscNode : public TeXNode {
+};
+@}
+
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class WhatsitNode : public TeXNode {
+};
+@}
+
+
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class MListNode : public TeXNode {
+public:
+   void Print(OutputStream& out);
+   TeXNodeList* m_pList;
+};
+@}
+
+
+
+@$@<Typesetter implementation@>+=@{@-
+const int NUM_UPREF_STRS = 20;
+const int FIX_IE_BUG = 18;
+
+char *upref_zstrs[] = {
+  "200",                           // U8* mml_version
+  "<mml:math class=\"displayedmathml\" mode=\"display\" display=\"block\">" ,
+  "<mml:math class=\"inlinemathml\" display=\"inline\">",
+  "mml:",                         //  U8* namespace_prefix;
+  "fontfamily=\"Times New Roman\" fontsize=\"120%\"",   //  U8* mstyle_attrs;
+  "mathcolor=\"gray\"",           //  U8* mathname_attrs;
+  "mathcolor=\"green\"",          //  U8* unitname_attrs;
+  "mathcolor=\"black\"",          //  U8* text_in_math_attrs;
+  "mathcolor=\"green\"",          //  U8* link_attrs;
+  "true",                         //  U8* renderer_baselines;
+  "false",                        //  U8* eqn_tags_to_mlabeledtr;
+  "false",                        //  U8* eqn_nums_to_mlabeledtr;
+  "0",                            //  U8* entity_mode;
+  "1",                            //  U8* lr_spacing_mode;
+  "1",                            //  U8* lr_spacing_mode_in_scripts;
+  "(%theequation%)",              //  U8* eqn_nums_format;
+  "false",                        //  U8* long_arrows_are_stretched;
+  "2",                            //  U8* indent_increment;
+  "true",                         //  U8* adjust_output_for_IE_spacing_bug;
+  "<mml:mtext class=\"fix-IE-bug\">&ZeroWidthSpace;</mml:mtext></mml:math>",
+  ""
+};
+
+
+
+bool fix_IE_space_bug =  true;
+
+HINSTANCE s_hApp;
+HINSTANCE s_hDLL;
+
+std::string s_mathml;
+
+
+bool SetupMathMLDLL()
+{
+    // const MAXPATH = 500;
+    // char path[MAXPATH];
+    // s_hApp = GetModuleHandle(0);
+    // GetModuleFileName( s_hApp, path, MAXPATH );
+    // FileSpec fsPath(path);
+    // std::string strPath = fsPath.GetDir();
+    std::string strPath = "mmldll.dll";
+    s_hDLL = ::LoadLibrary( strPath.c_str() );
+    if (s_hDLL == NULL) {
+      // TCI_ASSERT(FALSE);
+      return false;
+    }
+
+    // int i = 0;
+    // while ( i < NUM_UPREF_STRS ) {
+    //   upref_zstrs[i]  =  NULL;
+    //   i++;
+    // }
+
+    //TCIString mathmlSettings;
+    //GetCfgSection("MATHML SETTINGS", mathmlSettings);
+    // i = 0;
+    // int uprefcnt = 0;
+    // while (i < mathmlSettings.GetLength())
+    // {
+    //   TCIString setting;
+    //   while ((i < mathmlSettings.GetLength()) &&
+    //          (mathmlSettings[i] != '\n') &&
+    //          (mathmlSettings[i] != '='))
+    //   {
+    //      ++i;
+    //   }
+    //   TCI_ASSERT(mathmlSettings[i] == '=');
+    //   ++i;
+    //   while ((i < mathmlSettings.GetLength()) && (mathmlSettings[i] != '\n'))
+    //   {
+    //      if (mathmlSettings[i] != '\r'){
+    //         setting += mathmlSettings[i];
+    //      }
+    //      ++i;
+    //   }
+    //   int len = setting.GetLength();
+    //   char* tar = TCI_NEW(char[len+1]);
+    //   char* src = setting.GetBuffer(0);
+    //   strcpy(tar, src);
+    //   setting.ReleaseBuffer();
+    //   upref_zstrs[uprefcnt] = tar;
+    //   ++uprefcnt;
+    //   ++i;
+    // }
+  for (int j = 0; j < NUM_UPREF_STRS; j++ )
+  {
+    if (upref_zstrs[j] == NULL)
+    {
+      char* temp = new char[1];
+      temp[0] = 0;
+      upref_zstrs[j] = temp;
+    }
+  }
+  fix_IE_space_bug = (strcmp(upref_zstrs[FIX_IE_BUG], "true") == 0);
+  LPINITIALIZE Initialize = (LPINITIALIZE)GetProcAddress(s_hDLL,"Initialize");
+  if (!Initialize)
+  {
+    // TCI_ASSERT(FALSE);
+    return false;
+  }
+  HRESULT hr = (*Initialize)( (const char*) ".",
+                                (const char*)"mml:",
+                                (const char**)upref_zstrs );
+  if (hr != S_OK) {
+    // TCI_ASSERT(FALSE);
+    return false;
+  }
+  return true;
+}
+
+
+void CloseMathML()
+{
+  int i =  0;
+  while ( i < 20 ) {
+    char* str = upref_zstrs[i];
+    if ( str )
+       delete[] str;
+    i++;
+  }
+  if (s_hDLL != 0){
+     FreeLibrary(s_hDLL);
+  }
+}
+
+BOOL CALLBACK mathmlHandler(DWORD type, const char* data)
+{
+  if ( type < 1000 ) {
+    s_mathml += "\n";
+    s_mathml += data;
+  } // else
+    // TCI_ASSERT(0);
+
+  return true;
+}
+
+@}
+@$@<Typesetter implementation@>+=@{@-
+void MListNode::Print(OutputStream& out)
+{
+   m_pList -> Print(out);
+}
+@}
+
+
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class KernNode : public TeXNode {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class PenaltyNode : public TeXNode {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class UnsetNode : public TeXNode {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class StyleNode : public TeXNode {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class ChoiceNode : public TeXNode {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+
+class NoadField{
+public:
+  virtual ~NoadField() {};
+  virtual void Print(OutputStream&) {};
+};
+
+class MathCharData : public NoadField{
+public:
+   MathCharData(TeXChar ch) : m_ch(ch) {}
+   void Print(OutputStream&);
+private:
+   //family;
+   TeXChar m_ch;
+};
+
+class MathTextChar : public NoadField{
+public:
+   //family;
+   //character;
+};
+
+class SubBox : public NoadField{
+   TeXNode* m_listNode; // An hlist node or a vlist node
+};
+
+class SubMList : public NoadField{
+public:
+   void Print(OutputStream&);
+   TeXNodeList* m_pList;
+};
+
+void SubMList::Print(OutputStream& out)
+{
+   if (s_bMathml){
+      //out << "{";
+      m_pList -> Print(out);
+      //out << "}";
+   } else{
+      out << "<mrow>";
+      m_pList -> Print(out);
+      out << "</mrow>";
+   }
+}
+
+class Noad : public TeXNode{
+public:
+   Noad() : m_nucleus(0), m_subscript(0), m_superscript(0){}
+   void Print(OutputStream&);
+   virtual bool ScriptsAllowed(){ return true;}
+   NoadField* m_nucleus;
+   NoadField* m_subscript;
+   NoadField* m_superscript;
+};
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Noad::Print(OutputStream& out){
+   if (m_subscript == 0 && m_superscript == 0){
+      m_nucleus -> Print(out);
+      return;
+   }
+   if (m_subscript != 0){
+      if (m_superscript == 0){
+         if (s_bMathml){
+            m_nucleus -> Print(out);
+            out << "_";
+            m_subscript -> Print(out);
+         }else{
+            out << "<sub>";
+            m_nucleus -> Print(out);
+            m_subscript -> Print(out);
+            out << "</sub>";
+         }
+      } else {
+         if (s_bMathml){
+            m_nucleus -> Print(out);
+            out << "_";
+            m_subscript -> Print(out);
+            out << "^";
+            m_superscript -> Print(out);
+         } else {
+            out << "<subsup>";
+            m_nucleus -> Print(out);
+            m_subscript -> Print(out);
+            m_superscript -> Print(out);
+            out << "</subsup>";
+         }
+      }
+   } else {
+      if (s_bMathml){
+         m_nucleus -> Print(out);
+         out << "^";
+         m_superscript -> Print(out);
+      } else{
+         out << "<sup>";
+         m_nucleus -> Print(out);
+         m_superscript -> Print(out);
+         out << "</sup>";
+      }
+   }
+
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+void MathCharData::Print(OutputStream& out)
+{
+  if (s_bMathml){
+     if (m_ch != 0)
+        out << (char) m_ch;
+  } else {
+     if ((char)m_ch == '<')
+        out << "&lt;";
+     else if (m_ch == '>')
+        out << "&gt;";
+     else if (0 < m_ch && m_ch <= 126)
+        out << "<mi>" << (char) m_ch << "</mi>";
+     else
+        out << "\\u(" << m_ch << ")";
+  }
+}
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class MathList {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class OrdNoad : public Noad {
+public:
+   OrdNoad(TeXChar ch);
+   //void Print(std::ostream&);
+};
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+OrdNoad::OrdNoad(TeXChar ch)
+{
+   m_nucleus = new MathCharData(ch);
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+// void OrdNoad::Print(std::ostream& out)
+// {
+//    m_nucleus -> Print(out);
+// }
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class OpNoad : public Noad {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class BinNoad : public Noad {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class RelNoad : public Noad {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class OpenNoad : public Noad {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class CloseNoad : public Noad {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class PunctNoad : public Noad {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class InnerNoad : public Noad {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class RadicalNoad : public Noad {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class FunctionNoad : public Noad {
+};
+@}
+
+Under and over noads are created by the @{\overline@}
+and @{\underline@} commands.
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class UnderNoad : public Noad {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class OverNoad : public Noad {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class AccentNoad : public Noad {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class VCenterNoad : public Noad {
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class LeftNoad : public Noad {
+private:
+   // delimiter;
+};
+@}
+
+\noseealso
+@$@<Node declarations@>+=@{@-
+class RightNoad : public Noad {
+};
+@}
+
+
+
+
+

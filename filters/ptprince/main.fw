@@ -1,0 +1,169 @@
+
+@A@<The main program@>
+
+
+@o@<tex.cpp@>==@{@-
+#include "platform.h"
+#include "textio.h"
+#include "symbols.h"
+#include "tokens.h"
+#include "basicdata.h"
+#include "scanutils.h"
+#include "expandables.h"
+#include "conditionals.h"
+#include "typesetter.h"
+#include "interpretter.h"
+
+#include <iostream>
+#include <fstream>
+
+extern void SetupExpandables();
+std::string s_tapfilename;
+std::ofstream s_tapfile;
+bool s_bTapped;
+extern Typesetter ts;
+
+const char* s_inputfilename;
+
+void usage()
+{
+  std::cout <<
+    "usage: pretex [-i<dir>] [-f<format file>] [-h] "
+        "[-c<inputfilter>] "
+        "<input file> <output file>\n"
+    "   -h        Print this text.\n"
+    "   -i<dir>   The directory where the pretex formats"
+    " and style files are (defaults to MSITEXINPUT evironment variable.\n"
+    "   -f<file>  The format file to use (defaults to msilatex.tex).\n"
+    "   -o<dir>   The directory in which to put auxiliary files,"
+                " such as .css.\n"
+    "   -c<multibyte codepage> e.g. -cp932.\n";
+  exit(1);
+}
+
+
+int main(int argc, char* argv[])
+{
+   // Check for -h, /h
+   for (int k = 0; k < argc; ++k){
+      if (argv[k][0] == '-' || argv[k][0] == '/'){
+         if (strlen(argv[k]) > 1 && argv[k][1]=='h')usage();
+      }
+   }
+
+   if (argc <= 3){
+      std::cout << "\nMissing argument\n";
+      usage();
+   }
+
+   int argn = 1;
+   InitData();
+   InitTokens();
+   Interpretter::InitializeSymbolTable();
+   InitializeKeywords();
+   SetupExpandables();
+   InitConditionalSymbols();
+   SetCWD();
+
+   // Set up tex input directory
+   char envInput[_MAX_PATH+12];
+   char envOutput[_MAX_PATH+12];
+   strcpy(envInput, "MSITEXINPUT=");
+   strcpy(envOutput, "MSIOUTPUT=");
+   for (int j = 0; j < argc; ++j){
+      if (argv[j][0] == '-'){
+         if (strlen(argv[j]) > 2)
+           if (argv[j][1]=='i'){
+             const char* inputdir = &argv[j][2];
+             strcat(envInput, inputdir);
+             _putenv(envInput);
+           }
+           else if (argv[j][1]=='o') {
+             const char* outputdir = &argv[j][2];
+             strcat(envOutput, outputdir);
+             _putenv(envOutput);
+           }
+       }
+   }
+
+   // Read a "format" file
+   const char* format = "msilatex.tex";
+   for (int i = 0; i < argc; ++i){
+      if (argv[i][0] == '-'){
+         if (strlen(argv[i]) > 2 && argv[i][1]=='f'){
+           format = &argv[i][2];
+         }
+      }
+   }
+   LOG("\nReading format file " << format);
+   Filename fn0(format, true);
+   InputByteFile* pbf0 = new InputByteFile;
+   if (!pbf0 -> Open(fn0)){
+      std::cout << "\nFailed to open format file: " << format<<"\n";
+      usage();
+   }
+   Latin_1_in*  platin1filt0 = new Latin_1_in(*pbf0);
+   LineSource* plineSource0 = new LineSource(*platin1filt0);
+
+   Tokenizer* toks0 = new Tokenizer(plineSource0);
+   InputStack::Push(toks0);
+
+   Interpretter::MainLoop();
+
+   try{
+      s_inputfilename = argv[argc-2];
+      LOG("\nReading input file " << s_inputfilename);
+      Filename fn(s_inputfilename, true);
+      InputByteFile* pbf = new InputByteFile;
+      pbf -> Open(fn);
+
+      // Open a tap file for holding defs
+      std::string tappath = fn.GetAreaString();
+      s_tapfilename = fn.GetNameString();
+      s_tapfilename += "-defs.tex";
+      tappath += s_tapfilename;
+      s_tapfile.open(tappath.c_str());
+
+      s_bTapped = false;
+      const char* filter = "latin1";
+      for (int i = 0; i < argc; ++i){
+         if (argv[i][0] == '-'){
+            if (strlen(argv[i]) > 2 && argv[i][1]=='c'){
+              filter = &argv[i][2];
+            }
+         }
+      }
+      LineSource* plineSource;
+      if (strcmp(filter, "p932")==0){
+         Codepage932_in*  pcp932filt = new Codepage932_in(*pbf);
+         plineSource = new LineSource(*pcp932filt);
+      }else if (strcmp(filter, "p936")==0){
+         Codepage936_in*  pcp936filt = new Codepage936_in(*pbf);
+         plineSource = new LineSource(*pcp936filt);
+      }else if (strcmp(filter, "p949")==0){
+         Codepage949_in*  pcp949filt = new Codepage949_in(*pbf);
+         plineSource = new LineSource(*pcp949filt);
+      }else if (strcmp(filter, "p950")==0){
+         Codepage950_in*  pcp950filt = new Codepage950_in(*pbf);
+         plineSource = new LineSource(*pcp950filt);
+      }else{
+         Latin_1_in* platin1filt = new Latin_1_in(*pbf);
+         plineSource = new LineSource(*platin1filt);
+      }
+
+      Tokenizer* toks = new Tokenizer(plineSource);
+      InputStack::Push(toks);
+      Interpretter::MainLoop();
+   }
+   catch(...){
+      LOG("\n!!! FILTER CRASHED !!! -- will attempt output");
+      std::cout << "\n!!! FILTER CRASHED !!! -- will attempt output";
+   }
+   LOG("\nWriting output file " << argv[argc-1]);
+   const char* outfilename = argv[argc-1];
+   std::ofstream outfile(outfilename);
+   Typesetter::PrintMainList(outfile);
+   return 0;
+}
+
+@}

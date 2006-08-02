@@ -1,0 +1,1397 @@
+
+
+@A@<The platform subsystem@>
+
+The first subsystem, @{platform@}, contains two kinds of low-level definitions.
+First we gather things that seem likely to depend on the platform.
+Hopefully gathering them here will ease porting. Second, we put some things that
+don't seem particularly TeX-ish, for example the symbol table.
+
+The platform module consisists of an object file @{platform.o@}
+and a test jig @{platform.t@}.
+
+
+@B@<Exceptions@>
+
+Here is a base class for all exceptions in our project.  Outsiders
+using the library system need only know about this one. Internally we
+are free to create derived exceptions.
+
+@$@<class TeXException@>==@{@-
+class TeXException {
+private:
+   const char* m_errorMessage;
+public:
+   TeXException(const char* msg);
+};@}
+
+
+@$@<TeXException implementation@>==@{@-
+TeXException::TeXException(const char* errorMessage)
+  : m_errorMessage( errorMessage )
+{
+}
+@}
+
+
+
+
+@B@<Assertions@> Assertions have are used to document invariant
+conditions in source code, and to enforce these conditions in
+debugging code. In release code they are made to vanish. In the program
+you write @{Assert(condition);@} and if the condition is true nothing
+happens, otherwise an exception is thrown.
+
+
+@$@<Assertions@>+=@{@-
+#ifdef DEBUG
+   #define ASSERT(expr) _Assert(expr,__FILE__,__LINE__, #expr)
+   void _Assert(bool assertion, const char* file, int line, const char* expr);
+#else
+   #define ASSERT(expr)
+#endif
+@}
+
+@$@<Assertions imp@>==@{@-
+void _Assert(bool assertion, const char* file, int line, const char* cond)
+{
+   if (!assertion){
+      // log a message that assertion failed and throw an exception
+      std::cerr << "\nAssertion fired at line " << line
+                  << ", of " << file << ", " << cond << "\n";
+      throw TeXException("ASSERTION");
+   }
+}
+@}
+
+Let's add a test to @{platform.t@}. This test will be called
+@{TestAssertions@} and externally we'll refer to it as
+@{assert@}. Hence, when we type @{platform.t list@} we'll see
+@{assert@} on the printed list, and we we type @{platform.t assert@}
+this test will run and return either @{true@} or @{false@}.
+
+
+@$@<Platform tests@>+=@{@-
+bool TestAssertions()
+{
+    // Test assertions
+    try
+    {
+       ASSERT(1 == 2); // Should fire
+       // if we get here it's an error
+       return false;
+    }
+    catch(TeXException e)
+    {
+       // This should catch the assertion above
+    }
+    ASSERT(1 != 2); // Should not fire
+    return true;
+}
+@}
+
+@$@<Platform TestTable entries@>+=@{
+{"assert", TestAssertions},
+@}
+
+
+
+
+
+@B@<Execution logging@>
+
+This section defines mechanisms for logging program execution and for
+assertions. The static function @{TheLog@} is used to get a reference
+to the one and only log file. We can't write @{LogFile << stuff@}. The
+alternative would be to write something like
+@{LogFile::operator<<(stuff)@} and that seems a little ugly.
+
+@$@<Execution log@>==@{@-
+#ifdef LOGGING
+   struct LogFile {
+   public:
+       static LogFile& TheLog();
+       static void Start();
+       static void Close();
+       static void Flush();
+       friend LogFile& operator<<(LogFile&, const char*);
+       friend LogFile& operator<<(LogFile&, char);
+       friend LogFile& operator<<(LogFile&, int);
+       friend LogFile& operator<<(LogFile&, TeXChar);
+   };
+   #define LOG(X) LogFile::TheLog() << X; LogFile::Flush()
+#else
+   #define LOG(X)
+#endif
+@}
+
+@$@<Execution log imp@>==@{@-
+#ifdef LOGGING
+   LogFile* s_pLog = 0;
+   std::ofstream* s_pStream = 0;
+
+   LogFile& LogFile::TheLog()
+   {
+      if (s_pLog == 0){
+        Start();
+      }
+      ASSERT(s_pLog != 0);
+      return *s_pLog;
+   }
+
+   void LogFile::Start()
+   {
+     ASSERT(s_pLog == 0);
+     s_pLog = new LogFile;
+     s_pStream = new std::ofstream;
+     s_pStream -> open("tex.log");
+     ASSERT(s_pLog != 0);
+   }
+
+   void LogFile::Close()
+   {
+      if (s_pStream != 0){
+          s_pStream -> close();
+          delete s_pStream;
+          s_pStream = 0;
+      }
+      delete s_pLog;
+      s_pLog = 0;
+   }
+
+   void LogFile::Flush()
+   {
+      ASSERT(s_pStream != 0);
+      s_pStream -> flush();
+   }
+
+   LogFile& operator<<(LogFile& f, const char* str)
+   {
+      (*s_pStream) << str;
+      return f;
+   }
+
+   LogFile& operator<<(LogFile& f, char ch)
+   {
+      (*s_pStream) << ch;
+      return f;
+   }
+
+   LogFile& operator<<(LogFile& f, int n)
+   {
+      (*s_pStream) << n;
+      return f;
+   }
+
+   LogFile& operator<<(LogFile& f, TeXChar n)
+   {
+      if (n <= 255)
+         (*s_pStream) << (char) n;
+      else
+         (*s_pStream) << "mb("
+              << (char) (n / 256) << ","
+              << (char)(n % 256)  << ")";
+      return f;
+   }
+
+#endif
+@}
+
+This utility macro is directly included into each of the
+@{xxx.t.cpp@} files as required.
+
+
+@$@<CompareLog utility@>@M+=@{@-
+#include <fstream>
+#include <iostream>
+
+bool CompareLog(const char* filename, const char* testname)
+{
+    // Close the log file and open for writing
+    LogFile::Close();
+    std::ifstream loginp("tex.log");
+    std::ifstream reference(filename);
+    int lineNumber = 0;
+    bool ok = true;
+    while (ok){
+       if (reference.eof()){
+          if (loginp.eof()){
+             return true;
+          }else{
+             ok = false;
+          }
+       }else if (loginp.eof()){
+          ok = false;
+       }else{
+          ++lineNumber;
+          std::string logline;
+          std::string refline;
+          std::getline(loginp, logline);
+          std::getline(reference, refline);
+          if (logline != refline){
+             ok = false;
+          }
+       }
+    }
+    std::cout << "\nTest failed: " << testname;
+    std::cout << "\nInput: " << filename;
+    std::cout << "\nLine: " << lineNumber;
+    std::cout << "\n\n";
+    return false;
+}
+@}
+
+
+
+
+@$@<Platform tests@>+=@{@-
+bool TestLoggingFacility()
+{
+    // Test the logging facility
+    LogFile::Start();
+
+    // Log some numbers and constant strings
+    int x = 0;
+    int y = 1;
+    LOG("x=" << x << "\n");
+    LOG("y=" << y << "\n");
+
+    // Log some TeXChars
+    TeXChar u = 0x0071;  // 'q'
+    TeXChar v = 0x3310;  // something not printable (= 13072 decimal)
+    LOG("\nu = " << u);
+    LOG("\nv = " << v);
+
+    // Log a String
+
+    StringBuilder::Append(L'a');
+    StringBuilder::Append(L'b');
+    String str = StringBuilder::Create();
+    LOG("\nHere's a string: " << str << "\n");
+
+    // Check the results
+    bool rv = CompareLog("plat_1.dat", "Platform.TestLoggingFacility");
+    return rv;
+}
+@}
+
+@$@<Platform TestTable entries@>+=@{@-
+{"logging", TestLoggingFacility},
+@}
+
+
+
+And the test data file
+@o@<plat_1.dat@>==@{@-
+x=0
+y=1
+
+u = q
+v = \u(13072)
+Here's a string: ab
+@}
+
+@B@<Bytes and Characters@>
+
+There are several character sets running around. First, there is the
+character set used to write this C++ program. It is a subset of ASCII
+described in, say Stroustrup.
+
+The character set used by the C++ implementation is reflected in type
+@{char@}. There are characters used by programs written with the C++
+compiler to communicate with external files. We will distinguish this
+from the internal character set used by TeX, which we'll call
+@{TeXChar@}. This implementation will use Unicode as the internal
+set. I.e. @{TeXChar@} = Unicode. These characters are produced by
+CharSources. These are the characters tokensized by the
+TokenSources. In addition to the system @{char@}s and the internal
+@{TeXChar@}s there is also the scheme used to order characters in a
+font. This depends on the font.
+
+@{FontCode@} represents a font. It is returned by @{DVIFilter@} when
+registering a new font. The @{FontCode@} is then used in subsequent
+switches to that font. The @{CharCode@} is a character position in a
+font. @{CharCodes@} are used as arguments to the @{Set@} commands.
+
+A @{Byte@} is the smallest addressable piece of memory in the C++
+implementation.
+
+
+@$@<Characters@>+=@{@-
+typedef unsigned char Byte;
+typedef unsigned int TeXChar;
+typedef int FontCode;
+typedef int CharCode;
+
+const unsigned int NUM_TEX_CHARS = 65556;
+const unsigned int FIRST_TEX_CHAR = 0;
+const unsigned int LAST_TEX_CHAR = 65555;
+@}
+
+Here are a couple useful routines:
+
+@$@<Characters@>+=@{@-
+inline Byte HiByte(TeXChar c) { return (Byte)((c & 0xFF00) >> 8); }
+inline Byte LoByte(TeXChar c) { return (Byte)(c & 0x00FF);}
+@}
+
+
+@$@<Platform tests@>+=@{@-
+bool TestLoByteHiByte()
+{
+    LogFile::Start();
+    TeXChar testchar[] = {L'a',0xffff,  L'\n', 0x0000};
+    const int NUMCH = 3;
+    for (int i = 0; i < NUMCH; ++i){
+        TeXChar ch = testchar[i];
+        if (i > 0)
+          LOG ( "\n" );
+        LOG( "(" << ch << " " << HiByte(ch) << " " << LoByte(ch) << ")");
+    }
+    bool rv = CompareLog("plat_2.dat", "Platform.TestLoByteHiByte");
+    return rv;
+}
+@}
+
+@$@<Platform TestTable entries@>+=@{@-
+{"lohi", TestLoByteHiByte},
+@}
+
+
+The output of the above should be:
+@o@<plat_2.dat@>==@{@-
+(a 0 97)
+(\u(65535) 255 255)
+(\u(10) 0 10)@}
+
+
+
+
+@!--------------------------------------------
+@! STRINGS
+@!--------------------------------------------
+
+@B@<Strings@>
+
+\TeX{} strings have some extra properties that we can use to create
+more efficient representations than we might find in
+@{std::string<TeXChar>@}.  @{TeXString@}'s are never altered or
+deleted after they are created. They are used for control sequences
+that get entered into a hash table and are never disturbed after that,
+and for error messages.  The strings should not be zero-terminated
+because it is possible to get a zero into a csname. Therefore a string
+will contain a character count. There is only one string under
+construction at any given time. Strings are constructed a character at
+a time, with characters added one at a time. We have no need for
+inserting characters, concatenating, finding substrings, and so on.
+
+When the construction of an object has some twist to it I like to create
+a ``factory" class for that object. The factory makes sure that the correct
+steps are taken to construct the object. In this case I call the factory
+class @{StringBuilder@}.  It has the responsibility of creating strings.
+
+@$@<class String@>+=@{@-
+
+class String {
+private:
+   int m_strNum;
+
+friend class StringBuilder;
+
+public:
+   String();
+   String(const String&);
+   ~String();
+   String& operator=(const String&);
+   bool operator==(const String&) const;
+   bool operator!=(const String&) const;
+   TeXChar operator[](int i) const;
+   int  Size() const;
+};
+@}
+
+@$@<class String@>+=@{@-
+   #ifdef LOGGING
+   LogFile& operator<<(LogFile& f, const String&);
+   #endif
+@}
+
+@$@<class StringBuilder@>+=@{@-
+class StringBuilder {
+public:
+   static void Append(TeXChar c);
+   static String Create();
+   static String Create(const char*);
+   static void Discard(const String& str);
+};
+@}
+
+There may be up to 10000 @{Strings@}, and 50000 @{TeXChar@}'s comprising
+those strings.
+
+@$@<String implementation@>+=@{@-
+static const int STRING_AREA_SIZE = 50000;
+static const int MAX_STRINGS = 10000;
+static TeXChar s_stringArea[STRING_AREA_SIZE];
+static int s_stringAreaTop = 0;
+
+static int s_stringBegin[MAX_STRINGS];
+static int s_currentString = 0;
+@}
+
+Now consider constructing a string. We'll let string @{0@} be an
+empty string.
+
+@$@<StringBuilder implementation@>+=@{@-
+void StringBuilder::Append(TeXChar c)
+{
+   if (s_stringAreaTop == STRING_AREA_SIZE){
+      LOG("\nERROR - string area exceeded");
+      for (int n = 0; n < s_currentString; ++n){
+         int len = s_stringBegin[n+1] - s_stringBegin[n];
+         int start = s_stringBegin[n];
+         int end = s_stringBegin[n+1];
+         LOG("\n" << n <<
+              "(" << start << " .. " << end-1 << " = " << len<< "):  ");
+         for (int m = start; m < end; ++m){
+            LOG(s_stringArea[m]);
+         }
+      }
+      throw TeXException("String area overflow");
+   }else{
+      s_stringArea[s_stringAreaTop++] = c;
+   }
+}
+@}
+
+
+
+
+
+
+@$@<StringBuilder implementation@>+=@{@-
+String StringBuilder::Create()
+{
+   String str;
+   str.m_strNum = s_currentString;
+   ++s_currentString;
+   s_stringBegin[s_currentString] = s_stringAreaTop;
+   return str;
+}
+@}
+
+@$@<StringBuilder implementation@>+=@{@-
+String StringBuilder::Create(const char* cstr)
+{
+   ASSERT(cstr != 0);
+   for (long i = 0; i < (long) strlen(cstr); ++i){
+      Append((TeXChar) cstr[i]);
+   }
+   return Create();
+}
+@}
+
+We can remove the string just constructed.
+@$@<StringBuilder implementation@>+=@{@-
+void StringBuilder::Discard(const String& str)
+{
+   ASSERT(str.m_strNum ==  s_currentString-1);
+   --s_currentString;
+   s_stringAreaTop =  s_stringBegin[s_currentString];
+}
+@}
+
+
+@$@<String implementation@>+=@{@-
+inline int StartLoc(int str) { return s_stringBegin[str]; }
+
+String::String()
+   : m_strNum(-1) // so we don't use this accidentally
+{}
+
+String::String(const String& s)
+   : m_strNum ( s.m_strNum )
+{}
+
+String::~String()
+{}
+
+String& String::operator=(const String& right)
+{
+   m_strNum = right.m_strNum;
+   return *this;
+}
+
+int String::Size() const
+{
+   return StartLoc(m_strNum+1) - StartLoc(m_strNum);
+}
+
+bool String::operator==(const String& right) const
+{
+   if (Size() != right.Size())
+      return false;
+
+   int leftBegin = s_stringBegin[m_strNum];
+   int rightBegin = s_stringBegin[right.m_strNum];
+
+   for (int i = 0; i < Size(); ++i) {
+      if (s_stringArea[leftBegin + i] != s_stringArea[rightBegin + i])
+         return false;
+   }
+
+   return true;
+}
+
+bool String::operator!=(const String& right) const
+{
+   return !(*this == right);
+}
+
+TeXChar String::operator[](int i) const
+{
+   return s_stringArea[StartLoc(m_strNum) + i];
+}
+
+#ifdef LOGGING
+LogFile& operator<<(LogFile& f, const String& s)
+{
+   for (int i = 0; i < s.Size(); ++i){
+      if (s[i] >= 32 && s[i] <= 126){
+         f << s[i];
+      } else {
+         f << "[chr " << (int) s[i] << "]";
+      }
+   }
+   return f;
+}
+#endif
+@}
+
+@$@<Platform tests@>+=@{@-
+bool TestString()
+{
+    // Test strings
+
+    StringBuilder::Append(L'x');
+    StringBuilder::Append(L'y');
+    StringBuilder::Append(L'z');
+    String foo = StringBuilder::Create();
+    ASSERT(foo.Size() == 3 && foo[0] == 'x' && foo[1] == 'y' && foo[2] == 'z');
+
+    // Test an empty string
+    String empty1 = StringBuilder::Create();
+    String empty2 = StringBuilder::Create("");
+    ASSERT(empty1 != foo);
+    ASSERT(empty1 == empty2);
+
+    // Test a string with \0 characters
+    StringBuilder::Append(L'\0');
+    StringBuilder::Append(L'\0');
+    StringBuilder::Append(L'x');
+    StringBuilder::Append(L'\0');
+    String strange = StringBuilder::Create();
+    ASSERT(strange.Size() == 4);
+
+    return true;
+}
+@}
+
+@$@<Platform TestTable entries@>+=@{@-
+{"string", TestString},
+@}
+
+
+@!-----------------------------------------------
+@! PATHS
+@!-----------------------------------------------
+
+@B@<Paths@>
+
+In this section we collect the various paths that the
+system needs to know about.
+
+@$@<Path declarations@>+=@{
+void SetCWD();
+const char* GetCWD();
+bool ChangeDir(const char* dir);
+@}
+
+@$@<Path implementation@>+=@{
+static std::string s_CWD;
+
+void SetCWD()
+{
+   char path[200];
+   if (_getcwd(path, 200)){
+     LOG("\nCWD = " << path);
+     s_CWD = path;
+   } else {
+     std::cout << "\nCould not set CWD";
+     exit(0);
+   }
+}
+
+const char* GetCWD()
+{
+   return s_CWD.c_str();
+}
+
+
+bool ChangeDir(const char* dir)
+{
+   return _chdir(dir);
+}
+
+@}
+
+@!-----------------------------------------------
+@! FILENAMES
+@!-----------------------------------------------
+
+@B@<File names@>
+
+One way in which operating systems vary is in the file naming
+conventions. We want to encapsulate here any logic involved
+in determining the paths and names of files we'll use.
+
+To illustrate the problem consider the \TeX code @+
+@{\input a\more@}@+
+When \TeX starts reading the file name it first sees the character 'a'
+which is presumably catcode 11. Now that may or may not be the end of
+the name. \TeX has to expand the following macro @{\more@} to see if
+there are any more characters. Thus if @{\more@} expands to @{b.tex@}
+then the file to be input might be @{ab.tex@}. I say might because
+there could be a macro following @{\more@} that needs to be expanded
+to see if there are any more characters that belong to the extension.
+
+The member function @{Accept@} takes a character and appends it to the
+current filename. It returns true if this succeeds and false
+otherwise.  Some characters might not be allowed as part of a
+filename. On the other hand the function @{Finished@} returns true if
+the filename is complete and no more characters could possibly be
+allowed. In that cases there is no need to expand the next macro
+looking for characters.
+
+The function @{GetNameString@} is used to fetch a copy of the string
+(in terms of @{char@}) that can be used by the file system portion of
+the library. You pass in a pointer to a buffer and its length
+and it fills it or returns false.
+
+@$@<class Filename@>==@{@-
+struct FilenameData;
+
+class Filename {
+private:
+   FilenameData* m_filenameData;
+public:
+   Filename();
+   Filename(const char*, bool fExternal = false);
+   ~Filename();
+
+   bool Accept(TeXChar c, bool fExternal);
+   bool Finished() const;
+   //bool GetNameString(char*,int) const;
+   const char* GetFullName() const;
+   const char* GetAreaString() const;
+   const char* GetNameString() const;
+   const char* GetExtString() const;
+};
+@}
+
+
+I'll use a conversion FSA. The conversion will be contained in a data
+file with entries of the form@+ \ \ \ \ \ @{pre-state unicode emit
+post-state@}@+ and so on
+
+@$@<Filename implementation@>+=@{@-
+struct FilenameData {
+   std::string m_strFullName;
+   bool m_bSplit;
+   std::string m_strArea;
+   std::string m_strName;
+   std::string m_strExt;
+   int area_delim;
+   int ext_delim;
+
+   FilenameData()
+   {
+      m_bSplit = false;
+      area_delim = -1;
+      ext_delim = -1;
+   }
+};
+@}
+
+@$@<Filename implementation@>+=@{@-
+Filename::Filename()
+  : m_filenameData(new FilenameData)
+{
+}
+
+Filename::Filename(const char* name, bool fExternal)
+   : m_filenameData(new FilenameData)
+{
+   ASSERT(name != 0);
+   for (int i = 0; i < strlen(name); ++i){
+      Accept((TeXChar) name[i], fExternal);
+   }
+}
+
+
+Filename::~Filename()
+{
+   delete m_filenameData;
+   m_filenameData = 0;
+}
+
+bool Filename::Accept(TeXChar c, bool fExternal)
+{
+  ASSERT(m_filenameData != 0);
+
+  // Here we have to map unicode character c to the
+  // local C++ system charset and append to the file name.
+  // For the time being:
+  if (HiByte(c) != '\0')
+     return false;
+// BBM: we have to support spaces in paths when they
+// come from outside the TeX file
+  if (!fExternal && (c == L' '))
+     return false;
+  if (c == L'{' || c == '}')
+     return false;
+  if (c == L'[' || c == ']')
+     return false;
+  if ((c == L'/')||(fExternal &&(c==L'\\'))) {
+     m_filenameData -> area_delim = m_filenameData -> m_strFullName.size();
+     c = L'\\';
+  }
+  if (c == L'.'){
+     m_filenameData -> ext_delim = m_filenameData -> m_strFullName.size();
+  }
+
+  m_filenameData -> m_strFullName += LoByte(c);
+  return true;
+}
+@}
+
+
+@$@<Filename implementation@>+=@{@-
+void SplitFilename(FilenameData* pfd){
+   ASSERT(pfd != 0);
+   if (!pfd -> m_bSplit) {
+      const std::string& str = pfd -> m_strFullName;
+      int len = str.length();
+      ASSERT(len > 0);
+      int name_pos;
+      int name_len;
+
+      if (pfd -> area_delim == -1){
+          // No area specified
+          pfd -> m_strArea = "";
+          name_pos = 0;
+      } else {
+          int area_len = pfd -> area_delim;
+          pfd -> m_strArea = str.substr(0, area_len);
+          name_pos = 1 + area_len;
+      }
+
+      if (pfd -> ext_delim == -1){
+          // No extension
+          pfd -> m_strExt = "";
+          name_len = len - name_pos;
+      } else {
+          int ext_pos  = 1 + pfd -> ext_delim;
+          int ext_len = len - ext_pos;
+          pfd -> m_strExt = str.substr(ext_pos, ext_len);
+          name_len = pfd -> ext_delim - name_pos;
+      }
+
+      if (name_len > 0)
+         pfd -> m_strName = str.substr(name_pos, name_len);
+
+      pfd -> m_bSplit = true;
+   }
+}
+@}
+
+@$@<Filename implementation@>+=@{@-
+std::string CatFilename(const char* area,
+                        const char* name,
+                        const char* ext,
+                        bool bSubst)
+{
+   std::string full;
+   if (area != 0 && strlen(area) != 0){
+     full += area;
+     full += "\\";
+   }
+   if (bSubst) full += "msi-";
+   full += name;
+   if (ext != 0 && strlen(ext) != 0){
+     full += ".";
+     full += ext;
+   }
+   return full;
+}
+@}
+
+
+@$@<Filename implementation@>+=@{@-
+bool Filename::Finished() const
+{
+   return false;
+}
+@}
+
+@$@<Filename implementation@>+=@{@-
+const char* Filename::GetFullName() const
+{
+   ASSERT(m_filenameData != 0);
+   return m_filenameData -> m_strFullName.c_str();
+}
+@}
+
+@$@<Filename implementation@>+=@{@-
+const char* Filename::GetAreaString() const
+{
+   ASSERT(m_filenameData != 0);
+   SplitFilename(m_filenameData);
+   return m_filenameData -> m_strArea.c_str();
+}
+@}
+
+
+Should each file *have* a filename?
+
+I don't wnat to declare len to be unsigned in the interface (?),
+hence the assertion in the second line of this function.x
+
+@$@<Filename implementation@>+=@{@-
+const char* Filename::GetNameString() const
+{
+   ASSERT(m_filenameData != 0);
+   SplitFilename(m_filenameData);
+   return m_filenameData -> m_strName.c_str();
+}
+@}
+
+@$@<Filename implementation@>+=@{@-
+const char* Filename::GetExtString() const
+{
+   ASSERT(m_filenameData != 0);
+   SplitFilename(m_filenameData);
+   return m_filenameData -> m_strExt.c_str();
+}
+@}
+
+
+@$@<Platform tests@>+=@{@-
+bool TestFilename()
+{
+    // Test filenames
+    Filename fn;
+
+    const char* uni = "testfilename.dat";
+    for(unsigned int i = 0; i < strlen(uni); ++i){
+      if (!fn.Accept((TeXChar, false)(uni[i]))){
+         break;
+      }
+    }
+    char buf[50];
+    fn.GetNameString(buf, 50);
+    if (strcmp(buf,uni) == 0)
+       return true;
+    else
+       return false;
+}
+@}
+
+@$@<Platform TestTable entries@>+=@{@-
+{"filename", TestFilename},
+@}
+
+
+@!------------------------------------------------------
+@! BYTE STREAM
+@!------------------------------------------------------
+
+@B@<Input Byte streams@>
+
+At the lowest level this implementation reads from files
+as though the file was a sequence of bytes. In other words,
+a binary file. This is because we want control over how
+the data is interpretted once read. We'll pass the bytes
+through filters to produce a stream of characters and we
+don't trust the library functions like @{fgets@} to do this
+correctly. Suppose the file is somehow encoded, say UTF-7
+or wahtever, and that a line end character @{'\n'@} occurs
+as the second byte of a multi byte character.
+
+@$@<class InputByteStream@>==@{@-
+class InputByteStream {
+public:
+   virtual ~InputByteStream();
+   virtual bool bEOS() const = 0; // End of stream?
+   virtual Byte Get() = 0;
+protected:
+   InputByteStream();
+private:
+   // Do not implement
+   InputByteStream(const InputByteStream&);
+   InputByteStream& operator=(const InputByteStream&);
+};
+@}
+
+@$@<InputByteStream implementation@>==@{@-
+InputByteStream::InputByteStream()
+{}
+
+InputByteStream::~InputByteStream()
+{}
+
+@}
+
+
+@B@<Output Byte streams@>
+
+
+@$@<class OutputByteStream@>==@{@-
+class OutputByteStream {
+public:
+   virtual ~OutputByteStream();
+   virtual bool bEOS() const = 0; // End of stream?
+   virtual void Put(Byte) = 0;
+   virtual void Write(String& str) = 0;
+protected:
+   OutputByteStream();
+private:
+   // Do not implement
+   OutputByteStream(const OutputByteStream&);
+   OutputByteStream& operator=(const OutputByteStream&);
+};
+@}
+
+@$@<OutputByteStream implementation@>+=@{@-
+OutputByteStream::OutputByteStream()
+{}
+@}
+
+
+@$@<OutputByteStream implementation@>+=@{@-
+OutputByteStream::~OutputByteStream()
+{}
+@}
+
+
+@!------------------------------------------
+@! BYTE FILES
+@!------------------------------------------
+
+@B@<Input Byte files@>
+
+One source of @{Byte@}s is of course a file.
+
+In this class the type @{InputByteFileData@} is used to hide implementation
+detail.
+
+@$@<class InputByteFiles@>==@{@-
+struct InputByteFileData;
+
+class InputByteFile : public InputByteStream{
+private:
+   InputByteFileData* m_byteFileData;
+public:
+   InputByteFile();
+   ~InputByteFile();
+   bool Open(const Filename&);
+   bool bEOS() const;
+   Byte Get();
+private:
+   InputByteFile(const InputByteFile&);
+   operator=(const InputByteFile&);
+};
+@}
+
+Next consider the implementation of @{InputByteFile@}. We define a class
+@{InputByteFileData@} that holds a pointer to a file. It also has a one-
+character buffer that holds the next character. I do this because
+I have to get the next character before deciding whether I'm at the
+end of file.
+
+@$@<InputByteFile implementation@>+=@{@-
+struct InputByteFileData{
+   std::ifstream m_file;
+   std::string   m_filename;
+   int           m_lineno;
+   Byte m_buf;
+};
+@}
+
+For debugging purposees we keep track of the current
+file and line number.
+
+
+
+Construction and deletion are simply a matter
+of opening and closing the file.
+
+@$@<InputByteFile implementation@>+=@{@-
+InputByteFile::InputByteFile()
+{
+   // The TeXChar string name has to be converted
+   // to a char* type name
+   m_byteFileData = new InputByteFileData;
+   ASSERT(m_byteFileData != 0);
+
+}
+
+InputByteFile::~InputByteFile()
+{
+   ASSERT(m_byteFileData != 0);
+   m_byteFileData -> m_file.close();
+}
+@}
+
+@$@<InputByteFile implementation@>+=@{@-
+const char* SearchFor(const char* searchfile)
+{
+   // Search for file in MSITEXINPUT environment variable
+
+   static char pathbuffer[_MAX_PATH];
+   char envvar[] = "MSITEXINPUT";
+
+   _searchenv( searchfile, envvar, pathbuffer );
+   if( *pathbuffer != '\0' ){
+      LOG("\nPath for " << searchfile << " == " << pathbuffer);
+      return pathbuffer;
+   } else {
+      LOG("\nDid not find path for " << searchfile);
+      return(0);
+   }
+}
+@}
+
+
+@$@<InputByteFile implementation@>+=@{@-
+bool InputByteFile::Open(const Filename& fullpath){
+
+   m_byteFileData -> m_filename = fullpath.GetFullName();
+   m_byteFileData -> m_lineno = 1;
+
+   const char* area = fullpath.GetAreaString();
+   const char* name = fullpath.GetNameString();
+   const char* ext  = fullpath.GetExtString();
+   if (strcmp(ext,"") == 0){
+     ext = "tex";
+   }
+
+   std::string filepath = CatFilename(area, name, ext, true);
+   const char* path = SearchFor(filepath.c_str());
+   if (path == 0){
+      filepath = CatFilename(area, name, ext, false);
+      path = SearchFor(filepath.c_str());
+      if (path == 0){
+         LOG("\nFailed to locate " << filepath.c_str());
+         std::cout << "\nNo coverage: " << filepath.c_str();
+         return false;
+      } else {
+         LOG("\nFound file"<< filepath.c_str());
+      }
+   } else {
+      LOG("\nFound substitute file" << filepath.c_str());
+   }
+   m_byteFileData -> m_file.open(path, std::ios::in | std::ios::binary);
+   if ( ! m_byteFileData -> m_file.is_open() ){
+      LOG("\nFailed to open " << path);
+      return false;
+   }
+   LOG("\nOpened for reading: " << filepath.c_str());
+   // Get the first byte into the buffer
+   m_byteFileData -> m_buf =  m_byteFileData -> m_file.get();
+   return true;
+}
+@}
+
+Next we have @{bEOS()@}.
+
+@$@<InputByteFile implementation@>+=@{@-
+bool InputByteFile::bEOS() const
+{
+   ASSERT(m_byteFileData != 0);
+   return (!m_byteFileData -> m_file.is_open()) ||
+          (m_byteFileData -> m_file.eof());
+}
+@}
+
+
+@$@<InputByteFile implementation@>+=@{@-
+Byte InputByteFile::Get()
+{
+   ASSERT(m_byteFileData != 0);
+   Byte result =  m_byteFileData -> m_buf;
+   m_byteFileData -> m_buf =  m_byteFileData -> m_file.get();
+   if (result == '\n'){
+     LOG("\nFinished " << "file: "  << m_byteFileData -> m_filename.c_str()
+                 << ", line " << m_byteFileData -> m_lineno);
+     m_byteFileData -> m_lineno++;
+   }
+   return result;
+}
+@}
+
+@$@<Platform tests@>+=@{@-
+bool TestInputByteFile()
+{
+    LogFile::Start();
+    try
+    {
+       // Try opening a non-existent file
+       InputByteFile bfile1;
+       Filename fn1("zzzzz.dat");
+       ASSERT( !bfile1.Open(fn1));
+
+       // Open an empty file and check for eof
+       InputByteFile bfile2;
+       Filename fn2("empty.dat");
+       ASSERT(bfile2.Open(fn2));
+       ASSERT(bfile2.bEOS());
+
+       // Normal case
+       InputByteFile bfile3;
+       Filename fn3("bfiletest1.dat");
+       ASSERT(bfile3.Open(fn3));
+       while (!bfile3.bEOS()){
+          Byte b = bfile3.Get();
+          LOG(b << ' ');
+       }
+       ASSERT(CompareLog("bfiletest1.log", "Platform.TestByteFile"));
+    }
+    catch(...)
+    {
+       return false;
+    }
+    return true;
+}
+@}
+
+@$@<Platform TestTable entries@>+=@{@-
+{"inputbytefile", TestInputByteFile},
+@}
+
+
+Here is the test data
+
+@o@<empty.dat@>==@{@}
+
+@o@<bfiletest1.dat@>==@{@-
+Line1
+Line2@}
+
+Here is the result of the Normal case test above.
+@o@<bfiletest1.log@>==@{76 105 110 101 49 @<LineEnd@> 76 105 110 101 50 @}
+
+
+@B@<Output Byte files@>
+@$@<class OutputByteFiles@>==@{@-
+struct OutputByteFileData;
+
+class OutputByteFile : public OutputByteStream{
+private:
+   OutputByteFileData* m_byteFileData;
+public:
+   OutputByteFile();
+   ~OutputByteFile();
+   bool Open(const Filename&);
+   bool bEOS() const;
+   void Put(Byte);
+   void Write(String& str);
+private:
+   OutputByteFile(const OutputByteFile&);
+   operator=(const OutputByteFile&);
+};
+@}
+
+
+@$@<OutputByteFile implementation@>+=@{@-
+struct OutputByteFileData{
+   std::ofstream m_file;
+   std::string   m_filename;
+   int           m_lineno;
+   Byte m_buf;
+};
+@}
+
+@$@<OutputByteFile implementation@>+=@{@-
+OutputByteFile::OutputByteFile()
+{
+   m_byteFileData = new OutputByteFileData;
+   ASSERT(m_byteFileData != 0);
+}
+@}
+
+@$@<OutputByteFile implementation@>+=@{@-
+OutputByteFile::~OutputByteFile()
+{
+   delete m_byteFileData;
+}
+
+
+const char* SearchForOutput(const char* searchfile)
+{
+   // Search for file in MSIOUTPUT environment variable
+
+   static char pathbuffer[_MAX_PATH];
+   char envvar[] = "MSIOUTPUT";
+
+   _searchenv( searchfile, envvar, pathbuffer );
+   if( *pathbuffer != '\0' ){
+      LOG("\nPath for " << searchfile << " == " << pathbuffer);
+      return pathbuffer;
+   } else {
+      LOG("\nDid not find path for " << searchfile);
+      return(0);
+   }
+}
+@}
+
+
+@$@<OutputByteFile implementation@>+=@{@-
+bool OutputByteFile::Open(const Filename& fullpath)
+{
+   m_byteFileData -> m_filename = fullpath.GetFullName();
+   m_byteFileData -> m_lineno = 1;
+
+   const char* area = fullpath.GetAreaString();
+   const char* name = fullpath.GetNameString();
+   const char* ext  = fullpath.GetExtString();
+   if (strcmp(ext,"") == 0){
+     ext = "tex";
+   }
+
+   std::string filepath = CatFilename(area, name, ext, false);
+   const char* path = SearchForOutput(filepath.c_str());
+   if (path == 0){
+      LOG("\nFailed to locate " << filepath.c_str());
+      path = filepath.c_str();
+      // BBM: we want to create the file if it doesn't exist
+      // return false;
+   }
+   m_byteFileData -> m_file.open(path, std::ios::out
+     | std::ios::binary | std::ios::app );
+   if ( ! m_byteFileData -> m_file.is_open() ){
+      LOG("\nFailed to open " << path);
+      return false;
+   }
+   LOG("\nOpened for writing: " << filepath.c_str());
+
+   return true;
+
+}
+@}
+
+@$@<OutputByteFile implementation@>+=@{@-
+bool OutputByteFile::bEOS() const
+{
+   return false;
+}
+@}
+
+
+@$@<OutputByteFile implementation@>+=@{@-
+void OutputByteFile::Put(Byte b)
+{
+    m_byteFileData -> m_file.put(b);
+}
+@}
+
+@$@<OutputByteFile implementation@>+=@{@-
+void OutputByteFile::Write(String& str)
+{
+   for (int i = 0; i < str.Size(); ++i){
+     Put(str[i]);
+   }
+   Put('\n');
+}
+@}
+
+
+
+
+
+
+
+@B@<Arithmetic@>
+
+\TeX{} requires platform independent arithmetic for several
+computations.  The necessary routines are described here.
+
+
+
+@B@<Physical layout@>
+
+@o@<platform.h@>==@{@-
+#ifndef PLATFORM_H
+#define PLATFORM_H
+
+#pragma warning(disable : 4786)
+#include <cwchar>
+@<class TeXException@>
+@<Assertions@>
+@<Characters@>
+@<Execution log@>
+@<class String@>
+@<class StringBuilder@>
+@<class Filename@>
+@<class InputByteStream@>
+@<class OutputByteStream@>
+@<class InputByteFiles@>
+@<class OutputByteFiles@>
+@<Path declarations@>
+#endif
+@}
+
+@o@<platform.cpp@>==@{@-
+#include "platform.h"
+#include <fstream>
+#include <iostream>
+#include <cstdlib>
+#include <string>
+#include <limits.h>
+#include <direct.h>
+@<TeXException implementation@>
+@<Execution log imp@>
+@<Assertions imp@>
+@<String implementation@>
+@<StringBuilder implementation@>
+@<InputByteStream implementation@>
+@<OutputByteStream implementation@>
+@<Filename implementation@>
+@<InputByteFile implementation@>
+@<OutputByteFile implementation@>
+@<Path implementation@>
+@}
+
+
+
+Finally here's the testjig:
+@o@<platform.t.cpp@>==@{@-
+#include "platform.h"
+#include <string>
+@<CompareLog utility@>
+
+@<Test jig@>@(@<Platform tests@>@,@<Platform TestTable entries@>@)
+@}
+
+
+
+
+
+
+
+
+
+
+
+
+

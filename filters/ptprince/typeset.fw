@@ -1,0 +1,794 @@
+
+@A@<The Typesetter@>
+
+The typesetter builds lists of boxes and then breaks them into
+lines, formulas, pages, footnotes, and so on.
+
+@B@<The Interface@>
+
+@o@<typesetter.h@>==@{@-
+#ifndef TYPESETTER_H
+#define TYPESETTER_H
+#include "platform.h"
+#include <list>
+#include "basicdata.h"
+@<TeXNode declaration@>
+@<Typesetter Interface@>
+#endif
+@}
+
+@o@<typesetter.cpp@>==@{@-
+#include "typesetter.h"
+#include <iostream>
+#include <strstream>
+#include <windows.h>
+//#include <filespec.h>
+//#include <tcistrin.h>
+//#include <dataman.h>
+//#include <bytearry.h>
+#include "mmldll.h"
+
+enum FieldTarget{TARG_NUCLEUS, TARG_SUBSCRIPT, TARG_SUPERSCRIPT};
+
+static Mode s_mode;
+static bool s_bInner;
+static bool s_priveledged;
+static FieldTarget s_target;
+static TeXNodeList* s_pList = new TeXNodeList;
+static char* s_processor;
+
+static const bool s_bMathml = true;
+
+@<Node declarations@>
+@<Semantic nest@>
+@<Typesetter implementation@>
+@<AdjustSpaceFactor@>
+@<SetRule@>
+@}
+
+
+@$@<Typesetter Interface@>==@{@-
+
+enum Mode {MODE_VERTICAL, MODE_HORIZONTAL, MODE_MATH};
+
+class Typesetter {
+public:
+
+   static void PrintMainList(std::ostream&);
+   static void AppendTag(const TokenList* pTL);
+   static void AppendTag(const char* cstr);
+   static Mode GetMode();
+   static bool GetInner();
+   static void SetInner(bool);
+   static bool Priveledged();
+   static void SetPriveledged(bool);
+
+   static void GotoHMode();
+   static void GotoVMode();
+   static void GotoMMode();
+
+   static void PopMode();
+
+   static void SetChar(CharCode c);
+   static void SetSpace(); // checks space_factor
+   static void SetExplicitSpace(); // does not check space_factor
+   static void StartBox();
+   static void EndBox();
+
+   static void SetMathChar(CharCode c);
+   static void AttachMathChar(CharCode c);
+
+   static bool StartNucleus();
+
+   static bool StartScript(bool bSub);
+   static void EndScript();
+
+   static void StartInline();
+   static void EndInline();
+
+   static void StartDisplay();
+   static void EndDisplay();
+
+   static void StartSubformula();
+   static void EndSubformula();
+
+   static void StartProcess(const char*);
+   static void EndProcess();
+
+   static void StartAlignment();
+   static void EndAlignment();
+   static void StartCol();
+   static void EndCol();
+   static void StartRow();
+   static void EndRow();
+};
+@}
+
+
+The typesetter is always in one of six modes. Here is a stack to maintain
+state info for modes.
+
+@$@<Semantic nest@>+=@{@-
+class SemanticLevel {
+public:
+   Mode        m_mode;
+   bool        m_bInner;
+   TeXNodeList* m_pList;
+   char* m_processor;
+   FieldTarget m_target;
+   int      m_prevGraf;
+   int      m_aux;
+   int      m_sourceLineNumber;
+};
+@}
+
+@$@<Semantic nest@>+=@{@-
+std::list<SemanticLevel*> semanticNest;
+@}
+
+@$@<Semantic nest@>+=@{@-
+void PushSemanticLevel()
+{
+   LOG("\n----Pushing semantic level: ");
+   if (s_mode == MODE_HORIZONTAL){
+      LOG("horizontal");
+   } else if (s_mode == MODE_VERTICAL){
+      LOG("vertical");
+   } else if (s_mode == MODE_MATH){
+      LOG("math");
+   } else {
+      LOG("ERROR -- unknown mode");
+      ASSERT(false);
+   }
+
+   SemanticLevel* lev = new SemanticLevel;
+   lev -> m_pList = s_pList;
+   s_pList = new TeXNodeList;;
+
+   lev -> m_mode = s_mode;
+   lev -> m_bInner = s_bInner;
+   lev -> m_target = s_target;
+   lev -> m_processor = s_processor;
+   semanticNest.push_back(lev);
+}
+@}
+
+@$@<Semantic nest@>+=@{@-
+void PopSemanticLevel()
+{
+   LOG("\n----Popping semantic level. ");
+   SemanticLevel* lev = 0;
+   if (semanticNest.size() == 0){
+     LOG("\nERROR -- semantic nest underflow!");
+     ASSERT(false);
+     lev = 0;
+   } else {
+     lev = semanticNest.back();
+   }
+   if (lev != 0){
+     s_pList = lev -> m_pList;
+     s_processor = lev -> m_processor;
+     s_mode = lev -> m_mode;
+     s_bInner = lev -> m_bInner;
+     s_target = lev -> m_target;
+     semanticNest.pop_back();
+   }
+
+   LOG("Return to " << (s_bInner ? "inner " : ""));
+
+   if (s_mode == MODE_HORIZONTAL){
+      LOG("horizontal mode");
+   } else if (s_mode == MODE_VERTICAL){
+      LOG("vertical mode");
+   } else if (s_mode == MODE_MATH){
+      LOG("math mode");
+   } else {
+      LOG("ERROR -- unknown mode");
+      ASSERT(false);
+   }
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::PopMode()
+{
+   if (s_mode == MODE_MATH){
+      // Create an mnode list
+      MListNode* pMListNode = new MListNode;
+      pMListNode -> m_pList = s_pList;
+      PopSemanticLevel();
+      s_pList -> push_back(pMListNode);
+   } else if (s_mode == MODE_HORIZONTAL){
+      // create an hlist
+      HListNode* pHListNode = new HListNode(s_pList);
+      PopSemanticLevel();
+      s_pList -> push_back(pHListNode);
+   } else {
+      // create a vlist
+      VListNode* pVListNode = new VListNode(s_pList);
+      PopSemanticLevel();
+      s_pList -> push_back(pVListNode);
+   }
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::AppendTag(const TokenList* pTL)
+{
+  if (Global::msioutput == 0){
+    StringUtils::AppendToks(*pTL);
+    String str = StringBuilder::Create();
+    TeXNode* tag = new TagNode(str);
+    StringBuilder::Discard(str);
+    s_pList -> push_back(tag);
+  }
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::AppendTag(const char* cstr)
+{
+  if (Global::msioutput == 0){
+    TeXNode* tag = new TagNode(cstr);
+    s_pList -> push_back(tag);
+  }
+}
+@}
+
+
+
+
+@$@<Typesetter implementation@>+=@{@-
+Mode Typesetter::GetMode()
+{
+   return s_mode;
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+bool Typesetter::GetInner()
+{
+   return s_bInner;
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::SetInner(bool b)
+{
+   s_bInner = b;
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+bool Typesetter::Priveledged()
+{
+   return s_priveledged;
+}
+void Typesetter::SetPriveledged(bool b)
+{
+   s_priveledged = b;
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::GotoHMode()
+{
+//   // TTP 1091
+//   prev_graf = 0;
+//   if (mode ==  VMODE || head != tail){
+//
+//   }
+//   // etc
+
+   s_mode = MODE_HORIZONTAL;
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::GotoVMode()
+{
+   if (s_mode == MODE_HORIZONTAL){
+
+   }
+   s_mode = MODE_VERTICAL;
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::GotoMMode()
+{
+   //PushSemanticLevel();
+   s_mode = MODE_MATH;
+}
+@}
+
+
+@$@<AdjustSpaceFactor@>==@{@-
+//    // TTP: 1034. Adjust the space factor
+//    int s = SpaceFactor(c);
+//    if (s == 1000) {
+//       if (s > 0) {
+//          space_factor = 1000;
+//       }
+//    } else {
+//       if (space_factor < 1000) {
+//          space_factor = 1000;
+//       } else {
+//          space_factor = s;
+//       }
+//    }
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::StartBox()
+{
+   PushSemanticLevel();
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::EndBox()
+{
+   TeXNode* pNode = 0;
+   if (s_mode == MODE_HORIZONTAL){
+      pNode = new HListNode(s_pList);
+   } else if (s_mode == MODE_VERTICAL){
+      pNode = new VListNode(s_pList);
+   }
+
+   PopSemanticLevel();
+
+   s_pList -> push_back(pNode);
+
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::StartProcess(const char* name)
+{
+   PushSemanticLevel();
+   s_processor = new char[strlen(name)+1];
+   strcpy(s_processor, name);
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::EndProcess()
+{
+   TeXNodeList* plist = s_pList;
+   char* proc = s_processor;
+   PopSemanticLevel();
+
+   std::strstream strout;
+   OutputStream out(strout);
+   plist -> Print(out);
+   out.Flush();
+   strout.put(0);
+   const char* theCStr = strout.str();
+   LOG("\nSending to processor " << proc << ": " << theCStr);
+
+   if (strcmp(proc, "jbm") == 0){
+      if (strlen(theCStr) != 2) { // i.e. more than $$
+         LOG("\nSending to mathmldll: " << theCStr);
+         if (s_hDLL == 0){
+            SetupMathMLDLL();
+         }
+         LPCONVERT convertfunc;
+         convertfunc  = (LPCONVERT)GetProcAddress(s_hDLL,"ConvertInline");
+         convertfunc( theCStr, mathmlHandler, 2 );
+         LOG("\nGot back " << s_mathml.c_str());
+         std::string str;
+         str +=  "<mml:math>";
+         str +=  s_mathml;
+         str +=  "</mml:math>";
+         AppendTag(str.c_str());
+         s_mathml = "";
+      }
+   }
+}
+@}
+
+
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::SetChar(CharCode c)
+{
+  if (Global::msioutput == 0){
+    ASSERT(s_mode == MODE_HORIZONTAL || s_mode == MODE_MATH);
+    CharNode* ch = new CharNode(NULL, c);
+    s_pList -> push_back(ch);
+  }
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::SetMathChar(CharCode c)
+{
+   if (c > 32768){
+      //<Treat c as an active character>
+      ASSERT(false);
+   } else {
+      int fam = (c / 256) % 16;
+      int mathkind = c / 4096;
+
+      TeXNode* node = new OrdNoad(c);
+      s_pList -> push_back(node);
+   }
+}
+@}
+
+
+This function is used when constructing a sub/superscript
+and the mathchar needs to be placed into the correct NoadField.
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::AttachMathChar(CharCode c)
+{
+   MathCharData* pMCD = new MathCharData(c);
+   TeXNode* node = s_pList -> back();
+   Noad* noad = dynamic_cast<Noad*>(node);
+   ASSERT(noad != 0);
+   switch (s_target){
+      case TARG_NUCLEUS:
+        noad -> m_nucleus = pMCD;
+        break;
+
+      case TARG_SUBSCRIPT:
+        noad -> m_subscript = pMCD;
+        break;
+
+      case TARG_SUPERSCRIPT:
+        noad -> m_superscript = pMCD;
+        break;
+
+   }
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+bool Typesetter::StartScript(bool bSub)
+{
+   if (s_pList -> size() == 0){
+      @<Insert dummy noad for script@>
+   }
+   Noad* noad = dynamic_cast<Noad*>(s_pList -> back());
+   if (noad == 0){
+      @<Insert dummy noad for script@>
+      noad = dynamic_cast<Noad*>(s_pList -> back());
+   }
+   if (noad != 0){
+      if (!noad -> ScriptsAllowed()){
+         @<Insert dummy noad for script@>
+      }
+      noad = dynamic_cast<Noad*>(s_pList -> back());
+   }
+   if (noad == 0){
+      LOG("ERROR -- no noad at end of list");
+   }
+   s_target = bSub ?  TARG_SUBSCRIPT : TARG_SUPERSCRIPT;
+   return (noad != 0);
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+bool Typesetter::StartNucleus()
+{
+   Noad* dummy = new OrdNoad((TeXChar)0);
+   s_pList -> push_back(dummy);
+   s_target = TARG_NUCLEUS;
+   return (true);
+}
+@}
+
+
+
+@$@<Insert dummy noad for script@>@M==@{@-
+Noad* dummy = new OrdNoad((TeXChar)0);
+s_pList -> push_back(dummy);
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::StartInline()
+{
+   PushSemanticLevel();
+   GotoMMode();
+   SetInner(true);
+   StringUtils::AppendToks(Global::msiinlinemathproc);
+   String str = StringBuilder::Create();
+   char* dllname = new char[str.Size() + 1];
+   for (int i = 0; i < str.Size(); ++i){
+      dllname[i] = str[i];
+   }
+   dllname[str.Size()] = '\0';
+   StringBuilder::Discard(str);
+   s_processor = dllname;
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::EndInline()
+{
+   TeXNodeList* plist = s_pList;
+   char* proc = s_processor;
+   PopSemanticLevel();
+
+   if (strcmp(proc,"pass") == 0){
+      //std::strstream strout;
+      //OutputStream out(strout);
+      if (Global::msidollar != 0){
+         s_pList -> push_back(
+            new CharNode(NULL, (char) Global::msidollar)
+         );
+         //out << (char) Global::msidollar;
+      }
+      TeXNode* pNode = new HListNode(plist);
+      s_pList -> push_back(pNode);
+      //plist -> Print(out);
+      if (Global::msidollar != 0){
+         s_pList -> push_back(
+            new CharNode(NULL, (char) Global::msidollar)
+         );
+         //out << (char) Global::msidollar;
+      }
+      //out.Flush();
+      //strout.put(0);
+      //AppendTag(strout.str());
+   } else if (strcmp(proc, "jbm") == 0){
+      std::strstream strout;
+      OutputStream out(strout);
+      if (Global::msidollar != 0){
+         out << (char) Global::msidollar;
+      }
+      plist -> Print(out);
+      if (Global::msidollar != 0){
+         out << (char) Global::msidollar;
+      }
+      out.Flush();
+      strout.put(0);
+      const char* theCStr = strout.str();
+
+      if (strlen(theCStr) != 2) { // i.e. more than $$
+         LOG("\nSending to jbm processor : " << theCStr);
+         if (s_hDLL == 0){
+            SetupMathMLDLL();
+         }
+         LPCONVERT convertfunc;
+         convertfunc  = (LPCONVERT)GetProcAddress(s_hDLL,"ConvertInline");
+         convertfunc( theCStr, mathmlHandler, 2 );
+         LOG("\nGot back " << s_mathml.c_str());
+         std::string str;
+         str +=  "<mml:math>";
+         str +=  s_mathml;
+         str +=  "</mml:math>";
+         AppendTag(str.c_str());
+         s_mathml = "";
+      }
+   }
+
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::StartDisplay()
+{
+   PushSemanticLevel();
+   GotoMMode();
+   SetInner(false);
+   StringUtils::AppendToks(Global::msiinlinemathproc);
+   String str = StringBuilder::Create();
+   char* dllname = new char[str.Size() + 1];
+   for (int i = 0; i < str.Size(); ++i){
+      dllname[i] = str[i];
+   }
+   dllname[str.Size()] = '\0';
+   StringBuilder::Discard(str);
+   s_processor = dllname;
+}
+@}
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::EndDisplay()
+{
+   TeXNodeList* plist = s_pList;
+   char* proc = s_processor;
+   PopSemanticLevel();
+
+   if (strcmp(proc, "pass") == 0){
+      std::strstream strout;
+      OutputStream out(strout);
+      if (Global::msidollar != 0){
+         out << (char) Global::msidollar  << (char) Global::msidollar;
+      }
+      plist -> Print(out);
+      if (Global::msidollar != 0){
+         out << (char) Global::msidollar  << (char) Global::msidollar;
+      }
+      out.Flush();
+      strout.put(0);
+      AppendTag(strout.str());
+   } else if (strcmp(proc, "jbm") == 0){
+      std::strstream strout;
+      OutputStream out(strout);
+      if (Global::msidollar != 0){
+         out << (char) Global::msidollar  << (char) Global::msidollar;
+      }
+      plist -> Print(out);
+      if (Global::msidollar != 0){
+         out << (char) Global::msidollar  << (char) Global::msidollar;
+      }
+      out.Flush();
+      strout.put(0);
+      const char* theCStr = strout.str();
+
+      if (strlen(theCStr) != 2) { // i.e. more than $$
+         LOG("\nSending to jbm processor : " << theCStr);
+         if (s_hDLL == 0){
+            SetupMathMLDLL();
+         }
+         LPCONVERT convertfunc;
+         convertfunc  = (LPCONVERT)GetProcAddress(s_hDLL,"ConvertDisplay");
+         convertfunc( theCStr, mathmlHandler, 2 );
+         LOG("\nGot back " << s_mathml.c_str());
+         std::string str;
+         str +=  "<mml:math class=\"displayedmathml\" "
+                 "mode=\"display\" display=\"block\">";
+         str +=  s_mathml;
+         str +=  "</mml:math>";
+         AppendTag(str.c_str());
+         s_mathml = "";
+      }
+   }
+
+}
+@}
+
+
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::StartSubformula()
+{
+   PushSemanticLevel();
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::EndSubformula()
+{
+   SubMList* subform = new SubMList;
+   subform -> m_pList = s_pList;
+
+   PopSemanticLevel();
+   if (s_pList -> size() == 0){
+      Noad* pNoad = new Noad;
+      pNoad -> m_nucleus = subform;
+      s_pList -> push_back(pNoad);
+      return;
+   }
+   TeXNode* node = s_pList -> back();
+   Noad* noad = dynamic_cast<Noad*>(node);
+   if (noad == 0){
+      Noad* pNoad = new Noad;
+      pNoad -> m_nucleus = subform;
+      s_pList -> push_back(pNoad);
+      return;
+   }
+   if (noad != 0){
+      switch (s_target){
+         case TARG_NUCLEUS :
+            noad -> m_nucleus = subform;
+            break;
+         case TARG_SUBSCRIPT:
+            noad -> m_subscript = subform;
+            break;
+         case TARG_SUPERSCRIPT:
+            noad -> m_superscript = subform;
+            break;
+      }
+   }
+}
+@}
+
+
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::SetSpace()
+{
+  if (Global::msioutput == 0){
+     ASSERT(s_mode = MODE_HORIZONTAL);
+     GlueNode* ch = new GlueNode();
+     s_pList -> push_back(ch);
+  }
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+
+void Typesetter::PrintMainList(std::ostream& outs)
+{
+   // This may be called after a crash so we'll have
+   // to print the lists saved on the stack.
+   OutputStream out(outs);
+   std::list<SemanticLevel*>::const_iterator it;
+   it = semanticNest.begin();
+   while (it != semanticNest.end()){
+      (*it) -> m_pList -> Print(out);
+      ++it;
+   }
+   s_pList -> Print(out);
+   out.Flush();
+}
+@}
+
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::StartAlignment()
+{
+   LOG("\n----Typesetter::StartAlignment");
+   PushSemanticLevel();
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::EndAlignment()
+{
+   LOG("\n----Typesetter::EndAlignment");
+   AlignmentNode* pNode = new AlignmentNode;
+   pNode -> m_pList = s_pList;
+   PopSemanticLevel();
+   s_pList -> push_back(pNode);
+}
+@}
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::StartCol()
+{
+   PushSemanticLevel();
+}
+
+void Typesetter::EndCol()
+{
+   AlignCellNode* cell = new AlignCellNode;
+   cell -> m_pList = s_pList;
+   PopSemanticLevel();
+   s_pList -> push_back(cell);
+}
+
+void Typesetter::StartRow()
+{
+   PushSemanticLevel();
+}
+
+void Typesetter::EndRow()
+{
+   AlignRowNode* pRow = new AlignRowNode;
+   pRow -> m_pList = s_pList;
+   PopSemanticLevel();
+   s_pList -> push_back(pRow);
+}
+
+@}
+
+
+@$@<SetRule@>==@{@-
+//void Typesetter::SetRule(RuleSpec* pSpec)
+//{
+//    // TTP 1056
+//    append(pSpec);
+//    if (mode == VMODE){
+//       prev_depth = ignore_depth;
+//    else if (mode == HMODE){
+//       space_factor = 1000;
+//    }
+//}
+@}
+
+
+
