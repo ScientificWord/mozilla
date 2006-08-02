@@ -1,0 +1,1437 @@
+
+<TOKENIZER_MML>
+
+<DEFAULT_CONTEXT_MATH>
+
+<START_CONTEXT_MMLCONTEXT>
+;; MathML version
+<uID12.1.1>200
+;; namespace used to qualify MathML tokens
+<uID12.1.2>mml:
+;; renderer implements Displays flag
+<uID12.1.3>false
+;; the following entry not used currently
+<uID12.1.4>red
+;; <mstyle> attributes for all our MML objects
+;;<uID12.1.5>mathcolor="red" mathbackground="transparent"
+<uID12.1.5>
+;; Attributes on an <mi> to indicate a function name
+<uID12.1.6>mathcolor="gray"
+;; Attributes on an <mtext> or <mi> to indicate a unit name
+<uID12.1.7>mathcolor="green"
+;; Attributes on an <mtext> embedded in MATH - EmbeddedText
+<uID12.1.8>mathcolor="black"
+;; Attributes on an <mtext> for hyper objects
+<uID12.1.9>mathcolor="green"
+;; renderer implements Baselining flag
+<uID12.1.10>true
+;; output equation tags flag ( uses <mlabeledtr> )
+<uID12.1.11>true
+;; output equation numbers flag ( uses <mlabeledtr> )
+<uID12.1.12>true
+;; output entities as unicodes, 0 - &alpha;, 1 - &#945;, 2 - &#x3B1;
+<uID12.1.13>0
+;; control lspace and rspace on <mo>s, 1-don't script, 2-get from MathML.gmr, 3-TeX
+<uID12.1.14>1
+;; control lspace and rspace on <mo>s in scripts, 1-don't script, 2-get from MathML.gmr, 3-TeX
+<uID12.1.15>1
+;; format for equation numbers - side attribute comes from 5.701.4
+;;<uID12.1.16>(%thechapter%.%thesection%.%theequation%)
+<uID12.1.16>(%theequation%)
+;; script long arrows as stretched versions of short arrows
+<uID12.1.17>false
+;; indent increment for nested MML output
+<uID12.1.18>2
+<END_CONTEXT_MMLCONTEXT>
+
+
+;In some cases, it is useful to map 2 or 3 consecutive
+; LaTeX operator symbols to a single MathML operator.
+;Lookup by LaTeX tokens, with the corresponding MML name,
+; etc. on the right.
+
+<START_CONTEXT_MULTISYMOPS>
+**<uID3.20.1>**,**,infix,50,
+!!<uID3.20.5>!!,!!,postfix,61,
+...<uID3.20.6>...,...,postfix,15,
+\nabla\times<uID3.20.7>&nabla;&times;,&#x2207;&#xD7;,prefix,54,
+\nabla\cdot<uID3.20.8>&nabla;&sdot;,&#x2207;&#x22C5;,prefix,54,
+\nabla\cdot\nabla<uID3.20.9>&nabla;&sdot;&nabla;,&#x2207;&#x22C5;&#x2207;,prefix,54,
+
+-=<uID3.21.1>-=,-=,infix,12,,lspace="thinmathspace" rspace="thinmathspace"
+-><uID3.21.2>->,->,infix,13,
+;;;;!=<uID3.21.3>infix,26,
+*=<uID3.21.4>*=,*=,infix,12,
+//<uID3.21.5>//,//,infix,9,
+/=<uID3.21.6>/=,/=,infix,12,
+<><uID3.21.7>&lt;>,&#x3C;>,infix,59,
+:=<uID3.21.8>:=,:=,infix,6,
++=<uID3.21.9>+=,+=,infix,12,
+==<uID3.21.10>==,==,infix,26,
+\&\&<uID3.21.11>&amp;&amp;,&#x26;&#x26;,infix,20,
+<=<uID3.21.12>&lt;=,&#x3C;=,infix,26,
+>=<uID3.21.14>>=,>=,infix,26,
+;;;;!=<uID3.21.3>!=	problem with $n!=1x2x...n$
+
+--<uID3.20.2>--,--,multiform,,,
+..<uID3.20.3>..,..,multiform,,,
+++<uID3.20.4>++,++,multiform,,,
+||<uID3.21.13>||,||,multiform,,,
+
+\not=<uID3.22.1>&ne;,&#x2260;,infix,26,
+\not<<uID3.22.2>&nlt;,&#x226E;,infix,26,
+\not><uID3.22.3>&ngt;,&#x226F;,infix,26,
+\not\in<uID3.22.4>&notin;,&#x2209;,infix,26,
+\not\sim<uID3.22.5>&nsim;,&#x2241;,infix,26,
+\not\subset<uID3.22.6>&nsub;,&#x2284;,infix,26,
+\not\subseteq<uID3.22.7>&nsubE;,&#x2288;,infix,26,
+\not\equiv<uID3.22.8>&nequiv;,&#x2262;,infix,26,
+\not\leq<uID3.22.9>&nle;,&#xE2A7;,infix,26,
+
+<END_CONTEXT_MULTISYMOPS>
+
+
+;MML operators whose form is determined by context.
+;lookup by MML name and form, allowed forms on the right.
+
+<START_CONTEXT_MULTIFORMOPS>
+--<uID3.20.2>multiform,101
+--<uID3.20.2>prefix,64,,lspace="thinmathspace" rspace="0em"
+--<uID3.20.2>postfix,64,,lspace="0em" rspace="thinmathspace"
+..<uID3.20.3>multiform,011
+..<uID3.20.3>infix,46,,lspace="mediummathspace" rspace="mediummathspace"
+..<uID3.20.3>postfix,15,,lspace="0" rspace="mediummathspace" 
+++<uID3.20.4>multiform,101
+++<uID3.20.4>prefix,64,,lspace="mediummathspace" rspace="0"
+++<uID3.20.4>postfix,64,,lspace="0" rspace="mediummathspace"
+||<uID3.21.13>multiform,111
+||<uID3.21.13>prefix,1,,fence="true" stretchy="false" lspace="mediummathspace" rspace="0"
+||<uID3.21.13>infix,19,,lspace="mediummathspace" rspace="mediummathspace"
+||<uID3.21.13>postfix,1,,fence="true" stretchy="false" lspace="0" rspace="mediummathspace" 
+&plusmn;<uID3.13.1>multiform,110,U000B1
+&plusmn;<uID3.13.1>prefix,47,U000B1,lspace="mediummathspace" rspace="0"
+&plusmn;<uID3.13.1>infix,28,U000B1,lspace="mediummathspace" rspace="mediummathspace"
+&mnplus;<uID3.13.2>multiform,110,U02213
+&mnplus;<uID3.13.2>prefix,47,U02213,lspace="mediummathspace" rspace="0"
+&mnplus;<uID3.13.2>infix,28,U02213,lspace="mediummathspace" rspace="mediummathspace"
++<uID3.13.60>multiform,111,U0002B
++<uID3.13.60>prefix,47,U0002B,lspace="mediummathspace" rspace="0"
++<uID3.13.60>infix,28,U0002B,lspace="mediummathspace" rspace="mediummathspace"
++<uID3.13.60>postfix,64,U0002B,lspace="0" rspace="mediummathspace"
+&minus;<uID3.13.61>multiform,111,U02212
+&minus;<uID3.13.61>prefix,47,U02212,lspace="mediummathspace" rspace="0"
+&minus;<uID3.13.61>infix,28,U02212,lspace="mediummathspace" rspace="mediummathspace"
+&minus;<uID3.13.61>postfix,64,U02212,lspace="0" rspace="mediummathspace"
+!<uID3.17.80>multiform,101,U00021
+!<uID3.17.80>prefix,22,U00021,lspace="mediummathspace" rspace="0"
+!<uID3.17.80>postfix,61,U00021,lspace="0" rspace="mediummathspace"
+&amp;<uID3.17.84>multiform,111,U00026
+&amp;<uID3.17.84>prefix,11,U00026,lspace="mediummathspace" rspace="0"
+&amp;<uID3.17.84>infix,21,U00026,lspace="mediummathspace" rspace="mediummathspace"
+&amp;<uID3.17.84>postfix,11,U00026,lspace="0" rspace="mediummathspace"
+;<uID3.17.91>multiform,011,U0003B
+;<uID3.17.91>infix,2,U0003B,lspace="mediummathspace" rspace="mediummathspace"
+;<uID3.17.91>postfix,5,U0003B,lspace="0" rspace="mediummathspace"
+|<uID3.17.101>multiform,111,U0007C
+|<uID3.17.101>prefix,1,U0007C,fence="true" stretchy="false" lspace="mediummathspace" rspace="0"
+|<uID3.17.101>infix,19,U0007C,stretchy="true" minsize="0" lspace="mediummathspace" rspace="mediummathspace"
+|<uID3.17.101>postfix,1,U0007C,fence="true" stretchy="false" lspace="0" rspace="mediummathspace"
+&Verbar;<uID3.17.29>multiform,111,U02016
+&Verbar;<uID3.17.29>prefix,1,U02016,fence="true" stretchy="false" lspace="mediummathspace" rspace="0"
+&Verbar;<uID3.17.29>infix,19,U02016,stretchy="true" minsize="0" lspace="mediummathspace" rspace="mediummathspace"
+&Verbar;<uID3.17.29>postfix,1,U02016,fence="true" stretchy="false" lspace="0" rspace="mediummathspace" 
+<END_CONTEXT_MULTIFORMOPS>
+
+
+
+<START_CONTEXT_MATH,1.2.0>
+
+;Token Elements - no sub-elements
+; These don't correspond to anything in LaTeX
+
+mi<uID3.201.1>
+mn<uID3.202.1>
+mo<uID3.203.1>
+mtext<uID3.204.1>
+mspace<uID3.205.1>
+ms<uID3.206.1>
+
+
+\tiny<uID5.480.0>mathsize="0.9ex"
+\scriptsize<uID5.481.0>mathsize="1.15ex"
+\footnotesize<uID5.482.0>mathsize="1.40ex"
+\small<uID5.483.0>mathsize="small"
+\normalsize<uID5.484.0>mathsize="normal"
+\large<uID5.485.0>mathsize="large"
+\Large<uID5.486.0>mathsize="2.40ex"
+\LARGE<uID5.487.0>mathsize="2.65ex"
+\huge<uID5.488.0>mathsize="2.90ex"
+\Huge<uID5.489.0>mathsize="3.15ex"
+
+\mathrm<uID5.81.0>fontweight="normal"
+\mathbf<uID5.82.0>fontweight="bold" fontstyle="upright"
+\mathsf<uID5.83.0>fontstyle="italic"
+\mathtt<uID5.84.0>fontstyle="italic"
+\mathnormal<uID5.85.0>
+\mathit<uID5.86.0>fontstyle="italic"
+\pmb<uID5.89.0>
+\boldsymbol<uID5.91.0>fontweight="bold" fontstyle="italic"
+
+\textup<uID5.450.1>fontstyle="upright"
+\textit<uID5.451.1>fontstyle="italic"
+\textsl<uID5.452.1>fontstyle="slanted"
+\textsc<uID5.453.1>
+
+\textmd<uID5.454.1>fontweight="medium"
+\textbf<uID5.455.1>fontweight="bold"
+
+\textrm<uID5.456.1>
+\textsf<uID5.457.1>mathvariant="sans-serif"
+\texttt<uID5.458.1>
+
+\emph<uID5.459.1>fontweight="bold"
+\textnormal<uID5.460.1>fontweight="normal"
+
+\textcircled<uID5.460.1>
+
+;; type size in TEXT
+
+\tiny<uID5.480.1>mathsize="0.9ex"
+\scriptsize<uID5.481.1>mathsize="1.15ex"
+\footnotesize<uID5.482.1>mathsize="1.40ex"
+\small<uID5.483.1>mathsize="1.65ex"
+\normalsize<uID5.484.1>mathsize="1.90ex"
+\large<uID5.485.1>mathsize="2.15ex"
+\Large<uID5.486.1>mathsize="2.40ex"
+\LARGE<uID5.487.1>mathsize="2.65ex"
+\huge<uID5.488.1>mathsize="2.90ex"
+\Huge<uID5.489.1>mathsize="3.15ex"
+
+
+;;\TCItag<uID5.701.0>!\TCItag!REQPARAM(5.701.1,TEXT)
+side<uID5.701.4>left
+minlabelspacing<uID5.701.5>1.0in
+
+
+
+;General Layout Schemata
+
+/mrow<uID5.750.0>
+mrow<uID5.750.1>!mrow!BUCKET(5.750.2,MATH,,,/mrow,)!/mrow!
+/mfrac<uID5.1.3>
+mfrac<uID5.1.0>!mfrac!reqELEMENT(5.1.1)reqELEMENT(5.1.2)!/mfrac!
+/msqrt<uID5.60.3>
+msqrt<uID5.60.0>!msqrt!BUCKET(5.60.2,MATH,,,/msqrt,)!/msqrt!
+/mroot<uID5.61.3>
+mroot<uID5.61.0>!mroot!reqELEMENT(5.61.2)reqELEMENT(5.61.1)!/mroot!
+/mstyle<uID5.600.3>
+mstyle<uID5.600.0>!mstyle!BUCKET(5.600.2,MATH,,,/mstyle,)!/mstyle!
+/merror<uID5.601.3>
+merror<uID5.601.0>!merror!BUCKET(5.601.2,MATH,,,/merror,)!/merror!
+/mpadded<uID5.602.3>
+mpadded<uID5.602.0>!mpadded!BUCKET(5.602.2,MATH,,,/mpadded,)!/mpadded!
+/mphantom<uID5.603.3>
+mphantom<uID5.603.0>!mphantom!BUCKET(5.603.2,MATH,,,/mphantom,)!/mphantom!
+
+/maction<uID5.604.3>
+maction<uID5.604.0>!maction!reqELEMENT(5.604.1)reqELEMENT(5.604.2)!/maction!
+
+/mfenced<uID5.70.3>
+mfenced<uID5.70.0>!mfenced!_FENCEDITEMS_!/mfenced!
+_FENCEDITEMS_LIST(5.70.11,reqELEMENT(5.70.10),5.70.12,,/mfenced,)
+
+
+;Script and Limit Schemata
+
+/msub<uID5.50.1>
+msub<uID5.50.2>!msub!_SUBBASE__SUBSCRIPT_!/msub!
+_SUBBASE_reqELEMENT(5.50.3)
+_SUBSCRIPT_reqELEMENT(5.50.4)
+
+/msup<uID5.51.1>
+msup<uID5.51.2>!msup!reqELEMENT(5.51.3)_SUPERSCRIPT_!/msup!
+_SUPERSCRIPT_reqELEMENT(5.51.5)
+
+/msubsup<uID5.52.1>
+msubsup<uID5.52.2>!msubsup!reqELEMENT(5.52.3)_SSSUB__SSSUPER_!/msubsup!
+_SSSUB_reqELEMENT(5.52.4)
+_SSSUPER_reqELEMENT(5.52.5)
+
+/munder<uID5.53.1>
+munder<uID5.53.2>!munder!reqELEMENT(5.53.3)_UNDERSCRIPT_!/munder!
+_UNDERSCRIPT_reqELEMENT(5.53.4)
+
+/mover<uID5.54.1>
+mover<uID5.54.2>!mover!reqELEMENT(5.54.3)_OVERSCRIPT_!/mover!
+_OVERSCRIPT_reqELEMENT(5.54.5)
+
+/munderover<uID5.55.1>
+munderover<uID5.55.2>!munderover!reqELEMENT(5.55.3)_UOSUB__UOSUPER_!/munderover!
+_UOSUB_reqELEMENT(5.55.4)
+_UOSUPER_reqELEMENT(5.55.5)
+
+/mprescripts/<uID5.56.15>
+mprescripts/<uID5.56.10>LIST(5.56.11,_LEFTSUBSUPPAIR_,5.56.12,,/mmultiscripts,)
+_LEFTSUBSUPPAIR_reqELEMENT(5.56.13)reqELEMENT(5.56.14)
+
+/mmultiscripts<uID5.56.11>
+mmultiscripts<uID5.56.2>!mmultiscripts!reqELEMENT(5.56.3)_RIGHTSCRIPTS__LEFTSCRIPTS_!/mmultiscripts!
+_RIGHTSCRIPTS_LIST(5.56.6,_SUBSUPPAIR_,5.56.7,,mprescripts/|/mmultiscripts,)
+_SUBSUPPAIR_reqELEMENT(5.56.8)reqELEMENT(5.56.9)
+_LEFTSCRIPTS_IF(MATH,?mprescripts/?,5.56.10)ifEND
+
+
+;Tables and Matrices
+
+/mtd<uID5.35.15>
+mtd<uID5.35.14>!mtd!BUCKET(5.35.8,MATH,,,/mtd,)!/mtd!
+
+;MathML 1.0
+;/mtr<uID5.35.16>
+;mtr<uID5.35.13>!mtr!_LISTOFCELLS_!/mtr!
+;_LISTOFCELLS_LIST(5.35.11,_MTCELL_,5.35.12,,/mtr|/mtable,)
+;_MTCELL_IF(MATH,?mtd?,5.35.14)ELSE(_SINGLEELEMCELL_)ifEND
+;_SINGLEELEMCELL_reqELEMENT(5.35.8)
+
+;MathML 2.0
+/mtr<uID5.35.16>
+mtr<uID5.35.13>!mtr!_LISTOFCELLS_!/mtr!
+_LISTOFCELLS_LIST(5.35.11,_MTCELL_,5.35.12,,/mtr|/mtable,)
+_MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
+
+;MathML 2.0
+/mlabeledtr<uID5.35.41>
+mlabeledtr<uID5.35.40>!mlabeledtr!_EQNNUMBER__LISTOFCELLS_!/mlabeledtr!
+_EQNNUMBER_reqELEMENT(5.35.42)
+;_LABELEDLIST_LIST(5.35.11,_TDATA_,5.35.12,,/mtr|/mtable,)
+;_TDATA_IF(MATH,?mtd?,5.35.14)ifEND
+
+;MathML 1.0
+;/mtable<uID5.35.17>
+;mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
+;_LISTOFROWS_LIST(5.35.9,_MTROW_,5.35.10,,/mtable,)
+;_MTROW_IF(MATH,?mtr?,5.35.13)ELSE(_SINGLECELLROW_)ifEND
+;_SINGLECELLROW_reqELEMENT(5.35.8)
+
+;MathML 2.0
+/mtable<uID5.35.17>
+mtable<uID5.35.0>!mtable!_LISTOFROWS_!/mtable!
+_LISTOFROWS_LIST(5.35.9,_MTROW_,5.35.10,,/mtable,)
+_MTROW_IF(MATH,?mtr?,5.35.13)elseIF(?mlabeledtr?,5.35.40)ifEND
+
+
+; Start map of LaTeX symbols
+
+; uID3.1.1 to 26 small letters	  - mapped to <mi>'s
+; uID3.2.1 to 26 capitol letters  - mapped to <mi>'s
+; uID3.3.1 to 10 digits			  - mapped to <mn>'s
+
+; in certain contexts, d and D are mapped to differential ops
+
+;&DifferentialD;<uID3.1.4>prefix,55,U02146
+;&CapitalDifferentialD;<uID3.2.4>prefix,55,U0F74B
+&dd;<uID3.1.4>prefix,55,U02146
+&DD;<uID3.2.4>prefix,55,U0F74B
+
+
+;Latin (upper ansi) symbols
+
+&AElig;<uID3.16.1>,U000C6
+&OElig;<uID3.16.2>,U00152
+&aelig;<uID3.16.3>,U000E6
+&oelig;<uID3.16.4>,U00153
+&Lstrok;<uID3.16.5>,U00141
+&lstrok;<uID3.16.6>,U00142
+&Oslash;<uID3.16.7>,U000D8
+&oslash;<uID3.16.8>,U000F8
+&imath;<uID3.16.9>,U00131
+&jmath;<uID3.16.10>
+&szlig;<uID3.16.11>,U000DF
+&iquest;<uID3.16.12>,U000BF
+&iexcl;<uID3.16.13>,U000A1
+&Aring;<uID3.16.14>,U00C5
+
+
+;translations for \symbol{94} and \symbol{126}.
+; currently hard-coded <mo>'s
+
+^<uID3.5.94>infix,58,
+~<uID3.5.126>infix,62,
+
+&ApplyFunction;<uID3.5.6>infix,65,U02061
+
+unknown_op<uID3.5.7>infix,25
+
+
+; \U{0x..} - unicodes that we script as entities
+
+&pound;<uID11.0.163>3.17.63
+&cent;<uID11.0.162>3.17.64
+&yen;<uID11.0.165>3.17.65
+&curren;<uID11.0.164>3.17.140
+
+&#8352;<uID11.0.8352>3.17.141
+&#8356;<uID11.0.8356>3.17.142
+&#8355;<uID11.0.8355>3.17.143
+&#8359;<uID11.0.8359>3.17.144
+
+&Omega;<uID11.0.937>3.10.43
+&mu;<uID11.0.956>3.10.14
+
+&Aring;<uID11.0.197>3.16.14
+&Aring;<uID11.0.8491>3.16.14
+
+&Copf;<uID11.0.8450>3.17.76
+;;&Iopf;<uID11.0.????>3.17.77
+&Nopf;<uID11.0.8469>3.17.78
+&Ropf;<uID11.0.8477>3.17.79
+
+&Lscr;<uID11.0.8466>3.17.150
+&Fscr;<uID11.0.8497>3.17.151
+
+&Qopf;<uID11.0.8474>3.17.155
+&Zopf;<uID11.0.8484>3.17.156
+
+&deg;<uID11.0.176>3.17.159
+&prime;<uID11.0.8242>3.17.160
+&Prime;<uID11.0.8243>3.17.161
+&deg;C<uID11.0.8451>3.17.162
+&deg;F<uID11.0.8457>3.17.163
+
+
+;Entities used as accents
+
+;Hat<uID4.1.1>postfix,70,U00302,accent="true"
+&Hat;<uID4.1.1>postfix,70,U00302,accent="true"
+;Hacek<uID4.1.2>postfix,70,U002C7,accent="true"
+&caron;<uID4.1.2>postfix,70,U002C7,accent="true"
+;DiacriticalTilde<uID4.1.3>postfix,70,U002DC,accent="true"
+&tilde;<uID4.1.3>postfix,70,U002DC,accent="true"
+;DiacriticalAcute<uID4.1.4>postfix,70,U000B4,accent="true"
+&acute;<uID4.1.4>postfix,70,U000B4,accent="true"
+;DiacriticalGrave<uID4.1.5>postfix,70,U00060,accent="true"
+&grave;<uID4.1.5>postfix,70,U00060,accent="true"
+;DiacriticalDot<uID4.1.6>postfix,70,U002D9,accent="true"
+&dot;<uID4.1.6>postfix,70,U002D9,accent="true"
+;DoubleDot<uID4.1.7>postfix,70,U000A8,accent="true"
+&die;<uID4.1.7>postfix,70,U000A8,accent="true"
+;Breve<uID4.1.8>postfix,70,U002D8,accent="true"
+&breve;<uID4.1.8>postfix,70,U002D8,accent="true"
+;OverBar<uID4.1.9>postfix,70,U000AF,accent="true"
+&macr;<uID4.1.9>postfix,70,U000AF,accent="true"
+&#x20D7;<uID4.1.10>postfix,70,U020D7,accent="true"
+;DiacriticalRightVector<uID4.1.10>postfix,70,,accent="true"
+;&rarr;<uID4.1.10>postfix,70,U02192,accent="true"
+;TripleDot<uID4.1.11>postfix,70,U020DB,accent="true"
+&tdot;<uID4.1.11>postfix,70,U020DB,accent="true"
+&ring;<uID4.1.12>postfix,70,U002DA,accent="true"
+&DotDot;<uID4.1.13>postfix,70,U020DC,accent="true"
+
+
+;Entities used as decorations
+
+&OverBar;<uID3.25.1>postfix,70,U000AF,stretchy="true" accent="true"
+;DiacriticalLeftArrow<uID3.25.2>postfix,70,,stretchy="true"
+&larr;<uID3.25.2>postfix,70,U02190,stretchy="true"
+;DiacriticalRightArrow<uID3.25.3>postfix,70,,stretchy="true"
+&rarr;<uID3.25.3>postfix,70,U02192,stretchy="true"
+;DiacriticalLeftRightArrow<uID3.25.4>postfix,70,,stretchy="true"
+&harr;<uID3.25.4>postfix,70,U02194,stretchy="true"
+&OverBrace;<uID3.25.5>postfix,70,U0F612,stretchy="true"
+&Hat;<uID3.25.6>postfix,70,,stretchy="true"
+&DiacriticalTilde;<uID3.25.7>postfix,70,,stretchy="true"
+&UnderBar;<uID3.25.8>postfix,70,U00332,stretchy="true"
+;DiacriticalLeftArrow<uID3.25.9>postfix,70,,stretchy="true"
+&larr;<uID3.25.9>postfix,70,U02190,stretchy="true"
+;DiacriticalRightArrow<uID3.25.10>postfix,70,,stretchy="true"
+&rarr;<uID3.25.10>postfix,70,U02192,stretchy="true"
+;DiacriticalLeftRightArrow<uID3.25.11>postfix,70,,stretchy="true"
+&harr;<uID3.25.11>postfix,70,U02194,stretchy="true"
+&UnderBrace;<uID3.25.12>postfix,70,U0F613,stretchy="true"
+
+
+;Greek letters
+
+&alpha;<uID3.10.1>,U003B1
+&beta;<uID3.10.2>,U003B2
+&gamma;<uID3.10.3>,U003B3
+&delta;<uID3.10.4>,U003B4
+;; cursive epsilon OR \varepsilon<uID3.10.5>
+&epsiv;<uID3.10.5>,U003B5
+;; straight epsilon OR \epsilon<uID3.10.6> - I don't know the unicode
+&epsi;<uID3.10.6>,U003F5
+&zeta;<uID3.10.7>,U003B6
+&eta;<uID3.10.8>,U003B7
+&theta;<uID3.10.9>,U003B8
+&thetav;<uID3.10.10>,U003D1
+&iota;<uID3.10.11>,U003B9
+&kappa;<uID3.10.12>,U003BA
+&lambda;<uID3.10.13>,U003BB
+&mu;<uID3.10.14>,U003BC
+&nu;<uID3.10.15>,U003BD
+&xi;<uID3.10.16>,U003BE
+
+&pi;<uID3.10.18>,U003C0
+;varpi<uID3.10.19>
+&piv;<uID3.10.19>,U003D6
+&rho;<uID3.10.20>,U003C1
+;varrho<uID3.10.21>
+&rhov;<uID3.10.21>,U003F1
+&sigma;<uID3.10.22>,U003C3
+;varsigma<uID3.10.23>
+&sigmav;<uID3.10.23>,U003C2
+&tau;<uID3.10.24>,U003C4
+;upsilon<uID3.10.25>
+&upsi;<uID3.10.25>,U003C5
+&phi;<uID3.10.26>,U003D5
+;varphi<uID3.10.27>
+&phiv;<uID3.10.27>,U003C6
+&chi;<uID3.10.28>,U003C7
+&psi;<uID3.10.29>,U003C8
+&omega;<uID3.10.30>,U003C9
+
+;digamma<uID3.10.31>
+&gammad;<uID3.10.31>,U003DC
+;varkappa<uID3.10.32>
+&kappav;<uID3.10.32>,U003F0
+
+&Gamma;<uID3.10.33>,U00393
+&Delta;<uID3.10.34>prefix,54,U00394,
+&Theta;<uID3.10.35>,U00398
+&Lambda;<uID3.10.36>,U0039B
+&Xi;<uID3.10.37>,U0039E
+&Pi;<uID3.10.38>,U003A0
+&Sigma;<uID3.10.39>,U003A3
+;Upsilon<uID3.10.40>
+&Upsi;<uID3.10.40>,U003D2
+&Phi;<uID3.10.41>,U003A6
+&Psi;<uID3.10.42>,U003A8
+&Omega;<uID3.10.43>,U003A9
+
+&Gammad;<uID3.10.44>,U003DC
+&omicron;<uID3.10.45>,U003BF
+;straightepsilon<uID3.10.46>
+&epsi;<uID3.10.46>,U003B5
+;straightphi<uID3.10.47>
+&phi;<uID3.10.47>,U003C6
+
+
+;arrows
+
+&larr;<uID3.12.1>infix,25,U02190,lspace="thickmathspace" rspace="thickmathspace"
+&lArr;<uID3.12.2>infix,25,U021D0,lspace="thickmathspace" rspace="thickmathspace"
+&rarr;<uID3.12.3>infix,25,U02192,lspace="thickmathspace" rspace="thickmathspace"
+&rArr;<uID3.12.4>infix,25,U021D2,lspace="thickmathspace" rspace="thickmathspace"
+&harr;<uID3.12.5>infix,25,U02194,lspace="thickmathspace" rspace="thickmathspace"
+&hArr;<uID3.12.6>infix,25,U021D4,lspace="thickmathspace" rspace="thickmathspace"
+&map;<uID3.12.7>infix,25,U021A6,lspace="thickmathspace" rspace="thickmathspace"
+&larrhk;<uID3.12.8>infix,25,U021A9,lspace="thickmathspace" rspace="thickmathspace"
+&lharu;<uID3.12.9>infix,25,U021BC,lspace="thickmathspace" rspace="thickmathspace"
+&lhard;<uID3.12.10>infix,25,U021BD,lspace="thickmathspace" rspace="thickmathspace"
+&rlhar;<uID3.12.11>infix,25,U021CC,lspace="thickmathspace" rspace="thickmathspace"
+&uarr;<uID3.12.12>infix,25,U02191,lspace="thickmathspace" rspace="thickmathspace"
+&uArr;<uID3.12.13>infix,25,U021D1,lspace="thickmathspace" rspace="thickmathspace"
+&darr;<uID3.12.14>infix,25,U02193,lspace="thickmathspace" rspace="thickmathspace"
+&dArr;<uID3.12.15>infix,25,U021D3,lspace="thickmathspace" rspace="thickmathspace"
+&varr;<uID3.12.16>infix,25,U02195,lspace="thickmathspace" rspace="thickmathspace"
+
+;;long arrows as stretched versions of their shorter counterparts
+&larr;<uID3.12.17>infix,25,U02190,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
+&lArr;<uID3.12.18>infix,25,U021D0,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
+&rarr;<uID3.12.19>infix,25,U02192,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
+&rArr;<uID3.12.20>infix,25,U021D2,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
+&harr;<uID3.12.21>infix,25,U02194,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
+&hArr;<uID3.12.22>infix,25,U021D4,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
+&map;<uID3.12.23>infix,25,U021A6,stretchy="true" minsize="1.6" lspace="thickmathspace" rspace="thickmathspace"
+
+;; Note that a second set of productions for long arrows is in DEPOPS section
+
+&rarrhk;<uID3.12.24>infix,25,U021AA,lspace="thickmathspace" rspace="thickmathspace"
+&rharu;<uID3.12.25>infix,25,U021C0,lspace="thickmathspace" rspace="thickmathspace"
+&rhard;<uID3.12.26>infix,25,U021C1,lspace="thickmathspace" rspace="thickmathspace"
+&rarrc;<uID3.12.27>infix,25,U02933,lspace="thickmathspace" rspace="thickmathspace"
+&vArr;<uID3.12.28>infix,25,U021D5,lspace="thickmathspace" rspace="thickmathspace"
+&nearr;<uID3.12.29>infix,25,U02197,lspace="thickmathspace" rspace="thickmathspace"
+&searr;<uID3.12.30>infix,25,U02198,lspace="thickmathspace" rspace="thickmathspace"
+&swarr;<uID3.12.31>infix,25,U02199,lspace="thickmathspace" rspace="thickmathspace"
+&nwarr;<uID3.12.32>infix,25,U02196,lspace="thickmathspace" rspace="thickmathspace"
+;;&orarr;<uID3.12.33>infix,25,U021BB,lspace="thickmathspace" rspace="thickmathspace"
+&#x21BB;<uID3.12.33>infix,25,U021BB,lspace="thickmathspace" rspace="thickmathspace"
+;;&olarr;<uID3.12.34>infix,25,U021BA,lspace="thickmathspace" rspace="thickmathspace"
+&#x21BA;<uID3.12.34>infix,25,U021BA,lspace="thickmathspace" rspace="thickmathspace"
+
+&lrhar;<uID3.12.36>infix,25,U021CB,lspace="thickmathspace" rspace="thickmathspace"
+&Rarr;<uID3.12.37>infix,25,U021A0,lspace="thickmathspace" rspace="thickmathspace"
+&Larr;<uID3.12.38>infix,25,U0219E,lspace="thickmathspace" rspace="thickmathspace"
+&llarr;<uID3.12.39>infix,25,U021C7,lspace="thickmathspace" rspace="thickmathspace"
+&rrarr;<uID3.12.40>infix,25,U021C9,lspace="thickmathspace" rspace="thickmathspace"
+&uuarr;<uID3.12.41>infix,25,U021C8,lspace="thickmathspace" rspace="thickmathspace"
+&ddarr;<uID3.12.42>infix,25,U021CA,lspace="thickmathspace" rspace="thickmathspace"
+&uharr;<uID3.12.43>infix,25,U021BE,lspace="thickmathspace" rspace="thickmathspace"
+&dharr;<uID3.12.44>infix,25,U021C2,lspace="thickmathspace" rspace="thickmathspace"
+&uharl;<uID3.12.45>infix,25,U021BF,lspace="thickmathspace" rspace="thickmathspace"
+&dharl;<uID3.12.46>infix,25,U021C3,lspace="thickmathspace" rspace="thickmathspace"
+&rarrtl;<uID3.12.47>infix,25,U021A3,lspace="thickmathspace" rspace="thickmathspace"
+&larrtl;<uID3.12.48>infix,25,U021A2,lspace="thickmathspace" rspace="thickmathspace"
+&lrarr;<uID3.12.49>infix,25,U021C6,lspace="thickmathspace" rspace="thickmathspace"
+&rlarr;<uID3.12.50>infix,25,U021C4,lspace="thickmathspace" rspace="thickmathspace"
+&lsh;<uID3.12.51>infix,25,U021B0,lspace="thickmathspace" rspace="thickmathspace"
+&rsh;<uID3.12.52>infix,25,U021B1,lspace="thickmathspace" rspace="thickmathspace"
+&rarrw;<uID3.12.53>infix,25,U021DD,lspace="thickmathspace" rspace="thickmathspace"
+&harrw;<uID3.12.54>infix,25,U021AD,lspace="thickmathspace" rspace="thickmathspace"
+&larrlp;<uID3.12.55>infix,25,U021AB,lspace="thickmathspace" rspace="thickmathspace"
+&rarrlp;<uID3.12.56>infix,25,U021AC,lspace="thickmathspace" rspace="thickmathspace"
+&mumap;<uID3.12.57>infix,25,U022B8,lspace="thickmathspace" rspace="thickmathspace"
+&lAarr;<uID3.12.58>infix,25,U021DA,lspace="thickmathspace" rspace="thickmathspace"
+&rAarr;<uID3.12.59>infix,25,U021DB,lspace="thickmathspace" rspace="thickmathspace"
+&cularr;<uID3.12.60>infix,25,U021B6,lspace="thickmathspace" rspace="thickmathspace"
+&curarr;<uID3.12.61>infix,25,U021B7,lspace="thickmathspace" rspace="thickmathspace"
+&rBarr;<uID3.12.62>infix,25,U0290F,lspace="thickmathspace" rspace="thickmathspace"
+&lBarr;<uID3.12.63>infix,25,U0290E,lspace="thickmathspace" rspace="thickmathspace"
+
+
+;xarrows
+&larr;<uID3.24.1>infix,25,U02190,stretchy="true"
+&rarr;<uID3.24.2>infix,25,U02192,stretchy="true"
+
+
+
+;binops
+; There are multiple names (ie. entities) for most binops.
+; Many have entries in the operator dictionary.
+; The names in the dictionary are not the same as those
+; found in entities tables.  WebEQ doesn't seem to support
+; all dictionary names as of Jan. 2001
+
+
+&plusmn;<uID3.13.1>multiform,110,U000B1,lspace="mediummathspace" rspace="mediummathspace"
+&mnplus;<uID3.13.2>multiform,110,U02213,lspace="mediummathspace" rspace="mediummathspace"
+&times;<uID3.13.3>infix,39,U000D7,lspace="mediummathspace" rspace="mediummathspace"
+&sdot;<uID3.13.4>infix,40,U022C5,lspace="mediummathspace" rspace="mediummathspace"
+&divide;<uID3.13.5>infix,46,U000F7,lspace="mediummathspace" rspace="mediummathspace"
+&sstarf;<uID3.13.6>infix,40,U022C6,lspace="mediummathspace" rspace="mediummathspace"
+&or;<uID3.13.7>infix,19,U02228,lspace="mediummathspace" rspace="mediummathspace"
+&and;<uID3.13.8>infix,20,U02227,lspace="mediummathspace" rspace="mediummathspace"
+&midast;<uID3.13.9>infix,39,U02217,lspace="mediummathspace" rspace="mediummathspace"
+;;&cir;<uID3.13.10>infix,52,U025CB,lspace="mediummathspace" rspace="mediummathspace"
+&compfn;<uID3.13.10>infix,52,U02218,lspace="mediummathspace" rspace="mediummathspace"
+&bull;<uID3.13.11>infix,40,U02022,lspace="mediummathspace" rspace="mediummathspace"
+&diam;<uID3.13.12>infix,40,U022C4,lspace="mediummathspace" rspace="mediummathspace"
+&plusdo;<uID3.13.13>infix,30,U02214,lspace="mediummathspace" rspace="mediummathspace"
+&odash;<uID3.13.14>infix,30,U0229D,lspace="mediummathspace" rspace="mediummathspace"
+&oast;<uID3.13.15>infix,40,U0229B,lspace="mediummathspace" rspace="mediummathspace"
+&ocir;<uID3.13.16>infix,40,U0229A,lspace="mediummathspace" rspace="mediummathspace"
+&odiv;<uID3.13.17>infix,46,U02A38,lspace="mediummathspace" rspace="mediummathspace"
+&osol;<uID3.13.18>infix,46,U02298,lspace="mediummathspace" rspace="mediummathspace"
+&oplus;<uID3.13.19>infix,30,U02295,lspace="mediummathspace" rspace="mediummathspace"
+;CirclePlus<uID3.13.19>infix,30,U02295
+&ominus;<uID3.13.20>infix,30,U02296,lspace="mediummathspace" rspace="mediummathspace"
+;CircleMinus<uID3.13.20>infix,30,U02296
+&otimes;<uID3.13.21>infix,41,U02297,lspace="mediummathspace" rspace="mediummathspace"
+;CircleTimes<uID3.13.21>infix,41,U02297
+&odot;<uID3.13.22>infix,40,U02299,lspace="mediummathspace" rspace="mediummathspace"
+;\lhd<uID3.13.23>infix,40,
+&vltri;<uID3.13.23>infix,40,U022B2,lspace="mediummathspace" rspace="mediummathspace"
+;\rhd<uID3.13.24>infix,40,
+&vrtri;<uID3.13.24>infix,40,U022B3,lspace="mediummathspace" rspace="mediummathspace"
+&plusb;<uID3.13.25>infix,30,U0229E,lspace="mediummathspace" rspace="mediummathspace"
+&minusb;<uID3.13.26>infix,30,U0229F,lspace="mediummathspace" rspace="mediummathspace"
+;;&timesb;<uID3.13.27>infix,40,U022A0
+&#x22A0;<uID3.13.27>infix,40,U022A0,lspace="mediummathspace" rspace="mediummathspace"
+&sdotb;<uID3.13.28>infix,40,U022A1,lspace="mediummathspace" rspace="mediummathspace"
+;;&ltri;<uID3.13.29>infix,30,U025C3
+&#x25C3;<uID3.13.29>infix,30,U025C3,lspace="mediummathspace" rspace="mediummathspace"
+&rtri;<uID3.13.30>infix,30,U025B9,lspace="mediummathspace" rspace="mediummathspace"
+&cup;<uID3.13.31>infix,27,U0222A,lspace="mediummathspace" rspace="mediummathspace"
+;Union<uID3.13.31>infix,27,U0222A
+&cap;<uID3.13.32>infix,28,U02229,lspace="mediummathspace" rspace="mediummathspace"
+;Intersection<uID3.13.32>infix,28,U02229
+&setmn;<uID3.13.33>infix,30,U02216,lspace="mediummathspace" rspace="mediummathspace"
+&sqcup;<uID3.13.34>infix,27,U02294,lspace="mediummathspace" rspace="mediummathspace"
+;SquareUnion<uID3.13.34>infix,27,U02294
+&sqcap;<uID3.13.35>infix,28,U02293,lspace="mediummathspace" rspace="mediummathspace"
+;SquareIntersection<uID3.13.35>infix,28,U02293
+&uplus;<uID3.13.36>infix,27,U0228E,lspace="mediummathspace" rspace="mediummathspace"
+;;&Cup;<uID3.13.37>infix,27,U022D3
+&#x22D3;<uID3.13.37>infix,27,U022D3,lspace="mediummathspace" rspace="mediummathspace"
+;;&Cap;<uID3.13.38>infix,28,U022D2
+&#x22D2;<uID3.13.38>infix,28,U022D2,lspace="mediummathspace" rspace="mediummathspace"
+&xutri;<uID3.13.39>infix,38,U025B3,lspace="mediummathspace" rspace="mediummathspace"
+&xdtri;<uID3.13.40>infix,38,U025BD,lspace="mediummathspace" rspace="mediummathspace"
+;\unlhd<uID3.13.41>infix,40,
+;;&ltrie;<uID3.13.41>infix,40,U022B4
+&#x22B4;<uID3.13.41>infix,40,U022B4,lspace="mediummathspace" rspace="mediummathspace"
+;\unrhd<uID3.13.42>infix,40,
+&rtrie;<uID3.13.42>infix,40,U022B5,lspace="mediummathspace" rspace="mediummathspace"
+&veebar;<uID3.13.43>infix,19,U022BB,lspace="mediummathspace" rspace="mediummathspace"
+&barwed;<uID3.13.44>infix,20,U022BC,lspace="mediummathspace" rspace="mediummathspace"
+&cuvee;<uID3.13.45>infix,19,U022CE,lspace="mediummathspace" rspace="mediummathspace"
+&cuwed;<uID3.13.46>infix,20,U022CF,lspace="mediummathspace" rspace="mediummathspace"
+;;&lthree;<uID3.13.47>infix,39,U022CB
+&#x22CB;<uID3.13.47>infix,39,U022CB,lspace="mediummathspace" rspace="mediummathspace"
+&rthree;<uID3.13.48>infix,39,U022CC,lspace="mediummathspace" rspace="mediummathspace"
+&cir;<uID3.13.49>infix,39,U025EF,lspace="mediummathspace" rspace="mediummathspace"
+&intcal;<uID3.13.50>infix,40,U022BA,lspace="mediummathspace" rspace="mediummathspace"
+&ssetmn;<uID3.13.51>infix,20,U02216,lspace="mediummathspace" rspace="mediummathspace"
+&wreath;<uID3.13.52>infix,40,U02240,lspace="mediummathspace" rspace="mediummathspace"
+;;&ltimes;<uID3.13.53>infix,39,U022C9
+&#x22C9;<uID3.13.53>infix,39,U022C9,lspace="mediummathspace" rspace="mediummathspace"
+&rtimes;<uID3.13.54>infix,39,U022CA,lspace="mediummathspace" rspace="mediummathspace"
+&dagger;<uID3.13.55>infix,40,U02020,lspace="mediummathspace" rspace="mediummathspace"
+&Dagger;<uID3.13.56>infix,40,U02021,lspace="mediummathspace" rspace="mediummathspace"
+&divonx;<uID3.13.57>infix,39,U022C7,lspace="mediummathspace" rspace="mediummathspace"
+&Barwed;<uID3.13.58>infix,20,U02306,lspace="mediummathspace" rspace="mediummathspace"
+&amalg;<uID3.13.59>infix,30,U02A3F,lspace="mediummathspace" rspace="mediummathspace"
++<uID3.13.60>multiform,111,U0002B
+&minus;<uID3.13.61>multiform,111,U02212
+/<uID3.13.62>infix,46,U0002F
+&amp;<uID3.13.63>infix,20,U00026,lspace="0.5em" rspace="0.5em"
+&middot;<uID3.13.64>infix,40,U000B7,lspace="mediummathspace" rspace="mediummathspace"
+;;&smallint;<uID3.13.65>infix,26,U0222B
+&int;<uID3.13.65>infix,26,U0222B,lspace="mediummathspace" rspace="mediummathspace"
+
+
+;binrels
+
+
+&le;<uID3.14.1>infix,26,U02264,lspace="thickmathspace" rspace="thickmathspace"
+&pr;<uID3.14.2>infix,26,U0227A,lspace="thickmathspace" rspace="thickmathspace"
+&pre;<uID3.14.3>infix,26,U0E2FE,lspace="thickmathspace" rspace="thickmathspace"
+&ll;<uID3.14.4>infix,26,U0226A,lspace="thickmathspace" rspace="thickmathspace"
+&sub;<uID3.14.5>infix,24,U02282,lspace="thickmathspace" rspace="thickmathspace"
+&sube;<uID3.14.6>infix,24,U02286,lspace="thickmathspace" rspace="thickmathspace"
+&sqsub;<uID3.14.7>infix,24,U0228F,lspace="thickmathspace" rspace="thickmathspace"
+&sqsube;<uID3.14.8>infix,24,U02291,lspace="thickmathspace" rspace="thickmathspace"
+;isin<uID3.14.9>infix,24,U02208
+&Element;<uID3.14.9>infix,24,U02208,lspace="thickmathspace" rspace="thickmathspace"
+&vdash;<uID3.14.10>infix,24,U022A2,lspace="thickmathspace" rspace="thickmathspace"
+&smile;<uID3.14.11>infix,24,U02323,lspace="thickmathspace" rspace="thickmathspace"
+&frown;<uID3.14.12>infix,24,U02322,lspace="thickmathspace" rspace="thickmathspace"
+
+&equiv;<uID3.14.14>infix,26,U02261,lspace="thickmathspace" rspace="thickmathspace"
+&sim;<uID3.14.15>infix,26,U0223C,lspace="thickmathspace" rspace="thickmathspace"
+&simeq;<uID3.14.16>infix,26,U02243,lspace="thickmathspace" rspace="thickmathspace"
+;;&asymp;<uID3.14.17>infix,26,U0224D
+&#x224D;<uID3.14.17>infix,26,U0224D,lspace="thickmathspace" rspace="thickmathspace"
+&approx;<uID3.14.18>infix,26,U02248,lspace="thickmathspace" rspace="thickmathspace"
+&ge;<uID3.14.19>infix,26,U02265,lspace="thickmathspace" rspace="thickmathspace"
+&sc;<uID3.14.20>infix,26,U0227B,lspace="thickmathspace" rspace="thickmathspace"
+&sce;<uID3.14.21>infix,26,U0227D,lspace="thickmathspace" rspace="thickmathspace"
+&gg;<uID3.14.22>infix,26,U0226B,lspace="thickmathspace" rspace="thickmathspace"
+&sup;<uID3.14.23>infix,24,U02283,lspace="thickmathspace" rspace="thickmathspace"
+&supe;<uID3.14.24>infix,24,U02287,lspace="thickmathspace" rspace="thickmathspace"
+&sqsup;<uID3.14.25>infix,24,U02290,lspace="thickmathspace" rspace="thickmathspace"
+&sqsupe;<uID3.14.26>infix,24,U02292,lspace="thickmathspace" rspace="thickmathspace"
+&ni;<uID3.14.27>infix,24,U0220B,lspace="thickmathspace" rspace="thickmathspace"
+
+&dashv;<uID3.14.29>infix,24,U022A3,lspace="thickmathspace" rspace="thickmathspace"
+;; we use \mid (ie.|) as "such that" or "for which"
+;;  in "x | x<=0, x>-3" -- very low precedence
+;;|<uID3.14.30>infix,2,
+&mid;<uID3.14.30>infix,2,U02223,lspace="thickmathspace" rspace="thickmathspace"
+&par;<uID3.14.31>infix,25,U02225,lspace="thickmathspace" rspace="thickmathspace"
+&perp;<uID3.14.32>infix,25,U022A5,lspace="thickmathspace" rspace="thickmathspace"
+&cong;<uID3.14.33>infix,26,U02245,lspace="thickmathspace" rspace="thickmathspace"
+&bowtie;<uID3.14.34>infix,26,U022C8,lspace="thickmathspace" rspace="thickmathspace"
+&prop;<uID3.14.35>infix,26,U0221D,lspace="thickmathspace" rspace="thickmathspace"
+&models;<uID3.14.36>infix,26,U022A7,lspace="thickmathspace" rspace="thickmathspace"
+&esdot;<uID3.14.37>infix,26,U02250,lspace="thickmathspace" rspace="thickmathspace"
+;;\Join<uID3.14.38>infix,26,U02A1D,lspace="thickmathspace" rspace="thickmathspace"
+&bowtie;<uID3.14.38>infix,26,U022C8,lspace="thickmathspace" rspace="thickmathspace"
+&Vdash;<uID3.14.39>infix,26,U022A9,lspace="thickmathspace" rspace="thickmathspace"
+&Vvdash;<uID3.14.40>infix,26,U022AA,lspace="thickmathspace" rspace="thickmathspace"
+&vDash;<uID3.14.41>infix,26,U022A8,lspace="thickmathspace" rspace="thickmathspace"
+&cire;<uID3.14.42>infix,26,U02257,lspace="thickmathspace" rspace="thickmathspace"
+&scsim;<uID3.14.43>infix,26,U0227F,lspace="thickmathspace" rspace="thickmathspace"
+&gsim;<uID3.14.44>infix,26,U02273,lspace="thickmathspace" rspace="thickmathspace"
+&gap;<uID3.14.45>infix,26,U02A86,lspace="thickmathspace" rspace="thickmathspace"
+;there4<uID3.14.46>infix,7,U02234
+&Therefore;<uID3.14.46>infix,7,U02234,lspace="thickmathspace" rspace="thickmathspace"
+;becaus<uID3.14.47>infix,7,U02235
+&Because;<uID3.14.47>infix,7,U02235,lspace="thickmathspace" rspace="thickmathspace"
+&eDot;<uID3.14.48>infix,26,U02251,lspace="thickmathspace" rspace="thickmathspace"
+&trie;<uID3.14.49>infix,26,U0225C,lspace="thickmathspace" rspace="thickmathspace"
+&prsim;<uID3.14.50>infix,26,U0227E,lspace="thickmathspace" rspace="thickmathspace"
+&lsim;<uID3.14.51>infix,26,U02272,lspace="thickmathspace" rspace="thickmathspace"
+&lap;<uID3.14.52>infix,26,U02A85,lspace="thickmathspace" rspace="thickmathspace"
+&els;<uID3.14.53>infix,26,U022DC,lspace="thickmathspace" rspace="thickmathspace"
+&egs;<uID3.14.54>infix,26,U022DD,lspace="thickmathspace" rspace="thickmathspace"
+&cuepr;<uID3.14.55>infix,26,U022DE,lspace="thickmathspace" rspace="thickmathspace"
+&cuesc;<uID3.14.56>infix,26,U022DF,lspace="thickmathspace" rspace="thickmathspace"
+&prcue;<uID3.14.57>infix,26,U0227C,lspace="thickmathspace" rspace="thickmathspace"
+&lE;<uID3.14.58>infix,26,U02266,lspace="thickmathspace" rspace="thickmathspace"
+&les;<uID3.14.59>infix,26,U02A7D,lspace="thickmathspace" rspace="thickmathspace"
+&lg;<uID3.14.60>infix,26,U02276,lspace="thickmathspace" rspace="thickmathspace"
+&erDot;<uID3.14.61>infix,26,U02253,lspace="thickmathspace" rspace="thickmathspace"
+&efDot;<uID3.14.62>infix,26,U02252,lspace="thickmathspace" rspace="thickmathspace"
+&sccue;<uID3.14.63>infix,26,U0227D,lspace="thickmathspace" rspace="thickmathspace"
+&gE;<uID3.14.64>infix,26,U02267,lspace="thickmathspace" rspace="thickmathspace"
+&ges;<uID3.14.65>infix,26,U02A7E,lspace="thickmathspace" rspace="thickmathspace"
+&gl;<uID3.14.66>infix,26,U02277,lspace="thickmathspace" rspace="thickmathspace"
+&vrtri;<uID3.14.67>infix,26,U022B3,lspace="thickmathspace" rspace="thickmathspace"
+&vltri;<uID3.14.68>infix,26,U022B2,lspace="thickmathspace" rspace="thickmathspace"
+&rtrie;<uID3.14.69>infix,26,U022B5,lspace="thickmathspace" rspace="thickmathspace"
+;;&ltrie;<uID3.14.70>infix,26,U022B4
+&#x22B4;<uID3.14.70>infix,26,U022B4,lspace="thickmathspace" rspace="thickmathspace"
+;bigstar
+&twixt;<uID3.14.71>infix,26,U0226C,lspace="thickmathspace" rspace="thickmathspace"
+
+&rtrif;<uID3.14.72>infix,26,U025B8,lspace="thickmathspace" rspace="thickmathspace"
+;;&ltrif;<uID3.14.73>infix,26,U025C2
+&#x25C2;<uID3.14.73>infix,26,U025C2,lspace="thickmathspace" rspace="thickmathspace"
+&ecir;<uID3.14.74>infix,26,U02256,lspace="thickmathspace" rspace="thickmathspace"
+&leg;<uID3.14.75>infix,26,U022DA,lspace="thickmathspace" rspace="thickmathspace"
+&gel;<uID3.14.76>infix,26,U022DB,lspace="thickmathspace" rspace="thickmathspace"
+&lEg;<uID3.14.77>infix,26,U02A8B,lspace="thickmathspace" rspace="thickmathspace"
+&gEl;<uID3.14.78>infix,26,U02A8C,lspace="thickmathspace" rspace="thickmathspace"
+&vprop;<uID3.14.79>infix,26,U0221D,lspace="thickmathspace" rspace="thickmathspace"
+;;\smallsmile<uID3.14.80>infix,26,U0E01A,lspace="thickmathspace" rspace="thickmathspace"
+;;\smallfrown<uID3.14.81>infix,26,U0E019,lspace="thickmathspace" rspace="thickmathspace"
+&smile;<uID3.14.80>infix,24,U02323,lspace="thickmathspace" rspace="thickmathspace"
+&frown;<uID3.14.81>infix,24,U02322,lspace="thickmathspace" rspace="thickmathspace"
+&Sub;<uID3.14.82>infix,26,U022D0,lspace="thickmathspace" rspace="thickmathspace"
+&Sup;<uID3.14.83>infix,26,U022D1,lspace="thickmathspace" rspace="thickmathspace"
+&subE;<uID3.14.84>infix,26,U02AC5,lspace="thickmathspace" rspace="thickmathspace"
+&supE;<uID3.14.85>infix,26,U02AC6,lspace="thickmathspace" rspace="thickmathspace"
+&bumpe;<uID3.14.86>infix,26,U0224F,lspace="thickmathspace" rspace="thickmathspace"
+&bump;<uID3.14.87>infix,26,U0224E,lspace="thickmathspace" rspace="thickmathspace"
+&Ll;<uID3.14.88>infix,26,U022D8,lspace="thickmathspace" rspace="thickmathspace"
+&Gg;<uID3.14.89>infix,26,U022D9,lspace="thickmathspace" rspace="thickmathspace"
+&fork;<uID3.14.90>infix,26,U022D4,lspace="thickmathspace" rspace="thickmathspace"
+&bsim;<uID3.14.91>infix,26,U0223D,lspace="thickmathspace" rspace="thickmathspace"
+&bsime;<uID3.14.92>infix,26,U022CD,lspace="thickmathspace" rspace="thickmathspace"
+&eqsim;<uID3.14.93>infix,26,U02242,lspace="thickmathspace" rspace="thickmathspace"
+;;&ltdot;<uID3.14.94>infix,26,U022D6
+&#x22D6;<uID3.14.94>infix,26,U022D6,lspace="thickmathspace" rspace="thickmathspace"
+;;&gtdot;<uID3.14.95>infix,26,U022D7
+&#x22D7;<uID3.14.95>infix,26,U022D7,lspace="thickmathspace" rspace="thickmathspace"
+&shortmid;<uID3.14.96>infix,26,U0E301,lspace="thickmathspace" rspace="thickmathspace"
+&shortparallel;<uID3.14.97>infix,26,U0E302,lspace="thickmathspace" rspace="thickmathspace"
+&thksim;<uID3.14.98>infix,26,U0E429,lspace="thickmathspace" rspace="thickmathspace"
+&thkap;<uID3.14.99>infix,26,U0E306,lspace="thickmathspace" rspace="thickmathspace"
+&ape;<uID3.14.100>infix,26,U0224A,lspace="thickmathspace" rspace="thickmathspace"
+&scap;<uID3.14.101>infix,26,U02AB8,lspace="thickmathspace" rspace="thickmathspace"
+&prap;<uID3.14.102>infix,26,U02AB7,lspace="thickmathspace" rspace="thickmathspace"
+
+&equest;<uID3.14.103>infix,26,U0225F,lspace="thickmathspace" rspace="thickmathspace"
+\defineas<uID3.14.104>infix,26,U0xxxx,lspace="thickmathspace" rspace="thickmathspace"
+;bepsi<uID3.14.105>infix,16,U0213C
+&SuchThat;<uID3.14.105>infix,16,U0213C,lspace="thickmathspace" rspace="thickmathspace"
+
+; proportion, as in 1:2::4:8
+&Colon;<uID3.14.106>infix,10,U02237,lspace="thickmathspace" rspace="thickmathspace"
+&lt;<uID3.14.107>infix,26,U0003C,lspace="thickmathspace" rspace="thickmathspace"
+=<uID3.14.108>infix,26,U0003D,lspace="thickmathspace" rspace="thickmathspace"
+><uID3.14.109>infix,26,U0003E,lspace="thickmathspace" rspace="thickmathspace"
+
+;CHAR_var_triangle_relation    0xe015
+;;\vartriangle<uID3.14.110>infix,26,U0E015,lspace="thickmathspace" rspace="thickmathspace"
+&utri;<uID3.14.110>infix,26,U025B5,lspace="thickmathspace" rspace="thickmathspace"
+&Implies;<uID3.14.111>infix,18,U021D2,lspace="0.8em" rspace="0.8em"
+;\impliedby<uID3.14.112>infix,18,U021D0
+&lArr;<uID3.14.112>infix,18,U021D0,lspace="0.8em" rspace="0.8em"
+&iff;<uID3.14.113>infix,18,U0E365,lspace="0.8em" rspace="0.8em"
+
+
+;TCI corners and delimiters
+
+&lfloor;<uID3.15.1>prefix,1,U0230A,fence="true" stretchy="false"
+&rfloor;<uID3.15.2>postfix,1,U0230B,fence="true" stretchy="false"
+&lceil;<uID3.15.3>prefix,1,U02308,fence="true" stretchy="false"
+&rceil;<uID3.15.4>postfix,1,U02309,fence="true" stretchy="false"
+&langle;<uID3.15.5>prefix,1,U02329,fence="true" stretchy="false"
+&rangle;<uID3.15.6>postfix,1,U0232A,fence="true" stretchy="false"
+
+&ulcorn;<uID3.15.7>prefix,1,U0231C,fence="true" stretchy="false"
+&dlcorn;<uID3.15.8>prefix,1,U0231E,fence="true" stretchy="false"
+&urcorn;<uID3.15.9>postfix,1,U0231D,fence="true" stretchy="false"
+&drcorn;<uID3.15.10>postfix,1,U0231F,fence="true" stretchy="false"
+&lobrk;<uID3.15.11>prefix,1,U0301A,fence="true" stretchy="false"
+&robrk;<uID3.15.12>postfix,1,U0301B,fence="true" stretchy="false"
+
+&lmoust;<uID3.15.21>prefix,1,U02998,fence="true" stretchy="false"
+&rmoust;<uID3.15.20>postfix,1,U02997,fence="true" stretchy="false"
+\lgroup<uID3.15.23>prefix,1,,fence="true" stretchy="false"
+\rgroup<uID3.15.22>postfix,1,,fence="true" stretchy="false"
+\arrowvert<uID3.15.24>prefix,1,,fence="true" stretchy="false"
+\Arrowvert<uID3.15.25>prefix,1,,fence="true" stretchy="false"
+\bracevert<uID3.15.26>prefix,1,,fence="true" stretchy="false"
+
+
+;European Latin symbols
+
+&#x14A;<uID3.8.1>,U0014A
+&#x14B;<uID3.8.2>,U0014B
+
+;Latin1 symbols - from Sample_Article.tex 3.9.
+
+;;\DH<uID3.9.1>,U000D0 - same as &ETH;
+&#xD0;<uID3.9.1>,U000D0
+;;\dh<uID3.9.2>,U000F0 - same as &eth;
+&#xF0;<uID3.9.2>,U000F0
+;;\textexclamdown<uID3.9.3>,U000A1 - same as &iexcl;
+&#xA1;<uID3.9.3>,U000A1
+&#xE5<uID3.9.4>,U000E5
+&#xAB;<uID3.9.5>,U000AB
+&#xBB;<uID3.9.6>,U000BB
+&#xDE;<uID3.9.7>,U000DE
+&#xFE;<uID3.9.8>,U000FE
+;;\textquestiondown<uID3.9.9>,U000BF - same as &iquest;
+&#xBF;<uID3.9.9>,U000BF
+
+\guilsinglleft<uID3.15.30>
+\guilsinglright<uID3.15.31>
+
+
+
+
+;Miscellaneous symbols
+
+&hellip;<uID3.17.1>,U02026
+&ctdot;<uID3.17.2>,U022EF
+&vellip;<uID3.17.3>,U022EE
+&dtdot;<uID3.17.4>,U022F1
+;;&smallint;<uID3.17.5>,U0222B
+&aleph;<uID3.17.6>,U02135
+;&plank;<uID3.17.7>,U0E2D5
+&#xE2D5;<uID3.17.7>,U0E2D5
+&imath;<uID3.17.8>,U00131
+&jmath;<uID3.17.9>,U0E2D4
+
+&ell;<uID3.17.10>,U02113
+&weierp;<uID3.17.11>,U02118
+&real;<uID3.17.12>,U0211C
+&image;<uID3.17.13>,U02111
+&PartialD;<uID3.17.14>prefix,54,U02202
+&infin;<uID3.17.15>,U0221E
+&squ;<uID3.17.16>,U025A1
+&ForAll;<uID3.17.17>prefix,23,U02200
+&Exists;<uID3.17.18>prefix,23,U02203
+&not;<uID3.17.19>,U000AC
+
+&flat;<uID3.17.20>,U0266D
+&natur;<uID3.17.21>,U0266E
+&mho;<uID3.17.22>,U02127
+&prime;<uID3.17.23>postfix,66,U02032
+;;&prime;<uID3.17.23>postfix,66,U002B9
+&empty;<uID3.17.24>
+&nabla;<uID3.17.25>prefix,54,U02207
+&radic;<uID3.17.26>,U0221A
+&top;<uID3.17.27>,U022A4
+&bottom;<uID3.17.28>,U022A5
+&Verbar;<uID3.17.29>,U02016
+;;||<uID3.17.29>infix,19,U02016
+
+&ang;<uID3.17.30>,U02220
+&utri;<uID3.17.31>,U025B5
+&Diamond;<uID3.17.32>infix,44,U022C4
+&sharp;<uID3.17.33>,U0266F
+&clubs;<uID3.17.34>,U02663
+&diams;<uID3.17.35>,U02666
+&heartsuit;<uID3.17.36>,U02661
+&spades;<uID3.17.37>,U02660
+&square;<uID3.17.38>,U025A1
+&squarf;<uID3.17.39>,U025AA
+
+&lozf;<uID3.17.40>,U029EB
+&bprime;<uID3.17.41>,U02035
+&utrif;<uID3.17.42>,U025B4
+&dtri;<uID3.17.43>,U025BF
+&angmsd;<uID3.17.44>,U02221
+&angsph;<uID3.17.45>,U02222
+&oS;<uID3.17.46>,U024C8
+&comp;<uID3.17.47>,U02201
+&emptyv;<uID3.17.48>,U02205
+&beth;<uID3.17.49>,U02136
+
+&gimel;<uID3.17.50>,U02137
+&daleth;<uID3.17.51>,U02138
+;&plankv;<uID3.17.52>,U0210F
+&#x210F;<uID3.17.52>,U0210F
+\diagup<uID3.17.53>
+\diagdown<uID3.17.54>
+\Finv<uID3.17.55>0x2132
+\Game<uID3.17.56>0xe049
+;&kopf;<uID3.17.57>,U1D55C
+;&kopf;<uID3.17.57>
+k<uID3.17.57>,U0006B:mathvariant="double-struck"
+&NotExists;<uID3.17.58>prefix,23,U02204
+&circledR;<uID3.17.59>,U000AE
+
+&copy;<uID3.17.60>,U000A9
+&sect;<uID3.17.61>,U000A7
+&para;<uID3.17.62>,U000B6
+&pound;<uID3.17.63>postfix,67,U000A3
+&cent;<uID3.17.64>postfix,67,U000A2
+&yen;<uID3.17.65>postfix,67,U000A5
+&check;<uID3.17.66>postfix,2,U02713
+&malt;<uID3.17.67>,U02720
+&conint;<uID3.17.68>,U0222E
+&angrt;<uID3.17.69>,U0221F
+
+&LeftDoubleBracket;<uID3.17.70>prefix,1,U0301A
+&RightDoubleBracket;<uID3.17.71>postfix,1,U0301B
+\backint<uID3.17.72>
+&dtrif;<uID3.17.73>,U025BE
+&starf;<uID3.17.75>,U02605
+;;&Copf;<uID3.17.76>,U02102
+C<uID3.17.76>,U00043:mathvariant="double-struck"
+;;&Iopf;<uID3.17.77>
+I<uID3.17.77>,U00049:mathvariant="double-struck"
+;;&Nopf;<uID3.17.78>,U02115
+N<uID3.17.78>,U0004E:mathvariant="double-struck"
+;;&Ropf;<uID3.17.79>,U0211D
+R<uID3.17.79>,U00052:mathvariant="double-struck"
+!<uID3.17.80>multiform,101
+
+"<uID3.17.81>
+#<uID3.17.82>
+%<uID3.17.83>postfix,61,
+&amp;<uID3.17.84>multiform,111
+
+;\&<uID3.17.84>
+
+;keyboard ASCII symbols that may be used as delimiters
+
+(<uID3.17.85>prefix,1,U00028,fence="true" stretchy="false"
+)<uID3.17.86>postfix,1,U00029,fence="true" stretchy="false"
+;<uID3.17.91>multiform,011,U0003B
+[<uID3.17.94>prefix,1,U0005B,fence="true" stretchy="false"
+]<uID3.17.96>postfix,1,U0005D,fence="true" stretchy="false"
+{<uID3.17.100>prefix,1,U0007B,fence="true" stretchy="false"
+|<uID3.17.101>multiform,111,U0007C
+}<uID3.17.102>postfix,1,U0007D,fence="true" stretchy="false"
+[<uID3.17.111>prefix,1,U0005B,fence="true" stretchy="false"
+]<uID3.17.112>postfix,1,U0005D,fence="true" stretchy="false"
+
+
+,<uID3.17.87>infix,3,U0002C
+.<uID3.17.88>infix,48,U0002E
+
+:<uID3.17.90>infix,14,U0003A,lspace="thickmathspace" rspace="thickmathspace"
+?<uID3.17.92>infix,66,U0003F
+@<uID3.17.93>infix,63,U00040
+&bsol;<uID3.17.95>infix,30,U0005C,lspace="mediummathspace" rspace="mediummathspace"
+\char94<uID3.17.97>
+_<uID3.17.98>infix,67,U0005F
+`<uID3.17.99>
+
+\char126<uID3.17.103>
+'<uID3.17.104>
+;105,asterisk
+&<uID3.17.106>
+
+$<uID3.17.108>prefix,67,U00024
+
+&#x111;<uID3.17.113>,U00111
+;\dag<uID3.17.114>
+&dagger;<uID3.17.114>
+;\ddag<uID3.17.115>
+&Dagger;<uID3.17.115>
+&lozenge;<uID3.17.116>
+&eth;<uID3.17.117>,U000F0
+&ETH;<uID3.17.118>,U000D0
+&colon;<uID3.17.119>infix,2,U0003A
+
+\textvisiblespace<uID3.17.120>
+&trade;<uID3.17.121>,U02122
+
+\dots<uID3.17.125>
+\dotsb<uID3.17.126>
+\dotsc<uID3.17.127>
+\dotsm<uID3.17.128>
+;;\dotsi<uID3.17.129>,U000B7
+&#xB7;<uID3.17.129>,U000B7
+
+&curren;<uID3.17.140>postfix,67,U000A4
+&#x20A0;<uID3.17.141>postfix,67,U020A0
+&#x20A4;<uID3.17.142>postfix,67,U020A4
+&#x20A3;<uID3.17.143>postfix,67,U020A3
+&#x20A7;<uID3.17.144>postfix,67,U020A7
+
+&Lscr;<uID3.17.150>,U02112
+;;L<uID3.17.150>,U0004C:mathvariant="script"
+&Fscr;<uID3.17.151>,U02131
+;;F<uID3.17.151>,U00046:mathvariant="script"
+&#x110;<uID3.17.152>,U00110
+\lambdabar<uID3.17.153>
+
+empty<uID3.17.154>
+
+
+Q<uID3.17.155>,U00051:mathvariant="double-struck"
+;;&Qopf;<uID3.17.155>,U0211A
+Z<uID3.17.156>,U0005A:mathvariant="double-struck"
+;;&Zopf;<uID3.17.156>,U02124
+
+
+&deg;<uID3.17.159>,U000B0
+;;small raised prime - NOT same as TeX
+&prime;<uID3.17.160>,U02032
+;;large lower prime - same as TeX but not available in MathPlayer
+;;&prime;<uID3.17.160>,U002B9
+&Prime;<uID3.17.161>,U02033
+;;&Prime;<uID3.17.161>,U002BA
+&deg;C<uID3.17.162>,U02103
+&deg;F<uID3.17.163>,U02109
+
+superscript2<uID3.17.165>
+superscript3<uID3.17.166>
+
+
+brokenbar<uID3.17.167>
+section<uID3.17.168>
+diaeresis<uID3.17.169>
+copyright<uID3.17.170>
+femaleord<uID3.17.171>
+registered<uID3.17.172>
+
+acute<uID3.17.180>
+micro<uID3.17.181>
+paragraph<uID3.17.182>
+cedilla<uID3.17.183>
+superscript1<uID3.17.184>
+maleord<uID3.17.185>
+frac14<uID3.17.186>
+frac12<uID3.17.187>
+frac34<uID3.17.188>
+
+
+
+;;Entities for MathML's invisible operators.
+
+&InvisibleComma;<uID3.17.200>infix,2,U02063,separator="true"
+;;&ic;<uID3.17.200>
+&InvisibleTimes;<uID3.17.201>infix,39,U02062
+;;&it;<uID3.17.201>
+
+
+;negrels
+
+&ne;<uID3.18.1>infix,26,U02260,lspace="thickmathspace" rspace="thickmathspace"
+&notin;<uID3.18.2>infix,26,U02209,lspace="thickmathspace" rspace="thickmathspace"
+;&NotElement;<uID3.18.2>infix,26,U02209,lspace="thickmathspace" rspace="thickmathspace"
+&lvnE;<uID3.18.3>infix,26,U0E2A4,lspace="thickmathspace" rspace="thickmathspace"
+&gvnE;<uID3.18.4>infix,26,U0E2A1,lspace="thickmathspace" rspace="thickmathspace"
+&nle;<uID3.18.5>infix,26,U0E2A7,lspace="thickmathspace" rspace="thickmathspace"
+&nge;<uID3.18.6>infix,26,U0E2A6,lspace="thickmathspace" rspace="thickmathspace"
+&nlt;<uID3.18.7>infix,26,U0226E,lspace="thickmathspace" rspace="thickmathspace"
+&ngt;<uID3.18.8>infix,26,U0226F,lspace="thickmathspace" rspace="thickmathspace"
+&npr;<uID3.18.9>infix,26,U02280,lspace="thickmathspace" rspace="thickmathspace"
+&nsc;<uID3.18.10>infix,26,U02281,lspace="thickmathspace" rspace="thickmathspace"
+&lnE;<uID3.18.11>infix,26,U02268,lspace="thickmathspace" rspace="thickmathspace"
+&gnE;<uID3.18.12>infix,26,U02269,lspace="thickmathspace" rspace="thickmathspace"
+&nles;<uID3.18.13>infix,26,U02270,lspace="thickmathspace" rspace="thickmathspace"
+&nges;<uID3.18.14>infix,26,U02271,lspace="thickmathspace" rspace="thickmathspace"
+&lne;<uID3.18.15>infix,26,U02268,lspace="thickmathspace" rspace="thickmathspace"
+&gne;<uID3.18.16>infix,26,U02269,lspace="thickmathspace" rspace="thickmathspace"
+&npre;<uID3.18.17>infix,26,U0E5DC,lspace="thickmathspace" rspace="thickmathspace"
+&nsce;<uID3.18.18>infix,26,U0E5F1,lspace="thickmathspace" rspace="thickmathspace"
+&prnsim;<uID3.18.19>infix,26,U022E8,lspace="thickmathspace" rspace="thickmathspace"
+&scnsim;<uID3.18.20>infix,26,U022E9,lspace="thickmathspace" rspace="thickmathspace"
+&lnsim;<uID3.18.21>infix,26,U022E6,lspace="thickmathspace" rspace="thickmathspace"
+&gnsim;<uID3.18.22>infix,26,U022E7,lspace="thickmathspace" rspace="thickmathspace"
+&nlE;<uID3.18.23>infix,26,U02270,lspace="thickmathspace" rspace="thickmathspace"
+&ngE;<uID3.18.24>infix,26,U02271,lspace="thickmathspace" rspace="thickmathspace"
+&prnE;<uID3.18.25>infix,26,U02AB5,lspace="thickmathspace" rspace="thickmathspace"
+&scnE;<uID3.18.26>infix,26,U02AB6,lspace="thickmathspace" rspace="thickmathspace"
+&prnap;<uID3.18.27>infix,26,U022E8,lspace="thickmathspace" rspace="thickmathspace"
+&scnap;<uID3.18.28>infix,26,U022E9,lspace="thickmathspace" rspace="thickmathspace"
+&lnap;<uID3.18.29>infix,26,U02A89,lspace="thickmathspace" rspace="thickmathspace"
+&gnap;<uID3.18.30>infix,26,U02A8A,lspace="thickmathspace" rspace="thickmathspace"
+&nsim;<uID3.18.31>infix,26,U02241,lspace="thickmathspace" rspace="thickmathspace"
+&ncong;<uID3.18.32>infix,26,U02247,lspace="thickmathspace" rspace="thickmathspace"
+&vsubne;<uID3.18.33>infix,26,U0E2B9,lspace="thickmathspace" rspace="thickmathspace"
+&vsupne;<uID3.18.34>infix,26,U0E2BA,lspace="thickmathspace" rspace="thickmathspace"
+&nsubE;<uID3.18.35>infix,26,U02288,lspace="thickmathspace" rspace="thickmathspace"
+&nsupE;<uID3.18.36>infix,26,U02289,lspace="thickmathspace" rspace="thickmathspace"
+&subnE;<uID3.18.37>infix,26,U0228A,lspace="thickmathspace" rspace="thickmathspace"
+&supnE;<uID3.18.38>infix,26,U0228B,lspace="thickmathspace" rspace="thickmathspace"
+&vsubnE;<uID3.18.39>infix,26,U0E2B8,lspace="thickmathspace" rspace="thickmathspace"
+&vsupnE;<uID3.18.40>infix,26,U0E2BB,lspace="thickmathspace" rspace="thickmathspace"
+&subne;<uID3.18.41>infix,26,U0228A,lspace="thickmathspace" rspace="thickmathspace"
+&supne;<uID3.18.42>infix,26,U0228B,lspace="thickmathspace" rspace="thickmathspace"
+&nsube;<uID3.18.43>infix,26,U02288,lspace="thickmathspace" rspace="thickmathspace"
+&nsupe;<uID3.18.44>infix,26,U02289,lspace="thickmathspace" rspace="thickmathspace"
+\sqsubsetneq<uID3.18.45>infix,26,U0xxxx,lspace="thickmathspace" rspace="thickmathspace"
+\sqsupsetneq<uID3.18.46>infix,26,U0xxxx,lspace="thickmathspace" rspace="thickmathspace"
+&npar;<uID3.18.47>infix,26,U02226,lspace="thickmathspace" rspace="thickmathspace"
+&nmid;<uID3.18.48>infix,26,U02224,lspace="thickmathspace" rspace="thickmathspace"
+&nsmid;<uID3.18.49>infix,26,U0E2AA,lspace="thickmathspace" rspace="thickmathspace"
+&nspar;<uID3.18.50>infix,26,U0E2AB,lspace="thickmathspace" rspace="thickmathspace"
+&nvdash;<uID3.18.51>infix,26,U022AC,lspace="thickmathspace" rspace="thickmathspace"
+&nVdash;<uID3.18.52>infix,26,U022AE,lspace="thickmathspace" rspace="thickmathspace"
+&nvDash;<uID3.18.53>infix,26,U022AD,lspace="thickmathspace" rspace="thickmathspace"
+&nVDash;<uID3.18.54>infix,26,U022AF,lspace="thickmathspace" rspace="thickmathspace"
+&nrtrie;<uID3.18.55>infix,26,U022ED,lspace="thickmathspace" rspace="thickmathspace"
+&nltrie;<uID3.18.56>infix,26,U022EC,lspace="thickmathspace" rspace="thickmathspace"
+&nltri;<uID3.18.57>infix,26,U022EA,lspace="thickmathspace" rspace="thickmathspace"
+&nrtri;<uID3.18.58>infix,26,U022EB,lspace="thickmathspace" rspace="thickmathspace"
+&nlarr;<uID3.18.59>infix,26,U0219A,lspace="thickmathspace" rspace="thickmathspace"
+&nrarr;<uID3.18.60>infix,26,U0219B,lspace="thickmathspace" rspace="thickmathspace"
+&nlArr;<uID3.18.61>infix,26,U021CD,lspace="thickmathspace" rspace="thickmathspace"
+&nrArr;<uID3.18.62>infix,26,U021CF,lspace="thickmathspace" rspace="thickmathspace"
+&nhArr;<uID3.18.63>infix,26,U021CE,lspace="thickmathspace" rspace="thickmathspace"
+&nharr;<uID3.18.64>infix,26,U021AE,lspace="thickmathspace" rspace="thickmathspace"
+
+&not;<uID3.18.65>prefix,22,U000AC,
+
+
+&OpenCurlyQuote;<uID3.42.3>prefix,1,,fence="true"
+&CloseCurlyQuote;<uID3.23.2>postfix,1,,fence="true"
+&OpenCurlyDoubleQuote;<uID3.42.2>prefix,1,,fence="true"
+&CloseCurlyDoubleQuote;<uID3.23.1>postfix,1,,fence="true"
+
+
+;Entity name 	Unicode 	Description 
+
+;&Tab; X09 tabulator stop 
+&Tab;<uID9.1.11>,U00009
+;&NewLine; X10 force a line break 
+&NewLine;<uID9.51.0>,U0000A
+
+
+;&IndentingNewLine; -- force a line break and indent appropriately on next line 
+&IndentingNewLine;<uID9.2.0>
+;&NoBreak; -- never break line here 
+&NoBreak;<uID9.52.0>
+;&GoodBreak; -- if a linebreak is needed, here is a good spot 
+&GoodBreak;<uID9.50.0>
+;&BadBreak; -- if a linebreak is needed, try to avoid breaking here 
+&BadBreak;<uID9.53.0>
+
+
+&Space;<uID9.1.1>,U00020
+&NonBreakingSpace;<uID9.1.3>,U000A0
+&ZeroWidthSpace;<uID9.1.10>,U0200B
+&VeryThinSpace;<uID9.1.12>,U0200A
+&ThinSpace;<uID9.1.6>,U02009
+&MediumSpace;<uID9.1.13>,U02005
+&ThickSpace;<uID9.1.7>
+
+&NegativeVeryThinSpace;<uID9.1.14>
+&NegativeThinSpace;<uID9.1.9>
+&NegativeMediumSpace;<uID9.1.15>
+&NegativeThickSpace;<uID9.1.16>
+
+&ensp;<uID9.1.17>,U02002
+&emsp;<uID9.1.18>,U02003
+&emsp13;<uID9.1.19>,U02004
+&emsp14;<uID9.1.20>,U02005
+
+
+maligngroup<uID9.20.0>
+
+
+&int;<uID7.1.1>prefix,31,U0222B,largeop="true" stretchy="true"  lspace="0em" rspace="0em"
+&Int;<uID7.1.2>prefix,31,U0222C,largeop="true" stretchy="true"  lspace="0em" rspace="0em"
+&tint;<uID7.1.3>prefix,31,U0222D,largeop="true" stretchy="true"  lspace="0em" rspace="0em"
+&qint;<uID7.1.4>prefix,31,U0E378,largeop="true" stretchy="true"  lspace="0em" rspace="0em"
+&int;&ctdot;&int;<uID7.1.5>prefix,31,U0222B'U022EF'U0222B,largeop="true" stretchy="true"  lspace="0em" rspace="0em"
+&conint;<uID7.1.6>prefix,31,U0222E,largeop="true" stretchy="true"  lspace="0em" rspace="0em"
+&sum;<uID7.1.7>prefix,29,U02211,largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"
+&prod;<uID7.1.8>prefix,35,U0220F,largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"
+&xcap;<uID7.1.9>prefix,35,U022C2,largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"
+&xwedge;<uID7.1.10>prefix,35,U022C0,largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"
+&xoplus;<uID7.1.11>prefix,29,U02295,largeop="true" movablelimits="true" lspace="0em" rspace="thinmathspace"
+&xodot;<uID7.1.12>prefix,38,U02A00,largeop="true" movablelimits="true" lspace="0em" rspace="thinmathspace"
+&xsqcup;<uID7.1.13>prefix,29,U02A06,largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"
+&coprod;<uID7.1.14>prefix,35,U02210,largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"
+&xcup;<uID7.1.15>prefix,29,U022C3,largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"
+&xvee;<uID7.1.16>prefix,29,U022C1,largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"
+&xotime;<uID7.1.17>prefix,35,U02A02,largeop="true" movablelimits="true" lspace="0em" rspace="thinmathspace"
+&xuplus;<uID7.1.18>prefix,29,U02A04,largeop="true" movablelimits="true" stretchy="true" lspace="0em" rspace="thinmathspace"
+
+;;Im MathML, but not LaTeX
+;CircleMinus<uID>prefix,29,,largeop="true" movablelimits="true" lspace="0em" rspace="thinmathspace"
+;ClockwiseContourIntegral<uID>prefix,31,,largeop="true" stretchy="true"  lspace="0em" rspace="0em"
+;CounterClockwiseContourIntegral<uID>prefix,31,,largeop="true" stretchy="true"  lspace="0em" rspace="0em"
+;DoubleContourIntegral<uID>prefix,31,,largeop="true" stretchy="true"  lspace="0em" rspace="0em"
+
+auto-size<uID7.2.1>largeop="true"
+;MathPlayer doesn't implement the line below
+;display-size<uID7.2.2>largeop="false" stretchy="true" maxsize="1.4" minsize="1.4"
+display-size<uID7.2.2>largeop="true"
+text-size<uID7.2.3>largeop="false" stretchy="false"
+
+
+\correctchoice<uID5.56.1>&emsp;&check;
+
+
+;; Delimiters for \begin{pmatrix}, \begin{bmatrix}, etc.
+
+(<uID5.712.0,l>U00028,form="prefix"   fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
+)<uID5.712.0,r>U00029,form="postfix"  fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
+[<uID5.713.0,l>U0005B,form="prefix"   fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
+]<uID5.713.0,r>U0005D,form="postfix"  fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
+;;&LeftBracketingBar;
+|<uID5.714.0,l>U0007C,form="prefix"   fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
+;;&RightBracketingBar;
+|<uID5.714.0,r>U0007C,form="postfix"  fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
+;;&LeftDoubleBracketingBar;
+&Verbar;<uID5.715.0,l>U02016,form="prefix"  fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
+;;&RightDoubleBracketingBar;
+&Verbar;<uID5.715.0,r>U02016,form="postfix" fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
+{<uID5.716.0,l>U0007B,form="prefix"   fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
+}<uID5.716.0,r>U0007D,form="postfix"  fence="true" stretchy="true" symmetric="true" lspace="0em" rspace="0em"
+
+
+
+<END_CONTEXT_MATH>
+
+
+;Lookup by uID
+<START_CONTEXT_FENCE>
+; symbols used to delimit ( ie.fence ) runs of MATH
+; In LaTeX, these objects always follow \left, \right
+;  \big, \bigl, \bigm, \bigr, and similar variant of \Big, \bigg, \Bigg
+[<uID10.4.1>U005B
+]<uID10.4.2>U005D
+(<uID10.4.3>U0028
+)<uID10.4.4>U0029
+{<uID10.4.5>U007B
+}<uID10.4.6>U007D
+&LeftAngleBracket;<uID10.4.7>U02329
+&RightAngleBracket;<uID10.4.8>U0232A
+&LeftFloor;<uID10.4.9>U0230A
+&RightFloor;<uID10.4.10>U0230B
+&LeftCeiling;<uID10.4.11>U02308
+&RightCeiling;<uID10.4.12>U02309
+; the arrow delims aren't fences in MML's operator dictionary
+; we use "stretchy" arrow ops with attribs set for fencing.
+&UpArrow;<uID10.4.13>U02191
+&DownArrow;<uID10.4.14>U02193
+&UpDownArrow;<uID10.4.15>U02195
+&DoubleUpArrow;<uID10.4.16>U021D1
+&DoubleDownArrow;<uID10.4.17>U021D3
+&DoubleUpDownArrow;<uID10.4.18>U021D5
+
+;invisible fence
+.<uID10.4.19>
+
+|<uID10.4.20>U007C
+;;&LeftBracketingBar;<uID10.4.20,l>
+|<uID10.4.20,l>U007C
+;;&RightBracketingBar;<uID10.4.20,r>
+|<uID10.4.20,r>U007C
+&Verbar;<uID10.4.21>U02016
+;;&LeftDoubleBracketingBar;<uID10.4.21,l>
+&Verbar;<uID10.4.21,l>U02016
+;;&RightDoubleBracketingBar;<uID10.4.21,r>
+&Verbar;<uID10.4.21,r>U02016
+
+/<uID10.4.22>U002F
+;Backslash<uID10.4.23> - not implemented by WebEQ
+\<uID10.4.23>U005C
+
+&lmoust;<uID10.4.24>
+&rmoust;<uID10.4.25>
+\lgroup<uID10.4.26>
+\rgroup<uID10.4.27>
+
+\arrowvert<uID10.4.28>
+\Arrowvert<uID10.4.29>
+\bracevert<uID10.4.30>
+
+&ulcorn;<uID10.4.31>U0231C
+&urcorn;<uID10.4.32>U0231D
+&dlcorn;<uID10.4.33>U0231E
+&drcorn;<uID10.4.34>U0231F
+
+;;attributes added to fence <mo>s, based on context.
+;; In LaTeX, all fence symbols are symmetric (above/below the math axis)
+fracleft<uID10.6.1>form="prefix" fence="true" stretchy="true" lspace="0em" rspace="0em"
+fracright<uID10.6.2>form="postfix" fence="true" stretchy="true" lspace="0em" rspace="0em"
+fenceleft<uID10.7.1>form="prefix" fence="true" stretchy="true" symmetric="true" lspace="thinmathspace"
+fenceright<uID10.7.2>form="postfix" fence="true" stretchy="true" symmetric="true" rspace="thinmathspace"
+
+casesleft<uID10.9.1>form="prefix" fence="true" stretchy="true" lspace="0.5em" rspace="0.5em"
+<END_CONTEXT_FENCE>
+
+
+; partners for implicit fencing symbols
+;lookup by MML name, partners on the right.
+
+<START_CONTEXT_CLOSERS>
+(<uID13.1.1> mate=")" secondary="]"
+[<uID13.1.2> mate="]" secondary=")"
+{<uID13.1.3> mate="}"
+|<uID13.1.4> mate="|"
+||<uID13.1.5> mate="||"
+
+&LeftAngleBracket;<uID13.1.6> mate="&RightAngleBracket;"
+&LeftFloor;<uID13.1.7> mate="&RightFloor;"
+&LeftCeiling;<uID13.1.8> mate="&RightCeiling;"
+
+&lfloor;<uID13.1.9> mate="&rfloor;"
+&lceil;<uID13.1.10> mate="&rceil;"
+&langle;<uID13.1.11> mate="&rangle;"
+
+&ulcorn;<uID13.1.12> mate="&urcorn;"
+&dlcorn;<uID13.1.13> mate="&drcorn;"
+
+&LeftDoubleBracket;<uID13.1.14> mate="&RightDoubleBracket;"
+&Verbar;<uID13.1.15> mate="&Verbar;"
+
+&UpArrow;<uID13.1.16> mate="&UpArrow;"
+&DownArrow;<uID13.1.17> mate="&DownArrow;"
+&UpDownArrow;<uID13.1.18> mate="&UpDownArrow;"
+&DoubleUpArrow;<uID13.1.19> mate="&DoubleUpArrow;"
+&DoubleDownArrow;<uID13.1.20> mate="&DoubleDownArrow;"
+&DoubleUpDownArrow;<uID13.1.21> mate="&DoubleUpDownArrow;"
+
+&lmoust;<uID13.1.22> mate="&rmoust;"
+\lgroup<uID13.1.23> mate="\rgroup"
+
+\arrowvert<uID13.1.24> mate="\arrowvert"
+\Arrowvert<uID13.1.25> mate="\Arrowvert"
+\bracevert<uID13.1.26> mate="\bracevert"
+&DoubleVerticalBar;<uID13.1.27> mate="&DoubleVerticalBar;"
+<END_CONTEXT_CLOSERS>
+
+
+;; <mo> attributes to set size for \bigl, etc,
+<START_CONTEXT_BIGLMR>
+\big<uID15.1.0>  stretchy="true" minsize="3.0ex" maxsize="3.0ex"
+\Big<uID15.2.0>  stretchy="true" minsize="4.5ex" maxsize="4.5ex"
+\bigg<uID15.3.0> stretchy="true" minsize="6.0ex" maxsize="6.0ex"
+\Bigg<uID15.4.0> stretchy="true" minsize="7.5ex" maxsize="7.5ex"
+<END_CONTEXT_BIGLMR>
+
+
+;Some long arrows have deprecated (pre 2.0) MML forms,
+; which are given below.
+;The new long arrows are stretched versions
+; of their shorter forms, which have valid unicodes.
+;Lookup by uID
+<START_CONTEXT_DEPOPS>
+;; the following are deprecated as of MathML 2.0
+&xlarr;<uID3.12.17>infix,25,U027F5,lspace="thickmathspace" rspace="thickmathspace"
+&xlArr;<uID3.12.18>infix,25,U027F8,lspace="thickmathspace" rspace="thickmathspace"
+&xrarr;<uID3.12.19>infix,25,U027F6,lspace="thickmathspace" rspace="thickmathspace"
+&xrArr;<uID3.12.20>infix,25,U027F9,lspace="thickmathspace" rspace="thickmathspace"
+&xharr;<uID3.12.21>infix,25,U027F7,lspace="thickmathspace" rspace="thickmathspace"
+&xhArr;<uID3.12.22>infix,25,U027FA,lspace="thickmathspace" rspace="thickmathspace"
+&xmap;<uID3.12.23>infix,25,U027FC,lspace="thickmathspace" rspace="thickmathspace"
+
+;; deprecated entities as of MathML 2.0 - new unicodes
+;&xlarr;<uID3.12.17>infix,25,U0E201,lspace="thickmathspace" rspace="thickmathspace"
+;&xlArr;<uID3.12.18>infix,25,U0E200,lspace="thickmathspace" rspace="thickmathspace"
+;&xrarr;<uID3.12.19>infix,25,U0E205,lspace="thickmathspace" rspace="thickmathspace"
+;&xrArr;<uID3.12.20>infix,25,U0E204,lspace="thickmathspace" rspace="thickmathspace"
+;&xharr;<uID3.12.21>infix,25,U0E203,lspace="thickmathspace" rspace="thickmathspace"
+;&xhArr;<uID3.12.22>infix,25,U0E202,lspace="thickmathspace" rspace="thickmathspace"
+;&xmap;<uID3.12.23>infix,25,U0E207,lspace="thickmathspace" rspace="thickmathspace"
+<END_CONTEXT_DEPOPS>
+
+
+<START_CONTEXT_TEXTTAGS>
+MenuDialog<uID14.1.1>fontweight="bold"
+<END_CONTEXT_TEXTTAGS>
+
+
+
+<START_CONTEXT_OPSPACING>
+mod<uID16.1.1>infix,10,,lspace="0.5em" rspace="thickmathspace"
+<END_CONTEXT_OPSPACING>
+

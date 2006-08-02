@@ -1,0 +1,455 @@
+
+@A@<Alignment@>
+
+
+The alignment stack:
+
+@$@<Alignment implementation@>+=@{@-
+
+
+struct PreambleEntry {
+   TokenList m_upart;
+   TokenList m_vpart;
+};
+
+
+struct AlignStruct {
+  AlignStruct()
+  {
+     m_curpreamble = m_preamble.begin();
+     m_iCurPreamble = 0;
+  }
+  std::list<PreambleEntry> m_preamble;
+  std::list<PreambleEntry> m_loop;
+  std::list<PreambleEntry>::iterator m_curpreamble;
+  int m_iCurPreamble;
+};
+
+
+const int MAX_ALIGNS = 20;
+static AlignStruct s_alignStack[MAX_ALIGNS];
+static int s_alignTop = -1;
+
+static AlignStruct s_alignment;
+
+enum AlignState{AS_NORMAL, AS_PEEKING};
+static AlignState  s_alignState = AS_NORMAL;
+
+void InitRow();
+void InitCol();
+void PushAlignment()
+{
+   ASSERT(s_alignTop < MAX_ALIGNS);
+   ++s_alignTop;
+   // Compute iterator offset
+   std::list<PreambleEntry>::iterator it;
+   it = s_alignment.m_preamble.begin();
+   s_alignment.m_iCurPreamble = 0;
+   while (it != s_alignment.m_curpreamble){
+     ++s_alignment.m_iCurPreamble;
+     ++it;
+   }
+   s_alignStack[s_alignTop] = s_alignment;
+   s_alignment.m_preamble.clear();
+   s_alignment.m_loop.clear();
+}
+
+void PopAlignment()
+{
+   ASSERT(s_alignTop >= 0);
+   s_alignment = s_alignStack[s_alignTop];
+   s_alignment.m_curpreamble = s_alignment.m_preamble.begin();
+   for (int i = 0; i < s_alignment.m_iCurPreamble; ++i){
+     ++s_alignment.m_curpreamble;
+   }
+   --s_alignTop;
+}
+
+@}
+
+
+
+@$@<Command Codes@>+=@{@-
+CMD_HALIGN,
+CMD_VALIGN,
+CMD_ALIGN_TAB,
+CMD_SPAN,
+CMD_OMIT,
+CMD_NOALIGN,
+CMD_ENDV,
+CMD_ENDR,
+@}
+
+@$@<Command subcodes@>+=@{@-
+enum CarRetCode{CR_CR, CR_CRCR};
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("halign", CMD_HALIGN);
+NewPrimitive("valign", CMD_VALIGN);
+NewPrimitive("span", CMD_SPAN);
+NewPrimitive("omit", CMD_OMIT);
+NewPrimitive("noalign", CMD_NOALIGN);
+@}
+
+The alignment tab is an expandable token.  It has to insert the
+correct V-template followed by an ENDV token.
+
+@$@<Alignment implementation@>+=@{@-
+bool xfcnTab(int, TeXToken*, SymbolData**)
+{
+   LOG("\nAlignment --- found Tab");
+   if (s_alignState == AS_PEEKING){
+      //InputStack::Putback(CurTok());
+      s_alignState = AS_NORMAL;
+      return true;
+   }
+
+   TeXToken endv(TT_ENDV, 0, 0);
+   InputStack::Putback(endv);
+   InputStack::Putback(Global::msieverycellend);
+   // <Insert v-part>
+   InputStack::Putback(s_alignment.m_curpreamble -> m_vpart);
+   return false;
+}
+@}
+
+
+Here {\tt which} is zero if it's a {\tt cr} and one if it's
+a {\tt crcr}.
+
+@$@<Alignment implementation@>+=@{@-
+bool xfcnCR(int which, TeXToken*, SymbolData**)
+{
+   if (which == 0){
+      LOG("\nAlignment --- found \\cr");
+   }else if (which == 1){
+      LOG("\nAlignment --- found \\crcr");
+   } else {
+      LOG("\nERROR -- bad \\cr type");
+   }
+   if (s_alignState == AS_PEEKING){
+      if (which == 0){
+         InputStack::Putback(CurTok());
+         InitRow();
+         InputStack::Putback(Global::msieveryrowstart);
+         s_alignState = AS_NORMAL;
+      }
+      return false;
+   } else {
+      TeXToken endr(TT_ENDR, which, 0);
+      InputStack::Putback(endr);
+      InputStack::Putback(Global::msieveryrowend);
+      InputStack::Putback(Global::msieverycellend);
+      // <Insert v-part>
+      InputStack::Putback(s_alignment.m_curpreamble -> m_vpart);
+      return false;
+   }
+}
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+// a phony name, used in scanning
+NewExpandable("]&[", xfcnTab, 0);
+NewExpandable("cr", xfcnCR, 0);
+NewExpandable("crcr", xfcnCR, 1);
+@}
+
+
+
+
+@$@<Alignment implementation@>+=@{@-
+void GetPreambleToken()
+{
+   String cr = StringBuilder::Create("cr");
+   int crid;
+   Symbols::GetId(cr, &crid, Symbols::NO_CREATE);
+
+   while (true) {
+      GetRawToken();
+      // We have to check for \cr. Normally this would be expanded
+      // but not in a preamble
+      if (CurTok().Type() == TT_SYMBOL &&  CurTok().Symbol() == crid){
+         SetCmdCode(CMD_ENDR);
+         break;
+      }
+
+      DetermineCommandCode();
+      while (CurCmdCode() == CMD_SPAN){
+         GetRawToken();
+         if (TT_SYMBOL == CurTok().Type()){
+            SymbolData* pDef = 0;
+            Symbols::GetDef(CurTok().Symbol(), &pDef);
+            const Expandable* exp = dynamic_cast<const Expandable*>(pDef);
+            if (exp != 0){
+               LOG("Unimplemented case : expandable after \\span in preamble");
+               ASSERT(false);
+            }
+         }
+      }
+      if (CurCmdCode() == CMD_ASSIGN_GLUE){
+         LOG("Unimplemented case: glue assignment in preamble");
+         ASSERT(false);
+      }
+      break;
+   }
+}
+@}
+
+
+
+@$@<Alignment implementation@>+=@{@-
+void ScanAlignmentPreamble()
+{
+   bool bLoop = false;
+   std::list<PreambleEntry>::const_iterator loopbegin;
+
+   GetPreambleToken(); // skip the left brace
+
+   // Skip spaces
+   while (CurTok().Type() == TT_SPACE){
+      GetPreambleToken();
+   }
+
+   while (true) {
+      PreambleEntry entry;
+      s_alignment.m_preamble.push_back(entry);
+      @<Scan U template into holdHead@>
+      @<Scan V template into holdHead@>
+      LOG("\n----Preamble entry created");
+      LOG("\n       u = " << s_alignment.m_preamble.back().m_upart);
+      LOG("\n       v = " << s_alignment.m_preamble.back().m_vpart);
+      if (CurCmdCode() == CMD_ENDR){
+         // InputStack::Putback(CurTok()); // so AlignPeek finds it
+         break;
+      }
+      if (CurCmdCode() == CMD_ALIGN_TAB){
+         GetPreambleToken();
+      }
+   }
+   s_alignment.m_curpreamble = s_alignment.m_preamble.begin();
+   if (bLoop){
+      std::list<PreambleEntry>::const_iterator it;
+      for ( it = loopbegin; it != s_alignment.m_preamble.end(); ++it){
+         s_alignment.m_loop.push_back(*it);
+      }
+   }
+}
+@}
+
+
+@$@<Scan U template into holdHead@>==@{@-
+while (true) {
+   if (CurTok().Type() == TT_TAB){
+      LOG("\nAlignment -- setting loop point");
+      // Set the current loop point
+      bLoop = true;
+      loopbegin = s_alignment.m_preamble.end();
+      --loopbegin;
+      GetPreambleToken();
+      continue;
+   }
+   if (CurTok().Type() == TT_PARAM){
+      GetPreambleToken();
+      break; // continue to v-part scanning
+   }
+   s_alignment.m_preamble.back().m_upart.push_back(CurTok());
+   GetPreambleToken();
+}
+@}
+
+@$@<Scan V template into holdHead@>==@{@-
+while(true){
+   if (CurTok().Type() == TT_TAB || CurCmdCode() == CMD_ENDR){
+      break;
+   }
+   s_alignment.m_preamble.back().m_vpart.push_back(CurTok());
+   GetPreambleToken();
+}
+@}
+
+
+@$@<Alignment implementation@>+=@{@-
+void ExtendPreamble()
+{
+   LOG("\nAlignment --- extending preamble");
+   // curpreamble pointer is passed the end. First back up
+   --s_alignment.m_curpreamble;
+
+   // then append the loop
+   std::list<PreambleEntry>::const_iterator it;
+   for (it = s_alignment.m_loop.begin(); it != s_alignment.m_loop.end(); ++it)
+   {
+      s_alignment.m_preamble.push_back(*it);
+   }
+
+   // the advance the preamble pointer
+
+   ++s_alignment.m_curpreamble;
+}
+@}
+
+
+@$@<Alignment implementation@>+=@{@-
+void InitRow()
+{
+   LOG("\nAlignment -- InitRow");
+   Typesetter::StartRow();
+   s_alignment.m_curpreamble = s_alignment.m_preamble.begin();
+}
+@}
+
+@$@<Alignment implementation@>+=@{@-
+
+void AlignPeek();
+
+
+void FinRow()
+{
+   LOG("\nAlignment -- FinRow");
+   Typesetter::EndRow();
+   AlignPeek();
+}
+@}
+
+
+
+@$@<Alignment implementation@>+=@{@-
+void InitCol()
+{
+   LOG("\nAlignment -- InitCol");
+   Typesetter::StartCol();
+   InputStack::Putback(s_alignment.m_curpreamble -> m_upart);
+   InputStack::Putback(Global::msieverycellstart);
+}
+@}
+
+
+@$@<Alignment implementation@>+=@{@-
+bool FinCol()
+{
+   LOG("\nAlignment -- FinishCol");
+   Typesetter::EndCol();
+   bool rv = false;
+   ++s_alignment.m_curpreamble;
+   if ( s_alignment.m_curpreamble == s_alignment.m_preamble.end()){
+      //GetNext_NonBlank_NonCall();
+      rv = true;
+   }
+   return rv;
+}
+@}
+
+
+@$@<Alignment implementation@>+=@{@-
+
+void FinishAlignment();
+
+void AlignPeek()
+{
+   LOG("\nAlignment -- AlignPeek");
+   while (true) {
+      s_alignState = AS_PEEKING;
+      GetNext_NonBlank_NonCall();
+      s_alignState = AS_NORMAL;
+      DetermineCommandCode();
+      if (CurCmdCode() == CMD_NOALIGN){
+         LOG("\nERROR -- Unimplemented --- \noalign");
+         ASSERT(false);
+      } else if (CurCmdCode() == CMD_RIGHT_BRACE){
+         LOG("\n--- See right brace");
+         FinishAlignment();
+         break;
+      } else if (CurCmdCode() == CMD_ENDR){
+         LOG("\n--- See ENDR");
+         if (CurTok().ChrCode() == 1){
+            continue; // go on to next token -- ignore \crcr
+         } else {
+            FinRow();
+            InitRow();
+            InitCol();
+            InputStack::Putback(Global::msieveryrowstart);
+            break;
+         }
+      } else {
+         LOG("\n--- Saw nothing interesting");
+         InputStack::Putback(CurTok());
+         InitRow();
+         InitCol();
+         InputStack::Putback(Global::msieveryrowstart);
+         break;
+      }
+   }
+}
+@}
+
+@$@<Alignment implementation@>+=@{@-
+void InitAlign()
+{
+   PushAlignment();
+   Typesetter::StartAlignment();
+   ScanBoxSpec();
+   ScanAlignmentPreamble();
+   NewLevel(ALIGN_GROUP);
+   Typesetter::GotoHMode();
+   Typesetter::SetInner(true);
+   AlignPeek();
+}
+@}
+
+@$@<Alignment implementation@>+=@{@-
+void FinishAlignment()
+{
+   LOG("\nAlignment -- FinishAlignment");
+   EndLevel();
+   Typesetter::EndAlignment();
+   PopAlignment();
+}
+@}
+
+@$@<Misc commands@>+=@{@-
+case CMD_HALIGN:
+  LOG("\n----Start halign");
+  InitAlign();
+break;
+
+case CMD_VALIGN:
+  LOG("\n----Start valign");
+  InitAlign();
+break;
+
+case CMD_ENDV:
+   LOG("\n---ENDV");
+   if (FinCol()) {
+      // if we see a final column in this case we extend
+      // the preamble rather than end the row
+      if (s_alignment.m_loop.size() != 0){
+         ExtendPreamble();
+         InitCol();
+      } else {
+         LOG("\nERROR -- column too long");
+         FinRow();
+     }
+   } else {
+      InitCol();
+   }
+   break;
+
+case CMD_ENDR:
+   LOG("\n---ENDR");
+   FinCol();
+   FinRow();
+   break;
+@}
+
+
+@$@<Misc commands@>+=@{@-
+case CMD_ALIGN_TAB:
+  LOG("\nERROR----Align tab");
+  break;
+@}
+

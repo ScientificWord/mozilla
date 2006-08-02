@@ -1,0 +1,477 @@
+@A@<Basic expandables@>
+
+@B@<\input@>
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewExpandable("input", xfcnInput, 0);
+@}
+
+@$@<Expandable declarations@>+=@{@-
+bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**);
+@}
+
+
+@$@<Scan filename@>@M==@{@-
+GetNext_NonBlank_NonCall();
+bool braced = false;
+if (CurTok().Type() == TT_LEFT_BRACE){
+   braced = true;
+   GetToken();
+}
+while (true){
+   if (CurTok().Type() == TT_SYMBOL ||
+       CurTok().Type() == TT_ACTIVE){
+      InputStack::Putback(CurTok());
+      break;
+   } else if (!fn.Accept(CurTok().ChrCode(),false)){
+      break;
+   } else {
+      GetToken();
+   }
+}
+if (braced){
+   if (CurTok().Type() != TT_RIGHT_BRACE){
+      LOG("\nERROR missing right brace in filename.");
+   }
+}
+@}
+
+@$@<Misc functions@>+=@{@-
+bool xfcnInput(int /* ignored */, TeXToken*, SymbolData**)
+{
+   Filename fn;
+   @<Scan filename@>
+   const char* name = fn.GetNameString();
+   const char* ext = fn.GetExtString();
+   if (ext == 0)
+     ext = "tex";
+
+   InputByteFile* pbf = new InputByteFile;
+   pbf -> Open(fn);
+   Latin_1_in*  platin1filt = new Latin_1_in(*pbf);
+   LineSource* plineSource = new LineSource(*platin1filt);
+   Tokenizer* ts = new Tokenizer(plineSource);
+   InputStack::Push(ts);
+   LOG("\n----\\input " << name);
+   return false;
+}
+@}
+
+@B@<\number@>
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewExpandable("number", xfcnNumber, 0);
+@}
+
+@$@<Expandable declarations@>+=@{@-
+
+bool xfcnNumber(int /* ignored */, TeXToken*, SymbolData**);
+@}
+
+@$@<Misc functions@>+=@{@-
+
+void StrToToks(String str, TokenList* tl)
+{
+   for (int i = 0; i < str.Size(); ++i){
+      if (str[i] == L' '){
+         tl -> push_back(TeXToken(TT_SPACE, L' ', 0));
+      } else {
+         tl -> push_back(TeXToken(TT_OTHER, str[i], 0));
+      }
+   }
+}
+
+
+bool xfcnNumber(int /* ignored */, TeXToken*, SymbolData**)
+{
+   int n;
+   ScanInt(&n);
+   StringUtils::AppendInt(n);
+   String str = StringBuilder::Create();
+   TokenList* tl = new TokenList;
+   StrToToks(str, tl);
+   StringBuilder::Discard(str);
+   TokenListTokenSource* ts = new TokenListTokenSource(*tl);
+   InputStack::Push(ts);
+   return false;
+}
+@}
+
+
+
+@B@<\romannumeral@>
+
+@B@<\meaning@>
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewExpandable("meaning", xfcnMeaning, 0);
+@}
+
+@$@<Expandable declarations@>+=@{@-
+
+bool xfcnMeaning(int /* ignored */, TeXToken*, SymbolData**);
+@}
+
+@$@<Misc functions@>+=@{@-
+
+bool xfcnMeaning(int /* ignored */, TeXToken*, SymbolData**)
+{
+   GetRawToken();
+   DetermineCommandCode();
+   MacroDef* pMacDef = dynamic_cast<MacroDef*>(CurData());
+   if (pMacDef != 0){
+      StringUtils::AppendToks(pMacDef -> Toks());
+      String str = StringBuilder::Create();
+      TokenList* tl = new TokenList;
+      StrToToks(str, tl);
+      StringBuilder::Discard(str);
+      InputStack::Putback(*tl);
+   }
+   return false;
+}
+@}
+
+
+@B@<\jobname@>
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewExpandable("jobname", xfcnJobname, 0);
+@}
+
+@$@<Expandable declarations@>+=@{@-
+bool xfcnJobname(int /* ignored */, TeXToken*, SymbolData**);
+@}
+
+@$@<Misc functions@>+=@{@-
+extern const char* s_inputfilename;
+
+bool xfcnJobname(int /* ignored */, TeXToken*, SymbolData**)
+{
+   Filename fn(s_inputfilename);
+   StringUtils::AppendCStr(fn.GetNameString());
+   String str = StringBuilder::Create();
+   TokenList* toks = new TokenList;;
+   StrToToks(str, toks);
+   InputStack::Putback(*toks);
+   return false;
+}
+@}
+
+
+
+@B@<\fontname@>
+
+@B@<\the@>
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewExpandable("the", xfcnThe, 0);
+@}
+
+@$@<Expandable declarations@>+=@{@-
+
+bool xfcnThe(int /* ignored */, TeXToken*, SymbolData**);
+@}
+
+@$@<Misc functions@>+=@{@-
+
+TokenListTokenSource* xfcnThe_nopush(int /* ignored */, TeXToken*, SymbolData**)
+{
+   GetToken();
+   DetermineCommandCode();
+   ScanSomethingResult res;
+   ScanSomethingInternal(+1, res);
+   if (res.m_type == SCAN_TOKS){
+      TokenList* pList = res.m_toks;
+      //StringUtils::AppendToks(*pList);
+      TokenListTokenSource* ts = new TokenListTokenSource(*pList);
+      return ts;
+      //InputStack::Push(ts);
+      //return false;
+   } else  if (res.m_type == SCAN_INT){
+      StringUtils::AppendInt(res.m_int);
+   } else if (res.m_type == SCAN_DIMEN){
+      StringUtils::AppendScaled(res.m_int);
+      StringBuilder::Append(L'p');
+      StringBuilder::Append(L't');
+   } else if (res.m_type == SCAN_GLUE){
+      StringUtils::AppendScaled(res.m_int);
+      StringBuilder::Append(L'p');
+      StringBuilder::Append(L't');
+   } else {
+      ASSERT(false);
+   }
+   String str = StringBuilder::Create();
+   TokenList* tl = new TokenList;
+   StrToToks(str, tl);
+   StringBuilder::Discard(str);
+   TokenListTokenSource* ts = new TokenListTokenSource(*tl);
+   //InputStack::Push(ts);
+   return ts;
+}
+
+
+bool xfcnThe(int i, TeXToken* pt, SymbolData** psd)
+{
+    TokenListTokenSource* ts = xfcnThe_nopush(i, pt, psd);
+    InputStack::Push(ts);
+    return false;
+}
+
+@}
+
+@B@<\noexpand@>
+
+@$@<Expandable declarations@>+=@{@-
+bool xfcnNoexpand(int, TeXToken*, SymbolData**);
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewExpandable("noexpand", xfcnNoexpand, 0);
+@}
+
+
+@$@<Misc functions@>+=@{@-
+bool xfcnNoexpand(int /* ignored*/, TeXToken* tt, SymbolData** ppDef)
+{
+   static SymbolData* frozen_relax = new Primitive(CMD_RELAX);
+   TeXToken next;
+   GetRawToken();
+   next = CurTok();
+   if (next.Type() == TT_SYMBOL){
+      LOG(" (don't expand token)");
+      *tt = next;
+      *ppDef = frozen_relax;
+      return true;
+   }
+   return false;
+}
+@}
+
+
+@B@<\uppercase and \lowercase@>
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewExpandable("uppercase", xfcnCaseshift, 0);
+NewExpandable("lowercase", xfcnCaseshift, 1);
+@}
+
+@$@<Expandable declarations@>+=@{@-
+
+bool xfcnCaseshift(int dir, TeXToken*, SymbolData**);
+@}
+@$@<Misc functions@>+=@{@-
+bool xfcnCaseshift(int dir, TeXToken*, SymbolData**)
+{
+   TokenList* tl = new TokenList;
+   ScanTokenList(tl, false);
+   LOG("\nCase shift.");
+   LOG("\n...I read " << *tl);
+   TokenList::iterator it;
+   for (it = tl -> begin(); it != tl -> end(); ++it){
+      if ((*it).Type() != TT_SYMBOL){
+         TeXChar ch = (*it).ChrCode();
+         if (dir == 0){
+            TeXChar uc = GetUccode(ch);
+            if (uc != 0)
+               (*it).SetChrCode(uc);
+         } else {
+            TeXChar lc = GetLccode(ch);
+            if (lc != 0)
+               (*it).SetChrCode(lc);
+         }
+      }
+   }
+   LOG("\n... I put back: " << *tl);
+   InputStack::Putback(*tl);
+   return false;
+}
+@}
+
+
+
+@B@<\mark@>
+
+@$@<Expansion functions@>+=@{@-
+bool xfcnExpandMark(int which, TeXToken*, SymbolData**)
+{
+   TeXToken tok;
+   tok.SetType(TT_LEFT_BRACE);
+   tok.SetChrCode('{');
+   InputStack::Putback(tok);
+   return false;
+}
+@}
+
+
+@B@<\expandafter@>
+
+@$@<Expansion functions@>+=@{@-
+bool xfcnExpandafter(int /*ignored*/, TeXToken*, SymbolData**)
+{
+   GetRawToken();
+   TeXToken next1 = CurTok();
+   LOG(" (first token)");
+
+   GetRawToken();
+   TeXToken next2 = CurTok();
+   LOG(" (second token)");
+
+   if (bSymbol(&next2)){
+      SymbolData* pDef = 0;
+      Symbols::GetDef(next2.Symbol(),&pDef);
+      const Expandable* exp = dynamic_cast<const Expandable*>(pDef);
+      if (exp != 0){
+         LOG("\n--Expandafter expanding " << next2);
+         TeXToken tmptt;
+         SymbolData* tmpsd;
+         exp -> Expand(&tmptt, &tmpsd);
+      } else
+         InputStack::Putback(next2);
+
+   }else{
+      InputStack::Putback(next2);
+   }
+   InputStack::Putback(next1);
+   return false;
+}
+@}
+
+
+@B@<\csname@>
+
+@$@<Expansion functions@>+=@{@-
+bool xfcnCsname(int /* ignored */, TeXToken*, SymbolData**)
+{
+   TokenList tl;
+   while (true) {
+      GetToken();
+      if (CurTok().Type() == TT_SYMBOL){
+         LOG("todo: check that we have \\endcsname def");
+         break;
+      } else {
+         tl.push_back(CurTok());
+      }
+   }
+   TokenList::const_iterator it;
+   for (it = tl.begin(); it != tl.end(); ++it){
+      StringBuilder::Append((*it).ChrCode());
+   }
+   String name = StringBuilder::Create();
+   int id;
+   Symbols::GetId(name, &id, Symbols::CREATE);
+   TeXToken newtok(TT_SYMBOL, 0, id);
+   InputStack::Putback(newtok);
+   SymbolData* pData;
+   Symbols::GetDef(id, &pData);
+   if (pData == 0){
+      static SymbolData* frozen_relax = new Primitive(CMD_RELAX);
+      LOG("\n\\csname will define the nyew symbol as \\relax.");
+      Symbols::SetDef(id, frozen_relax, true);
+   }
+   return false;
+}
+@}
+
+@B@<\string@>
+
+@$@<Expansion functions@>+=@{@-
+
+TeXToken escape(TT_OTHER, '\\', 0);
+
+bool xfcnString(int /* ignored */, TeXToken*, SymbolData**)
+{
+   GetRawToken();
+   TeXToken next = CurTok();
+   if (next.Type() == TT_SYMBOL){
+      TokenList* pTL = new TokenList;
+      if (Global::escapechar != -1){
+         pTL -> push_back(escape);
+      }
+      String name = Symbols::GetName(next.Symbol());
+      for (int i = 0; i < name.Size(); ++i){
+         TeXToken ch(TT_OTHER, name[i], 0);
+         pTL -> push_back(ch);
+      }
+      InputStack::Putback(*pTL);
+   } else {
+      TokenList* pTL = new TokenList;
+      pTL ->  push_back(TeXToken(TT_LETTER, next.ChrCode(), 0));
+      InputStack::Putback(*pTL);
+   }
+   return false;
+}
+@}
+
+
+@!    {"topmark",      Expandable(xfcnExpandMark, XC_TOP_MARK)},
+@!    {"firstmark",    Expandable(xfcnExpandMark, XC_FIRST_MARK)},
+@!    {"botmark",      Expandable(xfcnExpandMark, XC_BOT_MARK)},
+@!    {"splittopmark", Expandable(xfcnExpandMark, XC_SPLIT_TOP_MARK)},
+@!    {"splitbotmark", Expandable(xfcnExpandMark, XC_SPLIT_BOT_MARK)},
+@!
+@!    {0, Expandable(xfcnExpandMark, XC_TOP_MARK)},
+@!
+
+
+
+@$@<Add predefined symbols@>==@{@-
+
+
+void SetupExpandables()
+{
+
+   NewExpandable("expandafter", xfcnExpandafter, 0);
+   NewExpandable("csname",      xfcnCsname, 0);
+   NewExpandable("string",      xfcnString, 0);
+}
+@}
+
+
+
+Here is an example of an unwanted dependency. The macro expander is a
+low level thing that doesn't need to know about the typesetter,
+another low-level thing. But we have to expand @{\topmarks@} here. So
+how do we know what the values are? There has to be an even lower
+level repository of mark data. That everyone knows about.
+
+@$@<Do mark@>@Z==@{@-
+   if (repository.topmark() != 0){
+      iosys::push_token_list(repository.topmark());
+   }
+@}
+
+
+@o@<expandables.h@>==@{@-
+#ifndef EXPANDABLES_H
+#define EXPANDABLES_H
+
+@<Expandable declarations@>
+
+#endif
+@}
+
+
+@o@<expandables.cpp@>==@{@-
+#include "platform.h"
+#include "basicdata.h"
+#include "tokens.h"
+#include "scanutils.h"
+#include "macros.h"
+@<Expansion functions@>
+@<Misc functions@>
+@<Add predefined symbols@>
+@}
+
+
+
+
+
+
+
