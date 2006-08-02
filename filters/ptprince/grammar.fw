@@ -1,0 +1,22 @@
+
+
+\def\nt#1{{\tt <#1>}}
+
+
+
+\nt{space token} is a token resulting from a category 10 character,
+or a control sequence that has been @{\let@} or @{\futerlet@} to such a token.
+
+\nt{plus} = $+_{12}$ (a plus sign with category code 12)
+
+\nt{minus} = $-_{12}$ (a minus sign with category code 12)
+
+\nt{apostrophe} = '$_{12}$
+
+\nt{double quote} = "$_{12}$
+
+\nt{quote} = `$_{12}$
+
+
+\nt{optional spaces} -> \nt{empty} | \nt{space token} \nt{optional spaces}
+

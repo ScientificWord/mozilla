@@ -1,0 +1,69 @@
+@A@<Fonts metric data@>
+
+A @{TFM@} file is a binary file containing font information.
+It contains the information needed to place the characters but does
+not have information about how to draw the characters.
+
+@$@<class TFM@>==@{@-
+class TFM {
+   long lf; // length of file
+   long lh; // length of header
+   long bc; // smallest charcode in font
+   long ec; // largest charcode in font
+   long nw; // # of words in width table
+   long nh; // # of words in the height table
+   long nd; // # of words in the depth table
+   long ni; // # of words in the italic correction table
+   long nl; // # of words in the lig/kern table
+   long nk; // # of words in the kern table
+   long ne; // # of words in the extensible character table
+   long np; // # of font parameter words
+
+   // header
+   checksum;
+   design_size;
+   char_info
+       // for each character the following data
+       width_index;
+       height_index;
+       depth_index;
+       italic_index;
+       tag;
+       remainder;
+    width  -  an array of widths indexed by the width_indicies to
+       get the actual width
+    height -  similar
+    depth  -  similar
+    italic -  similar
+    lig_kern - a table of simple programming instructions for
+       setting the ligatures and kerns.
+    kern - a table of kern values indexed by lig_kern_instructions.
+    exten - a table of extensible_recipes TRMRB (top, repeat, middle,
+       repeat, bottom)
+    param  -  font parameters
+       slant
+       space
+       space_stretch
+       space_shrink
+       x_height
+       quad
+       extra_space (at end of sentence)
+};
+@}
+
+Omega extensions?
+
+Internally we'll maintain a table of TFMs so that we may
+reference quickly any particular font data.
+
+
+
+@o@<fonts.h@>==@{@-
+@<class TFM@>
+
+struct FontData{
+void Load(...);
+void Unload(...);
+
+};
+@}

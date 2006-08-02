@@ -1,0 +1,55 @@
+
+% Define some TeX macros
+
+% I don't like the braces around the code fragments
+% so I remove them.
+\def\fwodef{\parindent=15pt\vskip0pt\parindent=20pt}
+\def\fwcdef{\vskip0pt\parindent=0pt}
+
+% I also don't always want the "This macro is defined ...."
+% documentation comments when they get too long
+\let\Xseealso\fwseealso
+\def\noseealso{\def\fwseealso##1{\global\let\fwseealso\Xseealso}}
+
+% These macros are used to generate the headings for the
+% individual command sections
+% \def\command#1{{\verb+#1+}}
+
+% Here is a redefinition of the C heading
+\font\bigtt=cmtt10 scaled \magstep2
+\def\fwlibc#1#2{\fwbeforesec{\fwfontnormb #1 \bigtt #2}\penalty200\smallskip}
+% No TOC entry
+\def\fwtocc#1#2{}
+%
+\def\beforecmd{\penalty-200\bigskip\medskip\hrule\medskip\par}
+\def\cmd#1{\beforecmd{\bigtt\char92#1}\penalty200\smallskip}
+\def\cmda#1{\beforecmd{\bigtt #1}\penalty200\smallskip}
+%
+%
+\chardef\other=12
+\def\ttverbatim{\begingroup\catcode`\\=\other \catcode`\{=\other
+  \catcode`\}=\other \catcode`\$=\other \catcode`\&=\other
+  \catcode`\#=\other \catcode`\%=\other \catcode`\~=\other
+  \catcode`\_=\other \catcode`\^=\other
+  \obeyspaces\obeylines\tt}
+\newskip\ttglue
+{\tt\global\ttglue=.5em plus.25em minus .15em}
+
+
+\catcode`\|=\active
+{\gdef|{\ttverbatim\spaceskip=\ttglue\let|=\endgroup}}
+\catcode`\|=\other
+
+\outer\def\beginlines{%
+   \par
+   \begingroup
+      \catcode`\|=\active
+      \nobreak\medskip\parindent=0pt\parskip=0pt%
+      \hrule\kern5pt\nobreak%
+}
+\def\endlines{\vskip5pt\hrule\endgroup\medbreak\noindent}
+
+% Generate the frontmatter
+
+
+

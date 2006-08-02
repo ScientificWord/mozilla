@@ -1,0 +1,357 @@
+@! Set the typesetter to be TeX. This allows us to enter TeX commands
+@! directly into the funnelweb source.
+
+@p typesetter = tex
+\input docmacros
+
+@i which.fw
+
+@A@<Building the TeX projects@>
+
+@B@<The build process@>
+
+I use a different shell for each major project I work on. This
+shell is initialized with project specificenvironment variables, command
+aliases, and so on. This way I can have everything start up with my
+favorite directories and commands abbreviated. I create an icon on my
+desktop that, when clicked, starts up a console with @{command.exe -k
+tex-win.bat@} on Windows and @{konsole -e bash --rcfile
+~/TeX/tex-linux@} on Linux. Here is the file I use to initialize the
+Bash shell when I work on Linux. For this project I'll keep the bash
+features to a minimum so that I can use the same sort of thing on
+Windows. Fancier shell work will be done in Perl. So, there are two
+shell scripts. One for bash called @{tex-linux@} and one for Windows
+called @{tex-win.bat@}.
+
+Within these shells I have commands to @{clean@} the directory,
+build the program, build the tests, create the distribution, compress
+the files and so on.
+
+There are different version to build and exactly what you want to
+build is determined by environment variables set in the shell. I use
+the environment variable @{DEBUG@} when some code specific to a
+debug build is needed. Primarily this is to set compiler and linker
+flags, and to turn assertions off. Another environment variable is
+called @{LOGGING@} which is used to turn the program execution log on.
+
+
+@o@<.builddbg@>==@{@-
+#
+# Bash initialization file for the TeX Shell
+#
+echo "Debug build shell for TeX"
+#
+# Read my general initialization file
+source ~/.profile
+#
+# Set environment variables and commands used
+# for building TeX project.
+#
+export TEX=~/tex
+export LOGGING=1
+export DEBUG=1
+alias fw='funnelweb +t +D tex-l.fw'
+alias m='perl buildtools.pl'
+#
+# Change to the source directory
+cd $TEX
+@}
+
+
+Windows has no shell language to speak of so shell languages seem
+useless for a portable make. The other choice would be Python. I don't
+know Python so this is an opportunity to learn but I think Perl will fit
+into our company build process better.
+
+The instruction for a \TeX source distribution will read something
+like ``1) Make sure that Perl and Funnelweb are installed. 2) Create
+a directory called @{tex-source@}. 3) Copy all these files into that
+directory. 4) Change directory to that directory and Type @{perl
+buildtools.pl setup@}.
+
+Here's the outline of the Perl script.
+@o@<buildtools.pl@>==@{@-
+@<buildtools imports@>
+@<buildtools functions@>
+@<buildtools main@>
+@}
+
+
+The main program just checks the next command line argument and
+branches to the correct function
+
+@$@<buildtools main@>+=@{@-
+if __name__ == '__main__':
+    if len(argv) == 2:
+        if (argv[1] == 'setup'):
+           source_setup()
+        elif (argv[1] == 'dist'):
+           build_distribution()
+        elif (argv[1] == 'clean'):
+           clean()
+        elif (argv[1] == 'source-ball'):
+           build_archive()
+@}
+
+The only thing we need to import is the command line argument array
+@{argv@}.
+
+@$@<buildtools imports@>+=@{@-
+from sys import argv
+@}
+
+Consider the @{setup@} function. The first thing we can have the
+buildtools script do is provide a way to set up any other directories we
+might need. In particular, we need a @{obj@} directory to hold the
+object files.
+
+@$@<buildtools functions@>+=@{@-
+def setup():
+    goto_source_dir()
+    create_tex_shell()
+    create_make_file()
+    create_obj_dir()
+@}
+
+
+Here's a Perl script that increments the build number. The file
+@{version.dat@} contains three numbers on one line. The numbers are
+separated by white space. The first number is the current major
+version number, the second is the minor version and the third is the
+build number. This number is incremented every time a daily build is
+done.
+
+
+@$@<buildtools functions@>+=@{@-
+def get_version_number():
+    input = open('version.dat', 'r')
+    instr = input.read()
+    input.close()
+    nums = string.split(instr)
+    nums[2] = "%d" % (eval(nums[2]) + 1)
+    return nums
+
+def create_version_file(nums):
+    output = open('version.dat', 'w')
+    output.write("%s %s %s" % (nums[0], nums[1], nums[2]))
+    output.close()
+
+def goto_build_dir():
+    src = os.environ['TEX']
+    os.chdir(src)
+
+def delete_object_files():
+    os.chdir('obj')
+    for file in os.listdir('.'):
+        print 'Deleting ' + file
+        #os.unlink(file)
+    goto_build_dir()
+
+def clean():
+    # Delete everything except the funnelweb sources,
+    # data files, or python scripts (in particular,
+    # Windows won't like it if this file is deleted
+    # while being executed).
+    delete_object_files()
+    pat = regex.compile('.*\.\(fw\|FW\|dat\|DAT\|py\|PY\)$')
+    for file in os.listdir('.'):
+        if pat.match(file) < 0:
+            if not os.path.isdir(file):
+                print 'Deleting ' + file
+                os.unlink(file)
+
+def funnelweb():
+    if sys.platform == 'linux2':
+        os.system('funnelweb +t tex-l.fw')
+    elif sys.platform() == 'win32':
+        os.system('funnelweb +t tex-w.fw')
+
+def copymakefile():
+    if sys.platform == 'linux2':
+        os.system('cp makefile.tpl makefile')
+    elif sys.platform() == 'win32':
+        os.system('copy makefile.tpl makefile')
+
+def makeall():
+    os.system('make')
+
+
+def build_distribution():
+    nums = get_version_number()
+    print "Distribution", nums[2]
+    print "Building TeX Version %s.%s" % (nums[0], nums[1])
+    print "The time is ", ctime(time())
+    clean()
+    create_version_file(nums)
+    funnelweb()
+    copymakefile()
+    os.system('cp makefile.tpl makefile')
+    os.system('make depends')
+@}
+
+@$@<buildtools functions@>+=@{@-
+def build_archive():
+    print "Not done yet"
+@}
+
+@$@<buildtools imports@>+=@{@-
+import string
+import os
+import regex
+import sys
+from time import time, ctime
+@}
+
+
+
+The ``daily build" which occurs every night is supposed to create a
+system ready to test and a system ready to deliver every day. It
+cleans out the directories removing files that will be generated by
+the build process. We need a crontab entry....
+
+
+The first part of the build is to increment the build number.
+
+Make is reasonably portable if you stick to basic features.
+
+
+@! There is a little trickery going on here.  Some lines of the
+@! makefile are required to begin with a tab (at least using GNU make
+@! under Linux. Tabs are ASCII 9 and must be entered as @^D(009)
+@! for funnelweb. On the other hand, TeX won't print tabs without
+@! some macro manipulation:
+
+\begingroup% matching endgroup at end of file
+\catcode`\^^I=13
+\def^^I{\hskip5em}
+
+The file @{makefile.tpl@} is a template for a makefile. We have to
+add dependency information. See the @{depends@} target.
+
+@o@<makefile.tpl@>==@{@-
+@<Macros for build programs@>
+
+OBJ = ./obj
+OBJS = platform.$(O) textio.$(O) symbols.$(O) tokens.$(O) \
+       macrop.$(O)
+SOURCES = $(OBJS:.$(O)=.cpp)
+
+@<Suffix rules@>
+@<Make targets@>
+@}
+
+We define some macros to stand for the various programs we want to
+use. On my Linux system @{g++@} may be used to compile and link
+@{C++@} programs. @{CC@} holds the name of the C++ Compiler executable,
+@{LINK@} the name of the linker.
+
+@{CPPFLAGS@} are the C preprocessor (also used by C++) flags. We use
+@{DEBUG@} and @{LOGGING@}.
+
+@$@<GNU/Linux program macros@>==@{@-
+CC = g++
+LINK = g++
+FW = funnelweb +t +D
+RM = rm -f
+CP = cp
+ifdef DEBUG
+   CPPFLAGS = -DDEBUG -DLOGGING
+   CCFLAGS = -g -c -Wall -I. $(CPPFLAGS)
+   LFLAGS =
+else
+   CPPFLAGS =
+   CCFLAGS = -c -Wall -I. $(CPPFLAGS)
+   LFLAGS =
+endif
+
+VPATH = . ./obj
+
+CCOUT = -o
+LINKOUT = -o
+EXEEXT =
+
+# Object file extension
+O = o
+@}
+
+@$@<Windows program macros@>==@{@-
+CC = cl
+LINK = link
+FW = funnelweb +t +D
+RM = del
+CP = copy
+%ifdef DEBUG
+   CPPFLAGS = -DDEBUG -DLOGGING
+   CCFLAGS = -c -Zi -GX -W4 -I.
+   LFLAGS = /DEBUG
+%else
+   CPPFLAGS =
+   CCFLAGS = -c -GX -W4 -I.
+   LFLAGS =
+%endif
+
+CCOUT = -Fo
+LINKOUT = -OUT:
+EXEEXT =.exe
+
+# Object file extension
+O = obj
+@}
+
+
+The macros used to determine the programs and options
+are system dependent so we encapsulate them in a @{Platform@}
+macro.
+
+@$@<Macros for build programs@>==@{@-
+@<Platform@>@(@<GNU/Linux program macros@>@,@<Windows program macros@>@)
+@}
+
+The @{DEBUG@} flag is used to include symbolic debugging data
+in the object files. @{LOGGING@} is used to include a program
+trace feature.
+
+So far there's only one suffix rule, that telling us how to
+go from a @{.cpp@} to an object file.
+
+@$@<Suffix rules@>==@{@-
+.SUFFIXES : .h .cpp .fw .$(O)
+
+.cpp.$(O) :
+@^D(009)$(CC) $(CCFLAGS) $(CCOUT) $(OBJ)/$@@ ${<:.$(O)=.cpp}
+@}
+
+@$@<Make targets@>+=@{@-
+all : $(OBJS)
+@^D(009)$(LINK) $(LFLAGS) $(LINKOUT)tex.bin $(OBJ)/*.$(O)
+@}
+
+@$@<Make targets@>+=@{@-
+depends :
+@^D(009)$(CP) makefile.tpl makefile
+@^D(009)$(RM) deps
+@^D(009)$(CC) $(CCFLAGS) -M $(SOURCES) >> deps
+@^D(009)echo '# Generated dependencies' >> makefile
+@^D(009)cat deps >> makefile
+@}
+
+Here's a target that takes all the @{.fw@} files
+in the curent directory and wraps them into a tarball.
+
+@$@<Make targets@>+=@{@-
+source-ball:
+@^D(009)tar -czf source.tar *.fw
+@}
+
+@! end the group we started above so that we go back to treating
+@! tabs as spaces.
+\endgroup
+
+
+
+
+
+
+
+
+

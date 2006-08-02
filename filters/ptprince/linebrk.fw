@@ -1,0 +1,33 @@
+@A@<Line breaking@>
+
+@B@<Interface@>
+
+
+@B@<Physical layout@>
+@o@<linebreak.h@>==@{@-
+@}
+
+@o@<linebreak.cpp@>==@{@-
+@<class ActiveNode@>
+@<class PassiveNode@>
+@}
+
+
+@$@<class ActiveNode@>==@{@-
+class ActiveNode {
+   PassiveNode* m_breakPoint;
+   int          m_lineNuber;
+   int          m_fitness;
+   int          m_hyphenType;
+   int          m_totalDemerits;
+};
+@}
+
+@$@<class PassiveNode@>==@{@-
+class PassiveNode {
+   TeXNode* m_breakPoint; // Pointer into the hlist
+   CurrBreak;
+   PrevBreak;
+   Serial;
+};
+@}

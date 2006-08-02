@@ -1,0 +1,1213 @@
+@A@<Basic TeX data types and parameters@>
+
+Now we introduce the data types used throughout the rest of \TeX{}.
+These include integers, dimensions, glue, tokens, token lists,
+fonts, and boxes. We also gather together all of the parameters
+defined in the \TeX{} language. These include simple parameters
+like @{\baselineskip@} and arrays like @{\count@} and @{\catcode@}.
+
+Here's ths structure that holds all the parameters:
+
+@$@<Parameter struct declaration@>==@{@-
+struct Global {
+   @<Parameters@>
+   @<Input and Output files@>
+};
+@}
+
+@B@<Integers@>
+
+There is not too much to say here. We'll just use the built-in C++ type
+@{int@}.
+
+@$@<Parameters@>+=@{@-
+static int pretolerance;
+static int tolerance;
+static int hbadness;
+static int vbadness;
+static int linepenalty;
+static int hyphenpenalty;
+static int exhyphenpenalty;
+static int binoppenalty;
+static int relpenalty;
+static int clubpenalty;
+static int widowpenalty;
+static int displaywidowpenalty;
+static int brokenpenalty;
+static int predisplaypenalty;
+static int postdisplaypenalty;
+static int interlinepenalty;
+static int floatingpenalty;
+static int outputpenalty;
+static int doublehyphendemerits;
+static int finalhyphendemerits;
+static int adjdemerits;
+static int looseness;
+static int pausing;
+static int holdinginserts;
+static int tracingonline;
+static int tracingmacros;
+static int tracingstats;
+static int tracingparagraphs;
+static int tracingpages;
+static int tracingoutput;
+static int tracinglostchars;
+static int tracingcommands;
+static int tracingrestores;
+static int language;
+static int uchyph;
+static int lefthyphenmin;
+static int righthyphenmin;
+static int globaldefs;
+static int defaulthyphenchar;
+static int defaultskewchar;
+static int escapechar;
+static int endlinechar;
+static int newlinechar;
+static int showboxbreadth;
+static int showboxdepth;
+static int errorcontextlines;
+static int delimiterfactor;
+static int fam;
+static int maxdeadcycles;
+static int hangafter;
+static int mag;
+static int time;
+static int day;
+static int month;
+static int year;
+static int inputlineno;
+static int lastpenalty;
+static int deadcycles;
+static int spacefactor;
+static int msidobraces;
+static int msidollar;
+static int msioutput;
+@}
+
+
+And these have to be defined in the @{.cpp@} file:
+
+@$@<Parameter definitions@>+=@{@-
+int Global::pretolerance;
+int Global::tolerance;
+int Global::hbadness;
+int Global::vbadness;
+int Global::linepenalty;
+int Global::hyphenpenalty;
+int Global::exhyphenpenalty;
+int Global::binoppenalty;
+int Global::relpenalty;
+int Global::clubpenalty;
+int Global::widowpenalty;
+int Global::displaywidowpenalty;
+int Global::brokenpenalty;
+int Global::predisplaypenalty;
+int Global::postdisplaypenalty;
+int Global::interlinepenalty;
+int Global::floatingpenalty;
+int Global::outputpenalty;
+int Global::doublehyphendemerits;
+int Global::finalhyphendemerits;
+int Global::adjdemerits;
+int Global::looseness;
+int Global::pausing;
+int Global::holdinginserts;
+int Global::tracingonline;
+int Global::tracingmacros;
+int Global::tracingstats;
+int Global::tracingparagraphs;
+int Global::tracingpages;
+int Global::tracingoutput;
+int Global::tracinglostchars;
+int Global::tracingcommands;
+int Global::tracingrestores;
+int Global::language;
+int Global::uchyph;
+int Global::lefthyphenmin;
+int Global::righthyphenmin;
+int Global::globaldefs;
+int Global::defaulthyphenchar;
+int Global::defaultskewchar;
+int Global::escapechar;
+int Global::endlinechar;
+int Global::newlinechar;
+int Global::showboxbreadth;
+int Global::showboxdepth;
+int Global::errorcontextlines;
+int Global::delimiterfactor;
+int Global::fam;
+int Global::maxdeadcycles;
+int Global::hangafter;
+int Global::mag;
+int Global::time;
+int Global::day;
+int Global::month;
+int Global::year;
+int Global::inputlineno;
+int Global::lastpenalty;
+int Global::deadcycles;
+int Global::spacefactor;
+int Global::msidobraces;
+int Global::msidollar;
+int Global::msioutput;
+@}
+
+
+The @{CountReg@} array holds all the counter registers.
+These are accessed via the \TeX{} primitive @{\count@}.
+
+@$@<Parameters@>+=@{@-
+static int CountReg[256];
+@}
+
+@$@<Parameter definitions@>+=@{@-
+int Global::CountReg[256];
+@}
+
+
+@B@<Scaled@>
+
+@$@<Basic type declarations@>+=@{@-
+typedef int Scaled;
+@}
+
+
+@$@<Parameters@>+=@{@-
+static Scaled hfuzz;
+static Scaled vfuzz;
+static Scaled boxmaxdepth;
+static Scaled splitmaxdepth;
+static Scaled delimitershortfall;
+static Scaled nulldelimiterspace;
+static Scaled scriptspace;
+static Scaled parindent;
+static Scaled overfullrule;
+static Scaled emergencystretch;
+static Scaled hsize;
+static Scaled vsize;
+static Scaled maxdepth;
+static Scaled lineskiplimit;
+static Scaled mathsurround;
+static Scaled predisplaysize;
+static Scaled displaywidth;
+static Scaled displayindent;
+static Scaled hangindent;
+static Scaled hoffset;
+static Scaled voffset;
+static Scaled lastkern;
+static Scaled prevdepth;
+static Scaled pagegoal;
+static Scaled pagetotal;
+static Scaled pagestretch;
+static Scaled pagefilstretch;
+static Scaled pagefillstretch;
+static Scaled pagefilllstretch;
+static Scaled pageshrink;
+static Scaled pagedepth;
+@}
+
+
+
+@$@<Parameter definitions@>+=@{@-
+Scaled Global::hfuzz;
+Scaled Global::vfuzz;
+Scaled Global::boxmaxdepth;
+Scaled Global::splitmaxdepth;
+Scaled Global::delimitershortfall;
+Scaled Global::nulldelimiterspace;
+Scaled Global::scriptspace;
+Scaled Global::parindent;
+Scaled Global::overfullrule;
+Scaled Global::emergencystretch;
+Scaled Global::hsize;
+Scaled Global::vsize;
+Scaled Global::maxdepth;
+Scaled Global::lineskiplimit;
+Scaled Global::mathsurround;
+Scaled Global::predisplaysize;
+Scaled Global::displaywidth;
+Scaled Global::displayindent;
+Scaled Global::hangindent;
+Scaled Global::hoffset;
+Scaled Global::voffset;
+Scaled Global::lastkern;
+Scaled Global::prevdepth;
+Scaled Global::pagegoal;
+Scaled Global::pagetotal;
+Scaled Global::pagestretch;
+Scaled Global::pagefilstretch;
+Scaled Global::pagefillstretch;
+Scaled Global::pagefilllstretch;
+Scaled Global::pageshrink;
+Scaled Global::pagedepth;
+
+
+@}
+
+The @{DimenReg@} array holds all the dimension registers.
+These are accessed via the \TeX{} primitive @{\dimen@}.
+
+@$@<Parameters@>+=@{@-
+static int DimenReg[256];
+@}
+
+@$@<Parameter definitions@>+=@{@-
+int Global::DimenReg[256];
+@}
+
+
+@B@<Glue@>
+
+@$@<Basic type declarations@>+=@{@-
+enum GlueOrder {ORD_FINITE, ORD_FIL, ORD_FILL, ORD_FILLL};
+
+class GlueSpec {
+private:
+   Scaled m_width;
+   Scaled m_shrink;
+   GlueOrder m_shrinkOrder;
+   Scaled m_stretch;
+   GlueOrder m_stretchOrder;
+
+public:
+
+};
+
+typedef GlueSpec* Glue;
+@}
+
+
+@$@<Parameters@>+=@{@-
+static Glue baselineskip;
+static Glue lineskip;
+static Glue parskip;
+static Glue abovedisplayskip;
+static Glue belowdisplayskip;
+static Glue abovedisplayshortskip;
+static Glue belowdisplayshortskip;
+static Glue leftskip;
+static Glue rightskip;
+static Glue topskip;
+static Glue splittopskip;
+static Glue spaceskip;
+static Glue xspaceskip;
+static Glue parfillskip;
+static Glue thinmuskip;
+static Glue medmuskip;
+static Glue thickmuskip;
+static Glue tabskip;
+static Glue lastskip;
+
+@}
+
+@$@<Parameter definitions@>+=@{@-
+Glue Global::baselineskip;
+Glue Global::lineskip;
+Glue Global::parskip;
+Glue Global::abovedisplayskip;
+Glue Global::belowdisplayskip;
+Glue Global::abovedisplayshortskip;
+Glue Global::belowdisplayshortskip;
+Glue Global::leftskip;
+Glue Global::rightskip;
+Glue Global::topskip;
+Glue Global::splittopskip;
+Glue Global::spaceskip;
+Glue Global::xspaceskip;
+Glue Global::parfillskip;
+Glue Global::thinmuskip;
+Glue Global::medmuskip;
+Glue Global::thickmuskip;
+Glue Global::tabskip;
+Glue Global::lastskip;
+@}
+
+
+The @{SkipReg@} array holds all the glue registers.
+These are accessed via the \TeX{} primitive @{\skip@}.
+
+@$@<Parameters@>+=@{@-
+static int SkipReg[256];
+@}
+
+@$@<Parameter definitions@>+=@{@-
+int Global::SkipReg[256];
+@}
+
+
+@B@<Boxes@>
+
+
+The @{BoxReg@} array holds all the box registers.
+These are accessed via the \TeX{} primitive @{\box@}.
+
+@$@<Parameters@>+=@{@-
+static int BoxReg[256];
+@}
+
+
+@$@<Parameter definitions@>+=@{@-
+int Global::BoxReg[256];
+@}
+
+
+
+
+
+
+@B@<TeXTokens@>
+
+Every @{TeXToken@} consists of a @{TokenType@}, and then either a
+character if the token is a single (non-active) character token, or
+else a @{SymID@} that we get from the symbols subsystem. This is used
+to look up a symbol's definition.
+
+Here is a list of the basic token types we use in \TeX. Basic means
+that these token types come out of the tokenizer. However, there may
+be other types that get into @{TokenList@}s. So we are faced with this
+issue: We don't want this piece of code (the Tokens component) to
+depend on knowledge of higher level stuff like the macro
+processor. Therefore we can't give a complete list of the token types
+here. We could peek ahead and get a complete list but we don't really
+want to do that unless we have to. On the other hand, providing a
+complete list here provides a bit of type safety. The compiler would
+be able to ensure that only the declared values ever get to be the
+value of a token type variable.
+
+We can actually get both type safety and code independence by working
+hard enough but that seems like overkill here. I lean towards maintaining
+independence and giving up a bit of type safety.
+
+@$@<Basic type declarations@>+=@{@-
+enum TokenType {
+   TT_SYMBOL,
+   TT_LEFT_BRACE,
+   TT_RIGHT_BRACE,
+   TT_MATH_SHIFT,
+   TT_TAB,
+   TT_ACTIVE,
+   TT_LETTER,
+   TT_OTHER,
+   TT_SPACE,
+   TT_PARAM,
+   TT_SUBSCRIPT,
+   TT_SUPERSCRIPT,
+   TT_PAR,
+   TT_MATCH,      // used in macro processor to mark parameter
+   TT_END_MATCH,  // used in macro processor to mark end of param description
+   TT_OUTPARAM,   // used in macro processor to denote a parmeter subst.
+   TT_ENDV,       // used to mark the end of an alignment column
+   TT_ENDR,       // used to mark the end of an alignment row
+   FIRST_NONBASIC_TOKENTYPE // must go last in this enum
+};
+@}
+
+
+
+@$@<Basic type declarations@>+=@{@-
+enum Catcode{
+   CC_ESCAPE,     // 0
+   CC_LEFTBRACE,  // 1
+   CC_RIGHTBRACE, // 2
+   CC_MATHSHIFT,  // 3
+   CC_ALIGNTAB,   // 4
+   CC_ENDOFLINE,  // 5
+   CC_PARAM,      // 6
+   CC_SUPER,      // 7
+   CC_SUBS,       // 8
+   CC_IGNORE,     // 9
+   CC_SPACE,      // 10
+   CC_LETTER,     // 11
+   CC_OTHER,      // 12
+   CC_ACTIVE,     // 13
+   CC_COMMENT,    // 14
+   CC_INVALID};   // 15
+@}
+
+
+@$@<Basic type declarations@>+=@{@-
+class TeXToken {
+private :
+   TokenType m_type;
+   TeXChar   m_chrCode;
+   Symbols::SymId     m_sym;
+public:
+   TeXToken();
+   TeXToken( TokenType t, TeXChar c, Symbols::SymId id);
+
+   bool operator==(const TeXToken& right) const;
+   bool operator!=(const TeXToken& right) const;
+
+   TokenType Type() const { return m_type; }
+   TeXChar   ChrCode() const { return m_chrCode; };
+   Symbols::SymId Symbol() const { return m_sym; }
+
+   void SetType(TokenType t) { m_type = t; }
+   void SetChrCode(TeXChar c) { m_chrCode = c; }
+   void SetSymbol(Symbols::SymId id) { m_sym = id; }
+};
+@}
+
+@$@<TeXToken implementation@>+=@{@-
+TeXToken::TeXToken()
+   : m_type(TT_LETTER),
+     m_chrCode(0),
+     m_sym(0)
+{
+}
+@}
+
+@$@<TeXToken implementation@>+=@{@-
+TeXToken::TeXToken( TokenType t, TeXChar c, Symbols::SymId id)
+   : m_type(t), m_chrCode(c), m_sym(id)
+{}
+@}
+
+@$@<TeXToken implementation@>+=@{@-
+bool TeXToken::operator==(const TeXToken& right) const
+{
+   return (m_type == right.m_type) &&
+          (m_chrCode == right.m_chrCode) &&
+          (m_sym == right.m_sym);
+}
+@}
+
+@$@<TeXToken implementation@>+=@{@-
+bool TeXToken::operator!=(const TeXToken& right) const
+{
+   return !(*this == right);
+}
+@}
+
+
+
+Next let's add a method for writing tokens to the execution log.
+
+
+@$@<TeXToken logging@>+=@{@-
+#ifdef LOGGING
+   LogFile& operator<<(LogFile&, const TeXToken&);
+#endif
+static int s_paramno = 0; // Used to print  #1, #2, etc
+@}
+
+
+@$@<TeXToken logging imp@>+=@{@-
+#ifdef LOGGING
+static s_bLogSymbolNumber = false;
+
+LogFile& operator<<(LogFile& f, const TeXToken& tt)
+{
+   switch (tt.Type()){
+      case TT_SYMBOL:
+         if (tt.Symbol() == Symbols::NullCS()){
+            LOG("null");
+         }else{
+            LOG("\\" << Symbols::GetName(tt.Symbol()) );
+         }
+         #ifdef LOGGING
+            if (s_bLogSymbolNumber){
+               LOG(", #" << tt.Symbol() );
+            }
+         #endif
+         break;
+
+      case TT_PAR:   LOG(tt.ChrCode() << " (\\Par)"); break;
+      case TT_MATCH:
+           ++s_paramno;
+           LOG("#" << s_paramno);
+           break;
+      case TT_END_MATCH:   LOG("-->"); break;
+      case TT_OUTPARAM:    LOG("#"); LOG(1+(int)tt.ChrCode());break;
+      case TT_ENDV:        LOG("ENDV"); break;
+      case TT_ENDR:        LOG("ENDR"); break;
+      default:
+         LOG(tt.ChrCode());
+         if (tt.Type() != s_usualtokentype[tt.ChrCode()]){
+           switch (tt.Type()){
+             case TT_LEFT_BRACE:   LOG(",(Left Brace)" ); break;
+             case TT_RIGHT_BRACE:  LOG(",(Right Brace)" ); break;
+             case TT_MATH_SHIFT:   LOG(",(Math shift)" ); break;
+             case TT_TAB:          LOG(",(Align tab)" ); break;
+             case TT_ACTIVE:       LOG(",(Active)"); break;
+             case TT_LETTER:       LOG(",(Letter)"); break;
+             case TT_OTHER:        LOG(",(Other)"); break;
+             case TT_SPACE:        LOG(",(Space)"); break;
+             case TT_PARAM:        LOG(",(Param)"); break;
+             case TT_SUBSCRIPT:    LOG(",(Subscript)"); break;
+             case TT_SUPERSCRIPT:  LOG(",(Superscript)"); break;
+             default: {
+                LOG("\nCan't happen. Tokens. ");
+                LOG(tt.ChrCode() << " has catcode " << s_catcode[tt.ChrCode()]);
+                break;
+             }
+           }
+         }
+         break;
+   }
+   return f;
+}
+#endif
+@}
+
+
+@B@<Token lists@>
+
+In this section we describe @{TokenList@}s which are simply reference
+counted lists of @{TeXTokens@}. We consider implementing a
+@{ReferenceCounted@} class and a ``smart pointer" that manages the
+reference count. But until there is more than one of this sort of
+thing going on we'll not do that. Finally we have
+@{TokenListTokenSource@}s that are @{TokenSource@}s that manage a
+@{TokenList@}.
+
+@$@<Basic type declarations@>+=@{@-
+class TokenList : public std::list<TeXToken>{
+private:
+   mutable long m_refCount;
+public:
+   TokenList() : m_refCount(0) {}
+   void AddReference() const { ++m_refCount; }
+   void RemoveReference() const {
+       --m_refCount;
+       if (m_refCount == 0)
+          delete this;
+   }
+
+   void AppendSymbol(const char* str);
+   //bool operator==(const TokenList& right) const;
+};
+@}
+
+
+
+
+
+@$@<Parameters@>+=@{@-
+static TokenList output;
+static TokenList everypar;
+static TokenList everymath;
+static TokenList everydisplay;
+static TokenList everyhbox;
+static TokenList everyvbox;
+static TokenList everyjob;
+static TokenList everycr;
+static TokenList errhelp;
+static TokenList msieverycellstart;
+static TokenList msieverycellend;
+
+static TokenList msieveryrowstart;
+static TokenList msieveryrowend;
+
+
+static TokenList msiinlinemathproc;
+static TokenList msidisplaymathproc;
+static TokenList msieverypar;
+static TokenList msieveryhbox;
+
+@}
+
+
+@$@<Parameter definitions@>+=@{@-
+TokenList Global::output;
+TokenList Global::everypar;
+TokenList Global::everymath;
+TokenList Global::everydisplay;
+TokenList Global::everyhbox;
+TokenList Global::everyvbox;
+TokenList Global::everyjob;
+TokenList Global::everycr;
+TokenList Global::errhelp;
+TokenList Global::msieverycellstart;
+TokenList Global::msieverycellend;
+
+TokenList Global::msieveryrowstart;
+TokenList Global::msieveryrowend;
+
+TokenList Global::msiinlinemathproc;
+TokenList Global::msidisplaymathproc;
+TokenList Global::msieverypar;
+TokenList Global::msieveryhbox;
+@}
+
+The @{ToksReg@} array holds all the token list registers.
+These are accessed via the \TeX{} primitive @{\toks@}.
+
+@$@<Parameters@>+=@{@-
+static TokenList ToksReg[256];
+@}
+
+@$@<Parameter definitions@>+=@{@-
+TokenList Global::ToksReg[256];
+@}
+
+
+
+@$@<TokenList implementation@>==@{@-
+void TokenList::AppendSymbol(const char* cstr)
+{
+  String str = StringBuilder::Create(cstr);
+  Symbols::SymId id;
+  Symbols::GetId(str, &id, Symbols::CREATE);
+  push_back(TeXToken(TT_SYMBOL,0,id));
+}
+@}
+
+
+
+@$@<TokenList logging@>==@{@-
+struct LogFile;
+
+#ifdef LOGGING
+   LogFile& operator<<(LogFile&, const TokenList&);
+#endif
+@}
+
+@$@<TokenList logging imp@>==@{@-
+#ifdef LOGGING
+
+   LogFile& operator<<(LogFile& lf, const TokenList& tl)
+   {
+      s_paramno = 0;
+      for (TokenList::const_iterator it = tl.begin(); it != tl.end(); ++it)
+      {
+         LOG(*it << "  ");
+      }
+      return lf;
+   }
+#endif
+@}
+
+
+@B@<Rules@>
+
+@$@<Basic type declarations@>+=@{@-
+class RuleSpec {
+public:
+   RuleSpec() :
+     m_width(0), m_height(0), m_depth(0)
+   {}
+
+   Scaled m_width;
+   Scaled m_height;
+   Scaled m_depth;
+};
+@}
+
+
+
+@B@<Catcode and other tables@>
+
+There is a table of @{catcode@}s. The table is accessed by the functions
+@$@<Declare catcode functions@>==@{@-
+void InitCatcodes();
+void SetCatcode(TeXChar ch, int catcode);
+int* CatcodeLoc(TeXChar ch);
+Catcode GetCatcode(TeXChar ch);
+@}
+
+
+@$@<Implement catcode functions@>==@{@-
+
+static Catcode s_catcode[NUM_TEX_CHARS];
+
+#ifdef LOGGING
+static TokenType s_usualtokentype[NUM_TEX_CHARS];
+#endif
+
+void InitCatcodes()
+{
+   // Initialize the catcode table
+
+   for (TeXChar c = FIRST_TEX_CHAR; c <= LAST_TEX_CHAR; ++c){
+      s_catcode[c] = CC_OTHER;
+   }
+   TeXChar letter;
+   for (letter = L'a'; letter <= L'z'; ++letter) {
+      s_catcode[letter] = CC_LETTER;
+   }
+   for (letter = L'A'; letter <= L'Z'; ++letter) {
+      s_catcode[letter] = CC_LETTER;
+   }
+   s_catcode[L'\\'] = CC_ESCAPE;    s_catcode[L'{'] = CC_LEFTBRACE;
+   s_catcode[L'}'] = CC_RIGHTBRACE; s_catcode[L'$'] = CC_MATHSHIFT;
+   s_catcode[L'&'] = CC_ALIGNTAB;   s_catcode[L'%'] = CC_COMMENT;
+   s_catcode[L'_'] = CC_SUBS;       s_catcode[L'^'] = CC_SUPER;
+   s_catcode[L' '] = CC_SPACE;      s_catcode[L'~'] = CC_ACTIVE;
+   s_catcode[L'#'] = CC_PARAM;
+
+   // Need code to decide what to use here for \endlinechar
+
+   //s_catcode[L'\n'] = CC_ENDOFLINE;
+   s_catcode[13] = CC_ENDOFLINE;
+
+#ifdef LOGGING
+   for (int ch = 0; ch < 255; ++ch){
+     switch (s_catcode[ch]){
+        case CC_LEFTBRACE:  s_usualtokentype[ch] = TT_LEFT_BRACE;  break;
+        case CC_RIGHTBRACE: s_usualtokentype[ch] = TT_RIGHT_BRACE; break;
+        case CC_MATHSHIFT:  s_usualtokentype[ch] = TT_MATH_SHIFT;  break;
+        case CC_ALIGNTAB:   s_usualtokentype[ch] = TT_TAB; break;
+        case CC_SPACE:      s_usualtokentype[ch] = TT_SPACE; break;
+        case CC_LETTER:     s_usualtokentype[ch] = TT_LETTER; break;
+        case CC_OTHER:      s_usualtokentype[ch] = TT_OTHER; break;
+        case CC_SUPER:      s_usualtokentype[ch] = TT_SUPERSCRIPT; break;
+        case CC_SUBS:       s_usualtokentype[ch] = TT_SUBSCRIPT; break;
+        case CC_ACTIVE:     s_usualtokentype[ch] = TT_ACTIVE; break;
+     }
+   }
+#endif
+
+}
+
+
+void SetCatcode(TeXChar ch, int catcode)
+{
+   ASSERT(catcode >= CC_ESCAPE && catcode <= CC_INVALID);
+
+   s_catcode[ch] = (Catcode) catcode;
+}
+
+Catcode GetCatcode(TeXChar ch)
+{
+   return s_catcode[ch];
+}
+
+int* CatcodeLoc(TeXChar ch)
+{
+   return (int*)&s_catcode[ch];
+}
+@}
+
+
+
+
+Here's a table of @{uccodes@}s.
+@$@<Uccode table@>==@{@-
+
+static int s_uccode[NUM_TEX_CHARS];
+
+void InitUccodes()
+{
+   // Initialize the catcode table
+
+   for (TeXChar c = FIRST_TEX_CHAR; c <= LAST_TEX_CHAR; ++c){
+      s_uccode[c] = c;
+   }
+   TeXChar letter;
+   for (letter = L'a'; letter <= L'z'; ++letter) {
+      s_uccode[letter] = letter - L'a' + L'A';
+   }
+}
+
+
+void SetUccode(TeXChar ch, int code)
+{
+   s_uccode[ch] = code;
+}
+
+int GetUccode(TeXChar ch)
+{
+   return s_uccode[ch];
+}
+
+int* UccodeLoc(TeXChar ch)
+{
+   return &s_uccode[ch];
+}
+@}
+
+
+Here's a table of @{sfcodes@}s.
+
+@$@<Declare other code functions@>+=@{@-
+void InitSfcodes();
+void SetSfcode(TeXChar ch, int sfcode);
+int* SfcodeLoc(TeXChar ch);
+int  GetSfcode(TeXChar ch);
+@}
+
+@$@<Sfcode table@>==@{@-
+
+static int s_sfcode[NUM_TEX_CHARS];
+
+void InitSfcodes()
+{
+   // Initialize the sfcode table
+
+   for (TeXChar c = FIRST_TEX_CHAR; c <= LAST_TEX_CHAR; ++c){
+      s_sfcode[c] = 1000;
+   }
+   TeXChar letter;
+   for (letter = L'a'; letter <= L'z'; ++letter) {
+      s_sfcode[letter] = 999;
+   }
+}
+
+
+void SetSfcode(TeXChar ch, int code)
+{
+   s_sfcode[ch] = code;
+}
+
+int GetSfcode(TeXChar ch)
+{
+   return s_sfcode[ch];
+}
+
+int* SfcodeLoc(TeXChar ch)
+{
+   return &s_sfcode[ch];
+}
+@}
+
+
+
+
+@$@<Declare other code functions@>+=@{@-
+void InitUccodes();
+void SetUccode(TeXChar ch, int catcode);
+int* UccodeLoc(TeXChar ch);
+int  GetUccode(TeXChar ch);
+@}
+
+
+Here's a table of @{lccodes@}s.
+@$@<Lccode table@>==@{@-
+
+static int s_lccode[NUM_TEX_CHARS];
+
+void InitLccodes()
+{
+   // Initialize the lccode table
+
+   for (TeXChar c = FIRST_TEX_CHAR; c <= LAST_TEX_CHAR; ++c){
+      s_lccode[c] = c;
+   }
+   TeXChar letter;
+   for (letter = L'A'; letter <= L'Z'; ++letter) {
+      s_lccode[letter] = letter - L'A' + L'a';
+   }
+}
+
+
+void SetLccode(TeXChar ch, int code)
+{
+   s_lccode[ch] = code;
+}
+
+int GetLccode(TeXChar ch)
+{
+   return s_lccode[ch];
+}
+
+int* LccodeLoc(TeXChar ch)
+{
+   return &s_lccode[ch];
+}
+@}
+
+
+@$@<Declare other code functions@>+=@{@-
+void InitLccodes();
+void SetLccode(TeXChar ch, int catcode);
+int* LccodeLoc(TeXChar ch);
+int  GetLccode(TeXChar ch);
+@}
+
+
+
+
+Here is a table of @{mathcode@}s. The table is accessed by the functions
+@$@<Declare mathcode functions@>==@{@-
+void InitMathcodes();
+void SetMathcode(TeXChar ch, int mathcode);
+int* MathcodeLoc(TeXChar ch);
+int  GetMathcode(TeXChar ch);
+@}
+
+
+
+@$@<Implement mathcode functions@>==@{@-
+
+static int s_mathcode[NUM_TEX_CHARS];
+
+void InitMathcodes()
+{
+   TeXChar letter;
+   for (letter = L'a'; letter <= L'z'; ++letter) {
+      s_mathcode[letter] = 256 + letter;
+   }
+   for (letter = L'A'; letter <= L'Z'; ++letter) {
+      s_mathcode[letter] = 256 + letter;
+   }
+}
+
+void SetMathcode(TeXChar ch, int mathcode)
+{
+   s_mathcode[ch] = mathcode;
+}
+
+int* MathcodeLoc(TeXChar ch)
+{
+   return &s_mathcode[ch];
+}
+
+int  GetMathcode(TeXChar ch)
+{
+   return s_mathcode[ch];
+}
+@}
+
+
+
+
+@$@<Declare InitData@>==@{@-
+void InitData();
+@}
+
+@$@<InitData@>==@{@-
+void InitData()
+{
+   InitCatcodes();
+   InitUccodes();
+   InitLccodes();
+   InitMathcodes();
+}
+@}
+
+
+
+@B@<Converting of basic types to strings@>
+
+
+@$@<Conversion to strings@>+=@{@-
+struct StringUtils {
+   static void AppendCStr(const char*);
+   static void AppendStr(const String&);
+   static void AppendInt(int n);
+   static void AppendScaled(Scaled s);
+   static void AppendToks(const TokenList& tl);
+   static void AppendToken(const TeXToken& tok);
+};
+@}
+
+@$@<Conversion to strings implementation@>+=@{@-
+void StringUtils::AppendStr(const String& str)
+{
+   for (int k = 0; k < str.Size(); ++k){
+      StringBuilder::Append(str[k]);
+   }
+}
+@}
+
+@$@<Conversion to strings implementation@>+=@{@-
+void StringUtils::AppendCStr(const char* cstr)
+{
+   for (unsigned int k = 0; k < strlen(cstr); ++k){
+      StringBuilder::Append(cstr[k]);
+   }
+}
+@}
+
+@$@<Conversion to strings implementation@>+=@{@-
+
+void printdigits(TeXChar dig[], int k)
+{
+   while ( k > 0){
+      -- k;
+      if (dig[k] < 10){
+         StringBuilder::Append(L'0' + dig[k]);
+      } else {
+         StringBuilder::Append(L'A' + dig[k] -10);
+      }
+    }
+}
+
+
+void StringUtils::AppendInt(int n)
+{
+   TeXChar dig[17];
+   int k = 0;
+   if (n < 0){
+      StringBuilder::Append(L'-');
+      if (n > -100000000){
+         n = -n;
+      } else {
+         int m = -1 - n;
+         n = m / 10;
+         m = m % 10 + 1;
+         k = 1;
+         if (m < 10){
+            dig[0] = m;
+         } else {
+            dig[0] = 0;
+            ++n;
+         }
+      }
+   }
+   do {
+      dig[k] = n % 10;
+      n = n / 10;
+      ++k;
+   } while (n != 0);
+
+   printdigits(dig, k);
+}
+@}
+
+@$@<Conversion to strings implementation@>+=@{@-
+
+void StringUtils::AppendScaled(Scaled s)
+{
+   const int unity = 65536;
+   const int half = unity / 2;
+
+   if (s < 0){
+      StringBuilder::Append(L'-');
+      s = - s;
+   }
+   AppendInt(s / unity);
+   StringBuilder::Append(L'.');
+   s = 10 * (s % unity) + 5;
+   int delta = 10;
+   do {
+     if (delta > unity){
+        s = s + half - (delta / 2);
+     }
+     StringBuilder::Append(L'0' + ( s / unity));
+     s = 10 * (s % unity);
+     delta = delta * 10;
+   } while ( s > delta);
+}
+
+@}
+
+@$@<Conversion to strings implementation@>+=@{@-
+void StringUtils::AppendToks(const TokenList& tl)
+{
+   for (TokenList::const_iterator it = tl.begin(); it != tl.end(); ++it){
+      AppendToken(*it);
+   }
+}
+@}
+
+
+@$@<Conversion to strings implementation@>+=@{@-
+void StringUtils::AppendToken(const TeXToken& tt)
+{
+   switch (tt.Type()){
+      case TT_SYMBOL:
+         if (tt.Symbol() == Symbols::NullCS()){
+            AppendCStr("null");
+         }else{
+            AppendCStr("\\");
+            String str = Symbols::GetName(tt.Symbol());
+            AppendStr(str);
+            if (str.Size() > 1){
+              AppendCStr(" ");
+            } else {
+              char ch = str[0];
+              if (('a' <= ch && ch <= 'z') ||
+                  ('A' <= ch && ch <= 'Z')){
+                AppendCStr(" ");
+              }
+            }
+         }
+         #ifdef LOGGING
+         if (s_bLogSymbolNumber){
+            LOG(", #" << tt.Symbol() );
+         }
+         #endif
+         break;
+
+      case TT_PAR:
+         AppendCStr("\\par");
+         break;
+      case TT_MATCH:
+         ++s_paramno;
+         AppendCStr("#");
+         AppendInt(1 + s_paramno);
+         break;
+      case TT_END_MATCH:
+         AppendCStr("-->");
+         break;
+      case TT_ENDV:
+         AppendCStr("ENDV");
+         break;
+      case TT_ENDR:
+         AppendCStr("ENDR");
+         break;
+      case TT_OUTPARAM:
+         AppendCStr("#");
+         AppendInt(1+(int)tt.ChrCode());
+         break;
+      default:
+         StringBuilder::Append(tt.ChrCode());
+         break;
+   }
+
+}
+@}
+
+
+@B@<Input and Output files@>
+
+
+@$@<Input and Output files@>==@{@-
+static OutputByteFile* g_writeFile[15];
+static InputByteFile* g_readFile[15];
+@}
+
+@$@<Implement Input and Output files@>==@{@-
+OutputByteFile* Global::g_writeFile[15];
+InputByteFile* Global::g_readFile[15];
+@}
+
+
+@B@<Physical layout@>
+
+@o@<basicdata.h@>==@{@-
+#ifndef BASICDATA_H
+#define BASICDATA_H
+#include "platform.h"
+#include "symbols.h"
+#include <list>
+
+@<Basic type declarations@>
+@<Parameter struct declaration@>
+@<Declare catcode functions@>
+@<Declare other code functions@>
+@<Declare mathcode functions@>
+@<Declare InitData@>
+@<TokenList logging@>
+@<TeXToken logging@>
+@<Conversion to strings@>
+
+
+#endif
+@}
+
+@o@<basicdata.cpp@>==@{@-
+#include "basicdata.h"
+#include "platform.h"
+@<Parameter definitions@>
+@<Implement catcode functions@>
+@<Uccode table@>
+@<Lccode table@>
+@<Sfcode table@>
+@<Implement mathcode functions@>
+@<InitData@>
+@<TeXToken implementation@>
+@<TeXToken logging imp@>
+@<TokenList implementation@>
+@<TokenList logging imp@>
+@<Conversion to strings implementation@>
+@<Implement Input and Output files@>
+@}
+
+
+
+
+

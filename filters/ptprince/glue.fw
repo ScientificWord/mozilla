@@ -1,0 +1,188 @@
+
+@B@<Glue parameter assignment@>
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_ASSIGN_GLUE,
+@}
+
+
+Each glue parameter is associated with a memory location that
+holds a glue.
+
+@$@<Declare MakeGlueParam@>==@{@-
+void MakeGlueParam(const char* name, Glue* addr)
+{
+   Primitive* pc = new Primitive(CMD_ASSIGN_GLUE, true, (int)addr);
+   Symbols::CreateSymbol(name, pc);
+}
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+MakeGlueParam("baselineskip",          &Global::baselineskip);
+MakeGlueParam("lineskip",              &Global::lineskip);
+MakeGlueParam("parskip",               &Global::parskip);
+MakeGlueParam("abovedisplayskip",      &Global::abovedisplayskip);
+MakeGlueParam("belowdisplayskip",      &Global::belowdisplayskip);
+MakeGlueParam("abovedisplayshortskip", &Global::abovedisplayshortskip);
+MakeGlueParam("belowdisplayshortskip", &Global::belowdisplayshortskip);
+MakeGlueParam("leftskip",              &Global::leftskip);
+MakeGlueParam("rightskip",             &Global::rightskip);
+MakeGlueParam("topskip",               &Global::topskip);
+MakeGlueParam("splittopskip",          &Global::splittopskip);
+MakeGlueParam("spaceskip",             &Global::spaceskip);
+MakeGlueParam("xspaceskip",            &Global::xspaceskip);
+MakeGlueParam("parfillskip",           &Global::parfillskip);
+MakeGlueParam("thinmuskip",            &Global::thinmuskip);
+MakeGlueParam("medmuskip",             &Global::medmuskip);
+MakeGlueParam("thickmuskip",           &Global::thickmuskip);
+MakeGlueParam("tabskip",               &Global::tabskip);
+MakeGlueParam("lastskip",              &Global::lastskip);
+@}
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_ASSIGN_GLUE: {
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_ASSIGN_GLUE: {
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   int* loc = (int*) prim -> Data();
+   TeXToken defining = CurTok();
+   ScanOptionalEquals();
+   ScanGlue();
+   LOG("\n----Set " << defining << " = some glue todo: implement");
+
+   //SaveRestoration(new GlueRestoration(loc, "a glue"), bGlobal);
+   //*loc = n;
+   break;
+};
+@}
+
+These commands can also appear while doing @{ScanSomethingInternal@}.
+
+@$@<ScanSomethingInternal cases@>+=@{@-
+case CMD_ASSIGN_GLUE: {
+   res.m_type = SCAN_GLUE;
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   res.m_int = * (int*) prim -> Data();
+   break;
+}
+@}
+
+
+@B@<Glue register assignment@>
+
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_SKIP,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("skip", CMD_SKIP, true, NULL);
+@}
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_SKIP:{
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_SKIP: {
+   int n;
+   //int dim;
+   ScanInt(&n);
+   ScanOptionalEquals();
+   ScanGlue();
+   LOG("\\skip" << n << " = ... ");
+   break;
+}
+@}
+
+
+@B@<Skip shorthand@>
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_SKIPDEF,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("skipdef", CMD_SKIPDEF);
+@}
+
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_SKIPDEF:{
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_SKIPDEF:{
+   TeXToken defining;
+   int n;
+   ScanShorthand(&defining, &n);
+   void* addr = &Global::SkipReg[n];
+   Primitive* cmd = new Primitive(CMD_ASSIGN_GLUE, true, (int)addr);
+   Symbols::SetDef(defining.Symbol(), cmd, false /*non-global*/);
+   LOG("\n----Set " << defining << " = shorthand for \\skip" << n);
+   break;
+}
+@}
+
+
+
+
+@B@<Register assignment@>
+@$@<Command Codes@>+=@{@-
+CMD_REGISTER,
+@}
+
+
+
+@$@<Command subcodes@>+=@{@-
+enum RegisterCode{DIMEN_REG, GLUE_REG, TOKS_REG};
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("skip", CMD_REGISTER, true, GLUE_REG);
+NewPrimitive("toks", CMD_REGISTER, true, TOKS_REG);
+@}
+
+@$@<Register commands@>==@{@-
+case CMD_REGISTER: {
+   int n;
+   int m;
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   int type = prim -> Data();
+   ScanInt(&n);
+   ScanOptionalEquals();
+   if (type == GLUE_REG){
+      ScanGlue();
+      LOG("SET GLUE");
+   } else if (type == TOKS_REG){
+      TokenList* pTL = new TokenList;
+      ScanTokenList(pTL, false);
+      LOG("SET TOKS");
+   } else {
+      ASSERT(false);
+   }
+   break;
+};
+@}
+
+

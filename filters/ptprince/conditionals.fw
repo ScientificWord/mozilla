@@ -1,0 +1,570 @@
+
+@A@<Conditional processing@>
+
+We require some flexibility because we want to be able to add
+conditionals later. Conditionals are not seen by the command
+processor. On the other hand, we don't want the macro processor to
+know about the various things that are the objects of conditionals
+like glue, dimensions, and numbers.
+
+@$@<Conditional symbols@>+=@{@-
+NewExpandable("iftrue",  xfcnIf, (int)tfcnIfTrue);
+NewExpandable("iffalse", xfcnIf, (int)tfcnIfFalse);
+
+NewExpandable("ifvmode", xfcnIf, (int)tfcnIfVmode);
+NewExpandable("ifhmode", xfcnIf, (int)tfcnIfHmode);
+NewExpandable("ifmmode", xfcnIf, (int)tfcnIfMmode);
+NewExpandable("ifinner", xfcnIf, (int)tfcnIfInner);
+
+NewExpandable("ifvoid",  xfcnIf, (int)tfcnIfVoid);
+NewExpandable("ifhbox",  xfcnIf, (int)tfcnIfHbox);
+NewExpandable("ifvbox",  xfcnIf, (int)tfcnIfVbox);
+
+NewExpandable("ifeof",   xfcnIf, (int)tfcnIfEof);
+
+NewExpandable("ifx",     xfcnIf, (int)tfcnIfx);
+NewExpandable("ifcat",   xfcnIf, (int)tfcnIfcat);
+NewExpandable("if",      xfcnIf, (int)tfcnIf);
+
+NewExpandable("ifnum",   xfcnIf, (int)tfcnIfnum);
+NewExpandable("ifodd",   xfcnIf, (int)tfcnIfodd);
+NewExpandable("ifdim",   xfcnIf, (int)tfcnIfdim);
+
+NewExpandable("ifcase",  xfcnIf, (int)tfcnIfcase);
+NewExpandable("else",    xfcnElse, 0);
+NewExpandable("or",      xfcnOr, 0);
+NewExpandable("fi",      xfcnFi, 0);
+@}
+
+
+In the case of an @{\if...@} the data field of the @{Expandable@}
+is used to hold a pointer to a function that performs the required
+test.
+
+@B@<Condition stack@>
+
+Conditions may be nested inside conditions, e.g.
+@{\ifnum\ifnum 3<4 12\fi>2 Yes\else no\fi@} should work out to @{Yes@}.
+
+There is a problem with something like @{\ifnum5<4\else no\fi@}
+because we see the @{\else@} while scanning the argument to the condition.
+
+The expansion for @{\else@} has to insert a @{\relax@} to terminate the
+tested expression. To faciliate this we have a condition stack.
+
+@$@<Condition Stack@>+=@{@-
+
+enum IfState {IF_SCAN_COND, IF_SCAN_FI};
+
+struct ConditionEntry {
+
+};
+
+static std::vector<ConditionEntry> s_condstack(10);
+
+@}
+
+
+
+@B@<Token related conditionals@>
+
+
+@$@<Interpretter forward declarations@>+=@{@-
+bool tfcnIf();
+bool tfcnIfx();
+bool tfcnIfcat();
+@}
+
+
+The tests for @{\if@}, and @{\ifcat@} require the following auxiliary
+function.
+
+@$@<Condition test functions@>+=@{@-
+void GetCodes(TokenType& cc, TeXChar& tc)
+{
+   TeXToken& tok = CurTok();
+   if (tok.Type() != TT_SYMBOL && tok.Type() != TT_ACTIVE){
+      cc = tok.Type(); //GetCatcode(tok.ChrCode());
+      tc = tok.ChrCode();
+      return;
+   }
+   if (tok.Type() == TT_SYMBOL || tok.Type() == TT_ACTIVE){
+      // need to check whther \let to a character token
+      if (CurCmdCode() == CMD_LET_TOK){
+         Primitive* prim = dynamic_cast<Primitive*>(CurData());
+         TeXToken* pTok = (TeXToken*) prim -> Data();
+         tc = pTok -> ChrCode();
+         cc = pTok -> Type(); //GetCatcode(tc);
+      } else {
+         cc = (TokenType)16;
+         tc = 256;
+      }
+   } else {
+      LOG("\nERROR: unimplemented test of active char defs");
+      ASSERT(false);
+   }
+}
+@}
+
+
+@$@<Condition test functions@>+=@{@-
+bool tfcnIf()
+{
+   TeXToken tok1, tok2;
+   TokenType cc1, cc2;
+   TeXChar tc1, tc2;
+
+   GetToken();
+   GetCodes(cc1, tc1);
+
+   GetToken();
+   GetCodes(cc2, tc2);
+
+   return tc1 == tc2;
+}
+@}
+
+
+
+@$@<Condition test functions@>+=@{@-
+bool tfcnIfcat()
+{
+   TeXToken tok1, tok2;
+   TokenType cc1, cc2;
+   TeXChar tc1, tc2;
+
+   GetRawToken();
+   GetCodes(cc1, tc1);
+
+   GetRawToken();
+   GetCodes(cc2, tc2);
+
+   return cc1 == cc2;
+}
+@}
+
+@$@<Condition test functions@>+=@{@-
+bool tfcnIfx()
+{
+   TeXToken tok1, tok2;
+   const SymbolData* pData1 = 0;
+   const SymbolData* pData2 = 0;
+
+   TokenType cc1, cc2;
+   TeXChar tc1, tc2;
+   const MacroDef* pMacDef1 = 0;
+   const MacroDef* pMacDef2 = 0;
+
+   GetRawToken();
+   tok1 = CurTok();
+   DetermineCommandCode();
+   pData1 = CurData();
+   GetCodes(cc1, tc1);
+   if (cc1 == 16){
+      pMacDef1 = dynamic_cast<const MacroDef*>(CurData());
+   }
+
+   GetRawToken();
+   tok2 = CurTok();
+   DetermineCommandCode();
+   pData2 = CurData();
+   GetCodes(cc2, tc2);
+   if (cc2 == 16){
+      pMacDef2 = dynamic_cast<const MacroDef*>(CurData());
+   }
+
+   if (pMacDef1 != 0 && pMacDef2 != 0){
+      // Both macros -- compare defs
+      return (pMacDef1 -> Toks() == pMacDef2 -> Toks());
+   } else if (pMacDef1 == 0 && pMacDef2 == 0){
+      // Neither macro
+      const Primitive* pPrim1 = dynamic_cast<const Primitive*>(pData1);
+      const Primitive* pPrim2 = dynamic_cast<const Primitive*>(pData2);
+      if (pPrim1 != 0 && pPrim2 != 0){
+         if (pPrim1 -> curcmd() != pPrim2 -> curcmd()){
+            return false;
+         }
+         if (  pPrim1 -> curcmd() == CMD_CHAR_GIVEN ){
+            return (pPrim1 -> Data() == pPrim2 -> Data());
+         } else if (pPrim1 -> curcmd() == CMD_LET_TOK){
+            return ((tc1 == tc2) && (cc1 == cc2));
+         } else {
+            LOG("\nWARNING -- may be other cases");
+            return true;
+         }
+      } else if (pPrim1 == 0 && pPrim2 == 0) {
+         return (tc1 == tc2);
+      } else
+         return false;
+   } else {
+      return false;
+   }
+}
+@}
+
+
+
+@B@<Integer conditionals@>
+
+@$@<Interpretter forward declarations@>+=@{@-
+bool tfcnIfnum();
+bool tfcnIfdim();
+bool tfcnIfodd();
+bool tfcnIfcase();
+@}
+
+
+@$@<Declare InitConditionalSymbols@>==@{@-
+void InitConditionalSymbols();
+@}
+@$@<Implement InitConditionalSymbols@>+=@{@-
+void InitConditionalSymbols()
+{
+   @<Conditional symbols@>
+}
+@}
+
+
+
+
+
+@$@<Condition test functions@>+=@{@-
+
+TeXToken equal  (TT_OTHER, '=', 0);
+TeXToken greater(TT_OTHER, '>', 0);
+TeXToken less   (TT_OTHER, '<', 0);
+
+enum Test { TEST_EQ, TEST_LESS, TEST_GREATER};
+
+bool tfcnIfnum()
+{
+   int m,n;
+   Test test;
+   ScanInt(&m);
+   GetNext_NonBlank_NonCall();
+   if (CurTok() == equal){
+      test = TEST_EQ;
+   } else if (CurTok() == greater){
+      test = TEST_GREATER;
+   } else if (CurTok() == less){
+      test = TEST_LESS;
+   } else {
+      test = TEST_EQ;
+      ASSERT(false);
+   }
+
+   ScanInt(&n);
+   bool b = false;
+   if (test == TEST_EQ){
+     b = (m == n);
+   } else if (test == TEST_LESS){
+     b = (m < n);
+   } else if (test == TEST_GREATER){
+     b = (m > n);
+   }
+   LOG("\n--ifnum " << m);
+   if (test == TEST_EQ){
+     LOG(" = ");
+   } else if (test == TEST_LESS){
+     LOG(" < ");
+   } else if (test == TEST_GREATER){
+     LOG(" > ");
+   }
+   LOG(n);
+   if (b){
+     LOG(" is true");
+   } else {
+     LOG(" is false");
+   }
+
+   return b;
+}
+@}
+
+
+
+@$@<Condition test functions@>+=@{@-
+bool tfcnIfdim()
+{
+   int m,n;
+   Test test;
+   ScanDim(false, false, false, &m);
+   GetNext_NonBlank_NonCall();
+   if (CurTok() == equal){
+      test = TEST_EQ;
+   } else if (CurTok() == greater){
+      test = TEST_GREATER;
+   } else if (CurTok() == less){
+      test = TEST_LESS;
+   } else {
+      test = TEST_EQ;
+      ASSERT(false);
+   }
+
+   ScanDim(false, false, false, &n);
+   bool b = false;
+   if (test == TEST_EQ){
+     b = (m == n);
+   } else if (test == TEST_LESS){
+     b = (m < n);
+   } else if (test == TEST_GREATER){
+     b = (m > n);
+   }
+   LOG("\n--ifnum " << m);
+   if (test == TEST_EQ){
+     LOG(" = ");
+   } else if (test == TEST_LESS){
+     LOG(" < ");
+   } else if (test == TEST_GREATER){
+     LOG(" > ");
+   }
+   LOG(n);
+   if (b){
+     LOG(" is true");
+   } else {
+     LOG(" is false");
+   }
+
+   return b;
+}
+@}
+
+
+@$@<Condition test functions@>+=@{@-
+bool tfcnIfodd()
+{
+   int m;
+   ScanInt(&m);
+   return ((m % 2) == 1);
+}
+@}
+
+@$@<Condition test functions@>+=@{@-
+bool tfcnIfcase()
+{
+   int m;
+   ScanInt(&m);
+   LOG("\nERROR -- unimplemented \\ifcase");
+   return true;
+}
+@}
+
+
+
+
+@$@<Some defines for conditionals@>+=@{@-
+typedef bool (*TESTFUNCT)(void);
+@}
+
+@$@<Conditional expansion functions@>+=@{@-
+
+void PassText();
+
+@}
+
+Here are a couple simple condition test functions.
+
+@$@<Condition test functions@>+=@{@-
+bool tfcnIfTrue()
+{
+   return true;
+}
+
+bool tfcnIfFalse()
+{
+   return false;
+}
+@}
+
+
+@$@<Conditional expansion functions@>+=@{@-
+bool xfcnElse(int /* ignored */, TeXToken*, SymbolData**)
+{
+   PassText();
+   return false;
+}
+@}
+
+
+@$@<Conditional expansion functions@>+=@{@-
+bool xfcnOr(int /* ignored */, TeXToken*, SymbolData**)
+{
+   PassText();
+   return false;
+}
+@}
+
+
+@$@<Conditional expansion functions@>+=@{@-
+bool xfcnFi(int /* ignored */, TeXToken*, SymbolData**)
+{
+   return false;
+}
+@}
+
+@$@<Conditional expansion functions@>+=@{@-
+
+bool xfcnIf(int testfcnaddr, TeXToken*, SymbolData**)
+{
+   TESTFUNCT bTest = (TESTFUNCT) testfcnaddr;
+   if (bTest()){
+      LOG("\nCondition is true");
+      // Take true branch
+   } else {
+      // Take false branch
+      LOG("\nCondition is false");
+      PassText();
+   }
+   return false;
+}
+@}
+
+
+@$@<PassText@>==@{@-
+void PassText()
+{
+   int level = 0;
+   while (true) {
+      GetRawToken();
+      if (TT_SYMBOL == CurTok().Type()){
+         SymbolData* pDef = 0;
+         Symbols::GetDef(CurTok().Symbol(), &pDef);
+         const Expandable* exp = dynamic_cast<const Expandable*>(pDef);
+         if (exp != 0){
+            EXPFUNC fcn = exp -> m_fcnExpand;
+            if (fcn == xfcnElse || fcn == xfcnFi){
+               if (level == 0)
+                  break;
+               if (fcn == xfcnFi)
+                  --level;
+            } else if (fcn == xfcnIf){
+               ++level;
+            }
+         }
+      }
+   }
+}
+@}
+
+
+@B@<Mode testing conditionals@>
+
+@$@<Interpretter forward declarations@>+=@{@-
+bool tfcnIfVmode();
+bool tfcnIfHmode();
+bool tfcnIfMmode();
+bool tfcnIfInner();
+@}
+
+
+@$@<Condition test functions@>+=@{@-
+bool tfcnIfVmode()
+{
+   return (Typesetter::GetMode() == MODE_VERTICAL);
+}
+
+
+bool tfcnIfHmode()
+{
+   return (Typesetter::GetMode() == MODE_HORIZONTAL);
+}
+
+bool tfcnIfMmode()
+{
+   return (Typesetter::GetMode() == MODE_MATH);
+}
+bool tfcnIfInner()
+{
+   return (Typesetter::GetInner());
+}
+
+@}
+
+
+@B@<ifeof@>
+
+@$@<Interpretter forward declarations@>+=@{@-
+bool tfcnIfEof();
+@}
+
+@$@<Condition test functions@>+=@{@-
+bool tfcnIfEof()
+{
+   int m;
+   ScanInt(&m);
+
+   if (Global::g_readFile[m] == 0)
+     return true;
+   return (Global::g_readFile[m] -> bEOS());
+}
+@}
+
+
+
+
+
+
+@B@<Box testing conditionals@>
+
+@$@<Interpretter forward declarations@>+=@{@-
+bool tfcnIfVoid();
+bool tfcnIfHbox();
+bool tfcnIfVbox();
+@}
+
+
+@$@<Condition test functions@>+=@{@-
+bool tfcnIfVoid()
+{
+   int m;
+   ScanInt(&m);
+   LOG("\n---- ERROR: Unimplemented \\ifvoid");
+   return false;
+}
+
+bool tfcnIfHbox()
+{
+   int m;
+   ScanInt(&m);
+   LOG("\n---- ERROR: Unimplemented \\ifhbox");
+   return false;
+}
+
+
+bool tfcnIfVbox()
+{
+   int m;
+   ScanInt(&m);
+   LOG("\n---- ERROR: Unimplemented \\ifvbox");
+   return false;
+}
+
+@}
+
+
+
+
+@o@<conditionals.h@>==@{@-
+#ifndef CONDITIONALS_H
+#define CONDITIONALS_H
+@<Declare InitConditionalSymbols@>
+#endif
+@}
+
+@o@<conditionals.cpp@>==@{@-
+#include "conditionals.h"
+#include "macros.h"
+#include "symbols.h"
+#include "tokens.h"
+#include "scanutils.h"
+#include "typesetter.h"
+@<Condition Stack@>
+@<Some defines for conditionals@>
+@<Condition test functions@>
+@<Conditional expansion functions@>
+@<PassText@>
+@<Implement InitConditionalSymbols@>
+
+@}
+
+

@@ -1,0 +1,384 @@
+
+
+@! Generate the frontmatter
+
+@!-------------------------------------------------
+@! TITLE PAGE AND TABLE OF CONTENTS
+@!-------------------------------------------------
+@t vskip 40 mm
+@t title titlefont centre "TeX 2003"
+@t vskip 10 mm
+@t title smalltitlefont centre "Jon Stenerson"
+@t title smalltitlefont centre "27 Aug 2003"
+@t vskip 20 mm
+@t table_of_contents
+
+
+@A@<Introduction@>
+
+
+@B@<The Big Picture@>
+
+This is a re-implementation of TeX. \TeX82 was written in the years
+prior to 1982 and was more or less frozen at that time. It has been
+21 years without major revision.
+
+The goal is to create a cleaner, more modular implementation and
+package it in a library. The main extension I have in mind is that
+this implementation serve as the core of a general \TeX{} input
+filter for future Scientific Workplace releases.  Other extensions might
+include things like a \TeX{} debugger, unicode and national character
+set support, direct support for LaTeX3 if it is ever released. One of
+the weak areas of \TeX{} is page layout. There is room to add features
+there.
+
+@B@<Outline of TeX@>
+
+\TeX{} is a general programming language. A @{.tex@} file is a program
+written in \TeX. The first to relaize is that \TeX{} is an interpretted
+language and not compiled. \TeX{} reads a command and executes it,
+reads a command and executes it, and so on. \TeX{} commands may be
+conveniently divided into two groups: elementary, and expandable.
+We think of \TeX{} as a language of `elementary commands'
+embedded in a macro language.
+The purpose of most elementary \TeX{} commands is to drive the
+\TeX{} typesetting engine. The most common elementary commands are
+letters and spaces. It your @{.tex@} file contains the characters
+@{It was the best of times@} these characters are interpretted as
+commands: letter I, letter t, space, letter w, and so on. There are
+many more elementary commands and many of them have complex arguments.
+For example, @{\hbox to 3pt{...}@} is an elementary command
+that causes the typestter to create an @{hbox@} of a certain size
+and content.
+
+The elementary commands do not have the usual programming language
+control structures however. There are no conditionals, no loops,
+no subroutines. These are implemented rather in the macro language.
+The macro language contains conditionals like @{\if@}, @{\ifhmode@},
+and the like. It contains commmands like @{\csname@} and @{\string@}
+to compose and decompose control sequences. The commands of the macro
+language are called ``expandable''. New expandable commands are
+created with the elementary command @{\def@}. The elementary command parser
+does not see expandable commands. Whenever the parser expects a certain
+kind of token and an expandable command appears instead, the expandable
+command is removed and replaced by its ``expansion' before the parser
+sees it.  For example, consider @{\hbox t\ifnum1<2o 3p\fi t{...}@}.
+\TeX{} sees @{\hbox@}, recognizes the start of a command and begins parsing
+for parameters. It sees a `t' and knows this could be part of a parameter.
+So it looks at the next token. The next token the parser sees is not
+@{\ifnum@} as you might suppose. Instead the @{\ifnum@} construct
+expands to @{o 3p@} because the condition @{1<2@} is true. So the next
+token the parser sees is `o', follwed by `3', `p' and so on.
+
+According to this discussion \TeX{} has two main pieces:
+(1) a typesetting engine, (2) an interpretter.
+
+The @{User Interface@} is the top-level subsystem. It provides a
+console that is used to observe and control the rest of the system.
+Although I have no immediate plans to implement much here it could
+eventually allow you to do the usual debugging things: set breakpoints,
+single step the code, and look at values of variables. The next level is
+the @{Command Interpretter@}. This takes a stream of tokens from the
+@{Macro Processor@} and parses them into commands and then executes
+the commands. Most of the commands will be addressed to the
+@{Typesetter@} subsystem and to the @{Macro Processor@} subsystem. The
+@{Typesetter@} produces a @{.dvi@} output file that can be easily
+converted to PostScript or some other printer language. In addition
+there is a @{Platform@} subsystem that provides basic definitons that
+may have to change with the platform.
+
+The first work product we'll make is a source distribution. This is
+becuase I want to distribute it to my Windows system for building and
+testing. So here is the question: given that we have a bunch of
+@{.fw@} files and perhaps some others, how do we get them to another
+computer, and build \TeX there? Here's my plan. There will be a file
+of build and distribution commands written in Python. This will be
+part of the distribution. The Python script can determine which system
+we're building on and set things up appropriately.
+
+The binary distributions go to the end user. Ultimately I want to
+provide distributions to the end user. There will be a binary
+distribution and a source distribution.  should consist of a single
+archive file (and perhaps a second file containing download
+instructions) for easy downloading. The archive can be unpacked into a
+directory and some instructions followed to obtain a running system,
+or a compilable system as the case may be.
+
+
+@B@<Development Processes and Tools@>
+
+There is more to software develpment than writing code. You need
+documentation, tests, a backup strategy, and a distribution scheme
+(and this doesn't include the marketing, sales, and management
+issues). There are several tools involved. Some things that are
+absolutely essential in my opinion are (1) having an automated daily
+build, (2) having an automated testing system, and (3) having a source
+control system. I also decided that I would regularly build and test
+on Windows.
+
+@B@<Literate programming: Funnelweb@>
+
+I've never done literate programming so I decided I would try it. I
+found that @{WEB@} and @{CWEB@} were not to my liking. It seemed
+difficult to generate makefiles and data files using them. It seemed a
+bit too Pascal/C-oriented. This program is written in FunnelWeb.
+
+
+Funnelweb is a literate programming tool avaiable freely on the Web
+at @{http://www.ross.net/funnelweb@}
+
+Literate programming basically means that a program and its
+documentation are written together. The \TeX{} program is written as a
+bunch of files. The funnelweb processor reads the source files and
+produces (1) C++ source, and (2) \TeX{} documentation.  You are now
+reading the \TeX{} documentation that resulted from running funnelweb on
+the source files.
+
+@! ...unless you see this comment in which case you're reading the
+@! funnelweb source.
+
+How to read documentation produced by funnelweb. This book is
+basically explanatory prose with scraps of code and data
+interspersed. The scraps are named and numbered.
+
+Here's our first scrap.
+
+@$@<Program name@>==@{TeX@}
+
+It defines a macro called {\it Program name}. The number of the scrap
+is contained in square brackets after the macro name like this`[1]'.
+Whenever this macro is used in the rest of this book it will be
+replaced by the text @{TeX@}. It says at the bottom that this macro
+is invoked in definition 3. If you look ahead to scrap 3 you'll see that
+this is so. Here is another similar scrap
+
+@$@<Program version@>==@{0.0@}
+
+How do we finally make use of these scraps to generate source code?
+Here's a simple C++ header file that uses the macros defined above.
+
+@o@<version.h@>==@{@-
+#ifndef VERSION_H
+#define VERSION_H
+const char* PROGRAM_NAME = "@<Program name@>";
+const char* PROGRAM_VERSION = "@<Program version@>";
+#endif
+@}
+
+A scrap with bold name describes a file to be generated. It also
+says at the bottom that it is attached to an output file. This means
+that there is a generated file called @{version.h@} and it contains
+the text
+
+\beginlines|
+#ifndef VERSION_H
+#define VERSION_H
+const char* PROGRAM_NAME = "Tex";
+const char* PROGRAM_VERSION = "0.0";
+#endif
+|\endlines
+
+where macro definitions [1] and [2] have been substituted.
+
+Need examples of  +=
+
+
+
+@B@<Development platforms@>
+
+I considered the development platform. On the one hand our products are
+developed for windows only. So I have to develop a Windows version. On
+the other hand I've done most of my previous development on Windows and
+I wanted a change. So I've decided to try and develop on Linux but
+constantly port to Windows.
+
+Here is a funnelweb macro intended to help with portability issues.
+This macro takes two arguments, the first should contain Linux
+particulars and the second should be windows particulars. In this
+version of the book the macro is defined to always select the second
+argument.
+
+@i which.fw
+
+For example, line ends are different in the two target systems:
+
+@$@<LineEnd@>==@{@<Platform@>@(10@,13 10@)@}
+
+The {\bf M} at the end of the {\it Platform} macro says that this macro
+may be used multiple times. Without the {\bf M} a macro may be used
+exactly once.
+
+
+I needed a scripting language so that I could write build and install
+scripts, and testing scripts. I could not use bash (a typical Linux
+shell language) because that would not port to Windows. In fact Windows
+has no shell language to speak of so I decided to use Perl which we
+already use in our development processes.
+
+Make is somewhat portable if you stick to the basic features.
+
+@B@<Program Structure@>
+
+\TeX{} is a medium sized program. I believe that for this sort of
+program the best way to do the overall design and implementation is in
+terms of {\it components}.  In this terminology a component is simply
+a pair of files: a @{.h@} header file and a @{.cpp@} implementation
+file. (See Lakos). A good component provides enough functionality that
+it makes sense to implement and test it independently.
+
+So we look for a chunk of functionality that we want to call a
+component. The most obvious is the command interpretter. This is an
+object that parses a stream of tokens into commands and parameters,
+and then executes the command.
+
+Here is a list of components in the final program:
+...
+
+This DAG also constrains our order of implementation. You might want to
+implement the bottom level of the DAG first, and then the next level
+and so on, but I think it's better to work your way toward the top of
+the DAG quickly even if it means leaving parts of the top
+unimplemented. So we start with @{platform@}, then @{textio@}, then
+@{symbols@}, then @{tokens@}, @{macrop@}, and finally @{main@}. Now,
+main needs a lot more than the listed predecessors but it feels better
+to have a program that does something at all times.
+
+It is also not necesary to completely implement a component before
+going on to the next. Just make sure to write code to test whatever
+you implement as you go. See the next section.
+
+@B@<Testing and debugging strategy@>
+
+The quicker you find a bug, the quicker you can fix it and move on to
+new features and functionality. You can't just write code and release
+it. I've tried that approach and it works poorly.
+
+Debugging vs. Testing. These are basically inseparable processes. The
+steps are are roughly: 1) Detect and describe defect, 2) Determine
+cause, 3) Fix.  For my purposes debugging means building a special form
+of the program that contains information that can be used by a debugger,
+and using those to track down the cause of a bug. Testing is the way
+you find bugs in the first place. The goal is to do a lot of testing
+and not so much debugging.
+
+There are several kinds of tests. No single kind of test is adequate.
+
+@B@<Stepping through in a debugger@>
+
+@B@<Assertions@>
+
+@B@<Execution logs@>
+
+@B@<Unit tests@>
+
+Associated to each component is a unit test. I decided that for each
+component I would generate a test jig with the same name but for a
+@{.t@} appended to the end. Thus the component @{macrop@} has a test
+program called @{macrop.t@} whose job is to test the functionality of
+@{macrop@}.
+
+While building unit tests we'll also create component test
+utilities. These are procedures to aid in writing tests for this and
+dependent components, but are not used in the program itself. For
+instance, we will want a function called, say,
+@{OpenInputFile(@}filename@{)@} that causes the next input to come
+from that file. So it behaves kind of like the \TeX{} @{\input@}
+command. However, for testing purposes we can't wait until the
+@{\input@} command is implemented to start inputting files. Thus we
+place a utility @{OpenInputFile@} in a file where tests can use
+it. The utility can make many simplifying assumptions. That the file
+exists, is readable, has a known encoding, and so on. The actual
+@{\input@} command has to do a lot more work.
+
+@B@<Component tests@>
+
+Each component has a test jig program to exercise it. The program consists
+of a main program and a collection of test functions prototyped as follows
+
+@$@<Test function prototype@>==@{@-
+typedef bool (*TESTFCN)(void);
+@}
+
+In other words, a test function takes no parameters and returns a
+boolean. True if the test passes, and false if it fails.
+
+The functions are associated to external names using a table declared
+as follows. Note the {\bf M} used at the end of the macro. This means
+it can be used more than once in the document.  I plan to use this
+macro in every module.
+
+@$@<TestTable declaration@>@M==@{@-
+struct NameFcn {
+    const char* name;
+    TESTFCN fcn;
+};
+@}
+
+The test jig main program follows. It checks the command line
+arguments and runs the appropriate test. You can also use the
+parameters @{all@} to run all the test functions and @{list@} to get a
+list of all the test names.If the test or tests all check out the
+program prints OK and stops. Otherwise it reports which test failed.
+
+@$@<Test jig@>@(@2@)@M==@{@-
+
+@<Test function prototype@>
+@<TestTable declaration@>
+
+// Test functions
+@1
+
+static NameFcn TestTable[] = {
+    @2
+    {0, 0}
+};
+
+
+int main (int argc, char* argv[], char* env[])
+{
+    bool b = true;
+    std::string arg = argv[1];
+    int tableIndex = 0;
+    if (arg == "list"){
+        while ( 0 != TestTable[tableIndex].name ){
+            std::cout << TestTable[tableIndex].name << "\n";
+            ++tableIndex;
+        }
+    }else if (arg == "all"){
+        while ( 0 != TestTable[tableIndex].name ){
+            TESTFCN func = TestTable[tableIndex].fcn;
+            b &= func();
+            ++tableIndex;
+        }
+        if (b) {
+            std::cout << "\nOK\n\n";
+        }
+    }else{
+       const char* testname = TestTable[tableIndex].name;
+       while ( (0 != testname) && (0 != strcmp(testname,argv[1])) ){
+          ++tableIndex;
+          testname = TestTable[tableIndex].name;
+       }
+
+       if (testname != 0){
+          TESTFCN func = TestTable[tableIndex].fcn;
+          b = func();
+       }
+
+       if (b) {
+          std::cout << "\nOK\n\n";
+       }
+    }
+
+    return 0;
+}
+@}
+
+
+@B@<Black box tests@>
+
+The @{trip@} test.
+
+@B@<Beta testing@>
+...
+

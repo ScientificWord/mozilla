@@ -1,0 +1,243 @@
+
+
+
+@B@<Dimension parameter assignment@>
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_ASSIGN_DIM,
+@}
+
+
+Each dimension parameter is associated with a memory location that
+holds a dimension.
+
+@$@<Declare MakeDimenParam@>==@{@-
+void MakeDimParam(const char* name, Scaled* addr)
+{
+   Primitive* pc = new Primitive(CMD_ASSIGN_DIM, true, (int)addr);
+   Symbols::CreateSymbol(name, pc);
+}
+@}
+
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+MakeDimParam("hfuzz",              &Global::hfuzz);
+MakeDimParam("vfuzz",              &Global::vfuzz);
+MakeDimParam("boxmaxdepth",        &Global::boxmaxdepth);
+MakeDimParam("splitmaxdepth",      &Global::splitmaxdepth);
+MakeDimParam("delimitershortfall", &Global::delimitershortfall);
+MakeDimParam("nulldelimiterspace", &Global::nulldelimiterspace);
+MakeDimParam("scriptspace",        &Global::scriptspace);
+MakeDimParam("parindent",          &Global::parindent);
+MakeDimParam("overfullrule",       &Global::overfullrule);
+MakeDimParam("emergencystretch",   &Global::emergencystretch);
+MakeDimParam("hsize",              &Global::hsize);
+MakeDimParam("vsize",              &Global::vsize);
+MakeDimParam("maxdepth",           &Global::maxdepth);
+MakeDimParam("lineskiplimit",      &Global::lineskiplimit);
+MakeDimParam("mathsurround",       &Global::mathsurround);
+MakeDimParam("predisplaysize",     &Global::predisplaysize);
+MakeDimParam("displaywidth",       &Global::displaywidth);
+MakeDimParam("displayindent",      &Global::displayindent);
+MakeDimParam("hangindent",         &Global::hangindent);
+MakeDimParam("hoffset",            &Global::hoffset);
+MakeDimParam("voffset",            &Global::voffset);
+MakeDimParam("lastkern",           &Global::lastkern);
+MakeDimParam("prevdepth",          &Global::prevdepth);
+
+MakeDimParam("pagegoal",           &Global::pagegoal);
+MakeDimParam("pagetotal",          &Global::pagetotal);
+MakeDimParam("pagestretch",        &Global::pagestretch);
+MakeDimParam("pagefilstretch",     &Global::pagefilstretch);
+MakeDimParam("pagefillstretch",    &Global::pagefillstretch);
+MakeDimParam("pagefilllstretch",   &Global::pagefilllstretch);
+MakeDimParam("pageshrink",         &Global::pageshrink);
+MakeDimParam("pagedepth",          &Global::pagedepth);
+
+
+@}
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_ASSIGN_DIM: {
+   DoAssignment(0);
+   break;
+};
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_ASSIGN_DIM:{
+   TokenList* pList = new TokenList;
+   pList -> push_back(CurTok());
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   int* loc = (int*) prim -> Data();
+   TeXToken defining = CurTok();
+   int n;
+   ScanOptionalEquals(pList);
+   ScanDim(false, false, false, &n, pList);
+   LOG("\n----Set " << defining << " = "
+                    << n << "  ((" << *pList << "))");
+   SaveRestoration(new IntRestoration(loc, "a dimension"), bGlobal);
+   *loc = n;
+   break;
+};
+@}
+
+
+@$@<ScanSomethingInternal cases@>+=@{@-
+case CMD_ASSIGN_DIM:{
+   res.m_type = SCAN_DIMEN;
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   res.m_int = * (int*) prim -> Data();
+   break;
+}
+@}
+
+
+
+
+
+
+
+@B@<Dimension register assignment@>
+
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_DIMEN,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("dimen", CMD_DIMEN, true, NULL);
+@}
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_DIMEN: {
+   DoAssignment(0);
+   break;
+}
+@}
+
+
+@$@<Assignments@>+=@{@-
+case CMD_DIMEN: {
+   int n;
+   int dim;
+   ScanInt(&n);
+   ScanOptionalEquals();
+   ScanDim(false, false, false, &dim);
+   LOG("\n----Set \\dimen" << n << " = " << dim);
+   int* loc = &Global::DimenReg[n];
+   SaveRestoration(new IntRestoration(loc, "a dimension"), bGlobal);
+   *loc = n;
+   break;
+}
+@}
+
+
+
+@B@<Dimension shorthand@>
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_DIMENDEF,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("dimendef", CMD_DIMENDEF);
+@}
+
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_DIMENDEF:{
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_DIMENDEF:{
+   TeXToken defining;
+   int n;
+   ScanShorthand(&defining, &n);
+   void* addr = &Global::DimenReg[n];
+   Primitive* cmd = new Primitive(CMD_ASSIGN_DIM, true, (int)addr);
+   Symbols::SetDef(defining.Symbol(), cmd, false /*non-global*/);
+   LOG("\n----Set " << defining << " = shorthand for \\dimen" << n);
+   break;
+}
+@}
+
+
+@$@<ScanSomethingInternal cases@>+=@{@-
+case CMD_DIMEN: {
+   int m;
+   if (ScanInt(&m, pList)){
+      res.m_type = SCAN_DIMEN;
+      res.m_int =  Global::DimenReg[m];
+   }
+   break;
+}
+@}
+
+
+@B@<Font dimensions@>
+
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_ASSIGN_FONTDIMEN,
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("fontdimen", CMD_ASSIGN_FONTDIMEN);
+@}
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_ASSIGN_FONTDIMEN: {
+   DoAssignment(0);
+   break;
+};
+@}
+
+
+@$@<Assignments@>+=@{@-
+case CMD_ASSIGN_FONTDIMEN:{
+   int n;
+   ScanInt(&n);
+   GetToken();
+   // Should be a font identifier ...
+   LOG("\nERROR -- unimplemented fontdimen");
+   break;
+};
+@}
+
+
+@$@<ScanSomethingInternal cases@>+=@{@-
+case CMD_ASSIGN_FONTDIMEN:{
+   int n;
+   ScanInt(&n, pList);
+   GetToken();
+   // Should be a font identifier ...
+   if (pList)
+     pList -> push_back(CurTok());
+
+   LOG("\nERROR -- unimplemented fontdimen");
+
+   res.m_type = SCAN_DIMEN;
+   //Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   //res.m_int = * (int*) prim -> Data();
+   break;
+}
+@}
+
+
+
+
+
+
+

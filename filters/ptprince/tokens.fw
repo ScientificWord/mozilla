@@ -1,0 +1,986 @@
+
+@A@<The Token subsystem@>
+
+@B@<Introduction@>
+
+The token subsystem manages the stream of tokens that the
+@{MacroProcessor@} sybsystem sees. It maintains a stack of
+@{TokenSource@}'s. @{TokenSource@} is an abstract class that
+represents a place that @{TeXToken@}s come from. These are (1)
+character streams, such as a file, that need to be tokenized, (2)
+@{tokenlist@}s that were backed up say during a macro expansion.
+
+
+
+@B@<Token Sources@>
+
+@{TokenSource@} is can abstract class. It is a place that we can get
+tokens from. The main concrete derived classes
+are @{FileTokenizer@} which tokenizes a file, and @{TokenList@} which
+represents a saved list of tokens.
+
+@$@<class TokenSource@>==@{@-
+class TokenSource {
+public:
+   virtual ~TokenSource();
+   virtual bool bEmpty() const = 0;
+   virtual void GetToken(TeXToken*) = 0;
+};
+@}
+
+
+@$@<TokenSource implementation@>==@{@-
+TokenSource::~TokenSource()
+{
+}
+@}
+
+
+
+
+@$@<class TokenListTokenSource@>==@{@-
+class TokenListTokenSource : public TokenSource {
+private:
+   TokenList& m_list;
+   TokenList::const_iterator m_iter;
+public:
+   TokenListTokenSource(TokenList& pList);
+   ~TokenListTokenSource();
+   bool bEmpty() const;
+   void GetToken(TeXToken*);
+private:
+   // Unimplemented
+   TokenListTokenSource(const TokenListTokenSource&);
+   TokenListTokenSource& operator=(const TokenListTokenSource&);
+
+};
+@}
+
+
+@$@<TokenListTokenSource imp@>==@{@-
+
+TokenListTokenSource::TokenListTokenSource(TokenList& lis)
+   : m_list(lis),
+     m_iter(lis.begin())
+{
+
+}
+
+TokenListTokenSource::~TokenListTokenSource()
+{
+   m_list.RemoveReference();
+}
+
+bool TokenListTokenSource::bEmpty() const
+{
+   return m_iter == m_list.end();
+}
+
+void TokenListTokenSource::GetToken(TeXToken* tt)
+{
+   *tt = *m_iter;
+   ++m_iter;
+}
+@}
+
+
+
+
+@B@<Tokenizer@>
+
+A @{Tokenizer@} is constructed with a @{LineSource@}. The @{LineSource@}
+provides buffered input.
+
+
+It must handle the @{^^@} convention, replacing them with the correct
+characters while tokenizing.
+
+Handle Omega Tranlation Processes.
+
+
+@$@<class Tokenizer@>==@{@-
+class TokenizerImp;
+
+class Tokenizer : public TokenSource {
+private:
+   TokenizerImp* m_tokenizerImp;
+   TokenList*    m_pTap;
+public:
+   Tokenizer(LineSource* pLineSource);
+   ~Tokenizer();
+   bool bEmpty() const;
+   void GetToken(TeXToken*);
+   void StartTap(TokenList*);
+   void StopTap();
+};
+@}
+
+
+
+Should alignstate be part of the macroprocessor? I think so.
+There should be an overall brace level and a local brace level
+for reading lines of a file via @{\read@}, and maybe more.
+
+@$@<alignstate@>==@{static int s_alignState = 0;@}
+
+@$@<Tokenizer implementation@>+=@{@-
+Tokenizer::Tokenizer(LineSource* pLineSource)
+   : m_tokenizerImp(new TokenizerImp (pLineSource) ),
+     m_pTap(0)
+{
+}
+
+Tokenizer::~Tokenizer()
+{
+   delete m_tokenizerImp;
+   m_tokenizerImp = 0;
+}
+
+void Tokenizer::GetToken(TeXToken* tt)
+{
+   m_tokenizerImp -> GetToken(tt);
+   if (m_pTap != 0){
+      m_pTap -> push_back(*tt);
+   }
+}
+@}
+
+@$@<Tokenizer implementation@>+=@{@-
+bool Tokenizer::bEmpty() const
+{
+   return m_tokenizerImp -> bEmpty();
+}
+@}
+
+
+@$@<Tokenizer implementation@>+=@{@-
+   void Tokenizer::StartTap(TokenList* pTL)
+   {
+      ASSERT(m_pTap == 0);
+      ASSERT(pTL != 0);
+      m_pTap = pTL;
+   }
+   void Tokenizer::StopTap()
+   {
+      m_pTap = 0;
+   }
+@}
+
+
+
+@$@<class TokenizerImp@>==@{@-
+enum State {STATE_NEWLINE, STATE_MIDLINE, STATE_SKIPPING_BLANKS};
+
+
+class TokenizerImp {
+private:
+   mutable LineOfText m_line; // allow refill without const violation
+   mutable State m_state;
+   mutable LineSource* m_pLineSource; // ditto...
+public:
+   TokenizerImp(LineSource* pLineSource);
+   ~TokenizerImp();
+   bool bEmpty() const;
+   void GetToken(TeXToken*);
+   TeXChar GetNextChar();
+};
+@}
+
+
+
+@$@<TokenizerImp implementation@>+=@{@-
+TokenizerImp::TokenizerImp(LineSource* pLineSource)
+   : m_state(STATE_NEWLINE),
+     m_pLineSource(pLineSource)
+
+{
+}
+@}
+
+
+@$@<TokenizerImp implementation@>+=@{@-
+TokenizerImp::~TokenizerImp()
+{
+}
+@}
+
+
+@$@<TokenizerImp implementation@>+=@{@-
+bool TokenizerImp::bEmpty() const
+{
+   while (m_line.bEmpty()){
+     if (m_pLineSource -> bEmpty())
+        return true;
+     m_pLineSource -> GetLine(&m_line);
+   }
+   return false;
+}
+@}
+
+
+@$@<TokenizerImp::GetNextChar@>==@{@-
+TeXChar TokenizerImp::GetNextChar()
+{
+   while (true) {
+      TeXChar ch = m_line.chGet();
+      if ( GetCatcode(ch) != CC_SUPER){
+        return ch;
+      }
+      if ( (m_line.nRemaining() >= 2) && ( m_line.chPeek(0) == ch) ){
+         // Have a ^^
+         // ... check for two hex digits 0-9a-f
+         if (m_line.nRemaining() >= 3){
+            if ( bHexDigit(m_line.chPeek(1)) && bHexDigit(m_line.chPeek(2)) ){
+               m_line.chGet(); // Skip the second ^
+               unsigned int d0 = uHexToInt(m_line.chGet());
+               unsigned int d1 = uHexToInt(m_line.chGet());
+               unsigned int n = (d0 << 4) | d1;
+               TeXChar c = n;
+               m_line.Putback(c);
+               continue; // go back to top of while loop
+            }
+         }
+
+         TeXChar ch1 =  m_line.chPeek(1);
+         if (0 <= ch1 && ch1 < 128){
+             ch1 = m_line.chGet(); // Get the second ^
+             ch1 = m_line.chGet(); // Get the char
+             if (ch1 >= 64)
+                 ch1 -= 64;
+             else
+                 ch1 += 64;
+             m_line.Putback(ch1);
+             continue;
+         }
+         // if we reach this point we have ch = ^ but there
+         // is no special continuation. The character is
+         // just the ^
+         return ch;
+      } else {
+         return ch;
+      }
+   }
+}
+@}
+
+@$@<TokenizerImp implementation@>+=@{@-
+void TokenizerImp::GetToken(TeXToken* tt)
+{
+   // Clear old token
+   tt->SetType(TT_SPACE);
+   tt->SetChrCode('\0');
+   tt->SetSymbol(0);
+
+   // The body of this loop may be executed more than once
+   // if characters are ignored.
+   while (!bEmpty()) {
+      // Todo: Check if the line is empty. If so
+      // get another from the LineSource. If that
+      // is empty, ...?
+      // GetNextChar() is like  m_line.chGet() but
+      // it looks for ^^.. sequences
+      TeXChar ch = GetNextChar();
+      Catcode cat = GetCatcode(ch);
+      switch (cat) {
+         @<Tokenizer cases@>
+      }
+   }
+}
+@}
+
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_ESCAPE:{
+   tt -> SetType(TT_SYMBOL);
+   if (m_line.bEmpty()){
+      tt -> SetSymbol(Symbols::NullCS());
+   }else{
+      ch = GetNextChar();
+      cat = GetCatcode(ch);
+      if (cat == CC_LETTER){
+         StringBuilder::Append(ch);
+         m_state = STATE_SKIPPING_BLANKS;
+         // scan rest of cs
+         bool loop = true;
+         while (!m_line.bEmpty() && loop) {
+            ch = GetNextChar();
+            cat = GetCatcode(ch);
+            if (cat == CC_LETTER){
+               StringBuilder::Append(ch);
+            }else{
+               // Replace the last char
+               m_line.Putback(ch);
+               loop = false;
+            }
+         }
+      } else if (cat == CC_SPACE){
+         m_state = STATE_SKIPPING_BLANKS;
+         StringBuilder::Append(ch);
+      } else {
+         m_state = STATE_MIDLINE;
+         StringBuilder::Append(ch);
+      }
+      String str = StringBuilder::Create();
+      // lookup cs in symbols table
+      Symbols::SymId id;
+      Symbols::GetId(str, &id, Symbols::CREATE);
+      tt -> SetSymbol(id);
+      return;
+   }
+   break;
+}
+@}
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_LEFTBRACE:{
+   ++s_alignState;
+   // Is m_alignState part of this class or is it
+   // global to the input stack?
+   m_state = STATE_MIDLINE;
+   tt -> SetType( TT_LEFT_BRACE );
+   tt -> SetChrCode(ch);
+   return;
+}
+@}
+
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_RIGHTBRACE:{
+   --s_alignState;
+   m_state = STATE_MIDLINE;
+   tt -> SetType(TT_RIGHT_BRACE);
+   tt -> SetChrCode(ch);
+   return;
+}
+@}
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_MATHSHIFT:{
+   m_state = STATE_MIDLINE;
+   tt -> SetType(TT_MATH_SHIFT);
+   tt -> SetChrCode(ch);
+   return;
+}
+@}
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_ALIGNTAB:{
+   m_state = STATE_MIDLINE;
+   tt -> SetType(TT_TAB);
+   tt -> SetChrCode(ch);
+   return;
+}
+@}
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_ENDOFLINE:{
+   m_line.SkipToEnd(); // so next time we go to next line...
+   if (m_state == STATE_MIDLINE){
+      tt -> SetType(TT_SPACE);
+      tt -> SetChrCode(' '); // Unicode 0020
+      m_state = STATE_NEWLINE;
+      return;
+   }else if (m_state == STATE_NEWLINE){
+      // blank line -- should look like \par
+      tt -> SetType(TT_SYMBOL);
+      tt -> SetChrCode(0);
+      String par = StringBuilder::Create("par");
+      int id;
+      Symbols::GetId(par, &id, Symbols::NO_CREATE);
+      tt -> SetSymbol(id);
+      m_state = STATE_NEWLINE;
+      // Check outer validity...
+      return;
+   }else{
+      m_state = STATE_NEWLINE;
+   }
+   break;
+}
+@}
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_PARAM:{
+   m_state = STATE_MIDLINE;
+   tt -> SetType(TT_PARAM);
+   tt -> SetChrCode(ch);
+   return;
+}
+@}
+
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_SUPER:{
+   m_state = STATE_MIDLINE;
+   tt -> SetType(TT_SUPERSCRIPT);
+   tt -> SetChrCode(ch);
+   return;
+}
+@}
+
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_SUBS:{
+   m_state = STATE_MIDLINE;
+   tt -> SetType(TT_SUBSCRIPT);
+   tt -> SetChrCode(ch);
+   return;
+}
+@}
+
+
+In the case of an ignore code we go back to the top
+and get the next character.
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_IGNORE:{
+   break;
+}
+@}
+
+
+If we see a space and the state is not @{STATE_MIDLINE@} then
+we drop through to the top of the loop again. We ignore the
+space in that case.
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_SPACE:{
+   if (m_state == STATE_MIDLINE){
+      tt -> SetType(TT_SPACE);
+      tt -> SetChrCode(' '); // Unicode 00020 ?
+      m_state = STATE_SKIPPING_BLANKS;
+      return;
+   }
+   break;
+}
+@}
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_LETTER:{
+   m_state = STATE_MIDLINE;
+   tt -> SetType(TT_LETTER);
+   tt -> SetChrCode(ch);
+   return;
+}
+@}
+
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_OTHER:{
+   m_state = STATE_MIDLINE;
+   tt -> SetType(TT_OTHER);
+   tt -> SetChrCode(ch);
+   return;
+}
+@}
+
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_ACTIVE:{
+   // Regardless of state...
+   tt -> SetType(TT_ACTIVE);
+   tt -> SetChrCode(ch);
+   m_state = STATE_MIDLINE;
+   return;
+}
+@}
+
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_COMMENT:{
+   m_line.SkipToEnd();
+   // and try again...
+   m_state = STATE_NEWLINE;
+   break;
+}
+@}
+
+
+@$@<Tokenizer cases@>+=@{@-
+case CC_INVALID:{
+   LOG("\nInvalid character!");
+   ASSERT(false);
+   break;
+}
+@}
+
+
+@$@<Tokenizer cases@>+=@{@-
+default:
+   LOG("\nDefault case in tokenizer -- can't happen");
+   ASSERT(false);
+   break;
+@}
+
+
+
+
+
+
+
+
+@$@<function bHexDigit@>==@{@-
+bool bHexDigit(TeXChar c)
+{
+   return ( '0' <= c && c <= '9') || ( 'a' <= c && c <= 'z');
+}
+@}
+
+@$@<function uHexToInt@>==@{@-
+unsigned int uHexToInt(TeXChar c)
+{
+   if ('0' <= c && c <= '9') {
+      return c - '0';
+   } else if ( 'a' <= c && c <= 'z') {
+      return c  + 10 - 'a';
+   } else {
+      ASSERT(false);
+      return 0;
+   }
+}
+@}
+
+
+
+
+
+
+@B@<Input Stack@>
+
+
+@$@<class InputStack@>==@{@-
+
+class InputStack {
+public:
+   InputStack();
+   ~InputStack();
+   static bool bEmpty();
+   static TeXToken& CurTok();
+   static void GetRawToken();
+   static void Push(TokenSource* pSource);
+   static void Putback(TeXToken);
+   static void Putback(TokenList& tl);
+   static void EndInput();
+   static void Clean();
+   static bool StartTap(TokenList*);
+   static void StopTap();
+};
+@}
+
+
+
+@$@<function bSymbol@>==@{@-
+inline bool bSymbol(TeXToken* tt)
+{
+   return TT_SYMBOL == (tt -> Type());
+}
+@}
+
+
+@$@<function bActive@>==@{@-
+inline bool bActive(const TeXToken* tt)
+{
+   return TT_ACTIVE == (tt -> Type());
+}
+@}
+
+
+@$@<Clean Stack@>@M==@{@-
+while (!s_stack.empty() && s_stack.back() -> bEmpty()){
+   delete s_stack.back();
+   s_stack.pop_back();
+}
+@}
+
+
+@$@<InputStack implementation@>+=@{@-
+
+namespace{
+   std::vector<TokenSource*> s_stack;
+}
+@}
+
+
+
+
+@$@<InputStack implementation@>+=@{@-
+
+static TeXToken s_curtok;
+
+TeXToken& InputStack::CurTok()
+{
+   return s_curtok;
+}
+
+@}
+
+
+
+@$@<InputStack implementation@>+=@{@-
+
+InputStack::InputStack()
+{
+}
+
+InputStack::~InputStack()
+{
+}
+
+bool InputStack::bEmpty()
+{
+   return s_stack.empty();
+}
+
+void InputStack::Clean()
+{
+  @<Clean Stack@>
+}
+
+
+void InputStack::Push(TokenSource* pSource)
+{
+   LOG("\nPushing token source onto input stack.");
+   if (pSource == 0){
+     LOG("\nNULL source!");
+     ASSERT(false);
+   } else if (pSource -> bEmpty()){
+     LOG("\nIgnoring empty source");
+   } else {
+      s_stack.push_back(pSource);
+   }
+}
+
+void InputStack::GetRawToken()
+{
+   @<Clean Stack@>
+   s_stack.back() -> GetToken(&s_curtok);
+   LOG("\nInput: " << s_curtok);
+}
+@}
+
+
+
+
+@$@<InputStack implementation@>+=@{@-
+
+void InputStack::Putback(TeXToken tt)
+{
+   LOG("\nPutback: " << tt);
+   TokenList* tl = new TokenList;
+   tl -> push_back(tt);
+   tl -> AddReference();
+
+   TokenListTokenSource* ts = new TokenListTokenSource(*tl);
+   s_stack.push_back(ts);
+}
+@}
+
+
+
+
+@$@<InputStack implementation@>+=@{@-
+void InputStack::Putback(TokenList& tl)
+{
+   if (tl.size() > 0){
+      Push(new TokenListTokenSource( tl ));
+   }
+}
+@}
+
+
+@$@<InputStack implementation@>+=@{@-
+void InputStack::EndInput()
+{
+  while(true){
+   TokenSource* pTS = s_stack.back();
+   s_stack.pop_back();
+   Tokenizer* pT = dynamic_cast<Tokenizer*>(pTS);
+   if (pT != 0){
+      break;
+   }
+  }
+}
+@}
+
+
+@$@<InputStack implementation@>+=@{@-
+bool InputStack::StartTap(TokenList* pTL)
+{
+   TokenSource* pTS = s_stack.back();
+   Tokenizer* pT = dynamic_cast<Tokenizer*>(pTS);
+   if (pT == 0){
+      return false;
+   } else {
+      pT -> StartTap(pTL);
+      return true;
+   }
+}
+void InputStack::StopTap()
+{
+   TokenSource* pTS = s_stack.back();
+   Tokenizer* pT = dynamic_cast<Tokenizer*>(pTS);
+   if (pT == 0){
+      ASSERT(pT == 0);
+   } else {
+      pT -> StopTap();
+   }
+}
+@}
+
+
+
+
+Here's the initalization function
+
+@$@<Declare Init@>==@{@-
+void InitTokens();
+@}
+
+and implementation
+
+@$@<Init@>==@{@-
+void InitTokens()
+{
+}
+@}
+
+
+
+@B@<Tests@>
+
+
+@$@<Tokens tests@>+=@{@-
+bool TestTokenizer()
+{
+   InitTokens();
+   Filename fn ("trip.tex");
+   InputByteFile bfile;
+   bfile.Open(fn);
+   Latin_1_in latin1filt(bfile);
+   LineSource lineSource(latin1filt);
+   Tokenizer tokenizer(&lineSource);
+   LogFile::Start();
+   TeXToken tt;
+   while (!tokenizer.bEmpty()){
+      tokenizer.GetToken(&tt);
+      LOG("\n" << tt);
+   }
+
+   return CompareLog("trip1.dat", "Tokens.TestTokenizer");
+}
+@}
+
+
+
+@$@<Tokens tests@>+=@{@-
+bool TestTokenList()
+{
+   InitTokens();
+   TokenList* tl = new TokenList();
+   TeXToken tok1, tok2;
+   tok1.SetType(TT_LETTER);
+   tok1.SetChrCode('D');
+   tok2.SetType(TT_OTHER);
+   tok2.SetChrCode('4');
+
+   tl -> push_back(tok1);
+   tl -> push_back(tok2);
+
+   TokenListTokenSource ts(*tl);
+   ASSERT(!ts.bEmpty());
+   TeXToken tok;
+   ts.GetToken(&tok);
+   ASSERT(tok.Type() == TT_LETTER);
+   ASSERT(tok.ChrCode() == 'D');
+   ASSERT(!ts.bEmpty());
+
+   return true;
+}
+@}
+
+@o@<tok1.tex@>==@{@-
+A test \foobar
+another line. Follwed by an empty line
+
+@}
+
+@o@<tok1.dat@>==@{@-
+
+(D   Letter)
+(4   Other)
+(D   Letter)
+(A   Letter)
+(    Space)
+(t   Letter)
+(e   Letter)
+(s   Letter)
+(t   Letter)
+(    Space)
+(\foobar,Symbol[1297])
+(a   Letter)
+(n   Letter)
+(o   Letter)
+(t   Letter)
+(h   Letter)
+(e   Letter)
+(r   Letter)
+(    Space)
+(l   Letter)
+(i   Letter)
+(n   Letter)
+(e   Letter)
+(.   Other)
+(    Space)
+(F   Letter)
+(o   Letter)
+(l   Letter)
+(l   Letter)
+(w   Letter)
+(e   Letter)
+(d   Letter)
+(    Space)
+(b   Letter)
+(y   Letter)
+(    Space)
+(a   Letter)
+(n   Letter)
+(    Space)
+(e   Letter)
+(m   Letter)
+(p   Letter)
+(t   Letter)
+(y   Letter)
+(    Space)
+(l   Letter)
+(i   Letter)
+(n   Letter)
+(e   Letter)
+(    Space)
+(\u(0)   \Par)
+(D   Letter)
+(4   Other)@}
+
+
+
+@$@<Tokens tests@>+=@{@-
+bool TestInputStack()
+{
+   InitTokens();
+   TokenList* tl1 = new TokenList();
+   TokenList* tl2 = new TokenList();
+
+   InputStack tstk;
+
+   TeXToken tok1, tok2;
+   tok1.SetType(TT_LETTER);
+   tok1.SetChrCode('D');
+
+   tok2.SetType(TT_OTHER);
+   tok2.SetChrCode('4');
+
+   tl1 -> push_back(tok1);
+   tl1 -> push_back(tok2);
+
+   tl2 -> push_back(tok2);
+   tl2 -> push_back(tok1);
+
+   // Set up the tokenizer
+   Filename fn ("tok1.tex");
+   InputByteFile bfile;
+   bfile.Open(fn);
+   Latin_1_in latin1filt(bfile);
+   LineSource lineSource(latin1filt);
+   Tokenizer* ts3 = new Tokenizer(&lineSource);
+
+   // Push the first token list, the tokenizer, and the second token list
+   TokenListTokenSource* ts1 = new TokenListTokenSource(*tl1);
+   TokenListTokenSource* ts2 = new TokenListTokenSource(*tl2);
+   tstk.Push(ts1);
+   tstk.Push(ts3);
+   tstk.Push(ts2);
+   // ... then putback a token
+   tstk.Putback(tok1);
+   LogFile::Start();
+   while (!tstk.bEmpty()){
+      tstk.GetRawToken();
+      LOG("\n" << tstk.CurTok());
+   }
+
+
+   return CompareLog("tok1.dat", "Tokens.TestInputStack");
+}
+@}
+
+
+
+@$@<Tokens TestTable@>+=@{@-
+{"tokenizer", TestTokenizer},
+{"tokenlist", TestTokenList},
+{"inputstack", TestInputStack},
+@}
+
+
+
+@o@<test1.tex@>==@{@-
+aA02 *?^_^^M^^5e^v\boo
+x 0{}$&#\boo   % here's some more
+%
+
+    test
+@}
+
+@B@<Physical layout@>
+
+@o@<tokens.h@>==@{@-
+#ifndef TOKENSOURCE_H
+#define TOKENSOURCE_H
+
+#include "platform.h"
+#include "textio.h"
+#include "symbols.h"
+#include "basicdata.h"
+#include <vector>
+#include <list>
+
+@<Declare Init@>
+@<class TokenSource@>
+@<class TokenListTokenSource@>
+@<class Tokenizer@>
+@<class InputStack@>
+@<function bSymbol@>
+@<function bActive@>
+
+#endif
+@}
+
+@o@<tokens.cpp@>==@{@-
+#include "tokens.h"
+#include "textio.h"
+@<alignstate@>
+@<Init@>
+@<function bHexDigit@>
+@<function uHexToInt@>
+@<TokenSource implementation@>
+@<TokenListTokenSource imp@>
+@<class TokenizerImp@>
+@<TokenizerImp implementation@>
+@<Tokenizer implementation@>
+@<TokenizerImp::GetNextChar@>
+@<InputStack implementation@>
+@}
+
+@o@<tokens.t.cpp@>==@{@-
+#include "platform.h"
+#include "textio.h"
+#include "symbols.h"
+#include "tokens.h"
+#include <string>
+@<CompareLog utility@>
+@<Test jig@>@(@<Tokens tests@>@,@<Tokens TestTable@>@)
+@}
+
+
+
+
+
+
+

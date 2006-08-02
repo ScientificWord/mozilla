@@ -1,0 +1,2732 @@
+
+\documentclass{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{revsymb}
+\usepackage{eurosym}
+\usepackage{graphicx}
+
+\setcounter{MaxMatrixCols}{10}
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.00.0.2606}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=Manual}
+%TCIDATA{LastRevised=Monday, September 27, 2004 16:26:10}
+%TCIDATA{<META NAME="ViewSettings" CONTENT="31">}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{CSTFile=LaTeX article (bright).cst}
+%TCIDATA{PageSetup=72,72,72,72,0}
+%TCIDATA{EvenPages=
+%H=36,\PARA{038<p type="texpara" tag="Body Text" >samplearticle.tex}
+%F=36,\PARA{038<p type="texpara" tag="Body Text" >\hfill Page \thepage \hfill }
+%}
+
+%TCIDATA{OddPages=
+%H=36,\PARA{038<p type="texpara" tag="Body Text" >\hfill samplearticle.tex}
+%F=36,\PARA{038<p type="texpara" tag="Body Text" >\hfill Page \thepage \hfill }
+%}
+
+%TCIDATA{FirstPage=
+%H=36
+%F=36
+%}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][]{\textbf{Proof.} }{}
+\input{tcilatex}
+\def\TextSymbolUnavailable#1{\textbf{???}}
+\begin{document}
+
+\title{A Sample Article}
+\author{Dr. Tane Hunter \\
+%EndAName
+TCI Software Research}
+\maketitle
+
+\begin{abstract}
+This article illustrates many features of a mathematics document created
+with Scientific Word or Scientific WorkPlace.
+\end{abstract}
+
+\tableofcontents
+\listoffigures
+
+\section{A Sample Article}
+
+This document illustrates a wide range of the symbols and constructs
+available to you. This document is set up to compile with the standard and
+multilingual format files. In particular, certain characters from the
+Latin-1, Latin Extended-A, and General Punctuation symbol panels will
+typeset as \textbf{???} if a multilingual format file such as TrueTeX
+MultiLingual is not used.
+
+\subsection{Mathematics and Text}
+
+Let $H$ be a Hilbert space, $C$ be a closed bounded convex subset of $H$, $T$
+a nonexpansive self map of $C$. Suppose that as $n\rightarrow \infty $, $%
+a_{n,k}\rightarrow 0$ for each $k$, and $\gamma _{n}=\sum_{k=0}^{\infty
+}\left( a_{n,k+1}-a_{n,k}\right) ^{+}\rightarrow 0$ Then for each $x$ in $C$%
+, $A_{n}x=\sum_{k=0}^{\infty }a_{n,k}T^{k}x$ converges weakly to a fixed
+point of $T$ \cite{dunford}.
+
+In this situation. we would also like to cite \cite%
+{black,blyth,Chang,condorcet,funkenbusch}, but we do so only to demonstrate
+a citation with multiple entries.
+
+\subsection{In-line and Displayed Mathematics}
+
+The equation 
+\begin{equation}
+u_{tt}-\Delta u+u^{5}+u\left| u\right| ^{p-2}=0\text{ in }\mathbf{R}%
+^{3}\times \left[ 0,\infty \right[ .  \tag{1}  \label{wave}
+\end{equation}
+is numbered and it also has the label ``wave''. You can use this label to
+jump to this equation using hypertext links. You can reference this equation
+within your document as equation \ref{wave}.
+
+There are two sets of \LaTeX{} parameters governing mathematical displays.
+The spacing left above and below a display depends on whether the lines
+above or below are short or long.
+
+Short above 
+\begin{equation*}
+x^2+y^2=z^2
+\end{equation*}
+short below.
+
+Long above. This may depend on your margins. Avoid wrapping. 
+\begin{equation*}
+\sin ^{2}\theta +\cos ^{2}\theta =1
+\end{equation*}
+and long below. You don't have to worry about this line being long enough in
+most circumstances because we've tried to ensure that it will wrap no matter
+how wide you have your margins set.
+
+\subsection{Multi-Line Displays}
+
+\emph{Scientific Word and WorkPlace} provide a range of alignment options
+for multiline mathematical displays. Here is a series of multiline displays. 
+\begin{eqnarray}
+x &=&17y \\
+y &>&a+b+c+d+e+f+g+h+i+j+  \notag \\
+&&k+l+m+n+o+p
+\end{eqnarray}
+\begin{eqnarray*}
+x &\ll &y_{1}+\cdots +y_{n} \\
+&\leq &z
+\end{eqnarray*}
+\begin{eqnarray*}
+y &=&a+b+c+d+e+f+g+h+i+j \\
+&&\,+k+l+m+n+o+p
+\end{eqnarray*}
+\begin{eqnarray*}
+w+x+y+z &=& \\
+&&a+b+c+d+e+f+g+h+i+j+ \\
+&&k+l+m+n+o+p
+\end{eqnarray*}
+
+If $f(x)=x+1,$ then we will have 
+\begin{equation*}
+f([x+1]/[x+2])=\{[x+1]/[x+2]\}+1=(2x+3)/(x+2)
+\end{equation*}
+\begin{eqnarray*}
+1+2+3+4+5+6+7+8+9+10+11+12 && \\
++13+14+15+16+17+18+19+20 &=&190
+\end{eqnarray*}
+
+\begin{eqnarray}
+\max (f,g) &=&\frac{f+g+\left| f-g\right| }{2}\text{,} \\
+\max (f,-g) &=&\frac{f-g+\left| f+g\right| }{2}\text{.}
+\end{eqnarray}
+\qquad 
+\begin{eqnarray}
+(a+b)^{n+1} &=&(a+b)(a+b)^{n}=(a+b)\sum_{j=0}^{n}\binom{n}{j}a^{n-1}b^{j}
+\label{JoyA} \\
+&=&\sum_{j=0}^{n}\binom{n}{j}a^{n+1-j}b^{j}+\sum_{j=1}^{n}\binom{n}{j-1}%
+a^{n-1}b^{j}  \label{JoyB} \\
+&=&\sum_{j=0}^{n}\binom{n+1}{j}a^{n+1-j}b^{j}\text{.}  \label{JoyC}
+\end{eqnarray}
+
+The equations in the display immediately above are (\ref{JoyA}), (\ref{JoyB}%
+), and (\ref{JoyC}).
+
+You can have subequation numbering generated automatically, illustrated in
+the following:
+
+\begin{subequations}
+\begin{eqnarray}
+x &=&a+b \\
+y &=&c+d \\
+z &=&e+f
+\end{eqnarray}
+This is text between the two sets of equations. The following set of
+equations continues the numbering from the set above.
+
+\begin{eqnarray}
+u &=&g+h \\
+v &=&i+j \\
+w &=&k+l
+\end{eqnarray}
+
+Test the overriding of automatic equation labels: 
+\end{subequations}
+\begin{eqnarray}
+x &=&y+z  \TCItag{A--1} \\
+&=&k+m  \TCItag{A--2}
+\end{eqnarray}
+Test the overriding of automatic equation labels, suppressing annotation: 
+\begin{eqnarray}
+x &=&y+z  \TCItag*{A--1} \\
+&=&k+m  \TCItag*{A--2}
+\end{eqnarray}
+The labels in the first set of equations should be parenthesized, while the
+labels in the second set should not be parenthesized.
+
+There is a significant difference between the standard \LaTeX{} equation
+array and the AMS align environment. SW/SWP does not show this difference on
+screen. To check this difference, look at the Typeset Preview versions of
+the following. 
+\begin{eqnarray*}
+x &=&y \\
+&=&z
+\end{eqnarray*}
+\begin{align*}
+x& =y \\
+& =z
+\end{align*}
+
+The space around the = sign in the first set of equations (the \LaTeX{}
+equation array) is much greater than in the second set (the AMS align
+environment). The spacing in the second set is preferred, as it agrees with
+the spacing in a single-line display:
+
+\begin{equation*}
+x=y
+\end{equation*}
+
+To convert the \LaTeX{} equation array to the AMS align environment, select
+the equations, then from the Edit menu, choose Properties. Select Advanced
+and then select Enable Alignment.
+
+\section{Mathematics in section heads $\protect\int_{\protect\alpha }^{%
+\protect\beta }\ln tdt$}
+
+You ought to be able to put mathematics in section heads. It might be a
+problem in style with running headers and table of contents entries.
+
+\subsection{Theorems, Lemmata, Etc.}
+
+\label{theorems}You can automatically number theorems and other proclamations%
+\footnote{%
+Such as propositions, lemmas and corollaries. You can create your own
+theorem-like environments to extend the basic set provided with \textsl{SW}.
+\par
+Footnotes, such as this, can have several paragraphs. Each paragraph can be
+as large as you want. You can include mathematics, graphics, or anything
+else you can enter in main-document paragraphs. It is even possible to
+compare the difference between an in-line sum $\sum_{n=1}^{\infty }\frac{1}{%
+n^{2}}$ and a displayed sum 
+\begin{equation*}
+\sum_{n=1}^{\infty }\frac{1}{n^{2}}
+\end{equation*}%
+}. This is a marginal marginal note.%
+\marginpar{
+Marginal notes are like call-outs in graphics. You can bring the reader's
+attention to a point made in the text.
+\par
+Marginal notes can have multiple paragraphs.} These theorem-like
+environments are available.
+
+\begin{acknowledgement}
+This is an acknowledgement
+\end{acknowledgement}
+
+\begin{algorithm}
+This is an algorithm
+\end{algorithm}
+
+\begin{axiom}
+All mathematics is fun.
+\end{axiom}
+
+\begin{case}
+This is a case
+\end{case}
+
+\begin{claim}
+This is a claim
+\end{claim}
+
+\begin{conclusion}
+This is a conclusion
+\end{conclusion}
+
+\begin{condition}
+This is a condition
+\end{condition}
+
+\begin{conjecture}
+Some people don't like mathematics.
+\end{conjecture}
+
+\begin{corollary}
+This is a corollary
+\end{corollary}
+
+\begin{criterion}
+This is a criterion
+\end{criterion}
+
+\begin{definition}
+This is a definition
+\end{definition}
+
+\begin{example}
+This is an example
+\end{example}
+
+\begin{exercise}
+This is an exercise
+\end{exercise}
+
+\begin{lemma}
+The plural of lemma is lemmata, so they say. Why all these lemmas?
+\end{lemma}
+
+\begin{proof}
+This is the proof of the lemma.
+\end{proof}
+
+\begin{notation}
+This is notation
+\end{notation}
+
+\begin{problem}
+This is a problem
+\end{problem}
+
+\begin{proposition}
+This is a proposition
+\end{proposition}
+
+\begin{remark}
+This is a remark
+\end{remark}
+
+\begin{summary}
+This is a summary
+\end{summary}
+
+\begin{theorem}[Main Theorem]
+\label{existence}Suppose $u_{0}\in C^{3}\left( \mathbf{R}^{3}\right)
+,u_{1}\in C^{2}\left( \mathbf{R}^{3}\right) $ have finite energy 
+\begin{equation}
+\int_{\mathbf{R}^{3}}\left( \frac{\left| u_{1}\right| ^{2}+\left| \nabla
+u_{0}\right| ^{2}}{2}+\frac{\left| u_{0}\right| ^{6}}{6}\right) dx<\infty 
+\tag{9}
+\end{equation}
+and suppose the solution $u^{(0)}$ to the homogeneous wave equation with
+initial data $u_{0},u_{1}$ is uniformly bounded. Then there exists $\epsilon
+_{0}>0$ such that for $\left| \epsilon \right| <\epsilon _{0}$ the initial
+value problem (\ref{wave}) with data $\epsilon u_{0},\epsilon u_{1}$ admits
+a global $C^{2}$-solution.
+\end{theorem}
+
+\begin{proof}[Proof of the Main Theorem]
+This is the proof.
+\end{proof}
+
+\section{Section Heading}
+
+This is body text following a section heading. \label{sectA}
+
+\subsection{Subsection Heading}
+
+This is body text following a subsection heading.\label{ssectA}
+
+\subsubsection{Subsubsection Heading}
+
+This is body text following a subsubsection heading.\label{sssectA}
+
+\paragraph{Subsubsubsection Heading}
+
+This is body text following a subsubsubsection heading.\label{ssssectA}
+
+\subparagraph{Subsubsubsubsection Heading}
+
+This is body text following a subsubsubsubsection heading.\label{sssssectA}
+
+\section{Another Section Heading}
+
+If this section is numbered, check that it is numbered correctly.\label%
+{sectB}
+
+\subsection{Another Subsection Heading}
+
+If this subsection heading is numbered, check that it is numbered correctly.%
+\label{ssectB}
+
+\subsubsection{Another Subsubsection Heading}
+
+If this subsubsection heading is numbered, check that it is numbered
+correctly.\label{sssectB}
+
+\paragraph{Another Subsubsubsection Heading}
+
+If this subsubsubsection heading is numbered, check that it is numbered
+correctly.\label{ssssectB}
+
+\subparagraph{Another Subsubsubsubsection Heading}
+
+If this subsubsubsubsection heading is numbered, check that it is numbered
+correctly.\label{sssssectB}
+
+The sections above are sections \ref{sectA}, \ref{ssectA}, \ref{sssectA}, %
+\ref{ssssectA}, \ref{sssssectA}, \ref{sectB}, \ref{ssectB}, \ref{sssectB}, %
+\ref{ssssectB}, \ref{sssssectB}.
+
+\section*{Starred Sections}
+
+With version 4, SW/SWP now provides user access to the \verb|\section*|
+command. To adjust this on an existing section heading, position the cursor
+on the left side of the section. Use edit properties or the context menu
+from the right mouse button to bring up the Section Properties dialog.
+Starred sections are not numbered and do not appear in the table of contents
+when a document is typeset. A better way to handle this is to set the
+section numbering counter depth.
+
+\subsection*{Starred Subsection}
+
+\subsubsection*{Starred Subsubsection}
+
+\paragraph*{Starred Subsubsubsection}
+
+\subparagraph*{Starred Subsubsubsubsection}
+
+\section[Short Form]{Sections with Optional Arguments}
+
+Optional arguments to sections are entered by putting them in square
+brackets at the start of the heading text. These optional arguments are used
+for the short form of a heading in running heads and in the table of contents
+
+\subsection[Short Form]{Subsection}
+
+\subsubsection[Short Form]{Subsubsection}
+
+\paragraph[Short Form]{Subsubsubsection}
+
+\subparagraph[Short Form]{Subsubsubsubsection}
+
+\subsection{Lists}
+
+\subsubsection{Numbered Lists}
+
+\begin{enumerate}
+\item First numbered item, level 1.\label{A}
+
+\begin{enumerate}
+\item First numbered item, level 2.,\label{AA}
+
+\begin{enumerate}
+\item First numbered item, level 3.\label{AAA}
+
+\begin{enumerate}
+\item First numbered item, level 4.\label{AAAA}
+
+\item Second numbered item, level 4.\label{AAAB}
+\end{enumerate}
+
+\item Second numbered item, leve1 3.\label{AAB}
+\end{enumerate}
+
+\item Second numbered item, level 2.\label{AB}
+\end{enumerate}
+
+\item Second numbered item, level 1.\label{B}
+
+\begin{enumerate}
+\item First numbered item, level 2.\label{BA}
+
+\begin{enumerate}
+\item First numbered item, level 3.\label{BAA}
+
+\begin{enumerate}
+\item First numbered item, level 4.\label{BAAA}
+
+\item Second numbered item, level 4.\label{BAAB}
+\end{enumerate}
+
+\item Second numbered item, leve1 3.\label{BAB}
+\end{enumerate}
+
+\item Second numbered item, level 2.\label{BB}
+\end{enumerate}
+\end{enumerate}
+
+The items above are numbered \ref{A}, \ref{AA}, \ref{AAA}, \ref{AAAA}, \ref%
+{AAAB}, \ref{AAB}, \ref{AB}, \ref{B}, \ref{BA}, \ref{BAA}, \ref{BAAA}, \ref%
+{BAAB}, \ref{BAB}, \ref{BB} in that order.
+
+Here is a list with multiple levels on one line. There should be five lines,
+only. Items should not be split out on separate lines.
+
+\begin{enumerate}
+\item First item, normal.
+
+\item 
+\begin{enumerate}
+\item Second item, both numbers.
+\end{enumerate}
+
+\item 
+\begin{enumerate}
+\item 
+\begin{enumerate}
+\item Third item, three numbers.
+\end{enumerate}
+\end{enumerate}
+
+\item 
+\begin{enumerate}
+\item 
+\begin{enumerate}
+\item 
+\begin{enumerate}
+\item Fourth item, four numbers.
+\end{enumerate}
+\end{enumerate}
+\end{enumerate}
+
+\item 
+\begin{enumerate}
+\item 
+\begin{enumerate}
+\item 
+\begin{enumerate}
+\item Fifth item. Second, third, and fourth numbers.
+\end{enumerate}
+\end{enumerate}
+\end{enumerate}
+\end{enumerate}
+
+Here is a list with continuation items.
+
+\begin{enumerate}
+\item Level 1, first paragraph.
+
+Level 1, second paragraph.
+
+\begin{enumerate}
+\item Level 2, first paragraph.
+
+Level 2, second paragraph.
+
+\begin{enumerate}
+\item Level 3, first paragraph.
+
+Level 3, second paragraph.
+
+\begin{enumerate}
+\item Level 4, first paragraph.
+
+Level 4, second paragraph.
+\end{enumerate}
+\end{enumerate}
+\end{enumerate}
+\end{enumerate}
+
+\subsubsection{Bulleted Lists}
+
+\begin{itemize}
+\item Bullet item, level 1.
+
+\begin{itemize}
+\item Bullet item, level 2.
+
+\begin{itemize}
+\item Bullet item, level 3.
+
+\begin{itemize}
+\item Bullet item, level 4.
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\item Bullet item, level 1.
+
+This is a continuation paragraph in a bullet item. The paragraph has been
+made long enough to wrap, and so wrap it will. The question is, do you like
+wrap? Is it your taste in music?
+
+\begin{itemize}
+\item Bullet item, level 2.
+
+This is a continuation paragraph in a bullet item. The paragraph has been
+made long enough to wrap, and so wrap it will. The question is, do you like
+wrap?
+
+\begin{itemize}
+\item Bullet item, level 3.
+
+This is a continuation paragraph in a bullet item. The paragraph has been
+made long enough to wrap, and so wrap it will. The question is, do you like
+wrap?
+
+\begin{itemize}
+\item Bullet item, level 4.
+
+This is a continuation paragraph in a bullet item. The paragraph has been
+made long enough to wrap, and so wrap it will. The question is, do you like
+wrap?
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Custom Lists}
+
+\begin{description}
+\item[gnat] A small animal, found in the North Woods, that causes no end of
+trouble.
+
+\item[gnu] A large animal, found in crossword puzzles, that causes no end of
+trouble.
+
+\item[armadillo] A medium-sized animal, named after a medium-sized Texas
+city. A medium-sized animal, named after a medium-sized Texas city.
+
+\item[A very long custom label here] There should be enough text following
+to allow the paragraph to wrap to the next line.
+
+Here is a continuation paragraph of the above custom item.
+\end{description}
+
+\subsubsection{Lists with custom lead-ins.}
+
+\paragraph{Numbered lists with custom lead-ins.}
+
+\begin{enumerate}
+\item[Number 1:] First numbered item
+
+\item[Number 2:] Second numbered item
+
+\item[Number 3:] Third numbered item
+
+\begin{enumerate}
+\item[Number 3.a:] First item under Number 3
+
+\begin{enumerate}
+\item[Number 3.a.i:] First item under Number 3.a:
+
+\begin{enumerate}
+\item[Number 3.a.i.1:] First item under Number 3.a.i:
+
+\item[Number 3.a.i.2:] Second item under Number 3.a.i:
+
+Continuation paragraph under the second item under Number 3.a.i:
+\end{enumerate}
+\end{enumerate}
+\end{enumerate}
+\end{enumerate}
+
+\paragraph{Bulleted lists with custom lead-ins.}
+
+\begin{itemize}
+\item[Bullet:] First item
+
+\item[Bullet:] Second item
+
+\item[Bullet:] Third item
+
+\begin{itemize}
+\item[Square:] First item under the third item
+
+\begin{itemize}
+\item[Triangle:] First item under the first item under the third item
+
+\begin{itemize}
+\item[elgnairT:] First item under the first item under the first item under
+the third item
+
+\item[elgnairT:] Second item under the first item under the first item under
+the third item
+
+Continuation paragraph under the second item under the first item under the
+third item
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+\paragraph{Lists with multiple lead-ins per line.}
+
+\begin{enumerate}
+\item First
+
+\item 
+\begin{enumerate}
+\item Second, First
+\end{enumerate}
+
+\item 
+\begin{enumerate}
+\item 
+\begin{enumerate}
+\item Third, First, First
+\end{enumerate}
+\end{enumerate}
+
+\item 
+\begin{enumerate}
+\item 
+\begin{enumerate}
+\item 
+\begin{enumerate}
+\item Fourth, First, First, First
+\end{enumerate}
+\end{enumerate}
+\end{enumerate}
+\end{enumerate}
+
+\begin{enumerate}
+\item Reset to First
+
+\item 
+\begin{enumerate}
+\item Second, First
+
+\item 
+\begin{enumerate}
+\item None, Second, First
+
+\item 
+\begin{enumerate}
+\item None, None, Second, First
+\end{enumerate}
+\end{enumerate}
+\end{enumerate}
+\end{enumerate}
+
+\paragraph{Lists with complex custom items.}
+
+\begin{enumerate}
+\item[$\protect\int \sin xdx$] Lead-in is $\int \sin xdx$
+
+\item[$\mathfrak{ABC}$] Lead-in is $\mathfrak{ABC}$
+
+
+%%JCS\item[$\sqrt[3]{3}$]
+\item[{$\sqrt[3]{3}$}]If the leadin contains an item with an optional
+parameter, that item should be in a group to prevent the closing bracket of
+the optional argument from closing the item brackets.
+
+\item[{\protect\FRAME{itbpF}{0.3528in}{0.3105in}{0in}{}{}{swplogo.wmf}{%
+\special{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio
+TRUE;display "PICT";valid_file "F";width 0.3528in;height 0.3105in;depth
+0in;original-width 0pt;original-height 0pt;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'../Graphics/swplogo.wmf';file-properties "XNPEU";}}}] Lead-in is \FRAME{%
+itbpF}{0.3528in}{0.3105in}{0in}{}{}{swplogo.wmf}{\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"PICT";valid_file "F";width 0.3528in;height 0.3105in;depth
+0in;original-width 0.3226in;original-height 0.2811in;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'../Graphics/swplogo.wmf';file-properties "XNPEU";}}
+\end{enumerate}
+
+\paragraph{Lists whose items contain notes}
+
+\begin{enumerate}
+\item A footnote\footnote{%
+This footnote is in a list item}
+
+\item A margin note%
+\marginpar{
+This marginal note is in a list item}
+
+\begin{enumerate}
+\item A footnote with lists. \footnote{%
+A list in a footnote:
+\par
+\begin{enumerate}
+\item First item
+\par
+\item Second item
+\par
+\begin{enumerate}
+\item First item
+\par
+\item Second item
+\end{enumerate}
+\end{enumerate}
+}
+
+\item A margin note with lists. 
+\marginpar{
+A list in a margin note:
+\par
+\begin{enumerate}
+\item First item
+\par
+\item Second item
+\par
+\begin{enumerate}
+\item First item
+\par
+\item Second item
+\end{enumerate}
+\end{enumerate}
+}
+\end{enumerate}
+\end{enumerate}
+
+\subsection{Block Quote and Centered}
+
+In addition to Body Text, there are paragraph tags named Block Quote and
+Center. Here is a Block Quote paragraph.
+
+\begin{quotation}
+Why, there, there, there, there! A diamond gone, cost me two thousand ducats
+in Frankfort! The curse never fell upon our nation till now; I never felt it
+till now. Two thousand ducats in that, and other precious, precious jewels.
+I would my daughter were dead at my foot, and the jewels in her ear! Would
+she were hearsed at my foot, and the jewels in her coffin! No news of them?
+Why, thou loss upon loss! The thief gone with so much, and so much to find
+the thief, and no satisfaction, no revenge! Nor no ill luck stirring but
+what lights o' my shedding.
+\end{quotation}
+
+Here is a centered paragraph:
+
+\begin{center}
+Nay, that's true, that's very true. Go, Tubal, fee me an officer; bespeak
+him a fortnight before. I will have the heart of him if he forfeit, for were
+he out of Venice I can make what merchandise I will. Go, Tubal, and meet me
+at our synagogue; go, good Tubal; at our synagogue, Tubal.
+\end{center}
+
+\subsection{Footnotes and Marginal Notes}
+
+In this section, we insert multiple footnotes and multiple marginal notes.
+This illustrates the various parameters used to separate multiple footnotes
+and marginal paragraphs.\footnote{%
+The first in a series of consecutive footnotes.}\footnote{%
+The second in a series of consecutive footnotes.}\footnote{%
+The third in a series of consecutive footnotes.}\footnote{%
+The fourth in a series of consecutive footnotes.}%
+\marginpar{
+The first in a series of marginal notes.}%
+\marginpar{
+The second in a series of marginal notes.}%
+\marginpar{
+The third in a series of marginal notes.}%
+\marginpar{
+The fourth in a series of marginal notes.}
+
+\section{Cross-References and Their Ilk}
+
+\label{crossrefs}The section on theorems is numbered \ref{theorems} and is
+on page \pageref{theorems}. The current section (on cross-references and
+their ilk) is numbered \ref{crossrefs} and is on page \pageref{crossrefs}.
+
+\section{Text Tags}
+
+Text tags are the tags you apply to text within a paragraph, to distinguish
+phrases. There are tags for physical phrase markup and tags for logical
+phrase markup.
+
+This section discusses the differences between some aspects of the \LaTeX{}
+coding \textsl{SW\/} uses in \LaTeX{}2.09 and \LaTeX{}2e documents. In \LaTeX%
+{}2.09, the commands for what we call \emph{tagged runs}, including
+boldface, italics, and emphasis, are switches. In \LaTeX{}2e, the switch
+commands are still available, but use of the new macro forms is strongly
+encouraged. We at TCI agree with this wholeheartedly---switches are an
+abomination and have caused us no end of trouble in the past. The new macro
+forms of the tagged runs also have additional capabilities, most of which
+are supported in \textsl{SW}.
+
+\subsection{Tagged Runs in Text}
+
+Here is a comparison of the tagged runs in text.
+
+\begin{center}
+\begin{tabular}{llll}
+\textbf{Name} & \textbf{\LaTeX{}2.09} & \textbf{\LaTeX{}2e} & \textbf{Example%
+} \\ \hline
+Italic & \{\TEXTsymbol{\backslash}it text\} & \TEXTsymbol{\backslash}%
+textit\{text\} & \textit{text} \\ 
+Bold & \{\TEXTsymbol{\backslash}bf text\} & \TEXTsymbol{\backslash}%
+textbf\{text\} & \textbf{text} \\ 
+Small Caps & \{\TEXTsymbol{\backslash}sc text\} & \TEXTsymbol{\backslash}%
+textsc\{text\} & \textsc{text} \\ 
+Sans Serif & \{\TEXTsymbol{\backslash}sf text\} & \TEXTsymbol{\backslash}%
+textsf\{text\} & \textsf{text} \\ 
+Slant & \{\TEXTsymbol{\backslash}sl text\} & \TEXTsymbol{\backslash}%
+textsl\{text\} & \textsl{text} \\ 
+Typewriter & \{\TEXTsymbol{\backslash}tt text\} & \TEXTsymbol{\backslash}%
+texttt\{text\} & \texttt{text} \\ 
+Emphasis & \{\TEXTsymbol{\backslash}em text\} & \{\TEXTsymbol{\backslash}em
+text\} & \emph{text} \\ 
+Roman & \{\TEXTsymbol{\backslash}rm text\} & \TEXTsymbol{\backslash}%
+textrm\{text\} & \textrm{text}%
+\end{tabular}
+\end{center}
+
+\subsection{Tagged Runs in Mathematics}
+
+All of the text tagged runs are also valid in mathematics. Since \textsl{SW}
+works very hard to provide a minimal nesting level of tags, these must be
+shown in an enviroment that forces math. Within that environment (here, a
+pair of empty expanding brackets), we select text in addition to the tagged
+run.
+
+\begin{center}
+\begin{tabular}{llll}
+\textbf{Name} & \textbf{\LaTeX{}2.09} & \textbf{\LaTeX{}2e} & \textbf{Example%
+} \\ \hline
+Italic & \$\TEXTsymbol{\backslash}text\{\TEXTsymbol{\backslash}it text\}\$ & 
+\$\TEXTsymbol{\backslash}textit\{text\}\$ & $\left. \text{\textit{text}}%
+\right. $ \\ 
+Bold & \$\TEXTsymbol{\backslash}text\{\TEXTsymbol{\backslash}bf text\}\$ & \$%
+\TEXTsymbol{\backslash}textbf\{text\}\$ & $\left. \text{\textbf{text}}%
+\right. $ \\ 
+Small Caps & \$\TEXTsymbol{\backslash}text\{\TEXTsymbol{\backslash}sc
+text\}\$ & \$\TEXTsymbol{\backslash}textsc\{text\}\$ & $\left. \text{\textsc{%
+text}}\right. $ \\ 
+Sans Serif & \$\TEXTsymbol{\backslash}text\{\TEXTsymbol{\backslash}sf
+text\}\$ & \$\TEXTsymbol{\backslash}textsf\{text\}\$ & $\left. \text{\textsf{%
+text}}\right. $ \\ 
+Slant & \$\TEXTsymbol{\backslash}text\{\TEXTsymbol{\backslash}sl text\}\$ & 
+\$\TEXTsymbol{\backslash}textsl\{text\}\$ & $\left. \text{\textsl{text}}%
+\right. $ \\ 
+Typewriter & \$\TEXTsymbol{\backslash}text\{\TEXTsymbol{\backslash}tt
+text\}\$ & \$\TEXTsymbol{\backslash}texttt\{text\}\$ & $\left. \text{\texttt{%
+text}}\right. $ \\ 
+Emphasis & \$\TEXTsymbol{\backslash}text\{\TEXTsymbol{\backslash}em text\}\$
+& \$\{\TEXTsymbol{\backslash}em text\}\$ & $\left. \text{\emph{text}}\right. 
+$ \\ 
+Roman & \$\TEXTsymbol{\backslash}text\{\TEXTsymbol{\backslash}rm text\}\$ & 
+\$\TEXTsymbol{\backslash}textrm\{text\}\$ & $\left. \text{\textrm{text}}%
+\right. $%
+\end{tabular}
+\end{center}
+
+The coding of the above tagged runs presents a number of problems for the
+filter. There is now an option to use \TEXTsymbol{\backslash}textrm or 
+\TEXTsymbol{\backslash}mbox in place of the \TEXTsymbol{\backslash}text
+command.
+
+\begin{center}
+\begin{tabular}{llll}
+\textbf{Name} & \textbf{\LaTeX{}2.09} & \textbf{\LaTeX{}2e} & \textbf{Example%
+} \\ \hline
+Italic & \{\TEXTsymbol{\backslash}it text\} & \TEXTsymbol{\backslash}%
+textit\{text\} & $\mathit{text}$ \\ 
+Bold & \{\TEXTsymbol{\backslash}bf text\} & \TEXTsymbol{\backslash}%
+textbf\{text\} & $\mathbf{text}$ \\ 
+Small Caps & \{\TEXTsymbol{\backslash}sc text\} & \TEXTsymbol{\backslash}%
+textsc\{text\} & $\QTR{sc}{text}$ \\ 
+Sans Serif & \{\TEXTsymbol{\backslash}sf text\} & \TEXTsymbol{\backslash}%
+textsf\{text\} & $\mathsf{text}$ \\ 
+Slant & \{\TEXTsymbol{\backslash}sl text\} & \TEXTsymbol{\backslash}%
+textsl\{text\} & $\QTR{sl}{text}$ \\ 
+Typewriter & \{\TEXTsymbol{\backslash}tt text\} & \TEXTsymbol{\backslash}%
+texttt\{text\} & $\mathtt{text}$ \\ 
+Emphasis & NA & NA & NA \\ 
+Roman & \{\TEXTsymbol{\backslash}rm text\} & \TEXTsymbol{\backslash}%
+textrm\{text\} & $\mathrm{text}$%
+\end{tabular}
+\end{center}
+
+\textsc{Small Caps Here!}
+
+\textsl{This sentence is slanted.}
+
+This is math $\left[ x+\mathit{italic}+y+\mathsf{sansserif}+\mathbf{bold}+%
+\mathrm{roman}\right] $
+
+Here is a display 
+\begin{equation*}
+x+\text{text}+y+\mathrm{roman}+\text{\textrm{roman text}}
+\end{equation*}
+and then we finish off the paragraph with great alacrity.
+
+\textit{Now we use italics. Here is a display} 
+\begin{equation*}
+x+\text{text}+y+\mathrm{roman}+\text{\textrm{roman text}}
+\end{equation*}
+\textit{and then we finish off the paragraph with great alacrity.}
+
+\textit{This is a paragraph of italic text with a stretch of \textrm{roman}
+in the middle.}
+
+You obtain \TEXTsymbol{\backslash}mathrm by applying roman to a selection in
+math, and you obtain \TEXTsymbol{\backslash}textrm by applying text and then
+applying roman. $\left[ x+\mathrm{roman}+\text{\textrm{textroman}}\right] $
+
+\subsection{Bold Symbol}
+
+Bold Symbol is a special tag you can apply in math to build italic bold
+symbols. For example: $\boldsymbol{m}$. (Compare with $\mathbf{m}$). Another
+examples: $\boldsymbol{2\pi i\neq }$ $\boldsymbol{\dot{x}}$.
+
+\subsection{Calligraphic, Fraktur and Blackboard Bold}
+
+These are math--only tags.
+
+$\mathcal{CALLIGRAPHIC}$
+
+$\mathfrak{fraktur}$
+
+$\mathbb{BLACKBOARDBOLD}$
+
+\section{The \texttt{\TEXTsymbol{\backslash}text} Command}
+
+\textsl{SW} writes text in mathematics using the AMS \TEXTsymbol{\backslash}%
+text command. This is the only command for text in mathematics that reduces
+size appropriately when smaller fonts are called for in \LaTeX{}2.09. The 
+\TEXTsymbol{\backslash}rm switch also works in \LaTeX{}2e. Here is text in
+mathematics at various sizes: 
+\begin{equation*}
+X^{x+\text{text}^{x+\text{text}}}+\text{text}
+\end{equation*}
+and the same, attempted with \TEXTsymbol{\backslash}rm: 
+\begin{equation*}
+X^{x+\mathrm{text}^{x+\mathrm{text}}}+\mathrm{text}
+\end{equation*}
+and with \TEXTsymbol{\backslash}mbox: 
+\begin{equation*}
+X^{x+\mbox{text}^{x+\mbox{text}}}+\mbox{text}
+\end{equation*}
+
+\section{Operators}
+
+The following is a list of operators from the \textsc{Insert, Operator}...
+menu selection.
+
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+\hline
+$\int $ & $\iint $ & $\iiint $ & $\iiiint $ & $\idotsint $ & $\oint $ & $%
+\sum $ & $\prod $ & $\bigcap $ \\ \hline
+$\bigwedge $ & $\bigoplus $ & $\bigodot $ & $\bigsqcup $ & $\coprod $ & $%
+\bigcup $ & $\bigvee $ & $\bigotimes $ & $\biguplus $ \\ \hline
+\end{tabular}
+
+The following is a list of operators from the \textsc{Insert, Operator}...
+menu selection. In this example, all operators are set to ``Big,'' while all
+limit positions are set ``at right.''
+
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+$\dint\nolimits_{b}^{a}$ & $\diint\nolimits_{A}^{b}$ & $\diiint\nolimits_{%
+\Delta }dV$ & $\diiiint\nolimits_{what?}dT$ & $\didotsint\nolimits_{\ldots
+}d\cdots $ \\ \hline
+$\dbigwedge\nolimits_{i}x_{i}$ & $\dbigoplus\nolimits^{100}X_{i}$ & $%
+\dbigodot\nolimits_{\nu \neq v}\Psi _{\nu }$ & $\dbigsqcup\nolimits_{\xi
+=\left( 
+\begin{array}{ll}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) }\xi $ & $\dcoprod\nolimits^{\text{A small paragraph}}\Xi _{i}$ \\ 
+\hline
+\end{tabular}
+\vspace{1.019pc}
+
+\begin{tabular}{|l|l|l|l|}
+\hline
+$\doint\nolimits_{\Gamma }d\gamma $ & $\dsum\nolimits_{x=1}^{5}\frac{1}{x^{2}%
+}$ & $\dprod\nolimits_{x=5}^{7}\left( 1-\sqrt{x}\right) $ & $%
+\dbigcap\nolimits_{A\in \mathbf{A}}A$ \\ \hline
+$\dbigcup\nolimits_{x^{x^{x}}}U_{x}$ & $\dbigvee\nolimits_{\int i}y^{i}$ & $%
+\dbigotimes\nolimits_{\mu \in \{1,2,5,7\}}\Phi \mu $ & $\dbiguplus%
+\nolimits_{Blow}^{Joe}B$ \\ \hline
+\end{tabular}
+
+The following is a list of operators from the \textsc{Insert, Operator}...
+menu selection. In this example, all operators are set to ``Small,'' while
+all limit positions are set ``at right.''
+
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+$\tint\nolimits_{b}^{a}xdx$ & $\tiint\nolimits_{A}\frac{dxdy}{xy}$ & $%
+\tiiint\nolimits_{\Delta }dV$ & $\tiiiint\nolimits_{what?}dT$ & $%
+\tidotsint\nolimits_{\ldots }d\cdots $ \\ \hline
+$\tbigwedge\nolimits_{i}x_{i}$ & $\tbigoplus\nolimits^{100}X_{i}$ & $%
+\tbigodot\nolimits_{\nu \neq v}\Psi _{\nu }$ & $\tbigsqcup\nolimits_{\xi
+=\left( 
+\begin{array}{ll}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) }\xi $ & $\tcoprod\nolimits^{\text{A small paragraph}}\Xi _{i}$ \\ 
+\hline
+\end{tabular}
+\vspace{1.019pc}
+
+\begin{tabular}{|l|l|l|l|}
+\hline
+$\toint\nolimits_{\Gamma }d\gamma $ & $\tsum\nolimits_{x=1}^{5}\frac{1}{x^{2}%
+}$ & $\tprod\nolimits_{x=5}^{7}\left( 1-\sqrt{x}\right) $ & $%
+\tbigcap\nolimits_{A\in \mathbf{A}}A$ \\ \hline
+$\tbigcup\nolimits_{x^{x^{x}}}U_{x}$ & $\tbigvee\nolimits_{\int i}y^{i}$ & $%
+\tbigotimes\nolimits_{\mu \in \{1,2,5,7\}}\Phi \mu $ & $\tbiguplus%
+\nolimits_{Blow}^{Joe}B$ \\ \hline
+\end{tabular}
+
+The following is a list of operators from the \textsc{Insert, Operator}...
+menu selection. In this example, all operators are set to ``Big,'' while all
+limit positions are set ``Above/below.''
+
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+$\dint\limits_{b}^{a}xdx$ & $\diint\limits_{A}\frac{dxdy}{xy}$ & $%
+\diiint\limits_{\Delta }dV$ & $\diiiint\limits_{what?}dT$ & $%
+\didotsint\limits_{\ldots }d\cdots $ \\ \hline
+$\dbigwedge\limits_{i}x_{i}$ & $\dbigoplus\limits^{100}X_{i}$ & $%
+\dbigodot\limits_{\nu \neq v}\Psi _{\nu }$ & $\dbigsqcup\limits_{\xi =\left( 
+\begin{array}{ll}
+1 & 2 \\ 
+3 & 4%
+\end{array}%
+\right) }\xi $ & $\dcoprod\limits^{\text{A small paragraph}}\Xi _{i}$ \\ 
+\hline
+\end{tabular}
+\vspace{1.019pc}
+
+\begin{tabular}{|l|l|l|l|}
+\hline
+$\doint\limits_{\Gamma }d\gamma $ & $\dsum\limits_{x=1}^{5}\frac{1}{x^{2}}$
+& $\dprod\limits_{x=5}^{7}\left( 1-\sqrt{x}\right) $ & $\dbigcap\limits_{A%
+\in \mathbf{A}}A$ \\ \hline
+$\dbigcup\limits_{x^{x^{x}}}U_{x}$ & $\dbigvee\limits_{\int i}y^{i}$ & $%
+\dbigotimes\limits_{\mu \in \{1,2,5,7\}}\Phi \mu $ & $\dbiguplus%
+\limits_{Blow}^{Joe}B$ \\ \hline
+\end{tabular}
+
+\subsection{Multi-Line Subscripts and Superscripts}
+
+$\sum_{\substack{ 1<i<10  \\ 1<j<10}}^{{}}2^{i+j}$ is more reasonable than $%
+\Gamma _{1_{\substack{ 2_{\substack{ 3  \\ 4}}  \\ 5^{\substack{ 6  \\ 7}}}}%
+}^{1 ^{\substack{ 5^{\substack{ 7  \\ 6}}  \\ 2_{\substack{ 4  \\ 5}}}}}$
+
+\section{Brackets}
+
+The following is a list of the different brackets from the \textsc{Insert,
+Brackets}... menu selection.
+
+%%JCS$%
+%%JCS\begin{tabular}{|l|l|l|l|l|l|}
+%%JCS\hline
+%%JCS$\left( \frac{a}{\frac{x}{y}}\right) $ & $\left\lfloor \frac{E}{X}%
+%%JCS\right\rfloor $ & $\left/ \frac{\mathbf{I}}{\mathbf{J}}\right/ $ & $%
+%%JCS\left\Updownarrow \frac{m}{\frac{m}{m}}\right\Updownarrow $ & $%
+%%JCS\left\Downarrow \frac{Q}{\frac{Q}{\frac{Q}{Q}}}\right\Downarrow $ & $\left\} 
+%%JCS\mathsf{U}\right\{ $ \\ \hline
+%%JCS$\left[ \frac{b}{\frac{x}{y}}\right] $ & $\left\lceil \frac{F}{X}%
+%%JCS\right\rceil $ & $\left\backslash \frac{\mathbf{J}}{\mathbf{L}}%
+%%JCS\right\backslash $ & $\left\uparrow \frac{n}{\frac{n}{n}}\right\uparrow $ & $%
+%%JCS\left\rceil \frac{R}{\frac{R}{\frac{R}{R}}}\right\lceil $ & $\left] \mathsf{V%
+%%JCS}\right[ $ \\ \hline
+%%JCS$\left\{ \frac{c}{\frac{x}{y}}\right\} $ & $\left\vert \frac{G}{X}%
+%%JCS\right\vert $ & $\left\updownarrow \frac{\mathbf{K}}{\mathbf{L}}%
+%%JCS\right\updownarrow $ & $\left\Uparrow \frac{o}{\frac{o}{o}}\right\Uparrow $
+%%JCS& $\left\rfloor \frac{S}{\frac{S}{\frac{S}{S}}}\right\lfloor $ & $\left) 
+%%JCS\mathsf{W}\right( $ \\ \hline
+%%JCS$\left\langle \frac{d}{\frac{x}{y}}\right\rangle $ & $\left\Vert \frac{H}{X}%
+%%JCS\right\Vert $ & $\left. \frac{\mathbf{L}}{\mathbf{X}}\right. $ & $%
+%%JCS\left\downarrow \frac{p}{\frac{p}{p}}\right\downarrow $ & $\left\rangle 
+%%JCS\frac{T}{\frac{T}{\frac{T}{T}}}\right\langle $ &  \\ \hline
+%%JCS\end{tabular}%
+%%JCS\ $
+
+\section{Math Names}
+
+The following is a sample of names from the \textsc{Insert, Math Name}...
+menu selection. Some are standard, built-in names: $\ln x$, $\sin ^{2}x$, $%
+\arg \tanh \pi $. Or you can make up your own: $\limfunc{above}\limits^{a\in
+B}\left( \left\{ a\right\} \right) $, $\limfunc{right}\nolimits_{b\in
+A}\left( \left\{ b\right\} \right) $,$\ \func{func}\left( x\right) $.
+
+\section{Binomials}
+
+The following is a list of operators from the \textsc{Insert, Binomials}...
+menu selection.
+
+\noindent 
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+$\QOVERD( ) {2}{3}$ & $\QOVERD[ ] {3}{4}$ & $\QOVERD\{ \} {4}{5}$ & $%
+\QOVERD\langle \rangle {5}{6}$ & $\QOVERD\lfloor \rfloor {6}{7}$ & $%
+\QOVERD\lceil \rceil {7}{8}$ & $\QOVERD\vert \vert {8}{9}$ & $\QOVERD\Vert
+\Vert {9}{0}$ & $\QOVERD/ / {0}{1}$ & $\QOVERD\backslash \backslash {1}{2}$
+& $\QOVERD\updownarrow \updownarrow {2}{3}$ & $\QOVERD. . {3}{4}$ \\ \hline
+$\QOVERD\Updownarrow \Updownarrow {4}{5}$ & $\QOVERD\uparrow \uparrow {5}{6}$
+& $\QOVERD\Uparrow \Uparrow {6}{7}$ & $\QOVERD\downarrow \downarrow {7}{8}$
+& $\QOVERD\Downarrow \Downarrow {8}{9}$ & $\QOVERD\rceil \lceil {9}{0}$ & $%
+\QOVERD\rfloor \lfloor {0}{1}$ & $\QOVERD\rangle \langle {1}{2}$ & $%
+\QOVERD\} \{ {2}{3}$ & $\QOVERD] [ {3}{4}$ & $\QOVERD) ( {4}{5}$ &  \\ \hline
+\end{tabular}
+
+You can modify the thickness of the line: none $\binom{q}{p}$, normal $%
+\QOVERD( ) {q}{p}$, thick $\QABOVED( ) {1pt}{q}{p}$. And the size : auto $%
+\binom{q}{p}$, big $\dbinom{q}{p}$, small $\tbinom{q}{p}$. In a display, the
+auto should become big:
+
+\begin{equation*}
+\text{auto }\binom{q}{p}\text{, big }\dbinom{q}{p}\text{, small }\tbinom{q}{p%
+}
+\end{equation*}%
+And you can make binomials with no delimiters: none $\QATOP{q}{p}$, normal $%
+\frac{q}{p}$, thick $\QABOVE{1pt}{q}{p}$.
+
+\section{Labels}
+
+Use \textsc{Insert, Label}... to build labels above or below. $A\overset{%
+f\left( x\right) }{\longrightarrow }B$ or $A^{\ast }\underset{f^{-1}}{%
+\Longleftarrow }B^{\ast }$.
+
+\section{Decorations}
+
+The following is a list of decorations from the \textsc{Insert, Decorations}%
+... menu selection.
+
+%% jcs$%
+%% jcs\begin{tabular}{|l|l|l|l|l|l|l|}
+%% jcs\hline
+%% jcs$\overline{\frac{1}{1+a^{2}}}$ & $\underleftarrow{\frac{1}{1+d^{2}}}$ & $%
+%% jcs\overleftrightarrow{\frac{1}{1+g^{2}}}$ & $\underbrace{\frac{1}{1+j^{2}}}$ & 
+%% jcs$\widetilde{\frac{1}{1+m^{2}}}$ & $\underline{\frac{1}{1+b^{2}}}$ & $%
+%% jcs\overrightarrow{\frac{1}{1+e^{2}}}$ \\ \hline
+%% jcs$\frac{1}{1+h^{2}}$ & $\widehat{\frac{1}{1+k^{2}}}$ & $\frame{$\frac{1}{%
+%% jcs1+n^{2}}$}$ & $\overleftarrow{\frac{1}{1+c^{2}}}$ & $\underrightarrow{\frac{1%
+%% jcs}{1+f^{2}}}$ & $\overbrace{\frac{1}{1+i^{2}}}$ & $\fbox{$\frac{1}{1+l^{2}}$}$
+%% jcs\\ \hline
+%% jcs\end{tabular}%
+%% jcs\ $
+
+\section{The Symbols}
+
+Here are the symbols on the panels.
+
+\textbf{Note: }If you typeset this document and do not use a multilingual
+format file such as TrueTeX MultiLingual, several characters in the Latin-1,
+Latin Extended-A, and General Punctuation panels will not typeset properly
+and will instead appear as \textbf{???} in the typeset document.
+
+\subsection{Lowercase Greek}
+
+\begin{tabular}{llll}
+$\alpha $ & $\beta $ & $\gamma $ & $\delta $ \\ 
+$\epsilon $ & $\varepsilon $ & $\zeta $ & $\eta $ \\ 
+$\theta $ & $\vartheta $ & $\iota $ & $\kappa $ \\ 
+$\lambda $ & $\mu $ & $\nu $ & $\xi $ \\ 
+$\pi $ & $\varpi $ & $\rho $ & $\sigma $ \\ 
+$\varsigma $ & $\tau $ & $\upsilon $ & $\phi $ \\ 
+$\varphi $ & $\chi $ & $\psi $ & $\omega $ \\ 
+$\varkappa $ & $\varrho $ &  & 
+\end{tabular}
+
+\subsection{Uppercase Greek}
+
+\begin{tabular}{ll}
+$\Gamma $ & $\Delta $ \\ 
+$\Theta $ & $\Lambda $ \\ 
+$\Xi $ & $\Pi $ \\ 
+$\Sigma $ & $\Upsilon $ \\ 
+$\Phi $ & $\Psi $ \\ 
+$\Omega $ & $\digamma $%
+\end{tabular}
+
+\subsection{Binary Operations}
+
+\begin{tabular}{lllll}
+$\pm $ & $\mp $ & $\times $ & $\cdot $ & $\ast $ \\ 
+$\cup $ & $\cap $ & $\circ $ & $\bullet $ & $\div $ \\ 
+$\sqcup $ & $\sqcap $ & $\bigcirc $ & $\setminus $ & $\smallsetminus $ \\ 
+$\oplus $ & $\ominus $ & $\otimes $ & $\odot $ & $\circledast $ \\ 
+$\vee $ & $\wedge $ & $\circledcirc $ & $\lhd $ & $\rhd $ \\ 
+$\veebar $ & $\barwedge $ & $\wr $ & $\triangleleft $ & $\triangleright $ \\ 
+$\uplus $ & $\doublebarwedge $ & $\amalg $ & $\unlhd $ & $\unrhd $ \\ 
+$\bigtriangledown $ & $\bigtriangleup $ & $\diamond $ & $\dagger $ & $%
+\ddagger $ \\ 
+$\boxplus $ & $\boxminus $ & $\boxtimes $ & $\boxdot $ & $\oslash $ \\ 
+$\Cup $ & $\Cap $ & $\ltimes $ & $\rtimes $ & $\star $ \\ 
+$\curlyvee $ & $\curlywedge $ & $\leftthreetimes $ & $\rightthreetimes $ & $%
+\intercal $ \\ 
+$\dotplus $ & $\circleddash $ & $\divideontimes $ & $\centerdot $ & $%
+\smallint $ \\ 
+$\And $ &  &  &  & 
+\end{tabular}
+
+\subsection{Binary Relations}
+
+\begin{tabular}{llllll}
+$\leq $ & $\prec $ & $\preceq $ & $\ll $ & $\subset $ & $\subseteq $ \\ 
+$\sqsubset $ & $\sqsubseteq $ & $\in $ & $\vdash $ & $\smile $ & $\frown $
+\\ 
+$\equiv $ & $\sim $ & $\simeq $ & $\asymp $ & $\approx $ & $\geq $ \\ 
+$\succ $ & $\succeq $ & $\gg $ & $\supset $ & $\supseteq $ & $\sqsupset $ \\ 
+$\sqsupseteq $ & $\ni $ & $\dashv $ & $\mid $ & $\parallel $ & $\perp $ \\ 
+$\cong $ & $\bowtie $ & $\propto $ & $\models $ & $\doteq $ & $\Join $ \\ 
+$\Vdash $ & $\Vvdash $ & $\vDash $ & $\circeq $ & $\succsim $ & $\gtrsim $
+\\ 
+$\gtrapprox $ & $\therefore $ & $\because $ & $\doteqdot $ & $\triangleq $ & 
+$\precsim $ \\ 
+$\lesssim $ & $\lessapprox $ & $\eqslantless $ & $\eqslantgtr $ & $%
+\curlyeqprec $ & $\curlyeqsucc $ \\ 
+$\preccurlyeq $ & $\leqq $ & $\leqslant $ & $\lessgtr $ & $\risingdotseq $ & 
+$\fallingdotseq $ \\ 
+$\succcurlyeq $ & $\geqq $ & $\geqslant $ & $\gtrless $ & $\vartriangleright 
+$ & $\vartriangleleft $ \\ 
+$\trianglerighteq $ & $\trianglelefteq $ & $\between $ & $%
+\blacktriangleright $ & $\blacktriangleleft $ & $\eqcirc $ \\ 
+$\lesseqgtr $ & $\gtreqless $ & $\lesseqqgtr $ & $\gtreqqless $ & $%
+\varpropto $ & $\eqcirc $ \\ 
+$\smallfrown $ & $\Subset $ & $\Supset $ & $\subseteqq $ & $\supseteqq $ & $%
+\bumpeq $ \\ 
+$\Bumpeq $ & $\lll $ & $\ggg $ & $\pitchfork $ & $\backsim $ & $\backsimeq $
+\\ 
+$\eqsim $ & $\lessdot $ & $\gtrdot $ & $\shortmid $ & $\shortparallel $ & $%
+\thicksim $ \\ 
+$\thickapprox $ & $\approxeq $ & $\succapprox $ & $\precapprox $ & $%
+\backepsilon $ & $\vartriangle $%
+\end{tabular}
+
+\subsection{Negated Relations}
+
+\begin{tabular}{lllll}
+$\neq $ & $\notin $ & $\lvertneqq $ & $\gvertneqq $ & $\nleq $ \\ 
+$\ngeq $ & $\nless $ & $\ngtr $ & $\nprec $ & $\nsucc $ \\ 
+$\lneqq $ & $\gneqq $ & $\nleqslant $ & $\ngeqslant $ & $\lneq $ \\ 
+$\gneq $ & $\npreceq $ & $\nsucceq $ & $\precnsim $ & $\succnsim $ \\ 
+$\lnsim $ & $\gnsim $ & $\nleqq $ & $\ngeqq $ & $\precneqq $ \\ 
+$\succneqq $ & $\precnapprox $ & $\succnapprox $ & $\lnapprox $ & $\gnapprox 
+$ \\ 
+$\nsim $ & $\ncong $ & $\varsubsetneq $ & $\varsupsetneq $ & $\nsubseteqq $
+\\ 
+$\nsupseteqq $ & $\subsetneqq $ & $\supsetneqq $ & $\varsubsetneqq $ & $%
+\varsupsetneqq $ \\ 
+$\subsetneq $ & $\supsetneq $ & $\nsubseteq $ & $\nsupseteq $ & $\nparallel $
+\\ 
+$\nmid $ & $\nshortmid $ & $\nshortparallel $ & $\nvdash $ & $\nVdash $ \\ 
+$\nvDash $ & $\nVDash $ & $\ntrianglerighteq $ & $\ntrianglelefteq $ & $%
+\ntriangleright $ \\ 
+$\ntriangleleft $ & $\nleftarrow $ & $\nrightarrow $ & $\nLeftarrow $ & $%
+\nRightarrow $ \\ 
+$\nLeftrightarrow $ & $\nleftrightarrow $ &  &  & 
+\end{tabular}
+
+\subsection{Arrows}
+
+\begin{tabular}{lllll}
+$\leftarrow $ & $\Leftarrow $ & $\rightarrow $ & $\Rightarrow $ & $%
+\leftrightarrow $ \\ 
+$\Leftrightarrow $ & $\mapsto $ & $\hookleftarrow $ & $\leftharpoonup $ & $%
+\leftharpoondown $ \\ 
+$\uparrow $ & $\Uparrow $ & $\downarrow $ & $\Downarrow $ & $\updownarrow $
+\\ 
+$\longleftarrow $ & $\Longleftarrow $ & $\longrightarrow $ & $%
+\Longrightarrow $ & $\longleftrightarrow $ \\ 
+$\Longleftrightarrow $ & $\longmapsto $ & $\hookrightarrow $ & $%
+\rightharpoonup $ & $\rightharpoondown $ \\ 
+$\leadsto $ & $\Updownarrow $ & $\nearrow $ & $\searrow $ & $\swarrow $ \\ 
+$\nwarrow $ & $\circlearrowright $ & $\circlearrowleft $ & $%
+\rightleftharpoons $ & $\leftrightharpoons $ \\ 
+$\twoheadrightarrow $ & $\twoheadleftarrow $ & $\leftleftarrows $ & $%
+\rightrightarrows $ & $\upuparrows $ \\ 
+$\downdownarrows $ & $\upharpoonright $ & $\downharpoonright $ & $%
+\upharpoonleft $ & $\downharpoonleft $ \\ 
+$\rightarrowtail $ & $\leftarrowtail $ & $\leftrightarrows $ & $%
+\rightleftarrows $ & $\Lsh $ \\ 
+$\Rsh $ & $\rightsquigarrow $ & $\leftrightsquigarrow $ & $\looparrowleft $
+& $\looparrowright $ \\ 
+$\multimap $ & $\Rrightarrow $ & $\Lleftarrow $ & $\curvearrowleft $ & $%
+\curvearrowright $ \\ 
+$\dashrightarrow $ & $\dashleftarrow $ & $\implies $ & $\impliedby $ & $\iff 
+$%
+\end{tabular}
+
+\subsection{Miscellaneous}
+
+\begin{tabular}{llllll}
+$\infty $ & $\partial $ & \ldots & $\cdots $ & $\vdots $ & $\ddots $ \\ 
+\i & \j & $\ell $ & $\wp $ & $\hbar $ & $\hslash $ \\ 
+$\forall $ & $\exists $ & $\nexists $ & $\Re $ & $\Im $ & $\aleph $ \\ 
+$\prime $ & $\backprime $ & $\emptyset $ & $\varnothing $ & $\diagup $ & $%
+\diagdown $ \\ 
+$\nabla $ & $\surd $ & $\top $ & $\bot $ & $\eth $ & $\lambdabar $ \\ 
+$\angle $ & $\measuredangle $ & $\sphericalangle $ & $\circledS $ & $%
+\tciLaplace $ & $\tciFourier $ \\ 
+$\lnot $ & $\complement $ & $\Finv $ & $\Game $ & $\bigstar $ & $\Vert $ \\ 
+$\square $ & $\blacksquare $ & $\Diamond $ & $\lozenge $ & $\blacklozenge $
+& \TEXTsymbol{\backslash} \\ 
+$\triangle $ & $\blacktriangle $ & $\triangledown $ & $\blacktriangledown $
+& \dag & \ddag \\ 
+$\beth $ & $\gimel $ & $\daleth $ & $\sharp $ & $\flat $ & $\natural $ \\ 
+$\clubsuit $ & $\diamondsuit $ & $\heartsuit $ & $\spadesuit $ & $\checkmark 
+$ & $\maltese $ \\ 
+$\Bbbk $ & $%
+%TCIMACRO{\U{2102} }%
+%BeginExpansion
+\mathbb{C}
+%EndExpansion
+$ & $%
+%TCIMACRO{\U{2115} }%
+%BeginExpansion
+\mathbb{N}
+%EndExpansion
+$ & $%
+%TCIMACRO{\U{211a} }%
+%BeginExpansion
+\mathbb{Q}
+%EndExpansion
+$ & $%
+%TCIMACRO{\U{211d} }%
+%BeginExpansion
+\mathbb{R}
+%EndExpansion
+$ & $%
+%TCIMACRO{\U{2124} }%
+%BeginExpansion
+\mathbb{Z}
+%EndExpansion
+$ \\ 
+\cents  & \pounds  & \textcurrency  & \yen  & \euro & \textfranc \\ 
+\textlira & \textpeseta  & \texttrademark & $\mho $ & $\colon $ & 
+\end{tabular}
+
+\subsection{Delimiters}
+
+\begin{tabular}{ll}
+$\lfloor $ & $\rfloor $ \\ 
+$\lceil $ & $\rceil $ \\ 
+$\langle $ & $\rangle $ \\ 
+$\ulcorner $ & $\urcorner $ \\ 
+$\llcorner $ & $\lrcorner $%
+\end{tabular}
+
+\subsection{Latin-1}
+
+\begin{tabular}{llllll}
+~ & $%
+%TCIMACRO{\U{b0}}%
+%BeginExpansion
+{{}^\circ}%
+%EndExpansion
+$ & \`{A} & \DH  & \`{a} & \dh  \\ 
+\textexclamdown  & $\pm $ & \'{A} & \~{N} & \'{a} & \~{n} \\ 
+\cents  & 
+%TCIMACRO{\U{b2} }%
+%BeginExpansion
+${{}^2}$
+%EndExpansion
+& \^{A} & \`{O} & \^{a} & \`{o} \\ 
+\pounds  & 
+%TCIMACRO{\U{b3} }%
+%BeginExpansion
+${{}^3}$
+%EndExpansion
+& \~{A} & \'{O} & \~{a} & \'{o} \\ 
+\textcurrency  & 
+%TCIMACRO{\U{b4} }%
+%BeginExpansion
+\'{}
+%EndExpansion
+& \"{A} & \^{O} & \"{a} & \^{o} \\ 
+\yen  & 
+%TCIMACRO{\U{b5} }%
+%BeginExpansion
+$\mu$
+%EndExpansion
+& \AA  & \~{O} & \aa  & \~{o} \\ 
+$%
+%TCIMACRO{\U{a6}}%
+%BeginExpansion
+{\vert}%
+%EndExpansion
+$ & \P  & \AE  & \"{O} & \ae  & \"{o} \\ 
+\S  & \textperiodcentered & \c{C} & $\times $ & \c{c} & $\div $ \\ 
+%TCIMACRO{\U{a8} }%
+%BeginExpansion
+\"{}
+%EndExpansion
+& 
+%TCIMACRO{\U{b8} }%
+%BeginExpansion
+\c{}
+%EndExpansion
+& \`{E} & \O  & \`{e} & \o  \\ 
+\copyright  & 
+%TCIMACRO{\U{b9} }%
+%BeginExpansion
+${{}^1}$
+%EndExpansion
+& \'{E} & \`{U} & \'{e} & \`{u} \\ 
+%TCIMACRO{\U{aa} }%
+%BeginExpansion
+${{}^a}$
+%EndExpansion
+& 
+%TCIMACRO{\U{ba} }%
+%BeginExpansion
+${{}^o}$
+%EndExpansion
+& \^{E} & \'{U} & \^{e} & \'{u} \\ 
+\guillemotleft  & \guillemotright  & \"{E} & \^{U} & \"{e} & \^{u} \\ 
+$\lnot $ & 
+%TCIMACRO{\U{bc} }%
+%BeginExpansion
+$\frac14$
+%EndExpansion
+& \`{I} & \"{U} & \`{\i} & \"{u} \\ 
+- & 
+%TCIMACRO{\U{bd} }%
+%BeginExpansion
+$\frac12$
+%EndExpansion
+& \'{I} & \'{Y} & \'{\i} & \'{y} \\ 
+\registered  & 
+%TCIMACRO{\U{be} }%
+%BeginExpansion
+$\frac34$
+%EndExpansion
+& \^{I} & \TH  & \^{\i} & \th  \\ 
+%TCIMACRO{\U{af} }%
+%BeginExpansion
+\={}
+%EndExpansion
+& \textquestiondown  & \"{I} & \ss  & \"{\i} & \"{y}%
+\end{tabular}
+
+\subsection{Latin Extended-A}
+
+\begin{tabular}{llllllll}
+\={A} & \DJ  & \.{G} & \.{I} & 
+%TCIMACRO{\U{140} }%
+%BeginExpansion
+l{\hskip.15em}\llap{\raise.25ex\hbox{$\cdot$}}
+%EndExpansion
+& \H{O} & \v{S} & \H{U} \\ 
+\={a} & \dj  & \.{g} & \i & \L  & \H{o} & \v{s} & \H{u} \\ 
+\u{A} & \={E} & \c{G} & 
+%TCIMACRO{\U{132} }%
+%BeginExpansion
+\symbol{156}
+%EndExpansion
+& \l  & \OE  & \c{T} & \k{U} \\ 
+\u{a} & \={e} & \c{g} & 
+%TCIMACRO{\U{133} }%
+%BeginExpansion
+\symbol{188}
+%EndExpansion
+& \'{N} & \oe  & \c{t} & \k{u} \\ 
+\k{A} & \u{E} & \^{H} & \^{J} & \'{n} & \'{R} & \v{T} & \^{W} \\ 
+\k{a} & \u{e} & \^{h} & \^{\j} & \c{N} & \'{r} & \v{t} & \^{w} \\ 
+\'{C} & \.{E} & 
+%TCIMACRO{\U{126} }%
+%BeginExpansion
+H\llap{\protect\rule[1.1ex]{.735em}{.1ex}}
+%EndExpansion
+& \c{K} & \c{n} & \c{R} & 
+%TCIMACRO{\U{166} }%
+%BeginExpansion
+T{\hskip-.05em}\llap{\protect\rule[.7ex]{.6em}{.1ex}}{\hskip.05em}
+%EndExpansion
+& \^{Y} \\ 
+\'{c} & \.{e} & 
+%TCIMACRO{\U{127} }%
+%BeginExpansion
+h{\hskip-.2em}\llap{\protect\rule[1.1ex]{.325em}{.1ex}}{\hskip.2em}
+%EndExpansion
+& \c{k} & \v{N} & \c{r} & 
+%TCIMACRO{\U{167} }%
+%BeginExpansion
+t{\hskip-.05em}\llap{\protect\rule[.7ex]{.36em}{.1ex}}{\hskip.05em}
+%EndExpansion
+& \^{y} \\ 
+\^{C} & \k{E} & \~{I} & \U{138} & \v{n} & \v{R} & \~{U} & \"{Y} \\ 
+\^{c} & \k{e} & \~{\i} & \'{L} & 
+%TCIMACRO{\U{149} }%
+%BeginExpansion
+n{\hskip-.3em}\llap{\raise1.5ex\hbox{,}}{\hskip.3em}
+%EndExpansion
+& \v{r} & \~{u} & \'{Z} \\ 
+\.{C} & \v{E} & \={I} & \'{l} & \NG  & \'{S} & \={U} & \'{z} \\ 
+\.{c} & \v{e} & \={\i} & \c{L} & \ng  & \'{s} & \={u} & \.{Z} \\ 
+\v{C} & \^{G} & \u{I} & \c{l} & \={O} & \^{S} & \u{U} & \.{z} \\ 
+\v{c} & \^{g} & \u{\i} & \v{L} & \={o} & \^{s} & \u{u} & \v{Z} \\ 
+\v{D} & \u{G} & \k{I} & \v{l} & \u{O} & \c{S} & \r{U} & \v{z} \\ 
+\v{d} & \u{g} & \k{i} & 
+%TCIMACRO{\U{13f} }%
+%BeginExpansion
+L{\hskip-.05em}\llap{\raise.5ex\hbox{$\cdot$}}{\hskip.05em}
+%EndExpansion
+& \u{o} & \c{s} & \r{u} & 
+\end{tabular}
+
+\subsection{General Punctuation}
+
+\begin{tabular}{ll}
+-- & --- \\ 
+` & ' \\ 
+\quotesinglbase & \quotedblbase \\ 
+\textquotedblleft & \textquotedblright \\ 
+\guilsinglleft  & \guilsinglright 
+\end{tabular}
+
+\begin{center}
+\TeX{} converts the following pairs and triples to single characters called
+ligatures
+
+ff fi fl ffi ffl -- \textbf{ff fi fl ffi ffl} -- \textit{ff fi fl ffi ffl}
+
+Kerning is the subtle adjustment of certain pairs of characters.
+
+To, Wo, Ro -- \textbf{To, Wo, Ro }\textit{-- To, Wo, Ro}
+\end{center}
+
+\section{Type Styles and Kerns}
+
+The text in this section tests the available \LaTeX{} type styles (plain,
+bold, italic, and bold italic) for each of the basic fonts (Roman-Times,
+Sans Serif-Arial, and Typewriter-Courier).
+
+\subsection{Type Styles for Roman, Sans Serif, and Typewriter}
+
+Roman \textbf{bold}, \textit{italic}, and \textbf{\textit{bold italic}}.
+
+\textsf{Sans Serif \textbf{bold}, \textit{italic}, and \textbf{\textit{bold
+italic}}.}
+
+\texttt{Typewriter \textbf{bold,} \textit{italic,} and\textbf{\ \textit{bold
+italic}.}}
+
+{\tiny tiny roman \textbf{bold},\textit{\ italic}, and \textbf{\textit{bold
+italic}}}
+
+\textsf{{\tiny tiny Sans Serif \textbf{bold},\textit{\ italic}, and \textbf{%
+\textit{bold italic}}}}
+
+\texttt{{\tiny tiny Typewriter \textbf{bold},\textit{\ italic}, and \textbf{%
+\textit{bold italic}}}}
+
+{\scriptsize scriptsize roman \textbf{bold},\textit{\ italic}, and \textbf{%
+\textit{bold italic}}}
+
+\textsf{{\scriptsize scriptsize Sans Serif \textbf{bold},\textit{\ italic},
+and \textbf{\textit{bold italic}}}}
+
+\texttt{{\scriptsize scriptsize Typewriter \textbf{bold},\textit{\ italic},
+and \textbf{\textit{bold italic}}}}
+
+{\footnotesize footnotesize roman \textbf{bold},\textit{\ italic}, and 
+\textbf{\textit{bold italic}}}
+
+\textsf{{\footnotesize footnotesize Sans Serif \textbf{bold},\textit{\ italic%
+}, and \textbf{\textit{bold italic}}}}
+
+\texttt{{\footnotesize footnotesize Typewriter \textbf{bold},\textit{\ italic%
+}, and \textbf{\textit{bold italic}}}}
+
+{\small small roman \textbf{bold},\textit{\ italic}, and \textbf{\textit{%
+bold italic}}}
+
+\textsf{{\small small Sans Serif \textbf{bold},\textit{\ italic}, and 
+\textbf{\textit{bold italic}}}}
+
+\texttt{{\small small Typewriter \textbf{bold},\textit{\ italic}, and 
+\textbf{\textit{bold italic}}}}
+
+{\normalsize normalsize roman \textbf{bold},\textit{\ italic}, and \textbf{%
+\textit{bold italic}}}
+
+\textsf{{\normalsize normalsize Sans Serif \textbf{bold},\textit{\ italic},
+and \textbf{\textit{bold italic}}}}
+
+\texttt{{\normalsize normalsize Typewriter \textbf{bold},\textit{\ italic},
+and \textbf{\textit{bold italic}}}}
+
+{\large large roman \textbf{bold},\textit{\ italic}, and \textbf{\textit{%
+bold italic}}}
+
+\textsf{{\large large Sans Serif \textbf{bold},\textit{\ italic}, and 
+\textbf{\textit{bold italic}}}}
+
+\texttt{{\large large Typewriter \textbf{bold},\textit{\ italic}, and 
+\textbf{\textit{bold italic}}}}
+
+{\Large Large roman \textbf{bold},\textit{\ italic}, and \textbf{\textit{%
+bold italic}}}
+
+\textsf{{\Large Large Sans Serif \textbf{bold},\textit{\ italic}, and 
+\textbf{\textit{bold italic}}}}
+
+\texttt{{\Large Large Typewriter \textbf{bold},\textit{\ italic}, and 
+\textbf{\textit{bold italic}}}}
+
+{\LARGE LARGE roman \textbf{bold},\textit{\ italic}, and \textbf{\textit{%
+bold italic}}}
+
+\textsf{{\LARGE LARGE Sans Serif \textbf{bold},\textit{\ italic}, and 
+\textbf{\textit{bold italic}}}}
+
+\texttt{{\LARGE LARGE Typewriter \textbf{bold},\textit{\ italic}, and 
+\textbf{\textit{bold italic}}}}
+
+{\huge huge roman \textbf{bold},\textit{\ italic}, and \textbf{\textit{bold
+italic}}}
+
+\textsf{{\huge huge Sans Serif \textbf{bold},\textit{\ italic}, and \textbf{%
+\textit{bold italic}}}}
+
+\texttt{{\huge huge Typewriter \textbf{bold},\textit{\ italic}, and \textbf{%
+\textit{bold italic}}}}
+
+{\Huge Huge roman \textbf{bold},\textit{\ italic}, and \textbf{\textit{bold
+italic}}}
+
+\textsf{{\Huge Huge Sans Serif \textbf{bold},\textit{\ italic}, and \textbf{%
+\textit{bold italic}}}}
+
+\texttt{{\Huge Huge Typewriter \textbf{bold},\textit{\ italic}, and \textbf{%
+\textit{bold italic}}}}
+
+\subsubsection{Bold Greek Letters}
+
+Here are uppercase and lowercase greek letters, normal and bold, together
+with nabla, in a variety of positions:
+
+\begin{equation*}
+x+\gamma +\mathbf{\alpha }+\mathbf{\Gamma }(\lambda )\Psi ^{\mathbf{\beta }%
+^\delta }+\nabla (\mathbf{\kappa }_{\nu ^{\mathbf{\mu }}}\mathbf{)}+\mathbf{%
+\nabla }
+\end{equation*}
+
+Here is a more comprehensive listing:
+
+$%
+\begin{array}{ccccccc}
+\alpha ^{\alpha ^\alpha }\mathbf{\alpha }^{\mathbf{\alpha }^{\mathbf{\alpha }%
+}} & \beta ^{\beta ^\beta }\mathbf{\beta }^{\mathbf{\beta }^{\mathbf{\beta }%
+}} & \gamma ^{\gamma ^\gamma }\mathbf{\gamma }^{\mathbf{\gamma }^{\mathbf{%
+\gamma }}} & \delta ^{\delta ^\delta }\mathbf{\delta }^{\mathbf{\delta }^{%
+\mathbf{\delta }}} & \epsilon ^{\epsilon ^\epsilon }\mathbf{\epsilon }^{%
+\mathbf{\epsilon }^{\mathbf{\epsilon }}} & \varepsilon ^{\varepsilon
+^\varepsilon }\mathbf{\varepsilon }^{\mathbf{\varepsilon }^{\mathbf{%
+\varepsilon }}} & \zeta ^{\zeta ^\zeta }\mathbf{\zeta }^{\mathbf{\zeta }^{%
+\mathbf{\zeta }}} \\ 
+\eta ^{\eta ^\eta }\mathbf{\eta }^{\mathbf{\eta }^{\mathbf{\eta }}} & \theta
+^{\theta ^\theta }\mathbf{\theta }^{\mathbf{\theta }^{\mathbf{\theta }}} & 
+\vartheta ^{\vartheta ^\vartheta }\mathbf{\vartheta }^{\mathbf{\vartheta }^{%
+\mathbf{\vartheta }}} & \iota ^{\iota ^\iota }\mathbf{\iota }^{\mathbf{\iota 
+}^{\mathbf{\iota }}} & \kappa ^{\kappa ^\kappa }\mathbf{\kappa }^{\mathbf{%
+\kappa }^{\mathbf{\kappa }}} & \lambda ^{\lambda ^\lambda }\mathbf{\lambda }%
+^{\mathbf{\lambda }^{\mathbf{\lambda }}} & \mu ^{\mu ^\mu }\mathbf{\mu }^{%
+\mathbf{\mu }^{\mathbf{\mu }}}%
+\end{array}
+$
+
+Here are superscript greek letters, normal and bold, following normal and
+bold numbers:
+
+$%
+\begin{array}{ccccccc}
+1^{\alpha ^{\alpha }}1\mathbf{\alpha }^{\mathbf{\alpha }^{\mathbf{\alpha }}}
+& 1^{\beta ^{\beta }}\mathbf{1}^{\mathbf{\beta }^{\mathbf{\beta }}} & 
+1^{\gamma ^{\gamma }}\mathbf{1}^{\mathbf{\gamma }^{\mathbf{\gamma }}} & 
+1^{\delta ^{\delta }}\mathbf{1}^{\mathbf{\delta }^{\mathbf{\delta }}} & 
+1^{\epsilon ^{\epsilon }}\mathbf{1}^{\mathbf{\epsilon }^{\mathbf{\epsilon }}}
+& 1^{\varepsilon ^{\varepsilon }}\mathbf{1}^{\mathbf{\varepsilon }^{\mathbf{%
+\varepsilon }}} & 1^{\zeta ^{\zeta }}\mathbf{1}^{\mathbf{\zeta }^{\mathbf{%
+\zeta }}} \\ 
+1^{\eta ^{\eta }}\mathbf{1}^{\mathbf{\eta }^{\mathbf{\eta }}} & 1^{\theta
+^{\theta }}\mathbf{1}^{\mathbf{\theta }^{\mathbf{\theta }}} & 1^{\vartheta
+^{\vartheta }}\mathbf{1}^{\mathbf{\vartheta }^{\mathbf{\vartheta }}} & 
+1^{\iota ^{\iota }}\mathbf{1}^{\mathbf{\iota }^{\mathbf{\iota }}} & 
+1^{\kappa ^{\kappa }}\mathbf{1}^{\mathbf{\kappa }^{\mathbf{\kappa }}} & 
+1^{\lambda ^{\lambda }}\mathbf{1}^{\mathbf{\lambda }^{\mathbf{\lambda }}} & 
+1^{\mu ^{\mu }}\mathbf{1}^{\mathbf{\mu }^{\mathbf{\mu }}}%
+\end{array}
+$
+
+Here are subscript greek letters, normal and bold, following normal and bold
+numbers:
+
+$%
+\begin{array}{ccccccc}
+1_{\alpha _{\alpha }}\mathbf{1}_{\mathbf{\alpha }_{\mathbf{\alpha }}} & 
+1_{\beta _{\beta }}\mathbf{1}_{\mathbf{\beta }_{\mathbf{\beta }}} & 
+1_{\gamma _{\gamma }}\mathbf{1}_{\mathbf{\gamma }_{\mathbf{\gamma }}} & 
+1_{\delta _{\delta }}\mathbf{1}_{\mathbf{\delta }_{\mathbf{\delta }}} & 
+1_{\epsilon _{\epsilon }}\mathbf{1}_{\mathbf{\epsilon }_{\epsilon }} & 
+1_{\varepsilon _{\varepsilon }}\mathbf{1}_{\mathbf{\varepsilon }_{\mathbf{%
+\varepsilon }}} & 1_{\zeta _{\zeta }}\mathbf{1}_{\mathbf{\zeta }_{\mathbf{%
+\zeta }}} \\ 
+1_{\eta _{\eta }}\mathbf{1}_{\mathbf{\eta }_{\mathbf{\eta }}} & 1_{\theta
+_{\theta }}\mathbf{1}_{\mathbf{\theta }_{\mathbf{\theta }}} & 1_{\vartheta
+_{\vartheta }}\mathbf{1}_{\mathbf{\vartheta }_{\mathbf{\vartheta }}} & 
+1_{\delta _{\delta }}1_{\mathbf{\delta }_{\mathbf{\delta }}} & 1_{\kappa
+_{\kappa }}\mathbf{1}_{\mathbf{\kappa }_{\mathbf{\kappa }}} & 1_{\lambda
+_{\lambda }}\mathbf{1}_{\mathbf{\lambda }_{\mathbf{\lambda }}} & 1_{\mu
+_{\mu }}\mathbf{1}_{\mathbf{\mu }_{\mathbf{\mu }}}%
+\end{array}
+$
+
+\section{Font Size Commands}
+
+The \LaTeX{} font size switches are not directly supported by \textsl{SW}.
+This is deliberate, because we attempt to create objects that encapsulate
+such switches. A switch ``in the clear'' causes the filter to turn that
+switch on and off for every paragraph. Thus, all such switches should be
+encapsulated like this: \{\TEXTsymbol{\backslash}huge huge text\}. We
+strongly discourage the use of such switches. Instead, you should create
+appropriate tags in a style, giving the size changes content-oriented
+meaning. The following table is included here to check the font sizes and
+shapes provided by the style.
+
+\begin{center}
+\begin{tabular}{lll}
+\textbf{\LaTeX{} Command} & \textbf{Style Editor Size} & \textbf{Example} \\ 
+\hline
+\TEXTsymbol{\backslash}tiny & tiny & {\tiny Gnu} \\ 
+\TEXTsymbol{\backslash}scriptsize & script & {\scriptsize Gnu} \\ 
+\TEXTsymbol{\backslash}footnotesize & footnote & {\footnotesize Gnu} \\ 
+\TEXTsymbol{\backslash}small & small & {\small Gnu} \\ 
+\TEXTsymbol{\backslash}normal & normal & {\normalsize Gnu} \\ 
+\TEXTsymbol{\backslash}large & large-1 & {\large Gnu} \\ 
+\TEXTsymbol{\backslash}Large & large-2 & {\Large Gnu} \\ 
+\TEXTsymbol{\backslash}LARGE & large-3 & {\LARGE Gnu} \\ 
+\TEXTsymbol{\backslash}huge & large-4 & {\huge Gnu} \\ 
+\TEXTsymbol{\backslash}Huge & large-5 & {\Huge Gnu}%
+\end{tabular}
+\end{center}
+
+\section{Spacing Objects}
+
+\subsection{Horizontal}
+
+Each horizontal spacing object is placed between reversed brackets, where
+this makes sense.
+
+Required space \rbrack\ \lbrack
+
+Non-breaking space \rbrack ~\lbrack
+
+Em space (quad) \rbrack \quad \lbrack
+
+2-Em space (double quad) \rbrack \qquad \lbrack
+
+Thin space \rbrack \thinspace \lbrack
+
+Thick space \rbrack \ \lbrack
+
+Italic correction \rbrack \/\lbrack
+
+Negative thin space \rbrack \negthinspace \lbrack
+
+Zero space \rbrack {}\lbrack
+
+\noindent No indent
+
+Custom space (1 inch) \rbrack \hspace{1in}\lbrack
+
+Custom space (stretchy, 1.0) \rbrack \hfill \lbrack
+
+Custom spaces (stretchy, 1.0, 0.5) \rbrack \hfill \lbrack \rbrack \hspace{%
+\stretch{0.5000}}\lbrack
+
+Custom space (stretchy, line) \rbrack \hrulefill \lbrack
+
+Custom space (stretchy, dots) \rbrack \dotfill \lbrack
+
+\subsection{Vertical}
+
+Small skip:\smallskip
+
+Medium skip: \medskip
+
+Big skip: \bigskip
+
+Strut \lbrack \strut \rbrack
+
+Math strut $\sqrt{\mathstrut }$ Radical without math strut $\sqrt{}$
+
+Custom (1 inch): \vspace{1in}
+
+\subsection{Rule}
+
+Rule, raised 0.25 inch, 1 inch wide, .25 inch high \rule[0.25in]{1in}{0.25in}
+
+\subsection{Breaks}
+
+Allowbreak \rbrack \allowbreak \lbrack
+
+Discretionary hyphen \rbrack \-\lbrack
+
+No break \rbrack \nolinebreak \lbrack
+
+Page break\rbrack \pagebreak \lbrack
+
+New page \rbrack \newpage
+
+\lbrack
+
+Line break \rbrack \linebreak \lbrack
+
+New line \rbrack \newline
+\lbrack
+
+Custom new line, 1 inch\rbrack \\[1in]
+\lbrack
+
+\section{Verb and Verbatim}
+
+The \LaTeX{} \TEXTsymbol{\backslash}verb command is available as a fragment.
+You enter the fragment, then choose Edit Properties to change the contents.
+A \TEXTsymbol{\backslash}verb: \verb"`~!@#$^&*()_+|\{}"
+
+The \LaTeX{} verbatim environment is translated to the Body Verbatim
+paragraph enviroment in \textsl{Scientific Word\/}{}. This environment is
+valuable for displaying fragments of program code:
+\begin{verbatim}
+\long\def\@caption#1[#2]#3{%
+  \par
+   %\edef\@tempa{\csname #1TOCLabel\endcsname}
+   \AddContentsLine
+   {\csname ext@#1\endcsname}%
+   {#1@toc}%
+   {\csname #1toclabel\endcsname}%
+   {\ignorespaces #2}%
+   \begingroup
+     \@parboxrestore
+     \normalsize
+     \csname @makecaption#1\endcsname{\ignorespaces #3}\par
+   \endgroup}
+\end{verbatim}
+
+Active \LaTeX{} characters can cause problems in verbatim translations:
+\begin{verbatim}
+  `~!@#$%^&*()_-+=[]{}\|;:'",<.>/?
+\end{verbatim}
+
+Another approach to program code is illustrated by the following, which uses
+a table.
+
+\begin{center}
+\begin{tabular}{l}
+\textbf{for $j:=2$ step $1$ until $n$ do} \\ 
+\quad \textbf{begin} $\mathit{accum}:=A\lbrack j\rbrack $; $k:=j-1$; $%
+A\lbrack 0\rbrack :=\mathit{accum}$; \\ 
+\quad \textbf{while $A\lbrack k\rbrack >\mathit{accum}$ do} \\ 
+\qquad \textbf{begin} $A\lbrack k+1\rbrack :=A\lbrack k\rbrack $; $k:=k-1$;
+\\ 
+\qquad \textbf{end}; \\ 
+\quad $A\lbrack k+1\rbrack :=\mathit{accum}$; \\ 
+\quad \textbf{end}.%
+\end{tabular}
+\end{center}
+
+\section{Comments}
+
+You enter \LaTeX{} comments using the comment fragment. Enter the fragment,
+then choose Edit Properties to change the body of the comment.%
+%This comment is the fragment of TeX code from the Body Verbatim example:
+%
+%\long\def\@caption#1[#2]#3{%
+%  \par
+%  %\edef\@tempa{\csname #1TOCLabel\endcsname}
+%  \AddContentsLine
+%     {\csname ext@#1\endcsname}%
+%     {#1@toc}%
+%     {\csname #1toclabel\endcsname}%
+%     {\ignorespaces #2}%
+%  \begingroup
+%    \@parboxrestore
+%    \normalsize
+%    \csname @makecaption#1\endcsname{\ignorespaces #3}\par
+%  \endgroup}
+%
+
+\section{Tables and Arrays}
+
+\subsection{Tables}
+
+There are many different tables that you can create with the table editor.
+Some are included here to test
+
+\begin{center}
+\begin{tabular}{|lrrrrrr|}
+\hline
+&  &  &  &  &  & \% Change \\ 
+Ethnicity & 1986 & 1987 & 1988 & 1989 & 1990 & 1986-1990 \\ \hline
+Amer. Indian & 294 & 277 & 298 & 328 & 361 & 23.0\% \\ 
+Black & 192 & 206 & 199 & 183 & 225 & 17.0\% \\ 
+Hispanic & 3,108 & 3,131 & 3,433 & 3,637 & 4,038 & 30.0\% \\ 
+Oriental & 67 & 65 & 71 & 77 & 96 & 30.0\% \\ 
+Other & 10,057 & 10,324 & 10,283 & 10,075 & 10,089 & 0.3\% \\ \hline
+\end{tabular}
+
+\begin{tabular}{|l|rrrrr|}
+\hline
+Course & 1987 & 1988 & 1989 & 1990 & 1991 \\ \hline
+MATH 280 & 68 & 61 & 58 & 61 & 84 \\ \hline
+MATH 480 & 36 & 26 & 41 & 44 & 53 \\ \hline
+\end{tabular}
+\end{center}
+
+\subsubsection{From the \LaTeX{} User's Guide and Reference Manual}
+
+\begin{center}
+\begin{tabular}{||l|lr||}
+\hline
+gnats & gram & \$13.65 \\ \cline{2-3}
+& each & .01 \\ \hline
+gnu & stuffed & 92.50 \\ \cline{1-1}\cline{3-3}
+emur &  & 33.33 \\ \hline
+armadillo & frozen & 8.99 \\ \hline
+\end{tabular}
+
+\begin{tabular}{|l|l|r|}
+\hline\hline
+\emph{type} & \multicolumn{2}{c|}{\emph{style}} \\ \hline
+smart & red & short \\ 
+rather silly & puce & tall \\ \hline\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{From Jane Hahn's \LaTeX{} for Everyone}
+
+\begin{center}
+\begin{tabular}{|l|r|c|r|}
+\hline
+\multicolumn{4}{|c|}{\textbf{Overall Heading of Table}} \\ \hline
+\multicolumn{1}{|c|}{Left-justified} & \multicolumn{1}{c|}{Right-justified}
+& Centered & \multicolumn{1}{|c|}{Right-justified} \\ \hline\hline
+one & two & three & four \\ \cline{2-4}
+1 & 2 & 3 & 4 \\ 
+i & ii & iii & iv \\ \hline
+\end{tabular}
+
+\begin{tabular}{|l|r@{.}l|}
+\hline
+\multicolumn{3}{|c|}{\textbf{Household Budget}} \\ \hline\hline
+& \multicolumn{2}{c|}{\textbf{\% of}} \\ 
+\textbf{Item} & \multicolumn{2}{c|}{\textbf{Budget}} \\ \hline
+Housing & 50 & 0 \\ 
+Food & 25 & 0 \\ 
+Toys & 10 & 5 \\ 
+Pet Supplies & 7 & 5 \\ 
+Clothes & 5 & 25 \\ 
+Charity & 1 & 75 \\ \hline
+\end{tabular}
+
+\begin{tabular}{|l|cr|}
+\hline
+\multicolumn{3}{|c|}{\textbf{PORTABLE HOOK-ON CHAIRS}} \\ \hline\hline
+\textbf{BRAND} & \textbf{Graco} & \textbf{Strolee} \\ \hline
+\textbf{MODEL} & Tot Loc Chair & Meal Mate \\ \hline
+\textbf{PRICE} & \$23 & \$32 \\ \hline
+\textbf{OVERALL JUDGEMENT} & Satisfactory & Satisfactory \\ \hline
+\textbf{WEIGHT} & 7 lb. 9 oz. & 6 lb. 8 oz. \\ \hline
+\end{tabular}
+
+\begin{tabular}{|ll|}
+\hline
+\multicolumn{2}{|c|}{\textbf{THE CATECHISM}} \\ \hline
+Q. & What are we by nature? \\ 
+A. & We are part of God's creation, made in the image of God. \\[3mm] 
+Q. & What does it mean to be created in the image of God? \\ 
+A. & It means that we are free to make choices: to love; to create, to
+reason, \\[3mm] 
+& and to live in harmony with creation and with God. \\ 
+Q. & Why then do we live apart from God and out of harmony with creation? \\ 
+A. & From the beginning, human beings have misused their freedom and \\ 
+& made wrong choices. \\ \hline
+\end{tabular}
+\end{center}
+
+\subsubsection{The Economist}
+
+Here is a table that is too wide for the page:
+
+\begin{center}
+\begin{tabular}{llllcllcl}
+&  &  &  & \multicolumn{5}{c}{\textbf{\% change on}} \\ \cline{5-9}
+&  & \multicolumn{2}{c}{\textbf{1993/94}} & \textbf{one} & \textbf{one} & 
+\textbf{record} & \multicolumn{2}{c}{\textbf{Dec 31st 1992}} \\ \cline{3-4}
+& \textbf{Feb 22nd} & \textbf{high} & \textbf{low} & \textbf{week} & \textbf{%
+year} & \textbf{high} & \textbf{in local} & \textbf{in \$} \\ 
+&  &  &  & \multicolumn{1}{l}{} &  &  & \textbf{currency} & \textbf{terms}
+\\ \hline
+\textbf{Australia} & \multicolumn{1}{r}{2,202.5} & \multicolumn{1}{r}{2,340.6
+} & \multicolumn{1}{r}{1,495.0} & \multicolumn{1}{l}{$-$ 1.4} & $+$ 36.9 & $%
+- $ 5.9 & \multicolumn{1}{l}{$+$42.1} & $+$48.6 \\ \hline
+\textbf{Austria} & \multicolumn{1}{r}{450.7} & \multicolumn{1}{r}{460.7} & 
+\multicolumn{1}{r}{300.3} & \multicolumn{1}{l}{$+$ 0.1} & $+$ 29.8 & $-$35.9
+& \multicolumn{1}{l}{$+$44.0} & $+$35.0 \\ \hline
+\textbf{Belgium} & \multicolumn{1}{r}{1,504.5} & \multicolumn{1}{r}{1,542.7}
+& \multicolumn{1}{r}{1,125.5} & \multicolumn{1}{l}{$-$ 1.2} & $+$ 24.3 & $-$
+2.5 & \multicolumn{1}{l}{$+$33.5} & $+$24.8 \\ \hline
+\textbf{Britain} & \multicolumn{1}{r}{3,333.7} & \multicolumn{1}{r}{3,520.3}
+& \multicolumn{1}{r}{2,737.6} & \multicolumn{1}{l}{$-$ 1.8} & $+$ 18.3 & $-$
+5.3 & \multicolumn{1}{l}{$+$17.1} & $+$14.4 \\ \hline
+\textbf{Canada} & \multicolumn{1}{r}{4,371.1} & \multicolumn{1}{r}{4,591.3}
+& \multicolumn{1}{r}{3,275.8} & \multicolumn{1}{l}{$-$ 1.0} & $+$ 26.6 & $-$
+4.8 & \multicolumn{1}{l}{$+$30.5} & $+$23.5 \\ \hline
+\textbf{Denmark} & \multicolumn{1}{r}{407.4} & \multicolumn{1}{r}{415.8} & 
+\multicolumn{1}{r}{261.9} & \multicolumn{1}{l}{$+$ 0.3} & $+$ 44.4 & $-$ 2.0
+& \multicolumn{1}{l}{$+$55.7} & $+$45.0 \\ \hline
+\textbf{France *} & \multicolumn{1}{r}{1,506.6} & \multicolumn{1}{r}{1,585.2}
+& \multicolumn{1}{r}{1,114.2} & \multicolumn{1}{l}{$-$ 1.0} & $+$ 23.1 & $-$
+5.0 & \multicolumn{1}{l}{$+$32.1} & $+$24.4 \\ \hline
+\textbf{Germany} & \multicolumn{1}{r}{2,107.6} & \multicolumn{1}{r}{2,268.0}
+& \multicolumn{1}{r}{1,516.5} & \multicolumn{1}{l}{$-$ 0.4} & $+$ 26.8 & $-$
+7.1 & \multicolumn{1}{l}{$+$36.4} & $+$27.9 \\ \hline
+\textbf{Holland} & \multicolumn{1}{r}{285.6} & \multicolumn{1}{r}{294.8} & 
+\multicolumn{1}{r}{198.6} & \multicolumn{1}{l}{$-$ 1.4} & $+$ 35.7 & $-$ 3.1
+& \multicolumn{1}{l}{$+$44.2} & $+$35.4 \\ \hline
+\textbf{Italy} & \multicolumn{1}{r}{672.2} & \multicolumn{1}{r}{689.0} & 
+\multicolumn{1}{r}{446.3} & \multicolumn{1}{l}{$-$ 0.6} & $+$ 33.7 & $-$26.0
+& \multicolumn{1}{l}{$+$50.6} & $+$32.0 \\ \hline
+\textbf{Japan} & \multicolumn{1}{r}{19,342.6} & \multicolumn{1}{r}{21,148.1}
+& \multicolumn{1}{r}{16,078.7} & \multicolumn{1}{l}{$+$ 1.9} & $+$ 14.7 & $-$%
+50.3 & \multicolumn{1}{l}{$+$14.3} & $+$35.3 \\ \hline
+\textbf{Spain} & \multicolumn{1}{r}{339.6} & \multicolumn{1}{r}{358.3} & 
+\multicolumn{1}{r}{215.6} & \multicolumn{1}{l}{$-$ 2.0} & $+$ 49.0 & $-$ 5.2
+& \multicolumn{1}{l}{$+$58.5} & $+$29.2 \\ \hline
+\textbf{Sweden} & \multicolumn{1}{r}{1,565.8} & \multicolumn{1}{r}{1,603.9}
+& \multicolumn{1}{r}{879.1} & \multicolumn{1}{l}{$+$ 2.1} & $+$ 58.5 & $-$
+2.4 & \multicolumn{1}{l}{$+$71.6} & $+$53.0 \\ \hline
+\textbf{Switzerland} & \multicolumn{1}{r}{2,982.8} & \multicolumn{1}{r}{
+3,178.4} & \multicolumn{1}{r}{2,049.5} & \multicolumn{1}{l}{$-$ 0.3} & $+$
+45.5 & $-$ 6.2 & \multicolumn{1}{l}{$+$41.6} & $+$43.1 \\ \hline
+\textbf{United States} & \multicolumn{1}{r}{3,911.7} & \multicolumn{1}{r}{
+3,978.4} & \multicolumn{1}{r}{3,242.0} & \multicolumn{1}{l}{$-$ 0.4} & $+$
+17.7 & $-$ 1.7 & \multicolumn{1}{l}{$+$18.5} & $+$18.5 \\ \hline
+\textbf{World }$\dagger $ & \multicolumn{1}{r}{621.2} & \multicolumn{1}{r}{
+641.0} & \multicolumn{1}{r}{488.6} & \multicolumn{1}{l}{$-$ 0.7} & $+$ 23.1
+& $-$ 3.1 & \multicolumn{1}{l}{$+$25.0} & $+$25.0 \\ \hline
+\end{tabular}
+\end{center}
+
+\section{Matrices}
+
+Matrices have similar behavior to tables, but are in math mode.
+
+Inline matrix: $%
+\begin{array}{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+$. Generally, these are hard to read without surrounding fences, like $%
+\left( 
+\begin{array}{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+\right) $ or $\left[ 
+\begin{array}{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+\right] $.
+
+Displayed matrix:
+
+\begin{equation*}
+\begin{array}{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+\text{or }\left( 
+\begin{array}{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+\right) \text{ or }\left[ 
+\begin{array}{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+\right]
+\end{equation*}
+
+Try various column alignment options: $\ $left$%
+\begin{array}{ll}
+1 & \frac{1}{4}+\frac{1}{4} \\ 
+\frac{1}{4}+\frac{1}{4} & \frac{1}{3}%
+\end{array}%
+$, center$%
+\begin{array}{cc}
+1 & \frac{1}{4}+\frac{1}{4} \\ 
+\frac{1}{4}+\frac{1}{4} & \frac{1}{3}%
+\end{array}%
+$, right $%
+\begin{array}{rr}
+1 & \frac{1}{4}+\frac{1}{4} \\ 
+\frac{1}{4}+\frac{1}{4} & \frac{1}{3}%
+\end{array}%
+$.
+
+Try various baseline alignment options: $\ $top row$%
+\begin{array}[t]{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+$, center$%
+\begin{array}{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+$, bottom row $%
+\begin{array}[b]{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+$.
+
+Finally, you can use built-in delimiters which may look better in certain
+situations. brackets $%
+\begin{bmatrix}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{bmatrix}%
+$ vs. $\left[ 
+\begin{array}{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+\right] $ (standard matrix with fence -- the screen appearance is the same
+in SWP). braces $%
+\begin{Bmatrix}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{Bmatrix}%
+$ vs. $\left\{ 
+\begin{array}{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+\right\} $. vertical bar $%
+\begin{vmatrix}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{vmatrix}%
+$ vs. $\left\vert 
+\begin{array}{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+\right\vert $. double vertical bar $%
+\begin{Vmatrix}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{Vmatrix}%
+$ vs. $\left\Vert 
+\begin{array}{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+\right\Vert $. parentheses $%
+\begin{pmatrix}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{pmatrix}%
+$ vs. $\left( 
+\begin{array}{cc}
+1 & \frac{1}{2} \\ 
+\frac{1}{2} & \frac{1}{3}%
+\end{array}%
+\right) $.
+
+\section{Graphics}
+
+Here is a displayed graphic.\FRAME{dhFU}{2.3298in}{1.5489in}{0pt}{\Qcb{%
+Triangle}}{\Qlb{triangle}}{triangle.wmf}{\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "FULL";valid_file
+"F";width 2.3298in;height 1.5489in;depth 0pt;original-width
+166.9375pt;original-height 110.3125pt;cropleft "0";croptop
+"1.0004";cropright "0.9981";cropbottom "0";filename
+'../Graphics/triangle.wmf';file-properties "XNPEU";}}Displayed graphic.%
+\FRAME{dtbpF}{0.3494in}{0.2992in}{0pt}{}{}{swplogo.wmf}{\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"FULL";valid_file "F";width 0.3494in;height 0.2992in;depth
+0pt;original-width 23.3125pt;original-height 20.3125pt;cropleft "0";croptop
+"0.9851";cropright "1.0129";cropbottom "0";filename
+'../Graphics/swplogo.wmf';file-properties "XNPEU";}}
+
+In-line graphic in a centered paragraph.
+
+\begin{center}
+\FRAME{itbpF}{0.3494in}{0.2992in}{0in}{}{}{swplogo.wmf}{\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"FULL";valid_file "F";width 0.3494in;height 0.2992in;depth 0in;cropleft
+"0";croptop "0.9851";cropright "1.0129";cropbottom "0";filename
+'../Graphics/swplogo.wmf';file-properties "XNPEU";}}
+\end{center}
+
+Various inline graphics. On baseline\FRAME{itbpF}{0.3494in}{0.2992in}{0in}{}{%
+}{swplogo.wmf}{\special{language "Scientific Word";type
+"GRAPHIC";maintain-aspect-ratio TRUE;display "FULL";valid_file "F";width
+0.3494in;height 0.2992in;depth 0in;original-width 0.3226in;original-height
+0.2811in;cropleft "0";croptop "0.9851";cropright "1.0129";cropbottom
+"0";filename '../Graphics/swplogo.wmf';file-properties "XNPEU";}}, raised%
+\FRAME{itbpF}{0.3494in}{0.2992in}{-0.3122in}{}{}{swplogo.wmf}{\special%
+{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio
+TRUE;display "FULL";valid_file "F";width 0.3494in;height 0.2992in;depth
+-0.3122in;original-width 0.3226in;original-height 0.2811in;cropleft
+"0";croptop "0.9851";cropright "1.0129";cropbottom "0";filename
+'../Graphics/swplogo.wmf';file-properties "XNPEU";}}, lowered\FRAME{itbpF}{%
+0.3494in}{0.2992in}{0.2811in}{}{}{swplogo.wmf}{\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "FULL";valid_file
+"F";width 0.3494in;height 0.2992in;depth 0.2811in;original-width
+0.3226in;original-height 0.2811in;cropleft "0";croptop "0.9851";cropright
+"1.0129";cropbottom "0";filename '../Graphics/swplogo.wmf';file-properties
+"XNPEU";}}, with caption\FRAME{itbpFU}{0.3494in}{0.2992in}{0in}{\Qcb{%
+Butterfly}}{}{swplogo.wmf}{\special{language "Scientific Word";type
+"GRAPHIC";maintain-aspect-ratio TRUE;display "FULL";valid_file "F";width
+0.3494in;height 0.2992in;depth 0in;original-width 23.3125pt;original-height
+20.3125pt;cropleft "0";croptop "0.9875";cropright "1.0150";cropbottom
+"0";filename '../Graphics/swplogo.wmf';file-properties "XNPEU";}}, without
+frame\FRAME{itbpF}{0.3494in}{0.2992in}{0in}{}{}{swplogo.wmf}{\special%
+{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio
+TRUE;display "PICT";valid_file "F";width 0.3494in;height 0.2992in;depth
+0in;original-width 23.3125pt;original-height 20.3125pt;cropleft "0";croptop
+"0.9875";cropright "1.0150";cropbottom "0";filename
+'../Graphics/swplogo.wmf';file-properties "XNPEU";}}, frame only\FRAME{itbpF%
+}{0.3494in}{0.2992in}{0in}{}{}{swplogo.wmf}{\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "FRAME";valid_file
+"F";width 0.3494in;height 0.2992in;depth 0in;original-width
+0.3226in;original-height 0.2811in;cropleft "0";croptop "0.9875";cropright
+"1.0150";cropbottom "0";filename '../Graphics/swplogo.wmf';file-properties
+"XNPEU";}}, iconified\FRAME{itbpF}{0.3494in}{0.2992in}{0in}{}{}{swplogo.wmf}{%
+\special{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio
+TRUE;display "ICON";valid_file "F";width 0.3494in;height 0.2992in;depth
+0in;original-width 0.3226in;original-height 0.2811in;cropleft "0";croptop
+"0.9875";cropright "1.0150";cropbottom "0";filename
+'../Graphics/swplogo.wmf';file-properties "XNPEU";}}, using the default 
+\FRAME{itbpF}{0.3494in}{0.2992in}{0in}{}{}{swplogo.wmf}{\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"FULL";valid_file "F";width 0.3494in;height 0.2992in;depth
+0in;original-width 23.3125pt;original-height 20.3125pt;cropleft "0";croptop
+"0.9875";cropright "1.0150";cropbottom "0";filename
+'../Graphics/swplogo.wmf';file-properties "XNPEU";}}.
+
+Different graphic types:
+
+WMF :\FRAME{itbpF}{0.7507in}{0.2162in}{0in}{}{}{greeks.wmf}{\special%
+{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio
+TRUE;display "PICT";valid_file "F";width 0.7507in;height 0.2162in;depth
+0in;original-width 0.7187in;original-height 0.1877in;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'../Graphics/greeks.wmf';file-properties "XNPEU";}} \ \ GIF:\FRAME{itbpF}{%
+1.913in}{0.8553in}{0.2292in}{}{}{nb2.gif}{\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "PICT";valid_file
+"F";width 1.913in;height 0.8553in;depth 0.2292in;original-width
+1.8749in;original-height 0.8233in;cropleft "0";croptop "1";cropright
+"1";cropbottom "0";filename '../Graphics/NB2.GIF';file-properties "XNPEU";}}
+\ JPEG: \FRAME{itbpF}{0.6123in}{0.8475in}{0.2006in}{}{}{barry.jpg}{\special%
+{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio
+TRUE;display "PICT";valid_file "F";width 0.6123in;height 0.8475in;depth
+0.2006in;original-width 0.4566in;original-height 0.6434in;cropleft
+"0";croptop "1";cropright "1";cropbottom "0";filename
+'../Graphics/barry.jpg';file-properties "XNPEU";}}
+
+AI: \FRAME{dtbpF}{2.3177in}{1.817in}{0pt}{}{}{020112.ai}{\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"PICT";valid_file "F";width 2.3177in;height 1.817in;depth 0pt;original-width
+2.2779in;original-height 1.7798in;cropleft "0";croptop "1";cropright
+"1";cropbottom "0";filename '../Graphics/020112.AI';file-properties "XNPEU";}%
+}
+
+Here is a floating graphic.
+
+\FRAME{ftbpFU}{0.3632in}{0.3736in}{0pt}{\Qcb{This is the caption text. It's
+below. It also contains a marker (\label{fig:key2})}}{\Qlb{fig:key1}}{%
+nblogo.wmf}{\special{ language "Scientific Word"; type "GRAPHIC";
+maintain-aspect-ratio TRUE; display "PICT"; valid_file "F"; width 0.3632in;
+height 0.3736in; depth 0pt; original-width 0.3329in; original-height
+0.3433in; cropleft "0"; croptop "1"; cropright "1"; cropbottom "0"; filename
+'../Graphics/NBlogo.wmf';file-properties "XNPEU";}}
+
+Reference to fig:key1 (\ref{fig:key1}) and to fig:key2 (\ref{fig:key2})
+
+Here is a floating graphic with very long keys.
+
+\FRAME{ftbpFU}{0.3632in}{0.3736in}{0pt}{\Qcb{This is the caption text. It's
+below. It also contains a marker (\label{fig: This is a very long key that
+can cause problems1})}}{\Qlb{fig: This is a very long key that can cause
+problems2}}{nblogo.wmf}{\special{ language "Scientific Word"; type
+"GRAPHIC"; maintain-aspect-ratio TRUE; display "PICT"; valid_file "F"; width
+0.3632in; height 0.3736in; depth 0pt; original-width 0.3329in;
+original-height 0.3433in; cropleft "0"; croptop "1"; cropright "1";
+cropbottom "0"; filename '../Graphics/NBlogo.wmf';file-properties "XNPEU";}}
+
+References to (\ref{fig: This is a very long key that can cause problems1})
+and to (\ref{fig: This is a very long key that can cause problems2})\FRAME{%
+ftbpFU}{0.3632in}{0.3736in}{0pt}{\Qcb{This is the caption text. It is a long
+caption so that we can observe line wrap in this case of a long long long
+caption longer than the line width.}}{}{nblogo.wmf}{\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"PICT";valid_file "F";width 0.3632in;height 0.3736in;depth
+0pt;original-width 0.3329in;original-height 0.3433in;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'../Graphics/NBlogo.wmf';file-properties "XNPEU";}}\FRAME{ftbpFU}{0.3632in}{%
+0.3736in}{0pt}{\Qcb{This is a caption containing mathematics. $\protect\int_{%
+\protect\alpha }^{\protect\beta }\ln udu$}}{}{nblogo.wmf}{\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"PICT";valid_file "F";width 0.3632in;height 0.3736in;depth
+0pt;original-width 0.3329in;original-height 0.3433in;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'../Graphics/NBlogo.wmf';file-properties "XNPEU";}}
+
+\section{Standard \LaTeX{} Float Environments}
+
+The standard \LaTeX{} float environments are figure and table. These are not
+directly supported by the SW/SWP input and output filters. However, these
+environments are preserved, and you can edit their contents using Edit
+Properties. All label statements are also visible in SW/SWP for
+cross-references.
+
+\begin{figure}[ht]
+\caption{Caption First}
+\label{fig:in2}
+\begin{center}
+\fbox{\ldots{} figure body \ldots}
+\par
+\fbox{\ldots{} figure body \ldots}
+\end{center}
+\caption{Caption Second}
+\label{fig:in4}
+\end{figure}
+
+\begin{table}[ht]
+\caption{Caption First}
+\label{tab:in2}
+\begin{center}
+\fbox{\ldots{} table body \ldots}
+\par
+\fbox{\ldots{} table body \ldots}
+\end{center}
+\caption{Caption Second}
+\label{tab:in4}
+\end{table}
+
+\section{Scientific Notebook Items}
+
+These constructs were introduced with the first version of Scientific
+Notebook. They are now available in SW/SWP. They are provided here to test
+the ability of SW/SWP to create a document containing these constructs that
+can also be compiled with \LaTeX{}.
+
+\subsection{Hypertext Links}
+
+Hypertext link with text: 
+%TCIMACRO{%
+%\hyperref{MacKichan Software, Inc. home page}{}{}{http://www.mackichan.com}}%
+%BeginExpansion
+\msihyperref{MacKichan Software, Inc. home page}{}{}{http://www.mackichan.com}%
+%EndExpansion
+
+Hypertext link with graphic: 
+%TCIMACRO{%
+%\hyperref{\FRAME{itbpF}{0.499in}{0.2257in}{0in}{}{}{nb2.gif}{\special{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "PICT";valid_file "F";width 0.499in;height 0.2257in;depth 0in;original-width 1.8749in;original-height 0.8233in;cropleft "0";croptop "1";cropright "1";cropbottom "0";filename '../Graphics/Nb2.gif';file-properties "XNPEU";}}}{}{}{http://www.scinotebook.com}}%
+%BeginExpansion
+\msihyperref{\FRAME{itbpF}{0.499in}{0.2257in}{0in}{}{}{nb2.gif}{\special{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "PICT";valid_file "F";width 0.499in;height 0.2257in;depth 0in;original-width 1.8749in;original-height 0.8233in;cropleft "0";croptop "1";cropright "1";cropbottom "0";filename '../Graphics/Nb2.gif';file-properties "XNPEU";}}}{}{}{http://www.scinotebook.com}%
+%EndExpansion
+
+Hypertext links can go to external documents specified by a URI as show
+above, or to markers or Hypertext targets, as illustrated here: 
+%TCIMACRO{\hyperref{go to target}{}{}{my target}}%
+%BeginExpansion
+\msihyperref{go to target}{}{}{my target}%
+%EndExpansion
+
+\subsection{Hypertext Targets}
+
+Hypertext target at the end of this sentence.\label{my target} These become
+visible by turning on markers.
+
+\subsection{Formulas}
+
+Formulas allow you to create elements which are recalculated every time they
+are displayed on screen. If the expression uses defined quantities, then the
+formula will change every time you redefine the quantity.
+
+Formula: $%
+%TCIMACRO{\FORMULA{\int ax^{2}dx}{\frac{1}{3}ax^{3}}{evaluate}}%
+%BeginExpansion
+\frac{1}{3}ax^{3}%
+%EndExpansion
+$
+
+Now, define $a=\pi $ and see what happens.
+
+\subsection{Units}
+
+%TCIMACRO{\TeXButton{Reverse noindent}{\hspace{\parindent}}}%
+%BeginExpansion
+\hspace{\parindent}%
+%EndExpansion
+\begin{tabular}{lll}
+\multicolumn{3}{c}{\textbf{Base SI Units}} \\ \hline
+\textit{Physical quantity} &  & \textit{Symbol} \\ \hline
+length &  & $\unit{m}$ \\ 
+mass &  & $\unit{kg}$ \\ 
+time &  & $\unit{s}$ \\ 
+electric current &  & $\unit{A}$ \\ 
+thermodynamic temperature &  & $\unit{K}$ \\ 
+amount of substance &  & $\unit{mol}$ \\ 
+luminous intensity &  & $\unit{cd}$ \\ \hline
+\end{tabular}
+
+\begin{tabular}{lll}
+\multicolumn{3}{c}{\textbf{Supplementary SI Units}} \\ \hline
+\textit{Physical quantity} & \textit{Name} & \textit{Symbol} \\ \hline
+plane angle & radian & $\unit{rad}$ \\ 
+solid angle & steradian & $\unit{sr}$ \\ \hline
+\end{tabular}
+
+\begin{tabular}{lll}
+\multicolumn{3}{c}{\textbf{Derived SI Units with Special Names}} \\ \hline
+\textit{Physical quantity} &  & \textit{Symbol} \\ \hline
+frequency &  & $\unit{Hz}$ \\ 
+energy &  & $\unit{J}$ \\ 
+force &  & $\unit{N}$ \\ 
+power &  & $\unit{W}$ \\ 
+pressure &  & $\unit{Pa}$ \\ 
+electric charge &  & $\unit{C}$ \\ 
+electric potential difference &  & $\unit{V}$ \\ 
+electric resistance &  & $\unit{%
+%TCIMACRO{\U{3a9}}%
+%BeginExpansion
+\Omega%
+%EndExpansion
+}$ \\ 
+electric conductance &  & $\unit{S}$ \\ 
+electric capacitance &  & $\unit{F}$ \\ 
+magnetic flux &  & $\unit{Wb}$ \\ 
+inductance &  & $\unit{H}$ \\ 
+magnetic flux density &  & $\unit{T}$ \\ 
+luminous flux &  & $\unit{lm}$ \\ 
+illumination &  & $\unit{lx}$ \\ \hline
+\end{tabular}
+
+The following examples use Unicode characters.
+
+MicroFarad: $\unit{%
+%TCIMACRO{\U{3bc}}%
+%BeginExpansion
+\mu%
+%EndExpansion
+F}$
+
+Degree Celcius: $\unit{%
+%TCIMACRO{\U{2103}}%
+%BeginExpansion
+{}^{\circ}{\rm C}%
+%EndExpansion
+}$
+
+Angular Measure: $30\unit{%
+%TCIMACRO{\U{b0}}%
+%BeginExpansion
+{{}^\circ}%
+%EndExpansion
+}10\unit{%
+%TCIMACRO{\U{2032}}%
+%BeginExpansion
+{}^{\prime }%
+%EndExpansion
+}12\unit{%
+%TCIMACRO{\U{2033}}%
+%BeginExpansion
+{}^{\prime \prime}%
+%EndExpansion
+}$
+
+Ohm: $\unit{%
+%TCIMACRO{\U{3a9}}%
+%BeginExpansion
+\Omega%
+%EndExpansion
+}$
+
+\subsection{New Note Types}
+
+Margin Hint with icon: 
+\CustomNote{Margin Hint}{%
+Margin Hint}
+
+\vspace{1pt}Margin Hint with text: 
+\CustomNote[Hint!]{Margin Hint}{%
+Margin Hint}
+
+Margin Hint with picture: 
+\CustomNote[{\FRAME{itbpF}{0.3528in}{0.3105in}{0in}{}{}{swplogo.wmf}{\special%
+{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio
+TRUE;display "PICT";valid_file "F";width 0.3528in;height 0.3105in;depth
+0in;original-width 0.3226in;original-height 0.2811in;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'../Graphics/swplogo.wmf';file-properties "XNPEU";}}}]{Margin Hint}{%
+Margin Hint}
+
+Solution Note with icon: 
+\CustomNote{Solution Note}{%
+Solution Note}
+
+Solution Note with text: 
+\CustomNote[Solution Note!]{Solution Note}{%
+Solution Note} \ 
+
+\vspace{1pt}Solution Note with picture: 
+\CustomNote[{\FRAME{itbpF}{0.5405in}{0.2447in}{0in}{}{}{nb2.gif}{\special%
+{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio
+TRUE;display "PICT";valid_file "F";width 0.5405in;height 0.2447in;depth
+0in;original-width 1.8749in;original-height 0.8233in;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'../Graphics/Nb2.gif';file-properties "XNPEU";}}}]{Solution Note}{%
+Solution Note} \ 
+
+Problem Solving Hint with icon: 
+\CustomNote{Problem Solving Hint}{%
+Problem Solving Hint}
+
+Problem Solving Hint with text: 
+\CustomNote[Problem Solving Hint!]{Problem Solving Hint}{%
+Problem Solving Hint}
+
+Problem Solving Hint with picture: 
+\CustomNote[{\FRAME{itbpF}{0.5682in}{0.3822in}{0in}{}{}{triangle.wmf}{\special%
+{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio
+TRUE;display "PICT";valid_file "F";width 0.5682in;height 0.3822in;depth
+0in;original-width 2.3099in;original-height 1.5264in;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'../Graphics/TRIANGLE.WMF';file-properties "XNPEU";}}}]{Problem Solving Hint}
+{%
+Problem Solving Hint}
+
+Note with icon: 
+\CustomNote{Note}{%
+Note}
+
+Note with text: 
+\CustomNote[Note!]{Note}{%
+Note} \ 
+
+Note with picture: 
+\CustomNote[{\FRAME{itbpF}{0.3892in}{0.5362in}{0in}{}{}{barry.jpg}{\special%
+{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio
+TRUE;display "PICT";valid_file "F";width 0.3892in;height 0.5362in;depth
+0in;original-width 0.4566in;original-height 0.6434in;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'../Graphics/barry.jpg';file-properties "XNPEU";}}}]{Note}{%
+Note}
+
+Answer Note with icon: 
+\CustomNote{AnswerNote}{%
+Answer Note}.
+
+Answer Note with text: 
+\CustomNote[Answer Note!]{AnswerNote}{%
+Answer Note}.
+
+Answer Note with picture: 
+\CustomNote[{\FRAME{itbpF}{0.5353in}{0.5353in}{0in}{}{}{sticker.gif}{\special%
+{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio
+TRUE;display "PICT";valid_file "F";width 0.5353in;height 0.5353in;depth
+0in;original-width 1.1459in;original-height 1.1459in;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'../Graphics/STICKER.GIF';file-properties "XNPEU";}}}]{AnswerNote}{%
+Answer Note}.
+
+Here is a note containing a picture: 
+\CustomNote[{\FRAME{itbpF}{0.5353in}{0.5353in}{0in}{}{}{sticker.gif}{\special%
+{language "Scientific Word";type "GRAPHIC";maintain-aspect-ratio
+TRUE;display "PICT";valid_file "F";width 0.5353in;height 0.5353in;depth
+0in;original-width 1.1459in;original-height 1.1459in;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'../Graphics/Sticker.gif';file-properties "XNPEU";}}}]{AnswerNote}{%
+This answer note contains a picture:\FRAME{dtbpF}{0.3528in}{0.3105in}{0pt}{}{%
+}{swplogo.wmf}{\special{language "Scientific Word";type
+"GRAPHIC";maintain-aspect-ratio TRUE;display "PICT";valid_file "F";width
+0.3528in;height 0.3105in;depth 0pt;original-width 0.3226in;original-height
+0.2811in;cropleft "0";croptop "1";cropright "1";cropbottom "0";filename
+'../Graphics/swplogo.wmf';file-properties "XNPEU";}}}.
+
+\subsection{HTML Fields}
+
+These are analogous to TeX Fields, but are active when you Export to HTML.
+
+%TCIMACRO{\HTMLButton{HTML Field}{<hr title="from an HTML field"/>}}%
+
+\section{Conclusion}
+
+We are now done with our sample article.
+
+The following references automatically generate a References section heading.
+
+\begin{thebibliography}{99}
+\bibitem{black} D. Black, \emph{The Theory of Committees and Elections},
+Cambridge: Cambridge University Press (1958).
+
+\bibitem{blyth} C. Blyth, \emph{Some probability paradoxes in choice from
+among random alternatives}, J. Amer. Statist. Assoc. \textbf{67} (1972),
+366--373.
+
+\bibitem{Chang} Chang Li-chien, \emph{On the maximin probability of cyclic
+random inequalities}, Scientia Sinica \textbf{10} (1961), 499--504.
+
+\bibitem{condorcet} Marquis de Condorcet, \emph{Essai sur l'application de
+l'analyse \`{a} la probabilit\'{e} des d\'{e}cisions rendues \`{a} la
+pluralit\'{e} des voix}, Paris (1785).
+
+\bibitem{dunford} N. Dunford and J. Schwartz, \emph{Functional Analysis}, v.
+2, John Wiley and Sons, New York, 1963.
+
+\bibitem{funkenbusch} W. W. Funkenbusch, \emph{A gaming wheel based on
+cyclic advantage in symbol choice}, The Gambling Papers, Vol. XIII (1982),
+68--83 University of Nevada, Reno.
+
+\bibitem{gardner} M. Gardner, \emph{The paradox of the nontransitive dice
+and the elusive principle of indifference}, Scientific American \textbf{223}
+(1970), 110--114.
+
+\bibitem{gardnerb} M. Gardner, \emph{On the paradoxical situations that
+arise from nontransitive relations}, Scientific American \textbf{231}
+(1974), 120--125.
+
+\bibitem{funkensaari} W. W. Funkenbusch and Saari, D. G., \emph{Preferences
+among preferences or nested cyclic stochastic inequalities}, Congr. Numer. 
+\textbf{39} (1983), 419--432.
+
+\bibitem{struwe} M. Struwe, \emph{Semilinear wave equations}, Bull. Amer.
+Math. Soc. \textbf{26} (1992), 53-85.
+
+\bibitem{thurston} W.P. Thurston, \emph{Geometry and topology of three
+manifolds}, Lecture notes, Princeton Univ., NJ, 1979.
+\end{thebibliography}
+
+\end{document}

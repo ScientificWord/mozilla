@@ -1,0 +1,180 @@
+
+@B@<Token list parameter assignment@>
+
+The token list parameters are things like @{\output@}.
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_ASSIGN_TOKS,
+@}
+
+Each token list parameter is associated with a memory location that
+holds a token list.
+
+@$@<Declare MakeToksParameter@>==@{@-
+void MakeToksParameter(const char* name, TokenList* addr)
+{
+   Primitive* pc = new Primitive(CMD_ASSIGN_TOKS, true, (int)addr);
+   Symbols::CreateSymbol(name, pc);
+}
+@}
+
+@$@<Create symbols@>+=@{@-
+MakeToksParameter("output",              &Global::output);
+MakeToksParameter("everypar",            &Global::everypar);
+MakeToksParameter("everymath",           &Global::everymath);
+MakeToksParameter("everydisplay",        &Global::everydisplay);
+MakeToksParameter("everyhbox",           &Global::everyhbox);
+MakeToksParameter("everyvbox",           &Global::everyvbox);
+MakeToksParameter("everyjob",            &Global::everyjob);
+MakeToksParameter("everycr",             &Global::everycr);
+MakeToksParameter("errhelp",             &Global::errhelp);
+MakeToksParameter("msi@@everycellstart", &Global::msieverycellstart);
+MakeToksParameter("msi@@everycellend",   &Global::msieverycellend);
+MakeToksParameter("msi@@everyrowstart",  &Global::msieveryrowstart);
+MakeToksParameter("msi@@everyrowend",    &Global::msieveryrowend);
+
+MakeToksParameter("msi@@inline@@proc",   &Global::msiinlinemathproc);
+MakeToksParameter("msi@@display@@proc",  &Global::msidisplaymathproc);
+
+MakeToksParameter("msi@@everypar",       &Global::msieverypar);
+MakeToksParameter("msi@@everyhbox",      &Global::msieveryhbox);
+@}
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_ASSIGN_TOKS:{
+   DoAssignment(0);
+   break;
+};
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_ASSIGN_TOKS: {
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   TokenList* loc = (TokenList*) prim -> Data();
+   TeXToken defining = CurTok();
+   TokenList* pTL = new TokenList;
+   ScanOptionalEquals();
+   ScanTokenList(pTL, false);
+   LOG("\n----Set " << defining << " = " << *pTL);
+   SaveRestoration(new ToksRestoration(loc, "a token list"), bGlobal);
+   *loc = *pTL;
+   break;
+};
+@}
+
+These commands can also appear while doing @{ScanSomethingInternal@}.
+
+@$@<ScanSomethingInternal cases@>+=@{@-
+case CMD_ASSIGN_TOKS: {
+   res.m_type = SCAN_TOKS;
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   TokenList* loc = (TokenList*) prim -> Data();
+   res.m_toks = loc;
+   break;
+}
+@}
+
+
+@B@<Token register assignment@>
+
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_TOKS,
+@}
+
+@$@<Create symbols@>+=@{@-
+NewPrimitive("toks", CMD_TOKS, true, NULL);
+@}
+
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_TOKS: {
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_TOKS: {
+   int n;
+   TokenList* pTL = new TokenList;
+   ScanInt(&n);
+   ScanOptionalEquals();
+   ScanTokenList(pTL, false);
+   TokenList* loc = &Global::ToksReg[n];
+   // SaveRestoration(
+   //          new IntRestoration(loc, "a token register"),
+   //          false
+   //        );
+   *loc = *pTL;
+   LOG("\n----Set \\toks" << n << " = " << *pTL);
+   break;
+}
+@}
+
+And here is the second case
+
+@$@<ScanSomethingInternal cases@>+=@{@-
+case CMD_TOKS: {
+   int m;
+   if (ScanInt(&m)){
+      res.m_type = SCAN_TOKS;
+      res.m_toks =  &Global::ToksReg[m];
+   }
+   break;
+}
+@}
+
+@B@<Token register shorthand commands@>
+There is another kind of token list assignment. The @{\toksdef@}
+command associates a command like @{\toks12@} with a control
+sequence.
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_TOKSDEF,
+@}
+
+@$@<Create symbols@>+=@{@-
+NewPrimitive("toksdef", CMD_TOKSDEF);
+@}
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_TOKSDEF:{
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_TOKSDEF:{
+   TeXToken defining;
+   int n;
+   ScanShorthand(&defining, &n);
+   void* addr = &Global::ToksReg[n];
+   Primitive* cmd = new Primitive(CMD_ASSIGN_TOKS, true, (int)addr);
+   Symbols::SetDef(defining.Symbol(), cmd, bGlobal);
+   LOG(defining << " = shorthand for \\toks" << n);
+   break;
+}
+@}
+
+@B@<Tests@>
+
+@$@<Interprt TestTable@>+=@{@-
+{"toks", TestToksCmds},
+@}
+
+@$@<Interprt tests@>+=@{@-
+bool TestToksCmds()
+{
+   Interpretter::InitializeSymbolTable();
+   Interpretter::InitializeKeywords();
+   InputFile("toksassign.tex");
+   Interpretter::MainLoop();
+   return CompareLog("toksassign.log", "Interpretter toks test 1");
+}
+@}
+

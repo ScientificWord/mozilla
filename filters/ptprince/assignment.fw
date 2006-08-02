@@ -1,0 +1,213 @@
+
+@A@<Assignment commands@>
+
+
+In this section we'll cover the prefix and assignment commands
+except for macro definitions (see section ...).
+
+The assignment action is triggered either by a token representing
+an assignment command (@{\def@}, @{\advance@}, @{\deadcycles@}, etc)
+or by a prefix (@{\global@}, @{\long@}, @{\outer@}). In the latter
+case we see if there are more prefixes and process them.
+
+All assignments get routed to the @{DoAssignment@} function
+which handles the common work before and after an assignment.
+
+@$@<DoAssignments@>==@{@-
+void DoAssignment(int prefixes)
+{
+   bool bGlobal = (bool) (prefixes & PREFIX_GLOBAL);
+   bool bLong   = (bool) (prefixes & PREFIX_LONG);
+   bool bOuter  = (bool) (prefixes & PREFIX_OUTER);
+
+   if (Global::globaldefs != 0){
+      bGlobal = Global::globaldefs > 0;
+   }
+   if (bGlobal) LOG(" global ");
+   if (bLong)   LOG(" long");
+   if (bOuter)  LOG(" outer");
+
+   switch (CurCmdCode()){
+      @<Assignments@>
+      default:
+         ASSERT(false); // can't use prefix ...
+   }
+   // insert the afterassignment token
+   if (s_afterAssignment !=  s_illegal){
+      InputStack::Putback(s_afterAssignment);
+      s_afterAssignment = s_illegal;
+   }
+}
+@}
+
+
+@B@<Prefixes@>
+
+Assignments, including @{\def@}, can be prefixed by things
+like @{\global@}, @{\long@}, and @{\outer@}.
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_PREFIX,
+@}
+
+@$@<Command subcodes@>+=@{@-
+enum PrefixType{PREFIX_LONG = 1, PREFIX_OUTER = 2, PREFIX_GLOBAL = 4};
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("long", CMD_PREFIX, false, PREFIX_LONG);
+NewPrimitive("outer", CMD_PREFIX, false, PREFIX_OUTER);
+NewPrimitive("global", CMD_PREFIX, false, PREFIX_GLOBAL);
+@}
+
+
+@$@<Prefix commands@>+=@{@-
+case CMD_PREFIX:{
+   DoPrefixedCommand();
+   break;
+}
+@}
+
+
+@$@<DoPrefixedCommand@>==@{@-
+void DoPrefixedCommand()
+{
+   int prefixes = 0;
+   while (CurCmdCode() == CMD_PREFIX){
+       Primitive* prim = dynamic_cast<Primitive*>(CurData());
+       prefixes |= prim -> Data();
+       GetNext_NonBlank_NonRelax_NonCall();
+   }
+   DoAssignment(prefixes);
+}
+@}
+
+
+@B@<Shorthand definitions@>
+
+
+For example, the @{\chardef@} command creates a mapping between a
+control sequence and a character code. E.g. @{\chardef\foo=`\%@}
+
+\noseealso
+@$@<Command Codes@>+=@{@-
+CMD_SHORTHANDDEF,
+@}
+
+@$@<Command subcodes@>+=@{@-
+enum ShorthandType{CHARDEF, MATHCHARDEF,
+                   SKIPDEF, MUSKIPDEF, TOKSDEF};
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("chardef", CMD_SHORTHANDDEF, false, CHARDEF);
+NewPrimitive("mathchardef", CMD_SHORTHANDDEF, false, MATHCHARDEF);
+NewPrimitive("muskipdef", CMD_SHORTHANDDEF, false, MUSKIPDEF);
+//NewPrimitive("toksdef", CMD_SHORTHANDDEF, false, TOKSDEF);
+@}
+
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_SHORTHANDDEF: {
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_SHORTHANDDEF: {
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   ShorthandType subtype = (ShorthandType) prim -> Data();
+   TeXToken defining;
+   int n;
+
+   ScanShorthand(&defining, &n);
+   if (subtype == CHARDEF){
+      Primitive* cmd =
+         new Primitive(CMD_CHAR_GIVEN, true, n);
+      Symbols::SetDef(defining.Symbol(), cmd, false /*non-global*/);
+      LOG("\n----Set " << defining << " = shorthand for char " << n);
+   } else if (subtype == MATHCHARDEF){
+      Primitive* cmd =
+         new Primitive(CMD_MATH_GIVEN, true, n);
+      Symbols::SetDef(defining.Symbol(), cmd, false /*non-global*/);
+      LOG("\n----Set " << defining << " = shorthand for mathchar " << n);
+   } else {
+      ASSERT(false);
+   }
+   break;
+}
+@}
+
+
+
+@B@<Assign catcodes, uccodes, etc@>
+
+@$@<Command Codes@>+=@{@-
+CMD_DEFCODE,
+@}
+
+@$@<Command subcodes@>+=@{@-
+enum DefCode{CATCODE, MATHCODE, LCCODE, UCCODE, SFCODE, DELCODE};
+@}
+
+\noseealso
+@$@<Create symbols@>+=@{@-
+NewPrimitive("catcode", CMD_DEFCODE, true, (int)CATCODE);
+NewPrimitive("mathcode",CMD_DEFCODE, true, (int)MATHCODE);
+NewPrimitive("lccode",  CMD_DEFCODE, true, (int)LCCODE);
+NewPrimitive("uccode",  CMD_DEFCODE, true, (int)UCCODE);
+NewPrimitive("sfcode",  CMD_DEFCODE, true, (int)SFCODE);
+NewPrimitive("delcode", CMD_DEFCODE, true, (int)DELCODE);
+@}
+
+@$@<Basic assignment commands@>+=@{@-
+case CMD_DEFCODE:{
+   DoAssignment(0);
+   break;
+}
+@}
+
+@$@<Assignments@>+=@{@-
+case CMD_DEFCODE: {
+   Primitive* prim = dynamic_cast<Primitive*>(CurData());
+   DefCode subtype = (DefCode) prim -> Data();
+   int n;
+   int m;
+   ScanInt(&n);
+   ScanOptionalEquals();
+   ScanInt(&m);
+   TeXChar ch = n;
+   if (subtype == CATCODE){
+      LOG("\n----Set catcode[" << ch << "] = " << m);
+      SaveRestoration(
+         new IntRestoration(CatcodeLoc(ch), "a catcode"), bGlobal);
+      SetCatcode(n, m);
+   } else if (subtype == MATHCODE){
+      LOG("\n----Set mathcode[" << ch << "] = " << m);
+      SaveRestoration(
+         new IntRestoration(MathcodeLoc(ch), "a mathcode"), bGlobal);
+      SetMathcode(n, m);
+   } else if (subtype == LCCODE){
+      LOG("\n----Set lccode[" << ch << "] = " << m);
+      SaveRestoration(
+         new IntRestoration(LccodeLoc(ch), "an lccode"), bGlobal);
+      SetLccode(n, m);
+   } else if (subtype == UCCODE){
+      SaveRestoration(
+         new IntRestoration(UccodeLoc(ch), "a uccode"), bGlobal);
+      SetUccode(n, m);
+      LOG("\n----Set uccode[" << ch << "] = " << m);
+   } else if (subtype == SFCODE){
+      LOG("\n----Set sfcode[" << ch << "] = " << m);
+   } else if (subtype == DELCODE){
+      LOG("\n----Set delcode[" << ch << "] = " << m);
+   }
+   break;
+};
+@}
+
+

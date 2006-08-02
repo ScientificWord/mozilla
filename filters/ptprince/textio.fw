@@ -1,0 +1,843 @@
+@A@<The Text IO Subsystem@>
+
+@B@<Interface@>
+
+In the last section we implemented binary file IO ans abstracted a
+@{BinaryStream@} class. In this section we'll implement text IO.
+
+A \TeX program consists of a sequence of lines of text. The end of
+line marks are important in that every token is contained in a line.
+
+Up to 16 files may be open at one time and it may be necessary to read
+until matched braces are found. However, this input is atomic.  On
+command an entire line is read and tokenized. The tokens are not
+expanded It is not suspended. On the other hand, reading and executing
+instructions from the main input is not atomic. It may be suspended
+and continued later. Thus you will read a few tokens, execute some
+commands, and then read some more, in a loop.
+
+The Text IO Subsystem handles file processing. Files are identified by
+a filename. A filename is a string of Unicode. We could also use URLs.
+It is system dependent how this string is used to identify a file.
+\TeX is line-oriented in its IO and so the functions here provide for
+reading and writing lines of text only. A line of text is represented
+by the class @{LineOfText@}. Files are text. This subsystem has to
+scan bytes for characters and line ends (which are system
+dependent). So each file/stream has an associated character encoding
+scheme. The encoding scheme is represented by the class
+@{CharStream@}. A @{CharStream@} takes a @{InputByteStream@} and translates
+it into @{TeXChar@}'s (i.e. unicode characters). This is an abstract
+class of which the primary concrete derived class is
+@{Latin1@}. @{Latin1@} assumes the byte stream is encoded in
+ISO-Latin-1 and produces unicode charaters appropriately.
+
+@$@<IOSys interface@>==@{@-
+struct IOSys {
+   // Used for \input files
+   static bool bInput(TeXChar* name);
+   static bool bRead(LineOfText*);
+   static bool bClose();
+   //static void SetInputEncoding(ByteToTeXChar&);
+
+   // Used by \read and \write
+   static bool bOpenIn(int n, TeXChar* name);
+   static bool bCloseIn(int n);
+   //static void SetInputEncoding(int n, ByteToTeXChar&);
+   static bool bReadIn(int n, LineOfText* buf);
+   static bool bOpenOut(int n, TeXChar* name);
+   static bool bCloseOut(int n);
+   static bool bWriteOut(int n, const LineOfText* buf);
+   //static void SetOutputEncoding(int n, ByteToTeXChar&);
+
+   static int s_endlinechar;
+};
+@}
+
+
+@$@<static data@>+=@{@-
+int IOSys::s_endlinechar;
+@}
+
+Here are the test jig macros. The test jig in this case is called
+@{textio.t@}.
+
+@$@<Textio tests@>+=@{@-
+@}
+
+@$@<Textio TestTable@>+=@{@-
+@}
+
+
+@B@<Lines of Text@>
+
+@C@<Interface@>
+Here is a class that represents a line of text.
+
+@$@<class LineOfText@>+=@{@-
+struct LineOfTextData;
+
+class LineOfText {
+private:
+   LineOfTextData* m_lineData;
+public:
+   LineOfText();
+   ~LineOfText();
+   int     nSize() const;
+   bool    bEmpty() const;
+   void    Clear();
+   void    Append(TeXChar c); // Add to end of line
+   TeXChar chGet();
+   void    Putback(TeXChar c);
+   int     nRemaining() const; // How many chars left in line?
+   TeXChar chPeek(int n = 0);   // Peek ahead n chars
+   void    SkipToEnd();
+   TeXChar operator[](int) const;
+};
+@};
+
+
+
+Finally, let's add a logging aid.
+@$@<class LineOfText@>+=@{@-
+#ifdef LOGGING
+   LogFile& operator<<(LogFile& f, const LineOfText& t);
+#endif
+@}
+
+
+@C@<Implementation@>
+@$@<LineOfText implementation@>+=@{@-
+const unsigned int INITIAL_LINE_SIZE = 0;
+const TeXChar FILL_CHAR = 0x0020;
+
+struct LineOfTextData {
+
+   std::basic_string<TeXChar> m_line;
+   // std::basic_string<TeXChar>::iterator m_cursor;
+   int m_cursor;
+
+   LineOfTextData()
+      : m_line(INITIAL_LINE_SIZE, FILL_CHAR),
+        m_cursor(0)
+        // m_cursor(m_line.begin())
+   {}
+};
+@}
+
+
+@$@<LineOfText implementation@>+=@{@-
+
+LineOfText::LineOfText()
+   : m_lineData(new LineOfTextData)
+{
+}
+@}
+
+
+@$@<LineOfText implementation@>+=@{@-
+
+LineOfText::~LineOfText()
+{
+   delete m_lineData;
+   m_lineData = 0;
+}
+
+void LineOfText::Clear()
+{
+   m_lineData -> m_cursor = 0;
+   m_lineData -> m_line.resize(0);
+}
+
+TeXChar LineOfText::operator[](int i) const
+{
+   return m_lineData -> m_line[i];
+}
+
+int  LineOfText::nSize() const
+{
+   return m_lineData -> m_line.size();
+}
+
+void LineOfText::SkipToEnd()
+{
+   m_lineData -> m_cursor = m_lineData -> m_line.size();
+}
+
+bool LineOfText::bEmpty() const
+{
+   ASSERT(m_lineData != 0);
+   return ( (m_lineData -> m_cursor) == (int)(m_lineData -> m_line.length()) );
+}
+
+void LineOfText::Append(TeXChar c)
+{
+   ASSERT(m_lineData != 0);
+   m_lineData -> m_line += c;
+}
+
+TeXChar LineOfText::chGet()
+{
+   return m_lineData -> m_line[m_lineData -> m_cursor++];
+}
+
+void LineOfText::Putback(TeXChar c)
+{
+   m_lineData -> m_cursor--;
+   m_lineData -> m_line[m_lineData -> m_cursor] = c;
+}
+
+int LineOfText::nRemaining() const
+{
+   ASSERT(m_lineData != 0);
+   return ( (m_lineData -> m_line.length()) - (m_lineData -> m_cursor) );
+}
+
+TeXChar LineOfText::chPeek(int n /* = 0*/)
+{
+   return m_lineData -> m_line[m_lineData -> m_cursor + n];
+}
+
+@}
+
+@$@<LineOfText implementation@>+=@{@-
+#ifdef LOGGING
+   LogFile& operator<<(LogFile& f, const LineOfText& t)
+   {
+       for (int i = 0; i < t.nSize(); ++i){
+           f << t[i];
+       }
+
+       return f;
+   }
+#endif
+@}
+
+
+
+
+@C@<Tests@>
+
+@$@<Textio tests@>+=@{@-
+bool TestLineOfText()
+{
+   try
+   {
+      // Test LineOfText
+      LineOfText line;
+      ASSERT(line.nRemaining() == 0);
+      line.Append('a');
+      line.Append('b');
+      line.Append('c');
+      ASSERT(line.nRemaining() == 3);
+      TeXChar ch = line.chGet();
+      ASSERT(ch == 'a');
+      ASSERT(line.nRemaining() == 2);
+      ASSERT(line.chPeek(0) == 'b');
+      ASSERT(line.chPeek(1) == 'c');
+      line.Putback('k');
+      ASSERT(line.chPeek(0) == 'k');
+      ASSERT(line.nRemaining() == 3);
+   }
+   catch(...)
+   {
+      return false;
+   }
+   return true;
+}
+@}
+
+@$@<Textio TestTable@>+=@{@-
+{"lines", TestLineOfText},
+@}
+
+
+
+@B@<Converting Bytes to TeXChars@>
+
+The byte streams will often be interpretted as text.  There are two
+aspects to this. First, how are the bytes converted to characters, and
+second, what charcter pattern represents the end of a line? The
+details depend on how the binary data is encoded. There is also the
+question of how to interpret line ends. Therefore we have the classes:
+
+
+@$@<class CharStream@>==@{@-
+class CharStream{
+public:
+   virtual ~CharStream();
+   virtual TeXChar Get() = 0;
+   virtual bool bEOS() = 0;
+   virtual void Putback(TeXChar) = 0;
+protected:
+   CharStream();
+private:
+   // Do not implement these!
+   CharStream(const CharStream&);
+   CharStream& operator=(const CharStream&);
+};
+@}
+
+Observe that the constructor is protected. This means that you're not
+allowed to construct one directly. This class can only be constructed
+by derived classes. Also observe that the copy constructor and
+assignment operator are private. I don't think we ever want to copy
+or assign these and this decision is formalized in the code.
+
+It is an assumption that a byte stream has just one character
+encoding.  If this is not true, for example some types of
+multi-language writing might have portions of a document written in
+different encodings, then a @{CharStream@} might be written that can
+switch between encodings. But I think that it would be better to
+write in straight unicode in that case.
+
+
+@$@<CharStream implementation@>==@{@-
+CharStream::CharStream()
+{
+}
+
+CharStream::~CharStream()
+{
+}
+@}
+
+
+Here is a derived class that converts ISO-Latin-1 encoded files to
+Unicode. We'll have other derived classes for Latin-2, ..., UTF-8,
+UTF-7, and so forth.
+
+Perhaps there whould be a class @{Filter@} that contains both translation
+directions. Then we'd write lines like@+
+\ \ \ \ \ @{Unicode c = Latin_1.Get()@}@+
+\ \ \ \ \ @{Latin_1.Put(c)@}
+
+@$@<class Latin_1_in@>==@{@-
+class Latin_1_in : public CharStream{
+private:
+   InputByteStream& m_InputByteStream;
+public:
+   Latin_1_in(InputByteStream&);
+   TeXChar Get();
+   bool bEOS();
+   void Putback(TeXChar);
+private:
+   // Unimplemented
+   Latin_1_in(const Latin_1_in&);
+   operator=(const Latin_1_in&);
+};
+@}
+
+
+@$@<Latin_1_in implementation@>==@{@-
+Latin_1_in::Latin_1_in(InputByteStream& bs)
+   : m_InputByteStream(bs)
+{
+}
+
+
+bool Latin_1_in::bEOS()
+{
+   return m_InputByteStream.bEOS();
+}
+
+TeXChar Latin_1_in::Get()
+{
+   ASSERT(!bEOS());
+   Byte b = m_InputByteStream.Get();
+   // We'll ignore 0D characters
+   if (b == 0x0d){
+     b = m_InputByteStream.Get();
+   }
+   return b;
+}
+
+
+void Latin_1_in::Putback(TeXChar c)
+{
+   ASSERT(false);
+}
+@}
+
+
+Here is a derived class that converts codepage 932 to
+Unicode.
+
+@$@<class Codepage932_in@>==@{@-
+class Codepage932_in : public CharStream{
+private:
+   InputByteStream& m_InputByteStream;
+public:
+   Codepage932_in(InputByteStream&);
+   TeXChar Get();
+   bool bEOS();
+   void Putback(TeXChar);
+private:
+   // Unimplemented
+   Codepage932_in(const Codepage932_in&);
+   operator=(const Codepage932_in&);
+};
+@}
+
+
+@$@<Codepage932_in implementation@>==@{@-
+Codepage932_in::Codepage932_in(InputByteStream& bs)
+   : m_InputByteStream(bs)
+{
+}
+
+
+bool Codepage932_in::bEOS()
+{
+   return m_InputByteStream.bEOS();
+}
+
+TeXChar Codepage932_in::Get()
+{
+   ASSERT(!bEOS());
+   TeXChar ch;
+   Byte b = m_InputByteStream.Get();
+   // We'll ignore 0D characters
+   if (b == 0x0d){
+     b = m_InputByteStream.Get();
+   }
+
+   if (b < 0x80 || (b >= 0xa0 && b < 0xe0)){
+     ch = b;
+   } else {
+     ch = b*256;
+     b = m_InputByteStream.Get();
+     ch += b;
+   }
+
+   return ch;
+}
+
+
+void Codepage932_in::Putback(TeXChar c)
+{
+   ASSERT(false);
+}
+@}
+
+
+
+
+Here is a derived class that scans codepage 936.
+
+@$@<class Codepage936_in@>==@{@-
+class Codepage936_in : public CharStream{
+private:
+   InputByteStream& m_InputByteStream;
+public:
+   Codepage936_in(InputByteStream&);
+   TeXChar Get();
+   bool bEOS();
+   void Putback(TeXChar);
+private:
+   // Unimplemented
+   Codepage936_in(const Codepage936_in&);
+   operator=(const Codepage936_in&);
+};
+@}
+
+
+@$@<Codepage936_in implementation@>==@{@-
+Codepage936_in::Codepage936_in(InputByteStream& bs)
+   : m_InputByteStream(bs)
+{
+}
+
+
+bool Codepage936_in::bEOS()
+{
+   return m_InputByteStream.bEOS();
+}
+
+TeXChar Codepage936_in::Get()
+{
+   ASSERT(!bEOS());
+   TeXChar ch;
+   Byte b = m_InputByteStream.Get();
+   // We'll ignore 0D characters
+   if (b == 0x0d){
+     b = m_InputByteStream.Get();
+   }
+
+   if (b < 0xa0){
+     ch = b;
+   } else {
+     ch = b*256;
+     b = m_InputByteStream.Get();
+     ch += b;
+   }
+
+   return ch;
+}
+
+
+void Codepage936_in::Putback(TeXChar c)
+{
+   ASSERT(false);
+}
+@}
+
+
+
+Here is a derived class that scans codepage 949.
+
+@$@<class Codepage949_in@>==@{@-
+class Codepage949_in : public CharStream{
+private:
+   InputByteStream& m_InputByteStream;
+public:
+   Codepage949_in(InputByteStream&);
+   TeXChar Get();
+   bool bEOS();
+   void Putback(TeXChar);
+private:
+   // Unimplemented
+   Codepage949_in(const Codepage949_in&);
+   operator=(const Codepage949_in&);
+};
+@}
+
+
+@$@<Codepage949_in implementation@>==@{@-
+Codepage949_in::Codepage949_in(InputByteStream& bs)
+   : m_InputByteStream(bs)
+{
+}
+
+
+bool Codepage949_in::bEOS()
+{
+   return m_InputByteStream.bEOS();
+}
+
+TeXChar Codepage949_in::Get()
+{
+   ASSERT(!bEOS());
+   TeXChar ch;
+   Byte b = m_InputByteStream.Get();
+   // We'll ignore 0D characters
+   if (b == 0x0d){
+     b = m_InputByteStream.Get();
+   }
+
+   if (b < 0x80){
+     ch = b;
+   } else {
+     ch = b*256;
+     b = m_InputByteStream.Get();
+     ch += b;
+   }
+
+   return ch;
+}
+
+
+void Codepage949_in::Putback(TeXChar c)
+{
+   ASSERT(false);
+}
+@}
+
+
+
+Here is a derived class that scans codepage 950.
+
+@$@<class Codepage950_in@>==@{@-
+class Codepage950_in : public CharStream{
+private:
+   InputByteStream& m_InputByteStream;
+public:
+   Codepage950_in(InputByteStream&);
+   TeXChar Get();
+   bool bEOS();
+   void Putback(TeXChar);
+private:
+   // Unimplemented
+   Codepage950_in(const Codepage950_in&);
+   operator=(const Codepage950_in&);
+};
+@}
+
+
+@$@<Codepage950_in implementation@>==@{@-
+Codepage950_in::Codepage950_in(InputByteStream& bs)
+   : m_InputByteStream(bs)
+{
+}
+
+
+bool Codepage950_in::bEOS()
+{
+   return m_InputByteStream.bEOS();
+}
+
+TeXChar Codepage950_in::Get()
+{
+   ASSERT(!bEOS());
+   TeXChar ch;
+   Byte b = m_InputByteStream.Get();
+   // We'll ignore 0D characters
+   if (b == 0x0d){
+     b = m_InputByteStream.Get();
+   }
+
+   if (b < 0xa0){
+     ch = b;
+   } else {
+     ch = b*256;
+     b = m_InputByteStream.Get();
+     ch += b;
+   }
+
+   return ch;
+}
+
+
+void Codepage950_in::Putback(TeXChar c)
+{
+   ASSERT(false);
+}
+@}
+
+
+
+
+@C@<Tests@>
+
+Since ISO-Latin-1 maps so simply into Unicode there is
+not much to test here.
+
+@$@<Textio tests@>+=@{@-
+bool TestLatin1()
+{
+   // With an empty file
+   InputByteFile bfile1;
+   bfile1.Open("empty.dat");
+   Latin_1_in latin1File1 ( bfile1 );
+   ASSERT(latin1File1.bEOS());
+   // Normal case
+   Filename fn("latin1.dat");
+   InputByteFile bfile;
+   bfile.Open(fn);
+   Latin_1_in latin1File(bfile);
+   LogFile::Start();
+   while (! latin1File.bEOS() ){
+      TeXChar ch = latin1File.Get();
+      LOG( ch << ' ' );
+   }
+   return CompareLog("latin1.log", "Textio.TestLatin1");
+}
+@}
+
+
+@$@<Textio TestTable@>+=@{@-
+{"latin1", TestLatin1},
+@}
+
+@o@<latin1.dat@>==@{@-
+Some text
+Line 2@}
+
+@o@<latin1.log@>==@{@-
+S o m e   t e x t @<Platform@>@(\u(10)@,\u(13) \u(10)@) L i n e   2 @}
+
+
+@B@<Line Sources@>
+
+A @{LineSource@} reads the character stream produced by the @{CharStream@}
+class and converts it to a sequence of @{LinesOfText@}.
+
+@$@<class LineSource@>==@{@-
+class LineSource {
+private:
+   CharStream& m_charStream;
+
+public:
+   LineSource(CharStream&);
+   ~LineSource();
+   bool bEmpty() const;
+   bool GetLine(LineOfText* line);
+private:
+   // Unimplemented
+   LineSource(const LineSource&);
+   LineSource& operator=(const LineSource&);
+};
+@}
+
+
+@$@<LineSource implementation@>+=@{@-
+LineSource::LineSource(CharStream& cs)
+   : m_charStream(cs)
+{
+}
+@}
+
+
+@$@<LineSource implementation@>+=@{@-
+LineSource::~LineSource()
+{
+}
+@}
+
+@$@<LineSource implementation@>+=@{@-
+bool LineSource::bEmpty() const
+{
+   return m_charStream.bEOS();
+}
+@}
+
+
+Note the use of @{LINE_END@} here. This needs to be changed.
+There is going to be a parameter @{\endlinechar@} that holds the
+charater to be used as an end of line mark regardless of what
+the system uses.
+
+@$@<LineSource implementation@>+=@{@-
+const TeXChar LINE_END = 0x000A;
+
+bool LineSource::GetLine(LineOfText* pLine)
+{
+   ASSERT(pLine != 0);
+   if (m_charStream.bEOS()){
+      return false;
+   }
+   pLine -> Clear();
+   while (true){
+      TeXChar ch = m_charStream.Get();
+      if (ch == LINE_END){
+         pLine -> Append('\x0d');
+         break;
+      } else
+         pLine -> Append(ch);
+
+      if (m_charStream.bEOS())
+         break;
+
+   }
+   // I think a line should be able to have
+   // a line end character or not, so I'll
+   // remove this for now.
+   //pLine -> Append(LINE_END);
+   return true;
+}
+@}
+
+
+@C@<Tests@>
+
+@$@<Textio tests@>+=@{@-
+bool TestLineSource()
+{
+   // Test with an empty file
+   Filename fn1("empty.dat");
+   InputByteFile bfile1;
+   bfile1.Open(fn1);
+   Latin_1_in charStream1(bfile1);
+   LineSource lines1(charStream1);
+   ASSERT(lines1.bEmpty());
+
+   // Normal Case
+   Filename fn2("lines2.dat");
+   InputByteFile bfile2;
+   bfile2.Open(fn2);
+   Latin_1_in charStream2(bfile2);
+   LineSource lines2(charStream2);
+   LineOfText line;
+   int i = 0;
+   LogFile::Start();
+   while ( !lines2.bEmpty() ) {
+     ++i;
+     lines2.GetLine(&line);
+     if (i != 1) LOG ('\n');
+     LOG("Line " << i << '\n');
+     LOG("Size = " << line.nRemaining() << '\n');
+     LOG(line);
+   }
+   return CompareLog("lines2.log", "Textio.TestLineSource");
+}
+@}
+
+@$@<Textio TestTable@>+=@{@-
+{"linesource", TestLineSource},
+@}
+
+
+@o@<lines2.dat@>==@{@-
+First line
+Second line
+Third line@}
+
+
+@o@<lines2.log@>==@{@-
+Line 1
+Size = 11
+First line\u(13)
+Line 2
+Size = 12
+Second line\u(13)
+Line 3
+Size = 10
+Third line@}
+
+
+
+@B@<Overall subsystem@>
+
+
+@o@<a.x@>==@{@-
+Testing one, two, three...
+here is another line
+@}
+
+@B@<Physical layout@>
+@o@<textio.h@>==@{@-
+#ifndef TEXTIO_H
+#define TEXTIO_H
+
+#ifndef PLATFORM_H
+   #include "platform.h"
+#endif
+
+@<class LineOfText@>
+@<class CharStream@>
+@<class LineSource@>
+@<class Latin_1_in@>
+@<class Codepage932_in@>
+@<class Codepage936_in@>
+@<class Codepage949_in@>
+@<class Codepage950_in@>
+
+
+@<IOSys interface@>
+
+#endif
+@}
+
+@o@<textio.cpp@>==@{@-
+#include "textio.h"
+#include <string>
+@<static data@>
+@<LineOfText implementation@>
+@<CharStream implementation@>
+@<LineSource implementation@>
+@<Latin_1_in implementation@>
+@<Codepage932_in implementation@>
+@<Codepage936_in implementation@>
+@<Codepage949_in implementation@>
+@<Codepage950_in implementation@>
+
+@}
+
+@o@<textio.t.cpp@>==@{@-
+#include "platform.h"
+#include "textio.h"
+#include <string>
+@<CompareLog utility@>
+@<Test jig@>@(@<Textio tests@>@,@<Textio TestTable@>@)
+@}
+
+
