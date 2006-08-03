@@ -2013,7 +2013,8 @@ toolbar {
 }
 
 
-tabpanel toolbarbutton { margin: 2px; padding: 2px; }
+tabpanel toolbarbutton,
+tabpanel toolbarbutton:active { margin: 2px !important; padding: 2px !important; }
 tabpanel toolbarbutton:hover { background-color: rgb(240,240,240); }
 toolbox[iconsize="small"] tabpanel toolbarbutton { margin: 1px; padding: 0px; }
 toolbox[iconsize="small"] tab { padding-bottom: 1px; }
