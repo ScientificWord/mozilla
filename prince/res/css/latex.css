@@ -1,8 +1,8 @@
 latex {
-  -moz-binding: url("resource://gre/res/xbl/latex.xml#latex");
+  -moz-binding: url("resource://app/res/xbl/latex.xml#latex");
 }
 
 tex {
-  -moz-binding: url("resource://gre/res/xbl/latex.xml#tex");
+  -moz-binding: url("resource://app/res/xbl/latex.xml#tex");
 }
 

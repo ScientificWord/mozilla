@@ -40,4 +40,4 @@
 \@text@tag{footnotesize}
 
 \immediate\openout2={my.css}
-\immediate\write2{@import url("resource://gre/res/css/report.css");}
+\immediate\write2{@import url("resource://app/res/css/report.css");}
