@@ -22,7 +22,7 @@ comm.jar:
     content/communicator/utilityOverlay.xul              (resources/content/utilityOverlay.xul) 
     content/communicator/utilityOverlay.js               (resources/content/utilityOverlay.js) 
     content/communicator/openLocation.js                 (resources/content/openLocation.js)
-    content/communicator/openLocation.xul                (resources/content/openLocation.xul)
+*    content/communicator/openLocation.xul                (resources/content/openLocation.xul)
     content/communicator/tasksOverlay.js                 (resources/content/tasksOverlay.js) 
     content/communicator/tasksOverlay.xul                (resources/content/tasksOverlay.xul) 
     content/communicator/editorBindings.xul              (resources/content/editorBindings.xul) 
@@ -61,7 +61,7 @@ comm.jar:
     content/communicator/printPreviewBindings.xml        (resources/content/printPreviewBindings.xml)
     content/communicator/printing.js                     (resources/content/printing.js)
 
-#ifdef MOZ_SUITE
+#ifdef MOZ_MSI_PRINCE 
 en-US.jar:
 #ifdef MOZ_XUL_APP
 % locale communicator en-US %locale/en-US/communicator/
