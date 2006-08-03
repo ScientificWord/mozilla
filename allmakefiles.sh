@@ -1069,6 +1069,7 @@ xpfe/components/build2/Makefile
 MAKEFILES_prince="
 Prince/Makefile
 Prince/Compute/Makefile
+xpfe/communicator/Makefile
 "
 
 MAKEFILES_calendar="
