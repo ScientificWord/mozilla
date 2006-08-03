@@ -11,8 +11,8 @@ CSS_RESOURCES := $(wildcard	$(srcdir)/css/*.css)
 XBL_RESOURCES := $(wildcard $(srcdir)/xbl/*.xml)
 
 libs::	$(CSS_RESOURCES) $(XBL_RESOURCES)
-	$(INSTALL)	$(CSS_RESOURCES)	$(DIST)/bin/res/css
-	$(INSTALL)	$(XBL_RESOURCES)	$(DIST)/bin/res/xbl
+	$(INSTALL)	$(CSS_RESOURCES)	$(DIST)/xpi-stage/prince/res/css
+	$(INSTALL)	$(XBL_RESOURCES)	$(DIST)/xpi-stage/prince/res/xbl
 
 
 
