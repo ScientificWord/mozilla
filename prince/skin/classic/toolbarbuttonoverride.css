@@ -29,7 +29,18 @@ toolbarbutton[disabled="true"][open="true"] {
 
 toolbarbutton[checked="true"] {
   border-color: ThreeDShadow ThreeDHighlight ThreeDHighlight ThreeDShadow !important;
-  padding: 0;
+  padding: 0 !important;
   background-image: url("chrome://global/skin/toolbar/Lighten.png");
   color: ButtonText !important;
 }
+
+
+#Symbol-tabbox { font-family: "Times-Roman"; }
+#Symbol-tabbox[textsize="large"] tab { font-size: large; }
+#Symbol-tabbox[textsize="large"] toolbarbutton { font-size: large; }
+#Symbol-tabbox[textsize="medium"] tab { font-size: medium; }
+#Symbol-tabbox[textsize="medium"] toolbarbutton { font-size: medium; }
+#Symbol-tabbox[textsize="small"] tab { font-size: small; }
+#Symbol-tabbox[textsize="small"] toolbarbutton { font-size: small; }
+#symbol_lcGreek toolbarbutton{font-style: italic; }
+#symbol_lcGreekTab {font-style: italic; }
