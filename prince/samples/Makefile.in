@@ -77,8 +77,8 @@ GRAPHICS_SAMPLES  := $(wildcard $(srcdir)/graphics/TestPlot*.png)
 include $(topsrcdir)/config/rules.mk
 
 libs::	$(SAMPLES) $(SWP_SAMPLES) $(MUPAD_SAMPLES)
-	$(INSTALL) $(SAMPLES) $(DIST)/bin/samples
-	$(INSTALL) $(SWP_SAMPLES) $(DIST)/bin/samples
+	$(INSTALL) $(SAMPLES) $(DIST)/xpi-stage/prince/samples
+	$(INSTALL) $(SWP_SAMPLES) $(DIST)/xpi-stage/prince/samples
 	$(INSTALL) $(MUPAD_SAMPLES) $(DIST)/bin
-	$(INSTALL) $(GRAPHICS_SAMPLES) $(DIST)/bin/samples/graphics
+	$(INSTALL) $(GRAPHICS_SAMPLES) $(DIST)/xpi-stage/prince/samples/graphics
 

@@ -20,6 +20,9 @@
                   key="openeditorkb"
                   observes="cmd_open" 
                   label="&openFileCmd.label;"/>
+      <menuitem accesskey="&fileopenremote.accesskey;"  
+                  key="openremoteeditorkb" 
+                  observes="cmd_openRemote"/>
       <menuitem observes="cmd_openTeX" label="Import TeX ..."/>
       <menuitem observes="cmd_exportTeX" label="Export TeX ..."/>
       <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
@@ -116,8 +119,8 @@
           oncommandupdate="goUpdateComposerMenuItems(this)"
   >
     <command id="cmd_open"                                          oncommand="goDoCommand('cmd_open')"/>
-    <command id="cmd_openRemote"   label="_amp_openremoteCmd.label;"    oncommand="goDoCommand('cmd_openRemote')"/>
-    <command id="cmd_close"        label="_amp_closeCmd.label;"         oncommand="goDoCommand('cmd_close')"/>
+    <command id="cmd_openRemote"   label="&openremoteCmd.label;"    oncommand="goDoCommand('cmd_openRemote')"/>
+    <command id="cmd_close"        label="&closeCmd.label;"         oncommand="goDoCommand('cmd_close')"/>
     <command id="cmd_printSetup"   oncommand="goDoCommand('cmd_printSetup')"/>
 <!--
     <command id="cmd_printPreview" label="_amp_printPreviewCmd.label;"  oncommand="goDoCommand('cmd_printPreview')"/>
