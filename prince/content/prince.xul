@@ -158,5 +158,5 @@
   <commandset id="composerStyleMenuItems" />
   <commandset id="composerListMenuItems" />
   <commandset id="composerTableMenuItems" />
- 
+  <commandset id="MSIcomputeMenuCommands" />
 </window>
