@@ -1,5 +1,0 @@
-#expand <!ENTITY  lang.version          "__MOZILLA_LOCALE_VERSION__">
-<!ENTITY  brandFullName         "Scientific WorkPlace">
-<!ENTITY  brandShortName        "Scientific WorkPlace">
-<!ENTITY  vendorShortName       "MacKichan Software, Inc">
-<!ENTITY  sidebarName           "Sidebar">
