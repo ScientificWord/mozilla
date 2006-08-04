@@ -1,0 +1,146 @@
+<?xml version="1.0"?> 
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!DOCTYPE overlay SYSTEM "chrome://prince/locale/typesetOverlay.dtd">
+
+<overlay id="typesetOverlay"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<!-- ?xml-stylesheet href="resource://gre/res/mathml.css" type="text/css"? -->
+<!-- ?xml-stylesheet href="data:text/css,math[display='inline']{display:-moz-inline-box}" type="text/css"? -->
+
+<script type="application/x-javascript" src="chrome://prince/content/typesetOverlay.js"/>
+
+  <commandset id="MSItypesetMenuCommands"
+                  commandupdater="true"
+                  events="create, mode_switch"
+                  oncommandupdate="goUpdateMSITypesetMenuItems(this)">
+  
+    <command id="cmd_MSIfrontMatterCmd"                     oncommand="goDoCommand('cmd_MSIfrontMatterCmd');"/>
+    <command id="cmd_MSIpreambleCmd"                        oncommand="goDoCommand('cmd_MSIpreambleCmd');"/>
+    <command id="cmd_MSIbibChoiceCmd"                       oncommand="goDoCommand('cmd_MSIbibChoiceCmd');"/>
+    <command id="cmd_MSItypesetOptionsAndPackagesCmd"       oncommand="goDoCommand('cmd_MSItypesetOptionsAndPackagesCmd');"/>
+    <command id="cmd_MSItypesetOutputChoiceCmd"             oncommand="goDoCommand('cmd_MSItypesetOutputChoiceCmd');"/>
+    <command id="cmd_MSItypesetPreviewCmd"                  oncommand="goDoCommand('cmd_MSItypesetPreviewCmd');"/>
+    <command id="cmd_MSItypesetPrintCmd"                    oncommand="goDoCommand('cmd_MSItypesetPrintCmd');"/>
+    <command id="cmd_MSItypesetCompileCmd"                  oncommand="goDoCommand('cmd_MSItypesetCompileCmd');"/>
+    <command id="cmd_MSItypesetPDFPreviewCmd"               oncommand="goDoCommand('cmd_MSItypesetPDFPreviewCmd');"/>
+    <command id="cmd_MSItypesetPDFPrintCmd"                 oncommand="goDoCommand('cmd_MSItypesetPDFPrintCmd');"/>
+    <command id="cmd_MSItypesetPDFCompileCmd"               oncommand="goDoCommand('cmd_MSItypesetPDFCompileCmd');"/>
+    <command id="cmd_MSItypesetGenSettingsCmd"              oncommand="goDoCommand('cmd_MSItypesetGenSettingsCmd');"/>
+    <command id="cmd_MSItypesetExpertSettingsCmd"           oncommand="goDoCommand('cmd_MSItypesetExpertSettingsCmd');"/>
+    <command id="cmd_MSIrunBibTeXCmd"                       oncommand="goDoCommand('cmd_MSIrunBibTeXCmd');"/>
+    <command id="cmd_MSIrunMakeIndexCmd"                    oncommand="goDoCommand('cmd_MSIrunMakeIndexCmd');"/>
+  </commandset>
+
+	<commandset id="MSItypesetInsertMenuCommands"
+	            commandupdater="true"
+							events="create, mode_switch"
+							oncommandupdate="goUpdateMSITypesetInsertMenuItems(this)">
+
+		<command id="cmd_MSIinsertIndexEntryCmd"								oncommand="goDoCommand('cmd_MSIinsertIndexEntryCmd');"/>
+		<command id="cmd_MSIinsertCrossReferenceCmd"						oncommand="goDoCommand('cmd_MSIinsertCrossReferenceCmd');"/>
+		<command id="cmd_MSIinsertCitationCmd"									oncommand="goDoCommand('cmd_MSIinsertCitationCmd');"/>
+		<command id="cmd_MSIinsertBibliographyCmd"							oncommand="goDoCommand('cmd_MSIinsertBibliographyCmd');"/>
+		<command id="cmd_MSIinsertTeXFieldCmd"									oncommand="goDoCommand('cmd_MSIinsertTeXFieldCmd');"/>
+		<command id="cmd_MSIinsertSubdocumentCmd"								oncommand="goDoCommand('cmd_MSIinsertSubdocumentCmd');"/>
+	</commandset>
+
+  <!-- style related commands that update on creation, and on selection change (editorOverlay.xul)-->
+
+  <menu id="MSITypesetMenu" label="&MSITypesetMenu.label;" accesskey="&MSITypesetMenu.accesskey;">
+    <menupopup id="MSITypesetPopup" onpopupshowing="initTypesetMenu(this)">
+      <menuitem label="&MSIfrontMatterCmd.label;"            
+        accesskey="&MSIfrontMatterCmd.accesskey;"          
+        command="cmd_MSIfrontMatterCmd"/>
+      <menuitem label="&MSIpreambleCmd.label;"               
+        accesskey="&MSIpreambleCmd.accesskey;"             
+        command="cmd_MSIpreambleCmd"/>
+      <menuitem label="&MSIbibChoiceCmd.label;"              
+        accesskey="&MSIbibChoiceCmd.accesskey;"            
+        command="cmd_MSIbibChoiceCmd"/>  
+      <menuitem label="&MSItypesetOptionsAndPackagesCmd.label;" 
+        accesskey="&MSItypesetOptionsAndPackagesCmd.accesskey;" 
+        command="cmd_MSItypesetOptionsAndPackagesCmd"/>
+      <menuitem label="&MSItypesetOutputChoiceCmd.label;"    
+        accesskey="&MSItypesetOutputChoiceCmd.accesskey;"  
+        command="cmd_MSItypesetOutputChoiceCmd"/>
+      <menuseparator/>                                                                                                                       
+      <menuitem label="&MSItypesetPreviewCmd.label;"         
+        accesskey="&MSItypesetPreviewCmd.accesskey;"       
+        command="cmd_MSItypesetPreviewCmd"/>
+      <menuitem label="&MSItypesetPrintCmd.label;"           
+        accesskey="&MSItypesetPrintCmd.accesskey;"         
+        command="cmd_MSItypesetPrintCmd"/>      
+      <menuitem label="&MSItypesetCompileCmd.label;"         
+        accesskey="&MSItypesetCompileCmd.accesskey;"       
+        command="cmd_MSItypesetCompileCmd"/>
+      <menuseparator/>                                                                                                                       
+      <menuitem label="&MSItypesetPDFPreviewCmd.label;"      
+        accesskey="&MSItypesetPDFPreviewCmd.accesskey;"    
+        command="cmd_MSItypesetPDFPreviewCmd"/>
+      <menuitem label="&MSItypesetPDFPrintCmd.label;"        
+        accesskey="&MSItypesetPDFPrintCmd.accesskey;"      
+        command="cmd_MSItypesetPDFPrintCmd"/>
+      <menuitem label="&MSItypesetPDFCompileCmd.label;"      
+        accesskey="&MSItypesetPDFCompileCmd.accesskey;"    
+        command="cmd_MSItypesetPDFCompileCmd"/>
+      <menuseparator/>
+      <menu label="&MSItypesetToolsMenu.label;"              
+        accesskey="&MSItypesetToolsMenu.accesskey;">
+        
+        <menupopup id="MSItypesetToolsPopup">
+          <menuitem label="&MSIrunBibTeXCmd.label;"          
+            accesskey="&MSIrunBibTeXCmd.accesskey;"            
+            command="cmd_MSIrunBibTeXCmd"/>
+          <menuitem label="&MSIrunMakeIndexCmd.label;"       
+            accesskey="&MSIrunMakeIndexCmd.accesskey;"         
+            command="cmd_MSIrunBibTeXCmd"/>
+        </menupopup>
+      </menu>
+      <menuitem label="&MSItypesetGenSettingsCmd.label;"     
+        accesskey="&MSItypesetGenSettingsCmd.accesskey;"   
+        command="cmd_MSIColorsCmd"/>
+      <menuitem label="&MSItypesetExpertSettingsCmd.label;"  
+        accesskey="&MSItypesetExpertSettingsCmd.accesskey;"
+         command="cmd_MSIColorsCmd"/>
+    </menupopup>
+  </menu>
+
+  <menu id="insertMenu">
+    <menupopup id="insertMenuPopup">
+      <menu id="MSIInsertTypesetObjectMenu" 
+        label="&MSIInsertTypesetObjectMenu.label;" 
+        accesskey="&MSIInsertTypesetObjectMenu.accesskey;">
+        
+        <menupopup onpopupshowing="InitTypesetObjectMenu()">
+          <menuitem id="MSIinsertIndexEntry"         
+            label="&MSIinsertIndexEntry.label;"         
+            accesskey="&MSIinsertIndexEntry.accesskey;"         
+            command="cmd_MSIinsertIndexEntryCmd"/>
+          <menuitem id="MSIinsertCrossReference"     
+            label="&MSIinsertCrossReference.label;"     
+            accesskey="&MSIinsertCrossReference.accesskey;"     
+            command="cmd_MSIinsertCrossReferenceCmd"/>
+          <menuitem id="MSIinsertCitation"           
+            label="&MSIinsertCitation.label;"           
+            accesskey="&MSIinsertCitation.accesskey;"           
+            command="cmd_MSIinsertCitationCmd"/>
+          <menuitem id="MSIinsertBibliography"       
+            label="&MSIinsertBibliography.label;"       
+            accesskey="&MSIinsertBibliography.accesskey;"       
+            command="cmd_MSIinsertBibliographyCmd"/>
+          <menuitem id="MSIinsertTeXField"           
+            label="&MSIinsertTeXField.label;"           
+            accesskey="&MSIinsertTeXField.accesskey;"           
+            command="cmd_MSIinsertTeXFieldCmd"/>
+          <menuitem id="MSIinsertSubdocument"        
+            label="&MSIinsertSubdocument.label;"        
+            accesskey="&MSIinsertSubdocument.accesskey;"        
+            command="cmd_MSIinsertSubdocumentCmd"/>
+        </menupopup>
+      </menu>
+    </menupopup>
+  </menu>
+
+</overlay>
