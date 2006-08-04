@@ -4,6 +4,9 @@ topsrcdir	= @top_srcdir@
 srcdir		= @srcdir@
 VPATH		= @srcdir@
 
+XPI_NAME	= prince
+
+
 include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/rules.mk
 
@@ -11,8 +14,8 @@ CSS_RESOURCES := $(wildcard	$(srcdir)/css/*.css)
 XBL_RESOURCES := $(wildcard $(srcdir)/xbl/*.xml)
 
 libs::	$(CSS_RESOURCES) $(XBL_RESOURCES)
-	$(INSTALL)	$(CSS_RESOURCES)	$(DIST)/xpi-stage/prince/res/css
-	$(INSTALL)	$(XBL_RESOURCES)	$(DIST)/xpi-stage/prince/res/xbl
+	$(INSTALL)	$(CSS_RESOURCES)	$(FINAL_TARGET)/res/css
+	$(INSTALL)	$(XBL_RESOURCES)	$(FINAL_TARGET)/res/xbl
 
 
 
