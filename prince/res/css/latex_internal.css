@@ -30,6 +30,8 @@ tex2 {
 /*  font-family: "Times-Roman";  */
   letter-spacing: -0.14em;
   visibility: visible;
+  -moz-user-select: none;
+  background-color: rgb(200,255,200);
 }
 
 texe {
