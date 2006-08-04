@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetStyleOptions.dtd">
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();"
+    >
+
+  <script type="application/x-javascript" src="chrome://prince/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/typesetStyleOptions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/typesetDialogUtils.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+
+  <stringbundle id="titleStrings" src="chrome://prince/locale/typesetDialogs.properties"/>
+
+  <!-- keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset -->
+
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <!-- broadcasterset>
+    <broadcaster id="enableDecorationsAround" disabled="false"/>
+    <broadcaster id="enableDecorationsAboveBelow" disabled="false"/>
+  </broadcasterset -->
+    
+    <vbox>
+      <hbox>
+        <vbox>
+          <description value='&categoryDescription.label;' accesskey='&categoryDescription.accessKey;'/>
+          <listbox id='categoryListbox' datasources='chrome://prince/content/texOptions.rdf' ref='' onselect='changeOptionSelection(this.selectedItem);'>
+            <template>
+              <!-- listitem uri="rdf:*" label='rdf:http://www.sciword.com/namespaces/texoptions-rdf#displayText' value='rdf:http://www.sciword.com/namespaces/texoptions-rdf#optionValues'/ -->
+              <listitem uri="rdf:*" label="rdf:http://www.sciword.com/namespaces/texoptions-rdf#displayText" value="rdf:http://www.sciword.com/namespaces/texoptions-rdf#optionID"/>
+            </template>
+          </listbox>
+        </vbox>
+        <vbox>
+          <description value='&optionsDescription.label;' accesskey='&optionsDescription.accessKey;'/>
+          <listbox id='optionsListbox' datasources='chrome://prince/content/texOptions.rdf' ref='' onselect='changeOptionChoice();'>
+            <template>
+              <listitem uri="rdf:*" label="rdf:http://www.sciword.com/namespaces/texoptions-rdf#displayText" value="rdf:http://www.sciword.com/namespaces/texoptions-rdf#latexString"/>
+            </template>
+          </listbox>
+          </vbox>
+      </hbox>
+      <hbox>
+        <vbox>
+          <description value='&currentOptionsDescription.label;'/>
+          <textbox id='selectedOptionsDescription' size='80' readonly='true'/>
+        </vbox>
+        <button id="goNativeButton" label="&goNativeButton.label;" accesskey="&goNativeButton.accessKey;" oncommand="doGoNative();"/>
+      </hbox>
+    </vbox>
+
+</dialog>
