@@ -1,3 +1,4 @@
+XPI_NAME	= prince
 
 DEPTH		= ../..
 topsrcdir	= @top_srcdir@
