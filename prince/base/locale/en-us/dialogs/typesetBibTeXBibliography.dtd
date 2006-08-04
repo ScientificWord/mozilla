@@ -1,0 +1,10 @@
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "BibTeX Bibliography">
+
+<!ENTITY databaseFileListbox.label "Database Files">
+<!ENTITY databaseFileListbox.accessKey "D">
+<!ENTITY styleFileListbox.label "Style">
+<!ENTITY styleFileListbox.accessKey "S">
+
+<!-- <!ENTITY .tooltip "">  -->

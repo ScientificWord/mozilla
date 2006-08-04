@@ -1,0 +1,238 @@
+
+
+<!ENTITY mathtextToolbar.tooltip "Toggle Math/Text">
+
+<!ENTITY customizeStandardToolbar.label "Customize the main toolbar">
+<!ENTITY customizeComputeToolbar.label "Customize the compute toolbar">
+<!ENTITY customizeSymbolToolbar.label "Customize the symbol toolbar">
+
+<!ENTITY mathToolbar.tooltip     "Math Toolbar">
+<!ENTITY ViewMathToolbar.label "Math Toolbar">
+<!ENTITY ViewMathToolbar.accesskey "U">
+
+<!ENTITY standardToolbar.tooltip     "Standard Toolbar">
+<!ENTITY ViewStandardToolbar.label "Standard Toolbar">
+<!ENTITY ViewStandardToolbar.accesskey "U">
+
+<!ENTITY ViewSymbolToolbar.label     "Symbol Palette Toolbar" >
+<!ENTITY ViewSymbolToolbar.accesskey "S">
+
+<!ENTITY ViewTagSelectToolbar.label     "Tag Select Toolbar" >
+<!ENTITY ViewTagSelectToolbar.accesskey "S">
+
+<!ENTITY ViewEditingToolbar.label     "Editing Toolbar" >
+<!ENTITY ViewEditingToolbar.accesskey "X">
+
+<!ENTITY texttagselect.tooltip "Apply a text tag" >
+<!ENTITY texttagselect.label "Text tags" >
+
+<!ENTITY paratagselect.tooltip "Apply a paragraph tag" >
+<!ENTITY paratagselect.label "Paragraph tags" >
+
+<!ENTITY secttagselect.tooltip "Apply a structure tag" >
+<!ENTITY secttagselect.label "Structure tags" >
+
+<!ENTITY othertagselect.tooltip "Apply a miscellaneous tag" >
+<!ENTITY othertagselect.label "Misc. tags" >
+
+
+<!ENTITY mathtextButton.tooltip "Toggle between math and text" >
+<!ENTITY mathtextButton.label "Math/Text" >
+
+<!ENTITY stopButton.tooltip "Stop a long process" >
+<!ENTITY stopButton.label "Stop" >
+
+<!ENTITY fractionButton.tooltip "Fraction" >
+<!ENTITY fractionButton.label "Fraction" >
+
+<!ENTITY radicalButton.tooltip "Radical" >
+<!ENTITY radicalButton.label "Radical" >
+
+<!ENTITY superscriptButton.tooltip "Superscript" >
+<!ENTITY superscriptButton.label "Superscript" >
+
+<!ENTITY subscriptButton.tooltip "Subscript" >
+<!ENTITY subscriptButton.label "Subscript" >
+
+<!ENTITY parenthesesButton.tooltip "Parentheses" >
+<!ENTITY parenthesesButton.label "Parentheses" >
+
+<!ENTITY bracketsButton.tooltip "Square brackets" >
+<!ENTITY bracketsButton.label "Square brackets" >
+
+<!ENTITY sumButton.tooltip "Sum" >
+<!ENTITY sumButton.label "Sum" >
+
+<!ENTITY integralButton.tooltip "Integral" >
+<!ENTITY integralButton.label "Integral" >
+
+<!ENTITY unitnameButton.tooltip "Unit name" >
+<!ENTITY unitnameButton.label "Unit name" >
+
+<!ENTITY displayButton.tooltip "Display" >
+<!ENTITY displayButton.label "Display" >
+
+<!ENTITY bigopButton.tooltip "Big operator" >
+<!ENTITY bigopButton.label "Big operator" >
+
+<!ENTITY bracketsButton.tooltip "Brackets" >
+<!ENTITY bracketsButton.label "Brackets" >
+
+<!ENTITY matrixButton.tooltip "Matrix" >
+<!ENTITY matrixButton.label "Matrix" >
+
+<!ENTITY mathnameButton.tooltip "Math name" >
+<!ENTITY mathnameButton.label "Math name" >
+
+<!ENTITY binomialButton.tooltip "Binomial" >
+<!ENTITY binomialButton.label "Binomial" >
+
+<!ENTITY labelButton.tooltip "Label" >
+<!ENTITY labelButton.label "Label" >
+
+<!ENTITY decorationButton.tooltip "Decoration" >
+<!ENTITY decorationButton.label "Decoration" >
+
+<!ENTITY noteButton.tooltip "Note" >
+<!ENTITY noteButton.label "Note" >
+
+<!ENTITY markerButton.tooltip "Marker" >
+<!ENTITY markerButton.label "Marker" >
+
+<!ENTITY htlinkButton.tooltip "Hypertext link" >
+<!ENTITY htlinkButton.label "Hypertext link" >
+
+<!ENTITY formulaButton.tooltip "Formula" >
+<!ENTITY formulaButton.label "Formula" >
+
+<!-- print buttons -->
+<!ENTITY printToolbarCmd.tooltip "Print" >
+<!ENTITY printToolbarCmd.label "Print" >
+
+<!ENTITY printButton.tooltip "Direct print" >
+<!ENTITY printButton.label "Direct print" >
+
+<!ENTITY dviprintButton.tooltip "Typeset DVI print" >
+<!ENTITY dviprintButton.label "Typeset DVI print" >
+
+<!ENTITY pdfprintButton.tooltip "Typeset PDF print" >
+<!ENTITY pdfprintButton.label "Typeset PDF print" >
+
+<!-- preview buttons -->
+
+<!ENTITY printPreviewToolbarCmd.tooltip "Direct print preview" >
+<!ENTITY printPreviewToolbarCmd.label "Direct print preview" >
+
+<!ENTITY dvipreviewButton.tooltip "Typeset DVI preview" >
+<!ENTITY dvipreviewButton.label "Typeset DVI preview" >
+
+<!ENTITY pdfpreviewButton.tooltip "Typeset PDF preview" >
+<!ENTITY pdfpreviewButton.label "Typeset PDF preview" >
+
+<!-- compile buttons -->
+
+<!ENTITY dvicompileButton.tooltip "Typeset DVI compile" >
+<!ENTITY dvicompileButton.label "DVI compile" >
+
+<!ENTITY pdfcompileButton.tooltip "Typeset PDF compile" >
+<!ENTITY pdfcompileButton.label "Typeset PDF compile" >
+
+<!ENTITY compileButton.tooltip "Typeset compile" >
+<!ENTITY compileButton.label "Typeset compile" >
+
+
+<!ENTITY frontmatterButton.tooltip "Front matter" >
+<!ENTITY frontmatterButton.label "Front matter" >
+
+<!ENTITY packagesButton.tooltip "Options and packages" >
+<!ENTITY packagesButton.label "Options and packages" >
+
+<!ENTITY citationButton.tooltip "Citation" >
+<!ENTITY citationButton.label "Citation" >
+
+<!ENTITY indexentryButton.tooltip "Index entry" >
+<!ENTITY indexentryButton.label "Index entry" >
+
+<!ENTITY xrefButton.tooltip "Cross reference" >
+<!ENTITY xrefButton.label "Cross reference" >
+
+<!ENTITY texfieldButton.tooltip "Tex field" >
+<!ENTITY texfieldButton.label "Tex field" >
+
+<!ENTITY subdocButton.tooltip "Subdocument" >
+<!ENTITY subdocButton.label "Subdocument" >
+
+<!ENTITY bibliographyButton.tooltip "Bibliography" >
+<!ENTITY bibliographyButton.label "Bibliography" >
+
+<!ENTITY MSIComputeEval.tooltip "Evaluate">
+<!ENTITY MSIComputeEval.label "Eval">
+
+<!ENTITY MSIComputeEvalNum.tooltip "Evaluate Numerically">
+<!ENTITY MSIComputeEvalNum.label "Eval num">
+
+<!ENTITY MSIComputeSimplify.tooltip "Simplify">
+<!ENTITY MSIComputeSimplify.label "Simplify">
+
+<!ENTITY MSIComputeExpand.tooltip "Expand">
+<!ENTITY MSIComputeExpand.label "Expand">
+
+<!ENTITY MSIComputeSolveExact.tooltip "Solve Exact">
+<!ENTITY MSIComputeSolveExact.label "Solve">
+
+<!ENTITY MSIComputePlot2D.tooltip "Plot 2D Rectangular">
+<!ENTITY MSIComputePlot2D.label "Plot 2D">
+
+<!ENTITY MSIComputePlot3D.tooltip "Plot 3D Rectangular">
+<!ENTITY MSIComputePlot3D.label "Plot 3D">
+
+<!ENTITY MSIComputeDefine.tooltip "New Definition">      
+<!ENTITY MSIComputeDefine.label "New Def">      
+
+<!ENTITY MSIComputeShowDefs.tooltip "Show Definitions">
+<!ENTITY MSIComputeShowDefs.label "Show Defs">
+
+<!ENTITY gifsAnimatedButton.tooltip "Start/stop GIF animations">
+<!ENTITY gifsAnimatedButton.label "Animations">
+
+<!ENTITY exporttexToolbarButton.tooltip "Export to TeX file">
+<!ENTITY exporttexToolbarButton.label "Export to TeX">
+
+<!ENTITY exportwebToolbarButton.tooltip "Export to web">
+<!ENTITY exportwebToolbarButton.label "Export to web">
+
+<!ENTITY importimageToolbarButton.tooltip "Import image">
+<!ENTITY importimageToolbarButton.label "Import image">
+
+<!ENTITY importtexToolbarButton.tooltip "Import TeX file">
+<!ENTITY importtexToolbarButton.label "Import TeX">
+
+<!ENTITY javascriptToolbarButton.tooltip "Enable/disable JavaScript">
+<!ENTITY javascriptToolbarButton.label "JavaScript">
+
+<!ENTITY chooseDefPrinter.label "Select default">
+<!ENTITY direct "Direct">
+<!ENTITY pdf "PDF">
+<!ENTITY dvi "DVI">
+
+<!ENTITY newToolbarCmd.tooltip "New document">
+<!ENTITY newMenu.label "New">
+<!ENTITY openToolbarCmd.tooltip "Open">
+<!ENTITY openToolbarCmd.label "Open">
+<!ENTITY saveToolbarCmd.tooltip "Save">
+<!ENTITY saveToolbarCmd.label "Save">
+
+<!ENTITY cutCmd.tooltip "Cut">
+<!ENTITY cutCmd.label "Cut">
+<!ENTITY copyCmd.tooltip "Copy">
+<!ENTITY copyCmd.label "Copy">
+<!ENTITY pasteCmd.tooltip "Paste">
+<!ENTITY pasteCmd.label "Paste">
+<!ENTITY undoCmd.tooltip "Undo">
+<!ENTITY undoCmd.label "Undo">
+<!ENTITY redoCmd.tooltip "Redo">
+<!ENTITY redoCmd.label "Redo">
+<!ENTITY findToolbarCmd.tooltip "Find">
+<!ENTITY findToolbarCmd.label "Find">
+<!ENTITY spellToolbarCmd.tooltip "Check spelling">
+<!ENTITY spellToolbarCmd.label "Spell">
