@@ -1,0 +1,5 @@
+
+    #ChamTestWindow { -moz-user-input: none;
+                      -moz-user-select: none;
+                    } 
+    #foo {-moz-user-input: none; }       
