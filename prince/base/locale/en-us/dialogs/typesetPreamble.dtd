@@ -1,0 +1,8 @@
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "LaTeX Preamble">
+
+<!ENTITY warning.label "WARNING!">
+<!ENTITY warningText.label "LaTeX commands entered here will be inserted before the \begin{document} statement in your document. Be sure you know what you are doing, because you have the potential to cause irreparable damage to your document.">
+
+<!-- <!ENTITY .tooltip "">  -->
