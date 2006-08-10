@@ -1089,53 +1089,53 @@ toolbar[iconsize="small"] #printButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/print-disabled.png");
 }
 
-#printButton[defaultcompiler="dvi"] {
+#printButton[defcomp="dvi"] {
   list-style-image: url("chrome://prince/skin/icons/type_dviprint.png");
 }
-toolbar[iconsize="small"] #printButton[defaultcompiler="dvi"] {
+toolbar[iconsize="small"] #printButton[defcomp="dvi"] {
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-sm.png");
 }
-#printButton[defaultcompiler="dvi"]:hover {
+#printButton[defcomp="dvi"]:hover {
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-hover.png");
 }
-toolbar[iconsize="small"] #printButton[defaultcompiler="dvi"]:hover {
+toolbar[iconsize="small"] #printButton[defcomp="dvi"]:hover {
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-hover-sm.png");
 }
-#printButton[defaultcompiler="dvi"]:hover:active {
+#printButton[defcomp="dvi"]:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-active.png");
 }
-toolbar[iconsize="small"] #printButton[defaultcompiler="dvi"]:hover:active {
+toolbar[iconsize="small"] #printButton[defcomp="dvi"]:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-active-sm.png");
 }
-#printButton[defaultcompiler="dvi"][disabled="true"] {
+#printButton[defcomp="dvi"][disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-disabled.png");
 }
-toolbar[iconsize="small"] #printButton[defaultcompiler="dvi"][disabled="true"] {
+toolbar[iconsize="small"] #printButton[defcomp="dvi"][disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-disabled-sm.png");
 }
 
-#printButton[defaultcompiler="pdf"] {
+#printButton[defcomp="pdf"] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint.png");
 }
-toolbar[iconsize="small"] #printButton[defaultcompiler="pdf"] {
+toolbar[iconsize="small"] #printButton[defcomp="pdf"] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-sm.png");
 }
-#printButton[defaultcompiler="pdf"]:hover {
+#printButton[defcomp="pdf"]:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-hover.png");
 }
-toolbar[iconsize="small"] #printButton[defaultcompiler="pdf"]:hover {
+toolbar[iconsize="small"] #printButton[defcomp="pdf"]:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-hover-sm.png");
 }
-#printButton[defaultcompiler="pdf"]:hover:active {
+#printButton[defcomp="pdf"]:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-active.png");
 }
-toolbar[iconsize="small"] #printButton[defaultcompiler="pdf"]:hover:active {
+toolbar[iconsize="small"] #printButton[defcomp="pdf"]:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-active-sm.png");
 }
-#printButton[defaultcompiler="pdf"][disabled="true"] {
+#printButton[defcomp="pdf"][disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-disabled.png");
 }
-toolbar[iconsize="small"] #printButton[defaultcompiler="pdf"][disabled="true"] {
+toolbar[iconsize="small"] #printButton[defcomp="pdf"][disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-disabled-sm.png");
 }
 
@@ -1165,53 +1165,53 @@ toolbar[iconsize="small"] #printPreviewButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/preview-disabled-sm.png");
 }
 
-#printPreviewButton[defaultcompiler='dvi'] {
+#printPreviewButton[defcomp='dvi'] {
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defaultcompiler='dvi'] {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi'] {
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-sm.png");
 }
-#printPreviewButton[defaultcompiler='dvi']:hover {
+#printPreviewButton[defcomp='dvi']:hover {
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-hover.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defaultcompiler='dvi']:hover {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi']:hover {
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-hover-sm.png");
 }
-#printPreviewButton[defaultcompiler='dvi']:hover:active {
+#printPreviewButton[defcomp='dvi']:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-active.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defaultcompiler='dvi']:hover:active {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi']:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-active-sm.png");
 }
-#printPreviewButton[defaultcompiler='dvi'][disabled="true"] {
+#printPreviewButton[defcomp='dvi'][disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-disabled.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defaultcompiler='dvi'][disabled="true"] {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi'][disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-disabled-sm.png");
 }
 
-#printPreviewButton[defaultcompiler='pdf'] {
+#printPreviewButton[defcomp='pdf'] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defaultcompiler='pdf'] {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-sm.png");
 }
-#printPreviewButton[defaultcompiler='pdf']:hover {
+#printPreviewButton[defcomp='pdf']:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-hover.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defaultcompiler='pdf']:hover {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-hover-sm.png");
 }
-#printPreviewButton[defaultcompiler='pdf']:hover:active {
+#printPreviewButton[defcomp='pdf']:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-active.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defaultcompiler='pdf']:hover:active {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-active-sm.png");
 }
-#printPreviewButton[defaultcompiler='pdf'][disabled="true"] {
+#printPreviewButton[defcomp='pdf'][disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-disabled.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defaultcompiler='pdf'][disabled="true"] {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'][disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-disabled-sm.png");
 }
 
