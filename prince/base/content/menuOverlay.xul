@@ -6,8 +6,10 @@
 <!DOCTYPE overlay [
 <!ENTITY % DTD SYSTEM "chrome://prince/locale/menuOverlay.dtd">
 %DTD;
-<!ENTITY % inspectorDTD SYSTEM "chrome://inspector/locale/tasksOverlay.dtd" >
-%inspectorDTD;
+<!ENTITY % toolbarDTD SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd" >
+%toolbarDTD;
+# <!ENTITY % inspectorDTD SYSTEM "chrome://inspector/locale/tasksOverlay.dtd" >
+# %inspectorDTD;
 ]>
 
 <overlay id="editorOverlay"
@@ -15,7 +17,7 @@
   <script src="chrome://editor/content/editor.js"/>
   <script src="chrome://prince/content/toolbarsOverlay.js"/>
   <script src="chrome://venkman/content/venkman-overlay.js"/>
-  <script type="application/x-javascript" src="chrome://inspector/content/hooks.js"/>
+#  <script type="application/x-javascript" src="chrome://inspector/content/hooks.js"/>
   
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
     <menupopup id="menu_FilePopup" onpopupshowing="EditorInitFileMenu();">
@@ -46,8 +48,76 @@
       <menuitem accesskey="&filerevert.accesskey;" observes="cmd_revert"
         label="&fileRevert.label;" />
       <menuseparator/>
-      <menuitem id="printMenuItem" accesskey="&fileprint.accesskey;" key="printkb" 
-       observes="cmd_print" label="&printCmd.label;"/>
+      <menu id="printPreviewMenuItem" accesskey="&fileprintpreview.accesskey;" key="printpreviewkb" 
+       observes="cmd_printPreview" label="&printPreviewCmd.label;" >
+        <observes id="printPreviewMenuObs" element="defaultCompiler" attribute="defcomp" />
+        <menupopup id="printPreviewMenu" tooltiptext="" >
+          <menuitem id="printPreviewMenuItem1" label="&printPreviewToolbarCmd.label;" persist="default" default="true"
+                    oncommand="alert('Direct print');event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);" >
+            <observes id="ppmObs1" element="defaultCompiler" attribute="defcomp" />
+          </menuitem>        
+          <menuitem id="printPreviewMenuItem1pdf" label="&pdfpreviewButton.label;" persist="default" default="false"
+                    oncommand="alert('PDF print');event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
+            <observes id="ppmObs2" element="defaultCompiler" attribute="defcomp"  />
+          </menuitem>        
+          <menuitem id="printPreviewMenuItem1dvi" label="&dvipreviewButton.label;" persist="default" default="false"
+                    oncommand="alert('DVI print');event.stopPropagation();"  for="dvi" onbroadcast="setDefaultmenu(this);">
+            <observes id="ppmObs3" element="defaultCompiler" attribute="defcomp"  />
+          </menuitem>        
+          <menuseparator/>
+          <menu id="chooseDefPrinter3" label="&chooseDefPrinter.label;" >
+	          <menupopup id="menuChooseDefPrinterPopup3">
+	            <menuitem id="directMode3" label="&direct;" checked="true" 
+                oncommand="return setDefaultPrinter('',event);" for="" onbroadcast="setDefaultmenu(this);">
+                <observes id="ppmObs3" element="defaultCompiler" attribute="defcomp" />
+              </menuitem>        
+	            <menuitem id="pdfMode3" label="&pdf;" 
+                oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefaultmenu(this);">
+                <observes id="ppmObs4" element="defaultCompiler" attribute="defcomp" />
+              </menuitem>        
+	            <menuitem id="dviMode3" label="&dvi;" 
+                oncommand="return setDefaultPrinter('dvi',event);" for="dvi" onbroadcast="setDefaultmenu(this);">
+                 <observes id="ppmObs5" element="defaultCompiler" attribute="defcomp" />
+              </menuitem>        
+	          </menupopup>
+          </menu>
+        </menupopup>
+      </menu>
+      <menu id="printMenuItem" accesskey="&fileprint.accesskey;" key="printkb" 
+       observes="cmd_print" label="&printCmd.label;">
+        <observes id="printPreviewMenuObs" element="defaultCompiler" attribute="defcomp" />
+        <menupopup id="printMenuPop" tooltiptext="" >
+          <menuitem id="printMenuItem1" label="&printButton.label;" persist="default" default="true"
+                    oncommand="alert('Direct print');event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);">
+            <observes id="ppmObs7" element="defaultCompiler" attribute="defcomp" />
+          </menuitem>        
+          <menuitem id="printMenuItem1pdf" label="&pdfprintButton.label;" persist="default" default="false"
+                    oncommand="alert('PDF print');event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
+            <observes id="ppmObs8" element="defaultCompiler" attribute="defcomp" />
+          </menuitem>        
+          <menuitem id="printMenuItem1dvi" label="&dviprintButton.label;" persist="default" default="false"
+                    oncommand="alert('DVI print');event.stopPropagation();"  for="dvi" onbroadcast="setDefaultmenu(this);" >
+            <observes id="ppmObs9" element="defaultCompiler" attribute="defcomp"  />
+          </menuitem>        
+          <menuseparator/>
+          <menu id="chooseDefPrinter4" label="&chooseDefPrinter.label;" >
+	          <menupopup id="menuChooseDefPrinterPopup10">
+	            <menuitem id="directMode7" label="&direct;" checked="true" 
+                oncommand="return setDefaultPrinter('',event);" for="" onbroadcast="setDefaultmenu(this);">
+                <observes id="ppmObs10" element="defaultCompiler" attribute="defcomp" />
+              </menuitem>        
+	            <menuitem id="pdfMode7" label="&pdf;" 
+                oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefaultmenu(this);">
+                <observes id="ppmObs11" element="defaultCompiler" attribute="defcomp" />
+              </menuitem>        
+	            <menuitem id="dviMode7" label="&dvi;" 
+                oncommand="return setDefaultPrinter('dvi',event);" for="dvi" onbroadcast="setDefaultmenu(this);">
+                 <observes id="ppmObs12" element="defaultCompiler" attribute="defcomp" />
+              </menuitem>        
+	          </menupopup>
+          </menu>
+        </menupopup>
+      </menu>
       <menuseparator/>
       <menuitem id="quitMenuItem" accesskey="&fileexit.accesskey;" key="key_quit" 
         observes="cmd_quit" label="&exitCmd.label;"/>
@@ -108,8 +178,8 @@
   <menu id="toolsMenu" label="Tools" >
     <menupopup id="toolPopup">
       <menuitem  label="JavaScript debugger" id="venkmanName" oncommand="start_venkman();"/>
-      <menuitem id="menu_inspector" label="&inspectorTaskCmd.label;" 
-                accesskey="&inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
+      <menuitem id="menu_inspector" label="_amp_inspectorTaskCmd.label;" 
+                accesskey="_amp_inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
     </menupopup>
   </menu>
   
