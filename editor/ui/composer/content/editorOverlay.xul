@@ -244,6 +244,11 @@
     <command id="cmd_indent"                          oncommand="goDoCommand('cmd_indent')"/>
     <command id="cmd_outdent"                         oncommand="goDoCommand('cmd_outdent')"/>
 
+    <command id="cmd_texttag"         state=""   textValue=""  oncommand="doStatefulCommand('cmd_texttag',event.target.value);" />
+    <command id="cmd_paratag"         state=""   value=""      oncommand="doStatefulCommand('cmd_paratag',event.target.value);" />
+    <command id="cmd_structtag"       state=""   value=""      oncommand="doStatefulCommand('cmd_structtag',event.target.value);" />
+    <command id="cmd_othertag"        state=""   value=""      oncommand="doStatefulCommand('cmd_othertag',event.target.value);" />
+
     <!-- the state attribute gets filled with the paragraph format before the command is exectued -->
     <command id="cmd_paragraphState"  state=""         oncommand="doStatefulCommand('cmd_paragraphState', event.target.value)"/>
     <command id="cmd_fontFace"        state=""         oncommand="doStatefulCommand('cmd_fontFace', event.target.value)"/>
