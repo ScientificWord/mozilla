@@ -16,7 +16,7 @@ function setCompact(aMenuItemId)
 
 function setDefaultPrinter(aStr, aEvent)
 {
-  document.getElementById('defaultCompiler').setAttribute('defaultcompiler',aStr);
+  document.getElementById('defaultCompiler').setAttribute('defcomp',aStr);
   aEvent.stopPropagation();
   return true;
 }
@@ -24,13 +24,24 @@ function setDefaultPrinter(aStr, aEvent)
 
 function setDefault(obj)
 {
-  if (obj.getAttribute('for')==obj.getAttribute('defaultcompiler')) {
+  if (obj.getAttribute('for')==obj.getAttribute('defcomp')) {
     obj.setAttribute('default','true');
     obj.parentNode.parentNode.setAttribute('oncommand',obj.getAttribute('oncommand'));   // the button is up two.
   }
   else
     obj.setAttribute('default','false');
 }
+
+function setDefaultmenu(obj)
+{
+  if (obj.getAttribute('for')==obj.getAttribute('defcomp')) {
+    obj.setAttribute('default','true');
+    obj.parentNode.parentNode.setAttribute('onclick',obj.getAttribute('oncommand'));   // the button is up two.
+  }
+  else
+    obj.setAttribute('default','false');
+}
+
 
 function setAnimation()
 {
