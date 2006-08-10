@@ -93,7 +93,7 @@ enum
 };
 
 /********************************************************
- *  first some helpful funcotrs we will use
+ *  first some helpful functors we will use
  ********************************************************/
 
 static PRBool IsBlockNode(nsIDOMNode* node)
