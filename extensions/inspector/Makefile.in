@@ -49,11 +49,11 @@ MODULE	= inspector
 DIRS=base resources
 
 ifdef MOZ_XUL_APP
-XPI_NAME               = inspector
-USE_EXTENSION_MANIFEST = 1
-NO_JAR_AUTO_REG        = 1
-INSTALL_EXTENSION_ID   = inspector@mozilla.org
-XPI_PKGNAME            = inspector-$(MOZ_APP_VERSION)
+XPI_NAME               = prince
+# USE_EXTENSION_MANIFEST = 0
+# NO_JAR_AUTO_REG        = 0
+# INSTALL_EXTENSION_ID   = inspector@mozilla.org
+# XPI_PKGNAME            = inspector-$(MOZ_APP_VERSION)
 endif
 
 PREF_JS_EXPORTS = $(srcdir)/resources/content/prefs/inspector.js
