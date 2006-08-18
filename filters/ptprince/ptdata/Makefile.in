@@ -19,6 +19,6 @@ include $(topsrcdir)/config/config.mk
 include $(topsrcdir)/config/rules.mk
 
 export:: $(files)
-	$(INSTALL) $(files) $(DIST)/bin/ptdata
+	$(INSTALL) $(files) $(FINAL_TARGET)/ptdata
 
 
