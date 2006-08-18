@@ -20,11 +20,6 @@ MathMLDLL = \
     $(srcdir)/NOTEBOOK.gmr \
     $(NULL)
 
-SAMPLES	:= \
-    $(srcdir)/article.shl \
-    $(srcdir)/standardLatexArticle.css \
-    $(NULL)
-
 CPPSRCS		=		   \
 	basicdata.cpp \
 	conditionals.cpp \
@@ -108,9 +103,8 @@ ifdef MOZ_DEBUG
 CXXFLAGS	+= /DTESTING    /DLOGGING
 endif
 
-export:: $(FWSRCS) $(MathMLDLL) $(SAMPLES)
+export:: $(FWSRCS) $(MathMLDLL) 
 	$(INSTALL) $(FWSRCS) .
 	$(INSTALL) $(MathMLDLL) $(DIST)/bin
-	$(INSTALL) $(SAMPLES) $(DIST)/bin/samples
 
 
