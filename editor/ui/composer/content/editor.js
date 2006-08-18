@@ -3518,11 +3518,12 @@ function RemoveTOC()
 function openTeX()
 {
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-    fp.init(window, "Open TeX File", nsIFilePicker.modeOpen);
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+    fp.init(window, "Open TeX File", nsIFilePicker.modeOpen);     // BBM -- use properties file here for the strings
 
     SetFilePickerDirectory(fp, "tex");
 
-    fp.appendFilters(nsIFilePicker.filterTeX);
+//    fp.appendFilters(nsIFilePicker.filterTeX);
     fp.appendFilters(nsIFilePicker.filterAll);
 
     try {
@@ -3538,54 +3539,52 @@ function openTeX()
      *  since file.URL will be "file:///" if no filename picked (Cancel button used)
      */
     if (fp.file && fp.file.path.length > 0) {
+//         dump("\n"+fp.file.leafName);
+      var filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
+//         dump("\n"+filename);
+         
       SaveFilePickerDirectory(fp, "tex");
-      //editPage(fp.fileURL.spec, window, false);
-      
-      var infile =  fp.file.path;
+      var infile =  "\""+fp.file.path+"\"";
       dump("Open Tex: " + infile);
-      var end = infile.lastIndexOf(".");
-      var outdir = infile.substring(0, end);
-      var outfile = outdir + "\\doc.xhtml";
-      const nsILocalFile = Components.interfaces.nsILocalFile;
-      // do we need to create the directory now?
-      var aDir = Components.classes["@mozilla.org/file/local;1"].createInstance(nsILocalFile);
-      var aFile = Components.classes["@mozilla.org/file/local;1"].createInstance(nsILocalFile);
-//      outdir = outdir.replace(/\\\"/g, "\"");
-      aDir.initWithPath(outdir);
-      aFile.initWithPath(outdir+"\\my.css");
-      try {
-        aDir.create(1 /*DIRECTORY_TYPE */, 0755);
-        aFile.create(0 /*FILE_TYPE */, 0755);
-      }
-      catch (ex) {
-        dump("aDir.create threw an exception\n");
-        alert("An exception occurred in the script. Error name: " + ex.name + ". Error message: " + ex.message);
-      }
-
-
-      dump("\nOutput file: " + outfile);
+      var outfile = dsprops.get("TmpD", Components.interfaces.nsIFile);
+      outfile.append(filename);
+      var outdir = dsprops.get("TmpD", Components.interfaces.nsIFile);
+      outdir.append(filename);
+      if (!outdir.exists()) outdir.create(1 /*DIRECTORY_TYPE */, 0755);
+      dump( "\nOutdir = \"" + outdir.target + "\"");
+      outfile.append("doc.xhtml");
+      var css = dsprops.get("TmpD", Components.interfaces.nsIFile);
+      css.append(filename);
+      css.append("my.css");
+      if (css.exists()) css.remove(false); 
+      css.create(0 /*FILE_TYPE*/, 0755);
+      dump( "\nOutfile = \"" + outfile.target + "\"");
+      if (outfile.exists()) outfile.remove(false);
       
       // run pretex.exe
       
       try {
-        var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
 
-        var exe = dsprops.get("CurProcD", Components.interfaces.nsIFile);
+        var exe=dsprops.get("CurProcD", Components.interfaces.nsIFile);
+        var dataDir = dsprops.get("resource:app", Components.interfaces.nsIFile);
         exe.append("pretex.exe");
+        dataDir.append("ptdata");
+        dump("\nExe="+exe.target+"\n");
+        dump("\noutdir=\""+outdir.target+"\"\n");
+        dump("\noutfile=\""+outfile.target+"\"\n");
+        dump("\ninfile=\""+fp.file.target+"\"\n");
+        dump("\ndataDir=\""+dataDir.target+"\"\n");
 
         var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
         theProcess.init(exe);
         
-        var dataDir = dsprops.get("CurProcD", Components.interfaces.nsIFile);
-        dataDir.append("ptdata");
-
-        theProcess.run(true, ['-i'+dataDir.target, '-flatex2xml.tex', '-o'+outdir, infile, outfile], 5, {});
+        theProcess.run(true, ['-i', dataDir.target, '-f', 'latex2xml.tex', '-o', outdir.target, fp.file.target, outfile.target], 8, {});
       } catch (ex) {
            dump("\nUnable to open TeX:\n");
            dump(ex);
       }      
       
-      editPage("file:///" + outfile.replace(/\\/g,"/"), window, true);
+      editPage("file:///" + outfile.target.replace(/\\/g,"/"), window, true);
     }                       
   }
   
