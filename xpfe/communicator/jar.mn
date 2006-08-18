@@ -61,8 +61,9 @@ comm.jar:
     content/communicator/printPreviewBindings.xml        (resources/content/printPreviewBindings.xml)
     content/communicator/printing.js                     (resources/content/printing.js)
 
-#ifdef MOZ_MSI_PRINCE 
+ 
 en-US.jar:
+#ifdef MOZ_MSI_PRINCE
 #ifdef MOZ_XUL_APP
 % locale communicator en-US %locale/en-US/communicator/
 % locale communicator-region en-US %locale/en-US/communicator-region/
