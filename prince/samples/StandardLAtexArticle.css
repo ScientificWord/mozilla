@@ -254,14 +254,5 @@ subparagraph defaulttitletag:after { content: "Replace this subsubsubsubsection 
 						 color: red;
 }
 
-latex {
-  -moz-binding: url("resource://xbl/latex.xml#latex");
-}
-
-tex {
-  -moz-binding: url("resource://xbl/latex.xml#tex");
-}
-
-
 
 
