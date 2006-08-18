@@ -1069,6 +1069,9 @@ xpfe/components/build2/Makefile
 MAKEFILES_prince="
 Prince/Makefile
 Prince/Compute/Makefile
+filters/Makefile
+filters/ptprince/Makefile
+filters/ptprince/ptdata/Makefile
 xpfe/communicator/Makefile
 "
 
