@@ -4,7 +4,8 @@ latex2 {
 /*  font-family: "Times-Roman"; */
   letter-spacing: -0.2em;
   visibility: visible;
-  -moz-user-select: none;
+  -moz-user-select: all;
+  -moz-user-modify: read-only;
   background-color: rgb(200,255,200);
 }
 
