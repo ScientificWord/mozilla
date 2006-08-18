@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <!-- ?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"? -->
