@@ -8,16 +8,15 @@
 %DTD;
 <!ENTITY % toolbarDTD SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd" >
 %toolbarDTD;
-# <!ENTITY % inspectorDTD SYSTEM "chrome://inspector/locale/tasksOverlay.dtd" >
-# %inspectorDTD;
+ <!ENTITY % inspectorDTD SYSTEM "chrome://inspector/locale/tasksOverlay.dtd" >
+ %inspectorDTD;
 ]>
 
 <overlay id="editorOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script src="chrome://editor/content/editor.js"/>
   <script src="chrome://prince/content/toolbarsOverlay.js"/>
   <script src="chrome://venkman/content/venkman-overlay.js"/>
-#  <script type="application/x-javascript" src="chrome://inspector/content/hooks.js"/>
+  <script type="application/x-javascript" src="chrome://inspector/content/hooks.js"/>
   
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
     <menupopup id="menu_FilePopup" onpopupshowing="EditorInitFileMenu();">
@@ -178,8 +177,8 @@
   <menu id="toolsMenu" label="Tools" >
     <menupopup id="toolPopup">
       <menuitem  label="JavaScript debugger" id="venkmanName" oncommand="start_venkman();"/>
-      <menuitem id="menu_inspector" label="_amp_inspectorTaskCmd.label;" 
-                accesskey="_amp_inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
+      <menuitem id="menu_inspector" label="&inspectorTaskCmd.label;" 
+                accesskey="&inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
     </menupopup>
   </menu>
   
@@ -203,6 +202,7 @@
 <!--
     <command id="cmd_printPreview" label="_amp_printPreviewCmd.label;"  oncommand="goDoCommand('cmd_printPreview')"/>
 -->
+    <command id="cmd_openTeX" oncommand="openTeX();" />
     <command id="cmd_print"                                         oncommand="goDoCommand('cmd_print')"/>
     <command id="cmd_quit"         oncommand="goDoCommand('cmd_quit')"/>
   </commandset>
