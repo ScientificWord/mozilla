@@ -385,7 +385,8 @@ tier_99_dirs	+= composer
 endif
 
 ifdef MOZ_MSI_PRINCE
-tier_99_dirs	+= Prince
+tier_99_dirs	+= Prince 
+tier_99_dirs	+= filters 
 endif
 
 ifdef MOZ_SUNBIRD
