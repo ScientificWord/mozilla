@@ -70,7 +70,7 @@ nsComposerCmdLineHandler.prototype = {
   },
 
   get chromeUrlForTask() {
-    return "chrome://editor/content/editor.xul";
+    return "chrome://prince/content/prince.xul";
   },
 
   get helpText() {
