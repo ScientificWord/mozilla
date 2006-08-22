@@ -2,7 +2,7 @@ venkman.jar:
 % content venkman %content/venkman/
 % locale venkman en-US %locale/en-US/venkman/
 % skin venkman classic %skin/classic/venkman/
-% skin venkman modern %skin/modern/venkman/
+% skin venkman modern %skin/classic/venkman/
 #ifdef NOT
 * content/venkman/contents.rdf          (content/contents.rdf)
 * locale/en-US/venkman/contents.rdf     (locale/en-US/contents.rdf)
