@@ -7,16 +7,16 @@
 <!ENTITY % DTD SYSTEM "chrome://prince/locale/menuOverlay.dtd">
 %DTD;
 <!ENTITY % toolbarDTD SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd" >
-%toolbarDTD;
+ %toolbarDTD;
  <!ENTITY % inspectorDTD SYSTEM "chrome://inspector/locale/tasksOverlay.dtd" >
  %inspectorDTD;
 ]>
 
 <overlay id="editorOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script src="chrome://prince/content/toolbarsOverlay.js"/>
-  <script src="chrome://venkman/content/venkman-overlay.js"/>
-  <script type="application/x-javascript" src="chrome://inspector/content/hooks.js"/>
+  <script type="application/x-javascript"  src="chrome://prince/content/toolbarsOverlay.js"/>
+  <script type="application/x-javascript"  src="chrome://venkman/content/venkman-overlay.js"/>
+  <script type="application/x-javascript"  src="chrome://inspector/content/hooks.js"/>
   
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
     <menupopup id="menu_FilePopup" onpopupshowing="EditorInitFileMenu();">
@@ -33,7 +33,7 @@
       <menuitem observes="cmd_openTeX" label="Import TeX ..."/>
       <menuitem observes="cmd_exportTeX" label="Export TeX ..."/>
       <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
-            onpopupshowing="BuildRecentPagesMenu();">
+            onpopupshowing="BuildRecentFilesMenu();">
         <menupopup id="menupopup_RecentFiles" oncommand="editPage(event.target.getAttribute('value'), window, false);"/>
           <!-- menuitems appended at runtime -->
       </menu>
