@@ -26,7 +26,6 @@ var gSourceContentWindow = 0;
 var gSourceTextEditor = null;
 var gContentWindowDeck;
 var gTagSelectBar;
-var gViewFormatToolbar;
 var gColorObj = { LastTextColor:"", LastBackgroundColor:"", LastHighlightColor:"",
                   Type:"", SelectedType:"", NoDefault:false, Cancel:false,
                   HighlightColor:"", BackgroundColor:"", PageColor:"",
@@ -530,7 +529,6 @@ function EditorStartup()
   {
     // XUL elements we use when switching from normal editor to edit source
     gContentWindowDeck = document.getElementById("ContentWindowDeck");
-    gViewFormatToolbar = document.getElementById("viewFormatToolbar");
   }
 
   // set up our global prefs object
@@ -1927,7 +1925,6 @@ function SetDisplayMode(mode)
     gContentWindowDeck.selectedIndex = 1;
 
     //Hide the formatting toolbar if not already hidden
-    gViewFormatToolbar.hidden = true;
     HideItem("MSIMathMenu");
     HideItem("cmd_viewComputeToolbar");
     HideItem("MSIComputeMenu");
@@ -1985,7 +1982,6 @@ function SetDisplayMode(mode)
     gContentWindowDeck.selectedIndex = 0;
 
     // Restore menus and toolbars
-    gViewFormatToolbar.hidden = false;
     ShowItem("MSIMathMenu");
     ShowItem("cmd_viewComputeToolbar");
     ShowItem("MSIComputeMenu");
@@ -2066,12 +2062,12 @@ function UpdateWindowTitle()
     }
     // Set window title with " - Composer" appended
     xulWin = document.documentElement;
-    window.title = windowTitle + xulWin.getAttribute("titlemenuseparator") + 
+    document.title = windowTitle + xulWin.getAttribute("titlemenuseparator") + 
                    xulWin.getAttribute("titlemodifier");
   } catch (e) { dump(e); }
 }
 
-function BuildRecentPagesMenu()
+function BuildRecentFilesMenu()
 {
   var editor = GetCurrentEditor();
   if (!editor || !gPrefs)
