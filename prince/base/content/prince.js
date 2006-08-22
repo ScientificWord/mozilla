@@ -23,9 +23,10 @@ function doOpen() {
   if (fp.file && fp.file.path.length > 0) {
     dump("Ready to edit page: " + fp.fileURL.spec +"\n");
     try {
-      GetCurrentEditorElement().webNavigation.loadURI(fp.fileURL.spec,
-               Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,
-               null, null, null);
+      editPage(fp.fileURL.spec, window, false);
+//      GetCurrentEditorElement().webNavigation.loadURI(fp.fileURL.spec,
+//               Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,
+//               null, null, null);
     } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
 } }
 
