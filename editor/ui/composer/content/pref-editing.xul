@@ -37,7 +37,7 @@
  ***** END LICENSE BLOCK ***** -->
 
 <?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
 <!DOCTYPE page SYSTEM "chrome://editor/locale/pref-editing.dtd">
 

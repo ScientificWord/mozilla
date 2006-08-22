@@ -148,10 +148,10 @@ function editPage(url, launchWindow, delay)
     // Create new Composer window
     if (delay)
     {
-      launchWindow.delayedOpenWindow("chrome://editor/content", "chrome,all,dialog=no", url);
+      launchWindow.delayedOpenWindow("chrome://prince/content", "chrome,all,dialog=no", url);
     }
     else
-      launchWindow.openDialog("chrome://editor/content", "_blank", "chrome,all,dialog=no", url, charsetArg);
+      launchWindow.openDialog("chrome://prince/content", "_blank", "chrome,all,dialog=no", url, charsetArg);
 
   } catch(e) {}
 }
