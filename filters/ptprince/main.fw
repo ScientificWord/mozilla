@@ -24,6 +24,7 @@ bool s_bTapped;
 extern Typesetter ts;
 
 const char* s_inputfilename;
+char* s_mmldirname = ".";
 
 void usage()
 {
@@ -37,6 +38,8 @@ void usage()
     "   -f <file>  The format file to use (defaults to msilatex.tex).\n"
     "   -o <dir>   The directory in which to put auxiliary files,"
                 " such as .css.\n"
+    "   -m <dir>   The directory containing mmldll.dll "
+    "and its auxiliary .gmr files.\n"
     "   -c<multibyte codepage> e.g. -cp932.\n";
   exit(1);
 }
@@ -79,24 +82,29 @@ int main(int argc, char* argv[])
          char* inputdir = strdup(argv[j+1]);
          // check for double quotes around the path
          if (inputdir[0]=='"') inputdir++;
-         if (inputdir[strlen(inputdir)-1]=='"') 
+         if (inputdir[strlen(inputdir)-1]=='"')
             inputdir[strlen(inputdir)-1] = '\0';
          strcat(envInput, inputdir);
          _putenv(envInput);
-         std::cout << "Set input environment " << envInput;
+         std::cout << "Set input environment " << envInput << "\n";
          delete inputdir;
         }
-        else if (argv[j][1]=='o') 
+        else if (argv[j][1]=='o')
         {
           char* outputdir = strdup(argv[j+1]);
           // check for double quotes around the path
           if (outputdir[0]=='"') outputdir++;
-          if (outputdir[strlen(outputdir)-1]=='"') 
+          if (outputdir[strlen(outputdir)-1]=='"')
            outputdir[strlen(outputdir)-1] = '\0';
           strcat(envOutput, outputdir);
           _putenv(envOutput);
-          std::cout << "Set output environment " << envOutput;
+          std::cout << "Set output environment " << envOutput << "\n";
           delete outputdir;
+        }
+        else if (argv[j][1]=='m')
+        {
+          s_mmldirname = strdup(argv[j+1]);
+          std::cout << "Set mmldirname to " << s_mmldirname << "\n";
         }
       }
    }
