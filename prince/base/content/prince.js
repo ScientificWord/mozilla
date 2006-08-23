@@ -287,3 +287,173 @@ function count_children( par )
   return res;
 }
 
+
+function openTeX()
+{
+    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+    fp.init(window, "Open TeX File", nsIFilePicker.modeOpen);     // BBM -- use properties file here for the strings
+
+    SetFilePickerDirectory(fp, "tex");
+
+//    fp.appendFilters(nsIFilePicker.filterTeX);
+    fp.appendFilters(nsIFilePicker.filterAll);
+
+    try {
+      fp.show();
+      /* need to handle cancel (uncaught exception at present) */
+    }
+    catch (ex) {
+      dump("filePicker.chooseInputFile threw an exception\n");
+    }
+  
+    /* This checks for already open window and activates it... 
+     * note that we have to test the native path length
+     *  since file.URL will be "file:///" if no filename picked (Cancel button used)
+     */
+    if (fp.file && fp.file.path.length > 0) {
+    
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//      Prepare to run pretex.exe. We need to send it some directories:                                       //
+//       The input directory gives the location of the .cls and .tex files that pretex reads to               //
+//         determine how to translate the TeX. This is usually prince/ptdata.                                 //
+//       The output directory where the auxiliary files that are generated (such as .css, etc.) go.           //
+//         This is a generated directory in the temp directory. It will be taken out of the temp directory    //
+//         once the user saves the document.                                                                  //
+//       The MathML conversion directory. This is where the DLL used to convert math and its associated .gmr  //
+//         files are. This is usuall prince.                                                                  //
+//       The input .tex file.                                                                                 //
+//       The output .xhtml file, which is usually in the output directory.                                    //
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      
+      SaveFilePickerDirectory(fp, "tex");
+      var filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
+      var infile =  "\""+fp.file.path+"\"";
+      dump("Open Tex: " + infile);
+      var outfile = dsprops.get("TmpD", Components.interfaces.nsIFile);
+      outfile.append(filename);
+      var outdir = outfile.clone();
+      if (!outdir.exists()) outdir.create(1 /*DIRECTORY_TYPE */, 0755);
+      outfile.append("doc.xhtml");
+      var css = outdir.clone();
+      css.append("my.css");
+      if (css.exists()) css.remove(false); 
+      css.create(0 /*FILE_TYPE*/, 0755);
+      if (outfile.exists()) outfile.remove(false);
+      var mmldir = dsprops.get("resource:app", Components.interfaces.nsIFile);
+      var exefile=dsprops.get("resource:app", Components.interfaces.nsIFile);
+      exefile.append("pretex.exe");
+      var dataDir = dsprops.get("resource:app", Components.interfaces.nsIFile);
+      dataDir.append("ptdata");
+        dump("\n\nExe="+exefile.target);
+        dump("\noutdir=\""+outdir.target);
+        dump("\noutfile=\""+outfile.target);
+        dump("\ninfile=\""+fp.file.target);
+        dump("\ndataDir=\""+dataDir.target);
+        dump("\nmmldir=\""+mmldir.target+"\n");
+      // run pretex.exe
+      
+      try {
+
+
+        var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+        theProcess.init(exefile);
+        theProcess.run(true, ['-i', dataDir.target, '-f', 'latex2xml.tex', '-o', outdir.target, '-m', mmldir.target,
+          fp.file.target, outfile.target], 10, {});
+      } catch (ex) {
+           dump("\nUnable to open TeX:\n");
+           dump(ex);
+      }      
+//  TODO: we may need to run a merge program to bring in processing instructions for specifying tag property files
+      
+      editPage("file:///" + outfile.target.replace(/\\/g,"/"), window, true);
+    }                       
+  }
+  
+  
+  
+  function exportTeX()
+  {
+     dump("\nExport TeX\n");
+     
+     var docUrl = GetDocumentUrl();
+     dump('\nThis doc url = ' + docUrl);
+
+     var scheme, filename;
+     if (docUrl && !IsUrlAboutBlank(docUrl))
+     {
+       scheme = GetScheme(docUrl);
+       filename = GetFilename(docUrl);
+     }
+     dump('\nThis doc = ' + filename);
+
+     if (filename.length < 0)
+        return;
+        
+     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+     fp.init(window, "Export TeX File", nsIFilePicker.modeSave);
+
+     fp.appendFilters(nsIFilePicker.filterAll);
+
+     /* doesn't handle *.shtml files */
+     try {
+       fp.show();
+       /* need to handle cancel (uncaught exception at present) */
+     }
+     catch (ex) {
+       dump("filePicker threw an exception\n");
+     }
+     
+     if (fp.file && fp.file.path.length > 0) {
+      
+        var exportfile =  fp.file.path;
+        dump("\nExport Tex: " + exportfile);
+      
+        // run saxon.exe
+        //    saxon thisdoc.xml prince.xsl >exportfile.tex
+      
+        try {
+          var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+
+          var exe = dsprops.get("CurProcD", Components.interfaces.nsIFile);
+          exe.append("runsax.bat");
+
+          var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+          theProcess.init(exe);
+        
+          var dataDir = dsprops.get("CurProcD", Components.interfaces.nsIFile);
+          dataDir.append("todata");
+          
+          var xslfile = "prince.xsl";
+          dump('\ncmdline args = ' + filename + ' ' + dataDir.target + '/' + xslfile +' ' + '>'+exportfile);
+          theProcess.run(true, [docUrl, exportfile], 2, {});
+        } catch (ex) {
+             dump("\nUnable to run saxon:\n");
+             dump(ex);
+        }      
+
+    } 
+  }
+  
+
+ function initializeAutoCompleteStringArray()
+ 
+ { 
+   dump("===> initializeAutoCompleteStringArray\n");
+                              
+//   var stringArraySearch = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//   stringArraySearch.editor = GetCurrentEditor(); 
+ }
+ 
+ 
+ 
+// handle events on prince-specific elements here, or call the default goDoCommand() 
+function goDoPrinceCommand (cmdstr, element) 
+{
+   if ((element.localName.toLowerCase() == "img") && (element.getAttribute("msigraph") == "true"))
+     { graphClickEvent(cmdstr);
+     }
+   else 
+     { goDoCommand(cmdstr);  
+     }
+}
