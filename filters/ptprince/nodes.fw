@@ -425,7 +425,7 @@ HINSTANCE s_hApp;
 HINSTANCE s_hDLL;
 
 std::string s_mathml;
-
+extern char* s_mmldirname;
 
 bool SetupMathMLDLL()
 {
@@ -435,10 +435,11 @@ bool SetupMathMLDLL()
     // GetModuleFileName( s_hApp, path, MAXPATH );
     // FileSpec fsPath(path);
     // std::string strPath = fsPath.GetDir();
-    std::string strPath = "mmldll.dll";
+    std::string strPath = s_mmldirname;
+    strPath += "\\mmldll.dll";
     s_hDLL = ::LoadLibrary( strPath.c_str() );
     if (s_hDLL == NULL) {
-      // TCI_ASSERT(FALSE);
+      std::cout << "Load library failed for " << strPath.c_str() << "\n";
       return false;
     }
 
@@ -495,7 +496,7 @@ bool SetupMathMLDLL()
     // TCI_ASSERT(FALSE);
     return false;
   }
-  HRESULT hr = (*Initialize)( (const char*) ".",
+  HRESULT hr = (*Initialize)( (const char*) s_mmldirname,
                                 (const char*)"mml:",
                                 (const char**)upref_zstrs );
   if (hr != S_OK) {
