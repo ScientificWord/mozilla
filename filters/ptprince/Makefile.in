@@ -9,6 +9,7 @@ include $(DEPTH)/config/autoconf.mk
 
 PROGRAM		= pretex$(BIN_SUFFIX)
 RESFILE		= pretex.res
+XPI_NAME	= prince
 
 MODULE = pretex
 
@@ -105,6 +106,6 @@ endif
 
 export:: $(FWSRCS) $(MathMLDLL) 
 	$(INSTALL) $(FWSRCS) .
-	$(INSTALL) $(MathMLDLL) $(DIST)/bin
+	$(INSTALL) $(MathMLDLL) $(FINAL_TARGET)
 
 
