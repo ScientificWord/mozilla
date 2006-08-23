@@ -80,6 +80,8 @@
 
 %% Frontmatter
 
+\def\frontmatter{\out@frontmatter}
+
 \def\title#1{\gdef\@title{#1}\out@title{#1}}
 \def\author#1{\gdef\@author{#1}\out@author{#1}}
 \def\date#1{\gdef\@date{#1}\out@date{#1}}
@@ -88,9 +90,16 @@
 \def\and{\out@and}
 
 \def\maketitle{\out@maketitle}
+\def\tableofcontents{\out@tableofcontents}
+\def\listoffigures{\out@listoffigures}
+\def\listoftables{\out@listoftables}
 
 \def\msi@begin@abstract{\out@begin@abstract}
 \def\msi@end@abstract{\out@end@abstract}
+
+%% Main matter
+
+\def\mainmatter{\out@mainmatter}
 
 
 %% \begin and \end
@@ -115,6 +124,11 @@
 \def\@checkend#1{\def\reserved@a{#1}\ifx
       \reserved@a\@currenvir \else\@badend{#1}\fi}
 \let\@currenvline\@empty
+
+%% Back matter
+
+\def\backmatter{\out@backmatter}
+\def\appendix{\out@appendix}
 
 %%%%%%%%%%%%%%%%
 

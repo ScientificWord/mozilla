@@ -74,9 +74,6 @@
 }
 
 
-
-
-
 %% \usepackage
 \def\out@usepackageA[#1]#2{%
    \br\msitag{<usepackage package="#2" options="#1"/>}%
@@ -87,6 +84,10 @@
 
 
 %% Frontmatter
+
+\def\out@frontmatter{%
+   \msihmode\br\msitag{<frontmatter />}%
+}
 
 \def\out@title#1{%
    {\everypar={}\msitag{^^0a}\msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}}
@@ -103,7 +104,16 @@
    \msihmode\br\msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}}
 
 \def\out@maketitle{%
-   \br\msitag{<maketitle />}%
+   \msihmode\br\msitag{<maketitle />}%
+}
+\def\out@tableofcontents{%
+   \msihmode\br\msitag{<tableofcontents />}%
+}
+\def\out@listoffigures{%
+   \msihmode\br\msitag{<listoffigures />}%
+}
+\def\out@listoftables{%
+   \msihmode\br\msitag{<listoftables />}%
 }
 
 \def\out@thanks#1{%
@@ -118,7 +128,13 @@
    \msitag{^^0a}\msiclosetag{abstract}{</abstract>}
 }
 
+%% Main matter
 
+\def\out@mainmatter{%
+   \msihmode\br\msitag{<mainmatter />}%
+}
+
+%% newtheorem
 
 \def\out@newtheorema#1[#2]#3{%
    \br\msitag{<newtheorem name="#1" counter="#2" label="#3"/>}%
@@ -152,15 +168,10 @@
 
 \def\ref#1{\msiopentag{ref}{<html:a>}#1\msiclosetag{ref}{</html:a>}}
 \def\pageref#1{\msiopentag{pageref}{<pageref>}#1\msiclosetag{pageref}{</pageref>}}
-\def\pagenumbering#1{\msiopentag{latexstyleb}{<latexstyleb>}\msitag{<styleprop>pagenumber</styleprop>}\msiopentag{styledata}{<styledata>}#1\msiclosetag{styledata}{</styledata>}\msiclosetag{latexstyleb}{</latexstyleb>}}
-\def\markboth#1#2{\msiopentag{latexstyleb}{<latexstyleb>}\msitag{<styleprop>headers</styleprop>}\msiopentag{styledata}
-	{<styledata>}#1\msiclosetag{styledata}{</styledata>}\msiopentag{styledata}
-	{<styledata>}#1\msiclosetag{styledata}{</styledata>}\msiclosetag{latexstyleb}{</latexstyleb>}}
-\def\addcontentsline#1#2#3{\msiopentag{latexstyleb}{<latexstyleb>}\msitag{<styleprop>contentsline</styleprop>}
-	\msitag{<styledata>#1</styledata>}
-	\msitag{<styledata>#2</styledata>}
-	\msitag{<styledata>#3</styledata>}
-	\msiclosetag{latexstyleb}{</latexstyleb>}}
+\def\pagenumbering#1{\msiopentag{latexstyleb}{<latexstyleb>}\msiopentag{styleprop}
+  {<styleprop>}page number style\msiclosetag{styleprop}{</styleprop>}\msiopentag{styledata}{<styledata>}#1
+  \msiclosetag{styledata}{</styledata>}\msiclosetag{latexstyleb}{</latexstyleb>}}
+
 
 \def\msi@pass#1{\def#1{\msitag{#1}}}
 \def\msi@mathmlpass#1{\def#1{\string#1\char32\relax}}
@@ -287,11 +298,6 @@
 
 \newsection{part}{1}{Part \the\partnumber}{sectiontitle}%
 \newsection{chapter}{1}{Chapter \the\chapternumber}{sectiontitle}%
-
-\def\appendix{%
-%
-}
-
 
 \def\out@marginparA#1#2{%
   \msiopentag{marginpar}{<marginpar opt="#1">}#2\msiclosetag{marginpar}{</marginpar>}%
@@ -559,10 +565,20 @@
 
 \def\LaTeX{<latex>LaTeX</latex>}
 \def\TeX{<tex>TeX</tex>}
-\def\tableofcontents{<tableofcontents/>}
 \def\textquotedblleft{<leftquote/>}
 \def\textquotedblright{<rightquote/>}
 \def\textbackslash{<textbackslash/>}
+
+%% Back matter
+
+\def\out@backmatter{%
+   \msihmode\br\msitag{<backmatter />}%
+}
+\def\out@appendix{%
+   \msihmode\br\msitag{<appendix />}%
+}
+
+%% 
 
 \msi@mathmlpass{\dot}
 \msi@mathmlpass{\boldsymbol}
@@ -1466,9 +1482,4 @@
    \br\msiopentag{preamble}{<sw:preamble>}
 }
 
-
-
-
-
-				 
 
