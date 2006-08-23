@@ -41,21 +41,21 @@ display: table-cell
 
 
 latex {
-  -moz-binding: url("resource://xbl/latex.xml#latex");
+  -moz-binding: url("resource://app/res/xbl/latex.xml#latex");
 }
 
 tex {
-  -moz-binding: url("resource://xbl/latex.xml#tex");
+  -moz-binding: url(resource://app/res/xbl/latex.xml#tex");
   display:none;
 }
 
 texb {
 /*  font-size: small; */
-  -moz-binding: url("resource://xbl/latex.xml#texb");
+  -moz-binding: url("resource://app/res/xbl/latex.xml#texb");
 }
 
 latexstyleb {
-  -moz-binding: url("resource://xbl/latex.xml#latexstyleb");
+  -moz-binding: url("resource://app/res/xbl/latex.xml#latexstyleb");
 }
 
 
@@ -73,7 +73,31 @@ texb, latexstyleb {
   -moz-user-select: none;
 }
 
+maketitle { display:block;
+}
+
+maketitle:before { content: "Title page goes here";
+  color: green;
+}
+
+tableofcontents { display:block;
+}
+
 tableofcontents:before { content: "Table of contents goes here";
+  color: green;
+}
+
+listoffigures { display:block;
+}
+
+listoffigures:before { content: "List of figures goes here";
+  color: green;
+}
+
+listoftables { display:block;
+}
+
+listoftables:before { content: "List of tables goes here";
   color: green;
 }
 
