@@ -1,13 +1,21 @@
-\newsection{section}{1}{Section \the\sectionnumber}{sectiontitle}%
-\newsection{subsection}{2}{\the\sectionnumber.\the\subsectionnumber}{sectiontitle}%
-\newsection{subsubsection}{3}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber}{sectiontitle}%
-\newsection{paragraph}{4}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
-\newsection{subparagraph}{5}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
+%% Sectioning
+
+\newsection{part}{1}{Part \the\sectionnumber}{sectiontitle}%
+\newsection{section}{2}{Section \the\sectionnumber}{sectiontitle}%
+\newsection{subsection}{3}{\the\sectionnumber.\the\subsectionnumber}{sectiontitle}%
+\newsection{subsubsection}{4}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber}{sectiontitle}%
+\newsection{paragraph}{5}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
+\newsection{subparagraph}{6}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
 
 %% Environments
 
-\msi@environment{quotation}
+\msi@environment{center}
+\msi@environment{flushleft}
+\msi@environment{flushright}
 \msi@environment{quote}
+\msi@environment{quotation}
+% Handled separately? (gp) {verbatim}
+% Handled separately? (gp) {verbatim*}
 \msi@environment{enumerate}
 \msi@environment{itemize}
 \msi@environment{description}
@@ -16,8 +24,11 @@
 \msi@environment{figure*}
 \msi@environment{table}
 \msi@environment{table*}
+\msi@environment{titlepage}
+\msi@environment{thebibliography}
+\msi@environment{theindex}
 
-
+%% Text tags
 
 \def\textbf#1{\msiopentag{bold}{<bold>}#1\msiclosetag{bold}{</bold>}}
 \def\textit#1{\msiopentag{it}{<it>}#1\msiclosetag{it}{</it>}}
@@ -27,17 +38,19 @@
 \def\textrm#1{\msiopentag{rm}{<rm>}#1\msiclosetag{rm}{</rm>}}
 \def\textsc#1{\msiopentag{sc}{<sc>}#1\msiclosetag{sc}{</sc>}}
 
-
-\@text@tag{normalsize}
 \@text@tag{tiny}
+\@text@tag{scriptsize}
+\@text@tag{footnotesize}
 \@text@tag{small}
-\@text@tag{Large}
+\@text@tag{normalsize}
 \@text@tag{large}
+\@text@tag{Large}
 \@text@tag{LARGE}
 \@text@tag{huge}
 \@text@tag{Huge}
-\@text@tag{scriptsize}
-\@text@tag{footnotesize}
+
+
+%% Finish up
 
 \immediate\openout2={my.css}
-\immediate\write2{@import url("resource://app/res/css/article.css");}
+\immediate\write2{@import url("resource://resource://app/res/css/article.css");}
