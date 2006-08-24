@@ -53,4 +53,4 @@
 %% Finish up
 
 \immediate\openout2={my.css}
-\immediate\write2{@import url("resource://resource://app/res/css/article.css");}
+\immediate\write2{@import url("resource://app/res/css/article.css");}
