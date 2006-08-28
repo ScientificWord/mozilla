@@ -195,10 +195,8 @@ ATTRIB_REC *ExtractAttrs(char *zattrsAndvals);
 ATTRIB_REC *MergeAttrsLists(ATTRIB_REC * dest_list, ATTRIB_REC * new_attrs);
 ATTRIB_REC *RemoveAttr(ATTRIB_REC * a_list, const char *attr_nom);
 
-bool IsTrigArgFuncName(const char * f_nom);
-int CountTrigargNodes(MNODE * mnode);
-bool NodeInTrigargList(MNODE * mnode, bool & is_op);
-
+class Grammar;
+bool IsTrigArgFuncName(Grammar *mml_entities, const char * f_nom);
 bool IsReservedFuncName(const char * f_nom);
 
 void StrReplace(char *line, size_t zln, char *tok, const char *sub);
