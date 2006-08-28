@@ -543,6 +543,29 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     124b
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">gcd</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mrow>
+           <mn>35</mn>
+           <mo form="infix">,</mo>
+           <mn>25</mn>
+           <mo form="infix">,</mo>
+           <mn>65</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
 Test ID     125
 Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mn>2275</mn></math>
 Client ID   1
@@ -3559,6 +3582,27 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     124b.2
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi mathcolor="gray">gcd</mi>
+     <mo>&ApplyFunction;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+       <mrow>
+         <mn>35</mn>
+         <mo form="infix">,</mo>
+         <mn>25</mn>
+         <mo form="infix">,</mo>
+         <mn>65</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+     </mrow>
+   </math>
+End of test
+
 Test ID     125.2
 Client ID   1
 Engine      MuPAD
@@ -6186,6 +6230,22 @@ Command ID	Fixup
        <mo>,</mo>
        <mn>65</mn>
      </mrow>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     124b.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi mathcolor="gray">gcd</mi>
+     <mo>(</mo>
+       <mn>35</mn>
+       <mo form="infix">,</mo>
+       <mn>25</mn>
+       <mo form="infix">,</mo>
+       <mn>65</mn>
      <mo>)</mo>
    </math>
 End of test

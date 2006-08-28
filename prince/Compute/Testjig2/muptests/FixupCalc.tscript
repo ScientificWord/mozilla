@@ -760,3 +760,35 @@ Engine      MuPAD
 Command ID	Evaluate
   <math>%</math>
 End of test
+
+Test ID     Fixup2 124b
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">gcd</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mrow>
+           <mn>35</mn>
+           <mo form="infix">,</mo>
+           <mn>25</mn>
+           <mo form="infix">,</mo>
+           <mn>65</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     Fixup2 124b:e
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+  <math>%</math>
+End of test
+
+
