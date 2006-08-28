@@ -94,6 +94,9 @@ protected:
   bool IsDelimitedGroup(MNODE * mml_node);
   void LookupMOInfo(MNODE * mml_node);
 
+  int CountTrigargNodes(MNODE * mnode);
+  bool NodeInTrigargList(MNODE * mnode, bool & is_op);
+
   bool NodeIsNumber(MNODE * mml_node);
   bool NodeIsTrueNumber(MNODE * mml_node);
   bool NodeIsRationalFraction(MNODE * mml_node);

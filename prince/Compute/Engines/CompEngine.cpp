@@ -61,7 +61,7 @@ CompEngine::CompEngine(Grammar * ID_dBase, Grammar * NOM_dBase,
   semantic_analyzer = TCI_NEW(Analyzer(mathml_grammar, up_store));
   mml_tree_gen = TCI_NEW(MML2Tree);
   dMML_tree = NULL;
-  StreeToMML = TCI_NEW(STree2MML(up_store));
+  StreeToMML = TCI_NEW(STree2MML(mathml_grammar,up_store));
 
   curr_IDs_2mml = NULL;
   def_IDs_2mml = NULL;

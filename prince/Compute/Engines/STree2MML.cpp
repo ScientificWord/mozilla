@@ -183,10 +183,10 @@ char *MML1templates[] = {
   0
 };
 
-STree2MML::STree2MML(PrefsStore * up_store)
-{
-  uprefs_store = up_store;
+STree2MML::STree2MML(Grammar * mml_grammar, PrefsStore * up_store) :
+  mml_entities(mml_grammar), uprefs_store(up_store)
 
+{
   src_markup = NULL;
   canonicalID_mapper = NULL;
   def_IDs_mapper = NULL;
@@ -6034,7 +6034,7 @@ int STree2MML::GetInfixPrecedence(SEMANTICS_NODE * s_group)
 bool STree2MML::IsTrigArgFunc(SEMANTICS_NODE * s_function)
 {
   if (s_function && s_function->contents)
-    return IsTrigArgFuncName(s_function->contents);
+    return IsTrigArgFuncName(mml_entities,s_function->contents);
   else
     return false;
 }

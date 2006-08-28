@@ -910,7 +910,7 @@ bool Tree2StdMML::FunctionHasArg(MNODE * mml_func_node, int & n_arg_nodes, bool 
   n_arg_nodes = 1;              // assumed, set if otherwise
   is_delimited = false;
   MNODE * base_node = GetBaseFunction(mml_func_node);
-  bool do_trigargs = IsTrigArgFuncName(base_node->p_chdata);
+  bool do_trigargs = IsTrigArgFuncName(mml_entities,base_node->p_chdata);
 
   MNODE *arg = mml_func_node->next;
   if (!arg)
@@ -1478,7 +1478,7 @@ bool Tree2StdMML::NodeIsFunction(MNODE * mml_node)
   if (HasScriptChildren(mml_node))
     return NodeIsFunction(mml_node->first_kid);
   else if (!strcmp(mml_node->src_tok,"mi"))
-    if (IsTrigArgFuncName(mml_node->p_chdata) ||
+    if (IsTrigArgFuncName(mml_entities,mml_node->p_chdata) ||
         IsReservedFuncName(mml_node->p_chdata) ||
         my_analyzer->IsDefinedFunction(mml_node))
       return true;
@@ -1499,7 +1499,7 @@ MNODE * Tree2StdMML::GetBaseFunction(MNODE * mml_node)
 
 bool Tree2StdMML::FuncTakesTrigArgs(MNODE * mml_node)
 {
-  return IsTrigArgFuncName(mml_node->p_chdata);
+  return IsTrigArgFuncName(mml_entities,mml_node->p_chdata);
 }
 
 bool Tree2StdMML::NodeIsOperator(MNODE * mml_node)
@@ -1842,6 +1842,80 @@ bool Tree2StdMML::IsEnclosedList(GROUP_INFO & gi)
     }
   }
   return rv;
+}
+
+int Tree2StdMML::CountTrigargNodes(MNODE * mml_node)
+{
+  int rv = 1;
+  MNODE * rover = mml_node;
+  if (rover)
+    rover = rover->next;  // first one always OK
+  else
+    rv = 0;
+  bool last_was_op = false;
+  while (rover) {
+    bool is_op;
+    if (!NodeInTrigargList(rover, is_op)) {
+      if (last_was_op)
+        rv--;
+      break;
+    } else {
+      last_was_op = is_op;
+      rv++;
+      rover = rover->next;
+    }
+  }
+  return rv;
+}
+
+// TODO review this list carefully
+bool Tree2StdMML::NodeInTrigargList(MNODE * mml_node, bool & is_op)
+{
+  is_op = false;
+  if (mml_node) {
+    const char* p_elem = mml_node->src_tok;
+    if (!strcmp(p_elem,"mrow")
+        || !strcmp(p_elem, "mroot")
+        || !strcmp(p_elem, "msqrt")) {
+      return true;
+    } else if (!strcmp(p_elem, "msub")
+        || !strcmp(p_elem, "msup")
+        || !strcmp(p_elem, "msubsup")) {
+      bool dummy;
+      return NodeInTrigargList(mml_node->first_kid, dummy);
+    } else if (!strcmp(p_elem,"mo")) {
+      is_op = true;
+      // true if multiplicative (this needs to be refactored)
+      const char *ptr = mml_node->p_chdata;
+      if (ptr && *ptr == '&' && *(ptr + 1) == '#') { // numeric entity
+        int off = 2;
+        int base = 10;            // "&#1234;"
+        if (*(ptr + 2) == 'x') {
+          base = 16;              // "&#x220a;"
+          off++;
+        }
+        U32 unicode = ASCII2U32(ptr + off, base);
+        switch (unicode) {
+          case 0xd7  :                  // "times"
+          case 0x2062:                  // "invisibletimes"
+          case 0x2217:                  // "lowast"
+          case 0x22c5:                  // "sdot"
+          case 0x22c6:                  // "starf"
+            return true;
+        }
+      } else if (ptr) {
+        size_t zln = strlen(ptr);
+        if (zln == 1) {
+          char ch0 = ptr[0];
+          if (ch0 == '*' || ch0 == '/' || ch0 == '\\')
+            return true;
+        }
+      }
+    } else if (!strcmp(p_elem,"mi")) {
+      return (!IsTrigArgFuncName(mml_entities, mml_node->p_chdata));
+    }
+  }
+  return false;
 }
 
 MNODE *Tree2StdMML::RemoveRedundantMROWs(MNODE * MML_list)
