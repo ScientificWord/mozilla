@@ -1370,6 +1370,34 @@ Test ID Op134mie
 </math>
 
 </p>
+<p>
+Test ID Fixup2 124b
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi mathcolor="gray">gcd</mi>
+    <mo>&#x2061;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mn>35</mn>
+      <mn>25</mn>
+      <mn>65</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Fixup2 124b:e
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mn>5</mn>
+  </mrow>
+</math>
+
+</p>
 <hr/>
 </body>
 </html>
