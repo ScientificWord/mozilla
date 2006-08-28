@@ -514,6 +514,23 @@ Test ID 124
 
 </p>
 <p>
+Test ID 124b
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+  <mrow>
+    <mi mathcolor="gray">gcd</mi>
+    <mo>&#x2061;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mn>35</mn>
+      <mn>25</mn>
+      <mn>65</mn>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
 Test ID 125
 </p>
 <p><math xmlns="http://www.w3.org/1998/Math/MathML"><mn>2275</mn></math></p>
@@ -3203,6 +3220,21 @@ Test ID 124.2
 
 </p>
 <p>
+Test ID 124b.2
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi mathcolor="gray">gcd</mi>
+  <mo>&#x2061;</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mn>35</mn>
+    <mn>25</mn>
+    <mn>65</mn>
+  </mfenced>
+</math>
+
+</p>
+<p>
 Test ID 125.2
 </p>
 <p>
@@ -5577,6 +5609,15 @@ Test ID 124.3
     <mn>25</mn>
     <mn>65</mn>
   </mfenced>
+</math>
+
+</p>
+<p>
+Test ID 124b.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>124b.3 wrong, gcd is a function (sic).</mtext>
 </math>
 
 </p>
