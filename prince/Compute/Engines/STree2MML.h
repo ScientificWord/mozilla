@@ -28,13 +28,14 @@ typedef struct tagFACTOR_REC
 
 class DefStore;
 class PrefsStore;
+class Grammar;
 class MML2Tree;
 class MathResult;
 
 class STree2MML
 {
 public:
-  STree2MML(PrefsStore * up_store);
+  STree2MML(Grammar * mml_grammar, PrefsStore * up_store);
   ~STree2MML();
 
   char *BackTranslate(SEMANTICS_NODE * root_handle,
@@ -229,13 +230,13 @@ private:
 
   bool IsSimpleDenom(char *mml_markup);
 
+  Grammar *mml_entities;
+  PrefsStore *uprefs_store;
   const char *src_markup;
   MIC2MMLNODE_REC *canonicalID_mapper;
   MIC2MMLNODE_REC *def_IDs_mapper;
 
   MML2Tree *mml_tree_gen;
-
-  PrefsStore *uprefs_store;
 
   int output_markup;            // MML or LaTeX
 

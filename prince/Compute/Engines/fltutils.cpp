@@ -674,169 +674,6 @@ ATTRIB_REC *RemoveAttr(ATTRIB_REC * a_list, const char *attr_nom)
   return rv;
 }
 
-//A bit of a hack.  Seems like this should be data driven or
-// in the runtime grammar.
-bool IsTrigArgFuncName(const char * f_nom)
-{
-  bool rv = false;
-
-  size_t zln = strlen(f_nom);
-  switch (zln) {
-  case 2:
-    if (!strcmp(f_nom, "ln"))
-      rv = true;
-    break;
-  case 3:
-    if (!strcmp(f_nom, "sin"))
-      rv = true;
-    else if (!strcmp(f_nom, "cos"))
-      rv = true;
-    else if (!strcmp(f_nom, "tan"))
-      rv = true;
-    else if (!strcmp(f_nom, "sec"))
-      rv = true;
-    else if (!strcmp(f_nom, "csc"))
-      rv = true;
-    else if (!strcmp(f_nom, "cot"))
-      rv = true;
-    else if (!strcmp(f_nom, "log"))
-      rv = true;
-    break;
-  case 4:
-    if (!strcmp(f_nom, "sinh"))
-      rv = true;
-    else if (!strcmp(f_nom, "cosh"))
-      rv = true;
-    else if (!strcmp(f_nom, "tanh"))
-      rv = true;
-    else if (!strcmp(f_nom, "sech"))
-      rv = true;
-    else if (!strcmp(f_nom, "csch"))
-      rv = true;
-    else if (!strcmp(f_nom, "coth"))
-      rv = true;
-    break;
-  case 6:
-    if (!strcmp(f_nom, "arcsin"))
-      rv = true;
-    else if (!strcmp(f_nom, "arccos"))
-      rv = true;
-    else if (!strcmp(f_nom, "arctan"))
-      rv = true;
-    else if (!strcmp(f_nom, "arcsec"))
-      rv = true;
-    else if (!strcmp(f_nom, "arccsc"))
-      rv = true;
-    else if (!strcmp(f_nom, "arccot"))
-      rv = true;
-    break;
-  default:
-    break;
-  }
-
-  return rv;
-}
-
-int CountTrigargNodes(MNODE * mml_node)
-{
-  int rv = 1;
-  MNODE * rover = mml_node;
-  if (rover)
-    rover = rover->next;  // first one always OK
-  else
-    rv = 0;
-  bool last_was_op = false;
-  while (rover) {
-    bool is_op;
-    if (!NodeInTrigargList(rover, is_op)) {
-      if (last_was_op)
-        rv--;
-      break;
-    } else {
-      last_was_op = is_op;
-      rv++;
-      rover = rover->next;
-    }
-  }
-  return rv;
-}
-
-// TODO review this list carefully
-bool NodeInTrigargList(MNODE * mml_node, bool & is_op)
-{
-  is_op = false;
-  if (mml_node) {
-    const char* p_elem = mml_node->src_tok;
-    if (!strcmp(p_elem,"mrow")
-        || !strcmp(p_elem, "mroot")
-        || !strcmp(p_elem, "msqrt")) {
-      return true;
-    } else if (!strcmp(p_elem, "msub")
-        || !strcmp(p_elem, "msup")
-        || !strcmp(p_elem, "msubsup")) {
-      bool dummy;
-      return NodeInTrigargList(mml_node->first_kid, dummy);
-    } else if (!strcmp(p_elem,"mo")) {
-      is_op = true;
-      // true if multiplicative (this needs to be refactored)
-      const char *ptr = mml_node->p_chdata;
-      if (ptr && *ptr == '&' && *(ptr + 1) == '#') { // numeric entity
-        int off = 2;
-        int base = 10;            // "&#1234;"
-        if (*(ptr + 2) == 'x') {
-          base = 16;              // "&#x220a;"
-          off++;
-        }
-        U32 unicode = ASCII2U32(ptr + off, base);
-        switch (unicode) {
-          case 0xd7  :                  // "times"
-          case 0x2062:                  // "invisibletimes"
-          case 0x2217:                  // "lowast"
-          case 0x22c5:                  // "sdot"
-          case 0x22c6:                  // "starf"
-            return true;
-        }
-      } else if (ptr) {
-        size_t zln = strlen(ptr);
-        if (zln == 1) {
-          char ch0 = ptr[0];
-          if (ch0 == '*' || ch0 == '/' || ch0 == '\\')
-            return true;
-        }
-      }
-    } else if (!strcmp(p_elem,"mi")) {
-      return (!IsTrigArgFuncName(mml_node->p_chdata));
-    }
-  }
-  return false;
-}
-
-//Continuing the hack of IsTrigArgFuncName().
-// See FUNCTIONS section in engine grammar files...but the list of recognized function
-// names should not depend on the engine!
-bool IsReservedFuncName(const char * f_nom)
-{
-  bool rv = false;
-
-  size_t zln = strlen(f_nom);
-  switch (zln) {
-  case 2:
-    if (!strcmp(f_nom, "Re"))
-      rv = true;
-    else if (!strcmp(f_nom, "Im"))
-      rv = true;
-    break;
-  case 3:
-    if (!strcmp(f_nom, "arg"))
-      rv = true;
-    break;
-  // all those distribution functions.
-  default:
-    break;
-  }
-
-  return rv;
-}
 BUCKET_REC *MakeBucketRec(U32 which_bucket, SEMANTICS_NODE * sem_child)
 {
   BUCKET_REC *rv = TCI_NEW(BUCKET_REC);
@@ -2216,4 +2053,46 @@ char *DumpSList(const SEMANTICS_NODE * s_list, int indent)
     zheap_str = AppendStr2HeapStr(zheap_str, buffer_ln, "\n");
 
   return zheap_str;
+}
+
+#include "grammar.h"
+
+bool IsTrigArgFuncName(Grammar *gmr, const char * nom)
+{
+  U32 ID, subID;
+  const char *p_data;
+  if (gmr->GetRecordFromName("TRIGARGFUNCS", nom, strlen(nom), ID, subID, &p_data)) {
+    if (p_data && *p_data)
+      int rhs = atoi(p_data); // unused
+    return true;
+  }
+
+  return false;
+}
+  
+//Continuing the hack of IsTrigArgFuncName().
+// See FUNCTIONS section in engine grammar files...but the list of recognized function
+// names should not depend on the engine!
+bool IsReservedFuncName(const char * f_nom)
+{
+  bool rv = false;
+
+  size_t zln = strlen(f_nom);
+  switch (zln) {
+  case 2:
+    if (!strcmp(f_nom, "Re"))
+      rv = true;
+    else if (!strcmp(f_nom, "Im"))
+      rv = true;
+    break;
+  case 3:
+    if (!strcmp(f_nom, "arg"))
+      rv = true;
+    break;
+  // all those distribution functions.
+  default:
+    break;
+  }
+
+  return rv;
 }
