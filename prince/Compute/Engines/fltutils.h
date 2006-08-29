@@ -197,7 +197,7 @@ ATTRIB_REC *RemoveAttr(ATTRIB_REC * a_list, const char *attr_nom);
 
 class Grammar;
 bool IsTrigArgFuncName(Grammar *mml_entities, const char * f_nom);
-bool IsReservedFuncName(const char * f_nom);
+bool IsReservedFuncName(Grammar *mml_entities, const char * f_nom);
 
 void StrReplace(char *line, size_t zln, char *tok, const char *sub);
 

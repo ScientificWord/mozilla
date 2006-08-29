@@ -1479,7 +1479,7 @@ bool Tree2StdMML::NodeIsFunction(MNODE * mml_node)
     return NodeIsFunction(mml_node->first_kid);
   else if (!strcmp(mml_node->src_tok,"mi"))
     if (IsTrigArgFuncName(mml_entities,mml_node->p_chdata) ||
-        IsReservedFuncName(mml_node->p_chdata) ||
+        IsReservedFuncName(mml_entities,mml_node->p_chdata) ||
         my_analyzer->IsDefinedFunction(mml_node))
       return true;
 

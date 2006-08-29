@@ -2070,29 +2070,16 @@ bool IsTrigArgFuncName(Grammar *gmr, const char * nom)
   return false;
 }
   
-//Continuing the hack of IsTrigArgFuncName().
-// See FUNCTIONS section in engine grammar files...but the list of recognized function
-// names should not depend on the engine!
-bool IsReservedFuncName(const char * f_nom)
+// See also FUNCTIONS section in engine grammar files.
+bool IsReservedFuncName(Grammar *gmr, const char *nom)
 {
-  bool rv = false;
-
-  size_t zln = strlen(f_nom);
-  switch (zln) {
-  case 2:
-    if (!strcmp(f_nom, "Re"))
-      rv = true;
-    else if (!strcmp(f_nom, "Im"))
-      rv = true;
-    break;
-  case 3:
-    if (!strcmp(f_nom, "arg"))
-      rv = true;
-    break;
-  // all those distribution functions.
-  default:
-    break;
+  U32 ID, subID;
+  const char *p_data;
+  if (gmr->GetRecordFromName("RESERVEDFUNCS", nom, strlen(nom), ID, subID, &p_data)) {
+    if (p_data && *p_data)
+      int rhs = atoi(p_data); // unused
+    return true;
   }
 
-  return rv;
+  return false;
 }
