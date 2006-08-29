@@ -5522,7 +5522,28 @@ Test ID 116.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>116.3 wrong, &Gamma; is a function.</mtext>
+  <mfrac>
+    <mrow>
+      <mi>&#x393;</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mfrac>
+          <mn>5</mn>
+          <mn>3</mn>
+        </mfrac>
+      </mfenced>
+    </mrow>
+    <mrow>
+      <mi>&#x393;</mi>
+      <mo>&#x2061;</mo>
+      <mfenced open="(" close=")">
+        <mfrac>
+          <mn>1</mn>
+          <mn>2</mn>
+        </mfrac>
+      </mfenced>
+    </mrow>
+  </mfrac>
 </math>
 
 </p>
@@ -5580,7 +5601,11 @@ Test ID 121.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>121.3 wrong, &zeta; is a function</mtext>
+  <mi>&#x3b6;</mi>
+  <mo>&#x2061;</mo>
+  <mfenced open="(" close=")">
+    <mn>12</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -5617,7 +5642,13 @@ Test ID 124b.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>124b.3 wrong, gcd is a function (sic).</mtext>
+  <mi mathcolor="gray">gcd</mi>
+  <mo>&#x2061;</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mn>35</mn>
+    <mn>25</mn>
+    <mn>65</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -5626,7 +5657,13 @@ Test ID 125.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>125.3 wrong, lcm is a function.</mtext>
+  <mi mathcolor="gray">lcm</mi>
+  <mo>&#x2061;</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mn>35</mn>
+    <mn>25</mn>
+    <mn>65</mn>
+  </mfenced>
 </math>
 
 </p>
@@ -5636,6 +5673,21 @@ Test ID 126.3
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mo form="prefix" mathcolor="gray">max</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mn>35</mn>
+    <mn>25</mn>
+    <mn>65</mn>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID 126b.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi mathcolor="gray">max</mi>
+  <mo>&#x2061;</mo>
   <mfenced ilk="enclosed-list" open="(" close=")">
     <mn>35</mn>
     <mn>25</mn>
@@ -5670,11 +5722,52 @@ Test ID 127.3
 
 </p>
 <p>
+Test ID 127b.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <munder>
+    <mi mathcolor="gray">max</mi>
+    <mrow>
+      <mn>1</mn>
+      <mo>&#x2264;</mo>
+      <mi>n</mi>
+      <mo>&#x2264;</mo>
+      <mn>10</mn>
+    </mrow>
+  </munder>
+  <mo>&#x2061;</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mrow>
+      <mi mathcolor="gray">sin</mi>
+      <mo>&#x2061;</mo>
+      <mi>n</mi>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<p>
 Test ID 128.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mo form="prefix" mathcolor="gray">min</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mn>35</mn>
+    <mn>25</mn>
+    <mn>65</mn>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID 128b.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi mathcolor="gray">min</mi>
+  <mo>&#x2061;</mo>
   <mfenced ilk="enclosed-list" open="(" close=")">
     <mn>35</mn>
     <mn>25</mn>
@@ -6626,7 +6719,69 @@ Test ID 401.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>401.3 wrong, det is a function</mtext>
+  <mi mathcolor="gray">det</mi>
+  <mo>&#x2061;</mo>
+  <mfenced open="(" close=")">
+    <mtable align="axis">
+      <mtr>
+        <mtd>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>3</mn>
+          </mfrac>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>2</mn>
+          </mfrac>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>3</mn>
+          </mfrac>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>4</mn>
+          </mfrac>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>3</mn>
+          </mfrac>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>4</mn>
+          </mfrac>
+        </mtd>
+        <mtd>
+          <mfrac>
+            <mn>1</mn>
+            <mn>5</mn>
+          </mfrac>
+        </mtd>
+      </mtr>
+    </mtable>
+  </mfenced>
 </math>
 
 </p>
@@ -7027,7 +7182,14 @@ Test ID 701.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>701.3 wrong, &Fscr; is a function.</mtext> 
+  <mi>&#x2131;</mi>
+  <mo>&#x2061;</mo>
+  <mfenced open="(" close=")">
+    <mfrac>
+      <mn>1</mn>
+      <mi>x</mi>
+    </mfrac>
+  </mfenced>
 </math>
 
 </p>
@@ -7036,7 +7198,24 @@ Test ID 702.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>702.3 wrong, &Fscr; is a function.</mtext> 
+  <mi>&#x2131;</mi>
+  <mo>&#x2061;</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <msup>
+      <mi>e</mi>
+      <mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <mi>&#x3c0;</mi>
+        <mo>&#x2062;</mo>
+        <mi>i</mi>
+        <mo>&#x2062;</mo>
+        <mi>t</mi>
+      </mrow>
+    </msup>
+    <mi>t</mi>
+    <mi>w</mi>
+  </mfenced>
 </math>
 
 </p>
@@ -7045,7 +7224,29 @@ Test ID 703.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>703.3 wrong, &Fscr; is a function.</mtext> 
+  <msup>
+    <mi>&#x2131;</mi>
+    <mrow>
+      <mo form="prefix">&#x2212;</mo>
+      <mn>1</mn>
+    </mrow>
+  </msup>
+  <mo>&#x2061;</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mrow>
+      <mo form="prefix">&#x2212;</mo>
+      <mfrac>
+        <mrow>
+          <mn>2</mn>
+          <mo>&#x2062;</mo>
+          <mi>i</mi>
+        </mrow>
+        <mi>&#x3c9;</mi>
+      </mfrac>
+    </mrow>
+    <mi>&#x3c9;</mi>
+    <mi>t</mi>
+  </mfenced>
 </math>
 
 </p>
@@ -7054,7 +7255,18 @@ Test ID 704.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>704.3 wrong, &Lscr; is a function.</mtext> 
+  <mi>&#x2112;</mi>
+  <mo>&#x2061;</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mrow>
+      <mi>t</mi>
+      <mo>&#x2062;</mo>
+      <msup>
+        <mi>e</mi>
+        <mi>t</mi>
+      </msup>
+    </mrow>
+  </mfenced>
 </math>
 
 </p>
@@ -7063,7 +7275,68 @@ Test ID 705.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>705.3 wrong, &Lscr; is a function.</mtext> 
+  <mi>&#x2112;</mi>
+  <mo>&#x2061;</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mrow>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mfenced ilk="enclosed-list" open="(" close=")">
+          <mrow>
+            <mi>&#x3c9;</mi>
+            <mo>&#x2062;</mo>
+            <mi>t</mi>
+          </mrow>
+        </mfenced>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">Heaviside</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mi>t</mi>
+        </mfenced>
+      </mrow>
+    </mrow>
+    <mi>t</mi>
+    <mi>u</mi>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID 705b.3
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi>&#x2112;</mi>
+  <mo>&#x2061;</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mrow>
+      <mrow>
+        <mi mathcolor="gray">sin</mi>
+        <mo>&#x2061;</mo>
+        <mfenced ilk="enclosed-list" open="(" close=")">
+          <mrow>
+            <mi>&#x3c9;</mi>
+            <mo>&#x2062;</mo>
+            <mi>t</mi>
+          </mrow>
+        </mfenced>
+      </mrow>
+      <mo>&#x2062;</mo>
+      <mrow>
+        <mi mathcolor="gray">Dirac</mi>
+        <mo>&#x2061;</mo>
+        <mfenced open="(" close=")">
+          <mi>t</mi>
+        </mfenced>
+      </mrow>
+    </mrow>
+    <mi>t</mi>
+    <mi>u</mi>
+  </mfenced>
 </math>
 
 </p>
@@ -7072,7 +7345,29 @@ Test ID 706.3
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>706.3 wrong, &Lscr; is a function.</mtext> 
+  <msup>
+    <mi>&#x2112;</mi>
+    <mrow>
+      <mo form="prefix">&#x2212;</mo>
+      <mn>1</mn>
+    </mrow>
+  </msup>
+  <mo>&#x2061;</mo>
+  <mfenced open="(" close=")">
+    <mfrac>
+      <mn>1</mn>
+      <msup>
+        <mfenced open="(" close=")">
+          <mrow>
+            <mi>s</mi>
+            <mo>+</mo>
+            <mi>&#x3b1;</mi>
+          </mrow>
+        </mfenced>
+        <mn>2</mn>
+      </msup>
+    </mfrac>
+  </mfenced>
 </math>
 
 </p>
@@ -10209,6 +10504,28 @@ Test ID Op170
 
 </p>
 <p>
+Test ID Op170b
+</p>
+<p>nabla (AKA grad)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi mathcolor="gray">grad</mi>
+    <mo>&#x2061;</mo>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+        <mo>&#x2062;</mo>
+        <mi>z</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
 Test ID Op171
 </p>
 <p>more norms</p>
@@ -10352,6 +10669,32 @@ Test ID Op174
 
 </p>
 <p>
+Test ID Op174b
+</p>
+<p>nabla dot (AKA div)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi mathcolor="gray">div</mi>
+    <mo>&#x2061;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mi>x</mi>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+      <mrow>
+        <mi>y</mi>
+        <mo form="infix">&#x2212;</mo>
+        <mi>z</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
 Test ID Op175
 </p>
 <p>curl</p>
@@ -10359,6 +10702,32 @@ Test ID Op175
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mo form="prefix">&#x2207;&#xd7;</mo>
+    <mfenced ilk="enclosed-list" open="(" close=")">
+      <mi>x</mi>
+      <mrow>
+        <mi>x</mi>
+        <mo>&#x2062;</mo>
+        <mi>y</mi>
+      </mrow>
+      <mrow>
+        <mi>y</mi>
+        <mo form="infix">&#x2212;</mo>
+        <mi>z</mi>
+      </mrow>
+    </mfenced>
+  </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op175b
+</p>
+<p>curl</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mrow>
+    <mi mathcolor="gray">curl</mi>
+    <mo>&#x2061;</mo>
     <mfenced ilk="enclosed-list" open="(" close=")">
       <mi>x</mi>
       <mrow>
@@ -11645,6 +12014,26 @@ Test ID Op261
 
 </p>
 <p>
+Test ID Op270b
+</p>
+<p>nabla (AKA grad)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi mathcolor="gray">grad</mi>
+  <mo>&#x2061;</mo>
+  <mfenced open="(" close=")">
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mi>z</mi>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<p>
 Test ID Op323
 </p>
 <p>arcsin and sin</p>
@@ -12763,6 +13152,26 @@ Test ID Op361
     </mfenced>
     <mi>&#x221e;</mi>
   </msub>
+</math>
+
+</p>
+<p>
+Test ID Op370b
+</p>
+<p>nabla (AKA grad)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi mathcolor="gray">grad</mi>
+  <mo>&#x2061;</mo>
+  <mfenced open="(" close=")">
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mi>z</mi>
+    </mrow>
+  </mfenced>
 </math>
 
 </p>
@@ -13916,6 +14325,74 @@ Test ID Op452
       </mrow>
     </msup>
   </mrow>
+</math>
+
+</p>
+<p>
+Test ID Op470b
+</p>
+<p>nabla (AKA grad)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi mathcolor="gray">grad</mi>
+  <mo>&#x2061;</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+      <mo>&#x2062;</mo>
+      <mi>z</mi>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID Op474b
+</p>
+<p>nabla dot (AKA div)</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi mathcolor="gray">div</mi>
+  <mo>&#x2061;</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mi>x</mi>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+    </mrow>
+    <mrow>
+      <mi>y</mi>
+      <mo form="infix">&#x2212;</mo>
+      <mi>z</mi>
+    </mrow>
+  </mfenced>
+</math>
+
+</p>
+<p>
+Test ID Op475b
+</p>
+<p>curl</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mi mathcolor="gray">curl</mi>
+  <mo>&#x2061;</mo>
+  <mfenced ilk="enclosed-list" open="(" close=")">
+    <mi>x</mi>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+    </mrow>
+    <mrow>
+      <mi>y</mi>
+      <mo form="infix">&#x2212;</mo>
+      <mi>z</mi>
+    </mrow>
+  </mfenced>
 </math>
 
 </p>
