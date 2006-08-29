@@ -948,3 +948,29 @@ log<uID1.10.1>1
 ln<uID1.10.2>1
 <END_CONTEXT_TRIGARGFUNCS>
 
+;The following identifiers are treated as functions during Fixup.
+;(globally, and there's no way to turn this off other than introducing an &it;)
+<START_CONTEXT_RESERVEDFUNCS>
+Re<uID1.1.1>1
+Im<uID1.1.2>1
+arg<uID1.1.3>1
+; &Gamma;
+&#x393;<uID1.2.1>1
+; &zeta;
+&#x3b6;<uID1.2.2>1
+gcd<uID1.3.1>1
+lcm<uID1.3.2>1
+det<uID1.4.1>1
+; &Lscr; Laplace
+&#x2112;<uID1.5.1>1
+; &Fscr; Fourier
+&#x2131;<uID1.5.2>1
+max<uID1.7.1>1
+min<uID1.7.2>1
+div<uID1.9.1>1
+grad<uID1.9.2>1
+curl<uID1.9.3>1
+Dirac<uID1.10.1>1
+Heaviside<uID1.10.2>1
+<END_CONTEXT_RESERVEDFUNCS>
+
