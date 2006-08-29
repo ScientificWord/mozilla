@@ -6282,6 +6282,22 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     126b.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi mathcolor="gray">max</mi>
+     <mo>(</mo>
+       <mn>35</mn>
+       <mo>,</mo>
+       <mn>25</mn>
+       <mo>,</mo>
+       <mn>65</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
 Test ID     127.3
 Client ID   1
 Engine      MuPAD
@@ -6304,12 +6320,50 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     127b.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <munder>
+       <mi mathcolor="gray">max</mi>
+       <mrow>
+         <mn>1</mn>
+         <mo>&le;</mo>
+         <mi>n</mi>
+         <mo>&le;</mo>
+         <mn>10</mn>
+       </mrow>
+     </munder>
+     <mo>(</mo>
+       <mi mathcolor="gray">sin</mi>
+       <mi>n</mi>
+     <mo>)</mo>
+   </math>
+End of test
+
 Test ID     128.3
 Client ID   1
 Engine      MuPAD
 Command ID	Fixup
    <math xmlns="http://www.w3.org/1998/Math/MathML">
      <mo mathcolor="gray">min</mo>
+     <mo>(</mo>
+       <mn>35</mn>
+       <mo>,</mo>
+       <mn>25</mn>
+       <mo>,</mo>
+       <mn>65</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     128b.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi mathcolor="gray">min</mi>
      <mo>(</mo>
        <mn>35</mn>
        <mo>,</mo>
@@ -7723,6 +7777,30 @@ Command ID	Fixup
          <mi>t</mi>
        <mo>)</mo>
        <mi mathcolor="gray">Heaviside</mi>
+       <mo>(</mo>
+       <mi>t</mi>
+       <mo>)</mo>
+       <mo>,</mo>
+       <mi>t</mi>
+       <mo>,</mo>
+       <mi>u</mi>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     705b.3
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi>&Lscr;</mi>
+     <mo>(</mo>
+       <mi mathcolor="gray">sin</mi>
+       <mo>(</mo>
+         <mi>&omega;</mi>
+         <mi>t</mi>
+       <mo>)</mo>
+       <mi mathcolor="gray">Dirac</mi>
        <mo>(</mo>
        <mi>t</mi>
        <mo>)</mo>
@@ -11212,6 +11290,28 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     Op170b
+Comment     nabla (AKA grad)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mi mathcolor="gray">grad</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mi>y</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mi>z</mi>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
 Test ID     Op171
 Comment     more norms 
 Client ID   1
@@ -11389,6 +11489,38 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     Op174b
+Comment     nabla dot (AKA div)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mi mathcolor="gray">div</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mrow>
+           <mi>x</mi>
+           <mo form="infix">,</mo>
+           <mrow>
+             <mi>x</mi>
+             <mo>&InvisibleTimes;</mo>
+             <mi>y</mi>
+           </mrow>
+           <mo form="infix">,</mo>
+           <mrow>
+             <mi>y</mi>
+             <mo form="infix">&minus;</mo>
+             <mi>z</mi>
+           </mrow>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
 Test ID     Op175
 Comment     curl 
 Client ID   1
@@ -11397,6 +11529,38 @@ Command ID	Fixup
    <math xmlns="http://www.w3.org/1998/Math/MathML">
      <mrow>
        <mo form="prefix">&nabla;&times;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mrow>
+           <mi>x</mi>
+           <mo form="infix">,</mo>
+           <mrow>
+             <mi>x</mi>
+             <mo>&InvisibleTimes;</mo>
+             <mi>y</mi>
+           </mrow>
+           <mo form="infix">,</mo>
+           <mrow>
+             <mi>y</mi>
+             <mo form="infix">&minus;</mo>
+             <mi>z</mi>
+           </mrow>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     Op175b
+Comment     curl 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mi mathcolor="gray">curl</mi>
+       <mo>&ApplyFunction;</mo>
        <mrow>
          <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
          <mrow>
@@ -12747,6 +12911,26 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     Op270b
+Comment     nabla (AKA grad)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi mathcolor="gray">grad</mi>
+     <mo>&ApplyFunction;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mi>x</mi>
+       <mo>&InvisibleTimes;</mo>
+       <mi>y</mi>
+       <mo>&InvisibleTimes;</mo>
+       <mi>z</mi>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+   </math>
+End of test
+
 Test ID     Op323
 Comment     arcsin and sin
 Client ID   1
@@ -13927,6 +14111,23 @@ Command ID	Fixup
    </math>
 End of test
 
+Test ID     Op370b
+Comment     nabla (AKA grad)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi mathcolor="gray">grad</mi>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mi>x</mi>
+       <mo>&InvisibleTimes;</mo>
+       <mi>y</mi>
+       <mo>&InvisibleTimes;</mo>
+       <mi>z</mi>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
 Test ID     Op420
 Comment     embellished sin and cos and tan
 Client ID   1
@@ -15024,6 +15225,61 @@ Command ID	Fixup
          </mrow>
        </msup>
      </mrow>
+   </math>
+End of test
+
+Test ID     Op470b
+Comment     nabla (AKA grad)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi mathcolor="gray">grad</mi>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mi>x</mi>
+       <mi>y</mi>
+       <mi>z</mi>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     Op474b
+Comment     nabla dot (AKA div)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi mathcolor="gray">div</mi>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+       <mi>x</mi>
+       <mo form="infix">,</mo>
+         <mi>x</mi>
+         <mi>y</mi>
+       <mo form="infix">,</mo>
+         <mi>y</mi>
+         <mo form="infix">&minus;</mo>
+         <mi>z</mi>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </math>
+End of test
+
+Test ID     Op475b
+Comment     curl 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi mathcolor="gray">curl</mi>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+       <mi>x</mi>
+       <mo form="infix">,</mo>
+         <mi>x</mi>
+         <mi>y</mi>
+       <mo form="infix">,</mo>
+         <mi>y</mi>
+         <mo form="infix">&minus;</mo>
+         <mi>z</mi>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
    </math>
 End of test
 
