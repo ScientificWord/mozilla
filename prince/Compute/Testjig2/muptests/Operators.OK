@@ -5572,7 +5572,37 @@ Test ID 341
 <p>sums</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>341 wrong, summand includes second sum</mtext>
+  <mrow>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x2211;</mo>
+      <mrow>
+        <mi>i</mi>
+        <mo>=</mo>
+        <mn>1</mn>
+      </mrow>
+      <mi>n</mi>
+    </msubsup>
+    <msup>
+      <mi>i</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>+</mo>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x2211;</mo>
+      <mrow>
+        <mi>i</mi>
+        <mo>=</mo>
+        <mn>1</mn>
+      </mrow>
+      <mi>n</mi>
+    </msubsup>
+    <msup>
+      <mi>i</mi>
+      <mn>3</mn>
+    </msup>
+  </mrow>
 </math>
 
 </p>
@@ -5616,7 +5646,50 @@ Test ID 343
 <p>products</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>343 wrong, parens on productand lost</mtext>
+  <mrow>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x220f;</mo>
+      <mrow>
+        <mi>i</mi>
+        <mo>=</mo>
+        <mn>1</mn>
+      </mrow>
+      <mi>n</mi>
+    </msubsup>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>1</mn>
+        <mo>+</mo>
+        <msup>
+          <mn>2</mn>
+          <mi>i</mi>
+        </msup>
+      </mrow>
+    </mfenced>
+    <mo>&#x2212;</mo>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x220f;</mo>
+      <mrow>
+        <mi>i</mi>
+        <mo>=</mo>
+        <mn>1</mn>
+      </mrow>
+      <mi>&#x221e;</mi>
+    </msubsup>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>1</mn>
+        <mo>&#x2212;</mo>
+        <msup>
+          <mn>2</mn>
+          <mrow>
+            <mo>&#x2212;</mo>
+            <mi>i</mi>
+          </mrow>
+        </msup>
+      </mrow>
+    </mfenced>
+  </mrow>
 </math>
 
 </p>
@@ -7239,7 +7312,37 @@ Test ID 441
 <p>sums</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>441 wrong, second sum included in summand</mtext>
+  <mrow>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x2211;</mo>
+      <mrow>
+        <mi>i</mi>
+        <mo>=</mo>
+        <mn>1</mn>
+      </mrow>
+      <mi>n</mi>
+    </msubsup>
+    <msup>
+      <mi>i</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>+</mo>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x2211;</mo>
+      <mrow>
+        <mi>i</mi>
+        <mo>=</mo>
+        <mn>1</mn>
+      </mrow>
+      <mi>n</mi>
+    </msubsup>
+    <msup>
+      <mi>i</mi>
+      <mn>3</mn>
+    </msup>
+  </mrow>
 </math>
 
 </p>
@@ -7249,7 +7352,50 @@ Test ID 443
 <p>products</p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>443 wrong, parens lost on productand</mtext>
+  <mrow>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x220f;</mo>
+      <mrow>
+        <mi>i</mi>
+        <mo>=</mo>
+        <mn>1</mn>
+      </mrow>
+      <mi>n</mi>
+    </msubsup>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>1</mn>
+        <mo>+</mo>
+        <msup>
+          <mn>2</mn>
+          <mi>i</mi>
+        </msup>
+      </mrow>
+    </mfenced>
+    <mo>&#x2212;</mo>
+    <msubsup>
+      <mo form="prefix" largeop="true">&#x220f;</mo>
+      <mrow>
+        <mi>i</mi>
+        <mo>=</mo>
+        <mn>1</mn>
+      </mrow>
+      <mi>&#x221e;</mi>
+    </msubsup>
+    <mfenced open="(" close=")">
+      <mrow>
+        <mn>1</mn>
+        <mo>&#x2212;</mo>
+        <msup>
+          <mn>2</mn>
+          <mrow>
+            <mo>&#x2212;</mo>
+            <mi>i</mi>
+          </mrow>
+        </msup>
+      </mrow>
+    </mfenced>
+  </mrow>
 </math>
 
 </p>
