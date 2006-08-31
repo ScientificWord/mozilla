@@ -93,6 +93,8 @@ protected:
   bool IsEnclosedList(GROUP_INFO & gi);
   bool IsDelimitedGroup(MNODE * mml_node);
   void LookupMOInfo(MNODE * mml_node);
+  void LookupEmbellishedMO(MNODE * mml_node);
+  bool GetBasePrecedence(MNODE * mml_node, int &precedence, OpIlk &op_ilk);
 
   int CountTrigargNodes(MNODE * mnode);
   bool NodeInTrigargList(MNODE * mnode, bool & is_op);
