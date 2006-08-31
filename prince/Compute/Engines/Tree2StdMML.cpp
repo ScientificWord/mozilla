@@ -287,6 +287,7 @@ void Tree2StdMML::AddOperatorInfo(MNODE * dMML_tree)
   MNODE *rover = dMML_tree;
   while (rover) {
     LookupMOInfo(rover);
+    LookupEmbellishedMO(rover);
     rover = rover->next;
   }
 }
@@ -382,6 +383,33 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
 
   mml_node->precedence = precedence;
   mml_node->form = op_ilk;
+}
+
+//embellished operators need to participate in precedence resolution
+//we assume here that LookMOInfor has been performed on all subtrees
+void Tree2StdMML::LookupEmbellishedMO(MNODE * mml_node)
+{
+  if (HasScriptChildren(mml_node)) {
+    int precedence = 0;
+    OpIlk op_ilk = OP_none;
+    if (GetBasePrecedence(mml_node->first_kid,precedence,op_ilk)) {
+      mml_node->precedence = precedence;
+      mml_node->form = op_ilk;
+    }
+  }
+}
+
+bool Tree2StdMML::GetBasePrecedence(MNODE * mml_node, int &precedence, OpIlk &op_ilk)
+{
+  if (!strcmp(mml_node->src_tok,"mo")) {
+    precedence = mml_node->precedence;
+    op_ilk = mml_node->form;
+    return true;
+  } else if (HasScriptChildren(mml_node->first_kid)) {
+    return GetBasePrecedence(mml_node->first_kid, precedence, op_ilk);
+  } else {
+    return false;  // not an embellished operator
+  }
 }
 
 //CapitalDifferentialD is a special kind of operator
