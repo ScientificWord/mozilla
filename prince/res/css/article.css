@@ -113,6 +113,21 @@ margin-left: 20pt;
 margin-right: 20pt;
 }
 
+center { display: block;
+margin: 10pt 10pt 5pt 5pt;
+text-align: center;
+}
+
+flushright { display: block;
+margin: 10pt 10pt 5pt 5pt;
+text-align: right;
+}
+
+flushleft { display: block;
+margin: 10pt 10pt 5pt 5pt;
+text-align: left;
+}
+
 
 em {
 font-style: italic;
