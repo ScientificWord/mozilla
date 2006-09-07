@@ -1,10 +1,17 @@
 part {
   display: block;
+  counter-increment: part;
 }
 
 part sectiontitle {
   display: block;
-  font-size: larger;
+  font-size: x-large;
+  font-weight: bold;
+}
+
+part>sectiontitle:before { content: "Part " counter(part,upper-roman);
+  display: block;
+  font-size: large;
   font-weight: bold;
 }
 
@@ -71,6 +78,14 @@ content: counter(section) "." counter(subsection) "." counter(subsubsection) "."
 abstract { display: block;
 margin-left: 50pt;
 margin-right: 50pt;
+font-size: small;
+}
+
+abstract:before { 
+content: "Abstract";
+display: block;
+text-align: center;
+font-size: medium; font-weight: bold;
 }
 
 
