@@ -3,7 +3,7 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
-    xmlns:sw="http://www.sciword.com/namespaces/sciword">}
+    xmlns:sw="http://www.sciword.com/namespaces/sciword"
 >
 <xsl:include href="mml2ltex.xsl"/>
 <xsl:output method="text"/>
@@ -57,6 +57,10 @@
 \begin{abstract}
 <xsl:apply-templates/>
 \end{abstract}
+</xsl:template>
+
+<xsl:template match="maketitle">
+\maketitle
 </xsl:template>
 
 <xsl:template match="section">
