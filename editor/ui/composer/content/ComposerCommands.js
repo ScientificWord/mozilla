@@ -3254,7 +3254,7 @@ function doAdvancedProperties(element)
         if (element.prop == "pagenumber") {
           try {
             data.numstyle = element.value;
-            window.openDialog("chrome://editor/content/latexpagenumberstyle.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", data);
+            window.openDialog("chrome://prince/content/latexpagenumberstyle.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", data);
             window.content.focus();
             if (!data.Cancel)
             {
@@ -3267,7 +3267,7 @@ function doAdvancedProperties(element)
           try {
             data.lheader = element.value;
             data.rheader = element.value2;
-            window.openDialog("chrome://editor/content/latexheaders.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", data);
+            window.openDialog("chrome://prince/content/latexheaders.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", data);
             window.content.focus();
             if (!data.Cancel)
             {
