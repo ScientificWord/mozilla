@@ -1,3 +1,6 @@
+@namespace sw url("http://www.sciword.com/namespaces/sciword");
+
+
 document { display: block;
   margin-left: 20pt;
   font-family: Arial;
@@ -11,16 +14,16 @@ item { margin: 0pt 0pt 0pt 0pt;
        padding: 10pt 0pt 0pt 20pt; 
        display: list-item }
 
-/* item:before { content: counters(item, ".") ":  ";
+item:before { content: counters(item, ".") ":  ";
   counter-increment: item;
-}  */
+} 
  
-/* enumerate { counter-reset: item; }
+enumerate { counter-reset: item; }
 
-description { counter-reset: item; }  */
+description { counter-reset: item; }  
 
 itemize { list-style: disc; 
-/*   counter-reset: item; */}
+  counter-reset: item; }
 
 img { display: inline; margin: 2em } 
 
@@ -45,7 +48,7 @@ latex {
 }
 
 tex {
-  -moz-binding: url(resource://app/res/xbl/latex.xml#tex");
+  -moz-binding: url("resource://app/res/xbl/latex.xml#tex");
   display:none;
 }
 
@@ -70,7 +73,7 @@ texb, latexstyleb {
   -moz-border-bottom-colors: transparent ThreeDDarkShadow ThreeDShadow;
   -moz-border-left-colors: transparent ThreeDHighlight ThreeDLightShadow;
   background-color: ThreeDFace;
-  -moz-user-select: none;
+  -moz-user-select: all;	  
 }
 
 maketitle { display:block;
@@ -108,10 +111,20 @@ styledata {
 
 											
 styleprop {
-  -moz-user-select: none;
+  -moz-user-select: all;
 }
 
 #sw_preamble [hide="true"] {
   display: none;
 }
 
+/* We make the refprint... tags invisible on the screen, but we want to make
+ them visible in print.  TODO */
+
+sw|refprintleft {
+  display: none;
+}
+
+sw|refprintright {
+  display: none;
+}
