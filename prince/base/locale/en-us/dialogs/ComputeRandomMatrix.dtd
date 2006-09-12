@@ -1,0 +1,13 @@
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Random Matrix">
+<!ENTITY dimensions.label  "Dimensions">
+<!ENTITY rows.label  "Rows">
+<!ENTITY columns.label  "Columns">
+<!ENTITY range.label       "Range of Random Entries">
+<!ENTITY types.label       "Matrix Types">
+
+<!ENTITY Unrestricted.label   "Unrestricted">
+<!ENTITY Symmetric.label      "Symmetric">  
+<!ENTITY Antisymmetric.label  "Antisymmetric">
+<!ENTITY Triangular.label     "Triangular"> 

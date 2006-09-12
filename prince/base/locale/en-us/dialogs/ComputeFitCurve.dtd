@@ -1,0 +1,12 @@
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Fit Curve to Data">
+
+<!ENTITY column.label   "Location of Dependent variable">
+<!ENTITY first.label    "First Column">
+<!ENTITY last.label     "Last Column">
+
+<!ENTITY regress.label   "Multiple Regression">
+<!ENTITY noconst.label   "Multiple Regression (No Constant)">  
+<!ENTITY poly.label      "Polynomial of">
+<!ENTITY degree.label    "degree"> 

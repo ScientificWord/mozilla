@@ -1,0 +1,9 @@
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+ <!-- Window title -->
+<!ENTITY windowTitle.label	"Matrix">
+
+<!ENTITY rows.label "Rows">
+<!ENTITY cols.label "Columns">
+
+

@@ -1,0 +1,7 @@
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label	"Math Name">
+
+<!ENTITY enter.label "Name">
+<!ENTITY engfunc.label "Engine Function">
+<!ENTITY engfunc.desc "This is an engine string.">
