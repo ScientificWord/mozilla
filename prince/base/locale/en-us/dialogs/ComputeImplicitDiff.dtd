@@ -1,0 +1,6 @@
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Implicit Differentiation">
+
+<!ENTITY center.label "Variables:">
+<!ENTITY math.label   "Enter differentiation variable and dependent variable, separated by a bit of text.">

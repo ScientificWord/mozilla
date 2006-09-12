@@ -1,0 +1,7 @@
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY latexHeaders.title "LaTeX header content">
+<!ENTITY latexHeaders.label "LaTeX header content">
+<!ENTITY latexHeaders.preamble "The headers in your document are determined by the typesetting specifications of your shell document. You can override these default values by specifying the headers below.">
+
+<!-- <!ENTITY .tooltip "">  -->
