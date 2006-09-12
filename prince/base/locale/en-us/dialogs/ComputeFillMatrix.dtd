@@ -1,0 +1,13 @@
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Fill Matrix">
+<!ENTITY dimensions.label  "Dimensions">
+<!ENTITY range.label       "Range of Random Entries">
+<!ENTITY types.label       "Matrix Types">
+
+<!ENTITY zero.label     "zero">
+<!ENTITY Identity.label "Identity">
+<!ENTITY random.label   "random">
+<!ENTITY Jordan.label   "Jordan Block">
+<!ENTITY function.label "Defined by Function">
+<!ENTITY band.label     "Band">

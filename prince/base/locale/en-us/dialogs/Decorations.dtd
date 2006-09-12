@@ -1,0 +1,13 @@
+<!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Decorations">
+<!-- <!ENTITY colors.desc "You can override the page colors to make editing certain math objects easier."> -->
+
+<!ENTITY decorationsAboveButtonGroup.label "Decorations above:">
+<!ENTITY decorationsAboveButtonGroup.accessKey "v">
+<!ENTITY decorationsBelowButtonGroup.label "Decorations below:">
+<!ENTITY decorationsBelowButtonGroup.accessKey "b">
+<!ENTITY decorationsAroundButtonGroup.label "Decorations around:">
+<!ENTITY decorationsAroundButtonGroup.accessKey "d">
+
+<!-- <!ENTITY .tooltip "">  -->

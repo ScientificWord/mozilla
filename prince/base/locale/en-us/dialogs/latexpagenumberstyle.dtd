@@ -1,0 +1,11 @@
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY numberStyles.title "LaTeX number styles">
+
+<!ENTITY numberStyles.Arabic "Arabic numerals">
+<!ENTITY numberStyles.LCRoman "Lowercase Roman numerals">
+<!ENTITY numberStyles.UCRoman "Uppercase Roman numerals">
+<!ENTITY numberStyles.LCletters "Lowercase letters">
+<!ENTITY numberStyles.UCletters "Uppercase letters">
+
+<!-- <!ENTITY .tooltip "">  -->

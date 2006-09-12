@@ -1,0 +1,14 @@
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Compute Settings">
+<!ENTITY solve.label "Solve Options">
+<!ENTITY debug.label "Debugging">
+
+<!ENTITY desc.Digits    "Digits">
+<!ENTITY desc.Max       "Maximum Degree">
+<!ENTITY desc.Principal "Principal Value Only">
+<!ENTITY desc.Ignore    "Ignore Special Cases">
+<!ENTITY desc.MMLSent   "Log MathML commands sent">
+<!ENTITY desc.MMLRec    "Log MathML content received">
+<!ENTITY desc.EngSent   "Log engine strings sent">
+<!ENTITY desc.EngRec    "Log engine strings received">

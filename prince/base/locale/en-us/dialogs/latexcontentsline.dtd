@@ -1,0 +1,7 @@
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY latexContentsLine.title "LaTeX contents line">
+<!ENTITY latexContentsLine.label "LaTeX contents line">
+<!ENTITY latexHeaders.preamble "You can add a line to the table of contents by filling in these items.">
+
+<!-- <!ENTITY .tooltip "">  -->
