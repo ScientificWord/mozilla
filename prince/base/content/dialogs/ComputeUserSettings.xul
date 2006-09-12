@@ -1,0 +1,230 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/ComputeUserSettings.dtd">
+
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "Startup()"
+    ondialogaccept = "OK()"
+    ondialogcancel = "Cancel()"
+    buttons="accept,cancel">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeUserSettings.js" />
+
+  <tabbox id="outer-box" flex="1">
+	  <tabs class="tabs-top">
+	   <tab label="&tabbar.input;"       selected="1" />
+	   <tab label="&tabbar.output;"      selected="0" />
+	   <tab label="&tabbar.fences;"      selected="0" />
+	   <tab label="&tabbar.derivatives;" selected="0" />
+	   <tab label="&tabbar.entities;"    selected="0" />
+	  </tabs>
+
+    <tabpanels>
+      <tabpanel id="compusersettings.inputpage">
+       <vbox>
+        <groupbox>
+          <caption label="&logs.label;"/>
+          <hbox>
+            <description>Base of log is e (otherwise 10)</description>
+            <spacer flex="1"/>
+            <checkbox id="logs"/>
+          </hbox>
+        </groupbox>
+        <groupbox>
+          <caption label="&dots.label;"/>
+          <hbox>
+            <description>Dot accent means derivative</description>
+            <spacer flex="1"/>
+            <checkbox id="dots"/>
+          </hbox>
+        </groupbox>
+        <groupbox>
+          <caption label="&bar.label;"/>
+          <hbox>
+            <description>Overbar accent means conjugate</description>
+            <spacer flex="1"/>
+            <checkbox id="bar"/>
+          </hbox>
+        </groupbox>
+        <groupbox>
+          <caption label="i"/>
+          <hbox>
+            <description>Recognize plain i as imaginary</description>
+            <spacer flex="1"/>
+            <checkbox id="i_imaginary"/>
+          </hbox>
+        </groupbox>
+        <groupbox>
+          <caption label="j"/>
+          <hbox>
+            <description>Recognize j as imaginary i</description>
+            <spacer flex="1"/>
+            <checkbox id="j_imaginary"/>
+          </hbox>
+        </groupbox>
+        <groupbox>
+          <caption label="e"/>
+          <hbox>
+            <description>Recognize plain e as exponential</description>
+            <spacer flex="1"/>
+            <checkbox id="e_exp"/>
+          </hbox>
+        </groupbox>
+       </vbox>
+      </tabpanel>      
+
+      <tabpanel id="compusersettings.outputpage">
+       <vbox>
+        <groupbox>
+          <caption label="&scinotation.label;"/>
+          <hbox>
+            <description>Digits Rendered</description>
+            <spacer flex="1"/>
+            <textbox id="digits" style="width: 3em"/>
+          </hbox>
+          <vbox>
+            <hbox>
+              <description>Upper Threshold</description>
+              <spacer flex="1"/>
+              <textbox id="upper" style="width: 3em"/>
+            </hbox>
+            <description>(digits left of decimal before switching)</description>
+          </vbox>
+          <vbox>
+            <hbox>
+              <description>Lower Threshold</description>
+              <spacer flex="1"/>
+              <textbox id="lower" style="width: 3em"/>
+            </hbox>
+            <description>(zeros to right of decimal before switching)</description>
+          </vbox>
+        </groupbox>
+        <groupbox>
+          <caption label="&mixednum.label;"/>
+          <hbox>
+            <description>Output fractions as mixed numbers</description>
+            <spacer flex="1"/>
+            <checkbox id="mixednum"/>
+          </hbox>
+        </groupbox>
+        <groupbox>
+          <caption label="&trigargs.label;"/>
+          <hbox>
+            <description>Use Parentheses for Trig Functions</description>
+            <spacer flex="1"/>
+            <checkbox id="trigargs"/>
+          </hbox>
+          <hbox>
+            <description>Use "arc" prefix for inverse Trig Functions</description>
+            <spacer flex="1"/>
+            <checkbox id="usearc"/>
+          </hbox>
+        </groupbox>
+       </vbox>
+      </tabpanel>      
+
+      <tabpanel id="compusersettings.fencespage">
+       <vbox>
+        <groupbox>
+          <caption label="&fences.label;"/>
+          <radiogroup id="fences">
+            <radio label="&mfenced.label;"  id="mfenced"  selected="true"/>
+            <radio label="&chars.label;"    id="chars"    selected="false"/>
+          </radiogroup>
+        </groupbox>
+        <groupbox>
+          <caption label="&matrices.label;"/>
+          <hbox>
+            <description>Default matrix delimiter</description>
+            <spacer flex="1"/>
+            <radiogroup id="matrix_delim">
+               <radio label="&matrix_none.label;"     id="matrix_none"      selected="true"/>
+               <radio label="&matrix_brackets.label;" id="matrix_brackets"  selected="false"/>
+               <radio label="&matrix_parens.label;"   id="matrix_parens"    selected="false"/>
+            </radiogroup>
+          </hbox>
+        </groupbox>
+       </vbox>
+      </tabpanel>      
+
+      <tabpanel id="compusersettings.derivpage">
+       <vbox>
+        <groupbox>
+          <caption label="&deriv.label;"/>
+          <radiogroup id="derivformat">
+            <radio label="&derivformat_input.label;"        id="derivformat_input"         selected="true"/>
+            <radio label="&derivformat_d.label;"            id="derivformat_d"             selected="false"/>
+            <radio label="&derivformat_D.label;"            id="derivformat_D"             selected="false"/>
+            <radio label="&derivformat_primes.label;"       id="derivformat_primes"        selected="false"/>
+            <radio label="&derivformat_dots.label;"         id="derivformat_dots"          selected="false"/>
+          </radiogroup>
+        </groupbox>
+        <groupbox>
+          <caption label="&primeasn.label;"/>
+          <hbox>
+            <description>switch from primes to (n)</description>
+            <spacer flex="1"/>
+            <textbox id="primesasn" style="width: 3em"/>
+          </hbox>
+        </groupbox>
+        <groupbox>
+          <caption label="&primederiv.label;"/>
+          <hbox>
+            <description>Prime means derivative</description>
+            <spacer flex="1"/>
+            <checkbox id="primederiv"/>
+          </hbox>
+        </groupbox>
+       </vbox>
+      </tabpanel>      
+
+      <tabpanel id="compusersettings.entitiespage">
+       <vbox>
+        <groupbox>
+          <caption label="&imagi_output.label;"/>
+          <radiogroup id="imagi">
+            <radio label="&imagi_i.label;"        id="imagi_i"        selected="true"/>
+            <radio label="&imagi_j.label;"        id="imagi_j"        selected="false"/>
+            <radio label="&imagi_imagi.label;"    id="imagi_imagi"    selected="false"/>
+          </radiogroup>
+        </groupbox>
+        <groupbox>
+          <caption label="&diffD_output.label;"/>
+          <radiogroup id="diffD">
+            <radio label="&diffD_D.label;"        id="diffD_D"        selected="true"/>
+            <radio label="&diffD_diffD.label;"    id="diffD_diffD"    selected="false"/>
+          </radiogroup>
+        </groupbox>
+        <groupbox>
+          <caption label="&diffd_output.label;"/>
+          <radiogroup id="diffd">
+            <radio label="&diffd_d.label;"        id="diffd_d"        selected="true"/>
+            <radio label="&diffd_diffd.label;"    id="diffd_diffd"    selected="false"/>
+          </radiogroup>
+        </groupbox>
+        <groupbox>
+          <caption label="&expe_output.label;"/>
+          <radiogroup id="expe">
+            <radio label="&expe_e.label;"         id="expe_d"         selected="true"/>
+            <radio label="&expe_expe.label;"      id="expe_expe"      selected="false"/>
+          </radiogroup>
+        </groupbox>
+       </vbox>
+      </tabpanel>      
+    </tabpanels>
+  </tabbox>
+
+</dialog>

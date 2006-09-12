@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/ComputeApproxIntegral.dtd">
+
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "Startup()"
+    ondialogaccept = "OK()"
+    ondialogcancel = "Cancel()"
+    buttons="accept,cancel">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeApproxIntegral.js" />
+
+  <hbox id="outer-box" flex="1">
+    <vbox>
+      <groupbox>
+        <caption label="Formula"/>
+        <listbox id="form" seltype="single">
+          <listitem label="Left Boxes"/>
+          <listitem label="Midpoint"/>
+          <listitem label="Right Boxes"/>
+          <listitem label="Simpson"/>
+          <listitem label="Trapezoid"/>
+        </listbox>
+      </groupbox>
+      <hbox>
+        <description>Subintervals</description>
+        <spacer flex="1"/>
+        <textbox id="intervals" style="width: 3em"/>
+      </hbox>
+    </vbox>
+  </hbox>
+
+</dialog>
