@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"?>
+
+<?xul-overlay href="chrome://editor/content/editorOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/composerOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+<?xul-overlay href="chrome://communicator/content/contentAreaContextOverlay.xul"?>
+
+<!DOCTYPE dialog [
+<!ENTITY % DTD SYSTEM "chrome://editor/locale/ComputeImplicitDiff.dtd" >
+%DTD;
+<!ENTITY % editorDTD SYSTEM "chrome://editor/locale/editor.dtd" >
+%editorDTD;
+<!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
+%editorOverlayDTD;
+]>
+
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "Startup()"
+    onunload="EditorShutdown()"
+    ondialogaccept = "OK()"
+    ondialogcancel = "Cancel()"
+    buttons="accept,cancel">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeImplicitDiff.js" />
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeUtils.js" />
+
+  <broadcaster id="args" value="about:blank"/>
+
+  <commandset id="tasksCommands">
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    
+    <commandset id="commonEditorMenuItems"/>
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+  </commandset>
+
+  <commandset id="MSImathMenuCommands"/>
+  <keyset id="editorKeys">
+    <keyset id="MSIKeySet"/>
+  </keyset>
+
+  <toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
+  <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="&menuBar.tooltip;">
+    <menu id="editMenu"/>
+
+    <menu id="MSIMathMenu"/>
+    
+    <menu id="formatMenu" label="&formatMenu.label;" accesskey="&formatmenu.accesskey;">
+      <menupopup id="formatMenuPopup">
+        <menuitem id="snapToGrid"/>
+        <menuseparator/>
+        <menuitem id="objectProperties"/>
+        <menuitem id="colorsAndBackground"/>
+        <menuitem id="pageProperties"/>
+      </menupopup>
+    </menu>
+
+    <menu id="tableMenu"/>
+    <spacer flex="1"/>
+  </menubar>
+  </toolbox>
+
+  <hbox>
+    <vbox>
+      <groupbox>
+        <caption id="center" label="&center.label;"/>
+        <editor editortype="html" type="content-primary" context="editorContentContext" id="content-frame"/>
+        <description id="math">&math.label;</description>
+      </groupbox>
+    </vbox>
+  </hbox>
+
+</dialog>
