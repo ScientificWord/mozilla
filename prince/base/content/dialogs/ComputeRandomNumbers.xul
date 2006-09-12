@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/ComputeRandomNumbers.dtd">
+
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "Startup()"
+    ondialogaccept = "OK()"
+    ondialogcancel = "Cancel()"
+    buttons="accept,cancel">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeRandomNumbers.js" />
+
+  <hbox id="outer-box" flex="1">
+    <vbox>
+      <hbox>
+        <description>&many.label;</description>
+        <spacer flex="1"/>
+        <textbox id="tally" style="width: 3em"/>
+      </hbox>
+      <listbox id="dist" seltype="single" onselect="doSelect(); return false;">
+        <listitem label="Beta"/>
+        <listitem label="Binomial"/>
+        <listitem label="Cauchy"/>
+        <listitem label="Chi-Square"/>
+        <listitem label="Exponential"/>
+        <listitem label="F"/>
+        <listitem label="Gamma"/>
+        <listitem label="Normal"/>
+        <listitem label="Poisson"/>
+        <listitem label="Student's t"/>
+        <listitem label="Uniform"/>
+        <listitem label="Weibull"/>
+      </listbox>
+      <groupbox>
+        <caption label="&parameters.label;"/>
+        <hbox>
+          <label id="param1.text" value="param1"/>
+          <spacer flex="1"/>
+          <textbox id="param1" style="width: 3em"/>
+        </hbox>
+        <hbox>
+          <label id="param2.text" value="param2"/>
+          <spacer flex="1"/>
+          <textbox id="param2" style="width: 3em"/>
+        </hbox>
+      </groupbox>
+    </vbox>
+  </hbox>
+
+</dialog>

@@ -1,0 +1,382 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"?>
+
+<?xul-overlay href="chrome://editor/content/editorOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/composerOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+<?xul-overlay href="chrome://communicator/content/contentAreaContextOverlay.xul"?>
+
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+
+<!DOCTYPE dialog [									 
+<!ENTITY % DTD SYSTEM "chrome://editor/locale/ComputeGraphSettings.dtd" >
+%DTD;
+<!ENTITY % editorDTD SYSTEM "chrome://editor/locale/editor.dtd" >
+%editorDTD;
+<!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
+%editorOverlayDTD;
+]>
+
+
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "Startup()"
+    ondialogaccept = "OK()"
+    ondialogcancel = "Cancel()"
+    buttons="accept,cancel">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeUtils.js" />
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeOverlay.js" />
+  <script type="application/x-javascript" src="chrome://editor/content/GraphOverlay.js" />
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeGraphSettings.js" />
+  <script type="application/x-javascript" src="chrome://editor/content/ComputePlotSettings.js" />
+
+  <tabbox id="outer-box" flex="1">
+    <tabs class="tabs-top">
+	  <tab label="&tabbar.items;"       selected="1" />
+	  <tab label="&tabbar.axes;"        selected="0" />
+	  <tab label="&tabbar.layout;"      selected="0" />
+	  <tab label="&tabbar.labelling;"   selected="0" />
+	  <tab label="&tabbar.view;"        selected="0" />
+	</tabs>
+
+    <tabpanels>
+      <tabpanel id="ItemsPlotted">
+
+	    <vbox>
+		  <groupbox>
+  	        <caption label="&plotstyles.label;"/>
+      	    <grid flex = "1">
+  	          <columns>
+  	            <column flex="2"/>
+  	            <column flex="1"/>
+      	      </columns>
+  	          <rows>
+			    <row>
+                  <label>&dimensions.label;</label>
+				  <description id="dimension"  value="2" />
+				</row>
+			    <row>
+                   <groupbox id="plotcs2d">
+                     <label>&plottype.label;</label>
+                     <menulist id="pt2d">
+                       <menupopup command="cmd_changePlotType"> 
+                         <menuitem label="&plottyperec.label;"         value="rectangular"/>
+                         <menuitem label="&plottypepolar.label;"       value="polar"/>
+                         <menuitem label="&plottypeimplicit.label;"    value="implicit"/>
+                         <menuitem label="&plottypeinequality.label;"  value="inequality"/>
+                         <menuitem label="&plottypeparametric.label;"  value="parametric"/>
+                         <menuitem label="&plottypeconformal.label;"   value="conformal"/>
+                         <menuitem label="&plottypegradient.label;"    value="gradient"/>
+                         <menuitem label="&plottypevector.label;"      value="vectorField"/>
+                         <menuitem label="&plottypeode.label;"         value="ode"/>
+                         <menuitem label="&plottypeAI.label;"          value="approximateIntegral"/>
+                       </menupopup>
+                     </menulist>
+   				   </groupbox>
+                   <groupbox id="plotcs3d" collapsed="true">
+                      <label>&plottype.label;</label>
+                      <menulist id="pt3d">
+                        <menupopup command="cmd_changePlotType"> 
+                           <menuitem label="&plottyperec.label;"         value="rectangular"/>
+                           <menuitem label="&plottypecur.label;"         value="curve"/>
+                           <menuitem label="&plottypecylindrical.label;" value="cylindrical"/>
+                           <menuitem label="&plottypesphere.label;"      value="spherical"/>
+                           <menuitem label="&plottypeparametric.label;"  value="parametric"/>
+                           <menuitem label="&plottypeimplicit.label;"    value="implicit"/>
+                           <menuitem label="&plottypetube.label;"        value="tube"/>
+                           <menuitem label="&plottypegradient.label;"    value="gradient"/>
+                           <menuitem label="&plottypevector.label;"      value="vectorField"/>
+                        </menupopup>
+                      </menulist>
+				   </groupbox>
+				</row>
+			    <row>
+                  <checkbox id="animate"     label="&animate.label;"/>
+				</row>
+              </rows>
+			</grid>
+          </groupbox>
+          <groupbox>
+            <hbox>
+              <menulist id="plot" label="&editplotitem.label;">
+                <menupopup id="plotnumber" command="cmd_changePlot"> 
+                </menupopup>
+              </menulist>
+              <button label="&editplot.label;"  command="cmd_editPlot"/>
+              <button label="&newplot.label;"   command="cmd_newPlot"/>
+              <button label="&command.delete;"  command="cmd_deletePlot"/>
+            </hbox>
+          </groupbox>
+
+  	      <broadcaster id="args" value="about:blank"/>
+          <commandset id="tasksCommands">
+            <commandset id="globalEditMenuItems"/>
+            <commandset id="selectEditMenuItems"/>
+            <commandset id="undoEditMenuItems"/>
+            <commandset id="clipboardEditMenuItems"/>
+            <commandset id="commonEditorMenuItems"/>
+            <commandset id="composerMenuItems"/>
+            <commandset id="composerEditMenuItems"/>
+            <commandset id="composerStyleMenuItems"/>
+            <commandset id="composerTableMenuItems"/>
+          </commandset>
+          <commandset id="MSImathMenuCommands"/>
+          <keyset id="editorKeys">
+            <keyset id="MSIKeySet"/>
+          </keyset>
+
+          <toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
+            <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="menutooltip">
+              <menu id="editMenu"/>
+              <menu id="MSIMathMenu"/>
+              <menu id="formatMenu" label="&formatMenu.label;">
+                <menupopup id="formatMenuPopup">
+                  <menuitem id="snapToGrid"/>
+                  <menuseparator/>
+                  <menuitem id="objectProperties"/>
+                  <menuitem id="colorsAndBackground"/>
+                  <menuitem id="pageProperties"/>
+                </menupopup>
+              </menu>
+              <menu id="tableMenu"/>
+              <spacer flex="1"/>
+            </menubar>
+          </toolbox>
+
+          <hbox>
+            <vbox>
+              <groupbox>
+                <caption id="center" label="&plotarguments.label;"/>
+                  <editor editortype="html" type="content-primary" context="editorContentContext" 
+                          id="content-frame" flex="1" height="350"/>
+              </groupbox>
+		    </vbox>
+		  </hbox>
+        </vbox>
+      </tabpanel>      
+
+      <tabpanel id="Axes">
+        <vbox>
+          <groupbox>
+          <caption label="&axisaxesscale.label;" />
+          <radiogroup id="axisscale" orient="horizontal">
+            <radio label="&axislinear.label;"  value="LinLin"      selected="true"/>
+            <radio label="&axislinlog.label;"  value="LinLog"      selected="false"/>
+            <radio label="&axisloglin.label;"  value="LogLin"      selected="false"/>
+            <radio label="&axisloglog.label;"  value="LogLog"      selected="false"/>
+          </radiogroup>
+          <checkbox id="equalscale" label="&axisequal.label;"/>
+          </groupbox>
+
+          <groupbox>        
+            <label value="&axisxaxis.label;"/>
+            <textbox id="XAxisLabel" cols="40"/>
+          </groupbox>
+          <groupbox>        
+            <label value="&axisyaxis.label;"/>
+            <textbox id="YAxisLabel" cols="40"/>
+          </groupbox>
+          <groupbox>        
+            <label value="&axiszaxis.label;"/>
+            <textbox id="ZAxisLabel" cols="40"/>
+          </groupbox>
+          <groupbox>
+            <hbox>
+              <description>"&axistickmark.label;"</description>
+              <menulist id="XTickCount">
+                <menupopup> 
+                  <menuitem label="&none.label;"   value="none"/>
+                  <menuitem label="&low.label;"    value="low"/>
+                  <menuitem label="&normal.label;" value="normal"/>
+                  <menuitem label="&high.label;"   value="high"/>
+                </menupopup>
+              </menulist>
+            </hbox>
+            <!-- <checkbox id="disableticks" label="&axisdisable.label;"/> -->
+            <checkbox id="axestips"     label="&axistips.label;"/>
+            <checkbox id="gridlines"    label="&axisgridlines.label;"/>
+          </groupbox>
+
+          <groupbox>
+            <caption label="&axistype.label;" />
+            <radiogroup id="axistype" orient= "horizontal">
+              <radio label="&unspecified.label;" value="unspecified" selected="true"/>
+              <radio label="&axisauto.label;"    value="Automatic"   selected="false"/>
+              <radio label="&axisnormal.label;"  value="Normal"      selected="false"/>
+              <radio label="&axisboxed.label;"   value="Boxed"       selected="false"/>
+              <radio label="&axisframed.label;"  value="Frame"       selected="false"/>
+              <radio label="&axisnone.label;"    value="None"        selected="false"/>
+            </radiogroup>
+          </groupbox>
+       </vbox>
+      </tabpanel>      
+
+      <tabpanel id="Layout">
+        <vbox>
+          <groupbox>
+            <caption label="&layoutsize.label;"/>
+            <hbox>
+              <label>"&width.label;"</label>
+              <textbox id="Width" cols="4"/>
+            </hbox>
+            <hbox>
+              <label>"&height.label;"</label>
+              <textbox id="Height" cols="4"/>
+            </hbox>
+            <hbox>
+              <description>"&units.label;"</description>
+              <menulist id="Units">
+                <menupopup> 
+                  <menuitem label="&unitsinches.label;" value="inches"/>
+                  <menuitem label="&unitscm.label;"     value="cm"/>
+                  <menuitem label="&unitspicas.label;"  value="picas"/>
+                  <menuitem label="&unitspoints.label;" value="points"/>
+                </menupopup>
+              </menulist>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption label="&layoutscreendisp.label;"/>
+            <hbox>
+              <checkbox id="model" label="&layoutmodel.label;"/>   
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption label="&layoutprintattr.label;"/>
+            <radiogroup id="printattr" orient="horizontal">
+              <radio label="&layoutprintframe.label;"     value="plotinframe"     selected="true"/>
+              <radio label="&layoutprintplot.label;"      value="plotinplot"      selected="false"/>
+              <radio label="&layoutprintframeonly.label;" value="plotinframeonly" selected="false"/>
+              <radio label="&layoutprinticon.label;"      value="plotinicon"      selected="false"/>
+            </radiogroup>
+          </groupbox>
+          <groupbox>
+            <caption label="&screendisplay.label;"/>
+            <radiogroup id="screendisplayattr" orient="horizontal">
+              <radio label="&layoutprintframe.label;"     value="plotinframe"     selected="true"/>
+              <radio label="&layoutprintplot.label;"      value="plotinplot"      selected="false"/>
+              <radio label="&layoutprintframeonly.label;" value="plotinframeonly" selected="false"/>
+              <radio label="&layoutprinticon.label;"      value="plotinicon"      selected="false"/>
+            </radiogroup>
+          </groupbox>
+          <groupbox>
+            <caption label="&layoutplacement.label;"/>
+            <radiogroup id="placement" orient="horizontal">
+              <radio label="&layoutplaceinline.label;"    value="placeinline" selected="false"/>
+              <radio label="&layoutplacedisplayed.label;" value="placedisp"   selected="true"/>
+              <radio label="&layoutplacefloat.label;"     value="placefloat"  selected="false"/>
+            </radiogroup>
+          </groupbox>
+        </vbox>
+      </tabpanel>      
+
+      <tabpanel id="Labelling">
+        <vbox>
+          <groupbox>        
+            <label value="&labelingkey.label;"/>
+            <textbox id="Key"/>
+          </groupbox>
+          <groupbox>        
+            <label value="&labelingname.label;"/>
+            <textbox id="Name"/>
+          </groupbox>
+          <groupbox>
+            <caption label="&labelingcaption.label;"/>
+            <radiogroup id="captionplacement" orient="horizontal">
+              <radio label="&labelingabove.label;"    value="labelabove" selected="false"/>
+              <radio label="&labelingbelow.label;"    value="labelbelow" selected="true"/>
+            </radiogroup>
+            <textbox id="CaptionText"  multiline="true" rows="4" cols="40" 
+                   caption="&labelingcaptiontext.label;" />
+          </groupbox>
+       </vbox>
+      </tabpanel>      
+
+      <tabpanel id="View">
+        <vbox>
+           <row>
+             <label id="bgcolor" control="TextButton" value="Background Color: " />
+             <button id="bgcolorbutton" class="color-button" oncommand="GetGraphColor('BGColor');">
+               <spacer id="plotCW" class="color-well"/>
+             </button>
+           </row>
+
+          <groupbox>        
+            <hbox>
+              <label value="Camera Location"/>
+              <textbox id="CameraLocationX" cols="3"/>
+              <textbox id="CameraLocationY" cols="3"/>
+              <textbox id="CameraLocationZ" cols="3"/>
+            </hbox>
+            <hbox>
+              <label value="Focal Point"/>
+              <textbox id="FocalPointX" cols="3"/>
+              <textbox id="FocalPointY" cols="3"/>
+              <textbox id="FocalPointZ" cols="3"/>
+            </hbox>
+            <hbox>
+              <label value="Up Vector"/>
+              <textbox id="UpVectorX" cols="3"/>
+              <textbox id="UpVectorY" cols="3"/>
+              <textbox id="UpVectorZ" cols="3"/>
+            </hbox>
+			<hbox>
+              <label value="Viewing Angle"/>
+              <textbox id="ViewingAngle" cols="3"/>
+			</hbox>
+		  </groupbox>
+          <vbox>
+            <checkbox id="OrthogonalProjection" label="Orthogonal Projection"/>
+            <checkbox id="KeepUp"               label="Keep Up Vector"/>
+            <checkbox id="defaultviewintervals" label="&viewinterval.label;"/>
+          </vbox>
+          <groupbox>        
+            <hbox>
+              <label value="&axisxrange.label;"/>
+              <textbox id="xrangelow" cols="4"/>
+              <textbox id="xrangehigh" cols="4"/>
+            </hbox>
+            <hbox>
+              <label value="&axisyrange.label;"/>
+              <textbox id="yrangelow" cols="4"/>
+              <textbox id="yrangehigh" cols="4"/>
+            </hbox>
+            <hbox>
+              <label value="&axiszrange.label;"/>
+              <textbox id="zrangelow" cols="4"/>
+              <textbox id="zrangehigh" cols="4"/>
+            </hbox>
+          </groupbox>
+
+       </vbox>
+      </tabpanel>      
+
+    </tabpanels>
+  </tabbox>
+
+  <command id="cmd_editPlot"        oncommand="formatPlot();"/>
+  <command id="cmd_newPlot"         oncommand="addPlot();"/>
+  <command id="cmd_deletePlot"      oncommand="deletePlot();"/>
+  <command id="cmd_changePlot"      oncommand="changePlot();"/>
+  <command id="cmd_changePlotType"  oncommand="changePlotType();"/>
+</dialog>

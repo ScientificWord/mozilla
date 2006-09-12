@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/MathmlMatrix.dtd">
+
+
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?> 
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+
+<!-- <?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>     -->
+<?xml-stylesheet href="chrome://editor/skin/mathmlmatrix.css" type="text/css"?>
+
+<dialog id="MatrixDlg"
+  title="&windowTitle.label;"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  onload = "Startup();"
+  ondialogaccept="return onOK();"
+  ondialogcancel="return onCancel();"
+>
+
+ <script src="chrome://global/content/dialogOverlay.js" />
+ 
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/mathmlMatrix.js"/>
+ 
+  <spacer  id="location" offsetY="50" persist="offsetX offsetY"/>
+  <broadcaster id="args" value=""/>
+
+  <vbox id="matrixgrid" flex="0">
+    <spacer class="spacer" flex="0"/>
+    <grid class="sizeSelector" >
+      <columns><column flex="1"/><column/><column flex="1"/></columns>
+      <rows>
+        <row>
+          <spacer/>
+          <hbox>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c1"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c2"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c3"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c4"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c5"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c6"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c7"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c8"/>
+          </hbox>
+          <spacer/>
+        </row>
+        <row>
+          <spacer/>
+          <hbox>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c11"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c12"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c13"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c14"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c15"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c16"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c17"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c18"/>
+          </hbox>
+          <spacer/>
+        </row>
+        <row>
+          <spacer/>
+          <hbox>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c21"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c22"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c23"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c24"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c25"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c26"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c27"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c28"/>
+          </hbox>
+          <spacer/>
+        </row>
+        <row>
+          <spacer/>
+          <hbox>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c31"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c32"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c33"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c34"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c35"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c36"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c37"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c38"/>
+          </hbox>
+          <spacer/>
+        </row>
+        <row>
+          <spacer/>
+          <hbox>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c41"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c42"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c43"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c44"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c45"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c46"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c47"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c48"/>
+          </hbox>
+          <spacer/>
+        </row>
+        <row>
+          <spacer/>
+          <hbox>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c51"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c52"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c53"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c54"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c55"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c56"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c57"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c58"/>
+          </hbox>
+          <spacer/>
+        </row>
+        <row>
+          <spacer/>
+          <hbox>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c61"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c62"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c63"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c64"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c65"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c66"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c67"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c68"/>
+          </hbox>
+          <spacer/>
+        </row>
+        <row>
+          <spacer/>
+          <hbox>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c71"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c72"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c73"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c74"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c75"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c76"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c77"/>
+            <label onmouseover="SelectArea(this)" onclick="SelectSize()" value=" " id="c78"/>
+          </hbox>
+          <spacer/>
+        </row>
+      </rows>
+    </grid>
+    <hbox id="gridcoordinates" align="center">
+      <spacer class="spacer" flex="1"/>
+      <label id="sizeLabel" value="2 x 2"/>
+      <spacer class="spacer" flex="1"/>
+    </hbox>
+    <spacer class="spacer" flex="1"/>
+  </vbox>
+   <grid>
+   <columns>
+     <column flex="1"/>
+     <column flex="1"/>
+   </columns>
+   <rows>
+     <row align="center">
+       <label control="rowsInput" class="align-right"
+              value="&rows.label;"/>
+       <textbox id="rowsInput" value="2" persist="value" onchange="SelectSizeFromText();"/>
+       <spacer/>
+     </row>
+     <row align="center">
+       <label control="columnsInput" class="align-right"
+              value="&cols.label;"/>
+       <textbox id="columnsInput"  value="2" persist="value" onchange="SelectSizeFromText();"/>
+       <spacer/>
+     </row>
+   </rows>
+ </grid>
+</dialog>
+
+

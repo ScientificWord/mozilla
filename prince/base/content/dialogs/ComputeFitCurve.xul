@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/ComputeFitCurve.dtd">
+
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "Startup()"
+    ondialogaccept = "OK()"
+    ondialogcancel = "Cancel()"
+    buttons="accept,cancel">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeFitCurve.js" />
+
+  <hbox id="outer-box" flex="1">
+    <vbox>
+      <groupbox>
+        <caption label="&column.label;"/>
+        <radiogroup id="column" orient="horizontal">
+          <radio label="&first.label;"  id="first"  selected="true"/>
+          <radio label="&last.label;"   id="last"   selected="false"/>
+        </radiogroup>
+      </groupbox>
+      <radiogroup id="code" onselect="doSelect(); return false;">
+        <radio label="&noconst.label;" id="noconst"  selected="false"/>
+        <radio label="&regress.label;" id="regress"  selected="true"/>
+        <radio label="&poly.label;"    id="poly"     selected="false"/>
+      </radiogroup>
+      <hbox>
+        <spacer flex="1"/>
+        <label id="degree.text" value="&degree.label;"/>
+        <textbox id="degree" style="width: 3em"/>
+      </hbox>
+    </vbox>
+  </hbox>
+
+</dialog>
