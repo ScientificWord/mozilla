@@ -1,0 +1,325 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/bracketsDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/decorationsDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/msiMathDlgStyle.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/Decorations.dtd">
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/Decorations.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/msiButtonGroup.js"/>
+
+  <keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset>
+
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <broadcasterset>
+    <broadcaster id="enableDecorationsAround" disabled="false"/>
+    <broadcaster id="enableDecorationsAboveBelow" disabled="false"/>
+  </broadcasterset>
+
+  <vbox xmlns:xhtml="http://www.w3.org/1999/xhtml"
+           xmlns:mml="http://www.w3.org/1998/Math/MathML">
+    <spacer flex="1"/>
+    <groupbox orient="horizontal" id="decorationsAboveButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
+      <observes element="enableDecorationsAboveBelow" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
+      <caption label="&decorationsAboveButtonGroup.label;" accesskey="&decorationsAboveButtonGroup.accessKey;"/>
+      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#x00AF;">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:mover accent="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mo stretchy="true">&#x00AF;</mml:mo>
+              </mml:mover>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2190;">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:mover accent="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mo stretchy="true">&#x2190;</mml:mo>
+              </mml:mover>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2192;">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:mover accent="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mo stretchy="true">&#x2192;</mml:mo>
+              </mml:mover>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2194;">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:mover accent="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mo stretchy="true">&#x2194;</mml:mo>
+              </mml:mover>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#xFE37;">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:mover accent="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mo stretchy="true">&#xFE37;</mml:mo>
+              </mml:mover>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#x0302;">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:mover accent="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mo stretchy="true">&#x0302;</mml:mo>
+              </mml:mover>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#x02DC;">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:mover accent="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mo stretchy="true">&#x02DC;</mml:mo>
+              </mml:mover>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsAboveButtonGroup" autoCheck="false" value="label">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:mover accent="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mstyle scriptlevel="+2">
+                  <mml:mrow class="fbox">
+                    <mml:mphantom>
+                      <mml:mi>abc</mml:mi>
+                    </mml:mphantom>
+                  </mml:mrow>
+                </mml:mstyle>
+              </mml:mover>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+    </groupbox>
+  </vbox>
+  <vbox xmlns:xhtml="http://www.w3.org/1999/xhtml"
+           xmlns:mml="http://www.w3.org/1998/Math/MathML">
+    <spacer flex="1"/>
+    <groupbox orient="horizontal" id="decorationsBelowButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
+      <observes element="enableDecorationsAboveBelow" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
+      <caption label="&decorationsBelowButtonGroup.label;" accesskey="&decorationsBelowButtonGroup.accessKey;"/>
+      <button group="decorationsBelowButtonGroup" autoCheck="false" value="&#x0332;">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:munder accentunder="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mo stretchy="true">&#x0332;</mml:mo>
+              </mml:munder>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2190;">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:munder accentunder="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mo stretchy="true">&#x2190;</mml:mo>
+              </mml:munder>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2192;">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:munder accentunder="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mo stretchy="true">&#x2192;</mml:mo>
+              </mml:munder>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2194;">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:munder accentunder="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mo stretchy="true">&#x2194;</mml:mo>
+              </mml:munder>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsBelowButtonGroup" autoCheck="false" value="&#xFE38;">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:munder accentunder="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mo stretchy="true">&#xFE38;</mml:mo>
+              </mml:munder>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsBelowButtonGroup" autoCheck="false" value="label">
+        <description>
+          <mml:math display="inline">
+            <mml:mrow>
+              <mml:munder accent="false">
+                <mml:mrow class="phantomBox">
+                  <mml:mphantom>
+                    <mml:mi>abcX</mml:mi>
+                  </mml:mphantom>
+                </mml:mrow>
+                <mml:mstyle scriptlevel="+2">
+                  <mml:mrow class="fbox">
+                    <mml:mphantom>
+                      <mml:mi>abc</mml:mi>
+                    </mml:mphantom>
+                  </mml:mrow>
+                </mml:mstyle>
+              </mml:munder>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+    </groupbox>
+  </vbox>
+  <vbox xmlns:xhtml="http://www.w3.org/1999/xhtml"
+           xmlns:mml="http://www.w3.org/1998/Math/MathML">
+    <spacer flex="1"/>
+    <groupbox orient="horizontal" id="decorationsAroundButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
+      <observes element="enableDecorationsAround" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
+      <caption label="&decorationsAroundButtonGroup.label;" accesskey="&decorationsAroundButtonGroup.accessKey;"/>
+      <button group="decorationsAroundButtonGroup" autoCheck="false" value="fbox">
+        <description class="fbox">
+          <mml:math display="inline">
+            <mml:mrow class="phantomBox">
+              <mml:mphantom>
+                <mml:mi>abc</mml:mi>
+              </mml:mphantom>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+      <button group="decorationsAroundButtonGroup" autoCheck="false" value="frame">
+        <description class="framebox">
+          <mml:math display="inline">
+            <mml:mrow class="phantomBox">
+              <mml:mphantom>
+                <mml:mi>abc</mml:mi>
+              </mml:mphantom>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </button>
+    </groupbox>
+  </vbox>
+</dialog>

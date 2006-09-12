@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/MathmlMathname.dtd">
+
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?> 
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+
+<dialog id="MathNameDlg"
+  title="&windowTitle.label;"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  ondialogaccept="return onOK();"
+  ondialogcancel="return onCancel();"
+  onload="Startup()"
+>
+
+ <script src="chrome://global/content/dialogOverlay.js" />
+ <script src="chrome://editor/content/MathmlMathname.js"/>
+
+    <vbox flex="1">
+      <description>&enter.label;</description>
+      <separator class="thin"/>
+
+      <hbox align="center">
+        <textbox id="dialog.input" flex="1" maxlength="60"/>
+      </hbox>
+      <groupbox>
+        <caption label="&engfunc.label;"/>
+        <hbox>
+          <description>&engfunc.desc;</description>
+          <spacer flex="1"/>
+          <checkbox id="enginefunction"/>
+        </hbox>
+      </groupbox>
+      <separator class="thin"/>
+    </vbox>
+</dialog>

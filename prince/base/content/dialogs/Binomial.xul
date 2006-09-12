@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/msiMathDlgStyle.css" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/binomialsDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/Binomial.dtd">
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/Binomial.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/msiButtonGroup.js"/>
+
+  <keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset>
+
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <broadcasterset>
+    <broadcaster id="enableBrackets" disabled="false"/>
+  </broadcasterset>
+
+  <vbox>
+    <hbox>
+      <spacer flex="1"/>
+      <vbox>
+      <description id="BinomialPreview" class="MSISample"	flex="1"
+           xmlns:xhtml="http://www.w3.org/1999/xhtml"
+           xmlns:mml="http://www.w3.org/1998/Math/MathML">
+			<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+            <!-- mml:math display="inline" -->
+              <!-- xhtml:div -->
+				<mstyle  id="binomialSampleMStyle">
+          <mrow>
+            <mo fence="true" form="prefix" stretchy="true" id="binomialSampleLeftFence">(</mo>
+            <mfrac id="binomialSampleMFrac" linethickness="0">
+              <mi tempinput="true">&#x2039;&#x203a;</mi>
+              <mi tempinput="true">&#x2039;&#x203a;</mi>
+            </mfrac>
+            <mo fence="true" form="postfix" stretchy="true" id="binomialSampleRightFence">)</mo>
+          </mrow>
+				</mstyle>
+              <!-- /xhtml:div -->
+      </math>
+      </description>
+      <spacer flex="1"/>
+      </vbox>
+      <spacer flex="1"/>
+      <groupbox align="start" orient="vertical">
+        <caption label="&lineRadioGroup.label;"/>
+        <radiogroup id="lineRadioGroup" oncommand="setLineThickness(event.target);">
+          <radio label="&lineNoneRadio.label;" group="lineRadioGroup" value="0" id="noLineRadio" accesskey="&lineNoneRadio.accessKey;"/>
+          <radio label="&lineNormalRadio.label;" group="lineRadioGroup" value="" id="normalLineRadio" accesskey="&lineNormalRadio.accessKey;"/>
+          <radio label="&lineThickRadio.label;" group="lineRadioGroup" value="thick" id="thickLineRadio" accesskey="&lineThickRadio.accessKey;"/>
+        </radiogroup>
+      </groupbox>
+        <spacer flex="1"/>
+      <groupbox align="start" orient="vertical">
+        <caption label="&sizeRadioGroup.label;"/>
+        <radiogroup id="sizeRadioGroup" oncommand="setBinomialSize(event.target);">
+          <radio label="&sizeAutoRadio.label;" group="sizeRadioGroup" value="auto" id="autoSizeRadio" accesskey="&sizeAutoRadio.accessKey;"/>
+          <radio label="&sizeBigRadio.label;" group="sizeRadioGroup" value="big" id="bigSizeRadio" accesskey="&sizeBigRadio.accessKey;"/>
+          <radio label="&sizeSmallRadio.label;" group="sizeRadioGroup" value="small" id="smallSizeRadio" accesskey="&sizeSmallRadio.accessKey;"/>
+        </radiogroup>
+      </groupbox>
+      <spacer flex="1"/>
+    </hbox>
+		<hbox>
+      <checkbox id="DelimitersCheckBox" label="&withDelimitersCheckbox.label;" accesskey="withDelimitersCheckbox.accessKey;" oncommand="turnDelimitersOnOff(event);"/>
+      <spacer flex="1"/>
+		</hbox>
+    <groupbox id = "binomialDelimiters" align="start" orient="vertical"> 
+      <observes element="enableBrackets" attribute="disabled"/>
+      <hbox>
+        <label id="leftGroupLabel" control="leftBracketGroup" value="&leftBracketGroup.label;" accesskey="&leftBracketGroup.accessKey;" observes="enableBrackets"/>
+      </hbox>
+      <hbox id="leftBracketGroup" orient="horizontal" oncommand="setSelectionByIndex(setSelection(this, event.target),'rightBracketGroup');" onfocus="radioGroupSetFocus(this,event.target);" >
+			  <observes element="enableBrackets" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, document.getElementById('DelimitersCheckBox').checked)"/>
+        <button type="radio" label="(" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x005B;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="{" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2329;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x230A;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2308;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="|" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2016;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="/" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="\" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2195;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x250A;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x21D5;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2191;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x21D1;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2193;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x21D3;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2309;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x230B;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x232A;" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="}" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="]" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label=")" group="leftBracketGroup"/>
+        <spacer flex="1"/> 
+      </hbox>
+      <hbox>
+        <label id="rightGroupLabel" control="rightBracketGroup" value="&rightBracketGroup.label;" accesskey="&rightBracketGroup.accessKey;" observes="enableBrackets"/>
+      </hbox>
+      <hbox id="rightBracketGroup" orient="horizontal" oncommand="setSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
+			  <observes element="enableBrackets" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, document.getElementById('DelimitersCheckBox').checked)"/>
+        <button type="radio" label=")" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="]" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="}" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x232A;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x230B;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2309;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="|" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2016;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="/" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="\" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2195;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x250A;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x21D5;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2191;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x21D1;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2193;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x21D3;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2308;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x230A;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="&#x2329;" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="{" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="[" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+        <button type="radio" label="(" group="rightBracketGroup"/>
+        <spacer flex="1"/> 
+      </hbox>
+    </groupbox>
+  </vbox>
+</dialog>
