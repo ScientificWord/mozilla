@@ -1,0 +1,11 @@
+<!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Brackets">
+<!-- <!ENTITY colors.desc "You can override the page colors to make editing certain math objects easier."> -->
+
+<!ENTITY leftBracketGroup.label "Left">
+<!ENTITY rightBracketGroup.label "Right">
+
+<!ENTITY leftBracketGroup.accessKey "L">
+<!ENTITY rightBracketGroup.accessKey "R">
+<!-- <!ENTITY .tooltip "">  -->
