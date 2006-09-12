@@ -1,0 +1,279 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"?>
+
+<?xul-overlay href="chrome://editor/content/editorOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/composerOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+<?xul-overlay href="chrome://communicator/content/contentAreaContextOverlay.xul"?>
+
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+
+<!DOCTYPE dialog [
+<!ENTITY % DTD SYSTEM "chrome://editor/locale/ComputeGraphSettings.dtd" >
+%DTD;
+<!ENTITY % editorDTD SYSTEM "chrome://editor/locale/editor.dtd" >
+<!ENTITY plottypeimplicit.label   "Implicit">
+
+%editorDTD;
+<!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
+%editorOverlayDTD;
+]>
+
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitleP.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "plotStartup()"
+    ondialogaccept = "plotOK()"
+    ondialogcancel = "plotCancel()"
+    buttons="accept,cancel">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeUtils.js" />
+  <script type="application/x-javascript" src="chrome://editor/content/mathmlOverlay.js" />
+  <script type="application/x-javascript" src="chrome://editor/content/MathColors.js"/>
+
+  <script type="application/x-javascript" src="chrome://editor/content/ComputePlotSettings.js" />
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeGraphSettings.js" />
+  <script type="application/x-javascript" src="chrome://editor/content/GraphOverlay.js" />
+
+  <tabbox id="outer-box" flex="1">
+	<tabs class="tabs-top">
+	  <tab label="&tabbar.items;"      selected="1" />
+      <tab label="animation"           selected="0" />
+	</tabs>
+
+    <tabpanels>
+      <tabpanel id="plotstyle" height="300">
+ 	    <groupbox id="twoD">
+            <caption label="&plotstyles.label;"/>
+   	        <grid flex = "1">
+              <columns>
+                <column flex="2"/>
+                <column flex="1"/>
+   	          </columns>
+              <rows>
+   	            <row>
+                  <description>&plotlinestyle.label;</description>
+                  <menulist id="LineStyle">
+                    <menupopup> 
+                      <menuitem label="&plotlinesolid.label;" value="Solid"/>
+                      <menuitem label="&plotlinedash.label;"  value="Dashed"/>
+   	                  <menuitem label="&plotlinedots.label;"  value="Dotted"/>
+                    </menupopup>
+                   </menulist>
+   	            </row>
+                <row>
+                  <description>&plotpointstyle.label;</description>
+                  <menulist id="PointStyle">
+                    <menupopup> 
+                      <menuitem label="&plotpointsquares.label;"        value="Squares"/>
+   	                  <menuitem label="&plotpointcircles.label;"        value="Circles"/>
+                      <menuitem label="&plotpointcrosses.label;"        value="Crosses"/>
+                      <menuitem label="&plotpointdiamonds.label;"       value="Diamonds"/>
+                      <menuitem label="&plotpointfilledsquares.label;"  value="FilledSquares"/>
+                      <menuitem label="&plotpointfilledcircles.label;"  value="FilledCircles"/>
+                      <menuitem label="&plotpointfilleddiamonds.label;" value="FilledDiamonds"/>
+                      <menuitem label="&plotpointstars.label;"          value="Stars"/>
+                      <menuitem label="&plotpointxcrosses.label;"       value="XCrosses"/>
+                    </menupopup>
+   	              </menulist>
+                </row>
+                <row>
+                  <description>&plotlinethickness.label;</description>
+                  <menulist id="LineThickness">
+                    <menupopup> 
+   	                  <menuitem label="&plotlinethin.label;"   value="thin"/>
+                      <menuitem label="&plotlinemedium.label;" value="medium"/>
+                      <menuitem label="&plotlinethick.label;"  value="thick"/>
+                    </menupopup>
+                  </menulist>
+   	            </row>
+                <row>
+				  <!-- should use css height property, not attribute here !!!! -->
+                  <label control="TextButton" value="&plotcolor.label;" height="30"/>
+                  <button id="linecolorbutton" class="color-button" oncommand="GetPlotColor('LineColor');">
+                    <spacer id="plotCW" class="color-well"/>
+   	              </button>
+                </row>
+            
+              </rows>
+   	        </grid>
+            <vbox>
+              <hbox>
+                <radiogroup id="DiscAdjust" orient="horizontal">
+                   <radio label="&unspecified.label;"    value="unspecified" selected="true"/>
+                   <radio label="&plotadjust.label;"     value="on"          selected="false"/>
+                   <radio label="&plotasymptote.label;"  value="line"        selected="false"/>
+                   <radio label="&plotnoadjust.label;"   value="off"         selected="false"/>
+                </radiogroup>
+              </hbox>
+              <checkbox id="IncludePoints" label="&includepoints.label;"/>
+              <checkbox id="IncludeLines"  label="&includelines.label;"/>
+            </vbox>
+        </groupbox>
+
+ 	    <groupbox id="threeD" collapsed="true">
+          <caption label="&plotstyles.label;"/>
+          <description>"&surfacestyle.label;"</description>
+          <menulist id="SurfaceStyle">
+            <menupopup> 
+              <menuitem label="&surfacecolorpatch.label;" value="colorpatch"/>
+              <menuitem label="&surfacehidden.label;"     value="hiddenline"/>
+              <menuitem label="&surfacewire.label;"       value="wireframe"/>
+              <menuitem label="&surfacepoint.label;"      value="point"/>
+            </menupopup>
+          </menulist>
+
+          <description>"&surfacemesh.label;"</description>
+          <menulist id="SurfaceMesh">
+            <menupopup> 
+              <menuitem label="&mesh.label;"           value="mesh"/>
+              <menuitem label="&none.label;"           value="none"/>
+              <menuitem label="&surfaceulines.label;"  value="ulines"/>
+              <menuitem label="&surfacevlines.label;"  value="vlines"/>
+              <menuitem label="&surfacecontour.label;" value="contour"/>
+            </menupopup>
+          </menulist>
+
+          <row>
+            <label control="TextButton" value="Base Color" height="30"/>
+            <button id="basecolorbutton" class="color-button" oncommand="GetPlotColor('BaseColor');">
+              <spacer id="plotCW" class="color-well"/>
+   	        </button>
+          </row>
+          <row>
+            <label control="TextButton" value="Secondary Color" height="30"/>
+            <button id="secondarycolorbutton" class="color-button" oncommand="GetPlotColor('SecondaryColor');">
+              <spacer id="plotCW" class="color-well"/>
+   	        </button>
+          </row>
+
+        </groupbox>
+
+ 	    <groupbox id="approxIntegral" collapsed="true">
+            <caption label="Approximate Integral"/>
+   	        <grid flex = "1">
+              <columns>
+                <column flex="2"/>
+                <column flex="1"/>
+   	          </columns>
+              <rows>
+                <row>
+				  <!-- should use css height property, not attribute here !!!! -->
+                  <label id="AIPlotColor" control="TextButton" value="Plot Color: " height="30"/>
+                  <button id="plotcolorbutton" class="color-button" oncommand="GetPlotColor();">
+                    <spacer id="plotCW" class="color-well"/>
+   	              </button>
+                </row>
+                <row>
+				  <!-- should use css height property, not attribute here !!!! -->
+                  <label id="AIFillColor" control="TextButton" value="Fill Color: " height="30"/>
+                  <button id="plotcolorbutton" class="color-button" oncommand="GetPlotColor();">
+                    <spacer id="plotCW" class="color-well"/>
+   	              </button>
+                </row>
+   	            <row>
+                  <description>Area Fill Style</description>
+                  <menulist id="FillPattern">
+                    <menupopup> 
+                      <menuitem label="Solid"                   value="Solid"/>
+                      <menuitem label="Crossed Lines"           value="CrossedLines"/>
+   	                  <menuitem label="Diagonal Lines"          value="DiagonalLines"/>
+   	                  <menuitem label="Forward Diagonal Lines"  value="ForwardDiagonalLines"/>
+                      <menuitem label="Horizontal Lines"        value="HorizontalLines"/>
+                      <menuitem label="Vertical Lines"          value="VerticalLines"/>
+   	                  <menuitem label="Crossed Diagonal Lines"  value="CrossedDiagonalLines"/>
+                    </menupopup>
+                   </menulist>
+   	            </row>
+   	            <row>
+                  <description>Number of Intervals</description>
+                  <spacer flex="1"/>
+                  <textbox id="AISubIntervals" style="width: 3em"/>
+   	            </row>
+   	            <row>
+                  <description>Approximation Method</description>
+                  <menulist id="AIMethod">
+                    <menupopup> 
+                      <menuitem label="Left"                       value="Left"/>
+                      <menuitem label="Right"                      value="Right"/>
+                      <menuitem label="Middle"                     value="Middle"/>
+                      <menuitem label="Lower"                      value="Lower"/>
+   	                  <menuitem label="Upper"                      value="Upper"/>
+                      <menuitem label="Lower Absolute"             value="LowerAbsolute"/>
+   	                  <menuitem label="Upper Absolute"             value="UpperAbsolute"/>
+                      <menuitem label="Trapezoidal"                value="Trapezoidal"/>
+   	                  <menuitem label="Simpson"                    value="Simpson"/>
+                    </menupopup>
+                   </menulist>
+   	            </row>
+   	            <row>
+                  <description>Show Info</description>
+                  <menulist id="AIInfo">
+                    <menupopup> 
+                      <menuitem label="No Info"                       value="NoInfo"/>
+                      <menuitem label="Approximated Value"            value="ApproximatedValue"/>
+   	                  <menuitem label="Approximated and Exact Value"  value="ApproximatedandExactValue"/>
+                      <menuitem label="Both Values and Error"         value="BothValuesandError"/>
+                    </menupopup>
+                   </menulist>
+   	            </row>
+              </rows>
+   	        </grid>
+        </groupbox>
+      </tabpanel>      
+
+      <tabpanel id="animparams" height="300">
+ 	    <groupbox id="animation" collapsed="false">
+            <caption label="Animation Parameters"/>
+   	        <grid flex = "1">
+              <columns>
+                <column flex="2"/>
+                <column flex="1"/>
+   	          </columns>
+              <rows>
+                <row>
+				  <description>Start time (seconds)</description>
+                  <spacer flex="1"/>
+                  <textbox id="AnimateStart" style="width: 3em"/>
+                </row>
+                <row>
+				  <description>End time (seconds)</description>
+                  <spacer flex="1"/>
+                  <textbox id="AnimateEnd" style="width: 3em"/>
+                </row>
+   	            <row>
+                  <description>Frames per second</description>
+                  <spacer flex="1"/>
+                  <textbox id="AnimateFPS" style="width: 3em"/>
+   	            </row>
+   	            <row>
+                 <checkbox id="AnimateVisBefore"  label="Visible Before"/>
+   	            </row>
+   	            <row>
+                 <checkbox id="AnimateVisAfter"  label="VisibleAfter"/>
+   	            </row>
+              </rows>
+   	        </grid>
+        </groupbox>
+      </tabpanel>      
+    </tabpanels>
+  </tabbox>
+</dialog>

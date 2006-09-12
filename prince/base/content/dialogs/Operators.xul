@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/msiMathDlgStyle.css" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/operatorsDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/Operators.dtd">
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/Operators.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/msiButtonGroup.js"/>
+
+  <keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset>
+
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <broadcasterset>
+    <broadcaster id="enableBrackets" disabled="false"/>
+  </broadcasterset>
+
+  <vbox>
+    <hbox>
+      <groupbox align="start" orient="vertical">
+        <caption label="&limitPositionRadioGroup.label;"/>
+        <radiogroup id="limitPositionRadioGroup">
+          <radio label="&limitPositionAutoRadio.label;" group="limitPositionRadioGroup" value="auto" id="autoLimitPositionRadio" accesskey="&limitPositionAutoRadio.accessKey;"/>
+          <radio label="&limitPositionAboveBelowRadio.label;" group="limitPositionRadioGroup" value="aboveBelow" id="aboveBelowLimitPositionRadio" accesskey="&limitPositionAboveBelowRadio.accessKey;"/>
+          <radio label="&limitPositionAtRightRadio.label;" group="limitPositionRadioGroup" value="atRight" id="atRightLimitPositionRadio" accesskey="&limitPositionAtRightRadio.accessKey;"/>
+        </radiogroup>
+      </groupbox>
+        <spacer flex="1"/>
+      <groupbox align="start" orient="vertical">
+        <caption label="&sizeRadioGroup.label;"/>
+        <radiogroup id="sizeRadioGroup">
+          <radio label="&sizeAutoRadio.label;" group="sizeRadioGroup" value="auto" id="autoSizeRadio" accesskey="&sizeAutoRadio.accessKey;"/>
+          <radio label="&sizeBigRadio.label;" group="sizeRadioGroup" value="big" id="bigSizeRadio" accesskey="&sizeBigRadio.accessKey;"/>
+          <radio label="&sizeSmallRadio.label;" group="sizeRadioGroup" value="small" id="smallSizeRadio" accesskey="&sizeSmallRadio.accessKey;"/>
+        </radiogroup>
+      </groupbox>
+      <spacer flex="1"/>
+    </hbox>
+    <groupbox id="operatorsButtonGroup" oncommand="setSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
+			<caption label="&operatorsButtonGroup.label;" accesskey="&operatorsButtonGroup.accessKey;"/>
+			<grid flex="1">
+				<columns>
+					<column/>
+					<column/>
+					<column/>
+					<column/>
+					<column/>
+					<column/>
+					<column/>
+					<column/>
+					<column/>
+				</columns>
+				<rows>
+				  <row>
+            <button type="radio" label="&#x222B;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x222C;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x222D;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x2A0C;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x222B;&#x22EF;&#x222B;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x222E;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x2211;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x220F;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x22C2;" group="operatorsButtonGroup"/>
+					</row>
+					<row>
+            <button type="radio" label="&#x22C0;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x2295;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x2299;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x2294;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x2210;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x22C3;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x22C1;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x2297;" group="operatorsButtonGroup"/>
+            <button type="radio" label="&#x228E;" group="operatorsButtonGroup"/>
+					</row>
+				</rows>
+			</grid>
+    </groupbox>
+  </vbox>
+</dialog>

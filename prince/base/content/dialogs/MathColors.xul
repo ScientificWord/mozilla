@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"?>
+
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/MathColors.dtd">
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/MathColors.js"/>
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <broadcaster id="args" value=""/>
+
+  <description>&colors.desc;</description>
+  <separator class="groove"/>
+  <groupbox align="start">
+    <caption label="&mathColor.label;"/>
+    <hbox>
+      <radiogroup id="MathColorGroup">
+        <radio id="DefaultMathRadio" label="&defaultColorsRadio.label;" oncommand="UseDefaultColors('mathCW')"
+          accesskey="&defaultColorsRadio.accessKey;"
+          tooltiptext="&defaultColorsRadio.tooltip;" />
+        <radio id="CustomMathRadio" label="&customColorsRadio.label;" oncommand="UseCustomColors('mathCW')"
+          accesskey="&customColorsRadio.accessKey;"
+          tooltiptext="&customColorsRadio.tooltip;" />
+      </radiogroup>
+      <spacer flex="1"/>
+      <vbox>
+        <spacer flex="1"/>
+        <hbox>
+          <label id="Math" control="TextButton"
+                 value="&mathText.label;&colon.character;"
+                 accesskey="&mathText.accessKey;"/>
+          <button id="MathButton" class="color-button" oncommand="GetColorAndUpdate('mathCW');">
+            <spacer id="mathCW" class="color-well"/>
+          </button>
+        </hbox>
+      </vbox>
+    </hbox>
+  </groupbox>
+  <groupbox align="start">
+    <caption label="&mathnameColor.label;"/>
+    <hbox>
+      <radiogroup id="MathnameColorGroup">
+        <radio id="DefaultMathnameRadio" label="&defaultColorsRadio.label;" oncommand="UseDefaultColors('mathnameCW')"
+          accesskey="&defaultColorsRadio.accessKey;"
+          tooltiptext="&defaultColorsRadio.tooltip;" />
+        <radio id="CustomMathnameRadio" label="&customColorsRadio.label;" oncommand="UseCustomColors('mathnameCW')"
+          accesskey="&customColorsRadio.accessKey;"
+          tooltiptext="&customColorsRadio.tooltip;" />
+      </radiogroup>
+      <spacer flex="1"/>
+      <vbox>
+        <spacer flex="1"/>
+        <hbox>
+          <label id="Mathname" control="TextButton"
+                 value="&mathnameText.label;&colon.character;"
+                 accesskey="&mathnameText.accessKey;"/>
+          <button id="MathnameButton" class="color-button" oncommand="GetColorAndUpdate('mathnameCW');">
+            <spacer id="mathnameCW" class="color-well"/>
+          </button>
+        </hbox>
+      </vbox>
+    </hbox>
+  </groupbox>
+  <groupbox align="start">
+    <caption label="&unitColor.label;"/>
+    <hbox>
+      <radiogroup id="UnitColorGroup">
+        <radio id="DefaultUnitRadio" label="&defaultColorsRadio.label;" oncommand="UseDefaultColors('unitCW')"
+          accesskey="&defaultColorsRadio.accessKey;"
+          tooltiptext="&defaultColorsRadio.tooltip;" />
+        <radio id="CustomUnitRadio" label="&customColorsRadio.label;" oncommand="UseCustomColors('unitCW')"
+          accesskey="&customColorsRadio.accessKey;"
+          tooltiptext="&customColorsRadio.tooltip;" />
+      </radiogroup>
+      <spacer flex="1"/>
+      <vbox>
+        <spacer flex="1"/>
+        <hbox>
+          <label id="Unit" control="TextButton"
+                 value="&unitText.label;&colon.character;"
+                 accesskey="&unitText.accessKey;"/>
+          <button id="UnitButton" class="color-button" oncommand="GetColorAndUpdate('unitCW');">
+            <spacer id="unitCW" class="color-well"/>
+          </button>
+        </hbox>
+      </vbox>
+    </hbox>
+  </groupbox>
+  <groupbox align="start">
+    <caption label="&mtextColor.label;"/>
+    <hbox>
+      <radiogroup id="MtextColorGroup">
+        <radio id="DefaultUnitRadio" label="&defaultColorsRadio.label;" oncommand="UseDefaultColors('mtextCW')"
+          accesskey="&defaultColorsRadio.accessKey;"
+          tooltiptext="&defaultColorsRadio.tooltip;" />
+        <radio id="CustomUnitRadio" label="&customColorsRadio.label;" oncommand="UseCustomColors('mtextCW')"
+          accesskey="&customColorsRadio.accessKey;"
+          tooltiptext="&customColorsRadio.tooltip;" />
+      </radiogroup>
+      <spacer flex="1"/>
+      <vbox>
+        <spacer flex="1"/>
+        <hbox>
+          <label id="Mtext" control="TextButton"
+                 value="&mtextText.label;&colon.character;"
+                 accesskey="&mtextText.accessKey;"/>
+          <button id="MtextButton" class="color-button" oncommand="GetColorAndUpdate('mtextCW');">
+            <spacer id="mtextCW" class="color-well"/>
+          </button>
+        </hbox>
+      </vbox>
+    </hbox>
+  </groupbox>
+  <groupbox align="start">
+    <caption label="&matrixlinesColor.label;"/>
+    <hbox>
+      <radiogroup id="MatrixColorGroup">
+        <radio id="DefaultMatrixRadio" label="&defaultColorsRadio.label;" oncommand="UseDefaultColors('matrixCW')"
+          accesskey="&defaultColorsRadio.accessKey;"
+          tooltiptext="&defaultColorsRadio.tooltip;" />
+        <radio id="CustomMatrixRadio" label="&customColorsRadio.label;" oncommand="UseCustomColors('matrixCW')"
+          accesskey="&customColorsRadio.accessKey;"
+          tooltiptext="&customColorsRadio.tooltip;" />
+      </radiogroup>
+      <spacer flex="1"/>
+      <vbox>
+        <spacer flex="1"/>
+        <hbox>
+          <label id="Matrix" control="TextButton"
+                 value="&matrixLines.label;&colon.character;"
+                 accesskey="&matrixLines.accessKey;"/>
+          <button id="MatrixButton" class="color-button" oncommand="GetColorAndUpdate('matrixCW');">
+            <spacer id="matrixCW" class="color-well"/>
+          </button>
+        </hbox>
+      </vbox>
+    </hbox>
+  </groupbox>
+  <vbox id="ColorPreview" flex="1">
+    <spacer flex="1"/>
+    <label class="larger" id="MathText"     value="&mathText.label;"/>
+    <spacer flex="1"/>
+    <label class="larger" id="MathnameText" value="&mathnameText.label;"/>
+    <spacer flex="1"/>
+    <label class="larger" id="UnitText"     value="&unitText.label;"/>
+    <spacer flex="1"/>
+    <label class="larger" id="MtextText"    value="&mtextText.label;"/>
+    <spacer flex="1"/>
+    <label class="larger" id="MatrixLines"  value="&matrixLines.label;"/>
+    <spacer flex="1"/>
+  </vbox>
+  <separator class="groove"/>
+</dialog>

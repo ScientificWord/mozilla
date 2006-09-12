@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/ComputeSettings.dtd">
+
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "Startup()"
+    ondialogaccept = "OK()"
+    ondialogcancel = "Cancel()"
+    buttons="accept,cancel">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeSettings.js" />
+
+  <hbox id="outer-box" flex="1">
+    <vbox>
+          <hbox>
+            <description>&desc.Digits;</description>
+            <spacer flex="1"/>
+            <textbox id="digits" style="width: 3em"/>
+          </hbox>
+        <groupbox>
+          <caption label="&solve.label;"/>
+          <hbox>
+            <description>&desc.Max;</description>
+            <spacer flex="1"/>
+            <textbox id="degree" maxlength="1"  style="width: 1em"/>
+          </hbox>
+          <hbox>
+            <description>&desc.Principal;</description>
+            <spacer flex="1"/>
+            <checkbox id="principal"/>
+          </hbox>
+          <hbox>
+            <description>&desc.Ignore;</description>
+            <spacer flex="1"/>
+            <checkbox id="special"/>
+          </hbox>
+        </groupbox>
+      <groupbox>
+        <caption label="&debug.label;"/>
+        <hbox>
+          <description>&desc.MMLSent;</description>
+        <spacer flex="1"/>
+          <checkbox id="logSent"/>
+        </hbox>
+        <hbox>
+          <description>&desc.MMLRec;</description>
+        <spacer flex="1"/>
+          <checkbox id="logReceived"/>
+        </hbox>
+        <hbox>
+          <description>&desc.EngSent;</description>
+        <spacer flex="1"/>
+          <checkbox id="engSent"/>
+        </hbox>
+        <hbox>
+          <description>&desc.EngRec;</description>
+        <spacer flex="1"/>
+          <checkbox id="engReceived"/>
+        </hbox>
+      </groupbox>
+    </vbox>
+  </hbox>
+
+</dialog>
