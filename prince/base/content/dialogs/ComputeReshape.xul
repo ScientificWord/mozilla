@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/ComputeReshape.dtd">
+
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "Startup()"
+    ondialogaccept = "OK()"
+    ondialogcancel = "Cancel()"
+    buttons="accept,cancel">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+
+  <script type="application/x-javascript" src="chrome://editor/content/ComputeReshape.js" />
+
+  <hbox id="outer-box" flex="1">
+    <vbox>
+          <hbox>
+            <description>Columns</description>
+            <spacer flex="1"/>
+            <textbox id="ncols" style="width: 3em"/>
+          </hbox>
+    </vbox>
+  </hbox>
+
+</dialog>
