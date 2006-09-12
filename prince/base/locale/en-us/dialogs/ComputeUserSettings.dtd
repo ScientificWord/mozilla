@@ -1,0 +1,56 @@
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label  "(Global) User Settings">
+
+<!ENTITY tabbar.input        "Input">
+<!ENTITY tabbar.output       "Output">
+<!ENTITY tabbar.fences       "Fences">
+<!ENTITY tabbar.derivatives  "Derivatives">
+<!ENTITY tabbar.entities     "Entities">
+
+
+<!ENTITY scinotation.label        "Scientific Notation Output">
+
+<!ENTITY mixednum.label           "Rational Numbers">
+
+<!ENTITY trigargs.label           "Trigonometric Functions">
+
+<!ENTITY fences.label             "Fence Output">
+<!ENTITY mfenced.label              "mfenced">
+<!ENTITY chars.label                "matched characters (), {}, []">
+
+<!ENTITY matrices.label           "Matrices">
+<!ENTITY matrix_none.label          "none">
+<!ENTITY matrix_brackets.label      "[]">
+<!ENTITY matrix_parens.label        "()">
+
+<!ENTITY logs.label               "Base of Log">
+<!ENTITY dots.label               "Dot Accent">
+<!ENTITY bar.label                "Bar Accent">
+
+<!ENTITY deriv.label              "Derivative Output Notation">
+<!ENTITY derivformat_input.label    "input notation">
+<!ENTITY derivformat_d.label        "d/dx">
+<!ENTITY derivformat_D.label        "D">
+<!ENTITY derivformat_primes.label   "primes">
+<!ENTITY derivformat_dots.label     "dots">
+
+<!ENTITY primeasn.label           "Derivatives as Primes">
+<!ENTITY primederiv.label         "Prime Notation">
+
+<!ENTITY imagi_output.label       "Imaginary i Output">
+<!ENTITY imagi_i.label              "i">
+<!ENTITY imagi_j.label              "j">
+<!ENTITY imagi_imagi.label          "ImaginaryI">
+
+<!ENTITY diffD_output.label       "Differential D Output">
+<!ENTITY diffD_D.label              "D">
+<!ENTITY diffD_diffD.label          "CapitalDifferentialD">
+
+<!ENTITY diffd_output.label       "Differential d Output">
+<!ENTITY diffd_d.label              "d">
+<!ENTITY diffd_diffd.label          "DifferentialD">
+
+<!ENTITY expe_output.label        "Exponential e Output">
+<!ENTITY expe_e.label               "e">
+<!ENTITY expe_expe.label            "ExponentialE">

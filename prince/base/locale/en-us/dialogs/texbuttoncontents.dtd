@@ -1,0 +1,8 @@
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "TeX button contents">
+
+<!ENTITY warning.label "WARNING!">
+<!ENTITY warningText.label "LaTeX commands entered here will be inserted at the location of the TeX button in your document. Be sure you know what you are doing, because you have the potential to cause irreparable damage to your document.">
+
+<!-- <!ENTITY .tooltip "">  -->
