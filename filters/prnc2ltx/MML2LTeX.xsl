@@ -372,11 +372,11 @@
   </xsl:template>
 
 
-  <xsl:include href="attrutil.xsl"/>
-  <xsl:include href="mathmap.xsl"/>
-  <xsl:include href="textmap.xsl"/>
-  <xsl:include href="mtext.xsl"/>
-  <xsl:include href="mstyle.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/attrutil.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/mathmap.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/textmap.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/mtext.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/mstyle.xsl"/>
 
 
 
@@ -475,12 +475,12 @@ no indent - disregarded completely
   </xsl:template>
 
 
-  <xsl:include href="mn.xsl"/>
-  <xsl:include href="fencemo.xsl"/>
-  <xsl:include href="mo.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/mn.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/fencemo.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/mo.xsl"/>
 
-  <xsl:include href="mi.xsl"/>
-  <xsl:include href="mfrac.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/mi.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/mfrac.xsl"/>
 
 
   <xsl:template match="mml:msqrt">
@@ -715,11 +715,11 @@ no indent - disregarded completely
   </xsl:template>
 
 
-  <xsl:include href="mfenced.xsl"/>
-  <xsl:include href="scripts.xsl"/>
-  <xsl:include href="munder.xsl"/>
-  <xsl:include href="mover.xsl"/>
-  <xsl:include href="munderover.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/mfenced.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/scripts.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/munder.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/mover.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/munderover.xsl"/>
 
 
   <xsl:template match="mml:mprescripts">
@@ -1121,9 +1121,9 @@ no indent - disregarded completely
 
 
 
-  <xsl:include href="MML2arry.xsl"/>
-  <xsl:include href="MML2eqna.xsl"/>
-  <xsl:include href="MML2tabular.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/MML2arry.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/MML2eqna.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/MML2tabular.xsl"/>
 
 <!-- Frequently, the numbered children of a MathML schemata
   translate to an argument of some LaTeX command.
@@ -1266,7 +1266,7 @@ no indent - disregarded completely
   </xsl:template>
 
 
-  <xsl:include href="HTM2LTeX.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/HTM2LTeX.xsl"/>
 
 
 </xsl:stylesheet>
