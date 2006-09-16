@@ -159,4 +159,6 @@
   <commandset id="composerListMenuItems" />
   <commandset id="composerTableMenuItems" />
   <commandset id="MSIcomputeMenuCommands" />
+  <commandset id="MSItypesetMenuCommands"/>
+  <commandset id="MSItypesetInsertMenuCommands"/>
 </window>
