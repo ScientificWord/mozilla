@@ -370,8 +370,6 @@ function openTeX()
     }                       
   }
   
-  
-  
   function exportTeX()
   {
      dump("\nExport TeX\n");
@@ -396,46 +394,46 @@ function openTeX()
      fp.appendFilters(nsIFilePicker.filterAll);
 
      /* doesn't handle *.shtml files */
-     try {
-       fp.show();
+//     try {
+//       fp.show();
        /* need to handle cancel (uncaught exception at present) */
-     }
-     catch (ex) {
-       dump("filePicker threw an exception\n");
-     }
+//     }
+//     catch (ex) {
+//       dump("filePicker threw an exception\n");
+//     }
      
-     if (fp.file && fp.file.path.length > 0) {
+//     if (fp.file && fp.file.path.length > 0) {
       
-        var exportfile =  fp.file.path;
-        dump("\nExport Tex: " + exportfile);
-      
-        // run saxon.exe
-        //    saxon thisdoc.xml prince.xsl >exportfile.tex
-      
-        try {
-          var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+//        var exportfile =  fp.file.path;
+        var doc;
+        var editor = GetCurrentEditor();
+        doc = editor.document;
+        if (!doc)
+          return;
+ //       dump("\nExport Tex: " + exportfile);
 
-          var exe = dsprops.get("CurProcD", Components.interfaces.nsIFile);
-          exe.append("runsax.bat");
 
-          var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-          theProcess.init(exe);
+        var xslStylesheet;
+        var xsltProcessor = new XSLTProcessor();
+        // load the xslt file, example1.xsl
+        var myXMLHTTPRequest = new XMLHttpRequest();
+        myXMLHTTPRequest.open("GET", "chrome://prnc2ltx/content/latex.xsl", false);
+        myXMLHTTPRequest.send(null);
+
+        xslStylesheet = myXMLHTTPRequest.responseXML;
+        xsltProcessor.importStylesheet(xslStylesheet);
+
+        var newDoc = xsltProcessor.transformToDocument(doc);
+        dump("\n"+newDoc);
+        dump("\n"+newDoc.documentElement);
+        dump("\n"+newDoc.documentElement.textContent);
         
-          var dataDir = dsprops.get("CurProcD", Components.interfaces.nsIFile);
-          dataDir.append("todata");
-          
-          var xslfile = "prince.xsl";
-          dump('\ncmdline args = ' + filename + ' ' + dataDir.target + '/' + xslfile +' ' + '>'+exportfile);
-          theProcess.run(true, [docUrl, exportfile], 2, {});
-        } catch (ex) {
-             dump("\nUnable to run saxon:\n");
-             dump(ex);
-        }      
-
-    } 
+        
+        var str = newDoc.documentElement.textContent;
+//     }
   }
+ 
   
-
  function initializeAutoCompleteStringArray()
  
  { 

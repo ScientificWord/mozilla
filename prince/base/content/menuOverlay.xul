@@ -2,6 +2,7 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
+<?xul-overlay href="chrome://prince/content/typesetOverlay.xul" ?>
 
 <!DOCTYPE overlay [
 <!ENTITY % DTD SYSTEM "chrome://prince/locale/menuOverlay.dtd">
@@ -174,6 +175,8 @@
     </menupopup>
   </menu>
 
+  <menu id="MSITypesetMenu"/>
+
   <menu id="toolsMenu" label="Tools" >
     <menupopup id="toolPopup">
       <menuitem  label="JavaScript debugger" id="venkmanName" oncommand="start_venkman();"/>
@@ -203,6 +206,7 @@
     <command id="cmd_printPreview" label="_amp_printPreviewCmd.label;"  oncommand="goDoCommand('cmd_printPreview')"/>
 -->
     <command id="cmd_openTeX" oncommand="openTeX();" />
+    <command id="cmd_exportTeX" oncommand="exportTeX();" />
     <command id="cmd_print"                                         oncommand="goDoCommand('cmd_print')"/>
     <command id="cmd_quit"         oncommand="goDoCommand('cmd_quit')"/>
   </commandset>
