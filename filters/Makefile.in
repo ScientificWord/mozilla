@@ -6,6 +6,6 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DIRS		= ptprince
+DIRS		= ptprince prnc2ltx
 
 include $(topsrcdir)/config/rules.mk
