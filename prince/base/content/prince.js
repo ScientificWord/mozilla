@@ -2,7 +2,6 @@ function goAboutDialog() {
   window.openDialog("chrome://prince/content/aboutDialog.xul", "About", "modal,chrome,resizable=yes");
 }
 
-
 function doOpen() {
   var fp = Components.classes["@mozilla.org/filepicker;1"].
              createInstance(Components.interfaces.nsIFilePicker);
@@ -290,29 +289,29 @@ function count_children( par )
 
 function openTeX()
 {
-    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-    fp.init(window, "Open TeX File", nsIFilePicker.modeOpen);     // BBM -- use properties file here for the strings
+  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  fp.init(window, "Open TeX File", nsIFilePicker.modeOpen);     // BBM todo -- use properties file here for the strings
 
-    SetFilePickerDirectory(fp, "tex");
+  SetFilePickerDirectory(fp, "tex");
 
 //    fp.appendFilters(nsIFilePicker.filterTeX);
-    fp.appendFilters(nsIFilePicker.filterAll);
+  fp.appendFilters(nsIFilePicker.filterAll);
 
-    try {
-      fp.show();
-      /* need to handle cancel (uncaught exception at present) */
-    }
-    catch (ex) {
-      dump("filePicker.chooseInputFile threw an exception\n");
-    }
-  
-    /* This checks for already open window and activates it... 
-     * note that we have to test the native path length
-     *  since file.URL will be "file:///" if no filename picked (Cancel button used)
-     */
-    if (fp.file && fp.file.path.length > 0) {
-    
+  try {
+    fp.show();
+    /* need to handle cancel (uncaught exception at present) */
+  }
+  catch (ex) {
+    dump("filePicker.chooseInputFile threw an exception\n");
+  }
+
+  /* This checks for already open window and activates it... 
+   * note that we have to test the native path length
+   *  since file.URL will be "file:///" if no filename picked (Cancel button used)
+   */
+  if (fp.file && fp.file.path.length > 0) {
+   
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //      Prepare to run pretex.exe. We need to send it some directories:                                       //
 //       The input directory gives the location of the .cls and .tex files that pretex reads to               //
@@ -325,123 +324,204 @@ function openTeX()
 //       The input .tex file.                                                                                 //
 //       The output .xhtml file, which is usually in the output directory.                                    //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-      
-      SaveFilePickerDirectory(fp, "tex");
-      var filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
-      var infile =  "\""+fp.file.path+"\"";
-      dump("Open Tex: " + infile);
-      var outfile = dsprops.get("TmpD", Components.interfaces.nsIFile);
-      outfile.append(filename);
-      var outdir = outfile.clone();
-      if (!outdir.exists()) outdir.create(1 /*DIRECTORY_TYPE */, 0755);
-      outfile.append("doc.xhtml");
-      var css = outdir.clone();
-      css.append("my.css");
-      if (css.exists()) css.remove(false); 
-      css.create(0 /*FILE_TYPE*/, 0755);
-      if (outfile.exists()) outfile.remove(false);
-      var mmldir = dsprops.get("resource:app", Components.interfaces.nsIFile);
-      var exefile=dsprops.get("resource:app", Components.interfaces.nsIFile);
-      exefile.append("pretex.exe");
-      var dataDir = dsprops.get("resource:app", Components.interfaces.nsIFile);
-      dataDir.append("ptdata");
-        dump("\n\nExe="+exefile.target);
-        dump("\noutdir=\""+outdir.target);
-        dump("\noutfile=\""+outfile.target);
-        dump("\ninfile=\""+fp.file.target);
-        dump("\ndataDir=\""+dataDir.target);
-        dump("\nmmldir=\""+mmldir.target+"\n");
-      // run pretex.exe
-      
-      try {
+    
+    SaveFilePickerDirectory(fp, "tex");
+    var filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
+    var infile =  "\""+fp.file.path+"\"";
+    dump("Open Tex: " + infile);
+    var outfile = dsprops.get("TmpD", Components.interfaces.nsIFile);
+    outfile.append(filename);
+    var outdir = outfile.clone();
+    if (!outdir.exists()) outdir.create(1 /*DIRECTORY_TYPE */, 0755);
+    outfile.append("doc.xhtml");
+    var css = outdir.clone();
+    css.append("my.css");
+    if (css.exists()) css.remove(false); 
+    css.create(0 /*FILE_TYPE*/, 0755);
+    if (outfile.exists()) outfile.remove(false);
+    var mmldir = dsprops.get("resource:app", Components.interfaces.nsIFile);
+    var exefile=dsprops.get("resource:app", Components.interfaces.nsIFile);
+    exefile.append("pretex.exe");
+    var dataDir = dsprops.get("resource:app", Components.interfaces.nsIFile);
+    dataDir.append("ptdata");
+    dump("\n\nExe="+exefile.path);
+    dump("\noutdir=\""+outdir.path);
+    dump("\noutfile=\""+outfile.path);
+    dump("\ninfile=\""+fp.file.path);
+    dump("\ndataDir=\""+dataDir.path);
+    dump("\nmmldir=\""+mmldir.path+"\n");
+    // run pretex.exe
+    
+    try 
+    {
+      var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+      theProcess.init(exefile);
+      var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, fp.file.path, outfile.path];
+      theProcess.run(true, args, args.length);
+    } 
+    catch (ex) 
+    {
+         dump("\nUnable to open TeX:\n");
+         dump(ex);
+    }      
+//  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
+    
+    editPage("file:///" + outfile.path.replace(/\\/g,"/"), window, true);
+  }                       
+}
 
+function documentAsTeX( document, xslSheetPath )
+{
+  if (!document) return;
+  if (xslSheetPath.length == 0) return;
+  var xsltProcessor = new XSLTProcessor();
+  var myXMLHTTPRequest = new XMLHttpRequest();
+  myXMLHTTPRequest.open("GET", xslSheetPath, false);
+  myXMLHTTPRequest.send(null);
 
-        var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-        theProcess.init(exefile);
-        theProcess.run(true, ['-i', dataDir.target, '-f', 'latex2xml.tex', '-o', outdir.target, '-m', mmldir.target,
-          fp.file.target, outfile.target], 10, {});
-      } catch (ex) {
-           dump("\nUnable to open TeX:\n");
-           dump(ex);
-      }      
-//  TODO: we may need to run a merge program to bring in processing instructions for specifying tag property files
-      
-      editPage("file:///" + outfile.target.replace(/\\/g,"/"), window, true);
-    }                       
-  }
+  var xslStylesheet = myXMLHTTPRequest.responseXML;
+  xsltProcessor.importStylesheet(xslStylesheet);
+  var newDoc = xsltProcessor.transformToDocument(document);
+  var str = newDoc.documentElement.textContent;
+  dump("\n"+str);
+  return str;
+}
+
+function exportTeX()
+{
+   dump("\nExport TeX\n");
   
-  function exportTeX()
+   var docUrl = GetDocumentUrl();
+   dump('\nThis doc url = ' + docUrl);
+
+   var scheme, filename;
+   if (docUrl && !IsUrlAboutBlank(docUrl))
+   {
+     scheme = GetScheme(docUrl);
+     filename = GetFilename(docUrl);
+   }
+   dump('\nThis doc = ' + filename);
+
+   if (filename.length < 0)
+      return;
+    var editor = GetCurrentEditor();
+    if (!editor) return;
+      
+   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+   fp.init(window, "Export TeX File", nsIFilePicker.modeSave);
+
+   // BBM todo: we need to set up file pickers for tex files 
+   fp.appendFilters(nsIFilePicker.filterAll);
+
+   try 
+   {
+     fp.show();
+     // need to handle cancel (uncaught exception at present) 
+   }
+   catch (ex) 
+   {
+     dump("filePicker threw an exception\n");
+   }
+   
+   if (fp.file && fp.file.path.length > 0) 
+   {
+      var exportfile =  fp.file.path;
+     	dump("\nExport Tex: " + exportfile);
+      var str = documentAsTeX(editor.document, "chrome://prnc2ltx/content/latex.xsl" );
+     	if (fp.file.exists()) 
+     	  fp.file.remove(false);
+      fp.file.create(0  /*NORMAL_FILE_TYPE*/, 0755);
+      var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+      fos.init(fp.file, -1, -1, false);
+      if (str.length > fos.write(str, str.length))
+      {
+        dump("Wrote fewer bytes than expected!\n");
+      }
+      fos.close();
+   }
+}
+
+function printTeX( pdftex )
+{
+  var editor = GetCurrentEditor();
+  if (!editor) return;
+  var str = documentAsTeX(editor.document, "chrome://prnc2ltx/content/latex.xsl" );
+// now save this TeX string and run TeX on it.  
+// BBM todo: We want the directory name above the file.
+  var docUrl = GetDocumentUrl();
+  var scheme, filebase;
+  if (docUrl && !IsUrlAboutBlank(docUrl))
   {
-     dump("\nExport TeX\n");
-     
-     var docUrl = GetDocumentUrl();
-     dump('\nThis doc url = ' + docUrl);
-
-     var scheme, filename;
-     if (docUrl && !IsUrlAboutBlank(docUrl))
-     {
-       scheme = GetScheme(docUrl);
-       filename = GetFilename(docUrl);
-     }
-     dump('\nThis doc = ' + filename);
-
-     if (filename.length < 0)
-        return;
-        
-     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-     fp.init(window, "Export TeX File", nsIFilePicker.modeSave);
-
-     fp.appendFilters(nsIFilePicker.filterAll);
-
-     /* doesn't handle *.shtml files */
-//     try {
-//       fp.show();
-       /* need to handle cancel (uncaught exception at present) */
-//     }
-//     catch (ex) {
-//       dump("filePicker threw an exception\n");
-//     }
-     
-//     if (fp.file && fp.file.path.length > 0) {
-      
-//        var exportfile =  fp.file.path;
-        var doc;
-        var editor = GetCurrentEditor();
-        doc = editor.document;
-        if (!doc)
-          return;
- //       dump("\nExport Tex: " + exportfile);
-
-
-        var xslStylesheet;
-        var xsltProcessor = new XSLTProcessor();
-        // load the xslt file, example1.xsl
-        var myXMLHTTPRequest = new XMLHttpRequest();
-        myXMLHTTPRequest.open("GET", "chrome://prnc2ltx/content/latex.xsl", false);
-        myXMLHTTPRequest.send(null);
-
-        xslStylesheet = myXMLHTTPRequest.responseXML;
-        xsltProcessor.importStylesheet(xslStylesheet);
-
-        var newDoc = xsltProcessor.transformToDocument(doc);
-        dump("\n"+newDoc);
-        dump("\n"+newDoc.documentElement);
-        dump("\n"+newDoc.documentElement.textContent);
-        
-        
-        var str = newDoc.documentElement.textContent;
-//     }
+    scheme = GetScheme(docUrl);
+    filebase = GetFilename(docUrl);
   }
- 
+  var filename = filebase.substring(0,filebase.lastIndexOf(".")) + ".tex";
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var texfile = dsprops.get("TmpD", Components.interfaces.nsILocalFile);
+  texfile.append(filename);
+  texfile.createUnique(0  /*NORMAL_FILE_TYPE*/, 0755);
+  // capture the file name that was constructed
+  var outputleaf = texfile.leafName;
+  var outputfile = dsprops.get("TmpD", Components.interfaces.nsILocalFile);
+  dump("\noutputleaf = "+outputleaf);
+  dump("\ntexfile="+texfile.path);  
+  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+  fos.init(texfile, -1, -1, false);
+  if (str.length > fos.write(str, str.length))
+  {
+    dump("Wrote fewer bytes than expected!\n");
+  }
+  fos.close();
+// now execute latex or pdflatex  
+//  texfile.launch();
   
- function initializeAutoCompleteStringArray()
+// the following is an egreqious hack. How do we find the path we need in general.
+  var execpath = "/usr/local/teTeX/bin/i386-apple-darwin-current/pdflatex";
+  var exefile = Components.classes["@mozilla.org/file/local;1"].
+              createInstance(Components.interfaces.nsILocalFile);
+  exefile.initWithPath( execpath);
+  try 
+  {
+    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+    theProcess.init(exefile);
+    var args = ["--output-directory", outputfile.path, "--output-format", (pdftex?"pdf":"dvi"), texfile.path];
+    theProcess.run(true, args, args.length);
+  } catch (ex) {
+       dump("\nUnable to run TeX:\n");
+       dump(ex);
+       return;
+  }
+// check for a dvi or pdf file
+  dump("\nOutputleaf="+outputleaf);
+  outputleaf = outputleaf.substring(0, outputleaf.lastIndexOf("."));
+  if (pdftex)
+    outputleaf += ".pdf";
+  else
+    outputleaf += ".dvi";
+  dump("\nOutputleaf="+outputleaf);
+  outputfile.append(outputleaf);
+  dump("\nFinal output filename; "+outputfile.path+"\n")
+  if (outputfile.exists())
+    outputfile.launch();
+  else
+    dump("\nRunning TeX failed to create a file!");
+}
+
+function previewTeX(pdftex)
+{
+  printTeX(pdftex);
+};
+
+  
+function initializeAutoCompleteStringArray()
  
- { 
-   dump("===> initializeAutoCompleteStringArray\n");
-                              
+{ 
+ dump("===> initializeAutoCompleteStringArray\n");
+                            
 //   var stringArraySearch = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService(Components.interfaces.nsIAutoCompleteSearchStringArray);
 //   stringArraySearch.editor = GetCurrentEditor(); 
- }
+}
+
  
  
  
@@ -449,9 +529,11 @@ function openTeX()
 function goDoPrinceCommand (cmdstr, element) 
 {
    if ((element.localName.toLowerCase() == "img") && (element.getAttribute("msigraph") == "true"))
-     { graphClickEvent(cmdstr);
-     }
+   {
+      graphClickEvent(cmdstr);
+   }
    else 
-     { goDoCommand(cmdstr);  
-     }
+   { 
+      goDoCommand(cmdstr);  
+   }
 }

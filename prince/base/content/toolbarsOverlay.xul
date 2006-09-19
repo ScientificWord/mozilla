@@ -257,11 +257,11 @@
         <observes id="pmitb1" element="defaultCompiler" attribute="defcomp" />
       </menuitem>        
       <menuitem id="printMenuItem1pdf" label="&pdfprintButton.label;" persist="default" default="false"
-                oncommand="alert('PDF print');event.stopPropagation();"  for="pdf" onbroadcast="setDefault(this);">
+                oncommand="printTeX(true);event.stopPropagation();"  for="pdf" onbroadcast="setDefault(this);">
         <observes id="pmitb2" element="defaultCompiler" attribute="defcomp"  />
       </menuitem>        
       <menuitem id="printMenuItem1dvi" label="&dviprintButton.label;" persist="default" default="false"
-                oncommand="alert('DVI print');event.stopPropagation();"  for="dvi" onbroadcast="setDefault(this);">
+                oncommand="printTeX(false);event.stopPropagation();"  for="dvi" onbroadcast="setDefault(this);">
         <observes id="pmitb3" element="defaultCompiler" attribute="defcomp"  />
       </menuitem>        
       <menuseparator/>
@@ -295,11 +295,11 @@
         <observes id="pmitb10" element="defaultCompiler" attribute="defcomp" />
       </menuitem>        
       <menuitem id="pdfPreviewMenuItem" label="&pdfpreviewButton.label;" persist="default" default="false"
-                oncommand="alert('PDF print preview');event.stopPropagation();" for="pdf" onbroadcast="setDefault(this);">
+                oncommand="previewTeX(true);event.stopPropagation();" for="pdf" onbroadcast="setDefault(this);">
         <observes id="pmitb11" element="defaultCompiler" attribute="defcomp" />
       </menuitem>        
       <menuitem id="dviPreviewMenuItem" label="&dvipreviewButton.label;" persist="default" default="false"
-                oncommand="alert('DVI print preview');event.stopPropagation();" for="dvi" onbroadcast="setDefault(this);">  
+                oncommand="previewTeX(false);event.stopPropagation();" for="dvi" onbroadcast="setDefault(this);">  
         <observes id="pmitb12" element="defaultCompiler" attribute="defcomp" />
       </menuitem>        
       <menuseparator/>
