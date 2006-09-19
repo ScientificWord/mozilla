@@ -6,3 +6,6 @@ tex {
   -moz-binding: url("resource://app/res/xbl/latex.xml#tex");
 }
 
+invis {
+  display: none;
+}
