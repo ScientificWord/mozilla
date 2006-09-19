@@ -161,4 +161,5 @@
   <commandset id="MSIcomputeMenuCommands" />
   <commandset id="MSItypesetMenuCommands"/>
   <commandset id="MSItypesetInsertMenuCommands"/>
+  <commandset id="MSImathMenuCommands"/>
 </window>
