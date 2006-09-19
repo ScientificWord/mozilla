@@ -7,6 +7,7 @@
 <head> 
 <title>Standard LaTeX Article</title>
 
+
 </head> 
 <body> 
 <preamble> 
@@ -31,7 +32,7 @@
 <newtheorem name="conjecture" counter="theorem" label="Conjecture"/>  
 
 <newtheorem name="corollary" counter="theorem" label="Corollary"/>   
-<newtheorem name="Criterion" counter="theorem" label="Criterion"/>
+<newtheorem name="criterion" counter="theorem" label="Criterion"/>
   
 <newtheorem name="definition" counter="theorem" label="Definition"/>
   
@@ -49,13 +50,16 @@
   
 <newtheorem name="summary" counter="theorem" label="Summary"/>     </preamble>
 <docbody>
+	
+	
 <title>The Title of a Standard <latex>LaTeX</latex> Article</title> 
 <author>A. U. Thor 
 <address>The University of Stewart Island</address></author> 
-</docbody><docbody _moz_dirty=""><abstract>
+<abstract>
 <p>We study the effects of warm water on the local penguin population.
 The major finding is that it is extremely difficult to induce penguins to
-drink warm water. The success factor is approximately <math xmlns="http://www.w3.org/1998/Math/MathML">
+drink warm water. The success factor is approximately <math xmlns="http://www.w3.org/1998/Math/MathML" >
+  <invis>minus E to the minus I pi minus one</invis>
   <mrow>
     <mstyle fontfamily="Times New Roman" fontsize="120%">
       <mrow>
@@ -76,11 +80,16 @@ drink warm water. The success factor is approximately <math xmlns="http://www.w3
       <mn>1</mn>
     </mstyle>
   </mrow></math>. 
-</p></abstract></docbody><docbody _moz_dirty="">  
-</docbody><docbody _moz_dirty=""><section>
+</p></abstract>  
+<maketitle/>
+<section>
 <sectiontitle _moz_dirty="">About This Shell</sectiontitle>  
 <p>This shell document provides
-a sample layout of a Standard <latex>LaTeX</latex> Article. </p>
+a sample layout of a Standard <latex>LaTeX</latex> Article. Here is some PDf 
+
+    <embed src="foo.pdf" type="application/pdf" width="340" height="230" background="white" />
+
+</p>
 <p>The front matter has
 a number of sample entries that you should replace with your own. Replace
 this text with your own. You may delete all of the text in this document
@@ -555,84 +564,84 @@ legends.
 theorem-like environments (in alphabetical order) are available in this
 style. </p>
 <p>
-<theorem type="Acknowledgement"> This is an acknowledgement
+<theorem type="acknowledgement"> This is an acknowledgement
 
 </theorem> </p>
 <p>
-<theorem type="Algorithm"> This is an algorithm 
+<theorem type="algorithm"> This is an algorithm 
 </theorem>
 </p>
 <p>
-<theorem type="Axiom"> This is an axiom 
+<theorem type="axiom"> This is an axiom 
 </theorem> </p>
 <p>
-<theorem type="Case">
+<theorem type="case">
 This is a case 
 </theorem> </p>
 <p>
-<theorem type="Claim"> This is a claim
+<theorem type="claim"> This is a claim
 
 </theorem> </p>
 <p>
-<theorem type="Conclusion"> This is a conclusion 
+<theorem type="conclusion"> This is a conclusion 
 </theorem>
 </p>
 <p>
-<theorem type="Condition"> This is a condition 
+<theorem type="condition"> This is a condition 
 </theorem> </p>
 <p>
-<theorem type="Conjecture">
+<theorem type="conjecture">
 This is a conjecture 
 </theorem> </p>
 <p>
-<theorem type="Corollary"> This
+<theorem type="corollary"> This
 is a corollary 
 </theorem> </p>
 <p>
-<theorem type="Criterion"> This is a
+<theorem type="criterion"> This is a
 criterion 
 </theorem> </p>
 <p>
-<theorem type="Definition"> This is a definition
+<theorem type="definition"> This is a definition
 
 </theorem> </p>
 <p>
-<theorem type="Example"> This is an example 
+<theorem type="example"> This is an example 
 </theorem>
 </p>
 <p>
-<theorem type="Exercise"> This is an exercise 
+<theorem type="exercise"> This is an exercise 
 </theorem> </p>
 <p>
-<theorem type="Lemma">
+<theorem type="lemma">
 This is a lemma 
 </theorem> </p>
 <p>This is the proof of the lemma.  </p>
 <p>
-<theorem type="Notation">
+<theorem type="notation">
 This is notation 
 </theorem> </p>
 <p>
-<theorem type="Problem"> This is a
+<theorem type="problem"> This is a
 problem 
 </theorem> </p>
 <p>
-<theorem type="Proposition"> This is a proposition
+<theorem type="proposition"> This is a proposition
 
 </theorem> </p>
 <p>
-<theorem type="Remark"> This is a remark 
+<theorem type="remark"> This is a remark 
 </theorem>
 </p>
 <p>
-<theorem type="Solution"> This is a solution 
+<theorem type="solution"> This is a solution 
 </theorem> </p>
 <p>
-<theorem type="Summary">
+<theorem type="summary">
 This is a summary 
 </theorem> </p>
 <p>
-<theorem type="Theorem"> This is
+<theorem type="theorem"> This is
 a theorem 
 </theorem> </p>
 <p>[Proof of the Main Theorem] This is the proof.
@@ -643,6 +652,7 @@ a theorem
 is used only once. Subsequent appendices can be created using the Section
 Section/Body Tag. </p>
 <p>
-</p></section></docbody>
+</p></section>
+</docbody>
 </body> 
 </html>
