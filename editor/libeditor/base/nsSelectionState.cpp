@@ -471,6 +471,15 @@ nsRangeUpdater::SelAdjJoinNodes(nsIDOMNode *aLeftNode,
   return NS_OK;
 }
 
+nsresult 
+nsRangeUpdater::SelAdjReplaceNode(nsIDOMNode *aNewNode, 
+                                  nsIDOMNode *aOldNode, 
+                                  nsIDOMNode * aParent)
+{
+  //ljh TODO -- need to add functionality -- first need to determine what functionality!!!!
+  return NS_OK;
+}                                  
+
 
 nsresult
 nsRangeUpdater::SelAdjInsertText(nsIDOMCharacterData *aTextNode, PRInt32 aOffset, const nsAString &aString)

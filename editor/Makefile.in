@@ -47,7 +47,7 @@ DIRS		= public idl txtsvc libeditor txmgr composer
 
 ifdef MOZ_MSI_PRINCE
 DIRS += ui
-# DIRS += msiediting
+DIRS += msiediting
 endif
 
 

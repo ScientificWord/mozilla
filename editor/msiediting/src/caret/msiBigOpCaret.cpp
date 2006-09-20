@@ -1,0 +1,801 @@
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+#include "msiBigOpCaret.h"
+#include "msiIMrowEditing.h"
+#include "msiUtils.h"
+#include "nsCOMPtr.h"
+#include "nsIDOMNode.h"
+#include "nsIEditor.h"
+#include "nsISelection.h"
+#include "nsIFrame.h"
+#include "nsIView.h"
+#include "msiRequiredArgument.h"
+#include "msiIMathMLEditor.h"
+#include "nsITransaction.h"
+#include "nsIArray.h"
+#include "nsIMutableArray.h"
+#include "nsComponentManagerUtils.h"
+
+msiBigOperatorCaret::msiBigOperatorCaret(nsIDOMNode* mathmlNode, PRUint32 offset,
+                                         nsCOMPtr<msiIBigOpInfo> & bigOpInfo)
+:msiMCaretBase(mathmlNode, offset, MSI_BIGOPERATOR), m_bigOpInfo(bigOpInfo)
+{
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::PrepareForCaret(nsIEditor* editor)
+{
+  if (!m_bigOpInfo || !m_mathmlNode)
+    return NS_ERROR_FAILURE;
+  PRUint32 scriptType(MATHML_UNKNOWN);
+  m_bigOpInfo->GetScriptType(&scriptType);
+  if (scriptType == MATHML_UNKNOWN) 
+    return NS_OK;
+  // has scripts
+  nsresult res(NS_OK);
+  nsCOMPtr<nsIDOMNode> child;
+  res = m_mathmlNode->GetLastChild(getter_AddRefs(child));
+  if (NS_SUCCEEDED(res) &&child && msiRequiredArgument::NestRequiredArgumentInMrow(child))
+  {
+    nsCOMPtr<nsIDOMElement> mrow;
+    res = msiUtils::CreateMRow(editor, (nsIDOMNode*)nsnull, mrow);
+    if (NS_SUCCEEDED(res) && mrow)
+    {
+      nsCOMPtr<nsIDOMNode> kid, dontcare;
+      nsCOMPtr<nsIDOMNode> mrowNode = do_QueryInterface(mrow);
+      if (mrowNode)
+        res = m_mathmlNode->ReplaceChild(mrowNode,  child, getter_AddRefs(kid));
+      else 
+        res = NS_ERROR_FAILURE;  
+      if (NS_SUCCEEDED(res))
+        res = mrowNode->AppendChild(kid, getter_AddRefs(dontcare));
+    }  
+  }
+  if (NS_SUCCEEDED(res) && m_numKids == 3)
+  {
+    child = nsnull;
+    nsCOMPtr<nsIDOMNode> first;
+    res = m_mathmlNode->GetFirstChild(getter_AddRefs(first));
+    if (NS_SUCCEEDED(res) && first)
+      res = first->GetNextSibling(getter_AddRefs(first));
+    if (NS_SUCCEEDED(res) &&child && msiRequiredArgument::NestRequiredArgumentInMrow(child))
+    {
+      nsCOMPtr<nsIDOMElement> mrow;
+      res = msiUtils::CreateMRow(editor, (nsIDOMNode*)nsnull, mrow);
+      if (NS_SUCCEEDED(res) && mrow)
+      {
+        nsCOMPtr<nsIDOMNode> kid, dontcare;
+        nsCOMPtr<nsIDOMNode> mrowNode = do_QueryInterface(mrow);
+        if (mrowNode)
+          res = m_mathmlNode->ReplaceChild(mrowNode,  child, getter_AddRefs(kid));
+        else 
+          res = NS_ERROR_FAILURE;  
+        if (NS_SUCCEEDED(res))
+          res =mrowNode->AppendChild(kid, getter_AddRefs(dontcare));
+      }  
+    }
+  }  
+  return res;
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::Inquiry(nsIEditor* editor, PRUint32 inquiryID, PRBool *result)
+{
+  PRUint32 scriptType(MATHML_UNKNOWN);
+  if (m_bigOpInfo)
+    m_bigOpInfo->GetScriptType(&scriptType);
+  if (inquiryID == AT_RIGHT_EQUIV_TO_0)
+    *result = PR_TRUE;
+  else if (inquiryID == AT_LEFT_EQUIV_TO_RIGHT_MOST && scriptType == MATHML_UNKNOWN) 
+    *result = PR_TRUE;
+  else if (inquiryID == CAN_SELECT_CHILD_LEAF) 
+    *result = PR_TRUE;
+  else
+    *result = PR_FALSE;
+  return NS_OK;
+}
+
+
+NS_IMETHODIMP
+msiBigOperatorCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell, 
+                                                    PRUint32 flags, nsIDOMMouseEvent * mouseEvent,
+                                                    nsIDOMNode **node, PRUint32 *offset)
+{
+  if (!editor || !node || !offset || !presShell || !m_mathmlNode || !mouseEvent)
+    return NS_ERROR_FAILURE;
+  nsresult res(NS_OK);
+  *node = nsnull;
+  *offset = INVALID;
+  PRUint32 scriptType(MATHML_UNKNOWN);
+  if (m_bigOpInfo)
+    m_bigOpInfo->GetScriptType(&scriptType);
+  nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+  nsPoint eventPoint(0,0);
+  if (NS_SUCCEEDED(res))
+    res = msiUtils::GetPointFromMouseEvent(mouseEvent, eventPoint);                                     
+  if (scriptType == MATHML_UNKNOWN) 
+  {
+    nsIFrame * bigOpFrame = nsnull;
+    if (NS_SUCCEEDED(res))
+      res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &bigOpFrame);
+    if (NS_SUCCEEDED(res) && bigOpFrame)
+    {
+      nsPoint offsetPoint(0,0);
+      nsRect bigOpRect(0,0,0,0);
+      nsIView * dontcare = nsnull;
+      res = bigOpFrame->GetOffsetFromView(offsetPoint, &dontcare);
+      if (NS_SUCCEEDED(res))
+      {
+        bigOpRect = bigOpFrame->GetRect();
+        bigOpRect.x = offsetPoint.x;
+        bigOpRect.y = offsetPoint.y;
+        m_offset = eventPoint.x <= (bigOpRect.x + (bigOpRect.width/2)) ? 0 : m_numKids;
+        flags = m_offset == 0 ? FROM_RIGHT : FROM_LEFT;
+        res = Accept(editor, flags, node, offset);
+      }  
+    }
+  }
+  else // has script
+  {
+    nsIFrame * scriptFrame = nsnull; // no smart pointers for frames.
+    nsIFrame * baseFrame = nsnull;
+    nsIFrame * script1Frame = nsnull;
+    nsIFrame * script2Frame = nsnull;
+    nsRect scriptRect, baseRect, script1Rect, script2Rect;
+    PRBool isAboveBelow(PR_FALSE);
+    *node = nsnull;
+    *offset = INVALID;
+    if (NS_SUCCEEDED(res))
+      res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &scriptFrame);
+    if (NS_SUCCEEDED(res))
+      res = GetFramesAndRects(presShell, scriptFrame, &baseFrame, &script1Frame, &script2Frame, 
+                              scriptRect, baseRect, script1Rect, script2Rect, isAboveBelow);
+    if (NS_SUCCEEDED(res) && isAboveBelow)
+    {
+      nsCOMPtr<nsIDOMNode> child;
+      PRInt32 above(0), below(0);
+      PRBool aboveSet(PR_FALSE), belowSet(PR_FALSE);
+      GetAboveBelowThresholds(scriptRect, baseRect, script1Rect, script2Rect,
+                              above, aboveSet, below, belowSet);
+      if (aboveSet &&  eventPoint.y <= above)
+      {
+        if (!script2Frame) 
+          res =  msiMCaretBase::GetNodeFromFrame(script1Frame, child);
+        else
+          res =  msiMCaretBase::GetNodeFromFrame(script2Frame, child);
+      }
+      else if (belowSet &&  eventPoint.y >= below)
+        res =  msiMCaretBase::GetNodeFromFrame(script1Frame, child);
+      else
+      {
+        m_offset = eventPoint.x <= (baseRect.x + (baseRect.width/2)) ? 0 : m_numKids;
+        flags = m_offset == 0 ? FROM_RIGHT : FROM_LEFT;
+        res = Accept(editor, flags, node, offset);
+      }
+      if (NS_SUCCEEDED(res) && child)
+      {
+        nsCOMPtr<msiIMathMLCaret> mathCaret;
+        PRUint32 pos(0);
+        msiUtils::GetMathMLCaretInterface(editor, child, pos, mathCaret);
+        NS_ASSERTION(mathCaret, "Yuck - mathml caret interface is null");
+        if (mathCaret)
+          res = mathCaret->GetNodeAndOffsetFromMouseEvent(editor, presShell, FROM_PARENT,
+                                                          mouseEvent, node, offset);
+      }
+    }  
+    else if (NS_SUCCEEDED(res))
+    {
+      PRInt32 left(0), right(0);
+      GetAtRightThresholds(scriptRect, baseRect, script1Rect, script2Rect,
+                           left, right);
+      if (eventPoint.x <= left || eventPoint.x >= right) 
+      { 
+        m_offset = eventPoint.x <= left ? 0 : m_numKids;
+        flags = eventPoint.x <= left ? FROM_RIGHT : FROM_LEFT;
+        res = Accept(editor, flags, node, offset);
+      }
+      else if (script1Frame) 
+      { 
+        nsCOMPtr<nsIDOMNode> child;
+        if (!script2Frame ||  eventPoint.y > script1Rect.y) 
+          res =  msiMCaretBase::GetNodeFromFrame(script1Frame, child);
+        else
+          res =  msiMCaretBase::GetNodeFromFrame(script2Frame, child);
+        if (child)
+        {
+          nsCOMPtr<msiIMathMLCaret> mathCaret;
+          PRUint32 pos(0);
+          msiUtils::GetMathMLCaretInterface(editor, child, pos, mathCaret);
+          NS_ASSERTION(mathCaret, "Yuck - mathml caret interface is null");
+          if (mathCaret)
+            res = mathCaret->GetNodeAndOffsetFromMouseEvent(editor, presShell, FROM_PARENT,
+                                                            mouseEvent, node, offset);
+        }
+      }
+    }  
+    if (*node == nsnull)
+    {
+      NS_ASSERTION(PR_FALSE, "BigOp failed to set node and offset.");
+      m_offset = eventPoint.x <= scriptRect.x + (scriptRect.width/2) ? 0 : m_numKids;
+      flags = m_offset== 0 ? FROM_RIGHT : FROM_LEFT;
+      res = Accept(editor, flags, node, offset);
+    }  
+  }
+  return res;
+}  
+       
+NS_IMETHODIMP 
+msiBigOperatorCaret::GetSelectableMathFragment(nsIEditor  *editor, 
+                                               nsIDOMNode *start,      PRUint32 startOffset, 
+                                               nsIDOMNode *end,        PRUint32 endOffset, 
+                                               nsIDOMNode **fragStart, PRUint32 *fragStartOffset,
+                                               nsIDOMNode **fragEnd,   PRUint32 *fragEndOffset)
+{
+  //ljh -- code below assumes the big Op is the "common ancestor" of start and end.
+  if (!editor || !m_mathmlNode)
+    return NS_ERROR_FAILURE;
+  if (!(start && startOffset <= LAST_VALID) || !(end && endOffset <= LAST_VALID))
+    return NS_ERROR_FAILURE;
+  if (!fragStart || !fragEnd || !fragStartOffset || !fragEndOffset)
+    return NS_ERROR_FAILURE;
+  *fragStart = nsnull;
+  *fragEnd = nsnull;
+  *fragStartOffset = INVALID;
+  *fragEndOffset = INVALID;
+  nsresult res(NS_OK);
+  PRInt32 startEndCompare(0);
+  msiUtils::ComparePoints(editor, start, startOffset, end, endOffset, startEndCompare);
+  if (startEndCompare ==  1)
+  {
+    NS_ASSERTION(PR_FALSE, "start after end");
+    res = NS_ERROR_FAILURE;
+  }
+  else if (startEndCompare == 0)
+  { 
+    // collapse the selection
+    *fragStart = start;
+    *fragEnd = start;
+    NS_ADDREF(*fragStart);
+    NS_ADDREF(*fragEnd);
+    *fragStartOffset = startOffset;
+    *fragEndOffset = startOffset;
+    res = NS_OK;
+  }
+  else
+  {
+    PRBool toParent(PR_FALSE);
+    PRUint32 scriptType(MATHML_UNKNOWN);
+    if (m_bigOpInfo)
+      m_bigOpInfo->GetScriptType(&scriptType);
+    if (scriptType == MATHML_UNKNOWN) 
+      toParent = PR_TRUE;
+    else
+    {
+      PRInt32 startCompare1(0), endCompare1(0), startCompare2(0), endCompare2(0);
+      res = msiUtils::ComparePoints(editor, start, startOffset, m_mathmlNode, 1, startCompare1);
+      if (NS_SUCCEEDED(res))
+        res = msiUtils::ComparePoints(editor, end, endOffset, m_mathmlNode, 1, endCompare1);
+      if (NS_SUCCEEDED(res))
+        res = msiUtils::ComparePoints(editor, start, startOffset, m_mathmlNode, 2, startCompare2);
+      if (NS_SUCCEEDED(res))
+        res = msiUtils::ComparePoints(editor, end, endOffset, m_mathmlNode, 2, endCompare2);
+      if (NS_FAILED(res))
+        return res;
+      if (startCompare1 == -1 && endCompare1 <= 0)
+        toParent = PR_TRUE;
+      else if (startCompare1 >= 0 && endCompare1 == 1)
+      {
+        if (m_numKids == 2) // select script1
+        {
+          *fragStart = m_mathmlNode;
+          *fragEnd = m_mathmlNode;
+          NS_ADDREF(*fragStart);
+          NS_ADDREF(*fragEnd);
+          *fragStartOffset = 1;
+          *fragEndOffset = 2;
+          res = NS_OK;
+        }
+        else
+        {
+          if (startCompare2 == -1 && endCompare2 <= 0) // select script1
+          {
+            *fragStart = m_mathmlNode;
+            *fragEnd = m_mathmlNode;
+            NS_ADDREF(*fragStart);
+            NS_ADDREF(*fragEnd);
+            *fragStartOffset = 1;
+            *fragEndOffset = 2;
+            res = NS_OK;
+          }
+          else if (startCompare2 >= 0 && endCompare2 == 1) // select script2
+          {
+            *fragStart = m_mathmlNode;
+            *fragEnd = m_mathmlNode;
+            NS_ADDREF(*fragStart);
+            NS_ADDREF(*fragEnd);
+            *fragStartOffset = 2;
+            *fragEndOffset = 3;
+            res = NS_OK;
+          }
+          else // (startCompare2 == -1 && endCompare2 == 1)
+            toParent = PR_TRUE;
+        }
+      }
+      else
+        toParent = PR_TRUE;
+    }
+    if (toParent)
+    {  nsCOMPtr<msiIMathMLCaret> parent;
+      res = msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, parent);
+      if (NS_SUCCEEDED(res) && parent)
+      {
+        nsCOMPtr<nsIDOMNode> parentNode;
+        PRUint32 offset(INVALID);
+        res = msiUtils::GetMathmlNodeFromCaretInterface(parent, parentNode);
+        if (NS_SUCCEEDED(res))
+          res = msiUtils::GetOffsetFromCaretInterface(parent, offset);
+        if (NS_SUCCEEDED(res) && parentNode && offset <= LAST_VALID)
+          res = parent->GetSelectableMathFragment(editor, parentNode, offset, parentNode, offset+1, 
+                                                  fragStart, fragStartOffset, fragEnd, fragEndOffset);
+      }
+    }
+  }  
+  return res;
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPoint, 
+                                          nsIDOMNode** selectionNode, PRUint32 * selectionOffset,
+                                          msiIMathMLCaret ** parentCaret)
+{
+  return msiMCaretBase::AdjustSelectionPoint(editor, leftSelPoint, selectionNode, selectionOffset, parentCaret);
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
+{
+  if (!node || !offset || !m_mathmlNode || !editor)
+    return NS_ERROR_FAILURE;
+  nsresult res(NS_OK);
+  PRUint32 scriptType(MATHML_UNKNOWN);
+  if (m_bigOpInfo)
+    m_bigOpInfo->GetScriptType(&scriptType);
+  nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+  nsCOMPtr<nsIDOMNode> child;
+  NS_ASSERTION(flags & FROM_LEFT|FROM_RIGHT, "Accept called without From left or from right");
+  if (scriptType == MATHML_UNKNOWN) 
+  {
+    if (!(flags&FROM_PARENT))
+    {
+      PRBool incOffset = m_offset != 0;
+      msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, incOffset, mathmlEditing);
+      if (mathmlEditing)
+      {
+        PRUint32 currFlags(FROM_CHILD);
+        if (flags & FROM_RIGHT)
+          currFlags |= FROM_RIGHT;
+        else
+          currFlags |= FROM_LEFT;
+        res = mathmlEditing->Accept(editor, currFlags, node, offset); 
+      }  
+    }
+    if (*node == nsnull)
+    {
+      *node  = m_mathmlNode;
+      NS_ADDREF(*node);
+      *offset = m_offset;
+    }
+  }
+  else if (flags & FROM_LEFT)
+  {
+    if (m_offset == 0)
+    {
+      *node  = m_mathmlNode;
+      NS_ADDREF(*node);
+      *offset = m_offset;
+    }
+    else if (m_offset == 1)
+    {
+      msiUtils::GetChildNode(m_mathmlNode, m_numKids-1, child);
+      if (child)
+      {
+        msiUtils::GetMathMLCaretInterface(editor, child, 0, mathmlEditing);
+        if (mathmlEditing)
+          res = mathmlEditing->Accept(editor, FROM_PARENT|FROM_LEFT, node, offset); 
+        else 
+          res = NS_ERROR_FAILURE;
+      }
+      else 
+        res = NS_ERROR_FAILURE;
+    }
+    else if (!(flags& FROM_CHILD))
+    {
+      nsCOMPtr<msiIMathMLCaret> parent;
+      msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_TRUE, parent);
+      if (parent)
+        res = parent->Accept(editor, FROM_CHILD|FROM_LEFT, node, offset);
+      if (*node == nsnull)
+      {
+        *node = m_mathmlNode;
+        NS_ADDREF(*node);
+        *offset = 0;
+        res = NS_OK;
+      }  
+     
+    }
+    else
+      *node = nsnull; // don't accept from child
+  }        
+  else if (flags & FROM_RIGHT)
+  {
+    if (m_offset == 0 ) //|| m_offset == 1)
+    { 
+      nsCOMPtr<msiIMathMLCaret> parent;
+      msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, parent);
+      if (parent)
+        res = parent->Accept(editor, FROM_CHILD|FROM_RIGHT, node, offset);
+      if (*node == nsnull)
+      {
+        *node = m_mathmlNode;
+        NS_ADDREF(*node);
+        *offset = 0;
+        res = NS_OK;
+      }  
+    }
+    else if (m_offset == m_numKids)
+    {
+      msiUtils::GetChildNode(m_mathmlNode, m_offset-1, child);
+      msiUtils::GetMathMLCaretInterface(editor, child, RIGHT_MOST, mathmlEditing);
+      if (mathmlEditing)
+        res = mathmlEditing->Accept(editor, FROM_PARENT|FROM_RIGHT, node, offset);
+    }
+  }
+  return res;
+}
+
+NS_IMETHODIMP 
+msiBigOperatorCaret::SplitAtDecendents(nsIEditor* editor, 
+                                 nsIDOMNode *leftDecendent, PRUint32 leftOffset, 
+                                 nsIDOMNode *rightDecendent, PRUint32 rightOffset, 
+                                 PRUint32 *mmlNodeLeftOffset, PRUint32 *mmlNodeRightOffset, 
+                                 nsIDOMNode **left_leftPart, nsIDOMNode **left_rightPart, 
+                                 nsIDOMNode **right_leftPart, nsIDOMNode **right_rightPart)
+{
+  return msiMCaretBase::SplitAtDecendents(editor, leftDecendent, leftOffset, rightDecendent, rightOffset, 
+                                          mmlNodeLeftOffset, mmlNodeRightOffset, 
+                                          left_leftPart, left_rightPart, 
+                                          right_leftPart, right_rightPart);
+}
+
+
+NS_IMETHODIMP
+msiBigOperatorCaret::Split(nsIEditor *editor, 
+                           nsIDOMNode *appendLeft, 
+                           nsIDOMNode *prependRight, 
+                           nsIDOMNode **left, 
+                           nsIDOMNode **right)
+{
+  return msiMCaretBase::Split(editor, appendLeft, prependRight, left, right);
+}                                     
+
+NS_IMETHODIMP
+msiBigOperatorCaret::SetupDeletionTransactions(nsIEditor * editor,
+                                               PRUint32 startOffset,
+                                               PRUint32 endOffset,
+                                               nsIDOMNode * start,
+                                               nsIDOMNode * end,
+                                               nsIArray ** transactionList)
+{
+  if (!m_mathmlNode || !editor || !transactionList)
+    return NS_ERROR_FAILURE;
+  nsresult res(NS_OK);
+  PRUint32 scriptType(MATHML_UNKNOWN);
+  if (m_bigOpInfo)
+    m_bigOpInfo->GetScriptType(&scriptType);
+  if (scriptType == MATHML_UNKNOWN) 
+    res = msiMCaretBase::SetupDeletionTransactions(editor, startOffset, endOffset,
+                                                    start, end, transactionList);
+  else if (startOffset >= 1 && ((endOffset - startOffset == 1 && end == nsnull) ||
+           (endOffset == startOffset)))
+  {
+    nsCOMPtr<nsIDOMNode> newKid;
+    if (startOffset == endOffset)
+    {
+      if ((startOffset != m_numKids)  && (start || end))
+      {
+        res = msiRequiredArgument::MakeRequiredArgument(editor, start, end, newKid);
+        if (NS_FAILED(res) || !newKid)
+          res = NS_ERROR_FAILURE;  
+      }    
+    }
+    else if (start)
+    {
+      res = msiRequiredArgument::MakeRequiredArgument(editor, start, nsnull, newKid);
+      if (NS_FAILED(res) || !newKid)
+        res = NS_ERROR_FAILURE;  
+    }
+    else
+    {
+      nsCOMPtr<nsIDOMElement> inputboxElement;
+      PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+      res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputboxElement);
+      if (NS_SUCCEEDED(res) && inputboxElement)
+        newKid = do_QueryInterface(inputboxElement);
+      if (!newKid)
+        res = NS_ERROR_FAILURE;  
+    }
+    if (NS_SUCCEEDED(res) && newKid)
+    {
+      nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
+      nsCOMPtr<nsIMutableArray> mutableTxnArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+      if (!msiEditor ||!mutableTxnArray)
+        res = NS_ERROR_FAILURE;
+      if (NS_SUCCEEDED(res))
+      {
+        nsCOMPtr<nsITransaction> transaction;
+        nsCOMPtr<nsIDOMNode> oldKid;
+        res = msiUtils::GetChildNode(m_mathmlNode, startOffset, oldKid);
+        if (NS_SUCCEEDED(res) && oldKid)
+          res = msiEditor->CreateReplaceTransaction(newKid, oldKid, m_mathmlNode, getter_AddRefs(transaction));
+        if (NS_SUCCEEDED(res) && transaction)
+          res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
+        else
+          res = NS_ERROR_FAILURE;
+      }
+      if (NS_SUCCEEDED(res))
+      {
+        *transactionList = mutableTxnArray;
+        NS_ADDREF(*transactionList);
+      }  
+    }
+  }
+  else // this should not happen
+  {
+    NS_ASSERTION(PR_FALSE, "Yucky\n");
+    nsCOMPtr<msiIMathMLCaret> parentCaret;
+    res = msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, parentCaret);
+    if (NS_SUCCEEDED(res) && parentCaret)
+    {
+      PRUint32 offset(INVALID);
+      res = msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
+      if (NS_SUCCEEDED(res) && offset != INVALID) 
+        res = parentCaret->SetupDeletionTransactions(editor, offset, offset+1, 
+                                                     nsnull, nsnull, transactionList);
+      else
+        res = NS_ERROR_FAILURE;
+    }
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  return res;
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
+{
+  if (!node || !offset || !m_mathmlNode || !editor)
+    return NS_ERROR_FAILURE;
+  nsresult res(NS_OK);
+  PRUint32 scriptType(MATHML_UNKNOWN);
+  if (m_bigOpInfo)
+    m_bigOpInfo->GetScriptType(&scriptType);
+  nsCOMPtr<nsIDOMNode> child;
+  nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+  if (m_offset == 0)
+  {
+    msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, mathmlEditing);
+    NS_ASSERTION(mathmlEditing, "Parent's mathmlEditing interface is null");
+    if (mathmlEditing)
+      res = mathmlEditing->CaretLeft(editor, FROM_CHILD|FROM_RIGHT, node, offset);
+  }
+  else if (m_offset == 1 || (m_numKids == 3 && m_offset == 2))
+  {
+    m_offset = 0;
+    res = Accept(editor, FROM_RIGHT, node, offset);
+  }
+  else 
+  {
+    msiUtils::GetChildNode(m_mathmlNode, m_numKids-1, child);
+    if (child)
+    {
+      msiUtils::GetMathMLCaretInterface(editor, child, RIGHT_MOST, mathmlEditing);
+      if (mathmlEditing)
+        res = mathmlEditing->Accept(editor, FROM_PARENT|FROM_RIGHT, node, offset); 
+      else 
+        res = NS_ERROR_FAILURE;
+    }
+    else 
+      res = NS_ERROR_FAILURE;
+  }
+  return res;   
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::CaretRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
+{
+  if (!node || !offset || !m_mathmlNode || !editor)
+    return NS_ERROR_FAILURE;
+  nsresult res(NS_OK);
+  PRUint32 scriptType(MATHML_UNKNOWN);
+  nsCOMPtr<nsIDOMNode> child;
+  nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+  if (m_bigOpInfo)
+    m_bigOpInfo->GetScriptType(&scriptType);
+  if (scriptType == MATHML_UNKNOWN) 
+  {
+    if (m_offset == 0)
+    {
+      m_offset = 1;
+      res =Accept(editor, FROM_LEFT, node, offset);
+    }
+    else
+    {
+      msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_TRUE, mathmlEditing);
+      if (mathmlEditing)
+        res = mathmlEditing->CaretRight(editor, FROM_CHILD, node, offset); 
+      else 
+        res = NS_ERROR_FAILURE;
+    }  
+  }
+  else // in particular scriptType != MATHML_UNKNOWN
+  {
+    if (m_offset == 2 || m_offset == m_numKids)
+    {
+      msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_TRUE, mathmlEditing);
+      if (mathmlEditing)
+        res = mathmlEditing->Accept(editor, FROM_CHILD|FROM_RIGHT, node, offset); 
+      else 
+        res = NS_ERROR_FAILURE;
+    }
+    else
+    {
+      msiUtils::GetChildNode(m_mathmlNode, m_numKids-1, child);
+      NS_ASSERTION(child, "MathML child node is null.");
+      if (child)
+      {
+        msiUtils::GetMathMLCaretInterface(editor, child, 0, mathmlEditing);
+        if (mathmlEditing)
+          res = mathmlEditing->Accept(editor, FROM_PARENT|FROM_LEFT, node, offset); 
+        else 
+          res = NS_ERROR_FAILURE;
+      }
+      else 
+        res = NS_ERROR_FAILURE;
+    }
+  }
+  return res;
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::CaretUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return CaretLeft(editor, flags, node, offset);
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return CaretRight(editor, flags, node, offset);
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::CaretObjectLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
+{
+  m_offset = 0;
+  return Accept(editor, FROM_RIGHT, node, offset);
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::CaretObjectRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
+{
+  m_offset = m_numKids;
+  return Accept(editor, FROM_LEFT, node, offset);
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::CaretObjectUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return CaretLeft(editor, flags, node, offset);
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return CaretRight(editor, flags, node, offset);
+}
+
+//private
+nsresult
+msiBigOperatorCaret::GetFramesAndRects(nsIPresShell* shell, const nsIFrame * script, 
+                                 nsIFrame ** base, nsIFrame ** script1, nsIFrame ** script2,
+                                 nsRect & sRect, nsRect &bRect, nsRect& s1Rect, nsRect& s2Rect,
+                                 PRBool& isAboveBelow)
+{ // relative to scritp's view
+  nsresult res(NS_ERROR_FAILURE);
+  nsPresContext * context = nsnull;
+  *script2 = nsnull;
+  s2Rect= nsRect(0,0,0,0);
+  isAboveBelow = PR_TRUE;
+  if (script && shell)
+  {
+    *base = script->GetFirstChild(nsnull);
+    if (*base)
+      *script1 = (*base)->GetNextSibling();
+    res = *base && *script1 ? NS_OK : NS_ERROR_FAILURE;  
+    if (NS_SUCCEEDED(res))
+    {
+      *script2 = (*script1)->GetNextSibling();
+      context = shell->GetPresContext();
+      res = context ? NS_OK : NS_ERROR_FAILURE;
+    }  
+  }
+  if (NS_SUCCEEDED(res))
+  {
+    nsPoint offsetPoint(0,0);
+    nsIView * scriptView = nsnull;
+    res = script->GetOffsetFromView(offsetPoint, &scriptView);
+    if (NS_SUCCEEDED(res))
+    {
+      sRect = script->GetRect();
+      sRect.x = offsetPoint.x;
+      sRect.y = offsetPoint.y;
+      bRect = (*base)->GetRect();
+      bRect.x += offsetPoint.x;
+      bRect.y += offsetPoint.y;
+      s1Rect = (*script1)->GetRect();
+      s1Rect.x += offsetPoint.x;
+      s1Rect.y += offsetPoint.y;
+      if (*script2)
+      {
+        s2Rect = (*script2)->GetRect();
+        s2Rect.x += offsetPoint.x;
+        s2Rect.y += offsetPoint.y;
+      }
+      if (bRect.x + bRect.width <= s1Rect.x)
+        isAboveBelow = PR_FALSE;
+    }
+  }
+  return res;
+}  
+
+void
+msiBigOperatorCaret::GetAtRightThresholds(const nsRect& sRect, const nsRect& bRect, const nsRect& s1Rect, nsRect& s2Rect,
+                                          PRInt32& left, PRInt32& right)
+{
+  left = bRect.x+bRect.width;
+  right = s1Rect.x + s1Rect.width;
+  if (!s2Rect.IsEmpty() && s2Rect.x+s2Rect.width > right)
+    right = s2Rect.x+s2Rect.width;
+  if ( right > sRect.x + sRect.width)  
+    right = sRect.x + sRect.width;
+}                           
+
+
+
+void
+msiBigOperatorCaret::GetAboveBelowThresholds(const nsRect& sRect, const nsRect& bRect, const nsRect& s1Rect, nsRect& s2Rect,
+                                             PRInt32& above, PRBool& aboveSet, PRInt32& below, PRBool& belowSet)
+{
+  aboveSet = PR_FALSE;
+  belowSet = PR_FALSE;
+  if (s2Rect.IsEmpty())
+  {
+    if (s1Rect.y < bRect.y)
+    {
+      above = bRect.y > s1Rect.y+s1Rect.height ? bRect.y : s1Rect.y+s1Rect.height;
+      aboveSet = PR_TRUE;
+    }
+    else
+    {
+      below = bRect.y+bRect.height < s1Rect.y ? bRect.y+bRect.height : s1Rect.y;
+      belowSet = PR_TRUE;
+    }
+  }
+  else
+  {
+    above = bRect.y > s2Rect.y + s2Rect.height ? bRect.y : s2Rect.y + s2Rect.height;
+    below = bRect.y + bRect.height < s1Rect.y ? bRect.y + bRect.height : s1Rect.y;
+    aboveSet = PR_TRUE;
+    belowSet = PR_TRUE;
+  }
+
+}                                             

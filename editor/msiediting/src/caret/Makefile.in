@@ -1,0 +1,87 @@
+# Copyright (c) 2004, MacKichan Software, Inc.  All rights reserved.
+
+DEPTH		= ../../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE		= msiediting
+LIBXUL_LIBRARY	= 1
+LIBRARY_NAME	= msi_mml_caret_s
+REQUIRES	= xpcom \
+            string \
+            dom \
+            editor \
+		  locale \
+		  layout \
+		  content \
+		  txmgr \
+		  htmlparser \
+		  necko \
+		  pref \
+		  view \
+		  gfx \
+		  widget \
+		  webshell \
+		  unicharutil \
+		  commandhandler \
+		  docshell \
+            $(NULL)
+
+CPPSRCS		= \
+    msiInputboxCaret.cpp \
+    msiMactionCaret.cpp \
+    msiMaligngroupCaret.cpp \
+    msiMalignmarkCaret.cpp \
+    msiMathCaret.cpp \
+    msiMCaretBase.cpp \
+    msiMencloseCaret.cpp \
+    msiMerrorCaret.cpp \
+    msiMfencedCaret.cpp \
+    msiMfracCaret.cpp \
+    msiMglyphCaret.cpp \
+    msiMiCaret.cpp \
+    msiMlabeledtrCaret.cpp \
+    msiMleafCaret.cpp \
+    msiMmultiscriptsCaret.cpp \
+    msiMnCaret.cpp \
+    msiMoCaret.cpp \
+    msiMoverCaret.cpp \
+    msiMpaddedCaret.cpp \
+    msiMphantomCaret.cpp \
+    msiMrootCaret.cpp \
+    msiMrowCaret.cpp \
+    msiMrowFenceCaret.cpp \
+    msiMrowBoundFenceCaret.cpp \
+    msiMsCaret.cpp \
+    msiMspaceCaret.cpp \
+    msiMsqrtCaret.cpp \
+    msiMstyleCaret.cpp \
+    msiMsubCaret.cpp \
+    msiMsubsupCaret.cpp \
+    msiMsupCaret.cpp \
+    msiMtableCaret.cpp \
+    msiMtdCaret.cpp \
+    msiMtextCaret.cpp \
+    msiMtrCaret.cpp \
+    msiMunderCaret.cpp \
+    msiMunderoverCaret.cpp \
+    msiMContainerCaret.cpp \
+    msiScriptCaret.cpp \
+    msiWhitespaceCaret.cpp \
+    msiBigOpCaret.cpp \
+    msiUnderAndOrOverCaret.cpp \
+    $(NULL)
+    
+# don't want the shared lib; force the creation of a static lib.
+FORCE_STATIC_LIB = 1
+
+include $(topsrcdir)/config/rules.mk
+
+INCLUDES        += -I$(srcdir)/..
+
+#flag below is required to get nsLayoutUtils
+DEFINES += -D_IMPL_NS_LAYOUT
+

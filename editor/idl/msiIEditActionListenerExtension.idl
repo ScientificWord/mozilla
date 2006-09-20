@@ -1,0 +1,50 @@
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsISupports.idl"
+#include "domstubs.idl"
+
+interface nsISelection;
+
+
+/*
+An extension of the Editor Action Listener interface to outside world
+*/
+
+
+/**
+ * An extenstion to the generic editor action listener interface. 
+ * <P>
+ * msiIEditActionListenerExtension  is the interface used by applications wishing to be notified
+ * when the editor modifies the DOM tree.
+ *
+ * Note:  this is the wrong class to implement if you are interested in generic
+ * change notifications.  For generic notifications, you should implement
+ * nsIDocumentObserver.
+ */
+[scriptable, uuid(c7e2c9fd-bb75-4132-b943-dce2e0b08e5d)]
+
+interface msiIEditActionListenerExtension : nsISupports {
+
+  /** 
+   * Called before the editor replaces a node.
+   * @param aNewNode  The new DOM Node to be inserted
+   * @param aOldNode  The old DOM Node to be replaced
+   * @param aParent   The parent node
+   */
+  void WillReplaceNode(in nsIDOMNode aNewNode,
+                       in nsIDOMNode aOldNode,
+                       in nsIDOMNode aParent);
+
+  /** 
+   * Called after the editor replaces a node.
+   * @param aNewNode  The new DOM Node that was inserted.
+   * @param aOldNode  The old DOM Node that was replaced
+   * @param aParent   The parent node
+   * @param aResult   The result of the replace operation.
+   */
+  void DidReplaceNode(in nsIDOMNode aNewNode,
+                      in nsIDOMNode aOldNode,
+                      in nsIDOMNode aParent,
+                      in nsresult   aResult);
+
+};
