@@ -66,7 +66,10 @@ REQUIRES	= xpcom \
 		  $(NULL)
 
 # Internal header files, needed by other editor sublibs:
-INTERNAL_HDR_DIR = ../internal
+INTERNAL_HDR_DIR = ../internal	\
+			../html		\
+			../msi		\
+			$(NULL)
 
 CPPSRCS		=                           \
 		nsEditor.cpp                \
@@ -95,6 +98,8 @@ CPPSRCS		+=                          \
 		SetDocTitleTxn.cpp          \
 		SplitElementTxn.cpp         \
 		nsStyleSheetTxns.cpp        \
+        ReplaceElementTxn.cpp       \
+        DeleteMathmlRangeTxn.cpp    \
 		TransactionFactory.cpp      \
 		$(NULL)
 
@@ -103,3 +108,7 @@ FORCE_STATIC_LIB = 1
 
 include $(topsrcdir)/config/rules.mk
 
+INCLUDES        += -I$(topsrcdir)/editor/libeditor/html \
+                   -I$(topsrcdir)/editor/libeditor/msi \
+                   -I$(topsrcdir)/editor/msiediting/src \
+                   -I$(topsrcdir)/editor/libeditor/text

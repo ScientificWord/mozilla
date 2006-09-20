@@ -1,0 +1,1581 @@
+// Copyright (c) 2005, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsString.h"
+#include "nsIDOMNamedNodeMap.h"
+#include "nsIDOMAttr.h"
+#include "nsITextContent.h"
+#include "nsIDOMNode.h"
+#include "nsIDOMText.h"
+#include "nsIDOMCharacterData.h"
+#include "nsIArray.h"
+
+#include "msiEditingManager.h"
+#include "msiInputbox.h"
+#include "msiMaction.h"
+#include "msiMaligngroup.h"
+#include "msiMalignmark.h"
+#include "msiMath.h"
+#include "msiMenclose.h"
+#include "msiMerror.h"
+#include "msiMfenced.h"
+#include "msiMfrac.h"
+#include "msiMglyph.h"
+#include "msiMi.h"
+#include "msiMlabeledtr.h"
+#include "msiMmultiscripts.h"
+#include "msiMn.h"
+#include "msiMo.h"
+#include "msiMover.h"
+#include "msiMpadded.h"
+#include "msiMphantom.h"
+#include "msiMroot.h"
+#include "msiMrow.h"
+#include "msiMrowFence.h"
+#include "msiMrowBoundFence.h"
+#include "msiMs.h"
+#include "msiMspace.h"
+#include "msiMsqrt.h"
+#include "msiMstyle.h"
+#include "msiMsub.h"
+#include "msiMsubsup.h"
+#include "msiMsup.h"
+#include "msiMtable.h"
+#include "msiMtd.h"
+#include "msiMtext.h"
+#include "msiMtr.h"
+#include "msiMunder.h"
+#include "msiMunderover.h"
+#include "msiWhitespace.h"
+#include "msiBigOperator.h"
+
+#include "msiMCaretBase.h"
+#include "msiInputboxCaret.h"
+#include "msiMactionCaret.h"
+#include "msiMaligngroupCaret.h"
+#include "msiMalignmarkCaret.h"
+#include "msiMathCaret.h"
+#include "msiMencloseCaret.h"
+#include "msiMerrorCaret.h"
+#include "msiMfencedCaret.h"
+#include "msiMfracCaret.h"
+#include "msiMglyphCaret.h"
+#include "msiMiCaret.h"
+#include "msiMlabeledtrCaret.h"
+#include "msiMmultiscriptsCaret.h"
+#include "msiMnCaret.h"
+#include "msiMoCaret.h"
+#include "msiMoverCaret.h"
+#include "msiMpaddedCaret.h"
+#include "msiMphantomCaret.h"
+#include "msiMrootCaret.h"
+#include "msiMrowCaret.h"
+#include "msiMrowFenceCaret.h"
+#include "msiMrowBoundFenceCaret.h"
+#include "msiMsCaret.h"
+#include "msiMspaceCaret.h"
+#include "msiMsqrtCaret.h"
+#include "msiMstyleCaret.h"
+#include "msiMsubCaret.h"
+#include "msiMsubsupCaret.h"
+#include "msiMsupCaret.h"
+#include "msiMtableCaret.h"
+#include "msiMtdCaret.h"
+#include "msiMtextCaret.h"
+#include "msiMtrCaret.h"
+#include "msiMunderCaret.h"
+#include "msiMunderoverCaret.h"
+#include "msiWhitespaceCaret.h"
+#include "msiBigOpCaret.h"
+#include "msiEditingAtoms.h"
+
+#include  "msiMCoalesceBase.h"
+#include  "msiMnCoalesce.h"
+#include  "msiMrowCoalesce.h"
+#include  "msiMsubCoalesce.h"
+#include  "msiMsupCoalesce.h"
+#include  "msiMsubsupCoalesce.h"
+#include  "msiInputboxCoalesce.h"
+#include  "msiBigOpCoalesce.h"
+#include  "msiMleafCoalesce.h"
+
+#include "msiUtils.h"
+#include "msiNameSpaceUtils.h"
+#include "msiIBigOpInfo.h"
+
+NS_IMPL_ISUPPORTS1(msiEditingManager, msiIEditingManager)
+
+msiEditingManager::msiEditingManager()
+{
+  msiNameSpaceUtils::Initialize();
+  msiEditingAtoms::AddRefAtoms();
+}
+
+msiEditingManager::~msiEditingManager()
+{
+   msiNameSpaceUtils::Shutdown();
+}
+
+
+
+NS_IMETHODIMP
+msiEditingManager::GetMathMLEditingBC(nsIDOMNode* rawNode, 
+                                      PRUint32    rawOffset,
+                                      msiIMathMLEditingBC ** editingBC)
+                                             
+{
+  nsresult res(NS_ERROR_FAILURE);
+  *editingBC = nsnull;
+  if (rawNode)
+  {
+    res = NS_ERROR_NO_INTERFACE;
+    nsCOMPtr<nsIDOMNode> mathmlNode;
+    PRUint32 offset(rawOffset);
+    PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(rawNode, rawOffset, mathmlNode, offset);
+    if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN && mathmlNode)
+    {
+      res = NS_OK;
+      *editingBC = new msiMEditingBase(mathmlNode, offset, mathmlNodeType);
+      if (*editingBC == nsnull)
+        res = NS_ERROR_OUT_OF_MEMORY;
+      else
+        NS_ADDREF(*editingBC);
+    }
+  }
+  return res;
+}
+
+
+NS_IMETHODIMP
+msiEditingManager::GetMathMLInsertionInterface(nsIDOMNode* rawNode, 
+                                              PRUint32    rawOffset,
+                                              msiIMathMLInsertion ** mathml)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  *mathml = nsnull;
+  if (rawNode)
+  {
+    res = NS_ERROR_NO_INTERFACE;
+    nsCOMPtr<nsIDOMNode> mathmlNode;
+    PRUint32 offset(rawOffset);
+    PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(rawNode, rawOffset, mathmlNode, offset);
+    if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN && mathmlNode)
+    {
+      res = NS_OK;
+      switch (mathmlNodeType)
+      {
+        case msiIMathMLEditingBC::MATHML_MATH:
+         *mathml = new msiMath(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MI:
+         *mathml = new msiMi(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MN:
+         *mathml = new msiMn(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MO:
+         *mathml = new msiMo(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MTEXT:
+         *mathml = new msiMtext(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSPACE:
+         *mathml = new msiMspace(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MS:
+         *mathml = new msiMs(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MGLYPH:
+         *mathml = new msiMglyph(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MROW:
+         *mathml = new msiMrow(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MROWFENCE:
+         *mathml = new msiMrowFence(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MROWBOUNDFENCE:
+         *mathml = new msiMrowBoundFence(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MFRAC:
+         *mathml = new msiMfrac(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSQRT:
+         *mathml = new msiMsqrt(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MROOT:
+         *mathml = new msiMroot(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSTYLE:
+         *mathml = new msiMstyle(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MERROR:
+         *mathml = new msiMerror(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MPADDED:
+         *mathml = new msiMpadded(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MPHANTOM:
+         *mathml = new msiMphantom(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MFENCED:
+         *mathml = new msiMfenced(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MENCLOSE:
+         *mathml = new msiMenclose(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSUB:
+         *mathml = new msiMsub(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSUP:
+         *mathml = new msiMsup(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSUBSUP:
+         *mathml = new msiMsubsup(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MUNDER:
+         *mathml = new msiMunder(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MOVER:
+         *mathml = new msiMover(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MUNDEROVER:
+         *mathml = new msiMunderover(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MMULTISCRIPTS:
+         *mathml = new msiMmultiscripts(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MTABLE:
+         *mathml = new msiMtable(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MLABELEDTR:
+         *mathml = new msiMlabeledtr(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MTR:
+         *mathml = new msiMtr(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MTD:
+         *mathml = new msiMtd(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MALIGNGROUP:
+         *mathml = new msiMaligngroup(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MALIGNMARK:
+         *mathml = new msiMalignmark(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MACTION:
+         *mathml = new msiMaction(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MSI_INPUTBOX:
+          *mathml = new msiInputbox(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MSI_BIGOPERATOR:
+        {
+          nsCOMPtr<msiIBigOpInfo> bigOpInfo;
+          MSI_NewBigOpInfoImp(mathmlNode, offset, getter_AddRefs(bigOpInfo));
+          nsCOMPtr<nsIDOMNode> mmlNode;
+          PRUint32 bigOpOffset(msiIMathMLEditingBC::INVALID);
+          if (bigOpInfo)
+          {
+            bigOpInfo->GetMathmlNode(getter_AddRefs(mmlNode)); 
+            bigOpInfo->GetOffset(&bigOpOffset); 
+          }
+          else
+          {
+            mmlNode = mathmlNode;
+            bigOpOffset = offset;
+          }
+          *mathml = new msiBigOperator(mmlNode, bigOpOffset, bigOpInfo);
+        }
+        break;
+        case msiIMathMLEditingBC::MSI_WHITESPACE:
+          *mathml = new msiWhitespace(mathmlNode, offset);
+        break;
+        
+        default:
+          res = NS_ERROR_NO_INTERFACE;
+        break;
+      }  
+      if (res == NS_OK && *mathml == nsnull)
+        res = NS_ERROR_OUT_OF_MEMORY;
+      if (NS_SUCCEEDED(res) && *mathml)
+        NS_ADDREF(*mathml);
+    }
+  }   
+  return res;
+}
+
+
+NS_IMETHODIMP
+msiEditingManager::SupportsMathMLInsertionInterface(nsIDOMNode* node, PRBool *supportsMathml)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  *supportsMathml = PR_FALSE;
+  if (node)
+  {
+    res = NS_OK;
+    nsCOMPtr<nsIDOMNode> dontcare;
+    PRUint32 dontcare1(0);
+    PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(node, dontcare1, dontcare, dontcare1);
+    if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN)
+      *supportsMathml = PR_TRUE;
+  }   
+  return res;
+}
+
+NS_IMETHODIMP
+msiEditingManager::GetMathMLCaretInterface(nsIEditor* editor,
+                                           nsIDOMNode* rawNode, 
+                                           PRUint32    rawOffset,
+                                           msiIMathMLCaret ** mathml)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  *mathml = nsnull;
+  if (rawNode && editor)
+  {
+    res = NS_ERROR_NO_INTERFACE;
+    nsCOMPtr<nsIDOMNode> mathmlNode;
+    PRUint32 offset(rawOffset);
+    PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(rawNode, rawOffset, mathmlNode, offset);
+    if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN && mathmlNode)
+    {
+      res = NS_OK;
+      switch (mathmlNodeType)
+      {
+        case msiIMathMLEditingBC::MATHML_MATH:
+         *mathml = new msiMathCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MI:
+         *mathml = new msiMiCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MN:
+         *mathml = new msiMnCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MO:
+         *mathml = new msiMoCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MTEXT:
+         *mathml = new msiMtextCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSPACE:
+         *mathml = new msiMspaceCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MS:
+         *mathml = new msiMsCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MGLYPH:
+         *mathml = new msiMglyphCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MROW:
+         *mathml = new msiMrowCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MROWFENCE:
+         *mathml = new msiMrowFenceCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MROWBOUNDFENCE:
+         *mathml = new msiMrowBoundFenceCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MFRAC:
+         *mathml = new msiMfracCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSQRT:
+         *mathml = new msiMsqrtCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MROOT:
+         *mathml = new msiMrootCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSTYLE:
+         *mathml = new msiMstyleCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MERROR:
+         *mathml = new msiMerrorCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MPADDED:
+         *mathml = new msiMpaddedCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MPHANTOM:
+         *mathml = new msiMphantomCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MFENCED:
+         *mathml = new msiMfencedCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MENCLOSE:
+         *mathml = new msiMencloseCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSUB:
+         *mathml = new msiMsubCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSUP:
+         *mathml = new msiMsupCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSUBSUP:
+         *mathml = new msiMsubsupCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MUNDER:
+         *mathml = new msiMunderCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MOVER:
+         *mathml = new msiMoverCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MUNDEROVER:
+         *mathml = new msiMunderoverCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MMULTISCRIPTS:
+         *mathml = new msiMmultiscriptsCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MTABLE:
+         *mathml = new msiMtableCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MLABELEDTR:
+         *mathml = new msiMlabeledtrCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MTR:
+         *mathml = new msiMtrCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MTD:
+         *mathml = new msiMtdCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MALIGNGROUP:
+         *mathml = new msiMaligngroupCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MALIGNMARK:
+         *mathml = new msiMalignmarkCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MACTION:
+         *mathml = new msiMactionCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MSI_INPUTBOX:
+          *mathml = new msiInputboxCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MSI_WHITESPACE:
+          *mathml = new msiWhitespaceCaret(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MSI_BIGOPERATOR:
+        {
+          nsCOMPtr<msiIBigOpInfo> bigOpInfo;
+          MSI_NewBigOpInfoImp(mathmlNode, offset, getter_AddRefs(bigOpInfo));
+          nsCOMPtr<nsIDOMNode> mmlNode;
+          PRUint32 bigOpOffset(msiIMathMLEditingBC::INVALID);
+          if (bigOpInfo)
+          {
+            bigOpInfo->GetMathmlNode(getter_AddRefs(mmlNode)); 
+            bigOpInfo->GetOffset(&bigOpOffset); 
+          }
+          else
+          {
+            mmlNode = mathmlNode;
+            bigOpOffset = offset;
+          }
+          *mathml = new msiBigOperatorCaret(mmlNode, bigOpOffset, bigOpInfo);
+        }
+        break;
+        default:
+          res = NS_ERROR_NO_INTERFACE;
+        break;
+      }  
+      if (res == NS_OK && *mathml == nsnull)
+        res = NS_ERROR_OUT_OF_MEMORY;
+      if (NS_SUCCEEDED(res) && *mathml)
+        NS_ADDREF(*mathml);
+    }
+  }   
+  return res;
+}
+
+
+NS_IMETHODIMP
+msiEditingManager::SupportsMathMLCaretInterface(nsIDOMNode* node, PRBool *supportsMathml)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  *supportsMathml = PR_FALSE;
+  if (node)
+  {
+    res = NS_OK;
+    nsCOMPtr<nsIDOMNode> dontcare;
+    PRUint32 dummyOffset(0);
+    PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(node, dummyOffset, dontcare, dummyOffset);
+    if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN)
+      *supportsMathml = PR_TRUE;
+  }   
+  return res;
+}
+//////////////////////
+
+NS_IMETHODIMP
+msiEditingManager::GetMathMLCoalesceInterface(nsIDOMNode* rawNode, 
+                                              PRUint32    rawOffset,
+                                              msiIMathMLCoalesce ** mathml)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  *mathml = nsnull;
+  if (rawNode)
+  {
+    res = NS_ERROR_NO_INTERFACE;
+    nsCOMPtr<nsIDOMNode> mathmlNode;
+    PRUint32 offset(rawOffset);
+    PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(rawNode, rawOffset, mathmlNode, offset);
+    if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN && mathmlNode)
+    {
+      res = NS_OK;
+      switch (mathmlNodeType)
+      {
+        case msiIMathMLEditingBC::MATHML_MN:
+          *mathml = new msiMnCoalesce(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MROW:
+          *mathml = new msiMrowCoalesce(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MI:
+        case msiIMathMLEditingBC::MATHML_MO:
+          *mathml = new msiMleafCoalesce(mathmlNode, offset, mathmlNodeType);
+        break;
+        case msiIMathMLEditingBC::MATHML_MATH:
+        case msiIMathMLEditingBC::MATHML_MTEXT:
+        case msiIMathMLEditingBC::MATHML_MSPACE:
+        case msiIMathMLEditingBC::MATHML_MS:
+        case msiIMathMLEditingBC::MATHML_MGLYPH:
+        case msiIMathMLEditingBC::MATHML_MROWFENCE:
+        case msiIMathMLEditingBC::MATHML_MROWBOUNDFENCE:
+        case msiIMathMLEditingBC::MATHML_MFRAC:
+        case msiIMathMLEditingBC::MATHML_MSQRT:
+        case msiIMathMLEditingBC::MATHML_MROOT:
+        case msiIMathMLEditingBC::MATHML_MSTYLE:
+        case msiIMathMLEditingBC::MATHML_MERROR:
+        case msiIMathMLEditingBC::MATHML_MPADDED:
+        case msiIMathMLEditingBC::MATHML_MPHANTOM:
+        case msiIMathMLEditingBC::MATHML_MFENCED:
+        case msiIMathMLEditingBC::MATHML_MENCLOSE:
+          *mathml = new msiMCoalesceBase(mathmlNode, offset, mathmlNodeType);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSUB:
+          *mathml = new msiMsubCoalesce(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MSUP:
+          *mathml = new msiMsupCoalesce(mathmlNode, offset);
+        break;
+        
+        case msiIMathMLEditingBC::MATHML_MSUBSUP:
+          *mathml = new msiMsubsupCoalesce(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MATHML_MUNDER:
+        case msiIMathMLEditingBC::MATHML_MOVER:
+        case msiIMathMLEditingBC::MATHML_MUNDEROVER:
+        case msiIMathMLEditingBC::MATHML_MMULTISCRIPTS:
+        case msiIMathMLEditingBC::MATHML_MTABLE:
+        case msiIMathMLEditingBC::MATHML_MLABELEDTR:
+        case msiIMathMLEditingBC::MATHML_MTR:
+        case msiIMathMLEditingBC::MATHML_MTD:
+        case msiIMathMLEditingBC::MATHML_MALIGNGROUP:
+        case msiIMathMLEditingBC::MATHML_MALIGNMARK:
+        case msiIMathMLEditingBC::MATHML_MACTION:
+          *mathml = new msiMCoalesceBase(mathmlNode, offset, mathmlNodeType);
+        break;
+        case msiIMathMLEditingBC::MSI_INPUTBOX:
+          *mathml = new msiInputboxCoalesce(mathmlNode, offset);
+        break;
+        case msiIMathMLEditingBC::MSI_BIGOPERATOR:
+        {
+          nsCOMPtr<msiIBigOpInfo> bigOpInfo;
+          MSI_NewBigOpInfoImp(mathmlNode, offset, getter_AddRefs(bigOpInfo));
+          nsCOMPtr<nsIDOMNode> mmlNode;
+          PRUint32 bigOpOffset(msiIMathMLEditingBC::INVALID);
+          if (bigOpInfo)
+          {
+            bigOpInfo->GetMathmlNode(getter_AddRefs(mmlNode)); 
+            bigOpInfo->GetOffset(&bigOpOffset); 
+          }
+          else
+          {
+            mmlNode = mathmlNode;
+            bigOpOffset = offset;
+          }
+          *mathml = new msiBigOpCoalesce(mmlNode, bigOpOffset, bigOpInfo);
+        }
+        break;
+        case msiIMathMLEditingBC::MSI_WHITESPACE:
+          *mathml = new msiMCoalesceBase(mathmlNode, offset, mathmlNodeType);
+        break;
+        default:
+          res = NS_ERROR_NO_INTERFACE;
+        break;
+      }  
+      if (res == NS_OK && *mathml == nsnull)
+        res = NS_ERROR_OUT_OF_MEMORY;
+      if (NS_SUCCEEDED(res) && *mathml)
+        NS_ADDREF(*mathml);
+    }
+  }   
+  return res;
+}
+
+//ljh TODO -- The inserting of Math into document will need more work
+// 1. When is it valid to insert math
+// 2. If inserting into a bold span, should the math inherit the bold, via mstyle.
+NS_IMETHODIMP
+msiEditingManager::InsertMath(nsIEditor * editor,
+                              nsISelection * selection, 
+                              nsIDOMNode* node, 
+                              PRUint32 offset,
+                              PRUint32 flags,
+                              PRBool   isDisplay)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr<nsIDOMNode> mathParent, parent, left, right;
+  if (node)
+    msiUtils::GetMathParent(node, mathParent);
+  if (mathParent)
+  {
+    PRUint16 nodeType;
+    nsCOMPtr<nsIDOMNode> theNode;
+    node->GetNodeType(&nodeType);
+    if (nodeType == nsIDOMNode::TEXT_NODE)
+      node->GetParentNode(getter_AddRefs(theNode));
+    else
+      theNode = node;  
+    nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
+    GetMathMLInsertionInterface(theNode, offset, getter_AddRefs(mathmlEditing));
+    if (mathmlEditing && editor)
+    {
+      PRBool isFeasible(PR_FALSE);
+      PRUint32 inquiryID = isDisplay ? msiIMathMLInsertion::INSERT_DISPLAY : 
+                                         msiIMathMLInsertion::INSERT_INLINE_MATH;
+      mathmlEditing->Inquiry(editor, inquiryID, &isFeasible);
+      if (isFeasible)
+        res = mathmlEditing->InsertMath(editor, selection, isDisplay, nsnull, nsnull, flags);
+      else
+      {
+        res = NS_OK;
+        //TODO -- message about can't insert object
+      }  
+    }  
+  }
+  else // not in math
+  {
+    res = DetermineParentLeftRight(node, offset, flags, parent, left, right);
+    if (NS_SUCCEEDED(res) && parent)
+    {
+      nsCOMPtr<nsIDOMElement> mathElement;
+      res = msiUtils::CreateMathElement(editor, isDisplay, PR_TRUE, flags, mathElement);
+      nsCOMPtr<nsIDOMNode> mathNode(do_QueryInterface(mathElement));
+      if (NS_SUCCEEDED(res) && mathNode)
+      {
+        if (left)
+          res = editor->ReplaceNode(left, node, parent);
+        res = editor->InsertNode(mathNode, parent, offset);
+        if (right)
+          res = editor->InsertNode(right, parent, offset+1);
+        if (NS_SUCCEEDED(res))
+          msiUtils::doSetCaretPosition(editor, selection, mathNode);
+      }
+    }  
+  }  
+  return res;
+}
+
+
+NS_IMETHODIMP
+msiEditingManager::InsertSymbol(nsIEditor * editor,
+                                nsISelection * selection, 
+                                nsIDOMNode* node, 
+                                PRUint32 offset,
+                                PRUint32 symbol)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSymbol");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateMathMLLeafElement(editor, symbol, 1, flags, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}      
+
+NS_IMETHODIMP
+msiEditingManager::InsertFraction(nsIEditor * editor,
+                                  nsISelection * selection, 
+                                  nsIDOMNode* node, 
+                                  PRUint32 offset,
+                                  const nsAString & lineThickness,
+                                  PRUint32 attrFlags)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFraction");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateMfrac(editor, nsnull, nsnull, PR_TRUE, flags, lineThickness, attrFlags, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}      
+
+NS_IMETHODIMP
+msiEditingManager::InsertBinomial(nsIEditor * editor,
+                                    nsISelection * selection,
+                                    nsIDOMNode * node,
+                                    PRUint32 offset,
+                                    const nsAString & opening,
+                                    const nsAString & closing,
+                                    const nsAString & lineThickness,
+                                    PRUint32 attrFlags)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertBinomial");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateBinomial(editor, nsnull, nsnull, PR_TRUE, flags, opening, closing, lineThickness, attrFlags, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}      
+
+NS_IMETHODIMP
+msiEditingManager::InsertSqRoot(nsIEditor * editor,
+                                nsISelection * selection, 
+                                nsIDOMNode* node, 
+                                PRUint32 offset)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSqRoot");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateMsqrt(editor, nsnull, PR_TRUE, flags, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}   
+
+NS_IMETHODIMP
+msiEditingManager::InsertRoot(nsIEditor * editor,
+                                nsISelection * selection, 
+                                nsIDOMNode* node, 
+                                PRUint32 offset)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSqRoot");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateMroot(editor, nsnull, nsnull, PR_TRUE, flags, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}   
+
+NS_IMETHODIMP
+msiEditingManager::InsertFence(nsIEditor* editor,
+                               nsISelection * selection,
+                               nsIDOMNode* node, 
+                               PRUint32 offset,
+                               const nsAString & open,
+                               const nsAString & close)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFence");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    PRUint32 attrFlags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateMRowFence(editor, nsnull, open, close, PR_TRUE, flags, attrFlags, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}                
+
+//TODO Are lim, limsup and such mathnames. How are scripts to be handled
+NS_IMETHODIMP
+msiEditingManager::InsertMathname(nsIEditor* editor,
+                                  nsISelection * selection,
+                                  nsIDOMNode* node, 
+                                  PRUint32 offset,
+                                  const nsAString & mathname)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMathname");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateMathname(editor, mathname, flags, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}                                                 
+
+NS_IMETHODIMP
+msiEditingManager::InsertEngineFunction(nsIEditor* editor,
+                                        nsISelection * selection,
+                                        nsIDOMNode* node, 
+                                        PRUint32 offset,
+                                        const nsAString & name)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMathname");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateEngineFunction(editor, name, flags, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}                                                 
+
+NS_IMETHODIMP
+msiEditingManager::InsertMatrix(nsIEditor * editor,
+                                nsISelection * selection,
+                                nsIDOMNode * node,
+                                PRUint32 offset,
+                                PRUint32 rows,
+                                PRUint32 cols,
+                                const nsAString & rowSignature)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSqRoot");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateMtable(editor, rows, cols, rowSignature, PR_TRUE, flags, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}   
+
+NS_IMETHODIMP
+msiEditingManager::InsertOperator(nsIEditor * editor,
+                                  nsISelection * selection,
+                                  nsIDOMNode * node,
+                                  PRUint32 offset,
+                                  const nsAString & symbol,
+                                  PRUint32 attrFlags,
+                                  const nsAString & leftspace,
+                                  const nsAString & rightspace,
+                                  const nsAString & minsize,
+                                  const nsAString & maxsize)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertOperator");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    PRUint32 caretPos = symbol.Length();
+    res = msiUtils::CreateMathOperator(editor, symbol, caretPos, flags, attrFlags, 
+                                       leftspace, rightspace, minsize, maxsize, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}
+
+
+NS_IMETHODIMP
+msiEditingManager::InsertScript(nsIEditor * editor,
+                                nsISelection * selection,
+                                nsIDOMNode * node,
+                                PRUint32 offset,
+                                PRBool isSup,
+                                const nsAString & scriptShift)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertOperator");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    nsCOMPtr<nsIDOMNode> dummy;
+    res = msiUtils::CreateMSubOrMSup(editor, isSup, dummy, dummy, PR_FALSE, PR_TRUE,
+                                      flags, scriptShift, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}
+
+NS_IMETHODIMP
+msiEditingManager::InsertDecoration(nsIEditor* editor,
+                                    nsISelection * selection,
+                                    nsIDOMNode* node, 
+                                    PRUint32 offset,
+                                    const nsAString & above,
+                                    const nsAString & below)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFence");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateDecoration(editor, nsnull, above, below, PR_TRUE, flags, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}                
+
+
+
+nsresult msiEditingManager::DetermineParentLeftRight(nsIDOMNode * node,
+                                                     PRUint32 & offset,
+                                                     PRUint32 & flags,
+                                                     nsCOMPtr<nsIDOMNode> & parent,
+                                                     nsCOMPtr<nsIDOMNode> & left,
+                                                     nsCOMPtr<nsIDOMNode> & right)
+{ 
+  nsresult res(NS_ERROR_FAILURE);
+  if (node)
+  {                                                   
+    PRUint16 nodeType;
+    node->GetNodeType(&nodeType);
+    if (nodeType == nsIDOMNode::TEXT_NODE)
+    {
+      node->GetParentNode(getter_AddRefs(parent));
+      if (parent && NodeSupportsMathChild(parent, PR_FALSE))
+      {
+        res = NS_OK;
+        PRUint32 index(0);
+        PRUint32 textlen(0);
+        msiUtils::GetIndexOfChildInParent(node, index);
+        nsCOMPtr<nsITextContent> text(do_QueryInterface(node));
+        if (text)
+          textlen = text->TextLength();
+        if (0 < offset && offset < textlen)
+        { 
+          msiUtils::CloneNode(node, right);
+          msiUtils::CloneNode(node, left);
+          nsCOMPtr<nsIDOMCharacterData> lfSideCharData(do_QueryInterface(left));
+          nsCOMPtr<nsIDOMCharacterData> rtSideCharData(do_QueryInterface(right));
+          if (lfSideCharData && rtSideCharData)
+          {
+            lfSideCharData->DeleteData(offset, textlen-offset);
+            rtSideCharData->DeleteData(0, offset);
+          }  
+        } 
+        if (0 < offset)
+          offset = index + 1; 
+      }
+      else
+        parent = nsnull;  
+    }
+    else if (NodeSupportsMathChild(node, PR_FALSE))
+    {
+      parent = node;
+      left = nsnull;
+      right = nsnull;
+      res = NS_OK;
+    }
+  }
+  return res;  
+}
+
+PRBool msiEditingManager::NodeSupportsMathChild(nsIDOMNode * node, PRBool displayed)
+{
+  //ljh TODO -- Where can math be inserted  -- Is this supposed to be determined via DTD???
+  PRBool rv(PR_FALSE);
+  if (node)
+  {
+    PRUint16 nodeType;
+    node->GetNodeType(&nodeType);
+    if (nodeType == nsIDOMNode::ELEMENT_NODE)
+     rv = PR_TRUE;
+  }
+  return rv;
+}
+
+PRUint32 
+msiEditingManager::GetMathMLNodeAndTypeFromNode(nsIDOMNode * rawNode, PRUint32 rawOffset,
+                                                nsCOMPtr<nsIDOMNode> & mathmlNode,
+                                                PRUint32 & offset)
+{
+  offset = rawOffset;
+  PRUint32 rv(msiIMathMLEditingBC::MATHML_UNKNOWN);
+  if (rawNode)
+  { 
+    nsAutoString localName, nsURI;
+    PRUint32 length(0);
+    nsCOMPtr<nsIDOMText> text(do_QueryInterface(rawNode));
+    nsCOMPtr<nsIDOMNode> parent;
+    if (text)
+    {
+      text->GetParentNode(getter_AddRefs(parent));
+      NS_ASSERTION(parent, "Yuck -- Get Parent node failed");
+      if (parent)
+        parent->GetNamespaceURI(nsURI);
+    }
+    else
+      rawNode->GetNamespaceURI(nsURI);
+    PRInt32 nsID(kNameSpaceID_Unknown);
+    msiNameSpaceUtils::GetNameSpaceID(nsURI, nsID);
+    if (nsID == kNameSpaceID_MathML)
+    { 
+      if (text)
+      { 
+        nsCOMPtr<nsITextContent> tc(do_QueryInterface(text));
+        if (tc && tc->IsOnlyWhitespace())
+        {
+          rv = msiIMathMLEditingBC::MSI_WHITESPACE; 
+          mathmlNode = rawNode;
+          length = 0;
+        }
+        else if (parent)
+        {
+          parent->GetLocalName(localName);
+          length = localName.Length();
+          mathmlNode = parent;
+        }
+      }
+      else
+      {
+        rawNode->GetLocalName(localName);
+        length = localName.Length();
+        mathmlNode = rawNode;
+      }
+      if (length)
+        rv = GetMMLNodeTypeFromLocalName(mathmlNode, localName);
+      if (rv == msiIMathMLEditingBC::MATHML_MROWBOUNDFENCE ||
+          rv == msiIMathMLEditingBC::MATHML_MROWFENCE)
+        SetMathmlNodeAndOffsetForMrowFence(localName, mathmlNode, offset);
+    }
+  }  
+  return rv;
+}
+
+PRBool msiEditingManager::NodeInMath(nsIDOMNode* node)
+{
+  PRBool rv(PR_FALSE);
+  NS_ASSERTION(node, "Null node passed to NodeInMath");
+  if (node)
+    SupportsMathMLInsertionInterface(node, &rv);
+  return rv;
+}
+nsresult msiEditingManager::EnsureMathWithSelectionCollapsed(nsIDOMNode * node)
+{
+  nsresult res(NS_OK);
+  if (!NodeInMath(node))
+  {
+    //TODO
+    res = NS_ERROR_FAILURE;
+  }
+  return res;
+  
+}
+
+nsresult
+msiEditingManager::InsertMathmlElement(nsIEditor * editor,
+                                       nsISelection * selection, 
+                                       nsIDOMNode* node, 
+                                       PRUint32 offset,
+                                       PRUint32 flags,
+                                       const nsCOMPtr<nsIDOMElement> & mathmlElement)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFraction");
+  if (editor && selection && node && mathmlElement)
+  {
+    res = EnsureMathWithSelectionCollapsed(node);
+    if (NS_SUCCEEDED(res))
+    {
+      nsCOMPtr<nsIDOMNode> newMathmlNode;
+      newMathmlNode = do_QueryInterface(mathmlElement);
+      NS_ASSERTION(newMathmlNode, "Failed to get nsIDOMNode interface from nsIDOMElement");
+      if (newMathmlNode)
+      {
+        nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
+        GetMathMLInsertionInterface(node, offset, getter_AddRefs(mathmlEditing));
+        if (mathmlEditing)
+        {
+          editor->BeginTransaction();
+          editor->SaveSelection(selection);
+          res = mathmlEditing->InsertNode(editor, selection, newMathmlNode, flags);
+          editor->EndTransaction();
+        }  
+      }
+    }
+  }
+  return res;
+}      
+
+PRUint32
+msiEditingManager::GetMMLNodeTypeFromLocalName(nsIDOMNode * mathmlNode, 
+                                               const nsAString & localName)
+{
+  PRUint32 rv(msiIMathMLEditingBC::MATHML_UNKNOWN);
+  PRUint32 length(localName.Length());
+  PRBool checkForBigOp(PR_FALSE);
+  if (length)
+  {
+    switch (length)
+    {
+      case 2:
+        if (msiEditingAtoms::mi->Equals(localName))
+        {
+          rv = msiIMathMLEditingBC::MATHML_MI;
+          nsCOMPtr<nsIDOMNamedNodeMap> attrMap;
+          mathmlNode->GetAttributes(getter_AddRefs(attrMap));
+          if (attrMap)
+          {
+            nsCOMPtr<nsIDOMNode> attrNode;
+            nsAutoString tempinput;
+            msiEditingAtoms::tempinput->ToString(tempinput);
+            attrMap->GetNamedItem(tempinput, getter_AddRefs(attrNode));
+            if (attrNode)
+            {
+              nsCOMPtr<nsIDOMAttr> attribute(do_QueryInterface(attrNode));
+              if (attribute)
+              {
+                nsAutoString value;
+                attribute->GetValue(value);
+	            if (msiEditingAtoms::msitrue->Equals(value))
+                  rv = msiIMathMLEditingBC::MSI_INPUTBOX;
+              }
+            }
+          }
+        }
+        else if (msiEditingAtoms::mn->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MN;
+        else if (msiEditingAtoms::mo->Equals(localName))
+        {
+          rv = GetMoNodeType(mathmlNode);
+          if (rv == msiIMathMLEditingBC::MATHML_MO)
+            checkForBigOp = PR_TRUE;
+        }
+        else if (msiEditingAtoms::ms->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MS;
+        break;
+      case 3:
+        if (msiEditingAtoms::mtr->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MTR;
+        else if (msiEditingAtoms::mtd->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MTD;
+        break;
+      case 4:
+        if (msiEditingAtoms::math->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MATH;
+        else if (msiEditingAtoms::mrow->Equals(localName))
+          rv = GetMRowNodeType(mathmlNode);
+        else if (msiEditingAtoms::msub->Equals(localName))
+        {
+          checkForBigOp = PR_TRUE;
+          rv = msiIMathMLEditingBC::MATHML_MSUB;
+        }
+        else if (msiEditingAtoms::msup->Equals(localName))
+        {
+          checkForBigOp = PR_TRUE;
+          rv = msiIMathMLEditingBC::MATHML_MSUP;
+        }
+        break;
+      case 5:
+        if (msiEditingAtoms::mfrac->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MFRAC;
+        else if (msiEditingAtoms::msqrt->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MSQRT;
+        else if (msiEditingAtoms::mroot->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MROOT;
+        else if (msiEditingAtoms::mtext->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MTEXT;
+        else if (msiEditingAtoms::mover->Equals(localName))
+        {
+          checkForBigOp = PR_TRUE;
+          rv = msiIMathMLEditingBC::MATHML_MOVER;
+        }
+        break;
+      case 6:
+        if (msiEditingAtoms::mspace->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MSPACE;
+        else if (msiEditingAtoms::mglyph->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MGLYPH;
+        else if (msiEditingAtoms::mstyle->Equals(localName))
+        {
+          checkForBigOp = PR_TRUE;
+          rv = msiIMathMLEditingBC::MATHML_MSTYLE;
+        }
+        else if (msiEditingAtoms::merror->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MERROR;
+        else if (msiEditingAtoms::munder->Equals(localName))
+        {
+          checkForBigOp = PR_TRUE;
+          rv = msiIMathMLEditingBC::MATHML_MUNDER;
+        }
+        else if (msiEditingAtoms::mtable->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MTABLE;
+        break;
+      case 7:
+        if (msiEditingAtoms::maction->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MACTION;
+        else if (msiEditingAtoms::mpadded->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MPADDED;
+        else if (msiEditingAtoms::mfenced->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MFENCED;
+        else if (msiEditingAtoms::msubsup->Equals(localName))
+        {
+          checkForBigOp = PR_TRUE;
+          rv = msiIMathMLEditingBC::MATHML_MSUBSUP;
+        }
+        break;
+      case 8:
+        if (msiEditingAtoms::mphantom->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MPHANTOM;
+        else if (msiEditingAtoms::menclose->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MENCLOSE;
+        break;
+      case 10:
+        if (msiEditingAtoms::munderover->Equals(localName))
+        {
+          checkForBigOp = PR_TRUE;
+          rv = msiIMathMLEditingBC::MATHML_MUNDEROVER;
+        }
+        else if (msiEditingAtoms::mlabeledtr->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MLABELEDTR;
+        else if (msiEditingAtoms::malignmark->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MALIGNMARK;
+        break;
+      case 11:
+        if (msiEditingAtoms::maligngroup->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MALIGNGROUP;
+        break;
+      case 13:
+        if (msiEditingAtoms::mmultiscripts->Equals(localName))
+          rv = msiIMathMLEditingBC::MATHML_MMULTISCRIPTS;
+        break;
+      default:
+          rv = msiIMathMLEditingBC::MATHML_UNKNOWN;
+        break;
+    }
+    if (checkForBigOp && IsBigOperator(mathmlNode, localName))
+      rv = msiIMathMLEditingBC::MSI_BIGOPERATOR;
+  }
+  return rv;
+}  
+
+PRUint32 msiEditingManager::GetMRowNodeType(nsIDOMNode* mathmlNode)
+{
+  if (!mathmlNode)
+    return msiIMathMLEditingBC::MATHML_UNKNOWN;
+  PRUint32 rv(msiIMathMLEditingBC::MATHML_MROW);
+  nsCOMPtr<nsIArray> children;
+  PRUint32 numKids(0);
+  nsresult res = msiUtils::GetNonWhitespaceChildren(mathmlNode, children);
+  if (NS_SUCCEEDED(res) && children)
+    res = children->GetLength(&numKids);
+  if (NS_SUCCEEDED(res) && numKids >= 3)
+  {
+    nsCOMPtr<nsIDOMNode> first;
+    nsCOMPtr<nsIDOMNode> last;
+    children->QueryElementAt(0, NS_GET_IID(nsIDOMNode), getter_AddRefs(first));
+    children->QueryElementAt(numKids-1, NS_GET_IID(nsIDOMNode), getter_AddRefs(last));
+    if (first && last)
+    {
+    
+      if (msiNameSpaceUtils::GetNameSpaceID(first) == kNameSpaceID_MathML &&
+          msiNameSpaceUtils::GetNameSpaceID(last) == kNameSpaceID_MathML)
+      { 
+        nsAutoString firstName, lastName;
+        first->GetLocalName(firstName);
+        last->GetLocalName(lastName);
+        if (msiEditingAtoms::mo->Equals(firstName) && msiEditingAtoms::mo->Equals(lastName))
+        {
+          nsCOMPtr<nsIDOMElement> firstElement(do_QueryInterface(first));
+          nsCOMPtr<nsIDOMElement> lastElement(do_QueryInterface(last));
+          if (firstElement && lastElement)
+          {
+            nsAutoString firstVal, lastVal, fence;
+            msiEditingAtoms::fence->ToString(fence);
+            firstElement->GetAttribute(fence, firstVal);
+            lastElement->GetAttribute(fence, lastVal);
+            if (msiEditingAtoms::msitrue->Equals(firstVal) && msiEditingAtoms::msitrue->Equals(lastVal))
+            {
+              nsAutoString form;
+              msiEditingAtoms::form->ToString(form);
+              firstElement->GetAttribute(form, firstVal);
+              lastElement->GetAttribute(form, lastVal);
+              if (msiEditingAtoms::prefix->Equals(firstVal) && msiEditingAtoms::postfix->Equals(lastVal))
+              {
+                nsAutoString msiBoundFence;
+                msiEditingAtoms::msiBoundFence->ToString(msiBoundFence);
+                firstElement->GetAttribute(msiBoundFence, firstVal);
+                lastElement->GetAttribute(msiBoundFence, lastVal);
+                if (msiEditingAtoms::msitrue->Equals(firstVal) && msiEditingAtoms::msitrue->Equals(lastVal))
+                  rv = msiIMathMLEditingBC::MATHML_MROWBOUNDFENCE;
+                else
+                  rv = msiIMathMLEditingBC::MATHML_MROWFENCE;
+              }
+            }
+          }
+        }
+      }  
+    }
+  }
+  return rv;
+}
+
+PRBool msiEditingManager::IsBigOperator(nsIDOMNode* mathmlNode, const nsAString & localName) 
+{
+  PRBool rv(PR_FALSE);
+  nsCOMPtr<nsIDOMNode> mo, mstyle, script;
+  PRUint32 scriptType(msiIMathMLEditingBC::MATHML_UNKNOWN);
+  rv = GetBigOpNodes(mathmlNode, localName, mo, mstyle, script, scriptType);
+  return rv; 
+}
+
+PRBool msiEditingManager::GetBigOpNodes(nsIDOMNode* mathmlNode, const nsAString & localName,
+                                        nsCOMPtr<nsIDOMNode> & mo, nsCOMPtr<nsIDOMNode> & mstyle,
+                                        nsCOMPtr<nsIDOMNode> & script, PRUint32 &scriptType) 
+{
+  PRBool rv(PR_FALSE);
+  nsresult res(NS_OK);
+  mo = nsnull;
+  mstyle = nsnull;
+  script = nsnull;
+  scriptType = msiIMathMLEditingBC::MATHML_UNKNOWN;
+  if (!mathmlNode)
+     return rv;
+  if (msiEditingAtoms::mo->Equals(localName)         || msiEditingAtoms::mstyle->Equals(localName) ||
+      msiEditingAtoms::munder->Equals(localName)     || msiEditingAtoms::mover->Equals(localName)  ||
+      msiEditingAtoms::munderover->Equals(localName) || msiEditingAtoms::msub->Equals(localName)   ||
+      msiEditingAtoms::msup->Equals(localName)       || msiEditingAtoms::msubsup->Equals(localName) )
+  {    
+    if (msiEditingAtoms::mo->Equals(localName))
+    {
+      mo = mathmlNode;
+      nsCOMPtr<nsIDOMNode> parent;
+      res = mo->GetParentNode(getter_AddRefs(parent));
+      if (NS_SUCCEEDED(res) && parent)
+      {
+        nsAutoString name;
+        parent->GetLocalName(name);
+        if (msiEditingAtoms::mstyle->Equals(name))
+        {
+          mstyle = parent;
+          parent = nsnull;
+          name.Truncate(0);
+          res = mstyle->GetParentNode(getter_AddRefs(parent));
+          if (NS_SUCCEEDED(res) && parent)
+            parent->GetLocalName(name);
+        }
+        if (msiEditingAtoms::munder->Equals(name)     || msiEditingAtoms::mover->Equals(name) ||
+            msiEditingAtoms::munderover->Equals(name) || msiEditingAtoms::msub->Equals(name) ||
+            msiEditingAtoms::msup->Equals(name)       || msiEditingAtoms::msubsup->Equals(name))
+          script = parent;
+      }
+    }
+    else if (msiEditingAtoms::mstyle->Equals(localName))
+    {
+      nsCOMPtr<nsIArray> children;
+      PRUint32 numKids(0);
+      nsresult res = msiUtils::GetNonWhitespaceChildren(mathmlNode, children);
+      if (NS_SUCCEEDED(res) && children)
+        res = children->GetLength(&numKids);
+      if (NS_SUCCEEDED(res) && numKids == 1)
+      {
+        nsCOMPtr<nsIDOMNode> kid;
+        res = children->QueryElementAt(0, NS_GET_IID(nsIDOMNode), getter_AddRefs(kid));
+        if (NS_SUCCEEDED(res) && kid)
+        {
+          nsAutoString kidName;
+          res = kid->GetLocalName(kidName);
+          if (NS_SUCCEEDED(res) && msiEditingAtoms::mo->Equals(kidName))
+          {
+            mo = kid;
+            mstyle = mathmlNode;
+          }
+        }
+      }
+      if (mstyle && mo)
+      {
+        nsCOMPtr<nsIDOMNode> parent;
+        nsAutoString name;
+        res = mstyle->GetParentNode(getter_AddRefs(parent));
+        if (NS_SUCCEEDED(res) && parent)
+          parent->GetLocalName(name);
+        if (msiEditingAtoms::munder->Equals(name)     || msiEditingAtoms::mover->Equals(name) ||
+            msiEditingAtoms::munderover->Equals(name) || msiEditingAtoms::msub->Equals(name) ||
+            msiEditingAtoms::msup->Equals(name)       || msiEditingAtoms::msubsup->Equals(name))
+          script = parent;
+      }
+    }
+    else // localname is one of the scripts
+    {
+      nsCOMPtr<nsIArray> children;
+      PRUint32 numKids(0);
+      nsresult res = msiUtils::GetNonWhitespaceChildren(mathmlNode, children);
+      if (NS_SUCCEEDED(res) && children)
+        res = children->GetLength(&numKids);
+      if (NS_SUCCEEDED(res) && numKids <= 3)
+      {
+        nsCOMPtr<nsIDOMNode> base;
+        res = children->QueryElementAt(0, NS_GET_IID(nsIDOMNode), getter_AddRefs(base));
+        if (NS_SUCCEEDED(res) && base)
+        {
+          nsAutoString name;
+          base->GetLocalName(name);
+          if (msiEditingAtoms::mo->Equals(name))
+          {
+            mo = base;
+            script = mathmlNode;
+          }
+          else if (msiEditingAtoms::mstyle->Equals(name))
+          {
+            nsCOMPtr<nsIArray> children;
+            PRUint32 numKids(0);
+            nsresult res = msiUtils::GetNonWhitespaceChildren(base, children);
+            if (NS_SUCCEEDED(res) && children)
+              res = children->GetLength(&numKids);
+            if (NS_SUCCEEDED(res) && numKids == 1)
+            {
+              nsCOMPtr<nsIDOMNode> kid;
+              res = children->QueryElementAt(0, NS_GET_IID(nsIDOMNode), getter_AddRefs(kid));
+              if (NS_SUCCEEDED(res) && kid)
+              {
+                nsAutoString kidName;
+                res = kid->GetLocalName(kidName);
+                if (NS_SUCCEEDED(res) && msiEditingAtoms::mo->Equals(kidName))
+                {
+                  mo = kid;
+                  mstyle = base;
+                  script = mathmlNode;
+                }
+              }
+            }
+          }
+        }  
+      }
+    }
+    if (mo)
+    {
+      //TODO --- should we only allow the fixed set of symbol from the dialog? 
+      //TODO --- should big ops have form ="prefix" set? 
+      nsCOMPtr<nsIDOMElement> moElement(do_QueryInterface(mo));
+      if (moElement)
+      {
+        nsAutoString value, largeop;
+        msiEditingAtoms::largeop->ToString(largeop);
+        res = moElement->GetAttribute(largeop,  value);
+        if (NS_SUCCEEDED(res))
+          rv = msiEditingAtoms::msitrue->Equals(value);
+      }
+      if (rv && mstyle)
+      {
+        nsCOMPtr<nsIDOMElement> styleElement(do_QueryInterface(mstyle));
+        if (styleElement)
+        {
+          nsAutoString value, displaystyle;
+          msiEditingAtoms::displaystyle->ToString(displaystyle);
+          res = styleElement->GetAttribute(displaystyle,  value);
+          if (NS_SUCCEEDED(res) && (msiEditingAtoms::msitrue->Equals(value) || 
+                                    msiEditingAtoms::msifalse->Equals(value)))
+          {
+            nsCOMPtr<nsIDOMNamedNodeMap> attrMap;
+            mstyle->GetAttributes(getter_AddRefs(attrMap));
+            PRUint32 numAttr(0);
+            if (attrMap)
+              attrMap->GetLength(&numAttr);
+            if (numAttr > 1)
+            {
+              //TODO -- do we care about other attributes which may be set -- which may conflict?
+            }
+          }
+          else
+          {
+            mstyle = nsnull;
+            script = nsnull;
+          }
+        }
+      }
+      if (script)
+      {
+        nsAutoString scriptName;
+        script->GetLocalName(scriptName);
+        if (msiEditingAtoms::munder->Equals(scriptName))
+          scriptType = msiIMathMLEditingBC::MATHML_MUNDER;
+        else if (msiEditingAtoms::mover->Equals(scriptName))
+          scriptType = msiIMathMLEditingBC::MATHML_MOVER;
+        else if (msiEditingAtoms::munderover->Equals(scriptName))
+          scriptType = msiIMathMLEditingBC::MATHML_MUNDEROVER;
+        else if (msiEditingAtoms::msup->Equals(scriptName))
+          scriptType = msiIMathMLEditingBC::MATHML_MSUP;
+        else if (msiEditingAtoms::msubsup->Equals(scriptName))
+          scriptType = msiIMathMLEditingBC::MATHML_MSUBSUP;
+        else if (msiEditingAtoms::msub->Equals(scriptName))
+          scriptType = msiIMathMLEditingBC::MATHML_MSUB;
+      }
+    }
+    if (!rv)
+    {
+      mo = nsnull;
+      mstyle = nsnull;
+      script = nsnull;
+    }
+  }
+  return rv;
+}
+
+
+PRUint32 msiEditingManager::GetMoNodeType(nsIDOMNode * mathmlNode)
+{
+  PRUint32 mathmlType(msiIMathMLEditingBC::MATHML_MO);
+  PRUint32 parentType(msiIMathMLEditingBC::MATHML_UNKNOWN);
+  nsCOMPtr<nsIDOMNode> parent;
+  if (mathmlNode)
+    mathmlNode->GetParentNode(getter_AddRefs(parent));
+  if (parent)
+  {
+    PRUint32 parentType = GetMRowNodeType(parent);
+    if (parentType == msiIMathMLEditingBC::MATHML_MROWBOUNDFENCE ||
+        parentType == msiIMathMLEditingBC::MATHML_MROWFENCE)
+    {
+      nsCOMPtr<nsIArray> children;
+      PRUint32 numKids(0);
+      nsresult res = msiUtils::GetNonWhitespaceChildren(parent, children);
+      if (NS_SUCCEEDED(res) && children)
+        res = children->GetLength(&numKids);
+      if (NS_SUCCEEDED(res) && numKids >= 3)
+      {
+        nsCOMPtr<nsIDOMNode> first;
+        nsCOMPtr<nsIDOMNode> last;
+        children->QueryElementAt(0, NS_GET_IID(nsIDOMNode), getter_AddRefs(first));
+        children->QueryElementAt(numKids-1, NS_GET_IID(nsIDOMNode), getter_AddRefs(last));
+        if (first && last && (first == mathmlNode || last == mathmlNode))
+          mathmlType = parentType;   
+      }  
+    }   
+  }
+  return mathmlType;    
+}
+
+void msiEditingManager::SetMathmlNodeAndOffsetForMrowFence(const nsAString & localName,
+                                                           nsCOMPtr<nsIDOMNode> & mathmlNode,
+                                                           PRUint32 & offset)
+{
+  if (msiEditingAtoms::mo->Equals(localName))
+  {
+    PRUint32 index(0);
+    nsCOMPtr<nsIDOMNode> mrowFence;
+    mathmlNode->GetParentNode(getter_AddRefs(mrowFence));
+    msiUtils::GetIndexOfChildInParent(mathmlNode, index);
+    if(offset <= msiIMathMLEditingBC::LAST_VALID)
+    {
+      if (offset > 0)
+        index += 1;
+      offset = index;
+    }
+    mathmlNode = mrowFence;  
+  }
+}                                                        

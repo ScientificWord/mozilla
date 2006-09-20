@@ -1,0 +1,67 @@
+// Copyright (c) 2004, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsISupports.idl"
+#include "nsIDOMNode.idl"
+#include "nsIEditor.idl"
+
+[uuid(06f30674-dfc6-42f3-8cf8-eb2eaeb857bc)]
+interface msiIMathMLEditingBC : nsISupports
+{
+  const unsigned short  MATHML_UNKNOWN       = 0;
+  const unsigned short  MATHML_MATH          = 1;
+  const unsigned short  MATHML_MI            = 2;
+  const unsigned short  MATHML_MN            = 3;
+  const unsigned short  MATHML_MO            = 4;
+  const unsigned short  MATHML_MTEXT         = 5;
+  const unsigned short  MATHML_MSPACE        = 6;
+  const unsigned short  MATHML_MS            = 7;
+  const unsigned short  MATHML_MGLYPH        = 8;
+  const unsigned short  MATHML_MROW          = 9;
+  const unsigned short  MATHML_MFRAC         = 10;
+  const unsigned short  MATHML_MSQRT         = 11;
+  const unsigned short  MATHML_MROOT         = 12;
+  const unsigned short  MATHML_MSTYLE        = 13;
+  const unsigned short  MATHML_MERROR        = 14;
+  const unsigned short  MATHML_MPADDED       = 15;
+  const unsigned short  MATHML_MPHANTOM      = 16;
+  const unsigned short  MATHML_MFENCED       = 17;
+  const unsigned short  MATHML_MENCLOSE      = 18;
+  const unsigned short  MATHML_MSUB          = 19;
+  const unsigned short  MATHML_MSUP          = 20;
+  const unsigned short  MATHML_MSUBSUP       = 21;
+  const unsigned short  MATHML_MUNDER        = 22;
+  const unsigned short  MATHML_MOVER         = 23;
+  const unsigned short  MATHML_MUNDEROVER    = 24;
+  const unsigned short  MATHML_MMULTISCRIPTS = 25;
+  const unsigned short  MATHML_MTABLE        = 26;
+  const unsigned short  MATHML_MLABELEDTR    = 27;
+  const unsigned short  MATHML_MTR           = 28;
+  const unsigned short  MATHML_MTD           = 29;
+  const unsigned short  MATHML_MALIGNGROUP   = 30;
+  const unsigned short  MATHML_MALIGNMARK    = 31;
+  const unsigned short  MATHML_MACTION       = 32;
+  const unsigned short  MATHML_MROWFENCE     = 33;
+  const unsigned short  MSI_INPUTBOX         = 34;
+  const unsigned short  MSI_WHITESPACE       = 35;
+  const unsigned short  MSI_BIGOPERATOR      = 36;
+  const unsigned short  MATHML_MROWBOUNDFENCE  = 37;
+  
+  readonly attribute unsigned long        mathmlType;
+  readonly attribute nsIDOMNode           mathmlNode;
+  readonly attribute unsigned long        numKids;
+           attribute unsigned long        offset;
+           
+  /* INVALID CARET POSITION, CHILD INDEX, or OFFSET */
+  const unsigned long  INVALID    = 0xFFFFFFF0;
+  const unsigned long  LAST_VALID = 0xFFFFFFEF;
+  
+  /* Used to set offset to right most valid offset during construction. */
+  const unsigned long  RIGHT_MOST = 0xFFFFFFF1;
+  
+  /* Used to indicate that the caret should be place directly to the left or right of relevant node */
+  const unsigned long TO_LEFT = 0xFFFFFFF2;         
+  const unsigned long TO_RIGHT = 0xFFFFFFF3;         
+};
+
+
+

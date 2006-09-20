@@ -1,0 +1,40 @@
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsIDOMNode.idl"
+#include "nsIEditor.idl"
+#include "nsIArray.idl"
+
+// Used to coalesce the incoming node into an existing node, the coalesced node
+// is returned via coalescedNode. If the node doesn't coalesce then coalescedNode
+// should be returned as null. Typically, the nodes being coalesced are not in
+// the document, that is before a node is inserted into a document, we will asked
+// if it can be coalesced into one of the nodes in its neighborhood. Coalescing 
+// should maintain an existing caret position mark attribute, but should not set
+// the caret position mark attribute.
+
+//TODO 1/06: Coalesce is not considering attributes when determining of two nodes coalesce. 
+//           so the attributes of node (except for caret mark) are being thrown away.
+
+[uuid(c85b8088-8540-4c51-985d-96394fbf805d)]
+interface msiIMathMLCoalesce : nsISupports
+{
+
+  void Coalesce(in  nsIEditor   editor,
+                in  nsIDOMNode  node,
+                out nsIArray coalesced);
+  
+  /* PrepareForCoalesce flags */
+  const unsigned long PFCflags_none = 0;  
+  const unsigned long PFCflags_removeRedundantMrows = 1;
+  const unsigned long PFCflags_Recursive1           = 2;
+  const unsigned long PFCflags_RecursiveFully       = 4;
+    
+  void PrepareForCoalesce(in  nsIEditor    editor,
+                          in unsigned long pfcFlags,
+                          out nsIArray     beforeOffset,
+                          out nsIArray     afterOffset);
+                   
+};
+
+
+

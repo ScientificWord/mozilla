@@ -1,0 +1,163 @@
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsISupports.idl"
+interface nsIDOMNode;
+interface nsIDOMEvent;
+interface nsIEditor;
+interface nsISelection;
+interface nsIPresShell;
+interface nsIArray;
+interface nsIDOMMouseEvent;
+
+[uuid(cef19390-0ade-452e-aaf7-7a1f53725484)]
+interface msiIMathMLCaret : nsISupports
+{
+  /* Caret movement operations */
+  const unsigned long    CARET_NONE                 = 0;
+  const unsigned long    CARET_LEFT                 = 1;
+  const unsigned long    CARET_RIGHT                = 2;
+  const unsigned long    CARET_UP                   = 3;
+  const unsigned long    CARET_DOWN                 = 4;
+  const unsigned long    CARET_NODELEFT             = 5;
+  const unsigned long    CARET_NODERIGHT            = 6;
+  const unsigned long    CARET_NODEUP               = 7;
+  const unsigned long    CARET_NODEDOWN             = 8;
+  const unsigned long    CARET_OBJECTLEFT           = 9;
+  const unsigned long    CARET_OBJECTRIGHT          = 10;
+  const unsigned long    CARET_OBJECTUP             = 11;
+  const unsigned long    CARET_OBJECTDOWN           = 12;
+  const unsigned long    SELECT_LEFT                = 13;
+  const unsigned long    SELECT_RIGHT               = 14;
+  const unsigned long    SELECT_UP                  = 15;
+  const unsigned long    SELECT_DOWN                = 16;
+  const unsigned long    SELECT_NODELEFT            = 17;
+  const unsigned long    SELECT_NODERIGHT           = 18;
+  const unsigned long    SELECT_NODEUP              = 19;
+  const unsigned long    SELECT_NODEDOWN            = 20;
+  const unsigned long    SELECT_OBJECTLEFT          = 21;
+  const unsigned long    SELECT_OBJECTRIGHT         = 22;
+  const unsigned long    SELECT_OBJECTUP            = 23;
+  const unsigned long    SELECT_OBJECTDOWN          = 24;
+  
+  void PrepareForCaret(in nsIEditor editor);
+  
+  
+  /* inquiry ids used in calls to Inquiry
+  */
+  const unsigned long    INQUIRY_NONE                = 0;
+  const unsigned long    AT_RIGHT_EQUIV_TO_0         = 1;
+  const unsigned long    AT_LEFT_EQUIV_TO_RIGHT_MOST = 2;
+  const unsigned long    CAN_SELECT_CHILD_LEAF       = 3;
+  
+  /* call Inquiry to ask node/parent/child a question
+  */
+  PRBool Inquiry(in nsIEditor editor,
+                 in PRUint32 inquiryID);
+  
+  
+
+  /* Caret movement flags used when a mathml object passes
+   * along a command to its parent or a child.
+  */
+  const unsigned long    FLAGS_NONE                 = 0;
+  const unsigned long    FROM_CHILD                 = 1;
+  const unsigned long    FROM_PARENT                = 2;
+  const unsigned long    FROM_LEFT                  = 4;
+  const unsigned long    FROM_RIGHT                 = 8;
+  
+  void GetNodeAndOffsetFromMouseEvent(in nsIEditor editor,
+                                      in nsIPresShell presShell,
+                                      in PRUint32 flags,
+                                      in nsIDOMMouseEvent mouseEvent,
+                                      out nsIDOMNode node,
+                                      out PRUint32 offset);
+ 
+  void Accept(in nsIEditor editor, 
+              in PRUint32  flags,
+              out nsIDOMNode node,
+              out PRUint32 offset);
+
+  void GetSelectableMathFragment(in nsIEditor editor,
+                                 in nsIDOMNode start,
+                                 in PRUint32   startOffset,
+                                 in nsIDOMNode end,
+                                 in PRUint32   endOffset,                             
+                                 out nsIDOMNode fragStart,
+                                 out PRUint32   fragStartOffset,
+                                 out nsIDOMNode fragEnd,
+                                 out PRUint32   fragEndOffset);                            
+
+  void AdjustSelectionPoint(in nsIEditor editor,
+                            in PRBool leftSelPoint,
+                            out nsIDOMNode selectionNode,
+                            out PRUint32   selectionOffset,
+                            out msiIMathMLCaret parentCaret);
+                            
+  void SplitAtDecendents(in nsIEditor editor,
+                         in nsIDOMNode leftDecendent,
+                         in PRUint32 leftOffset,
+                         in nsIDOMNode rightDecendent,
+                         in PRUint32 rightOffset,
+                         out PRUint32   mmlNodeLeftOffset,
+                         out PRUint32   mmlNodeRightOffset,
+                         out nsIDOMNode left_leftPart,
+                         out nsIDOMNode left_rightPart,
+                         out nsIDOMNode right_leftPart,
+                         out nsIDOMNode right_rightPart);
+  
+  void Split(in nsIEditor editor,
+             in nsIDOMNode appendLeft,
+             in nsIDOMNode appendRight,
+             out nsIDOMNode left,
+             out nsIDOMNode right);
+
+  void SetupDeletionTransactions(in nsIEditor editor,
+                                 in PRUint32 startOffset,
+                                 in PRUint32 endOffset,
+                                 in nsIDOMNode start,
+                                 in nsIDOMNode end,
+                                 out nsIArray transactionList);
+
+  void CaretLeft(in nsIEditor editor,
+                 in PRUint32 flags,
+                 out nsIDOMNode node,
+                 out PRUint32 offset);
+                 
+  void CaretRight(in nsIEditor editor,
+                  in PRUint32 flags,
+                  out nsIDOMNode node,
+                  out PRUint32 offset);
+              
+  void CaretUp(in nsIEditor editor,
+               in PRUint32 flags,
+               out nsIDOMNode node,
+               out PRUint32 offset);
+              
+  void CaretDown(in nsIEditor editor,
+                 in PRUint32 flags,
+                 out nsIDOMNode node,
+                 out PRUint32 offset);
+              
+  void CaretObjectLeft(in nsIEditor editor,
+                       in PRUint32 flags,
+                       out nsIDOMNode node,
+                       out PRUint32 offset);
+                 
+  void CaretObjectRight(in nsIEditor editor,
+                        in PRUint32 flags,
+                        out nsIDOMNode node,
+                        out PRUint32 offset);
+              
+  void CaretObjectUp(in nsIEditor editor,
+                     in PRUint32 flags,
+                     out nsIDOMNode node,
+                     out PRUint32 offset);
+              
+  void CaretObjectDown(in nsIEditor editor,
+                       in PRUint32 flags,
+                       out nsIDOMNode node,
+                       out PRUint32 offset);
+};
+
+
+

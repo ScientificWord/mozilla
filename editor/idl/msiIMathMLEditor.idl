@@ -1,0 +1,92 @@
+// Copyright (c) 2004, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsISupports.idl"
+#include "msiIMathMLInsertion.idl"
+#include "msiIMathMLCaret.idl"
+#include "msiIMathMLCoalesce.idl"
+#include "msiIMathMLEditingBC.idl"
+
+interface nsITransaction;
+
+[scriptable, uuid(aec23fe1-2a0f-4fa8-9896-3a1c8a6fcb1b)]
+interface msiIMathMLEditor : nsISupports
+{
+  void InsertInlineMath();
+  void InsertDisplay();
+  void InsertSuperscript();
+  void InsertSubscript();
+  void InsertFraction(in DOMString lineWidth, in unsigned long attrFlags);
+  void InsertBinomial(in DOMString openingDelim, in DOMString closingDelim,
+                        in DOMString lineWidth, in unsigned long attrFlags);
+  void InsertSqRoot();
+  void InsertRoot();
+  void InsertSymbol(in unsigned long symbol);
+  void InsertMathname(in DOMString name);
+  void InsertEngineFunction(in DOMString name);
+  void InsertFence(in DOMString open,
+                   in DOMString close);
+  void InsertMatrix(in unsigned long rows, 
+                    in unsigned long cols,
+                    in DOMString rowSignature);
+  void InsertOperator(in DOMString symbol, in unsigned long attrFlags,
+                      in DOMString leftspace, in DOMString rightspace,
+                      in DOMString minsize, in DOMString maxsize);
+  void InsertDecoration(in DOMString above, 
+                        in DOMString below);
+                   
+  /* GetMathMLEditingBC returns a msiIMathMLEditingBC object based
+   * on the aNode. A pointer to aNode and the offset are stored in the 
+   * msiMathMLEditingBC.
+   */
+  [noscript]void GetMathMLEditingBC(in nsIDOMNode aNode,
+                          in unsigned long offset,
+                          out msiIMathMLEditingBC editingBC);
+                   
+  /* GetMathMLInsertionInterface returns a msiIMathMLInsertion object based
+   * on the aNode. A pointer to aNode and the offset are stored in the 
+   * msiMathMLEditingBC. The parameter callToEditForm is used to determine if
+   */
+  [noscript]void GetMathMLInsertionInterface(in nsIDOMNode aNode,
+                                   in unsigned long offset,
+                                   out msiIMathMLInsertion mathml);
+  
+  /* GetMathMLCaretInterface returns a msiIMathMLCaret object based
+   * on the aNode. A pointer to aNode and the offset are stored in the 
+   * msiMathMLEditingBC. The parameter callToEditForm is used to determine if
+   */
+  [noscript]void GetMathMLCaretInterface(in nsIDOMNode aNode,
+                               in unsigned long offset,
+                               out msiIMathMLCaret mathml);
+                               
+  /* GetMathMLCoalesceInterface returns a msiIMathMLCoalesce object based
+   * on the aNode. A pointer to aNode and the offset are stored in the 
+   * msiMathMLEditingBC.
+   */
+  [noscript]void GetMathMLCoalesceInterface(in nsIDOMNode aNode,
+                                  in unsigned long offset,
+                                  out msiIMathMLCoalesce mathml);
+
+  /*  returns -1 if node1/offset1 < node2/offset2
+   *  returns  0 if node1/offset1 == node2/offset2
+   *  returns  1 if node1/offset1 > node2/offset2
+   */                                       
+  [noscript] void ComparePoints(in nsIDOMNode node1,
+                                 in PRUint32 offset1,
+                                 in nsIDOMNode node2,
+                                 in PRUint32 offset2,
+                                 out PRInt32 comparison);
+                                 
+  [noscript] void CreateReplaceTransaction(in nsIDOMNode newKid,
+                                           in nsIDOMNode oldKid,
+                                           in nsIDOMNode parent,
+                                           out nsITransaction transaction);
+                                            
+  [noscript] void CreateDeleteTransaction(in nsIDOMNode node,
+                                          out nsITransaction transaction);                                 
+                                                                            
+  [noscript] void CreateInsertTransaction(in nsIDOMNode node,
+                                          in nsIDOMNode parent,
+                                          in PRUint32 offset,
+                                          out nsITransaction transaction);                                 
+                                 
+};
