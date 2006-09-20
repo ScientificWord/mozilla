@@ -277,6 +277,7 @@
     MODULE(embedcomponents)                  \
     MODULE(Browser_Embedding_Module)         \
     MODULE(nsEditorModule)                   \
+    MODULE(msieditingModule)                 \
     OJI_MODULES                              \
     ACCESS_MODULES                           \
     MODULE(appshell)                         \
