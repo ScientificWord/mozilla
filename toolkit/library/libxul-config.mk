@@ -115,6 +115,7 @@ COMPONENT_LIBS += \
 	toolkitcomps \
 	pipboot \
 	pipnss \
+    msiediting \
 	$(NULL)
 
 ifdef MOZ_PLUGINS
