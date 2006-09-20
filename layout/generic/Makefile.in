@@ -199,6 +199,7 @@ LOCAL_INCLUDES += \
 		-I$(srcdir)/../../content/base/src \
 		-I$(srcdir)/../../content/html/content/src \
 		$(MOZ_CAIRO_CFLAGS) \
+        -I$(srcdir)/msi \
 		$(NULL)
 
 libs::
