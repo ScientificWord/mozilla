@@ -2075,6 +2075,11 @@ NS_IMETHODIMP nsFrame::HandleDrag(nsPresContext* aPresContext,
                                   nsGUIEvent*     aEvent,
                                   nsEventStatus*  aEventStatus)
 {
+  //TODO ljh: I don't want the default behavior if the event is handled by msiEditor.
+  NS_ENSURE_ARG_POINTER(aEventStatus);
+  if (nsEventStatus_eConsumeNoDefault == *aEventStatus) {
+    return NS_OK;
+  }
   PRBool  selectable;
   PRUint8 selectStyle;
   IsSelectable(&selectable, &selectStyle);
