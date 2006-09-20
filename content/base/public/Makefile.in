@@ -82,6 +82,7 @@ endif
 
 SDK_XPIDLSRCS   = \
 		nsISelection.idl  \
+		msiISelection.idl  \
 		$(NULL)
 
 XPIDLSRCS	= \
