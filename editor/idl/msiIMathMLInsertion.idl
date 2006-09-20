@@ -1,0 +1,63 @@
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsIDOMNode.idl"
+#include "nsIEditor.idl"
+#include "nsISelection.idl"
+#include "nsIArray.idl"
+
+[uuid(d6d43c82-eed5-4513-8bbb-b3253a03131b)]
+interface msiIMathMLInsertion : nsISupports
+{
+  /* Flags used by mathml insertion object.
+  */
+  const unsigned long    FLAGS_NONE                = 0;
+  const unsigned long    FLAGS_LEFTSIDE            = 1;
+  const unsigned long    FLAGS_RIGHTSIDE           = 2;
+  const unsigned long    FLAGS_FROM_NODE           = 4;
+  const unsigned long    FLAGS_CARET_MARKED        = 8;
+  const unsigned long    FLAGS_FEASIBILITY_QUERIED = 16;
+  
+  /* Convenient composites 
+  */
+  const unsigned long FLAGS_NODE_LEFT = FLAGS_FROM_NODE | FLAGS_LEFTSIDE;
+  const unsigned long FLAGS_NODE_RIGHT = FLAGS_FROM_NODE | FLAGS_RIGHTSIDE;
+  const unsigned long FLAGS_NODE_LEFT_RIGHT = FLAGS_FROM_NODE | FLAGS_RIGHTSIDE | FLAGS_LEFTSIDE;
+  
+  
+  /* inquiry ids used in calls to Inquiry
+  */
+  const unsigned long    INQUIRY_NONE         = 0;
+  const unsigned long    INSERT_INLINE_MATH   = 1;
+  const unsigned long    INSERT_DISPLAY       = 2;
+  const unsigned long    IS_MROW_REDUNDANT    = 3;
+  
+  /* call Inquiry to ask node/parent/child a question
+  */
+  PRBool Inquiry(in nsIEditor editor,
+                 in PRUint32 inquiryID);
+                                 
+  /* call InsertNode to insert an mathml node  */
+  void InsertNode(in nsIEditor      editor,
+                  in nsISelection   selection,
+                  in nsIDOMNode     node,
+                  in PRUint32       flags);
+ /* call InsertNodes to insert an array of nodes, possible deleting the 
+    existing node at the insertion point */                
+  void InsertNodes(in nsIEditor      editor,
+                  in nsISelection   selection,
+                  in nsIArray       nodeArray,
+                  in PRBool         deleteExisting,
+                  in PRUint32       flags);
+                  
+  /* call InsertMath to insert an base math node */
+  
+  void InsertMath(in nsIEditor      editor,
+                  in nsISelection   selection,
+                  in PRBool         isDisplay,
+                  in nsIDOMNode     left,
+                  in nsIDOMNode     right,
+                  in PRUint32       flags);
+};
+
+
+

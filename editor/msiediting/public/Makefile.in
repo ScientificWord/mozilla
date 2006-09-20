@@ -1,0 +1,17 @@
+# Copyright (c) 2004, MacKichan Software, Inc.  All rights reserved.
+
+DEPTH		= ../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE		= msiediting
+
+EXPORTS		= \
+		msiEditingManagerCID.h \
+		$(NULL)
+
+include $(topsrcdir)/config/rules.mk
+

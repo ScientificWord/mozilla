@@ -107,6 +107,9 @@ class nsRangeUpdater
     nsresult SelAdjInsertNode(nsIDOMNode *aParent, PRInt32 aPosition);
     nsresult SelAdjDeleteNode(nsIDOMNode *aNode);
     nsresult SelAdjSplitNode(nsIDOMNode *aOldRightNode, PRInt32 aOffset, nsIDOMNode *aNewLeftNode);
+    nsresult SelAdjReplaceNode(nsIDOMNode *aNewNode, 
+                               nsIDOMNode *aOldNode,
+                               nsIDOMNode * aParent);
     nsresult SelAdjJoinNodes(nsIDOMNode *aLeftNode, 
                              nsIDOMNode *aRightNode, 
                              nsIDOMNode *aParent, 

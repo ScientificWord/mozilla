@@ -99,6 +99,7 @@
 #include "CreateElementTxn.h"
 #include "InsertElementTxn.h"
 #include "DeleteElementTxn.h"
+#include "ReplaceElementTxn.h"
 #include "InsertTextTxn.h"
 #include "DeleteTextTxn.h"
 #include "DeleteRangeTxn.h"
@@ -114,6 +115,8 @@
 #include "nsINameSpaceManager.h"
 #include "nsIHTMLDocument.h"
 #include "nsIParserService.h"
+//ljh
+#include "msiIEditActionListenerExtension.h"
 
 #define NS_ERROR_EDITOR_NO_SELECTION NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_EDITOR,1)
 #define NS_ERROR_EDITOR_NO_TEXTNODE  NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_EDITOR,2)
@@ -1367,6 +1370,98 @@ NS_IMETHODIMP nsEditor::InsertNode(nsIDOMNode * aNode,
     }
   }
 
+  return result;
+}
+
+NS_IMETHODIMP nsEditor::ReplaceNode(nsIDOMNode * aNewChild,
+                                    nsIDOMNode * aOldChild,
+                                    nsIDOMNode * aParent )
+{
+  PRInt32 i;
+  nsIEditActionListener *listener;
+  nsAutoRules beginRulesSniffing(this, kOpReplaceNode, nsIEditor::eNone); //ljh i think eNone is correct???
+
+  if (mActionListeners)
+  {
+    for (i = 0; i < mActionListeners->Count(); i++)
+    {
+      listener = (nsIEditActionListener *)mActionListeners->ElementAt(i);
+      if (listener)
+      {
+        nsCOMPtr<msiIEditActionListenerExtension> msiListener(do_QueryInterface(listener));
+        if (msiListener)
+          msiListener->WillReplaceNode(aNewChild, aOldChild, aParent);
+      }  
+    }
+  }
+
+  ReplaceElementTxn *txn;
+  nsresult result = CreateTxnForReplaceElement(aNewChild, aOldChild, aParent, &txn);
+  if (NS_SUCCEEDED(result))  
+  {
+    result = DoTransaction(txn);  
+  }
+  // The transaction system (if any) has taken ownwership of txn
+  NS_IF_RELEASE(txn);
+
+  mRangeUpdater.SelAdjReplaceNode(aNewChild, aOldChild, aParent);
+
+  if (mActionListeners)
+  {
+    for (i = 0; i < mActionListeners->Count(); i++)
+    {
+      listener = (nsIEditActionListener *)mActionListeners->ElementAt(i);
+      if (listener)
+      {
+        nsCOMPtr<msiIEditActionListenerExtension> msiListener(do_QueryInterface(listener));
+        if (msiListener)
+        msiListener->DidReplaceNode(aNewChild, aOldChild, aParent, result);
+      }  
+    }
+  }
+
+  return result;
+}
+
+NS_IMETHODIMP nsEditor::SaveSelection(nsISelection * selection)
+{
+
+//ljh TODO -- do we need this listner stuff???
+//  PRInt32 i;
+//  nsIEditActionListener *listener;
+//  nsAutoRules beginRulesSniffing(this, kOpReplaceNode, nsIEditor::eNone); //ljh i think eNone is correct???
+//
+//  if (mActionListeners)
+//  {
+//    for (i = 0; i < mActionListeners->Count(); i++)
+//    {
+//      listener = (nsIEditActionListener *)mActionListeners->ElementAt(i);
+//      if (listener)
+//        listener->WillReplaceNode(aNewChild, aOldChild, aParent);
+//    }
+//  }
+
+  PlaceholderTxn *txn;
+  nsresult result = CreateTxnForSaveSelection(selection, &txn);
+  if (NS_SUCCEEDED(result))  
+  {
+    result = DoTransaction(txn);  
+  }
+  // The transaction system (if any) has taken ownwership of txn
+  NS_IF_RELEASE(txn);
+
+//  mRangeUpdater.SelAdjReplaceNode(aNewChild, aOldChild, aParent);
+//
+//  if (mActionListeners)
+//  {
+//    for (i = 0; i < mActionListeners->Count(); i++)
+//    {
+//      listener = (nsIEditActionListener *)mActionListeners->ElementAt(i);
+//      if (listener)
+//        listener->DidReplaceNode(aNewChild, aOldChild, aParent, result);
+//    }
+//  }
+//
   return result;
 }
 
@@ -4810,6 +4905,44 @@ NS_IMETHODIMP nsEditor::CreateTxnForInsertElement(nsIDOMNode * aNode,
   return result;
 }
 
+NS_IMETHODIMP nsEditor::CreateTxnForReplaceElement(nsIDOMNode * aNewChild,
+                                                   nsIDOMNode * aOldChild,
+                                                   nsIDOMNode * aParent,
+                                                   ReplaceElementTxn ** aTxn)
+{
+  nsresult result = NS_ERROR_NULL_POINTER;
+  if (aParent && aNewChild && aOldChild && aTxn)
+  {
+    result = TransactionFactory::GetNewTransaction(ReplaceElementTxn::GetCID(), (EditTxn **)aTxn);
+    if (NS_SUCCEEDED(result)) {
+      result = (*aTxn)->Init(aNewChild, aOldChild, aParent, this);
+    }
+  }
+  return result;
+}
+
+NS_IMETHODIMP nsEditor::CreateTxnForSaveSelection(nsISelection * selection,
+                                               PlaceholderTxn ** aTxn)
+{
+  nsresult res = NS_ERROR_NULL_POINTER;
+  if (selection && aTxn)
+  {
+    res = TransactionFactory::GetNewTransaction(PlaceholderTxn::GetCID(), (EditTxn **)aTxn);
+    if (NS_SUCCEEDED(res) && *aTxn) 
+    {
+      nsSelectionState * selState = new nsSelectionState();
+      if (selState)
+      {
+        res = selState->SaveSelection(selection);
+        if (NS_SUCCEEDED(res)) 
+          res = (*aTxn)->Init(nsnull, selState, this);
+      }
+      else
+        res = NS_ERROR_OUT_OF_MEMORY;
+    }
+  }
+  return res;
+}                                      
 NS_IMETHODIMP nsEditor::CreateTxnForDeleteElement(nsIDOMNode * aElement,
                                              DeleteElementTxn ** aTxn)
 {

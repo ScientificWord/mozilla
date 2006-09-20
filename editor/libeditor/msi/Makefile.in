@@ -1,0 +1,61 @@
+# Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+
+DEPTH		= ../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE		= editor
+LIBRARY_NAME	= msieditor_s
+LIBXUL_LIBRARY	= 1
+
+EXPORTS = msiLayoutAtoms.h \
+          $(NULL)
+
+REQUIRES = xpcom \
+		   string \
+		   dom \
+		   layout \
+		   locale \
+		   unicharutil \
+		   content \
+		   txmgr \
+		   htmlparser \
+		   necko \
+		   pref \
+		   gfx \
+		   widget \
+           view \
+           msiediting \
+           js \
+           xpconnect \
+           txtsvc \
+		   $(NULL)
+
+
+
+CPPSRCS  = \
+           msiEditor.cpp \
+           msiEditorMouseListener.cpp \
+           msiEditorMouseMotionListener.cpp \
+           $(NULL)
+
+ifdef ENABLE_EDITOR_API_LOG
+CPPSRCS += msiEditorLog.cpp \
+           $(NULL)
+
+DEFINES += -DENABLE_EDITOR_API_LOG
+endif
+           
+
+# don't want the shared lib; force the creation of a static lib.
+FORCE_STATIC_LIB = 1
+
+include $(topsrcdir)/config/rules.mk
+
+INCLUDES        += -I$(topsrcdir)/editor/libeditor/base \
+                   -I$(topsrcdir)/editor/libeditor/html	\
+                   -I$(topsrcdir)/editor/msiediting/src	\
+                   -I$(topsrcdir)/editor/libeditor/text

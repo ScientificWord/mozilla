@@ -53,6 +53,7 @@
 
 #ifndef MOZILLA_PLAINTEXT_EDITOR_ONLY
 #include "nsHTMLEditor.h"
+#include "msiEditor.h"
 #include "nsTextServicesDocument.h"
 #include "nsTextServicesCID.h"
 #endif
@@ -200,10 +201,10 @@ nsEditorCommandTableConstructor(nsISupports *aOuter, REFNSIID aIID,
 #ifndef MOZILLA_PLAINTEXT_EDITOR_ONLY
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsTextServicesDocument)
 #ifdef ENABLE_EDITOR_API_LOG
-#include "nsHTMLEditorLog.h"
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsHTMLEditorLog)
+#include "msiEditorLog.h"
+NS_GENERIC_FACTORY_CONSTRUCTOR(msiEditorLog)
 #else
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsHTMLEditor)
+NS_GENERIC_FACTORY_CONSTRUCTOR(msiEditor)
 #endif
 #endif
 
@@ -219,13 +220,12 @@ static const nsModuleComponentInfo components[] = {
 #ifndef MOZILLA_PLAINTEXT_EDITOR_ONLY
 #ifdef ENABLE_EDITOR_API_LOG
     { "HTML Editor", NS_HTMLEDITOR_CID,
-      "@mozilla.org/editor/htmleditor;1", nsHTMLEditorLogConstructor, },
+      "@mozilla.org/editor/htmleditor;1", msiEditorLogConstructor, },
 #else
     { "HTML Editor", NS_HTMLEDITOR_CID,
-      "@mozilla.org/editor/htmleditor;1", nsHTMLEditorConstructor, },
+      "@mozilla.org/editor/htmleditor;1", msiEditorConstructor, },
 #endif
 #endif
-
     { "Editor Controller", NS_EDITORCONTROLLER_CID,
       "@mozilla.org/editor/editorcontroller;1",
       nsEditorControllerConstructor, },
