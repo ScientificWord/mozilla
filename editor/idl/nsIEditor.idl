@@ -27,8 +27,7 @@
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
  * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
+ * in which case the provisions of the GPL or the LGPL are applicable instead * of those above. If you wish to allow use of your version of this file only
  * under the terms of either the GPL or the LGPL, and not to allow others to
  * use your version of this file under the terms of the MPL, indicate your
  * decision by deleting the provisions above and replace them with the notice
@@ -489,11 +488,28 @@ interface nsIEditor  : nsISupports
   void deleteNode(in nsIDOMNode child);
 
   /** 
+   * replaceNode replace oldNode with newNode in parent
+   * No checking is done to verify the legality of the insertion.
+   * That is the responsibility of the caller.
+   * @param newNode  The new DOM Node to be inserted.
+   * @param oldNode  The old DOM Node to be replaced.
+   * @param parent   The parent DOM node
+   */
+  void replaceNode(in nsIDOMNode newNode,
+                   in nsIDOMNode oldNode,
+
+                   in nsIDOMNode parent);
+  /** 
+   * save the selection for undo purposes
+   */
+  void saveSelection(in nsISelection selection);                    
+
+  /** 
    * markNodeDirty() sets a special dirty attribute on the node.
    * Usually this will be called immediately after creating a new node.
    * @param aNode      The node for which to insert formatting.
    */
-  void markNodeDirty(in nsIDOMNode node);
+   void markNodeDirty(in nsIDOMNode node);
 
 /* ---------- direction controller ---------- */
 

@@ -1,0 +1,37 @@
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsISupports.idl"
+
+[scriptable, uuid(66a1e9af-9d53-4b12-9cc4-fba67db314bb)]
+interface msiIMMLEditDefines : nsISupports
+{
+//MathML Object Attribute flags:
+  const unsigned long    MO_ATTR_none                 =         0;
+  const unsigned long    MO_ATTR_prefix               =         1;
+  const unsigned long    MO_ATTR_infix                =         2;
+  const unsigned long    MO_ATTR_postfix              =         4;
+  const unsigned long    MO_ATTR_stretchy_T           =         8;
+  const unsigned long    MO_ATTR_stretchy_F           =      0x10;  
+  const unsigned long    MO_ATTR_fence_T              =      0x20;
+  const unsigned long    MO_ATTR_fence_F              =      0x40;
+  const unsigned long    MO_ATTR_accent_T             =      0x80;
+  const unsigned long    MO_ATTR_accent_F             =     0x100;
+  const unsigned long    MO_ATTR_largeop_T            =     0x200;
+  const unsigned long    MO_ATTR_largeop_F            =     0x400;
+  const unsigned long    MO_ATTR_separator_T          =     0x800;
+  const unsigned long    MO_ATTR_separator_F          =    0x1000;
+  const unsigned long    MO_ATTR_movablelimits_T      =    0x2000;
+  const unsigned long    MO_ATTR_movablelimits_F      =    0x4000;
+  const unsigned long    MO_ATTR_symmetric_T          =    0x8000;
+  const unsigned long    MO_ATTR_symmetric_F          =   0x10000;
+  const unsigned long    MO_ATTR_autoLimits           =   0x20000;
+  const unsigned long    MO_ATTR_atRightLimits        =   0x40000;
+  const unsigned long    MO_ATTR_aboveBelowLimits     =   0x80000;
+  const unsigned long    MO_ATTR_limitPlacementFlags  =  MO_ATTR_atRightLimits | MO_ATTR_aboveBelowLimits;
+  const unsigned long    MO_ATTR_autoSize             =  0x100000;
+  const unsigned long    MO_ATTR_displaySize          =  0x200000;
+  const unsigned long    MO_ATTR_smallSize            =  0x400000;
+  const unsigned long    MO_ATTR_sizeFlags            =  MO_ATTR_displaySize | MO_ATTR_smallSize;
+  const unsigned long    MO_ATTR_binomialFence        =  0x800000;
+  const unsigned long    MO_ATTR_boundFence           = 0x1000000;
+};

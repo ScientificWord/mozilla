@@ -66,6 +66,18 @@ XPIDLSRCS	= \
 		nsIURIRefObject.idl \
 		nsIContentFilter.idl \
 		nsPIEditorTransaction.idl \
+        msiIMathMLEditor.idl \
+        msiIMathMLEditRules.idl \
+        msiIEditingManager.idl \
+        msiIMathMLEditingBC.idl \
+        msiIMathMLInsertion.idl \
+        msiIMathMLCaret.idl \
+        msiIMrowEditing.idl \
+        msiIMMLEditDefines.idl \
+        msiIMathMLCoalesce.idl \
+        msiIBigOpInfo.idl \
+        msiIMouse.idl \
+        msiIEditActionListenerExtension.idl \
 		$(NULL)
 
 include $(topsrcdir)/config/rules.mk

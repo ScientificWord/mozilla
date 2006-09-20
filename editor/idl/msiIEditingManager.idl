@@ -1,0 +1,209 @@
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsISupports.idl"
+#include "msiIMathMLInsertion.idl"
+#include "msiIMathMLCaret.idl"
+#include "msiIMathMLEditingBC.idl"
+#include "msiIMathMLCoalesce.idl"
+#include "nsIEditor.idl"
+#include "nsISelection.idl"
+
+%{ C++
+
+#define MSI_EDITING_MANAGER_CONTRACTID "@mackichan.com/editingmanager;1"
+
+%} C++
+
+/**
+ * The msiIEditingManager interface.
+ * <P>
+ * This interface is implemented by an object that wants to
+ * add editing behavior to mathml elements.
+ */
+[uuid(ddb42f92-5fe1-4999-a979-ed9c5a9edcd9)]
+interface msiIEditingManager : nsISupports
+{
+  /**
+   * Call getMathMLEditingBC to get the msiMathMLEditingBC (Base Class) interface associated
+   * to aNode
+  */
+
+  void getMathMLEditingBC(in nsIDOMNode aNode,
+                          in unsigned long offset,
+                          out msiIMathMLEditingBC editingBC);
+                                  
+  /**
+   * Call getMathMLInsertionInterface to get the msiMathMLInsertion interface associated
+   * to aNode
+  */
+  void getMathMLInsertionInterface(in nsIDOMNode aNode,
+                                   in unsigned long offset,
+                                   out msiIMathMLInsertion mathml);
+                                 
+  /**
+   * Call supportsMathMLInsertionInterface to determine if a node can be associated to a msiMathML 
+   * insertion interface. In particular, determine if a node is in math.
+  */
+  void supportsMathMLInsertionInterface(in nsIDOMNode aNode,
+                                        out boolean   supportsMathml);
+ 
+  /**
+   * Call getMathMLCaretInterface to get the msiMathMLCaret interface associated
+   * to aNode. This interface is used to move the caret or modify the selection.
+  */
+  void getMathMLCaretInterface(in nsIEditor editor,
+                               in nsIDOMNode aNode,
+                               in unsigned long offset,
+                               out msiIMathMLCaret mathml);
+                                 
+  /**
+   * Call supportsMathMLCaretInterface to determine if a node can be associated to a msiMathML 
+   * caret interface.
+  */
+  void supportsMathMLCaretInterface(in nsIDOMNode aNode,
+                                    out boolean   supportsMathml);
+ 
+ 
+  /**
+   * Call getMathMLCoalesceInterface to get the msiMathMLCoalesce interface associated
+   * to aNode
+  */
+  void getMathMLCoalesceInterface(in nsIDOMNode aNode,
+                                 in unsigned long offset,
+                                 out msiIMathMLCoalesce mathml);
+ 
+  /**
+   * Call insertMath to create inline or dispaly mathml math tag. In some cases this may just
+   * absorb the caret to the left or right into an existing math tag.
+  */
+  void insertMath(in nsIEditor editor,
+                  in nsISelection selection,
+                  in nsIDOMNode node,
+                  in PRUint32 offset,
+                  in PRUint32 flags,
+                  in PRBool isdisplay);                                      
+  /**
+   * Call insertFraction to create a fraction and insert based on node and offset
+  */
+  void insertFraction(in nsIEditor editor,
+                      in nsISelection selection,
+                      in nsIDOMNode node,
+                      in PRUint32 offset,
+                      in DOMString lineThickness,
+                      in PRUint32 attrFlags);
+ 
+  /**
+   * Call insertBinomial to create a binomial with surrounding fence created from "opening" and "closing" 
+     and linethickness "lineThickness", with any required size attributes reflected in "attrFlags"; 
+     insert based on node and offset
+  */
+  void insertBinomial(in nsIEditor editor,
+                      in nsISelection selection,
+                      in nsIDOMNode node,
+                      in PRUint32 offset,
+                      in DOMString opening,
+                      in DOMString closing,
+                      in DOMString lineThickness,
+                      in PRUint32 attrFlags);
+ 
+  /**
+   * Call insertSqRoot to create a square root and insert based on node and offset
+  */
+  void insertSqRoot(in nsIEditor editor,
+                    in nsISelection selection,
+                    in nsIDOMNode node,
+                    in PRUint32 offset);
+                    
+  /**
+   * Call insertRoot to create a root and insert based on node and offset
+  */
+  void insertRoot(in nsIEditor editor,
+                  in nsISelection selection,
+                  in nsIDOMNode node,
+                  in PRUint32 offset);
+                    
+  /**
+   * Call insertFence to create a fence construct and insert based on node and offset
+   * opening, closing and separators are specified
+  */
+  void insertFence(in nsIEditor editor,
+                   in nsISelection  selection,
+                   in nsIDOMNode node,
+                   in PRUint32 offset,
+                   in DOMString open,
+                   in DOMString close);
+                   
+  /**
+   * Call insertSymbol to create a math leaf node (mi, mo, mn) from symbol
+   * and insert based on node and offset. 
+   * Infrastructure will determine the mathml type (mi, mo, mn)
+  */
+  void insertSymbol(in nsIEditor  editor,
+                    in nsISelection selection,
+                    in nsIDOMNode node,
+                    in PRUint32 offset,
+                    in PRUint32 symbol);
+                   
+  /**
+   * Call insertMathname to create a mathname object (sin, ln, lim? etc) from the 
+   * string mathname and insert based on node and offset.
+  */
+  void insertMathname(in nsIEditor editor,
+                      in nsISelection selection,
+                      in nsIDOMNode node,
+                      in PRUint32 offset,
+                      in DOMString mathname);
+                      
+  /**
+   * Call insertEngineFunction to create a mathname object which is an engine function,  
+   * string mathname and insert based on node and offset.
+  */
+  void insertEngineFunction(in nsIEditor editor,
+                            in nsISelection selection,
+                            in nsIDOMNode node,
+                            in PRUint32 offset,
+                            in DOMString name);
+                      
+  /**
+   * Call insertMatrix to create a Matrix/Mtable of dimension rows by cols 
+   * insert based on node and offset.
+  */
+  void insertMatrix(in nsIEditor editor,
+                    in nsISelection selection,
+                    in nsIDOMNode node,
+                    in PRUint32 offset,
+                    in PRUint32 rows,
+                    in PRUint32 cols,
+                    in DOMString rowSignature);
+
+  /**
+   * Call insertOperator to create an operator (mo) from symbol with attributes attrFlags,
+     leftspace, rightspace, minsize, maxsize . The insert based on node and offset.
+  */
+  void insertOperator(in nsIEditor editor,
+                      in nsISelection selection,
+                      in nsIDOMNode node,
+                      in PRUint32 offset,
+                      in DOMString symbol,
+                      in unsigned long attrFlags,
+                      in DOMString leftspace,                                 
+                      in DOMString rightspace,                                 
+                      in DOMString minsize,                                 
+                      in DOMString maxsize);
+  
+  void insertScript(in nsIEditor editor,
+                    in nsISelection selection,
+                    in nsIDOMNode node,
+                    in PRUint32 offset,
+                    in PRBool isSup,
+                    in DOMString scriptShift);
+              
+  void insertDecoration(in nsIEditor editor,
+                        in nsISelection  selection,
+                        in nsIDOMNode node,
+                        in PRUint32 offset,
+                        in DOMString above,
+                        in DOMString below);
+                        
+};                                 
+

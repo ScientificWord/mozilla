@@ -1,0 +1,12 @@
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsISupports.idl"
+
+[uuid(30c8bc19-d99b-4b07-ad13-d9376782e269)]
+interface msiIMouse  : nsISupports
+{ 
+  readonly attribute PRBool mayDrag;
+};
+
+
+

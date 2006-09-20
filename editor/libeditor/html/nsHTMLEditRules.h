@@ -48,6 +48,7 @@
 #include "nsEditorUtils.h"
 #include "TypeInState.h"
 #include "nsReadableUtils.h"
+#include "msiIEditActionListenerExtension.h"
 
 class nsVoidArray;
 class nsIDOMElement;
@@ -67,7 +68,8 @@ struct StyleCache : public PropItem
 
 #define SIZE_STYLE_TABLE 19
 
-class nsHTMLEditRules : public nsIHTMLEditRules, public nsTextEditRules, public nsIEditActionListener
+class nsHTMLEditRules : public nsIHTMLEditRules, public nsTextEditRules, public nsIEditActionListener,
+                        public msiIEditActionListenerExtension
 {
 public:
 
@@ -113,6 +115,10 @@ public:
   NS_IMETHOD DidDeleteRange(nsIDOMRange *aRange);
   NS_IMETHOD WillDeleteSelection(nsISelection *aSelection);
   NS_IMETHOD DidDeleteSelection(nsISelection *aSelection);
+  
+  // msiIEditActionListenerExtension methods
+  NS_IMETHOD WillReplaceNode(nsIDOMNode *aNewNode, nsIDOMNode *aOldNode, nsIDOMNode *aParent);
+  NS_IMETHOD DidReplaceNode(nsIDOMNode *aNewNode, nsIDOMNode *aOldNode, nsIDOMNode *aParent, nsresult aResult);
 
 protected:
 
