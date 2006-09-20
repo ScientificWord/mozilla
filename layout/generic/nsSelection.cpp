@@ -183,6 +183,9 @@ struct CachedOffsetForFrame {
   PRPackedBool mCanCacheFrameOffset;    // cached frame offset is valid?
 };
 
+//ljh
+class msiTypedSelection;
+
 class nsTypedSelection : public nsISelection,
                          public nsISelectionPrivate,
                          public nsSupportsWeakReference
@@ -252,6 +255,10 @@ public:
 
 private:
   friend class nsAutoScrollTimer;
+  
+  //ljh
+  friend class msiTypedSelection;
+  
 
   nsresult DoAutoScrollView(nsPresContext *aPresContext,
                             nsIView *aView,
@@ -516,6 +523,10 @@ NS_IMPL_ADDREF(nsAutoScrollTimer)
 NS_IMPL_RELEASE(nsAutoScrollTimer)
 NS_IMPL_QUERY_INTERFACE1(nsAutoScrollTimer, nsITimerCallback)
 
+//ljh
+#include "msiTypedSelection.cpp"
+
+
 nsresult NS_NewSelection(nsFrameSelection **aFrameSelection);
 
 nsresult NS_NewSelection(nsFrameSelection **aFrameSelection)
@@ -532,7 +543,8 @@ nsresult NS_NewDomSelection(nsISelection **aDomSelection);
 
 nsresult NS_NewDomSelection(nsISelection **aDomSelection)
 {
-  nsTypedSelection *rlist = new nsTypedSelection;
+  //ljh nsTypedSelection *rlist = new nsTypedSelection;
+  msiTypedSelection *rlist = new msiTypedSelection;
   if (!rlist)
     return NS_ERROR_OUT_OF_MEMORY;
   *aDomSelection = (nsISelection *)rlist;
@@ -757,7 +769,8 @@ nsFrameSelection::nsFrameSelection()
     mDomSelections[i] = nsnull;
   }
   for (i = 0;i<nsISelectionController::NUM_SELECTIONTYPES;i++){
-    mDomSelections[i] = new nsTypedSelection(this);
+    //ljh mDomSelections[i] = new nsTypedSelection(this);
+    mDomSelections[i] = new msiTypedSelection(this);
     if (!mDomSelections[i])
       return;
     NS_ADDREF(mDomSelections[i]);
