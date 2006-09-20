@@ -98,6 +98,9 @@ protected:
   NS_IMETHOD CreateTxnsToDeleteContent(nsIDOMNode *aParent, 
                                              PRUint32 aOffset, 
                                              nsIEditor::EDirection aAction);
+  nsresult GetMathParent(nsIDOMNode * node, nsCOMPtr<nsIDOMNode> & mathParent);
+  nsresult GetIndexOfChildInParent(nsIDOMNode * child, PRUint32 &index);
+                                             
   
 protected:
   

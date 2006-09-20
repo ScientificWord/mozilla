@@ -1,0 +1,17 @@
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsISupports.idl"
+#include "nsIEditor.idl"
+
+//ljh TODO mrow wear many hats in MathML -- they may require special editing behavior
+[uuid(90af9cac-209f-46ce-a0b0-f1eec63d518f)]
+interface msiIMrowEditing  : nsISupports
+{ 
+  boolean isStructural();
+  
+  boolean isRedundant(in nsIEditor editor,
+                      in PRBool    offsetOnBoundary);
+};
+
+
+

@@ -71,6 +71,8 @@ class ChangeAttributeTxn;
 class CreateElementTxn;
 class InsertElementTxn;
 class DeleteElementTxn;
+class PlaceholderTxn;
+class ReplaceElementTxn;
 class InsertTextTxn;
 class DeleteTextTxn;
 class SplitElementTxn;
@@ -119,6 +121,7 @@ public:
     kOpSplitNode,
     kOpJoinNode,
     kOpDeleteSelection,
+    kOpReplaceNode,
     // text commands
     kOpInsertBreak    = 1000,
     kOpInsertText     = 1001,
@@ -219,6 +222,17 @@ protected:
                                        PRInt32      aOffset,
                                        InsertElementTxn ** aTxn);
 
+  /** create a transaction for replacing as a child of aParent.
+    */
+  NS_IMETHOD CreateTxnForReplaceElement(nsIDOMNode * aNewChld,
+                                        nsIDOMNode * aOldChild,
+                                        nsIDOMNode * aParent,
+                                        ReplaceElementTxn ** aTxn);
+  /** create a transaction for storing the selection state.
+    */
+  NS_IMETHOD CreateTxnForSaveSelection(nsISelection * selection,
+                                        PlaceholderTxn ** aTxn);
+                                        
   /** create a transaction for removing aElement from its parent.
     */
   NS_IMETHOD CreateTxnForDeleteElement(nsIDOMNode * aElement,
@@ -333,7 +347,7 @@ protected:
 
 
   // install the event listeners for the editor 
-  nsresult InstallEventListeners();
+  virtual nsresult InstallEventListeners();
 
   virtual nsresult CreateEventListeners() = 0;
 

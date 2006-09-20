@@ -2710,6 +2710,24 @@ nsTextServicesDocument::JoinNodes(nsIDOMNode  *aLeftNode,
   return NS_OK;
 }
 
+// ljh TODO -- what to do here?????
+nsresult
+nsTextServicesDocument::ReplaceNode(nsIDOMNode *aNewNode,
+                                   nsIDOMNode *aOldNode,
+                                   nsIDOMNode *aParent)
+{
+  return NS_OK;
+}
+
+
+// ljh TODO -- what to do here?????
+nsresult
+nsTextServicesDocument::SaveSelection(nsISelection * selection)
+{
+  return NS_OK;
+}
+
+
 nsresult
 nsTextServicesDocument::CreateContentIterator(nsIDOMRange *aRange, nsIContentIterator **aIterator)
 {

@@ -1,0 +1,29 @@
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsISupports.idl"
+#include "nsIEditor.idl"
+
+[uuid(81f256c3-d7f4-485c-9f1d-8e2acbfe26b2)]
+interface msiIBigOpInfo  : nsISupports
+{ 
+  const unsigned long BOFlag_none = 0;
+  const unsigned long BOFlag_limits_right = 1;
+  const unsigned long BOFlag_limits_above_below = 2;
+  const unsigned long BOFlag_textstyle = 4;
+  const unsigned long BOFlag_displaystyle = 8;
+  
+  readonly attribute nsIDOMNode rawMathmlNode;
+  readonly attribute unsigned long rawOffset;
+  readonly attribute nsIDOMNode mo;
+  readonly attribute nsIDOMNode mstyle;
+  readonly attribute nsIDOMNode script;
+  readonly attribute nsIDOMNode mathmlNode;
+  readonly attribute unsigned long offset;
+  readonly attribute unsigned long flags;
+  readonly attribute unsigned long scriptType;
+  readonly attribute boolean useSubSupLimits;
+  
+};
+
+
+

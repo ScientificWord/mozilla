@@ -1,0 +1,74 @@
+# Copyright (c) 2004, MacKichan Software, Inc.  All rights reserved.
+
+DEPTH		= ../../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE		= msiediting
+LIBXUL_LIBRARY	= 1
+LIBRARY_NAME	= msi_mml_insertion_s
+REQUIRES	= xpcom \
+            string \
+            content \
+            dom \
+            editor \
+            widget \
+            layout \
+            gfx \
+            $(NULL)
+
+CPPSRCS		= \
+    msiInputbox.cpp \
+    msiMaction.cpp \
+    msiMaligngroup.cpp \
+    msiMalignmark.cpp \
+    msiMath.cpp \
+    msiMInsertionBase.cpp \
+    msiMenclose.cpp \
+    msiMerror.cpp \
+    msiMfenced.cpp \
+    msiMfrac.cpp \
+    msiMglyph.cpp \
+    msiMi.cpp \
+    msiMlabeledtr.cpp \
+    msiMleaf.cpp \
+    msiMmultiscripts.cpp \
+    msiMn.cpp \
+    msiMo.cpp \
+    msiMover.cpp \
+    msiMpadded.cpp \
+    msiMphantom.cpp \
+    msiMroot.cpp \
+    msiMrow.cpp \
+    msiMrowFence.cpp \
+    msiMrowBoundFence.cpp \
+    msiMs.cpp \
+    msiMspace.cpp \
+    msiMsqrt.cpp \
+    msiMstyle.cpp \
+    msiMsub.cpp \
+    msiMsubsup.cpp \
+    msiMsup.cpp \
+    msiMtable.cpp \
+    msiMtd.cpp \
+    msiMtext.cpp \
+    msiMtr.cpp \
+    msiMunder.cpp \
+    msiMunderover.cpp \
+    msiMContainer.cpp \
+    msiFracRoot.cpp \
+    msiScript.cpp \
+    msiWhitespace.cpp \
+    msiUnderAndOrOver.cpp \
+    msiBigOperator.cpp \
+		$(NULL)
+    
+# don't want the shared lib; force the creation of a static lib.
+FORCE_STATIC_LIB = 1
+
+include $(topsrcdir)/config/rules.mk
+
+INCLUDES        += -I$(srcdir)/.. -I$(srcdir)/../coalesce
