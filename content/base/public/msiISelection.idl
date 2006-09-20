@@ -1,0 +1,30 @@
+// Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
+
+#include "nsISupports.idl"
+
+/**
+ * MSI Interface, an extension of nsISelection.idl, for manipulating and querying the current selected range
+ * of nodes within the document.
+ *
+ * @status FROZEN
+ * @version 1.0
+ */
+interface nsIDOMNode; 
+ 
+[uuid(c0f3b745-26ba-466e-8f8e-e9c4a7c33d86)]
+interface msiISelection : nsISupports
+{
+  const unsigned long  INVALID_OFFSET  = 0xFFFFFFFF;
+
+  readonly attribute nsIDOMNode msiAnchorNode;
+  readonly attribute unsigned long msiAnchorOffset;
+  readonly attribute nsIDOMNode msiFocusNode;
+  readonly attribute unsigned long msiFocusOffset;
+  
+  void Set(in nsIDOMNode startNode, in unsigned long startOffset,
+           in nsIDOMNode endNode, in unsigned long endOffset,
+           in nsIDOMNode focusNode, in unsigned long focusOffset,
+           in nsIDOMNode anchorNode, in unsigned long anchorOffset);
+  void GetMouseDown(out PRBool isDown);           
+  void SetMouseDown(in  PRBool isDown);           
+};
