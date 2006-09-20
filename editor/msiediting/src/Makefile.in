@@ -1,0 +1,92 @@
+# Copyright (c) 2004, MacKichan Software, Inc.  All rights reserved.
+
+DEPTH		= ../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE		= msiediting
+LIBRARY_NAME	= msiediting
+EXPORT_LIBRARY = 1
+IS_COMPONENT	= 1
+LIBXUL_LIBRARY	= 1
+GRE_MODULE	= 1
+MODULE_NAME  = msieditingModule
+
+PACKAGE_FILE = msiediting.pkg
+
+
+LAYOUT_LIBS = \
+		$(DIST)/lib/$(LIB_PREFIX)gkhtmlbase_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkhtmldoc_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkhtmlforms_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkhtmlstyle_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkhtmltable_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkxulbase_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkbase_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkconbase_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkconevents_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkconhtmlcon_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkconhtmldoc_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkconhtmlstyle_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkconxmlcon_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkconxmldoc_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkconxbl_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkconxuldoc_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkconshared_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkview_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkmathmlcon_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)gkmathmlbase_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)jsdombase_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)jsdomevents_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)jsurl_s.$(LIB_SUFFIX) \
+		$(NULL)
+
+
+EXTRA_DSO_LDOPTS = \
+    $(MOZ_COMPONENT_LIBS) \
+	$(TK_LIBS) \
+	$(LAYOUT_LIBS) \
+	$(DIST)/lib/gkgfx.$(LIB_SUFFIX) \
+    $(NULL)
+
+REQUIRES  = xpcom \
+            string \
+            content \
+            dom \
+            editor \
+            widget \
+	        layout \
+		    txmgr \
+            gfx \
+            widget \
+            $(NULL)
+
+CPPSRCS    = \
+    msiEditingManager.cpp \
+    msiEditingManagerFactory.cpp \
+    msiMEditingBase.cpp \
+    msiUtils.cpp \
+    msiCoalesceUtils.cpp \
+    msiEditingAtoms.cpp \
+    msiNameSpaceUtils.cpp \
+    msiMrowEditingImp.cpp \
+    msiBigOpInfoImp.cpp \
+    msiRequiredArgument.cpp \
+    $(NULL)
+
+    
+SHARED_LIBRARY_LIBS = \
+    insertion/$(LIB_PREFIX)msi_mml_insertion_s.$(LIB_SUFFIX) \
+    caret/$(LIB_PREFIX)msi_mml_caret_s.$(LIB_SUFFIX) \
+    coalesce/$(LIB_PREFIX)msi_mml_coalesce_s.$(LIB_SUFFIX) \
+    $(NULL)                       
+
+include $(topsrcdir)/config/rules.mk
+
+INCLUDES += -I$(srcdir)/insertion \
+            -I$(srcdir)/caret \
+            -I$(srcdir)/coalesce
+            

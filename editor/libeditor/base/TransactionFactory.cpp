@@ -44,6 +44,7 @@
 #include "DeleteTextTxn.h"
 #include "CreateElementTxn.h"
 #include "InsertElementTxn.h"
+#include "ReplaceElementTxn.h"
 #include "DeleteElementTxn.h"
 #include "DeleteRangeTxn.h"
 #include "ChangeAttributeTxn.h"
@@ -51,6 +52,7 @@
 #include "JoinElementTxn.h"
 #include "nsStyleSheetTxns.h"
 #include "IMETextTxn.h"
+#include "DeleteMathmlRangeTxn.h"
 
 #ifndef MOZILLA_PLAINTEXT_EDITOR_ONLY
 #include "SetDocTitleTxn.h"
@@ -106,6 +108,10 @@ TransactionFactory::GetNewTransaction(REFNSIID aTxnType, EditTxn **aResult)
 #endif // MOZILLA_PLAINTEXT_EDITOR_ONLY
   else if (aTxnType.Equals(PlaceholderTxn::GetCID()))
     *aResult = new PlaceholderTxn();
+  else if (aTxnType.Equals(ReplaceElementTxn::GetCID()))
+    *aResult = new ReplaceElementTxn();
+  else if (aTxnType.Equals(DeleteMathmlRangeTxn::GetCID()))
+    *aResult = new DeleteMathmlRangeTxn();
   else
     result = NS_ERROR_NO_INTERFACE;
   
