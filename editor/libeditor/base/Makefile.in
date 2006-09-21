@@ -111,4 +111,5 @@ include $(topsrcdir)/config/rules.mk
 INCLUDES        += -I$(topsrcdir)/editor/libeditor/html \
                    -I$(topsrcdir)/editor/libeditor/msi \
                    -I$(topsrcdir)/editor/msiediting/src \
-                   -I$(topsrcdir)/editor/libeditor/text
+                   -I$(topsrcdir)/editor/libeditor/text \
+                   -I$(topsrcdir)/editor/libeditor/base
