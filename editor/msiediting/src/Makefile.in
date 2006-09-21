@@ -88,5 +88,6 @@ include $(topsrcdir)/config/rules.mk
 
 INCLUDES += -I$(srcdir)/insertion \
             -I$(srcdir)/caret \
-            -I$(srcdir)/coalesce
+            -I$(srcdir)/coalesce \
+            -I$(srcdir) 
             
