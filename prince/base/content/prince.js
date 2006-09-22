@@ -289,14 +289,15 @@ function count_children( par )
 
 function openTeX()
 {
-  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+  dump("Open TeX \n");
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
   fp.init(window, "Open TeX File", nsIFilePicker.modeOpen);     // BBM todo -- use properties file here for the strings
+  fp.appendFilter("TeX files", "*.tex; *.ltx; *.shl");
+  fp.appendFilters(nsIFilePicker.filterXML)
 
-  SetFilePickerDirectory(fp, "tex");
+ // SetFilePickerDirectory(fp, "tex");
 
-//    fp.appendFilters(nsIFilePicker.filterTeX);
-  fp.appendFilters(nsIFilePicker.filterAll);
 
   try {
     fp.show();
@@ -304,6 +305,8 @@ function openTeX()
   }
   catch (ex) {
     dump("filePicker.chooseInputFile threw an exception\n");
+    dump(e+"\n");
+    
   }
 
   // This checks for already open window and activates it... 
@@ -405,34 +408,36 @@ function documentAsTeXFile( document, xslSheetPath, outputFile )
   }
 }
 
+
+function currentFileName()
+{
+  var docUrl = GetDocumentUrl();
+  dump('\nThis doc url = ' + docUrl);
+  var filename = "";
+  if (docUrl && !IsUrlAboutBlank(docUrl))
+    filename = GetFilename(docUrl);
+  // BBM todo: we should check to see if the parent is a .swd directory, and if so, use that name  
+  return filename;
+}
+
+
+
 function exportTeX()
 {
-   dump("\nExport TeX\n");
-   var docUrl = GetDocumentUrl();
-   dump('\nThis doc url = ' + docUrl);
-   var scheme, filename;
-   if (docUrl && !IsUrlAboutBlank(docUrl))
-   {
-     scheme = GetScheme(docUrl);
-     filename = GetFilename(docUrl);
-   }
-   dump('\nThis doc = ' + filename);
+  dump("\nExport TeX\n");
 
-   if (filename.length < 0)
-      return;
-    var editor = GetCurrentEditor();
-    if (!editor) return;
-      
+  if (currentFileName().length < 0) return;
+  var editor = GetCurrentEditor();
+  if (!editor) return;
+
    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
    fp.init(window, "Export TeX File", nsIFilePicker.modeSave);
-
-   // BBM todo: we need to set up file pickers for tex files 
-   fp.appendFilters(nsIFilePicker.filterAll);
-
+   fp.appendFilters(nsIFilePicker.filterText);
+   fp.appendFilter("TeX files", "*.tex; *.ltx");
+   fp.defaultExtension = ".tex";
    try 
    {
      fp.show();
-     // need to handle cancel (uncaught exception at present) 
    }
    catch (ex) 
    {
@@ -457,10 +462,17 @@ compileTeXFile:
 
 function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
 {
-  // the following is an egreqious hack. How do we find the path we need in general.
+  // the following requires that the pdflatex program (or a hard link to it) be in xpi-stage/prince/TeX/bin/pdflatex 
+//  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+//  var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+//  exefile.append("TeX"); exefile.append("bin"); 
+//  exefile.append("pdflatex");
+// the following is an egreqious hack. How do we find the path we need in general.
   var execpath = "/usr/local/teTeX/bin/i386-apple-darwin-current/pdflatex";
   var exefile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   exefile.initWithPath( execpath );
+  dump("\nexecutable file: "+exefile.path+"\n");
+  // BBM todo: On Mac OSX we want to put up a shell for possible interaction.
   try 
   {
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
