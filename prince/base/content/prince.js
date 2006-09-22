@@ -300,16 +300,16 @@ function openTeX()
 
   try {
     fp.show();
-    /* need to handle cancel (uncaught exception at present) */
+    // need to handle cancel (uncaught exception at present) 
   }
   catch (ex) {
     dump("filePicker.chooseInputFile threw an exception\n");
   }
 
-  /* This checks for already open window and activates it... 
-   * note that we have to test the native path length
-   *  since file.URL will be "file:///" if no filename picked (Cancel button used)
-   */
+  // This checks for already open window and activates it... 
+  // note that we have to test the native path length
+  // since file.URL will be "file:///" if no filename picked (Cancel button used)
+  
   if (fp.file && fp.file.path.length > 0) {
    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -332,12 +332,12 @@ function openTeX()
     var outfile = dsprops.get("TmpD", Components.interfaces.nsIFile);
     outfile.append(filename);
     var outdir = outfile.clone();
-    if (!outdir.exists()) outdir.create(1 /*DIRECTORY_TYPE */, 0755);
+    if (!outdir.exists()) outdir.create(1 , 0755);
     outfile.append("doc.xhtml");
     var css = outdir.clone();
     css.append("my.css");
     if (css.exists()) css.remove(false); 
-    css.create(0 /*FILE_TYPE*/, 0755);
+    css.create(0 , 0755);
     if (outfile.exists()) outfile.remove(false);
     var mmldir = dsprops.get("resource:app", Components.interfaces.nsIFile);
     var exefile=dsprops.get("resource:app", Components.interfaces.nsIFile);
@@ -387,13 +387,29 @@ function documentAsTeX( document, xslSheetPath )
   return str;
 }
 
+function documentAsTeXFile( document, xslSheetPath, outputFile )
+{
+  if (outputFile && outputFile.path.length > 0) 
+  {
+    var str = documentAsTeX(document, xslSheetPath );
+    if (outputFile.exists()) 
+    outputFile.remove(false);
+    outputFile.create(0, 0755);
+    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+    fos.init(outputFile, -1, -1, false);
+    if (str.length > fos.write(str, str.length))
+    {
+      dump("Wrote fewer bytes than expected!\n");
+   }
+   fos.close();
+  }
+}
+
 function exportTeX()
 {
    dump("\nExport TeX\n");
-  
    var docUrl = GetDocumentUrl();
    dump('\nThis doc url = ' + docUrl);
-
    var scheme, filename;
    if (docUrl && !IsUrlAboutBlank(docUrl))
    {
@@ -422,24 +438,59 @@ function exportTeX()
    {
      dump("filePicker threw an exception\n");
    }
-   
-   if (fp.file && fp.file.path.length > 0) 
-   {
-      var exportfile =  fp.file.path;
-     	dump("\nExport Tex: " + exportfile);
-      var str = documentAsTeX(editor.document, "chrome://prnc2ltx/content/latex.xsl" );
-     	if (fp.file.exists()) 
-     	  fp.file.remove(false);
-      fp.file.create(0  /*NORMAL_FILE_TYPE*/, 0755);
-      var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-      fos.init(fp.file, -1, -1, false);
-      if (str.length > fos.write(str, str.length))
-      {
-        dump("Wrote fewer bytes than expected!\n");
-      }
-      fos.close();
-   }
+   documentAsTeXFile(editor.document, "chrome://prnc2ltx/content/latex.xsl", fp.file );
 }
+
+/* ==== */
+/* = 
+compileTeXFile:
+  pdftex -- a boolean to determine whether to produce pdf (as opposed to dvi)
+  infileLeaf -- the name of the input TeX file without '.tex' or the initial part of the path 
+  infilePath -- the full name of the input TeX file, including the path and 'tex'
+  outputDir -- the directory in which to put the resulting file
+  passCount -- the number of passes with LaTeX needed
+  
+  returns -- a boolean to indicate whether the expected file appears where it is supposed to
+  
+ = */
+/* ==== */
+
+function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
+{
+  // the following is an egreqious hack. How do we find the path we need in general.
+  var execpath = "/usr/local/teTeX/bin/i386-apple-darwin-current/pdflatex";
+  var exefile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  exefile.initWithPath( execpath );
+  try 
+  {
+    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+    theProcess.init(exefile);
+    var args = ["--output-directory", outputDir, "--output-format", (pdftex?"pdf":"dvi"), infilePath];
+    for (var i = 0; i < passCount; i++)
+    {
+      // BBM todo: We need to build the dialog box to display the number of passes
+      theProcess.run(true, args, args.length);
+    } 
+  } 
+  catch (ex) {
+    dump("\nUnable to run TeX:\n");
+    dump(ex);
+    return false;
+  }
+  // check for a dvi or pdf file
+  var outfileLeaf = infileLeaf;
+  if (pdftex)
+    outfileLeaf += ".pdf";
+  else
+    outfileLeaf += ".dvi";
+  dump("\nOutputleaf="+outfileLeaf);
+  var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  outputfile.initWithPath( outputDir );
+  outputfile.append(outfileLeaf);
+  dump("\nFinal output filename: "+outputfile.path+"\n");
+  return true;//outputfile.exists();
+}
+
 
 function printTeX( pdftex )
 {
@@ -459,11 +510,11 @@ function printTeX( pdftex )
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var texfile = dsprops.get("TmpD", Components.interfaces.nsILocalFile);
   texfile.append(filename);
-  texfile.createUnique(0  /*NORMAL_FILE_TYPE*/, 0755);
+  texfile.createUnique(0, 0755);
   // capture the file name that was constructed
-  var outputleaf = texfile.leafName;
+  var texfileLeaf = texfile.leafName;
+  texfileLeaf = texfileLeaf.substring(0, texfileLeaf.lastIndexOf("."));
   var outputfile = dsprops.get("TmpD", Components.interfaces.nsILocalFile);
-  dump("\noutputleaf = "+outputleaf);
   dump("\ntexfile="+texfile.path);  
   var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   fos.init(texfile, -1, -1, false);
@@ -472,37 +523,17 @@ function printTeX( pdftex )
     dump("Wrote fewer bytes than expected!\n");
   }
   fos.close();
-// now execute latex or pdflatex  
-//  texfile.launch();
-  
-// the following is an egreqious hack. How do we find the path we need in general.
-  var execpath = "/usr/local/teTeX/bin/i386-apple-darwin-current/pdflatex";
-  var exefile = Components.classes["@mozilla.org/file/local;1"].
-              createInstance(Components.interfaces.nsILocalFile);
-  exefile.initWithPath( execpath);
-  try 
+  if (compileTeXFile(pdftex, texfileLeaf, texfile.path, outputfile.path, 1))
   {
-    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-    theProcess.init(exefile);
-    var args = ["--output-directory", outputfile.path, "--output-format", (pdftex?"pdf":"dvi"), texfile.path];
-    theProcess.run(true, args, args.length);
-  } catch (ex) {
-       dump("\nUnable to run TeX:\n");
-       dump(ex);
-       return;
-  }
-// check for a dvi or pdf file
-  dump("\nOutputleaf="+outputleaf);
-  outputleaf = outputleaf.substring(0, outputleaf.lastIndexOf("."));
-  if (pdftex)
-    outputleaf += ".pdf";
-  else
-    outputleaf += ".dvi";
-  dump("\nOutputleaf="+outputleaf);
-  outputfile.append(outputleaf);
-  dump("\nFinal output filename; "+outputfile.path+"\n")
-  if (outputfile.exists())
+    if (pdftex)
+      texfileLeaf += ".pdf";
+    else
+      texfileLeaf += ".dvi";
+    outputfile.append(texfileLeaf);
+    dump("outputfile to be launched: "+outputfile.path+"\n");
+    
     outputfile.launch();
+  }
   else
     dump("\nRunning TeX failed to create a file!");
 }
@@ -512,7 +543,66 @@ function previewTeX(pdftex)
   printTeX(pdftex);
 };
 
+function compileTeX(pdftex)
+{
+  var docUrl = GetDocumentUrl();
+  dump('\nThis doc url = ' + docUrl);
+  var scheme, filename;
+  if (docUrl && !IsUrlAboutBlank(docUrl))
+  {
+    scheme = GetScheme(docUrl);
+    filename = GetFilename(docUrl);
+  }
+  dump('\nThis doc = ' + filename);
+
+  if (filename.length < 0)
+     return;     
+  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+  fp.init(window, "Save "+(pdftex?"PDF":"DVI")+" file", nsIFilePicker.modeSave);
+
+  // BBM todo: we need to set up file pickers for pdf and dvi files 
+  fp.appendFilters(nsIFilePicker.filterAll);
+
+  try 
+  {
+    fp.show();
+    // need to handle cancel (uncaught exception at present) 
+  }
+  catch (ex) 
+  {
+    dump("filePicker threw an exception\n");
+  }
   
+  if (fp.file && fp.file.path.length > 0) 
+  {
+     var exportfile =  fp.file.path;
+    	dump("\nCompiled file: " + exportfile);
+  }
+  var editor = GetCurrentEditor();
+  if (!editor) return;
+  var texfile = dsprops.get("TmpD", Components.interfaces.nsILocalFile);
+  texfile.append("temp.tex");
+  texfile.createUnique(0, 0755);
+  // capture the file name that was constructed
+  var texfileLeaf = texfile.leafName;
+  texfileLeaf = texfileLeaf.substring(0, texfileLeaf.lastIndexOf("."));
+  var outputDir = dsprops.get("TmpD", Components.interfaces.nsILocalFile);
+ 
+  documentAsTeXFile(editor.document, "chrome://prnc2ltx/content/latex.xsl", texfile );
+  if (compileTeXFile( pdftex, texfileLeaf, texfile.path, outputDir.path, 1 ))
+  {
+    if (pdftex)
+      texfileLeaf += ".pdf";
+    else
+      texfileLeaf += ".dvi";
+    outputDir.append(texfileLeaf);  
+    // move the output result to the place indicated by fp.
+    outputDir.move(fp.file.parent, fp.file.leafName);  
+  }
+}  
+
+
+
 function initializeAutoCompleteStringArray()
  
 { 
