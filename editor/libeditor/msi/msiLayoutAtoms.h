@@ -39,7 +39,6 @@
 
 
 #include "nsIAtom.h"
-#include "nsGkAtoms.h"
 /**
  * This class wraps up the creation (and destruction) of the standard
  * set of atoms used during layout processing. These objects
@@ -47,15 +46,23 @@
  * are destroyed when the last presentation context object is destroyed.
  */
  
-//ljh A copy of the layout and mathml atoms for use in the msiediting module 
+//ljh A copy of the gklayout atoms
 
-static PRBool msiLayoutAtoms_initalized(PR_FALSE);
-
-class msiLayoutAtoms : public nsGkAtoms
+class msiLayoutAtoms
 {
 public:
-  static void AddRefAtoms() { if (!msiLayoutAtoms_initalized){nsGkAtoms::AddRefAtoms(); msiLayoutAtoms_initalized = PR_TRUE;}}
-};
 
+  static void AddRefAtoms();
 
+  /* Declare all atoms
+
+     The atom names and values are stored in nsGkAtomList.h and
+     are brought to you by the magic of C preprocessing
+
+     Add new atoms to msiEditingAtomList.h and all support logic will be auto-generated
+   */
+#define GK_ATOM(_name, _value) static nsIAtom* _name;
+#include "nsGkAtomList.h"
+#undef GK_ATOM
+};  
 #endif /* msiLayoutAtoms_h___ */
