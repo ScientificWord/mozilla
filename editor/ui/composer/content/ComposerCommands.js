@@ -112,6 +112,12 @@ function SetupHTMLEditorCommands()
   commandTable.registerCommand("cmd_ConvertToTable",     nsConvertToTable);
   commandTable.registerCommand("cmd_MSIAnimateGifsOn",   nsGIFAnimation);
   commandTable.registerCommand("cmd_MSIAnimateGifsOff",  nsGIFAnimation);
+  commandTable.registerCommand("cmd_printDvi",           msiPrintCommand);
+  commandTable.registerCommand("cmd_printPdf",           msiPrintCommand);
+  commandTable.registerCommand("cmd_previewDvi",         msiPreviewCommand);
+  commandTable.registerCommand("cmd_previewPdf",         msiPreviewCommand);
+  commandTable.registerCommand("cmd_compileDvi",         msiCompileCommand);
+  commandTable.registerCommand("cmd_compilePdf",         msiCompileCommand);
 //  commandTable.registerCommand("cmd_texttag",            nsTextTagUpdatingCommand);
 //  commandTable.registerCommand("cmd_paratag",            nsParaTagUpdatingCommand);
 //  commandTable.registerCommand("cmd_secttag",            nsSectTagUpdatingCommand);
@@ -2376,6 +2382,71 @@ var nsPrintCommand =
     } catch (e) {}
   }
 };
+
+//-----------------------------------------------------------------------------------
+var msiPrintCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+    
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+  },
+  doCommand: function(aCommand)
+  {
+    printTeX(aCommand=='cmd_printPdf');  
+  }
+};
+
+//-----------------------------------------------------------------------------------
+var msiPreviewCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+    
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+  },
+  doCommand: function(aCommand)
+  {
+    printTeX(aCommand=='cmd_previewPdf');  
+  }
+};
+
+//-----------------------------------------------------------------------------------
+var msiCompileCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;  // BBM todo: doesn't this depend on the save state?   
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+    
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+    
+  },
+  doCommand: function(aCommand)
+  {
+     compileTeX(aCommand=='cmd_compilePdf')
+  }
+};
+
 
 //-----------------------------------------------------------------------------------
 var nsPrintSetupCommand =
