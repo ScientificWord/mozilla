@@ -98,6 +98,8 @@ nsresult SetMouseDown(PRBool  isDown);
 nsresult GetMayDrag(PRBool *mayDrag);
 nsresult HandleArrowKeyPress(PRUint32 keycode, PRBool isShift, PRBool ctrlDown, 
                              PRBool altDown, PRBool metaDown, PRBool & preventDefault);
+nsresult GetCommonAncestor(nsIDOMNode * node1, nsIDOMNode * node2, nsCOMPtr<nsIDOMNode> & commonAncestor);
+                             
                               
                                  
 
