@@ -1199,7 +1199,7 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
     if (NS_SUCCEEDED(res) && anchorNode && anchorOffset <= msiIMathMLEditingBC::LAST_VALID)
     {
       ComparePoints(focusNode, focusOffset, anchorNode, anchorOffset, &compareFocusAnchor);
-      res = nsContentUtils::GetCommonAncestor(anchorNode, focusNode, getter_AddRefs(commonAncestor));
+      res = GetCommonAncestor(anchorNode, focusNode, commonAncestor);
     }
     if (compareFocusAnchor == 0) // same point.
        collapse = PR_TRUE;
@@ -1614,7 +1614,60 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
   }
   return res;  
 }
+
+
+//ljh  GetCommonAncestor algorithm is copied from nsContentUtils::GetCommonAncestor.
+// I decided to duplicate this function instead of bringing in all the baggage need to 
+// link with nsContentUtils.
+
+nsresult
+msiEditor::GetCommonAncestor(nsIDOMNode * node1,
+                             nsIDOMNode * node2,
+                             nsCOMPtr<nsIDOMNode> & commonAncestor)
+{
+  commonAncestor = nsnull;
+  if (!node1 || !node2)
+    return NS_ERROR_FAILURE;
   
+  if (node1 == node2) 
+  {
+    commonAncestor = node1;
+    return NS_OK;
+  }
+  // Build the chain of parents
+  nsCOMPtr<nsIDOMNode> tmpNode = node1;
+  nsAutoVoidArray parents1, parents2;
+  do {
+    parents1.AppendElement(tmpNode);
+    nsCOMPtr<nsIDOMNode> parent;
+    tmpNode->GetParentNode(getter_AddRefs(parent));
+    tmpNode = parent;
+  } while (tmpNode);
+
+  tmpNode = node2;
+  do {
+    parents2.AppendElement(tmpNode);
+    nsCOMPtr<nsIDOMNode> parent;
+    tmpNode->GetParentNode(getter_AddRefs(parent));
+    tmpNode = parent;
+  } while (tmpNode);
+
+  // Find where the parent chain differs
+  PRUint32 pos1 = parents1.Count();
+  PRUint32 pos2 = parents2.Count();
+  nsIDOMNode* parent = nsnull;
+  PRUint32 len;
+  for (len = PR_MIN(pos1, pos2); len > 0; --len) 
+  {
+    nsIDOMNode* child1 = NS_STATIC_CAST(nsIDOMNode*, parents1.FastElementAt(--pos1));
+    nsIDOMNode* child2 = NS_STATIC_CAST(nsIDOMNode*, parents2.FastElementAt(--pos2));
+    if (child1 != child2) 
+      break;
+    parent = child1;
+  }
+  commonAncestor = parent;
+  return NS_OK;
+}
   
 //NS_IMETHODIMP 
 //msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
