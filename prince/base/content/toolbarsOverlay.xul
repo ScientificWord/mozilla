@@ -249,19 +249,19 @@
                  label="&printToolbarCmd.label;"
                  tooltiptext="&printToolbarCmd.tooltip;"
                  persist="defcomp oncommand" 
-                 oncommand="alert('Default to Direct print');" >
+                 oncommand="" >
     <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp" />
     <menupopup id="printMenu" tooltiptext="" >
       <menuitem id="printMenuItem1" label="&printButton.label;" persist="default" default="true"
-                oncommand="alert('Direct print');event.stopPropagation();" for="" onbroadcast="setDefault(this);" >
+                oncommand="goDoCommand('cmd_printDirect');event.stopPropagation();" for="" onbroadcast="setDefault(this);" >
         <observes id="pmitb1" element="defaultCompiler" attribute="defcomp" />
       </menuitem>        
       <menuitem id="printMenuItem1pdf" label="&pdfprintButton.label;" persist="default" default="false"
-                oncommand="printTeX(true);event.stopPropagation();"  for="pdf" onbroadcast="setDefault(this);">
+                oncommand="goDoCommand('cmd_printPdf');event.stopPropagation();"  for="pdf" onbroadcast="setDefault(this);">
         <observes id="pmitb2" element="defaultCompiler" attribute="defcomp"  />
       </menuitem>        
       <menuitem id="printMenuItem1dvi" label="&dviprintButton.label;" persist="default" default="false"
-                oncommand="printTeX(false);event.stopPropagation();"  for="dvi" onbroadcast="setDefault(this);">
+                oncommand="goDoCommand('cmd_printDvi');event.stopPropagation();"  for="dvi" onbroadcast="setDefault(this);">
         <observes id="pmitb3" element="defaultCompiler" attribute="defcomp"  />
       </menuitem>        
       <menuseparator/>
@@ -321,6 +321,9 @@
       </menu>
     </menupopup>
   </toolbarbutton>
+  <toolbarbutton id="dvicompileButton" class="toolbarbutton-1" observes="cmd_compileDvi" tooltiptext="&dvicompileButton.tooltip;"/>
+  <toolbarbutton id="pdfcompileButton" class="toolbarbutton-1" observes="cmd_compilePdf" tooltiptext="&pdfcompileButton.tooltip;"/>
+
 #  
   <toolbarbutton id="cutButton" class="toolbarbutton-1"
                  label="&cutCmd.label;" command="cmd_cut"
