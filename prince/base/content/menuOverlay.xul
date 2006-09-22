@@ -53,15 +53,15 @@
         <observes id="printPreviewMenuObs" element="defaultCompiler" attribute="defcomp" />
         <menupopup id="printPreviewMenu" tooltiptext="" >
           <menuitem id="printPreviewMenuItem1" label="&printPreviewToolbarCmd.label;" persist="default" default="true"
-                    oncommand="alert('Direct print');event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);" >
+                    oncommand="goDoCommand('cmd_previewDirect');event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);" >
             <observes id="ppmObs1" element="defaultCompiler" attribute="defcomp" />
           </menuitem>        
           <menuitem id="printPreviewMenuItem1pdf" label="&pdfpreviewButton.label;" persist="default" default="false"
-                    oncommand="alert('PDF print');event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
+                    oncommand="goDoCommand('cmd_previewPdf'); event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
             <observes id="ppmObs2" element="defaultCompiler" attribute="defcomp"  />
           </menuitem>        
           <menuitem id="printPreviewMenuItem1dvi" label="&dvipreviewButton.label;" persist="default" default="false"
-                    oncommand="alert('DVI print');event.stopPropagation();"  for="dvi" onbroadcast="setDefaultmenu(this);">
+                    oncommand="goDoCommand('cmd_previewDvi');;event.stopPropagation();"  for="dvi" onbroadcast="setDefaultmenu(this);">
             <observes id="ppmObs3" element="defaultCompiler" attribute="defcomp"  />
           </menuitem>        
           <menuseparator/>
@@ -88,15 +88,15 @@
         <observes id="printPreviewMenuObs" element="defaultCompiler" attribute="defcomp" />
         <menupopup id="printMenuPop" tooltiptext="" >
           <menuitem id="printMenuItem1" label="&printButton.label;" persist="default" default="true"
-                    oncommand="alert('Direct print');event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);">
+                    oncommand="goDoCommand('cmd_printDirect');;event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);">
             <observes id="ppmObs7" element="defaultCompiler" attribute="defcomp" />
           </menuitem>        
           <menuitem id="printMenuItem1pdf" label="&pdfprintButton.label;" persist="default" default="false"
-                    oncommand="alert('PDF print');event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
+                    oncommand="goDoCommand('cmd_printPdf');event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
             <observes id="ppmObs8" element="defaultCompiler" attribute="defcomp" />
           </menuitem>        
           <menuitem id="printMenuItem1dvi" label="&dviprintButton.label;" persist="default" default="false"
-                    oncommand="alert('DVI print');event.stopPropagation();"  for="dvi" onbroadcast="setDefaultmenu(this);" >
+                    oncommand="goDoCommand('cmd_printDvi');event.stopPropagation();"  for="dvi" onbroadcast="setDefaultmenu(this);" >
             <observes id="ppmObs9" element="defaultCompiler" attribute="defcomp"  />
           </menuitem>        
           <menuseparator/>
@@ -207,8 +207,15 @@
 -->
     <command id="cmd_openTeX" oncommand="openTeX();" />
     <command id="cmd_exportTeX" oncommand="exportTeX();" />
-    <command id="cmd_print"                                         oncommand="goDoCommand('cmd_print')"/>
-    <command id="cmd_quit"         oncommand="goDoCommand('cmd_quit')"/>
+    <command id="cmd_printDirect"  oncommand="goDoCommand('cmd_printDirect')"/>
+    <command id="cmd_printPdf"    oncommand="goDoCommand('cmd_printPdf')"/>
+    <command id="cmd_printDvi"    oncommand="goDoCommand('cmd_printDvi')"/>
+    <command id="cmd_previewDirect"  oncommand="goDoCommand('cmd_previewDirect')"/>
+    <command id="cmd_previewPdf"  oncommand="goDoCommand('cmd_previewPdf')"/>
+    <command id="cmd_previewDvi"  oncommand="goDoCommand('cmd_previewDvi')"/>
+    <command id="cmd_compilePdf"  oncommand="goDoCommand('cmd_compilePdf')"/>
+    <command id="cmd_compileDvi"  oncommand="goDoCommand('cmd_compileDvi')"/>
+    <command id="cmd_quit"        oncommand="goDoCommand('cmd_quit')"/>
   </commandset>
 
   <commandset id="composerMenuItems"
