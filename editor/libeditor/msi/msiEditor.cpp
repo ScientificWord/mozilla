@@ -52,7 +52,7 @@ msiEditor::CreateEventListeners()
   if (!mMouseListenerP)
   {
     // get a mouse listener
-    rv = NS_NewHTMLEditorMouseListener(getter_AddRefs(mMouseListenerP), this);
+    rv = NS_NewMSIEditorMouseListener(getter_AddRefs(mMouseListenerP), this);
     if (NS_FAILED(rv))
       return rv;
   }
