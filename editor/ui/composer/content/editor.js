@@ -199,13 +199,22 @@ function AfterHighlightColorChange()
 
 function EditorOnLoad()
 {
+    dump("\n=====================EditorOnLoad\n");
+    dump(window.arguments[0]+"\n");
+    dump(window.arguments.length+"\n");
+    
     // See if argument was passed.
     if ( window.arguments && window.arguments[0] ) {
+      // The following is a hack. When Prince starts up, there seems to be a single argument attached which is not a string, 
+      // but a C++ object wrapped by JavaScript. The following line forces conversion to a string and then searches it for 
+      // 'xpconnect wrapped'. Ugly, but it works. It would be better to find the offending first call.
+        if ((window.arguments[0]+"@@@").search("xpconnect wrapped")<0)
         // Opened via window.openDialog with URL as argument.
         // Put argument where EditorStartup expects it.
-        document.getElementById( "args" ).setAttribute( "value", window.arguments[0] );
+        {
+          document.getElementById( "args" ).setAttribute( "value", window.arguments[0] );
+        }
     }
-
     // get default character set if provided
     if ("arguments" in window && window.arguments.length > 1 && window.arguments[1]) {
       if (window.arguments[1].indexOf("charset=") != -1) {
@@ -251,6 +260,7 @@ function EditorOnLoad()
     } catch (e) { dump("makeEditable failed: "+e+"\n"); }
 }
 
+
 const gSourceTextListener =
 {
   NotifyDocumentCreated: function NotifyDocumentCreated() {},
@@ -272,6 +282,7 @@ const gSourceTextObserver =
 
 function TextEditorOnLoad()
 {
+    dump("\n======================TextEditorOnLoad");
     // See if argument was passed.
     if ( window.arguments && window.arguments[0] ) {
         // Opened via window.openDialog with URL as argument.
@@ -518,6 +529,7 @@ var gEditorDocumentObserver =
 
 function SetFocusOnStartup()
 {
+  dump("\n--------SetFocusOnStartup");
   setZoom();
   gContentWindow.focus();
 }
@@ -560,7 +572,7 @@ function EditorStartup()
   }
 
   // Get url for editor content and load it.
-  // the editor gets instantiated by the edittingSession when the URL has finished loading.
+  // the editor gets instantiated by the editingSession when the URL has finished loading.
   var url = document.getElementById("args").getAttribute("value");
   try {
     var charset = document.getElementById("args").getAttribute("charset");
@@ -574,6 +586,7 @@ function EditorStartup()
 
 function EditorLoadUrl(url)
 {
+  dump("\n============================EditorLoadUrl");
   try {
     if (url)
       GetCurrentEditorElement().webNavigation.loadURI(url, // uri string
