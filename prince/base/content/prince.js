@@ -463,21 +463,24 @@ compileTeXFile:
 function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
 {
   // the following requires that the pdflatex program (or a hard link to it) be in xpi-stage/prince/TeX/bin/pdflatex 
-//  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-//  var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-//  exefile.append("TeX"); exefile.append("bin"); 
-//  exefile.append("pdflatex");
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+  exefile.append("TeX"); exefile.append("bin"); 
+  if (pdftex)
+    exefile.append("pdflatex.exe");
+  else
+    exefile.append("tex.exe");
 // the following is an egreqious hack. How do we find the path we need in general.
-  var execpath = "/usr/local/teTeX/bin/i386-apple-darwin-current/pdflatex";
-  var exefile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  exefile.initWithPath( execpath );
+//  var execpath = "/usr/local/teTeX/bin/i386-apple-darwin-current/pdflatex";
+//  var exefile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+//  exefile.initWithPath( execpath );
   dump("\nexecutable file: "+exefile.path+"\n");
   // BBM todo: On Mac OSX we want to put up a shell for possible interaction.
   try 
   {
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theProcess.init(exefile);
-    var args = ["--output-directory", outputDir, "--output-format", (pdftex?"pdf":"dvi"), infilePath];
+    var args = ["-output-directory", outputDir, infilePath];
     for (var i = 0; i < passCount; i++)
     {
       // BBM todo: We need to build the dialog box to display the number of passes
@@ -543,7 +546,6 @@ function printTeX( pdftex )
       texfileLeaf += ".dvi";
     outputfile.append(texfileLeaf);
     dump("outputfile to be launched: "+outputfile.path+"\n");
-    
     outputfile.launch();
   }
   else
