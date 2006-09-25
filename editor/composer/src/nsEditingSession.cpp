@@ -1142,6 +1142,16 @@ nsEditingSession::EndDocumentLoad(nsIWebProgress *aWebProgress,
   }
   return rv;
 }
+/*---------------------------------------------------------------------------
+
+----------------------------------------------------------------------------*/
+nsresult
+InitialShell(nsString* initialURL)
+{
+  //BBM todo: check preferences and use this as a default only if necessary
+  nsString url = NS_LITERAL_STRING("resource://app/res/shells/article/latexArticleShell.xhtml");
+  *initialURL = url;
+}
 
 
 void
@@ -1152,10 +1162,15 @@ nsEditingSession::TimerCallback(nsITimer* aTimer, void* aClosure)
   {
     nsCOMPtr<nsIWebNavigation> webNav(do_QueryInterface(docShell));
     if (webNav)
-      webNav->LoadURI(NS_LITERAL_STRING("about:blank").get(),
+    {
+      nsString URL;
+      InitialShell(&URL);
+      webNav->LoadURI(URL.get(),
                       0, nsnull, nsnull, nsnull);
+    }                  
   }
 }
+
 
 /*---------------------------------------------------------------------------
 

@@ -484,7 +484,7 @@ var gEditorDocumentObserver =
           // Start in "Normal" edit mode
           SetDisplayMode(kDisplayModeNormal);
         }
-//        initFastCursorBar();
+        initFastCursorBar();
 
         // Add mouse click watcher if right type of editor
         if (IsHTMLEditor())
