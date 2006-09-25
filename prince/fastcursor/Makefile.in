@@ -11,4 +11,5 @@ DIRS		= src
 REQUIRES	= editor \
 		  $(NULL)
 
+
 include $(topsrcdir)/config/rules.mk
