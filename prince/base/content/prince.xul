@@ -3,6 +3,7 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/toolbar.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/fastcursor.css" type="text/css"?>
 
 #<?xml-stylesheet href="chrome://editor/skin/editorPrimaryToolbar.css" type="text/css"?> 
 #<?xml-stylesheet href="chrome://editor/skin/editorFormatToolbar.css" type="text/css"?> 
@@ -24,9 +25,12 @@
 <!DOCTYPE window [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
 %editorDTD;
-#<!ENTITY % brandDTD SYSTEM "chrome://prince/locale/brand.dtd" >
+<!ENTITY % fastcursorDTD SYSTEM "chrome://prince/locale/fastcursor.dtd" >
+%fastcursorDTD;
+#<!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd" >
 #%brandDTD;
 ]> 
+
 
 
 <window
@@ -45,6 +49,7 @@
 
   <script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/prince.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/fastcursor.js"/>
 #  <script type="application/x-javascript" src="chrome://editor/content/EditorCommandsDebug.js"/>
 #  <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
 #  <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
@@ -130,19 +135,43 @@
     <hbox id="EditModeToolbar" align="center" hidden="false" persist="collapsed">
       <tabs id="EditModeTabs" class="tabs-bottom" flex="1">
         <tab id="NormalModeButton" class="tab-bottom edit-mode _plain" type="text" selected="1"
-             label="&NormalModeTab.label;" tooltiptext="&NormalMode.tooltip;"/>
+             label="&NormalModeTab.label;" observes="cmd_NormalMode" tooltiptext="&NormalMode.tooltip;"/>
         <tab id="TagModeButton" class="tab-bottom edit-mode _plain" type="text" selected="1"
-             label="&TagModeTab.label;" tooltiptext="&TagMode.tooltip;"/>
+             label="&TagModeTab.label;" observes="cmd_AllTagsMode" tooltiptext="&TagMode.tooltip;"/>
         <tab id="SourceModeButton" class="tab-bottom edit-mode _plain" type="text" selected="1"
-             label="&SourceModeTab.label;" tooltiptext="&SourceMode.tooltip;"/>
+             label="&SourceModeTab.label;" observes="cmd_HTMLSourceMode" tooltiptext="&SourceMode.tooltip;"/>
         <tab id="PreviewModeButton" class="tab-bottom edit-mode _plain" type="text" selected="1"
-             label="&PreviewModeTab.label;" tooltiptext="&PreviewMode.tooltip;"/>
+             label="&PreviewModeTab.label;" observes="cmd_PreviewMode" tooltiptext="&PreviewMode.tooltip;"/>
       </tabs>
     </hbox>
   </vbox>
 </hbox><!-- sidebar-parent -->
 
   <statusbar class="chromeclass-status" id="status-bar">
+      <toolbar id="FastCursorToolbar" hidden="true" align="center" fullscreentoolbar="true">
+      <toolbarbutton id="fastcursor-closebutton" tooltiptext="&fastcursorCloseButton.tooltip;"
+                     hidden="true" oncommand="closeFastCursorBar();"/>  -->
+
+      <label value="&fastcursor.label;"/>
+      <hbox id="fastcursor-field-container">
+        <textbox id="fastcursor-field" oninput="fastcursor(this.value);" onfocus="onFastCursorBarFocus();"
+                onkeypress="onFastCursorBarKeyPress(event);" onblur="onFastCursorBarBlur();"/>
+      </hbox>
+      <toolbarbutton id="find-next" label="&fastcursorNext.label;" tooltiptext="&fastcursorNext.tooltip;"
+                     oncommand="onFindAgainCmd();" disabled="false"/>
+      <toolbarbutton id="find-previous" label="&fastcursorPrevious.label;" tooltiptext="&fastcursorPrevious.tooltip;"
+                     oncommand="onFindPreviousCmd();" disabled="false"/>
+      <toolbarbutton id="highlight" label="&highlight.label;" tooltiptext="&highlight.tooltip;"
+                     oncommand="toggleHighlight(!this.checked);
+                                if (gFindMode != FIND_NORMAL) setFastCursorCloseTimeout();"
+                     type="checkbox" disabled="false"/>
+      <checkbox id="fastcursor-case-sensitive" oncommand="toggleCaseSensitivity(this.checked);"
+                hidden="true" label="&caseSensitiveCheckbox.label;" accesskey="&caseSensitiveCheckbox.accesskey;"/>
+      <image id="fastcursor-status-icon"/>
+      <label id="fastcursor-status"/>
+    </toolbar>
+
+
     <statusbarpanel id="component-bar"/>
     <statusbarpanel id="structToolbar" flex="1" pack="end">
     <label id="structSpacer" value="" flex="1"/>
