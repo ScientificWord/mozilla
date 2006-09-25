@@ -1069,6 +1069,7 @@ xpfe/components/build2/Makefile
 MAKEFILES_prince="
 Prince/Makefile
 Prince/Compute/Makefile
+Prince/fastcursor/Makefile
 filters/Makefile
 filters/ptprince/Makefile
 filters/ptprince/ptdata/Makefile
