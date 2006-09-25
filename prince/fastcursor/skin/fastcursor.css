@@ -3,7 +3,7 @@
 #fastcursor-closebutton {
   border: 1px solid transparent;
   padding: 3px 2px 4px 2px !important;
-  list-style-image: url("chrome://editor/skin/close.png");
+  list-style-image: url("chrome://prince/skin/close.png");
   -moz-appearance: none;
   -moz-image-region: rect(0px, 16px, 16px, 0px);
 }
@@ -33,7 +33,7 @@
 /* find-next button */
 
 #find-next {
-  list-style-image: url("chrome://editor/skin/find.png");
+  list-style-image: url("chrome://prince/skin/find.png");
   -moz-image-region: rect(0px 16px 16px 0px);
 }
 
@@ -48,7 +48,7 @@
 /* find-previous button */
 
 #find-previous {
-  list-style-image: url("chrome://editor/skin/find.png");
+  list-style-image: url("chrome://prince/skin/find.png");
   -moz-image-region: rect(0px 32px 16px 16px);
 }
 
@@ -63,7 +63,7 @@
 /* highlight button */
 
 #highlight {
-  list-style-image: url("chrome://editor/skin/find.png");
+  list-style-image: url("chrome://prince/skin/find.png");
   -moz-image-region: rect(0px 48px 16px 32px);
 }
 
@@ -99,7 +99,7 @@
 
 #fastcursor-status-icon[status="notfound"]
 {
-  list-style-image: url("chrome://editor/skin/notfound.png");
+  list-style-image: url("chrome://prince/skin/notfound.png");
 }
 
 #fastcursor-field
@@ -122,7 +122,7 @@
 
 #fastcursor-status-icon[status="wrapped"]
 {
-  list-style-image: url("chrome://editor/skin/wrap.png");
+  list-style-image: url("chrome://prince/skin/wrap.png");
 }
 
 #fastcursor-field-container
