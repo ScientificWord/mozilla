@@ -48,6 +48,7 @@
 #include "nsIDOMDragListener.h"
 #include "nsIDOMCompositionListener.h"
 #include "nsIDOMFocusListener.h"
+#include "msiIArrowStateService.h"
 
 #include "nsIEditor.h"
 #include "nsIPlaintextEditor.h"
@@ -87,7 +88,10 @@ public:
 /*END interfaces from nsIDOMKeyListener*/
 
 protected:
+  PRBool IsInArrowState(PRUint32 keyCode);
   nsIEditor*     mEditor;		// weak reference
+  PRBool mInArrowState;
+  nsCOMPtr<msiIArrowStateService>  mArrowState;
 };
 
 

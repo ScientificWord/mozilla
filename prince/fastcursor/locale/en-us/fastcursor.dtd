@@ -1,0 +1,14 @@
+
+<!-- LOCALIZATION NOTE : FILE This file contains the entities needed to -->
+<!-- LOCALIZATION NOTE : FILE use the Fastcursor bar. --> 
+
+<!ENTITY fastcursor.label "fastcursor:">
+<!ENTITY fastcursorNext.label "Find Next">
+<!ENTITY fastcursorNext.tooltip "Find the next occurrence of the phrase">
+<!ENTITY fastcursorPrevious.label "Find Previous">
+<!ENTITY fastcursorPrevious.tooltip "Find the previous occurrence of the phrase">
+<!ENTITY fastcursorCloseButton.tooltip "Close Fastcursor bar">
+<!ENTITY highlight.label "Highlight">
+<!ENTITY highlight.tooltip "Highlight all occurrences of the phrase (Ctrl+Enter)">
+<!ENTITY caseSensitiveCheckbox.label "Match case">
+<!ENTITY caseSensitiveCheckbox.accesskey "c">
