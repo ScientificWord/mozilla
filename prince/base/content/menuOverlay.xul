@@ -176,7 +176,7 @@
   </menu>
 
   <menu id="MSITypesetMenu"/>
-
+  <menu id="MSIComputeMenu"/> 
   <menu id="toolsMenu" label="Tools" >
     <menupopup id="toolPopup">
       <menuitem  label="JavaScript debugger" id="venkmanName" oncommand="start_venkman();"/>
@@ -248,10 +248,10 @@
 
     <command id="cmd_insertBreak"      oncommand="goDoCommand('cmd_insertBreak')"/>
     <command id="cmd_insertBreakAll"   oncommand="goDoCommand('cmd_insertBreakAll')"/>
-    <command id="cmd_NormalMode"       oncommand="goDoCommand('cmd_NormalMode')"     label="_amp_NormalMode.label;"/>
-    <command id="cmd_AllTagsMode"      oncommand="goDoCommand('cmd_AllTagsMode')"    label="_amp_AllTagsMode.label;"/>
+    <command id="cmd_NormalMode"       oncommand="goDoCommand('cmd_NormalMode')"/>
+    <command id="cmd_AllTagsMode"      oncommand="goDoCommand('cmd_AllTagsMode')"/>
     <command id="cmd_HTMLSourceMode"   oncommand="goDoCommand('cmd_HTMLSourceMode')"/>
-    <command id="cmd_PreviewMode"      oncommand="goDoCommand('cmd_PreviewMode')"    label="_amp_PreviewMode.label;"/>
+    <command id="cmd_PreviewMode"      oncommand="goDoCommand('cmd_PreviewMode')"/>
 
     <!-- only used in context popup menu -->
     <command id="cmd_editLink"         oncommand="goDoCommand('cmd_editLink')"/>

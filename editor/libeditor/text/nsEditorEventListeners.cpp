@@ -79,6 +79,7 @@ NS_IMPL_ISUPPORTS2(nsTextEditorKeyListener, nsIDOMEventListener, nsIDOMKeyListen
 
 
 nsTextEditorKeyListener::nsTextEditorKeyListener()
+   : mInArrowState(true)
 {
 }
 
@@ -86,6 +87,37 @@ nsTextEditorKeyListener::nsTextEditorKeyListener()
 
 nsTextEditorKeyListener::~nsTextEditorKeyListener() 
 {
+}
+
+PRBool
+nsTextEditorKeyListener::IsInArrowState( PRUint32 aKeyCode)
+{
+  nsresult rv;
+  PRUint32 keyCode;
+  PRBool isVertical;
+  PRBool isAcceptingRepeats;
+  PRBool isForward;
+  PRBool isFirstArrowPress;
+  
+  //  The initial value of mInArrowState is true, and we initialize the arrow state service only
+  //  when it is uninitialized AND mInArrowState is true.  If the initialization fails, mInArrowState
+  //  is set to false, and its value can't change henceforth.  Thus we try to initialize the arrow
+  //  state service only once.
+  if (mInArrowState &&  (mArrowState == 0)) {
+    mArrowState = do_CreateInstance("@mackichan.com/arrowstate/arrowstate_service;1", &rv);
+    if (NS_FAILED(rv)) {
+      mInArrowState = PR_FALSE;
+      return mInArrowState;
+    }
+  }
+  if (mArrowState == 0) return PR_FALSE;
+  rv = mArrowState->FindArrowKeyState( &mInArrowState, &keyCode, &isAcceptingRepeats, &isVertical, 
+    &isForward, aKeyCode, &isFirstArrowPress ); 
+  if (NS_FAILED(rv)) {
+    mInArrowState = PR_FALSE;
+    return mInArrowState;
+  }
+  return mInArrowState && !isFirstArrowPress;
 }
 
 
@@ -143,6 +175,10 @@ nsTextEditorKeyListener::KeyPress(nsIDOMEvent* aKeyEvent)
 
   PRUint32 keyCode;
   keyEvent->GetKeyCode(&keyCode);
+	if (IsInArrowState(keyCode)) {
+		aKeyEvent->PreventDefault();
+    return NS_OK;  // don't do anything if we are searching with the arrow keys
+	}
 
   // if we are readonly or disabled, then do nothing.
   PRUint32 flags;
