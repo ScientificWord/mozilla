@@ -1,7 +1,7 @@
 //	standard MSI header goes here
 #include "msiArrowStateService.h"
 #include "nsCOMPtr.h"
-#include "nsCRT.h"
+#include <string.h>
 #include "nsIDOMEvent.h"
 #include "nsIDOMKeyEvent.h"
 #include "nsIDOMNSUIEvent.h"
@@ -116,7 +116,7 @@ NS_IMETHODIMP
 msiArrowStateService::Observe(nsISupports *aSubject, const char *aTopic,
                          const PRUnichar *aData)
 {
-  if (!nsCRT::strcmp(aTopic, NS_PREFBRANCH_PREFCHANGE_TOPIC_ID))
+  if (!strcmp(aTopic, NS_PREFBRANCH_PREFCHANGE_TOPIC_ID))
     return PrefsReset();
 
   return NS_OK;
