@@ -375,8 +375,9 @@ function openTeX()
 
 function documentAsTeX( document, xslSheetPath )
 {
-  if (!document) return;
-  if (xslSheetPath.length == 0) return;
+  var str = "";
+  if (!document) return str;
+  if (xslSheetPath.length == 0) return str;
   var xsltProcessor = new XSLTProcessor();
   var myXMLHTTPRequest = new XMLHttpRequest();
   myXMLHTTPRequest.open("GET", xslSheetPath, false);
@@ -385,7 +386,7 @@ function documentAsTeX( document, xslSheetPath )
   var xslStylesheet = myXMLHTTPRequest.responseXML;
   xsltProcessor.importStylesheet(xslStylesheet);
   var newDoc = xsltProcessor.transformToDocument(document);
-  var str = newDoc.documentElement.textContent;
+  str = newDoc.documentElement.textContent;
   dump("\n"+str);
   return str;
 }
