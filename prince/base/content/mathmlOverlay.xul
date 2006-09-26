@@ -151,7 +151,7 @@
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     >
-	  <tabs class="tabs-top" align="baseline">
+	  <tabs class="tabs-top" align="start baseline">
 			<tab id="symbol_lcGreekTab" image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x03B1;&#x03B2;" tooltiptext="&MSISymbolTabLCGreek;" selected="1" />
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x03A6;&#x03A8;" tooltiptext="&MSISymbolTabCCGreek;" selected="0" />
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x00B1;&#x00F7;" tooltiptext="&MSISymbolTabBinaryOps;"   selected="0" />
