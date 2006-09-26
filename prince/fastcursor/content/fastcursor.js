@@ -375,10 +375,10 @@ function shouldFastFastCursor(evt)
   }
   
   var win = document.commandDispatcher.focusedWindow;
-  if (win && win.document.designMode == "on")
+  if (win && win.document.designMode == "on") 
     return false;
-  
-  return true;
+  else
+    return true;
 }
 
 function onFastCursorBarFocus()
@@ -413,6 +413,7 @@ function onBrowserKeyDown(evt)
   {
     gArrowStateService.arrowKeyDown( keyCode.value );
   }
+  return 0;
 }
 
 function onBrowserKeyUp(evt)
@@ -638,7 +639,7 @@ function onFindNext()
 //    gReplaceDialog.findInput.select();
 //    gReplaceDialog.findInput.focus();
     return false;
-  } 
+  } else
   return true;
 }
 
@@ -667,8 +668,8 @@ function flashFastCursorBar()
     gFlashFastCursorBarCount = 6;
     return true;
   }
- 
   fastCursorToolbar.setAttribute("flash", (gFlashFastCursorBarCount % 2 == 0) ? "false" : "true");
+  return true;
 }
 
 function onFindCmd()
