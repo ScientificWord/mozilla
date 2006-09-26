@@ -3,3 +3,5 @@
 <!ENTITY  brandShortName        "Scientific WorkPlace">
 <!ENTITY  vendorShortName       "MacKichan Software, Inc">
 <!ENTITY  sidebarName           "Sidebar">
+<!ENTITY mainWindow.titlemodifier	"Scientific WorkPlace">
+<!ENTITY mainWindow.titlemodifiermenuseparator	" - ">
