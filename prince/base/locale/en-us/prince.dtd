@@ -28,10 +28,17 @@
 
 <!ENTITY NormalModeTab.label "Normal">
 <!ENTITY NormalMode.tooltip "Normal Mode">
+<!ENTITY NormalMode.label "Normal Edit Mode">
+<!ENTITY NormalMode.accesskey "n">
 <!ENTITY TagModeTab.label "Tag">
 <!ENTITY TagMode.tooltip "Tag Mode">
-<!ENTITY SourceModeTab.label "Source">
+<!ENTITY TagsMode.label "XML Tags">
+<!ENTITY TagsMode.accesskey "T">
+<!ENTITY TagsMode.tooltip "Display icons for tags">
+<!ENTITY SourceMode.label "Source">
 <!ENTITY SourceMode.tooltip "Source Mode">
-<!ENTITY PreviewModeTab.label "Preview">
+<!ENTITY SourceMode.accesskey "s">
+<!ENTITY PreviewMode.label "Preview">
 <!ENTITY PreviewMode.tooltip "Preview Mode">
-
+<!ENTITY PreviewMode.accesskey "p">
+<!ENTITY SourceTabDirection "ltr">

@@ -190,8 +190,20 @@
       <menuitem accesskey="&aboutCmd.accesskey;" label="&aboutCmd.label;" id="aboutName" oncommand="goAboutDialog();"/>
     </menupopup>
   </menu>
-
-
+  
+  <menu id="viewMenu" label="View" accesskey="" >
+    <menupopup id="viewPopup">
+      <menuitem id="viewNormalMode"   type="radio" group="mode" accesskey="&NormalMode.accesskey;"     observes="cmd_NormalMode"
+        label="&NormalMode.label;"/>
+      <menuitem id="viewAllTagsMode"  type="radio" group="mode" accesskey="&TagsMode.accesskey;"    observes="cmd_AllTagsMode"
+        label="&TagsMode.label;"/>
+      <menuitem id="viewSourceMode"   type="radio" group="mode" accesskey="&SourceMode.accesskey;" observes="cmd_HTMLSourceMode"
+         label="&SourceMode.label;"/>
+      <menuitem id="viewPreviewMode"  type="radio" group="mode" accesskey="&PreviewMode.accesskey;"    observes="cmd_PreviewMode"
+        label="&PreviewMode.label;"/>
+    </menupopup>
+  </menu>
+  
   <!-- commands updated when the editor gets created -->
   <commandset id="commonEditorMenuItems"
           commandupdater="true"

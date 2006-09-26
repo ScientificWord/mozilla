@@ -76,6 +76,9 @@
 <!ENTITY selectAllCmd.key					"A">  
 <!ENTITY selectAllCmd.accesskey				"a"> 
 
+<!-- View menu items -->
+
+
 <!-- For a "Paste" submenu when more than 1 
      clipboard formats are available -->
 <!ENTITY pasteHTMLCmd.label "HTML">
@@ -563,18 +566,18 @@
 <!ENTITY NormalMode.label "Normal Edit Mode">
 <!ENTITY NormalMode.accesskey "n">
 <!ENTITY NormalMode.tooltip "Show table borders and named anchors">
-<!ENTITY AllTagsMode.label "HTML Tags">
-<!ENTITY AllTagsMode.accesskey "A">
-<!ENTITY AllTagsMode.tooltip "Display icons for all HTML tags">
+<!ENTITY TagsMode.label "XML Tags">
+<!ENTITY TagsMode.accesskey "A">
+<!ENTITY TagsMode.tooltip "Display icons for tags">
 
-<!ENTITY HTMLSourceMode.label "HTML Source">
+<!ENTITY SourceMode.label "XML Source">
 <!-- Toolbar has an image with "HTML" text, so don't include it in the string -->
 <!ENTITY SourceMode.label "Source">
-<!ENTITY HTMLSourceMode.accesskey "h">
-<!ENTITY HTMLSourceMode.tooltip "Edit HTML source">
+<!ENTITY SourceMode.accesskey "h">
+<!ENTITY SourceMode.tooltip "Edit XML source">
 <!ENTITY PreviewMode.label "Preview">
 <!ENTITY PreviewMode.accesskey "p">
-<!ENTITY PreviewMode.tooltip "Display as WYSIWYG (as in Navigator)">
+<!ENTITY PreviewMode.tooltip "Display as WYSIWYG">
 
 <!-- LOCALIZATION NOTE: Do NOT translate text for 'SourceTabDirection'
      Use latin "ltr" if you want the <html> image to left of the 
