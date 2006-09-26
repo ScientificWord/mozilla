@@ -1,5 +1,7 @@
 prince.jar:
-% content prince %content/	 
+% content prince %content/	
+% content branding %content/branding/
+  content/branding/icon64.png       (content/icon64.png) 
 * content/prince.xul                (content/prince.xul)
 * content/prince.js                 (content/prince.js)
 * content/aboutDialog.xul           (content/aboutDialog.xul)
@@ -112,7 +114,7 @@ prince.jar:
 
 en-US.jar:
 % locale prince en-US %locale/en-US/
-% locale branding en-US %locale/en-US/
+% locale branding en-US %locale/en-US/branding/
   locale/en-US/prince.dtd           (locale/en-us/prince.dtd)
   locale/en-US/aboutDialog.dtd      (locale/en-us/aboutDialog.dtd)
   locale/en-US/toolbarsOverlay.dtd  (locale/en-us/toolbarsOverlay.dtd)
@@ -163,8 +165,8 @@ en-US.jar:
   locale/en-US/mathmlMatrix.dtd	(locale/en-US/Dialogs/mathmlMatrix.dtd)
   locale/en-US/Operators.dtd	(locale/en-US/Dialogs/Operators.dtd)
   locale/en-US/texbuttoncontents.dtd	(locale/en-US/Dialogs/texbuttoncontents.dtd)
-  locale/en-US/brand.dtd				(locale/en-US/brand.dtd)
-  locale/en-US/brand.properties				(locale/en-US/brand.properties)
+*  locale/en-US/branding/brand.dtd	(locale/en-US/brand.dtd)
+*  locale/en-US/branding/brand.properties	(locale/en-US/brand.properties)
  
 classic.jar:
 % skin prince classic %skin/classic/
