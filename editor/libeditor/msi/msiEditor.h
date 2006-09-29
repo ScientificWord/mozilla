@@ -9,6 +9,8 @@
 #include "msiEditingManager.h"
 #include "nsHTMLEditor.h"
 #include "nsIRangeUtils.h"
+#include "msiILayoutUtils.h"
+
 
 class msiEditorMouseListener;
 class msiISelection;
@@ -44,9 +46,8 @@ protected:
   virtual void     RemoveEventListeners();
   
 protected:
-  //msiEditingManager * m_msiEditingMan;
   nsCOMPtr <msiIEditingManager> m_msiEditingMan;
-  nsCOMPtr <nsIRangeUtils> m_rangeUtils;
+  static nsIRangeUtils * m_rangeUtils;
   nsCOMPtr<nsIDOMEventListener> m_mouseMotionListener;
   
   

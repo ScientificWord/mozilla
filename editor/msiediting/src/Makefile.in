@@ -17,6 +17,10 @@ MODULE_NAME  = msieditingModule
 
 PACKAGE_FILE = msiediting.pkg
 
+EXTRA_DSO_LIBS = \
+	gkgfx \
+	$(NULL)
+
 
 LAYOUT_STUFF = \
         $(DIST)/../layout/build/nsContentDLF.$(OBJ_SUFFIX) \
@@ -68,9 +72,12 @@ LAYOUT_STUFF = \
 
 
 EXTRA_DSO_LDOPTS = \
-    $(MOZ_COMPONENT_LIBS) \
+	$(LIBS_DIR)              \
+	$(EXTRA_DSO_LIBS)        \
+	$(MOZ_UNICHARUTIL_LIBS)  \
+	$(MOZ_COMPONENT_LIBS)    \
+    $(MOZ_JS_LIBS)           \
 	$(TK_LIBS) \
-	$(LAYOUT_STUFF) \
     $(NULL)
 
 REQUIRES  = xpcom \

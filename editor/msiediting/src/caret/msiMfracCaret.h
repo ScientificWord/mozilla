@@ -21,10 +21,10 @@ public:
                                          
 protected:
 
-nsresult  GetFramesAndRects(nsIPresShell* shell, const nsIFrame * frac, 
+nsresult  GetFramesAndRects(const nsIFrame * frac, 
                             nsIFrame ** numer, nsIFrame ** denom,
                             nsRect & fRect, nsRect & nRect, nsRect & dRect);
-void GetThresholds(nsIPresShell* shell, const nsRect &fRect, 
+void GetThresholds(const nsRect &fRect, 
                   const nsRect &nRect, const nsRect& dRect,
                   PRInt32 &left, PRInt32 & right);
 public:
