@@ -108,6 +108,7 @@ msiEditingManager::msiEditingManager()
 {
   msiNameSpaceUtils::Initialize();
   msiEditingAtoms::AddRefAtoms();
+  msiUtils::Initalize();
 }
 
 msiEditingManager::~msiEditingManager()

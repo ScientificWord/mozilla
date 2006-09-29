@@ -24,21 +24,30 @@
 #include "nsIDOM3EventTarget.h"
 #include "nsIDOMEventReceiver.h"
 #include "nsIDOMEventGroup.h"
+#include "nsIServiceManager.h"
+
 #include "msiISelection.h"
 #include "msiIEditingManager.h"
+
+static PRInt32 instanceCounter = 0;
+nsIRangeUtils * msiEditor::m_rangeUtils = nsnull;
 
 msiEditor::msiEditor()
 {
   nsresult dummy(NS_OK);
   m_msiEditingMan = do_CreateInstance(MSI_EDITING_MANAGER_CONTRACTID, &dummy);
-  m_rangeUtils = do_CreateInstance("@mozilla.org/content/range-utils;1", &dummy);
+  if (!m_rangeUtils)
+    CallGetService("@mozilla.org/content/range-utils;1",  &m_rangeUtils);
   msiLayoutAtoms::AddRefAtoms(); // initalize a copy of the layout and mathml atoms
+  instanceCounter += 1;
 }
 
 msiEditor::~msiEditor()
 {
+  instanceCounter -= 1;
   m_msiEditingMan = nsnull;
-  m_rangeUtils = nsnull;
+  if (instanceCounter <= 0)
+    NS_IF_RELEASE(m_rangeUtils);
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(msiEditor, nsHTMLEditor, msiIMathMLEditor)
