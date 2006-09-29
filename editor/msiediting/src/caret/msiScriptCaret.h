@@ -21,11 +21,11 @@ public:
   NS_DECL_MSIIMATHMLCARET
   
 protected:
-  nsresult GetFramesAndRects(nsIPresShell* shell, const nsIFrame * script, 
+  nsresult GetFramesAndRects(const nsIFrame * script, 
                              nsIFrame ** base, nsIFrame ** script1, nsIFrame ** script2,
                              nsRect & sRect, nsRect &bRect, nsRect& s1Rect, nsRect& s2Rect);
                              
-  void GetThresholds(nsIPresShell* shell, const nsRect &sRect, 
+  void GetThresholds(const nsRect &sRect, 
                      const nsRect &bRect, const nsRect& s1Rect, nsRect& s2Rect,
                      PRInt32 &left, PRInt32& midLf, PRInt32& midRt, PRInt32 & right);
                              

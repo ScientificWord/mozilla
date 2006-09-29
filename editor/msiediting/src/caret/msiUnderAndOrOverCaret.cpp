@@ -99,10 +99,10 @@ msiUnderAndOrOverCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPre
   *offset = INVALID;
   nsresult res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &uoFrame);
   if (NS_SUCCEEDED(res))
-    res = GetFramesAndRects(presShell, uoFrame, &baseFrame, &script1Frame, &script2Frame, 
+    res = GetFramesAndRects(uoFrame, &baseFrame, &script1Frame, &script2Frame, 
                             uoRect, baseRect, script1Rect, script2Rect);
   if (NS_SUCCEEDED(res))
-    res = msiUtils::GetPointFromMouseEvent(mouseEvent, eventPoint);                                     
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
   if (NS_SUCCEEDED(res))
   {
     nsCOMPtr<nsIDOMNode> child;
@@ -573,50 +573,27 @@ msiUnderAndOrOverCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDO
 
 //private
 nsresult
-msiUnderAndOrOverCaret::GetFramesAndRects(nsIPresShell* shell, const nsIFrame * underOver, 
+msiUnderAndOrOverCaret::GetFramesAndRects(const nsIFrame * underOver, 
                                  nsIFrame ** base, nsIFrame ** script1, nsIFrame ** script2,
                                  nsRect & uoRect, nsRect &bRect, nsRect& s1Rect, nsRect& s2Rect)
 { // relative to scritp's view
   nsresult res(NS_ERROR_FAILURE);
-  nsPresContext * context = nsnull;
   *script2 = nsnull;
   s2Rect= nsRect(0,0,0,0);
-  if (underOver && shell)
+  if (underOver)
   {
     *base = underOver->GetFirstChild(nsnull);
     if (*base)
       *script1 = (*base)->GetNextSibling();
     res = *base && *script1 ? NS_OK : NS_ERROR_FAILURE;  
-    if (NS_SUCCEEDED(res))
-    {
-      *script2 = (*script1)->GetNextSibling();
-      context = shell->GetPresContext();
-      res = context ? NS_OK : NS_ERROR_FAILURE;
-    }  
   }
   if (NS_SUCCEEDED(res))
   {
-    nsPoint offsetPoint(0,0);
-    nsIView * dontcare = nsnull;
-    res = underOver->GetOffsetFromView(offsetPoint, &dontcare);
-    if (NS_SUCCEEDED(res))
-    {
-      uoRect = underOver->GetRect();
-      uoRect.x = offsetPoint.x;
-      uoRect.y = offsetPoint.y;
-      bRect = (*base)->GetRect();
-      bRect.x += offsetPoint.x;
-      bRect.y += offsetPoint.y;
-      s1Rect = (*script1)->GetRect();
-      s1Rect.x += offsetPoint.x;
-      s1Rect.y += offsetPoint.y;
-      if (*script2)
-      {
-        s2Rect = (*script2)->GetRect();
-        s2Rect.x += offsetPoint.x;
-        s2Rect.y += offsetPoint.y;
-      }
-    }
+    uoRect = underOver->GetScreenRectExternal();
+    bRect = (*base)->GetScreenRectExternal();
+    s1Rect = (*script1)->GetScreenRectExternal();
+    if (*script2)
+      s2Rect = (*script2)->GetScreenRectExternal();
   }
   return res;
 }  

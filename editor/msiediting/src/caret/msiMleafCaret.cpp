@@ -71,19 +71,19 @@ msiMleafCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *p
   nsIFrame * leafFrame = nsnull; // no smart pointers for frames.
   nsIFrame * textFrame = nsnull; // no smart pointers for frames.
   nsRect leafRect, textRect;
-  nsPoint offsetPoint(0,0), eventPoint(0, 0);
+  nsPoint eventPoint(0, 0);
   PRInt32 lfGap(0), rtGap(0);
   *node = nsnull;
   *offset = INVALID;
   res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &leafFrame);
   if (NS_SUCCEEDED(res) && leafFrame)
   {
-    leafRect = leafFrame->GetRect();
+    leafRect = leafFrame->GetScreenRectExternal();
     textFrame = leafFrame->GetFirstChild(nsnull);
     NS_ASSERTION(textFrame && textFrame->GetType() == msiEditingAtoms::textFrame, "child of leaf is not textframe");
     if (textFrame && textFrame->GetType() == msiEditingAtoms::textFrame)
     {
-      textRect = textFrame->GetRect();
+      textRect = textFrame->GetScreenRectExternal();
       lfGap = textRect.x > 0 ? textRect.x : 0;
       rtGap = leafRect.width - textRect.x - textRect.width;
       rtGap = rtGap < 0 ? 0 : rtGap;
@@ -92,29 +92,18 @@ msiMleafCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *p
       res = NS_ERROR_FAILURE;  
   }
   if (NS_SUCCEEDED(res))
-    res = msiMCaretBase::GetFrameOffsetFromView(leafFrame, offsetPoint);
-  if (NS_SUCCEEDED(res))
-    res = msiUtils::GetPointFromMouseEvent(mouseEvent, eventPoint);                                     
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
   if (NS_SUCCEEDED(res))
   {
-    PRInt32 eventX = eventPoint.x - offsetPoint.x; //relative to baseFrame's rect
     m_offset = m_length;
     if (m_isDipole)
-      m_offset =  (eventX <= lfGap + textRect.width/2) ? 0 : m_length;
+      m_offset =  (eventPoint.x <= lfGap + textRect.width/2) ? 0 : m_length;
     else
     {
-      nsEvent * nsEvent;
-      res = msiUtils::GetNSEventFromMouseEvent(mouseEvent, &nsEvent);
+      PRUint32 loc_offset(NS_MAXSIZE);
+      res = msiUtils::GetOffsetIntoTextFromEvent(textFrame, mouseEvent, &loc_offset);
       if (NS_SUCCEEDED(res))
-      {
-        nsPoint pt = nsLayoutUtils::GetEventCoordinatesRelativeTo(nsEvent, textFrame);
-        if (pt.x != NS_UNCONSTRAINEDSIZE)
-        {
-          nsIFrame::ContentOffsets offsets = textFrame->GetContentOffsetsFromPoint(pt);
-          if (offsets.offset >=0)
-            m_offset = offsets.offset;
-        }    
-      } 
+        m_offset = loc_offset;
     }
     res = Accept(editor, FLAGS_NONE, node, offset);
   }

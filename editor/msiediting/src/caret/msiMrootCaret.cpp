@@ -94,37 +94,34 @@ msiMrootCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *p
   nsIFrame * base = nsnull;
   nsIFrame * index = nsnull;
   nsRect rootRect, baseRect, indexRect;
-  nsPoint offsetPoint(0,0), eventPoint(0,0);;
+  nsPoint eventPoint(0,0);
   *node = nsnull;
   *offset = INVALID;
   res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &rootFrame);
   if (NS_SUCCEEDED(res) && rootFrame)
   {  
-    rootRect = rootFrame->GetRect();
+    rootRect = rootFrame->GetScreenRectExternal();
     base = rootFrame->GetFirstChild(nsnull);
     if (base)
-      baseRect = base->GetRect();
+      baseRect = base->GetScreenRectExternal();
     else
       res = NS_ERROR_FAILURE;  
     if (NS_SUCCEEDED(res) && base)
       index = base->GetNextSibling();
     if (index)
-      indexRect = index->GetRect();
+      indexRect = index->GetScreenRectExternal();
     else
       res = NS_ERROR_FAILURE;  
       
   }
   if (NS_SUCCEEDED(res))
-    res = msiMCaretBase::GetFrameOffsetFromView(rootFrame, offsetPoint);
-  if (NS_SUCCEEDED(res))
-    res = msiUtils::GetPointFromMouseEvent(mouseEvent, eventPoint);                                     
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
   if (NS_SUCCEEDED(res))
   {
-    PRInt32 eventX = eventPoint.x - offsetPoint.x; //relative to baseFrame's rect
     PRInt32 gap = (baseRect.x - indexRect.x - indexRect.width);
     gap = gap < 0 ? 0 : gap;
     nsCOMPtr<nsIDOMNode> child;
-    if (eventX <= indexRect.x + indexRect.width + gap/2)
+    if (eventPoint.x <= indexRect.x + indexRect.width + gap/2)
       res =  msiMCaretBase::GetNodeFromFrame(index, child);
     else
       res =  msiMCaretBase::GetNodeFromFrame(base, child);
@@ -142,9 +139,9 @@ msiMrootCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *p
     {
       NS_ASSERTION(PR_FALSE, "Root failed to set node and offset.");
       m_offset = 0;
-      if (eventX > baseRect.x + baseRect.width/2)
+      if (eventPoint.x > baseRect.x + baseRect.width/2)
         m_offset = 1;
-      else if (eventX <= indexRect.x + indexRect.width + gap/2)
+      else if (eventPoint.x <= indexRect.x + indexRect.width + gap/2)
         m_offset = 2;
       res = NS_OK;  
     } 

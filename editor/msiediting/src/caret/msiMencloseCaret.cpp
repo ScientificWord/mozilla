@@ -34,40 +34,37 @@ msiMencloseCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell
   nsIFrame * firstKid = nsnull;
   nsIFrame * lastKid = nsnull;
   nsRect encloseRect, firstKidRect, lastKidRect;
-  nsPoint offsetPoint(0,0), eventPoint(0,0);
+  nsPoint eventPoint(0,0);
   *node = nsnull;
   *offset = INVALID;
   res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &encloseFrame);
   if (NS_SUCCEEDED(res) && encloseFrame)
   {  
-    encloseRect = encloseFrame->GetRect();
+    encloseRect = encloseFrame->GetScreenRectExternal();
     firstKid = encloseFrame->GetFirstChild(nsnull);
     if (firstKid)
     {
-      firstKidRect = firstKid->GetRect();
+      firstKidRect = firstKid->GetScreenRectExternal();
       lastKid = firstKid;
       while (lastKid->GetNextSibling())
         lastKid = lastKid->GetNextSibling();
-      lastKidRect = lastKid->GetRect();
+      lastKidRect = lastKid->GetScreenRectExternal();
     }
     else
       res = NS_ERROR_FAILURE;
   }
   if (NS_SUCCEEDED(res))
-    res = msiMCaretBase::GetFrameOffsetFromView(encloseFrame, offsetPoint);
-  if (NS_SUCCEEDED(res))
-    res = msiUtils::GetPointFromMouseEvent(mouseEvent, eventPoint);                                     
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
   if (NS_SUCCEEDED(res))
   {
-    PRInt32 eventX = eventPoint.x - offsetPoint.x; //relative to sqrtFrame's rect
     PRInt32 lfThres(0), rtThres(0);
-    GetThresholds(presShell, encloseRect, firstKidRect, lastKidRect, lfThres, rtThres);
-    if (!(flags&FROM_PARENT) && ((eventX <= lfThres) || (encloseRect.width - eventX <= rtThres))) 
+    GetThresholds(encloseRect, firstKidRect, lastKidRect, lfThres, rtThres);
+    if (!(flags&FROM_PARENT) && ((eventPoint.x <= lfThres) || (encloseRect.width - eventPoint.x <= rtThres))) 
     { 
       //ask parent to accept caret.
-      PRBool incOffset = eventX <= lfThres ? PR_FALSE : PR_TRUE;
+      PRBool incOffset = eventPoint.x <= lfThres ? PR_FALSE : PR_TRUE;
       flags = FROM_CHILD;
-      flags |= (eventX <= lfThres) ? FROM_RIGHT : FROM_LEFT;
+      flags |= (eventPoint.x <= lfThres) ? FROM_RIGHT : FROM_LEFT;
       nsCOMPtr<msiIMathMLCaret> parent;
       msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, incOffset, parent);
       if (parent)
@@ -131,19 +128,11 @@ msiMencloseCaret::SetupDeletionTransactions(nsIEditor * editor,
 }                                                     
     
 #define MIN_THRESHOLD 2 //TODO -- how should this be determined.      
-void msiMencloseCaret::GetThresholds(nsIPresShell* shell, const nsRect &encloseRect, 
+void msiMencloseCaret::GetThresholds(const nsRect &encloseRect, 
                                      const nsRect &firstKidRect, const nsRect &lastKidRect, 
                                      PRInt32 &left, PRInt32 & right)
 {
-  float p2t = 15.0;
-  PRInt32 min(15);
-  if (shell)
-  {
-    nsPresContext * context = shell->GetPresContext();
-    if (context)
-      p2t = context->PixelsToTwips();
-  }
-  min = NS_STATIC_CAST(PRInt32, MIN_THRESHOLD * p2t);
+  PRInt32 min(MIN_THRESHOLD);
   left = firstKidRect.x/2;
   right = encloseRect.x + encloseRect.width - lastKidRect.x - lastKidRect.width;
   if (left < min)

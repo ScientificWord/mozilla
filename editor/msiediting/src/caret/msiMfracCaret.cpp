@@ -101,14 +101,14 @@ msiMfracCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *p
   *offset = INVALID;
   res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &fracFrame);
   if (NS_SUCCEEDED(res) && fracFrame)
-    res = GetFramesAndRects(presShell, fracFrame, &numerFrame, &denomFrame, 
+    res = GetFramesAndRects(fracFrame, &numerFrame, &denomFrame, 
                             fracRect, numerRect, denomRect);
   if (NS_SUCCEEDED(res))
-    res = msiUtils::GetPointFromMouseEvent(mouseEvent, eventPoint);                                     
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
   if (NS_SUCCEEDED(res))
   {
     PRInt32 lfThres(0), rtThres(0);
-    GetThresholds(presShell, fracRect, numerRect, denomRect,
+    GetThresholds(fracRect, numerRect, denomRect,
                   lfThres, rtThres);
     if (!(flags&FROM_PARENT) && ((eventPoint.x <= lfThres) || (eventPoint.x >= rtThres))) 
     { 
@@ -465,12 +465,12 @@ msiMfracCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** 
 
 //protected
 nsresult
-msiMfracCaret::GetFramesAndRects(nsIPresShell* shell, const nsIFrame * frac, 
+msiMfracCaret::GetFramesAndRects(const nsIFrame * frac, 
                                  nsIFrame ** numer, nsIFrame ** denom,
                                  nsRect & fRect, nsRect &nRect, nsRect& dRect)
 { // relative to frac's view
   nsresult res(NS_ERROR_FAILURE);
-  if (frac && shell)
+  if (frac)
   {
     *numer = frac->GetFirstChild(nsnull);
     if (*numer)
@@ -479,39 +479,19 @@ msiMfracCaret::GetFramesAndRects(nsIPresShell* shell, const nsIFrame * frac,
   }
   if (NS_SUCCEEDED(res))
   {
-    nsPoint offsetPoint(0,0);
-    nsIView * fracView = nsnull;
-    res = frac->GetOffsetFromView(offsetPoint, &fracView);
-    if (NS_SUCCEEDED(res))
-    {
-      fRect = frac->GetRect();
-      fRect.x = offsetPoint.x;
-      fRect.y = offsetPoint.y;
-      nRect = (*numer)->GetRect();
-      nRect.x += offsetPoint.x;
-      nRect.y += offsetPoint.y;
-      dRect = (*denom)->GetRect();
-      dRect.x += offsetPoint.x;
-      dRect.y += offsetPoint.y;
-    }
+    fRect = frac->GetScreenRectExternal();
+    nRect = (*numer)->GetScreenRectExternal();
+    dRect = (*denom)->GetScreenRectExternal();
   }
   return res;
 }  
       
-#define MIN_THRESHOLD 3 //TODO -- how should this be determined.      
-void msiMfracCaret::GetThresholds(nsIPresShell* shell, const nsRect &fRect, 
+#define MIN_THRESHOLD 2 //TODO -- how should this be determined.      
+void msiMfracCaret::GetThresholds(const nsRect &fRect, 
                                  const nsRect &nRect, const nsRect& dRect,
                                  PRInt32 &left, PRInt32 & right)
 {
-  float p2t = 15.0;
-  PRInt32 minGap(0), tmp(0);
-  if (shell)
-  {
-    nsPresContext * context = shell->GetPresContext();
-    if (context)
-      p2t = context->PixelsToTwips();
-  }
-  minGap = NS_STATIC_CAST(PRInt32, MIN_THRESHOLD * p2t);
+  PRInt32 minGap(MIN_THRESHOLD);
   minGap = minGap > fRect.width/50 ? minGap : fRect.width/50;
   left = nRect.x < dRect.x ? nRect.x : dRect.x;
   if (left < fRect.x + minGap)

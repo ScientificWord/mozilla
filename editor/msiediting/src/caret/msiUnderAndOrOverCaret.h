@@ -20,7 +20,7 @@ public:
   //override msiIMathMLCaret
   NS_DECL_MSIIMATHMLCARET
 protected:
-  nsresult GetFramesAndRects(nsIPresShell* shell, const nsIFrame * underOver, 
+  nsresult GetFramesAndRects(const nsIFrame * underOver, 
                              nsIFrame ** base, nsIFrame ** script1, nsIFrame ** script2,
                              nsRect& sRect, nsRect& bRect, nsRect& s1Rect, nsRect& s2Rect);
                            
