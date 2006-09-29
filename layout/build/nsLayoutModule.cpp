@@ -138,6 +138,9 @@
 #include "nsIDOMCanvasRenderingContext2D.h"
 #endif
 
+//ljh
+#include "msiILayoutUtils.h"
+
 class nsIDocumentLoaderFactory;
 
 #define PRODUCT_NAME "Gecko"
@@ -343,6 +346,8 @@ nsresult NS_NewTextEncoder(nsIDocumentEncoder** aResult);
 nsresult NS_NewXBLService(nsIXBLService** aResult);
 nsresult NS_NewContentPolicy(nsIContentPolicy** aResult);
 nsresult NS_NewDOMEventGroup(nsIDOMEventGroup** aResult);
+//ljh
+nsresult MSI_NewLayoutUtils(msiILayoutUtils** aResult);
 
 NS_IMETHODIMP NS_NewXULControllers(nsISupports* aOuter, REFNSIID aIID, void** aResult);
 
@@ -464,6 +469,8 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsDataDocumentContentPolicy)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsNoDataProtocolContentPolicy)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsSyncLoadService)
 MAKE_CTOR(CreatePluginDocument,           nsIDocument,                 NS_NewPluginDocument)
+MAKE_CTOR(CreateMSILayoutUtils,           msiILayoutUtils,             MSI_NewLayoutUtils)
+
 
 #ifdef MOZ_ENABLE_CANVAS
 MAKE_CTOR(CreateCanvasRenderingContext2D, nsIDOMCanvasRenderingContext2D, NS_NewCanvasRenderingContext2D)
@@ -1295,7 +1302,13 @@ static const nsModuleComponentInfo gComponents[] = {
   { "DOM Storage",
     NS_DOMSTORAGE_CID,
     "@mozilla.org/dom/storage;1",
-    NS_NewDOMStorage }
+    NS_NewDOMStorage },
+//ljh    
+  { "MSI Layout Utils",
+    MSI_ILAYOUTUTILS_CID,
+    "@mackichan.com/layout/msilayout-utils;1",
+    CreateMSILayoutUtils }
+    
 };
 
 NS_IMPL_NSGETMODULE_WITH_CTOR(nsLayoutModule, gComponents, Initialize)
