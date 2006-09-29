@@ -134,18 +134,21 @@ msiMrow::InsertNodes(nsIEditor * editor,
             PRUint32 len(0);
             if (addToFront)
               addToFront->GetLength(&len);
-            if (len >= 2)
-            {
-              msiCoalesceUtils::SetCoalesceSwitch(addToFront, 0, PR_FALSE);
-              msiCoalesceUtils::SetCoalesceSwitch(addToFront, len-1, PR_TRUE);
-            }
-            if (numNewNodes >= 2)
-              msiCoalesceUtils::SetCoalesceSwitch(nodeList, numNewNodes-1, PR_TRUE);
+//TODO ljh 9/06: I not sure if setting coalese switch is good, for example the mrow may contain
+// scripts which were split and then may not be put back together.
+// I am not sure why I added this code in the first place (back in 3/06)              
+//            if (len >= 2)
+//            {
+//              msiCoalesceUtils::SetCoalesceSwitch(addToFront, 0, PR_FALSE);
+//              msiCoalesceUtils::SetCoalesceSwitch(addToFront, len-1, PR_TRUE);
+//            }
+//            if (numNewNodes >= 2)
+//              msiCoalesceUtils::SetCoalesceSwitch(nodeList, numNewNodes-1, PR_TRUE);
             len = 0;  
             if (addToEnd)
               addToEnd->GetLength(&len);
-            if (len >= 2)
-              msiCoalesceUtils::SetCoalesceSwitch(addToEnd, 0, PR_FALSE);
+//            if (len >= 2)
+//              msiCoalesceUtils::SetCoalesceSwitch(addToEnd, 0, PR_FALSE);
             res = msiUtils::AddToNodeList(nodeList, addToFront, addToEnd, nodeArray);
           }
           if (NS_SUCCEEDED(res) && nodeArray)
