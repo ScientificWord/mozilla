@@ -118,6 +118,7 @@ EXPORTS		= \
 		nsPresState.h \
 		nsStyleChangeList.h \
 		nsStyleConsts.h \
+		msiILayoutUtils.h \
 		$(NULL)
 
 CPPSRCS		= \
@@ -144,6 +145,7 @@ CPPSRCS		= \
 		nsQuoteList.cpp \
 		nsStyleChangeList.cpp \
 		nsStyleSheetService.cpp \
+		msiLayoutUtils.cpp \
 		$(NULL)
 
 ifdef IBMBIDI
