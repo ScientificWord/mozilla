@@ -111,7 +111,7 @@ msiBigOperatorCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresSh
   nsCOMPtr<msiIMathMLCaret> mathmlEditing;
   nsPoint eventPoint(0,0);
   if (NS_SUCCEEDED(res))
-    res = msiUtils::GetPointFromMouseEvent(mouseEvent, eventPoint);                                     
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
   if (scriptType == MATHML_UNKNOWN) 
   {
     nsIFrame * bigOpFrame = nsnull;
@@ -119,15 +119,11 @@ msiBigOperatorCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresSh
       res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &bigOpFrame);
     if (NS_SUCCEEDED(res) && bigOpFrame)
     {
-      nsPoint offsetPoint(0,0);
       nsRect bigOpRect(0,0,0,0);
       nsIView * dontcare = nsnull;
-      res = bigOpFrame->GetOffsetFromView(offsetPoint, &dontcare);
       if (NS_SUCCEEDED(res))
       {
-        bigOpRect = bigOpFrame->GetRect();
-        bigOpRect.x = offsetPoint.x;
-        bigOpRect.y = offsetPoint.y;
+        bigOpRect = bigOpFrame->GetScreenRectExternal();
         m_offset = eventPoint.x <= (bigOpRect.x + (bigOpRect.width/2)) ? 0 : m_numKids;
         flags = m_offset == 0 ? FROM_RIGHT : FROM_LEFT;
         res = Accept(editor, flags, node, offset);
@@ -147,7 +143,7 @@ msiBigOperatorCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresSh
     if (NS_SUCCEEDED(res))
       res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &scriptFrame);
     if (NS_SUCCEEDED(res))
-      res = GetFramesAndRects(presShell, scriptFrame, &baseFrame, &script1Frame, &script2Frame, 
+      res = GetFramesAndRects(scriptFrame, &baseFrame, &script1Frame, &script2Frame, 
                               scriptRect, baseRect, script1Rect, script2Rect, isAboveBelow);
     if (NS_SUCCEEDED(res) && isAboveBelow)
     {
@@ -705,54 +701,31 @@ msiBigOperatorCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNo
 
 //private
 nsresult
-msiBigOperatorCaret::GetFramesAndRects(nsIPresShell* shell, const nsIFrame * script, 
+msiBigOperatorCaret::GetFramesAndRects(const nsIFrame * script, 
                                  nsIFrame ** base, nsIFrame ** script1, nsIFrame ** script2,
                                  nsRect & sRect, nsRect &bRect, nsRect& s1Rect, nsRect& s2Rect,
                                  PRBool& isAboveBelow)
 { // relative to scritp's view
   nsresult res(NS_ERROR_FAILURE);
-  nsPresContext * context = nsnull;
   *script2 = nsnull;
   s2Rect= nsRect(0,0,0,0);
   isAboveBelow = PR_TRUE;
-  if (script && shell)
+  if (script)
   {
     *base = script->GetFirstChild(nsnull);
     if (*base)
       *script1 = (*base)->GetNextSibling();
     res = *base && *script1 ? NS_OK : NS_ERROR_FAILURE;  
-    if (NS_SUCCEEDED(res))
-    {
-      *script2 = (*script1)->GetNextSibling();
-      context = shell->GetPresContext();
-      res = context ? NS_OK : NS_ERROR_FAILURE;
-    }  
   }
   if (NS_SUCCEEDED(res))
   {
-    nsPoint offsetPoint(0,0);
-    nsIView * scriptView = nsnull;
-    res = script->GetOffsetFromView(offsetPoint, &scriptView);
-    if (NS_SUCCEEDED(res))
-    {
-      sRect = script->GetRect();
-      sRect.x = offsetPoint.x;
-      sRect.y = offsetPoint.y;
-      bRect = (*base)->GetRect();
-      bRect.x += offsetPoint.x;
-      bRect.y += offsetPoint.y;
-      s1Rect = (*script1)->GetRect();
-      s1Rect.x += offsetPoint.x;
-      s1Rect.y += offsetPoint.y;
-      if (*script2)
-      {
-        s2Rect = (*script2)->GetRect();
-        s2Rect.x += offsetPoint.x;
-        s2Rect.y += offsetPoint.y;
-      }
-      if (bRect.x + bRect.width <= s1Rect.x)
-        isAboveBelow = PR_FALSE;
-    }
+    sRect = script->GetScreenRectExternal();
+    bRect = (*base)->GetScreenRectExternal();
+    s1Rect = (*script1)->GetScreenRectExternal();
+    if (*script2)
+      s2Rect = (*script2)->GetScreenRectExternal();
+    if (bRect.x + bRect.width <= s1Rect.x)
+      isAboveBelow = PR_FALSE;
   }
   return res;
 }  

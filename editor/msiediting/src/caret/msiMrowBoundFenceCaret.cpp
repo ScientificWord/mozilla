@@ -50,38 +50,35 @@ msiMrowBoundFenceCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPre
   nsIFrame * openFrame = nsnull;
   nsIFrame * closeFrame = nsnull;
   nsRect fenceRect(0,0,0,0), openRect(0,0,0,0), closeRect(0,0,0,0);
-  nsPoint offsetPoint(0,0), eventPoint(0,0);
+  nsPoint eventPoint(0,0);
   
   nsresult res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &fenceFrame);
   if (NS_SUCCEEDED(res) && fenceFrame)
   {  
-    fenceRect = fenceFrame->GetRect();
+    fenceRect = fenceFrame->GetScreenRectExternal();
     openFrame = fenceFrame->GetFirstChild(nsnull);
     if (openFrame)
     {
-      openRect = openFrame->GetRect();
+      openRect = openFrame->GetScreenRectExternal();
       closeFrame = openFrame;
       while (closeFrame->GetNextSibling())
         closeFrame = closeFrame->GetNextSibling();
-      closeRect = closeFrame->GetRect();
+      closeRect = closeFrame->GetScreenRectExternal();
     }
     else
       res = NS_ERROR_FAILURE;
         
   }
   if (NS_SUCCEEDED(res))
-    res = msiMCaretBase::GetFrameOffsetFromView(fenceFrame, offsetPoint);
-    if (NS_SUCCEEDED(res))
-      res = msiUtils::GetPointFromMouseEvent(mouseEvent, eventPoint);                                     
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
   if (NS_SUCCEEDED(res))
   {
-    PRInt32 eventX = eventPoint.x - offsetPoint.x; //relative to fenceFrame's rect
     PRInt32 lfThres(0), rtThres(0);
-    GetThresholds(presShell, fenceRect, openRect, closeRect, lfThres, rtThres);
-    if (!(flags&FROM_PARENT) && ((eventX <= lfThres) || (fenceRect.width - eventX <= rtThres))) 
+    GetThresholds(fenceRect, openRect, closeRect, lfThres, rtThres);
+    if (!(flags&FROM_PARENT) && ((eventPoint.x <= lfThres) || (fenceRect.width - eventPoint.x <= rtThres))) 
     { 
-      m_offset = eventX <= lfThres ? 0 : m_numKids;
-      flags = eventX <= lfThres ? FROM_RIGHT : FROM_LEFT;
+      m_offset = eventPoint.x <= lfThres ? 0 : m_numKids;
+      flags = eventPoint.x <= lfThres ? FROM_RIGHT : FROM_LEFT;
       res = Accept(editor, flags, node, offset);
     }
     else if (m_numKids == 3)
@@ -108,7 +105,7 @@ msiMrowBoundFenceCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPre
     {
       *node = m_mathmlNode;
       NS_ADDREF(*node);
-      *offset = eventX <= fenceRect.width/2 ? 0 : m_numKids; 
+      *offset = eventPoint.x <= fenceRect.width/2 ? 0 : m_numKids; 
     }   
   }
   return res;   
@@ -386,20 +383,12 @@ msiMrowBoundFenceCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDO
 }
 
 //private
-#define MIN_THRESHOLD 3 //TODO -- how should this be determined.      
-void msiMrowBoundFenceCaret::GetThresholds(nsIPresShell* shell, const nsRect &frameRect, 
+#define MIN_THRESHOLD 2 //TODO -- how should this be determined.      
+void msiMrowBoundFenceCaret::GetThresholds(const nsRect &frameRect, 
                                            const nsRect &openRect, const nsRect &closeRect, 
                                            PRInt32 &left, PRInt32 & right)
 {
-  float p2t = 15.0;
-  PRInt32 min(15);
-  if (shell)
-  {
-    nsPresContext * context = shell->GetPresContext();
-    if (context)
-      p2t = context->PixelsToTwips();
-  }
-  min = NS_STATIC_CAST(PRInt32, MIN_THRESHOLD * p2t);
+  PRInt32 min(MIN_THRESHOLD);
   left = openRect.width/2;
   if (openRect.x > 0)
     left += openRect.x;

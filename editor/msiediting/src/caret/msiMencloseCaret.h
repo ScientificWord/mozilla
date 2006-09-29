@@ -40,7 +40,7 @@ public:
   // end msiIMathmlCaret overrides
   
 protected:
-void  GetThresholds(nsIPresShell* shell, const nsRect &encloseRect, 
+void  GetThresholds(const nsRect &encloseRect, 
                     const nsRect &firstKidRect, const nsRect& lastKidRect,
                     PRInt32 &left, PRInt32 & right);
   

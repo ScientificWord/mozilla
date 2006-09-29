@@ -106,14 +106,14 @@ msiScriptCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *
   nsPoint eventPoint(0,0);
   nsresult res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &scriptFrame);
   if (NS_SUCCEEDED(res))
-    res = GetFramesAndRects(presShell, scriptFrame, &baseFrame, &script1Frame, &script2Frame, 
+    res = GetFramesAndRects(scriptFrame, &baseFrame, &script1Frame, &script2Frame, 
                             scriptRect, baseRect, script1Rect, script2Rect);
   if (NS_SUCCEEDED(res))
-    res = msiUtils::GetPointFromMouseEvent(mouseEvent, eventPoint);                                     
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
   if (NS_SUCCEEDED(res))
   {
     PRInt32 lfThres(0), rtThres(0), middleLf(0), middleRt(0);
-    GetThresholds(presShell, scriptRect, baseRect, script1Rect, script2Rect,
+    GetThresholds(scriptRect, baseRect, script1Rect, script2Rect,
                   lfThres, middleLf, middleRt, rtThres);
     if (eventPoint.x <= lfThres || eventPoint.x >= rtThres) 
     { 
@@ -786,69 +786,38 @@ msiScriptCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode **
 
 //private
 nsresult
-msiScriptCaret::GetFramesAndRects(nsIPresShell* shell, const nsIFrame * script, 
-                                 nsIFrame ** base, nsIFrame ** script1, nsIFrame ** script2,
-                                 nsRect & sRect, nsRect &bRect, nsRect& s1Rect, nsRect& s2Rect)
+msiScriptCaret::GetFramesAndRects(const nsIFrame * script, 
+                                  nsIFrame ** base, nsIFrame ** script1, nsIFrame ** script2,
+                                  nsRect & sRect, nsRect &bRect, nsRect& s1Rect, nsRect& s2Rect)
 { // relative to scritp's view
   nsresult res(NS_ERROR_FAILURE);
-  nsPresContext * context = nsnull;
   *script2 = nsnull;
   s2Rect= nsRect(0,0,0,0);
-  if (script && shell)
+  if (script)
   {
     *base = script->GetFirstChild(nsnull);
     if (*base)
       *script1 = (*base)->GetNextSibling();
     res = *base && *script1 ? NS_OK : NS_ERROR_FAILURE;  
-    if (NS_SUCCEEDED(res))
-    {
-      *script2 = (*script1)->GetNextSibling();
-      context = shell->GetPresContext();
-      res = context ? NS_OK : NS_ERROR_FAILURE;
-    }  
   }
   if (NS_SUCCEEDED(res))
   {
-    nsPoint offsetPoint(0,0);
-    nsIView * scriptView = nsnull;
-    res = script->GetOffsetFromView(offsetPoint, &scriptView);
-    if (NS_SUCCEEDED(res))
-    {
-      sRect = script->GetRect();
-      sRect.x = offsetPoint.x;
-      sRect.y = offsetPoint.y;
-      bRect = (*base)->GetRect();
-      bRect.x += offsetPoint.x;
-      bRect.y += offsetPoint.y;
-      s1Rect = (*script1)->GetRect();
-      s1Rect.x += offsetPoint.x;
-      s1Rect.y += offsetPoint.y;
-      if (*script2)
-      {
-        s2Rect = (*script2)->GetRect();
-        s2Rect.x += offsetPoint.x;
-        s2Rect.y += offsetPoint.y;
-      }
-    }
+    sRect = script->GetScreenRectExternal();
+    bRect = (*base)->GetScreenRectExternal();
+    s1Rect = (*script1)->GetScreenRectExternal();
+    if (*script2)
+      s2Rect = (*script2)->GetScreenRectExternal();
   }
   return res;
 }  
       
 #define MIN_THRESHOLD 2 //TODO -- how should this be determined.      
 
-void msiScriptCaret::GetThresholds(nsIPresShell* shell, const nsRect &sRect, 
+void msiScriptCaret::GetThresholds(const nsRect &sRect, 
                                  const nsRect &bRect, const nsRect& s1Rect, nsRect& s2Rect,
                                  PRInt32 &left, PRInt32& midLf, PRInt32& midRt, PRInt32 & right)
 {
-  float p2t = 15.0;
-  PRInt32 minGap(0), tmp(0);
-  if (shell)
-  {
-    nsPresContext * context = shell->GetPresContext();
-    if (context)
-      p2t = context->PixelsToTwips();
-  }
-  minGap = NS_STATIC_CAST(PRInt32, MIN_THRESHOLD * p2t);
+  PRInt32 minGap(MIN_THRESHOLD), tmp(0);
   
   left = bRect.x;
   if (left < sRect.x + minGap)
@@ -870,7 +839,7 @@ void msiScriptCaret::GetThresholds(nsIPresShell* shell, const nsRect &sRect,
     midLf = midRt;
     midRt = tmp;
   }  
-  tmp = NS_STATIC_CAST(PRInt32, MIN_THRESHOLD * p2t);
+  tmp = MIN_THRESHOLD;
   if (midRt - midLf < tmp)
   {
     tmp -= (midRt - midLf);
