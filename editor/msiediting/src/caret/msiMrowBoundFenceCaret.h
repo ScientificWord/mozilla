@@ -17,7 +17,7 @@ public:
   NS_DECL_MSIIMATHMLCARET
 
 protected:
-  void GetThresholds(nsIPresShell* shell, const nsRect &frameRect, 
+  void GetThresholds(const nsRect &frameRect, 
                      const nsRect &openRect, const nsRect &closeRect, 
                      PRInt32 &left, PRInt32 & right);
 protected:

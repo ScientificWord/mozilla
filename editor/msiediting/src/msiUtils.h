@@ -17,9 +17,13 @@
 #include "msiIMathMLInsertion.h"
 #include "msiIMathMLCaret.h"
 #include "msiIMathMLEditingBC.h"
+#include "msiILayoutUtils.h"
+
+
 class msiUtils
 {
 public:
+  static void Initalize();
   static PRInt32  GetMathMLNodeTypeFromCharacter(PRUint32 character);
   
   static nsresult GetMathMLEditingBC(nsIEditor *editor,
@@ -293,7 +297,7 @@ public:
                                      
   static nsresult GetNSEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent, nsEvent ** nsEvent);
   
-  static nsresult GetPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent, nsPoint & point);                                     
+  static nsresult GetScreenPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent, nsPoint & point);                                     
                                      
   static PRBool IsWhitespace(nsIDOMNode * node);
                                        
@@ -352,6 +356,16 @@ public:
   static nsresult SplitNode(nsIDOMNode * node, PRUint32 offset, PRBool emptyOK,
                             nsCOMPtr<nsIDOMNode> & left, 
                             nsCOMPtr<nsIDOMNode> & right);
+
+//msiLayoutUtils
+  static msiILayoutUtils * m_msiLayoutUtils;
+  static nsresult GetOffsetIntoTextFromEvent(nsIFrame *textFrame, nsIDOMEvent *domEvent, PRUint32 *offset); 
+  static nsresult GetEventCoordinatesRelativeToFrame(nsIFrame* frame, nsIDOMEvent *domEvent, nsPoint & point);
+  
+// end msiLayoutUtils  
+
+
+  static                             
                                               
                                       
 //TODO - how should this be determined -- user preference??
