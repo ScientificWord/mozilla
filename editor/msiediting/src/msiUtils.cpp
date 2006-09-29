@@ -21,6 +21,7 @@
 #include "nsComponentManagerUtils.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsGUIEvent.h"
+#include "nsIServiceManager.h"
 
 #include "msiUtils.h"
 #include "msiIMMLEditDefines.h"
@@ -61,6 +62,23 @@
 #include "msiEditingAtoms.h"
 #include "msiNameSpaceUtils.h"
 
+static PRBool initalized = PR_FALSE;
+
+//msiLayoutUtils
+msiILayoutUtils * msiUtils::m_msiLayoutUtils = nsnull;
+
+void msiUtils::Initalize()
+{
+  if (!initalized)
+  {
+    
+    if (!m_msiLayoutUtils)
+    {  nsresult res = CallGetService("@mackichan.com/layout/msilayout-utils;1", &m_msiLayoutUtils);
+      initalized = NS_SUCCEEDED(res) && m_msiLayoutUtils;
+    }  
+  }
+  return;
+}    
 
 nsresult msiUtils::GetMathMLInsertionInterface(nsIEditor *editor,
                                              nsIDOMNode * node,
@@ -2445,20 +2463,27 @@ nsresult msiUtils::GetNSEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
 //}
 
   
-nsresult msiUtils::GetPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent, 
-                                          nsPoint & point)                                     
+nsresult msiUtils::GetScreenPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent, 
+                                                nsPoint & point)                                     
 {
-  nsresult res(NS_ERROR_FAILURE);
   if (!mouseEvent)
     return NS_ERROR_FAILURE;
-  nsEvent * internalEvent = nsnull;
-  nsCOMPtr<nsIPrivateDOMEvent> privateEvent(do_QueryInterface(mouseEvent));
-  if (privateEvent)
-     privateEvent->GetInternalNSEvent(&internalEvent);
-  if (internalEvent)
-  {
-    point = internalEvent->refPoint;
-    res = NS_OK;
-  }
-  return res;
+  PRInt32 screenX(NS_MAXSIZE), screenY(NS_MAXSIZE);
+  mouseEvent->GetScreenX(&screenX);
+  mouseEvent->GetScreenY(&screenY);
+  point = nsPoint(screenX, screenY);
+  return NS_OK;
 }
+
+
+//msiLayoutUtils
+
+nsresult msiUtils::GetOffsetIntoTextFromEvent(nsIFrame *textFrame, nsIDOMEvent *domEvent, PRUint32 *offset)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  if (m_msiLayoutUtils)
+    res = m_msiLayoutUtils->GetOffsetIntoTextFromEvent(textFrame, domEvent, offset);
+  return res;  
+}
+
+

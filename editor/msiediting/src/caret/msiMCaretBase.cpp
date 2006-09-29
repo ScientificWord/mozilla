@@ -68,33 +68,31 @@ msiMCaretBase::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *p
   nsIFrame * baseFrame = nsnull; // no smart pointers for frames.
   nsIFrame * kid = nsnull;
   nsRect baseRect, kidRect;
-  nsPoint offsetPoint(0,0), eventPoint(0,0);
+  nsPoint eventPoint(0,0);
   *node = nsnull;
   *offset = INVALID;
   res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &baseFrame);
   if (NS_SUCCEEDED(res) && baseFrame)
   {  
-     baseRect = baseFrame->GetRect();
+     baseRect = baseFrame->GetScreenRectExternal();
      kid = baseFrame->GetFirstChild(nsnull);
   }
   if (NS_SUCCEEDED(res))
-    res = msiMCaretBase::GetFrameOffsetFromView(baseFrame, offsetPoint);
   if (NS_SUCCEEDED(res))
-    res = msiUtils::GetPointFromMouseEvent(mouseEvent, eventPoint);                                     
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
   
   if (NS_SUCCEEDED(res))
   {
-    PRInt32 eventX = eventPoint.x - offsetPoint.x; //relative to baseFrame's rect
     PRBool done(PR_FALSE), passToKid(PR_FALSE);
     PRUint32 currOffset(0);
-    if (eventX > 0)
+    if (eventPoint.x >= 0)
     {
       while (kid && !done)
-      {
-        kidRect = kid->GetRect();
-        if (eventX < kidRect.x)
+      {                
+        kidRect = kid->GetScreenRectExternal();
+        if (eventPoint.x < kidRect.x)
           done = PR_TRUE;
-        else if ( eventX <= kidRect.x + kidRect.width)
+        else if ( eventPoint.x <= kidRect.x + kidRect.width)
         {
           done = PR_TRUE;
           passToKid = PR_TRUE;
@@ -787,17 +785,6 @@ msiMCaretBase::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** 
 }
 
 // Mouse Util functions
-
-nsresult msiMCaretBase::GetFrameOffsetFromView(nsIFrame * frame, nsPoint &offset)
-{
-  nsresult res(NS_ERROR_FAILURE);
-  if (frame)
-  {
-    nsIView * dontcare = nsnull;
-    res = frame->GetOffsetFromView(offset, &dontcare);
-  }
-  return res;  
-}
 
 nsresult msiMCaretBase::GetNodeFromFrame(nsIFrame* frame, nsCOMPtr<nsIDOMNode> & node)
 {

@@ -42,6 +42,7 @@ NS_IMPL_ISUPPORTS_INHERITED1(msiEditorMouseListener, nsHTMLEditorMouseListener, 
 nsresult
 msiEditorMouseListener::MouseDown(nsIDOMEvent* aMouseEvent)
 {
+  //return NS_OK;
   if (!aMouseEvent || !m_msiEditor)  
     return NS_ERROR_NULL_POINTER;
   
@@ -255,17 +256,6 @@ msiEditorMouseListener::GetClosestEditingNode(msiEditor* msiEditor, nsIDOMEvent*
   nsCOMPtr<nsIDOMEventTarget> target;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIPresShell> presShell;
-  nsPoint eventPoint(0,0);
-  // get the event point
-  if (aMouseEvent)
-  {
-    nsEvent * internalEvent = nsnull;
-    nsCOMPtr<nsIPrivateDOMEvent> privateEvent(do_QueryInterface(aMouseEvent));
-    if (privateEvent)
-       privateEvent->GetInternalNSEvent(&internalEvent);
-    if (internalEvent)
-      eventPoint = internalEvent->refPoint;
-  }
   res = msiEditor->GetPresShell(getter_AddRefs(presShell));
   nsCOMPtr<nsIDOMNSEvent> internalEvent = do_QueryInterface(aMouseEvent);
   if (NS_SUCCEEDED(res) && internalEvent)
@@ -279,6 +269,11 @@ msiEditorMouseListener::GetClosestEditingNode(msiEditor* msiEditor, nsIDOMEvent*
     // and the final determination will minimize the y-distance.  see PresShell::HandleEventInternal.
     // In particular, if the frame is an areaframe (the whole document?), I probably want to limit the 
     // search.
+    
+    PRInt32 screenX(NS_MAXSIZE), screenY(NS_MAXSIZE);
+    mouseEvent->GetScreenX(&screenX);
+    mouseEvent->GetScreenY(&screenY);
+    nsPoint eventPoint(screenX, screenY);
     
     // get base frame
     nsIFrame *closestFrame = nsnull;
@@ -311,14 +306,9 @@ msiEditorMouseListener::GetClosestEditingNode(msiEditor* msiEditor, nsIDOMEvent*
           continue;
         }
         // Kid frame has content that has a proper parent-child
-        // relationship. Now see if the eventPoint inside it's bounding
+        // relationship. Now see if the mouseEvent occured inside it's bounding
         // rect or close by.
-        nsPoint offsetPoint(0,0);
-        nsIView * kidView = nsnull;
-        kid->GetOffsetFromView(offsetPoint, &kidView);
-        nsRect rect = kid->GetRect();
-        rect.x = offsetPoint.x;
-        rect.y = offsetPoint.y;
+        nsRect rect = kid->GetScreenRectExternal();
         PRInt32 fromLeft = eventPoint.x - rect.x;
         PRInt32 fromRight = eventPoint.x - rect.x - rect.width;
  

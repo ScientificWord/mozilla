@@ -27,7 +27,6 @@ public:
   
   // Mouse Util functions
   static nsresult GetPrimaryFrameForNode(nsIPresShell * presShell, nsIDOMNode * node, nsIFrame ** frame);
-  static nsresult GetFrameOffsetFromView(nsIFrame * frame, nsPoint &offset);
   static nsresult GetNodeFromFrame(nsIFrame* frame, nsCOMPtr<nsIDOMNode> & node);
   // End Mouse Util functions
   
