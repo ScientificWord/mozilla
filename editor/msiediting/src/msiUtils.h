@@ -360,8 +360,6 @@ public:
 //msiLayoutUtils
   static msiILayoutUtils * m_msiLayoutUtils;
   static nsresult GetOffsetIntoTextFromEvent(nsIFrame *textFrame, nsIDOMEvent *domEvent, PRUint32 *offset); 
-  static nsresult GetEventCoordinatesRelativeToFrame(nsIFrame* frame, nsIDOMEvent *domEvent, nsPoint & point);
-  
 // end msiLayoutUtils  
 
 
