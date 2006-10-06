@@ -31,18 +31,22 @@ protected:
   nsCOMPtr<nsIDOMNode>  m_msiAnchorNode;
   PRUint32              m_msiFocusOffset;
   PRUint32              m_msiAnchorOffset;
+  msiAdjustCaretCB      m_caretCB; 
+  msiAdjustSelectionCB  m_selCB;
+  void *                m_msiEditor;
+  nsCOMPtr<nsIDOMEvent> m_mouseEvent;
 };
 
 
 msiTypedSelection::msiTypedSelection() 
-: nsTypedSelection(), m_msiFocusOffset(INVALID_OFFSET),
-m_msiAnchorOffset(INVALID_OFFSET)
+: nsTypedSelection(), m_msiFocusOffset(INVALID_OFFSET), m_msiAnchorOffset(INVALID_OFFSET),
+m_caretCB(nsnull), m_selCB(nsnull), m_msiEditor(nsnull)
 {
 }
 
 msiTypedSelection::msiTypedSelection(nsFrameSelection* aList)
-: nsTypedSelection(aList),
-m_msiFocusOffset(INVALID_OFFSET), m_msiAnchorOffset(INVALID_OFFSET)
+: nsTypedSelection(aList), m_msiFocusOffset(INVALID_OFFSET), m_msiAnchorOffset(INVALID_OFFSET),
+m_caretCB(nsnull), m_selCB(nsnull), m_msiEditor(nsnull)
 {
 }
 
@@ -196,6 +200,25 @@ msiTypedSelection::SetMouseDown(PRBool isdown)
   return NS_OK;
 }
 
+NS_IMETHODIMP
+msiTypedSelection::InitalizeCallbackFunctions(msiAdjustCaretCB caretCB, 
+                                              msiAdjustSelectionCB selCB, 
+                                              void * msiEditor)
+{
+  m_msiEditor = msiEditor;
+  m_caretCB = caretCB;
+  m_selCB = selCB;
+  return NS_OK;
+}  
+
+NS_IMETHODIMP
+msiTypedSelection::SetDOMEvent(nsIDOMEvent * mouseEvent)
+{
+  m_mouseEvent = mouseEvent;
+  return NS_OK;
+}
+
+
 
 
 // end msiISelection interface
@@ -204,14 +227,21 @@ msiTypedSelection::SetMouseDown(PRBool isdown)
 NS_IMETHODIMP 
 msiTypedSelection::Collapse(nsIDOMNode *parentNode, PRInt32 offset)
 { 
-  nsresult res =  nsTypedSelection::Collapse(parentNode, offset);
+  nsresult res(NS_OK);
+  if (m_caretCB && m_mouseEvent)
+    res = m_caretCB(m_msiEditor, m_mouseEvent, parentNode, offset);
+  if (NS_SUCCEEDED(res))  
+    res =  nsTypedSelection::Collapse(parentNode, offset);
   SyncMSIwithNS();
+  SetDOMEvent(nsnull); // only use a mouse event once
   return res;
 }
+
 NS_IMETHODIMP 
 msiTypedSelection::Extend(nsIDOMNode *parentNode, PRInt32 offset)
 { 
   nsresult res =  nsTypedSelection::Extend(parentNode, offset);
+  SetDOMEvent(nsnull); // only use a mouse event once
   SyncMSIwithNS();
   return res;
 }
