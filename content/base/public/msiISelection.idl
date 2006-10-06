@@ -2,6 +2,26 @@
 
 #include "nsISupports.idl"
 
+
+%{C++
+/**
+ * The signature of the adjust caret callback function.
+ * This is the function that will get called just before collaspe if called
+ * callback is set with SetAdjustCaretFuncCallback.
+ *
+ * Implementers should return the following:
+ *
+ * @return NS_OK
+ *
+ */
+typedef nsresult (*msiAdjustCaretCB) (void* msiEditor, nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset);
+typedef nsresult (*msiAdjustSelectionCB) (void* msiEditor, nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset);
+%}
+
+native msiAdjustCaretCB(msiAdjustCaretCB);
+native msiAdjustSelectionCB(msiAdjustSelectionCB);
+
+
 /**
  * MSI Interface, an extension of nsISelection.idl, for manipulating and querying the current selected range
  * of nodes within the document.
@@ -10,6 +30,7 @@
  * @version 1.0
  */
 interface nsIDOMNode; 
+interface nsIDOMEvent; 
  
 [uuid(c0f3b745-26ba-466e-8f8e-e9c4a7c33d86)]
 interface msiISelection : nsISupports
@@ -26,5 +47,11 @@ interface msiISelection : nsISupports
            in nsIDOMNode focusNode, in unsigned long focusOffset,
            in nsIDOMNode anchorNode, in unsigned long anchorOffset);
   void GetMouseDown(out PRBool isDown);           
-  void SetMouseDown(in  PRBool isDown);           
+  void SetMouseDown(in  PRBool isDown);
+  
+  [noscript] void InitalizeCallbackFunctions(in msiAdjustCaretCB caretCB,
+                                             in msiAdjustSelectionCB selCB,
+                                             in voidPtr msiEditor);
+  [noscript] void SetDOMEvent(in nsIDOMEvent mouseEvent);                                             
+             
 };
