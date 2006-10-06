@@ -93,7 +93,7 @@ function setSelectionByValue(parentNode,valueStr)
   var theKids = parentNode.getKids();
   if (!theNode)
   {
-    for (i = 0; i < theKids.length; ++i)
+    for (var i = 0; i < theKids.length; ++i)
     {
       if (getButtonValue(theKids[i]) == valueStr)
       {

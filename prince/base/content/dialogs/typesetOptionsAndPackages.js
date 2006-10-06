@@ -106,7 +106,7 @@ function goNative()
   var packagesData = new Object();
   packagesData.packages = gDialog.packages;
   window.openDialog("chrome://prince/content/typesetNativePackages.xul", "_blank", "chrome,close,titlebar,modal", packagesData);
-  if (!classOptionsData.Cancel)
+  if (!packagesData.Cancel)
   {
     gDialog.packages = packagesData.packages;
   }

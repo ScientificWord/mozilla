@@ -851,7 +851,7 @@ nsresult msiUtils::CreateDecoration(nsIEditor * editor,
     nsCOMPtr<nsIDOMElement> over, under;
     nsCOMPtr<nsIDOMNode> overNode, underNode;
     nsAutoString emptyString;
-    if (!above.IsEmpty() && msiEditingAtoms::label->Equals(above))
+    if (!above.IsEmpty() && !(msiEditingAtoms::label->Equals(above)))
     {
       res = CreateMathOperator(editor, above, msiIMathMLEditingBC::INVALID, dummyFlags, 
                                msiIMMLEditDefines::MO_ATTR_stretchy_T, emptyString,
