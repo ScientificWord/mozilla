@@ -81,12 +81,12 @@ function InitDialog()
     nWhichSelR = n;
   }
   if (nWhichSelL == -1)   
-    nWhichSel = setSelectionByValue(gDialog.LeftBracketGroup, gDialog.LeftBracketGroup.valueStr);
+    nWhichSelL = setSelectionByValue(gDialog.LeftBracketGroup, gDialog.LeftBracketGroup.valueStr);
 //  We do NOT want to set defaults. They are gotten from the persisted user data, if there is any, or from the XUL file --BBM
 //  if (nWhichSel < 0)
 //    setSelectionByIndex(0, gDialog.LeftBracketGroup.id);
   if (nWhichSelR < 0);
-    nWhichSel = setSelectionByValue(gDialog.RightBracketGroup, gDialog.RightBracketGroup.valueStr);
+    nWhichSelR = setSelectionByValue(gDialog.RightBracketGroup, gDialog.RightBracketGroup.valueStr);
 //  We do NOT want to set defaults. They are gotten from the persisted user data, if there is any, or from the XUL file -- BBM
 //  if (nWhichSel < 0)
 //    setSelectionByIndex(0, gDialog.RightBracketGroup.id);
