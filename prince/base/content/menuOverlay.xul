@@ -175,6 +175,61 @@
     </menupopup>
   </menu>
 
+  <!-- Insert menu -->
+  <menu id="insertMenu" label="&insertMenu.label;" accesskey="&insertmenu.accesskey;">
+    <menupopup id="insertMenuPopup">
+      <!-- menuitem id="insertImage" accesskey="&insertimage.accesskey;"      observes="cmd_image"       label="&insertImageCmd.label;"/>
+      <menuitem id="insertTable" accesskey="&inserttable.accesskey;"      observes="cmd_InsertTable" label="&insertTableCmd.label;"/>
+      <menu     accesskey="&insertformmenu.accesskey;"   id="insertFormMenu"        label="&insertFormMenu.label;">
+        <menupopup>
+          <menuitem accesskey="&insertform.accesskey;"        command="cmd_form"        label="&insertFormCmd.label;"/>
+          <menuseparator/>
+          <menuitem accesskey="&insertinputtag.accesskey;"    command="cmd_inputtag"    label="&insertInputTagCmd.label;"/>
+          <menuitem accesskey="&insertinputimage.accesskey;"  command="cmd_inputimage"  label="&insertInputImageCmd.label;"/>
+          <menuitem accesskey="&inserttextarea.accesskey;"    command="cmd_textarea"    label="&insertTextAreaCmd.label;"/>
+          <menuitem accesskey="&insertselect.accesskey;"      command="cmd_select"      label="&insertSelectCmd.label;"/>
+          <menuitem accesskey="&insertbutton.accesskey;"      command="cmd_button"      label="&insertButtonCmd.label;"/>
+          <menuitem accesskey="&insertlabel.accesskey;"       command="cmd_label"       label="&insertLabelCmd.label;"/>
+          <menuitem accesskey="&insertfieldset.accesskey;"    command="cmd_fieldset"    label="&insertFieldSetCmd.label;"/>
+          <menuseparator/>
+          <menuitem accesskey="&insertisindex.accesskey;"     command="cmd_isindex"     label="&insertIsIndexCmd.label;"/>
+        </menupopup>
+      </menu>
+      <menuitem id="insertLink" accesskey="&insertlink.accesskey;"       observes="cmd_link"        label="&insertLinkCmd.label;"   key="insertlinkkb"/>
+      <menuitem id="insertAnchor" accesskey="&insertanchor.accesskey;"     observes="cmd_anchor"      label="&insertAnchorCmd.label;"/ -->
+      <menuitem id="insertHline" accesskey="&inserthline.accesskey;"      observes="cmd_hline"       label="&insertHLineCmd.label;"/>
+      <!-- menuitem id="insertHTMLSource" accesskey="&insertHTMLCmd.accesskey;"   observes="cmd_insertHTMLWithDialog"  key="inserthtmlkb"/>
+      <menuitem accesskey="&insertchars.accesskey;"      observes="cmd_insertChars" id="insertChars"/>
+      <menu id="insertTOC" label="&tocMenu.label;" accesskey="&tocMenu.accesskey;">
+        <menupopup onpopupshowing="InitTOCMenu()">
+          <menuitem id="insertTOCMenuitem"
+                    label="&insertTOC.label;"
+                    accesskey="&insertTOC.accesskey;"
+                    oncommand="UpdateTOC()"/>
+          <menuitem id="updateTOCMenuitem"
+                    label="&updateTOC.label;"
+                    accesskey="&updateTOC.accesskey;"
+                    oncommand="UpdateTOC()"/>
+          <menuitem id="removeTOCMenuitem"
+                    label="&removeTOC.label;"
+                    accesskey="&removeTOC.accesskey;"
+                    oncommand="RemoveTOC()"/>
+        </menupopup>
+      </menu>
+      <menu id="insertSmartWidgetsMenu" label="&insertSmartWidgetsMenu.label;">
+        <menupopup id="insertSmartWidgetsMenuPopup">
+          <menuitem label="&insertCalendarSW.label;"
+                    oncommand="addCalendarSmartWidget();"/>
+        </menupopup>
+      </menu-->
+      <menuseparator id="insertMenuSeparator"/>
+<!-- Activate this after Enter key inserts P tag and not BR
+      <menuitem accesskey="&insertbreak.accesskey;"      observes="cmd_insertBreak"      label="&insertBreakCmd.label;"/>
+-->
+      <menuitem id="insertBreakAll" accesskey="&insertbreakall.accesskey;"   observes="cmd_insertBreakAll"   label="&insertBreakAllCmd.label;"/>
+    </menupopup>
+  </menu>
+    
   <menu id="MSITypesetMenu"/>
   <menu id="MSIComputeMenu"/> 
   <menu id="toolsMenu" label="Tools" >
@@ -255,8 +310,8 @@
     <command id="cmd_fieldset"         oncommand="goDoCommand('cmd_fieldset')"/>
     <command id="cmd_isindex"          oncommand="goDoCommand('cmd_isindex')"/>
     <command id="cmd_objectProperties" oncommand="goDoCommand('cmd_objectProperties')"/>
-    <command id="cmd_insertChars"      oncommand="goDoCommand('cmd_insertChars')"    label="_amp_insertCharsCmd.label;"/>
-    <command id="cmd_insertHTMLWithDialog" oncommand="goDoCommand('cmd_insertHTMLWithDialog')"  label="_amp_insertHTMLCmd.label;"/>
+    <command id="cmd_insertChars"      oncommand="goDoCommand('cmd_insertChars')"    label="&insertCharsCmd.label;"/>
+    <command id="cmd_insertHTMLWithDialog" oncommand="goDoCommand('cmd_insertHTMLWithDialog')"  label="&insertHTMLCmd.label;"/>
 
     <command id="cmd_insertBreak"      oncommand="goDoCommand('cmd_insertBreak')"/>
     <command id="cmd_insertBreakAll"   oncommand="goDoCommand('cmd_insertBreakAll')"/>
@@ -277,16 +332,16 @@
           events="create, save"
           oncommandupdate="goUpdateComposerMenuItems(this)"
   >
-    <command id="cmd_save"           label="_amp_saveCmd.label;"           oncommand="goDoCommand('cmd_save')"/>
-    <command id="cmd_saveAs"         label="_amp_saveAsCmd.label;"         oncommand="goDoCommand('cmd_saveAs')"/>
-    <command id="cmd_exportToText"   label="_amp_exportToTextCmd.label;"   oncommand="goDoCommand('cmd_exportToText')"/>
-    <command id="cmd_saveAndChangeEncoding"  label="_amp_saveAsChangeEncodingCmd.label;"  oncommand="goDoCommand('cmd_saveAndChangeEncoding')"/>
-    <command id="cmd_publish"        label="_amp_publishCmd.label;"        oncommand="goDoCommand('cmd_publish')"/>
-    <command id="cmd_publishAs"      label="_amp_publishAsCmd.label;"      oncommand="goDoCommand('cmd_publishAs')"/>
-    <command id="cmd_revert"         label="_amp_fileRevert.label;"        oncommand="goDoCommand('cmd_revert')"/>
+    <command id="cmd_save"           label="&saveCmd.label;"           oncommand="goDoCommand('cmd_save')"/>
+    <command id="cmd_saveAs"         label="&saveAsCmd.label;"         oncommand="goDoCommand('cmd_saveAs')"/>
+    <command id="cmd_exportToText"   label="&exportToTextCmd.label;"   oncommand="goDoCommand('cmd_exportToText')"/>
+    <command id="cmd_saveAndChangeEncoding"  label="&saveAndChangeEncodingCmd.label;"  oncommand="goDoCommand('cmd_saveAndChangeEncoding')"/>
+    <command id="cmd_publish"        label="&publishCmd.label;"        oncommand="goDoCommand('cmd_publish')"/>
+    <command id="cmd_publishAs"      label="&publishAsCmd.label;"      oncommand="goDoCommand('cmd_publishAs')"/>
+    <command id="cmd_revert"         label="&fileRevert.label;"        oncommand="goDoCommand('cmd_revert')"/>
     <command id="cmd_preview"                                          oncommand="goDoCommand('cmd_preview')"/>
-    <command id="cmd_editSendPage"   label="_amp_sendPageCmd.label;"
-                                     accesskey="_amp_sendPage.accesskey;"  oncommand="goDoCommand('cmd_editSendPage')"/>
+    <command id="cmd_editSendPage"   label="&sendPageCmd.label;"
+                                     accesskey="&sendPage.accesskey;"  oncommand="goDoCommand('cmd_editSendPage')"/>
   </commandset>
 
 
@@ -312,7 +367,7 @@
              oncommand="goDoCommand('cmd_paste')"
              disabled="true"/>
     <command id="cmd_pasteNoFormatting" oncommand="goDoCommand('cmd_pasteNoFormatting')"
-               label="_amp_pasteNoFormatting.label;" accesskey="_amp_pasteNoFormatting.accesskey;"/>
+               label="amp_pasteNoFormatting.label;" accesskey="_amp_pasteNoFormatting.accesskey;"/>
     <command id="cmd_delete"
              oncommand="goDoCommand('cmd_delete')"
              valueDefault="&deleteCmd.label;"
@@ -323,12 +378,12 @@
              disabled="true"/>
     <command id="cmd_preferences"   oncommand="goDoCommand('cmd_preferences')"/>
     <command id="cmd_find"          oncommand="goDoCommand('cmd_find')"/>
-    <command id="cmd_findNext"      oncommand="goDoCommand('cmd_findNext')"     label="_amp_findAgainCmd.label;"/>
-    <command id="cmd_findPrev"      oncommand="goDoCommand('cmd_findPrev')"     label="_amp_findPrevCmd.label;"/>
+    <command id="cmd_findNext"      oncommand="goDoCommand('cmd_findNext')"     label="&findAgainCmd.label;"/>
+    <command id="cmd_findPrev"      oncommand="goDoCommand('cmd_findPrev')"     label="&findPrevCmd.label;"/>
     <command id="cmd_spelling"      oncommand="goDoCommand('cmd_spelling')"/>
-    <command id="cmd_validate"      label="_amp_validateCmd.label;" accesskey="_amp_validate.accesskey;" oncommand="goDoCommand('cmd_validate')"/>
+    <command id="cmd_validate"      label="&validateCmd.label;" accesskey="&validate.accesskey;" oncommand="goDoCommand('cmd_validate')"/>
     <command id="cmd_checkLinks"    oncommand="goDoCommand('cmd_checkLinks')"/>
-    <command id="cmd_pasteQuote"    oncommand="goDoCommand('cmd_pasteQuote')" label="_amp_pasteAsQuotationCmd.label;"/>
+    <command id="cmd_pasteQuote"    oncommand="goDoCommand('cmd_pasteQuote')" label="&pasteAsQuotationCmd.label;"/>
     <command id="cmd_publishSettings" label="_amp_publishSettings.label;" accesskey="_amp_publishSettings.accesskey;" oncommand="goDoCommand('cmd_publishSettings')"/>
   </commandset>
 
