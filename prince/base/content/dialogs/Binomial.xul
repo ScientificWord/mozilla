@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<?xml-stylesheet href="chrome://editor/skin/editor.css" type="text/css"?>
-<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
-<?xml-stylesheet href="chrome://editor/skin/msiMathDlgStyle.css" type="text/css"?>
-<?xml-stylesheet href="chrome://editor/skin/binomialsDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/Editor.css" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://communicator/skin/" type="text/css"? -->
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/binomialsDialog.css" type="text/css"?>
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
-<!DOCTYPE dialog SYSTEM "chrome://editor/locale/Binomial.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/Binomial.dtd">
 
 <dialog title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -21,9 +21,9 @@
 
   <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/Binomial.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/msiDialogUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/msiButtonGroup.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/Binomial.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiButtonGroup.js"/>
 
   <keyset>
     <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
