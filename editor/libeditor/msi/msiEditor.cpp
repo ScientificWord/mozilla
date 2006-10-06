@@ -54,6 +54,26 @@ NS_IMPL_ISUPPORTS_INHERITED1(msiEditor, nsHTMLEditor, msiIMathMLEditor)
 
 
 nsresult
+msiEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRoot, 
+                nsISelectionController *aSelCon, PRUint32 aFlags)
+{
+  // Init the HTML editor
+  nsresult res = nsHTMLEditor::Init(aDoc, aPresShell, aRoot, aSelCon, aFlags);
+  if (NS_SUCCEEDED(res))
+  {
+    nsCOMPtr<msiISelection> msiSelection;
+    GetMSISelection(msiSelection);
+    if (!msiSelection)
+      return NS_ERROR_FAILURE;
+    res = msiSelection->InitalizeCallbackFunctions(AdjustCaretCB, 
+                                                   AdjustSelectionCB, 
+                                                   (void*)this);
+  } 
+  return res; 
+}                
+
+
+nsresult
 msiEditor::CreateEventListeners()
 {
   nsresult rv = NS_OK;
@@ -1677,6 +1697,36 @@ msiEditor::GetCommonAncestor(nsIDOMNode * node1,
   commonAncestor = parent;
   return NS_OK;
 }
+
+//static
+nsresult msiEditor::AdjustCaretCB(void* msieditor, nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset)
+{
+  if (msieditor)
+    return ((msiEditor*)msieditor)->AdjustCaretCallback(mouseEvent, node, offset);
+  else
+    return NS_ERROR_NULL_POINTER;
+}
+
+//static
+nsresult msiEditor::AdjustSelectionCB(void* msieditor, nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset)
+{
+  if (msieditor)
+    return ((msiEditor*)msieditor)->AdjustSelectionCallback(mouseEvent, node, offset);
+  else
+    return NS_ERROR_NULL_POINTER;
+}
+
+
+nsresult msiEditor::AdjustCaretCallback(nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset)
+{
+  return NS_OK;
+}  
+
+nsresult msiEditor::AdjustSelectionCallback(nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset)
+{
+  return NS_OK;
+}  
+
   
 //NS_IMETHODIMP 
 //msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
