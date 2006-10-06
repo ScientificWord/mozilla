@@ -446,7 +446,12 @@ function doBibChoiceDlg()
   {
     var choiceStr = "manual bibliography";
     if (bibChoiceData.bBibTeX)
+    {
       choiceStr = "BibTeX bibliography";
+      gBibChoice = "BibTeX";
+    }
+    else
+      gBibChoice = "manual";
     alert("Bibliography Choice Dialog returned " + choiceStr + "; needs to be hooked up to do something!");
   }
 }

@@ -183,6 +183,7 @@ classic.jar:
   skin/classic/bracketsDialog.css        (skin/classic/bracketsDialog.css)
   skin/classic/decorationsDialog.css     (skin/classic/decorationsDialog.css)
   skin/classic/msiMathDlgStyle.css       (skin/classic/msiMathDlgStyle.css)
+  skin/classic/msiTypesetDlgStyle.css    (skin/classic/msiTypesetDlgStyle.css)
   skin/classic/icons/background.png      (skin/classic/icons/background.png)
   skin/classic/icons/background-sm.png   (skin/classic/icons/background-sm.png)
   skin/classic/icons/btn1.gif            (skin/classic/icons/btn1.gif)

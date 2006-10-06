@@ -99,6 +99,7 @@
       <menu id="fileMenu" />
       <menu id="editMenu" />
       <menu id="viewMenu" />
+      <menu id="insertMenu" />
       <menu id="MSIMathMenu" />
       <menu id="MSIComputeMenu" />
       <menu id="MSITypesetMenu" />
