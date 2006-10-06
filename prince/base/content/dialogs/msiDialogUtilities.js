@@ -17,6 +17,7 @@ function inaccessibleAcceleratorFilter(anElement)
       return NodeFilter.FILTER_ACCEPT;
     break;
   }
+  return NodeFilter.FILTER_SKIP;
 }
 
 function addToSpecialAccList(newChar)
@@ -78,9 +79,9 @@ function shouldFireOnAccessKey(anElement)
       return true;
     break;
     default:
-      return false;
     break;
   }
+  return false;
 }
 
 function canHandleKeys(anElement)
@@ -95,9 +96,9 @@ function canHandleKeys(anElement)
       return true;
     break;
     default:
-      return false;
     break;
   }
+  return false;
 }
 
 function canHandleArrowKeys(anElement)
@@ -115,9 +116,9 @@ function canHandleArrowKeys(anElement)
       return true;
     break;
     default:
-      return false;
     break;
   }
+  return false;
 }
 
 function arrowKeyHandler(event)
@@ -415,6 +416,7 @@ function checkRedrawSample(event)
   if (gDialog.sampleControlArray == null)
     return;
 
+//  var bRedraw = false;
   for (var i = 0; i < gDialog.sampleControlArray.length; ++i)
   {
     var theTarget = null;
@@ -432,8 +434,25 @@ function checkRedrawSample(event)
     }
 
     if ((theTarget != null) && (gDialog.sampleControlArray[i].sampleDependsOn != null) && (lookUpInArray(theTarget, gDialog.sampleControlArray[i].sampleDependsOn) >= 0))
+    {
       drawSample(gDialog.sampleControlArray[i]);
+//      gDialog.sampleControlArray[i].sizeToContent();
+//      bRedraw = true;
+    }
   }
+
+//  if (bRedraw)
+//    window.sizeToContent();
+//  try
+//  {
+//    var requestor = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+//    if (!requestor && window.parent)
+//      requestor = window.parent.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+//    var webnavigation=requestor.getInterface(Components.interfaces.nsIWebNavigation);
+//    var basewindow=webnavigation.QueryInterface(Components.interfaces.nsIBaseWindow);
+//    basewindow.repaint(true);
+//  }
+//  catch(exc) {AlertWithTitle("Error", "Unable to get nsIBaseWindow interface in checkRedrawSample()");}
 }
 
 function findInArray(theArray, theItem)
