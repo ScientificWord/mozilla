@@ -42,7 +42,14 @@ NS_IMPL_ISUPPORTS_INHERITED1(msiEditorMouseListener, nsHTMLEditorMouseListener, 
 nsresult
 msiEditorMouseListener::MouseDown(nsIDOMEvent* aMouseEvent)
 {
+  if (!aMouseEvent || !m_msiEditor)  
+    return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<msiISelection> msiSelection;
+  m_msiEditor->GetMSISelection(msiSelection);
+  //if (msiSelection)
+  //  msiSelection->SetDOMEvent(aMouseEvent);
   //return NS_OK;
+  
   if (!aMouseEvent || !m_msiEditor)  
     return NS_ERROR_NULL_POINTER;
   

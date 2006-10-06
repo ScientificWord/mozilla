@@ -10,6 +10,7 @@
 #include "nsHTMLEditor.h"
 #include "nsIRangeUtils.h"
 #include "msiILayoutUtils.h"
+#include "msiISelection.h"
 
 
 class msiEditorMouseListener;
@@ -34,10 +35,12 @@ public:
   //msiIMathMLEditor
   NS_DECL_MSIIMATHMLEDITOR
   
-  // nsPlaintextEditor overrides
+  // nsIEditor overrides
   NS_IMETHOD HandleKeyPress(nsIDOMKeyEvent* aKeyEvent);  //non-scriptable
   NS_IMETHOD InsertText(const nsAString &aStringToInsert);
-  // End of nsPlaintextEditor overrides
+  NS_IMETHOD Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRoot, nsISelectionController *aSelCon, PRUint32 aFlags);
+  // End of nsIEditor overrides
+  
   
 
 protected:
@@ -101,7 +104,13 @@ nsresult HandleArrowKeyPress(PRUint32 keycode, PRBool isShift, PRBool ctrlDown,
                              PRBool altDown, PRBool metaDown, PRBool & preventDefault);
 nsresult GetCommonAncestor(nsIDOMNode * node1, nsIDOMNode * node2, nsCOMPtr<nsIDOMNode> & commonAncestor);
                              
-                              
+//msiSelection callback functions
+
+static nsresult AdjustCaretCB(void* msieditor, nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset);
+static nsresult AdjustSelectionCB(void* msieditor, nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset);
+
+nsresult AdjustCaretCallback(nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset);
+nsresult AdjustSelectionCallback(nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset);
                                  
 
 };
