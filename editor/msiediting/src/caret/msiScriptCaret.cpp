@@ -156,6 +156,18 @@ msiScriptCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *
 }
 
 NS_IMETHODIMP
+msiScriptCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
+                                                       PRUint32 flags, 
+                                                       nsIDOMMouseEvent *mouseEvent, 
+                                                       nsIDOMNode **node, 
+                                                       PRUint32 *offset)
+{
+  return msiMCaretBase::AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
+                                                          mouseEvent, node, offset);
+}                                                       
+
+
+NS_IMETHODIMP
 msiScriptCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
 
@@ -226,6 +238,13 @@ msiScriptCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PR
         res = parent->Accept(editor, FROM_CHILD|FROM_LEFT, node, offset);
       else
         res = NS_ERROR_FAILURE; 
+    }
+    else if (m_offset == 1 && (flags & FROM_CHILD))
+    {
+      *node = m_mathmlNode;
+      NS_ADDREF(*node);
+      *offset = m_offset;
+      res = NS_OK;
     }
     else if (!(flags & FROM_CHILD))
     {

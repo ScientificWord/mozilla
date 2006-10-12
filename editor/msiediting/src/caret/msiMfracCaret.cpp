@@ -146,6 +146,18 @@ msiMfracCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *p
   return res;   
 }
 
+NS_IMETHODIMP
+msiMfracCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
+                                                       PRUint32 flags, 
+                                                       nsIDOMMouseEvent *mouseEvent, 
+                                                       nsIDOMNode **node, 
+                                                       PRUint32 *offset)
+{
+  return msiMCaretBase::AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
+                                                          mouseEvent, node, offset);
+}                                                       
+
+
 NS_IMETHODIMP 
 msiMfracCaret::GetSelectableMathFragment(nsIEditor  *editor, 
                                          nsIDOMNode *start,      PRUint32 startOffset, 

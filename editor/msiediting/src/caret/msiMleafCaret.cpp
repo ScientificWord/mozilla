@@ -111,6 +111,78 @@ msiMleafCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *p
 }   
 
 NS_IMETHODIMP
+msiMleafCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell, 
+                                                       PRUint32 flags, 
+                                                       nsIDOMMouseEvent *mouseEvent, 
+                                                       nsIDOMNode **node, 
+                                                       PRUint32 *offset)
+{
+  if (!editor || !node || !offset || !presShell || !m_mathmlNode || !mouseEvent)
+    return NS_ERROR_FAILURE;
+  nsresult res(NS_OK);
+  nsIFrame * leafFrame = nsnull; // no smart pointers for frames.
+  nsIFrame * textFrame = nsnull; // no smart pointers for frames.
+  nsRect leafRect, textRect;
+  nsPoint eventPoint(0, 0);
+  PRInt32 lfGap(0), rtGap(0);
+  *node = nsnull;
+  *offset = INVALID;
+  res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &leafFrame);
+  if (NS_SUCCEEDED(res) && leafFrame)
+  {
+    leafRect = leafFrame->GetScreenRectExternal();
+    textFrame = leafFrame->GetFirstChild(nsnull);
+    NS_ASSERTION(textFrame && textFrame->GetType() == msiEditingAtoms::textFrame, "child of leaf is not textframe");
+    if (textFrame && textFrame->GetType() == msiEditingAtoms::textFrame)
+    {
+      textRect = textFrame->GetScreenRectExternal();
+      lfGap = textRect.x - leafRect.x;
+      if (lfGap < 0)
+      {
+        leafRect.x = textRect.x;
+        leafRect.width -= lfGap;
+        lfGap = 0;
+      }
+      rtGap = leafRect.x + leafRect.width - textRect.x - textRect.width;
+      if (rtGap < 0)
+      {
+        leafRect.width -= rtGap;
+        rtGap = 0;
+      }
+    }
+    else
+      res = NS_ERROR_FAILURE;  
+  }
+  if (NS_SUCCEEDED(res))
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
+  if (NS_SUCCEEDED(res))
+  {
+    if ( leafRect.x <= eventPoint.x && eventPoint.x <= leafRect.x + leafRect.width)
+    {
+      if (m_isDipole)
+        m_offset =  (eventPoint.x <= lfGap + textRect.x + textRect.width/2) ? 0 : m_length;
+      // else  accept system placement
+      res = Accept(editor, FLAGS_NONE, node, offset);
+    }
+    else
+    {
+      nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+      PRBool incOffset = (leafRect.x <= eventPoint.x);
+      msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, incOffset, mathmlEditing);
+      if (mathmlEditing)
+      {
+        flags = FROM_CHILD;
+        flags |= incOffset ? FROM_LEFT : FROM_RIGHT;
+        res = mathmlEditing->AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
+                                                               mouseEvent, node, offset);
+      } 
+    }  
+  }
+  return res;   
+}                                                       
+
+
+NS_IMETHODIMP
 msiMleafCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
   if (!node || !offset || !m_mathmlNode || !editor)
@@ -129,12 +201,9 @@ msiMleafCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRU
     msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, incOffset, mathmlEditing);
     if (mathmlEditing)
     {
-      PRUint32 currFlags(FROM_CHILD);
-      if (flags & FROM_RIGHT)
-        currFlags |= FROM_RIGHT;
-      else  
-        currFlags |= FROM_LEFT;
-      mathmlEditing->Accept(editor, currFlags, node, offset); 
+      flags = FROM_CHILD;
+      flags |= incOffset ? FROM_LEFT : FROM_RIGHT;
+      mathmlEditing->Accept(editor, flags, node, offset); 
     }  
   }
   if (*node == nsnull)
