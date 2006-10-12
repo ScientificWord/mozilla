@@ -22,6 +22,12 @@ public:
                                             nsIDOMMouseEvent * mouseEvent,
                                             nsIDOMNode **node, 
                                             PRUint32 *offset);
+                                            
+  NS_IMETHOD AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
+                                               PRUint32 flags, 
+                                               nsIDOMMouseEvent *mouseEvent, 
+                                               nsIDOMNode **node, 
+                                               PRUint32 *offset);
                                        
   NS_IMETHOD AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPoint, 
                                   nsIDOMNode** selectionNode, PRUint32 * selectionOffset,

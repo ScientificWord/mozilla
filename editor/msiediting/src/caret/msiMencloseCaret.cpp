@@ -85,6 +85,63 @@ msiMencloseCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell
   return res;   
 }          
 
+
+NS_IMETHODIMP
+msiMencloseCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
+                                                       PRUint32 flags, 
+                                                       nsIDOMMouseEvent *mouseEvent, 
+                                                       nsIDOMNode **node, 
+                                                       PRUint32 *offset)
+{
+  nsIFrame * encloseFrame = nsnull; // no smart pointers for frames.
+  nsIFrame * firstKid = nsnull;
+  nsIFrame * lastKid = nsnull;
+  nsRect encloseRect, firstKidRect, lastKidRect;
+  nsPoint eventPoint(0,0);
+  *node = nsnull;
+  *offset = INVALID;
+  nsresult res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &encloseFrame);
+  if (NS_SUCCEEDED(res) && encloseFrame)
+  {  
+    encloseRect = encloseFrame->GetScreenRectExternal();
+    firstKid = encloseFrame->GetFirstChild(nsnull);
+    if (firstKid)
+    {
+      firstKidRect = firstKid->GetScreenRectExternal();
+      lastKid = firstKid;
+      while (lastKid->GetNextSibling())
+        lastKid = lastKid->GetNextSibling();
+      lastKidRect = lastKid->GetScreenRectExternal();
+    }
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  if (NS_SUCCEEDED(res))
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);
+  if (NS_SUCCEEDED(res))
+  {
+    PRInt32 lfThres(0), rtThres(0);
+    GetThresholds(encloseRect, firstKidRect, lastKidRect, lfThres, rtThres);
+    if (encloseRect.x + lfThres <= eventPoint.x && eventPoint.x <= eventPoint.x + encloseRect.width - rtThres)
+      res = msiMContainerCaret::AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
+                                                                   mouseEvent, node, offset);
+    else
+    {
+      nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+      PRBool incOffset = encloseRect.x + lfThres <= eventPoint.x;
+      msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, incOffset, mathmlEditing);
+      if (mathmlEditing)
+      {
+        flags = FROM_CHILD;
+        flags |= incOffset ? FROM_LEFT : FROM_RIGHT;
+        res = mathmlEditing->AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
+                                                               mouseEvent, node, offset);
+      } 
+    }  
+  }
+  return res;                                                                 
+}                                                       
+
                                
 
 NS_IMETHODIMP
@@ -133,7 +190,7 @@ void msiMencloseCaret::GetThresholds(const nsRect &encloseRect,
                                      PRInt32 &left, PRInt32 & right)
 {
   PRInt32 min(MIN_THRESHOLD);
-  left = firstKidRect.x/2;
+  left = (firstKidRect.x- encloseRect.x)/2;
   right = encloseRect.x + encloseRect.width - lastKidRect.x - lastKidRect.width;
   if (left < min)
     left = min;

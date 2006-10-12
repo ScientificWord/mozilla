@@ -111,7 +111,19 @@ msiMrowFenceCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShel
     }                                                      
   }
   return res;   
-}      
+}   
+
+NS_IMETHODIMP
+msiMrowFenceCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
+                                                       PRUint32 flags, 
+                                                       nsIDOMMouseEvent *mouseEvent, 
+                                                       nsIDOMNode **node, 
+                                                       PRUint32 *offset)
+{
+  return msiMContainerCaret::AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
+                                                               mouseEvent, node, offset);
+}                                                       
+   
                                    
 NS_IMETHODIMP
 msiMrowFenceCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)

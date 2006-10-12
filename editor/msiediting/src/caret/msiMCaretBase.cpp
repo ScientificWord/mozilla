@@ -128,6 +128,55 @@ msiMCaretBase::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *p
   return res;   
 }
 
+
+NS_IMETHODIMP
+msiMCaretBase::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
+                                                       PRUint32 flags, 
+                                                       nsIDOMMouseEvent *mouseEvent, 
+                                                       nsIDOMNode **node, 
+                                                       PRUint32 *offset)
+{
+  if (!editor || !node || !offset || !presShell || !m_mathmlNode || !mouseEvent)
+    return NS_ERROR_FAILURE;
+  nsresult res(NS_OK);
+  nsIFrame * baseFrame = nsnull; // no smart pointers for frames.
+  nsRect baseRect;
+  nsPoint eventPoint(0,0);
+  *node = nsnull;
+  *offset = INVALID;
+  res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &baseFrame);
+  if (NS_SUCCEEDED(res) && baseFrame)
+  {
+     baseRect = baseFrame->GetScreenRectExternal();
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
+  }
+  else
+    res = NS_ERROR_FAILURE;
+  if (NS_SUCCEEDED(res))
+  {
+    if ( baseRect.x <= eventPoint.x && eventPoint.x <= baseRect.x + baseRect.width)
+    {
+      PRUint32 acceptFlags = flags & FROM_RIGHT ? FROM_RIGHT : FROM_LEFT;
+      res = Accept(editor, acceptFlags, node, offset);
+    }
+    else
+    {
+      nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+      PRBool incOffset = (baseRect.x <= eventPoint.x);
+      msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, incOffset, mathmlEditing);
+      if (mathmlEditing)
+      {
+        flags = FROM_CHILD;
+        flags |= incOffset ? FROM_LEFT : FROM_RIGHT;
+        res = mathmlEditing->AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
+                                                               mouseEvent, node, offset);
+      } 
+    }  
+  }
+  return res;   
+}                                                       
+
+
 NS_IMETHODIMP 
 msiMCaretBase::GetSelectableMathFragment(nsIEditor  *editor, 
                                          nsIDOMNode *start,      PRUint32 startOffset, 
@@ -172,7 +221,7 @@ msiMCaretBase::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRU
     return NS_ERROR_FAILURE;
   nsCOMPtr<nsIDOMNode> child;
   nsresult res(NS_OK);  
-  NS_ASSERTION(flags & FROM_LEFT|FROM_RIGHT, "Accept called without From left or from right");
+  NS_ASSERTION(flags & (FROM_LEFT|FROM_RIGHT), "Accept called without From left or from right");
   if (m_numKids == 1)
   {
     msiUtils::GetChildNode(m_mathmlNode, 0, child);

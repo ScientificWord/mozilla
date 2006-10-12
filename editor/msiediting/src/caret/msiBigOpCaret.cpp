@@ -218,6 +218,17 @@ msiBigOperatorCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresSh
   }
   return res;
 }  
+
+NS_IMETHODIMP
+msiBigOperatorCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell, 
+                                                       PRUint32 flags, 
+                                                       nsIDOMMouseEvent *mouseEvent, 
+                                                       nsIDOMNode **node, 
+                                                       PRUint32 *offset)
+{
+  return msiMCaretBase::AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
+                                                          mouseEvent, node, offset);
+}                                                       
        
 NS_IMETHODIMP 
 msiBigOperatorCaret::GetSelectableMathFragment(nsIEditor  *editor, 
