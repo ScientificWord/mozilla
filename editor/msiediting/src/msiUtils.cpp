@@ -65,17 +65,17 @@
 static PRBool initalized = PR_FALSE;
 
 //msiLayoutUtils
-msiILayoutUtils * msiUtils::m_msiLayoutUtils = nsnull;
+//msiILayoutUtils * msiUtils::m_msiLayoutUtils = nsnull;
 
 void msiUtils::Initalize()
 {
   if (!initalized)
   {
-    
-    if (!m_msiLayoutUtils)
-    {  nsresult res = CallGetService("@mackichan.com/layout/msilayout-utils;1", &m_msiLayoutUtils);
-      initalized = NS_SUCCEEDED(res) && m_msiLayoutUtils;
-    }  
+    initalized = PR_TRUE;
+//    if (!m_msiLayoutUtils)
+//    {  nsresult res = CallGetService("@mackichan.com/layout/msilayout-utils;1", &m_msiLayoutUtils);
+//      initalized = NS_SUCCEEDED(res) && m_msiLayoutUtils;
+//    }  
   }
   return;
 }    
@@ -2477,13 +2477,7 @@ nsresult msiUtils::GetScreenPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
 
 
 //msiLayoutUtils
+//TODO -- Currently not being used.
 
-nsresult msiUtils::GetOffsetIntoTextFromEvent(nsIFrame *textFrame, nsIDOMEvent *domEvent, PRUint32 *offset)
-{
-  nsresult res(NS_ERROR_FAILURE);
-  if (m_msiLayoutUtils)
-    res = m_msiLayoutUtils->GetOffsetIntoTextFromEvent(textFrame, domEvent, offset);
-  return res;  
-}
 
 
