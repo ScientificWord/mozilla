@@ -52,16 +52,20 @@ interface msiIMathMLEditingBC : nsISupports
            attribute unsigned long        offset;
            
   /* INVALID CARET POSITION, CHILD INDEX, or OFFSET */
-  const unsigned long  INVALID    = 0xFFFFFFF0;
-  const unsigned long  LAST_VALID = 0xFFFFFFEF;
+  const unsigned long  LAST_VALID = 0x7FFFFFFF;  /* should = PR_INT32_MAX */
+  const unsigned long  INVALID    = LAST_VALID + 1;
   
   /* Used to set offset to right most valid offset during construction. */
-  const unsigned long  RIGHT_MOST = 0xFFFFFFF1;
+  const unsigned long  RIGHT_MOST = INVALID +1;
   
   /* Used to indicate that the caret should be place directly to the left or right of relevant node */
-  const unsigned long TO_LEFT = 0xFFFFFFF2;         
-  const unsigned long TO_RIGHT = 0xFFFFFFF3;         
+  const unsigned long TO_LEFT = INVALID + 2;         
+  const unsigned long TO_RIGHT = INVALID + 3;         
 };
 
+
+%{C++
+#define IS_VALID_NODE_OFFSET(_x) ((0 <= _x) && (_x <= msiIMathMLEditingBC::LAST_VALID))
+%}
 
 

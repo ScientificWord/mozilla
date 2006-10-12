@@ -597,7 +597,7 @@ IsValidSelectionPoint(nsFrameSelection *aFrameSel, nsIDOMNode *aDomNode)
     if (!passedContent)
       return PR_FALSE;
     return IsValidSelectionPoint(aFrameSel, passedContent);
-}
+}        
 
 /*
 The limiter is used specifically for the text areas and textfields
