@@ -358,8 +358,7 @@ public:
                             nsCOMPtr<nsIDOMNode> & right);
 
 //msiLayoutUtils
-  static msiILayoutUtils * m_msiLayoutUtils;
-  static nsresult GetOffsetIntoTextFromEvent(nsIFrame *textFrame, nsIDOMEvent *domEvent, PRUint32 *offset); 
+//TODO  static msiILayoutUtils * m_msiLayoutUtils;
 // end msiLayoutUtils  
 
 
