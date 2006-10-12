@@ -11,7 +11,6 @@ public:
   NS_DECL_ISUPPORTS
   
   // msiILayoutUtils methods
-  NS_IMETHOD GetOffsetIntoTextFromEvent(nsIFrame *textFrame, nsIDOMEvent *domEvent, PRUint32 *offset);
   // end msiILayoutUtils methods
 
   msiLayoutUtils();
