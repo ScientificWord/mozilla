@@ -185,24 +185,6 @@ msiTypedSelection::Set(nsIDOMNode *startNode, PRUint32 startOffset,
 }
 
 NS_IMETHODIMP
-msiTypedSelection::GetMouseDown(PRBool * isdown)
-{
-  if (!isdown || !mFrameSelection)
-    return NS_ERROR_FAILURE;
-  *isdown = mFrameSelection->GetMouseDownState();
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-msiTypedSelection::SetMouseDown(PRBool isdown)
-{
-  if (!isdown || !mFrameSelection)
-    return NS_ERROR_FAILURE;
-  mFrameSelection->SetMouseDownState(isdown);
-  return NS_OK;
-}
-
-NS_IMETHODIMP
 msiTypedSelection::InitalizeCallbackFunctions(msiAdjustCaretCB adjustCaretCB, 
                                               msiSetSelectionCB setSelectionCB, 
                                               void * msiEditor)
