@@ -101,8 +101,24 @@ msiBigOperatorCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPre
                                                        nsIDOMNode **node, 
                                                        PRUint32 *offset)
 {
-  return msiMCaretBase::AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
-                                                          mouseEvent, node, offset);
+  if (!editor || !node || !offset || !presShell || !m_mathmlNode || !mouseEvent)
+    return NS_ERROR_FAILURE;
+    nsIFrame *bigOpFrame = nsnull;
+  nsresult  res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &bigOpFrame);
+  if (NS_SUCCEEDED(res) && bigOpFrame)
+  {
+    nsPoint eventPoint(0,0);
+    nsRect bigOpRect(0,0,0,0);
+    bigOpRect = bigOpFrame->GetScreenRectExternal();
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
+    if (NS_SUCCEEDED(res))
+    {
+      m_offset = eventPoint.x <= (bigOpRect.x + (bigOpRect.width/2)) ? 0 : m_numKids;
+      flags = m_offset == 0 ? FROM_RIGHT : FROM_LEFT;
+      res = Accept(editor, flags, node, offset);
+    }  
+  }
+  return res;
 }                                                       
        
 NS_IMETHODIMP 
