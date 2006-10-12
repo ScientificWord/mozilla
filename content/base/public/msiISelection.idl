@@ -14,12 +14,13 @@
  * @return NS_OK
  *
  */
-typedef nsresult (*msiAdjustCaretCB) (void* msiEditor, nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset);
-typedef nsresult (*msiAdjustSelectionCB) (void* msiEditor, nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset);
+typedef nsresult (*msiAdjustCaretCB)(void* msiEditor, nsIDOMEvent * mouseEvent, nsCOMPtr<nsIDOMNode> & node, PRInt32 &offset);
+typedef nsresult (*msiSetSelectionCB)(void* msiEditor, nsCOMPtr<nsIDOMNode> & focusNode, PRInt32 focusOffset, 
+                                      PRBool selecting, PRBool & preventDefault);
 %}
 
 native msiAdjustCaretCB(msiAdjustCaretCB);
-native msiAdjustSelectionCB(msiAdjustSelectionCB);
+native msiSetSelectionCB(msiSetSelectionCB);
 
 
 /**
@@ -49,8 +50,8 @@ interface msiISelection : nsISupports
   void GetMouseDown(out PRBool isDown);           
   void SetMouseDown(in  PRBool isDown);
   
-  [noscript] void InitalizeCallbackFunctions(in msiAdjustCaretCB caretCB,
-                                             in msiAdjustSelectionCB selCB,
+  [noscript] void InitalizeCallbackFunctions(in msiAdjustCaretCB adjustCaretCB,
+                                             in msiSetSelectionCB setSelectionCB,
                                              in voidPtr msiEditor);
   [noscript] void SetDOMEvent(in nsIDOMEvent mouseEvent);                                             
              

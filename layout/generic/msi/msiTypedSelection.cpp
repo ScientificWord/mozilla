@@ -1,4 +1,5 @@
 #include "msiISelection.h"
+#include "nsIPrivateDOMEvent.h"
 
 class msiTypedSelection : public nsTypedSelection,
                           public msiISelection
@@ -25,14 +26,15 @@ public:
 protected:
   void SyncMSIwithNS();
   PRBool IsVoidOfContent(nsIDOMNode * start, PRUint32 startOff, nsIDOMNode* end, PRUint32 endOff);
+  PRBool IsMouseEventActive();
   
 protected:
   nsCOMPtr<nsIDOMNode>  m_msiFocusNode;
   nsCOMPtr<nsIDOMNode>  m_msiAnchorNode;
   PRUint32              m_msiFocusOffset;
   PRUint32              m_msiAnchorOffset;
-  msiAdjustCaretCB      m_caretCB; 
-  msiAdjustSelectionCB  m_selCB;
+  msiAdjustCaretCB      m_adjustCaretCB; 
+  msiSetSelectionCB     m_setSelectionCB;
   void *                m_msiEditor;
   nsCOMPtr<nsIDOMEvent> m_mouseEvent;
 };
@@ -40,13 +42,13 @@ protected:
 
 msiTypedSelection::msiTypedSelection() 
 : nsTypedSelection(), m_msiFocusOffset(INVALID_OFFSET), m_msiAnchorOffset(INVALID_OFFSET),
-m_caretCB(nsnull), m_selCB(nsnull), m_msiEditor(nsnull)
+m_adjustCaretCB(nsnull), m_setSelectionCB(nsnull), m_msiEditor(nsnull)
 {
 }
 
 msiTypedSelection::msiTypedSelection(nsFrameSelection* aList)
 : nsTypedSelection(aList), m_msiFocusOffset(INVALID_OFFSET), m_msiAnchorOffset(INVALID_OFFSET),
-m_caretCB(nsnull), m_selCB(nsnull), m_msiEditor(nsnull)
+m_adjustCaretCB(nsnull), m_setSelectionCB(nsnull), m_msiEditor(nsnull)
 {
 }
 
@@ -201,13 +203,13 @@ msiTypedSelection::SetMouseDown(PRBool isdown)
 }
 
 NS_IMETHODIMP
-msiTypedSelection::InitalizeCallbackFunctions(msiAdjustCaretCB caretCB, 
-                                              msiAdjustSelectionCB selCB, 
+msiTypedSelection::InitalizeCallbackFunctions(msiAdjustCaretCB adjustCaretCB, 
+                                              msiSetSelectionCB setSelectionCB, 
                                               void * msiEditor)
 {
   m_msiEditor = msiEditor;
-  m_caretCB = caretCB;
-  m_selCB = selCB;
+  m_adjustCaretCB = adjustCaretCB;
+  m_setSelectionCB = setSelectionCB;
   return NS_OK;
 }  
 
@@ -228,10 +230,12 @@ NS_IMETHODIMP
 msiTypedSelection::Collapse(nsIDOMNode *parentNode, PRInt32 offset)
 { 
   nsresult res(NS_OK);
-  if (m_caretCB && m_mouseEvent)
-    res = m_caretCB(m_msiEditor, m_mouseEvent, parentNode, offset);
+  nsCOMPtr<nsIDOMNode> adjustNode(parentNode);
+  PRInt32 adjustOffset(offset);
+  if (m_adjustCaretCB && IsMouseEventActive() && m_msiEditor)
+    res = m_adjustCaretCB(m_msiEditor, m_mouseEvent, adjustNode, adjustOffset);
   if (NS_SUCCEEDED(res))  
-    res =  nsTypedSelection::Collapse(parentNode, offset);
+    res =  nsTypedSelection::Collapse(adjustNode, adjustOffset);
   SyncMSIwithNS();
   SetDOMEvent(nsnull); // only use a mouse event once
   return res;
@@ -240,9 +244,20 @@ msiTypedSelection::Collapse(nsIDOMNode *parentNode, PRInt32 offset)
 NS_IMETHODIMP 
 msiTypedSelection::Extend(nsIDOMNode *parentNode, PRInt32 offset)
 { 
-  nsresult res =  nsTypedSelection::Extend(parentNode, offset);
+  nsresult res(NS_OK);
+  nsCOMPtr<nsIDOMNode> adjustNode(parentNode);
+  PRInt32 adjustOffset(offset);
+  PRBool preventDefault(PR_FALSE);
+  if (m_adjustCaretCB && IsMouseEventActive() && m_msiEditor)
+    res = m_adjustCaretCB(m_msiEditor, m_mouseEvent, adjustNode, adjustOffset);
+  if (NS_SUCCEEDED(res) && m_setSelectionCB && m_msiEditor)
+    res = m_setSelectionCB(m_msiEditor, adjustNode, adjustOffset, PR_TRUE, preventDefault);
+  if (!preventDefault)
+  {    
+    res =  nsTypedSelection::Extend(adjustNode, adjustOffset);
+    SyncMSIwithNS();
+  }
   SetDOMEvent(nsnull); // only use a mouse event once
-  SyncMSIwithNS();
   return res;
 }
 
@@ -411,5 +426,22 @@ PRBool msiTypedSelection::IsVoidOfContent(nsIDOMNode* start, PRUint32 startOff, 
       }    
     }
   }  
+  return rv;
+}
+
+PRBool  msiTypedSelection::IsMouseEventActive()
+{
+  PRBool rv(PR_FALSE);
+  if (m_mouseEvent)
+  {
+    nsCOMPtr<nsIPrivateDOMEvent> privateEvent(do_QueryInterface(m_mouseEvent));
+    if (privateEvent)
+    {
+        nsEvent* innerEvent;
+        privateEvent->GetInternalNSEvent(&innerEvent);
+        if (innerEvent) 
+          rv = !(innerEvent->flags & NS_EVENT_FLAG_STOP_DISPATCH_IMMEDIATELY);
+    }
+  }
   return rv;
 }

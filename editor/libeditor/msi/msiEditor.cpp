@@ -66,7 +66,7 @@ msiEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRo
     if (!msiSelection)
       return NS_ERROR_FAILURE;
     res = msiSelection->InitalizeCallbackFunctions(AdjustCaretCB, 
-                                                   AdjustSelectionCB, 
+                                                   SetSelectionCB, 
                                                    (void*)this);
   } 
   return res; 
@@ -1699,35 +1699,55 @@ msiEditor::GetCommonAncestor(nsIDOMNode * node1,
 }
 
 //static
-nsresult msiEditor::AdjustCaretCB(void* msieditor, nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset)
+nsresult msiEditor::AdjustCaretCB(void* msieditor, nsIDOMEvent * mouseEvent, nsCOMPtr<nsIDOMNode> & node, PRInt32 &offset)
 {
   if (msieditor)
-    return ((msiEditor*)msieditor)->AdjustCaretCallback(mouseEvent, node, offset);
+    return ((msiEditor*)msieditor)->AdjustCaret(mouseEvent, node, offset);
   else
     return NS_ERROR_NULL_POINTER;
 }
 
 //static
-nsresult msiEditor::AdjustSelectionCB(void* msieditor, nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset)
+nsresult msiEditor::SetSelectionCB(void* msieditor, nsCOMPtr<nsIDOMNode> & focusNode, PRInt32 focusOffset, PRBool selecting, PRBool & preventDefault)
 {
+  preventDefault = PR_FALSE;
   if (msieditor)
-    return ((msiEditor*)msieditor)->AdjustSelectionCallback(mouseEvent, node, offset);
+    return ((msiEditor*)msieditor)->SetSelection(focusNode, focusOffset, selecting, preventDefault);
   else
     return NS_ERROR_NULL_POINTER;
 }
 
 
-nsresult msiEditor::AdjustCaretCallback(nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset)
+nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> & node, PRInt32 &offset)
 {
-  return NS_OK;
-}  
-
-nsresult msiEditor::AdjustSelectionCallback(nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset)
-{
-  return NS_OK;
-}  
-
+  if (!aMouseEvent || !node || offset< 0)
+    return NS_OK;
+  nsCOMPtr<nsIDOMMouseEvent> mouseEvent (do_QueryInterface(aMouseEvent));
+  if (!mouseEvent) 
+    return NS_OK;
   
+  nsCOMPtr<nsIDOMNode> adjustedNode;
+  PRUint32 adjustedOffset(msiIMathMLEditingBC::INVALID);
+  nsCOMPtr<msiIMathMLCaret> mathCaret;  
+  nsCOMPtr<nsIPresShell> presShell;
+  GetPresShell(getter_AddRefs(presShell));
+  
+  nsresult res = GetMathMLCaretInterface(node, offset, getter_AddRefs(mathCaret));
+  if (NS_SUCCEEDED(res) && mathCaret && presShell)
+    res = mathCaret->AdjustNodeAndOffsetFromMouseEvent(this, presShell, msiIMathMLCaret::FLAGS_NONE, 
+                                                       mouseEvent, getter_AddRefs(adjustedNode), &adjustedOffset);
+  else
+  {
+    //TODO -- may be on a boundary
+  }
+  if (adjustedNode && IS_VALID_NODE_OFFSET(adjustedOffset))
+  {
+    node = adjustedNode;
+    offset = adjustedOffset;
+  }
+  return NS_OK;
+}  
+
 //NS_IMETHODIMP 
 //msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 //{

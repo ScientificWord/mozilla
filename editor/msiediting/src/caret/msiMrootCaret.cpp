@@ -149,6 +149,18 @@ msiMrootCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *p
   return res;   
 } 
 
+NS_IMETHODIMP
+msiMrootCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
+                                                       PRUint32 flags, 
+                                                       nsIDOMMouseEvent *mouseEvent, 
+                                                       nsIDOMNode **node, 
+                                                       PRUint32 *offset)
+{
+  return msiMCaretBase::AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
+                                                          mouseEvent, node, offset);
+}                                                       
+
+
                                         
 NS_IMETHODIMP
 msiMrootCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
