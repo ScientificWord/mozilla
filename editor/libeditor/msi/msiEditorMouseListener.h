@@ -33,22 +33,11 @@ public:
   // msiIMouse
   NS_DECL_MSIIMOUSE
 
-
-protected:
-  PRBool IsContextClick(nsCOMPtr<nsIDOMMouseEvent> & mouseEvent);
-  
-
 protected:
 
   msiEditor * m_msiEditor;
-  PRBool m_trackingMouse;
   PRBool m_mayDrag;
   PRBool m_didDrag;
-public :
-  static nsresult GetClosestEditingNode(msiEditor * msiEditor, nsIDOMEvent* aMouseEvent, nsCOMPtr<nsIDOMNode> & editingNode);
-  static PRBool IsEditableFrame(nsIFrame * testFrame);
-  
-
 };
 
 //factory for the mouse listener
