@@ -1,7 +1,6 @@
 // Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
 #include "msiEditorMouseMotionListener.h"
 #include "msiEditorMouseListener.h"
-#include "msiLayoutAtoms.h"
 
 #include "msiIMathMLCaret.h"
 #include "nsIDOMEventTarget.h"
