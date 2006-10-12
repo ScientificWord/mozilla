@@ -18,9 +18,6 @@ class msiILayoutUtils : public nsISupports {
  public: 
 
   NS_DECLARE_STATIC_IID_ACCESSOR(MSI_ILAYOUTUTILS_IID)
-
-  NS_IMETHOD GetOffsetIntoTextFromEvent(nsIFrame *textFrame, nsIDOMEvent *domEvent, PRUint32 *offset) = 0;
-
 };
 
   NS_DEFINE_STATIC_IID_ACCESSOR(msiILayoutUtils, MSI_ILAYOUTUTILS_IID)
