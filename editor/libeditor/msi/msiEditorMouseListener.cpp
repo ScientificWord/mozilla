@@ -46,195 +46,202 @@ msiEditorMouseListener::MouseDown(nsIDOMEvent* aMouseEvent)
     return NS_ERROR_NULL_POINTER;
   nsCOMPtr<msiISelection> msiSelection;
   m_msiEditor->GetMSISelection(msiSelection);
-  //if (msiSelection)
-  //  msiSelection->SetDOMEvent(aMouseEvent);
-  //return NS_OK;
+  if (msiSelection)
+    msiSelection->SetDOMEvent(aMouseEvent);
+  return NS_OK;
   
-  if (!aMouseEvent || !m_msiEditor)  
-    return NS_ERROR_NULL_POINTER;
-  
-  nsCOMPtr<nsIDOMMouseEvent> mouseEvent (do_QueryInterface(aMouseEvent));
-  if (!mouseEvent) 
-    return NS_OK;
-  nsresult res(NS_OK);
-  PRBool defaultPrevented(PR_FALSE);
-  nsCOMPtr<nsIDOMNode> eventNode;
-  nsCOMPtr<nsIPresShell> presShell;
-  nsCOMPtr<nsIDOMNode> focusNode;
-  PRUint32 focusOffset(msiIMathMLEditingBC::INVALID);
-  
-  m_mayDrag = PR_FALSE;
-  m_didDrag = PR_FALSE;
-  // get the event point
-  nsEvent * internalEvent = nsnull;
-  nsCOMPtr<nsIPrivateDOMEvent> privateEvent(do_QueryInterface(aMouseEvent));
-  if (privateEvent)
-     privateEvent->GetInternalNSEvent(&internalEvent);
-  nsGUIEvent* guiEvent = nsnull;
-  if (internalEvent && internalEvent->eventStructType == NS_MOUSE_EVENT)
-    guiEvent = NS_STATIC_CAST(nsGUIEvent*, internalEvent);
-  if (!guiEvent)
-  {
-    NS_ASSERTION(PR_FALSE, "internal event is not a guiEvent.");
-    res = NS_ERROR_FAILURE;
-  }  
-  if (NS_SUCCEEDED(res))
-    res = msiEditorMouseListener::GetClosestEditingNode(m_msiEditor, aMouseEvent, eventNode);
-  
-  // get node (focusNode) and offset of the mouse event
-  if (NS_SUCCEEDED(res) && eventNode)
-  {
-    res = m_msiEditor->GetPresShell(getter_AddRefs(presShell));
-    nsCOMPtr<msiIMathMLCaret> mathCaret;  
-    if (NS_SUCCEEDED(res) && presShell)
-      res = m_msiEditor->GetMathMLCaretInterface(eventNode, msiIMathMLEditingBC::INVALID, getter_AddRefs(mathCaret));
-    if (NS_SUCCEEDED(res) && mathCaret)
-      res = mathCaret->GetNodeAndOffsetFromMouseEvent(m_msiEditor, presShell, msiIMathMLCaret::FLAGS_NONE, 
-                                                      mouseEvent, getter_AddRefs(focusNode), &focusOffset);
-    else
-    {
-      //TODO -- click outside of math -- this may need to be handled also.
-    }  
-  }  
-  
-  if (NS_SUCCEEDED(res) && focusNode && focusOffset <= msiIMathMLEditingBC::LAST_VALID)
-  {   
-    // Detect only "context menu" click
-    //XXX This should be easier to do!
-    // But eDOMEvents_contextmenu and NS_CONTEXTMENU is not exposed in any event interface :-(
-    PRUint16 buttonNumber(0);
-    PRInt32 clickCount(0);
-    PRBool shiftDown(PR_FALSE);
-    PRBool isContextClick = IsContextClick(mouseEvent);
-    res = mouseEvent->GetButton(&buttonNumber);
-    if (NS_SUCCEEDED(res))
-      res = mouseEvent->GetShiftKey(&shiftDown);
-    if (NS_SUCCEEDED(res))
-      res = mouseEvent->GetDetail(&clickCount);
-      
-    PRBool selectionIsCollapsed = m_msiEditor->IsSelectionCollapsed();   
-    if (isContextClick)
-    {
-     //TODO context menus!!!! 
-     res = NS_OK;
-    }
-    else if (buttonNumber == 0 && clickCount == 1)
-    {
-      PRBool doSet(PR_TRUE);
-      if (!selectionIsCollapsed && !shiftDown)
-      {
-        PRBool withinSelection(PR_FALSE);
-        m_msiEditor->IsPointWithinCurrentSelection(focusNode, focusOffset, withinSelection);
-        doSet = !withinSelection;
-      }  
-      if (doSet)
-      {
-        PRBool preventDefault(PR_FALSE);
-        res = m_msiEditor->SetSelection(focusNode, focusOffset, shiftDown, preventDefault);
-        if (NS_SUCCEEDED(res) && preventDefault)
-          aMouseEvent->PreventDefault();
-      }
-      else
-      {
-        //TODO -- drag and drop
-        aMouseEvent->PreventDefault();
-        m_mayDrag = !selectionIsCollapsed;
-      }    
-    }
-    
-    nsCOMPtr<nsIDOMNSUIEvent> uiEvent(do_QueryInterface(aMouseEvent));
-    if (uiEvent)
-      uiEvent->GetPreventDefault(&defaultPrevented);
-  }
-  if (!defaultPrevented)  
-    res = nsHTMLEditorMouseListener::MouseDown(aMouseEvent);
-  else
-    res = m_msiEditor->SetMouseDown(PR_TRUE);
- return res;
+//  if (!aMouseEvent || !m_msiEditor)  
+//    return NS_ERROR_NULL_POINTER;
+//  
+//  nsCOMPtr<nsIDOMMouseEvent> mouseEvent (do_QueryInterface(aMouseEvent));
+//  if (!mouseEvent) 
+//    return NS_OK;
+//  nsresult res(NS_OK);
+//  PRBool defaultPrevented(PR_FALSE);
+//  nsCOMPtr<nsIDOMNode> eventNode;
+//  nsCOMPtr<nsIPresShell> presShell;
+//  nsCOMPtr<nsIDOMNode> focusNode;
+//  PRUint32 focusOffset(msiIMathMLEditingBC::INVALID);
+//  
+//  m_mayDrag = PR_FALSE;
+//  m_didDrag = PR_FALSE;
+//  // get the event point
+//  nsEvent * internalEvent = nsnull;
+//  nsCOMPtr<nsIPrivateDOMEvent> privateEvent(do_QueryInterface(aMouseEvent));
+//  if (privateEvent)
+//     privateEvent->GetInternalNSEvent(&internalEvent);
+//  nsGUIEvent* guiEvent = nsnull;
+//  if (internalEvent && internalEvent->eventStructType == NS_MOUSE_EVENT)
+//    guiEvent = NS_STATIC_CAST(nsGUIEvent*, internalEvent);
+//  if (!guiEvent)
+//  {
+//    NS_ASSERTION(PR_FALSE, "internal event is not a guiEvent.");
+//    res = NS_ERROR_FAILURE;
+//  }  
+//  if (NS_SUCCEEDED(res))
+//    res = msiEditorMouseListener::GetClosestEditingNode(m_msiEditor, aMouseEvent, eventNode);
+//  
+//  // get node (focusNode) and offset of the mouse event
+//  if (NS_SUCCEEDED(res) && eventNode)
+//  {
+//    res = m_msiEditor->GetPresShell(getter_AddRefs(presShell));
+//    nsCOMPtr<msiIMathMLCaret> mathCaret;  
+//    if (NS_SUCCEEDED(res) && presShell)
+//      res = m_msiEditor->GetMathMLCaretInterface(eventNode, msiIMathMLEditingBC::INVALID, getter_AddRefs(mathCaret));
+//    if (NS_SUCCEEDED(res) && mathCaret)
+//      res = mathCaret->GetNodeAndOffsetFromMouseEvent(m_msiEditor, presShell, msiIMathMLCaret::FLAGS_NONE, 
+//                                                      mouseEvent, getter_AddRefs(focusNode), &focusOffset);
+//    else
+//    {
+//      //TODO -- click outside of math -- this may need to be handled also.
+//    }  
+//  }  
+//  
+//  if (NS_SUCCEEDED(res) && focusNode && focusOffset <= msiIMathMLEditingBC::LAST_VALID)
+//  {   
+//    // Detect only "context menu" click
+//    //XXX This should be easier to do!
+//    // But eDOMEvents_contextmenu and NS_CONTEXTMENU is not exposed in any event interface :-(
+//    PRUint16 buttonNumber(0);
+//    PRInt32 clickCount(0);
+//    PRBool shiftDown(PR_FALSE);
+//    PRBool isContextClick = IsContextClick(mouseEvent);
+//    res = mouseEvent->GetButton(&buttonNumber);
+//    if (NS_SUCCEEDED(res))
+//      res = mouseEvent->GetShiftKey(&shiftDown);
+//    if (NS_SUCCEEDED(res))
+//      res = mouseEvent->GetDetail(&clickCount);
+//      
+//    PRBool selectionIsCollapsed = m_msiEditor->IsSelectionCollapsed();   
+//    if (isContextClick)
+//    {
+//     //TODO context menus!!!! 
+//     res = NS_OK;
+//    }
+//    else if (buttonNumber == 0 && clickCount == 1)
+//    {
+//      PRBool doSet(PR_TRUE);
+//      if (!selectionIsCollapsed && !shiftDown)
+//      {
+//        PRBool withinSelection(PR_FALSE);
+//        m_msiEditor->IsPointWithinCurrentSelection(focusNode, focusOffset, withinSelection);
+//        doSet = !withinSelection;
+//      }  
+//      if (doSet)
+//      {
+//        PRBool preventDefault(PR_FALSE);
+//        res = m_msiEditor->SetSelection(focusNode, focusOffset, shiftDown, preventDefault);
+//        if (NS_SUCCEEDED(res) && preventDefault)
+//          aMouseEvent->PreventDefault();
+//      }
+//      else
+//      {
+//        //TODO -- drag and drop
+//        aMouseEvent->PreventDefault();
+//        m_mayDrag = !selectionIsCollapsed;
+//      }    
+//    }
+//    
+//    nsCOMPtr<nsIDOMNSUIEvent> uiEvent(do_QueryInterface(aMouseEvent));
+//    if (uiEvent)
+//      uiEvent->GetPreventDefault(&defaultPrevented);
+//  }
+//  if (!defaultPrevented)  
+//    res = nsHTMLEditorMouseListener::MouseDown(aMouseEvent);
+//  else
+//    res = m_msiEditor->SetMouseDown(PR_TRUE);
+// return res;
 }  
 
 
 nsresult
 msiEditorMouseListener::MouseUp(nsIDOMEvent* aMouseEvent)
 {
-  PRBool mayDrag(m_mayDrag), didDrag(m_didDrag);
-  m_mayDrag = PR_FALSE;
-  m_didDrag = PR_FALSE;
   if (!aMouseEvent || !m_msiEditor)  
     return NS_ERROR_NULL_POINTER;
-  
-  nsCOMPtr<nsIDOMMouseEvent> mouseEvent (do_QueryInterface(aMouseEvent));
-  if (!mouseEvent) 
-    return NS_OK;
-  nsresult res(NS_OK);
-  PRBool defaultPrevented(PR_FALSE);
-  PRBool selectionIsCollapsed = m_msiEditor->IsSelectionCollapsed();   
-  if (!selectionIsCollapsed && mayDrag && !didDrag)
-  {
-    nsCOMPtr<nsIDOMNode> eventNode;
-    nsCOMPtr<nsIPresShell> presShell;
-    nsCOMPtr<nsIDOMNode> focusNode;
-    PRUint32 focusOffset(msiIMathMLEditingBC::INVALID);
-    
-    // get the event point
-    nsEvent * internalEvent = nsnull;
-    nsCOMPtr<nsIPrivateDOMEvent> privateEvent(do_QueryInterface(aMouseEvent));
-    if (privateEvent)
-       privateEvent->GetInternalNSEvent(&internalEvent);
-       
-    nsGUIEvent* guiEvent = nsnull;
-    if (internalEvent && internalEvent->eventStructType == NS_MOUSE_EVENT)
-      guiEvent = NS_STATIC_CAST(nsGUIEvent*, internalEvent);
-    if (!guiEvent)
-    {
-      NS_ASSERTION(PR_FALSE, "internal event is not a guiEvent.");
-      res = NS_ERROR_FAILURE;
-    }  
-    if (NS_SUCCEEDED(res))
-      res = msiEditorMouseListener::GetClosestEditingNode(m_msiEditor, aMouseEvent, eventNode);
-    
-    // get node (focusNode) and offset of the mouse event
-    if (NS_SUCCEEDED(res) && eventNode)
-    {
-      res = m_msiEditor->GetPresShell(getter_AddRefs(presShell));
-      nsCOMPtr<msiIMathMLCaret> mathCaret;  
-      if (NS_SUCCEEDED(res) && presShell)
-        res = m_msiEditor->GetMathMLCaretInterface(eventNode, msiIMathMLEditingBC::INVALID, getter_AddRefs(mathCaret));
-      if (NS_SUCCEEDED(res) && mathCaret)
-        res = mathCaret->GetNodeAndOffsetFromMouseEvent(m_msiEditor, presShell, msiIMathMLCaret::FLAGS_NONE, 
-                                                        mouseEvent, getter_AddRefs(focusNode), &focusOffset);
-      else
-      {
-        //TODO -- click outside of math -- this may need to be handled also.
-      }  
-    }  
-    if (NS_SUCCEEDED(res) && focusNode && focusOffset <= msiIMathMLEditingBC::LAST_VALID)
-    {   
-      PRUint16 buttonNumber(0);
-      PRInt32 clickCount(0);
-      res = mouseEvent->GetButton(&buttonNumber);
-      if (NS_SUCCEEDED(res))
-        res = mouseEvent->GetDetail(&clickCount);
-      PRBool withinSelection(PR_FALSE);
-      m_msiEditor->IsPointWithinCurrentSelection(focusNode, focusOffset, withinSelection);
-        
-      if (buttonNumber == 0 && clickCount <= 1 && withinSelection)
-      {
-        PRBool preventDefault(PR_FALSE);
-        res = m_msiEditor->SetSelection(focusNode, focusOffset, PR_FALSE, preventDefault);
-        if (NS_SUCCEEDED(res) && preventDefault)
-          aMouseEvent->PreventDefault();
-      }
-      nsCOMPtr<nsIDOMNSUIEvent> uiEvent(do_QueryInterface(aMouseEvent));
-      if (uiEvent)
-        uiEvent->GetPreventDefault(&defaultPrevented);
-    }
-  }
-  if (!defaultPrevented)  
-    res = nsHTMLEditorMouseListener::MouseUp(aMouseEvent);
-  else
-    res = m_msiEditor->SetMouseDown(PR_FALSE);
- return res;
+  nsCOMPtr<msiISelection> msiSelection;
+  m_msiEditor->GetMSISelection(msiSelection);
+  if (msiSelection)
+    msiSelection->SetDOMEvent(aMouseEvent);
+  return NS_OK;
+//  PRBool mayDrag(m_mayDrag), didDrag(m_didDrag);
+//  m_mayDrag = PR_FALSE;
+//  m_didDrag = PR_FALSE;
+//  if (!aMouseEvent || !m_msiEditor)  
+//    return NS_ERROR_NULL_POINTER;
+//  
+//  nsCOMPtr<nsIDOMMouseEvent> mouseEvent (do_QueryInterface(aMouseEvent));
+//  if (!mouseEvent) 
+//    return NS_OK;
+//  nsresult res(NS_OK);
+//  PRBool defaultPrevented(PR_FALSE);
+//  PRBool selectionIsCollapsed = m_msiEditor->IsSelectionCollapsed();   
+//  if (!selectionIsCollapsed && mayDrag && !didDrag)
+//  {
+//    nsCOMPtr<nsIDOMNode> eventNode;
+//    nsCOMPtr<nsIPresShell> presShell;
+//    nsCOMPtr<nsIDOMNode> focusNode;
+//    PRUint32 focusOffset(msiIMathMLEditingBC::INVALID);
+//    
+//    // get the event point
+//    nsEvent * internalEvent = nsnull;
+//    nsCOMPtr<nsIPrivateDOMEvent> privateEvent(do_QueryInterface(aMouseEvent));
+//    if (privateEvent)
+//       privateEvent->GetInternalNSEvent(&internalEvent);
+//       
+//    nsGUIEvent* guiEvent = nsnull;
+//    if (internalEvent && internalEvent->eventStructType == NS_MOUSE_EVENT)
+//      guiEvent = NS_STATIC_CAST(nsGUIEvent*, internalEvent);
+//    if (!guiEvent)
+//    {
+//      NS_ASSERTION(PR_FALSE, "internal event is not a guiEvent.");
+//      res = NS_ERROR_FAILURE;
+//    }  
+//    if (NS_SUCCEEDED(res))
+//      res = msiEditorMouseListener::GetClosestEditingNode(m_msiEditor, aMouseEvent, eventNode);
+//    
+//    // get node (focusNode) and offset of the mouse event
+//    if (NS_SUCCEEDED(res) && eventNode)
+//    {
+//      res = m_msiEditor->GetPresShell(getter_AddRefs(presShell));
+//      nsCOMPtr<msiIMathMLCaret> mathCaret;  
+//      if (NS_SUCCEEDED(res) && presShell)
+//        res = m_msiEditor->GetMathMLCaretInterface(eventNode, msiIMathMLEditingBC::INVALID, getter_AddRefs(mathCaret));
+//      if (NS_SUCCEEDED(res) && mathCaret)
+//        res = mathCaret->GetNodeAndOffsetFromMouseEvent(m_msiEditor, presShell, msiIMathMLCaret::FLAGS_NONE, 
+//                                                        mouseEvent, getter_AddRefs(focusNode), &focusOffset);
+//      else
+//      {
+//        //TODO -- click outside of math -- this may need to be handled also.
+//      }  
+//    }  
+//    if (NS_SUCCEEDED(res) && focusNode && focusOffset <= msiIMathMLEditingBC::LAST_VALID)
+//    {   
+//      PRUint16 buttonNumber(0);
+//      PRInt32 clickCount(0);
+//      res = mouseEvent->GetButton(&buttonNumber);
+//      if (NS_SUCCEEDED(res))
+//        res = mouseEvent->GetDetail(&clickCount);
+//      PRBool withinSelection(PR_FALSE);
+//      m_msiEditor->IsPointWithinCurrentSelection(focusNode, focusOffset, withinSelection);
+//        
+//      if (buttonNumber == 0 && clickCount <= 1 && withinSelection)
+//      {
+//        PRBool preventDefault(PR_FALSE);
+//        res = m_msiEditor->SetSelection(focusNode, focusOffset, PR_FALSE, preventDefault);
+//        if (NS_SUCCEEDED(res) && preventDefault)
+//          aMouseEvent->PreventDefault();
+//      }
+//      nsCOMPtr<nsIDOMNSUIEvent> uiEvent(do_QueryInterface(aMouseEvent));
+//      if (uiEvent)
+//        uiEvent->GetPreventDefault(&defaultPrevented);
+//    }
+//  }
+//  if (!defaultPrevented)  
+//    res = nsHTMLEditorMouseListener::MouseUp(aMouseEvent);
+//  else
+//    res = m_msiEditor->SetMouseDown(PR_FALSE);
+// return res;
 }
 
 //msiIMouse
