@@ -29,6 +29,8 @@ msiMencloseCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresSh
                                                        nsIDOMNode **node, 
                                                        PRUint32 *offset)
 {
+  if (!editor || !node || !offset || !presShell || !m_mathmlNode || !mouseEvent)
+    return NS_ERROR_FAILURE;
   nsIFrame * encloseFrame = nsnull; // no smart pointers for frames.
   nsIFrame * firstKid = nsnull;
   nsIFrame * lastKid = nsnull;
