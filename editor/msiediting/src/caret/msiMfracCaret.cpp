@@ -83,69 +83,6 @@ msiMfracCaret::Inquiry(nsIEditor* editor, PRUint32 inquiryID, PRBool *result)
   return NS_OK;
 }
 
-
-NS_IMETHODIMP
-msiMfracCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell, 
-                                              PRUint32 flags, nsIDOMMouseEvent *mouseEvent,
-                                              nsIDOMNode **node, PRUint32 *offset)
-{
-  if (!editor || !node || !offset || !presShell || !m_mathmlNode || !mouseEvent)
-    return NS_ERROR_FAILURE;
-  nsresult res(NS_OK);
-  nsIFrame * fracFrame = nsnull; // no smart pointers for frames.
-  nsIFrame * numerFrame = nsnull;
-  nsIFrame * denomFrame = nsnull;
-  nsRect fracRect, numerRect, denomRect;
-  nsPoint eventPoint(0,0);
-  *node = nsnull;
-  *offset = INVALID;
-  res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &fracFrame);
-  if (NS_SUCCEEDED(res) && fracFrame)
-    res = GetFramesAndRects(fracFrame, &numerFrame, &denomFrame, 
-                            fracRect, numerRect, denomRect);
-  if (NS_SUCCEEDED(res))
-    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
-  if (NS_SUCCEEDED(res))
-  {
-    PRInt32 lfThres(0), rtThres(0);
-    GetThresholds(fracRect, numerRect, denomRect,
-                  lfThres, rtThres);
-    if (!(flags&FROM_PARENT) && ((eventPoint.x <= lfThres) || (eventPoint.x >= rtThres))) 
-    { 
-      m_offset = eventPoint.x <= lfThres ? 0 : 2;
-      flags = eventPoint.x <= lfThres ? FROM_RIGHT : FROM_LEFT;
-      res = Accept(editor, flags, node, offset);
-    }
-    else 
-    {  
-      nsCOMPtr<nsIDOMNode> child;
-      if (eventPoint.y < numerRect.y + numerRect.height)
-        res =  msiMCaretBase::GetNodeFromFrame(numerFrame, child);
-      else
-        res =  msiMCaretBase::GetNodeFromFrame(denomFrame, child);
-      if (child)
-      {
-        nsCOMPtr<msiIMathMLCaret> mathCaret;
-        PRUint32 pos(0);
-        msiUtils::GetMathMLCaretInterface(editor, child, pos, mathCaret);
-        NS_ASSERTION(mathCaret, "Yuck - mathml caret interface is null");
-        if (mathCaret)
-          res = mathCaret->GetNodeAndOffsetFromMouseEvent(editor, presShell, FROM_PARENT,
-                                                          mouseEvent, node, offset);
-      }
-    }
-    if (*node == nsnull)
-    {
-      NS_ASSERTION(PR_FALSE, "Frac failed to set node and offset.");
-      m_offset = eventPoint.x <= (fracRect.x + fracRect.width/2) ? 0 : 1;
-      if (m_offset == 1 && (eventPoint.y > numerRect.y + numerRect.height))
-        m_offset = 2;
-      res = Accept(editor, FLAGS_NONE, node, offset);
-    }  
-  }
-  return res;   
-}
-
 NS_IMETHODIMP
 msiMfracCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
                                                        PRUint32 flags, 
