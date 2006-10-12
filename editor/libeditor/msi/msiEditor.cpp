@@ -1371,24 +1371,6 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
   return res;
 }
 
-nsresult msiEditor::GetMouseDown(PRBool * isDown)
-{
-  nsCOMPtr<msiISelection> msiSelection;
-  GetMSISelection(msiSelection);
-  if (!msiSelection || !isDown)
-    return NS_ERROR_FAILURE;
-  return msiSelection->GetMouseDown(isDown);
-}  
-
-nsresult msiEditor::SetMouseDown(PRBool isDown)
-{
-  nsCOMPtr<msiISelection> msiSelection;
-  GetMSISelection(msiSelection);
-  if (!msiSelection)
-    return NS_ERROR_FAILURE;
-  return msiSelection->SetMouseDown(isDown);
-}  
-
 nsresult msiEditor::GetMayDrag(PRBool * mayDrag)
 {
   if (!mMouseListenerP || !mayDrag)

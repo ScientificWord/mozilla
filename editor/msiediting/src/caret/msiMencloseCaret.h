@@ -16,13 +16,6 @@ public:
   msiMencloseCaret(nsIDOMNode* mathmlNode, PRUint32 offset);
   msiMencloseCaret(nsIDOMNode* mathmlNode, PRUint32 offset, PRUint32 mathmlType);
   // msiIMathmlCaret overrides
-  NS_IMETHOD GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, 
-                                            nsIPresShell *presShell, 
-                                            PRUint32 flags, 
-                                            nsIDOMMouseEvent * mouseEvent,
-                                            nsIDOMNode **node, 
-                                            PRUint32 *offset);
-                                            
   NS_IMETHOD AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
                                                PRUint32 flags, 
                                                nsIDOMMouseEvent *mouseEvent, 
