@@ -11,9 +11,6 @@ MODULE		= editor
 LIBRARY_NAME	= msieditor_s
 LIBXUL_LIBRARY	= 1
 
-EXPORTS = msiLayoutAtoms.h \
-          $(NULL)
-
 REQUIRES = xpcom \
 		   string \
 		   dom \
@@ -40,7 +37,6 @@ CPPSRCS  = \
            msiEditor.cpp \
            msiEditorMouseListener.cpp \
            msiEditorMouseMotionListener.cpp \
-           msiLayoutAtoms.cpp \
            $(NULL)
 
 ifdef ENABLE_EDITOR_API_LOG
