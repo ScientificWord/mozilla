@@ -47,8 +47,6 @@ interface msiISelection : nsISupports
            in nsIDOMNode endNode, in unsigned long endOffset,
            in nsIDOMNode focusNode, in unsigned long focusOffset,
            in nsIDOMNode anchorNode, in unsigned long anchorOffset);
-  void GetMouseDown(out PRBool isDown);           
-  void SetMouseDown(in  PRBool isDown);
   
   [noscript] void InitalizeCallbackFunctions(in msiAdjustCaretCB adjustCaretCB,
                                              in msiSetSelectionCB setSelectionCB,

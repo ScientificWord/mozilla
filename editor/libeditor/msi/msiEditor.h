@@ -97,8 +97,6 @@ nsresult GetNodeAndOffsetFromMMLCaretOp(PRUint32 caretOp, nsCOMPtr<nsIDOMNode> &
                                
 nsresult GetMSISelection(nsCOMPtr<msiISelection> & msiSelection); 
 nsresult SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focusOffset, PRBool selecting, PRBool& preventDefault);
-nsresult GetMouseDown(PRBool * isDown);
-nsresult SetMouseDown(PRBool  isDown);
 nsresult GetMayDrag(PRBool *mayDrag);
 nsresult HandleArrowKeyPress(PRUint32 keycode, PRBool isShift, PRBool ctrlDown, 
                              PRBool altDown, PRBool metaDown, PRBool & preventDefault);

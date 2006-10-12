@@ -65,13 +65,6 @@ interface msiIMathMLCaret : nsISupports
   const unsigned long    FROM_LEFT                  = 4;
   const unsigned long    FROM_RIGHT                 = 8;
   
-  void GetNodeAndOffsetFromMouseEvent(in nsIEditor editor,
-                                      in nsIPresShell presShell,
-                                      in PRUint32 flags,
-                                      in nsIDOMMouseEvent mouseEvent,
-                                      out nsIDOMNode node,
-                                      out PRUint32 offset);
-
   void AdjustNodeAndOffsetFromMouseEvent(in nsIEditor editor,
                                          in nsIPresShell presShell,
                                          in PRUint32 flags,

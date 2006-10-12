@@ -29,16 +29,6 @@ msiWhitespaceCaret::Inquiry(nsIEditor* editor, PRUint32 inquiryID, PRBool *resul
   return NS_OK;
 }
 
-
-NS_IMETHODIMP
-msiWhitespaceCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell, 
-                                                   PRUint32 flags, nsIDOMMouseEvent * mouseEvent, 
-                                              nsIDOMNode **node, PRUint32 *offset)
-{
-  nsresult res(NS_OK);
-  return res;
-}   
-
 NS_IMETHODIMP
 msiWhitespaceCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
                                                        PRUint32 flags, 
