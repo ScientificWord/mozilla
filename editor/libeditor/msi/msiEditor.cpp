@@ -9,7 +9,6 @@
 #include "nsEditorEventListeners.h"
 #include "msiEditorMouseListener.h"
 #include "msiEditorMouseMotionListener.h"
-#include "msiLayoutAtoms.h"
 
 #include "nsContentUtils.h"
 #include "nsIDOMDocumentFragment.h"
@@ -38,7 +37,6 @@ msiEditor::msiEditor()
   m_msiEditingMan = do_CreateInstance(MSI_EDITING_MANAGER_CONTRACTID, &dummy);
   if (!m_rangeUtils)
     CallGetService("@mozilla.org/content/range-utils;1",  &m_rangeUtils);
-  msiLayoutAtoms::AddRefAtoms(); // initalize a copy of the layout and mathml atoms
   instanceCounter += 1;
 }
 
