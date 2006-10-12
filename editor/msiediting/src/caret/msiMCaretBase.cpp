@@ -75,7 +75,7 @@ msiMCaretBase::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell
   res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &baseFrame);
   if (NS_SUCCEEDED(res) && baseFrame)
   {
-     baseRect = baseFrame->GetScreenRectExternal();
+    baseRect = baseFrame->GetScreenRectExternal();
     res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
   }
   else

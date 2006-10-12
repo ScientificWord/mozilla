@@ -60,7 +60,10 @@ msiMathCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell 
                                                        nsIDOMNode **node, 
                                                        PRUint32 *offset)
 {
-  return msiMContainerCaret::Accept(editor, flags, node, offset);
+  if (!editor || !node || !offset || !presShell || !m_mathmlNode || !mouseEvent)
+    return NS_ERROR_FAILURE;
+  flags = m_offset == 0 ? FROM_RIGHT : FROM_LEFT;
+  return Accept(editor, flags, node, offset);
 }                                                       
                             
 
