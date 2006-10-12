@@ -34,15 +34,6 @@ msiInputboxCaret::Inquiry(nsIEditor* editor, PRUint32 inquiryID, PRBool *result)
   return NS_OK;
 }
 
-
-NS_IMETHODIMP
-msiInputboxCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell, 
-                                                 PRUint32 flags, nsIDOMMouseEvent * mouseEvent,
-                                                 nsIDOMNode **node, PRUint32 *offset)
-{
-  return Accept(editor, FLAGS_NONE, node, offset);
-}      
-
 NS_IMETHODIMP
 msiInputboxCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
                                                        PRUint32 flags, 

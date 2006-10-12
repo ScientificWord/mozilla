@@ -59,57 +59,6 @@ msiMleafCaret::Inquiry(nsIEditor* editor, PRUint32 inquiryID, PRBool *result)
   return NS_OK;
 }
 
-
-NS_IMETHODIMP
-msiMleafCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell, 
-                                              PRUint32 flags, nsIDOMMouseEvent *mouseEvent,
-                                              nsIDOMNode **node, PRUint32 *offset)
-{
-  if (!editor || !node || !offset || !presShell || !m_mathmlNode || !mouseEvent)
-    return NS_ERROR_FAILURE;
-  nsresult res(NS_OK);
-  nsIFrame * leafFrame = nsnull; // no smart pointers for frames.
-  nsIFrame * textFrame = nsnull; // no smart pointers for frames.
-  nsRect leafRect, textRect;
-  nsPoint eventPoint(0, 0);
-  PRInt32 lfGap(0), rtGap(0);
-  *node = nsnull;
-  *offset = INVALID;
-  res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &leafFrame);
-  if (NS_SUCCEEDED(res) && leafFrame)
-  {
-    leafRect = leafFrame->GetScreenRectExternal();
-    textFrame = leafFrame->GetFirstChild(nsnull);
-    NS_ASSERTION(textFrame && textFrame->GetType() == msiEditingAtoms::textFrame, "child of leaf is not textframe");
-    if (textFrame && textFrame->GetType() == msiEditingAtoms::textFrame)
-    {
-      textRect = textFrame->GetScreenRectExternal();
-      lfGap = textRect.x > 0 ? textRect.x : 0;
-      rtGap = leafRect.width - textRect.x - textRect.width;
-      rtGap = rtGap < 0 ? 0 : rtGap;
-    }
-    else
-      res = NS_ERROR_FAILURE;  
-  }
-  if (NS_SUCCEEDED(res))
-    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
-  if (NS_SUCCEEDED(res))
-  {
-    m_offset = m_length;
-    if (m_isDipole)
-      m_offset =  (eventPoint.x <= lfGap + textRect.width/2) ? 0 : m_length;
-    else
-    {
-      PRUint32 loc_offset(NS_MAXSIZE);
-      res = msiUtils::GetOffsetIntoTextFromEvent(textFrame, mouseEvent, &loc_offset);
-      if (NS_SUCCEEDED(res))
-        m_offset = loc_offset;
-    }
-    res = Accept(editor, FLAGS_NONE, node, offset);
-  }
-  return res;   
-}   
-
 NS_IMETHODIMP
 msiMleafCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell, 
                                                        PRUint32 flags, 
