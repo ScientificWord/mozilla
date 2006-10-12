@@ -75,26 +75,40 @@ msiMrowBoundFenceCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPre
   {
     PRInt32 lfThres(0), rtThres(0);
     GetThresholds(fenceRect, openRect, closeRect, lfThres, rtThres);
-    if (!(flags&FROM_PARENT) && ((eventPoint.x <= lfThres) || (fenceRect.width - eventPoint.x <= rtThres))) 
+    if (!(flags&FROM_PARENT) && ((eventPoint.x <= fenceRect.x + lfThres) || 
+                                 (fenceRect.x + fenceRect.width - rtThres <= eventPoint.x))) 
     { 
-      m_offset = eventPoint.x <= lfThres ? 0 : m_numKids;
-      flags = eventPoint.x <= lfThres ? FROM_RIGHT : FROM_LEFT;
+      m_offset = eventPoint.x <= fenceRect.x + lfThres ? 0 : m_numKids;
+      flags = eventPoint.x <= fenceRect.x + lfThres ? FROM_RIGHT : FROM_LEFT;
       res = Accept(editor, flags, node, offset);
     }
-    else if (m_numKids == 3)
+    else
     {
-      nsCOMPtr<nsIDOMNode> child;
-      nsCOMPtr<msiIMathMLCaret> mathmlEditing;
-      res = msiUtils::GetChildNode(m_mathmlNode, 1, child);
-      if (NS_SUCCEEDED(res) && child)
+      if (eventPoint.x <= fenceRect.x + (fenceRect.width/2))
       {
-        PRUint32 pos(0);
-        msiUtils::GetMathMLCaretInterface(editor, child, pos, mathmlEditing);
+        m_offset = 1;
+        res =Accept(editor, FROM_LEFT, node, offset);
       }
-      if (mathmlEditing)
-        res = mathmlEditing->GetNodeAndOffsetFromMouseEvent(editor, presShell, FROM_PARENT,
-                                                            mouseEvent, node, offset);
+      else
+      {
+        m_offset = m_numKids-1;
+        res = Accept(editor, FROM_RIGHT, node, offset);
+      }  
     }
+//    else if (m_numKids == 3)
+//    {
+//      nsCOMPtr<nsIDOMNode> child;
+//      nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+//      res = msiUtils::GetChildNode(m_mathmlNode, 1, child);
+//      if (NS_SUCCEEDED(res) && child)
+//      {
+//        PRUint32 pos(0);
+//        msiUtils::GetMathMLCaretInterface(editor, child, pos, mathmlEditing);
+//      }
+//      if (mathmlEditing)
+//        res = mathmlEditing->GetNodeAndOffsetFromMouseEvent(editor, presShell, FROM_PARENT,
+//                                                            mouseEvent, node, offset);
+//    }
     if (*node == nsnull)
     {
       NS_ASSERTION(PR_FALSE,"Abnormal case, kid refused or more then 3 kids");
@@ -110,6 +124,71 @@ msiMrowBoundFenceCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPre
   }
   return res;   
 }      
+
+NS_IMETHODIMP
+msiMrowBoundFenceCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
+                                                       PRUint32 flags, 
+                                                       nsIDOMMouseEvent *mouseEvent, 
+                                                       nsIDOMNode **node, 
+                                                       PRUint32 *offset)
+{
+  if (!editor || !node || !offset || !presShell || !m_mathmlNode || !mouseEvent)
+    return NS_ERROR_FAILURE;
+  *node = nsnull;
+  *offset = INVALID;
+  nsIFrame * fenceFrame = nsnull; // no smart pointers for frames.
+  nsIFrame * openFrame = nsnull;
+  nsIFrame * closeFrame = nsnull;
+  nsRect fenceRect(0,0,0,0), openRect(0,0,0,0), closeRect(0,0,0,0);
+  nsPoint eventPoint(0,0);
+  
+  nsresult res = msiMCaretBase::GetPrimaryFrameForNode(presShell, m_mathmlNode, &fenceFrame);
+  if (NS_SUCCEEDED(res) && fenceFrame)
+  {  
+    fenceRect = fenceFrame->GetScreenRectExternal();
+    openFrame = fenceFrame->GetFirstChild(nsnull);
+    if (openFrame)
+    {
+      openRect = openFrame->GetScreenRectExternal();
+      closeFrame = openFrame;
+      while (closeFrame->GetNextSibling())
+        closeFrame = closeFrame->GetNextSibling();
+      closeRect = closeFrame->GetScreenRectExternal();
+    }
+    else
+      res = NS_ERROR_FAILURE;
+        
+  }
+  if (NS_SUCCEEDED(res))
+    res = msiUtils::GetScreenPointFromMouseEvent(mouseEvent, eventPoint);                                     
+  if (NS_SUCCEEDED(res))
+  {
+    PRInt32 lfThres(0), rtThres(0);
+    GetThresholds(fenceRect, openRect, closeRect, lfThres, rtThres);
+    if (!(flags&FROM_PARENT) && ((eventPoint.x <= fenceRect.x + lfThres) || 
+                                 (fenceRect.x + fenceRect.width - rtThres <= eventPoint.x))) 
+    { 
+      m_offset = eventPoint.x <= fenceRect.x + lfThres ? 0 : m_numKids;
+      flags = eventPoint.x <= fenceRect.x + lfThres ? FROM_RIGHT : FROM_LEFT;
+      res = Accept(editor, flags, node, offset);
+    }
+    else
+    {
+      if (eventPoint.x <= fenceRect.x + (fenceRect.width/2))
+      {
+        m_offset = 1;
+        res =Accept(editor, FROM_LEFT, node, offset);
+      }
+      else
+      {
+        m_offset = m_numKids-1;
+        res = Accept(editor, FROM_RIGHT, node, offset);
+      }  
+    }
+  }
+  return res;   
+}                                                       
+
 
 NS_IMETHODIMP
 msiMrowBoundFenceCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
@@ -161,7 +240,7 @@ msiMrowBoundFenceCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** 
     flags |= incOffset ? FROM_LEFT : FROM_RIGHT;
     msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, incOffset, parent);
     if (!(flags&FROM_PARENT) && parent)
-      res = parent->Accept(editor, FROM_CHILD, node, offset);
+      res = parent->Accept(editor, flags, node, offset);
     if (*node == nsnull)
     {
       if (m_offset == 1)
@@ -390,10 +469,11 @@ void msiMrowBoundFenceCaret::GetThresholds(const nsRect &frameRect,
 {
   PRInt32 min(MIN_THRESHOLD);
   left = openRect.width/2;
-  if (openRect.x > 0)
-    left += openRect.x;
+  PRInt32 gap = openRect.x - frameRect.x;
+  if (gap > 0)
+    left += gap;
   right = closeRect.width/2;
-  PRInt32 gap = frameRect.width - closeRect.x - closeRect.width;
+  gap = frameRect.x + frameRect.width - closeRect.x - closeRect.width;
   if (gap > 0)  
     right += gap; 
   if (left < min)

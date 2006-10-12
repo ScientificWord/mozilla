@@ -106,12 +106,11 @@ nsresult GetCommonAncestor(nsIDOMNode * node1, nsIDOMNode * node2, nsCOMPtr<nsID
                              
 //msiSelection callback functions
 
-static nsresult AdjustCaretCB(void* msieditor, nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset);
-static nsresult AdjustSelectionCB(void* msieditor, nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset);
+static nsresult AdjustCaretCB(void* msieditor, nsIDOMEvent * mouseEvent, nsCOMPtr<nsIDOMNode> & node, PRInt32 &offset);
+static nsresult SetSelectionCB(void* msieditor, nsCOMPtr<nsIDOMNode> & focusNode, PRInt32 focusOffset, 
+                               PRBool selecting, PRBool & preventDefault);
 
-nsresult AdjustCaretCallback(nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset);
-nsresult AdjustSelectionCallback(nsIDOMEvent * mouseEvent, nsIDOMNode*& node, PRInt32 &offset);
-                                 
+nsresult AdjustCaret(nsIDOMEvent * mouseEvent, nsCOMPtr<nsIDOMNode> & node, PRInt32 &offset);
 
 };
 

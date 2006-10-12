@@ -60,7 +60,19 @@ msiMathCaret::GetNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *pr
                                              nsIDOMNode **node, PRUint32 *offset)
 {
   return msiMContainerCaret::GetNodeAndOffsetFromMouseEvent(editor, presShell,flags, mouseEvent, node, offset);
-}                                         
+}             
+
+
+NS_IMETHODIMP
+msiMathCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell *presShell,
+                                                       PRUint32 flags, 
+                                                       nsIDOMMouseEvent *mouseEvent, 
+                                                       nsIDOMNode **node, 
+                                                       PRUint32 *offset)
+{
+  return msiMContainerCaret::Accept(editor, flags, node, offset);
+}                                                       
+                            
 
 NS_IMETHODIMP
 msiMathCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)

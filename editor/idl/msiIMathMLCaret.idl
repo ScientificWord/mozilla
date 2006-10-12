@@ -71,6 +71,13 @@ interface msiIMathMLCaret : nsISupports
                                       in nsIDOMMouseEvent mouseEvent,
                                       out nsIDOMNode node,
                                       out PRUint32 offset);
+
+  void AdjustNodeAndOffsetFromMouseEvent(in nsIEditor editor,
+                                         in nsIPresShell presShell,
+                                         in PRUint32 flags,
+                                         in nsIDOMMouseEvent mouseEvent,
+                                         out nsIDOMNode node,
+                                         out PRUint32 offset);
  
   void Accept(in nsIEditor editor, 
               in PRUint32  flags,
