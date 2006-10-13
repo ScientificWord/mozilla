@@ -107,21 +107,6 @@ protected:
   /** p1 in the range */
   nsCOMPtr<nsIDOMRange> mRange;			// is this really an owning ptr?
 
-  /** p1 in the range */
-  nsCOMPtr<nsIDOMNode> mStartParent;
-
-  /** p1 offset */
-  PRInt32 mStartOffset;
-
-  /** p2 in the range */
-  nsCOMPtr<nsIDOMNode> mEndParent;
-
-  /** the closest common parent of p1 and p2 */
-  nsCOMPtr<nsIDOMNode> mCommonParent;
-
-  /** p2 offset */
-  PRInt32 mEndOffset;
-
   /** the editor for this transaction */
   nsIEditor* mEditor;
 
