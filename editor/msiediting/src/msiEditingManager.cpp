@@ -128,13 +128,12 @@ msiEditingManager::GetMathMLEditingBC(nsIDOMNode* rawNode,
   *editingBC = nsnull;
   if (rawNode)
   {
-    res = NS_ERROR_NO_INTERFACE;
+    res = NS_OK;
     nsCOMPtr<nsIDOMNode> mathmlNode;
     PRUint32 offset(rawOffset);
     PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(rawNode, rawOffset, mathmlNode, offset);
     if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN && mathmlNode)
     {
-      res = NS_OK;
       *editingBC = new msiMEditingBase(mathmlNode, offset, mathmlNodeType);
       if (*editingBC == nsnull)
         res = NS_ERROR_OUT_OF_MEMORY;
@@ -155,13 +154,12 @@ msiEditingManager::GetMathMLInsertionInterface(nsIDOMNode* rawNode,
   *mathml = nsnull;
   if (rawNode)
   {
-    res = NS_ERROR_NO_INTERFACE;
+    res = NS_OK;
     nsCOMPtr<nsIDOMNode> mathmlNode;
     PRUint32 offset(rawOffset);
     PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(rawNode, rawOffset, mathmlNode, offset);
     if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN && mathmlNode)
     {
-      res = NS_OK;
       switch (mathmlNodeType)
       {
         case msiIMathMLEditingBC::MATHML_MATH:
@@ -333,13 +331,12 @@ msiEditingManager::GetMathMLCaretInterface(nsIEditor* editor,
   *mathml = nsnull;
   if (rawNode && editor)
   {
-    res = NS_ERROR_NO_INTERFACE;
+    res = NS_OK;
     nsCOMPtr<nsIDOMNode> mathmlNode;
     PRUint32 offset(rawOffset);
     PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(rawNode, rawOffset, mathmlNode, offset);
     if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN && mathmlNode)
     {
-      res = NS_OK;
       switch (mathmlNodeType)
       {
         case msiIMathMLEditingBC::MATHML_MATH:
@@ -510,13 +507,12 @@ msiEditingManager::GetMathMLCoalesceInterface(nsIDOMNode* rawNode,
   *mathml = nsnull;
   if (rawNode)
   {
-    res = NS_ERROR_NO_INTERFACE;
+    res = NS_OK;
     nsCOMPtr<nsIDOMNode> mathmlNode;
     PRUint32 offset(rawOffset);
     PRUint32 mathmlNodeType = GetMathMLNodeAndTypeFromNode(rawNode, rawOffset, mathmlNode, offset);
     if (mathmlNodeType != msiIMathMLEditingBC::MATHML_UNKNOWN && mathmlNode)
     {
-      res = NS_OK;
       switch (mathmlNodeType)
       {
         case msiIMathMLEditingBC::MATHML_MN:
