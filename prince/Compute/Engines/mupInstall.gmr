@@ -3,7 +3,7 @@
 MuPAD<uID1.0>
 engpath<uID2.0>
 libp<uID3.0>MuPAD/lib
-champath<uID4.0>C:/Prince2/obj-Prince/dist/bin
+champath<uID4.0>D:/Prince/mozilla/obj-Prince/dist/bin
 wrapperDLL<uID5.0>@mackichan.com/mupadenginewrapper;1
 eng_dbase<uID6.0>MuPAD.gmr
 entity_dbase<uID7.0>MMLents.gmr
