@@ -235,8 +235,8 @@
   <menu id="toolsMenu" label="Tools" >
     <menupopup id="toolPopup">
       <menuitem  label="JavaScript debugger" id="venkmanName" oncommand="start_venkman();"/>
-      <menuitem id="menu_inspector" label="&inspectorTaskCmd.label;" 
-                accesskey="&inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
+      <menuitem id="menu_inspector" label="amp__inspectorTaskCmd.label;" 
+                accesskey="amp__inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
     </menupopup>
   </menu>
   
@@ -496,5 +496,79 @@
     <key id="key_inspectPage" key="i" modifiers="accel,shift" command="Tasks:InspectPage"/>
   </keyset>
   
+    <!-- DEBUG only -->
+  <menu id="debugMenu" label="&debugMenu.label;">
+  <menupopup id="menu_debugPopup">
+    <menuitem label="&newEditorTestPage.label;" oncommand="window.openDialog('chrome://editor/content','_blank','chrome,all,dialog=no','chrome://editor/content/EditorInitPage.html')"/>
+    <menuitem label="&textEditorCmd.label;"     oncommand="EditorNewPlaintext();" />
+    <menuitem label="&outputTextCmd.label;"
+           oncommand="EditorGetText()"/>
+    <menuitem label="&outputHTMLCmd.label;"
+           oncommand="EditorGetHTML()"/>
+    <menuseparator />
+    <menuitem label="&pasteAsQuotationCmd.label;"
+           accesskey="&editpastequotation.accesskey;"
+           oncommand="goDoCommand('cmd_pasteQuote')"/>
+    <menuitem label="&editRewrapCmd.label;"
+           oncommand="try { GetCurrentEditor().rewrap(true); } catch (e) {}"/>
+    <menuitem label="&editStripQuotesCmd.label;"
+           oncommand="try { GetCurrentEditor().stripCites(); } catch (e) {}"/>
+    <menuitem label="&insertTextCmd.label;"
+           oncommand="EditorInsertText('All good things come to those who wait. ')"/>
+    <menuitem id="menu_checkLinks" observes="cmd_checkLinks"
+     label="&checkLinksCmd.label;"/>
+    <menuseparator />
+    <menuitem label="&testSelectionCmd.label;"
+           oncommand="EditorTestSelection()"/>
+    <menuitem label="&testTableLayoutCmd.label;"
+           oncommand="EditorTestTableLayout()"/>
+    <menuitem label="&showEmbeddedCmd.label;"
+           oncommand="EditorShowEmbeddedObjects()"/>
+    <menuitem label="&dumpContentCmd.label;"
+           oncommand="EditorDumpContent()"/>
+    <menuitem label="&testDocumentCmd.label;"
+           oncommand="EditorTestDocument()"/>
+    <menuitem label="&runUnitTestsCmd.label;"
+           oncommand="EditorUnitTests()"/>
+    <menuseparator />
+    <menuitem label="&dumpUndoStack.label;"
+           oncommand="DumpUndoStack()"/>
+    <menuitem label="&dumpRedoStack.label;"
+           oncommand="DumpRedoStack()"/>
+    <menuitem label="&executeJSTransactionViaTxmgr.label;"
+           oncommand="ExecuteJSTransactionViaTxmgr()"/>
+    <menuitem label="&executeJSTransactionViaEditor.label;"
+           oncommand="ExecuteJSTransactionViaEditor()"/>
+    <menuseparator />
+    <menuitem label="&startLogCmd.label;"
+           oncommand="EditorStartLog()"/>
+    <menuitem label="&stopLogCmd.label;"
+           oncommand="EditorStopLog()"/>
+    <menuitem label="&runLogCmd.label;"
+           oncommand="EditorRunLog()"/>
+    <menuseparator />
+    <menuitem label="&setFocusCmd.label;"
+            accesskey="&toolsetfocus.accesskey;"
+            oncommand="window.focus()"/>
+    <menuseparator />
+    <menuitem label="Prepare Plot"              oncommand="TestPreparePlotAll();"/>
+    <menuitem label="Prepare Plot and Graph"	oncommand="TestPreparePlotGraph();"/>
+    <menuitem label="Plot Tests"				oncommand="TestGraphScript();"/>
+    <menuseparator />
+    <menuitem label="Configuration"
+            oncommand='window.openDialog("chrome://global/content/config.xul","Configure Prince", "chrome ");'/>
+    <menuitem label="Plugins"
+            oncommand='window.openDialog("chrome://communicator/content/plugins.html","Installed plugins", "chrome ");'/>
+    <menuitem label="Stop animation"
+            oncommand='stopAnimation();' />
+    <menuitem label="Start animation"
+            oncommand='startAnimation();' />
+    <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://editor/content/chamtest.xul","Cham Test", 
+      "chrome,close,titlebar,modal=false");' />
+
+  </menupopup>
+  </menu>
+  <!-- end DEBUG only -->
+
   
 </overlay>
