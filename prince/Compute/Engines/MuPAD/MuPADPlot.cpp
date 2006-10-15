@@ -75,14 +75,15 @@ string msiToString(int val) {
     return strm.str();
 }
 
-int CountPlotVars (string dim, string ptype, string animate) {
+int PlotVarsNeeded (string dim, string ptype, string animate) {
   int nvars = 0;  
-  if (ptype == "curve") {
+  if ((ptype == "curve") || (ptype == "tube")) {
     nvars = 0;            // gets set to 1 below
+  } else if (ptype == "explicitList") {
+    nvars = 0;  
   } else if ((ptype == "rectangular") || (ptype == "polar") ||
            (ptype == "parametric")  || (ptype == "approximateIntegral") ||
-           (ptype == "spherical")   || (ptype == "cylindrical") ||
-           (ptype == "tube")) {
+           (ptype == "spherical")   || (ptype == "cylindrical")) {
     nvars = 1;                                                
   } else if ((ptype == "inequality") || (ptype == "implicit") ||
            (ptype == "conformal")  || (ptype == "vectorField") ||
@@ -109,7 +110,7 @@ MuPADPlot::MuPADPlot ( MuPADWrapper * const thismpw, PlotServiceRequest * thisps
   string val = psr->RetrievePlotParam (plotno, PID_PlotAnimate, plottype);                                     
   this->animate = (val == "true") ? true : false;
 
-  int nvars = CountPlotVars (dim, ptype, val);
+  int nvars = PlotVarsNeeded (dim, ptype, val);
   this->numvars = nvars;
 }
 
@@ -779,7 +780,7 @@ string MuPADPlot::MeshStr (MuPADPlot* T) {
   int nv = T->numvars;
   if (T->animate) nv--;
   if (T->ptype == "tube") {
-    m = "Mesh=[#XPts#, #YPts#]";
+    m = "Mesh=[#XPts#, #XPts#]";
   } else if (T->ptype == "conformal") {
     m = "Mesh=[#XPts#, #YPts#],Submesh=[#ConfHorizontalPts#,#ConfVerticalPts#]";
   } else {  
@@ -807,6 +808,8 @@ string MuPADPlot::PlotFuncStr(MuPADPlot* T) {
   if (T->dim[0] == '2') {
     if ((T->ptype == "polar")) {
       s = "plot::Polar";
+    } else if (T->ptype == "explicitList") {
+      s = "plot::Polygon2d";
     } else if (T->ptype == "implicit") {
       s = "plot::Implicit2d";
     } else if (T->ptype == "approximateIntegral") {
@@ -834,6 +837,8 @@ string MuPADPlot::PlotFuncStr(MuPADPlot* T) {
       s = "plot::Function3d";
     } else if (T->ptype == "curve") {
       s = "plot::Curve3d";
+    } else if (T->ptype == "explicitList") {
+      s = "plot::Polygon3d";
     } else if (T->ptype == "implicit") {
       s = "plot::Implicit3d";
     } else if (T->ptype == "inequality") {
@@ -887,52 +892,16 @@ string MuPADPlot::PointStyleStr (MuPADPlot* T) {
 }                                                          
 
 
-// SWPPreparePlot30 <UID(CCID_PlotFunc2d,0)>plotfunc2d(%expr%,%plotvar1%=%ll%..%ul%);
-// order needs to match the order of the plot types above
 string MuPADPlot::QueryStr(MuPADPlot* T) {
-  string varfield = "[%XVar%],[hold(%XVar%),hold(%YVar%)],\"#Expression#\",2,";
-  string fun      = "functionGraph";
-  string other    = "";
-  string term     = ");";
-  
-  if (T->dim[0] == '3') {
-    if (T->ptype == "curve") {
-      varfield = "[%XVar%],[hold(%XVar%),hold(%YVar%)],\"#Expression#\",3,";
-    } else {
-      varfield = "[%XVar%,%YVar%],[hold(%XVar%),hold(%YVar%),hold(%ZVar%)],\"#Expression#\",3,";
-    }  
-  }
-  
-  if (T->ptype == "polar") {
-    other = ", polar";
-  } else if (T->ptype == "cylindrical") {
-    other = ", cylindrical";
-  } else if (T->ptype == "spherical") {
-    other = ", spherical";
-  }    
-
-  if (T->ptype == "parametric") {
-    fun = "functionImage";
-  } else if (T->ptype == "implicit") {
-    fun = "equality";
-  } else if (T->ptype == "vectorField") {
-    fun = "vectorField";
-  } else if (T->ptype == "gradient") {
-    fun = "vectorField,gradient";
-  }
-
-  if (T->animate) {
-    other += ", animated";
-  }
-    
-  string ret = "swPreparePlot30(";
-  ret = ret + varfield + fun + other + term;
+  string ret = "eval(#Expression#)";
   return ret;
 }
 
 
 string MuPADPlot::ReqParamsStr (MuPADPlot* T) {
   string pattern = "@exp@,@vars@,@mesh@";
+  if (T->ptype == "explicitList")
+    pattern = "@exp@";
   return pattern;
 }
 
