@@ -107,11 +107,13 @@ function GraphComputeGraph () {
     try {                                            
       msiComputeLogger.Sent4 ("plotfuncCmd", filename, str, "");
       //msiComputeLogger.Sent4 ("plotfuncCmd", filename, "", "");
-      out=GetCurrentEngine().plotfuncCmd (str);
+      var out=GetCurrentEngine().plotfuncCmd (str);
       msiComputeLogger.Received(out);                                                             
     }                                                                                             
     catch (e) {                                                                                    
-      this.prompt.alert (null, "Computation Error", "Compute Graph: " + GetCurrentEngine().getEngineErrors());
+//      this.prompt.alert (null, "Computation Error", "Compute Graph: " + GetCurrentEngine().getEngineErrors());
+      alert ("Computation Error", "Compute Graph: " + GetCurrentEngine().getEngineErrors());
+      dump("Computation Error", "Compute Graph: " + GetCurrentEngine().getEngineErrors() + "\n");
       msiComputeLogger.Exception(e);                                                               
     } 
   } else {
@@ -133,7 +135,9 @@ function GraphComputeQuery (plot_no) {
   }                                                                                             
   catch (e) {                                                                                    
     this.setPlotAttribute (PlotAttrName ("PlotStatus", plot_no), "ERROR");             
-    this.prompt.alert (null, "Computation Error", "Query Graph: " + GetCurrentEngine().getEngineErrors());
+//    this.prompt.alert (null, "Computation Error", "Query Graph: " + GetCurrentEngine().getEngineErrors());
+    alert ("Computation Error", "Query Graph: " + GetCurrentEngine().getEngineErrors());
+    dump("Computation Error", "Query Graph: " + GetCurrentEngine().getEngineErrors()+"\n");
     msiComputeLogger.Exception(e);                                                               
   }                                                                                              
   RestoreCursor();                                                                               
@@ -168,7 +172,9 @@ function GraphGetDefaultGraphValue (key) {
       value = prefs.getCharPref(keyname);
     }
     catch (e) {
-      this.prompt.alert (null, "Preference Error", "Can't find preference for " + keyname);
+      dump("Preference Error", "Can't find preference for " + keyname +"\n");
+//      this.prompt.alert (null, "Preference Error", "Can't find preference for " + keyname);
+      alert ("Preference Error", "Can't find preference for " + keyname);
       value = "";
     }  
   } else {
@@ -255,8 +261,8 @@ function GraphReadGraphAttributesFromDOM (DOMGraph) {
   if (DOMGs.length > 0) {
     DOMGs = DOMGs[0];
     for (i=0; i<DOMGs.attributes.length; i++) {
-      key = DOMGs.attributes[i].nodeName;
-      value = DOMGs.attributes[i].nodeValue;
+      var key = DOMGs.attributes[i].nodeName;
+      var value = DOMGs.attributes[i].nodeValue;
       this.setGraphAttribute(key, value);
     }
     var DOMPlots = DOMGraph.getElementsByTagName("plot");
@@ -660,6 +666,7 @@ function parseQueryReturn (out, graph, plot_no) {
   var variableList, expr;                                                     
   var count = 0;   
   var index = 0;                                                           
+  dump("SMR Query returned: " + out + "\n");
   var pt   = graph.getPlotAttribute (PlotAttrName ("PlotType", plot_no)); 
   // search for top level "mfenced" and the matching "/mfenced"                            
   // 4/11/06 this while loop should be unnecessary: the compute engine doesn't return
@@ -705,9 +712,12 @@ function parseQueryReturn (out, graph, plot_no) {
       }                                                                         
     }
     
-    if ((pt != "gradient") && (count < 3)) 
-      this.prompt.alert (null, "Computation Warning", 
-          "Warning: Prepare Plot was unable to identify dependent variables and prepare the expression");
+    if ((pt != "gradient") && (count < 3)) {
+//      this.prompt.alert (null, "Computation Warning", 
+  //        "Warning: Prepare Plot was unable to identify dependent variables and prepare the expression");
+      alert ("Warning: Prepare Plot was unable to identify dependent variables and prepare the expression");
+      dump("Warning: Prepare Plot was unable to identify dependent variables and prepare the expression\n");
+    }  
   }  
                                                                 
   if (variableList)
@@ -817,10 +827,12 @@ function attributeArrayRemove (A, element) {
 }
 
 // return the index of element in the array A, -1 if not found
+// ***** need to fix this 8/4/06 ****
+// get some funky error about A[idx] not having properties
 function attributeArrayFind (A, element) {
   var idx;
-  for (idx = 0; idx < A.length && A[idx] != element; idx++) ;
-  if (A[idx] != element)
+//  for (idx = 0; idx < A.length && A[idx] != element; idx++) ;
+//  if (A[idx] != element)
     idx = -1;
   return idx;
 }
@@ -929,7 +941,8 @@ function CountPlotVars (dim, ptype, animate) {
        nvars = 2;
        break;
     default:
-       alert ("SMR ERROR in GraphOverlay line 932 unknown plot type " + ptype);
+       dump ("SMR ERROR in GraphOverlay line 932 unknown plot type " + ptype+"\n");
+//       alert ("SMR ERROR in GraphOverlay line 932 unknown plot type " + ptype);
 //      this.prompt.alert (null, "Computation Error", "Unknown plot type <" + ptype +">");
        break;
   }   
