@@ -15,6 +15,8 @@
 #include "../../MRequest.h"
 #include "MuPADPlot.h"
 #include <string>
+#include <iostream>
+using namespace std;
 
 MuPADPlotWrapper::MuPADPlotWrapper(void *ID_dBase, void *NOM_dBase)
 {
