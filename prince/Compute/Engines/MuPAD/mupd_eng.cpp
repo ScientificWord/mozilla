@@ -23,12 +23,10 @@ static char THIS_FILE[] = __FILE__;
 #include "MKT_com_kernel.h"
 #include "MKT_lib_kernel.h"
 
-#define PLOTMAGIC  1234
-#define PLOTBAD    4321
-
 static jmp_buf mupad_mark;      // Address for long jump to jump to -- used in case of MuPAD DLL crash
 
 #define USE_MuPAD_30 1
+#ifdef USE_MuPAD_30
 const TCICHAR *MuPADEngine::m_VCAMSWP_GUID_STR =
   "{1141E11F-C863-4EDF-AB2D-1031BE573CB3}";
 const TCICHAR *MuPADEngine::m_VCAMPRO_GUID_STR =
@@ -37,16 +35,28 @@ const TCICHAR *MuPADEngine::m_MuPADSWP_GUID_STR =
   "{63680B2D-EE7E-42C8-AB45-AB46CD4D4360}";
 const TCICHAR *MuPADEngine::m_MuPADPRO_GUID_STR =
   "{15922A38-0266-47bb-BE10-441A425607F0}";
+#else
+const TCICHAR *MuPADEngine::m_VCAMSWP_GUID_STR =
+  "{1141E11F-C863-4EDF-AB2D-1031BE573CB3}";  // don't have this yet
+const TCICHAR *MuPADEngine::m_VCAMPRO_GUID_STR =
+  "{AD0749C0-BBB4-11D0-93DF-0000C059B7AD}";
+const TCICHAR *MuPADEngine::m_MuPADSWP_GUID_STR =
+  "{63680B2D-EE7E-42C8-AB45-AB46CD4D4360}";  // don't need this out of process kernel
+const TCICHAR *MuPADEngine::m_MuPADPRO_GUID_STR =
+  "{ED233FD4-C924-47b1-B855-4E305CF9706B}";
+#endif
+
+MuPADMssgHandler *MuPADEngine::m_client = 0;
 
 // our kernel message handler class
-class MuPADMssgHandler:public MTclientMessageHandler
+class MuPADMssgHandler : public MTclientMessageHandler
 {
 public:
-  MuPADMssgHandler():ready(false), usingDLL(true), errorFlag(false),
+  MuPADMssgHandler() : ready(false), usingDLL(true), errorFlag(false),
     warningFlag(false), cmd_cookie(0)
   {
   }
-  virtual ~ MuPADMssgHandler()
+  virtual ~MuPADMssgHandler()
   {
   }
 
@@ -57,11 +67,6 @@ public:
   void on_finished(void *cmd_cookie);
   void on_status(size_t used_mem, size_t res_mem, size_t sec);  // called all the time
   void on_plot_result_file(void *cmd_cookie, const char *fname);
-/*
-  void on_display_list(size_t num_vars, char* names[],
-                                 char* values[]);
-  void on_frame_changed(const char* frame);
-*/
 
   bool Ready()
   {
@@ -158,12 +163,6 @@ void MuPADMssgHandler::on_kernel_ready()
 {
   ready = true;
 }
-
-/*
-void MuPADMssgHandler::on_display_list(size_t num_vars, char* names[],
-                                 char* values[]){}
-void MuPADMssgHandler::on_frame_changed(const char* frame){}
-*/
 
 //   User name:    MacKichan
 //   Key:          81000-57A6F-A4EDC-67BC6-45F97
@@ -281,8 +280,8 @@ static void Cleanup_MuPAD()
   longjmp(mupad_mark, -1);
 }
 
-MuPADEngine::MuPADEngine()
-:m_useDLL(true), m_kernel(0), m_client(0)  //, m_pPlotStore(NULL)
+MuPADEngine::MuPADEngine() :
+  m_useDLL(true), m_kernel(0)
 {
   fcnsloaded = false;
   plot_status = false;
@@ -309,6 +308,7 @@ MuPADEngine::~MuPADEngine()
   if (!m_useDLL)
     delete m_kernel;
   delete m_client;
+  m_client = 0;
 }
 
 int MuPADEngine::GetEngStrPtr(int str_ID, char **engstr, int *engstr_ln)
@@ -391,9 +391,9 @@ bool MuPADEngine::LoadStrsAndDLL(const char *engpath, const char *libpath)
       return rv;
     }
   }
-  // m_pPlotStore has been set
 
   // start up kernel
+  TCI_ASSERT(m_client == 0);
   m_client = TCI_NEW(MuPADMssgHandler);
   m_client->SetLibPath(libpath);
   m_client->UseDLL(m_useDLL);
@@ -474,6 +474,8 @@ void MuPADEngine::CleanupAndUnloadDLL()
       delete m_kernel;
     m_kernel = 0;
   }
+  delete m_client;
+  m_client = 0;
   if (m_useDLL) {
     // name must match link line, exactly
     //    TCIString dll( StrUtil::GetResourceString( STR_MuPADDLL ) );
@@ -487,6 +489,7 @@ void MuPADEngine::HandleMuPADException()
   //  Message( MSG_WARNING,MSG_MuPADFailure );
   //  DelayLoadComputePackage( CHAM_MUPAD,true );
   //this kernel is corrupt, don't use it
+  //TODO set an error code
   m_kernel = 0;
 }
 
@@ -522,7 +525,7 @@ int MuPADEngine::PrepareProcessor(void *dummy, const char *champath)
 
 bool MuPADEngine::SendToProcessor(ByteArray * ba)
 {
-  //The contents of ba are sent to Maple. If a valid return
+  //The contents of ba are sent to MuPAD. If a valid return
   //is obtained, the result replaces the contents of ba.
 
   bool rv = false;
