@@ -5,8 +5,7 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DIRS		=  base samples res plugins fastcursor
-# Compute
+DIRS		=  base samples Compute res plugins fastcursor
 
 MODULE		= prince
 XPI_NAME	= prince
