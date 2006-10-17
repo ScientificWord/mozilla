@@ -354,6 +354,8 @@ msiUnderAndOrOverCaret::SetupDeletionTransactions(nsIEditor * editor,
 {
   if (!m_mathmlNode || !editor || !transactionList)
     return NS_ERROR_FAILURE;
+  if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
+    return NS_ERROR_FAILURE;
   nsresult res(NS_OK);
   if ((endOffset - startOffset == 1 && end == nsnull) ||
       (endOffset == startOffset))
