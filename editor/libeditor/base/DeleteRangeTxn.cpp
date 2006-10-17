@@ -191,14 +191,15 @@ NS_IMETHODIMP DeleteRangeTxn::DoTransaction(void)
     GetMathParent(startParent, startMath);
     if (startMath && msiEditor)
     {
-      msiEditor->GetMathMLCaretInterface(startParent, msiIMathMLEditingBC::INVALID, getter_AddRefs(startCaret));
+      msiEditor->GetMathMLCaretInterface(startMath, msiIMathMLEditingBC::INVALID, getter_AddRefs(startCaret));
       startMath->GetParentNode(getter_AddRefs(newStart));
       GetIndexOfChildInParent(startMath, newStartOffset);
+      newStartOffset += 1;
     }
     GetMathParent(endParent, endMath);
     if (endMath && msiEditor)
     {
-      msiEditor->GetMathMLCaretInterface(endParent, msiIMathMLEditingBC::INVALID, getter_AddRefs(endCaret));
+      msiEditor->GetMathMLCaretInterface(endMath, msiIMathMLEditingBC::INVALID, getter_AddRefs(endCaret));
       endMath->GetParentNode(getter_AddRefs(newEnd));
       GetIndexOfChildInParent(endMath, newEndOffset);
     }
