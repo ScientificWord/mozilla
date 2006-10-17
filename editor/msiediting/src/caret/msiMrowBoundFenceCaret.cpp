@@ -252,6 +252,8 @@ msiMrowBoundFenceCaret::SetupDeletionTransactions(nsIEditor * editor,
 {
   if (!m_mathmlNode || !editor || !transactionList)
     return NS_ERROR_FAILURE;
+  if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
+    return NS_ERROR_FAILURE;
   nsCOMPtr<msiIMathMLCaret> parentCaret;
   nsresult  res = msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, parentCaret);
   if (NS_SUCCEEDED(res) && parentCaret)
