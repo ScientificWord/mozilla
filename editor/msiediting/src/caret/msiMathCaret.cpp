@@ -168,6 +168,16 @@ msiMathCaret::SetupDeletionTransactions(nsIEditor * editor,
   if (!m_mathmlNode || !editor || !transactionList)
     return NS_ERROR_FAILURE;
   nsresult res(NS_OK);
+    
+  if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
+  {
+     if (!(IS_VALID_NODE_OFFSET(startOffset)) && !(IS_VALID_NODE_OFFSET(endOffset)))
+       return NS_ERROR_FAILURE;
+     if (!(IS_VALID_NODE_OFFSET(startOffset)))
+       startOffset = 0;
+     else
+       endOffset = m_numKids;
+  }
   if (startOffset == 0 && endOffset == m_numKids && start == nsnull && end == nsnull)
   { // replace contents of enclosed with input box.
     nsCOMPtr<nsIDOMElement> inputbox;

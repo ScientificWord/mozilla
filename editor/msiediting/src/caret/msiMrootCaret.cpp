@@ -292,6 +292,8 @@ msiMrootCaret::SetupDeletionTransactions(nsIEditor * editor,
 {
   if (!m_mathmlNode || !editor || !transactionList)
     return NS_ERROR_FAILURE;
+  if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
+    return NS_ERROR_FAILURE;
   return msiMfracCaret::SetupDelTxnForFracOrRoot(editor, m_mathmlNode,
                                                  startOffset, endOffset,
                                                  start,  end,
