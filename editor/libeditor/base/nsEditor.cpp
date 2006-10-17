@@ -5033,9 +5033,8 @@ nsEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
 
     // allocate the out-param transaction
     result = TransactionFactory::GetNewTransaction(EditAggregateTxn::GetCID(), (EditTxn **)aTxn);
-    if (NS_FAILED(result)) {
+    if (NS_FAILED(result)) 
       return result;
-    }
 
     nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(selection));
     nsCOMPtr<nsIEnumerator> enumerator;
