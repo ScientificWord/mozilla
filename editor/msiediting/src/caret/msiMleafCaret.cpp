@@ -501,47 +501,51 @@ msiMleafCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, 
 NS_IMETHODIMP
 msiMleafCaret::CaretObjectLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  if (!node || !offset || !m_mathmlNode || !editor)
-    return NS_ERROR_FAILURE;
-  nsresult res(NS_OK);
-  if (m_offset > 0) 
-  {
-    m_offset = 0;
-    Accept(editor, FROM_RIGHT, node, offset);
-  }
-  else //m_offset == 0
-  {
-    nsCOMPtr<msiIMathMLCaret> mathmlEditing;
-    flags = FROM_CHILD;
-    msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, mathmlEditing);
-    NS_ASSERTION(mathmlEditing, "Parent's mathmlEditing interface is null");
-    if (mathmlEditing)
-      res = mathmlEditing->CaretObjectLeft(editor, flags, node, offset);
-  }
-  return res;   
+  return CaretLeft(editor, flags, node, offset);
+  //TODO ljh 10/06 -- need to make shift+arrow and shift+ctrl+arrow different
+//  if (!node || !offset || !m_mathmlNode || !editor)
+//    return NS_ERROR_FAILURE;
+//  nsresult res(NS_OK);
+//  if (m_offset > 0) 
+//  {
+//    m_offset = 0;
+//    Accept(editor, FROM_RIGHT, node, offset);
+//  }
+//  else //m_offset == 0
+//  {
+//    nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+//    flags = FROM_CHILD;
+//    msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, mathmlEditing);
+//    NS_ASSERTION(mathmlEditing, "Parent's mathmlEditing interface is null");
+//    if (mathmlEditing)
+//      res = mathmlEditing->CaretObjectLeft(editor, flags, node, offset);
+//  }
+//  return res;   
 }
 
 NS_IMETHODIMP
 msiMleafCaret::CaretObjectRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  if (!node || !offset || !m_mathmlNode || !editor)
-    return NS_ERROR_FAILURE;
-  nsresult res(NS_OK);
-  if (m_offset < m_length) 
-  {
-    m_offset = m_length;
-    Accept(editor, FROM_LEFT, node, offset);
-  }
-  else  // m_offset == m_length
-  {
-    nsCOMPtr<msiIMathMLCaret> mathmlEditing;
-    flags = FROM_CHILD;
-    msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_TRUE, mathmlEditing);
-    NS_ASSERTION(mathmlEditing, "Parent's mathmlEditing interface is null");
-    if (mathmlEditing)
-      res = mathmlEditing->CaretObjectRight(editor, flags, node, offset);
-  }
-  return res;
+  return CaretRight(editor, flags, node, offset);
+  //TODO ljh 10/06 -- need to make shift+arrow and shift+ctrl+arrow different
+//  if (!node || !offset || !m_mathmlNode || !editor)
+//    return NS_ERROR_FAILURE;
+//  nsresult res(NS_OK);
+//  if (m_offset < m_length) 
+//  {
+//    m_offset = m_length;
+//    Accept(editor, FROM_LEFT, node, offset);
+//  }
+//  else  // m_offset == m_length
+//  {
+//    nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+//    flags = FROM_CHILD;
+//    msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_TRUE, mathmlEditing);
+//    NS_ASSERTION(mathmlEditing, "Parent's mathmlEditing interface is null");
+//    if (mathmlEditing)
+//      res = mathmlEditing->CaretObjectRight(editor, flags, node, offset);
+//  }
+//  return res;
 }
 
 NS_IMETHODIMP
