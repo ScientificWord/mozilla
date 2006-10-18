@@ -233,38 +233,23 @@ msiMathCaret::CaretRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, 
 {
   if (!node || !offset || !m_mathmlNode || !editor)
     return NS_ERROR_FAILURE;
-  nsresult res(NS_OK); 
+  nsresult res(NS_ERROR_FAILURE); 
   if (m_offset < m_numKids)
     res = msiMContainerCaret::CaretRight(editor, flags, node, offset); 
   else // leave math
   { 
-    //TODO -- fix this hack.
-    nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(editor);
-    nsCOMPtr<nsISelection> selection;
-    editor->GetSelection(getter_AddRefs(selection));
-    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(m_mathmlNode);
-    if (htmlEditor && element && selection)
+    PRUint32 index(INVALID);
+    nsCOMPtr<nsIDOMNode> parent;
+    msiUtils::GetIndexOfChildInParent(m_mathmlNode, index);
+    m_mathmlNode->GetParentNode(getter_AddRefs(parent));
+    NS_ASSERTION(parent, "Parent node is null");
+    if (parent && IS_VALID_NODE_OFFSET(index))
     {
-      res = htmlEditor->SetCaretAfterElement(element);
-      nsCOMPtr<nsISelectionPrivate> selPriv(do_QueryInterface(selection));
-      if (selPriv)
-        selPriv->SetInterlinePosition(PR_TRUE);
+      *node = parent;
+      NS_ADDREF(*node);
+      *offset = index+1;
+      res = NS_OK;
     }
-    else
-    {
-      PRUint32 newOffset(0);
-      nsCOMPtr<nsIDOMNode> carrotNode;
-      msiUtils::GetIndexOfChildInParent(m_mathmlNode, newOffset);
-      m_mathmlNode->GetParentNode(getter_AddRefs(carrotNode));
-      NS_ASSERTION(carrotNode, "Parent node is null");
-      if (carrotNode && newOffset < LAST_VALID)
-      {
-        *node = carrotNode;
-        NS_ADDREF(*node);
-        *offset = newOffset+1;
-        res = NS_OK;
-      }
-    }    
   }
   return res;  
 }
@@ -312,38 +297,23 @@ msiMathCaret::CaretObjectRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** 
 {
   if (!node || !offset || !m_mathmlNode || !editor)
     return NS_ERROR_FAILURE;
-  nsresult res(NS_OK); 
+  nsresult res(NS_ERROR_FAILURE); 
   if (m_offset < m_numKids)
     res = msiMContainerCaret::CaretObjectRight(editor, flags, node, offset); 
   else // leave math
   { 
-    //TODO -- fix this hack.
-    nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(editor);
-    nsCOMPtr<nsISelection> selection;
-    editor->GetSelection(getter_AddRefs(selection));
-    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(m_mathmlNode);
-    if (htmlEditor && element && selection)
+    PRUint32 index(INVALID);
+    nsCOMPtr<nsIDOMNode> parent;
+    msiUtils::GetIndexOfChildInParent(m_mathmlNode, index);
+    m_mathmlNode->GetParentNode(getter_AddRefs(parent));
+    NS_ASSERTION(parent, "Parent node is null");
+    if (parent && IS_VALID_NODE_OFFSET(index))
     {
-      res = htmlEditor->SetCaretAfterElement(element);
-      nsCOMPtr<nsISelectionPrivate> selPriv(do_QueryInterface(selection));
-      if (selPriv)
-        selPriv->SetInterlinePosition(PR_TRUE);
+      *node = parent;
+      NS_ADDREF(*node);
+      *offset = index+1;
+      res = NS_OK;
     }
-    else
-    {
-      PRUint32 newOffset(0);
-      nsCOMPtr<nsIDOMNode> carrotNode;
-      msiUtils::GetIndexOfChildInParent(m_mathmlNode, newOffset);
-      m_mathmlNode->GetParentNode(getter_AddRefs(carrotNode));
-      NS_ASSERTION(carrotNode, "Parent node is null");
-      if (carrotNode && newOffset < LAST_VALID)
-      {
-        *node = carrotNode;
-        NS_ADDREF(*node);
-        *offset = newOffset+1;
-        res = NS_OK;
-      }
-    }    
   }
   return res;  
 }
