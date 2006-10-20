@@ -72,6 +72,8 @@
 #include "nsIDocumentObserver.h"
 
 #include "nsPoint.h"
+// New XML tag stuff
+#include "msiITagListManager.h"
 
 class nsIDOMKeyEvent;
 class nsITransferable;
@@ -760,11 +762,13 @@ protected:
   TypeInState*         mTypeInState;
 
   nsCOMPtr<nsIDOMNode> mCachedNode;
+  //TagListManager
+  nsCOMPtr<msiITagListManager> mtagListManager;
 
   PRPackedBool mCRInParagraphCreatesParagraph;
 
   PRPackedBool mCSSAware;
-  nsHTMLCSSUtils *mHTMLCSSUtils;
+  nsHTMLCSSUtils * mHTMLCSSUtils;
 
   // Used by GetFirstSelectedCell and GetNextSelectedCell
   PRInt32  mSelectedCellIndex;

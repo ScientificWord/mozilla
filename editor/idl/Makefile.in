@@ -47,6 +47,7 @@ GRE_MODULE	= 1
 
 XPIDLSRCS	= \
     msiIArrowStateService.idl \
+    msiITagListManager.idl \
 		nsICiter.idl \
 		nsIDocumentStateListener.idl \
 		nsIEditActionListener.idl \
