@@ -12,10 +12,12 @@ include $(topsrcdir)/config/rules.mk
 
 CSS_RESOURCES := $(wildcard	$(srcdir)/css/*.css)
 XBL_RESOURCES := $(wildcard $(srcdir)/xbl/*.xml)
+TAGDEF_RESOURCES := $(wildcard $(srcdir)/tagdefs/*.xml)
 
 libs::	$(CSS_RESOURCES) $(XBL_RESOURCES)
 	$(INSTALL)	$(CSS_RESOURCES)	$(FINAL_TARGET)/res/css
 	$(INSTALL)	$(XBL_RESOURCES)	$(FINAL_TARGET)/res/xbl
+	$(INSTALL)	$(TAGDEF_RESOURCES)	$(FINAL_TARGET)/res/tagdefs
 
 
 
