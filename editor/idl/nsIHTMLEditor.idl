@@ -45,6 +45,7 @@ interface nsIAtom;
 interface nsISupportsArray;
 interface nsISelection;
 interface nsIContentFilter;
+interface msiITagListManager;
 
 %{C++
 #define NS_EDITOR_ELEMENT_NOT_FOUND \
@@ -608,5 +609,7 @@ interface nsIHTMLEditor : nsISupports
    * @return    true if CR in a paragraph creates a new paragraph
    */
   attribute boolean returnInParagraphCreatesNewParagraph;
+  readonly attribute msiITagListManager tagListManager;
+  void addTagInfo( in AString strPath );
 };
 
