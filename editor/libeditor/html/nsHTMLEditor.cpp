@@ -130,6 +130,7 @@
 #include "nsIView.h"
 #include "nsIWidget.h"
 #include "nsIParserService.h"
+#include "msiTagListManager.h"
 
 // Some utilities to handle annoying overloading of "A" tag for link and named anchor
 static char hrefText[] = "href";
@@ -165,6 +166,11 @@ nsHTMLEditor::nsHTMLEditor()
 , mIsInlineTableEditingEnabled(PR_TRUE)
 , mGridSize(0)
 {
+  mHTMLCSSUtils = nsnull;
+  nsCOMPtr<msiTagListManager> manager;
+  manager = new msiTagListManager;
+  manager->SetEditor(this);
+  mtagListManager = do_QueryInterface(manager);
 } 
 
 nsHTMLEditor::~nsHTMLEditor()
@@ -306,9 +312,9 @@ nsHTMLEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,
     nsPresContext *context = aPresShell->GetPresContext();
     if (!context) return NS_ERROR_NULL_POINTER;
     if (!(mFlags & eEditorPlaintextMask)) {
-      mLinkHandler = context->GetLinkHandler();
+//      mLinkHandler = context->GetLinkHandler();
 
-      context->SetLinkHandler(nsnull);
+//      context->SetLinkHandler(nsnull);
     }
 
     // init the type-in state
@@ -5886,5 +5892,33 @@ nsresult
 nsHTMLEditor::GetReturnInParagraphCreatesNewParagraph(PRBool *aCreatesNewParagraph)
 {
   *aCreatesNewParagraph = mCRInParagraphCreatesParagraph;
+  return NS_OK;
+}
+
+
+nsresult
+nsHTMLEditor::GetTagListManager( msiITagListManager ** _retVal)
+{ 
+  if (mtagListManager == nsnull)
+  {
+    nsCOMPtr<msiTagListManager> manager;
+    manager = new msiTagListManager;
+    mtagListManager = do_QueryInterface(manager);
+  }
+  NS_ADDREF(*_retVal = mtagListManager);
+  return NS_OK;
+}
+
+nsresult
+nsHTMLEditor::AddTagInfo( const nsAString & strPath )
+{ 
+  if (mtagListManager == nsnull)
+  {
+    nsCOMPtr<msiTagListManager> manager;
+    manager = new msiTagListManager;
+    mtagListManager = do_QueryInterface(manager);
+  }
+  PRBool bresult;
+  mtagListManager->AddTagInfo(strPath, &bresult);
   return NS_OK;
 }
