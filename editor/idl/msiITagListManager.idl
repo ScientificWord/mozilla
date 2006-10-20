@@ -1,0 +1,43 @@
+ 
+#include "nsISupports.idl"
+
+interface nsIAtom;
+interface nsEditor;
+interface nsIDOMNode;
+interface nsIFile;
+interface nsStringArray;
+
+/*This interface manages a store of information about the editing behavior of tags.
+Since the tags are possibly in name spaces, each tag is identified by an atom (for the name space) and a string (for the tag name).
+The store is initialized by reading XML files that contain the relevant information for the tags. The definition of the structure
+of these files is likely to change, so it is documented by the source code only.
+
+Since this information is document-dependent, there is one store per editor. The store contains a pointer to its editor.
+
+The store contains a string array for each class of tags (text, structure, paragraph, etc.) and allows for getting and setting
+these string arrays. We may make this read-only, since the tag data should be set from the tag info files only.
+*/   
+
+[scriptable, uuid(9BA9E685-EF5A-49b3-96DC-8D8EC355A690)]
+interface msiITagListManager : nsISupports
+{
+	attribute nsEditor editor;
+	//attribute AString strTagInfoPath;
+
+	AString currentValue( in AString strTagClass, out nsIAtom atomNS );
+  
+  void reset();  //initializes the store to an empty store
+  PRBool AddTagInfo ( in AString strTagInfoPath );
+   
+	nsStringArray getStringArray( in  AString strTagClass ); 
+
+	PRBool getTagInClass( in AString strTagClass, in AString strTag, in nsIAtom atomNS);
+	AString getClassOfTag( in AString strTag, in nsIAtom atomNS);
+	PRBool tagCanContainTag( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
+	PRBool levelCanContainLevel( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
+  PRBool getDiscardEmptyBlockNode( in nsIDOMNode node);
+	void fixTagsAfterSplit( in nsIDOMNode firstNode, inout nsIDOMNode secondNode);
+  AString GetStringPropertyForTag( in AString strTag, in nsIAtom atomNS, in AString propertyName );
+  AString GetTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
+  void findParentTags( out nsStringArray strarrParents);
+};

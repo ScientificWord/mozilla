@@ -136,7 +136,7 @@ nsButtonPrefListener.prototype =
   startup: function()
   {
     try {
-      var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
       pbi.addObserver(this.domain, this, false);
     } catch(ex) {
       dump("Failed to observe prefs (nsButtonPrefListener): " + ex + "\n");
@@ -145,7 +145,7 @@ nsButtonPrefListener.prototype =
   shutdown: function()
   {
     try {
-      var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
       pbi.removeObserver(this.domain, this);
     } catch(ex) {
       dump("Failed to remove pref observers: " + ex + "\n");
@@ -494,7 +494,7 @@ var gEditorDocumentObserver =
           // Force color widgets to update
           onFontColorChange();
           onBackgroundColorChange();
-//          editor.SetTagListPath("chrome://editor/content/default.xml");
+          editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
           // the order here is important, since the autocomplete component has to read the tag names 
 //          initializeAutoCompleteStringArray();
         }
