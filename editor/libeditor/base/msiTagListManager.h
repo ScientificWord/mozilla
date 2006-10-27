@@ -6,6 +6,7 @@
 
 class nsIDOMXMLDocument;
 class nsIDOMElement;
+class nsIAutoCompleteSearchStringArray;
 struct namespaceLookup;
 
 class TagData // other fields can be added to this
@@ -31,6 +32,7 @@ public:
   ~msiTagListManager();
   nsString GetStringProperty( const nsAString & str, nsIDOMElement * element);
   PRBool BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retval);
+  nsCOMPtr<nsIAutoCompleteSearchStringArray> pACSSA;
     
 protected:  
 //  nsStringArray mstrTagInfoPath; // do we save this here?

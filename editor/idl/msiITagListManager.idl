@@ -25,11 +25,12 @@ interface msiITagListManager : nsISupports
 	//attribute AString strTagInfoPath;
 
 	AString currentValue( in AString strTagClass, out nsIAtom atomNS );
+	void enable();
   
   void reset();  //initializes the store to an empty store
   PRBool AddTagInfo ( in AString strTagInfoPath );
    
-	nsStringArray getStringArray( in  AString strTagClass ); 
+	void buildStringArray( in  AString strTagClass ); 
 
 	PRBool getTagInClass( in AString strTagClass, in AString strTag, in nsIAtom atomNS);
 	AString getClassOfTag( in AString strTag, in nsIAtom atomNS);

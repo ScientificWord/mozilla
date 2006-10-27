@@ -178,6 +178,7 @@ image {
   -moz-binding: url("chrome://global/content/bindings/general.xml#image");
 }
 
+
 /********** checkbox **********/
 
 checkbox {
@@ -730,7 +731,8 @@ textbox[type="timed"] {
 
 /********** autocomplete textbox **********/
 
-/* thunderbird and Nvu don't use the new toolkit's autocomplete widget yet.... */
+/* thunderbird and Nvu don't use the new toolkit's autocomplete widget yet....but Prince does! */
+%ifndef MOZ_MSI_PRINCE
 
 %ifdef MOZ_THUNDERBIRD
 %define AUTOCOMPLETE_OLD_STYLE
@@ -738,6 +740,7 @@ textbox[type="timed"] {
 %define AUTOCOMPLETE_OLD_STYLE
 %elifdef MOZ_SUITE
 %define AUTOCOMPLETE_OLD_STYLE
+%endif
 %endif
 
 %ifdef AUTOCOMPLETE_OLD_STYLE
@@ -1107,3 +1110,5 @@ richlistbox {
 richlistitem {
   -moz-binding: url('chrome://global/content/bindings/richlistbox.xml#richlistitem');
 }
+
+html|* [class="autocomplete-textbox"] { width:40px; }
