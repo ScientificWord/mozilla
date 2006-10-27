@@ -62,6 +62,10 @@ textbox.padded {
   -moz-box-align: center;
 }
 
+.autocomplete-icon {
+  list-style-image: url("chrome://global/skin/arrow/arrow-dn.gif");
+}
+
 .textbox-input-box {
   margin: 0 3px;
   -moz-box-align: center;

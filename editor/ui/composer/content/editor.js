@@ -199,9 +199,9 @@ function AfterHighlightColorChange()
 
 function EditorOnLoad()
 {
-    dump("\n=====================EditorOnLoad\n");
-    dump(window.arguments[0]+"\n");
-    dump(window.arguments.length+"\n");
+//    dump("\n=====================EditorOnLoad\n");
+//    dump(window.arguments[0]+"\n");
+//    dump(window.arguments.length+"\n");
     
     // See if argument was passed.
     if ( window.arguments && window.arguments[0] ) {
@@ -249,6 +249,7 @@ function EditorOnLoad()
       gSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
       var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                                    .getInterface(Components.interfaces.nsIControllerCommandTable);
+                                   dump("\n13");
       commandTable.registerCommand("cmd_find",        nsFindCommand);
       commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
       commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
@@ -274,7 +275,7 @@ const gSourceTextListener =
 const gSourceTextObserver =
 {
   observe: function observe(aSubject, aTopic, aData)
-  {
+  {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
     // we currently only use this to update undo
     window.updateCommands("undo");
   }
@@ -496,7 +497,6 @@ var gEditorDocumentObserver =
           onBackgroundColorChange();
           editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
           // the order here is important, since the autocomplete component has to read the tag names 
-//          initializeAutoCompleteStringArray();
         }
         break;
 
@@ -581,6 +581,7 @@ function EditorStartup()
     contentViewer.defaultCharacterSet = charset;
     contentViewer.forceCharacterSet = charset;
   } catch (e) {}
+  
   EditorLoadUrl(url);
 }
 
@@ -1973,7 +1974,7 @@ function SetDisplayMode(mode)
           // Disable ShowAllTags mode
           editor.enableStyleSheet(kAllTagsStyleSheet, false);
           editor.isImageResizingEnabled = true;
-          initializeAutoCompleteStringArray();
+          editor.enableTagMananger();
         break;
 
         case kDisplayModeAllTags:
@@ -1982,7 +1983,7 @@ function SetDisplayMode(mode)
           editor.addOverrideStyleSheet(kAllTagsStyleSheet);
           // don't allow resizing in AllTags mode because the visible tags
           // change the computed size of images and tables...
-          initializeAutoCompleteStringArray();
+          editor.enableTagMananger();
           if (editor.resizedObject) {
             editor.hideResizers();
           }
@@ -3523,3 +3524,11 @@ function RemoveTOC()
   }
 }
 
+function goDoPrinceCommand( cmdstr, element)
+{
+  if ((element.localName.toLowerCase() == "img") && (element.getAttribute("msigraph") == "true"))
+  { 
+    graphClickEvent(cmdstr);
+  }
+  else goDoCommand(cmdstr);
+}
