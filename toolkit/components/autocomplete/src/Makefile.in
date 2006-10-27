@@ -52,6 +52,7 @@ EXPORT_LIBRARY = 1
 LIBXUL_LIBRARY = 1
 
 REQUIRES =	xpcom \
+        autocomplete \
 		string \
 		dom \
 		layout \
@@ -67,6 +68,7 @@ REQUIRES =	xpcom \
 
 CPPSRCS = nsAutoCompleteController.cpp \
           nsAutoCompleteSimpleResult.cpp \
+		  nsAutoCompleteStringArray.cpp \
           $(NULL)
 
 ifdef MOZ_MORK

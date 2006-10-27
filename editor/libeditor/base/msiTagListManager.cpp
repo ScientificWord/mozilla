@@ -1,8 +1,4 @@
 #include "msiTagListManager.h"
-//#include "nsString.h"
-//#include "nsVoidArray.h"
-//#include "nsLiteralString.h"
-//#include "nsStringUtils.h"
 #include "nsClassHashtable.h"
 #include "nsUnicharUtils.h"
 #include "nsIDOMElement.h"
@@ -10,21 +6,20 @@
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMXMLDocument.h"
-//#include "nsIDOMNode.h"
 #include "nsIDOMNodeList.h"
 #include "nsIDOMRange.h"
 #include "nsIHTMLEditor.h"
 #include "nsISelection.h"
 #include "prerror.h"
-//#include "nsCOMPtr.h"
 #include "nsIContent.h"
 #include "nsContentCID.h"
 #include "nsComponentManagerUtils.h"
 #include "nsISelectionPrivate.h"
 #include "nsIDOM3Node.h"
-//#include "nsEditor.h"
 #include "../text/nsPlaintextEditor.h"
 #include "../html/nsHTMLEditor.h"
+#include "nsIAutoCompleteSearchStringArray.h"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
 
 
 /* Implementation file */
@@ -43,6 +38,10 @@ void DebExamineNode(nsIDOMNode * aNode);
 msiTagListManager::msiTagListManager()
 :  meditor(nsnull), mparentTags(nsnull), mInitialized(PR_FALSE), plookup(nsnull) 
 {
+  nsresult rv;
+  pACSSA = do_CreateInstance("@mozilla.org/autocomplete/search;1?name=stringarray", &rv);
+  // Now replace the singleton autocompletesearchstringarry by an implementation
+  pACSSA->GetNewImplementation(getter_AddRefs(pACSSA));
   Reset();
 }
 
@@ -65,9 +64,15 @@ msiTagListManager::~msiTagListManager()
     delete(pns);
     pns = plookup;
   }
-
 }
 
+NS_IMETHODIMP 
+msiTagListManager::Enable() 
+{
+  // find the nsIAutoCompleteSearchStringArray object and set its current pointer to ours
+  pACSSA->SetImplementation(pACSSA);
+  return NS_OK;
+}
 
 // We convert the XML tree form of the tag info into a hash table form for more efficient lookup.
 // Because of multiple name spaces, we can't assume that the tag names are unique without the namespace
@@ -121,7 +126,7 @@ TagKey::altForm()
   {
     nsString str;
     key.Left(str,colon);
-    return localName()+ NS_LITERAL_STRING("(") + str + NS_LITERAL_STRING(")");
+    return localName()+ NS_LITERAL_STRING(" - ") + str;
   }
 }
  
@@ -264,7 +269,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
       tagClassNameElement = do_QueryInterface(tagClassName);
       rv = tagClassNameNode->GetTextContent(strClassName);
       rv = tagClassElement->GetElementsByTagName(NS_LITERAL_STRING("tag"), getter_AddRefs(tagNames));
-      printf("\n");
+//      printf("\n");
       if (tagNames) 
       {
         rv = tagNames->GetLength(&tagNameCount);
@@ -286,21 +291,24 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
             GetStringProperty(NS_LITERAL_STRING("discardEmptyBlock"), tagNameElement)==NS_LITERAL_STRING("true");
           // save the key, data pair
           msiTagHashtable.Put(key.key, pdata);
-		      printf("Added %s: %s %s\n", ToNewCString(key.key), ToNewCString(pdata->description), ToNewCString(pdata->tagClass));
-          printf("hash table has %d entries\n",msiTagHashtable.Count()); 
+//		      printf("Added %s: %s %s\n", ToNewCString(key.key), ToNewCString(pdata->description), ToNewCString(pdata->tagClass));
+//          printf("hash table has %d entries\n",msiTagHashtable.Count()); 
         }
       }
     }
   }
-  nsStringArray* sa;
-  GetStringArray(NS_LITERAL_STRING("texttag"),&sa);
+  BuildStringArray(NS_LITERAL_STRING("texttag"));
+  BuildStringArray(NS_LITERAL_STRING("paratag"));
+  BuildStringArray(NS_LITERAL_STRING("structtag"));
+  BuildStringArray(NS_LITERAL_STRING("othertag"));
   return PR_TRUE;
 }
 
 
 struct userArgStruct {
-  nsStringArray * stringArray;
+//  nsStringArray * stringArray;
   nsString tagClass;
+  msiTagListManager * ptlm;
 };
 
 /* nsStringArray getStringArray (in AString strTagClass); */
@@ -308,31 +316,29 @@ PLDHashOperator
 nsDEnumRead(const nsAString_internal& aKey, TagData* aData, void* userArg) 
 {  // this is a callback to the hash table enumerator that adds to a string array all the data that matches the ... part of *userArg
   TagKey tk;
+  PRBool bres;
   tk.key = aKey;;
   userArgStruct * ua = (userArgStruct *) userArg;
-//    printf("  enumerated %s = \"%s\"\n", ToNewCString(aKey), ToNewCString(aData->tagClass));
+//   printf("  enumerated %s = \"%s\"\n", aKey.get(), aData->tagClass.get());
   if (aData->tagClass == ua->tagClass)
   {
     nsString name = tk.altForm();
-    ua->stringArray->AppendString(name);
-    printf("   %s\n", ToNewCString(name));
+    ua->ptlm->pACSSA->AddString(ua->tagClass, name, &bres);
   }
   return PL_DHASH_NEXT;
 }
 
 
 NS_IMETHODIMP
-msiTagListManager::GetStringArray(const nsAString & strTagClass, nsStringArray **_retval)
+msiTagListManager::BuildStringArray(const nsAString & strTagClass)
 // BBM todo:  We don't really want a string array. We want an array of classes containing tag name, description, and maybe some more.
 {
-  *_retval = new nsStringArray;
   userArgStruct ua;
-  ua.stringArray = *_retval;
   ua.tagClass = strTagClass;
-  printf("%s:\n", ToNewCString(strTagClass));
+  ua.ptlm = this;
+//  printf("%S:\n", strTagClass.BeginReading());
   msiTagHashtable.EnumerateRead(nsDEnumRead, &(ua));
   // now we need to sort the array
-  (*_retval)->Sort();
   return NS_OK;
 }
 

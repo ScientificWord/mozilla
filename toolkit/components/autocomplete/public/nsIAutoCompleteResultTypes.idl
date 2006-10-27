@@ -37,7 +37,7 @@
 
 #include "nsIAutoCompleteResult.idl"
 
-interface nsIMdbTable;
+/*interface nsIMdbTable;
 interface nsIMdbEnv;
 interface nsIMdbRow;
 
@@ -47,7 +47,7 @@ interface nsIMdbRow;
 
 native mdb_scope(mdb_scope);
 native mdb_column(mdb_column);
-
+*/
 /* noscript */
 [uuid(e6396544-921d-4776-aa62-8bf2dc1ae058)]
 interface nsIAutoCompleteBaseResult : nsIAutoCompleteResult
@@ -59,7 +59,7 @@ interface nsIAutoCompleteBaseResult : nsIAutoCompleteResult
 };
 
 /* noscript */
-[uuid(f7e7b341-2d5c-4d04-9f51-496cb2ce178c)]
+/*[uuid(f7e7b341-2d5c-4d04-9f51-496cb2ce178c)]
 interface nsIAutoCompleteMdbResult : nsIAutoCompleteBaseResult
 {
   const short kUnicharType = 0;
@@ -81,10 +81,11 @@ interface nsIAutoCompleteMdbResult : nsIAutoCompleteBaseResult
 
   long getIntRowValue(in nsIMdbRow row, in mdb_column col);
 };
-
+*/
 /* noscript */
-[uuid(148C9DC5-0FBB-408B-80FE-544F6A85B433)]
+/*[uuid(148C9DC5-0FBB-408B-80FE-544F6A85B433)]
 interface nsIAutoCompleteMdbResult2 : nsIAutoCompleteMdbResult
 {
   attribute boolean reverseByteOrder;
 };
+*/
