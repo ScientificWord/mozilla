@@ -53,6 +53,7 @@ XPIDLSRCS	= nsIAutoCompleteController.idl \
             nsIAutoCompleteResult.idl \
             nsIAutoCompleteResultTypes.idl \
             nsIAutoCompleteSimpleResult.idl \
+            nsIAutoCompleteSearchStringArray.idl \
             $(NULL)
 
 include $(topsrcdir)/config/rules.mk

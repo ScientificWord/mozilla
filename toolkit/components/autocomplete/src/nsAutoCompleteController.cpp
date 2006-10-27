@@ -44,10 +44,12 @@
 #include "nsAutoCompleteMdbResult.h"
 #endif
 #include "nsAutoCompleteSimpleResult.h"
+#include "nsVoidArray.h"
+#include "nsAutoCompleteStringArray.h"
 
 #include "nsNetCID.h"
 #include "nsIIOService.h"
-#include "nsToolkitCompsCID.h"
+#include "..\..\build\nsToolkitCompsCID.h"
 #include "nsIServiceManager.h"
 #include "nsIDOMNode.h"
 #include "nsIDOMDocument.h"
@@ -118,6 +120,7 @@ nsAutoCompleteController::GetInput(nsIAutoCompleteInput **aInput)
 NS_IMETHODIMP
 nsAutoCompleteController::SetInput(nsIAutoCompleteInput *aInput)
 {
+  nsresult rv;
   // Don't do anything if the input isn't changing.
   if (mInput == aInput)
     return NS_OK;
@@ -166,7 +169,7 @@ nsAutoCompleteController::SetInput(nsIAutoCompleteInput *aInput)
     cid.Append(searchName);
     
     // Use the created cid to get a pointer to the search service and store it for later
-    nsCOMPtr<nsIAutoCompleteSearch> search = do_GetService(cid.get());
+    nsCOMPtr<nsIAutoCompleteSearch> search = do_GetService(cid.get(), &rv);
     if (search)
       mSearches->AppendElement(search);
   }
@@ -1416,6 +1419,10 @@ nsAutoCompleteController::GetPopupWidget()
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteController)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteSimpleResult)
+#ifdef MOZ_MSI_PRINCE
+#pragma message("MOZ_MSI_PRINCE is defined")
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(nsAutoCompleteSearchStringArray, nsAutoCompleteSearchStringArray::GetInstance)
+#endif
 #ifdef MOZ_MORK
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteMdbResult)
 #endif
@@ -1431,6 +1438,13 @@ static const nsModuleComponentInfo components[] =
     NS_AUTOCOMPLETESIMPLERESULT_CID, 
     NS_AUTOCOMPLETESIMPLERESULT_CONTRACTID,
     nsAutoCompleteSimpleResultConstructor },
+
+#ifdef MOZ_MSI_PRINCE
+  { "String Array Autocomplete",
+    NS_STRINGARRAYAUTOCOMPLETE_CID,
+    NS_STRINGARRAYAUTOCOMPLETE_CONTRACTID,
+    nsAutoCompleteSearchStringArrayConstructor },
+#endif
 
 #ifdef MOZ_MORK
   { "AutoComplete Mdb Result",

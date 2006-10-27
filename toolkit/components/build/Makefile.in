@@ -100,11 +100,16 @@ LOCAL_INCLUDES = \
 	-I$(srcdir)/../alerts/src \
 	-I$(srcdir)/../url-classifier/src \
 	-I$(srcdir)/../feeds/src \
+	-I$(srcdir)/../autocomplete/src \
 	$(NULL)
 
 SHARED_LIBRARY_LIBS = \
 	../startup/src/$(LIB_PREFIX)appstartup_s.$(LIB_SUFFIX) \
 	$(NULL)
+
+#ifdef MOZ_MSI_PRINCE
+SHARED_LIBRARY_LIBS += ../autocomplete/src/$(LIB_PREFIX)tkautocomplete.$(LIB_SUFFIX)
+#endif
 
 ifndef MOZ_SUITE
 # XXX Suite isn't ready to build this just yet
