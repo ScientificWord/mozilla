@@ -5919,6 +5919,7 @@ nsHTMLEditor::AddTagInfo( const nsAString & strPath )
     mtagListManager = do_QueryInterface(manager);
   }
   PRBool bresult;
+  mtagListManager->Enable();
   mtagListManager->AddTagInfo(strPath, &bresult);
   return NS_OK;
 }

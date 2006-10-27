@@ -367,22 +367,22 @@
   
   
 	<textbox id="TextTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttags" 
+    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag" 
 		tooltiptext="&texttagselect.tooltip;" onkeypress="if (event.keyCode == 13 || event.keyCode==9) doStatefulCommand('cmd_texttag',this.value);"
 		label="&texttagselect.label;" ontextentered=" doStatefulCommand('cmd_texttag',this.value);" />
 	
   <textbox id="ParaTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="paratags" 
+    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="paratag" 
 		tooltiptext="&paratagselect.tooltip;" onkeypress="if (event.keyCode == 13 || event.keyCode==9) doStatefulCommand('cmd_paratag',this.value);"
 		label="&paratagselect.label;" ontextentered=" doStatefulCommand('cmd_paratag',this.value);"  />
 	
   <textbox id="StructTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="structtags" 
+    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="structtag" 
 		tooltiptext="&secttagselect.tooltip;" onkeypress="if (event.keyCode == 13 || event.keyCode==9) doStatefulCommand('cmd_structtag',this.value);"
 		label="&secttagselect.label;" ontextentered=" doStatefulCommand('cmd_structtag',this.value);"  />
 	
   <textbox id="OtherTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="othertags" 
+    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="othertag" 
 		tooltiptext="&othertagselect.tooltip;" onkeypress="if (event.keyCode == 13 || event.keyCode==9) doStatefulCommand('cmd_othertag',this.value);"
 		label="&othertagselect.label;" ontextentered=" doStatefulCommand('cmd_othertag',this.value);"  />
     
