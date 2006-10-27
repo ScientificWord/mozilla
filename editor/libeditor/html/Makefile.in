@@ -47,6 +47,7 @@ LIBRARY_NAME	= htmleditor_s
 LIBXUL_LIBRARY	= 1
 
 REQUIRES	= xpcom \
+		  autocomplete \
 		  string \
 		  dom \
 		  layout \
