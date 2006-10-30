@@ -1076,6 +1076,7 @@ filters/ptprince/ptdata/Makefile
 xpfe/communicator/Makefile
 toolkit/Makefile
 toolkit/components/Makefile
+toolkit/components/autocomplete/Makefile
 "
 
 MAKEFILES_calendar="
