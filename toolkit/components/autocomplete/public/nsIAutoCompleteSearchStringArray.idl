@@ -1,0 +1,13 @@
+#include "nsIAutoCompleteSearch.idl"
+
+
+
+[scriptable, uuid(3A6BB324-512A-4d41-AC56-C8B8249A2E45)]                                             
+interface nsIAutoCompleteSearchStringArray : nsIAutoCompleteSearch
+{
+  boolean addString( in AString strCategory, in AString strAdd);
+  boolean deleteString( in AString strCategory, in AString strDelete);
+  void sortArrays(); // in the future we may need more granularity.
+  void setImplementation( in nsIAutoCompleteSearchStringArray imp);
+  nsIAutoCompleteSearchStringArray getNewImplementation();
+};
