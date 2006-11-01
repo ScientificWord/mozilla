@@ -122,6 +122,110 @@ protected:
   virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
   
 };
+// virtual base class for tag commands that need to save and update Boolean state (like styles etc)
+// It does not store the tag name like the above class
+class nsBaseTagUpdatingCommand : public nsBaseComposerCommand
+{
+public:
+
+              nsBaseTagUpdatingCommand(void);
+  virtual     ~nsBaseTagUpdatingCommand();
+    
+  NS_DECL_ISUPPORTS_INHERITED
+
+  NS_DECL_NSICONTROLLERCOMMAND
+
+protected:
+
+  // get the current state (on or off) for this style or block format
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams) = 0;
+  
+  // add/remove the style
+  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName) = 0;
+  virtual nsresult SetState(nsIEditor *aEditor, nsString& newState) = 0;
+
+protected:
+  virtual nsresult GetCurrentTagState(nsIEditor *aEditor, const char * aTagClass, nsICommandParams *aParams);
+  const char* mTagName;
+};
+
+// Shared class for text tags.  Based on original nsStyleUpdatingCommand
+class nsTextTagUpdatingCommand : public nsBaseTagUpdatingCommand
+{
+public:
+
+  nsTextTagUpdatingCommand(void){}
+           
+protected:
+
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams)
+  { return GetCurrentTagState( aEditor, "texttag", aParams);}
+  
+  // add/remove the style
+    
+  virtual nsresult SetState(nsIEditor *aEditor, nsString& newState) { return NS_ERROR_NOT_IMPLEMENTED;}
+  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName){ return NS_OK; }
+  
+};
+// Shared class for para tags.  
+class nsParaTagUpdatingCommand : public nsBaseTagUpdatingCommand
+{
+public:
+
+  nsParaTagUpdatingCommand(void){}
+           
+protected:
+
+  // get the current state (on or off) for this style or block format
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams)
+  { return GetCurrentTagState( aEditor, "paratag", aParams);}
+  
+  // add/remove the style
+  virtual nsresult  SetState(nsIEditor *aEditor, nsString& newState);
+    
+  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName) {return NS_ERROR_NOT_IMPLEMENTED;}
+  NS_IMETHOD DoCommand(const char * aCommandName, nsISupports *aCommandRefCon);
+  NS_IMETHOD DoCommandParams(const char *aCommandName,
+                                            nsICommandParams *aParams,
+                                            nsISupports *refCon);  
+};
+// Shared class for structure tags.
+class nsStructTagUpdatingCommand : public nsBaseTagUpdatingCommand
+{
+public:
+
+  nsStructTagUpdatingCommand(void);
+           
+protected:
+
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams)
+  { return GetCurrentTagState( aEditor, "structtag", aParams);}
+  
+  // add/remove the style
+  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName){return NS_OK;}
+  virtual nsresult SetState(nsIEditor *aEditor, nsString& newState);
+  NS_IMETHOD DoCommand(const char * aCommandName, nsISupports *aCommandRefCon);
+  NS_IMETHOD DoCommandParams(const char *aCommandName,
+                                            nsICommandParams *aParams,
+                                            nsISupports *refCon);  
+};                                            
+
+// Shared class for other tags.
+class nsOtherTagUpdatingCommand : public nsBaseTagUpdatingCommand
+{
+public:
+
+  nsOtherTagUpdatingCommand(void){}
+  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName){return NS_OK;}
+  virtual nsresult  SetState(nsIEditor *aEditor, nsString& newState){return NS_ERROR_NOT_IMPLEMENTED;}
+           
+protected:
+
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams)
+  { return GetCurrentTagState( aEditor, "othertag", aParams);}
+  
+};
+
 
 
 class nsInsertTagCommand : public nsBaseComposerCommand
