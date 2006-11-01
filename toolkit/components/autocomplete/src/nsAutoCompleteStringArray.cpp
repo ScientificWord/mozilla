@@ -206,9 +206,11 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::DeleteString(const nsAString &
   return NS_OK;
 }
 
+
 /* void sortArrays (); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SortArrays(void)
 {
+  // TODO: do a case-insensitive compare. Pass a comparator function to Sort.
   stringStringArray * pssa = m_stringArrays;
   
   while (pssa)
