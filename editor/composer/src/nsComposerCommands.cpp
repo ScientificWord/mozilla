@@ -143,6 +143,194 @@ nsBaseStateUpdatingCommand::GetCommandStateParams(const char *aCommandName,
 
   return NS_OK;
 }
+nsBaseTagUpdatingCommand::nsBaseTagUpdatingCommand(void)
+: nsBaseComposerCommand()
+{
+}
+
+nsBaseTagUpdatingCommand::~nsBaseTagUpdatingCommand()
+{
+}
+
+NS_IMPL_ISUPPORTS_INHERITED0(nsBaseTagUpdatingCommand, nsBaseComposerCommand)
+
+NS_IMETHODIMP
+nsBaseTagUpdatingCommand::IsCommandEnabled(const char *aCommandName,
+                                             nsISupports *refCon,
+                                             PRBool *outCmdEnabled)
+{
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  *outCmdEnabled = PR_FALSE;
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(refCon);
+  if (htmlEditor)
+  {
+    *outCmdEnabled = PR_TRUE;
+  }
+  return NS_OK;
+}
+
+
+NS_IMETHODIMP
+nsBaseTagUpdatingCommand::DoCommand(const char *aCommandName,
+                                      nsISupports *refCon)
+{
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+
+  return ToggleState(editor, mTagName);
+}
+
+NS_IMETHODIMP
+nsBaseTagUpdatingCommand::DoCommandParams(const char *aCommandName,
+                                            nsICommandParams *aParams,
+                                            nsISupports *refCon)
+{
+  nsXPIDLString tagName;
+  nsresult rv;
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+  if (aParams) {
+    nsXPIDLCString s;
+    rv = aParams->GetCStringValue(STATE_ATTRIBUTE, getter_Copies(s));
+    if (NS_SUCCEEDED(rv))
+      tagName.AssignWithConversion(s);
+    else
+      rv = aParams->GetStringValue(STATE_ATTRIBUTE, tagName);
+  }
+  return ToggleState(editor, NS_ConvertUTF16toUTF8(tagName).get());
+}
+
+NS_IMETHODIMP
+nsBaseTagUpdatingCommand::GetCommandStateParams(const char *aCommandName, 
+                                                  nsICommandParams *aParams,
+                                                  nsISupports *refCon)
+{
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+  return GetCurrentState(editor, aParams);
+
+  return NS_OK;
+}
+
+nsresult
+nsBaseTagUpdatingCommand::GetCurrentTagState(nsIEditor *aEditor, const char *aTagClass, 
+                                        nsICommandParams *aParams)
+{
+  NS_ASSERTION(aEditor, "Need editor here");
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
+  if (!htmlEditor) return NS_ERROR_NOT_INITIALIZED;
+  
+  nsresult rv = NS_OK;
+  nsString strTagName;
+  NS_ConvertASCIItoUTF16 tagClass(aTagClass);
+
+  PRBool firstOfSelectionHasProp = PR_TRUE;
+  PRBool anyOfSelectionHasProp = PR_TRUE;
+  PRBool allOfSelectionHasProp = PR_TRUE;
+
+  rv = htmlEditor->GetInnermostTag(  tagClass, 
+                                     &firstOfSelectionHasProp, 
+                                     &anyOfSelectionHasProp, 
+                                     &allOfSelectionHasProp,
+                                     strTagName);
+  aParams->SetStringValue(STATE_ATTRIBUTE, strTagName);
+  aParams->SetBooleanValue(STATE_ENABLED, NS_SUCCEEDED(rv));
+  aParams->SetBooleanValue(STATE_ALL, allOfSelectionHasProp);
+  aParams->SetBooleanValue(STATE_ANY, anyOfSelectionHasProp);
+  aParams->SetBooleanValue(STATE_MIXED, anyOfSelectionHasProp
+           && !allOfSelectionHasProp);
+  aParams->SetBooleanValue(STATE_BEGIN, firstOfSelectionHasProp);
+  aParams->SetBooleanValue(STATE_END, allOfSelectionHasProp);//not completely accurate
+  return NS_OK;
+}
+
+nsresult
+nsParaTagUpdatingCommand::SetState(nsIEditor *aEditor, nsString& newState)
+{
+  NS_ASSERTION(aEditor, "Need an editor here");
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
+  if (!htmlEditor) return NS_ERROR_FAILURE;
+
+  if (newState.Length() > 0) return htmlEditor->SetParagraphFormat(newState);
+  return NS_OK; //BBM should be bad data
+}
+
+NS_IMETHODIMP
+nsParaTagUpdatingCommand::DoCommand(const char *aCommandName,
+                                      nsISupports *refCon)
+{
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+
+  return SetState(editor, (nsAutoString&)mTagName);
+}
+
+NS_IMETHODIMP
+nsParaTagUpdatingCommand::DoCommandParams(const char *aCommandName,
+                                            nsICommandParams *aParams,
+                                            nsISupports *refCon)
+{
+  nsXPIDLString tagName;
+  nsresult rv;
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+  if (aParams) {
+    nsXPIDLCString s;
+    rv = aParams->GetCStringValue(STATE_ATTRIBUTE, getter_Copies(s));
+    if (NS_SUCCEEDED(rv))
+      tagName.AssignWithConversion(s);
+    else
+      rv = aParams->GetStringValue(STATE_ATTRIBUTE, tagName);
+  }
+  return SetState(editor, tagName);
+}
+
+nsStructTagUpdatingCommand::nsStructTagUpdatingCommand(void)
+: nsBaseTagUpdatingCommand()
+{
+}
+
+NS_IMETHODIMP
+nsStructTagUpdatingCommand::DoCommand(const char *aCommandName,
+                                      nsISupports *refCon)
+{
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+
+  return SetState(editor, (nsAutoString&)mTagName);
+}
+
+NS_IMETHODIMP
+nsStructTagUpdatingCommand::DoCommandParams(const char *aCommandName,
+                                            nsICommandParams *aParams,
+                                            nsISupports *refCon)
+{
+  nsXPIDLString tagName;
+  nsresult rv;
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+  if (aParams) {
+    nsXPIDLCString s;
+    rv = aParams->GetCStringValue(STATE_ATTRIBUTE, getter_Copies(s));
+    if (NS_SUCCEEDED(rv))
+      tagName.AssignWithConversion(s);
+    else
+      rv = aParams->GetStringValue(STATE_ATTRIBUTE, tagName);
+  }
+  return SetState(editor, tagName);
+}
+
+nsresult
+nsStructTagUpdatingCommand::SetState(nsIEditor *aEditor, nsString& newState)
+{
+  NS_ASSERTION(aEditor, "Need an editor here");
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
+  if (!htmlEditor) return NS_ERROR_FAILURE;
+
+  if (newState.Length() > 0) return htmlEditor->SetStructureTag(newState);
+  return NS_OK; //BBM should be bad data
+}
+
 
 NS_IMETHODIMP
 nsPasteNoFormattingCommand::IsCommandEnabled(const char * aCommandName, 
