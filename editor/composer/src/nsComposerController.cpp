@@ -124,6 +124,13 @@ nsComposerController::RegisterHTMLEditorCommands(
   NS_REGISTER_ONE_COMMAND(nsIndentCommand, "cmd_indent");
   NS_REGISTER_ONE_COMMAND(nsOutdentCommand, "cmd_outdent");
 
+  // Prince: text tags -- similar to styles, but the tag name is not hard wired
+  NS_REGISTER_ONE_COMMAND(nsTextTagUpdatingCommand, "cmd_texttag");
+  NS_REGISTER_ONE_COMMAND(nsParaTagUpdatingCommand, "cmd_paratag");
+  NS_REGISTER_ONE_COMMAND(nsStructTagUpdatingCommand, "cmd_structtag");
+  NS_REGISTER_ONE_COMMAND(nsOtherTagUpdatingCommand, "cmd_othertag");
+
+
   // Styles
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_bold", "b");
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_italic", "i");
@@ -144,6 +151,8 @@ nsComposerController::RegisterHTMLEditorCommands(
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_samp", "samp");
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_var", "var");
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_removeLinks", "href");
+
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_MSImathtext", "math");
 
   // lists
   NS_REGISTER_STYLE_COMMAND(nsListCommand,     "cmd_ol", "ol");

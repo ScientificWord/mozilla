@@ -56,11 +56,12 @@
 #include "nsICSSLoader.h"
 #include "nsICSSLoaderObserver.h"
 #include "nsITableLayout.h"
-
+#include "nsIRangeUtils.h"
 #include "nsEditRules.h"
 
 #include "nsEditProperty.h"
 #include "nsHTMLCSSUtils.h"
+#include "nsIParserService.h"
 
 #include "nsVoidArray.h"
 
@@ -959,6 +960,7 @@ public:
 friend class nsHTMLEditRules;
 friend class nsTextEditRules;
 friend class nsWSRunObject;
+friend class msiTagListManager;
 
 };
 #endif //nsHTMLEditor_h__
