@@ -486,7 +486,9 @@ var gEditorDocumentObserver =
           SetDisplayMode(kDisplayModeNormal);
         }
         initFastCursorBar();
-
+        //This is the place to set up the autocomplete tag bars.
+        
+        
         // Add mouse click watcher if right type of editor
         if (IsHTMLEditor())
         {
