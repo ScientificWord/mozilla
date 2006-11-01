@@ -1248,6 +1248,24 @@ NS_IMETHODIMP nsHTMLEditor::GetInlinePropertyWithAttrValue(nsIAtom *aProperty,
 }
 
 
+NS_IMETHODIMP nsHTMLEditor::GetInnermostTag( const nsAString & aTagClassName,
+                                            PRBool *aFirst,
+                                            PRBool *aAny,
+                                            PRBool *aAll,
+                                            nsAString &outvalue)
+{  
+//TODO: This should also get the name space.                                           
+                 if (!aFirst || !aAny || !aAll)
+    return NS_ERROR_NULL_POINTER;
+  nsString strTag;
+  nsIAtom * namespaceAtom;
+  nsString strEmpty = EmptyString();
+  if (mtagListManager) mtagListManager->CurrentValue(aTagClassName, &namespaceAtom, outvalue);
+  nsCOMPtr<nsIAtom> aProperty = NS_NewAtom(aTagClassName);
+  return GetInlinePropertyBase( aProperty, &strEmpty, &strEmpty, aFirst, aAny, aAll, &strTag); 
+}
+                                                                             
+
 NS_IMETHODIMP nsHTMLEditor::RemoveAllInlineProperties()
 {
   nsAutoEditBatch batchIt(this);

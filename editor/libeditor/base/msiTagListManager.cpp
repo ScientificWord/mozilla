@@ -19,8 +19,6 @@
 #include "../text/nsPlaintextEditor.h"
 #include "../html/nsHTMLEditor.h"
 #include "nsIAutoCompleteSearchStringArray.h"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-
 
 /* Implementation file */
 NS_INTERFACE_MAP_BEGIN(msiTagListManager)
@@ -85,14 +83,28 @@ class TagKey // a class castable to and from strings that supports pulling out t
 public:
   nsString key;  // example: sw:sectiontitle
   operator nsString() { return key; }
-  TagKey( nsString akey, nsString nsAbbrev) { key = nsAbbrev + NS_LITERAL_STRING(":") + akey;}
-  TagKey( nsString akey) :key(akey) {}
+  TagKey( nsString akey, nsString nsAbbrev) { key = (nsAbbrev.Length()?nsAbbrev + NS_LITERAL_STRING(":") + akey:akey);}
+  TagKey( nsString akey);
   TagKey( ){}
   ~TagKey() {/* todo */};
-  nsString altForm(); // if the key is 'sw:sectiontitle', then the altForm is 'sectiontitle(sw)'
+  nsString altForm(); // if the key is 'sw:sectiontitle', then the altForm is 'sectiontitle - sw' (notice the spaces)
   nsIAtom * atomNS();
   nsString localName();
 };
+
+TagKey::TagKey(nsString akey)
+{
+  int hyphen = akey.FindChar('-');
+  if (hyphen>0 && (hyphen < akey.Length() -1) && akey[hyphen-1] == ' ' 
+    && akey[hyphen+1] == ' ')
+  {
+    nsString str;
+    akey.Left(key,hyphen-1);
+    akey.Right(str, (key.Length() - hyphen +3));
+    if (str.Length() > 0) key = str +  NS_LITERAL_STRING(":") +key;                                
+  } else key = akey;
+}
+
 
 nsIAtom * 
 TagKey::atomNS()
@@ -126,7 +138,7 @@ TagKey::altForm()
   {
     nsString str;
     key.Left(str,colon);
-    return localName()+ NS_LITERAL_STRING(" - ") + str;
+    return (str.Length()?localName()+ NS_LITERAL_STRING(" - ") + str:localName());
   }
 }
  
@@ -301,6 +313,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
   BuildStringArray(NS_LITERAL_STRING("paratag"));
   BuildStringArray(NS_LITERAL_STRING("structtag"));
   BuildStringArray(NS_LITERAL_STRING("othertag"));
+  pACSSA->SortArrays();
   return PR_TRUE;
 }
 
@@ -407,20 +420,23 @@ NS_IMETHODIMP msiTagListManager::CurrentValue(const nsAString & strTagClass, nsI
   nsresult res;
   nsAutoString strTemp;
   nsAutoString strURI;
+  nsString returnVal;
   PRBool isInList;
-  _retval = EmptyString();
   
   if (!meditor)
     return NS_ERROR_NULL_POINTER;
   nsHTMLEditor * editor = NS_STATIC_CAST(nsHTMLEditor *, meditor);  
   nsCOMPtr<nsIDOMElement> element;
-   nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMNode> node2;
   nsCOMPtr<nsIDOMNode> temp;
   nsCOMPtr<nsISelection> selection;
   nsCOMPtr<nsIDOMRange> range;
+  nsIAtom * namespaceAtom;
   PRInt32 startoffset = 0;
   PRInt32 endoffset = 0;
+  PRBool success = PR_TRUE;
+/*
   // if the selection is a node and its contents, GetSelectionContainer doesn't return the node, but the parent.
   // Thus we have the next few lines of code
   res = meditor->GetSelection(getter_AddRefs(selection));
@@ -428,7 +444,6 @@ NS_IMETHODIMP msiTagListManager::CurrentValue(const nsAString & strTagClass, nsI
   PRInt32 rangeCount;
   res = selection->GetRangeCount(&rangeCount);
   if (NS_FAILED(res)) { return res; }
-  PRBool success = PR_TRUE;
   while (--rangeCount >= 0)
   {
     res = selection->GetRangeAt(rangeCount, getter_AddRefs(range));
@@ -453,7 +468,8 @@ NS_IMETHODIMP msiTagListManager::CurrentValue(const nsAString & strTagClass, nsI
       node = selectedNode;
     else success = PR_FALSE;
   }
-  
+*/
+  success = PR_FALSE;  
   if (!success)
   {
     res = editor->GetSelectionContainer(getter_AddRefs(element));
@@ -462,19 +478,22 @@ NS_IMETHODIMP msiTagListManager::CurrentValue(const nsAString & strTagClass, nsI
   while (node)
   {
     node->GetLocalName(strTemp);
+//  get the namespace atom, too
+     node->GetNamespaceURI(strURI);
+    namespaceAtom = NS_NewAtom(strURI);
 	  if (strTemp.Equals(NS_LITERAL_STRING("#document"))) break;
-    GetTagInClass(strTagClass, strTemp, *atomNS, &isInList);
+    GetTagInClass(strTagClass, strTemp, namespaceAtom, &isInList);
     if (isInList)
     {
       _retval = strTemp;
       node->GetNamespaceURI(strURI);
-      *atomNS = NS_NewAtom(strURI);
+      *atomNS = namespaceAtom;
       return NS_OK;
     }
     node->GetParentNode((nsIDOMNode **)(&temp));
     node = temp;
   }
-  _retval = EmptyString();
+  _retval = returnVal;
   *atomNS = nsnull;
   return NS_OK;
 }
@@ -491,7 +510,7 @@ NS_IMETHODIMP msiTagListManager::abbrevFromAtom(nsIAtom * atomNS, nsAString &_re
     }
     pns = pns->next;
   }
-  _retval = EmptyString();
+  _retval = NS_LITERAL_STRING("");
   return NS_OK;
 }
 
@@ -502,14 +521,16 @@ NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom
   // If *atomNS is null, we just use strTag to look up. Otherwise we concat the namespace abbreviation with strTag
   nsString strAbbrev;
   abbrevFromAtom(atomNS, strAbbrev);
-  nsAutoString strKey = strAbbrev + NS_LITERAL_STRING(":") + strTag; 
-  TagData data;               
+  nsString strKey;
+  if (strAbbrev.Length() >0 )strKey = strAbbrev + NS_LITERAL_STRING(":") + strTag;
+  else strKey = strTag; 
+  TagData *data = new TagData;               
   if (msiTagHashtable.Get(strKey, (nsClassHashtable<nsStringHashKey, TagData>::UserDataType *)&data))
   {
-    _retval = data.tagClass;
-    return NS_OK; 
+    _retval = data->tagClass;
   }
-  _retval = EmptyString();
+  else _retval = NS_LITERAL_STRING("");
+  delete data;
   return NS_OK;
 }  
  
@@ -741,7 +762,7 @@ NS_IMETHODIMP msiTagListManager::GetTagOfNode(nsIDOMNode *node, nsIAtom ** atomN
     return NS_OK;
   }
   *atomNS = nsnull;
-  _retval = EmptyString();
+  _retval = NS_LITERAL_STRING("");
 }
  
 /* AString GetStringPropertyForTag (in AString strTag, in nsIAtom atomNS, in AString propertyName); */

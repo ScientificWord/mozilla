@@ -2175,6 +2175,15 @@ nsHTMLEditor::SetCaretAfterElement(nsIDOMElement* aElement)
 }
 
 NS_IMETHODIMP 
+nsHTMLEditor::SetStructureTag(const nsAString& aSectionTag)
+{
+  nsAutoString tag; tag.Assign(aSectionTag);
+  ToLowerCase(tag);
+  return InsertBasicBlock(tag);
+}
+
+
+NS_IMETHODIMP 
 nsHTMLEditor::SetParagraphFormat(const nsAString& aParagraphFormat)
 {
   nsAutoString tag; tag.Assign(aParagraphFormat);
