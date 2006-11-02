@@ -42,7 +42,7 @@ MuPADlib	:= \
 			$(NULL)
 
 SupportFiles	:= \
-			$(srcdir)/MuPAD/mupkern.dll \
+			$(srcdir)/MuPAD/mupkernel.dll \
 			$(srcdir)/swfcns.mu \
 			$(srcdir)/tcifcns.m \
 			$(NULL)
