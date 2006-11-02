@@ -39,7 +39,7 @@ EXTRA_LIBS += \
 		ole32.lib \
 		oleaut32.lib \
 		oledlg.lib \
-		$(srcdir)/mupkern.lib \
+		$(srcdir)/mupkernel.lib \
 		$(NULL)
 
 include $(topsrcdir)/config/rules.mk
