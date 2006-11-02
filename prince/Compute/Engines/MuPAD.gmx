@@ -53,8 +53,8 @@ Rewrite arccot<UID(CCID_Rewrite_arccot,0)>tcirewrite(18,%s);
 Rewrite Polar<UID(CCID_Rewrite_Polar,0)>tcirewrite(10,%s);
 Rewrite Rectangular<UID(CCID_Rewrite_Rectangular,0)>tcirewrite(11,%s);
 Rewrite Normal Form<UID(CCID_Rewrite_Normal_Form,0)>tcirewrite(12,%s);
-Rewrite Equations as Matrix<UID(CCID_Rewrite_Equations_as_Matrix,0)>tciequationstomatrix(%eqns_or_mat%,SWPmatrix(1,%nvars%,[%var_list%]));
-Rewrite Matrix as Equations<UID(CCID_Rewrite_Matrix_as_Equations,0)>tcimatrixtoequations(%eqns_or_mat%,SWPmatrix(1,%nvars%,[%var_list%]));
+Rewrite Equations as Matrix<UID(CCID_Rewrite_Equations_as_Matrix,0)>tciequationstomatrix(%eqns_or_mat%,matrix(1,%nvars%,[%var_list%]));
+Rewrite Matrix as Equations<UID(CCID_Rewrite_Matrix_as_Equations,0)>tcimatrixtoequations(%eqns_or_mat%,matrix(1,%nvars%,[%var_list%]));
 Check Equality<UID(CCID_Check_Equality,0)>tciistrue(%s);
 Solve Exact<UID(CCID_Solve_Exact,0)>tcisolve({%expr%});
 Solve Exact For<UID(CCID_Solve_Exact,1)>tcisolve({%expr%},{%which_var%});
@@ -122,7 +122,7 @@ FillMatrix zero<UID(CCID_Fill_Matrix,0)>tcizmat(%nRows%,%nCols%);
 FillMatrix Identity<UID(CCID_Fill_Matrix,1)>tciimat(%nRows%,%nCols%);
 FillMatrix random<UID(CCID_Fill_Matrix,2)>linalg::randomMatrix(%nRows%,%nCols%,Dom::Integer);
 FillMatrix Jordan block<UID(CCID_Fill_Matrix,3)>tciJBmat(%diag_entry%,%nRows%,%nCols%);
-FillMatrix by function<UID(CCID_Fill_Matrix,4)>SWPmatrix(%nRows%,%nCols%,%func_nom%);
+FillMatrix by function<UID(CCID_Fill_Matrix,4)>matrix(%nRows%,%nCols%,%func_nom%);
 FillMatrix band<UID(CCID_Fill_Matrix,5)>tciBand([%band_list%],%nRows%,%nCols%);
 Fraction-Free Gaussian Elimination<UID(CCID_Fraction_Free_Gaussian_Elimination,0)>tciffgausselim(%s);
 Gaussian Elimination<UID(CCID_Gaussian_Elimination,0)>linalg::gaussElim(%s);
@@ -629,7 +629,7 @@ fraction<uID2.0>(%numerator%/%denominator%)
 sqrt<uID3.0>sqrt(%base%)
 surd<uID4.0>surd(%base%,%radicand%)
 binomial<uID5.0>binomial(%numerator%,%denominator%)
-matrix<uID6.0>SWPmatrix(%nrows%,%ncols%,[%row_list%])
+matrix<uID6.0>matrix(%nrows%,%ncols%,[%row_list%])
 Simplex Dual<uID7.0>%expr%,{%condition_list%},%var%
 Simplex Feasible<uID8.0>{%condition_list%}
 Simplex Maximize<uID9.0>%expr%,{%condition_list%}
