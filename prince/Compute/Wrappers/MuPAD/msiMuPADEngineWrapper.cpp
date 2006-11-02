@@ -4,9 +4,6 @@
 #include <stdio.h>
 
 #include "msiMuPADEngineWrapper.h"
-#include "nsMemory.h"
-
-#include "nsEmbedString.h"
 
 #include "../../CmpTypes.h"
 #include "../../MRequest.h"
