@@ -10,6 +10,7 @@
 // Initialize domains for buit-in types
 //--------------------------------------------------------------------
 
+sysassign(sysassign, subsop(sysassign, 2=op(_assign, 2))):
 old_assign := _assign;
 protected(hold(_assign), None);
 sysassign( _assign, sysassign );
@@ -39,7 +40,8 @@ DOM_COMPLEX:= domtype(I);
 DOM_COMPLEX::D := 0 ;
 DOM_COMPLEX::new:= proc() name new; begin args(1)+I*args(2) end_proc;
 DOM_COMPLEX::new_extelement:= DOM_ARRAY::new_extelement;
-DOM_COMPLEX::_index := (x, ind) -> if contains({1,2}, ind) then
+DOM_COMPLEX::_index := (x, ind) -> if args(0) = 2 and
+				      contains({1,2}, ind) then
                                      op(x, ind)
                                    else
                                      FAIL
@@ -50,6 +52,7 @@ DOM_DOMAIN:= domtype(newDomain("DOM_DOMAIN"));
 DOM_DOMAIN::func_call:= _domainfunccall ;
 DOM_DOMAIN::new:= newDomain;
 DOM_DOMAIN::new_extelement:= DOM_ARRAY::new_extelement;
+DOM_DOMAIN::_index := (d) -> d::domain_index(args(2..args(0)));
 
 // -------- DOM_EXEC --------
 DOM_EXEC:= domtype(op(_assign, 1));
@@ -220,7 +223,8 @@ proc(p)
   option noDebug;
 begin
   if contains({op(p,  3)}, hold(arrow)) then
-    str := stringlib::collapseWhitespace(expr2text(p));
+    // subs removes debug nodes in procedure p
+    str := stringlib::collapseWhitespace(expr2text(subs(p, 1=1)));
     if length(str) > 28 then
       str := substring(str, 1..25)."...";
     end_if;
@@ -270,11 +274,12 @@ begin
         return(T::convert_to(x,DOM_RAT))
     end_case
 end_proc:
-DOM_RAT::_index := (x, ind) -> if contains({1,2}, ind) then
-                                     op(x, ind)
-                                   else
-                                     FAIL
-                                   end_if:
+DOM_RAT::_index := (x, ind) -> if args(0) = 2 and
+				  contains({1,2}, ind) then
+				 op(x, ind)
+			       else
+				 FAIL
+			       end_if:
 
 // -------- DOM_LIST --------
 DOM_LIST:= domtype([]);
@@ -335,6 +340,7 @@ DOM_STRING::new:= DOM_BOOL::new;
 DOM_STRING::new_extelement:= DOM_ARRAY::new_extelement;
 // for the internal Print methods
 DOM_STRING::Print := id:
+DOM_STRING::MMLContent := (Out, data) -> Out::Ccsymbol(output::MMLPresentation::ms(data)):
 
 // -------- DOM_TABLE --------
 DOM_TABLE:= domtype(table());
@@ -426,6 +432,13 @@ mods::type := "_mod":
 _mod := modp:
 
 //------------------------------------------------------------
+// nicer output for last
+//------------------------------------------------------------
+last :=  subsop(last, 2 = (ex -> if op(ex)=1 then "%"
+				 else "%".expr2text(op(ex))
+				 end_if)):
+
+//------------------------------------------------------------
 // evaluating proc definition
 //------------------------------------------------------------
 `-->` := proc(l, r)
@@ -459,6 +472,8 @@ _mod := modp:
 	   end_if;
 	   fp::unapply((r), (l));
 	 end_proc:
+`-->` := funcenv(`-->`,  builtin(1100, 150, " --> ", "`-->`")):
+`-->`::Content := (Out, data) -> Out::Capply(Out::Clambda, map(op(data), Out)):
 
 //--------------------------------------------------------------------
 // Operator rules for +, *, ^ and @                                   
@@ -493,8 +508,9 @@ _leequal::float   := (x, y) -> (float(x) <= float(y)):
 _not::float       := x -> not float(x):
 _and::float       := () -> hold(_and)      (op(map([args()], float))):
 _or::float        := () -> hold(_or)       (op(map([args()], float))):
-_union::float     := () -> hold(_union)    (op(map([args()], float))):
-_intersect::float := () -> hold(_intersect)(op(map([args()], float))):
+_union::float     := () -> _union(op(map([args()], float))):
+_intersect::float := () -> _intersect(op(map([args()], float))):
+_index::float     := x -> float(x)[args(2..args(0))]:
 
 //--------------------------------------------------------------------
 // Define shortcuts for basic arithmetic operators                    
@@ -514,7 +530,8 @@ _intersect::float := () -> hold(_intersect)(op(map([args()], float))):
 `>=` := (a,b) -> a>=b:
 `==>`:= hold(_implies):
 `|`  := hold(evalAt):
-
+`~=` := hold(_approx):
+`,`  := hold(_exprseq):
 
 //--------------------------------------------------------------------
 // If someone is able to create the identifier I, it evaluates
@@ -958,9 +975,6 @@ stdlib::max:= max;
 stdlib::min:= min;
 stdlib::anames:= anames;
 
-stdlib::expr:= expr:
-delete expr:
-
 stdlib::exp1 := exp1:
 delete exp1:
 
@@ -1096,7 +1110,7 @@ end_if;
 sysread("STDLIB".stdlib::PathSep."alias");
 sysread("STDLIB".stdlib::PathSep."unalias");
 sysread("STDLIB".stdlib::PathSep."pathname");
-if strmatch(_pref(hold(UserOptions)), "\*ANALYZE\*") then
+if strmatch(_pref(hold(UserOptions)), "ANALYZE") then
   sysread("STDLIB".stdlib::PathSep."loadproc-analyze")
 else
   sysread("STDLIB".stdlib::PathSep."loadproc")
@@ -1123,6 +1137,8 @@ misc     := loadproc(misc,      path, "misc");
 RGB      := loadproc(RGB,       path, "RGB");
 Series   := loadproc(Series,    path, "Series");
 plot     := loadproc(plot,      path, "plot");
+// alias for plot::new
+display  := loadproc(display,   path, "plot");
 polylib  := loadproc(polylib,   path, "polylib");
 Pref     := loadproc(Pref,      path, "Pref");
 property := loadproc(property,  path, "property");
@@ -1155,6 +1171,8 @@ output   := loadproc(output,    path, "output");
 prog     := loadproc(prog,      path, "prog");
 rec      := loadproc(rec,       path, "rec");
 Simplify := loadproc(Simplify,  path, "simplify");
+Sum      := loadproc(Sum,       path, "Sum");
+Symbol   := loadproc(Symbol   , path, "Symbol"  ):
 Rule     := loadproc(Rule,      path, "Rule");
 solvelib := loadproc(solvelib,  path, "solvelib");
 stats    := loadproc(stats,     path, "stats");
@@ -1274,12 +1292,19 @@ _lastContentOutput := FAIL:
 // only needed for output library                                     
 //--------------------------------------------------------------------
 
-_mult_intern := funcenv(_mult_intern):
+_mult_intern := funcenv(_mult_intern, subsop(extop(_mult, 2),
+		   2=output::Priority::Mult-1,
+		   3=Pref::timesDot(),
+		   4="_mult_intern"
+		   )):
+
 _mult_intern::type := "_mult_intern":
 _mult_intern::Content :=
     loadproc(_mult_intern::Content, pathname("OUTPUT", "EXPR"), "mult"):
 
 old_assign::Content := (Out, data) ->
+                       Out::Capply(Out::Cassign, op(map([op(data)],Out))):
+sysassign::Content  := (Out, data) ->
                        Out::Capply(Out::Cassign, op(map([op(data)],Out))):
 
 _exprseq::Content    := Out -> Out::Cexprseq(map(args(2..args(0)), Out)):
@@ -1302,33 +1327,74 @@ _not::Content        := (Out, data) -> Out::Capply(Out::Cnot, Out(op(data))):
 _negate::Content     := (Out, data) -> Out::Capply(Out::Cminus, Out(op(data,1))):
 _invert::Content     := (Out, data) -> Out::Capply(Out::Cdivide, Out(1),Out(op(data))):
 _divide::Content     := (Out, data) -> Out::Capply(Out::Cdivide, Out(op(data,1)), Out(op(data,2))):
-norm::Content        := (Out, data) -> Out::Capply(Out::Cnorm, map(op(data), Out)):
+norm::Content        := (Out, data) -> Out::Capply(Out::Cnorm,
+						   op(map([op(data)], Out))):
 
 
 _index::Content   := (Out, data) -> Out::Cci(Out::Cindex(Out(op(data, 1)),
                                               Out(op(data, 2..nops(data))))):
-diff::Content     := proc(Out, data) 
-                       local i, bvar, varList;
-                     begin
-                         if nops(data) = 1 then return(Out(op(data))) end:
-
-                         bvar := op(data, nops(data)); i := nops(data);
-                         while i > 2 and op(data, i-1) = bvar do
-                           i := i-1;
-                         end_while; 
-                         varList := op(data, 2..i-1);
-                         if i = nops(data) then
-                            Out::Capply(Out::Cpartialdiff, 
-                                        Out::Cbvar(Out(bvar)),
-                                        Out(hold(diff)(op(data, 1), varList)) 
-                                        ):
-                         else
-                            Out::Capply(Out::Cpartialdiff, 
-                                        Out::Cbvar(Out(bvar), Out::Cdegree(nops(data)-i+1)),
-                                        Out(hold(diff)(op(data, 1), varList))
-                                        ):
-                         end_if;
-                     end_proc:
+diff::Content     :=
+ proc(Out, data)
+   name diff::Content;
+   local i, bvar, neubvar, varList, myexp;
+ begin
+   myexp := 0;
+   if nops(data) = 1 then
+     return(Out(op(data)))
+   end_if;
+   neubvar := op(data, nops(data));
+   if testtype(neubvar, "_seqgen") then
+     bvar := op(neubvar, 1);
+     if nops(neubvar) = 1 then       
+       myexp := myexp + op(neubvar, [1, 2]) - op(neubvar, [1, 1]) + 1;
+     elif nops(neubvar) = 2 then
+       myexp := myexp + op(neubvar, 2);
+     elif nops(neubvar) = 3 then       
+       myexp := myexp + op(neubvar, [3, 2]) - op(neubvar, [3, 1]) + 1;
+     else       
+       error("illegal argument");
+     end_if;
+   else 
+     bvar := neubvar;
+     myexp := myexp + 1;
+   end_if;
+   i := nops(data);
+   while 2 < i and
+     (op(data, [i - 1, 1]) = bvar or
+      testtype(op(data, i - 1), "_index") and op(data, i - 1) = bvar)  do
+     neubvar := op(data, i - 1);
+     if testtype(neubvar, "_seqgen") then
+       if nops(neubvar) = 1 then
+         myexp := myexp + op(neubvar, [1, 2]) - op(neubvar, [1, 1]) + 1;
+       elif nops(neubvar) = 2 then
+         myexp := myexp + op(neubvar, 2);
+       elif nops(neubvar) = 3 then
+         myexp := myexp + op(neubvar, [3, 2]) - op(neubvar, [3, 1]) + 1;
+       else
+         error("illegal argument");
+       end_if;
+     else
+       myexp := myexp + 1;
+     end_if;
+     i := i - 1;
+   end_while;
+   varList := op(data, 2..i - 1); 
+   if i = nops(data) then
+     if myexp = 1 then
+       Out::Capply(Out::Cpartialdiff,
+                   Out::Cbvar(Out(bvar)),
+                   Out(hold(diff)(op(data, 1), varList)))
+     else
+       Out::Capply(Out::Cpartialdiff,
+                   Out::Cbvar(Out(bvar), Out::Cdegree(Out(myexp))),
+                   Out(hold(diff)(op(data, 1), varList)))
+     end_if
+   else
+     Out::Capply(Out::Cpartialdiff,
+                 Out::Cbvar(Out(bvar), Out::Cdegree(Out(myexp))),
+                 Out(hold(diff)(op(data, 1), varList)))
+   end_if
+ end_proc:
 _mult::Content    := loadproc(_mult::Content, pathname("OUTPUT", "EXPR"), "mult"):
 _plus::Content    := proc(Out, data)
                        local sorted;
@@ -1345,9 +1411,12 @@ _subtract::Content:= (Out, data) -> Out::Capply(Out::Cminus,
                                                 Out(op(data,1)),
                                                 Out(op(data,2))):
 _power::Content   := loadproc(_power::Content, pathname("OUTPUT", "EXPR"), "power"):
-_seqgen::Content  := (Out, data) -> error("not yet implemented"):
-_seqin::Content  := (Out, data) -> error("not yet implemented"):
-_seqstep::Content  := (Out, data) -> error("not yet implemented"):
+_seqgen::Content  := (Out, data) ->  Out::Capply(Out::Cseqgen,
+                                                 op(map([op(data)], Out))):
+_seqstep::Content  := (Out, data) ->  Out::Capply(Out::Cseqstep,
+                                                 map(op(data), Out)):
+_seqin::Content  := (Out, data) ->  Out::Capply(Out::Cseqin,
+                                                 map(op(data), Out)):
 slot::Content     := proc(Out, data) 
                        local x, key;
                      begin
@@ -1357,7 +1426,7 @@ slot::Content     := proc(Out, data)
                           nops(data) = 2 then
                          Out::Capply(Out::Cslot, Out(op(data,1)), x)
                        else
-                         Out(hold(slot)(op(data)))
+                         Out::stdFunc(data)
                        end_if:
                      end_proc:
 
@@ -1411,11 +1480,12 @@ DOM_FLOAT::Content    := proc(Out, x)
                            x := x*float(1); 
                            hasSign := if x<0 then TRUE else FALSE end;
                            signLessX := abs(x);
-                           if signLessX <> 0.0 and
-                              (signLessX > 10^DIGITS or 
-                               signLessX < 10^(-DIGITS)) then
+                           if signLessX <> RD_INF and
+                             signLessX <> 0.0 and
+                              (signLessX > 10.0^DIGITS or 
+                               signLessX < 10.0^(-DIGITS)) then
                              exponent := floor(ln(signLessX)/ln(10.0));
-                             res := Out(hold(_mult)(signLessX*10^(-exponent), 
+                             res := Out(hold(_mult)(signLessX*10.0^(-exponent), 
                                                     hold(_power)(10, exponent)));
                              if hasSign then
                                return(Out::Capply(Out::Cminus, res))
@@ -1446,7 +1516,7 @@ DOM_POLY::Content:=
 DOM_PROC::Content     := 
   proc(Out, data)
     save _varStack_;
-    local procSubs, doIt;
+    local procSubs, doIt, formals;
   begin
     if contains({op(data,3)}, hold(arrow)) then
       procSubs := 
@@ -1492,8 +1562,12 @@ DOM_PROC::Content     :=
       end:
       
       data := doIt(data);
+      formals := op(data,1);
+      if formals = NIL then
+        formals := hold(`()`);
+      end_if;
       Out::Capply(Out::Clambda, 
-                  Out::Cbvar(Out(op(data,1))),
+                  Out::Cbvar(Out(formals)),
                   Out(op(data,4))
                      );
     else
@@ -1547,44 +1621,6 @@ DOM_POLY::int:= loadproc( DOM_POLY::int, path, "DOM_POLY" ):
 _intersect():=universe: 
 /* not possible earlier because stdlib must be loaded first */
 
-
-//--------------------------------------------------------------------
-// Warnung bei unbekannten globalen Variablen			     
-//--------------------------------------------------------------------
-
-_check_global:= proc(v, p) option hold, noDebug; local s; begin
-    if contains({hold(ERRORLEVEL),hold(PRINTLEVEL),hold(EVAL_STMT),
-                 hold(LIB_PATH), hold(READ_PATH), hold(WRITE_PATH), 
-                 hold(PRETTY_PRINT)}, v)
-    then s:= "Obselete environment variable '".v."' used"
-    elif v = hold(HISTORY)
-    then s:= "HISTORY may no longer be changed for procedures"
-    elif contains({hold(fun),hold(func),hold(newpurefunc),
-        hold(newfuncarg)}, v)
-    then s:= "Pure functions no longer available [".v."]"
-//  Bleibt dieser Zweig drin, so wird die ueberfluessige Warnung:
-//
-//     >> proc(y) begin (x->x^2)(y) end
-//     Warning: Unknown global identifier 'x'
-//
-//  ezeugt. 
-/*  elif protected(v) <> hold(Error) and
-    not contains(indexval(stdlib, "ENVIRONMENT_VARIABLES"), v) and
-    not contains(indexval(stdlib, "SYSTEM_CONSTANTS"), v) and
-    not contains(indexval(stdlib, "LIBRARY_CONSTANTS"), v) and
-    not contains(indexval(stdlib, "OPTIONS"), v) and
-    (_parser_config() = null() or not contains(_parser_config()[3],v)) and
-    not contains(indexval(Type, "interface"),v)
-    then s:= "Unknown global identifier '".v."'" 
-*/
-    else return(null())
-    end_if;
-    if p <> NIL then
-        s:= s." in procedure '".expr2text(p)."'"
-    end;
-    warning(s);
-end_proc:
-
 //--------------------------------------------------------------------
 // path definitions for kernel secure mode
 //--------------------------------------------------------------------
@@ -1616,13 +1652,12 @@ end_if:
 // Remember protected identifiers				     
 //--------------------------------------------------------------------
 
-package("scilab", Quiet):
-
  stdlib::PROTECTED := 
     (stdlib::anames(3)
       minus indexval(stdlib, "ENVIRONMENT_VARIABLES")
       minus indexval(stdlib, "SYSTEM_CONSTANTS")
-      minus aux_globals)
+      minus aux_globals
+      minus {hold(_mod)})
       union indexval(stdlib, "LIBRARY_CONSTANTS")
       union indexval(stdlib, "OPTIONS")
       union {bna}:
@@ -1630,7 +1665,8 @@ package("scilab", Quiet):
 map((stdlib::anames(3)
       minus indexval(stdlib, "ENVIRONMENT_VARIABLES")
       minus indexval(stdlib, "SYSTEM_CONSTANTS")
-      minus aux_globals)
+      minus aux_globals
+      minus {hold(_mod)})
       union indexval(stdlib, "LIBRARY_CONSTANTS")
       union {bna},
     protected, Error);
