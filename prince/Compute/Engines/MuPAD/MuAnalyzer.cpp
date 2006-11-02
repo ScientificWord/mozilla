@@ -1188,6 +1188,14 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
       }
       break;
 
+    case 13:{
+        if (!strcmp(func_name, "Dom::Interval")) {
+          AnalyzeINTERVAL(func_node, snode, local_nodes_done);
+          done = true;
+        }
+      }
+      break;
+
     case 18:{
         if (!strcmp(func_name, "transform::laplace")) {
           delete[] func_node->p_chdata;
@@ -1756,6 +1764,9 @@ void MuAnalyzer::AnalyzeCONSTANT(MNODE * eng_node,
         } else if (zln == 5) {
           if (!strcmp(c_str, "EULER"))
             strcpy(buffer, "gamma");  // Euler gamma constant
+        } else if (zln == 6) {
+          if (!strcmp(c_str, "RD_INF"))
+            strcpy(buffer, "&#x221e;");  // infinity from interval calculus
         } else if (zln == 7) {
           if (!strcmp(c_str, "UNKNOWN")) {
             strcpy(buffer, "UNKNOWN");  // 
@@ -1763,6 +1774,8 @@ void MuAnalyzer::AnalyzeCONSTANT(MNODE * eng_node,
               snode->semantic_type = SEM_TYP_EQCHECK_RESULT;
               snode->variant = SNV_Undecidable;
             }
+          } if (!strcmp(c_str,"RD_NINF")) {
+            strcpy(buffer, "-#x221e;");  // wrong, if not super-ugly
           }
         } else if (zln == 9) {
           if (!strcmp(c_str, "undefined"))
