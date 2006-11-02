@@ -347,7 +347,7 @@ bool MuPADWrapper::SetEngineState(int attr_ID, const char *new_value)
       sprintf(cmd, eng_dbase_rec, new_value);
       ByteArray ba(256);
       ba += cmd;
-      rv = mupd_eng->SendToProcessor(&ba);
+      rv = mupd_eng->SendToProcessor(ba);
     }
   }
 
@@ -364,7 +364,7 @@ int MuPADWrapper::iExecute(const char *cmd)
 {
   ByteArray ba(80);
   ba += cmd;
-  bool res = mupd_eng->SendToProcessor(&ba);
+  bool res = mupd_eng->SendToProcessor(ba);
 
   U32 nBytes = ba.GetByteCount();
   if (res && nBytes)
@@ -379,9 +379,9 @@ char *MuPADWrapper::Execute(const char *cmd)
   ba += cmd;
   bool res;
   if (context_cmdtype == CC_PLOTFUNC)
-    res = mupd_eng->SendPlotToProcessor(&ba);
+    res = mupd_eng->SendPlotToProcessor(ba);
   else
-    res = mupd_eng->SendToProcessor(&ba);
+    res = mupd_eng->SendToProcessor(ba);
 
   U32 nBytes = ba.GetByteCount();
   if (res && nBytes) {
