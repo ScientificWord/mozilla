@@ -6,7 +6,7 @@
 #include <ByteArry.h>
 #include <TCIStrin.h>
 
-class MTkernel;
+typedef class MUP_KernelImpl * MUP_Kernel;
 class MuPADMssgHandler;
 
 // It is understood that this is a singleton, but that's not enforced.
@@ -18,35 +18,26 @@ public:
 
   bool LoadStrsAndDLL(const char *engpath, const char *libpath);
   int Initialize(const char *libpath, const char *champath);
-  bool SendToProcessor(ByteArray * ba);
-  bool SendPlotToProcessor(ByteArray * ba);
+  bool SendToProcessor(ByteArray & ba);
+  bool SendPlotToProcessor(ByteArray & ba);
   int GetEngStrPtr(int str_ID, char **engstr, int *engstr_ln);
-
   void CleanupAndUnloadDLL();
 
 private:
-  int PrepareProcessor(void *dummy, const char *champath);
-  bool SendLowLevel(ByteArray * ba, bool semicolon);
-  bool PackageIDtoName(U32 package_ID, U8 * dest);
-  void ReadLib(const char *name);
-  void DoReadLibs(const U8 * packs, const U8 * name);
-  void CollectGarbage();
-  void ReportMemoryUse(U32 how);
+  int PrepareProcessor(const char *champath);
 
   bool Exec(ByteArray & ba);
-  void WaitToFinish();
-  void WaitToStart();
   void HandleMuPADException();
 
   char *AppendBA2HeapStr(char *zheap_str, U32 & buffer_ln, ByteArray & ba);
 
 private:
-  bool m_useDLL;
-  MTkernel *m_kernel;
-  static MuPADMssgHandler *m_client;
+  MUP_Kernel m_kernel;
+  MuPADMssgHandler *m_client;
 
   bool fcnsloaded;
   bool plot_status;
+
   char *zeng_instr;
   U32 zeng_inln;
   bool instr_sent;
@@ -56,12 +47,6 @@ private:
   char *zeng_errorstr;
   U32 zeng_errorln;
   bool errorstr_sent;
-
-  static const TCICHAR *m_VCAMSWP_GUID_STR;
-  static const TCICHAR *m_VCAMPRO_GUID_STR;
-  static const TCICHAR *m_MuPADSWP_GUID_STR;
-  static const TCICHAR *m_MuPADPRO_GUID_STR;
-
 };
 
 #endif
