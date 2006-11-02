@@ -1,36 +1,11 @@
-//* 
-//*  swfcns.mu - computation support functions for use with MuPAD 3.0
+//*  swfcns.mu - computation support functions for use with MuPAD 4.0
 //*
-//* Copyright (c) 1999 - 2006  MacKichan Software, Inc.
+//* Copyright (c) 1999 - 2007  MacKichan Software, Inc.
 //*
 //*                    All Rights Reserved
-//*
 
-// Our matrix type
-//
-SWPmatrix := Dom::Matrix( );
-
-//have intervals print in a more parseable form
-//
-Dom::Interval;    // make sure Interval is loaded
-sysassign( Dom::Interval::print,
-  proc(J) begin hold(Interval)( dom::leftB(J), dom::rightB(J) ) end_proc );
-
-stdlib::syseval((
-  property::IVnat::print :=
-    proc(iv)
-    begin
-      _if(op(extop(iv,1),2) = 0, "(", "[")
-      .expr2text(op(extop(iv,1),1))
-      .", "
-      .expr2text(op(extop(iv,1),3))
-      ._if(op(extop(iv,1),4) = 0, ")", "]")
-    end_proc:
-));
-
-//have RootOfs print in a more consistent form
-sysassign( RootOf::print,
-           proc(J) begin hold(RootOf2)(subs(op(J,1),op(J,2)=_Z)) end_proc );
+//Fixes printing of matrices, intervals and RootOf.
+Pref::mackichan(TRUE);
 
 //Assign non-zero assumptions to units
 property::assume(mQU,Type::Positive):
@@ -65,7 +40,7 @@ begin
                 Dom::MultivariatePolynomial([op(tciindets(xx))],Dom::IntegerMod(mm)) ) );
       m :=II::convert(xx);
     end_if;
-    SWPmatrix::convert(m^nn);  // might FAIL if nn negative
+    matrix::convert(m^nn);  // might FAIL if nn negative
   else
     powermod(xx,nn,mm);
   end_if;
@@ -104,15 +79,15 @@ begin
     a+b                                    
   elif( testtype(a,Dom::Matrix) ) then
     if ( linalg::ncols(a) = linalg::nrows(a) ) then 
-      a+(b*SWPmatrix(linalg::ncols(a),linalg::ncols(a),1,Diagonal))
+      a+(b*matrix(linalg::ncols(a),linalg::ncols(a),1,Diagonal))
     else
-      a+b*SWPmatrix(linalg::nrows(a),linalg::ncols(a),1)
+      a+b*matrix(linalg::nrows(a),linalg::ncols(a),1)
     end_if;
   elif( testtype(b,Dom::Matrix) ) then
     if ( linalg::ncols(b)=linalg::nrows(b) ) then
-      a*SWPmatrix(linalg::ncols(b),linalg::ncols(b),1,Diagonal)+b
+      a*matrix(linalg::ncols(b),linalg::ncols(b),1,Diagonal)+b
     else
-      a*SWPmatrix(linalg::nrows(b),linalg::ncols(b),1)+b
+      a*matrix(linalg::nrows(b),linalg::ncols(b),1)+b
     end_if;
   else
     a+b
@@ -258,13 +233,13 @@ begin
     if (testtype(B,Dom::Matrix)) then
       return( linalg::scalarProduct( A, B ) );
     elif (testtype(B,DOM_LIST)) then
-      return( linalg::scalarProduct( A, SWPmatrix(B) ) );
+      return( linalg::scalarProduct( A, matrix(B) ) );
     end_if;
   elif (testtype(A,DOM_LIST)) then
     if (testtype(B,Dom::Matrix)) then
-      return( linalg::scalarProduct( SWPmatrix(A), B ) );
+      return( linalg::scalarProduct( matrix(A), B ) );
     elif (testtype(B,DOM_LIST)) then
-      return( linalg::scalarProduct( SWPmatrix(A), SWPmatrix(B) ) );
+      return( linalg::scalarProduct( matrix(A), matrix(B) ) );
     end_if;
   end_if;
   tcimpy(A,B);  // last ditch possibility 
@@ -276,13 +251,13 @@ begin
     if (testtype(B,Dom::Matrix)) then
       return( linalg::crossProduct( A, B ) );
     elif (testtype(B,DOM_LIST)) then
-      return( linalg::crossProduct( A, SWPmatrix(B) ) );
+      return( linalg::crossProduct( A, matrix(B) ) );
     end_if;
   elif (testtype(A,DOM_LIST)) then
     if (testtype(B,Dom::Matrix)) then
-      return( linalg::crossProduct( SWPmatrix(A), B ) );
+      return( linalg::crossProduct( matrix(A), B ) );
     elif (testtype(B,DOM_LIST)) then
-      return( linalg::crossProduct( SWPmatrix(A), SWPmatrix(B) ) );
+      return( linalg::crossProduct( matrix(A), matrix(B) ) );
     end_if;
   end_if;
   tcimpy(A,B);  // last ditch possibility
@@ -887,7 +862,7 @@ begin
     error("MuPAD cannot do this differentiation");      
   end_if;
   if (testtype(var,Dom::Matrix)) then
-    ans := SWPmatrix(linalg::nrows(var),linalg::ncols(var));      
+    ans := matrix(linalg::nrows(var),linalg::ncols(var));      
     for ii from 1 to linalg::nrows(var) do
       for jj from 1 to linalg::ncols(var) do
         x := var[ii,jj];
@@ -986,7 +961,7 @@ begin
   nrows := linalg::nrows(A);
   vars := linalg::transpose(v);
   if (linalg::nrows(A) = linalg::ncols(A)) then
-    c := SWPmatrix(linalg::nrows(A),1);
+    c := matrix(linalg::nrows(A),1);
     S := A;
   else
     c := linalg::col(A,linalg::ncols(A));
@@ -998,7 +973,7 @@ end_proc:
 
 tcizmat := proc(nrows,ncols)
 begin
-  SWPmatrix(nrows,ncols);
+  matrix(nrows,ncols);
 end_proc:
 
 tciimat := proc(nrows,ncols)
@@ -1015,7 +990,7 @@ tciBand := proc(entrylist,nrows,ncols)
   local A, d;
 begin
   d := max(nrows,ncols);
-  A := SWPmatrix(d,d,entrylist,Banded);
+  A := matrix(d,d,entrylist,Banded);
   if( d > ncols ) then
     A := linalg::delCol(A,(ncols+1)..d);
   elif( d > nrows ) then
@@ -1303,7 +1278,7 @@ begin
 
   A := tcistatdata(A);
   n := linalg::ncols(A);
-  ans := SWPmatrix(n,n);
+  ans := matrix(n,n);
   for i from 1 to n do
     for j from 1 to n do
       list1 := linalg::col(A,i);
@@ -1340,7 +1315,7 @@ begin
   A := tcistatdata(A);
   n := linalg::ncols(A);
   m := linalg::nrows(A);
-  ans := SWPmatrix(n,n);
+  ans := matrix(n,n);
   for i from 1 to n do
     for j from 1 to n do
       list1 := linalg::col(A,i);
@@ -1690,9 +1665,9 @@ tciSVD := proc(A)
   local mD,l,ll,lr;
 begin
   l := numeric::singularvectors(A,NoErrors);
-  ll := SWPmatrix( l[1] );  // force arrays to be matrices
-  lr := SWPmatrix( l[3] );
-  mD := SWPmatrix( linalg::ncols(ll),linalg::nrows(lr), l[2], Diagonal );
+  ll := matrix( l[1] );  // force arrays to be matrices
+  lr := matrix( l[3] );
+  mD := matrix( linalg::ncols(ll),linalg::nrows(lr), l[2], Diagonal );
   ll, mD, tcihtranspose(lr);
 end_proc:
 
@@ -1749,7 +1724,7 @@ begin
   else
     func := f;
   end_if;
-  vec := SWPmatrix(n+1,1);
+  vec := matrix(n+1,1);
   vec[1,1] := a;
   for ii from 1 to n do 
     nextone := eval(func(vec[ii,1]));
@@ -1839,7 +1814,7 @@ begin
     l := linalg::factorLU(Z);
   end_if;
   p := l[3];
-  P := SWPmatrix( nops(p), nops(p) ); // build permutation matrix
+  P := matrix( nops(p), nops(p) ); // build permutation matrix
   for i from 1 to nops(p) do
     P[p[i],i] := 1;
   end_for;
@@ -1875,7 +1850,7 @@ tcieigenvectors := proc(M)
 begin
   if (tcishouldfloat(M)) then
     [vals,m,res] := numeric::eigenvectors(M);
-    m := SWPmatrix(m);   // convert from ARRAY
+    m := matrix(m);   // convert from ARRAY
     [vals[i],1,{linalg::col(m,i)}] $ i = 1..nops(vals);
   else
     m := linalg::eigenvectors(M);        // convert overall list to sequence
@@ -2306,14 +2281,14 @@ tcirandmat := proc(nr,nc,mtype,range)
   local A,j,k;
 begin
   if (testtype(range,"_range") or testtype(range,Dom::Matrix) or testtype(range,DOM_LIST)) then
-    A := SWPmatrix(nr,nc);
+    A := matrix(nr,nc);
     for j from 1 to nr do
       for k from 1 to nc do
         A[j,k] := random(op(range,1)..op(range,2))();
       end_for;
     end_for;
   elif (testtype(range,DOM_SET)) then
-    A := SWPmatrix(nr,nc);
+    A := matrix(nr,nc);
     for j from 1 to nr do
       for k from 1 to nc do
         A[j,k] := tcirandfromset(range);
@@ -2523,7 +2498,7 @@ begin
   if testtype(SWPplotMatrix,itemIn) then
     itemOut := SWPplotMatrix(itemIn):
     itemOut := [itemOut[iii,jjj] $ jjj=1..op(itemOut,[0,3,2]) $ iii=1..op(itemOut,[0,2,2])]:
-  elif type(itemIn) = SWPmatrix then
+  elif type(itemIn) = matrix then
     itemOut := expr(itemIn):
     itemOut := [expr(itemOut[iii,jjj]) $ jjj=1..op(itemOut,[0,3,2]) $ iii=1..op(itemOut,[0,2,2])]:
   else
