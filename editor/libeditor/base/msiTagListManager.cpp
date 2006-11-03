@@ -210,6 +210,8 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
         pns = new namespaceLookup;
         textNode=do_QueryInterface(node);
         textNode->GetTextContent(strNameSpace);
+        // TODO: trim leading and following spaces
+        
         pns->namespaceAbbrev = strAbbrev;
         pns->nsAtom = NS_NewAtom(strNameSpace);
         pns->next = plookup; 
