@@ -175,6 +175,7 @@ tier_9_dirs += js/jsd
 endif
 
 tier_9_dirs	+= \
+		toolkit/components/autocomplete/public \
 		uriloader \
 		modules/libpref \
 		modules/libimg \
