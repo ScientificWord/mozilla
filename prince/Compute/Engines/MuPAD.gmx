@@ -428,6 +428,8 @@ euler<uID8061.0>euler%arg_list%
 mod<uID8063.0>mod%arg_list%
 signum<uID8064.0>sign%arg_list%
 csgn<uID8065.0>tcicsgn%arg_list%
+;SLS does this work?
+signIm<uID8065.1>signIm%arg_list%
 hypergeom<uID8066.0>hypergeom
 
 about<uID8067.0>property::getprop%arg_list%
