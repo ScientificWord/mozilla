@@ -155,12 +155,7 @@ Test ID 1602
           <mo>&#x2062;</mo>
           <mi>&#x2148;</mi>
           <mo>&#x2062;</mo>
-          <mi>&#x3c0;</mi>
-          <mo>&#x2062;</mo>
-          <msub>
-            <mi>X</mi>
-            <mn>1</mn>
-          </msub>
+          <mi>y</mi>
         </mrow>
       </msup>
       <mo>+</mo>
@@ -169,16 +164,13 @@ Test ID 1602
         <mn>3</mn>
       </mfrac>
       <mo>|</mo>
-      <msub>
-        <mi>X</mi>
-        <mn>1</mn>
-      </msub>
+      <mi>y</mi>
       <mo>&#x220a;</mo>
       <mo>[</mo>
       <mrow>
         <mn>0</mn>
         <mo>,</mo>
-        <mn>1</mn>
+        <mi>&#x3c0;</mi>
       </mrow>
       <mo>]</mo>
     </mrow>
@@ -196,6 +188,16 @@ Test ID 1703
   <mrow>
     <mo>{</mo>
     <mrow>
+      <mrow>
+        <mo>[</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>=</mo>
+          <mn>3.0</mn>
+        </mrow>
+        <mo>]</mo>
+      </mrow>
+      <mo>,</mo>
       <mrow>
         <mo>[</mo>
         <mrow>
@@ -222,16 +224,6 @@ Test ID 1703
           <mn>1.7176</mn>
           <mo>&#x2062;</mo>
           <mi>&#x2148;</mi>
-        </mrow>
-        <mo>]</mo>
-      </mrow>
-      <mo>,</mo>
-      <mrow>
-        <mo>[</mo>
-        <mrow>
-          <mi>x</mi>
-          <mo>=</mo>
-          <mn>3.0</mn>
         </mrow>
         <mo>]</mo>
       </mrow>
@@ -564,12 +556,7 @@ Test ID mu1602
           <mo>&#x2062;</mo>
           <mi>&#x2148;</mi>
           <mo>&#x2062;</mo>
-          <mi>&#x3c0;</mi>
-          <mo>&#x2062;</mo>
-          <msub>
-            <mi>X</mi>
-            <mn>1</mn>
-          </msub>
+          <mi>y</mi>
         </mrow>
       </msup>
       <mo>+</mo>
@@ -578,16 +565,13 @@ Test ID mu1602
         <mn>3</mn>
       </mfrac>
       <mo>|</mo>
-      <msub>
-        <mi>X</mi>
-        <mn>1</mn>
-      </msub>
+      <mi>y</mi>
       <mo>&#x220a;</mo>
       <mo>[</mo>
       <mrow>
         <mn>0</mn>
         <mo>,</mo>
-        <mn>1</mn>
+        <mi>&#x3c0;</mi>
       </mrow>
       <mo>]</mo>
     </mrow>
@@ -605,6 +589,16 @@ Test ID mu1703
   <mrow>
     <mo>{</mo>
     <mrow>
+      <mrow>
+        <mo>[</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>=</mo>
+          <mn>3.0</mn>
+        </mrow>
+        <mo>]</mo>
+      </mrow>
+      <mo>,</mo>
       <mrow>
         <mo>[</mo>
         <mrow>
@@ -631,16 +625,6 @@ Test ID mu1703
           <mn>1.7176</mn>
           <mo>&#x2062;</mo>
           <mi>&#x2148;</mi>
-        </mrow>
-        <mo>]</mo>
-      </mrow>
-      <mo>,</mo>
-      <mrow>
-        <mo>[</mo>
-        <mrow>
-          <mi>x</mi>
-          <mo>=</mo>
-          <mn>3.0</mn>
         </mrow>
         <mo>]</mo>
       </mrow>

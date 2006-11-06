@@ -80,12 +80,12 @@ Test ID 103
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
     <msub>
       <mi>C</mi>
       <mn>1</mn>
     </msub>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
     <mo>&#x2062;</mo>
     <msup>
       <mi>e</mi>
@@ -112,12 +112,12 @@ Test ID 104
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
     <msub>
       <mi>C</mi>
       <mn>1</mn>
     </msub>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
     <mo>&#x2062;</mo>
     <msup>
       <mi>e</mi>
@@ -152,7 +152,7 @@ Test ID 105
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>5</mn>
+          <mn>4</mn>
         </msub>
         <mo>&#x2062;</mo>
         <msup>
@@ -176,7 +176,7 @@ Test ID 106
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>7</mn>
+          <mn>6</mn>
         </msub>
         <mo>&#x2212;</mo>
         <mi msiMathname="true">cos</mi>
@@ -199,7 +199,7 @@ Test ID 107
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>11</mn>
+          <mn>8</mn>
         </msub>
         <mo>+</mo>
         <mi>t</mi>
@@ -224,7 +224,7 @@ Test ID 108
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>14</mn>
+          <mn>10</mn>
         </msub>
         <mo>&#x2212;</mo>
         <mi msiMathname="true">cos</mi>
@@ -271,7 +271,7 @@ Test ID 109
         <mo>+</mo>
         <msub>
           <mi>C</mi>
-          <mn>18</mn>
+          <mn>12</mn>
         </msub>
       </mrow>
     </mfenced>
@@ -296,7 +296,7 @@ Test ID 110
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>20</mn>
+          <mn>14</mn>
         </msub>
         <mo>&#x2062;</mo>
         <msup>
@@ -324,7 +324,7 @@ Test ID 111
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>22</mn>
+          <mn>16</mn>
         </msub>
         <mo>&#x2062;</mo>
         <msup>
@@ -363,35 +363,18 @@ Test ID 112
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mfenced open="{" close="}">
-      <mfrac>
-        <mfenced open="(" close=")">
-          <mrow>
-            <msub>
-              <mi>C</mi>
-              <mn>25</mn>
-            </msub>
-            <mo>+</mo>
-            <mi>a</mi>
-            <mo>&#x2062;</mo>
-            <msup>
-              <mi>e</mi>
-              <mrow>
-                <mfrac>
-                  <mn>1</mn>
-                  <mn>2</mn>
-                </mfrac>
-                <mo>&#x2062;</mo>
-                <msup>
-                  <mi>x</mi>
-                  <mn>2</mn>
-                </msup>
-              </mrow>
-            </msup>
-          </mrow>
-        </mfenced>
+      <mrow>
+        <mi>a</mi>
+        <mo>+</mo>
+        <msub>
+          <mi>C</mi>
+          <mn>18</mn>
+        </msub>
+        <mo>&#x2062;</mo>
         <msup>
           <mi>e</mi>
           <mrow>
+            <mo>&#x2212;</mo>
             <mfrac>
               <mn>1</mn>
               <mn>2</mn>
@@ -403,7 +386,7 @@ Test ID 112
             </msup>
           </mrow>
         </msup>
-      </mfrac>
+      </mrow>
     </mfenced>
   </mrow>
 </math>
@@ -418,28 +401,28 @@ Test ID 113
   <mrow>
     <mfenced open="{" close="}">
       <mrow>
-        <msub>
-          <mi>C</mi>
-          <mn>27</mn>
-        </msub>
-        <mo>&#x2062;</mo>
-        <mi msiMathname="true">cos</mi>
-        <mo>&#x2061;</mo>
-        <mi>x</mi>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
         <mo>&#x2212;</mo>
         <msub>
           <mi>C</mi>
-          <mn>28</mn>
+          <mn>21</mn>
         </msub>
         <mo>&#x2062;</mo>
         <mi msiMathname="true">sin</mi>
         <mo>&#x2061;</mo>
         <mi>x</mi>
         <mo>+</mo>
-        <msup>
-          <mi>x</mi>
-          <mn>2</mn>
-        </msup>
+        <msub>
+          <mi>C</mi>
+          <mn>20</mn>
+        </msub>
+        <mo>&#x2062;</mo>
+        <mi msiMathname="true">cos</mi>
+        <mo>&#x2061;</mo>
+        <mi>x</mi>
         <mo>&#x2212;</mo>
         <mn>2</mn>
       </mrow>
@@ -464,7 +447,7 @@ Test ID 114
         <mo>+</mo>
         <msub>
           <mi>C</mi>
-          <mn>30</mn>
+          <mn>23</mn>
         </msub>
         <mo>&#x2062;</mo>
         <mi>x</mi>
@@ -485,7 +468,7 @@ Test ID 115
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>33</mn>
+          <mn>25</mn>
         </msub>
         <mo>&#x2062;</mo>
         <msup>
@@ -518,7 +501,7 @@ Test ID 115
         <mo>+</mo>
         <msub>
           <mi>C</mi>
-          <mn>34</mn>
+          <mn>26</mn>
         </msub>
         <mo>&#x2062;</mo>
         <msup>
@@ -586,6 +569,14 @@ Test ID 116
               <mo form="prefix" largeop="true">&#x222b;</mo>
               <mrow>
                 <mrow>
+                  <mfenced open="(" close=")">
+                    <mrow>
+                      <mi msiMathname="true">sin</mi>
+                      <mo>&#x2061;</mo>
+                      <mi>y</mi>
+                    </mrow>
+                  </mfenced>
+                  <mo>&#x2062;</mo>
                   <msup>
                     <mi>e</mi>
                     <mrow>
@@ -601,10 +592,6 @@ Test ID 116
                       </msup>
                     </mrow>
                   </msup>
-                  <mo>&#x2062;</mo>
-                  <mi msiMathname="true">sin</mi>
-                  <mo>&#x2061;</mo>
-                  <mi>y</mi>
                 </mrow>
                 <mo>&#x2062;</mo>
                 <mrow>
@@ -615,7 +602,7 @@ Test ID 116
               <mo>&#x2212;</mo>
               <msub>
                 <mi>C</mi>
-                <mn>36</mn>
+                <mn>28</mn>
               </msub>
               <mo>&#x2062;</mo>
               <msup>
@@ -650,9 +637,19 @@ Test ID 117
   <mrow>
     <mfenced open="{" close="}">
       <mrow>
+        <mfrac>
+          <mn>1</mn>
+          <mn>3</mn>
+        </mfrac>
+        <mo>&#x2062;</mo>
+        <msup>
+          <mi>x</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>+</mo>
         <msub>
           <mi>C</mi>
-          <mn>38</mn>
+          <mn>30</mn>
         </msub>
         <mo>&#x2062;</mo>
         <mroot>
@@ -666,16 +663,6 @@ Test ID 117
           </mrow>
           <mn>4</mn>
         </mroot>
-        <mo>+</mo>
-        <mfrac>
-          <mn>1</mn>
-          <mn>3</mn>
-        </mfrac>
-        <mo>&#x2062;</mo>
-        <msup>
-          <mi>x</mi>
-          <mn>2</mn>
-        </msup>
         <mo>&#x2212;</mo>
         <mfrac>
           <mn>1</mn>
@@ -782,7 +769,7 @@ Test ID 120
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>40</mn>
+          <mn>6</mn>
         </msub>
         <mo>&#x2212;</mo>
         <mi msiMathname="true">cos</mi>
@@ -837,7 +824,7 @@ Test ID 122
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>42</mn>
+          <mn>14</mn>
         </msub>
         <mo>&#x2062;</mo>
         <msup>
@@ -900,7 +887,7 @@ Test ID 124
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>44</mn>
+          <mn>32</mn>
         </msub>
         <mo>+</mo>
         <mi msiMathname="true">sin</mi>
@@ -961,7 +948,7 @@ Test ID 126
         <mo>+</mo>
         <msub>
           <mi>C</mi>
-          <mn>47</mn>
+          <mn>34</mn>
         </msub>
       </mrow>
     </mfenced>
@@ -1014,7 +1001,7 @@ Test ID 128
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>50</mn>
+          <mn>36</mn>
         </msub>
         <mo>&#x2062;</mo>
         <msup>
@@ -1070,19 +1057,12 @@ Test ID 130
         <mo>&#x2061;</mo>
         <mfenced open="(" close=")">
           <mrow>
-            <mfrac>
-              <mn>1</mn>
-              <mn>2</mn>
-            </mfrac>
-            <mo>&#x2062;</mo>
-            <mi>&#x3c0;</mi>
+            <mi>x</mi>
             <mo>&#x2212;</mo>
             <msub>
               <mi>C</mi>
-              <mn>53</mn>
+              <mn>38</mn>
             </msub>
-            <mo>+</mo>
-            <mi>x</mi>
           </mrow>
         </mfenced>
       </mrow>
@@ -1101,24 +1081,24 @@ Test ID 132
     <mfenced open="{" close="}">
       <msub>
         <mi>C</mi>
-        <mn>56</mn>
+        <mn>40</mn>
       </msub>
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>62</mn>
+          <mn>42</mn>
         </msub>
         <mo>+</mo>
-        <mn>2</mn>
-        <mo>&#x2062;</mo>
         <mi>x</mi>
       </mrow>
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>59</mn>
+          <mn>44</mn>
         </msub>
         <mo>+</mo>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
         <mi>x</mi>
       </mrow>
     </mfenced>
