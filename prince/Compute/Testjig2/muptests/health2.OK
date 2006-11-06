@@ -816,13 +816,6 @@ Test ID 209
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <msup>
-      <mi msiMathname="true">cos</mi>
-      <mn>2</mn>
-    </msup>
-    <mo>&#x2061;</mo>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
     <mi msiMathname="true">sin</mi>
     <mo>&#x2061;</mo>
     <mrow>
@@ -830,6 +823,13 @@ Test ID 209
       <mo>&#x2062;</mo>
       <mi>y</mi>
     </mrow>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi msiMathname="true">cos</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
     <mo>&#x2212;</mo>
     <mi msiMathname="true">sin</mi>
     <mo>&#x2061;</mo>
@@ -844,26 +844,6 @@ Test ID 209
     <mi>y</mi>
     <mo>&#x2062;</mo>
     <mi msiMathname="true">cos</mi>
-    <mo>&#x2061;</mo>
-    <mrow>
-      <mi>x</mi>
-      <mo>&#x2062;</mo>
-      <mi>y</mi>
-    </mrow>
-    <mo>&#x2212;</mo>
-    <mn>2</mn>
-    <mo>&#x2062;</mo>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
-    <mi msiMathname="true">cos</mi>
-    <mo>&#x2061;</mo>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
-    <mi msiMathname="true">sin</mi>
-    <mo>&#x2061;</mo>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
-    <mi msiMathname="true">sin</mi>
     <mo>&#x2061;</mo>
     <mrow>
       <mi>x</mi>
@@ -875,13 +855,6 @@ Test ID 209
     <mo>&#x2062;</mo>
     <mi>y</mi>
     <mo>&#x2062;</mo>
-    <msup>
-      <mi msiMathname="true">cos</mi>
-      <mn>2</mn>
-    </msup>
-    <mo>&#x2061;</mo>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
     <mi msiMathname="true">cos</mi>
     <mo>&#x2061;</mo>
     <mrow>
@@ -889,6 +862,33 @@ Test ID 209
       <mo>&#x2062;</mo>
       <mi>y</mi>
     </mrow>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi msiMathname="true">cos</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+    <mo>&#x2212;</mo>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
   </mrow>
 </math>
 
@@ -921,13 +921,6 @@ Test ID 211
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <msup>
-      <mi msiMathname="true">cos</mi>
-      <mn>2</mn>
-    </msup>
-    <mo>&#x2061;</mo>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
     <mi msiMathname="true">sin</mi>
     <mo>&#x2061;</mo>
     <mrow>
@@ -935,6 +928,13 @@ Test ID 211
       <mo>&#x2062;</mo>
       <mi>y</mi>
     </mrow>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi msiMathname="true">cos</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
     <mo>&#x2212;</mo>
     <mi msiMathname="true">sin</mi>
     <mo>&#x2061;</mo>
@@ -949,26 +949,6 @@ Test ID 211
     <mi>y</mi>
     <mo>&#x2062;</mo>
     <mi msiMathname="true">cos</mi>
-    <mo>&#x2061;</mo>
-    <mrow>
-      <mi>x</mi>
-      <mo>&#x2062;</mo>
-      <mi>y</mi>
-    </mrow>
-    <mo>&#x2212;</mo>
-    <mn>2</mn>
-    <mo>&#x2062;</mo>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
-    <mi msiMathname="true">cos</mi>
-    <mo>&#x2061;</mo>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
-    <mi msiMathname="true">sin</mi>
-    <mo>&#x2061;</mo>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
-    <mi msiMathname="true">sin</mi>
     <mo>&#x2061;</mo>
     <mrow>
       <mi>x</mi>
@@ -980,13 +960,6 @@ Test ID 211
     <mo>&#x2062;</mo>
     <mi>y</mi>
     <mo>&#x2062;</mo>
-    <msup>
-      <mi msiMathname="true">cos</mi>
-      <mn>2</mn>
-    </msup>
-    <mo>&#x2061;</mo>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
     <mi msiMathname="true">cos</mi>
     <mo>&#x2061;</mo>
     <mrow>
@@ -994,6 +967,33 @@ Test ID 211
       <mo>&#x2062;</mo>
       <mi>y</mi>
     </mrow>
+    <mo>&#x2062;</mo>
+    <msup>
+      <mi msiMathname="true">cos</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+    <mo>&#x2212;</mo>
+    <mn>2</mn>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mrow>
+      <mi>x</mi>
+      <mo>&#x2062;</mo>
+      <mi>y</mi>
+    </mrow>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
+    <mo>&#x2062;</mo>
+    <mi msiMathname="true">sin</mi>
+    <mo>&#x2061;</mo>
+    <mi>x</mi>
   </mrow>
 </math>
 
@@ -1069,23 +1069,24 @@ Test ID 214
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mfrac>
-      <mn>5</mn>
-      <mn>4</mn>
-    </mfrac>
-    <mo>&#x2062;</mo>
     <mi msiMathname="true">ln</mi>
     <mo>&#x2061;</mo>
-    <mn>2</mn>
-    <mo>&#x2212;</mo>
-    <mfrac>
-      <mn>1</mn>
-      <mn>4</mn>
-    </mfrac>
-    <mo>&#x2062;</mo>
-    <mi msiMathname="true">ln</mi>
-    <mo>&#x2061;</mo>
-    <mn>17</mn>
+    <mrow>
+      <mfrac>
+        <mn>2</mn>
+        <mn>17</mn>
+      </mfrac>
+      <mo>&#x2062;</mo>
+      <mroot>
+        <mn>17</mn>
+        <mn>4</mn>
+      </mroot>
+      <mo>&#x2062;</mo>
+      <mroot>
+        <mn>578</mn>
+        <mn>4</mn>
+      </mroot>
+    </mrow>
   </mrow>
 </math>
 
@@ -1135,41 +1136,7 @@ Test ID 216
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mo>&#x2212;</mo>
-    <mfrac>
-      <mn>1</mn>
-      <mn>2</mn>
-    </mfrac>
-    <mo>&#x2062;</mo>
-    <mi>&#x2148;</mi>
-    <mo>&#x2062;</mo>
-    <msqrt>
-      <mi>&#x3c0;</mi>
-    </msqrt>
-    <mo>&#x2062;</mo>
-    <munder>
-      <mo form="prefix" msiMathname="true">lim</mo>
-      <mrow>
-        <mi>x</mi>
-        <mo>&#x2192;</mo>
-        <mi>&#x221e;</mi>
-      </mrow>
-    </munder>
-    <mo>(</mo>
-    <mrow>
-      <mi msiMathname="true">erf</mi>
-      <mo>&#x2061;</mo>
-      <mrow>
-        <mo>(</mo>
-        <mrow>
-          <mi>&#x2148;</mi>
-          <mo>&#x2062;</mo>
-          <mi>x</mi>
-        </mrow>
-        <mo>)</mo>
-      </mrow>
-    </mrow>
-    <mo>)</mo>
+    <mi>&#x221e;</mi>
   </mrow>
 </math>
 
@@ -2294,9 +2261,9 @@ Test ID 1001
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mi>x</mi>
-    <mo>&#x2062;</mo>
     <mi fontweight="bold" fontstyle="upright">x</mi>
+    <mo>&#x2062;</mo>
+    <mi>x</mi>
     <mo>&#x2212;</mo>
     <msup>
       <mi>x</mi>
@@ -2483,34 +2450,7 @@ Test ID 1110
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mo>&#x2212;</mo>
-    <mn>0.88623</mn>
-    <mo>&#x2062;</mo>
-    <mi>&#x2148;</mi>
-    <mo>&#x2062;</mo>
-    <munder>
-      <mo form="prefix" msiMathname="true">lim</mo>
-      <mrow>
-        <mi>x</mi>
-        <mo>&#x2192;</mo>
-        <mi>&#x221e;</mi>
-      </mrow>
-    </munder>
-    <mo>(</mo>
-    <mrow>
-      <mi msiMathname="true">erf</mi>
-      <mo>&#x2061;</mo>
-      <mrow>
-        <mo>(</mo>
-        <mrow>
-          <mi>&#x2148;</mi>
-          <mo>&#x2062;</mo>
-          <mi>x</mi>
-        </mrow>
-        <mo>)</mo>
-      </mrow>
-    </mrow>
-    <mo>)</mo>
+    <mi>&#x221e;</mi>
   </mrow>
 </math>
 
@@ -2749,14 +2689,14 @@ Test ID 1403
       <mrow>
         <mo>(</mo>
         <mrow>
-          <mn>3</mn>
-          <mo>&#x2062;</mo>
-          <mi>x</mi>
-          <mo>+</mo>
           <msup>
             <mi>x</mi>
             <mn>3</mn>
           </msup>
+          <mo>+</mo>
+          <mn>3</mn>
+          <mo>&#x2062;</mo>
+          <mi>x</mi>
           <mo>&#x2212;</mo>
           <mn>22</mn>
         </mrow>
@@ -2913,12 +2853,7 @@ Test ID 1602
           <mo>&#x2062;</mo>
           <mi>&#x2148;</mi>
           <mo>&#x2062;</mo>
-          <mi>&#x3c0;</mi>
-          <mo>&#x2062;</mo>
-          <msub>
-            <mi>X</mi>
-            <mn>52</mn>
-          </msub>
+          <mi>y</mi>
         </mrow>
       </msup>
       <mo>+</mo>
@@ -2927,16 +2862,13 @@ Test ID 1602
         <mn>3</mn>
       </mfrac>
       <mo>|</mo>
-      <msub>
-        <mi>X</mi>
-        <mn>52</mn>
-      </msub>
+      <mi>y</mi>
       <mo>&#x220a;</mo>
       <mo>[</mo>
       <mrow>
         <mn>0</mn>
         <mo>,</mo>
-        <mn>1</mn>
+        <mi>&#x3c0;</mi>
       </mrow>
       <mo>]</mo>
     </mrow>
@@ -3017,6 +2949,55 @@ Test ID 1606
     <mtable>
       <mtr>
         <mtd>
+          <mi>&#x2102;</mi>
+        </mtd>
+        <mtd>
+          <mtext>if</mtext>
+        </mtd>
+        <mtd>
+          <mi>P</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>Q</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+          <mo>&#x2228;</mo>
+          <mfrac>
+            <mrow>
+              <mi>&#x2148;</mi>
+              <mo>&#x2062;</mo>
+              <mi msiMathname="true">ln</mi>
+              <mo>&#x2061;</mo>
+              <mfrac>
+                <mi>Q</mi>
+                <mi>P</mi>
+              </mfrac>
+            </mrow>
+            <mrow>
+              <mn>2</mn>
+              <mo>&#x2062;</mo>
+              <mi>&#x3c0;</mi>
+            </mrow>
+          </mfrac>
+          <mo>&#x220a;</mo>
+          <mi>&#x2124;</mi>
+          <mo>&#x2227;</mo>
+          <mi>k</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>P</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>Q</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
           <mi fontstyle="upright">&#x2205;</mi>
         </mtd>
         <mtd>
@@ -3027,8 +3008,45 @@ Test ID 1606
           <mo>&#x2260;</mo>
           <mn>0</mn>
           <mo>&#x2227;</mo>
-          <mi>Q</mi>
+          <mo>(</mo>
+          <mrow>
+            <mi>Q</mi>
+            <mo>=</mo>
+            <mn>0</mn>
+            <mo>&#x2228;</mo>
+            <mo>&#xac;</mo>
+            <mfrac>
+              <mrow>
+                <mi>&#x2148;</mi>
+                <mo>&#x2062;</mo>
+                <mi msiMathname="true">ln</mi>
+                <mo>&#x2061;</mo>
+                <mfrac>
+                  <mi>Q</mi>
+                  <mi>P</mi>
+                </mfrac>
+              </mrow>
+              <mrow>
+                <mn>2</mn>
+                <mo>&#x2062;</mo>
+                <mi>&#x3c0;</mi>
+              </mrow>
+            </mfrac>
+            <mo>&#x220a;</mo>
+            <mi>&#x2124;</mi>
+            <mo>&#x2227;</mo>
+            <mi>k</mi>
+            <mo>=</mo>
+            <mn>0</mn>
+          </mrow>
+          <mo>)</mo>
+          <mo>&#x2228;</mo>
+          <mi>P</mi>
           <mo>=</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>Q</mi>
+          <mo>&#x2260;</mo>
           <mn>0</mn>
         </mtd>
       </mtr>
@@ -3053,14 +3071,14 @@ Test ID 1606
                   <mo>&#x2062;</mo>
                   <mi>&#x3c0;</mi>
                   <mo>&#x2062;</mo>
-                  <mi>l</mi>
+                  <mi>k</mi>
                 </mrow>
                 <mo>)</mo>
               </mrow>
               <mi>k</mi>
             </mfrac>
             <mo>|</mo>
-            <mi>l</mi>
+            <mi>k</mi>
             <mo>&#x220a;</mo>
             <mi>&#x2124;</mi>
           </mrow>
@@ -3080,124 +3098,6 @@ Test ID 1606
           <mo>&#x2227;</mo>
           <mi>k</mi>
           <mo>&#x2260;</mo>
-          <mn>0</mn>
-        </mtd>
-      </mtr>
-      <mtr>
-        <mtd>
-          <mi>&#x2102;</mi>
-        </mtd>
-        <mtd>
-          <mtext>if</mtext>
-        </mtd>
-        <mtd>
-          <mfrac>
-            <mrow>
-              <mi>&#x2148;</mi>
-              <mo>&#x2062;</mo>
-              <mi msiMathname="true">ln</mi>
-              <mo>&#x2061;</mo>
-              <mfrac>
-                <mi>Q</mi>
-                <mi>P</mi>
-              </mfrac>
-            </mrow>
-            <mrow>
-              <mn>2</mn>
-              <mo>&#x2062;</mo>
-              <mi>&#x3c0;</mi>
-            </mrow>
-          </mfrac>
-          <mo>&#x220a;</mo>
-          <mi>&#x2124;</mi>
-          <mo>&#x2227;</mo>
-          <mi>P</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
-          <mi>Q</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
-          <mi>k</mi>
-          <mo>=</mo>
-          <mn>0</mn>
-        </mtd>
-      </mtr>
-      <mtr>
-        <mtd>
-          <mi fontstyle="upright">&#x2205;</mi>
-        </mtd>
-        <mtd>
-          <mtext>if</mtext>
-        </mtd>
-        <mtd>
-          <mfrac>
-            <mrow>
-              <mi>&#x2148;</mi>
-              <mo>&#x2062;</mo>
-              <mi msiMathname="true">ln</mi>
-              <mo>&#x2061;</mo>
-              <mfrac>
-                <mi>Q</mi>
-                <mi>P</mi>
-              </mfrac>
-            </mrow>
-            <mrow>
-              <mn>2</mn>
-              <mo>&#x2062;</mo>
-              <mi>&#x3c0;</mi>
-            </mrow>
-          </mfrac>
-          <mo>&#x220a;</mo>
-          <mi>&#x2102;</mi>
-          <mo>&#x2216;</mo>
-          <mi>&#x2124;</mi>
-          <mo>&#x2227;</mo>
-          <mi>P</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
-          <mi>Q</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
-          <mi>k</mi>
-          <mo>=</mo>
-          <mn>0</mn>
-        </mtd>
-      </mtr>
-      <mtr>
-        <mtd>
-          <mi>&#x2102;</mi>
-        </mtd>
-        <mtd>
-          <mtext>if</mtext>
-        </mtd>
-        <mtd>
-          <mi>P</mi>
-          <mo>=</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
-          <mi>Q</mi>
-          <mo>=</mo>
-          <mn>0</mn>
-        </mtd>
-      </mtr>
-      <mtr>
-        <mtd>
-          <mi fontstyle="upright">&#x2205;</mi>
-        </mtd>
-        <mtd>
-          <mtext>if</mtext>
-        </mtd>
-        <mtd>
-          <mi>Q</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
-          <mi>P</mi>
-          <mo>=</mo>
           <mn>0</mn>
         </mtd>
       </mtr>
@@ -3218,25 +3118,6 @@ Test ID 1607
     <mtable>
       <mtr>
         <mtd>
-          <mi fontstyle="upright">&#x2205;</mi>
-        </mtd>
-        <mtd>
-          <mtext>if</mtext>
-        </mtd>
-        <mtd>
-          <mi>P</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
-          <mi>Q</mi>
-          <mo>=</mo>
-          <mn>0</mn>
-        </mtd>
-      </mtr>
-      <mtr>
-        <mtd>
-          <mi>&#x2102;</mi>
-          <mo>&#x222a;</mo>
           <mo>{</mo>
           <mrow>
             <mfrac>
@@ -3256,7 +3137,7 @@ Test ID 1607
                   <mo>&#x2062;</mo>
                   <mi>&#x3c0;</mi>
                   <mo>&#x2062;</mo>
-                  <mi>l</mi>
+                  <mi>k</mi>
                 </mrow>
                 <mo>)</mo>
               </mrow>
@@ -3269,7 +3150,7 @@ Test ID 1607
               </mrow>
             </mfrac>
             <mo>|</mo>
-            <mi>l</mi>
+            <mi>k</mi>
             <mo>&#x220a;</mo>
             <mi>&#x2124;</mi>
           </mrow>
@@ -3279,211 +3160,8 @@ Test ID 1607
           <mtext>if</mtext>
         </mtd>
         <mtd>
-          <mi>c</mi>
-          <mo>&#x2062;</mo>
-          <mi msiMathname="true">ln</mi>
-          <mo>&#x2061;</mo>
-          <mi>b</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
           <mo>(</mo>
           <mrow>
-            <mo>(</mo>
-            <mrow>
-              <mi>b</mi>
-              <mo>&#x2260;</mo>
-              <mn>0</mn>
-              <mo>&#x2227;</mo>
-              <mi>c</mi>
-              <mo>=</mo>
-              <mn>0</mn>
-              <mo>&#x2228;</mo>
-              <mi>c</mi>
-              <mo>&#x2260;</mo>
-              <mn>0</mn>
-              <mo>&#x2227;</mo>
-              <mi>b</mi>
-              <mo>=</mo>
-              <mn>1</mn>
-            </mrow>
-            <mo>)</mo>
-            <mo>&#x2227;</mo>
-            <mfrac>
-              <mrow>
-                <mi>&#x2148;</mi>
-                <mo>&#x2062;</mo>
-                <mi msiMathname="true">ln</mi>
-                <mo>&#x2061;</mo>
-                <mfrac>
-                  <mi>Q</mi>
-                  <mi>P</mi>
-                </mfrac>
-              </mrow>
-              <mrow>
-                <mn>2</mn>
-                <mo>&#x2062;</mo>
-                <mi>&#x3c0;</mi>
-              </mrow>
-            </mfrac>
-            <mo>&#x220a;</mo>
-            <mi>&#x2124;</mi>
-            <mo>&#x2228;</mo>
-            <mfrac>
-              <mrow>
-                <mi>&#x2148;</mi>
-                <mo>&#x2062;</mo>
-                <mi msiMathname="true">ln</mi>
-                <mo>&#x2061;</mo>
-                <mfrac>
-                  <mi>Q</mi>
-                  <mi>P</mi>
-                </mfrac>
-              </mrow>
-              <mrow>
-                <mn>2</mn>
-                <mo>&#x2062;</mo>
-                <mi>&#x3c0;</mi>
-              </mrow>
-            </mfrac>
-            <mo>&#x220a;</mo>
-            <mi>&#x2124;</mi>
-            <mo>&#x2227;</mo>
-            <mi>b</mi>
-            <mo>=</mo>
-            <mn>0</mn>
-            <mo>&#x2227;</mo>
-            <mi>c</mi>
-            <mo>=</mo>
-            <mn>0</mn>
-          </mrow>
-          <mo>)</mo>
-          <mo>&#x2227;</mo>
-          <mi>P</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
-          <mi>Q</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-        </mtd>
-      </mtr>
-      <mtr>
-        <mtd>
-          <mo>{</mo>
-          <mrow>
-            <mfrac>
-              <mrow>
-                <mo>(</mo>
-                <mrow>
-                  <mi msiMathname="true">ln</mi>
-                  <mo>&#x2061;</mo>
-                  <mfrac>
-                    <mi>Q</mi>
-                    <mi>P</mi>
-                  </mfrac>
-                  <mo>+</mo>
-                  <mn>2</mn>
-                  <mo>&#x2062;</mo>
-                  <mi>&#x2148;</mi>
-                  <mo>&#x2062;</mo>
-                  <mi>&#x3c0;</mi>
-                  <mo>&#x2062;</mo>
-                  <mi>l</mi>
-                </mrow>
-                <mo>)</mo>
-              </mrow>
-              <mrow>
-                <mi>c</mi>
-                <mo>&#x2062;</mo>
-                <mi msiMathname="true">ln</mi>
-                <mo>&#x2061;</mo>
-                <mi>b</mi>
-              </mrow>
-            </mfrac>
-            <mo>|</mo>
-            <mi>l</mi>
-            <mo>&#x220a;</mo>
-            <mi>&#x2124;</mi>
-          </mrow>
-          <mo>}</mo>
-        </mtd>
-        <mtd>
-          <mtext>if</mtext>
-        </mtd>
-        <mtd>
-          <mi>c</mi>
-          <mo>&#x2062;</mo>
-          <mi msiMathname="true">ln</mi>
-          <mo>&#x2061;</mo>
-          <mi>b</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
-          <mi>P</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
-          <mi>Q</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
-          <mo>(</mo>
-          <mrow>
-            <mi>c</mi>
-            <mo>&#x2260;</mo>
-            <mn>0</mn>
-            <mo>&#x2227;</mo>
-            <mi>b</mi>
-            <mo>=</mo>
-            <mn>0</mn>
-            <mo>&#x2228;</mo>
-            <mo>(</mo>
-            <mrow>
-              <mi>b</mi>
-              <mo>&#x2260;</mo>
-              <mn>0</mn>
-              <mo>&#x2227;</mo>
-              <mi>c</mi>
-              <mo>=</mo>
-              <mn>0</mn>
-              <mo>&#x2228;</mo>
-              <mi>c</mi>
-              <mo>&#x2260;</mo>
-              <mn>0</mn>
-              <mo>&#x2227;</mo>
-              <mi>b</mi>
-              <mo>=</mo>
-              <mn>1</mn>
-            </mrow>
-            <mo>)</mo>
-            <mo>&#x2227;</mo>
-            <mfrac>
-              <mrow>
-                <mi>&#x2148;</mi>
-                <mo>&#x2062;</mo>
-                <mi msiMathname="true">ln</mi>
-                <mo>&#x2061;</mo>
-                <mfrac>
-                  <mi>Q</mi>
-                  <mi>P</mi>
-                </mfrac>
-              </mrow>
-              <mrow>
-                <mn>2</mn>
-                <mo>&#x2062;</mo>
-                <mi>&#x3c0;</mi>
-              </mrow>
-            </mfrac>
-            <mo>&#x220a;</mo>
-            <mi>&#x2102;</mi>
-            <mo>&#x2216;</mo>
-            <mi>&#x2124;</mi>
-            <mo>&#x2228;</mo>
-            <mi>b</mi>
-            <mo>&#x2260;</mo>
-            <mn>0</mn>
-            <mo>&#x2227;</mo>
             <mi>b</mi>
             <mo>&#x2260;</mo>
             <mn>1</mn>
@@ -3513,102 +3191,17 @@ Test ID 1607
             <mo>&#x220a;</mo>
             <mi>&#x2124;</mi>
             <mo>&#x2227;</mo>
-            <mi>b</mi>
-            <mo>=</mo>
-            <mn>0</mn>
-            <mo>&#x2227;</mo>
-            <mi>c</mi>
-            <mo>=</mo>
-            <mn>0</mn>
-          </mrow>
-          <mo>)</mo>
-        </mtd>
-      </mtr>
-      <mtr>
-        <mtd>
-          <mi>&#x2102;</mi>
-        </mtd>
-        <mtd>
-          <mtext>if</mtext>
-        </mtd>
-        <mtd>
-          <mi>c</mi>
-          <mo>&#x2062;</mo>
-          <mi msiMathname="true">ln</mi>
-          <mo>&#x2061;</mo>
-          <mi>b</mi>
-          <mo>=</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
-          <mo>(</mo>
-          <mrow>
             <mo>(</mo>
             <mrow>
               <mi>b</mi>
-              <mo>&#x2260;</mo>
-              <mn>0</mn>
-              <mo>&#x2227;</mo>
-              <mi>c</mi>
-              <mo>=</mo>
-              <mn>0</mn>
-              <mo>&#x2228;</mo>
-              <mi>c</mi>
-              <mo>&#x2260;</mo>
-              <mn>0</mn>
-              <mo>&#x2227;</mo>
-              <mi>b</mi>
               <mo>=</mo>
               <mn>1</mn>
+              <mo>&#x2228;</mo>
+              <mi>c</mi>
+              <mo>=</mo>
+              <mn>0</mn>
             </mrow>
             <mo>)</mo>
-            <mo>&#x2227;</mo>
-            <mfrac>
-              <mrow>
-                <mi>&#x2148;</mi>
-                <mo>&#x2062;</mo>
-                <mi msiMathname="true">ln</mi>
-                <mo>&#x2061;</mo>
-                <mfrac>
-                  <mi>Q</mi>
-                  <mi>P</mi>
-                </mfrac>
-              </mrow>
-              <mrow>
-                <mn>2</mn>
-                <mo>&#x2062;</mo>
-                <mi>&#x3c0;</mi>
-              </mrow>
-            </mfrac>
-            <mo>&#x220a;</mo>
-            <mi>&#x2124;</mi>
-            <mo>&#x2228;</mo>
-            <mfrac>
-              <mrow>
-                <mi>&#x2148;</mi>
-                <mo>&#x2062;</mo>
-                <mi msiMathname="true">ln</mi>
-                <mo>&#x2061;</mo>
-                <mfrac>
-                  <mi>Q</mi>
-                  <mi>P</mi>
-                </mfrac>
-              </mrow>
-              <mrow>
-                <mn>2</mn>
-                <mo>&#x2062;</mo>
-                <mi>&#x3c0;</mi>
-              </mrow>
-            </mfrac>
-            <mo>&#x220a;</mo>
-            <mi>&#x2124;</mi>
-            <mo>&#x2227;</mo>
-            <mi>b</mi>
-            <mo>=</mo>
-            <mn>0</mn>
-            <mo>&#x2227;</mo>
-            <mi>c</mi>
-            <mo>=</mo>
-            <mn>0</mn>
           </mrow>
           <mo>)</mo>
           <mo>&#x2227;</mo>
@@ -3619,20 +3212,49 @@ Test ID 1607
           <mi>Q</mi>
           <mo>&#x2260;</mo>
           <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>b</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>b</mi>
+          <mo>&#x2260;</mo>
+          <mn>1</mn>
+          <mo>&#x2227;</mo>
+          <mi>c</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
         </mtd>
       </mtr>
       <mtr>
         <mtd>
-          <mi fontstyle="upright">&#x2205;</mi>
+          <mo>{</mo>
+          <mrow>
+            <mfrac>
+              <mi>x</mi>
+              <mi>c</mi>
+            </mfrac>
+            <mo>|</mo>
+            <mi>x</mi>
+            <mo>&#x220a;</mo>
+            <mo>(</mo>
+            <mrow>
+              <mn>0</mn>
+              <mo>,</mo>
+              <mi>&#x221e;</mi>
+            </mrow>
+            <mo>)</mo>
+          </mrow>
+          <mo>}</mo>
         </mtd>
         <mtd>
           <mtext>if</mtext>
         </mtd>
         <mtd>
-          <mi>c</mi>
-          <mo>&#x2062;</mo>
-          <mi msiMathname="true">ln</mi>
-          <mo>&#x2061;</mo>
+          <mi>Q</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
           <mi>b</mi>
           <mo>=</mo>
           <mn>0</mn>
@@ -3641,104 +3263,36 @@ Test ID 1607
           <mo>&#x2260;</mo>
           <mn>0</mn>
           <mo>&#x2227;</mo>
-          <mi>Q</mi>
+          <mi>c</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mo>{</mo>
+          <mn>0</mn>
+          <mo>}</mo>
+        </mtd>
+        <mtd>
+          <mtext>if</mtext>
+        </mtd>
+        <mtd>
+          <mi>b</mi>
+          <mo>=</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>P</mi>
           <mo>&#x2260;</mo>
           <mn>0</mn>
           <mo>&#x2227;</mo>
-          <mo>(</mo>
-          <mrow>
-            <mi>c</mi>
-            <mo>&#x2260;</mo>
-            <mn>0</mn>
-            <mo>&#x2227;</mo>
-            <mi>b</mi>
-            <mo>=</mo>
-            <mn>0</mn>
-            <mo>&#x2228;</mo>
-            <mo>(</mo>
-            <mrow>
-              <mi>b</mi>
-              <mo>&#x2260;</mo>
-              <mn>0</mn>
-              <mo>&#x2227;</mo>
-              <mi>c</mi>
-              <mo>=</mo>
-              <mn>0</mn>
-              <mo>&#x2228;</mo>
-              <mi>c</mi>
-              <mo>&#x2260;</mo>
-              <mn>0</mn>
-              <mo>&#x2227;</mo>
-              <mi>b</mi>
-              <mo>=</mo>
-              <mn>1</mn>
-            </mrow>
-            <mo>)</mo>
-            <mo>&#x2227;</mo>
-            <mfrac>
-              <mrow>
-                <mi>&#x2148;</mi>
-                <mo>&#x2062;</mo>
-                <mi msiMathname="true">ln</mi>
-                <mo>&#x2061;</mo>
-                <mfrac>
-                  <mi>Q</mi>
-                  <mi>P</mi>
-                </mfrac>
-              </mrow>
-              <mrow>
-                <mn>2</mn>
-                <mo>&#x2062;</mo>
-                <mi>&#x3c0;</mi>
-              </mrow>
-            </mfrac>
-            <mo>&#x220a;</mo>
-            <mi>&#x2102;</mi>
-            <mo>&#x2216;</mo>
-            <mi>&#x2124;</mi>
-            <mo>&#x2228;</mo>
-            <mi>b</mi>
-            <mo>&#x2260;</mo>
-            <mn>0</mn>
-            <mo>&#x2227;</mo>
-            <mi>b</mi>
-            <mo>&#x2260;</mo>
-            <mn>1</mn>
-            <mo>&#x2227;</mo>
-            <mi>c</mi>
-            <mo>&#x2260;</mo>
-            <mn>0</mn>
-            <mo>&#x2228;</mo>
-            <mo>&#xac;</mo>
-            <mfrac>
-              <mrow>
-                <mi>&#x2148;</mi>
-                <mo>&#x2062;</mo>
-                <mi msiMathname="true">ln</mi>
-                <mo>&#x2061;</mo>
-                <mfrac>
-                  <mi>Q</mi>
-                  <mi>P</mi>
-                </mfrac>
-              </mrow>
-              <mrow>
-                <mn>2</mn>
-                <mo>&#x2062;</mo>
-                <mi>&#x3c0;</mi>
-              </mrow>
-            </mfrac>
-            <mo>&#x220a;</mo>
-            <mi>&#x2124;</mi>
-            <mo>&#x2227;</mo>
-            <mi>b</mi>
-            <mo>=</mo>
-            <mn>0</mn>
-            <mo>&#x2227;</mo>
-            <mi>c</mi>
-            <mo>=</mo>
-            <mn>0</mn>
-          </mrow>
-          <mo>)</mo>
+          <mi>c</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>Q</mi>
+          <mo>=</mo>
+          <mi>P</mi>
         </mtd>
       </mtr>
       <mtr>
@@ -3749,6 +3303,78 @@ Test ID 1607
           <mtext>if</mtext>
         </mtd>
         <mtd>
+          <mo>(</mo>
+          <mrow>
+            <mi>b</mi>
+            <mo>=</mo>
+            <mn>0</mn>
+            <mo>&#x2227;</mo>
+            <mi>c</mi>
+            <mo>=</mo>
+            <mn>0</mn>
+            <mo>&#x2227;</mo>
+            <mi>Q</mi>
+            <mo>=</mo>
+            <mi>P</mi>
+            <mo>&#x2228;</mo>
+            <mi>Q</mi>
+            <mo>&#x2260;</mo>
+            <mn>0</mn>
+            <mo>&#x2227;</mo>
+            <mi>b</mi>
+            <mo>&#x2260;</mo>
+            <mn>0</mn>
+            <mo>&#x2227;</mo>
+            <mo>(</mo>
+            <mrow>
+              <mfrac>
+                <mrow>
+                  <mi>&#x2148;</mi>
+                  <mo>&#x2062;</mo>
+                  <mi msiMathname="true">ln</mi>
+                  <mo>&#x2061;</mo>
+                  <mfrac>
+                    <mi>Q</mi>
+                    <mi>P</mi>
+                  </mfrac>
+                </mrow>
+                <mrow>
+                  <mn>2</mn>
+                  <mo>&#x2062;</mo>
+                  <mi>&#x3c0;</mi>
+                </mrow>
+              </mfrac>
+              <mo>&#x220a;</mo>
+              <mi>&#x2124;</mi>
+              <mo>&#x2228;</mo>
+              <mi>b</mi>
+              <mo>&#x2260;</mo>
+              <mn>1</mn>
+              <mo>&#x2227;</mo>
+              <mi>c</mi>
+              <mo>&#x2260;</mo>
+              <mn>0</mn>
+            </mrow>
+            <mo>)</mo>
+            <mo>&#x2227;</mo>
+            <mo>(</mo>
+            <mrow>
+              <mi>b</mi>
+              <mo>=</mo>
+              <mn>1</mn>
+              <mo>&#x2228;</mo>
+              <mi>c</mi>
+              <mo>=</mo>
+              <mn>0</mn>
+            </mrow>
+            <mo>)</mo>
+          </mrow>
+          <mo>)</mo>
+          <mo>&#x2227;</mo>
+          <mi>P</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2228;</mo>
           <mi>P</mi>
           <mo>=</mo>
           <mn>0</mn>
@@ -3766,13 +3392,114 @@ Test ID 1607
           <mtext>if</mtext>
         </mtd>
         <mtd>
-          <mi>Q</mi>
-          <mo>&#x2260;</mo>
-          <mn>0</mn>
-          <mo>&#x2227;</mo>
           <mi>P</mi>
           <mo>=</mo>
           <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mi>Q</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2228;</mo>
+          <mi>P</mi>
+          <mo>&#x2260;</mo>
+          <mn>0</mn>
+          <mo>&#x2227;</mo>
+          <mo>(</mo>
+          <mrow>
+            <mi>b</mi>
+            <mo>=</mo>
+            <mn>0</mn>
+            <mo>&#x2227;</mo>
+            <mo>(</mo>
+            <mrow>
+              <mi>Q</mi>
+              <mo>=</mo>
+              <mn>0</mn>
+              <mo>&#x2227;</mo>
+              <mi>c</mi>
+              <mo>=</mo>
+              <mn>0</mn>
+              <mo>&#x2228;</mo>
+              <mi>Q</mi>
+              <mo>&#x2260;</mo>
+              <mn>0</mn>
+              <mo>&#x2227;</mo>
+              <mi>Q</mi>
+              <mo>&#x2260;</mo>
+              <mi>P</mi>
+            </mrow>
+            <mo>)</mo>
+            <mo>&#x2228;</mo>
+            <mi>b</mi>
+            <mo>&#x2260;</mo>
+            <mn>0</mn>
+            <mo>&#x2227;</mo>
+            <mo>(</mo>
+            <mrow>
+              <mi>Q</mi>
+              <mo>=</mo>
+              <mn>0</mn>
+              <mo>&#x2228;</mo>
+              <mo>(</mo>
+              <mrow>
+                <mi>b</mi>
+                <mo>&#x2260;</mo>
+                <mn>1</mn>
+                <mo>&#x2227;</mo>
+                <mi>c</mi>
+                <mo>&#x2260;</mo>
+                <mn>0</mn>
+                <mo>&#x2228;</mo>
+                <mo>&#xac;</mo>
+                <mfrac>
+                  <mrow>
+                    <mi>&#x2148;</mi>
+                    <mo>&#x2062;</mo>
+                    <mi msiMathname="true">ln</mi>
+                    <mo>&#x2061;</mo>
+                    <mfrac>
+                      <mi>Q</mi>
+                      <mi>P</mi>
+                    </mfrac>
+                  </mrow>
+                  <mrow>
+                    <mn>2</mn>
+                    <mo>&#x2062;</mo>
+                    <mi>&#x3c0;</mi>
+                  </mrow>
+                </mfrac>
+                <mo>&#x220a;</mo>
+                <mi>&#x2124;</mi>
+                <mo>&#x2227;</mo>
+                <mo>(</mo>
+                <mrow>
+                  <mi>b</mi>
+                  <mo>=</mo>
+                  <mn>1</mn>
+                  <mo>&#x2228;</mo>
+                  <mi>c</mi>
+                  <mo>=</mo>
+                  <mn>0</mn>
+                </mrow>
+                <mo>)</mo>
+              </mrow>
+              <mo>)</mo>
+              <mo>&#x2227;</mo>
+              <mo>(</mo>
+              <mrow>
+                <mi>b</mi>
+                <mo>=</mo>
+                <mn>1</mn>
+                <mo>&#x2228;</mo>
+                <mi>c</mi>
+                <mo>=</mo>
+                <mn>0</mn>
+              </mrow>
+              <mo>)</mo>
+            </mrow>
+            <mo>)</mo>
+          </mrow>
+          <mo>)</mo>
         </mtd>
       </mtr>
     </mtable>
@@ -3818,7 +3545,8 @@ Test ID 1702
         <mrow>
           <mi>x</mi>
           <mo>=</mo>
-          <mn>0.67732</mn>
+          <mo>&#x2212;</mo>
+          <mn>7.6773</mn>
         </mrow>
         <mo>]</mo>
       </mrow>
@@ -3828,8 +3556,7 @@ Test ID 1702
         <mrow>
           <mi>x</mi>
           <mo>=</mo>
-          <mo>&#x2212;</mo>
-          <mn>7.6773</mn>
+          <mn>0.67732</mn>
         </mrow>
         <mo>]</mo>
       </mrow>
@@ -3848,6 +3575,16 @@ Test ID 1703
   <mrow>
     <mo>{</mo>
     <mrow>
+      <mrow>
+        <mo>[</mo>
+        <mrow>
+          <mi>x</mi>
+          <mo>=</mo>
+          <mn>3.0</mn>
+        </mrow>
+        <mo>]</mo>
+      </mrow>
+      <mo>,</mo>
       <mrow>
         <mo>[</mo>
         <mrow>
@@ -3874,16 +3611,6 @@ Test ID 1703
           <mn>1.7176</mn>
           <mo>&#x2062;</mo>
           <mi>&#x2148;</mi>
-        </mrow>
-        <mo>]</mo>
-      </mrow>
-      <mo>,</mo>
-      <mrow>
-        <mo>[</mo>
-        <mrow>
-          <mi>x</mi>
-          <mo>=</mo>
-          <mn>3.0</mn>
         </mrow>
         <mo>]</mo>
       </mrow>
@@ -3948,7 +3675,7 @@ Test ID 1801
       <mo>=</mo>
       <msub>
         <mi>C</mi>
-        <mn>5</mn>
+        <mn>3</mn>
       </msub>
       <mo>&#x2062;</mo>
       <msup>
@@ -3977,7 +3704,7 @@ Test ID 1801
       <mo>+</mo>
       <msub>
         <mi>C</mi>
-        <mn>6</mn>
+        <mn>4</mn>
       </msub>
       <mo>&#x2062;</mo>
       <msup>
@@ -4067,7 +3794,7 @@ Test ID 1901
     <mrow>
       <msub>
         <mi>C</mi>
-        <mn>10</mn>
+        <mn>8</mn>
       </msub>
       <mo>&#x2212;</mo>
       <mi msiMathname="true">cos</mi>
@@ -4090,7 +3817,7 @@ Test ID 1902
     <mrow>
       <msub>
         <mi>C</mi>
-        <mn>12</mn>
+        <mn>10</mn>
       </msub>
       <mo>&#x2062;</mo>
       <msup>
@@ -4105,7 +3832,7 @@ Test ID 1902
       <mo>+</mo>
       <msub>
         <mi>C</mi>
-        <mn>13</mn>
+        <mn>11</mn>
       </msub>
       <mo>&#x2062;</mo>
       <msup>
@@ -4129,7 +3856,7 @@ Test ID 1903
     <mrow>
       <msub>
         <mi>C</mi>
-        <mn>15</mn>
+        <mn>13</mn>
       </msub>
       <mo>&#x2062;</mo>
       <msup>
@@ -4139,7 +3866,7 @@ Test ID 1903
       <mo>+</mo>
       <msub>
         <mi>C</mi>
-        <mn>16</mn>
+        <mn>14</mn>
       </msub>
       <mo>&#x2062;</mo>
       <mi>t</mi>
@@ -4199,7 +3926,7 @@ Test ID 1905
     <mrow>
       <msub>
         <mi>C</mi>
-        <mn>21</mn>
+        <mn>19</mn>
       </msub>
       <mo>&#x2062;</mo>
       <msup>
@@ -4233,7 +3960,7 @@ Test ID 1906
     <mrow>
       <msub>
         <mi>C</mi>
-        <mn>25</mn>
+        <mn>21</mn>
       </msub>
       <mo>&#x2062;</mo>
       <msup>
@@ -4261,7 +3988,7 @@ Test ID 1907
     <mrow>
       <msub>
         <mi>C</mi>
-        <mn>27</mn>
+        <mn>23</mn>
       </msub>
       <mo>&#x2062;</mo>
       <msup>
@@ -4274,7 +4001,7 @@ Test ID 1907
       <mo>+</mo>
       <msub>
         <mi>C</mi>
-        <mn>28</mn>
+        <mn>24</mn>
       </msub>
       <mo>&#x2062;</mo>
       <msup>
@@ -5112,6 +4839,19 @@ Test ID 2007
       </mrow>
       <mo>)</mo>
       <mo>&#x2212;</mo>
+      <msup>
+        <mrow>
+          <mo>(</mo>
+          <mrow>
+            <mi>t</mi>
+            <mo>&#x2212;</mo>
+            <mi>x</mi>
+          </mrow>
+          <mo>)</mo>
+        </mrow>
+        <mn>3</mn>
+      </msup>
+      <mo>&#x2062;</mo>
       <mo>(</mo>
       <mrow>
         <mfrac>
@@ -5138,7 +4878,7 @@ Test ID 2007
         <mi>t</mi>
       </mrow>
       <mo>)</mo>
-      <mo>&#x2062;</mo>
+      <mo>+</mo>
       <msup>
         <mrow>
           <mo>(</mo>
@@ -5149,9 +4889,9 @@ Test ID 2007
           </mrow>
           <mo>)</mo>
         </mrow>
-        <mn>3</mn>
+        <mn>4</mn>
       </msup>
-      <mo>+</mo>
+      <mo>&#x2062;</mo>
       <mo>(</mo>
       <mrow>
         <mfrac>
@@ -5178,19 +4918,6 @@ Test ID 2007
         <mi>t</mi>
       </mrow>
       <mo>)</mo>
-      <mo>&#x2062;</mo>
-      <msup>
-        <mrow>
-          <mo>(</mo>
-          <mrow>
-            <mi>t</mi>
-            <mo>&#x2212;</mo>
-            <mi>x</mi>
-          </mrow>
-          <mo>)</mo>
-        </mrow>
-        <mn>4</mn>
-      </msup>
       <mo>+</mo>
       <mi>O</mi>
       <mo>&#x2061;</mo>
@@ -5351,16 +5078,21 @@ Test ID 2009
       </mrow>
       <mo>)</mo>
       <mo>+</mo>
-      <mo>(</mo>
-      <mrow>
-        <mi>y</mi>
-        <mo>&#x2061;</mo>
+      <msup>
         <mrow>
           <mo>(</mo>
-          <mn>1</mn>
+          <mrow>
+            <mi>x</mi>
+            <mo>&#x2212;</mo>
+            <mn>1</mn>
+          </mrow>
           <mo>)</mo>
         </mrow>
-        <mo>+</mo>
+        <mn>2</mn>
+      </msup>
+      <mo>&#x2062;</mo>
+      <mo>(</mo>
+      <mrow>
         <mfrac>
           <mn>1</mn>
           <mn>6</mn>
@@ -5376,9 +5108,17 @@ Test ID 2009
           <mn>1</mn>
           <mo>)</mo>
         </mrow>
+        <mo>+</mo>
+        <mi>y</mi>
+        <mo>&#x2061;</mo>
+        <mrow>
+          <mo>(</mo>
+          <mn>1</mn>
+          <mo>)</mo>
+        </mrow>
       </mrow>
       <mo>)</mo>
-      <mo>&#x2062;</mo>
+      <mo>&#x2212;</mo>
       <msup>
         <mrow>
           <mo>(</mo>
@@ -5389,9 +5129,9 @@ Test ID 2009
           </mrow>
           <mo>)</mo>
         </mrow>
-        <mn>2</mn>
+        <mn>3</mn>
       </msup>
-      <mo>&#x2212;</mo>
+      <mo>&#x2062;</mo>
       <mo>(</mo>
       <mrow>
         <mfrac>
@@ -5424,7 +5164,7 @@ Test ID 2009
         </mrow>
       </mrow>
       <mo>)</mo>
-      <mo>&#x2062;</mo>
+      <mo>+</mo>
       <msup>
         <mrow>
           <mo>(</mo>
@@ -5435,9 +5175,9 @@ Test ID 2009
           </mrow>
           <mo>)</mo>
         </mrow>
-        <mn>3</mn>
+        <mn>4</mn>
       </msup>
-      <mo>+</mo>
+      <mo>&#x2062;</mo>
       <mo>(</mo>
       <mrow>
         <mfrac>
@@ -5470,19 +5210,6 @@ Test ID 2009
         </mrow>
       </mrow>
       <mo>)</mo>
-      <mo>&#x2062;</mo>
-      <msup>
-        <mrow>
-          <mo>(</mo>
-          <mrow>
-            <mi>x</mi>
-            <mo>&#x2212;</mo>
-            <mn>1</mn>
-          </mrow>
-          <mo>)</mo>
-        </mrow>
-        <mn>4</mn>
-      </msup>
       <mo>+</mo>
       <mi>O</mi>
       <mo>&#x2061;</mo>
@@ -7098,14 +6825,11 @@ Test ID 4103
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
-    <mn>2</mn>
-    <mo>&#x2062;</mo>
-    <msup>
-      <mi msiMathname="true">sin</mi>
-      <mn>2</mn>
-    </msup>
-    <mo>&#x2061;</mo>
     <mn>1</mn>
+    <mo>&#x2212;</mo>
+    <mi msiMathname="true">cos</mi>
+    <mo>&#x2061;</mo>
+    <mn>2</mn>
   </mrow>
 </math>
 
@@ -7489,20 +7213,6 @@ Test ID 4606
     <mtable>
       <mtr>
         <mtd>
-          <mo>&#x2212;</mo>
-          <mn>1</mn>
-        </mtd>
-        <mtd>
-          <mtext>if</mtext>
-        </mtd>
-        <mtd>
-          <mi>t</mi>
-          <mo>&#x3c;</mo>
-          <mn>0</mn>
-        </mtd>
-      </mtr>
-      <mtr>
-        <mtd>
           <mn>2</mn>
           <mo>&#x2062;</mo>
           <mi>t</mi>
@@ -7514,6 +7224,20 @@ Test ID 4606
           <mn>0</mn>
           <mo>&#x3c;</mo>
           <mi>t</mi>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mo>&#x2212;</mo>
+          <mn>1</mn>
+        </mtd>
+        <mtd>
+          <mtext>if</mtext>
+        </mtd>
+        <mtd>
+          <mi>t</mi>
+          <mo>&#x3c;</mo>
+          <mn>0</mn>
         </mtd>
       </mtr>
     </mtable>
