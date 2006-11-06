@@ -83,7 +83,7 @@ Test ID #200
       <mrow>
         <msub>
           <mi>C</mi>
-          <mn>3</mn>
+          <mn>2</mn>
         </msub>
         <mo>+</mo>
         <mn>2</mn>
@@ -453,7 +453,7 @@ Test ID #1101
       <mrow>
         <msub>
           <mi>i</mi>
-          <mn>3</mn>
+          <mn>4</mn>
         </msub>
         <mo>=</mo>
         <mn>0</mn>
@@ -470,7 +470,7 @@ Test ID #1101
       <mo>&#x2062;</mo>
       <msub>
         <mi>i</mi>
-        <mn>3</mn>
+        <mn>4</mn>
       </msub>
       <mo>&#x2062;</mo>
       <mi msiMathname="true">sin</mi>
@@ -485,7 +485,7 @@ Test ID #1101
         <mo>&#x2062;</mo>
         <msub>
           <mi>i</mi>
-          <mn>3</mn>
+          <mn>4</mn>
         </msub>
       </mrow>
     </mrow>
@@ -516,7 +516,7 @@ Test ID #1101a
       <mrow>
         <msub>
           <mi>i</mi>
-          <mn>4</mn>
+          <mn>5</mn>
         </msub>
         <mo>=</mo>
         <mn>0</mn>
@@ -533,7 +533,7 @@ Test ID #1101a
       <mo>&#x2062;</mo>
       <msub>
         <mi>i</mi>
-        <mn>4</mn>
+        <mn>5</mn>
       </msub>
       <mo>&#x2062;</mo>
       <mi msiMathname="true">sin</mi>
@@ -548,7 +548,7 @@ Test ID #1101a
         <mo>&#x2062;</mo>
         <msub>
           <mi>i</mi>
-          <mn>4</mn>
+          <mn>5</mn>
         </msub>
       </mrow>
     </mrow>
@@ -575,7 +575,7 @@ Test ID #1102
       <mrow>
         <msub>
           <mi>i</mi>
-          <mn>5</mn>
+          <mn>6</mn>
         </msub>
         <mo>=</mo>
         <mn>0</mn>
@@ -606,7 +606,7 @@ Test ID #1102
               <mrow>
                 <msub>
                   <mi>i</mi>
-                  <mn>5</mn>
+                  <mn>6</mn>
                 </msub>
                 <mo>+</mo>
                 <mfrac>
@@ -623,7 +623,7 @@ Test ID #1102
         <mrow>
           <msub>
             <mi>i</mi>
-            <mn>5</mn>
+            <mn>6</mn>
           </msub>
           <mo>+</mo>
           <mfrac>
@@ -656,7 +656,7 @@ Test ID #1103
       <mrow>
         <msub>
           <mi>i</mi>
-          <mn>6</mn>
+          <mn>7</mn>
         </msub>
         <mo>=</mo>
         <mn>1</mn>
@@ -673,7 +673,7 @@ Test ID #1103
       <mo>&#x2062;</mo>
       <msub>
         <mi>i</mi>
-        <mn>6</mn>
+        <mn>7</mn>
       </msub>
       <mo>&#x2062;</mo>
       <mi msiMathname="true">sin</mi>
@@ -688,7 +688,7 @@ Test ID #1103
         <mo>&#x2062;</mo>
         <msub>
           <mi>i</mi>
-          <mn>6</mn>
+          <mn>7</mn>
         </msub>
       </mrow>
     </mrow>
@@ -712,6 +712,50 @@ Test ID #1104
     <mo>&#x2062;</mo>
     <mfenced open="(" close=")">
       <mrow>
+        <mn>2</mn>
+        <mo>&#x2062;</mo>
+        <msubsup>
+          <mo form="prefix" largeop="true">&#x2211;</mo>
+          <mrow>
+            <msub>
+              <mi>i</mi>
+              <mn>8</mn>
+            </msub>
+            <mo>=</mo>
+            <mn>1</mn>
+          </mrow>
+          <mn>4</mn>
+        </msubsup>
+        <mrow>
+          <mfrac>
+            <mn>1</mn>
+            <mn>5</mn>
+          </mfrac>
+          <mo>&#x2062;</mo>
+          <mi>&#x3c0;</mi>
+          <mo>&#x2062;</mo>
+          <msub>
+            <mi>i</mi>
+            <mn>8</mn>
+          </msub>
+          <mo>&#x2062;</mo>
+          <mi msiMathname="true">sin</mi>
+          <mo>&#x2061;</mo>
+          <mrow>
+            <mfrac>
+              <mn>1</mn>
+              <mn>5</mn>
+            </mfrac>
+            <mo>&#x2062;</mo>
+            <mi>&#x3c0;</mi>
+            <mo>&#x2062;</mo>
+            <msub>
+              <mi>i</mi>
+              <mn>8</mn>
+            </msub>
+          </mrow>
+        </mrow>
+        <mo>+</mo>
         <mn>4</mn>
         <mo>&#x2062;</mo>
         <msubsup>
@@ -719,7 +763,7 @@ Test ID #1104
           <mrow>
             <msub>
               <mi>i</mi>
-              <mn>7</mn>
+              <mn>8</mn>
             </msub>
             <mo>=</mo>
             <mn>1</mn>
@@ -752,7 +796,7 @@ Test ID #1104
                     <mo>&#x2062;</mo>
                     <msub>
                       <mi>i</mi>
-                      <mn>7</mn>
+                      <mn>8</mn>
                     </msub>
                     <mo>&#x2212;</mo>
                     <mn>1</mn>
@@ -768,56 +812,12 @@ Test ID #1104
               <mo>&#x2062;</mo>
               <msub>
                 <mi>i</mi>
-                <mn>7</mn>
+                <mn>8</mn>
               </msub>
               <mo>&#x2212;</mo>
               <mn>1</mn>
             </mrow>
           </mfenced>
-        </mrow>
-        <mo>+</mo>
-        <mn>2</mn>
-        <mo>&#x2062;</mo>
-        <msubsup>
-          <mo form="prefix" largeop="true">&#x2211;</mo>
-          <mrow>
-            <msub>
-              <mi>i</mi>
-              <mn>7</mn>
-            </msub>
-            <mo>=</mo>
-            <mn>1</mn>
-          </mrow>
-          <mn>4</mn>
-        </msubsup>
-        <mrow>
-          <mfrac>
-            <mn>1</mn>
-            <mn>5</mn>
-          </mfrac>
-          <mo>&#x2062;</mo>
-          <mi>&#x3c0;</mi>
-          <mo>&#x2062;</mo>
-          <msub>
-            <mi>i</mi>
-            <mn>7</mn>
-          </msub>
-          <mo>&#x2062;</mo>
-          <mi msiMathname="true">sin</mi>
-          <mo>&#x2061;</mo>
-          <mrow>
-            <mfrac>
-              <mn>1</mn>
-              <mn>5</mn>
-            </mfrac>
-            <mo>&#x2062;</mo>
-            <mi>&#x3c0;</mi>
-            <mo>&#x2062;</mo>
-            <msub>
-              <mi>i</mi>
-              <mn>7</mn>
-            </msub>
-          </mrow>
         </mrow>
       </mrow>
     </mfenced>
@@ -844,7 +844,7 @@ Test ID #1105
       <mrow>
         <msub>
           <mi>i</mi>
-          <mn>8</mn>
+          <mn>9</mn>
         </msub>
         <mo>=</mo>
         <mn>1</mn>
@@ -861,7 +861,7 @@ Test ID #1105
       <mo>&#x2062;</mo>
       <msub>
         <mi>i</mi>
-        <mn>8</mn>
+        <mn>9</mn>
       </msub>
       <mo>&#x2062;</mo>
       <mi msiMathname="true">sin</mi>
@@ -876,7 +876,7 @@ Test ID #1105
         <mo>&#x2062;</mo>
         <msub>
           <mi>i</mi>
-          <mn>8</mn>
+          <mn>9</mn>
         </msub>
       </mrow>
     </mrow>
