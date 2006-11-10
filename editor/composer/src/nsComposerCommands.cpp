@@ -391,6 +391,203 @@ nsPasteNoFormattingCommand::GetCommandStateParams(const char *aCommandName,
 #ifdef XP_MAC
 #pragma mark -
 #endif
+nsTextTagUpdatingCommand::nsTextTagUpdatingCommand(void)
+: nsBaseTagUpdatingCommand()
+{
+}
+
+
+nsresult
+nsTextTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
+{
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
+  if (!htmlEditor)
+    return NS_ERROR_NO_INTERFACE;
+
+  //create some params now...
+  nsresult rv;
+  nsCOMPtr<nsICommandParams> params =
+      do_CreateInstance(NS_COMMAND_PARAMS_CONTRACTID,&rv);
+  if (NS_FAILED(rv) || !params)
+    return rv;
+
+  // tags "href" and "name" are special cases in the core editor 
+  // they are used to remove named anchor/link and shouldn't be used for insertion
+  nsAutoString tagName; tagName.AssignWithConversion(aTagName);
+  PRBool doTagRemoval;
+  if (tagName.Equals(NS_LITERAL_STRING("href")) ||
+      tagName.Equals(NS_LITERAL_STRING("name")))
+    doTagRemoval = PR_TRUE;
+  else
+  {
+    // check current selection; set doTagRemoval if formatting should be removed
+    rv = GetCurrentState(aEditor,params);
+    if (NS_FAILED(rv)) 
+      return rv;
+    rv = params->GetBooleanValue(STATE_ALL, &doTagRemoval);
+    if (NS_FAILED(rv)) 
+      return rv;
+  }
+
+  if (doTagRemoval)
+    rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
+  else
+  {
+    // Superscript and Subscript styles are mutually exclusive
+    nsAutoString removeName; 
+    aEditor->BeginTransaction();
+
+    if (tagName.Equals(NS_LITERAL_STRING("sub")))
+    {
+      removeName.AssignWithConversion("sup");
+      rv = RemoveTextProperty(aEditor,tagName.get(), nsnull);
+    } 
+    else if (tagName.Equals(NS_LITERAL_STRING("sup")))
+    {
+      removeName.AssignWithConversion("sub");
+      rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
+    }
+    if (NS_SUCCEEDED(rv))
+      rv = SetTextProperty(aEditor,tagName.get(), nsnull, nsnull);
+
+    aEditor->EndTransaction();
+  }
+
+  return rv;
+}
+
+nsParaTagUpdatingCommand::nsParaTagUpdatingCommand(void)
+: nsBaseTagUpdatingCommand()
+{
+}
+
+
+
+
+nsresult
+nsStructTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
+{
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
+  if (!htmlEditor)
+    return NS_ERROR_NO_INTERFACE;
+
+  //create some params now...
+  nsresult rv;
+  nsCOMPtr<nsICommandParams> params =
+      do_CreateInstance(NS_COMMAND_PARAMS_CONTRACTID,&rv);
+  if (NS_FAILED(rv) || !params)
+    return rv;
+
+  // tags "href" and "name" are special cases in the core editor 
+  // they are used to remove named anchor/link and shouldn't be used for insertion
+  nsAutoString tagName; tagName.AssignWithConversion(aTagName);
+  PRBool doTagRemoval;
+  if (tagName.Equals(NS_LITERAL_STRING("href")) ||
+      tagName.Equals(NS_LITERAL_STRING("name")))
+    doTagRemoval = PR_TRUE;
+  else
+  {
+    // check current selection; set doTagRemoval if formatting should be removed
+    rv = GetCurrentState(aEditor, params);
+    if (NS_FAILED(rv)) 
+      return rv;
+    rv = params->GetBooleanValue(STATE_ALL, &doTagRemoval);
+    if (NS_FAILED(rv)) 
+      return rv;
+  }
+
+  if (doTagRemoval)
+    rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
+  else
+  {
+    // Superscript and Subscript styles are mutually exclusive
+    nsAutoString removeName; 
+    aEditor->BeginTransaction();
+
+    if (tagName.Equals(NS_LITERAL_STRING("sub")))
+    {
+      removeName.AssignWithConversion("sup");
+      rv = RemoveTextProperty(aEditor,tagName.get(), nsnull);
+    } 
+    else if (tagName.Equals(NS_LITERAL_STRING("sup")))
+    {
+      removeName.AssignWithConversion("sub");
+      rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
+    }
+    if (NS_SUCCEEDED(rv))
+      rv = SetTextProperty(aEditor,tagName.get(), nsnull, nsnull);
+
+    aEditor->EndTransaction();
+  }
+
+  return rv;
+}
+
+nsOtherTagUpdatingCommand::nsOtherTagUpdatingCommand(void)
+: nsBaseTagUpdatingCommand()
+{
+}
+
+
+nsresult
+nsOtherTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
+{
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
+  if (!htmlEditor)
+    return NS_ERROR_NO_INTERFACE;
+
+  //create some params now...
+  nsresult rv;
+  nsCOMPtr<nsICommandParams> params =
+      do_CreateInstance(NS_COMMAND_PARAMS_CONTRACTID,&rv);
+  if (NS_FAILED(rv) || !params)
+    return rv;
+
+  // tags "href" and "name" are special cases in the core editor 
+  // they are used to remove named anchor/link and shouldn't be used for insertion
+  nsAutoString tagName; tagName.AssignWithConversion(aTagName);
+  PRBool doTagRemoval;
+  if (tagName.Equals(NS_LITERAL_STRING("href")) ||
+      tagName.Equals(NS_LITERAL_STRING("name")))
+    doTagRemoval = PR_TRUE;
+  else
+  {
+    // check current selection; set doTagRemoval if formatting should be removed
+    rv = GetCurrentState(aEditor, params);
+    if (NS_FAILED(rv)) 
+      return rv;
+    rv = params->GetBooleanValue(STATE_ALL, &doTagRemoval);
+    if (NS_FAILED(rv)) 
+      return rv;
+  }
+
+  if (doTagRemoval)
+    rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
+  else
+  {
+    // Superscript and Subscript styles are mutually exclusive
+    nsAutoString removeName; 
+    aEditor->BeginTransaction();
+
+    if (tagName.Equals(NS_LITERAL_STRING("sub")))
+    {
+      removeName.AssignWithConversion("sup");
+      rv = RemoveTextProperty(aEditor,tagName.get(), nsnull);
+    } 
+    else if (tagName.Equals(NS_LITERAL_STRING("sup")))
+    {
+      removeName.AssignWithConversion("sub");
+      rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
+    }
+    if (NS_SUCCEEDED(rv))
+      rv = SetTextProperty(aEditor,tagName.get(), nsnull, nsnull);
+
+    aEditor->EndTransaction();
+  }
+
+  return rv;
+}
+
 
 nsStyleUpdatingCommand::nsStyleUpdatingCommand(const char* aTagName)
 : nsBaseStateUpdatingCommand(aTagName)
