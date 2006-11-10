@@ -9,7 +9,7 @@
 <overlay id="toolbarsOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   
-  <script type="application/x-javascript" src="chrome://editor/content/EditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/toolbarsOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/customizeToolbar.js"/>

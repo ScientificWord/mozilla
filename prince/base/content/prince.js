@@ -466,11 +466,11 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   // the following requires that the pdflatex program (or a hard link to it) be in xpi-stage/prince/TeX/bin/pdflatex 
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-  exefile.append("TeX"); exefile.append("bin"); 
+//  exefile.append("TeX"); exefile.append("bin"); 
   if (pdftex)
-    exefile.append("pdflatex.exe");
+    exefile.append("pdflatex.cmd");
   else
-    exefile.append("tex.exe");
+    exefile.append("tex.cmd");
 // the following is an egreqious hack. How do we find the path we need in general.
 //  var execpath = "/usr/local/teTeX/bin/i386-apple-darwin-current/pdflatex";
 //  var exefile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
