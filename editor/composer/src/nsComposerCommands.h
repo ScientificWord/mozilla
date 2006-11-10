@@ -122,6 +122,7 @@ protected:
   virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
   
 };
+
 // virtual base class for tag commands that need to save and update Boolean state (like styles etc)
 // It does not store the tag name like the above class
 class nsBaseTagUpdatingCommand : public nsBaseComposerCommand
@@ -154,7 +155,7 @@ class nsTextTagUpdatingCommand : public nsBaseTagUpdatingCommand
 {
 public:
 
-  nsTextTagUpdatingCommand(void){}
+  nsTextTagUpdatingCommand(void);
            
 protected:
 
@@ -164,7 +165,7 @@ protected:
   // add/remove the style
     
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState) { return NS_ERROR_NOT_IMPLEMENTED;}
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName){ return NS_OK; }
+  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
   
 };
 // Shared class for para tags.  
@@ -172,7 +173,7 @@ class nsParaTagUpdatingCommand : public nsBaseTagUpdatingCommand
 {
 public:
 
-  nsParaTagUpdatingCommand(void){}
+  nsParaTagUpdatingCommand(void);
            
 protected:
 
@@ -202,7 +203,7 @@ protected:
   { return GetCurrentTagState( aEditor, "structtag", aParams);}
   
   // add/remove the style
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName){return NS_OK;}
+  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState);
   NS_IMETHOD DoCommand(const char * aCommandName, nsISupports *aCommandRefCon);
   NS_IMETHOD DoCommandParams(const char *aCommandName,
@@ -215,8 +216,8 @@ class nsOtherTagUpdatingCommand : public nsBaseTagUpdatingCommand
 {
 public:
 
-  nsOtherTagUpdatingCommand(void){}
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName){return NS_OK;}
+  nsOtherTagUpdatingCommand(void);
+  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
   virtual nsresult  SetState(nsIEditor *aEditor, nsString& newState){return NS_ERROR_NOT_IMPLEMENTED;}
            
 protected:
@@ -225,7 +226,6 @@ protected:
   { return GetCurrentTagState( aEditor, "othertag", aParams);}
   
 };
-
 
 
 class nsInsertTagCommand : public nsBaseComposerCommand
@@ -292,6 +292,7 @@ protected:
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState) = 0;
   
 };
+
 
 
 class nsParagraphStateCommand : public nsMultiStateCommand
