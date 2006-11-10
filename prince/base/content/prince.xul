@@ -152,24 +152,24 @@
 
   <statusbar class="chromeclass-status" id="status-bar">
       <toolbar id="FastCursorToolbar" hidden="true" align="center" fullscreentoolbar="true">
-      <toolbarbutton id="fastcursor-closebutton" tooltiptext="&fastcursorCloseButton.tooltip;"
+      <toolbarbutton id="fastcursor-closebutton" tooltiptext="fastcursorCloseButton.tooltip;"
                      hidden="true" oncommand="closeFastCursorBar();"/>  -->
 
-      <label value="&fastcursor.label;"/>
+      <label value="fastcursor.label;"/>
       <hbox id="fastcursor-field-container">
         <textbox id="fastcursor-field" oninput="fastcursor(this.value);" onfocus="onFastCursorBarFocus();"
                 onkeypress="onFastCursorBarKeyPress(event);" onblur="onFastCursorBarBlur();"/>
       </hbox>
-      <toolbarbutton id="find-next" label="&fastcursorNext.label;" tooltiptext="&fastcursorNext.tooltip;"
+      <toolbarbutton id="find-next" label="fastcursorNext.label;" tooltiptext="fastcursorNext.tooltip;"
                      oncommand="onFindAgainCmd();" disabled="false"/>
-      <toolbarbutton id="find-previous" label="&fastcursorPrevious.label;" tooltiptext="&fastcursorPrevious.tooltip;"
+      <toolbarbutton id="find-previous" label="fastcursorPrevious.label;" tooltiptext="fastcursorPrevious.tooltip;"
                      oncommand="onFindPreviousCmd();" disabled="false"/>
-      <toolbarbutton id="highlight" label="&highlight.label;" tooltiptext="&highlight.tooltip;"
+      <toolbarbutton id="highlight" label="highlight.label;" tooltiptext="highlight.tooltip;"
                      oncommand="toggleHighlight(!this.checked);
                                 if (gFindMode != FIND_NORMAL) setFastCursorCloseTimeout();"
                      type="checkbox" disabled="false"/>
       <checkbox id="fastcursor-case-sensitive" oncommand="toggleCaseSensitivity(this.checked);"
-                hidden="true" label="&caseSensitiveCheckbox.label;" accesskey="&caseSensitiveCheckbox.accesskey;"/>
+                hidden="true" label="caseSensitiveCheckbox.label;" accesskey="caseSensitiveCheckbox.accesskey;"/>
       <image id="fastcursor-status-icon"/>
       <label id="fastcursor-status"/>
     </toolbar>
