@@ -685,6 +685,16 @@ protected:
                                      nsIDOMNode *aNode);
   nsresult RelativeFontChangeHelper( PRInt32 aSizeChange, 
                                      nsIDOMNode *aNode);
+                                     
+  /* Scientific WorkPlace additions */  
+  nsresult SetTextTagNode( nsIDOMCharacterData *aTextNode, 
+                           PRInt32 aStartOffset,
+                           PRInt32 aEndOffset,
+                           nsString &tagLocalName,
+                           nsIAtom *atomNS /* perhaps later, add these: 
+                           const nsAString *aAttribute,
+                           const nsAString *aValue */);
+                                       
 
   /* helper routines for inline style */
   nsresult SetInlinePropertyOnTextNode( nsIDOMCharacterData *aTextNode, 
