@@ -59,6 +59,7 @@
 #include "nsIContent.h"
 #include "nsIContentIterator.h"
 #include "nsAttrName.h"
+#include "msiTagListManager.h"
 
 
 NS_IMETHODIMP nsHTMLEditor::AddDefaultProperty(nsIAtom *aProperty, 
@@ -131,6 +132,11 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
 {
   if (!aProperty) { return NS_ERROR_NULL_POINTER; }
   if (!mRules) { return NS_ERROR_NOT_INITIALIZED; }
+  nsAutoString tagString;
+  aProperty->ToString(tagString);
+  TagKey tagkey(tagString);
+  bool fNotHTML = (tagkey.atomNS() != msiTagListManager::htmlnsAtom);
+  
   ForceCompositionEnd();
 
   nsCOMPtr<nsISelection>selection;
@@ -193,7 +199,13 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
         range->GetStartOffset(&startOffset);
         range->GetEndOffset(&endOffset);
         nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(startNode);
-        res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, endOffset, aProperty, &aAttribute, &aValue);
+        if (fNotHTML)
+        {
+          nsString localname = tagkey.localName();
+          res = SetTextTagNode(nodeAsText, startOffset, endOffset, localname, tagkey.atomNS() /* and perhaps later add "", &aAttribute, &aValue" "*/);
+        }
+        else
+          res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, endOffset, aProperty, &aAttribute, &aValue);
         if (NS_FAILED(res)) return res;
       }
       else
@@ -249,7 +261,13 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
           PRUint32 textLen;
           range->GetStartOffset(&startOffset);
           nodeAsText->GetLength(&textLen);
-          res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, textLen, aProperty, &aAttribute, &aValue);
+          if (fNotHTML)
+          {
+            nsString localname = tagkey.localName();
+            res = SetTextTagNode(nodeAsText, startOffset, textLen, localname, tagkey.atomNS() /* and perhaps later add "", &aAttribute, &aValue" "*/);
+          }
+          else
+            res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, textLen, aProperty, &aAttribute, &aValue);
           if (NS_FAILED(res)) return res;
         }
         
@@ -259,6 +277,7 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
         for (j = 0; j < listCount; j++)
         {
           node = arrayOfNodes[j];
+          // BBM TODO:
           res = SetInlinePropertyOnNode(node, aProperty, &aAttribute, &aValue);
           if (NS_FAILED(res)) return res;
         }
@@ -272,7 +291,13 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
           nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(endNode);
           PRInt32 endOffset;
           range->GetEndOffset(&endOffset);
-          res = SetInlinePropertyOnTextNode(nodeAsText, 0, endOffset, aProperty, &aAttribute, &aValue);
+          if (fNotHTML)
+          {
+            nsString localname = tagkey.localName();
+            res = SetTextTagNode(nodeAsText, 0, endOffset, localname, tagkey.atomNS() /* and perhaps later add "", &aAttribute, &aValue" "*/);
+          }
+          else
+            res = SetInlinePropertyOnTextNode(nodeAsText, 0, endOffset, aProperty, &aAttribute, &aValue);
           if (NS_FAILED(res)) return res;
         }
       }
@@ -287,6 +312,18 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
   return res;
 }
 
+
+nsresult
+nsHTMLEditor::SetTextTagNode( nsIDOMCharacterData *aTextNode, 
+                                            PRInt32 aStartOffset,
+                                            PRInt32 aEndOffset,
+                                            nsString &tagLocalName,
+                                            nsIAtom * atomNS /* perhaps later add these: 
+                                            const nsAString *aAttribute,
+                                            const nsAString *aValue  */ )
+{
+  return NS_OK;
+}
 
 
 nsresult
