@@ -33,6 +33,8 @@ NS_IMPL_RELEASE(msiTagListManager)
 void DebExamineNode(nsIDOMNode * aNode);
 #endif */
 
+nsIAtom * msiTagListManager::htmlnsAtom = NS_NewAtom(NS_LITERAL_STRING("http://www.w3.org/1999/xhtml"));
+
 msiTagListManager::msiTagListManager()
 :  meditor(nsnull), mparentTags(nsnull), mInitialized(PR_FALSE), plookup(nsnull) 
 {
@@ -77,20 +79,6 @@ msiTagListManager::Enable()
 // indicator. Thus our key is something like 'sw:sectiontitle' that combines the namespace and the tag name.
 // First we define the key class.
 
-
-class TagKey // a class castable to and from strings that supports pulling out the tag name and name space atom
-{
-public:
-  nsString key;  // example: sw:sectiontitle
-  operator nsString() { return key; }
-  TagKey( nsString akey, nsString nsAbbrev) { key = (nsAbbrev.Length()?nsAbbrev + NS_LITERAL_STRING(":") + akey:akey);}
-  TagKey( nsString akey);
-  TagKey( ){}
-  ~TagKey() {/* todo */};
-  nsString altForm(); // if the key is 'sw:sectiontitle', then the altForm is 'sectiontitle - sw' (notice the spaces)
-  nsIAtom * atomNS();
-  nsString localName();
-};
 
 TagKey::TagKey(nsString akey)
 {
