@@ -33,7 +33,8 @@ public:
   nsString GetStringProperty( const nsAString & str, nsIDOMElement * element);
   PRBool BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retval);
   nsCOMPtr<nsIAutoCompleteSearchStringArray> pACSSA;
-    
+
+static nsIAtom * htmlnsAtom; // an atom corresponding to  "http://www.w3.org/1999/xhtml"   
 protected:  
 //  nsStringArray mstrTagInfoPath; // do we save this here?
   nsStringArray* mparentTags;
@@ -47,3 +48,17 @@ protected:
   nsClassHashtable<nsStringHashKey, TagData> msiTagHashtable;
 };
 
+
+class TagKey // a class castable to and from strings that supports pulling out the tag name and name space atom
+{
+public:
+  nsString key;  // example: sw:sectiontitle
+  operator nsString() { return key; }
+  TagKey( nsString akey, nsString nsAbbrev) { key = (nsAbbrev.Length()?nsAbbrev + NS_LITERAL_STRING(":") + akey:akey);}
+  TagKey( nsString akey);
+  TagKey( ){}
+  ~TagKey() {/* todo */};
+  nsString altForm(); // if the key is 'sw:sectiontitle', then the altForm is 'sectiontitle - sw' (notice the spaces)
+  nsIAtom * atomNS();
+  nsString localName();
+};
