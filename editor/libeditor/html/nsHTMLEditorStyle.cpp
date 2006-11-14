@@ -59,7 +59,6 @@
 #include "nsIContent.h"
 #include "nsIContentIterator.h"
 #include "nsAttrName.h"
-#include "msiTagListManager.h"
 
 
 NS_IMETHODIMP nsHTMLEditor::AddDefaultProperty(nsIAtom *aProperty, 
@@ -135,7 +134,7 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
   nsAutoString tagString;
   aProperty->ToString(tagString);
   TagKey tagkey(tagString);
-  bool fNotHTML = (tagkey.atomNS() != msiTagListManager::htmlnsAtom);
+  bool fNotHTML = (mtagListManager->NameSpaceAtomOfTagKey(tagkey) != msiTagListManager::htmlnsAtom);
   
   ForceCompositionEnd();
 
@@ -202,7 +201,7 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
         if (fNotHTML)
         {
           nsString localname = tagkey.localName();
-          res = SetTextTagNode(nodeAsText, startOffset, endOffset, localname, tagkey.atomNS() /* and perhaps later add "", &aAttribute, &aValue" "*/);
+          res = SetTextTagNode(nodeAsText, startOffset, endOffset, localname, mtagListManager->NameSpaceAtomOfTagKey(tagkey) /* and perhaps later add "", &aAttribute, &aValue" "*/);
         }
         else
           res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, endOffset, aProperty, &aAttribute, &aValue);
@@ -264,7 +263,7 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
           if (fNotHTML)
           {
             nsString localname = tagkey.localName();
-            res = SetTextTagNode(nodeAsText, startOffset, textLen, localname, tagkey.atomNS() /* and perhaps later add "", &aAttribute, &aValue" "*/);
+            res = SetTextTagNode(nodeAsText, startOffset, textLen, localname, mtagListManager->NameSpaceAtomOfTagKey(tagkey) /* and perhaps later add "", &aAttribute, &aValue" "*/);
           }
           else
             res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, textLen, aProperty, &aAttribute, &aValue);
@@ -294,7 +293,7 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
           if (fNotHTML)
           {
             nsString localname = tagkey.localName();
-            res = SetTextTagNode(nodeAsText, 0, endOffset, localname, tagkey.atomNS() /* and perhaps later add "", &aAttribute, &aValue" "*/);
+            res = SetTextTagNode(nodeAsText, 0, endOffset, localname, mtagListManager->NameSpaceAtomOfTagKey(tagkey) /* and perhaps later add "", &aAttribute, &aValue" "*/);
           }
           else
             res = SetInlinePropertyOnTextNode(nodeAsText, 0, endOffset, aProperty, &aAttribute, &aValue);
@@ -321,9 +320,212 @@ nsHTMLEditor::SetTextTagNode( nsIDOMCharacterData *aTextNode,
                                             nsIAtom * atomNS /* perhaps later add these: 
                                             const nsAString *aAttribute,
                                             const nsAString *aValue  */ )
+// This is the analogue of SetInlinePropertyOnTextNone                                            
 {
-  return NS_OK;
+  if (!aTextNode) return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<nsIDOMNode> parent;
+  nsresult res = aTextNode->GetParentNode(getter_AddRefs(parent));
+  if (NS_FAILED(res)) return res;
+
+  // don't need to do anything if no characters actually selected
+  if (aStartOffset == aEndOffset) return NS_OK;
+
+  // BBM TODO: fix this up to compare HTML tags with non-HTML tags 
+  PRBool fCanContain;
+  nsAutoString strUri;
+  nsAutoString strParentLocalName;
+  res = parent->GetNamespaceURI(strUri);
+  res = parent->GetLocalName(strParentLocalName);
+  nsIAtom * atomParentNS = NS_NewAtom(strUri);
+  mtagListManager->TagCanContainTag(strParentLocalName, atomParentNS, tagLocalName, atomNS, &fCanContain);
+  
+  if (!fCanContain) return NS_OK;
+  nsCOMPtr<nsIDOMNode> node = do_QueryInterface(aTextNode);
+  
+  // don't need to do anything if tag already there
+  // TODO BBM: check to see if there are existing text tags of the same type
+  // that should be deleted.
+    
+  // do we need to split the text node?
+  PRUint32 textLen;
+  aTextNode->GetLength(&textLen);
+  
+  nsCOMPtr<nsIDOMNode> tmp;
+  if ( (PRUint32)aEndOffset != textLen )
+  {
+    // we need to split off back of text node
+    res = SplitNode(node, aEndOffset, getter_AddRefs(tmp));
+    if (NS_FAILED(res)) return res;
+    node = tmp;  // remember left node
+  }
+  if ( aStartOffset )
+  {
+    // we need to split off front of text node
+    res = SplitNode(node, aStartOffset, getter_AddRefs(tmp));
+    if (NS_FAILED(res)) return res;
+  }
+  
+  // look for siblings that are correct type of node
+  nsCOMPtr<nsIDOMNode> sibling;
+  node->GetPreviousSibling((nsIDOMNode **)&sibling);
+  nsAutoString stringNS;
+  if (atomNS) atomNS->ToString(stringNS);
+  if (sibling) 
+  {
+    nsAutoString tmpLocalName;
+    sibling->GetLocalName(tmpLocalName);
+    if (tmpLocalName.Equals(tagLocalName))
+    {
+      nsAutoString tmpUri;
+      sibling->GetNamespaceURI(tmpUri);
+      if (tmpUri.Equals(stringNS))
+      // BBM TODO: Should check also that there are no attributes
+      {
+         // previous sib is already right kind of inline node; slide this over into it
+        res = MoveNode(node, sibling, -1);
+        return res;
+      }
+    }
+  }
+  sibling = nsnull;
+  node->GetNextSibling((nsIDOMNode **)&sibling);
+  if (sibling) 
+  {
+    nsAutoString tmpLocalName;
+    sibling->GetLocalName(tmpLocalName);
+    if (tmpLocalName.Equals(tagLocalName))
+    {
+      nsAutoString tmpUri;
+      sibling->GetNamespaceURI(tmpUri);
+      if (tmpUri.Equals(stringNS))
+      // BBM TODO: Should check also that there are no attributes
+      {
+         // previous sib is already right kind of inline node; slide this over into it
+        res = MoveNode(node, sibling, 0);
+        return res;
+      }
+    }
+  }
+  
+  // reparent the node inside inline node
+  return SetTextTagOnNode(node, tagLocalName, atomNS);
 }
+
+
+
+nsresult
+nsHTMLEditor::SetTextTagOnNode( nsIDOMNode *aNode,
+                                            nsString &tagLocalName,
+                                            nsIAtom * atomNS /* perhaps later add these: 
+                                            const nsAString *aAttribute,
+                                            const nsAString *aValue  */ )
+{
+  if (!aNode || !tagLocalName.Length()) return NS_ERROR_NULL_POINTER;
+
+  nsresult res = NS_OK;
+  nsCOMPtr<nsIDOMNode> tmp;
+  
+
+  
+  // can we put the new node inside this node?
+  // BBM TODO: fix this up to compare HTML tags with non-HTML tags 
+  PRBool fCanContain;
+  nsAutoString strUri;
+  nsAutoString strLocalName;
+  res = aNode->GetNamespaceURI(strUri);
+  res = aNode->GetLocalName(strLocalName);
+  nsIAtom * atomaNodeNS = NS_NewAtom(strUri);
+  mtagListManager->TagCanContainTag(strLocalName, atomaNodeNS, tagLocalName, atomNS, &fCanContain);
+  
+  if (fCanContain)
+  {
+    nsCOMPtr<nsIDOMNode> priorNode, nextNode;
+    // is either of its neighbors the right kind of node?
+    aNode->GetPreviousSibling((nsIDOMNode **)address_of(priorNode));
+    aNode->GetNextSibling((nsIDOMNode **)address_of(nextNode));
+    nsAutoString stringNS;
+    if (atomNS) atomNS->ToString(stringNS);
+    if (priorNode) 
+    {
+      nsAutoString tmpLocalName;
+      priorNode->GetLocalName(tmpLocalName);
+      if (tmpLocalName.Equals(tagLocalName))
+      {
+        nsAutoString tmpUri;
+        priorNode->GetNamespaceURI(tmpUri);
+        if (tmpUri.Equals(stringNS))
+        // BBM TODO: Should check also that there are no attributes
+        {
+           // previous sib is already right kind of inline node; slide this over into it
+          res = MoveNode(aNode, priorNode, -1);
+          return res;
+        }
+      }
+    }
+    if (nextNode) 
+    {
+      nsAutoString tmpLocalName;
+      nextNode->GetLocalName(tmpLocalName);
+      if (tmpLocalName.Equals(tagLocalName))
+      {
+        nsAutoString tmpUri;
+        nextNode->GetNamespaceURI(tmpUri);
+        if (tmpUri.Equals(stringNS))
+        // BBM TODO: Should check also that there are no attributes
+        {
+           // previous sib is already right kind of inline node; slide this over into it
+          res = MoveNode(aNode, nextNode, 0);
+          return res;
+        }
+      }
+    }
+    // ok, chuck it in it's very own container
+    res = InsertContainerAboveNS(aNode, address_of(tmp), tagLocalName, atomNS);
+    if (NS_FAILED(res)) return res;
+    // BBM TODO: Remove instances of this tag that might be inside.
+    // return RemoveStyleInside(aNode, aProperty, aAttribute);
+  }
+  // none of the above?  then cycle through the children.
+  nsCOMPtr<nsIDOMNodeList> childNodes;
+  res = aNode->GetChildNodes(getter_AddRefs(childNodes));
+  if (NS_FAILED(res)) return res;
+  if (childNodes)
+  {
+    PRInt32 j;
+    PRUint32 childCount;
+    childNodes->GetLength(&childCount);
+    if (childCount)
+    {
+      nsCOMArray<nsIDOMNode> arrayOfNodes;
+      nsCOMPtr<nsIDOMNode> node;
+      
+      // populate the list
+      for (j=0 ; j < (PRInt32)childCount; j++)
+      {
+        nsCOMPtr<nsIDOMNode> childNode;
+        res = childNodes->Item(j, getter_AddRefs(childNode));
+        if ((NS_SUCCEEDED(res)) && (childNode) && IsEditable(childNode))
+        {
+          arrayOfNodes.AppendObject(childNode);
+        }
+      }
+      
+      // then loop through the list, set the property on each node
+      PRInt32 listCount = arrayOfNodes.Count();
+      for (j = 0; j < listCount; j++)
+      {
+        node = arrayOfNodes[j];
+        res = SetTextTagOnNode(node, tagLocalName, atomNS);
+        if (NS_FAILED(res)) return res;
+      }
+      arrayOfNodes.Clear();
+    }
+  }
+  return res;
+}
+
+/////////////////
+
 
 
 nsresult
