@@ -183,6 +183,13 @@ public:
                                 const nsAString &aNodeType,
                                 const nsAString *aAttribute = nsnull,
                                 const nsAString *aValue = nsnull);
+  nsresult InsertContainerAboveNS(nsIDOMNode *inNode, 
+                                nsCOMPtr<nsIDOMNode> *outNode, 
+                                const nsAString &aNodeType,
+                                nsIAtom * atomNS // name space atom
+                                //const nsAString *aAttribute = nsnull,
+                                //const nsAString *aValue = nsnull
+                                );
   nsresult MoveNode(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 aOffset);
 
   /* Method to replace certain CreateElementNS() calls. 
@@ -191,7 +198,8 @@ public:
       nsIContent** aContent   - returned Content that was created with above namespace.
   */
   nsresult CreateHTMLContent(const nsAString& aTag, nsIContent** aContent);
-
+  ///SWP additions:
+  nsresult CreateContentNS(const nsAString& aQualifiedTag, nsIAtom * atomNS, nsIDOMElement** aElement);
 protected:
   nsCString mContentMIMEType;       // MIME type of the doc we are editing.
 

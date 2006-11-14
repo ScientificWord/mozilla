@@ -74,7 +74,7 @@
 
 #include "nsPoint.h"
 // New XML tag stuff
-#include "msiITagListManager.h"
+#include "msiTagListManager.h"
 
 class nsIDOMKeyEvent;
 class nsITransferable;
@@ -694,6 +694,13 @@ protected:
                            nsIAtom *atomNS /* perhaps later, add these: 
                            const nsAString *aAttribute,
                            const nsAString *aValue */);
+
+  nsresult SetTextTagOnNode( nsIDOMNode *aTextNode, 
+                           nsString &tagLocalName,
+                           nsIAtom *atomNS /* perhaps later, add these: 
+                           const nsAString *aAttribute,
+                           const nsAString *aValue */);
+                                       
                                        
 
   /* helper routines for inline style */
@@ -774,7 +781,7 @@ protected:
 
   nsCOMPtr<nsIDOMNode> mCachedNode;
   //TagListManager
-  nsCOMPtr<msiITagListManager> mtagListManager;
+  nsCOMPtr<msiTagListManager> mtagListManager;
 
   PRPackedBool mCRInParagraphCreatesParagraph;
 
