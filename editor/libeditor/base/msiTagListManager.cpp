@@ -94,14 +94,14 @@ TagKey::TagKey(nsString akey)
 }
 
 
-nsIAtom * 
-TagKey::atomNS()
+nsString 
+TagKey::prefix()
 {
   int colon = key.FindChar(':');
-  if (colon < 0) return nsnull;
+  if (colon < 0) return NS_LITERAL_STRING("");
   nsString str;
   key.Left(str,colon);
-  return NS_NewAtom(str);
+  return str;
 }
 
 nsString
@@ -128,6 +128,17 @@ TagKey::altForm()
     key.Left(str,colon);
     return (str.Length()?localName()+ NS_LITERAL_STRING(" - ") + str:localName());
   }
+}
+
+nsIAtom * 
+msiTagListManager::NameSpaceAtomOfTagKey( TagKey& tagkey)
+{
+  nsString str = tagkey.prefix();
+  namespaceLookup * pns = plookup;
+  while (pns && !(pns->namespaceAbbrev.Equals(str)))
+    pns = pns->next;
+  if (pns) return pns->nsAtom;
+  return nsnull;  
 }
  
 /* void reset (); */
@@ -186,13 +197,10 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
       rv = nodeElement->GetAttribute(NS_LITERAL_STRING("abbrev"),strAbbrev);
       // look to see if strAbbrev is already in the namespace list
       pns = plookup;
-      while (pns)
+      while ((pns) && !(pns->namespaceAbbrev.Equals(strAbbrev)))
       {
-        if (pns->namespaceAbbrev != strAbbrev)
-          pns = pns->next;
-        else
-          break;
-      }
+        pns = pns->next; 
+      }     
       if (pns == nsnull) // strAbbrev was not found
       {
         pns = new namespaceLookup;
@@ -488,20 +496,16 @@ NS_IMETHODIMP msiTagListManager::CurrentValue(const nsAString & strTagClass, nsI
   return NS_OK;
 }
 
-NS_IMETHODIMP msiTagListManager::abbrevFromAtom(nsIAtom * atomNS, nsAString &_retval)
+nsString msiTagListManager::PrefixFromNameSpaceAtom(nsIAtom * atomNS)
 {
   namespaceLookup * pns = plookup;
   while (pns)
   {
     if (pns->nsAtom == atomNS)
-    {
-      _retval = pns->namespaceAbbrev;
-      return NS_OK;
-    }
+      return pns->namespaceAbbrev;
     pns = pns->next;
   }
-  _retval = NS_LITERAL_STRING("");
-  return NS_OK;
+  return NS_LITERAL_STRING(""); 
 }
 
 
@@ -510,7 +514,7 @@ NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom
 {
   // If *atomNS is null, we just use strTag to look up. Otherwise we concat the namespace abbreviation with strTag
   nsString strAbbrev;
-  abbrevFromAtom(atomNS, strAbbrev);
+  strAbbrev = PrefixFromNameSpaceAtom(atomNS);
   nsString strKey;
   if (strAbbrev.Length() >0 )strKey = strAbbrev + NS_LITERAL_STRING(":") + strTag;
   else strKey = strTag; 
@@ -541,8 +545,13 @@ Check the current tag info DOM to see if the class of tag(strOuter) has a 'Conta
 that includes, as a token, strInner or class(strInner).
 */
 /* PRBool tagCanContainTag (in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner); */
-NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter, nsIAtom *atomNSOuter, const nsAString & strTagInner, nsIAtom *atomNSInner, PRBool *_retval)
+NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter, 
+  nsIAtom *atomNSOuter, const nsAString & strTagInner, nsIAtom *atomNSInner, PRBool *_retval)
 {
+  // Temporary kludge:
+  *_retval = PR_TRUE;
+  return NS_OK;
+  // end of kludge
   nsAutoString classOuter;
   nsresult rv = GetClassOfTag(strTagOuter, atomNSOuter, classOuter);
   nsAutoString classInner;
