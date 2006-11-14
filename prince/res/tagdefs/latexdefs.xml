@@ -6,15 +6,9 @@
 		StandardLatexArticle
 	</forshell>
 	<namespaces>
-	  <ns abbrev="sw">
-	    http://www.sciword.com/namespaces/sciword
-	  </ns>
-    <ns abbrev="html">
-	    http://www.w3.org/1999/xhtml
-	  </ns>
-	  <ns abbrev="mml">
-	    http://www.w3.org/1998/Math/MathML
-	  </ns>
+	  <ns abbrev="sw">http://www.sciword.com/namespaces/sciword</ns>
+    <ns abbrev="html">http://www.w3.org/1999/xhtml</ns>
+	  <ns abbrev="mml">http://www.w3.org/1998/Math/MathML</ns>
 	</namespaces>
 	<tagclasses>
 		<tagclass>
