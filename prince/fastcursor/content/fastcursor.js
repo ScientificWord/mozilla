@@ -426,7 +426,7 @@ function onBrowserKeyUp(evt)
   var isForward = new Boolean();
   var isFirstArrowPress = new Boolean();
   gArrowStateService.findKeyCode(evt, keyCode, isArrow);
-  if (!keyCode.value) return NS_OK;
+  if (!keyCode.value) return 0;
   if (isArrow.value) {
     gArrowStateService.arrowKeyUp( keyCode.value );
     //  If there are no more arrows down, hide the FastCursorBar
