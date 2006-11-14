@@ -3034,7 +3034,7 @@ nsHTMLEditor::GetSelectedElement(const nsAString& aTagName, nsIDOMElement** aRet
 
   nsAutoString domTagName;
   nsAutoString TagName(aTagName);
-  ToLowerCase(TagName);
+//  ToLowerCase(TagName);
   // Empty string indicates we should match any element tag
   PRBool anyTag = (TagName.IsEmpty());
   PRBool isLinkTag = IsLinkTag(TagName);

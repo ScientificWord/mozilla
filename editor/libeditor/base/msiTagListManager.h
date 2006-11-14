@@ -1,3 +1,6 @@
+#ifndef msiITagListManager_h__
+#define msiITagListManager_h__
+
 #include "msiITagListManager.h"
 #include "nsString.h"
 #include "nsCOMPtr.h"
@@ -8,6 +11,7 @@ class nsIDOMXMLDocument;
 class nsIDOMElement;
 class nsIAutoCompleteSearchStringArray;
 struct namespaceLookup;
+class TagKey;
 
 class TagData // other fields can be added to this
 {
@@ -32,6 +36,7 @@ public:
   ~msiTagListManager();
   nsString GetStringProperty( const nsAString & str, nsIDOMElement * element);
   PRBool BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retval);
+  nsIAtom * NameSpaceAtomOfTagKey( TagKey& key);
   nsCOMPtr<nsIAutoCompleteSearchStringArray> pACSSA;
 
 static nsIAtom * htmlnsAtom; // an atom corresponding to  "http://www.w3.org/1999/xhtml"   
@@ -43,7 +48,7 @@ protected:
   nsCOMPtr<nsIDOMXMLDocument> mdocTagInfo;
   nsCOMPtr<nsIDOMNode> GetChildAt(nsIDOMNode *aParent, PRInt32 aOffset);
   nsresult MergeIntoTagInfo( const nsIDOMXMLDocument* docTagInfo, PRBool *_retval );
-  NS_IMETHOD abbrevFromAtom(nsIAtom * atomNS, nsAString & _retval);
+  nsString PrefixFromNameSpaceAtom(nsIAtom * atomNS);
   namespaceLookup * plookup;
   nsClassHashtable<nsStringHashKey, TagData> msiTagHashtable;
 };
@@ -59,6 +64,8 @@ public:
   TagKey( ){}
   ~TagKey() {/* todo */};
   nsString altForm(); // if the key is 'sw:sectiontitle', then the altForm is 'sectiontitle - sw' (notice the spaces)
-  nsIAtom * atomNS();
+  nsString prefix();
   nsString localName();
 };
+
+#endif // msiITagListManager_h__
