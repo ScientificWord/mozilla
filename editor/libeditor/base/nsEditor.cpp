@@ -53,6 +53,7 @@
 #include "nsIDOMElement.h"
 #include "nsIDOMAttr.h"
 #include "nsIDOMNode.h"
+#include "nsIDOM3Node.h"
 #include "nsIDOMDocumentFragment.h"
 #include "nsIDOMNamedNodeMap.h"
 #include "nsIDOMNodeList.h"
@@ -1763,6 +1764,62 @@ nsEditor::InsertContainerAbove( nsIDOMNode *inNode,
     res = elem->SetAttribute(*aAttribute, *aValue);
     if (NS_FAILED(res)) return res;
   }
+  
+  // notify our internal selection state listener
+  nsAutoInsertContainerSelNotify selNotify(mRangeUpdater);
+  
+  // put inNode in new parent, outNode
+  res = DeleteNode(inNode);
+  if (NS_FAILED(res)) return res;
+
+  {
+    nsAutoTxnsConserveSelection conserveSelection(this);
+    res = InsertNode(inNode, *outNode, 0);
+    if (NS_FAILED(res)) return res;
+  }
+
+  // put new parent in doc
+  return InsertNode(*outNode, parent, offset);
+}
+
+
+nsresult
+nsEditor::InsertContainerAboveNS( nsIDOMNode *inNode, 
+                                nsCOMPtr<nsIDOMNode> *outNode, 
+                                const nsAString &aNodeType,
+                                nsIAtom * atomNS
+                                //, const nsAString *aAttribute,
+                                //const nsAString *aValue
+                                )
+{
+  if (!inNode || !outNode)
+    return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<nsIDOMNode> parent;
+  PRInt32 offset;
+  nsresult res = GetNodeLocation(inNode, address_of(parent), &offset);
+  if (NS_FAILED(res)) return res;
+
+  // create new container
+  nsCOMPtr<nsIDOMElement> newElement;
+
+  nsAutoString strQualifiedName;
+  nsAutoString strPrefix;
+  nsCOMPtr<nsIDOM3Node> node;
+  node = do_QueryInterface(inNode);
+  nsAutoString strNS;
+  atomNS->ToString(strNS);
+  node->LookupPrefix(strNS,strPrefix);
+  if (strPrefix.Length()>0) strQualifiedName = strPrefix + NS_LITERAL_STRING(":") + aNodeType;
+  else strQualifiedName = aNodeType;
+  res = CreateContentNS(strQualifiedName, atomNS, getter_AddRefs(newElement));
+  *outNode = do_QueryInterface(newElement);
+  
+  // set attribute if needed
+//  if (aAttribute && aValue && !aAttribute->IsEmpty())
+//  {
+//    res = elem->SetAttribute(*aAttribute, *aValue);
+//    if (NS_FAILED(res)) return res;
+//  }
   
   // notify our internal selection state listener
   nsAutoInsertContainerSelNotify selNotify(mRangeUpdater);
@@ -5378,6 +5435,28 @@ nsEditor::CreateHTMLContent(const nsAString& aTag, nsIContent** aContent)
   }
 
   return doc->CreateElem(tag, nsnull, kNameSpaceID_XHTML, PR_FALSE, aContent);
+}
+
+nsresult
+nsEditor::CreateContentNS(const nsAString& aQualifiedTag, nsIAtom * atomNS, nsIDOMElement** aElement)
+{
+  nsCOMPtr<nsIDOMDocument> tempDoc;
+  GetDocument(getter_AddRefs(tempDoc));
+
+//  nsCOMPtr<nsIDocument> doc = do_QueryInterface(tempDoc);
+//  if (!doc)
+//    return NS_ERROR_FAILURE;
+
+  // XXX Wallpaper over editor bug (editor tries to create elements with an
+  //     empty nodename).
+  if (aQualifiedTag.IsEmpty()) {
+    NS_ERROR("Don't pass an empty tag to nsEditor::CreateContentNS, "
+             "check caller.");
+    return NS_ERROR_FAILURE;
+  }
+  nsAutoString strNS;
+  atomNS->ToString(strNS);
+  return tempDoc->CreateElementNS(strNS, aQualifiedTag, aElement);
 }
 
 nsresult
