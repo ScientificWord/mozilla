@@ -50,6 +50,7 @@ public:
 protected:
   
   stringStringArray * m_stringArrays;
+  nsStringArray * m_markedStrings;
   
 protected:  
   nsStringArray * GetStringArrayForCategory( const nsAString & strCategory);
@@ -67,7 +68,7 @@ public:
   NS_DECL_NSIAUTOCOMPLETERESULT
   NS_DECL_NSIAUTOCOMPLETEBASERESULT
   
-  nsAutoCompleteResultStringArray();
+  nsAutoCompleteResultStringArray(nsStringArray * pMarkedStrings);
   ~nsAutoCompleteResultStringArray();
   NS_IMETHOD AppendString( nsString aString );
   NS_IMETHOD Clear();
