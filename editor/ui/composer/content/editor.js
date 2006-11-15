@@ -3275,7 +3275,8 @@ function UpdateStructToolbar()
 {
   var editor = GetCurrentEditor();
   if (!editor) return;
-
+  if (!editor.tagListManager) return;
+  editor.tagListManager.buildParentTagList();
   var mixed = GetSelectionContainer();
   if (!mixed) return;
   var element = mixed.node;
@@ -3318,7 +3319,7 @@ function UpdateStructToolbar()
   // we will eventually get to the root <body> tag. But due to some bug, 
   // there may be multiple <body> elements in the document. 
   do {
-    tag = element.nodeName.toLowerCase();
+    tag = element.nodeName;
 
     button = document.createElementNS(XUL_NS, "toolbarbutton");
     button.setAttribute("label",   "<" + tag + ">");

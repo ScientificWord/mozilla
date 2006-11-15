@@ -45,6 +45,15 @@
 
 /* ::::: autocomplete ::::: */
 
+/* for an explanation of the -moz-tree-cell rules, see http://developer.mozilla.org/en/docs/XUL_Tutorial:Styling_A_Tree.
+   The sw-checked properties are returned by the autocomplete code (nsAutoCompleteResultsStringArray).	*/
+
+treechildren::-moz-tree-image(sw_checked) {
+  list-style-image: url("chrome://global/skin/checkbox/cbox-check.gif");
+  /* the width of this gif is 7 pixels. The next rule keeps the left margin even */
+}
+
+
 textbox {
   cursor: default;
   padding: 0;

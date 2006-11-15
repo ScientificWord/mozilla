@@ -48,9 +48,8 @@ msiTagListManager::msiTagListManager()
 struct namespaceLookup
 {
   nsString namespaceAbbrev;
-  nsIAtom * nsAtom;
+  nsCOMPtr<nsIAtom> nsAtom;
   namespaceLookup * next;
-  // BBM todo: do we need destructor code here?
   namespaceLookup(): nsAtom(nsnull), next(nsnull) {}
 };
 
@@ -82,8 +81,9 @@ msiTagListManager::Enable()
 
 TagKey::TagKey(nsString akey)
 {
+// the key string looks like "sw:bold". If aKey is in the hyphen form ("bold - sw"), we change it to the standard form
   int hyphen = akey.FindChar('-');
-  if (hyphen>0 && (hyphen < akey.Length() -1) && akey[hyphen-1] == ' ' 
+  if (hyphen>0 && (hyphen < (int)(akey.Length()) -1) && akey[hyphen-1] == ' ' 
     && akey[hyphen+1] == ' ')
   {
     nsString str;
@@ -325,7 +325,8 @@ struct userArgStruct {
 /* nsStringArray getStringArray (in AString strTagClass); */
 PLDHashOperator
 nsDEnumRead(const nsAString_internal& aKey, TagData* aData, void* userArg) 
-{  // this is a callback to the hash table enumerator that adds to a string array all the data that matches the ... part of *userArg
+{  // this is a callback to the hash table enumerator that adds to a string array all the data that 
+   // matches the ... part of *userArg
   TagKey tk;
   PRBool bres;
   tk.key = aKey;;
@@ -342,7 +343,7 @@ nsDEnumRead(const nsAString_internal& aKey, TagData* aData, void* userArg)
 
 NS_IMETHODIMP
 msiTagListManager::BuildStringArray(const nsAString & strTagClass)
-// BBM todo:  We don't really want a string array. We want an array of classes containing tag name, description, and maybe some more.
+// All the work is done in the enumerator (above)
 {
   userArgStruct ua;
   ua.tagClass = strTagClass;
@@ -354,12 +355,15 @@ msiTagListManager::BuildStringArray(const nsAString & strTagClass)
 }
 
 NS_IMETHODIMP 
-msiTagListManager::FindParentTags(nsStringArray **strarrParents)
+msiTagListManager::BuildParentTagList()
 {
   // BBM todo: handle namespaces here
   nsresult res;
   nsAutoString strTemp;
-  *strarrParents = nsnull;
+  nsAutoString strTemp2;
+  nsAutoString strTempURI;
+  nsAutoString strQName;
+  nsCOMPtr<nsIAtom> nsAtom; // namespace atom
   if (!mparentTags) mparentTags = new nsStringArray();
   mparentTags->Clear();
  // BBM todo: put in error checking
@@ -373,14 +377,22 @@ msiTagListManager::FindParentTags(nsStringArray **strarrParents)
   node = element;
   while (node)
   {
-    node->GetNodeName(strTemp);
+    node->GetLocalName(strTemp);
 	  if (strTemp.Equals(NS_LITERAL_STRING("#document"))) break;
-	  mparentTags->AppendString(strTemp);
+    node->GetNamespaceURI(strTempURI);
+    if (strTempURI.Length() == 0) nsAtom = nsnull;
+    else nsAtom = NS_NewAtom(strTempURI);
+    if (nsAtom) 
+    {
+      strTemp2 = NS_LITERAL_STRING(" - ")+PrefixFromNameSpaceAtom(nsAtom);
+      strQName = strTemp + strTemp2;
+    }
+    else strQName = strTemp;  
+	  mparentTags->AppendString(strQName);
     node->GetParentNode((nsIDOMNode **)(&temp));
     node = temp;
   }
-  *strarrParents = mparentTags;
-  return  NS_OK;
+  return pACSSA->SetMarkedStrings(mparentTags);
 }
 
 
