@@ -11,6 +11,6 @@ classic.jar:
   
 
 en-US.jar:
-% locale en-US %locale/en-US
+% locale prince en-US %locale/
   locale/fastcursor.dtd  (locale/en-US/fastcursor.dtd)
   locale/fastcursor.properties (locale/en-US/fastcursor.properties)
