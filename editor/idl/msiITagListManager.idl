@@ -40,5 +40,5 @@ interface msiITagListManager : nsISupports
 	void fixTagsAfterSplit( in nsIDOMNode firstNode, inout nsIDOMNode secondNode);
   AString GetStringPropertyForTag( in AString strTag, in nsIAtom atomNS, in AString propertyName );
   AString GetTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
-  void findParentTags( out nsStringArray strarrParents);
+  void buildParentTagList();
 };
