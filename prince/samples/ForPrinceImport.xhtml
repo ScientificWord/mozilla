@@ -2,14 +2,16 @@
 <?xml-stylesheet href="StandardLatexArticle.css" type="text/css" ?>
 <?xml-stylesheet href="resource://app/res/css/latex.css" type="text/css" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" mml="http://www.w3.org/1998/Math/MathML" sw="http://www.sciword.com/namespaces/sciword">
+<html:html xmlns="http://www.sciword.com/namespaces/sciword" 
+           xmlns:html="http://www.w3.org/1999/xhtml" 
+           xmlns:mml="http://www.w3.org/1998/Math/MathML" >
 
-<head> 
-<title>Standard LaTeX Article</title>
+<html:head> 
+<html:title>Standard LaTeX Article</html:title>
 
 
-</head> 
-<body> 
+</html:head> 
+<html:body> 
 <preamble> 
 <documentclass class="article"/>
  
@@ -57,7 +59,7 @@
 <address>The University of Stewart Island</address></author> 
 <maketitle/>
 <abstract>
-<p>We study the effects of warm water on the local penguin population.
+<para>We study the effects of warm water on the local penguin population.
 The major finding is that it is extremely difficult to induce penguins to
 drink warm water. The success factor is approximately <math xmlns="http://www.w3.org/1998/Math/MathML" >
   <invis>minus E to the minus I pi minus one</invis>
@@ -81,61 +83,61 @@ drink warm water. The success factor is approximately <math xmlns="http://www.w3
       <mn>1</mn>
     </mstyle>
   </mrow></math>. 
-</p></abstract>  
+</para></abstract>  
 <section>
 <sectiontitle _moz_dirty="">About This Shell</sectiontitle>  
-<p>This shell document provides
+<para>This shell document provides
 a sample layout of a Standard <latex>LaTeX</latex> Article. Here is some PDf 
 
     <embed src="foo.pdf" type="application/pdf" width="340" height="230" background="white" />
 
-</p>
-<p>The front matter has
+</para>
+<para>The front matter has
 a number of sample entries that you should replace with your own. Replace
 this text with your own. You may delete all of the text in this document
-to start with a blank document. </p>
-<p>Changes to the typeset format of
+to start with a blank document. </para>
+<para>Changes to the typeset format of
 this shell and its associated <latex>LaTeX</latex> formatting file (<tt>article.cls</tt>)
 are not supported by MacKichan Software, Inc. If you wish to make such changes,
-please consult the <latex>LaTeX</latex> manuals or a local <latex>LaTeX</latex> expert. </p>
-<p>If
+please consult the <latex>LaTeX</latex> manuals or a local <latex>LaTeX</latex> expert. </para>
+<para>If
 you modify this document and export it as <textquotedblleft/>Standard <latex>LaTeX</latex>
 Article.shl <textquotedblright/><nbsp/>in the <tt>Shells<textbackslash/>Standard
 LaTeX</tt> directory, it will become your new Standard <latex>LaTeX</latex> Article shell.
-</p>
-<p>The typesetting specification selected by this shell document uses
+</para>
+<para>The typesetting specification selected by this shell document uses
 the default class options. There are a number of class options supported
 by this typesetting specification. The available options include setting
 the paper size and the point size of the font used in the body of the document.
 Select <sf>Typeset, Options and Packages</sf>, the <sf>Class Options</sf>
 tab and then click the <sf>Modify</sf> button to see the class options that
-are available for this typesetting specification. </p></section>
+are available for this typesetting specification. </para></section>
 <section>
 <sectiontitle>Features of This Shell</sectiontitle>  
 <subsection>
 <sectiontitle>Subsection</sectiontitle>  
-<p>Use the Section tag for major
-sections, and the Subsection tag for subsections. </p>
+<para>Use the Section tag for major
+sections, and the Subsection tag for subsections. </para>
 <subsubsection>
 <sectiontitle>Subsubsection</sectiontitle>  
-<p>This is just some harmless
-text under a subsubsection. </p>
+<para>This is just some harmless
+text under a subsubsection. </para>
 <paragraph>
 <sectiontitle>Subsubsubsection</sectiontitle>  
-<p>This is just some harmless
-text under a subsubsubsection. </p>
+<para>This is just some harmless
+text under a subsubsubsection. </para>
 <subparagraph>
 <sectiontitle>Subsubsubsubsection</sectiontitle>  
-<p>This is just some
-harmless text under a subsubsubsubsection. </p></subparagraph></paragraph></subsubsection></subsection>
+<para>This is just some
+harmless text under a subsubsubsubsection. </para></subparagraph></paragraph></subsubsection></subsection>
 <subsection>
 <sectiontitle>Tags</sectiontitle>  
-<p>You can apply the logical markup
-tag <em>Emphasized</em>. </p>
-<p>You can apply the visual markup tags <bold>Bold</bold>,
+<para>You can apply the logical markup
+tag <em>Emphasized</em>. </para>
+<para>You can apply the visual markup tags <bold>Bold</bold>,
 <it>Italics</it>, <rm>Roman</rm>, <sf>Sans Serif</sf>, <sl>Slanted</sl>,
-<sc>Small Caps</sc>, and <tt>Typewriter</tt>. </p>
-<p>You can apply the
+<sc>Small Caps</sc>, and <tt>Typewriter</tt>. </para>
+<para>You can apply the
 special, mathematics only, tags <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mstyle fontfamily="Times New Roman" fontsize="120%">
@@ -213,46 +215,46 @@ special, mathematics only, tags <math xmlns="http://www.w3.org/1998/Math/MathML"
       <mi mathvariant="fraktur">r</mi>
     </mstyle>
   </mrow></math>. Note that blackboard bold and calligraphic are
-correct only when applied to uppercase letters A through Z. </p>
-<p>You
+correct only when applied to uppercase letters A through Z. </para>
+<para>You
 can apply the size tags <tiny>tiny</tiny>, <scriptsize>scriptsize</scriptsize>,
 <footnotesize>footnotesize</footnotesize>, <small>small</small>, <normalsize>normalsize</normalsize>,
 <large>large</large>, <Large>Large</Large>, <LARGE>LARGE</LARGE>, <huge>huge</huge>
-and <Huge>Huge</Huge>. </p>
-<p><QTP type="Body Math"> This is a Body Math
+and <Huge>Huge</Huge>. </para>
+<para><QTP type="Body Math"> This is a Body Math
 paragraph. Each time you press the Enter key, Scientific WorkPlace switches
 to mathematics mode. This is convenient for carrying out ``scratchpad''
 computations. </QTP>Following is a group of paragraphs marked as Short Quote.
 This environment is appropriate for a short quotation or a sequence of short
-quotations. </p>
-<p>
+quotations. </para>
+<para>
 <quote> The buck stops here. <em>Harry Truman</em>
 
-<p>Ask not what your country can do for you; ask what you can do for your
-country. <em>John F Kennedy</em> </p>
-<p>I am not a crook. <em>Richard Nixon</em>
-</p>
-<p>It's no exaggeration to say the undecideds could go one way or another.
-<em>George Bush</em> </p>
-<p>I did not have sexual relations with that woman,
+<para>Ask not what your country can do for you; ask what you can do for your
+country. <em>John F Kennedy</em> </para>
+<para>I am not a crook. <em>Richard Nixon</em>
+</para>
+<para>It's no exaggeration to say the undecideds could go one way or another.
+<em>George Bush</em> </para>
+<para>I did not have sexual relations with that woman,
 Miss Lewinsky. <em>Bill Clinton</em> 
-</p></quote> </p>
-<p>The Long Quotation
+</para></quote> </para>
+<para>The Long Quotation
 tag is used for quotations of more than one paragraph. Following is the
 beginning of <em>Alice's Adventures in Wonderland </em>by Lewis Carroll:
-</p>
-<p>
+</para>
+<para>
 <quotation> Alice was beginning to get very tired of sitting by
 her sister on the bank, and of having nothing to do: once or twice she had
 peeped into the book her sister was reading, but it had no pictures or conversations
 in it, `and what is the use of a book,' thought Alice `without pictures
 or conversation?' 
-<p>So she was considering in her own mind (as well as
+<para>So she was considering in her own mind (as well as
 she could, for the hot day made her feel very sleepy and stupid), whether
 the pleasure of making a daisy-chain would be worth the trouble of getting
 up and picking the daisies, when suddenly a White Rabbit with pink eyes
-ran close by her. </p>
-<p>There was nothing so very remarkable in that;
+ran close by her. </para>
+<para>There was nothing so very remarkable in that;
 nor did Alice think it so very much out of the way to hear the Rabbit say
 to itself, `Oh dear! Oh dear! I shall be late!' (when she thought it over
 afterwards, it occurred to her that she ought to have wondered at this,
@@ -262,20 +264,20 @@ on, Alice started to her feet, for it flashed across her mind that she had
 never before seen a rabbit with either a waistcoat-pocket, or a watch to
 take out of it, and burning with curiosity, she ran across the field after
 it, and fortunately was just in time to see it pop down a large rabbit-hole
-under the hedge. </p>
-<p>In another moment down went Alice after it, never
+under the hedge. </para>
+<para>In another moment down went Alice after it, never
 once considering how in the world she was to get out again. 
-</p></quotation>
-</p>
-<p>Use the Verbatim tag when you want <latex>LaTeX</latex> to preserve spacing,
+</para></quotation>
+</para>
+<para>Use the Verbatim tag when you want <latex>LaTeX</latex> to preserve spacing,
 perhaps when including a fragment from a program such as:  
 <pre>
 #include
 <langle/>iostream<rangle/>        // <langle/> <rangle/> is used for standard<br _moz_dirty=""/>libraries.<br _moz_dirty=""/>void main(void)            // "main" method always called first.<br _moz_dirty=""/>{<br _moz_dirty=""/><br _moz_dirty=""/>cout <langle/><langle/> "Hello World.";  // Send to output stream.<br _moz_dirty=""/>}<br _moz_dirty=""/></pre>
-</p></subsection>
+</para></subsection>
 <subsection>
 <sectiontitle>Mathematics and Text</sectiontitle>  
-<p>Let <math xmlns="http://www.w3.org/1998/Math/MathML">
+<para>Let <math xmlns="http://www.w3.org/1998/Math/MathML">
   <mrow>
     <mstyle fontfamily="Times New Roman" fontsize="120%">
       <mi>H</mi>
@@ -436,8 +438,8 @@ perhaps when including a fragment from a program such as:
     <mstyle fontfamily="Times New Roman" fontsize="120%">
       <mi>T</mi>
     </mstyle>
-  </mrow></math> . </p>
-<p>The numbered equation <math xmlns="http://www.w3.org/1998/Math/MathML" class="displayedmathml" mode="display" display="block">
+  </mrow></math> . </para>
+<para>The numbered equation <math xmlns="http://www.w3.org/1998/Math/MathML" class="displayedmathml" mode="display" display="block">
   <mrow>
     <mstyle fontfamily="Times New Roman" fontsize="120%">
       <mrow id="eqn1">
@@ -502,12 +504,12 @@ perhaps when including a fragment from a program such as:
       </mrow>
     </mstyle>
   </mrow></math> is automatically numbered as equation <ref>eqn1</ref>.
-</p></subsection>
+</para></subsection>
 <subsection>
 <sectiontitle>List Environments</sectiontitle>  
-<p>You can create numbered,
+<para>You can create numbered,
 bulleted, and description lists using the Item Tag popup list on the Tag
-toolbar. </p>
+toolbar. </para>
 
 <enumerate>  
 <item>List item 1 </item>
@@ -560,99 +562,99 @@ legends.
 </item></description> </subsection>
 <subsection>
 <sectiontitle>Theorem-like Environments</sectiontitle>  
-<p>The following
+<para>The following
 theorem-like environments (in alphabetical order) are available in this
-style. </p>
-<p>
+style. </para>
+<para>
 <theorem type="acknowledgement"> This is an acknowledgement
 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="algorithm"> This is an algorithm 
 </theorem>
-</p>
-<p>
+</para>
+<para>
 <theorem type="axiom"> This is an axiom 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="case">
 This is a case 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="claim"> This is a claim
 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="conclusion"> This is a conclusion 
 </theorem>
-</p>
-<p>
+</para>
+<para>
 <theorem type="condition"> This is a condition 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="conjecture">
 This is a conjecture 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="corollary"> This
 is a corollary 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="criterion"> This is a
 criterion 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="definition"> This is a definition
 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="example"> This is an example 
 </theorem>
-</p>
-<p>
+</para>
+<para>
 <theorem type="exercise"> This is an exercise 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="lemma">
 This is a lemma 
-</theorem> </p>
-<p>This is the proof of the lemma.  </p>
-<p>
+</theorem> </para>
+<para>This is the proof of the lemma.  </para>
+<para>
 <theorem type="notation">
 This is notation 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="problem"> This is a
 problem 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="proposition"> This is a proposition
 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="remark"> This is a remark 
 </theorem>
-</p>
-<p>
+</para>
+<para>
 <theorem type="solution"> This is a solution 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="summary">
 This is a summary 
-</theorem> </p>
-<p>
+</theorem> </para>
+<para>
 <theorem type="theorem"> This is
 a theorem 
-</theorem> </p>
-<p>[Proof of the Main Theorem] This is the proof.
- </p></subsection></section>
+</theorem> </para>
+<para>[Proof of the Main Theorem] This is the proof.
+ </para></subsection></section>
 <section>
 <sectiontitle>The First Appendix</sectiontitle>  
-<p>The appendix fragment
+<para>The appendix fragment
 is used only once. Subsequent appendices can be created using the Section
-Section/Body Tag. </p>
-<p>
-</p></section>
+Section/Body Tag. </para>
+<para>
+</para></section>
 </docbody>
-</body> 
-</html>
+</html:body> 
+</html:html>

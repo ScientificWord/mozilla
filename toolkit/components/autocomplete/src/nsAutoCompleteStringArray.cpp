@@ -37,7 +37,6 @@ nsAutoCompleteSearchStringArray * nsAutoCompleteSearchStringArray::sAutoComplete
 
 nsAutoCompleteSearchStringArray::nsAutoCompleteSearchStringArray()
 {
-  
 }
 
 nsAutoCompleteSearchStringArray::~nsAutoCompleteSearchStringArray()
@@ -100,6 +99,15 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::SortArrays()
   return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
+/* [noscript] void setMarkedStrings (in nsNativeStringArray sa); */
+NS_IMETHODIMP nsAutoCompleteSearchStringArray::SetMarkedStrings(nsStringArray * sa)
+{
+  if (m_imp) return m_imp->SetMarkedStrings(sa);
+  printf("nsAutoCompletSearchStringArray uninitialized\n");
+  return NS_OK; // is there an NS_UNINITIALIZED ??
+}
+
+
 /* void setImplementation (in nsISupports imp); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::SetImplementation(nsIAutoCompleteSearchStringArray *imp)
 {
@@ -128,6 +136,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::GetNewImplementation(nsIAutoCompl
 nsAutoCompleteSearchStringArrayImp::nsAutoCompleteSearchStringArrayImp()
 {
   m_stringArrays = nsnull;
+  m_markedStrings = nsnull;
 }
 
 nsAutoCompleteSearchStringArrayImp::~nsAutoCompleteSearchStringArrayImp()
@@ -221,8 +230,22 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SortArrays(void)
   return NS_OK;
 }
 
+/* [noscript] void setMarkedStrings (in nsNativeStringArray sa); */
+NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SetMarkedStrings(nsStringArray * sa)
+{
+  nsAutoString str;
+  nsresult res = NS_OK;
+  if (m_markedStrings) m_markedStrings->Clear();
+  else m_markedStrings = new nsStringArray[10];
+  if (!m_markedStrings) return PR_OUT_OF_MEMORY_ERROR;
+  for (int i = 0; i < sa->Count(); i++) {
+    sa->StringAt(i, str);
+    m_markedStrings->AppendString(str); 
+  } 
+  return res; 
+}
 
-/* void setImplementation (in nsISupports imp); */
+
 NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SetImplementation(nsIAutoCompleteSearchStringArray *imp)
 {
     // we delegate this one to the unique nsAutoCompleteSearchStringArray
@@ -253,7 +276,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::StartSearch(
   nsString str2;
   nsStringArray * psa = GetStringArrayForCategory(searchParam);
   if (!psa) return  PR_INVALID_ARGUMENT_ERROR;
-  nsCOMPtr<nsAutoCompleteResultStringArray> mResult = new nsAutoCompleteResultStringArray();
+  nsCOMPtr<nsAutoCompleteResultStringArray> mResult = new nsAutoCompleteResultStringArray(m_markedStrings);
   if (!mResult) return NS_ERROR_FAILURE;
   mResult->SetSearchString(searchString);
   mResult->SetSearchResult(nsIAutoCompleteResult::RESULT_NOMATCH);
@@ -301,7 +324,7 @@ NS_IMPL_ADDREF(nsAutoCompleteResultStringArray)
 NS_IMPL_RELEASE(nsAutoCompleteResultStringArray)
 
 
-nsAutoCompleteResultStringArray::nsAutoCompleteResultStringArray()
+nsAutoCompleteResultStringArray::nsAutoCompleteResultStringArray(nsStringArray * pmarkedStrings):pMarkedTags(pmarkedStrings)
 {
   mReturnStrings = new nsStringArray(10);
   mDefaultIndex = 0;
@@ -362,23 +385,24 @@ NS_IMETHODIMP nsAutoCompleteResultStringArray::GetCommentAt(PRInt32 index, nsASt
 /* AString getStyleAt (in long index); */
 NS_IMETHODIMP nsAutoCompleteResultStringArray::GetStyleAt(PRInt32 index, nsAString & _retval)
 {
-	//   nsAutoString strValue;
-	//   nsString str;
-	// GetValueAt(index, strValue);
-	// if (!strValue.IsEmpty())
-	// {
-	//   for (int i = 0; i < mparentTags->Count(); i++)
-	//     {
-	// 	  mparentTags->StringAt(i, str);
-	//       if (strValue.Equals(str))
-	// 	  {
-	//          _retval = NS_LITERAL_STRING("sw_checked");
-	//        return NS_OK;
-	// 	  }
-	//     }
-	// }
+	nsAutoString strValue;
+	nsString str;
+  if (!pMarkedTags) return NS_OK;
+	GetValueAt(index, strValue);
+	if (!strValue.IsEmpty())
+	{
+	  for (int i = 0; i < pMarkedTags->Count(); i++)
+	  {
+	 	  pMarkedTags->StringAt(i, str);
+	    if (strValue.Equals(str))
+	 	  {
+	       _retval = NS_LITERAL_STRING("sw_checked");
+	       return NS_OK;
+	 	  }
+	  }
+	}
 	_retval = NS_LITERAL_STRING("");
-    return NS_OK;
+  return NS_OK;
 }
 
 
@@ -442,19 +466,4 @@ NS_IMETHODIMP nsAutoCompleteResultStringArray::Clear()
   mReturnStrings->Clear();
   return NS_OK;
 }
-
-// NS_IMETHODIMP nsAutoCompleteResultStringArray::SetParentTags( nsStringArray * parentTags )
-// {
-//   nsString str;
-//   if (!parentTags) return NS_OK;
-//   if (!mparentTags) mparentTags = new nsStringArray();
-//   mparentTags->Clear();
-//   for (int i = 0; i< parentTags->Count(); i++)
-//   {
-//     parentTags->StringAt(i, str);
-//     mparentTags->AppendString(str);
-//   }
-//   
-//   return NS_OK;
-// }
 
