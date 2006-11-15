@@ -1,5 +1,5 @@
 #include "nsIAutoCompleteSearch.idl"
-
+[ptr] native nsNativeStringArray(nsStringArray);
 
 
 [scriptable, uuid(3A6BB324-512A-4d41-AC56-C8B8249A2E45)]                                             
@@ -10,4 +10,6 @@ interface nsIAutoCompleteSearchStringArray : nsIAutoCompleteSearch
   void sortArrays(); // in the future we may need more granularity.
   void setImplementation( in nsIAutoCompleteSearchStringArray imp);
   nsIAutoCompleteSearchStringArray getNewImplementation();
+  [noscript]
+  void setMarkedStrings( in nsNativeStringArray sa);
 };

@@ -62,7 +62,7 @@
 			<contains>cursor</contains>
 			<contains>defaulttitletag</contains>
 			<tags>
-				<tag id="defaultparagraph" ns="sw" nm="p">
+				<tag id="defaultparagraph" ns="sw" nm="para">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[
