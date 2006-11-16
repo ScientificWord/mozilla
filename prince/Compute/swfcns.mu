@@ -1854,10 +1854,12 @@ begin
     [vals[i],1,{linalg::col(m,i)}] $ i = 1..nops(vals);
   else
     m := linalg::eigenvectors(M);        // convert overall list to sequence
-    if (m <> FAIL) then
-      map( op(m), (l) -> [l[1],l[2],{op(l[3])}] );  // convert list of eigenvectors to set of such
-    else
+    if (m = FAIL) then
       FAIL;
+    elif (nops(m) = 1) then
+      op( map( m, (l) -> [l[1],l[2],{op(l[3])}] ) );  // convert eigenvector to set of such
+    else
+      map( op(m), (l) -> [l[1],l[2],{op(l[3])}] );  // convert list of eigenvectors to set of such
     end_if;
   end_if;
 end_proc:
