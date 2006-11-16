@@ -686,7 +686,8 @@ nsRangeUpdater::DidMoveNode(nsIDOMNode *aOldParent, PRInt32 aOldOffset, nsIDOMNo
 
   // DEBUG: PRInt32 nsRangeStore::n = 0;
 
-nsRangeStore::nsRangeStore() 
+nsRangeStore::nsRangeStore()
+: startOffset(-1), endOffset(-1), startSurrogateOffset(-1), endSurrogateOffset(-1) 
 { 
   // DEBUG: n++;  printf("range store alloc count=%d\n", n); 
 }
@@ -694,6 +695,24 @@ nsRangeStore::~nsRangeStore()
 {
   // DEBUG: n--;  printf("range store alloc count=%d\n", n); 
 }
+
+nsRangeStore::nsRangeStore(nsRangeStore * rangeStore)
+: startOffset(-1), endOffset(-1), startSurrogateOffset(-1), endSurrogateOffset(-1) 
+{ 
+  // DEBUG: n++;  printf("range store alloc count=%d\n", n); 
+  if (rangeStore)
+  {
+   startNode = rangeStore->startNode;
+   startOffset = rangeStore->startOffset;
+   endNode = rangeStore->endNode;
+   endOffset = rangeStore->endOffset;
+   startSurrogate = rangeStore->startSurrogate;
+   startSurrogateOffset = rangeStore->startSurrogateOffset;
+   endSurrogate = rangeStore->endSurrogate;
+   endSurrogateOffset = rangeStore->endSurrogateOffset;
+ }  
+}
+
 
 nsresult nsRangeStore::StoreRange(nsIDOMRange *aRange)
 {

@@ -20,6 +20,9 @@
 #include "nsComponentManagerUtils.h"
 #include "msiEditingAtoms.h"
 
+
+//TODO -- non-normal leaf????  can a leaf have alignmarks???
+
 msiMleafCaret::msiMleafCaret(nsIDOMNode* mathmlNode, PRUint32 offset, PRUint32 mathmlType)
 :  msiMCaretBase(mathmlNode, offset, mathmlType), m_isDipole(PR_FALSE), m_length(0)
 {
@@ -365,65 +368,126 @@ msiMleafCaret::Split(nsIEditor *editor,
     }
   }
   return res;
-}                                     
+} 
+
+NS_IMETHODIMP
+msiMleafCaret::SetDeletionTransaction(nsIEditor * editor,
+                                      PRBool deletingToTheRight, 
+                                      nsITransaction ** txn,
+                                      PRBool * toRightInParent)
+{
+
+  if (!m_mathmlNode || !editor || !txn)
+    return NS_ERROR_FAILURE;
+  nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
+  if (!msiEditor)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIDOMNode> first, last;
+  nsCOMPtr<nsIDOMCharacterData> charData;
+  nsresult res(NS_OK);
+  m_mathmlNode->GetFirstChild(getter_AddRefs(first));
+   m_mathmlNode->GetLastChild(getter_AddRefs(last));
+  PRBool normal = first && first == last ? PR_TRUE : PR_FALSE;
+  if (normal)
+  {  
+    charData = do_QueryInterface(first);
+    normal = charData ? PR_TRUE : PR_FALSE;
+  }
+  if (normal)
+  {
+    *toRightInParent = deletingToTheRight;
+    if (deletingToTheRight)
+    {
+      if (m_offset == 0)
+        *toRightInParent = PR_FALSE;
+      else if (m_isDipole)
+      {
+        if (m_offset< m_length)
+          toRightInParent = PR_FALSE;
+      }    
+      else
+        res = msiEditor->CreateDeleteTextTransaction(charData, m_offset, m_length - m_offset, txn);
+    }
+    else
+    {
+      if (m_offset == m_length)
+        *toRightInParent = PR_TRUE;
+      else if (m_isDipole)
+      {
+        if (0 < m_offset)
+          *toRightInParent = PR_TRUE;
+      }    
+      else
+        res = msiEditor->CreateDeleteTextTransaction(charData, 0, m_offset, txn);
+    }  
+  }
+  else  // !normal
+  {
+    NS_ASSERTION(PR_FALSE, "Deleting from non-normal leaf.\n");
+    //TODO
+  }
+  return res;
+
+}                                            
+                                    
 
 NS_IMETHODIMP
 msiMleafCaret::SetupDeletionTransactions(nsIEditor * editor,
-                                         PRUint32 startOffset,
-                                         PRUint32 endOffset,
                                          nsIDOMNode * start,
+                                         PRUint32 startOffset,
                                          nsIDOMNode * end,
-                                         nsIArray ** transactionList)
+                                         PRUint32 endOffset,
+                                         nsIArray ** transactionList,
+                                         nsIDOMNode ** coalesceNode,
+                                         PRUint32 * coalesceOffset)
 {
-
-  if (!m_mathmlNode || !editor || !transactionList)
+  if (!m_mathmlNode || !editor || !transactionList || !coalesceNode || !coalesceOffset)
     return NS_ERROR_FAILURE;
-  if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
+  if (! start || !end || !(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
     return NS_ERROR_FAILURE;
-      
-  nsresult res(NS_OK);
-  if (m_isDipole || (startOffset == 0 && endOffset == m_length))
+  *coalesceNode = nsnull,
+  *coalesceOffset = INVALID;
+  *transactionList = nsnull;  
+  nsCOMPtr<nsIDOMNode> first;
+  nsresult res = m_mathmlNode->GetFirstChild(getter_AddRefs(first));
+  PRBool normal = first ? PR_TRUE : PR_FALSE;
+  if (normal && (start != first || start != m_mathmlNode))
+    normal = PR_FALSE;
+  if (normal && (end != first || end != m_mathmlNode))
+    normal = PR_FALSE;
+  if (normal)
   {
-    nsCOMPtr<msiIMathMLCaret> parentCaret;
-    res = msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, parentCaret);
-    if (NS_SUCCEEDED(res) && parentCaret)
+    if (m_isDipole || (startOffset == 0 && endOffset == m_length))
     {
-      PRUint32 offset(INVALID);
-      res = msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
-      if (NS_SUCCEEDED(res) && offset  != INVALID)
-        res = parentCaret->SetupDeletionTransactions(editor, offset, offset+1, 
-                                                     nsnull, nsnull, transactionList);
-      else                                               
-        res = NS_ERROR_FAILURE;
-    }
-    else
-      res = NS_ERROR_FAILURE;
-  }
-  else if (startOffset < endOffset)
-  {
-    nsCOMPtr<nsIDOMNode> first, clone;
-    res = m_mathmlNode->GetFirstChild(getter_AddRefs(first));
-    if (NS_FAILED(res) || !first)
-      res = NS_ERROR_FAILURE;
-    if (NS_SUCCEEDED(res))
-      res = msiUtils::CloneNode(first, clone);
-    if (NS_FAILED(res) || !clone)
-      res = NS_ERROR_FAILURE;
-    if (NS_SUCCEEDED(res))
-    {
-      nsCOMPtr<nsIDOMCharacterData> charData(do_QueryInterface(clone));
-      if (charData)
-        res = charData->DeleteData(startOffset, endOffset-startOffset);
+      nsCOMPtr<msiIMathMLCaret> parentCaret;
+      res = msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, parentCaret);
+      if (NS_SUCCEEDED(res) && parentCaret)
+      {
+        PRUint32 offset(INVALID);
+        res = msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
+        if (NS_SUCCEEDED(res) && offset  != INVALID)
+          res = parentCaret->SetupDeletionTransactions(editor, m_mathmlNode, offset, 
+                                                       m_mathmlNode, offset+1, transactionList,
+                                                       coalesceNode, coalesceOffset);
+        else                                               
+          res = NS_ERROR_FAILURE;
+      }
       else
         res = NS_ERROR_FAILURE;
-      if (NS_SUCCEEDED(res))
+    }
+    else if (startOffset < endOffset)
+    {
+      nsCOMPtr<nsIDOMCharacterData> charData(do_QueryInterface(first));
+      if (charData)
       {
         nsCOMPtr<nsIMutableArray> mutableTxnArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
         nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
         if (!msiEditor || !mutableTxnArray)
           return NS_ERROR_FAILURE;
         nsCOMPtr<nsITransaction> transaction;
-        res = msiEditor->CreateReplaceTransaction(clone, first, m_mathmlNode, getter_AddRefs(transaction));
+        res = msiEditor->CreateDeleteTextTransaction(charData, startOffset, endOffset-startOffset, 
+                                                     getter_AddRefs(transaction));
         if (NS_SUCCEEDED(res) && transaction)
           res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
         else
@@ -434,8 +498,13 @@ msiMleafCaret::SetupDeletionTransactions(nsIEditor * editor,
           NS_ADDREF(*transactionList);
         }  
       }   
-    }
-  }  
+    }  
+  }
+  else  // !normal
+  {
+    NS_ASSERTION(PR_FALSE, "Deleting from non-normal leaf.\n");
+    //TODO
+  }
   return res;
 }
 

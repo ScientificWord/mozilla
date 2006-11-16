@@ -37,6 +37,7 @@ CPPSRCS  = \
            msiEditor.cpp \
            msiEditorMouseListener.cpp \
            msiEditorMouseMotionListener.cpp \
+           msiSelectionManager.cpp \
            $(NULL)
 
 ifdef ENABLE_EDITOR_API_LOG

@@ -9,6 +9,8 @@
 #include "nsEditorEventListeners.h"
 #include "msiEditorMouseListener.h"
 #include "msiEditorMouseMotionListener.h"
+#include "TransactionFactory.h"
+#include "EditAggregateTxn.h"
 
 #include "nsContentUtils.h"
 #include "nsIDOMDocumentFragment.h"
@@ -761,6 +763,64 @@ msiEditor::CreateInsertTransaction(nsIDOMNode * node, nsIDOMNode * parent, PRUin
     return NS_ERROR_FAILURE;
   return CreateTxnForInsertElement(node, parent, (PRInt32)offset, (InsertElementTxn**)transaction);  
 } 
+
+
+NS_IMETHODIMP
+msiEditor::CreateDeleteTextTransaction(nsIDOMCharacterData * node,
+                                       PRUint32 offset,
+                                       PRUint32 numChar,
+                                       nsITransaction ** transaction)
+{
+  if (!node || !transaction)
+    return NS_ERROR_FAILURE;
+  return CreateTxnForDeleteText(node, offset, numChar, (DeleteTextTxn**)transaction);  
+}         
+
+NS_IMETHODIMP
+msiEditor::CreateDeleteChildrenTransaction(nsIDOMNode * parent,
+                                           PRUint32 offset,
+                                           PRUint32 numToDelete,
+                                           nsITransaction ** transaction)
+{
+  if (!parent || !transaction)
+    return NS_ERROR_FAILURE;
+  nsCOMPtr<nsIDOMNodeList> childNodes;
+  PRUint32 numKids(0);
+  nsresult res = parent->GetChildNodes(getter_AddRefs(childNodes));
+  if (NS_SUCCEEDED(res) && childNodes)
+    res = childNodes->GetLength(&numKids);
+  if (offset >= numKids || numToDelete == 0)
+    return NS_OK;
+  if (offset + numToDelete >= numKids)
+    numToDelete = numKids - offset;    
+  // allocate the out-param transaction
+  EditAggregateTxn * aggTxn = nsnull;
+  res = TransactionFactory::GetNewTransaction(EditAggregateTxn::GetCID(), (EditTxn **)&aggTxn);
+  if (NS_FAILED(res) || !(aggTxn)) 
+    return NS_ERROR_FAILURE;
+  for (PRInt32 i=offset+numToDelete-1; i >= NS_STATIC_CAST(PRInt32, offset) && NS_SUCCEEDED(res); i--) 
+  {
+    nsCOMPtr<nsIDOMNode> currChild;
+    res = childNodes->Item(i, getter_AddRefs(currChild));
+    if (NS_SUCCEEDED(res) && currChild)
+    {
+      DeleteElementTxn *txn;
+      res = CreateTxnForDeleteElement(currChild, &txn);
+      if (NS_FAILED(res) || !txn)
+        res = NS_ERROR_FAILURE;
+      else
+        aggTxn->AppendChild((EditTxn*)txn);
+    }
+  }
+  if (NS_SUCCEEDED(res))
+  {
+    *transaction = aggTxn;
+    NS_ADDREF(*transaction); 
+  }
+  return res;
+}                                                                                                                  
+                                                                                                         
+
 
 //End nsIMathMLEditor
 

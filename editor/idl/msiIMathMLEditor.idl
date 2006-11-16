@@ -87,6 +87,17 @@ interface msiIMathMLEditor : nsISupports
   [noscript] void CreateInsertTransaction(in nsIDOMNode node,
                                           in nsIDOMNode parent,
                                           in PRUint32 offset,
-                                          out nsITransaction transaction);                                 
+                                          out nsITransaction transaction);
+                                          
+  [noscript] void CreateDeleteTextTransaction(in nsIDOMCharacterData node,
+                                              in PRUint32 offset,
+                                              in PRUint32 numChar,
+                                              out nsITransaction transaction);                                                                           
+                                              
+  [noscript] void CreateDeleteChildrenTransaction(in nsIDOMNode parent,
+                                                  in PRUint32 offset,
+                                                  in PRUint32 numToDelete,
+                                                  out nsITransaction transaction);                                                                           
+                                              
                                  
 };

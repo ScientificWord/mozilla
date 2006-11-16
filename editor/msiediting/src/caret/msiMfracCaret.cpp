@@ -295,21 +295,27 @@ msiMfracCaret::Split(nsIEditor *editor,
 } 
 
 NS_IMETHODIMP
-msiMfracCaret::SetupDeletionTransactions(nsIEditor * editor,
-                                         PRUint32 startOffset,
-                                         PRUint32 endOffset,
-                                         nsIDOMNode * start,
-                                         nsIDOMNode * end,
-                                         nsIArray ** transactionList)
+msiMfracCaret::SetDeletionTransaction(nsIEditor * editor,
+                                      PRBool deletingToTheRight, 
+                                      nsITransaction ** txn,
+                                      PRBool * toRightInParent)
 {
-  if (!m_mathmlNode || !editor || !transactionList)
-    return NS_ERROR_FAILURE;
-  if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
-    return NS_ERROR_FAILURE;
-  return msiMfracCaret::SetupDelTxnForFracOrRoot(editor, m_mathmlNode,
-                                                 startOffset, endOffset,
-                                                 start,  end,
-                                                 transactionList);  
+  return msiMCaretBase::SetDeletionTransaction(editor, deletingToTheRight, txn, toRightInParent);
+}                                            
+
+NS_IMETHODIMP
+msiMfracCaret::SetupDeletionTransactions(nsIEditor * editor,
+                                         nsIDOMNode * start,
+                                         PRUint32 startOffset,
+                                         nsIDOMNode * end,
+                                         PRUint32 endOffset,
+                                         nsIArray ** transactionList,
+                                         nsIDOMNode ** coalesceNode,
+                                         PRUint32 * coalesceOffset)
+{
+  return msiMCaretBase::FracRootSetupDelTxns(editor, m_mathmlNode, start, startOffset, 
+                                             end,  endOffset, transactionList,
+                                             coalesceNode, coalesceOffset);  
 }
                                     
 
@@ -455,102 +461,4 @@ void msiMfracCaret::GetThresholds(const nsRect &fRect,
 }
 
 
-nsresult
-msiMfracCaret::SetupDelTxnForFracOrRoot(nsIEditor * editor,
-                                        nsIDOMNode * mathmlNode,
-                                        PRUint32 startOffset,
-                                        PRUint32 endOffset,
-                                        nsIDOMNode * start,
-                                        nsIDOMNode * end,
-                                        nsIArray ** transactionList)
-{
-  if (!mathmlNode || !editor || !transactionList)
-    return NS_ERROR_FAILURE;
-  if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
-    return NS_ERROR_FAILURE;
-  nsresult res(NS_OK);
-  if (startOffset == 0 && endOffset == 2 && start == nsnull && end == nsnull)
-  {
-    nsCOMPtr<msiIMathMLCaret> parentCaret;
-    res = msiUtils::SetupPassOffCaretToParent(editor, mathmlNode, PR_FALSE, parentCaret);
-    if (NS_SUCCEEDED(res) && parentCaret)
-    {
-      PRUint32 offset(msiIMathMLEditingBC::INVALID);
-      res = msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
-      if (NS_SUCCEEDED(res) && offset != msiIMathMLEditingBC::INVALID)
-        res = parentCaret->SetupDeletionTransactions(editor, offset, offset+1, 
-                                                     nsnull, nsnull, transactionList);
-    }                                                 
-  }
-  else
-  {
-    nsCOMPtr<nsIDOMNode> newFirst, newSecond;
-    nsCOMPtr<nsIDOMElement> inputboxElement;
-    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputboxElement);
-    nsCOMPtr<nsIDOMNode> inputbox(do_QueryInterface(inputboxElement));
-    if (NS_FAILED(res) || !inputbox)
-      return NS_ERROR_FAILURE; 
-    
-    if (startOffset == 0 && endOffset == 0)
-    {
-      if (start || end)
-        res = msiRequiredArgument::MakeRequiredArgument(editor, start, end, newFirst);
-      
-    }
-    else if (startOffset == 0 && endOffset >= 1)
-    {
-      if (start)
-        res = msiRequiredArgument::MakeRequiredArgument(editor, start, nsnull, newFirst);
-      else
-        newFirst = inputbox;
-      if (end)    
-        res = msiRequiredArgument::MakeRequiredArgument(editor, nsnull, end, newSecond);
-    }
-    else if (startOffset == 1)
-    {
-      if (start || end)
-        res = msiRequiredArgument::MakeRequiredArgument(editor, start, end, newSecond);
-      else
-        newSecond = inputbox;
-    }
-    if (NS_SUCCEEDED(res) && (newFirst || newSecond))
-    {
-      nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
-      nsCOMPtr<nsIMutableArray> mutableTxnArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
-      if (!msiEditor ||!mutableTxnArray)
-        res = NS_ERROR_FAILURE;
-      if (NS_SUCCEEDED(res) && newFirst)
-      {
-        nsCOMPtr<nsITransaction> transaction;
-        nsCOMPtr<nsIDOMNode> first;
-        res = mathmlNode->GetFirstChild(getter_AddRefs(first));
-        if (NS_SUCCEEDED(res) && first)
-          res = msiEditor->CreateReplaceTransaction(newFirst, first, mathmlNode, getter_AddRefs(transaction));
-        if (NS_SUCCEEDED(res) && transaction)
-          res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
-        else
-          res = NS_ERROR_FAILURE;
-      }
-      if (NS_SUCCEEDED(res) && newSecond)
-      {
-        nsCOMPtr<nsITransaction> transaction;
-        nsCOMPtr<nsIDOMNode> second;
-        res = mathmlNode->GetLastChild(getter_AddRefs(second));
-        if (NS_SUCCEEDED(res) && second)
-          res = msiEditor->CreateReplaceTransaction(newSecond, second, mathmlNode, getter_AddRefs(transaction));
-        if (NS_SUCCEEDED(res) && transaction)
-          res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
-        else
-          res = NS_ERROR_FAILURE;
-      }
-      if (NS_SUCCEEDED(res))
-      {
-        *transactionList = mutableTxnArray;
-        NS_ADDREF(*transactionList);
-      }  
-    }
-  }
-  return res;
-}
                                       

@@ -27,17 +27,6 @@ nsresult  GetFramesAndRects(const nsIFrame * frac,
 void GetThresholds(const nsRect &fRect, 
                   const nsRect &nRect, const nsRect& dRect,
                   PRInt32 &left, PRInt32 & right);
-public:
-  // utility function used by mroot and mfrac.
-  static nsresult SetupDelTxnForFracOrRoot(nsIEditor * editor,
-                                           nsIDOMNode * mathmlNode,
-                                           PRUint32 startOffset,
-                                           PRUint32 endOffset,
-                                           nsIDOMNode * start,
-                                           nsIDOMNode * end,
-                                           nsIArray ** transactionList);
-                  
-  
 };
 
 #endif // msiMfracCaret_h___
