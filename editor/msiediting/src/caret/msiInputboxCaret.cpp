@@ -159,18 +159,35 @@ msiInputboxCaret::Split(nsIEditor *editor,
                         nsIDOMNode **right)
 {
   return msiMCaretBase::Split(editor, appendLeft, appendRight, left, right);
+}
+
+NS_IMETHODIMP
+msiInputboxCaret::SetDeletionTransaction(nsIEditor * editor,
+                                      PRBool deletingToTheRight, 
+                                      nsITransaction ** txn,
+                                      PRBool * toRightInParent)
+{
+
+  if (!editor || !m_mathmlNode || !txn || !toRightInParent)
+    return NS_ERROR_NULL_POINTER;
+  *txn = nsnull;
+  *toRightInParent = deletingToTheRight;
+  return NS_OK;
 }   
 
 NS_IMETHODIMP
 msiInputboxCaret::SetupDeletionTransactions(nsIEditor * editor,
-                                            PRUint32 startOffset,
-                                            PRUint32 endOffset,
                                             nsIDOMNode * start,
+                                            PRUint32 startOffset,
                                             nsIDOMNode * end,
-                                            nsIArray ** transactionList)
+                                            PRUint32 endOffset,
+                                            nsIArray ** transactionList,
+                                            nsIDOMNode ** coalesceNode,
+                                            PRUint32 * coalesceOffset)
 {
-  return msiMCaretBase::SetupDeletionTransactions(editor, startOffset, endOffset,
-                                                  start, end, transactionList);
+  NS_ASSERTION(PR_FALSE, "Yuck\n");
+  return msiMCaretBase::InputboxSetupDelTxns(editor, m_mathmlNode, m_numKids, start, startOffset,
+                                             end, endOffset, transactionList, coalesceNode, coalesceOffset);
 }
                                   
 
