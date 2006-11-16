@@ -508,7 +508,7 @@ msiScriptCaret::SetupDeletionTransactions(nsIEditor * editor,
                                           nsIDOMNode ** coalesceNode,
                                           PRUint32 * coalesceOffset)
 {
-  if (m_mathmlNode || !editor || !transactionList || !coalesceNode || !coalesceOffset )
+  if (!m_mathmlNode || !editor || !transactionList || !coalesceNode || !coalesceOffset )
     return NS_ERROR_FAILURE;
   if (!start || !end || !(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
     return NS_ERROR_FAILURE;
@@ -538,7 +538,7 @@ msiScriptCaret::SetupDeletionTransactions(nsIEditor * editor,
                                                        endOffset, PR_FALSE, rightTxnList, rightOffsetInTop);
   if (NS_FAILED(res))
     return res;
-  if (leftOffsetInTop == 0 || rightOffsetInTop == m_numKids)
+  if (leftOffsetInTop == 0 && rightOffsetInTop == m_numKids)
   {
     nsCOMPtr<msiIMathMLCaret> parentCaret;
     res = msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, parentCaret);
