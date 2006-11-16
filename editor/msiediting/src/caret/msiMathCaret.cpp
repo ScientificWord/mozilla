@@ -12,6 +12,7 @@
 #include "nsIHTMLEditor.h"
 #include "nsString.h"
 #include "nsISelectionPrivate.h"
+#include "msiIMathMLEditor.h"
 
 //TODO many absorb issues to understand and deal with
 
@@ -155,52 +156,53 @@ msiMathCaret::Split(nsIEditor *editor,
                     nsIDOMNode **right)
 {
   return NS_ERROR_NOT_IMPLEMENTED;
-}  
+}
+
+NS_IMETHODIMP
+msiMathCaret::SetDeletionTransaction(nsIEditor * editor,
+                                     PRBool deletingToTheRight, 
+                                     nsITransaction ** txn,
+                                     PRBool * toRightInParent)
+{
+  NS_ASSERTION(PR_FALSE, "Should not be here since the math element is always top level.\n");
+  if (!editor || !m_mathmlNode || !txn || !toRightInParent)
+    return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
+  if (!msiEditor)
+    return NS_ERROR_FAILURE;  
+  nsresult res(NS_OK);  
+  *txn = nsnull;
+  *toRightInParent = deletingToTheRight;
+  if (deletingToTheRight && (m_offset < m_numKids))
+    res = msiEditor->CreateDeleteChildrenTransaction(m_mathmlNode, m_offset, m_numKids-m_offset, txn);
+  else if (!deletingToTheRight && (0 < m_offset))
+    res = msiEditor->CreateDeleteChildrenTransaction(m_mathmlNode, 0, m_offset, txn);
+  return res;
+}                                      
 
 NS_IMETHODIMP
 msiMathCaret::SetupDeletionTransactions(nsIEditor * editor,
-                                        PRUint32 startOffset,
-                                        PRUint32 endOffset,
                                         nsIDOMNode * start,
+                                        PRUint32 startOffset,
                                         nsIDOMNode * end,
-                                        nsIArray ** transactionList)
+                                        PRUint32 endOffset,
+                                        nsIArray ** transactionList,
+                                        nsIDOMNode ** coalesceNode,
+                                        PRUint32 * coalesceOffset)
 {
-  if (!m_mathmlNode || !editor || !transactionList)
-    return NS_ERROR_FAILURE;
-  nsresult res(NS_OK);
-    
-  if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
+  if (!start)
   {
-     if (!(IS_VALID_NODE_OFFSET(startOffset)) && !(IS_VALID_NODE_OFFSET(endOffset)))
-       return NS_ERROR_FAILURE;
-     if (!(IS_VALID_NODE_OFFSET(startOffset)))
-       startOffset = 0;
-     else
-       endOffset = m_numKids;
-  }
-  if (startOffset == 0 && endOffset == m_numKids && start == nsnull && end == nsnull)
-  { // replace contents of enclosed with input box.
-    nsCOMPtr<nsIDOMElement> inputbox;
-    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputbox);
-    nsCOMPtr<nsIDOMNode> inputboxNode(do_QueryInterface(inputbox));
-    if (NS_SUCCEEDED(res) && inputboxNode) 
-    {
-      res = msiMCaretBase::SetupDeletionTransactions(editor, startOffset, endOffset,
-                                                     inputboxNode, nsnull, transactionList);
-    }  
-    else
-      res = NS_ERROR_FAILURE;
-  }
-  else
-    res = msiMCaretBase::SetupDeletionTransactions(editor, startOffset, endOffset,
-                                                   start, end, transactionList);
-  return res;
+    start = m_mathmlNode;
+    startOffset = 0;
+  }  
+  if (!end)
+  {
+    end = m_mathmlNode;
+    endOffset = m_numKids;
+  }  
+  return msiMCaretBase::InputboxSetupDelTxns(editor, m_mathmlNode, m_numKids, start, startOffset,
+                                            end, endOffset, transactionList, coalesceNode, coalesceOffset);
 }
-                                   
-
-
-
 
 NS_IMETHODIMP
 msiMathCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)

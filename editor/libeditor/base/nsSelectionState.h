@@ -56,6 +56,7 @@ class nsISelection;
 struct nsRangeStore 
 {
   nsRangeStore();
+  nsRangeStore(nsRangeStore * rangeStore);
   ~nsRangeStore();
   nsresult StoreRange(nsIDOMRange *aRange);
   nsresult GetRange(nsCOMPtr<nsIDOMRange> *outRange);
@@ -64,6 +65,11 @@ struct nsRangeStore
   PRInt32              startOffset;
   nsCOMPtr<nsIDOMNode> endNode;
   PRInt32              endOffset;
+  nsCOMPtr<nsIDOMNode> startSurrogate;
+  PRInt32              startSurrogateOffset;
+  nsCOMPtr<nsIDOMNode> endSurrogate;
+  PRInt32              endSurrogateOffset;
+  
   // DEBUG:   static PRInt32 n;
 };
 

@@ -92,36 +92,28 @@ msiMencloseCaret::AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPoint,
 
 
 NS_IMETHODIMP
-msiMencloseCaret::SetupDeletionTransactions(nsIEditor * editor,
-                                            PRUint32 startOffset,
-                                            PRUint32 endOffset,
-                                            nsIDOMNode * start,
-                                            nsIDOMNode * end,
-                                            nsIArray ** transactionList)
+msiMencloseCaret::SetDeletionTransaction(nsIEditor * editor,
+                                         PRBool deletingToTheRight, 
+                                         nsITransaction ** txn,
+                                         PRBool * toRightInParent)
 {
-  if (!m_mathmlNode || !editor || !transactionList)
-    return NS_ERROR_FAILURE;
-  if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
-    return NS_ERROR_FAILURE;
-  nsresult res(NS_OK);
-  if (startOffset == 0 && endOffset == m_numKids && start == nsnull && end == nsnull)
-  { // replace contents of enclosed with input box.
-    nsCOMPtr<nsIDOMElement> inputbox;
-    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputbox);
-    nsCOMPtr<nsIDOMNode> inputboxNode(do_QueryInterface(inputbox));
-    if (NS_SUCCEEDED(res) && inputboxNode) 
-    {
-      res = msiMCaretBase::SetupDeletionTransactions(editor, startOffset, endOffset,
-                                                     inputboxNode, nsnull, transactionList);
-    }  
-    else
-      res = NS_ERROR_FAILURE;
-  }
-  else
-    res = msiMCaretBase::SetupDeletionTransactions(editor, startOffset, endOffset,
-                                                   start, end, transactionList);
-  return res;
+
+  NS_ASSERTION(PR_FALSE, "Should not be here since 0th and last offsets are inside the enclose element\n");
+  return msiMCaretBase::SetDeletionTransaction(editor, deletingToTheRight, txn, toRightInParent);
+}                                      
+
+NS_IMETHODIMP
+msiMencloseCaret::SetupDeletionTransactions(nsIEditor * editor,
+                                            nsIDOMNode * start,
+                                            PRUint32 startOffset,
+                                            nsIDOMNode * end,
+                                            PRUint32 endOffset,
+                                            nsIArray ** transactionList,
+                                            nsIDOMNode ** coalesceNode,
+                                            PRUint32 * coalesceOffset)
+{
+  return msiMCaretBase::InputboxSetupDelTxns(editor, m_mathmlNode, m_numKids, start, startOffset,
+                                             end, endOffset, transactionList, coalesceNode, coalesceOffset);
 }                                                     
     
 #define MIN_THRESHOLD 2 //TODO -- how should this be determined.      

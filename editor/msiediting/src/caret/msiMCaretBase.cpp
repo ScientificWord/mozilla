@@ -24,7 +24,6 @@
 #include "nsIMutableArray.h"
 #include "nsComponentManagerUtils.h"
 
-
 msiMCaretBase::msiMCaretBase(nsIDOMNode* mathmlNode, 
                              PRUint32 offset,
                              PRUint32 mathmlType) 
@@ -381,7 +380,23 @@ msiMCaretBase::SplitAtDecendents(nsIEditor * editor, nsIDOMNode *leftDecendent, 
   return res;  
 }
 
+NS_IMETHODIMP
+msiMCaretBase::SetDeletionTransaction(nsIEditor * editor,
+                                      PRBool deletingToTheRight, 
+                                      nsITransaction ** txn,
+                                      PRBool * toRightInParent)
+{
 
+  if (!editor || !m_mathmlNode || !txn || !toRightInParent)
+    return NS_ERROR_NULL_POINTER;
+  *txn = nsnull;
+  *toRightInParent = deletingToTheRight;
+  if (deletingToTheRight && m_offset < m_numKids)
+    *toRightInParent = PR_FALSE; //parent will delete node.
+  else if (!deletingToTheRight && m_offset > 0)
+    *toRightInParent = PR_TRUE; //parent will delete node.
+  return NS_OK;
+}                                      
 
 
 NS_IMETHODIMP
@@ -418,167 +433,16 @@ msiMCaretBase::Split(nsIEditor *editor,
 
 NS_IMETHODIMP
 msiMCaretBase::SetupDeletionTransactions(nsIEditor * editor,
-                                         PRUint32 startOffset,
-                                         PRUint32 endOffset,
                                          nsIDOMNode * start,
+                                         PRUint32 startOffset,
                                          nsIDOMNode * end,
-                                         nsIArray ** transactionList)
+                                         PRUint32 endOffset,
+                                         nsIArray ** transactionList,
+                                         nsIDOMNode ** coalesceNode,
+                                         PRUint32 * coalesceOffset)
 {
-  if (!m_mathmlNode || !editor || !transactionList)
-    return NS_ERROR_FAILURE;
-  if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
-    return NS_ERROR_FAILURE;
-  nsresult res(NS_OK);
-  if (startOffset == 0 && endOffset == m_numKids && start == nsnull && end == nsnull)
-  {
-    nsCOMPtr<msiIMathMLCaret> parentCaret;
-    res = msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, parentCaret);
-    if (NS_SUCCEEDED(res) && parentCaret)
-    {
-      PRUint32 offset(INVALID);
-      res = msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
-      res = parentCaret->SetupDeletionTransactions(editor, offset, offset+1, 
-                                                   nsnull, nsnull, transactionList);
-    }
-    else
-      res = NS_ERROR_FAILURE;
-  }
-  else
-  {
-    nsCOMPtr<nsIDOMNode> tobeCoalLeft, tobeCoalRight;
-    nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
-    nsCOMPtr<nsIDOMNodeList> children;
-    nsCOMPtr<nsIMutableArray> mutableTxnArray, tobeCoalesced;
-    nsCOMPtr<nsIArray> prepareForCoalLeft, prepareForCoalRight, coalescedArray;
-    mutableTxnArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
-    m_mathmlNode->GetChildNodes(getter_AddRefs(children));
-    if (!msiEditor || !children || !mutableTxnArray)
-      return NS_ERROR_FAILURE;
-    
-    PRUint32 startingIndex(startOffset), endingIndex(endOffset), count(0);
-    children->GetLength(&count);
-    if (start)
-      tobeCoalLeft = start;
-    else if (startOffset > 0)  
-    {
-      nsCOMPtr<nsIDOMNode> child, clone;
-      res = children->Item(startOffset-1, getter_AddRefs(child));
-      if (NS_SUCCEEDED(res) && child)
-      {
-        
-        msiUtils::CloneNode(child, clone);
-        if (clone)
-        {
-          tobeCoalLeft = clone;
-          startingIndex -= 1;
-        }
-      }
-      else
-        res = NS_ERROR_FAILURE;
-    }
-    
-    if (end)
-    {
-      tobeCoalRight = end;
-      endingIndex += 1;
-    }
-    else if (endOffset < count)  
-    {
-      nsCOMPtr<nsIDOMNode> child, clone;
-      res = children->Item(endOffset, getter_AddRefs(child));
-      if (NS_SUCCEEDED(res) && child)
-      {
-        
-        msiUtils::CloneNode(child, clone);
-        if (clone)
-        {
-          tobeCoalRight = clone;
-          endingIndex += 1;
-        }
-      }
-      else
-        res = NS_ERROR_FAILURE;
-    }
-    if (NS_SUCCEEDED(res))
-      tobeCoalesced = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
-      
-    if (NS_SUCCEEDED(res) && tobeCoalLeft)
-    {
-      PRUint32 pfcFlags(msiIMathMLCoalesce::PFCflags_removeRedundantMrows);
-      res = msiCoalesceUtils::PrepareForCoalesceFromRight(editor, tobeCoalLeft, pfcFlags, prepareForCoalLeft);
-      if (NS_SUCCEEDED(res))
-        res = msiUtils::AppendToMutableList(tobeCoalesced, prepareForCoalLeft);
-    }  
-    if (NS_SUCCEEDED(res) && tobeCoalRight)
-    {
-      PRUint32 pfcFlags(msiIMathMLCoalesce::PFCflags_removeRedundantMrows);
-      res = msiCoalesceUtils::PrepareForCoalesceFromLeft(editor, tobeCoalRight, pfcFlags, prepareForCoalRight);
-      if (NS_SUCCEEDED(res))
-        res = msiUtils::AppendToMutableList(tobeCoalesced, prepareForCoalRight);
-    }
-    if (NS_SUCCEEDED(res) && tobeCoalesced)
-    {
-      nsCOMPtr<nsIArray> tmpArray(do_QueryInterface(tobeCoalesced));
-      if (tmpArray)
-        res = msiCoalesceUtils::CoalesceArray(editor, tmpArray, coalescedArray);
-    }  
-    for (PRUint32 i=startingIndex; NS_SUCCEEDED(res) && i < endingIndex; i++)
-    {
-      nsCOMPtr<nsIDOMNode> child;
-      res = children->Item(i, getter_AddRefs(child));
-      if (NS_SUCCEEDED(res) && child)
-      {
-        nsCOMPtr<nsITransaction> transaction;
-        res = msiEditor->CreateDeleteTransaction(child, getter_AddRefs(transaction));
-        if (NS_SUCCEEDED(res) && transaction)
-          res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
-        else
-          res = NS_ERROR_FAILURE;
-      }
-      else
-        res = NS_ERROR_FAILURE;
-    }
-    
-    nsCOMPtr<nsISimpleEnumerator> enumerator;
-    if (coalescedArray)
-      coalescedArray->Enumerate(getter_AddRefs(enumerator));
-    if (enumerator)
-    {
-      PRBool someMore(PR_FALSE);
-      PRUint32 offset(startingIndex);
-      while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore) 
-      {
-        nsCOMPtr<nsISupports> isupp;
-        if (NS_FAILED(enumerator->GetNext(getter_AddRefs(isupp))))
-        {
-          res = NS_ERROR_FAILURE; 
-          break;
-        }
-        nsCOMPtr<nsIDOMNode> child(do_QueryInterface(isupp));
-        if (child) 
-        {
-          nsCOMPtr<nsITransaction> transaction;
-          res = msiEditor->CreateInsertTransaction(child, m_mathmlNode, offset, getter_AddRefs(transaction));
-          if (NS_SUCCEEDED(res) && transaction)
-          {
-            res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
-            offset += 1;
-          }
-          else
-            res = NS_ERROR_FAILURE;
-        }
-        else
-          res = NS_ERROR_FAILURE;
-      }  
-    }
-    if (NS_SUCCEEDED(res))
-    {
-      *transactionList = mutableTxnArray;
-      NS_ADDREF(*transactionList);
-    }  
-  }
-  return res;
-  
+  return StandardSetupDelTxns(editor, m_mathmlNode, m_numKids, start, startOffset,
+                              end, endOffset, transactionList, coalesceNode, coalesceOffset);
 }                                         
                                    
 
@@ -852,6 +716,535 @@ nsresult msiMCaretBase::GetSelectionPoint(nsIEditor * editor, PRBool leftSelPoin
   }
   return res;
 }                                              
+
+nsresult 
+msiMCaretBase::SetUpDeleteTxnsFromDescendent(nsIEditor * editor, 
+                                             nsIDOMNode * topNode,
+                                             PRUint32 numKids,
+                                             nsIDOMNode * descendent, 
+                                             PRUint32 offset, 
+                                             PRBool deletingToTheRight,  
+                                             nsCOMPtr<nsIMutableArray> & transactionList, 
+                                             PRUint32 & offsetInTopNode)
+{
+  offsetInTopNode = INVALID;
+  if (!editor || !topNode || !descendent || !IS_VALID_NODE_OFFSET(offset))
+    return NS_ERROR_FAILURE;
+  
+  nsresult res(NS_OK);
+  offsetInTopNode = offset;
+  nsCOMPtr<nsIDOMNode> currDescendent;
+  PRUint32 currOffset(INVALID);
+  nsCOMPtr<msiIMathMLCaret> currCaret;
+  res = msiUtils::GetMathMLCaretInterface(editor, descendent, offset, currCaret);
+  if (NS_SUCCEEDED(res) && currCaret)
+  {
+    res = msiUtils::GetMathmlNodeFromCaretInterface(currCaret, currDescendent);
+    if (NS_SUCCEEDED(res))
+    {
+      res = msiUtils::GetOffsetFromCaretInterface(currCaret, currOffset);
+      offsetInTopNode = currOffset;
+    }  
+  }
+  nsCOMPtr<nsIMutableArray> mutableArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+  if (NS_SUCCEEDED(res) && !mutableArray)
+    res =  NS_ERROR_FAILURE;
+  while (NS_SUCCEEDED(res) && currDescendent != topNode && currCaret)
+  {
+    PRBool nextToRight(PR_TRUE);
+    nsCOMPtr<nsITransaction> txn;
+    res = currCaret->SetDeletionTransaction(editor, deletingToTheRight, getter_AddRefs(txn), &nextToRight);
+    if (NS_SUCCEEDED(res) && txn)
+      res = mutableArray->AppendElement(txn, PR_FALSE);
+    if (NS_SUCCEEDED(res))
+    {
+      nsCOMPtr<msiIMathMLCaret> parentCaret;
+      res = msiUtils::SetupPassOffCaretToParent(editor, currDescendent, nextToRight, parentCaret);
+      if (NS_SUCCEEDED(res) && parentCaret)
+      {
+        nsCOMPtr<nsIDOMNode> newNode;
+        PRUint32 newOffset(INVALID);
+        res = msiUtils::GetMathmlNodeFromCaretInterface(parentCaret, newNode);
+        if (NS_SUCCEEDED(res))
+          res = msiUtils::GetOffsetFromCaretInterface(parentCaret, newOffset);
+        if (NS_SUCCEEDED(res) && newNode && newOffset != INVALID)
+        {
+          currDescendent = newNode;
+          currOffset = newOffset;
+          currCaret = parentCaret;
+        
+        }
+        else
+          res = NS_ERROR_FAILURE;
+      }
+      else
+        res = NS_ERROR_FAILURE;
+    }
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  if (NS_SUCCEEDED(res) && currDescendent == topNode)
+  {
+    offsetInTopNode = currOffset;
+    nsCOMPtr<nsIArray> tmp(do_QueryInterface(mutableArray));
+    msiUtils::AppendToMutableList(transactionList, tmp);
+  }
+  else
+  {
+    res = NS_ERROR_FAILURE;
+    offsetInTopNode = INVALID;
+  }
+  return res;  
+}
+
+nsresult
+msiMCaretBase::StandardSetupDelTxns(nsIEditor * editor,
+                                    nsIDOMNode * topNode,
+                                    PRUint32 numKids,
+                                    nsIDOMNode * start,
+                                    PRUint32 startOffset,
+                                    nsIDOMNode * end,
+                                    PRUint32 endOffset,
+                                    nsIArray ** transactionList,
+                                    nsIDOMNode ** coalesceNode,
+                                    PRUint32 * coalesceOffset)
+{
+  if (!topNode || !editor || !transactionList || !coalesceNode || !coalesceOffset )
+    return NS_ERROR_FAILURE;
+  if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
+    return NS_ERROR_FAILURE;
+    
+  nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
+  if (!msiEditor)
+    return NS_ERROR_FAILURE;  
+  
+  nsCOMPtr<nsIDOMNodeList> children;
+  topNode->GetChildNodes(getter_AddRefs(children));
+  if (!children)
+    return NS_ERROR_FAILURE;  
+  
+  nsresult res(NS_OK);
+  *coalesceNode = nsnull;
+  *coalesceOffset = INVALID;
+  nsCOMPtr<nsIMutableArray> leftTxnList = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+  nsCOMPtr<nsIMutableArray> rightTxnList = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+  PRUint32 leftOffsetInTop(INVALID), rightOffsetInTop(INVALID);
+  
+  SetUpDeleteTxnsFromDescendent(editor, topNode, numKids, start, startOffset, PR_TRUE, leftTxnList, leftOffsetInTop);
+  SetUpDeleteTxnsFromDescendent(editor, topNode, numKids, end, endOffset, PR_FALSE, rightTxnList, rightOffsetInTop);
+  if (leftOffsetInTop == 0 && rightOffsetInTop == numKids)
+  {
+    nsCOMPtr<msiIMathMLCaret> parentCaret;
+    res = msiUtils::SetupPassOffCaretToParent(editor, topNode, PR_FALSE, parentCaret);
+    if (NS_SUCCEEDED(res) && parentCaret)
+    {
+      PRUint32 offset(INVALID);
+      nsCOMPtr<nsIDOMNode> parentMMLNode;
+      msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
+      msiUtils::GetMathmlNodeFromCaretInterface(parentCaret, parentMMLNode);
+      if (parentMMLNode && IS_VALID_NODE_OFFSET(offset))
+        res = parentCaret->SetupDeletionTransactions(editor, parentMMLNode, offset, 
+                                                     parentMMLNode, offset+1,
+                                                     transactionList, 
+                                                     coalesceNode, coalesceOffset);
+      else
+        res = NS_ERROR_FAILURE;                                               
+    }
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  else
+  {
+    nsCOMPtr<nsIMutableArray> mutableTxnArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+    nsCOMPtr<nsIArray> left(do_QueryInterface(leftTxnList));
+    nsCOMPtr<nsIArray> right(do_QueryInterface(rightTxnList));
+    PRUint32 leftLen(0), rightLen(0);
+    if (left)
+      left->GetLength(&leftLen);
+    if (right)
+      right->GetLength(&rightLen);
+      
+    if (rightLen > 0)
+      res = msiUtils::AppendToMutableList(mutableTxnArray, right);
+    for (PRUint32 i=leftOffsetInTop; NS_SUCCEEDED(res) && i < rightOffsetInTop; i++)
+    {
+      nsCOMPtr<nsIDOMNode> child;
+      res = children->Item(i, getter_AddRefs(child));
+      if (NS_SUCCEEDED(res) && child)
+      {
+        nsCOMPtr<nsITransaction> transaction;
+        res = msiEditor->CreateDeleteTransaction(child, getter_AddRefs(transaction));
+        if (NS_SUCCEEDED(res) && transaction)
+          res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
+        else
+          res = NS_ERROR_FAILURE;
+      }
+      else
+        res = NS_ERROR_FAILURE;
+    }
+    if (leftLen > 0)
+      res = msiUtils::AppendToMutableList(mutableTxnArray, left);
+    if (NS_SUCCEEDED(res))
+    {
+      *transactionList = mutableTxnArray;
+      NS_ADDREF(*transactionList);
+      *coalesceNode = topNode;
+      NS_ADDREF(*coalesceNode);
+      *coalesceOffset = leftOffsetInTop;
+    }  
+  }
+  return res;
+  
+} 
+
+nsresult
+msiMCaretBase::InputboxSetupDelTxns(nsIEditor * editor,
+                                    nsIDOMNode * topNode,
+                                    PRUint32 numKids,
+                                    nsIDOMNode * start,
+                                    PRUint32 startOffset,
+                                    nsIDOMNode * end,
+                                    PRUint32 endOffset,
+                                    nsIArray ** transactionList,
+                                    nsIDOMNode ** coalesceNode,
+                                    PRUint32 * coalesceOffset)
+{
+  if (!topNode || !editor || !transactionList || !coalesceNode || !coalesceOffset )
+    return NS_ERROR_FAILURE;
+  if (!start || !end || !(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
+    return NS_ERROR_FAILURE;
+  nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
+  if (!msiEditor)
+    return NS_ERROR_FAILURE;
+  
+  nsCOMPtr<nsIDOMNodeList> children;
+  topNode->GetChildNodes(getter_AddRefs(children));
+  if (!children)
+    return NS_ERROR_FAILURE;  
+      
+    
+  nsresult res(NS_OK);
+  nsCOMPtr<nsIMutableArray> leftTxnList = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+  nsCOMPtr<nsIMutableArray> rightTxnList = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+  if (!leftTxnList || !rightTxnList)
+    return NS_ERROR_FAILURE;
+  PRUint32 leftOffsetInTop(INVALID), rightOffsetInTop(INVALID);
+  res = msiMCaretBase::SetUpDeleteTxnsFromDescendent(editor, topNode, numKids, start, 
+                                                     startOffset, PR_TRUE, leftTxnList, leftOffsetInTop);
+  if (NS_SUCCEEDED(res))                                                   
+    res = msiMCaretBase::SetUpDeleteTxnsFromDescendent(editor, topNode, numKids, end, 
+                                                       endOffset, PR_FALSE, rightTxnList, rightOffsetInTop);
+  
+  
+  PRBool coalesceSet(PR_FALSE);
+  if (leftOffsetInTop == 0 && rightOffsetInTop == numKids)
+  { 
+    // replace contents of enclosed with input box.
+    leftTxnList->Clear();
+    rightTxnList->Clear();
+    nsCOMPtr<nsIDOMElement> inputbox;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputbox);
+    nsCOMPtr<nsIDOMNode> inputboxNode(do_QueryInterface(inputbox));
+    if (NS_SUCCEEDED(res) && inputboxNode) 
+    {
+      nsCOMPtr<nsITransaction> txn;
+      msiEditor->CreateInsertTransaction(inputboxNode, topNode, 0, getter_AddRefs(txn));
+      leftTxnList->AppendElement(txn, PR_FALSE);
+      *coalesceNode = nsnull;
+      *coalesceOffset = INVALID;
+      coalesceSet = PR_TRUE;
+    }  
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  nsCOMPtr<nsIMutableArray> mutableTxnArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+  nsCOMPtr<nsIArray> left(do_QueryInterface(leftTxnList));
+  nsCOMPtr<nsIArray> right(do_QueryInterface(rightTxnList));
+  PRUint32 leftLen(0), rightLen(0);
+  if (left)
+    left->GetLength(&leftLen);
+  if (right)
+    right->GetLength(&rightLen);
+    
+  if (rightLen > 0)
+    res = msiUtils::AppendToMutableList(mutableTxnArray, right);
+  for (PRUint32 i=leftOffsetInTop; NS_SUCCEEDED(res) && i < rightOffsetInTop; i++)
+  {
+    nsCOMPtr<nsIDOMNode> child;
+    res = children->Item(i, getter_AddRefs(child));
+    if (NS_SUCCEEDED(res) && child)
+    {
+      nsCOMPtr<nsITransaction> transaction;
+      res = msiEditor->CreateDeleteTransaction(child, getter_AddRefs(transaction));
+      if (NS_SUCCEEDED(res) && transaction)
+        res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
+      else
+        res = NS_ERROR_FAILURE;
+    }
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  if (leftLen > 0)
+    res = msiUtils::AppendToMutableList(mutableTxnArray, left);
+  nsCOMPtr<nsIArray> txnList(do_QueryInterface(mutableTxnArray));
+  if (NS_SUCCEEDED(res) && txnList)
+  {
+    *transactionList = txnList;
+    NS_ADDREF(*transactionList);
+    if (!coalesceSet)
+    {
+      *coalesceNode = topNode;
+      NS_ADDREF(*coalesceNode);
+      *coalesceOffset = leftOffsetInTop;
+    }  
+  }
+  return res;
+} 
+
+nsresult
+msiMCaretBase::FracRootSetupDelTxns(nsIEditor * editor,
+                                    nsIDOMNode * topNode,
+                                    nsIDOMNode * start,
+                                    PRUint32 startOffset,
+                                    nsIDOMNode * end,
+                                    PRUint32 endOffset,
+                                    nsIArray ** transactionList,
+                                    nsIDOMNode ** coalesceNode,
+                                    PRUint32 * coalesceOffset)
+{
+  if (!topNode || !editor || !transactionList || !coalesceNode || !coalesceOffset )
+    return NS_ERROR_FAILURE;
+  if (!start || !end || !(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
+    return NS_ERROR_FAILURE;
+  nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
+  if (!msiEditor)
+    return NS_ERROR_FAILURE;
+  
+  nsCOMPtr<nsIDOMNodeList> children;
+  topNode->GetChildNodes(getter_AddRefs(children));
+  if (!children)
+    return NS_ERROR_FAILURE;  
+      
+  *coalesceNode = nsnull;
+  *coalesceOffset = INVALID;
+  *transactionList = nsnull;
+  nsresult res(NS_OK);
+  nsCOMPtr<nsIMutableArray> mutableTxnArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+  nsCOMPtr<nsIMutableArray> leftTxnList = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+  nsCOMPtr<nsIMutableArray> rightTxnList = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+  if (!leftTxnList || !rightTxnList)
+    return NS_ERROR_FAILURE;
+  PRUint32 leftOffsetInTop(INVALID), rightOffsetInTop(INVALID);
+  res = msiMCaretBase::SetUpDeleteTxnsFromDescendent(editor, topNode, 2, start, 
+                                                     startOffset, PR_TRUE, leftTxnList, leftOffsetInTop);
+  if (NS_SUCCEEDED(res))                                                   
+    res = msiMCaretBase::SetUpDeleteTxnsFromDescendent(editor, topNode, 2, end, 
+                                                       endOffset, PR_FALSE, rightTxnList, rightOffsetInTop);
+  if (NS_FAILED(res))
+    return res;
+  if (leftOffsetInTop == 0 && rightOffsetInTop == 2)
+  {
+    nsCOMPtr<msiIMathMLCaret> parentCaret;
+    res = msiUtils::SetupPassOffCaretToParent(editor, topNode, PR_FALSE, parentCaret);
+    if (NS_SUCCEEDED(res) && parentCaret)
+    {
+      PRUint32 offset(msiIMathMLEditingBC::INVALID);
+      nsCOMPtr<nsIDOMNode> parentMMLNode;
+      msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
+      msiUtils::GetMathmlNodeFromCaretInterface(parentCaret, parentMMLNode);
+      if (NS_SUCCEEDED(res) && offset != msiIMathMLEditingBC::INVALID)
+        res = parentCaret->SetupDeletionTransactions(editor, parentMMLNode, offset, 
+                                                     parentMMLNode, offset+1, transactionList,
+                                                     coalesceNode, coalesceOffset);
+    }                                                 
+  }
+  else if (rightOffsetInTop - leftOffsetInTop == 1) 
+  {
+    nsCOMPtr<nsIDOMElement> inputboxElement;
+    nsCOMPtr<nsIDOMNode> newKid;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputboxElement);
+    if (NS_SUCCEEDED(res) && inputboxElement)
+      newKid = do_QueryInterface(inputboxElement);
+    if (!newKid)
+      res = NS_ERROR_FAILURE;  
+    nsCOMPtr<nsITransaction> transaction;
+    nsCOMPtr<nsIDOMNode> oldKid;
+    res = msiUtils::GetChildNode(topNode, leftOffsetInTop, oldKid);
+    if (NS_SUCCEEDED(res) && oldKid)
+      res = msiEditor->CreateReplaceTransaction(newKid, oldKid, topNode, getter_AddRefs(transaction));
+    if (NS_SUCCEEDED(res) && transaction)
+      res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  else   //leftOffsetInTop == rightOffsetInTop
+  {
+    nsCOMPtr<nsIArray> left(do_QueryInterface(leftTxnList));
+    nsCOMPtr<nsIArray> right(do_QueryInterface(rightTxnList));
+    PRUint32 leftLen(0), rightLen(0);
+    if (left)
+      left->GetLength(&leftLen);
+    if (right)
+      right->GetLength(&rightLen);
+    
+    if (rightLen > 0)
+      res = msiUtils::AppendToMutableList(mutableTxnArray, right);
+    if (leftLen > 0)
+      res = msiUtils::AppendToMutableList(mutableTxnArray, left);
+  }  
+  nsCOMPtr<nsIArray> txnList(do_QueryInterface(mutableTxnArray));
+  PRUint32 len(0);
+  if (txnList)
+    txnList->GetLength(&len);
+  if (NS_SUCCEEDED(res) && len > 0)
+  {
+    *transactionList = txnList;
+    NS_ADDREF(*transactionList);
+  }  
+  return res;
+}
+                                                    
+                                        
+
+
 // End selection Util functions
 
 
+
+//    nsCOMPtr<nsIDOMNode> tobeCoalLeft, tobeCoalRight;
+//    nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
+//    nsCOMPtr<nsIDOMNodeList> children;
+//    nsCOMPtr<nsIMutableArray> mutableTxnArray, tobeCoalesced;
+//    nsCOMPtr<nsIArray> prepareForCoalLeft, prepareForCoalRight, coalescedArray;
+//    mutableTxnArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+//    m_mathmlNode->GetChildNodes(getter_AddRefs(children));
+//    if (!msiEditor || !children || !mutableTxnArray)
+//      return NS_ERROR_FAILURE;
+//    
+//    PRUint32 startingIndex(startOffset), endingIndex(endOffset), count(0);
+//    children->GetLength(&count);
+//    if (start)
+//      tobeCoalLeft = start;
+//    else if (startOffset > 0)  
+//    {
+//      nsCOMPtr<nsIDOMNode> child, clone;
+//      res = children->Item(startOffset-1, getter_AddRefs(child));
+//      if (NS_SUCCEEDED(res) && child)
+//      {
+//        
+//        msiUtils::CloneNode(child, clone);
+//        if (clone)
+//        {
+//          tobeCoalLeft = clone;
+//          startingIndex -= 1;
+//        }
+//      }
+//      else
+//        res = NS_ERROR_FAILURE;
+//    }
+//    
+//    if (end)
+//    {
+//      tobeCoalRight = end;
+//      endingIndex += 1;
+//    }
+//    else if (endOffset < count)  
+//    {
+//      nsCOMPtr<nsIDOMNode> child, clone;
+//      res = children->Item(endOffset, getter_AddRefs(child));
+//      if (NS_SUCCEEDED(res) && child)
+//      {
+//        
+//        msiUtils::CloneNode(child, clone);
+//        if (clone)
+//        {
+//          tobeCoalRight = clone;
+//          endingIndex += 1;
+//        }
+//      }
+//      else
+//        res = NS_ERROR_FAILURE;
+//    }
+//    if (NS_SUCCEEDED(res))
+//      tobeCoalesced = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+//      
+//    if (NS_SUCCEEDED(res) && tobeCoalLeft)
+//    {
+//      PRUint32 pfcFlags(msiIMathMLCoalesce::PFCflags_removeRedundantMrows);
+//      res = msiCoalesceUtils::PrepareForCoalesceFromRight(editor, tobeCoalLeft, pfcFlags, prepareForCoalLeft);
+//      if (NS_SUCCEEDED(res))
+//        res = msiUtils::AppendToMutableList(tobeCoalesced, prepareForCoalLeft);
+//    }  
+//    if (NS_SUCCEEDED(res) && tobeCoalRight)
+//    {
+//      PRUint32 pfcFlags(msiIMathMLCoalesce::PFCflags_removeRedundantMrows);
+//      res = msiCoalesceUtils::PrepareForCoalesceFromLeft(editor, tobeCoalRight, pfcFlags, prepareForCoalRight);
+//      if (NS_SUCCEEDED(res))
+//        res = msiUtils::AppendToMutableList(tobeCoalesced, prepareForCoalRight);
+//    }
+//    if (NS_SUCCEEDED(res) && tobeCoalesced)
+//    {
+//      nsCOMPtr<nsIArray> tmpArray(do_QueryInterface(tobeCoalesced));
+//      if (tmpArray)
+//        res = msiCoalesceUtils::CoalesceArray(editor, tmpArray, coalescedArray);
+//    }  
+//    for (PRUint32 i=startingIndex; NS_SUCCEEDED(res) && i < endingIndex; i++)
+//    {
+//      nsCOMPtr<nsIDOMNode> child;
+//      res = children->Item(i, getter_AddRefs(child));
+//      if (NS_SUCCEEDED(res) && child)
+//      {
+//        nsCOMPtr<nsITransaction> transaction;
+//        res = msiEditor->CreateDeleteTransaction(child, getter_AddRefs(transaction));
+//        if (NS_SUCCEEDED(res) && transaction)
+//          res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
+//        else
+//          res = NS_ERROR_FAILURE;
+//      }
+//      else
+//        res = NS_ERROR_FAILURE;
+//    }
+//    
+//    nsCOMPtr<nsISimpleEnumerator> enumerator;
+//    if (coalescedArray)
+//      coalescedArray->Enumerate(getter_AddRefs(enumerator));
+//    if (enumerator)
+//    {
+//      PRBool someMore(PR_FALSE);
+//      PRUint32 offset(startingIndex);
+//      while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore) 
+//      {
+//        nsCOMPtr<nsISupports> isupp;
+//        if (NS_FAILED(enumerator->GetNext(getter_AddRefs(isupp))))
+//        {
+//          res = NS_ERROR_FAILURE; 
+//          break;
+//        }
+//        nsCOMPtr<nsIDOMNode> child(do_QueryInterface(isupp));
+//        if (child) 
+//        {
+//          nsCOMPtr<nsITransaction> transaction;
+//          res = msiEditor->CreateInsertTransaction(child, m_mathmlNode, offset, getter_AddRefs(transaction));
+//          if (NS_SUCCEEDED(res) && transaction)
+//          {
+//            res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
+//            offset += 1;
+//          }
+//          else
+//            res = NS_ERROR_FAILURE;
+//        }
+//        else
+//          res = NS_ERROR_FAILURE;
+//      }  
+//    }
+//    if (NS_SUCCEEDED(res))
+//    {
+//      *transactionList = mutableTxnArray;
+//      NS_ADDREF(*transactionList);
+//    }  
+//  }
+//  return res;
+//  
+//}                                         
