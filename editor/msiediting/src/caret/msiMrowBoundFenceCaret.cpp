@@ -240,17 +240,29 @@ msiMrowBoundFenceCaret::Split(nsIEditor *editor,
                               nsIDOMNode **right)
 {
   return msiMCaretBase::Split(editor, appendLeft, appendRight, left, right);
-}                                     
+} 
+
+NS_IMETHODIMP
+msiMrowBoundFenceCaret::SetDeletionTransaction(nsIEditor * editor,
+                                               PRBool deletingToTheRight, 
+                                               nsITransaction ** txn,
+                                               PRBool * toRightInParent)
+{
+  return msiMCaretBase::SetDeletionTransaction(editor, deletingToTheRight, txn, toRightInParent);
+}                                            
+                                    
 
 NS_IMETHODIMP
 msiMrowBoundFenceCaret::SetupDeletionTransactions(nsIEditor * editor,
-                                                  PRUint32 startOffset,
-                                                  PRUint32 endOffset,
                                                   nsIDOMNode * start,
+                                                  PRUint32 startOffset,
                                                   nsIDOMNode * end,
-                                                  nsIArray ** transactionList)
+                                                  PRUint32 endOffset,
+                                                  nsIArray ** transactionList,
+                                                  nsIDOMNode ** coalesceNode,
+                                                  PRUint32 * coalesceOffset)
 {
-  if (!m_mathmlNode || !editor || !transactionList)
+  if (!m_mathmlNode || !editor || !transactionList || !coalesceNode || !coalesceOffset)
     return NS_ERROR_FAILURE;
   if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
     return NS_ERROR_FAILURE;
@@ -258,11 +270,15 @@ msiMrowBoundFenceCaret::SetupDeletionTransactions(nsIEditor * editor,
   nsresult  res = msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, parentCaret);
   if (NS_SUCCEEDED(res) && parentCaret)
   {
-    PRUint32 offset(INVALID);
-    res = msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
-    res = parentCaret->SetupDeletionTransactions(editor, offset, offset+1, 
-                                                 nsnull, nsnull, transactionList);
-  }
+    PRUint32 offset(msiIMathMLEditingBC::INVALID);
+    nsCOMPtr<nsIDOMNode> parentMMLNode;
+    msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
+    msiUtils::GetMathmlNodeFromCaretInterface(parentCaret, parentMMLNode);
+    if (NS_SUCCEEDED(res) && offset != msiIMathMLEditingBC::INVALID)
+      res = parentCaret->SetupDeletionTransactions(editor, parentMMLNode, offset, 
+                                                   parentMMLNode, offset+1, transactionList,
+                                                   coalesceNode, coalesceOffset);
+  }                                                 
   else
     res = NS_ERROR_FAILURE;
   return res;

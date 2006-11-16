@@ -15,6 +15,7 @@
 
 class msiEditorMouseListener;
 class msiISelection;
+class msiSelectionManager;
 
 
 class msiEditor : 
@@ -56,6 +57,7 @@ protected:
   
   friend class msiEditorMouseListener;
   friend class msiEditorMouseMotionListener;
+  friend class msiSelectionManager;
   
 protected:
 //Utility functions

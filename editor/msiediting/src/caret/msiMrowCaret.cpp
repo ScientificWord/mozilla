@@ -6,6 +6,7 @@
 #include "nsCOMPtr.h"
 #include "msiUtils.h"   
 #include "msiMrowEditingImp.h"   
+#include "msiIMathMLEditor.h"
 
 msiMrowCaret::msiMrowCaret(nsIDOMNode* mathmlNode, PRUint32 offset) 
 :  msiMContainerCaret(mathmlNode, offset, MATHML_MROW)
@@ -142,18 +143,54 @@ msiMrowCaret::Split(nsIEditor * editor,
   else
     res = NS_ERROR_FAILURE;
   return res;    
-}                                     
+} 
+
+NS_IMETHODIMP
+msiMrowCaret::SetDeletionTransaction(nsIEditor * editor,
+                                     PRBool deletingToTheRight, 
+                                     nsITransaction ** txn,
+                                     PRBool * toRightInParent)
+{
+
+  if (!editor || !m_mathmlNode || !txn || !toRightInParent)
+    return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
+  if (!msiEditor)
+    return NS_ERROR_FAILURE;  
+  nsresult res(NS_OK);  
+  *txn = nsnull;
+  *toRightInParent = deletingToTheRight;
+  if (deletingToTheRight)
+  {
+    if (m_offset == 0)
+      *toRightInParent = PR_FALSE;
+    else if (m_offset < m_numKids)
+      res = msiEditor->CreateDeleteChildrenTransaction(m_mathmlNode, m_offset, m_numKids-m_offset, txn);
+  }
+  else
+  {
+    if (m_offset == m_numKids)
+      *toRightInParent = PR_TRUE;
+    else if (0 < m_offset)
+      res = msiEditor->CreateDeleteChildrenTransaction(m_mathmlNode, 0, m_offset, txn);
+  }
+  return res;
+}  
+                                    
 
 NS_IMETHODIMP
 msiMrowCaret::SetupDeletionTransactions(nsIEditor * editor,
-                                        PRUint32 startOffset,
-                                        PRUint32 endOffset,
                                         nsIDOMNode * start,
+                                        PRUint32 startOffset,
                                         nsIDOMNode * end,
-                                        nsIArray ** transactionList)
+                                        PRUint32 endOffset,
+                                        nsIArray ** transactionList,
+                                        nsIDOMNode ** coalesceNode,
+                                        PRUint32 * coalesceOffset)
 {
-  return msiMCaretBase::SetupDeletionTransactions(editor, startOffset, endOffset,
-                                                  start, end, transactionList);
+  return msiMCaretBase::SetupDeletionTransactions(editor, start, startOffset, 
+                                                  end, endOffset, transactionList, 
+                                                  coalesceNode, coalesceOffset);
 }
 
 

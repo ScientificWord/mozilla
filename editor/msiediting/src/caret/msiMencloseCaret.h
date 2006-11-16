@@ -25,12 +25,20 @@ public:
   NS_IMETHOD AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPoint, 
                                   nsIDOMNode** selectionNode, PRUint32 * selectionOffset,
                                   msiIMathMLCaret** parentCaret);
+                                  
+  NS_IMETHOD SetDeletionTransaction(nsIEditor * editor,
+                                    PRBool deletingToTheRight, 
+                                    nsITransaction ** txn,
+                                    PRBool * toRightInParent);
+                                  
   NS_IMETHOD SetupDeletionTransactions(nsIEditor * editor,
-                                       PRUint32 startOffset,
-                                       PRUint32 endOffset,
                                        nsIDOMNode * start,
+                                       PRUint32 startOffset,
                                        nsIDOMNode * end,
-                                       nsIArray ** transactionList);
+                                       PRUint32 endOffset,
+                                       nsIArray ** transactionList,
+                                       nsIDOMNode ** coalesceNode,
+                                       PRUint32 * coalesceOffset);
 
 
   NS_IMETHOD CaretObjectLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset);

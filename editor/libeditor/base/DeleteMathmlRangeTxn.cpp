@@ -55,26 +55,30 @@ NS_IMETHODIMP DeleteMathmlRangeTxn::DoTransaction(void)
     return NS_ERROR_NOT_INITIALIZED;
   if (!(m_start||m_end))
     return NS_OK; //nothing to do
-  nsCOMPtr<nsIDOMNode> topMMLNode, startLeft, startRight, endLeft, endRight;
-  PRUint32 startOffset(msiIMathMLEditingBC::INVALID), endOffset(msiIMathMLEditingBC::INVALID);
-  PRUint32 numKids(0);
-  nsresult res(NS_OK);  
-  res = m_topCaret->SplitAtDecendents(m_editor, m_start, m_startOffset,
-                                      m_end, m_endOffset, 
-                                      &startOffset, &endOffset, 
-                                      getter_AddRefs(startLeft), 
-                                      getter_AddRefs(startRight),
-                                      getter_AddRefs(endLeft), 
-                                      getter_AddRefs(endRight));
-  if (NS_FAILED(res) || (startOffset == msiIMathMLEditingBC::INVALID &&
-      endOffset == msiIMathMLEditingBC::INVALID))
-    return NS_ERROR_FAILURE;
+//  nsCOMPtr<nsIDOMNode> topMMLNode, startLeft, startRight, endLeft, endRight;
+//  PRUint32 startOffset(msiIMathMLEditingBC::INVALID), endOffset(msiIMathMLEditingBC::INVALID);
+//  PRUint32 numKids(0);
+//  nsresult res(NS_OK);  
+//  res = m_topCaret->SplitAtDecendents(m_editor, m_start, m_startOffset,
+//                                      m_end, m_endOffset, 
+//                                      &startOffset, &endOffset, 
+//                                      getter_AddRefs(startLeft), 
+//                                      getter_AddRefs(startRight),
+//                                      getter_AddRefs(endLeft), 
+//                                      getter_AddRefs(endRight));
+//  if (NS_FAILED(res) || (startOffset == msiIMathMLEditingBC::INVALID &&
+//      endOffset == msiIMathMLEditingBC::INVALID))
+//    return NS_ERROR_FAILURE;
   nsCOMPtr<nsIArray> transactionList;
-  res = m_topCaret->SetupDeletionTransactions(m_editor, startOffset, endOffset,
-                                              startLeft, endRight, getter_AddRefs(transactionList));
+  nsCOMPtr<nsIDOMNode> secondPhaseCoalesceNode;
+  PRUint32 secondPhaseCoalesceOffset(msiIMathMLEditingBC::INVALID);
+  nsCOMPtr<nsIArray> coalesceNodeList;
+  nsresult res = m_topCaret->SetupDeletionTransactions(m_editor, m_start, m_startOffset, m_end, m_endOffset,
+                                                       getter_AddRefs(transactionList),
+                                                       getter_AddRefs(secondPhaseCoalesceNode), 
+                                                       &secondPhaseCoalesceOffset);
   if (NS_FAILED(res) || !transactionList)
     return NS_ERROR_FAILURE;
-  
   nsCOMPtr<nsISimpleEnumerator> enumerator;
   transactionList->Enumerate(getter_AddRefs(enumerator));
   if (enumerator)

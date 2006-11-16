@@ -2260,11 +2260,11 @@ nsresult msiUtils::AddToNodeList(nsIArray* nodeList,
   return res;  
 }   
 
-nsresult msiUtils::AppendToMutableList(nsCOMPtr<nsIMutableArray> & mutableNodeList, 
+nsresult msiUtils::AppendToMutableList(nsCOMPtr<nsIMutableArray> & mutableList, 
                                        nsCOMPtr<nsIArray> & tobeAdded)
 {
   nsresult res(NS_ERROR_FAILURE);
-  if (mutableNodeList)
+  if (mutableList)
   {
     res = NS_OK;
     if (tobeAdded)
@@ -2283,9 +2283,7 @@ nsresult msiUtils::AppendToMutableList(nsCOMPtr<nsIMutableArray> & mutableNodeLi
             res = NS_ERROR_FAILURE; 
             break;
           }
-          nsCOMPtr<nsIDOMNode> node(do_QueryInterface(isupp));
-          if (node) 
-            res = mutableNodeList->AppendElement(node, PR_FALSE);
+          res = mutableList->AppendElement(isupp, PR_FALSE);
         }
       }
     }

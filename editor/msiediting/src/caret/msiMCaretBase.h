@@ -12,6 +12,7 @@ class nsIPresShell;
 class nsIDOMEvent;
 class nsIFrame;
 struct nsPoint;
+class nsIMutableArray;
 
 class msiMCaretBase : public msiMEditingBase, 
                       public msiIMathMLCaret
@@ -34,6 +35,47 @@ public:
   nsresult GetSelectionPoint(nsIEditor * editor, PRBool leftSelPoint,
                              nsIDOMNode * startNode, PRUint32 startOffset,
                              nsCOMPtr<nsIDOMNode> & splitNode, PRUint32 & splitOffset);
+                             
+  static nsresult SetUpDeleteTxnsFromDescendent(nsIEditor * editor, 
+                                                nsIDOMNode * topNode,
+                                                PRUint32 numKids,
+                                                nsIDOMNode * descendent, 
+                                                PRUint32 offset,
+                                                PRBool toRight,  
+                                                nsCOMPtr<nsIMutableArray> & transactionList, 
+                                                PRUint32 & offsetInTopNode);
+                                                
+  static nsresult StandardSetupDelTxns(nsIEditor * editor,
+                                       nsIDOMNode * topNode,
+                                       PRUint32 numKids,
+                                       nsIDOMNode * start,
+                                       PRUint32 startOffset,
+                                       nsIDOMNode * end,
+                                       PRUint32 endOffset,
+                                       nsIArray ** transactionList,
+                                       nsIDOMNode ** coalesceNode,
+                                       PRUint32 * coalesceOffset);
+  
+  static nsresult InputboxSetupDelTxns(nsIEditor * editor,
+                                       nsIDOMNode * topNode,
+                                       PRUint32 numKids,
+                                       nsIDOMNode * start,
+                                       PRUint32 startOffset,
+                                       nsIDOMNode * end,
+                                       PRUint32 endOffset,
+                                       nsIArray ** transactionList,
+                                       nsIDOMNode ** coalesceNode,
+                                       PRUint32 * coalesceOffset);
+                             
+  static nsresult FracRootSetupDelTxns(nsIEditor * editor,
+                                       nsIDOMNode * topNode,
+                                       nsIDOMNode * start,
+                                       PRUint32 startOffset,
+                                       nsIDOMNode * end,
+                                       PRUint32 endOffset,
+                                       nsIArray ** transactionList,
+                                       nsIDOMNode ** coalesceNode,
+                                       PRUint32 * coalesceOffset);
   // End Utility Selection functions
 };
 

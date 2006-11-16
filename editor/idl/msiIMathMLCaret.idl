@@ -8,6 +8,7 @@ interface nsISelection;
 interface nsIPresShell;
 interface nsIArray;
 interface nsIDOMMouseEvent;
+interface nsITransaction;
 
 [uuid(cef19390-0ade-452e-aaf7-7a1f53725484)]
 interface msiIMathMLCaret : nsISupports
@@ -110,13 +111,20 @@ interface msiIMathMLCaret : nsISupports
              in nsIDOMNode appendRight,
              out nsIDOMNode left,
              out nsIDOMNode right);
+             
+  void SetDeletionTransaction(in nsIEditor editor,
+                              in PRBool toRight, 
+                              out nsITransaction  txn,
+                              out PRBool nextToRight);
 
   void SetupDeletionTransactions(in nsIEditor editor,
-                                 in PRUint32 startOffset,
-                                 in PRUint32 endOffset,
                                  in nsIDOMNode start,
+                                 in PRUint32 startOffset,
                                  in nsIDOMNode end,
-                                 out nsIArray transactionList);
+                                 in PRUint32 endOffset,
+                                 out nsIArray transactionList,
+                                 out nsIDOMNode coalesceNode,
+                                 out PRUint32 coalesceOffset);
 
   void CaretLeft(in nsIEditor editor,
                  in PRUint32 flags,

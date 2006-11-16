@@ -373,80 +373,90 @@ msiBigOperatorCaret::Split(nsIEditor *editor,
                            nsIDOMNode **right)
 {
   return msiMCaretBase::Split(editor, appendLeft, prependRight, left, right);
-}                                     
+}            
+
+NS_IMETHODIMP
+msiBigOperatorCaret::SetDeletionTransaction(nsIEditor * editor,
+                                            PRBool deletingToTheRight, 
+                                            nsITransaction ** txn,
+                                            PRBool * toRightInParent)
+{
+  return msiMCaretBase::SetDeletionTransaction(editor, deletingToTheRight, txn, toRightInParent);
+}                                            
+                         
 
 NS_IMETHODIMP
 msiBigOperatorCaret::SetupDeletionTransactions(nsIEditor * editor,
-                                               PRUint32 startOffset,
-                                               PRUint32 endOffset,
                                                nsIDOMNode * start,
+                                               PRUint32 startOffset,
                                                nsIDOMNode * end,
-                                               nsIArray ** transactionList)
+                                               PRUint32 endOffset,
+                                               nsIArray ** transactionList,
+                                               nsIDOMNode ** coalesceNode,
+                                               PRUint32 * coalesceOffset)
 {
-  if (!m_mathmlNode || !editor || !transactionList)
+  if (!m_mathmlNode || !editor || !transactionList || 
+      !coalesceNode || !coalesceOffset )
     return NS_ERROR_FAILURE;
   if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
     return NS_ERROR_FAILURE;
+  *coalesceNode = nsnull;
+  *coalesceOffset = INVALID;
+  nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
+  if (!msiEditor)
+    return NS_ERROR_FAILURE;  
+
   nsresult res(NS_OK);
   PRUint32 scriptType(MATHML_UNKNOWN);
   if (m_bigOpInfo)
     m_bigOpInfo->GetScriptType(&scriptType);
   if (scriptType == MATHML_UNKNOWN) 
-    res = msiMCaretBase::SetupDeletionTransactions(editor, startOffset, endOffset,
-                                                    start, end, transactionList);
-  else if (startOffset >= 1 && ((endOffset - startOffset == 1 && end == nsnull) ||
-           (endOffset == startOffset)))
+    return msiMCaretBase::SetupDeletionTransactions(editor, start, startOffset, 
+                                                   end, endOffset, transactionList, 
+                                                   coalesceNode, coalesceOffset);
+                                                   
+  nsCOMPtr<nsIMutableArray> mutableTxnArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+  nsCOMPtr<nsIMutableArray> leftTxnList = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+  nsCOMPtr<nsIMutableArray> rightTxnList = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+  PRUint32 leftOffsetInTop(INVALID), rightOffsetInTop(INVALID);
+  
+  msiMCaretBase::SetUpDeleteTxnsFromDescendent(editor, m_mathmlNode, m_numKids, start, startOffset, PR_TRUE, leftTxnList, leftOffsetInTop);
+  msiMCaretBase::SetUpDeleteTxnsFromDescendent(editor, m_mathmlNode, m_numKids, end, endOffset, PR_FALSE, rightTxnList, rightOffsetInTop);
+                                                   
+  if (leftOffsetInTop >= 1 && rightOffsetInTop - leftOffsetInTop == 1)
   {
+    nsCOMPtr<nsIDOMElement> inputboxElement;
     nsCOMPtr<nsIDOMNode> newKid;
-    if (startOffset == endOffset)
-    {
-      if ((startOffset != m_numKids)  && (start || end))
-      {
-        res = msiRequiredArgument::MakeRequiredArgument(editor, start, end, newKid);
-        if (NS_FAILED(res) || !newKid)
-          res = NS_ERROR_FAILURE;  
-      }    
-    }
-    else if (start)
-    {
-      res = msiRequiredArgument::MakeRequiredArgument(editor, start, nsnull, newKid);
-      if (NS_FAILED(res) || !newKid)
-        res = NS_ERROR_FAILURE;  
-    }
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputboxElement);
+    if (NS_SUCCEEDED(res) && inputboxElement)
+      newKid = do_QueryInterface(inputboxElement);
+    if (!newKid)
+      res = NS_ERROR_FAILURE;  
+    nsCOMPtr<nsITransaction> transaction;
+    nsCOMPtr<nsIDOMNode> oldKid;
+    res = msiUtils::GetChildNode(m_mathmlNode, leftOffsetInTop, oldKid);
+    if (NS_SUCCEEDED(res) && oldKid)
+      res = msiEditor->CreateReplaceTransaction(newKid, oldKid, m_mathmlNode, getter_AddRefs(transaction));
+    if (NS_SUCCEEDED(res) && transaction)
+      res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
     else
-    {
-      nsCOMPtr<nsIDOMElement> inputboxElement;
-      PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-      res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputboxElement);
-      if (NS_SUCCEEDED(res) && inputboxElement)
-        newKid = do_QueryInterface(inputboxElement);
-      if (!newKid)
-        res = NS_ERROR_FAILURE;  
-    }
-    if (NS_SUCCEEDED(res) && newKid)
-    {
-      nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
-      nsCOMPtr<nsIMutableArray> mutableTxnArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
-      if (!msiEditor ||!mutableTxnArray)
-        res = NS_ERROR_FAILURE;
-      if (NS_SUCCEEDED(res))
-      {
-        nsCOMPtr<nsITransaction> transaction;
-        nsCOMPtr<nsIDOMNode> oldKid;
-        res = msiUtils::GetChildNode(m_mathmlNode, startOffset, oldKid);
-        if (NS_SUCCEEDED(res) && oldKid)
-          res = msiEditor->CreateReplaceTransaction(newKid, oldKid, m_mathmlNode, getter_AddRefs(transaction));
-        if (NS_SUCCEEDED(res) && transaction)
-          res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
-        else
-          res = NS_ERROR_FAILURE;
-      }
-      if (NS_SUCCEEDED(res))
-      {
-        *transactionList = mutableTxnArray;
-        NS_ADDREF(*transactionList);
-      }  
-    }
+      res = NS_ERROR_FAILURE;
+  }
+  else if (leftOffsetInTop >= 1 && rightOffsetInTop == leftOffsetInTop )
+  {
+    nsCOMPtr<nsIArray> left(do_QueryInterface(leftTxnList));
+    nsCOMPtr<nsIArray> right(do_QueryInterface(rightTxnList));
+    PRUint32 leftLen(0), rightLen(0);
+    if (left)
+      left->GetLength(&leftLen);
+    if (right)
+      right->GetLength(&rightLen);
+      
+    if (rightLen > 0)
+      res = msiUtils::AppendToMutableList(mutableTxnArray, right);
+    if (leftLen > 0)
+      res = msiUtils::AppendToMutableList(mutableTxnArray, left);
   }
   else // this should not happen
   {
@@ -455,17 +465,32 @@ msiBigOperatorCaret::SetupDeletionTransactions(nsIEditor * editor,
     res = msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, parentCaret);
     if (NS_SUCCEEDED(res) && parentCaret)
     {
+      nsCOMPtr<nsIDOMNode> mmlNode;
       PRUint32 offset(INVALID);
       res = msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
-      if (NS_SUCCEEDED(res) && offset != INVALID) 
-        res = parentCaret->SetupDeletionTransactions(editor, offset, offset+1, 
-                                                     nsnull, nsnull, transactionList);
+      if (NS_SUCCEEDED(res)) 
+        res = msiUtils::GetMathmlNodeFromCaretInterface(parentCaret, mmlNode);
+      
+      if (NS_SUCCEEDED(res) && offset != INVALID && mmlNode) 
+        res = parentCaret->SetupDeletionTransactions(editor, mmlNode, offset, 
+                                                     mmlNode, offset+1, transactionList,
+                                                     coalesceNode, coalesceOffset);
       else
         res = NS_ERROR_FAILURE;
     }
     else
       res = NS_ERROR_FAILURE;
   }
+  
+  nsCOMPtr<nsIArray> txnList(do_QueryInterface(mutableTxnArray));
+  PRUint32 len(0);
+  if (txnList)
+    txnList->GetLength(&len);
+  if (NS_SUCCEEDED(res) && len > 0)
+  {
+    *transactionList = mutableTxnArray;
+    NS_ADDREF(*transactionList);
+  }  
   return res;
 }
 

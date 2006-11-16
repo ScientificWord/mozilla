@@ -145,6 +145,7 @@ NS_IMETHODIMP DeleteRangeTxn::DoTransaction(void)
     return NS_ERROR_NOT_INITIALIZED;
 
   nsresult result(NS_OK);
+  PRBool okToCollapseAfterDelete(PR_TRUE);
   nsCOMPtr<nsIDOMNode> startParent, endParent, commonParent;
   PRInt32 startOffset(msiIMathMLEditingBC::INVALID), endOffset(msiIMathMLEditingBC::INVALID);
   
@@ -172,6 +173,8 @@ NS_IMETHODIMP DeleteRangeTxn::DoTransaction(void)
   
   if (NS_SUCCEEDED(res) && mathCaret) // both start and end in the same math run
   { 
+    okToCollapseAfterDelete = PR_FALSE;  //TODO -- temp
+  
     DeleteMathmlRangeTxn *txn;
     res = TransactionFactory::GetNewTransaction(DeleteMathmlRangeTxn::GetCID(), (EditTxn **)&txn);
     txn->Init(mEditor, mathCaret, startParent, startOffset, endParent, endOffset);
@@ -226,6 +229,7 @@ NS_IMETHODIMP DeleteRangeTxn::DoTransaction(void)
       {
         if (startCaret)  
         {
+          okToCollapseAfterDelete = PR_FALSE;  //TODO -- temp
           DeleteMathmlRangeTxn *txn;
           nsCOMPtr<nsIDOMNode> dummy;
           res = TransactionFactory::GetNewTransaction(DeleteMathmlRangeTxn::GetCID(), (EditTxn **)&txn);
@@ -235,6 +239,7 @@ NS_IMETHODIMP DeleteRangeTxn::DoTransaction(void)
         }
         if (endCaret)  
         {
+          okToCollapseAfterDelete = PR_FALSE;  //TODO -- temp
           DeleteMathmlRangeTxn *txn;
           nsCOMPtr<nsIDOMNode> dummy;
           res = TransactionFactory::GetNewTransaction(DeleteMathmlRangeTxn::GetCID(), (EditTxn **)&txn);
@@ -293,7 +298,7 @@ NS_IMETHODIMP DeleteRangeTxn::DoTransaction(void)
   // only set selection to deletion point if editor gives permission
   PRBool bAdjustSelection;
   mEditor->ShouldTxnSetSelection(&bAdjustSelection);
-  if (bAdjustSelection)
+  if (bAdjustSelection && okToCollapseAfterDelete) //TODO -- ok to collapse is temp
   {
     nsCOMPtr<nsISelection> selection;
     res = mEditor->GetSelection(getter_AddRefs(selection));

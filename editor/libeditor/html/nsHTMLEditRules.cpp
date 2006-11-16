@@ -2417,14 +2417,16 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       }
     }
   }
-  if (aAction == nsIEditor::eNext)
-  {
-    res = aSelection->Collapse(endNode,endOffset);
-  }
-  else
-  {
-    res = aSelection->Collapse(startNode,startOffset);
-  }
+//TODO ljh 11/06 -- this is late in the process to be collasping the selection,
+// for example, if math is involved, these nodes may not exist.
+//  if (aAction == nsIEditor::eNext)
+//  {
+//    res = aSelection->Collapse(endNode,endOffset);
+//  }
+//  else
+//  {
+//    res = aSelection->Collapse(startNode,startOffset);
+//  }
   return res;
 }  
 
