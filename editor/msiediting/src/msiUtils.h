@@ -335,7 +335,7 @@ public:
                                 nsIArray * addToEnd, 
                                 nsCOMPtr<nsIArray> & pArray);
                                 
-  static nsresult AppendToMutableList(nsCOMPtr<nsIMutableArray> & mutableNodeList, 
+  static nsresult AppendToMutableList(nsCOMPtr<nsIMutableArray> & mutableList, 
                                       nsCOMPtr<nsIArray> & tobeAdded);
                                 
   static nsresult RemoveNodesFromList(nsIArray* nodeList, 
@@ -362,7 +362,6 @@ public:
 // end msiLayoutUtils  
 
 
-                                    
 //TODO - how should this be determined -- user preference??
 enum {MROW_PURGE_NONE = 0, MROW_PURGE_BOUNDARY, MROW_PURGE_ALL};
 static PRUint32  GetMrowPurgeMode();

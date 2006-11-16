@@ -89,18 +89,30 @@ msiWhitespaceCaret::Split(nsIEditor *editor,
                               nsIDOMNode **right)
 {
   return msiMCaretBase::Split(editor, appendLeft, appendRight, left, right);
-}   
+} 
+
+NS_IMETHODIMP
+msiWhitespaceCaret::SetDeletionTransaction(nsIEditor * editor,
+                                               PRBool deletingToTheRight, 
+                                               nsITransaction ** txn,
+                                               PRBool * toRightInParent)
+{
+  return msiMCaretBase::SetDeletionTransaction(editor, deletingToTheRight, txn, toRightInParent);
+}                                            
 
 NS_IMETHODIMP
 msiWhitespaceCaret::SetupDeletionTransactions(nsIEditor * editor,
-                                              PRUint32 startOffset,
-                                              PRUint32 endOffset,
                                               nsIDOMNode * start,
+                                              PRUint32 startOffset,
                                               nsIDOMNode * end,
-                                              nsIArray ** transactionList)
+                                              PRUint32 endOffset,
+                                              nsIArray ** transactionList,
+                                              nsIDOMNode ** coalesceNode,
+                                              PRUint32 * coalesceOffset)
 {
-  return msiMCaretBase::SetupDeletionTransactions(editor, startOffset, endOffset,
-                                                  start, end, transactionList);
+  return msiMCaretBase::SetupDeletionTransactions(editor, start, startOffset, 
+                                                  end, endOffset, transactionList,
+                                                  coalesceNode, coalesceOffset);
 }
                                   
 
