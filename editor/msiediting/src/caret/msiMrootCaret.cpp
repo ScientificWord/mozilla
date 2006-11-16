@@ -280,24 +280,31 @@ msiMrootCaret::Split(nsIEditor *editor,
                      nsIDOMNode **right)
 {
   return msiMCaretBase::Split(editor, appendLeft, appendRight, left, right);
-}                                     
+} 
+
+NS_IMETHODIMP
+msiMrootCaret::SetDeletionTransaction(nsIEditor * editor,
+                                      PRBool deletingToTheRight, 
+                                      nsITransaction ** txn,
+                                      PRBool * toRightInParent)
+{
+  return msiMCaretBase::SetDeletionTransaction(editor, deletingToTheRight, txn, toRightInParent);
+}                                            
+                                    
 
 NS_IMETHODIMP
 msiMrootCaret::SetupDeletionTransactions(nsIEditor * editor,
-                                         PRUint32 startOffset,
-                                         PRUint32 endOffset,
                                          nsIDOMNode * start,
+                                         PRUint32 startOffset,
                                          nsIDOMNode * end,
-                                         nsIArray ** transactionList)
+                                         PRUint32 endOffset,
+                                         nsIArray ** transactionList,
+                                         nsIDOMNode ** coalesceNode,
+                                         PRUint32 * coalesceOffset)
 {
-  if (!m_mathmlNode || !editor || !transactionList)
-    return NS_ERROR_FAILURE;
-  if (!(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
-    return NS_ERROR_FAILURE;
-  return msiMfracCaret::SetupDelTxnForFracOrRoot(editor, m_mathmlNode,
-                                                 startOffset, endOffset,
-                                                 start,  end,
-                                                 transactionList);  
+  return msiMCaretBase::FracRootSetupDelTxns(editor, m_mathmlNode, start, startOffset, 
+                                             end,  endOffset, transactionList,
+                                             coalesceNode, coalesceOffset);  
 }
 
 

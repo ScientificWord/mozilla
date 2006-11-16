@@ -118,6 +118,7 @@
 #include "nsIParserService.h"
 //ljh
 #include "msiIEditActionListenerExtension.h"
+#include "msiSelectionManager.h"
 
 #define NS_ERROR_EDITOR_NO_SELECTION NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_EDITOR,1)
 #define NS_ERROR_EDITOR_NO_TEXTNODE  NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_EDITOR,2)
@@ -5093,36 +5094,64 @@ nsEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
     if (NS_FAILED(result)) 
       return result;
 
-    nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(selection));
-    nsCOMPtr<nsIEnumerator> enumerator;
-    result = selPrivate->GetEnumerator(getter_AddRefs(enumerator));
-    if (NS_SUCCEEDED(result) && enumerator)
+//    nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(selection));
+//    nsCOMPtr<nsIEnumerator> enumerator;
+//    result = selPrivate->GetEnumerator(getter_AddRefs(enumerator));
+//    if (NS_SUCCEEDED(result) && enumerator)
+//    {
+//      for (enumerator->First(); NS_OK!=enumerator->IsDone(); enumerator->Next())
+//      {
+//        nsCOMPtr<nsISupports> currentItem;
+//        result = enumerator->CurrentItem(getter_AddRefs(currentItem));
+//        if ((NS_SUCCEEDED(result)) && (currentItem))
+//        {
+//          nsCOMPtr<nsIDOMRange> range( do_QueryInterface(currentItem) );
+//          range->GetCollapsed(&isCollapsed);
+//          if (!isCollapsed)
+//          {
+//            DeleteRangeTxn *txn;
+//            result = TransactionFactory::GetNewTransaction(DeleteRangeTxn::GetCID(), (EditTxn **)&txn);
+//            if (NS_SUCCEEDED(result) && txn)
+//            {
+//              txn->Init(this, range, &mRangeUpdater);
+//              (*aTxn)->AppendChild(txn);
+//              NS_RELEASE(txn);
+//            }
+//            else
+//              result = NS_ERROR_OUT_OF_MEMORY;
+//          }
+//          else
+//          { // we have an insertion point.  delete the thing in front of it or behind it, depending on aAction
+//            result = CreateTxnForDeleteInsertionPoint(range, aAction, *aTxn);
+//          }
+//        }
+//      }
+//    }
+    msiSelectionManager msiSelMan(selection, (msiEditor*)this);
+    PRUint32 rangeCount = msiSelMan.RangeCount();
+    for (PRUint32 index = 0; index < rangeCount && NS_SUCCEEDED(result); index++)
     {
-      for (enumerator->First(); NS_OK!=enumerator->IsDone(); enumerator->Next())
+      nsCOMPtr<nsIDOMRange> range;
+      msiSelMan.GetRange(index, range);
+      if (range)
       {
-        nsCOMPtr<nsISupports> currentItem;
-        result = enumerator->CurrentItem(getter_AddRefs(currentItem));
-        if ((NS_SUCCEEDED(result)) && (currentItem))
+        range->GetCollapsed(&isCollapsed);
+        if (!isCollapsed)
         {
-          nsCOMPtr<nsIDOMRange> range( do_QueryInterface(currentItem) );
-          range->GetCollapsed(&isCollapsed);
-          if (!isCollapsed)
+          DeleteRangeTxn *txn;
+          result = TransactionFactory::GetNewTransaction(DeleteRangeTxn::GetCID(), (EditTxn **)&txn);
+          if (NS_SUCCEEDED(result) && txn)
           {
-            DeleteRangeTxn *txn;
-            result = TransactionFactory::GetNewTransaction(DeleteRangeTxn::GetCID(), (EditTxn **)&txn);
-            if (NS_SUCCEEDED(result) && txn)
-            {
-              txn->Init(this, range, &mRangeUpdater);
-              (*aTxn)->AppendChild(txn);
-              NS_RELEASE(txn);
-            }
-            else
-              result = NS_ERROR_OUT_OF_MEMORY;
+            txn->Init(this, range, &mRangeUpdater);
+            (*aTxn)->AppendChild(txn);
+            NS_RELEASE(txn);
           }
           else
-          { // we have an insertion point.  delete the thing in front of it or behind it, depending on aAction
-            result = CreateTxnForDeleteInsertionPoint(range, aAction, *aTxn);
-          }
+            result = NS_ERROR_OUT_OF_MEMORY;
+        }
+        else
+        { // we have an insertion point.  delete the thing in front of it or behind it, depending on aAction
+          result = CreateTxnForDeleteInsertionPoint(range, aAction, *aTxn);
         }
       }
     }
