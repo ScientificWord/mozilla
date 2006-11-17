@@ -452,10 +452,8 @@ msiMleafCaret::SetupDeletionTransactions(nsIEditor * editor,
   nsCOMPtr<nsIDOMNode> first;
   nsresult res = m_mathmlNode->GetFirstChild(getter_AddRefs(first));
   PRBool normal = first ? PR_TRUE : PR_FALSE;
-  if (normal && (start != first || start != m_mathmlNode))
-    normal = PR_FALSE;
-  if (normal && (end != first || end != m_mathmlNode))
-    normal = PR_FALSE;
+  normal = normal && (start == first || start == m_mathmlNode);
+  normal = normal && (end == first || end == m_mathmlNode);
   if (normal)
   {
     if (m_isDipole || (startOffset == 0 && endOffset == m_length))
@@ -465,10 +463,12 @@ msiMleafCaret::SetupDeletionTransactions(nsIEditor * editor,
       if (NS_SUCCEEDED(res) && parentCaret)
       {
         PRUint32 offset(INVALID);
-        res = msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
-        if (NS_SUCCEEDED(res) && offset  != INVALID)
-          res = parentCaret->SetupDeletionTransactions(editor, m_mathmlNode, offset, 
-                                                       m_mathmlNode, offset+1, transactionList,
+        nsCOMPtr<nsIDOMNode> parentMMLNode;
+        msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
+        msiUtils::GetMathmlNodeFromCaretInterface(parentCaret, parentMMLNode);
+        if (parentMMLNode && offset  != INVALID)
+          res = parentCaret->SetupDeletionTransactions(editor, parentMMLNode, offset, 
+                                                       parentMMLNode, offset+1, transactionList,
                                                        coalesceNode, coalesceOffset);
         else                                               
           res = NS_ERROR_FAILURE;
