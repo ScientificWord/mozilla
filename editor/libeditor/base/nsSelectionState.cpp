@@ -472,12 +472,21 @@ nsRangeUpdater::SelAdjJoinNodes(nsIDOMNode *aLeftNode,
 }
 
 nsresult 
-nsRangeUpdater::SelAdjReplaceNode(nsIDOMNode *aNewNode, 
-                                  nsIDOMNode *aOldNode, 
-                                  nsIDOMNode * aParent)
+nsRangeUpdater::SelAdjReplaceNode(nsIDOMNode *newNode, 
+                                  nsIDOMNode *oldNode, 
+                                  nsIDOMNode * parent)
 {
+  
   //ljh TODO -- need to add functionality -- first need to determine what functionality!!!!
-  return NS_OK;
+  if (!newNode || !oldNode || !parent)
+    return NS_ERROR_FAILURE;
+  PRInt32 offset(0);  
+  nsresult res = nsEditor::GetChildOffset(oldNode, parent, offset);
+  NS_ENSURE_SUCCESS(res, res);
+  res = SelAdjDeleteNode(oldNode);
+  NS_ENSURE_SUCCESS(res, res);
+  res = SelAdjInsertNode(parent, offset);
+  return res;
 }                                  
 
 

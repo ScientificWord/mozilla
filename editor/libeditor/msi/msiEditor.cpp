@@ -819,8 +819,41 @@ msiEditor::CreateDeleteChildrenTransaction(nsIDOMNode * parent,
   }
   return res;
 }                                                                                                                  
-                                                                                                         
+           
+NS_IMETHODIMP
+msiEditor::CreateDeleteScriptTransaction(nsIDOMNode * script,
+                                         nsIDOMNode * dummyChild,
+                                         nsITransaction ** transaction)
+{
+  if (!script || !dummyChild || !transaction)
+    return NS_ERROR_FAILURE;
+  // allocate the out-param transaction
+  EditAggregateTxn * aggTxn = nsnull;
+  nsresult res = TransactionFactory::GetNewTransaction(EditAggregateTxn::GetCID(), (EditTxn **)&aggTxn);
+  if (NS_FAILED(res) || !(aggTxn)) 
+    return NS_ERROR_FAILURE;
+  
+  nsCOMPtr<nsIDOMNode> first, parent;
+  script->GetFirstChild(getter_AddRefs(first));
+  script->GetParentNode(getter_AddRefs(parent));
+  
+  ReplaceElementTxn * txn1 = nsnull;
+  ReplaceElementTxn * txn2 = nsnull;
+  CreateTxnForReplaceElement(dummyChild, first, script, &txn1);  
+  CreateTxnForReplaceElement(first, script, parent, &txn2);  
+  if (txn1 && txn2)
+  {
+     aggTxn->AppendChild((EditTxn*)txn1);
+     aggTxn->AppendChild((EditTxn*)txn2);
+  }  
+  if (NS_SUCCEEDED(res))
+  {
+    *transaction = aggTxn;
+    NS_ADDREF(*transaction); 
+  }
+  return res;
 
+}
 
 //End nsIMathMLEditor
 

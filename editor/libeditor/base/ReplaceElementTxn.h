@@ -49,6 +49,8 @@
 0xf92967de, 0x700a, 0x4e1a, \
 {0x99, 0x4, 0x8f, 0x80, 0x1b, 0x49, 0x38, 0x8d} }
 
+class nsRangeUpdater;
+
 /**
  * A transaction that inserts a single element
  */
@@ -66,7 +68,8 @@ public:
   NS_IMETHOD Init(nsIDOMNode *aNewChild,
                   nsIDOMNode *aOldChild,
                   nsIDOMNode *aParent,
-                  nsIEditor  *aEditor);
+                  nsIEditor  *aEditor,
+                  nsRangeUpdater * rangeUpdater);
 
 private:
   ReplaceElementTxn();
@@ -78,6 +81,8 @@ public:
   NS_IMETHOD DoTransaction(void);
 
   NS_IMETHOD UndoTransaction(void);
+  
+  NS_IMETHOD RedoTransaction(void);
 
   NS_IMETHOD Merge(nsITransaction *aTransaction, PRBool *aDidMerge);
 
@@ -95,6 +100,9 @@ protected:
 
   /** the editor for this transaction */
   nsIEditor*           m_editor;
+
+  /** range updater object */
+  nsRangeUpdater *m_rangeUpdater;
 
   friend class TransactionFactory;
 
