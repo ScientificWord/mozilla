@@ -98,6 +98,11 @@ interface msiIMathMLEditor : nsISupports
                                                   in PRUint32 offset,
                                                   in PRUint32 numToDelete,
                                                   out nsITransaction transaction);                                                                           
+
+  [noscript] void CreateDeleteScriptTransaction(in nsIDOMNode script,
+                                                in nsIDOMNode dummyFirstChild,
+                                                out nsITransaction transaction);                                                                           
+                                                  
                                               
                                  
 };
