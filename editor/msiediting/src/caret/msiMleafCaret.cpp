@@ -234,15 +234,17 @@ msiMleafCaret::GetSelectableMathFragment(nsIEditor  *editor,
             res = parent->GetSelectableMathFragment(editor, parentNode, offset, parentNode, offset+1, 
                                                     fragStart, fragStartOffset, fragEnd, fragEndOffset);
         }
-        else
+        else if (m_textNode)
         {
-          *fragEnd = m_mathmlNode;
-          *fragStart = m_mathmlNode;
+          *fragEnd = m_textNode;
+          *fragStart = m_textNode;
           NS_ADDREF(*fragEnd);
           NS_ADDREF(*fragStart);
-          *fragStartOffset = 0;
-          *fragEndOffset = 1;
-        }                                            
+          *fragStartOffset = startOffset;
+          *fragEndOffset = endOffset;
+        }
+        else
+          res = NS_ERROR_FAILURE;
       }
     }  
     else if (m_textNode)
@@ -456,6 +458,8 @@ msiMleafCaret::SetupDeletionTransactions(nsIEditor * editor,
   normal = normal && (end == first || end == m_mathmlNode);
   if (normal)
   {
+    if (end == m_mathmlNode && endOffset == 1) // the mi/mo/mn is selected not the textnode.
+      endOffset = m_length;
     if (m_isDipole || (startOffset == 0 && endOffset == m_length))
     {
       nsCOMPtr<msiIMathMLCaret> parentCaret;

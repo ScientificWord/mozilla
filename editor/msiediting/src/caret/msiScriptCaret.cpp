@@ -470,13 +470,24 @@ msiScriptCaret::SetDeletionTransaction(nsIEditor * editor,
     *toRightInParent = deletingToTheRight;
     if (deletingToTheRight)
     {
-      nsCOMPtr<nsIDOMNode> first, parent;
-      msiUtils::GetChildNode(m_mathmlNode, 0, first);
-      m_mathmlNode->GetParentNode(getter_AddRefs(parent));
-      if (first && parent)
-        res = msiEditor->CreateReplaceTransaction(first, m_mathmlNode, parent, txn);
-      else
+      nsCOMPtr<nsIDOMElement> inputboxElement;
+      nsCOMPtr<nsIDOMNode> dummyChild;
+      PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+      res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputboxElement);
+      if (NS_SUCCEEDED(res) && inputboxElement)
+        dummyChild = do_QueryInterface(inputboxElement);
+      if (!dummyChild)
         res = NS_ERROR_FAILURE;  
+      if (NS_SUCCEEDED(res))
+        res = msiEditor->CreateDeleteScriptTransaction(m_mathmlNode, dummyChild, txn);
+       
+//      nsCOMPtr<nsIDOMNode> first, parent;
+//      msiUtils::GetChildNode(m_mathmlNode, 0, first);
+//      m_mathmlNode->GetParentNode(getter_AddRefs(parent));
+//      if (first && parent)
+//        res = msiEditor->CreateReplaceTransaction(first, m_mathmlNode, parent, txn);
+//      else
+//        res = NS_ERROR_FAILURE;  
     }
     else
     {
