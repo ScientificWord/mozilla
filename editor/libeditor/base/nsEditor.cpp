@@ -1406,8 +1406,6 @@ NS_IMETHODIMP nsEditor::ReplaceNode(nsIDOMNode * aNewChild,
   // The transaction system (if any) has taken ownwership of txn
   NS_IF_RELEASE(txn);
 
-  mRangeUpdater.SelAdjReplaceNode(aNewChild, aOldChild, aParent);
-
   if (mActionListeners)
   {
     for (i = 0; i < mActionListeners->Count(); i++)
@@ -1452,18 +1450,6 @@ NS_IMETHODIMP nsEditor::SaveSelection(nsISelection * selection)
   // The transaction system (if any) has taken ownwership of txn
   NS_IF_RELEASE(txn);
 
-//  mRangeUpdater.SelAdjReplaceNode(aNewChild, aOldChild, aParent);
-//
-//  if (mActionListeners)
-//  {
-//    for (i = 0; i < mActionListeners->Count(); i++)
-//    {
-//      listener = (nsIEditActionListener *)mActionListeners->ElementAt(i);
-//      if (listener)
-//        listener->DidReplaceNode(aNewChild, aOldChild, aParent, result);
-//    }
-//  }
-//
   return result;
 }
 
@@ -4973,7 +4959,7 @@ NS_IMETHODIMP nsEditor::CreateTxnForReplaceElement(nsIDOMNode * aNewChild,
   {
     result = TransactionFactory::GetNewTransaction(ReplaceElementTxn::GetCID(), (EditTxn **)aTxn);
     if (NS_SUCCEEDED(result)) {
-      result = (*aTxn)->Init(aNewChild, aOldChild, aParent, this);
+      result = (*aTxn)->Init(aNewChild, aOldChild, aParent, this, &mRangeUpdater);
     }
   }
   return result;

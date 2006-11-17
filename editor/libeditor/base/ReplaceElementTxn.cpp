@@ -41,6 +41,7 @@
 #include "nsIContent.h"
 #include "nsIDOMNodeList.h"
 #include "nsReadableUtils.h"
+#include "nsSelectionState.h"
 
 #ifdef NS_DEBUG
 static PRBool gNoisy = PR_FALSE;
@@ -48,24 +49,26 @@ static PRBool gNoisy = PR_FALSE;
 
 
 ReplaceElementTxn::ReplaceElementTxn()
-  : EditTxn()
+  : EditTxn(), m_rangeUpdater(nsnull)
 {
 }
 
 NS_IMETHODIMP ReplaceElementTxn::Init(nsIDOMNode *aNewChild,
                                       nsIDOMNode *aOldChild,
                                       nsIDOMNode *aParent,
-                                      nsIEditor  *aEditor)
+                                      nsIEditor  *aEditor,
+                                      nsRangeUpdater *aRangeUpdater)
 {
   NS_ASSERTION(aParent && aNewChild && aOldChild && aEditor, "bad arg");
-  if (!aParent ||  !aNewChild || !aOldChild || !aEditor)
+  if (!aParent ||  !aNewChild || !aOldChild || !aEditor || !aRangeUpdater)
     return NS_ERROR_NULL_POINTER;
 
   m_parent = do_QueryInterface(aParent);
   m_newChild = do_QueryInterface(aNewChild);
   m_oldChild = do_QueryInterface(aOldChild);
   m_editor = aEditor;
-  if (!m_parent ||  !m_newChild || !m_oldChild || !m_editor)
+  m_rangeUpdater = aRangeUpdater;
+  if (!m_parent ||  !m_newChild || !m_oldChild || !m_editor || !m_rangeUpdater)
     return NS_ERROR_INVALID_ARG;
   return NS_OK;
 }
@@ -95,9 +98,14 @@ NS_IMETHODIMP ReplaceElementTxn::DoTransaction(void)
     nsMemory::Free(old_nodename);
   }
 #endif
-  if (!m_parent ||  !m_newChild || !m_oldChild || !m_editor)
+  if (!m_parent) 
+    return NS_OK;
+  if (!m_newChild || !m_oldChild || !m_editor)
     return NS_ERROR_NOT_INITIALIZED;
   m_editor->MarkNodeDirty(m_parent);
+  
+  if (m_rangeUpdater)
+    m_rangeUpdater->SelAdjReplaceNode(m_newChild, m_oldChild, m_parent);
 
   nsCOMPtr<nsIDOMNode> resultNode;
   nsresult result = m_parent->ReplaceChild(m_newChild, m_oldChild,
@@ -131,13 +139,36 @@ NS_IMETHODIMP ReplaceElementTxn::UndoTransaction(void)
 #ifdef NS_DEBUG
 #endif
 
-  if (!m_parent ||  !m_newChild || !m_oldChild || !m_editor)
+  if (!m_parent) 
+    return NS_OK;
+  if (!m_newChild || !m_oldChild || !m_editor)
     return NS_ERROR_NOT_INITIALIZED;
 
   nsCOMPtr<nsIDOMNode> resultNode;
   nsresult result = m_parent->ReplaceChild(m_oldChild, m_newChild,
                                             getter_AddRefs(resultNode));
   return result;                                            
+}
+
+
+NS_IMETHODIMP ReplaceElementTxn::RedoTransaction(void)
+{
+  if (!m_parent) 
+    return NS_OK;
+  if (!m_newChild || !m_oldChild || !m_editor)
+    return NS_ERROR_NOT_INITIALIZED;
+  
+//  if (m_rangeUpdater)
+//    m_rangeUpdater->SelAdjReplaceNode(m_newChild, m_oldChild, m_parent);
+
+  nsCOMPtr<nsIDOMNode> resultNode;
+  nsresult result = m_parent->ReplaceChild(m_newChild, m_oldChild,
+                                            getter_AddRefs(resultNode));
+  if (NS_FAILED(result)) 
+    return result;
+  if (!resultNode) 
+    return NS_ERROR_NULL_POINTER;
+  return result;
 }
 
 NS_IMETHODIMP ReplaceElementTxn::Merge(nsITransaction *aTransaction, PRBool *aDidMerge)
