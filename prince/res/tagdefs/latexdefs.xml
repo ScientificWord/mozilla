@@ -6,6 +6,8 @@
 		StandardLatexArticle
 	</forshell>
 	<namespaces>
+    <!-- currently white space in the namespace declarations will be kept, so these declarations
+      should be on one line with no white space -->
 	  <ns abbrev="sw">http://www.sciword.com/namespaces/sciword</ns>
     <ns abbrev="html">http://www.w3.org/1999/xhtml</ns>
 	  <ns abbrev="mml">http://www.w3.org/1998/Math/MathML</ns>
@@ -16,102 +18,102 @@
 			<contains>texttag</contains>
 			<contains>paratag</contains>
 			<contains>structtag</contains>
-			<contains>xref</contains>
+			<contains>sw:xref</contains>
 			<tags>
-				<tag ns="sw" nm="body"><description>Body</description></tag>
-				<tag ns="sw" nm="docbody"><description>DocBody</description></tag>
+				<tag nm="html:body"><description>Body</description></tag>
+				<tag nm="sw:docbody"><description>DocBody</description></tag>
 			</tags>
 		</tagclass>
 		<tagclass>
 			<tagclassname>texttag</tagclassname>
 			<contains>texttag</contains>
-			<contains>xref</contains>
-			<contains>math</contains>
+			<contains>sw:xref</contains>
+			<contains>mml:math</contains>
 			<tags>
-				<tag ns="sw" nm="bold"><description>Bold</description></tag>
-				<tag ns="sw" nm="bbold"><description>Blackboard Bold</description></tag>
-				<tag ns="sw" nm="cal"><description>Calligraphic</description></tag>
-				<tag ns="sw" nm="em"><description>Emphasized</description></tag>
-				<tag ns="sw" nm="footnotesize"><description>Footnote size</description></tag>
-				<tag ns="sw" nm="fraktur"><description>Fraktur</description></tag>
-				<tag ns="sw" nm="Huge"><description>Huge</description></tag>
-				<tag ns="sw" nm="huge"><description>huge</description></tag>
-				<tag ns="sw" nm="it"><description>Italics</description></tag>
-				<tag ns="sw" nm="LARGE"><description>LARGE</description></tag>
-				<tag ns="sw" nm="Large"><description>Large</description></tag>
-				<tag ns="sw" nm="large"><description>large</description></tag>
-				<tag ns="sw" nm="normalsize"><description>normalsize</description></tag>
-				<tag ns="sw" nm="rm"><description>Roman</description></tag>
-				<tag ns="sw" nm="sf"><description>Sans Serif</description></tag>
-				<tag ns="sw" nm="scriptsize"><description>Scriptsize</description></tag>
-				<tag ns="sw" nm="sl"><description>Slanted</description></tag>
-				<tag ns="sw" nm="small"><description>Small</description></tag>
-				<tag ns="sw" nm="sc"><description>Small Caps</description></tag>
-				<tag ns="sw" nm="tiny"><description>Tiny</description></tag>
-				<tag ns="sw" nm="tt"><description>Typewriter font</description></tag>
+				<tag nm="sw:bold"><description>Bold</description></tag>
+				<tag nm="sw:bbold"><description>Blackboard Bold</description></tag>
+				<tag nm="sw:cal"><description>Calligraphic</description></tag>
+				<tag nm="sw:em"><description>Emphasized</description></tag>
+				<tag nm="sw:footnotesize"><description>Footnote size</description></tag>
+				<tag nm="sw:fraktur"><description>Fraktur</description></tag>
+				<tag nm="sw:Huge"><description>Huge</description></tag>
+				<tag nm="sw:huge"><description>huge</description></tag>
+				<tag nm="sw:it"><description>Italics</description></tag>
+				<tag nm="sw:LARGE"><description>LARGE</description></tag>
+				<tag nm="sw:Large"><description>Large</description></tag>
+				<tag nm="sw:large"><description>large</description></tag>
+				<tag nm="sw:normalsize"><description>normalsize</description></tag>
+				<tag nm="sw:rm"><description>Roman</description></tag>
+				<tag nm="sw:sf"><description>Sans Serif</description></tag>
+				<tag nm="sw:scriptsize"><description>Scriptsize</description></tag>
+				<tag nm="sw:sl"><description>Slanted</description></tag>
+				<tag nm="sw:small"><description>Small</description></tag>
+				<tag nm="sw:sc"><description>Small Caps</description></tag>
+				<tag nm="sw:tiny"><description>Tiny</description></tag>
+				<tag nm="sw:tt"><description>Typewriter font</description></tag>
 			</tags>
 		</tagclass>
 		<tagclass>
 			<tagclassname>paratag</tagclassname>
 			<contains>texttag</contains>
 			<contains>listtag</contains>
-			<contains>quote</contains>
-			<contains>xref</contains>
-			<contains>math</contains>
-			<contains>br</contains>
-			<contains>cursor</contains>
-			<contains>defaulttitletag</contains>
+			<contains>sw:quote</contains>
+			<contains>sw:xref</contains>
+			<contains>mml:math</contains>
+			<contains>html:br</contains>
+			<contains>sw:cursor</contains>
+			<contains>sw:defaulttitletag</contains>
 			<tags>
-				<tag id="defaultparagraph" ns="sw" nm="para">
+				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[
-              <br/><cursor/>
+              <html:br/><sw:cursor/>
               ]]>
           </initialcontentsforempty>
 				</tag>
-				<tag ns="sw" nm="mathp">
+				<tag nm="sw:mathp">
 					<description>Body math paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[
-              <br/><cursor/>
+              <html:br/><sw:cursor/>
               ]]>
           </initialcontentsforempty>
 				</tag>
-				<tag ns="sw" nm="sectiontitle">
-					<nexttag>p</nexttag>
+				<tag nm="sw:sectiontitle">
+					<nexttag>sw:para</nexttag>
 					<description>Title of section</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <defaulttitletag/> <cursor/>
+              <sw:defaulttitletag/> <sw:cursor/>
               ]]>
           </initialcontents>
 				</tag>
-				<tag ns="sw" nm="quote">
-					<nexttag>p</nexttag>
+				<tag nm="sw:quote">
+					<nexttag>sw:para</nexttag>
 					<description>Quote</description>
           <initialcontentsforempty> <![CDATA[
-              <br/><cursor/>
+              <html:br/><sw:cursor/>
               ]]>
           </initialcontentsforempty>
 			  </tag>
-				<tag ns="sw" nm="quotation">
+				<tag nm="sw:quotation">
 					<description>Long quotation</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[
-              <html:br/><cursor/>
+              <html:br/><sw:cursor/>
               ]]>
           </initialcontentsforempty>
 				</tag>
-				<tag ns="sw" nm="title">
-					<nexttag>p</nexttag>
+				<tag nm="sw:title">
+					<nexttag>swp:ara</nexttag>
 					<description>Title</description>
           <initialcontents> <![CDATA[
-              <defaulttitletag/><cursor/>
+              <sw:defaulttitletag/><sw:cursor/>
               ]]>
           </initialcontents>
 				</tag>
-				<tag ns="sw" nm="verbatim">
+				<tag nm="sw:verbatim">
 					<description>Verbatim text</description>
           <initialcontentsforempty> <![CDATA[
               
@@ -124,31 +126,31 @@
 			<tagclassname>listtag</tagclassname>
 			<contains>texttag</contains>
 			<contains>paratag</contains>
-			<contains>math</contains>
-			<contains>xref</contains>
-			<contains>br</contains>
+			<contains>mml:math</contains>
+			<contains>sw:xref</contains>
+			<contains>html:br</contains>
 			<tags>
-				<tag ns="sw" nm="itemizedlistitem">
+				<tag nm="sw:itemizedlistitem">
           <description>Bulleted list time</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p><br/><cursor/></p>
+              <sw:para><html:br/><sw:cursor/></p>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="orderedlistitem">
+				<tag nm="sw:orderedlistitem">
           <description>Numbered list item</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p><br/><cursor/></p>
+              <sw:para><html:br/><sw:cursor/></p>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="simplelistitem">
+				<tag nm="sw:simplelistitem">
           <description>Simple list item</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p><br/><cursor/></p>
+              <sw:para><html:br/><sw:cursor/></p>
               ]]>
           </initialcontents>
         </tag>
@@ -158,175 +160,171 @@
 			<tagclassname>structtag</tagclassname>
 			<contains>paratag</contains>
 			<contains>structtag</contains>
-			<contains>xref</contains>
-			<contains>br</contains>
+			<contains>sw:xref</contains>
+			<contains>html:br</contains>
 			<tags>
-				<tag ns="sw" nm="set">
+				<tag nm="sw:set">
         	<level>-3</level>
           <description>Set of books</description>
           <discardemptyblock>true</discardemptyblock>
         </tag>
-				<tag ns="sw" nm="book">
+				<tag nm="sw:book">
           <level>-2</level>
           <description>Book</description>
           <discardemptyblock>true</discardemptyblock>
         </tag>
-				<tag ns="sw" nm="part">
+				<tag nm="sw:part">
           <level>-1</level>
           <description>Part of a book</description>
           <discardemptyblock>true</discardemptyblock>
         </tag>
-				<tag ns="sw" nm="chapter">
+				<tag nm="sw:chapter">
           <level> 1</level>
           <description>Section</description>
           <discardemptyblock>true</discardemptyblock>
         </tag>
-				<tag ns="sw" nm="section">
+				<tag nm="sw:section">
           <level> 2</level>
           <description>Subsection</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
+              <sw:sectiontitle><html:br/><sw:cursor/><sw:defaulttitletag/></sw:sectiontitle>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="subsection">
+				<tag nm="sw:subsection">
           <level> 3</level>
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
+              <sw:sectiontitle><html:br/><sw:cursor/><sw:defaulttitletag/></sw:sectiontitle>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="subsubsection">
+				<tag nm="sw:subsubsection">
           <level> 4</level>
           <description>Subsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
+              <sw:sectiontitle><html:br/><sw:cursor/><sw:defaulttitletag/></sw:sectiontitle>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="paragraph">
+				<tag nm="sw:paragraph">
           <level> 5</level>
           <description>Subsubsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
+              <sw:sectiontitle><html:br/><sw:cursor/><sw:defaulttitletag/></sw:sectiontitle>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="subparagraph">
+				<tag nm="sw:subparagraph">
           <level> *</level>
           <description>Section (dynamic level)</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
+              <sw:sectiontitle><html:br/><sw:cursor/><sw:defaulttitletag/></sw:sectiontitle>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="abstract">
+				<tag nm="sw:abstract">
           <level> *</level>
           <description>Abstract</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p><br><cursor/></p>
+              <sw:para><html:br><sw:cursor/></sw:para>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="dedication">
+				<tag nm="sw:dedication">
           <level> 0</level>
           <description>Dedication</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p></p>
+              <sw:para></sw:para>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="preface">
+				<tag nm="sw:preface">
           <level> 0</level>
           <description>Preface</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p></p>
+              <sw:para></sw:para>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="index">
+				<tag nm="sw:index">
           <level> 0</level>
           <description>Index</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p></p>
+              <sw:para></sw:para>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="appendix">
+				<tag nm="sw:appendix">
           <level> 0</level>
           <description>Appendix</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p></p>
+              <sw:para></sw:para>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="glossary">
+				<tag nm="sw:glossary">
           <level> 0</level>
           <description>Glossary</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p></p>
-              ]]>
-          </initialcontents>
-          <initialcontents> <![CDATA[
-              <p></p>
+              <sw:para></sw:para>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="bibliography">
+				<tag nm="sw:bibliography">
           <level> 0</level>
           <description>Bibliography</description>
           <discardemptyblock>true</discardemptyblock>
         </tag>
-				<tag ns="sw" nm="refsect1">
+				<tag nm="sw:refsect1">
           <level> 1</level>
           <description>Refsect1</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p></p>
+              <sw:para></sw:para>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="refsect2">
+				<tag nm="sw:refsect2">
           <level> 2</level>
           <description>Refsect2</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p></p>
+              <sw:para></sw:para>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="refsect3">
+				<tag nm="sw:refsect3">
           <level> 3</level>
           <description>Refsect3</description>
           <discardemptyblock>true</discardemptyblock>
         </tag>
-				<tag ns="sw" nm="author">
+				<tag nm="sw:author">
           <level> *</level>
           <description>Author name</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p></p>
+              <sw:para></sw:para>
               ]]>
           </initialcontents>
         </tag>
-				<tag ns="sw" nm="address">
+				<tag nm="sw:address">
           <level> *</level>
           <description>Author address</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <p></p>
+              <sw:para></sw:para>
               ]]>
           </initialcontents>
         </tag>
@@ -335,7 +333,7 @@
 		<tagclass>
 			<tagclassname>othertag</tagclassname>
 			<tags>
-				<tag ns="sw" nm="xref"><description>An instance of an "other" tag</description></tag>
+				<tag nm="sw:xref"><description>An instance of an "other" tag</description></tag>
 			</tags>
 		</tagclass>
 	</tagclasses>
