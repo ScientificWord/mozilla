@@ -35,14 +35,23 @@ void DebExamineNode(nsIDOMNode * aNode);
 
 nsIAtom * msiTagListManager::htmlnsAtom = NS_NewAtom(NS_LITERAL_STRING("http://www.w3.org/1999/xhtml"));
 
+
+
 msiTagListManager::msiTagListManager()
-:  meditor(nsnull), mparentTags(nsnull), mInitialized(PR_FALSE), plookup(nsnull) 
+:  meditor(nsnull), mparentTags(nsnull), mInitialized(PR_FALSE), plookup(nsnull), pContainsList(nsnull) 
 {
   nsresult rv;
   pACSSA = do_CreateInstance("@mozilla.org/autocomplete/search;1?name=stringarray", &rv);
   // Now replace the singleton autocompletesearchstringarry by an implementation
   pACSSA->GetNewImplementation(getter_AddRefs(pACSSA));
   Reset();
+}
+
+msiTagListManager * MSI_NewTagListManager()
+{
+  msiTagListManager * pmgr = new msiTagListManager;
+  NS_ADDREF(pmgr);
+  return pmgr;
 }
 
 struct namespaceLookup
@@ -63,6 +72,19 @@ msiTagListManager::~msiTagListManager()
     delete(pns);
     pns = plookup;
   }
+  delete pContainsList;
+}
+
+// Miscellaneous destructors (constructors are inline
+TagKeyList::~TagKeyList()
+{
+  if (pNext) delete pNext;
+}
+
+TagKeyListHead::~TagKeyListHead()
+{
+  if (pListHead) delete pListHead;
+  if (pNext) delete pNext;  
 }
 
 NS_IMETHODIMP 
@@ -129,16 +151,20 @@ TagKey::altForm()
     return (str.Length()?localName()+ NS_LITERAL_STRING(" - ") + str:localName());
   }
 }
-
-nsIAtom * 
-msiTagListManager::NameSpaceAtomOfTagKey( TagKey& tagkey)
+/* nsIAtom NameSpaceAtomOfTagKey (in AString key); */
+NS_IMETHODIMP msiTagListManager::NameSpaceAtomOfTagKey(const nsAString & key, nsIAtom **_retval)
 {
+  TagKey tagkey;
+  tagkey.key.Assign(key);
   nsString str = tagkey.prefix();
   namespaceLookup * pns = plookup;
+  if (!_retval) return NS_ERROR_INVALID_POINTER;
+  *_retval = nsnull;
+  if (str.Length() == 0) return NS_OK;
   while (pns && !(pns->namespaceAbbrev.Equals(str)))
     pns = pns->next;
-  if (pns) return pns->nsAtom;
-  return nsnull;  
+  if (pns) *_retval = pns->nsAtom;
+  return NS_OK;  
 }
  
 /* void reset (); */
@@ -240,7 +266,7 @@ nsString msiTagListManager::GetStringProperty( const nsAString & str, nsIDOMElem
   return strResult;
 }
 
-
+// Build hash tables and also the list of lists that store the 'contains' info
 /* bool BuildHashTables (in nsIDOMXMLDocument docTagInfo); */
 PRBool
 msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retval)
@@ -249,6 +275,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
   PRUint32 tagClassCount = 0;
   PRUint32 tagClassNameCount = 0;
   PRUint32 tagNameCount = 0;
+  PRUint32 tagContainsCount = 0;
   nsCOMPtr<nsIDOMNodeList> tagClasses;
   nsCOMPtr<nsIDOMNode> tagClass;
   nsCOMPtr<nsIDOMElement> tagClassElement;
@@ -257,14 +284,19 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
   nsCOMPtr<nsIDOMElement> tagClassNameElement;
   nsCOMPtr<nsIDOM3Node> tagClassNameNode;
   nsCOMPtr<nsIDOMNodeList> tagNames;
+  nsCOMPtr<nsIDOMNodeList> tagContains;
   nsCOMPtr<nsIDOMNode> tagName;
+  nsCOMPtr<nsIDOMNode> tagCanContain;
   nsIDOMXMLDocument * dti = docTagInfo;
   nsAutoString strName;
-  nsAutoString str2;
   nsAutoString strClassName;
+  nsAutoString strCanContain;
   nsCOMPtr<nsIDOMElement> tagNameElement;   
+  nsCOMPtr<nsIDOMElement> tagCanContainElement;   
+  nsCOMPtr<nsIDOM3Node> tagCanContainNode3;
+  TagKeyListHead * pTagKeyListHead;
+  TagKeyList * pTagKeyList;
   TagKey key;
-  // BBM todo: get additional namespace declarations
   rv = dti->GetElementsByTagName(NS_LITERAL_STRING("tagclass"), getter_AddRefs(tagClasses));
   if (tagClasses) tagClasses->GetLength(&tagClassCount);
   if (tagClassCount > 0)
@@ -274,12 +306,54 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
       tagClasses->Item(i, (nsIDOMNode **) getter_AddRefs(tagClass));
       tagClassElement = do_QueryInterface(tagClass);
       rv = tagClassElement->GetElementsByTagName(NS_LITERAL_STRING("tagclassname"), getter_AddRefs(tagClassNames));
+      // there should be only one <tagclassname> per <tagclass>. Thus we look only at the first in the list (and presumably the last)
       if (tagClassNames) tagClassNames->Item(0, getter_AddRefs(tagClassName));
       tagClassNameNode = do_QueryInterface(tagClassName);
       tagClassNameElement = do_QueryInterface(tagClassName);
       rv = tagClassNameNode->GetTextContent(strClassName);
+      // strClassName is the name of the class. Now find the <contains> tags
+      ///////
+      rv = tagClassElement->GetElementsByTagName(NS_LITERAL_STRING("contains"), getter_AddRefs(tagContains));
+      if (tagContains) 
+      {
+        rv = tagContains->GetLength(&tagContainsCount);
+        for (PRUint32 j = 0; j < tagContainsCount; j++)
+        {
+          tagContains ->Item(j, getter_AddRefs(tagCanContain));
+          tagCanContainNode3 = do_QueryInterface(tagCanContain);
+          tagCanContainNode3->GetTextContent(strCanContain);
+          // now we put strCanContain (a tag key) in the list for strClassName
+          pTagKeyListHead = pContainsList;
+          while (pTagKeyListHead && !(pTagKeyListHead->name.Equals(strClassName))) pTagKeyListHead = pTagKeyListHead->pNext;
+          if (!pTagKeyListHead) // there is no list for the class name; make one
+          {
+            pTagKeyListHead = new TagKeyListHead;
+            pTagKeyListHead->name.Assign(strClassName);
+            pTagKeyListHead->pNext = pContainsList;  // we insert at the beginning of the list for simplicity
+            pContainsList = pTagKeyListHead;
+          } // pTagKeyListHead is not null
+          // TODO: check for out of memory
+          pTagKeyList = new TagKeyList;
+          pTagKeyList->key.key.Assign(strCanContain);
+          if (pTagKeyListHead->pListTail)
+            pTagKeyListHead->pListTail->pNext = pTagKeyList;   // we use ListTail to keep the list in the same order as in the XNL file,
+          pTagKeyListHead->pListTail = pTagKeyList;   // we use ListTail to keep the list in the same order as in the XNL file,
+                                                      // for hand optimizations
+          if (!(pTagKeyListHead->pListHead)) pTagKeyListHead->pListHead = pTagKeyListHead->pListTail;
+        }
+      }
+      
+      // Write out the list
+      printf("\nContains list for tag %S:\n", pContainsList->name.BeginReading());
+      pTagKeyList = pContainsList->pListHead;
+      while (pTagKeyList)
+      {
+        printf("  can contain \"%S\n", ((nsString)pTagKeyList->key).BeginReading());
+        pTagKeyList = pTagKeyList->pNext;
+      }
+      
+      /////////
       rv = tagClassElement->GetElementsByTagName(NS_LITERAL_STRING("tag"), getter_AddRefs(tagNames));
-//      printf("\n");
       if (tagNames) 
       {
         rv = tagNames->GetLength(&tagNameCount);
@@ -288,8 +362,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           tagNames->Item(j, getter_AddRefs(tagName));
           tagNameElement = do_QueryInterface(tagName);
           rv = tagNameElement->GetAttribute(NS_LITERAL_STRING("nm"),strName);
-          rv = tagNameElement->GetAttribute(NS_LITERAL_STRING("ns"),str2);
-          key = TagKey(strName, str2);
+          key = TagKey(strName);
           TagData *pdata = new TagData;               
           pdata->tagClass = strClassName;
           pdata->description = GetStringProperty(NS_LITERAL_STRING("description"), tagNameElement);
@@ -528,15 +601,19 @@ NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom
   nsString strAbbrev;
   strAbbrev = PrefixFromNameSpaceAtom(atomNS);
   nsString strKey;
+  nsString emptyString;
   if (strAbbrev.Length() >0 )strKey = strAbbrev + NS_LITERAL_STRING(":") + strTag;
   else strKey = strTag; 
-  TagData *data = new TagData;               
-  if (msiTagHashtable.Get(strKey, (nsClassHashtable<nsStringHashKey, TagData>::UserDataType *)&data))
+  TagData * data;    
+  PRBool fInHash = msiTagHashtable.Get(strKey, (TagData **)&data);
+//  printf("\nFound in hash table is %s, strKey = %S, data->tagClass is ", (fInHash?"true":"false"), strKey.BeginReading());
+//  if (fInHash) printf("%S\n", data->tagClass.BeginReading());  
+//  else printf("\n");         
+  if (fInHash)
   {
     _retval = data->tagClass;
   }
-  else _retval = NS_LITERAL_STRING("");
-  delete data;
+  else _retval.Assign(emptyString);
   return NS_OK;
 }  
  
@@ -551,88 +628,69 @@ NS_IMETHODIMP msiTagListManager::GetTagInClass(const nsAString & strTagClass, co
   return NS_OK;  
 }
 
-// BBM todo: Keep 'contains' information in a set of lists
-/* PRBool TagCanContainTag (in string strOuter, in string strOInner);  
-Check the current tag info DOM to see if the class of tag(strOuter) has a 'Contains' node with a string 
-that includes, as a token, strInner or class(strInner).
-*/
 /* PRBool tagCanContainTag (in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner); */
 NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter, 
   nsIAtom *atomNSOuter, const nsAString & strTagInner, nsIAtom *atomNSInner, PRBool *_retval)
 {
-  // Temporary kludge:
-  *_retval = PR_TRUE;
-  return NS_OK;
-  // end of kludge
-  nsAutoString classOuter;
-  nsresult rv = GetClassOfTag(strTagOuter, atomNSOuter, classOuter);
-  nsAutoString classInner;
-  rv = GetClassOfTag(strTagInner, atomNSInner, classInner);
-  *_retval = PR_FALSE;
-  if (strTagOuter.Equals(NS_LITERAL_STRING("body")))
+  if (!_retval) return NS_ERROR_INVALID_POINTER;
+  if (strTagOuter.Length() == 0)  // nil outer tag --> no restrictions
   {
     *_retval = PR_TRUE;
     return NS_OK;
   }
-  // TODO: also check atoms
-  if (classOuter.Equals(classInner) && classOuter.Equals(NS_LITERAL_STRING("structtag")))
+  *_retval = PR_FALSE;
+  nsAutoString classOuter;
+  nsresult rv = GetClassOfTag(strTagOuter, atomNSOuter, classOuter);
+  nsAutoString classInner;
+  rv = GetClassOfTag(strTagInner, atomNSInner, classInner);
+  
+  // structtags are different: the level determines what can contain what.
+  if (classOuter.Equals(classInner) && classOuter.EqualsLiteral("structtag"))
   {
     // both tags are structure tags, and so we need to look at the levels. We return true if the outer level or the inner level
     // is '*', or if the outer level is strictly less than the inner level.
     return LevelCanContainLevel( strTagOuter, atomNSOuter, strTagInner, atomNSInner, _retval);
   }
-  else
+  // Find the contains list for classOuter
+  TagKeyListHead * pTagKeyListHead = pContainsList;
+  while (PR_TRUE)
   {
-  
-    //Find the 'Contains' node, if any, for the Outer Class
-    nsCOMPtr<nsIDOMNodeList> tagClasses;
-    nsCOMPtr<nsIDOMNode> tagClass;
-    nsCOMPtr<nsIDOMElement> tagClassElement;
-    nsCOMPtr<nsIDOMNodeList> tagClassNames;
-    nsCOMPtr<nsIDOMNode> tagClassName;
-    nsCOMPtr<nsIDOMElement> tagClassNameElement;
-    nsCOMPtr<nsIDOM3Node> tagClassNameNode;
-    nsCOMPtr<nsIDOMNodeList> tagContainsList;
-    nsCOMPtr<nsIDOMNode> tagContains;
-    nsAutoString strTemp;
-    PRUint32 tagClassCount, tagContainsCount;
-    nsCOMPtr<nsIDOM3Node> tagContainsNode;
-    rv = mdocTagInfo->GetElementsByTagName(NS_LITERAL_STRING("tagclass"), getter_AddRefs(tagClasses));
-    if (tagClasses) tagClasses->GetLength(&tagClassCount);
-    if (tagClassCount > 0)
+    while (pTagKeyListHead && !(pTagKeyListHead->name.Equals(classOuter))) 
+      pTagKeyListHead = pTagKeyListHead->pNext;
+    if (!pTagKeyListHead) // there is no list for the class name; treat it like a text tag
     {
-      for (PRUint32 i = 0; i < tagClassCount; i++)
-      {
-        tagClasses->Item(i, (nsIDOMNode **) getter_AddRefs(tagClass));
-        tagClassElement = do_QueryInterface(tagClass);
-        rv = tagClassElement->GetElementsByTagName(NS_LITERAL_STRING("tagclassname"), getter_AddRefs(tagClassNames));
-        if (tagClassNames) tagClassNames->Item(0, getter_AddRefs(tagClassName));
-        tagClassNameNode = do_QueryInterface(tagClassName);
-        tagClassNameElement = do_QueryInterface(tagClassName);
-        rv = tagClassNameNode->GetTextContent(strTemp);
-        if (strTemp.Equals(classOuter))
-        {
-          rv = tagClassElement->GetElementsByTagName(NS_LITERAL_STRING("contains"), getter_AddRefs(tagContainsList));
-          if (tagContainsList) tagContainsList->GetLength(&tagContainsCount);
-          if (tagContainsCount > 0)
-          {
-            for (PRUint32 j = 0; j < tagContainsCount; j++)
-            {tagContainsList->Item(j, getter_AddRefs(tagContains));
-              tagContainsNode = do_QueryInterface(tagContains);
-              rv = tagContainsNode->GetTextContent(strTemp);
-              if (strTemp.Equals(strTagInner) || strTemp.Equals(classInner))
-              {
-                * _retval = PR_TRUE;
-                break;
-              }
-            }    
-            break;
-          }
-        }
-      }
+      if (classOuter.EqualsLiteral("texttag")) break;
+        // we already changed the name and *still* didn't find the list header
+      classOuter = NS_LITERAL_STRING("texttag");
+      pTagKeyListHead = pContainsList;
     }
+    else break;
+  }
+  if (!pTagKeyListHead) return NS_ERROR_FAILURE;
+  // in the list headed by pTagKeyListHead, search for the classInner string, then the 
+  // strTagInner string.
+  TagKeyList * pTKL = pTagKeyListHead->pListHead;
+  while (pTKL && !(classInner.Equals(pTKL->key.key))) pTKL = pTKL->pNext;
+  if (pTKL) // a match was found
+  {
+    *_retval = PR_TRUE;
     return NS_OK; 
-  } 
+  }
+  // Broad categories didn't work; now look for a specific tag
+  nsString strTemp;
+  strTemp.Assign(strTagInner);
+  TagKey tagkeyLookup(strTemp, PrefixFromNameSpaceAtom(atomNSInner)); 
+  printf("Looking for tag %S\n", tagkeyLookup.key.BeginReading());
+  pTKL = pTagKeyListHead->pListHead;
+  while (pTKL && !(tagkeyLookup.key.Equals(pTKL->key.key))) pTKL = pTKL->pNext;
+  if (pTKL) // a match was found
+  {
+    *_retval = PR_TRUE;
+    return NS_OK; 
+  }
+  // failed to find anything if we got here.
+  *_retval = PR_FALSE;
+  return NS_OK;
 }
 
 

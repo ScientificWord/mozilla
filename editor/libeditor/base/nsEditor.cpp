@@ -1794,8 +1794,11 @@ nsEditor::InsertContainerAboveNS( nsIDOMNode *inNode,
   nsCOMPtr<nsIDOM3Node> node;
   node = do_QueryInterface(inNode);
   nsAutoString strNS;
-  atomNS->ToString(strNS);
-  node->LookupPrefix(strNS,strPrefix);
+  if (atomNS) 
+  {
+    atomNS->ToString(strNS);
+    node->LookupPrefix(strNS,strPrefix);
+  }  
   if (strPrefix.Length()>0) strQualifiedName = strPrefix + NS_LITERAL_STRING(":") + aNodeType;
   else strQualifiedName = aNodeType;
   res = CreateContentNS(strQualifiedName, atomNS, getter_AddRefs(newElement));
@@ -3907,6 +3910,9 @@ nsEditor::TagCanContainTag(const nsAString &aParentTag, const nsAString &aChildT
 {
   return PR_TRUE;
 }
+
+
+
 
 PRBool 
 nsEditor::IsRootNode(nsIDOMNode *inNode) 
