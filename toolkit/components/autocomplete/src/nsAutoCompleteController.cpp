@@ -49,7 +49,7 @@
 
 #include "nsNetCID.h"
 #include "nsIIOService.h"
-#include "..\..\build\nsToolkitCompsCID.h"
+#include "../../build/nsToolkitCompsCID.h"
 #include "nsIServiceManager.h"
 #include "nsIDOMNode.h"
 #include "nsIDOMDocument.h"
