@@ -1,5 +1,5 @@
-#ifndef msiITagListManager_h__
-#define msiITagListManager_h__
+#ifndef msiTagListManager_h__
+#define msiTagListManager_h__
 
 #include "msiITagListManager.h"
 #include "nsString.h"
@@ -11,7 +11,9 @@ class nsIDOMXMLDocument;
 class nsIDOMElement;
 class nsIAutoCompleteSearchStringArray;
 struct namespaceLookup;
-class TagKey;
+struct TagKey;
+struct TagKeyList;
+struct TagKeyListHead;
 
 class TagData // other fields can be added to this
 {
@@ -36,12 +38,11 @@ public:
   ~msiTagListManager();
   nsString GetStringProperty( const nsAString & str, nsIDOMElement * element);
   PRBool BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retval);
-  nsIAtom * NameSpaceAtomOfTagKey( TagKey& key);
+  
+  
   nsCOMPtr<nsIAutoCompleteSearchStringArray> pACSSA;
-
-static nsIAtom * htmlnsAtom; // an atom corresponding to  "http://www.w3.org/1999/xhtml"   
+  static nsIAtom * htmlnsAtom; // an atom corresponding to  "http://www.w3.org/1999/xhtml"   
 protected:  
-//  nsStringArray mstrTagInfoPath; // do we save this here?
   nsStringArray* mparentTags;
   nsEditor * meditor; // this is a back pointer, hence not ref counted
   PRBool mInitialized;
@@ -51,16 +52,17 @@ protected:
   nsString PrefixFromNameSpaceAtom(nsIAtom * atomNS);
   namespaceLookup * plookup;
   nsClassHashtable<nsStringHashKey, TagData> msiTagHashtable;
+  TagKeyListHead * pContainsList;
 };
 
+msiTagListManager * MSI_NewTagListManager();
 
-class TagKey // a class castable to and from strings that supports pulling out the tag name and name space atom
+struct TagKey // a class castable to and from strings that supports pulling out the tag name and name space atom
 {
-public:
   nsString key;  // example: sw:sectiontitle
   operator nsString() { return key; }
-  TagKey( nsString akey, nsString nsAbbrev) { key = (nsAbbrev.Length()?nsAbbrev + NS_LITERAL_STRING(":") + akey:akey);}
-  TagKey( nsString akey);
+  TagKey( const nsString akey, const nsString nsAbbrev) { key = (nsAbbrev.Length()?nsAbbrev + NS_LITERAL_STRING(":") + akey:akey);}
+  TagKey( const nsString akey);
   TagKey( ){}
   ~TagKey() {/* todo */};
   nsString altForm(); // if the key is 'sw:sectiontitle', then the altForm is 'sectiontitle - sw' (notice the spaces)
@@ -68,4 +70,22 @@ public:
   nsString localName();
 };
 
-#endif // msiITagListManager_h__
+struct TagKeyList
+{
+  TagKey key;
+  TagKeyList * pNext;
+  TagKeyList(): pNext(nsnull) {}
+  ~TagKeyList();
+};
+
+struct TagKeyListHead
+{
+  TagKeyList *pListHead;
+  TagKeyList *pListTail;
+  nsString name;
+  TagKeyListHead * pNext;
+  TagKeyListHead(): pListHead(nsnull), pListTail(nsnull), pNext(nsnull) {}
+  ~TagKeyListHead();
+};
+
+#endif // msiTagListManager_h__

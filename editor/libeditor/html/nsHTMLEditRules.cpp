@@ -7006,6 +7006,53 @@ nsHTMLEditRules::SplitAsNeeded(const nsAString *aTag,
   return res;
 }      
 
+
+///////////////////////////////////////////////////////////////////////////
+// SplitAsNeededNS:  given a tag name and a namespace atom, split inOutParent up to the point   
+//                 where we can insert the tag.  Adjust inOutParent and
+//                 inOutOffset to pint to new location for tag.
+//nsresult 
+//nsHTMLEditRules::SplitAsNeededNS(const nsAString *aTag,
+//                               nsIAtom * nsAtom, 
+//                               nsCOMPtr<nsIDOMNode> *inOutParent,
+//                               PRInt32 *inOutOffset)
+//{
+//  if (!aTag || !inOutParent || !inOutOffset) return NS_ERROR_NULL_POINTER;
+//  if (!*inOutParent) return NS_ERROR_NULL_POINTER;
+//  nsCOMPtr<nsIDOMNode> tagParent, temp, splitNode, parent = *inOutParent;
+//  nsresult res = NS_OK;
+//   
+//  // check that we have a place that can legally contain the tag
+//  while (!tagParent)
+//  {
+//    // sniffing up the parent tree until we find 
+//    // a legal place for the block
+//    if (!parent) break;
+//    if (mHTMLEditor->CanContainTag(parent, *aTag))
+//    {
+//      tagParent = parent;
+//      break;
+//    }
+//    splitNode = parent;
+//    parent->GetParentNode(getter_AddRefs(temp));
+//    parent = temp;
+//  }
+//  if (!tagParent)
+//  {
+//    // could not find a place to build tag!
+//    return NS_ERROR_FAILURE;
+//  }
+//  if (splitNode)
+//  {
+//    // we found a place for block, but above inOutParent.  We need to split nodes.
+//    res = mHTMLEditor->SplitNodeDeep(splitNode, *inOutParent, *inOutOffset, inOutOffset);
+//    if (NS_FAILED(res)) return res;
+//    *inOutParent = tagParent;
+//  }
+//  return res;
+//}      
+//
+
 ///////////////////////////////////////////////////////////////////////////
 // JoinNodesSmart:  join two nodes, doing whatever makes sense for their  
 //                  children (which often means joining them, too).

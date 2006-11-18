@@ -134,7 +134,9 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
   nsAutoString tagString;
   aProperty->ToString(tagString);
   TagKey tagkey(tagString);
-  bool fNotHTML = (mtagListManager->NameSpaceAtomOfTagKey(tagkey) != msiTagListManager::htmlnsAtom);
+  nsCOMPtr<nsIAtom> nsAtom;
+  mtagListManager->NameSpaceAtomOfTagKey(tagkey.key, (nsIAtom**)address_of(nsAtom));
+  PRBool fNotHTML = (nsAtom != msiTagListManager::htmlnsAtom);
   
   ForceCompositionEnd();
 
@@ -201,7 +203,9 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
         if (fNotHTML)
         {
           nsString localname = tagkey.localName();
-          res = SetTextTagNode(nodeAsText, startOffset, endOffset, localname, mtagListManager->NameSpaceAtomOfTagKey(tagkey) /* and perhaps later add "", &aAttribute, &aValue" "*/);
+          nsCOMPtr<nsIAtom> nsAtom;
+          mtagListManager->NameSpaceAtomOfTagKey(tagkey.key, (nsIAtom**)address_of(nsAtom));
+          res = SetTextTagNode(nodeAsText, startOffset, endOffset, localname, nsAtom /* and perhaps later add "", &aAttribute, &aValue" "*/);
         }
         else
           res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, endOffset, aProperty, &aAttribute, &aValue);
@@ -263,7 +267,9 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
           if (fNotHTML)
           {
             nsString localname = tagkey.localName();
-            res = SetTextTagNode(nodeAsText, startOffset, textLen, localname, mtagListManager->NameSpaceAtomOfTagKey(tagkey) /* and perhaps later add "", &aAttribute, &aValue" "*/);
+            nsCOMPtr<nsIAtom> nsAtom;
+            mtagListManager->NameSpaceAtomOfTagKey(tagkey.key, (nsIAtom**)address_of(nsAtom));
+            res = SetTextTagNode(nodeAsText, startOffset, textLen, localname, nsAtom /* and perhaps later add "", &aAttribute, &aValue" "*/);
           }
           else
             res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, textLen, aProperty, &aAttribute, &aValue);
@@ -293,7 +299,9 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
           if (fNotHTML)
           {
             nsString localname = tagkey.localName();
-            res = SetTextTagNode(nodeAsText, 0, endOffset, localname, mtagListManager->NameSpaceAtomOfTagKey(tagkey) /* and perhaps later add "", &aAttribute, &aValue" "*/);
+            nsCOMPtr<nsIAtom> nsAtom;
+            mtagListManager->NameSpaceAtomOfTagKey(tagkey.key, (nsIAtom**)address_of(nsAtom));
+            res = SetTextTagNode(nodeAsText, 0, endOffset, localname, nsAtom /* and perhaps later add "", &aAttribute, &aValue" "*/);
           }
           else
             res = SetInlinePropertyOnTextNode(nodeAsText, 0, endOffset, aProperty, &aAttribute, &aValue);
@@ -336,7 +344,7 @@ nsHTMLEditor::SetTextTagNode( nsIDOMCharacterData *aTextNode,
   nsAutoString strParentLocalName;
   res = parent->GetNamespaceURI(strUri);
   res = parent->GetLocalName(strParentLocalName);
-  nsIAtom * atomParentNS = NS_NewAtom(strUri);
+  nsCOMPtr<nsIAtom> atomParentNS = NS_NewAtom(strUri);
   mtagListManager->TagCanContainTag(strParentLocalName, atomParentNS, tagLocalName, atomNS, &fCanContain);
   
   if (!fCanContain) return NS_OK;
@@ -434,7 +442,7 @@ nsHTMLEditor::SetTextTagOnNode( nsIDOMNode *aNode,
   nsAutoString strLocalName;
   res = aNode->GetNamespaceURI(strUri);
   res = aNode->GetLocalName(strLocalName);
-  nsIAtom * atomaNodeNS = NS_NewAtom(strUri);
+  nsCOMPtr<nsIAtom> atomaNodeNS = NS_NewAtom(strUri);
   mtagListManager->TagCanContainTag(strLocalName, atomaNodeNS, tagLocalName, atomNS, &fCanContain);
   
   if (fCanContain)
@@ -1497,9 +1505,9 @@ NS_IMETHODIMP nsHTMLEditor::GetInnermostTag( const nsAString & aTagClassName,
                  if (!aFirst || !aAny || !aAll)
     return NS_ERROR_NULL_POINTER;
   nsString strTag;
-  nsIAtom * namespaceAtom;
+  nsCOMPtr<nsIAtom> namespaceAtom;
   nsString strEmpty = EmptyString();
-  if (mtagListManager) mtagListManager->CurrentValue(aTagClassName, &namespaceAtom, outvalue);
+  if (mtagListManager) mtagListManager->CurrentValue(aTagClassName, (nsIAtom**)address_of(namespaceAtom), outvalue);
   nsCOMPtr<nsIAtom> aProperty = NS_NewAtom(aTagClassName);
   return GetInlinePropertyBase( aProperty, &strEmpty, &strEmpty, aFirst, aAny, aAll, &strTag); 
 }
