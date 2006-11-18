@@ -96,7 +96,7 @@ class nsHTMLEditor : public nsPlaintextEditor,
                      public nsIHTMLEditor,
                      public nsIHTMLObjectResizer,
                      public nsIHTMLAbsPosEditor,
-                     public nsITableEditor,
+                     public nsITableEditor,        
                      public nsIHTMLInlineTableEditor,
                      public nsIEditorStyleSheets,
                      public nsICSSLoaderObserver
@@ -672,6 +672,7 @@ protected:
   /* helpers for block transformations */
   nsresult MakeDefinitionItem(const nsAString & aItemType);
   nsresult InsertBasicBlock(const nsAString & aBlockType);
+  nsresult InsertBasicBlockNS(const nsAString & aBlockType, nsIAtom * atomNS);
   
   /* increase/decrease the font size of selection */
   nsresult RelativeFontChange( PRInt32 aSizeChange);
@@ -771,6 +772,12 @@ protected:
                              PRBool aCheckDefaults = PR_TRUE);
   nsresult HasStyleOrIdOrClass(nsIDOMElement * aElement, PRBool *aHasStyleOrIdOrClass);
   nsresult RemoveElementIfNoStyleOrIdOrClass(nsIDOMElement * aElement, nsIAtom * aTag);
+  
+  /** versions of some methods in nsEditor that take name spaces into account */
+  PRBool CanContainTagNS(nsIDOMNode* aParent, const nsAString &aTag, nsIAtom * nsAtom);
+  PRBool TagCanContainNS(const nsAString &aParentTag, nsIAtom * nsAtomParent, nsIDOMNode* aChild);
+  virtual PRBool TagCanContainTagNS(const nsAString &aParentTag, nsIAtom * nsAtomParent, const nsAString &aChildTag, nsIAtom * nsAtomChild);
+
 
 // Data members
 protected:
