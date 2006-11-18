@@ -6,6 +6,7 @@ interface nsEditor;
 interface nsIDOMNode;
 interface nsIFile;
 interface nsStringArray;
+interface nsIAtom;
 
 /*This interface manages a store of information about the editing behavior of tags.
 Since the tags are possibly in name spaces, each tag is identified by an atom (for the name space) and a string (for the tag name).
@@ -36,9 +37,10 @@ interface msiITagListManager : nsISupports
 	AString getClassOfTag( in AString strTag, in nsIAtom atomNS);
 	PRBool tagCanContainTag( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
 	PRBool levelCanContainLevel( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
-  PRBool getDiscardEmptyBlockNode( in nsIDOMNode node);
+    PRBool getDiscardEmptyBlockNode( in nsIDOMNode node);
 	void fixTagsAfterSplit( in nsIDOMNode firstNode, inout nsIDOMNode secondNode);
-  AString GetStringPropertyForTag( in AString strTag, in nsIAtom atomNS, in AString propertyName );
-  AString GetTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
-  void buildParentTagList();
+    AString GetStringPropertyForTag( in AString strTag, in nsIAtom atomNS, in AString propertyName );
+    AString GetTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
+    void buildParentTagList();
+	nsIAtom NameSpaceAtomOfTagKey( in AString key);
 };
