@@ -421,6 +421,53 @@ nsHTMLEditor::GetFlags(PRUint32 *aFlags)
 }
 
 
+PRBool 
+nsHTMLEditor::CanContainTagNS(nsIDOMNode* aParent, const nsAString &aTag, nsIAtom * nsAtom)
+{
+  nsCOMPtr<nsIDOMElement> parentElement = do_QueryInterface(aParent);
+  if (!parentElement) return PR_FALSE;
+  
+  nsAutoString parentStringTag;
+  parentElement->GetLocalName(parentStringTag);
+  nsAutoString parentNS;
+  parentElement->GetNamespaceURI(parentNS);
+  nsCOMPtr<nsIAtom> nsAtomParent = NS_NewAtom(parentNS);
+  PRBool result;
+  mtagListManager->TagCanContainTag(parentStringTag, nsAtomParent, aTag, nsAtom, &result);
+  return result;
+}
+
+PRBool 
+nsHTMLEditor::TagCanContainNS(const nsAString &aParentTag, nsIAtom * nsAtomParent, nsIDOMNode* aChild)
+{
+  PRBool result;
+  nsAutoString childStringTag;
+  nsCOMPtr<nsIAtom> nsAtomChild;
+  if (IsTextNode(aChild)) 
+  {
+    childStringTag.AssignLiteral("#text");
+    nsAtomChild = nsnull;
+  }
+  else
+  {
+//    nsCOMPtr<nsIDOMElement> childElement = do_QueryInterface(aChild);
+//    if (!childElement) return PR_FALSE;
+    aChild->GetLocalName(childStringTag);
+    nsAutoString childNamespaceURI;
+    aChild->GetNamespaceURI(childNamespaceURI);
+    nsAtomChild = NS_NewAtom(childNamespaceURI);
+  }
+  mtagListManager->TagCanContainTag(aParentTag, nsAtomParent, childStringTag, nsAtomChild, &result);
+  return result;
+}
+
+PRBool 
+nsHTMLEditor::TagCanContainTagNS(const nsAString &aParentTag, nsIAtom * nsAtomParent, const nsAString &aChildTag, nsIAtom * nsAtomChild)
+{
+  return PR_TRUE;
+}
+
+
 NS_IMETHODIMP 
 nsHTMLEditor::SetFlags(PRUint32 aFlags)
 {
@@ -557,7 +604,7 @@ nsHTMLEditor::NodeIsBlockStatic(nsIDOMNode *aNode, PRBool *aIsBlock)
     return NS_OK;
   }
 
-  nsIAtom *tagAtom = GetTag(aNode);
+  nsCOMPtr<nsIAtom> tagAtom = GetTag(aNode);
   if (!tagAtom) return NS_ERROR_NULL_POINTER;
 
   // Nodes we know we want to treat as block
@@ -1963,6 +2010,7 @@ nsHTMLEditor::InsertElementAtSelection(nsIDOMElement* aElement, PRBool aDeleteSe
   PRBool cancel, handled;
   nsTextRulesInfo ruleInfo(nsTextEditRules::kInsertElement);
   ruleInfo.insertElement = aElement;
+//  ruleInfo.namespaceAtom = namespaceAtom;
   res = mRules->WillDoAction(selection, &ruleInfo, &cancel, &handled);
   if (cancel || (NS_FAILED(res))) return res;
 
@@ -2186,12 +2234,17 @@ nsHTMLEditor::SetStructureTag(const nsAString& aSectionTag)
 NS_IMETHODIMP 
 nsHTMLEditor::SetParagraphFormat(const nsAString& aParagraphFormat)
 {
-  nsAutoString tag; tag.Assign(aParagraphFormat);
-  ToLowerCase(tag);
-  if (tag.EqualsLiteral("dd") || tag.EqualsLiteral("dt"))
-    return MakeDefinitionItem(tag);
+  nsAutoString strPara; strPara.Assign(aParagraphFormat);
+  TagKey tag(strPara);
+  if (tag.localName().EqualsLiteral("dd") || tag.localName().EqualsLiteral("dt"))
+  // TODO: BBM Should also check the namespace
+    return MakeDefinitionItem(tag.localName());
   else
-    return InsertBasicBlock(tag);
+  {
+    nsCOMPtr<nsIAtom> nsAtom;
+    mtagListManager->NameSpaceAtomOfTagKey(tag.key, (nsIAtom**)address_of(nsAtom));
+    return InsertBasicBlockNS(tag.localName(), nsAtom);
+  }
 }
 
 // XXX: ERROR_HANDLING -- this method needs a little work to ensure all error codes are 
@@ -2586,6 +2639,7 @@ nsHTMLEditor::MakeOrChangeList(const nsAString& aListType, PRBool entireList, co
   if (!selection) return NS_ERROR_NULL_POINTER;
 
   nsTextRulesInfo ruleInfo(nsTextEditRules::kMakeList);
+//  ruleInfo.namespaceAtom = namespaceAtom;
   ruleInfo.blockType = &aListType;
   ruleInfo.entireList = entireList;
   ruleInfo.bulletType = &aBulletType;
@@ -2777,6 +2831,96 @@ nsHTMLEditor::InsertBasicBlock(const nsAString& aBlockType)
   res = mRules->DidDoAction(selection, &ruleInfo, res);
   return res;
 }
+
+
+nsresult
+nsHTMLEditor::InsertBasicBlockNS(const nsAString& aBlockType, nsIAtom * namespaceAtom)
+{
+  nsresult res;
+  if (!mRules) { return NS_ERROR_NOT_INITIALIZED; }
+
+  nsCOMPtr<nsISelection> selection;
+  PRBool cancel, handled;
+
+  nsAutoEditBatch beginBatching(this);
+  nsAutoRules beginRulesSniffing(this, kOpMakeBasicBlock, nsIEditor::eNext);
+  
+  // pre-process
+  res = GetSelection(getter_AddRefs(selection));
+  if (NS_FAILED(res)) return res;
+  if (!selection) return NS_ERROR_NULL_POINTER;
+  nsTextRulesInfo ruleInfo(nsTextEditRules::kMakeBasicBlock);
+  ruleInfo.blockType = &aBlockType;
+  ruleInfo.namespaceAtom = namespaceAtom;
+  res = mRules->WillDoAction(selection, &ruleInfo, &cancel, &handled);
+  if (cancel || (NS_FAILED(res))) return res;
+
+  if (!handled)
+  {
+    // Find out if the selection is collapsed:
+    PRBool isCollapsed;
+    res = selection->GetIsCollapsed(&isCollapsed);
+    if (NS_FAILED(res)) return res;
+
+    nsCOMPtr<nsIDOMNode> node;
+    PRInt32 offset;
+  
+    res = GetStartNodeAndOffset(selection, address_of(node), &offset);
+    if (!node) res = NS_ERROR_FAILURE;
+    if (NS_FAILED(res)) return res;
+  
+    if (isCollapsed)
+    {
+      // have to find a place to put the block
+      nsCOMPtr<nsIDOMNode> parent = node;
+      nsCOMPtr<nsIDOMNode> topChild = node;
+      nsCOMPtr<nsIDOMNode> tmp;
+      nsAutoString nsURI;
+      nsAutoString strParentLocalName;
+      nsCOMPtr<nsIAtom> nsAtomParent;
+      PRBool fCanContain;
+      parent->GetNamespaceURI(nsURI);
+      parent->GetLocalName(strParentLocalName);
+      if (nsURI.Length()>0) nsAtomParent = NS_NewAtom(nsURI);
+      else nsAtomParent = nsnull;
+      mtagListManager->TagCanContainTag(strParentLocalName, nsAtomParent, aBlockType, namespaceAtom, &fCanContain);
+      while ( !fCanContain)
+      {
+        parent->GetParentNode(getter_AddRefs(tmp));
+        if (!tmp) return NS_ERROR_FAILURE;
+        topChild = parent;
+        parent = tmp;
+        parent->GetNamespaceURI(nsURI);
+        parent->GetLocalName(strParentLocalName);
+        if (nsURI.Length()>0) nsAtomParent = NS_NewAtom(nsURI);
+        else nsAtomParent = nsnull;
+        mtagListManager->TagCanContainTag(strParentLocalName, nsAtomParent, aBlockType, namespaceAtom, &fCanContain);
+      }
+    
+      if (parent != node)
+      {
+        // we need to split up to the child of parent
+        res = SplitNodeDeep(topChild, node, offset, &offset);
+        if (NS_FAILED(res)) return res;
+      }
+
+      // make a block
+      nsCOMPtr<nsIDOMNode> newBlock;
+      
+      // TODO: need CreateNodeNS
+      res = CreateNode(aBlockType, parent, offset, getter_AddRefs(newBlock));
+      if (NS_FAILED(res)) return res;
+    
+      // reposition selection to inside the block
+      res = selection->Collapse(newBlock,0);
+      if (NS_FAILED(res)) return res;  
+    }
+  }
+
+  res = mRules->DidDoAction(selection, &ruleInfo, res);
+  return res;
+}
+
 
 NS_IMETHODIMP
 nsHTMLEditor::Indent(const nsAString& aIndent)
@@ -4355,7 +4499,7 @@ nsHTMLEditor::SetCaretInTableCell(nsIDOMElement* aElement)
     nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
     if (content)
     {
-      nsIAtom *atom = content->Tag();
+      nsCOMPtr<nsIAtom> atom = content->Tag();
       if (atom == nsEditProperty::table ||
           atom == nsEditProperty::tbody ||
           atom == nsEditProperty::thead ||
@@ -5642,7 +5786,7 @@ nsHTMLEditor::NodesSameType(nsIDOMNode *aNode1, nsIDOMNode *aNode2)
   PRBool useCSS;
   GetIsCSSEnabled(&useCSS);
 
-  nsIAtom *tag1 = GetTag(aNode1);
+  nsCOMPtr<nsIAtom> tag1 = GetTag(aNode1);
 
   if (tag1 == GetTag(aNode2)) {
     if (useCSS && tag1 == nsEditProperty::span) {
