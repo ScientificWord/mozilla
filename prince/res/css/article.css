@@ -103,6 +103,11 @@ p {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
 }
+para {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+}
+
 
 mathp {
   display: block;
