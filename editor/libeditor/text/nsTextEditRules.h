@@ -240,6 +240,7 @@ class nsTextRulesInfo : public nsRulesInfo
     bulletType(0),
     alignType(0),
     blockType(0),
+    namespaceAtom(nsnull),
     insertElement(0)
     {};
 
@@ -264,6 +265,8 @@ class nsTextRulesInfo : public nsRulesInfo
   
   // kMakeBasicBlock
   const nsAString *blockType;
+  
+  nsCOMPtr<nsIAtom> namespaceAtom;
   
   // kInsertElement
   const nsIDOMElement* insertElement;
