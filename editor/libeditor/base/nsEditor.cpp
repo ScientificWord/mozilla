@@ -5094,51 +5094,14 @@ nsEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
     result = TransactionFactory::GetNewTransaction(EditAggregateTxn::GetCID(), (EditTxn **)aTxn);
     if (NS_FAILED(result)) 
       return result;
-
-//    nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(selection));
-//    nsCOMPtr<nsIEnumerator> enumerator;
-//    result = selPrivate->GetEnumerator(getter_AddRefs(enumerator));
-//    if (NS_SUCCEEDED(result) && enumerator)
-//    {
-//      for (enumerator->First(); NS_OK!=enumerator->IsDone(); enumerator->Next())
-//      {
-//        nsCOMPtr<nsISupports> currentItem;
-//        result = enumerator->CurrentItem(getter_AddRefs(currentItem));
-//        if ((NS_SUCCEEDED(result)) && (currentItem))
-//        {
-//          nsCOMPtr<nsIDOMRange> range( do_QueryInterface(currentItem) );
-//          range->GetCollapsed(&isCollapsed);
-//          if (!isCollapsed)
-//          {
-//            DeleteRangeTxn *txn;
-//            result = TransactionFactory::GetNewTransaction(DeleteRangeTxn::GetCID(), (EditTxn **)&txn);
-//            if (NS_SUCCEEDED(result) && txn)
-//            {
-//              txn->Init(this, range, &mRangeUpdater);
-//              (*aTxn)->AppendChild(txn);
-//              NS_RELEASE(txn);
-//            }
-//            else
-//              result = NS_ERROR_OUT_OF_MEMORY;
-//          }
-//          else
-//          { // we have an insertion point.  delete the thing in front of it or behind it, depending on aAction
-//            result = CreateTxnForDeleteInsertionPoint(range, aAction, *aTxn);
-//          }
-//        }
-//      }
-//    }
     PRUint32 rangeCount = msiSelMan.RangeCount();
     for (PRUint32 index = 0; index < rangeCount && NS_SUCCEEDED(result); index++)
     {
-          //ljh TODO  --- use rangestore *
-      nsCOMPtr<nsIDOMRange> range;
-      msiSelMan.GetRange(index, range);
-      if (range)
+      PRBool rangeCollapsed(PR_TRUE);
+      result = msiSelMan.IsRangeCollapsed(index, rangeCollapsed);
+      if (NS_SUCCEEDED(result))
       {
-        //ljh TODO  --- need collapsed for rangestore *
-        range->GetCollapsed(&isCollapsed);
-        if (!isCollapsed)
+        if (!rangeCollapsed)
         {
           DeleteRangeTxn *txn;
           result = TransactionFactory::GetNewTransaction(DeleteRangeTxn::GetCID(), (EditTxn **)&txn);
@@ -5152,11 +5115,8 @@ nsEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
           else
             result = NS_ERROR_OUT_OF_MEMORY;
         }
-        else
-        { // we have an insertion point.  delete the thing in front of it or behind it, depending on aAction
-          //ljh TODO  --- use rangestore *
-          result = CreateTxnForDeleteInsertionPoint(range, aAction, *aTxn);
-        }
+        else // we have an insertion point.  delete the thing in front of it or behind it, depending on aAction
+          result = CreateTxnForDeleteInsertionPoint(msiSelMan, index, aAction, *aTxn);
       }
     }
   }
@@ -5203,23 +5163,23 @@ nsEditor::CreateTxnForDeleteCharacter(nsIDOMCharacterData  *aData,
 
 //XXX: currently, this doesn't handle edge conditions because GetNext/GetPrior are not implemented
 NS_IMETHODIMP
-nsEditor::CreateTxnForDeleteInsertionPoint(nsIDOMRange          *aRange, 
+nsEditor::CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
+                                           PRUint32 index, 
                                            nsIEditor::EDirection aAction,
                                            EditAggregateTxn     *aTxn)
 {
   NS_ASSERTION(aAction == eNext || aAction == ePrevious, "invalid action");
+  
+  nsRangeStore * rangeItem = msiSelMan.GetRangeStoreItem(index);
+  if (!rangeItem)
+    return NS_ERROR_FAILURE;
 
   // get the node and offset of the insertion point
-  nsCOMPtr<nsIDOMNode> node;
-  nsresult result = aRange->GetStartContainer(getter_AddRefs(node));
-  if (NS_FAILED(result))
-    return result;
-
-  PRInt32 offset;
-  result = aRange->GetStartOffset(&offset);
-  if (NS_FAILED(result))
-    return result;
-
+  nsCOMPtr<nsIDOMNode> node(rangeItem->startNode);
+  PRInt32 offset(rangeItem->startOffset);
+  if (!node || offset < 0)
+    return NS_ERROR_FAILURE;
+  nsresult result(NS_OK);
   // determine if the insertion point is at the beginning, middle, or end of the node
   nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(node);
 
