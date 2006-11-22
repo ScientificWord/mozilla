@@ -5605,7 +5605,7 @@ nsHTMLEditRules::GetNodesForOperation(nsCOMArray<nsIDOMRange>& inArrayOfRanges,
       if (!item) return NS_ERROR_NULL_POINTER;
       rangeItemArray.RemoveElementAt(0);
       mHTMLEditor->mRangeUpdater.DropRangeItem(item);
-      res = item->GetRange(address_of(opRange));
+      res = item->GetRange(opRange);
       if (NS_FAILED(res)) return res;
       delete item;
       inArrayOfRanges.AppendObject(opRange);

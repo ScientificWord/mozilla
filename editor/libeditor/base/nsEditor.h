@@ -88,6 +88,8 @@ class nsIFile;
 class nsISelectionController;
 class nsIDOMEventReceiver;
 
+class msiSelectionManager;
+
 #define kMOZEditorBogusNodeAttr NS_LITERAL_STRING("_moz_editor_bogus_node")
 #define kMOZEditorBogusNodeValue NS_LITERAL_STRING("TRUE")
 
@@ -235,6 +237,7 @@ protected:
   NS_IMETHOD CreateTxnForReplaceElement(nsIDOMNode * aNewChld,
                                         nsIDOMNode * aOldChild,
                                         nsIDOMNode * aParent,
+                                        PRBool doRangeUpdate,
                                         ReplaceElementTxn ** aTxn);
   /** create a transaction for storing the selection state.
     */
@@ -248,7 +251,8 @@ protected:
 
 
   NS_IMETHOD CreateTxnForDeleteSelection(EDirection aAction,
-                                              EditAggregateTxn  ** aTxn);
+                                         msiSelectionManager & msiSelMan,
+                                         EditAggregateTxn  ** aTxn);
 
   NS_IMETHOD CreateTxnForDeleteInsertionPoint(nsIDOMRange         *aRange, 
                                               EDirection aAction, 

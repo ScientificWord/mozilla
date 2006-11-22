@@ -69,6 +69,7 @@ public:
                   nsIDOMNode *aOldChild,
                   nsIDOMNode *aParent,
                   nsIEditor  *aEditor,
+                  PRBool deepRangeUpdate,
                   nsRangeUpdater * rangeUpdater);
 
 private:
@@ -103,6 +104,8 @@ protected:
 
   /** range updater object */
   nsRangeUpdater *m_rangeUpdater;
+  
+  PRBool m_deepRangeUpdate;
 
   friend class TransactionFactory;
 

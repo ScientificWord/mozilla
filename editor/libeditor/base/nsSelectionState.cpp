@@ -117,7 +117,7 @@ nsSelectionState::RestoreSelection(nsISelection *aSel)
     item = (nsRangeStore*)mArray.ElementAt(i);
     if (!item) return NS_ERROR_UNEXPECTED;
     nsCOMPtr<nsIDOMRange> range;
-    item->GetRange(address_of(range));
+    item->GetRange(range);
     if (!range) return NS_ERROR_UNEXPECTED;
    
     res = aSel->AddRange(range);
@@ -135,7 +135,7 @@ nsSelectionState::IsCollapsed()
   item = (nsRangeStore*)mArray.ElementAt(0);
   if (!item) return PR_FALSE;
   nsCOMPtr<nsIDOMRange> range;
-  item->GetRange(address_of(range));
+  item->GetRange(range);
   if (!range) return PR_FALSE;
   PRBool bIsCollapsed;
   range->GetCollapsed(&bIsCollapsed);
@@ -159,8 +159,8 @@ nsSelectionState::IsEqual(nsSelectionState *aSelState)
     if (!myItem || !itsItem) return PR_FALSE;
     
     nsCOMPtr<nsIDOMRange> myRange, itsRange;
-    myItem->GetRange(address_of(myRange));
-    itsItem->GetRange(address_of(itsRange));
+    myItem->GetRange(myRange);
+    itsItem->GetRange(itsRange);
     if (!myRange || !itsRange) return PR_FALSE;
   
     PRInt16 compResult;
@@ -289,7 +289,7 @@ nsRangeUpdater::SelAdjInsertNode(nsIDOMNode *aParent, PRInt32 aPosition)
 
 
 nsresult
-nsRangeUpdater::SelAdjDeleteNode(nsIDOMNode *aNode)
+nsRangeUpdater::SelAdjDeleteNode(nsIDOMNode *aNode, PRBool deep)
 {
   if (mLock) return NS_OK;  // lock set by Will/DidReplaceParent, etc...
   if (!aNode) return NS_ERROR_NULL_POINTER;
@@ -326,21 +326,24 @@ nsRangeUpdater::SelAdjDeleteNode(nsIDOMNode *aNode)
       item->endOffset = offset;
     }
 
-    // check for range endpoints that are in descendants of aNode
-    nsCOMPtr<nsIDOMNode> oldStart;
-    if (nsEditorUtils::IsDescendantOf(item->startNode, aNode))
+    if (deep)
     {
-      oldStart = item->startNode;  // save for efficiency hack below.
-      item->startNode   = parent;
-      item->startOffset = offset;
-    }
+      // check for range endpoints that are in descendants of aNode
+      nsCOMPtr<nsIDOMNode> oldStart;
+      if (nsEditorUtils::IsDescendantOf(item->startNode, aNode))
+      {
+        oldStart = item->startNode;  // save for efficiency hack below.
+        item->startNode   = parent;
+        item->startOffset = offset;
+      }
 
-    // avoid having to call IsDescendantOf() for common case of range startnode == range endnode.
-    if ((item->endNode == oldStart) || nsEditorUtils::IsDescendantOf(item->endNode, aNode))
-    {
-      item->endNode   = parent;
-      item->endOffset = offset;
-    }
+      // avoid having to call IsDescendantOf() for common case of range startnode == range endnode.
+      if ((item->endNode == oldStart) || nsEditorUtils::IsDescendantOf(item->endNode, aNode))
+      {
+        item->endNode   = parent;
+        item->endOffset = offset;
+      }
+    }  
   }
   return NS_OK;
 }
@@ -474,7 +477,8 @@ nsRangeUpdater::SelAdjJoinNodes(nsIDOMNode *aLeftNode,
 nsresult 
 nsRangeUpdater::SelAdjReplaceNode(nsIDOMNode *newNode, 
                                   nsIDOMNode *oldNode, 
-                                  nsIDOMNode * parent)
+                                  nsIDOMNode * parent,
+                                  PRBool deep)
 {
   
   //ljh TODO -- need to add functionality -- first need to determine what functionality!!!!
@@ -483,7 +487,7 @@ nsRangeUpdater::SelAdjReplaceNode(nsIDOMNode *newNode,
   PRInt32 offset(0);  
   nsresult res = nsEditor::GetChildOffset(oldNode, parent, offset);
   NS_ENSURE_SUCCESS(res, res);
-  res = SelAdjDeleteNode(oldNode);
+  res = SelAdjDeleteNode(oldNode, deep);
   NS_ENSURE_SUCCESS(res, res);
   res = SelAdjInsertNode(parent, offset);
   return res;
@@ -733,16 +737,16 @@ nsresult nsRangeStore::StoreRange(nsIDOMRange *aRange)
   return NS_OK;
 }
 
-nsresult nsRangeStore::GetRange(nsCOMPtr<nsIDOMRange> *outRange)
+nsresult nsRangeStore::GetRange(nsCOMPtr<nsIDOMRange> & outRange)
 {
-  if (!outRange) return NS_ERROR_NULL_POINTER;
-  nsresult res;
-  *outRange = do_CreateInstance("@mozilla.org/content/range;1", &res);
-  if(NS_FAILED(res)) return res;
+  nsresult res(NS_OK);
+  outRange = do_CreateInstance("@mozilla.org/content/range;1", &res);
+  if(NS_FAILED(res) || !outRange) 
+    return NS_ERROR_FAILURE;
 
-  res = (*outRange)->SetStart(startNode, startOffset);
-  if(NS_FAILED(res)) return res;
-
-  res = (*outRange)->SetEnd(endNode, endOffset);
+  res = outRange->SetStart(startNode, startOffset);
+  if(NS_FAILED(res)) 
+    return res;
+  res = outRange->SetEnd(endNode, endOffset);
   return res;
 }
