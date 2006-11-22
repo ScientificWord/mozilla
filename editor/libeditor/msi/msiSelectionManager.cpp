@@ -180,22 +180,22 @@ nsresult
 msiSelectionManager::GetRange(PRUint32 index, nsCOMPtr<nsIDOMRange> & range)
 {
   range = nsnull;
+  nsresult res(NS_OK);
   PRInt32 count = mArray.Count();
-  if (count > 0 && index < count)
+  if (count > 0 && index < NS_STATIC_CAST(PRUint32, count))
   {
     nsRangeStore * item = (nsRangeStore*)mArray.ElementAt(index);
     if (!item)
       return NS_ERROR_FAILURE;
-    nsCOMPtr<nsIDOMRange> xrange;  
-    item->GetRange(address_of(xrange));
-    range = xrange;
+    res = item->GetRange(range);
   }
-  return NS_OK;
+  return res;
 }
 
 nsRangeStore * msiSelectionManager::GetRangeStoreItem(PRUint32 index)
 {
-  if (index < mArray.Count())
+  PRInt32 count = mArray.Count();
+  if (count > 0 && index < NS_STATIC_CAST(PRUint32, count))
     return (nsRangeStore*)(mArray.ElementAt(index));
   else
     return nsnull;  

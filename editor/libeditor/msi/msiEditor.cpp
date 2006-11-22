@@ -744,7 +744,7 @@ msiEditor::CreateReplaceTransaction(nsIDOMNode * newKid, nsIDOMNode * oldKid,
 {
   if (!newKid || !oldKid || !parent || !transaction)
     return NS_ERROR_FAILURE;
-  return CreateTxnForReplaceElement(newKid, oldKid, parent, (ReplaceElementTxn**)transaction);  
+  return CreateTxnForReplaceElement(newKid, oldKid, parent, PR_TRUE, (ReplaceElementTxn**)transaction);  
 }                                    
 
                                             
@@ -839,8 +839,9 @@ msiEditor::CreateDeleteScriptTransaction(nsIDOMNode * script,
   
   ReplaceElementTxn * txn1 = nsnull;
   ReplaceElementTxn * txn2 = nsnull;
-  CreateTxnForReplaceElement(dummyChild, first, script, &txn1);  
-  CreateTxnForReplaceElement(first, script, parent, &txn2);  
+  PRBool deepRangeUpdate(PR_FALSE); 
+  CreateTxnForReplaceElement(dummyChild, first, script, deepRangeUpdate, &txn1);  
+  CreateTxnForReplaceElement(first, script, parent, deepRangeUpdate, &txn2);  
   if (txn1 && txn2)
   {
      aggTxn->AppendChild((EditTxn*)txn1);
@@ -879,7 +880,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
       if (NS_SUCCEEDED(res) && preventDefault)
         aKeyEvent->PreventDefault();
     }
-    else if (symbol)
+    else if (symbol && !ctrlKey && !altKey)
     {
       PRBool collapsed(PR_FALSE);
       nsCOMPtr<msiISelection> msiSelection;
@@ -897,7 +898,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
       {
         nsCOMPtr<nsIDOMNode> currFocusNode;
         res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
-        if (NS_SUCCEEDED(res) && currFocusNode && NodeInMath(currFocusNode)&& !ctrlKey && !altKey)
+        if (NS_SUCCEEDED(res) && currFocusNode && NodeInMath(currFocusNode))
         {
           res = InsertSymbol(symbol);
           if (NS_SUCCEEDED(res))

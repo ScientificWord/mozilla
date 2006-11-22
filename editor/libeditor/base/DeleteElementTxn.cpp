@@ -114,7 +114,7 @@ NS_IMETHODIMP DeleteElementTxn::DoTransaction(void)
   // give range updater a chance.  SelAdjDeleteNode() needs to be called *before*
   // we do the action, unlike some of the other nsRangeStore update methods.
   if (mRangeUpdater) 
-    mRangeUpdater->SelAdjDeleteNode(mElement);
+    mRangeUpdater->SelAdjDeleteNode(mElement, PR_TRUE);
 
   nsCOMPtr<nsIDOMNode> resultNode;
   return mParent->RemoveChild(mElement, getter_AddRefs(resultNode));
@@ -167,7 +167,7 @@ NS_IMETHODIMP DeleteElementTxn::RedoTransaction(void)
   if (!mElement) { return NS_ERROR_NULL_POINTER; }
 
   if (mRangeUpdater) 
-    mRangeUpdater->SelAdjDeleteNode(mElement);
+    mRangeUpdater->SelAdjDeleteNode(mElement, PR_TRUE);
 
   nsCOMPtr<nsIDOMNode> resultNode;
   return mParent->RemoveChild(mElement, getter_AddRefs(resultNode));
