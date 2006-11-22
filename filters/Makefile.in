@@ -6,6 +6,8 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
+ifeq ($(OS_ARCH),WINNT)
 DIRS		= ptprince prnc2ltx
+endif
 
 include $(topsrcdir)/config/rules.mk
