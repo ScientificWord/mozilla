@@ -254,7 +254,8 @@ protected:
                                          msiSelectionManager & msiSelMan,
                                          EditAggregateTxn  ** aTxn);
 
-  NS_IMETHOD CreateTxnForDeleteInsertionPoint(nsIDOMRange         *aRange, 
+  NS_IMETHOD CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
+                                              PRUint32 index,
                                               EDirection aAction, 
                                               EditAggregateTxn    *aTxn);
 

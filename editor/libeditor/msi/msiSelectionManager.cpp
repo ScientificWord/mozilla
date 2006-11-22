@@ -180,7 +180,7 @@ nsresult
 msiSelectionManager::GetRange(PRUint32 index, nsCOMPtr<nsIDOMRange> & range)
 {
   range = nsnull;
-  nsresult res(NS_OK);
+  nsresult res(NS_ERROR_FAILURE);
   PRInt32 count = mArray.Count();
   if (count > 0 && index < NS_STATIC_CAST(PRUint32, count))
   {
@@ -191,6 +191,18 @@ msiSelectionManager::GetRange(PRUint32 index, nsCOMPtr<nsIDOMRange> & range)
   }
   return res;
 }
+
+nsresult msiSelectionManager::IsRangeCollapsed(PRUint32 index, PRBool &collapsed)
+{
+  nsCOMPtr<nsIDOMRange> range;
+  nsresult res = GetRange(index, range);
+  if (NS_SUCCEEDED(res) && range)
+    res = range->GetCollapsed(&collapsed);
+  else
+    res = NS_ERROR_FAILURE;
+  return  res;
+}
+
 
 nsRangeStore * msiSelectionManager::GetRangeStoreItem(PRUint32 index)
 {

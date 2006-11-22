@@ -18,6 +18,7 @@ public:
   PRUint32 RangeCount();
   nsresult GetRange(PRUint32 index, nsCOMPtr<nsIDOMRange> & range);
   nsRangeStore * GetRangeStoreItem(PRUint32 index);
+  nsresult IsRangeCollapsed(PRUint32 index, PRBool &collapsed);
   void     Cleanup();
    
  protected:
