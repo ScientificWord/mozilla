@@ -1398,7 +1398,7 @@ NS_IMETHODIMP nsEditor::ReplaceNode(nsIDOMNode * aNewChild,
   }
 
   ReplaceElementTxn *txn;
-  nsresult result = CreateTxnForReplaceElement(aNewChild, aOldChild, aParent, &txn);
+  nsresult result = CreateTxnForReplaceElement(aNewChild, aOldChild, aParent, PR_TRUE, &txn);
   if (NS_SUCCEEDED(result))  
   {
     result = DoTransaction(txn);  
@@ -4638,10 +4638,17 @@ nsEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
 {
   nsCOMPtr<nsISelection>selection;
   nsresult res = GetSelection(getter_AddRefs(selection));
-  if (NS_FAILED(res)) return res;
+  if (NS_FAILED(res)) 
+    return res;
+  msiSelectionManager msiSelMan(selection, (msiEditor*)this);
+  mRangeUpdater.RegisterSelectionState(msiSelMan);
   EditAggregateTxn *txn;
-  res = CreateTxnForDeleteSelection(aAction, &txn);
-  if (NS_FAILED(res)) return res;
+  res = CreateTxnForDeleteSelection(aAction, msiSelMan, &txn);
+  if (NS_FAILED(res)) 
+  {
+    mRangeUpdater.DropSelectionState(msiSelMan);
+    return res;
+  }
   nsAutoRules beginRulesSniffing(this, kOpDeleteSelection, aAction);
 
   PRInt32 i;
@@ -4670,6 +4677,7 @@ nsEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
       }
     }
   }
+  mRangeUpdater.DropSelectionState(msiSelMan);
 
   // The transaction system (if any) has taken ownership of txn
   NS_IF_RELEASE(txn);
@@ -4958,15 +4966,15 @@ NS_IMETHODIMP nsEditor::CreateTxnForInsertElement(nsIDOMNode * aNode,
 NS_IMETHODIMP nsEditor::CreateTxnForReplaceElement(nsIDOMNode * aNewChild,
                                                    nsIDOMNode * aOldChild,
                                                    nsIDOMNode * aParent,
+                                                   PRBool deepRangeUpdate,
                                                    ReplaceElementTxn ** aTxn)
 {
   nsresult result = NS_ERROR_NULL_POINTER;
   if (aParent && aNewChild && aOldChild && aTxn)
   {
     result = TransactionFactory::GetNewTransaction(ReplaceElementTxn::GetCID(), (EditTxn **)aTxn);
-    if (NS_SUCCEEDED(result)) {
-      result = (*aTxn)->Init(aNewChild, aOldChild, aParent, this, &mRangeUpdater);
-    }
+    if (NS_SUCCEEDED(result)) 
+      result = (*aTxn)->Init(aNewChild, aOldChild, aParent, this, deepRangeUpdate, &mRangeUpdater);
   }
   return result;
 }
@@ -5058,6 +5066,7 @@ nsEditor::CreateTxnForRemoveStyleSheet(nsICSSStyleSheet* aSheet, RemoveStyleShee
 
 NS_IMETHODIMP
 nsEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
+                                      msiSelectionManager & msiSelMan,
                                       EditAggregateTxn  ** aTxn)
 {
   if (!aTxn)
@@ -5119,22 +5128,24 @@ nsEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
 //        }
 //      }
 //    }
-    msiSelectionManager msiSelMan(selection, (msiEditor*)this);
     PRUint32 rangeCount = msiSelMan.RangeCount();
     for (PRUint32 index = 0; index < rangeCount && NS_SUCCEEDED(result); index++)
     {
+          //ljh TODO  --- use rangestore *
       nsCOMPtr<nsIDOMRange> range;
       msiSelMan.GetRange(index, range);
       if (range)
       {
+        //ljh TODO  --- need collapsed for rangestore *
         range->GetCollapsed(&isCollapsed);
         if (!isCollapsed)
         {
           DeleteRangeTxn *txn;
           result = TransactionFactory::GetNewTransaction(DeleteRangeTxn::GetCID(), (EditTxn **)&txn);
-          if (NS_SUCCEEDED(result) && txn)
+          nsRangeStore * rangeItem = msiSelMan.GetRangeStoreItem(index);
+          if (NS_SUCCEEDED(result) && txn && rangeItem)
           {
-            txn->Init(this, range, &mRangeUpdater);
+            txn->Init(this, &msiSelMan, index, &mRangeUpdater);
             (*aTxn)->AppendChild(txn);
             NS_RELEASE(txn);
           }
@@ -5143,6 +5154,7 @@ nsEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
         }
         else
         { // we have an insertion point.  delete the thing in front of it or behind it, depending on aAction
+          //ljh TODO  --- use rangestore *
           result = CreateTxnForDeleteInsertionPoint(range, aAction, *aTxn);
         }
       }
