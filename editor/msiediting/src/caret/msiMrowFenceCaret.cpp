@@ -192,7 +192,7 @@ msiMrowFenceCaret::SetupDeletionTransactions(nsIEditor * editor,
                                              nsIDOMNode ** coalesceNode,
                                              PRUint32 * coalesceOffset)
 {
-  if (m_mathmlNode || !editor || !transactionList || !coalesceNode || !coalesceOffset )
+  if (!m_mathmlNode || !editor || !transactionList || !coalesceNode || !coalesceOffset )
     return NS_ERROR_FAILURE;
   if (!start || !end || !(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
     return NS_ERROR_FAILURE;
