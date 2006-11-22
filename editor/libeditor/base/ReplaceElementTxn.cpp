@@ -49,7 +49,7 @@ static PRBool gNoisy = PR_FALSE;
 
 
 ReplaceElementTxn::ReplaceElementTxn()
-  : EditTxn(), m_rangeUpdater(nsnull)
+  : EditTxn(), m_rangeUpdater(nsnull), m_deepRangeUpdate(PR_TRUE)
 {
 }
 
@@ -57,19 +57,20 @@ NS_IMETHODIMP ReplaceElementTxn::Init(nsIDOMNode *aNewChild,
                                       nsIDOMNode *aOldChild,
                                       nsIDOMNode *aParent,
                                       nsIEditor  *aEditor,
+                                      PRBool deepRangeUpdate,
                                       nsRangeUpdater *aRangeUpdater)
 {
   NS_ASSERTION(aParent && aNewChild && aOldChild && aEditor, "bad arg");
-  if (!aParent ||  !aNewChild || !aOldChild || !aEditor || !aRangeUpdater)
+  if (!aParent ||  !aNewChild || !aOldChild || !aEditor)
     return NS_ERROR_NULL_POINTER;
 
   m_parent = do_QueryInterface(aParent);
   m_newChild = do_QueryInterface(aNewChild);
   m_oldChild = do_QueryInterface(aOldChild);
   m_editor = aEditor;
-  m_rangeUpdater = aRangeUpdater;
-  if (!m_parent ||  !m_newChild || !m_oldChild || !m_editor || !m_rangeUpdater)
-    return NS_ERROR_INVALID_ARG;
+  m_deepRangeUpdate = deepRangeUpdate;
+  if (aRangeUpdater)
+    m_rangeUpdater = aRangeUpdater;
   return NS_OK;
 }
 
@@ -105,7 +106,7 @@ NS_IMETHODIMP ReplaceElementTxn::DoTransaction(void)
   m_editor->MarkNodeDirty(m_parent);
   
   if (m_rangeUpdater)
-    m_rangeUpdater->SelAdjReplaceNode(m_newChild, m_oldChild, m_parent);
+    m_rangeUpdater->SelAdjReplaceNode(m_newChild, m_oldChild, m_parent, m_deepRangeUpdate);
 
   nsCOMPtr<nsIDOMNode> resultNode;
   nsresult result = m_parent->ReplaceChild(m_newChild, m_oldChild,
@@ -114,23 +115,6 @@ NS_IMETHODIMP ReplaceElementTxn::DoTransaction(void)
     return result;
   if (!resultNode) 
     return NS_ERROR_NULL_POINTER;
-
-//  // only set selection to insertion point if editor gives permission
-//  PRBool bAdjustSelection;
-//  mEditor->ShouldTxnSetSelection(&bAdjustSelection);
-//  if (bAdjustSelection)
-//  {
-//    nsCOMPtr<nsISelection> selection;
-//    result = mEditor->GetSelection(getter_AddRefs(selection));
-//    if (NS_FAILED(result)) return result;
-//    if (!selection) return NS_ERROR_NULL_POINTER;
-//    // place the selection just after the inserted element
-//    selection->Collapse(mParent, mOffset+1);
-//  }
-//  else
-//  {
-//    // do nothing - dom range gravity will adjust selection
-//  }
   return result;
 }
 
@@ -158,9 +142,6 @@ NS_IMETHODIMP ReplaceElementTxn::RedoTransaction(void)
   if (!m_newChild || !m_oldChild || !m_editor)
     return NS_ERROR_NOT_INITIALIZED;
   
-//  if (m_rangeUpdater)
-//    m_rangeUpdater->SelAdjReplaceNode(m_newChild, m_oldChild, m_parent);
-
   nsCOMPtr<nsIDOMNode> resultNode;
   nsresult result = m_parent->ReplaceChild(m_newChild, m_oldChild,
                                             getter_AddRefs(resultNode));
