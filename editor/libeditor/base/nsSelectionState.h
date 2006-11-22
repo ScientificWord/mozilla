@@ -59,7 +59,7 @@ struct nsRangeStore
   nsRangeStore(nsRangeStore * rangeStore);
   ~nsRangeStore();
   nsresult StoreRange(nsIDOMRange *aRange);
-  nsresult GetRange(nsCOMPtr<nsIDOMRange> *outRange);
+  nsresult GetRange(nsCOMPtr<nsIDOMRange> &outRange);
         
   nsCOMPtr<nsIDOMNode> startNode;
   PRInt32              startOffset;
@@ -111,11 +111,12 @@ class nsRangeUpdater
     // which is not what you want if you know you are reinserting it.
     nsresult SelAdjCreateNode(nsIDOMNode *aParent, PRInt32 aPosition);
     nsresult SelAdjInsertNode(nsIDOMNode *aParent, PRInt32 aPosition);
-    nsresult SelAdjDeleteNode(nsIDOMNode *aNode);
+    nsresult SelAdjDeleteNode(nsIDOMNode *aNode, PRBool deep);
     nsresult SelAdjSplitNode(nsIDOMNode *aOldRightNode, PRInt32 aOffset, nsIDOMNode *aNewLeftNode);
     nsresult SelAdjReplaceNode(nsIDOMNode *aNewNode, 
                                nsIDOMNode *aOldNode,
-                               nsIDOMNode * aParent);
+                               nsIDOMNode * aParent,
+                               PRBool deep);
     nsresult SelAdjJoinNodes(nsIDOMNode *aLeftNode, 
                              nsIDOMNode *aRightNode, 
                              nsIDOMNode *aParent, 
