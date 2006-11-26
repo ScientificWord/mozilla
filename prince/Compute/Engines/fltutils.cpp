@@ -1,26 +1,20 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
 #include "fltutils.h"
-#include "tci_new.h"
 #include <string.h>
 #include <ctype.h>
-
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // Global utility functions
 
 void AppendVarRec(VAR_REC * &curr_list, const char *v_nom, VarType v_type)
 {
-  VAR_REC *new_rec = TCI_NEW(VAR_REC());
+  VAR_REC *new_rec = new VAR_REC();
   new_rec->next = curr_list;
 
   new_rec->var_type = v_type;
   if (v_nom) {
     size_t zln = strlen(v_nom);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, v_nom);
     new_rec->var_eng_name = tmp;
   } else
@@ -124,7 +118,7 @@ void JBM::DumpTList(MNODE * t_list, int indent) {}
 
 #define JBM_FILENAME "/temp/JBMLine.out"
 
-#ifdef TESTING
+#ifdef DEBUG
 void JBM::JBMLine(const char *line)
 {
   FILE *jbmfile = fopen(JBM_FILENAME, "a");
@@ -161,7 +155,7 @@ void JBM::ClearLog()
 
 MNODE *MakeTNode(U32 s_off, U32 s_len, U32 line_no)
 {
-  MNODE *rv = TCI_NEW(MNODE);
+  MNODE *rv = new MNODE();
   rv->next = NULL;
   rv->prev = NULL;
   rv->src_linenum = line_no;
@@ -228,7 +222,7 @@ char *eMsgStrs[] = {
 // See enum LogMsgID in fltutils.h
 LOG_MSG_REC *MakeLogMsg()
 {
-  LOG_MSG_REC *rv = TCI_NEW(LOG_MSG_REC);
+  LOG_MSG_REC *rv = new LOG_MSG_REC();
   rv->next = NULL;
   rv->msg = NULL;
 
@@ -266,7 +260,7 @@ void RecordMsg(LOG_MSG_REC * &msg_list, LogMsgID id, const char *token)
   if (token)
     zln += strlen(token);
 
-  char *buffer = TCI_NEW(char[zln]);
+  char *buffer = new char[zln];
   if (token)
     sprintf(buffer, msg_str, token);
   else
@@ -325,7 +319,7 @@ void StrReplace(char *line, size_t zln, char *tok, const char *sub)
 {
   char *ptr = strstr(line, tok);
   if (ptr) {
-    char *buffer = TCI_NEW(char[zln]);
+    char *buffer = new char[zln];
 
     *ptr = 0;
     strcpy(buffer, line);       // head
@@ -473,13 +467,13 @@ bool HasInferedMROW(MNODE * mml_node)
 
 ATTRIB_REC *MakeATTRIBNode(const char *attr_nom, const char *attr_val)
 {
-  ATTRIB_REC *rv = TCI_NEW(ATTRIB_REC);
+  ATTRIB_REC *rv = new ATTRIB_REC();
   rv->next = NULL;
   rv->prev = NULL;
 
   if (attr_nom) {
     size_t zln = strlen(attr_nom);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, attr_nom);
     rv->zattr_nom = tmp;
   } else {
@@ -487,7 +481,7 @@ ATTRIB_REC *MakeATTRIBNode(const char *attr_nom, const char *attr_val)
   }
   if (attr_val) {               // we have a STR value for the attribute
     size_t zln = strlen(attr_val);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, attr_val);
     rv->zattr_val = tmp;
   } else {
@@ -676,7 +670,7 @@ ATTRIB_REC *RemoveAttr(ATTRIB_REC * a_list, const char *attr_nom)
 
 BUCKET_REC *MakeBucketRec(U32 which_bucket, SEMANTICS_NODE * sem_child)
 {
-  BUCKET_REC *rv = TCI_NEW(BUCKET_REC);
+  BUCKET_REC *rv = new BUCKET_REC();
   rv->next = NULL;
   rv->parts = NULL;
   rv->bucket_ID = which_bucket;
@@ -726,7 +720,7 @@ void DisposeBucketList(BUCKET_REC * b_list)
 
 SEMANTICS_NODE *CreateSemanticsNode()
 {
-  SEMANTICS_NODE *rv = TCI_NEW(SEMANTICS_NODE);
+  SEMANTICS_NODE *rv = new SEMANTICS_NODE;
   rv->next = NULL;
   rv->prev = NULL;
   rv->parent = NULL;
@@ -1032,14 +1026,14 @@ U32 NumericEntity2U32(const char *p_entity)
 PARAM_REC *AppendParam(PARAM_REC * curr_list, U32 p_ID, U32 p_type,
                        const char *zdata)
 {
-  PARAM_REC *new_rec = TCI_NEW(PARAM_REC());
+  PARAM_REC *new_rec = new PARAM_REC();
   new_rec->next = curr_list;
 
   new_rec->param_ID = p_ID;
   new_rec->param_type = p_type;
   if (zdata) {
     size_t zln = strlen(zdata);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, zdata);
     new_rec->ztext = tmp;
   } else {
@@ -1073,7 +1067,7 @@ char *AppendStr2HeapStr(char *zheap_str, U32 & buffer_ln,
     bool OK = true;
     if (bytes_needed > buffer_ln) {
       buffer_ln = bytes_needed + 512;
-      char *tmp = TCI_NEW(char[buffer_ln]);
+      char *tmp = new char[buffer_ln];
       if (tmp) {
         rv = tmp;
         if (zheap_str) {
@@ -1101,7 +1095,7 @@ char *AppendStr2HeapStr(char *zheap_str, U32 & buffer_ln,
 
 INPUT_NOTATION_REC *CreateNotationRec()
 {
-  INPUT_NOTATION_REC *new_struct = TCI_NEW(INPUT_NOTATION_REC);
+  INPUT_NOTATION_REC *new_struct = new INPUT_NOTATION_REC();
 
   new_struct->nbracket_tables = 0;
   new_struct->nparen_tables = 0;
@@ -1411,7 +1405,7 @@ char *NestInParens(char *z_expr, bool forced)
 
     if (do_it) {
       size_t zln = strlen(z_expr);
-      rv = TCI_NEW(char[zln + 3]);
+      rv = new char[zln + 3];
       strcpy(rv, "(");
       strcat(rv, z_expr);
       strcat(rv, ")");
@@ -1420,7 +1414,7 @@ char *NestInParens(char *z_expr, bool forced)
       rv = z_expr;
     }
   } else if (z_expr || forced) {
-    rv = TCI_NEW(char[3]);
+    rv = new char[3];
     strcpy(rv, "()");
     delete[] z_expr;
   }
@@ -1433,13 +1427,13 @@ char *NestInBrackets(char *z_expr)
 
   if (z_expr && *z_expr) {
     size_t zln = strlen(z_expr);
-    rv = TCI_NEW(char[zln + 3]);
+    rv = new char[zln + 3];
     strcpy(rv, "[");
     strcat(rv, z_expr);
     strcat(rv, "]");
     delete[] z_expr;
   } else if (z_expr) {
-    rv = TCI_NEW(char[3]);
+    rv = new char[3];
     strcpy(rv, "[]");
     delete[] z_expr;
   }
@@ -1470,7 +1464,7 @@ char *RemovezStrParens(char *z_expr)
     }
     if (do_it) {
       size_t zln = strlen(z_expr) - 2;
-      rv = TCI_NEW(char[zln + 1]);
+      rv = new char[zln + 1];
       strncpy(rv, z_expr + 1, zln);
       rv[zln - 1] = 0;
       delete[] z_expr;
@@ -1583,7 +1577,7 @@ char *TNodeToStr(MNODE * mml_node, char *prefix, int indent)
   }
   if (buffer) {
     size_t zln = strlen(buffer);
-    rv = TCI_NEW(char[zln + 1]);
+    rv = new char[zln + 1];
     strcpy(rv, buffer);
     delete[] buffer;
   }
@@ -1610,7 +1604,7 @@ void FunctionToInfix(SEMANTICS_NODE * s_func, char *zop_str)
       SEMANTICS_NODE *s_op = CreateSemanticsNode();
       s_op->semantic_type = SEM_TYP_INFIX_OP;
       size_t zln = strlen(zop_str);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, zop_str);
       s_op->contents = tmp;
       s_left_op->next = s_op;
@@ -1688,7 +1682,7 @@ U16 *ASCIItoWide(const char *ascii, int &zlen)
   if (ascii) {
     size_t zln = strlen(ascii);
 
-    rv = TCI_NEW(U16[zln + 1]);
+    rv = new U16[zln + 1];
     U32 bi = 0;
     const char *p = ascii;
     while (*p) {

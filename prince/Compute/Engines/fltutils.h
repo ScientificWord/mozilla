@@ -222,7 +222,7 @@ char *RemovezStrParens(char *z_expr);
 char *WideToASCII(const U16 * w_markup);
 U16 *ASCIItoWide(const char *ascii, int &zlen);
 
-#ifdef TESTING
+#ifdef DEBUG
 #define ALLOW_DUMPS
 #endif
 

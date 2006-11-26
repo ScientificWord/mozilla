@@ -49,9 +49,5 @@ GMR_FILES := \
 
 include $(topsrcdir)/config/rules.mk
 
-ifdef MOZ_DEBUG
-CXXFLAGS	+= /DTESTING
-endif
-
 export:: $(GMR_FILES)
 	$(INSTALL) $(GMR_FILES) $(DIST)/bin
