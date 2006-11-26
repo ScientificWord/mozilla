@@ -1,14 +1,8 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #include "MResult.h"
 #include <string.h>
 
-#include "tci_new.h"
 
 MathResult::MathResult()
 {
@@ -68,7 +62,7 @@ void MathResult::PutResultStr(const char *src, int zlen)
   delete[] result_string;
   result_string = NULL;
   if (zlen > 0) {
-    result_string = TCI_NEW(char[zlen + 1]);
+    result_string = new char[zlen + 1];
     strncpy(result_string, src, zlen);
     result_string[zlen] = 0;
   }
@@ -79,7 +73,7 @@ void MathResult::PutWideResultStr(const U16 * src, int zlen)
   delete[] w_result_string;
   w_result_string = NULL;
   if (zlen > 0) {
-    w_result_string = TCI_NEW(U16[zlen + 1]);
+    w_result_string = new U16[zlen + 1];
 
     const U16 *p = src;
     int i = 0;
@@ -96,7 +90,7 @@ void MathResult::PutEngInStr(const char *src, int zlen)
   delete[] eng_instr;
   eng_instr = NULL;
   if (zlen > 0) {
-    eng_instr = TCI_NEW(char[zlen + 1]);
+    eng_instr = new char[zlen + 1];
     strncpy(eng_instr, src, zlen);
     eng_instr[zlen] = 0;
   }
@@ -107,7 +101,7 @@ void MathResult::PutEngOutStr(const char *src, int zlen)
   delete[] eng_outstr;
   eng_outstr = NULL;
   if (zlen > 0) {
-    eng_outstr = TCI_NEW(char[zlen + 1]);
+    eng_outstr = new char[zlen + 1];
     strncpy(eng_outstr, src, zlen);
     eng_outstr[zlen] = 0;
   }
@@ -118,7 +112,7 @@ void MathResult::PutEngErrorStr(const char *src, int zlen)
   delete[] eng_errorstr;
   eng_errorstr = NULL;
   if (zlen > 0) {
-    eng_errorstr = TCI_NEW(char[zlen + 1]);
+    eng_errorstr = new char[zlen + 1];
     strncpy(eng_errorstr, src, zlen);
     eng_errorstr[zlen] = 0;
   }
@@ -223,14 +217,14 @@ const U16 *MathResult::GetWideSemanticsStr()
 void AppendComponent(COMPONENT_REC * &curr_list, U32 c_ID, int index,
                        const char *zdata)
 {
-  COMPONENT_REC *new_rec = TCI_NEW(COMPONENT_REC());
+  COMPONENT_REC *new_rec = new COMPONENT_REC();
   new_rec->next = curr_list;
 
   new_rec->component_ID = c_ID;
   new_rec->index = index;
   if (zdata) {
     size_t zln = strlen(zdata);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, zdata);
     new_rec->ztext = tmp;
   } else {

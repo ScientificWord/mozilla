@@ -57,10 +57,6 @@ include $(topsrcdir)/config/rules.mk
 
 LOCAL_INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../libtci
 
-ifdef MOZ_DEBUG
-CXXFLAGS	+= /DTESTING
-endif
-
 
 libs:: $(TARGETS)
 	$(INSTALL) $(srcdir)/simplecompute2.html $(DIST)/bin/res/samples
