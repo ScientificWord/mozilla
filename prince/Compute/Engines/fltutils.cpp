@@ -333,6 +333,12 @@ void StrReplace(char *line, size_t zln, char *tok, const char *sub)
   }
 }
 
+// itoa replacement
+void StrFromInt(int val, char* buffer)
+{
+  sprintf(buffer, "%d", val);
+}
+
 // Function to remove a MNODE's links to a tree.
 // The delinked node can be moved or disposed by the caller.
 // Note that we can't delink the first node of a first

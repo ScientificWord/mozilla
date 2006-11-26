@@ -198,11 +198,11 @@ bool CompEngine::SetEngineAttr(int attr_ID, int i_val, const char *s_val)
 
   char buffer[32];
   const char *new_value;
-  if (s_val)
+  if (s_val) {
     new_value = s_val;
-  else {
-    itoa(i_val, buffer, 10);
-    new_value = s_val;
+  } else {
+    StrFromInt(i_val, buffer);
+    new_value = buffer;
   }
 
   nsresult res = wrapper->SetEngineState(attr_ID, new_value, &rv);
