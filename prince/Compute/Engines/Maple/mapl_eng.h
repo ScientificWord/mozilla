@@ -3,10 +3,11 @@
 #ifndef MAPL_ENG_H
 #define MAPL_ENG_H
 
-#if TCIENV(MAPLE)
-
 #include <ByteArry.h>
 #include <TCIStrin.h>
+
+#define I32 int
+#define I16 short
 
 extern "C"
 {
@@ -122,5 +123,4 @@ public:
   bool pkgsloaded[ENGINE_PACKAGES];
 };
 
-#endif
 #endif
