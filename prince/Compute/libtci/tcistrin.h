@@ -3,9 +3,8 @@
 #ifndef   TCISTRING_H
 #define   TCISTRING_H
 
-#ifndef CHMTYPES_H
-  #include "chmtypes.h"
-#endif
+#include "../CmpTypes.h"
+#include "ByteArry.h"
 
 #ifndef STD_STRING_H
   #include <string.h>
@@ -16,8 +15,6 @@
   #include <stdarg.h>
   #define STD_STDARG_H
 #endif
-
-#include "../CmpTypes.h"
 
 //#define ASSERT_HYPERACTIVE_STR
 
@@ -63,7 +60,7 @@ class TCIString
 
    inline int      GetLength() const;
    inline int      GetAllocLength() const;  
-   inline TCI_BOOL IsEmpty() const;
+   inline bool IsEmpty() const;
           void     Empty();  
    inline TCICHAR  GetAt(int nIndex) const;
    inline void     SetAt(int nIndex, TCICHAR ch) ;
@@ -100,24 +97,24 @@ class TCIString
    // Collate is often slower than Compare but is MBSC/Unicode
    // aware as well as locale-sensitive with respect to sort order.
    inline int Collate(const TCICHAR *lpsz) const;
-   inline friend TCI_BOOL operator == (const TCIString &s1,const TCIString &s2);
-   inline friend TCI_BOOL operator == (const TCIString &s1, const TCICHAR *s2);
-   inline friend TCI_BOOL operator == (const TCICHAR *s1, const TCIString &s2);
-   inline friend TCI_BOOL operator != (const TCIString &s1,const TCIString &s2);
-   inline friend TCI_BOOL operator != (const TCICHAR *s1, const TCIString &s2);
-   inline friend TCI_BOOL operator != (const TCIString& s1, const TCICHAR* s2);
-   inline friend TCI_BOOL operator <  (const TCIString &s1, const TCIString &s2);
-   inline friend TCI_BOOL operator <  (const TCIString &s1, const TCICHAR *s2);
-   inline friend TCI_BOOL operator <  (const TCICHAR *s1, const TCIString &s2);
-   inline friend TCI_BOOL operator >  (const TCIString &s1, const TCIString &s2);
-   inline friend TCI_BOOL operator >  (const TCIString &s1, const TCICHAR *s2);
-   inline friend TCI_BOOL operator >  (const TCICHAR *s1, const TCIString &s2);
-   inline friend TCI_BOOL operator <= (const TCIString &s1,const TCIString &s2);
-   inline friend TCI_BOOL operator <= (const TCIString &s1, const TCICHAR *s2);
-   inline friend TCI_BOOL operator <= (const TCICHAR *s1, const TCIString &s2);
-   inline friend TCI_BOOL operator >= (const TCIString &s1, const TCIString &s2);
-   inline friend TCI_BOOL operator >= (const TCIString &s1, const TCICHAR *s2);
-   inline friend TCI_BOOL operator >= (const TCICHAR *s1, const TCIString &s2);
+   inline friend bool operator == (const TCIString &s1,const TCIString &s2);
+   inline friend bool operator == (const TCIString &s1, const TCICHAR *s2);
+   inline friend bool operator == (const TCICHAR *s1, const TCIString &s2);
+   inline friend bool operator != (const TCIString &s1,const TCIString &s2);
+   inline friend bool operator != (const TCICHAR *s1, const TCIString &s2);
+   inline friend bool operator != (const TCIString& s1, const TCICHAR* s2);
+   inline friend bool operator <  (const TCIString &s1, const TCIString &s2);
+   inline friend bool operator <  (const TCIString &s1, const TCICHAR *s2);
+   inline friend bool operator <  (const TCICHAR *s1, const TCIString &s2);
+   inline friend bool operator >  (const TCIString &s1, const TCIString &s2);
+   inline friend bool operator >  (const TCIString &s1, const TCICHAR *s2);
+   inline friend bool operator >  (const TCICHAR *s1, const TCIString &s2);
+   inline friend bool operator <= (const TCIString &s1,const TCIString &s2);
+   inline friend bool operator <= (const TCIString &s1, const TCICHAR *s2);
+   inline friend bool operator <= (const TCICHAR *s1, const TCIString &s2);
+   inline friend bool operator >= (const TCIString &s1, const TCIString &s2);
+   inline friend bool operator >= (const TCIString &s1, const TCICHAR *s2);
+   inline friend bool operator >= (const TCICHAR *s1, const TCIString &s2);
    
 
    //
@@ -150,8 +147,8 @@ class TCIString
    int ReverseFind(TCICHAR ch) const;                      // like "C" strrchr
    int FindOneOf(const TCICHAR *charSet, int startPos = 0) const;  // like "C" strcspn
    int NotMember(const TCICHAR *charSet, int startPos = 0) const;  // like "C" strspn
-   TCI_BOOL Contains(const TCICHAR *charSet) const;
-   TCI_BOOL ContainedIn(const TCICHAR *charSet) const;
+   bool Contains(const TCICHAR *charSet) const;
+   bool ContainedIn(const TCICHAR *charSet) const;
 
    // replace functions
    int Replace(const TCICHAR *pat, const TCICHAR *repl, int startPos = 0);
@@ -190,7 +187,7 @@ int TCIString::GetAllocLength() const{
 }
 
 
-TCI_BOOL TCIString::IsEmpty() const{return m_nDataLength == 0;}
+bool TCIString::IsEmpty() const{return m_nDataLength == 0;}
 
 TCICHAR TCIString::GetAt(int nIndex) const
 {
@@ -302,75 +299,75 @@ void TCIString::AppendChars(const TCICHAR *lpch,int numbytes){
 
 
      
-TCI_BOOL operator == (const TCIString &s1, const TCIString &s2){
+bool operator == (const TCIString &s1, const TCIString &s2){
     return s1.Compare(s2) == 0;
 }
 
-TCI_BOOL operator == (const TCIString &s1, const TCICHAR *s2){
+bool operator == (const TCIString &s1, const TCICHAR *s2){
     return s1.Compare(s2) == 0;
 }
 
-TCI_BOOL operator == (const TCICHAR *s1, const TCIString &s2){
+bool operator == (const TCICHAR *s1, const TCIString &s2){
     return s2.Compare(s1) == 0;
 }
 
-TCI_BOOL operator != (const TCIString &s1, const TCIString &s2){
+bool operator != (const TCIString &s1, const TCIString &s2){
     return s1.Compare(s2) != 0;
 }
 
-TCI_BOOL operator != (const TCIString &s1, const TCICHAR *s2){
+bool operator != (const TCIString &s1, const TCICHAR *s2){
     return s1.Compare(s2) != 0;
 }
 
-TCI_BOOL operator != (const TCICHAR* s1, const TCIString& s2){
+bool operator != (const TCICHAR* s1, const TCIString& s2){
     return s2.Compare(s1) != 0;
 }
 
-TCI_BOOL operator < (const TCIString &s1,  const TCIString &s2){
+bool operator < (const TCIString &s1,  const TCIString &s2){
     return s1.Compare(s2) < 0;
 }
 
-TCI_BOOL operator < (const TCIString &s1, const TCICHAR *s2){
+bool operator < (const TCIString &s1, const TCICHAR *s2){
     return s1.Compare(s2) < 0;
 }
 
-TCI_BOOL operator < (const TCICHAR *s1, const TCIString &s2) {
+bool operator < (const TCICHAR *s1, const TCIString &s2) {
     return s2.Compare(s1) > 0;
 }
 
-TCI_BOOL operator > (const TCIString &s1, const TCIString &s2) {
+bool operator > (const TCIString &s1, const TCIString &s2) {
     return s1.Compare(s2) > 0;
 }
 
-TCI_BOOL operator > (const TCIString &s1, const TCICHAR *s2) {
+bool operator > (const TCIString &s1, const TCICHAR *s2) {
     return s1.Compare(s2) > 0;
 }
 
-TCI_BOOL operator > (const TCICHAR *s1, const TCIString &s2) {
+bool operator > (const TCICHAR *s1, const TCIString &s2) {
     return s2.Compare(s1) < 0;
 }
 
-TCI_BOOL operator <= (const TCIString &s1,  const TCIString &s2) {
+bool operator <= (const TCIString &s1,  const TCIString &s2) {
     return s1.Compare(s2) <= 0;
 }
 
-TCI_BOOL operator <= (const TCIString &s1, const TCICHAR *s2){
+bool operator <= (const TCIString &s1, const TCICHAR *s2){
     return s1.Compare(s2) <= 0;
 }
 
-TCI_BOOL operator <= (const TCICHAR *s1, const TCIString &s2){
+bool operator <= (const TCICHAR *s1, const TCIString &s2){
     return s2.Compare(s1) >= 0;
 }
 
-TCI_BOOL operator >= (const TCIString &s1, const TCIString &s2) {
+bool operator >= (const TCIString &s1, const TCIString &s2) {
     return s1.Compare(s2) >= 0;
 }
 
-TCI_BOOL operator >= (const TCIString &s1, const TCICHAR *s2) {
+bool operator >= (const TCIString &s1, const TCICHAR *s2) {
     return s1.Compare(s2) >= 0;
 }
 
-TCI_BOOL operator >= (const TCICHAR *s1, const TCIString &s2) {
+bool operator >= (const TCICHAR *s1, const TCIString &s2) {
     return s2.Compare(s1) <= 0;
 }
 
