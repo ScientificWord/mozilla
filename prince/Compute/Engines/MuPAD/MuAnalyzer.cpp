@@ -19,18 +19,10 @@
    back to names originally sent by CompEngine.
 */
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #include "MuAnalyzer.h"
 #include "MuWrap.h"
-
 #include <string.h>
 #include <ctype.h>
-
-#include "tci_new.h"
 
 MuAnalyzer::MuAnalyzer(MuPADWrapper * the_parent)
 {
@@ -304,7 +296,7 @@ void MuAnalyzer::AnalyzeNUMBER(MNODE * eng_node,
   snode->semantic_type = SEM_TYP_NUMBER;
   if (eng_node->p_chdata) {
     size_t zln = strlen(eng_node->p_chdata);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, eng_node->p_chdata);
     snode->contents = tmp;
   }
@@ -317,7 +309,7 @@ void MuAnalyzer::AnalyzeSTRING(MNODE * eng_node,
   snode->semantic_type = SEM_TYP_TEXT;
   if (eng_node->p_chdata) {
     size_t zln = strlen(eng_node->p_chdata);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, eng_node->p_chdata);
     snode->contents = tmp;
   }
@@ -809,7 +801,7 @@ void MuAnalyzer::AnalyzeEXPONENTIAL(MNODE * func_node,
 
         if (is_one) {
           snode->semantic_type = SEM_TYP_UCONSTANT;
-          char *tmp = TCI_NEW(char[10]);
+          char *tmp = new char[10];
           strcpy(tmp, "&#x2147;");
           snode->contents = tmp;
         } else {
@@ -819,7 +811,7 @@ void MuAnalyzer::AnalyzeEXPONENTIAL(MNODE * func_node,
 
           SEMANTICS_NODE *s_base = CreateSemanticsNode();
           s_base->semantic_type = SEM_TYP_UCONSTANT;
-          char *tmp = TCI_NEW(char[10]);
+          char *tmp = new char[10];
           strcpy(tmp, "&#x2147;");
           s_base->contents = tmp;
 
@@ -913,7 +905,7 @@ void MuAnalyzer::AnalyzeLIMIT(MNODE * func_node,
 {
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_LIMFUNC;
-  char *tmp = TCI_NEW(char[4]);
+  char *tmp = new char[4];
   strcpy(tmp, "lim");
   snode->contents = tmp;
 
@@ -959,7 +951,7 @@ void MuAnalyzer::AnalyzeLIMIT(MNODE * func_node,
 
               SEMANTICS_NODE *s_num = CreateSemanticsNode();
               s_num->semantic_type = SEM_TYP_NUMBER;
-              char *tmp = TCI_NEW(char[2]);
+              char *tmp = new char[2];
               if (!strcmp(variable->p_chdata, "Right"))
                 strcpy(tmp, "1");
               else if (!strcmp(variable->p_chdata, "Left"))
@@ -1065,7 +1057,7 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
         } else if (!strcmp(func_name, "psi")) {
           //          func_node->p_chdata[0]  =  'P';
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[4]);
+          char *tmp = new char[4];
           strcpy(tmp, "Psi");
           func_node->p_chdata = tmp;
         }
@@ -1082,18 +1074,18 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
           sem_type = SEM_TYP_CEILING;
         } else if (!strcmp(func_name, "fact")) {
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[10]);
+          char *tmp = new char[10];
           strcpy(tmp, "factorial");
           func_node->p_chdata = tmp;
         } else if (!strcmp(func_name, "zeta")) {
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[10]);
+          char *tmp = new char[10];
           strcpy(tmp, "&#x3b6;");
           func_node->p_chdata = tmp;
         } else if (!strcmp(func_name, "beta")) {
           //          func_node->p_chdata[0]  =  'B';
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[5]);
+          char *tmp = new char[5];
           strcpy(tmp, "Beta");
           func_node->p_chdata = tmp;
         }
@@ -1111,12 +1103,12 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
         } else if (!strcmp(func_name, "dirac")) {
           //          func_node->p_chdata[0]  =  'D';
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[6]);
+          char *tmp = new char[6];
           strcpy(tmp, "Dirac");
           func_node->p_chdata = tmp;
         } else if (!strcmp(func_name, "gamma")) {
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[8]);
+          char *tmp = new char[8];
           strcpy(tmp, "&#x393;");
           func_node->p_chdata = tmp;
         }
@@ -1128,19 +1120,19 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
           done = true;
         } else if (!strcmp(func_name, "igamma")) {
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[8]);
+          char *tmp = new char[8];
           strcpy(tmp, "&#x393;");
           func_node->p_chdata = tmp;
         } else if (!strcmp(func_name, "airyAi")) {
           //          func_node->p_chdata[0]  =  'A';
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[7]);
+          char *tmp = new char[7];
           strcpy(tmp, "AiryAi");
           func_node->p_chdata = tmp;
         } else if (!strcmp(func_name, "airyBi")) {
           //          func_node->p_chdata[0]  =  'A';
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[7]);
+          char *tmp = new char[7];
           strcpy(tmp, "AiryBi");
           func_node->p_chdata = tmp;
         }
@@ -1156,7 +1148,7 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
         } else if (!strcmp(func_name, "lambertW")) {
           //          func_node->p_chdata[0]  =  'L';
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[9]);
+          char *tmp = new char[9];
           strcpy(tmp, "LambertW");
           func_node->p_chdata = tmp;
         }
@@ -1172,7 +1164,7 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
         } else if (!strcmp(func_name, "heaviside")) {
           //          func_node->p_chdata[0]  =  'H';
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[10]);
+          char *tmp = new char[10];
           strcpy(tmp, "Heaviside");
           func_node->p_chdata = tmp;
         }
@@ -1199,13 +1191,13 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
     case 18:{
         if (!strcmp(func_name, "transform::laplace")) {
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[9]);
+          char *tmp = new char[9];
           strcpy(tmp, "&#x2112;");
           func_node->p_chdata = tmp;
           sem_type = SEM_TYP_TRANSFORM;
         } else if (!strcmp(func_name, "transform::fourier")) {
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[9]);
+          char *tmp = new char[9];
           strcpy(tmp, "&#x2131;");
           func_node->p_chdata = tmp;
           sem_type = SEM_TYP_TRANSFORM;
@@ -1216,13 +1208,13 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
     case 21:{
         if (!strcmp(func_name, "transform::invlaplace")) {
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[9]);
+          char *tmp = new char[9];
           strcpy(tmp, "&#x2112;");
           func_node->p_chdata = tmp;
           sem_type = SEM_TYP_INVTRANSFORM;
         } else if (!strcmp(func_name, "transform::invfourier")) {
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[9]);
+          char *tmp = new char[9];
           strcpy(tmp, "&#x2131;");
           func_node->p_chdata = tmp;
           sem_type = SEM_TYP_INVTRANSFORM;
@@ -1244,19 +1236,19 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
       if (back_map) {           // user function seen in input
         if (back_map->src_canonical_name) {
           size_t zln = strlen(back_map->src_canonical_name);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, back_map->src_canonical_name);
           snode->canonical_ID = tmp;
         }
         if (back_map->user_name) {
           size_t zln = strlen(back_map->user_name);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, back_map->user_name);
           snode->contents = tmp;
         }
       } else {
         size_t zln = strlen(func_node->p_chdata);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, func_node->p_chdata);
         snode->contents = tmp;
       }
@@ -1298,7 +1290,7 @@ void MuAnalyzer::AnalyzePIECEWISE(MNODE * PIECEWISE_node,
   snode->semantic_type = SEM_TYP_PIECEWISE_LIST;
   if (PIECEWISE_node->p_chdata) {
     size_t zln = strlen(PIECEWISE_node->p_chdata);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, PIECEWISE_node->p_chdata);
     snode->contents = tmp;
   }
@@ -1475,7 +1467,7 @@ void MuAnalyzer::AnalyzeVARIABLE(MNODE * eng_node, SEMANTICS_NODE * snode,
                             subID)) {
       if (db_production && *db_production) {
         size_t zln = strlen(db_production);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, db_production);
         snode->contents = tmp;
 
@@ -1494,12 +1486,12 @@ void MuAnalyzer::AnalyzeVARIABLE(MNODE * eng_node, SEMANTICS_NODE * snode,
 
       if (back_map->src_canonical_name && back_map->src_canonical_name[0]) {
         size_t zln = strlen(back_map->src_canonical_name);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, back_map->src_canonical_name);
         snode->canonical_ID = tmp;
       } else if (back_map->user_name && back_map->user_name[0]) {
         size_t zln = strlen(back_map->user_name);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, back_map->user_name);
         snode->contents = tmp;
       }
@@ -1524,11 +1516,11 @@ void MuAnalyzer::AnalyzeVARIABLE(MNODE * eng_node, SEMANTICS_NODE * snode,
       if (IsText(var_nom)) {
         snode->semantic_type = SEM_TYP_TEXT;
 
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, var_nom);
         snode->contents = tmp;
       } else {
-        char *tmp_nom = TCI_NEW(char[zln + 1]);
+        char *tmp_nom = new char[zln + 1];
         if (zln > 1 && var_nom[1] >= '0' && var_nom[1] <= '9') {
           BUCKET_REC *obj_bucket = MakeBucketRec(MB_UNNAMED, snode);
           snode->bucket_list =
@@ -1536,7 +1528,7 @@ void MuAnalyzer::AnalyzeVARIABLE(MNODE * eng_node, SEMANTICS_NODE * snode,
 
           SEMANTICS_NODE *s_sub = CreateSemanticsNode();
           s_sub->semantic_type = SEM_TYP_NUMBER;
-          char *tmp = TCI_NEW(char[zln]);
+          char *tmp = new char[zln];
           strcpy(tmp, var_nom + 1);
           s_sub->contents = tmp;
 
@@ -1678,7 +1670,7 @@ void MuAnalyzer::AnalyzeOPERATOR(MNODE * eng_node, SEMANTICS_NODE * snode,
         strcpy(buffer, eng_node->p_chdata);
     }
     size_t bln = strlen(buffer);
-    char *tmp = TCI_NEW(char[bln + 1]);
+    char *tmp = new char[bln + 1];
     strcpy(tmp, buffer);
     snode->contents = tmp;
     if (p)
@@ -1705,7 +1697,7 @@ void MuAnalyzer::AnalyzeCONSTANT(MNODE * eng_node,
                               subID)) {
         if (db_production && *db_production) {
           size_t zln = strlen(db_production);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, db_production);
           snode->contents = tmp;
 
@@ -1789,7 +1781,7 @@ void MuAnalyzer::AnalyzeCONSTANT(MNODE * eng_node,
           TCI_ASSERT(0);
       }
       size_t bln = strlen(buffer);
-      char *tmp = TCI_NEW(char[bln + 1]);
+      char *tmp = new char[bln + 1];
       strcpy(tmp, buffer);
       snode->contents = tmp;
     }
@@ -1805,7 +1797,7 @@ void MuAnalyzer::AnalyzeBOOLEAN(MNODE * eng_node,
   snode->semantic_type = SEM_TYP_BOOLEAN;
   if (eng_node->p_chdata) {
     size_t zln = strlen(eng_node->p_chdata);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, eng_node->p_chdata);
     snode->contents = tmp;
 
@@ -2040,7 +2032,7 @@ void MuAnalyzer::FixMapleCholesky(SEMANTICS_NODE * s_list)
     if (comma->semantic_type == SEM_TYP_INFIX_OP
         && !strcmp(comma->contents, ",")) {
       delete[] comma->contents;
-      char *chdata = TCI_NEW(char[9]);
+      char *chdata = new char[9];
       strcpy(chdata, "&#x2062;");
       comma->contents = chdata;
     }
@@ -2056,7 +2048,7 @@ void MuAnalyzer::FixMapleJordanForm(SEMANTICS_NODE * s_list)
     if (rover->semantic_type == SEM_TYP_INFIX_OP
         && !strcmp(rover->contents, ",")) {
       delete[] rover->contents;
-      char *chdata = TCI_NEW(char[9]);
+      char *chdata = new char[9];
       strcpy(chdata, "&#x2062;");
       rover->contents = chdata;
     }
@@ -2145,7 +2137,7 @@ SEMANTICS_NODE *MuAnalyzer::FixMapleSimplexDual(SEMANTICS_NODE * s_list)
     s_simplex->semantic_type = SEM_TYP_SIMPLEX;
     char *name = "Simplex Dual";
     size_t zln = strlen(name);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, name);
     s_simplex->contents = tmp;
 
@@ -2200,7 +2192,7 @@ SEMANTICS_NODE *MuAnalyzer::FixQuantileResult(SEMANTICS_NODE * s_list)
     s_qresult->semantic_type = SEM_TYP_QUANTILE_RESULT;
     char *name = "Quantile Result";
     size_t zln = strlen(name);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, name);
     s_qresult->contents = tmp;
 
@@ -2421,7 +2413,7 @@ void MuAnalyzer::AddPrimesCount(SEMANTICS_NODE * snode, int n_primes)
   char buffer[32];
   sprintf(buffer, "%d", n_primes);
   size_t zln = strlen(buffer);
-  char *tmp = TCI_NEW(char[zln + 1]);
+  char *tmp = new char[zln + 1];
   strcpy(tmp, buffer);
   s_nprimes->contents = tmp;
 }
@@ -2501,7 +2493,7 @@ void MuAnalyzer::AnalyzeDIFF(MNODE * func_node,
             char buffer[32];
             itoa(cv_tally, buffer, 10);
             size_t zln = strlen(buffer);
-            char *tmp = TCI_NEW(char[zln + 1]);
+            char *tmp = new char[zln + 1];
             strcpy(tmp, buffer);
             s_sup->contents = tmp;
 

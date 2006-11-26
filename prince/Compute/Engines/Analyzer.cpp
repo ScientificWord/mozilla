@@ -20,11 +20,6 @@
 
 */
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #include "Analyzer.h"
 #include "Grammar.h"
 #include "MML2Tree.h"
@@ -34,8 +29,6 @@ static char THIS_FILE[] = __FILE__;
 
 #include <string.h>
 #include <ctype.h>
-
-#include "tci_new.h"
 
 
 Analyzer::Analyzer(Grammar * mml_grammar, PrefsStore * up_store)
@@ -50,13 +43,13 @@ Analyzer::Analyzer(Grammar * mml_grammar, PrefsStore * up_store)
 
   msg_list = NULL;
   node_IDs_list = NULL;
-  CanonicalTreeGen = TCI_NEW(Tree2StdMML(mml_grammar,this));
+  CanonicalTreeGen = new Tree2StdMML(mml_grammar,this);
   DE_ind_vars = NULL;
   DE_func_names = NULL;
   IMPLDIFF_ind_var = NULL;
   IMPLDIFF_func_names = NULL;
 
-  mml_tree_gen = TCI_NEW(MML2Tree);
+  mml_tree_gen = new MML2Tree();
 
   i_is_imaginary = true;
   j_is_imaginary = false;
@@ -341,7 +334,7 @@ void Analyzer::AnalyzeMI(MNODE * mml_mi_node,
         && !IsPositionalChild(mml_mi_node)) {
       TCI_ASSERT(0);
       snode->semantic_type = SEM_TYP_INFIX_OP;
-      char *tmp = TCI_NEW(char[10]);
+      char *tmp = new char[10];
       strcpy(tmp, "&#x2062;");
       snode->contents = tmp;
 
@@ -352,7 +345,7 @@ void Analyzer::AnalyzeMI(MNODE * mml_mi_node,
 
     const char *ptr = mml_mi_node->p_chdata;
     size_t zln = strlen(ptr);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, ptr);
     s_target->contents = tmp;
 
@@ -407,13 +400,13 @@ void Analyzer::AnalyzeMI(MNODE * mml_mi_node,
       if (mi_ilk == MI_imaginaryunit)
         cont = "i";
       size_t ln = strlen(cont);
-      char *tmp = TCI_NEW(char[ln + 1]);
+      char *tmp = new char[ln + 1];
       strcpy(tmp, cont);
       snode->contents = tmp;
       snode->semantic_type = SEM_TYP_UCONSTANT;
     } else if (mi_ilk == MI_Laplace || mi_ilk == MI_Fourier || mi_ilk == MI_function) {
       size_t ln = strlen(mml_mi_node->p_chdata);
-      char *tmp = TCI_NEW(char[ln + 1]);
+      char *tmp = new char[ln + 1];
       strcpy(tmp, mml_mi_node->p_chdata);
       snode->contents = tmp;
       if (mi_ilk == MI_Laplace || mi_ilk == MI_Fourier)
@@ -444,7 +437,7 @@ void Analyzer::AnalyzeMI(MNODE * mml_mi_node,
       strcat(varnom, mml_mi_node->p_chdata);
 
       size_t ln = strlen(varnom);
-      char *tmp = TCI_NEW(char[ln + 1]);
+      char *tmp = new char[ln + 1];
       strcpy(tmp, varnom);
       snode->contents = tmp;
     } else {
@@ -540,7 +533,7 @@ void Analyzer::AnalyzeMTEXT(MNODE * mml_mtext_node,
     if (!IsWhiteText(mml_mtext_node->p_chdata)) {
 
       size_t zln = strlen(mml_mtext_node->p_chdata);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, mml_mtext_node->p_chdata);
       snode->contents = tmp;
 
@@ -661,7 +654,7 @@ void Analyzer::AnalyzeMO(MNODE * mml_mo_node,
 
     delete[] snode->contents;
     size_t zln = strlen(f_nom);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, f_nom);
     snode->contents = tmp;
   } else {
@@ -673,7 +666,7 @@ void Analyzer::AnalyzeMN(MNODE * mml_mn_node, SEMANTICS_NODE * snode)
 {
   if (mml_mn_node && mml_mn_node->p_chdata) {
     size_t zln = strlen(mml_mn_node->p_chdata);
-    char *num_str = TCI_NEW(char[zln + 1]);
+    char *num_str = new char[zln + 1];
 
     int n_digits = 0;
     int di = 0;
@@ -744,7 +737,7 @@ void Analyzer::AnalyzeMFRAC(MNODE * mml_mfrac, SEMANTICS_NODE * snode,
   MNODE *m_den;
   if (IsDIFFOP(mml_mfrac, &m_num_operand, &m_den)) {
     snode->semantic_type = SEM_TYP_DERIVATIVE;
-    char *tmp = TCI_NEW(char[14]);
+    char *tmp = new char[14];
     strcpy(tmp, "differentiate");
     snode->contents = tmp;
 
@@ -786,7 +779,7 @@ void Analyzer::AnalyzeMFRAC(MNODE * mml_mfrac, SEMANTICS_NODE * snode,
     //  in the source MML, it's semantic equivalent is generated here.
     if (mml_mfrac->prev && !IsOperator(mml_mfrac->prev)) {
       snode->semantic_type = SEM_TYP_INFIX_OP;
-      char *tmp = TCI_NEW(char[10]);
+      char *tmp = new char[10];
       strcpy(tmp, "&#x2062;");
       snode->contents = tmp;
 
@@ -940,7 +933,7 @@ void Analyzer::AnalyzeMFENCED(MNODE * mml_mfenced_node,
     if (key) {
       delete[] snode->contents;
       size_t zln = strlen(key);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, key);
       snode->contents = tmp;
     }
@@ -980,7 +973,7 @@ void Analyzer::AnalyzeMFENCED(MNODE * mml_mfenced_node,
       if (snode->semantic_type == SEM_TYP_ABS) {
         snode->semantic_type = SEM_TYP_FUNCTION;
         delete[] snode->contents;
-        char *tmp = TCI_NEW(char[4]);
+        char *tmp = new char[4];
         strcpy(tmp, "det");
         snode->contents = tmp;
       }
@@ -1111,7 +1104,7 @@ void Analyzer::AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
               snode->bucket_list = AppendBucketRec(snode->bucket_list, br);
 
             size_t ln = strlen(base->p_chdata);
-            char *tmp = TCI_NEW(char[ln + 1]);
+            char *tmp = new char[ln + 1];
             strcpy(tmp, base->p_chdata);
             snode->contents = tmp;
             snode->semantic_type = SEM_TYP_INVFUNCTION;
@@ -1170,7 +1163,7 @@ void Analyzer::AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
 
             // Add remaining function info
             size_t ln = strlen(base->p_chdata);
-            char *tmp = TCI_NEW(char[ln + 1]);
+            char *tmp = new char[ln + 1];
             strcpy(tmp, base->p_chdata);
             snode->contents = tmp;
             snode->semantic_type = SEM_TYP_FUNCTION;
@@ -1237,7 +1230,7 @@ void Analyzer::AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
             if (br)
               snode->bucket_list = AppendBucketRec(snode->bucket_list, br);
             size_t ln = strlen(base->p_chdata);
-            char *tmp = TCI_NEW(char[ln + 1]);
+            char *tmp = new char[ln + 1];
             strcpy(tmp, base->p_chdata);
             snode->contents = tmp;
             snode->semantic_type = SEM_TYP_INVTRANSFORM;
@@ -1272,7 +1265,7 @@ void Analyzer::AnalyzeMSUB(MNODE * mml_msub_node, SEMANTICS_NODE * snode,
     CreateSubstBucket(subst, snode, true);
 
     snode->semantic_type = SEM_TYP_SUBSTITUTION;
-    char *tmp = TCI_NEW(char[13]);
+    char *tmp = new char[13];
     strcpy(tmp, "substitution");
     snode->contents = tmp;
     return;
@@ -1308,7 +1301,7 @@ void Analyzer::AnalyzeMSUB(MNODE * mml_msub_node, SEMANTICS_NODE * snode,
     }
 
     snode->semantic_type = SEM_TYP_DERIVATIVE;
-    char *tmp = TCI_NEW(char[14]);
+    char *tmp = new char[14];
     strcpy(tmp, "differentiate");
     snode->contents = tmp;
     p_input_notation->n_Dxs++;
@@ -1443,7 +1436,7 @@ void Analyzer::AnalyzeMSUBSUP(MNODE * mml_msubsup_node,
     CreateSubstBucket(upper, snode, false);
 
     snode->semantic_type = SEM_TYP_SUBSTITUTION;
-    char *tmp = TCI_NEW(char[19]);
+    char *tmp = new char[19];
     strcpy(tmp, "doublesubstitution");
     snode->contents = tmp;
 
@@ -1483,7 +1476,7 @@ void Analyzer::AnalyzeMSUBSUP(MNODE * mml_msubsup_node,
           snode->semantic_type = SEM_TYP_DERIVATIVE;
           char *key = "differentiate";
           size_t zln = strlen(key);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, key);
           snode->contents = tmp;
 
@@ -1927,7 +1920,7 @@ void Analyzer::AnalyzeMTABLE(MNODE * mml_mtable_node,
   } else {
     TCI_ASSERT(0);
   }
-  char *tmp = TCI_NEW(char[7]);
+  char *tmp = new char[7];
   strcpy(tmp, "matrix");
   info->contents = tmp;
 
@@ -2327,7 +2320,7 @@ char *Analyzer::GetCanonicalIDforMathNode(MNODE * mml_node)
     }
     if (buffer[0]) {
       size_t zln = strlen(buffer);
-      rv = TCI_NEW(char[zln + 1]);
+      rv = new char[zln + 1];
       strcpy(rv, buffer);
     }
   }
@@ -3050,7 +3043,7 @@ void Analyzer::TranslateEmbellishedOp(MNODE * mml_embellop_node,
   MNODE *base = mml_embellop_node->first_kid;
   if (base) {                   // the underlying operator - \int, \sum, etc.
     size_t ln = strlen(base->p_chdata);
-    char *tmp = TCI_NEW(char[ln + 1]);
+    char *tmp = new char[ln + 1];
     strcpy(tmp, base->p_chdata);
     snode->contents = tmp;
 
@@ -3145,7 +3138,7 @@ void Analyzer::TranslateEmbellishedOp(MNODE * mml_embellop_node,
         delete[] snode->contents;
 
         char *op_name = NULL;
-        char *tmp = TCI_NEW(char[8]);
+        char *tmp = new char[8];
         if (var_lim_type == 1)
           op_name = "injlim";
         else if (var_lim_type == 2)
@@ -3171,7 +3164,7 @@ void Analyzer::TranslateEmbellishedOp(MNODE * mml_embellop_node,
         snode->semantic_type = SEM_TYP_PREFIX_OP;
 
         delete[] snode->contents;
-        char *tmp = TCI_NEW(char[12]);
+        char *tmp = new char[12];
         strcpy(tmp, "Laplacian");
         snode->contents = tmp;
       } else {                  // for now, I'm assuming a limfunc here!
@@ -3419,7 +3412,7 @@ void Analyzer::AnalyzePrimed(MNODE * mml_msup,
 
   char *key = "differentiate";
   size_t zln = strlen(key);
-  char *tmp = TCI_NEW(char[zln + 1]);
+  char *tmp = new char[zln + 1];
   strcpy(tmp, key);
   s_node->contents = tmp;
 
@@ -3480,14 +3473,14 @@ void Analyzer::AnalyzePrimed(MNODE * mml_msup,
 
           if (canonical_ID) {
             size_t ln = strlen(canonical_ID);
-            char *tmp = TCI_NEW(char[ln + 1]);
+            char *tmp = new char[ln + 1];
             strcpy(tmp, canonical_ID);
             s_var->canonical_ID = tmp;
             SetSnodeOwner(s_var);
           }
 
           size_t ln = strlen(user_name);
-          char *tmp = TCI_NEW(char[ln + 1]);
+          char *tmp = new char[ln + 1];
           strcpy(tmp, user_name);
           s_var->contents = tmp;
 
@@ -3527,7 +3520,7 @@ void Analyzer::AnalyzeDotDerivative(MNODE * mml_mover,
 
   char *key = "differentiate";
   size_t zln = strlen(key);
-  char *tmp = TCI_NEW(char[zln + 1]);
+  char *tmp = new char[zln + 1];
   strcpy(tmp, key);
   s_node->contents = tmp;
 
@@ -3590,14 +3583,14 @@ void Analyzer::AnalyzeDotDerivative(MNODE * mml_mover,
 
           if (canonical_ID) {
             size_t ln = strlen(canonical_ID);
-            char *tmp = TCI_NEW(char[ln + 1]);
+            char *tmp = new char[ln + 1];
             strcpy(tmp, canonical_ID);
             s_var->canonical_ID = tmp;
             SetSnodeOwner(s_var);
           }
 
           size_t ln = strlen(user_name);
-          char *tmp = TCI_NEW(char[ln + 1]);
+          char *tmp = new char[ln + 1];
           strcpy(tmp, user_name);
           s_var->contents = tmp;
 
@@ -3654,7 +3647,7 @@ void Analyzer::AnalyzeSubscriptedFunc(MNODE * mml_msub_node,
 
   MNODE *base = mml_msub_node->first_kid;
   size_t ln = strlen(base->p_chdata);
-  char *tmp = TCI_NEW(char[ln + 1]);
+  char *tmp = new char[ln + 1];
   strcpy(tmp, base->p_chdata);
   snode->contents = tmp;
   snode->semantic_type = SEM_TYP_FUNCTION;
@@ -3696,7 +3689,7 @@ void Analyzer::AnalyzeSubscriptedArgFunc(MNODE * mml_msub_node,
     TCI_ASSERT(0);
 
   size_t ln = strlen(f_nom->p_chdata);
-  char *tmp = TCI_NEW(char[ln + 1]);
+  char *tmp = new char[ln + 1];
   strcpy(tmp, f_nom->p_chdata);
   snode->contents = tmp;
 
@@ -4099,14 +4092,14 @@ BUCKET_REC *Analyzer::AddVarToBucket(U32 bucket_ID,
 
         if (s_curr_var->canonical_ID) {
           size_t ln = strlen(s_curr_var->canonical_ID);
-          char *tmp = TCI_NEW(char[ln + 1]);
+          char *tmp = new char[ln + 1];
           strcpy(tmp, s_curr_var->canonical_ID);
           s_var->canonical_ID = tmp;
           SetSnodeOwner(s_var);
         }
 
         size_t ln = strlen(s_curr_var->contents);
-        char *tmp = TCI_NEW(char[ln + 1]);
+        char *tmp = new char[ln + 1];
         strcpy(tmp, s_curr_var->contents);
         s_var->contents = tmp;
         buffer = AppendStr2HeapStr(buffer, buffer_ln, tmp);
@@ -4314,7 +4307,7 @@ void Analyzer::AppendNumber(SEMANTICS_NODE * snode, U32 bucket_ID, int num)
   char buffer[32];
   sprintf(buffer, "%d", num);
   size_t zln = strlen(buffer);
-  char *tmp = TCI_NEW(char[zln + 1]);
+  char *tmp = new char[zln + 1];
   strcpy(tmp, buffer);
   s_nprimes->contents = tmp;
 }
@@ -4361,7 +4354,7 @@ void Analyzer::DetermineODEFuncNames(MNODE * dMML_tree)
       char *new_src_name = NULL;
       if (src_name) {
         size_t zln = strlen(src_name);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, src_name);
         new_src_name = tmp;
       }
@@ -4394,7 +4387,7 @@ void Analyzer::DeterminePDEFuncNames(MNODE * dMML_tree)
       char *new_src_name = NULL;
       if (src_name) {
         size_t zln = strlen(src_name);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, src_name);
         new_src_name = tmp;
       }
@@ -4452,7 +4445,7 @@ DE_FUNC_REC *Analyzer::AppendFuncName(DE_FUNC_REC * f_list, char *f_name,
   DE_FUNC_REC *rv = f_list;
 
   if (!LocateFuncRec(f_list, f_name, src_name)) {
-    DE_FUNC_REC *new_rec = TCI_NEW(DE_FUNC_REC);
+    DE_FUNC_REC *new_rec = new DE_FUNC_REC();
     new_rec->next = f_list;
     new_rec->zfunc_canon_name = f_name;
     new_rec->zfunc_src_name = src_name;
@@ -4757,7 +4750,7 @@ void Analyzer::ArgsToMatrix(SEMANTICS_NODE * snode, BUCKET_REC * b_list)
     s_matrix->semantic_type = SEM_TYP_TABULATION;
     s_matrix->nrows = n_rows;
     s_matrix->ncols = n_cols;
-    char *tmp = TCI_NEW(char[8]);
+    char *tmp = new char[8];
     strcpy(tmp, "matrix");
     s_matrix->contents = tmp;
 
@@ -4839,7 +4832,7 @@ void Analyzer::SetVarAndIntervalLimit(BUCKET_REC * ll_bucket)
 
     SEMANTICS_NODE *interval = CreateSemanticsNode();
     interval->semantic_type = SEM_TYP_INTERVAL;
-    char *tmp = TCI_NEW(char[10]);
+    char *tmp = new char[10];
     strcpy(tmp, "interval");
     interval->contents = tmp;
 
@@ -4898,7 +4891,7 @@ void Analyzer::SetVarArrowExprLimit(BUCKET_REC * ll_bucket)
 
     SEMANTICS_NODE *s_direction_num = CreateSemanticsNode();
     s_direction_num->semantic_type = SEM_TYP_NUMBER;
-    char *num_str = TCI_NEW(char[2]);
+    char *num_str = new char[2];
     num_str[0] = direction + '0'; // '+' -> 1, '-' -> 2
     num_str[1] = 0;
     s_direction_num->contents = num_str;
@@ -5305,7 +5298,7 @@ void Analyzer::ExtractVariables(SEMANTICS_NODE * s_tree)
       if (s_rover->contents) {
         size_t zln = strlen(s_rover->contents);
         if (zln) {
-          char *src_name = TCI_NEW(char[zln + 1]);
+          char *src_name = new char[zln + 1];
           strcpy(src_name, s_rover->contents);
           IMPLDIFF_func_names =
             AppendFuncName(IMPLDIFF_func_names, NULL, src_name);
@@ -5514,7 +5507,7 @@ void Analyzer::FenceToMatrix(SEMANTICS_NODE * operand)
       operand->ncols = n_cols;
 
       delete[] operand->contents;
-      char *tmp = TCI_NEW(char[8]);
+      char *tmp = new char[8];
       strcpy(tmp, "matrix");
       operand->contents = tmp;
     }
@@ -5551,7 +5544,7 @@ void Analyzer::FenceToInterval(SEMANTICS_NODE * s_fence)
     s_fence->variant = interval_type;
 
     delete[] s_fence->contents;
-    char *tmp = TCI_NEW(char[9]);
+    char *tmp = new char[9];
     strcpy(tmp, "interval");
     s_fence->contents = tmp;
 
@@ -5634,7 +5627,7 @@ void Analyzer::AddDefaultBaseToLOG(SEMANTICS_NODE * snode)
   }
 
   size_t zln = strlen(ptr);
-  char *tmp = TCI_NEW(char[zln + 1]);
+  char *tmp = new char[zln + 1];
   strcpy(tmp, ptr);
   log_base->contents = tmp;
 }
@@ -5652,7 +5645,7 @@ void Analyzer::AppendODEfuncs(SEMANTICS_NODE * rv, DE_FUNC_REC * ODE_fnames)
 
     if (rover->zfunc_src_name) {
       size_t ln = strlen(rover->zfunc_src_name);
-      char *tmp = TCI_NEW(char[ln + 1]);
+      char *tmp = new char[ln + 1];
       strcpy(tmp, rover->zfunc_src_name);
       s_odefunc->contents = tmp;
     } else
@@ -5660,7 +5653,7 @@ void Analyzer::AppendODEfuncs(SEMANTICS_NODE * rv, DE_FUNC_REC * ODE_fnames)
 
     if (rover->zfunc_canon_name) {
       size_t ln = strlen(rover->zfunc_canon_name);
-      char *tmp = TCI_NEW(char[ln + 1]);
+      char *tmp = new char[ln + 1];
       strcpy(tmp, rover->zfunc_canon_name);
       s_odefunc->canonical_ID = tmp;
       SetSnodeOwner(s_odefunc);
@@ -5760,7 +5753,7 @@ void Analyzer::Patchdx(SEMANTICS_NODE * s_frac)
           && s_num->semantic_type == SEM_TYP_PREFIX_OP
           && !strcmp(s_num->contents, "&#x2146;")) {
         delete[] s_num->contents;
-        char *tmp = TCI_NEW(char[2]);
+        char *tmp = new char[2];
         strcpy(tmp, "1");
         s_num->contents = tmp;
 
@@ -5917,7 +5910,7 @@ void Analyzer::CreateSubscriptedVar(MNODE * mml_msub_node,
       }
     }
     size_t zln = strlen(buffer);
-    mml_canonical_name = TCI_NEW(char[zln + 1]);
+    mml_canonical_name = new char[zln + 1];
     strcpy(mml_canonical_name, buffer);
   } else
     mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node);
@@ -5954,7 +5947,7 @@ void Analyzer::CreateSubscriptedVar(MNODE * mml_msub_node,
   s_var->semantic_type = SEM_TYP_VARIABLE;
 
   size_t ln = strlen(base->p_chdata);
-  char *tmp = TCI_NEW(char[ln + 1]);
+  char *tmp = new char[ln + 1];
   strcpy(tmp, base->p_chdata);
   s_var->contents = tmp;
 
@@ -6007,12 +6000,12 @@ MIC2MMLNODE_REC *Analyzer::AppendIDRec(MIC2MMLNODE_REC * node_IDs_list,
       }
     }
 
-    MIC2MMLNODE_REC *new_node = TCI_NEW(MIC2MMLNODE_REC);
+    MIC2MMLNODE_REC *new_node = new MIC2MMLNODE_REC();
     new_node->next = NULL;
     new_node->owner_ID = client_ID;
 
     size_t zln = strlen(obj_name);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, obj_name);
     new_node->canonical_name = tmp;
 
@@ -6074,7 +6067,7 @@ void Analyzer::AnalyzeBesselFunc(MNODE * mml_msub_node,
     MNODE *base = mml_msub_node->first_kid;
 
     size_t ln = strlen(base->p_chdata);
-    char *tmp = TCI_NEW(char[ln + 1]);
+    char *tmp = new char[ln + 1];
     strcpy(tmp, base->p_chdata);
     snode->contents = tmp;
     snode->semantic_type = SEM_TYP_FUNCTION;
@@ -6181,7 +6174,7 @@ bool Analyzer::SetODEvars(MathServiceRequest & msr, MathResult & mr,
       DE_ind_vars->semantic_type = SEM_TYP_VARIABLE;
 
       size_t zln = strlen(i_var);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, i_var);
       DE_ind_vars->contents = tmp;
     } else if (p_type == zPT_ASCII_mmlmarkup) {
@@ -6203,7 +6196,7 @@ bool Analyzer::SetODEvars(MathServiceRequest & msr, MathResult & mr,
         DE_ind_vars = CreateSemanticsNode();
         DE_ind_vars->semantic_type = SEM_TYP_VARIABLE;
         size_t zln = strlen(buffer);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, buffer);
         DE_ind_vars->contents = tmp;
 
@@ -6237,7 +6230,7 @@ bool Analyzer::SetIMPLICITvars(MathServiceRequest & msr, MathResult & mr)
       IMPLDIFF_ind_var->semantic_type = SEM_TYP_VARIABLE;
 
       size_t zln = strlen(i_var);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, i_var);
       IMPLDIFF_ind_var->contents = tmp;
     } else if (p_type == zPT_ASCII_mmlmarkup) {
@@ -6464,7 +6457,7 @@ void Analyzer::OverrideInvisibleTimesOnLHS(MNODE * dMML_tree)
         if (IsArgDelimitingFence(m_rover->next->next)) {
           //super ugly, but what else to do?
           delete m_rover->next->p_chdata;
-          char *tmp = TCI_NEW(char[9]);
+          char *tmp = new char[9];
           strcpy(tmp,"&#x2061;");  // ApplyFunction
           m_rover->next->p_chdata = tmp;
         }
