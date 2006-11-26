@@ -1,8 +1,5 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
-#include <windows.h>
-#include <stdio.h>
-
 #include "msiSimpleComputeEngine2.h"
 
 #include "nsMemory.h"
@@ -12,6 +9,8 @@
 #include "ComputeDLL.h"
 #include "iCmpTypes.h"
 #include "iCmpIDs.h"
+#include <stdio.h>
+#include <stdarg.h>
 
 // forward def.
 void SetupNodeAttrs();
@@ -603,7 +602,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::GetEngineAttr(PRUint32 attrID, PRInt32 *_
 /* void getVectorBasis ([retval] out wstring result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::GetVectorBasis(PRUnichar **result)
 {
-  const WORD* res_mml = ComputeDLL::GetWideUserPref( 0/*client_handle*/, CLPF_Vector_basis, 0 /* no_inherit */);
+  const U16* res_mml = ComputeDLL::GetWideUserPref( 0/*client_handle*/, CLPF_Vector_basis, 0 /* no_inherit */);
   if (res_mml)
     *result = (PRUnichar*) nsMemory::Clone(res_mml, (wstrlen(res_mml)+1)*sizeof(PRUnichar));
   else
@@ -917,7 +916,7 @@ nsresult   msiSimpleComputeEngine2::DoTransaction(PRUint32 trans_ID, PRUnichar *
 // note interesting side effects.  GetEngineSent/GetEngineReceived return other values
 PRUnichar *msiSimpleComputeEngine2::GetResultStrs(PRUint32 trans_ID)
 {
-  const WORD* res_mml =  ComputeDLL::GetPtrWIDEresult( trans_ID, RES_RESULT );
+  const U16* res_mml =  ComputeDLL::GetPtrWIDEresult( trans_ID, RES_RESULT );
   PRUnichar *res;
   if (res_mml)
     res = (PRUnichar*) nsMemory::Clone(res_mml, (wstrlen(res_mml)+1)*sizeof(PRUnichar));
@@ -925,21 +924,21 @@ PRUnichar *msiSimpleComputeEngine2::GetResultStrs(PRUint32 trans_ID)
     res = nsnull;
 
   nsMemory::Free(sent_to_engine);
-  const WORD* sent =  ComputeDLL::GetPtrWIDEresult( trans_ID, RES_SENT );
+  const U16* sent =  ComputeDLL::GetPtrWIDEresult( trans_ID, RES_SENT );
   if (sent)
     sent_to_engine = (PRUnichar*) nsMemory::Clone(sent, (wstrlen(sent)+1)*sizeof(PRUnichar));
   else
     sent_to_engine = nsnull;
 
   nsMemory::Free(received_from_engine);
-  const WORD* received =  ComputeDLL::GetPtrWIDEresult( trans_ID, RES_RECEIVED );
+  const U16* received =  ComputeDLL::GetPtrWIDEresult( trans_ID, RES_RECEIVED );
   if (received)
     received_from_engine = (PRUnichar*) nsMemory::Clone(received, (wstrlen(received)+1)*sizeof(PRUnichar));
   else
     received_from_engine = nsnull;
 
   nsMemory::Free(engine_errors);
-  const WORD* errors =  ComputeDLL::GetPtrWIDEresult( trans_ID, RES_ERROR );
+  const U16* errors =  ComputeDLL::GetPtrWIDEresult( trans_ID, RES_ERROR );
   if (errors)
     engine_errors = (PRUnichar*) nsMemory::Clone(errors, (wstrlen(errors)+1)*sizeof(PRUnichar));
   else

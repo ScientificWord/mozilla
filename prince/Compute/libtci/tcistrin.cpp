@@ -5,6 +5,7 @@
 #include <ctype.h>  // for islower, ...
 #include <limits.h> // for INT_MAX
 #include <string.h>
+#include <algorithm>  // for min/max
 
 // was tcidebug.h
 #if 0
@@ -46,14 +47,14 @@ int SafeStrlen(const TCICHAR *lpsz)
 
 
 #ifdef DEBUG
-static TCI_BOOL IsValidTCIString(const TCICHAR *lpsz)
+static bool IsValidTCIString(const TCICHAR *lpsz)
 {
   return lpsz != 0;
 }
 #endif
 
 
-inline TCI_BOOL _tciisspace(TCICHAR cp)
+inline bool _tciisspace(TCICHAR cp)
 {
   return (cp==0x20 || (cp>=9 && cp<=0x0d));
 }
@@ -651,10 +652,10 @@ int TCIString::FindNoCase(TCICHAR ch, int startPos) const
   }
 
   // return -1 if not found and index otherwise
-  if (CHAMmin(pos1,pos2) >= 0)
-    return(CHAMmin(pos1,pos2));
+  if (std::min(pos1,pos2) >= 0)
+    return(std::min(pos1,pos2));
   else
-    return(CHAMmax(pos1,pos2));
+    return(std::max(pos1,pos2));
 }
 
 int TCIString::ReverseFind(TCICHAR ch) const
@@ -813,13 +814,13 @@ int TCIString::NotMember(const TCICHAR *lpszCharSet, int startPos) const
   return (index < SafeStrlen(m_pchData)) ? index : -1;
 }
 
-TCI_BOOL TCIString::Contains(const TCICHAR *lpszCharSet) const
+bool TCIString::Contains(const TCICHAR *lpszCharSet) const
 {
   TCI_ASSERT(IsValidTCIString(lpszCharSet));
   return !(_tcistrlen(lpszCharSet) > _tcistrspn(lpszCharSet, m_pchData));
 }
 
-TCI_BOOL TCIString::ContainedIn(const TCICHAR *lpszCharSet) const
+bool TCIString::ContainedIn(const TCICHAR *lpszCharSet) const
 {
   TCI_ASSERT(IsValidTCIString(lpszCharSet));
   return !((size_t)SafeStrlen(m_pchData) > _tcistrspn(m_pchData, lpszCharSet));
@@ -902,6 +903,6 @@ TCIString::TCIString(const TCICHAR* lpch, int nLength)
     AllocBuffer(nLength);
     memcpy(m_pchData, lpch, m_nDataLength*sizeof(TCICHAR));
     m_pchData[m_nDataLength] = '\0';
-    m_nDataLength = CHAMmin(m_nDataLength,SafeStrlen(m_pchData));
+    m_nDataLength = std::min(m_nDataLength,SafeStrlen(m_pchData));
   }
 }

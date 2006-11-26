@@ -1,19 +1,16 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
-#include <windows.h>
-#include <stdio.h>
-
 #include "msiMapleEngineWrapper.h"
-#include "nsMemory.h"
+#include "MplWrap.h"
 
+#include "nsMemory.h"
 #include "nsEmbedString.h"
 
 #include "../../CmpTypes.h"
 #include "../../MRequest.h"
 #include "../../MResult.h"
 #include "../fltutils.h"
-
-#include "MplWrap.h"
+#include <stdio.h>
 
 
 NS_IMPL_ISUPPORTS1(msiMapleEngineWrapper, msiIEngineWrapper)

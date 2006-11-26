@@ -1,16 +1,13 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
-#include <windows.h>
-#include <stdio.h>
-
 #include "msiMuPADEngineWrapper.h"
+#include "MuWrap.h"
 
 #include "../../CmpTypes.h"
 #include "../../MRequest.h"
 #include "../../MResult.h"
 #include "../fltutils.h"
-
-#include "MuWrap.h"
+#include <stdio.h>
 
 
 NS_IMPL_ISUPPORTS1(msiMuPADEngineWrapper, msiIEngineWrapper)

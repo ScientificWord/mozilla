@@ -5,9 +5,10 @@
   by constructing an SWP "MuPADEngine" object and making calls to it.
 */
 
+#ifdef XP_WIN
 #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
-
+#endif
 
 #include "MuWrap.h"
 #include "MuWrapPlotCmd.h"

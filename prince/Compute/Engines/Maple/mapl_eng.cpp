@@ -1,8 +1,8 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
+#define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 
-#include <chmtypes.h>
 #include "mapl_eng.h"
 
 #include <math.h>

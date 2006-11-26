@@ -3,9 +3,10 @@
 #ifndef BYTEARRY_H
 #define BYTEARRY_H
 
-#ifndef CHMTYPES_H
-  #include "chmtypes.h"
-#endif
+#include "../CmpTypes.h"
+#define TCICHAR  char
+#define TCIWCHAR  short
+typedef unsigned char U8;
 
 class ByteArray 
 {
@@ -18,7 +19,7 @@ class ByteArray
   ~ByteArray();
 
 
-  TCI_BOOL    operator==(const ByteArray&);
+  bool    operator==(const ByteArray&);
  
   void        AddBytes(const U8* pData, U32 count);
  
@@ -31,9 +32,9 @@ class ByteArray
   ByteArray&  operator+=(const U8);
   void        AddString(const TCICHAR* str); //ljh 9/99 will include NULL terminator
 
-  TCI_BOOL        ReSize(U32 newsize);
+  bool        ReSize(U32 newsize);
   
-  TCI_BOOL        SetByteCount(U32 newcount);
+  bool        SetByteCount(U32 newcount);
   inline U32      GetByteCount() const {return m_bytecount;}
   
   U8*             Lock();
@@ -41,21 +42,21 @@ class ByteArray
   const U8*       ReadOnlyLock() const;
   void            ReadOnlyUnlock() const;
 
-  TCI_BOOL        ReplaceBytes(U32 nOffset, U32 nNumBytes, const U8* pNewBytes,
+  bool        ReplaceBytes(U32 nOffset, U32 nNumBytes, const U8* pNewBytes,
                                   U32 nNumNewBytes);
 
   private:
   
   void            AddBytes(const U8* pData, U32 count, U32 flags);
   U32             CalculateAllocSize(U32 size, U32 flags);
-  TCI_BOOL        ReSize(U32 newsize, U32 flags);
-  TCI_BOOL        LockedFor(U32 access) const;
+  bool        ReSize(U32 newsize, U32 flags);
+  bool        LockedFor(U32 access) const;
   U8*             GetDataPtr() const; 
   // Memory system specific
-  static TCI_BOOL AllocMemory(void** handle, U32 size);
+  static bool AllocMemory(void** handle, U32 size);
   static void*    ReallocMemory(void* handle, U32 size);
   static void     FreeMemory(void* handle);
-  static TCI_BOOL InitHeap(); //ljh 9/99 heap agent only
+  static bool InitHeap(); //ljh 9/99 heap agent only
 
 
   //Data
@@ -63,7 +64,7 @@ class ByteArray
   void*            m_handle;
   U32              m_bytecount;
   U32              m_allocsize;
-  mutable TCI_BOOL m_lockedForWriting;
+  mutable bool m_lockedForWriting;
   mutable int      m_readOnlyLockCount;
   static void*     m_mempool;  // heap agent only
 
