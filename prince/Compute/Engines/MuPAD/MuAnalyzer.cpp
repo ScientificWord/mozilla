@@ -2491,7 +2491,7 @@ void MuAnalyzer::AnalyzeDIFF(MNODE * func_node,
             SEMANTICS_NODE *s_sup = CreateSemanticsNode();
             s_sup->semantic_type = SEM_TYP_NUMBER;
             char buffer[32];
-            itoa(cv_tally, buffer, 10);
+            StrFromInt(cv_tally, buffer);
             size_t zln = strlen(buffer);
             char *tmp = new char[zln + 1];
             strcpy(tmp, buffer);
