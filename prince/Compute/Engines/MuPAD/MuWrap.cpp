@@ -3275,7 +3275,7 @@ char *MuPADWrapper::ODENumerictoEstr(SEMANTICS_NODE * ODE_info,
     }
 
     ODE_num_procnum += procs_defined;
-    itoa(ODE_num_procnum, magic_num_str, 10);
+    StrFromInt(ODE_num_procnum, magic_num_str);
 
     if (err_code) {
       error_code = err_code;
@@ -4536,7 +4536,7 @@ char *MuPADWrapper::CreateEQN2MATeStr(MathServiceRequest & msr,
       }
 
       char buffer[32];
-      itoa(tally, buffer, 10);
+      StrFromInt(tally, buffer);
       StrReplace(zh_rv, zln, "%nvars%", buffer);
 
       if (vars_str) {

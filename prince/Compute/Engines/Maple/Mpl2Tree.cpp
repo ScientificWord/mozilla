@@ -803,7 +803,7 @@ MNODE *Maple2Tree::BindOp(MNODE * op_node, int targ_prec, OpIlk op_type)
     strcpy(rv->src_tok, "precedence_group");
 
     char buffer[32];
-    itoa(targ_prec, buffer, 10);
+    StrFromInt(targ_prec, buffer);
     size_t nln = strlen(buffer);
     char *tmp = new char[nln + 1];
     strcpy(tmp, buffer);
