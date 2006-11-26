@@ -6,9 +6,6 @@
 #ifndef CHMTYPES_H
   #include "chmtypes.h"
 #endif
-#ifndef TCI_NEW_H
-  #include "TCI_new.h"
-#endif
 
 class ByteArray 
 {
@@ -37,7 +34,7 @@ class ByteArray
   TCI_BOOL        ReSize(U32 newsize);
   
   TCI_BOOL        SetByteCount(U32 newcount);
-  inline U32      GetByteCount() const {TCI_ASSERT(m_bytecount <= m_allocsize); return m_bytecount;}
+  inline U32      GetByteCount() const {return m_bytecount;}
   
   U8*             Lock();
   void            Unlock();

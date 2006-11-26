@@ -6,6 +6,11 @@
 #include "iCmpTypes.h"
 #include "iCmpIDs.h"
 
+#include "nsDebug.h"
+// debugging help, should switch each to NS_ASSERTION
+#define TCI_ASSERT(expr)  NS_ASSERTION((expr),"TCI_ASSERT")
+
+
 enum MarkupType
 { MT_UNDEFINED, MT_MATHML, MT_LATEX,
   MT_MAPLEV_INPUT, MT_MUPAD_INPUT, MT_GRAPH

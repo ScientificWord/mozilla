@@ -6,7 +6,7 @@
 #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 
-#ifdef TESTING
+#ifdef DEBUG
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
@@ -23,11 +23,6 @@
 
 #include "MplWrap.h"
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 LONG clients;
 
 MapleWrapper *maple_wrapper;
@@ -38,7 +33,7 @@ BOOL APIENTRY DllMain(HANDLE hModule,
   switch (ul_reason_for_call) {
 
   case DLL_PROCESS_ATTACH:
-#ifdef TESTING
+#ifdef DEBUG
     // detect and report memory leaks
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif

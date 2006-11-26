@@ -13,13 +13,7 @@
   generated and managed within MathWorkShop.
 */
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #include "MRequest.h"
-#include "tci_new.h"
 #include "engines/fltutils.h"
 #include <string>
 
@@ -80,7 +74,7 @@ void MathServiceRequest::PutASCIIMarkup(const char *src)
   }
   if (src) {
     size_t zln = strlen(src);
-    a_markup = TCI_NEW(char[zln + 1]);
+    a_markup = new char[zln + 1];
     strcpy(a_markup, src);
   }
 }
@@ -96,7 +90,7 @@ void MathServiceRequest::PutWideMarkup(const U16 * src)
     while (*p)
       p++;
     U32 zln = p - src;
-    w_markup = TCI_NEW(U16[zln + 1]);
+    w_markup = new U16[zln + 1];
     p = src;
     U32 i = 0;
     while (i <= zln) {
@@ -139,7 +133,7 @@ void MathServiceRequest::PutParam(U32 targ_ID, U32 p_type,
       }
       if (str_val) {
         size_t zln = strlen(str_val);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, str_val);
         rover->ASCII_data = tmp;
       }
@@ -158,13 +152,13 @@ void MathServiceRequest::PutParam(U32 targ_ID, U32 p_type,
   }
 
   if (!done) {
-    PARAM_SPEC *new_rec = TCI_NEW(PARAM_SPEC());
+    PARAM_SPEC *new_rec = new PARAM_SPEC();
     new_rec->next = param_list;
     new_rec->param_ID = targ_ID;
     new_rec->data_type = p_type;
     if (str_val) {
       size_t zln = strlen(str_val);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, str_val);
       new_rec->ASCII_data = tmp;
     } else {
@@ -379,7 +373,7 @@ void PlotServiceRequest::StorePlotParam(U32 plot_no, const char *str_key,
                                     const char *str_val, U32 p_type) {
   // if pspecs doesn't have at least plot_no, add them.
   for (std::vector<string>::size_type last = pspecs.size(); last <= plot_no; ++last) {
-    PARAM_SPEC *new_rec = TCI_NEW(PARAM_SPEC());
+    PARAM_SPEC *new_rec = new PARAM_SPEC();
     new_rec->next = NULL;
     new_rec->param_ID = 0;
     new_rec->data_type = 0;
@@ -441,7 +435,7 @@ const char *PlotServiceRequest::GetPlotParam(PARAM_SPEC *param_list, U32 targ_ID
     rover = rover->next;
   }
   if (!rv) {
-    char *x = TCI_NEW(char[1]);
+    char *x = new char[1];
 	x[0] = NULL;
 	rv = x;
   }
@@ -472,7 +466,7 @@ void PlotServiceRequest::PutPlotParam(PARAM_SPEC *param_list, U32 targ_ID, U32 p
       // Here, the target param already exists. We reset it.
       if (str_val) {
         size_t zln = strlen(str_val);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, str_val);
         rover->ASCII_data = tmp;
       }
@@ -486,13 +480,13 @@ void PlotServiceRequest::PutPlotParam(PARAM_SPEC *param_list, U32 targ_ID, U32 p
   }
 
   if (!done) {
-    PARAM_SPEC *new_rec = TCI_NEW(PARAM_SPEC());
+    PARAM_SPEC *new_rec = new PARAM_SPEC();
     new_rec->next = NULL;
     new_rec->param_ID = targ_ID;
     new_rec->data_type = p_type;
     if (str_val) {
       size_t zln = strlen(str_val);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, str_val);
       new_rec->ASCII_data = tmp;
     } else {

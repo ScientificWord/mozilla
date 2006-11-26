@@ -6,15 +6,8 @@
 */
 
 #include "grammar.h"
-
-#include "tci_new.h"
 #include <string.h>
 #include <stdlib.h>
-
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // Each hash table has a list of env names - a catenation of zstrs.
 //  We check that the table identified by "tableID" is valid for "zcurr_env".
@@ -156,7 +149,7 @@ HASH_TABLE *Grammar::FindTableForEnv(const char *env_list)
       tp += strlen(tp) + 1;
 
     size_t zln = tp - env_list + 1;
-    char *envs = TCI_NEW(char[zln]);
+    char *envs = new char[zln];
     memcpy(envs, env_list, zln);
 
     rv = MakeNextHNode();
@@ -191,7 +184,7 @@ bool Grammar::IsSubset(const char *env_list_subset,
 
 HASH_TABLE *Grammar::MakeNextHNode()
 {
-  HASH_TABLE *rv = TCI_NEW(HASH_TABLE);
+  HASH_TABLE *rv = new HASH_TABLE();
 
   rv->next = NULL;
   rv->zenv_names = NULL;        // context names
@@ -263,7 +256,7 @@ Grammar::Grammar(FILE * grammar_file, bool key_on_uids)
       U32 n_slots = (3 * rover->slot_count) / 2;
       n_slots++;                // assure at least 1 slot remains empty
 
-      HASH_REC *h_array = TCI_NEW(HASH_REC[n_slots]);
+      HASH_REC *h_array = new HASH_REC[n_slots];
       for (U32 si = 0; si < n_slots; si++) {
         h_array[si].zname = NULL;
         h_array[si].ztemplate = NULL;
@@ -578,9 +571,9 @@ LINE_REC *Grammar::FileToLineList(FILE * grammar_file)
 
       } else {                  // put this line on the list
 
-        new_node = TCI_NEW(LINE_REC);
+        new_node = new LINE_REC();
         new_node->next = NULL;
-        new_node->zline = TCI_NEW(char[ln + 1]);
+        new_node->zline = new char[ln + 1];
         strcpy(new_node->zline, fline);
 
         bool is_macro = false;
@@ -639,7 +632,7 @@ void Grammar::FileLineToHashTables(const char *fline, HASH_TABLE * t_node)
 
   // Set up the name of this syntax element in a heap zstring
   size_t zln = offsets[0];
-  char *znom = TCI_NEW(char[zln + 1]);
+  char *znom = new char[zln + 1];
   strncpy(znom, fline, zln);
   znom[zln] = 0;
 
@@ -669,7 +662,7 @@ void Grammar::FileLineToHashTables(const char *fline, HASH_TABLE * t_node)
   const char *ptr = fline + offsets[2];
   if (*ptr >= ' ') {
     zln = strlen(ptr);
-    char *ztempl = TCI_NEW(char[zln + 1]);
+    char *ztempl = new char[zln + 1];
     strcpy(ztempl, ptr);
     h_array[slot].ztemplate = ztempl;
   }

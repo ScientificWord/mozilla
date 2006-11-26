@@ -34,17 +34,9 @@ typedef struct tagClientVariables_REC {	//
 
 */
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #include "eAnalyzer.h"
-
 #include <string.h>
 #include <ctype.h>
-
-#include "tci_new.h"
 
 eAnalyzer::eAnalyzer(MapleWrapper * the_parent)
 {
@@ -309,7 +301,7 @@ void eAnalyzer::AnalyzeNUMBER(MNODE * eng_node,
   snode->semantic_type = SEM_TYP_NUMBER;
   if (eng_node->p_chdata) {
     size_t zln = strlen(eng_node->p_chdata);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, eng_node->p_chdata);
 
     // Maple pads returned decimal numbers with trailing 0's
@@ -343,7 +335,7 @@ void eAnalyzer::AnalyzeNUMBER(MNODE * eng_node,
         size_t zln = strlen(tmp);
         if (p_e)
           zln += strlen(p_e);
-        char *rv = TCI_NEW(char[zln + 1]);
+        char *rv = new char[zln + 1];
         strcpy(rv, tmp);
         if (p_e)
           strcat(rv, p_e);
@@ -810,7 +802,7 @@ void eAnalyzer::AnalyzeEXPONENTIAL(MNODE * func_node,
 
         if (is_one) {
           snode->semantic_type = SEM_TYP_UCONSTANT;
-          char *tmp = TCI_NEW(char[10]);
+          char *tmp = new char[10];
           strcpy(tmp, "&#x2147;");  // exponenent "e"
           snode->contents = tmp;
         } else {
@@ -820,7 +812,7 @@ void eAnalyzer::AnalyzeEXPONENTIAL(MNODE * func_node,
 
           SEMANTICS_NODE *s_base = CreateSemanticsNode();
           s_base->semantic_type = SEM_TYP_UCONSTANT;
-          char *tmp = TCI_NEW(char[10]);
+          char *tmp = new char[10];
           strcpy(tmp, "&#x2147;");  // exponential "e"
           s_base->contents = tmp;
 
@@ -899,7 +891,7 @@ void eAnalyzer::AnalyzeLIMIT(MNODE * func_node,
 {
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_LIMFUNC;
-  char *tmp = TCI_NEW(char[4]);
+  char *tmp = new char[4];
   strcpy(tmp, "lim");
   snode->contents = tmp;
 
@@ -946,7 +938,7 @@ void eAnalyzer::AnalyzeLIMIT(MNODE * func_node,
 
               SEMANTICS_NODE *s_num = CreateSemanticsNode();
               s_num->semantic_type = SEM_TYP_NUMBER;
-              char *tmp = TCI_NEW(char[2]);
+              char *tmp = new char[2];
               if (!strcmp(variable->p_chdata, "right"))
                 strcpy(tmp, "1");
               else if (!strcmp(variable->p_chdata, "left"))
@@ -1073,7 +1065,7 @@ void eAnalyzer::AnalyzeFUNCTION(MNODE * func_node,
           sem_type = SEM_TYP_CEILING;
         } else if (!strcmp(func_name, "Zeta")) {
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[10]);
+          char *tmp = new char[10];
           strcpy(tmp, "&#x3b6;");
           func_node->p_chdata = tmp;
         }
@@ -1084,7 +1076,7 @@ void eAnalyzer::AnalyzeFUNCTION(MNODE * func_node,
           sem_type = SEM_TYP_FLOOR;
         } else if (!strcmp(func_name, "GAMMA")) {
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[8]);
+          char *tmp = new char[8];
           strcpy(tmp, "&#x393;");
           func_node->p_chdata = tmp;
         } else if (!strcmp(func_name, "limit")) {
@@ -1106,19 +1098,19 @@ void eAnalyzer::AnalyzeFUNCTION(MNODE * func_node,
     case 7:{
         if (!strcmp(func_name, "laplace")) {
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[9]);
+          char *tmp = new char[9];
           strcpy(tmp, "&#x2112;");
           func_node->p_chdata = tmp;
         } else if (!strcmp(func_name, "fourier")) {
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[9]);
+          char *tmp = new char[9];
           strcpy(tmp, "&#x2131;");
           func_node->p_chdata = tmp;
         } else if (!strcmp(func_name, "`minus`")) {
           // Trick to avoid infinite regress
           //strcpy( func_node->p_chdata,"recurse" );
           delete[] func_node->p_chdata;
-          char *tmp = TCI_NEW(char[10]);
+          char *tmp = new char[10];
           strcpy(tmp, "recurse");
           func_node->p_chdata = tmp;
           AnalyzeFUNCTION(func_node, snode, local_nodes_done);
@@ -1159,19 +1151,19 @@ void eAnalyzer::AnalyzeFUNCTION(MNODE * func_node,
       if (back_map) {           // user function seen in input
         if (back_map->src_canonical_name) {
           size_t zln = strlen(back_map->src_canonical_name);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, back_map->src_canonical_name);
           snode->canonical_ID = tmp;
         }
         if (back_map->user_name) {
           size_t zln = strlen(back_map->user_name);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, back_map->user_name);
           snode->contents = tmp;
         }
       } else {
         size_t zln = strlen(func_node->p_chdata);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, func_node->p_chdata);
         snode->contents = tmp;
       }
@@ -1208,7 +1200,7 @@ void eAnalyzer::AnalyzePIECEWISE(MNODE * PIECEWISE_node,
   snode->semantic_type = SEM_TYP_PIECEWISE_LIST;
   if (PIECEWISE_node->p_chdata) {
     size_t zln = strlen(PIECEWISE_node->p_chdata);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, PIECEWISE_node->p_chdata);
     snode->contents = tmp;
   }
@@ -1371,7 +1363,7 @@ void eAnalyzer::AnalyzeVARIABLE(MNODE * eng_node, SEMANTICS_NODE * snode,
         GetdBaseNamedRecord("SIBASEUNITS", v_str, &db_production, ID, subID)) {
       if (db_production && *db_production) {
         size_t zln = strlen(db_production);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, db_production);
         snode->contents = tmp;
         snode->semantic_type = SEM_TYP_SIUNIT;
@@ -1385,12 +1377,12 @@ void eAnalyzer::AnalyzeVARIABLE(MNODE * eng_node, SEMANTICS_NODE * snode,
     if (back_map) {             // variable directly from input
       if (back_map->src_canonical_name && back_map->src_canonical_name[0]) {
         size_t zln = strlen(back_map->src_canonical_name);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, back_map->src_canonical_name);
         snode->canonical_ID = tmp;
       } else if (back_map->user_name && back_map->user_name[0]) {
         size_t zln = strlen(back_map->user_name);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, back_map->user_name);
         snode->contents = tmp;
       }
@@ -1413,7 +1405,7 @@ void eAnalyzer::AnalyzeVARIABLE(MNODE * eng_node, SEMANTICS_NODE * snode,
       size_t zln = strlen(var_nom);
       if (IsText(var_nom)) {
         snode->semantic_type = SEM_TYP_TEXT;
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, var_nom);
         snode->contents = tmp;
       } else {
@@ -1424,18 +1416,18 @@ void eAnalyzer::AnalyzeVARIABLE(MNODE * eng_node, SEMANTICS_NODE * snode,
 
           SEMANTICS_NODE *s_sub = CreateSemanticsNode();
           s_sub->semantic_type = SEM_TYP_NUMBER;
-          char *tmp = TCI_NEW(char[zln]);
+          char *tmp = new char[zln];
           strcpy(tmp, var_nom + 1);
           s_sub->contents = tmp;
 
           obj_bucket->first_child = s_sub;
           s_sub->parent = obj_bucket;
-          tmp = TCI_NEW(char[2]);
+          tmp = new char[2];
           tmp[0] = var_nom[0];
           tmp[1] = 0;
           snode->contents = tmp;
         } else {
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, var_nom);
           snode->contents = tmp;
         }
@@ -1534,7 +1526,7 @@ void eAnalyzer::AnalyzeOPERATOR(MNODE * eng_node,
       strcpy(buffer, eng_node->p_chdata);
     size_t bln = strlen(buffer);
 
-    char *tmp = TCI_NEW(char[bln + 1]);
+    char *tmp = new char[bln + 1];
     strcpy(tmp, buffer);
     snode->contents = tmp;
     if (p)
@@ -1559,7 +1551,7 @@ void eAnalyzer::AnalyzeCONSTANT(MNODE * eng_node, SEMANTICS_NODE * snode,
           GetdBaseNamedRecord("SIBASEUNITS", c_str, &db_production, ID, subID)) {
         if (db_production && *db_production) {
           size_t zln = strlen(db_production);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, db_production);
           snode->contents = tmp;
 
@@ -1607,7 +1599,7 @@ void eAnalyzer::AnalyzeCONSTANT(MNODE * eng_node, SEMANTICS_NODE * snode,
       }
       size_t bln = strlen(buffer);
 
-      char *tmp = TCI_NEW(char[bln + 1]);
+      char *tmp = new char[bln + 1];
       strcpy(tmp, buffer);
       snode->contents = tmp;
     }
@@ -1622,7 +1614,7 @@ void eAnalyzer::AnalyzeBOOLEAN(MNODE * eng_node,
   snode->semantic_type = SEM_TYP_BOOLEAN;
   if (eng_node->p_chdata) {
     size_t zln = strlen(eng_node->p_chdata);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, eng_node->p_chdata);
     snode->contents = tmp;
 
@@ -1876,7 +1868,7 @@ void eAnalyzer::FixMapleCholesky(SEMANTICS_NODE * s_list)
     if (comma->semantic_type == SEM_TYP_INFIX_OP
         && !strcmp(comma->contents, ",")) {
       delete[] comma->contents;
-      char *chdata = TCI_NEW(char[9]);
+      char *chdata = new char[9];
       strcpy(chdata, "&#x2062;");
       comma->contents = chdata;
     }
@@ -1891,7 +1883,7 @@ void eAnalyzer::FixMapleJordanForm(SEMANTICS_NODE * s_list)
     if (rover->semantic_type == SEM_TYP_INFIX_OP
         && !strcmp(rover->contents, ",")) {
       delete[] rover->contents;
-      char *chdata = TCI_NEW(char[9]);
+      char *chdata = new char[9];
       strcpy(chdata, "&#x2062;");
       rover->contents = chdata;
     }
@@ -1982,7 +1974,7 @@ SEMANTICS_NODE *eAnalyzer::FixMapleSimplexDual(SEMANTICS_NODE * s_list)
     s_simplex->semantic_type = SEM_TYP_SIMPLEX;
     char *name = "Simplex Dual";
     size_t zln = strlen(name);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, name);
     s_simplex->contents = tmp;
 
@@ -2038,7 +2030,7 @@ SEMANTICS_NODE *eAnalyzer::FixQuantileResult(SEMANTICS_NODE * s_list)
     s_qresult->semantic_type = SEM_TYP_QUANTILE_RESULT;
     char *name = "Quantile Result";
     size_t zln = strlen(name);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, name);
     s_qresult->contents = tmp;
 
@@ -2193,7 +2185,7 @@ void eAnalyzer::AddPrimesCount(SEMANTICS_NODE * snode, int n_primes)
   char buffer[32];
   sprintf(buffer, "%d", n_primes);
   size_t zln = strlen(buffer);
-  char *tmp = TCI_NEW(char[zln + 1]);
+  char *tmp = new char[zln + 1];
   strcpy(tmp, buffer);
   s_nprimes->contents = tmp;
 }

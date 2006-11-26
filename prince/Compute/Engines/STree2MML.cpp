@@ -25,18 +25,12 @@
   for a computation testjig.
 */
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-#include <string.h>
 #include "STree2MML.h"
 #include "MML2Tree.h"
-#include "tci_new.h"
 #include "../MResult.h"
 #include "../DefStore.h"
 #include "../PrefStor.h"
+#include <string.h>
 
 // IDs and Templates for MathML generation.
 // Make "mml:" into a substitution token - later.
@@ -192,7 +186,7 @@ STree2MML::STree2MML(Grammar * mml_grammar, PrefsStore * up_store) :
   def_IDs_mapper = NULL;
   input_notation = NULL;
 
-  mml_tree_gen = TCI_NEW(MML2Tree);
+  mml_tree_gen = new MML2Tree();
 
   // Some data used in selecting output formats
   last_matrix_delim_type = Delims_none;
@@ -241,7 +235,7 @@ char *STree2MML::BackTranslate(SEMANTICS_NODE * semantic_tree,
 
   SetUserPrefs(ds);
 
-#ifdef TESTING
+#ifdef DEBUG
   JBM::DumpSList(semantic_tree);
 #endif
 
@@ -701,7 +695,7 @@ void STree2MML::SemanticVARIABLE2MML(SEMANTICS_NODE * s_variable,
       z_variable = "&#x221e;";
 
     size_t ln = strlen(tmpl) + strlen(z_variable);
-    zh_rv = TCI_NEW(char[ln + 1]);
+    zh_rv = new char[ln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, ln, "%letters%", z_variable);
     zh_rv = ColorizeMMLElement(zh_rv, up_clr_math_attr, NULL, NULL);
@@ -756,7 +750,7 @@ void STree2MML::SemanticNUMBER2MML(SEMANTICS_NODE * s_number,
         size_t zln = strlen(tmpl) + strlen(znum_base) + strlen(zmult_op)
           + strlen(znum_10) + strlen(znum_exp);
 
-        zh_rv = TCI_NEW(char[zln + 1]);
+        zh_rv = new char[zln + 1];
         strcpy(zh_rv, tmpl);
         StrReplace(zh_rv, zln, "%num_base%", znum_base);
         StrReplace(zh_rv, zln, "%mult_op%", zmult_op);
@@ -771,7 +765,7 @@ void STree2MML::SemanticNUMBER2MML(SEMANTICS_NODE * s_number,
       } else {
         if (p_decimal && *(p_decimal + 1) == 0) { // "1."
           size_t zln = strlen(fixed_number);
-          char *tmp = TCI_NEW(char[zln + 2]);
+          char *tmp = new char[zln + 2];
           strcpy(tmp, fixed_number);
           strcat(tmp, "0");
           delete[] fixed_number;
@@ -813,7 +807,7 @@ void STree2MML::SemanticUCONSTANT2MML(SEMANTICS_NODE * s_constant,
       letter[1] = 0;
       char *tmpl = GetTmplPtr(TMPL_MI);
       size_t zln = strlen(tmpl);
-      char *zh_base = TCI_NEW(char[zln + 1]);
+      char *zh_base = new char[zln + 1];
       strcpy(zh_base, tmpl);
       StrReplace(zh_base, zln, "%letters%", letter);
       zh_base = ColorizeMMLElement(zh_base, up_clr_math_attr, NULL, NULL);
@@ -821,7 +815,7 @@ void STree2MML::SemanticUCONSTANT2MML(SEMANTICS_NODE * s_constant,
       char *zh_sub = MNfromNUMBER(const_tok + 1);
       tmpl = GetTmplPtr(TMPL_MSUB);
       zln = strlen(tmpl) + strlen(zh_base) + strlen(zh_sub);
-      zh_rv = TCI_NEW(char[zln + 1]);
+      zh_rv = new char[zln + 1];
       strcpy(zh_rv, tmpl);
       StrReplace(zh_rv, zln, "%base%", zh_base);
       StrReplace(zh_rv, zln, "%script%", zh_sub);
@@ -837,7 +831,7 @@ void STree2MML::SemanticUCONSTANT2MML(SEMANTICS_NODE * s_constant,
         char *tmpl = GetTmplPtr(TMPL_HAT_ACCENT);
         char *mi_Z = MIfromCHDATA("Z");
         size_t zln = strlen(tmpl) + strlen(mi_Z);
-        mml_symbol = TCI_NEW(char[zln + 1]);
+        mml_symbol = new char[zln + 1];
         strcpy(mml_symbol, tmpl);
         StrReplace(mml_symbol, zln, "%base%", mi_Z);
         mml_symbol =
@@ -897,7 +891,7 @@ void STree2MML::SemanticUCONSTANT2MML(SEMANTICS_NODE * s_constant,
 
       char *tmpl = GetTmplPtr(tmpl_ID);
       size_t ln = strlen(tmpl) + strlen(symbol);
-      zh_rv = TCI_NEW(char[ln + 1]);
+      zh_rv = new char[ln + 1];
       strcpy(zh_rv, tmpl);
       StrReplace(zh_rv, ln, repl, symbol);
       zh_rv = ColorizeMMLElement(zh_rv, color_attr, NULL, NULL);
@@ -923,7 +917,7 @@ void STree2MML::SemanticBOOLEAN2MML(SEMANTICS_NODE * s_boolean,
     char *tmpl = GetTmplPtr(TMPL_MTEXT);
     char *unicode_entity = s_boolean->contents;
     size_t ln = strlen(tmpl) + strlen(unicode_entity);
-    zh_rv = TCI_NEW(char[ln + 1]);
+    zh_rv = new char[ln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, ln, "%text%", unicode_entity);
     zh_rv = ColorizeMMLElement(zh_rv, up_clr_func_attr, NULL, NULL);
@@ -967,7 +961,7 @@ void STree2MML::SemanticCONJUGATE2MML(SEMANTICS_NODE * s_conjugate,
         size_t ln = strlen(tmpl);
         if (zh_arg)
           ln += strlen(zh_arg);
-        zh_rv = TCI_NEW(char[ln + 1]);
+        zh_rv = new char[ln + 1];
         strcpy(zh_rv, tmpl);
         StrReplace(zh_rv, ln, "%body%", zh_arg);
         zh_rv = ColorizeMMLElement(zh_rv, up_clr_math_attr, NULL, NULL);
@@ -1000,7 +994,7 @@ void STree2MML::SemanticCONJUGATE2MML(SEMANTICS_NODE * s_conjugate,
         size_t ln = strlen(tmpl);
         if (zh_arg)
           ln += strlen(zh_arg);
-        zh_rv = TCI_NEW(char[ln + 1]);
+        zh_rv = new char[ln + 1];
         strcpy(zh_rv, tmpl);
         StrReplace(zh_rv, ln, "%expr%", zh_arg);
         zh_rv = ColorizeMMLElement(zh_rv, up_clr_math_attr, NULL, NULL);
@@ -1026,7 +1020,7 @@ void STree2MML::SemanticTEXT2MML(SEMANTICS_NODE * s_text,
     char *tmpl = GetTmplPtr(TMPL_MTEXT);
     char *text = s_text->contents;
     size_t ln = strlen(tmpl) + strlen(text);
-    zh_rv = TCI_NEW(char[ln + 1]);
+    zh_rv = new char[ln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, ln, "%text%", text);
     zh_rv = ColorizeMMLElement(zh_rv, up_clr_text_attr, NULL, NULL);
@@ -1049,7 +1043,7 @@ void STree2MML::SemanticEQRESULT2MML(SEMANTICS_NODE * s_eq_result,
     char *tmpl = GetTmplPtr(TMPL_MTEXT);
     char *text = s_eq_result->contents;
     size_t ln = strlen(tmpl) + strlen(text);
-    zh_rv = TCI_NEW(char[ln + 1]);
+    zh_rv = new char[ln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, ln, "%text%", text);
     zh_rv = ColorizeMMLElement(zh_rv, up_clr_text_attr, NULL, NULL);
@@ -1090,7 +1084,7 @@ void STree2MML::SemanticUNIT2MML(SEMANTICS_NODE * s_unit,
     size_t ln = strlen(tmpl) + strlen(text);
     if (up_unit_attrs)
       ln += strlen(up_unit_attrs);
-    zh_rv = TCI_NEW(char[ln + 1]);
+    zh_rv = new char[ln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, ln, "%unit_attrs%", up_unit_attrs);
     StrReplace(zh_rv, ln, "%nom%", text);
@@ -1139,7 +1133,7 @@ void STree2MML::SemanticFUNCTION2MML(SEMANTICS_NODE * s_function,
         char *tmpl = GetTmplPtr(TMPL_FACTORIAL);
         // "<mml:mrow>\n%body%<mml:mo form=\"postfix\">!</mml:mo>\n</mml:mrow>\n",
         size_t ln = strlen(tmpl) + strlen(z_arg);
-        char *zh_rv = TCI_NEW(char[ln + 1]);
+        char *zh_rv = new char[ln + 1];
         strcpy(zh_rv, tmpl);
         StrReplace(zh_rv, ln, "%body%", z_arg);
         zh_rv = ColorizeMMLElement(zh_rv, up_clr_math_attr, NULL, NULL);
@@ -1268,7 +1262,7 @@ void STree2MML::LogWithBase2MML(SEMANTICS_NODE * s_function,
       ln += strlen(z_base);
     if (z_arg)
       ln += strlen(z_arg);
-    char *zh_rv = TCI_NEW(char[ln + 1]);
+    char *zh_rv = new char[ln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, ln, "%base%", z_base);
     StrReplace(zh_rv, ln, "%arg%", z_arg);
@@ -1368,7 +1362,7 @@ void STree2MML::SemanticDERIVATIVE2MML(SEMANTICS_NODE * s_derivative,
             char *tmpl = GetTmplPtr(TMPL_MSUP); //  "<msup>\n%base%%script%</msup>\n"
             size_t zln =
               strlen(tmpl) + strlen(zh_header) + strlen(primes_str);
-            zh_fcall = TCI_NEW(char[zln + 1]);
+            zh_fcall = new char[zln + 1];
             strcpy(zh_fcall, tmpl);
             StrReplace(zh_fcall, zln, "%base%", zh_header);
             StrReplace(zh_fcall, zln, "%script%", primes_str);
@@ -1377,7 +1371,7 @@ void STree2MML::SemanticDERIVATIVE2MML(SEMANTICS_NODE * s_derivative,
             char *dots_str = GetDotsStr(nprimes);
             char *tmpl = GetTmplPtr(TMPL_MOVER);  //  "<mover>\n%base%%top%</mover>\n"
             size_t zln = strlen(tmpl) + strlen(zh_header) + strlen(dots_str);
-            zh_fcall = TCI_NEW(char[zln + 1]);
+            zh_fcall = new char[zln + 1];
             strcpy(zh_fcall, tmpl);
             StrReplace(zh_fcall, zln, "%base%", zh_header);
             StrReplace(zh_fcall, zln, "%top%", dots_str);
@@ -1391,7 +1385,7 @@ void STree2MML::SemanticDERIVATIVE2MML(SEMANTICS_NODE * s_derivative,
               char *tmpl = GetTmplPtr(TMPL_MSUP); //  "<msup>\n%base%%script%</msup>\n"
               size_t zln =
                 strlen(tmpl) + strlen(zh_header) + strlen(primes_str);
-              zh_fcall = TCI_NEW(char[zln + 1]);
+              zh_fcall = new char[zln + 1];
               strcpy(zh_fcall, tmpl);
               StrReplace(zh_fcall, zln, "%base%", zh_header);
               StrReplace(zh_fcall, zln, "%script%", primes_str);
@@ -1409,7 +1403,7 @@ void STree2MML::SemanticDERIVATIVE2MML(SEMANTICS_NODE * s_derivative,
                 //TODO fence?
                 zln += strlen(zh_expr);
               }
-              zh_fcall = TCI_NEW(char[zln + 1]);
+              zh_fcall = new char[zln + 1];
               strcpy(zh_fcall, tmpl);
               StrReplace(zh_fcall, zln, "%DiffOp%", dop_str);
               StrReplace(zh_fcall, zln, "%vars%", vars_str);
@@ -1464,7 +1458,7 @@ void STree2MML::SemanticPIECEWISE2MML(SEMANTICS_NODE * s_piecewise,
         size_t zln = zln_mtd;
         if (zh_expr)
           zln += strlen(zh_expr);
-        char *zh_mtd = TCI_NEW(char[zln + 1]);
+        char *zh_mtd = new char[zln + 1];
         strcpy(zh_mtd, mtd_tmpl);
         StrReplace(zh_mtd, zln, "%body%", zh_expr);
         delete[] zh_expr;
@@ -1477,7 +1471,7 @@ void STree2MML::SemanticPIECEWISE2MML(SEMANTICS_NODE * s_piecewise,
       // Nest "if" in an <mtd>
       char *if_tmpl = GetTmplPtr(TMPL_IF);
       size_t zln = zln_mtd + strlen(if_tmpl);
-      char *zh_mtd = TCI_NEW(char[zln + 1]);
+      char *zh_mtd = new char[zln + 1];
       strcpy(zh_mtd, mtd_tmpl);
       StrReplace(zh_mtd, zln, "%body%", if_tmpl);
       zh_mtd = ColorizeMMLElement(zh_mtd, up_clr_text_attr, NULL, NULL);
@@ -1496,7 +1490,7 @@ void STree2MML::SemanticPIECEWISE2MML(SEMANTICS_NODE * s_piecewise,
         size_t zln = zln_mtd;
         if (zh_cond)
           zln += strlen(zh_cond);
-        char *zh_mtd = TCI_NEW(char[zln + 1]);
+        char *zh_mtd = new char[zln + 1];
         strcpy(zh_mtd, mtd_tmpl);
         StrReplace(zh_mtd, zln, "%body%", zh_cond);
         delete[] zh_cond;
@@ -1511,7 +1505,7 @@ void STree2MML::SemanticPIECEWISE2MML(SEMANTICS_NODE * s_piecewise,
       zln = strlen(mtr_tmpl + 1);
       if (celllist)
         zln += strlen(celllist);
-      char *zh_mtr = TCI_NEW(char[zln + 1]);
+      char *zh_mtr = new char[zln + 1];
       strcpy(zh_mtr, mtr_tmpl);
       StrReplace(zh_mtr, zln, "%celllist%", celllist);
       delete[] celllist;
@@ -1528,7 +1522,7 @@ void STree2MML::SemanticPIECEWISE2MML(SEMANTICS_NODE * s_piecewise,
   char *mtable_tmpl = GetTmplPtr(TMPL_MTABLE);
   size_t zln = strlen(mtable_tmpl + 1);
   zln += strlen(zh_line_list);
-  zh_rv = TCI_NEW(char[zln + 1]);
+  zh_rv = new char[zln + 1];
   strcpy(zh_rv, mtable_tmpl);
   StrReplace(zh_rv, zln, "%rowlist%", zh_line_list);
   delete[] zh_line_list;
@@ -1540,7 +1534,7 @@ void STree2MML::SemanticPIECEWISE2MML(SEMANTICS_NODE * s_piecewise,
     char *tmp = zh_rv;
     if (tmp)
       ln += strlen(tmp);
-    zh_rv = TCI_NEW(char[ln + 1]);
+    zh_rv = new char[ln + 1];
     strcpy(zh_rv, pw_fence_tmpl);
 
     StrReplace(zh_rv, ln, "%interior%", tmp);
@@ -1611,7 +1605,7 @@ void STree2MML::SemanticLIMFUNC2MML(SEMANTICS_NODE * s_limfunc,
     if (z_arg)
       zln += strlen(z_arg);
 
-    zh_rv = TCI_NEW(char[zln + 1]);
+    zh_rv = new char[zln + 1];
     strcpy(zh_rv, tmpl);
 
     StrReplace(zh_rv, zln, "%opname%", opname);
@@ -1685,7 +1679,7 @@ void STree2MML::SemanticFENCE2MML(SEMANTICS_NODE * sem_set_node,
   if (sem_set_node && sem_set_node->bucket_list) {
     char *comma_markup = GetTmplPtr(TMPL_COMMA);
     size_t c_ln = strlen(comma_markup);
-    char *z_comma = TCI_NEW(char[c_ln + 1]);
+    char *z_comma = new char[c_ln + 1];
     strcpy(z_comma, comma_markup);
     z_comma = ColorizeMMLElement(z_comma, up_clr_math_attr, NULL, NULL);
 
@@ -1757,7 +1751,7 @@ void STree2MML::SemanticFENCE2MML(SEMANTICS_NODE * sem_set_node,
           strlen(tmpl) + strlen(z_left_delim) + strlen(z_right_delim);
         if (zh_interior)
           zln += strlen(zh_interior);
-        rv = TCI_NEW(char[zln + 1]);
+        rv = new char[zln + 1];
         strcpy(rv, tmpl);
         StrReplace(rv, zln, "%open%", z_left_delim);
         StrReplace(rv, zln, "%close%", z_right_delim);
@@ -1782,7 +1776,7 @@ void STree2MML::SemanticFENCE2MML(SEMANTICS_NODE * sem_set_node,
         size_t ln = strlen(tmpl);
         if (zh_interior)
           ln += strlen(zh_interior);
-        rv = TCI_NEW(char[ln + 1]);
+        rv = new char[ln + 1];
         strcpy(rv, tmpl);
         StrReplace(rv, ln, "%interior%", zh_interior);
         rv = ColorizeMMLElement(rv, up_clr_math_attr, up_clr_math_attr, NULL);
@@ -1800,7 +1794,7 @@ void STree2MML::SemanticFENCE2MML(SEMANTICS_NODE * sem_set_node,
       char *tmpl = GetTmplPtr(TMPL_UPRIGHTMI);  // "<mi%color_attr% fontstyle=\"upright\">%letters%</mi>\n",
 
       size_t ln = strlen(tmpl) + 8;
-      rv = TCI_NEW(char[ln + 1]);
+      rv = new char[ln + 1];
       strcpy(rv, tmpl);
       StrReplace(rv, ln, "%letters%", "&#x2205;");
       rv = ColorizeMMLElement(rv, up_clr_math_attr, NULL, NULL);
@@ -1811,7 +1805,7 @@ void STree2MML::SemanticFENCE2MML(SEMANTICS_NODE * sem_set_node,
       //  "<mo%color_attr%>[</mo>\n%interior%<mo%color_attr2%>]</mo>\n",
 
       size_t ln = strlen(tmpl);
-      rv = TCI_NEW(char[ln + 1]);
+      rv = new char[ln + 1];
       strcpy(rv, tmpl);
       StrReplace(rv, ln, "%interior%", NULL);
       rv = ColorizeMMLElement(rv, up_clr_math_attr, up_clr_math_attr, NULL);
@@ -1874,7 +1868,7 @@ void STree2MML::SemanticSUBS2MML(SEMANTICS_NODE * sem_set_node,
         strlen(tmpl) + strlen(z_left_delim) + strlen(z_right_delim);
       if (zh_interior)
         zln += strlen(zh_interior);
-      z_body = TCI_NEW(char[zln + 1]);
+      z_body = new char[zln + 1];
       strcpy(z_body, tmpl);
       StrReplace(z_body, zln, "%open%", z_left_delim);
       StrReplace(z_body, zln, "%close%", z_right_delim);
@@ -1888,7 +1882,7 @@ void STree2MML::SemanticSUBS2MML(SEMANTICS_NODE * sem_set_node,
       size_t ln = strlen(tmpl);
       if (zh_interior)
         ln += strlen(zh_interior);
-      z_body = TCI_NEW(char[ln + 1]);
+      z_body = new char[ln + 1];
       strcpy(z_body, tmpl);
       StrReplace(z_body, ln, "%interior%", zh_interior);
       z_body = ColorizeMMLElement(z_body, up_clr_math_attr, up_clr_math_attr, NULL);
@@ -1928,7 +1922,7 @@ void STree2MML::SemanticSUBS2MML(SEMANTICS_NODE * sem_set_node,
     char *tmpl = GetTmplPtr(TMPL_SUBSTITUTION);
     size_t zln =
       strlen(tmpl) + strlen(z_body) + strlen(z_sub) + strlen(z_sup);
-    rv = TCI_NEW(char[zln + 1]);
+    rv = new char[zln + 1];
     strcpy(rv, tmpl);
     StrReplace(rv, zln, "%FenceBody%", z_body);
     StrReplace(rv, zln, "%lower%", z_sub);
@@ -2140,7 +2134,7 @@ void STree2MML::SemanticBINOMIAL2MML(SEMANTICS_NODE * s_fraction,
   if (z_den)
     zln += strlen(z_den);
 
-  rv = TCI_NEW(char[zln + 1]);
+  rv = new char[zln + 1];
   strcpy(rv, tmpl);
   StrReplace(rv, zln, "%num%", z_num);
   StrReplace(rv, zln, "%den%", z_den);
@@ -2209,13 +2203,13 @@ void STree2MML::SemanticINTERVAL2MML(SEMANTICS_NODE * s_interval,
     if (z_right)
       zln += strlen(z_right);
 
-    rv = TCI_NEW(char[zln + 1]);
+    rv = new char[zln + 1];
     strcpy(rv, tmpl);
     StrReplace(rv, zln, "%open%", l_delim);
     StrReplace(rv, zln, "%close%", r_delim);
 
     size_t ln = strlen(z_left) + strlen(z_right);
-    char *tmp = TCI_NEW(char[ln + 1]);
+    char *tmp = new char[ln + 1];
     strcpy(tmp, z_left);
     strcat(tmp, z_right);
 
@@ -2231,7 +2225,7 @@ void STree2MML::SemanticINTERVAL2MML(SEMANTICS_NODE * s_interval,
     if (z_right)
       zln += strlen(z_right);
 
-    rv = TCI_NEW(char[zln + 1]);
+    rv = new char[zln + 1];
     strcpy(rv, tmpl);
     StrReplace(rv, zln, "%l_delim%", l_delim);
     StrReplace(rv, zln, "%left%", z_left);
@@ -2331,7 +2325,7 @@ void STree2MML::SemanticPOWERFORM2MML(SEMANTICS_NODE * snode,
       zln += strlen(z_base);
     if (z_exp)
       zln += strlen(z_exp);
-    rv = TCI_NEW(char[zln + 1]);
+    rv = new char[zln + 1];
     strcpy(rv, tmpl);
     StrReplace(rv, zln, "%base%", z_base);
     if (!is_sqrt) {
@@ -2403,7 +2397,7 @@ void STree2MML::SemanticPOWERFORM2MML(SEMANTICS_NODE * snode,
       zln += strlen(z_base);
     if (z_sup)
       zln += strlen(z_sup);
-    rv = TCI_NEW(char[zln + 1]);
+    rv = new char[zln + 1];
     strcpy(rv, tmpl);
 
     StrReplace(rv, zln, "%base%", z_base);
@@ -2459,7 +2453,7 @@ void STree2MML::SemanticSQROOT2MML(SEMANTICS_NODE * snode,
   if (z_base)
     zln += strlen(z_base);
 
-  rv = TCI_NEW(char[zln + 1]);
+  rv = new char[zln + 1];
   strcpy(rv, tmpl);
 
   StrReplace(rv, zln, "%base%", z_base);
@@ -2507,7 +2501,7 @@ void STree2MML::SemanticQUANTILE2MML(SEMANTICS_NODE * s_quant_result,
       }
       char *comma_markup = GetTmplPtr(TMPL_COMMA);
       size_t c_ln = strlen(comma_markup);
-      char *z_comma = TCI_NEW(char[c_ln + 1]);
+      char *z_comma = new char[c_ln + 1];
       strcpy(z_comma, comma_markup);
       z_comma = ColorizeMMLElement(z_comma, up_clr_math_attr, NULL, NULL);
 
@@ -2518,7 +2512,7 @@ void STree2MML::SemanticQUANTILE2MML(SEMANTICS_NODE * s_quant_result,
       if (z_result)
         zln += strlen(z_result);
 
-      rv = TCI_NEW(char[zln + 1]);
+      rv = new char[zln + 1];
       strcpy(rv, tmpl);
 
       StrReplace(rv, zln, "%percent%", z_percent);
@@ -2589,7 +2583,7 @@ void STree2MML::SemanticROOT2MML(SEMANTICS_NODE * snode,
   if (z_radi)
     zln += strlen(z_radi);
 
-  rv = TCI_NEW(char[zln + 1]);
+  rv = new char[zln + 1];
   strcpy(rv, tmpl);
 
   StrReplace(rv, zln, "%base%", z_base);
@@ -2645,7 +2639,7 @@ void STree2MML::SemanticMIXEDNUM2MML(SEMANTICS_NODE * snode,
   size_t zln = strlen(tmpl);
   if (body)
     zln += strlen(body);
-  rv = TCI_NEW(char[zln + 1]);
+  rv = new char[zln + 1];
   strcpy(rv, tmpl);
 
   StrReplace(rv, zln, "%body%", body);
@@ -2749,7 +2743,7 @@ void STree2MML::SemanticBIGOPSUM2MML(SEMANTICS_NODE * s_sum,
       ln += strlen(zh_lowerlim);
     if (zh_upperlim)
       ln += strlen(zh_upperlim);
-    zh_rv = TCI_NEW(char[ln + 1]);
+    zh_rv = new char[ln + 1];
     strcpy(zh_rv, tmpl);
 
     StrReplace(zh_rv, ln, "%op%", zh_op);
@@ -2799,7 +2793,7 @@ void STree2MML::SemanticTABULATION2MML(SEMANTICS_NODE * s_table,
       size_t zln = strlen(mtd_tmpl);
       if (zh_cell_contents)
         zln += strlen(zh_cell_contents);
-      char *zh_mtd = TCI_NEW(char[zln + 1]);
+      char *zh_mtd = new char[zln + 1];
       strcpy(zh_mtd, mtd_tmpl);
       StrReplace(zh_mtd, zln, "%body%", zh_cell_contents);
       delete[] zh_cell_contents;
@@ -2815,7 +2809,7 @@ void STree2MML::SemanticTABULATION2MML(SEMANTICS_NODE * s_table,
     size_t zln = strlen(mtr_tmpl);
     if (zh_celllist)
       zln += strlen(zh_celllist);
-    char *zh_mtr = TCI_NEW(char[zln + 1]);
+    char *zh_mtr = new char[zln + 1];
     strcpy(zh_mtr, mtr_tmpl);
     StrReplace(zh_mtr, zln, "%celllist%", zh_celllist);
     zh_rowlist = AppendStr2HeapStr(zh_rowlist, rln, zh_mtr);
@@ -2828,7 +2822,7 @@ void STree2MML::SemanticTABULATION2MML(SEMANTICS_NODE * s_table,
   size_t zln = strlen(mtable_tmpl);
   if (zh_rowlist)
     zln += strlen(zh_rowlist);
-  zh_rv = TCI_NEW(char[zln + 1]);
+  zh_rv = new char[zln + 1];
   strcpy(zh_rv, mtable_tmpl);
   StrReplace(zh_rv, zln, "%rowlist%", zh_rowlist);
   delete[] zh_rowlist;
@@ -2860,7 +2854,7 @@ void STree2MML::SemanticTABULATION2MML(SEMANTICS_NODE * s_table,
         zln += strlen(z_right_delim);
       if (zh_interior)
         zln += strlen(zh_interior);
-      zh_rv = TCI_NEW(char[zln + 1]);
+      zh_rv = new char[zln + 1];
       strcpy(zh_rv, tmpl);
       StrReplace(zh_rv, zln, "%open%", z_left_delim);
       StrReplace(zh_rv, zln, "%close%", z_right_delim);
@@ -2883,7 +2877,7 @@ void STree2MML::SemanticTABULATION2MML(SEMANTICS_NODE * s_table,
         size_t zln = strlen(delim_tmpl);
         if (zh_rv)
           zln += strlen(zh_rv);
-        char *zh_delimited_rv = TCI_NEW(char[zln + 1]);
+        char *zh_delimited_rv = new char[zln + 1];
         strcpy(zh_delimited_rv, delim_tmpl);
         StrReplace(zh_delimited_rv, zln, "%interior%", zh_rv);
         zh_delimited_rv = ColorizeMMLElement(zh_delimited_rv,
@@ -2922,7 +2916,7 @@ void STree2MML::SemanticTRANSPOSE2MML(SEMANTICS_NODE * s_transpose,
                                         NULL);
   char *transpose_tmpl = GetTmplPtr(TMPL_TRANSPOSE);
   size_t zln = strlen(transpose_tmpl) + strlen(zh_matrix) + strlen(zh_transpose);
-  char *zh_rv = TCI_NEW(char[zln + 1]);
+  char *zh_rv = new char[zln + 1];
   strcpy(zh_rv, transpose_tmpl);
   StrReplace(zh_rv, zln, "%MatrixBody%", zh_matrix);
   StrReplace(zh_rv, zln, "%transpose%", zh_transpose);
@@ -2965,7 +2959,7 @@ void STree2MML::SemanticSIMPLEX2MML(SEMANTICS_NODE * s_simplex,
       size_t zln = strlen(mtd_tmpl);
       if (zh_line_contents)
         zln += strlen(zh_line_contents);
-      char *zh_mtd = TCI_NEW(char[zln + 1]);
+      char *zh_mtd = new char[zln + 1];
       strcpy(zh_mtd, mtd_tmpl);
       StrReplace(zh_mtd, zln, "%body%", zh_line_contents);
       delete[] zh_line_contents;
@@ -2975,7 +2969,7 @@ void STree2MML::SemanticSIMPLEX2MML(SEMANTICS_NODE * s_simplex,
       zln = strlen(mtr_tmpl + 1);
       if (zh_mtd)
         zln += strlen(zh_mtd);
-      char *zh_mtr = TCI_NEW(char[zln + 1]);
+      char *zh_mtr = new char[zln + 1];
       strcpy(zh_mtr, mtr_tmpl);
       StrReplace(zh_mtr, zln, "%celllist%", zh_mtd);
 
@@ -2999,7 +2993,7 @@ void STree2MML::SemanticSIMPLEX2MML(SEMANTICS_NODE * s_simplex,
   if (zh_condition_list)
     rows_zln += strlen(zh_condition_list);
 
-  char *zh_rowlist = TCI_NEW(char[rows_zln + 1]);
+  char *zh_rowlist = new char[rows_zln + 1];
   zh_rowlist[0] = 0;
 
   if (zh_objective_func) {
@@ -3015,7 +3009,7 @@ void STree2MML::SemanticSIMPLEX2MML(SEMANTICS_NODE * s_simplex,
   char *mtable_tmpl = GetTmplPtr(TMPL_MTABLE);
   size_t zln = strlen(mtable_tmpl + 1);
   zln += strlen(zh_rowlist);
-  zh_rv = TCI_NEW(char[zln + 1]);
+  zh_rv = new char[zln + 1];
   strcpy(zh_rv, mtable_tmpl);
   StrReplace(zh_rv, zln, "%rowlist%", zh_rowlist);
   delete[] zh_rowlist;
@@ -3075,7 +3069,7 @@ void STree2MML::SemanticFENCEOP2MML(SEMANTICS_NODE * s_fence,
     size_t zln = strlen(tmpl) + strlen(z_left_delim) + strlen(z_right_delim);
     if (zh_contents)
       zln += strlen(zh_contents);
-    zh_rv = TCI_NEW(char[zln + 1]);
+    zh_rv = new char[zln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, zln, "%open%", z_left_delim);
     StrReplace(zh_rv, zln, "%close%", z_right_delim);
@@ -3091,7 +3085,7 @@ void STree2MML::SemanticFENCEOP2MML(SEMANTICS_NODE * s_fence,
     size_t zln = strlen(tmpl) + strlen(zmo_left) + strlen(zmo_right);
     if (zh_contents)
       zln += strlen(zh_contents);
-    zh_rv = TCI_NEW(char[zln + 1]);
+    zh_rv = new char[zln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, zln, "%mo_left%", zmo_left);
     StrReplace(zh_rv, zln, "%body%", zh_contents);
@@ -3134,7 +3128,7 @@ void STree2MML::SemanticNORM2MML(SEMANTICS_NODE * s_norm,
     size_t zln = strlen(tmpl) + strlen(z_left_delim) + strlen(z_right_delim);
     if (zh_contents)
       zln += strlen(zh_contents);
-    zh_rv = TCI_NEW(char[zln + 1]);
+    zh_rv = new char[zln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, zln, "%open%", z_left_delim);
     StrReplace(zh_rv, zln, "%close%", z_right_delim);
@@ -3150,7 +3144,7 @@ void STree2MML::SemanticNORM2MML(SEMANTICS_NODE * s_norm,
     size_t zln = strlen(tmpl) + strlen(zmo_left) + strlen(zmo_right);
     if (zh_contents)
       zln += strlen(zh_contents);
-    zh_rv = TCI_NEW(char[zln + 1]);
+    zh_rv = new char[zln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, zln, "%mo_left%", zmo_left);
     StrReplace(zh_rv, zln, "%body%", zh_contents);
@@ -3182,7 +3176,7 @@ char *STree2MML::NestzMMLInMROW(char *z_body)
   if (z_body) {
     char *tmpl = GetTmplPtr(TMPL_MROW);
     size_t zln = strlen(tmpl) + strlen(z_body);
-    zh_rv = TCI_NEW(char[zln + 1]);
+    zh_rv = new char[zln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, zln, "%body%", z_body);
     delete[] z_body;
@@ -3308,7 +3302,7 @@ void STree2MML::SemanticEIGENVECTOR2MML(SEMANTICS_NODE * s_evector_set,
             ln += strlen(z_mult);
           if (z_vector)
             ln += strlen(z_vector);
-          char *z_triple = TCI_NEW(char[ln + 1]);
+          char *z_triple = new char[ln + 1];
           strcpy(z_triple, vec_tmpl);
 
           StrReplace(z_triple, ln, "%value%", z_value);
@@ -3350,7 +3344,7 @@ void STree2MML::SemanticEIGENVECTOR2MML(SEMANTICS_NODE * s_evector_set,
     if (vec_list)
       ln += strlen(vec_list);
 
-    zh_rv = TCI_NEW(char[ln + 1]);
+    zh_rv = new char[ln + 1];
     strcpy(zh_rv, set_tmpl);
     StrReplace(zh_rv, ln, "%eigen_vector_list%", vec_list);
 
@@ -3438,7 +3432,7 @@ void STree2MML::SemanticINTEGRAL2MML(SEMANTICS_NODE * s_integral,
       ln += strlen(zh_diffop);
     if (zh_intvar)
       ln += strlen(zh_intvar);
-    zh_rv = TCI_NEW(char[ln + 1]);
+    zh_rv = new char[ln + 1];
     strcpy(zh_rv, tmpl);
 
     StrReplace(zh_rv, ln, "%integrand%", zh_integrand);
@@ -3471,7 +3465,7 @@ char *STree2MML::NestzMMLInPARENS(char *zh_arg, int & nodes_made)
     size_t zln = strlen(tmpl) + 1 + 1;
     if (zh_arg)
       zln += strlen(zh_arg);
-    zh_rv = TCI_NEW(char[zln + 1]);
+    zh_rv = new char[zln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, zln, "%open%", "(");
     StrReplace(zh_rv, zln, "%close%", ")");
@@ -3482,7 +3476,7 @@ char *STree2MML::NestzMMLInPARENS(char *zh_arg, int & nodes_made)
     size_t ln = strlen(tmpl);
     if (zh_arg)
       ln += strlen(zh_arg);
-    zh_rv = TCI_NEW(char[ln + 1]);
+    zh_rv = new char[ln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, ln, "%interior%", zh_arg);
     zh_rv =
@@ -3767,7 +3761,7 @@ void STree2MML::SmallMixedNumber2MML(U32 num, U32 denom, FACTOR_REC * factor)
   char *tmpl = GetTmplPtr(TMPL_MIXEDNUMBER);
   size_t ln = strlen(tmpl) + 64;
 
-  zh_rv = TCI_NEW(char[ln]);
+  zh_rv = new char[ln];
   strcpy(zh_rv, tmpl);
 
   char buffer[64];
@@ -3824,7 +3818,7 @@ char *STree2MML::FuncHeader2MML(SEMANTICS_NODE * s_function)
     }
 
     size_t ln = strlen(tmpl) + strlen(f_nom);
-    zh_rv = TCI_NEW(char[ln + 1]);
+    zh_rv = new char[ln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, ln, "%letters%", f_nom);
 
@@ -3835,7 +3829,7 @@ char *STree2MML::FuncHeader2MML(SEMANTICS_NODE * s_function)
       char *tmpl = GetTmplPtr(TMPL_MSUP); //  "<msup>\n%base%%script%</msup>\n"
       char *minus1 = MNfromNUMBER("&#x2212;1");
       size_t zln = strlen(tmpl) + strlen(zh_rv) + strlen(minus1);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, tmpl);
       StrReplace(tmp, zln, "%base%", zh_rv);
       StrReplace(tmp, zln, "%script%", minus1);
@@ -3855,7 +3849,7 @@ char *STree2MML::FuncHeader2MML(SEMANTICS_NODE * s_function)
         GetMarkupFromID(def_IDs_mapper, s_function->canonical_ID);
     if (mml_markup) {
       size_t ln = strlen(mml_markup);
-      zh_rv = TCI_NEW(char[ln + 1]);
+      zh_rv = new char[ln + 1];
       strcpy(zh_rv, mml_markup);
     } else {
       TCI_ASSERT(!"No markup for this function.");
@@ -3877,7 +3871,7 @@ char *STree2MML::FuncHeader2MML(SEMANTICS_NODE * s_function)
       if (zh_exp && nodes_made > 1)
         zh_exp = NestzMMLInMROW(zh_exp);
       size_t zln = strlen(tmpl) + strlen(zh_rv) + strlen(zh_exp);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, tmpl);
       StrReplace(tmp, zln, "%base%", zh_rv);
       StrReplace(tmp, zln, "%script%", zh_exp);
@@ -3906,7 +3900,7 @@ char *STree2MML::ComposeFuncCall(SEMANTICS_NODE * s_function,
 
   char *comma_markup = GetTmplPtr(TMPL_COMMA);
   size_t c_ln = strlen(comma_markup);
-  char *z_comma = TCI_NEW(char[c_ln + 1]);
+  char *z_comma = new char[c_ln + 1];
   strcpy(z_comma, comma_markup);
   z_comma = ColorizeMMLElement(z_comma, up_clr_math_attr, NULL, NULL);
 
@@ -3991,7 +3985,7 @@ char *STree2MML::ComposeFuncCall(SEMANTICS_NODE * s_function,
         size_t zln = strlen(pattern) + strlen(dop_str);
         if (vars_str)
           zln += strlen(vars_str);
-        dhead_str = TCI_NEW(char[zln + 1]);
+        dhead_str = new char[zln + 1];
         strcpy(dhead_str, pattern);
         StrReplace(dhead_str, zln, "%DiffOp%", dop_str);
         StrReplace(dhead_str, zln, "%vars%", vars_str);
@@ -4056,7 +4050,7 @@ char *STree2MML::ComposeFuncCall(SEMANTICS_NODE * s_function,
     aln += strlen(dots_str);
   if (dhead_str)
     aln += strlen(dhead_str);
-  zh_rv = TCI_NEW(char[aln + 1]);
+  zh_rv = new char[aln + 1];
   strcpy(zh_rv, tmpl);
 
   StrReplace(zh_rv, aln, "%fheader%", zh_header);
@@ -4283,7 +4277,7 @@ char *STree2MML::ComposeTerm(FACTOR_REC * num_factors,
           zln += strlen(z_num);
         if (z_den)
           zln += strlen(z_den);
-        char *mfrac = TCI_NEW(char[zln + 1]);
+        char *mfrac = new char[zln + 1];
         strcpy(mfrac, tmpl);
         StrReplace(mfrac, zln, "%num%", z_num);
         StrReplace(mfrac, zln, "%den%", z_den);
@@ -4300,7 +4294,7 @@ char *STree2MML::ComposeTerm(FACTOR_REC * num_factors,
         if (z_body) {
           if (top_factors->is_operator) {
             size_t zln = strlen(mfrac) + strlen(z_body);
-            rv1 = TCI_NEW(char[zln + 1]);
+            rv1 = new char[zln + 1];
             strcpy(rv1, mfrac);
             delete[] mfrac;
             strcat(rv1, z_body);
@@ -4309,7 +4303,7 @@ char *STree2MML::ComposeTerm(FACTOR_REC * num_factors,
           } else {
             char *it = MOfromSTRING("&#x2062;", up_clr_math_attr);
             size_t zln = strlen(mfrac) + strlen(it) + strlen(z_body);
-            rv1 = TCI_NEW(char[zln + 1]);
+            rv1 = new char[zln + 1];
             strcpy(rv1, mfrac);
             delete[] mfrac;
             strcat(rv1, it);
@@ -4352,7 +4346,7 @@ char *STree2MML::ComposeTerm(FACTOR_REC * num_factors,
         if (z_den)
           zln += strlen(z_den);
 
-        rv1 = TCI_NEW(char[zln + 1]);
+        rv1 = new char[zln + 1];
         strcpy(rv1, tmpl);
         StrReplace(rv1, zln, "%num%", z_num);
         StrReplace(rv1, zln, "%den%", z_den);
@@ -4415,7 +4409,7 @@ char *STree2MML::ComposeTerm(FACTOR_REC * num_factors,
         if (z_den)
           zln += strlen(z_den);
 
-        zmml_unit_str = TCI_NEW(char[zln + 1]);
+        zmml_unit_str = new char[zln + 1];
         strcpy(zmml_unit_str, tmpl);
         StrReplace(zmml_unit_str, zln, "%num%", z_num);
         StrReplace(zmml_unit_str, zln, "%den%", z_den);
@@ -4430,7 +4424,7 @@ char *STree2MML::ComposeTerm(FACTOR_REC * num_factors,
       if (up_unit_attrs)
         zln += strlen(up_unit_attrs);
       char *body = zmml_unit_str;
-      zmml_unit_str = TCI_NEW(char[zln + 1]);
+      zmml_unit_str = new char[zln + 1];
       strcpy(zmml_unit_str, tmpl);
       StrReplace(zmml_unit_str, zln, "%unit_attrs%", up_unit_attrs);
       StrReplace(zmml_unit_str, zln, "%body%", body);
@@ -4947,7 +4941,7 @@ char *STree2MML::BUnitsToCompoundUnit(int *baseunit_powers)
       size_t ln = strlen(tmpl) + strlen(text);
       if (up_unit_attrs)
         ln += strlen(up_unit_attrs);
-      zh_rv = TCI_NEW(char[ln + 1]);
+      zh_rv = new char[ln + 1];
       strcpy(zh_rv, tmpl);
       StrReplace(zh_rv, ln, "%nom%", text);
       StrReplace(zh_rv, ln, "%unit_attrs%", up_unit_attrs);
@@ -5139,7 +5133,7 @@ void STree2MML::SetUnitInfo(SEMANTICS_NODE * snode, FACTOR_REC * new_fr)
 
 FACTOR_REC *STree2MML::CreateFactor()
 {
-  FACTOR_REC *new_fr = TCI_NEW(FACTOR_REC);
+  FACTOR_REC *new_fr = new FACTOR_REC();
   new_fr->next = NULL;
   new_fr->zh_fstr = NULL;
   new_fr->n_terms = 0;
@@ -5175,7 +5169,7 @@ char *STree2MML::AddSubToVariable(SEMANTICS_NODE * s_sub, char *zh_var)
     size_t zln = strlen(tmpl) + strlen(zh_sub);
     if (zh_var)
       zln += strlen(zh_var);
-    zh_rv = TCI_NEW(char[zln + 1]);
+    zh_rv = new char[zln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, zln, "%base%", zh_var);
     StrReplace(zh_rv, zln, "%script%", zh_sub);
@@ -5202,7 +5196,7 @@ FACTOR_REC *STree2MML::AbsorbUnaryOps(FACTOR_REC * factors,
       size_t ln1 = strlen(factors->zh_fstr);
       rv = factors->next;
       size_t ln2 = strlen(rv->zh_fstr);
-      char *cat = TCI_NEW(char[ln1 + ln2 + 1]);
+      char *cat = new char[ln1 + ln2 + 1];
       strcpy(cat, factors->zh_fstr);
       strcat(cat, rv->zh_fstr);
       delete[] rv->zh_fstr;
@@ -5285,7 +5279,7 @@ MNODE *STree2MML::CleanupMMLsource(MNODE * mml_var_node)
               if (do_it) {
                 delete[] mml_var_node->p_chdata;
                 size_t zln = strlen(suffix) + 3;
-                char *tmp = TCI_NEW(char[zln + 1]);
+                char *tmp = new char[zln + 1];
                 tmp[0] = '&';
                 tmp[1] = ch;
                 strcpy(tmp + 2, suffix);
@@ -5335,7 +5329,7 @@ char *STree2MML::ColorizeMMLElement(char *tmpl,
       ln += strlen(color_attr2);
     if (color_attr3)
       ln += strlen(color_attr3);
-    rv = TCI_NEW(char[ln + 1]);
+    rv = new char[ln + 1];
     strcpy(rv, tmpl);
     if (color_attr1)
       StrReplace(rv, ln, "%color_attr%", color_attr1);
@@ -5427,14 +5421,14 @@ void STree2MML::SemanticFracDerivative2MML(SEMANTICS_NODE * snode,
 
     char *tmpl = GetTmplPtr(TMPL_MSUP); //  "<msup>\n%base%%script%</msup>\n"
     size_t zln = strlen(tmpl) + strlen(diff_op) + strlen(script);
-    z_dop = TCI_NEW(char[zln + 1]);
+    z_dop = new char[zln + 1];
     strcpy(z_dop, tmpl);
     StrReplace(z_dop, zln, "%base%", diff_op);
     StrReplace(z_dop, zln, "%script%", script);
     delete[] script;
   } else {
     size_t zln = strlen(diff_op);
-    z_dop = TCI_NEW(char[zln + 1]);
+    z_dop = new char[zln + 1];
     strcpy(z_dop, diff_op);
   }
   delete[] diff_op;
@@ -5450,7 +5444,7 @@ void STree2MML::SemanticFracDerivative2MML(SEMANTICS_NODE * snode,
   if (z_dvar)
     zln += strlen(z_dvar);
 
-  rv = TCI_NEW(char[zln + 1]);
+  rv = new char[zln + 1];
   strcpy(rv, tmpl);
 
   StrReplace(rv, zln, "%d_op%", z_dop);
@@ -5631,7 +5625,7 @@ void STree2MML::BesselFunc2MML(SEMANTICS_NODE * s_function,
         char *tmpl = GetTmplPtr(TMPL_BESSEL);
         //  "<msub>\n<mi%color_attr%>Bessel%letter%</mi>\n%arg1%</msub>\n<mo>&#x2061;</mo>\n%arg2%",
         size_t ln = strlen(tmpl) + strlen(z_arg1) + strlen(z_arg2);
-        char *zh_rv = TCI_NEW(char[ln + 1]);
+        char *zh_rv = new char[ln + 1];
         strcpy(zh_rv, tmpl);
         StrReplace(zh_rv, ln, "%letter%", lstr);
         StrReplace(zh_rv, ln, "%arg1%", z_arg1);
@@ -5660,7 +5654,7 @@ char *STree2MML::NumberToUserFormat(SEMANTICS_NODE * s_number)
 
     char *p_decimal = strchr(ptr, '.');
     if (!p_decimal) {
-      rv = TCI_NEW(char[zln + 1]);
+      rv = new char[zln + 1];
       strcpy(rv, ptr);
       return rv;
     }
@@ -5674,7 +5668,7 @@ char *STree2MML::NumberToUserFormat(SEMANTICS_NODE * s_number)
     while (*ptr == '0')
       ptr++;                    // step over lead 0's
 
-    char *zsig_digits = TCI_NEW(char[zln + 1]);
+    char *zsig_digits = new char[zln + 1];
     int bi = 0;
     int shift = 0;
     bool after_decimal = false;
@@ -5700,7 +5694,7 @@ char *STree2MML::NumberToUserFormat(SEMANTICS_NODE * s_number)
     }
 
     if (!bi) {
-      char *rv = TCI_NEW(char[4]);
+      char *rv = new char[4];
       strcpy(rv, "0.0");
       delete[] zsig_digits;
       return rv;
@@ -5736,7 +5730,7 @@ char *STree2MML::NumberToUserFormat(SEMANTICS_NODE * s_number)
       size_t zln = strlen(tmp) + n_digits + 2;
       if (sign)
         zln++;
-      rv = TCI_NEW(char[zln + 1]);
+      rv = new char[zln + 1];
       size_t i = 0;
       if (sign)
         rv[i++] = sign == 1 ? '+' : '-';
@@ -5751,7 +5745,7 @@ char *STree2MML::NumberToUserFormat(SEMANTICS_NODE * s_number)
         size_t zln = n_digits + 1 + shift;
         if (sign)
           zln++;
-        rv = TCI_NEW(char[zln + 1]);
+        rv = new char[zln + 1];
         size_t i = 0;
         if (sign)
           rv[i++] = sign == 1 ? '+' : '-';
@@ -5771,7 +5765,7 @@ char *STree2MML::NumberToUserFormat(SEMANTICS_NODE * s_number)
           zln++;
         if (shift >= n_digits)  // need 0's in front of decimal
           zln += shift - n_digits + 1;
-        rv = TCI_NEW(char[zln + 1]);
+        rv = new char[zln + 1];
         int i = 0;
         if (sign)
           rv[i++] = sign == 1 ? '+' : '-';
@@ -5812,7 +5806,7 @@ void STree2MML::Roundup(char *z_numstr)
 {
   if (z_numstr && *z_numstr) {
     size_t zln = strlen(z_numstr);
-    char *tmp = TCI_NEW(char[zln + 2]);
+    char *tmp = new char[zln + 2];
     int ti = 0;
 
     bool carry_one = true;
@@ -5849,7 +5843,7 @@ char *STree2MML::MNfromNUMBER(char *z_number)
 {
   char *tmpl = GetTmplPtr(TMPL_MN);
   size_t ln = strlen(tmpl) + strlen(z_number);
-  char *zh_rv = TCI_NEW(char[ln + 1]);
+  char *zh_rv = new char[ln + 1];
   strcpy(zh_rv, tmpl);
   StrReplace(zh_rv, ln, "%digits%", z_number);
   zh_rv = ColorizeMMLElement(zh_rv, up_clr_math_attr, NULL, NULL);
@@ -5861,7 +5855,7 @@ char *STree2MML::MOfromSTRING(char *z_string, char *color)
 {
   char *tmpl = GetTmplPtr(TMPL_MO);
   size_t ln = strlen(tmpl) + strlen(z_string);
-  char *zh_rv = TCI_NEW(char[ln + 1]);
+  char *zh_rv = new char[ln + 1];
   strcpy(zh_rv, tmpl);
   StrReplace(zh_rv, ln, "%chdata%", z_string);
   zh_rv = ColorizeMMLElement(zh_rv, color, NULL, NULL);
@@ -5882,7 +5876,7 @@ char *STree2MML::PrefixMOfromSTRING(char *z_string)
   size_t ln = strlen(tmpl) + strlen(z_string);
   if (slant_attr)
     ln += strlen(slant_attr);
-  char *zh_rv = TCI_NEW(char[ln + 1]);
+  char *zh_rv = new char[ln + 1];
   strcpy(zh_rv, tmpl);
   StrReplace(zh_rv, ln, "%slant_att%", slant_attr);
   StrReplace(zh_rv, ln, "%chdata%", z_string);
@@ -5899,7 +5893,7 @@ char *STree2MML::AccentMOfromSTRING(char *z_string)
 
   char *tmpl = GetTmplPtr(TMPL_ACCENTMO);
   size_t ln = strlen(tmpl) + strlen(z_string);
-  char *zh_rv = TCI_NEW(char[ln + 1]);
+  char *zh_rv = new char[ln + 1];
   strcpy(zh_rv, tmpl);
   StrReplace(zh_rv, ln, "%chdata%", z_string);
   zh_rv = ColorizeMMLElement(zh_rv, up_clr_math_attr, NULL, NULL);
@@ -5911,7 +5905,7 @@ char *STree2MML::MIfromCHDATA(const char *z_chdata)
 {
   char *tmpl = GetTmplPtr(TMPL_MI);
   size_t ln = strlen(tmpl) + strlen(z_chdata);
-  char *zh_rv = TCI_NEW(char[ln + 1]);
+  char *zh_rv = new char[ln + 1];
   strcpy(zh_rv, tmpl);
   StrReplace(zh_rv, ln, "%letters%", z_chdata);
   zh_rv = ColorizeMMLElement(zh_rv, up_clr_math_attr, NULL, NULL);
@@ -5938,7 +5932,7 @@ char *STree2MML::GetPrimesStr(int nprimes)
     size_t aln = strlen(tmpl);
     if (primeslist)
       aln += strlen(primeslist);
-    rv = TCI_NEW(char[aln + 1]);
+    rv = new char[aln + 1];
     strcpy(rv, tmpl);
 
     StrReplace(rv, aln, "%primes%", primeslist);
@@ -6091,11 +6085,11 @@ void STree2MML::UPrefStr2MMLattr(char **dest, const char *new_value)
   if (new_value) {
     size_t zln = strlen(new_value);
     if (new_value[0] != ' ' && new_value[0] != 0) {
-      *dest = TCI_NEW(char[zln + 2]);
+      *dest = new char[zln + 2];
       strcpy(*dest, " ");
       strcat(*dest, new_value);
     } else {
-      *dest = TCI_NEW(char[zln + 1]);
+      *dest = new char[zln + 1];
       strcpy(*dest, new_value);
     }
   }
@@ -6436,7 +6430,7 @@ char *STree2MML::LowerLim2MML(BUCKET_REC * b_parts)
 
           char *tmpl = GetTmplPtr(TMPL_MSUP); //  "<msup>\n%base%%script%</msup>\n"
           size_t zln = strlen(tmpl) + strlen(expr_str) + strlen(script_str);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, tmpl);
           StrReplace(tmp, zln, "%base%", expr_str);
           StrReplace(tmp, zln, "%script%", script_str);
@@ -6492,7 +6486,7 @@ char *STree2MML::NestInMath(char *body)
     size_t ln = strlen(tmpl) + strlen(body);
     if (up_math_attrs)
       ln += strlen(up_math_attrs);
-    zh_rv = TCI_NEW(char[ln + 1]);
+    zh_rv = new char[ln + 1];
     strcpy(zh_rv, tmpl);
     StrReplace(zh_rv, ln, "%attrs%", up_math_attrs);
     StrReplace(zh_rv, ln, "%body%", body);

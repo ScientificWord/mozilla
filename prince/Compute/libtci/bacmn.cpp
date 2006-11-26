@@ -1,11 +1,7 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
-#ifdef TESTING
-  #undef THIS_FILE
-  static char THIS_FILE[] = __FILE__;
-#endif
-
 #include "bytearry.h"
+#include "../CmpTypes.h"
 #include <tchar.h>
 #include <stdlib.h>
 
@@ -190,7 +186,7 @@ void ByteArray::AddBytes(const U8* pData, U32 count, U32 flags)
     {
       U32 limit = m_bytecount + count;
       if (limit >= m_allocsize)
-        TCI_VERIFY(ReSize(limit, flags));
+        ReSize(limit, flags);
       U8* p = Lock() + m_bytecount;
       memcpy(p, pData, count);
       Unlock();
@@ -214,7 +210,7 @@ TCI_BOOL ByteArray::ReplaceBytes(U32 nOffset, U32 nNumBytes, const U8* pNewBytes
       nNumBytes = m_bytecount - nOffset;
     int nDelta = (int)nNumNewBytes - (int)nNumBytes;
     if (m_bytecount + nDelta >= m_allocsize)
-      TCI_VERIFY(ReSize(m_bytecount + nDelta));
+      ReSize(m_bytecount + nDelta);
     U8* pOldMem = Lock() + nOffset;
     if (nDelta && (nOffset + nNumBytes < m_bytecount))
     {
@@ -246,7 +242,8 @@ TCI_BOOL ByteArray::ReSize(U32 thesize, U32 flags)
     U32 size = CalculateAllocSize(thesize, flags);
     if (m_handle == NULL)
     { 
-       TCI_VERIFY(ByteArray::AllocMemory(&m_handle, size));
+       ByteArray::AllocMemory(&m_handle, size);
+       TCI_ASSERT(m_handle);
        m_allocsize = (m_handle != NULL) ? size : 0;
     }
     else
