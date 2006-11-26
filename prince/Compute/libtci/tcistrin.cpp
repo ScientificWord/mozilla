@@ -6,7 +6,6 @@
 #include <limits.h> // for INT_MAX
 #include <string.h>
 
-
 // was tcidebug.h
 #if 0
   #define TCI_TRACE(a) fprintf(stderr, a); \
@@ -23,11 +22,6 @@
 
 #ifdef ASSERT_HYPERACTIVE_STR
   #define ALLOC_WARNING_THRESHOLD  5
-#endif
-
-#ifdef TESTING
-  #undef THIS_FILE
-  static char THIS_FILE[] = __FILE__;
 #endif
 
 
@@ -51,7 +45,7 @@ int SafeStrlen(const TCICHAR *lpsz)
 }
 
 
-#ifdef TESTING
+#ifdef DEBUG
 static TCI_BOOL IsValidTCIString(const TCICHAR *lpsz)
 {
   return lpsz != 0;
@@ -194,8 +188,7 @@ void TCIString::AllocBuffer(int nLen)
   }
   else
   {
-    //m_pchData = new TCICHAR[nLen + 1]; // may throw an exception
-    m_pchData =  TCI_NEW( TCICHAR[nLen + 1] ); // may throw an exception
+    m_pchData = new TCICHAR[nLen + 1]; // may throw an exception
     m_pchData[nLen] = '\0';
     m_nDataLength = nLen;
     m_nAllocLength = nLen;

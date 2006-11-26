@@ -27,15 +27,8 @@ OR
     in some of our own boiler plate.
 */
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #include "MuP2Tree.h"
-
 #include "../../CmpTypes.h"
-#include "tci_new.h"
 #include <string.h>
 #include <ctype.h>
 
@@ -145,7 +138,7 @@ MNODE *MuPAD2Tree::GetElementList(const char *z_src,
           char buffer[32];
           sprintf(buffer, "%d", n_primes);
           size_t zln = strlen(buffer);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, buffer);
           delete[] name;
           new_node->p_chdata = tmp;
@@ -440,7 +433,7 @@ MNODE *MuPAD2Tree::GetNumber(const char *z_src, int &advance)
     rv = MakeTNode(z_src - start_ptr, data_len, src_line_number);
     strcpy(rv->src_tok, "number");
 
-    char *tmp = TCI_NEW(char[data_len + 1]);
+    char *tmp = new char[data_len + 1];
     strncpy(tmp, z_src, data_len);
     tmp[data_len] = 0;
     rv->p_chdata = tmp;
@@ -454,7 +447,7 @@ MNODE *MuPAD2Tree::GetOperator(const char *z_src, U32 n_chars)
   MNODE *rv = MakeTNode(z_src - start_ptr, n_chars, src_line_number);
   strcpy(rv->src_tok, "operator");
 
-  char *tmp = TCI_NEW(char[n_chars + 1]);
+  char *tmp = new char[n_chars + 1];
   if (!strncmp(z_src, ", \"#\",", 6))
     strncpy(tmp, "mnjoin", n_chars);
   else
@@ -484,7 +477,7 @@ MNODE *MuPAD2Tree::GetString(const char *z_src, int &advance)
     rv = MakeTNode(z_src - start_ptr, data_len, src_line_number);
     strcpy(rv->src_tok, "string");
 
-    char *tmp = TCI_NEW(char[data_len + 1]);
+    char *tmp = new char[data_len + 1];
     strncpy(tmp, z_src, data_len);
     tmp[data_len] = 0;
     rv->p_chdata = tmp;
@@ -522,7 +515,7 @@ char *MuPAD2Tree::GetName(const char *z_src, int &bytes_spanned)
       break;
   }
   bytes_spanned = ptr - z_src;
-  rv = TCI_NEW(char[bytes_spanned + 1]);
+  rv = new char[bytes_spanned + 1];
   strncpy(rv, z_src, bytes_spanned);
   rv[bytes_spanned] = 0;
 
@@ -544,7 +537,7 @@ char *MuPAD2Tree::GetQuotedString(const char *z_src, int &bytes_spanned)
 
         TCI_ASSERT(bytes_spanned == 2);
 
-        rv = TCI_NEW(char[bytes_spanned + 1]);
+        rv = new char[bytes_spanned + 1];
         strncpy(rv, z_src, bytes_spanned);
         rv[bytes_spanned] = 0;
         break;
@@ -882,7 +875,7 @@ MNODE *MuPAD2Tree::BindOp(MNODE * op_node, int targ_prec, OpIlk op_type)
     char buffer[32];
     itoa(targ_prec, buffer, 10);
     size_t nln = strlen(buffer);
-    char *tmp = TCI_NEW(char[nln + 1]);
+    char *tmp = new char[nln + 1];
     strcpy(tmp, buffer);
     rv->p_chdata = tmp;
 

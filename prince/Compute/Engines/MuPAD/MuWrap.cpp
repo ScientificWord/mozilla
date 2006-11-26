@@ -8,23 +8,18 @@
 #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 
-#include <tcistrin.h>
 
 #include "MuWrap.h"
 #include "MuWrapPlotCmd.h"
 #include "../EngWrap.h"
 #include "mupd_eng.h"
+#include <tcistrin.h>
 #include "../../MRequest.h"
 #include "../../MResult.h"
 #include "../../DefStore.h"
 #include "MuP2Tree.h"
 #include "MuAnalyzer.h"
 #include "../Grammar.h"
-
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 MuPADEngine *mupd_eng = NULL;
 
@@ -33,13 +28,13 @@ MuPADWrapper::MuPADWrapper(void *ID_dBase, void *NOM_dBase)
   id_dBase = (Grammar *) ID_dBase;
   nom_dBase = (Grammar *) NOM_dBase;
 
-  mupd_eng = TCI_NEW(MuPADEngine());
+  mupd_eng = new MuPADEngine();
 
   client_list = NULL;
 
-  MuPAD_parser = TCI_NEW(MuPAD2Tree());
+  MuPAD_parser = new MuPAD2Tree();
   out_tree = NULL;
-  engstr_analyzer = TCI_NEW(MuAnalyzer(this));
+  engstr_analyzer = new MuAnalyzer(this);
 
   msg_list = NULL;
   curr_msr = NULL;
@@ -83,7 +78,7 @@ void MuPADWrapper::iReleaseClient(U32 client_ID, const char *def_list)
 
     if (def_list) {
       size_t zln = strlen(def_list);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, def_list);
       char *ptr = tmp;
       while (ptr && *ptr) {
@@ -249,7 +244,7 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
             TCI_ASSERT(cmd_ID == CCID_Polynomial_Sort || cmd_ID == CCID_Definiteness_Tests);
             size_t zln = strlen(zeng_output);
             if (zeng_output[zln - 1] == '"') {
-              char *tmp = TCI_NEW(char[zln - 1]);
+              char *tmp = new char[zln - 1];
               strncpy(tmp, zeng_output + 1, zln - 2);
               tmp[zln - 2] = 0;
               delete[] zeng_output;
@@ -327,7 +322,7 @@ int MuPADWrapper::iInitialize(const char *libp, const char *champ,
 {
   if (vcampath) {
     size_t zln = strlen(vcampath);
-    vcam_path = TCI_NEW(char[zln + 1]);
+    vcam_path = new char[zln + 1];
     strcpy(vcam_path, vcampath);
   }
   TCIString libpath = libp;
@@ -386,7 +381,7 @@ char *MuPADWrapper::Execute(const char *cmd)
   U32 nBytes = ba.GetByteCount();
   if (res && nBytes) {
     const char *ret = (const char *)ba.ReadOnlyLock();
-    char *rv = TCI_NEW(char[nBytes + 1]);
+    char *rv = new char[nBytes + 1];
     strncpy(rv, ret, nBytes);
     rv[nBytes] = 0;
     ba.ReadOnlyUnlock();
@@ -416,7 +411,7 @@ bool MuPADWrapper::RenderPlot(const char *VCamFile, const char *outFile)
   TCI_ASSERT(vcam_path);
   if (!CreateProcess
       (vcam_path, msSucks, NULL, NULL, false, 0, NULL, NULL, &si, &pi)) {
-#ifdef TESTING
+#ifdef DEBUG
     DWORD err = GetLastError();
     TCI_ASSERT(!"Unable to run VCam.  Check error code.");
 #endif
@@ -613,12 +608,12 @@ char *MuPADWrapper::ProcessSemList(SEMANTICS_NODE * head, const char *modulus,
       if (rv) {
         char *save = rv;
         zln += strlen(save);
-        rv = TCI_NEW(char[zln + 1]);
+        rv = new char[zln + 1];
         strcpy(rv, save);
         strcat(rv, eng_zstr);
         delete[] save;
       } else {
-        rv = TCI_NEW(char[zln + 1]);
+        rv = new char[zln + 1];
         strcpy(rv, eng_zstr);
       }
       delete[] eng_zstr;
@@ -663,7 +658,7 @@ char *MuPADWrapper::ProcessSemNode(SEMANTICS_NODE * s_node,
     case SEM_TYP_ENG_PASSTHRU:
       if (s_node->contents) {
         size_t zln = strlen(s_node->contents);
-        rv = TCI_NEW(char[zln + 1]);
+        rv = new char[zln + 1];
         strcpy(rv, s_node->contents);
       }
       break;
@@ -903,7 +898,7 @@ char *MuPADWrapper::VARIABLEtoEstr(SEMANTICS_NODE * snode, int& error_code)
                                 snode->canonical_ID, snode->contents);
   if (map) {
     size_t zln = strlen(map->alias);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, map->alias);
     rv = tmp;
 
@@ -993,7 +988,7 @@ char *MuPADWrapper::MIXEDNUMBERtoEstr(SEMANTICS_NODE * s_mixed,
     if (whole_str && frac_str) {
       size_t bln =
         strlen(db_production) + strlen(whole_str) + strlen(frac_str);
-      zh_rv = TCI_NEW(char[bln]);
+      zh_rv = new char[bln];
       strcpy(zh_rv, db_production);
       StrReplace(zh_rv, bln, "%whole%", whole_str);
       StrReplace(zh_rv, bln, "%frac%", frac_str);
@@ -1022,7 +1017,7 @@ char *MuPADWrapper::UCONSTANTtoEstr(SEMANTICS_NODE * snode, int& error_code)
       if (db_production && *db_production) {
         // the database for this engine contains a token for this constant
         size_t zln = strlen(db_production);
-        rv = TCI_NEW(char[zln + 1]);
+        rv = new char[zln + 1];
         strcpy(rv, db_production);
 
         if (zln == 1 && rv[0] == 'I')
@@ -1069,7 +1064,7 @@ char *MuPADWrapper::UNITtoEstr(SEMANTICS_NODE * snode, int& error_code)
     if (GetdBaseNamedRecord("SICONVERSIONS", key, &db_production, ID, subID)) {
       if (db_production && *db_production) {
         size_t zln = strlen(db_production);
-        rv = TCI_NEW(char[zln + 1]);
+        rv = new char[zln + 1];
         strcpy(rv, db_production);
       }
     } else
@@ -1222,7 +1217,7 @@ char *MuPADWrapper::FUNCTIONtoEstr(SEMANTICS_NODE * s_func, int& error_code)
     bln += strlen(base_str);
   if (args_str)
     bln += strlen(args_str);
-  rv = TCI_NEW(char[bln]);
+  rv = new char[bln];
   strcpy(rv, new_production);
   StrReplace(rv, bln, "%base%", base_str);
   StrReplace(rv, bln, "%arg_list%", args_str);
@@ -1260,7 +1255,7 @@ char *MuPADWrapper::FUNCTIONtoEstr(SEMANTICS_NODE * s_func, int& error_code)
       bln += strlen(base_str);
     if (sup_str)
       bln += strlen(sup_str);
-    rv = TCI_NEW(char[bln]);
+    rv = new char[bln];
     strcpy(rv, db_production);
     StrReplace(rv, bln, "%base%", base_str);
     StrReplace(rv, bln, "%superscript%", sup_str);
@@ -1479,7 +1474,7 @@ char *MuPADWrapper::LIMFUNCtoEstr(SEMANTICS_NODE * limfunc_info,
       bln += strlen(ll_str);
     if (ul_str)
       bln += strlen(ul_str);
-    rv = TCI_NEW(char[bln]);
+    rv = new char[bln];
     strcpy(rv, db_production);
     StrReplace(rv, bln, "%arg_list%", arg_str);
     StrReplace(rv, bln, "%var%", var_str);
@@ -1565,7 +1560,7 @@ char *MuPADWrapper::SUBSTITUTIONtoEstr(SEMANTICS_NODE * subst_info,
       bln += strlen(expr_str);
       bln += strlen(upper_str);
     }
-    rv = TCI_NEW(char[bln]);
+    rv = new char[bln];
     strcpy(rv, db_production);
     StrReplace(rv, bln, "%subst_list%", lower_str);
     StrReplace(rv, bln, "%expr%", expr_str);
@@ -1627,7 +1622,7 @@ char *MuPADWrapper::MULTIARGFUNCtoEstr(SEMANTICS_NODE * subst_info,
       bln += strlen(subst_str);
     if (expr_str)
       bln += strlen(expr_str);
-    rv = TCI_NEW(char[bln]);
+    rv = new char[bln];
     strcpy(rv, db_production);
     StrReplace(rv, bln, "%subst%", subst_str);
     StrReplace(rv, bln, "%expr%", expr_str);
@@ -1744,7 +1739,7 @@ char *MuPADWrapper::DERIVATIVEtoEstr(SEMANTICS_NODE * diff_info,
       bln += strlen(expr_str);
     if (var_str)
       bln += strlen(var_str);
-    rv = TCI_NEW(char[bln]);
+    rv = new char[bln];
     strcpy(rv, db_production);
     StrReplace(rv, bln, "%expr%", expr_str);
     StrReplace(rv, bln, "%var%", var_str);
@@ -1796,7 +1791,7 @@ char *MuPADWrapper::ODEBoundarytoEstr(SEMANTICS_NODE * diff_info,
     size_t bln = strlen(db_production) + 1;
     if (func_str)
       bln += strlen(func_str);
-    rv = TCI_NEW(char[bln]);
+    rv = new char[bln];
     strcpy(rv, db_production);
     StrReplace(rv, bln, "%func%", func_str);
     delete[] func_str;
@@ -1806,7 +1801,7 @@ char *MuPADWrapper::ODEBoundarytoEstr(SEMANTICS_NODE * diff_info,
 
   if (args_str) {
     size_t zln = strlen(rv) + strlen(args_str);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, rv);
     strcat(tmp, args_str);
     delete[] rv;
@@ -1857,7 +1852,7 @@ char *MuPADWrapper::PRIMEStoEstr(SEMANTICS_NODE * diff_info, int& error_code)
       else
         TCI_ASSERT(0);
       zln = strlen(ptr);
-      var_str = TCI_NEW(char[zln]);
+      var_str = new char[zln];
       strcpy(var_str, ptr + 1);
       *ptr = 0;
     } else {
@@ -1900,7 +1895,7 @@ char *MuPADWrapper::PRIMEStoEstr(SEMANTICS_NODE * diff_info, int& error_code)
                                         canonical_ID, NULL);
           if (map) {
             size_t zln = strlen(map->alias);
-            var_str = TCI_NEW(char[zln + 1]);
+            var_str = new char[zln + 1];
             strcpy(var_str, map->alias);
           } else {
             var_str = GetEngNameForVar(frame_ID, user_name, canonical_ID);
@@ -1916,7 +1911,7 @@ char *MuPADWrapper::PRIMEStoEstr(SEMANTICS_NODE * diff_info, int& error_code)
     if (nprimes_bucket) {
       SEMANTICS_NODE *s_number = nprimes_bucket->first_child;
       size_t zln = strlen(s_number->contents);
-      num_str = TCI_NEW(char[zln + 1]);
+      num_str = new char[zln + 1];
       strcpy(num_str, s_number->contents);
     }
 
@@ -1927,7 +1922,7 @@ char *MuPADWrapper::PRIMEStoEstr(SEMANTICS_NODE * diff_info, int& error_code)
       bln += strlen(var_str);
     if (num_str)
       bln += strlen(num_str);
-    rv = TCI_NEW(char[bln]);
+    rv = new char[bln];
     strcpy(rv, db_production);
     StrReplace(rv, bln, "%func%", func_str);
     StrReplace(rv, bln, "%var%", var_str);
@@ -2040,7 +2035,7 @@ char *MuPADWrapper::BIGOPtoEstr(SEMANTICS_NODE * bigop_snode,
         bln += strlen(lower_str);
       if (upper_str)
         bln += strlen(upper_str);
-      rv = TCI_NEW(char[bln]);
+      rv = new char[bln];
       strcpy(rv, db_production);
       StrReplace(rv, bln, "%operand%", operand_str);
       StrReplace(rv, bln, "%variable%", var_str);
@@ -2155,7 +2150,7 @@ char *MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE * bigop_snode,
       bln += strlen(upper_str);
     if (var_str)
       bln += strlen(var_str);
-    rv = TCI_NEW(char[bln + 1]);
+    rv = new char[bln + 1];
     strcpy(rv, db_production);
     StrReplace(rv, bln, "%integrand%", integrand_str);
     if (subID == 3 || subID == 4) {
@@ -2193,7 +2188,7 @@ char *MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE * bigop_snode,
           bln += strlen(rv);
         if (var_str)
           bln += strlen(var_str);
-        char *new_rv = TCI_NEW(char[bln + 1]);
+        char *new_rv = new char[bln + 1];
         strcpy(new_rv, db_production);
         StrReplace(new_rv, bln, "%integrand%", rv);
         StrReplace(new_rv, bln, "%comma%", ",");
@@ -2235,13 +2230,13 @@ char *MuPADWrapper::OPERATORtoEstr(SEMANTICS_NODE * sem_op_node,
         char ch = db_maple_op[0];
         if (ch >= 'a' && ch <= 'z') { // " union "
           zln += 2;
-          rv = TCI_NEW(char[zln + 1]);
+          rv = new char[zln + 1];
           rv[0] = ' ';
           strcpy(rv + 1, db_maple_op);
           rv[zln - 1] = ' ';
           rv[zln] = 0;
         } else {                // "+"
-          rv = TCI_NEW(char[zln + 1]);
+          rv = new char[zln + 1];
           strcpy(rv, db_maple_op);
         }
       }
@@ -2308,7 +2303,7 @@ char *MuPADWrapper::INTERVALtoEstr(SEMANTICS_NODE * interval_info,
     if (lower_str && upper_str) {
       size_t bln =
         strlen(db_production) + strlen(lower_str) + strlen(upper_str);
-      zh_rv = TCI_NEW(char[bln]);
+      zh_rv = new char[bln];
       strcpy(zh_rv, db_production);
       StrReplace(zh_rv, bln, "%lower%", lower_str);
       StrReplace(zh_rv, bln, "%upper%", upper_str);
@@ -2357,7 +2352,7 @@ char *MuPADWrapper::FRACTIONtoEstr(SEMANTICS_NODE * frac_info,
 
     if (num_str && den_str) {
       size_t bln = strlen(db_production) + strlen(num_str) + strlen(den_str);
-      rv = TCI_NEW(char[bln]);
+      rv = new char[bln];
       strcpy(rv, db_production);
       StrReplace(rv, bln, "%numerator%", num_str);
       StrReplace(rv, bln, "%denominator%", den_str);
@@ -2406,7 +2401,7 @@ char *MuPADWrapper::POWERFORMtoEstr(SEMANTICS_NODE * s_powerform,
           size_t bln = strlen(db_production);
           if (arg_str)
             bln += strlen(arg_str);
-          rv = TCI_NEW(char[bln]);
+          rv = new char[bln];
           strcpy(rv, db_production);
           StrReplace(rv, bln, "%exponent%", arg_str);
           delete[] arg_str;
@@ -2519,7 +2514,7 @@ char *MuPADWrapper::POWERFORMtoEstr(SEMANTICS_NODE * s_powerform,
       if (base_str && sup_str) {
         size_t bln = strlen(db_production)
           + strlen(base_str) + strlen(sup_str);
-        rv = TCI_NEW(char[bln]);
+        rv = new char[bln];
         strcpy(rv, db_production);
         StrReplace(rv, bln, "%base%", base_str);
         StrReplace(rv, bln, "%superscript%", sup_str);
@@ -2573,7 +2568,7 @@ char *MuPADWrapper::ROOTtoEstr(SEMANTICS_NODE * root_info, int& error_code)
       if (base_str && radi_str) {
         size_t bln =
           strlen(db_production) + strlen(base_str) + strlen(radi_str);
-        zh_rv = TCI_NEW(char[bln]);
+        zh_rv = new char[bln];
         strcpy(zh_rv, db_production);
         StrReplace(zh_rv, bln, "%base%", base_str);
         StrReplace(zh_rv, bln, "%radicand%", radi_str);
@@ -2613,7 +2608,7 @@ char *MuPADWrapper::SQROOTtoEstr(SEMANTICS_NODE * sqrt_info,
       }
       if (base_str) {
         size_t bln = strlen(db_production) + strlen(base_str);
-        zh_rv = TCI_NEW(char[bln]);
+        zh_rv = new char[bln];
         strcpy(zh_rv, db_production);
         StrReplace(zh_rv, bln, "%base%", base_str);
       }
@@ -2653,7 +2648,7 @@ char *MuPADWrapper::SURDasPOWERtoEstr(SEMANTICS_NODE * surd_info,
     if (den_str) {
       size_t bln = strlen(db_production)
         + strlen(num_str) + strlen(den_str);
-      sup_str = TCI_NEW(char[bln]);
+      sup_str = new char[bln];
       strcpy(sup_str, db_production);
       StrReplace(sup_str, bln, "%numerator%", num_str);
       StrReplace(sup_str, bln, "%denominator%", den_str);
@@ -2684,7 +2679,7 @@ char *MuPADWrapper::SURDasPOWERtoEstr(SEMANTICS_NODE * surd_info,
       sup_str = NestInParens(sup_str, false);
 
       size_t bln = strlen(db_production) + strlen(base_str) + strlen(sup_str);
-      zh_rv = TCI_NEW(char[bln]);
+      zh_rv = new char[bln];
       strcpy(zh_rv, db_production);
       StrReplace(zh_rv, bln, "%base%", base_str);
       StrReplace(zh_rv, bln, "%superscript%", sup_str);
@@ -2721,7 +2716,7 @@ char *MuPADWrapper::CONJUGATEtoEstr(SEMANTICS_NODE * snode, int& error_code)
       if (base_str) {
         base_str = NestInParens(base_str, false);
         size_t bln = strlen(db_production) + strlen(base_str);
-        rv = TCI_NEW(char[bln]);
+        rv = new char[bln];
         strcpy(rv, db_production);
         StrReplace(rv, bln, "%arg%", base_str);
 
@@ -2758,7 +2753,7 @@ char *MuPADWrapper::TRANSPOSEtoEstr(SEMANTICS_NODE * snode, char TorH,
 
         if (m_str) {
           size_t bln = strlen(db_production) + strlen(m_str);
-          rv = TCI_NEW(char[bln]);
+          rv = new char[bln];
           strcpy(rv, db_production);
           StrReplace(rv, bln, "%matrix%", m_str);
           delete[] m_str;
@@ -2836,7 +2831,7 @@ char *MuPADWrapper::TABULATIONtoEstr(SEMANTICS_NODE * table_info,
     size_t bln = strlen(db_production) + 1;
     if (row_list_str)
       bln += strlen(row_list_str);
-    rv = TCI_NEW(char[bln]);
+    rv = new char[bln];
     strcpy(rv, db_production);
     char num_buffer[80];
     sprintf(num_buffer, "%d", table_info->nrows);
@@ -2916,7 +2911,7 @@ char *MuPADWrapper::SIMPLEXtoEstr(SEMANTICS_NODE * simplex_info,
     char *ptr = strstr(db_production, "%var%");
     if (ptr) {
       // Need to pass this in!
-      var_str = TCI_NEW(char[2]);
+      var_str = new char[2];
       strcpy(var_str, "s");
     }
     // Compose the return string
@@ -2928,7 +2923,7 @@ char *MuPADWrapper::SIMPLEXtoEstr(SEMANTICS_NODE * simplex_info,
       bln += strlen(conds_str);
     if (var_str)
       bln += strlen(var_str);
-    rv = TCI_NEW(char[bln + 1]);
+    rv = new char[bln + 1];
     strcpy(rv, db_production);
 
     StrReplace(rv, bln, "%expr%", expr_str);
@@ -3034,7 +3029,7 @@ char *MuPADWrapper::NUMSYSTEMtoEstr(SEMANTICS_NODE * numsys_info,
       bln += strlen(comma_str);
     if (cond_set_str)
       bln += strlen(cond_set_str);
-    rv = TCI_NEW(char[bln + 1]);
+    rv = new char[bln + 1];
     strcpy(rv, db_production);
 
     StrReplace(rv, bln, "%eqn_set%", eqn_set_str);
@@ -3100,7 +3095,7 @@ char *MuPADWrapper::SOLVESYSTEMtoEstr(SEMANTICS_NODE * numsys_info,
       bln += strlen(comma_str);
     if (col_matrix_str)
       bln += strlen(col_matrix_str);
-    rv = TCI_NEW(char[bln + 1]);
+    rv = new char[bln + 1];
     strcpy(rv, db_production);
 
     StrReplace(rv, bln, "%coeff_matrix%", coeff_matrix_str);
@@ -3197,7 +3192,7 @@ char *MuPADWrapper::ODEtoEstr(SEMANTICS_NODE * ODE_info, int& error_code)
         bln += strlen(expr_list_str);
       if (sfor_func_str)
         bln += strlen(sfor_func_str);
-      rv = TCI_NEW(char[bln + 1]);
+      rv = new char[bln + 1];
       strcpy(rv, db_production);
 
       StrReplace(rv, bln, "%exp_list%", expr_list_str);
@@ -3293,7 +3288,7 @@ char *MuPADWrapper::ODENumerictoEstr(SEMANTICS_NODE * ODE_info,
       if (func_names_str)
         bln += strlen(func_names_str);
       bln += strlen(magic_num_str);
-      rv = TCI_NEW(char[bln + 1]);
+      rv = new char[bln + 1];
       strcpy(rv, db_production);
 
       StrReplace(rv, bln, "%exp_list%", exp_list_str);
@@ -3314,7 +3309,7 @@ char *MuPADWrapper::ODENumerictoEstr(SEMANTICS_NODE * ODE_info,
 
 ClientAliases_REC *MuPADWrapper::CreateClientRecord(U32 client_num)
 {
-  ClientAliases_REC *rv = TCI_NEW(ClientAliases_REC);
+  ClientAliases_REC *rv = new ClientAliases_REC();
   rv->next = NULL;
   rv->client_ID = client_num;
   rv->AKAs_list = NULL;
@@ -3339,17 +3334,17 @@ NAME2AKA_REC *MuPADWrapper::PushNamingRecord(const char *eng_name,
   NAME2AKA_REC *rv = aka_list;
 
   if (eng_name) {
-    NAME2AKA_REC *new_node = TCI_NEW(NAME2AKA_REC);
+    NAME2AKA_REC *new_node = new NAME2AKA_REC();
     new_node->next = aka_list;
 
     size_t zln = strlen(eng_name);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, eng_name);
     new_node->alias = tmp;
 
     if (canon_name) {
       zln = strlen(canon_name);
-      tmp = TCI_NEW(char[zln + 1]);
+      tmp = new char[zln + 1];
       strcpy(tmp, canon_name);
       new_node->src_canonical_name = tmp;
     } else
@@ -3357,7 +3352,7 @@ NAME2AKA_REC *MuPADWrapper::PushNamingRecord(const char *eng_name,
 
     if (user_name && *user_name) {
       zln = strlen(user_name);
-      tmp = TCI_NEW(char[zln + 1]);
+      tmp = new char[zln + 1];
       strcpy(tmp, user_name);
       new_node->user_name = tmp;
     } else
@@ -3465,7 +3460,7 @@ char *MuPADWrapper::CreateEngName(U32 client_ID,
   }
 
   size_t zln = strlen(mangled_name);
-  char *eng_name = TCI_NEW(char[zln + 1]);
+  char *eng_name = new char[zln + 1];
   strcpy(eng_name, mangled_name);
 
   curr_client->AKAs_list =
@@ -3484,7 +3479,7 @@ char *MuPADWrapper::CanonicalNumberToEngineStr(const char *num_str,
   error_code = 0;
 
   size_t zln = strlen(num_str);
-  char *rv = TCI_NEW(char[zln + 1]);
+  char *rv = new char[zln + 1];
   int i = 0;
 
   const char *ptr = num_str;
@@ -3973,12 +3968,12 @@ char *MuPADWrapper::CreateStandardeStr(const char *eng_zstr,
   if (eng_zstr) {
     if (cmd_template && *cmd_template) {
       size_t zln = strlen(cmd_template) + strlen(eng_zstr) + 10;
-      rv = TCI_NEW(char[zln]);
+      rv = new char[zln];
       sprintf(rv, cmd_template, eng_zstr);
     } else {
       TCI_ASSERT(0);
       size_t zln = strlen(eng_zstr);
-      rv = TCI_NEW(char[zln + 1]);
+      rv = new char[zln + 1];
       strcpy(rv, eng_zstr);
     }
   }
@@ -4107,7 +4102,7 @@ char *MuPADWrapper::CreateWHICHVAReStr(MathServiceRequest & msr, U32 cmd_ID,
         size_t zln = strlen(cmd_template) + strlen(eng_zstr);
         if (vars_str)
           zln += strlen(vars_str);
-        zh_rv = TCI_NEW(char[zln]);
+        zh_rv = new char[zln];
         strcpy(zh_rv, cmd_template);
         StrReplace(zh_rv, zln, "%expr%", eng_zstr);
 
@@ -4175,7 +4170,7 @@ char *MuPADWrapper::CreateITERATEeStr(MathServiceRequest & msr,
         zln += strlen(start_str);
         zln += strlen(tally_str);
 
-        zh_rv = TCI_NEW(char[zln]);
+        zh_rv = new char[zln];
         strcpy(zh_rv, cmd_template);
         StrReplace(zh_rv, zln, "%func%", z_func_nom);
         if (start_str) {
@@ -4230,7 +4225,7 @@ char *MuPADWrapper::CreateSIntegraleStr(MathServiceRequest & msr, U32 cmd_ID,
       char *ptr = strstr(eng_zstr, "hold(int)");
       if (ptr) {
         size_t zln = strlen(cmd_template) + strlen(eng_zstr) + strlen(part);
-        zh_rv = TCI_NEW(char[zln]);
+        zh_rv = new char[zln];
         strcpy(zh_rv, cmd_template);
         StrReplace(zh_rv, zln, "%integral%", eng_zstr);
         if (cmd_ID == CCID_Calculus_Integrate_by_Parts)
@@ -4275,7 +4270,7 @@ char *MuPADWrapper::CreateAPPROXINTeStr(MathServiceRequest & msr,
       if (n_intervals)
         zln += strlen(n_intervals);
 
-      zh_rv = TCI_NEW(char[zln]);
+      zh_rv = new char[zln];
       strcpy(zh_rv, cmd_template);
       StrReplace(zh_rv, zln, "%integral%", eng_zstr);
       if (n_intervals) {
@@ -4334,7 +4329,7 @@ char *MuPADWrapper::CreateFITCURVEeStr(MathServiceRequest & msr,
           zln += strlen(z_degree);
         }
 
-        zh_rv = TCI_NEW(char[zln]);
+        zh_rv = new char[zln];
         strcpy(zh_rv, cmd_template);
         StrReplace(zh_rv, zln, "%data_matrix%", eng_zstr);
 
@@ -4409,7 +4404,7 @@ char *MuPADWrapper::CreateFILLMATRIXeStr(MathServiceRequest & msr,
       if (extra)
         zln += strlen(extra);
 
-      zh_rv = TCI_NEW(char[zln]);
+      zh_rv = new char[zln];
       strcpy(zh_rv, cmd_template);
 
       StrReplace(zh_rv, zln, "%nRows%", rows_str);
@@ -4479,7 +4474,7 @@ char *MuPADWrapper::CreateEQN2MATeStr(MathServiceRequest & msr,
     if (z_var)
       zln += strlen(z_var);
 
-    zh_rv = TCI_NEW(char[zln]);
+    zh_rv = new char[zln];
     strcpy(zh_rv, cmd_template);
     StrReplace(zh_rv, zln, "%eqns_or_mat%", eng_zstr);
 
@@ -4592,7 +4587,7 @@ char *MuPADWrapper::CreateCOLLECTeStr(MathServiceRequest & msr,
     size_t zln = strlen(cmd_template) + strlen(eng_zstr);
     if (var_str)
       zln += strlen(var_str);
-    zh_rv = TCI_NEW(char[zln]);
+    zh_rv = new char[zln];
     strcpy(zh_rv, cmd_template);
     StrReplace(zh_rv, zln, "%expr%", eng_zstr);
     StrReplace(zh_rv, zln, "%var%", var_str);
@@ -4660,7 +4655,7 @@ char *MuPADWrapper::CreatePSERIESeStr(MathServiceRequest & msr,
     if (order_str)
       zln += strlen(order_str);
 
-    zh_rv = TCI_NEW(char[zln]);
+    zh_rv = new char[zln];
     strcpy(zh_rv, cmd_template);
     StrReplace(zh_rv, zln, "%expr%", eng_zstr);
     StrReplace(zh_rv, zln, "%var%", var_str);
@@ -4733,7 +4728,7 @@ char *MuPADWrapper::CreateODESERIESeStr(MathServiceRequest & msr,
     if (order_str)
       zln += strlen(order_str);
 
-    zh_rv = TCI_NEW(char[zln]);
+    zh_rv = new char[zln];
     strcpy(zh_rv, cmd_template);
     StrReplace(zh_rv, zln, "%theODE_and_func%", eng_zstr);
     StrReplace(zh_rv, zln, "%var%", var_str);
@@ -4765,7 +4760,7 @@ char *MuPADWrapper::CreateQUANTILEeStr(MathServiceRequest & msr,
       size_t zln = strlen(cmd_template) + strlen(eng_zstr);
       if (percent_str)
         zln += strlen(percent_str);
-      zh_rv = TCI_NEW(char[zln]);
+      zh_rv = new char[zln];
       strcpy(zh_rv, cmd_template);
       StrReplace(zh_rv, zln, "%stat_list%", eng_zstr);
       if (percent_str) {
@@ -4807,7 +4802,7 @@ char *MuPADWrapper::CreateMOMENTeStr(MathServiceRequest & msr,
           return NULL;
         }
       } else {
-        about_str = TCI_NEW(char[4]);
+        about_str = new char[4];
         strcpy(about_str, "M");
       }
 
@@ -4825,7 +4820,7 @@ char *MuPADWrapper::CreateMOMENTeStr(MathServiceRequest & msr,
       zln += strlen(mom_num_str);
     if (about_str)
       zln += strlen(about_str);
-    zh_rv = TCI_NEW(char[zln]);
+    zh_rv = new char[zln];
     strcpy(zh_rv, cmd_template);
     StrReplace(zh_rv, zln, "%data_set%", eng_zstr);
 
@@ -4869,7 +4864,7 @@ char *MuPADWrapper::CreateMAPSeStr(MathServiceRequest & msr,
       size_t zln = strlen(cmd_template) + strlen(eng_zstr);
       if (map_str)
         zln += strlen(map_str);
-      zh_rv = TCI_NEW(char[zln]);
+      zh_rv = new char[zln];
       strcpy(zh_rv, cmd_template);
       StrReplace(zh_rv, zln, "%matrix%", eng_zstr);
       if (map_str) {
@@ -4929,7 +4924,7 @@ char *MuPADWrapper::CreateRANDMATRIXeStr(MathServiceRequest & msr,
       + strlen(z_nRows) + strlen(z_nCols)
       + strlen(z_ll) + strlen(z_ul);
 
-    zh_rv = TCI_NEW(char[zln]);
+    zh_rv = new char[zln];
     strcpy(zh_rv, cmd_template);
 
     StrReplace(zh_rv, zln, "%nRows%", z_nRows);
@@ -5013,7 +5008,7 @@ char *MuPADWrapper::CreateRANDOMNUMeStr(MathServiceRequest & msr,
       zln += strlen(param2_str);
     }
 
-    zh_rv = TCI_NEW(char[zln]);
+    zh_rv = new char[zln];
     strcpy(zh_rv, cmd_template);
 
     StrReplace(zh_rv, zln, "%distID%", z_ilk);
@@ -5150,7 +5145,7 @@ char *MuPADWrapper::VARASSIGNtoEstr(SEMANTICS_NODE * s_assign_var,
 
     if (nom_str && val_str) {
       size_t bln = strlen(db_production) + strlen(nom_str) + strlen(val_str);
-      rv = TCI_NEW(char[bln]);
+      rv = new char[bln];
       strcpy(rv, db_production);
       StrReplace(rv, bln, "%var%", nom_str);
       StrReplace(rv, bln, "%expr%", val_str);
@@ -5249,7 +5244,7 @@ char *MuPADWrapper::FUNCDEFtoEstr(SEMANTICS_NODE * s_funcdef,
     bln +=
       strlen(db_production) + strlen(f_nom_str) + strlen(var_list_str) +
       strlen(expr_str);
-    rv = TCI_NEW(char[bln]);
+    rv = new char[bln];
     rv[0] = 0;
 
     if (do_kill) {
@@ -5291,7 +5286,7 @@ char *MuPADWrapper::GetEngNameForUserFunc(SEMANTICS_NODE * s_func)
                                 s_func->contents);
   if (map) {
     size_t zln = strlen(map->alias);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, map->alias);
     rv = tmp;
   } else {
@@ -5388,7 +5383,7 @@ char *MuPADWrapper::POWERasSURDtoEstr(SEMANTICS_NODE * s_pform,
             size_t bln = strlen(db_production) + strlen(base_str);
             if (radi_str)
               bln += strlen(radi_str);
-            zh_rv = TCI_NEW(char[bln]);
+            zh_rv = new char[bln];
             strcpy(zh_rv, db_production);
             StrReplace(zh_rv, bln, "%base%", base_str);
             if (!is_sqrt)
@@ -5623,7 +5618,7 @@ char *MuPADWrapper::Piecewise2Estr(SEMANTICS_NODE * pw_list, int& error_code)
     size_t bln = strlen(db_production) + 1;
     if (dr_list_str)
       bln += strlen(dr_list_str);
-    zh_rv = TCI_NEW(char[bln]);
+    zh_rv = new char[bln];
     strcpy(zh_rv, db_production);
     StrReplace(zh_rv, bln, "%dr_list%", dr_list_str);
     delete[] dr_list_str;
@@ -5693,7 +5688,7 @@ char *MuPADWrapper::Recursion2Estr(SEMANTICS_NODE * recursion,
         bln += strlen(eqn_str);
       if (rfunc_str)
         bln += strlen(rfunc_str);
-      zh_rv = TCI_NEW(char[bln]);
+      zh_rv = new char[bln];
       strcpy(zh_rv, db_production);
       StrReplace(zh_rv, bln, "%eqns%", eqn_str);
       StrReplace(zh_rv, bln, "%rfunc%", rfunc_str);
@@ -6018,7 +6013,7 @@ char *MuPADWrapper::PROBFUNCtoEstr(SEMANTICS_NODE * sem_func_node,
             bln += strlen(str_s3);
         }
       }
-      zh_rv = TCI_NEW(char[bln]);
+      zh_rv = new char[bln];
       strcpy(zh_rv, func_template);
       StrReplace(zh_rv, bln, "%val%", str_val);
       if (str_s1) {
@@ -6112,7 +6107,7 @@ char *MuPADWrapper::TRANSFORMtoEstr(SEMANTICS_NODE * s_transform,
       TCI_ASSERT(0);
   } else if (expr) {
     size_t bln = strlen(expr);
-    expr_str = TCI_NEW(char[bln + 1]);
+    expr_str = new char[bln + 1];
     strcpy(expr_str, expr);
     production = cmd_template;
   } else {
@@ -6149,7 +6144,7 @@ char *MuPADWrapper::TRANSFORMtoEstr(SEMANTICS_NODE * s_transform,
     // e^{-5iw}Fourier(f(x))
     size_t bln = strlen(production) + strlen(expr_str)
       + strlen(var_str) + strlen(tvar_str);
-    zh_rv = TCI_NEW(char[bln]);
+    zh_rv = new char[bln];
     strcpy(zh_rv, production);
     StrReplace(zh_rv, bln, "%expr%", expr_str);
     StrReplace(zh_rv, bln, "%var%", var_str);
@@ -6199,7 +6194,7 @@ char *MuPADWrapper::VCALCOPtoEstr(MathServiceRequest * msr,
     }
   } else if (expr) {            // Here, we're we're responding to a vcalc menu command
     size_t bln = strlen(expr);
-    expr_str = TCI_NEW(char[bln + 1]);
+    expr_str = new char[bln + 1];
     strcpy(expr_str, expr);
     production = cmd_template;
   } else {
@@ -6223,7 +6218,7 @@ char *MuPADWrapper::VCALCOPtoEstr(MathServiceRequest * msr,
 
   if (expr_str && basis_str) {
     size_t bln = strlen(production) + strlen(expr_str) + strlen(basis_str);
-    zh_rv = TCI_NEW(char[bln]);
+    zh_rv = new char[bln];
     strcpy(zh_rv, production);
     StrReplace(zh_rv, bln, "%expr%", expr_str);
     StrReplace(zh_rv, bln, "%vector_basis%", basis_str);
@@ -6320,7 +6315,7 @@ char *MuPADWrapper::POLISHOPtoEstr(SEMANTICS_NODE * s_rpolish_op,
         }
 
         size_t zln = strlen(zoperator) + strlen(operand);
-        rv = TCI_NEW(char[zln + 1]);
+        rv = new char[zln + 1];
         strcpy(rv, zoperator);
         strcat(rv, operand);
         delete[] operand;
@@ -6335,14 +6330,14 @@ char *MuPADWrapper::POLISHOPtoEstr(SEMANTICS_NODE * s_rpolish_op,
             args_str = MODtoEstr(s_rpolish_op, err_code);
             if (context_cmdtype == CC_FACTOR_IN_RING) {
               size_t bln = strlen(args_str) + 1;
-              rv = TCI_NEW(char[bln]);
+              rv = new char[bln];
               strcpy(rv, args_str);
             } else {
               args_str = NestInParens(args_str, true);
               size_t bln = strlen(production) + 1;
               if (args_str)
                 bln += strlen(args_str);
-              rv = TCI_NEW(char[bln]);
+              rv = new char[bln];
               strcpy(rv, production);
               StrReplace(rv, bln, "%arg_list%", args_str);
             }
@@ -6353,7 +6348,7 @@ char *MuPADWrapper::POLISHOPtoEstr(SEMANTICS_NODE * s_rpolish_op,
             size_t bln = strlen(production) + 1;
             if (args_str)
               bln += strlen(args_str);
-            rv = TCI_NEW(char[bln]);
+            rv = new char[bln];
             strcpy(rv, production);
             StrReplace(rv, bln, "%arg_list%", args_str);
           }
@@ -6403,7 +6398,7 @@ char *MuPADWrapper::POLISHOPtoEstr(SEMANTICS_NODE * s_rpolish_op,
         }
 
         size_t zln = strlen(operand) + strlen(zoperator);
-        rv = TCI_NEW(char[zln + 1]);
+        rv = new char[zln + 1];
         strcpy(rv, operand);
         strcat(rv, zoperator);
         delete[] operand;
@@ -6487,7 +6482,7 @@ bool MuPADWrapper::QueryEngineIsMatrix(SEMANTICS_NODE * s_expr)
             ("SCHEMATA", "testtypeMatrix", &db_production, ID, subID)) {
           if (db_production && *db_production) {
             size_t bln = strlen(db_production) + strlen(v_str);
-            char *cmd = TCI_NEW(char[bln]);
+            char *cmd = new char[bln];
             strcpy(cmd, db_production);
             StrReplace(cmd, bln, "%var%", v_str);
 
@@ -6651,7 +6646,7 @@ char *MuPADWrapper::MODtoEstr(SEMANTICS_NODE * s_mod, int& error_code)
       }
 
       size_t rv_ln = strlen(arg1_str) + strlen(modulus_str);
-      rv = TCI_NEW(char[rv_ln + 2]);
+      rv = new char[rv_ln + 2];
       strcpy(rv, arg1_str);
       strcat(rv, ",");
       strcat(rv, modulus_str);
@@ -6704,7 +6699,7 @@ char *MuPADWrapper::POWERMODtoEstr(SEMANTICS_NODE * s_powerform,
       size_t bln =
         strlen(db_production) + strlen(base_str) + strlen(sup_str) +
         strlen(modulus);
-      rv = TCI_NEW(char[bln]);
+      rv = new char[bln];
       strcpy(rv, db_production);
       StrReplace(rv, bln, "%base%", base_str);
       StrReplace(rv, bln, "%superscript%", sup_str);
@@ -6734,7 +6729,7 @@ char *MuPADWrapper::GetEngNameForODEfunc(SEMANTICS_NODE * s_func,
                                 s_func->contents);
   if (map && map->obj_ilk == Ilk_ODE) {
     size_t zln = strlen(map->alias);
-    f_nom_str = TCI_NEW(char[zln + 1]);
+    f_nom_str = new char[zln + 1];
     strcpy(f_nom_str, map->alias);
   } else {
     char base_name[128];
@@ -6769,7 +6764,7 @@ char *MuPADWrapper::GetEngNameForODEfunc(SEMANTICS_NODE * s_func,
       bln += strlen(base_str);
     if (args_str)
       bln += strlen(args_str);
-    rv = TCI_NEW(char[bln]);
+    rv = new char[bln];
     strcpy(rv, new_production);
     StrReplace(rv, bln, "%base%", base_str);
     StrReplace(rv, bln, "%arg_list%", args_str);
@@ -6898,7 +6893,7 @@ char *MuPADWrapper::NORMtoEstr(SEMANTICS_NODE * s_norm, int& error_code)
           SEMANTICS_NODE *s_num = bucket->first_child;
           if (s_num
               && s_num->contents && !strcmp(s_num->contents, "F")) {
-            num_str = TCI_NEW(char[10]);
+            num_str = new char[10];
             strcpy(num_str, "Frobenius");
           } else {
             num_str = ProcessSemList(s_num, NULL, error_code);
@@ -6916,7 +6911,7 @@ char *MuPADWrapper::NORMtoEstr(SEMANTICS_NODE * s_norm, int& error_code)
               *ptr = 'I';
           }
         } else {                // norm not specified in input - defaults
-          num_str = TCI_NEW(char[2]);
+          num_str = new char[2];
           num_str[0] = '2';
           num_str[1] = 0;
         }
@@ -6927,7 +6922,7 @@ char *MuPADWrapper::NORMtoEstr(SEMANTICS_NODE * s_norm, int& error_code)
         bln += strlen(vec_str);
       if (num_str)
         bln += strlen(num_str);
-      rv = TCI_NEW(char[bln]);
+      rv = new char[bln];
       strcpy(rv, db_production);
       StrReplace(rv, bln, "%matrix%", vec_str);
       StrReplace(rv, bln, "%num%", num_str);
@@ -6996,7 +6991,7 @@ char *MuPADWrapper::QVARIABLEtoEstr(SEMANTICS_NODE * s_qvar, int& error_code)
                                 s_var->canonical_ID, s_var->contents);
   if (map) {
     size_t zln = strlen(map->alias);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, map->alias);
     rv = tmp;
   } else {
@@ -7015,7 +7010,7 @@ char *MuPADWrapper::QVARIABLEtoEstr(SEMANTICS_NODE * s_qvar, int& error_code)
       if (GetdBaseNamedRecord
           ("SCHEMATA", "Qualified Variable", &db_production, ID, subID)) {
         size_t bln = strlen(db_production) + strlen(rv) + strlen(q_list);
-        char *zh_rv = TCI_NEW(char[bln]);
+        char *zh_rv = new char[bln];
         strcpy(zh_rv, db_production);
         StrReplace(zh_rv, bln, "%var%", rv);
         StrReplace(zh_rv, bln, "%q_list%", q_list);
@@ -7088,7 +7083,7 @@ char *MuPADWrapper::POWERTRANSPOSEtoEstr(SEMANTICS_NODE * s_powerform,
         }
         if (m_str) {
           size_t bln = strlen(db_production) + strlen(m_str);
-          rv = TCI_NEW(char[bln]);
+          rv = new char[bln];
           strcpy(rv, db_production);
           StrReplace(rv, bln, "%matrix%", m_str);
           delete[] m_str;
@@ -7142,7 +7137,7 @@ void MuPADWrapper::SetVarTypes(SEMANTICS_NODE * root, int & nmatrices)
                                     s_rover->contents);
       if (map) {
         size_t zln = strlen(map->alias);
-        eng_nom = TCI_NEW(char[zln + 1]);
+        eng_nom = new char[zln + 1];
         strcpy(eng_nom, map->alias);
       } else {
         bool use_alias = true;
@@ -7383,7 +7378,7 @@ char *MuPADWrapper::CreateVParameStr(MathServiceRequest & msr,
     }
   } else if (p_type == alt_ptype) {
     size_t zln = strlen(z_param);
-    zh_rv = TCI_NEW(char[zln + 1]);
+    zh_rv = new char[zln + 1];
     strcpy(zh_rv, z_param);
   } else {
     error_code = PID_first_badparam + param_ID;

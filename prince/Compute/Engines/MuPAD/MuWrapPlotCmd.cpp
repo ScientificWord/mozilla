@@ -38,7 +38,7 @@ char *MuPADPlotWrapper::CreatePLOTQueryeStr(MuPADWrapper * const mpw, PlotServic
   cmd += plot->ToString(q);
   
   size_t zln = cmd.length();
-  char *zh_rv = TCI_NEW(char[zln + 1]);
+  char *zh_rv = new char[zln + 1];
   strcpy(zh_rv, cmd.c_str());
   return zh_rv;
 }
@@ -100,7 +100,7 @@ char *MuPADPlotWrapper::CreatePLOTFUNCeStr(MuPADWrapper * const mpw, PlotService
   
   // << "\n\nSMR Final CMD is " << cmd << "\n" << endl;
   size_t zln = cmd.length();
-  char *zh_rv = TCI_NEW(char[zln + 1]);
+  char *zh_rv = new char[zln + 1];
   strcpy(zh_rv, cmd.c_str());
   return zh_rv;
 }

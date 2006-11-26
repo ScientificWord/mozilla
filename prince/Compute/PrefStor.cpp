@@ -1,15 +1,7 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #include "PrefStor.h"
-
 #include "CmpTypes.h"
-#include "tci_new.h"
-
 #include <string.h>
 
 // WARNING: the following strings MUST be 1-to-1 with the CLPF_
@@ -88,7 +80,7 @@ int PrefsStore::SetPref(U32 pref_ID, const char *new_value)
     prefs[pref_ID] = NULL;
     if (new_value) {
       size_t zln = strlen(new_value);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, new_value);
       prefs[pref_ID] = tmp;
     }

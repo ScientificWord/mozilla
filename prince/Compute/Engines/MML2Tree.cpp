@@ -1,14 +1,7 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #include "MML2Tree.h"
-
 #include "../CmpTypes.h"
-#include "tci_new.h"
 #include <string.h>
 #include <ctype.h>
 
@@ -186,7 +179,7 @@ MNODE *MML2Tree::GetElement(const char *z_src, int &advance)
             }
             int data_len = p_tmp - needle;
             if (data_len > 0) {
-              char *tmp = TCI_NEW(char[data_len + 1]);
+              char *tmp = new char[data_len + 1];
               strncpy(tmp, needle, data_len);
               tmp[data_len] = 0;
               rv->p_chdata = tmp;

@@ -1,15 +1,11 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #include <windows.h>
 #include "mupd_eng.h"
 
 #include <chmtypes.h>
 #include "../fltutils.h"
+#include "../../CmpTypes.h"
 #include "tcistrin.h"
 
 #include <setjmp.h>
@@ -267,7 +263,7 @@ bool MuPADEngine::LoadStrsAndDLL(const char *engpath, const char *libpath)
   TCIString ErrorMessage;
 
   TCI_ASSERT(m_client == 0);
-  m_client = TCI_NEW(MuPADMssgHandler);
+  m_client = new MuPADMssgHandler();
   if (!m_client)
     return rv;
   m_client->SetLibPath(libpath);
@@ -477,7 +473,7 @@ char *MuPADEngine::AppendBA2HeapStr(char *zheap_str, U32 & buffer_ln,
         bytes_needed++;
       if (bytes_needed > buffer_ln) {
         buffer_ln = bytes_needed + 200;
-        rv = TCI_NEW(char[buffer_ln]);
+        rv = new char[buffer_ln];
         if (zheap_str) {
           strcpy(rv, zheap_str);
           delete[] zheap_str;

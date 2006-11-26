@@ -1,15 +1,7 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #include "DefStore.h"
-
 #include "CmpTypes.h"
-#include "tci_new.h"
-
 #include <string.h>
 
 DefStore::DefStore(DefStore * parent_store, U32 client_handle) :
@@ -37,7 +29,7 @@ void DefStore::PushDefInfo(U32 engine_ID,
   if (def_name && *def_name) {
     def_list = DeleteDefInfo(engine_ID, def_name);
 
-    DefInfo *new_definfo = TCI_NEW(DefInfo());
+    DefInfo *new_definfo = new DefInfo();
     new_definfo->next = def_list;
     new_definfo->engine_ID = engine_ID;
     new_definfo->owner_ID = client_ID;
@@ -45,26 +37,26 @@ void DefStore::PushDefInfo(U32 engine_ID,
     new_definfo->n_subscripted_args = n_sub_args;
 
     size_t zln = strlen(def_name);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, def_name);
     new_definfo->canonical_name = tmp;
     if (markup && *markup) {
       size_t zln = strlen(markup);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, markup);
       new_definfo->src_markup = tmp;
     } else
       new_definfo->src_markup = NULL;
     if (arg_list && *arg_list) {
       size_t zln = strlen(arg_list);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, arg_list);
       new_definfo->arg_list = tmp;
     } else
       new_definfo->arg_list = NULL;
     if (ASCII_src && *ASCII_src) {
       size_t zln = strlen(ASCII_src);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, ASCII_src);
       new_definfo->ASCII_src = tmp;
     } else
@@ -77,7 +69,7 @@ void DefStore::PushDefInfo(U32 engine_ID,
         ptr++;
         zln++;
       }
-      U16 *tmp = TCI_NEW(U16[zln + 1]);
+      U16 *tmp = new U16[zln + 1];
       size_t i = 0;
       ptr = WIDE_src;
       while (i <= zln) {
@@ -184,7 +176,7 @@ char *DefStore::GetDefList(U32 targ_engine)
 
   if (tmp && *tmp) {
     size_t zln = strlen(tmp);
-    char *rv = TCI_NEW(char[zln + 1]);
+    char *rv = new char[zln + 1];
     strcpy(rv, tmp);
     delete[] tmp;
     return rv;
@@ -259,7 +251,7 @@ int DefStore::SetPref(U32 pref_ID, const char *new_value)
       }
       if (new_value) {
         size_t zln = strlen(new_value);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, new_value);
         rover->ztext = tmp;
       }

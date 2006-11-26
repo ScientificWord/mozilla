@@ -6,9 +6,6 @@
 #ifndef CHMTYPES_H
   #include "chmtypes.h"
 #endif
-#ifndef TCI_NEW_H
-  #include "TCI_new.h"
-#endif
 
 #ifndef STD_STRING_H
   #include <string.h>
@@ -19,6 +16,8 @@
   #include <stdarg.h>
   #define STD_STDARG_H
 #endif
+
+#include "../CmpTypes.h"
 
 //#define ASSERT_HYPERACTIVE_STR
 

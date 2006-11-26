@@ -11,6 +11,7 @@
 #include <tcistrin.h>
 #include <bytearry.h>
 
+#include "../../CmpTypes.h"
 #include "../fltutils.h"
 #include "../../MResult.h"
 
@@ -18,11 +19,6 @@
 #define MPL_READLIB         32
 
 #include "MathIDs.h"
-
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 enum MType
 {
@@ -93,7 +89,7 @@ MapleEngine::MapleEngine():MapleH(0), bCorrupt(false)
 
   fcnsloaded = false;
 
-  mcb = TCI_NEW(MCallBackVec);
+  mcb = new MCallBackVec();
   mcb->textCallBack = TextCallBack;
   mcb->plotCallBack = PlotCallBack;
   mcb->errorCallBack = ErrorCallBack;
@@ -105,7 +101,7 @@ MapleEngine::MapleEngine():MapleH(0), bCorrupt(false)
   mcb->queryInterrupt = QueryInterrupt;
 //  discont = true;
 
-  PlotCallBacks = TCI_NEW(MPlotDeviceVec);  // inited later
+  PlotCallBacks = new MPlotDeviceVec();  // inited later
 }
 
 MapleEngine::~MapleEngine()
@@ -876,7 +872,7 @@ static void M_DECL PlotCallBack(void *data, MPlot plot)
 
   LastPlotID = i;
 
-  plot_devs[i] = TCI_NEW(WIN_data);
+  plot_devs[i] = new WIN_data();
 
   WIN_data *data_vec = plot_devs[i];
 
@@ -1231,7 +1227,7 @@ static
   }
 }
 
-#ifdef TESTING
+#ifdef DEBUG
 //  #define PLOT_LOGGING
 #endif
 
@@ -1465,7 +1461,7 @@ static
 
   oldpen = (HPEN) NULL;
 
-  points = TCI_NEW(POINT[numPoints]);
+  points = new POINT[numPoints];
 
   for (i = 0; i < numPoints; ++i) {
     points[i].x = x[i] + data_vec->x;
@@ -1685,7 +1681,7 @@ char *MapleEngine::AppendBA2HeapStr(char *zheap_str, U32 & buffer_ln,
         bytes_needed++;
       if (bytes_needed > buffer_ln) {
         buffer_ln = bytes_needed + 200;
-        rv = TCI_NEW(char[buffer_ln]);
+        rv = new char[buffer_ln];
         if (zheap_str) {
           strcpy(rv, zheap_str);
           delete[] zheap_str;
