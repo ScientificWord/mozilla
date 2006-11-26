@@ -3250,7 +3250,7 @@ char *MapleWrapper::ODENumerictoEstr(SEMANTICS_NODE * ODE_info,
     }
     if (procs_defined)
       ODE_num_procnum++;
-    itoa(ODE_num_procnum, magic_num_str, 10);
+    StrFromInt(ODE_num_procnum, magic_num_str);
 
     if (err_code) {
       error_code = err_code;
