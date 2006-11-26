@@ -1,15 +1,11 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 
 #include "WorkShop.h"
 
+#include "CmpTypes.h"
 #include "MRequest.h"
 #include "MResult.h"
 #include "DefStore.h"
@@ -17,9 +13,6 @@ static char THIS_FILE[] = __FILE__;
 #include "engines\CompEngine.h"
 #include "engines\Grammar.h"
 #include "engines\fltutils.h"
-
-#include "CmpTypes.h"
-#include "tci_new.h"
 
 MathWorkShop::MathWorkShop()
 {
@@ -31,7 +24,7 @@ MathWorkShop::MathWorkShop()
   install_counter = 0;
 
   mml_entities = NULL;
-  uprefs_store = TCI_NEW(PrefsStore());
+  uprefs_store = new PrefsStore();
 
   wide_pref = NULL;
 }
@@ -75,11 +68,11 @@ U32 MathWorkShop::GetClientHandle(U32 parentID)
       parent_ds = p_rec->defstore;
   }
 
-  ClientInfo *new_client = TCI_NEW(ClientInfo());
+  ClientInfo *new_client = new ClientInfo();
   new_client->next = client_list;
   new_client->ID = client_counter;
   new_client->parent_ID = parentID;
-  new_client->defstore = TCI_NEW(DefStore(parent_ds, client_counter));
+  new_client->defstore = new DefStore(parent_ds, client_counter);
 
   client_list = new_client;
   return client_counter;
@@ -160,7 +153,7 @@ U32 MathWorkShop::InstallCompEngine(const char *install_script,
   FILE *fp = fopen(install_script, "r");
   if (fp) {
     // Lookup is on IDs
-    Grammar *install_dBase = TCI_NEW(Grammar(fp, true));
+    Grammar *install_dBase = new Grammar(fp, true);
     fclose(fp);
 
     const char *db_zname;
@@ -198,7 +191,7 @@ U32 MathWorkShop::InstallCompEngine(const char *install_script,
         if (db_ztemplate && *db_ztemplate) {
           FILE *fp = fopen(db_ztemplate, "r");
           if (fp) {
-            mml_entities = TCI_NEW(Grammar(fp, false));
+            mml_entities = new Grammar(fp, false);
             fclose(fp);
           } else {
             TCI_ASSERT(0);
@@ -293,11 +286,11 @@ U32 MathWorkShop::FinishInstall(const char *eng_dbase_file,
   //  keyed by number, the other is keyed by names.
   FILE *fp = fopen(eng_dbase_file, "r");
   if (fp) {
-    ID_dBase = TCI_NEW(Grammar(fp, true));
+    ID_dBase = new Grammar(fp, true);
     fclose(fp);
 
     fp = fopen(eng_dbase_file, "r");
-    NOM_dBase = TCI_NEW(Grammar(fp, false));
+    NOM_dBase = new Grammar(fp, false);
     fclose(fp);
   } else {
     TCI_ASSERT(0);
@@ -306,7 +299,7 @@ U32 MathWorkShop::FinishInstall(const char *eng_dbase_file,
   }
 
   comp_engine =
-    TCI_NEW(CompEngine(ID_dBase, NOM_dBase, mml_entities, uprefs_store));
+    new CompEngine(ID_dBase, NOM_dBase, mml_entities, uprefs_store);
   TCI_ASSERT(comp_engine);
 
   bool result = comp_engine->InitUnderlyingEngine(install_dBase, mr);
@@ -316,7 +309,7 @@ U32 MathWorkShop::FinishInstall(const char *eng_dbase_file,
     rv = install_counter;
     mr.PutResultCode(CR_success);
 
-    EngineInfo *eng_info = (EngineInfo *) TCI_NEW(EngineInfo);
+    EngineInfo *eng_info = new EngineInfo();
     eng_info->eng_ID = install_counter;
     eng_info->eng_ID_dBase = ID_dBase;
     eng_info->eng_NOM_dBase = NOM_dBase;

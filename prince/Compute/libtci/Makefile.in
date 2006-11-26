@@ -13,15 +13,10 @@ LIBRARY_NAME = libtci
 include $(topsrcdir)/config/config.mk
 
 CPPSRCS =				\
-  assert.cpp  \
   bacmn.cpp \
   tcistrin.cpp \
 	$(NULL)
 
 FORCE_STATIC_LIB = 1
-
-ifdef MOZ_DEBUG
-CXXFLAGS	+= /DTESTING
-endif
 
 include $(topsrcdir)/config/rules.mk

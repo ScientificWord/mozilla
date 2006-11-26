@@ -28,11 +28,6 @@
   of this project.
 */
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 
@@ -48,7 +43,6 @@ static char THIS_FILE[] = __FILE__;
 #include "STree2MMl.h"
 
 #include "nsServiceManagerUtils.h"
-#include <tci_new.h>
 
 
 CompEngine::CompEngine(Grammar * ID_dBase, Grammar * NOM_dBase,
@@ -58,10 +52,10 @@ CompEngine::CompEngine(Grammar * ID_dBase, Grammar * NOM_dBase,
   nom_dBase = NOM_dBase;
   uprefs_store = up_store;
 
-  semantic_analyzer = TCI_NEW(Analyzer(mathml_grammar, up_store));
-  mml_tree_gen = TCI_NEW(MML2Tree);
+  semantic_analyzer = new Analyzer(mathml_grammar, up_store);
+  mml_tree_gen = new MML2Tree();
   dMML_tree = NULL;
-  StreeToMML = TCI_NEW(STree2MML(mathml_grammar,up_store));
+  StreeToMML = new STree2MML(mathml_grammar,up_store);
 
   curr_IDs_2mml = NULL;
   def_IDs_2mml = NULL;
@@ -244,7 +238,7 @@ void CompEngine::Execute(MathServiceRequest & msr, MathResult & mr)
     defaultVecBasis = uprefs_store->GetPref(CLPF_Vector_basis);
   if (defaultVecBasis) {
     size_t zln = strlen(defaultVecBasis);
-    mml_VecBasisVars = TCI_NEW(char[zln + 1]);
+    mml_VecBasisVars = new char[zln + 1];
     strcpy(mml_VecBasisVars, defaultVecBasis);
   }
 
@@ -262,7 +256,7 @@ void CompEngine::Execute(MathServiceRequest & msr, MathResult & mr)
       return;
     }
   }
-#ifdef TESTING
+#ifdef DEBUG
   char start_msg[100];
   sprintf( start_msg, "\n\n========== Evaluate ==== Command = %d ============", UI_cmd_ID );
   JBM::JBMLine(start_msg);
@@ -522,7 +516,7 @@ void CompEngine::Execute(MathServiceRequest & msr, MathResult & mr)
           MatrixToList(semantics_tree->bucket_list);
       }
 
-#ifdef TESTING
+#ifdef DEBUG
       JBM::DumpSList(semantics_tree);
 #endif
 
@@ -750,7 +744,7 @@ void CompEngine::ConvertTreeToSimplex(SEMANTICS_NODE * semantics_tree,
 
           delete[] c_content->contents;
           size_t zln = strlen(obj_name);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, obj_name);
           c_content->contents = tmp;
         }
@@ -779,7 +773,7 @@ void CompEngine::ConvertTreeToNumericSys(SEMANTICS_NODE * semantics_tree)
           char *obj_name = "Numeric System";
           delete[] c_content->contents;
           size_t zln = strlen(obj_name);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, obj_name);
           c_content->contents = tmp;
 
@@ -894,7 +888,7 @@ int CompEngine::ConvertTreeToSolveSys(SEMANTICS_NODE * semantics_tree)
       char *obj_name = "Solve System";
       delete[] assign_op->contents;
       size_t zln = strlen(obj_name);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, obj_name);
       assign_op->contents = tmp;
 
@@ -941,7 +935,7 @@ void CompEngine::ConvertTreeToPDE(SEMANTICS_NODE * semantics_tree)
       if (s_save) {
         char *obj_name = "PDE";
         size_t zln = strlen(obj_name);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, obj_name);
         s_save->contents = tmp;
       }
@@ -1019,7 +1013,7 @@ void CompEngine::ConvertTreeToODE(SEMANTICS_NODE * semantics_tree,
           obj_name = "ODE Series";
         }
         size_t zln = strlen(obj_name);
-        char *tmp = TCI_NEW(char[zln + 1]);
+        char *tmp = new char[zln + 1];
         strcpy(tmp, obj_name);
         s_save->contents = tmp;
       }
@@ -1085,7 +1079,7 @@ void CompEngine::ConvertTreeToRecursion(SEMANTICS_NODE * semantics_tree,
       delete[] s_save->contents;
       char *obj_name = "Recursion";
       size_t zln = strlen(obj_name);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, obj_name);
       s_save->contents = tmp;
     }
@@ -1111,7 +1105,7 @@ void CompEngine::ConvertTreeToList(SEMANTICS_NODE * semantics_tree,
 
           delete[] c_content->contents;
           size_t zln = strlen(obj_name);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, obj_name);
           c_content->contents = tmp;
         }
@@ -1707,7 +1701,7 @@ bool CompEngine::AdjustSemTree(MathServiceRequest & msr,
 
 void CompEngine::ConcatMatrixITMatrix(SEMANTICS_NODE * s_times_op, int n_rows)
 {
-  BUCKET_REC **bucket_lists = TCI_NEW(BUCKET_REC *[n_rows]);
+  BUCKET_REC **bucket_lists = new BUCKET_REC *[n_rows];
   int i = 0;
   while (i < n_rows)
     bucket_lists[i++] = NULL;
@@ -1721,7 +1715,7 @@ void CompEngine::ConcatMatrixITMatrix(SEMANTICS_NODE * s_times_op, int n_rows)
   delete[] s_times_op->contents;
   char *obj_name = "matrix";
   size_t zln = strlen(obj_name);
-  char *tmp = TCI_NEW(char[zln + 1]);
+  char *tmp = new char[zln + 1];
   strcpy(tmp, obj_name);
   s_times_op->contents = tmp;
 
@@ -1746,7 +1740,7 @@ void CompEngine::ConcatMatrixMatrix(SEMANTICS_NODE * s_matrix)
 {
   U32 n_rows = s_matrix->nrows;
 
-  BUCKET_REC **bucket_lists = TCI_NEW(BUCKET_REC *[n_rows]);
+  BUCKET_REC **bucket_lists = new BUCKET_REC *[n_rows];
   U32 i = 0;
   while (i < n_rows)
     bucket_lists[i++] = NULL;
@@ -1849,7 +1843,7 @@ void CompEngine::StackMatrices(SEMANTICS_NODE * s_times_op, int n_cols)
 
     char *obj_name = "matrix";
     size_t zln = strlen(obj_name);
-    char *tmp = TCI_NEW(char[zln + 1]);
+    char *tmp = new char[zln + 1];
     strcpy(tmp, obj_name);
     s_times_op->contents = tmp;
 
@@ -2126,17 +2120,17 @@ void CompEngine::SaveBackMap(MIC2MMLNODE_REC * new_IDs)
     }
 
     if (do_it) {
-      MIC2MMLNODE_REC *new_node = TCI_NEW(MIC2MMLNODE_REC);
+      MIC2MMLNODE_REC *new_node = new MIC2MMLNODE_REC();
       new_node->next = NULL;
       new_node->owner_ID = rover->owner_ID;
 
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, obj_name);
       new_node->canonical_name = tmp;
 
       if (rover->mml_markup) {
         size_t ln = strlen(rover->mml_markup);
-        tmp = TCI_NEW(char[ln + 1]);
+        tmp = new char[ln + 1];
         strcpy(tmp, rover->mml_markup);
         new_node->mml_markup = tmp;
       } else
@@ -2183,7 +2177,7 @@ void CompEngine::ListToMatrix(BUCKET_REC * var_val_bucket)
 
       char *obj_name = "matrix";
       size_t zln = strlen(obj_name);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, obj_name);
       cont->contents = tmp;
     }
@@ -2258,7 +2252,7 @@ void CompEngine::AddRecurFuncNode(SEMANTICS_NODE * s_recur,
 
   //  FUNCTION canonical_ID = "miy" contents = "y"
       size_t zln = strlen(s_func->canonical_ID);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, s_func->canonical_ID);
       s_clone->canonical_ID = tmp;
 
@@ -2267,7 +2261,7 @@ void CompEngine::AddRecurFuncNode(SEMANTICS_NODE * s_recur,
         func_nom = s_func->contents;
 
       zln = strlen(func_nom);
-      tmp = TCI_NEW(char[zln + 1]);
+      tmp = new char[zln + 1];
       strcpy(tmp, func_nom);
       s_clone->contents = tmp;
     } else
@@ -2556,7 +2550,7 @@ U32 CompEngine::GetDefType(SEMANTICS_NODE * semantics_tree,
 
         if (tmp && *tmp) {
           size_t zln = strlen(tmp);
-          char *t1 = TCI_NEW(char[zln + 1]);
+          char *t1 = new char[zln + 1];
           strcpy(t1, tmp);
           *arg_list = t1;
           delete[] tmp;
@@ -2591,7 +2585,7 @@ void CompEngine::RecordEngineAttr(int targ_ID, const char *new_value)
         a_rover->value = NULL;
         if (new_value) {
           size_t zln = strlen(new_value);
-          char *tmp = TCI_NEW(char[zln + 1]);
+          char *tmp = new char[zln + 1];
           strcpy(tmp, new_value);
           a_rover->value = tmp;
         }
@@ -2603,11 +2597,11 @@ void CompEngine::RecordEngineAttr(int targ_ID, const char *new_value)
   }
 
   if (!done) {
-    ENG_ATTR_REC *new_rec = TCI_NEW(ENG_ATTR_REC);
+    ENG_ATTR_REC *new_rec = new ENG_ATTR_REC();
     new_rec->next = engine_attrs;
     if (new_value) {
       size_t zln = strlen(new_value);
-      char *tmp = TCI_NEW(char[zln + 1]);
+      char *tmp = new char[zln + 1];
       strcpy(tmp, new_value);
       new_rec->value = tmp;
     } else {

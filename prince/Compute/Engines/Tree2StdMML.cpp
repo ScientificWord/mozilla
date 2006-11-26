@@ -42,16 +42,9 @@
   If they are ever done here, we may want user controlled input.
 */
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 #include "Tree2StdMML.h"
 #include "Grammar.h"
 #include "Analyzer.h"
-#include "tci_new.h"
-
 #include <string.h>
 
 
@@ -325,7 +318,7 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
         else
           str_ilk = OpIlkToString(op_ilk);
         size_t new_ln = strlen(entity) + 1 + strlen(str_ilk);
-        char *tmp = TCI_NEW(char[new_ln + 1]);
+        char *tmp = new char[new_ln + 1];
         strcpy(tmp, entity);
         strcat(tmp, ",");
         strcat(tmp, str_ilk);
@@ -364,7 +357,7 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
     if (op_ilk == OP_none) {
       // convert str_ilk .. str_prec to the code
       size_t ilk_len = str_prec - str_ilk - 1;
-      char *tmp = TCI_NEW(char[ilk_len+1]);
+      char *tmp = new char[ilk_len+1];
       strncpy(tmp,str_ilk,ilk_len);
       tmp[ilk_len] = 0;
       OpIlk new_ilk = StringToOpIlk(tmp);
@@ -619,7 +612,7 @@ MNODE *Tree2StdMML::FixAdjacentMNs(MNODE * dMML_tree)
             if (strcmp(rover->src_tok,"mn") != 0)
               strcpy(rover->src_tok,"mn");  // might have been mo
             size_t ln = strlen(rover->p_chdata) + strlen(right->p_chdata);
-            char *tmp = TCI_NEW(char[ln + 1]);
+            char *tmp = new char[ln + 1];
             strcpy(tmp, rover->p_chdata);
             strcat(tmp, right->p_chdata);
             delete rover->p_chdata;
@@ -1609,7 +1602,7 @@ void Tree2StdMML::PermuteDifferential(MNODE * mml_node)
     strcpy(mml_node->src_tok,"mo");
     const char * dd = "&#x2146;";   // &dd;
     size_t ln = strlen(dd);
-    char *tmp = TCI_NEW(char[ln + 1]);
+    char *tmp = new char[ln + 1];
     strcpy(tmp, dd);
     delete mml_node->p_chdata;
     mml_node->p_chdata = tmp;
@@ -1643,7 +1636,7 @@ void Tree2StdMML::PermuteCapitalDifferential(MNODE * mml_node)
     strcpy(theD->src_tok,"mo");
     const char * DD = "&#x2145;";  // &DD;
     size_t ln = strlen(DD);
-    char *tmp = TCI_NEW(char[ln + 1]);
+    char *tmp = new char[ln + 1];
     strcpy(tmp, DD);
     delete theD->p_chdata;
     theD->p_chdata = tmp;
@@ -2516,7 +2509,7 @@ void Tree2StdMML::PermuteMixedNumber(MNODE * num)
   char buffer[32];
   sprintf(buffer, "%lu", new_numerator);
   size_t ln = strlen(buffer);
-  char *tmp = TCI_NEW(char[ln + 1]);
+  char *tmp = new char[ln + 1];
   strcpy(tmp, buffer);
   numerator->p_chdata = tmp;
 }
@@ -2662,7 +2655,7 @@ void Tree2StdMML::InsertAF(MNODE * func)
 {
   MNODE *af = MakeTNode(func->src_start_offset, 0, func->src_linenum);
   strcpy(af->src_tok, "mo");
-  char *tmp = TCI_NEW(char[9]);
+  char *tmp = new char[9];
   strcpy(tmp,"&#x2061;");  // ApplyFunction
   af->p_chdata = tmp;
   af->prev = func;
@@ -2677,7 +2670,7 @@ void Tree2StdMML::InsertIT(MNODE * term)
 {
   MNODE *it = MakeTNode(term->src_start_offset, 0, term->src_linenum);
   strcpy(it->src_tok, "mo");
-  char *tmp = TCI_NEW(char[9]);
+  char *tmp = new char[9];
   strcpy(tmp,"&#x2062;");  // InvisibleTimes
   it->p_chdata = tmp;
   it->prev = term;
@@ -2701,7 +2694,7 @@ void Tree2StdMML::InsertInvisibleAddSigns(MNODE * dMML_list)
           MNODE *plus = MakeTNode(r_anchor->src_start_offset,
                                   0, r_anchor->src_linenum);
           strcpy(plus->src_tok, "mo");
-          char *tmp = TCI_NEW(char[2]);
+          char *tmp = new char[2];
           strcpy(tmp, "+");
           plus->p_chdata = tmp;
           plus->prev = l_anchor;

@@ -46,10 +46,6 @@ LIBS = \
   $(DIST)/lib/libtci.$(LIB_SUFFIX) \
   $(NULL)
 
-ifdef MOZ_DEBUG
-CXXFLAGS	+= /DTESTING
-endif
-
 include $(topsrcdir)/config/rules.mk
 
 

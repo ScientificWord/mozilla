@@ -19,13 +19,8 @@
 #include "../MResult.h"
 #include "../WorkShop.h"
 #include "../engines/fltutils.h"
-#include "../libtci/tci_new.h"
 
-#ifdef TESTING
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
+// global
 MathWorkShop *workshop;
 
 typedef struct tagTRANS_REC
@@ -36,6 +31,7 @@ typedef struct tagTRANS_REC
   MathResult *mr;
 } TRANS_REC;
 
+// more globals
 TRANS_REC *transactions_list;
 int trans_counter;
 
@@ -53,7 +49,7 @@ TRANS_REC *LocateTransRecord(U32 trans_ID)
 
 int ComputeDLL::InitCompDLL()
 {
-  workshop = TCI_NEW(MathWorkShop());
+  workshop = new MathWorkShop();
   trans_counter = 0;
   transactions_list = NULL;
 
@@ -118,19 +114,19 @@ U32 ComputeDLL::CreateTransaction(U32 c_handle, const U16 * w_mml, U32 eng_ID, U
 {
   MathServiceRequest *msr;
   if ((cmd_ID == CCID_PlotFuncCmd) || (cmd_ID == CCID_PlotFuncQuery)) {
-    PlotServiceRequest *psr = TCI_NEW(PlotServiceRequest());
+    PlotServiceRequest *psr = new PlotServiceRequest();
     psr->PutMarkupType (MT_GRAPH);
     msr = psr;
   } else {
-    msr = TCI_NEW(MathServiceRequest());
+    msr = new MathServiceRequest();
   }    
-  MathResult *mr = TCI_NEW(MathResult());
+  MathResult *mr = new MathResult();
   msr->PutClientHandle(c_handle);
   msr->PutEngineID(eng_ID);
   msr->PutOpID(cmd_ID);
   msr->PutWideMarkup(w_mml);
   trans_counter++;
-  TRANS_REC *new_trans = TCI_NEW(TRANS_REC());
+  TRANS_REC *new_trans = new TRANS_REC();
   new_trans->next = transactions_list;
   new_trans->transaction_ID = trans_counter;
   new_trans->msr = msr;
