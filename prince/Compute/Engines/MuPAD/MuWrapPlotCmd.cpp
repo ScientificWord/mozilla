@@ -5,9 +5,6 @@
   by constructing an SWP "MuPADEngine" object and making calls to it.
 */
 
-#define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
-#include <windows.h>
-
 #include "MuWrapPlotCmd.h"
 #include "MuWrap.h"
 #include "../EngWrap.h"
@@ -25,7 +22,6 @@ MuPADPlotWrapper::MuPADPlotWrapper(void *ID_dBase, void *NOM_dBase)
 MuPADPlotWrapper::~MuPADPlotWrapper()
 {
 }
-
 
 char *MuPADPlotWrapper::CreatePLOTQueryeStr(MuPADWrapper * const mpw, PlotServiceRequest * psr,
                                        const char *eng_zstr, int& error_code)

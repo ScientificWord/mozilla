@@ -1,9 +1,12 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
+#ifdef XP_WIN
+#define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
+#endif
+
 #include "mupd_eng.h"
 
-#include <chmtypes.h>
 #include "../fltutils.h"
 #include "../../CmpTypes.h"
 #include "tcistrin.h"

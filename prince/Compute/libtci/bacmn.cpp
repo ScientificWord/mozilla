@@ -8,18 +8,18 @@
 void* ByteArray::m_mempool = NULL;
 
 ByteArray::ByteArray() : m_bytecount(0), m_handle(NULL) ,
-  m_allocsize(0), m_lockedForWriting(FALSE), m_readOnlyLockCount(0)
+  m_allocsize(0), m_lockedForWriting(false), m_readOnlyLockCount(0)
 {}
 
 ByteArray::ByteArray(U32 allocsize) : m_bytecount(0), m_handle(NULL) ,
-  m_allocsize(0), m_lockedForWriting(FALSE), m_readOnlyLockCount(0)
+  m_allocsize(0), m_lockedForWriting(false), m_readOnlyLockCount(0)
 {
   if (allocsize > 0)
     ReSize(allocsize, BA_none);
 }
 
 ByteArray::ByteArray(const ByteArray& b) : m_bytecount(0), m_handle(NULL) ,
-  m_allocsize(0), m_lockedForWriting(FALSE), m_readOnlyLockCount(0)
+  m_allocsize(0), m_lockedForWriting(false), m_readOnlyLockCount(0)
 {
   TCI_ASSERT(!b.LockedFor(BA_ReadAccess));
   if (!b.LockedFor(BA_ReadAccess))
@@ -31,7 +31,7 @@ ByteArray::ByteArray(const ByteArray& b) : m_bytecount(0), m_handle(NULL) ,
 }
 
 ByteArray::ByteArray(const TCICHAR* str) : m_bytecount(0), m_handle(NULL) ,
-  m_allocsize(0), m_lockedForWriting(FALSE), m_readOnlyLockCount(0)
+  m_allocsize(0), m_lockedForWriting(false), m_readOnlyLockCount(0)
 {
   U32 len = str ? _tcslen(str) : 0;
   AddBytes(reinterpret_cast<const U8*>(str), len*sizeof(TCICHAR), BA_none);
@@ -47,9 +47,9 @@ ByteArray::~ByteArray()
   }
 }
 
-TCI_BOOL ByteArray::operator==(const ByteArray& b)
+bool ByteArray::operator==(const ByteArray& b)
 {
-  TCI_BOOL rv(FALSE);
+  bool rv(false);
   TCI_ASSERT(!LockedFor(BA_ReadAccess) && !b.LockedFor(BA_ReadAccess));
   if (!LockedFor(BA_ReadAccess) && !b.LockedFor(BA_ReadAccess) && (b.GetByteCount() == GetByteCount()))
   {
@@ -114,14 +114,14 @@ ByteArray& ByteArray::operator=( const ByteArray& b )
   return *this;
 }
 
-TCI_BOOL ByteArray::ReSize(U32 thesize)
+bool ByteArray::ReSize(U32 thesize)
 {
   return ReSize(thesize, BA_none);
 }
 
-TCI_BOOL ByteArray::SetByteCount(U32 newcount) 
+bool ByteArray::SetByteCount(U32 newcount) 
 {
-  TCI_BOOL rv(FALSE);
+  bool rv(false);
   m_bytecount =  (newcount <= m_allocsize) ? newcount : m_allocsize;
   rv = (newcount <= m_allocsize);
   return rv;
@@ -134,7 +134,7 @@ U8* ByteArray::Lock()
   TCI_ASSERT(!LockedFor(BA_WriteAccess));
   if (!LockedFor(BA_WriteAccess))
   {
-    m_lockedForWriting = TRUE;
+    m_lockedForWriting = true;
     rv = GetDataPtr();
   }
   return rv;
@@ -156,7 +156,7 @@ const U8* ByteArray::ReadOnlyLock() const
 
 void ByteArray::Unlock()
 {
-  m_lockedForWriting = FALSE;
+  m_lockedForWriting = false;
 }
 
 void ByteArray::ReadOnlyUnlock() const
@@ -195,15 +195,15 @@ void ByteArray::AddBytes(const U8* pData, U32 count, U32 flags)
   }
 }
 
-TCI_BOOL ByteArray::ReplaceBytes(U32 nOffset, U32 nNumBytes, const U8* pNewBytes,
+bool ByteArray::ReplaceBytes(U32 nOffset, U32 nNumBytes, const U8* pNewBytes,
                                   U32 nNumNewBytes)
 {
   if (LockedFor(BA_WriteAccess))
   {
-    TCI_ASSERT(FALSE);
-    return FALSE;
+    TCI_ASSERT(false);
+    return false;
   }
-  TCI_BOOL rv = FALSE;
+  bool rv = false;
   if (nOffset <= m_bytecount)
   {
     if (nOffset + nNumBytes > m_bytecount)
@@ -218,7 +218,7 @@ TCI_BOOL ByteArray::ReplaceBytes(U32 nOffset, U32 nNumBytes, const U8* pNewBytes
       memmove(pOldTail + nDelta, pOldTail, m_bytecount - nOffset - nNumBytes);
     }
     memcpy(pOldMem, pNewBytes, nNumNewBytes);
-    rv = TRUE;
+    rv = true;
     Unlock();
   }
   return rv;
@@ -233,10 +233,10 @@ U32 ByteArray::CalculateAllocSize(U32 thesize, U32 flags)
 }
 
 
-TCI_BOOL ByteArray::ReSize(U32 thesize, U32 flags)
+bool ByteArray::ReSize(U32 thesize, U32 flags)
 {
   TCI_ASSERT(!LockedFor(BA_WriteAccess));
-  TCI_BOOL rv(FALSE);
+  bool rv(false);
   if (!LockedFor(BA_WriteAccess)) 
   {
     U32 size = CalculateAllocSize(thesize, flags);
@@ -262,28 +262,28 @@ TCI_BOOL ByteArray::ReSize(U32 thesize, U32 flags)
   return rv;
 }
 
-TCI_BOOL ByteArray::LockedFor(U32 mode)  const 
+bool ByteArray::LockedFor(U32 mode)  const 
 {
-  TCI_BOOL rv(FALSE);
+  bool rv(false);
   if (m_lockedForWriting)
-    rv = TRUE;
+    rv = true;
   if (!rv && (m_readOnlyLockCount > 0) && (mode == BA_WriteAccess))
-    rv = TRUE;
+    rv = true;
   if (!rv && (m_readOnlyLockCount > 0) && (mode == (BA_WriteAccess|BA_ReadAccess)))
-    rv = TRUE;
+    rv = true;
   return rv;
 }
 
 
-TCI_BOOL ByteArray::InitHeap()
+bool ByteArray::InitHeap()
 {
-  return TRUE;
+  return true;
 }
 
-TCI_BOOL ByteArray::AllocMemory(void** handle, U32 size)
+bool ByteArray::AllocMemory(void** handle, U32 size)
 {
   if (!size)
-    return FALSE;
+    return false;
   *handle =  malloc(size);
   TCI_ASSERT(*handle);
   return *handle != NULL;
