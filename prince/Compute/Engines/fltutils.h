@@ -200,6 +200,7 @@ bool IsTrigArgFuncName(Grammar *mml_entities, const char * f_nom);
 bool IsReservedFuncName(Grammar *mml_entities, const char * f_nom);
 
 void StrReplace(char *line, size_t zln, char *tok, const char *sub);
+void StrFromInt(int val, char* buffer);
 
 U32 ASCII2U32(const char *p_digits, int place_val);
 U32 NumericEntity2U32(const char *p_entity);

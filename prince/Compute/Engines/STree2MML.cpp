@@ -5416,7 +5416,7 @@ void STree2MML::SemanticFracDerivative2MML(SEMANTICS_NODE * snode,
   char *z_dop = NULL;
   if (n_diffs > 1) {
     char exponent[32];
-    itoa(n_diffs, exponent, 10);
+    StrFromInt(n_diffs, exponent);
     char *script = MNfromNUMBER(exponent);
 
     char *tmpl = GetTmplPtr(TMPL_MSUP); //  "<msup>\n%base%%script%</msup>\n"
@@ -5726,7 +5726,7 @@ char *STree2MML::NumberToUserFormat(SEMANTICS_NODE * s_number)
       // Here we position the decimal after the first digit
       shift += n_digits - 1;
       char tmp[80];
-      itoa(shift, tmp, 10);
+      StrFromInt(shift, tmp);
       size_t zln = strlen(tmp) + n_digits + 2;
       if (sign)
         zln++;
@@ -5940,7 +5940,7 @@ char *STree2MML::GetPrimesStr(int nprimes)
     delete[] primeslist;
   } else {
     char exponent[32];
-    itoa(nprimes, exponent, 10);
+    StrFromInt(nprimes, exponent);
     rv = MNfromNUMBER(exponent);
     int tmp_nodes_made;
     rv = NestzMMLInPARENS(rv, tmp_nodes_made);
