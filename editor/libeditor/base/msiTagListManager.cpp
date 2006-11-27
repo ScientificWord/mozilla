@@ -832,6 +832,7 @@ NS_IMETHODIMP msiTagListManager::GetTagOfNode(nsIDOMNode *node, nsIAtom ** atomN
   }
   *atomNS = nsnull;
   _retval = NS_LITERAL_STRING("");
+  return NS_OK;
 }
  
 /* AString GetStringPropertyForTag (in AString strTag, in nsIAtom atomNS, in AString propertyName); */
