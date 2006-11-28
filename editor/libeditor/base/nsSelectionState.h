@@ -111,6 +111,7 @@ class nsRangeUpdater
     // which is not what you want if you know you are reinserting it.
     nsresult SelAdjCreateNode(nsIDOMNode *aParent, PRInt32 aPosition);
     nsresult SelAdjInsertNode(nsIDOMNode *aParent, PRInt32 aPosition);
+    nsresult SelAdjInsertNodes(nsIDOMNode *aParent, PRInt32 aPosition, PRInt32 aNumber);
     nsresult SelAdjDeleteNode(nsIDOMNode *aNode, PRBool deep);
     nsresult SelAdjSplitNode(nsIDOMNode *aOldRightNode, PRInt32 aOffset, nsIDOMNode *aNewLeftNode);
     nsresult SelAdjReplaceNode(nsIDOMNode *aNewNode, 
