@@ -102,6 +102,7 @@ CPPSRCS		+=                          \
 		nsStyleSheetTxns.cpp        \
         ReplaceElementTxn.cpp       \
         DeleteMathmlRangeTxn.cpp    \
+        FlattenMrowTxn.cpp    \
 		TransactionFactory.cpp      \
 		$(NULL)
 
