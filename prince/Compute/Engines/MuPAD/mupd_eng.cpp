@@ -125,6 +125,7 @@ static void MUP_CALLBACK on_kernel_ready(MUP_Kernel kernel)
 static void MUP_CALLBACK on_init_wanted(MUP_Kernel kernel)
 {
   MuPADMssgHandler* client = (MuPADMssgHandler*)MUP_get_client_data(kernel);
+#ifdef XP_WIN
   char path[MAX_PATH];
   strcpy(path, static_cast<const TCICHAR *>(client->libStr));
   const char *argv[4] = {
@@ -132,6 +133,9 @@ static void MUP_CALLBACK on_init_wanted(MUP_Kernel kernel)
     "/m", path
   };
   MUP_send_init(kernel, 4, argv);
+#else
+  MUP_send_init(kernel, 0, 0);
+#endif
 }
 
 // an output from the kernel
@@ -274,7 +278,11 @@ bool MuPADEngine::LoadStrsAndDLL(const char *engpath, const char *libpath)
   MUP_set_event_handler(Stop_MuPAD, 0);
 
   TCI_ASSERT(m_kernel == 0);
+#ifdef XP_WIN
   m_kernel = MUP_get_lib_kernel(libpath);
+#else
+  m_kernel = MUP_get_uds_kernel(libpath);
+#endif
   if (m_kernel) {
     MUP_set_event_handler(Stop_MuPAD, m_kernel);
     MUP_set_fatal_exit_handler(Cleanup_MuPAD);
