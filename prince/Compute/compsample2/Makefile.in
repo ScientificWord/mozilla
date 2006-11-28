@@ -64,7 +64,7 @@ libs:: $(TARGETS)
 install:: $(TARGETS)
 	$(SYSINSTALL) $(IFLAGS1) $(srcdir)/simplecompute2 $(DESTDIR)$(mozappdir)/res/samples
 
-msiISimpleComputeEngine.idl:: msiISimpleComputeEngine.idl.in ../iCmpIDs.h
+msiISimpleComputeEngine.idl:: msiISimpleComputeEngine.idl.c ../iCmpIDs.h
 	$(CPP) $<  | sed "s/^IDLinclude/#include/" > msiISimpleComputeEngine.idl
 
                  
