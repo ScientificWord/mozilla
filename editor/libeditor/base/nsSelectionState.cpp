@@ -261,12 +261,28 @@ nsRangeUpdater::DropSelectionState(nsSelectionState &aSelState)
 nsresult
 nsRangeUpdater::SelAdjCreateNode(nsIDOMNode *aParent, PRInt32 aPosition)
 {
-  if (mLock) return NS_OK;  // lock set by Will/DidReplaceParent, etc...
-  if (!aParent) return NS_ERROR_NULL_POINTER;
-  PRInt32 i, count = mArray.Count();
-  if (!count) return NS_OK;
+  return SelAdjInsertNodes(aParent, aPosition, 1);
+}
 
-  nsRangeStore *item;
+nsresult
+nsRangeUpdater::SelAdjInsertNode(nsIDOMNode *aParent, PRInt32 aPosition)
+{
+  return SelAdjInsertNodes(aParent, aPosition, 1);
+}
+
+
+nsresult
+nsRangeUpdater::SelAdjInsertNodes(nsIDOMNode *aParent, PRInt32 aPosition, PRInt32 aNumber)
+{
+  if (mLock) 
+    return NS_OK;  // lock set by Will/DidReplaceParent, etc...
+  if (!aParent) 
+    return NS_ERROR_NULL_POINTER;
+  PRInt32 i, count = mArray.Count();
+  if (!count || aNumber <= 0) 
+    return NS_OK;
+
+  nsRangeStore *item = nsnull;
   
   for (i=0; i<count; i++)
   {
@@ -274,18 +290,13 @@ nsRangeUpdater::SelAdjCreateNode(nsIDOMNode *aParent, PRInt32 aPosition)
     if (!item) return NS_ERROR_NULL_POINTER;
     
     if ((item->startNode.get() == aParent) && (item->startOffset > aPosition))
-      item->startOffset++;
+      item->startOffset += aNumber;
     if ((item->endNode.get() == aParent) && (item->endOffset > aPosition))
-      item->endOffset++;
+      item->endOffset += aNumber;
   }
   return NS_OK;
 }
 
-nsresult
-nsRangeUpdater::SelAdjInsertNode(nsIDOMNode *aParent, PRInt32 aPosition)
-{
-  return SelAdjCreateNode(aParent, aPosition);
-}
 
 
 nsresult
