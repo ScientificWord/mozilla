@@ -5,7 +5,7 @@
     object dispense this data to clients.
 */
 
-#include "grammar.h"
+#include "Grammar.h"
 #include <string.h>
 #include <stdlib.h>
 
