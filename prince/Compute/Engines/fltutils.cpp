@@ -2055,7 +2055,7 @@ char *DumpSList(const SEMANTICS_NODE * s_list, int indent)
   return zheap_str;
 }
 
-#include "grammar.h"
+#include "Grammar.h"
 
 bool IsTrigArgFuncName(Grammar *gmr, const char * nom)
 {
