@@ -5315,9 +5315,9 @@ MNODE *STree2MML::CleanupMMLsource(MNODE * mml_var_node)
 //  Here we replace instances of%color_attr% with something
 //  like mathcolor="red"
 
-char *STree2MML::ColorizeMMLElement(char *tmpl,
-                                    char *color_attr1,
-                                    char *color_attr2, char *color_attr3)
+char *STree2MML::ColorizeMMLElement(const char *tmpl,
+                                    const char *color_attr1,
+                                    const char *color_attr2, const char *color_attr3)
 {
   char *rv = NULL;
 
@@ -5851,7 +5851,7 @@ char *STree2MML::MNfromNUMBER(char *z_number)
   return zh_rv;
 }
 
-char *STree2MML::MOfromSTRING(char *z_string, char *color)
+char *STree2MML::MOfromSTRING(const char *z_string, const char *color)
 {
   char *tmpl = GetTmplPtr(TMPL_MO);
   size_t ln = strlen(tmpl) + strlen(z_string);
@@ -6425,7 +6425,7 @@ char *STree2MML::LowerLim2MML(BUCKET_REC * b_parts)
         if (b_direction)
           direction = GetLimDirection(b_direction);
         if (direction) {
-          char *direction_str = (direction == 1) ? "+" : "&#x2212;";
+          const char *direction_str = (direction == 1) ? "+" : "&#x2212;";
           char *script_str = MOfromSTRING(direction_str, up_clr_math_attr);
 
           char *tmpl = GetTmplPtr(TMPL_MSUP); //  "<msup>\n%base%%script%</msup>\n"

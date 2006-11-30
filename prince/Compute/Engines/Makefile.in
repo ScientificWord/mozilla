@@ -14,7 +14,10 @@ include $(DEPTH)/config/autoconf.mk
 MODULE = compute
 LIBRARY_NAME = enginelib
 
-DIRS		=  Maple MuPAD
+DIRS		=  MuPAD
+ifeq ($(OS_ARCH),WINNT)
+DIRS		=  Maple
+endif
 
 include $(topsrcdir)/config/config.mk
 

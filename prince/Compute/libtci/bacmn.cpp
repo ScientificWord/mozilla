@@ -2,23 +2,23 @@
 
 #include "bytearry.h"
 #include "../CmpTypes.h"
-#include <tchar.h>
 #include <stdlib.h>
+#include <string.h>
 
 void* ByteArray::m_mempool = NULL;
 
-ByteArray::ByteArray() : m_bytecount(0), m_handle(NULL) ,
+ByteArray::ByteArray() : m_handle(NULL), m_bytecount(0), 
   m_allocsize(0), m_lockedForWriting(false), m_readOnlyLockCount(0)
 {}
 
-ByteArray::ByteArray(U32 allocsize) : m_bytecount(0), m_handle(NULL) ,
+ByteArray::ByteArray(U32 allocsize) : m_handle(NULL), m_bytecount(0), 
   m_allocsize(0), m_lockedForWriting(false), m_readOnlyLockCount(0)
 {
   if (allocsize > 0)
     ReSize(allocsize, BA_none);
 }
 
-ByteArray::ByteArray(const ByteArray& b) : m_bytecount(0), m_handle(NULL) ,
+ByteArray::ByteArray(const ByteArray& b) : m_handle(NULL), m_bytecount(0), 
   m_allocsize(0), m_lockedForWriting(false), m_readOnlyLockCount(0)
 {
   TCI_ASSERT(!b.LockedFor(BA_ReadAccess));
@@ -30,10 +30,10 @@ ByteArray::ByteArray(const ByteArray& b) : m_bytecount(0), m_handle(NULL) ,
   }
 }
 
-ByteArray::ByteArray(const TCICHAR* str) : m_bytecount(0), m_handle(NULL) ,
+ByteArray::ByteArray(const TCICHAR* str) : m_handle(NULL), m_bytecount(0), 
   m_allocsize(0), m_lockedForWriting(false), m_readOnlyLockCount(0)
 {
-  U32 len = str ? _tcslen(str) : 0;
+  U32 len = str ? strlen(str) : 0;
   AddBytes(reinterpret_cast<const U8*>(str), len*sizeof(TCICHAR), BA_none);
 }
 
@@ -77,7 +77,7 @@ ByteArray& ByteArray::operator+=( const ByteArray& b )
 
 ByteArray& ByteArray::operator+=(const TCICHAR* str) 
 {
-  U32 len = str ? _tcslen(str) : 0;
+  U32 len = str ? strlen(str) : 0;
   AddBytes(reinterpret_cast<const U8*>(str), len*sizeof(TCICHAR), BA_double);
   return *this;
 }
@@ -90,13 +90,13 @@ ByteArray& ByteArray::operator+=(const U8 u8)
 
 void ByteArray::AddString(const TCICHAR* str)  // adds null terminator to data.
 {
-  U32 len = str ? _tcslen(str)+1 : 0;
+  U32 len = str ? strlen(str)+1 : 0;
   AddBytes(reinterpret_cast<const U8*>(str), len*sizeof(TCICHAR), BA_double);
 }
 
 ByteArray& ByteArray::operator=(const TCICHAR* str) 
 {
-  U32 len = str ? _tcslen(str) : 0;
+  U32 len = str ? strlen(str) : 0;
   AddBytes(reinterpret_cast<const U8*>(str), len*sizeof(TCICHAR), BA_reset);
   return *this;
 }
