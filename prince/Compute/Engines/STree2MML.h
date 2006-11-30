@@ -190,8 +190,8 @@ private:
 
   MNODE *CleanupMMLsource(MNODE * mml_var_tree);
 
-  char *ColorizeMMLElement(char *tmpl, char *color_attr1,
-                           char *color_attr2, char *color_attr3);
+  char *ColorizeMMLElement(const char *tmpl, const char *color_attr1,
+                           const char *color_attr2, const char *color_attr3);
   char *DiffDenom2MML(SEMANTICS_NODE * snode,
                       bool use_dd, int& error_code);
 
@@ -210,7 +210,7 @@ private:
 
   char *MIfromCHDATA(const char *z_chdata);
   char *MNfromNUMBER(char *z_number);
-  char *MOfromSTRING(char *z_string, char *color);
+  char *MOfromSTRING(const char *z_string, const char *color);
   char *PrefixMOfromSTRING(char *z_string);
   char *AccentMOfromSTRING(char *z_string);
 

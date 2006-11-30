@@ -239,9 +239,14 @@ TCIString::operator const U8 *() const                     // Convert to a U8 *
 
 #define _tcistrlen   strlen
 #define _tcistrcmp   strcmp
-#define _tcistricmp  stricmp
 #define _tcistrncmp  strncmp
+#ifdef XP_WIN
+#define _tcistricmp  stricmp
 #define _tcistrnicmp _strnicmp
+#else
+#define _tcistricmp  strcasecmp
+#define _tcistrnicmp _strncasecmp
+#endif
 #define _tcistrcoll  strcoll
 #define _tcistrchr   strchr
 #define _tcistrrchr  strrchr

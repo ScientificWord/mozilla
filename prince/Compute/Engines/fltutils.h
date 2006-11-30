@@ -6,7 +6,6 @@
 #include "../CmpTypes.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <io.h>
 
 /*  As we parse LaTeX, a data structure called a "Parse Tree"
 is generated. Each node in this tree is a "MNODE" struct
