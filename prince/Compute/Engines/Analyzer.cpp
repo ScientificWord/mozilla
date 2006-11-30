@@ -30,6 +30,13 @@
 #include <string.h>
 #include <ctype.h>
 
+#ifdef XP_WIN
+#define _tcistricmp  stricmp
+#define _tcistrnicmp _strnicmp
+#else
+#define _tcistricmp  strcasecmp
+#define _tcistrnicmp _strncasecmp
+#endif
 
 Analyzer::Analyzer(Grammar * mml_grammar, PrefsStore * up_store)
 {
@@ -1996,9 +2003,9 @@ Analyzer::IdentIlk Analyzer::GetMSIilk(char *msi_class)
 {
   IdentIlk rv = MI_none;
 
-  if (!stricmp(msi_class, "enginefunction")) {
+  if (!_tcistricmp(msi_class, "enginefunction")) {
     rv = MI_function;
-  } else if (!stricmp(msi_class, "enginevariable")) {
+  } else if (!_tcistricmp(msi_class, "enginevariable")) {
     rv = MI_variable;
   } else {
     TCI_ASSERT(!"Unexpected msi_class value.");
