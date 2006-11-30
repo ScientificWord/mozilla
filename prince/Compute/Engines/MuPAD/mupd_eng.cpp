@@ -281,7 +281,7 @@ bool MuPADEngine::LoadStrsAndDLL(const char *engpath, const char *libpath)
 #ifdef XP_WIN
   m_kernel = MUP_get_lib_kernel(libpath);
 #else
-  m_kernel = MUP_get_uds_kernel(libpath);
+  m_kernel = MUP_get_uds_kernel(libpath,NULL,1);
 #endif
   if (m_kernel) {
     MUP_set_event_handler(Stop_MuPAD, m_kernel);
@@ -345,7 +345,7 @@ void MuPADEngine::HandleMuPADException()
   m_kernel = 0;
 }
 
-BOOL FileSys_Exists(const char *fspec)
+bool FileSys_Exists(const char *fspec)
 {
   struct stat fs;
   return (stat(fspec, &fs) == 0);

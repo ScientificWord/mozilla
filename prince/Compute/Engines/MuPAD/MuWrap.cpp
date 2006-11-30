@@ -395,6 +395,7 @@ char *MuPADWrapper::Execute(const char *cmd)
 bool MuPADWrapper::RenderPlot(const char *VCamFile, const char *outFile)
 {
   TCI_ASSERT(VCamFile && outFile);
+#ifdef XP_WIN
   TCIString cmdLine;
   cmdLine += "VCamNG.exe /e ";
   cmdLine += outFile;
@@ -425,6 +426,9 @@ bool MuPADWrapper::RenderPlot(const char *VCamFile, const char *outFile)
 
   // we don't need this now
   DeleteFile(VCamFile);
+#else
+    TCI_ASSERT(!"Need to write this code.");
+#endif
 
   return true;
 }
@@ -2155,7 +2159,7 @@ char *MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE * bigop_snode,
     strcpy(rv, db_production);
     StrReplace(rv, bln, "%integrand%", integrand_str);
     if (subID == 3 || subID == 4) {
-      char *comma = var_str ? "," : "";
+      const char *comma = var_str ? "," : "";
       StrReplace(rv, bln, "%comma%", comma);
     } else {
       StrReplace(rv, bln, "%lower%", lower_str);
@@ -6086,7 +6090,7 @@ char *MuPADWrapper::TRANSFORMtoEstr(SEMANTICS_NODE * s_transform,
     if (!strncmp(expr_str, "SWPmatrix", 9))
       is_mapped = true;
 
-    char *key = NULL;
+    const char *key = NULL;
     if (s_transform->semantic_type == SEM_TYP_TRANSFORM) {
       if (is_Laplace)
         key = is_mapped ? "LaplaceMapped" : "Laplace";
@@ -6121,8 +6125,8 @@ char *MuPADWrapper::TRANSFORMtoEstr(SEMANTICS_NODE * s_transform,
   if (!var_str) {
     char *is_laplace = strstr(production, "laplace");
 
-    char *nom = is_laplace ? "s" : "w";
-    char *t_nom = is_laplace ? "t" : "x";
+    const char *nom = is_laplace ? "s" : "w";
+    const char *t_nom = is_laplace ? "t" : "x";
 
     char user_name[2];
     bool use_alias = false;
@@ -7065,7 +7069,7 @@ char *MuPADWrapper::POWERTRANSPOSEtoEstr(SEMANTICS_NODE * s_powerform,
   char *rv = NULL;
   error_code = 0;
 
-  char *key = (which_one == 'T') ? "Transpose" : "Hermitian Transpose";
+  const char *key = (which_one == 'T') ? "Transpose" : "Hermitian Transpose";
   const char *db_production;
   U32 ID, subID;
   if (GetdBaseNamedRecord("SCHEMATA", key, &db_production, ID, subID)) {
