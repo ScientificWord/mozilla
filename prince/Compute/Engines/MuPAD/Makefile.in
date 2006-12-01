@@ -10,7 +10,6 @@ include $(DEPTH)/config/autoconf.mk
 MODULE = compute
 LIBRARY_NAME	= MuPWrapperDLL
 SHORT_LIBNAME	= MuPWrapperDLL
-MODULE_NAME		= compute
 
 include $(topsrcdir)/config/config.mk
 
@@ -28,18 +27,14 @@ FORCE_STATIC_LIB = 1
 
 LOCAL_INCLUDES	= -I$(srcdir)/../../libtci
 
-SHARED_LIBRARY_LIBS += \
-      $(DIST)/lib/computelib.$(LIB_SUFFIX) \
-      $(DIST)/lib/enginelib.$(LIB_SUFFIX) \
-      $(DIST)/lib/libtci.$(LIB_SUFFIX) \
-			$(NULL)
-
+ifeq ($OS_ARCH),WINNT)
 EXTRA_LIBS += \
 		ole32.lib \
 		oleaut32.lib \
 		oledlg.lib \
 		$(srcdir)/mupkernel.lib \
 		$(NULL)
+endif
 
 include $(topsrcdir)/config/rules.mk
 
