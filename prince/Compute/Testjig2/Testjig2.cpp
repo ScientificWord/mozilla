@@ -16,6 +16,12 @@
 #include "../CmpTypes.h"
 #include "../Engines/fltutils.h"
 
+#ifdef XP_WIN
+#define tcistricmp stricmp
+#else
+#define tcistricmp strcasecmp
+#endif
+
 #define MSI_SIMPLECOMPUTEENGINE_CONTRACTID "@mackichan.com/simplecomputeengine;2"
 
 // vestigal
@@ -129,7 +135,7 @@ bool CompEngine::Init(nsCOMPtr<nsIComponentManager> aManager)
     return false;
   }
 
-  rv = mysample->Startup(L"mupInstall.gmr");
+  rv = mysample->Startup(NS_LITERAL_STRING("mupInstall.gmr").get());
   if (NS_FAILED(rv)) {
     printf("ERROR: Calling msiISimpleComputeEngine::Startup() [%x]\n", rv);
     return false;
@@ -150,7 +156,7 @@ bool CompEngine::SwitchEngine(U32 engine_ID)
     printf(" Shutdown OK in SwitchEngine()\n");
   }
 
-  rv = mysample->Startup(engine_ID == 2 ? L"mupInstall.gmr" : L"mplInstall.gmr");
+  rv = mysample->Startup(engine_ID == 2 ? NS_LITERAL_STRING("mupInstall.gmr").get() : NS_LITERAL_STRING("mplInstall.gmr").get());
   if (NS_FAILED(rv)) {
     printf("ERROR: Calling msiISimpleComputeEngine::Startup() during SwitchEngine() [%x]\n", rv);
     return false;
@@ -1669,7 +1675,7 @@ int ProcessTestScript(CompEngine &aEngine, const char *aFile)
     NS_ASSERTION(0,"could not find \'.\' in selected_file");
     return 1;
   }
-  if (stricmp(".tscript", aFile + dot_pos)) {
+  if (tcistricmp(".tscript", aFile + dot_pos)) {
     NS_ASSERTION(0,"Source File Extension Error (tscript required)");
     return 4;
   }
