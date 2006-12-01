@@ -13,7 +13,7 @@
 #include <stdarg.h>
 
 // forward def.
-void SetupNodeAttrs();
+static void SetupNodeAttrs();
 
 PRUint32 wstrlen(const PRUnichar* s)
 {
@@ -470,10 +470,10 @@ NS_IMETHODIMP msiSimpleComputeEngine2::GetDefinitions(PRUnichar **result)
   if (!didInit)
     return NS_ERROR_FAILURE;
 
-  const PRUnichar *openp  = L"<p>";
-  const PRSize openp_len = wstrlen(openp);
-  const PRUnichar *closep = L"</p>";
-  const PRSize closep_len = wstrlen(closep);
+  NS_NAMED_LITERAL_STRING(openp,"<p>");
+  const PRSize openp_len = openp.Length();
+  NS_NAMED_LITERAL_STRING(closep,"</p>");
+  const PRSize closep_len = closep.Length();
 
   const DefInfo* curr_def =  NULL;
   curr_def = (DefInfo*)ComputeDLL::GetNextDef( client_handle,MuPAD_eng_ID,curr_def );
@@ -499,12 +499,12 @@ NS_IMETHODIMP msiSimpleComputeEngine2::GetDefinitions(PRUnichar **result)
   // now, loop through defs to get the data
   PRUnichar *rover = *result;
   while (curr_def) {
-    memcpy(rover, openp, openp_len*sizeof(PRUnichar));
+    memcpy(rover, openp.get(), openp_len*sizeof(PRUnichar));
     rover += openp_len;
     int zln = wstrlen(curr_def->WIDE_src);
     memcpy(rover, curr_def->WIDE_src, zln*sizeof(PRUnichar));
     rover += zln;
-    memcpy(rover, closep, closep_len*sizeof(PRUnichar));
+    memcpy(rover, closep.get(), closep_len*sizeof(PRUnichar));
     rover += closep_len;
     curr_def = (DefInfo*)ComputeDLL::GetNextDef( client_handle,MuPAD_eng_ID,curr_def );
   }
