@@ -281,7 +281,7 @@ bool MuPADEngine::LoadStrsAndDLL(const char *engpath, const char *libpath)
 #ifdef XP_WIN
   m_kernel = MUP_get_lib_kernel(libpath);
 #else
-  m_kernel = MUP_get_uds_kernel(libpath,NULL,1);
+  m_kernel = MUP_get_uds_kernel(engpath,NULL,1);
 #endif
   if (m_kernel) {
     MUP_set_event_handler(Stop_MuPAD, m_kernel);
