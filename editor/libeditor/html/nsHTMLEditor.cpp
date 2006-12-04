@@ -149,6 +149,10 @@ nsresult NS_NewHTMLEditRules(nsIEditRules** aInstancePtrResult);
 #define IsLinkTag(s) (s.EqualsIgnoreCase(hrefText))
 #define IsNamedAnchorTag(s) (s.EqualsIgnoreCase(anchorTxt) || s.EqualsIgnoreCase(namedanchorText))
 
+#if DEBUG_barry || DEBUG_Barry
+// void DebExamineNode(nsIDOMNode * aNode);
+#endif
+
 nsHTMLEditor::nsHTMLEditor()
 : nsPlaintextEditor()
 , mIgnoreSpuriousDragEvent(PR_FALSE)
@@ -744,14 +748,37 @@ nsHTMLEditor::NodeIsBlockStatic(nsIDOMNode *aNode, PRBool *aIsBlock)
 NS_IMETHODIMP
 nsHTMLEditor::NodeIsBlock(nsIDOMNode *aNode, PRBool *aIsBlock)
 {
-  return NodeIsBlockStatic(aNode, aIsBlock);
+  if (!aNode || !aIsBlock) { return NS_ERROR_NULL_POINTER; }
+  *aIsBlock = PR_FALSE;
+  nsIAtom *tagAtom = GetTag(aNode);
+  if (!tagAtom) return NS_ERROR_NULL_POINTER;
+
+// BBM: search for XML tags classified as paragraph or section tags.
+  PRBool found = PR_FALSE;
+  nsString strTagName;
+  nsIAtom * namespaceAtom = nsnull;
+  // to do to implement namespaces: get the namespace atom of aNode
+  tagAtom->ToString(strTagName);
+  mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), strTagName, namespaceAtom, &found);
+  if (found)
+  {
+   *aIsBlock = PR_TRUE;
+   return NS_OK;
+  }
+  mtagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"), strTagName , namespaceAtom, &found);
+  if (found)
+  {
+   *aIsBlock = PR_TRUE;
+   return NS_OK;
+  }
+  else return NodeIsBlockStatic(aNode, aIsBlock);
 }
 
 PRBool
 nsHTMLEditor::IsBlockNode(nsIDOMNode *aNode)
 {
   PRBool isBlock;
-  NodeIsBlockStatic(aNode, &isBlock);
+  NodeIsBlock(aNode, &isBlock);
   return isBlock;
 }
 
@@ -799,8 +826,11 @@ nsHTMLEditor::GetBlockNodeParent(nsIDOMNode *aNode)
 
   while (p)
   {
+#if DEBUG_barry || DEBUG_Barry
+//      DebExamineNode(p);
+#endif
     PRBool isBlock;
-    if (NS_FAILED(NodeIsBlockStatic(p, &isBlock)) || isBlock)
+    if (NS_FAILED(NodeIsBlock(p, &isBlock)) || isBlock)
       break;
     if ( NS_FAILED(p->GetParentNode(getter_AddRefs(tmp))) || !tmp) // no parent, ran off top of tree
       return p;
@@ -851,7 +881,7 @@ nsHTMLEditor::GetBlockSection(nsIDOMNode *aChild,
   while ((NS_SUCCEEDED(result)) && sibling)
   {
     PRBool isBlock;
-    NodeIsBlockStatic(sibling, &isBlock);
+    NodeIsBlock(sibling, &isBlock);
     if (isBlock)
     {
       nsCOMPtr<nsIDOMCharacterData>nodeAsText = do_QueryInterface(sibling);
@@ -869,7 +899,7 @@ nsHTMLEditor::GetBlockSection(nsIDOMNode *aChild,
   while ((NS_SUCCEEDED(result)) && sibling)
   {
     PRBool isBlock;
-    NodeIsBlockStatic(sibling, &isBlock);
+    NodeIsBlock(sibling, &isBlock);
     if (isBlock) 
     {
       nsCOMPtr<nsIDOMCharacterData>nodeAsText = do_QueryInterface(sibling);
@@ -917,7 +947,7 @@ nsHTMLEditor::GetBlockSectionsForRange(nsIDOMRange *aRange,
         else
         {
           PRBool isNotInlineOrText;
-          result = NodeIsBlockStatic(currentNode, &isNotInlineOrText);
+          result = NodeIsBlock(currentNode, &isNotInlineOrText);
           if (isNotInlineOrText)
           {
             PRUint16 nodeType;
@@ -1004,7 +1034,7 @@ nsHTMLEditor::NextNodeInBlock(nsIDOMNode *aNode, IterDirection aDir)
   // much gnashing of teeth as we twit back and forth between content and domnode types
   content = do_QueryInterface(aNode);
   PRBool isBlock;
-  if (NS_SUCCEEDED(NodeIsBlockStatic(aNode, &isBlock)) && isBlock)
+  if (NS_SUCCEEDED(NodeIsBlock(aNode, &isBlock)) && isBlock)
   {
     blockParent = aNode;
   }
@@ -1332,13 +1362,13 @@ NS_IMETHODIMP nsHTMLEditor::HandleKeyPress(nsIDOMKeyEvent* aKeyEvent)
         {
           PRBool bHandled = PR_FALSE;
           
-          if (nsHTMLEditUtils::IsTableElement(blockParent))
+          if (nsHTMLEditUtils::IsTableElement(blockParent, mtagListManager))
           {
             res = TabInTable(isShift, &bHandled);
             if (bHandled)
               ScrollSelectionIntoView(PR_FALSE);
           }
-          else if (nsHTMLEditUtils::IsListItem(blockParent))
+          else if (nsHTMLEditUtils::IsListItem(blockParent, mtagListManager))
           {
             nsAutoString indentstr;
             if (isShift) indentstr.AssignLiteral("outdent");
@@ -1402,9 +1432,12 @@ NS_IMETHODIMP nsHTMLEditor::TypedText(const nsAString& aString,
   switch (aAction)
   {
     case eTypedText:
-    case eTypedBreak:
       {
         return nsPlaintextEditor::TypedText(aString, aAction);
+      }
+    case eTypedBreak:
+      {
+        return InsertReturn();
       }
     case eTypedBR:
       {
@@ -1456,7 +1489,7 @@ NS_IMETHODIMP nsHTMLEditor::TabInTable(PRBool inIsShift, PRBool *outHandled)
 
     node = do_QueryInterface(iter->GetCurrentNode());
 
-    if (node && nsHTMLEditUtils::IsTableCell(node) &&
+    if (node && nsHTMLEditUtils::IsTableCell(node, mtagListManager) &&
         GetEnclosingTable(node) == tbl)
     {
       res = CollapseSelectionToDeepestNonTableFirstChild(nsnull, node);
@@ -1650,7 +1683,7 @@ nsHTMLEditor::CollapseSelectionToDeepestNonTableFirstChild(nsISelection *aSelect
     {
       // Stop if we find a table
       // don't want to go into nested tables
-      if (nsHTMLEditUtils::IsTable(child)) break;
+      if (nsHTMLEditUtils::IsTable(child, mtagListManager)) break;
       // hey, it'g gotta be a container too!
       if (!IsContainer(child)) break;
       node = child;
@@ -2032,7 +2065,7 @@ nsHTMLEditor::InsertElementAtSelection(nsIDOMElement* aElement, PRBool aDeleteSe
       // Named Anchor is a special case,
       // We collapse to insert element BEFORE the selection
       // For all other tags, we insert AFTER the selection
-      if (nsHTMLEditUtils::IsNamedAnchor(node))
+      if (nsHTMLEditUtils::IsNamedAnchor(node, mtagListManager))
       {
         selection->CollapseToStart();
       } else {
@@ -2069,7 +2102,7 @@ nsHTMLEditor::InsertElementAtSelection(nsIDOMElement* aElement, PRBool aDeleteSe
         if (NS_FAILED(res)) return res;
       }
       // check for inserting a whole table at the end of a block. If so insert a br after it.
-      if (nsHTMLEditUtils::IsTable(node))
+      if (nsHTMLEditUtils::IsTable(node, mtagListManager))
       {
         PRBool isLast;
         res = IsLastEditableChild(node, &isLast);
@@ -2127,7 +2160,7 @@ nsHTMLEditor::InsertNodeAtPoint(nsIDOMNode *aNode,
   {
     // If the current parent is a root (body or table element)
     // then go no further - we can't insert
-    if (nsTextEditUtils::IsBody(parent) || nsHTMLEditUtils::IsTableElement(parent))
+    if (nsTextEditUtils::IsBody(parent) || nsHTMLEditUtils::IsTableElement(parent, mtagListManager))
       return NS_ERROR_FAILURE;
     // Get the next parent
     parent->GetParentNode(getter_AddRefs(tmp));
@@ -2461,7 +2494,7 @@ nsHTMLEditor::GetCSSBackgroundColorState(PRBool *aMixed, nsAString &aOutColor, P
 
   // is the node to examine a block ?
   PRBool isBlock;
-  res = NodeIsBlockStatic(nodeToExamine, &isBlock);
+  res = NodeIsBlock(nodeToExamine, &isBlock);
   if (NS_FAILED(res)) return res;
 
   nsCOMPtr<nsIDOMNode> tmp;
@@ -2504,7 +2537,7 @@ nsHTMLEditor::GetCSSBackgroundColorState(PRBool *aMixed, nsAString &aOutColor, P
     }
     do {
       // is the node to examine a block ?
-      res = NodeIsBlockStatic(nodeToExamine, &isBlock);
+      res = NodeIsBlock(nodeToExamine, &isBlock);
       if (NS_FAILED(res)) return res;
       if (isBlock) {
         // yes it is a block; in that case, the text background color is transparent
@@ -3093,8 +3126,8 @@ nsHTMLEditor::GetElementOrParentByTagName(const nsAString& aTagName, nsIDOMNode 
   {
     nsAutoString currentTagName; 
     // Test if we have a link (an anchor with href set)
-    if ( (getLink && nsHTMLEditUtils::IsLink(currentNode)) ||
-         (getNamedAnchor && nsHTMLEditUtils::IsNamedAnchor(currentNode)) )
+    if ( (getLink && nsHTMLEditUtils::IsLink(currentNode, mtagListManager)) ||
+         (getNamedAnchor && nsHTMLEditUtils::IsNamedAnchor(currentNode, mtagListManager)) )
     {
       bNodeFound = PR_TRUE;
       break;
@@ -3102,14 +3135,14 @@ nsHTMLEditor::GetElementOrParentByTagName(const nsAString& aTagName, nsIDOMNode 
       if (findList)
       {
         // Match "ol", "ul", or "dl" for lists
-        if (nsHTMLEditUtils::IsList(currentNode))
+        if (nsHTMLEditUtils::IsList(currentNode, mtagListManager))
           goto NODE_FOUND;
 
       } else if (findTableCell)
       {
         // Table cells are another special case:
         // Match either "td" or "th" for them
-        if (nsHTMLEditUtils::IsTableCell(currentNode))
+        if (nsHTMLEditUtils::IsTableCell(currentNode, mtagListManager))
           goto NODE_FOUND;
 
       } else {
@@ -3214,8 +3247,8 @@ nsHTMLEditor::GetSelectedElement(const nsAString& aTagName, nsIDOMElement** aRet
 
       // Test for appropriate node type requested
       if (anyTag || (TagName == domTagName) ||
-          (isLinkTag && nsHTMLEditUtils::IsLink(selectedNode)) ||
-          (isNamedAnchorTag && nsHTMLEditUtils::IsNamedAnchor(selectedNode)))
+          (isLinkTag && nsHTMLEditUtils::IsLink(selectedNode, mtagListManager)) ||
+          (isNamedAnchorTag && nsHTMLEditUtils::IsNamedAnchor(selectedNode, mtagListManager)))
       {
         bNodeFound = PR_TRUE;
         selectedElement = do_QueryInterface(selectedNode);
@@ -3289,7 +3322,7 @@ nsHTMLEditor::GetSelectedElement(const nsAString& aTagName, nsIDOMElement** aRet
         {
           nsCOMPtr<nsIDOMNode> anchorChild;
           anchorChild = GetChildAt(anchorNode,anchorOffset);
-          if (anchorChild && nsHTMLEditUtils::IsLink(anchorChild) && 
+          if (anchorChild && nsHTMLEditUtils::IsLink(anchorChild, mtagListManager) && 
               (anchorNode == focusNode) && focusOffset == (anchorOffset+1))
           {
             selectedElement = do_QueryInterface(anchorChild);
@@ -3350,8 +3383,8 @@ nsHTMLEditor::GetSelectedElement(const nsAString& aTagName, nsIDOMElement** aRet
               // The "A" tag is a pain,
               //  used for both link(href is set) and "Named Anchor"
               nsCOMPtr<nsIDOMNode> selectedNode = do_QueryInterface(selectedElement);
-              if ( (isLinkTag && nsHTMLEditUtils::IsLink(selectedNode)) ||
-                   (isNamedAnchorTag && nsHTMLEditUtils::IsNamedAnchor(selectedNode)) )
+              if ( (isLinkTag && nsHTMLEditUtils::IsLink(selectedNode, mtagListManager)) ||
+                   (isNamedAnchorTag && nsHTMLEditUtils::IsNamedAnchor(selectedNode, mtagListManager)) )
               {
                 bNodeFound = PR_TRUE;
               } else if (TagName == domTagName) { // All other tag names are handled here
@@ -4306,20 +4339,24 @@ nsHTMLEditor::EndOperation()
 PRBool 
 nsHTMLEditor::TagCanContainTag(const nsAString& aParentTag, const nsAString& aChildTag)  
 {
-  PRInt32 childTagEnum;
-  // XXX Should this handle #cdata-section too?
-  if (aChildTag.EqualsLiteral("#text")) {
-    childTagEnum = eHTMLTag_text;
-  }
-  else {
-    childTagEnum = sParserService->HTMLStringTagToId(aChildTag);
-  }
-
-  PRInt32 parentTagEnum = sParserService->HTMLStringTagToId(aParentTag);
-  NS_ASSERTION(parentTagEnum < NS_HTML_TAG_MAX,
-               "Fix the caller, this type of node can never contain children.");
-
-  return nsHTMLEditUtils::CanContain(parentTagEnum, childTagEnum);
+  PRBool fRet;
+  if (mtagListManager)
+    mtagListManager->TagCanContainTag(aParentTag, nsnull, aChildTag, nsnull, &fRet);
+  return fRet;
+//  PRInt32 childTagEnum;
+//  // XXX Should this handle #cdata-section too?
+//  if (aChildTag.EqualsLiteral("#text")) {
+//    childTagEnum = eHTMLTag_text;
+//  }
+//  else {
+//    childTagEnum = sParserService->HTMLStringTagToId(aChildTag);
+//  }
+//
+//  PRInt32 parentTagEnum = sParserService->HTMLStringTagToId(aParentTag);
+//  NS_ASSERTION(parentTagEnum < NS_HTML_TAG_MAX,
+//               "Fix the caller, this type of node can never contain children.");
+//
+//  return nsHTMLEditUtils::CanContain(parentTagEnum, childTagEnum);
 }
 
 PRBool 
@@ -4343,7 +4380,7 @@ nsHTMLEditor::IsContainer(nsIDOMNode *aNode)
     tagEnum = sParserService->HTMLStringTagToId(stringTag);
   }
 
-  return nsHTMLEditUtils::IsContainer(tagEnum);
+  return nsHTMLEditUtils::IsContainer(tagEnum, mtagListManager);
 }
 
 
@@ -4611,7 +4648,7 @@ nsHTMLEditor::GetEnclosingTable(nsIDOMNode *aNode)
   {
     tmp = GetBlockNodeParent(node);
     if (!tmp) break;
-    if (nsHTMLEditUtils::IsTable(tmp)) tbl = tmp;
+    if (nsHTMLEditUtils::IsTable(tmp, mtagListManager)) tbl = tmp;
     node = tmp;
   }
   return tbl;
@@ -5352,10 +5389,10 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
   // anchors are containers, named anchors are "empty" but we don't
   // want to treat them as such.  Also, don't call ListItems or table
   // cells empty if caller desires.  Form Widgets not empty.
-  if (!IsContainer(aNode) || nsHTMLEditUtils::IsNamedAnchor(aNode) ||
-        nsHTMLEditUtils::IsFormWidget(aNode)                       ||
-       (aListOrCellNotEmpty && nsHTMLEditUtils::IsListItem(aNode)) ||
-       (aListOrCellNotEmpty && nsHTMLEditUtils::IsTableCell(aNode)) ) 
+  if (!IsContainer(aNode) || nsHTMLEditUtils::IsNamedAnchor(aNode, mtagListManager) ||
+        nsHTMLEditUtils::IsFormWidget(aNode, mtagListManager)                       ||
+       (aListOrCellNotEmpty && nsHTMLEditUtils::IsListItem(aNode, mtagListManager)) ||
+       (aListOrCellNotEmpty && nsHTMLEditUtils::IsTableCell(aNode, mtagListManager)) ) 
   {
     *outIsEmptyNode = PR_FALSE;
     return NS_OK;
@@ -5363,7 +5400,7 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
     
   // need this for later
   PRBool isListItemOrCell = 
-       nsHTMLEditUtils::IsListItem(aNode) || nsHTMLEditUtils::IsTableCell(aNode);
+       nsHTMLEditUtils::IsListItem(aNode, mtagListManager) || nsHTMLEditUtils::IsTableCell(aNode, mtagListManager);
        
   // loop over children of node. if no children, or all children are either 
   // empty text nodes or non-editable, then node qualifies as empty
@@ -5398,14 +5435,14 @@ nsHTMLEditor::IsEmptyNodeImpl( nsIDOMNode *aNode,
           // if they contain other lists or tables
           if (isListItemOrCell)
           {
-            if (nsHTMLEditUtils::IsList(node) || nsHTMLEditUtils::IsTable(node))
+            if (nsHTMLEditUtils::IsList(node, mtagListManager) || nsHTMLEditUtils::IsTable(node, mtagListManager))
             { // break out if we find we aren't empty
               *outIsEmptyNode = PR_FALSE;
               return NS_OK;
             }
           }
           // is it a form widget?
-          else if (nsHTMLEditUtils::IsFormWidget(aNode))
+          else if (nsHTMLEditUtils::IsFormWidget(aNode, mtagListManager))
           { // break out if we find we aren't empty
             *outIsEmptyNode = PR_FALSE;
             return NS_OK;
@@ -5622,7 +5659,7 @@ nsHTMLEditor::SetCSSBackgroundColor(const nsAString& aColor)
         // to the containing block, possibly the node itself
         nsCOMPtr<nsIDOMNode> selectedNode = GetChildAt(startNode, startOffset);
         PRBool isBlock =PR_FALSE;
-        res = NodeIsBlockStatic(selectedNode, &isBlock);
+        res = NodeIsBlock(selectedNode, &isBlock);
         if (NS_FAILED(res)) return res;
         nsCOMPtr<nsIDOMNode> blockParent = selectedNode;
         if (!isBlock) {
@@ -5705,7 +5742,7 @@ nsHTMLEditor::SetCSSBackgroundColor(const nsAString& aColor)
           node = arrayOfNodes[j];
           // do we have a block here ?
           PRBool isBlock =PR_FALSE;
-          res = NodeIsBlockStatic(node, &isBlock);
+          res = NodeIsBlock(node, &isBlock);
           if (NS_FAILED(res)) return res;
           nsCOMPtr<nsIDOMNode> blockParent = node;
           if (!isBlock) {
@@ -5832,7 +5869,7 @@ nsHTMLEditor::CopyLastEditableChildStyles(nsIDOMNode * aPreviousBlock, nsIDOMNod
   }
   nsCOMPtr<nsIDOMNode> newStyles = nsnull, deepestStyle = nsnull;
   while (child && (child != aPreviousBlock)) {
-    if (nsHTMLEditUtils::IsInlineStyle(child) ||
+    if (nsHTMLEditUtils::IsInlineStyle(child, mtagListManager) ||
         nsEditor::NodeIsType(child, nsEditProperty::span)) {
       nsAutoString domTagName;
       child->GetNodeName(domTagName);
@@ -5880,7 +5917,7 @@ nsHTMLEditor::GetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 &
 
   float t2p = ps->GetPresContext()->TwipsToPixels();
 
-  if (nsHTMLEditUtils::IsHR(aElement) && frame) {
+  if (nsHTMLEditUtils::IsHR(aElement, mtagListManager) && frame) {
     frame = frame->GetNextSibling();
   }
   PRInt32 offsetX = 0, offsetY = 0;

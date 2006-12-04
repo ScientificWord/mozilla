@@ -565,7 +565,7 @@ nsHTMLEditor::AbsolutelyPositionElement(nsIDOMElement * aElement,
                                      nsEditProperty::cssZIndex,
                                      EmptyString(), PR_FALSE);
 
-    if (!nsHTMLEditUtils::IsImage(aElement)) {
+    if (!nsHTMLEditUtils::IsImage(aElement, mtagListManager)) {
       mHTMLCSSUtils->RemoveCSSProperty(aElement,
                                        nsEditProperty::cssWidth,
                                        EmptyString(), PR_FALSE);
@@ -577,7 +577,7 @@ nsHTMLEditor::AbsolutelyPositionElement(nsIDOMElement * aElement,
     PRBool hasStyleOrIdOrClass;
     res = HasStyleOrIdOrClass(aElement, &hasStyleOrIdOrClass);
     if (NS_FAILED(res)) return res;
-    if (!hasStyleOrIdOrClass && nsHTMLEditUtils::IsDiv(aElement)) {
+    if (!hasStyleOrIdOrClass && nsHTMLEditUtils::IsDiv(aElement, mtagListManager)) {
       nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
       if (!htmlRules) return NS_ERROR_FAILURE;
       res = htmlRules->MakeSureElemStartsOrEndsOnCR(aElement);

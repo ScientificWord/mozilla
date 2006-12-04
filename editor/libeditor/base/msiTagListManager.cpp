@@ -20,6 +20,7 @@
 #include "../html/nsHTMLEditor.h"
 #include "nsIAutoCompleteSearchStringArray.h"
 
+
 /* Implementation file */
 NS_INTERFACE_MAP_BEGIN(msiTagListManager)
   NS_INTERFACE_MAP_ENTRY(msiTagListManager)
@@ -110,9 +111,19 @@ TagKey::TagKey(nsString akey)
   {
     nsString str;
     akey.Left(key,hyphen-1);
-    akey.Right(str, (key.Length() - hyphen +3));
-    if (str.Length() > 0) key = str +  NS_LITERAL_STRING(":") +key;                                
-  } else key = akey;
+    akey.Right(str, (akey.Length() - hyphen +3));
+#ifdef USE_NAMESPACES 
+    if (str.Length() > 0) key = str +  NS_LITERAL_STRING(":") +key;
+#endif                                
+  } else 
+  {
+#ifndef USE_NAMESPACES 
+    int colon = akey.FindChar(':');
+    if (colon >= 0) akey.Right(key, (akey.Length() - (colon+1)));
+    else    
+#endif
+    key = akey;
+  }
 }
 
 
@@ -335,6 +346,9 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           // TODO: check for out of memory
           pTagKeyList = new TagKeyList;
           pTagKeyList->key.key.Assign(strCanContain);
+#ifndef USE_NAMESPACES 
+          pTagKeyList->key.key.Assign(pTagKeyList->key.localName());
+#endif
           if (pTagKeyListHead->pListTail)
             pTagKeyListHead->pListTail->pNext = pTagKeyList;   // we use ListTail to keep the list in the same order as in the XNL file,
           pTagKeyListHead->pListTail = pTagKeyList;   // we use ListTail to keep the list in the same order as in the XNL file,
@@ -367,12 +381,15 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           pdata->tagClass = strClassName;
           pdata->description = GetStringProperty(NS_LITERAL_STRING("description"), tagNameElement);
           pdata->initialContentsForEmpty = 
-            GetStringProperty(NS_LITERAL_STRING("initialContentsForEmpty"), tagNameElement);
+            GetStringProperty(NS_LITERAL_STRING("initialcontentsforempty"), tagNameElement);
           pdata->initialContents =
-            GetStringProperty(NS_LITERAL_STRING("initialContents"), tagNameElement);
+            GetStringProperty(NS_LITERAL_STRING("initialcontents"), tagNameElement);
           pdata->discardEmptyBlock = 
-            GetStringProperty(NS_LITERAL_STRING("discardEmptyBlock"), tagNameElement)==NS_LITERAL_STRING("true");
+            GetStringProperty(NS_LITERAL_STRING("discardemptyblock"), tagNameElement)==NS_LITERAL_STRING("true");
           // save the key, data pair
+          TagKey nextTagKey(GetStringProperty(NS_LITERAL_STRING("nexttag"), tagNameElement));
+          pdata->nextTag = nextTagKey.key;
+          if (pdata->nextTag.Length() == 0) pdata->nextTag = key.key;
           msiTagHashtable.Put(key.key, pdata);
 //		      printf("Added %s: %s %s\n", ToNewCString(key.key), ToNewCString(pdata->description), ToNewCString(pdata->tagClass));
 //          printf("hash table has %d entries\n",msiTagHashtable.Count()); 
@@ -597,24 +614,7 @@ nsString msiTagListManager::PrefixFromNameSpaceAtom(nsIAtom * atomNS)
 /* AString getClassOfTag (in AString strTag, in nsIAtom atomNS); */
 NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom *atomNS, nsAString & _retval)
 {
-  // If *atomNS is null, we just use strTag to look up. Otherwise we concat the namespace abbreviation with strTag
-  nsString strAbbrev;
-  strAbbrev = PrefixFromNameSpaceAtom(atomNS);
-  nsString strKey;
-  nsString emptyString;
-  if (strAbbrev.Length() >0 )strKey = strAbbrev + NS_LITERAL_STRING(":") + strTag;
-  else strKey = strTag; 
-  TagData * data;    
-  PRBool fInHash = msiTagHashtable.Get(strKey, (TagData **)&data);
-//  printf("\nFound in hash table is %s, strKey = %S, data->tagClass is ", (fInHash?"true":"false"), strKey.BeginReading());
-//  if (fInHash) printf("%S\n", data->tagClass.BeginReading());  
-//  else printf("\n");         
-  if (fInHash)
-  {
-    _retval = data->tagClass;
-  }
-  else _retval.Assign(emptyString);
-  return NS_OK;
+  return GetStringPropertyForTag(strTag, atomNS, NS_LITERAL_STRING("tagclass"), _retval);
 }  
  
 
@@ -679,7 +679,11 @@ NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter,
   // Broad categories didn't work; now look for a specific tag
   nsString strTemp;
   strTemp.Assign(strTagInner);
+#ifdef USE_NAMESPACES
   TagKey tagkeyLookup(strTemp, PrefixFromNameSpaceAtom(atomNSInner)); 
+#else
+  TagKey tagkeyLookup(strTemp);
+#endif
   printf("Looking for tag %S\n", tagkeyLookup.key.BeginReading());
   pTKL = pTagKeyListHead->pListHead;
   while (pTKL && !(tagkeyLookup.key.Equals(pTKL->key.key))) pTKL = pTKL->pNext;
@@ -838,32 +842,36 @@ NS_IMETHODIMP msiTagListManager::GetTagOfNode(nsIDOMNode *node, nsIAtom ** atomN
 /* AString GetStringPropertyForTag (in AString strTag, in nsIAtom atomNS, in AString propertyName); */
 NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTag, nsIAtom *atomNS, const nsAString & propertyName, nsAString & _retval)
 {
-  nsAutoString strResult;
-  nsCOMPtr<nsIDOMElement> tagElement;
-  nsCOMPtr<nsIDOM3Node> textNode; 
-  nsCOMPtr<nsIDOMNode> node; 
-  nsCOMPtr<nsIDOMNodeList> nodeList;
-  PRUint32 nodeCount; 
-  nsresult rv; 
-  rv = mdocTagInfo->GetElementById(strTag, getter_AddRefs(tagElement));
-  if (!rv && tagElement)
-  {
-    rv = tagElement->GetElementsByTagName(propertyName, getter_AddRefs(nodeList));
-    if (!rv)
-    {
-      if (nodeList) nodeList->GetLength(&nodeCount);
-      if (nodeCount > 0)
-      {
-        nodeList->Item(0, getter_AddRefs(node));
-        textNode=do_QueryInterface(node);
-        textNode->GetTextContent(strResult);
-        _retval = strResult;
-        return NS_OK;
-      }
-    }
+  // If *atomNS is null, we just use strTag to look up. Otherwise we concat the namespace abbreviation with strTag
+  nsString strAbbrev;
+  strAbbrev = PrefixFromNameSpaceAtom(atomNS);
+  nsString strKey;
+  nsString emptyString;
+  if (strAbbrev.Length() >0 )strKey = strAbbrev + NS_LITERAL_STRING(":") + strTag;
+  else strKey = strTag; 
+  TagData * data;    
+  PRBool fInHash = msiTagHashtable.Get(strKey, (TagData **)&data);
+//  printf("\nFound in hash table is %s, strKey = %S, data->tagClass is ", (fInHash?"true":"false"), strKey.BeginReading());
+//  if (fInHash) printf("%S\n", data->tagClass.BeginReading());  
+//  else printf("\n");         
+  if (fInHash)
+  { 
+    if (propertyName.EqualsLiteral("description"))
+      _retval = data->description;
+    else if (propertyName.EqualsLiteral("tagclass"))
+      _retval = data->tagClass;
+    else if (propertyName.EqualsLiteral("initialcontentsforempty"))
+      _retval = data->initialContentsForEmpty;
+    else if (propertyName.EqualsLiteral("initialcontents"))
+      _retval = data->initialContents;
+    else if (propertyName.EqualsLiteral("discardemptyblock"))
+      _retval = data->discardEmptyBlock?NS_LITERAL_STRING("true"):NS_LITERAL_STRING("false");
+    else if (propertyName.EqualsLiteral("nexttag"))
+      _retval = data->nextTag;
+    else _retval.Assign(emptyString);
   }
-  _retval = NS_LITERAL_STRING("");
-  return NS_ERROR_FAILURE;
+  else _retval.Assign(emptyString);
+  return NS_OK;
 }
 
 /* void FixTagsAfterSplit (in nsIDOMNode firstNode, inout nsIDOMNode secondNode); */
@@ -872,11 +880,11 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
 #if DEBUG_barry || DEBUG_Barry
 //  DebExamineNode(firstNode);
 //  DebExamineNode(*secondNode);
-  // printf("=====FixTagsAfterSplit=============================================\n");
-  // printf("==firstNode:\n");
-  // meditor->DumpNode(firstNode);
-  // printf("==*secondNode:\n");
-  // meditor->DumpNode(*secondNode);
+  printf("=====FixTagsAfterSplit=============================================\n");
+  printf("==firstNode:\n");
+//  meditor->DumpNode(firstNode);
+  printf("==*secondNode:\n");
+//  meditor->DumpNode(*secondNode);
 #endif
 // find out what the second node should be
   nsString firstNodeName;
@@ -975,7 +983,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
       editor->DeleteNode(node);
       selPriv->SetInterlinePosition(PR_TRUE);
       rv = selection->Collapse(selNode, selOffset);
-      rv = selection->Extend( selNode, selOffset+1 );
+//      rv = selection->Extend( selNode, selOffset+1 );
 #if DEBUG_barry || DEBUG_Barry
 //      editor->DumpNode(selNode,0);
 #endif

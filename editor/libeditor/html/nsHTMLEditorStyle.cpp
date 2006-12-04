@@ -854,7 +854,7 @@ nsresult nsHTMLEditor::SplitStyleAbovePoint(nsCOMPtr<nsIDOMNode> *aNode,
                                                          SPECIFIED_STYLE_TYPE);
     }
     if ( (aProperty && NodeIsType(tmp, aProperty)) ||   // node is the correct inline prop
-         (aProperty == nsEditProperty::href && nsHTMLEditUtils::IsLink(tmp)) ||
+         (aProperty == nsEditProperty::href && nsHTMLEditUtils::IsLink(tmp, mtagListManager)) ||
                                                         // node is href - test if really <a href=...
          (!aProperty && NodeIsProperty(tmp)) ||         // or node is any prop, and we asked to split them all
          isSet)                                         // or the style is specified in the style attribute
@@ -920,8 +920,8 @@ nsresult nsHTMLEditor::RemoveStyleInside(nsIDOMNode *aNode,
   // then process the node itself
   if ( !aChildrenOnly && 
         (aProperty && NodeIsType(aNode, aProperty) || // node is prop we asked for
-        (aProperty == nsEditProperty::href && nsHTMLEditUtils::IsLink(aNode)) || // but check for link (<a href=...)
-        (aProperty == nsEditProperty::name && nsHTMLEditUtils::IsNamedAnchor(aNode))) || // and for named anchors
+        (aProperty == nsEditProperty::href && nsHTMLEditUtils::IsLink(aNode, mtagListManager)) || // but check for link (<a href=...)
+        (aProperty == nsEditProperty::name && nsHTMLEditUtils::IsNamedAnchor(aNode, mtagListManager))) || // and for named anchors
         (!aProperty && NodeIsProperty(aNode)))  // or node is any prop and we asked for that
   {
     // if we weren't passed an attribute, then we want to 
@@ -1118,14 +1118,14 @@ nsresult nsHTMLEditor::PromoteRangeIfStartsOrEndsInNamedAnchor(nsIDOMRange *inRa
   tmp = startNode;
   while ( tmp && 
           !nsTextEditUtils::IsBody(tmp) &&
-          !nsHTMLEditUtils::IsNamedAnchor(tmp))
+          !nsHTMLEditUtils::IsNamedAnchor(tmp, mtagListManager))
   {
     res = GetNodeLocation(tmp, address_of(parent), &tmpOffset);
     if (NS_FAILED(res)) return res;
     tmp = parent;
   }
   if (!tmp) return NS_ERROR_NULL_POINTER;
-  if (nsHTMLEditUtils::IsNamedAnchor(tmp))
+  if (nsHTMLEditUtils::IsNamedAnchor(tmp, mtagListManager))
   {
     res = GetNodeLocation(tmp, address_of(parent), &tmpOffset);
     if (NS_FAILED(res)) return res;
@@ -1136,14 +1136,14 @@ nsresult nsHTMLEditor::PromoteRangeIfStartsOrEndsInNamedAnchor(nsIDOMRange *inRa
   tmp = endNode;
   while ( tmp && 
           !nsTextEditUtils::IsBody(tmp) &&
-          !nsHTMLEditUtils::IsNamedAnchor(tmp))
+          !nsHTMLEditUtils::IsNamedAnchor(tmp, mtagListManager))
   {
     res = GetNodeLocation(tmp, address_of(parent), &tmpOffset);
     if (NS_FAILED(res)) return res;
     tmp = parent;
   }
   if (!tmp) return NS_ERROR_NULL_POINTER;
-  if (nsHTMLEditUtils::IsNamedAnchor(tmp))
+  if (nsHTMLEditUtils::IsNamedAnchor(tmp, mtagListManager))
   {
     res = GetNodeLocation(tmp, address_of(parent), &tmpOffset);
     if (NS_FAILED(res)) return res;

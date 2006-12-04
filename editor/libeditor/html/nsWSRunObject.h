@@ -299,6 +299,7 @@ class nsWSRunObject
                                        BlockBoundary aBoundary);
     nsresult Scrub();
     
+    PRBool IsBlockNode(nsIDOMNode* node);
     // member variables ---------------------------------------------------------
     
     nsCOMPtr<nsIDOMNode> mNode;           // the node passed to our constructor

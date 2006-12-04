@@ -243,6 +243,12 @@ interface nsIHTMLEditor : nsISupports
    */
   void insertHTML(in AString aInputString);
 
+  /**
+   *  Insert a paragraph break (i.e., press the return key).
+   *  Implementation may vary depending on the context
+   */
+  void insertReturn();
+
 
   /** 
     * Paste the text in the OS clipboard at the cursor position, replacing
