@@ -22,7 +22,8 @@ DeleteMathmlRangeTxn::DeleteMathmlRangeTxn()
 : EditAggregateTxn(),
 m_editor(nsnull),
 m_startOffset(msiIMathMLEditingBC::INVALID),
-m_endOffset(msiIMathMLEditingBC::INVALID)
+m_endOffset(msiIMathMLEditingBC::INVALID),
+m_coalesceTxn(nsnull)
 {
 }
 
@@ -46,6 +47,8 @@ NS_IMETHODIMP DeleteMathmlRangeTxn::Init(nsIEditor * editor,
 
 DeleteMathmlRangeTxn::~DeleteMathmlRangeTxn()
 {
+  if (m_coalesceTxn)
+    NS_RELEASE(m_coalesceTxn);
 }
 
 NS_IMETHODIMP DeleteMathmlRangeTxn::DoTransaction(void)
@@ -55,28 +58,14 @@ NS_IMETHODIMP DeleteMathmlRangeTxn::DoTransaction(void)
     return NS_ERROR_NOT_INITIALIZED;
   if (!(m_start||m_end))
     return NS_OK; //nothing to do
-//  nsCOMPtr<nsIDOMNode> topMMLNode, startLeft, startRight, endLeft, endRight;
-//  PRUint32 startOffset(msiIMathMLEditingBC::INVALID), endOffset(msiIMathMLEditingBC::INVALID);
-//  PRUint32 numKids(0);
-//  nsresult res(NS_OK);  
-//  res = m_topCaret->SplitAtDecendents(m_editor, m_start, m_startOffset,
-//                                      m_end, m_endOffset, 
-//                                      &startOffset, &endOffset, 
-//                                      getter_AddRefs(startLeft), 
-//                                      getter_AddRefs(startRight),
-//                                      getter_AddRefs(endLeft), 
-//                                      getter_AddRefs(endRight));
-//  if (NS_FAILED(res) || (startOffset == msiIMathMLEditingBC::INVALID &&
-//      endOffset == msiIMathMLEditingBC::INVALID))
-//    return NS_ERROR_FAILURE;
   nsCOMPtr<nsIArray> transactionList;
-  nsCOMPtr<nsIDOMNode> secondPhaseCoalesceNode;
-  PRUint32 secondPhaseCoalesceOffset(msiIMathMLEditingBC::INVALID);
+  nsCOMPtr<nsIDOMNode> coalesceNode;
+  PRUint32 coalesceOffset(msiIMathMLEditingBC::INVALID);
   nsCOMPtr<nsIArray> coalesceNodeList;
   nsresult res = m_topCaret->SetupDeletionTransactions(m_editor, m_start, m_startOffset, m_end, m_endOffset,
                                                        getter_AddRefs(transactionList),
-                                                       getter_AddRefs(secondPhaseCoalesceNode), 
-                                                       &secondPhaseCoalesceOffset);
+                                                       getter_AddRefs(coalesceNode), 
+                                                       &coalesceOffset);
   if (NS_FAILED(res) || !transactionList)
     return NS_ERROR_FAILURE;
   nsCOMPtr<nsISimpleEnumerator> enumerator;
@@ -104,6 +93,56 @@ NS_IMETHODIMP DeleteMathmlRangeTxn::DoTransaction(void)
   }
   if (NS_SUCCEEDED(res))
     res = EditAggregateTxn::DoTransaction();
+  if (NS_SUCCEEDED(res) && coalesceNode &&  IS_VALID_NODE_OFFSET(coalesceOffset))
+  {
+    nsresult res1(NS_OK);
+    nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(m_editor));
+    nsCOMPtr<msiIMathMLCaret> mmlCaret;
+    EditAggregateTxn * coalesceTxn = nsnull;
+    res1 = TransactionFactory::GetNewTransaction(EditAggregateTxn::GetCID(), (EditTxn**)&coalesceTxn);
+    if (NS_SUCCEEDED(res1) && msiEditor)
+      res1 = msiEditor->GetMathMLCaretInterface(coalesceNode, coalesceOffset, getter_AddRefs(mmlCaret));
+    else
+      res1 = NS_ERROR_FAILURE;
+    if (NS_SUCCEEDED(res1) && coalesceTxn && mmlCaret)
+    {
+      nsCOMPtr<nsIArray> coalesceTxnList;
+      res1 = mmlCaret->SetupCoalesceTransactions(m_editor, getter_AddRefs(coalesceTxnList));
+      if (NS_SUCCEEDED(res1) && coalesceTxnList)
+      {
+        nsCOMPtr<nsISimpleEnumerator> enumerator;
+        coalesceTxnList->Enumerate(getter_AddRefs(enumerator));
+        if (enumerator)
+        {
+          PRBool someMore(PR_FALSE);
+          while (NS_SUCCEEDED(res1) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore) 
+          {
+            nsCOMPtr<nsISupports> isupp;
+            if (NS_FAILED(enumerator->GetNext(getter_AddRefs(isupp))))
+            {
+              res1 = NS_ERROR_FAILURE; 
+              break;
+            }
+            nsCOMPtr<nsITransaction> txn(do_QueryInterface(isupp));
+            if (txn)
+            {
+              nsITransaction * xxx = txn;
+              coalesceTxn->AppendChild((EditTxn*)xxx);
+            }
+            else
+              res1 = NS_ERROR_FAILURE;
+          }  
+        }
+        if (NS_SUCCEEDED(res1))
+        { 
+          m_coalesceTxn = coalesceTxn; // keep arount for undo and redo
+          m_coalesceTxn->DoTransaction();
+        }
+        else
+          NS_RELEASE(coalesceTxn);
+      }  
+    }
+  }
   return res;
 }
 
@@ -111,6 +150,8 @@ NS_IMETHODIMP DeleteMathmlRangeTxn::UndoTransaction(void)
 {
   if (!m_editor || !m_topCaret)
     return NS_ERROR_NOT_INITIALIZED;
+  if (m_coalesceTxn)
+    m_coalesceTxn->UndoTransaction();  
   return EditAggregateTxn::UndoTransaction();
 }
 
@@ -118,6 +159,8 @@ NS_IMETHODIMP DeleteMathmlRangeTxn::RedoTransaction(void)
 {
   if (!m_editor || !m_topCaret)
     return NS_ERROR_NOT_INITIALIZED;
+  if (m_coalesceTxn)
+    m_coalesceTxn->RedoTransaction();  
   return EditAggregateTxn::RedoTransaction();
 }
 

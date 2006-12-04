@@ -59,6 +59,7 @@ protected:
  PRUint32 m_startOffset;
  nsCOMPtr<nsIDOMNode> m_end;
  PRUint32 m_endOffset;
+ EditAggregateTxn * m_coalesceTxn;
   
   friend class TransactionFactory;
 

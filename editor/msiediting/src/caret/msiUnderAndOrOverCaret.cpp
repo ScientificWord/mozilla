@@ -459,6 +459,13 @@ msiUnderAndOrOverCaret::SetupDeletionTransactions(nsIEditor * editor,
 }
 
 NS_IMETHODIMP
+msiUnderAndOrOverCaret::SetupCoalesceTransactions(nsIEditor * editor,
+                                                  nsIArray ** coalesceTransactions)
+{
+  return msiMCaretBase::SetupCoalesceTransactions(editor, coalesceTransactions);
+}         
+
+NS_IMETHODIMP
 msiUnderAndOrOverCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
   if (!node || !offset || !m_mathmlNode || !editor)

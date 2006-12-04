@@ -115,6 +115,13 @@ msiWhitespaceCaret::SetupDeletionTransactions(nsIEditor * editor,
                                                   coalesceNode, coalesceOffset);
 }
                                   
+NS_IMETHODIMP
+msiWhitespaceCaret::SetupCoalesceTransactions(nsIEditor * editor,
+                                              nsIArray ** coalesceTransactions)
+{
+  return msiMCaretBase::SetupCoalesceTransactions(editor, coalesceTransactions);
+}         
+
 
 
 NS_IMETHODIMP
