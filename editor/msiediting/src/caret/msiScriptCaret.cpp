@@ -628,6 +628,14 @@ msiScriptCaret::SetupDeletionTransactions(nsIEditor * editor,
   return res;
 }
 
+NS_IMETHODIMP
+msiScriptCaret::SetupCoalesceTransactions(nsIEditor * editor,
+                                     nsIArray ** coalesceTransactions)
+{
+  return msiMCaretBase::SetupCoalesceTransactions(editor, coalesceTransactions);
+}         
+
+
 
 NS_IMETHODIMP
 msiScriptCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
