@@ -193,7 +193,12 @@ msiMrowCaret::SetupDeletionTransactions(nsIEditor * editor,
                                                   coalesceNode, coalesceOffset);
 }
 
-
+NS_IMETHODIMP
+msiMrowCaret::SetupCoalesceTransactions(nsIEditor * editor,
+                                        nsIArray ** coalesceTransactions)
+{
+  return msiMCaretBase::SetupCoalesceTransactions(editor, coalesceTransactions);
+}         
 
 NS_IMETHODIMP
 msiMrowCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
