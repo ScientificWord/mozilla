@@ -189,6 +189,15 @@ msiInputboxCaret::SetupDeletionTransactions(nsIEditor * editor,
   return msiMCaretBase::InputboxSetupDelTxns(editor, m_mathmlNode, m_numKids, start, startOffset,
                                              end, endOffset, transactionList, coalesceNode, coalesceOffset);
 }
+
+
+NS_IMETHODIMP
+msiInputboxCaret::SetupCoalesceTransactions(nsIEditor * editor,
+                                               nsIArray ** coalesceTransactions)
+{
+  return msiMCaretBase:: SetupCoalesceTransactions(editor, coalesceTransactions);
+}                                               
+
                                   
 
 NS_IMETHODIMP
