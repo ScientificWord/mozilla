@@ -266,8 +266,8 @@ public:
   NS_IMETHOD SetHTMLBackgroundColor(const nsAString& aColor);
 
   /* ------------ Block methods moved from nsEditor -------------- */
-  static nsCOMPtr<nsIDOMNode> GetBlockNodeParent(nsIDOMNode *aNode);
-  static PRBool HasSameBlockNodeParent(nsIDOMNode *aNode1, nsIDOMNode *aNode2);
+  nsCOMPtr<nsIDOMNode> GetBlockNodeParent(nsIDOMNode *aNode);
+  PRBool HasSameBlockNodeParent(nsIDOMNode *aNode1, nsIDOMNode *aNode2);
   /** Determines the bounding nodes for the block section containing aNode.
     * The calculation is based on some nodes intrinsically being block elements
     * acording to HTML.  Style sheets are not considered in this calculation.
@@ -285,7 +285,7 @@ public:
     * @param aRightNode [OUT] the right endpoint of the block content containing aNode
     *
     */
-  static nsresult GetBlockSection(nsIDOMNode  *aNode,
+  nsresult GetBlockSection(nsIDOMNode  *aNode,
                                   nsIDOMNode **aLeftNode, 
                                   nsIDOMNode **aRightNode);
 
@@ -298,10 +298,10 @@ public:
     * @param aRange     The range to compute block sections for.
     * @param aSections  Allocated storage for the resulting set, stored as nsIDOMRanges.
     */
-  static nsresult GetBlockSectionsForRange(nsIDOMRange      *aRange, 
+  nsresult GetBlockSectionsForRange(nsIDOMRange      *aRange, 
                                            nsCOMArray<nsIDOMRange>& aSections);
 
-  static nsCOMPtr<nsIDOMNode> NextNodeInBlock(nsIDOMNode *aNode, IterDirection aDir);
+  nsCOMPtr<nsIDOMNode> NextNodeInBlock(nsIDOMNode *aNode, IterDirection aDir);
   nsresult IsNextCharWhitespace(nsIDOMNode *aParentNode, 
                                 PRInt32 aOffset, 
                                 PRBool *outIsSpace, 
@@ -323,7 +323,7 @@ public:
   NS_IMETHOD Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRoot, nsISelectionController *aSelCon, PRUint32 aFlags);
   
   /** Internal, static version */
-  static nsresult NodeIsBlockStatic(nsIDOMNode *aNode, PRBool *aIsBlock);
+  nsresult NodeIsBlockStatic(nsIDOMNode *aNode, PRBool *aIsBlock);
 
   NS_IMETHOD GetFlags(PRUint32 *aFlags);
   NS_IMETHOD SetFlags(PRUint32 aFlags);
@@ -379,7 +379,9 @@ public:
                               PRInt32 *ioOffset, 
                               PRBool aNoEmptyNodes);
   nsCOMPtr<nsIDOMNode> FindUserSelectAllNode(nsIDOMNode *aNode);
-                                
+
+  NS_IMETHOD InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset);
+                         
 
   /** returns the absolute position of the end points of aSelection
     * in the document as a text stream.
@@ -543,7 +545,7 @@ protected:
 
   virtual PRBool IsBlockNode(nsIDOMNode *aNode);
   
-  static nsCOMPtr<nsIDOMNode> GetEnclosingTable(nsIDOMNode *aNode);
+  nsCOMPtr<nsIDOMNode> GetEnclosingTable(nsIDOMNode *aNode);
 
   /** content-based query returns PR_TRUE if <aProperty aAttribute=aValue> effects aNode
     * If <aProperty aAttribute=aValue> contains aNode, 
@@ -932,7 +934,8 @@ protected:
   void     DeleteRefToAnonymousNode(nsIDOMNode * aNode);
   void     SetResizeIncrements(PRInt32 aX, PRInt32 aY, PRInt32 aW, PRInt32 aH, PRBool aPreserveRatio);
   void     SetInfoIncrements(PRInt8 aX, PRInt8 aY);
-
+  nsCOMPtr<nsIDOMNode> GetListParent(nsIDOMNode* aNode);
+  nsCOMPtr<nsIDOMNode> GetTableParent(nsIDOMNode* aNode);
   /* ABSOLUTE POSITIONING */
 
   PRInt32 mPositionedObjectX;
