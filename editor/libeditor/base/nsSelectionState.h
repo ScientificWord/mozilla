@@ -45,6 +45,7 @@
 
 class nsIDOMCharacterData;
 class nsISelection;
+struct DOMPoint;
 
 /***************************************************************************
  * class for recording selection info.  stores selection as collection of
@@ -87,7 +88,7 @@ class nsSelectionState
     void     MakeEmpty();
     PRBool   IsEmpty();
   protected:    
-    nsVoidArray mArray;
+    nsVoidArray mRangeItemArray;
     
     friend class nsRangeUpdater;
 };
@@ -103,6 +104,10 @@ class nsRangeUpdater
     void DropRangeItem(nsRangeStore *aRangeItem);
     nsresult RegisterSelectionState(nsSelectionState &aSelState);
     nsresult DropSelectionState(nsSelectionState &aSelState);
+    
+    void RegisterDOMPoint(DOMPoint * domPoint);
+    void DropDOMPoint(DOMPoint * domPoint);
+    
     
     // editor selection gravity routines.  Note that we can't always depend on
     // DOM Range gravity to do what we want to the "real" selection.  For instance,
@@ -136,7 +141,8 @@ class nsRangeUpdater
     nsresult WillMoveNode();
     nsresult DidMoveNode(nsIDOMNode *aOldParent, PRInt32 aOldOffset, nsIDOMNode *aNewParent, PRInt32 aNewOffset);
   protected:    
-    nsVoidArray mArray;
+    nsVoidArray mRangeItemArray;
+    nsVoidArray mDOMPointArray;
     PRBool mLock;
 };
 
