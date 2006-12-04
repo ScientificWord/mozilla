@@ -14,7 +14,7 @@ endif
 
 %.gmr: %.gmx
 	echo Building $*.gmr
-	$(CPP) $(CPPEXTRAARGS) $(_VPATH_SRCS)  | sed "/^$$/d" | sed "/^#line/d" > $*.gmr
+	$(CPP) $(CPPEXTRAARGS) $(_VPATH_SRCS)  | sed "/^$$/d" | sed "/^#.*$$/d" > $*.gmr
 
 MODULE = compute
 LIBRARY_NAME = enginelib
