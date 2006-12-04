@@ -233,7 +233,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   if (!focusElement) return NS_OK;
   if (NS_FAILED(res)) return res;
 
-  // what's its tag?
+  // what's its tag?  
   nsAutoString focusTagName;
   res = focusElement->GetTagName(focusTagName);
   if (NS_FAILED(res)) return res;

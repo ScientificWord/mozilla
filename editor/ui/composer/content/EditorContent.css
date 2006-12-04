@@ -43,7 +43,7 @@
  *  place in EditorOverride.css, instead of here.
 */
 
-@import url(chrome://communicator/skin/smileys.css);
+/* Prince doesn't use smileys @import url(chrome://communicator/skin/smileys.css);*/
 
 a[name] {
   min-height: 17px; margin-left: 2px; margin-top: 2px;

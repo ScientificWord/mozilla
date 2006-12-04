@@ -42,6 +42,8 @@
 #include "nsError.h"  // for nsresult
 class nsIEditor;
 class nsIDOMNode;
+class nsString;
+class msiITagListManager;
 
 class nsHTMLEditUtils
 {
@@ -51,36 +53,42 @@ public:
   static PRBool IsSmall(nsIDOMNode *aNode);
 
   // from nsHTMLEditRules:
-  static PRBool IsInlineStyle(nsIDOMNode *aNode);
-  static PRBool IsFormatNode(nsIDOMNode *aNode);
-  static PRBool IsNodeThatCanOutdent(nsIDOMNode *aNode);
-  static PRBool IsHeader(nsIDOMNode *aNode);
-  static PRBool IsParagraph(nsIDOMNode *aNode);
-  static PRBool IsHR(nsIDOMNode *aNode);
-  static PRBool IsListItem(nsIDOMNode *aNode);
-  static PRBool IsTable(nsIDOMNode *aNode);
-  static PRBool IsTableRow(nsIDOMNode *aNode);
-  static PRBool IsTableElement(nsIDOMNode *aNode);
-  static PRBool IsTableElementButNotTable(nsIDOMNode *aNode);
-  static PRBool IsTableCell(nsIDOMNode *aNode);
-  static PRBool IsTableCellOrCaption(nsIDOMNode *aNode);
-  static PRBool IsList(nsIDOMNode *aNode);
-  static PRBool IsOrderedList(nsIDOMNode *aNode);
-  static PRBool IsUnorderedList(nsIDOMNode *aNode);
-  static PRBool IsBlockquote(nsIDOMNode *aNode);
-  static PRBool IsPre(nsIDOMNode *aNode);
-  static PRBool IsAddress(nsIDOMNode *aNode);
-  static PRBool IsAnchor(nsIDOMNode *aNode);
-  static PRBool IsImage(nsIDOMNode *aNode);
-  static PRBool IsLink(nsIDOMNode *aNode);
-  static PRBool IsNamedAnchor(nsIDOMNode *aNode);
-  static PRBool IsDiv(nsIDOMNode *aNode);
-  static PRBool IsMozDiv(nsIDOMNode *aNode);
-  static PRBool IsMailCite(nsIDOMNode *aNode);
-  static PRBool IsFormWidget(nsIDOMNode *aNode);
-  static PRBool SupportsAlignAttr(nsIDOMNode *aNode);
-  static PRBool CanContain(PRInt32 aParent, PRInt32 aChild);
-  static PRBool IsContainer(PRInt32 aTag);
+  static PRBool IsInlineStyle(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsFormatNode(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsNodeThatCanOutdent(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsHeader(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsParagraph(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsHR(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsListItem(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsTable(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsTableRow(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsTableElement(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsTableElementButNotTable(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsTableCell(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsTableCellOrCaption(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsList(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsOrderedList(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsUnorderedList(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsBlockquote(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsPre(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsAddress(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsAnchor(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsImage(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsLink(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsNamedAnchor(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsDiv(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsMozDiv(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsMailCite(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsFormWidget(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool SupportsAlignAttr(nsIDOMNode *aNode, msiITagListManager * manager);
+  //added for XML editing
+  static PRBool IsNodeType(nsIDOMNode *aNode, nsString strClassName, msiITagListManager * manager);
+  static PRBool IsTextNode(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsParaNode(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsStructNode(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsOtherNode(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool CanContain(PRInt32 aParent, PRInt32 aChild, msiITagListManager * manager);
+  static PRBool IsContainer(PRInt32 aTag, msiITagListManager * manager);
 };
 
 #endif /* nsHTMLEditUtils_h__ */

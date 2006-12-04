@@ -5448,7 +5448,7 @@ nsEditor::CreateContentNS(const nsAString& aQualifiedTag, nsIAtom * atomNS, nsID
     return NS_ERROR_FAILURE;
   }
   nsAutoString strNS;
-  atomNS->ToString(strNS);
+  if (atomNS) atomNS->ToString(strNS);
   return tempDoc->CreateElementNS(strNS, aQualifiedTag, aElement);
 }
 

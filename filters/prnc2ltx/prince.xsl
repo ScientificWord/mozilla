@@ -104,8 +104,7 @@
 <xsl:apply-templates/>
 \end{enumerate}
 </xsl:template>
-
-<xsl:template match="itemize">
+<xsl:template match="itemize">							 
 \begin{itemize}
 <xsl:apply-templates/>
 \end{itemize}
@@ -186,7 +185,7 @@
 <xsl:template match="huge">{\huge <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="Huge">{\Huge <xsl:apply-templates/>}</xsl:template>
 
-<xsl:template match="LaTeX">\LaTeX </xsl:template>
+<xsl:template match="LaTeX">\LaTeX\ </xsl:template>
 <xsl:template match="textquotedblleft">\textquotedblleft </xsl:template>
 <xsl:template match="textquotedblright">\textquotedblright </xsl:template>
 <xsl:template match="textbackslash">\textbackslash </xsl:template>

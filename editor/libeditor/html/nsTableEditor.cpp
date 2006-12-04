@@ -282,7 +282,7 @@ nsHTMLEditor::GetFirstRow(nsIDOMElement* aTableElement, nsIDOMNode** aRowNode)
         if (NS_FAILED(res)) return res;
         
         // We can encounter textnodes here -- must find a row
-        while (rowNode && !nsHTMLEditUtils::IsTableRow(rowNode))
+        while (rowNode && !nsHTMLEditUtils::IsTableRow(rowNode, mtagListManager))
         {
           nsCOMPtr<nsIDOMNode> nextNode;
           res = rowNode->GetNextSibling(getter_AddRefs(nextNode));
@@ -321,7 +321,7 @@ nsHTMLEditor::GetNextRow(nsIDOMNode* aCurrentRowNode, nsIDOMNode **aRowNode)
 
   if (!aCurrentRowNode) return NS_ERROR_NULL_POINTER;
 
-  if (!nsHTMLEditUtils::IsTableRow(aCurrentRowNode))
+  if (!nsHTMLEditUtils::IsTableRow(aCurrentRowNode, mtagListManager))
     return NS_ERROR_FAILURE;
   
   nsCOMPtr<nsIDOMNode> nextRow;
@@ -331,7 +331,7 @@ nsHTMLEditor::GetNextRow(nsIDOMNode* aCurrentRowNode, nsIDOMNode **aRowNode)
   nsCOMPtr<nsIDOMNode> nextNode;
 
   // Skip over any textnodes here
-  while (nextRow && !nsHTMLEditUtils::IsTableRow(nextRow))
+  while (nextRow && !nsHTMLEditUtils::IsTableRow(nextRow, mtagListManager))
   {
     res = nextRow->GetNextSibling(getter_AddRefs(nextNode));
     if (NS_FAILED(res)) return res;
@@ -361,7 +361,7 @@ nsHTMLEditor::GetNextRow(nsIDOMNode* aCurrentRowNode, nsIDOMNode **aRowNode)
     if (NS_FAILED(res)) return res;
   
     // We can encounter textnodes here -- must find a row
-    while (nextRow && !nsHTMLEditUtils::IsTableRow(nextRow))
+    while (nextRow && !nsHTMLEditUtils::IsTableRow(nextRow, mtagListManager))
     {
       res = nextRow->GetNextSibling(getter_AddRefs(nextNode));
       if (NS_FAILED(res)) return res;
@@ -402,7 +402,7 @@ nsHTMLEditor::GetFirstCellInRow(nsIDOMNode* aRowNode, nsIDOMNode** aCellNode)
   nsresult res = aRowNode->GetFirstChild(getter_AddRefs(rowChild));
   if (NS_FAILED(res)) return res;
 
-  while (rowChild && !nsHTMLEditUtils::IsTableCell(rowChild))
+  while (rowChild && !nsHTMLEditUtils::IsTableCell(rowChild, mtagListManager))
   {
     // Skip over textnodes
     nsCOMPtr<nsIDOMNode> nextChild;
@@ -434,7 +434,7 @@ nsHTMLEditor::GetNextCellInRow(nsIDOMNode* aCurrentCellNode, nsIDOMNode** aCellN
   nsresult res = aCurrentCellNode->GetNextSibling(getter_AddRefs(nextCell));
   if (NS_FAILED(res)) return res;
 
-  while (nextCell && !nsHTMLEditUtils::IsTableCell(nextCell))
+  while (nextCell && !nsHTMLEditUtils::IsTableCell(nextCell, mtagListManager))
   {
     // Skip over textnodes
     nsCOMPtr<nsIDOMNode> nextChild;
@@ -466,7 +466,7 @@ nsHTMLEditor::GetLastCellInRow(nsIDOMNode* aRowNode, nsIDOMNode** aCellNode)
   nsresult res = aRowNode->GetLastChild(getter_AddRefs(rowChild));
   if (NS_FAILED(res)) return res;
 
-  while (rowChild && !nsHTMLEditUtils::IsTableCell(rowChild))
+  while (rowChild && !nsHTMLEditUtils::IsTableCell(rowChild, mtagListManager))
   {
     // Skip over textnodes
     nsCOMPtr<nsIDOMNode> previousChild;
@@ -3037,7 +3037,7 @@ nsHTMLEditor::GetCellFromRange(nsIDOMRange *aRange, nsIDOMElement **aCell)
   //   so tell caller the cell wasn't found
   if (startParent == endParent && 
       endOffset == startOffset+1 &&
-      nsHTMLEditUtils::IsTableCell(childNode))
+      nsHTMLEditUtils::IsTableCell(childNode, mtagListManager))
   {
     // Should we also test if frame is selected? (Use GetCellDataAt())
     // (Let's not for now -- more efficient)

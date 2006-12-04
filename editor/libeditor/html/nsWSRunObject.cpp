@@ -47,10 +47,10 @@
 
 const PRUnichar nbsp = 160;
 
-static PRBool IsBlockNode(nsIDOMNode* node)
+PRBool nsWSRunObject::IsBlockNode(nsIDOMNode* node)
 {
   PRBool isBlock (PR_FALSE);
-  nsHTMLEditor::NodeIsBlockStatic(node, &isBlock);
+  mHTMLEditor->NodeIsBlock(node, &isBlock);
   return isBlock;
 }
 
