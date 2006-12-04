@@ -442,7 +442,17 @@ msiMCaretBase::SetupDeletionTransactions(nsIEditor * editor,
 {
   return StandardSetupDelTxns(editor, m_mathmlNode, m_numKids, start, startOffset,
                               end, endOffset, transactionList, coalesceNode, coalesceOffset);
-}                                         
+}  
+
+
+NS_IMETHODIMP
+msiMCaretBase::SetupCoalesceTransactions(nsIEditor * editor,
+                                         nsIArray ** coalesceTransactions)
+{
+  return NS_OK;
+}         
+
+                                       
                                    
 
 NS_IMETHODIMP

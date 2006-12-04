@@ -201,8 +201,16 @@ msiMathCaret::SetupDeletionTransactions(nsIEditor * editor,
     endOffset = m_numKids;
   }  
   return msiMCaretBase::InputboxSetupDelTxns(editor, m_mathmlNode, m_numKids, start, startOffset,
-                                            end, endOffset, transactionList, coalesceNode, coalesceOffset);
+                                             end, endOffset, transactionList, coalesceNode, coalesceOffset);
 }
+
+NS_IMETHODIMP
+msiMathCaret::SetupCoalesceTransactions(nsIEditor * editor,
+                                        nsIArray ** coalesceTransactions)
+{
+  return msiMCaretBase::SetupCoalesceTransactions(editor, coalesceTransactions);
+}                                               
+
 
 NS_IMETHODIMP
 msiMathCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
