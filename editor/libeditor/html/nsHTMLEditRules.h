@@ -226,6 +226,8 @@ protected:
   PRBool ExpandSelectionForDeletion(nsISelection *aSelection);
   PRBool IsFirstNode(nsIDOMNode *aNode);
   PRBool IsLastNode(nsIDOMNode *aNode);
+  PRBool IsBlockNode(nsIDOMNode* node);
+  PRBool IsInlineNode(nsIDOMNode* node);
 #ifdef XXX_DEAD_CODE
   PRBool AtStartOfBlock(nsIDOMNode *aNode, PRInt32 aOffset, nsIDOMNode *aBlock);
   PRBool AtEndOfBlock(nsIDOMNode *aNode, PRInt32 aOffset, nsIDOMNode *aBlock);
@@ -301,6 +303,7 @@ protected:
 // data members
 protected:
   nsHTMLEditor           *mHTMLEditor;
+  msiITagListManager     *mtagListManager;
   nsCOMPtr<nsIDOMRange>   mDocChangeRange;
   PRPackedBool            mListenerEnabled;
   PRPackedBool            mReturnInEmptyLIKillsList;

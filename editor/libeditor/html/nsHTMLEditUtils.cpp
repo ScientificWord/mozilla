@@ -48,6 +48,7 @@
 #include "nsIDOMNodeList.h"
 #include "nsIDOMHTMLAnchorElement.h"
 #include "nsHTMLTags.h"
+#include "msiITagListManager.h"
 
 ///////////////////////////////////////////////////////////////////////////
 //                  
@@ -62,7 +63,7 @@ nsHTMLEditUtils::IsBig(nsIDOMNode *node)
 // IsInlineStyle true if node is an inline style
 //                  
 PRBool 
-nsHTMLEditUtils::IsInlineStyle(nsIDOMNode *node)
+nsHTMLEditUtils::IsInlineStyle(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsInlineStyle");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
@@ -84,7 +85,7 @@ nsHTMLEditUtils::IsInlineStyle(nsIDOMNode *node)
 // IsFormatNode true if node is a format node
 // 
 PRBool
-nsHTMLEditUtils::IsFormatNode(nsIDOMNode *node)
+nsHTMLEditUtils::IsFormatNode(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsFormatNode");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
@@ -103,7 +104,7 @@ nsHTMLEditUtils::IsFormatNode(nsIDOMNode *node)
 // IsNodeThatCanOutdent true if node is a list, list item, or blockquote      
 //
 PRBool
-nsHTMLEditUtils::IsNodeThatCanOutdent(nsIDOMNode *node)
+nsHTMLEditUtils::IsNodeThatCanOutdent(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsNodeThatCanOutdent");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
@@ -133,7 +134,7 @@ nsHTMLEditUtils::IsSmall(nsIDOMNode *node)
 // IsHeader: true if node an html header
 //                  
 PRBool 
-nsHTMLEditUtils::IsHeader(nsIDOMNode *node)
+nsHTMLEditUtils::IsHeader(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsHeader");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
@@ -150,7 +151,7 @@ nsHTMLEditUtils::IsHeader(nsIDOMNode *node)
 // IsParagraph: true if node an html paragraph
 //                  
 PRBool 
-nsHTMLEditUtils::IsParagraph(nsIDOMNode *node)
+nsHTMLEditUtils::IsParagraph(nsIDOMNode *node, msiITagListManager * manager)
 {
   return nsEditor::NodeIsType(node, nsEditProperty::p);
 }
@@ -160,7 +161,7 @@ nsHTMLEditUtils::IsParagraph(nsIDOMNode *node)
 // IsHR: true if node an horizontal rule
 //                  
 PRBool 
-nsHTMLEditUtils::IsHR(nsIDOMNode *node)
+nsHTMLEditUtils::IsHR(nsIDOMNode *node, msiITagListManager * manager)
 {
   return nsEditor::NodeIsType(node, nsEditProperty::hr);
 }
@@ -170,7 +171,7 @@ nsHTMLEditUtils::IsHR(nsIDOMNode *node)
 // IsListItem: true if node an html list item
 //                  
 PRBool 
-nsHTMLEditUtils::IsListItem(nsIDOMNode *node)
+nsHTMLEditUtils::IsListItem(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsListItem");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
@@ -184,7 +185,7 @@ nsHTMLEditUtils::IsListItem(nsIDOMNode *node)
 // IsTableElement: true if node an html table, td, tr, ...
 //                  
 PRBool 
-nsHTMLEditUtils::IsTableElement(nsIDOMNode *node)
+nsHTMLEditUtils::IsTableElement(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null node passed to nsHTMLEditor::IsTableElement");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
@@ -202,7 +203,7 @@ nsHTMLEditUtils::IsTableElement(nsIDOMNode *node)
 // IsTableElementButNotTable: true if node an html td, tr, ... (doesn't include table)
 //                  
 PRBool 
-nsHTMLEditUtils::IsTableElementButNotTable(nsIDOMNode *node)
+nsHTMLEditUtils::IsTableElementButNotTable(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null node passed to nsHTMLEditor::IsTableElementButNotTable");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
@@ -219,7 +220,7 @@ nsHTMLEditUtils::IsTableElementButNotTable(nsIDOMNode *node)
 // IsTable: true if node an html table
 //                  
 PRBool 
-nsHTMLEditUtils::IsTable(nsIDOMNode *node)
+nsHTMLEditUtils::IsTable(nsIDOMNode *node, msiITagListManager * manager)
 {
   return nsEditor::NodeIsType(node, nsEditProperty::table);
 }
@@ -228,7 +229,7 @@ nsHTMLEditUtils::IsTable(nsIDOMNode *node)
 // IsTableRow: true if node an html tr
 //                  
 PRBool 
-nsHTMLEditUtils::IsTableRow(nsIDOMNode *node)
+nsHTMLEditUtils::IsTableRow(nsIDOMNode *node, msiITagListManager * manager)
 {
   return nsEditor::NodeIsType(node, nsEditProperty::tr);
 }
@@ -238,7 +239,7 @@ nsHTMLEditUtils::IsTableRow(nsIDOMNode *node)
 // IsTableCell: true if node an html td or th
 //                  
 PRBool 
-nsHTMLEditUtils::IsTableCell(nsIDOMNode *node)
+nsHTMLEditUtils::IsTableCell(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsTableCell");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
@@ -251,7 +252,7 @@ nsHTMLEditUtils::IsTableCell(nsIDOMNode *node)
 // IsTableCell: true if node an html td or th
 //                  
 PRBool 
-nsHTMLEditUtils::IsTableCellOrCaption(nsIDOMNode *node)
+nsHTMLEditUtils::IsTableCellOrCaption(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsTableCell");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
@@ -265,7 +266,7 @@ nsHTMLEditUtils::IsTableCellOrCaption(nsIDOMNode *node)
 // IsList: true if node an html list
 //                  
 PRBool 
-nsHTMLEditUtils::IsList(nsIDOMNode *node)
+nsHTMLEditUtils::IsList(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsList");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
@@ -279,7 +280,7 @@ nsHTMLEditUtils::IsList(nsIDOMNode *node)
 // IsOrderedList: true if node an html ordered list
 //                  
 PRBool 
-nsHTMLEditUtils::IsOrderedList(nsIDOMNode *node)
+nsHTMLEditUtils::IsOrderedList(nsIDOMNode *node, msiITagListManager * manager)
 {
   return nsEditor::NodeIsType(node, nsEditProperty::ol);
 }
@@ -289,7 +290,7 @@ nsHTMLEditUtils::IsOrderedList(nsIDOMNode *node)
 // IsUnorderedList: true if node an html unordered list
 //                  
 PRBool 
-nsHTMLEditUtils::IsUnorderedList(nsIDOMNode *node)
+nsHTMLEditUtils::IsUnorderedList(nsIDOMNode *node, msiITagListManager * manager)
 {
   return nsEditor::NodeIsType(node, nsEditProperty::ul);
 }
@@ -299,7 +300,7 @@ nsHTMLEditUtils::IsUnorderedList(nsIDOMNode *node)
 // IsBlockquote: true if node an html blockquote node
 //                  
 PRBool 
-nsHTMLEditUtils::IsBlockquote(nsIDOMNode *node)
+nsHTMLEditUtils::IsBlockquote(nsIDOMNode *node, msiITagListManager * manager)
 {
   return nsEditor::NodeIsType(node, nsEditProperty::blockquote);
 }
@@ -309,7 +310,7 @@ nsHTMLEditUtils::IsBlockquote(nsIDOMNode *node)
 // IsPre: true if node an html pre node
 //                  
 PRBool 
-nsHTMLEditUtils::IsPre(nsIDOMNode *node)
+nsHTMLEditUtils::IsPre(nsIDOMNode *node, msiITagListManager * manager)
 {
   return nsEditor::NodeIsType(node, nsEditProperty::pre);
 }
@@ -319,7 +320,7 @@ nsHTMLEditUtils::IsPre(nsIDOMNode *node)
 // IsAddress: true if node an html address node
 //                  
 PRBool 
-nsHTMLEditUtils::IsAddress(nsIDOMNode *node)
+nsHTMLEditUtils::IsAddress(nsIDOMNode *node, msiITagListManager * manager)
 {
   return nsEditor::NodeIsType(node, nsEditProperty::address);
 }
@@ -329,13 +330,13 @@ nsHTMLEditUtils::IsAddress(nsIDOMNode *node)
 // IsImage: true if node an html image node
 //                  
 PRBool 
-nsHTMLEditUtils::IsImage(nsIDOMNode *node)
+nsHTMLEditUtils::IsImage(nsIDOMNode *node, msiITagListManager * manager)
 {
   return nsEditor::NodeIsType(node, nsEditProperty::img);
 }
 
 PRBool 
-nsHTMLEditUtils::IsLink(nsIDOMNode *aNode)
+nsHTMLEditUtils::IsLink(nsIDOMNode *aNode, msiITagListManager * manager)
 {
   if (!aNode) return PR_FALSE;
   nsCOMPtr<nsIDOMHTMLAnchorElement> anchor = do_QueryInterface(aNode);
@@ -349,7 +350,7 @@ nsHTMLEditUtils::IsLink(nsIDOMNode *aNode)
 }
 
 PRBool 
-nsHTMLEditUtils::IsNamedAnchor(nsIDOMNode *aNode)
+nsHTMLEditUtils::IsNamedAnchor(nsIDOMNode *aNode, msiITagListManager * manager)
 {
   if (!aNode) return PR_FALSE;
   nsCOMPtr<nsIDOMHTMLAnchorElement> anchor = do_QueryInterface(aNode);
@@ -367,7 +368,7 @@ nsHTMLEditUtils::IsNamedAnchor(nsIDOMNode *aNode)
 // IsDiv: true if node an html div node
 //                  
 PRBool 
-nsHTMLEditUtils::IsDiv(nsIDOMNode *node)
+nsHTMLEditUtils::IsDiv(nsIDOMNode *node, msiITagListManager * manager)
 {
   return nsEditor::NodeIsType(node, nsEditProperty::div);
 }
@@ -377,9 +378,9 @@ nsHTMLEditUtils::IsDiv(nsIDOMNode *node)
 // IsMozDiv: true if node an html div node with type = _moz
 //                  
 PRBool 
-nsHTMLEditUtils::IsMozDiv(nsIDOMNode *node)
+nsHTMLEditUtils::IsMozDiv(nsIDOMNode *node, msiITagListManager * manager)
 {
-  if (IsDiv(node) && nsTextEditUtils::HasMozAttr(node)) return PR_TRUE;
+  if (IsDiv(node, manager) && nsTextEditUtils::HasMozAttr(node)) return PR_TRUE;
   return PR_FALSE;
 }
 
@@ -389,7 +390,7 @@ nsHTMLEditUtils::IsMozDiv(nsIDOMNode *node)
 // IsMailCite: true if node an html blockquote with type=cite
 //                  
 PRBool 
-nsHTMLEditUtils::IsMailCite(nsIDOMNode *node)
+nsHTMLEditUtils::IsMailCite(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsMailCite");
   nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(node);
@@ -424,7 +425,7 @@ nsHTMLEditUtils::IsMailCite(nsIDOMNode *node)
 // IsFormWidget: true if node is a form widget of some kind
 //                  
 PRBool 
-nsHTMLEditUtils::IsFormWidget(nsIDOMNode *node)
+nsHTMLEditUtils::IsFormWidget(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null node passed to nsHTMLEditUtils::IsFormWidget");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
@@ -435,7 +436,7 @@ nsHTMLEditUtils::IsFormWidget(nsIDOMNode *node)
 }
 
 PRBool
-nsHTMLEditUtils::SupportsAlignAttr(nsIDOMNode * aNode)
+nsHTMLEditUtils::SupportsAlignAttr(nsIDOMNode * aNode, msiITagListManager * manager)
 {
   NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::SupportsAlignAttr");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(aNode);
@@ -456,6 +457,49 @@ nsHTMLEditUtils::SupportsAlignAttr(nsIDOMNode * aNode)
       || (nodeAtom == nsEditProperty::h5)
       || (nodeAtom == nsEditProperty::h6);
 }
+PRBool
+nsHTMLEditUtils::IsNodeType(nsIDOMNode *aNode, nsString strClassName, msiITagListManager * manager)
+{
+  PRBool found;
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(aNode);
+  if (!nodeAtom) return NS_ERROR_FAILURE;
+  nsString strTagName;
+  nodeAtom->ToString(strTagName);
+  // to do: put in namespace atom
+  manager->GetTagInClass(strClassName, strTagName, nsnull , &found);
+  return found;
+}
+
+
+  //added for XML editing
+PRBool 
+nsHTMLEditUtils::IsTextNode(nsIDOMNode *aNode, msiITagListManager * manager)
+{
+  NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::IsTextNode");
+  return IsNodeType(aNode, NS_LITERAL_STRING("texttag"), manager); 
+}
+
+PRBool 
+nsHTMLEditUtils::IsParaNode(nsIDOMNode *aNode, msiITagListManager * manager)
+{
+  NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::IsParaNode");
+  return IsNodeType(aNode, NS_LITERAL_STRING("paratag"), manager); 
+}
+
+PRBool 
+nsHTMLEditUtils::IsStructNode(nsIDOMNode *aNode, msiITagListManager * manager)
+{
+  NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::IsStructNode");
+  return IsNodeType(aNode, NS_LITERAL_STRING("structtag"), manager); 
+}
+
+PRBool 
+nsHTMLEditUtils::IsOtherNode(nsIDOMNode *aNode, msiITagListManager * manager)
+{
+  NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::IsOtherNode");
+  return IsNodeType(aNode, NS_LITERAL_STRING("othertag"), manager); 
+}
+
 
 // We use bitmasks to test containment of elements. Elements are marked to be
 // in certain groups by setting the mGroup member of the nsElementInfo struct
@@ -697,7 +741,7 @@ static const nsElementInfo kElements[eHTMLTag_userdefined] = {
 };
 
 PRBool
-nsHTMLEditUtils::CanContain(PRInt32 aParent, PRInt32 aChild)
+nsHTMLEditUtils::CanContain(PRInt32 aParent, PRInt32 aChild, msiITagListManager * manager)
 {
   NS_ASSERTION(aParent > eHTMLTag_unknown && aParent <= eHTMLTag_userdefined,
                "aParent out of range!");
@@ -757,7 +801,7 @@ nsHTMLEditUtils::CanContain(PRInt32 aParent, PRInt32 aChild)
 } 
 
 PRBool
-nsHTMLEditUtils::IsContainer(PRInt32 aTag)
+nsHTMLEditUtils::IsContainer(PRInt32 aTag, msiITagListManager * manager)
 {
   NS_ASSERTION(aTag > eHTMLTag_unknown && aTag <= eHTMLTag_userdefined,
                "aTag out of range!");
