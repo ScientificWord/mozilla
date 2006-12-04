@@ -26,6 +26,7 @@
 		</tagclass>
 		<tagclass>
 			<tagclassname>texttag</tagclassname>
+      <contains>#text</contains>
 			<contains>texttag</contains>
 			<contains>sw:xref</contains>
 			<contains>mml:math</contains>
@@ -55,20 +56,21 @@
 		</tagclass>
 		<tagclass>
 			<tagclassname>paratag</tagclassname>
+      <contains>#text</contains>
 			<contains>texttag</contains>
 			<contains>listtag</contains>
 			<contains>sw:quote</contains>
 			<contains>sw:xref</contains>
 			<contains>mml:math</contains>
 			<contains>html:br</contains>
-			<contains>sw:cursor</contains>
+			<contains>cursor</contains>
 			<contains>sw:defaulttitletag</contains>
 			<tags>
 				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[
-              <html:br/><sw:cursor/>
+              <br/><cursor/>
               ]]>
           </initialcontentsforempty>
 				</tag>
@@ -76,7 +78,7 @@
 					<description>Body math paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[
-              <html:br/><sw:cursor/>
+              <br/><cursor/>
               ]]>
           </initialcontentsforempty>
 				</tag>
@@ -85,15 +87,15 @@
 					<description>Title of section</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:defaulttitletag/> <sw:cursor/>
+              <defaulttitletag/> <cursor/>
               ]]>
           </initialcontents>
 				</tag>
 				<tag nm="sw:quote">
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:quotation</nexttag>
 					<description>Quote</description>
           <initialcontentsforempty> <![CDATA[
-              <html:br/><sw:cursor/>
+              <br/><cursor/>
               ]]>
           </initialcontentsforempty>
 			  </tag>
@@ -101,15 +103,15 @@
 					<description>Long quotation</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[
-              <html:br/><sw:cursor/>
+              <br/><cursor/>
               ]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="sw:title">
-					<nexttag>swp:ara</nexttag>
+					<nexttag>sw:para</nexttag>
 					<description>Title</description>
           <initialcontents> <![CDATA[
-              <sw:defaulttitletag/><sw:cursor/>
+              <defaulttitletag/><cursor/>
               ]]>
           </initialcontents>
 				</tag>
@@ -134,7 +136,7 @@
           <description>Bulleted list time</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para><html:br/><sw:cursor/></p>
+              <para><br/><cursor/></p>
               ]]>
           </initialcontents>
         </tag>
@@ -142,7 +144,7 @@
           <description>Numbered list item</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para><html:br/><sw:cursor/></p>
+              <para><br/><cursor/></p>
               ]]>
           </initialcontents>
         </tag>
@@ -150,7 +152,7 @@
           <description>Simple list item</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para><html:br/><sw:cursor/></p>
+              <para><br/><cursor/></p>
               ]]>
           </initialcontents>
         </tag>
@@ -188,7 +190,7 @@
           <description>Subsection</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:sectiontitle><html:br/><sw:cursor/><sw:defaulttitletag/></sw:sectiontitle>
+              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
               ]]>
           </initialcontents>
         </tag>
@@ -197,7 +199,7 @@
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:sectiontitle><html:br/><sw:cursor/><sw:defaulttitletag/></sw:sectiontitle>
+              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
               ]]>
           </initialcontents>
         </tag>
@@ -206,7 +208,7 @@
           <description>Subsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:sectiontitle><html:br/><sw:cursor/><sw:defaulttitletag/></sw:sectiontitle>
+              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
               ]]>
           </initialcontents>
         </tag>
@@ -215,7 +217,7 @@
           <description>Subsubsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:sectiontitle><html:br/><sw:cursor/><sw:defaulttitletag/></sw:sectiontitle>
+              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
               ]]>
           </initialcontents>
         </tag>
@@ -224,7 +226,7 @@
           <description>Section (dynamic level)</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:sectiontitle><html:br/><sw:cursor/><sw:defaulttitletag/></sw:sectiontitle>
+              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
               ]]>
           </initialcontents>
         </tag>
@@ -233,7 +235,7 @@
           <description>Abstract</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para><html:br><sw:cursor/></sw:para>
+              <para><br><cursor/></para>
               ]]>
           </initialcontents>
         </tag>
@@ -242,7 +244,7 @@
           <description>Dedication</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para></sw:para>
+              <para></para>
               ]]>
           </initialcontents>
         </tag>
@@ -251,7 +253,7 @@
           <description>Preface</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para></sw:para>
+              <para></para>
               ]]>
           </initialcontents>
         </tag>
@@ -260,7 +262,7 @@
           <description>Index</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para></sw:para>
+              <para></para>
               ]]>
           </initialcontents>
         </tag>
@@ -269,7 +271,7 @@
           <description>Appendix</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para></sw:para>
+              <para></para>
               ]]>
           </initialcontents>
         </tag>
@@ -278,7 +280,7 @@
           <description>Glossary</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para></sw:para>
+              <para></para>
               ]]>
           </initialcontents>
         </tag>
@@ -292,7 +294,7 @@
           <description>Refsect1</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para></sw:para>
+              <para></para>
               ]]>
           </initialcontents>
         </tag>
@@ -301,7 +303,7 @@
           <description>Refsect2</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para></sw:para>
+              <para></para>
               ]]>
           </initialcontents>
         </tag>
@@ -315,7 +317,7 @@
           <description>Author name</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para></sw:para>
+              <para></para>
               ]]>
           </initialcontents>
         </tag>
@@ -324,7 +326,7 @@
           <description>Author address</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <sw:para></sw:para>
+              <para></para>
               ]]>
           </initialcontents>
         </tag>

@@ -23,6 +23,7 @@ public:
   nsString initialContentsForEmpty;
   nsString initialContents;
   PRBool discardEmptyBlock;
+  nsString nextTag;
   TagData()
     : discardEmptyBlock(PR_FALSE)
     {}
@@ -87,5 +88,8 @@ struct TagKeyListHead
   TagKeyListHead(): pListHead(nsnull), pListTail(nsnull), pNext(nsnull) {}
   ~TagKeyListHead();
 };
+
+
+/* #define USE_NAMESPACES 1 -- we start out not using name spaces */
 
 #endif // msiTagListManager_h__
