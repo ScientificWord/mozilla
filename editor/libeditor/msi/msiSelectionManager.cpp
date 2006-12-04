@@ -70,7 +70,7 @@ msiSelectionManager::InitalizeRangeStore(const nsVoidArray & rangeData)
     rangeStoreItem = new nsRangeStore(rangeDataItem);
     if (!rangeStoreItem)
       return NS_ERROR_UNEXPECTED;
-    mArray.AppendElement(rangeStoreItem);
+    mRangeItemArray.AppendElement(rangeStoreItem);
   }
   return NS_OK;
 }
@@ -170,7 +170,7 @@ msiSelectionManager::ClearNodeIDs(nsRangeStore * rangeItem)
 PRUint32 msiSelectionManager::RangeCount()
 {
   PRUint32 count(0);
-  PRInt32 tmp = mArray.Count();
+  PRInt32 tmp = mRangeItemArray.Count();
   if (tmp > 0)
     count = tmp;
   return count;  
@@ -181,10 +181,10 @@ msiSelectionManager::GetRange(PRUint32 index, nsCOMPtr<nsIDOMRange> & range)
 {
   range = nsnull;
   nsresult res(NS_ERROR_FAILURE);
-  PRInt32 count = mArray.Count();
+  PRInt32 count = mRangeItemArray.Count();
   if (count > 0 && index < NS_STATIC_CAST(PRUint32, count))
   {
-    nsRangeStore * item = (nsRangeStore*)mArray.ElementAt(index);
+    nsRangeStore * item = (nsRangeStore*)mRangeItemArray.ElementAt(index);
     if (!item)
       return NS_ERROR_FAILURE;
     res = item->GetRange(range);
@@ -206,19 +206,19 @@ nsresult msiSelectionManager::IsRangeCollapsed(PRUint32 index, PRBool &collapsed
 
 nsRangeStore * msiSelectionManager::GetRangeStoreItem(PRUint32 index)
 {
-  PRInt32 count = mArray.Count();
+  PRInt32 count = mRangeItemArray.Count();
   if (count > 0 && index < NS_STATIC_CAST(PRUint32, count))
-    return (nsRangeStore*)(mArray.ElementAt(index));
+    return (nsRangeStore*)(mRangeItemArray.ElementAt(index));
   else
     return nsnull;  
 }
 
 void msiSelectionManager::Cleanup()
 {
-  PRInt32 count = mArray.Count();
+  PRInt32 count = mRangeItemArray.Count();
   for (PRInt32 index= 0; index < count; index++)
   {
-    nsRangeStore * item = (nsRangeStore*)mArray.ElementAt(index);
+    nsRangeStore * item = (nsRangeStore*)mRangeItemArray.ElementAt(index);
     if (item)
     {
       ClearNodeIDs(item);
