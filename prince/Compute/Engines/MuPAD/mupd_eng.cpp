@@ -206,8 +206,12 @@ static void MUP_CALLBACK Cleanup_MuPAD()
 }
 
 MuPADEngine::MuPADEngine() :
-  m_kernel(0), m_client(0), fcnsloaded(false), plot_status(false)
+  m_kernel(0), m_client(0), fcnsloaded(false), plot_status(false), m_useDLL(false)
 {
+#ifdef XP_WIN
+  m_useDLL = true;
+#endif
+
   zeng_instr = NULL;
   zeng_inln = 0;
   instr_sent = false;
@@ -299,6 +303,7 @@ bool MuPADEngine::LoadStrsAndDLL(const char *engpath, const char *libpath)
     MUP_set_on_plot_result_file_handler(m_kernel, &on_plot_result_file);
     
     if (MUP_send_new_client(m_kernel, 0, 0, MUP_cf_can_plot)) {
+      WaitToStart();
       if (m_client->Error()) {
         ErrorMessage = m_client->GetError();
         m_client->ClearError();
@@ -422,6 +427,7 @@ bool MuPADEngine::Exec(ByteArray & ba)
     return rv;
   }
 
+  WaitToFinish();
   ba.ReadOnlyUnlock();
   ba.SetByteCount(0);
 
@@ -465,6 +471,59 @@ bool MuPADEngine::Exec(ByteArray & ba)
   m_client->ClearError();
   m_client->ClearWarning();
   return rv;
+}
+
+static void DispatchMuPADMessages()
+{
+#ifdef XP_WIN
+  MSG msg;
+  Sleep(0);                     // give up processor for rest of time slice if there are any other active threads
+  // Avoid keyboard and mouse messages.
+  if (::GetMessage(&msg, NULL, NULL, NULL)) {
+    if ((WM_KEYFIRST <= msg.message && msg.message <= WM_KEYLAST) ||
+        (WM_MOUSEFIRST <= msg.message && msg.message <= WM_MOUSELAST) ||
+        (WM_PAINT == msg.message))
+      ::PostMessage(msg.hwnd, msg.message, msg.wParam, msg.lParam);
+    else
+      ::DispatchMessage(&msg);
+  }
+#endif
+#ifdef XP_UNIX
+  MUP_handle_uds_input(true);
+#endif
+}
+
+// Wait for a normal MuPAD command to finish.
+void MuPADEngine::WaitToFinish()
+{
+  if (m_useDLL)
+    return;
+  while (!m_client->Ready()) {
+    if (Stop_Interrupt()) {
+      if (!m_kernel->send_stop()) { // tell MuPAD to stop
+        m_client->Interrupted();  // ?MuPAD dead?
+        return;
+      }
+    }
+    DispatchMuPADMessages();
+  }
+}
+
+// Wait for the kernel to start up.  If there's a failure, we never get
+// back a "Ready" signal, hence the different exit condition from above.
+void MuPADEngine::WaitToStart()
+{
+  if (m_useDLL)
+    return;
+  while (!(m_client->Ready() || m_client->Error())) {
+    if (Stop_Interrupt()) {
+      if (!m_kernel->send_stop()) { // tell MuPAD to stop
+        m_client->Interrupted();  // ?MuPAD dead?
+        return;
+      }
+    }
+    DispatchMuPADMessages();
+  }
 }
 
 char *MuPADEngine::AppendBA2HeapStr(char *zheap_str, U32 & buffer_ln,

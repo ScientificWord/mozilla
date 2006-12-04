@@ -29,6 +29,9 @@ private:
   bool Exec(ByteArray & ba);
   void HandleMuPADException();
 
+  void WaitToFinish();
+  void WaitToStart();
+  
   char *AppendBA2HeapStr(char *zheap_str, U32 & buffer_ln, ByteArray & ba);
 
 private:
@@ -37,6 +40,7 @@ private:
 
   bool fcnsloaded;
   bool plot_status;
+  bool m_useDLL;
 
   char *zeng_instr;
   U32 zeng_inln;
