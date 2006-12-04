@@ -240,10 +240,13 @@ nsHTMLEditorMouseListener::MouseDown(nsIDOMEvent* aMouseEvent)
 
 // XXX: should we call nsHTMLEditUtils::IsTableElement here?
 // that also checks for thead, tbody, tfoot
+          nsCOMPtr<msiITagListManager> mtagListManager;
+          mHTMLEditor->GetTagListManager((msiITagListManager **)&mtagListManager); 
+          
           if (nsTextEditUtils::IsBody(node) ||
-              nsHTMLEditUtils::IsTableCellOrCaption(node) ||
-              nsHTMLEditUtils::IsTableRow(node) ||
-              nsHTMLEditUtils::IsTable(node))
+              nsHTMLEditUtils::IsTableCellOrCaption(node, mtagListManager) ||
+              nsHTMLEditUtils::IsTableRow(node, mtagListManager) ||
+              nsHTMLEditUtils::IsTable(node, mtagListManager))
           {
             // This will place caret just inside table cell or at start of body
             selection->Collapse(parent, offset);
