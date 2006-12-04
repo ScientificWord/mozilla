@@ -58,7 +58,6 @@ const U16 *MathResult::GetWideResultStr()
 
 void MathResult::PutResultStr(const char *src, int zlen)
 { 
-  TCI_ASSERT(0);
   delete[] result_string;
   result_string = NULL;
   if (zlen > 0) {
@@ -69,7 +68,7 @@ void MathResult::PutResultStr(const char *src, int zlen)
 }
 
 void MathResult::PutWideResultStr(const U16 * src, int zlen)
-{ TCI_ASSERT(0);
+{
   delete[] w_result_string;
   w_result_string = NULL;
   if (zlen > 0) {
