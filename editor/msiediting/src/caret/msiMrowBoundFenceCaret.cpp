@@ -282,7 +282,14 @@ msiMrowBoundFenceCaret::SetupDeletionTransactions(nsIEditor * editor,
   else
     res = NS_ERROR_FAILURE;
   return res;
-}                                                     
+}   
+
+NS_IMETHODIMP
+msiMrowBoundFenceCaret::SetupCoalesceTransactions(nsIEditor * editor,
+                                                  nsIArray ** coalesceTransactions)
+{
+  return msiMCaretBase::SetupCoalesceTransactions(editor, coalesceTransactions);
+}         
   
 NS_IMETHODIMP
 msiMrowBoundFenceCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)

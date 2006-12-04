@@ -115,6 +115,15 @@ msiMencloseCaret::SetupDeletionTransactions(nsIEditor * editor,
   return msiMCaretBase::InputboxSetupDelTxns(editor, m_mathmlNode, m_numKids, start, startOffset,
                                              end, endOffset, transactionList, coalesceNode, coalesceOffset);
 }                                                     
+
+
+NS_IMETHODIMP
+msiMencloseCaret::SetupCoalesceTransactions(nsIEditor * editor,
+                                             nsIArray ** coalesceTransactions)
+{
+  return msiMCaretBase::SetupCoalesceTransactions(editor, coalesceTransactions);
+}                                               
+
     
 #define MIN_THRESHOLD 2 //TODO -- how should this be determined.      
 void msiMencloseCaret::GetThresholds(const nsRect &encloseRect, 
