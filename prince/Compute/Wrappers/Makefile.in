@@ -5,12 +5,12 @@ topsrcdir	= @top_srcdir@
 srcdir		= @srcdir@
 VPATH		= @srcdir@
 
+include $(DEPTH)/config/autoconf.mk
+
 DIRS		=  MuPAD
 ifeq ($(OS_ARCH),WINNT)
 DIRS		+=  Maple
 endif
-
-include $(DEPTH)/config/autoconf.mk
 
 include $(topsrcdir)/config/config.mk
 
