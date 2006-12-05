@@ -21,7 +21,7 @@ LIBRARY_NAME = enginelib_s
 
 DIRS		=  MuPAD
 ifeq ($(OS_ARCH),WINNT)
-DIRS		=  Maple
+DIRS		+=  Maple
 endif
 
 include $(topsrcdir)/config/config.mk
