@@ -97,10 +97,10 @@ int main(int argc, char** argv)
       return -2;
     
     if (ProcessTestScript(myengine,fname) != 0) {
-      printf("ERROR: ProcessTestScript failure\n");
+      printf("%s ERROR: ProcessTestScript failure\n", argv[0]);
       return -4;
     } else {
-      printf(" Test script ran to completion.\n");
+      printf("%s Test script ran to completion.\n", argv[0]);
     }
     
     if (!myengine.Shutdown())
@@ -140,7 +140,9 @@ bool CompEngine::Init(nsCOMPtr<nsIComponentManager> aManager)
     printf("ERROR: Calling msiISimpleComputeEngine::Startup() [%x]\n", rv);
     return false;
   } else {
+#ifdef DEBUG_CompEngine
     printf(" Startup OK\n");
+#endif
   }
   return true;
 }
@@ -153,7 +155,9 @@ bool CompEngine::SwitchEngine(U32 engine_ID)
     printf("ERROR: Calling msiISimpleComputeEngine::Shutdown() in SwitchEngine() [%x]\n", rv);
     return false;
   } else {
+#ifdef DEBUG_CompEngine
     printf(" Shutdown OK in SwitchEngine()\n");
+#endif
   }
 
   rv = mysample->Startup(engine_ID == 2 ? NS_LITERAL_STRING("mupInstall.gmr").get() : NS_LITERAL_STRING("mplInstall.gmr").get());
@@ -161,7 +165,9 @@ bool CompEngine::SwitchEngine(U32 engine_ID)
     printf("ERROR: Calling msiISimpleComputeEngine::Startup() during SwitchEngine() [%x]\n", rv);
     return false;
   } else {
+#ifdef DEBUG_CompEngine
     printf(" Startup OK in SwitchEngine()\n");
+#endif
   }
   return true;
 }
@@ -173,7 +179,9 @@ bool CompEngine::Shutdown()
     printf("ERROR: Calling msiISimpleComputeEngine::Shutdown() [%x]\n", rv);
     return false;
   } else {
+#ifdef DEBUG_CompEngine
     printf(" Shutdown OK\n");
+#endif
   }
   mysample = 0;
   return true;
