@@ -8,7 +8,7 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE = compute
-LIBRARY_NAME = computelib
+LIBRARY_NAME = computelib_s
 
 DIRS		=  libtci public Engines compsample2 Wrappers Testjig2
 
@@ -34,6 +34,10 @@ LOCAL_INCLUDES	= -I$(srcdir)/libtci
 # we don't want the shared lib, but we want to force the creation of a static lib.
 FORCE_STATIC_LIB = 1
 
+SupportFiles	:= \
+			$(srcdir)/tcifcns.m \
+			$(NULL)
+
 ifeq ($(OS_ARCH),WINNT)
 MuPADlib	:= \
 			$(srcdir)/MuPAD/lib/lib.tar \
@@ -42,10 +46,6 @@ MuPADlib	:= \
 			$(wildcard $(srcdir)/MuPAD/lib/xmlprint.*) \
 			$(NULL)
 endif
-
-SupportFiles	:= \
-			$(srcdir)/tcifcns.m \
-			$(NULL)
 
 ifeq ($(OS_ARCH),WINNT)
 SupportFiles	+= \
