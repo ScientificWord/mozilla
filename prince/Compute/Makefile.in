@@ -35,7 +35,7 @@ LOCAL_INCLUDES	= -I$(srcdir)/libtci
 FORCE_STATIC_LIB = 1
 
 SupportFiles	:= \
-			$(srcdir)/tcifcns.m \
+			$(srcdir)/swfcns.mu \
 			$(NULL)
 
 ifeq ($(OS_ARCH),WINNT)
@@ -50,7 +50,7 @@ endif
 ifeq ($(OS_ARCH),WINNT)
 SupportFiles	+= \
 			$(srcdir)/MuPAD/mupkernel.dll \
-			$(srcdir)/swfcns.mu \
+			$(srcdir)/tcifcns.m \
 			$(NULL)
 endif
 
