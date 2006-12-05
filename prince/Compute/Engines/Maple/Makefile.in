@@ -8,9 +8,7 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE = compute
-LIBRARY_NAME	= MplWrapperDLL
-SHORT_LIBNAME	= MplWrapperDLL
-MODULE_NAME		= compute
+LIBRARY_NAME	= MplWrapperDLL_s
 
 include $(topsrcdir)/config/config.mk
 
@@ -33,5 +31,3 @@ SHARED_LIBRARY_LIBS += \
 			$(NULL)
 
 include $(topsrcdir)/config/rules.mk
-
-CXXFLAGS	+= /DMOZILLA_VERSION=\"$(MOZILLA_VERSION)\"
