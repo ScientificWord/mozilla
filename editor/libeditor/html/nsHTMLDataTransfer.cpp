@@ -784,7 +784,7 @@ nsHTMLEditor::InsertReturn()
 nsresult
 nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset)
 {
-  nsresult res;
+  nsresult res = NS_OK;
   nsCOMPtr<nsIDOMNode>splitNode;
   nsCOMPtr<nsIDOMNode> outLeftNode;
   nsCOMPtr<nsIDOMNode> outRightNode;
