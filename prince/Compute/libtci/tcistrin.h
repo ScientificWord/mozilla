@@ -245,7 +245,7 @@ TCIString::operator const U8 *() const                     // Convert to a U8 *
 #define _tcistrnicmp _strnicmp
 #else
 #define _tcistricmp  strcasecmp
-#define _tcistrnicmp _strncasecmp
+#define _tcistrnicmp strncasecmp
 #endif
 #define _tcistrcoll  strcoll
 #define _tcistrchr   strchr

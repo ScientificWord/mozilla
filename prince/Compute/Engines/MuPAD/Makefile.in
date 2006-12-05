@@ -8,8 +8,7 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE = compute
-LIBRARY_NAME	= MuPWrapperDLL
-SHORT_LIBNAME	= MuPWrapperDLL
+LIBRARY_NAME	= MuPWrapperDLL_s
 
 include $(topsrcdir)/config/config.mk
 
@@ -33,6 +32,14 @@ EXTRA_LIBS += \
 		oleaut32.lib \
 		oledlg.lib \
 		$(srcdir)/mupkernel.lib \
+		$(NULL)
+endif
+ifeq ($OS_ARCH),Darwin)
+EXTRA_LIBS += \
+		$(srcdir)/../../MuPAD/libexpat.a \
+		$(srcdir)/../../MuPAD/liblibstream.a \
+		$(srcdir)/../../MuPAD/libmupudskernel.a \
+		$(srcdir)/../../MuPAD/libmut.a \
 		$(NULL)
 endif
 
