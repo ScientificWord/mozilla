@@ -500,7 +500,7 @@ void MuPADEngine::WaitToFinish()
     return;
   while (!m_client->Ready()) {
     if (Stop_Interrupt()) {
-      if (!m_kernel->send_stop()) { // tell MuPAD to stop
+      if (!MUP_send_stop(m_kernel)) { // tell MuPAD to stop
         m_client->Interrupted();  // ?MuPAD dead?
         return;
       }
@@ -517,7 +517,7 @@ void MuPADEngine::WaitToStart()
     return;
   while (!(m_client->Ready() || m_client->Error())) {
     if (Stop_Interrupt()) {
-      if (!m_kernel->send_stop()) { // tell MuPAD to stop
+      if (!MUP_send_stop(m_kernel)) { // tell MuPAD to stop
         m_client->Interrupted();  // ?MuPAD dead?
         return;
       }
