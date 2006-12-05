@@ -2,7 +2,7 @@
 <START_CONTEXT_ENGINFO>
 MuPAD<uID1.0>
 engpath<uID2.0>
-;Mac engpath<uID2.0>/Applications/MuPAD Pro 4.0.app/Contents/bin/mupkern
+;Mac engpath<uID2.0>/Applications/MuPAD Pro 4.0.app/Contents/share/bin/mupkern
 libp<uID3.0>MuPAD/lib
 ;Mac libp<uID3.0>/Applications/MuPAD Pro 4.0.app/Contents/share/lib
 champath<uID4.0>C:/Prince2/obj-Prince/dist/bin
