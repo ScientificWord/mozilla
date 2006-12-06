@@ -900,7 +900,12 @@ function GetCurrentEngine()
   if (!compsample) {
     compsample = Components.classes["@mackichan.com/simplecomputeengine;2"].getService(Components.interfaces.msiISimpleComputeEngine);
     try {
-      compsample.startup("mupInstall.gmr");
+      var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+//      var inifile = dsprops.get("resource:app", Components.interfaces.nsIFile);
+      var inifile = dsprops.get("GreD", Components.interfaces.nsIFile);
+      inifile.append("mupInstall.gmr");
+      var inipath = inifile.path;
+      compsample.startup(inifile.path);
       compengine = 2;
       msiComputeLogger.Init();
     } catch(e) {
@@ -908,7 +913,7 @@ function GetCurrentEngine()
       if (e.result == Components.results.NS_ERROR_NOT_AVAILABLE)
         msg_key = "Error.notavailable";
       else if (e.result == Components.results.NS_ERROR_FILE_NOT_FOUND)
-        msg_Key = "Error.notfound";
+        msg_key = "Error.notfound";
       else if (e.result == Components.results.NS_ERROR_NOT_INITIALIZED)
         msg_key = "Error.notinitialized";
       else if (e.result == Components.results.NS_ERROR_FAILURE)
