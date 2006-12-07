@@ -215,8 +215,10 @@
 <!ENTITY pdf "PDF">
 <!ENTITY dvi "DVI">
 
-<!ENTITY newToolbarCmd.tooltip "New document">
-<!ENTITY newMenu.label "New">
+<!ENTITY newDocumentToolbarCmd.label "New document">
+<!ENTITY newDocumentToolbarCmd.accesskey "N" >
+<!ENTITY newDocumenToolbarCmdt.label "New">
+<!ENTITY newDocumentToolbarCmd.tooltip "New document">
 <!ENTITY openToolbarCmd.tooltip "Open">
 <!ENTITY openToolbarCmd.label "Open">
 <!ENTITY saveToolbarCmd.tooltip "Save">

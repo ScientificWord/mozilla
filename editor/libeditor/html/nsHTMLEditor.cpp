@@ -150,7 +150,7 @@ nsresult NS_NewHTMLEditRules(nsIEditRules** aInstancePtrResult);
 #define IsNamedAnchorTag(s) (s.EqualsIgnoreCase(anchorTxt) || s.EqualsIgnoreCase(namedanchorText))
 
 #if DEBUG_barry || DEBUG_Barry
-// void DebExamineNode(nsIDOMNode * aNode);
+void DebExamineNode(nsIDOMNode * aNode);
 #endif
 
 nsHTMLEditor::nsHTMLEditor()
@@ -827,7 +827,7 @@ nsHTMLEditor::GetBlockNodeParent(nsIDOMNode *aNode)
   while (p)
   {
 #if DEBUG_barry || DEBUG_Barry
-//      DebExamineNode(p);
+    DebExamineNode(p);
 #endif
     PRBool isBlock;
     if (NS_FAILED(NodeIsBlock(p, &isBlock)) || isBlock)

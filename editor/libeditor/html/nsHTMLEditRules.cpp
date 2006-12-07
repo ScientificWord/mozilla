@@ -1343,8 +1343,17 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
   // dont put text in places that can't have it
   if (!mHTMLEditor->IsTextNode(selNode) &&
       !mHTMLEditor->CanContainTag(selNode, NS_LITERAL_STRING("#text")))
-    return NS_ERROR_FAILURE;
-
+  {
+    // TODO: BBM. If a text node is not allowed, check to see if the default paragraph
+    // tag is acceptable. If so, insert a paragraph node and then continue.
+    nsString defPara;
+    nsIAtom * atomDummy;
+    mHTMLEditor->mtagListManager->GetDefaultParagraphTag(&atomDummy, defPara);
+    if (!mHTMLEditor->CanContainTag(selNode, defPara))  
+      return NS_ERROR_FAILURE;
+    // else insert the default paragraph
+    printf("Insert default paragraph (%s) here\n", defPara.BeginReading());
+  }
   // we need to get the doc
   nsCOMPtr<nsIDOMDocument>doc;
   res = mHTMLEditor->GetDocument(getter_AddRefs(doc));

@@ -22,12 +22,28 @@ public:
   nsString tagClass;
   nsString initialContentsForEmpty;
   nsString initialContents;
+  nsString nextAfterEmptyBlock;
   PRBool discardEmptyBlock;
   nsString nextTag;
   TagData()
     : discardEmptyBlock(PR_FALSE)
     {}
 };
+
+
+struct TagKey // a class castable to and from strings that supports pulling out the tag name and name space atom
+{
+  nsString key;  // example: sw:sectiontitle
+  operator nsString() { return key; }
+  TagKey( const nsString akey, const nsString nsAbbrev) { key = (nsAbbrev.Length()?nsAbbrev + NS_LITERAL_STRING(":") + akey:akey);}
+  TagKey( const nsString akey);
+  TagKey( ){}
+  ~TagKey() {/* todo */};
+  nsString altForm(); // if the key is 'sw:sectiontitle', then the altForm is 'sectiontitle - sw' (notice the spaces)
+  nsString prefix();
+  nsString localName();
+};
+
 
 class msiTagListManager : public msiITagListManager
 {                                
@@ -53,24 +69,11 @@ protected:
   nsString PrefixFromNameSpaceAtom(nsIAtom * atomNS);
   namespaceLookup * plookup;
   nsClassHashtable<nsStringHashKey, TagData> msiTagHashtable;
+  TagKey mdefaultParagraph;
   TagKeyListHead * pContainsList;
 };
 
 msiTagListManager * MSI_NewTagListManager();
-
-struct TagKey // a class castable to and from strings that supports pulling out the tag name and name space atom
-{
-  nsString key;  // example: sw:sectiontitle
-  operator nsString() { return key; }
-  TagKey( const nsString akey, const nsString nsAbbrev) { key = (nsAbbrev.Length()?nsAbbrev + NS_LITERAL_STRING(":") + akey:akey);}
-  TagKey( const nsString akey);
-  TagKey( ){}
-  ~TagKey() {/* todo */};
-  nsString altForm(); // if the key is 'sw:sectiontitle', then the altForm is 'sectiontitle - sw' (notice the spaces)
-  nsString prefix();
-  nsString localName();
-};
-
 struct TagKeyList
 {
   TagKey key;
