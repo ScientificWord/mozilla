@@ -253,6 +253,53 @@ NS_IMPL_ISUPPORTS4(nsEditor, nsIEditor, nsIEditorIMESupport, nsISupportsWeakRefe
 #pragma mark -
 #endif
 
+void
+nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent)
+{
+  PRInt32 i;
+  for (i=0; i<indent; i++)
+    printf("  ");
+  
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
+  nsCOMPtr<nsIDOMDocumentFragment> docfrag = do_QueryInterface(aNode);
+  
+  if (element || docfrag)
+  { 
+    if (element)
+    {
+      nsAutoString tag;
+      element->GetTagName(tag);
+      printf("<%s>\n", NS_LossyConvertUTF16toASCII(tag).get());
+    }
+    else
+    {
+      printf("<document fragment>\n");
+    }
+    nsCOMPtr<nsIDOMNodeList> childList;
+    aNode->GetChildNodes(getter_AddRefs(childList));
+    if (!childList) return; // NS_ERROR_NULL_POINTER;
+    PRUint32 numChildren;
+    childList->GetLength(&numChildren);
+    nsCOMPtr<nsIDOMNode> child, tmp;
+    aNode->GetFirstChild(getter_AddRefs(child));
+    for (i=0; i<numChildren; i++)
+    {
+      DumpNode(child, indent+1);
+      child->GetNextSibling(getter_AddRefs(tmp));
+      child = tmp;
+    }
+  }
+  else if (IsTextNode(aNode))
+  {
+    nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aNode);
+    nsAutoString str;
+    textNode->GetData(str);
+    nsCAutoString cstr;
+    LossyCopyUTF16toASCII(str, cstr);
+    cstr.ReplaceChar('\n', ' ');
+    printf("<textnode> %s\n", cstr.get());
+  }
+}
 
 NS_IMETHODIMP
 nsEditor::Init(nsIDOMDocument *aDoc, nsIPresShell* aPresShell, nsIContent *aRoot, nsISelectionController *aSelCon, PRUint32 aFlags)
@@ -5573,52 +5620,3 @@ nsEditor::SwitchTextDirection()
   return rv;
 }
 
-#if DEBUG_JOE
-void
-nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent)
-{
-  PRInt32 i;
-  for (i=0; i<indent; i++)
-    printf("  ");
-  
-  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
-  nsCOMPtr<nsIDOMDocumentFragment> docfrag = do_QueryInterface(aNode);
-  
-  if (element || docfrag)
-  { 
-    if (element)
-    {
-      nsAutoString tag;
-      element->GetTagName(tag);
-      printf("<%s>\n", NS_LossyConvertUTF16toASCII(tag).get());
-    }
-    else
-    {
-      printf("<document fragment>\n");
-    }
-    nsCOMPtr<nsIDOMNodeList> childList;
-    aNode->GetChildNodes(getter_AddRefs(childList));
-    if (!childList) return NS_ERROR_NULL_POINTER;
-    PRUint32 numChildren;
-    childList->GetLength(&numChildren);
-    nsCOMPtr<nsIDOMNode> child, tmp;
-    aNode->GetFirstChild(getter_AddRefs(child));
-    for (i=0; i<numChildren; i++)
-    {
-      DumpNode(child, indent+1);
-      child->GetNextSibling(getter_AddRefs(tmp));
-      child = tmp;
-    }
-  }
-  else if (IsTextNode(aNode))
-  {
-    nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(aNode);
-    nsAutoString str;
-    textNode->GetData(str);
-    nsCAutoString cstr;
-    LossyCopyUTF16toASCII(str, cstr);
-    cstr.ReplaceChar('\n', ' ');
-    printf("<textnode> %s\n", cstr.get());
-  }
-}
-#endif

@@ -271,26 +271,26 @@ theorem:before {
 
 section defaulttitletag:after {
   content: "Replace this section title"; 
-  color: red;
+  color: gray;
 }
 
 subsection defaulttitletag:after {
   content: "Replace this subsection title"; 
-  color: red;
+  color: gray;
 }
 
 subsubsection defaulttitletag:after {
   content: "Replace this subsubsection title"; 
-  color: red;
+  color: gray;
 }
 
 paragraph defaulttitletag:after {
   content: "Replace this subsubsubsection title"; 
-  color: red;
+  color: gray;
 }
 
 subparagraph defaulttitletag:after {
   content: "Replace this subsubsubsubsection title"; 
-  color: red;
+  color: gray;
 }
 
