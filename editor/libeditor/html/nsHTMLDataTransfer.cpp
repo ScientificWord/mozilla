@@ -84,6 +84,7 @@
 #include "nsIServiceManager.h"
 #include "nsIDocumentEncoder.h"
 #include "nsIDOMDocumentFragment.h"
+#include "nsIDOMNSHTMLElement.h"
 #include "nsIPresShell.h"
 #include "nsPresContext.h"
 #include "nsIParser.h"
@@ -149,6 +150,15 @@ static PRInt32 FindPositiveIntegerAfterString(const char *aLeadingString, nsCStr
 static nsresult RemoveFragComments(nsCString &theStr);
 static void RemoveBodyAndHead(nsIDOMNode *aNode);
 static nsresult FindTargetNode(nsIDOMNode *aStart, nsCOMPtr<nsIDOMNode> &aResult);
+
+#if DEBUG_barry || DEBUG_Barry
+nsString DebTagName;
+void DebExamineNode(nsIDOMNode * aNode)
+{
+  if (aNode) nsEditor::GetTagString(aNode, DebTagName);
+  else DebTagName = NS_LITERAL_STRING("Null");
+}
+#endif
 
 nsCOMPtr<nsIDOMNode> nsHTMLEditor::GetListParent(nsIDOMNode* aNode)
 {
@@ -761,11 +771,13 @@ PRBool IsWhiteSpaceOnly( nsString str )
 // InsertReturn -- usually splits a paragraph
 nsresult
 nsHTMLEditor::InsertReturn()
+
 {
   if (!mRules) return NS_ERROR_NOT_INITIALIZED;
 
   // force IME commit; set up rules sniffing and batching
   ForceCompositionEnd();
+//  SaveSelection();
   nsAutoEditBatch beginBatching(this);
   nsAutoRules beginRulesSniffing(this, kOpHTMLPaste, nsIEditor::eNext);
   
@@ -785,7 +797,7 @@ nsresult
 nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset)
 {
   nsresult res = NS_OK;
-  nsCOMPtr<nsIDOMNode>splitNode;
+  nsCOMPtr<nsIDOMNode> splitNode;
   nsCOMPtr<nsIDOMNode> outLeftNode;
   nsCOMPtr<nsIDOMNode> outRightNode;
   nsCOMPtr<nsIDOMNode> tempNode;
@@ -800,9 +812,10 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   nsString strTagName;
   if (splitNode) GetTagString(splitNode, strTagName);
 #if DEBUG_barry || DEBUG_Barry
-//  DebExamineNode(splitNode);
+  DebExamineNode(splitNode);
 #endif
-  if (!IsBlockNode(splitNode)||strTagName.Equals(NS_LITERAL_STRING("body"))||strTagName.Equals(NS_LITERAL_STRING("#document"))) {
+  if (!IsBlockNode(splitNode)||strTagName.Equals(NS_LITERAL_STRING("body"))
+    ||strTagName.Equals(NS_LITERAL_STRING("#document"))) {
   // there is no paragraph or section node.  We probably should put in the default
   // paragraph node (defined in the editbehavior file) to enclose as much text as possible.
   // For the moment, we put in a <br/>
@@ -814,7 +827,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   nsCOMPtr<nsIDOM3Node> dom3node;
   dom3node = do_QueryInterface(splitNode);
 #if DEBUG_barry || DEBUG_Barry
-//  DebExamineNode(splitNode);
+  DebExamineNode(splitNode);
 #endif
   //isEmpty = IsEmptyTextContent(content);
   nsAutoString strContents;
@@ -824,9 +837,47 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   if (isEmpty) mtagListManager->GetDiscardEmptyBlockNode(splitNode, &fDiscardNode);
   if (isEmpty && fDiscardNode)
   {  
+    nsIAtom * atomNS = nsnull;
+    nsString sNewNodeName;
+    nsString strContents;
+    nsCOMPtr<nsIDOMNode> newNode;
+    nsCOMPtr<nsIDOMNSHTMLElement> newHTMLElement;
+    nsCOMPtr<nsIDOMElement> newElement;
     nsEditor::GetNodeLocation(splitNode, address_of(newsplitpointNode), &newsplitpointOffset);
-    nsEditor::DeleteNode(splitNode);
-    res = InsertReturnAt(newsplitpointNode, newsplitpointOffset);
+    mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("nextafteremptyblock"), sNewNodeName);
+    if (sNewNodeName.Length() > 0)
+    {
+      res = mtagListManager->GetStringPropertyForTag(sNewNodeName, atomNS, NS_LITERAL_STRING("initialcontentsforempty"), strContents);
+      res = CreateNode( sNewNodeName, newsplitpointNode, newsplitpointOffset, getter_AddRefs(newNode));
+      newElement = do_QueryInterface(newNode);
+      newHTMLElement = do_QueryInterface(newNode);
+      if (strContents.Length() > 0) newHTMLElement->SetInnerHTML(strContents);
+      newsplitpointNode = newNode;
+      newsplitpointOffset = 0;
+      // TODO: hunt for cursor tag in the new contents
+      nsCOMPtr<nsIDOMNodeList> nodeList;
+      nsCOMPtr<nsIDOMNode> node;
+      PRUint32 nodeCount;
+      nsCOMPtr<nsISelection>selection;
+      res = GetSelection(getter_AddRefs(selection));
+      res = newElement->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
+      if (nodeList) nodeList->GetLength(&nodeCount);
+      if (nodeCount > 0)
+      {
+        nodeList->Item(0, getter_AddRefs(node));
+        nsEditor::GetNodeLocation(node, address_of(newsplitpointNode), &newsplitpointOffset);
+        DeleteNode(node);
+        //selPriv->SetInterlinePosition(PR_TRUE);
+        res = selection->Collapse(newsplitpointNode, newsplitpointOffset);
+      }
+      nsEditor::DeleteNode(splitNode);
+      return res;
+    }
+    else
+    {
+      nsEditor::DeleteNode(splitNode);
+      res = InsertReturnAt(newsplitpointNode, newsplitpointOffset);
+    }
   } 
   else
   {

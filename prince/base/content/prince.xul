@@ -86,7 +86,7 @@
     <key keycode="VK_TAB" modifiers="shift" oncommand="return true;"/>
     <key keycode="VK_TAB" modifiers="control" oncommand="return true;"/>
     <key keycode="VK_TAB" modifiers="control,shift" oncommand="return true;"/>
-    <key id="key_newBlankPage" key="&filenew.keybinding;" observes="cmd_newEditor"  modifiers="accel"/>
+    <key id="key_newDocument" key="&filenew.keybinding;" observes="cmd_newDocument"  modifiers="accel"/>
     <key id="openeditorkb"   key="&fileopen.keybinding;"  observes="cmd_open"  modifiers="accel"/>
     <key id="savekb"         key="&filesave.keybinding;"  observes="cmd_save"  modifiers="accel"/>
     <key id="printkb"        key="&fileprint.keybinding;" observes="cmd_print" modifiers="accel"/>
