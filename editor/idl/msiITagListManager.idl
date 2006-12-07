@@ -28,8 +28,8 @@ interface msiITagListManager : nsISupports
 	AString currentValue( in AString strTagClass, out nsIAtom atomNS );
 	void enable();
   
-  void reset();  //initializes the store to an empty store
-  PRBool AddTagInfo ( in AString strTagInfoPath );
+    void reset();  //initializes the store to an empty store
+    PRBool AddTagInfo ( in AString strTagInfoPath );
    
 	void buildStringArray( in  AString strTagClass ); 
 
@@ -43,4 +43,5 @@ interface msiITagListManager : nsISupports
     AString GetTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
     void buildParentTagList();
 	nsIAtom NameSpaceAtomOfTagKey( in AString key);
+	AString GetDefaultParagraphTag( out nsIAtom atomNamespace );
 };
