@@ -1,5 +1,6 @@
 @echo off
 
+echo !!!!!!!!!!!!!!!!!! run checkall.bash instead !!!!!!!!!!!!!!!!!!
 echo Running test scripts and comparing with known good version.
 FOR %%F in (muptests\health1 muptests\health2) DO CALL check %%F
 FOR %%F in (muptests\commands muptests\errors muptests\params muptests\uprefs) DO CALL check %%F
