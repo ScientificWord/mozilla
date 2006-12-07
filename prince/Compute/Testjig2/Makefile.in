@@ -1,4 +1,4 @@
-# Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+﻿# Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
 DEPTH		= ../../..
 topsrcdir	= @top_srcdir@
@@ -21,6 +21,9 @@ TESTBATS = \
     $(srcdir)/check.bat \
     $(srcdir)/checkall.bat \
     $(srcdir)/checknew.bat \
+    $(srcdir)/check.bash \
+    $(srcdir)/checkall.bash \
+    $(srcdir)/checknew.bash \
     $(srcdir)/RemoveNoise.sed \
     $(NULL)
 
