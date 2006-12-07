@@ -234,8 +234,8 @@
     label="&decorationButton.label;" observes="cmd_MSIdecorationsCmd"/>
 #  
   <toolbarbutton id="newButton" class="toolbarbutton-1"
-                 label="&newMenu.label;" command="cmd_newEditor"
-                 tooltiptext="&newToolbarCmd.tooltip;"/>
+                 label="&newDocumentToolbarCmd.label;" observes="cmd_newDocument"
+                 tooltiptext="&newDocumentToolbarCmd.tooltip;"/>
   
   <toolbarbutton id="openButton" class="toolbarbutton-1"
                  label="&openToolbarCmd.label;" observes="cmd_open"
