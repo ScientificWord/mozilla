@@ -63,64 +63,56 @@
 			<contains>sw:xref</contains>
 			<contains>mml:math</contains>
 			<contains>html:br</contains>
+			<contains>sw:quote</contains>
 			<contains>cursor</contains>
 			<contains>sw:defaulttitletag</contains>
 			<tags>
 				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[
-              <br/><cursor/>
-              ]]>
+          <initialcontentsforempty> <![CDATA[<cursor/>]]>
+          </initialcontentsforempty>
+				</tag>
+				<tag nm="html:p">
+					<description>HTML paragraph</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="sw:mathp">
 					<description>Body math paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[
-              <br/><cursor/>
-              ]]>
+          <initialcontentsforempty> <![CDATA[<cursor/>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="sw:sectiontitle">
 					<nexttag>sw:para</nexttag>
 					<description>Title of section</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <defaulttitletag/> <cursor/>
-              ]]>
+          <initialcontents> <![CDATA[<defaulttitletag/><cursor/>]]>
           </initialcontents>
 				</tag>
 				<tag nm="sw:quote">
-					<nexttag>sw:quotation</nexttag>
+					<nexttag>sw:quote</nexttag>
 					<description>Quote</description>
-          <initialcontentsforempty> <![CDATA[
-              <br/><cursor/>
-              ]]>
+          <initialcontentsforempty> <![CDATA[<para><cursor/></para>]]>
           </initialcontentsforempty>
 			  </tag>
 				<tag nm="sw:quotation">
 					<description>Long quotation</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[
-              <br/><cursor/>
-              ]]>
+          <initialcontentsforempty> <![CDATA[<cursor/>]]>
           </initialcontentsforempty>
+          <nextafteremptyblock>para</nextafteremptyblock>
 				</tag>
 				<tag nm="sw:title">
 					<nexttag>sw:para</nexttag>
 					<description>Title</description>
-          <initialcontents> <![CDATA[
-              <defaulttitletag/><cursor/>
-              ]]>
+          <initialcontents> <![CDATA[<defaulttitletag/><cursor/>]]>
           </initialcontents>
 				</tag>
 				<tag nm="sw:verbatim">
 					<description>Verbatim text</description>
-          <initialcontentsforempty> <![CDATA[
-              
-              ]]>
-          </initialcontentsforempty>
 				</tag>
 			</tags>
 		</tagclass>
@@ -136,7 +128,7 @@
           <description>Bulleted list time</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><br/><cursor/></p>
+              <para><cursor/></p>
               ]]>
           </initialcontents>
         </tag>
@@ -144,7 +136,7 @@
           <description>Numbered list item</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><br/><cursor/></p>
+              <para><cursor/></p>
               ]]>
           </initialcontents>
         </tag>
@@ -152,7 +144,7 @@
           <description>Simple list item</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><br/><cursor/></p>
+              <para><cursor/></p>
               ]]>
           </initialcontents>
         </tag>
@@ -189,54 +181,47 @@
           <level> 2</level>
           <description>Subsection</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
-              ]]>
+          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/><br/></sectiontitle>]]>
           </initialcontents>
+          <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
 				<tag nm="sw:subsection">
           <level> 3</level>
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
-              ]]>
+          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle>]]>
           </initialcontents>
+          <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
 				<tag nm="sw:subsubsection">
           <level> 4</level>
           <description>Subsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
-              ]]>
+          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle]]>
           </initialcontents>
+          <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
 				<tag nm="sw:paragraph">
           <level> 5</level>
           <description>Subsubsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
-              ]]>
+          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle> ]]>
           </initialcontents>
+          <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
 				<tag nm="sw:subparagraph">
           <level> *</level>
           <description>Section (dynamic level)</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <sectiontitle><br/><cursor/><defaulttitletag/></sectiontitle>
-              ]]>
+          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle>]]>
           </initialcontents>
+          <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
 				<tag nm="sw:abstract">
           <level> *</level>
           <description>Abstract</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <para><br><cursor/></para>
-              ]]>
+          <initialcontents> <![CDATA[ <para><br><cursor/></para>]]>
           </initialcontents>
         </tag>
 				<tag nm="sw:dedication">

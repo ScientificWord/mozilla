@@ -21,9 +21,9 @@
   
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
     <menupopup id="menu_FilePopup" onpopupshowing="EditorInitFileMenu();">
-      <menuitem id="menu_newBlankPage" label="&newBlankPageCmd.label;" 
-                accesskey="&newBlankPage.accesskey;" key="key_newBlankPage"
-                command="cmd_newEditor"/>
+      <menuitem id="menu_newDocument" label="&newDocument.label;" 
+                accesskey="&newDocument.accesskey;" key="key_newDocument"
+                command="cmd_newDocument"/>
       <menuitem id="openMenuitem" accesskey="&fileopen.accesskey;"
                   key="openeditorkb"
                   observes="cmd_open" 
@@ -265,6 +265,7 @@
           events="create"
           oncommandupdate="goUpdateComposerMenuItems(this)"
   >
+    <command id="cmd_newDocument"  oncommand="doNew();"/>
     <command id="cmd_open"                                          oncommand="goDoCommand('cmd_open')"/>
     <command id="cmd_openRemote"   label="&openremoteCmd.label;"    oncommand="goDoCommand('cmd_openRemote')"/>
     <command id="cmd_close"        label="&closeCmd.label;"         oncommand="goDoCommand('cmd_close')"/>

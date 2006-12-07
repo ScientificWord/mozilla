@@ -29,6 +29,34 @@ function doOpen() {
     } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
 } }
 
+
+function doNew() {
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var fp = Components.classes["@mozilla.org/filepicker;1"].
+             createInstance(Components.interfaces.nsIFilePicker);
+  fp.displayDirectory = dsprops.get("resource:app", Components.interfaces.nsIFile).append("shells");
+  fp.init(window, "Open Shell File", Components.interfaces.nsIFilePicker.modeOpen);
+  fp.appendFilter("Shell Files","*.xhtml; *.xht; *.shl");
+  fp.appendFilters(Components.interfaces.nsIFilePicker.filterText);
+  fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
+
+  try {
+    fp.show();
+  }
+  catch (ex) {
+    dump("filePicker.show() threw an exception\n");
+  }
+
+  if (fp.file && fp.file.path.length > 0) {
+    dump("Ready to edit shell: " + fp.fileURL.spec +"\n");
+    try {
+      editPage(fp.fileURL.spec, window, false);
+//      GetCurrentEditorElement().webNavigation.loadURI(fp.fileURL.spec,
+//               Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,
+//               null, null, null);
+    } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
+} }
+
 function GetCurrentEditor() {
   var editor;
   try {

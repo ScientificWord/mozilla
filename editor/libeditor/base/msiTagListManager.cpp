@@ -30,16 +30,17 @@ NS_INTERFACE_MAP_END
 NS_IMPL_ADDREF(msiTagListManager)
 NS_IMPL_RELEASE(msiTagListManager)
 
-/*#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barry || DEBUG_Barry
 void DebExamineNode(nsIDOMNode * aNode);
-#endif */
+#endif 
 
 nsIAtom * msiTagListManager::htmlnsAtom = NS_NewAtom(NS_LITERAL_STRING("http://www.w3.org/1999/xhtml"));
 
 
 
 msiTagListManager::msiTagListManager()
-:  meditor(nsnull), mparentTags(nsnull), mInitialized(PR_FALSE), plookup(nsnull), pContainsList(nsnull) 
+:  meditor(nsnull), mparentTags(nsnull), mInitialized(PR_FALSE), plookup(nsnull), pContainsList(nsnull),
+    mdefaultParagraph(NS_LITERAL_STRING("")) 
 {
   nsresult rv;
   pACSSA = do_CreateInstance("@mozilla.org/autocomplete/search;1?name=stringarray", &rv);
@@ -214,6 +215,13 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
   rv = docTagInfo->Load( strTagInfoPath, _retval);
   if (rv) return rv;
   BuildHashTables(docTagInfo, _retval);
+  // get the default paragraph tag
+  nsCOMPtr<nsIDOMElement> nodeElement;
+  nsString strDefPara;
+  rv = docTagInfo->GetElementById(NS_LITERAL_STRING("defaultparagraph"), getter_AddRefs(nodeElement));
+  if (rv == NS_OK && nodeElement)
+    rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strDefPara);
+  if (rv==NS_OK) mdefaultParagraph.key.Assign(strDefPara);
   // build the name space list
   nsCOMPtr<nsIDOMNodeList> nodeList;
   nsString strNameSpace;
@@ -221,7 +229,6 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
   PRUint32 nodeCount;
   nsCOMPtr<nsIDOM3Node> textNode; 
   nsCOMPtr<nsIDOMNode> node; 
-  nsCOMPtr<nsIDOMElement> nodeElement;
   namespaceLookup * pns;
   rv = docTagInfo->GetElementsByTagName(NS_LITERAL_STRING("ns"), getter_AddRefs(nodeList));
   if (nodeList) nodeList->GetLength(&nodeCount);
@@ -384,6 +391,8 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
             GetStringProperty(NS_LITERAL_STRING("initialcontentsforempty"), tagNameElement);
           pdata->initialContents =
             GetStringProperty(NS_LITERAL_STRING("initialcontents"), tagNameElement);
+          pdata->nextAfterEmptyBlock =
+            GetStringProperty(NS_LITERAL_STRING("nextafteremptyblock"), tagNameElement);
           pdata->discardEmptyBlock = 
             GetStringProperty(NS_LITERAL_STRING("discardemptyblock"), tagNameElement)==NS_LITERAL_STRING("true");
           // save the key, data pair
@@ -864,6 +873,8 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
       _retval = data->initialContentsForEmpty;
     else if (propertyName.EqualsLiteral("initialcontents"))
       _retval = data->initialContents;
+    else if (propertyName.EqualsLiteral("nextafteremptyblock"))
+      _retval = data->nextAfterEmptyBlock;
     else if (propertyName.EqualsLiteral("discardemptyblock"))
       _retval = data->discardEmptyBlock?NS_LITERAL_STRING("true"):NS_LITERAL_STRING("false");
     else if (propertyName.EqualsLiteral("nexttag"))
@@ -878,13 +889,13 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
 NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOMNode **secondNode)
 {
 #if DEBUG_barry || DEBUG_Barry
-//  DebExamineNode(firstNode);
-//  DebExamineNode(*secondNode);
+  DebExamineNode(firstNode);
+  DebExamineNode(*secondNode);
   printf("=====FixTagsAfterSplit=============================================\n");
   printf("==firstNode:\n");
-//  meditor->DumpNode(firstNode);
+  meditor->DumpNode(firstNode);
   printf("==*secondNode:\n");
-//  meditor->DumpNode(*secondNode);
+  meditor->DumpNode(*secondNode);
 #endif
 // find out what the second node should be
   nsString firstNodeName;
@@ -962,7 +973,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   }
   if (!pnode) pnode = *secondNode;
 #if DEBUG_barry || DEBUG_Barry
-//  editor->DumpNode(pnode,0);
+  editor->DumpNode(pnode,0);
 #endif                                                                                                                                        
 
   nsCOMPtr<nsISelectionPrivate> selPriv(do_QueryInterface(selection));
@@ -985,7 +996,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
       rv = selection->Collapse(selNode, selOffset);
 //      rv = selection->Extend( selNode, selOffset+1 );
 #if DEBUG_barry || DEBUG_Barry
-//      editor->DumpNode(selNode,0);
+      editor->DumpNode(selNode,0);
 #endif
       //return NS_OK;
       goto diagnostics;
@@ -999,9 +1010,9 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
 diagnostics:
 #if DEBUG_barry || DEBUG_Barry
   printf("==Leaving: firstNode: \n");
-//  editor->DumpNode(firstNode);
+  editor->DumpNode(firstNode);
   printf("==*secondNode:\n");
-//  editor->DumpNode(*secondNode);
+  editor->DumpNode(*secondNode);
   printf("===================================================================\n");
 #endif
   return NS_OK;
@@ -1026,3 +1037,16 @@ NS_IMETHODIMP msiTagListManager::GetDiscardEmptyBlockNode(nsIDOMNode *node, PRBo
   }
   return NS_OK;
 }
+
+
+
+/* AString GetDefaultParagraphTag (out nsIAtom atomNamespace); */
+NS_IMETHODIMP msiTagListManager::GetDefaultParagraphTag(nsIAtom **atomNamespace, nsAString & _retval)
+{
+  _retval = mdefaultParagraph.localName();
+  *atomNamespace = NS_NewAtom(mdefaultParagraph.prefix());
+  return NS_OK;
+}
+
+
+

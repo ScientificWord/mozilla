@@ -5,9 +5,10 @@
 <!-- File menu items -->
 <!ENTITY fileMenu.label "File">
 <!ENTITY filemenu.accesskey "f">
-<!ENTITY newBlankPageCmd.label "New Page">
-<!ENTITY newBlankPage.accesskey "P" >
-<!ENTITY newMenu.label "New">
+<!ENTITY newDocument.label "New document">
+<!ENTITY newDocument.accesskey "N" >
+<!ENTITY newDocument.label "New">
+<!ENTITY newDocument.tooltip "New document">
 <!ENTITY openFileCmd.label "Open File...">
 <!ENTITY fileopen.accesskey "o">
 <!ENTITY fileopen.keybinding "o">
@@ -501,7 +502,7 @@
 <!ENTITY menuBar.tooltip "Menu Bar">
 <!ENTITY compositionToolbar.tooltip "Composition Toolbar">
 <!ENTITY formatToolbar.tooltip "Formatting Toolbar">
-<!ENTITY newToolbarCmd.tooltip "Create a new page">
+<!ENTITY newDocument.tooltip "Create a new document">
 <!ENTITY openToolbarCmd.label "Open">
 <!ENTITY openToolbarCmd.tooltip "Open a local file">
 <!ENTITY saveToolbarCmd.tooltip "Save file to a local location">
