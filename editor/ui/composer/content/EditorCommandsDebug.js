@@ -567,3 +567,30 @@ function ExecuteJSTransactionViaEditor()
   }
 }
 
+//--------------------------------------------------
+function TestGraphScript() {
+  var theDoc = GetCurrentEditor().document;
+  var graphs = theDoc.getElementsByTagName("graph");
+  dump("SMR testGraphScript, length is " + graphs.length +  "\n");
+  for (var i=0; i<graphs.length; i++) {
+    recreateGraph (graphs[i]);
+  }
+}  
+
+function TestPreparePlotAll() {
+  var theDoc = GetCurrentEditor().document;
+  var mathelems = theDoc.getElementsByTagName("graph");
+  dump("SMR TestPreparePlotAll with " + mathelems.length + " items\n");
+  for (var i=0; i<mathelems.length; i++) {
+    testQuery (mathelems[i]);
+  }
+}
+
+function TestPreparePlotGraph() {
+  var theDoc = GetCurrentEditor().document;
+  var mathelems = theDoc.getElementsByTagName("graph");
+  dump("SMR TestPreparePlotAll with " + mathelems.length + " items\n");
+  for (var i=0; i<mathelems.length; i++) {
+    testQueryGraph (mathelems[i]);
+  }
+}
