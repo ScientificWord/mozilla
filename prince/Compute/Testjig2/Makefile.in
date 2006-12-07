@@ -1,4 +1,4 @@
-﻿# Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+# Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
 DEPTH		= ../../..
 topsrcdir	= @top_srcdir@
@@ -54,5 +54,6 @@ include $(topsrcdir)/config/rules.mk
 
 export:: $(TESTBATS)
 	$(INSTALL) $(TESTBATS) $(DIST)/bin/TestJigData
+	
 
                  
