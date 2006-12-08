@@ -11,4 +11,5 @@ wrapperDLL<uID5.0>@mackichan.com/mupadenginewrapper;1
 eng_dbase<uID6.0>MuPAD.gmr
 entity_dbase<uID7.0>MMLents.gmr
 vcampath<uID8.0>C:\Program Files\SciFace\MuPAD Pro 3.1\bin\VCamNG.exe
+;Mac vcampath<uID8.0>/Applications/MuPAD Pro 4.0.app/Contents/MacOS/MuPAD Pro
 <END_CONTEXT_ENGINFO>
