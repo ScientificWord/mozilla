@@ -42,6 +42,13 @@ public:
   NS_IMETHOD Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRoot, nsISelectionController *aSelCon, PRUint32 aFlags);
   // End of nsIEditor overrides
   
+  // nsEditor method
+  virtual nsresult DeleteSelectionImpl(EDirection aAction);
+  
+  
+  
+  
+  
   
 
 protected:
@@ -109,8 +116,20 @@ nsresult GetCommonAncestor(nsIDOMNode * node1, nsIDOMNode * node2, nsCOMPtr<nsID
 static nsresult AdjustCaretCB(void* msieditor, nsIDOMEvent * mouseEvent, nsCOMPtr<nsIDOMNode> & node, PRInt32 &offset);
 static nsresult SetSelectionCB(void* msieditor, nsCOMPtr<nsIDOMNode> & focusNode, PRInt32 focusOffset, 
                                PRBool selecting, PRBool & preventDefault);
+//end msiSelection callback functions
 
 nsresult AdjustCaret(nsIDOMEvent * mouseEvent, nsCOMPtr<nsIDOMNode> & node, PRInt32 &offset);
+
+nsresult CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
+                                     msiSelectionManager & msiSelMan,
+                                     EditAggregateTxn  ** aTxn);
+                                     
+nsresult CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
+                                          PRUint32 index, 
+                                          nsIEditor::EDirection aAction,
+                                          EditAggregateTxn     *aTxn);
+                                     
+
 
 };
 

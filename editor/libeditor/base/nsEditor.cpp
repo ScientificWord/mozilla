@@ -118,7 +118,6 @@
 #include "nsIParserService.h"
 //ljh
 #include "msiIEditActionListenerExtension.h"
-#include "msiSelectionManager.h"
 
 #define NS_ERROR_EDITOR_NO_SELECTION NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_EDITOR,1)
 #define NS_ERROR_EDITOR_NO_TEXTNODE  NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_EDITOR,2)
@@ -4680,22 +4679,15 @@ nsEditor::GetShouldTxnSetSelection()
 #endif
 
 
-NS_IMETHODIMP 
+nsresult 
 nsEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
 {
   nsCOMPtr<nsISelection>selection;
   nsresult res = GetSelection(getter_AddRefs(selection));
-  if (NS_FAILED(res)) 
-    return res;
-  msiSelectionManager msiSelMan(selection, (msiEditor*)this);
-  mRangeUpdater.RegisterSelectionState(msiSelMan);
+  if (NS_FAILED(res)) return res;
   EditAggregateTxn *txn;
-  res = CreateTxnForDeleteSelection(aAction, msiSelMan, &txn);
-  if (NS_FAILED(res)) 
-  {
-    mRangeUpdater.DropSelectionState(msiSelMan);
-    return res;
-  }
+  res = CreateTxnForDeleteSelection(aAction, &txn);
+  if (NS_FAILED(res)) return res;
   nsAutoRules beginRulesSniffing(this, kOpDeleteSelection, aAction);
 
   PRInt32 i;
@@ -4724,7 +4716,6 @@ nsEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
       }
     }
   }
-  mRangeUpdater.DropSelectionState(msiSelMan);
 
   // The transaction system (if any) has taken ownership of txn
   NS_IF_RELEASE(txn);
@@ -5113,7 +5104,6 @@ nsEditor::CreateTxnForRemoveStyleSheet(nsICSSStyleSheet* aSheet, RemoveStyleShee
 
 NS_IMETHODIMP
 nsEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
-                                      msiSelectionManager & msiSelMan,
                                       EditAggregateTxn  ** aTxn)
 {
   if (!aTxn)
@@ -5141,29 +5131,38 @@ nsEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
     result = TransactionFactory::GetNewTransaction(EditAggregateTxn::GetCID(), (EditTxn **)aTxn);
     if (NS_FAILED(result)) 
       return result;
-    PRUint32 rangeCount = msiSelMan.RangeCount();
-    for (PRUint32 index = 0; index < rangeCount && NS_SUCCEEDED(result); index++)
+
+    nsCOMPtr<nsISelectionPrivate>selPrivate(do_QueryInterface(selection));
+    nsCOMPtr<nsIEnumerator> enumerator;
+    result = selPrivate->GetEnumerator(getter_AddRefs(enumerator));
+    if (NS_SUCCEEDED(result) && enumerator)
     {
-      PRBool rangeCollapsed(PR_TRUE);
-      result = msiSelMan.IsRangeCollapsed(index, rangeCollapsed);
-      if (NS_SUCCEEDED(result))
+      for (enumerator->First(); NS_OK!=enumerator->IsDone(); enumerator->Next())
       {
-        if (!rangeCollapsed)
+        nsCOMPtr<nsISupports> currentItem;
+        result = enumerator->CurrentItem(getter_AddRefs(currentItem));
+        if ((NS_SUCCEEDED(result)) && (currentItem))
         {
-          DeleteRangeTxn *txn;
-          result = TransactionFactory::GetNewTransaction(DeleteRangeTxn::GetCID(), (EditTxn **)&txn);
-          nsRangeStore * rangeItem = msiSelMan.GetRangeStoreItem(index);
-          if (NS_SUCCEEDED(result) && txn && rangeItem)
+          nsCOMPtr<nsIDOMRange> range( do_QueryInterface(currentItem) );
+          range->GetCollapsed(&isCollapsed);
+          if (!isCollapsed)
           {
-            txn->Init(this, &msiSelMan, index, &mRangeUpdater);
-            (*aTxn)->AppendChild(txn);
-            NS_RELEASE(txn);
+            DeleteRangeTxn *txn;
+            result = TransactionFactory::GetNewTransaction(DeleteRangeTxn::GetCID(), (EditTxn **)&txn);
+            if (NS_SUCCEEDED(result) && txn)
+            {
+              txn->Init(this, range, &mRangeUpdater);
+              (*aTxn)->AppendChild(txn);
+              NS_RELEASE(txn);
+            }
+            else
+              result = NS_ERROR_OUT_OF_MEMORY;
           }
           else
-            result = NS_ERROR_OUT_OF_MEMORY;
+          { // we have an insertion point.  delete the thing in front of it or behind it, depending on aAction
+            result = CreateTxnForDeleteInsertionPoint(range, aAction, *aTxn);
+          }
         }
-        else // we have an insertion point.  delete the thing in front of it or behind it, depending on aAction
-          result = CreateTxnForDeleteInsertionPoint(msiSelMan, index, aAction, *aTxn);
       }
     }
   }
@@ -5210,23 +5209,23 @@ nsEditor::CreateTxnForDeleteCharacter(nsIDOMCharacterData  *aData,
 
 //XXX: currently, this doesn't handle edge conditions because GetNext/GetPrior are not implemented
 NS_IMETHODIMP
-nsEditor::CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
-                                           PRUint32 index, 
+nsEditor::CreateTxnForDeleteInsertionPoint(nsIDOMRange          *aRange, 
                                            nsIEditor::EDirection aAction,
                                            EditAggregateTxn     *aTxn)
 {
   NS_ASSERTION(aAction == eNext || aAction == ePrevious, "invalid action");
-  
-  nsRangeStore * rangeItem = msiSelMan.GetRangeStoreItem(index);
-  if (!rangeItem)
-    return NS_ERROR_FAILURE;
 
   // get the node and offset of the insertion point
-  nsCOMPtr<nsIDOMNode> node(rangeItem->startNode);
-  PRInt32 offset(rangeItem->startOffset);
-  if (!node || offset < 0)
-    return NS_ERROR_FAILURE;
-  nsresult result(NS_OK);
+  nsCOMPtr<nsIDOMNode> node;
+  nsresult result = aRange->GetStartContainer(getter_AddRefs(node));
+  if (NS_FAILED(result))
+    return result;
+
+  PRInt32 offset;
+  result = aRange->GetStartOffset(&offset);
+  if (NS_FAILED(result))
+    return result;
+
   // determine if the insertion point is at the beginning, middle, or end of the node
   nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(node);
 
