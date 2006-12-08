@@ -14,42 +14,63 @@
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
 
-
 <!DOCTYPE dialog [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
 %editorDTD;
-<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/typesetBibTeXCitation.dtd" >
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/typesetFrontMatter.dtd" >
 %dialogDTD;
 ]>
 
 <dialog title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    onload="Startup()"
+    onload="Startup();"
+		onunload="ShutdownAllEditors();"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/typesetBibTeXCitation.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/typesetFrontMatter.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/typesetDialogUtils.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
-  <!-- Following scripts are needed by any MSI dialog containing an editor -->
+  <!-- script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/ -->
+
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <!-- script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <!-- script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/ -->
+
+  <!-- keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset -->
+
+  <commandset id="viewZoomCommands"/>
 
   <commandset id="tasksCommands">
-    <command id="cmd_open" oncommand="doOpen()"/>
-    <command id="cmd_print" oncommand="goDoCommand('cmd_print')"/>
-    <command id="cmd_quit" oncommand="doQuit()"/>
-    <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    
+    <!-- commandset id="commonEditorMenuItems"/ -->
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
     <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
     <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
+	
   <commandset id="MSImathMenuCommands"/>
+	<commandset id="MSIcomputeMenuCommands"/>
+	<!-- commandset id="MSItypesetMenuCommands"/ -->
+	<commandset id="MSItypesetInsertMenuCommands"/>
   
   <keyset id="editorKeys">
     <keyset id="tasksKeys"/>
@@ -66,40 +87,25 @@
     <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
   </keyset>
 
-  <keyset>
-    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
-    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
-    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
-    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
-  </keyset>
-
-
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
-	
-	<vbox>
+    
+  <vbox>
+    <groupbox>
+      <description>"&instructions.label;"</description>
+    </groupbox>
+    <spacer flex='1'/>
 		<hbox>
-		  <vbox>
-		    <description value='&databaseFileListbox.label;' accesskey='&databaseFileListbox.accessKey;'/>
-		    <listbox id='databaseFileListbox' rows='8' onselect='selectDatabaseFile(this.selectedItem);'/>
-			</vbox>
-			<vbox>
-			  <button id='viewKeysButton' label='&viewKeysButton.label;' accesskey='&viewKeysButton.accessKey;' oncommand='doViewKeys();'/>
-			  <button id='selectBibTeXDirectory' label='&selectDirectoryButton.label;' accesskey='&selectDirectoryButton.accessKey;' oncommand='doSelectBibTeXDirectory();'/>
-			</vbox>
+      <groupbox>
+        <editor editortype="html" type="content-primary" context="editorContentContext" id="editControl" flex="1" height="200" width="450"/>
+      </groupbox>
 		</hbox>
-		<spacer flex='1'/>
+    <spacer flex='1'/>
+		<!-- label value="How does this appear?"/>
 		<hbox>
-		  <description value='&keyCaption.label;' accesskey='&keyCaption.accessKey;'/>
-		  <textbox id='keyTextbox' size='30' oninput='checkDisableControls();'/>
-		</hbox>
-		<spacer flex='1'/>
-		<hbox>
-			<description value='&remarkCaption.label;' accesskey='&remarkCaption.accessKey;'/>
-			<!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
-      <editor editortype="html" type="content-primary" context="editorContentContext" id="remarkEditControl" flex="1" height="350" width="450"/>
-		</hbox>
-		<checkbox id='bibEntryOnlyCheckbox' label='&bibEntryOnlyCheckbox.label;' accesskey='&bibEntryOnlyCheckbox.accessKey;'/>
-		<spacer flex='1'/>
-	</vbox>
+      <groupbox>
+        <editor editortype="html" context="editorContentContext" id="editControlTwo" flex="1" height="200" width="450"/>
+      </groupbox>
+		</hbox -->
+  </vbox>
 
 </dialog>

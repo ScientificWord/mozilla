@@ -50,7 +50,62 @@ function SetupMSIMathMenuCommands()
 //  doPanelLoad(document.getElementById("symbol.delims"),"mo");
 }  
 
+function msiSetupMSIMathMenuCommands(editorElement)
+{
+  var commandTable = msiGetComposerCommandTable(editorElement);
+  
+  //dump("Registering msi math menu commands\n");
+  commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiInlineMath);
+  commandTable.registerCommand("cmd_MSIdisplayMathCmd", msiDisplayMath);
+  commandTable.registerCommand("cmd_MSItextCmd",        msiDoSomething);
+  commandTable.registerCommand("cmd_MSIfractionCmd",    msiFraction);
+  commandTable.registerCommand("cmd_MSIradicalCmd",     msiRadical);
+  commandTable.registerCommand("cmd_MSIrootCmd",        msiRoot);
+  commandTable.registerCommand("cmd_MSIsupCmd",         msiSuperscript);
+  commandTable.registerCommand("cmd_MSIsubCmd",         msiSubscript);
+  commandTable.registerCommand("cmd_MSItensorCmd",      msiDoSomething);
+  commandTable.registerCommand("cmd_MSIsinCmd",         msiSin);
+  commandTable.registerCommand("cmd_MSIcosCmd",         msiCos);
+  commandTable.registerCommand("cmd_MSItanCmd",         msiTan);
+  commandTable.registerCommand("cmd_MSIlnCmd",          msiLn);
+  commandTable.registerCommand("cmd_MSIlogCmd",         msiLog);
+  commandTable.registerCommand("cmd_MSIexpCmd",         msiExp);
+  commandTable.registerCommand("cmd_MSImathnameCmd",    msiMathname);
+  commandTable.registerCommand("cmd_MSIMatrixCmd",      msiMatrix);
+  commandTable.registerCommand("cmd_MSIparenCmd",       msiParen);
+  commandTable.registerCommand("cmd_MSIbracketCmd",     msiBracket);
+  commandTable.registerCommand("cmd_MSIbraceCmd",       msiBrace);
+  commandTable.registerCommand("cmd_MSIabsvalueCmd",    msiAbsValue);
+  commandTable.registerCommand("cmd_MSInormCmd",        msiNorm);
+  commandTable.registerCommand("cmd_MSIsymbolCmd",       msiSymbol);
+  commandTable.registerCommand("cmd_MSIColorsCmd",       msiColors);
+  commandTable.registerCommand("cmd_MSIgenBracketsCmd",  msiGenBrackets);
+  commandTable.registerCommand("cmd_MSIbinomialsCmd",    msiBinomials);
+  commandTable.registerCommand("cmd_MSIoperatorsCmd",    msiOperators);
+  commandTable.registerCommand("cmd_MSIdecorationsCmd",  msiDecorations);
+
+  try {
+    gMathStyleSheet = msiColorObj.Format();
+  } catch(e) { dump("Error setting up msiColorObj\n"); msiKludgeLogString("Error setting up msiColorObj\n"); }
+
+// too slow for debugging.  Turn back on if you want style-correct toolbars
+//  // build symbol panels, since overlays don't seem to fire onload handlers
+//  doPanelLoad(document.getElementById("symbol.lcGreek"),"mi");
+//  doPanelLoad(document.getElementById("symbol.ucGreek"),"mi");
+//  doPanelLoad(document.getElementById("symbol.binOp"),"mo");
+//  doPanelLoad(document.getElementById("symbol.binRel"),"mo");
+//  doPanelLoad(document.getElementById("symbol.negRel"),"mo");
+//  doPanelLoad(document.getElementById("symbol.arrow"),"mo");
+//  doPanelLoad(document.getElementById("symbol.misc"),"mi");
+//  doPanelLoad(document.getElementById("symbol.delims"),"mo");
+}  
+
 function goUpdateMSIMathMenuItems(commandset)
+{
+  return;  //ljh todo -- do something reasonable
+}
+
+function msiGoUpdateMSIMathMenuItems(commandset)
 {
   return;  //ljh todo -- do something reasonable
 }
@@ -61,7 +116,8 @@ function doParamCommand(commandID, newValue)
   var commandNode = document.getElementById(commandID);
   if (commandNode)
       commandNode.setAttribute("value", newValue);
-  gContentWindow.focus();   // needed for command dispatch to work
+  if (!msiCurrEditorSetFocus(window)  && ("gContentWindow" in window) && window.gContentWindow != null)
+    gContentWindow.focus();   // needed for command dispatch to work
 
   try
   {
@@ -69,7 +125,8 @@ function doParamCommand(commandID, newValue)
     if (!cmdParams) return;
 
     cmdParams.setStringValue("value", newValue);
-    goDoCommandParams(commandID, cmdParams);
+//    goDoCommandParams(commandID, cmdParams);
+    msiGoDoCommandParams(commandID, cmdParams);
   } catch(e) { dump("error thrown in doParamCommand: "+e+"\n"); }
 }
 
@@ -103,7 +160,8 @@ var msiFraction =
 
   doCommand: function(aCommand)
   {
-    insertfraction("", "");
+    var editorElement = msiGetActiveEditorElement(window);
+    insertfraction("", "", editorElement);
   }
 };
 
@@ -119,7 +177,8 @@ var msiRoot =
 
   doCommand: function(aCommand)
   {
-    insertroot();
+    var editorElement = msiGetActiveEditorElement(window);
+    insertroot(editorElement);
   }
 };
 
@@ -135,7 +194,8 @@ var msiRadical =
 
   doCommand: function(aCommand)
   {
-    insertradical();
+    var editorElement = msiGetActiveEditorElement(window);
+    insertradical(editorElement);
   }
 };
 
@@ -153,7 +213,8 @@ var msiSuperscript =
 
   doCommand: function(aCommand)
   {
-    insertsup();
+    var editorElement = msiGetActiveEditorElement(window);
+    insertsup(editorElement);
   }
 };
 
@@ -169,7 +230,8 @@ var msiSubscript =
 
   doCommand: function(aCommand)
   {
-    insertsub();
+    var editorElement = msiGetActiveEditorElement(window);
+    insertsub(editorElement);
   }
 };
 
@@ -186,7 +248,8 @@ var msiInlineMath =
 
   doCommand: function(aCommand)
   {
-    insertinlinemath();
+    var editorElement = msiGetActiveEditorElement(window);
+    insertinlinemath(editorElement);
   }
 };
 
@@ -202,7 +265,8 @@ var msiDisplayMath =
 
   doCommand: function(aCommand)
   {
-    insertdisplay();
+    var editorElement = msiGetActiveEditorElement(window);
+    insertdisplay(editorElement);
   }
 };
 
@@ -218,7 +282,8 @@ var msiSin =
 
   doCommand: function(aCommand)
   {
-    insertmathname("sin");
+    var editorElement = msiGetActiveEditorElement(window);
+    insertmathname("sin", editorElement);
   }
 };
 
@@ -234,7 +299,8 @@ var msiCos =
 
   doCommand: function(aCommand)
   {
-    insertmathname("cos");
+    var editorElement = msiGetActiveEditorElement(window);
+    insertmathname("cos", editorElement);
   }
 };
 
@@ -250,7 +316,8 @@ var msiTan =
 
   doCommand: function(aCommand)
   {
-    insertmathname("tan");
+    var editorElement = msiGetActiveEditorElement(window);
+    insertmathname("tan", editorElement);
   }
 };
 
@@ -266,7 +333,8 @@ var msiLn =
 
   doCommand: function(aCommand)
   {
-    insertmathname("ln");
+    var editorElement = msiGetActiveEditorElement(window);
+    insertmathname("ln", editorElement);
   }
 };
 
@@ -282,7 +350,8 @@ var msiLog =
 
   doCommand: function(aCommand)
   {
-    insertmathname("log");
+    var editorElement = msiGetActiveEditorElement(window);
+    insertmathname("log", editorElement);
   }
 };
 
@@ -298,7 +367,8 @@ var msiExp =
 
   doCommand: function(aCommand)
   {
-    insertmathname("exp");
+    var editorElement = msiGetActiveEditorElement(window);
+    insertmathname("exp", editorElement);
   }
 };
 
@@ -314,7 +384,8 @@ var msiMathname =
 
   doCommand: function(aCommand)
   {
-    doMathnameDlg();
+    var editorElement = msiGetActiveEditorElement(window);
+    doMathnameDlg(editorElement);
   }
 };
 
@@ -330,7 +401,8 @@ var msiParen =
 
   doCommand: function(aCommand)
   {
-    insertfence("(",")");
+    var editorElement = msiGetActiveEditorElement(window);
+    insertfence("(", ")", editorElement);
   }
 };
 
@@ -346,7 +418,8 @@ var msiBracket =
 
   doCommand: function(aCommand)
   {
-    insertfence("[","]");
+    var editorElement = msiGetActiveEditorElement(window);
+    insertfence("[", "]", editorElement);
   }
 };
 
@@ -362,7 +435,8 @@ var msiBrace =
 
   doCommand: function(aCommand)
   {
-    insertfence("{","}");
+    var editorElement = msiGetActiveEditorElement(window);
+    insertfence("{", "}", editorElement);
   }
 };
 
@@ -378,7 +452,8 @@ var msiAbsValue =
 
   doCommand: function(aCommand)
   {
-    insertfence("|","|");
+    var editorElement = msiGetActiveEditorElement(window);
+    insertfence("|", "|", editorElement);
   }
 };
 
@@ -394,7 +469,8 @@ var msiNorm =
 
   doCommand: function(aCommand)
   {
-    insertfence("\u2016","\u2016");
+    var editorElement = msiGetActiveEditorElement(window);
+    insertfence("\u2016", "\u2016", editorElement);
   }
 };
 
@@ -414,6 +490,7 @@ var msiSymbol =
 
   doCommand: function(aCommand)
   {
+    var editorElement = msiGetActiveEditorElement(window);
     dump("msiSymbol::doCommand HuH?\n");
   }
 };
@@ -430,7 +507,8 @@ var msiMatrix =
 
   doCommand: function(aCommand)
   {
-    doMatrixDlg();
+    var editorElement = msiGetActiveEditorElement(window);
+    doMatrixDlg(editorElement);
   }
 };
 
@@ -446,7 +524,8 @@ var msiColors =
 
   doCommand: function(aCommand)
   {
-    doColorsDlg();
+    var editorElement = msiGetActiveEditorElement();
+    doColorsDlg(editorElement);
   }
 };
 
@@ -462,7 +541,8 @@ var msiGenBrackets =
 
   doCommand: function(aCommand)
   {
-    doBracketsDlg("(",")","");
+    var editorElement = msiGetActiveEditorElement();
+    doBracketsDlg("(", ")", "", "cmd_MSIgenBracketsCmd", editorElement, this);
   }
 };
 
@@ -478,7 +558,8 @@ var msiBinomials =
 
   doCommand: function(aCommand)
   {
-    doBinomialsDlg("(",")","0","auto");
+    var editorElement = msiGetActiveEditorElement();
+    doBinomialsDlg("(", ")", "0", "auto", "cmd_MSIbinomialsCmd", editorElement, this);
   }
 };
 
@@ -495,7 +576,8 @@ var msiOperators =
 
   doCommand: function(aCommand)
   {
-    doOperatorsDlg(String.fromCharCode(0x222B), "auto", "auto");
+    var editorElement = msiGetActiveEditorElement(window);
+    doOperatorsDlg(String.fromCharCode(0x222B), "auto", "auto", "cmd_MSIoperatorsCmd", editorElement, this);
   }
 };
 
@@ -511,68 +593,83 @@ var msiDecorations =
 
   doCommand: function(aCommand)
   {
-    doDecorationsDlg(String.fromCharCode(0x00AF), "", "");
+    var editorElement = msiGetActiveEditorElement(window);
+    doDecorationsDlg(String.fromCharCode(0x00AF), "", "", editorElement);
   }
 };
 
-const mmlns    = "http://www.w3.org/1998/Math/MathML";
-const xhtmlns  = "http://www.w3.org/1999/xhtml";
+//const mmlns    = "http://www.w3.org/1998/Math/MathML";
+//const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
-function insertinlinemath() 
+function insertinlinemath(editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertInlineMath();
+    editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
   }
 }
 
-function insertdisplay() 
+function insertdisplay(editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertDisplay();
+    editorElement.contentWindow.focus();   // needed for command dispatch to work
   } 
   catch (e) 
   {
   }
 }
 
-function insertsup() 
+function insertsup(editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertSuperscript();
+    editorElement.contentWindow.focus();   // needed for command dispatch to work
   } 
   catch (e) 
   {
   }
 }
 
-function insertsub() 
+function insertsub(editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertSubscript();
+    editorElement.contentWindow.focus();   // needed for command dispatch to work
   } 
   catch (e) 
   {
   }
 }
 
-function insertfraction(lineSpec, sizeSpec) 
+function insertfraction(lineSpec, sizeSpec, editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
@@ -582,15 +679,18 @@ function insertfraction(lineSpec, sizeSpec)
     else if (sizeSpec == "big")
       sizeFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_displaySize;
     mathmlEditor.InsertFraction(lineSpec, sizeFlags);
+    editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
   }
 }
 
-function insertBinomial(openingBracket, closingBracket, lineSpec, sizeSpec)
+function insertBinomial(openingBracket, closingBracket, lineSpec, sizeSpec, editorElement)
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
@@ -602,15 +702,18 @@ function insertBinomial(openingBracket, closingBracket, lineSpec, sizeSpec)
     if (lineSpec == "undefined")
       lineSpec = "";  
     mathmlEditor.InsertBinomial(openingBracket, closingBracket, lineSpec, sizeFlags);
+    editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
   }
 }
 
-function insertOperator(operator, limitPlacement, sizeSpec)
+function insertOperator(operator, limitPlacement, sizeSpec, editorElement)
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
@@ -632,46 +735,56 @@ function insertOperator(operator, limitPlacement, sizeSpec)
       limitFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_movablelimits_T;
     mathmlEditor.InsertOperator(operator, (sizeFlags | limitFlags | largeOpFlag),
                                 "", "", "", "");
+    editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
   }
 }
 
-function insertDecoration(decorationAboveStr, decorationBelowStr, decorationAroundStr)
+function insertDecoration(decorationAboveStr, decorationBelowStr, decorationAroundStr, editorElement)
 {
 //  alert("Inserting Decoration above: [" + decorationAboveStr + "], below: [" + decorationBelowStr + "], around: [" + decorationAroundStr + "].");
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertDecoration(decorationAboveStr, decorationBelowStr);
+    editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
   }
 }
 
-function insertroot() 
+function insertroot(editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertRoot();
+    editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
   }
 }
 
-function insertradical() 
+function insertradical(editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertSqRoot();
+    editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
@@ -679,42 +792,48 @@ function insertradical()
 }
 
 
-function insertmathname(name) 
+function insertmathname(name, editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertMathname(name);
+    editorElement.contentWindow.focus();
   } 
   catch (e) {}
 }
 
-function insertenginefunction(name) 
+function insertenginefunction(name, editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertEngineFunction(name);
+    editorElement.contentWindow.focus();
   } 
   catch (e) {}
 }
 
-function doMathnameDlg()
+function doMathnameDlg(editorElement)
 {
   var o = new Object();
   o.val = "";
   window.openDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.val.length > 0) {
     if (o.enginefunction)
-      insertenginefunction(o.val);
+      insertenginefunction(o.val, editorElement);
     else
-      insertmathname(o.val);
+      insertmathname(o.val, editorElement);
   }
 }
 
-function doMatrixDlg()
+function doMatrixDlg(editorElement)
 {
   var o = new Object();
   o.rows = 0;
@@ -722,7 +841,7 @@ function doMatrixDlg()
   o.rowsignature = "";
   window.openDialog("chrome://prince/content/MathmlMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.rows > 0 && o.cols > 0)
-    insertmatrix(o.rows, o.cols, o.rowsignature);
+    insertmatrix(o.rows, o.cols, o.rowsignature, editorElement);
 }
 
 // maintain color attributes and generate corresponding CSS
@@ -765,13 +884,16 @@ var msiColorObj =
 
 // Run color dialog.
 //XXX This shouldn't happen in Source View or Preview mode.
-function doColorsDlg()
+function doColorsDlg(editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+
   window.openDialog("chrome://prince/content/MathColors.xul", "_blank", "chrome,close,titlebar,modal", msiColorObj);
   if (msiColorObj.Cancel)
     return;
 
-  var editor = GetCurrentEditor();
   try {
     editor.QueryInterface(nsIEditorStyleSheets);
 
@@ -784,22 +906,26 @@ function doColorsDlg()
 }
 
 
-function doBracketsDlg(leftBrack, rightBrack, sep)
+function doBracketsDlg(leftBrack, rightBrack, sep, commandID, editorElement, commandHandler)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var bracketData = new Object();
   // Eventually we want to initialize this with whatever is in the document, if possible. In other cases, it is
   // an error to initialize it since that defeats any persistence of the dialog state.
   bracketData.leftBracket = ""; //leftBrack;
   bracketData.rightBracket = ""; //rightBrack;
   bracketData.separator = sep;
-  window.openDialog("chrome://prince/content/Brackets.xul", "_blank", "chrome,close,titlebar,modal", bracketData);
-  if (bracketData.Cancel)
-    return;
-  insertfence(bracketData.leftBracket, bracketData.rightBracket, bracketData.separator);
+//  window.openDialog("chrome://prince/content/Brackets.xul", "_blank", "chrome,close,titlebar,modal", bracketData);
+  msiOpenModelessDialog("chrome://prince/content/Brackets.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, commandID, commandHandler, bracketData);
+//  if (bracketData.Cancel)
+//    return;
+//  insertfence(bracketData.leftBracket, bracketData.rightBracket, bracketData.separator, editorElement);
 }
 
 
-function doBinomialsDlg(leftBrack, rightBrack, line, size)
+function doBinomialsDlg(leftBrack, rightBrack, line, size, commandID, editorElement, commandHandler)
 {
   var binomialData = new Object();
   binomialData.leftBracket = leftBrack;
@@ -810,35 +936,39 @@ function doBinomialsDlg(leftBrack, rightBrack, line, size)
     binomialData.withDelimiters = true;
   binomialData.lineSpec = line;
   binomialData.sizeSpec = size;
-  window.openDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,modal", binomialData);
-  if (binomialData.Cancel)
-    return;
-  if (!binomialData.withDelimiters)
-  {
-    binomialData.leftBracket = "";
-    binomialData.rightBracket = "";
-  }
-  insertBinomial(binomialData.leftBracket, binomialData.rightBracket,
-                        binomialData.lineSpec, binomialData.sizeSpec);
-//  if (binomialData.withDelimiters)
-//    insertfence(binomialData.leftBracket, binomialData.rightBracket, "");
-//  insertfraction(binomialData.lineSpec, binomialData.sizeSpec);
+//  window.openDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,modal", binomialData);
+  msiOpenModelessDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, commandID, commandHandler, binomialData);
+//  if (binomialData.Cancel)
+//    return;
+//  if (!binomialData.withDelimiters)
+//  {
+//    binomialData.leftBracket = "";
+//    binomialData.rightBracket = "";
+//  }
+//  insertBinomial(binomialData.leftBracket, binomialData.rightBracket,
+//                        binomialData.lineSpec, binomialData.sizeSpec, editorElement);
+////  if (binomialData.withDelimiters)
+////    insertfence(binomialData.leftBracket, binomialData.rightBracket, "");
+////  insertfraction(binomialData.lineSpec, binomialData.sizeSpec);
 }
 
-function doOperatorsDlg(operatorStr, limitPlacement, size)
+function doOperatorsDlg(operatorStr, limitPlacement, size, commandID, editorElement, commandHandler)
 {
   var operatorData = new Object();
   operatorData.operator = operatorStr;
   operatorData.limitsSpec = limitPlacement;
   operatorData.sizeSpec = size;
-  window.openDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,modal", operatorData);
-  if (operatorData.Cancel)
-    return;
-  insertOperator(operatorData.operator, operatorData.limitsSpec, operatorData.sizeSpec);
+  msiOpenModelessDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, commandID, commandHandler, operatorData);
+//  window.openDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,modal", operatorData);
+//  if (operatorData.Cancel)
+//    return;
+//  insertOperator(operatorData.operator, operatorData.limitsSpec, operatorData.sizeSpec, editorElement);
 //  alert("Insert operator [" + operatorData.operator + "] with limit placement [" + operatorData.limitsSpec + "] and size [" + operatorData.sizeSpec + "].");
 }
 
-function doDecorationsDlg(decorationAboveStr, decorationBelowStr, decorationAroundStr)
+function doDecorationsDlg(decorationAboveStr, decorationBelowStr, decorationAroundStr, editorElement)
 {
   var decorationData = new Object();
   decorationData.decorationAboveStr = decorationAboveStr;
@@ -847,7 +977,7 @@ function doDecorationsDlg(decorationAboveStr, decorationBelowStr, decorationArou
   window.openDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,close,titlebar,modal", decorationData);
   if (decorationData.Cancel)
     return;
-  insertDecoration(decorationData.decorationAboveStr, decorationData.decorationBelowStr, decorationData.decorationAroundStr);
+  insertDecoration(decorationData.decorationAboveStr, decorationData.decorationBelowStr, decorationData.decorationAroundStr, editorElement);
 }
 
 
@@ -880,53 +1010,76 @@ function doPanelLoad(panel,elementtype)
   }
 }
 
-function insertsymbol(s) 
+function insertsymbol(s, editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertSymbol(s.charCodeAt(0));
+    editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
     dump("insertsymbol failed: "+e+"\n");
   }
 }
-function insertfence(left, right) 
+
+function insertfence(left, right, editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
+  var logStr = "";
   try 
   {
+    if (!editorElement)
+      logStr = "In insertfence, editor element is null!\n";
+    else if (!editor)
+      logStr = "In insertfence, editor element [" + editorElement.id + "] has null editor!\n";
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    if (!mathmlEditor)
+      logStr = "In insertfence, editor element [" + editorElement.id + "] has editor, but null mathmlEditor!\n";
     mathmlEditor.InsertFence(left, right);
+    editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
+    AlertWithTitle("Error in insertfence!", e);
+    if (logStr.length > 0)
+      msiKludgeLogString(logStr);
   }
 }
 
-function insertmatrix(rows, cols, rowsignature) 
+function insertmatrix(rows, cols, rowsignature, editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     mathmlEditor.InsertMatrix(rows, cols, rowsignature);
+    editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
   }
 }
 
-function insertmath() 
+function insertmath(editorElement) 
 {
-  var editor = GetCurrentEditor();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
   var d = editor.document.createDocumentFragment();
   var b = newbox(editor);
   d.appendChild(b);
   insertfragment(editor, d);
   caret_on_box(editor, b);
+  editorElement.contentWindow.focus();
 }
 
 function newbox(editor) 

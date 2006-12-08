@@ -1,0 +1,10 @@
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Citation">
+
+<!ENTITY keyCaption.label "Key:">
+<!ENTITY keyCaption.accessKey "K">
+<!ENTITY remarkCaption.label "Remark:">
+<!ENTITY remarkCaption.accessKey "R">
+
+<!-- <!ENTITY .tooltip "">  -->

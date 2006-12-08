@@ -7,8 +7,8 @@ const cssBackgroundColorStr = "background-color";
 const emptyElementStr=" ";
 //const colorStyle = cssColorStr + ": ";
 
-const mmlns    = "http://www.w3.org/1998/Math/MathML";
-const xhtmlns  = "http://www.w3.org/1999/xhtml";
+//const mmlns    = "http://www.w3.org/1998/Math/MathML";
+//const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
 var customMathColor;
 
@@ -17,7 +17,8 @@ var data;
 // dialog initialization code
 function Startup()
 {
-  var editor = GetCurrentEditor();
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
   if (!editor) {
     window.close();
     return;
@@ -84,8 +85,14 @@ function onAccept()
   data.limitsSpec = gDialog.limitsSpecGroup.value;
   data.sizeSpec = gDialog.sizeSpecGroup.value;
 
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var theWindow = window.opener;
+  if (!theWindow || !("insertOperator" in theWindow))
+    theWindow = msiGetTopLevelWindow();
+  theWindow.insertOperator(data.operator, data.limitsSpec, data.sizeSpec, editorElement);
+
   SaveWindowLocation();
-  return true;
+  return false;
 }
 
 function onCancel()

@@ -440,7 +440,9 @@ function documentAsTeXFile( document, xslSheetPath, outputFile )
 
 function currentFileName()
 {
-  var docUrl = GetDocumentUrl();
+//  var docUrl = GetDocumentUrl();
+  var editorElement = msiGetTopLevelEditorElement();
+  var docUrl = msiGetEditorURL(editorElement);
   dump('\nThis doc url = ' + docUrl);
   var filename = "";
   if (docUrl && !IsUrlAboutBlank(docUrl))
@@ -543,7 +545,9 @@ function printTeX( pdftex )
   var str = documentAsTeX(editor.document, "chrome://prnc2ltx/content/latex.xsl" );
 // now save this TeX string and run TeX on it.  
 // BBM todo: We want the directory name above the file.
-  var docUrl = GetDocumentUrl();
+  var editorElement = msiGetTopLevelEditorElement();
+  var docUrl = msiGetEditorURL(editorElement);
+//  var docUrl = GetDocumentUrl();
   var scheme, filebase;
   if (docUrl && !IsUrlAboutBlank(docUrl))
   {
@@ -588,7 +592,9 @@ function previewTeX(pdftex)
 
 function compileTeX(pdftex)
 {
-  var docUrl = GetDocumentUrl();
+  var editorElement = msiGetTopLevelEditorElement();
+  var docUrl = msiGetEditorURL(editorElement);
+//  var docUrl = GetDocumentUrl();
   dump('\nThis doc url = ' + docUrl);
   var scheme, filename;
   if (docUrl && !IsUrlAboutBlank(docUrl))
@@ -658,15 +664,15 @@ function initializeAutoCompleteStringArray()
  
  
  
-// handle events on prince-specific elements here, or call the default goDoCommand() 
-function goDoPrinceCommand (cmdstr, element) 
-{
-   if ((element.localName.toLowerCase() == "img") && (element.getAttribute("msigraph") == "true"))
-   {
-      graphClickEvent(cmdstr);
-   }
-   else 
-   { 
-      goDoCommand(cmdstr);  
-   }
-}
+//In msiEditor.js // handle events on prince-specific elements here, or call the default goDoCommand() 
+//In msiEditor.js function goDoPrinceCommand (cmdstr, element) 
+//In msiEditor.js {
+//In msiEditor.js    if ((element.localName.toLowerCase() == "img") && (element.getAttribute("msigraph") == "true"))
+//In msiEditor.js    {
+//In msiEditor.js       graphClickEvent(cmdstr);
+//In msiEditor.js    }
+//In msiEditor.js    else 
+//In msiEditor.js    { 
+//In msiEditor.js       goDoCommand(cmdstr);  
+//In msiEditor.js    }
+//In msiEditor.js }

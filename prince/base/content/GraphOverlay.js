@@ -1,14 +1,14 @@
 //----------------------------------------------------------------------------------
 // an array of DOM <graph> elements currently being reformatted
 var currentDOMGs = new Array();
-  
+
 function Graph () {
   // these arrays enumerate the data for a graph. PLOTELEMENTS are in mathml
   // When adding to this list, you must also add to the MathServiceRequest in the compute engine
   // Compute/iCmpIDs.h and Compute/MRequest.cpp::NameToPID()
-  // PlotStatus: UI use only. New/Inited/Deleted. 
+  // PlotStatus: UI use only. New/Inited/Deleted.
   this.GRAPHATTRIBUTES  = new Array ("ImageFile", "XAxisLabel", "YAxisLabel", "ZAxisLabel", "Width",
-                                     "Height", "PrintAttribute", "Placement", "Offset", "Float", 
+                                     "Height", "PrintAttribute", "Placement", "Offset", "Float",
                                      "PrintFrame", "Key", "Name", "CaptionText", "CaptionPlace",
                                      "Units", "AxesType", "EqualScaling", "EnableTicks",
                                      "XTickCount", "YTickCount", "AxesTips", "GridLines", "BGColor",
@@ -19,44 +19,44 @@ function Graph () {
                                      "UpVectorX", "UpVectorY", "UpVectorZ",
                                      "ViewingAngle", "OrthogonalProjection", "KeepUp",
                                      " ");
-  this.PLOTATTRIBUTES   = new Array ("PlotStatus", "PlotType",  
+  this.PLOTATTRIBUTES   = new Array ("PlotStatus", "PlotType",
                                      "LineStyle", "PointStyle", "LineThickness", "LineColor",
                                      "DiscAdjust", "DirectionalShading", "BaseColor", "SecondaryColor",
 									 "PointSymbol", "SurfaceStyle", "IncludePoints",
 									 "SurfaceMesh", "CameraLocationX", "CameraLocationY",
-									 "CameraLocationZ",	"FontFamily", "IncludeLines", 
+									 "CameraLocationZ",	"FontFamily", "IncludeLines",
                                      "AISubIntervals", "AIMethod", "AIInfo", "FillPattern",
-                                     "Animate", "AnimateStart", "AnimateEnd", "AnimateFPS", 
-                                     "AnimateVisBefore", "AnimateVisAfter", 
+                                     "Animate", "AnimateStart", "AnimateEnd", "AnimateFPS",
+                                     "AnimateVisBefore", "AnimateVisAfter",
                                      "ConfHorizontalPts", "ConfVerticalPts");
-  this.PLOTELEMENTS     = new Array ("Expression", "XMax", "XMin", "YMax", "YMin", "ZMax", "ZMin", 
+  this.PLOTELEMENTS     = new Array ("Expression", "XMax", "XMin", "YMax", "YMin", "ZMax", "ZMin",
                                      "XVar", "YVar", "ZVar", "XPts", "YPts", "ZPts", "TubeRadius");
-  this.modFlag          = new Object ();       
+  this.modFlag          = new Object ();
   this.plotCount        = 0;
   this.errStr           = "";
   this.addPlot          = GraphAddPlot;
   this.deletePlot       = GraphDeletePlot;
-  this.getNumPlots      = function ()      { return (this.plotCount); }; 
+  this.getNumPlots      = function ()      { return (this.plotCount); };
   this.isModified       = function (x) { return (this.modFlag[x]);};
   this.setModified      = function (x) { this.modFlag[x] = true;};
-  this.ser              = new XMLSerializer();  
+  this.ser              = new XMLSerializer();
   this.prompt           = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
-                                                                                
+
   for (var i = 0; i < this.GRAPHATTRIBUTES.length; i++) {
     this[this.GRAPHATTRIBUTES[i]] = this.getDefaultValue(this.GRAPHATTRIBUTES[i]);
   }
 }
 
-Graph.prototype.computeGraph           = GraphComputeGraph;                                                  
-Graph.prototype.computeQuery           = GraphComputeQuery;                                                  
+Graph.prototype.computeGraph           = GraphComputeGraph;
+Graph.prototype.computeQuery           = GraphComputeQuery;
 Graph.prototype.createGraphDOMElement  = GraphMakeDOMGraphElement;
 Graph.prototype.createPlotDOMElement   = PlotMakeDOMPlotElement;
 Graph.prototype.extractGraphAttributes = GraphReadGraphAttributesFromDOM;
-Graph.prototype.extractPlotAttributes  = PlotReadPlotAttributesFromDOM                                    
+Graph.prototype.extractPlotAttributes  = PlotReadPlotAttributesFromDOM
 Graph.prototype.getDefaultValue        = GraphGetDefaultGraphValue;
 Graph.prototype.getGraphAttribute      = function (name) { return (this[name]);};
 Graph.prototype.getPlotAttribute       = function (name) { return (this[name]);};
-Graph.prototype.getPlotValue           = PlotGetPlotValue;                                                                  
+Graph.prototype.getPlotValue           = PlotGetPlotValue;
 Graph.prototype.getValue               = GraphGetGraphValue;
 Graph.prototype.graphAttributeList     = function () { return (this.GRAPHATTRIBUTES); };
 Graph.prototype.graphCompAttributeList = GraphSelectCompAttributes;
@@ -64,11 +64,11 @@ Graph.prototype.plotAttributeList      = function () { return (this.PLOTATTRIBUT
 Graph.prototype.plotElementList        = function () { return (this.PLOTELEMENTS); };
 Graph.prototype.plotCompAttributeList  = PlotSelectCompAttributes;
 Graph.prototype.plotCompElementList    = PlotSelectCompElements;
-Graph.prototype.serializeGraph         = GraphSerializeGraph;                                                  
+Graph.prototype.serializeGraph         = GraphSerializeGraph;
 Graph.prototype.setGraphAttribute      = function (name, value) { this[name] = value; };
 Graph.prototype.setPlotAttribute       = function (name, value) { this[name] = value;
                                                                   this.setModified(name); };
-                                                                  
+
 // Add a plot to a graph. Conceptually, a plot is a collection of attribute/value pairs
 function GraphAddPlot () {
   this.plotCount = this.plotCount + 1;
@@ -81,30 +81,30 @@ function GraphAddPlot () {
     this.modFlag[PlotAttrName(this.PLOTELEMENTS[i],this.plotCount)] = false;
   }
   return (this.plotCount);
-}                                    
+}
 
 // just decrement the counter and let the GC handle the rest
 function GraphDeletePlot () {
    if (this.plotCount > 0) {
      this.plotCount = this.plotCount - 1;
    }
-}                                    
+}
 
 // mangle plot attribute and element names so that multiple plots don't collide
-// There should be a plot object that contains the elements for a plot, but 
+// There should be a plot object that contains the elements for a plot, but
 // I wasn't able to make JS behave in the expected way. This is a kludge-around.
 function PlotAttrName (str, num) {
-  return (str + "__" + num);   
+  return (str + "__" + num);
 }
 
 
-// call the compute engine to create an image 
-function GraphComputeGraph () {    
-  var filename = this.getGraphAttribute ("ImageFile");                                            
-  ComputeCursor();   
+// call the compute engine to create an image
+function GraphComputeGraph () {
+  var filename = this.getGraphAttribute ("ImageFile");
+  ComputeCursor();
   var str = this.serializeGraph();
   if (this.errStr == "") {
-    try {                                            
+    try {
       msiComputeLogger.Sent4 ("plotfuncCmd", filename, str, "");
       //msiComputeLogger.Sent4 ("plotfuncCmd", filename, "", "");
       var out=GetCurrentEngine().plotfuncCmd (str);
@@ -118,18 +118,18 @@ function GraphComputeGraph () {
     } 
   } else {
     dump (this.errStr);
-  }                                                                                               
-  RestoreCursor();                                                                               
-}                                                                                                
+  }
+  RestoreCursor();
+}
 
-// call the compute engine to guess at graph attributes 
-function GraphComputeQuery (plot_no) {    
+// call the compute engine to guess at graph attributes
+function GraphComputeQuery (plot_no) {
   var str = this.serializeGraph (plot_no);
-  try {           
+  try {
     msiComputeLogger.Sent4 ("plotfuncQuery", "", str, "");
     //msiComputeLogger.Sent4 ("plotfuncQuery", "", "", "");
     var out=GetCurrentEngine().plotfuncQuery (str);
-    msiComputeLogger.Received(out); 
+    msiComputeLogger.Received(out);
     parseQueryReturn (out, this, plot_no);
     this.setPlotAttribute (PlotAttrName ("PlotStatus", plot_no), "Inited");             
   }                                                                                             
@@ -147,17 +147,17 @@ function GraphComputeQuery (plot_no) {
 // If any of the plots has an ERROR status, return "ERROR" and a diagnostic
 function GraphSerializeGraph (optionalplot) {
   var str;
-  try {  
+  try {
     str = this.ser.serializeToString(this.createGraphDOMElement(true,optionalplot));
-    // strip off the temporary namespace headers ... 
+    // strip off the temporary namespace headers ...
     str = str.replace (/<[a-zA-Z0-9]{2}:/g,"<");
     str = str.replace (/<\/[a-zA-Z0-9]{2}:/g,"<\/");
   }
   catch (e) {
     // dump("SMR GraphSerialize exception caught\n");
-    // this.setPlotAttribute (PlotAttrName ("PlotStatus", plot_no), "ERROR");             
-    msiComputeLogger.Exception(e);                                                               
-  }                                                                                              
+    // this.setPlotAttribute (PlotAttrName ("PlotStatus", plot_no), "ERROR");
+    msiComputeLogger.Exception(e);
+  }
   return str;
 }
 
@@ -165,7 +165,7 @@ function GraphSerializeGraph (optionalplot) {
 // get defaults from preference system, or if not there, from hardcoded list
 function GraphGetDefaultGraphValue (key) {
   var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-  var keyname = "prince.graph." + key;  
+  var keyname = "prince.graph." + key;
   var value;
   if (prefs.getPrefType(keyname) == prefs.PREF_STRING) {
     try {
@@ -176,12 +176,12 @@ function GraphGetDefaultGraphValue (key) {
 //      this.prompt.alert (null, "Preference Error", "Can't find preference for " + keyname);
       alert ("Preference Error", "Can't find preference for " + keyname);
       value = "";
-    }  
+    }
   } else {
     switch (key) {
-      default:           value = ""; 
+      default:           value = "";
     }
-  }  
+  }
   return value;
 }
 
@@ -193,70 +193,70 @@ function GraphGetGraphValue (key) {
     return value;
     }
   return (this.getDefaultValue(key));
-} 
+}
 
 
-// return a DOM <graph> fragment 
+// return a DOM <graph> fragment
 // if forComp, prepare the <graph> fragment to pass to the computation engine
 // Otherwise, create one suitable for putting into the document
 // An optional second argument is the number of the one plot to include for query
-function GraphMakeDOMGraphElement (forComp, optplot) { 
+function GraphMakeDOMGraphElement (forComp, optplot) {
   var msins="http://www.sciword.com/namespaces/sciword";
   var DOMGraph  = document.createElementNS(msins,"graph");
   var DOMGs     = document.createElementNS(msins,"graphSpec");
 
-  // loop through graph attributes and insert them 
+  // loop through graph attributes and insert them
   var alist;
   if (forComp)
-    alist = this.graphCompAttributeList(); 
-  else  
-    alist = this.graphAttributeList(); 
+    alist = this.graphCompAttributeList();
+  else
+    alist = this.graphAttributeList();
   for (var i=0; i<alist.length; i++) {
     var attr = alist[i];
     var value = this.getGraphAttribute(attr);
     var defaultValue = this.getDefaultValue (attr);
     if ((value == "") || (value == null)) {
        value = defaultValue;
-    } 
+    }
     if (forComp || (value != defaultValue)) {
       if ((value != "") && (value != "unspecified")) {
         DOMGs.setAttribute (attr, value);
-      }  
+      }
     }
   }
 
   // if the optional plot number was specified, just include one plot
-  // otherwise, for each plot, create a <plot> element 
+  // otherwise, for each plot, create a <plot> element
   if ((arguments.length > 1) && (arguments[1] <= this.getNumPlots())) {
-    var status = this.getPlotAttribute (PlotAttrName ("PlotStatus", arguments[1]));  
-    if (status == "ERROR") { 
+    var status = this.getPlotAttribute (PlotAttrName ("PlotStatus", arguments[1]));
+    if (status == "ERROR") {
       this.errStr = "ERROR, Plot number " + arguments[1] + " " + this.errStr;
     } else if (status != "Deleted") {
       DOMGs.appendChild(this.createPlotDOMElement(document, forComp, arguments[1]));
-    }    
-  } else {    
-    for (var i=1; i<=this.getNumPlots(); i++) {      
-      var status = this.getPlotAttribute (PlotAttrName ("PlotStatus", i));  
-      if (status == "ERROR") { 
+    }
+  } else {
+    for (var i=1; i<=this.getNumPlots(); i++) {
+      var status = this.getPlotAttribute (PlotAttrName ("PlotStatus", i));
+      if (status == "ERROR") {
         this.errStr = "ERROR, Plot number " + i + " " + this.errStr;
       } else if (status != "Deleted") {
           DOMGs.appendChild(this.createPlotDOMElement(document, forComp, i));
-      }                                                                               
-    }  
-  }  
-  DOMGraph.appendChild(DOMGs);                                                    
-                                                                               
-  // put the image file in 
+      }
+    }
+  }
+  DOMGraph.appendChild(DOMGs);
+
+  // put the image file in
   var img    = document.createElementNS(htmlns,"img");
   img.setAttribute("src", "file://"+this.getGraphAttribute("ImageFile"));
   img.setAttribute("alt", "Generated Plot");
   img.setAttribute("msigraph","true");
-  DOMGraph.appendChild(img);                                                                  
+  DOMGraph.appendChild(img);
   return(DOMGraph);
 }
 
 // walk down <graphSpec> and extract attributes and elements from existing graph
-function GraphReadGraphAttributesFromDOM (DOMGraph) { 
+function GraphReadGraphAttributesFromDOM (DOMGraph) {
   var DOMGs = DOMGraph.getElementsByTagName("graphSpec");
   if (DOMGs.length > 0) {
     DOMGs = DOMGs[0];
@@ -266,11 +266,11 @@ function GraphReadGraphAttributesFromDOM (DOMGraph) {
       this.setGraphAttribute(key, value);
     }
     var DOMPlots = DOMGraph.getElementsByTagName("plot");
-    for (var i = 0; i<DOMPlots.length; i++) {                                                                                   
+    for (var i = 0; i<DOMPlots.length; i++) {
       var plotno = this.addPlot();
       this.extractPlotAttributes(DOMPlots[i], plotno);
-      this.setPlotAttribute (PlotAttrName ("PlotStatus", plotno), "Inited");             
-    }  
+      this.setPlotAttribute (PlotAttrName ("PlotStatus", plotno), "Inited");
+    }
   }
 }
 
@@ -281,7 +281,7 @@ function PlotGetDefaultPlotValue (key) {
   var math = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
   var value;
   var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-  var keyname = "prince.plot." + key;  
+  var keyname = "prince.plot." + key;
   if (prefs.getPrefType(keyname) == prefs.PREF_STRING) {
     value = prefs.getCharPref(keyname);
   }
@@ -290,18 +290,18 @@ function PlotGetDefaultPlotValue (key) {
 	  case 'PlotStatus':       value = "New";  // this should never be moved from here
          break;
 	  case 'ConfHorizontalPts':     value = "15";
-	  case 'ConfVerticalPts':       value = "15";  
+	  case 'ConfVerticalPts':       value = "15";
          break;
 //      default:
 //        value = math + "<mrow><mi tempinput=\"true\">()</mi></mrow></math>";
-      default: value = ""; 
+      default: value = "";
     }
   }
   return value;
-}                     
-                      
-                      
-// look up the value key. If not found, look up the default value. 
+}
+
+
+// look up the value key. If not found, look up the default value.
 function PlotGetPlotValue (key, plotno) {
   var value = this.getPlotAttribute(PlotAttrName(key,plotno));
   if ((value != null) && (value != "")) {
@@ -329,47 +329,47 @@ function PlotGetPlotValue (key, plotno) {
         case "tube":                 value = GetNumAsMathML(40); break;
         case "approximateIntegral":  value = GetNumAsMathML(400); break;
         default:                     value = GetNumAsMathML(20); break;
-      }  
+      }
     }
-    return value;  
+    return value;
   }
   return (PlotGetDefaultPlotValue (key));
-} 
+}
 
 
-// return a DOM <plot> node. Unless forComp, only include non-default attributes and elements 
-function PlotMakeDOMPlotElement (doc, forComp, plotno) { 
+// return a DOM <plot> node. Unless forComp, only include non-default attributes and elements
+function PlotMakeDOMPlotElement (doc, forComp, plotno) {
   // do the plot attributes as DOM attributes of <plot>
   var status = this.getPlotValue("PlotStatus",plotno);
   if (status != "Deleted") {
     var msins="http://www.sciword.com/namespaces/sciword";
     var DOMPlot = doc.createElementNS(msins,"plot");
     var attributes = (forComp) ? this.plotCompAttributeList(plotno) : this.plotAttributeList();
-    for (var i=0; i<attributes.length; i++) {  
+    for (var i=0; i<attributes.length; i++) {
       if ((this.isModified(PlotAttrName(attributes[i],plotno))) || forComp) {
         var value = this.getPlotAttribute(PlotAttrName(attributes[i],plotno));
         if ((value != "") && (value != "unspecified"))
            DOMPlot.setAttribute (attributes[i], value);
-      }                                                               
-    }                                                  
-    // do the plot elements as document fragment children of <plot>               
-    attributes = (forComp) ? this.plotCompElementList(plotno) : this.plotElementList();                              
-    for (var i=0; i<attributes.length; i++) {                         
+      }
+    }
+    // do the plot elements as document fragment children of <plot>
+    attributes = (forComp) ? this.plotCompElementList(plotno) : this.plotElementList();
+    for (var i=0; i<attributes.length; i++) {
       if (forComp || (this.isModified(PlotAttrName(attributes[i],plotno)))) {
-        var DOMEnode = doc.createElementNS(msins,attributes[i]);    
+        var DOMEnode = doc.createElementNS(msins,attributes[i]);
         var textval = this.getPlotValue(attributes[i],plotno);
         if ((textval != "") && (textval != "unspecified")) {
           var tNode = (new DOMParser()).parseFromString (textval, "text/xml");
           DOMEnode.appendChild (tNode.documentElement);
-          DOMPlot.appendChild (DOMEnode);                              
-        }  
-      }  
-    }    
+          DOMPlot.appendChild (DOMEnode);
+        }
+      }
+    }
     return(DOMPlot);
   }
   return(NULL);
 }
-    
+
 
 // get values from a DOM <plot> node
 function PlotReadPlotAttributesFromDOM (DOMPlot, plotno) {
@@ -383,15 +383,15 @@ function PlotReadPlotAttributesFromDOM (DOMPlot, plotno) {
   // We should get an ELEMENT_NODE for the <plotelement>, and the localName is the attribute name.
   // The data is either text or mathml. For text, grab the text value, which must be in the nodeValue
   // of the first child. For DOM fragment, store serialization of the fragment.
-  var children = DOMPlot.childNodes;                                                                                      
-  for (var j=0; j<children.length; j++) {   
+  var children = DOMPlot.childNodes;
+  for (var j=0; j<children.length; j++) {
     var key = PlotAttrName(children[j].localName, plotno);
-    if (children[j].nodeType == Node.ELEMENT_NODE) {                                                                                       
+    if (children[j].nodeType == Node.ELEMENT_NODE) {
       if ((children[j].childNodes.length > 0) && (children[j].childNodes[0].nodeType == Node.TEXT_NODE)) {
          this.setPlotAttribute (key, children[j].childNodes[0].nodeValue);
       }
       else {
-//         var ser = new XMLSerializer();          
+//         var ser = new XMLSerializer();
          var serialized = this.ser.serializeToString(children[j].firstChild);
          this.setPlotAttribute (key, serialized);
       }
@@ -402,50 +402,63 @@ function PlotReadPlotAttributesFromDOM (DOMPlot, plotno) {
 
 /**----------------------------------------------------------------------------------*/
 // Handle a mouse double click on a graph image in the document. This is bound in editor.js.
-function graphClickEvent (cmdstr) {                                       
-  var selection = GetCurrentEditor().selection;                
-  if (selection) {                                             
-    var element = findtagparent(selection.focusNode, "graph"); 
-    if (element) {                                            
-       formatRecreateGraph(element);                              
-    }   
-  }                                                            
-}                                                              
+function graphClickEvent (cmdstr, editorElement)
+{
+  try
+  {
+    if (!editorElement)
+      editorElement = msiGetActiveEditorElement();
+    var selection = msiGetEditor(editorElement).selection;
+    if (selection)
+    {
+      var element = findtagparent(selection.focusNode, "graph");
+      if (element)
+        formatRecreateGraph(element);
+    }
+  }
+  catch(exc) {AlertWithTitle("Error in GraphOverlay.js", "Error in graphClickEvent: " + exc);}
+}
 
 
 /** ---------------------------------------------------------------------------------*/
 // insert the xml DOM fragment into the DOM
-function addGraphElementToDocument(DOMGraphNode, siblingNode) {
-  var editor = GetCurrentEditor();                                                               
-  if (siblingNode) {                                                                             
-    var idx;                                                                                     
-    var parent = siblingNode.parentNode;                                                         
-    for (idx = 0; idx < parent.childNodes.length && siblingNode!=parent.childNodes[idx]; idx++); 
-    editor.insertNode (DOMGraphNode, parent, idx+1);                                         
+function addGraphElementToDocument(DOMGraphNode, siblingNode, editorElement)
+{
+  if (siblingNode)
+  {
+    var idx;
+    var parent = siblingNode.parentNode;
+    if (!editorElement)
+      editorElement = findEditorElementForDocument(element.ownerDocument);
+    if (!editorElement)
+      editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+    for (idx = 0; (editor != null) && idx < parent.childNodes.length && siblingNode!=parent.childNodes[idx]; idx++);
+      editor.insertNode(DOMGraphNode, parent, idx+1);
   }
 }
 
-  
+
 /**----------------------------------------------------------------------------------*/
-// Arguments: <name>: first characters of returned name 
-//            <ext>:  file extension 
+// Arguments: <name>: first characters of returned name
+//            <ext>:  file extension
 // Returns <path><name><date>.<ext>
-//  where <path> is the current document directory, or if there is no 
+//  where <path> is the current document directory, or if there is no
 //  current directory, the mozilla TmpD directory, or if we can't
 //  find this, then return empty string
 //  <date> is the system time from the Date method.
-function createUniqueFileName(name, ext) {
+function createUniqueFileName(name, ext, editorElement) {
   var pathname = "";
-  var urlstring = GetDocumentUrl();
+  var urlstring = msiGetEditorURL(editorElement);
   var isBlank = (IsUrlAboutBlank(urlstring) || (urlstring == ""));
 
   // if no current doc path, get the mozilla tmp directory
   if (isBlank) {
-    var dp = Components.classes["@mozilla.org/file/directory_service;1"]; 
-    dp = dp.getService(Components.interfaces.nsIDirectoryService);        
-    dp = dp.QueryInterface(Components.interfaces.nsIProperties);          
-    pathname = dp.get("TmpD", Components.interfaces.nsIFile);             
-    pathname = pathname.path + "\/";                                      
+    var dp = Components.classes["@mozilla.org/file/directory_service;1"];
+    dp = dp.getService(Components.interfaces.nsIDirectoryService);
+    dp = dp.QueryInterface(Components.interfaces.nsIProperties);
+    pathname = dp.get("TmpD", Components.interfaces.nsIFile);
+    pathname = pathname.path + "\/";
   } else {   // if there's a current dir, use it
     pathname = urlstring;
     var lastSlash = pathname.lastIndexOf("\/");
@@ -475,7 +488,7 @@ function DOMGListMemberP (DOMGraph, thelist) {
   for (var i=0; i<thelist.length; i++) {
      if (thelist[i] == DOMGraph)
         return true;
-  }      
+  }
   return false;
 }
 
@@ -487,11 +500,11 @@ function DOMGListRemove (DOMGraph, thelist) {
          thelist.splice(i,1);
          return;
      }
-  }      
+  }
 }
 
 function DOMGListAdd (DOMGraph, thelist) {
-  thelist[thelist.length] = DOMGraph;                   
+  thelist[thelist.length] = DOMGraph;
 }
 
 /**----------------------------------------------------------------------------------*/
@@ -500,16 +513,16 @@ function DOMGListAdd (DOMGraph, thelist) {
 function formatRecreateGraph (DOMGraph) {
   // only open one dialog per DOMGraph element
   if (DOMGListMemberP (DOMGraph, currentDOMGs)) {
-    return;                                                                           
+    return;
   }
   DOMGListAdd (DOMGraph, currentDOMGs);
 
   var graph = new Graph();
   graph.extractGraphAttributes (DOMGraph);
   // non-modal dialog, the return is immediate
-  window.openDialog ("chrome://editor/content/ComputeGraphSettings.xul", 
+  window.openDialog ("chrome://editor/content/ComputeGraphSettings.xul",
                      "", "chrome,close,titlebar,dependent", graph, DOMGraph, currentDOMGs);
-  return;                  
+  return;
 }
 
 // this gets called only if the user clicked OK from ComputeGraphSettings.xul
@@ -518,7 +531,7 @@ function formatRecreateGraph (DOMGraph) {
 // parent (i.e., deleted). No parent, no changes to the picture.
 function nonmodalRecreateGraph (graph, DOMGraph) {
   try {
-    if (DOMGraph) {  
+    if (DOMGraph) {
       var parent = DOMGraph.parentNode;
       if (parent) {
         // parent.replaceChild() doesn't work. insert new, delete current
@@ -529,33 +542,36 @@ function nonmodalRecreateGraph (graph, DOMGraph) {
   }
   catch (e) {
     dump("ERROR: Recreate Graph failed, line 433 in GraphOverlay.js\n");
-  }      
-}  
+  }
+}
 
 
 
 /**----------------------------------------------------------------------------------*/
 // compute a graph, create a <graph> element, insert it into DOM after siblingElement
-function insertGraph (siblingElement, graph) { 
+function insertGraph (siblingElement, graph) {
   var filetype = graph.getDefaultValue ("DefaultFileType");
   // need to walk down plot tree and see if any of the plots are animated ...
   if (graph.getPlotAttribute(PlotAttrName("Animate",1)) == "true")
-     filetype = "gif";  
-  var filename = createUniqueFileName("plot", filetype);			 
-  graph.setGraphAttribute("ImageFile", filename);                                                 
-  try {
-    GetCurrentEditor().setCaretAfterElement (siblingElement);
+     filetype = "gif";
+  var editorElement = null;
+  try
+  {
+    editorElement = findEditorElementForDocument(siblingElement.ownerDocument);
+    var filename = createUniqueFileName("plot", filetype, editorElement);
+    graph.setGraphAttribute("ImageFile", filename);
+    msiGetEditor(editorElement).setCaretAfterElement (siblingElement);
   } catch (e) {
     dump ("Warning: unable to setCaretAfterElement while inserting graph\n");
   }
-  graph.computeGraph ();  
-  addGraphElementToDocument (graph.createGraphDOMElement(false), siblingElement);
+  graph.computeGraph ();
+  addGraphElementToDocument (graph.createGraphDOMElement(false), siblingElement, editorElement);
 }
 
 /**-----------------------------------------------------------------------------------------*/
 // Create the <graph> element and insert into the document following this math element
 // primary entry point
-function insertNewGraph (math, dimension, plottype, optionalAnimate) { 
+function insertNewGraph (math, dimension, plottype, optionalAnimate) {
   var expr = runFixup(GetFixedMath(math));
   var graph = new Graph();
   graph.addPlot ();
@@ -566,7 +582,7 @@ function insertNewGraph (math, dimension, plottype, optionalAnimate) {
   graph.setGraphAttribute("plotnumber", "1");
   if ((arguments.length > 3) && (arguments[3] == true)) {
     graph.setPlotAttribute (PlotAttrName ("Animate",1), "true");
-  }  
+  }
   graph.computeQuery(1);
   insertGraph (math, graph);
 }
@@ -591,51 +607,51 @@ function wrapMath (thing) {
 
 
 /**----------------------------------------------------------------------------------*/
-// extract the variable list and expression from the fragment created from 
+// extract the variable list and expression from the fragment created from
 // a plot query return string. The format of the fragment is
 // [<maybeExplicitList>, <outvarlist>, <invarlist>, <expression>, <optionaldatalist>]
 // except the string is really mathml, not just text. So it looks like this:
 
 /* <math xmlns="http://www.w3.org/1998/Math/M*//* <math xmlns="http://www.w3.org/1998/Math/MathML"> */
-/*   <mrow>                                  *//*   <mrow>                                          */ 
-/*     <mfenced open="[" close="]">          *//*     <mo>[</mo>                                    */ 
-/*       <mtext>"functionImage"</mtext>      *//*     <mrow>                                        */ 
-/*       <mfenced open="[" close="]">        *//*       <mtext>"functionImage"</mtext>              */ 
-/*         <mi>θ</mi>                       *//*       <mo>,</mo>                                  */ 
-/*       </mfenced>                          *//*       <mrow>                                      */ 
-/*       <mfenced open="[" close="]">        *//*         <mo>[</mo>                                */ 
-/*         <mi>x</mi>                        *//*         <mi>θ</mi>                               */ 
-/*         <mi>θ</mi>                       *//*         <mo>]</mo>                                */ 
-/*       </mfenced>                          *//*       </mrow>                                     */ 
-/*       <mfenced open="[" close="]">        *//*       <mo>,</mo>                                  */ 
-/*         <mrow>                            *//*       <mrow>                                      */ 
-/*           <mn>2</mn>                      *//*         <mo>[</mo>                                */ 
-/*           <mo>⁢</mo>                    *//*         <mrow>                                    */ 
-/*           <mi msiMathname="true">sin</mi> *//*           <mi>x</mi>                              */ 
-/*           <mo>⁡</mo>                    *//*           <mo>,</mo>                              */ 
-/*           <mrow>                          *//*           <mi>θ</mi>                             */ 
-/*             <mn>3</mn>                    *//*         </mrow>                                   */ 
-/*             <mo>⁢</mo>                  *//*         <mo>]</mo>                                */ 
-/*             <mi>θ</mi>                   *//*       </mrow>                                     */ 
-/*           </mrow>                         *//*       <mo>,</mo>                                  */ 
-/*           <mo>−</mo>                    *//*       <mrow>                                      */ 
-/*           <mi msiMathname="true">sin</mi> *//*         <mo>[</mo>                                */ 
-/*           <mo>⁡</mo>                    *//*         <mrow>                                    */ 
-/*           <mi>θ</mi>                     *//*           <mrow>                                  */ 
-/*           <mo>+</mo>                      *//*             <mn>2</mn>                            */ 
-/*           <mn>1</mn>                      *//*             <mo>⁢</mo>                          */ 
-/*         </mrow>                           *//*             <mi msiMathname="true">sin</mi>       */ 
-/*         <mi>θ</mi>                       *//*             <mo>⁡</mo>                          */ 
-/*       </mfenced>                          *//*             <mrow>                                */ 
-/*       <mrow>                              *//*               <mn>3</mn>                          */ 
-/*         <mo>[</mo>                        *//*               <mo>⁢</mo>                        */ 
-/*         <mo>]</mo>                        *//*               <mi>θ</mi>                         */ 
-/*       </mrow>                             *//*             </mrow>                               */ 
-/*     </mfenced>                            *//*             <mo>−</mo>                          */ 
-/*   </mrow>                                 *//*             <mi msiMathname="true">sin</mi>       */ 
-/* </math>									 *//*             <mo>⁡</mo>                          */ 
-                                               /*             <mi>θ</mi>                           */ 
-                                               /*             <mo>+</mo>                            */ 
+/*   <mrow>                                  *//*   <mrow>                                          */
+/*     <mfenced open="[" close="]">          *//*     <mo>[</mo>                                    */
+/*       <mtext>"functionImage"</mtext>      *//*     <mrow>                                        */
+/*       <mfenced open="[" close="]">        *//*       <mtext>"functionImage"</mtext>              */
+/*         <mi>θ</mi>                       *//*       <mo>,</mo>                                  */
+/*       </mfenced>                          *//*       <mrow>                                      */
+/*       <mfenced open="[" close="]">        *//*         <mo>[</mo>                                */
+/*         <mi>x</mi>                        *//*         <mi>θ</mi>                               */
+/*         <mi>θ</mi>                       *//*         <mo>]</mo>                                */
+/*       </mfenced>                          *//*       </mrow>                                     */
+/*       <mfenced open="[" close="]">        *//*       <mo>,</mo>                                  */
+/*         <mrow>                            *//*       <mrow>                                      */
+/*           <mn>2</mn>                      *//*         <mo>[</mo>                                */
+/*           <mo>⁢</mo>                    *//*         <mrow>                                    */
+/*           <mi msiMathname="true">sin</mi> *//*           <mi>x</mi>                              */
+/*           <mo>⁡</mo>                    *//*           <mo>,</mo>                              */
+/*           <mrow>                          *//*           <mi>θ</mi>                             */
+/*             <mn>3</mn>                    *//*         </mrow>                                   */
+/*             <mo>⁢</mo>                  *//*         <mo>]</mo>                                */
+/*             <mi>θ</mi>                   *//*       </mrow>                                     */
+/*           </mrow>                         *//*       <mo>,</mo>                                  */
+/*           <mo>−</mo>                    *//*       <mrow>                                      */
+/*           <mi msiMathname="true">sin</mi> *//*         <mo>[</mo>                                */
+/*           <mo>⁡</mo>                    *//*         <mrow>                                    */
+/*           <mi>θ</mi>                     *//*           <mrow>                                  */
+/*           <mo>+</mo>                      *//*             <mn>2</mn>                            */
+/*           <mn>1</mn>                      *//*             <mo>⁢</mo>                          */
+/*         </mrow>                           *//*             <mi msiMathname="true">sin</mi>       */
+/*         <mi>θ</mi>                       *//*             <mo>⁡</mo>                          */
+/*       </mfenced>                          *//*             <mrow>                                */
+/*       <mrow>                              *//*               <mn>3</mn>                          */
+/*         <mo>[</mo>                        *//*               <mo>⁢</mo>                        */
+/*         <mo>]</mo>                        *//*               <mi>θ</mi>                         */
+/*       </mrow>                             *//*             </mrow>                               */
+/*     </mfenced>                            *//*             <mo>−</mo>                          */
+/*   </mrow>                                 *//*             <mi msiMathname="true">sin</mi>       */
+/* </math>									 *//*             <mo>⁡</mo>                          */
+                                               /*             <mi>θ</mi>                           */
+                                               /*             <mo>+</mo>                            */
                                                /*             <mn>1</mn>                            */
                                                /*           </mrow>                                 */
                                                /*           <mo>,</mo>                              */
@@ -670,46 +686,46 @@ function parseQueryReturn (out, graph, plot_no) {
   var pt   = graph.getPlotAttribute (PlotAttrName ("PlotType", plot_no)); 
   // search for top level "mfenced" and the matching "/mfenced"                            
   // 4/11/06 this while loop should be unnecessary: the compute engine doesn't return
-  // mfenced anymore. 
+  // mfenced anymore.
   while ((result = out.indexOf ("mfenced", index)) >= 0) {
     index = result+1;
     if (out[result-1] == "/") { // end of mfence
-	  var start = stack.pop();  
-      var stop  = out.indexOf (">", result) + 1;  // find </mfenced>                                              
-  	  level = level - 1;                                         
+	  var start = stack.pop();
+      var stop  = out.indexOf (">", result) + 1;  // find </mfenced>
+  	  level = level - 1;
       if (level == 1) {  // we have the end of a second-to-top-level mfence
-	    count = count + 1;                                                    
-	    if (count == 1)  // save the output variable list                      
-	      variableList = out.slice (start, stop);                   
-  	    else if (count == 3)  // save the returned expression                  
+	    count = count + 1;
+	    if (count == 1)  // save the output variable list
+	      variableList = out.slice (start, stop);
+  	    else if (count == 3)  // save the returned expression
     	  expr = wrapMath (out.slice (start, stop));
-      }                                                                       
-    } else { // it must be "mfenced"                                                
-      level = level + 1;                                 
+      }
+    } else { // it must be "mfenced"
+      level = level + 1;
       stack.push (out.lastIndexOf("<", result)); // find <mfenced, even w/ namespace
-    }                                                                         
+    }
   }
-       
+
   if (count < 3) {
-    // search for top level "row" and the matching "/row"                            
+    // search for top level "row" and the matching "/row"
     count = 0; index = 0; level = 0;
     while ((result = out.indexOf ("mrow", index)) >= 0) {
       index = result+1;
       if (out[result-1] == "/") { // end of mrow
-		  var start = stack.pop();  
-          var stop  = out.indexOf (">", result) + 1;  // find </mrow>                                              
-    	  level = level - 1;                                         
-          if (level == 2) {  // we have the end of a second-to-top-level 
-		    count = count + 1;                                                    
-		    if (count == 1)  // save the output variable list                      
-		      variableList = out.slice (start, stop);                   
-    	    else if (count == 3)  // save the returned expression                  
+		  var start = stack.pop();
+          var stop  = out.indexOf (">", result) + 1;  // find </mrow>
+    	  level = level - 1;
+          if (level == 2) {  // we have the end of a second-to-top-level
+		    count = count + 1;
+		    if (count == 1)  // save the output variable list
+		      variableList = out.slice (start, stop);
+    	    else if (count == 3)  // save the returned expression
       	  expr = wrapMath (out.slice (start, stop));
-        }                                                                       
-      } else { // it must be "mrow"                                                
-        level = level + 1;                                 
+        }
+      } else { // it must be "mrow"
+        level = level + 1;
         stack.push (out.lastIndexOf("<", result)); // find <mrow, even w/ namespace
-      }                                                                         
+      }
     }
     
     if ((pt != "gradient") && (count < 3)) {
@@ -723,7 +739,7 @@ function parseQueryReturn (out, graph, plot_no) {
   if (variableList)
     graphSaveVars (variableList, graph, plot_no);
 
-  if (expr) { 
+  if (expr) {
     if ((pt == "polar") || (pt == "spherical") || (pt == "cylindrical") ||
         (pt == "parametric") || (pt == "gradient") || (pt == "vectorField")) {
       // insert ilk="enclosed-list" as attribute to <mfenced>
@@ -731,58 +747,58 @@ function parseQueryReturn (out, graph, plot_no) {
       if (hasilk == -1) {
         var s = expr.indexOf("<mfenced",0);
         if (s>0) {
-          expr = expr.slice (0,s) + "<mfenced ilk=\"enclosed-list\" " + expr.slice(s+8); 
+          expr = expr.slice (0,s) + "<mfenced ilk=\"enclosed-list\" " + expr.slice(s+8);
         }
-      }  
+      }
       expr = runFixup(expr);
-      graph.setPlotAttribute (PlotAttrName ("Expression", plot_no), expr);             
-    }          
+      graph.setPlotAttribute (PlotAttrName ("Expression", plot_no), expr);
+    }
   }
-  
+
   // look for "explicitList" and "parametric"
   // Set the plot types if these are found
   var s = out.indexOf("explicitList",0);
   if (s > 0) {
-    graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "explicitList");             
+    graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "explicitList");
   } else {
     s = out.indexOf ("parametric");
     if (s > 0) {
-      graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "parametric");             
+      graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "parametric");
     }
-  }  
+  }
 }
 
 
-// put the vars in the <graph>                                                 
+// put the vars in the <graph>
 //<mfenced open="[" close="]">
 //        <mi>x</mi>
 //        <mi>y</mi>
 //        <mi>z</mi>
 //      </mfenced>
-function graphSaveVars (varList, g, plot_no) {     
-  var xyzvar, i;                                                                 
-  if (varList) {                                                            
+function graphSaveVars (varList, g, plot_no) {
+  var xyzvar, i;
+  if (varList) {
     var index = 0;
     var stop = 0;
     var start = varList.indexOf ("<mi>", index);
     if (start >= 0) {
       stop = varList.indexOf ("</mi>", start+1);
       xyzvar = wrapMath (varList.slice ( start, stop+5));
-      g.setPlotAttribute (PlotAttrName ("XVar", plot_no), xyzvar);         
+      g.setPlotAttribute (PlotAttrName ("XVar", plot_no), xyzvar);
       index = stop+1;
     }
     start = varList.indexOf ("<mi>", index);
     if (start >= 0) {
       stop = varList.indexOf ("</mi>", start+1);
       xyzvar = wrapMath (varList.slice ( start, stop+5));
-      g.setPlotAttribute (PlotAttrName ("YVar", plot_no), xyzvar);         
+      g.setPlotAttribute (PlotAttrName ("YVar", plot_no), xyzvar);
       index = stop+1;
     }
     start = varList.indexOf ("<mi>", index);
     if (start >= 0) {
       stop = varList.indexOf ("</mi>", start+1);
       xyzvar = wrapMath (varList.slice ( start, stop+5));
-      g.setPlotAttribute (PlotAttrName ("ZVar", plot_no), xyzvar);         
+      g.setPlotAttribute (PlotAttrName ("ZVar", plot_no), xyzvar);
       index = stop+1;
     }
   }
@@ -804,13 +820,13 @@ function GraphSelectCompAttributes() {
   NA = attributeArrayRemove (NA,  "Name");
   NA = attributeArrayRemove (NA,  "CaptionText");
   NA = attributeArrayRemove (NA,  "CaptionPlace");
- 
+
   var dim = this.getGraphAttribute("Dimension");
   if (dim == "2") {
     NA = attributeArrayRemove (NA,  "ZAxisLabel");
     NA = attributeArrayRemove (NA,  "OrientationTiltTurn");
-  }         
-  return NA;  
+  }
+  return NA;
 }
 
 
@@ -822,7 +838,7 @@ function attributeArrayRemove (A, element) {
   if (idx == -1)
     return A;
   NA1 = A.slice(0,idx);
-  NA2 = A.slice(idx+1);    
+  NA2 = A.slice(idx+1);
   return (NA1.concat(NA2));
 }
 
@@ -854,12 +870,12 @@ function PlotSelectCompAttributes (plotno) {
 
   if ((ptype != "approximateIntegral") && (ptype != "inequality")){
     NA = attributeArrayRemove (NA,  "FillPattern");
-  }  
+  }
 
   if (ptype != "conformal") {
     NA = attributeArrayRemove (NA,  "ConfHorizontalPts");
     NA = attributeArrayRemove (NA,  "ConfVerticalPts");
-  }  
+  }
 
   if (dim == "2") {
     NA = attributeArrayRemove (NA,  "DirectionalShading");
@@ -872,20 +888,20 @@ function PlotSelectCompAttributes (plotno) {
     NA = attributeArrayRemove (NA,  "PointStyle");
     NA = attributeArrayRemove (NA,  "AxisScale");
   }
-  
+
   if ((ptype != "rectangular") && (ptype != "parametric") && (ptype != "implict")) {
     NA = attributeArrayRemove (NA, "DiscAdjust");
   }
-      
+
   if (animate != "true") {
     NA = attributeArrayRemove (NA, "AnimateStart");
     NA = attributeArrayRemove (NA, "AnimateEnd");
     NA = attributeArrayRemove (NA, "AnimateFPS");
     NA = attributeArrayRemove (NA, "AnimateVisBefore");
     NA = attributeArrayRemove (NA, "AnimateVisAfter");
-  }      
+  }
 
-  return NA;  
+  return NA;
 }
 
 function PlotSelectCompElements (plotno) {
@@ -893,11 +909,11 @@ function PlotSelectCompElements (plotno) {
   var animate = this.getPlotAttribute(PlotAttrName("Animate",plotno));
   var ptype   = this.getPlotAttribute(PlotAttrName("PlotType",plotno));
   var NA = this.PLOTELEMENTS;
-  
+
   if (ptype != "tube") {
     NA = attributeArrayRemove (this.PLOTELEMENTS, "TubeRadius");
-  }  
-                                                                       
+  }
+
   var nvars = CountPlotVars (dim, ptype, animate);
 
   if (nvars < 2) {
@@ -905,39 +921,39 @@ function PlotSelectCompElements (plotno) {
     NA = attributeArrayRemove (NA, "YMax");
     NA = attributeArrayRemove (NA, "YMin");
   }
-  
+
   if (nvars < 3) {
     NA = attributeArrayRemove (NA, "ZPts");
     NA = attributeArrayRemove (NA, "ZMax");
     NA = attributeArrayRemove (NA, "ZMin");
   }
-  
-  return NA;  
+
+  return NA;
 }
 
 
 function CountPlotVars (dim, ptype, animate) {
-  var nvars = 0;  
+  var nvars = 0;
   switch (ptype) {
     case "curve":
     case "explicitList":
        nvars = 0;            // gets set to 1 below
-       break; 
-    case "rectangular":                                                                     
-    case "polar":                                                                     
-    case "parametric":                                                                     
-    case "approximateIntegral":                     
-    case "spherical":                                                                     
-    case "cylindrical":                                                                     
-    case "tube":                                                                     
-       nvars = 1;                                                
        break;
-    case "inequality":                                                                     
-    case "implicit":                                                                     
-    case "conformal":                                                                     
-    case "vectorField":                                                                     
-    case "gradient":                                                                     
-    case "ode":                                                                     
+    case "rectangular":
+    case "polar":
+    case "parametric":
+    case "approximateIntegral":
+    case "spherical":
+    case "cylindrical":
+    case "tube":
+       nvars = 1;
+       break;
+    case "inequality":
+    case "implicit":
+    case "conformal":
+    case "vectorField":
+    case "gradient":
+    case "ode":
        nvars = 2;
        break;
     default:
@@ -945,13 +961,13 @@ function CountPlotVars (dim, ptype, animate) {
 //       alert ("SMR ERROR in GraphOverlay line 932 unknown plot type " + ptype);
 //      this.prompt.alert (null, "Computation Error", "Unknown plot type <" + ptype +">");
        break;
-  }   
-  if (dim == "3") 
+  }
+  if (dim == "3")
     nvars++;
   if (animate == "true")
     nvars++;
   return (nvars);
-}  
+}
 
 function testQuery (domgraph) {
   var graph = new Graph();
@@ -960,7 +976,7 @@ function testQuery (domgraph) {
   var expr = graph.getPlotAttribute (PlotAttrName ("Expression",1));
   var expr2 = runFixup(runFixup(expr));
   graph.setPlotAttribute (PlotAttrName ("Expression",1), expr2);
- 
+
   graph.computeQuery(1);
 }
 
@@ -972,7 +988,7 @@ function testQueryGraph (domgraph) {
   var expr2 = runFixup(runFixup(expr));
   graph.setPlotAttribute (PlotAttrName ("Expression",1), expr2);
   graph.computeQuery(1);
- 
+
   var parent = domgraph.parentNode;
   insertGraph (domgraph, graph);
   parent.removeChild (domgraph);
