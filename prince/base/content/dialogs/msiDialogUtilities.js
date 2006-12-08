@@ -334,7 +334,7 @@ function msiTabForward(event)
 //        break;
 //      }
 //    }
-    for (i = 1; (startItem >= 0) && (i < gDialog.tabOrderArray.length); ++i)
+    for (var i = 1; (startItem >= 0) && (i < gDialog.tabOrderArray.length); ++i)
     {
       var trialItem = startItem + i;
       if (trialItem >= gDialog.tabOrderArray.length)

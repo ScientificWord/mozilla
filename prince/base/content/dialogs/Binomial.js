@@ -192,8 +192,22 @@ function onAccept()
   data.lineSpec = gDialog.lineSpec;
   data.sizeSpec = gDialog.sizeSpec;
 
+  if (!data.withDelimiters)
+  {
+    data.leftBracket = "";
+    data.rightBracket = "";
+  }
+
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
+  var theWindow = window.opener;
+  if (!theWindow || !("insertBinomial" in theWindow))
+    theWindow = msiGetTopLevelWindow();
+
+  theWindow.insertBinomial(data.leftBracket, data.rightBracket, data.lineSpec, data.sizeSpec, editorElement);
+
   SaveWindowLocation();
-  return true;
+  return false;
 }
 
 function onCancel()

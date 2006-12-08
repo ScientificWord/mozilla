@@ -9,8 +9,18 @@
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<!-- ?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul"? -->
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
 
-<!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetBibTeXCitation.dtd">
+
+<!DOCTYPE dialog [
+<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
+%editorDTD;
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/typesetBibTeXCitation.dtd" >
+%dialogDTD;
+]>
 
 <dialog title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -18,25 +28,53 @@
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();">
 
-  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/typesetBibTeXCitation.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/typesetDialogUtils.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
-  <!-- keyset>
+  <!-- Following scripts are needed by any MSI dialog containing an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <!-- script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+
+  <commandset id="tasksCommands">
+    <command id="cmd_open" oncommand="doOpen()"/>
+    <command id="cmd_print" oncommand="goDoCommand('cmd_print')"/>
+    <command id="cmd_quit" oncommand="doQuit()"/>
+    <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
+    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+  </commandset>
+  <commandset id="MSImathMenuCommands"/>
+  
+  <keyset id="editorKeys">
+    <keyset id="tasksKeys"/>
+    <keyset id="MSIKeySet"/>
+    <!-- key keycode="VK_TAB" oncommand="return true;"/>
+    <key keycode="VK_TAB" modifiers="shift" oncommand="return true;"/>
+    <key keycode="VK_TAB" modifiers="control" oncommand="return true;"/>
+    <key keycode="VK_TAB" modifiers="control,shift" oncommand="return true;"/ -->
+    <!-- key id="key_newBlankPage" key="&filenew.keybinding;" observes="cmd_newEditor"  modifiers="accel"/>
+    <key id="openeditorkb"   key="&fileopen.keybinding;"  observes="cmd_open"  modifiers="accel"/>
+    <key id="savekb"         key="&filesave.keybinding;"  observes="cmd_save"  modifiers="accel"/>
+    <key id="printkb"        key="&fileprint.keybinding;" observes="cmd_print" modifiers="accel"/>
+    <key id="key_quit"       key="&filequit.keybinding;"  observes="cmd_quit" modifiers="accel"/ -->
+    <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
+  </keyset>
+
+  <keyset>
     <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
     <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
     <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
     <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
-  </keyset -->
+  </keyset>
 
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
-  <!-- broadcasterset>
-    <broadcaster id="enableDecorationsAround" disabled="false"/>
-    <broadcaster id="enableDecorationsAboveBelow" disabled="false"/>
-  </broadcasterset -->
 	
 	<vbox>
 		<hbox>
@@ -57,7 +95,8 @@
 		<spacer flex='1'/>
 		<hbox>
 			<description value='&remarkCaption.label;' accesskey='&remarkCaption.accessKey;'/>
-			<textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/>
+			<!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
+      <editor editortype="html" type="content-primary" context="editorContentContext" id="remarkEditControl" flex="1" height="350" width="450"/>
 		</hbox>
 		<checkbox id='bibEntryOnlyCheckbox' label='&bibEntryOnlyCheckbox.label;' accesskey='&bibEntryOnlyCheckbox.accessKey;'/>
 		<spacer flex='1'/>

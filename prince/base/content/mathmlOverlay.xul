@@ -72,7 +72,7 @@
 
 
   <menu id="MSIMathMenu" label="&MSIMathMenu.label;" accesskey="&MSIMathMenu.accesskey;">
-    <menupopup id="MSIMathPopup" onpopupshowing="initFontStyleMenu(this)">
+    <menupopup id="MSIMathPopup" onpopupshowing="msiInitFontStyleMenu(this)">
       <menuitem label="&MSIinlineMathCmd.label;" accesskey="&MSIinlineMathCmd.accesskey;" key="MSIinlineMathKey" observes="cmd_MSImathtext"   type="checkbox"/>
       <menuitem label="&MSIdisplayCmd.label;"    accesskey="&MSIdisplayCmd.accesskey;"    key="MSIdisplayKey"    command="cmd_MSIdisplayMathCmd"/>
       <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"                              command="cmd_MSItextCmd"/>  
