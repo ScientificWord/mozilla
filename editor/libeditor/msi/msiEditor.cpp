@@ -26,9 +26,17 @@
 #include "nsIDOMEventReceiver.h"
 #include "nsIDOMEventGroup.h"
 #include "nsIServiceManager.h"
+#include "nsIEditActionListener.h"
+
+#include "DeleteTextTxn.h"
+#include "DeleteElementTxn.h"
 
 #include "msiISelection.h"
 #include "msiIEditingManager.h"
+#include "msiSelectionManager.h"
+#include "msiDeleteRangeTxn.h"
+
+#include  "nsEditorUtils.h"
 
 static PRInt32 instanceCounter = 0;
 nsIRangeUtils * msiEditor::m_rangeUtils = nsnull;
@@ -921,6 +929,298 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
   else
     return NS_ERROR_FAILURE;
 }
+
+
+nsresult 
+msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
+{
+  nsCOMPtr<nsISelection>selection;
+  nsresult res = GetSelection(getter_AddRefs(selection));
+  if (NS_FAILED(res)) 
+    return res;
+  msiSelectionManager msiSelMan(selection, this);
+  mRangeUpdater.RegisterSelectionState(msiSelMan);
+  EditAggregateTxn *txn;
+  res = CreateTxnForDeleteSelection(aAction, msiSelMan, &txn);
+  if (NS_FAILED(res)) 
+  {
+    mRangeUpdater.DropSelectionState(msiSelMan);
+    return res;
+  }
+  nsAutoRules beginRulesSniffing(this, kOpDeleteSelection, aAction);
+
+  PRInt32 i;
+  nsIEditActionListener *listener;
+  if (NS_SUCCEEDED(res))  
+  {
+    if (mActionListeners)
+    {
+      for (i = 0; i < mActionListeners->Count(); i++)
+      {
+        listener = (nsIEditActionListener *)mActionListeners->ElementAt(i);
+        if (listener)
+          listener->WillDeleteSelection(selection);
+      }
+    }
+
+    res = DoTransaction(txn);  
+
+    if (mActionListeners)
+    {
+      for (i = 0; i < mActionListeners->Count(); i++)
+      {
+        listener = (nsIEditActionListener *)mActionListeners->ElementAt(i);
+        if (listener)
+          listener->DidDeleteSelection(selection);
+      }
+    }
+  }
+  mRangeUpdater.DropSelectionState(msiSelMan);
+
+  // The transaction system (if any) has taken ownership of txn
+  NS_IF_RELEASE(txn);
+
+  return res;
+}
+
+
+nsresult
+msiEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
+                                      msiSelectionManager & msiSelMan,
+                                      EditAggregateTxn  ** aTxn)
+{
+  if (!aTxn)
+    return NS_ERROR_NULL_POINTER;
+  *aTxn = nsnull;
+
+  nsCOMPtr<nsISelectionController> selCon = do_QueryReferent(mSelConWeak);
+  if (!selCon) return NS_ERROR_NOT_INITIALIZED;
+  nsCOMPtr<nsISelection> selection;
+  nsresult result = selCon->GetSelection(nsISelectionController::SELECTION_NORMAL,
+                                         getter_AddRefs(selection));
+  if ((NS_SUCCEEDED(result)) && selection)
+  {
+    // Check whether the selection is collapsed and we should do nothing:
+    PRBool isCollapsed;
+    result = (selection->GetIsCollapsed(&isCollapsed));
+    if (NS_SUCCEEDED(result) && isCollapsed && aAction == eNone)
+      return NS_OK;
+
+    // allocate the out-param transaction
+    result = TransactionFactory::GetNewTransaction(EditAggregateTxn::GetCID(), (EditTxn **)aTxn);
+    if (NS_FAILED(result)) 
+      return result;
+    PRUint32 rangeCount = msiSelMan.RangeCount();
+    for (PRUint32 index = 0; index < rangeCount && NS_SUCCEEDED(result); index++)
+    {
+      PRBool rangeCollapsed(PR_TRUE);
+      result = msiSelMan.IsRangeCollapsed(index, rangeCollapsed);
+      if (NS_SUCCEEDED(result))
+      {
+        if (!rangeCollapsed)
+        {
+          msiDeleteRangeTxn *txn;
+          result = TransactionFactory::GetNewTransaction(msiDeleteRangeTxn::GetCID(), (EditTxn **)&txn);
+          nsRangeStore * rangeItem = msiSelMan.GetRangeStoreItem(index);
+          if (NS_SUCCEEDED(result) && txn && rangeItem)
+          {
+            txn->Init(this, &msiSelMan, index, &mRangeUpdater);
+            (*aTxn)->AppendChild(txn);
+            NS_RELEASE(txn);
+          }
+          else
+            result = NS_ERROR_OUT_OF_MEMORY;
+        }
+        else // we have an insertion point.  delete the thing in front of it or behind it, depending on aAction
+          result = CreateTxnForDeleteInsertionPoint(msiSelMan, index, aAction, *aTxn);
+      }
+    }
+  }
+
+  // if we didn't build the transaction correctly, destroy the out-param transaction so we don't leak it.
+  if (NS_FAILED(result))
+    NS_IF_RELEASE(*aTxn);
+  return result;
+}
+
+
+//ljh comment below from nsEditor's version of this method
+//XXX: currently, this doesn't handle edge conditions because GetNext/GetPrior are not implemented
+nsresult
+msiEditor::CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
+                                            PRUint32 index, 
+                                            nsIEditor::EDirection aAction,
+                                            EditAggregateTxn     *aTxn)
+{
+  NS_ASSERTION(aAction == eNext || aAction == ePrevious, "invalid action");
+  
+  nsRangeStore * rangeItem = msiSelMan.GetRangeStoreItem(index);
+  if (!rangeItem)
+    return NS_ERROR_FAILURE;
+
+  // get the node and offset of the insertion point
+  nsCOMPtr<nsIDOMNode> node(rangeItem->startNode);
+  PRInt32 offset(rangeItem->startOffset);
+  if (!node || offset < 0)
+    return NS_ERROR_FAILURE;
+  nsresult result(NS_OK);
+  // determine if the insertion point is at the beginning, middle, or end of the node
+  nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(node);
+
+  PRUint32 count(0);
+  if (nodeAsText)
+    nodeAsText->GetLength(&count);
+  else
+  { 
+    // get the child list and count
+    nsCOMPtr<nsIDOMNodeList>childList;
+    result = node->GetChildNodes(getter_AddRefs(childList));
+    if ((NS_SUCCEEDED(result)) && childList)
+      childList->GetLength(&count);
+  }
+
+  PRBool isFirst = (0 == offset);
+  PRBool isLast  = (count == (PRUint32)offset);
+
+  // XXX: if isFirst && isLast, then we'll need to delete the node 
+  //      as well as the 1 child
+
+  // build a transaction for deleting the appropriate data
+  // XXX: this has to come from rule section
+  if ((ePrevious==aAction) && (PR_TRUE==isFirst))
+  { // we're backspacing from the beginning of the node.  Delete the first thing to our left
+    nsCOMPtr<nsIDOMNode> priorNode;
+    result = GetPriorNode(node, PR_TRUE, address_of(priorNode));
+    if ((NS_SUCCEEDED(result)) && priorNode)
+    { // there is a priorNode, so delete it's last child (if text content, delete the last char.)
+      // if it has no children, delete it
+      nsCOMPtr<nsIDOMCharacterData> priorNodeAsText = do_QueryInterface(priorNode);
+      if (priorNodeAsText)
+      {
+        PRUint32 length=0;
+        priorNodeAsText->GetLength(&length);
+        if (0<length)
+        {
+          DeleteTextTxn *txn;
+          result = CreateTxnForDeleteCharacter(priorNodeAsText, length,
+                                               ePrevious, &txn);
+          if (NS_SUCCEEDED(result)) {
+            aTxn->AppendChild(txn);
+            NS_RELEASE(txn);
+          }
+        }
+        else
+        { // XXX: can you have an empty text node?  If so, what do you do?
+          printf("ERROR: found a text node with 0 characters\n");
+          result = NS_ERROR_UNEXPECTED;
+        }
+      }
+      else
+      { // priorNode is not text, so tell it's parent to delete it
+        DeleteElementTxn *txn;
+        result = CreateTxnForDeleteElement(priorNode, &txn);
+        if (NS_SUCCEEDED(result)) {
+          aTxn->AppendChild(txn);
+          NS_RELEASE(txn);
+        }
+      }
+    }
+  }
+  else if ((nsIEditor::eNext==aAction) && (PR_TRUE==isLast))
+  { // we're deleting from the end of the node.  Delete the first thing to our right
+    nsCOMPtr<nsIDOMNode> nextNode;
+    result = GetNextNode(node, PR_TRUE, address_of(nextNode));
+    if ((NS_SUCCEEDED(result)) && nextNode)
+    { // there is a nextNode, so delete it's first child (if text content, delete the first char.)
+      // if it has no children, delete it
+      nsCOMPtr<nsIDOMCharacterData> nextNodeAsText = do_QueryInterface(nextNode);
+      if (nextNodeAsText)
+      {
+        PRUint32 length=0;
+        nextNodeAsText->GetLength(&length);
+        if (0<length)
+        {
+          DeleteTextTxn *txn;
+          result = CreateTxnForDeleteCharacter(nextNodeAsText, 0, eNext, &txn);
+          if (NS_SUCCEEDED(result)) {
+            aTxn->AppendChild(txn);
+            NS_RELEASE(txn);
+          }
+        }
+        else
+        { // XXX: can you have an empty text node?  If so, what do you do?
+          printf("ERROR: found a text node with 0 characters\n");
+          result = NS_ERROR_UNEXPECTED;
+        }
+      }
+      else
+      { // nextNode is not text, so tell it's parent to delete it
+        DeleteElementTxn *txn;
+        result = CreateTxnForDeleteElement(nextNode, &txn);
+        if (NS_SUCCEEDED(result)) {
+          aTxn->AppendChild(txn);
+          NS_RELEASE(txn);
+        }
+      }
+    }
+  }
+  else
+  {
+    if (nodeAsText)
+    { // we have text, so delete a char at the proper offset
+      DeleteTextTxn *txn;
+      result = CreateTxnForDeleteCharacter(nodeAsText, offset, aAction, &txn);
+      if (NS_SUCCEEDED(result)) {
+        aTxn->AppendChild(txn);
+        NS_RELEASE(txn);
+      }
+    }
+    else
+    { // we're either deleting a node or some text, need to dig into the next/prev node to find out
+      nsCOMPtr<nsIDOMNode> selectedNode;
+      if (ePrevious==aAction)
+      {
+        result = GetPriorNode(node, offset, PR_TRUE, address_of(selectedNode));
+      }
+      else if (eNext==aAction)
+      {
+        result = GetNextNode(node, offset, PR_TRUE, address_of(selectedNode));
+      }
+      if (NS_FAILED(result)) { return result; }
+      if (selectedNode) 
+      {
+        nsCOMPtr<nsIDOMCharacterData> selectedNodeAsText =
+                                             do_QueryInterface(selectedNode);
+        if (selectedNodeAsText)
+        { // we are deleting from a text node, so do a text deletion
+          PRUint32 position = 0;    // default for forward delete
+          if (ePrevious==aAction)
+          {
+            selectedNodeAsText->GetLength(&position);
+          }
+          DeleteTextTxn *delTextTxn;
+          result = CreateTxnForDeleteCharacter(selectedNodeAsText, position,
+                                               aAction, &delTextTxn);
+          if (NS_FAILED(result))  { return result; }
+          if (!delTextTxn) { return NS_ERROR_NULL_POINTER; }
+          aTxn->AppendChild(delTextTxn);
+          NS_RELEASE(delTextTxn);
+        }
+        else
+        {
+          DeleteElementTxn *delElementTxn;
+          result = CreateTxnForDeleteElement(selectedNode, &delElementTxn);
+          if (NS_FAILED(result))  { return result; }
+          if (!delElementTxn) { return NS_ERROR_NULL_POINTER; }
+          aTxn->AppendChild(delElementTxn);
+          NS_RELEASE(delElementTxn);
+        }
+      }
+    }
+  }
+  return result;
+}
+
 
 
 //SLS It's not clear who calls this function.  It is accessible from JavaScript.
