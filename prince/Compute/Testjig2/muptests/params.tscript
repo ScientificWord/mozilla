@@ -1152,7 +1152,7 @@ Client ID   1
 Engine      MuPAD
 Command ID	Plot Function 2d
   <graph xmlns="http://www.sciword.com/namespaces/sciword">
-    <graphSpec ImageFile="C:/Temp/comptest.png">
+    <graphSpec ImageFile="/tmp/comptest.png">
       <plot Dimension="2" PlotType="rectangular">
        <Expression>
         <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
@@ -1177,7 +1177,7 @@ Command ID	Plot Function 2d
        <ZPts>       <math><mrow><mn>100</mn></mrow></math> </ZPts>
       </plot>
     </graphSpec>
-    <img src="file://C:/Temp/comptest.png" alt="Generated Plot" msigraph="true"/>
+    <img src="file:///tmp/comptest.png" alt="Generated Plot" msigraph="true"/>
   </graph>
 End of test
 
@@ -1188,7 +1188,7 @@ Client ID   1
 Engine      MuPAD
 Command ID	Plot Function 3d
   <graph xmlns="http://www.sciword.com/namespaces/sciword">
-    <graphSpec ImageFile="C:/Temp/comptest3d.png">
+    <graphSpec ImageFile="/tmp/comptest3d.png">
       <plot Dimension="3" PlotType="rectangular">
        <Expression>
         <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
@@ -1229,7 +1229,7 @@ Command ID	Plot Function 3d
        <ZPts>       <math><mrow><mn>15</mn></mrow></math> </ZPts>
       </plot>
     </graphSpec>
-    <img src="file://C:/Temp/comptest3d.png" alt="Generated Plot" msigraph="true"/>
+    <img src="file:///tmp/comptest3d.png" alt="Generated Plot" msigraph="true"/>
   </graph>
 End of test
 
