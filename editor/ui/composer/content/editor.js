@@ -371,7 +371,7 @@ var gEditorDocumentObserver =
             case nsIEditingSession.eEditorErrorCantEditMimeType:
               errorStringId = "CantEditMimeTypeMsg";
               break;
-            case nsIEditingSession.eEditorErrorUnkown:
+            case nsIEditingSession.eEditorErrorUnknown:
               errorStringId = "CantEditDocumentMsg";
               break;
             // Note that for "eEditorErrorFileNotFound, 
@@ -2077,7 +2077,7 @@ function UpdateWindowTitle()
       SaveRecentFilesPrefs();
     }
     // Set window title with " - Composer" appended
-    xulWin = document.documentElement;
+    var xulWin = document.documentElement;
     document.title = windowTitle + xulWin.getAttribute("titlemenuseparator") + 
                    xulWin.getAttribute("titlemodifier");
   } catch (e) { dump(e); }

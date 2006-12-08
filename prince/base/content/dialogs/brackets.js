@@ -7,8 +7,8 @@ const cssBackgroundColorStr = "background-color";
 const emptyElementStr=" ";
 //const colorStyle = cssColorStr + ": ";
 
-const mmlns    = "http://www.w3.org/1998/Math/MathML";
-const xhtmlns  = "http://www.w3.org/1999/xhtml";
+//const mmlns    = "http://www.w3.org/1998/Math/MathML";
+//const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
 var customMathColor;
 
@@ -17,7 +17,9 @@ var data;
 // dialog initialization code
 function Startup()
 {
-  var editor = GetCurrentEditor();
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
+//  var editor = GetCurrentEditor();
   if (!editor) {
     window.close();
     return;
@@ -139,8 +141,21 @@ function InitDialog()
 
 function drawSample(sampleControl)
 {
-  document.getElementById("leftBracketSample").textContent = gDialog.LeftBracketGroup.valueStr;
+//  document.getElementById("leftBracketSample").textContent = gDialog.LeftBracketGroup.valueStr;
+//  document.getElementById("rightBracketSample").textContent = gDialog.RightBracketGroup.valueStr;
+  var leftBrackSamp = document.getElementById("leftBracketSample");
+  var leftText = document.createTextNode(gDialog.LeftBracketGroup.valueStr);
+  var n = leftBrackSamp.childNodes.length;
+  for (var i = n-1; i >= 0; --i)
+    leftBrackSamp.removeChild(leftBrackSamp.childNodes[i]);
+  leftBrackSamp.appendChild(leftText);
   document.getElementById("rightBracketSample").textContent = gDialog.RightBracketGroup.valueStr;
+  var rightBrackSamp = document.getElementById("rightBracketSample");
+  var rightText = document.createTextNode(gDialog.RightBracketGroup.valueStr);
+  n = rightBrackSamp.childNodes.length;
+  for (var i = n-1; i >= 0; --i)
+    rightBrackSamp.removeChild(rightBrackSamp.childNodes[i]);
+  rightBrackSamp.appendChild(rightText);
 //  var opening = document.createElementNS(mmlns, "mo");
 //  opening.setAttribute("form", "prefix");
 //  opening.setAttribute("fence", "true");
@@ -191,8 +206,36 @@ function onAccept()
     }
   }
 
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var theWindow = window.opener;
+  if (!theWindow || !("insertfence" in theWindow))
+  {
+////Logging stuff only
+//    var logStr = "window.opener is [";
+//    if (window.opener)
+//    {
+//      if (window.opener.name)
+//        logStr += window.opener.name;
+//      else if (window.opener.document)
+//      {
+//        if (window.opener.document.localName)
+//          logStr += "document: " + window.opener.document.localName;
+//        else if (window.opener.document.documentElement)
+//          logStr += "document element: " + window.opener.document.documentElement.nodeName;
+//        else
+//          logStr += "Anonymous document";
+//      }
+//      else
+//        logstr += "Anonymous window (without document)";
+//    }
+//    logStr += "]";
+//    msiKludgeLogString(logStr);
+//End logging stuff
+    theWindow = msiGetTopLevelWindow();
+  }
+  theWindow.insertfence(data.leftBracket, data.rightBracket, data.separator, editorElement);
   SaveWindowLocation();
-  return true;
+  return false;
 }
 
 function onCancel()

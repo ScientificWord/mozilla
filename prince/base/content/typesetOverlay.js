@@ -1,10 +1,33 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
 var gBibChoice = "manual";  //a kludge - must get hooked up to editor to really work
+var gBibItemList = ["bibItem1", "bibItem2", "journalBibEntry", "bookBibEntry"];
 
 function SetupMSITypesetMenuCommands()
 {
   var commandTable = GetComposerCommandTable();
+  
+  //dump("Registering msi math menu commands\n");
+  commandTable.registerCommand("cmd_MSIfrontMatterCmd",                 msiFrontMatter);
+  commandTable.registerCommand("cmd_MSIpreambleCmd",                    msiPreamble);
+  commandTable.registerCommand("cmd_MSIbibChoiceCmd",                   msiBibChoice);
+  commandTable.registerCommand("cmd_MSItypesetOptionsAndPackagesCmd",   msiTypesetOptionsAndPackages);
+  commandTable.registerCommand("cmd_MSItypesetOutputChoiceCmd",         msiTypesetOutputChoice);
+  commandTable.registerCommand("cmd_MSItypesetPreviewCmd",              msiTypesetPreview);
+  commandTable.registerCommand("cmd_MSItypesetPrintCmd",                msiTypesetPrint);
+  commandTable.registerCommand("cmd_MSItypesetCompileCmd",              msiTypesetCompile);
+  commandTable.registerCommand("cmd_MSItypesetPDFPreviewCmd",           msiTypesetPDFPreview);
+  commandTable.registerCommand("cmd_MSItypesetPDFPrintCmd",             msiTypesetPDFPrint);
+  commandTable.registerCommand("cmd_MSItypesetPDFCompileCmd",           msiTypesetPDFCompile);
+  commandTable.registerCommand("cmd_MSItypesetGenSettingsCmd",          msiTypesetGenSettings);
+  commandTable.registerCommand("cmd_MSItypesetExpertSettingsCmd",       msiTypesetExpertSettings);
+  commandTable.registerCommand("cmd_MSIrunBibTeXCmd",                   msiRunBibTeX);
+  commandTable.registerCommand("cmd_MSIrunMakeIndexCmd",                msiRunMakeIndex);
+}
+
+function msiSetupMSITypesetMenuCommands(editorElement)
+{
+  var commandTable = msiGetComposerCommandTable(editorElement);
   
   //dump("Registering msi math menu commands\n");
   commandTable.registerCommand("cmd_MSIfrontMatterCmd",                 msiFrontMatter);
@@ -36,12 +59,34 @@ function SetupMSITypesetInsertMenuCommands()
   commandTable.registerCommand("cmd_MSIinsertSubdocumentCmd",				    msiInsertSubdocument);
 }
 
+function msiSetupMSITypesetInsertMenuCommands(editorElement)
+{
+  var commandTable = msiGetComposerCommandTable(editorElement);
+
+  commandTable.registerCommand("cmd_MSIinsertIndexEntryCmd",            msiInsertIndexEntry);
+  commandTable.registerCommand("cmd_MSIinsertCrossReferenceCmd",	      msiInsertCrossReference);
+  commandTable.registerCommand("cmd_MSIinsertCitationCmd",					    msiInsertCitation);
+  commandTable.registerCommand("cmd_MSIinsertBibliographyCmd",			    msiInsertBibliography);
+  commandTable.registerCommand("cmd_MSIinsertTeXFieldCmd",					    msiInsertTeXField);
+  commandTable.registerCommand("cmd_MSIinsertSubdocumentCmd",				    msiInsertSubdocument);
+}
+
 function goUpdateMSITypesetMenuItems(commandset)
 {
   return;  //rwa to do
 }
 
+function msiGoUpdateMSITypesetMenuItems(commandset, editorElement)
+{
+  return;  //rwa to do
+}
+
 function goUpdateMSITypesetInsertMenuItems(commandset)
+{
+  return;  //rwa to do
+}
+
+function msiGoUpdateMSITypesetInsertMenuItems(commandset, editorElement)
 {
   return;  //rwa to do
 }
@@ -62,7 +107,8 @@ function doParamCommand(commandID, newValue)
   var commandNode = document.getElementById(commandID);
   if (commandNode)
       commandNode.setAttribute("value", newValue);
-  gContentWindow.focus();   // needed for command dispatch to work
+  msiGetActiveEditorElement(window).contentWindow.focus();
+//  gContentWindow.focus();   // needed for command dispatch to work
 
   try
   {
@@ -70,7 +116,7 @@ function doParamCommand(commandID, newValue)
     if (!cmdParams) return;
 
     cmdParams.setStringValue("value", newValue);
-    goDoCommandParams(commandID, cmdParams);
+    msiGoDoCommandParams(commandID, cmdParams);
   } catch(e) { dump("error thrown in doParamCommand: "+e+"\n"); }
 }
 
@@ -88,7 +134,8 @@ var msiFrontMatter =
 
   doCommand: function(aCommand)
   {
-    doFrontMatterDlg();
+    var editorElement = msiGetActiveEditorElement();
+    doFrontMatterDlg(editorElement, this);
   }
 };
 
@@ -364,7 +411,8 @@ var msiInsertCitation =
 
   doCommand: function(aCommand)
   {
-    doInsertCitation();
+    var editorElement = msiGetActiveEditorElement();
+    doInsertCitation(editorElement, this);
   }
 };
 
@@ -419,9 +467,18 @@ var msiInsertSubdocument =
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
-function doFrontMatterDlg()
+function doFrontMatterDlg(editorElement, commandHandler)
 {
-  alert("Front Matter Dialog not implemented!");
+  var frontMatterData = new Object();
+  var frontMatterFrag = getFrontMatterDocumentFragment(editorElement.contentDocument);
+  var serializer = Components.classes["@mozilla.org/xmlextras/xmlserializer;1"]
+                               .createInstance(Components.interfaces.nsIDOMSerializer);
+  frontMatterData.frontMatterText = serializer.serializeToString(frontMatterFrag);
+  if (!frontMatterData.frontMatterText.length)
+    frontMatterData.frontMatterText = "<p>Just a paragraph.</p>";
+  var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetFrontMatter.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                                              editorElement, "cmd_MSIfrontMatterCmd", commandHandler, frontMatterData);
+//  alert("Front Matter Dialog not implemented!");
 }
 
 function doPreambleDlg()
@@ -551,7 +608,7 @@ function doInsertCrossReference()
   alert("Insert cross reference not implemented!");
 }
 
-function doInsertCitation()
+function doInsertCitation(editorElement, command, commandHandler)
 {
   if (gBibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
   {
@@ -560,14 +617,46 @@ function doInsertCitation()
     bibCiteData.key = "";  //a string
     bibCiteData.remark = "";  //this should become arbitrary markup - a Document Fragment perhaps?
     bibCiteData.bBibEntryOnly = false;
-    window.openDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "chrome,close,titlebar,modal", bibCiteData);
-    if (!bibCiteData.Cancel)
-    {
-      alert("BibTeX Citation Dialog returned key: [" + bibCiteData.key + "] from file [" + bibCiteData.databaseFile + "], remark: [" + bibCiteData.remark + "]; needs to be hooked up to do something!");
-    }
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "cmd_MSIinsertCitationCmd", commandHandler, bibCiteData);
+//    window.openDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "chrome,close,titlebar,modal", bibCiteData);
+//    if (!bibCiteData.Cancel)
+//    {
+//      alert("BibTeX Citation Dialog returned key: [" + bibCiteData.key + "] from file [" + bibCiteData.databaseFile + "], remark: [" + bibCiteData.remark + "]; needs to be hooked up to do something!");
+//    }
   }
   else
-    alert("Insert citation not implemented!");
+  {
+    var manualCiteData = new Object();
+    manualCiteData.key = "";  //a string
+    manualCiteData.remark = "";  //this should become arbitrary markup - a Document Fragment perhaps?
+    manualCiteData.keyList = new Array();
+    var editor = msiGetEditor(editorElement);
+    if (editor)
+      manualCiteData.keyList = manualCiteData.keyList.concat(getEditorBibItemList(editor));
+
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                           editorElement, "cmd_MSIinsertCitationCmd", commandHandler, manualCiteData);
+//    window.openDialog("chrome://editor/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,modal", manualCiteData);
+//    if (!manualCiteData.Cancel)
+//    {
+//      alert("Manual Citation Dialog returned key: [" + manualCiteData.key + "], remark: [" + manualCiteData.remark + "]; needs to be hooked up to do something!");
+//      if (editor)
+//        updateEditorBibItemList(editor, manualCiteData.keyList);
+//    }
+  }
+}
+
+function getEditorBibItemList(editor)
+{
+  return gBibItemList;
+}
+
+//These function, and the variable "gBibItemList" above,  are solely artificial, to allow simulating the behavior of an 
+//editor that would traverse its paragraphs looking for bibliography items. We'll clean this up shortly.
+function updateEditorBibItemList(editor, newList)
+{
+  gBibItemList = unionArrayWith(gBibItemList, newList);
 }
 
 function doInsertBibliography()
@@ -590,4 +679,78 @@ function doInsertTeXField()
 function doInsertSubdocument()
 {
   alert("Insert subdocument not implemented!");
+}
+
+
+//This list needs to be variable depending on the document - have to have "isFrontMatterTag()" available as query on
+//tags.
+var gFrontMatterTags = ["author", "title", "makeTitle", "makeTOC"];
+
+function nodeIsFrontMatterNode(theNode)
+{
+  for (var i = 0; i < gFrontMatterTags.length; ++i)
+  {
+    if (theNode.nodeName.toLowerCase() == "gFrontMatterTags[i]")
+      return NodeFilter.FILTER_ACCEPT;
+  }
+  return NodeFilter.FILTER_SKIP;
+}
+
+function getFrontMatterDocumentFragment(theDocument)
+{
+  var docFrag = theDocument.createDocumentFragment();
+  var namespaceStr = "sw:";
+
+  var namespaceStr = "sw:";
+  var currFrontMatterWalker = theDocument.createTreeWalker(theDocument.documentElement, NodeFilter.SHOW_ELEMENT, nodeIsFrontMatterNode, true);
+  if (currFrontMatterWalker)
+  {
+    var nextNode = currFrontMatterWalker.nextNode();
+    while (nextNode)
+    {
+      docFrag.appendChild(nextNode.cloneNode(true));
+      nextNode = currFrontMatterWalker.nextNode();
+    }
+  }
+  return docFrag;
+}
+
+function insertFrontMatter(editorElement, frontMatterData)
+{
+  var parser = new DOMParser;
+  var frontMatterDoc = parser.parseFromString(frontMatterData.frontMatterText, "text/xml");
+  var namespaceStr = "sw:";
+  var editor = msiGetEditor(editorElement);
+  var currFrontMatterWalker = editor.document.createTreeWalker(editor.document.documentElement, NodeFilter.SHOW_ELEMENT, nodeIsFrontMatterNode, true);
+                                                
+  var firstNode = null;
+  if (currFrontMatterWalker)
+  {
+    var nextNode = currFrontMatterWalker.nextNode();
+    firstNode = nextNode;
+    nextNode = currFrontMatterWalker.nextNode();
+    while (nextNode)
+    {
+      var tmp = currFrontMatterWalker.nextNode();
+      nextNode.parentNode.removeChild(nextNode);
+      nextNode = tmp;
+    }
+  }
+  if (!firstNode)
+  {
+    var docBody = editor.document.getElementsByTagNameNS(namespaceStr, "docbody");
+    if (!docBody)
+      docBody = editor.document.getElementsByTagName("body");
+    if (!docBody)
+      docBody = editor.document.getElementsByTagName("BODY");
+    if (docBody.length > 0)
+      firstNode = docBody[0].firstChild;
+  }
+  if (!firstNode)
+    firstNode = editor.document.documentElement.firstChild;
+  var newNodes = frontMatterDoc.documentElement.childNodes;
+  for (var i = 0; i < newNodes.length; ++i)
+  {
+    firstNode.parentNode.insertBefore(newNodes[i].cloneNode(true), firstNode);
+  }
 }
