@@ -5,7 +5,8 @@ var msiEvaluateCommand =
 {
   isCommandEnabled: function(aCommand, editorElement)
   {
-    return (IsDocumentEditable() && IsEditingRenderedHTML());
+    var theEditorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement));
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
@@ -13,7 +14,8 @@ var msiEvaluateCommand =
 
   doCommand: function(aCommand, editorElement)
   {
-    doComputeCommand(aCommand);
+    var theEditorElement = msiGetActiveEditorElement();
+    doComputeCommand(aCommand, theEditorElement);
   }
 };
 
@@ -21,7 +23,8 @@ var msiDefineCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return (IsDocumentEditable() && IsEditingRenderedHTML());
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
@@ -29,7 +32,8 @@ var msiDefineCommand =
 
   doCommand: function(aCommand, editorElement)
   {
-    doComputeCommand(aCommand);
+    var theEditorElement = msiGetActiveEditorElement();
+    doComputeCommand(aCommand, theEditorElement);
   }
 };
 
@@ -128,6 +132,19 @@ function SetupMSIComputeMenuCommands()
 {
   var commandTable = GetComposerCommandTable();
   //dump("Registering msi compute menu commands\n");
+  // note hokey use of shared command
+  doSetupMSIComputeMenuCommands(commandTable);
+}
+
+function msiSetupMSIComputeMenuCommands(editorElement)
+{
+  var commandTable = msiGetComposerCommandTable(editorElement);
+  //dump("Registering msi compute menu commands\n");
+  doSetupMSIComputeMenuCommands(commandTable);
+}
+
+function doSetupMSIComputeMenuCommands(commandTable)
+{
   // note hokey use of shared command
   commandTable.registerCommand("cmd_MSIComputeEval",             msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputeEvalNum",          msiEvaluateCommand);      
@@ -315,6 +332,22 @@ function goUpdateMSIcomputeMenuItems(commandset)
 } } }
 
 
+function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement)
+{
+  for (var i = 0; i < commandset.childNodes.length; i++)
+  {
+    var commandNode = commandset.childNodes[i];
+    var commandID = commandNode.id;
+    if (commandID)
+    {
+      msiGoUpdateCommand(commandID, editorElement);
+      if (commandNode.hasAttribute("state"))
+        msiGoUpdateCommandState(commandID, editorElement);
+    } 
+  } 
+}
+
+
 const htmlns   = "http://www.w3.org/1999/xhtml";
 const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
@@ -345,14 +378,18 @@ function GetComputeString(name)
 
 
 // used by computeDebug.js.  Need to consider scripting interface in more detail.
-function doComputeEvaluate(math)
+function doComputeEvaluate(math, editorElement)
 {
-  doEvalComputation(math,GetCurrentEngine().Evaluate,"<mo>=</mo>","evaluate");
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  doEvalComputation(math,GetCurrentEngine().Evaluate,"<mo>=</mo>","evaluate", editorElement);
 }
 
-function doComputeCommand(cmd)
+function doComputeCommand(cmd, editorElement)
 {
-  var selection = GetCurrentEditor().selection;
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var selection = msiGetEditor(editorElement).selection;
   if (selection)
   {
     var element = findmathparent(selection.focusNode);
@@ -367,362 +404,362 @@ function doComputeCommand(cmd)
     var eng = GetCurrentEngine();
     switch (cmd) {
     case "cmd_compute_Evaluate":
-      doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate");
+      doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate", editorElement);
       break;
     case "cmd_compute_EvaluateNumeric":
-      doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric");
+      doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric", editorElement);
       break;
     case "cmd_compute_Simplify":
-      doEvalComputation(element,eng.Simplify,"<mo>=</mo>","simplify");
+      doEvalComputation(element,eng.Simplify,"<mo>=</mo>","simplify", editorElement);
       break;
     case "cmd_compute_CombineExponentials":
-      doEvalComputation(element,eng.Combine_Exponentials,"<mo>=</mo>","combine exp");
+      doEvalComputation(element,eng.Combine_Exponentials,"<mo>=</mo>","combine exp", editorElement);
       break;
     case "cmd_compute_CombineLogs":
-      doEvalComputation(element,eng.Combine_Logs,"<mo>=</mo>","combine log");
+      doEvalComputation(element,eng.Combine_Logs,"<mo>=</mo>","combine log", editorElement);
       break;
     case "cmd_compute_CombinePowers":
-      doEvalComputation(element,eng.Combine_Powers,"<mo>=</mo>","combine pow");
+      doEvalComputation(element,eng.Combine_Powers,"<mo>=</mo>","combine pow", editorElement);
       break;
     case "cmd_compute_CombineTrig":
-      doEvalComputation(element,eng.Combine_Trig_Functions,"<mo>=</mo>","combine trig");
+      doEvalComputation(element,eng.Combine_Trig_Functions,"<mo>=</mo>","combine trig", editorElement);
       break;
     case "cmd_compute_CombineArctan":
-      doEvalComputation(element,eng.Combine_Arctan,"<mo>=</mo>","combine arctan");
+      doEvalComputation(element,eng.Combine_Arctan,"<mo>=</mo>","combine arctan", editorElement);
       break;
     case "cmd_compute_CombineHyperbolics":
-      doEvalComputation(element,eng.Combine_Hyperbolic_Functions,"<mo>=</mo>","combine hyperbolic");
+      doEvalComputation(element,eng.Combine_Hyperbolic_Functions,"<mo>=</mo>","combine hyperbolic", editorElement);
       break;
     case "cmd_compute_Expand":
-      doEvalComputation(element,eng.Expand,"<mo>=</mo>","expand");
+      doEvalComputation(element,eng.Expand,"<mo>=</mo>","expand", editorElement);
       break;
     case "cmd_compute_Factor":
-      doEvalComputation(element,eng.Factor,"<mo>=</mo>","factor");
+      doEvalComputation(element,eng.Factor,"<mo>=</mo>","factor", editorElement);
       break;
     case "cmd_compute_RewriteRational":
-      doEvalComputation(element,eng.Rewrite_Rational,"<mo>=</mo>","rewrite rational");
+      doEvalComputation(element,eng.Rewrite_Rational,"<mo>=</mo>","rewrite rational", editorElement);
       break;
     case "cmd_compute_RewriteFloat":
-      doEvalComputation(element,eng.Rewrite_Float,"<mo>=</mo>","rewrite float");
+      doEvalComputation(element,eng.Rewrite_Float,"<mo>=</mo>","rewrite float", editorElement);
       break;
     case "cmd_compute_RewriteMixed":
-      doEvalComputation(element,eng.Rewrite_Mixed,"<mo>=</mo>","rewrite mixed");
+      doEvalComputation(element,eng.Rewrite_Mixed,"<mo>=</mo>","rewrite mixed", editorElement);
       break;
     case "cmd_compute_RewriteExponential":
-      doEvalComputation(element,eng.Rewrite_Exponential,"<mo>=</mo>","rewrite exponential");
+      doEvalComputation(element,eng.Rewrite_Exponential,"<mo>=</mo>","rewrite exponential", editorElement);
       break;
     case "cmd_compute_RewriteFactorial":
-      doEvalComputation(element,eng.Rewrite_Factorial,"<mo>=</mo>","rewrite factorial");
+      doEvalComputation(element,eng.Rewrite_Factorial,"<mo>=</mo>","rewrite factorial", editorElement);
       break;
     case "cmd_compute_RewriteGamma":
-      doEvalComputation(element,eng.Rewrite_Gamma,"<mo>=</mo>","rewrite gamma");
+      doEvalComputation(element,eng.Rewrite_Gamma,"<mo>=</mo>","rewrite gamma", editorElement);
       break;
     case "cmd_compute_RewriteLogarithm":
-      doEvalComputation(element,eng.Rewrite_Logarithm,"<mo>=</mo>","rewrite logarithm");
+      doEvalComputation(element,eng.Rewrite_Logarithm,"<mo>=</mo>","rewrite logarithm", editorElement);
       break;
     case "cmd_compute_RewriteSinAndCos":
-      doEvalComputation(element,eng.Rewrite_sin_and_cos,"<mo>=</mo>","rewrite sincos");
+      doEvalComputation(element,eng.Rewrite_sin_and_cos,"<mo>=</mo>","rewrite sincos", editorElement);
       break;
     case "cmd_compute_RewriteSinhAndCosh":
-      doEvalComputation(element,eng.Rewrite_sinh_and_cosh,"<mo>=</mo>","rewrite sinhcosh");
+      doEvalComputation(element,eng.Rewrite_sinh_and_cosh,"<mo>=</mo>","rewrite sinhcosh", editorElement);
       break;
     case "cmd_compute_RewriteSin":
-      doEvalComputation(element,eng.Rewrite_sin,"<mo>=</mo>","rewrite sin");
+      doEvalComputation(element,eng.Rewrite_sin,"<mo>=</mo>","rewrite sin", editorElement);
       break;
     case "cmd_compute_RewriteCos":
-      doEvalComputation(element,eng.Rewrite_cos,"<mo>=</mo>","rewrite cos");
+      doEvalComputation(element,eng.Rewrite_cos,"<mo>=</mo>","rewrite cos", editorElement);
       break;
     case "cmd_compute_RewriteTan":
-      doEvalComputation(element,eng.Rewrite_tan,"<mo>=</mo>","rewrite tan");
+      doEvalComputation(element,eng.Rewrite_tan,"<mo>=</mo>","rewrite tan", editorElement);
       break;
     case "cmd_compute_RewriteArcsin":
-      doEvalComputation(element,eng.Rewrite_arcsin,"<mo>=</mo>","rewrite arcsin");
+      doEvalComputation(element,eng.Rewrite_arcsin,"<mo>=</mo>","rewrite arcsin", editorElement);
       break;
     case "cmd_compute_RewriteArccos":
-      doEvalComputation(element,eng.Rewrite_arccos,"<mo>=</mo>","rewrite arccos");
+      doEvalComputation(element,eng.Rewrite_arccos,"<mo>=</mo>","rewrite arccos", editorElement);
       break;
     case "cmd_compute_RewriteArctan":
-      doEvalComputation(element,eng.Rewrite_arctan,"<mo>=</mo>","rewrite arctan");
+      doEvalComputation(element,eng.Rewrite_arctan,"<mo>=</mo>","rewrite arctan", editorElement);
       break;
     case "cmd_compute_RewriteArccot":
-      doEvalComputation(element,eng.Rewrite_arccot,"<mo>=</mo>","rewrite arccot");
+      doEvalComputation(element,eng.Rewrite_arccot,"<mo>=</mo>","rewrite arccot", editorElement);
       break;
     case "cmd_compute_RewritePolar":
-      doEvalComputation(element,eng.Rewrite_Polar,"<mo>=</mo>","rewrite polar");
+      doEvalComputation(element,eng.Rewrite_Polar,"<mo>=</mo>","rewrite polar", editorElement);
       break;
     case "cmd_compute_RewriteRectangular":
-      doEvalComputation(element,eng.Rewrite_Rectangular,"<mo>=</mo>","rewrite rectangular");
+      doEvalComputation(element,eng.Rewrite_Rectangular,"<mo>=</mo>","rewrite rectangular", editorElement);
       break;
     case "cmd_compute_RewriteNormal":
-      doEvalComputation(element,eng.Rewrite_Normal_Form,"<mo>=</mo>","rewrite normal");
+      doEvalComputation(element,eng.Rewrite_Normal_Form,"<mo>=</mo>","rewrite normal", editorElement);
       break;
     case "cmd_compute_RewriteEquationsAsMatrix":
-      doVarsComputation(element,", Corresponding matrix: ",eng.equationsAsMatrix,GetComputeString("EqnsAsMatrix.title"));
+      doVarsComputation(element,", Corresponding matrix: ",eng.equationsAsMatrix,GetComputeString("EqnsAsMatrix.title"), editorElement);
       break;
     case "cmd_compute_RewriteMatrixAsEquations":
-      doVarsComputation(element,", Corresponding equations: ",eng.matrixAsEquations,GetComputeString("MatrixAsEqns.title"));
+      doVarsComputation(element,", Corresponding equations: ",eng.matrixAsEquations,GetComputeString("MatrixAsEqns.title"), editorElement);
       break;
     case "cmd_compute_CheckEquality":
-      doLabeledComputation(element,eng.Check_Equality,"CheckEquality.fmt");
+      doLabeledComputation(element,eng.Check_Equality,"CheckEquality.fmt", editorElement);
       break;
     case "cmd_compute_SolveExact":
-      doComputeSolveExact(element);
+      doComputeSolveExact(element, editorElement);
       break;
     case "cmd_compute_SolveNumeric":
-      doComputeSolveNumeric(element);
+      doComputeSolveNumeric(element, editorElement);
       break;
     case "cmd_compute_SolveRecursion":
-      doComputeSolveRecursion(element);
+      doComputeSolveRecursion(element, editorElement);
       break;
     case "cmd_compute_Collect":
-      doVarsEvalComputation(element,eng.collect,"<mo>=</mo>",GetComputeString("Collect.title"),"");
+      doVarsEvalComputation(element,eng.collect,"<mo>=</mo>",GetComputeString("Collect.title"),"", editorElement);
       break;
     case "cmd_compute_Divide":
-      doComputeDivide(element);
+      doComputeDivide(element, editorElement);
       break;
     case "cmd_compute_PartialFractions":
-      doComputePartialFractions(element);
+      doComputePartialFractions(element, editorElement);
       break;
     case "cmd_compute_Roots":
-      doLabeledComputation(element,eng.Polynomial_Roots,"Roots.fmt");
+      doLabeledComputation(element,eng.Polynomial_Roots,"Roots.fmt", editorElement);
       break;
     case "cmd_compute_Sort":
-      doComputeSort(element);
+      doComputeSort(element, editorElement);
       break;
     case "cmd_compute_CompanionMatrix":
-      doComputeCompanionMatrix(element);
+      doComputeCompanionMatrix(element, editorElement);
       break;
     case "cmd_compute_ByParts":
-      doVarsEvalComputation(element,eng.byParts,"<mo>=</mo>",GetComputeString("ByParts.title"),GetComputeString("ByParts.remark"));
+      doVarsEvalComputation(element,eng.byParts,"<mo>=</mo>",GetComputeString("ByParts.title"),GetComputeString("ByParts.remark"), editorElement);
       break;
     case "cmd_compute_ChangeVariable":
-      doVarsEvalComputation(element,eng.changeVar,"<mo>=</mo>",GetComputeString("ChangeVar.title"),GetComputeString("ChangeVar.remark"));
+      doVarsEvalComputation(element,eng.changeVar,"<mo>=</mo>",GetComputeString("ChangeVar.title"),GetComputeString("ChangeVar.remark"), editorElement);
       break;
     case "cmd_compute_ApproxIntegral":
-      doComputeApproxIntegral(element);
+      doComputeApproxIntegral(element, editorElement);
       break;
     case "cmd_compute_ImplicitDiff":
-      doComputeImplicitDiff(element);
+      doComputeImplicitDiff(element, editorElement);
       break;
     case "cmd_compute_SolveODEExact":
-      doComputeSolveODE(element,"ODE.fmt",eng.solveODEExact,"ODE.title");
+      doComputeSolveODE(element,"ODE.fmt",eng.solveODEExact,"ODE.title", editorElement);
       break;
     case "cmd_compute_SolveODELaplace":
-      doComputeSolveODE(element,"ODELaplace.fmt",eng.solveODELaplace,"ODELaplace.title");
+      doComputeSolveODE(element,"ODELaplace.fmt",eng.solveODELaplace,"ODELaplace.title", editorElement);
       break;
     case "cmd_compute_SolveODENumeric":
-      doComputeSolveODE(element,"ODENumeric.fmt",eng.solveODENumeric,"ODENumeric.title");
+      doComputeSolveODE(element,"ODENumeric.fmt",eng.solveODENumeric,"ODENumeric.title", editorElement);
       break;
     case "cmd_compute_SolveODESeries":
-      doComputeSolveODESeries(element);
+      doComputeSolveODESeries(element, editorElement);
       break;
     case "cmd_compute_PowerSeries":
-      doComputePowerSeries(element);
+      doComputePowerSeries(element, editorElement);
       break;
     case "cmd_compute_Fourier":
-      doLabeledComputation(element,eng.Fourier_Transform,"Fourier.fmt");
+      doLabeledComputation(element,eng.Fourier_Transform,"Fourier.fmt", editorElement);
       break;
     case "cmd_compute_InverseFourier":
-      doLabeledComputation(element,eng.Inverse_Fourier_Transform,"InvFourier.fmt");
+      doLabeledComputation(element,eng.Inverse_Fourier_Transform,"InvFourier.fmt", editorElement);
       break;
     case "cmd_compute_Laplace":
-      doLabeledComputation(element,eng.Laplace_Transform,"Laplace.fmt");
+      doLabeledComputation(element,eng.Laplace_Transform,"Laplace.fmt", editorElement);
       break;
     case "cmd_compute_InverseLaplace":
-      doLabeledComputation(element,eng.Inverse_Laplace_Transform,"InvLaplace.fmt");
+      doLabeledComputation(element,eng.Inverse_Laplace_Transform,"InvLaplace.fmt", editorElement);
       break;
     case "cmd_compute_Gradient":
-      doLabeledComputation(element,eng.Gradient,"Gradient.fmt");
+      doLabeledComputation(element,eng.Gradient,"Gradient.fmt", editorElement);
       break;
     case "cmd_compute_Divergence":
-      doLabeledComputation(element,eng.Divergence,"Divergence.fmt");
+      doLabeledComputation(element,eng.Divergence,"Divergence.fmt", editorElement);
       break;
     case "cmd_compute_Curl":
-      doLabeledComputation(element,eng.Curl,"Curl.fmt");
+      doLabeledComputation(element,eng.Curl,"Curl.fmt", editorElement);
       break;
     case "cmd_compute_Laplacian":
-      doLabeledComputation(element,eng.Laplacian,"Laplacian.fmt");
+      doLabeledComputation(element,eng.Laplacian,"Laplacian.fmt", editorElement);
       break;
     case "cmd_compute_Jacobian":
-      doLabeledComputation(element,eng.Jacobian,"Jacobian.fmt");
+      doLabeledComputation(element,eng.Jacobian,"Jacobian.fmt", editorElement);
       break;
     case "cmd_compute_Hessian":
-      doLabeledComputation(element,eng.Hessian,"Hessian.fmt");
+      doLabeledComputation(element,eng.Hessian,"Hessian.fmt", editorElement);
       break;
     case "cmd_compute_Wronskian":
-      doComputeWronskian(element);
+      doComputeWronskian(element, editorElement);
       break;
     case "cmd_compute_ScalarPot":
-      doLabeledComputation(element,eng.Scalar_Potential,"ScalarPot.fmt");
+      doLabeledComputation(element,eng.Scalar_Potential,"ScalarPot.fmt", editorElement);
       break;
     case "cmd_compute_VectorPot":
-      doLabeledComputation(element,eng.Vector_Potential,"VectorPot.fmt");
+      doLabeledComputation(element,eng.Vector_Potential,"VectorPot.fmt", editorElement);
       break;
 
     case "cmd_MSIComputeAdjugate":  
-      doLabeledComputation(element,eng.Adjugate,"Adjugate.fmt");
+      doLabeledComputation(element,eng.Adjugate,"Adjugate.fmt", editorElement);
       break;
     case "cmd_MSIComputeCharPoly":
-      doComputeCharPoly(element);
+      doComputeCharPoly(element, editorElement);
       break;
     case "cmd_MSIComputeCholesky":      
-      doLabeledComputation(element,eng.Cholesky_Decomposition,"Cholesky.fmt");
+      doLabeledComputation(element,eng.Cholesky_Decomposition,"Cholesky.fmt", editorElement);
       break;
     case "cmd_MSIComputeColBasis":   
-      doLabeledComputation(element,eng.Column_Basis,"ColBasis.fmt");
+      doLabeledComputation(element,eng.Column_Basis,"ColBasis.fmt", editorElement);
       break;
     case "cmd_MSIComputeConcat":   
-      doLabeledComputation(element,eng.Concatenate,"Concat.fmt");
+      doLabeledComputation(element,eng.Concatenate,"Concat.fmt", editorElement);
       break;
     case "cmd_MSIComputeConditionNum":  
-      doLabeledComputation(element,eng.Condition_Number,"ConditionNum.fmt");
+      doLabeledComputation(element,eng.Condition_Number,"ConditionNum.fmt", editorElement);
       break;
     case "cmd_MSIComputeDefinitenessTests":  
-      doLabeledComputation(element,eng.Definiteness_Tests,"DefTest.fmt");
+      doLabeledComputation(element,eng.Definiteness_Tests,"DefTest.fmt", editorElement);
       break;
     case "cmd_MSIComputeDeterminant":  
-      doLabeledComputation(element,eng.Determinant,"Determinant.fmt");
+      doLabeledComputation(element,eng.Determinant,"Determinant.fmt", editorElement);
       break;
     case "cmd_MSIComputeEigenvalues":
-      doLabeledComputation(element,eng.Eigenvalues,"Eigenvalues.fmt");
+      doLabeledComputation(element,eng.Eigenvalues,"Eigenvalues.fmt", editorElement);
       break;
     case "cmd_MSIComputeEigenvectors":
       // formatting needs to be fixed
-      doLabeledComputation(element,eng.Eigenvectors,"Eigenvectors.fmt");
+      doLabeledComputation(element,eng.Eigenvectors,"Eigenvectors.fmt", editorElement);
       break;
     case "cmd_MSIComputeFFGE":
-      doLabeledComputation(element,eng.Fraction_Free_Gaussian_Elimination,"FFGaussElim.fmt");
+      doLabeledComputation(element,eng.Fraction_Free_Gaussian_Elimination,"FFGaussElim.fmt", editorElement);
       break;
     case "cmd_MSIComputeGaussElim":
-      doLabeledComputation(element,eng.Gaussian_Elimination,"GaussElim.fmt");
+      doLabeledComputation(element,eng.Gaussian_Elimination,"GaussElim.fmt", editorElement);
       break;
     case "cmd_MSIComputeHermite":  
-      doLabeledComputation(element,eng.Hermite_Normal_Form,"Hermite.fmt");
+      doLabeledComputation(element,eng.Hermite_Normal_Form,"Hermite.fmt", editorElement);
       break;
     case "cmd_MSIComputeHermitianTranspose":  
-      doLabeledComputation(element,eng.Hermitian_Transpose,"HermitianTr.fmt");
+      doLabeledComputation(element,eng.Hermitian_Transpose,"HermitianTr.fmt", editorElement);
       break;
     case "cmd_MSIComputeInverse":  
-      doLabeledComputation(element,eng.Inverse,"Inverse.fmt");
+      doLabeledComputation(element,eng.Inverse,"Inverse.fmt", editorElement);
       break;
     case "cmd_MSIComputeJordan":  
-      doLabeledComputation(element,eng.Jordan_Form,"Jordan.fmt");
+      doLabeledComputation(element,eng.Jordan_Form,"Jordan.fmt", editorElement);
       break;
     case "cmd_MSIComputeMap":  
-      doComputeMap(element);
+      doComputeMap(element, editorElement);
       break;
     case "cmd_MSIComputeMinPoly":
-      doComputeMinPoly(element);
+      doComputeMinPoly(element, editorElement);
       break;
     case "cmd_MSIComputeNorm":     
-      doLabeledComputation(element,eng.Norm,"Norm.fmt");
+      doLabeledComputation(element,eng.Norm,"Norm.fmt", editorElement);
       break;
     case "cmd_MSIComputeNullspaceBasis":   
-      doLabeledComputation(element,eng.Nullspace_Basis,"Nullspace.fmt");
+      doLabeledComputation(element,eng.Nullspace_Basis,"Nullspace.fmt", editorElement);
       break;
     case "cmd_MSIComputeOrthogonalityTest":  
-      doLabeledComputation(element,eng.Orthogonality_Test,"Orthogonality.fmt");
+      doLabeledComputation(element,eng.Orthogonality_Test,"Orthogonality.fmt", editorElement);
       break;
     case "cmd_MSIComputePermanent":  
-      doLabeledComputation(element,eng.Permanent,"Permanent.fmt");
+      doLabeledComputation(element,eng.Permanent,"Permanent.fmt", editorElement);
       break;
     case "cmd_MSIComputePLU":      
-      doLabeledComputation(element,eng.PLU_Decomposition,"PLU.fmt");
+      doLabeledComputation(element,eng.PLU_Decomposition,"PLU.fmt", editorElement);
       break;
     case "cmd_MSIComputeRank":  
-      doLabeledComputation(element,eng.Rank,"Rank.fmt");
+      doLabeledComputation(element,eng.Rank,"Rank.fmt", editorElement);
       break;
     case "cmd_MSIComputeRationalCanonical":  
-      doLabeledComputation(element,eng.Rational_Canonical_Form,"Rational.fmt");
+      doLabeledComputation(element,eng.Rational_Canonical_Form,"Rational.fmt", editorElement);
       break;
     case "cmd_MSIComputeRREF":
-      doLabeledComputation(element,eng.Reduced_Row_Echelon_Form,"RREchelonForm.fmt");
+      doLabeledComputation(element,eng.Reduced_Row_Echelon_Form,"RREchelonForm.fmt", editorElement);
       break;
     case "cmd_MSIComputeReshape":       
-      doComputeReshape(element);
+      doComputeReshape(element, editorElement);
       break;
     case "cmd_MSIComputeRowBasis":   
-      doLabeledComputation(element,eng.Row_Basis,"RowBasis.fmt");
+      doLabeledComputation(element,eng.Row_Basis,"RowBasis.fmt", editorElement);
       break;
     case "cmd_MSIComputeQR":       
-      doLabeledComputation(element,eng.QR_Decomposition,"QR.fmt");
+      doLabeledComputation(element,eng.QR_Decomposition,"QR.fmt", editorElement);
       break;
     case "cmd_MSIComputeSingularValues":      
-      doLabeledComputation(element,eng.Singular_Values,"Singular.fmt");
+      doLabeledComputation(element,eng.Singular_Values,"Singular.fmt", editorElement);
       break;
     case "cmd_MSIComputeSVD":      
-      doLabeledComputation(element,eng.SVD,"SVD.fmt");
+      doLabeledComputation(element,eng.SVD,"SVD.fmt", editorElement);
       break;
     case "cmd_MSIComputeSmith":    
-      doLabeledComputation(element,eng.Smith_Normal_Form,"Smith.fmt");
+      doLabeledComputation(element,eng.Smith_Normal_Form,"Smith.fmt", editorElement);
       break;
     case "cmd_MSIComputeSpectralRadius":    
-      doLabeledComputation(element,eng.Spectral_Radius,"SpectralRadius.fmt");
+      doLabeledComputation(element,eng.Spectral_Radius,"SpectralRadius.fmt", editorElement);
       break;
     case "cmd_MSIComputeStack":    
-      doLabeledComputation(element,eng.Stack,"Stack.fmt");
+      doLabeledComputation(element,eng.Stack,"Stack.fmt", editorElement);
       break;
     case "cmd_MSIComputeTrace":
-      doLabeledComputation(element,eng.Trace,"Trace.fmt");
+      doLabeledComputation(element,eng.Trace,"Trace.fmt", editorElement);
       break;
     case "cmd_MSIComputeTranspose":
-      doLabeledComputation(element,eng.Transpose,"Transpose.fmt");
+      doLabeledComputation(element,eng.Transpose,"Transpose.fmt", editorElement);
       break;
 
     case "cmd_compute_SimplexDual":
-      doLabeledComputation(element,eng.Simplex_Dual,"Dual.fmt");
+      doLabeledComputation(element,eng.Simplex_Dual,"Dual.fmt", editorElement);
       break;
     case "cmd_compute_SimplexFeasible":
-      doLabeledComputation(element,eng.Simplex_Feasible,"Feasible.fmt");
+      doLabeledComputation(element,eng.Simplex_Feasible,"Feasible.fmt", editorElement);
       break;
     case "cmd_compute_SimplexMaximize":
-      doLabeledComputation(element,eng.Simplex_Maximize,"Maximize.fmt");
+      doLabeledComputation(element,eng.Simplex_Maximize,"Maximize.fmt", editorElement);
       break;
     case "cmd_compute_SimplexMinimize":
-      doLabeledComputation(element,eng.Simplex_Minimize,"Minimize.fmt");
+      doLabeledComputation(element,eng.Simplex_Minimize,"Minimize.fmt", editorElement);
       break;
     case "cmd_compute_SimplexStandardize":
-      doLabeledComputation(element,eng.Simplex_Standardize,"Standardize.fmt");
+      doLabeledComputation(element,eng.Simplex_Standardize,"Standardize.fmt", editorElement);
       break;
 
     case "cmd_compute_FitCurve":
-      doComputeFitCurve(element);
+      doComputeFitCurve(element, editorElement);
       break;
     case "cmd_compute_Mean":
-      doLabeledComputation(element,eng.Mean,"Mean.fmt");
+      doLabeledComputation(element,eng.Mean,"Mean.fmt", editorElement);
       break;
     case "cmd_compute_Median":
-      doLabeledComputation(element,eng.Median,"Median.fmt");
+      doLabeledComputation(element,eng.Median,"Median.fmt", editorElement);
       break;
     case "cmd_compute_Mode":
-      doLabeledComputation(element,eng.Mode,"Mode.fmt");
+      doLabeledComputation(element,eng.Mode,"Mode.fmt", editorElement);
       break;
     case "cmd_compute_Correlation":
-      doLabeledComputation(element,eng.Correlation,"Correlation.fmt");
+      doLabeledComputation(element,eng.Correlation,"Correlation.fmt", editorElement);
       break;
     case "cmd_compute_Covariance":
-      doLabeledComputation(element,eng.Covariance,"Covariance.fmt");
+      doLabeledComputation(element,eng.Covariance,"Covariance.fmt", editorElement);
       break;
     case "cmd_compute_GeometricMean":
-      doLabeledComputation(element,eng.Geometric_Mean,"GeometricMean.fmt");
+      doLabeledComputation(element,eng.Geometric_Mean,"GeometricMean.fmt", editorElement);
       break;
     case "cmd_compute_HarmonicMean":
-      doLabeledComputation(element,eng.Harmonic_Mean,"HarmonicMean.fmt");
+      doLabeledComputation(element,eng.Harmonic_Mean,"HarmonicMean.fmt", editorElement);
       break;
     case "cmd_compute_MeanDeviation":
-      doLabeledComputation(element,eng.Mean_Deviation,"MeanDeviation.fmt");
+      doLabeledComputation(element,eng.Mean_Deviation,"MeanDeviation.fmt", editorElement);
       break;
     case "cmd_compute_Moment":
-      doComputeMoment(element);
+      doComputeMoment(element, editorElement);
       break;
     case "cmd_compute_Quantile":
-      doComputeQuantile(element);
+      doComputeQuantile(element, editorElement);
       break;
     case "cmd_compute_StandardDeviation":
-      doLabeledComputation(element,eng.Standard_Deviation,"StdDeviation.fmt");
+      doLabeledComputation(element,eng.Standard_Deviation,"StdDeviation.fmt", editorElement);
       break;
     case "cmd_compute_Variance":
-      doLabeledComputation(element,eng.Variance,"Variance.fmt");
+      doLabeledComputation(element,eng.Variance,"Variance.fmt", editorElement);
       break;
 
     case "cmd_compute_Plot2DRectangular":
@@ -834,42 +871,44 @@ function doComputeCommand(cmd)
       doComputePlot(element, 3, "vectorField", true);
       break;
     case "cmd_compute_Define":
-      doComputeDefine(element);
+      doComputeDefine(element, editorElement);
       break;
     case "cmd_compute_Undefine":
       doComputeUndefine(element);
       break;
     case "cmd_compute_Interpret":
-      doEvalComputation(element,eng.Interpret,"<mo>=</mo>","interpret");
+      doEvalComputation(element,eng.Interpret,"<mo>=</mo>","interpret", editorElement);
       break;
     case "cmd_compute_Fixup":
-      doFixupComputation(element,eng.Fixup,"<mo>=</mo>","fixup");
+      doFixupComputation(element,eng.Fixup,"<mo>=</mo>","fixup", editorElement);
       break;
     default:
       dump("Unknown compute command. (" + cmd + ")\n");
       return;
 } } }
 
-function doGlobalComputeCommand(cmd)
+function doGlobalComputeCommand(cmd, editorElement)
 {
+  if(!editorElement)
+    editorElement = msiGetActiveEditorElement();
   switch (cmd) {
   case "cmd_compute_Iterate":       
-    doComputeIterate();
+    doComputeIterate(editorElement);
     break;
   case "cmd_MSIComputeFillMatrix":       
-    doComputeFillMatrix();
+    doComputeFillMatrix(editorElement);
     break;
   case "cmd_MSIComputeRandomMatrix":       
-    doComputeRandomMatrix();
+    doComputeRandomMatrix(editorElement);
     break;
   case "cmd_MSIComputeRandomNumbers":       
-    doComputeRandomNumbers();
+    doComputeRandomNumbers(editorElement);
     break;
   case "cmd_compute_SetBasisVariables":
-    doComputeSetBasisVars();
+    doComputeSetBasisVars(editorElement);
     break;
   case "cmd_compute_ShowDefs":
-    doComputeShowDefs();
+    doComputeShowDefs(editorElement);
     break;
   case "cmd_compute_ClearDefs":
     doComputeClearDefs();
@@ -884,7 +923,7 @@ function doGlobalComputeCommand(cmd)
     doComputeSwitchEngines();
     break;
   case "cmd_compute_Passthru":
-    doComputePassthru();
+    doComputePassthru(editorElement);
     break;
   default:
     dump("Unknown global compute command. (" + cmd + ")\n");
@@ -927,14 +966,20 @@ function GetCurrentEngine()
 }
 
 // cursor helpers
-function ComputeCursor()
+function ComputeCursor(editorElement)
 {
-  window.setCursor( "spinning" );
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var theWin = msiGetWindowContainingEditor(editorElement);
+  theWin.setCursor( "spinning" );
 }
 
-function RestoreCursor()
+function RestoreCursor(editorElement)
 {
-  window.setCursor( "default" );
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var theWin = msiGetWindowContainingEditor(editorElement);
+  theWin.setCursor( "default" );
 }
 
 // return node on RHS of =, if structure is that simple
@@ -954,44 +999,54 @@ function GetRHS(math)
   return math;
 }
 
-function appendResult(result,sep,math)
+function appendResult(result,sep,math,editorElement)
 {
-  GetCurrentEditor().insertHTMLWithContext(
+  if(!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  msiGetEditor(editorElement).insertHTMLWithContext(
       result.replace(fullmath,fullmath+sep),
       "", "", "", null,
       math, math.childNodes.length, false );
-  coalescemath();
+  coalescemath(editorElement);
 }
 
-function appendLabel(label,math)
+function appendLabel(label,math,editorElement)
 {
-  GetCurrentEditor().insertHTMLWithContext(
+  if(!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  msiGetEditor(editorElement).insertHTMLWithContext(
       label,
       "", "", "", null,
       math, math.childNodes.length, false );
 }
 
-function appendLabeledResult(result,label,math)
+function appendLabeledResult(result,label,math,editorElement)
 {
+  if(!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var str;
   if (-1 == label.search(/%result%/))
     str = result.replace(fullmath,label+fullmath);
   else
     str = label.replace(/%result%/,result);
 
-  GetCurrentEditor().insertHTMLWithContext(str,"","","",null,math,math.childNodes.length,false);
+  msiGetEditor(editorElement).insertHTMLWithContext(str,"","","",null,math,math.childNodes.length,false);
 }
 
-function appendTaggedResult(result,label,body,index)
+function appendTaggedResult(result,label,body,index,editorElement)
 {
+  if(!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var str = label.replace(/%result%/,result);
 
-  GetCurrentEditor().insertHTMLWithContext(str,"","","",null,body,index,false);
+  msiGetEditor(editorElement).insertHTMLWithContext(str,"","","",null,body,index,false);
 }
 
-function addResult(result)
+function addResult(result, editorElement)
 {
-  var editor = GetCurrentEditor();
+  if(!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   var selection = editor.selection;
   editor.insertHTMLWithContext(result,"","","",null,selection.focusNode,selection.focusOffset,false);
 }
@@ -1013,59 +1068,60 @@ function GetFixedMath(math)
 }
 
 
-function doLabeledComputation(math,op,labelID)
+function doLabeledComputation(math,op,labelID, editorElement)
 {
   var mathstr = GetFixedMath(GetRHS(math));
   msiComputeLogger.Sent("doing "+labelID+" after fixup",mathstr);
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().perform(mathstr,op);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString(labelID),math);
+    appendLabeledResult(out,GetComputeString(labelID),math, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
 // like above, but use operator instead of text between input and result
-function doEvalComputation(math,op,joiner,remark)
+function doEvalComputation(math,op,joiner,remark, editorElement)
 {
   var mathstr = GetFixedMath(GetRHS(math));
   msiComputeLogger.Sent(remark+" after fixup",mathstr);
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().perform(mathstr,op);
     msiComputeLogger.Received(out);
-    appendResult(out,joiner,math);
+    appendResult(out,joiner,math, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
 // like above, but make sure to run Fixup exactly once
-function doFixupComputation(math,op,joiner,remark)
+function doFixupComputation(math,op,joiner,remark, editorElement)
 {
   var mathstr = GetMathAsString(GetRHS(math));
   msiComputeLogger.Sent(remark,mathstr);
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().perform(mathstr,op);
     msiComputeLogger.Received(out);
-    appendResult(out,joiner,math);
+    appendResult(out,joiner,math, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
 // like above, but asks user for variable(s) first
-function doVarsComputation(math,label,func,title)
+function doVarsComputation(math,label,func,title, editorElement)
 {
   var o = new Object();
   o.title = title;
-  window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var vars = o.vars;
@@ -1073,24 +1129,25 @@ function doVarsComputation(math,label,func,title)
   vars = runFixup(vars);
   msiComputeLogger.Sent4(label+" after fixup",mathstr,"specifying",vars);
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = func(mathstr,vars);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,label,math);
+    appendLabeledResult(out,label,math, editorElement);
   } catch(e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
 // like above, but use operator instead of text between input and result
-function doVarsEvalComputation(math,func,joiner,title,label)
+function doVarsEvalComputation(math,func,joiner,title,label, editorElement)
 {
   var o = new Object();
   o.title = title;
   o.label = label;
-  window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var vars = o.vars;
@@ -1098,42 +1155,45 @@ function doVarsEvalComputation(math,func,joiner,title,label)
   vars = runFixup(vars);
   msiComputeLogger.Sent4(title+" after fixup",mathstr,"specifying",vars);
   
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = func(mathstr,vars);
     msiComputeLogger.Received(out);
-    appendResult(out,joiner,math);
+    appendResult(out,joiner,math, editorElement);
   } catch(e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
 // actual command handlers
 
-function doComputeSolveExact(math)
+function doComputeSolveExact(math, editorElement)
 {
   var mathstr = GetFixedMath(math);
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
 
   var vars = "";
   var done = false;
   while (!done) {
     msiComputeLogger.Sent4("solve exact",mathstr,"specifying",vars);
     try {
-      ComputeCursor();
+      ComputeCursor(editorElement);
       var out = GetCurrentEngine().solveExact(mathstr,vars);
       msiComputeLogger.Received(out);
-      appendLabeledResult(out,GetComputeString("Solution.fmt"),math);
-      RestoreCursor();
+      appendLabeledResult(out,GetComputeString("Solution.fmt"),math, editorElement);
+      RestoreCursor(editorElement);
       done = true;
     } catch(ex) {
-      RestoreCursor();
+      RestoreCursor(editorElement);
       if (ex.result == compsample.nosol) {
-        appendLabel(GetComputeString("NoSolution"),math);
+        appendLabel(GetComputeString("NoSolution"),math, editorElement);
         done = true;
       } else if (ex.result == compsample.needvars) {
         var o = new Object();
-        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        var parentWin = msiGetParentWindowForNewDialog(editorElement);
+        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1142,46 +1202,52 @@ function doComputeSolveExact(math)
         done = true;
 } } } }
 
-function doComputeSolveNumeric(math)
+function doComputeSolveNumeric(math, editorElement)
 {
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent("solve numeric after fixup",mathstr);
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().perform(mathstr,GetCurrentEngine().Solve_Numeric);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Solution.fmt"),math);
+    appendLabeledResult(out,GetComputeString("Solution.fmt"),math, editorElement);
   } catch(ex) {
     if (ex.result == compsample.nosol) {
-      appendLabel(GetComputeString("NoSolution"),math);
+      appendLabel(GetComputeString("NoSolution"),math, editorElement);
     } else {
       msiComputeLogger.Exception(ex);
   } }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputeSolveRecursion(math)
+function doComputeSolveRecursion(math, editorElement)
 {
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent("solve recursion after fixup",mathstr);
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().perform(mathstr,GetCurrentEngine().Solve_Recursion);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Solution.fmt"),math);
+    appendLabeledResult(out,GetComputeString("Solution.fmt"),math, editorElement);
   } catch(ex) {
     if (ex.result == compsample.nosol) {
-      appendLabel(GetComputeString("NoSolution"),math);
+      appendLabel(GetComputeString("NoSolution"),math, editorElement);
     } else {
       msiComputeLogger.Exception(ex);
   } }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputePartialFractions(math)
+function doComputePartialFractions(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
 
   var vars = "";
@@ -1189,18 +1255,19 @@ function doComputePartialFractions(math)
   while (!done) {
     msiComputeLogger.Sent4("partial fractions",mathstr,"specifying",vars);
     try {
-      ComputeCursor();
+      ComputeCursor(editorElement);
       var out = GetCurrentEngine().partialFractions(mathstr,vars);
       msiComputeLogger.Received(out);
-      appendResult(out,"<mo>=</mo>",math);
-      RestoreCursor();
+      appendResult(out,"<mo>=</mo>",math, editorElement);
+      RestoreCursor(editorElement);
       done = true;
     } catch(ex) {
-      RestoreCursor();
+      RestoreCursor(editorElement);
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("ParFrac.title");
-        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        var parentWin = msiGetParentWindowForNewDialog(editorElement);
+        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1208,8 +1275,10 @@ function doComputePartialFractions(math)
         msiComputeLogger.Exception(ex);
 } } } }
 
-function doComputeDivide(math)
+function doComputeDivide(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
   
   var vars = "";
@@ -1217,18 +1286,19 @@ function doComputeDivide(math)
   while (!done) {
     msiComputeLogger.Sent4("divide",mathstr,"specifying",vars);
     try {
-      ComputeCursor();
+      ComputeCursor(editorElement);
       var out = GetCurrentEngine().divide(mathstr,vars);
       msiComputeLogger.Received(out);
-      appendResult(out,"<mo>=</mo>",math);
-      RestoreCursor();
+      appendResult(out,"<mo>=</mo>",math, editorElement);
+      RestoreCursor(editorElement);
       done = true;
     } catch(ex) {
-      RestoreCursor();
+      RestoreCursor(editorElement);
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("Divide.title");
-        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        var parentWin = msiGetParentWindowForNewDialog(editorElement);
+        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1236,8 +1306,10 @@ function doComputeDivide(math)
         msiComputeLogger.Exception(ex);
 } } } }
 
-function doComputeSort(math)
+function doComputeSort(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
 
   var vars = "";
@@ -1245,18 +1317,19 @@ function doComputeSort(math)
   while (!done) {
     msiComputeLogger.Sent4("sort",mathstr,"specifying",vars);
     try {
-      ComputeCursor();
+      ComputeCursor(editorElement);
       var out = GetCurrentEngine().sort(mathstr,vars);
       msiComputeLogger.Received(out);
-      appendResult(out,"<mo>=</mo>",math);
-      RestoreCursor();
+      appendResult(out,"<mo>=</mo>",math, editorElement);
+      RestoreCursor(editorElement);
       done = true;
     } catch(ex) {
-      RestoreCursor();
+      RestoreCursor(editorElement);
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("Sort.title");
-        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        var parentWin = msiGetParentWindowForNewDialog(editorElement);
+        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1264,8 +1337,10 @@ function doComputeSort(math)
         msiComputeLogger.Exception(ex);
 } } } }
 
-function doComputeCompanionMatrix(math)
+function doComputeCompanionMatrix(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
 
   var vars = "";
@@ -1273,18 +1348,19 @@ function doComputeCompanionMatrix(math)
   while (!done) {
     msiComputeLogger.Sent4("companion matrix",mathstr,"specifying",vars);
     try {
-      ComputeCursor();
+      ComputeCursor(editorElement);
       var out = GetCurrentEngine().companionMatrix(mathstr,vars);
       msiComputeLogger.Received(out);
-      appendResult(out,"<mo>=</mo>",math);
-      RestoreCursor();
+      appendResult(out,"<mo>=</mo>",math, editorElement);
+      RestoreCursor(editorElement);
       done = true;
     } catch(ex) {
-      RestoreCursor();
+      RestoreCursor(editorElement);
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("Companion.title");
-        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        var parentWin = msiGetParentWindowForNewDialog(editorElement);
+        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1292,12 +1368,15 @@ function doComputeCompanionMatrix(math)
         msiComputeLogger.Exception(ex);
 } } } }
 
-function doComputeApproxIntegral(math)
+function doComputeApproxIntegral(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var o = new Object();
   o.intervals = 10;
   o.form = 1;
-  window.openDialog("chrome://prince/content/ComputeApproxIntegral.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeApproxIntegral.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel) {
     return;
   }
@@ -1305,18 +1384,18 @@ function doComputeApproxIntegral(math)
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent4("approximate integral",mathstr,o.form,intervals);
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().approxIntegral(mathstr,o.form,intervals);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("ApproximateInt.fmt"),math);  // SWP labels with type
+    appendLabeledResult(out,GetComputeString("ApproximateInt.fmt"),math, editorElement);  // SWP labels with type
   } catch(ex) {
     msiComputeLogger.Exception(ex);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputeIterate()                                                          
+function doComputeIterate(editorElement)
 {                                                                                    
   var o = new Object();                                                              
   o.title 			= GetComputeString("Iterate.title");                             
@@ -1329,77 +1408,84 @@ function doComputeIterate()
   o.initialvalue[1] = GetComputeString("Iterate.centerdefault");                     
   o.prompt[2] 		= GetComputeString("Iterate.terms");                             
   o.initialvalue[2] = GetComputeString("Iterate.termsdefault");                      
-                                                                                     
-  window.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank",  
+                                       
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank",  
                     "chrome,close,titlebar,modal", o);                               
   if (o.Cancel)                                                                      
     return;                                                                          
                                                                                      
-  ComputeCursor();                                                                   
+  ComputeCursor(editorElement);
   var fn       = runFixup(o.mathresult[0]);                                                    
   var center   = runFixup(o.mathresult[1]);                                                    
   var order    = runFixup(o.mathresult[2]);                                                    
   msiComputeLogger.Sent4("iterate",fn,center,order);                                 
                                                                                      
-  ComputeCursor();                                                                   
+  ComputeCursor(editorElement);
   try {                                                                              
     var out = GetCurrentEngine().iterate(fn,center,order);                           
     msiComputeLogger.Received(out);                                                  
-    addResult(out);                                                                  
+    addResult(out, editorElement);
   } catch(ex) {                                                                      
     msiComputeLogger.Exception(ex);                                                  
   }                                                                                  
-  RestoreCursor();                                                                   
+  RestoreCursor(editorElement);
 }                                                                                    
 
 							                                                                                   
-function doComputeImplicitDiff(math)
+function doComputeImplicitDiff(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
 
   var vars = "";
   var o = new Object();
-  window.openDialog("chrome://prince/content/ComputeImplicitDiff.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeImplicitDiff.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   msiComputeLogger.Sent4("implicit diff",mathstr,o.thevar,o.about);
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().implicitDiff(mathstr,o.thevar,o.about);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Solution.fmt"),math);
+    appendLabeledResult(out,GetComputeString("Solution.fmt"),math, editorElement);
   } catch(ex) {
     msiComputeLogger.Exception(ex);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputeSolveODE(math,labelID,func,titleID)
+function doComputeSolveODE(math,labelID,func,titleID, editorElement)
 {
   var mathstr = GetFixedMath(math);
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
 
   var vars = "";
   var done = false;
   while (!done) {
     msiComputeLogger.Sent4(labelID,mathstr,"specifying",vars);
     try {
-      ComputeCursor();
+      ComputeCursor(editorElement);
       var out = func(mathstr,vars);
       msiComputeLogger.Received(out);
-      appendLabeledResult(out,GetComputeString(labelID),math);
-      RestoreCursor();
+      appendLabeledResult(out,GetComputeString(labelID),math, editorElement);
+      RestoreCursor(editorElement);
       done = true;
     } catch(ex) {
-      RestoreCursor();
+      RestoreCursor(editorElement);
       if (ex.result == compsample.nosol) {
-        appendLabel(GetComputeString("NoSolution"),math);
+        appendLabel(GetComputeString("NoSolution"),math, editorElement);
         done = true;
       } else if (ex.result == compsample.needivars) {
         var o = new Object();
         o.title = GetComputeString(titleID);
         o.label = GetComputeString("ODE.label");
-        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        var parentWin = msiGetParentWindowForNewDialog(editorElement);
+        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1408,31 +1494,37 @@ function doComputeSolveODE(math,labelID,func,titleID)
         return;
 } } } }
 
-function doComputeSolveODESeries(math)
+function doComputeSolveODESeries(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var o = new Object();
   o.order = "5";  // sticky? But really, should be general content
   o.title = GetComputeString("ODESeries.title");
-  window.openDialog("chrome://prince/content/ComputePowerSeries.xul", "_blank", "chrome,close,titlebar,modal", o);
+
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputePowerSeries.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mathstr = GetFixedMath(math);
   var ord = GetNumAsMathML(o.order);
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   msiComputeLogger.Sent4("Solve ODE Power Series ",mathstr,o.thevar + " @ " + o.about,ord);
   try {
     var out = GetCurrentEngine().solveODESeries(mathstr,o.thevar,o.about,ord);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("ODESeries.fmt"),math);
+    appendLabeledResult(out,GetComputeString("ODESeries.fmt"),math, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputePowerSeries(math)
+function doComputePowerSeries(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var o = new Object();
   o.title 			= GetComputeString("PowerSeries.title");
   o.fieldcount      = 3;
@@ -1445,13 +1537,14 @@ function doComputePowerSeries(math)
   o.prompt[2] 		= GetComputeString("PowerSeries.termsprompt");
   o.initialvalue[2] = GetComputeString("PowerSeries.termsdefault");
 
-  window.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank", 
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank", 
                     "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mathstr = GetMathAsString(GetRHS(math));
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   var variable = runFixup(o.mathresult[0]);
   var center   = runFixup(o.mathresult[1]);
   var order    = runFixup(o.mathresult[2]);
@@ -1459,16 +1552,18 @@ function doComputePowerSeries(math)
   try {
     var out = GetCurrentEngine().powerSeries(mathstr, variable, center, order);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Series.fmt"),math);
+    appendLabeledResult(out,GetComputeString("Series.fmt"),math, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
 // vector calculus
-function doComputeWronskian(math)
+function doComputeWronskian(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
 
   var vars = "";
@@ -1476,18 +1571,19 @@ function doComputeWronskian(math)
   while (!done) {
     msiComputeLogger.Sent4("Wronskian",mathstr,"specifying",vars);
     try {
-      ComputeCursor();
+      ComputeCursor(editorElement);
       var out = GetCurrentEngine().wronskian(mathstr,vars);
       msiComputeLogger.Received(out);
-      appendLabeledResult(out,GetComputeString("Wronskian.fmt"),math);
-      RestoreCursor();
+      appendLabeledResult(out,GetComputeString("Wronskian.fmt"),math, editorElement);
+      RestoreCursor(editorElement);
       done = true;
     } catch(ex) {
-      RestoreCursor();
+      RestoreCursor(editorElement);
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("Wronskian.title");
-        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        var parentWin = msiGetParentWindowForNewDialog(editorElement);
+        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1496,8 +1592,10 @@ function doComputeWronskian(math)
 } } } }
 
 // matrix commands
-function doComputeCharPoly(math)
+function doComputeCharPoly(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
 
   var vars = "";
@@ -1505,18 +1603,19 @@ function doComputeCharPoly(math)
   while (!done) {
     msiComputeLogger.Sent4("characteristic polynomial",mathstr,"specifying",vars);
     try {
-      ComputeCursor();
+      ComputeCursor(editorElement);
       var out = GetCurrentEngine().characteristicPolynomial(mathstr,vars);
       msiComputeLogger.Received(out);
-      appendLabeledResult(out,GetComputeString("CharPolynomial.fmt"),math);
-      RestoreCursor();
+      appendLabeledResult(out,GetComputeString("CharPolynomial.fmt"),math, editorElement);
+      RestoreCursor(editorElement);
       done = true;
     } catch(ex) {
-      RestoreCursor();
+      RestoreCursor(editorElement);
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("Charpoly.title");
-        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        var parentWin = msiGetParentWindowForNewDialog(editorElement);
+        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1524,16 +1623,19 @@ function doComputeCharPoly(math)
         msiComputeLogger.Exception(ex);
 } } } }
 
-function doComputeFillMatrix()
+function doComputeFillMatrix(editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var o = new Object();
   o.rows = "3";  // sticky?
   o.cols = "3";
-  window.openDialog("chrome://prince/content/ComputeFillMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeFillMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   var mRows = GetNumAsMathML(o.rows);
   var mCols = GetNumAsMathML(o.cols);
   var mExpr  = o.expr;
@@ -1541,37 +1643,42 @@ function doComputeFillMatrix()
   try {
     var out = GetCurrentEngine().matrixFill(o.type,mRows,mCols,mExpr);
     msiComputeLogger.Received(out);
-    addResult(out);
+    addResult(out, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputeMap(math)
+function doComputeMap(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var o = new Object();
   o.title = GetComputeString("Map.title");
   o.label = GetComputeString("Map.label");
-  window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mathstr = GetFixedMath(GetRHS(math));
   msiComputeLogger.Sent4("Map ",mathstr," @ ",o.vars);
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().map(mathstr,o.vars);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Map.fmt"),math);
+    appendLabeledResult(out,GetComputeString("Map.fmt"),math, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputeMinPoly(math)
+function doComputeMinPoly(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
 
   var vars = "";
@@ -1579,19 +1686,20 @@ function doComputeMinPoly(math)
   while (!done) {
     msiComputeLogger.Sent4("minimal polynomial",mathstr,"specifying",vars);
     try {
-      ComputeCursor();
+      ComputeCursor(editorElement);
       var out = GetCurrentEngine().minimalPolynomial(mathstr,vars);
       msiComputeLogger.Received(out);
       label = " Minimal Polynomial: ";
-      appendLabeledResult(out,GetComputeString("MinPolynomial.fmt"),math);
-      RestoreCursor();
+      appendLabeledResult(out,GetComputeString("MinPolynomial.fmt"),math, editorElement);
+      RestoreCursor(editorElement);
       done = true;
     } catch(ex) {
-      RestoreCursor();
+      RestoreCursor(editorElement);
       if (ex.result == compsample.needvars) {
         var o = new Object();
         o.title = GetComputeString("Minpoly.title");
-        window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+        var parentWin = msiGetParentWindowForNewDialog(editorElement);
+        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1600,14 +1708,17 @@ function doComputeMinPoly(math)
         done = true;
 } } } }
 
-function doComputeRandomMatrix()
+function doComputeRandomMatrix(editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var o = new Object();
   o.rows = "3";  // sticky?
   o.cols = "3";
   o.min  = "-9";
   o.max  = "9";
-  window.openDialog("chrome://prince/content/ComputeRandomMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeRandomMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mRows = GetNumAsMathML(o.rows);
@@ -1616,46 +1727,52 @@ function doComputeRandomMatrix()
   var mMax  = GetNumAsMathML(o.max);
   msiComputeLogger.Sent4("random matrix",mRows+" by "+mCols, mMin+ " to "+mMax,o.type);
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().matrixRandom(o.type,mRows,mCols,mMin,mMax);
     msiComputeLogger.Received(out);
-    addResult(out);
+    addResult(out, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputeReshape(math)
+function doComputeReshape(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var o = new Object();
   o.ncols = "2";  // sticky?
-  window.openDialog("chrome://prince/content/ComputeReshape.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeReshape.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mCols = GetNumAsMathML(o.ncols);
   var mathstr = GetFixedMath(GetRHS(math));
   msiComputeLogger.Sent4("reshape",mathstr,"with cols",mCols);
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().matrixReshape(mathstr,mCols);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Reshape.fmt"),math);
+    appendLabeledResult(out,GetComputeString("Reshape.fmt"),math, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputeFitCurve(math)
+function doComputeFitCurve(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var o = new Object();
   o.code   = 1;
   o.column = 1;
   o.degree = 2;
-  window.openDialog("chrome://prince/content/ComputeFitCurve.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeFitCurve.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mathstr = GetFixedMath(math);
@@ -1666,25 +1783,28 @@ function doComputeFitCurve(math)
   else
     label = GetComputeString("FitCurveRegression.fmt");
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().fitCurve(mathstr,o.code,o.column,o.degree);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,label,math);
+    appendLabeledResult(out,label,math, editorElement);
   } catch(ex) {
     msiComputeLogger.Exception(ex);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputeRandomNumbers()
+function doComputeRandomNumbers(editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var o = new Object();
   o.tally      = "10";  // sticky?
   o.dist       = 0;
   o.param1     = "";
   o.param2     = "";
-  window.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mTally    = GetNumAsMathML(o.tally);
@@ -1692,24 +1812,27 @@ function doComputeRandomNumbers()
   var mParam2   = GetNumAsMathML(o.param2);
   msiComputeLogger.Sent4("random numbers",o.dist,mTally,mParam1+ " to "+mParam2);
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().randomNumbers(o.dist,mTally,mParam1,mParam2);
     msiComputeLogger.Received(out);
-    addResult(out);
+    addResult(out, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputeMoment(math)
+function doComputeMoment(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var o = new Object();
   o.title = GetComputeString("Moment.title");
   o.label = GetComputeString("Moment.label");
   o.remark = GetComputeString("Moment.remark");
-  window.openDialog("chrome://prince/content/ComputeMoment.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeMoment.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var num = o.thevar;
@@ -1718,42 +1841,47 @@ function doComputeMoment(math)
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent4("Moment ",mathstr,origin + " @ ",num+" / "+meanisorigin);
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().moment(mathstr,num,origin,meanisorigin);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Moment.fmt"),math);
+    appendLabeledResult(out,GetComputeString("Moment.fmt"),math, editorElement);
   } catch(ex) {
     msiComputeLogger.Exception(ex);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputeQuantile(math)
+function doComputeQuantile(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var o = new Object();
   o.title = GetComputeString("Quantile.title");
   o.label = GetComputeString("Quantile.label");
-  window.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var quantile = o.vars;
   var mathstr = GetFixedMath(math);
   msiComputeLogger.Sent4("Quantile",mathstr,"specifying",quantile);
 
-  ComputeCursor();
+  ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().quantile(mathstr,quantile);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Quantile.fmt"),math);
+    appendLabeledResult(out,GetComputeString("Quantile.fmt"),math, editorElement);
   } catch(ex) {
     msiComputeLogger.Exception(ex);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
-function doComputeDefine(math)
+function doComputeDefine(math, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var mathstr = GetFixedMath(math);
 
   var subscript = "";
@@ -1761,16 +1889,17 @@ function doComputeDefine(math)
   while (!done) {
     msiComputeLogger.Sent4("define",mathstr,"specifying",subscript);
     try {
-      ComputeCursor();
+      ComputeCursor(editorElement);
       out = GetCurrentEngine().define(mathstr,subscript);
       msiComputeLogger.Received(out);
       // there is no result
       done = true;
     } catch(ex) {
-      RestoreCursor();
+      RestoreCursor(editorElement);
       if (ex.result == compsample.needsubinterp) {
         var o = new Object();
-        window.openDialog("chrome://prince/content/ComputeInterpretSubscript.xul", "_blank", "chrome,close,titlebar,modal", o);
+        var parentWin = msiGetParentWindowForNewDialog(editorElement);
+        parentWin.openDialog("chrome://prince/content/ComputeInterpretSubscript.xul", "_blank", "chrome,close,titlebar,modal", o);
         if (o.Cancel) {
           return;
         }
@@ -1780,7 +1909,7 @@ function doComputeDefine(math)
         return;
   } } }
 
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
 function doComputeUndefine(math)
@@ -1798,15 +1927,18 @@ function doComputeUndefine(math)
   RestoreCursor();
 }
 
-function doComputeShowDefs()
+function doComputeShowDefs(editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   msiComputeLogger.Sent("show definitions","");
   var out = GetCurrentEngine().getDefinitions();
   msiComputeLogger.Received(out);
 
   var o = new Object();
   o.val = out;
-  window.openDialog("chrome://prince/content/ComputeShowDefs.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeShowDefs.xul", "_blank", "chrome,close,titlebar,modal", o);
 }
 
 function doComputeClearDefs()
@@ -1815,8 +1947,10 @@ function doComputeClearDefs()
   GetCurrentEngine().clearDefinitions();
 }
 
-function doComputeSetBasisVars()
+function doComputeSetBasisVars(editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var compsample = GetCurrentEngine();
 
   msiComputeLogger.Sent("vector basis","queried");
@@ -1824,7 +1958,8 @@ function doComputeSetBasisVars()
   var o = new Object();
 
   o.vars = runFixup(compsample.getVectorBasis());
-  window.openDialog("chrome://prince/content/ComputeVarList.xul", "_blank", "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  parentWin.openDialog("chrome://prince/content/ComputeVarList.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.Cancel) {
     return;
   }
@@ -1939,29 +2074,37 @@ function doComputeSwitchEngines()
   msiComputeLogger.Sent("Switching engine to",compengine);
 }
 
-function doComputePassthru()
+function doComputePassthru(editorElement)
 {
-  var selection = GetCurrentEditor().selection;
-  if (!selection) {
-	  dump("no selection!\n");
-    return;
-  }
-  var element = findtagparent(selection.focusNode,"code");
-  if (!element) {
-	  dump("not in code tag!\n");
-    return;
-  }
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var str = "";
+  var element = null;
+  try
+  {
+    var selection = msiGetEditor(editorElement).selection;
+    if (!selection) {
+	    dump("no selection!\n");
+      return;
+    }
+    element = findtagparent(selection.focusNode,"code");
+    if (!element) {
+	    dump("not in code tag!\n");
+      return;
+    }
 
-  var text = element.firstChild;
-  if (text.nodeType != Node.TEXT_NODE) {
-    dump("bad node structure.\n");
-    return;
+    var text = element.firstChild;
+    if (text.nodeType != Node.TEXT_NODE) {
+      dump("bad node structure.\n");
+      return;
+    }
+
+    str = WrapInMtext(text.nodeValue);
+    msiComputeLogger.Sent("passthru",str);
   }
+  catch(exc) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputePassthru; exception is [" + exc + "]."); return;}
 
-  var str = WrapInMtext(text.nodeValue);
-  msiComputeLogger.Sent("passthru",str);
-
-  ComputeCursor();
+  ComputeCursor(editorElement);
   var compsample = GetCurrentEngine();
   var out;                                                 
   try {
@@ -1988,9 +2131,9 @@ function doComputePassthru()
       if (child == node.childNodes[idx])
         break;
     }
-    appendTaggedResult(out,GetComputeString("Passthru.fmt"),node,idx+1);
+    appendTaggedResult(out,GetComputeString("Passthru.fmt"),node,idx+1, editorElement);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
 
@@ -2003,8 +2146,10 @@ function doComputePlot(math, dimension, type, animate)
 
 
 // form a single run of math and put caret on end
-function coalescemath() {
-  var editor = GetCurrentEditor();
+function coalescemath(editorElement) {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   var selection = editor.selection;
   if (selection)
   {

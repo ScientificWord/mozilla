@@ -2,14 +2,16 @@
 
 
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
-const xhtmlns  = "http://www.w3.org/1999/xhtml";
+//const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
 var data;
 
 // dialog initialization code
 function Startup()
 {
-  var editor = GetCurrentEditor();
+//  var editor = GetCurrentEditor();
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
   if (!editor) {
     window.close();
     return;
@@ -34,8 +36,16 @@ function Startup()
 function InitDialog()
 {
   document.getElementById("keyTextbox").value = gDialog.key;
+
   //This next will have to be replaced by code to set up the MathML editor for the Remark field
-  document.getElementById("remarkTextbox").value = gDialog.remark;
+//  document.getElementById("remarkTextbox").value = gDialog.remark;
+  if (!gDialog.remark || gDialog.remark.length == 0)
+    gDialog.remark = "Is this bold?";
+  var theStringSource = "<span style='font-weight: bold;'>" + gDialog.remark + "</span>";
+  var editorControl = document.getElementById("remarkEditControl");
+  msiInitializeEditorForElement(editorControl, theStringSource);
+  editorControl.makeEditable("html", false);
+
   fillDatabaseFileListbox();
   checkDisableControls();
 
@@ -51,8 +61,14 @@ function InitDialog()
 function onAccept()
 {
   data.key = document.getElementById("keyTextbox").value;
+
+
   //This next will have to be replaced by code to extract data from the MathML editor for the Remark field
-  data.remark = document.getElementById("remarkTextbox").value;
+//  data.remark = document.getElementById("remarkTextbox").value;
+  var editorControl = document.getElementById("remarkEditControl");
+  var serializer = new XMLSerializer();
+  data.remark = gDialog.remark = serializer.serializeToString(editorControl.contentDocument.documentElement);
+
   data.databaseFile = gDialog.databaseFile;  //Note: since we respond to the selection action on the listbox anyway, we'll store this each time it changes
   data.bBibEntryOnly = document.getElementById("bibEntryOnlyCheckbox").checked;
 
@@ -65,6 +81,15 @@ function onAccept()
     }
     catch(exception) {}
   }   
+
+//  var editorElement = msiGetParentEditorElementForDialog(window);
+//  var editor = msiGetEditor(editorElement);
+  AlertWithTitle("Information", "BibTeX Citation Dialog returned key: [" + data.key + "] from file [" + data.databaseFile + "], remark: [" + data.remark + "]; needs to be hooked up to do something!");
+//  var theWindow = window.opener;
+//  if (!theWindow || !("updateEditorBibItemList" in theWindow))
+//    theWindow = msiGetTopLevelWindow();
+//  if (editor && theWindow)
+//    theWindow.updateEditorBibItemList(editor, data.keyList);
 
   SaveWindowLocation();
   return true;
