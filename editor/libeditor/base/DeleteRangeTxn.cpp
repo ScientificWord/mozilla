@@ -37,7 +37,6 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "DeleteRangeTxn.h"
-#include "ReplaceElementTxn.h"
 #include "nsIDOMRange.h"
 #include "nsIDOMCharacterData.h"
 #include "nsIDOMNodeList.h"
@@ -48,88 +47,82 @@
 #include "nsIContentIterator.h"
 #include "nsIContent.h"
 #include "nsComponentManagerUtils.h"
-#include "msiEditor.h"
-#include "msiIMathMLCaret.h"
-#include "msiIMathMLEditor.h"
-#include "DeleteMathmlRangeTxn.h"
-#include "nsIDOMDocument.h"
-#include "nsIDOMDocumentRange.h"
-
-#include "msiSelectionManager.h"
 
 #ifdef NS_DEBUG
 static PRBool gNoisy = PR_FALSE;
 #endif
 
-// note that editor, rangeUpdater and msiSelectionManager are not refcounted
+// note that aEditor is not refcounted
 DeleteRangeTxn::DeleteRangeTxn()
-: EditAggregateTxn(), m_msiSelMan(nsnull), m_rangeIndex(-1),
-m_editor(nsnull), m_rangeUpdater(nsnull)
+: EditAggregateTxn()
+,mRange()
+,mStartParent()
+,mStartOffset(0)
+,mEndParent()
+,mCommonParent()
+,mEndOffset(0)
+,mEditor(nsnull)
+,mRangeUpdater(nsnull)
 {
 }
 
-nsresult DeleteRangeTxn::Init(nsIEditor *editor,
-                              msiSelectionManager * msiSelMan,
-                              PRInt32 rangeIndex, 
-                              nsRangeUpdater *rangeUpdater)
+NS_IMETHODIMP DeleteRangeTxn::Init(nsIEditor *aEditor, 
+                                   nsIDOMRange *aRange,
+                                   nsRangeUpdater *aRangeUpdater)
 {
-  NS_ASSERTION(editor && msiSelMan && (rangeIndex >= 0), "bad state");
-  if (!editor || !msiSelMan || rangeIndex < 0) 
-    return NS_ERROR_NOT_INITIALIZED;
+  NS_ASSERTION(aEditor && aRange, "bad state");
+  if (!aEditor || !aRange) { return NS_ERROR_NOT_INITIALIZED; }
 
-  m_editor = editor;
-  m_msiSelMan = msiSelMan;
-  m_rangeIndex = rangeIndex;
-  m_rangeUpdater = rangeUpdater;
-  nsresult result(NS_OK);
+  mEditor = aEditor;
+  mRange  = do_QueryInterface(aRange);
+  mRangeUpdater = aRangeUpdater;
+  
+  nsresult result = aRange->GetStartContainer(getter_AddRefs(mStartParent));
+  NS_ASSERTION((NS_SUCCEEDED(result)), "GetStartParent failed.");
+  result = aRange->GetEndContainer(getter_AddRefs(mEndParent));
+  NS_ASSERTION((NS_SUCCEEDED(result)), "GetEndParent failed.");
+  result = aRange->GetStartOffset(&mStartOffset);
+  NS_ASSERTION((NS_SUCCEEDED(result)), "GetStartOffset failed.");
+  result = aRange->GetEndOffset(&mEndOffset);
+  NS_ASSERTION((NS_SUCCEEDED(result)), "GetEndOffset failed.");
+  result = aRange->GetCommonAncestorContainer(getter_AddRefs(mCommonParent));
+  NS_ASSERTION((NS_SUCCEEDED(result)), "GetCommonParent failed.");
 
 #ifdef NS_DEBUG
-    nsCOMPtr<nsIDOMRange> range;
-    result = msiSelMan->GetRange(rangeIndex, range);
-    NS_ASSERTION((NS_SUCCEEDED(result)), "GetRange failed.");
-    if (NS_FAILED(result))
-      return result;
-    nsCOMPtr<nsIDOMNode> startParent, endParent, commonParent;
-    PRInt32 startOffset(msiIMathMLEditingBC::INVALID), endOffset(msiIMathMLEditingBC::INVALID);
-    result = range->GetStartContainer(getter_AddRefs(startParent));
-    NS_ASSERTION((NS_SUCCEEDED(result)), "GetStartParent failed.");
-    result = range->GetEndContainer(getter_AddRefs(endParent));
-    NS_ASSERTION((NS_SUCCEEDED(result)), "GetEndParent failed.");
-    result = range->GetStartOffset(&startOffset);
-    NS_ASSERTION((NS_SUCCEEDED(result)), "GetStartOffset failed.");
-    result = range->GetEndOffset(&endOffset);
-    NS_ASSERTION((NS_SUCCEEDED(result)), "GetEndOffset failed.");
-    result = range->GetCommonAncestorContainer(getter_AddRefs(commonParent));
-    NS_ASSERTION((NS_SUCCEEDED(result)), "GetCommonParent failed.");
+  {
     PRUint32 count;
-    nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(startParent);
+    nsCOMPtr<nsIDOMCharacterData> textNode = do_QueryInterface(mStartParent);
     if (textNode)
       textNode->GetLength(&count);
     else
     {
       nsCOMPtr<nsIDOMNodeList> children;
-      result = startParent->GetChildNodes(getter_AddRefs(children));
+      result = mStartParent->GetChildNodes(getter_AddRefs(children));
       NS_ASSERTION(((NS_SUCCEEDED(result)) && children), "bad start child list");
       children->GetLength(&count);
     }
-    NS_ASSERTION(startOffset<=(PRInt32)count, "bad start offset");
+    NS_ASSERTION(mStartOffset<=(PRInt32)count, "bad start offset");
 
-    textNode = do_QueryInterface(endParent);
+    textNode = do_QueryInterface(mEndParent);
     if (textNode)
       textNode->GetLength(&count);
     else
     {
       nsCOMPtr<nsIDOMNodeList> children;
-      result = endParent->GetChildNodes(getter_AddRefs(children));
+      result = mEndParent->GetChildNodes(getter_AddRefs(children));
       NS_ASSERTION(((NS_SUCCEEDED(result)) && children), "bad end child list");
       children->GetLength(&count);
     }
-    NS_ASSERTION(endOffset<=(PRInt32)count, "bad end offset");
+    NS_ASSERTION(mEndOffset<=(PRInt32)count, "bad end offset");
+
+#ifdef NS_DEBUG
     if (gNoisy)
     {
       printf ("DeleteRange: %d of %p to %d of %p\n", 
-               startOffset, (void *)startParent, endOffset, (void *)endParent);
-   }         
+               mStartOffset, (void *)mStartParent, mEndOffset, (void *)mEndParent);
+    }         
+#endif
+  }
 #endif
   return result;
 
@@ -144,178 +137,57 @@ NS_IMETHODIMP DeleteRangeTxn::DoTransaction(void)
 #ifdef NS_DEBUG
   if (gNoisy) { printf("Do Delete Range\n"); }
 #endif
-  nsresult res(NS_OK);
-  if (!m_editor || !m_msiSelMan || m_rangeIndex < 0) 
-    res = NS_ERROR_NOT_INITIALIZED;
-  nsCOMPtr<nsIDOMRange> range;
-  res = m_msiSelMan->GetRange(m_rangeIndex, range);
-  NS_ASSERTION((NS_SUCCEEDED(res)), "GetRange failed.");
-  if (NS_FAILED(res))
-    return res;
-  PRBool okToCollapseAfterDelete(PR_TRUE);
-  nsCOMPtr<nsIDOMNode> startParent, endParent, commonParent;
-  PRInt32 startOffset(msiIMathMLEditingBC::INVALID), endOffset(msiIMathMLEditingBC::INVALID);
-  
-  res = range->GetStartContainer(getter_AddRefs(startParent));
-  NS_ASSERTION((NS_SUCCEEDED(res)), "GetStartParent failed.");
-  res = range->GetEndContainer(getter_AddRefs(endParent));
-  NS_ASSERTION((NS_SUCCEEDED(res)), "GetEndParent failed.");
-  res = range->GetStartOffset(&startOffset);
-  NS_ASSERTION((NS_SUCCEEDED(res)), "GetStartOffset failed.");
-  res = range->GetEndOffset(&endOffset);
-  NS_ASSERTION((NS_SUCCEEDED(res)), "GetEndOffset failed.");
-  res = range->GetCommonAncestorContainer(getter_AddRefs(commonParent));
-  NS_ASSERTION((NS_SUCCEEDED(res)), "GetCommonParent failed.");
 
-  if (!startParent || !endParent || !commonParent ||
-      !IS_VALID_NODE_OFFSET(startOffset) || !IS_VALID_NODE_OFFSET(endOffset)) 
-    return NS_ERROR_FAILURE;
-  nsCOMPtr<msiIMathMLCaret> mathCaret;
-  nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(m_editor));
-  if (msiEditor)
-    res = msiEditor->GetMathMLCaretInterface(commonParent, msiIMathMLEditingBC::INVALID, getter_AddRefs(mathCaret));
-  
-  if (NS_SUCCEEDED(res) && mathCaret) // both start and end in the same math run
-  { 
-    okToCollapseAfterDelete = PR_FALSE;  //TODO -- temp
-  
-    DeleteMathmlRangeTxn *txn;
-    res = TransactionFactory::GetNewTransaction(DeleteMathmlRangeTxn::GetCID(), (EditTxn **)&txn);
-    txn->Init(m_editor, mathCaret, startParent, startOffset, endParent, endOffset);
-    AppendChild(txn);
-    NS_RELEASE(txn);
+  if (!mStartParent || !mEndParent || !mCommonParent || !mEditor) 
+    return NS_ERROR_NOT_INITIALIZED;
+
+  nsresult result; 
+  // build the child transactions
+
+  if (mStartParent==mEndParent)
+  { // the selection begins and ends in the same node
+    result = CreateTxnsToDeleteBetween(mStartParent, mStartOffset, mEndOffset);
   }
   else
-  {
-    res = NS_OK;
-    //check to see if start and/or end is in math. If so, create deletemathmlrangetxn for them and
-    // update mRange etc.
-    nsCOMPtr<nsIDOMNode> startMath, endMath, newStart, newEnd;
-    PRUint32 newStartOffset(msiIMathMLEditingBC::INVALID), newEndOffset(msiIMathMLEditingBC::INVALID);
-    nsCOMPtr<msiIMathMLCaret> startCaret, endCaret;
-    nsCOMPtr<nsIDOMRange> newRange;
-    
-    GetMathParent(startParent, startMath);
-    if (startMath && msiEditor)
+  { // the selection ends in a different node from where it started
+    // delete the relevant content in the start node
+    result = CreateTxnsToDeleteContent(mStartParent, mStartOffset, nsIEditor::eNext);
+    if (NS_SUCCEEDED(result))
     {
-      msiEditor->GetMathMLCaretInterface(startMath, msiIMathMLEditingBC::INVALID, getter_AddRefs(startCaret));
-      startMath->GetParentNode(getter_AddRefs(newStart));
-      GetIndexOfChildInParent(startMath, newStartOffset);
-      newStartOffset += 1;
-    }
-    GetMathParent(endParent, endMath);
-    if (endMath && msiEditor)
-    {
-      msiEditor->GetMathMLCaretInterface(endMath, msiIMathMLEditingBC::INVALID, getter_AddRefs(endCaret));
-      endMath->GetParentNode(getter_AddRefs(newEnd));
-      GetIndexOfChildInParent(endMath, newEndOffset);
-    }
-    if (startMath || endMath)
-    {
-      if (startMath && (!startCaret || !newStart || newStartOffset == msiIMathMLEditingBC::INVALID))
-        res = NS_ERROR_FAILURE;
-      if (endMath && (!endCaret || !newEnd || newEndOffset == msiIMathMLEditingBC::INVALID))
-        res = NS_ERROR_FAILURE;
-      if (NS_SUCCEEDED(res))
+      // delete the intervening nodes
+      result = CreateTxnsToDeleteNodesBetween();
+      if (NS_SUCCEEDED(result))
       {
-        nsCOMPtr<nsIDOMDocument> doc;
-        m_editor->GetDocument(getter_AddRefs(doc));
-        if (doc)
-        {
-          nsCOMPtr<nsIDOMDocumentRange> docRange(do_QueryInterface(doc));
-          if (docRange)
-            docRange->CreateRange(getter_AddRefs(newRange));
-        }
-      }
-      if (NS_FAILED(res) || !newRange)
-        res = NS_ERROR_FAILURE;
-      if (NS_SUCCEEDED(res))  
-      {
-        if (startCaret)  
-        {
-          okToCollapseAfterDelete = PR_FALSE;  //TODO -- temp
-          DeleteMathmlRangeTxn *txn;
-          nsCOMPtr<nsIDOMNode> dummy;
-          res = TransactionFactory::GetNewTransaction(DeleteMathmlRangeTxn::GetCID(), (EditTxn **)&txn);
-          txn->Init(m_editor, startCaret, startParent, startOffset, dummy, msiIMathMLEditingBC::INVALID);
-          AppendChild(txn);
-          NS_RELEASE(txn);
-        }
-        if (endCaret)  
-        {
-          okToCollapseAfterDelete = PR_FALSE;  //TODO -- temp
-          DeleteMathmlRangeTxn *txn;
-          nsCOMPtr<nsIDOMNode> dummy;
-          res = TransactionFactory::GetNewTransaction(DeleteMathmlRangeTxn::GetCID(), (EditTxn **)&txn);
-          txn->Init(m_editor, endCaret, dummy, msiIMathMLEditingBC::INVALID, endParent, endOffset);
-          AppendChild(txn);
-          NS_RELEASE(txn);
-        }
-        
-        if (newStart)
-        {
-          newRange->SetStart(newStart, newStartOffset);
-          startParent = newStart;
-          startOffset = newStartOffset;
-        }
-        else
-          newRange->SetStart(startParent, startOffset);
-        if (newEnd)
-        {
-          newRange->SetEnd(newEnd, newEndOffset);
-          endParent = newEnd;
-          endOffset = newEndOffset;
-        }
-        else
-          newRange->SetEnd(endParent, endOffset);
-        range = newRange;  
-      }
-    }
-    // build the child transactions
-    if (startParent==endParent)
-    { // the selection begins and ends in the same node
-      res = CreateTxnsToDeleteBetween(startParent, startOffset, endOffset);
-    }
-    else
-    { // the selection ends in a different node from where it started
-      // delete the relevant content in the start node
-      res = CreateTxnsToDeleteContent(startParent, startOffset, nsIEditor::eNext);
-      if (NS_SUCCEEDED(res))
-      {
-        // delete the intervening nodes
-        res = CreateTxnsToDeleteNodesBetween(range);
-        if (NS_SUCCEEDED(res))
-        {
-          // delete the relevant content in the end node
-          res = CreateTxnsToDeleteContent(endParent, endOffset, nsIEditor::ePrevious);
-        }
+        // delete the relevant content in the end node
+        result = CreateTxnsToDeleteContent(mEndParent, mEndOffset, nsIEditor::ePrevious);
       }
     }
   }
+
   // if we've successfully built this aggregate transaction, then do it.
-  if (NS_SUCCEEDED(res)) 
-  {
-    res = EditAggregateTxn::DoTransaction();
+  if (NS_SUCCEEDED(result)) {
+    result = EditAggregateTxn::DoTransaction();
   }
-  if (NS_FAILED(res)) 
-    return res;
+
+  if (NS_FAILED(result)) return result;
   
   // only set selection to deletion point if editor gives permission
   PRBool bAdjustSelection;
-  m_editor->ShouldTxnSetSelection(&bAdjustSelection);
-  if (bAdjustSelection && okToCollapseAfterDelete) //TODO -- ok to collapse is temp
+  mEditor->ShouldTxnSetSelection(&bAdjustSelection);
+  if (bAdjustSelection)
   {
     nsCOMPtr<nsISelection> selection;
-    res = m_editor->GetSelection(getter_AddRefs(selection));
-    if (NS_FAILED(res) || !selection) 
-      return NS_ERROR_FAILURE;
-    res = selection->Collapse(startParent, startOffset);
+    result = mEditor->GetSelection(getter_AddRefs(selection));
+    if (NS_FAILED(result)) return result;
+    if (!selection) return NS_ERROR_NULL_POINTER;
+    result = selection->Collapse(mStartParent, mStartOffset);
   }
   else
   {
     // do nothing - dom range gravity will adjust selection
   }
-  return res;
+
+  return result;
 }
 
 NS_IMETHODIMP DeleteRangeTxn::UndoTransaction(void)
@@ -323,6 +195,10 @@ NS_IMETHODIMP DeleteRangeTxn::UndoTransaction(void)
 #ifdef NS_DEBUG
   if (gNoisy) { printf("Undo Delete Range\n"); }
 #endif
+
+  if (!mStartParent || !mEndParent || !mCommonParent || !mEditor) 
+    return NS_ERROR_NOT_INITIALIZED;
+
   return EditAggregateTxn::UndoTransaction();
 }
 
@@ -331,6 +207,9 @@ NS_IMETHODIMP DeleteRangeTxn::RedoTransaction(void)
 #ifdef NS_DEBUG
   if (gNoisy) { printf("Redo Delete Range\n"); }
 #endif
+
+  if (!mStartParent || !mEndParent || !mCommonParent || !mEditor) 
+    return NS_ERROR_NOT_INITIALIZED;
 
   return EditAggregateTxn::RedoTransaction();
 }
@@ -348,7 +227,7 @@ NS_IMETHODIMP DeleteRangeTxn::GetTxnDescription(nsAString& aString)
   return NS_OK;
 }
 
-nsresult 
+NS_IMETHODIMP 
 DeleteRangeTxn::CreateTxnsToDeleteBetween(nsIDOMNode *aStartParent, 
                                           PRUint32    aStartOffset, 
                                           PRUint32    aEndOffset)
@@ -368,7 +247,7 @@ DeleteRangeTxn::CreateTxnsToDeleteBetween(nsIDOMNode *aStartParent,
       numToDel = 1;
     else
       numToDel = aEndOffset-aStartOffset;
-    txn->Init(m_editor, textNode, aStartOffset, numToDel, m_rangeUpdater);
+    txn->Init(mEditor, textNode, aStartOffset, numToDel, mRangeUpdater);
     AppendChild(txn);
     NS_RELEASE(txn);
   }
@@ -397,7 +276,7 @@ DeleteRangeTxn::CreateTxnsToDeleteBetween(nsIDOMNode *aStartParent,
       if (NS_FAILED(result)) return result;
       if (!txn) return NS_ERROR_NULL_POINTER;
 
-      txn->Init(child, m_rangeUpdater);
+      txn->Init(child, mRangeUpdater);
       AppendChild(txn);
       NS_RELEASE(txn);
     }
@@ -405,10 +284,9 @@ DeleteRangeTxn::CreateTxnsToDeleteBetween(nsIDOMNode *aStartParent,
   return result;
 }
 
-nsresult 
-DeleteRangeTxn::CreateTxnsToDeleteContent(nsIDOMNode *aParent, 
-                                          PRUint32    aOffset, 
-                                          nsIEditor::EDirection aAction)
+NS_IMETHODIMP DeleteRangeTxn::CreateTxnsToDeleteContent(nsIDOMNode *aParent, 
+                                                        PRUint32    aOffset, 
+                                                        nsIEditor::EDirection aAction)
 {
   nsresult result = NS_OK;
   // see what kind of node we have
@@ -435,7 +313,7 @@ DeleteRangeTxn::CreateTxnsToDeleteContent(nsIDOMNode *aParent,
       if (NS_FAILED(result)) return result;
       if (!txn) return NS_ERROR_NULL_POINTER;
 
-      txn->Init(m_editor, textNode, start, numToDelete, m_rangeUpdater);
+      txn->Init(mEditor, textNode, start, numToDelete, mRangeUpdater);
       AppendChild(txn);
       NS_RELEASE(txn);
     }
@@ -444,13 +322,12 @@ DeleteRangeTxn::CreateTxnsToDeleteContent(nsIDOMNode *aParent,
   return result;
 }
 
-nsresult
-DeleteRangeTxn::CreateTxnsToDeleteNodesBetween(nsCOMPtr <nsIDOMRange> & range)
+NS_IMETHODIMP DeleteRangeTxn::CreateTxnsToDeleteNodesBetween()
 {
   nsCOMPtr<nsIContentIterator> iter = do_CreateInstance("@mozilla.org/content/subtree-content-iterator;1");
   if (!iter) return NS_ERROR_NULL_POINTER;
 
-  nsresult result = iter->Init(range);
+  nsresult result = iter->Init(mRange);
   if (NS_FAILED(result)) return result;
 
   while (!iter->IsDone())
@@ -464,7 +341,7 @@ DeleteRangeTxn::CreateTxnsToDeleteNodesBetween(nsCOMPtr <nsIDOMRange> & range)
     if (NS_FAILED(result)) return result;
     if (!txn) return NS_ERROR_NULL_POINTER;
 
-    txn->Init(node, m_rangeUpdater);
+    txn->Init(node, mRangeUpdater);
     AppendChild(txn);
     NS_RELEASE(txn);
     iter->Next();
@@ -472,70 +349,3 @@ DeleteRangeTxn::CreateTxnsToDeleteNodesBetween(nsCOMPtr <nsIDOMRange> & range)
   return result;
 }
 
-
-nsresult 
-DeleteRangeTxn::GetIndexOfChildInParent(nsIDOMNode * child, PRUint32 &index)
-{
-  nsresult res(NS_ERROR_FAILURE);
-  if (child)
-  {
-    nsCOMPtr <nsIDOMNode> parent;
-    child->GetParentNode(getter_AddRefs(parent));
-    if (parent)
-    {
-      nsCOMPtr<nsIDOMNodeList> children;
-      parent->GetChildNodes(getter_AddRefs(children));
-      if (children) 
-      {
-        PRUint32 i, count;
-        children->GetLength(&count);
-        for (i=0; i < count; i++) 
-        {
-          nsCOMPtr<nsIDOMNode> currChild;
-          children->Item(i, getter_AddRefs(currChild));
-          if (currChild == child)
-          {
-            index = i;
-            res = NS_OK;
-            break;
-          }
-        }
-      }  
-    }
-  }
-  return res;
-} 
-
-
-nsresult 
-DeleteRangeTxn::GetMathParent(nsIDOMNode * node,
-                              nsCOMPtr<nsIDOMNode> & mathParent)
-{
-  nsresult res(NS_ERROR_FAILURE);
-  mathParent = nsnull;
-  nsCOMPtr<nsIDOMNode> p = node;
-  if (!p)
-   res = NS_ERROR_NULL_POINTER;
-  while (p)
-  {
-    nsAutoString localName, nsURI;
-    p->GetLocalName(localName);
-    p->GetNamespaceURI(nsURI);
-    PRInt32 nsID(kNameSpaceID_Unknown);
-    //msiNameSpaceUtils::GetNameSpaceID(nsURI, nsID);
-    
-    if (localName.Equals(NS_LITERAL_STRING("math")))
-    //if (msiString_math.Equals(localName) && nsID == kNameSpaceID_MathML)
-    {
-      mathParent = p;
-      p = nsnull;
-      res = NS_OK;
-    }
-    else
-    {
-      nsCOMPtr<nsIDOMNode> temp = p;
-      temp->GetParentNode(getter_AddRefs(p));
-    }
-  }
-  return res;
-}  

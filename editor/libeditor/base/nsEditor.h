@@ -88,8 +88,6 @@ class nsIFile;
 class nsISelectionController;
 class nsIDOMEventReceiver;
 
-class msiSelectionManager;
-
 #define kMOZEditorBogusNodeAttr NS_LITERAL_STRING("_moz_editor_bogus_node")
 #define kMOZEditorBogusNodeValue NS_LITERAL_STRING("TRUE")
 
@@ -167,7 +165,7 @@ public:
   NS_IMETHOD InsertTextIntoTextNodeImpl(const nsAString& aStringToInsert, 
                                            nsIDOMCharacterData *aTextNode, 
                                            PRInt32 aOffset, PRBool suppressIME=PR_FALSE);
-  NS_IMETHOD DeleteSelectionImpl(EDirection aAction);
+  virtual nsresult DeleteSelectionImpl(EDirection aAction);
   NS_IMETHOD DeleteSelectionAndCreateNode(const nsAString& aTag,
                                            nsIDOMNode ** aNewNode);
 
@@ -251,11 +249,9 @@ protected:
 
 
   NS_IMETHOD CreateTxnForDeleteSelection(EDirection aAction,
-                                         msiSelectionManager & msiSelMan,
                                          EditAggregateTxn  ** aTxn);
 
-  NS_IMETHOD CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
-                                              PRUint32 index,
+  NS_IMETHOD CreateTxnForDeleteInsertionPoint(nsIDOMRange *aRange,
                                               EDirection aAction, 
                                               EditAggregateTxn    *aTxn);
 

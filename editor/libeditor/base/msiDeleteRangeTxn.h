@@ -35,8 +35,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef DeleteRangeTxn_h__
-#define DeleteRangeTxn_h__
+#ifndef MSIDeleteRangeTxn_h__
+#define MSIDeleteRangeTxn_h__
 
 #include "EditAggregateTxn.h"
 #include "nsIDOMNode.h"
@@ -44,38 +44,39 @@
 #include "nsIEditor.h"
 #include "nsCOMPtr.h"
 
-#define DELETE_RANGE_TXN_CID \
-{/* 5ec6b260-ac49-11d2-86d8-000064657374 */ \
-0x5ec6b260, 0xac49, 0x11d2, \
-{0x86, 0xd8, 0x0, 0x0, 0x64, 0x65, 0x73, 0x74} }
+#define MSI_DELETE_RANGE_TXN_CID \
+{/* 28f1bdb3-d55f-45b1-bca6-82c718c0056d */ \
+0x28f1bdb3, 0xd55f, 0x45b1, \
+{0xbc, 0xa6, 0x82, 0xc7, 0x18, 0xc0, 0x05, 0x6d} }
 
-class nsIDOMRange;
 class nsIEditor;
 class nsRangeUpdater;
+class msiSelectionManager;
 
 /**
  * A transaction that deletes an entire range in the content tree
  */
-class DeleteRangeTxn : public EditAggregateTxn
+class msiDeleteRangeTxn : public EditAggregateTxn
 {
 public:
 
-  static const nsIID& GetCID() { static const nsIID iid = DELETE_RANGE_TXN_CID; return iid; }
+  static const nsIID& GetCID() { static const nsIID iid = MSI_DELETE_RANGE_TXN_CID; return iid; }
 
   /** initialize the transaction.
     * @param aEditor the object providing basic editing operations
     * @param aRange  the range to delete
     */
-  NS_IMETHOD Init(nsIEditor *aEditor, 
-                  nsIDOMRange *aRange,
-                  nsRangeUpdater *aRangeUpdater);
+  nsresult Init(nsIEditor *editor,
+                msiSelectionManager * msiSelMan,
+                PRInt32 rangeIndex,
+                nsRangeUpdater *rangeUpdater);
 
 private:
-  DeleteRangeTxn();
+  msiDeleteRangeTxn();
 
 public:
 
-  virtual ~DeleteRangeTxn();
+  virtual ~msiDeleteRangeTxn();
 
   NS_IMETHOD DoTransaction(void);
 
@@ -89,41 +90,31 @@ public:
 
 protected:
 
-  NS_IMETHOD CreateTxnsToDeleteBetween(nsIDOMNode *aStartParent, 
-                                             PRUint32    aStartOffset, 
-                                             PRUint32    aEndOffset);
-
-  NS_IMETHOD CreateTxnsToDeleteNodesBetween();
-
-  NS_IMETHOD CreateTxnsToDeleteContent(nsIDOMNode *aParent, 
-                                             PRUint32 aOffset, 
-                                             nsIEditor::EDirection aAction);
+  nsresult CreateTxnsToDeleteBetween(nsIDOMNode *aStartParent, 
+                                     PRUint32    aStartOffset, 
+                                     PRUint32    aEndOffset);
+                                     
+  nsresult CreateTxnsToDeleteNodesBetween(nsCOMPtr <nsIDOMRange> & range);
+  
+  nsresult CreateTxnsToDeleteContent(nsIDOMNode *aParent, 
+                                     PRUint32 aOffset, 
+                                     nsIEditor::EDirection aAction);
+                                     
+  nsresult GetMathParent(nsIDOMNode * node, nsCOMPtr<nsIDOMNode> & mathParent);
+  
+  nsresult GetIndexOfChildInParent(nsIDOMNode * child, PRUint32 &index);
   
 protected:
   
-  /** p1 in the range */
-  nsCOMPtr<nsIDOMRange> mRange;			// is this really an owning ptr?
-
-  /** p1 in the range */
-  nsCOMPtr<nsIDOMNode> mStartParent;
-
-  /** p1 offset */
-  PRInt32 mStartOffset;
-
-  /** p2 in the range */
-  nsCOMPtr<nsIDOMNode> mEndParent;
-
-  /** the closest common parent of p1 and p2 */
-  nsCOMPtr<nsIDOMNode> mCommonParent;
-
-  /** p2 offset */
-  PRInt32 mEndOffset;
+  /** pointer to range data */
+  msiSelectionManager * m_msiSelMan;
+  PRInt32 m_rangeIndex;
 
   /** the editor for this transaction */
-  nsIEditor* mEditor;
+  nsIEditor* m_editor;
 
   /** range updater object */
-  nsRangeUpdater *mRangeUpdater;
+  nsRangeUpdater *m_rangeUpdater;
   
   friend class TransactionFactory;
 
