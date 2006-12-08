@@ -510,7 +510,7 @@
     <menu id="fontStyleMenu" label="&fontStyleMenu.label;" 
           accesskey="&formatstylemenu.accesskey;"
           position="3">
-    <menupopup onpopupshowing="initFontStyleMenu(this)">
+    <menupopup onpopupshowing="msiInitFontStyleMenu(this)">
       <menuitem label="&styleBoldCmd.label;"        accesskey="&stylebold.accesskey;"         observes="cmd_bold"          type="checkbox" key="boldkb"/>
       <menuitem label="&styleItalicCmd.label;"      accesskey="&styleitalic.accesskey;"       observes="cmd_italic"        type="checkbox" key="italickb" />
       <menuitem label="&styleUnderlineCmd.label;"   accesskey="&styleunderline.accesskey;"    observes="cmd_underline"     type="checkbox" key="underlinekb"/>
@@ -841,25 +841,25 @@
 
   <toolbarbutton id="boldButton" type="checkbox" autoCheck="false" observes="cmd_bold"
           tooltiptext="&boldToolbarCmd.tooltip;">
-    <observes element="cmd_bold" type="checkbox" attribute="state" onbroadcast="onButtonUpdate(this.parentNode, 'cmd_bold')"/>
+    <observes element="cmd_bold" type="checkbox" attribute="state" onbroadcast="msiOnButtonUpdate(this.parentNode, 'cmd_bold')"/>
   </toolbarbutton>
   <toolbarbutton id="italicButton" type="checkbox" autoCheck="false" observes="cmd_italic"
           tooltiptext="&italicToolbarCmd.tooltip;">
-    <observes element="cmd_italic" attribute="state" onbroadcast="onButtonUpdate(this.parentNode, 'cmd_italic')"/>
+    <observes element="cmd_italic" attribute="state" onbroadcast="msiOnButtonUpdate(this.parentNode, 'cmd_italic')"/>
   </toolbarbutton>
   <toolbarbutton id="underlineButton" type="checkbox" autoCheck="false" observes="cmd_underline"
           tooltiptext="&underlineToolbarCmd.tooltip;">
-    <observes element="cmd_underline" attribute="state" onbroadcast="onButtonUpdate(this.parentNode, 'cmd_underline')"/>
+    <observes element="cmd_underline" attribute="state" onbroadcast="msiOnButtonUpdate(this.parentNode, 'cmd_underline')"/>
   </toolbarbutton>
 
   <toolbarbutton id="ulButton" type="radio" group="lists" autoCheck="false" observes="cmd_ul"
           tooltiptext="&bulletListToolbarCmd.tooltip;">
-      <observes element="cmd_ul" attribute="state" onbroadcast="onButtonUpdate(this.parentNode, 'cmd_ul')"/>
+      <observes element="cmd_ul" attribute="state" onbroadcast="msiOnButtonUpdate(this.parentNode, 'cmd_ul')"/>
   </toolbarbutton>
 
   <toolbarbutton id="olButton" type="radio" group="lists" autoCheck="false" observes="cmd_ol"
           tooltiptext="&numberListToolbarCmd.tooltip;">
-      <observes element="cmd_ol" attribute="state" onbroadcast="onButtonUpdate(this.parentNode, 'cmd_ol')"/>
+      <observes element="cmd_ol" attribute="state" onbroadcast="msiOnButtonUpdate(this.parentNode, 'cmd_ol')"/>
   </toolbarbutton>
 
   <toolbarbutton id="outdentButton" observes="cmd_outdent"

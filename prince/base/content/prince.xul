@@ -36,9 +36,9 @@
 <window
   id    = "prince"
   title = "&prince.title;"
-  onload="EditorOnLoad()"
-        onclose="return EditorCanClose()"
-        onfocus="EditorOnFocus()"
+  onload="msiEditorOnLoad()"
+        onclose="return msiEditorCanClose()"
+        onfocus="msiEditorWindowOnFocus()"
         contenttitlesetting="true"
         titlemodifier="&editorWindow.titlemodifier;"
         titlemenuseparator="&editorWindow.titlemodifiermenuseparator;"
@@ -47,10 +47,16 @@
   persist="screenX screenY width height sizemode"
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
+#  <script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/prince.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/fastcursor.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EditorCommandsDebug.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorCommandsDebug.js"/>
 #  <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
 #  <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
    <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
