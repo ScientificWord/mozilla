@@ -4262,7 +4262,7 @@ Client ID   1
 Engine      MuPAD
 Command ID	Plot Function 2d
   <graph xmlns="http://www.sciword.com/namespaces/sciword">
-    <graphSpec ImageFile="C:/Temp/Testjig2.png">
+    <graphSpec ImageFile="/tmp/Testjig2.png">
       <plot Dimension="2" PlotType="expression" CoordinateSystem="rectangular">
        <Expression>
         <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
@@ -4287,7 +4287,7 @@ Command ID	Plot Function 2d
        <ZPts>       <math><mrow><mn>100</mn></mrow></math> </ZPts>
       </plot>
     </graphSpec>
-    <img src="file://C:/Temp/Testjig2.png" alt="Generated Plot" msigraph="true"/>
+    <img src="file:///tmp/Testjig2.png" alt="Generated Plot" msigraph="true"/>
   </graph>
 End of test
 
