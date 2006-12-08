@@ -116,11 +116,7 @@ void JBM::DumpTNode(MNODE * t_node, int indent) {}
 void JBM::DumpTList(MNODE * t_list, int indent) {}
 #endif
 
-#ifdef XP_WIN
-#define JBM_FILENAME "/temp/JBMLine.out"
-#else
 #define JBM_FILENAME "/tmp/JBMLine.out"
-#endif
 
 #ifdef DEBUG
 void JBM::JBMLine(const char *line)
