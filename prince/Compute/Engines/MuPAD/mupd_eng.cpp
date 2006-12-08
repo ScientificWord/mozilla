@@ -411,7 +411,9 @@ bool MuPADEngine::Exec(ByteArray & ba)
   zeng_instr = AppendBA2HeapStr(zeng_instr, zeng_inln, ba);
 
   const U8 *p = ba.ReadOnlyLock();
-
+#ifdef DEBUG_Steve
+  printf("..MuPADEngine::Exec(%s)\n", p);
+#endif
   // send command
   int send_cmd_ret = setjmp(mupad_mark);
   if (send_cmd_ret == 0) {
