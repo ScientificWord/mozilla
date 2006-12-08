@@ -9,6 +9,11 @@
 #define WIN32_LEAN_AND_MEAN     // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 #endif
+#ifdef XP_UNIX
+#include <sys/types.h>
+#include <unistd.h>
+#include <resource.h>
+#endif
 
 #include "MuWrap.h"
 #include "MuWrapPlotCmd.h"
@@ -70,10 +75,10 @@ MuPADWrapper::~MuPADWrapper()
 
 void MuPADWrapper::iReleaseClient(U32 client_ID, const char *def_list)
 {
-  const char *cmd_template = NULL;
+  const char *undefine_template = NULL;
   U32 cmd_ID, subID;
   if (GetdBaseNamedRecord
-      ("COMMANDS", "Undefine", &cmd_template, cmd_ID, subID)) {
+      ("COMMANDS", "Undefine", &undefine_template, cmd_ID, subID)) {
     // Undefine<uID136.0>delete %s;
     ClientAliases_REC *client_aliases = GetClientAliasesRec(client_ID);
 
@@ -96,7 +101,7 @@ void MuPADWrapper::iReleaseClient(U32 client_ID, const char *def_list)
             GetAKARec(client_aliases->AKAs_list, p_name, NULL);
           if (curr) {
             char cmd[256];
-            sprintf(cmd, cmd_template, curr->alias);
+            sprintf(cmd, undefine_template, curr->alias);
             int res = iExecute(cmd);
           } else
             TCI_ASSERT(0);
@@ -109,11 +114,13 @@ void MuPADWrapper::iReleaseClient(U32 client_ID, const char *def_list)
     while (rover) {
       NAME2AKA_REC *curr = rover;
       rover = rover->next;
+#ifdef WHY_DID_JACK_DO_THIS
       if (IsDefined(curr->alias)) {
         char cmd[256];
-        sprintf(cmd, cmd_template, curr->alias);
+        sprintf(cmd, undefine_template, curr->alias);
         int res = iExecute(cmd);
       }
+#endif
       delete[] curr->alias;
       delete[] curr->src_canonical_name;
       delete[] curr->user_name;
@@ -121,8 +128,9 @@ void MuPADWrapper::iReleaseClient(U32 client_ID, const char *def_list)
     }
 
     client_aliases->AKAs_list = NULL;
-  } else
+  } else {
     TCI_ASSERT(0);
+  }
 }
 
 void MuPADWrapper::iCleanupAndUnloadDLL()
@@ -394,6 +402,7 @@ char *MuPADWrapper::Execute(const char *cmd)
 
 bool MuPADWrapper::RenderPlot(const char *VCamFile, const char *outFile)
 {
+  TCI_ASSERT(vcam_path);
   TCI_ASSERT(VCamFile && outFile);
 #ifdef XP_WIN
   TCIString cmdLine;
@@ -410,7 +419,6 @@ bool MuPADWrapper::RenderPlot(const char *VCamFile, const char *outFile)
   si.cb = sizeof(si);
   ZeroMemory(&pi, sizeof(pi));
 
-  TCI_ASSERT(vcam_path);
   if (!CreateProcess
       (vcam_path, msSucks, NULL, NULL, false, 0, NULL, NULL, &si, &pi)) {
 #ifdef DEBUG
@@ -427,7 +435,23 @@ bool MuPADWrapper::RenderPlot(const char *VCamFile, const char *outFile)
   // we don't need this now
   DeleteFile(VCamFile);
 #else
-    TCI_ASSERT(!"Need to write this code.");
+  // XP_UNIX
+  pid_t pid = fork();
+  
+  if (pid == 0) { // we are the child
+    if (execl(vcam_path, vcam_path, "-convert", outFile, VCamFile, 0)) {
+#ifdef DEBUG
+      TCI_ASSERT(!"Unable to run MuPAD/VCam.  Check errno code.");
+#endif
+      return false;
+    }
+  } else {
+    int status;
+    waitpid(pid, &status, 0);
+  
+    // we don't need this now
+    DeleteFile(VCamFile);
+  }
 #endif
 
   return true;
