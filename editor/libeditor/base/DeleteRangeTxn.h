@@ -49,9 +49,9 @@
 0x5ec6b260, 0xac49, 0x11d2, \
 {0x86, 0xd8, 0x0, 0x0, 0x64, 0x65, 0x73, 0x74} }
 
+class nsIDOMRange;
 class nsIEditor;
 class nsRangeUpdater;
-class msiSelectionManager;
 
 /**
  * A transaction that deletes an entire range in the content tree
@@ -66,10 +66,9 @@ public:
     * @param aEditor the object providing basic editing operations
     * @param aRange  the range to delete
     */
-  nsresult Init(nsIEditor *editor,
-                msiSelectionManager * msiSelMan,
-                PRInt32 rangeIndex,
-                nsRangeUpdater *rangeUpdater);
+  NS_IMETHOD Init(nsIEditor *aEditor, 
+                  nsIDOMRange *aRange,
+                  nsRangeUpdater *aRangeUpdater);
 
 private:
   DeleteRangeTxn();
@@ -90,31 +89,41 @@ public:
 
 protected:
 
-  nsresult CreateTxnsToDeleteBetween(nsIDOMNode *aStartParent, 
-                                     PRUint32    aStartOffset, 
-                                     PRUint32    aEndOffset);
-                                     
-  nsresult CreateTxnsToDeleteNodesBetween(nsCOMPtr <nsIDOMRange> & range);
-  
-  nsresult CreateTxnsToDeleteContent(nsIDOMNode *aParent, 
-                                     PRUint32 aOffset, 
-                                     nsIEditor::EDirection aAction);
-                                     
-  nsresult GetMathParent(nsIDOMNode * node, nsCOMPtr<nsIDOMNode> & mathParent);
-  
-  nsresult GetIndexOfChildInParent(nsIDOMNode * child, PRUint32 &index);
+  NS_IMETHOD CreateTxnsToDeleteBetween(nsIDOMNode *aStartParent, 
+                                             PRUint32    aStartOffset, 
+                                             PRUint32    aEndOffset);
+
+  NS_IMETHOD CreateTxnsToDeleteNodesBetween();
+
+  NS_IMETHOD CreateTxnsToDeleteContent(nsIDOMNode *aParent, 
+                                             PRUint32 aOffset, 
+                                             nsIEditor::EDirection aAction);
   
 protected:
   
-  /** pointer to range data */
-  msiSelectionManager * m_msiSelMan;
-  PRInt32 m_rangeIndex;
+  /** p1 in the range */
+  nsCOMPtr<nsIDOMRange> mRange;			// is this really an owning ptr?
+
+  /** p1 in the range */
+  nsCOMPtr<nsIDOMNode> mStartParent;
+
+  /** p1 offset */
+  PRInt32 mStartOffset;
+
+  /** p2 in the range */
+  nsCOMPtr<nsIDOMNode> mEndParent;
+
+  /** the closest common parent of p1 and p2 */
+  nsCOMPtr<nsIDOMNode> mCommonParent;
+
+  /** p2 offset */
+  PRInt32 mEndOffset;
 
   /** the editor for this transaction */
-  nsIEditor* m_editor;
+  nsIEditor* mEditor;
 
   /** range updater object */
-  nsRangeUpdater *m_rangeUpdater;
+  nsRangeUpdater *mRangeUpdater;
   
   friend class TransactionFactory;
 
