@@ -407,7 +407,9 @@ bool MuPADWrapper::RenderPlot(const char *VCamFile, const char *outFile)
 #ifdef XP_WIN
   TCIString cmdLine;
   cmdLine += "VCamNG.exe /e ";
-  cmdLine += outFile;
+  TCIString out (outFile);  // if leading /, VCam fails
+  out.Replace("/","\\");
+  cmdLine += out;
   cmdLine += " ";
   cmdLine += VCamFile;
   TCICHAR *msSucks =
