@@ -12,7 +12,6 @@
 #ifdef XP_UNIX
 #include <sys/types.h>
 #include <unistd.h>
-#include <resource.h>
 #endif
 
 #include "MuWrap.h"
@@ -452,7 +451,7 @@ bool MuPADWrapper::RenderPlot(const char *VCamFile, const char *outFile)
     waitpid(pid, &status, 0);
   
     // we don't need this now
-    DeleteFile(VCamFile);
+    unlink(VCamFile);
   }
 #endif
 
