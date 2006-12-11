@@ -348,9 +348,8 @@ bool MuPADWrapper::SetEngineState(int attr_ID, const char *new_value)
     if (eng_dbase_rec && *eng_dbase_rec) {
       char cmd[256];
       sprintf(cmd, eng_dbase_rec, new_value);
-      ByteArray ba(256);
-      ba += cmd;
-      rv = mupd_eng->SendToProcessor(ba);
+      TCIString str(cmd);
+      rv = mupd_eng->SendToProcessor(str);
     }
   }
 
@@ -365,12 +364,10 @@ bool MuPADWrapper::SetEngineState(int attr_ID, const char *new_value)
 
 int MuPADWrapper::iExecute(const char *cmd)
 {
-  ByteArray ba(80);
-  ba += cmd;
-  bool res = mupd_eng->SendToProcessor(ba);
+  TCIString str(cmd);
+  bool res = mupd_eng->SendToProcessor(str);
 
-  U32 nBytes = ba.GetByteCount();
-  if (res && nBytes)
+  if (res && str.GetLength())
     return 1;
   else
     return 0;
@@ -378,21 +375,17 @@ int MuPADWrapper::iExecute(const char *cmd)
 
 char *MuPADWrapper::Execute(const char *cmd)
 {
-  ByteArray ba(1000);
-  ba += cmd;
+  TCIString str(cmd);
   bool res;
   if (context_cmdtype == CC_PLOTFUNC)
-    res = mupd_eng->SendPlotToProcessor(ba);
+    res = mupd_eng->SendPlotToProcessor(str);
   else
-    res = mupd_eng->SendToProcessor(ba);
+    res = mupd_eng->SendToProcessor(str);
 
-  U32 nBytes = ba.GetByteCount();
+  U32 nBytes = str.GetLength();
   if (res && nBytes) {
-    const char *ret = (const char *)ba.ReadOnlyLock();
     char *rv = new char[nBytes + 1];
-    strncpy(rv, ret, nBytes);
-    rv[nBytes] = 0;
-    ba.ReadOnlyUnlock();
+    strcpy(rv, static_cast<const char *>(str));
     return rv;
   } else {
     return NULL;
@@ -5934,7 +5927,7 @@ void MuPADWrapper::iDisposeSList(SEMANTICS_NODE * slist)
   DisposeSList(slist);
 }
 
-int MuPADWrapper::iGetEngStrPtr(int str_ID, char **engstr, int *engstr_ln)
+int MuPADWrapper::iGetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln)
 {
   return mupd_eng->GetEngStrPtr(str_ID, engstr, engstr_ln);
 }

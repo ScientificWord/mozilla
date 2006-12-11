@@ -3,7 +3,6 @@
 #ifndef MUPD_ENG_H
 #define MUPD_ENG_H
 
-#include <ByteArry.h>
 #include <TCIStrin.h>
 
 typedef class MUP_KernelImpl * MUP_Kernel;
@@ -18,21 +17,21 @@ public:
 
   bool LoadStrsAndDLL(const char *engpath, const char *libpath);
   int Initialize(const char *libpath, const char *champath);
-  bool SendToProcessor(ByteArray & ba);
-  bool SendPlotToProcessor(ByteArray & ba);
-  int GetEngStrPtr(int str_ID, char **engstr, int *engstr_ln);
+  bool SendToProcessor(TCIString & ba);
+  bool SendPlotToProcessor(TCIString & ba);
+  int GetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln);
   void CleanupAndUnloadDLL();
 
 private:
   int PrepareProcessor(const char *champath);
 
-  bool Exec(ByteArray & ba);
+  bool Exec(TCIString & ba);
   void HandleMuPADException();
 
   void WaitToFinish();
   void WaitToStart();
   
-  char *AppendBA2HeapStr(char *zheap_str, U32 & buffer_ln, ByteArray & ba);
+  char *AppendBA2HeapStr(char *zheap_str, U32 & buffer_ln, const TCIString & ba);
 
 private:
   MUP_Kernel m_kernel;
@@ -42,14 +41,11 @@ private:
   bool plot_status;
   bool m_useDLL;
 
-  char *zeng_instr;
-  U32 zeng_inln;
+  TCIString eng_instr;
   bool instr_sent;
-  char *zeng_outstr;
-  U32 zeng_outln;
+  TCIString eng_outstr;
   bool outstr_sent;
-  char *zeng_errorstr;
-  U32 zeng_errorln;
+  TCIString eng_errorstr;
   bool errorstr_sent;
 };
 

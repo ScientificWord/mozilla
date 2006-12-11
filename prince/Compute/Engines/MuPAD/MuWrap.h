@@ -27,7 +27,7 @@ public:
   int iInitialize( const char* libpath,const char* champath,const char* vcampath );
   bool SetEngineState( int attr_ID,const char* new_value );
   void     iDisposeSList( SEMANTICS_NODE* slist );
-  int      iGetEngStrPtr( int str_ID, char** engstr, int* engstr_ln );
+  int      iGetEngStrPtr( int str_ID, const char** engstr, int* engstr_ln );
 
   bool GetdBaseNamedRecord( const char* bin_name, const char* op_name,
                                 const char** eng_dbase_rec, U32& ID, U32& subID );
