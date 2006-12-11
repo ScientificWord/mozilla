@@ -729,7 +729,7 @@ function needTwoVars (plotno) {
   var dim  = window.arguments[0].getValue ("Dimension");
   var pt   = window.arguments[0].getPlotValue ("PlotType", plotno);
   var anim = window.arguments[0].getPlotValue ("Animate",plotno);
-  var nvars = CountPlotVars (dim, pt, anim);
+  var nvars = PlotVarsNeeded (dim, pt, anim);
   return (nvars > 1);
 /*                                                                                               */
 /*                                                                                               */
@@ -746,7 +746,7 @@ function needThreeVars (plotno) {
   var dim  = window.arguments[0].getValue ("Dimension");
   var pt   = window.arguments[0].getPlotValue ("PlotType", plotno);
   var anim = window.arguments[0].getPlotValue ("Animate", plotno);
-  var nvars = CountPlotVars (dim, pt, anim);
+  var nvars = PlotVarsNeeded (dim, pt, anim);
   return (nvars > 2);
 /*                                                                         */
 /*   if ((dim[0] == "2") && (anim != "true")) return false;                */
