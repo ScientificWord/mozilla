@@ -212,53 +212,41 @@ MuPADEngine::MuPADEngine() :
   m_useDLL = true;
 #endif
 
-  zeng_instr = NULL;
-  zeng_inln = 0;
   instr_sent = false;
-
-  zeng_outstr = NULL;
-  zeng_outln = 0;
   outstr_sent = false;
-
-  zeng_errorstr = NULL;
-  zeng_errorln = 0;
   errorstr_sent = false;
 }
 
 MuPADEngine::~MuPADEngine()
 {
-  delete[] zeng_instr;
-  delete[] zeng_outstr;
-  delete[] zeng_errorstr;
-
   MUP_delete_kernel(m_kernel);
   m_kernel = 0;
   delete m_client;
   m_client = 0;
 }
 
-int MuPADEngine::GetEngStrPtr(int str_ID, char **engstr, int *engstr_ln)
+int MuPADEngine::GetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln)
 {
   int rv = 0;
 
   if (str_ID == 1) {            // engine input string
-    if (zeng_instr) {
-      *engstr = zeng_instr;
-      *engstr_ln = strlen(zeng_instr);
+    if (eng_instr.GetLength) {
+      *engstr = static_cast<const TCICHAR*>(eng_instr);
+      *engstr_ln = eng_instr.GetLength();
       instr_sent = true;
       rv = 1;
     }
   } else if (str_ID == 2) {
-    if (zeng_outstr) {
-      *engstr = zeng_outstr;
-      *engstr_ln = strlen(zeng_outstr);
+    if (eng_outstr.GetLength) {
+      *engstr = static_cast<const TCICHAR*>(eng_outstr);
+      *engstr_ln = eng_outstr.GetLength();
       outstr_sent = true;
       rv = 1;
     }
   } else if (str_ID == 3) {
-    if (zeng_errorstr) {
-      *engstr = zeng_errorstr;
-      *engstr_ln = strlen(zeng_errorstr);
+    if (eng_errorstr.GetLength()) {
+      *engstr = static_cast<const TCICHAR*>(eng_errorstr);
+      *engstr_ln = eng_errorstr.GetLength();
       errorstr_sent = true;
       rv = 1;
     }
@@ -360,7 +348,7 @@ int MuPADEngine::PrepareProcessor(const char *champath)
 {
   // Do we need to load our special functions?
   if (!fcnsloaded) {
-    ByteArray packba;
+    TCIString packba;
     TCIString path(champath);
     path += "/swfcns.mu";
     if (FileSys_Exists(path)) {
@@ -370,7 +358,6 @@ int MuPADEngine::PrepareProcessor(const char *champath)
       packba += fcnsPath;
       packba += "\"):";
       fcnsloaded = SendToProcessor(packba);
-      packba.SetByteCount(0);
       return 1;
     } else {
       TCI_ASSERT(!"Unable to find swfcsn.mu");
@@ -380,69 +367,60 @@ int MuPADEngine::PrepareProcessor(const char *champath)
   return 1;
 }
 
-bool MuPADEngine::SendToProcessor(ByteArray & ba)
+bool MuPADEngine::SendToProcessor(TCIString & str)
 {
-  //The contents of ba are sent to MuPAD. If a valid return
-  //is obtained, the result replaces the contents of ba.
-  ba += (U8) '\0';
-  return Exec(ba);
+  // the result replaces the contents of ba.
+  return Exec(str);
 }
 
-bool MuPADEngine::SendPlotToProcessor(ByteArray & ba)
+bool MuPADEngine::SendPlotToProcessor(TCIString & str)
 {
   plot_status = true;
-  bool rv = SendToProcessor(ba);
+  bool rv = SendToProcessor(str);
   plot_status = false;
   return rv;
 }
 
-bool MuPADEngine::Exec(ByteArray & ba)
+bool MuPADEngine::Exec(TCIString & cmd)
 {
   bool rv = false;
 
   TCI_ASSERT(!m_client->Ready());
 
   if (instr_sent) {
-    delete[] zeng_instr;
-    zeng_instr = NULL;
-    zeng_inln = 0;
+    eng_instr.Empty();
     instr_sent = false;
   }
-  zeng_instr = AppendBA2HeapStr(zeng_instr, zeng_inln, ba);
+  eng_instr += cmd;
 
-  const U8 *p = ba.ReadOnlyLock();
+  const MUP_Char *p = static_cast<const MUP_Char*>(cmd);
 #ifdef DEBUG_Steve
   printf("..MuPADEngine::Exec(%s)\n", p);
 #endif
   // send command
   int send_cmd_ret = setjmp(mupad_mark);
   if (send_cmd_ret == 0) {
-    if (!MUP_send_cmd_ext(m_kernel, m_client->Cookie(), reinterpret_cast<const MUP_Char*>(p), MUP_ef_no_history, 0)) {
-      ba.ReadOnlyUnlock();
-      ba.SetByteCount(0);
+    if (!MUP_send_cmd_ext(m_kernel, m_client->Cookie(), p, MUP_ef_no_history, 0)) {
+      cmd.Empty();
       return rv;
     }
   } else {                      // MuPAD crashed via fatal_exit_handler()
-    ba.ReadOnlyUnlock();
-    ba.SetByteCount(0);
+    cmd.Empty();
     HandleMuPADException();
     return rv;
   }
 
   WaitToFinish();
-  ba.ReadOnlyUnlock();
-  ba.SetByteCount(0);
+  cmd.Empty();
 
   if (m_client->Error()) {
     TCI_ASSERT(!"Got an error from MuPAD.");
-    ba = m_client->GetError();
+    cmd = m_client->GetError();
     if (errorstr_sent) {
-      delete[] zeng_errorstr;
-      zeng_errorstr = NULL;
-      zeng_errorln = 0;
+      eng_errorstr.Empty();
       errorstr_sent = false;
     }
-    zeng_errorstr = AppendBA2HeapStr(zeng_errorstr, zeng_errorln, ba);
+    eng_errorstr += cmd;
   } else {
     if (m_client->Warning()) {
       TCI_ASSERT(!"No place for warning string.");
@@ -452,19 +430,17 @@ bool MuPADEngine::Exec(ByteArray & ba)
       plotFile = m_client->GetPlotFile();
       m_client->ClearPlotFile();
     }
-    ba = m_client->GetReturn();
+    cmd = m_client->GetReturn();
 
     if (outstr_sent) {
-      delete[] zeng_outstr;
-      zeng_outstr = NULL;
-      zeng_outln = 0;
+      eng_outstr.Empty();
       outstr_sent = false;
     }
-    zeng_outstr = AppendBA2HeapStr(zeng_outstr, zeng_outln, ba);
+    eng_outstr += cmd;
 
     if (!plotFile.IsEmpty()) {
-      ba = plotFile;
-      zeng_outstr = AppendBA2HeapStr(zeng_outstr, zeng_outln, ba);
+      cmd = plotFile;
+      eng_outstr += cmd;
     }
     rv = true;
   }
@@ -526,39 +502,4 @@ void MuPADEngine::WaitToStart()
     }
     DispatchMuPADMessages();
   }
-}
-
-char *MuPADEngine::AppendBA2HeapStr(char *zheap_str, U32 & buffer_ln,
-                                    ByteArray & ba)
-{
-  char *rv = zheap_str;
-
-  U32 delta_ln = ba.GetByteCount();
-  if (delta_ln) {
-    const char *src = reinterpret_cast<const char*>(ba.ReadOnlyLock());
-    if (src) {
-      U32 curr_ln = 0;
-      if (zheap_str)
-        curr_ln = strlen(zheap_str);
-      U32 bytes_needed = curr_ln + delta_ln + 1;
-      if (zheap_str)
-        bytes_needed++;
-      if (bytes_needed > buffer_ln) {
-        buffer_ln = bytes_needed + 200;
-        rv = new char[buffer_ln];
-        if (zheap_str) {
-          strcpy(rv, zheap_str);
-          delete[] zheap_str;
-        } else
-          rv[0] = 0;
-      }
-      if (zheap_str)
-        rv[curr_ln++] = '\n';
-      strncpy(rv + curr_ln, src, delta_ln);
-      rv[curr_ln + delta_ln] = 0;
-    }
-    ba.ReadOnlyUnlock();
-  }
-
-  return rv;
 }
