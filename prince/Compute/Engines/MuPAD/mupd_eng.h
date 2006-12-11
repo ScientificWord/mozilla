@@ -17,22 +17,20 @@ public:
 
   bool LoadStrsAndDLL(const char *engpath, const char *libpath);
   int Initialize(const char *libpath, const char *champath);
-  bool SendToProcessor(TCIString & ba);
-  bool SendPlotToProcessor(TCIString & ba);
+  bool SendToProcessor(TCIString &cmd);
+  bool SendPlotToProcessor(TCIString &cmd);
   int GetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln);
   void CleanupAndUnloadDLL();
 
-private:
+protected:
   int PrepareProcessor(const char *champath);
 
-  bool Exec(TCIString & ba);
+  bool Exec(TCIString &cmd);
   void HandleMuPADException();
 
   void WaitToFinish();
   void WaitToStart();
   
-  char *AppendBA2HeapStr(char *zheap_str, U32 & buffer_ln, const TCIString & ba);
-
 private:
   MUP_Kernel m_kernel;
   MuPADMssgHandler *m_client;
