@@ -61,7 +61,7 @@ NS_IMETHODIMP msiMuPADEngineWrapper::SetEngineState(PRInt32 attr_ID, const char 
 /* long getEngStrPtr (in long str_ID, out string engstr, out long engstr_ln); */
 NS_IMETHODIMP msiMuPADEngineWrapper::GetEngStrPtr(PRInt32 str_ID, char **engstr, PRInt32 *engstr_ln, PRInt32 *_retval)
 {
-  *_retval = MuPAD_wrapper->iGetEngStrPtr(str_ID, engstr, engstr_ln);
+  *_retval = MuPAD_wrapper->iGetEngStrPtr(str_ID, const_cast<const char **>(engstr), engstr_ln);
   return NS_OK;
 }
 
