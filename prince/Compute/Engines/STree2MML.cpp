@@ -3724,7 +3724,7 @@ bool STree2MML::IsSmallNaturalNumber(SEMANTICS_NODE * s_node, U32 & num)
     char ch;
     int n_digits = 0;
     while (ch = *ptr) {
-      if (ch < '0' || ch > '9') {
+      if ((ch < '0') || (ch > '9')) {
         rv = false;
         break;
       } else if (n_digits == 9) {
@@ -4899,22 +4899,22 @@ typedef struct tagCOMPUNIT_INFO
 } COMPUNIT_INFO;
 
 COMPUNIT_INFO cunit_data[] = {
-  "N", 1, 1, -2, 0, 0, 0, 0, 0,
-  "J", 1, 2, -2, 0, 0, 0, 0, 0,
-  "W", 1, 2, -3, 0, 0, 0, 0, 0,
-  "Pa", 1, -1, -2, 0, 0, 0, 0, 0,
-  "C", 0, 0, 1, 1, 0, 0, 0, 0,
-  "V", 1, 2, -3, -1, 0, 0, 0, 0,
-  "&#x3a9;", 1, 2, -3, -2, 0, 0, 0, 0,
-  "H", 1, 2, -2, -2, 0, 0, 0, 0,
-  "T", 1, 0, -2, -1, 0, 0, 0, 0,
-  "Wb", 1, 2, -2, -1, 0, 0, 0, 0,
-  "lx", 0, -2, 0, 0, 0, 0, 1, 1,
-  "lm", 0, 0, 0, 0, 0, 0, 1, 1,
-  "S", -1, -2, 3, 2, 0, 0, 0, 0,
-  "F", -1, -2, 4, 2, 0, 0, 0, 0,
-  "Bq", 0, 0, -1, 0, 0, 0, 0, 0,
-  "Gy", 0, 2, -2, 0, 0, 0, 0, 0,
+  {"N", 1, 1, -2, 0, 0, 0, 0, 0},
+  {"J", 1, 2, -2, 0, 0, 0, 0, 0},
+  {"W", 1, 2, -3, 0, 0, 0, 0, 0},
+  {"Pa", 1, -1, -2, 0, 0, 0, 0, 0},
+  {"C", 0, 0, 1, 1, 0, 0, 0, 0},
+  {"V", 1, 2, -3, -1, 0, 0, 0, 0},
+  {"&#x3a9;", 1, 2, -3, -2, 0, 0, 0, 0},
+  {"H", 1, 2, -2, -2, 0, 0, 0, 0},
+  {"T", 1, 0, -2, -1, 0, 0, 0, 0},
+  {"Wb", 1, 2, -2, -1, 0, 0, 0, 0},
+  {"lx", 0, -2, 0, 0, 0, 0, 1, 1},
+  {"lm", 0, 0, 0, 0, 0, 0, 1, 1},
+  {"S", -1, -2, 3, 2, 0, 0, 0, 0},
+  {"F", -1, -2, 4, 2, 0, 0, 0, 0},
+  {"Bq", 0, 0, -1, 0, 0, 0, 0, 0},
+  {"Gy", 0, 2, -2, 0, 0, 0, 0, 0}
 };
 
 // Return a derived unit from a corresponding group of base units
@@ -5674,7 +5674,7 @@ char *STree2MML::NumberToUserFormat(SEMANTICS_NODE * s_number)
 
     char ch;
     while (ch = *ptr) {
-      if (ch >= '0' && ch <= '9') {
+      if ((ch >= '0') && (ch <= '9')) {
         zsig_digits[bi++] = ch;
         if (after_decimal)
           shift--;
@@ -5868,7 +5868,8 @@ char *STree2MML::PrefixMOfromSTRING(char *z_string)
 
   size_t sln = strlen(z_string);
   char *slant_attr = NULL;
-  if (sln == 1 && z_string[0] < 128)
+//SLS. Bogus; what is meant?  if (sln == 1 && z_string[0] < 128)
+  if (sln == 1)
     slant_attr = "fontstyle=\"italic\"";
 
   char *tmpl = GetTmplPtr(TMPL_PREFIXMO);
@@ -5887,8 +5888,6 @@ char *STree2MML::PrefixMOfromSTRING(char *z_string)
 char *STree2MML::AccentMOfromSTRING(char *z_string)
 {
   //  "<mo%color_attr% form=\"postfix\" accent=\"true\">%chdata%</mo>\n",
-
-  size_t sln = strlen(z_string);
 
   char *tmpl = GetTmplPtr(TMPL_ACCENTMO);
   size_t ln = strlen(tmpl) + strlen(z_string);
