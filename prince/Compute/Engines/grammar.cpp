@@ -74,7 +74,7 @@ void Grammar::GetContextNom(const char *nom, char *dest, U32 & the_uID)
   if (*nom == ',') {
     nom = strchr(nom, '.');
     nom++;
-    int the_usubtype = atoi(nom);  // subtype unused by current code
+//    int the_usubtype = atoi(nom);  // subtype unused by current code
     nom = strchr(nom, '.');
     nom++;
     the_uID = atoi(nom);
@@ -545,24 +545,24 @@ LINE_REC *Grammar::FileToLineList(FILE * grammar_file)
 
         // comment line
 
-      } else if (t_ptr = strstr(fline, "<TOKENIZER_TEX>")) {
+      } else if ((t_ptr = strstr(fline, "<TOKENIZER_TEX>"))) {
 
         //      tokenizerID =  TOKENIZER_TEX;
 
-      } else if (t_ptr = strstr(fline, "<TOKENIZER_MML>")) {
+      } else if ((t_ptr = strstr(fline, "<TOKENIZER_MML>"))) {
 
-      } else if (t_ptr = strstr(fline, "<DEFAULT_CONTEXT_")) {
+      } else if ((t_ptr = strstr(fline, "<DEFAULT_CONTEXT_"))) {
 
         //      GetContextNom( t_ptr+17,(char*)default_context,env_usubtype,env_uID ); 
 
-      } else if (t_ptr = strstr(fline, "<START_CONTEXT_")) {
+      } else if ((t_ptr = strstr(fline, "<START_CONTEXT_"))) {
 
         char new_env_nom[CONTEXT_NOM_LIM];
         GetContextNom(t_ptr + 15, new_env_nom, env_uID);
         AddContext(new_env_nom, env_list, env_uID);
         curr_table = FindTableForEnv(env_list);
 
-      } else if (t_ptr = strstr(fline, "<END_CONTEXT_")) {
+      } else if ((t_ptr = strstr(fline, "<END_CONTEXT_"))) {
 
         char new_env_nom[CONTEXT_NOM_LIM];
         GetContextNom(t_ptr + 13, new_env_nom, env_uID);

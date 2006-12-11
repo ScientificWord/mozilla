@@ -2062,7 +2062,6 @@ BUCKET_REC *Analyzer::ArgsToBucket(MNODE * func_node, int& nodes_done)
     MNODE *mml_rover = func_node->next;
 
     bool found_ap = false;
-    bool found_args = false;
 
     // step over any whitespace
     while (IsWhiteSpace(mml_rover)) {
@@ -3532,7 +3531,7 @@ void Analyzer::AnalyzeDotDerivative(MNODE * mml_mover,
   s_node->contents = tmp;
 
   MNODE *base = mml_mover->first_kid;
-  MNODE *dots = base->next;
+//  MNODE *dots = base->next;
 
   BUCKET_REC *base_bucket = MakeBucketRec(MB_UNNAMED, NULL);
   s_node->bucket_list = AppendBucketRec(s_node->bucket_list, base_bucket);
@@ -5538,7 +5537,6 @@ void Analyzer::FenceToInterval(SEMANTICS_NODE * s_fence)
     TCI_ASSERT(!"Unexpected semantic type on fence.");
   }
 
-  int n_rows = 1;
   int n_cols = 0;
   BUCKET_REC *brover = s_fence->bucket_list;
   while (brover) {

@@ -2629,7 +2629,7 @@ void Tree2StdMML::InstallStackedAttr(MNODE * mml_node,
                                      ATTRIB_REC * attr_stack)
 {
   char *targ_attr = attr_stack->zattr_nom;
-  char *targ_aval = attr_stack->zattr_val;
+//  char *targ_aval = attr_stack->zattr_val;
 
   bool done = false;
   ATTRIB_REC *arover = mml_node->attrib_list;
