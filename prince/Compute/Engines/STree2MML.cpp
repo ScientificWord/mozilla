@@ -983,7 +983,6 @@ void STree2MML::SemanticCONJUGATE2MML(SEMANTICS_NODE * s_conjugate,
           }
         }
         if (add_parens) {
-          int nodes_made;
           if (nodes_made > 1 || is_signed)
             zh_arg = NestzMMLInMROW(zh_arg);
           zh_arg = NestzMMLInPARENS(zh_arg, nodes_made);
