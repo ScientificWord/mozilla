@@ -4,9 +4,7 @@
 #define BYTEARRY_H
 
 #include "../CmpTypes.h"
-#define TCICHAR  char
-#define TCIWCHAR  short
-typedef unsigned char U8;
+#include "tcistrin.h"
 
 class ByteArray 
 {
