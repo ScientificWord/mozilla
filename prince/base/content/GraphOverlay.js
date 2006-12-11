@@ -122,26 +122,30 @@ function GraphComputeGraph () {
   RestoreCursor();
 }
 
-// call the compute engine to guess at graph attributes
-function GraphComputeQuery (plot_no) {
+// call the compute engine to guess at graph attributes 
+function GraphComputeQuery (plot_no) {    
   var str = this.serializeGraph (plot_no);
-  try {
+  var eng = GetCurrentEngine();
+  
+  try {           
     msiComputeLogger.Sent4 ("plotfuncQuery", "", str, "");
     //msiComputeLogger.Sent4 ("plotfuncQuery", "", "", "");
-    var out=GetCurrentEngine().plotfuncQuery (str);
-    msiComputeLogger.Received(out);
+
+    var out=eng.plotfuncQuery (str);
+    dump ("ComputQuery plotfuncQuery returns " + out + "\n");
+    msiComputeLogger.Received(out); 
     parseQueryReturn (out, this, plot_no);
     this.setPlotAttribute (PlotAttrName ("PlotStatus", plot_no), "Inited");             
   }                                                                                             
   catch (e) {                                                                                    
     this.setPlotAttribute (PlotAttrName ("PlotStatus", plot_no), "ERROR");             
-//    this.prompt.alert (null, "Computation Error", "Query Graph: " + GetCurrentEngine().getEngineErrors());
-    alert ("Computation Error", "Query Graph: " + GetCurrentEngine().getEngineErrors());
-    dump("Computation Error", "Query Graph: " + GetCurrentEngine().getEngineErrors()+"\n");
+    //this.prompt.alert (null, "Computation Error", "Query Graph: " + eng.getEngineErrors());
+    dump("Computation Error", "Query Graph: " + eng.getEngineErrors()+"\n");
     msiComputeLogger.Exception(e);                                                               
   }                                                                                              
   RestoreCursor();                                                                               
-}                                                                                                
+} 
+
 
 // the optionalplot, if specified, indicates that this <graph> has only one plot
 // If any of the plots has an ERROR status, return "ERROR" and a diagnostic
@@ -605,202 +609,23 @@ function wrapMath (thing) {
   return ("<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" + thing + "</math>");
 }
 
-
-/**----------------------------------------------------------------------------------*/
-// extract the variable list and expression from the fragment created from
-// a plot query return string. The format of the fragment is
-// [<maybeExplicitList>, <outvarlist>, <invarlist>, <expression>, <optionaldatalist>]
-// except the string is really mathml, not just text. So it looks like this:
-
-/* <math xmlns="http://www.w3.org/1998/Math/M*//* <math xmlns="http://www.w3.org/1998/Math/MathML"> */
-/*   <mrow>                                  *//*   <mrow>                                          */
-/*     <mfenced open="[" close="]">          *//*     <mo>[</mo>                                    */
-/*       <mtext>"functionImage"</mtext>      *//*     <mrow>                                        */
-/*       <mfenced open="[" close="]">        *//*       <mtext>"functionImage"</mtext>              */
-/*         <mi>θ</mi>                       *//*       <mo>,</mo>                                  */
-/*       </mfenced>                          *//*       <mrow>                                      */
-/*       <mfenced open="[" close="]">        *//*         <mo>[</mo>                                */
-/*         <mi>x</mi>                        *//*         <mi>θ</mi>                               */
-/*         <mi>θ</mi>                       *//*         <mo>]</mo>                                */
-/*       </mfenced>                          *//*       </mrow>                                     */
-/*       <mfenced open="[" close="]">        *//*       <mo>,</mo>                                  */
-/*         <mrow>                            *//*       <mrow>                                      */
-/*           <mn>2</mn>                      *//*         <mo>[</mo>                                */
-/*           <mo>⁢</mo>                    *//*         <mrow>                                    */
-/*           <mi msiMathname="true">sin</mi> *//*           <mi>x</mi>                              */
-/*           <mo>⁡</mo>                    *//*           <mo>,</mo>                              */
-/*           <mrow>                          *//*           <mi>θ</mi>                             */
-/*             <mn>3</mn>                    *//*         </mrow>                                   */
-/*             <mo>⁢</mo>                  *//*         <mo>]</mo>                                */
-/*             <mi>θ</mi>                   *//*       </mrow>                                     */
-/*           </mrow>                         *//*       <mo>,</mo>                                  */
-/*           <mo>−</mo>                    *//*       <mrow>                                      */
-/*           <mi msiMathname="true">sin</mi> *//*         <mo>[</mo>                                */
-/*           <mo>⁡</mo>                    *//*         <mrow>                                    */
-/*           <mi>θ</mi>                     *//*           <mrow>                                  */
-/*           <mo>+</mo>                      *//*             <mn>2</mn>                            */
-/*           <mn>1</mn>                      *//*             <mo>⁢</mo>                          */
-/*         </mrow>                           *//*             <mi msiMathname="true">sin</mi>       */
-/*         <mi>θ</mi>                       *//*             <mo>⁡</mo>                          */
-/*       </mfenced>                          *//*             <mrow>                                */
-/*       <mrow>                              *//*               <mn>3</mn>                          */
-/*         <mo>[</mo>                        *//*               <mo>⁢</mo>                        */
-/*         <mo>]</mo>                        *//*               <mi>θ</mi>                         */
-/*       </mrow>                             *//*             </mrow>                               */
-/*     </mfenced>                            *//*             <mo>−</mo>                          */
-/*   </mrow>                                 *//*             <mi msiMathname="true">sin</mi>       */
-/* </math>									 *//*             <mo>⁡</mo>                          */
-                                               /*             <mi>θ</mi>                           */
-                                               /*             <mo>+</mo>                            */
-                                               /*             <mn>1</mn>                            */
-                                               /*           </mrow>                                 */
-                                               /*           <mo>,</mo>                              */
-                                               /*           <mi>θ</mi>                             */
-                                               /*         </mrow>                                   */
-                                               /*         <mo>]</mo>                                */
-                                               /*       </mrow>                                     */
-                                               /*       <mo>,</mo>                                  */
-                                               /*       <mrow>                                      */
-                                               /*         <mo>[</mo>                                */
-                                               /*         <mo>]</mo>                                */
-                                               /*       </mrow>                                     */
-                                               /*     </mrow>                                       */
-                                               /*     <mo>]</mo>                                    */
-                                               /*   </mrow>                                         */
-                                               /* </math>                                           */
-
-
-
-// Run along the string looKing for <mfenced> and </mfenced> pairs. We want
-// the second-level of these (there may be many embedded in the expression.)
-// Not and RE parsing problem: push each occurrence of <mfenced>, pop matched
-// </mfenced>, and if the right level and count, save the needed data.
-function parseQueryReturn (out, graph, plot_no) {
-  var stack = [];                                                             
-  var level = 0;                                                              
-  var result;                                                                 
-  var variableList, expr;                                                     
-  var count = 0;   
-  var index = 0;                                                           
-  dump("SMR Query returned: " + out + "\n");
-  var pt   = graph.getPlotAttribute (PlotAttrName ("PlotType", plot_no)); 
-  // search for top level "mfenced" and the matching "/mfenced"                            
-  // 4/11/06 this while loop should be unnecessary: the compute engine doesn't return
-  // mfenced anymore.
-  while ((result = out.indexOf ("mfenced", index)) >= 0) {
-    index = result+1;
-    if (out[result-1] == "/") { // end of mfence
-	  var start = stack.pop();
-      var stop  = out.indexOf (">", result) + 1;  // find </mfenced>
-  	  level = level - 1;
-      if (level == 1) {  // we have the end of a second-to-top-level mfence
-	    count = count + 1;
-	    if (count == 1)  // save the output variable list
-	      variableList = out.slice (start, stop);
-  	    else if (count == 3)  // save the returned expression
-    	  expr = wrapMath (out.slice (start, stop));
-      }
-    } else { // it must be "mfenced"
-      level = level + 1;
-      stack.push (out.lastIndexOf("<", result)); // find <mfenced, even w/ namespace
-    }
-  }
-
-  if (count < 3) {
-    // search for top level "row" and the matching "/row"
-    count = 0; index = 0; level = 0;
-    while ((result = out.indexOf ("mrow", index)) >= 0) {
-      index = result+1;
-      if (out[result-1] == "/") { // end of mrow
-		  var start = stack.pop();
-          var stop  = out.indexOf (">", result) + 1;  // find </mrow>
-    	  level = level - 1;
-          if (level == 2) {  // we have the end of a second-to-top-level
-		    count = count + 1;
-		    if (count == 1)  // save the output variable list
-		      variableList = out.slice (start, stop);
-    	    else if (count == 3)  // save the returned expression
-      	  expr = wrapMath (out.slice (start, stop));
-        }
-      } else { // it must be "mrow"
-        level = level + 1;
-        stack.push (out.lastIndexOf("<", result)); // find <mrow, even w/ namespace
-      }
-    }
-    
-    if ((pt != "gradient") && (count < 3)) {
-//      this.prompt.alert (null, "Computation Warning", 
-  //        "Warning: Prepare Plot was unable to identify dependent variables and prepare the expression");
-      alert ("Warning: Prepare Plot was unable to identify dependent variables and prepare the expression");
-      dump("Warning: Prepare Plot was unable to identify dependent variables and prepare the expression\n");
-    }  
-  }  
-                                                                
-  if (variableList)
-    graphSaveVars (variableList, graph, plot_no);
-
-  if (expr) {
-    if ((pt == "polar") || (pt == "spherical") || (pt == "cylindrical") ||
-        (pt == "parametric") || (pt == "gradient") || (pt == "vectorField")) {
-      // insert ilk="enclosed-list" as attribute to <mfenced>
-      var hasilk = expr.indexOf("ilk=",0);
-      if (hasilk == -1) {
-        var s = expr.indexOf("<mfenced",0);
-        if (s>0) {
-          expr = expr.slice (0,s) + "<mfenced ilk=\"enclosed-list\" " + expr.slice(s+8);
-        }
-      }
-      expr = runFixup(expr);
-      graph.setPlotAttribute (PlotAttrName ("Expression", plot_no), expr);
-    }
-  }
-
-  // look for "explicitList" and "parametric"
-  // Set the plot types if these are found
-  var s = out.indexOf("explicitList",0);
-  if (s > 0) {
-    graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "explicitList");
-  } else {
-    s = out.indexOf ("parametric");
-    if (s > 0) {
-      graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "parametric");
-    }
-  }
+// wrap this mathml fragment string inside a mathml <mi> element
+function wrapmi (thing) {
+  return ("<mi>" + thing + "</mi>");
 }
 
 
-// put the vars in the <graph>
-//<mfenced open="[" close="]">
-//        <mi>x</mi>
-//        <mi>y</mi>
-//        <mi>z</mi>
-//      </mfenced>
-function graphSaveVars (varList, g, plot_no) {
-  var xyzvar, i;
-  if (varList) {
-    var index = 0;
-    var stop = 0;
-    var start = varList.indexOf ("<mi>", index);
-    if (start >= 0) {
-      stop = varList.indexOf ("</mi>", start+1);
-      xyzvar = wrapMath (varList.slice ( start, stop+5));
-      g.setPlotAttribute (PlotAttrName ("XVar", plot_no), xyzvar);
-      index = stop+1;
-    }
-    start = varList.indexOf ("<mi>", index);
-    if (start >= 0) {
-      stop = varList.indexOf ("</mi>", start+1);
-      xyzvar = wrapMath (varList.slice ( start, stop+5));
-      g.setPlotAttribute (PlotAttrName ("YVar", plot_no), xyzvar);
-      index = stop+1;
-    }
-    start = varList.indexOf ("<mi>", index);
-    if (start >= 0) {
-      stop = varList.indexOf ("</mi>", start+1);
-      xyzvar = wrapMath (varList.slice ( start, stop+5));
-      g.setPlotAttribute (PlotAttrName ("ZVar", plot_no), xyzvar);
-      index = stop+1;
-    }
+/**----------------------------------------------------------------------------------*/
+
+function graphSaveVars (varList, g, plot_no) {   
+  if (varList[0] != "") {
+    g.setPlotAttribute (PlotAttrName ("XVar", plot_no), wrapMath (wrapmi(varList[0])));         
+  }  
+  if (varList[1] != "") {
+    g.setPlotAttribute (PlotAttrName ("YVar", plot_no), wrapMath (wrapmi(varList[1])));         
+  }
+  if (varList[2] != "") {
+    g.setPlotAttribute (PlotAttrName ("ZVar", plot_no), wrapMath (wrapmi(varList[2])));         
   }
 }
 
@@ -847,8 +672,8 @@ function attributeArrayRemove (A, element) {
 // get some funky error about A[idx] not having properties
 function attributeArrayFind (A, element) {
   var idx;
-//  for (idx = 0; idx < A.length && A[idx] != element; idx++) ;
-//  if (A[idx] != element)
+  for (idx = 0; idx < A.length && A[idx] != element; idx++) ;
+  if (A[idx] != element)
     idx = -1;
   return idx;
 }
@@ -914,7 +739,7 @@ function PlotSelectCompElements (plotno) {
     NA = attributeArrayRemove (this.PLOTELEMENTS, "TubeRadius");
   }
 
-  var nvars = CountPlotVars (dim, ptype, animate);
+  var nvars = PlotVarsNeeded (dim, ptype, animate);
 
   if (nvars < 2) {
     NA = attributeArrayRemove (NA, "YPts");
@@ -932,42 +757,41 @@ function PlotSelectCompElements (plotno) {
 }
 
 
-function CountPlotVars (dim, ptype, animate) {
-  var nvars = 0;
+function PlotVarsNeeded (dim, ptype, animate) {
+  var nvars = 0;  
   switch (ptype) {
     case "curve":
     case "explicitList":
+    case "tube":                                                                     
        nvars = 0;            // gets set to 1 below
+       break; 
+    case "rectangular":                                                                     
+    case "polar":                                                                     
+    case "parametric":                                                                     
+    case "approximateIntegral":                     
+    case "spherical":                                                                     
+    case "cylindrical":                                                                     
+       nvars = 1;                                                
        break;
-    case "rectangular":
-    case "polar":
-    case "parametric":
-    case "approximateIntegral":
-    case "spherical":
-    case "cylindrical":
-    case "tube":
-       nvars = 1;
-       break;
-    case "inequality":
-    case "implicit":
-    case "conformal":
-    case "vectorField":
-    case "gradient":
-    case "ode":
+    case "inequality":                                                                     
+    case "implicit":                                                                     
+    case "conformal":                                                                     
+    case "vectorField":                                                                     
+    case "gradient":                                                                     
+    case "ode":                                                                     
        nvars = 2;
        break;
     default:
-       dump ("SMR ERROR in GraphOverlay line 932 unknown plot type " + ptype+"\n");
-//       alert ("SMR ERROR in GraphOverlay line 932 unknown plot type " + ptype);
+       alert ("SMR ERROR in GraphOverlay line 932 unknown plot type " + ptype);
 //      this.prompt.alert (null, "Computation Error", "Unknown plot type <" + ptype +">");
        break;
-  }
-  if (dim == "3")
+  }   
+  if (dim == "3") 
     nvars++;
   if (animate == "true")
     nvars++;
   return (nvars);
-}
+}  
 
 function testQuery (domgraph) {
   var graph = new Graph();
@@ -992,4 +816,247 @@ function testQueryGraph (domgraph) {
   var parent = domgraph.parentNode;
   insertGraph (domgraph, graph);
   parent.removeChild (domgraph);
+}
+
+
+//================================================================================
+
+// The engine has simply run eval(expression) and out is the mathml returned.
+// (1) identify the plot parameters by looking for <mi>s and assign them to 
+//     the plot variables. Warn if there are problems
+// (2) Try to identify the type of plot 
+function parseQueryReturn (out, graph, plot_no) {
+  var stack = [];                                                             
+  var level = 0;                                                              
+  var result;                                                                 
+  var variableList = [];                                                     
+  var pt       = graph.getPlotAttribute (PlotAttrName ("PlotType", plot_no)); 
+  var dim      = graph.getGraphAttribute ("Dimension"); 
+  var animated = (graph.getPlotAttribute (PlotAttrName ("Animate", plot_no)) == "true")?true:false;
+  var mathvars = false, commas = false;
+  
+  // (1) try to identify all of the variables 
+  //     Variables are indicated by <mi>, but these might also be mathnames of functions
+  var count = 0;   
+  var index = 0;   
+  var start;                                                        
+  while ((start = out.indexOf ("<mi", index)) >= 0) {
+    mathvars = true;
+    start = out.indexOf(">", start);
+    var stop  = out.indexOf ("</mi>", start) + 1;  // find </mi>                                              
+    index = stop+1;
+	var v = out.slice (start+1, stop-1);
+    if (nameNotIn (v, stack)) {              
+      stack.push (v);          
+    }           
+  }
+  for (var i=0; i<stack.length; i++) {
+    if (varNotFun(stack[i])) {
+      variableList.push (stack[i]);
+    }
+  }
+  
+  // check variables
+  var varsNeeded = PlotVarsNeeded (dim, pt, animated);
+  
+  // (2) Given a list of potential variables, match them to x,y,z, and t
+  variableList = matchVarNames (variableList, animated);
+  if (variableList)
+    graphSaveVars (variableList, graph, plot_no);
+
+  // (3) identify explicitList and parametric types
+  // graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "explicitList");             
+  // Count the number of elements in the returned expression. If it's equal to the
+  // dimension, set the plot type to parametric.
+  var dim      = graph.getGraphAttribute("Dimension");
+  var commalst = out.match (/<mo>,<\/mo>/g);
+  if (commalst) {
+    commas = true;
+    var n = commalst.length + 1;
+    // probably only want to do the following for "rectangular" plots
+    if ((dim == n) && (pt != "vectorField") & (pt != "polar") && (pt != "cylindrical") && 
+        (pt != "spherical") && (pt != "tube")) {
+      graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "parametric");   
+    }  
+  }  
+
+  // (4) try to identify explicit lists
+  if ((!commas) && (!mathvars)) {
+    if (out.indexOf("<mtable>") >= 0) {
+      graph.setPlotAttribute (PlotAttrName ("PlotType", plot_no), "explicitList");   
+    }
+  }
+
+  // (5) some special handling for polar, spherical, and cylindrical
+  //     build an expression that looks like [r,t] for polar, [r,t,p] for spherical and cylindrical
+  //     Allow constants. For animations, if there is only 1 var, it's the animation var.
+  if ((pt == "polar") || (pt == "spherical") || (pt == "cylindrical")) {
+    if (!commas) {        // create [fn, xvar]
+      if ((!mathvars) || ((animated) && (actualVarCount(variableList) == 1))){    // first arg is a constant, the rest are new
+        var animvar = variableList[0];
+        variableList[0] = newVar ("1");
+        graph.setPlotAttribute (PlotAttrName ("XVar", plot_no), wrapMath (wrapmi(variableList[0])));         
+        variableList[1] = newVar ("2");
+        graph.setPlotAttribute (PlotAttrName ("YVar", plot_no), wrapMath (wrapmi(variableList[1])));         
+        if (animated) {
+          if (pt == "polar") {
+            graph.setPlotAttribute (PlotAttrName ("YVar", plot_no), wrapMath (wrapmi(animvar)));         
+          } else {
+            graph.setPlotAttribute (PlotAttrName ("ZVar", plot_no), wrapMath (wrapmi(animvar)));         
+          }  
+        }
+      } 
+      out = runFixup (createPolarExpr (out, variableList, pt));
+      graph.setPlotAttribute (PlotAttrName ("Expression", plot_no), out);             
+    }  
+  }
+  
+  // (6) add the ilk="enclosed-list" attribute to <mfenced>
+  if (out) { 
+    if ((pt == "polar") || (pt == "spherical") || (pt == "cylindrical") ||
+        (pt == "parametric") || (pt == "gradient") || (pt == "vectorField")) {
+      var hasilk = out.indexOf("ilk=",0);
+      if (hasilk == -1) {
+        var s = out.indexOf("<mfenced",0);
+        if (s>0) {
+          out = out.slice (0,s) + "<mfenced ilk=\"enclosed-list\" " + out.slice(s+8); 
+        }
+      }  
+      out = runFixup(out);
+      graph.setPlotAttribute (PlotAttrName ("Expression", plot_no), out);             
+    }          
+  }
+  
+}
+
+
+// return true unless v is one of the function names
+// \u03c0 is the unicode for PI?
+function varNotFun (v) {
+  var funNames = ["sin", "cos", "tan", "ln", "log", "exp", "PI", "\u03c0"];
+  var ret = true;
+  for (var i=0; i<funNames.length; i++) {
+    if (v == funNames[i]) {
+      ret = false;
+    }
+  }
+  return (ret);
+}
+
+// return true if vin is not in the list
+function nameNotIn (vin, list) {
+  var ret = true;
+  for (var i=0; i<list.length; i++) {
+    if (list[i] == vin) {
+      ret = false;
+    }
+  }  
+  return ret;
+}  
+
+
+
+// Given a list of variable names, assign them to the x, y, z, and animation 
+// variables for a plot
+function matchVarNames (variableList, animated) {
+  var newVarList = ["", "", "", ""];
+  var animVar = "";
+  var xvar=-1, yvar=-1, zvar=-1;
+  
+  // If there's x, y, or z, match them to vars 0, 1, or 2 respectively,
+  // but only if all of the predecessors are there.
+  for (var i=0; i<variableList.length; i++) {
+    if ((variableList[i] == "x") || (variableList[i] == "X")) {
+       xvar = i;
+    } else if ((variableList[i] == "y") || (variableList[i] == "Y")) {
+       yvar = i;
+    }  else if ((variableList[i] == "z") || (variableList[i] == "Z")) {
+       zvar = i;
+    }   
+  }
+  var ptr = 0;
+  if (xvar >= 0) {
+    newVarList[ptr++] = variableList[xvar];
+    variableList[xvar] = "";
+    if (yvar >= 0) {
+      newVarList[ptr++] = variableList[yvar];
+      variableList[yvar] = "";
+      if (zvar >= 0) {
+        newVarList[ptr++] = variableList[zvar];
+        variableList[zvar] = "";
+      }
+    }
+  }
+
+  // grab the animation variable ... 
+  if (animated) {
+    for (var i=0; i<variableList.length; i++) {
+      if ((variableList[i] == "t") || (variableList[i] == "T")) {
+         animVar = variableList[i];
+         variableList[i] = "";
+      } 
+    }  
+  }
+  // sort the remainder alphabetically
+  variableList.sort();
+  
+  // assign remainder of variables in alphabetical order
+  var oldptr = 0;
+  var newptr = 0;
+  while ((oldptr < variableList.length) && (newptr < newVarList.length)) {
+    for ( ; ((oldptr <= variableList.length) && (variableList[oldptr] == "")); oldptr++) ;
+    for ( ; ((newptr <= newVarList.length) && (newVarList[newptr] != "")); newptr++) ;
+    if (variableList[oldptr] && variableList[oldptr] != "")
+      newVarList[newptr++] = variableList[oldptr++];
+  }
+
+  // insert animation var if it's there 
+  if ((animated) && (animVar != "")) {
+     newVarList[newptr] = animVar;
+  }
+    
+  return newVarList;
+}
+  
+// create [fn, var]  
+function createPolarExpr (mathexp, variableList, plottype) {
+  var newexp = stripMath (mathexp);
+  newexp = "<mrow><mo>[</mo>" + newexp;
+  newexp = newexp + "<mo>,</mo>" + wrapmi(variableList[0]); 
+  if (plottype != "polar") {
+    newexp = newexp + "<mo>,</mo>" + wrapmi(variableList[1]); 
+  }   
+  newexp = newexp + "<mo>]</mo></mrow>";
+  newexp = wrapMath (newexp);
+  return newexp;
+}
+
+/* function createPolarExpr (mathexp, xvar) {                                                  */
+/*   var newexp = stripMath (mathexp);                                                         */
+/*   newexp = "<mrow><mo>[</mo>" + newexp + "<mo>,</mo>" + wrapmi(xvar) + "<mo>]</mo></mrow>"; */
+/*   newexp = wrapMath (newexp);                                                               */
+/*   return newexp;                                                                            */
+/* }                                                                                           */
+
+
+function newVar (x) {
+  return "o"+x;
+}
+ 
+
+function stripMath (mathexp) {
+  var start  = mathexp.indexOf ("<math", 0);
+  start      = mathexp.indexOf (">", start) + 1;
+  var finish = mathexp.indexOf ("</math", start);
+  var newexp = mathexp.slice   (start, finish-1);
+  return newexp;
+}
+
+
+function actualVarCount(variableList) {
+  var i=0;
+  for (var j=0; j<variableList.length; j++)
+    if (variableList[j] != "") 
+      i++;
+  return i;    
 }
