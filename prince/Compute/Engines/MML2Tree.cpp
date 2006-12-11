@@ -219,7 +219,6 @@ MNODE *MML2Tree::GetElement(const char *z_src, int &advance)
 int MML2Tree::GetElementHeader(const char *p_header,
                                MNODE * new_node, int &is_empty)
 {
-  int rv = 0;
   is_empty = 0;
 
   TCI_ASSERT(*p_header == '<');
