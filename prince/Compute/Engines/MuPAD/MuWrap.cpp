@@ -101,9 +101,10 @@ void MuPADWrapper::iReleaseClient(U32 client_ID, const char *def_list)
           if (curr) {
             char cmd[256];
             sprintf(cmd, undefine_template, curr->alias);
-            int res = iExecute(cmd);
-          } else
+            iExecute(cmd);
+          } else {
             TCI_ASSERT(0);
+          }
         }
       }
       delete[] tmp;
@@ -318,8 +319,6 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
 
 bool MuPADWrapper::iLoadStrsAndDLL(const char *engp, const char *libp)
 {
-  bool rv = false;
-
   TCIString engpath = engp;
   TCIString libpath = libp;
   return mupd_eng->LoadStrsAndDLL(engpath, libpath);
@@ -433,7 +432,7 @@ bool MuPADWrapper::RenderPlot(const char *VCamFile, const char *outFile)
   pid_t pid = fork();
   
   if (pid == 0) { // we are the child
-    if (execl(vcam_path, vcam_path, "-convert", outFile, VCamFile, 0)) {
+    if (execl(vcam_path, vcam_path, "-convert", outFile, VCamFile, (char *)NULL)) {
 #ifdef DEBUG
       TCI_ASSERT(!"Unable to run MuPAD/VCam.  Check errno code.");
 #endif
@@ -931,7 +930,7 @@ char *MuPADWrapper::VARIABLEtoEstr(SEMANTICS_NODE * snode, int& error_code)
   }
 
   if (snode->bucket_list && snode->bucket_list->first_child) {
-    SEMANTICS_NODE *s_qualifier = snode->bucket_list->first_child;
+//    SEMANTICS_NODE *s_qualifier = snode->bucket_list->first_child;
     TCI_ASSERT(0);
     // Qualified variables are now typed as SEM_TYP_QUALIFIED_VAR or SEM_TYP_INDEXED_VAR
   }
@@ -3171,7 +3170,7 @@ char *MuPADWrapper::ODEtoEstr(SEMANTICS_NODE * ODE_info, int& error_code)
     BUCKET_REC *bucket_rover = ODE_info->bucket_list;
     while (bucket_rover && err_code != 1) {
       if (bucket_rover->first_child) {
-        SEMANTICS_NODE *s_eqn = bucket_rover->first_child;
+//        SEMANTICS_NODE *s_eqn = bucket_rover->first_child;
         if (bucket_rover->bucket_ID == MB_ODEFUNC)
           ODEFuncName2eStr(bucket_rover->first_child, &sfor_func_str,
                            sfor_ln);
@@ -3259,7 +3258,7 @@ char *MuPADWrapper::ODENumerictoEstr(SEMANTICS_NODE * ODE_info,
     BUCKET_REC *bucket_rover = ODE_info->bucket_list;
     while (bucket_rover && err_code != 1) {
       if (bucket_rover->first_child) {
-        SEMANTICS_NODE *s_eqn = bucket_rover->first_child;
+//        SEMANTICS_NODE *s_eqn = bucket_rover->first_child;
         if (bucket_rover->bucket_ID == MB_ODEFUNC) {
           ODEFuncName2eStr(bucket_rover->first_child,
                            &ODEfunc_list_str, ODEfunc_ln);
@@ -4242,9 +4241,9 @@ char *MuPADWrapper::CreateSIntegraleStr(MathServiceRequest & msr, U32 cmd_ID,
       if (sn) {
         SEMANTICS_NODE *s_param = sn;
         part = ProcessSemList(s_param, NULL, error_code);;
-      } else
+      } else {
         TCI_ASSERT(0);
-
+      }
       char *ptr = strstr(eng_zstr, "hold(int)");
       if (ptr) {
         size_t zln = strlen(cmd_template) + strlen(eng_zstr) + strlen(part);
@@ -4261,8 +4260,9 @@ char *MuPADWrapper::CreateSIntegraleStr(MathServiceRequest & msr, U32 cmd_ID,
         error_code = CR_badintegral;
       }
       delete[] part;
-    } else
+    } else {
       TCI_ASSERT(0);
+    }
   }
 
   return zh_rv;
@@ -4602,11 +4602,12 @@ char *MuPADWrapper::CreateCOLLECTeStr(MathServiceRequest & msr,
       if (sn) {
         SEMANTICS_NODE *s_param = sn;
         var_str = ProcessSemList(s_param, NULL, error_code);
-      } else
+      } else {
         TCI_ASSERT(0);
-    } else
+      }
+    } else {
       TCI_ASSERT(0);
-
+    }
     size_t zln = strlen(cmd_template) + strlen(eng_zstr);
     if (var_str)
       zln += strlen(var_str);
@@ -6194,7 +6195,6 @@ char *MuPADWrapper::VCALCOPtoEstr(MathServiceRequest * msr,
 
   char *expr_str = NULL;
   char *basis_str = NULL;
-  U32 zln = 0;
 
   if (s_func) {                 // Here, we're evaluating a vcalc operator
     U32 subID = 0;
@@ -6858,7 +6858,7 @@ void MuPADWrapper::KillIndVar(SEMANTICS_NODE * ODE_info)
     BUCKET_REC *bucket_rover = ODE_info->bucket_list;
     while (bucket_rover) {
       if (bucket_rover->first_child) {
-        SEMANTICS_NODE *s_eqn = bucket_rover->first_child;
+//        SEMANTICS_NODE *s_eqn = bucket_rover->first_child;
         if (bucket_rover->bucket_ID == MB_ODEFUNC) {
           SEMANTICS_NODE *s_func = bucket_rover->first_child;
           if (s_func->semantic_type == SEM_TYP_FUNCTION) {
@@ -6876,13 +6876,14 @@ void MuPADWrapper::KillIndVar(SEMANTICS_NODE * ODE_info)
                 if (map) {
                   char cmd[256];
                   sprintf(cmd, cmd_template, map->alias);
-                  int res = iExecute(cmd);
+                  iExecute(cmd);
                 }
               }
               arg_rover = arg_rover->next;
             }
-          } else
+          } else {
             TCI_ASSERT(0);
+          }
         }
       }
       bucket_rover = bucket_rover->next;

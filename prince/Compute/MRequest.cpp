@@ -436,7 +436,7 @@ const char *PlotServiceRequest::GetPlotParam(PARAM_SPEC *param_list, U32 targ_ID
   }
   if (!rv) {
     char *x = new char[1];
-	x[0] = NULL;
+	x[0] = 0;
 	rv = x;
   }
   return rv;

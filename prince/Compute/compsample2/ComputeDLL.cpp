@@ -163,7 +163,7 @@ void ComputeDLL::ReleaseTransaction(U32 targ_ID)
 bool ComputeDLL::CheckParam(MathServiceRequest * msr, U32 p_ID, U32 expected_type)
 {
   U32 p_type;
-  const char *z_var = msr->GetParam(p_ID, p_type);
+  msr->GetParam(p_ID, p_type);
   if (p_type == expected_type)
     return true;
   else
@@ -285,7 +285,7 @@ int ComputeDLL::ValidateParams(U32 cmd_ID, MathServiceRequest * msr)
         rv = PID_dependcolumn + PID_first_badparam;
 
       U32 p_type;
-      const char *z_var = msr->GetParam(PID_regressdegree, p_type);
+      msr->GetParam(PID_regressdegree, p_type);
       if (p_type) {
         if (!CheckParam(msr, PID_regressdegree, zPT_ASCII_natural) &&
             !CheckParam(msr, PID_regressdegree, zPT_ASCII_mmlmarkup))
