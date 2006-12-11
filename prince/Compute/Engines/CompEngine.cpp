@@ -347,7 +347,6 @@ void CompEngine::Execute(MathServiceRequest & msr, MathResult & mr)
       DisposeTList (graphTree);
       
       INPUT_NOTATION_REC *p_input_notation = CreateNotationRec();
-      const char *def_canon_ID = NULL;
       AddBasisVariables (msr);
       void * tmp;
       nsresult res = wrapper->ProcessRequest((void *) &msr, (void *) &mr, &tmp);
@@ -1097,7 +1096,6 @@ void CompEngine::ConvertTreeToList(SEMANTICS_NODE * semantics_tree,
       if (c_content->semantic_type == SEM_TYP_TABULATION) {
         if (c_content->ncols == 1) {
           c_content->semantic_type = SEM_TYP_LIST;
-          BUCKET_REC *bl = c_content->bucket_list;
           char *obj_name = "Solve List";
 
           delete[] c_content->contents;
@@ -1106,11 +1104,11 @@ void CompEngine::ConvertTreeToList(SEMANTICS_NODE * semantics_tree,
           strcpy(tmp, obj_name);
           c_content->contents = tmp;
         }
-      } else {
       }
-    }                           //  if ( b_rover->first_child && b_rover->next == NULL )
-  } else
+    }
+  } else {
     TCI_ASSERT(0);
+  }
 }
 
 /* When Analyzer produces a semantics tree from an SWP equation
@@ -1165,7 +1163,7 @@ const char *CompEngine::ConvertTreeToDef(MathServiceRequest & msr,
           // could see unicode 0x2254 here!
           BUCKET_REC *b = assign_op->bucket_list;
           SEMANTICS_NODE *left_side = b->first_child;
-          SEMANTICS_NODE *right_side = b->next->first_child;
+//          SEMANTICS_NODE *right_side = b->next->first_child;
 
           bool is_func_def = false;
           bool is_var_def = false;

@@ -278,12 +278,12 @@ void CompEngine::SetClientPref(U32 pref_ID, long pref_val)
 
 void CompEngine::SetVectorBasis(const nsACString & src_markup)
 {
-  nsresult res = mysample->SetVectorBasis(NS_ConvertUTF8toUTF16(src_markup).get());
+  mysample->SetVectorBasis(NS_ConvertUTF8toUTF16(src_markup).get());
 }
 
 void CompEngine::SetEngineAttr(U32 attr_ID, long val)
 {
-  nsresult res = mysample->SetEngineAttr(attr_ID,val);
+  mysample->SetEngineAttr(attr_ID,val);
 }
 
 int CompEngine::DoComputation(FILE * outfile,
@@ -300,7 +300,7 @@ int CompEngine::DoComputation(FILE * outfile,
     wide_markup = NS_ConvertUTF8toUTF16(src_markup);
   nsAutoString arg, arg2, arg3, arg4, arg5;
   PRUnichar* res_str;
-  U32 res = 0;
+  int res = 0;
   nsresult rv = NS_OK;
   switch (cmd_ID) {
     case CCID_Evaluate:

@@ -55,7 +55,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::Startup(const PRUnichar *engFile)
     Shutdown();
   
   if (rv == NS_OK) {
-    int   res =  ComputeDLL::InitCompDLL();
+    ComputeDLL::InitCompDLL();  //check return?
 
     client_handle =  ComputeDLL::GetClientHandle( 0 );
     if (client_handle == 0) {
@@ -560,7 +560,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::SetEngineAttr(PRUint32 attrID, PRInt32 va
   default:
     return NS_ERROR_ILLEGAL_VALUE;
   }
-  int res = ComputeDLL::SetEngineStateAttr( MuPAD_eng_ID, attrID, buf);
+  ComputeDLL::SetEngineStateAttr( MuPAD_eng_ID, attrID, buf); // check return?
   return NS_OK;
 }
 
@@ -613,7 +613,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::GetVectorBasis(PRUnichar **result)
 /* void setVectorBasis (in wstring result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::SetVectorBasis(const PRUnichar *expr)
 {
-  int res = ComputeDLL::SetWideUserPref( 0/*client_handle*/, CLPF_Vector_basis, expr);
+  ComputeDLL::SetWideUserPref( 0/*client_handle*/, CLPF_Vector_basis, expr);  // check return?
   // check res
   return NS_OK;
 }
@@ -720,7 +720,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::SetUserPref(PRUint32 attrID, PRInt32 valu
     return NS_ERROR_ILLEGAL_VALUE;
   }
 
-  int res = ComputeDLL::SetUserPref( 0/*client_handle*/, attrID, buf);
+  ComputeDLL::SetUserPref( 0/*client_handle*/, attrID, buf);  // check return?
   return NS_OK;
 }
 
