@@ -4,17 +4,13 @@
 #define   TCISTRING_H
 
 #include "../CmpTypes.h"
-#include "ByteArry.h"
 
-#ifndef STD_STRING_H
-  #include <string.h>
-  #define STD_STRING_H
-#endif
+#include <string.h>
+#include <stdarg.h>
 
-#ifndef STD_STDARG_H
-  #include <stdarg.h>
-  #define STD_STDARG_H
-#endif
+#define TCICHAR  char
+#define TCIWCHAR  short
+typedef unsigned char U8;
 
 //#define ASSERT_HYPERACTIVE_STR
 
