@@ -2297,7 +2297,7 @@ MNODE *MuAnalyzer::InfixToPrefix(MNODE * eng_tree, char *z_op)
       } else
         TCI_ASSERT(0);
     } else if (rover->first_kid) {
-      MNODE *tmp = InfixToPrefix(rover->first_kid, z_op);
+      InfixToPrefix(rover->first_kid, z_op);
     }
     rover = rover->next;
   }
