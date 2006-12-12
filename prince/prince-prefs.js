@@ -142,4 +142,4 @@ pref("prince.plot.YPts", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mr
 pref("prince.plot.ZPts", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>20</mn></mrow></math>");
 
 pref("prince.bibtex.dir", "/swp55/TCITeX/BibTeX/bib");
-pref("security.xpconnect.plugin.unrestricted", "true");
+pref("security.xpconnect.plugin.unrestricted", true);
