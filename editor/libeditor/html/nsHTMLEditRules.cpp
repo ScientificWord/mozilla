@@ -7332,7 +7332,9 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   {
    // TODO: skip this if the existing node is the same type as the new node
    // there is a title. Convert inNode to the title node.
+#if DEBUG_barry || DEBUG_Barry
    DebExamineNode(inNode);
+#endif
     res = mHTMLEditor->ReplaceContainer(inNode, address_of(currentNode), strTitle);
     // TODO: switching nodes may screw up the selection???
     if (NS_FAILED(res)) return res;
@@ -7346,7 +7348,9 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &offset);
 //    printf("Parent of target tag: \n");
 //    mHTMLEditor->DumpNode(parent); 
-    DebExamineNode(parent);
+#if DEBUG_barry || DEBUG_Barry
+   DebExamineNode(inNode);
+#endif
     if (NS_FAILED(res)) return res;
     res = mtagListManager->NodeCanContainTag(parent, aStructureType, atomNamespace, &fCanContain);
     if (NS_FAILED(res)) return res;
@@ -7390,7 +7394,9 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   while (parent)
   {
     res = mtagListManager->NodeCanContainTag(parent, aStructureType, atomNamespace, &fCanContain);
-    DebExamineNode(parent);
+#if DEBUG_barry || DEBUG_Barry
+   DebExamineNode(inNode);
+#endif
     if (NS_FAILED(res)) return res;
     if (fCanContain) break;
     
@@ -7410,8 +7416,10 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
         else
         {
           printf("Moving node: \n");
-          DebExamineNode(node);
-          mHTMLEditor->DumpNode(node);
+#if DEBUG_barry || DEBUG_Barry
+   DebExamineNode(inNode);
+#endif
+           mHTMLEditor->DumpNode(node);
           res = mHTMLEditor->MoveNode( node, *outNode, destOffset);
           if (NS_FAILED(res)) return res;
           offsetIncrement++;
@@ -7452,12 +7460,16 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     savedParent = parent;
     currentNode = parent;
     res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &offset);
-	DebExamineNode(parent);
+#if DEBUG_barry || DEBUG_Barry
+   DebExamineNode(inNode);
+#endif
     if (NS_FAILED(res)) return res;
     if (fDelParent)
     {
       printf("Deleting empty node: \n");
-      DebExamineNode(savedParent);
+#if DEBUG_barry || DEBUG_Barry
+   DebExamineNode(inNode);
+#endif
       mHTMLEditor->DumpNode(savedParent);
       res = mHTMLEditor->DeleteNode(savedParent);
     }
@@ -7473,7 +7485,9 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     if (fCanContain)
     {
       printf("Moving nodes to the right of the target node: \n");
-      DebExamineNode(node);
+#if DEBUG_barry || DEBUG_Barry
+   DebExamineNode(inNode);
+#endif
       mHTMLEditor->DumpNode(node);
       mHTMLEditor->MoveNode(node, *outNode, destOffset++);
     }
