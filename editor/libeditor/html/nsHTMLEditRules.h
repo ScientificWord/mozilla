@@ -176,6 +176,7 @@ protected:
   nsresult WillRelativeChangeZIndex(nsISelection *aSelection, PRInt32 aChange, PRBool *aCancel, PRBool * aHandled);
   nsresult WillMakeDefListItem(nsISelection *aSelection, const nsAString *aBlockType, PRBool aEntireList, PRBool *aCancel, PRBool *aHandled);
   nsresult WillMakeBasicBlock(nsISelection *aSelection, const nsAString *aBlockType, PRBool *aCancel, PRBool *aHandled);
+  nsresult WillMakeStructure(nsISelection *aSelection, const nsAString *aStructureType, PRBool *aCancel, PRBool *aHandled);
   nsresult DidMakeBasicBlock(nsISelection *aSelection, nsRulesInfo *aInfo, nsresult aResult);
   nsresult DidAbsolutePosition();
   nsresult AlignInnerBlocks(nsIDOMNode *aNode, const nsAString *alignType);
@@ -265,6 +266,9 @@ protected:
                               nsVoidArray &inTransitionArray);
   nsresult RemoveBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes);
   nsresult ApplyBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAString *aBlockTag);
+  nsresult InsertStructure(nsIDOMNode *inNode, nsCOMPtr<nsIDOMNode> *outNode, 
+                           const nsAString &aStructureType, nsIAtom * atomNamespace );
+  nsresult ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAString *aStructureTag);
   nsresult MakeBlockquote(nsCOMArray<nsIDOMNode>& arrayOfNodes);
   nsresult SplitAsNeeded(const nsAString *aTag, nsCOMPtr<nsIDOMNode> *inOutParent, PRInt32 *inOutOffset);
   nsresult AddTerminatingBR(nsIDOMNode *aBlock);
