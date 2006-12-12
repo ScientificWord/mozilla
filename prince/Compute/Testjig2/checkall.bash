@@ -7,6 +7,8 @@ for F in muptests/commands muptests/errors muptests/params muptests/uprefs ; do 
 for F in muptests/dm10-1 muptests/Statistics1 ; do bash  check.bash $F ; done
 for F in muptests/Interpret muptests/Interpret2 ; do bash check.bash $F ; done
 
-for F in mpltests/health1 mpltests/params ; do bash check.bash $F ; done
-
-for F in othertests/SwitchEngines ; do bash check.bash $F ; done
+if [ $OSTYPE == cygwin ]; then
+  for F in mpltests/health1 mpltests/params ; do bash check.bash $F ; done
+  for F in othertests/SwitchEngines ; do bash check.bash $F ; done ;
+fi
+  
