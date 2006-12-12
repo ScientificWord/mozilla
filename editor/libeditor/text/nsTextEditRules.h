@@ -102,7 +102,8 @@ public:
     kSetAbsolutePosition = 3015,
     kRemoveAbsolutePosition = 3016,
     kDecreaseZIndex      = 3017,
-    kIncreaseZIndex      = 3018
+    kIncreaseZIndex      = 3018,
+    kMakeStructure       = 3019
 
   };
   

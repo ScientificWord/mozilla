@@ -393,6 +393,11 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
             GetStringProperty(NS_LITERAL_STRING("initialcontents"), tagNameElement);
           pdata->nextAfterEmptyBlock =
             GetStringProperty(NS_LITERAL_STRING("nextafteremptyblock"), tagNameElement);
+          pdata->titleTag =
+            GetStringProperty(NS_LITERAL_STRING("titletag"), tagNameElement);
+          if (strClassName.EqualsLiteral("structtag"))
+            pdata->level =
+              GetStringProperty(NS_LITERAL_STRING("level"), tagNameElement);
           pdata->discardEmptyBlock = 
             GetStringProperty(NS_LITERAL_STRING("discardemptyblock"), tagNameElement)==NS_LITERAL_STRING("true");
           // save the key, data pair
@@ -707,11 +712,53 @@ NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter,
 }
 
 
+/* PRBool nodeCanContainTag (in nsIDOMNode node, in AString strTagInner, in nsIAtom atomNSInner); */
+NS_IMETHODIMP msiTagListManager::NodeCanContainTag(nsIDOMNode *node, const nsAString & strTagInner, nsIAtom *atomNSInner, PRBool *_retval)
+{
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
+  if (!element) return PR_FALSE;
+  nsresult res = NS_OK;
+  nsAutoString stringTag;
+  element->GetLocalName(stringTag);
+  nsAutoString strNS;
+  element->GetNamespaceURI(strNS);
+  nsCOMPtr<nsIAtom> atomNS = NS_NewAtom(strNS);
+  res = TagCanContainTag(stringTag, atomNS, strTagInner, atomNSInner, _retval);
+  return res;
+}
+
+
+/* PRBool nodeCanContainTag (in nsIDOMNode nodeOuter, in nsIDOMNode nodeInner); */
+NS_IMETHODIMP msiTagListManager::NodeCanContainNode(nsIDOMNode *nodeOuter, nsIDOMNode *nodeInner, PRBool *_retval)
+{
+  nsCOMPtr<nsIDOMElement> elementOuter = do_QueryInterface(nodeOuter);
+  if (!elementOuter) return PR_FALSE;
+  nsresult res = NS_OK;
+  nsAutoString stringTagOuter;
+  elementOuter->GetLocalName(stringTagOuter);
+  nsAutoString strNSOuter;
+  elementOuter->GetNamespaceURI(strNSOuter);
+  nsCOMPtr<nsIAtom> atomNSOuter = NS_NewAtom(strNSOuter);
+  nsCOMPtr<nsIDOMElement> elementInner = do_QueryInterface(nodeInner);
+  if (!elementInner) return PR_FALSE;
+  nsAutoString stringTagInner;
+  elementInner->GetLocalName(stringTagInner);
+  nsAutoString strNSInner;
+  elementInner->GetNamespaceURI(strNSInner);
+  nsCOMPtr<nsIAtom> atomNSInner = NS_NewAtom(strNSInner);
+  res = TagCanContainTag(stringTagOuter, atomNSOuter, stringTagInner, atomNSInner, _retval);
+  return res;
+}
+
+
+
 PRInt32 IntFromString( nsAString & str)
 {
   PRBool fMinus = PR_FALSE;
   PRInt32 n = 0;
-  nsAString::const_iterator start, end; // reading-only iterators for nsAString 
+  const PRUnichar *start, *end;
+  start = str.BeginReading();
+  end = str.EndReading();
   if (start == end) return -200;   // -200 is less than any conceivable negative level, and so it is the error value.
   if (*start == '-')
   {
@@ -720,102 +767,50 @@ PRInt32 IntFromString( nsAString & str)
   }
   while (start != end)
   {
-    n = 10*n + *start - '0';
+    if (*start >= '0' && *start <= '9') n = 10*n + *start - '0';
     start++;
   }
   if (fMinus) return (-n);
   else return n;
 }
 
+
+// Whether one structure tag can contain another depends on the levels. A tag with a * level
+// can be contained in any structure tag. A non-* tag cannot be contained in a * tag.
+// If both tags have numerical levels, then the tag with the lower level can contain the tag with the 
+// higher level. Thus 'level' corresponds to the degree of indentation in outline form.
+
 /* PRBool levelCanContainLevel (in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner); */
-NS_IMETHODIMP msiTagListManager::LevelCanContainLevel(const nsAString & strTagOuter, nsIAtom *atomNSOuter, const nsAString & strTagInner, nsIAtom *atomNSInner, PRBool *_retval)
+NS_IMETHODIMP msiTagListManager::LevelCanContainLevel(const nsAString & strTagOuter, nsIAtom *atomNSOuter, const nsAString & strTagInner, 
+      nsIAtom *atomNSInner, PRBool *_retval)
 {
   nsresult rv;
-  nsCOMPtr<nsIDOMNodeList> tagClassNames;
-  nsCOMPtr<nsIDOMNodeList> tagNames;
-  nsCOMPtr<nsIDOMNode> tagClassName;
-  nsCOMPtr<nsIDOM3Node> tagClassNameNode;
-  nsCOMPtr<nsIDOMNode> tagClass;
-  nsCOMPtr<nsIDOMElement> tagClassElement;
-  nsCOMPtr<nsIDOMNode> tagName;
-  nsCOMPtr<nsIDOM3Node> tagNameNode;
-  nsCOMPtr<nsIDOMNode> tagLevel;
-  nsCOMPtr<nsIDOM3Node> tagLevelNode;
-  PRUint32 count;
-  PRInt32 outerLevel = -200;
-  PRInt32 innerLevel = -200;
-  nsAutoString strTemp;
-  // We need to find the levels for these tags.  First find the secttags section
-  rv = mdocTagInfo->GetElementsByTagName(NS_LITERAL_STRING("tagclassname"), getter_AddRefs(tagClassNames));
-  if (tagClassNames) tagClassNames->GetLength(&count);
-  if (count > 0)
-  {
-    for (PRUint32 i = 0; i < count; i++)
-    {
-      tagClassNames->Item(i, getter_AddRefs(tagClassName));
-      if (tagClassName) 
-      {
-        tagClassNameNode = do_QueryInterface(tagClassName);
-        rv = tagClassNameNode->GetTextContent(strTemp);
-        if (strTemp.Equals(NS_LITERAL_STRING("secttag")))   // tagClassNameNode has the taxt "secttag"
-        {
-          tagClassName->GetParentNode( getter_AddRefs(tagClass));
-          tagClassElement = do_QueryInterface(tagClass);
-          rv = tagClassElement->GetElementsByTagName(NS_LITERAL_STRING("name"), getter_AddRefs(tagNames));
-          if (tagNames) tagNames->GetLength(&count);
-          if (count > 0)
-          {
-            for (PRUint32 j = 0; j < count; j++)
-            {
-              tagNames->Item(j, getter_AddRefs(tagName));
-              if (tagName) 
-              {
-                tagNameNode = do_QueryInterface(tagName);
-                rv = tagNameNode->GetTextContent(strTemp);
-                if (strTemp.Equals(strTagOuter))   // the name matches the outer tag name.  Now find the level (it is the sibling
-                // following tagName.
-                {
-                  tagName->GetNextSibling(getter_AddRefs(tagLevel));
-                  tagLevelNode = do_QueryInterface(tagLevel);
-                  rv = tagLevelNode->GetTextContent(strTemp);
-                  if (strTemp.Equals(NS_LITERAL_STRING("*"))) outerLevel = -100;
-                    else outerLevel = IntFromString(strTemp);
-                  break;
-                }
-              }
-            }
-            for (PRUint32 j = 0; j < count; j++)
-            {
-              tagNames->Item(j, getter_AddRefs(tagName));
-              if (tagName) 
-              {
-                tagNameNode = do_QueryInterface(tagName);
-                rv = tagNameNode->GetTextContent(strTemp);
-                if (strTemp.Equals(strTagInner))   // the name matches the outer tag name.  Now find the level (it is the sibling
-                // following tagName.
-                {
-                  tagName->GetNextSibling(getter_AddRefs(tagLevel));
-                  tagLevelNode = do_QueryInterface(tagLevel);
-                  rv = tagLevelNode->GetTextContent(strTemp);
-                  if (strTemp.Equals(NS_LITERAL_STRING("*"))) innerLevel = -100;
-                    else innerLevel = IntFromString(strTemp);
-                  break;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  } 
-  if ((outerLevel < -100) || (innerLevel < -100))
-    *_retval = PR_FALSE;   // didn't find both level
-  else if (innerLevel == -100)
-    *_retval = PR_TRUE;    // "*" sections can go anywhere 
-  else if (outerLevel = -100)
-    *_retval = PR_FALSE;   // don't allow a numbered level inside a * level
-  else *_retval = (outerLevel < innerLevel);
+  nsString strOuterLevel;
+  PRBool fOuterStar;
+  nsString strInnerLevel;
+  PRBool fInnerStar;
+  PRInt32 nOuter;
+  PRInt32 nInner;
   
+  rv = GetStringPropertyForTag(strTagOuter, atomNSOuter, NS_LITERAL_STRING("level"), strOuterLevel);
+//  strOuterLevel.StripWhiteSpace();
+  rv = GetStringPropertyForTag(strTagInner, atomNSInner, NS_LITERAL_STRING("level"), strInnerLevel);
+//  strInnerLevel.StripWhiteSpace();
+  fOuterStar = strOuterLevel.EqualsLiteral("*");
+  fInnerStar = strInnerLevel.EqualsLiteral("*");
+  if (fInnerStar) *_retval = PR_TRUE;
+  else if (fOuterStar) *_retval = PR_FALSE;
+  else
+  {
+    nOuter = IntFromString(strOuterLevel);
+    nInner = IntFromString(strInnerLevel);
+    if (nOuter == -200 || nInner == -200) // -200 is the error value
+    {
+      *_retval = PR_FALSE;
+      return NS_OK;  //TODO: get FAILURE return code;
+    }
+    *_retval = nOuter < nInner;
+  }
   return NS_OK;
 }
 
@@ -856,8 +851,11 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
   strAbbrev = PrefixFromNameSpaceAtom(atomNS);
   nsString strKey;
   nsString emptyString;
+#ifdef USE_NAMESPACES 
   if (strAbbrev.Length() >0 )strKey = strAbbrev + NS_LITERAL_STRING(":") + strTag;
-  else strKey = strTag; 
+  else 
+#endif
+    strKey = strTag; 
   TagData * data;    
   PRBool fInHash = msiTagHashtable.Get(strKey, (TagData **)&data);
 //  printf("\nFound in hash table is %s, strKey = %S, data->tagClass is ", (fInHash?"true":"false"), strKey.BeginReading());
@@ -875,6 +873,10 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
       _retval = data->initialContents;
     else if (propertyName.EqualsLiteral("nextafteremptyblock"))
       _retval = data->nextAfterEmptyBlock;
+    else if (propertyName.EqualsLiteral("titletag"))
+      _retval = data->titleTag;
+    else if (propertyName.EqualsLiteral("level"))
+      _retval = data->level;
     else if (propertyName.EqualsLiteral("discardemptyblock"))
       _retval = data->discardEmptyBlock?NS_LITERAL_STRING("true"):NS_LITERAL_STRING("false");
     else if (propertyName.EqualsLiteral("nexttag"))

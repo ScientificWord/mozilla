@@ -36,12 +36,14 @@ interface msiITagListManager : nsISupports
 	PRBool getTagInClass( in AString strTagClass, in AString strTag, in nsIAtom atomNS);
 	AString getClassOfTag( in AString strTag, in nsIAtom atomNS);
 	PRBool tagCanContainTag( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
+	PRBool nodeCanContainTag( in nsIDOMNode node, in AString strTagInner, in nsIAtom atomNSInner);
+	PRBool nodeCanContainNode( in nsIDOMNode nodeOuter, in nsIDOMNode nodeInner);
 	PRBool levelCanContainLevel( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
     PRBool getDiscardEmptyBlockNode( in nsIDOMNode node);
 	void fixTagsAfterSplit( in nsIDOMNode firstNode, inout nsIDOMNode secondNode);
-    AString GetStringPropertyForTag( in AString strTag, in nsIAtom atomNS, in AString propertyName );
-    AString GetTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
+    AString getStringPropertyForTag( in AString strTag, in nsIAtom atomNS, in AString propertyName );
+    AString getTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
     void buildParentTagList();
-	nsIAtom NameSpaceAtomOfTagKey( in AString key);
-	AString GetDefaultParagraphTag( out nsIAtom atomNamespace );
+	nsIAtom nameSpaceAtomOfTagKey( in AString key);
+	AString getDefaultParagraphTag( out nsIAtom atomNamespace );
 };
