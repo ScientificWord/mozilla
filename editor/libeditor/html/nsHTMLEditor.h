@@ -125,7 +125,8 @@ public:
     kOpSetAbsolutePosition = 3015,
     kOpRemoveAbsolutePosition = 3016,
     kOpDecreaseZIndex      = 3017,
-    kOpIncreaseZIndex      = 3018
+    kOpIncreaseZIndex      = 3018,
+    kOpMakeStructure       = 3019
   };
 
   enum ResizingRequestID
@@ -675,6 +676,7 @@ protected:
   nsresult MakeDefinitionItem(const nsAString & aItemType);
   nsresult InsertBasicBlock(const nsAString & aBlockType);
   nsresult InsertBasicBlockNS(const nsAString & aBlockType, nsIAtom * atomNS);
+  nsresult InsertStructureNS(const nsAString & aStructType, nsIAtom * atomNS);
   
   /* increase/decrease the font size of selection */
   nsresult RelativeFontChange( PRInt32 aSizeChange);
