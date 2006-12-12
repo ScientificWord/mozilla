@@ -32,7 +32,7 @@ SAMPLES	:= \
 			$(srcdir)/DebugEvaluate.xhtml \
 			$(srcdir)/ForPrinceImport.xhtml \
 			$(srcdir)/shell.xhtml \
-			$(srcdir)/TestFancy.xhtml	\
+			$(srcdir)/TestFAncy.xhtml	\
 			$(srcdir)/img.xhtml	\
 			$(srcdir)/img.xml	\
 			$(srcdir)/TestPlotsWithImages.xhtml \
