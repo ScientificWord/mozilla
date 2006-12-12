@@ -276,11 +276,11 @@ function msiPageIsEmptyAndUntouched(editorElement)
   return msiIsDocumentEmpty(editorElement) && !msiIsDocumentModified(editorElement) && !msiIsHTMLSourceChanged(editorElement);
 }
 
-//function IsWebComposer()
-//{
-//  return document.documentElement.id == "editorWindow";
-//}
-//
+function IsWebComposer()
+{
+  return document.documentElement.id == "editorWindow";
+}
+
 
 function clearPrevActiveEditor()
 {
@@ -1213,7 +1213,8 @@ function msiOpenModelessPropertiesDialog(chromeUrl, dlgName, options, targetEdit
   if (!reviseObject)
   {
     AlertWithTitle("Error in msiOpenModelessPropertiesDialog!", "No object to revise for dialog [" + chromeUrl + "]");
-    return msiOpenSingleInstanceModelessDialog(chromeUrl, dlgName, options, targetEditorElement, commandID, extraArgsArray);
+    msiOpenSingleInstanceModelessDialog(chromeUrl, dlgName, options, targetEditorElement, commandID, extraArgsArray);
+    return;
   }
   var theDialog = null;
   reviseObject = commandHandler.msiGetReviseObject(editor);
