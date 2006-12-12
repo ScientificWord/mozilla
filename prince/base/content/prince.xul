@@ -159,7 +159,7 @@
   <statusbar class="chromeclass-status" id="status-bar">
       <toolbar id="FastCursorToolbar" hidden="true" align="center" fullscreentoolbar="true">
       <toolbarbutton id="fastcursor-closebutton" tooltiptext="fastcursorCloseButton.tooltip;"
-                     hidden="true" oncommand="closeFastCursorBar();"/>  -->
+                     hidden="true" oncommand="closeFastCursorBar();"/>  
 
       <label value="fastcursor.label;"/>
       <hbox id="fastcursor-field-container">
