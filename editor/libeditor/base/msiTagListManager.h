@@ -23,8 +23,10 @@ public:
   nsString initialContentsForEmpty;
   nsString initialContents;
   nsString nextAfterEmptyBlock;
-  PRBool discardEmptyBlock;
+  nsString titleTag;
   nsString nextTag;
+  nsString level;
+  PRBool   discardEmptyBlock;
   TagData()
     : discardEmptyBlock(PR_FALSE)
     {}
