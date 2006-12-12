@@ -2258,9 +2258,17 @@ nsHTMLEditor::SetCaretAfterElement(nsIDOMElement* aElement)
 NS_IMETHODIMP 
 nsHTMLEditor::SetStructureTag(const nsAString& aSectionTag)
 {
-  nsAutoString tag; tag.Assign(aSectionTag);
-  ToLowerCase(tag);
-  return InsertBasicBlock(tag);
+  nsAutoString strStruct; strStruct.Assign(aSectionTag);
+  TagKey tag(strStruct);
+  if (tag.localName().EqualsLiteral("dd") || tag.localName().EqualsLiteral("dt"))
+  // TODO: BBM Should also check the namespace
+    return MakeDefinitionItem(tag.localName());
+  else
+  {
+    nsCOMPtr<nsIAtom> nsAtom;
+    mtagListManager->NameSpaceAtomOfTagKey(tag.key, (nsIAtom**)address_of(nsAtom));
+    return InsertStructureNS(tag.localName(), nsAtom);
+  }
 }
 
 
@@ -2953,6 +2961,97 @@ nsHTMLEditor::InsertBasicBlockNS(const nsAString& aBlockType, nsIAtom * namespac
   res = mRules->DidDoAction(selection, &ruleInfo, res);
   return res;
 }
+
+nsresult
+nsHTMLEditor::InsertStructureNS(const nsAString& aStructType, nsIAtom * namespaceAtom)
+
+// TODO: Change this from inserting a block to putting in a structure tag.z
+{
+  nsresult res;
+  if (!mRules) { return NS_ERROR_NOT_INITIALIZED; }
+
+  nsCOMPtr<nsISelection> selection;
+  PRBool cancel, handled;
+
+  nsAutoEditBatch beginBatching(this);
+  nsAutoRules beginRulesSniffing(this, kOpMakeStructure, nsIEditor::eNext);
+  
+  // pre-process
+  res = GetSelection(getter_AddRefs(selection));
+  if (NS_FAILED(res)) return res;
+  if (!selection) return NS_ERROR_NULL_POINTER;
+  nsTextRulesInfo ruleInfo(nsTextEditRules::kMakeStructure);
+  ruleInfo.blockType = &aStructType;
+  ruleInfo.namespaceAtom = namespaceAtom;
+  res = mRules->WillDoAction(selection, &ruleInfo, &cancel, &handled);
+  if (cancel || (NS_FAILED(res))) return res;
+
+  if (!handled)
+  {
+    // Find out if the selection is collapsed:
+    PRBool isCollapsed;
+    res = selection->GetIsCollapsed(&isCollapsed);
+    if (NS_FAILED(res)) return res;
+
+    nsCOMPtr<nsIDOMNode> node;
+    PRInt32 offset;
+  
+    res = GetStartNodeAndOffset(selection, address_of(node), &offset);
+    if (!node) res = NS_ERROR_FAILURE;
+    if (NS_FAILED(res)) return res;
+  
+    if (isCollapsed)
+    {
+      // have to find a place to put the structure
+      nsCOMPtr<nsIDOMNode> parent = node;
+      nsCOMPtr<nsIDOMNode> topChild = node;
+      nsCOMPtr<nsIDOMNode> tmp;
+      nsAutoString nsURI;
+      nsAutoString strParentLocalName;
+      nsCOMPtr<nsIAtom> nsAtomParent;
+      PRBool fCanContain;
+      parent->GetNamespaceURI(nsURI);
+      parent->GetLocalName(strParentLocalName);
+      if (nsURI.Length()>0) nsAtomParent = NS_NewAtom(nsURI);
+      else nsAtomParent = nsnull;
+      mtagListManager->TagCanContainTag(strParentLocalName, nsAtomParent, aStructType, namespaceAtom, &fCanContain);
+      while ( !fCanContain)
+      {
+        parent->GetParentNode(getter_AddRefs(tmp));
+        if (!tmp) return NS_ERROR_FAILURE;
+        topChild = parent;
+        parent = tmp;
+        parent->GetNamespaceURI(nsURI);
+        parent->GetLocalName(strParentLocalName);
+        if (nsURI.Length()>0) nsAtomParent = NS_NewAtom(nsURI);
+        else nsAtomParent = nsnull;
+        mtagListManager->TagCanContainTag(strParentLocalName, nsAtomParent, aStructType, namespaceAtom, &fCanContain);
+      }
+    
+      if (parent != node)
+      {
+        // we need to split up to the child of parent
+        res = SplitNodeDeep(topChild, node, offset, &offset);
+        if (NS_FAILED(res)) return res;
+      }
+
+      // make a block
+      nsCOMPtr<nsIDOMNode> newBlock;
+      
+      // TODO: need CreateNodeNS
+      res = CreateNode(aStructType, parent, offset, getter_AddRefs(newBlock));
+      if (NS_FAILED(res)) return res;
+    
+      // reposition selection to inside the block
+      res = selection->Collapse(newBlock,0);
+      if (NS_FAILED(res)) return res;  
+    }
+  }
+
+  res = mRules->DidDoAction(selection, &ruleInfo, res);
+  return res;
+}
+
 
 
 NS_IMETHODIMP
