@@ -9,8 +9,7 @@ classic.jar:
 *  skin/classic/notfound.png			 (skin/notfound.png)
 *  skin/classic/close.png				 (skin/close.png)
   
-
 en-US.jar:
 % locale prince en-US %locale/
-  locale/fastcursor.dtd  (locale/en-US/fastcursor.dtd)
-  locale/fastcursor.properties (locale/en-US/fastcursor.properties)
+  locale/fastcursor.dtd  (locale/en-us/fastcursor.dtd)
+  locale/fastcursor.properties (locale/en-us/fastcursor.properties)
