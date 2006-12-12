@@ -726,6 +726,8 @@ void Grammar::ExtractIDs(const char *num_str, U32 & rec_ID, U32 & rec_subID)
       got_ID = true;
       val = 0;
       is_hex = false;
+    } else if (curr_byte == ' ') {
+      ; // hope for data later
     } else if (curr_byte >= '0' && curr_byte <= '9') {
       if (is_hex)
         val = (val * 16) + curr_byte - '0';
