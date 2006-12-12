@@ -15,7 +15,7 @@
 #include "nsContentUtils.h"
 #include "nsIDOMDocumentFragment.h"
 #include "nsIDocument.h"
-#include "nsIDomText.h"
+#include "nsIDOMText.h"
 #include "nsIDOMAttr.h"
 #include "nsIDOMNamedNodeMap.h"
 #include "nsIDOMNodeList.h"
@@ -1351,6 +1351,7 @@ nsresult msiEditor::GetNSSelectionData(nsCOMPtr<nsISelection> &selection,
     {
       res = GetEndNodeAndOffset(selection, address_of(endNode), &endOffset);
        if (NS_SUCCEEDED(res))
+
      res = selection->GetIsCollapsed(&bCollapsed);
     }
   }
