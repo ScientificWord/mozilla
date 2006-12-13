@@ -76,6 +76,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_NormalizeTable",     msiNormalizeTableCommand);
   commandTable.registerCommand("cmd_smiley",             msiSetSmiley);
   commandTable.registerCommand("cmd_ConvertToTable",     msiConvertToTable);
+  commandTable.registerCommand("cmd_updateStructToolbar", msiUpdateStructToolbarCommand);
 //  commandTable.registerCommand("cmd_texttag",            nsTextTagUpdatingCommand);
 //  commandTable.registerCommand("cmd_paratag",            nsParaTagUpdatingCommand);
 //  commandTable.registerCommand("cmd_secttag",            nsSectTagUpdatingCommand);
@@ -175,7 +176,6 @@ function msiSetupComposerWindowCommands(editorElement)
       commandTable.registerCommand("cmd_FinishHTMLSource",   msiFinishHTMLSource);
       commandTable.registerCommand("cmd_CancelHTMLSource",   msiCancelHTMLSource);
     }
-    commandTable.registerCommand("cmd_updateStructToolbar", msiUpdateStructToolbarCommand);
   }
 
   windowControllers.insertControllerAt(0, editorController);
@@ -647,7 +647,7 @@ var msiSaveCommand =
     var result = false;
     var editorElement = msiGetActiveEditorElement();
     if (!msiIsTopLevelEditor(editorElement))
-      return;
+      return result;
 
     var editor = msiGetEditor(editorElement);
     if (editor)
