@@ -672,10 +672,10 @@ function attributeArrayRemove (A, element) {
 // get some funky error about A[idx] not having properties
 function attributeArrayFind (A, element) {
   var idx;
-  for (idx = 0; idx < A.length && A[idx] != element; idx++) ;
-  if (A[idx] != element)
-    idx = -1;
-  return idx;
+  for (idx = 0; idx < A.length; idx++) {
+    if (A[idx] == element) return idx;
+  }
+  return -1;
 }
 
 
@@ -963,8 +963,8 @@ function matchVarNames (variableList, animated) {
   var animVar = "";
   var xvar=-1, yvar=-1, zvar=-1;
   
-  // If there's x, y, or z, match them to vars 0, 1, or 2 respectively,
-  // but only if all of the predecessors are there.
+  // If variableList contains "x", "y", or "z", match them to position 0, 1, 
+  // or 2 respectively, but only if all of the predecessors are there.
   for (var i=0; i<variableList.length; i++) {
     if ((variableList[i] == "x") || (variableList[i] == "X")) {
        xvar = i;
@@ -1001,13 +1001,14 @@ function matchVarNames (variableList, animated) {
   variableList.sort();
   
   // assign remainder of variables in alphabetical order
-  var oldptr = 0;
-  var newptr = 0;
+  var oldptr, newptr;
+  for (oldptr = 0; ((oldptr < variableList.length) && (variableList[oldptr] == "")); oldptr++) ;
+  for (newptr = 0; ((newptr < newVarList.length) && (newVarList[newptr] != "")); newptr++) ;
   while ((oldptr < variableList.length) && (newptr < newVarList.length)) {
-    for ( ; ((oldptr <= variableList.length) && (variableList[oldptr] == "")); oldptr++) ;
-    for ( ; ((newptr <= newVarList.length) && (newVarList[newptr] != "")); newptr++) ;
-    if (variableList[oldptr] && variableList[oldptr] != "")
+    if (oldptr < variableList.length && variableList[oldptr] != "")
       newVarList[newptr++] = variableList[oldptr++];
+    for ( ; ((oldptr < variableList.length) && (variableList[oldptr] == "")); oldptr++) ;
+    for ( ; ((newptr < newVarList.length) && (newVarList[newptr] != "")); newptr++) ;
   }
 
   // insert animation var if it's there 
