@@ -128,3 +128,12 @@ sw|refprintleft {
 sw|refprintright {
   display: none;
 }
+
+img {
+  -moz-force-broken-image-icon: 1;
+  min-height: 17px; min-width: 70px;
+}
+
+graphSpec {
+  display: none;
+}  

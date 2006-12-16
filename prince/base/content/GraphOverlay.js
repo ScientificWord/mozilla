@@ -524,7 +524,7 @@ function formatRecreateGraph (DOMGraph) {
   var graph = new Graph();
   graph.extractGraphAttributes (DOMGraph);
   // non-modal dialog, the return is immediate
-  window.openDialog ("chrome://editor/content/ComputeGraphSettings.xul",
+  window.openDialog ("chrome://prince/content/ComputeGraphSettings.xul",
                      "", "chrome,close,titlebar,dependent", graph, DOMGraph, currentDOMGs);
   return;
 }
