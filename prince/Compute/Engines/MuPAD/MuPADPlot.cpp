@@ -90,7 +90,8 @@ int PlotVarsNeeded (string dim, string ptype, string animate) {
            (ptype == "gradient")   || (ptype == "ode")) {
     nvars = 2;
   } else {
-    cout << "SMR ERROR in MuPADPlot.cpp line 92 unknown plot type " << ptype << endl;
+    TCI_ASSERT(!"ERROR: invalid plot type line 93 MuPADPlot.cpp");
+
   }  
   if (dim == "3") 
     nvars++;
@@ -858,7 +859,7 @@ string MuPADPlot::PlotFuncStr(MuPADPlot* T) {
     }
  
   } else {
-    cout << "\nSMR ERROR: dimension not parsed #" << T->dim << "#" << endl;
+    TCI_ASSERT(!"ERROR: invalid plot dimension");
   }
   return s;
 }

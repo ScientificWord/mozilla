@@ -33,9 +33,6 @@ char *MuPADPlotWrapper::CreatePLOTQueryeStr(MuPADWrapper * const mpw, PlotServic
   string q = "@QUERY@";
   cmd += plot->ToString(q);
 
-  cout << "SMR QUERY Command String from CreatePLOTQueryeStr: ";
-  cout << cmd << endl;
-    
   size_t zln = cmd.length();
   char *zh_rv = new char[zln + 1];
   strcpy(zh_rv, cmd.c_str());
