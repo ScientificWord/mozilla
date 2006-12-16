@@ -19,7 +19,7 @@
 <?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
 
 <!DOCTYPE dialog [
-<!ENTITY % DTD SYSTEM "chrome://editor/locale/ComputeGraphSettings.dtd" >
+<!ENTITY % DTD SYSTEM "chrome://prince/content/ComputeGraphSettings.dtd" >
 %DTD;
 <!ENTITY % editorDTD SYSTEM "chrome://editor/locale/editor.dtd" >
 <!ENTITY plottypeimplicit.label   "Implicit">
@@ -50,8 +50,8 @@
   <script type="application/x-javascript" src="chrome://editor/content/MathColors.js"/>
 
   <script type="application/x-javascript" src="chrome://editor/content/ComputePlotSettings.js" />
-  <script type="application/x-javascript" src="chrome://editor/content/ComputeGraphSettings.js" />
-  <script type="application/x-javascript" src="chrome://editor/content/GraphOverlay.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/ComputeGraphSettings.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js" />
 
   <tabbox id="outer-box" flex="1">
 	<tabs class="tabs-top">
