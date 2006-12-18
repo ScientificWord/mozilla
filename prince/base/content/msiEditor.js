@@ -3598,7 +3598,7 @@ function msiResetStructToolbar(editorElement)
 
 function newCommandListener(element)
 {
-  return function() { return SelectFocusNodeAncestor(element); };
+  return function() { return msiSelectFocusNodeAncestor(element); };
 }
 
 function newContextmenuListener(button, element)

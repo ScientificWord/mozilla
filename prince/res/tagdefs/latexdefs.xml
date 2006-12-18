@@ -70,7 +70,7 @@
 				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="html:p">
@@ -82,7 +82,7 @@
 				<tag nm="sw:mathp">
 					<description>Body math paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/>]]>
+          <initialcontentsforempty> <![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"><cursor/></math>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="sw:sectiontitle">
@@ -95,7 +95,7 @@
 				<tag nm="sw:quote">
 					<nexttag>sw:quote</nexttag>
 					<description>Quote</description>
-          <initialcontentsforempty> <![CDATA[<para><cursor/></para>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
           </initialcontentsforempty>
 			  </tag>
 				<tag nm="sw:quotation">
@@ -108,7 +108,7 @@
 				<tag nm="sw:title">
 					<nexttag>sw:para</nexttag>
 					<description>Title</description>
-          <initialcontents> <![CDATA[<defaulttitletag/><cursor/>]]>
+          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br/>]]>
           </initialcontents>
 				</tag>
 				<tag nm="sw:verbatim">
@@ -173,59 +173,67 @@
           <discardemptyblock>true</discardemptyblock>
         </tag>
 				<tag nm="sw:chapter">
-          <level> 1</level>
-          <description>Section</description>
+          <level>1</level>
+          <description>Chapter</description>
+          <titletag>sectiontitle</titletag>
           <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle>]]>
+          </initialcontents>
         </tag>
 				<tag nm="sw:section">
-          <level> 2</level>
-          <description>Subsection</description>
+          <level>2</level>
+          <description>Section</description>
           <discardemptyblock>true</discardemptyblock>
+          <titletag>sectiontitle</titletag>
           <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/><br/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
 				<tag nm="sw:subsection">
-          <level> 3</level>
+          <level>3</level>
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
+          <titletag>sectiontitle</titletag>
           <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
 				<tag nm="sw:subsubsection">
-          <level> 4</level>
+          <level>4</level>
           <description>Subsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
+          <titletag>sectiontitle</titletag>
           <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle]]>
           </initialcontents>
           <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
 				<tag nm="sw:paragraph">
-          <level> 5</level>
+          <level>5</level>
           <description>Subsubsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
+          <titletag>sectiontitle</titletag>
           <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle> ]]>
           </initialcontents>
           <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
 				<tag nm="sw:subparagraph">
-          <level> *</level>
+          <level>*</level>
           <description>Section (dynamic level)</description>
           <discardemptyblock>true</discardemptyblock>
+          <titletag>sectiontitle</titletag>
           <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
 				<tag nm="sw:abstract">
-          <level> *</level>
+          <level>*</level>
           <description>Abstract</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[ <para><br><cursor/></para>]]>
+          <initialcontents> <![CDATA[ <para><cursor/><br/></para>]]>
           </initialcontents>
         </tag>
 				<tag nm="sw:dedication">
-          <level> 0</level>
+          <level>*</level>
           <description>Dedication</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
@@ -234,7 +242,7 @@
           </initialcontents>
         </tag>
 				<tag nm="sw:preface">
-          <level> 0</level>
+          <level>0</level>
           <description>Preface</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
@@ -243,7 +251,7 @@
           </initialcontents>
         </tag>
 				<tag nm="sw:index">
-          <level> 0</level>
+          <level>*</level>
           <description>Index</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
@@ -252,7 +260,7 @@
           </initialcontents>
         </tag>
 				<tag nm="sw:appendix">
-          <level> 0</level>
+          <level>0</level>
           <description>Appendix</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
@@ -261,7 +269,7 @@
           </initialcontents>
         </tag>
 				<tag nm="sw:glossary">
-          <level> 0</level>
+          <level>0</level>
           <description>Glossary</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
@@ -270,12 +278,12 @@
           </initialcontents>
         </tag>
 				<tag nm="sw:bibliography">
-          <level> 0</level>
+          <level>0</level>
           <description>Bibliography</description>
           <discardemptyblock>true</discardemptyblock>
         </tag>
 				<tag nm="sw:refsect1">
-          <level> 1</level>
+          <level>1</level>
           <description>Refsect1</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
@@ -284,7 +292,7 @@
           </initialcontents>
         </tag>
 				<tag nm="sw:refsect2">
-          <level> 2</level>
+          <level>2</level>
           <description>Refsect2</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
@@ -293,12 +301,12 @@
           </initialcontents>
         </tag>
 				<tag nm="sw:refsect3">
-          <level> 3</level>
+          <level>3</level>
           <description>Refsect3</description>
           <discardemptyblock>true</discardemptyblock>
         </tag>
 				<tag nm="sw:author">
-          <level> *</level>
+          <level>*</level>
           <description>Author name</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
@@ -307,7 +315,7 @@
           </initialcontents>
         </tag>
 				<tag nm="sw:address">
-          <level> *</level>
+          <level>*</level>
           <description>Author address</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
