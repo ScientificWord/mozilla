@@ -34,7 +34,7 @@ NS_IMPL_RELEASE(msiTagListManager)
 void DebExamineNode(nsIDOMNode * aNode);
 #endif 
 
-nsIAtom * msiTagListManager::htmlnsAtom = NS_NewAtom(NS_LITERAL_STRING("http://www.w3.org/1999/xhtml"));
+nsIAtom * msiTagListManager::htmlnsAtom = nsnull;
 
 
 
@@ -43,6 +43,7 @@ msiTagListManager::msiTagListManager()
     mdefaultParagraph(NS_LITERAL_STRING("")) 
 {
   nsresult rv;
+  if (!htmlnsAtom) htmlnsAtom  = NS_NewAtom(NS_LITERAL_STRING("http://www.w3.org/1999/xhtml"));
   pACSSA = do_CreateInstance("@mozilla.org/autocomplete/search;1?name=stringarray", &rv);
   // Now replace the singleton autocompletesearchstringarry by an implementation
   pACSSA->GetNewImplementation(getter_AddRefs(pACSSA));

@@ -16,6 +16,25 @@ part>sectiontitle:before {
   font-weight: bold;
 }
 
+chapter {
+  display: block;
+  counter-increment: chapter;
+  counter-reset: section;
+}
+
+chapter sectiontitle {
+  display: block;
+  font-size: x-large;
+  font-weight: bold;
+}
+
+chapter>sectiontitle:before {
+  content: "Chapter " counter(chapter,upper-roman);
+  display: block;
+  font-size: xx-large;
+  font-weight: bold;
+}
+
 section {
   display: block;
   counter-increment: section;
