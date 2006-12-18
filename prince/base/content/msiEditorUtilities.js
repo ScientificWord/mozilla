@@ -625,7 +625,10 @@ function msiGetEditor(editorElement)
     editor instanceof Components.interfaces.nsIPlaintextEditor;
     editor instanceof Components.interfaces.nsIHTMLEditor;
   }
-  catch(e) { dump(e) + "\n"; }
+  catch(e) 
+  { 
+    dump(e) + "\n"; 
+  }
   return editor;
 }
 
