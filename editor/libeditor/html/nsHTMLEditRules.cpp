@@ -7310,6 +7310,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     return NS_ERROR_NULL_POINTER;
     
   nsAutoString strTitle;
+  nsAutoString str;
   nsresult res;
   nsCOMPtr<nsIDOMNode> currentNode;
   nsCOMPtr<nsIDOMNode> savedCurrentNode;
@@ -7317,14 +7318,69 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
  nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIContent> newContent;
   nsCOMPtr<nsIDOMNode> parent;
+  nsCOMPtr<nsIDOMNode> grandParent;
+  nsCOMPtr<nsIDOMNode> olderUncle;
   nsCOMPtr<nsIDOMNode> parentOfNewStructure;
   PRInt32 offsetOfNewStructure;
   PRInt32 offset;
+  PRInt32 offset2;
   PRInt32 oldOffset;
   PRInt32 destOffset;
   PRInt32 offsetIncrement;
   PRBool fCanContain = PR_FALSE;
+  nsIAtom * atomNS;
+  nsCOMPtr<nsIDOMNodeList> childNodes;
+  PRUint32 nChildCount;
  
+  // If we are already in the first paragraph of a section, and if the current tag has a lower level than 
+  // the new tag (which means the current tag can-contain the new tag), then this is a demotion. In this case,
+  // it is easiest to remove the current section tag and then insert the new one.
+  
+  res = nsEditor::GetNodeLocation(inNode, address_of(parent), &offset);
+    // TODO: check for junk whitespace
+/*  if (offset == 0)
+  {
+    res = mtagListManager->GetTagOfNode(parent, &atomNS, str);
+    res = nsEditor::GetNodeLocation(parent, address_of(grandParent), &offset2);
+    res = mtagListManager->GetTagOfNode(grandParent, &atomNS, str);
+    res = grandParent->GetChildNodes(getter_AddRefs(childNodes));
+    if (NS_FAILED(res)) return res;
+    if (childNodes)
+    {
+      childNodes->GetLength(&nChildCount);
+      for (PRInt32 i = 0; i < nChildCount; i++)
+      {
+        res = childNodes->Item(i, getter_AddRefs(node));
+        res = mtagListManager->GetTagOfNode(node, &atomNS, str);
+      }
+    }  
+    // TODO: this might be more robust if we check that parent is a structure tag
+    res = mtagListManager->NodeCanContainTag(parent, aStructureType, atomNamespace, &fCanContain);
+    if (NS_FAILED(res)) return res;
+    // for debugging
+    res = parent->GetPreviousSibling(getter_AddRefs(olderUncle));
+    if (fCanContain) mHTMLEditor->RemoveContainer(parent);
+    if (olderUncle)
+    {
+      // we need to move nodes following olderUncle into olderUncle as long as it can contain them
+      while(true)
+      {
+        res = olderUncle->GetNextSibling(getter_AddRefs(node));
+        if (!node) break;
+        mtagListManager->NodeCanContainNode(olderUncle, node, &fCanContain);
+        if (fCanContain)
+        {
+          olderUncle->AppendChild(node, getter_AddRefs(olderUncle));
+#if DEBUG_barry || DEBUG_Barry
+   DebExamineNode(node);
+#endif
+          res = mHTMLEditor->DeleteNode(node);
+        }
+        else break; 
+      }
+    }
+    fCanContain = PR_FALSE;  // restore initial value after using
+  }  */  
   // find out if this section type has a title
   res = mtagListManager->GetStringPropertyForTag( aStructureType, atomNamespace, NS_LITERAL_STRING("titletag"), strTitle);
   if (NS_FAILED(res)) return res;
@@ -7370,8 +7426,9 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(newContent);
   if (NS_FAILED(res)) return res;
   *outNode = do_QueryInterface(elem);
-
-  res = mHTMLEditor->InsertNode( *outNode, parentOfNewStructure, offsetOfNewStructure++);
+  // hold off on inserting this node until it is fully populated. This makes counter update more
+  // reliable
+  // res = mHTMLEditor->InsertNode( *outNode, parentOfNewStructure, offsetOfNewStructure);
   // offsetOfNewStructure is incremented to point to nodes following our new node.
   if (NS_FAILED(res)) return res;
   
@@ -7400,8 +7457,6 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     if (NS_FAILED(res)) return res;
     if (fCanContain) break;
     
-    nsCOMPtr<nsIDOMNodeList> childNodes;
-    PRUint32 nChildCount;
     offsetIncrement = 0;
     res = parent->GetChildNodes(getter_AddRefs(childNodes));
     if (NS_FAILED(res)) return res;
@@ -7410,7 +7465,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
       childNodes->GetLength(&nChildCount);
       for (PRInt32 i = nChildCount -1; i > (PRInt32)offset; i--)
       { 
-        res = childNodes->Item(i, (nsIDOMNode **) &node);
+        res = childNodes->Item(i, getter_AddRefs(node));
         if (NS_FAILED(res)) return res;
         if (!node) printf("Null node while moving tags\n");
         else
@@ -7436,7 +7491,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
       childNodes->GetLength(&nChildCount);
       for (PRUint32 j = 0; j < nChildCount; j++)
       {
-        res = childNodes->Item(j, (nsIDOMNode **) &node);
+        res = childNodes->Item(j, getter_AddRefs(node));
         if (node)
         {
           if (mHTMLEditor->IsTextNode(node))
@@ -7479,7 +7534,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   nsCOMPtr<nsIContent> parentContent = do_QueryInterface(parentOfNewStructure);
   while (true)
   {
-    node = do_QueryInterface(parentContent->GetChildAt(offsetOfNewStructure++));
+    node = do_QueryInterface(parentContent->GetChildAt(offsetOfNewStructure));
     if (!node) break;
     mtagListManager->NodeCanContainNode (*outNode, node, &fCanContain );
     if (fCanContain)
@@ -7490,9 +7545,12 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
 #endif
       mHTMLEditor->DumpNode(node);
       mHTMLEditor->MoveNode(node, *outNode, destOffset++);
+      res = node->GetNextSibling( getter_AddRefs(node));
     }
     else break;
   }
+  // Now insert the node
+  res = mHTMLEditor->InsertNode( *outNode, parentOfNewStructure, offsetOfNewStructure);
   return res;
 }  
 

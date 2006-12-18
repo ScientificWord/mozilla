@@ -87,6 +87,7 @@ function onLoad()
   var editorElement = window.arguments[0];
 
   // If we don't get the editor, then we won't allow replacing.
+  dump("w");
   gEditor = editorElement.getEditor(editorElement.contentWindow);
   if (!gEditor)
   {
