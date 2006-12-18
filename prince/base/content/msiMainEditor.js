@@ -238,7 +238,7 @@ function UpdateWindowTitle()
   } catch (e) { dump(e); }
 }
 
-function BuildRecentPagesMenu()
+function BuildRecentFilesMenu()
 {
   var editorElement = msiGetTopLevelEditorElement();
   var editor = msiGetEditor(editorElement);
