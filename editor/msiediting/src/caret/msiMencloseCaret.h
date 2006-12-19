@@ -40,9 +40,6 @@ public:
                                        nsIDOMNode ** coalesceNode,
                                        PRUint32 * coalesceOffset);
 
-  NS_IMETHOD SetupCoalesceTransactions(nsIEditor * editor,
-                                       nsIArray ** coalesceTransactions);
-
 
   NS_IMETHOD CaretObjectLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset);
   NS_IMETHOD CaretObjectRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset);

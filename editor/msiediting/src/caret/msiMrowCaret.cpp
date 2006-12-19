@@ -7,6 +7,9 @@
 #include "msiUtils.h"   
 #include "msiMrowEditingImp.h"   
 #include "msiIMathMLEditor.h"
+#include "nsIMutableArray.h"
+#include "nsComponentManagerUtils.h"
+#include "nsITransaction.h"
 
 msiMrowCaret::msiMrowCaret(nsIDOMNode* mathmlNode, PRUint32 offset) 
 :  msiMContainerCaret(mathmlNode, offset, MATHML_MROW)
@@ -198,7 +201,82 @@ msiMrowCaret::SetupCoalesceTransactions(nsIEditor * editor,
                                         nsIArray ** coalesceTransactions)
 {
   return msiMCaretBase::SetupCoalesceTransactions(editor, coalesceTransactions);
-}         
+}
+
+
+NS_IMETHODIMP
+msiMrowCaret::SetCoalTransactionsAndNode(nsIEditor * editor,
+                                         PRBool onLeft,
+                                         nsIArray ** transactionList,
+                                         nsIDOMNode **coalesceNode)
+{
+  if (!editor || !transactionList || !coalesceNode || !m_mathmlNode)
+    return NS_ERROR_FAILURE;
+  nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
+  if (!msiEditor)  
+    return NS_ERROR_FAILURE;
+  *transactionList = nsnull;
+  *coalesceNode = nsnull;
+  nsresult res(NS_OK);
+  PRBool offsetOnBoundary = (m_offset== 0 || m_offset == m_numKids);
+  NS_ASSERTION(m_numKids > 0, "Mrow with zero kids -- I hoped this would of been deleted earlier.");
+  PRBool redundant(PR_FALSE);
+  if (redundant)
+    IsRedundant(editor, offsetOnBoundary, &redundant);
+  if (redundant)
+  {
+    //TODO -- handle case of empty mrow -- I guess delete this mrow and pass to sibling?
+    nsCOMPtr<nsITransaction> flattenMrowTxn;
+    res = msiEditor->CreateFlattenMrowTransaction(m_mathmlNode, getter_AddRefs(flattenMrowTxn));
+    nsCOMPtr<nsIDOMNode> newNode;
+    nsCOMPtr<msiIMathMLCaret> newCaret;
+    nsCOMPtr<nsIArray> newTxnList;
+    PRUint32 index = onLeft ? m_offset-1 : 0;
+    PRUint32 offsetInChild = onLeft ? RIGHT_MOST : 0;
+    msiUtils::GetChildNode(m_mathmlNode, index, newNode);
+    if (newNode)
+      msiUtils::GetMathMLCaretInterface(editor, newNode, offsetInChild, newCaret);
+    if (newCaret)
+      res = newCaret->SetCoalTransactionsAndNode(editor, onLeft, getter_AddRefs(newTxnList), coalesceNode);
+    else
+      res = NS_ERROR_FAILURE;
+    nsCOMPtr<nsIMutableArray> mutableTxnArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+    if (NS_SUCCEEDED(res))
+    {
+      if (!mutableTxnArray)
+        res = NS_ERROR_FAILURE;
+      else
+      {  
+        if (flattenMrowTxn)
+          mutableTxnArray->AppendElement(flattenMrowTxn, PR_FALSE);
+        PRUint32 length(0);
+        if (newTxnList)
+          newTxnList->GetLength(&length);
+        if (length > 0)
+          res = msiUtils::AppendToMutableList(mutableTxnArray, newTxnList);
+      }    
+    }
+    if (NS_SUCCEEDED(res))
+    {
+      nsCOMPtr<nsIArray> txnArray(do_QueryInterface(mutableTxnArray));
+      PRUint32 len(0);
+      if (txnArray)
+        txnArray->GetLength(&len);
+      if (len > 0)
+      {
+        *transactionList = txnArray;
+        NS_ADDREF(*transactionList);
+      }  
+    }  
+  }
+  else
+  {
+    NS_ASSERTION(PR_FALSE, "I don't think this should occur");
+    res = msiMCaretBase::SetCoalTransactionsAndNode(editor, onLeft, transactionList, coalesceNode);
+  }
+  return res;  
+}                                         
+         
 
 NS_IMETHODIMP
 msiMrowCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)

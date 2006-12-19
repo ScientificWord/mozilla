@@ -296,6 +296,15 @@ msiMrowFenceCaret::SetupCoalesceTransactions(nsIEditor * editor,
 }         
 
 NS_IMETHODIMP
+msiMrowFenceCaret::SetCoalTransactionsAndNode(nsIEditor * editor,
+                                              PRBool onLeft,
+                                              nsIArray ** transactionList,
+                                              nsIDOMNode **coalesceNode)
+{
+  return msiMCaretBase::SetCoalTransactionsAndNode(editor, onLeft, transactionList, coalesceNode);
+}
+
+NS_IMETHODIMP
 msiMrowFenceCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
   if (!node || !offset || !m_mathmlNode || !editor)

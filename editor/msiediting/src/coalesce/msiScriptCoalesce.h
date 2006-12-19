@@ -7,6 +7,9 @@
 #include "nsIDOMNode.h"
 #include "msiMCoalesceBase.h"
 
+class nsIArray;
+class nsITransaction;
+
 
 class msiScriptCoalesce : public msiMCoalesceBase
 {
@@ -19,6 +22,8 @@ public:
 protected:  
   nsresult CoalesceLeft(nsIEditor * editor, nsIDOMNode * node, nsIArray** coalesced);
   nsresult CoalesceRight(nsIEditor * editor, nsIDOMNode * node, nsIArray** coalesced);
+  nsresult CoalesceLeft(nsIEditor * editor, nsIDOMNode * node, nsITransaction** coalesced);
+  nsresult CoalesceRight(nsIEditor * editor, nsIDOMNode * node, nsITransaction** coalesced);
   void DetermineScriptShiftAttributes(nsIDOMNode * node, nsAString & subShift, 
                                       nsAString & supShift);
   

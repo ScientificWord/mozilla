@@ -162,6 +162,16 @@ msiBigOpCoalesce::Coalesce(nsIEditor * editor,
 }
 
 NS_IMETHODIMP
+msiBigOpCoalesce::CoalesceTxn(nsIEditor * editor,
+                              nsIDOMNode * node,
+                              nsITransaction ** txn)                
+{
+  *txn = nsnull;
+  return NS_OK;
+}
+
+
+NS_IMETHODIMP
 msiBigOpCoalesce::PrepareForCoalesce(nsIEditor * editor,
                                       PRUint32    pfcFlags,
                                       nsIArray ** beforeOffset,                

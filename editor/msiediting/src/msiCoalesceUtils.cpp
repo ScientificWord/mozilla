@@ -230,7 +230,36 @@ nsresult msiCoalesceUtils::CoalesceArray(nsIEditor * editor,
   if (!coalescedArray)
     res = NS_ERROR_FAILURE;
   return res;
-}                                         
+}    
+
+
+//Transaction based coalescing
+PRBool msiCoalesceUtils::Coalesce(nsIEditor * editor, nsIDOMNode * left,  
+                                  nsIDOMNode * right, nsCOMPtr<nsITransaction> & txn)
+{
+  PRBool ret(PR_FALSE);
+  nsresult res(NS_ERROR_FAILURE);
+  txn = nsnull;
+  if (editor && left && right)
+  {
+    nsCOMPtr<msiIMathMLCoalesce> msiCoal;
+    PRUint32 offset(msiIMathMLEditingBC::RIGHT_MOST);
+    GetMathMLCoalesceInterface(editor, left, offset, msiCoal);
+    if (msiCoal)
+      msiCoal->CoalesceTxn(editor, right, getter_AddRefs(txn));
+    if (!txn)
+    {
+      msiCoal = nsnull;
+      GetMathMLCoalesceInterface(editor, right, 0, msiCoal);
+      if (msiCoal)
+        msiCoal->CoalesceTxn(editor, left, getter_AddRefs(txn));
+    }
+    if (txn)
+      ret = PR_TRUE;
+  }
+  return ret;
+}                                    
+                                     
 
 // Should only be called when caretpos is known to be associated to node.
 nsresult msiCoalesceUtils::ForceCaretPositionMark(nsIDOMNode * node, 

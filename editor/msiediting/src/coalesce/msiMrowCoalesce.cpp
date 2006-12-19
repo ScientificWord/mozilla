@@ -95,6 +95,16 @@ msiMrowCoalesce::Coalesce(nsIEditor * editor,
   return res;
 }
 
+NS_IMETHODIMP
+msiMrowCoalesce::CoalesceTxn(nsIEditor * editor,
+                             nsIDOMNode * node,
+                             nsITransaction ** txn)                
+{
+  *txn = nsnull;
+  return NS_OK;
+}
+
+
 
 NS_IMETHODIMP
 msiMrowCoalesce::PrepareForCoalesce(nsIEditor * editor,
