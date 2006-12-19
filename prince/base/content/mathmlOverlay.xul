@@ -34,39 +34,39 @@
                   events="create, mode_switch"
                   oncommandupdate="goUpdateMSIMathMenuItems(this)">
   
-    <command id="cmd_MSIinlineMathCmd"  oncommand="goDoCommand('cmd_MSIinlineMathCmd')"/>
-    <command id="cmd_MSIdisplayMathCmd" oncommand="goDoCommand('cmd_MSIdisplayMathCmd')"/>
-    <command id="cmd_MSItextCmd"        oncommand="goDoCommand('cmd_MSItextCmd')"/>
-    <command id="cmd_MSIfractionCmd"    oncommand="goDoCommand('cmd_MSIfractionCmd')"/>
-    <command id="cmd_MSIradicalCmd"     oncommand="goDoCommand('cmd_MSIradicalCmd')"/>
-    <command id="cmd_MSIrootCmd"        oncommand="goDoCommand('cmd_MSIrootCmd')"/>
-    <command id="cmd_MSIsupCmd"         oncommand="goDoCommand('cmd_MSIsupCmd')"/>
-    <command id="cmd_MSIsubCmd"         oncommand="goDoCommand('cmd_MSIsubCmd')"/>
-    <command id="cmd_MSIMatrixCmd"      oncommand="goDoCommand('cmd_MSIMatrixCmd')"/>
-    <command id="cmd_MSItensorCmd"      oncommand="goDoCommand('cmd_MSItensorCmd')"/>
-    <command id="cmd_MSIsinCmd"         oncommand="goDoCommand('cmd_MSIsinCmd')"/>
-    <command id="cmd_MSIcosCmd"         oncommand="goDoCommand('cmd_MSIcosCmd')"/>
-    <command id="cmd_MSItanCmd"         oncommand="goDoCommand('cmd_MSItanCmd')"/>
-    <command id="cmd_MSIlnCmd"          oncommand="goDoCommand('cmd_MSIlnCmd')"/>
-    <command id="cmd_MSIlogCmd"         oncommand="goDoCommand('cmd_MSIlogCmd')"/>
-    <command id="cmd_MSIexpCmd"         oncommand="goDoCommand('cmd_MSIexpCmd')"/>
-    <command id="cmd_MSImathnameCmd"    oncommand="goDoCommand('cmd_MSImathnameCmd')"/>
-    <command id="cmd_MSIparenCmd"       oncommand="goDoCommand('cmd_MSIparenCmd')"/>
-    <command id="cmd_MSIbracketCmd"     oncommand="goDoCommand('cmd_MSIbracketCmd')"/>
-    <command id="cmd_MSIbraceCmd"       oncommand="goDoCommand('cmd_MSIbraceCmd')"/>
-    <command id="cmd_MSIabsvalueCmd"    oncommand="goDoCommand('cmd_MSIabsvalueCmd')"/>
-    <command id="cmd_MSInormCmd"        oncommand="goDoCommand('cmd_MSInormCmd')"/>
+    <command id="cmd_MSIinlineMathCmd"  oncommand="msiGoDoCommand('cmd_MSIinlineMathCmd')"/>
+    <command id="cmd_MSIdisplayMathCmd" oncommand="msiGoDoCommand('cmd_MSIdisplayMathCmd')"/>
+    <command id="cmd_MSItextCmd"        oncommand="msiGoDoCommand('cmd_MSItextCmd')"/>
+    <command id="cmd_MSIfractionCmd"    oncommand="msiGoDoCommand('cmd_MSIfractionCmd')"/>
+    <command id="cmd_MSIradicalCmd"     oncommand="msiGoDoCommand('cmd_MSIradicalCmd')"/>
+    <command id="cmd_MSIrootCmd"        oncommand="msiGoDoCommand('cmd_MSIrootCmd')"/>
+    <command id="cmd_MSIsupCmd"         oncommand="msiGoDoCommand('cmd_MSIsupCmd')"/>
+    <command id="cmd_MSIsubCmd"         oncommand="msiGoDoCommand('cmd_MSIsubCmd')"/>
+    <command id="cmd_MSIMatrixCmd"      oncommand="msiGoDoCommand('cmd_MSIMatrixCmd')"/>
+    <command id="cmd_MSItensorCmd"      oncommand="msiGoDoCommand('cmd_MSItensorCmd')"/>
+    <command id="cmd_MSIsinCmd"         oncommand="msiGoDoCommand('cmd_MSIsinCmd')"/>
+    <command id="cmd_MSIcosCmd"         oncommand="msiGoDoCommand('cmd_MSIcosCmd')"/>
+    <command id="cmd_MSItanCmd"         oncommand="msiGoDoCommand('cmd_MSItanCmd')"/>
+    <command id="cmd_MSIlnCmd"          oncommand="msiGoDoCommand('cmd_MSIlnCmd')"/>
+    <command id="cmd_MSIlogCmd"         oncommand="msiGoDoCommand('cmd_MSIlogCmd')"/>
+    <command id="cmd_MSIexpCmd"         oncommand="msiGoDoCommand('cmd_MSIexpCmd')"/>
+    <command id="cmd_MSImathnameCmd"    oncommand="msiGoDoCommand('cmd_MSImathnameCmd')"/>
+    <command id="cmd_MSIparenCmd"       oncommand="msiGoDoCommand('cmd_MSIparenCmd')"/>
+    <command id="cmd_MSIbracketCmd"     oncommand="msiGoDoCommand('cmd_MSIbracketCmd')"/>
+    <command id="cmd_MSIbraceCmd"       oncommand="msiGoDoCommand('cmd_MSIbraceCmd')"/>
+    <command id="cmd_MSIabsvalueCmd"    oncommand="msiGoDoCommand('cmd_MSIabsvalueCmd')"/>
+    <command id="cmd_MSInormCmd"        oncommand="msiGoDoCommand('cmd_MSInormCmd')"/>
     <command id="cmd_MSIsymbolCmd"      />
-    <command id="cmd_MSIColorsCmd"        oncommand="goDoCommand('cmd_MSIColorsCmd')"/>
-	  <command id="cmd_MSIgenBracketsCmd"   oncommand="goDoCommand('cmd_MSIgenBracketsCmd')"/>
-		<command id="cmd_MSIbinomialsCmd"     oncommand="goDoCommand('cmd_MSIbinomialsCmd')"/>
-		<command id="cmd_MSIoperatorsCmd"     oncommand="goDoCommand('cmd_MSIoperatorsCmd')"/>
-		<command id="cmd_MSIdecorationsCmd"   oncommand="goDoCommand('cmd_MSIdecorationsCmd')"/>
+    <command id="cmd_MSIColorsCmd"        oncommand="msiGoDoCommand('cmd_MSIColorsCmd')"/>
+	  <command id="cmd_MSIgenBracketsCmd"   oncommand="msiGoDoCommand('cmd_MSIgenBracketsCmd')"/>
+		<command id="cmd_MSIbinomialsCmd"     oncommand="msiGoDoCommand('cmd_MSIbinomialsCmd')"/>
+		<command id="cmd_MSIoperatorsCmd"     oncommand="msiGoDoCommand('cmd_MSIoperatorsCmd')"/>
+		<command id="cmd_MSIdecorationsCmd"   oncommand="msiGoDoCommand('cmd_MSIdecorationsCmd')"/>
   </commandset>
 
   <!-- style related commands that update on creation, and on selection change (editorOverlay.xul)-->
   <commandset id="composerStyleMenuItems">
-    <command id="cmd_MSImathtext"   state="false"     oncommand="goDoCommand('cmd_MSIinlineMathCmd')"/>
+    <command id="cmd_MSImathtext"   state="false"     oncommand="msiGoDoCommand('cmd_MSIinlineMathCmd')"/>
   </commandset>
 
 
