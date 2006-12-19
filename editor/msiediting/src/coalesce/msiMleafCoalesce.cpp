@@ -45,6 +45,15 @@ msiMleafCoalesce::Coalesce(nsIEditor * editor,
 }
 
 NS_IMETHODIMP
+msiMleafCoalesce::CoalesceTxn(nsIEditor * editor,
+                              nsIDOMNode * node,
+                              nsITransaction ** txn)                
+{
+  *txn = nsnull;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 msiMleafCoalesce::PrepareForCoalesce(nsIEditor * editor,
                                      PRUint32    pfcFlags,
                                      nsIArray ** beforeOffset,                

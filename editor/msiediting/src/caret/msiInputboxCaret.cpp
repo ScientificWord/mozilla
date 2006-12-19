@@ -196,9 +196,16 @@ msiInputboxCaret::SetupCoalesceTransactions(nsIEditor * editor,
                                                nsIArray ** coalesceTransactions)
 {
   return msiMCaretBase:: SetupCoalesceTransactions(editor, coalesceTransactions);
-}                                               
+}                 
 
-                                  
+NS_IMETHODIMP
+msiInputboxCaret::SetCoalTransactionsAndNode(nsIEditor * editor,
+                                            PRBool onLeft,
+                                            nsIArray ** transactionList,
+                                            nsIDOMNode **coalesceNode)
+{
+  return msiMCaretBase::SetCoalTransactionsAndNode(editor, onLeft, transactionList, coalesceNode);
+}                                         
 
 NS_IMETHODIMP
 msiInputboxCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)

@@ -1,7 +1,7 @@
 // Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
 
 #include "msiMCaretBase.h"
-#include "msiIMrowEditing.h"
+#include "msiIMrowEditing.h"   
 #include "msiUtils.h"
 #include "msiCoalesceUtils.h"
 #include "nsCOMPtr.h"
@@ -449,8 +449,79 @@ NS_IMETHODIMP
 msiMCaretBase::SetupCoalesceTransactions(nsIEditor * editor,
                                          nsIArray ** coalesceTransactions)
 {
-  return NS_OK;
-}         
+  if (!editor || !coalesceTransactions)
+    return NS_ERROR_FAILURE;
+  *coalesceTransactions = nsnull;
+  nsresult res(NS_OK);
+  if (0 < m_offset && m_offset <m_numKids)
+  {
+    nsCOMPtr<nsIDOMNode> leftKid, rightKid;
+    msiUtils::GetChildNode(m_mathmlNode, m_offset-1, leftKid);
+    msiUtils::GetChildNode(m_mathmlNode, m_offset, rightKid);
+    if (!leftKid || !rightKid)
+      return NS_ERROR_FAILURE;
+    nsCOMPtr<msiIMathMLCaret> leftCaret, rightCaret;  
+    msiUtils::GetMathMLCaretInterface(editor, leftKid, RIGHT_MOST, leftCaret);
+    msiUtils::GetMathMLCaretInterface(editor, rightKid, 0, rightCaret);
+    if (!leftCaret || !rightCaret)
+      return NS_ERROR_FAILURE;
+    nsCOMPtr<nsIDOMNode> leftCoalNode, rightCoalNode; 
+    nsCOMPtr<nsIArray> leftTxnList, rightTxnList;
+    nsCOMPtr<nsIMutableArray> mutableTxnArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
+
+    leftCaret->SetCoalTransactionsAndNode(editor, PR_TRUE, getter_AddRefs(leftTxnList),
+                                         getter_AddRefs(leftCoalNode)); 
+    rightCaret->SetCoalTransactionsAndNode(editor, PR_FALSE, getter_AddRefs(rightTxnList),
+                                         getter_AddRefs(rightCoalNode)); 
+    if (leftTxnList || rightTxnList)
+    {  
+      nsCOMPtr<nsIArray> left(do_QueryInterface(leftTxnList));
+      nsCOMPtr<nsIArray> right(do_QueryInterface(rightTxnList));
+      PRUint32 leftLen(0), rightLen(0);
+      if (left)
+        left->GetLength(&leftLen);
+      if (right)
+        right->GetLength(&rightLen);
+      if (leftLen > 0)
+        res = msiUtils::AppendToMutableList(mutableTxnArray, left);
+      if (rightLen > 0)
+        res = msiUtils::AppendToMutableList(mutableTxnArray, right);
+    }
+    if (leftCoalNode && rightCoalNode)
+    {
+      nsCOMPtr<nsITransaction> coalTxn;
+      msiCoalesceUtils::Coalesce(editor, leftCoalNode, rightCoalNode, coalTxn);
+      if (coalTxn)
+        mutableTxnArray->AppendElement(coalTxn, PR_FALSE);
+    }
+    nsCOMPtr<nsIArray> txnArray(do_QueryInterface(mutableTxnArray));
+    PRUint32 len(0);
+    if (txnArray)
+      txnArray->GetLength(&len);
+    if (len > 0)
+    {
+      *coalesceTransactions = txnArray;
+      NS_ADDREF(*coalesceTransactions);
+    }  
+  }
+  return res;
+} 
+
+
+NS_IMETHODIMP
+msiMCaretBase::SetCoalTransactionsAndNode(nsIEditor * editor,
+                                          PRBool onLeft,
+                                          nsIArray ** transactionList,
+                                          nsIDOMNode **coalesceNode)
+{
+  if (!editor || !transactionList || !coalesceNode || !m_mathmlNode)
+    return NS_ERROR_FAILURE;
+  *transactionList = nsnull;
+  *coalesceNode = m_mathmlNode;
+  NS_ADDREF(*coalesceNode);
+  return NS_OK;  
+}                                         
+        
 
                                        
                                    
