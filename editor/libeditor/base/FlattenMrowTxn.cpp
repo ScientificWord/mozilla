@@ -53,14 +53,6 @@ NS_IMETHODIMP FlattenMrowTxn::DoTransaction(void)
     return NS_ERROR_FAILURE;
   PRUint32 offset(NS_STATIC_CAST(PRUint32, _offset));
   
-  DeleteElementTxn *txn;
-  res = TransactionFactory::GetNewTransaction(DeleteElementTxn::GetCID(), (EditTxn **)&txn);
-  if (NS_FAILED(res) || !txn) 
-    return NS_ERROR_FAILURE;
-  res = txn->Init(m_mrow, nsnull); // Want to handle range updates locally -- hence nsnull 
-  if (NS_SUCCEEDED(res)) 
-    AppendChild(txn);
-  NS_RELEASE(txn);
     
   PRUint32 numKids(0);
   children->GetLength(&numKids);
@@ -70,19 +62,35 @@ NS_IMETHODIMP FlattenMrowTxn::DoTransaction(void)
     res = children->Item(numKids-1-i, getter_AddRefs(child));
     if (NS_SUCCEEDED(res) && child)
     {
-      InsertElementTxn * txn = nsnull;
-      res = TransactionFactory::GetNewTransaction(InsertElementTxn::GetCID(), (EditTxn **)&txn);
-      if (NS_SUCCEEDED(res) && txn)
-        res = txn->Init(child, parent, offset, m_editor);
+      InsertElementTxn * iTxn = nsnull;
+      DeleteElementTxn * dTxn = nsnull;
+      res = TransactionFactory::GetNewTransaction(DeleteElementTxn::GetCID(), (EditTxn **)&dTxn);
+      if (NS_FAILED(res) || !dTxn) 
+        return NS_ERROR_FAILURE;
+      res = dTxn->Init(child, nsnull); // Want to handle range updates locally -- hence nsnull 
+      if (NS_SUCCEEDED(res)) 
+        AppendChild(dTxn);
+      NS_RELEASE(dTxn);
+      res = TransactionFactory::GetNewTransaction(InsertElementTxn::GetCID(), (EditTxn **)&iTxn);
+      if (NS_SUCCEEDED(res) && iTxn)
+        res = iTxn->Init(child, parent, offset, m_editor);
       else 
         res = NS_ERROR_FAILURE;  
       if (NS_SUCCEEDED(res))
-        AppendChild(txn);
-      NS_RELEASE(txn);
+        AppendChild(iTxn);
+      NS_RELEASE(iTxn);
     }
     else
       res = NS_ERROR_FAILURE;
   }
+  DeleteElementTxn *txn;
+  res = TransactionFactory::GetNewTransaction(DeleteElementTxn::GetCID(), (EditTxn **)&txn);
+  if (NS_FAILED(res) || !txn) 
+    return NS_ERROR_FAILURE;
+  res = txn->Init(m_mrow, nsnull); // Want to handle range updates locally -- hence nsnull 
+  if (NS_SUCCEEDED(res)) 
+    AppendChild(txn);
+  NS_RELEASE(txn);
   if (NS_SUCCEEDED(res))
   {
     if (m_rangeUpdater) 
