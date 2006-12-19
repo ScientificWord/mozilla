@@ -151,7 +151,7 @@ NS_IMETHODIMP DeleteMathmlRangeTxn::UndoTransaction(void)
   if (!m_editor || !m_topCaret)
     return NS_ERROR_NOT_INITIALIZED;
   if (m_coalesceTxn)
-    m_coalesceTxn->UndoTransaction();  
+    m_coalesceTxn->UndoTransaction();
   return EditAggregateTxn::UndoTransaction();
 }
 
