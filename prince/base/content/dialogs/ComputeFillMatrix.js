@@ -2,21 +2,25 @@
 
 var data;
 
-// implements nsIObserver
-var msiEditorDocumentObserver =
+//// implements nsIObserver
+function msiFillMatrixEditorDocumentObserver(editorElement)
 { 
-  observe: function(aSubject, aTopic, aData)
+  this.msiEditorElement = editorElement;
+  this.observe = function(aSubject, aTopic, aData)
   {
     dump("ComputeFillMatrix observer hit!\n");
-    var editor = GetCurrentEditor();
+//    var editor = msiGetEditor(editorElement);
     switch(aTopic)
     {
       case "obs_documentCreated":
-    
+        try
+        {
+          insertmath(this.msiEditorElement);
+        } catch(exc) {AlertWithTitle("Error in ComputeFillMatrix.js", "Exception in inserting math: [" + exc + "]");}
         // type defaults to first choice according to XUL
         Switch("zero");
     }
-  }
+  };
 }
 
 
@@ -29,39 +33,55 @@ function Startup(){
   var cols = document.getElementById("cols");
   cols.value = data.cols.toString();
 
-//SLS the following copied from editor.js
-  gSourceContentWindow = document.getElementById("content-frame");
-  gSourceContentWindow.makeEditable("html", false);
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
+  if (!editor) {
+    AlertWithTitle("Error", "No editor found in ComputeFillMatrix Startup! Closing dialog window...");
+    window.close();
+    return;
+  }
 
-  EditorStartup();
+//SLS the following copied from editor.js
+//  gSourceContentWindow = document.getElementById("content-frame");
+//  gSourceContentWindow.makeEditable("html", false);
+//
+//  EditorStartup();
 
   // Initialize our source text <editor>
-  try {
-    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
-//SLS don't know why this doesn't work here...doesn't really matter since we have no source view.
-//    gSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-//    gSourceTextEditor.enableUndo(false);
-//    gSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
-//    gSourceTextEditor.rootElement.style.whiteSpace = "pre";
-//    gSourceTextEditor.rootElement.style.margin = 0;
-    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
-                               .createInstance(Components.interfaces.nsIControllerContext);
-    controller.init(null);
-    controller.setCommandContext(gSourceContentWindow);
-    gSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
-    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
-    commandTable.registerCommand("cmd_find",        nsFindCommand);
-    commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
-    commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
-    
-    SetupMSIMathMenuCommands();
+  var theStringSource = "";
+  var editorControl = document.getElementById("content-frame");
+  msiInitializeEditorForElement(editorControl, theStringSource);
+//  editorControl.makeEditable("html", false);
 
-  } catch (e) { dump("makeEditable failed in Startup(): "+e+"\n"); }
+//  try {
+//    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
+////SLS don't know why this doesn't work here...doesn't really matter since we have no source view.
+////    gSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+////    gSourceTextEditor.enableUndo(false);
+////    gSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
+////    gSourceTextEditor.rootElement.style.whiteSpace = "pre";
+////    gSourceTextEditor.rootElement.style.margin = 0;
+//    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
+//                               .createInstance(Components.interfaces.nsIControllerContext);
+//    controller.init(null);
+//    controller.setCommandContext(gSourceContentWindow);
+//    gSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
+//    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+//                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
+//    commandTable.registerCommand("cmd_find",        nsFindCommand);
+//    commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
+//    commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
+//    
+//    SetupMSIMathMenuCommands();
+//
+//  } catch (e) { dump("makeEditable failed in Startup(): "+e+"\n"); }
   
   // see EditorSharedStartup() in editor.js
-  var commandManager = GetCurrentCommandManager();
-  commandManager.addCommandObserver(msiEditorDocumentObserver, "obs_documentCreated");
+  var commandManager = msiGetCommandManager(editorControl);
+//  var commandManager = GetCurrentCommandManager();
+  var docObserver = new msiFillMatrixEditorDocumentObserver(editorControl);
+  commandManager.addCommandObserver(docObserver, "obs_documentCreated");
+  editorControl.makeEditable("html", false);
 }
 
 function OK(){
@@ -87,6 +107,23 @@ function OK(){
   } else {
     data.expr = "";
   }
+
+  var editorElement = msiGetParentEditorElementForDialog(window);
+//  var theWindow = msiGetWindowContainingEditor(editorElement);
+  ComputeCursor(editorElement);
+  var mRows = GetNumAsMathML(data.rows);
+  var mCols = GetNumAsMathML(data.cols);
+  var mExpr  = data.expr;
+  msiComputeLogger.Sent4("Fill matrix",mRows+" by "+mCols, mExpr,data.type);
+  try {
+    var out = GetCurrentEngine().matrixFill(data.type,mRows,mCols,mExpr);
+    msiComputeLogger.Received(out);
+    addResult(out, editorElement);
+  } catch (e) {
+    msiComputeLogger.Exception(e);
+  }
+  RestoreCursor(editorElement);
+
   return true;
 }
 
@@ -104,7 +141,11 @@ function Switch(id){
     val = false;
     break;
   }
-  document.getElementById("content-frame").disabled = val;
+  var theEditor = document.getElementById("content-frame");
+  if (val)
+    theEditor.disabled = true;
+  else if (theEditor.hasAttribute("disabled"))
+    theEditor.removeAttribute("disabled");
 }
 
 function Cancel(){

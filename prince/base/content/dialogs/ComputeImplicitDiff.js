@@ -18,42 +18,47 @@ function Startup(){
     center.setAttribute("label", data.label);
   }
 
-//SLS the following copied from editor.js
-  gSourceContentWindow = document.getElementById("content-frame");
-  gSourceContentWindow.makeEditable("html", false);
+  var theStringSource = "";
+  var ourEditor = document.getElementById("varsFrame");
+  msiInitializeEditorForElement(ourEditor, theStringSource);
+  ourEditor.makeEditable("html", false);
 
-  EditorStartup();
+////SLS the following copied from editor.js
+//  gSourceContentWindow = document.getElementById("content-frame");
+//  gSourceContentWindow.makeEditable("html", false);
+//
+//  EditorStartup();
 
-  // Initialize our source text <editor>
-  try {
-    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
-//SLS don't know why this doesn't work here...doesn't really matter since we have no source view.
-//    gSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-//    gSourceTextEditor.enableUndo(false);
-//    gSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
-//    gSourceTextEditor.rootElement.style.whiteSpace = "pre";
-//    gSourceTextEditor.rootElement.style.margin = 0;
-    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
-                               .createInstance(Components.interfaces.nsIControllerContext);
-    controller.init(null);
-    controller.setCommandContext(gSourceContentWindow);
-    gSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
-    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
-    commandTable.registerCommand("cmd_find",        nsFindCommand);
-    commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
-    commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
-    
-    SetupMSIMathMenuCommands();
-
-  } catch (e) { dump("makeEditable failed in Startup(): "+e+"\n"); }
+//  // Initialize our source text <editor>
+//  try {
+//    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
+////SLS don't know why this doesn't work here...doesn't really matter since we have no source view.
+////    gSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+////    gSourceTextEditor.enableUndo(false);
+////    gSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
+////    gSourceTextEditor.rootElement.style.whiteSpace = "pre";
+////    gSourceTextEditor.rootElement.style.margin = 0;
+//    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
+//                               .createInstance(Components.interfaces.nsIControllerContext);
+//    controller.init(null);
+//    controller.setCommandContext(gSourceContentWindow);
+//    gSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
+//    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+//                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
+//    commandTable.registerCommand("cmd_find",        nsFindCommand);
+//    commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
+//    commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
+//    
+//    SetupMSIMathMenuCommands();
+//
+//  } catch (e) { dump("makeEditable failed in Startup(): "+e+"\n"); }
 }
 
 function OK(){
   data.Cancel = false;
 
   //validate?
-  var doc = document.getElementById("content-frame").contentDocument;
+  var doc = document.getElementById("varsFrame").contentDocument;
   var mathnodes = doc.getElementsByTagName("math");
   if (mathnodes.length == 0) {
     dump("No math in center field!\n");
@@ -66,6 +71,27 @@ function OK(){
     dump("Only one math field found, returning 0 for second.\n");
     data.about = "<math><mn>0</mn></math>";
   }
+
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
+
+//  if (data.Cancel)
+//    return true;
+  try
+  {
+    msiComputeLogger.Sent4("implicit diff",mathstr,o.thevar,o.about);
+
+    ComputeCursor(editorElement);
+    try {
+      var out = GetCurrentEngine().implicitDiff(mathstr,data.thevar,data.about);
+      msiComputeLogger.Received(out);
+      appendLabeledResult(out, GetComputeString("Solution.fmt"),math, editorElement);
+    } catch(ex) {
+      msiComputeLogger.Exception(ex);
+    }
+    RestoreCursor(editorElement);
+  } catch(exc) {AlertWithTitle("Error in ComputeImplicitDiff.js", "Exception in OK(); exception is [" + exc + "].");}
+
   return true;
 }
 

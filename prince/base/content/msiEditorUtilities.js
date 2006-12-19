@@ -451,6 +451,8 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 
 function msiGetCurrentEditor(theWindow)
 {
+  if (!theWindow)
+    theWindow = window;
   var editorElement = msiGetActiveEditorElement(theWindow);
   if (editorElement)
     return msiGetEditor(editorElement);
@@ -652,10 +654,14 @@ function msiGetControllerForCommand(command, editorElement)
     {
       controller = editorElement.contentWindow.controllers.getControllerForCommand(command);
 //      controller = editorElement.contentWindow.document.commandDispatcher.getControllerForCommand(command);
+      if (!controller)
+      {
+        var topWin = msiGetTopLevelWindow(editorElement);
+        controller = topWin.controllers.getControllerForCommand(command);
+//        controller = editorElement.ownerDocument.commandDispatcher.getControllerForCommand(command);
+      }
     }
     catch(exc) {AlertWithTitle("Error in msiGetControllerForCommand!", exc);}
-    if (!controller)
-      controller = editorElement.ownerDocument.commandDispatcher.getControllerForCommand(command);
   }
   return controller;
 }
@@ -689,6 +695,24 @@ function msiIsHTMLEditor(editorElement)
       default:
         dump("INVALID EDITOR TYPE: " + editortype + "\n");
         break;
+  }
+  return false;
+}
+
+function msiWindowHasHTMLEditor(theWindow)
+{
+
+  if (!theWindow)
+    theWindow = window;
+  
+  if (theWindow.document != null)
+  {
+    var editorList = theWindow.document.getElementsByTagName("editor");
+    for (var i = 0; i < editorList.length; ++i)
+    {
+      if ( editorList.item(i)!=null && msiIsHTMLEditor(editorList.item(i)) )
+        return true;
+    }
   }
   return false;
 }
@@ -1309,6 +1333,15 @@ function msiGetWindowContainingEditor(editorElement)
 function msiGetParentWindowForNewDialog(ownerEditorElement)
 {
   return msiGetWindowContainingEditor(ownerEditorElement);
+}
+
+function ShutdownEditorsForWindow(theWindow)
+{
+  if (!theWindow)
+    theWindow = window;
+  var editorList = theWindow.document.getElementsByTagName("editor");
+  for (var i = 0; i < editorList.length; ++i)
+    ShutdownAnEditor(editorList[i]);
 }
 
 //A per-editor list of open properties-type dialogs referencing existing nodes in the DOM.
