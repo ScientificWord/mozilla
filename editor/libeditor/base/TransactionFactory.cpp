@@ -54,6 +54,7 @@
 #include "IMETextTxn.h"
 #include "DeleteMathmlRangeTxn.h"
 #include "FlattenMrowTxn.h"
+#include "ReplaceScriptBaseTxn.h"
 #include "msiDeleteRangeTxn.h"
 
 #ifndef MOZILLA_PLAINTEXT_EDITOR_ONLY
@@ -118,6 +119,8 @@ TransactionFactory::GetNewTransaction(REFNSIID aTxnType, EditTxn **aResult)
     *aResult = new FlattenMrowTxn();
   else if (aTxnType.Equals(msiDeleteRangeTxn::GetCID()))
     *aResult = new msiDeleteRangeTxn();
+  else if (aTxnType.Equals(ReplaceScriptBaseTxn::GetCID()))
+    *aResult = new ReplaceScriptBaseTxn();
   else
     result = NS_ERROR_NO_INTERFACE;
   

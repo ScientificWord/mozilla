@@ -21,56 +21,6 @@ EXTRA_DSO_LIBS = \
 	gkgfx \
 	$(NULL)
 
-
-LAYOUT_STUFF = \
-        $(DIST)/../layout/build/nsContentDLF.$(OBJ_SUFFIX) \
-        $(DIST)/../layout/build/nsLayoutStatics.$(OBJ_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkbase_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkgeneric_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkforms_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkstyle_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gktable_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkxulbase_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkconbase_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkconcvs_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkconevents_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkconhtmlcon_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkconhtmldoc_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkconxmlcon_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkconxmldoc_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)txbase_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)txxml_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)txxpath_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)txxslt_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkconxbl_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkconxuldoc_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkview_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)jsdombase_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)jsdomevents_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)jsurl_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)jsdomstorage_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkprinting_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkxultree_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkxulgrid_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkconxulcon_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkconxultmpl_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)inspector_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkmathmlcon_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkmathmlbase_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkcontentxtf_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkxtfbase_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gksvgbase_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkconsvgdoc_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkcontentsvg_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gksvgrenderercairo_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)gkgfx.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)unicharutil_s.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)js3250.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)mozcairo.$(LIB_SUFFIX) \
-        $(DIST)/lib/$(LIB_PREFIX)mozlibpixman.$(LIB_SUFFIX) \
-		$(NULL)
-
-
 EXTRA_DSO_LDOPTS = \
 	$(LIBS_DIR)              \
 	$(EXTRA_DSO_LIBS)        \

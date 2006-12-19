@@ -129,6 +129,16 @@ msiMnCoalesce::Coalesce(nsIEditor * editor,
 }
 
 NS_IMETHODIMP
+msiMnCoalesce::CoalesceTxn(nsIEditor * editor,
+                              nsIDOMNode * node,
+                              nsITransaction ** txn)                
+{
+  *txn = nsnull;
+  return NS_OK;
+}
+
+
+NS_IMETHODIMP
 msiMnCoalesce::PrepareForCoalesce(nsIEditor * editor,
                                   PRUint32    pfcFlags,
                                   nsIArray ** beforeOffset,                

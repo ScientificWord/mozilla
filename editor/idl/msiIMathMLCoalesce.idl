@@ -2,7 +2,9 @@
 
 #include "nsIDOMNode.idl"
 #include "nsIEditor.idl"
-#include "nsIArray.idl"
+
+interface nsIArray;
+interface nsITransaction;
 
 // Used to coalesce the incoming node into an existing node, the coalesced node
 // is returned via coalescedNode. If the node doesn't coalesce then coalescedNode
@@ -22,6 +24,10 @@ interface msiIMathMLCoalesce : nsISupports
   void Coalesce(in  nsIEditor   editor,
                 in  nsIDOMNode  node,
                 out nsIArray coalesced);
+  
+  void CoalesceTxn(in  nsIEditor   editor,
+                   in  nsIDOMNode  node,
+                   out nsITransaction txn);
   
   /* PrepareForCoalesce flags */
   const unsigned long PFCflags_none = 0;  
