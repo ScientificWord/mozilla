@@ -213,6 +213,17 @@ msiMathCaret::SetupCoalesceTransactions(nsIEditor * editor,
 
 
 NS_IMETHODIMP
+msiMathCaret::SetCoalTransactionsAndNode(nsIEditor * editor,
+                                        PRBool onLeft,
+                                        nsIArray ** transactionList,
+                                        nsIDOMNode **coalesceNode)
+{
+  NS_ASSERTION(PR_FALSE, "This should not be called.");
+  return NS_ERROR_FAILURE;
+}      
+
+                                   
+NS_IMETHODIMP
 msiMathCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
   if (!node || !offset || !m_mathmlNode || !editor)

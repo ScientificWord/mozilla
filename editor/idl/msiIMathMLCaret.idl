@@ -126,9 +126,14 @@ interface msiIMathMLCaret : nsISupports
                                  out nsIDOMNode coalesceNode,
                                  out PRUint32 coalesceOffset); 
                                  
-   void SetupCoalesceTransactions(in nsIEditor editor, 
-                                  out nsIArray coalesceTransactions);
-                                 
+  void SetupCoalesceTransactions(in nsIEditor editor, 
+                                 out nsIArray coalesceTransactions);
+                                    
+  void SetCoalTransactionsAndNode(in nsIEditor editor,
+                                  in PRBool onLeft,
+                                  out nsIArray transactionList,
+                                  out nsIDOMNode coalesceNode);
+                                                                
 
   void CaretLeft(in nsIEditor editor,
                  in PRUint32 flags,

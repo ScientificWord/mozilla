@@ -104,6 +104,7 @@ CPPSRCS		+=                          \
         DeleteMathmlRangeTxn.cpp    \
         FlattenMrowTxn.cpp    \
 		msiDeleteRangeTxn.cpp     \
+		ReplaceScriptBaseTxn.cpp     \
 		TransactionFactory.cpp      \
 		$(NULL)
 

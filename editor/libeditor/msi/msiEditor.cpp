@@ -30,6 +30,8 @@
 
 #include "DeleteTextTxn.h"
 #include "DeleteElementTxn.h"
+#include "FlattenMrowTxn.h"
+#include "ReplaceScriptBaseTxn.h"
 
 #include "msiISelection.h"
 #include "msiIEditingManager.h"
@@ -863,6 +865,56 @@ msiEditor::CreateDeleteScriptTransaction(nsIDOMNode * script,
   return res;
 
 }
+
+NS_IMETHODIMP
+msiEditor::CreateFlattenMrowTransaction(nsIDOMNode * mrow,
+                                        nsITransaction ** transaction)
+{
+  if (!mrow || !transaction)
+    return NS_ERROR_FAILURE;
+  // allocate the out-param transaction
+  FlattenMrowTxn * txn = nsnull;
+  nsresult res = TransactionFactory::GetNewTransaction(FlattenMrowTxn::GetCID(), (EditTxn **)&txn);
+  if (NS_FAILED(res) || !(txn)) 
+    return NS_ERROR_FAILURE;
+  nsCOMPtr<nsIEditor> editor;
+  QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
+  if (!editor)
+    return NS_ERROR_FAILURE;
+  res = txn->Init(editor, mrow, &mRangeUpdater);
+  if (NS_SUCCEEDED(res))
+  {
+    *transaction = txn;
+    NS_ADDREF(*transaction); 
+  }
+  return res;
+}
+    
+NS_IMETHODIMP
+msiEditor::CreateReplaceScriptBaseTransaction(nsIDOMNode * script,
+                                              nsIDOMNode * newbase,
+                                              nsITransaction ** transaction)
+{
+  if (!script || !newbase || !transaction)
+    return NS_ERROR_FAILURE;
+  // allocate the out-param transaction
+  ReplaceScriptBaseTxn * txn = nsnull;
+  nsresult res = TransactionFactory::GetNewTransaction(ReplaceScriptBaseTxn::GetCID(), (EditTxn **)&txn);
+  if (NS_FAILED(res) || !(txn)) 
+    return NS_ERROR_FAILURE;
+  nsCOMPtr<nsIEditor> editor;
+  QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
+  if (!editor)
+    return NS_ERROR_FAILURE;
+  res = txn->Init(editor, script, newbase, &mRangeUpdater);
+  if (NS_SUCCEEDED(res))
+  {
+    *transaction = txn;
+    NS_ADDREF(*transaction); 
+  }
+  return res;
+}    
+
 
 //End nsIMathMLEditor
 
