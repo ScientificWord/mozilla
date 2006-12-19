@@ -4,6 +4,7 @@
 #include "ReplaceScriptBaseTxn.h"
 #include "nsIDOMNodeList.h"
 #include "ReplaceElementTxn.h"
+#include "DeleteElementTxn.h"
 #include "TransactionFactory.h"
 #include "nsEditor.h"
 #include "nsSelectionState.h"
@@ -45,14 +46,22 @@ NS_IMETHODIMP ReplaceScriptBaseTxn::DoTransaction(void)
   if (!currBase)
     return NS_ERROR_NOT_INITIALIZED;
   nsresult res(NS_OK);
-  ReplaceElementTxn *txn;
-  res = TransactionFactory::GetNewTransaction(ReplaceElementTxn::GetCID(), (EditTxn **)&txn);
-  if (NS_FAILED(res) || !txn) 
+  ReplaceElementTxn *rTxn;
+      DeleteElementTxn * dTxn = nsnull;
+      res = TransactionFactory::GetNewTransaction(DeleteElementTxn::GetCID(), (EditTxn **)&dTxn);
+      if (NS_FAILED(res) || !dTxn) 
+        return NS_ERROR_FAILURE;
+      res = dTxn->Init(m_newbase, nsnull); // Want to handle range updates locally -- hence nsnull 
+      if (NS_SUCCEEDED(res)) 
+        AppendChild(dTxn);
+      NS_RELEASE(dTxn);
+  res = TransactionFactory::GetNewTransaction(ReplaceElementTxn::GetCID(), (EditTxn **)&rTxn);
+  if (NS_FAILED(res) || !rTxn) 
     return NS_ERROR_FAILURE;
-  res = txn->Init(m_newbase, currBase, m_script, m_editor, PR_FALSE, m_rangeUpdater);
+  res = rTxn->Init(m_newbase, currBase, m_script, m_editor, PR_FALSE, m_rangeUpdater);
   if (NS_SUCCEEDED(res)) 
-    AppendChild(txn);
-  NS_RELEASE(txn);
+    AppendChild(rTxn);
+  NS_RELEASE(rTxn);
   res = EditAggregateTxn::DoTransaction();
   return res;
 }
