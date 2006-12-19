@@ -102,6 +102,13 @@ interface msiIMathMLEditor : nsISupports
   [noscript] void CreateDeleteScriptTransaction(in nsIDOMNode script,
                                                 in nsIDOMNode dummyFirstChild,
                                                 out nsITransaction transaction);                                                                           
+
+  [noscript] void CreateFlattenMrowTransaction(in nsIDOMNode mrow,
+                                                out nsITransaction transaction);                                                                           
+
+  [noscript] void CreateReplaceScriptBaseTransaction(in nsIDOMNode script,
+                                                     in nsIDOMNOde newbase,
+                                                     out nsITransaction transaction);                                                                           
                                                   
                                               
                                  

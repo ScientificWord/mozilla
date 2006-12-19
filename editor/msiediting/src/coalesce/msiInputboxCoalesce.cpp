@@ -52,6 +52,15 @@ msiInputboxCoalesce::Coalesce(nsIEditor * editor,
 
 
 NS_IMETHODIMP
+msiInputboxCoalesce::CoalesceTxn(nsIEditor * editor,
+                                 nsIDOMNode * node,
+                                 nsITransaction ** txn)                
+{
+  *txn = nsnull;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 msiInputboxCoalesce::PrepareForCoalesce(nsIEditor * editor,
                                         PRUint32    pfcFlags,
                                         nsIArray ** beforeOffset,                

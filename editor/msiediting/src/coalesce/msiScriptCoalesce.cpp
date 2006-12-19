@@ -11,6 +11,7 @@
 #include "nsIMutableArray.h"
 #include "msiEditingAtoms.h"
 #include "nsComponentManagerUtils.h"
+#include "msiIMathMLEditor.h"
 
 msiScriptCoalesce::msiScriptCoalesce(nsIDOMNode* mathmlNode, 
                                       PRUint32 offset,
@@ -142,6 +143,28 @@ msiScriptCoalesce::PrepareForCoalesce(nsIEditor * editor,
   return res;
 }
 
+NS_IMETHODIMP
+msiScriptCoalesce::CoalesceTxn(nsIEditor * editor,
+                               nsIDOMNode * node,
+                               nsITransaction ** txn)                
+{
+  nsresult res(NS_ERROR_FAILURE);
+  *txn = nsnull;
+  if (node && editor && m_mathmlNode)
+  {
+    if (m_offset == 0)
+      res = CoalesceLeft(editor, node, txn);
+    else if (m_offset == m_maxOffset)
+    {
+      NS_ASSERTION(PR_FALSE, "Currently not implemented");
+      //TODO 12/06 ljh -- currently this should not occur since this method is only used for deletion
+      //res = CoalesceRight(editor, node, txn);
+    }  
+  }
+  return res;
+}
+
+
 nsresult msiScriptCoalesce::CoalesceLeft(nsIEditor * editor, nsIDOMNode * node, nsIArray** coalesced)
 {
   //ljh m_offset == 0
@@ -207,10 +230,10 @@ nsresult msiScriptCoalesce::CoalesceRight(nsIEditor * editor, nsIDOMNode * node,
                                       dummyflags, subShift, supShift, newElement); 
       else if (newSub)
         res = msiUtils::CreateMSubOrMSup(editor, PR_FALSE, base, newSub, PR_FALSE, PR_FALSE, 
-                                       dummyflags, subShift, newElement);
+                                         dummyflags, subShift, newElement);
       else //newSup
         res = msiUtils::CreateMSubOrMSup(editor, PR_TRUE, base, newSup, PR_FALSE, PR_FALSE, 
-                                       dummyflags, supShift, newElement);
+                                         dummyflags, supShift, newElement);
       if (NS_SUCCEEDED(res) && newElement)
       {
         nsCOMPtr<nsIMutableArray> mutableArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
@@ -228,6 +251,34 @@ nsresult msiScriptCoalesce::CoalesceRight(nsIEditor * editor, nsIDOMNode * node,
   }
   return res;
 }  
+
+nsresult msiScriptCoalesce::CoalesceLeft(nsIEditor * editor, nsIDOMNode * node, nsITransaction** txn)
+{
+  //ljh m_offset == 0
+  nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
+  if (!msiEditor)  
+    return NS_ERROR_FAILURE;
+  nsresult res(NS_OK);
+  nsCOMPtr<nsIDOMNode> currbase;
+  msiUtils::GetChildNode(m_mathmlNode, 0, currbase);
+  if (!currbase || !m_mathmlNode || !txn || !node)
+    return NS_ERROR_FAILURE;
+  if (msiUtils::IsInputbox(editor, currbase))
+  {
+    nsCOMPtr<nsITransaction> replaceBaseTxn;
+    res = msiEditor->CreateReplaceScriptBaseTransaction(m_mathmlNode, node, getter_AddRefs(replaceBaseTxn));
+    if (NS_SUCCEEDED(res) && replaceBaseTxn)
+    {
+      *txn = replaceBaseTxn;
+      NS_ADDREF(*txn);
+    }
+  }
+  else
+  {
+    //TODO try to coalese node into currbase but not currbase into node
+  }
+  return res;
+}    
 
 void msiScriptCoalesce::DetermineScriptShiftAttributes(nsIDOMNode * node, nsAString & subShift, nsAString & supShift)
 {

@@ -326,6 +326,16 @@ msiMfracCaret::SetupCoalesceTransactions(nsIEditor * editor,
   return msiMCaretBase::SetupCoalesceTransactions(editor, coalesceTransactions);
 }                                               
 
+
+NS_IMETHODIMP
+msiMfracCaret::SetCoalTransactionsAndNode(nsIEditor * editor,
+                                         PRBool onLeft,
+                                         nsIArray ** transactionList,
+                                         nsIDOMNode **coalesceNode)
+{
+  return msiMCaretBase::SetCoalTransactionsAndNode(editor, onLeft, transactionList, coalesceNode);
+}
+                                         
 NS_IMETHODIMP
 msiMfracCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {

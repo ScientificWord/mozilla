@@ -7,6 +7,7 @@
 #include "nsCOMPtr.h"
 #include "nsIArray.h"
 #include "nsIMutableArray.h"
+#include "nsITransaction.h"
 #include "msiIMathMLCoalesce.h"
 class msiCoalesceUtils
 {
@@ -45,6 +46,14 @@ static nsresult PrepareForCoalesceFromLeft(nsIEditor * editor,
                                            nsIDOMNode * node,
                                            PRUint32 pfcFlags,
                                            nsCOMPtr<nsIArray> & preparedArray);                              
+                                           
+//Transaction based coalescing
+                                           
+static PRBool Coalesce(nsIEditor * editor,
+                       nsIDOMNode * node1,  
+                       nsIDOMNode * node2, 
+                       nsCOMPtr<nsITransaction> & txn);
+                                           
                               
 // Should only be called when caretpos is known to be associated to node.
 static nsresult ForceCaretPositionMark(nsIDOMNode * node, 
