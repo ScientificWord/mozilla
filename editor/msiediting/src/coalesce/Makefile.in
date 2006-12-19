@@ -18,6 +18,7 @@ REQUIRES	= xpcom \
             widget \
             layout \
             gfx \
+		    txmgr \
             $(NULL)
 
 CPPSRCS		= \

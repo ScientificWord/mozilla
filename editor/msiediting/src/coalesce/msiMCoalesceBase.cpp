@@ -30,6 +30,15 @@ msiMCoalesceBase::Coalesce(nsIEditor * editor,
 }
 
 NS_IMETHODIMP
+msiMCoalesceBase::CoalesceTxn(nsIEditor * editor,
+                              nsIDOMNode * node,
+                              nsITransaction ** txn)                
+{
+  *txn = nsnull;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 msiMCoalesceBase::PrepareForCoalesce(nsIEditor * editor,
                                      PRUint32    pfcFlags,
                                      nsIArray ** beforeOffset,                
