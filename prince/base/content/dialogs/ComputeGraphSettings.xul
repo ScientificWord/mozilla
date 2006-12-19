@@ -6,13 +6,15 @@
 <?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
-<?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"?>
-
-<?xul-overlay href="chrome://editor/content/editorOverlay.xul"?>
-<?xul-overlay href="chrome://editor/content/MathmlOverlay.xul"?>
-<?xul-overlay href="chrome://editor/content/composerOverlay.xul"?>
+<!-- ?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"? -->
+<!-- ?xul-overlay href="chrome://editor/content/composerOverlay.xul"? -->
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
-<?xul-overlay href="chrome://communicator/content/contentAreaContextOverlay.xul"?>
+<!-- ?xul-overlay href="chrome://communicator/content/contentAreaContextOverlay.xul"? -->
+
+<!-- ?xul-overlay href="chrome://editor/content/editorOverlay.xul"? -->
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
 
 <?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
@@ -21,10 +23,10 @@
 <!DOCTYPE dialog [									 
 <!ENTITY % DTD SYSTEM "chrome://prince/content/ComputeGraphSettings.dtd" >
 %DTD;
-<!ENTITY % editorDTD SYSTEM "chrome://editor/locale/editor.dtd" >
+<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
 %editorDTD;
-<!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
-%editorOverlayDTD;
+<!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
+%menuOverlayDTD;
 ]>
 
 
@@ -37,18 +39,29 @@
     buttons="accept,cancel">
 
   <!-- Methods common to all editor dialogs -->
-  <script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+  <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/ -->
 
-  <script type="application/x-javascript" src="chrome://editor/content/ComputeUtils.js" />
-  <script type="application/x-javascript" src="chrome://editor/content/ComputeOverlay.js" />
-  <script type="application/x-javascript" src="chrome://editor/content/GraphOverlay.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/ComputeGraphSettings.js" />
   <script type="application/x-javascript" src="chrome://prince/content/ComputePlotSettings.js" />
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+   
+  <!-- Following scripts are needed by any MSI dialog containing an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <!-- script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
 
   <tabbox id="outer-box" flex="1">
     <tabs class="tabs-top">
