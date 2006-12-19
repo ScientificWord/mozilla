@@ -104,7 +104,8 @@ function msiSetupTextEditorCommands(editorElement)
 function msiSetupComposerWindowCommands(editorElement)
 {
   // Don't need to do this if already done
-  if (editorElement.mComposerWindowControllerID)
+  var topWin = msiGetTopLevelWindow(editorElement);
+  if (topWin.mComposerWindowControllerID)
     return;
 
   // Create a command controller and register commands
@@ -115,7 +116,7 @@ function msiSetupComposerWindowCommands(editorElement)
   //            must first call FinishHTMLSource() 
   //            to go from HTML Source mode to any other edit mode
 
-  var windowControllers = editorElement.controllers;
+  var windowControllers = topWin.controllers;
 
   if (!windowControllers) return;
 
@@ -165,23 +166,24 @@ function msiSetupComposerWindowCommands(editorElement)
   commandTable.registerCommand("cmd_preferences",    nsPreferencesCommand);
 
   // Edit Mode commands
-  if (msiGetEditorType(editorElement) == "html")
+  if (msiWindowHasHTMLEditor(topWin))
+//  if (msiGetEditorType(editorElement) == "html")
   {
-    if (msiIsTopLevelEditor(editorElement))  //The "mode" commands are only available for the top-level editor.
-    {
+//    if (msiIsTopLevelEditor(editorElement))  //The "mode" commands are only available for the top-level editor.
+//    {
       commandTable.registerCommand("cmd_NormalMode",         msiNormalModeCommand);
       commandTable.registerCommand("cmd_AllTagsMode",        msiAllTagsModeCommand);
       commandTable.registerCommand("cmd_HTMLSourceMode",     msiHTMLSourceModeCommand);
       commandTable.registerCommand("cmd_PreviewMode",        msiPreviewModeCommand);
       commandTable.registerCommand("cmd_FinishHTMLSource",   msiFinishHTMLSource);
       commandTable.registerCommand("cmd_CancelHTMLSource",   msiCancelHTMLSource);
-    }
+//    }
   }
 
   windowControllers.insertControllerAt(0, editorController);
 
   // Store the controller ID so we can be sure to get the right one later
-  editorElement.mComposerWindowControllerID = windowControllers.getControllerId(editorController);
+  topWin.mComposerWindowControllerID = windowControllers.getControllerId(editorController);
 }
 
 //-----------------------------------------------------------------------------------
@@ -375,25 +377,43 @@ function msiGoDoCommandParams(command, params, editorElement)
 function msiPokeStyleUI(uiID, aDesiredState)
 {
   try {
-    var topWindow = msiGetTopLevelWindow();
-    if ("pokeStyleUI" in topWindow)
-      topWindow.pokeStyleUI(uiID, aDesiredState);
-    if (topWindow != window && "pokeStyleUI" in window)
-      window.pokeStyleUI(uiID, aDesiredState);
-//    var commandNode = topWindow.document.getElementById(uiID);
-//    if (!commandNode)
-//      return;
-//
-//    var uiState = ("true" == commandNode.getAttribute("state"));
-//    if (aDesiredState != uiState)
-//    {
-//      var newState;
-//      if (aDesiredState)
-//        newState = "true";
-//      else
-//        newState = "false";
-//      commandNode.setAttribute("state", newState);
-//    }
+    var docList = msiGetUpdatableItemContainers(uiID, msiGetActiveEditorElement());
+    for (var i = 0; i < docList.length; ++i)
+    {
+      var commandNode = docList[i].getElementById(uiID);
+      if (commandNode)
+      {
+        var uiState = ("true" == commandNode.getAttribute("state"));
+        if (aDesiredState != uiState)
+        {
+          var newState;
+          if (aDesiredState)
+            newState = "true";
+          else
+            newState = "false";
+          commandNode.setAttribute("state", newState);
+        }
+      }
+    }
+//    var topWindow = msiGetTopLevelWindow();
+//    if ("pokeStyleUI" in topWindow)
+//      topWindow.pokeStyleUI(uiID, aDesiredState);
+//    if (topWindow != window && "pokeStyleUI" in window)
+//      window.pokeStyleUI(uiID, aDesiredState);
+////    var commandNode = topWindow.document.getElementById(uiID);
+////    if (!commandNode)
+////      return;
+////
+////    var uiState = ("true" == commandNode.getAttribute("state"));
+////    if (aDesiredState != uiState)
+////    {
+////      var newState;
+////      if (aDesiredState)
+////        newState = "true";
+////      else
+////        newState = "false";
+////      commandNode.setAttribute("state", newState);
+////    }
   } catch(e) { dump("poking UI for "+uiID+" failed: "+e+"\n"); }
 }
 
@@ -1154,17 +1174,17 @@ function msiGetWrapColumn(editorelement)
   return 0;
 }
 
-//function GetPromptService()
-//{
-//  var promptService;
-//  try {
-//    promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService();
-//    promptService = promptService.QueryInterface(Components.interfaces.nsIPromptService);
-//  }
-//  catch (e) {}
-//  return promptService;
-//}
-//
+function GetPromptService()
+{
+  var promptService;
+  try {
+    promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService();
+    promptService = promptService.QueryInterface(Components.interfaces.nsIPromptService);
+  }
+  catch (e) {}
+  return promptService;
+}
+
 //const gShowDebugOutputStateChange = false;
 //const gShowDebugOutputProgress = false;
 //const gShowDebugOutputStatusChange = false;
@@ -2331,30 +2351,36 @@ var msiCloseCommand =
 
   doCommand: function(aCommand)
   {
-    CloseWindow();
+    msiCloseWindow();
   }
 };
 
-//function CloseWindow()
-//{
-//  // Check to make sure document is saved. "true" means allow "Don't Save" button,
-//  //   so user can choose to close without saving
+function msiCloseWindow(theWindow)
+{
+  if (!theWindow)
+    theWindow = window;
+  // Check to make sure document is saved. "true" means allow "Don't Save" button,
+  //   so user can choose to close without saving
+  var editorElement = msiGetPrimaryEditorElementForWindow(theWindow);
+  if (msiCheckAndSaveDocument(editorElement, "cmd_close", true))
 //  if (CheckAndSaveDocument("cmd_close", true)) 
-//  {
+  {
 //    if (window.InsertCharWindow)
 //      SwitchInsertCharToAnotherEditorOrClose();
-//
-//    try {
-//      var basewin = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-//                      .getInterface(Components.interfaces.nsIWebNavigation)
-//                      .QueryInterface(Components.interfaces.nsIDocShellTreeItem)
-//                      .treeOwner
-//                      .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-//                      .getInterface(Components.interfaces.nsIBaseWindow);
-//      basewin.destroy();
-//    } catch (e) {}
-//  }
-//}
+//Ought to do what here? We'll assume that any dialog dependent on this window will be dealt with by our dialog management
+//code, and not worry it.  rwa
+
+    try {
+      var basewin = theWindow.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                      .getInterface(Components.interfaces.nsIWebNavigation)
+                      .QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+                      .treeOwner
+                      .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                      .getInterface(Components.interfaces.nsIBaseWindow);
+      basewin.destroy();
+    } catch (e) {}
+  }
+}
 
 //-----------------------------------------------------------------------------------
 //While it isn't clear that we'll never want this available in an alternate editor, there's no need for a

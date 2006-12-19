@@ -4098,7 +4098,7 @@ var msiCommandUpdater = {
 
     for (var i = 0; i < docList.length; ++i)
     {
-      var node = docList[i].getElementById(id);
+      var node = docList[i].getElementById(command);
       if ( node )
       {
         if ( enabled )

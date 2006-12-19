@@ -15,7 +15,7 @@ var msiEvaluateCommand =
   doCommand: function(aCommand, editorElement)
   {
     var theEditorElement = msiGetActiveEditorElement();
-    doComputeCommand(aCommand, theEditorElement);
+    doComputeCommand(aCommand, theEditorElement, this);
   }
 };
 
@@ -385,7 +385,7 @@ function doComputeEvaluate(math, editorElement)
   doEvalComputation(math,GetCurrentEngine().Evaluate,"<mo>=</mo>","evaluate", editorElement);
 }
 
-function doComputeCommand(cmd, editorElement)
+function doComputeCommand(cmd, editorElement, cmdHandler)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
@@ -539,7 +539,7 @@ function doComputeCommand(cmd, editorElement)
       doComputeApproxIntegral(element, editorElement);
       break;
     case "cmd_compute_ImplicitDiff":
-      doComputeImplicitDiff(element, editorElement);
+      doComputeImplicitDiff(element, editorElement, cmdHandler);
       break;
     case "cmd_compute_SolveODEExact":
       doComputeSolveODE(element,"ODE.fmt",eng.solveODEExact,"ODE.title", editorElement);
@@ -896,7 +896,7 @@ function doGlobalComputeCommand(cmd, editorElement)
     doComputeIterate(editorElement);
     break;
   case "cmd_MSIComputeFillMatrix":       
-    doComputeFillMatrix(editorElement);
+    doComputeFillMatrix(editorElement, null);
     break;
   case "cmd_MSIComputeRandomMatrix":       
     doComputeRandomMatrix(editorElement);
@@ -1433,7 +1433,7 @@ function doComputeIterate(editorElement)
 }                                                                                    
 
 							                                                                                   
-function doComputeImplicitDiff(math, editorElement)
+function doComputeImplicitDiff(math, editorElement, cmdHandler)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
@@ -1441,21 +1441,25 @@ function doComputeImplicitDiff(math, editorElement)
 
   var vars = "";
   var o = new Object();
-  var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeImplicitDiff.xul", "_blank", "chrome,close,titlebar,modal", o);
-  if (o.Cancel)
-    return;
-  msiComputeLogger.Sent4("implicit diff",mathstr,o.thevar,o.about);
-
-  ComputeCursor(editorElement);
+//  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+//  parentWin.openDialog("chrome://prince/content/ComputeImplicitDiff.xul", "_blank", "chrome,close,titlebar,modal", o);
   try {
-    var out = GetCurrentEngine().implicitDiff(mathstr,o.thevar,o.about);
-    msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Solution.fmt"),math, editorElement);
-  } catch(ex) {
-    msiComputeLogger.Exception(ex);
-  }
-  RestoreCursor(editorElement);
+    msiOpenModelessDialog("chrome://prince/content/ComputeImplicitDiff.xul", "_blank", "chrome,close,titlebar,dependent",
+                                      editorElement, "cmd_MSIComputeImplicitDiff", cmdHandler, o);
+  } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeFillMatrix: [" + e + "]"); return;}
+//  if (o.Cancel)
+//    return;
+//  msiComputeLogger.Sent4("implicit diff",mathstr,o.thevar,o.about);
+//
+//  ComputeCursor(editorElement);
+//  try {
+//    var out = GetCurrentEngine().implicitDiff(mathstr,o.thevar,o.about);
+//    msiComputeLogger.Received(out);
+//    appendLabeledResult(out,GetComputeString("Solution.fmt"),math, editorElement);
+//  } catch(ex) {
+//    msiComputeLogger.Exception(ex);
+//  }
+//  RestoreCursor(editorElement);
 }
 
 function doComputeSolveODE(math,labelID,func,titleID, editorElement)
@@ -1623,7 +1627,7 @@ function doComputeCharPoly(math, editorElement)
         msiComputeLogger.Exception(ex);
 } } } }
 
-function doComputeFillMatrix(editorElement)
+function doComputeFillMatrix(editorElement, cmdHandler)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
@@ -1631,23 +1635,27 @@ function doComputeFillMatrix(editorElement)
   o.rows = "3";  // sticky?
   o.cols = "3";
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeFillMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
-  if (o.Cancel)
-    return;
-
-  ComputeCursor(editorElement);
-  var mRows = GetNumAsMathML(o.rows);
-  var mCols = GetNumAsMathML(o.cols);
-  var mExpr  = o.expr;
-  msiComputeLogger.Sent4("Fill matrix",mRows+" by "+mCols, mExpr,o.type);
   try {
-    var out = GetCurrentEngine().matrixFill(o.type,mRows,mCols,mExpr);
-    msiComputeLogger.Received(out);
-    addResult(out, editorElement);
-  } catch (e) {
-    msiComputeLogger.Exception(e);
-  }
-  RestoreCursor(editorElement);
+    msiOpenModelessDialog("chrome://prince/content/ComputeFillMatrix.xul", "_blank", "chrome,close,titlebar,dependent",
+                                      editorElement, "cmd_MSIComputeFillMatrix", cmdHandler, o);
+  } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeFillMatrix: [" + e + "]"); return;}
+//  parentWin.openDialog("chrome://prince/content/ComputeFillMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
+//  if (o.Cancel)
+//    return;
+
+//  ComputeCursor(editorElement);
+//  var mRows = GetNumAsMathML(o.rows);
+//  var mCols = GetNumAsMathML(o.cols);
+//  var mExpr  = o.expr;
+//  msiComputeLogger.Sent4("Fill matrix",mRows+" by "+mCols, mExpr,o.type);
+//  try {
+//    var out = GetCurrentEngine().matrixFill(o.type,mRows,mCols,mExpr);
+//    msiComputeLogger.Received(out);
+//    addResult(out, editorElement);
+//  } catch (e) {
+//    msiComputeLogger.Exception(e);
+//  }
+//  RestoreCursor(editorElement);
 }
 
 function doComputeMap(math, editorElement)
