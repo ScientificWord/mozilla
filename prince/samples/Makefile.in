@@ -37,7 +37,9 @@ SAMPLES	:= \
 			$(srcdir)/img.xml	\
 			$(srcdir)/TestPlotsWithImages.xhtml \
 			$(srcdir)/TestPlotsExtended.xhtml \
+			$(srcdir)/TestPlotsVcam.xhtml \
 			$(srcdir)/TestPlotsAnimated.xhtml \
+			$(srcdir)/TestPlotsAnimatedVcam.xhtml \
 			$(srcdir)/vcamdemo.xhtml \
             $(wildcard $(srcdir)/TestPlot*.png) \
 			$(srcdir)/simpledocbook.xhtml \
