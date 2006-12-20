@@ -249,12 +249,24 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
     }
   }
   DOMGraph.appendChild(DOMGs);
-
+  var img;
   // put the image file in
-  var img    = document.createElementNS(htmlns,"img");
-  img.setAttribute("src", "file://"+this.getGraphAttribute("ImageFile"));
-  img.setAttribute("alt", "Generated Plot");
-  img.setAttribute("msigraph","true");
+  var filetype = this.getDefaultValue ("DefaultFileType");
+  dump("SMR file type is " + filetype + "\n");
+  if (filetype == "xvz") {
+    img    = document.createElementNS(htmlns,"object");
+    img.setAttribute("type","application/x-mupad-graphics+gzip"); 
+    img.setAttribute("data", "file://"+this.getGraphAttribute("ImageFile"));
+    img.setAttribute("alt", "Generated Plot");
+    img.setAttribute("msigraph","true");
+    img.setAttribute("width","300");
+    img.setAttribute("height","400");
+  } else {
+    img    = document.createElementNS(htmlns,"img");
+    img.setAttribute("src", "file://"+this.getGraphAttribute("ImageFile"));
+    img.setAttribute("alt", "Generated Plot");
+    img.setAttribute("msigraph","true");
+  }  
   DOMGraph.appendChild(img);
   return(DOMGraph);
 }
