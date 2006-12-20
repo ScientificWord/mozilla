@@ -567,9 +567,7 @@ function nonmodalRecreateGraph (graph, DOMGraph) {
 // compute a graph, create a <graph> element, insert it into DOM after siblingElement
 function insertGraph (siblingElement, graph) {
   var filetype = graph.getDefaultValue ("DefaultFileType");
-  // need to walk down plot tree and see if any of the plots are animated ...
-  if (graph.getPlotAttribute(PlotAttrName("Animate",1)) == "true")
-     filetype = "gif";
+  // May want to ensure file type is compatible with animated here
   var editorElement = null;
   try
   {
