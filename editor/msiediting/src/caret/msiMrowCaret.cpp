@@ -221,8 +221,7 @@ msiMrowCaret::SetCoalTransactionsAndNode(nsIEditor * editor,
   PRBool offsetOnBoundary = (m_offset== 0 || m_offset == m_numKids);
   NS_ASSERTION(m_numKids > 0, "Mrow with zero kids -- I hoped this would of been deleted earlier.");
   PRBool redundant(PR_FALSE);
-  if (redundant)
-    IsRedundant(editor, offsetOnBoundary, &redundant);
+  IsRedundant(editor, offsetOnBoundary, &redundant);
   if (redundant)
   {
     //TODO -- handle case of empty mrow -- I guess delete this mrow and pass to sibling?
