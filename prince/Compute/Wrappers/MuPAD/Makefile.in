@@ -44,16 +44,16 @@ EXTRA_LIBS += \
 		ole32.lib \
 		oleaut32.lib \
 		oledlg.lib \
-		$(srcdir)/../../Engines/MuPAD/mupkernel.lib \
+		$(srcdir)/../../MuPAD/win32/mupkernel.lib \
 		$(NULL)
 endif
 
 ifeq ($(OS_ARCH),Darwin)
 EXTRA_LIBS += \
-		$(srcdir)/../../MuPAD/libexpat.a \
-		$(srcdir)/../../MuPAD/liblibstream.a \
-		$(srcdir)/../../MuPAD/libmupudskernel.a \
-		$(srcdir)/../../MuPAD/libmut.a \
+		$(srcdir)/../../MuPAD/Darwin/libexpat.a \
+		$(srcdir)/../../MuPAD/Darwin/liblibstream.a \
+		$(srcdir)/../../MuPAD/Darwin/libmupudskernel.a \
+		$(srcdir)/../../MuPAD/Darwin/libmut.a \
 		-lz -framework Carbon \
 		$(NULL)
 endif
