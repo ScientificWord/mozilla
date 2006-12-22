@@ -140,13 +140,13 @@ function GetRHS(math)
   return math;
 }
 
-function appendResult(result,sep,math) {
-  GetCurrentEditor().insertHTMLWithContext(
-      result.replace(fullmath,fullmath+sep),
-      "", "", "", null,
-      math, math.childNodes.length, false );
-  coalescemath();
-}
+// function appendResult(result,sep,math) {
+//   GetCurrentEditor().insertHTMLWithContext(
+//       result.replace(fullmath,fullmath+sep),
+//       "", "", "", null,
+//       math, math.childNodes.length, false );
+//   coalescemath();
+// }
 
 function runFixup(math)
 {

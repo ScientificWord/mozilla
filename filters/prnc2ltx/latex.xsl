@@ -47,7 +47,8 @@
 
 
 <xsl:template match="html:title">
-\title{<xsl:value-of select="."/>}</xsl:template>
+\title{<xsl:value-of select="."/>}
+</xsl:template>
 
 <xsl:template match="html:author">
 \author{<xsl:value-of select="child::text()"/> <xsl:apply-templates select="address"/>}</xsl:template>
