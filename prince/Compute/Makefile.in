@@ -49,7 +49,7 @@ endif
 
 ifeq ($(OS_ARCH),WINNT)
 SupportFiles	+= \
-			$(srcdir)/MuPAD/mupkernel.dll \
+			$(srcdir)/MuPAD/win32/mupkernel.dll \
 			$(srcdir)/tcifcns.m \
 			$(NULL)
 endif
