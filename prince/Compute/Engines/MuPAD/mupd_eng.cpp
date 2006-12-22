@@ -465,8 +465,7 @@ static void DispatchMuPADMessages()
     else
       ::DispatchMessage(&msg);
   }
-#endif
-#ifdef XP_UNIX
+#else
   MUP_handle_uds_input(true);
 #endif
 }
