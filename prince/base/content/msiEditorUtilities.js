@@ -1583,24 +1583,25 @@ function SetElementEnabled(element, doEnable)
 
 /************* Services / Prefs ***************/
 
-//function GetIOService()
-//{
-//  if (gIOService)
-//    return gIOService;
-//
-//  gIOService = Components.classes["@mozilla.org/network/io-service;1"]
-//               .getService(Components.interfaces.nsIIOService);
-//
-//  return gIOService;
-//}
-//
-//function GetFileProtocolHandler()
-//{
-//  var ios = GetIOService();
-//  var handler = ios.getProtocolHandler("file");
-//  return handler.QueryInterface(Components.interfaces.nsIFileProtocolHandler);
-//}
-//
+function GetIOService()
+{
+  if (gIOService)
+    return gIOService;
+
+  gIOService = Components.classes["@mozilla.org/network/io-service;1"]
+               .getService(Components.interfaces.nsIIOService);
+
+  return gIOService;
+}
+
+function GetFileProtocolHandler()
+{
+  var ios = GetIOService();
+  var handler = ios.getProtocolHandler("file");
+  return handler.QueryInterface(Components.interfaces.nsIFileProtocolHandler);
+}
+
+
 function GetPrefsService()
 {
   if (gPrefsService)
