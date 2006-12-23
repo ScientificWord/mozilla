@@ -13,7 +13,7 @@
 //// Bummer! Can't get at enums from nsIDocumentEncoder.h
 //// http://lxr.mozilla.org/seamonkey/source/content/base/public/nsIDocumentEncoder.h#111
 //var gStringBundle;
-//var gIOService;
+var gIOService;
 var gPrefsService;
 var gPrefsBranch;
 //var gFilePickerDirectory;
@@ -276,9 +276,14 @@ function msiPageIsEmptyAndUntouched(editorElement)
   return msiIsDocumentEmpty(editorElement) && !msiIsDocumentModified(editorElement) && !msiIsHTMLSourceChanged(editorElement);
 }
 
-function IsWebComposer()
+function msiIsWebComposer(theWindow)
 {
-  return document.documentElement.id == "editorWindow";
+//  return document.documentElement.id == "editorWindow";
+  if (!theWindow)
+    theWindow = window;
+  if (theWindow.document && theWindow.document.documentElement)
+    return theWindow.document.documentElement.id == "prince";
+  return false;
 }
 
 
@@ -288,6 +293,12 @@ function clearPrevActiveEditor()
 
 //Logging stuff only
   var logStr = msiEditorStateLogString(theWindow);
+  if (!theWindow.msiActiveEditorElement)
+  {
+    var winWatcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+                         .getService(Components.interfaces.nsIWindowWatcher);
+    var activeWin = winWatcher.activeWindow;
+  }
 //End logging stuff
   if (theWindow.msiClearEditorTimer != null)
   {
@@ -463,13 +474,14 @@ function msiGetActiveEditorElement(currWindow)
 {
   if (!currWindow)
     currWindow = window.document.defaultView;
-  var editorElement = null;
   if ("msiActiveEditorElement" in currWindow)
-    editorElement = currWindow.msiActiveEditorElement;
-  if (!editorElement && currWindow.opener && currWindow.opener != currWindow)
-    editorElement = msiGetActiveEditorElement(currWindow.opener);
-  if (!editorElement)
-    editorElement = msiGetCurrentEditorElementForWindow(currWindow);
+    return currWindow.msiActiveEditorElement;
+  currWindow = msiGetTopLevelWindow(currWindow);
+  if ("msiActiveEditorElement" in currWindow)
+    return currWindow.msiActiveEditorElement;
+//  if (!editorElement && currWindow.opener && currWindow.opener != currWindow)
+//    editorElement = msiGetActiveEditorElement(currWindow.opener);
+  var editorElement = msiGetCurrentEditorElementForWindow(currWindow);
   if (!editorElement)
     editorElement = currWindow.GetCurrentEditorElement();  //Give up?
   return editorElement;
@@ -547,8 +559,12 @@ function msiGetTopLevelWindow(currWindow)  //do we need a different function for
 {
   if (!currWindow)
     currWindow = window.document.defaultView;
+  if ("ownerDocument" in currWindow)
+    currWindow = currWindow.ownerDocument.defaultView;
   if (currWindow.parent && currWindow.parent != currWindow)
     return msiGetTopLevelWindow(currWindow.parent);
+  if (msiIsWebComposer(currWindow))
+    return currWindow;
   if (currWindow.opener && currWindow.opener != currWindow)
     return msiGetTopLevelWindow(currWindow.opener);
   return currWindow;
@@ -1320,14 +1336,17 @@ function msiGetWindowContainingEditor(editorElement)
 //  logStr += "].\n";
 //  msiKludgeLogString(logStr);
 ////End logging stuff
+  if (!editorElement)
+    return null;
   var parWindow = editorElement.ownerDocument.defaultView;
-  if (parWindow != theWindow)
-    return parWindow;
-  //else???? for now, assume this always works?
-  var theWindow = editorElement.contentWindow;
-  if (theWindow.parent && theWindow.parent != theWindow)
-    return theWindow.parent;
-  return theWindow;
+  return parWindow;
+//  if (parWindow != theWindow)
+//    return parWindow;
+//  //else???? for now, assume this always works?
+//  var theWindow = editorElement.contentWindow;
+//  if (theWindow.parent && theWindow.parent != theWindow)
+//    return theWindow.parent;
+//  return theWindow;
 }
 
 function msiGetParentWindowForNewDialog(ownerEditorElement)
@@ -1583,7 +1602,7 @@ function SetElementEnabled(element, doEnable)
 
 /************* Services / Prefs ***************/
 
-function GetIOService()
+function msiGetIOService()
 {
   if (gIOService)
     return gIOService;
@@ -1594,13 +1613,12 @@ function GetIOService()
   return gIOService;
 }
 
-function GetFileProtocolHandler()
+function msiGetFileProtocolHandler()
 {
-  var ios = GetIOService();
+  var ios = msiGetIOService();
   var handler = ios.getProtocolHandler("file");
   return handler.QueryInterface(Components.interfaces.nsIFileProtocolHandler);
 }
-
 
 function GetPrefsService()
 {
@@ -1681,56 +1699,56 @@ function GetUnicharPref(aPrefName, aDefVal)
   }
   return "";
 }
-//
-//// Set initial directory for a filepicker from URLs saved in prefs
-//function SetFilePickerDirectory(filePicker, fileType)
-//{
-//  if (filePicker)
-//  {
-//    try {
-//      var prefBranch = GetPrefs();
-//      if (prefBranch)
-//      {
-//        // Save current directory so we can reset it in SaveFilePickerDirectory
-//        gFilePickerDirectory = filePicker.displayDirectory;
-//
-//        var location = prefBranch.getComplexValue("editor.lastFileLocation."+fileType, Components.interfaces.nsILocalFile);
-//        if (location)
-//          filePicker.displayDirectory = location;
-//      }
-//    }
-//    catch(e) {}
-//  }
-//}
-//
-//// Save the directory of the selected file to prefs
-//function SaveFilePickerDirectory(filePicker, fileType)
-//{
-//  if (filePicker && filePicker.file)
-//  {
-//    try {
-//      var prefBranch = GetPrefs();
-//
-//      var fileDir;
-//      if (filePicker.file.parent)
-//        fileDir = filePicker.file.parent.QueryInterface(Components.interfaces.nsILocalFile);
-//
-//      if (prefBranch)
-//       prefBranch.setComplexValue("editor.lastFileLocation."+fileType, Components.interfaces.nsILocalFile, fileDir);
-//    
-//      var prefsService = GetPrefsService();
-//        prefsService.savePrefFile(null);
-//    } catch (e) {}
-//  }
-//
-//  // Restore the directory used before SetFilePickerDirectory was called;
-//  // This reduces interference with Browser and other module directory defaults
-//  if (gFilePickerDirectory)
-//    filePicker.displayDirectory = gFilePickerDirectory;
-//
-//  gFilePickerDirectory = null;
-//}
-//
+
+// Set initial directory for a filepicker from URLs saved in prefs
+function msiSetFilePickerDirectory(filePicker, fileType)
+{
+  if (filePicker)
+  {
+    try {
+      var prefBranch = GetPrefs();
+      if (prefBranch)
+      {
+        // Save current directory so we can reset it in SaveFilePickerDirectory
+        window.gFilePickerDirectory = filePicker.displayDirectory;
+
+        var location = prefBranch.getComplexValue("editor.lastFileLocation."+fileType, Components.interfaces.nsILocalFile);
+        if (location)
+          filePicker.displayDirectory = location;
+      }
+    }
+    catch(e) {}
+  }
+}
+
+// Save the directory of the selected file to prefs
+function msiSaveFilePickerDirectory(filePicker, fileType)
+{
+  if (filePicker && filePicker.file)
+  {
+    try {
+      var prefBranch = GetPrefs();
+
+      var fileDir;
+      if (filePicker.file.parent)
+        fileDir = filePicker.file.parent.QueryInterface(Components.interfaces.nsILocalFile);
+
+      if (prefBranch)
+       prefBranch.setComplexValue("editor.lastFileLocation."+fileType, Components.interfaces.nsILocalFile, fileDir);
+    
+      var prefsService = GetPrefsService();
+        prefsService.savePrefFile(null);
+    } catch (e) {}
+  }
+
+  // Restore the directory used before SetFilePickerDirectory was called;
+  // This reduces interference with Browser and other module directory defaults
+  if ("gFilePickerDirectory" in window)
+    filePicker.displayDirectory = window.gFilePickerDirectory;
+
+  window.gFilePickerDirectory = null;
+}
+
 function GetDefaultBrowserColors()
 {
   var prefs = GetPrefs();
@@ -1793,7 +1811,7 @@ function MakeRelativeUrl(url)
   if (docScheme != urlScheme)
     return inputUrl;
 
-  var IOService = GetIOService();
+  var IOService = msiGetIOService();
   if (!IOService)
     return inputUrl;
 
@@ -1812,7 +1830,7 @@ function MakeRelativeUrl(url)
   // We only return "urlPath", so we can convert
   //  the entire docPath for case-insensitive comparisons
   var os = GetOS();
-  var doCaseInsensitive = (docScheme == "file" && os == gWin);
+  var doCaseInsensitive = (docScheme == "file" && os == msigWin);
   if (doCaseInsensitive)
     docPath = docPath.toLowerCase();
 
@@ -1878,7 +1896,7 @@ function MakeRelativeUrl(url)
         //   relativize to different drives/volumes.
         // UNIX doesn't have volumes, so we must not do this else
         //  the first directory will be misinterpreted as a volume name
-        if (firstDirTest && docScheme == "file" && os != gUNIX)
+        if (firstDirTest && docScheme == "file" && os != msigUNIX)
           return inputUrl;
       }
     }
@@ -1917,7 +1935,7 @@ function MakeAbsoluteUrl(url)
   if (!docScheme)
     return resultUrl;
 
-  var  IOService = GetIOService();
+  var  IOService = msiGetIOService();
   if (!IOService)
     return resultUrl;
   
@@ -1951,7 +1969,7 @@ function msiGetDocumentBaseUrl(editorElement)
         docUrl = base.getAttribute("href");
     }
     if (!docUrl)
-      docUrl = msiGetEditorUrl(editorElement);
+      docUrl = msiGetEditorURL(editorElement);
 
     if (!IsUrlAboutBlank(docUrl))
       return docUrl;
@@ -1977,7 +1995,7 @@ function GetScheme(urlspec)
   if (!resultUrl || IsUrlAboutBlank(resultUrl))
     return "";
 
-  var IOService = GetIOService();
+  var IOService = msiGetIOService();
   if (!IOService)
     return "";
 
@@ -1995,7 +2013,7 @@ function GetHost(urlspec)
   if (!urlspec)
     return "";
 
-  var IOService = GetIOService();
+  var IOService = msiGetIOService();
   if (!IOService)
     return "";
 
@@ -2012,7 +2030,7 @@ function GetUsername(urlspec)
   if (!urlspec)
     return "";
 
-  var IOService = GetIOService();
+  var IOService = msiGetIOService();
   if (!IOService)
     return "";
 
@@ -2029,7 +2047,7 @@ function GetFilename(urlspec)
   if (!urlspec || IsUrlAboutBlank(urlspec))
     return "";
 
-  var IOService = GetIOService();
+  var IOService = msiGetIOService();
   if (!IOService)
     return "";
 
@@ -2067,7 +2085,7 @@ function StripUsernamePassword(urlspec, usernameObj, passwordObj)
   if (atIndex > 0)
   {
     try {
-      var IOService = GetIOService();
+      var IOService = msiGetIOService();
       if (!IOService)
         return urlspec;
 
@@ -2104,7 +2122,7 @@ function StripPassword(urlspec, passwordObj)
   if (atIndex > 0)
   {
     try {
-      var IOService = GetIOService();
+      var IOService = msiGetIOService();
       if (!IOService)
         return urlspec;
 
@@ -2152,7 +2170,7 @@ function InsertUsernameIntoUrl(urlspec, username)
     return urlspec;
 
   try {
-    var ioService = GetIOService();
+    var ioService = msiGetIOService();
     var URI = ioService.newURI(urlspec, GetCurrentEditor().documentCharacterSet, null);
     URI.username = username;
     return URI.spec;
@@ -2169,11 +2187,11 @@ function GetOS()
   var platform = navigator.platform.toLowerCase();
 
   if (platform.indexOf("win") != -1)
-    gOS = gWin;
+    gOS = msigWin;
   else if (platform.indexOf("mac") != -1)
-    gOS = gMac;
+    gOS = msigMac;
   else if (platform.indexOf("unix") != -1 || platform.indexOf("linux") != -1 || platform.indexOf("sun") != -1)
-    gOS = gUNIX;
+    gOS = msigUNIX;
   else
     gOS = "";
   // Add other tests?
@@ -2276,6 +2294,8 @@ function addDataToFile(aFilePath, aDataStream)
 
 function msiKludgeLogString(logStr)
 {
+  return;
+
   if (!("msiLogPath" in window) || !window.msiLogPath)
   {
     var logLocalFile = null;

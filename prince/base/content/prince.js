@@ -22,7 +22,7 @@ function doOpen() {
   if (fp.file && fp.file.path.length > 0) {
     dump("Ready to edit page: " + fp.fileURL.spec +"\n");
     try {
-      editPage(fp.fileURL.spec, window, false);
+      msiEditPage(fp.fileURL.spec, window, false);
 //      GetCurrentEditorElement().webNavigation.loadURI(fp.fileURL.spec,
 //               Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,
 //               null, null, null);
@@ -50,7 +50,7 @@ function doNew() {
   if (fp.file && fp.file.path.length > 0) {
     dump("Ready to edit shell: " + fp.fileURL.spec +"\n");
     try {
-      editPage(fp.fileURL.spec, window, false);
+      msiEditPage(fp.fileURL.spec, window, false);
 //      GetCurrentEditorElement().webNavigation.loadURI(fp.fileURL.spec,
 //               Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,
 //               null, null, null);
@@ -319,10 +319,10 @@ function openTeX()
 {
   dump("Open TeX \n");
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-  fp.init(window, "Open TeX File", nsIFilePicker.modeOpen);     // BBM todo -- use properties file here for the strings
+  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
+  fp.init(window, "Open TeX File", msIFilePicker.modeOpen);     // BBM todo -- use properties file here for the strings
   fp.appendFilter("TeX files", "*.tex; *.ltx; *.shl");
-  fp.appendFilters(nsIFilePicker.filterXML)
+  fp.appendFilters(msIFilePicker.filterXML)
 
  // SetFilePickerDirectory(fp, "tex");
 
@@ -356,7 +356,7 @@ function openTeX()
 //       The output .xhtml file, which is usually in the output directory.                                    //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-    SaveFilePickerDirectory(fp, "tex");
+    msiSaveFilePickerDirectory(fp, "tex");
     var filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
     var infile =  "\""+fp.file.path+"\"";
     dump("Open Tex: " + infile);
@@ -397,7 +397,7 @@ function openTeX()
     }      
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
     
-    editPage("file:///" + outfile.path.replace(/\\/g,"/"), window, true);
+    msiEditPage("file:///" + outfile.path.replace(/\\/g,"/"), window, true);
   }                       
 }
 
@@ -461,9 +461,9 @@ function exportTeX()
   var editor = GetCurrentEditor();
   if (!editor) return;
 
-   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-   fp.init(window, "Export TeX File", nsIFilePicker.modeSave);
-   fp.appendFilters(nsIFilePicker.filterText);
+   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
+   fp.init(window, "Export TeX File", msIFilePicker.modeSave);
+   fp.appendFilters(msIFilePicker.filterText);
    fp.appendFilter("TeX files", "*.tex; *.ltx");
    fp.defaultExtension = ".tex";
    try 
@@ -606,11 +606,11 @@ function compileTeX(pdftex)
 
   if (filename.length < 0)
      return;     
-  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-  fp.init(window, "Save "+(pdftex?"PDF":"DVI")+" file", nsIFilePicker.modeSave);
+  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
+  fp.init(window, "Save "+(pdftex?"PDF":"DVI")+" file", msIFilePicker.modeSave);
 
   // BBM todo: we need to set up file pickers for pdf and dvi files 
-  fp.appendFilters(nsIFilePicker.filterAll);
+  fp.appendFilters(msIFilePicker.filterAll);
 
   try 
   {
