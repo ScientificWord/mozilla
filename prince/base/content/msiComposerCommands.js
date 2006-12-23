@@ -171,7 +171,7 @@ function msiSetupComposerWindowCommands(editorElement)
       commandTable.registerCommand("cmd_AllTagsMode",        msiAllTagsModeCommand);
       commandTable.registerCommand("cmd_HTMLSourceMode",     msiHTMLSourceModeCommand);
       commandTable.registerCommand("cmd_PreviewMode",        msiPreviewModeCommand);
-      commandTable.registerCommand("cmd_FinishHTMLSource",   msiFinishHTMLSource);
+      commandTable.registerCommand("cmd_FinishHTMLSource",   msiFinishHTMLSourceCmd);
       commandTable.registerCommand("cmd_CancelHTMLSource",   msiCancelHTMLSource);
 //    }
   }
@@ -428,79 +428,75 @@ function msiDoStyleUICommand(cmdStr)
 
 function msiPokeMultiStateUI(uiID, cmdParams)
 {
+  var isMixed = cmdParams.getBooleanValue("state_mixed");
+  var desiredAttrib;
+  if (isMixed)
+    desiredAttrib = "mixed";
+  else
+    desiredAttrib = cmdParams.getCStringValue("state_attribute");
+
   try
   {
-    var topWindow = msiGetTopLevelWindow();
-    if ("pokeMultiStateUI" in topWindow)
-      topWindow.pokeMultiStateUI(uiID, cmdParams);
-    if (topWindow != window && "pokeMultiStateUI" in window)
-      window.pokeMultiStateUI(uiID, cmdParams);
-//    var commandNode = topWindow.document.getElementById(uiID);
-//    if (!commandNode)
-//      return;
-//
-//    var isMixed = cmdParams.getBooleanValue("state_mixed");
-//    var desiredAttrib;
-//    if (isMixed)
-//      desiredAttrib = "mixed";
-//    else
-//      desiredAttrib = cmdParams.getCStringValue("state_attribute");
-//
-//    var uiState = commandNode.getAttribute("state");
-//    if (desiredAttrib != uiState)
-//    {
-//      commandNode.setAttribute("state", desiredAttrib);
-//    }
+    var docList = msiGetUpdatableItemContainers(uiID, msiGetActiveEditorElement());
+    for (var i = 0; i < docList.length; ++i)
+    {
+      var commandNode = docList[i].getElementById(uiID);
+      if (commandNode != null)
+      {
+        var uiState = commandNode.getAttribute("state");
+        if (desiredAttrib != uiState)
+        {
+          commandNode.setAttribute("state", desiredAttrib);
+        }
+      }
+    }
   } catch(e) {}
 }
 
 function msiPokeTagStateUI(uiID, cmdParams)
 {
+  var textboxName;
+  switch (uiID)
+  {
+    case "cmd_texttag":
+      textboxName = "TextTagSelections";
+      break;
+    case "cmd_paratag":
+      textboxName = "ParaTagSelections";
+      break;
+    case "cmd_secttag":
+      textboxName = "SectTagSelections";
+      break;
+    case "cmd_othertag":
+      textboxName = "OtherTagSelections";
+      break;
+    default:
+      break;
+//      return;
+  }   
+  var desiredAttrib;
+  desiredAttrib = cmdParams.getStringValue("state_attribute");
+
   try
   {
-    var topWindow = msiGetTopLevelWindow();
-//    if ("pokeTagStateUI" in topWindow)
-//      topWindow.pokeTagStateUI(uiID, cmdParams);
-//    if (topWindow != window && "pokeTagStateUI" in window)
-//      window.pokeTagStateUI(uiID, cmdParams);
-
-    var commandNode = topWindow.document.getElementById(uiID);
-    if (!commandNode)
-      return;
-
-    var desiredAttrib;
-    desiredAttrib = cmdParams.getStringValue("state_attribute");
-
-    var uiState = commandNode.getAttribute("state");
-    if (desiredAttrib != uiState)
+    var docList = msiGetUpdatableItemContainers(uiID, msiGetActiveEditorElement());
+    for (var i = 0; i < docList.length; ++i)
     {
-      commandNode.setAttribute("state", desiredAttrib);
-//      commandNode.setAttribute("value", desiredAttrib);
-      var textboxName;
-      switch (uiID)
+      var commandNode = docList[i].getElementById(uiID);
+      if (commandNode)
       {
-        case "cmd_texttag":
-          textboxName = "TextTagSelections";
-          break;
-        case "cmd_paratag":
-          textboxName = "ParaTagSelections";
-          break;
-        case "cmd_secttag":
-          textboxName = "SectTagSelections";
-          break;
-        case "cmd_othertag":
-          textboxName = "OtherTagSelections";
-          break;
-        default:
-          return;
-      }   
-      var textbox = topWindow.document.getElementById(textboxName);
-      textbox.textValue = desiredAttrib;
+        var uiState = commandNode.getAttribute("state");
+        if (desiredAttrib != uiState)
+        {
+          commandNode.setAttribute("state", desiredAttrib);
+    //      commandNode.setAttribute("value", desiredAttrib);
+          var textbox = docList[i].getElementById(textboxName);
+          if (textbox)
+            textbox.textValue = desiredAttrib;
+        }
+      }
     }
-  } 
-  catch(e) 
-  {
-  }
+  } catch(e) {}
 }
 //
 //
@@ -599,16 +595,16 @@ var msiOpenCommand =
 
   doCommand: function(aCommand)
   {
-    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-    fp.init(window, GetString("OpenHTMLFile"), nsIFilePicker.modeOpen);
+    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
+    fp.init(window, GetString("OpenHTMLFile"), msIFilePicker.modeOpen);
 
-    SetFilePickerDirectory(fp, "html");
+    msiSetFilePickerDirectory(fp, "html");
 
     // When loading into Composer, direct user to prefer HTML files and text files,
     //   so we call separately to control the order of the filter list
-    fp.appendFilters(nsIFilePicker.filterHTML);
-    fp.appendFilters(nsIFilePicker.filterText);
-    fp.appendFilters(nsIFilePicker.filterAll);
+    fp.appendFilters(msIFilePicker.filterHTML);
+    fp.appendFilters(msIFilePicker.filterText);
+    fp.appendFilters(msIFilePicker.filterAll);
 
     /* doesn't handle *.shtml files */
     try {
@@ -624,8 +620,8 @@ var msiOpenCommand =
      *  since file.URL will be "file:///" if no filename picked (Cancel button used)
      */
     if (fp.file && fp.file.path.length > 0) {
-      SaveFilePickerDirectory(fp, "html");
-      editPage(fp.fileURL.spec, window, false);
+      msiSaveFilePickerDirectory(fp, "html");
+      msiEditPage(fp.fileURL.spec, window, false);
     }
   }
 };
@@ -681,7 +677,7 @@ var msiSaveCommand =
     if (editor)
     {
       msiFinishHTMLSource(editorElement);
-      result = msiSaveDocument(IsUrlAboutBlank(msiGetEditorUrl(editorElement)), false, editor.contentsMIMEType, editorElement);
+      result = msiSaveDocument(IsUrlAboutBlank(msiGetEditorURL(editorElement)), false, editor.contentsMIMEType, editorElement);
       editorElement.contentWindow.focus();
     }
     return result;
@@ -771,7 +767,7 @@ var msiSaveAndChangeEncodingCommand =
     var oldTitle = msiGetDocumentTitle(editorElement);
     window.openDialog("chrome://editor/content/EditorSaveAsCharset.xul","_blank", "chrome,close,titlebar,modal,resizable=yes");
 
-    if (GetDocumentTitle() != oldTitle)
+    if (msiGetDocumentTitle(editorElement) != oldTitle)
       UpdateWindowTitle();
 
     if (window.ok)
@@ -803,7 +799,7 @@ var msiPublishCommand =
       //  otherwise the document modified state would prevent that
       //  when you first open any local file.
       try {
-        var docUrl = msiGetEditorUrl(editorElement);
+        var docUrl = msiGetEditorURL(editorElement);
 //        return IsDocumentModified() || IsHTMLSourceChanged()
 //               || IsUrlAboutBlank(docUrl) || GetScheme(docUrl) == "file";
         return (msiIsDocumentModified(editorElement) || msiIsHTMLSourceChanged(editorElement) ||
@@ -821,7 +817,7 @@ var msiPublishCommand =
     var editorElement = msiGetTopLevelEditorElement();
     if (msiGetEditor(editorElement))
     {
-      var docUrl = msiGetEditorUrl(editorElement);
+      var docUrl = msiGetEditorURL(editorElement);
       var filename = GetFilename(docUrl);
       var publishData;
       var showPublishDialog = false;
@@ -851,7 +847,7 @@ var msiPublishCommand =
         var oldTitle = msiGetDocumentTitle(editorElement);
         window.openDialog("chrome://editor/content/EditorPublish.xul","_blank", 
                           "chrome,close,titlebar,modal", "", "", publishData);
-        if (GetDocumentTitle() != oldTitle)
+        if (msiGetDocumentTitle(editorElement) != oldTitle)
           UpdateWindowTitle();
 
         window.content.focus();
@@ -908,159 +904,170 @@ var msiPublishAsCommand =
 //START HERE to reexamine output utilities. Some may need to be overwritten.
 
 // returns a fileExtension string
-//function GetExtensionBasedOnMimeType(aMIMEType)
-//{
-//  try {
-//    var mimeService = null;
-//    mimeService = Components.classes["@mozilla.org/mime;1"].getService();
-//    mimeService = mimeService.QueryInterface(Components.interfaces.nsIMIMEService);
-//
-//    var fileExtension = mimeService.getPrimaryExtension(aMIMEType, null);
-//
-//    // the MIME service likes to give back ".htm" for text/html files,
-//    // so do a special-case fix here.
-//    if (fileExtension == "htm")
-//      fileExtension = "html";
-//
-//    return fileExtension;
-//  }
-//  catch (e) {}
-//  return "";
-//}
-//
-//function GetSuggestedFileName(aDocumentURLString, aMIMEType)
-//{
-//  var extension = GetExtensionBasedOnMimeType(aMIMEType);
-//  if (extension)
-//    extension = "." + extension;
-//
-//  // check for existing file name we can use
-//  if (aDocumentURLString.length >= 0 && !IsUrlAboutBlank(aDocumentURLString))
-//  {
-//    var docURI = null;
-//    try {
-//
-//      var ioService = GetIOService();
-//      docURI = ioService.newURI(aDocumentURLString, GetCurrentEditor().documentCharacterSet, null);
-//      docURI = docURI.QueryInterface(Components.interfaces.nsIURL);
-//
-//      // grab the file name
-//      var url = docURI.fileBaseName;
-//      if (url)
-//        return url+extension;
-//    } catch(e) {}
-//  } 
-//
-//  // check if there is a title we can use
-//  var title = GetDocumentTitle();
-//  // generate a valid filename, if we can't just go with "untitled"
-//  return GenerateValidFilename(title, extension) || GetString("untitled") + extension;
-//}
-//
-//// returns file picker result
-//function PromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocumentURLString)
-//{
-//  var dialogResult = {};
-//  dialogResult.filepickerClick = nsIFilePicker.returnCancel;
-//  dialogResult.resultingURI = "";
-//  dialogResult.resultingLocalFile = null;
-//
-//  var fp = null;
-//  try {
-//    fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-//  } catch (e) {}
-//  if (!fp) return dialogResult;
-//
-//  // determine prompt string based on type of saving we'll do
-//  var promptString;
-//  if (aDoSaveAsText || aEditorType == "text")
-//    promptString = GetString("ExportToText");
-//  else
-//    promptString = GetString("SaveDocumentAs")
-//
-//  fp.init(window, promptString, nsIFilePicker.modeSave);
-//
-//  // Set filters according to the type of output
-//  if (aDoSaveAsText)
-//    fp.appendFilters(nsIFilePicker.filterText);
-//  else
-//    fp.appendFilters(nsIFilePicker.filterHTML);
-//  fp.appendFilters(nsIFilePicker.filterAll);
-//
-//  // now let's actually set the filepicker's suggested filename
-//  var suggestedFileName = GetSuggestedFileName(aDocumentURLString, aMIMEType);
-//  if (suggestedFileName)
-//    fp.defaultString = suggestedFileName;
-//
-//  // set the file picker's current directory
-//  // assuming we have information needed (like prior saved location)
-//  try {
-//    var ioService = GetIOService();
-//    var fileHandler = GetFileProtocolHandler();
-//    
-//    var isLocalFile = true;
-//    try {
-//      var docURI = ioService.newURI(aDocumentURLString, GetCurrentEditor().documentCharacterSet, null);
-//      isLocalFile = docURI.schemeIs("file");
-//    }
-//    catch (e) {}
-//
-//    var parentLocation = null;
-//    if (isLocalFile)
-//    {
-//      var fileLocation = fileHandler.getFileFromURLSpec(aDocumentURLString); // this asserts if url is not local
-//      parentLocation = fileLocation.parent;
-//    }
-//    if (parentLocation)
-//    {
-//      // Save current filepicker's default location
-//      if ("gFilePickerDirectory" in window)
-//        gFilePickerDirectory = fp.displayDirectory;
-//
-//      fp.displayDirectory = parentLocation;
-//    }
-//    else
-//    {
-//      // Initialize to the last-used directory for the particular type (saved in prefs)
-//      SetFilePickerDirectory(fp, aEditorType);
-//    }
-//  }
-//  catch(e) {}
-//
-//  dialogResult.filepickerClick = fp.show();
-//  if (dialogResult.filepickerClick != nsIFilePicker.returnCancel)
-//  {
-//    // reset urlstring to new save location
-//    dialogResult.resultingURIString = fileHandler.getURLSpecFromFile(fp.file);
-//    dialogResult.resultingLocalFile = fp.file;
-//    SaveFilePickerDirectory(fp, aEditorType);
-//  }
-//  else if ("gFilePickerDirectory" in window && gFilePickerDirectory)
-//    fp.displayDirectory = gFilePickerDirectory; 
-//
-//  return dialogResult;
-//}
-//
-//// returns a boolean (whether to continue (true) or not (false) because user canceled)
-//function PromptAndSetTitleIfNone()
-//{
-//  if (GetDocumentTitle()) // we have a title; no need to prompt!
-//    return true;
-//
-//  var promptService = GetPromptService();
-//  if (!promptService) return false;
-//
-//  var result = {value:null};
-//  var captionStr = GetString("DocumentTitle");
-//  var msgStr = GetString("NeedDocTitle") + '\n' + GetString("DocTitleHelp");
-//  var confirmed = promptService.prompt(window, captionStr, msgStr, result, null, {value:0});
-//  if (confirmed)
-//    SetDocumentTitle(TrimString(result.value));
-//
-//  return confirmed;
-//}
-//
-//var msigPersistObj;
+function msiGetExtensionBasedOnMimeType(aMIMEType)
+{
+  try {
+    var mimeService = null;
+    mimeService = Components.classes["@mozilla.org/mime;1"].getService();
+    mimeService = mimeService.QueryInterface(Components.interfaces.nsIMIMEService);
+
+    var fileExtension = mimeService.getPrimaryExtension(aMIMEType, null);
+
+    // the MIME service likes to give back ".htm" for text/html files,
+    // so do a special-case fix here.
+    if (fileExtension == "htm")
+      fileExtension = "html";
+
+    return fileExtension;
+  }
+  catch (e) {}
+  return "";
+}
+
+function msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement)
+{
+  var extension = msiGetExtensionBasedOnMimeType(aMIMEType);
+  if (extension)
+    extension = "." + extension;
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+
+  // check for existing file name we can use
+  if (aDocumentURLString.length >= 0 && !IsUrlAboutBlank(aDocumentURLString))
+  {
+    var docURI = null;
+    try {
+
+      var ioService = msiGetIOService();
+      docURI = ioService.newURI(aDocumentURLString, msiGetEditor(editorElement).documentCharacterSet, null);
+      docURI = docURI.QueryInterface(Components.interfaces.nsIURL);
+
+      // grab the file name
+      var url = docURI.fileBaseName;
+      if (url)
+        return url+extension;
+    } catch(e) {}
+  } 
+
+  // check if there is a title we can use
+  var title = msiGetDocumentTitle(editorElement);
+  // generate a valid filename, if we can't just go with "untitled"
+  return GenerateValidFilename(title, extension) || GetString("untitled") + extension;
+}
+
+// returns file picker result
+function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocumentURLString, editorElement)
+{
+  var dialogResult = {};
+  dialogResult.filepickerClick = msIFilePicker.returnCancel;
+  dialogResult.resultingURI = "";
+  dialogResult.resultingLocalFile = null;
+
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+
+  var fp = null;
+  try {
+    fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
+  } catch (e) {}
+  if (!fp) return dialogResult;
+
+  // determine prompt string based on type of saving we'll do
+  var promptString;
+  if (aDoSaveAsText || aEditorType == "text")
+    promptString = GetString("ExportToText");
+  else
+    promptString = GetString("SaveDocumentAs")
+
+  fp.init(window, promptString, msIFilePicker.modeSave);
+
+  // Set filters according to the type of output
+  if (aDoSaveAsText)
+    fp.appendFilters(msIFilePicker.filterText);
+  else
+    fp.appendFilters(msIFilePicker.filterHTML);
+  fp.appendFilters(msIFilePicker.filterAll);
+
+  // now let's actually set the filepicker's suggested filename
+  var suggestedFileName = msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement);
+  if (suggestedFileName)
+    fp.defaultString = suggestedFileName;
+
+  // set the file picker's current directory
+  // assuming we have information needed (like prior saved location)
+  try {
+    var ioService = msiGetIOService();
+    var fileHandler = msiGetFileProtocolHandler();
+    
+    var isLocalFile = true;
+    try {
+      var docURI = ioService.newURI(aDocumentURLString, msiGetEditor(editorElement).documentCharacterSet, null);
+      isLocalFile = docURI.schemeIs("file");
+    }
+    catch (e) {}
+
+    var parentLocation = null;
+    if (isLocalFile)
+    {
+      var fileLocation = fileHandler.getFileFromURLSpec(aDocumentURLString); // this asserts if url is not local
+      parentLocation = fileLocation.parent;
+    }
+    if (parentLocation)
+    {
+      // Save current filepicker's default location
+      if ("gFilePickerDirectory" in window)
+        gFilePickerDirectory = fp.displayDirectory;
+
+      fp.displayDirectory = parentLocation;
+    }
+    else
+    {
+      // Initialize to the last-used directory for the particular type (saved in prefs)
+      msiSetFilePickerDirectory(fp, aEditorType);
+    }
+  }
+  catch(e) {}
+
+  dialogResult.filepickerClick = fp.show();
+  if (dialogResult.filepickerClick != msIFilePicker.returnCancel)
+  {
+    // reset urlstring to new save location
+    dialogResult.resultingURIString = fileHandler.getURLSpecFromFile(fp.file);
+    dialogResult.resultingLocalFile = fp.file;
+    msiSaveFilePickerDirectory(fp, aEditorType);
+  }
+  else if ("gFilePickerDirectory" in window && gFilePickerDirectory)
+    fp.displayDirectory = gFilePickerDirectory; 
+
+  return dialogResult;
+}
+
+// returns a boolean (whether to continue (true) or not (false) because user canceled)
+function msiPromptAndSetTitleIfNone(editorElement)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  if (msiGetDocumentTitle(editorElement)) // we have a title; no need to prompt!
+    return true;
+
+  var promptService = msiGetPromptService();
+  if (!promptService) return false;
+
+  var result = {value:null};
+  var captionStr = GetString("DocumentTitle");
+  var msgStr = GetString("NeedDocTitle") + '\n' + GetString("DocTitleHelp");
+  var confirmed = promptService.prompt(window, captionStr, msgStr, result, null, {value:0});
+  if (confirmed)
+    msiSetDocumentTitle(editorElement, TrimString(result.value));
+
+  return confirmed;
+}
+
+function msiPersistObj(aStatus, aState)
+{
+  this.result = aStatus;
+  this.currentState = aState;
+}
 
 // Don't forget to do these things after calling OutputFileWithPersistAPI:
 // we need to update the uri before notifying listeners
@@ -1071,10 +1078,12 @@ var msiPublishAsCommand =
 //      editor.resetModificationCount();
       // this should cause notification to listeners that document has changed
 
-//const msiWebPersist = Components.interfaces.nsIWebBrowserPersist;
+const msiWebPersist = Components.interfaces.nsIWebBrowserPersist;
 function msiOutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFilesParentDir, aMimeType, editorElement)
 {
-  msigPersistObj = null;
+  if (!editorElement)
+    editorElement = msiGetPrimaryEditorElementForWindow(window);
+  editorElement.mPersistObj = null;
   var editor = msiGetEditor(editorElement);
   try {
     var imeEditor = editor.QueryInterface(Components.interfaces.nsIEditorIMESupport);
@@ -1097,7 +1106,7 @@ function msiOutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFi
   try {
     // we should supply a parent directory if/when we turn on functionality to save related documents
     var persistObj = Components.classes["@mozilla.org/embedding/browser/nsWebBrowserPersist;1"].createInstance(msiWebPersist);
-    persistObj.progressListener = gEditorOutputProgressListener;
+    persistObj.progressListener = new msigEditorOutputProgressListener(editorElement);
     
     var wrapColumn = msiGetWrapColumn(editorElement);
     var outputFlags = msiGetOutputFlags(aMimeType, wrapColumn, editorElement);
@@ -1106,26 +1115,26 @@ function msiOutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFi
     // this will always send crlf for upload (http/ftp)
     if (!isLocalFile) // if we aren't saving locally then send both cr and lf
     {
-      outputFlags |= webPersist.ENCODE_FLAGS_CR_LINEBREAKS | webPersist.ENCODE_FLAGS_LF_LINEBREAKS;
+      outputFlags |= msiWebPersist.ENCODE_FLAGS_CR_LINEBREAKS | msiWebPersist.ENCODE_FLAGS_LF_LINEBREAKS;
 
       // we want to serialize the output for all remote publishing
       // some servers can handle only one connection at a time
       // some day perhaps we can make this user-configurable per site?
-      persistObj.persistFlags = persistObj.persistFlags | webPersist.PERSIST_FLAGS_SERIALIZE_OUTPUT;
+      persistObj.persistFlags = persistObj.persistFlags | msiWebPersist.PERSIST_FLAGS_SERIALIZE_OUTPUT;
     }
 
     // note: we always want to set the replace existing files flag since we have
     // already given user the chance to not replace an existing file (file picker)
     // or the user picked an option where the file is implicitly being replaced (save)
     persistObj.persistFlags = persistObj.persistFlags 
-                            | webPersist.PERSIST_FLAGS_NO_BASE_TAG_MODIFICATIONS
-                            | webPersist.PERSIST_FLAGS_REPLACE_EXISTING_FILES
-                            | webPersist.PERSIST_FLAGS_DONT_FIXUP_LINKS
-                            | webPersist.PERSIST_FLAGS_DONT_CHANGE_FILENAMES
-                            | webPersist.PERSIST_FLAGS_FIXUP_ORIGINAL_DOM;
+                            | msiWebPersist.PERSIST_FLAGS_NO_BASE_TAG_MODIFICATIONS
+                            | msiWebPersist.PERSIST_FLAGS_REPLACE_EXISTING_FILES
+                            | msiWebPersist.PERSIST_FLAGS_DONT_FIXUP_LINKS
+                            | msiWebPersist.PERSIST_FLAGS_DONT_CHANGE_FILENAMES
+                            | msiWebPersist.PERSIST_FLAGS_FIXUP_ORIGINAL_DOM;
     persistObj.saveDocument(editorDoc, aDestinationLocation, aRelatedFilesParentDir, 
                             aMimeType, outputFlags, wrapColumn);
-    gmsiPersistObj = persistObj;
+    editorElement.mPersistObj = persistObj;
   }
   catch(e) { dump("caught an error, bail\n"); return false; }
 
@@ -1138,12 +1147,12 @@ function msiGetOutputFlags(aMimeType, aWrapColumn, editorElement)
   var outputFlags = 0;
   var editor = msiGetEditor(editorElement);
   var outputEntity = (editor && editor.documentCharacterSet == "ISO-8859-1")
-    ? webPersist.ENCODE_FLAGS_ENCODE_LATIN1_ENTITIES
-    : webPersist.ENCODE_FLAGS_ENCODE_BASIC_ENTITIES;
+    ? msiWebPersist.ENCODE_FLAGS_ENCODE_LATIN1_ENTITIES
+    : msiWebPersist.ENCODE_FLAGS_ENCODE_BASIC_ENTITIES;
   if (aMimeType == "text/plain")
   {
     // When saving in "text/plain" format, always do formatting
-    outputFlags |= webPersist.ENCODE_FLAGS_FORMATTED;
+    outputFlags |= msiWebPersist.ENCODE_FLAGS_FORMATTED;
   }
   else
   {
@@ -1151,14 +1160,14 @@ function msiGetOutputFlags(aMimeType, aWrapColumn, editorElement)
       // Should we prettyprint? Check the pref
       var prefs = GetPrefs();
       if (prefs.getBoolPref("editor.prettyprint"))
-        outputFlags |= webPersist.ENCODE_FLAGS_FORMATTED;
+        outputFlags |= msiWebPersist.ENCODE_FLAGS_FORMATTED;
 
       // How much entity names should we output? Check the pref
       var encodeEntity = prefs.getCharPref("editor.encode_entity");
       switch (encodeEntity) {
-        case "basic"  : outputEntity = webPersist.ENCODE_FLAGS_ENCODE_BASIC_ENTITIES; break;
-        case "latin1" : outputEntity = webPersist.ENCODE_FLAGS_ENCODE_LATIN1_ENTITIES; break;
-        case "html"   : outputEntity = webPersist.ENCODE_FLAGS_ENCODE_HTML_ENTITIES; break;
+        case "basic"  : outputEntity = msiWebPersist.ENCODE_FLAGS_ENCODE_BASIC_ENTITIES; break;
+        case "latin1" : outputEntity = msiWebPersist.ENCODE_FLAGS_ENCODE_LATIN1_ENTITIES; break;
+        case "html"   : outputEntity = msiWebPersist.ENCODE_FLAGS_ENCODE_HTML_ENTITIES; break;
         case "none"   : outputEntity = 0; break;
       }
     }
@@ -1167,7 +1176,7 @@ function msiGetOutputFlags(aMimeType, aWrapColumn, editorElement)
   outputFlags |= outputEntity;
 
   if (aWrapColumn > 0)
-    outputFlags |= webPersist.ENCODE_FLAGS_WRAP;
+    outputFlags |= msiWebPersist.ENCODE_FLAGS_WRAP;
 
   return outputFlags;
 }
@@ -1182,7 +1191,7 @@ function msiGetWrapColumn(editorelement)
   return 0;
 }
 
-function GetPromptService()
+function msiGetPromptService()
 {
   var promptService;
   try {
@@ -1207,590 +1216,601 @@ function GetPromptService()
 //const kErrorBindingRedirected = 2152398851;
 //const kFileNotFound = 2152857618;
 //
-//var gEditorOutputProgressListener =
-//{
-//  onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
-//  {
-//    var editor = GetCurrentEditor();
-//
-//    // Use this to access onStateChange flags
-//    var requestSpec;
-//    try {
-//      var channel = aRequest.QueryInterface(nsIChannel);
-//      requestSpec = StripUsernamePasswordFromURI(channel.URI);
-//    } catch (e) {
-//      if ( gShowDebugOutputStateChange)
-//        dump("***** onStateChange; NO REQUEST CHANNEL\n");
-//    }
-//
-//    var pubSpec;
-//    if (gPublishData)
-//      pubSpec = gPublishData.publishUrl + gPublishData.docDir + gPublishData.filename;
-//
-//    if (gShowDebugOutputStateChange)
-//    {
-//      dump("\n***** onStateChange request: " + requestSpec + "\n");
-//      dump("      state flags: ");
-//
-//      if (aStateFlags & nsIWebProgressListener.STATE_START)
-//        dump(" STATE_START, ");
-//      if (aStateFlags & nsIWebProgressListener.STATE_STOP)
-//        dump(" STATE_STOP, ");
-//      if (aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK)
-//        dump(" STATE_IS_NETWORK ");
-//
-//      dump("\n * requestSpec="+requestSpec+", pubSpec="+pubSpec+", aStatus="+aStatus+"\n");
-//
-//      DumpDebugStatus(aStatus);
-//    }
-//    // The rest only concerns publishing, so bail out if no dialog
-//    if (!gProgressDialog)
-//      return;
-//
-//    // Detect start of file upload of any file:
-//    // (We ignore any START messages after gPersistObj says publishing is finished
-//    if ((aStateFlags & nsIWebProgressListener.STATE_START)
-//         && gPersistObj && requestSpec
-//         && (gPersistObj.currentState != gPersistObj.PERSIST_STATE_FINISHED))
-//    {
-//      try {
-//        // Add url to progress dialog's list showing each file uploading
-//        gProgressDialog.SetProgressStatus(GetFilename(requestSpec), "busy");
-//      } catch(e) {}
-//    }
-//
-//    // Detect end of file upload of any file:
-//    if (aStateFlags & nsIWebProgressListener.STATE_STOP)
-//    {
-//      // ignore aStatus == kErrorBindingAborted; check http response for possible errors
-//      try {
-//        // check http channel for response: 200 range is ok; other ranges are not
-//        var httpChannel = aRequest.QueryInterface(Components.interfaces.nsIHttpChannel);
-//        var httpResponse = httpChannel.responseStatus;
-//        if (httpResponse < 200 || httpResponse >= 300)
-//          aStatus = httpResponse;   // not a real error but enough to pass check below
-//        else if (aStatus == kErrorBindingAborted)
-//          aStatus = 0;
-//
-//        if (gShowDebugOutputStateChange)
-//          dump("http response is: "+httpResponse+"\n");
-//      } 
-//      catch(e) 
-//      {
-//        if (aStatus == kErrorBindingAborted)
-//          aStatus = 0;
-//      }
-//
-//      // We abort publishing for all errors except if image src file is not found
-//      var abortPublishing = (aStatus != 0 && aStatus != kFileNotFound);
-//
-//      // Notify progress dialog when we receive the STOP
-//      //  notification for a file if there was an error 
-//      //  or a successful finish
-//      //  (Check requestSpec to be sure message is for destination url)
-//      if (aStatus != 0 
-//           || (requestSpec && requestSpec.indexOf(GetScheme(gPublishData.publishUrl)) == 0))
-//      {
-//        try {
-//          gProgressDialog.SetProgressFinished(GetFilename(requestSpec), aStatus);
-//        } catch(e) {}
-//      }
-//
-//
-//      if (abortPublishing)
-//      {
-//        // Cancel publishing
-//        gPersistObj.cancelSave();
-//
-//        // Don't do any commands after failure
-//        gCommandAfterPublishing = null;
-//
-//        // Restore original document to undo image src url adjustments
-//        if (gRestoreDocumentSource)
-//        {
-//          try {
-//            editor.rebuildDocumentFromSource(gRestoreDocumentSource);
-//
-//            // Clear transaction cache since we just did a potentially 
-//            //  very large insert and this will eat up memory
-//            editor.transactionManager.clear();
-//          }
-//          catch (e) {}
-//        }
-//
-//        // Notify progress dialog that we're finished
-//        //  and keep open to show error
-//        gProgressDialog.SetProgressFinished(null, 0);
-//
-//        // We don't want to change location or reset mod count, etc.
-//        return;
-//      }
-//
-//      //XXX HACK: "file://" protocol is not supported in network code
-//      //    (bug 151867 filed to add this support, bug 151869 filed
-//      //     to remove this and other code in nsIWebBrowserPersist)
-//      //    nsIWebBrowserPersist *does* copy the file(s), but we don't 
-//      //    get normal onStateChange messages.
-//
-//      // Case 1: If images are included, we get fairly normal
-//      //    STATE_START/STATE_STOP & STATE_IS_NETWORK messages associated with the image files,
-//      //    thus we must finish HTML file progress below
-//
-//      // Case 2: If just HTML file is uploaded, we get STATE_START and STATE_STOP
-//      //    notification with a null "requestSpec", and 
-//      //    the gPersistObj is destroyed before we get here!
-//      //    So create an new object so we can flow through normal processing below
-//      if (!requestSpec && GetScheme(gPublishData.publishUrl) == "file"
-//          && (!gPersistObj || gPersistObj.currentState == nsIWebBrowserPersist.PERSIST_STATE_FINISHED))
-//      {
-//        aStateFlags |= nsIWebProgressListener.STATE_IS_NETWORK;
-//        if (!gPersistObj)
-//        {          
-//          gPersistObj =
-//          {
-//            result : aStatus,
-//            currentState : nsIWebBrowserPersist.PERSIST_STATE_FINISHED
-//          }
-//        }
-//      }
-//
-//      // STATE_IS_NETWORK signals end of publishing, as does the gPersistObj.currentState
-//      if (aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
-//          && gPersistObj.currentState == nsIWebBrowserPersist.PERSIST_STATE_FINISHED)
-//      {
-//        if (GetScheme(gPublishData.publishUrl) == "file")
-//        {
-//          //XXX "file://" hack: We don't get notified about the HTML file, so end progress for it
-//          // (This covers both "Case 1 and 2" described above)
-//          gProgressDialog.SetProgressFinished(gPublishData.filename, gPersistObj.result);
-//        }
-//
-//        if (gPersistObj.result == 0)
-//        {
-//          // All files are finished and publishing succeeded (some images may have failed)
-//          try {
-//            // Make a new docURI from the "browse location" in case "publish location" was FTP
-//            // We need to set document uri before notifying listeners
-//            var docUrl = GetDocUrlFromPublishData(gPublishData);
-//            SetDocumentURI(GetIOService().newURI(docUrl, editor.documentCharacterSet, null));
-//
-//            UpdateWindowTitle();
-//
-//            // this should cause notification to listeners that doc has changed
-//            editor.resetModificationCount();
-//
-//            // Set UI based on whether we're editing a remote or local url
-//            SetSaveAndPublishUI(urlstring);
-//
-//          } catch (e) {}
-//
-//          // Save publishData to prefs
-//          if (gPublishData)
-//          {
-//            if (gPublishData.savePublishData)
-//            {
-//              // We published successfully, so we can safely
-//              //  save docDir and otherDir to prefs
-//              gPublishData.saveDirs = true;
-//              SavePublishDataToPrefs(gPublishData);
-//            }
-//            else
-//              SavePassword(gPublishData);
-//          }
-//
-//          // Ask progress dialog to close, but it may not
-//          // if user checked checkbox to keep it open
-//          gProgressDialog.RequestCloseDialog();
-//        }
-//        else
-//        {
-//          // We previously aborted publishing because of error:
-//          //   Calling gPersistObj.cancelSave() resulted in a non-zero gPersistObj.result,
-//          //   so notify progress dialog we're finished
-//          gProgressDialog.SetProgressFinished(null, 0);
-//        }
-//      }
-//    }
-//  },
-//
-//  onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress,
-//                              aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress)
-//  {
-//    if (!gPersistObj)
-//      return;
-//
-//    if (gShowDebugOutputProgress)
-//    {
-//      dump("\n onProgressChange: gPersistObj.result="+gPersistObj.result+"\n");
-//      try {
-//      var channel = aRequest.QueryInterface(nsIChannel);
-//      dump("***** onProgressChange request: " + channel.URI.spec + "\n");
-//      }
-//      catch (e) {}
-//      dump("*****       self:  "+aCurSelfProgress+" / "+aMaxSelfProgress+"\n");
-//      dump("*****       total: "+aCurTotalProgress+" / "+aMaxTotalProgress+"\n\n");
-//
-//      if (gPersistObj.currentState == gPersistObj.PERSIST_STATE_READY)
-//        dump(" Persister is ready to save data\n\n");
-//      else if (gPersistObj.currentState == gPersistObj.PERSIST_STATE_SAVING)
-//        dump(" Persister is saving data.\n\n");
-//      else if (gPersistObj.currentState == gPersistObj.PERSIST_STATE_FINISHED)
-//        dump(" PERSISTER HAS FINISHED SAVING DATA\n\n\n");
-//    }
-//  },
-//
-//  onLocationChange : function(aWebProgress, aRequest, aLocation)
-//  {
-//    if (gShowDebugOutputLocationChange)
-//    {
-//      dump("***** onLocationChange: "+aLocation.spec+"\n");
-//      try {
-//        var channel = aRequest.QueryInterface(nsIChannel);
-//        dump("*****          request: " + channel.URI.spec + "\n");
-//      }
-//      catch(e) {}
-//    }
-//  },
-//
-//  onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage)
-//  {
-//    if (gShowDebugOutputStatusChange)
-//    {
-//      dump("***** onStatusChange: "+aMessage+"\n");
-//      try {
-//        var channel = aRequest.QueryInterface(nsIChannel);
-//        dump("*****        request: " + channel.URI.spec + "\n");
-//      }
-//      catch (e) { dump("          couldn't get request\n"); }
-//      
-//      DumpDebugStatus(aStatus);
-//
-//      if (gPersistObj)
-//      {
-//        if(gPersistObj.currentState == gPersistObj.PERSIST_STATE_READY)
-//          dump(" Persister is ready to save data\n\n");
-//        else if(gPersistObj.currentState == gPersistObj.PERSIST_STATE_SAVING)
-//          dump(" Persister is saving data.\n\n");
-//        else if(gPersistObj.currentState == gPersistObj.PERSIST_STATE_FINISHED)
-//          dump(" PERSISTER HAS FINISHED SAVING DATA\n\n\n");
-//      }
-//    }
-//  },
-//
-//  onSecurityChange : function(aWebProgress, aRequest, state)
-//  {
-//    if (gShowDebugOutputSecurityChange)
-//    {
-//      try {
-//        var channel = aRequest.QueryInterface(nsIChannel);
-//        dump("***** onSecurityChange request: " + channel.URI.spec + "\n");
-//      } catch (e) {}
-//    }
-//  },
-//
-//  QueryInterface : function(aIID)
-//  {
-//    if (aIID.equals(Components.interfaces.nsIWebProgressListener)
-//    || aIID.equals(Components.interfaces.nsISupports)
-//    || aIID.equals(Components.interfaces.nsISupportsWeakReference)
-//    || aIID.equals(Components.interfaces.nsIPrompt)
-//    || aIID.equals(Components.interfaces.nsIAuthPrompt))
-//      return this;
-//    throw Components.results.NS_NOINTERFACE;
-//  },
-//
-//// nsIPrompt
-//  alert : function(dlgTitle, text)
-//  {
-//    AlertWithTitle(dlgTitle, text, gProgressDialog ? gProgressDialog : window);
-//  },
-//  alertCheck : function(dialogTitle, text, checkBoxLabel, checkObj)
-//  {
-//    AlertWithTitle(dialogTitle, text);
-//  },
-//  confirm : function(dlgTitle, text)
-//  {
-//    return ConfirmWithTitle(dlgTitle, text, null, null);
-//  },
-//  confirmCheck : function(dlgTitle, text, checkBoxLabel, checkObj)
-//  {
-//    var promptServ = GetPromptService();
-//    if (!promptServ)
-//      return;
-//
-//    promptServ.confirmEx(window, dlgTitle, text, nsIPromptService.STD_OK_CANCEL_BUTTONS,
-//                         "", "", "", checkBoxLabel, checkObj);
-//  },
-//  confirmEx : function(dlgTitle, text, btnFlags, btn0Title, btn1Title, btn2Title, checkBoxLabel, checkVal)
-//  {
-//    var promptServ = GetPromptService();
-//    if (!promptServ)
-//     return 0;
-//
-//    return promptServ.confirmEx(window, dlgTitle, text, btnFlags,
-//                        btn0Title, btn1Title, btn2Title,
-//                        checkBoxLabel, checkVal);
-//  },
-//  prompt : function(dlgTitle, text, inoutText, checkBoxLabel, checkObj)
-//  {
-//    var promptServ = GetPromptService();
-//    if (!promptServ)
-//     return false;
-//
-//    return promptServ.prompt(window, dlgTitle, text, inoutText, checkBoxLabel, checkObj);
-//  },
-//  promptPassword : function(dlgTitle, text, pwObj, checkBoxLabel, savePWObj)
-//  {
-//
-//    var promptServ = GetPromptService();
-//    if (!promptServ)
-//     return false;
-//
-//    var ret = false;
-//    try {
-//      // Note difference with nsIAuthPrompt::promptPassword, which has 
-//      // just "in" savePassword param, while nsIPrompt is "inout"
-//      // Initialize with user's previous preference for this site
-//      if (gPublishData)
-//        savePWObj.value = gPublishData.savePassword;
-//
-//      ret = promptServ.promptPassword(gProgressDialog ? gProgressDialog : window,
-//                                      dlgTitle, text, pwObj, checkBoxLabel, savePWObj);
-//
-//      if (!ret)
-//        setTimeout(CancelPublishing, 0);
-//
-//      if (ret && gPublishData)
-//        UpdateUsernamePasswordFromPrompt(gPublishData, gPublishData.username, pwObj.value, savePWObj.value);
-//    } catch(e) {}
-//
-//    return ret;
-//  },
-//  promptUsernameAndPassword : function(dlgTitle, text, userObj, pwObj, checkBoxLabel, savePWObj)
-//  {
-//    var ret = PromptUsernameAndPassword(dlgTitle, text, savePWObj.value, userObj, pwObj);
-//    if (!ret)
-//      setTimeout(CancelPublishing, 0);
-//
-//    return ret;
-//  },
-//  select : function(dlgTitle, text, count, selectList, outSelection)
-//  {
-//    var promptServ = GetPromptService();
-//    if (!promptServ)
-//      return false;
-//
-//    return promptServ.select(window, dlgTitle, text, count, selectList, outSelection);
-//  },
-//
-//// nsIAuthPrompt
-//  prompt : function(dlgTitle, text, pwrealm, savePW, defaultText, result)
-//  {
-//    var promptServ = GetPromptService();
-//    if (!promptServ)
-//      return false;
-//
-//    var savePWObj = {value:savePW};
-//    var ret = promptServ.prompt(gProgressDialog ? gProgressDialog : window,
-//                                dlgTitle, text, defaultText, pwrealm, savePWObj);
-//    if (!ret)
-//      setTimeout(CancelPublishing, 0);
-//    return ret;
-//  },
-//
-//  promptUsernameAndPassword : function(dlgTitle, text, pwrealm, savePW, userObj, pwObj)
-//  {
-//    var ret = PromptUsernameAndPassword(dlgTitle, text, savePW, userObj, pwObj);
-//    if (!ret)
-//      setTimeout(CancelPublishing, 0);
-//    return ret;
-//  },
-//
-//  promptPassword : function(dlgTitle, text, pwrealm, savePW, pwObj)
-//  {
-//    var ret = false;
-//    try {
-//      var promptServ = GetPromptService();
-//      if (!promptServ)
-//        return false;
-//
-//      // Note difference with nsIPrompt::promptPassword, which has 
-//      // "inout" savePassword param, while nsIAuthPrompt is just "in"
-//      // Also nsIAuth doesn't supply "checkBoxLabel"
-//      // Initialize with user's previous preference for this site
-//      var savePWObj = {value:savePW};
-//      // Initialize with user's previous preference for this site
-//      if (gPublishData)
-//        savePWObj.value = gPublishData.savePassword;
-//
-//      ret = promptServ.promptPassword(gProgressDialog ? gProgressDialog : window,
-//                                      dlgTitle, text, pwObj, GetString("SavePassword"), savePWObj);
-//
-//      if (!ret)
-//        setTimeout(CancelPublishing, 0);
-//
-//      if (ret && gPublishData)
-//        UpdateUsernamePasswordFromPrompt(gPublishData, gPublishData.username, pwObj.value, savePWObj.value);
-//    } catch(e) {}
-//
-//    return ret;
-//  }
-//}
-//
-//function PromptUsernameAndPassword(dlgTitle, text, savePW, userObj, pwObj)
-//{
-//  // HTTP prompts us twice even if user Cancels from 1st attempt!
-//  // So never put up dialog if there's no publish data
-//  if (!gPublishData)
-//    return false
-//
-//  var ret = false;
-//  try {
-//    var promptServ = GetPromptService();
-//    if (!promptServ)
-//      return false;
-//
-//    var savePWObj = {value:savePW};
-//
-//    // Initialize with user's previous preference for this site
-//    if (gPublishData)
-//    {
-//      // HTTP put uses this dialog if either username or password is bad,
-//      //   so prefill username input field with the previous value for modification
-//      savePWObj.value = gPublishData.savePassword;
-//      if (!userObj.value)
-//        userObj.value = gPublishData.username;
-//    }
-//
-//    ret = promptServ.promptUsernameAndPassword(gProgressDialog ? gProgressDialog : window, 
-//                                               dlgTitle, text, userObj, pwObj, 
-//                                               GetString("SavePassword"), savePWObj);
-//    if (ret && gPublishData)
-//      UpdateUsernamePasswordFromPrompt(gPublishData, userObj.value, pwObj.value, savePWObj.value);
-//
-//  } catch (e) {}
-//
-//  return ret;
-//}
-//
-//function DumpDebugStatus(aStatus)
-//{
-//  // see nsError.h and netCore.h and ftpCore.h
-//
-//  if (aStatus == kErrorBindingAborted)
-//    dump("***** status is NS_BINDING_ABORTED\n");
-//  else if (aStatus == kErrorBindingRedirected)
-//    dump("***** status is NS_BINDING_REDIRECTED\n");
-//  else if (aStatus == 2152398859) // in netCore.h 11
-//    dump("***** status is ALREADY_CONNECTED\n");
-//  else if (aStatus == 2152398860) // in netCore.h 12
-//    dump("***** status is NOT_CONNECTED\n");
-//  else if (aStatus == 2152398861) //  in nsISocketTransportService.idl 13
-//    dump("***** status is CONNECTION_REFUSED\n");
-//  else if (aStatus == 2152398862) // in nsISocketTransportService.idl 14
-//    dump("***** status is NET_TIMEOUT\n");
-//  else if (aStatus == 2152398863) // in netCore.h 15
-//    dump("***** status is IN_PROGRESS\n");
-//  else if (aStatus == 2152398864) // 0x804b0010 in netCore.h 16
-//    dump("***** status is OFFLINE\n");
-//  else if (aStatus == 2152398865) // in netCore.h 17
-//    dump("***** status is NO_CONTENT\n");
-//  else if (aStatus == 2152398866) // in netCore.h 18
-//    dump("***** status is UNKNOWN_PROTOCOL\n");
-//  else if (aStatus == 2152398867) // in netCore.h 19
-//    dump("***** status is PORT_ACCESS_NOT_ALLOWED\n");
-//  else if (aStatus == 2152398868) // in nsISocketTransportService.idl 20
-//    dump("***** status is NET_RESET\n");
-//  else if (aStatus == 2152398869) // in ftpCore.h 21
-//    dump("***** status is FTP_LOGIN\n");
-//  else if (aStatus == 2152398870) // in ftpCore.h 22
-//    dump("***** status is FTP_CWD\n");
-//  else if (aStatus == 2152398871) // in ftpCore.h 23
-//    dump("***** status is FTP_PASV\n");
-//  else if (aStatus == 2152398872) // in ftpCore.h 24
-//    dump("***** status is FTP_PWD\n");
-//  else if (aStatus == 2152857601)
-//    dump("***** status is UNRECOGNIZED_PATH\n");
-//  else if (aStatus == 2152857602)
-//    dump("***** status is UNRESOLABLE SYMLINK\n");
-//  else if (aStatus == 2152857604)
-//    dump("***** status is UNKNOWN_TYPE\n");
-//  else if (aStatus == 2152857605)
-//    dump("***** status is DESTINATION_NOT_DIR\n");
-//  else if (aStatus == 2152857606)
-//    dump("***** status is TARGET_DOES_NOT_EXIST\n");
-//  else if (aStatus == 2152857608)
-//    dump("***** status is ALREADY_EXISTS\n");
-//  else if (aStatus == 2152857609)
-//    dump("***** status is INVALID_PATH\n");
-//  else if (aStatus == 2152857610)
-//    dump("***** status is DISK_FULL\n");
-//  else if (aStatus == 2152857612)
-//    dump("***** status is NOT_DIRECTORY\n");
-//  else if (aStatus == 2152857613)
-//    dump("***** status is IS_DIRECTORY\n");
-//  else if (aStatus == 2152857614)
-//    dump("***** status is IS_LOCKED\n");
-//  else if (aStatus == 2152857615)
-//    dump("***** status is TOO_BIG\n");
-//  else if (aStatus == 2152857616)
-//    dump("***** status is NO_DEVICE_SPACE\n");
-//  else if (aStatus == 2152857617)
-//    dump("***** status is NAME_TOO_LONG\n");
-//  else if (aStatus == 2152857618) // 80520012
-//    dump("***** status is FILE_NOT_FOUND\n");
-//  else if (aStatus == 2152857619)
-//    dump("***** status is READ_ONLY\n");
-//  else if (aStatus == 2152857620)
-//    dump("***** status is DIR_NOT_EMPTY\n");
-//  else if (aStatus == 2152857621)
-//    dump("***** status is ACCESS_DENIED\n");
-//  else if (aStatus == 2152398878)
-//    dump("***** status is ? (No connection or time out?)\n");
-//  else
-//    dump("***** status is " + aStatus + "\n");
-//}
-//
-//// Update any data that the user supplied in a prompt dialog
-//function UpdateUsernamePasswordFromPrompt(publishData, username, password, savePassword)
-//{
-//  if (!publishData)
-//    return;
-//  
-//  // Set flag to save publish data after publishing if it changed in dialog 
-//  //  and the "SavePassword" checkbox was checked
-//  //  or we already had site data for this site
-//  // (Thus we don't automatically create a site until user brings up Publish As dialog)
-//  publishData.savePublishData = (gPublishData.username != username || gPublishData.password != password)
-//                                && (savePassword || !publishData.notInSiteData);
-//
-//  publishData.username = username;
-//  publishData.password = password;
-//  publishData.savePassword = savePassword;
-//}
-//
-//const kSupportedTextMimeTypes =
-//[
-//  "text/plain",
-//  "text/css",
-//  "text/rdf",
-//  "text/xsl",
-//  "text/javascript",
-//  "application/x-javascript",
-//  "text/xul",
-//  "application/vnd.mozilla.xul+xml"
-//];
-//
-//function IsSupportedTextMimeType(aMimeType)
-//{
-//  for (var i = 0; i < kSupportedTextMimeTypes.length; i++)
-//  {
-//    if (kSupportedTextMimeTypes[i] == aMimeType)
-//      return true;
-//  }
-//  return false;
-//}
-//
+function msigEditorOutputProgressListener(editorElement)
+{
+  this.msiEditorElement = editorElement;
+
+  this.onStateChange = function(aWebProgress, aRequest, aStateFlags, aStatus)
+  {
+    var editor = msiGetEditor(this.msiEditorElement);
+
+    // Use this to access onStateChange flags
+    var requestSpec;
+    var bDebugOutputStateChange = ("gShowDebugOutputStateChange" in window) && window.gShowDebugOutputStateChange;
+    try {
+      var channel = aRequest.QueryInterface(nsIChannel);
+      requestSpec = StripUsernamePasswordFromURI(channel.URI);
+    } catch (e) {
+      if ( bDebugOutputStateChange )
+        dump("***** onStateChange; NO REQUEST CHANNEL\n");
+    }
+
+    var pubSpec;
+    if (this.msiEditorElement.mgPublishData)
+      pubSpec = this.msiEditorElement.mgPublishData.publishUrl + this.msiEditorElement.mgPublishData.docDir + this.msiEditorElement.mgPublishData.filename;
+
+    if (bDebugOutputStateChange)
+    {
+      dump("\n***** onStateChange request: " + requestSpec + "\n");
+      dump("      state flags: ");
+
+      if (aStateFlags & nsIWebProgressListener.STATE_START)
+        dump(" STATE_START, ");
+      if (aStateFlags & nsIWebProgressListener.STATE_STOP)
+        dump(" STATE_STOP, ");
+      if (aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK)
+        dump(" STATE_IS_NETWORK ");
+
+      dump("\n * requestSpec="+requestSpec+", pubSpec="+pubSpec+", aStatus="+aStatus+"\n");
+
+      msiDumpDebugStatus(aStatus);
+    }
+    // The rest only concerns publishing, so bail out if no dialog
+    if (!this.msiEditorElement.mgProgressDialog)
+      return;
+
+    // Detect start of file upload of any file:
+    // (We ignore any START messages after gPersistObj says publishing is finished
+    if ((aStateFlags & nsIWebProgressListener.STATE_START)
+         && this.msiEditorElement.mPersistObj && requestSpec
+         && (this.msiEditorElement.mPersistObj.currentState != this.msiEditorElement.mPersistObj.PERSIST_STATE_FINISHED))
+    {
+      try {
+        // Add url to progress dialog's list showing each file uploading
+        this.msiEditorElement.mgProgressDialog.SetProgressStatus(GetFilename(requestSpec), "busy");
+      } catch(e) {}
+    }
+
+    // Detect end of file upload of any file:
+    if (aStateFlags & nsIWebProgressListener.STATE_STOP)
+    {
+      // ignore aStatus == kErrorBindingAborted; check http response for possible errors
+      try {
+        // check http channel for response: 200 range is ok; other ranges are not
+        var httpChannel = aRequest.QueryInterface(Components.interfaces.nsIHttpChannel);
+        var httpResponse = httpChannel.responseStatus;
+        if (httpResponse < 200 || httpResponse >= 300)
+          aStatus = httpResponse;   // not a real error but enough to pass check below
+        else if (aStatus == kErrorBindingAborted)
+          aStatus = 0;
+
+        if (bDebugOutputStateChange)
+          dump("http response is: "+httpResponse+"\n");
+      } 
+      catch(e) 
+      {
+        if (aStatus == kErrorBindingAborted)
+          aStatus = 0;
+      }
+
+      // We abort publishing for all errors except if image src file is not found
+      var abortPublishing = (aStatus != 0 && aStatus != kFileNotFound);
+
+      // Notify progress dialog when we receive the STOP
+      //  notification for a file if there was an error 
+      //  or a successful finish
+      //  (Check requestSpec to be sure message is for destination url)
+      if (aStatus != 0 
+           || (requestSpec && requestSpec.indexOf(GetScheme(this.msiEditorElement.mgPublishData.publishUrl)) == 0))
+      {
+        try {
+          this.msiEditorElement.mgProgressDialog.SetProgressFinished(GetFilename(requestSpec), aStatus);
+        } catch(e) {}
+      }
+
+
+      if (abortPublishing)
+      {
+        // Cancel publishing
+        this.msiEditorElement.mPersistObj.cancelSave();
+
+        // Don't do any commands after failure
+        this.msiEditorElement.mgCommandAfterPublishing = null;
+
+        // Restore original document to undo image src url adjustments
+        if (this.msiEditorElement.mgRestoreDocumentSource)
+        {
+          try {
+            editor.rebuildDocumentFromSource(this.msiEditorElement.mgRestoreDocumentSource);
+
+            // Clear transaction cache since we just did a potentially 
+            //  very large insert and this will eat up memory
+            editor.transactionManager.clear();
+          }
+          catch (e) {}
+        }
+
+        // Notify progress dialog that we're finished
+        //  and keep open to show error
+        this.msiEditorElement.mgProgressDialog.SetProgressFinished(null, 0);
+
+        // We don't want to change location or reset mod count, etc.
+        return;
+      }
+
+      //XXX HACK: "file://" protocol is not supported in network code
+      //    (bug 151867 filed to add this support, bug 151869 filed
+      //     to remove this and other code in nsIWebBrowserPersist)
+      //    nsIWebBrowserPersist *does* copy the file(s), but we don't 
+      //    get normal onStateChange messages.
+
+      // Case 1: If images are included, we get fairly normal
+      //    STATE_START/STATE_STOP & STATE_IS_NETWORK messages associated with the image files,
+      //    thus we must finish HTML file progress below
+
+      // Case 2: If just HTML file is uploaded, we get STATE_START and STATE_STOP
+      //    notification with a null "requestSpec", and 
+      //    the gPersistObj is destroyed before we get here!
+      //    So create an new object so we can flow through normal processing below
+      if (!requestSpec && GetScheme(this.msiEditorElement.mgPublishData.publishUrl) == "file"
+          && (!this.msiEditorElement.mPersistObj || this.msiEditorElement.mPersistObj.currentState == nsIWebBrowserPersist.PERSIST_STATE_FINISHED))
+      {
+        aStateFlags |= nsIWebProgressListener.STATE_IS_NETWORK;
+        if (!this.msiEditorElement.mPersistObj)
+        {          
+          this.msiEditorElement.mPersistObj = new msiPersistObj(aStatus, nsIWebBrowserPersist.PERSIST_STATE_FINISHED);
+        }
+      }
+
+      // STATE_IS_NETWORK signals end of publishing, as does the gPersistObj.currentState
+      if (aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
+          && this.msiEditorElement.mPersistObj.currentState == nsIWebBrowserPersist.PERSIST_STATE_FINISHED)
+      {
+        if (GetScheme(this.msiEditorElement.mgPublishData.publishUrl) == "file")
+        {
+          //XXX "file://" hack: We don't get notified about the HTML file, so end progress for it
+          // (This covers both "Case 1 and 2" described above)
+          this.msiEditorElement.mgProgressDialog.SetProgressFinished(this.msiEditorElement.mgPublishData.filename, this.msiEditorElement.mPersistObj.result);
+        }
+
+        if (this.msiEditorElement.mPersistObj.result == 0)
+        {
+          // All files are finished and publishing succeeded (some images may have failed)
+          try {
+            // Make a new docURI from the "browse location" in case "publish location" was FTP
+            // We need to set document uri before notifying listeners
+            var docUrl = msiGetDocUrlFromPublishData(this.msiEditorElement.mgPublishData, this.msiEditorElement);
+            SetDocumentURI(GetIOService().newURI(docUrl, editor.documentCharacterSet, null));
+
+            UpdateWindowTitle();
+
+            // this should cause notification to listeners that doc has changed
+            editor.resetModificationCount();
+
+            // Set UI based on whether we're editing a remote or local url
+            SetSaveAndPublishUI(urlstring);
+
+          } catch (e) {}
+
+          // Save publishData to prefs
+          if (this.msiEditorElement.mgPublishData)
+          {
+            if (this.msiEditorElement.mgPublishData.savePublishData)
+            {
+              // We published successfully, so we can safely
+              //  save docDir and otherDir to prefs
+              this.msiEditorElement.mgPublishData.saveDirs = true;
+              SavePublishDataToPrefs(this.msiEditorElement.mgPublishData);
+            }
+            else
+              SavePassword(this.msiEditorElement.mgPublishData);
+          }
+
+          // Ask progress dialog to close, but it may not
+          // if user checked checkbox to keep it open
+          this.msiEditorElement.mgProgressDialog.RequestCloseDialog();
+        }
+        else
+        {
+          // We previously aborted publishing because of error:
+          //   Calling gPersistObj.cancelSave() resulted in a non-zero gPersistObj.result,
+          //   so notify progress dialog we're finished
+          this.msiEditorElement.mgProgressDialog.SetProgressFinished(null, 0);
+        }
+      }
+    }
+  };
+
+  this.onProgressChange = function(aWebProgress, aRequest, aCurSelfProgress,
+                              aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress)
+  {
+    if (!this.msiEditorElement.mPersistObj)
+      return;
+
+    var bDebugOutputStateChange = ("gShowDebugOutputStateChange" in window) && window.gShowDebugOutputStateChange;
+    if (bDebugOutputProgress)
+    {
+      dump("\n onProgressChange: gPersistObj.result="+this.msiEditorElement.mPersistObj.result+"\n");
+      try {
+      var channel = aRequest.QueryInterface(nsIChannel);
+      dump("***** onProgressChange request: " + channel.URI.spec + "\n");
+      }
+      catch (e) {}
+      dump("*****       self:  "+aCurSelfProgress+" / "+aMaxSelfProgress+"\n");
+      dump("*****       total: "+aCurTotalProgress+" / "+aMaxTotalProgress+"\n\n");
+
+      if (this.msiEditorElement.mPersistObj.currentState == this.msiEditorElement.mPersistObj.PERSIST_STATE_READY)
+        dump(" Persister is ready to save data\n\n");
+      else if (this.msiEditorElement.mPersistObj.currentState == this.msiEditorElement.mPersistObj.PERSIST_STATE_SAVING)
+        dump(" Persister is saving data.\n\n");
+      else if (this.msiEditorElement.mPersistObj.currentState == this.msiEditorElement.mPersistObj.PERSIST_STATE_FINISHED)
+        dump(" PERSISTER HAS FINISHED SAVING DATA\n\n\n");
+    }
+  };
+
+  this.onLocationChange = function(aWebProgress, aRequest, aLocation)
+  {
+    var bDebugOutputStateChange = ("gShowDebugOutputStateChange" in window) && window.gShowDebugOutputStateChange;
+    if (bDebugOutputLocationChange)
+    {
+      dump("***** onLocationChange: "+aLocation.spec+"\n");
+      try {
+        var channel = aRequest.QueryInterface(nsIChannel);
+        dump("*****          request: " + channel.URI.spec + "\n");
+      }
+      catch(e) {}
+    }
+  };
+
+  this.onStatusChange = function(aWebProgress, aRequest, aStatus, aMessage)
+  {
+    var bDebugOutputStateChange = ("gShowDebugOutputStateChange" in window) && window.gShowDebugOutputStateChange;
+    if (bDebugOutputStatusChange)
+    {
+      dump("***** onStatusChange: "+aMessage+"\n");
+      try {
+        var channel = aRequest.QueryInterface(nsIChannel);
+        dump("*****        request: " + channel.URI.spec + "\n");
+      }
+      catch (e) { dump("          couldn't get request\n"); }
+      
+      msiDumpDebugStatus(aStatus);
+
+      if (this.msiEditorElement.mPersistObj)
+      {
+        if(this.msiEditorElement.mPersistObj.currentState == this.msiEditorElement.mPersistObj.PERSIST_STATE_READY)
+          dump(" Persister is ready to save data\n\n");
+        else if(this.msiEditorElement.mPersistObj.currentState == this.msiEditorElement.mPersistObj.PERSIST_STATE_SAVING)
+          dump(" Persister is saving data.\n\n");
+        else if(this.msiEditorElement.mPersistObj.currentState == this.msiEditorElement.mPersistObj.PERSIST_STATE_FINISHED)
+          dump(" PERSISTER HAS FINISHED SAVING DATA\n\n\n");
+      }
+    }
+  };
+
+  this.onSecurityChange = function(aWebProgress, aRequest, state)
+  {
+    var bDebugOutputStateChange = ("gShowDebugOutputStateChange" in window) && window.gShowDebugOutputStateChange;
+    if (bDebugOutputSecurityChange)
+    {
+      try {
+        var channel = aRequest.QueryInterface(nsIChannel);
+        dump("***** onSecurityChange request: " + channel.URI.spec + "\n");
+      } catch (e) {}
+    }
+  };
+
+  this.QueryInterface = function(aIID)
+  {
+    if (aIID.equals(Components.interfaces.nsIWebProgressListener)
+    || aIID.equals(Components.interfaces.nsISupports)
+    || aIID.equals(Components.interfaces.nsISupportsWeakReference)
+    || aIID.equals(Components.interfaces.nsIPrompt)
+    || aIID.equals(Components.interfaces.nsIAuthPrompt))
+      return this;
+    throw Components.results.NS_NOINTERFACE;
+  };
+
+// nsIPrompt
+  this.alert = function(dlgTitle, text)
+  {
+    AlertWithTitle(dlgTitle, text, this.msiEditorElement.mgProgressDialog ? this.msiEditorElement.mgProgressDialog : window);
+  };
+
+  this.alertCheck = function(dialogTitle, text, checkBoxLabel, checkObj)
+  {
+    AlertWithTitle(dialogTitle, text);
+  };
+
+  this.confirm = function(dlgTitle, text)
+  {
+    return ConfirmWithTitle(dlgTitle, text, null, null);
+  };
+
+  this.confirmCheck = function(dlgTitle, text, checkBoxLabel, checkObj)
+  {
+    var promptServ = GetPromptService();
+    if (!promptServ)
+      return;
+
+    promptServ.confirmEx(window, dlgTitle, text, nsIPromptService.STD_OK_CANCEL_BUTTONS,
+                         "", "", "", checkBoxLabel, checkObj);
+  };
+
+  this.confirmEx = function(dlgTitle, text, btnFlags, btn0Title, btn1Title, btn2Title, checkBoxLabel, checkVal)
+  {
+    var promptServ = GetPromptService();
+    if (!promptServ)
+     return 0;
+
+    return promptServ.confirmEx(window, dlgTitle, text, btnFlags,
+                        btn0Title, btn1Title, btn2Title,
+                        checkBoxLabel, checkVal);
+  };
+
+  this.prompt = function(dlgTitle, text, inoutText, checkBoxLabel, checkObj)
+  {
+    var promptServ = GetPromptService();
+    if (!promptServ)
+     return false;
+
+    return promptServ.prompt(window, dlgTitle, text, inoutText, checkBoxLabel, checkObj);
+  };
+
+  this.promptPassword = function(dlgTitle, text, pwObj, checkBoxLabel, savePWObj)
+  {
+
+    var promptServ = GetPromptService();
+    if (!promptServ)
+     return false;
+
+    var ret = false;
+    try {
+      // Note difference with nsIAuthPrompt::promptPassword, which has 
+      // just "in" savePassword param, while nsIPrompt is "inout"
+      // Initialize with user's previous preference for this site
+      if (this.msiEditorElement.mgPublishData)
+        savePWObj.value = this.msiEditorElement.mgPublishData.savePassword;
+
+      ret = promptServ.promptPassword(this.msiEditorElement.mgProgressDialog ? this.msiEditorElement.mgProgressDialog : window,
+                                      dlgTitle, text, pwObj, checkBoxLabel, savePWObj);
+
+      if (!ret)
+        setTimeout(CancelPublishing, 0);
+
+      if (ret && this.msiEditorElement.mgPublishData)
+        msiUpdateUsernamePasswordFromPrompt(this.msiEditorElement.mgPublishData, this.msiEditorElement.mgPublishData.username, pwObj.value, savePWObj.value);
+    } catch(e) {}
+
+    return ret;
+  };
+
+  this.promptUsernameAndPassword = function(dlgTitle, text, userObj, pwObj, checkBoxLabel, savePWObj)
+  {
+    var ret = msiPromptUsernameAndPassword(dlgTitle, text, savePWObj.value, userObj, pwObj, this.msiEditorElement);
+    if (!ret)
+      setTimeout(CancelPublishing, 0);
+
+    return ret;
+  };
+
+  this.select = function(dlgTitle, text, count, selectList, outSelection)
+  {
+    var promptServ = GetPromptService();
+    if (!promptServ)
+      return false;
+
+    return promptServ.select(window, dlgTitle, text, count, selectList, outSelection);
+  };
+
+// nsIAuthPrompt
+  this.prompt = function(dlgTitle, text, pwrealm, savePW, defaultText, result)
+  {
+    var promptServ = GetPromptService();
+    if (!promptServ)
+      return false;
+
+    var savePWObj = {value:savePW};
+    var ret = promptServ.prompt(this.msiEditorElement.mgProgressDialog ? this.msiEditorElement.mgProgressDialog : window,
+                                dlgTitle, text, defaultText, pwrealm, savePWObj);
+    if (!ret)
+      setTimeout(CancelPublishing, 0);
+    return ret;
+  };
+
+  this.promptUsernameAndPassword = function(dlgTitle, text, pwrealm, savePW, userObj, pwObj)
+  {
+    var ret = msiPromptUsernameAndPassword(dlgTitle, text, savePW, userObj, pwObj, this.msiEditorElement);
+    if (!ret)
+      setTimeout(CancelPublishing, 0);
+    return ret;
+  };
+
+  this.promptPassword = function(dlgTitle, text, pwrealm, savePW, pwObj)
+  {
+    var ret = false;
+    try {
+      var promptServ = GetPromptService();
+      if (!promptServ)
+        return false;
+
+      // Note difference with nsIPrompt::promptPassword, which has 
+      // "inout" savePassword param, while nsIAuthPrompt is just "in"
+      // Also nsIAuth doesn't supply "checkBoxLabel"
+      // Initialize with user's previous preference for this site
+      var savePWObj = {value:savePW};
+      // Initialize with user's previous preference for this site
+      if (this.msiEditorElement.mgPublishData)
+        savePWObj.value = this.msiEditorElement.mgPublishData.savePassword;
+
+      ret = promptServ.promptPassword(this.msiEditorElement.mgProgressDialog ? this.msiEditorElement.mgProgressDialog : window,
+                                      dlgTitle, text, pwObj, GetString("SavePassword"), savePWObj);
+
+      if (!ret)
+        setTimeout(CancelPublishing, 0);
+
+      if (ret && this.msiEditorElement.mgPublishData)
+        msiUpdateUsernamePasswordFromPrompt(this.msiEditorElement.mgPublishData, this.msiEditorElement.mgPublishData.username, pwObj.value, savePWObj.value);
+    } catch(e) {}
+
+    return ret;
+  };
+}
+//
+function msiPromptUsernameAndPassword(dlgTitle, text, savePW, userObj, pwObj, editorElement)
+{
+  // HTTP prompts us twice even if user Cancels from 1st attempt!
+  // So never put up dialog if there's no publish data
+  if (!editorElement || !editorElement.mgPublishData)
+    return false;
+
+  var ret = false;
+  try {
+    var promptServ = GetPromptService();
+    if (!promptServ)
+      return false;
+
+    var savePWObj = {value:savePW};
+
+    // Initialize with user's previous preference for this site
+    if (editorElement.mgPublishData)
+    {
+      // HTTP put uses this dialog if either username or password is bad,
+      //   so prefill username input field with the previous value for modification
+      savePWObj.value = editorElement.mgPublishData.savePassword;
+      if (!userObj.value)
+        userObj.value = editorElement.mgPublishData.username;
+    }
+
+    ret = promptServ.promptUsernameAndPassword(editorElement.mgProgressDialog ? editorElement.mgProgressDialog : window, 
+                                               dlgTitle, text, userObj, pwObj, 
+                                               GetString("SavePassword"), savePWObj);
+    if (ret && editorElement.mgPublishData)
+      msiUpdateUsernamePasswordFromPrompt(editorElement.mgPublishData, userObj.value, pwObj.value, savePWObj.value);
+
+  } catch (e) {}
+
+  return ret;
+}
+
+function msiDumpDebugStatus(aStatus)
+{
+  // see nsError.h and netCore.h and ftpCore.h
+
+  if (aStatus == kErrorBindingAborted)
+    dump("***** status is NS_BINDING_ABORTED\n");
+  else if (aStatus == kErrorBindingRedirected)
+    dump("***** status is NS_BINDING_REDIRECTED\n");
+  else if (aStatus == 2152398859) // in netCore.h 11
+    dump("***** status is ALREADY_CONNECTED\n");
+  else if (aStatus == 2152398860) // in netCore.h 12
+    dump("***** status is NOT_CONNECTED\n");
+  else if (aStatus == 2152398861) //  in nsISocketTransportService.idl 13
+    dump("***** status is CONNECTION_REFUSED\n");
+  else if (aStatus == 2152398862) // in nsISocketTransportService.idl 14
+    dump("***** status is NET_TIMEOUT\n");
+  else if (aStatus == 2152398863) // in netCore.h 15
+    dump("***** status is IN_PROGRESS\n");
+  else if (aStatus == 2152398864) // 0x804b0010 in netCore.h 16
+    dump("***** status is OFFLINE\n");
+  else if (aStatus == 2152398865) // in netCore.h 17
+    dump("***** status is NO_CONTENT\n");
+  else if (aStatus == 2152398866) // in netCore.h 18
+    dump("***** status is UNKNOWN_PROTOCOL\n");
+  else if (aStatus == 2152398867) // in netCore.h 19
+    dump("***** status is PORT_ACCESS_NOT_ALLOWED\n");
+  else if (aStatus == 2152398868) // in nsISocketTransportService.idl 20
+    dump("***** status is NET_RESET\n");
+  else if (aStatus == 2152398869) // in ftpCore.h 21
+    dump("***** status is FTP_LOGIN\n");
+  else if (aStatus == 2152398870) // in ftpCore.h 22
+    dump("***** status is FTP_CWD\n");
+  else if (aStatus == 2152398871) // in ftpCore.h 23
+    dump("***** status is FTP_PASV\n");
+  else if (aStatus == 2152398872) // in ftpCore.h 24
+    dump("***** status is FTP_PWD\n");
+  else if (aStatus == 2152857601)
+    dump("***** status is UNRECOGNIZED_PATH\n");
+  else if (aStatus == 2152857602)
+    dump("***** status is UNRESOLABLE SYMLINK\n");
+  else if (aStatus == 2152857604)
+    dump("***** status is UNKNOWN_TYPE\n");
+  else if (aStatus == 2152857605)
+    dump("***** status is DESTINATION_NOT_DIR\n");
+  else if (aStatus == 2152857606)
+    dump("***** status is TARGET_DOES_NOT_EXIST\n");
+  else if (aStatus == 2152857608)
+    dump("***** status is ALREADY_EXISTS\n");
+  else if (aStatus == 2152857609)
+    dump("***** status is INVALID_PATH\n");
+  else if (aStatus == 2152857610)
+    dump("***** status is DISK_FULL\n");
+  else if (aStatus == 2152857612)
+    dump("***** status is NOT_DIRECTORY\n");
+  else if (aStatus == 2152857613)
+    dump("***** status is IS_DIRECTORY\n");
+  else if (aStatus == 2152857614)
+    dump("***** status is IS_LOCKED\n");
+  else if (aStatus == 2152857615)
+    dump("***** status is TOO_BIG\n");
+  else if (aStatus == 2152857616)
+    dump("***** status is NO_DEVICE_SPACE\n");
+  else if (aStatus == 2152857617)
+    dump("***** status is NAME_TOO_LONG\n");
+  else if (aStatus == 2152857618) // 80520012
+    dump("***** status is FILE_NOT_FOUND\n");
+  else if (aStatus == 2152857619)
+    dump("***** status is READ_ONLY\n");
+  else if (aStatus == 2152857620)
+    dump("***** status is DIR_NOT_EMPTY\n");
+  else if (aStatus == 2152857621)
+    dump("***** status is ACCESS_DENIED\n");
+  else if (aStatus == 2152398878)
+    dump("***** status is ? (No connection or time out?)\n");
+  else
+    dump("***** status is " + aStatus + "\n");
+}
+
+// Update any data that the user supplied in a prompt dialog
+function msiUpdateUsernamePasswordFromPrompt(publishData, username, password, savePassword)
+{
+  if (!publishData)
+    return;
+  
+  // Set flag to save publish data after publishing if it changed in dialog 
+  //  and the "SavePassword" checkbox was checked
+  //  or we already had site data for this site
+  // (Thus we don't automatically create a site until user brings up Publish As dialog)
+  publishData.savePublishData = (gPublishData.username != username || gPublishData.password != password)
+                                && (savePassword || !publishData.notInSiteData);
+
+  publishData.username = username;
+  publishData.password = password;
+  publishData.savePassword = savePassword;
+}
+
+const kSupportedTextMimeTypes =
+[
+  "text/plain",
+  "text/css",
+  "text/rdf",
+  "text/xsl",
+  "text/javascript",
+  "application/x-javascript",
+  "text/xul",
+  "application/vnd.mozilla.xul+xml"
+];
+
+function msiIsSupportedTextMimeType(aMimeType)
+{
+  for (var i = 0; i < kSupportedTextMimeTypes.length; i++)
+  {
+    if (kSupportedTextMimeTypes[i] == aMimeType)
+      return true;
+  }
+  return false;
+}
+
 // throws an error or returns true if user attempted save; false if user canceled save
 function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
 {
@@ -1810,7 +1830,7 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
       && editorType != "htmlmail" && editorType != "textmail")
     throw NS_ERROR_NOT_IMPLEMENTED;
 
-  var saveAsTextFile = IsSupportedTextMimeType(aMimeType);
+  var saveAsTextFile = msiIsSupportedTextMimeType(aMimeType);
 
   // check if the file is to be saved is a format we don't understand; if so, bail
   if (aMimeType != "text/html" && aMimeType != "application/xhtml+xml" && !saveAsTextFile)
@@ -1819,7 +1839,7 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
   if (saveAsTextFile)
     aMimeType = "text/plain";
 
-  var urlstring = msiGetEditorUrl(editorElement);
+  var urlstring = msiGetEditorURL(editorElement);
   var mustShowFileDialog = (aSaveAs || IsUrlAboutBlank(urlstring) || (urlstring == ""));
 
   // If editing a remote URL, force SaveAs dialog
@@ -1837,16 +1857,16 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
 	    // Prompt for title if we are saving to HTML
 	    if (!saveAsTextFile && (editorType == "html"))
 	    {
-	      var userContinuing = PromptAndSetTitleIfNone(); // not cancel
+	      var userContinuing = msiPromptAndSetTitleIfNone(editorElement); // not cancel
 	      if (!userContinuing)
 	        return false;
 	    }
 
-	    var dialogResult = PromptForSaveLocation(saveAsTextFile, editorType, aMimeType, urlstring);
-	    if (dialogResult.filepickerClick == nsIFilePicker.returnCancel)
+	    var dialogResult = msiPromptForSaveLocation(saveAsTextFile, editorType, aMimeType, urlstring, editorElement);
+	    if (dialogResult.filepickerClick == msIFilePicker.returnCancel)
 	      return false;
 
-	    replacing = (dialogResult.filepickerClick == nsIFilePicker.returnReplace);
+	    replacing = (dialogResult.filepickerClick == msIFilePicker.returnReplace);
 	    urlstring = dialogResult.resultingURIString;
 	    tempLocalFile = dialogResult.resultingLocalFile;
  
@@ -1864,12 +1884,12 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
     var docURI;
     if (!tempLocalFile)
     {
-      ioService = GetIOService();
+      ioService = msiGetIOService();
       docURI = ioService.newURI(urlstring, editor.documentCharacterSet, null);
       
       if (docURI.schemeIs("file"))
       {
-        var fileHandler = GetFileProtocolHandler();
+        var fileHandler = msiGetFileProtocolHandler();
         tempLocalFile = fileHandler.getFileFromURLSpec(urlstring).QueryInterface(Components.interfaces.nsILocalFile);
       }
     }
@@ -1894,7 +1914,7 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
           // if we are saving to the same parent directory, don't set relatedFilesDir
           // grab old location, chop off file
           // grab new location, chop off file, compare
-          var oldLocation = msiGetEditorUrl(editorElement);
+          var oldLocation = msiGetEditorURL(editorElement);
           var oldLocationLastSlash = oldLocation.lastIndexOf("\/");
           if (oldLocationLastSlash != -1)
             oldLocation = oldLocation.slice(0, oldLocationLastSlash);
@@ -1914,7 +1934,7 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
           if (lastSlash != -1)
           {
             var relatedFilesDirString = urlstring.slice(0, lastSlash + 1);  // include last slash
-            ioService = GetIOService();
+            ioService = msiGetIOService();
             relatedFilesDir = ioService.newURI(relatedFilesDirString, editor.documentCharacterSet, null);
           }
         }
@@ -1941,7 +1961,7 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
       {
          // If a local file, we must create a new uri from nsILocalFile
         if (tempLocalFile)
-          docURI = GetFileProtocolHandler().newFileURI(tempLocalFile);
+          docURI = msiGetFileProtocolHandler().newFileURI(tempLocalFile);
 
         // We need to set new document uri before notifying listeners
         SetDocumentURI(docURI);
@@ -1957,7 +1977,7 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
       // this should cause notification to listeners that document has changed
 
       // Set UI based on whether we're editing a remote or local url
-      SetSaveAndPublishUI(urlstring);
+      msiSetSaveAndPublishUI(urlstring, editorElement);
     } catch (e) {}
   }
   else
@@ -1998,7 +2018,7 @@ function msiPublish(publishData, editorElement)
   //  and we are sure file transfer was successful
   editorElement.mgPublishData = publishData;
 
-  editorElement.mgPublishData.docURI = CreateURIFromPublishData(publishData, true);
+  editorElement.mgPublishData.docURI = msiCreateURIFromPublishData(publishData, true, editorElement);
   if (!editorElement.mgPublishData.docURI)
   {
     AlertWithTitle(GetString("Publish"), GetString("PublishFailed"));
@@ -2006,7 +2026,7 @@ function msiPublish(publishData, editorElement)
   }
 
   if (editorElement.mgPublishData.publishOtherFiles)
-    editorElement.mgPublishData.otherFilesURI = CreateURIFromPublishData(publishData, false);
+    editorElement.mgPublishData.otherFilesURI = msiCreateURIFromPublishData(publishData, false, editorElement);
   else
     editorElement.mgPublishData.otherFilesURI = null;
 
@@ -2015,7 +2035,7 @@ function msiPublish(publishData, editorElement)
     dump("\n *** publishData: PublishUrl="+publishData.publishUrl+", BrowseUrl="+publishData.browseUrl+
       ", Username="+publishData.username+", Dir="+publishData.docDir+
       ", Filename="+publishData.filename+"\n");
-    dump(" * gPublishData.docURI.spec w/o pass="+StripPassword(gPublishData.docURI.spec)+", PublishOtherFiles="+gPublishData.publishOtherFiles+"\n");
+    dump(" * gPublishData.docURI.spec w/o pass="+StripPassword(editorElement.mgPublishData.docURI.spec)+", PublishOtherFiles="+editorElement.mgPublishData.publishOtherFiles+"\n");
   }
 
   // XXX Missing username will make FTP fail 
@@ -2049,140 +2069,140 @@ function msiPublish(publishData, editorElement)
 
     // Start progress monitoring
     editorElement.mgProgressDialog =
-      window.openDialog("chrome://editor/content/EditorPublishProgress.xul", "_blank",
-                        "chrome,dependent,titlebar", editor.mgPublishData, gPersistObj);
+      window.openDialog("chrome://prince/content/msiEditorPublishProgress.xul", "_blank",
+                        "chrome,dependent,titlebar", editorElement.mgPublishData, editorElement.mPersistObj);
 
   } catch (e) {}
 
   // Network transfer is often too quick for the progress dialog to be initialized
   //  and we can completely miss messages for quickly-terminated bad URLs,
   //  so we can't call OutputFileWithPersistAPI right away.
-  // StartPublishing() is called at the end of the dialog's onload method
+  // msiStartPublishing() is called at the end of the dialog's onload method
   return true;
 }
 
-//function StartPublishing()
-//{
-//  var editor = GetCurrentEditor();
-//  if (editor && gPublishData && gPublishData.docURI && gProgressDialog)
-//  {
-//    gRestoreDocumentSource = null;
-//
-//    // Save backup document since nsIWebBrowserPersist changes image src urls
-//    // but we only need to do this if publishing images and other related files
-//    if (gPublishData.otherFilesURI)
-//    {
-//      try {
-//        // (256 = Output encoded entities)
-//        gRestoreDocumentSource = 
-//          editor.outputToString(editor.contentsMIMEType, 256);
-//      } catch (e) {}
-//    }
-//
-//    OutputFileWithPersistAPI(editor.document, 
-//                             gPublishData.docURI, gPublishData.otherFilesURI, 
-//                             editor.contentsMIMEType);
-//    return gPersistObj;
-//  }
-//  return null;
-//}
-//
-//function CancelPublishing()
-//{
-//  try {
-//    gPersistObj.cancelSave();
-//    gProgressDialog.SetProgressStatusCancel();
-//  } catch (e) {}
-//
-//  // If canceling publishing do not do any commands after this    
-//  gCommandAfterPublishing = null;
-//
-//  if (gProgressDialog)
-//  {
-//    // Close Progress dialog 
-//    // (this will call FinishPublishing())
-//    gProgressDialog.CloseDialog();
-//  }
-//  else
-//    FinishPublishing();
-//}
-//
-//function FinishPublishing()
-//{
-//  SetDocumentEditable(true);
-//  gProgressDialog = null;
-//  gPublishData = null;
-//  gRestoreDocumentSource = null;
-//
-//  if (gCommandAfterPublishing)
-//  {
-//    // Be sure to null out the global now incase of trouble when executing command
-//    var command = gCommandAfterPublishing;
-//    gCommandAfterPublishing = null;
-//    goDoCommand(command);
-//  }
-//}
-//
-//// Create a nsIURI object filled in with all required publishing info
-//function CreateURIFromPublishData(publishData, doDocUri)
-//{
-//  if (!publishData || !publishData.publishUrl)
-//    return null;
-//
-//  var URI;
-//  try {
-//    var spec = publishData.publishUrl;
-//    if (doDocUri)
-//      spec += FormatDirForPublishing(publishData.docDir) + publishData.filename; 
-//    else
-//      spec += FormatDirForPublishing(publishData.otherDir);
-//
-//    var ioService = GetIOService();
-//    URI = ioService.newURI(spec, GetCurrentEditor().documentCharacterSet, null);
-//
-//    if (publishData.username)
-//      URI.username = publishData.username;
-//    if (publishData.password)
-//      URI.password = publishData.password;
-//  }
-//  catch (e) {}
-//
-//  return URI;
-//}
-//
-//// Resolve the correct "http:" document URL when publishing via ftp
-//function GetDocUrlFromPublishData(publishData)
-//{
-//  if (!publishData || !publishData.filename || !publishData.publishUrl)
-//    return "";
-//
-//  // If user was previously editing an "ftp" url, then keep that as the new scheme
-//  var url;
-//  var docScheme = GetScheme(GetDocumentUrl());
-//
-//  // Always use the "HTTP" address if available
-//  // XXX Should we do some more validation here for bad urls???
-//  // Let's at least check for a scheme!
-//  if (!GetScheme(publishData.browseUrl))
-//    url = publishData.publishUrl;
-//  else
-//    url = publishData.browseUrl;
-//
-//  url += FormatDirForPublishing(publishData.docDir) + publishData.filename;
-//
-//  if (GetScheme(url) == "ftp")
-//    url = InsertUsernameIntoUrl(url, publishData.username);
-//
-//  return url;
-//}
-//
-//function SetSaveAndPublishUI(urlstring)
-//{
-//  // Be sure enabled state of toolbar buttons are correct
-//  goUpdateCommand("cmd_save");
-//  goUpdateCommand("cmd_publish");
-//}
-//
+function msiStartPublishing(editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  if (editor && editorElement && editorElement.mgPublishData && editorElement.mgPublishData.docURI && editorElement.mgProgressDialog)
+  {
+    editorElement.mgRestoreDocumentSource = null;
+
+    // Save backup document since nsIWebBrowserPersist changes image src urls
+    // but we only need to do this if publishing images and other related files
+    if (editorElement.mgPublishData.otherFilesURI)
+    {
+      try {
+        // (256 = Output encoded entities)
+        editorElement.mgRestoreDocumentSource = 
+          editor.outputToString(editor.contentsMIMEType, 256);
+      } catch (e) {}
+    }
+
+    OutputFileWithPersistAPI(editor.document, 
+                             editorElement.mgPublishData.docURI, editorElement.mgPublishData.otherFilesURI, 
+                             editor.contentsMIMEType);
+    return editorElement.mPersistObj;
+  }
+  return null;
+}
+
+function msiCancelPublishing(editorElement)
+{
+  try {
+    editorElement.mgPersistObj.cancelSave();
+    editorElement.mgProgressDialog.SetProgressStatusCancel();
+  } catch (e) {}
+
+  // If canceling publishing do not do any commands after this    
+  editorElement.mgCommandAfterPublishing = null;
+
+  if (editorElement.mgProgressDialog)
+  {
+    // Close Progress dialog 
+    // (this will call FinishPublishing())
+    editorElement.mgProgressDialog.CloseDialog();
+  }
+  else
+    msiFinishPublishing(editorElement);
+}
+
+function msiFinishPublishing(editorElement)
+{
+  msiSetDocumentEditable(true, editorElement);
+  editorElement.mgProgressDialog = null;
+  editorElement.mgPublishData = null;
+  editorElement.mgRestoreDocumentSource = null;
+
+  if (editorElement.mgCommandAfterPublishing)
+  {
+    // Be sure to null out the global now incase of trouble when executing command
+    var command = editorElement.mgCommandAfterPublishing;
+    editorElement.mgCommandAfterPublishing = null;
+    msiGoDoCommand(command, editorElement);
+  }
+}
+
+// Create a nsIURI object filled in with all required publishing info
+function msiCreateURIFromPublishData(publishData, doDocUri, editorElement)
+{
+  if (!publishData || !publishData.publishUrl)
+    return null;
+
+  var URI;
+  try {
+    var spec = publishData.publishUrl;
+    if (doDocUri)
+      spec += FormatDirForPublishing(publishData.docDir) + publishData.filename; 
+    else
+      spec += FormatDirForPublishing(publishData.otherDir);
+
+    var ioService = msiGetIOService();
+    URI = ioService.newURI(spec, msiGetEditor(editorElement).documentCharacterSet, null);
+
+    if (publishData.username)
+      URI.username = publishData.username;
+    if (publishData.password)
+      URI.password = publishData.password;
+  }
+  catch (e) {}
+
+  return URI;
+}
+
+// Resolve the correct "http:" document URL when publishing via ftp
+function msiGetDocUrlFromPublishData(publishData, editorElement)
+{
+  if (!publishData || !publishData.filename || !publishData.publishUrl)
+    return "";
+
+  // If user was previously editing an "ftp" url, then keep that as the new scheme
+  var url;
+  var docScheme = GetScheme(msiGetEditorURL(editorElement));
+
+  // Always use the "HTTP" address if available
+  // XXX Should we do some more validation here for bad urls???
+  // Let's at least check for a scheme!
+  if (!GetScheme(publishData.browseUrl))
+    url = publishData.publishUrl;
+  else
+    url = publishData.browseUrl;
+
+  url += FormatDirForPublishing(publishData.docDir) + publishData.filename;
+
+  if (GetScheme(url) == "ftp")
+    url = InsertUsernameIntoUrl(url, publishData.username);
+
+  return url;
+}
+
+function msiSetSaveAndPublishUI(urlstring, editorElement)
+{
+  // Be sure enabled state of toolbar buttons are correct
+  msiGoUpdateCommand("cmd_save", editorElement);
+  msiGoUpdateCommand("cmd_publish", editorElement);
+}
+
 function msiSetDocumentEditable(isDocEditable, editorElement)
 {
   if (!editorElement)
@@ -2285,7 +2305,7 @@ var msiPublishSettingsCommand =
       if (publishData)
       {
         msiFinishHTMLSource(editorElement);
-        return Publish(publishData);
+        return msiPublish(publishData, editorElement);
       }
     }
     return false;
@@ -2335,7 +2355,7 @@ var msiRevertCommand =
       {
         msiCancelHTMLSource(editorElement);
 //        EditorLoadUrl(GetDocumentUrl());
-        msiEditorLoadUrl(editorElement, msiGetEditorUrl(editorElement));
+        msiEditorLoadUrl(editorElement, msiGetEditorURL(editorElement));
       }
     }
   }
@@ -2451,7 +2471,7 @@ var msiPreviewCommand =
         var windowManagerInterface = windowManager.QueryInterface(Components.interfaces.nsIWindowMediator);
         var enumerator = windowManagerInterface.getEnumerator("navigator:browser");
 
-        var documentURI = msiGetEditorUrl(editorElement);
+        var documentURI = msiGetEditorURL(editorElement);
         while ( enumerator.hasMoreElements() )
         {
           browser = enumerator.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
@@ -2509,7 +2529,7 @@ var msiSendPageCommand =
       // Launch Messenger Composer window with current page as contents
       try
       {
-        openComposeWindow(msiGetEditorUrl(editorElement), GetDocumentTitle());        
+        openComposeWindow(msiGetEditorURL(editorElement), msiGetDocumentTitle(editorElement));
       } catch (ex) { dump("Cannot Send Page: " + ex + "\n"); }
     }
   }
@@ -2691,7 +2711,7 @@ var msiSpellingCommand =
   {
     var editorElement = msiGetActiveEditorElement();
     return (msiIsDocumentEditable(editorElement) && 
-              !msiIsInHTMLSourceMode(editorElement) && IsSpellCheckerInstalled());
+              !msiIsInHTMLSourceMode(editorElement) && msiIsSpellCheckerInstalled());
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -2742,11 +2762,11 @@ var msiValidateCommand =
         return;
     }
 
-    URL2Validate = msiGetEditorUrl(editorElement);
+    URL2Validate = msiGetEditorURL(editorElement);
     // See if it's a file:
     var ifile;
     try {
-      var fileHandler = GetFileProtocolHandler();
+      var fileHandler = msiGetFileProtocolHandler();
       ifile = fileHandler.getFileFromURLSpec(URL2Validate);
       // nsIFile throws an exception if it's not a file url
     } catch (e) { ifile = null; }
@@ -3752,7 +3772,7 @@ var msiEditLinkCommand =
     {
       var element = msiGetEditor(editorElement).getSelectedElement("href");
       if (element)
-        editPage(element.href, window, false);
+        msiEditPage(element.href, window, false);
     }
     catch (exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiEditLinkCommand.doCommand: " + exc);}
     editorElement.contentWindow.focus();
@@ -4501,7 +4521,7 @@ var nsPreferencesCommand =
 };
 //
 //
-var msiFinishHTMLSource =
+var msiFinishHTMLSourceCmd =
 {
   isCommandEnabled: function(aCommand, dummy)
   {

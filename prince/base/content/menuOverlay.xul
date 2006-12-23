@@ -16,8 +16,8 @@
 <overlay id="editorOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript"  src="chrome://prince/content/toolbarsOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/ -->
   <script type="application/x-javascript"  src="chrome://venkman/content/venkman-overlay.js"/>
   <script type="application/x-javascript"  src="chrome://inspector/content/hooks.js"/>
   
@@ -37,7 +37,7 @@
       <menuitem observes="cmd_exportTeX" label="Export TeX ..."/>
       <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
             onpopupshowing="BuildRecentFilesMenu();">
-        <menupopup id="menupopup_RecentFiles" oncommand="editPage(event.target.getAttribute('value'), window, false);"/>
+        <menupopup id="menupopup_RecentFiles" oncommand="msiEditPage(event.target.getAttribute('value'), window, false);"/>
           <!-- menuitems appended at runtime -->
       </menu>
       <menuitem accesskey="&fileclose.accesskey;" key="closekb" observes="cmd_close"
@@ -468,7 +468,7 @@
   <commandset id="composerTableMenuItems"
           commandupdater="true"
           events="create, mode_switch"
-          oncommandupdate="goUpdateTableMenuItems(this)">
+          oncommandupdate="msiGoUpdateTableMenuItems(this)">
     <!-- Table menu -->
     <command id="cmd_SelectTable"         oncommand="msiGoDoCommand('cmd_SelectTable')"/>
     <command id="cmd_SelectRow"           oncommand="msiGoDoCommand('cmd_SelectRow')"/>

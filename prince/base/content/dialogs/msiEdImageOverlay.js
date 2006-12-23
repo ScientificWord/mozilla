@@ -344,7 +344,7 @@ function LoadPreviewImage()
     //  (if we don't do this, loads after the first will always use image cache
     //   and we won't see image edit changes or be able to get actual width and height)
     
-    var IOService = GetIOService();
+    var IOService = msiGetIOService();
     if (IOService)
     {
       // We must have an absolute URL to preview it or remove it from the cache
