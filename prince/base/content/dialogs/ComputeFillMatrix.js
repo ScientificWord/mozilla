@@ -16,9 +16,10 @@ function msiFillMatrixEditorDocumentObserver(editorElement)
         try
         {
           insertmath(this.msiEditorElement);
-        } catch(exc) {AlertWithTitle("Error in ComputeFillMatrix.js", "Exception in inserting math: [" + exc + "]");}
+        } catch(exc) {dump("Exception inserting math in FillMatrix edit window: [" + exc + "].\n");}
         // type defaults to first choice according to XUL
         Switch("zero");
+      break;
     }
   };
 }
