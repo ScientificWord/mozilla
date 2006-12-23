@@ -195,7 +195,7 @@ function doSelectBibTeXDirectory()
   if (gDialog.bibTeXDir)
     dirPicker.displayDirectory = gDialog.bibTeXDir;
   var res = dirPicker.show();
-  if (res == nsIFilePicker.returnOK)
+  if (res == Components.interfaces.nsIFilePicker.returnOK)
   {
     gDialog.bibTeXDir = dirPicker.file;
     fillDatabaseFileListbox();

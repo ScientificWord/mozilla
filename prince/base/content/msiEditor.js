@@ -754,7 +754,7 @@ function EditorStartupForEditorElement(editorElement)
 {
   var is_HTMLEditor = msiIsHTMLEditor(editorElement);
 
-  editorElement.mPreviousNonSourceDisplayMode = 1;
+  editorElement.mPreviousNonSourceDisplayMode = 0;
   editorElement.mEditorDisplayMode = -1;
   editorElement.mDocWasModified = false;  // Check if clean document, if clean then unload when user "Opens"
   editorElement.mLastFocusNode = null;
@@ -832,7 +832,7 @@ function msiEditorLoadUrl(editorElement, url)
     if (url)
 //      GetCurrentEditorElement().webNavigation.loadURI(url, // uri string
       editorElement.webNavigation.loadURI(url, // uri string
-             nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,     // load flags
+             msIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,     // load flags
              null,                                         // referrer
              null,                                         // post-data stream
              null);
@@ -879,7 +879,7 @@ function SharedStartupForEditor(editorElement)
     commandManager.addCommandObserver(editorElement.mEditorDocumentObserver, "cmd_bold");
   } catch (e) { dump(e); }
 
-  var isMac = (GetOS() == gMac);
+  var isMac = (GetOS() == msigMac);
 
   // Set platform-specific hints for how to select cells
   // Mac uses "Cmd", all others use "Ctrl"
@@ -1038,7 +1038,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   var dialogMsg = GetString(doPublish ? "PublishPrompt" : "SaveFilePrompt");
   dialogMsg = (dialogMsg.replace(/%title%/,title)).replace(/%reason%/,reasonToSave);
 
-  var promptService = GetPromptService();
+  var promptService = msiGetPromptService();
   if (!promptService)
     return false;
 
@@ -1081,8 +1081,8 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
       // We save the command the user wanted to do in a global
       // and return as if user canceled because publishing is asynchronous
       // This command will be fired when publishing finishes
-      gCommandAfterPublishing = command;
-      goDoCommand("cmd_publish");
+      editorElement.mgCommandAfterPublishing = command;
+      msiGoDoCommand("cmd_publish", editorElement);
       return false;
     }
 
@@ -2257,7 +2257,7 @@ function msiSetEditMode(mode, editorElement)
             title = titleNode.firstChild.data;
         }
         if (editor.document.title != title)
-          SetDocumentTitle(title);
+          msiSetDocumentTitle(editorElement, title);
 
       } catch (ex) {
         dump(ex);
@@ -2443,9 +2443,9 @@ function msiSetDisplayMode(editorElement, mode)
       window.gContentWindowDeck.selectedIndex = 0;
 
     // Restore menus and toolbars
-    if ("gViewFormatToolbar" in window)
+    if ("gViewFormatToolbar" in window && window.gViewFormatToolbar != null)
       window.gViewFormatToolbar.hidden = false;
-    if ("gComputeToolbar" in window)
+    if ("gComputeToolbar" in window && window.gComputeToolbar != null)
       window.gComputeToolbar.hidden = false;
     msiShowItem("MSIMathMenu");
     msiShowItem("cmd_viewComputeToolbar");
