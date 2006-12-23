@@ -36,7 +36,8 @@ const kOutputLFLineBreak = Components.interfaces.nsIDocumentEncoder.OutputLFLine
 const kOutputSelectionOnly = Components.interfaces.nsIDocumentEncoder.OutputSelectionOnly;
 const kOutputWrap = Components.interfaces.nsIDocumentEncoder.OutputWrap;
 
-const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
+const msIWebNavigation = Components.interfaces.nsIWebNavigation;
+const msIFilePicker = Components.interfaces.nsIFilePicker;
 //
 //var gPreviousNonSourceDisplayMode = 1;
 var gEditorDisplayMode = -1;
@@ -59,9 +60,9 @@ var gStringBundle;
 var gPrefs;
 //var gLocalFonts = null;
 
-const gWin = "Win";
-const gUNIX = "UNIX";
-const gMac = "Mac";
+const msigWin = "Win";
+const msigUNIX = "UNIX";
+const msigMac = "Mac";
 
 //var gLastFocusNode = null;
 //var gLastFocusNodeWasSelected = false;

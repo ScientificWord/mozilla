@@ -59,7 +59,8 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorCommandsDebug.js"/>
 #  <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
-   <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
+   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+#   <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
 #  <script type="application/x-javascript" src="chrome://editor/content/publishprefs.js"/>
 #  <script type="application/x-javascript" src="chrome://communicator/content/contentAreaDD.js"/>
 #  <script type="application/x-javascript" src="chrome://communicator/content/contentAreaClick.js"/>
@@ -74,9 +75,9 @@
 
   <commandset id="tasksCommands">
     <command id="cmd_open" oncommand="doOpen()"/>
-    <command id="cmd_print" oncommand="goDoCommand('cmd_print')"/>
+    <command id="cmd_print" oncommand="msiGoDoCommand('cmd_print')"/>
     <command id="cmd_quit" oncommand="doQuit()"/>
-    <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
+    <command id="cmd_save" oncommand="msiGoDoCommand('cmd_save')"/>
     <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
     <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
