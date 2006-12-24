@@ -218,34 +218,22 @@ nsBaseTagUpdatingCommand::GetCurrentTagState(nsIEditor *aEditor, const char *aTa
                                         nsICommandParams *aParams)
 {
   NS_ASSERTION(aEditor, "Need editor here");
-  nsIAtom * atomNS;
-  nsAutoString strTagClass;
-  NS_ConvertASCIItoUTF16 tagClass(aTagClass);
-  nsAutoString strTagName; 
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
   if (!htmlEditor) return NS_ERROR_NOT_INITIALIZED;
-  nsCOMPtr<msiITagListManager> tagListManager;
-  htmlEditor->GetTagListManager(getter_AddRefs(tagListManager));
   
   nsresult rv = NS_OK;
+  nsString strTagName;
+  NS_ConvertASCIItoUTF16 tagClass(aTagClass);
 
   PRBool firstOfSelectionHasProp = PR_TRUE;
   PRBool anyOfSelectionHasProp = PR_TRUE;
   PRBool allOfSelectionHasProp = PR_TRUE;
-  
-  tagListManager->CurrentValue(strTagClass, &atomNS, strTagName );
-  if (strTagName.Length() == 0)
-  {
-    firstOfSelectionHasProp = PR_FALSE;
-    anyOfSelectionHasProp = PR_FALSE;
-    allOfSelectionHasProp = PR_FALSE;
-  } 
 
-//  rv = htmlEditor->GetInnermostTag(  tagClass, 
-//                                     &firstOfSelectionHasProp, 
-//                                     &anyOfSelectionHasProp, 
-//                                     &allOfSelectionHasProp,
-//                                     strTagName);
+  rv = htmlEditor->GetInnermostTag(  tagClass, 
+                                     &firstOfSelectionHasProp, 
+                                     &anyOfSelectionHasProp, 
+                                     &allOfSelectionHasProp,
+                                     strTagName);
   aParams->SetStringValue(STATE_ATTRIBUTE, strTagName);
   aParams->SetBooleanValue(STATE_ENABLED, NS_SUCCEEDED(rv));
   aParams->SetBooleanValue(STATE_ALL, allOfSelectionHasProp);
