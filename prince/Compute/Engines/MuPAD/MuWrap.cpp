@@ -11,6 +11,7 @@
 #endif
 #ifdef XP_UNIX
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #endif
 

@@ -60,10 +60,10 @@ endif
 
 ifeq ($(OS_ARCH),Linux)
 EXTRA_LIBS += \
-		$(srcdir)/../../MuPAD/linux/libexpat.a \
-		$(srcdir)/../../MuPAD/linux/liblibstream.a \
 		$(srcdir)/../../MuPAD/linux/libmupudskernel.a \
+		$(srcdir)/../../MuPAD/linux/libexpat.a \
 		$(srcdir)/../../MuPAD/linux/libmut.a \
+		$(srcdir)/../../MuPAD/linux/liblibstream.a \
 		$(srcdir)/../../MuPAD/linux/libz.a \
 		$(NULL)
 endif

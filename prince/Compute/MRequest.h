@@ -3,7 +3,7 @@
 #ifndef MREQUEST_H
 #define MREQUEST_H
 
-#include "cmptypes.h"
+#include "CmpTypes.h"
 #include <string.h>
 #include <vector>
 using std::vector;
