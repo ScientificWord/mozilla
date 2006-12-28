@@ -7,9 +7,9 @@
 #include "MResult.h"
 #include "DefStore.h"
 #include "PrefStor.h"
-#include "engines/CompEngine.h"
-#include "engines/Grammar.h"
-#include "engines/fltutils.h"
+#include "Engines/CompEngine.h"
+#include "Engines/Grammar.h"
+#include "Engines/fltutils.h"
 
 MathWorkShop::MathWorkShop()
 {

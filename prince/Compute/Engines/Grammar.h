@@ -5,7 +5,7 @@
 
 //This object holds a .gmr file in a hash table.
 
-#include "../cmptypes.h"
+#include "../CmpTypes.h"
 #include <stdio.h>
 
 typedef struct tagHASH_REC
