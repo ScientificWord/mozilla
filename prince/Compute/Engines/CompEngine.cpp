@@ -37,7 +37,7 @@
 #include "Grammar.h"
 #include "MML2Tree.h"
 #include "Analyzer.h"
-#include "STree2MMl.h"
+#include "STree2MML.h"
 
 #include "nsServiceManagerUtils.h"
 

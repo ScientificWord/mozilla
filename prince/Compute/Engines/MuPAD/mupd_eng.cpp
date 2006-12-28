@@ -230,14 +230,14 @@ int MuPADEngine::GetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln)
   int rv = 0;
 
   if (str_ID == 1) {            // engine input string
-    if (eng_instr.GetLength) {
+    if (eng_instr.GetLength()) {
       *engstr = static_cast<const TCICHAR*>(eng_instr);
       *engstr_ln = eng_instr.GetLength();
       instr_sent = true;
       rv = 1;
     }
   } else if (str_ID == 2) {
-    if (eng_outstr.GetLength) {
+    if (eng_outstr.GetLength()) {
       *engstr = static_cast<const TCICHAR*>(eng_outstr);
       *engstr_ln = eng_outstr.GetLength();
       outstr_sent = true;

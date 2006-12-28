@@ -4,7 +4,7 @@
 #define MRESULT_H
 
 #include "CmpTypes.h"
-#include "engines/fltutils.h"
+#include "Engines/fltutils.h"
 
 // used to be an overloaded PARAM_REC
 typedef struct tagCOMPONENT_REC

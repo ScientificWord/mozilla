@@ -3,7 +3,7 @@
 #ifndef MUPD_ENG_H
 #define MUPD_ENG_H
 
-#include <TCIStrin.h>
+#include <tcistrin.h>
 
 typedef class MUP_KernelImpl * MUP_Kernel;
 class MuPADMssgHandler;
