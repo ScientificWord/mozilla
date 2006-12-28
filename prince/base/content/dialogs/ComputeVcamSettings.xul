@@ -1,0 +1,216 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+
+<!-- dialog containing a control requiring initial setup -->
+<window
+        id="VCAMWindow"
+        xmlns:html="http://www.w3.org/1999/xhtml"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        onload="VCAMEditorOnLoad()" 
+        width="640" height="480"
+        screenX="10" screenY="10"
+        persist="screenX screenY width height sizemode">
+
+  <!-- Methods common to all editor dialogs -->
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/ -->
+
+  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/GraphOverlay.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/ComputeVcamSettings.js" />
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+   
+  <!-- Following scripts are needed by any MSI dialog containing an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <!-- script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+
+
+  <!-- keys are appended from the overlay -->
+  <keyset id="editorKeys">
+    <keyset id="MSIKeySet"/>
+    <keyset id="viewZoomKeys"/>
+    <keyset id="tasksKeys"/>
+    <key id="showHideSidebar"/>
+    <!-- eat these tab events here to stop focus from moving -->
+    <key keycode="VK_TAB" oncommand="return true;"/>
+    <key keycode="VK_TAB" modifiers="shift" oncommand="return true;"/>
+    <key keycode="VK_TAB" modifiers="control" oncommand="return true;"/>
+    <key keycode="VK_TAB" modifiers="control,shift" oncommand="return true;"/>
+  </keyset>
+
+
+
+  <groupbox>
+    <vbox>
+	  <hbox id="animationControl" collapsed="true">
+	    <button id="animateReset" label="|&lt;" />
+	    <button id="animateStart" label="&gt;" />
+	    <button id="animateStop"  label="||" />
+        <xul:slider flex="1">
+            <xul:thumb/>
+        </xul:slider>
+        <button id="animateEnd"   label="&gt;|"/>
+		<groupbox>
+           <menulist id="animateSpeed">
+              <menupopup command="cmd_animateSpeed"> 
+                 <menuitem label="X-Fast"    value="4"/>
+                 <menuitem label="Fast"      value="2"/>
+                 <menuitem label="Normal"    value="1"/>
+                 <menuitem label="Slow"      value=".5"/>
+                 <menuitem label="X=Slow"    value=".25"/>
+              </menupopup>
+           </menulist>
+   		</groupbox>
+		<groupbox>
+           <menulist id="animateLoop">
+              <menupopup command="cmd_animateLoop"> 
+                 <menuitem label="Run Once"       value="0"/>
+                 <menuitem label="Loop"           value="1"/>
+                 <menuitem label="Back and Forth" value="2"/>
+              </menupopup>
+           </menulist>
+   		</groupbox>
+
+
+	  </hbox>
+	  <hbox>
+        <html:object type="application/x-mupad-graphics+gzip"
+             id="plot" width="300" height="400">
+        </html:object>
+	 </hbox>
+	 <hbox>
+		<groupbox>
+		  <hbox>
+            <label>Cursor Tool</label>
+            <menulist id="cursorTool">
+               <menupopup command="cmd_CBcursorTool"> 
+                  <menuitem label="Select"    value="select"/>
+                  <menuitem label="Rotate"    value="rotate"/>
+                  <menuitem label="Move"      value="move"/>
+                  <menuitem label="Query"     value="query"/>
+                  <menuitem label="zoom"      value="zoom"/>
+               </menupopup>
+            </menulist>
+		  </hbox>
+   		</groupbox>
+		<groupbox>
+		  <hbox>
+            <label>Speed</label>
+            <menulist id="PUCursorSpeed">
+               <menupopup command="cmd_cursorSpeed"> 
+                  <menuitem label="X-Fast"    value="4"/>
+                  <menuitem label="Fast"      value="2"/>
+                  <menuitem label="Normal"    value="1"/>
+                  <menuitem label="Slow"      value=".5"/>
+                  <menuitem label="X=Slow"    value=".25"/>
+               </menupopup>
+            </menulist>
+		  </hbox>
+   		</groupbox>
+           <button id="cameraGet"   label="Get" />
+           <button id="cameraSet"   label="Set" />
+           <button id="cameraReset" label="Reset View" />
+           <button id="cameraFit"   label="Fit Contents" /> 
+
+     </hbox>
+		 <hbox>
+           <checkbox id="cameraOrtho"      label="Orthogonal Projection" command="cmd_cameraOrtho"/>
+           <checkbox id="cameraKeepUp"     label="Keep Up Vector" command="cmd_cameraKeepUp"/>
+		 </hbox>
+   </vbox>
+
+  </groupbox>
+  <vbox> <!--  onmouseover="updateVals(event);"> -->
+    <groupbox>   
+       <grid flex = "1">
+  	     <columns>
+  	       <column flex="0"/>
+  	       <column flex="0"/>
+      	 </columns>
+  	     <rows>
+		   <row>
+             <description>State</description>
+           </row>
+		   <row>
+		     <hbox>
+               <textbox id="cameraPosX" cols="6"/>
+               <textbox id="cameraPosY" cols="6"/>
+               <textbox id="cameraPosZ" cols="6"/>
+			 </hbox>
+             <hbox>
+               <button id="cameraRotateLeft"  label="Left" />
+               <button id="cameraRotateStop"  label="X" />
+               <button id="cameraRotateRight" label="Right" />
+           </hbox>
+           </row>
+		   <row>
+             <description> Focal Pt: </description>
+           </row>
+		   <row>
+			 <hbox>
+               <textbox id="focX" cols="6"/>
+               <textbox id="focY" cols="6"/>
+               <textbox id="focZ" cols="6"/>
+		   	 </hbox>
+	  	  	 <hbox>
+                <button id="cameraRotateUp"    label="Up" />
+                <button id="cameraRotate2Stop" label="X" />
+                <button id="cameraRotateDown"  label="Down" />
+			 </hbox>
+		   </row>
+		   <row>
+             <description>Up Vec:</description>
+		   </row>
+		   <row>
+             <hbox>
+               <textbox id="upX" cols="3"/>
+               <textbox id="upY" cols="3"/>
+               <textbox id="upZ" cols="3"/>
+			 </hbox>
+  	         <hbox>
+               <button id="cameraZoomIn"   label="In" />
+               <button id="cameraZoomStop" label="X" />
+               <button id="cameraZoomOut"  label="Out" />
+			 </hbox>
+		   </row>
+		   <row>
+             <description>Angle:</description>
+		   </row>
+		   <row>
+		     <hbox>  
+			   <textbox id="cameraAngle" cols="3"/>
+               <button id="URLLoad" label="Load URL:" />
+               <textbox id="url" cols="40"/> 
+			 </hbox>	
+   		   </row>
+		 </rows>
+	   </grid>
+     </groupbox> 
+   </vbox>
+
+ <command id="cmd_CBcursorTool"   oncommand="CBcursorTool();"/>
+ <command id="cmd_cursorSpeed"    oncommand="cursorSpeed();"/>
+ <command id="cmd_cameraOrtho"    oncommand="cameraOrtho();"/>
+ <command id="cmd_cameraKeepUp"   oncommand="cameraUpVector();"/>
+ <command id="cmd_animateSpeed"   oncommand="animateSpeed();"/>
+ <command id="cmd_animateLoop"    oncommand="animateLoop();"/>
+
+</window>
