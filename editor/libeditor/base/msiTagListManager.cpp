@@ -1053,3 +1053,24 @@ NS_IMETHODIMP msiTagListManager::GetDefaultParagraphTag(nsIAtom **atomNamespace,
 
 
 
+/* boolean selectionContainedInTag (in AString strTag, in nsIAtom atomNS); */
+NS_IMETHODIMP 
+msiTagListManager::SelectionContainedInTag(const nsAString & strTag, nsIAtom *atomNS, PRBool *_retval)
+{
+  nsAutoString str;
+  int j = mparentTags->Count();
+  for (int i = 0; i < j; i++)
+	{
+	 	mparentTags->StringAt(i, str);
+    TagKey key(str);
+	  if (strTag.Equals(key.localName()))
+	 	{
+	     *_retval = PR_TRUE;
+	     return NS_OK;
+	 	}
+	}
+  *_retval = PR_FALSE;
+  return NS_OK;
+}
+
+
