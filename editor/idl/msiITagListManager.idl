@@ -29,21 +29,22 @@ interface msiITagListManager : nsISupports
 	void enable();
   
     void reset();  //initializes the store to an empty store
-    PRBool AddTagInfo ( in AString strTagInfoPath );
+    boolean AddTagInfo ( in AString strTagInfoPath );
    
 	void buildStringArray( in  AString strTagClass ); 
 
-	PRBool getTagInClass( in AString strTagClass, in AString strTag, in nsIAtom atomNS);
+	boolean getTagInClass( in AString strTagClass, in AString strTag, in nsIAtom atomNS);
 	AString getClassOfTag( in AString strTag, in nsIAtom atomNS);
-	PRBool tagCanContainTag( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
-	PRBool nodeCanContainTag( in nsIDOMNode node, in AString strTagInner, in nsIAtom atomNSInner);
-	PRBool nodeCanContainNode( in nsIDOMNode nodeOuter, in nsIDOMNode nodeInner);
-	PRBool levelCanContainLevel( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
-    PRBool getDiscardEmptyBlockNode( in nsIDOMNode node);
+	boolean tagCanContainTag( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
+	boolean nodeCanContainTag( in nsIDOMNode node, in AString strTagInner, in nsIAtom atomNSInner);
+	boolean nodeCanContainNode( in nsIDOMNode nodeOuter, in nsIDOMNode nodeInner);
+	boolean levelCanContainLevel( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
+    boolean getDiscardEmptyBlockNode( in nsIDOMNode node);
 	void fixTagsAfterSplit( in nsIDOMNode firstNode, inout nsIDOMNode secondNode);
     AString getStringPropertyForTag( in AString strTag, in nsIAtom atomNS, in AString propertyName );
     AString getTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
     void buildParentTagList();
 	nsIAtom nameSpaceAtomOfTagKey( in AString key);
 	AString getDefaultParagraphTag( out nsIAtom atomNamespace );
+	boolean selectionContainedInTag( in AString strTag, in nsIAtom atomNS);
 };
