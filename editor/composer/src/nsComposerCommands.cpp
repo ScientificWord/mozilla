@@ -422,12 +422,15 @@ nsTextTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
   else
   {
     // check current selection; set doTagRemoval if formatting should be removed
-    rv = GetCurrentState(aEditor,params);
-    if (NS_FAILED(rv)) 
-      return rv;
-    rv = params->GetBooleanValue(STATE_ALL, &doTagRemoval);
-    if (NS_FAILED(rv)) 
-      return rv;
+//    rv = GetCurrentState(aEditor,params);
+//    if (NS_FAILED(rv)) 
+//      return rv;
+//    rv = params->GetBooleanValue(STATE_ALL, &doTagRemoval);
+//    if (NS_FAILED(rv)) 
+//      return rv;
+    nsCOMPtr<msiITagListManager> taglistManager;
+    htmlEditor->GetTagListManager( getter_AddRefs(taglistManager));
+    if (taglistManager) taglistManager->SelectionContainedInTag( tagName, nsnull, &doTagRemoval );
   }
 
   if (doTagRemoval)
@@ -448,7 +451,7 @@ nsTextTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
       removeName.AssignWithConversion("sub");
       rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
     }
-    if (NS_SUCCEEDED(rv))
+    if (NS_SUCCEEDED(rv)) 
       rv = SetTextProperty(aEditor,tagName.get(), nsnull, nsnull);
 
     aEditor->EndTransaction();
