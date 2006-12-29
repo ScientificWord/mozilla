@@ -3,7 +3,7 @@
 MuPAD<uID1.0>
 engpath<uID2.0>
 ;Mac engpath<uID2.0>/Applications/MuPAD Pro 4.0.app/Contents/share/bin/mupkern
-;Linux engpath<uID2.0>/opt/MuPAD-4.0.1/linux/bin/mupkern
+;Linux engpath<uID2.0>/opt/MuPAD-4.0.1/share/bin/mupkern
 libp<uID3.0>MuPAD/lib
 ;Mac libp<uID3.0>/Applications/MuPAD Pro 4.0.app/Contents/share/lib
 ;Linux libp<uID3.0>/opt/MuPAD-4.0.1/share/lib
@@ -15,5 +15,5 @@ eng_dbase<uID6.0>MuPAD.gmr
 entity_dbase<uID7.0>MMLents.gmr
 vcampath<uID8.0>C:\Program Files\SciFace\MuPAD Pro 3.1\bin\VCamNG.exe
 ;Mac vcampath<uID8.0>/Applications/MuPAD Pro 4.0.app/Contents/MacOS/mupad
-;Linux vcampath<uID8.0>/opt/MuPAD4.0.1/share/bin/mupad
+;Linux vcampath<uID8.0>/opt/MuPAD-4.0.1/share/bin/mupad
 <END_CONTEXT_ENGINFO>
