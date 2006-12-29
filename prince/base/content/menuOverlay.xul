@@ -16,8 +16,8 @@
 <overlay id="editorOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript"  src="chrome://prince/content/toolbarsOverlay.js"/>
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript"  src="chrome://venkman/content/venkman-overlay.js"/>
   <script type="application/x-javascript"  src="chrome://inspector/content/hooks.js"/>
   
