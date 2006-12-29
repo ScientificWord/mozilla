@@ -348,7 +348,7 @@ function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement)
 }
 
 
-//const htmlns   = "http://www.w3.org/1999/xhtml";
+const htmlns   = "http://www.w3.org/1999/xhtml";
 const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
 var gComputeStringBundle;
@@ -999,14 +999,32 @@ function GetRHS(math)
   return math;
 }
 
+function insertXML(text, node, offset)
+{
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(text,"application/xhtml+xml");
+  var nodeList = doc.documentElement.childNodes;
+  var nodeListLength = nodeList.length;
+  var i;
+  for (i = nodeListLength-1; i >= 0; --i)
+  {
+    editor.insertNode( nodeList[i], node, offset );
+  }
+}
+
 function appendResult(result,sep,math,editorElement)
 {
   if(!editorElement)
     editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var appendedResult = result.replace(fullmath, fullmath+sep);
+  var parser = new DOMParser();
+  insertXML( appendedResult, math, math.childNodes.length );
+  /*
   msiGetEditor(editorElement).insertHTMLWithContext(
       result.replace(fullmath,fullmath+sep),
       "", "", "", null,
-      math, math.childNodes.length, false );
+      math, math.childNodes.length, false );   */
   coalescemath(editorElement);
 }
 
@@ -1014,10 +1032,11 @@ function appendLabel(label,math,editorElement)
 {
   if(!editorElement)
     editorElement = msiGetActiveEditorElement();
-  msiGetEditor(editorElement).insertHTMLWithContext(
-      label,
-      "", "", "", null,
-      math, math.childNodes.length, false );
+  insertXML( label, math, math.childNodes.length );
+//  msiGetEditor(editorElement).insertHTMLWithContext(
+//      label,
+//      "", "", "", null,
+//      math, math.childNodes.length, false );
 }
 
 function appendLabeledResult(result,label,math,editorElement)
@@ -1029,8 +1048,8 @@ function appendLabeledResult(result,label,math,editorElement)
     str = result.replace(fullmath,label+fullmath);
   else
     str = label.replace(/%result%/,result);
-
-  msiGetEditor(editorElement).insertHTMLWithContext(str,"","","",null,math,math.childNodes.length,false);
+  insertXML(str, math, math,math.childNodes.length );
+//  msiGetEditor(editorElement).insertHTMLWithContext(str,"","","",null,math,math.childNodes.length,false);
 }
 
 function appendTaggedResult(result,label,body,index,editorElement)
