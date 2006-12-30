@@ -999,7 +999,7 @@ function GetRHS(math)
   return math;
 }
 
-function insertXML(text, node, offset)
+function insertXML(editor, text, node, offset)
 {
   var parser = new DOMParser();
   var doc = parser.parseFromString(text,"application/xhtml+xml");
@@ -1019,7 +1019,7 @@ function appendResult(result,sep,math,editorElement)
   var editor = msiGetEditor(editorElement);
   var appendedResult = result.replace(fullmath, fullmath+sep);
   var parser = new DOMParser();
-  insertXML( appendedResult, math, math.childNodes.length );
+  insertXML( editor, appendedResult, math, math.childNodes.length );
   /*
   msiGetEditor(editorElement).insertHTMLWithContext(
       result.replace(fullmath,fullmath+sep),
@@ -1032,7 +1032,8 @@ function appendLabel(label,math,editorElement)
 {
   if(!editorElement)
     editorElement = msiGetActiveEditorElement();
-  insertXML( label, math, math.childNodes.length );
+  var editor = msiGetEditor(editorElement);
+  insertXML( editor, label, math, math.childNodes.length );
 //  msiGetEditor(editorElement).insertHTMLWithContext(
 //      label,
 //      "", "", "", null,
@@ -1043,12 +1044,13 @@ function appendLabeledResult(result,label,math,editorElement)
 {
   if(!editorElement)
     editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   var str;
   if (-1 == label.search(/%result%/))
     str = result.replace(fullmath,label+fullmath);
   else
     str = label.replace(/%result%/,result);
-  insertXML(str, math, math,math.childNodes.length );
+  insertXML(editor, str, math, math,math.childNodes.length );
 //  msiGetEditor(editorElement).insertHTMLWithContext(str,"","","",null,math,math.childNodes.length,false);
 }
 
