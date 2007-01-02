@@ -31,10 +31,13 @@ function doOpen() {
 
 
 function doNew() {
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
   var fp = Components.classes["@mozilla.org/filepicker;1"].
              createInstance(Components.interfaces.nsIFilePicker);
-  fp.displayDirectory = dsprops.get("resource:app", Components.interfaces.nsIFile).append("shells");
+  fp.defaultExtension = ".shl";
+  var dir1 =dsprops.get("resource:app", Components.interfaces.nsIFile);
+  dir1.append("shells");;
+  fp.displayDirectory = dir1;
   fp.init(window, "Open Shell File", Components.interfaces.nsIFilePicker.modeOpen);
   fp.appendFilter("Shell Files","*.xhtml; *.xht; *.shl");
   fp.appendFilters(Components.interfaces.nsIFilePicker.filterText);
