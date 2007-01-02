@@ -89,7 +89,7 @@
 					<nexttag>sw:para</nexttag>
 					<description>Title of section</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[<defaulttitletag/><cursor/>]]>
+          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br/>]]>
           </initialcontents>
 				</tag>
 				<tag nm="sw:quote">
@@ -177,7 +177,7 @@
           <description>Chapter</description>
           <titletag>sectiontitle</titletag>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/><br/></sectiontitle>]]>
           </initialcontents>
         </tag>
 				<tag nm="sw:section">
@@ -194,7 +194,7 @@
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/><br/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
@@ -203,7 +203,7 @@
           <description>Subsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle]]>
+          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/><br/></sectiontitle]]>
           </initialcontents>
           <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
@@ -231,6 +231,7 @@
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[ <para><cursor/><br/></para>]]>
           </initialcontents>
+          <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
 				<tag nm="sw:dedication">
           <level>*</level>
