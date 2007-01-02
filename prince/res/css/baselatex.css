@@ -1,6 +1,3 @@
-@namespace sw url("http://www.sciword.com/namespaces/sciword");
-
-
 document { display: block;
   margin-left: 20pt;
   font-family: Arial;
@@ -114,18 +111,18 @@ styleprop {
   -moz-user-select: all;
 }
 
-#sw_preamble [hide="true"] {
+preamble [hide="true"] {
   display: none;
 }
 
 /* We make the refprint... tags invisible on the screen, but we want to make
  them visible in print.  TODO */
 
-sw|refprintleft {
+refprintleft {
   display: none;
 }
 
-sw|refprintright {
+refprintright {
   display: none;
 }
 
