@@ -328,9 +328,9 @@ nsEditingSession::SetupEditorOnWindow(nsIDOMWindow *aWindow)
         mEditorType.AssignLiteral("text");
         mimeCType = "text/plain";
       }
-      else if (!(mimeCType.EqualsLiteral("text/html") || mimeCType.EqualsLiteral("application/xhtml+xml")))
+      else if (!(mimeCType.EqualsLiteral("text/html") || mimeCType.EqualsLiteral("text/xml") || mimeCType.EqualsLiteral("application/xhtml+xml")))
       {
-        // Neither an acceptable text or html type.
+        // Neither an acceptable text, xml, or html type.
         mEditorStatus = eEditorErrorCantEditMimeType;
 
         // Turn editor into HTML -- we will load blank page later
