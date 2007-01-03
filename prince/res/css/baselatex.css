@@ -111,7 +111,7 @@ styleprop {
   -moz-user-select: all;
 }
 
-preamble [hide="true"] {
+preamble{
   display: none;
 }
 

@@ -10,9 +10,6 @@ invis {
   display: none;
 }
 
-#sw_preamble [hide="true"] {
-  display: none;
-}
 
 img {
   -moz-force-broken-image-icon: 1;
