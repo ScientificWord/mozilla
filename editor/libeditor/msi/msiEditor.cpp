@@ -1274,9 +1274,6 @@ msiEditor::CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
 }
 
 
-
-//SLS It's not clear who calls this function.  It is accessible from JavaScript.
-
 NS_IMETHODIMP msiEditor::InsertText(const nsAString &aStringToInsert)
 {
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
@@ -1295,7 +1292,7 @@ NS_IMETHODIMP msiEditor::InsertText(const nsAString &aStringToInsert)
       if (!bCollapsed)
       {
         res = DeleteSelection(nsIEditor::eNone);
-        // need to set "theNode"
+        NS_ASSERTION(theNode,"need to set theNode");
         if (NS_FAILED(res)) 
           return res;  // TODO -- is it not clear what to do here -- pass along to nsHTMLEditor
       }
