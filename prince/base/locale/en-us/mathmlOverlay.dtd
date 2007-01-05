@@ -150,6 +150,7 @@
 <!ENTITY symboltimes.tooltip      "times">
 <!ENTITY symboldivide.tooltip     "divide">
 <!ENTITY symbolplusminus.tooltip  "plusminus">
+<!ENTITY symbolminusplus.tooltip  "minusplus">
 <!ENTITY symbolwreath.tooltip     "wreath">
 
 <!ENTITY symbolle.tooltip       "le">
