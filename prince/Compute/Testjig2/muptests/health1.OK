@@ -222,6 +222,24 @@ Test ID 110
 
 </p>
 <p>
+Test ID 110b
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>110b wrong, no need for parentheses around numerator</mtext>
+</math>
+
+</p>
+<p>
+Test ID 110c
+</p>
+<p>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <mtext>110c wrong, redundant mrow</mtext>
+</math>
+
+</p>
+<p>
 Test ID 111
 </p>
 <p>72</p>
