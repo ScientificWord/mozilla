@@ -237,8 +237,8 @@
   <menu id="toolsMenu" label="Tools" >
     <menupopup id="toolPopup">
       <menuitem  label="JavaScript debugger" id="venkmanName" oncommand="start_venkman();"/>
-      <menuitem id="menu_inspector" label="amp__inspectorTaskCmd.label;" 
-                accesskey="amp__inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
+      <menuitem id="menu_inspector" label="&inspectorTaskCmd.label;" 
+                accesskey="&inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
     </menupopup>
   </menu>
   
