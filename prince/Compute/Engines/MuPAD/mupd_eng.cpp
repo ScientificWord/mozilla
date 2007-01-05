@@ -225,6 +225,13 @@ MuPADEngine::~MuPADEngine()
   m_client = 0;
 }
 
+void MuPADEngine::ClearEngStrPtrs()
+{
+  eng_instr.Empty();
+  eng_outstr.Empty();
+  eng_errorstr.Empty();
+}
+
 int MuPADEngine::GetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln)
 {
   int rv = 0;
