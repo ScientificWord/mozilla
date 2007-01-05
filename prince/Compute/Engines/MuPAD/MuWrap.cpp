@@ -218,12 +218,8 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
         CreateEngineCommandStr(*msr, cmd_ID, eng_zstr, error_code);
     }
 
-    // There will be cases where the previous call fails.
-    // Eventually, these cases will be considered here.
     if (zEngine_input && !error_code) {
-
       // Send our command string to the underlying engine
-
       if (context_cmdtype == CC_DEFINITION) {
         // might send tcikill() here
       }
@@ -252,7 +248,7 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
           if (*zeng_output == '"') {  // We gin "  " around the math that Polynomial Sort returns.
             // The double quotes are stripped away here.
             TCI_ASSERT(cmd_ID == CCID_Polynomial_Sort || cmd_ID == CCID_Definiteness_Tests);
-            size_t zln = strlen(zeng_output);
+            size_t zln = numBytes;
             if (zeng_output[zln - 1] == '"') {
               char *tmp = new char[zln - 1];
               strncpy(tmp, zeng_output + 1, zln - 2);
@@ -302,6 +298,7 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
       }
       delete[] zEngine_input;
     } else if (error_code) {
+	  mupd_eng->ClearEngStrPtrs();
       mr->PutResultCode(error_code);
     }
     delete[] eng_zstr;

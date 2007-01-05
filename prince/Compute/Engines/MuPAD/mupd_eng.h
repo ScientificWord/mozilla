@@ -19,6 +19,7 @@ public:
   int Initialize(const char *libpath, const char *champath);
   bool SendToProcessor(TCIString &cmd);
   bool SendPlotToProcessor(TCIString &cmd);
+  void ClearEngStrPtrs();
   int GetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln);
   void CleanupAndUnloadDLL();
 
