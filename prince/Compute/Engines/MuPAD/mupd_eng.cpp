@@ -367,7 +367,7 @@ int MuPADEngine::PrepareProcessor(const char *champath)
       fcnsloaded = SendToProcessor(packba);
       return 1;
     } else {
-      TCI_ASSERT(!"Unable to find swfcsn.mu");
+      TCI_ASSERT(!"Unable to find swfcns.mu");
       return 0;
     }
   }
