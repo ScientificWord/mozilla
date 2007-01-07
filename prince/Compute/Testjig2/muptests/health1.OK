@@ -235,7 +235,16 @@ Test ID 110c
 </p>
 <p>
 <math xmlns="http://www.w3.org/1998/Math/MathML">
-  <mtext>110c wrong, redundant mrow</mtext>
+  <mrow>
+    <mfrac>
+      <mi>c</mi>
+      <mrow>
+        <mi>b</mi>
+        <mo>+</mo>
+        <mn>5</mn>
+      </mrow>
+    </mfrac>
+  </mrow>
 </math>
 
 </p>
@@ -1204,16 +1213,14 @@ Test ID 215
       <mfrac>
         <mn>1</mn>
         <mrow>
-          <mrow>
-            <msup>
-              <mi>x</mi>
-              <mn>6</mn>
-            </msup>
-            <mo>+</mo>
+          <msup>
             <mi>x</mi>
-            <mo>+</mo>
-            <mn>2</mn>
-          </mrow>
+            <mn>6</mn>
+          </msup>
+          <mo>+</mo>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mn>2</mn>
         </mrow>
       </mfrac>
       <mo>&#x2062;</mo>
@@ -2148,17 +2155,15 @@ Test ID 705
     <mfrac>
       <mi>&#x3c9;</mi>
       <mrow>
-        <mrow>
-          <msup>
-            <mi>u</mi>
-            <mn>2</mn>
-          </msup>
-          <mo>+</mo>
-          <msup>
-            <mi>&#x3c9;</mi>
-            <mn>2</mn>
-          </msup>
-        </mrow>
+        <msup>
+          <mi>u</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>+</mo>
+        <msup>
+          <mi>&#x3c9;</mi>
+          <mn>2</mn>
+        </msup>
       </mrow>
     </mfrac>
   </mrow>
@@ -6808,14 +6813,12 @@ Test ID 4302
     <mfrac>
       <mn>1</mn>
       <mrow>
-        <mrow>
-          <msup>
-            <mi>b</mi>
-            <mn>2</mn>
-          </msup>
-          <mo>+</mo>
-          <mn>4</mn>
-        </mrow>
+        <msup>
+          <mi>b</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>+</mo>
+        <mn>4</mn>
       </mrow>
     </mfrac>
   </mrow>
