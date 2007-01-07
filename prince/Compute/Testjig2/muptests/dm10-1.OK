@@ -550,76 +550,74 @@ Test ID 116
         <mfrac>
           <mn>1</mn>
           <mrow>
-            <mrow>
-              <msup>
-                <mi>e</mi>
-                <mrow>
-                  <mfrac>
-                    <mn>1</mn>
-                    <mn>2</mn>
-                  </mfrac>
-                  <mo>&#x2062;</mo>
-                  <msup>
-                    <mi>y</mi>
-                    <mn>2</mn>
-                  </msup>
-                </mrow>
-              </msup>
-              <mo>&#x2062;</mo>
-              <mo form="prefix" largeop="true">&#x222b;</mo>
+            <msup>
+              <mi>e</mi>
               <mrow>
-                <mrow>
-                  <mfenced open="(" close=")">
-                    <mrow>
-                      <mi msiMathname="true">sin</mi>
-                      <mo>&#x2061;</mo>
-                      <mi>y</mi>
-                    </mrow>
-                  </mfenced>
-                  <mo>&#x2062;</mo>
-                  <msup>
-                    <mi>e</mi>
-                    <mrow>
-                      <mo>&#x2212;</mo>
-                      <mfrac>
-                        <mn>1</mn>
-                        <mn>2</mn>
-                      </mfrac>
-                      <mo>&#x2062;</mo>
-                      <msup>
-                        <mi>y</mi>
-                        <mn>2</mn>
-                      </msup>
-                    </mrow>
-                  </msup>
-                </mrow>
+                <mfrac>
+                  <mn>1</mn>
+                  <mn>2</mn>
+                </mfrac>
                 <mo>&#x2062;</mo>
-                <mrow>
-                  <mo fontstyle="italic" form="prefix">d</mo>
+                <msup>
                   <mi>y</mi>
-                </mrow>
+                  <mn>2</mn>
+                </msup>
               </mrow>
-              <mo>&#x2212;</mo>
-              <msub>
-                <mi>C</mi>
-                <mn>28</mn>
-              </msub>
-              <mo>&#x2062;</mo>
-              <msup>
-                <mi>e</mi>
-                <mrow>
-                  <mfrac>
-                    <mn>1</mn>
-                    <mn>2</mn>
-                  </mfrac>
-                  <mo>&#x2062;</mo>
-                  <msup>
+            </msup>
+            <mo>&#x2062;</mo>
+            <mo form="prefix" largeop="true">&#x222b;</mo>
+            <mrow>
+              <mrow>
+                <mfenced open="(" close=")">
+                  <mrow>
+                    <mi msiMathname="true">sin</mi>
+                    <mo>&#x2061;</mo>
                     <mi>y</mi>
-                    <mn>2</mn>
-                  </msup>
-                </mrow>
-              </msup>
+                  </mrow>
+                </mfenced>
+                <mo>&#x2062;</mo>
+                <msup>
+                  <mi>e</mi>
+                  <mrow>
+                    <mo>&#x2212;</mo>
+                    <mfrac>
+                      <mn>1</mn>
+                      <mn>2</mn>
+                    </mfrac>
+                    <mo>&#x2062;</mo>
+                    <msup>
+                      <mi>y</mi>
+                      <mn>2</mn>
+                    </msup>
+                  </mrow>
+                </msup>
+              </mrow>
+              <mo>&#x2062;</mo>
+              <mrow>
+                <mo fontstyle="italic" form="prefix">d</mo>
+                <mi>y</mi>
+              </mrow>
             </mrow>
+            <mo>&#x2212;</mo>
+            <msub>
+              <mi>C</mi>
+              <mn>28</mn>
+            </msub>
+            <mo>&#x2062;</mo>
+            <msup>
+              <mi>e</mi>
+              <mrow>
+                <mfrac>
+                  <mn>1</mn>
+                  <mn>2</mn>
+                </mfrac>
+                <mo>&#x2062;</mo>
+                <msup>
+                  <mi>y</mi>
+                  <mn>2</mn>
+                </msup>
+              </mrow>
+            </msup>
           </mrow>
         </mfrac>
       </mrow>
