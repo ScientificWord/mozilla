@@ -2060,10 +2060,6 @@ void STree2MML::SemanticFRACTION2MML(SEMANTICS_NODE * s_fraction,
                                 nodes_made, terms_made,
                                 is_signed, num_factors, den_factors);
     if (z_num) {
-      if (nodes_made > 1 || terms_made > 1) {
-        z_num = NestzMMLInMROW(z_num);
-        is_signed = false;
-      }
       FACTOR_REC *new_fr = CreateFactor();
       new_fr->zh_fstr = z_num;
       new_fr->n_terms = terms_made;
@@ -2082,10 +2078,6 @@ void STree2MML::SemanticFRACTION2MML(SEMANTICS_NODE * s_fraction,
                                 nodes_made, terms_made,
                                 is_signed, den_factors, num_factors);
     if (z_den) {
-      if (nodes_made > 1 || terms_made > 1) {
-        z_den = NestzMMLInMROW(z_den);
-        is_signed = false;
-      }
       FACTOR_REC *new_fr = CreateFactor();
       new_fr->zh_fstr = z_den;
       new_fr->n_terms = terms_made;
