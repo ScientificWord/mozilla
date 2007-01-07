@@ -266,14 +266,12 @@ Test ID 115
     <mfrac>
       <mn>1</mn>
       <mrow>
-        <mrow>
-          <mn>1</mn>
-          <mo>+</mo>
-          <msup>
-            <mi>i</mi>
-            <mn>2</mn>
-          </msup>
-        </mrow>
+        <mn>1</mn>
+        <mo>+</mo>
+        <msup>
+          <mi>i</mi>
+          <mn>2</mn>
+        </msup>
       </mrow>
     </mfrac>
   </mrow>
@@ -298,14 +296,12 @@ Test ID 115prod1
     <mfrac>
       <mn>1</mn>
       <mrow>
-        <mrow>
-          <mn>1</mn>
-          <mo>+</mo>
-          <msup>
-            <mi>i</mi>
-            <mn>2</mn>
-          </msup>
-        </mrow>
+        <mn>1</mn>
+        <mo>+</mo>
+        <msup>
+          <mi>i</mi>
+          <mn>2</mn>
+        </msup>
       </mrow>
     </mfrac>
   </mrow>
@@ -333,14 +329,12 @@ Test ID 115prod2
         <mn>2</mn>
       </msup>
       <mrow>
-        <mrow>
-          <msup>
-            <mi>i</mi>
-            <mn>2</mn>
-          </msup>
-          <mo>-</mo>
-          <mn>1</mn>
-        </mrow>
+        <msup>
+          <mi>i</mi>
+          <mn>2</mn>
+        </msup>
+        <mo>-</mo>
+        <mn>1</mn>
       </mrow>
     </mfrac>
   </mrow>
@@ -779,24 +773,20 @@ Test ID 201
       <mrow>
         <mfrac>
           <mrow>
-            <mrow>
-              <msup>
-                <mi>n</mi>
-                <mn>2</mn>
-              </msup>
-              <mo>&#x2212;</mo>
+            <msup>
               <mi>n</mi>
-            </mrow>
+              <mn>2</mn>
+            </msup>
+            <mo>&#x2212;</mo>
+            <mi>n</mi>
           </mrow>
           <mrow>
-            <mrow>
-              <msup>
-                <mi>n</mi>
-                <mn>2</mn>
-              </msup>
-              <mo>&#x2212;</mo>
-              <mn>81</mn>
-            </mrow>
+            <msup>
+              <mi>n</mi>
+              <mn>2</mn>
+            </msup>
+            <mo>&#x2212;</mo>
+            <mn>81</mn>
           </mrow>
         </mfrac>
       </mrow>
@@ -850,22 +840,18 @@ Test ID 203
       <mrow>
         <mfrac>
           <mrow>
-            <mrow>
-              <mi msiMathname="true">tan</mi>
-              <mo>&#x2061;</mo>
-              <mi>t</mi>
-              <mo>&#x2212;</mo>
-              <mi msiMathname="true">tan</mi>
-              <mo>&#x2061;</mo>
-              <mn>1</mn>
-            </mrow>
+            <mi msiMathname="true">tan</mi>
+            <mo>&#x2061;</mo>
+            <mi>t</mi>
+            <mo>&#x2212;</mo>
+            <mi msiMathname="true">tan</mi>
+            <mo>&#x2061;</mo>
+            <mn>1</mn>
           </mrow>
           <mrow>
-            <mrow>
-              <mi>t</mi>
-              <mo>&#x2212;</mo>
-              <mn>1</mn>
-            </mrow>
+            <mi>t</mi>
+            <mo>&#x2212;</mo>
+            <mn>1</mn>
           </mrow>
         </mfrac>
       </mrow>
@@ -1112,14 +1098,12 @@ Test ID 214
       <mfrac>
         <mn>1</mn>
         <mrow>
-          <mrow>
-            <msup>
-              <mi>x</mi>
-              <mn>5</mn>
-            </msup>
-            <mo>+</mo>
+          <msup>
             <mi>x</mi>
-          </mrow>
+            <mn>5</mn>
+          </msup>
+          <mo>+</mo>
+          <mi>x</mi>
         </mrow>
       </mfrac>
       <mo>&#x2062;</mo>
@@ -1147,16 +1131,14 @@ Test ID 215
       <mfrac>
         <mn>1</mn>
         <mrow>
-          <mrow>
-            <msup>
-              <mi>x</mi>
-              <mn>6</mn>
-            </msup>
-            <mo>+</mo>
+          <msup>
             <mi>x</mi>
-            <mo>+</mo>
-            <mn>2</mn>
-          </mrow>
+            <mn>6</mn>
+          </msup>
+          <mo>+</mo>
+          <mi>x</mi>
+          <mo>+</mo>
+          <mn>2</mn>
         </mrow>
       </mfrac>
       <mo>&#x2062;</mo>

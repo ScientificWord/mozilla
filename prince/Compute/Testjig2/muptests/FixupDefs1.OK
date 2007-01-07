@@ -327,11 +327,9 @@ Test ID 203 eval of fixup after define
     <mfrac>
       <mn>5</mn>
       <mrow>
-        <mrow>
-          <mi>m</mi>
-          <mo>+</mo>
-          <mn>1</mn>
-        </mrow>
+        <mi>m</mi>
+        <mo>+</mo>
+        <mn>1</mn>
       </mrow>
     </mfrac>
   </mrow>
@@ -608,11 +606,9 @@ Test ID 205 eval of fixup after define
     <mfrac>
       <mn>1</mn>
       <mrow>
-        <mrow>
-          <mi>m</mi>
-          <mo>+</mo>
-          <mn>1</mn>
-        </mrow>
+        <mi>m</mi>
+        <mo>+</mo>
+        <mn>1</mn>
       </mrow>
     </mfrac>
   </mrow>
