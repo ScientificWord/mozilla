@@ -74,8 +74,20 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_SplitTableCell",     msiSplitTableCellCommand);
   commandTable.registerCommand("cmd_TableOrCellColor",   msiTableOrCellColorCommand);
   commandTable.registerCommand("cmd_NormalizeTable",     msiNormalizeTableCommand);
-  commandTable.registerCommand("cmd_smiley",             msiSetSmiley);
+  commandTable.registerCommand("cmd_smiley",             msiSmileyCommand);
   commandTable.registerCommand("cmd_ConvertToTable",     msiConvertToTable);
+  commandTable.registerCommand("cmd_MSIAnimateGifsOn",   msiGIFAnimation);
+  commandTable.registerCommand("cmd_MSIAnimateGifsOff",  msiGIFAnimation);
+  commandTable.registerCommand("cmd_printDvi",           msiPrintCommand);
+  commandTable.registerCommand("cmd_printPdf",           msiPrintCommand);
+  commandTable.registerCommand("cmd_previewDvi",         msiPreviewCommand);
+  commandTable.registerCommand("cmd_previewPdf",         msiPreviewCommand);
+  commandTable.registerCommand("cmd_compileDvi",         msiCompileCommand);
+  commandTable.registerCommand("cmd_compilePdf",         msiCompileCommand);
+//  commandTable.registerCommand("cmd_texttag",            nsTextTagUpdatingCommand);
+//  commandTable.registerCommand("cmd_paratag",            nsParaTagUpdatingCommand);
+//  commandTable.registerCommand("cmd_secttag",            nsSectTagUpdatingCommand);
+//  commandTable.registerCommand("cmd_othertag",           nsOtherTagUpdatingCommand);
   commandTable.registerCommand("cmd_updateStructToolbar", msiUpdateStructToolbarCommand);
 }
 
@@ -155,7 +167,7 @@ function msiSetupComposerWindowCommands(editorElement)
   commandTable.registerCommand("cmd_openRemote",     msiOpenRemoteCommand);
   commandTable.registerCommand("cmd_preview",        msiPreviewCommand);
   commandTable.registerCommand("cmd_editSendPage",   msiSendPageCommand);
-  commandTable.registerCommand("cmd_print",          msiPrintCommand);
+  commandTable.registerCommand("cmd_print",          msiDirectPrintCommand);
   commandTable.registerCommand("cmd_printSetup",     msiPrintSetupCommand);
   commandTable.registerCommand("cmd_quit",           nsQuitCommand);
   commandTable.registerCommand("cmd_close",          msiCloseCommand);
@@ -581,6 +593,26 @@ var nsDummyHTMLCommand =
   }
 
 };
+
+//-----------------------------------------------------------------------------------
+var msiGIFAnimation = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (msiIsDocumentEditable() && msiIsEditingRenderedHTML());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon){},
+  doCommand: function(aCommand) {
+    if (aCommand == "cmd_MSIAnimateGifsOff")
+      msiStopAnimation();
+    else if (aCommand == "cmd_MSIAnimateGifsOn")
+      msiStartAnimation();
+    // else some registration screw-up
+  }
+};
+
 
 //-----------------------------------------------------------------------------------
 var msiOpenCommand =
@@ -2537,7 +2569,7 @@ var msiSendPageCommand =
 
 //-----------------------------------------------------------------------------------
 //There may be cases where a subordinate editor would want to print, but for now assume not.
-var msiPrintCommand =
+var msiDirectPrintCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -2559,6 +2591,71 @@ var msiPrintCommand =
     } catch (e) {}
   }
 };
+
+//-----------------------------------------------------------------------------------
+var msiPrintCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+    
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+  },
+  doCommand: function(aCommand)
+  {
+    printTeX(aCommand=='cmd_printPdf');  
+  }
+};
+
+//-----------------------------------------------------------------------------------
+var msiPreviewCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+    
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+  },
+  doCommand: function(aCommand)
+  {
+    printTeX(aCommand=='cmd_previewPdf');  
+  }
+};
+
+//-----------------------------------------------------------------------------------
+var msiCompileCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;  // BBM todo: doesn't this depend on the save state?   
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+    
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+    
+  },
+  doCommand: function(aCommand)
+  {
+     compileTeX(aCommand=='cmd_compilePdf')
+  }
+};
+
 
 //-----------------------------------------------------------------------------------
 //The status of the PrintSetupCommand is the same as the print command.
@@ -3554,7 +3651,7 @@ var msiObjectPropertiesCommand =
 
 
 ////-----------------------------------------------------------------------------------
-var msiSetSmiley =
+var msiSmileyCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -3563,7 +3660,7 @@ var msiSetSmiley =
       var editorElement = msiGetActiveEditorElement();
       return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiSetSmiley.isCommandEnabled: " + exc);}
+    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiSmileyCommand.isCommandEnabled: " + exc);}
     return false;
   },
 
@@ -3666,12 +3763,73 @@ function msiDoAdvancedProperties(element, editorElement)
   {
     if (!editorElement)
       editorElement = findEditorElementForDocument(element.ownerDocument);
+    //use which msiopendialog function here?
+    var dlgParentWindow = msiGetWindowContainingEditor(editorElement);
     if (element)
     {
-      //use which msiopendialog function here?
-      var theWindow = msiGetWindowContainingEditor(editorElement);
-      theWindow.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", "", element);
-      editorElement.contentWindow.focus();
+      if (element.role)
+      {
+        var data = new Object();
+        if (element.role == "texbutton")
+        {
+        // security restrictions prohibit calling openDialog from within XBL code,
+        // but we don't want to hard-wire tag names in this code. Thus, the compromise
+        // is to create 'roles' for elements, attach behavior to roles (as we do here)
+        // and the XBL code will then assign a role to an element. Thus we have 'texbutton'
+        // as a role, and currently that role is played by texb tags, but any other tag
+        // could play this role as well. 
+          try {
+            data.tex = element.value;
+            dlgParentWindow.openDialog("chrome://editor/content/texbuttoncontents.xul","_blank","chrome,close,titlebar,resizable=yes,modal", data);
+            editorElement.contentWindow.focus();
+            if (!data.Cancel)
+            {
+              element.value = data.tex;
+            }
+          }
+          catch (e)
+          { dump(e); }
+        }
+        else if (element.role == "latexstylebutton")
+        {
+          if (element.prop == "pagenumber")
+          {
+            try
+            {
+              data.numstyle = element.value;
+              dlgParentWindow.openDialog("chrome://prince/content/latexpagenumberstyle.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", data);
+              editorElement.contentWindow.focus();
+              if (!data.Cancel)
+              {
+                element.value = data.numstyle;
+              }
+            }
+            catch (e)
+            { dump(e); }
+          }
+          else if (element.prop == "headers")
+          {
+            try {
+              data.lheader = element.value;
+              data.rheader = element.value2;
+              dlgParentWindow.openDialog("chrome://prince/content/latexheaders.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", data);
+              editorElement.contentWindow.focus();
+              if (!data.Cancel)
+              {
+                element.value = data.lheader;
+                element.value2 = data.rheader;
+              }
+            }
+            catch (e)
+            { dump(e); }
+          }
+        }
+      }      
+      else
+      {
+        dlgParentWindow.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", "", element);
+        editorElement.contentWindow.focus();
+      }
     }
   }
   catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiDoAdvancedProperties: " + exc);}

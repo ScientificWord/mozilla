@@ -46,6 +46,6 @@ function setDefaultmenu(obj)
 function setAnimation()
 {
   if (document.getElementById('gifsAnimatedButton').getAttribute('checkState')=='1') 
-    stopAnimation();
-  else startAnimation(); 
+    msiStopAnimation();
+  else msiStartAnimation(); 
 }         

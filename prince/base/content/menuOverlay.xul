@@ -558,9 +558,9 @@
             accesskey="&toolsetfocus.accesskey;"
             oncommand="window.focus()"/>
     <menuseparator />
-    <menuitem label="Prepare Plot"              oncommand="TestPreparePlotAll();"/>
-    <menuitem label="Prepare Plot and Graph"	oncommand="TestPreparePlotGraph();"/>
-    <menuitem label="Plot Tests"				oncommand="TestGraphScript();"/>
+    <menuitem label="Prepare Plot"              oncommand="msiTestPreparePlotAll();"/>
+    <menuitem label="Prepare Plot and Graph"	oncommand="msiTestPreparePlotGraph();"/>
+    <menuitem label="Plot Tests"				oncommand="msiTestGraphScript();"/>
     <menuseparator />
     <menuitem label="Configuration"
             oncommand='window.openDialog("chrome://global/content/config.xul","Configure Prince", "chrome ");'/>
