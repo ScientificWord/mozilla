@@ -23,9 +23,6 @@ function doOpen() {
     dump("Ready to edit page: " + fp.fileURL.spec +"\n");
     try {
       msiEditPage(fp.fileURL.spec, window, false);
-//      GetCurrentEditorElement().webNavigation.loadURI(fp.fileURL.spec,
-//               Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,
-//               null, null, null);
     } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
 } }
 
