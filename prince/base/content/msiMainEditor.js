@@ -152,6 +152,7 @@ function msiEditorOnLoad()
     editorElement.mSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
     var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                                  .getInterface(Components.interfaces.nsIControllerCommandTable);
+                                 dump("\n13");
     commandTable.registerCommand("cmd_find",        msiFindCommand);
     commandTable.registerCommand("cmd_findNext",    msiFindAgainCommand);
     commandTable.registerCommand("cmd_findPrev",    msiFindAgainCommand);
@@ -231,7 +232,7 @@ function UpdateWindowTitle()
       SaveRecentFilesPrefs();
     }
     // Set window title with " - Composer" appended
-    xulWin = document.documentElement;
+    var xulWin = document.documentElement;
     window.title = windowTitle + xulWin.getAttribute("titlemenuseparator") + 
                    xulWin.getAttribute("titlemodifier");
   } catch (e) { dump(e); }
