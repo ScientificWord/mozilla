@@ -838,6 +838,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   if (isEmpty && fDiscardNode)
   {  
     nsIAtom * atomNS = nsnull;
+  	PRBool fCanContain;
     nsString sNewNodeName;
     nsString strContents;
     nsCOMPtr<nsIDOMNode> newNode;
@@ -848,7 +849,38 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     if (sNewNodeName.Length() > 0)
     {
       res = mtagListManager->GetStringPropertyForTag(sNewNodeName, atomNS, NS_LITERAL_STRING("initialcontentsforempty"), strContents);
-      res = CreateNode( sNewNodeName, newsplitpointNode, newsplitpointOffset, getter_AddRefs(newNode));
+      if (strContents.Length() == 0) 
+        res = mtagListManager->GetStringPropertyForTag(sNewNodeName, atomNS, NS_LITERAL_STRING("initialcontents"), strContents);
+// if the new node is a structure node, we need nsHTMLEditRules::InsertStructure
+  // walk up the tree to find where the new structure tag will fit.
+      nsCOMPtr<nsIDOMNode> parent;
+      nsCOMPtr<nsIDOMNode> currentNode;
+      nsCOMPtr<nsIDOMNode> parentOfNewStructure;
+      PRInt32 offsetOfNewStructure;
+      PRInt32 offset = newsplitpointOffset;
+      parent = newsplitpointNode;
+      while (true)
+      {
+        res = mtagListManager->NodeCanContainTag(parent, sNewNodeName, nsnull, &fCanContain);
+        if (NS_FAILED(res)) return res;
+        if (fCanContain)
+        { // parent is now the parent of our soon-to-be-created node, and it will go in at offset+1
+          parentOfNewStructure = parent;
+          offsetOfNewStructure = offset + 1;
+          break;
+        } 
+        currentNode = parent;
+        res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &offset);
+    //    printf("Parent of target tag: \n");
+    //    mHTMLEditor->DumpNode(parent); 
+    #if DEBUG_barry || DEBUG_Barry
+       DebExamineNode(parent);
+    #endif
+        if (NS_FAILED(res)) return res;
+      }
+     /////////////////////
+
+      res = CreateNode( sNewNodeName, parentOfNewStructure, offsetOfNewStructure, getter_AddRefs(newNode));
       newElement = do_QueryInterface(newNode);
       newHTMLElement = do_QueryInterface(newNode);
       if (strContents.Length() > 0) newHTMLElement->SetInnerHTML(strContents);
@@ -873,10 +905,17 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       nsEditor::DeleteNode(splitNode);
       return res;
     }
-    else
+    else 
     {
-      nsEditor::DeleteNode(splitNode);
-      res = InsertReturnAt(newsplitpointNode, newsplitpointOffset);
+      nsAutoString strTagName;
+      nsIAtom * nsAtom;
+	    mtagListManager->GetTagOfNode(newsplitpointNode, &nsAtom, strTagName ); 
+      mtagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"), strTagName, nsAtom, &fCanContain);
+	    if (fCanContain)
+	    {
+		    nsEditor::DeleteNode(splitNode);
+		    res = InsertReturnAt(newsplitpointNode, newsplitpointOffset);
+	    }
     }
   } 
   else

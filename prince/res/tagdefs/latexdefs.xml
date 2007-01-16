@@ -176,8 +176,8 @@
           <level>1</level>
           <description>Chapter</description>
           <titletag>sectiontitle</titletag>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/><br/></sectiontitle>]]>
+          <discardemptyblock>false</discardemptyblock>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
           </initialcontents>
         </tag>
 				<tag nm="sw:section">
@@ -185,45 +185,45 @@
           <description>Section</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/><br/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
           </initialcontents>
-          <nextafteremptyblock>para</nextafteremptyblock>
+          <nextafteremptyblock>chapter</nextafteremptyblock>
         </tag>
 				<tag nm="sw:subsection">
           <level>3</level>
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/><br/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
           </initialcontents>
-          <nextafteremptyblock>para</nextafteremptyblock>
+          <nextafteremptyblock>section</nextafteremptyblock>
         </tag>
 				<tag nm="sw:subsubsection">
           <level>4</level>
-          <description>Subsubsubsection</description>
+          <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/><br/></sectiontitle]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
           </initialcontents>
-          <nextafteremptyblock>para</nextafteremptyblock>
+          <nextafteremptyblock>subsection</nextafteremptyblock>
         </tag>
 				<tag nm="sw:paragraph">
           <level>5</level>
           <description>Subsubsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle> ]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle> ]]>
           </initialcontents>
-          <nextafteremptyblock>para</nextafteremptyblock>
+          <nextafteremptyblock>subsubsection</nextafteremptyblock>
         </tag>
 				<tag nm="sw:subparagraph">
           <level>*</level>
           <description>Section (dynamic level)</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle> <cursor/><defaulttitletag/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
           </initialcontents>
-          <nextafteremptyblock>para</nextafteremptyblock>
+          <nextafteremptyblock>paragraph</nextafteremptyblock>
         </tag>
 				<tag nm="sw:abstract">
           <level>*</level>

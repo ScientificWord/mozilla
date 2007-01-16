@@ -907,6 +907,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   nsString emptyString2;
   nsString emptyString3;
   nsresult rv;
+  nsCOMPtr<nsIDOMNode> aNewNode; 
   rv = GetTagOfNode(firstNode, &nsAtomFirst, firstNodeName);
   nsAutoString str;
   if (firstNodeName.Length()== 0) return NS_OK;
@@ -914,7 +915,6 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   rv = GetStringPropertyForTag(firstNodeName, dummyatom, NS_LITERAL_STRING("nexttag"), str);
   if (str.Length() > 0)
   {
-    nsCOMPtr<nsIDOMNode> aNewNode; 
     meditor->ReplaceContainer(*secondNode, address_of(aNewNode), str, nsnull, nsnull, PR_TRUE);
     *secondNode = aNewNode;
    	meditor->MarkNodeDirty(*secondNode);
