@@ -535,7 +535,7 @@ function msiEditorDocumentObserver(editorElement)
   this.mEditorElement = editorElement;
   this.doInitFastCursor = function() 
   {
-    if (this.mEditorElement && ("fastCursorInit" in this.mEditorElement))
+    if (this.mEditorElement && ("fastCursorInit" in this.mEditorElement) && this.mEditorElement.fastCursorInit!==null)
     {
       this.mEditorElement.fastCursorInit();
       this.mEditorElement.fastCursorInit = null;
