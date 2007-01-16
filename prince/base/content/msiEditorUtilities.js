@@ -1517,7 +1517,11 @@ function msiSetDocumentTitle(editorElement, title)
 
     // Update window title (doesn't work if called from a dialog)
     if ("UpdateWindowTitle" in window)
+    {
+      alert("3");
       window.UpdateWindowTitle();
+      alert("4");
+    }
   } catch (e) {}
 }
 

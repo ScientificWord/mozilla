@@ -255,7 +255,7 @@ function msiButtonPrefListener(editorElement)
 //  }      
 //}
 
-function msiInitializeEditorForElement(editorElement, initialText)
+function msiInitializeEditorForElement(editorElement, initialText, bWithContainingHTML)
 {
 //  // See if argument was passed.
 //  if ( window.arguments && window.arguments[0] )
@@ -284,8 +284,12 @@ function msiInitializeEditorForElement(editorElement, initialText)
 
   // Continue with normal startup.
 //  var editorElement = document.getElementById("content-frame");
-  if (initialText && initialText.length > 0)
+  if ( initialText && ((initialText.length > 0) || bWithContainingHTML) )
+  {
+    if (bWithContainingHTML)
+      initialText = "<html><head></head><body><para>" + initialText + "</para></body></html>";
     editorElement.initialEditorContents = initialText;
+  }
   EditorStartupForEditorElement(editorElement);
 
   // Initialize our source text <editor>
@@ -563,7 +567,7 @@ function msiEditorDocumentObserver(editorElement)
           if (!editor && editorStatus == nsIEditingSession.eEditorOK)
           {
             dump("\n ****** NO EDITOR BUT NO EDITOR ERROR REPORTED ******* \n\n");
-            editorStatus = nsIEditingSession.eEditorErrorUnkown;
+            editorStatus = nsIEditingSession.eEditorErrorUnknown;
           }
 
           switch (editorStatus)
@@ -574,7 +578,7 @@ function msiEditorDocumentObserver(editorElement)
             case nsIEditingSession.eEditorErrorCantEditMimeType:
               errorStringId = "CantEditMimeTypeMsg";
               break;
-            case nsIEditingSession.eEditorErrorUnkown:
+            case nsIEditingSession.eEditorErrorUnknown:
               errorStringId = "CantEditDocumentMsg";
               break;
             // Note that for "eEditorErrorFileNotFound, 
@@ -704,7 +708,6 @@ function msiEditorDocumentObserver(editorElement)
 //temp?          editor.SetTagListPath("chrome://editor/content/default.xml");
           // the order here is important, since the autocomplete component has to read the tag names 
 //          initializeAutoCompleteStringArrayForEditor(editor);
-          //initializeAutoCompleteStringArray();
         }
 
         if (("initialEditorContents" in editorElement) && (editorElement.initialEditorContents.length > 0))
@@ -4047,7 +4050,15 @@ var msiCommandUpdater = {
         bControllerFromTop = true;
       }
 
-      if (controller && controller.isCommandEnabled(command))
+      var bIsEnabled = false;
+      if (controller)
+      {
+        try
+        {
+          bIsEnabled = controller.isCommandEnabled(command);
+        } catch(exc) {dump("Error in msiEditor.js, in msiCommandUpdater._getControllerForCommand, command is [" + command + "]");}
+      }
+      if (bIsEnabled)
         return controller;
     }
     catch(e) {
@@ -4060,6 +4071,7 @@ var msiCommandUpdater = {
           return current;
       }
       catch (e) {
+        dump("Error in msiEditor.js, in msiCommandUpdater._getControllerForCommand, controller is [" + command + "]");
       }
     }
     return controller || window.controllers.getControllerForCommand(command);
@@ -4081,6 +4093,7 @@ var msiCommandUpdater = {
       this.enableCommand(command, controller.isCommandEnabled(command, editorElement), editorElement);
     }
     catch (e) {
+      dump("Error in msiEditor.js, in msiCommandUpdater.updateCommand, command is [" + command + "]");
     }
   },
   

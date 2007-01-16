@@ -71,11 +71,11 @@ function loadDialog()
 
   var theStringSource = (gFindInst.searchString ? gFindInst.searchString
                                                 : gFindService.searchString);
-  msiInitializeEditorForElement(gReplaceDialog.findInput, theStringSource);
+  msiInitializeEditorForElement(gReplaceDialog.findInput, theStringSource, true);
   gReplaceDialog.findInput.makeEditable("html", false);
 
   theStringSource = gFindService.replaceString;
-  msiInitializeEditorForElement(gReplaceDialog.replaceInput, theStringSource);
+  msiInitializeEditorForElement(gReplaceDialog.replaceInput, theStringSource, true);
   gReplaceDialog.replaceInput.makeEditable("html", false);
 
   gReplaceDialog.caseSensitive.checked   = (gFindInst.matchCase
@@ -102,6 +102,7 @@ function onLoad()
   var editorElement = window.arguments[0];
 
   // If we don't get the editor, then we won't allow replacing.
+  dump("w");
   gEditor = editorElement.getEditor(editorElement.contentWindow);
   if (!gEditor)
   {
