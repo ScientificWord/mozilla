@@ -396,43 +396,13 @@
           events="create, style, mode_switch"
           oncommandupdate="msiGoUpdateComposerMenuItems(this)"
   >
-    <command id="cmd_bold"          state="false"     oncommand="msiDoStyleUICommand('cmd_bold')"/>
-    <command id="cmd_italic"        state="false"     oncommand="msiDoStyleUICommand('cmd_italic')"/>
-    <command id="cmd_underline"     state="false"     oncommand="msiDoStyleUICommand('cmd_underline')"/>
-    <command id="cmd_tt"            state="false"     oncommand="msiDoStyleUICommand('cmd_tt')"/>
-    <command id="cmd_smiley"/>
 
-    <command id="cmd_strikethrough" state="false"     oncommand="msiDoStyleUICommand('cmd_strikethrough');"/>
-    <command id="cmd_superscript"   state="false"     oncommand="msiDoStyleUICommand('cmd_superscript');"/>
-    <command id="cmd_subscript"     state="false"     oncommand="msiDoStyleUICommand('cmd_subscript');"/>
-    <command id="cmd_nobreak"       state="false"     oncommand="msiDoStyleUICommand('cmd_nobreak');"/>
-
-    <command id="cmd_em"            state="false"     oncommand="msiDoStyleUICommand('cmd_em')"/>
-    <command id="cmd_strong"        state="false"     oncommand="msiDoStyleUICommand('cmd_strong')"/>
-    <command id="cmd_cite"          state="false"     oncommand="msiDoStyleUICommand('cmd_cite')"/>
-    <command id="cmd_abbr"          state="false"     oncommand="msiDoStyleUICommand('cmd_abbr')"/>
-    <command id="cmd_acronym"       state="false"     oncommand="msiDoStyleUICommand('cmd_acronym')"/>
-    <command id="cmd_code"          state="false"     oncommand="msiDoStyleUICommand('cmd_code')"/>
-    <command id="cmd_samp"          state="false"     oncommand="msiDoStyleUICommand('cmd_samp')"/>
-    <command id="cmd_var"           state="false"     oncommand="msiDoStyleUICommand('cmd_var')"/>
-
-    <command id="cmd_ul"            state="false"     oncommand="msiDoStyleUICommand('cmd_ul')"/>
-    <command id="cmd_ol"            state="false"     oncommand="msiDoStyleUICommand('cmd_ol')"/>
+    <!-- command id="cmd_ul"            state="false"     oncommand="msiDoStyleUICommand('cmd_ul')"/ -->
+    <!-- command id="cmd_ol"            state="false"     oncommand="msiDoStyleUICommand('cmd_ol')"/ -->
 
     <command id="cmd_indent"                          oncommand="msiGoDoCommand('cmd_indent')"/>
     <command id="cmd_outdent"                         oncommand="msiGoDoCommand('cmd_outdent')"/>
 
-    <!-- the state attribute gets filled with the paragraph format before the command is exectued -->
-    <command id="cmd_paragraphState"  state=""         oncommand="msiDoStatefulCommand('cmd_paragraphState', event.target.value)"/>
-    <command id="cmd_fontFace"        state=""         oncommand="msiDoStatefulCommand('cmd_fontFace', event.target.value)"/>
-
-    <!-- No "oncommand", use EditorSelectColor() to bring up color dialog -->
-    <command id="cmd_fontColor"       state=""/>
-    <command id="cmd_backgroundColor" state=""/>
-    <command id="cmd_highlight"       state="transparent"  oncommand="msiEditorSelectColor('Highlight', event);"/>
-
-    <command id="cmd_fontSize"                         oncommand="msiGoDoCommand('cmd_fontSize')"/>
-    <command id="cmd_align"           state=""/>
 
     <command id="cmd_absPos"          state=""        oncommand="msiGoDoCommand('cmd_absPos')"/>
     <command id="cmd_increaseZIndex"  state=""        oncommand="msiGoDoCommand('cmd_increaseZIndex')"/>
