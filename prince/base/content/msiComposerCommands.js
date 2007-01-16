@@ -74,7 +74,6 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_SplitTableCell",     msiSplitTableCellCommand);
   commandTable.registerCommand("cmd_TableOrCellColor",   msiTableOrCellColorCommand);
   commandTable.registerCommand("cmd_NormalizeTable",     msiNormalizeTableCommand);
-  commandTable.registerCommand("cmd_smiley",             msiSmileyCommand);
   commandTable.registerCommand("cmd_ConvertToTable",     msiConvertToTable);
   commandTable.registerCommand("cmd_MSIAnimateGifsOn",   msiGIFAnimation);
   commandTable.registerCommand("cmd_MSIAnimateGifsOff",  msiGIFAnimation);
@@ -630,7 +629,7 @@ var msiOpenCommand =
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
     fp.init(window, GetString("OpenHTMLFile"), msIFilePicker.modeOpen);
 
-    msiSetFilePickerDirectory(fp, "html");
+    msiSetFilePickerDirectory(fp, "xhtml");
 
     // When loading into Composer, direct user to prefer HTML files and text files,
     //   so we call separately to control the order of the filter list
@@ -652,7 +651,7 @@ var msiOpenCommand =
      *  since file.URL will be "file:///" if no filename picked (Cancel button used)
      */
     if (fp.file && fp.file.path.length > 0) {
-      msiSaveFilePickerDirectory(fp, "html");
+      msiSaveFilePickerDirectory(fp, "xhtml");
       msiEditPage(fp.fileURL.spec, window, false);
     }
   }
