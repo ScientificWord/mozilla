@@ -206,6 +206,7 @@ classic.jar:
   skin/classic/bracketsDialog.css        (skin/classic/bracketsDialog.css)
   skin/classic/decorationsDialog.css     (skin/classic/decorationsDialog.css)
   skin/classic/operatorsDialog.css       (skin/classic/operatorsDialog.css)
+  skin/classic/mathmlmatrix.css          (skin/classic/mathmlmatrix.css)
   skin/classic/msiMathDlgStyle.css       (skin/classic/msiMathDlgStyle.css)
   skin/classic/msiTypesetDlgStyle.css    (skin/classic/msiTypesetDlgStyle.css)
   skin/classic/icons/background.png      (skin/classic/icons/background.png)
