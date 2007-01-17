@@ -1149,7 +1149,7 @@ nsresult
 InitialShell(nsString* initialURL)
 {
   //BBM todo: check preferences and use this as a default only if necessary
-  nsString url = NS_LITERAL_STRING("resource://app/res/shells/article/latexArticleShell.xhtml");
+  nsString url = NS_LITERAL_STRING("resource://app/res/shells/article/LaTeXArticleShell.xhtml");
   *initialURL = url;
   return NS_OK;
 }
