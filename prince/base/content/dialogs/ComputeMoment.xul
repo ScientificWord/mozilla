@@ -1,26 +1,25 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/Editor.css" type="text/css"?>
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
-<?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"?>
-
-<?xul-overlay href="chrome://editor/content/editorOverlay.xul"?>
-<?xul-overlay href="chrome://editor/content/MathmlOverlay.xul"?>
-<?xul-overlay href="chrome://editor/content/composerOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
-<?xul-overlay href="chrome://communicator/content/contentAreaContextOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
 
 <!DOCTYPE dialog [
-<!ENTITY % DTD SYSTEM "chrome://editor/locale/ComputeMoment.dtd" >
+<!ENTITY % DTD SYSTEM "chrome://prince/locale/ComputeMoment.dtd" >
 %DTD;
-<!ENTITY % editorDTD SYSTEM "chrome://editor/locale/editor.dtd" >
+<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
 %editorDTD;
-<!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
-%editorOverlayDTD;
+<!ENTITY % menuDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
+%menuDTD;
 ]>
 
 <!-- dialog containing a control requiring initial setup -->
@@ -33,15 +32,19 @@
     buttons="accept,cancel">
 
   <!-- Methods common to all editor dialogs -->
-  <script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
-  <script type="application/x-javascript" src="chrome://editor/content/ComputeMoment.js" />
-  <script type="application/x-javascript" src="chrome://editor/content/ComputeUtils.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/ComputeMoment.js" />
+
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>
 
   <broadcaster id="args" value="about:blank"/>
 
