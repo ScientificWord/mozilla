@@ -2,5 +2,5 @@
 
 <!ENTITY windowTitle.label "Choose Computation Engine">
 
-<!ENTITY MuPAD.label   "MuPAD 3">
+<!ENTITY MuPAD.label   "MuPAD 4">
 <!ENTITY Maple5.label  "Maple 5">  
