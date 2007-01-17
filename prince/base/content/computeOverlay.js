@@ -1919,7 +1919,7 @@ function doComputeDefine(math, editorElement)
     msiComputeLogger.Sent4("define",mathstr,"specifying",subscript);
     try {
       ComputeCursor(editorElement);
-      out = GetCurrentEngine().define(mathstr,subscript);
+      var out = GetCurrentEngine().define(mathstr,subscript);
       msiComputeLogger.Received(out);
       // there is no result
       done = true;
