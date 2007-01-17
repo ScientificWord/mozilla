@@ -143,6 +143,7 @@ var msiDoSomething =
 
   doCommand: function(aCommand)
   {
+    dump("msiDoSomething():  ie not implemented.\n");
     return;
   }
 };
