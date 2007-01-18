@@ -1012,6 +1012,21 @@ function insertXML(editor, text, node, offset)
   }
 }
 
+//SLS for unknown reasons, get parsing error if text is at outer level
+function insertLabeledXML(editor, text, node, offset)
+{
+  var parser = new DOMParser();
+  var wrapped = "<span>" + text + "</span>";
+  var doc = parser.parseFromString(wrapped,"application/xhtml+xml");
+  var nodeList = doc.documentElement.childNodes;
+  var nodeListLength = nodeList.length;
+  var i;
+  for (i = nodeListLength-1; i >= 0; --i)
+  {
+    editor.insertNode( nodeList[i], node, offset );
+  }
+}
+
 function appendResult(result,sep,math,editorElement)
 {
   if(!editorElement)
@@ -1050,7 +1065,7 @@ function appendLabeledResult(result,label,math,editorElement)
     str = result.replace(fullmath,label+fullmath);
   else
     str = label.replace(/%result%/,result);
-  insertXML(editor, str, math, math,math.childNodes.length );
+  insertLabeledXML(editor, str, math, math.childNodes.length );
 //  msiGetEditor(editorElement).insertHTMLWithContext(str,"","","",null,math,math.childNodes.length,false);
 }
 
@@ -1058,9 +1073,11 @@ function appendTaggedResult(result,label,body,index,editorElement)
 {
   if(!editorElement)
     editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   var str = label.replace(/%result%/,result);
 
-  msiGetEditor(editorElement).insertHTMLWithContext(str,"","","",null,body,index,false);
+  insertXML(editor, str, body, index );
+//  msiGetEditor(editorElement).insertHTMLWithContext(str,"","","",null,body,index,false);
 }
 
 function addResult(result, editorElement)
@@ -1069,7 +1086,8 @@ function addResult(result, editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var selection = editor.selection;
-  editor.insertHTMLWithContext(result,"","","",null,selection.focusNode,selection.focusOffset,false);
+  insertXML(editor, result, selection.focusNode, selection.focusOffset );
+//  editor.insertHTMLWithContext(result,"","","",null,selection.focusNode,selection.focusOffset,false);
 }
 
 function runFixup(math)
