@@ -960,9 +960,25 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
         res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
         if (NS_SUCCEEDED(res) && currFocusNode && NodeInMath(currFocusNode))
         {
-          res = InsertSymbol(symbol);
-          if (NS_SUCCEEDED(res))
+          if (symbol == ' ')
+          {
+            // SWP actually has some special behavior if you're at the end of math
+            PRBool preventDefault(PR_FALSE);
+            res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault); 
+            if (NS_SUCCEEDED(res) && preventDefault)
+              aKeyEvent->PreventDefault();
+          }
+          else if (symbol == '\t')
+          {
+            //TODO TAB behavior (for now, NOP in math)
             aKeyEvent->PreventDefault();
+          }
+          else
+          {
+            res = InsertSymbol(symbol);
+            if (NS_SUCCEEDED(res))
+              aKeyEvent->PreventDefault();
+          }
         }    
       }    
     }    
