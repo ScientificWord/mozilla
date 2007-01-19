@@ -249,6 +249,11 @@ interface nsIHTMLEditor : nsISupports
    */
   void insertReturn();
 
+  /**
+   *  Insert a return with special behavior in blank paragraphs at the end of a structure
+   *
+   */
+  void insertReturnFancy();
 
   /** 
     * Paste the text in the OS clipboard at the cursor position, replacing
