@@ -166,11 +166,13 @@
           <level>-2</level>
           <description>Book</description>
           <discardemptyblock>true</discardemptyblock>
+          <prefsub>part</prefsub>
         </tag>
 				<tag nm="sw:part">
           <level>-1</level>
           <description>Part of a book</description>
           <discardemptyblock>true</discardemptyblock>
+          <prefsub>chapter</prefsub>
         </tag>
 				<tag nm="sw:chapter">
           <level>1</level>
@@ -179,6 +181,7 @@
           <discardemptyblock>false</discardemptyblock>
           <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
           </initialcontents>
+          <prefsub>section</prefsub>
         </tag>
 				<tag nm="sw:section">
           <level>2</level>
@@ -188,6 +191,7 @@
           <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>chapter</nextafteremptyblock>
+          <prefsub>subsection</prefsub>
         </tag>
 				<tag nm="sw:subsection">
           <level>3</level>
@@ -197,6 +201,7 @@
           <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>section</nextafteremptyblock>
+          <prefsub>subsubsection</prefsub>
         </tag>
 				<tag nm="sw:subsubsection">
           <level>4</level>
@@ -206,6 +211,7 @@
           <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>subsection</nextafteremptyblock>
+          <prefsub>paragraph</prefsub>
         </tag>
 				<tag nm="sw:paragraph">
           <level>5</level>
@@ -215,6 +221,7 @@
           <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle> ]]>
           </initialcontents>
           <nextafteremptyblock>subsubsection</nextafteremptyblock>
+          <prefsub>subparagraph</prefsub>
         </tag>
 				<tag nm="sw:subparagraph">
           <level>*</level>
@@ -268,6 +275,7 @@
               <para></para>
               ]]>
           </initialcontents>
+          <prefsub>section</prefsub>
         </tag>
 				<tag nm="sw:glossary">
           <level>0</level>
