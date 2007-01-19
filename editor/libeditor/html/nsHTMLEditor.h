@@ -381,7 +381,8 @@ public:
                               PRBool aNoEmptyNodes);
   nsCOMPtr<nsIDOMNode> FindUserSelectAllNode(nsIDOMNode *aNode);
 
-  NS_IMETHOD InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset);
+  NS_IMETHOD InsertReturnImpl ( PRBool fFancy );
+  NS_IMETHOD InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool fFancy);
                          
 
   /** returns the absolute position of the end points of aSelection

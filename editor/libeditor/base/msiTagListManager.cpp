@@ -397,8 +397,12 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           pdata->titleTag =
             GetStringProperty(NS_LITERAL_STRING("titletag"), tagNameElement);
           if (strClassName.EqualsLiteral("structtag"))
+          {
             pdata->level =
               GetStringProperty(NS_LITERAL_STRING("level"), tagNameElement);
+            pdata->prefsub =
+              GetStringProperty(NS_LITERAL_STRING("prefsub"), tagNameElement);
+          }
           pdata->discardEmptyBlock = 
             GetStringProperty(NS_LITERAL_STRING("discardemptyblock"), tagNameElement)==NS_LITERAL_STRING("true");
           // save the key, data pair
@@ -878,6 +882,8 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
       _retval = data->titleTag;
     else if (propertyName.EqualsLiteral("level"))
       _retval = data->level;
+    else if (propertyName.EqualsLiteral("prefsub"))
+      _retval = data->prefsub;
     else if (propertyName.EqualsLiteral("discardemptyblock"))
       _retval = data->discardEmptyBlock?NS_LITERAL_STRING("true"):NS_LITERAL_STRING("false");
     else if (propertyName.EqualsLiteral("nexttag"))
@@ -932,6 +938,8 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   {
     nsAutoString strContents;
     rv = GetStringPropertyForTag(firstNodeName, dummyatom, NS_LITERAL_STRING("initialcontents"), strContents);
+    if (strContents.Length() == 0)
+      rv = GetStringPropertyForTag(firstNodeName, dummyatom, NS_LITERAL_STRING("initialcontentsforempty"), strContents);
     if (strContents.Length() > 0)
     {
       nsCOMPtr<nsIDOMNode> newNode;
