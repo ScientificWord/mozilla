@@ -770,7 +770,23 @@ PRBool IsWhiteSpaceOnly( nsString str )
 
 // InsertReturn -- usually splits a paragraph
 nsresult
-nsHTMLEditor::InsertReturn()
+nsHTMLEditor::InsertReturn( )
+{
+  return InsertReturnImpl( PR_FALSE );
+}
+
+// InsertReturnFancy -- usually splits a paragraph
+nsresult
+nsHTMLEditor::InsertReturnFancy( )
+{
+  return InsertReturnImpl( PR_TRUE );
+}
+
+
+
+// InsertReturn -- usually splits a paragraph
+nsresult
+nsHTMLEditor::InsertReturnImpl( PRBool fFancy )
 
 {
   if (!mRules) return NS_ERROR_NOT_INITIALIZED;
@@ -788,13 +804,13 @@ nsHTMLEditor::InsertReturn()
   nsCOMPtr<nsISelection>selection;
   res = GetSelection(getter_AddRefs(selection));
   res = GetStartNodeAndOffset(selection, address_of(splitpointNode), &splitpointOffset);
-  res = InsertReturnAt(splitpointNode, splitpointOffset);
+  res = InsertReturnAt(splitpointNode, splitpointOffset, fFancy);
   return res;
 }
   
 // InsertReturnAt -- usually splits a paragraph; may call itself recursively
 nsresult
-nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset)
+nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool fFancy)
 {
   nsresult res = NS_OK;
   nsCOMPtr<nsIDOMNode> splitNode;
@@ -805,6 +821,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   PRInt32 newsplitpointOffset;
   nsCOMPtr<nsIDOMNode> newsplitpointNode;
   PRBool fDiscardNode, isEmpty;
+  PRBool isAtEnd;
   if (!splitpointNode) res = NS_ERROR_FAILURE;
   if (NS_FAILED(res)) return res;
   if (IsBlockNode(splitpointNode)) splitNode = splitpointNode;
@@ -822,7 +839,8 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     nsCOMPtr<nsIDOMNode> brNode;
     return InsertBR(address_of(brNode));  // only inserts a br node
   }
-  // if splitNode has no text, we want to check with the taglistmanager. Maybe we need to delete splitNode
+  // if fFancy and if splitNode has no text and it is at the end of its parent structure, we want to check with 
+  // the taglistmanager. Maybe we need to delete splitNode
   // and go up to the parent, and so on, until we find a tag that is willing to be split.
   nsCOMPtr<nsIDOM3Node> dom3node;
   dom3node = do_QueryInterface(splitNode);
@@ -830,28 +848,59 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   DebExamineNode(splitNode);
 #endif
   //isEmpty = IsEmptyTextContent(content);
-  nsAutoString strContents;
-  dom3node->GetTextContent(strContents);
-  isEmpty = IsWhiteSpaceOnly(strContents);
-  fDiscardNode = PR_FALSE;                       
-  if (isEmpty) mtagListManager->GetDiscardEmptyBlockNode(splitNode, &fDiscardNode);
-  if (isEmpty && fDiscardNode)
+  if (fFancy)
+  {
+    nsAutoString strContents;
+    dom3node->GetTextContent(strContents);
+    isEmpty = IsWhiteSpaceOnly(strContents);
+    fDiscardNode = PR_FALSE;                       
+    if (isEmpty) mtagListManager->GetDiscardEmptyBlockNode(splitNode, &fDiscardNode);
+  }
+  PRUint32 length;
+  if (fFancy && isEmpty && fDiscardNode)
+  {  // Check that we are at the end of the structure
+    nsEditor::GetNodeLocation(splitNode, address_of(newsplitpointNode), &newsplitpointOffset);
+    nsCOMPtr<nsIDOMNodeList> children;
+    res = newsplitpointNode->GetChildNodes(getter_AddRefs(children));
+    res = children->GetLength(&length);
+    isAtEnd = PR_TRUE;
+    #if DEBUG_barry || DEBUG_Barry
+       nsCOMPtr<nsIDOMNode> tempNode;
+        nsCOMPtr<nsIDOM3Node> dom3tempnode;
+       nsString s;
+       printf("\noffset is %d, number of nodes is %d\n", newsplitpointOffset, length);
+       for (int i = newsplitpointOffset; i < length; i++)
+       {
+         res = children->Item(i, getter_AddRefs(tempNode));
+         res = tempNode->GetLocalName(s);
+         printf("tag #%d: %S\n", i, s.BeginReading());
+        dom3tempnode = do_QueryInterface(tempNode);
+		     dom3tempnode->GetTextContent(s);
+		     if (!IsWhiteSpaceOnly(s))
+		     {
+			     printf("nonempty node: contents = %S\n", s.BeginReading());
+           isAtEnd = PR_FALSE;
+		     }
+       }
+       
+    #endif
+  }
+  if (fFancy && isEmpty && fDiscardNode && isAtEnd)
   {  
     nsIAtom * atomNS = nsnull;
-  	PRBool fCanContain;
+    PRBool fCanContain;
     nsString sNewNodeName;
     nsString strContents;
     nsCOMPtr<nsIDOMNode> newNode;
     nsCOMPtr<nsIDOMNSHTMLElement> newHTMLElement;
     nsCOMPtr<nsIDOMElement> newElement;
-    nsEditor::GetNodeLocation(splitNode, address_of(newsplitpointNode), &newsplitpointOffset);
     mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("nextafteremptyblock"), sNewNodeName);
     if (sNewNodeName.Length() > 0)
     {
       res = mtagListManager->GetStringPropertyForTag(sNewNodeName, atomNS, NS_LITERAL_STRING("initialcontentsforempty"), strContents);
       if (strContents.Length() == 0) 
         res = mtagListManager->GetStringPropertyForTag(sNewNodeName, atomNS, NS_LITERAL_STRING("initialcontents"), strContents);
-// if the new node is a structure node, we need nsHTMLEditRules::InsertStructure
+  // if the new node is a structure node, we need nsHTMLEditRules::InsertStructure
   // walk up the tree to find where the new structure tag will fit.
       nsCOMPtr<nsIDOMNode> parent;
       nsCOMPtr<nsIDOMNode> currentNode;
@@ -914,7 +963,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
 	    if (fCanContain)
 	    {
 		    nsEditor::DeleteNode(splitNode);
-		    res = InsertReturnAt(newsplitpointNode, newsplitpointOffset);
+		    res = InsertReturnAt(newsplitpointNode, newsplitpointOffset, fFancy);
 	    }
     }
   } 

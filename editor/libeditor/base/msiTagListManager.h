@@ -26,6 +26,7 @@ public:
   nsString titleTag;
   nsString nextTag;
   nsString level;
+  nsString prefsub;
   PRBool   discardEmptyBlock;
   TagData()
     : discardEmptyBlock(PR_FALSE)

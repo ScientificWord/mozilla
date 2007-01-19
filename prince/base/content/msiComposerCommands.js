@@ -83,11 +83,9 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_previewPdf",         msiPreviewCommand);
   commandTable.registerCommand("cmd_compileDvi",         msiCompileCommand);
   commandTable.registerCommand("cmd_compilePdf",         msiCompileCommand);
-//  commandTable.registerCommand("cmd_texttag",            nsTextTagUpdatingCommand);
-//  commandTable.registerCommand("cmd_paratag",            nsParaTagUpdatingCommand);
-//  commandTable.registerCommand("cmd_secttag",            nsSectTagUpdatingCommand);
-//  commandTable.registerCommand("cmd_othertag",           nsOtherTagUpdatingCommand);
   commandTable.registerCommand("cmd_updateStructToolbar", msiUpdateStructToolbarCommand);
+  commandTable.registerCommand("cmd_insertReturnFancy", msiInsertReturnFancyCommand);
+  commandTable.registerCommand("cmd_insertSubstructure", msiInsertSubstructureCommand);
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -3471,6 +3469,56 @@ var msiInsertBreakAllCommand =
     try {
       msiGetEditor(editorElement).insertHTML("<br clear='all'>");
     } catch (e) {}
+  }
+};
+
+//-----------------------------------------------------------------------------------
+
+var msiInsertReturnFancyCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    try {
+      msiGetEditor(editorElement).insertReturnFancy();
+    } catch (e) {}
+  }
+};
+//-----------------------------------------------------------------------------------
+
+var msiInsertSubstructureCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    try {
+      var atom = new Object();
+      var editor = msiGetEditor(editorElement);
+      var currentStruct = editor.tagListManager.currentValue("structtag", atom);
+      var nextStruct = editor.tagListManager.getStringPropertyForTag(currentStruct, atom, "prefsub");
+      msiDoStatefulCommand('cmd_structtag',nextStruct);
+    } catch (e) 
+    {
+      alert("Exception: "+e);
+    }
   }
 };
 
