@@ -1,9 +1,11 @@
-document { display: block;
+body { 
+  display: block;
+  font-family: Minion Pro;
   margin-left: 20pt;
-  font-family: Arial;
   font-size: 12pt;
   line-height: 14pt;
-  }
+}
+
 
 pre, verbatim { font-family: Courier; white-space: pre }
 
