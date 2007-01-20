@@ -546,6 +546,12 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
   } catch(e) { dump("error thrown in msiDoStatefulCommand: "+e+"\n"); }
 }
 
+function doTagKeyCommand(keycode, commandID, value)
+{
+  if (keycode == 13 || keycode == 9) msiDoStatefulCommand(commandID, value);
+  else if (keycode == 27) msiGetActiveEditorElement().contentWindow.focus();
+}
+
 ////-----------------------------------------------------------------------------------
 //function PrintObject(obj)
 //{

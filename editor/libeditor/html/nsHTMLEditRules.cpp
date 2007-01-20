@@ -7315,7 +7315,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   nsCOMPtr<nsIDOMNode> currentNode;
   nsCOMPtr<nsIDOMNode> savedCurrentNode;
   nsCOMPtr<nsIDOMNode> savedParent;
- nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIContent> newContent;
   nsCOMPtr<nsIDOMNode> parent;
   nsCOMPtr<nsIDOMNode> grandParent;
@@ -7413,7 +7413,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     if (fCanContain)
     { // parent is now the parent of our soon-to-be-created node, and it will go in at offset+1
       parentOfNewStructure = parent;
-      offsetOfNewStructure = offset + 1;
+      offsetOfNewStructure = offset;
       break;
     } 
     currentNode = parent;
