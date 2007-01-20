@@ -351,7 +351,7 @@
   <!-- edit menu commands. These get updated by code in globalOverlay.js -->
   <commandset id="composerEditMenuItems"
           commandupdater="true"
-          events="create, mode_switch"
+          events="create, mode_switch, undo"
           oncommandupdate="msiGoUpdateComposerMenuItems(this)"
   >
     <command id="cmd_undo" 

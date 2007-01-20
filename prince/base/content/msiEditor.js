@@ -719,6 +719,8 @@ function msiEditorDocumentObserver(editorElement)
 
       case "cmd_setDocumentModified":
         window.updateCommands("save");
+//        window.updateCommands("undo");
+//        msiDoUpdateCommands("undo", this.mEditorElement);
         break;
 
       case "obs_documentWillBeDestroyed":
