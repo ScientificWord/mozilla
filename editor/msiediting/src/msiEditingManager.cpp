@@ -1063,6 +1063,8 @@ PRBool msiEditingManager::NodeInMath(nsIDOMNode* node)
     SupportsMathMLInsertionInterface(node, &rv);
   return rv;
 }
+
+//SLS this doesn't do what the name says...
 nsresult msiEditingManager::EnsureMathWithSelectionCollapsed(nsIDOMNode * node)
 {
   nsresult res(NS_OK);
@@ -1072,7 +1074,6 @@ nsresult msiEditingManager::EnsureMathWithSelectionCollapsed(nsIDOMNode * node)
     res = NS_ERROR_FAILURE;
   }
   return res;
-  
 }
 
 nsresult
@@ -1087,7 +1088,29 @@ msiEditingManager::InsertMathmlElement(nsIEditor * editor,
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFraction");
   if (editor && selection && node && mathmlElement)
   {
-    res = EnsureMathWithSelectionCollapsed(node);
+    PRBool transacting(PR_FALSE);
+    //SLS need to check that selection collapsed?
+    if (!NodeInMath(node))
+    {
+      editor->BeginTransaction();
+      editor->SaveSelection(selection);
+      transacting = PR_TRUE;
+      res = InsertMath(editor, selection, node, offset, flags, PR_FALSE);
+      if (NS_SUCCEEDED(res))
+      {
+        nsCOMPtr<nsIDOMNode> anchorNode;
+        res = selection->GetAnchorNode(getter_AddRefs(anchorNode));
+        if (NS_SUCCEEDED(res))
+        {
+          node = anchorNode;
+          offset = 1;
+        }
+      }
+    }
+    else
+    {
+      res = NS_OK;
+    }
     if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> newMathmlNode;
@@ -1099,13 +1122,19 @@ msiEditingManager::InsertMathmlElement(nsIEditor * editor,
         GetMathMLInsertionInterface(node, offset, getter_AddRefs(mathmlEditing));
         if (mathmlEditing)
         {
-          editor->BeginTransaction();
-          editor->SaveSelection(selection);
+          if (!transacting)
+          {
+            editor->BeginTransaction();
+            editor->SaveSelection(selection);
+            transacting = PR_TRUE;
+          }
           res = mathmlEditing->InsertNode(editor, selection, newMathmlNode, flags);
-          editor->EndTransaction();
         }  
       }
     }
+    if (transacting)
+      editor->EndTransaction();
+
   }
   return res;
 }      
