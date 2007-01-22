@@ -923,6 +923,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   {
     meditor->ReplaceContainer(*secondNode, address_of(aNewNode), str, nsnull, nsnull, PR_TRUE);
     *secondNode = aNewNode;
+	NS_ADDREF((nsIDOMNode *)aNewNode);
    	meditor->MarkNodeDirty(*secondNode);
   }
   // Gecko does not display empty paragraphs, so we need to put in a BR, maybe with an attribute
@@ -948,7 +949,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
       rv = firstNode->CloneNode(PR_FALSE, getter_AddRefs(newNode));
       nsCOMPtr<nsIDOMNSHTMLElement> firstElement(do_QueryInterface(newNode));
       firstElement->SetInnerHTML(strContents);
-      NS_ADDREF((nsIDOMNode *)newNode);
+//      NS_ADDREF((nsIDOMNode *)newNode);
       meditor->ReplaceNode(newNode, firstNode, parentNode);
       meditor->MarkNodeDirty(newNode);
       pnode = newNode;
@@ -977,7 +978,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
     rv = (*secondNode)->CloneNode(PR_FALSE, getter_AddRefs(newNode));
     nsCOMPtr<nsIDOMNSHTMLElement> secondElement(do_QueryInterface(newNode));
     secondElement->SetInnerHTML(strContents);
-    NS_ADDREF((nsIDOMNode *)newNode);
+//    NS_ADDREF((nsIDOMNode *)newNode);
     meditor->ReplaceNode(newNode, *secondNode, parentNode);
     *secondNode = newNode;
     meditor->MarkNodeDirty(newNode);
