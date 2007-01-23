@@ -67,6 +67,20 @@
 			<contains>cursor</contains>
 			<contains>sw:defaulttitletag</contains>
 			<tags>
+				<tag nm="sw:author">
+          <description>Author name</description>
+          <discardemptyblock>true</discardemptyblock>
+					<nexttag>sw:para</nexttag>
+          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
+          </initialcontentsforempty>
+        </tag>
+				<tag nm="sw:address">
+          <description>Author address</description>
+          <discardemptyblock>true</discardemptyblock>
+					<nexttag>sw:para</nexttag>
+          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
+          </initialcontentsforempty>
+        </tag>
 				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
@@ -224,7 +238,7 @@
           <prefsub>subparagraph</prefsub>
         </tag>
 				<tag nm="sw:subparagraph">
-          <level>*</level>
+          <level>6</level>
           <description>Section (dynamic level)</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
@@ -245,7 +259,7 @@
           <description>Dedication</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para></para>
+              <para><cursor/><br/></para>
               ]]>
           </initialcontents>
         </tag>
@@ -313,24 +327,6 @@
           <level>3</level>
           <description>Refsect3</description>
           <discardemptyblock>true</discardemptyblock>
-        </tag>
-				<tag nm="sw:author">
-          <level>*</level>
-          <description>Author name</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <para></para>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="sw:address">
-          <level>*</level>
-          <description>Author address</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <para></para>
-              ]]>
-          </initialcontents>
         </tag>
 			</tags>
 		</tagclass>
