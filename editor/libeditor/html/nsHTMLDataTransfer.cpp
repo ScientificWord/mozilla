@@ -864,26 +864,30 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     res = newsplitpointNode->GetChildNodes(getter_AddRefs(children));
     res = children->GetLength(&length);
     isAtEnd = PR_TRUE;
-    #if DEBUG_barry || DEBUG_Barry
-       nsCOMPtr<nsIDOMNode> tempNode;
-        nsCOMPtr<nsIDOM3Node> dom3tempnode;
-       nsString s;
-       printf("\noffset is %d, number of nodes is %d\n", newsplitpointOffset, length);
-       for (int i = newsplitpointOffset; i < length; i++)
-       {
-         res = children->Item(i, getter_AddRefs(tempNode));
-         res = tempNode->GetLocalName(s);
-         printf("tag #%d: %S\n", i, s.BeginReading());
-        dom3tempnode = do_QueryInterface(tempNode);
-		     dom3tempnode->GetTextContent(s);
-		     if (!IsWhiteSpaceOnly(s))
-		     {
-			     printf("nonempty node: contents = %S\n", s.BeginReading());
-           isAtEnd = PR_FALSE;
-		     }
-       }
+   nsCOMPtr<nsIDOMNode> tempNode;
+   nsCOMPtr<nsIDOM3Node> dom3tempnode;
+   nsString s;
+#if DEBUG_barry || DEBUG_Barry
+   printf("\noffset is %d, number of nodes is %d\n", newsplitpointOffset, length);
+#endif
+   for (int i = newsplitpointOffset; i < length; i++)
+   {
+     res = children->Item(i, getter_AddRefs(tempNode));
+     res = tempNode->GetLocalName(s);
+#if DEBUG_barry || DEBUG_Barry
+     printf("tag #%d: %S\n", i, s.BeginReading());
+#endif
+     dom3tempnode = do_QueryInterface(tempNode);
+		 dom3tempnode->GetTextContent(s);
+		 if (!IsWhiteSpaceOnly(s))
+		 {
+#if DEBUG_barry || DEBUG_Barry
+			 printf("nonempty node: contents = %S\n", s.BeginReading());
+#endif
+       isAtEnd = PR_FALSE;
+		 }
+   }
        
-    #endif
   }
   if (fFancy && isEmpty && fDiscardNode && isAtEnd)
   {  
@@ -957,9 +961,14 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     else 
     {
       nsAutoString strTagName;
+      nsAutoString s2;
       nsIAtom * nsAtom;
 	    mtagListManager->GetTagOfNode(newsplitpointNode, &nsAtom, strTagName ); 
-      mtagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"), strTagName, nsAtom, &fCanContain);
+      res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("level"), s2);
+      if (s2.EqualsLiteral("*"))
+        fCanContain = PR_TRUE;
+      else
+  		  mtagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"), strTagName, nsAtom, &fCanContain);
 	    if (fCanContain)
 	    {
 		    nsEditor::DeleteNode(splitNode);
