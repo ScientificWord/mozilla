@@ -44,11 +44,19 @@
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
-<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!--Following needed by any dialog which may contain "AdvancedEdit", "ChooseFile", "MakeRelative", or "LinkLocation" buttons-->
+<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? -->
+
+<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
-<!-- ?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul"? -->
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+<!-- If an editor control is to support context menus, also need: -->
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
+
+<!--Following probably not needed by dialogs?-->
+<!-- ?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul"? -->
 
 <!DOCTYPE dialog [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
@@ -66,24 +74,38 @@
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEdReplace.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <!-- script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/ -->
+
+  <!-- Scripts specific to this dialog -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdReplace.js"/>
   <stringbundle id="findBundle" src="chrome://prince/locale/msifinddialog.properties"/>
    
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <!-- script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <!-- Following script needed if the editor wants to support a toolbox? -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
+
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
+
+  <popupset id="msiEditorContentContextSet"/>
 
   <commandset id="tasksCommands">
-    <command id="cmd_open" oncommand="doOpen()"/>
-    <command id="cmd_print" oncommand="goDoCommand('cmd_print')"/>
-    <command id="cmd_quit" oncommand="doQuit()"/>
-    <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
     <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
     <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
@@ -92,15 +114,6 @@
   <keyset id="editorKeys">
     <keyset id="tasksKeys"/>
     <keyset id="MSIKeySet"/>
-    <!-- key keycode="VK_TAB" oncommand="return true;"/>
-    <key keycode="VK_TAB" modifiers="shift" oncommand="return true;"/>
-    <key keycode="VK_TAB" modifiers="control" oncommand="return true;"/>
-    <key keycode="VK_TAB" modifiers="control,shift" oncommand="return true;"/ -->
-    <!-- key id="key_newBlankPage" key="&filenew.keybinding;" observes="cmd_newEditor"  modifiers="accel"/>
-    <key id="openeditorkb"   key="&fileopen.keybinding;"  observes="cmd_open"  modifiers="accel"/>
-    <key id="savekb"         key="&filesave.keybinding;"  observes="cmd_save"  modifiers="accel"/>
-    <key id="printkb"        key="&fileprint.keybinding;" observes="cmd_print" modifiers="accel"/>
-    <key id="key_quit"       key="&filequit.keybinding;"  observes="cmd_quit" modifiers="accel"/ -->
     <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
   </keyset>
 
@@ -121,14 +134,14 @@
             <label value="&findField.label;" accesskey="&findField.accesskey;" control="dialog.findInput"/>
             <!-- textbox id="dialog.findInput" oninput="doEnabling();"/ -->
             <groupbox>
-              <editor editortype="html" type="content-primary" context="editorContentContext" id="findInput" flex="1" height="60" width="250" onblur="doEnabling();"/>
+              <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="findInput" flex="1" height="60" width="250" onblur="doEnabling();"/>
             </groupbox>
           </row>
           <row align="center">
             <label value="&replaceField.label;" accesskey="&replaceField.accesskey;" control="dialog.replaceInput"/>
             <!-- textbox id="dialog.replaceInput" oninput="doEnabling();"/ -->
             <groupbox>
-              <editor editortype="html" context="editorContentContext" id="replaceInput" flex="1" height="60" width="250"/>
+              <editor editortype="html" context="msiEditorContentContext" id="replaceInput" flex="1" height="60" width="250"/>
             </groupbox>
           </row>
           <row align="start">
