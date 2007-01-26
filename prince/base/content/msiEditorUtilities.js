@@ -286,7 +286,6 @@ function msiIsWebComposer(theWindow)
   return false;
 }
 
-
 function clearPrevActiveEditor()
 {
   var theWindow = msiGetTopLevelWindow();
@@ -947,6 +946,31 @@ function newCommandParams()
   return null;
 }
 
+//Moved from computeOverlay.js
+function insertXML(editor, text, node, offset)
+{
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(text,"application/xhtml+xml");
+  var nodeList = doc.documentElement.childNodes;
+  var nodeListLength = nodeList.length;
+  var i;
+  for (i = nodeListLength-1; i >= 0; --i)
+  {
+    editor.insertNode( nodeList[i], node, offset );
+  }
+}
+
+function insertXMLAtCursor(editor, text)
+{
+  if (!editor)
+  {
+    dump("Error in msiEditorUtilities.js, insertXMLAtCursor - null editor!\n");
+    return;
+  }
+  editor.selection.collapseToEnd();
+  var theRange = editor.selection.getRangeAt(0);
+  insertXML(editor, text, theRange.endContainer, theRange.endOffset);
+}
 
 /************* Dialog management for editors ***************/
 

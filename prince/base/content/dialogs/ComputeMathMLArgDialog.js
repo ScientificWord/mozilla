@@ -15,45 +15,32 @@
 var data;
   
 // This part pastes data into the editor after the editor has started. 
-const math = '<math>';
-const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
+//const math = '<math>';
+//const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
-// implements nsIObserver
-var msiEditorDocumentObserver =
-{ 
-  observe: function(aSubject, aTopic, aData)
-  { // create an editor window with a 2-column table
+function createContentString()
+{
+  var str = "";
+  str += "<table class=\"MathVarsDialog\" xmlns=\"http://www.w3.org/1999/xhtml\">";
+  str += "<tbody>";
 
-    var editor = GetCurrentEditor();
-    if (aTopic == "obs_documentCreated") {
-      var doc = document.getElementById("content-frame").contentDocument;
-      var body = doc.getElementsByTagName("body");
-
-      var str = "";
-      str += "<table class=\"MathVarsDialog\" xmlns=\"http://www.w3.org/1999/xhtml\">";
-      str += "<tbody>";
-	
-      var i = 0;
-      while (i < data.fieldcount) {
-        str += "<tr>";               
-        str += "<td class=\"label\">";               
-        str += data.prompt[i];       
-        str += "</td>";              
-        str += "<td class=\"value\">";               
-        str += data.initialvalue[i]; 
-        str += "</td>";      
-        str += "</tr>";        
-        ++i;
-      }
-         
-      str += "</tbody>";
-      str += "</table>";
-      editor.addOverrideStyleSheet("chrome://editor/content/MathVarsDialog.css");
-      editor.insertHTML(str);
-    }  
+  var i = 0;
+  while (i < data.fieldcount) {
+    str += "<tr>";               
+    str += "<td class=\"label\">";
+    str += data.prompt[i];       
+    str += "</td>";              
+    str += "<td class=\"value\">";               
+    str += data.initialvalue[i]; 
+    str += "</td>";      
+    str += "</tr>";        
+    ++i;
   }
+     
+  str += "</tbody>";
+  str += "</table>";
+  return str;
 }
-
 
 function Startup(){
   data = window.arguments[0];
@@ -61,38 +48,18 @@ function Startup(){
       document.documentElement.setAttribute("title", data.title);
   }
 
-  //SLS the following copied from editor.js
-  gSourceContentWindow = document.getElementById("content-frame");
-  gSourceContentWindow.makeEditable("html", false);
-
-  EditorStartup();
-
   // Initialize our source text <editor>
-  try {
-    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
-    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
-                               .createInstance(Components.interfaces.nsIControllerContext);
-    controller.init(null);
-    controller.setCommandContext(gSourceContentWindow);
-    gSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
-    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
-    commandTable.registerCommand("cmd_find",        nsFindCommand);
-    commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
-    commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
-    
-    SetupMSIMathMenuCommands();
-  } catch (e) { dump("makeEditable failed in Startup(): "+e+"\n"); }
-
-  // see EditorSharedStartup() in editor.js
-  var commandManager = GetCurrentCommandManager();
-  commandManager.addCommandObserver(msiEditorDocumentObserver, "obs_documentCreated");
+  var theStringSource = createContentString();
+  var editorControl = document.getElementById("mmlArg-content-frame");
+  var editor = msiGetEditor(editorControl);
+  editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
+  msiInitializeEditorForElement(editorControl, theStringSource, true);
 }
 
 function OK(){
   data.Cancel = false;
 
-  var doc = document.getElementById("content-frame").contentDocument;
+  var doc = document.getElementById("mmlArg-content-frame").contentDocument;
   var mathnodes = doc.getElementsByTagName("math");
 
   // first mathnode is the variable
@@ -110,6 +77,17 @@ function OK(){
     }
     data.mathresult[i] = CleanMathString(GetMathAsString(mathnodes[i]));
   }
+  
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
+  var theWindow = window.opener;
+  if (!theWindow || !("finishComputeIterate" in theWindow))
+    theWindow = msiGetTopLevelWindow(window);
+  try
+  {
+    theWindow.finishComputeIterate(editorElement, data);
+  } catch(exc) {dump("Exception in ComputeMathMLArgDialog.js, in trying to call finishComputeIterate: [" + exc + "].\n");}
+
   return true;
 }
 

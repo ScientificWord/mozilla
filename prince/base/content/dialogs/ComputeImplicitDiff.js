@@ -74,24 +74,31 @@ function OK(){
 
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
-
-//  if (data.Cancel)
-//    return true;
+  var theWindow = window.opener;
+  if (!theWindow || !("finishComputeImplicitDiff" in theWindow))
+    theWindow = msiGetTopLevelWindow(window);
   try
   {
-    msiComputeLogger.Sent4("implicit diff",mathstr,o.thevar,o.about);
+    theWindow.finishComputeImplicitDiff(data.theMath, editorElement, data);
+  } catch(exc) {dump("Exception in ComputeImplicitDiff.js, in trying to call finishComputeImplicitDiff: [" + exc + "].\n");}
 
-    ComputeCursor(editorElement);
-    try {
-      var out = GetCurrentEngine().implicitDiff(mathstr,data.thevar,data.about);
-      msiComputeLogger.Received(out);
-      appendLabeledResult(out, GetComputeString("Solution.fmt"),math, editorElement);
-    } catch(ex) {
-      msiComputeLogger.Exception(ex);
-    }
-    RestoreCursor(editorElement);
-  } catch(exc) {AlertWithTitle("Error in ComputeImplicitDiff.js", "Exception in OK(); exception is [" + exc + "].");}
 
+//  try
+//  {
+//    var mathstr = GetFixedMath(data.theMath);
+//    msiComputeLogger.Sent4("implicit diff",mathstr,data.thevar,data.about);
+//
+//    ComputeCursor(editorElement);
+//    try {
+//      var out = GetCurrentEngine().implicitDiff(mathstr,data.thevar,data.about);
+//      msiComputeLogger.Received(out);
+//      appendLabeledResult(out, GetComputeString("Solution.fmt"),data.theMath, editorElement);
+//    } catch(ex) {
+//      msiComputeLogger.Exception(ex);
+//    }
+//    RestoreCursor(editorElement);
+//  } catch(exc) {AlertWithTitle("Error in ComputeImplicitDiff.js", "Exception in OK(); exception is [" + exc + "].");}
+//
   return true;
 }
 
