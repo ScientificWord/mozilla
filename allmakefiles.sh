@@ -1070,6 +1070,11 @@ MAKEFILES_prince="
 Prince/Makefile
 Prince/Compute/Makefile
 Prince/fastcursor/Makefile
+Prince/res/Makefile
+Prince/samples/Makefile
+Prince/shells/Makefile
+Prince/base/Makefile
+Prince/plugins/Makefile
 filters/Makefile
 filters/ptprince/Makefile
 filters/ptprince/ptdata/Makefile
