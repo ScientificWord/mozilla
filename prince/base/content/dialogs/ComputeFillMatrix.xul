@@ -8,11 +8,11 @@
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
-<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
-<!-- ?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul"? -->
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
 <!-- ?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"? -->
 
@@ -43,37 +43,26 @@
     buttons="accept,cancel">
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
-  <!-- script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
-  <!-- script type="application/x-javascript" src="chrome://editor/content/msiEdDialogCommon.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <!-- Following scripts are needed specifically by this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/ComputeFillMatrix.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
   
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <!-- script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
-  <!-- Following scripts are needed if the editor wants to allow computation -->
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
-  <!-- Following scripts are needed if the editor wants to support a toolbox? -->
-  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>
-
-  <!-- Methods common to all editor dialogs -->
-  <!-- script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" /-->
-
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
 
   <broadcaster id="args" value="about:blank"/>
+
+  <popupset id="msiEditorContentContextSet"/>
 
   <commandset id="tasksCommands">
     <commandset id="globalEditMenuItems"/>
@@ -86,6 +75,9 @@
     <commandset id="composerEditMenuItems"/>
     <commandset id="composerStyleMenuItems"/>
     <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
+    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
 
   <commandset id="MSImathMenuCommands"/>
@@ -143,7 +135,7 @@
       </groupbox>
       <groupbox>
         <caption label="Item/Function/List"/>
-        <editor editortype="html" type="content-primary" context="editorContentContext" id="content-frame"/>
+        <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="content-frame"/>
       </groupbox>
     </vbox>
   </hbox>

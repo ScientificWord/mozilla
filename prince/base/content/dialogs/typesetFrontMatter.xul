@@ -10,7 +10,7 @@
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
-<!-- ?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul"? -->
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
 
@@ -34,13 +34,14 @@
   <script type="application/x-javascript" src="chrome://prince/content/typesetDialogUtils.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
-  <!-- script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/ -->
-
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <!-- script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/ -->
+
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
 
   <!-- keyset>
     <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
@@ -49,6 +50,7 @@
     <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
   </keyset -->
 
+  <popupset id="msiEditorContentContextSet"/>
   <commandset id="viewZoomCommands"/>
 
   <commandset id="tasksCommands">
@@ -96,7 +98,7 @@
     <spacer flex='1'/>
 		<hbox>
       <groupbox>
-        <editor editortype="html" type="content-primary" context="editorContentContext" id="editControl" flex="1" height="200" width="450"/>
+        <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="editControl" flex="1" height="200" width="450"/>
       </groupbox>
 		</hbox>
     <spacer flex='1'/>

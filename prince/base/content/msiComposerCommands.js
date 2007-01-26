@@ -1462,7 +1462,7 @@ function msigEditorOutputProgressListener(editorElement)
     if (!this.msiEditorElement.mPersistObj)
       return;
 
-    var bDebugOutputStateChange = ("gShowDebugOutputStateChange" in window) && window.gShowDebugOutputStateChange;
+    var bDebugOutputProgress = ("gShowDebugOutputProgress" in window) && window.gShowDebugOutputProgress;
     if (bDebugOutputProgress)
     {
       dump("\n onProgressChange: gPersistObj.result="+this.msiEditorElement.mPersistObj.result+"\n");
@@ -1485,7 +1485,7 @@ function msigEditorOutputProgressListener(editorElement)
 
   this.onLocationChange = function(aWebProgress, aRequest, aLocation)
   {
-    var bDebugOutputStateChange = ("gShowDebugOutputStateChange" in window) && window.gShowDebugOutputStateChange;
+    var bDebugOutputLocationChange = ("gShowDebugOutputLocationChange" in window) && window.gShowDebugOutputLocationChange;
     if (bDebugOutputLocationChange)
     {
       dump("***** onLocationChange: "+aLocation.spec+"\n");
@@ -1499,7 +1499,7 @@ function msigEditorOutputProgressListener(editorElement)
 
   this.onStatusChange = function(aWebProgress, aRequest, aStatus, aMessage)
   {
-    var bDebugOutputStateChange = ("gShowDebugOutputStateChange" in window) && window.gShowDebugOutputStateChange;
+    var bDebugOutputStatusChange = ("gShowDebugOutputStatusChange" in window) && window.gShowDebugOutputStatusChange;
     if (bDebugOutputStatusChange)
     {
       dump("***** onStatusChange: "+aMessage+"\n");
@@ -1525,7 +1525,7 @@ function msigEditorOutputProgressListener(editorElement)
 
   this.onSecurityChange = function(aWebProgress, aRequest, state)
   {
-    var bDebugOutputStateChange = ("gShowDebugOutputStateChange" in window) && window.gShowDebugOutputStateChange;
+    var bDebugOutputSecurityChange = ("gShowDebugOutputSecurityChange" in window) && window.gShowDebugOutputSecurityChange;
     if (bDebugOutputSecurityChange)
     {
       try {
@@ -4665,7 +4665,7 @@ var msiSplitTableCellCommand =
       // or selection is entirely inside 1 cell
       if ( cell && (tagNameObj.value == "td") && 
            countObj.value <= 1 &&
-           IsSelectionInOneCell() )
+           msiIsSelectionInOneCell(editorElement) )
       {
         var colSpan = cell.getAttribute("colspan");
         var rowSpan = cell.getAttribute("rowspan");
