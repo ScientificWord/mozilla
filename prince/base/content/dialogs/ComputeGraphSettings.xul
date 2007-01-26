@@ -1,24 +1,22 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/Editor.css" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://communicator/skin/" type="text/css"? -->
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <!-- ?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"? -->
 <!-- ?xul-overlay href="chrome://editor/content/composerOverlay.xul"? -->
-<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? --> 
 <!-- ?xul-overlay href="chrome://communicator/content/contentAreaContextOverlay.xul"? -->
 
-<!-- ?xul-overlay href="chrome://editor/content/editorOverlay.xul"? -->
-<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
-
-<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+<!-- If an editor control is to support context menus, also need: -->
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
 <!DOCTYPE dialog [									 
 <!ENTITY % DTD SYSTEM "chrome://prince/content/ComputeGraphSettings.dtd" >
@@ -52,16 +50,20 @@
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <!-- script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
    
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <!-- script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
+
+  <popupset id="msiEditorContentContextSet"/>
 
   <tabbox id="outer-box" flex="1">
     <tabs class="tabs-top">
@@ -180,7 +182,7 @@
             <vbox>
               <groupbox>
                 <caption id="center" label="amp_plotarguments.label;"/>
-                  <editor editortype="html" type="content-primary" context="editorContentContext" 
+                  <editor editortype="html" type="content-primary" context="msiEditorContentContext" 
                           id="content-frame" flex="1" height="350"/>
               </groupbox>
 		    </vbox>
