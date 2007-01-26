@@ -892,8 +892,8 @@ function doGlobalComputeCommand(cmd, editorElement)
   if(!editorElement)
     editorElement = msiGetActiveEditorElement();
   switch (cmd) {
-  case "cmd_compute_Iterate":       
-    doComputeIterate(editorElement);
+  case "cmd_compute_Iterate":
+    doComputeIterate(editorElement, null);
     break;
   case "cmd_MSIComputeFillMatrix":       
     doComputeFillMatrix(editorElement, null);
@@ -999,18 +999,19 @@ function GetRHS(math)
   return math;
 }
 
-function insertXML(editor, text, node, offset)
-{
-  var parser = new DOMParser();
-  var doc = parser.parseFromString(text,"application/xhtml+xml");
-  var nodeList = doc.documentElement.childNodes;
-  var nodeListLength = nodeList.length;
-  var i;
-  for (i = nodeListLength-1; i >= 0; --i)
-  {
-    editor.insertNode( nodeList[i], node, offset );
-  }
-}
+//Moved to msiEditorUtilities.js
+//function insertXML(editor, text, node, offset)
+//{
+//  var parser = new DOMParser();
+//  var doc = parser.parseFromString(text,"application/xhtml+xml");
+//  var nodeList = doc.documentElement.childNodes;
+//  var nodeListLength = nodeList.length;
+//  var i;
+//  for (i = nodeListLength-1; i >= 0; --i)
+//  {
+//    editor.insertNode( nodeList[i], node, offset );
+//  }
+//}
 
 //SLS for unknown reasons, get parsing error if text is at outer level
 function insertLabeledXML(editor, text, node, offset)
@@ -1434,7 +1435,7 @@ function doComputeApproxIntegral(math, editorElement)
   RestoreCursor(editorElement);
 }
 
-function doComputeIterate(editorElement)
+function doComputeIterate(editorElement, cmdHandler)
 {                                                                                    
   var o = new Object();                                                              
   o.title 			= GetComputeString("Iterate.title");                             
@@ -1449,11 +1450,19 @@ function doComputeIterate(editorElement)
   o.initialvalue[2] = GetComputeString("Iterate.termsdefault");                      
                                        
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank",  
-                    "chrome,close,titlebar,modal", o);                               
+  try {
+    msiOpenModelessDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
+                                      editorElement, "cmd_compute_Iterate", cmdHandler, o);
+  } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeIterate: [" + e + "]"); return;}
+//  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank",  
+//                    "chrome,close,titlebar,modal", o);
+}
+
+function finishComputeIterate(editorElement, o)
+{
   if (o.Cancel)                                                                      
     return;                                                                          
-                                                                                     
+                                                                                   
   ComputeCursor(editorElement);
   var fn       = runFixup(o.mathresult[0]);                                                    
   var center   = runFixup(o.mathresult[1]);                                                    
@@ -1476,29 +1485,35 @@ function doComputeImplicitDiff(math, editorElement, cmdHandler)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
-  var mathstr = GetFixedMath(math);
+//  var mathstr = GetFixedMath(math);
 
   var vars = "";
   var o = new Object();
+  o.theMath = math;
 //  var parentWin = msiGetParentWindowForNewDialog(editorElement);
 //  parentWin.openDialog("chrome://prince/content/ComputeImplicitDiff.xul", "_blank", "chrome,close,titlebar,modal", o);
   try {
     msiOpenModelessDialog("chrome://prince/content/ComputeImplicitDiff.xul", "_blank", "chrome,close,titlebar,dependent",
                                       editorElement, "cmd_MSIComputeImplicitDiff", cmdHandler, o);
   } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeFillMatrix: [" + e + "]"); return;}
-//  if (o.Cancel)
-//    return;
-//  msiComputeLogger.Sent4("implicit diff",mathstr,o.thevar,o.about);
-//
-//  ComputeCursor(editorElement);
-//  try {
-//    var out = GetCurrentEngine().implicitDiff(mathstr,o.thevar,o.about);
-//    msiComputeLogger.Received(out);
-//    appendLabeledResult(out,GetComputeString("Solution.fmt"),math, editorElement);
-//  } catch(ex) {
-//    msiComputeLogger.Exception(ex);
-//  }
-//  RestoreCursor(editorElement);
+}
+
+function finishComputeImplicitDiff(math, editorElement, o)
+{
+  if (o.Cancel)
+    return;
+  var mathstr = GetFixedMath(math);
+  msiComputeLogger.Sent4("implicit diff",mathstr,o.thevar,o.about);
+
+  ComputeCursor(editorElement);
+  try {
+    var out = GetCurrentEngine().implicitDiff(mathstr,o.thevar,o.about);
+    msiComputeLogger.Received(out);
+    appendLabeledResult(out,GetComputeString("Solution.fmt"),math, editorElement);
+  } catch(ex) {
+    msiComputeLogger.Exception(ex);
+  }
+  RestoreCursor(editorElement);
 }
 
 function doComputeSolveODE(math,labelID,func,titleID, editorElement)

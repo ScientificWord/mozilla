@@ -9,7 +9,7 @@
 #<?xml-stylesheet href="chrome://editor/skin/editorFormatToolbar.css" type="text/css"?> 
 #<?xml-stylesheet href="chrome://editor/skin/editorModeToolbar.css" type="text/css"?> 
 #<?xul-overlay href="chrome://editor/content/composerOverlay.xul"?>
-<?xul-overlay href="chrome://editor/content/EditorContextMenuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/charsetOverlay.xul"?>
 #<?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"?>
@@ -57,7 +57,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/fastcursor.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EditorCommandsDebug.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorCommandsDebug.js"/>
-#  <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
    <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
 #   <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
@@ -70,7 +70,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/mainCore.js" />
   <script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/>
 
-  <popupset id="editorContentContextSet"/>
+  <popupset id="msiEditorContentContextSet"/>
   <popup id="sidebarPopup"/>
 
   <commandset id="tasksCommands">
@@ -130,7 +130,7 @@
   <vbox id="appcontent" flex="1">
     <deck id="ContentWindowDeck" selectedIndex="0" flex="1">
       <stack>
-        <editor id="content-frame" type="content-primary" context="editorContentContext"
+        <editor id="content-frame" type="content-primary" context="msiEditorContentContext"
                 editortype="html" flex="1" tooltip="aHTMLTooltip"/>
       </stack>
       <vbox>

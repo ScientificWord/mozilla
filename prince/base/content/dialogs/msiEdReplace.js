@@ -88,7 +88,7 @@ function loadDialog()
                                             ? gFindInst.findBackwards
                                             : gFindService.findBackwards);
 
-  gDialog.tabOrderArray = new Array( gReplaceDialog.findInput, gReplaceDialog.replaceInput, gReplaceDialog.caseSensitive,
+  gReplaceDialog.tabOrderArray = new Array( gReplaceDialog.findInput, gReplaceDialog.replaceInput, gReplaceDialog.caseSensitive,
                                        gReplaceDialog.wrap, gReplaceDialog.searchBackwards,
                                        gReplaceDialog.findNext, gReplaceDialog.replace,
                                        gReplaceDialog.replaceAndFind, gReplaceDialog.replaceAll,

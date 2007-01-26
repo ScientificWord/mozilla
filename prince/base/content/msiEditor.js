@@ -602,7 +602,14 @@ function msiEditorDocumentObserver(editorElement)
           //  and extra styles for showing anchors, table borders, smileys, etc
           editor.addOverrideStyleSheet(kNormalStyleSheet);
           editor.addOverrideStyleSheet(gMathStyleSheet);
-        } catch (e) {msiKludgeLogString("Exception in adding overrideStyleSheets: " + e);}
+          if (editorElement.overrideStyleSheets && editorElement.overrideStyleSheets != null)
+          {
+            for (var ix = 0; ix < editorElement.overrideStyleSheets.length; ++ix)
+            {
+              editor.addOverrideStyleSheet(editorElement.overrideStyleSheets[ix]);
+            }
+          }
+        } catch (e) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding overrideStyleSheets: " + e);}
 
 //        // Things for just the Web Composer application
 //        if (EditorIsWebComposer(editor))
@@ -712,8 +719,10 @@ function msiEditorDocumentObserver(editorElement)
 
         if (("initialEditorContents" in editorElement) && (editorElement.initialEditorContents.length > 0))
         {
+          dump("Adding initial contents for editorElement [" + editorElement.id + "].\n");
           var htmlEditor = editorElement.getHTMLEditor(editorElement.contentWindow);
-          htmlEditor.insertHTML(editorElement.initialEditorContents);
+//          htmlEditor.insertHTML(editorElement.initialEditorContents);
+          insertXMLAtCursor(htmlEditor, editorElement.initialEditorContents);
         }
         break;
 
@@ -758,6 +767,7 @@ function msiSetFocusOnStartup(editorElement)
 function EditorStartupForEditorElement(editorElement)
 {
   var is_HTMLEditor = msiIsHTMLEditor(editorElement);
+  var is_topLevel = msiIsTopLevelEditor(editorElement);
 
   editorElement.mPreviousNonSourceDisplayMode = 0;
   editorElement.mEditorDisplayMode = -1;
@@ -765,12 +775,13 @@ function EditorStartupForEditorElement(editorElement)
   editorElement.mLastFocusNode = null;
   editorElement.mLastFocusNodeWasSelected = false;
 
-  if (is_HTMLEditor)
+//  if (is_HTMLEditor)
+  if (is_topLevel)
   {
     // XUL elements we use when switching from normal editor to edit source
-    gContentWindowDeck = document.getElementById("ContentWindowDeck");
-    gComputeToolbar = document.getElementById("ComputeToolbar");
-    gViewFormatToolbar = document.getElementById("viewFormatToolbar");
+    window.gContentWindowDeck = document.getElementById("ContentWindowDeck");
+    window.gComputeToolbar = document.getElementById("ComputeToolbar");
+    window.gViewFormatToolbar = document.getElementById("viewFormatToolbar");
   }
 
   // set up our global prefs object
@@ -2220,7 +2231,7 @@ function msiSetEditMode(mode, editorElement)
       editorElement.mSourceTextObserver = new msiSourceTextObserver(editorElement);
     if (!editorElement.mSourceTextListener)
       editorElement.mSourceTextListener = new msiSourceTextListener(editorElement);
-    if (sourceTextWindow && sourceTextEditor)
+    if (sourceContentWindow!=null && sourceTextEditor!=null)
     {
       sourceTextEditor.insertText(source.slice(start));
       sourceTextEditor.resetModificationCount();
@@ -2234,7 +2245,7 @@ function msiSetEditMode(mode, editorElement)
   else if (previousMode == kDisplayModeSource)
   {
     // Only rebuild document if a change was made in source window
-    if (IsHTMLSourceChanged())
+    if (msiIsHTMLSourceChanged(editorElement))
     {
       // Reduce the undo count so we don't use too much memory
       //   during multiple uses of source window 
@@ -2384,9 +2395,9 @@ function msiSetDisplayMode(editorElement, mode)
       window.gContentWindowDeck.selectedIndex = 1;
 
     //Hide the formatting toolbar if not already hidden
-    if ("gViewFormatToolbar" in window)
+    if ("gViewFormatToolbar" in window && window.gViewFormatToolbar != null)
       window.gViewFormatToolbar.hidden = true;
-    if ("gComputeToolbar" in window)
+    if ("gComputeToolbar" in window && window.gComputeToolbar != null)
       window.gComputeToolbar.hidden = true;
 
     msiHideItem("MSIMathMenu");
@@ -3134,7 +3145,7 @@ function msiEditorInitTableMenu(editorElement)
   } catch (ex) {}
 
   // Set enable states for all table commands
-  msiGoUpdateTableMenuItems(editorElement, document.getElementById("composerTableMenuItems"));
+  msiGoUpdateTableMenuItems(document.getElementById("composerTableMenuItems"), editorElement);
 }
 
 function msiInitJoinCellMenuitem(id, editorElement)
@@ -3222,8 +3233,11 @@ function msiInitRemoveStylesMenuitems(editorElement, removeStylesId, removeLinks
   msiSetRelevantElementsEnabledById(removeNamedAnchorsId, !isCollapsed);
 }
 
-function msiGoUpdateTableMenuItems(editorElement, commandset)
+function msiGoUpdateTableMenuItems(commandset, editorElement)
 {
+  if (!commandset)
+    return;
+
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetTableEditor(editorElement);
