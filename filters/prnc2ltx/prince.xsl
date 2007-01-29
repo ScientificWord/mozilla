@@ -19,7 +19,9 @@
 <xsl:template match="html:html"><xsl:apply-templates/></xsl:template>
 
 <xsl:template match="html:body">
+\begin{document}
 <xsl:apply-templates/>
+\end{document}
 </xsl:template>
 
 <xsl:template match="sw:preamble">
