@@ -133,8 +133,8 @@ function drawSample(sampleControl)
 {
   if (gDialog.withDelimiters)
   {
-    document.getElementById("binomialSampleLeftFence").textContent = gDialog.LeftBracketGroup.valueStr;
-    document.getElementById("binomialSampleRightFence").textContent = gDialog.RightBracketGroup.valueStr;
+    document.getElementById("binomialSampleLeftFence").firstChild.nodeValue = gDialog.LeftBracketGroup.valueStr;
+    document.getElementById("binomialSampleRightFence").firstChild.nodeValue = gDialog.RightBracketGroup.valueStr;
   }
   else
   {
