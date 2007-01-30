@@ -6,21 +6,6 @@
       xmlns:msi="C:/xml/xsl/lbtest"
       version="1.1">
 
-<!-- xmlns:msi="C:/xml/xsl/lbtest" -->
-
-<!-- The following template is only for my testjig.xml, which I open with IE. -->
-
-  <xsl:template match="/doc">
-    <HTML>
-      <HEAD>
-        <TITLE></TITLE>
-      </HEAD>
-      <BODY>
-        <xsl:apply-templates/>
-      </BODY>
-    </HTML>
-  </xsl:template>
-
 
 <!-- This style sheet scripts 2 dialects of LaTeX.
   The following variable determines which dialect is generated.
@@ -372,11 +357,12 @@
   </xsl:template>
 
 
-  <xsl:include href="chrome://prnc2ltx/attrutil.xsl"/>
+  <!-- xsl:include href="chrome://prnc2ltx/attrutil.xsl"/>
   <xsl:include href="chrome://prnc2ltx/mathmap.xsl"/>
   <xsl:include href="chrome://prnc2ltx/textmap.xsl"/>
   <xsl:include href="chrome://prnc2ltx/mtext.xsl"/>
   <xsl:include href="chrome://prnc2ltx/mstyle.xsl"/>
+-->
 
 
 
@@ -475,12 +461,12 @@ no indent - disregarded completely
   </xsl:template>
 
 
-  <xsl:include href="chrome://prnc2ltx/mn.xsl"/>
+  <!--- xsl:include href="chrome://prnc2ltx/mn.xsl"/>
   <xsl:include href="chrome://prnc2ltx/fencemo.xsl"/>
   <xsl:include href="chrome://prnc2ltx/mo.xsl"/>
 
   <xsl:include href="chrome://prnc2ltx/mi.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/mfrac.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/mfrac.xsl"/>		--->
 
 
   <xsl:template match="mml:msqrt">
@@ -715,11 +701,11 @@ no indent - disregarded completely
   </xsl:template>
 
 
-  <xsl:include href="chrome://prnc2ltx/mfenced.xsl"/>
+  <!-- xsl:include href="chrome://prnc2ltx/mfenced.xsl"/>
   <xsl:include href="chrome://prnc2ltx/scripts.xsl"/>
   <xsl:include href="chrome://prnc2ltx/munder.xsl"/>
   <xsl:include href="chrome://prnc2ltx/mover.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/munderover.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/munderover.xsl"/>   -->
 
 
   <xsl:template match="mml:mprescripts">
@@ -1121,9 +1107,9 @@ no indent - disregarded completely
 
 
 
-  <xsl:include href="chrome://prnc2ltx/MML2arry.xsl"/>
+  <!--- xsl:include href="chrome://prnc2ltx/MML2arry.xsl"/>
   <xsl:include href="chrome://prnc2ltx/MML2eqna.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/MML2tabular.xsl"/>
+  <xsl:include href="chrome://prnc2ltx/MML2tabular.xsl"/>	-->
 
 <!-- Frequently, the numbered children of a MathML schemata
   translate to an argument of some LaTeX command.
@@ -1266,7 +1252,7 @@ no indent - disregarded completely
   </xsl:template>
 
 
-  <xsl:include href="chrome://prnc2ltx/HTM2LTeX.xsl"/>
+  <!-- xsl:include href="chrome://prnc2ltx/HTM2LTeX.xsl"/ --->
 
 
 </xsl:stylesheet>
