@@ -6,7 +6,6 @@
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
 >
 <!-- xsl:include href="chrome://prnc2ltx/content/mml2ltex.xsl"/ -->
-<xsl:include href="chrome://prnc2ltx/content/temp.xsl"/>
 <xsl:output method="text"/>
 <xsl:strip-space elements="*"/>
 <xsl:preserve-space elements="pre"/>
@@ -27,7 +26,8 @@
 <xsl:apply-templates/>
 </xsl:template>
 
-
+<xsl:template match="html:latex">\LaTeX{}</xsl:template>
+<xsl:template match="mml:math">\textbf{Math here}</xsl:template>
  
 <xsl:template match="html:documentclass">
 \documentclass{<xsl:value-of select="@class"/>}</xsl:template>
@@ -36,8 +36,9 @@
 \usepackage{<xsl:value-of select="@package"/>}</xsl:template>
 
 <xsl:template match="html:newtheorem">
-\newtheorem{<xsl:value-of select="@name"/>}<xsl:if test="not(not(@counter))">[<xsl:value-of select="@counter"/>]</xsl:if>{<xsl:value-of select="@label"/>}</xsl:template>
-
+\newtheorem{<xsl:value-of select="@name"/>}<xsl:if test="not(not(@counter))">[<xsl:value-of select="@counter"/>]</xsl:if>{<xsl:value-of select="@label"/>}
+</xsl:template>
+						  
 
 <xsl:template match="html:docbody">
 \begin{document}
@@ -47,7 +48,7 @@
 
 
 <xsl:template match="html:title">
-\title{<xsl:value-of select="."/>}
+\title{<xsl:apply-templates/>}
 </xsl:template>
 
 <xsl:template match="html:author">
@@ -86,6 +87,9 @@
 </xsl:template>
 
 
+<xsl:template match="html:para">
+<xsl:apply-templates/>\par </xsl:template>
+
 
 
 <xsl:template match="html:sectiontitle">
@@ -97,6 +101,12 @@
 </xsl:if>
 <xsl:if test="name(..)='subsubsection'">
 \subsubsection{<xsl:value-of select="."/>}
+</xsl:if>
+<xsl:if test="name(..)='paragraph'">
+\paragraph{<xsl:value-of select="."/>}
+</xsl:if>
+<xsl:if test="name(..)='subparagraph'">
+\subparagraph{<xsl:value-of select="."/>}
 </xsl:if>
 
 </xsl:template>
@@ -188,13 +198,9 @@
 <xsl:template match="html:huge">{\huge <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:Huge">{\Huge <xsl:apply-templates/>}</xsl:template>
 
-<xsl:template match="html:LaTeX">\LaTeX </xsl:template>
+<xsl:template match="html:tex">\TeX{}</xsl:template>
 <xsl:template match="html:textquotedblleft">\textquotedblleft </xsl:template>
 <xsl:template match="html:textquotedblright">\textquotedblright </xsl:template>
 <xsl:template match="html:textbackslash">\textbackslash </xsl:template>
-
-<!--
-<xsl:template match="mml:math">\textbf{Math here}</xsl:template>
--->
 
 </xsl:stylesheet>
