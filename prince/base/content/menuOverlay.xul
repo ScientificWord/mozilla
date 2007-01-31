@@ -172,7 +172,7 @@
 #      <menuitem id="menu_replace"       accesskey="&editreplace.accesskey;"        key="findprevkb"     observes="cmd_findPrev"/>
       <menuseparator id="sep_checkspelling"/>
       <menuitem id="menu_checkspelling" accesskey="&editcheckspelling.accesskey;"
-                key="checkspellingkb"   observes="cmd_spelling" disabled="true"
+                key="checkspellingkb"   observes="cmd_spelling" disabled="false"
                 label="&checkSpellingCmd.label;"/>
     </menupopup>
   </menu>
@@ -239,6 +239,8 @@
       <menuitem  label="JavaScript debugger" id="venkmanName" oncommand="start_venkman();"/>
       <menuitem id="menu_inspector" label="&inspectorTaskCmd.label;" 
                 accesskey="&inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
+      <menuitem label="Extensions" id="menu_extensions" observes="Tools:Extensions"/>
+      <menuitem label="Themes" id="menu_themes" observes="Tools:Themes"/>
     </menupopup>
   </menu>
   
@@ -467,6 +469,8 @@
   <commandset id="tasksCommands">
     <command id="Tasks:Inspector" oncommand="inspectDOMDocument();"/>
     <command id="Tasks:InspectPage" oncommand="inspectDOMDocument(_content.document);"/>
+    <command id="Tools:Extensions" oncommand="OpenExtensions('extensions');"/>
+    <command id="Tools:Themes" oncommand="OpenExtensions('themes');"/>
   </commandset>
 
   <keyset id="tasksKeys">
