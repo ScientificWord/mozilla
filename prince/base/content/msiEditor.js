@@ -893,6 +893,12 @@ function SharedStartupForEditor(editorElement)
     //  we will observe just the bold command to trigger update of
     //  all toolbar style items
     commandManager.addCommandObserver(editorElement.mEditorDocumentObserver, "cmd_bold");
+    if ("mInitialDocCreatedObserver" in editorElement && editorElement.mInitialDocCreatedObserver != null)
+    {
+      dump("Adding mInitialDocCreatedObserver for editor [" + editorElement.id + "].\n");
+      commandManager.addCommandObserver(editorElement.mInitialDocCreatedObserver, "obs_documentCreated");
+      editorElement.mInitialDocCreatedObserver = null;
+    }
   } catch (e) { dump(e); }
 
   var isMac = (GetOS() == msigMac);
