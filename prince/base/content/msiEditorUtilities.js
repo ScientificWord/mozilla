@@ -967,9 +967,27 @@ function insertXMLAtCursor(editor, text)
     dump("Error in msiEditorUtilities.js, insertXMLAtCursor - null editor!\n");
     return;
   }
-  editor.selection.collapseToEnd();
-  var theRange = editor.selection.getRangeAt(0);
-  insertXML(editor, text, theRange.endContainer, theRange.endOffset);
+  if (editor.selection != null)
+  {
+//    editor.selection.collapseToEnd();
+    var theFocusNode = editor.selection.focusNode;
+    var theFocusOffset = editor.selection.focusOffset;
+//    var theRange = editor.selection.getRangeAt(0);
+//    insertXML(editor, text, theRange.endContainer, theRange.endOffset);
+    insertXML(editor, text, theFocusNode, theFocusOffset);
+  }
+  else
+  {
+    var theElement = editor.document.rootElement;
+    if (theElement != null && theElement.childNodes.length > 0)
+      theElement = theElement.childNodes[theElement.childNodes.length - 1];
+    if (theElement != null)
+    {
+      insertXML(editor, text, theElement, theElement.childNodes.length);
+    }
+    else
+      dump("No content nodes to insert into in editor (insertXMLAtCursor)!\n");
+  }
 }
 
 /************* Dialog management for editors ***************/

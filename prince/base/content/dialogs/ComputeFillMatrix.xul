@@ -14,24 +14,16 @@
 <?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
-<!-- ?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"? -->
-
-<!--?xul-overlay href="chrome://editor/content/editorOverlay.xul"? -->
-<!-- ?xul-overlay href="chrome://editor/content/composerOverlay.xul"? -->
 <!-- ?xul-overlay href="chrome://communicator/content/contentAreaContextOverlay.xul"? -->
 
 <!DOCTYPE dialog [
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/ComputeFillMatrix.dtd" >
 %dialogDTD;
-<!-- !ENTITY % editorDTD SYSTEM "chrome://editor/locale/editor.dtd" > -->
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
 %editorDTD;
 <!ENTITY % menuDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuDTD;
 ]>
-<!-- !ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
-%editorOverlayDTD;
-] -->
 
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;"
@@ -59,6 +51,8 @@
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
+  <!-- If the dialog has a toolbox, need: -->
+  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>
 
   <broadcaster id="args" value="about:blank"/>
 
@@ -85,12 +79,12 @@
     <keyset id="MSIKeySet"/>
   </keyset>
 
-  <toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
+  <!-- toolbox class="toolbox-top" id="EditorToolbox" mode="icons" -->
   <!-- menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="&menuBar.tooltip;" -->
-  <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="&editMenu.label;">
+  <!-- menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="&editMenu.label;">
     <menu id="editMenu"/>
 
-    <menu id="MSIMathMenu"/>
+    <menu id="MSIMathMenu"/ -->
     
     <!-- menu id="formatMenu" label="&formatMenu.label;" accesskey="&formatmenu.accesskey;">
       <menupopup id="formatMenuPopup">
@@ -102,10 +96,10 @@
       </menupopup>
     </menu -->
 
-    <menu id="tableMenu"/>
+    <!-- menu id="tableMenu"/>
     <spacer flex="1"/>
   </menubar>
-  </toolbox>
+  </toolbox -->
 
   <hbox id="outer-box" flex="1">
     <vbox>
@@ -133,9 +127,9 @@
           <radio label="&band.label;"      id="band"      selected="false"/>
         </radiogroup>
       </groupbox>
-      <groupbox>
+      <groupbox id="editorGroupbox">
         <caption label="Item/Function/List"/>
-        <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="content-frame"/>
+        <editor editortype="html" type="content-primary" context="msiEditorContentContext" width="180" height="60" id="fillmat-content-frame"/>
       </groupbox>
     </vbox>
   </hbox>
