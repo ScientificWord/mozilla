@@ -3,25 +3,27 @@
 var data;
 
 //// implements nsIObserver
-function msiFillMatrixEditorDocumentObserver(editorElement)
+//function msiFillMatrixEditorDocumentObserver(editorElement)
+var msiFillMatrixEditorDocumentObserver =
 { 
-  this.msiEditorElement = editorElement;
-  this.observe = function(aSubject, aTopic, aData)
+//  this.msiEditorElement = editorElement;
+//  this.observe = function(aSubject, aTopic, aData)
+  observe: function(aSubject, aTopic, aData)
   {
     dump("ComputeFillMatrix observer hit!\n");
 //    var editor = msiGetEditor(editorElement);
     switch(aTopic)
     {
       case "obs_documentCreated":
-        try
-        {
-          insertmath(this.msiEditorElement);
-        } catch(exc) {dump("Exception inserting math in FillMatrix edit window: [" + exc + "].\n");}
+//        try
+//        {
+//          insertmath(this.msiEditorElement);
+//        } catch(exc) {dump("Exception inserting math in FillMatrix edit window: [" + exc + "].\n");}
         // type defaults to first choice according to XUL
         Switch("zero");
       break;
     }
-  };
+  }
 }
 
 
@@ -49,9 +51,10 @@ function Startup(){
 //  EditorStartup();
 
   // Initialize our source text <editor>
-  var theStringSource = "";
-  var editorControl = document.getElementById("content-frame");
-  msiInitializeEditorForElement(editorControl, theStringSource);
+  var theStringSource = GetComputeString("Math.emptyForInput");
+  var editorControl = document.getElementById("fillmat-content-frame");
+  editorControl.mInitialDocCreatedObserver = msiFillMatrixEditorDocumentObserver;
+  msiInitializeEditorForElement(editorControl, theStringSource, true);
 //  editorControl.makeEditable("html", false);
 
 //  try {
@@ -78,11 +81,10 @@ function Startup(){
 //  } catch (e) { dump("makeEditable failed in Startup(): "+e+"\n"); }
   
   // see EditorSharedStartup() in editor.js
-  var commandManager = msiGetCommandManager(editorControl);
-//  var commandManager = GetCurrentCommandManager();
-  var docObserver = new msiFillMatrixEditorDocumentObserver(editorControl);
-  commandManager.addCommandObserver(docObserver, "obs_documentCreated");
-  editorControl.makeEditable("html", false);
+//  var commandManager = msiGetCommandManager(editorControl);
+//  commandManager.addCommandObserver(msiFillMatrixEditorDocumentObserver, "obs_documentCreated");
+  
+//  editorControl.makeEditable("html", false);
 }
 
 function OK(){
@@ -98,7 +100,7 @@ function OK(){
   data.type = type.selectedIndex + 1;
 
   if (data.type >= 4) {
-    var doc = document.getElementById("content-frame").contentDocument;
+    var doc = document.getElementById("fillmat-content-frame").contentDocument;
     var mathnodes = doc.getElementsByTagName("math");
     if (mathnodes.length == 0) {
       dump("No math in center field!\n");
@@ -142,11 +144,39 @@ function Switch(id){
     val = false;
     break;
   }
-  var theEditor = document.getElementById("content-frame");
+  var theEditor = document.getElementById("fillmat-content-frame");
+  var elementStyle = theEditor.style;
+  var internalEditor = theEditor.getEditor(theEditor.contentWindow);
   if (val)
-    theEditor.disabled = true;
-  else if (theEditor.hasAttribute("disabled"))
+  {
+    theEditor.setAttribute("disabled", "true");
+    theEditor.allowevents = false;
+    if (internalEditor != null)
+    {
+      internalEditor.flags |= (Components.interfaces.nsIPlaintextEditor.eEditorReadonlyMask | Components.interfaces.nsIPlaintextEditor.eEditorDisabledMask);
+    }
+    if (elementStyle != null)
+    {
+      dump("Original value of moz-user-focus on editor is " + elementStyle.getPropertyValue("-moz-user-focus") + ".\n");
+      elementStyle.setProperty("-moz-user-focus", "ignore", "");
+    }
+  }
+//  else if (theEditor.hasAttribute("disabled"))
+  else
+  {
     theEditor.removeAttribute("disabled");
+    if (internalEditor != null)
+    {
+      internalEditor.flags &= ~(Components.interfaces.nsIPlaintextEditor.eEditorReadonlyMask | Components.interfaces.nsIPlaintextEditor.eEditorDisabledMask);
+    }
+    if (elementStyle != null)
+    {
+      dump("Original value of moz-user-focus on editor is " + elementStyle.getPropertyValue("-moz-user-focus") + ".\n");
+      elementStyle.setProperty("-moz-user-focus", "normal", "");
+    }
+//    theEditor.setAttribute("-moz-user-focus", "normal");
+    theEditor.allowevents = true;
+  }
 }
 
 function Cancel(){
