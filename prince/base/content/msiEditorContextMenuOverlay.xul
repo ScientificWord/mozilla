@@ -48,7 +48,19 @@
 
 <popupset id="msiEditorContentContextSet">
  <popup id="msiEditorContentContext"   
-   onpopupshowing="msiEditorFillContextMenu(event, this);"> 
+   onpopupshowing="msiEditorFillContextMenu(event, this);RealTimeSpell.updateMenu('spellSuggestionsMenu','spellSuggestionsMenuSeparator')"> 
+    <menu id="spellSuggestionsMenu" label="&spellSuggestions.label;"
+                                    accesskey="&spellSuggestions.accesskey;">
+      <menupopup id="spellSuggestionsMenuPopup"
+                 onpopupshowing="RealTimeSpell.updateSuggestionsMenu(this,'spellAddToDictionary','spellAddSep',null);"
+                 oncommand="RealTimeSpell.selectSuggestion(event.target.value,null,null);">
+        <menuitem id="spellAddToDictionary" label="&spellAddToDictionary.label;"
+                  oncommand="RealTimeSpell.addToDictionary(null,null);"/>
+        <menuseparator id="spellAddSep"/>
+      </menupopup>
+    </menu>
+    <menuseparator id="spellSuggestionsMenuSeparator"/>
+
     <menuitem id="menu_undo_cm"   label="&undoCmd.label;" accesskey="&undo.accesskey;" command="cmd_undo"/>
     <menuitem id="menu_redo_cm"   label="&redoCmd.label;" accesskey="&redo.accesskey;" command="cmd_redo"/>
     <menuseparator id="undoredo-separator"/>

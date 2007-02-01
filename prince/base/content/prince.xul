@@ -59,7 +59,8 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorCommandsDebug.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
-   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
 #   <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
 #  <script type="application/x-javascript" src="chrome://editor/content/publishprefs.js"/>
 #  <script type="application/x-javascript" src="chrome://communicator/content/contentAreaDD.js"/>
@@ -131,7 +132,7 @@
     <deck id="ContentWindowDeck" selectedIndex="0" flex="1">
       <stack>
         <editor id="content-frame" type="content-primary" context="msiEditorContentContext"
-                editortype="html" flex="1" tooltip="aHTMLTooltip"/>
+                editortype="html" flex="1" spellcheck="true" tooltip="aHTMLTooltip"/>
       </stack>
       <vbox>
         <label id="doctype-text" crop="right"/>
