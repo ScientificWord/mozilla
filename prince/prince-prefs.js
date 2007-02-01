@@ -96,7 +96,8 @@ pref("editor.grid.snap",                     false);
 pref("editor.grid.size",                     0);
 pref("editor.resizing.preserve_ratio",       true);
 pref("editor.positioning.offset",            0);
-
+pref("spellchecker.enablerealtimespell",      true);
+pref("spellchecker.realtimespell.warning_color", "red");
 /* for Prince */
 pref("mousewheel.withcontrolkey.action", 3); //enable ctrl+mousewheel to change font size
 
