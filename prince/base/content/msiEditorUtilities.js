@@ -12,7 +12,7 @@
 //
 //// Bummer! Can't get at enums from nsIDocumentEncoder.h
 //// http://lxr.mozilla.org/seamonkey/source/content/base/public/nsIDocumentEncoder.h#111
-//var gStringBundle;
+var gStringBundle;
 var gIOService;
 var gPrefsService;
 var gPrefsBranch;
