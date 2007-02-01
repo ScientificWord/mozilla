@@ -217,6 +217,9 @@
 <!ENTITY clear.accesskey "l">
 <!ENTITY selectAllCmd.label "Select All">
 <!ENTITY selectall.accesskey "a">
+<!ENTITY spellSuggestions.label   "Spelling Suggestions">
+<!ENTITY spellSuggestions.accesskey "S">
+<!ENTITY spellAddToDictionary.label "Add to Dictionary">
 
 <!-- Font Face SubMenu -->
 <!ENTITY FontFaceSelect.tooltip "Choose a font">
