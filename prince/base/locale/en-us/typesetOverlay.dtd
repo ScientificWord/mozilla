@@ -6,6 +6,8 @@
 <!ENTITY MSITypesetMenu.label "Typeset">
 <!ENTITY MSITypesetMenu.accesskey "p">
 
+<!ENTITY MSIDocFormatCmd.label "Document Format...">
+<!ENTITY MSIDocFormatCmd.accesskey "D">
 <!ENTITY MSIfrontMatterCmd.label "Front Matter...">
 <!ENTITY MSIfrontMatterCmd.accesskey "F">
 <!ENTITY MSIpreambleCmd.label "Preamble...">

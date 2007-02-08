@@ -1,0 +1,305 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/typesetDocFormat.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetDocFormat.dtd">
+
+<dialog title="&windowTitle.label;"
+    id="docformat.dialog"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/typesetDocFormat.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/ -->
+
+  <!-- keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset -->
+  <tabbox id="docformat">
+    <tabs>
+      <tab label="&docformatGeneraltab;"/>
+      <tab label="&docformatPageLayouttab;"/>
+      <tab label="&docformatFontstab;"/>
+      <tab label="&docformatHeaderstab;"/>
+      <tab label="&docformatAdvancedtab;"/>
+    </tabs>
+    <tabpanels>
+     <tabpanel id="docformatGeneralPanel"></tabpanel>
+     <tabpanel id="docformatPageLayoutPanel" flex="1">
+       <vbox>
+         <hbox>
+           <vbox flex="1">
+             <hbox maxheight="5em" minheight="3em" flex="1">
+               <vbox align="center">
+                 <label>&docformatTwosided;</label>
+                 <checkbox id="twosides" persist="checked" oncommand="setTwosidedState(this);"/>
+                 <broadcaster id="oneside" hidden="false" persist="hidden"/>
+                 <broadcaster id="twoside" hidden="true" persist="hidden"/>
+               </vbox>
+               <vbox align="center">
+                 <label>&docformatLandscape;</label>
+                 <checkbox id="landscape" persist="checked"
+                   oncommand="setPageDimensions();OnWindowSizeReset(false);"/>
+               </vbox>
+               <vbox align="center">
+                 <label>&docformatCentered;</label>
+                 <checkbox id="vcenter" label="Vert" persist="checked" 
+                   oncommand="if (checked) document.getElementById('bc.vcenter').setAttribute('disabled',true);else document.getElementById('bc.vcenter').removeAttribute('disabled');layoutPage('all');"/>
+                 <broadcaster id="bc.vcenter" persist="hidden"/>
+                 <checkbox id="hcenter" checked="false" label="Horiz" persist="checked" 
+                   oncommand="if (checked) document.getElementById('bc.hcenter').setAttribute('disabled',true);else document.getElementById('bc.hcenter').removeAttribute('disabled');layoutPage('all');"/>
+                 <broadcaster id="bc.hcenter" persist="hidden"/>
+               </vbox>
+               <vbox align="center">
+                 <label>&docformatUnits;</label>
+                 <menulist id="docformat.units" persist="value indexSelected" 
+                        oncommand="switchUnits();"  >
+                   <menupopup>
+                     <menuitem id="docformat.inch" label="&docformatInch;" value="in"/>
+                     <menuitem id="docformat.cm" label="&docformatCentimeter;" value="cm"/>
+                     <menuitem id="docformat.pt" label="&docformatPoints;" value="pt"/>
+                     <menuitem id="docformat.mm" label="&docformatMillimeter;" value="mm"/>
+                   </menupopup>
+                 </menulist>
+               </vbox>
+               <vbox align="center">
+                 <label>&docformatPaperSize;</label>
+                 <menulist id="docformat.papersize"
+                    persist="value indexSelected" oncommand="setPageDimensions();OnWindowSizeReset(false);">
+                   <menupopup >
+                     <menuitem id="docformat.letter" label="letter" value="letter"/>
+                     <menuitem id="docformat.a4" label="A4" value="a4"/>
+                     <menuitem id="docformat.screen" label="Screen" value="screen"/>
+                     <menuitem id="docformat.other" label="Other" value="other"/>
+                     <menuitem id="docformat.a0" label="A0" value="a0"/>
+                     <menuitem id="docformat.a1" label="A1" value="a1"/>
+                     <menuitem id="docformat.a2" label="A2" value="a2"/>
+                     <menuitem id="docformat.a3" label="A3" value="a3"/>
+                     <menuitem id="docformat.a5" label="A5" value="a5"/>
+                     <menuitem id="docformat.a6" label="A6" value="a6"/>
+                     <menuitem id="docformat.b0" label="B0" value="b0"/>
+                     <menuitem id="docformat.b1" label="B1" value="b1"/>
+                     <menuitem id="docformat.b2" label="B2" value="b2"/>
+                     <menuitem id="docformat.b3" label="B3" value="b3"/>
+                     <menuitem id="docformat.b4" label="B4" value="b4"/>
+                     <menuitem id="docformat.b5" label="B5" value="b5"/>
+                     <menuitem id="docformat.b6" label="B6" value="b6"/>
+                     <menuitem id="docformat.executive" label="Executive" value="executive"/>
+                     <menuitem id="docformat.legal" label="Legal" value="legal"/>
+                   </menupopup>
+                 </menulist>
+               </vbox>
+             </hbox>
+             <spacer flex="1"/>
+             <hbox>
+               <hbox style="width:1em" />
+    <!-- beginning of layout diagram -->
+               <hbox  id="page" role="page" >
+                 <vbox id="lmargin">
+                   <hbox>
+                     <observes element="tmargin" attribute="style" />
+                   </hbox>
+                   <hbox >
+                     <observes element="header" attribute="style" />
+                   </hbox>
+                   <hbox>
+                     <observes element="headersep" attribute="style" />
+                   </hbox>
+                   <hbox id="lmarginbody" onclick="document.getElementById('tblmargin').focus();">
+                     <observes element="bodyheight" attribute="style" />
+                   </hbox>
+                 </vbox>
+                 <vbox id="bodywidth">
+                   <hbox id="tmargin" onclick="document.getElementById('tbtmargin').focus();"/>
+                   <hbox id="header" role="textarea" style="height:.2cm;" onclick="document.getElementById('tbheader').focus();"/>
+                   <hbox id="headersep" style="height:.2cm;" onclick="document.getElementById('tbheadersep').focus();"/>
+                   
+                   <hbox id="bodyheight" >
+                     <hbox id="bodyleft" role="textarea" onclick="handleBodyMouseClick(event);" tooltip="Body text area" flex="1"/>
+                     <hbox id="colsep" observes="multicolumn" role="columnwidth" onclick="document.getElementById('tbcolsep').focus();" persist="hidden"/>
+                     <hbox id="bodyright" observes="multicolumn" role="textarea" onclick="handleBodyMouseClick(event);" tooltip="Body text area" flex="1" persist="hidden"/>
+                   </hbox>
+                   
+                   <hbox id="footersep" onclick="document.getElementById('tbfootersep').focus();"/>
+                   <hbox id="footer" role="textarea" onclick="document.getElementById('tbfooter').focus();"/>
+                 </vbox>
+                 <vbox id="mnsep" role="columnwidth" observes="disablemarginnotes" persist="hidden" >
+                   <hbox>
+                     <observes element="tmargin" attribute="style" />
+                   </hbox>
+                   <hbox >
+                     <observes element="header" attribute="style" />
+                   </hbox>
+                   <hbox>
+                     <observes element="headersep" attribute="style" />
+                   </hbox>
+                   <hbox id="mnsepbody" onclick="document.getElementById('tbmnsep').focus();">
+                     <observes element="bodyheight" attribute="style" />
+                   </hbox>
+                 </vbox>
+                 <vbox id="mnwidth" role="columnwidth" observes="disablemarginnotes"  persist="hidden">
+                   <hbox>
+                     <observes element="tmargin" attribute="style" />
+                   </hbox>
+                   <hbox >
+                     <observes element="header" attribute="style" />
+                   </hbox>
+                   <hbox>
+                     <observes element="headersep" attribute="style" />
+                   </hbox>
+                   <vbox id="mnbody" role="marginnotes">
+                     <observes element="bodyheight" attribute="style" />
+                     <separator flex="1" onclick="document.getElementById('tbmnwidth').focus();"/>
+                     <hbox id ="topmarginnote" role="mn"/>
+                     <hbox id="mnpush"  onclick="document.getElementById('tbmnpush').focus();">
+                        <observes element="topmarginnote" attribute="hidden" />
+                     </hbox>
+                     <hbox id ="bottommarginnote" role="mn">
+                        <observes element="topmarginnote" attribute="hidden" />
+                     </hbox>
+                     <separator flex="2" onclick="document.getElementById('tbmnwidth').focus();"/>
+                   </vbox>
+                 </vbox>
+               </hbox>
+    <!-- end of layout diagram 1-->           
+             </hbox>
+           </vbox>
+           <vbox align="center">
+             <label>2 Columns</label>
+             <checkbox id="columns" oncommand="broadcastColCount();" persist="checked"/>
+             <broadcaster id="multicolumn" hidden="true" persist="hidden"/><!-- observers of this will be visible only when there are multiple columns -->
+             <broadcaster id="singlecolumn" persist="hidden"/><!-- observers of this will be visible only when there is a single column; not used yet -->
+             <label value="Separation" observes="multicolumn" persist="hidden"/>
+             <textbox id="tbcolsep" style="width: 3em" observes="multicolumn" oninput="layoutPage('colsep');" 
+               onkeypress="handleChar(event,'colsep');" persist="hidden"
+               onchange="layoutPage('colsep');" onfocus="activate('colsep');" onblur="deactivate('colsep');"/>
+           </vbox>
+         </hbox>  
+         <vbox>
+           <hbox>
+             <vbox>
+               <hbox id="gb.dimension">
+                 <groupbox align="center">
+                   <caption label="Body"/>
+                   <label value="Width"/>
+                   <textbox id="tbbodywidth" style="width: 3.5em" onkeypress="handleChar(event,'bodywidth');"
+                     onchange="layoutPage('bodywidth');"
+                     onfocus="activate('bodyleft');activate('bodyright');" onblur="deactivate('bodyleft');deactivate('bodyright');"
+                     tooltip="The width of the main text"/>
+                   <label value="Height"/>
+                   <textbox id="tbbodyheight" style="width: 3.5em" oninput="layoutPage('bodyheight');" 
+                     onchange="layoutPage('bodyheight');" 
+                     onfocus="activate('bodyleft');activate('bodyright');" 
+                     onblur="deactivate('bodyleft');deactivate('bodyright');"
+                     tooltip="The height of the main text" onkeypress="handleChar(event,'bodyheight');"/>
+                 </groupbox>
+                 <groupbox align="center">
+                   <caption label="Margins"/>
+                   <hbox>
+                   <label value="Left" observes="oneside" persist="hidden"/>
+                   <label value="Inside" observes="twoside" persist="hidden"/>
+                   </hbox>
+                   <textbox id="tblmargin" style="width: 3em" voninput="layoutPage('lmargin');" onkeypress="handleChar(event,'lmargin');" 
+                     onchange="layoutPage('lmargin');" onfocus="activate('lmarginbody');" onblur="deactivate('lmarginbody');" observes="bc.hcenter"/>
+                   <label value="Top"/>
+                   <textbox id="tbtmargin" style="width: 3em" oninput="layoutPage('tmargin');"  onkeypress="handleChar(event,'tmargin');"
+                     onchange="layoutPage('tmargin');" onfocus="activate('tmargin');" onblur="deactivate('tmargin');" observes="bc.vcenter"/>
+                 </groupbox>
+               </hbox>
+               <hbox>
+                 <label value="Computed margins:"/>
+               </hbox>
+               <hbox>
+                 <label value="Page dimensions:"/>
+               </hbox>
+             </vbox>
+             <vbox>
+               <groupbox align="center">
+                 <caption label="Header"/>
+                 <label value="Separation"/>
+                 <textbox id="tbheadersep" style="width: 3em" oninput="layoutPage('headersep');" onkeypress="handleChar(event,'headersep');"
+                   onchange="layoutPage('headersep');" onfocus="activate('headersep');" onblur="deactivate('headersep');"/>
+                 <label value="Height"/>
+                 <textbox id="tbheader" style="width: 3em" oninput="layoutPage('header');" onkeypress="handleChar(event,'header');"
+                   onchange="layoutPage('header');" onfocus="activate('header');" onblur="deactivate('header');"/>
+               </groupbox>
+               <hbox>
+                 <label observes="oneside" value="Right" persist="hidden"/><label observes="twoside" value="Outside" persist="hidden"/><label id="tbcomputedrmargin" />
+               </hbox>
+               <hbox>
+                 <label value="Width"/><label id="tbpagewidth" />
+               </hbox>
+               <label id="tbcomputedrmargin" />
+             </vbox>
+             <vbox align="center">
+               <groupbox align="center">
+                 <caption label="Footer"/>
+                 <label value="Separation"/>
+                 <textbox id="tbfootersep" style="width: 3em" oninput="layoutPage('footersep');" onkeypress="handleChar(event,'footersep');"
+                  onchange="layoutPage('footersep');" onfocus="activate('footersep');" onblur="deactivate('footersep');"/>
+                 <label value="Height"/>
+                 <textbox id="tbfooter" style="width: 3em" oninput="layoutPage('footer');" onkeypress="handleChar(event,'footer');"
+                   onchange="layoutPage('footer');" onfocus="activate('footer');" onblur="deactivate('footer');"/>
+               </groupbox>
+               <hbox>
+                 <label value="Bottom"/><label id="tbcomputedbmargin" />
+               </hbox>
+               <hbox>
+                 <label value="Height"/><label id="tbpageheight" />
+               </hbox>
+             </vbox>
+             <groupbox align="center">
+               <caption label="Margin notes"/>
+               <label value="Width"/>
+               <textbox id="tbmnwidth" style="width: 3em" value="1"  oninput="layoutPage('mnwidth');" onkeypress="handleChar(event,'mnwidth');"
+                 onchange="layoutPage('mnwidth');" onfocus="activate('mnbody');" onblur="deactivate('mnbody');" persist="disabled">
+                 <observes element="disablemarginnotes" attribute="disabled"  />
+               </textbox>  
+               <label value="Separation"/>
+               <textbox id="tbmnsep" style="width: 3em" value="1"  oninput="layoutPage('mnsep');"  persist="disabled" onkeypress="handleChar(event,'mnsep');"
+                 onchange="layoutPage('mnsep');" onfocus="activate('mnsepbody');" onblur="deactivate('mnsepbody');">
+                 <observes element="disablemarginnotes" attribute="disabled"  />
+               </textbox>  
+               <label value="Push"/>
+               <textbox id="tbmnpush" style="width: 3em" value="1"  oninput="layoutPage('mnpush');" onkeypress="handleChar(event,'mnpush');"
+                 onchange="layoutPage('mnpush');" onfocus="activate('mnpush');" onblur="deactivate('mnpush');"  persist="disabled"
+                 tooltip="The minimum separation between margin notes" >
+                 <observes element="disablemarginnotes" attribute="disabled"  />
+               </textbox>  
+               <broadcaster id="disablemarginnotes" hidden="true" disabled="true" persist="hidden disabled"/>
+               <checkbox id="disablemn" checked="true" label="Hide notes" persist="checked" 
+                oncommand="disableMarginNotes();"/>
+             </groupbox>
+           </hbox>
+           <hbox>
+             <label observes="twoside" value="You are laying out the right page. The left page is a mirror image of this." persist="hidden"/>
+           </hbox>
+         </vbox>
+       </vbox>
+     </tabpanel>
+     <tabpanel id="docformatFontsPanel"></tabpanel>
+     <tabpanel id="docformatFontsPanel"></tabpanel>
+     <tabpanel id="docformatAdvancedPanel"></tabpanel>
+    </tabpanels>
+  </tabbox>
+
+
+
+
+</dialog>
