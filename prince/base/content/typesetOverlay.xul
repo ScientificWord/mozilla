@@ -16,6 +16,7 @@
                   events="create, mode_switch"
                   oncommandupdate="goUpdateMSITypesetMenuItems(this)">
   
+    <command id="cmd_MSIDocFormatCmd"                       oncommand="goDoCommand('cmd_MSIDocFormatCmd');"/>
     <command id="cmd_MSIfrontMatterCmd"                     oncommand="goDoCommand('cmd_MSIfrontMatterCmd');"/>
     <command id="cmd_MSIpreambleCmd"                        oncommand="goDoCommand('cmd_MSIpreambleCmd');"/>
     <command id="cmd_MSIbibChoiceCmd"                       oncommand="goDoCommand('cmd_MSIbibChoiceCmd');"/>
@@ -50,6 +51,9 @@
 
   <menu id="MSITypesetMenu" label="&MSITypesetMenu.label;" accesskey="&MSITypesetMenu.accesskey;">
     <menupopup id="MSITypesetPopup" onpopupshowing="initTypesetMenu(this)">
+      <menuitem label="&MSIDocFormatCmd.label;"            
+        accesskey="&MSIDocFormatCmd.accesskey;"          
+        command="cmd_MSIDocFormatCmd"/>
       <menuitem label="&MSIfrontMatterCmd.label;"            
         accesskey="&MSIfrontMatterCmd.accesskey;"          
         command="cmd_MSIfrontMatterCmd"/>
