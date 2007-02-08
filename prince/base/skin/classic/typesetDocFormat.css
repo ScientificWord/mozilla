@@ -1,0 +1,32 @@
+/* Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. */
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+*[role="page"] {border-style:solid;
+  border-width:1px;
+  background-color:white;
+  overflow:visible;
+}
+
+*[role="page"][danger="true"] { background-color: red; }
+
+*[role="textarea"] {border-style:solid;
+  border-width:1px;
+  background-color:silver;
+}
+
+*[role="marginnotes"] {border-style:solid;
+  border-width:1px;
+  background-color:white;
+}
+
+*[hidden="true"] {display:none;}
+
+*[role="mn"] {border-style:solid;
+  border-top-width:1px;
+  border-bottom-width:1px;
+  border-left-style:none;
+  border-right-style:none;
+  background-color:silver;
+}
+
+*[active="1"] { background-color:#ffc0c0; }
