@@ -30,6 +30,7 @@ function msiSetupMSITypesetMenuCommands(editorElement)
   var commandTable = msiGetComposerCommandTable(editorElement);
   
   //dump("Registering msi math menu commands\n");
+  commandTable.registerCommand("cmd_MSIDocFormatCmd",                   msiDocFormat);
   commandTable.registerCommand("cmd_MSIfrontMatterCmd",                 msiFrontMatter);
   commandTable.registerCommand("cmd_MSIpreambleCmd",                    msiPreamble);
   commandTable.registerCommand("cmd_MSIbibChoiceCmd",                   msiBibChoice);
@@ -121,6 +122,23 @@ function doParamCommand(commandID, newValue)
 }
 
 //ljh
+msiDocFormat
+var msiDocFormat =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    doDocFormatDlg(editorElement, this);
+  }
+};
 
 var msiFrontMatter =
 {
@@ -466,6 +484,19 @@ var msiInsertSubdocument =
 
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";
+
+
+function doDocFormatDlg()
+{
+  var doDocFormatData = new Object();
+  window.openDialog("chrome://prince/content/typesetDocFormat.xul", "_blank", "chrome,close,resizable, titlebar,modal", doDocFormatData);
+  if (!doDocFormatData.Cancel)
+  {
+    alert("Document Format Dialog returned.\nNeeds to be hooked up to do something!");
+  }
+}
+
+
 
 function doFrontMatterDlg(editorElement, commandHandler)
 {

@@ -1,0 +1,22 @@
+<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Document Format">
+
+
+<!ENTITY docformatGeneraltab "General">
+<!ENTITY docformatPageLayouttab "Page Layout">
+<!ENTITY docformatFontstab "Fonts">
+<!ENTITY docformatHeaderstab "Headers/Footers">
+<!ENTITY docformatAdvancedtab "Advanced">
+
+
+<!ENTITY docformatTwosided "Two Sided">
+<!ENTITY docformatNumberOfColumns "Number of columns">
+<!ENTITY docformatUnits	"Units">
+<!ENTITY docformatPaperSize	"Paper Size">
+<!ENTITY docformatLandscape "Landscape">
+<!ENTITY docformatCentered "Center">
+<!ENTITY docformatInch "in">
+<!ENTITY docformatCentimeter "cm">
+<!ENTITY docformatPoints "pt">
+<!ENTITY docformatMillimeter "mm">
