@@ -59,10 +59,10 @@
                </vbox>
                <vbox align="center">
                  <label>&docformatCentered;</label>
-                 <checkbox id="vcenter" label="Vert" persist="checked" 
+                 <checkbox id="vcenter" label="&docformatVert;" persist="checked" 
                    oncommand="if (checked) document.getElementById('bc.vcenter').setAttribute('disabled',true);else document.getElementById('bc.vcenter').removeAttribute('disabled');layoutPage('all');"/>
                  <broadcaster id="bc.vcenter" persist="hidden"/>
-                 <checkbox id="hcenter" checked="false" label="Horiz" persist="checked" 
+                 <checkbox id="hcenter" checked="false" label="&docformatHoriz;" persist="checked" 
                    oncommand="if (checked) document.getElementById('bc.hcenter').setAttribute('disabled',true);else document.getElementById('bc.hcenter').removeAttribute('disabled');layoutPage('all');"/>
                  <broadcaster id="bc.hcenter" persist="hidden"/>
                </vbox>
@@ -83,10 +83,10 @@
                  <menulist id="docformat.papersize"
                     persist="value indexSelected" oncommand="setPageDimensions();OnWindowSizeReset(false);">
                    <menupopup >
-                     <menuitem id="docformat.letter" label="letter" value="letter"/>
+                     <menuitem id="docformat.letter" label="&docformatLetter;" value="letter"/>
                      <menuitem id="docformat.a4" label="A4" value="a4"/>
-                     <menuitem id="docformat.screen" label="Screen" value="screen"/>
-                     <menuitem id="docformat.other" label="Other" value="other"/>
+                     <menuitem id="docformat.screen" label="&docformatScreen;" value="screen"/>
+                     <menuitem id="docformat.other" label="&docformatOther;" value="other"/>
                      <menuitem id="docformat.a0" label="A0" value="a0"/>
                      <menuitem id="docformat.a1" label="A1" value="a1"/>
                      <menuitem id="docformat.a2" label="A2" value="a2"/>
@@ -100,8 +100,8 @@
                      <menuitem id="docformat.b4" label="B4" value="b4"/>
                      <menuitem id="docformat.b5" label="B5" value="b5"/>
                      <menuitem id="docformat.b6" label="B6" value="b6"/>
-                     <menuitem id="docformat.executive" label="Executive" value="executive"/>
-                     <menuitem id="docformat.legal" label="Legal" value="legal"/>
+                     <menuitem id="docformat.executive" label="&docformatExecutive;" value="executive"/>
+                     <menuitem id="docformat.legal" label="&docformatLegal;" value="legal"/>
                    </menupopup>
                  </menulist>
                </vbox>
@@ -181,11 +181,11 @@
              </hbox>
            </vbox>
            <vbox align="center">
-             <label>2 Columns</label>
+             <label value="&docformatTwoColumns;"/>
              <checkbox id="columns" oncommand="broadcastColCount();" persist="checked"/>
              <broadcaster id="multicolumn" hidden="true" persist="hidden"/><!-- observers of this will be visible only when there are multiple columns -->
              <broadcaster id="singlecolumn" persist="hidden"/><!-- observers of this will be visible only when there is a single column; not used yet -->
-             <label value="Separation" observes="multicolumn" persist="hidden"/>
+             <label value="&docformatColSeparation;" observes="multicolumn" persist="hidden"/>
              <textbox id="tbcolsep" style="width: 3em" observes="multicolumn" oninput="layoutPage('colsep');" 
                onkeypress="handleChar(event,'colsep');" persist="hidden"
                onchange="layoutPage('colsep');" onfocus="activate('colsep');" onblur="deactivate('colsep');"/>
@@ -196,99 +196,99 @@
              <vbox>
                <hbox id="gb.dimension">
                  <groupbox align="center">
-                   <caption label="Body"/>
-                   <label value="Width"/>
+                   <caption label="&docformatTextBody;"/>
+                   <label value="&docformatTextBodyWidth;"/>
                    <textbox id="tbbodywidth" style="width: 3.5em" onkeypress="handleChar(event,'bodywidth');"
                      onchange="layoutPage('bodywidth');"
                      onfocus="activate('bodyleft');activate('bodyright');" onblur="deactivate('bodyleft');deactivate('bodyright');"
                      tooltip="The width of the main text"/>
-                   <label value="Height"/>
+                   <label value="&docformatTextBodyHeight;"/>
                    <textbox id="tbbodyheight" style="width: 3.5em" oninput="layoutPage('bodyheight');" 
                      onchange="layoutPage('bodyheight');" 
                      onfocus="activate('bodyleft');activate('bodyright');" 
                      onblur="deactivate('bodyleft');deactivate('bodyright');"
-                     tooltip="The height of the main text" onkeypress="handleChar(event,'bodyheight');"/>
+                     tooltip="&tbbodyheight.tooltip;" onkeypress="handleChar(event,'bodyheight');"/>
                  </groupbox>
                  <groupbox align="center">
-                   <caption label="Margins"/>
+                   <caption label="&docformatMargins;"/>
                    <hbox>
-                   <label value="Left" observes="oneside" persist="hidden"/>
-                   <label value="Inside" observes="twoside" persist="hidden"/>
+                   <label value="&docformatLeftMargin;" observes="oneside" persist="hidden"/>
+                   <label value="&docformatInsideMargin;" observes="twoside" persist="hidden"/>
                    </hbox>
                    <textbox id="tblmargin" style="width: 3em" voninput="layoutPage('lmargin');" onkeypress="handleChar(event,'lmargin');" 
                      onchange="layoutPage('lmargin');" onfocus="activate('lmarginbody');" onblur="deactivate('lmarginbody');" observes="bc.hcenter"/>
-                   <label value="Top"/>
+                   <label value="&docformatTopMargin;"/>
                    <textbox id="tbtmargin" style="width: 3em" oninput="layoutPage('tmargin');"  onkeypress="handleChar(event,'tmargin');"
                      onchange="layoutPage('tmargin');" onfocus="activate('tmargin');" onblur="deactivate('tmargin');" observes="bc.vcenter"/>
                  </groupbox>
                </hbox>
                <hbox>
-                 <label value="Computed margins:"/>
+                 <label value="&docformatComputedMargins;"/>
                </hbox>
                <hbox>
-                 <label value="Page dimensions:"/>
+                 <label value="&docformatPageDimensions;"/>
                </hbox>
              </vbox>
              <vbox>
                <groupbox align="center">
-                 <caption label="Header"/>
-                 <label value="Separation"/>
+                 <caption label="&docformatHeader;"/>
+                 <label value="&docformatHeaderSeparation;"/>
                  <textbox id="tbheadersep" style="width: 3em" oninput="layoutPage('headersep');" onkeypress="handleChar(event,'headersep');"
                    onchange="layoutPage('headersep');" onfocus="activate('headersep');" onblur="deactivate('headersep');"/>
-                 <label value="Height"/>
+                 <label value="&docformatHeaderHeight;"/>
                  <textbox id="tbheader" style="width: 3em" oninput="layoutPage('header');" onkeypress="handleChar(event,'header');"
                    onchange="layoutPage('header');" onfocus="activate('header');" onblur="deactivate('header');"/>
                </groupbox>
                <hbox>
-                 <label observes="oneside" value="Right" persist="hidden"/><label observes="twoside" value="Outside" persist="hidden"/><label id="tbcomputedrmargin" />
+                 <label observes="oneside" value="&docformatRightMarginLabel;" persist="hidden"/><label observes="twoside" value="&docformatOutsideMarginLabel;" persist="hidden"/><label id="tbcomputedrmargin" />
                </hbox>
                <hbox>
-                 <label value="Width"/><label id="tbpagewidth" />
+                 <label value="&docformatPageWidth;"/><label id="tbpagewidth" />
                </hbox>
                <label id="tbcomputedrmargin" />
              </vbox>
              <vbox align="center">
                <groupbox align="center">
-                 <caption label="Footer"/>
-                 <label value="Separation"/>
+                 <caption label="&docformatFooter;"/>
+                 <label value="&docformatFooterSeparation;"/>
                  <textbox id="tbfootersep" style="width: 3em" oninput="layoutPage('footersep');" onkeypress="handleChar(event,'footersep');"
                   onchange="layoutPage('footersep');" onfocus="activate('footersep');" onblur="deactivate('footersep');"/>
-                 <label value="Height"/>
+                 <label value="&docformatFooterHeight;"/>
                  <textbox id="tbfooter" style="width: 3em" oninput="layoutPage('footer');" onkeypress="handleChar(event,'footer');"
                    onchange="layoutPage('footer');" onfocus="activate('footer');" onblur="deactivate('footer');"/>
                </groupbox>
                <hbox>
-                 <label value="Bottom"/><label id="tbcomputedbmargin" />
+                 <label value="&docformatBottomMargin;"/><label id="tbcomputedbmargin" />
                </hbox>
                <hbox>
-                 <label value="Height"/><label id="tbpageheight" />
+                 <label value="&docformatPageHeight;"/><label id="tbpageheight" />
                </hbox>
              </vbox>
              <groupbox align="center">
-               <caption label="Margin notes"/>
-               <label value="Width"/>
+               <caption label="&docformatMarginNotes;"/>
+               <label value="&docformatMNWidth;"/>
                <textbox id="tbmnwidth" style="width: 3em" value="1"  oninput="layoutPage('mnwidth');" onkeypress="handleChar(event,'mnwidth');"
                  onchange="layoutPage('mnwidth');" onfocus="activate('mnbody');" onblur="deactivate('mnbody');" persist="disabled">
                  <observes element="disablemarginnotes" attribute="disabled"  />
                </textbox>  
-               <label value="Separation"/>
+               <label value="&docformatMNSeparation;"/>
                <textbox id="tbmnsep" style="width: 3em" value="1"  oninput="layoutPage('mnsep');"  persist="disabled" onkeypress="handleChar(event,'mnsep');"
                  onchange="layoutPage('mnsep');" onfocus="activate('mnsepbody');" onblur="deactivate('mnsepbody');">
                  <observes element="disablemarginnotes" attribute="disabled"  />
                </textbox>  
-               <label value="Push"/>
+               <label value="&docformatMNPush;"/>
                <textbox id="tbmnpush" style="width: 3em" value="1"  oninput="layoutPage('mnpush');" onkeypress="handleChar(event,'mnpush');"
                  onchange="layoutPage('mnpush');" onfocus="activate('mnpush');" onblur="deactivate('mnpush');"  persist="disabled"
                  tooltip="The minimum separation between margin notes" >
                  <observes element="disablemarginnotes" attribute="disabled"  />
                </textbox>  
                <broadcaster id="disablemarginnotes" hidden="true" disabled="true" persist="hidden disabled"/>
-               <checkbox id="disablemn" checked="true" label="Hide notes" persist="checked" 
+               <checkbox id="disablemn" checked="true" label="&docformatHideNotes;" persist="checked" 
                 oncommand="disableMarginNotes();"/>
              </groupbox>
            </hbox>
            <hbox>
-             <label observes="twoside" value="You are laying out the right page. The left page is a mirror image of this." persist="hidden"/>
+             <label observes="twoside" value="&docformatTwoPageMessage;" persist="hidden"/>
            </hbox>
          </vbox>
        </vbox>

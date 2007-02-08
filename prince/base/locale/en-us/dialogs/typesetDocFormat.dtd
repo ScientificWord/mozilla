@@ -11,7 +11,7 @@
 
 
 <!ENTITY docformatTwosided "Two Sided">
-<!ENTITY docformatNumberOfColumns "Number of columns">
+<!ENTITY docformatTwoColumns "2 Columns">
 <!ENTITY docformatUnits	"Units">
 <!ENTITY docformatPaperSize	"Paper Size">
 <!ENTITY docformatLandscape "Landscape">
@@ -20,3 +20,39 @@
 <!ENTITY docformatCentimeter "cm">
 <!ENTITY docformatPoints "pt">
 <!ENTITY docformatMillimeter "mm">
+
+<!ENTITY docformatVert "Vert">
+<!ENTITY docformatHoriz "Horiz">
+<!ENTITY docformatLetter	"Letter">
+<!ENTITY docformatScreen	 "Screen">
+<!ENTITY docformatOther	"Other">
+<!ENTITY docformatExecutive "Executive">
+<!ENTITY docformatLegal "Legal">
+<!ENTITY docformatColSeparation "Separation">
+<!ENTITY docformatTextBody "Body">
+<!ENTITY docformatTextBodyWidth "Width">
+<!ENTITY docformatTextBodyHeight "Height">
+<!ENTITY tbbodyheight.tooltip  "The height of the main text">
+<!ENTITY docformatMargins "Margins">
+<!ENTITY docformatLeftMargin "Left">
+<!ENTITY docformatInsideMargin "Inside">
+<!ENTITY docformatTopMargin  "Top">
+<!ENTITY docformatComputedMargins "Computed Margins:">
+<!ENTITY docformatPageDimensions	"Page Dimensions:">
+<!ENTITY docformatHeader "Header">
+<!ENTITY docformatHeaderSeparation "Separation">
+<!ENTITY docformatHeaderHeight  "Header">
+<!ENTITY docformatRightMarginLabel "Right">
+<!ENTITY docformatOutsideMarginLabel "Outside">
+<!ENTITY docformatPageWidth "Width">
+<!ENTITY docformatFooter "Footer">
+<!ENTITY docformatFooterSeparation "Separation">
+<!ENTITY docformatFooterHeight "Height">
+<!ENTITY docformatBottomMargin  "Bottom">
+<!ENTITY docformatPageHeight "Height">
+<!ENTITY docformatMarginNotes "Margin Notes">
+<!ENTITY docformatMNWidth "Width">
+<!ENTITY docformatMNSeparation "Separation">
+<!ENTITY docformatMNPush  "Push">
+<!ENTITY docformatHideNotes "Hide Notes">
+<!ENTITY docformatTwoPageMessage	"You are laying out the right page. The left page is a mirror image of this.">
