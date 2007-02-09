@@ -241,7 +241,10 @@ function onAccept()
         // Delete the placeholder <br>
         gActiveEditor.deleteNode(gTableElement.nextSibling);
       }
-    } catch (e) {}
+    } catch (e) {
+      var a;
+      a=3;
+    }
 
     gActiveEditor.endTransaction();
 
