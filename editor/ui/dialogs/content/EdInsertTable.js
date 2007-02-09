@@ -1,45 +1,32 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
+/* 
+ * The contents of this file are subject to the Netscape Public
+ * License Version 1.1 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of
+ * the License at http://www.mozilla.org/NPL/
+ *  
+ * Software distributed under the License is distributed on an "AS
+ * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * rights and limitations under the License.
+ *  
  * The Original Code is Mozilla Communicator client code, released
  * March 31, 1998.
- *
- * The Initial Developer of the Original Code is
- * Netscape Communications Corporation.
- * Portions created by the Initial Developer are Copyright (C) 1998-1999
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either of the GNU General Public License Version 2 or later (the "GPL"),
- * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
- *
- * ***** END LICENSE BLOCK ***** */
+ * 
+ * The Initial Developer of the Original Code is Netscape
+ * Communications Corporation. Portions created by Netscape are
+ * Copyright (C) 1998-1999 Netscape Communications Corporation. All
+ * Rights Reserved.
+ * 
+ * Contributor(s): 
+ */
 
 //Cancel() is in EdDialogCommon.js
 var gTableElement = null;
 var gRows;
 var gColumns;
 var gActiveEditor;
+var gCellID = 12;
+var gPrefs;
 
 // dialog initialization code
 function Startup()
@@ -62,41 +49,60 @@ function Startup()
     window.close();
     return;
   }
-  gDialog.rowsInput    = document.getElementById("rowsInput");
-  gDialog.columnsInput = document.getElementById("columnsInput");
-  gDialog.widthInput = document.getElementById("widthInput");
-  gDialog.borderInput = document.getElementById("borderInput");
+  gDialog.rowsInput      = document.getElementById("rowsInput");
+  gDialog.columnsInput   = document.getElementById("columnsInput");
+  gDialog.widthInput     = document.getElementById("widthInput");
+  gDialog.borderInput    = document.getElementById("borderInput");
+  gDialog.horizAlignment = document.getElementById("horizAlignment");
+  gDialog.vertAlignment  = document.getElementById("vertAlignment");
+  gDialog.textWrapping   = document.getElementById("textWrapping");
+  gDialog.cellSpacing    = document.getElementById("cellSpacing");
+  gDialog.cellPadding    = document.getElementById("cellPadding");
+
   gDialog.widthPixelOrPercentMenulist = document.getElementById("widthPixelOrPercentMenulist");
   gDialog.OkButton = document.documentElement.getButton("accept");
+  gDialog.sizeLabel = document.getElementById("sizeLabel");
+
+  gTableElement.setAttribute("border", gDialog.borderInput.value);
+  if (gDialog.widthInput.value)
+    gTableElement.setAttribute("width", Number(gDialog.widthInput.value) +
+                                        (gDialog.widthPixelOrPercentMenulist.value == "pc" ? "%" : ""));
 
   // Make a copy to use for AdvancedEdit
   globalElement = gTableElement.cloneNode(false);
   try {
-    if (GetPrefs().getBoolPref("editor.use_css") && IsHTMLEditor()
+    gPrefs = GetPrefs();
+    if (IsHTMLEditor()
         && !(gActiveEditor.flags & Components.interfaces.nsIPlaintextEditor.eEditorMailMask))
     {
-      // only for Composer and not for htmlmail
-      globalElement.setAttribute("style", "text-align: left;");
+      if (gPrefs.getBoolPref("editor.use_css"))
+      {
+        // only for Composer and not for htmlmail
+        globalElement.setAttribute("style", "text-align: left;");
+      }
+
+      var hAlign = gPrefs.getCharPref("editor.table.default_align");
+      var vAlign = gPrefs.getCharPref("editor.table.default_valign");
+      var wrapping = gPrefs.getCharPref("editor.table.default_wrapping");
+
+      var cellSpacing = gPrefs.getCharPref("editor.table.default_cellspacing");
+      if (cellSpacing)
+      {
+        // only for Composer and not for htmlmail
+        globalElement.setAttribute("cellspacing", cellSpacing);
+      }
+
+      var cellPadding= gPrefs.getCharPref("editor.table.default_cellpadding");
+      if (cellPadding)
+      {
+        // only for Composer and not for htmlmail
+        globalElement.setAttribute("cellpadding", cellPadding);
+      }
     }
   } catch (e) {}
 
   // Initialize all widgets with image attributes
-  InitDialog();
-
-  // Set initial number to 2 rows, 2 columns:
-  // Note, these are not attributes on the table,
-  //  so don't put them in InitDialog(),
-  //  else the user's values will be trashed when they use 
-  //  the Advanced Edit dialog
-  gDialog.rowsInput.value = 2;
-  gDialog.columnsInput.value = 2;
-
-  // If no default value on the width, set to 100%
-  if (gDialog.widthInput.value.length == 0)
-  {
-    gDialog.widthInput.value = "100";
-    gDialog.widthPixelOrPercentMenulist.selectedIndex = 1;
-  }
+  InitDialog(hAlign, vAlign, wrapping);
 
   SetTextboxFocusById("rowsInput");
 
@@ -106,14 +112,22 @@ function Startup()
 // Set dialog widgets with attribute data
 // We get them from globalElement copy so this can be used
 //   by AdvancedEdit(), which is shared by all property dialogs
-function InitDialog()
+function InitDialog(hAlign, vAlign, wrapping)
 {  
   // Get default attributes set on the created table:
   // Get the width attribute of the element, stripping out "%"
   // This sets contents of menu combobox list
   // 2nd param = null: Use current selection to find if parent is table cell or window
-  gDialog.widthInput.value = InitPixelOrPercentMenulist(globalElement, null, "width", "widthPixelOrPercentMenulist", gPercent);
-  gDialog.borderInput.value = globalElement.getAttribute("border");
+  /*gDialog.widthInput.value =*/ InitPixelOrPercentMenulist(globalElement, null, "width", "widthPixelOrPercentMenulist", gPercent);
+  /*gDialog.borderInput.value = globalElement.getAttribute("border");*/
+
+  gDialog.horizAlignment.value = hAlign;
+  gDialog.vertAlignment.value  = vAlign;
+  gDialog.textWrapping.selectedItem = (wrapping == "nowrap") ?
+                                       document.getElementById("nowrapRadio") :
+                                       document.getElementById("wrapRadio");
+  gDialog.cellSpacing.value    = globalElement.getAttribute("cellspacing");
+  gDialog.cellPadding.value    = globalElement.getAttribute("cellpadding");
 }
 
 function ChangeRowOrColumn(id)
@@ -151,17 +165,52 @@ function ValidateData()
 
   ValidateNumber(gDialog.widthInput, gDialog.widthPixelOrPercentMenulist,
                  1, gMaxTableSize, globalElement, "width", false);
+  gDialog.widthPixelOrPercentMenulist.value = gDialog.widthPixelOrPercentMenulist.selectedItem.value;
+
+  SetOrResetAttribute(globalElement, "cellspacing", gDialog.cellSpacing.value);
+  SetOrResetAttribute(globalElement, "cellpadding", gDialog.cellPadding.value);
+
   if (gValidationError)
     return false;
 
   return true;
 }
 
+function SetOrResetAttribute(element, attributeName, attributeValue)
+{
+  if (attributeValue)
+    element.setAttribute(attributeName, attributeValue);
+  else
+    element.removeAttribute(attributeName);
+}
 
 function onAccept()
 {
   if (ValidateData())
   {
+    try {
+      if (IsHTMLEditor()
+          && !(gActiveEditor.flags & Components.interfaces.nsIPlaintextEditor.eEditorMailMask))
+      {
+        var wrapping = gDialog.textWrapping.selectedItem.value;
+        gPrefs.setCharPref("editor.table.default_wrapping", wrapping);
+
+        var align = gDialog.horizAlignment.value;
+        gPrefs.setCharPref("editor.table.default_align", align);
+
+        var valign = gDialog.vertAlignment.value;
+        gPrefs.setCharPref("editor.table.default_valign", valign);
+
+        var cellSpacing = globalElement.getAttribute("cellspacing");
+        gPrefs.setCharPref("editor.table.default_cellspacing", cellSpacing);
+
+        var cellPadding = globalElement.getAttribute("cellpadding");
+        gPrefs.setCharPref("editor.table.default_cellpadding", cellPadding);
+
+      }
+    }
+    catch (e) {};
+
     gActiveEditor.beginTransaction();
     try {
       gActiveEditor.cloneAttributes(gTableElement, globalElement);
@@ -241,10 +290,7 @@ function onAccept()
         // Delete the placeholder <br>
         gActiveEditor.deleteNode(gTableElement.nextSibling);
       }
-    } catch (e) {
-      var a;
-      a=3;
-    }
+    } catch (e) {}
 
     gActiveEditor.endTransaction();
 
@@ -252,4 +298,62 @@ function onAccept()
     return true;
   }
   return false;
+}
+
+function SelectArea(cell)
+{
+  var cellID    = cell.id;
+  var numCellID = Number(cellID.substr(1));
+
+  // early way out if we can...
+  if (gCellID == numCellID)
+    return;
+
+  gCellID = numCellID;
+
+  var i, anyCell;
+  for (i = 1; i < 60; i += 10)
+  {
+    anyCell = document.getElementById("c"+i);
+    while (anyCell)
+    {
+      anyCell.removeAttribute("class");
+      anyCell = anyCell.nextSibling;
+    }
+  }
+
+  for (i = numCellID; i > 0; i -= 10)
+  {
+    anyCell = document.getElementById("c"+i);
+    while (anyCell)
+    {
+      anyCell.setAttribute("class", "selected");
+      anyCell = anyCell.previousSibling;
+    }
+  }
+  ShowSize();
+}
+
+function ShowSize()
+{
+  var columns  = (gCellID % 10);
+  var rows     = Math.ceil(gCellID / 10);
+  gDialog.sizeLabel.value = rows + " x " + columns;
+}
+
+function MakePersistsValue(elt)
+{
+  elt.setAttribute("value", elt.value);
+}
+
+function SelectSize(cell)
+{
+  var columns  = (gCellID % 10);
+  var rows     = Math.ceil(gCellID / 10);
+
+  gDialog.rowsInput.value    = rows;
+  gDialog.columnsInput.value = columns;
+
+  onAccept();
+  window.close();
 }

@@ -1,44 +1,30 @@
 <?xml version="1.0"?>
 
-<!-- ***** BEGIN LICENSE BLOCK *****
-   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
-   -
-   - The contents of this file are subject to the Mozilla Public License Version
-   - 1.1 (the "License"); you may not use this file except in compliance with
-   - the License. You may obtain a copy of the License at
-   - http://www.mozilla.org/MPL/
-   -
-   - Software distributed under the License is distributed on an "AS IS" basis,
-   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
-   - for the specific language governing rights and limitations under the
-   - License.
-   -
+<!--
+   - The contents of this file are subject to the Netscape Public
+   - License Version 1.1 (the "License"); you may not use this file
+   - except in compliance with the License. You may obtain a copy of
+   - the License at http://www.mozilla.org/NPL/
+   -  
+   - Software distributed under the License is distributed on an "AS
+   - IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+   - implied. See the License for the specific language governing
+   - rights and limitations under the License.
+   -  
    - The Original Code is Mozilla Communicator client code, released
    - March 31, 1998.
-   -
-   - The Initial Developer of the Original Code is
-   - Netscape Communications Corporation.
-   - Portions created by the Initial Developer are Copyright (C) 1998-2000
-   - the Initial Developer. All Rights Reserved.
-   -
-   - Contributor(s):
-   -
-   - Alternatively, the contents of this file may be used under the terms of
-   - either of the GNU General Public License Version 2 or later (the "GPL"),
-   - or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
-   - in which case the provisions of the GPL or the LGPL are applicable instead
-   - of those above. If you wish to allow use of your version of this file only
-   - under the terms of either the GPL or the LGPL, and not to allow others to
-   - use your version of this file under the terms of the MPL, indicate your
-   - decision by deleting the provisions above and replace them with the notice
-   - and other provisions required by the GPL or the LGPL. If you do not delete
-   - the provisions above, a recipient may use your version of this file under
-   - the terms of any one of the MPL, the GPL or the LGPL.
-   -
-   - ***** END LICENSE BLOCK ***** -->
+   - 
+   - The Initial Developer of the Original Code is Netscape
+   - Communications Corporation. Portions created by Netscape are
+   - Copyright (C) 1998-2000 Netscape Communications Corporation. All
+   - Rights Reserved.
+   - 
+   - Contributor(s): 
+  -->
 
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/content/EditorInsertTable.css" type="text/css"?>
 
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
 
@@ -55,51 +41,194 @@
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdInsertTable.js"/>
 
-  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <spacer  id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>
-  <groupbox><caption label="&size.label;"/>
-    <grid>
-      <columns>
-        <column flex="1"/>
-        <column flex="1"/>
-        <column flex="6"/>
-      </columns>
-      <rows>
-        <row align="center">
-          <label control="rowsInput" class="align-right"
-                 value="&numRowsEditField.label;"
-                 accesskey="&numRowsEditField.accessKey;"/>
-          <textbox class="narrow" id="rowsInput" oninput="ChangeRowOrColumn(this.id)" />
-          <spacer/>
-        </row>
-        <row align="center">
-          <label control="columnsInput" class="align-right"
-                 value="&numColumnsEditField.label;"
-                 accesskey="&numColumnsEditField.accessKey;"/>
-          <textbox class="narrow" id="columnsInput" oninput="ChangeRowOrColumn(this.id)" />
-          <spacer/>
-        </row>
-        <row align="center">
-          <label control="widthInput" class="align-right"
-                 value="&widthEditField.label;"
-                 accesskey="&widthEditField.accessKey;"/>
-          <textbox class="narrow" id="widthInput" oninput="forceInteger(this.id)" />
-          <menulist id="widthPixelOrPercentMenulist" flex="1"/>
-            <!-- child elements are appended by JS -->
-        </row>
-      </rows>
-    </grid>
-    <spacer class="spacer"/>
-  </groupbox>
-  <spacer class="spacer"/>
-  <hbox align="center">
-    <label control="borderInput" class="align-right"
-        value="&borderEditField.label;"
-        accesskey="&borderEditField.accessKey;"
-        tooltiptext="&borderEditField.tooltip;" />
-    <textbox class="narrow" id="borderInput" oninput="forceInteger(this.id)" />
-    <label value="&pixels.label;"/>  
-  </hbox>
+  <tabbox>
+    <tabs>
+      <tab label="&quicklyTab.label;"/>
+      <tab label="&preciselyTab.label;"/>
+      <tab label="&cellTab.label;"/>
+    </tabs>
+    <tabpanels>
+      <vbox flex="1">
+        <spacer class="spacer" flex="1"/>
+        <grid class="sizeSelector">
+          <columns><column flex="1"/><column/><column flex="1"/></columns>
+          <rows>
+            <row>
+              <spacer/>
+              <hbox>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c1" class="selected"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c2" class="selected"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c3"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c4"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c5"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c6"/>
+              </hbox>
+              <spacer/>
+            </row>
+            <row>
+              <spacer/>
+              <hbox>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c11" class="selected"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c12" class="selected"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c13"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c14"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c15"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c16"/>
+              </hbox>
+              <spacer/>
+            </row>
+            <row>
+              <spacer/>
+              <hbox>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c21"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c22"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c23"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c24"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c25"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c26"/>
+              </hbox>
+              <spacer/>
+            </row>
+            <row>
+              <spacer/>
+              <hbox>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c31"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c32"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c33"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c34"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c35"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c36"/>
+              </hbox>
+              <spacer/>
+            </row>
+            <row>
+              <spacer/>
+              <hbox>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c41"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c42"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c43"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c44"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c45"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c46"/>
+              </hbox>
+              <spacer/>
+            </row>
+            <row>
+              <spacer/>
+              <hbox>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c51"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c52"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c53"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c54"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c55"/>
+                <label onmouseover="SelectArea(this)" onclick="SelectSize(this)" value=" " id="c56"/>
+              </hbox>
+              <spacer/>
+            </row>
+          </rows>
+        </grid>
+        <hbox align="center">
+          <spacer class="spacer" flex="1"/>
+          <label id="sizeLabel" value="2 x 2"/>
+          <spacer class="spacer" flex="1"/>
+        </hbox>
+        <spacer class="spacer" flex="1"/>
+      </vbox>
+      <vbox>
+        <groupbox><caption label="&size.label;"/>
+          <grid>
+            <columns>
+              <column flex="1"/>
+              <column flex="1"/>
+              <column flex="6"/>
+            </columns>
+            <rows>
+              <row align="center">
+                <label control="rowsInput" class="align-right"
+                       value="&numRowsEditField.label;"
+                       accesskey="&numRowsEditField.accessKey;"/>
+                <textbox value="2" class="narrow" id="rowsInput" oninput="ChangeRowOrColumn(this.id); MakePersistsValue(this)" persist="value"/>
+                <spacer/>
+              </row>
+              <row align="center">
+                <label control="columnsInput" class="align-right"
+                       value="&numColumnsEditField.label;"
+                       accesskey="&numColumnsEditField.accessKey;"/>
+                <textbox value="2" class="narrow" id="columnsInput" oninput="ChangeRowOrColumn(this.id); MakePersistsValue(this)" persist="value"/>
+                <spacer/>
+              </row>
+              <row align="center">
+                <label control="widthInput" class="align-right"
+                       value="&widthEditField.label;"
+                       accesskey="&widthEditField.accessKey;"/>
+                <textbox value="100" class="narrow" id="widthInput" oninput="forceInteger(this.id); MakePersistsValue(this)" persist="value"/>
+                <menulist value="pc" id="widthPixelOrPercentMenulist" flex="1" persist="value"/>
+                  <!-- child elements are appended by JS -->
+              </row>
+            </rows>
+          </grid>
+          <spacer class="spacer"/>
+        </groupbox>
+        <spacer class="spacer"/>
+        <hbox align="center">
+          <label control="borderInput" class="align-right"
+              value="&borderEditField.label;"
+              accesskey="&borderEditField.accessKey;"
+              tooltiptext="&borderEditField.tooltip;" />
+          <textbox value="1" class="narrow" id="borderInput" oninput="forceInteger(this.id); MakePersistsValue(this)" persist="value"/>
+          <label id="&pixels.label;"/>  
+        </hbox>
+      </vbox>
+      <grid>
+        <columns><column/><column/></columns>
+        <rows>
+          <row align="center">
+            <label value="&horizAlignment.label;"/>
+            <menulist id="horizAlignment">
+              <menupopup>
+                <menuitem label="&unspecifiedHAlignment.label;" value=""/>
+                <menuitem label="&leftHAlignment.label;"        value="left"/>
+                <menuitem label="&centerHAlignment.label;"      value="center"/>
+                <menuitem label="&rightHAlignment.label;"       value="right"/>
+              </menupopup>
+            </menulist>
+          </row>
+          <row align="center">
+            <label value="&vertAlignment.label;"/>
+            <menulist id="vertAlignment">
+              <menupopup>
+                <menuitem label="&unspecifiedVAlignment.label;" value=""/>
+                <menuitem label="&topVAlignment.label;"         value="top"/>
+                <menuitem label="&middleVAlignment.label;"      value="middle"/>
+                <menuitem label="&bottomVAlignment.label;"      value="bottom"/>
+              </menupopup>
+            </menulist>
+          </row>
+          <row align="center">
+            <label value="&textWrapping.label;"/>
+            <radiogroup id="textWrapping" orient="horizontal">
+              <radio id="wrapRadio"   label="&wrapWrapping.label;"       value=""/>
+              <radio id="nowrapRadio" label="&nowrapWrapping.label;" value="nowrap"/>
+            </radiogroup>
+          </row>
+          <row align="center">
+            <label value="&cellSpacing.label;"/>
+            <hbox>
+              <textbox value="2" class="narrow" id="cellSpacing" oninput="forceInteger(this.id);"/>
+            </hbox>
+          </row>
+          <row align="center">
+            <label value="&cellPadding.label;"/>
+            <hbox>
+              <textbox value="2" class="narrow" id="cellPadding" oninput="forceInteger(this.id);"/>
+            </hbox>
+          </row>
+        </rows>
+      </grid>
+    </tabpanels>
+  </tabbox>
   <!-- from EdDialogOverlay -->
   <vbox id="AdvancedEdit"/>
 </dialog>
