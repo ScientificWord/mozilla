@@ -27,6 +27,7 @@
 		<tagclass>
 			<tagclassname>texttag</tagclassname>
       <contains>#text</contains>
+      <contains>table</contains>
 			<contains>texttag</contains>
 			<contains>sw:xref</contains>
 			<contains>mml:math</contains>
@@ -57,6 +58,7 @@
 		<tagclass>
 			<tagclassname>paratag</tagclassname>
       <contains>#text</contains>
+      <contains>table</contains>
 			<contains>texttag</contains>
 			<contains>listtag</contains>
 			<contains>sw:quote</contains>
