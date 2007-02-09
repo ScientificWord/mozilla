@@ -180,9 +180,9 @@
   <!-- Insert menu -->
   <menu id="insertMenu" label="&insertMenu.label;" accesskey="&insertmenu.accesskey;">
     <menupopup id="insertMenuPopup">
-      <!-- menuitem id="insertImage" accesskey="&insertimage.accesskey;"      observes="cmd_image"       label="&insertImageCmd.label;"/>
+      <menuitem id="insertImage" accesskey="&insertimage.accesskey;"      observes="cmd_image"       label="&insertImageCmd.label;"/>
       <menuitem id="insertTable" accesskey="&inserttable.accesskey;"      observes="cmd_InsertTable" label="&insertTableCmd.label;"/>
-      <menu     accesskey="&insertformmenu.accesskey;"   id="insertFormMenu"        label="&insertFormMenu.label;">
+      <!--menu     accesskey="&insertformmenu.accesskey;"   id="insertFormMenu"        label="&insertFormMenu.label;">
         <menupopup>
           <menuitem accesskey="&insertform.accesskey;"        command="cmd_form"        label="&insertFormCmd.label;"/>
           <menuseparator/>
@@ -231,7 +231,7 @@
       <menuitem id="insertBreakAll" accesskey="&insertbreakall.accesskey;"   observes="cmd_insertBreakAll"   label="&insertBreakAllCmd.label;"/>
     </menupopup>
   </menu>
-    
+  <menu id="tableMenu"/>  
   <menu id="MSITypesetMenu"/>
   <menu id="MSIComputeMenu"/> 
   <menu id="toolsMenu" label="Tools" >
