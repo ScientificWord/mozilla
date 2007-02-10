@@ -511,7 +511,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   {
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theProcess.init(exefile);
-    var args = ["-output-directory", outputDir, infilePath];
+    var args = ["-output-directory", outputDir, infileLeaf];
     for (var i = 0; i < passCount; i++)
     {
       // BBM todo: We need to build the dialog box to display the number of passes
