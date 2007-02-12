@@ -488,12 +488,13 @@ var msiInsertSubdocument =
 
 function doDocFormatDlg()
 {
-  var doDocFormatData = new Object();
-  window.openDialog("chrome://prince/content/typesetDocFormat.xul", "_blank", "chrome,close,resizable, titlebar,modal", doDocFormatData);
-  if (!doDocFormatData.Cancel)
-  {
-    alert("Document Format Dialog returned.\nNeeds to be hooked up to do something!");
-  }
+  var editorElement = document.getElementById("content-frame");
+  window.openDialog("chrome://prince/content/typesetDocFormat.xul", "_blank", 
+    "chrome,close,resizable, titlebar,modal", editorElement);
+//  if (!doDocFormatData.Cancel)
+//  {
+//    alert("Document Format Dialog returned.\nNeeds to be hooked up to do something!");
+//  }
 }
 
 
