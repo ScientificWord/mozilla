@@ -8,8 +8,16 @@ var landscape;
 var currentUnit;
 var scale = 0.5;
 
+var editor;
+
 function Startup()
 {
+  editor = GetCurrentEditor();
+  if (!editor) {
+    window.close();
+    return;
+  }
+
   widthElements=new Array("lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin");
   heightElements=new Array("tmargin","header","headersep",
     "bodyheight","footer","footersep", "mnpush", "computedbmargin");
@@ -22,13 +30,41 @@ function Startup()
   unitConversions.cm=10; // mm per cm
   setPageDimensions();
   setDefaults();
+  //now we can load the docformat information from the document to override 
+  //all or part of the initial state
   OnWindowSizeReset(true);
   dump("current unit = "+currentUnit+"\n");
 }
 
 function onAccept()
 {
-}
+// first check that something is set
+  var doc = editor.document;
+  var headElement = doc.documentElement.getElementsByTagName('head')[0];
+  var newNode = editor.createNode('docformat',headElement,0);
+  var pfNode = editor.createNode('pagelayout', newNode,0);
+  pfNode.setAttribute('twoside',document.getElementById('twosides').checked);
+  pfNode.setAttribute('width',pagewidth);
+  pfNode.setAttribute('height',pageheight);
+  pfNode.setAttribute('latex',true);
+  var node = editor.createNode('margin',pfNode,0);
+  node.setAttribute('left',document.getElementById('tblmargin').value);
+  node.setAttribute('top', document.getElementById('tbtmargin').value);
+  node = editor.createNode('header',pfNode,1);
+  node.setAttribute('height',document.getElementById('tbheader').value);
+  node.setAttribute('sep',document.getElementById('tbheadersep').value);
+  node = editor.createNode('footer',pfNode,2);
+  node.setAttribute('height',document.getElementById('tbfooter').value);
+  node.setAttribute('sep',document.getElementById('tbfootersep').value);
+  node = editor.createNode('columns',pfNode,3);
+  node.setAttribute('count',(document.getElementById('columns').checked?2:1));
+  node.setAttribute('sep',document.getElementById('tbfootersep').value);
+  node = editor.createNode('marginnote',pfNode,4);
+  node.setAttribute('reversed',document.getElementById('columns').checked);
+  node.setAttribute('width',document.getElementById('tbmnwidth').value);
+  node.setAttribute('sep',document.getElementById('tbmnsep').value);
+  node.setAttribute('push',document.getElementById('tbmnpush').value);
+}  
 
 function onCancel()
 {
