@@ -419,7 +419,7 @@ function addClickEventListenerForEditor(editorElement)
     var bodyelement = msiGetBodyElement(editorElement);
     if (bodyelement)
       bodyelement.addEventListener("click", EditorClick, false);
-  } catch (e) {}
+  } catch (e) {dump("Unable to register click event listener; error [" + e + "].\n");}
 }
 
 
@@ -609,6 +609,7 @@ function msiEditorDocumentObserver(editorElement)
           {
             for (var ix = 0; ix < editorElement.overrideStyleSheets.length; ++ix)
             {
+              dump("Adding override style sheet [" + editorElement.overrideStyleSheets[ix] + "] for editor [" + editorElement.id + "].\n");
               editor.addOverrideStyleSheet(editorElement.overrideStyleSheets[ix]);
             }
           }
@@ -963,6 +964,13 @@ function msiEditorResetFontAndColorAttributes(editorElement)
       bodyelement.removeAttribute("alink");
       bodyelement.removeAttribute("vlink");
       editor.removeAttributeOrEquivalent(bodyelement, "background", true);
+    }
+    else
+    {
+      var dumpStr = "In msiEditorResetFontAndColorAttributes, no bodyelement for editorElement [";
+      if (editorElement)
+        dumpStr += editorElement.id;
+      dump(dumpStr + "].\n");
     }
     editorElement.mColorObj.LastTextColor = "";
     editorElement.mColorObj.LastBackgroundColor = "";
@@ -1694,6 +1702,13 @@ function msiUpdateDefaultColors(editorElement)
     else if (BrowserColors)
       editorElement.gDefaultBackgroundColor = BrowserColors.BackgroundColor;
   }
+  else
+  {
+    var dumpStr = "In msiUpdateDefaultColors, unable to find bodyelement for editorElement [";
+    if (editorElement)
+      dumpStr += editorElement.id;
+    dump(dumpStr + "].\n");
+  }
 
   // Trigger update on toolbar
   if (defTextColor != editorElement.gDefaultTextColor)
@@ -2040,6 +2055,7 @@ function EditorDblClick(event)
         element = msiGetEditor(editorElement).getSelectedElement("href");
       } catch (e) {}
 
+    dump("In EditorDblClick, element is [" + element.nodeName + "].\n");
     if (element)
     {
       goDoPrinceCommand("cmd_objectProperties", element, editorElement);
@@ -3879,15 +3895,34 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     if (!editorElement)
       editorElement = findEditorElementForDocument(element.ownerDocument);
 
-    if ((element.localName.toLowerCase() == "img") && (element.getAttribute("msigraph") == "true"))
+    var elementName = element.localName.toLowerCase();
+    if (elementName == "object")
+      elementName = element.parentNode.localName.toLowerCase();
+    if ((elementName == "img") || (elementName=="graph"))
     {
-      var theWindow = window;
-      if (!("graphClickEvent" in theWindow))
-        theWindow = msiGetTopLevelWindow(window);
-      theWindow.graphClickEvent(cmdstr, editorElement);
+      var bIsGraph = (element.getAttribute("msigraph") == "true");
+      if (!bIsGraph)
+      {
+        for (var ix = 0; !bIsGraph && (ix < element.childNodes.length); ++ix)
+        {
+          if (element.childNodes[ix].getAttribute("msigraph") == "true")
+            bIsGraph = true;
+        }
+      }
+      if (bIsGraph)
+      {
+        dump("In goDoPrinceCommand, bIsGraph is true.\n");
+        var theWindow = window;
+        if (!("graphClickEvent" in theWindow))
+          theWindow = msiGetTopLevelWindow(window);
+        theWindow.graphClickEvent(cmdstr, editorElement);
+      }
+      else
+        dump("In goDoPrinceCommand, bIsGraph is false.\n");
     }
     else 
     {
+      dump("In goDoPrinceCommand, elementName is [" + elementName + "].\n");
       msiGoDoCommand(cmdstr, editorElement);
     }
   }

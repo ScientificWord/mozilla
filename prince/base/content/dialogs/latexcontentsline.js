@@ -47,7 +47,7 @@ var msiEditorDocumentObserverG =
     if (aTopic == "obs_documentCreated") {
 //      var plotno = window.arguments[0].getGraphAttribute("plotnumber");
       var editor = GetCurrentEditor();
-      editor.addOverrideStyleSheet("chrome://editor/content/MathVarsDialog.css");
+      editor.addOverrideStyleSheet("chrome://prince/skin/MathVarsDialog.css");
 	  populateDialog ();
     }  
   }

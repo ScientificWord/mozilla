@@ -366,8 +366,9 @@ function OK(){
   // nonmodal, call the code that redraws. This dialog closes when
   // the return is executed, so ensure that happens, even if there
   // are problems.
+  var editorElement = msiGetParentEditorElementForDialog(window);
   try {                                                                                         
-    nonmodalRecreateGraph (window.arguments[0], window.arguments[1]);
+    nonmodalRecreateGraph (window.arguments[0], window.arguments[1], editorElement);
   }                                                                                             
   catch (e) {                                                                                    
   }                                                  

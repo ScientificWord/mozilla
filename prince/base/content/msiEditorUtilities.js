@@ -960,7 +960,7 @@ function insertXML(editor, text, node, offset)
   }
 }
 
-function insertXMLAtCursor(editor, text)
+function insertXMLAtCursor(editor, text, bIsAlreadyDocument)
 {
   if (!editor)
   {
@@ -974,6 +974,8 @@ function insertXMLAtCursor(editor, text)
     var theFocusOffset = editor.selection.focusOffset;
 //    var theRange = editor.selection.getRangeAt(0);
 //    insertXML(editor, text, theRange.endContainer, theRange.endOffset);
+    if (!bIsAlreadyDocument)
+      text = "<body>" + text + "</body>";
     insertXML(editor, text, theFocusNode, theFocusOffset);
   }
   else
@@ -1302,7 +1304,7 @@ function msiOpenModelessPropertiesDialog(chromeUrl, dlgName, options, targetEdit
     return;
   }
   var theDialog = null;
-  reviseObject = commandHandler.msiGetReviseObject(editor);
+//  reviseObject = commandHandler.msiGetReviseObject(editor);
   theDialog = msiFindPropertiesDialogForObject(reviseObject);
   if (!theDialog)
   {
