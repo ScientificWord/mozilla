@@ -71,7 +71,7 @@ const msigMac = "Mac";
 //var gFontSizeNames = ["xx-small","x-small","small","medium","large","x-large","xx-large"];
 //
 ////MSI stuff, see msiColorObj::Format() for more comprehensive value.
-var gMathStyleSheet = "data:text/css,math { color: #FF0000; }";
+var gMathStyleSheet = "data:text/css,*|math { color: #FF0000; }";
 //
 //const nsIFilePicker = Components.interfaces.nsIFilePicker;
 //
