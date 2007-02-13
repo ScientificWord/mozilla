@@ -31,30 +31,35 @@ function Startup(){
   }                                                                         
   window.arguments[0].setGraphAttribute("plotnumber", "1");
 
-   //SLS the following copied from editor.js
-  gSourceContentWindow = document.getElementById("content-frame");
-  gSourceContentWindow.makeEditable("html", false);
-  EditorStartup();
+  var editorControl = document.getElementById("plotDlg-content-frame");
+  editorControl.mInitialDocCreatedObserver = msiEditorDocumentObserverG;
+  editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
+  msiInitializeEditorForElement(editorControl, "", true);
 
-  // Initialize our source text <editor>
-  try {
-    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
-    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
-                               .createInstance(Components.interfaces.nsIControllerContext);
-    controller.init(null);
-    controller.setCommandContext(gSourceContentWindow);
-    gSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
-    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
-    commandTable.registerCommand("cmd_find",        nsFindCommand);
-    commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
-    commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
-    SetupMSIMathMenuCommands();
-  } catch (e) { dump("makeEditable failed in Startup(): "+e+"\n"); }
-
-  // see EditorSharedStartup() in editor.js
-  var commandManager = GetCurrentCommandManager();
-  commandManager.addCommandObserver(msiEditorDocumentObserverG, "obs_documentCreated");
+//   //SLS the following copied from editor.js
+//  gSourceContentWindow = document.getElementById("plotDlg-content-frame");
+//  gSourceContentWindow.makeEditable("html", false);
+//  EditorStartup();
+//
+//  // Initialize our source text <editor>
+//  try {
+//    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
+//    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
+//                               .createInstance(Components.interfaces.nsIControllerContext);
+//    controller.init(null);
+//    controller.setCommandContext(gSourceContentWindow);
+//    gSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
+//    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+//                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
+//    commandTable.registerCommand("cmd_find",        nsFindCommand);
+//    commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
+//    commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
+//    SetupMSIMathMenuCommands();
+//  } catch (e) { dump("makeEditable failed in Startup(): "+e+"\n"); }
+//
+//  // see EditorSharedStartup() in editor.js
+//  var commandManager = GetCurrentCommandManager();
+//  commandManager.addCommandObserver(msiEditorDocumentObserverG, "obs_documentCreated");
 }                                                                                            
 
 
@@ -66,9 +71,9 @@ var msiEditorDocumentObserverG =
   { 
     if (aTopic == "obs_documentCreated") {
       var plotno = window.arguments[0].getGraphAttribute("plotnumber");
-      var editor = GetCurrentEditor();
-      editor.addOverrideStyleSheet("chrome://editor/content/MathVarsDialog.css");
-	  populateDialog (plotno);
+//      var editor = GetCurrentEditor();
+//      editor.addOverrideStyleSheet("chrome://editor/content/MathVarsDialog.css");
+	    populateDialog (plotno);
     }  
   }
 }
@@ -90,6 +95,7 @@ function tableRow4 (v, min, max, npts,chrome) {
 // return a string with the xml containing the expression and plot limits
 function buildEditorTable (plotno) {
   var str = "";
+  var tmpstr = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi tempinput=\"true\">()</mi></mrow></math>";
   // put the expression in it's own table
   var curval = window.arguments[0].getPlotValue ("Expression", plotno);
   str += "<table class=\"MathVarsDialog\" chrome=\"1\" xmlns=\"http://www.w3.org/1999/xhtml\">";
@@ -100,13 +106,13 @@ function buildEditorTable (plotno) {
   str += "</td></tr>";                              
   str += "<tr>";                               
   str += "<td class=\"value\">";               
-  str += curval;                               
+  str += curval;
   str += "</td>";                              
   str += "</tr></tbody></table>";
+//  dump("In buildEditorTable, string before breaks is: [" + str + "].\n");
   
   // put the ranges in a table
-  var tmpstr = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi tempinput=\"true\">()</mi></mrow></math>";
-  str += "<BR/><BR/>";
+  str += "<br/><br/>";
   str += "<table chrome=\"1\" class=\"MathVarsDialog\" xmlns=\"http://www.w3.org/1999/xhtml\">";
   str += "<tbody>";
   str += tableRow4 ("Variable", "Min", "Max", "Sample Points", 1);
@@ -115,7 +121,8 @@ function buildEditorTable (plotno) {
   var v, min, max, npts;                                           
   var ptype = window.arguments[0].getPlotValue ("PlotType", plotno);                      
   v    = window.arguments[0].getPlotValue ("XVar", plotno);                      
-  if (ptype == "conformal")  v = "Re(" + v + ")";               
+  if (ptype == "conformal")
+    v = "Re(" + v + ")";               
   min  = window.arguments[0].getPlotValue ("XMin", plotno);                      
   max  = window.arguments[0].getPlotValue ("XMax", plotno);                      
   npts = window.arguments[0].getPlotValue ("XPts", plotno);                      
@@ -165,6 +172,7 @@ function buildEditorTable (plotno) {
     str += "</tr></tbody></table>";
   }
 
+//  dump("In buildEditorTable, string to return is: [" + str + "].\n");
   return str;
 }
 
@@ -179,8 +187,14 @@ function OK(){
   // nonmodal, call the code that redraws. This dialog closes when
   // the return is executed, so ensure that happens, even if there
   // are problems.
+  var editorElement = msiGetParentEditorElementForDialog(window);
+//  var editor = msiGetEditor(editorElement);
+  var theWindow = window.opener;
+  if (!theWindow || !("nonmodalRecreateGraph" in theWindow))
+    theWindow = msiGetTopLevelWindow();
+
   try {                                                                                         
-    nonmodalRecreateGraph (window.arguments[0], window.arguments[1]);
+    theWindow.nonmodalRecreateGraph (window.arguments[0], window.arguments[1], editorElement);
   }                                                                                             
   catch (e) {                                                                                    
   }                                                  
@@ -241,7 +255,7 @@ function GetValuesFromDialog(){
   // ITEMS PLOTTED TAB
   // now grab things out of the table in the center and add them to the graph
   // There are two tables: one has just the expression. The other has the ranges
-  var doc = document.getElementById("content-frame").contentDocument;
+  var doc = document.getElementById("plotDlg-content-frame").contentDocument;
   var tables = doc.getElementsByTagName("table");
   if (tables && tables.length > 1) {
     var exptable = tables[0];
@@ -497,7 +511,7 @@ function formatPlot () {
   DOMGListAdd (window, window.arguments[2]);
   var count = document.getElementById("plot").selectedItem.value; 
   window.arguments[0].setGraphAttribute("plotnumber", count);
-  window.openDialog("chrome://editor/content/ComputePlotSettings.xul", 
+  window.openDialog("chrome://prince/content/ComputePlotSettings.xul", 
                     "Plot_Settings", "chrome,close,titlebar,dependent", 
                     window.arguments[0], window, window.arguments[2]);
 }
@@ -579,14 +593,24 @@ function changePlot () {
 
 function populateDialog (plotno) {
   // remove contents here
-  var doc = document.getElementById("content-frame").contentDocument;
+  var editorControl = document.getElementById("plotDlg-content-frame");
+  var doc = editorControl.contentDocument;
   var body = doc.getElementsByTagName("table");
   while (body.length>0) {
     body[0].parentNode.removeChild (body[0]);
   }
   var str = buildEditorTable (plotno);
-  var editor = GetCurrentEditor();
-  editor.insertHTML(str);
+  var editor = msiGetEditor(editorControl);
+  var serializer = new XMLSerializer();
+  var debugStr = serializer.serializeToString(doc.documentElement);
+//  dump("Preparing to insert XML in GraphSettings dialog. Editor currently contains: [" + debugStr + "]\n");
+//  dump("Current focus is at node [" + editor.selection.focusNode.localName + "], offset [" + editor.selection.focusOffset + "].\n");
+//  dump("In populateDialog, string to be inserted is: [" + str + "].\n");
+  insertXMLAtCursor(editor, str);
+  debugStr = serializer.serializeToString(doc.documentElement);
+//  dump("Editor contains: [" + debugStr + "]\n");
+
+//  editor.insertHTML(str);
   // now mark the body as in the chrome, to prevent resize widgets around the table.
   
   body = doc.getElementsByTagName("body");

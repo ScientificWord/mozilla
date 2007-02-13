@@ -19,7 +19,7 @@
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
 <!DOCTYPE dialog [									 
-<!ENTITY % DTD SYSTEM "chrome://prince/content/ComputeGraphSettings.dtd" >
+<!ENTITY % DTD SYSTEM "chrome://prince/locale/ComputeGraphSettings.dtd" >
 %DTD;
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
 %editorDTD;
@@ -29,7 +29,7 @@
 
 
 <!-- dialog containing a control requiring initial setup -->
-<dialog title="amp_windowTitle.label;"
+<dialog title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "Startup()"
     ondialogaccept = "OK()"
@@ -67,11 +67,11 @@
 
   <tabbox id="outer-box" flex="1">
     <tabs class="tabs-top">
-	  <tab label="amp_tabbar.items;"       selected="1" />
-	  <tab label="amp_tabbar.axes;"        selected="0" />
-	  <tab label="amp_tabbar.layout;"      selected="0" />
-	  <tab label="amp_tabbar.labelling;"   selected="0" />
-	  <tab label="amp_tabbar.view;"        selected="0" />
+	  <tab label="&tabbar.items;"       selected="1" />
+	  <tab label="&tabbar.axes;"        selected="0" />
+	  <tab label="&tabbar.layout;"      selected="0" />
+	  <tab label="&tabbar.labelling;"   selected="0" />
+	  <tab label="&tabbar.view;"        selected="0" />
 	</tabs>
 
     <tabpanels>
@@ -79,7 +79,7 @@
 
 	    <vbox>
 		  <groupbox>
-  	        <caption label="amp_plotstyles.label;"/>
+  	        <caption label="&plotstyles.label;"/>
       	    <grid flex = "1">
   	          <columns>
   	            <column flex="2"/>
@@ -87,59 +87,59 @@
       	      </columns>
   	          <rows>
 			    <row>
-                  <label>"amp_dimensions.label;"</label>
+                  <label>"&dimensions.label;"</label>
 				  <description id="dimension"  value="2" />
 				</row>
 			    <row>
                    <groupbox id="plotcs2d">
-                     <label>"amp_plottype.label;"</label>
+                     <label>"&plottype.label;"</label>
                      <menulist id="pt2d">
                        <menupopup command="cmd_changePlotType"> 
-                         <menuitem label="amp_plottyperec.label;"         value="rectangular"/>
-                         <menuitem label="amp_plottypepolar.label;"       value="polar"/>
-                         <menuitem label="amp_plottypeimplicit.label;"    value="implicit"/>
-                         <menuitem label="amp_plottypeinequality.label;"  value="inequality"/>
-                         <menuitem label="amp_plottypeparametric.label;"  value="parametric"/>
-                         <menuitem label="amp_plottypeconformal.label;"   value="conformal"/>
-                         <menuitem label="amp_plottypegradient.label;"    value="gradient"/>
-                         <menuitem label="amp_plottypevector.label;"      value="vectorField"/>
-                         <menuitem label="amp_plottypeode.label;"         value="ode"/>
-                         <menuitem label="amp_plottypeAI.label;"          value="approximateIntegral"/>
+                         <menuitem label="&plottyperec.label;"         value="rectangular"/>
+                         <menuitem label="&plottypepolar.label;"       value="polar"/>
+                         <menuitem label="&plottypeimplicit.label;"    value="implicit"/>
+                         <menuitem label="&plottypeinequality.label;"  value="inequality"/>
+                         <menuitem label="&plottypeparametric.label;"  value="parametric"/>
+                         <menuitem label="&plottypeconformal.label;"   value="conformal"/>
+                         <menuitem label="&plottypegradient.label;"    value="gradient"/>
+                         <menuitem label="&plottypevector.label;"      value="vectorField"/>
+                         <menuitem label="&plottypeode.label;"         value="ode"/>
+                         <menuitem label="&plottypeAI.label;"          value="approximateIntegral"/>
                        </menupopup>
                      </menulist>
    				   </groupbox>
                    <groupbox id="plotcs3d" collapsed="true">
-                      <label>"amp_plottype.label;"</label>
+                      <label>"&plottype.label;"</label>
                       <menulist id="pt3d">
                         <menupopup command="cmd_changePlotType"> 
-                           <menuitem label="amp_plottyperec.label;"         value="rectangular"/>
-                           <menuitem label="amp_plottypecur.label;"         value="curve"/>
-                           <menuitem label="amp_plottypecylindrical.label;" value="cylindrical"/>
-                           <menuitem label="amp_plottypesphere.label;"      value="spherical"/>
-                           <menuitem label="amp_plottypeparametric.label;"  value="parametric"/>
-                           <menuitem label="amp_plottypeimplicit.label;"    value="implicit"/>
-                           <menuitem label="amp_plottypetube.label;"        value="tube"/>
-                           <menuitem label="amp_plottypegradient.label;"    value="gradient"/>
-                           <menuitem label="amp_plottypevector.label;"      value="vectorField"/>
+                           <menuitem label="&plottyperec.label;"         value="rectangular"/>
+                           <menuitem label="&plottypecur.label;"         value="curve"/>
+                           <menuitem label="&plottypecylindrical.label;" value="cylindrical"/>
+                           <menuitem label="&plottypesphere.label;"      value="spherical"/>
+                           <menuitem label="&plottypeparametric.label;"  value="parametric"/>
+                           <menuitem label="&plottypeimplicit.label;"    value="implicit"/>
+                           <menuitem label="&plottypetube.label;"        value="tube"/>
+                           <menuitem label="&plottypegradient.label;"    value="gradient"/>
+                           <menuitem label="&plottypevector.label;"      value="vectorField"/>
                         </menupopup>
                       </menulist>
 				   </groupbox>
 				</row>
 			    <row>
-                  <checkbox id="animate"     label="amp_animate.label;"/>
+                  <checkbox id="animate"     label="&animate.label;"/>
 				</row>
               </rows>
 			</grid>
           </groupbox>
           <groupbox>
             <hbox>
-              <menulist id="plot" label="amp_editplotitem.label;">
+              <menulist id="plot" label="&editplotitem.label;">
                 <menupopup id="plotnumber" command="cmd_changePlot"> 
                 </menupopup>
               </menulist>
-              <button label="amp_editplot.label;"  command="cmd_editPlot"/>
-              <button label="amp_newplot.label;"   command="cmd_newPlot"/>
-              <button label="amp_command.delete;"  command="cmd_deletePlot"/>
+              <button label="&editplot.label;"  command="cmd_editPlot"/>
+              <button label="&newplot.label;"   command="cmd_newPlot"/>
+              <button label="&command.delete;"  command="cmd_deletePlot"/>
             </hbox>
           </groupbox>
 
@@ -160,11 +160,11 @@
             <keyset id="MSIKeySet"/>
           </keyset>
 
-          <toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
+          <!-- toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
             <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="menutooltip">
               <menu id="editMenu"/>
               <menu id="MSIMathMenu"/>
-              <menu id="formatMenu" label="amp_formatMenu.label;">
+              <menu id="formatMenu" label="&formatMenu.label;">
                 <menupopup id="formatMenuPopup">
                   <menuitem id="snapToGrid"/>
                   <menuseparator/>
@@ -176,14 +176,14 @@
               <menu id="tableMenu"/>
               <spacer flex="1"/>
             </menubar>
-          </toolbox>
+          </toolbox -->
 
           <hbox>
             <vbox>
               <groupbox>
-                <caption id="center" label="amp_plotarguments.label;"/>
+                <caption id="center" label="&plotarguments.label;"/>
                   <editor editortype="html" type="content-primary" context="msiEditorContentContext" 
-                          id="content-frame" flex="1" height="350"/>
+                          id="plotDlg-content-frame" flex="1" width="300" height="350"/>
               </groupbox>
 		    </vbox>
 		  </hbox>
@@ -193,54 +193,54 @@
       <tabpanel id="Axes">
         <vbox>
           <groupbox>
-          <caption label="amp_axisaxesscale.label;" />
+          <caption label="&axisaxesscale.label;" />
           <radiogroup id="axisscale" orient="horizontal">
-            <radio label="amp_axislinear.label;"  value="LinLin"      selected="true"/>
-            <radio label="amp_axislinlog.label;"  value="LinLog"      selected="false"/>
-            <radio label="amp_axisloglin.label;"  value="LogLin"      selected="false"/>
-            <radio label="amp_axisloglog.label;"  value="LogLog"      selected="false"/>
+            <radio label="&axislinear.label;"  value="LinLin"      selected="true"/>
+            <radio label="&axislinlog.label;"  value="LinLog"      selected="false"/>
+            <radio label="&axisloglin.label;"  value="LogLin"      selected="false"/>
+            <radio label="&axisloglog.label;"  value="LogLog"      selected="false"/>
           </radiogroup>
-          <checkbox id="equalscale" label="amp_axisequal.label;"/>
+          <checkbox id="equalscale" label="&axisequal.label;"/>
           </groupbox>
 
           <groupbox>        
-            <label value="amp_axisxaxis.label;"/>
+            <label value="&axisxaxis.label;"/>
             <textbox id="XAxisLabel" cols="40"/>
           </groupbox>
           <groupbox>        
-            <label value="amp_axisyaxis.label;"/>
+            <label value="&axisyaxis.label;"/>
             <textbox id="YAxisLabel" cols="40"/>
           </groupbox>
           <groupbox>        
-            <label value="amp_axiszaxis.label;"/>
+            <label value="&axiszaxis.label;"/>
             <textbox id="ZAxisLabel" cols="40"/>
           </groupbox>
           <groupbox>
             <hbox>
-              <description>"amp_axistickmark.label;"</description>
+              <description>"&axistickmark.label;"</description>
               <menulist id="XTickCount">
                 <menupopup> 
-                  <menuitem label="amp_none.label;"   value="none"/>
-                  <menuitem label="amp_low.label;"    value="low"/>
-                  <menuitem label="amp_normal.label;" value="normal"/>
-                  <menuitem label="amp_high.label;"   value="high"/>
+                  <menuitem label="&none.label;"   value="none"/>
+                  <menuitem label="&low.label;"    value="low"/>
+                  <menuitem label="&normal.label;" value="normal"/>
+                  <menuitem label="&high.label;"   value="high"/>
                 </menupopup>
               </menulist>
             </hbox>
-            <!-- <checkbox id="disableticks" label="amp_axisdisable.label;"/> -->
-            <checkbox id="axestips"     label="amp_axistips.label;"/>
-            <checkbox id="gridlines"    label="amp_axisgridlines.label;"/>
+            <!-- <checkbox id="disableticks" label="&axisdisable.label;"/> -->
+            <checkbox id="axestips"     label="&axistips.label;"/>
+            <checkbox id="gridlines"    label="&axisgridlines.label;"/>
           </groupbox>
 
           <groupbox>
-            <caption label="amp_axistype.label;" />
+            <caption label="&axistype.label;" />
             <radiogroup id="axistype" orient= "horizontal">
-              <radio label="amp_unspecified.label;" value="unspecified" selected="true"/>
-              <radio label="amp_axisauto.label;"    value="Automatic"   selected="false"/>
-              <radio label="amp_axisnormal.label;"  value="Normal"      selected="false"/>
-              <radio label="amp_axisboxed.label;"   value="Boxed"       selected="false"/>
-              <radio label="amp_axisframed.label;"  value="Frame"       selected="false"/>
-              <radio label="amp_axisnone.label;"    value="None"        selected="false"/>
+              <radio label="&unspecified.label;" value="unspecified" selected="true"/>
+              <radio label="&axisauto.label;"    value="Automatic"   selected="false"/>
+              <radio label="&axisnormal.label;"  value="Normal"      selected="false"/>
+              <radio label="&axisboxed.label;"   value="Boxed"       selected="false"/>
+              <radio label="&axisframed.label;"  value="Frame"       selected="false"/>
+              <radio label="&axisnone.label;"    value="None"        selected="false"/>
             </radiogroup>
           </groupbox>
        </vbox>
@@ -249,57 +249,57 @@
       <tabpanel id="Layout">
         <vbox>
           <groupbox>
-            <caption label="amp_layoutsize.label;"/>
+            <caption label="&layoutsize.label;"/>
             <hbox>
-              <label>"amp_width.label;"</label>
+              <label>"&width.label;"</label>
               <textbox id="Width" cols="4"/>
             </hbox>
             <hbox>
-              <label>"amp_height.label;"</label>
+              <label>"&height.label;"</label>
               <textbox id="Height" cols="4"/>
             </hbox>
             <hbox>
-              <description>"amp_units.label;"</description>
+              <description>"&units.label;"</description>
               <menulist id="Units">
                 <menupopup> 
-                  <menuitem label="amp_unitsinches.label;" value="inches"/>
-                  <menuitem label="amp_unitscm.label;"     value="cm"/>
-                  <menuitem label="amp_unitspicas.label;"  value="picas"/>
-                  <menuitem label="amp_unitspoints.label;" value="points"/>
+                  <menuitem label="&unitsinches.label;" value="inches"/>
+                  <menuitem label="&unitscm.label;"     value="cm"/>
+                  <menuitem label="&unitspicas.label;"  value="picas"/>
+                  <menuitem label="&unitspoints.label;" value="points"/>
                 </menupopup>
               </menulist>
             </hbox>
           </groupbox>
           <groupbox>
-            <caption label="amp_layoutscreendisp.label;"/>
+            <caption label="&layoutscreendisp.label;"/>
             <hbox>
-              <checkbox id="model" label="amp_layoutmodel.label;"/>   
+              <checkbox id="model" label="&layoutmodel.label;"/>   
             </hbox>
           </groupbox>
           <groupbox>
-            <caption label="amp_layoutprintattr.label;"/>
+            <caption label="&layoutprintattr.label;"/>
             <radiogroup id="printattr" orient="horizontal">
-              <radio label="amp_layoutprintframe.label;"     value="plotinframe"     selected="true"/>
-              <radio label="amp_layoutprintplot.label;"      value="plotinplot"      selected="false"/>
-              <radio label="amp_layoutprintframeonly.label;" value="plotinframeonly" selected="false"/>
-              <radio label="amp_layoutprinticon.label;"      value="plotinicon"      selected="false"/>
+              <radio label="&layoutprintframe.label;"     value="plotinframe"     selected="true"/>
+              <radio label="&layoutprintplot.label;"      value="plotinplot"      selected="false"/>
+              <radio label="&layoutprintframeonly.label;" value="plotinframeonly" selected="false"/>
+              <radio label="&layoutprinticon.label;"      value="plotinicon"      selected="false"/>
             </radiogroup>
           </groupbox>
           <groupbox>
-            <caption label="amp_screendisplay.label;"/>
+            <caption label="&screendisplay.label;"/>
             <radiogroup id="screendisplayattr" orient="horizontal">
-              <radio label="amp_layoutprintframe.label;"     value="plotinframe"     selected="true"/>
-              <radio label="amp_layoutprintplot.label;"      value="plotinplot"      selected="false"/>
-              <radio label="amp_layoutprintframeonly.label;" value="plotinframeonly" selected="false"/>
-              <radio label="amp_layoutprinticon.label;"      value="plotinicon"      selected="false"/>
+              <radio label="&layoutprintframe.label;"     value="plotinframe"     selected="true"/>
+              <radio label="&layoutprintplot.label;"      value="plotinplot"      selected="false"/>
+              <radio label="&layoutprintframeonly.label;" value="plotinframeonly" selected="false"/>
+              <radio label="&layoutprinticon.label;"      value="plotinicon"      selected="false"/>
             </radiogroup>
           </groupbox>
           <groupbox>
-            <caption label="amp_layoutplacement.label;"/>
+            <caption label="&layoutplacement.label;"/>
             <radiogroup id="placement" orient="horizontal">
-              <radio label="amp_layoutplaceinline.label;"    value="placeinline" selected="false"/>
-              <radio label="amp_layoutplacedisplayed.label;" value="placedisp"   selected="true"/>
-              <radio label="amp_layoutplacefloat.label;"     value="placefloat"  selected="false"/>
+              <radio label="&layoutplaceinline.label;"    value="placeinline" selected="false"/>
+              <radio label="&layoutplacedisplayed.label;" value="placedisp"   selected="true"/>
+              <radio label="&layoutplacefloat.label;"     value="placefloat"  selected="false"/>
             </radiogroup>
           </groupbox>
         </vbox>
@@ -308,21 +308,21 @@
       <tabpanel id="Labelling">
         <vbox>
           <groupbox>        
-            <label value="amp_labelingkey.label;"/>
+            <label value="&labelingkey.label;"/>
             <textbox id="Key"/>
           </groupbox>
           <groupbox>        
-            <label value="amp_labelingname.label;"/>
+            <label value="&labelingname.label;"/>
             <textbox id="Name"/>
           </groupbox>
           <groupbox>
-            <caption label="amp_labelingcaption.label;"/>
+            <caption label="&labelingcaption.label;"/>
             <radiogroup id="captionplacement" orient="horizontal">
-              <radio label="amp_labelingabove.label;"    value="labelabove" selected="false"/>
-              <radio label="amp_labelingbelow.label;"    value="labelbelow" selected="true"/>
+              <radio label="&labelingabove.label;"    value="labelabove" selected="false"/>
+              <radio label="&labelingbelow.label;"    value="labelbelow" selected="true"/>
             </radiogroup>
             <textbox id="CaptionText"  multiline="true" rows="4" cols="40" 
-                   caption="amp_labelingcaptiontext.label;" />
+                   caption="&labelingcaptiontext.label;" />
           </groupbox>
        </vbox>
       </tabpanel>      
@@ -363,21 +363,21 @@
           <vbox>
             <checkbox id="OrthogonalProjection" label="Orthogonal Projection"/>
             <checkbox id="KeepUp"               label="Keep Up Vector"/>
-            <checkbox id="defaultviewintervals" label="amp_viewinterval.label;"/>
+            <checkbox id="defaultviewintervals" label="&viewinterval.label;"/>
           </vbox>
           <groupbox>        
             <hbox>
-              <label value="amp_axisxrange.label;"/>
+              <label value="&axisxrange.label;"/>
               <textbox id="xrangelow" cols="4"/>
               <textbox id="xrangehigh" cols="4"/>
             </hbox>
             <hbox>
-              <label value="amp_axisyrange.label;"/>
+              <label value="&axisyrange.label;"/>
               <textbox id="yrangelow" cols="4"/>
               <textbox id="yrangehigh" cols="4"/>
             </hbox>
             <hbox>
-              <label value="amp_axiszrange.label;"/>
+              <label value="&axiszrange.label;"/>
               <textbox id="zrangelow" cols="4"/>
               <textbox id="zrangehigh" cols="4"/>
             </hbox>
