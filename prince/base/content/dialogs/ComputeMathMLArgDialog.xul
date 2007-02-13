@@ -22,7 +22,7 @@
 <!-- ?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"? -->
-<?xml-stylesheet href="chrome://prince/content/MathVarsDialog.css" type="text/css"?> 
+<?xml-stylesheet href="chrome://prince/skin/MathVarsDialog.css" type="text/css"?> 
 
 <!DOCTYPE dialog [
 <!ENTITY % DTD SYSTEM "chrome://prince/locale/ComputeMathMLArgDialog.dtd" >
