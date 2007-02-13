@@ -29,6 +29,7 @@
 <!-- use docformat information to call the geometry package -->
 <xsl:template match="html:pagelayout[@latex='true']">
 <xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable>
+
 \usepackage[ <xsl:apply-templates/>
 ]{geometry}
 </xsl:template>
@@ -38,31 +39,37 @@
   twoside=<xsl:value-of select="@twoside"/>,
   landscape=<xsl:value-of select="@landscape"/>,</xsl:template>
 
+<xsl:template match="html:page[@paper='screen']">
+  paper=screen,
+  twoside=false,
+  landscape=false,</xsl:template>
+
 <xsl:template match="html:page[@paper='other']">
-  paperwidth=<xsl:value-of select="@width"/>in,
-  paperheight=<xsl:value-of select="@height"/>in, </xsl:template>
+  paperwidth=<xsl:value-of select="@width"/>,
+  paperheight=<xsl:value-of select="@height"/>, </xsl:template>
 
 <xsl:template match="html:textregion">
-  textwidth=<xsl:value-of select="@width"/>in,		    
-  textheight=<xsl:value-of select="@height"/>in, </xsl:template>
+  textwidth=<xsl:value-of select="@width"/>,		    
+  textheight=<xsl:value-of select="@height"/>, </xsl:template>
 
 <xsl:template match="html:margin">
-  left=<xsl:value-of select="@left"/>in,
-  top=<xsl:value-of select="@top"/>in, </xsl:template>
+  left=<xsl:value-of select="@left"/>,
+  top=<xsl:value-of select="@top"/>, </xsl:template>
 
 <xsl:template match="html:header">
-  headheight=<xsl:value-of select="@height"/>in,
-  headsep=<xsl:value-of select="@sep"/>in, </xsl:template>
+  headheight=<xsl:value-of select="@height"/>,
+  headsep=<xsl:value-of select="@sep"/>, </xsl:template>
 
 <xsl:template match="html:columns[@count='2']">
-  twocolumn=true columnsep=<xsl:value-of select="@sep"/>in, </xsl:template>
+  twocolumn=true columnsep=<xsl:value-of select="@sep"/>, </xsl:template>
 
 <xsl:template match="html:marginnote[@hidden='false']">
-  marginparwidth=<xsl:value-of select="@width"/>in,
-  marginparsep=<xsl:value-of select="@sep"/>in,	</xsl:template>
+  marginparwidth=<xsl:value-of select="@width"/>,
+  marginparsep=<xsl:value-of select="@sep"/>,	</xsl:template>
 
 <xsl:template match="html:footer">
-  footskip=<xsl:value-of select="@height+@sep"/>in </xsl:template>
+  footskip=<xsl:value-of 
+  select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep)-2)),substring(@sep,string-length(@sep)-2))"/></xsl:template>
 
   
 

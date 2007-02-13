@@ -41,44 +41,62 @@ function savePageLayout(docFormatNode)
 {
   var pfNode = editor.createNode('pagelayout', docFormatNode,0);
   var nodecounter = 0;
+  var units;
   pfNode.setAttribute('latex',true);
-  pfNode.setAttribute('unit',document.getElementById('docformat.units').value);
+  units=document.getElementById('docformat.units').value;
+  pfNode.setAttribute('unit',units);
   var node = editor.createNode('requirespackage', pfNode, nodecounter++);
   node.nodeValue = "geometry";
   node = editor.createNode('page', pfNode, nodecounter++);
   node.setAttribute('twoside',document.getElementById('twosides').checked);
   node.setAttribute('paper',document.getElementById('docformat.papersize').value);
-  node.setAttribute('width',pagewidth);
-  node.setAttribute('height',pageheight);
+  node.setAttribute('width',pagewidth+units);
+  node.setAttribute('height',pageheight+units);
   node.setAttribute('landscape',document.getElementById('landscape').checked);
   node = editor.createNode('textregion',pfNode,nodecounter++);
-  node.setAttribute('width',document.getElementById('tbbodywidth').value);
-  node.setAttribute('height', document.getElementById('tbbodyheight').value);
+  node.setAttribute('width',document.getElementById('tbbodywidth').value+units);
+  node.setAttribute('height', document.getElementById('tbbodyheight').value+units);
   node = editor.createNode('margin',pfNode,nodecounter++);
-  node.setAttribute('left',document.getElementById('tblmargin').value);
-  node.setAttribute('top', document.getElementById('tbtmargin').value);
+  node.setAttribute('left',document.getElementById('tblmargin').value+units);
+  node.setAttribute('top', document.getElementById('tbtmargin').value+units);
   node = editor.createNode('columns',pfNode,nodecounter++);
   node.setAttribute('count',(document.getElementById('columns').checked?2:1));
-  node.setAttribute('sep',document.getElementById('tbfootersep').value);
+  node.setAttribute('sep',document.getElementById('tbfootersep').value+units);
   node = editor.createNode('marginnote',pfNode,nodecounter++);
 //  node.setAttribute('reversed',document.getElementById('*****').checked);
-  node.setAttribute('width',document.getElementById('tbmnwidth').value);
-  node.setAttribute('sep',document.getElementById('tbmnsep').value);
-  node.setAttribute('push',document.getElementById('tbmnpush').value);
+  node.setAttribute('width',document.getElementById('tbmnwidth').value+units);
+  node.setAttribute('sep',document.getElementById('tbmnsep').value+units);
+  node.setAttribute('push',document.getElementById('tbmnpush').value+units);
   node.setAttribute('hidden', document.getElementById('disablemn').checked);
   node = editor.createNode('header',pfNode,nodecounter++);
-  node.setAttribute('height',document.getElementById('tbheader').value);
-  node.setAttribute('sep',document.getElementById('tbheadersep').value);
+  node.setAttribute('height',document.getElementById('tbheader').value+units);
+  node.setAttribute('sep',document.getElementById('tbheadersep').value+units);
   node = editor.createNode('footer',pfNode,nodecounter++);
-  node.setAttribute('height',document.getElementById('tbfooter').value);
-  node.setAttribute('sep',document.getElementById('tbfootersep').value);
+  node.setAttribute('height',document.getElementById('tbfooter').value+units);
+  node.setAttribute('sep',document.getElementById('tbfootersep').value+units);
 }
+
+function getNumberValue(numberwithunit)
+{
+  var reNum = /\d*\.?\d*/;
+  var reUnit = /in|pt|mm|cm/;
+  var num = reNum.exec(numberwithunit);
+  if (num.length > 0)
+  {
+    dump(reUnit.exec()+"\n");
+    return Number(num);
+  }
+  return 0;
+}
+
 
 function getPageLayout()
 {
   var doc = editor.document;
   var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
+  if (!preamble) return;
   var docFormatNodeList = preamble.getElementsByTagName('docformat');
+  if (!docFormatNodeList) return;
   var node;
   var subnode;
   var i;
@@ -89,52 +107,51 @@ function getPageLayout()
     if (node)
     {
       value = node.getAttribute('twoside');
-      if (value==true) document.getElementById('twosides').checked=true;
+      if (value=='true') document.getElementById('twosides').checked=true;
         else document.getElementById('twosides').checked=false;
       value = node.getAttribute('paper');
       if (value) document.getElementById('docformat.papersize').value = value;
       value = node.getAttribute('width');
-      if (value) pagewidth = value;
+      if (value) pagewidth = getNumberValue(value);
       value = node.getAttribute('height');
-      if (value) pageheight = value;
+      if (value) pageheight = getNumberValue(value);
       value = node.getAttribute('landscape');
-      if (value==true) document.getElementById('landscape').checked=true;
-        else document.getElementById('landscape').checked=false;
-    }
+      if (value=='true') landscape = true; else landscape = false;
+      document.getElementById('landscape').checked=landscape;
+    }                                                    
     node = docFormatNodeList[i].getElementsByTagName('textregion')[0];
     if (node)
     {
       value = node.getAttribute('width');
-      if (value) document.getElementById('tbbodywidth').value=value;
+      if (value) document.getElementById('tbbodywidth').value=getNumberValue(value);
       value = node.getAttribute('height');
-      if (value) document.getElementById('tbbodyheight').value=value;
+      if (value) document.getElementById('tbbodyheight').value=getNumberValue(value);
     }
     node = docFormatNodeList[i].getElementsByTagName('margin')[0];
     if (node)
     {
       value = node.getAttribute('left');
-      if (value) document.getElementById('tblmargin').value=value;
+      if (value) document.getElementById('tblmargin').value=getNumberValue(value);
       value = node.getAttribute('top');
-      if (value) document.getElementById('tbtmargin').value=value;
+      if (value) document.getElementById('tbtmargin').value=getNumberValue(value);
     }
     node = docFormatNodeList[i].getElementsByTagName('columns')[0];
     if (node)
     {
       value = node.getAttribute('count');
-      if (value) document.getElementById('twosides').checked=(value?2:1);
-        else document.getElementById('twosides').checked=false;
+      if (value) document.getElementById('columns').checked=(value?2:1);
       value = node.getAttribute('sep');
-      if (value) document.getElementById('tbfootersep').value=value;
+      if (value) document.getElementById('tbcolsep').value=getNumberValue(value);
     }
     node = docFormatNodeList[i].getElementsByTagName('marginnote')[0];
     if (node)
     {
       value = node.getAttribute('width');
-      if (value) document.getElementById('tbmnwidth').value=value;
+      if (value) document.getElementById('tbmnwidth').value=getNumberValue(value);
       value = node.getAttribute('sep');
-      if (value) document.getElementById('tbmnsep').value=value;
+      if (value) document.getElementById('tbmnsep').value=getNumberValue(value);
       value = node.getAttribute('push');
-      if (value) document.getElementById('tbmnpush').value=value;
+      if (value) document.getElementById('tbmnpush').value=getNumberValue(value);
       value = node.getAttribute('hidden');
       if (value) document.getElementById('disablemn').checked=value;
         else document.getElementById('disablemn').checked=false;
@@ -143,17 +160,17 @@ function getPageLayout()
     if (node)
     {
       value = node.getAttribute('height');
-      if (value) document.getElementById('tbheader').value=value;
+      if (value) document.getElementById('tbheader').value=getNumberValue(value);
       value = node.getAttribute('sep');
-      if (value) document.getElementById('tbheadersep').value=value;
+      if (value) document.getElementById('tbheadersep').value=getNumberValue(value);
     }
     node = docFormatNodeList[i].getElementsByTagName('footer')[0];
     if (node)
     {
       value = node.getAttribute('height');
-      if (value) document.getElementById('tbfooter').value=value;
+      if (value) document.getElementById('tbfooter').value=getNumberValue(value);
       value = node.getAttribute('sep');
-      if (value) document.getElementById('tbfootersep').value=value;
+      if (value) document.getElementById('tbfootersep').value=getNumberValue(value);
     }
   }
 }
