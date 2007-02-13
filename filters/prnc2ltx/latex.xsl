@@ -26,11 +26,55 @@
 <xsl:apply-templates/>
 </xsl:template>
 
+<!-- use docformat information to call the geometry package -->
+<xsl:template match="html:pagelayout[@latex='true']">
+<xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable>
+\usepackage[ <xsl:apply-templates/>
+]{geometry}
+</xsl:template>
+
+<xsl:template match="html:page">
+  paper=<xsl:value-of select="@paper"/>paper,
+  twoside=<xsl:value-of select="@twoside"/>,
+  landscape=<xsl:value-of select="@landscape"/>,</xsl:template>
+
+<xsl:template match="html:page[@paper='other']">
+  paperwidth=<xsl:value-of select="@width"/>in,
+  paperheight=<xsl:value-of select="@height"/>in, </xsl:template>
+
+<xsl:template match="html:textregion">
+  textwidth=<xsl:value-of select="@width"/>in,		    
+  textheight=<xsl:value-of select="@height"/>in, </xsl:template>
+
+<xsl:template match="html:margin">
+  left=<xsl:value-of select="@left"/>in,
+  top=<xsl:value-of select="@top"/>in, </xsl:template>
+
+<xsl:template match="html:header">
+  headheight=<xsl:value-of select="@height"/>in,
+  headsep=<xsl:value-of select="@sep"/>in, </xsl:template>
+
+<xsl:template match="html:columns[@count='2']">
+  twocolumn=true columnsep=<xsl:value-of select="@sep"/>in, </xsl:template>
+
+<xsl:template match="html:marginnote[@hidden='false']">
+  marginparwidth=<xsl:value-of select="@width"/>in,
+  marginparsep=<xsl:value-of select="@sep"/>in,	</xsl:template>
+
+<xsl:template match="html:footer">
+  footskip=<xsl:value-of select="@height+@sep"/>in </xsl:template>
+
+  
+
 <xsl:template match="html:latex">\LaTeX{}</xsl:template>
 <xsl:template match="mml:math">\textbf{Math here}</xsl:template>
  
 <xsl:template match="html:documentclass">
 \documentclass{<xsl:value-of select="@class"/>}</xsl:template>
+
+<xsl:template match="//html:docformat">
+<xsl:apply-templates/>
+</xsl:template>
 
 <xsl:template match="html:usepackage">
 \usepackage{<xsl:value-of select="@package"/>}</xsl:template>
