@@ -99,13 +99,22 @@ function PlotAttrName (str, num) {
 
 
 // call the compute engine to create an image
-function GraphComputeGraph () {
+function GraphComputeGraph (editorElement) {
+//  dump("Entering GraphComputeGraph.\n");
   var filename = this.getGraphAttribute ("ImageFile");
-  ComputeCursor();
+//  var dumpStr = "In GraphComputeGraph, about to put on ComputeCursor; editorElement is [";
+//  if (editorElement)
+//    dumpStr += editorElement.id;
+//  dumpStr += "].\n";
+//  dump(dumpStr);
+  ComputeCursor(editorElement);
+//  dump("In GraphComputeGraph, about to serializeGraph.\n");
   var str = this.serializeGraph();
+//  dump("In GraphComputeGraph, after serializeGraph.\n");
   if (this.errStr == "") {
     try {
-      msiComputeLogger.Sent4 ("plotfuncCmd", filename, str, "");
+      var topWin = msiGetTopLevelWindow();
+      topWin.msiComputeLogger.Sent4 ("plotfuncCmd", filename, str, "");
       //msiComputeLogger.Sent4 ("plotfuncCmd", filename, "", "");
       var out=GetCurrentEngine().plotfuncCmd (str);
       msiComputeLogger.Received(out);                                                             
@@ -119,7 +128,7 @@ function GraphComputeGraph () {
   } else {
     dump (this.errStr);
   }
-  RestoreCursor();
+  RestoreCursor(editorElement);
 }
 
 // call the compute engine to guess at graph attributes 
@@ -273,15 +282,24 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
 
 // walk down <graphSpec> and extract attributes and elements from existing graph
 function GraphReadGraphAttributesFromDOM (DOMGraph) {
-  var DOMGs = DOMGraph.getElementsByTagName("graphSpec");
+  var msins="http://www.sciword.com/namespaces/sciword";
+  var DOMGs = DOMGraph.getElementsByTagNameNS(msins, "graphSpec");
   if (DOMGs.length > 0) {
     DOMGs = DOMGs[0];
     for (i=0; i<DOMGs.attributes.length; i++) {
       var key = DOMGs.attributes[i].nodeName;
       var value = DOMGs.attributes[i].nodeValue;
+//      dump("Adding key[" + key + "], value[" + value + "] to graph object.\n");  //rwa
       this.setGraphAttribute(key, value);
     }
-    var DOMPlots = DOMGraph.getElementsByTagName("plot");
+    var DOMPlots = DOMGraph.getElementsByTagNameNS(msins, "plot");
+    var debugStr = "Number of plot children of DOMGraph is [" + DOMPlots.length + "]";  //rwa
+    if (DOMPlots.length <= 0)  //rwa
+    {             //rwa
+      DOMPlots = DOMGs.getElementsByTagNameNS(msins, "plot");   //rwa
+      debugStr += "; number of plot children of graphSpec is [" + DOMPlots.length + "]";  //rwa
+    }
+    window.dump("Setting up graph dialog. " + debugStr + ".\n");  //rwa
     for (var i = 0; i<DOMPlots.length; i++) {
       var plotno = this.addPlot();
       this.extractPlotAttributes(DOMPlots[i], plotno);
@@ -420,6 +438,7 @@ function PlotReadPlotAttributesFromDOM (DOMPlot, plotno) {
 // Handle a mouse double click on a graph image in the document. This is bound in editor.js.
 function graphClickEvent (cmdstr, editorElement)
 {
+//  dump("Entering graphClickEvent.\n");
   try
   {
     if (!editorElement)
@@ -429,7 +448,7 @@ function graphClickEvent (cmdstr, editorElement)
     {
       var element = findtagparent(selection.focusNode, "graph");
       if (element)
-        formatRecreateGraph(element);
+        formatRecreateGraph(element, cmdstr, editorElement);
     }
   }
   catch(exc) {AlertWithTitle("Error in GraphOverlay.js", "Error in graphClickEvent: " + exc);}
@@ -526,7 +545,7 @@ function DOMGListAdd (DOMGraph, thelist) {
 /**----------------------------------------------------------------------------------*/
 // format and recreate a graph and replace the existing one
 // DOMGraph is the DOM graph element we are going to replace.
-function formatRecreateGraph (DOMGraph) {
+function formatRecreateGraph (DOMGraph, commandStr, editorElement) {
   // only open one dialog per DOMGraph element
   if (DOMGListMemberP (DOMGraph, currentDOMGs)) {
     return;
@@ -536,8 +555,12 @@ function formatRecreateGraph (DOMGraph) {
   var graph = new Graph();
   graph.extractGraphAttributes (DOMGraph);
   // non-modal dialog, the return is immediate
-  window.openDialog ("chrome://prince/content/ComputeGraphSettings.xul",
-                     "", "chrome,close,titlebar,dependent", graph, DOMGraph, currentDOMGs);
+
+  var extraArgsArray = new Array(graph, DOMGraph, currentDOMGs);
+  msiOpenModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul",
+                     "", "chrome,close,titlebar,dependent", editorElement, commandStr, DOMGraph, extraArgsArray);
+//  window.openDialog ("chrome://prince/content/ComputeGraphSettings.xul",
+//                     "", "chrome,close,titlebar,dependent", editorElement, DOMGraph, extraArgsArray);
   return;
 }
 
@@ -545,13 +568,13 @@ function formatRecreateGraph (DOMGraph) {
 // In theory, graph is the graph object and DOMGraph is the DOM element
 // to be replaced. It is possible that DOMGraph has been removed from the
 // parent (i.e., deleted). No parent, no changes to the picture.
-function nonmodalRecreateGraph (graph, DOMGraph) {
+function nonmodalRecreateGraph (graph, DOMGraph, editorElement) {
   try {
     if (DOMGraph) {
       var parent = DOMGraph.parentNode;
       if (parent) {
         // parent.replaceChild() doesn't work. insert new, delete current
-        insertGraph (DOMGraph, graph);
+        insertGraph (DOMGraph, graph, editorElement);
         parent.removeChild (DOMGraph);
       }
     }
@@ -565,27 +588,31 @@ function nonmodalRecreateGraph (graph, DOMGraph) {
 
 /**----------------------------------------------------------------------------------*/
 // compute a graph, create a <graph> element, insert it into DOM after siblingElement
-function insertGraph (siblingElement, graph) {
+function insertGraph (siblingElement, graph, editorElement) {
   var filetype = graph.getDefaultValue ("DefaultFileType");
   // May want to ensure file type is compatible with animated here
-  var editorElement = null;
+//  var editorElement = null;
+  if (!editorElement || editorElement == null)
+    editorElement = findEditorElementForDocument(siblingElement.ownerDocument);
   try
   {
-    editorElement = findEditorElementForDocument(siblingElement.ownerDocument);
     var filename = createUniqueFileName("plot", filetype, editorElement);
     graph.setGraphAttribute("ImageFile", filename);
     msiGetEditor(editorElement).setCaretAfterElement (siblingElement);
   } catch (e) {
     dump ("Warning: unable to setCaretAfterElement while inserting graph\n");
   }
-  graph.computeGraph ();
+//  dump("In insertGraph, about to computeGraph.\n");
+  graph.computeGraph (editorElement);
   addGraphElementToDocument (graph.createGraphDOMElement(false), siblingElement, editorElement);
 }
 
 /**-----------------------------------------------------------------------------------------*/
 // Create the <graph> element and insert into the document following this math element
 // primary entry point
-function insertNewGraph (math, dimension, plottype, optionalAnimate) {
+function insertNewGraph (math, dimension, plottype, optionalAnimate, editorElement) {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var expr = runFixup(GetFixedMath(math));
   var graph = new Graph();
   graph.addPlot ();
@@ -598,18 +625,18 @@ function insertNewGraph (math, dimension, plottype, optionalAnimate) {
     graph.setPlotAttribute (PlotAttrName ("Animate",1), "true");
   }
   graph.computeQuery(1);
-  insertGraph (math, graph);
+  insertGraph (math, graph, editorElement);
 }
 
 /**----------------------------------------------------------------------------------*/
 // regenerate the graph  based on the contents of <graph>
 // DOMGraph is the DOM graph element we are going to replace.
 // called by the TestGraphScript() method in the debug menu.
-function recreateGraph (DOMGraph) {
+function recreateGraph (DOMGraph, editorElement) {
   var graph = new Graph();
   graph.extractGraphAttributes (DOMGraph);
   var parent = DOMGraph.parentNode;
-  insertGraph (DOMGraph, graph);
+  insertGraph (DOMGraph, graph, editorElement);
   parent.removeChild (DOMGraph);
 }
 
@@ -814,7 +841,7 @@ function testQuery (domgraph) {
   graph.computeQuery(1);
 }
 
-function testQueryGraph (domgraph) {
+function testQueryGraph (domgraph, editorElement) {
   var graph = new Graph();
   graph.extractGraphAttributes(domgraph);
 
@@ -824,7 +851,7 @@ function testQueryGraph (domgraph) {
   graph.computeQuery(1);
 
   var parent = domgraph.parentNode;
-  insertGraph (domgraph, graph);
+  insertGraph (domgraph, graph, editorElement);
   parent.removeChild (domgraph);
 }
 

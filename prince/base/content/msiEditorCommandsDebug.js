@@ -558,11 +558,12 @@ function msiExecuteJSTransactionViaEditor()
 
 //--------------------------------------------------
 function msiTestGraphScript() {
-  var theDoc = msiGetCurrentEditor().document;
+  var editorElement = msiGetActiveEditorElement();
+  var theDoc = msiGetEditor(editorElement).document;
   var graphs = theDoc.getElementsByTagName("graph");
   dump("SMR testGraphScript, length is " + graphs.length +  "\n");
   for (var i=0; i<graphs.length; i++) {
-    recreateGraph (graphs[i]);
+    recreateGraph (graphs[i], editorElement);
   }
 }  
 
@@ -576,10 +577,11 @@ function msiTestPreparePlotAll() {
 }
 
 function msiTestPreparePlotGraph() {
-  var theDoc = msiGetCurrentEditor().document;
+  var editorElement = msiGetActiveEditorElement();
+  var theDoc = msiGetEditor(editorElement).document;
   var mathelems = theDoc.getElementsByTagName("graph");
   dump("SMR TestPreparePlotAll with " + mathelems.length + " items\n");
   for (var i=0; i<mathelems.length; i++) {
-    testQueryGraph (mathelems[i]);
+    testQueryGraph (mathelems[i], editorElement);
   }
 }

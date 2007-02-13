@@ -2720,7 +2720,7 @@ var msiFindCommand =
     try
     {
       return editorElement.getEditor(editorElement.contentWindow) != null;
-    } catch(exc) {AlertWithTitle("Error in misComposerCommands.js", "Error in msiFindCommand.isCommandEnabled: " + exc);}
+    } catch(exc) {dump("Error in misComposerCommands.js", "Error in msiFindCommand.isCommandEnabled: " + exc);}
     return false;
   },
 
@@ -2756,7 +2756,7 @@ var msiFindAgainCommand =
     {
       return editorElement.getEditor(editorElement.contentWindow) != null;
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiFindAgainCommand.isCommandEnabled: " + exc);}
+    catch(exc) {dump("Error in msiComposerCommands.js", "Error in msiFindAgainCommand.isCommandEnabled: " + exc);}
     return false;
   },
 
@@ -2776,7 +2776,7 @@ var msiFindAgainCommand =
       // reset to what it was in dialog, otherwise dialog setting can get reversed
       findInst.findBackwards = findService.findBackwards; 
     }
-    catch(exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiFindAgainCommand.doCommand: " + exc);}
+    catch(exc) {dump("Error in msiComposerCommands.js", "Error in msiFindAgainCommand.doCommand: " + exc);}
   }
 };
 
