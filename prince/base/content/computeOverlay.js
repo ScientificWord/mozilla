@@ -763,112 +763,112 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       break;
 
     case "cmd_compute_Plot2DRectangular":
-      doComputePlot(element, 2, "rectangular");
+      doComputePlot(element, 2, "rectangular", editorElement);
       break;
     case "cmd_compute_Plot2DPolar":
-      doComputePlot(element, 2, "polar");
+      doComputePlot(element, 2, "polar", editorElement);
       break;
     case "cmd_compute_Plot2DImplicit":
-      doComputePlot(element, 2, "implicit");
+      doComputePlot(element, 2, "implicit", editorElement);
       break;
     case "cmd_compute_Plot2DInequality":
-      doComputePlot(element, 2, "inequality");
+      doComputePlot(element, 2, "inequality", editorElement);
       break;
     case "cmd_compute_Plot2DParametric":
-      doComputePlot(element, 2, "parametric");
+      doComputePlot(element, 2, "parametric", editorElement);
       break;
     case "cmd_compute_Plot2DConformal":
-      doComputePlot(element, 2, "conformal");
+      doComputePlot(element, 2, "conformal", editorElement);
       break;
     case "cmd_compute_Plot2DGradient":
-      doComputePlot(element, 2, "gradient");
+      doComputePlot(element, 2, "gradient", editorElement);
       break;
     case "cmd_compute_Plot2DVector":
-      doComputePlot(element, 2, "vectorField");
+      doComputePlot(element, 2, "vectorField", editorElement);
       break;
     case "cmd_compute_Plot2DODE":
-      doComputePlot(element, 2, "ode");
+      doComputePlot(element, 2, "ode", editorElement);
       break;
     case "cmd_compute_Plot2DAI":
-      doComputePlot(element, 2, "approximateIntegral");
+      doComputePlot(element, 2, "approximateIntegral", editorElement);
       break;
     case "cmd_compute_Plot3DRectangular":
-      doComputePlot(element, 3, "rectangular");
+      doComputePlot(element, 3, "rectangular", editorElement);
       break;
     case "cmd_compute_Plot3DCurve":
-      doComputePlot(element, 3, "curve");
+      doComputePlot(element, 3, "curve", editorElement);
       break;
     case "cmd_compute_Plot3DCylindrical":
-      doComputePlot(element, 3, "cylindrical");
+      doComputePlot(element, 3, "cylindrical", editorElement);
       break;
     case "cmd_compute_Plot3DSpherical":
-      doComputePlot(element, 3, "spherical");
+      doComputePlot(element, 3, "spherical", editorElement);
       break;
     case "cmd_compute_Plot3DParametric":
-      doComputePlot(element, 3, "parametric");
+      doComputePlot(element, 3, "parametric", editorElement);
       break;
     case "cmd_compute_Plot3DImplicit":
-      doComputePlot(element, 3, "implicit");
+      doComputePlot(element, 3, "implicit", editorElement);
       break;
     case "cmd_compute_Plot3DTube":
-      doComputePlot(element, 3, "tube");
+      doComputePlot(element, 3, "tube", editorElement);
       break;
     case "cmd_compute_Plot3DGradient":
-      doComputePlot(element, 3, "gradient");
+      doComputePlot(element, 3, "gradient", editorElement);
       break;
     case "cmd_compute_Plot3DVector":
-      doComputePlot(element, 3, "vectorField");
+      doComputePlot(element, 3, "vectorField", editorElement);
       break;
     case "cmd_compute_Plot2DARectangular":
-      doComputePlot(element, 2, "rectangular", true);
+      doComputePlot(element, 2, "rectangular", true, editorElement);
       break;
     case "cmd_compute_Plot2DAPolar":
-      doComputePlot(element, 2, "polar", true);
+      doComputePlot(element, 2, "polar", true, editorElement);
       break;
     case "cmd_compute_Plot2DAImplicit":
-      doComputePlot(element, 2, "implicit", true);
+      doComputePlot(element, 2, "implicit", true, editorElement);
       break;
     case "cmd_compute_Plot2DAInequality":
-      doComputePlot(element, 2, "inequality", true);
+      doComputePlot(element, 2, "inequality", true, editorElement);
       break;
     case "cmd_compute_Plot2DAParametric":
-      doComputePlot(element, 2, "parametric", true);
+      doComputePlot(element, 2, "parametric", true, editorElement);
       break;
     case "cmd_compute_Plot2DAConformal":
-      doComputePlot(element, 2, "conformal", true);
+      doComputePlot(element, 2, "conformal", true, editorElement);
       break;
     case "cmd_compute_Plot2DAGradient":
-      doComputePlot(element, 2, "gradient", true);
+      doComputePlot(element, 2, "gradient", true, editorElement);
       break;
     case "cmd_compute_Plot2DAVector":
-      doComputePlot(element, 2, "vectorField", true);
+      doComputePlot(element, 2, "vectorField", true, editorElement);
       break;
     case "cmd_compute_Plot3DARectangular":
-      doComputePlot(element, 3, "rectangular", true);
+      doComputePlot(element, 3, "rectangular", true, editorElement);
       break;
     case "cmd_compute_Plot3DACurve":
-      doComputePlot(element, 3, "curve", true);
+      doComputePlot(element, 3, "curve", true, editorElement);
       break;
     case "cmd_compute_Plot3DACylindrical":
-      doComputePlot(element, 3, "cylindrical", true);
+      doComputePlot(element, 3, "cylindrical", true, editorElement);
       break;
     case "cmd_compute_Plot3DASpherical":
-      doComputePlot(element, 3, "spherical", true);
+      doComputePlot(element, 3, "spherical", true, editorElement);
       break;
     case "cmd_compute_Plot3DAParametric":
-      doComputePlot(element, 3, "parametric", true);
+      doComputePlot(element, 3, "parametric", true, editorElement);
       break;
     case "cmd_compute_Plot3DAImplicit":
-      doComputePlot(element, 3, "implicit", true);
+      doComputePlot(element, 3, "implicit", true, editorElement);
       break;
     case "cmd_compute_Plot3DATube":
-      doComputePlot(element, 3, "tube", true);
+      doComputePlot(element, 3, "tube", true, editorElement);
       break;
     case "cmd_compute_Plot3DAGradient":
-      doComputePlot(element, 3, "gradient", true);
+      doComputePlot(element, 3, "gradient", true, editorElement);
       break;
     case "cmd_compute_Plot3DAVector":
-      doComputePlot(element, 3, "vectorField", true);
+      doComputePlot(element, 3, "vectorField", true, editorElement);
       break;
     case "cmd_compute_Define":
       doComputeDefine(element, editorElement);
@@ -1034,7 +1034,6 @@ function appendResult(result,sep,math,editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var appendedResult = result.replace(fullmath, fullmath+sep);
-  var parser = new DOMParser();
   insertXML( editor, appendedResult, math, math.childNodes.length );
   /*
   msiGetEditor(editorElement).insertHTMLWithContext(
@@ -2201,9 +2200,9 @@ function doComputePassthru(editorElement)
 
 // "math" is the expression to plot
 // "type" is the type from the menu. 
-function doComputePlot(math, dimension, type, animate)
+function doComputePlot(math, dimension, type, animate, editorElement)
 {
-  insertNewGraph(math, dimension, type, animate);
+  insertNewGraph(math, dimension, type, animate, editorElement);
 }
 
 
