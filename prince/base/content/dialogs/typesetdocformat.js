@@ -196,6 +196,11 @@ function onAccept()
 // first check that something is set
   var doc = editor.document;
   var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
+  var head;
+  if (!preamble) { // create the preamble
+    head = doc.documentElement.getElementsByTagName('head')[0];
+    preamble = editor.createNode('preamble',head,head.childNodes.length);
+  }
 // delete any current docformat nodes -- we are replacing them
   var docFormatNodeList = preamble.getElementsByTagName('docformat');
   var i;
