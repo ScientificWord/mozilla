@@ -61,7 +61,8 @@
   headsep=<xsl:value-of select="@sep"/>, </xsl:template>
 
 <xsl:template match="html:columns[@count='2']">
-  twocolumn=true columnsep=<xsl:value-of select="@sep"/>, </xsl:template>
+  twocolumn=true,
+  columnsep=<xsl:value-of select="@sep"/>, </xsl:template>
 
 <xsl:template match="html:marginnote[@hidden='false']">
   marginparwidth=<xsl:value-of select="@width"/>,
@@ -71,7 +72,25 @@
   footskip=<xsl:value-of 
   select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep)-2)),substring(@sep,string-length(@sep)-2))"/></xsl:template>
 
-  
+
+<xsl:template match="html:fontchoices">
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
+<xsl:apply-templates/></xsl:template>  
+
+<xsl:template match="html:mainfont">
+\setmainfont{<xsl:value-of select="@name"/>}</xsl:template>
+
+<xsl:template match="html:romanfont">
+\setromanfont{<xsl:value-of select="@name"/>}</xsl:template>
+
+<xsl:template match="html:sansfont">
+\setsansfont{<xsl:value-of select="@name"/>}</xsl:template>
+
+<xsl:template match="html:fixedfont">
+\setmonofont{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:latex">\LaTeX{}</xsl:template>
 <xsl:template match="mml:math">\textbf{Math here}</xsl:template>
