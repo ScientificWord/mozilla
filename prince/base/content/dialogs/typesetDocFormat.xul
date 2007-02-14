@@ -24,6 +24,7 @@
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/typesetDocFormat.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/typesetOverlay.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/ -->
 
   <!-- keyset>
@@ -38,6 +39,7 @@
       <tab label="&docformatPageLayouttab;"/>
       <tab label="&docformatFontstab;"/>
       <tab label="&docformatHeaderstab;"/>
+      <tab label="&docformatNotestab;"/>
       <tab label="&docformatAdvancedtab;"/>
     </tabs>
     <tabpanels>
@@ -294,9 +296,45 @@
          </vbox>
        </vbox>
      </tabpanel>
-     <tabpanel id="docformatFontsPanel"></tabpanel>
-     <tabpanel id="docformatFontsPanel"></tabpanel>
-     <tabpanel id="docformatAdvancedPanel"></tabpanel>
+     <tabpanel id="docformatFontsPanel">
+        <vbox>
+          <checkbox id="useOpenType" label="&docformatUseOpenType;" />
+          <broadcaster id="opentypeok" observes="useOpenType" />
+          <groupbox>
+            <caption label="&mainFontsGroup;"/>
+            <label align="right" value="&docformatRoman;"/>
+            <menulist id="mainfontlist" 
+              oncommand="">
+              <menupopup >
+                <menuitem id="fontdefault" label="&docformatDefault;" />
+                <menuseparator/>
+                <menuseparator/>
+              </menupopup>
+            </menulist>
+            <label value="&docformatSans;"/>
+            <menulist id="sansfontlist" 
+              oncommand="">
+              <menupopup >
+                <menuitem id="fontdefault" label="&docformatDefault;" />
+                <menuseparator/>
+                <menuseparator/>
+              </menupopup>
+            </menulist>
+            <label value="&docformatFixed;"/>
+            <menulist id="fixedfontlist" label="&docformatFixed;"
+              oncommand="">
+              <menupopup >
+                <menuitem id="fontdefault" label="&docformatDefault;" />
+                <menuseparator/>
+                <menuseparator/>
+              </menupopup>
+            </menulist>
+          </groupbox>
+        </vbox>
+      </tabpanel>
+      <tabpanel id="docformatHeadersPanel"></tabpanel>
+      <tabpanel id="docformatNotesPanel"></tabpanel>
+      <tabpanel id="docformatAdvancedPanel"></tabpanel>
     </tabpanels>
   </tabbox>
 
