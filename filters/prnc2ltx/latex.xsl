@@ -17,6 +17,7 @@
 <xsl:template match="*"><!-- Matches everything but the root --></xsl:template>
 
 <xsl:template match="html:html"><xsl:apply-templates/></xsl:template>
+<xsl:template match="html:head"><xsl:apply-templates/></xsl:template>
 
 <xsl:template match="html:body">
 <xsl:apply-templates/>
@@ -110,7 +111,7 @@
 </xsl:template>
 						  
 
-<xsl:template match="html:docbody">
+<xsl:template match="html:body">
 \begin{document}
 <xsl:apply-templates/>
 \end{document}
