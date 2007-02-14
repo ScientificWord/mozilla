@@ -35,6 +35,11 @@ function Startup()
   //all or part of the initial state
   OnWindowSizeReset(true);
   dump("current unit = "+currentUnit+"\n");
+  // font page
+  initSystemFontMenu("mainfontlist");
+  initSystemFontMenu("sansfontlist");
+  initSystemFontMenu("fixedfontlist");
+  getFontSpecs();
 }
 
 function savePageLayout(docFormatNode)
@@ -102,7 +107,18 @@ function getPageLayout()
   var i;
   var value;
   for ( i = 0; i < docFormatNodeList.length; i++)
+  // we expect only one node in this list, but if there are several, we read them all
+  // in the case of conflicts, last man wins
   {
+    node = docFormatNodeList[i].getElementsByTagName('pagelayout')[0];
+    if (node)
+    {
+      value = node.getAttribute('unit');
+      if (value) {
+        currentUnit = value;
+        document.getElementById('docformat.units').value = currentUnit;
+      }
+    }
     node = docFormatNodeList[i].getElementsByTagName('page')[0];
     if (node)
     {
@@ -188,7 +204,11 @@ function onAccept()
       editor.deleteNode(docFormatNodeList[i])
   var newNode = editor.createNode('docformat',preamble,0);
 // should check that the user wants to use geometry package.
-  if (newNode) savePageLayout(newNode);
+  if (newNode) 
+  {
+    savePageLayout(newNode);
+    saveFontSpecs(newNode);
+  }
 }  
 
 function onCancel()
@@ -678,4 +698,43 @@ function setTwosidedState(elt)
 {
   document.getElementById('oneside').hidden = elt.checked;
   document.getElementById('twoside').hidden = !elt.checked;
+}
+
+// font section
+function saveFontSpecs(docFormatNode)
+{
+  var fontspecList = docFormatNode.getElementsByTagName('fontchoices');
+  var i;
+  for (i = fontspecList.length - 1; i >= 0; i--)
+      editor.deleteNode(fontspecList[i])
+  
+  var fontNode = editor.createNode('fontchoices', docFormatNode,0);
+  var nodecounter = 0;
+  var node = editor.createNode('mainfont', fontNode, nodecounter++);
+  node.setAttribute('name',document.getElementById('mainfontlist').value);
+  node = editor.createNode('sansfont', fontNode, nodecounter++);
+  node.setAttribute('name',document.getElementById('sansfontlist').value);
+  node = editor.createNode('fixedfont', fontNode, nodecounter++);
+  node.setAttribute('name', document.getElementById('fixedfontlist').value);
+}
+
+function getFontSpecs()
+{
+  var doc = editor.document;
+  var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
+  if (!preamble) return;
+  var docFormatNode = preamble.getElementsByTagName('docformat')[0];
+  if (!docFormatNode) return;
+  var fontNodes = docFormatNode.getElementsByTagName('fontchoices');
+  var node;
+  var i;
+  for ( i = 0; i < fontNodes.length; i++)
+  {
+    node = fontNodes[i].getElementsByTagName('mainfont')[0];
+    if (node) document.getElementById('mainfontlist').value = node.getAttribute('name');  
+    node = fontNodes[i].getElementsByTagName('sansfont')[0];
+    if (node) document.getElementById('sansfontlist').value = node.getAttribute('name');  
+    node = fontNodes[i].getElementsByTagName('fixedfont')[0];
+    if (node) document.getElementById('fixedfontlist').value = node.getAttribute('name'); 
+  } 
 }
