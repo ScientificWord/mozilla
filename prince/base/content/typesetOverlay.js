@@ -786,3 +786,43 @@ function insertFrontMatter(editorElement, frontMatterData)
     firstNode.parentNode.insertBefore(newNodes[i].cloneNode(true), firstNode);
   }
 }
+
+
+// font section
+var gFontMenuInitialized = new Object;
+var gSystemFonts;
+var systemFontCount;
+
+function initSystemFontMenu(menuPopupId)
+{
+  var menuPopup = document.getElementById(menuPopupId).firstChild;
+  // fill in the menu only once...
+  if (gFontMenuInitialized[menuPopupId ])
+    return;
+  gFontMenuInitialized[menuPopupId ] = menuPopupId ;
+
+  if (!gSystemFonts)
+  {
+    // Build list of all system fonts once per editor
+    try 
+    {
+      var enumerator = Components.classes["@mozilla.org/gfx/fontenumerator;1"]
+                                 .getService(Components.interfaces.nsIFontEnumerator);
+      systemFontCount = { value: 0 }
+      gSystemFonts = enumerator.EnumerateAllFonts(systemFontCount);
+    }
+    catch(e) { }
+  }
+  
+  for (var i = 0; i < gSystemFonts.length; ++i)
+  {
+    if (gSystemFonts[i] != "")
+    {
+      var itemNode = document.createElementNS(XUL_NS, "menuitem");
+      itemNode.setAttribute("label", gSystemFonts[i]);
+      itemNode.setAttribute("value", gSystemFonts[i]);
+      menuPopup.appendChild(itemNode);
+    }
+  }
+}
+ 
