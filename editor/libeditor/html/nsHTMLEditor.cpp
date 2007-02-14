@@ -629,7 +629,26 @@ nsHTMLEditor::NodeIsBlockStatic(nsIDOMNode *aNode, PRBool *aIsBlock)
     *aIsBlock = PR_TRUE;
     return NS_OK;
   }
+// BBM: search for XML tags classified as paragraph or section tags.
+  PRBool found = PR_FALSE;
+  nsString strTagName;
+  nsIAtom * namespaceAtom = nsnull;
+  // to do to implement namespaces: get the namespace atom of aNode
+  tagAtom->ToString(strTagName);
+  mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), strTagName, namespaceAtom, &found);
+  if (found)
+  {
+   *aIsBlock = PR_TRUE;
+   return NS_OK;
+  }
+  mtagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"), strTagName , namespaceAtom, &found);
+  if (found)
+  {
+   *aIsBlock = PR_TRUE;
+   return NS_OK;
+  }
 
+  
   rv = sParserService->IsBlock(sParserService->HTMLAtomTagToId(tagAtom),
                                *aIsBlock);
 
