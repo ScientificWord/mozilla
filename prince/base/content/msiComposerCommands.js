@@ -546,10 +546,62 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
   } catch(e) { dump("error thrown in msiDoStatefulCommand: "+e+"\n"); }
 }
 
-function doTagKeyCommand(keycode, commandID, value)
+function getNextTagWindow(commandID)
 {
-  if (keycode == 13 || keycode == 9) msiDoStatefulCommand(commandID, value);
-  else if (keycode == 27) msiGetActiveEditorElement().contentWindow.focus();
+  var idNext;
+  switch (commandID)
+  {
+    case "cmd_texttag":
+      idNext = "ParaTagSelections";
+      break;
+    case "cmd_paratag":
+      idNext = "StructTagSelections";
+      break;
+    case "cmd_structtag":
+      idNext = "OtherTagSelections";
+      break;
+    case "cmd_othertag":
+      idNext = "TextTagSelections";
+      break;
+    default:
+      idNext = "TextTagSelections";
+  }
+  return document.getElementById(idNext);
+}
+      
+function getPrevTagWindow(commandID)
+{
+  var idPrev;
+  switch (commandID)
+  {
+    case "cmd_texttag":
+      idPrev = "OtherTagSelections";
+      break;
+    case "cmd_paratag":
+      idPrev = "TextTagSelections";
+      break;
+    case "cmd_structtag":
+      idPrev = "ParaTagSelections";
+      break;
+    case "cmd_othertag":
+      idPrev = "StructTagSelections";
+      break;
+    default:
+      idNext = "TextTagSelections";
+  }
+  return document.getElementById(idPrev);
+}
+      
+
+function doTagKeyCommand(event, commandID, value)
+{
+  if (event.keyCode == KeyEvent.DOM_VK_RETURN) msiDoStatefulCommand(commandID, value);
+  else if (event.keyCode == KeyEvent.DOM_VK_ESCAPE) msiGetActiveEditorElement().contentWindow.focus();
+  else if (event.keyCode == KeyEvent.DOM_VK_TAB)
+  {
+    if (event.shiftKey) getPrevTagWindow(commandID).focus();
+    else getNextTagWindow(commandID).focus();
+  } 
 }
 
 ////-----------------------------------------------------------------------------------
