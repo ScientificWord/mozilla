@@ -284,11 +284,13 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
 
   // Continue with normal startup.
 //  var editorElement = document.getElementById("content-frame");
-  if ( initialText && ((initialText.length > 0) || bWithContainingHTML) )
+  var startText;
+  if ( (initialText.length > 0) || bWithContainingHTML )
   {
     if (bWithContainingHTML)
-      initialText = "<html><head></head><body><para>" + initialText + "</para></body></html>";
-    editorElement.initialEditorContents = initialText;
+      startText = "<html><head></head><BODY><para>" + initialText + "</para></BODY></html>";
+    else startText = initialText;
+    editorElement.initialEditorContents = startText;
   }
   EditorStartupForEditorElement(editorElement);
 
@@ -559,8 +561,8 @@ function msiEditorDocumentObserver(editorElement)
         var params = newCommandParams();
         if (!params)
           return;
-        var isInlineSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
-        RealTimeSpell.Init(editor, isInlineSpellCheckerEnabled);
+//        var isInlineSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
+//        RealTimeSpell.Init(editor, isInlineSpellCheckerEnabled);
         try {
           commandManager.getCommandState(aTopic, this.mEditorElement.contentWindow, params);
           var errorStringId = 0;
@@ -593,8 +595,8 @@ function msiEditorDocumentObserver(editorElement)
         //   with a blank page, so simply abort here
         if (editorStatus)
           return; 
-        var isInlineSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
-        editor.getInlineSpellChecker(true).enableRealTimeSpell = isInlineSpellCheckerEnabled;
+//        var isInlineSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
+//        editor.getInlineSpellChecker(true).enableRealTimeSpell = isInlineSpellCheckerEnabled;
 
         if (!("InsertCharWindow" in window))
           window.InsertCharWindow = null;
