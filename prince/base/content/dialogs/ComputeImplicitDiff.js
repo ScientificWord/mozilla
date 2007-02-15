@@ -18,9 +18,9 @@ function Startup(){
     center.setAttribute("label", data.label);
   }
 
-  var theStringSource = "";
+  var theStringSource = '';
   var ourEditor = document.getElementById("varsFrame");
-  msiInitializeEditorForElement(ourEditor, theStringSource);
+  msiInitializeEditorForElement(ourEditor, theStringSource, true);
   ourEditor.makeEditable("html", false);
 
 ////SLS the following copied from editor.js
