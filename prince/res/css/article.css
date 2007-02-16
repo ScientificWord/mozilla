@@ -297,6 +297,12 @@ tt {
   font-weight: 700
 }
 
+hebrew {
+  color: rgb(100,50,0);
+  direction: rtl;
+  unicode-bidi: bidi-override 
+}
+
 tiny {
   font-size: 50%
 }

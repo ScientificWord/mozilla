@@ -429,11 +429,12 @@ function documentAsTeXFile( document, xslSheetPath, outputFile )
     outputFile.create(0, 0755);
     var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
     fos.init(outputFile, -1, -1, false);
-    if (str.length > fos.write(str, str.length))
-    {
-      dump("Wrote fewer bytes than expected!\n");
-   }
-   fos.close();
+    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+      .createInstance(Components.interfaces.nsIConverterOutputStream);
+    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+    os.writeString(str);
+    os.close();
+//   fos.close();
   }
 }
 
@@ -566,11 +567,12 @@ function printTeX( pdftex )
   dump("\ntexfile="+texfile.path);  
   var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   fos.init(texfile, -1, -1, false);
-  if (str.length > fos.write(str, str.length))
-  {
-    dump("Wrote fewer bytes than expected!\n");
-  }
-  fos.close();
+  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+    .createInstance(Components.interfaces.nsIConverterOutputStream);
+  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+  os.writeString(str);
+  os.close();
+//   fos.close();
   if (compileTeXFile(pdftex, texfileLeaf, texfile.path, outputfile.path, 1))
   {
     if (pdftex)
