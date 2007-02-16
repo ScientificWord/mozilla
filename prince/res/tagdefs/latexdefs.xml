@@ -38,6 +38,7 @@
 				<tag nm="sw:em"><description>Emphasized</description></tag>
 				<tag nm="sw:footnotesize"><description>Footnote size</description></tag>
 				<tag nm="sw:fraktur"><description>Fraktur</description></tag>
+				<tag nm="sw:hebrew"><description>Hebrew font</description></tag>
 				<tag nm="sw:Huge"><description>Huge</description></tag>
 				<tag nm="sw:huge"><description>huge</description></tag>
 				<tag nm="sw:it"><description>Italics</description></tag>
