@@ -151,7 +151,6 @@ public:
                               PRUint32 & flags,
                               nsCOMPtr<nsIDOMElement> & mathmlElement);
                               
-                              
   static nsresult CreateMfrac(nsIEditor * editor,
                               nsIDOMNode * num,
                               nsIDOMNode * denom,
@@ -199,7 +198,6 @@ public:
                              nsIArray * nodeArray,
                              nsCOMPtr<nsIDOMElement> & mathmlElement);
                              
-
   static nsresult CreateMtd(nsIEditor *editor,
                             PRBool markCaret,
                             PRUint32 & flags,
@@ -228,7 +226,6 @@ public:
                                    PRUint32 & flags,
                                    nsCOMPtr<nsIDOMElement> & mathmlElement);
                                
- 
   static nsresult CreateContainer(nsIEditor *editor,
                                   const nsAString & elementName,
                                   nsIDOMNode * cloneMyKids,
@@ -238,20 +235,22 @@ public:
                             nsCOMPtr <nsIDOMNode> & clone);
 
   static nsresult CloneChildNode(nsIDOMNode * parent,
-                                 PRUint32    indexOfChild,
+                                 PRUint32 indexOfChild,
                                  nsCOMPtr <nsIDOMNode> & clone);
 
-  static nsresult WrapNodeInMStyle(nsIEditor * editor, nsIDOMNode * node, nsCOMPtr<nsIDOMElement> & mathmlElement);
+  static nsresult WrapNodeInMStyle(nsIEditor * editor,
+                                   nsIDOMNode * node,
+                                   nsCOMPtr<nsIDOMElement> & mathmlElement);
                               
   static nsresult GetRightMostCaretPosition(nsIEditor * editor,
                                             nsIDOMNode * node,
-                                            PRUint32   & position);
+                                            PRUint32 & position);
                                           
   static nsresult GetNumberofChildren(nsIDOMNode * node,
-                                      PRUint32   & number);
+                                      PRUint32 & number);
                                           
   static nsresult GetIndexOfChildInParent(nsIDOMNode * child, 
-                                          PRUint32   & index);
+                                          PRUint32 & index);
                                           
   static nsresult GetNonWhitespaceChildren(nsIDOMNode * parent,
                                            nsCOMPtr<nsIArray> & children);
@@ -277,8 +276,9 @@ public:
                                          nsIDOMNode * node,
                                          PRBool clearAll);
                                          
-  static PRBool NodeHasCaretMark(nsIDOMNode * node, PRUint32& pos,
-                                 PRBool& caretOnText);
+  static PRBool NodeHasCaretMark(nsIDOMNode * node,
+                                 PRUint32 & pos,
+                                 PRBool & caretOnText);
 
   static nsresult MarkCaretPosition(nsIEditor * editor,
                                     nsIDOMNode * node,
@@ -295,22 +295,21 @@ public:
                                      nsIDOMNode * node,
                                      PRUint32 offset);
                                      
-  static nsresult GetNSEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent, nsEvent ** nsEvent);
+  static nsresult GetNSEventFromMouseEvent(nsIDOMMouseEvent * mouseEvent, nsEvent ** nsEvent);
   
-  static nsresult GetScreenPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent, nsPoint & point);                                     
+  static nsresult GetScreenPointFromMouseEvent(nsIDOMMouseEvent * mouseEvent, nsPoint & point);                                     
                                      
   static PRBool IsWhitespace(nsIDOMNode * node);
                                        
-                                     
-  static PRBool IsInputbox(nsIEditor* editor,
+  static PRBool IsInputbox(nsIEditor * editor,
                            nsIDOMNode * node);       
                                                  
-  static PRBool IsInputbox(nsISupports* isupports);
+  static PRBool IsInputbox(nsISupports * isupports);
   
   static PRBool IsMrow(nsIEditor* editor,
                        nsIDOMNode * node);       
                                                  
-  static PRBool IsMrow(nsISupports* isupports);
+  static PRBool IsMrow(nsISupports * isupports);
   
   static PRBool IsMleaf(nsIEditor* editor,
                         nsIDOMNode * node,
@@ -323,10 +322,11 @@ public:
                                     nsIDOMNode * node,
                                     PRUint32 & nodetype);  
                                     
-  static PRUint32 GetMathmlNodeType(nsISupports* isupports);
+  static PRUint32 GetMathmlNodeType(nsISupports * isupports);
   
   static nsresult GetMathParent(nsIDOMNode * node,
                                 nsCOMPtr<nsIDOMNode> & mathParent);
+
   static nsresult CreateMathMLElement(nsIEditor* editor, nsIAtom * type, 
                                       nsCOMPtr<nsIDOMElement> & mmlElement);
                                       
@@ -338,7 +338,7 @@ public:
   static nsresult AppendToMutableList(nsCOMPtr<nsIMutableArray> & mutableList, 
                                       nsCOMPtr<nsIArray> & tobeAdded);
                                 
-  static nsresult RemoveNodesFromList(nsIArray* nodeList, 
+  static nsresult RemoveNodesFromList(nsIArray * nodeList, 
                                       PRUint32 index,
                                       PRUint32 count,
                                       nsCOMPtr<nsIArray> & pArray);
@@ -352,19 +352,16 @@ public:
   static nsresult ComparePoints(nsIEditor * editor,
                                 nsIDOMNode * node1, PRUint32 offset1,
                                 nsIDOMNode * node2, PRUint32 offset2,
-                                PRInt32 &comparison);
-  static nsresult SplitNode(nsIDOMNode * node, PRUint32 offset, PRBool emptyOK,
+                                PRInt32 & comparison);
+
+  static nsresult SplitNode(nsIDOMNode * node, PRUint32 offset,
+                            PRBool emptyOK,
                             nsCOMPtr<nsIDOMNode> & left, 
                             nsCOMPtr<nsIDOMNode> & right);
 
-//msiLayoutUtils
-//TODO  static msiILayoutUtils * m_msiLayoutUtils;
-// end msiLayoutUtils  
-
-
 //TODO - how should this be determined -- user preference??
-enum {MROW_PURGE_NONE = 0, MROW_PURGE_BOUNDARY, MROW_PURGE_ALL};
-static PRUint32  GetMrowPurgeMode();
+  enum {MROW_PURGE_NONE = 0, MROW_PURGE_BOUNDARY, MROW_PURGE_ALL};
+  static PRUint32  GetMrowPurgeMode();
                                       
 };                  
 
