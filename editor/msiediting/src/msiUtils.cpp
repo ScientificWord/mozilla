@@ -64,19 +64,9 @@
 
 static PRBool initalized = PR_FALSE;
 
-//msiLayoutUtils
-//msiILayoutUtils * msiUtils::m_msiLayoutUtils = nsnull;
-
 void msiUtils::Initalize()
 {
-  if (!initalized)
-  {
-    initalized = PR_TRUE;
-//    if (!m_msiLayoutUtils)
-//    {  nsresult res = CallGetService("@mackichan.com/layout/msilayout-utils;1", &m_msiLayoutUtils);
-//      initalized = NS_SUCCEEDED(res) && m_msiLayoutUtils;
-//    }  
-  }
+  initalized = PR_TRUE;
   return;
 }    
 
@@ -109,7 +99,6 @@ nsresult msiUtils::GetMathMLEditingBC(nsIEditor *editor,
   }
   return res;
 }                      
-    
 
 nsresult msiUtils::GetMathMLCaretInterface(nsIEditor *editor,
                                            nsIDOMNode * node,
@@ -438,7 +427,6 @@ nsresult msiUtils::CreateMathMLLeafElement(nsIEditor * editor,
           {
             if (caretPos <= msiIMathMLEditingBC::LAST_VALID)
             {
-             
               nsCOMPtr<nsIDOMNode> leafNode(do_QueryInterface(leafElement));  
               if (leafNode)
                 MarkCaretPosition(editor, leafNode, caretPos, flags, PR_TRUE, PR_TRUE);
@@ -1193,7 +1181,6 @@ nsresult msiUtils::CreateEngineFunction(nsIEditor * editor,
   return res;
 }                               
             
-            
 nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
                                    nsIDOMNode * child,
                                    const nsAString & open,
@@ -1381,7 +1368,6 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
   return res;
 } 
 
-
 nsresult msiUtils::CreateBinomial(nsIEditor * editor,
                                   nsIDOMNode * num,
                                   nsIDOMNode * denom,
@@ -1543,8 +1529,6 @@ nsresult msiUtils::CloneChildNode(nsIDOMNode * parent,
   return res;
 }    
 
-
-
 nsresult msiUtils::WrapNodeInMStyle(nsIEditor * editor, nsIDOMNode * node, nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
   nsresult res(NS_ERROR_FAILURE); 
@@ -1559,7 +1543,6 @@ nsresult msiUtils::WrapNodeInMStyle(nsIEditor * editor, nsIDOMNode * node, nsCOM
   }
   return res;
 }
-
 
 nsresult msiUtils::GetIndexOfChildInParent(nsIDOMNode * child, PRUint32 &index)
 {
@@ -1733,7 +1716,6 @@ PRUint32 msiUtils::GetMathmlNodeType(nsISupports* isupports)
   }    
   return rv;
 }
-
      
 nsresult msiUtils::GetMathmlNodeType(nsIEditor * editor,
                                      nsIDOMNode * node,
@@ -1762,7 +1744,6 @@ PRBool msiUtils::IsWhitespace(nsIDOMNode * node)
   }
   return PR_FALSE;    
 }
-
 
 PRBool msiUtils::IsInputbox(nsIEditor * editor,
                             nsIDOMNode * node)
@@ -1817,8 +1798,6 @@ PRBool msiUtils::IsMleaf(nsISupports * isupports,
           mathmltype == msiIMathMLEditingBC::MATHML_MO     );
   return rv;
 }
-
-
 
 PRBool msiUtils::IsMrow(nsIEditor * editor,
                         nsIDOMNode * node)
@@ -2071,7 +2050,6 @@ nsresult msiUtils::ClearCaretPositionMark(nsIEditor * editor,
   return res;
 }                                          
 
-
 nsresult msiUtils::GetMathParent(nsIDOMNode * node,
                                  nsCOMPtr<nsIDOMNode> & mathParent)
 {
@@ -2102,9 +2080,6 @@ nsresult msiUtils::GetMathParent(nsIDOMNode * node,
   }
   return res;
 }   
-
-
-
 
 nsresult msiUtils::GetNumberofChildren(nsIDOMNode * node,
                                       PRUint32  & number)
@@ -2168,7 +2143,6 @@ nsresult msiUtils::GetRightMostCaretPosition(nsIEditor* editor,
   }
   return res;
 }  
-
 
 nsresult msiUtils::AddToNodeList(nsIArray* nodeList, 
                                  nsIArray * addToFront, 
@@ -2290,7 +2264,6 @@ nsresult msiUtils::AppendToMutableList(nsCOMPtr<nsIMutableArray> & mutableList,
   }  
   return res;      
 }                                       
-            
 
 nsresult msiUtils::RemoveNodesFromList(nsIArray* nodeList, 
                                        PRUint32 index,
@@ -2366,14 +2339,12 @@ nsresult msiUtils::ComparePoints(nsIEditor * editor,
   }
   return res; 
 }
-                                  
 
 PRUint32 msiUtils::GetMrowPurgeMode()
 {
   //TODO - how should this be determined -- user preference??
   return MROW_PURGE_ALL;
 }
-
 
 nsresult msiUtils::SplitNode(nsIDOMNode * node, PRUint32 offset,
                              PRBool emptyOK,
@@ -2438,7 +2409,6 @@ nsresult msiUtils::GetNSEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
   return res;  
 }
 
-
 //nsresult msiUtils::GetGUIEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent, 
 //                                             nsGUIEvent ** guiEvent)
 //{
@@ -2459,7 +2429,6 @@ nsresult msiUtils::GetNSEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
 //  }  
 //  return res;  
 //}
-
   
 nsresult msiUtils::GetScreenPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent, 
                                                 nsPoint & point)                                     
@@ -2472,10 +2441,3 @@ nsresult msiUtils::GetScreenPointFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
   point = nsPoint(screenX, screenY);
   return NS_OK;
 }
-
-
-//msiLayoutUtils
-//TODO -- Currently not being used.
-
-
-
