@@ -27,7 +27,7 @@
   locale/@AB_CD@/editor/EdDialogOverlay.dtd                  (%chrome/dialogs/EdDialogOverlay.dtd)
   locale/@AB_CD@/editor/EdAdvancedEdit.dtd                   (%chrome/dialogs/EdAdvancedEdit.dtd)
   locale/@AB_CD@/editor/EdConvertToTable.dtd                 (%chrome/dialogs/EdConvertToTable.dtd)
-
+  locale/@AB_CD@/editor/EditorSaveAsCharset.dtd              (%chrome/dialogs/EditorSaveAsCharset.dtd)
 
 #ifdef MOZ_SUITE
 @AB_CD@.jar:
@@ -51,7 +51,6 @@
   locale/@AB_CD@/editor/EditorImageMap.dtd                   (%chrome/dialogs/EditorImageMap.dtd)
   locale/@AB_CD@/editor/EditorImageMapHotSpot.dtd            (%chrome/dialogs/EditorImageMapHotSpot.dtd)
   locale/@AB_CD@/editor/EditConflict.dtd                     (%chrome/dialogs/EditConflict.dtd)
-  locale/@AB_CD@/editor/EditorSaveAsCharset.dtd              (%chrome/dialogs/EditorSaveAsCharset.dtd)
   locale/@AB_CD@/editor/EditorPublish.dtd                    (%chrome/dialogs/EditorPublish.dtd)
   locale/@AB_CD@/editor/EditorPublishProgress.dtd            (%chrome/dialogs/EditorPublishProgress.dtd)
 #ifdef MOZ_XUL_APP
