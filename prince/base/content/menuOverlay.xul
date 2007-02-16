@@ -545,9 +545,9 @@
     <menuitem label="Start animation"
             oncommand='msiStartAnimation();' />
     <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://editor/content/chamtest.xul","Cham Test", 
-      "chrome,close,titlebar,modal=false");' />
-
-  </menupopup>
+      "chrome,close,titlebar,modal=false");' /> 
+    <menuitem label="Charset" oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding');"/>
+    </menupopup>
   </menu>
   <!-- end DEBUG only -->
 

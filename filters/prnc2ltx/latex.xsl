@@ -6,7 +6,7 @@
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
 >
 <!-- xsl:include href="chrome://prnc2ltx/content/mml2ltex.xsl"/ -->
-<xsl:output method="text"/>
+<xsl:output method="text" encoding="UTF-8"/>
 <xsl:strip-space elements="*"/>
 <xsl:preserve-space elements="pre"/>
 
@@ -78,7 +78,9 @@
 \usepackage{fontspec}
 \usepackage{xunicode}
 \usepackage{xltxtra}
+\TeXXeTstate=1
 \defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
+\font\hebrew="Narkisim"
 <xsl:apply-templates/></xsl:template>  
 
 <xsl:template match="html:mainfont">
@@ -256,6 +258,7 @@
 <xsl:template match="html:sc">\textsc{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:tt">\texttt{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:em">\emph{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:hebrew">{\hebrew\beginR <xsl:apply-templates/> \endR} </xsl:template>
 
 <xsl:template match="html:tiny">{\tiny <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:scriptsize">{\scriptsize <xsl:apply-templates/>}</xsl:template>
