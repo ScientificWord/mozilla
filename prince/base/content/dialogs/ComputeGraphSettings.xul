@@ -59,6 +59,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>

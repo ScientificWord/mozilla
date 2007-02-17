@@ -960,29 +960,46 @@ function insertXML(editor, text, node, offset)
   }
 }
 
-function insertXMLAtCursor(editor, text, bIsAlreadyDocument)
+function insertXMLAtCursor(editor, text, bWithinPara)
 {
   if (!editor)
   {
     dump("Error in msiEditorUtilities.js, insertXMLAtCursor - null editor!\n");
     return;
   }
-  if (editor.selection != null)
+  if (bWithinPara)
+    text = "<para>" + text + "</para>";
+  else
+    text = "<body>" + text + "</body>";
+//  if (editor.selection != null)
+  try
   {
 //    editor.selection.collapseToEnd();
     var theFocusNode = editor.selection.focusNode;
     var theFocusOffset = editor.selection.focusOffset;
 //    var theRange = editor.selection.getRangeAt(0);
 //    insertXML(editor, text, theRange.endContainer, theRange.endOffset);
-    if (!bIsAlreadyDocument)
-      text = "<body>" + text + "</body>";
     insertXML(editor, text, theFocusNode, theFocusOffset);
+    dump("insertXML now done.\n");
   }
-  else
+//  else
+  catch(exc)
   {
+    dump("In insertXMLAtCursor, couldn't use editor.selection! (Exception: [" + exc + "]\n");
     var theElement = editor.document.rootElement;
     if (theElement != null && theElement.childNodes.length > 0)
-      theElement = theElement.childNodes[theElement.childNodes.length - 1];
+    {
+      var targetTag = "body";
+      if (bWithinPara)
+        targetTag = "para";
+      var theCollection = theElement.getElementsByTagName(targetTag);
+      if (theCollection.length == 0 && bWithinPara)
+        theCollection = theElement.getElementsByTagName("p");
+      if (theCollection.length == 0)
+        theCollection = theElement.childNodes;
+      if (theCollection.length > 0)
+        theElement = theCollection[theCollection.length - 1];
+    }
     if (theElement != null)
     {
       insertXML(editor, text, theElement, theElement.childNodes.length);

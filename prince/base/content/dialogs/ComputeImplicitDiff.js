@@ -10,7 +10,7 @@ function Startup(){
     document.documentElement.setAttribute("title", data.title);
   }
   if (data.remark && data.remark.length > 0) {
-    var remark = document.getElementById("math");
+    var remark = document.getElementById("instruction");
     remark.firstChild.nodeValue = data.remark;
   }
   if (data.label && data.label.length > 0) {
@@ -18,10 +18,13 @@ function Startup(){
     center.setAttribute("label", data.label);
   }
 
-  var theStringSource = '';
-  var ourEditor = document.getElementById("varsFrame");
-  msiInitializeEditorForElement(ourEditor, theStringSource, true);
-  ourEditor.makeEditable("html", false);
+  var theStringSource = GetComputeString("Math.emptyForInput");
+  var indEditor = document.getElementById("indVarFrame");
+  msiInitializeEditorForElement(indEditor, theStringSource, true);
+  indEditor.makeEditable("html", false);
+  var depEditor = document.getElementById("depVarFrame");
+  msiInitializeEditorForElement(depEditor, theStringSource, true);
+  depEditor.makeEditable("html", false);
 
 ////SLS the following copied from editor.js
 //  gSourceContentWindow = document.getElementById("content-frame");
@@ -58,17 +61,20 @@ function OK(){
   data.Cancel = false;
 
   //validate?
-  var doc = document.getElementById("varsFrame").contentDocument;
+  var doc = document.getElementById("indVarFrame").contentDocument;
   var mathnodes = doc.getElementsByTagName("math");
   if (mathnodes.length == 0) {
-    dump("No math in center field!\n");
+    dump("No math in independent variables control!\n");
     return false;  // should leave dialog up but doesn't seem to work
   }
   data.thevar = GetMathAsString(mathnodes[0]);
-  if (mathnodes.length > 1) {
-    data.about = GetMathAsString(mathnodes[1]);
+
+  doc = document.getElementById("depVarFrame").contentDocument;
+  mathnodes = doc.getElementsByTagName("math");
+  if (mathnodes.length > 0) {
+    data.about = GetMathAsString(mathnodes[0]);
   } else {
-    dump("Only one math field found, returning 0 for second.\n");
+    dump("No math in dependent variables control, returning 0 for it.\n");
     data.about = "<math><mn>0</mn></math>";
   }
 

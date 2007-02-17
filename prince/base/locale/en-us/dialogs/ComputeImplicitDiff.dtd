@@ -3,4 +3,8 @@
 <!ENTITY windowTitle.label "Implicit Differentiation">
 
 <!ENTITY center.label "Variables:">
-<!ENTITY math.label   "Enter differentiation variable and dependent variable, separated by a bit of text.">
+<!ENTITY instruction.label   "Enter differentiation variable and comma-separated list of dependent variables.">
+<!ENTITY independent.label   "Independent variable">
+<!ENTITY independent.accessKey   "I">
+<!ENTITY dependent.label   "Dependent variables">
+<!ENTITY dependent.accessKey   "D">
