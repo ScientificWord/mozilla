@@ -28,6 +28,8 @@
 %editorDTD;
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/msiEditorReplace.dtd" >
 %dialogDTD;
+<!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
+%menuOverlayDTD;
 ]>
 
 <dialog id="replaceDlg" title="&replaceDialog.title;"
@@ -52,6 +54,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <!-- Following script needed if the editor wants to support a toolbox? -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
 
