@@ -284,12 +284,20 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
 
   // Continue with normal startup.
 //  var editorElement = document.getElementById("content-frame");
+  msiDumpWithID("Entering msiInitializeEditorForElement for element [@].\n", editorElement);
   var startText;
   if ( (initialText.length > 0) || bWithContainingHTML )
   {
     if (bWithContainingHTML)
-      startText = "<html><head></head><BODY><para>" + initialText + "</para></BODY></html>";
-    else startText = initialText;
+    {
+      if (editorElement.mbInitialContentsMultiPara)
+        startText = "<body>" + initialText + "</body>";
+      else
+        startText = "<para>" + initialText + "</para>";
+//      startText = "<html><head></head><BODY><para>" + initialText + "</para></BODY></html>";
+    }
+    else
+      startText = initialText;
     editorElement.initialEditorContents = startText;
   }
   EditorStartupForEditorElement(editorElement);
@@ -548,8 +556,15 @@ function msiEditorDocumentObserver(editorElement)
     // Should we allow this even if NOT the focused editor?
     var commandManager = msiGetCommandManager(this.mEditorElement);
     if (commandManager != aSubject)
+    {
+      msiDumpWithID("In documentCreated observer for editor [@]; returning, as commandManager doesn't equal aSubject.\n", this.mEditorElement);
       return;
+    }
     var editor = msiGetEditor(this.mEditorElement);
+    var edStr = "";
+    if (editor != null)
+      edStr = "non-null";
+//    msiDumpWithID("In documentCreated observer for editor [@]; aTopic is [" + aTopic + "], msiGetEditor returned [" + edStr + "] before switch.\n", editorElement);
 
     switch(aTopic)
     {
@@ -562,6 +577,7 @@ function msiEditorDocumentObserver(editorElement)
         if (!params)
           return;
 //        var isInlineSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
+        msiDumpWithID("In documentCreated observer for editor [@].\n", this.mEditorElement);
 //        RealTimeSpell.Init(editor, isInlineSpellCheckerEnabled);
         try {
           commandManager.getCommandState(aTopic, this.mEditorElement.contentWindow, params);
@@ -607,12 +623,13 @@ function msiEditorDocumentObserver(editorElement)
           //  and extra styles for showing anchors, table borders, smileys, etc
           editor.addOverrideStyleSheet(kNormalStyleSheet);
           editor.addOverrideStyleSheet(gMathStyleSheet);
-          if (editorElement.overrideStyleSheets && editorElement.overrideStyleSheets != null)
+          if (this.mEditorElement.overrideStyleSheets && this.mEditorElement.overrideStyleSheets != null)
           {
-            for (var ix = 0; ix < editorElement.overrideStyleSheets.length; ++ix)
+            for (var ix = 0; ix < this.mEditorElement.overrideStyleSheets.length; ++ix)
             {
-              dump("Adding override style sheet [" + editorElement.overrideStyleSheets[ix] + "] for editor [" + editorElement.id + "].\n");
-              editor.addOverrideStyleSheet(editorElement.overrideStyleSheets[ix]);
+              msiDumpWithID("Adding override style sheet [" + this.mEditorElement.overrideStyleSheets[ix] + "] for editor [@].\n", this.mEditorElement);
+//              dump("Adding override style sheet [" + editorElement.overrideStyleSheets[ix] + "] for editor [" + editorElement.id + "].\n");
+              editor.addOverrideStyleSheet(this.mEditorElement.overrideStyleSheets[ix]);
             }
           }
         } catch (e) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding overrideStyleSheets: " + e);}
@@ -709,10 +726,10 @@ function msiEditorDocumentObserver(editorElement)
         this.doInitFastCursor();
 
         // Add mouse click watcher if right type of editor
-        if (msiIsHTMLEditor(editorElement))
+        if (msiIsHTMLEditor(this.mEditorElement))
         {
-          addClickEventListenerForEditor(editorElement);
-          addFocusEventListenerForEditor(editorElement);
+          addClickEventListenerForEditor(this.mEditorElement);
+          addFocusEventListenerForEditor(this.mEditorElement);
 
           // Force color widgets to update
           msiOnFontColorChange();
@@ -723,12 +740,15 @@ function msiEditorDocumentObserver(editorElement)
 //          initializeAutoCompleteStringArrayForEditor(editor);
         }
 
-        if (("initialEditorContents" in editorElement) && (editorElement.initialEditorContents.length > 0))
+        if (("initialEditorContents" in this.mEditorElement) && (this.mEditorElement.initialEditorContents.length > 0))
         {
-          dump("Adding initial contents for editorElement [" + editorElement.id + "].\n");
-          var htmlEditor = editorElement.getHTMLEditor(editorElement.contentWindow);
+          msiDumpWithID("Adding initial contents for editorElement [@].\n", this.mEditorElement);
+          var htmlEditor = this.mEditorElement.getHTMLEditor(this.mEditorElement.contentWindow);
+          var bIsSinglePara = true;
+          if (this.mEditorElement.mbInitialContentsMultiPara)
+            bIsSinglePara = false;
 //          htmlEditor.insertHTML(editorElement.initialEditorContents);
-          insertXMLAtCursor(htmlEditor, editorElement.initialEditorContents);
+          insertXMLAtCursor(htmlEditor, this.mEditorElement.initialEditorContents, bIsSinglePara);
         }
         break;
 
@@ -770,8 +790,18 @@ function msiSetFocusOnStartup(editorElement)
   } catch(e) {}
 }
 
+function msiDumpWithID(str, element)
+{
+  var replStr = "";
+  if (element!=null && element.id)
+    replStr = element.id;
+  dump( str.replace("@", replStr) );
+}
+
 function EditorStartupForEditorElement(editorElement)
 {
+
+//  msiDumpWithID("Entering EditorStartupForEditorElement for element [@].\n", editorElement);
   var is_HTMLEditor = msiIsHTMLEditor(editorElement);
   var is_topLevel = msiIsTopLevelEditor(editorElement);
 
@@ -887,7 +917,7 @@ function SharedStartupForEditor(editorElement)
   try {
     theDocument = msiGetTopLevelWindow(window).document;
     var commandManager = msiGetCommandManager(editorElement);
-    if (!editorElement.mEditorDocumentObserver)
+    if (!editorElement.mEditorDocumentObserver || (editorElement.mEditorDocumentObserver == null))
       editorElement.mEditorDocumentObserver = new msiEditorDocumentObserver(editorElement);
 
     commandManager.addCommandObserver(editorElement.mEditorDocumentObserver, "obs_documentCreated");
@@ -899,9 +929,11 @@ function SharedStartupForEditor(editorElement)
     //  we will observe just the bold command to trigger update of
     //  all toolbar style items
     commandManager.addCommandObserver(editorElement.mEditorDocumentObserver, "cmd_bold");
+    msiDumpWithID("In SharedStartupForEditor for editor [@], got through adding CommandObservers.\n", editorElement);
+
     if ("mInitialDocCreatedObserver" in editorElement && editorElement.mInitialDocCreatedObserver != null)
     {
-      dump("Adding mInitialDocCreatedObserver for editor [" + editorElement.id + "].\n");
+      msiDumpWithID("Adding mInitialDocCreatedObserver for editor [@].\n", editorElement);
       commandManager.addCommandObserver(editorElement.mInitialDocCreatedObserver, "obs_documentCreated");
       editorElement.mInitialDocCreatedObserver = null;
     }
@@ -969,10 +1001,7 @@ function msiEditorResetFontAndColorAttributes(editorElement)
     }
     else
     {
-      var dumpStr = "In msiEditorResetFontAndColorAttributes, no bodyelement for editorElement [";
-      if (editorElement)
-        dumpStr += editorElement.id;
-      dump(dumpStr + "].\n");
+      msiDumpWithID("In msiEditorResetFontAndColorAttributes, no bodyelement for editorElement [@].\n", editorElement);
     }
     editorElement.mColorObj.LastTextColor = "";
     editorElement.mColorObj.LastBackgroundColor = "";
@@ -1706,10 +1735,7 @@ function msiUpdateDefaultColors(editorElement)
   }
   else
   {
-    var dumpStr = "In msiUpdateDefaultColors, unable to find bodyelement for editorElement [";
-    if (editorElement)
-      dumpStr += editorElement.id;
-    dump(dumpStr + "].\n");
+    msiDumpWithID("In msiUpdateDefaultColors, unable to find bodyelement for editorElement [@].\n", editorElement);
   }
 
   // Trigger update on toolbar
@@ -3913,18 +3939,18 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
       }
       if (bIsGraph)
       {
-        dump("In goDoPrinceCommand, bIsGraph is true.\n");
+//        dump("In goDoPrinceCommand, bIsGraph is true.\n");
         var theWindow = window;
         if (!("graphClickEvent" in theWindow))
           theWindow = msiGetTopLevelWindow(window);
         theWindow.graphClickEvent(cmdstr, editorElement);
       }
-      else
-        dump("In goDoPrinceCommand, bIsGraph is false.\n");
+//      else
+//        dump("In goDoPrinceCommand, bIsGraph is false.\n");
     }
     else 
     {
-      dump("In goDoPrinceCommand, elementName is [" + elementName + "].\n");
+//      dump("In goDoPrinceCommand, elementName is [" + elementName + "].\n");
       msiGoDoCommand(cmdstr, editorElement);
     }
   }
