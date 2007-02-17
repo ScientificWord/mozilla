@@ -8,11 +8,12 @@
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <!-- ?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"? -->
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
-<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? -->
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <!-- ?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul"? -->
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
 <!-- ?xul-overlay href="chrome://editor/content/editorOverlay.xul"? -->
 <!-- ?xul-overlay href="chrome://editor/content/composerOverlay.xul"? -->
@@ -37,9 +38,8 @@
     buttons="accept,cancel">
 
   <!-- Methods common to all editor dialogs -->
+  <!-- script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEdReplace.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <!-- script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
@@ -58,8 +58,15 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <!-- Following scripts are needed if the editor wants to support a toolbox? -->
-  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
+
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
+
+  <popupset id="msiEditorContentContextSet"/>
 
   <broadcaster id="args" value="about:blank"/>
 
@@ -74,6 +81,9 @@
     <commandset id="composerEditMenuItems"/>
     <commandset id="composerStyleMenuItems"/>
     <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
+    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
 
   <commandset id="MSImathMenuCommands"/>
@@ -81,11 +91,11 @@
     <keyset id="MSIKeySet"/>
   </keyset>
 
-  <toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
+  <!-- toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
   <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="&menuBar.tooltip;">
     <menu id="editMenu"/>
 
-    <menu id="MSIMathMenu"/>
+    <menu id="MSIMathMenu"/ -->
     
     <!-- menu id="formatMenu" label="&formatMenu.label;" accesskey="&formatmenu.accesskey;">
       <menupopup id="formatMenuPopup">
@@ -97,19 +107,32 @@
       </menupopup>
     </menu -->
 
-    <menu id="tableMenu"/>
+    <!--menu id="tableMenu"/>
     <spacer flex="1"/>
   </menubar>
-  </toolbox>
+  </toolbox -->
 
   <hbox>
-    <vbox>
+    <groupbox>
+      <caption id="center" label="&center.label;"/>
+      <hbox>
       <groupbox>
-        <caption id="center" label="&center.label;"/>
-        <editor editortype="html" type="content-primary" context="editorContentContext" flex="1" height="60" width="250" id="varsFrame"/>
-        <description id="math">&math.label;</description>
+        <caption label="&independent.label;"/>
+      <!-- vbox -->
+        <editor editortype="html" type="content" context="msiEditorContentContext" flex="1" height="60" width="120" id="indVarFrame"/>
+        <!-- description>&independent.label;</description>
+      </vbox -->
       </groupbox>
-    </vbox>
+      <spacer flex="1"/>
+      <groupbox>
+        <caption label="&dependent.label;"/>
+      <!--vbox -->
+        <editor editortype="html" type="content" context="msiEditorContentContext" flex="1" height="60" width="200" id="depVarFrame"/>
+      <!-- /vbox -->
+      </groupbox>
+      </hbox>
+      <description id="instruction">&instruction.label;</description>
+    </groupbox>
   </hbox>
 
 </dialog>
