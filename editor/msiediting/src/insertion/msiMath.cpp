@@ -37,9 +37,10 @@ NS_IMETHODIMP msiMath::Inquiry(nsIEditor* editor,
                                PRUint32 inquiryID, 
                                PRBool * result)
 {
-  if (inquiryID == INSERT_DISPLAY || 
-      inquiryID == INSERT_INLINE_MATH)
-    *result = PR_TRUE;
+  if (inquiryID == INSERT_DISPLAY)
+    *result = !m_isDisplay;
+  else if (inquiryID == INSERT_INLINE_MATH)
+    *result = PR_FALSE;
   else if (inquiryID == IS_MROW_REDUNDANT)
     *result = msiUtils::MROW_PURGE_NONE == msiUtils::GetMrowPurgeMode() ? PR_FALSE : PR_TRUE; 
   else
