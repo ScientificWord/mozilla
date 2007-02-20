@@ -40,6 +40,8 @@ prince.jar:
 * content/ComputeInterpretSubscript.xul     (content/dialogs/ComputeInterpretSubscript.xul)
 * content/ComputeMathMLArgDialog.js     (content/dialogs/ComputeMathMLArgDialog.js)
 * content/ComputeMathMLArgDialog.xul        (content/dialogs/ComputeMathMLArgDialog.xul)
+* content/ComputePowerSeriesArgDialog.js  (content/dialogs/ComputePowerSeriesArgDialog.js)
+* content/ComputePowerSeriesArgDialog.xul (content/dialogs/ComputePowerSeriesArgDialog.xul)
 * content/ComputeMoment.js      (content/dialogs/ComputeMoment.js)
 * content/ComputeMoment.xul     (content/dialogs/ComputeMoment.xul)
 * content/ComputePlotSettings.js        (content/dialogs/ComputePlotSettings.js)

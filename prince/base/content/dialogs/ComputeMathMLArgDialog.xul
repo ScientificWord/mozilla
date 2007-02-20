@@ -29,6 +29,8 @@
 %DTD;
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
 %editorDTD;
+<!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
+%menuOverlayDTD;
 <!-- <!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
 %editorOverlayDTD; -->
 ]>
@@ -50,11 +52,11 @@
 
   <!-- Methods common to all editor dialogs -->
   <!-- script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/ -->
-  <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/ -->
   <!-- script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" / -->
 
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
   <script type="application/x-javascript" src="chrome://prince/content/ComputeMathMLArgDialog.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
 
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
@@ -62,6 +64,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <!-- Following script needed if the editor wants to support a toolbox? -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
 
@@ -115,8 +118,22 @@
   <hbox>
     <vbox>
       <groupbox>
-        <caption id="center" label="&math.label;"/>
-        <editor editortype="html" type="content-primary" flex="1" width="200" height="100" context="msiEditorContentContext" id="mmlArg-content-frame"/>
+        <hbox>
+        <groupbox>
+          <caption id="fnprompt" label=""/>
+          <editor editortype="html" type="content" flex="1" width="200" height="60" context="msiEditorContentContext" id="mmlArg-expr-frame"/>
+        </groupbox>
+        </hbox>
+        <hbox>
+        <groupbox>
+          <caption id="initprompt" label=""/>
+          <editor editortype="html" type="content" flex="1" width="100" height="60" context="msiEditorContentContext" id="mmlArg-initVal-frame"/>
+        </groupbox>
+        <groupbox>
+          <caption id="termsprompt" label=""/>
+          <editor editortype="html" type="content" flex="1" width="100" height="60" context="msiEditorContentContext" id="mmlArg-numTerms-frame"/>
+        </groupbox>
+        </hbox>
       </groupbox>
     </vbox>
   </hbox>

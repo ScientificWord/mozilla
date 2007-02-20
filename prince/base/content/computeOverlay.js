@@ -554,7 +554,7 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       doComputeSolveODESeries(element, editorElement);
       break;
     case "cmd_compute_PowerSeries":
-      doComputePowerSeries(element, editorElement);
+      doComputePowerSeries(element, editorElement, null);
       break;
     case "cmd_compute_Fourier":
       doLabeledComputation(element,eng.Fourier_Transform,"Fourier.fmt", editorElement);
@@ -1578,7 +1578,7 @@ function doComputeSolveODESeries(math, editorElement)
   RestoreCursor(editorElement);
 }
 
-function doComputePowerSeries(math, editorElement)
+function doComputePowerSeries(math, editorElement, cmdHandler)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
@@ -1593,13 +1593,24 @@ function doComputePowerSeries(math, editorElement)
   o.initialvalue[1] = GetComputeString("PowerSeries.centerdefault");
   o.prompt[2] 		= GetComputeString("PowerSeries.termsprompt");
   o.initialvalue[2] = GetComputeString("PowerSeries.termsdefault");
+  o.theMath = math;
 
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank", 
-                    "chrome,close,titlebar,modal", o);
+  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+  try {
+    msiOpenModelessDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
+                                      editorElement, "cmd_MSIComputePowerSeries", cmdHandler, o);
+  } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputePowerSeries: [" + e + "]"); return;}
+
+//  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank", 
+//                    "chrome,close,titlebar,modal", o);
+}
+
+function finishComputePowerSeries(editorElement, o)
+{
   if (o.Cancel)
     return;
-  var mathstr = GetMathAsString(GetRHS(math));
+  var mathstr = GetMathAsString(GetRHS(o.theMath));
 
   ComputeCursor(editorElement);
   var variable = runFixup(o.mathresult[0]);
@@ -1609,7 +1620,7 @@ function doComputePowerSeries(math, editorElement)
   try {
     var out = GetCurrentEngine().powerSeries(mathstr, variable, center, order);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Series.fmt"),math, editorElement);
+    appendLabeledResult(out,GetComputeString("Series.fmt"),o.theMath, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
