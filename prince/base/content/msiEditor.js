@@ -284,7 +284,7 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
 
   // Continue with normal startup.
 //  var editorElement = document.getElementById("content-frame");
-  msiDumpWithID("Entering msiInitializeEditorForElement for element [@].\n", editorElement);
+//  msiDumpWithID("Entering msiInitializeEditorForElement for element [@].\n", editorElement);
   var startText;
   if ( (initialText.length > 0) || bWithContainingHTML )
   {
@@ -329,7 +329,7 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
     msiSetupMSIComputeMenuCommands(editorElement);
     msiSetupMSITypesetMenuCommands(editorElement);
     msiSetupMSITypesetInsertMenuCommands(editorElement);
-  } catch (e) { dump("msiInitializeEditorForElement failed: "+e+"\n"); }
+  } catch (e) { msiDumpWithID("msiInitializeEditorForElement [@] failed: "+e+"\n", editorElement); }
 }
 
 
@@ -577,7 +577,7 @@ function msiEditorDocumentObserver(editorElement)
         if (!params)
           return;
 //        var isInlineSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
-        msiDumpWithID("In documentCreated observer for editor [@].\n", this.mEditorElement);
+//        msiDumpWithID("In documentCreated observer for editor [@].\n", this.mEditorElement);
 //        RealTimeSpell.Init(editor, isInlineSpellCheckerEnabled);
         try {
           commandManager.getCommandState(aTopic, this.mEditorElement.contentWindow, params);
@@ -830,6 +830,7 @@ function EditorStartupForEditorElement(editorElement)
   //  (i.e., not embedded editors)
   //  such as file-related commands, HTML Source editing, Edit Modes...
   msiSetupComposerWindowCommands(editorElement);
+//  msiDumpWithID("Completed msiSetupComposerWindowCommands for editor [@].\n", editorElement);
 
   // msiShowHideToolbarButtons();
   editorElement.mEditorToolbarPrefListener = new msiEditorToolbarPrefListener(editorElement);
@@ -875,6 +876,7 @@ function EditorStartupForEditorElement(editorElement)
       contentViewer.forceCharacterSet = charset;
     }
     msiEditorLoadUrl(editorElement, url);
+//    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
   } catch (e) {}
 }
 
@@ -929,7 +931,7 @@ function SharedStartupForEditor(editorElement)
     //  we will observe just the bold command to trigger update of
     //  all toolbar style items
     commandManager.addCommandObserver(editorElement.mEditorDocumentObserver, "cmd_bold");
-    msiDumpWithID("In SharedStartupForEditor for editor [@], got through adding CommandObservers.\n", editorElement);
+//    msiDumpWithID("In SharedStartupForEditor for editor [@], got through adding CommandObservers.\n", editorElement);
 
     if ("mInitialDocCreatedObserver" in editorElement && editorElement.mInitialDocCreatedObserver != null)
     {
