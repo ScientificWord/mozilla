@@ -47,35 +47,64 @@ function Startup(){
   if (data.title && data.title.length > 0) {
       document.documentElement.setAttribute("title", data.title);
   }
+  var captionControl = document.getElementById("fnprompt");
+  captionControl.label = data.prompt[0];
+//  captionControl.firstChild.nodeValue = data.prompt[0];
+  captionControl = document.getElementById("initprompt");
+  captionControl.label = data.prompt[1];
+  captionControl = document.getElementById("termsprompt");
+  captionControl.label = data.prompt[2];
 
-  // Initialize our source text <editor>
-  var theStringSource = createContentString();
-  var editorControl = document.getElementById("mmlArg-content-frame");
-  var editor = msiGetEditor(editorControl);
-  editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
-  msiInitializeEditorForElement(editorControl, theStringSource, true);
+  // Initialize our source text <editor>s
+  var theStringSource = data.initialvalue[0];
+  try
+  {
+    var exprEditorControl = document.getElementById("mmlArg-expr-frame");
+//  editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
+    msiInitializeEditorForElement(exprEditorControl, theStringSource, true);
+    exprEditorControl.makeEditable("html", false);
+  }
+  catch(exc) {dump("In Startup for ComputeMathMLArgDialog, error initializing editor mmlArg-expr-frame: [" + exc + "].\n");}
+  try
+  {
+    theStringSource = data.initialvalue[1];
+    var initEditorControl = document.getElementById("mmlArg-initVal-frame");
+    msiInitializeEditorForElement(initEditorControl, theStringSource, true);
+    initEditorControl.makeEditable("html", false);
+  }
+  catch(exc) {dump("In Startup for ComputeMathMLArgDialog, error initializing editor mmlArg-initVal-frame: [" + exc + "].\n");}
+  try
+  {
+    theStringSource = data.initialvalue[2];
+    var termsEditorControl = document.getElementById("mmlArg-numTerms-frame");
+    msiInitializeEditorForElement(termsEditorControl, theStringSource, true);
+    termsEditorControl.makeEditable("html", false);
+  }
+  catch(exc) {dump("In Startup for ComputeMathMLArgDialog, error initializing editor mmlArg-numTerms-frame: [" + exc + "].\n");}
 }
 
 function OK(){
   data.Cancel = false;
 
-  var doc = document.getElementById("mmlArg-content-frame").contentDocument;
-  var mathnodes = doc.getElementsByTagName("math");
+  var mathFieldNames = new Array ("mmlArg-expr-frame", "mmlArg-initVal-frame", "mmlArg-numTerms-frame");
 
   // first mathnode is the variable
-  if (mathnodes.length < data.fieldcount) {
-    dump("Not enough math fields in input!\n");
-    return false;  // should leave dialog up but doesn't seem to work
-  }
 
-  data.mathresult = new Array (data.fieldcount);
-  for (var i=0; i<data.fieldcount; ++i) {
-    if (HasEmptyMath(mathnodes[i])) {
+  data.mathresult = new Array (3);
+  for (var i=0; i<3; ++i)
+  {
+    var doc = document.getElementById(mathFieldNames[i]).contentDocument;
+    var mathnodes = doc.getElementsByTagName("math");
+    if (mathnodes.length == 0) {
+      dump("Not enough math fields in input!\n");
+      return false;  // should leave dialog up but doesn't seem to work
+    }
+    if (HasEmptyMath(mathnodes[0])) {
       dump("math has temp input or is empty!\n");
       data.Cancel = true;
       return false;
     }
-    data.mathresult[i] = CleanMathString(GetMathAsString(mathnodes[i]));
+    data.mathresult[i] = CleanMathString(GetMathAsString(mathnodes[0]));
   }
   
   var editorElement = msiGetParentEditorElementForDialog(window);
