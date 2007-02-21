@@ -49,22 +49,37 @@ function Startup(){
   } catch (e) { dump("makeEditable failed in Startup(): "+e+"\n"); }
 }
 
+function checkEnableControls()
+{
+  var origin = document.getElementById("origin");
+  if (origin.selectedIndex)
+  {
+    theEditor.setAttribute("disabled", "true");
+  }
+  else
+  {
+    FINISH THIS!!
+  }
+}
+
 function OK(){
   data.Cancel = false;
 
   //validate?
-  var doc = document.getElementById("content-frame").contentDocument;
+  var doc = document.getElementById("degree-frame").contentDocument;
   var mathnodes = doc.getElementsByTagName("math");
   if (mathnodes.length == 0) {
-    dump("No math in center field!\n");
+    dump("No math in degree field!\n");
     return false;  // should leave dialog up but doesn't seem to work
   }
   data.thevar = GetMathAsString(mathnodes[0]);
-  if (mathnodes.length > 1) {
-    data.about = GetMathAsString(mathnodes[1]);
-  } else {
+  doc = document.getElementById("origin-frame").contentDocument;
+  var mathnodes = doc.getElementsByTagName("math");
+  if (mathnodes.length == 0 || HasEmptyMath(mathnodes[0])) {
     dump("Only one math field found, returning 0 for second.\n");
     data.about = "<math><mn>0</mn></math>";
+  } else {
+    data.about = GetMathAsString(mathnodes[0]);
   }
 
   var origin = document.getElementById("origin");
