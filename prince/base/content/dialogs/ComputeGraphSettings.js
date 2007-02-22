@@ -32,7 +32,11 @@ function Startup(){
   window.arguments[0].setGraphAttribute("plotnumber", "1");
 
   var editorControl = document.getElementById("plotDlg-content-frame");
-  editorControl.mInitialDocCreatedObserver = msiEditorDocumentObserverG;
+  var docObserver = new Object();
+  docObserver.mObserver = msiEditorDocumentObserverG;
+  docObserver.mCommand = "obs_documentCreated";
+  editorControl.mInitialDocObserver = new Array(docObserver);
+//  editorControl.mInitialDocCreatedObserver = msiEditorDocumentObserverG;
   editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
   msiInitializeEditorForElement(editorControl, "", true);
 
