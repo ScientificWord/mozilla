@@ -103,17 +103,17 @@
     <vbox>
       <groupbox>
         <caption id="center" label="&center.label;"/>
-        <editor editortype="html" type="content-primary" context="editorContentContext" flex="1" id="degree-frame"/>
-        <description id="math">&math.label;</description>
+        <editor editortype="html" type="content-primary" context="editorContentContext" flex="1" height="60" width="100" id="degree-frame"/>
+        <!-- description id="math">&math.label;</description -->
       </groupbox>
       <groupbox>
         <caption label="&origin.label;"/>
         <hbox>
-        <radiogroup id="origin" orient="vertical">
-          <radio label="&giveorigin.label;" id="first" selected="true"/>
-          <radio label="&mean.label;" id="last" selected="false"/>
+        <radiogroup id="origin" orient="vertical" oncommand="checkEnableControls();">
+          <radio label="&mean.label;" id="last" selected="true"/>
+          <radio label="&giveorigin.label;" id="first" selected="false"/>
         </radiogroup>
-        <editor editortype="html" type="content" context="msiEditorContentContext" flex="1" id="origin-frame"/>
+        <editor editortype="html" type="content" context="msiEditorContentContext" flex="1" height="60" width="100" id="origin-frame" onblur="checkEnableControls"/>
         </hbox>
       </groupbox>
     </vbox>
