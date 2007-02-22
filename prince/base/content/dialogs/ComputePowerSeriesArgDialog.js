@@ -84,7 +84,6 @@ function OK(){
   }
   
   var editorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(editorElement);
   var theWindow = window.opener;
   if (!theWindow || !("finishComputePowerSeries" in theWindow))
     theWindow = msiGetTopLevelWindow(window);

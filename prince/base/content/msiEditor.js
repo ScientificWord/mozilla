@@ -753,6 +753,7 @@ function msiEditorDocumentObserver(editorElement)
         break;
 
       case "cmd_setDocumentModified":
+//        msiDumpWithID("Hit setDocumentModified observer in base msiEditorDocumentObserver, for editor [@].\n", this.mEditorElement);
         window.updateCommands("save");
 //        window.updateCommands("undo");
 //        msiDoUpdateCommands("undo", this.mEditorElement);
@@ -788,14 +789,6 @@ function msiSetFocusOnStartup(editorElement)
     setZoom();
     editorElement.contentWindow.focus();
   } catch(e) {}
-}
-
-function msiDumpWithID(str, element)
-{
-  var replStr = "";
-  if (element!=null && element.id)
-    replStr = element.id;
-  dump( str.replace("@", replStr) );
 }
 
 function EditorStartupForEditorElement(editorElement)
@@ -933,10 +926,15 @@ function SharedStartupForEditor(editorElement)
     commandManager.addCommandObserver(editorElement.mEditorDocumentObserver, "cmd_bold");
 //    msiDumpWithID("In SharedStartupForEditor for editor [@], got through adding CommandObservers.\n", editorElement);
 
-    if ("mInitialDocCreatedObserver" in editorElement && editorElement.mInitialDocCreatedObserver != null)
+    if ("mInitialDocObserver" in editorElement && editorElement.mInitialDocObserver != null)
     {
-      msiDumpWithID("Adding mInitialDocCreatedObserver for editor [@].\n", editorElement);
-      commandManager.addCommandObserver(editorElement.mInitialDocCreatedObserver, "obs_documentCreated");
+      msiDumpWithID("Adding mInitialDocObserver for editor [@].\n", editorElement);
+      for (var ix = 0; ix < editorElement.mInitialDocObserver.length; ++ix)
+      {
+        commandManager.addCommandObserver(editorElement.mInitialDocObserver[ix].mObserver, editorElement.mInitialDocObserver[ix].mCommand);
+//        msiDumpWithID("Adding doc observer for editor [@]; for command [" + editorElement.mInitialDocObserver[ix].mCommand + "].\n", editorElement);
+      }
+//      commandManager.addCommandObserver(editorElement.mInitialDocCreatedObserver, "obs_documentCreated");
       editorElement.mInitialDocCreatedObserver = null;
     }
   } catch (e) { dump(e); }
