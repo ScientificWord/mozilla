@@ -750,7 +750,7 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       doLabeledComputation(element,eng.Mean_Deviation,"MeanDeviation.fmt", editorElement);
       break;
     case "cmd_compute_Moment":
-      doComputeMoment(element, editorElement);
+      doComputeMoment(element, editorElement, null);
       break;
     case "cmd_compute_Quantile":
       doComputeQuantile(element, editorElement);
@@ -1596,7 +1596,6 @@ function doComputePowerSeries(math, editorElement, cmdHandler)
   o.theMath = math;
 
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  var parentWin = msiGetParentWindowForNewDialog(editorElement);
   try {
     msiOpenModelessDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                       editorElement, "cmd_MSIComputePowerSeries", cmdHandler, o);
@@ -1895,29 +1894,39 @@ function doComputeRandomNumbers(editorElement)
   RestoreCursor(editorElement);
 }
 
-function doComputeMoment(math, editorElement)
+function doComputeMoment(math, editorElement, cmdHandler)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var o = new Object();
-  o.title = GetComputeString("Moment.title");
-  o.label = GetComputeString("Moment.label");
-  o.remark = GetComputeString("Moment.remark");
+//  o.title = GetComputeString("Moment.title");
+//  o.label = GetComputeString("Moment.label");
+//  o.remark = GetComputeString("Moment.remark");
+  o.theMath = math;
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeMoment.xul", "_blank", "chrome,close,titlebar,modal", o);
+  try {
+    msiOpenModelessDialog("chrome://prince/content/ComputeMoment.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
+                                      editorElement, "cmd_MSIComputeMoment", cmdHandler, o);
+  } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMoment: [" + e + "]"); return;}
+
+//  parentWin.openDialog("chrome://prince/content/ComputeMoment.xul", "_blank", "chrome,close,titlebar,modal", o);
+}
+
+function finishComputeMoment(editorElement, o)
+{
   if (o.Cancel)
     return;
   var num = o.thevar;
   var origin = o.about;
   var meanisorigin = o.meanisorigin;
-  var mathstr = GetFixedMath(math);
+  var mathstr = GetFixedMath(o.theMath);
   msiComputeLogger.Sent4("Moment ",mathstr,origin + " @ ",num+" / "+meanisorigin);
 
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().moment(mathstr,num,origin,meanisorigin);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Moment.fmt"),math, editorElement);
+    appendLabeledResult(out,GetComputeString("Moment.fmt"),o.theMath, editorElement);
   } catch(ex) {
     msiComputeLogger.Exception(ex);
   }

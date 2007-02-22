@@ -53,7 +53,10 @@ function Startup(){
   // Initialize our source text <editor>
   var theStringSource = GetComputeString("Math.emptyForInput");
   var editorControl = document.getElementById("fillmat-content-frame");
-  editorControl.mInitialDocCreatedObserver = msiFillMatrixEditorDocumentObserver;
+  var docObserver = new Object();
+  docObserver.mObserver = msiFillMatrixEditorDocumentObserver;
+  docObserver.mCommand = "obs_documentCreated";
+  editorControl.mInitialDocObserver = new Array(docObserver);
   msiInitializeEditorForElement(editorControl, theStringSource, true);
 //  editorControl.makeEditable("html", false);
 
@@ -145,38 +148,40 @@ function Switch(id){
     break;
   }
   var theEditor = document.getElementById("fillmat-content-frame");
-  var elementStyle = theEditor.style;
-  var internalEditor = theEditor.getEditor(theEditor.contentWindow);
-  if (val)
-  {
-    theEditor.setAttribute("disabled", "true");
-    theEditor.allowevents = false;
-    if (internalEditor != null)
-    {
-      internalEditor.flags |= (Components.interfaces.nsIPlaintextEditor.eEditorReadonlyMask | Components.interfaces.nsIPlaintextEditor.eEditorDisabledMask);
-    }
-    if (elementStyle != null)
-    {
-      dump("Original value of moz-user-focus on editor is " + elementStyle.getPropertyValue("-moz-user-focus") + ".\n");
-      elementStyle.setProperty("-moz-user-focus", "ignore", "");
-    }
-  }
-//  else if (theEditor.hasAttribute("disabled"))
-  else
-  {
-    theEditor.removeAttribute("disabled");
-    if (internalEditor != null)
-    {
-      internalEditor.flags &= ~(Components.interfaces.nsIPlaintextEditor.eEditorReadonlyMask | Components.interfaces.nsIPlaintextEditor.eEditorDisabledMask);
-    }
-    if (elementStyle != null)
-    {
-      dump("Original value of moz-user-focus on editor is " + elementStyle.getPropertyValue("-moz-user-focus") + ".\n");
-      elementStyle.setProperty("-moz-user-focus", "normal", "");
-    }
-//    theEditor.setAttribute("-moz-user-focus", "normal");
-    theEditor.allowevents = true;
-  }
+  msiEnableEditorControl(theEditor, !val);
+
+//  var elementStyle = theEditor.style;
+//  var internalEditor = theEditor.getEditor(theEditor.contentWindow);
+//  if (val)
+//  {
+//    theEditor.setAttribute("disabled", "true");
+//    theEditor.allowevents = false;
+//    if (internalEditor != null)
+//    {
+//      internalEditor.flags |= (Components.interfaces.nsIPlaintextEditor.eEditorReadonlyMask | Components.interfaces.nsIPlaintextEditor.eEditorDisabledMask);
+//    }
+//    if (elementStyle != null)
+//    {
+//      dump("Original value of moz-user-focus on editor is " + elementStyle.getPropertyValue("-moz-user-focus") + ".\n");
+//      elementStyle.setProperty("-moz-user-focus", "ignore", "");
+//    }
+//  }
+////  else if (theEditor.hasAttribute("disabled"))
+//  else
+//  {
+//    theEditor.removeAttribute("disabled");
+//    if (internalEditor != null)
+//    {
+//      internalEditor.flags &= ~(Components.interfaces.nsIPlaintextEditor.eEditorReadonlyMask | Components.interfaces.nsIPlaintextEditor.eEditorDisabledMask);
+//    }
+//    if (elementStyle != null)
+//    {
+//      dump("Original value of moz-user-focus on editor is " + elementStyle.getPropertyValue("-moz-user-focus") + ".\n");
+//      elementStyle.setProperty("-moz-user-focus", "normal", "");
+//    }
+////    theEditor.setAttribute("-moz-user-focus", "normal");
+//    theEditor.allowevents = true;
+//  }
 }
 
 function Cancel(){
