@@ -1009,6 +1009,56 @@ function insertXMLAtCursor(editor, text, bWithinPara)
   }
 }
 
+//Not all of the following is probably necessary - the internalEditor flags are, however. Should be able to edit this
+//function down a bit.
+function msiEnableEditorControl(editorElement, bEnable)
+{
+  if (!editorElement)
+  {
+    dump("msiEnableEditorControl called on null editorElement!\n");
+    return;
+  }
+  var internalEditor = editorElement.getEditor(editorElement.contentWindow);
+  var elementStyle = editorElement.style;
+  if (bEnable)
+  {
+    editorElement.removeAttribute("disabled");
+    editorElement.allowevents = true;
+    if (internalEditor != null)
+    {
+      msiDumpWithID("Got HTML editor for element [@] in msiEnableEditorControl; editor flags are [" + internalEditor.flags + "].\n", editorElement);
+      internalEditor.flags &= ~(Components.interfaces.nsIPlaintextEditor.eEditorReadonlyMask | Components.interfaces.nsIPlaintextEditor.eEditorDisabledMask);
+    }
+    else
+      msiDumpWithID("Unable to get HTML editor for element [@] in msiEnableEditorControl.\n", editorElement);
+    if (elementStyle != null)
+    {
+//      dump("Original value of moz-user-focus on editor is " + elementStyle.getPropertyValue("-moz-user-focus") + ".\n");
+      elementStyle.setProperty("-moz-user-focus", "normal", "");
+      elementStyle.setProperty("-moz-user-input", "enabled", "");
+    }
+//    theEditor.setAttribute("-moz-user-focus", "normal");
+  }
+  else
+  {
+    editorElement.setAttribute("disabled", "true");
+    editorElement.allowevents = false;
+    if (internalEditor != null)
+    {
+      msiDumpWithID("Got HTML editor for element [@] in msiEnableEditorControl; editor flags are [" + internalEditor.flags + "].\n", editorElement);
+      internalEditor.flags |= (Components.interfaces.nsIPlaintextEditor.eEditorReadonlyMask | Components.interfaces.nsIPlaintextEditor.eEditorDisabledMask);
+    }
+    else
+      msiDumpWithID("Unable to get HTML editor for element [@] in msiEnableEditorControl.\n", editorElement);
+    if (elementStyle != null)
+    {
+//      dump("Original value of moz-user-focus on editor is " + elementStyle.getPropertyValue("-moz-user-focus") + ".\n");
+      elementStyle.setProperty("-moz-user-focus", "ignore", "");
+      elementStyle.setProperty("-moz-user-input", "disabled", "");
+    }
+  }
+//  else if (theEditor.hasAttribute("disabled"))
+}
 /************* Dialog management for editors ***************/
 
 //A per-main-editor-window list of open dialogs which can have only a single invocation. This includes insertion uses of
@@ -2384,5 +2434,13 @@ function msiKludgeLogString(logStr)
 //    alert("Log path is " + window.msiLogPath);
   }
   addDataToFile(window.msiLogPath, logStr);
+}
+
+function msiDumpWithID(str, element)
+{
+  var replStr = "";
+  if (element!=null && element.id)
+    replStr = element.id;
+  dump( str.replace("@", replStr) );
 }
 
