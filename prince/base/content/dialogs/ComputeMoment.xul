@@ -103,7 +103,10 @@
     <vbox>
       <groupbox>
         <caption id="center" label="&center.label;"/>
-        <editor editortype="html" type="content-primary" context="editorContentContext" flex="1" height="60" width="100" id="degree-frame"/>
+        <hbox>
+          <editor editortype="html" type="content-primary" context="msiEditorContentContext" flex="1" height="60" width="100" id="degree-frame"/>
+          <spacer flex="1"/>
+        </hbox>
         <!-- description id="math">&math.label;</description -->
       </groupbox>
       <groupbox>
