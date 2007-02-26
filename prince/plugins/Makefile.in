@@ -11,6 +11,8 @@ include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/rules.mk
 
 PLUGIN_LIBS := $(wildcard	$(srcdir)/*.dll)
+PLUGIN_LIBS += $(wildcard	$(srcdir)/*.xpt)
+PLUGIN_LIBS += $(wildcard	$(srcdir)/*.class)
 
 libs::	$(PLUGIN_LIBS) 
 	$(INSTALL)	$(PLUGIN_LIBS)	$(FINAL_TARGET)/plugins
