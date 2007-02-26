@@ -6,7 +6,6 @@
 msiMContainerCaret::msiMContainerCaret(nsIDOMNode* mathmlNode, PRUint32 offset, PRUint32 mathmlType)
 :  msiMCaretBase(mathmlNode, offset, mathmlType)
 {
-  
 }
 
 NS_IMETHODIMP
@@ -20,7 +19,6 @@ msiMContainerCaret::Inquiry(nsIEditor* editor, PRUint32 inquiryID, PRBool *resul
     *result = PR_FALSE;
   return NS_OK;
 }
-
 
 NS_IMETHODIMP
 msiMContainerCaret::AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPoint, 
