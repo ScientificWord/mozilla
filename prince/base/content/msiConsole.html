@@ -1,0 +1,28 @@
+<html>
+<head>
+  <title>Scientific WorkPlace Console</title>
+
+  <script language="JavaScript">
+
+    window.mouseDownState = false;
+
+    function MouseDown(val) {
+      // Tracks mouse down state
+      window.mouseDownState = val;
+      return true;
+    }
+
+  </script>
+
+</head>
+
+<body onMouseDown="MouseDown(true);"
+      onMouseUp="MouseDown(false);">
+
+<pre id="console">
+SCIENTIFIC WORKPLACE CONSOLE
+</pre>
+
+</body>
+
+</html>
