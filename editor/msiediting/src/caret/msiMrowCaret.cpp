@@ -26,7 +26,6 @@ msiMrowCaret::PrepareForCaret(nsIEditor* editor)
   return NS_OK;
 }
 
-
 NS_IMETHODIMP
 msiMrowCaret::Inquiry(nsIEditor* editor, PRUint32 inquiryID, PRBool *result)
 {
@@ -49,7 +48,6 @@ msiMrowCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell 
   return msiMContainerCaret::AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
                                                                mouseEvent, node, offset);
 }                                                       
-     
                                    
 NS_IMETHODIMP
 msiMrowCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
@@ -77,7 +75,6 @@ msiMrowCaret::AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPoint,
   return msiMContainerCaret::AdjustSelectionPoint(editor, leftSelPoint, selectionNode, selectionOffset, parentCaret);
 }
 
-
 NS_IMETHODIMP 
 msiMrowCaret::SplitAtDecendents(nsIEditor* editor, 
                                  nsIDOMNode *leftDecendent, PRUint32 leftOffset, 
@@ -91,7 +88,6 @@ msiMrowCaret::SplitAtDecendents(nsIEditor* editor,
                                           left_leftPart, left_rightPart, 
                                           right_leftPart, right_rightPart);
 }
-
 
 NS_IMETHODIMP
 msiMrowCaret::Split(nsIEditor * editor, 
@@ -179,7 +175,6 @@ msiMrowCaret::SetDeletionTransaction(nsIEditor * editor,
   }
   return res;
 }  
-                                    
 
 NS_IMETHODIMP
 msiMrowCaret::SetupDeletionTransactions(nsIEditor * editor,
@@ -202,7 +197,6 @@ msiMrowCaret::SetupCoalesceTransactions(nsIEditor * editor,
 {
   return msiMCaretBase::SetupCoalesceTransactions(editor, coalesceTransactions);
 }
-
 
 NS_IMETHODIMP
 msiMrowCaret::SetCoalTransactionsAndNode(nsIEditor * editor,
@@ -275,7 +269,6 @@ msiMrowCaret::SetCoalTransactionsAndNode(nsIEditor * editor,
   }
   return res;  
 }                                         
-         
 
 NS_IMETHODIMP
 msiMrowCaret::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)

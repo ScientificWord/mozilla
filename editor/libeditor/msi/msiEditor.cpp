@@ -82,7 +82,6 @@ msiEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRo
   return res; 
 }                
 
-
 nsresult
 msiEditor::CreateEventListeners()
 {
@@ -161,7 +160,6 @@ msiEditor::GetMathMLEditingBC(nsIDOMNode * node, PRUint32 offset,
     res = m_msiEditingMan->GetMathMLEditingBC(node, offset, editingBC);
   return res;
 }
-
 
 NS_IMETHODIMP 
 msiEditor::GetMathMLInsertionInterface(nsIDOMNode * node, PRUint32 offset,
@@ -275,8 +273,6 @@ msiEditor::InsertDisplay()
 {
   return InsertMath(PR_TRUE);
 }
-
-
 
 NS_IMETHODIMP 
 msiEditor::InsertSuperscript()
@@ -455,7 +451,6 @@ msiEditor::InsertRoot()
   return res;
 }
 
-
 NS_IMETHODIMP
 msiEditor::InsertSymbol(PRUint32 symbol)
 {
@@ -491,7 +486,6 @@ msiEditor::InsertSymbol(PRUint32 symbol)
     }
   }
   return res;
-  
 }
 
 NS_IMETHODIMP
@@ -658,7 +652,6 @@ msiEditor::InsertMatrix(PRUint32 rows, PRUint32 cols, const nsAString & rowSigna
   return res;
 }
 
-
 NS_IMETHODIMP
 msiEditor::InsertOperator(const nsAString & symbol, PRUint32 attrFlags,
                           const nsAString & leftspace, const nsAString & rightspace,
@@ -756,7 +749,6 @@ msiEditor::CreateReplaceTransaction(nsIDOMNode * newKid, nsIDOMNode * oldKid,
     return NS_ERROR_FAILURE;
   return CreateTxnForReplaceElement(newKid, oldKid, parent, PR_TRUE, (ReplaceElementTxn**)transaction);  
 }                                    
-
                                             
 NS_IMETHODIMP
 msiEditor::CreateDeleteTransaction(nsIDOMNode * node, nsITransaction ** transaction)
@@ -773,7 +765,6 @@ msiEditor::CreateInsertTransaction(nsIDOMNode * node, nsIDOMNode * parent, PRUin
     return NS_ERROR_FAILURE;
   return CreateTxnForInsertElement(node, parent, (PRInt32)offset, (InsertElementTxn**)transaction);  
 } 
-
 
 NS_IMETHODIMP
 msiEditor::CreateDeleteTextTransaction(nsIDOMCharacterData * node,
@@ -915,7 +906,6 @@ msiEditor::CreateReplaceScriptBaseTransaction(nsIDOMNode * script,
   return res;
 }    
 
-
 //End nsIMathMLEditor
 
 
@@ -927,7 +917,6 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
   nsresult res(NS_OK);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
   {
-  
     PRUint32 keyCode(0), symbol(0);
     PRBool isShift(PR_FALSE), ctrlKey(PR_FALSE), altKey(PR_FALSE), metaKey(PR_FALSE);
     res = ExtractDataFromKeyEvent(aKeyEvent, keyCode, symbol, isShift, ctrlKey,
@@ -998,7 +987,6 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     return NS_ERROR_FAILURE;
 }
 
-
 nsresult 
 msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
 {
@@ -1050,7 +1038,6 @@ msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
 
   return res;
 }
-
 
 nsresult
 msiEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
@@ -1110,7 +1097,6 @@ msiEditor::CreateTxnForDeleteSelection(nsIEditor::EDirection aAction,
     NS_IF_RELEASE(*aTxn);
   return result;
 }
-
 
 //ljh comment below from nsEditor's version of this method
 //XXX: currently, this doesn't handle edge conditions because GetNext/GetPrior are not implemented
@@ -1289,7 +1275,6 @@ msiEditor::CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
   return result;
 }
 
-
 NS_IMETHODIMP msiEditor::InsertText(const nsAString &aStringToInsert)
 {
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
@@ -1367,7 +1352,6 @@ nsresult msiEditor::GetMathParent(nsIDOMNode * node,
   return res;
 }   
 
-
 nsresult msiEditor::ExtractDataFromKeyEvent(nsIDOMKeyEvent * aKeyEvent,
                                             PRUint32 & keyCode, PRUint32 & character,
                                             PRBool & isShift, PRBool & ctrlKey,
@@ -1400,7 +1384,6 @@ PRBool msiEditor::IsTextContentNode(nsIDOMNode* node)
   return text ? PR_TRUE : PR_FALSE;
 }
 
-
 nsresult msiEditor::GetNSSelectionData(nsCOMPtr<nsISelection> &selection,
                                        nsCOMPtr<nsIDOMNode> &startNode,
                                        PRInt32 &startOffset,
@@ -1423,7 +1406,6 @@ nsresult msiEditor::GetNSSelectionData(nsCOMPtr<nsISelection> &selection,
   return res;
 }
 
-
 PRBool msiEditor::IsSelectionCollapsed()
 {
   PRBool isCollapsed(PR_FALSE);
@@ -1433,8 +1415,6 @@ PRBool msiEditor::IsSelectionCollapsed()
     selection->GetIsCollapsed(&isCollapsed);
   return isCollapsed;
 }
-
-
 
 nsresult msiEditor::EnsureMathWithSelectionCollapsed(nsCOMPtr<nsIDOMNode> &node,
                                                      PRInt32 & offset)
@@ -1626,7 +1606,6 @@ msiEditor::GetNodeAndOffsetFromMMLCaretOp(PRUint32 caretOp,
   return res;
 }         
 
-
 nsresult msiEditor::GetMSISelection(nsCOMPtr<msiISelection> & msiSelection)
 {
   msiSelection = nsnull;
@@ -1652,9 +1631,6 @@ nsresult msiEditor::ComparePoints(nsIDOMNode * node1, PRUint32 offset1,
   else
     return NS_ERROR_FAILURE;
 }                                  
-
-
-
 
 nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focusOffset, 
                                  PRBool selecting, PRBool & preventDefault)
@@ -1841,7 +1817,6 @@ nsresult msiEditor::GetMayDrag(PRBool * mayDrag)
   return res; 
 }
 
-
 nsresult msiEditor::IsPointWithinCurrentSelection(nsCOMPtr<nsIDOMNode> & node, PRUint32 offset, PRBool & withinSelection)
 {
   withinSelection = PR_FALSE;
@@ -1986,8 +1961,8 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
   }
   else
   {
-    //TODO -- I don't like this code it use nsEditor's GetNextNode and GetPriorNode to get a text node
-    //  and then I check is this node is in math -- kinda hacky and not robust.
+    //TODO -- I don't like this code. It uses nsEditor's GetNextNode and GetPriorNode to get a text node
+    //  and then I check if this node is in math -- kinda hacky and not robust.
     nsCOMPtr<nsIDOMNode> testNode;
     PRUint32 flags(msiIMathMLCaret::FLAGS_NONE);
     if (keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT)
@@ -2156,7 +2131,6 @@ nsresult msiEditor::SetSelectionCB(void* msieditor, nsCOMPtr<nsIDOMNode> & focus
   else
     return NS_ERROR_NULL_POINTER;
 }
-
 
 nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> & node, PRInt32 &offset)
 {
