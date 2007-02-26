@@ -1,3 +1,6 @@
+
+var gPipeConsole;
+
 function goAboutDialog() {
   window.openDialog("chrome://prince/content/aboutDialog.xul", "About", "modal,chrome,resizable=yes");
 }
@@ -511,8 +514,14 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   try 
   {
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-    theProcess.init(exefile);
+//    var data=new Object();
+//    data.pipeconsole = Components.classes["@mozilla.org/process/pipe-console;1"].createInstance(Components.interfaces.nsIPipeConsole);
+//    data.pipeconsole.open(200,80,false);
+//    data.pipetransport = Components.classes["@mozilla.org/process/pipe-transport;1"].createInstance(Components.interfaces.nsIPipeTransport);
     var args = ["-output-directory", outputDir, infileLeaf];
+//    window.openDialog("chrome://prince/content/msiConsole.xul", "_blank", "chrome,close,titlebar", data);
+//    data.pipetransport.init(exefile.path, args, args.length, [], 0, 2000, "", true, true, data.pipeconsole );
+    theProcess.init(exefile);
     for (var i = 0; i < passCount; i++)
     {
       // BBM todo: We need to build the dialog box to display the number of passes
