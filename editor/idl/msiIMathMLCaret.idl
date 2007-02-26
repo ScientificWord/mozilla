@@ -41,8 +41,7 @@ interface msiIMathMLCaret : nsISupports
   const unsigned long    SELECT_OBJECTDOWN          = 24;
   
   void PrepareForCaret(in nsIEditor editor);
-  
-  
+    
   /* inquiry ids used in calls to Inquiry
   */
   const unsigned long    INQUIRY_NONE                = 0;
@@ -55,8 +54,6 @@ interface msiIMathMLCaret : nsISupports
   PRBool Inquiry(in nsIEditor editor,
                  in PRUint32 inquiryID);
   
-  
-
   /* Caret movement flags used when a mathml object passes
    * along a command to its parent or a child.
   */
@@ -133,7 +130,6 @@ interface msiIMathMLCaret : nsISupports
                                   in PRBool onLeft,
                                   out nsIArray transactionList,
                                   out nsIDOMNode coalesceNode);
-                                                                
 
   void CaretLeft(in nsIEditor editor,
                  in PRUint32 flags,
@@ -175,6 +171,3 @@ interface msiIMathMLCaret : nsISupports
                        out nsIDOMNode node,
                        out PRUint32 offset);
 };
-
-
-
