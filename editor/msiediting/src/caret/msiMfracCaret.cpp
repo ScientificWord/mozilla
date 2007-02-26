@@ -475,6 +475,3 @@ void msiMfracCaret::GetThresholds(const nsRect &fRect,
   if ( right > fRect.x + fRect.width - minGap)  
     right = fRect.x + fRect.width - minGap;
 }
-
-
-                                      

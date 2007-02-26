@@ -8,14 +8,6 @@ msiMtableCaret::msiMtableCaret(nsIDOMNode* mathmlNode, PRUint32 offset)
 {
 }
 
-NS_IMETHODIMP
-msiMtableCaret::GetNodeAndOffsetFromPoint(nsIEditor *editor, nsIPresShell *presShell, 
-                                         PRUint32 flags, PRInt32 x, PRInt32 y, 
-                                         nsIDOMNode **node, PRUint32 *offset)
-{
-  return NS_OK;
-}  
-
 NS_IMETHODIMP 
 msiMtableCaret::GetSelectableMathFragment(nsIEditor  *editor, 
                                          nsIDOMNode *start,      PRUint32 startOffset, 
