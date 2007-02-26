@@ -17,7 +17,6 @@ public:
   msiMfracCaret(nsIDOMNode* mathmlNode, PRUint32 offset);
   //msiIMathMLCaret
   NS_DECL_MSIIMATHMLCARET
-  
                                          
 protected:
 
