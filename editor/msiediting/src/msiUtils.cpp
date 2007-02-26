@@ -1573,6 +1573,7 @@ nsresult msiUtils::GetIndexOfChildInParent(nsIDOMNode * child, PRUint32 &index)
       }  
     }
   }
+  NS_ASSERTION(res==NS_OK, "Call failing, caller probably not checking.");
   return res;
 } 
 
