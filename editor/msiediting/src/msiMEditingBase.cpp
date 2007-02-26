@@ -33,11 +33,9 @@ msiMEditingBase::msiMEditingBase(nsIDOMNode* mathmlNode,
     }
     m_numKids = index;
     if (m_offset == RIGHT_MOST)
-     m_offset = index; 
+      m_offset = index; 
   }
 }
-
-
   
 msiMEditingBase::~msiMEditingBase()
 {
@@ -67,7 +65,6 @@ msiMEditingBase::GetNumKids(PRUint32 *numKids)
    *numKids = m_numKids;
    return NS_OK;
 }
-
 
 NS_IMETHODIMP 
 msiMEditingBase::GetOffset(PRUint32 *offset)
