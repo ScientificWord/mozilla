@@ -1,0 +1,4 @@
+<!ENTITY  copyCmd.label         "Copy">
+<!ENTITY  copyCmd.accesskey        "c">
+<!ENTITY  closeCmd.label       "Close">
+<!ENTITY  closeCmd.accesskey           "c">
