@@ -1139,6 +1139,14 @@ if [ "$MOZ_MAIL_NEWS" ]; then
     fi
 fi
 
+MAKEFILES_ipc="
+ipc/Makefile
+ipc/build/Makefile
+ipc/public/Makefile
+ipc/src/Makefile
+ipc/tests/Makefile
+"
+
 MAKEFILES_ipcd="
 ipc/ipcd/Makefile
 ipc/ipcd/daemon/public/Makefile
@@ -1691,7 +1699,11 @@ if test -n "$MOZ_STANDALONE_COMPOSER"; then
 fi
 
 if test -n "$MOZ_MSI_PRINCE"; then
-    add_makefiles "$MAKEFILES_prince"
+    add_makefiles "
+    $MAKEFILES_prince
+	$MAKEFILES_ipc
+	$MAKEFILES_ipcd
+"
 fi
 
 if test -n "$MOZ_SUNBIRD"; then
@@ -2128,6 +2140,7 @@ MAKEFILES_zlib="modules/zlib/standalone/Makefile"
         import) add_makefiles "$MAKEFILES_import" ;;
         inspector) add_makefiles "$MAKEFILES_inspector" ;;
         intl) add_makefiles "$MAKEFILES_intl" ;;
+        ipc) add_makefiles "$MAKEFILES_ipc" ;;
         ipcd) add_makefiles "$MAKEFILES_ipcd" ;;
         ipcd_test) add_makefiles "$MAKEFILES_ipcd_test" ;;
         jar) add_makefiles "$MAKEFILES_jar" ;;
