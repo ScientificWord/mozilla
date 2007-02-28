@@ -5,12 +5,15 @@
 
 #include "nsCOMPtr.h"
 #include "nsIDOMNode.h"
-#include "msiMCaretBase.h"
+#include "msiMContainerCaret.h"
 
-class msiMtdCaret : public msiMCaretBase
+class msiMtdCaret : public msiMContainerCaret
 {
 public:
   msiMtdCaret(nsIDOMNode* mathmlNode, PRUint32 offset);
+
+  //msiIMathMLCaret
+  NS_DECL_MSIIMATHMLCARET
 };
 
 #endif // msiMtdCaret_h___

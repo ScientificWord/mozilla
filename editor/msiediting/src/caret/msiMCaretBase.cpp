@@ -103,7 +103,6 @@ msiMCaretBase::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell
   return res;   
 }                                                       
 
-
 NS_IMETHODIMP 
 msiMCaretBase::GetSelectableMathFragment(nsIEditor  *editor, 
                                          nsIDOMNode *start,      PRUint32 startOffset, 
@@ -139,7 +138,6 @@ msiMCaretBase::GetSelectableMathFragment(nsIEditor  *editor,
   }
   return res;
 }
-
 
 NS_IMETHODIMP
 msiMCaretBase::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
@@ -349,7 +347,6 @@ msiMCaretBase::SplitAtDecendents(nsIEditor * editor, nsIDOMNode *leftDecendent, 
               currDecendent = newNode;
               currOffset = newOffset;
               currCaret = parentCaret;
-            
             }
             else
               res = NS_ERROR_FAILURE;
@@ -385,7 +382,6 @@ msiMCaretBase::SetDeletionTransaction(nsIEditor * editor,
                                       nsITransaction ** txn,
                                       PRBool * toRightInParent)
 {
-
   if (!editor || !m_mathmlNode || !txn || !toRightInParent)
     return NS_ERROR_NULL_POINTER;
   *txn = nsnull;
@@ -396,7 +392,6 @@ msiMCaretBase::SetDeletionTransaction(nsIEditor * editor,
     *toRightInParent = PR_TRUE; //parent will delete node.
   return NS_OK;
 }                                      
-
 
 NS_IMETHODIMP
 msiMCaretBase::Split(nsIEditor *editor, 
@@ -429,7 +424,6 @@ msiMCaretBase::Split(nsIEditor *editor,
   return res;    
 }  
 
-
 NS_IMETHODIMP
 msiMCaretBase::SetupDeletionTransactions(nsIEditor * editor,
                                          nsIDOMNode * start,
@@ -443,7 +437,6 @@ msiMCaretBase::SetupDeletionTransactions(nsIEditor * editor,
   return StandardSetupDelTxns(editor, m_mathmlNode, m_numKids, start, startOffset,
                               end, endOffset, transactionList, coalesceNode, coalesceOffset);
 }  
-
 
 NS_IMETHODIMP
 msiMCaretBase::SetupCoalesceTransactions(nsIEditor * editor,
@@ -507,7 +500,6 @@ msiMCaretBase::SetupCoalesceTransactions(nsIEditor * editor,
   return res;
 } 
 
-
 NS_IMETHODIMP
 msiMCaretBase::SetCoalTransactionsAndNode(nsIEditor * editor,
                                           PRBool onLeft,
@@ -521,10 +513,6 @@ msiMCaretBase::SetCoalTransactionsAndNode(nsIEditor * editor,
   NS_ADDREF(*coalesceNode);
   return NS_OK;  
 }                                         
-        
-
-                                       
-                                   
 
 NS_IMETHODIMP
 msiMCaretBase::CaretLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
