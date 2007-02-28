@@ -388,6 +388,7 @@ endif
 ifdef MOZ_MSI_PRINCE
 tier_99_dirs	+= Prince 
 tier_99_dirs	+= filters 
+tier_99_dirs    += ipc
 endif
 
 ifdef MOZ_SUNBIRD
