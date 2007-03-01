@@ -1,3 +1,8 @@
+const NS_IPCSERVICE_CONTRACTID  = "@mozilla.org/process/ipc-service;1";
+const NS_IPCBUFFER_CONTRACTID   = "@mozilla.org/process/ipc-buffer;1";
+const NS_PIPECONSOLE_CONTRACTID = "@mozilla.org/process/pipe-console;1";
+const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
+const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
 var gPipeConsole;
 
@@ -500,33 +505,27 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   // the following requires that the pdflatex program (or a hard link to it) be in xpi-stage/prince/TeX/bin/pdflatex 
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-//  exefile.append("TeX"); exefile.append("bin"); 
   if (pdftex)
     exefile.append("pdflatex.cmd");
   else
     exefile.append("tex.cmd");
-// the following is an egreqious hack. How do we find the path we need in general.
-//  var execpath = "/usr/local/teTeX/bin/i386-apple-darwin-current/pdflatex";
-//  var exefile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-//  exefile.initWithPath( execpath );
   dump("\nexecutable file: "+exefile.path+"\n");
-  // BBM todo: On Mac OSX we want to put up a shell for possible interaction.
   try 
   {
-    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-//    var data=new Object();
-//    data.pipeconsole = Components.classes["@mozilla.org/process/pipe-console;1"].createInstance(Components.interfaces.nsIPipeConsole);
-//    data.pipeconsole.open(200,80,false);
-//    data.pipetransport = Components.classes["@mozilla.org/process/pipe-transport;1"].createInstance(Components.interfaces.nsIPipeTransport);
-    var args = ["-output-directory", outputDir, infileLeaf];
-//    window.openDialog("chrome://prince/content/msiConsole.xul", "_blank", "chrome,close,titlebar", data);
-//    data.pipetransport.init(exefile.path, args, args.length, [], 0, 2000, "", true, true, data.pipeconsole );
-    theProcess.init(exefile);
-    for (var i = 0; i < passCount; i++)
-    {
-      // BBM todo: We need to build the dialog box to display the number of passes
-      theProcess.run(true, args, args.length);
-    } 
+    var data=new Object();
+    data.pipeconsole = Components.classes["@mozilla.org/process/pipe-console;1"].createInstance(Components.interfaces.nsIPipeConsole);
+    data.pipeconsole.open(500,80,false);
+    data.pipetransport = Components.classes["@mozilla.org/process/pipe-transport;1"].createInstance(Components.interfaces.nsIPipeTransport);
+    var args = ["-output-directory", outputDir, infileLeaf, passCount];
+    data.pipetransport.init(exefile.path, args, args.length, "", 0, 2000, "", true, true, data.pipeconsole );
+    data.pipetransport.loggingEnabled = true;
+    data.pipetransport.asyncRead(data.pipeconsole, null, 0, -1, 0);
+    data.stdin = data.pipetransport.openOutputStream(0,-1,0);
+    data.clean = false;
+    window.openDialog("chrome://prince/content/msiConsole.xul", "_blank", "chrome,close,titlebar,modal", data);
+    data.pipetransport.join();
+    // we need to kill the process
+    
   } 
   catch (ex) {
     dump("\nUnable to run TeX:\n");
@@ -590,7 +589,9 @@ function printTeX( pdftex )
       texfileLeaf += ".dvi";
     outputfile.append(texfileLeaf);
     dump("outputfile to be launched: "+outputfile.path+"\n");
-    outputfile.launch();
+    document.getElementById("preview-frame").loadURI(outputfile.path);
+    // Switch to the preview pane (third in the deck)
+    goDoCommand("cmd_PreviewMode");      
   }
   else
     dump("\nRunning TeX failed to create a file!");

@@ -16,6 +16,7 @@
         windowtype="sw:console"
         width="600" height="400"
         screenX="10" screenY="10"
+        buttons="cancel"
         persist="screenX screenY width height"> 
 
 <script type="application/x-javascript" src="chrome://prince/content/msiConsole.js"/>
@@ -28,12 +29,10 @@
          disabled="true"/>
 
 <command id="cmd_close" oncommand="window.close()"/>
-<command id="cmd_quit" oncommand="closeWindow(true)"/>
 
 <keyset id="tasksKeys">
   <key id="key_copy"/>
   <key id="key_close"/>
-  <key id="key_quit"/>
 </keyset>
 
 <popupset id="ContextMenus">
@@ -65,7 +64,8 @@
 
 </menubar>
 
-<browser id="contentFrame" name="contentFrame"
-        src="chrome://prince/content/msiConsole.html" flex="100%"/>
+<editor id="contentFrame" name="contentFrame"
+        src="chrome://prince/content/msiConsole.html" flex="100%"
+        onkeypress="doKeyPress(event);"/>
 
 </dialog>
