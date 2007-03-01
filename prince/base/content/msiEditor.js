@@ -2441,11 +2441,8 @@ function msiSetDisplayMode(editorElement, mode)
     window.gEditorDisplayMode = mode;
   msiResetStructToolbar(editorElement);
 
-  if (mode == kDisplayModeSource)
+  if ((mode == kDisplayModeSource)||(mode == kDisplayModePreview))
   {
-      // Switch to the sourceWindow (second in the deck)
-    if ("gContentWindowDeck" in window)
-      window.gContentWindowDeck.selectedIndex = 1;
 
     //Hide the formatting toolbar if not already hidden
     if ("gViewFormatToolbar" in window && window.gViewFormatToolbar != null)
@@ -2456,11 +2453,17 @@ function msiSetDisplayMode(editorElement, mode)
     msiHideItem("MSIMathMenu");
     msiHideItem("cmd_viewComputeToolbar");
     msiHideItem("MSIComputeMenu");
-    msiHideItem("SymbolToolbar");
     msiHideItem("MSITypesetMenu");
     msiHideItem("MSIInsertTypesetObjectMenu");
+    msiHideItem("StandardToolbox");
+    msiHideItem("SymbolToolbox");
+    msiHideItem("MathToolbox");
+    msiHideItem("EditingToolbox");
     if ("gSourceContentWindow" in window)
       window.gSourceContentWindow.contentWindow.focus();
+    // Switch to the sourceWindow or previewWindow(second or third in the deck)
+    if ("gContentWindowDeck" in window)
+      window.gContentWindowDeck.selectedIndex = (mode==kDisplayModeSource?1:2);
   }
   else
   {
@@ -2522,6 +2525,10 @@ function msiSetDisplayMode(editorElement, mode)
     msiShowItem("SymbolToolbar");
     msiShowItem("MSITypesetMenu");
     msiShowItem("MSIInsertTypesetObjectMenu");
+    msiShowItem("SymbolToolbox");
+    msiShowItem("StandardToolbox");
+    msiShowItem("MathToolbox");
+    msiShowItem("EditingToolbox");
     if ("gContentWindow" in window)
       window.gContentWindow.focus();
     else

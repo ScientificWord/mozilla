@@ -539,7 +539,7 @@
     <menuitem label="Configuration"
             oncommand='window.openDialog("chrome://global/content/config.xul","Configure Prince", "chrome ");'/>
     <menuitem label="Plugins"
-            oncommand='window.openDialog("chrome://communicator/content/plugins.html","Installed plugins", "chrome ");'/>
+            oncommand='window.openDialog("chrome://prince/content/plugins.html","Installed plugins", "chrome ");'/>
     <menuitem label="Stop animation"
             oncommand='msiStopAnimation();' />
     <menuitem label="Start animation"
