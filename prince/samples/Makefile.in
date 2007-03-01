@@ -49,6 +49,7 @@ SAMPLES	:= \
 			$(wildcard $(srcdir)/*.css) \
 			$(wildcard $(srcdir)/*.gif) \
 			$(wildcard $(srcdir)/*.xvz) \
+			$(wildcard $(srcdir)/*.pdf) \
 			$(NULL)
 
 SWP_SAMPLES	:= \

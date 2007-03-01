@@ -57,34 +57,48 @@ function msiConsoleUnload() {
     window.clearInterval(window.consoleIntervalId);
     window.consoleIntervalId = null;
   }
+  cleanUp(window.arguments[0]);
 }
 
 window.onload = msiConsoleLoad;
 window.onunload = msiConsoleUnload;
 
+function cleanUp( data )
+{
+  if (data.clean != true)
+  { 
+//    data.pipeconsole.shutDown();
+    data.stdin.close();
+    data.pipetransport.terminate();
+    data.clean = true;
+  }
+}
+
 function msiRefreshConsole() {
   //DEBUG_LOG("msiConsole.js: msiRefreshConsole():\n");
 
   var data = window.arguments[0];
-  if (!data || data.pipeconsole==null)
-    return;
-
-  if (data.pipetransport.console.hasNewData()) {
+  if (data.pipeconsole.hasNewData()) 
+  {
 //    DEBUG_LOG("msiConsole.js: msiRefreshConsole(): hasNewData\n");
 
     var contentFrame = document.getElementById("contentFrame");
     if (!contentFrame)
-      return;
+      return false;
 
-    var consoleElement = contentFrame.document.getElementById('console');
+    var consoleElement = contentFrame.contentDocument.getElementById("console");
 
     consoleElement.firstChild.data = data.pipeconsole.getData();
 
     if (!contentFrame.mouseDownState)
-       contentFrame.scrollTo(0,9999);
+       contentFrame.getSelection().collapseToEnd();
   }
-
-  return false;
+  if (!data.pipetransport.isAttached())
+  {
+    cleanUp(data);
+    window.close();
+  }
+  return true;
 }
 
 function msiConsoleCopy()
@@ -164,3 +178,22 @@ var CommandController =
   {
   }
 };
+
+
+function doKeyPress(event)
+{
+  dump(event+"\n");
+  var data;
+  if (event.charCode)
+  {
+    var data = window.arguments[0];
+    data.stdin.write(event.charCode,1);
+    var contentFrame = document.getElementById("contentFrame");
+    if (!contentFrame)
+      return;
+
+    var consoleElement = contentFrame.contentDocument.getElementById("console");
+
+    consoleElement.firstChild.data += String.fromCharCode(event.charCode);
+  }
+}
