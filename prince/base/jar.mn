@@ -92,6 +92,7 @@ prince.jar:
 * content/msiDialogUtilities.js     (content/dialogs/msiDialogUtilities.js)
 * content/Operators.js      (content/dialogs/Operators.js)
 * content/Operators.xul     (content/dialogs/Operators.xul)
+  content/plugins.html       (content/plugins.html)
 * content/texbuttoncontents.js      (content/dialogs/texbuttoncontents.js)
 * content/texbuttoncontents.xul     (content/dialogs/texbuttoncontents.xul)
 * content/typesetDocFormat.js      (content/dialogs/typesetDocFormat.js)
