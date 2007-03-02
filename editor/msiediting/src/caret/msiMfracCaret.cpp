@@ -242,7 +242,49 @@ msiMfracCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRU
         res = NS_ERROR_FAILURE;
     }    
   }
-  if (*node == nsnull && !(flags & FROM_CHILD))
+  else if (flags & FROM_ABOVE)
+  {
+    if (m_offset == 1)
+    {
+      res = msiUtils::GetChildNode(m_mathmlNode, 1, child);
+      NS_ASSERTION(child, "Yuck - child is null");
+      if (NS_SUCCEEDED(res) && child)
+      {
+        msiUtils::GetMathMLCaretInterface(editor, child, 0, mathmlEditing);
+        NS_ASSERTION(mathmlEditing, "Yuck - mathml caret interface is null");
+        if (mathmlEditing)
+          res = mathmlEditing->Accept(editor, FROM_ABOVE|FROM_PARENT, node, offset);
+        else
+          res = NS_ERROR_FAILURE;
+      }
+      else
+        res = NS_ERROR_FAILURE;
+    }    
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  else if (flags & FROM_BELOW)
+  {
+    if (m_offset == 0)
+    {
+      res = msiUtils::GetChildNode(m_mathmlNode, 0, child);
+      NS_ASSERTION(child, "Yuck - child is null");
+      if (NS_SUCCEEDED(res) && child)
+      {
+        msiUtils::GetMathMLCaretInterface(editor, child, 0, mathmlEditing);
+        NS_ASSERTION(mathmlEditing, "Yuck - mathml caret interface is null");
+        if (mathmlEditing)
+          res = mathmlEditing->Accept(editor, FROM_ABOVE|FROM_PARENT, node, offset);
+        else
+          res = NS_ERROR_FAILURE;
+      }
+      else
+        res = NS_ERROR_FAILURE;
+    }    
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  if (*node == nsnull && !(flags & FROM_CHILD) && NS_SUCCEEDED(res))
   {
     nsCOMPtr<nsIDOMNode> child;
     nsCOMPtr<msiIMathMLCaret> mathmlEditing;
@@ -401,13 +443,21 @@ msiMfracCaret::CaretRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node,
 NS_IMETHODIMP
 msiMfracCaret::CaretUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretLeft(editor, flags, node, offset);
+  if (m_offset > 0)
+    m_offset = 0;
+  else
+    return msiMCaretBase::CaretUp(editor,flags,node,offset);
+  return Accept(editor, FROM_BELOW, node, offset);
 }
 
 NS_IMETHODIMP
 msiMfracCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretRight(editor, flags, node, offset);
+  if (m_offset == 0)
+    m_offset = 1;
+  else
+    return msiMCaretBase::CaretUp(editor,flags,node,offset);
+  return Accept(editor, FROM_ABOVE, node, offset);
 }
 
 NS_IMETHODIMP

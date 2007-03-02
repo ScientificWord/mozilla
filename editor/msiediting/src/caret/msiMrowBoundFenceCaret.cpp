@@ -371,13 +371,13 @@ msiMrowBoundFenceCaret::CaretRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode
 NS_IMETHODIMP
 msiMrowBoundFenceCaret::CaretUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretLeft(editor, flags, node, offset);
+  return msiMCaretBase::CaretUp(editor, flags, node, offset);
 }
 
 NS_IMETHODIMP
 msiMrowBoundFenceCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretRight(editor, flags, node, offset);
+  return msiMCaretBase::CaretDown(editor, flags, node, offset);
 }
 
 NS_IMETHODIMP

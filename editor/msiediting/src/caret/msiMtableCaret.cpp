@@ -114,6 +114,38 @@ msiMtableCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PR
         res = NS_ERROR_FAILURE;
     }    
   }
+  else if (flags & FROM_ABOVE)
+  {
+    res = msiUtils::GetChildNode(m_mathmlNode, m_offset, child);
+    NS_ASSERTION(child, "Yuck - child is null");
+    if (NS_SUCCEEDED(res) && child)
+    {
+      msiUtils::GetMathMLCaretInterface(editor, child, 0, mathmlEditing);
+      NS_ASSERTION(mathmlEditing, "Yuck - mathml caret interface is null");
+      if (mathmlEditing)
+        res = mathmlEditing->Accept(editor, FROM_ABOVE|FROM_PARENT, node, offset);
+      else
+        res = NS_ERROR_FAILURE;
+    }
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  else if (flags & FROM_BELOW)
+  {
+    res = msiUtils::GetChildNode(m_mathmlNode, m_offset, child);
+    NS_ASSERTION(child, "Yuck - child is null");
+    if (NS_SUCCEEDED(res) && child)
+    {
+      msiUtils::GetMathMLCaretInterface(editor, child, 0, mathmlEditing);
+      NS_ASSERTION(mathmlEditing, "Yuck - mathml caret interface is null");
+      if (mathmlEditing)
+        res = mathmlEditing->Accept(editor, FROM_BELOW|FROM_PARENT, node, offset);
+      else
+        res = NS_ERROR_FAILURE;
+    }
+    else
+      res = NS_ERROR_FAILURE;
+  }
   if (*node == nsnull && !(flags & FROM_CHILD))
   {
     nsCOMPtr<nsIDOMNode> child;
@@ -269,13 +301,21 @@ msiMtableCaret::CaretRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node
 NS_IMETHODIMP
 msiMtableCaret::CaretUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretLeft(editor, flags, node, offset);
+  if (m_offset > 0)
+    --m_offset;
+  else
+    return msiMCaretBase::CaretUp(editor,flags,node,offset);
+  return Accept(editor, FROM_BELOW, node, offset);
 }
 
 NS_IMETHODIMP
 msiMtableCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretRight(editor, flags, node, offset);
+  if (m_offset < m_numKids)
+    ++m_offset;
+  else
+    return msiMCaretBase::CaretUp(editor,flags,node,offset);
+  return Accept(editor, FROM_ABOVE, node, offset);
 }
 
 //TODO
