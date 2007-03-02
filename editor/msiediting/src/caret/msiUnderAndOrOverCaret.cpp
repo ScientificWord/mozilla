@@ -495,13 +495,13 @@ msiUnderAndOrOverCaret::CaretRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode
 NS_IMETHODIMP
 msiUnderAndOrOverCaret::CaretUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretLeft(editor, flags, node, offset);
+  return msiMCaretBase::CaretUp(editor, flags, node, offset);
 }
 
 NS_IMETHODIMP
 msiUnderAndOrOverCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretRight(editor, flags, node, offset);
+  return msiMCaretBase::CaretDown(editor, flags, node, offset);
 }
 
 NS_IMETHODIMP

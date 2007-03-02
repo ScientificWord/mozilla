@@ -21,7 +21,6 @@ msiScriptCaret::msiScriptCaret(nsIDOMNode* mathmlNode, PRUint32 offset, PRUint32
 {
 }
 
-
 NS_IMETHODIMP
 msiScriptCaret::PrepareForCaret(nsIEditor* editor)
 {
@@ -99,7 +98,6 @@ msiScriptCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShel
   return msiMCaretBase::AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
                                                           mouseEvent, node, offset);
 }                                                       
-
 
 NS_IMETHODIMP
 msiScriptCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
@@ -186,6 +184,40 @@ msiScriptCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PR
       NS_ADDREF(*node);
       *offset = m_offset;
       res = NS_OK;
+    }
+  }
+  else if (flags & FROM_BELOW)
+  {
+    if (m_offset == 2) {
+      msiUtils::GetChildNode(m_mathmlNode, m_offset, child);
+      NS_ASSERTION(child, "MathML child node is null.");
+      if (child)
+      {
+        msiUtils::GetMathMLCaretInterface(editor, child, 0, mathmlEditing);
+        if (mathmlEditing)
+          res = mathmlEditing->Accept(editor, FROM_PARENT|FROM_BELOW, node, offset); 
+        else 
+          res = NS_ERROR_FAILURE;
+      }
+      else 
+        res = NS_ERROR_FAILURE;
+    }
+  }
+  else if (flags & FROM_ABOVE)
+  {
+    if (m_offset == 1) {
+      msiUtils::GetChildNode(m_mathmlNode, m_offset, child);
+      NS_ASSERTION(child, "MathML child node is null.");
+      if (child)
+      {
+        msiUtils::GetMathMLCaretInterface(editor, child, 0, mathmlEditing);
+        if (mathmlEditing)
+          res = mathmlEditing->Accept(editor, FROM_PARENT|FROM_ABOVE, node, offset); 
+        else 
+          res = NS_ERROR_FAILURE;
+      }
+      else 
+        res = NS_ERROR_FAILURE;
     }
   }
   return res;
@@ -316,7 +348,6 @@ msiScriptCaret::GetSelectableMathFragment(nsIEditor  *editor,
   return res;
 }
 
-
 NS_IMETHODIMP
 msiScriptCaret::AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPoint, 
                                       nsIDOMNode** selectionNode, PRUint32 * selectionOffset,
@@ -363,7 +394,6 @@ msiScriptCaret::AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPoint,
   return res;
 }
 
-
 NS_IMETHODIMP 
 msiScriptCaret::SplitAtDecendents(nsIEditor* editor, 
                                   nsIDOMNode *leftDecendent, PRUint32 leftOffset, 
@@ -377,7 +407,6 @@ msiScriptCaret::SplitAtDecendents(nsIEditor* editor,
                                           left_leftPart, left_rightPart, 
                                           right_leftPart, right_rightPart);
 }
-
 
 NS_IMETHODIMP
 msiScriptCaret::Split(nsIEditor *editor, 
@@ -449,7 +478,6 @@ msiScriptCaret::Split(nsIEditor *editor,
   return res;
 }  
 
-
 NS_IMETHODIMP
 msiScriptCaret::SetDeletionTransaction(nsIEditor * editor,
                                        PRBool deletingToTheRight, 
@@ -507,7 +535,6 @@ msiScriptCaret::SetDeletionTransaction(nsIEditor * editor,
   }
   return res;
 }
-                                   
 
 NS_IMETHODIMP
 msiScriptCaret::SetupDeletionTransactions(nsIEditor * editor,
@@ -708,13 +735,19 @@ msiScriptCaret::CaretRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node
 NS_IMETHODIMP
 msiScriptCaret::CaretUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretLeft(editor, flags, node, offset);
+  if (!(m_numKids == 3 && m_offset == 1))
+    return msiMCaretBase::CaretUp(editor,flags,node,offset);
+  m_offset = 2;
+  return Accept(editor, FROM_BELOW, node, offset);
 }
 
 NS_IMETHODIMP
 msiScriptCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretRight(editor, flags, node, offset);
+  if (!(m_numKids == 3 && m_offset == 2))
+    return msiMCaretBase::CaretUp(editor,flags,node,offset);
+  m_offset = 1;
+  return Accept(editor, FROM_ABOVE, node, offset);
 }
 
 NS_IMETHODIMP
