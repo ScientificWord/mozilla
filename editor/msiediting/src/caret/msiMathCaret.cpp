@@ -278,13 +278,13 @@ msiMathCaret::CaretRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, 
 NS_IMETHODIMP
 msiMathCaret::CaretUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretLeft(editor, flags, node, offset);
+  return NS_ERROR_FAILURE;
 }
 
 NS_IMETHODIMP
 msiMathCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretRight(editor, flags, node, offset);
+  return NS_ERROR_FAILURE;
 }
 
 NS_IMETHODIMP
