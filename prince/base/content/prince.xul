@@ -168,8 +168,9 @@
 
 
     <statusbarpanel id="component-bar"/>
-    <statusbarpanel id="structToolbar" flex="1" pack="end">
-    <label id="structSpacer" value="" flex="1"/>
+    <spacer flex="1"/>
+    <statusbarpanel id="structToolbar" flex="100" pack="end">
+    <label id="structSpacer" value="" flex="100"/>
     </statusbarpanel>
     <statusbarpanel class="statusbarpanel-iconic" id="offline-status"/>
   </statusbar>

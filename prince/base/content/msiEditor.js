@@ -2459,6 +2459,7 @@ function msiSetDisplayMode(editorElement, mode)
     msiHideItem("SymbolToolbox");
     msiHideItem("MathToolbox");
     msiHideItem("EditingToolbox");
+    msiHideItem("structToolbar");
     if ("gSourceContentWindow" in window)
       window.gSourceContentWindow.contentWindow.focus();
     // Switch to the sourceWindow or previewWindow(second or third in the deck)
@@ -2529,6 +2530,7 @@ function msiSetDisplayMode(editorElement, mode)
     msiShowItem("StandardToolbox");
     msiShowItem("MathToolbox");
     msiShowItem("EditingToolbox");
+    msiShowItem("structToolbar");
     if ("gContentWindow" in window)
       window.gContentWindow.focus();
     else
