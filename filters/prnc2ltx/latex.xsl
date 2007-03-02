@@ -86,16 +86,19 @@
 <xsl:template match="html:mainfont">
 \setmainfont{<xsl:value-of select="@name"/>}</xsl:template>
 
-<xsl:template match="html:romanfont">
-\setromanfont{<xsl:value-of select="@name"/>}</xsl:template>
+<xsl:template match="html:mainfont[@name='Default']"></xsl:template>
 
 <xsl:template match="html:sansfont">
 \setsansfont{<xsl:value-of select="@name"/>}</xsl:template>
 
+<xsl:template match="html:sansfont[@name='']"></xsl:template>
+
 <xsl:template match="html:fixedfont">
 \setmonofont{<xsl:value-of select="@name"/>}</xsl:template>
 
-<xsl:template match="html:latex">\LaTeX{}</xsl:template>
+<xsl:template match="html:fixedfont[@name='']"></xsl:template>
+
+<xsl:template match="html:latex">\LaTeX</xsl:template>
 <xsl:template match="mml:math">\textbf{Math here}</xsl:template>
  
 <xsl:template match="html:documentclass">
