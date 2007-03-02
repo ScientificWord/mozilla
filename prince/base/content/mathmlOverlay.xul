@@ -36,14 +36,14 @@
   
     <command id="cmd_MSIinlineMathCmd"  oncommand="msiGoDoCommand('cmd_MSIinlineMathCmd')"/>
     <command id="cmd_MSIdisplayMathCmd" oncommand="msiGoDoCommand('cmd_MSIdisplayMathCmd')"/>
-    <command id="cmd_MSItextCmd"        oncommand="msiGoDoCommand('cmd_MSItextCmd')"/>
+    <command id="cmd_MSItextCmd"        disabled="true" oncommand="msiGoDoCommand('cmd_MSItextCmd')"/>
     <command id="cmd_MSIfractionCmd"    oncommand="msiGoDoCommand('cmd_MSIfractionCmd')"/>
     <command id="cmd_MSIradicalCmd"     oncommand="msiGoDoCommand('cmd_MSIradicalCmd')"/>
     <command id="cmd_MSIrootCmd"        oncommand="msiGoDoCommand('cmd_MSIrootCmd')"/>
     <command id="cmd_MSIsupCmd"         oncommand="msiGoDoCommand('cmd_MSIsupCmd')"/>
     <command id="cmd_MSIsubCmd"         oncommand="msiGoDoCommand('cmd_MSIsubCmd')"/>
     <command id="cmd_MSIMatrixCmd"      oncommand="msiGoDoCommand('cmd_MSIMatrixCmd')"/>
-    <command id="cmd_MSItensorCmd"      oncommand="msiGoDoCommand('cmd_MSItensorCmd')"/>
+    <command id="cmd_MSItensorCmd"      disabled="true" oncommand="msiGoDoCommand('cmd_MSItensorCmd')"/>
     <command id="cmd_MSIsinCmd"         oncommand="msiGoDoCommand('cmd_MSIsinCmd')"/>
     <command id="cmd_MSIcosCmd"         oncommand="msiGoDoCommand('cmd_MSIcosCmd')"/>
     <command id="cmd_MSItanCmd"         oncommand="msiGoDoCommand('cmd_MSItanCmd')"/>
