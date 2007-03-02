@@ -62,6 +62,8 @@ interface msiIMathMLCaret : nsISupports
   const unsigned long    FROM_PARENT                = 2;
   const unsigned long    FROM_LEFT                  = 4;
   const unsigned long    FROM_RIGHT                 = 8;
+  const unsigned long    FROM_ABOVE                 = 16;
+  const unsigned long    FROM_BELOW                 = 32;
   
   void AdjustNodeAndOffsetFromMouseEvent(in nsIEditor editor,
                                          in nsIPresShell presShell,
