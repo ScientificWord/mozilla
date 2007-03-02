@@ -8,4 +8,7 @@
 #Symbol-tabbox[textsize="small"] toolbarbutton { font-size: small; }
 #symbol_lcGreek toolbarbutton{font-style: italic; }
 #symbol_lcGreekTab {font-style: italic; }
-
+#Symbol-tabbox > tab {
+  background-image: url("chrome://editor/skin/icons/background.png");
+  background-repeat: repeat-x;
+}
