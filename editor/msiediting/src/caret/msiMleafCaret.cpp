@@ -580,13 +580,13 @@ msiMleafCaret::CaretRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node,
 NS_IMETHODIMP
 msiMleafCaret::CaretUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretLeft(editor, flags, node, offset);
+  return msiMCaretBase::CaretUp(editor, flags, node, offset);
 }
 
 NS_IMETHODIMP
 msiMleafCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretRight(editor, flags, node, offset);
+  return msiMCaretBase::CaretDown(editor, flags, node, offset);
 }
 
 NS_IMETHODIMP

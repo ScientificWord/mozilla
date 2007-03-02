@@ -146,7 +146,7 @@ msiMCaretBase::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRU
     return NS_ERROR_FAILURE;
   nsCOMPtr<nsIDOMNode> child;
   nsresult res(NS_OK);  
-  NS_ASSERTION(flags & (FROM_LEFT|FROM_RIGHT), "Accept called without From left or from right");
+  NS_ASSERTION(flags & (FROM_LEFT|FROM_RIGHT|FROM_ABOVE|FROM_BELOW), "Accept called without From left or from right");
   if (m_numKids == 1)
   {
     msiUtils::GetChildNode(m_mathmlNode, 0, child);
@@ -607,13 +607,29 @@ msiMCaretBase::CaretRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node,
 NS_IMETHODIMP
 msiMCaretBase::CaretUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretLeft(editor, flags, node, offset);
+  if (!node || !offset || !m_mathmlNode || !editor)
+    return NS_ERROR_FAILURE;
+  nsresult res(NS_OK);
+  nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+  msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, mathmlEditing);
+  if (mathmlEditing)
+    mathmlEditing->CaretUp(editor, flags, node, offset); 
+  else 
+    res = NS_ERROR_FAILURE;
 }
 
 NS_IMETHODIMP
 msiMCaretBase::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretRight(editor, flags, node, offset);
+  if (!node || !offset || !m_mathmlNode || !editor)
+    return NS_ERROR_FAILURE;
+  nsresult res(NS_OK);
+  nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+  msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_FALSE, mathmlEditing);
+  if (mathmlEditing)
+    mathmlEditing->CaretDown(editor, flags, node, offset); 
+  else 
+    res = NS_ERROR_FAILURE;
 }
 
 NS_IMETHODIMP
