@@ -347,6 +347,40 @@ msiBigOperatorCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** nod
         res = mathmlEditing->Accept(editor, FROM_PARENT|FROM_RIGHT, node, offset);
     }
   }
+  else if (flags & FROM_BELOW)
+  {
+    if (m_offset == 2) {
+      msiUtils::GetChildNode(m_mathmlNode, m_offset, child);
+      NS_ASSERTION(child, "MathML child node is null.");
+      if (child)
+      {
+        msiUtils::GetMathMLCaretInterface(editor, child, 0, mathmlEditing);
+        if (mathmlEditing)
+          res = mathmlEditing->Accept(editor, FROM_PARENT|FROM_BELOW, node, offset); 
+        else 
+          res = NS_ERROR_FAILURE;
+      }
+      else 
+        res = NS_ERROR_FAILURE;
+    }
+  }
+  else if (flags & FROM_ABOVE)
+  {
+    if (m_offset == 1) {
+      msiUtils::GetChildNode(m_mathmlNode, m_offset, child);
+      NS_ASSERTION(child, "MathML child node is null.");
+      if (child)
+      {
+        msiUtils::GetMathMLCaretInterface(editor, child, 0, mathmlEditing);
+        if (mathmlEditing)
+          res = mathmlEditing->Accept(editor, FROM_PARENT|FROM_ABOVE, node, offset); 
+        else 
+          res = NS_ERROR_FAILURE;
+      }
+      else 
+        res = NS_ERROR_FAILURE;
+    }
+  }
   return res;
 }
 
@@ -610,13 +644,19 @@ msiBigOperatorCaret::CaretRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode **
 NS_IMETHODIMP
 msiBigOperatorCaret::CaretUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretLeft(editor, flags, node, offset);
+  if (!(m_numKids == 3 && m_offset == 1))
+    return msiMCaretBase::CaretUp(editor,flags,node,offset);
+  m_offset = 2;
+  return Accept(editor, FROM_BELOW, node, offset);
 }
 
 NS_IMETHODIMP
 msiBigOperatorCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretRight(editor, flags, node, offset);
+  if (!(m_numKids == 3 && m_offset == 2))
+    return msiMCaretBase::CaretUp(editor,flags,node,offset);
+  m_offset = 1;
+  return Accept(editor, FROM_ABOVE, node, offset);
 }
 
 NS_IMETHODIMP

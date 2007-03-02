@@ -319,13 +319,13 @@ msiMrowCaret::CaretRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, 
 NS_IMETHODIMP
 msiMrowCaret::CaretUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretLeft(editor, flags, node, offset);
+  return msiMContainerCaret::CaretUp(editor, flags, node, offset);
 }
 
 NS_IMETHODIMP
 msiMrowCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
-  return CaretRight(editor, flags, node, offset);
+  return msiMContainerCaret::CaretDown(editor, flags, node, offset);
 }
 
 NS_IMETHODIMP
