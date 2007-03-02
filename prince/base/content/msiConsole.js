@@ -46,6 +46,11 @@ function msiConsoleLoad() {
 
   // Refresh console every second
   window.consoleIntervalId = window.setInterval(msiRefreshConsole, 1000);
+  var contentFrame = document.getElementById("contentFrame");
+  if (!contentFrame)
+    return false;
+  var consoleElement = contentFrame.contentDocument.getElementById("console");
+  consoleElement.makeEditable("html", false);  
   msiRefreshConsole();
 }
 
@@ -91,7 +96,7 @@ function msiRefreshConsole() {
     consoleElement.firstChild.data = data.pipeconsole.getData();
 
     if (!contentFrame.mouseDownState)
-       contentFrame.getSelection().collapseToEnd();
+       consoleElement.contentWindow.getSelection().collapseToEnd();
   }
   if (!data.pipetransport.isAttached())
   {
@@ -179,21 +184,37 @@ var CommandController =
   }
 };
 
+var inputstring="";
+var bufferContents = ""
 
 function doKeyPress(event)
 {
   dump(event+"\n");
-  var data;
-  if (event.charCode)
+  var data = window.arguments[0];
+  if (event.charCode || event.keyCode==13 || event.keyCode==8)
   {
-    var data = window.arguments[0];
-    data.stdin.write(event.charCode,1);
     var contentFrame = document.getElementById("contentFrame");
     if (!contentFrame)
       return;
 
     var consoleElement = contentFrame.contentDocument.getElementById("console");
-
-    consoleElement.firstChild.data += String.fromCharCode(event.charCode);
+    if (bufferContents.length == 0)
+      bufferContents = consoleElement.firstChild.data;  
+    if (event.charCode)
+      inputstring += String.fromCharCode(event.charCode);
+    else if (event.keyCode == 8)
+      inputstring = inputstring.substring(0, inputstring.length-1);
+    else
+    {
+      data.stdin.write(inputstring+String.fromCharCode(event.keyCode), inputstring.length+1);
+      inputstring += "\n"; // add return to end of string
+    }
+    consoleElement.firstChild.data = bufferContents + inputstring;
+    if (event.keycode == 13)
+    {
+      inputstring = "";
+      bufferContents = "";
+    }
+    event.preventDefault();
   }
 }
