@@ -88,13 +88,13 @@
       mode="icons" customizable="true" />
   </toolbox>
   
-  <toolbox id="SymbolToolbox" orient="horizontal" mode="icons" persist="iconsize" context="symbol-palettes-context-menu" >
+  <toolbox id="SymbolToolbox" orient="horizontal"  mode="icons" context="symbol-palettes-context-menu" >
     <popup id="symbol-palettes-context-menu" >
-      <menuitem oncommand="getElementById('Symbol-tabbox').setAttribute('textsize','small');"
+      <menuitem id='symbolssmall' persist="checked" checked = "true" type="checkbox" oncommand="setSymbolSize('small');"
         label="Small symbols" />
-      <menuitem oncommand="getElementById('Symbol-tabbox').setAttribute('textsize','medium');"
+      <menuitem id='symbolsmedium' persist="checked" type="checkbox" oncommand="setSymbolSize('medium');"
         label="Medium symbols" />
-      <menuitem oncommand="getElementById('Symbol-tabbox').setAttribute('textsize','large');"
+      <menuitem id='symbolslarge' persist="checked" type="checkbox" oncommand="setSymbolSize('large');"
         label="Large symbols" />
       <menuseparator/>
       <menuitem id="menuCompactSymbolPanels" persist="checked" type="checkbox" oncommand="setCompact(this);"

@@ -4,15 +4,23 @@ function setCompact(aMenuItemId)
 {
   if (document.getElementById(aMenuItemId).getAttribute('checked')=='true')
   {
-    document.getElementById('SymbolToolbox').setAttribute('iconsize','small');
+    document.getElementById('Symbol-tabbox').setAttribute('iconsize','small');
   }
   else
   {
-    document.getElementById('SymbolToolbox').removeAttribute('iconsize');
+    document.getElementById('Symbol-tabbox').removeAttribute('iconsize');
   }
 }
 
-
+function setSymbolSize( size )
+{
+  var tabbox = document.getElementById('Symbol-tabbox');
+  var oldsize = tabbox.getAttribute('textsize');
+  if (oldsize == size) return;
+  var oldmenu = document.getElementById('symbols'+oldsize);
+  oldmenu.setAttribute("checked", "false");
+  tabbox.setAttribute('textsize', size);
+}
 
 function setDefaultPrinter(aStr, aEvent)
 {
