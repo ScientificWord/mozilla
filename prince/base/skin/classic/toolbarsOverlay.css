@@ -2013,10 +2013,38 @@ toolbar {
 }
 
 
-tabpanel toolbarbutton,
-tabpanel toolbarbutton:active { margin: 2px !important; padding: 2px !important; }
-tabpanel toolbarbutton:hover { background-color: rgb(240,240,240); }
-toolbox[iconsize="small"] tabpanel toolbarbutton { margin: 1px; padding: 0px; }
+#Symbol-tabbox toolbarbutton
+{ 
+  margin: 0px;
+  padding: 2px 4px;
+  border-style: none;
+}
+
+#Symbol-tabbox[iconsize="small"] toolbarbutton
+{ 
+  margin: 0px;
+  padding: 2px 2px;
+  border-style: none;
+}
+
+#Symbol-tabbox toolbarbutton:hover 
+{ 
+  padding: 1px 3px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #808080;
+}
+
+#Symbol-tabbox[iconsize="small"] toolbarbutton:hover 
+{ 
+  padding: 1px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #808080;
+}
+
+
+/* toolbox[iconsize="small"] tabpanel toolbarbutton { margin: 1px; padding: 0px; }*/
 toolbox[iconsize="small"] tab { padding-bottom: 1px; }
 #SymbolToolbar { background-image: none !important;
 				 background-color: transparent !important;
