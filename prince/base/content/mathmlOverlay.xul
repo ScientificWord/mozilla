@@ -147,7 +147,7 @@
      </menupopup>
    </menu>
 
-  <tabbox id="Symbol-tabbox"
+  <tabbox id="Symbol-tabbox" textsize="small" iconsize="large" persist="iconsize textsize" 
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     >
@@ -185,7 +185,7 @@
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03BB;" tooltiptext="&symbollambda.tooltip;"  msivalue="&#x03BB;"
             observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton label=" &#x03BC;" tooltiptext="&symbolmu.tooltip;"     msivalue="&#x03BC;"
+        <toolbarbutton label="&#x03BC;" tooltiptext="&symbolmu.tooltip;"     msivalue="&#x03BC;"
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03BD;" tooltiptext="&symbolnu.tooltip;"     msivalue="&#x03BD;"
             observes="cmd_MSIsymbolCmd"/>
@@ -205,7 +205,7 @@
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03C5;" tooltiptext="&symbolupsilon.tooltip;" msivalue="&#x03C5;"
             observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton label=" &#x03C6;" tooltiptext="&symbolstraightphi.tooltip;" msivalue="&#x03C6;"
+        <toolbarbutton label="&#x03C6;" tooltiptext="&symbolstraightphi.tooltip;" msivalue="&#x03C6;"
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03C7;" tooltiptext="&symbolchi.tooltip;"    msivalue="&#x03C7;"
              observes="cmd_MSIsymbolCmd"/>
