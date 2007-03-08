@@ -73,7 +73,7 @@ dialog,
 wizard,
 prefwindow {
   -moz-appearance: window;
-  background-color: -moz-Dialog;
+  background-color: #EEEEEE;
   color: -moz-DialogText;
   font: message-box;
 }
