@@ -70,29 +70,15 @@
         accesskey="&MSItypesetOutputChoiceCmd.accesskey;"  
         command="cmd_MSItypesetOutputChoiceCmd"/>
       <menuseparator/>                                                                                                                       
-      <menuitem label="&MSItypesetPreviewCmd.label;"         
-        accesskey="&MSItypesetPreviewCmd.accesskey;"       
-        command="cmd_MSItypesetPreviewCmd"/>
-      <menuitem label="&MSItypesetPrintCmd.label;"           
-        accesskey="&MSItypesetPrintCmd.accesskey;"         
-        command="cmd_MSItypesetPrintCmd"/>      
       <menuitem label="&MSItypesetCompileCmd.label;"         
         accesskey="&MSItypesetCompileCmd.accesskey;"       
         command="cmd_MSItypesetCompileCmd"/>
-      <menuseparator/>                                                                                                                       
-      <menuitem label="&MSItypesetPDFPreviewCmd.label;"      
-        accesskey="&MSItypesetPDFPreviewCmd.accesskey;"    
-        command="cmd_MSItypesetPDFPreviewCmd"/>
-      <menuitem label="&MSItypesetPDFPrintCmd.label;"        
-        accesskey="&MSItypesetPDFPrintCmd.accesskey;"      
-        command="cmd_MSItypesetPDFPrintCmd"/>
       <menuitem label="&MSItypesetPDFCompileCmd.label;"      
         accesskey="&MSItypesetPDFCompileCmd.accesskey;"    
         command="cmd_MSItypesetPDFCompileCmd"/>
       <menuseparator/>
       <menu label="&MSItypesetToolsMenu.label;"              
-        accesskey="&MSItypesetToolsMenu.accesskey;">
-        
+        accesskey="&MSItypesetToolsMenu.accesskey;">        
         <menupopup id="MSItypesetToolsPopup">
           <menuitem label="&MSIrunBibTeXCmd.label;"          
             accesskey="&MSIrunBibTeXCmd.accesskey;"            
