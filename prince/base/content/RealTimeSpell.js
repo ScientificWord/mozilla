@@ -83,7 +83,7 @@ var RealTimeSpell =
 
   selectSuggestion : function (newword, node, offset)
   {
-    if (!this.editorRTS) return null;
+    if (!this.editorRTS) return;
 
     if (!node){
       var selection = this.editor.selection;
@@ -96,7 +96,7 @@ var RealTimeSpell =
 
   addToDictionary : function (node, offset)
   {
-    if (!this.editorRTS) return null;
+    if (!this.editorRTS) return;
 
     if (!node){
       var selection = this.editor.selection;
