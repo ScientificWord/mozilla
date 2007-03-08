@@ -57,6 +57,8 @@ tab {
   padding: 0px;
   border: none !important;
   height: 22px !important;
+  background-image: url("chrome://editor/skin/icons/background.png");
+  background-repeat: repeat-x;
 }
 
 tab[selected="true"] {
