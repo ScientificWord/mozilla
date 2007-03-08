@@ -363,15 +363,18 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
                                                       // for hand optimizations
           if (!(pTagKeyListHead->pListHead)) pTagKeyListHead->pListHead = pTagKeyListHead->pListTail;
         }
-      }
       
-      // Write out the list
-      printf("\nContains list for tag %S:\n", pContainsList->name.BeginReading());
-      pTagKeyList = pContainsList->pListHead;
-      while (pTagKeyList)
-      {
-        printf("  can contain \"%S\n", ((nsString)pTagKeyList->key).BeginReading());
-        pTagKeyList = pTagKeyList->pNext;
+        // Write out the list
+        if (tagContainsCount >0)
+        {
+          printf("\nContains list for tag %S:\n", pContainsList->name.BeginReading());
+          pTagKeyList = pContainsList->pListHead;
+          while (pTagKeyList)
+          {
+            printf("  can contain \"%S\n", ((nsString)pTagKeyList->key).BeginReading());
+            pTagKeyList = pTagKeyList->pNext;
+          }
+        }
       }
       
       /////////
@@ -418,7 +421,9 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
   }
   BuildStringArray(NS_LITERAL_STRING("texttag"));
   BuildStringArray(NS_LITERAL_STRING("paratag"));
+  BuildStringArray(NS_LITERAL_STRING("listtag"));
   BuildStringArray(NS_LITERAL_STRING("structtag"));
+  BuildStringArray(NS_LITERAL_STRING("envtag"));
   BuildStringArray(NS_LITERAL_STRING("othertag"));
   pACSSA->SortArrays();
   return PR_TRUE;
