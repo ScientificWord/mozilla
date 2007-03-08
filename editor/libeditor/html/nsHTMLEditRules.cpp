@@ -6,7 +6,7 @@
  * 1.1 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/
- *
+ *                               
  * Software distributed under the License is distributed on an "AS IS" basis,
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  * for the specific language governing rights and limitations under the
@@ -3326,6 +3326,9 @@ nsHTMLEditRules::WillMakeBasicBlock(nsISelection *aSelection,
   PRInt32 i;
   for (i=listCount-1; i>=0; i--)
   {
+#if DEBUG_barry || DEBUG_Barry
+    DebExamineNode(arrayOfNodes[i]);
+#endif
     if (!mHTMLEditor->IsEditable(arrayOfNodes[i]))
     {
       arrayOfNodes.RemoveObjectAt(i);
@@ -3560,7 +3563,15 @@ nsHTMLEditRules::WillMakeStructure(nsISelection *aSelection,
              tString.IsEmpty() )
       res = RemoveBlockStyle(arrayOfNodes);
     else
-      res = ApplyStructure(arrayOfNodes, aStructureType);
+    {
+      PRBool isInClass;
+      res = mtagListManager->GetTagInClass(NS_LITERAL_STRING("envtag"), *aStructureType, (nsIAtom*)nsnull, &isInClass);
+      if (NS_FAILED(res)) return res;
+      if (isInClass) 
+        res = ApplyEnvironment(arrayOfNodes, aStructureType);
+      else
+        res = ApplyStructure(arrayOfNodes, aStructureType);
+    }
     return res;
   }
   return res;
@@ -5709,9 +5720,21 @@ nsHTMLEditRules::PromoteRange(nsIDOMRange *inRange,
   PRInt32 opStartOffset, opEndOffset;
   nsCOMPtr<nsIDOMRange> opRange;
   
+#if DEBUG_barry || DEBUG_Barry
+  DebExamineNode(startNode);
+#endif
   res = GetPromotedPoint( kStart, startNode, startOffset, inOperationType, address_of(opStartNode), &opStartOffset);
+#if DEBUG_barry || DEBUG_Barry
+  DebExamineNode(opStartNode);
+#endif
   if (NS_FAILED(res)) return res;
+#if DEBUG_barry || DEBUG_Barry
+  DebExamineNode(endNode);
+#endif
   res = GetPromotedPoint( kEnd, endNode, endOffset, inOperationType, address_of(opEndNode), &opEndOffset);
+#if DEBUG_barry || DEBUG_Barry
+  DebExamineNode(opEndNode);
+#endif
   if (NS_FAILED(res)) return res;
   res = inRange->SetStart(opStartNode, opStartOffset);
   if (NS_FAILED(res)) return res;
@@ -7012,7 +7035,7 @@ nsHTMLEditRules::ApplyBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsA
     if (NS_FAILED(res)) return res;
     nsAutoString curNodeTag;
     nsEditor::GetTagString(curNode, curNodeTag);
-    ToLowerCase(curNodeTag);
+//    ToLowerCase(curNodeTag);
  
     // is it already the right kind of block?
     if (curNodeTag == *aBlockTag)
@@ -7187,7 +7210,7 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
         nsHTMLEditUtils::IsFormatNode(curNode, mtagListManager))
     {
       curBlock = 0;  // forget any previous block used for previous inline nodes
-      res = InsertStructure(curNode, address_of(newBlock), *aStructureTag, nsnull);
+      res = InsertStructure(curNode, getter_AddRefs(newBlock), *aStructureTag, nsnull);
       if (NS_FAILED(res)) return res;
     }
     else if (nsHTMLEditUtils::IsTable(curNode, mtagListManager)                    || 
@@ -7288,6 +7311,66 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////
+// ApplyEnvironment:  Apply an environment tag to a list of nodes. An environment tag has paragraphs
+//      as its children, but not section tags. If the list of nodes contains non-sibling paragraph tags,
+//      then several environment tags will be inserted. The behavior of an environment tag is very much like
+//      a DIV tag.
+//
+                  
+nsresult 
+nsHTMLEditRules::ApplyEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAString *aEnvironmentTag)
+{
+  // intent of this routine is to be used for converting to/from
+  // headers, paragraphs, pre, and address.  Those blocks
+  // that pretty much just contain inline things...
+  
+  if (!aEnvironmentTag) return NS_ERROR_NULL_POINTER;
+  nsresult res = NS_OK;
+  
+  nsCOMPtr<nsIDOMNode> curNode, curParent, newParent, curBlock, newBlock, curEnvironment;
+  nsCOMPtr<nsIContent> newContent;
+  PRInt32 offset, destOffset;
+  PRInt32 listCount = arrayOfNodes.Count();
+  nsString tString(*aEnvironmentTag);
+
+  PRInt32 i;
+  for (i=0; i<listCount; i++)
+  {
+    // get the node to act on, and its location
+    curNode = arrayOfNodes[i];
+    res = nsEditor::GetNodeLocation(curNode, address_of(newParent), &offset);
+    if (NS_FAILED(res)) return res;
+    nsAutoString curNodeTag;
+    nsEditor::GetTagString(curNode, curNodeTag);
+
+    if (curParent != newParent)
+    {
+      // generate a new environment tag and insert it above curNode.
+      res = mHTMLEditor->CreateHTMLContent(*aEnvironmentTag, getter_AddRefs(newContent));
+      nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(newContent);
+      if (NS_FAILED(res)) return res;
+      curEnvironment = do_QueryInterface(elem); 
+      destOffset = 0;
+       
+      res = mHTMLEditor->MoveNode( curNode, curEnvironment, destOffset++);
+      res = mHTMLEditor->InsertNode( curEnvironment, newParent, offset);
+      printf("New environment tag inserted: \n");
+      // POSSIBLE TO-DO: remove any instances of aEnvironmentTag that may be contained in curNode.
+      curParent = newParent;
+    }
+    else
+    {
+      // this node is a sibling of the previous node. Move this node to the end of the child list for the
+      // current environment tag.
+      res = mHTMLEditor->MoveNode( curNode, curEnvironment, destOffset++);
+      // POSSIBLE TO-DO: remove any instances of aEnvironmentTag that may be contained in curNode.
+    }
+  }
+  return res;
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // InsertStructure: inNode is a paragraph-like node. This node will be replaced by
 //                  the titlenode for aStructureType, and its children will be copied
@@ -7299,7 +7382,7 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
 
 nsresult
 nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode, 
-                           nsCOMPtr<nsIDOMNode> *outNode, 
+                           nsIDOMNode **outNode, 
                            const nsAString &aStructureType,
                            nsIAtom * atomNamespace )
 //                         const nsAString *aAttribute,
@@ -7323,12 +7406,9 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   nsCOMPtr<nsIDOMNode> parentOfNewStructure;
   PRInt32 offsetOfNewStructure;
   PRInt32 offset;
-  PRInt32 offset2;
-  PRInt32 oldOffset;
   PRInt32 destOffset;
   PRInt32 offsetIncrement;
   PRBool fCanContain = PR_FALSE;
-  nsIAtom * atomNS;
   nsCOMPtr<nsIDOMNodeList> childNodes;
   PRUint32 nChildCount;
  
@@ -7425,7 +7505,8 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   res = mHTMLEditor->CreateHTMLContent(aStructureType, getter_AddRefs(newContent));
   nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(newContent);
   if (NS_FAILED(res)) return res;
-  *outNode = do_QueryInterface(elem);
+  nsCOMPtr<nsIDOMNode> tempNode = do_QueryInterface(elem);
+  *outNode = tempNode;
   // hold off on inserting this node until it is fully populated. This makes counter update more
   // reliable
   // res = mHTMLEditor->InsertNode( *outNode, parentOfNewStructure, offsetOfNewStructure);
@@ -7445,7 +7526,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   
   res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &offset);
   if (NS_FAILED(res)) return res;
-  res = mHTMLEditor->MoveNode( currentNode, *outNode, destOffset++);
+  res = mHTMLEditor->MoveNode( currentNode, tempNode, destOffset++);
   offset--;
   
   while (parent)
@@ -7475,7 +7556,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
    DebExamineNode(inNode);
 #endif
            mHTMLEditor->DumpNode(node);
-          res = mHTMLEditor->MoveNode( node, *outNode, destOffset);
+          res = mHTMLEditor->MoveNode( node, tempNode, destOffset);
           if (NS_FAILED(res)) return res;
           offsetIncrement++;
         }
@@ -7539,11 +7620,12 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     mtagListManager->NodeCanContainNode (*outNode, node, &fCanContain );
     if (fCanContain)
     {
-      printf("Moving nodes to the right of the target node: \n");
 #if DEBUG_barry || DEBUG_Barry
-   DebExamineNode(inNode);
-#endif
+      printf("Moving nodes to the right of the target node: \n");
+      DebExamineNode(inNode);
+
       mHTMLEditor->DumpNode(node);
+#endif      
       mHTMLEditor->MoveNode(node, *outNode, destOffset++);
       res = node->GetNextSibling( getter_AddRefs(node));
     }
