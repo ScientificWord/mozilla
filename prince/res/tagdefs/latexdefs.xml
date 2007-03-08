@@ -128,9 +128,6 @@
           <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br/>]]>
           </initialcontents>
 				</tag>
-				<tag nm="sw:verbatim">
-					<description>Verbatim text</description>
-				</tag>
 			</tags>
 		</tagclass>
 		<tagclass>
@@ -145,7 +142,7 @@
           <description>Bulleted list time</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/></p>
+              <para><cursor/></para>
               ]]>
           </initialcontents>
         </tag>
@@ -153,7 +150,7 @@
           <description>Numbered list item</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/></p>
+              <para><cursor/></para>
               ]]>
           </initialcontents>
         </tag>
@@ -161,7 +158,7 @@
           <description>Simple list item</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/></p>
+              <para><cursor/></para>
               ]]>
           </initialcontents>
         </tag>
@@ -249,8 +246,26 @@
           </initialcontents>
           <nextafteremptyblock>paragraph</nextafteremptyblock>
         </tag>
+				<tag nm="sw:appendix">
+          <level>0</level>
+          <description>Appendix</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <para></para>
+              ]]>
+          </initialcontents>
+          <prefsub>section</prefsub>
+        </tag>
+			</tags>
+		</tagclass>
+		<tagclass>
+			<tagclassname>envtag</tagclassname>
+			<contains>paratag</contains>
+			<contains>structtag</contains>
+			<tags>
 				<tag nm="sw:abstract">
           <level>*</level>
+          <nexttag>para</nexttag>
           <description>Abstract</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[ <para><cursor/><br/></para>]]>
@@ -284,16 +299,6 @@
               ]]>
           </initialcontents>
         </tag>
-				<tag nm="sw:appendix">
-          <level>0</level>
-          <description>Appendix</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <para></para>
-              ]]>
-          </initialcontents>
-          <prefsub>section</prefsub>
-        </tag>
 				<tag nm="sw:glossary">
           <level>0</level>
           <description>Glossary</description>
@@ -308,29 +313,9 @@
           <description>Bibliography</description>
           <discardemptyblock>true</discardemptyblock>
         </tag>
-				<tag nm="sw:refsect1">
-          <level>1</level>
-          <description>Refsect1</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <para></para>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="sw:refsect2">
-          <level>2</level>
-          <description>Refsect2</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <para></para>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="sw:refsect3">
-          <level>3</level>
-          <description>Refsect3</description>
-          <discardemptyblock>true</discardemptyblock>
-        </tag>
+				<tag nm="sw:verbatim">
+					<description>Verbatim text</description>
+				</tag>
 			</tags>
 		</tagclass>
 		<tagclass>
