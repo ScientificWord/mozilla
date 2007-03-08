@@ -39,6 +39,9 @@ function Startup()
   initSystemFontMenu("mainfontlist");
   initSystemFontMenu("sansfontlist");
   initSystemFontMenu("fixedfontlist");
+  initSystemFontMenu("x1fontlist");
+  initSystemFontMenu("x2fontlist");
+  initSystemFontMenu("x3fontlist");
   getFontSpecs();
 }
 
@@ -123,8 +126,7 @@ function getPageLayout()
     if (node)
     {
       value = node.getAttribute('twoside');
-      if (value=='true') document.getElementById('twosides').checked=true;
-        else document.getElementById('twosides').checked=false;
+      document.getElementById('twosides').checked=value;
       value = node.getAttribute('paper');
       if (value) document.getElementById('docformat.papersize').value = value;
       value = node.getAttribute('width');
@@ -264,7 +266,7 @@ function Spinbutton(increment, id)
 // Set defaults roughly to what the geometry package uses
 function setDefaults()
 {
-  var twosided = document.getElementById("twosides").checked;
+  var twosided = false;
   // set geometry package defaults in case there is nothing specified in our document
   var bodyheight = .7*pageheight;
   var bodywidth = .7*pagewidth;
@@ -306,9 +308,9 @@ function setDefaults()
 
 function setPageDimensions( )
 {
-  var paper;
-  paper = document.getElementById("docformat.papersize").selectedItem.value;
-  landscape = document.getElementById("landscape").checked;
+  var paper = "letter";
+  currentUnit ="in"; 
+  landscape = false;
   switch (paper) {
     case "letter":   // these dimensions are in millimeters
       pagewidth = 215.9;
@@ -721,6 +723,12 @@ function saveFontSpecs(docFormatNode)
   node.setAttribute('name',document.getElementById('sansfontlist').value);
   node = editor.createNode('fixedfont', fontNode, nodecounter++);
   node.setAttribute('name', document.getElementById('fixedfontlist').value);
+  node = editor.createNode('x1font', fontNode, nodecounter++);
+  node.setAttribute('name', document.getElementById('x1fontlist').value);
+  node = editor.createNode('x2font', fontNode, nodecounter++);
+  node.setAttribute('name', document.getElementById('x2fontlist').value);
+  node = editor.createNode('x3font', fontNode, nodecounter++);
+  node.setAttribute('name', document.getElementById('x3fontlist').value);
 }
 
 function getFontSpecs()
@@ -741,5 +749,198 @@ function getFontSpecs()
     if (node) document.getElementById('sansfontlist').value = node.getAttribute('name');  
     node = fontNodes[i].getElementsByTagName('fixedfont')[0];
     if (node) document.getElementById('fixedfontlist').value = node.getAttribute('name'); 
+    node = fontNodes[i].getElementsByTagName('x1font')[0];
+    if (node) document.getElementById('x1fontlist').value = node.getAttribute('name'); 
+    node = fontNodes[i].getElementsByTagName('x2font')[0];
+    if (node) document.getElementById('x2fontlist').value = node.getAttribute('name'); 
+    node = fontNodes[i].getElementsByTagName('x3font')[0];
+    if (node) document.getElementById('x3fontlist').value = node.getAttribute('name'); 
   } 
 }
+
+
+function trimBlanks( astring)    // this assumes blanks will appear only at the ends of the string, and it will
+                                 // remove any blanks in the interior of the string
+{
+  return astring.replace(/\s/gm,"");
+}
+
+function parseOneOption( astring ) // the string is of the form XXXX=yyyy or XXXX={yyyy,zzzz}
+{
+  var dataObj = new Object;
+  var arr = astring.split("=");
+  if (arr.length <= 1) return null;
+  dataObj.name = arr[0];
+  var re = /\{|\}/gm
+  var options = arr[1].replace(re,"");
+  dataObj.options = options.split(",");
+  return dataObj;
+}
+
+
+// parse the contents of a textbox. The menulist and checkbox to update are gotten by varying 
+// the id of the textbox in predetermined ways. Returns an array of objects with members name (a string)
+// and options, an array (often of length 1) of strings.                                      
+function parseNativeFontString( instring )
+{
+  var i = 0; var ch;
+  var nesting = 0;
+  var pairlist = new Array();
+  while (i < instring.length)
+  {
+    ch = instring[i];
+    if (ch == "{"[0]) nesting++;
+    if (ch == "}"[0]) --nesting;
+    if (nesting == 0 && ch == ",")  // we have hit a comma at the outer level
+    {
+      pairlist.push(trimBlanks(instring.substr(0,i)));
+      instring = instring.substr(i+1, instring.length-i);
+      i = -1;
+    }
+    i++;
+  }
+  instring = trimBlanks(instring);
+  if (instring.length >0) pairlist.push(instring);
+  // now pairlist consists of a list of strings, presumably of the form 'AAAA=xxx' or 
+  // 'AAAA={xxxx,yyyy}'
+  pairlist = pairlist.map(trimBlanks);
+  pairlist = pairlist.map(parseOneOption);
+  return pairlist;
+}
+
+function onOptionTextChanged( textbox )
+{
+  var id = textbox.id;
+  var base = id.substring(0,id.length - 6); // 6 is the length of 'native'
+  var oldstylecheckbox = document.getElementById(base+'oldstylenums');
+  var swashcheckbox = document.getElementById(base+'swash');
+  var instring = textbox.value;
+  var objarray = parseNativeFontString(instring);
+  var i,j;
+  var oldstyle = false;
+  var swash = false;
+  for (i = 0; i < objarray.length; i++)
+  {
+    if (objarray[i].name == "Numbers")
+    {
+      for (j = 0; j < objarray[i].options.length; j++)
+      {
+        if (objarray[i].options[j] == "OldStyle") oldstyle = true;
+        break;
+      }
+    }
+    else if (objarray[i].name == "Contextuals")
+    {
+      for (j = 0; j < objarray[i].options.length; j++)
+      {
+        if (objarray[i].options[j] == "Swash") swash = true;
+        break;
+      }
+    }
+  }
+  swashcheckbox.checked = swash;
+  oldstylecheckbox.checked = oldstyle;
+}     
+    
+function addOptionObject ( objarray, obj ) // objarray is an array of objects
+                                      // with a name (string) and options (array of strings)
+                                      // This adds the new object (with only one option in its array),
+                                      // consolidating if necessary
+{
+  var i,j;
+  var alreadythere = false;
+  for (i = 0; i< objarray.length; i++)
+  {
+    if (objarray[i] && obj.name == objarray[i].name)
+    {
+      for (j = 0; j< objarray[i].options.length; j++)
+      {
+        if (objarray[i].options[j] == obj.options[0])
+        {
+         alreadythere = true;
+         break;
+        }
+      }
+      if (!alreadythere)
+        objarray[i].options.push(obj.options[0]);
+      return;
+    }
+  }
+  // if we get here there is no current object with the same name
+  // simply add this one to the list
+  objarray.push(obj);
+}
+
+function removeOptionObject( objarray, obj)
+{
+  var i,j;
+//  var alreadythere = false;
+  for (i = 0; i< objarray.length; i++)
+  {
+    if (objarray[i] && obj.name == objarray[i].name)
+    {
+      for (j = 0; j< objarray[i].options.length; j++)
+      {
+        if (objarray[i].options[j] == obj.options[0])
+        {
+          objarray[i].options.splice(j,1);
+          // check to see if we have deleted the last option associated to this name
+          if (objarray[i].options.length == 0)
+            objarray.splice(i,1);
+          return;
+        }
+      }
+    }
+  }
+} 
+
+function stringFrom (objectArray)
+{
+  var returnValue = "";
+  var needcomma = false;
+  var i, j;
+  var obj;
+  for (i = 0; i < objectArray.length; i++)
+  {
+    obj = objectArray[i];
+    if (obj)
+    {
+      if (needcomma) returnValue += ",\n";
+      needcomma = true;
+      returnValue += obj.name + "=";                 
+      if (obj.options.length > 1) returnValue += "{";
+      if (obj.options.length > 0) returnValue += obj.options[0];
+      for (j = 1; j < obj.options.length; j++)
+        returnValue += ","+obj.options[j];
+      if (obj.options.length > 1) returnValue += "}";
+    }
+  }
+  return returnValue;
+}
+         
+   
+function onCheck( checkbox ) // the checkbox is for old style nums or swashes
+{
+  var id = checkbox.id;
+  var optionObj = new Object;
+  var base;
+  if (id[id.length-1] == "s")
+  {
+    base = id.substring(0,id.length - 12); // 6 is the length of 'oldstylenums'
+    optionObj.name="Numbers";
+    optionObj.options=["OldStyle"];
+  }
+  else
+  {
+    base = id.substring(0,id.length - 5); // 6 is the length of 'swash'
+    optionObj.name="Contextuals";
+    optionObj.options=["Swash"];
+  }
+  var objarray = parseNativeFontString(document.getElementById(base+"native").value);
+  if (checkbox.checked) addOptionObject(objarray,optionObj);
+  else removeOptionObject(objarray,optionObj);
+  document.getElementById(base+"native").value = stringFrom(objarray);
+}
+  
+    
+  
