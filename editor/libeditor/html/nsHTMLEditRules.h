@@ -266,9 +266,10 @@ protected:
                               nsVoidArray &inTransitionArray);
   nsresult RemoveBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes);
   nsresult ApplyBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAString *aBlockTag);
-  nsresult InsertStructure(nsIDOMNode *inNode, nsCOMPtr<nsIDOMNode> *outNode, 
+  nsresult InsertStructure(nsIDOMNode *inNode, nsIDOMNode **outNode, 
                            const nsAString &aStructureType, nsIAtom * atomNamespace );
   nsresult ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAString *aStructureTag);
+  nsresult ApplyEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAString *aEnvironmentTag);
   nsresult MakeBlockquote(nsCOMArray<nsIDOMNode>& arrayOfNodes);
   nsresult SplitAsNeeded(const nsAString *aTag, nsCOMPtr<nsIDOMNode> *inOutParent, PRInt32 *inOutOffset);
   nsresult AddTerminatingBR(nsIDOMNode *aBlock);
