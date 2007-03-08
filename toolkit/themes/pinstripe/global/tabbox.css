@@ -14,6 +14,8 @@ tab {
   -moz-box-align: stretch;
   color				: #000000;
   padding: 3px;
+  background-image: url("chrome://prince/skin/icons/background.png");
+  background-repeat: repeat-x;
 }
 
 .tab-text {
