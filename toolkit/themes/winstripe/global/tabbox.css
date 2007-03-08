@@ -85,6 +85,8 @@ tab
   -moz-border-radius-bottomright: 1px;
   padding: 1px 4px 2px 4px;
   /* background-color: -moz-Dialog; */
+  background-image: url("chrome://prince/skin/icons/background.png");
+  background-repeat: repeat-x;
   color: -moz-DialogText;
 }
 
@@ -104,9 +106,9 @@ tab[selected="true"] {
   padding: 1px 6px 4px 6px;
 }
 
-tab:focus > .tab-middle {
+/* tab:focus > .tab-middle {
   outline: 1px dotted invert;
-}
+}  */
 
 tab[beforeselected="true"],
 tab[afterselected="true"][chromedir="rtl"] {

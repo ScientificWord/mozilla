@@ -2043,6 +2043,14 @@ toolbar {
   border-color: #808080;
 }
 
+#Symbol-tabbox tabpanels 
+{ 
+  padding: 0px;
+  border-width: 0px;
+  margin: 0px;
+}
+
+
 
 /* toolbox[iconsize="small"] tabpanel toolbarbutton { margin: 1px; padding: 0px; }*/
 toolbox[iconsize="small"] tab { padding-bottom: 1px; }
