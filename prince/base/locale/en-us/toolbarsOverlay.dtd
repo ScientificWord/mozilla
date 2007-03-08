@@ -26,10 +26,10 @@
 <!ENTITY texttagselect.tooltip "Apply a text tag" >
 <!ENTITY texttagselect.label "Text tags" >
 
-<!ENTITY paratagselect.tooltip "Apply a paragraph tag" >
+<!ENTITY paratagselect.tooltip "Apply a paragraph or list tag" >
 <!ENTITY paratagselect.label "Paragraph tags" >
 
-<!ENTITY secttagselect.tooltip "Apply a structure tag" >
+<!ENTITY secttagselect.tooltip "Apply a structure or environment tag" >
 <!ENTITY secttagselect.label "Structure tags" >
 
 <!ENTITY othertagselect.tooltip "Apply a miscellaneous tag" >
