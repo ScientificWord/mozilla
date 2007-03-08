@@ -6,6 +6,7 @@
 <!ENTITY docformatGeneraltab "General">
 <!ENTITY docformatPageLayouttab "Page Layout">
 <!ENTITY docformatFontstab "Fonts">
+<!ENTITY docformatSectionstab "Sections">
 <!ENTITY docformatHeaderstab "Headers/Footers">
 <!ENTITY docformatNotestab "Notes">
 <!ENTITY docformatAdvancedtab "Advanced">

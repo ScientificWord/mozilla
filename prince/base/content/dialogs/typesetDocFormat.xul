@@ -38,6 +38,7 @@
       <tab label="&docformatGeneraltab;"/>
       <tab label="&docformatPageLayouttab;"/>
       <tab label="&docformatFontstab;"/>
+      <tab label="&docformatSectionstab;"/>
       <tab label="&docformatHeaderstab;"/>
       <tab label="&docformatNotestab;"/>
       <tab label="&docformatAdvancedtab;"/>
@@ -52,26 +53,26 @@
                <vbox align="center">
                  <label>&docformatTwosided;</label>
                  <checkbox id="twosides" persist="checked" oncommand="setTwosidedState(this);"/>
-                 <broadcaster id="oneside" hidden="false" persist="hidden"/>
-                 <broadcaster id="twoside" hidden="true" persist="hidden"/>
+                 <broadcaster id="oneside" hidden="false" />
+                 <broadcaster id="twoside" hidden="true" />
                </vbox>
                <vbox align="center">
                  <label>&docformatLandscape;</label>
-                 <checkbox id="landscape" persist="checked"
+                 <checkbox id="landscape" 
                    oncommand="setPageDimensions();OnWindowSizeReset(false);"/>
                </vbox>
                <vbox align="center">
                  <label>&docformatCentered;</label>
-                 <checkbox id="vcenter" label="&docformatVert;" persist="checked" 
+                 <checkbox id="vcenter" label="&docformatVert;"  
                    oncommand="if (checked) document.getElementById('bc.vcenter').setAttribute('disabled',true);else document.getElementById('bc.vcenter').removeAttribute('disabled');layoutPage('all');"/>
-                 <broadcaster id="bc.vcenter" persist="hidden"/>
-                 <checkbox id="hcenter" checked="false" label="&docformatHoriz;" persist="checked" 
+                 <broadcaster id="bc.vcenter" />
+                 <checkbox id="hcenter" checked="false" label="&docformatHoriz;"  
                    oncommand="if (checked) document.getElementById('bc.hcenter').setAttribute('disabled',true);else document.getElementById('bc.hcenter').removeAttribute('disabled');layoutPage('all');"/>
-                 <broadcaster id="bc.hcenter" persist="hidden"/>
+                 <broadcaster id="bc.hcenter" />
                </vbox>
                <vbox align="center">
                  <label>&docformatUnits;</label>
-                 <menulist id="docformat.units" persist="value indexSelected" 
+                 <menulist id="docformat.units"  
                         oncommand="switchUnits();"  >
                    <menupopup>
                      <menuitem id="docformat.inch" label="&docformatInch;" value="in"/>
@@ -84,7 +85,7 @@
                <vbox align="center">
                  <label>&docformatPaperSize;</label>
                  <menulist id="docformat.papersize"
-                    persist="value indexSelected" oncommand="setPageDimensions();OnWindowSizeReset(false);">
+                    oncommand="setPageDimensions();OnWindowSizeReset(false);">
                    <menupopup >
                      <menuitem id="docformat.letter" label="&docformatLetter;" value="letter"/>
                      <menuitem id="docformat.a4" label="A4" value="a4"/>
@@ -135,14 +136,14 @@
                    
                    <hbox id="bodyheight" >
                      <hbox id="bodyleft" role="textarea" onclick="handleBodyMouseClick(event);" tooltip="Body text area" flex="1"/>
-                     <hbox id="colsep" observes="multicolumn" role="columnwidth" onclick="document.getElementById('tbcolsep').focus();" persist="hidden"/>
-                     <hbox id="bodyright" observes="multicolumn" role="textarea" onclick="handleBodyMouseClick(event);" tooltip="Body text area" flex="1" persist="hidden"/>
+                     <hbox id="colsep" observes="multicolumn" role="columnwidth" onclick="document.getElementById('tbcolsep').focus();" />
+                     <hbox id="bodyright" observes="multicolumn" role="textarea" onclick="handleBodyMouseClick(event);" tooltip="Body text area" flex="1" />
                    </hbox>
                    
                    <hbox id="footersep" onclick="document.getElementById('tbfootersep').focus();"/>
                    <hbox id="footer" role="textarea" onclick="document.getElementById('tbfooter').focus();"/>
                  </vbox>
-                 <vbox id="mnsep" role="columnwidth" observes="disablemarginnotes" persist="hidden" >
+                 <vbox id="mnsep" role="columnwidth" observes="disablemarginnotes" >
                    <hbox>
                      <observes element="tmargin" attribute="style" />
                    </hbox>
@@ -156,7 +157,7 @@
                      <observes element="bodyheight" attribute="style" />
                    </hbox>
                  </vbox>
-                 <vbox id="mnwidth" role="columnwidth" observes="disablemarginnotes"  persist="hidden">
+                 <vbox id="mnwidth" role="columnwidth" observes="disablemarginnotes"  >
                    <hbox>
                      <observes element="tmargin" attribute="style" />
                    </hbox>
@@ -185,12 +186,12 @@
            </vbox>
            <vbox align="center">
              <label value="&docformatTwoColumns;"/>
-             <checkbox id="columns" oncommand="broadcastColCount();" persist="checked"/>
-             <broadcaster id="multicolumn" hidden="true" persist="hidden"/><!-- observers of this will be visible only when there are multiple columns -->
-             <broadcaster id="singlecolumn" persist="hidden"/><!-- observers of this will be visible only when there is a single column; not used yet -->
-             <label value="&docformatColSeparation;" observes="multicolumn" persist="hidden"/>
+             <checkbox id="columns" oncommand="broadcastColCount();" />
+             <broadcaster id="multicolumn" hidden="true" /><!-- observers of this will be visible only when there are multiple columns -->
+             <broadcaster id="singlecolumn" /><!-- observers of this will be visible only when there is a single column; not used yet -->
+             <label value="&docformatColSeparation;" observes="multicolumn" />
              <textbox id="tbcolsep" style="width: 3em" observes="multicolumn" oninput="layoutPage('colsep');" 
-               onkeypress="handleChar(event,'colsep');" persist="hidden"
+               onkeypress="handleChar(event,'colsep');" 
                onchange="layoutPage('colsep');" onfocus="activate('colsep');" onblur="deactivate('colsep');"/>
            </vbox>
          </hbox>  
@@ -215,8 +216,8 @@
                  <groupbox align="center">
                    <caption label="&docformatMargins;"/>
                    <hbox>
-                   <label value="&docformatLeftMargin;" observes="oneside" persist="hidden"/>
-                   <label value="&docformatInsideMargin;" observes="twoside" persist="hidden"/>
+                   <label value="&docformatLeftMargin;" observes="oneside" />
+                   <label value="&docformatInsideMargin;" observes="twoside" />
                    </hbox>
                    <textbox id="tblmargin" style="width: 3em" voninput="layoutPage('lmargin');" onkeypress="handleChar(event,'lmargin');" 
                      onchange="layoutPage('lmargin');" onfocus="activate('lmarginbody');" onblur="deactivate('lmarginbody');" observes="bc.hcenter"/>
@@ -243,7 +244,7 @@
                    onchange="layoutPage('header');" onfocus="activate('header');" onblur="deactivate('header');"/>
                </groupbox>
                <hbox>
-                 <label observes="oneside" value="&docformatRightMarginLabel;" persist="hidden"/><label observes="twoside" value="&docformatOutsideMarginLabel;" persist="hidden"/><label id="tbcomputedrmargin" />
+                 <label observes="oneside" value="&docformatRightMarginLabel;" /><label observes="twoside" value="&docformatOutsideMarginLabel;" /><label id="tbcomputedrmargin" />
                </hbox>
                <hbox>
                  <label value="&docformatPageWidth;"/><label id="tbpagewidth" />
@@ -271,27 +272,27 @@
                <caption label="&docformatMarginNotes;"/>
                <label value="&docformatMNWidth;"/>
                <textbox id="tbmnwidth" style="width: 3em" value="1"  oninput="layoutPage('mnwidth');" onkeypress="handleChar(event,'mnwidth');"
-                 onchange="layoutPage('mnwidth');" onfocus="activate('mnbody');" onblur="deactivate('mnbody');" persist="disabled">
+                 onchange="layoutPage('mnwidth');" onfocus="activate('mnbody');" onblur="deactivate('mnbody');" >
                  <observes element="disablemarginnotes" attribute="disabled"  />
                </textbox>  
                <label value="&docformatMNSeparation;"/>
-               <textbox id="tbmnsep" style="width: 3em" value="1"  oninput="layoutPage('mnsep');"  persist="disabled" onkeypress="handleChar(event,'mnsep');"
+               <textbox id="tbmnsep" style="width: 3em" value="1"  oninput="layoutPage('mnsep');"  onkeypress="handleChar(event,'mnsep');"
                  onchange="layoutPage('mnsep');" onfocus="activate('mnsepbody');" onblur="deactivate('mnsepbody');">
                  <observes element="disablemarginnotes" attribute="disabled"  />
                </textbox>  
                <label value="&docformatMNPush;"/>
                <textbox id="tbmnpush" style="width: 3em" value="1"  oninput="layoutPage('mnpush');" onkeypress="handleChar(event,'mnpush');"
-                 onchange="layoutPage('mnpush');" onfocus="activate('mnpush');" onblur="deactivate('mnpush');"  persist="disabled"
+                 onchange="layoutPage('mnpush');" onfocus="activate('mnpush');" onblur="deactivate('mnpush');"  
                  tooltip="The minimum separation between margin notes" >
                  <observes element="disablemarginnotes" attribute="disabled"  />
                </textbox>  
-               <broadcaster id="disablemarginnotes" hidden="true" disabled="true" persist="hidden disabled"/>
-               <checkbox id="disablemn" checked="true" label="&docformatHideNotes;" persist="checked" 
+               <broadcaster id="disablemarginnotes" hidden="true" disabled="true" />
+               <checkbox id="disablemn" checked="true" label="&docformatHideNotes;"  
                 oncommand="disableMarginNotes();"/>
              </groupbox>
            </hbox>
            <hbox>
-             <label observes="twoside" value="&docformatTwoPageMessage;" persist="hidden"/>
+             <label observes="twoside" value="&docformatTwoPageMessage;" />
            </hbox>
          </vbox>
        </vbox>
@@ -302,36 +303,168 @@
           <broadcaster id="opentypeok" observes="useOpenType" />
           <groupbox>
             <caption label="&mainFontsGroup;"/>
-            <label align="right" value="&docformatRoman;"/>
-            <menulist id="mainfontlist" 
-              oncommand="">
-              <menupopup >
-                <menuitem id="fontdefault" label="&docformatDefault;" />
-                <menuseparator/>
-                <menuseparator/>
-              </menupopup>
-            </menulist>
-            <label value="&docformatSans;"/>
-            <menulist id="sansfontlist" 
-              oncommand="">
-              <menupopup >
-                <menuitem id="fontdefault" label="&docformatDefault;" />
-                <menuseparator/>
-                <menuseparator/>
-              </menupopup>
-            </menulist>
-            <label value="&docformatFixed;"/>
-            <menulist id="fixedfontlist" label="&docformatFixed;"
-              oncommand="">
-              <menupopup >
-                <menuitem id="fontdefault" label="&docformatDefault;" />
-                <menuseparator/>
-                <menuseparator/>
-              </menupopup>
-            </menulist>
+            <hbox>
+              <vbox>
+                <label align="right" value="&docformatRoman;"/>
+                <menulist id="mainfontlist" oncommand="">
+                  <menupopup>
+                    <menuitem id="romanfontdefault" label="&docformatDefault;" />
+                    <menuseparator/>
+                    <menuseparator/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox>
+                <label align="center" value="Old style nums"/>
+                <checkbox label="" id="romanoldstylenums" oncommand="onCheck(this);"/>
+              </vbox>
+              <vbox>
+                <label align="center" value="Swash"/>
+                <checkbox label="" id="romanswash" oncommand="onCheck(this);"/>
+              </vbox>
+            </hbox>
+            <hbox>
+              <label value="Click to go native" onclick="var elt=getElementById('bcroman'); elt.hidden=!(elt.hidden);"/>
+              <textbox multiline="true" flex="1" observes="bcroman" id="romannative" onchange="onOptionTextChanged(this);"/>
+              <broadcaster id="bcroman" hidden="true"/>
+            </hbox>
+            <hbox>
+              <vbox>
+                <label value="&docformatSans;"/>
+                <menulist id="sansfontlist" 
+                  oncommand="">
+                  <menupopup >
+                    <menuitem id="sansfontdefault" label="&docformatDefault;" />
+                    <menuseparator/>
+                    <menuseparator/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox>
+                <label align="center" value="Old style nums"/>
+                <checkbox label="" id="sansoldstylenums" oncommand="onCheck(this);"/>
+              </vbox>
+              <vbox>
+                <label align="center" value="Swash"/>
+                <checkbox label="" id="sansswash" oncommand="onCheck(this);"/>
+              </vbox>
+            </hbox>
+            <hbox>
+              <label value="Click to go native" onclick="var elt=getElementById('bcsans'); elt.hidden=!(elt.hidden);"/>
+              <textbox multiline="true" flex="1" observes="bcsans" id="sansnative"/>
+              <broadcaster id="bcsans" hidden="true"/>
+            </hbox>
+            <hbox>
+              <vbox>
+                <label value="&docformatFixed;"/>
+                <menulist id="fixedfontlist" label="&docformatFixed;"
+                  oncommand="">
+                  <menupopup >
+                    <menuitem id="fixedfontdefault" label="&docformatDefault;" />
+                    <menuseparator/>
+                    <menuseparator/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox>
+                <label align="center" value="Old style nums"/>
+                <checkbox label="" id="fixedoldstylenums" oncommand="onCheck(this);"/>
+              </vbox>
+              <vbox>
+                <label align="center" value="Swash"/>
+                <checkbox label="" id="fixedswash" oncommand="onCheck(this);"/>
+              </vbox>
+            </hbox>
+            <hbox>
+              <label value="Click to go native" onclick="var elt=getElementById('bcfixed'); elt.hidden=!(elt.hidden);"/>
+              <textbox multiline="true" flex="1" observes="bcfixed" id="fixedsnative"/>
+              <broadcaster id="bcfixed" hidden="true"/>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption label="Additional fonts"/>
+            <hbox><label value="Internal font name"/><textbox id="f1native"/></hbox>
+            <hbox>
+              <vbox>
+                <label align="right" value="Extra font 1"/>
+                <menulist id="x1fontlist" oncommand="">
+                  <menupopup>
+                    <menuitem id="x1fontdefault" label="&docformatDefault;" />
+                    <menuseparator/>
+                    <menuseparator/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox>
+                <label align="center" value="Old style nums"/>
+                <checkbox label="" id="x1oldstylenums" oncommand="onCheck(this);"/>
+              </vbox>
+              <vbox>
+                <label align="center" value="Swash"/>
+                <checkbox label="" id="x1swash" oncommand="onCheck(this);"/>
+              </vbox>
+            </hbox>
+            <hbox>
+              <label value="Click to go native" onclick="var elt=getElementById('bcx1'); elt.hidden=!(elt.hidden);"/>
+              <textbox multiline="true" flex="1" observes="bcx1" id="x1native"/>
+              <broadcaster id="bcx1" hidden="true"/>
+            </hbox>
+            <hbox><label value="Internal font name"/><textbox id="f2native"/></hbox>
+            <hbox>
+              <vbox>
+                <label align="right" value="Extra font 2"/>
+                <menulist id="x2fontlist" oncommand="">
+                  <menupopup>
+                    <menuitem id="x2fontdefault" label="&docformatDefault;" />
+                    <menuseparator/>                                               
+                    <menuseparator/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox>
+                <label align="center" value="Old style nums"/>
+                <checkbox label="" id="x2oldstylenums" oncommand="onCheck(this);"/>
+              </vbox>
+              <vbox>
+                <label align="center" value="Swash"/>
+                <checkbox label="" id="x2swash" oncommand="onCheck(this);"/>
+              </vbox>
+            </hbox>
+            <hbox>
+              <label value="Click to go native" onclick="var elt=getElementById('bcx2'); elt.hidden=!(elt.hidden);"/>
+              <textbox multiline="true" flex="1" observes="bcx2" id="x2native"/>
+              <broadcaster id="bcx2" hidden="true"/>
+            </hbox>
+            <hbox><label value="Internal font name"/><textbox id="f3native"/></hbox>
+            <hbox>
+              <vbox>
+                <label align="right" value="Extra font 3"/>
+                <menulist id="x3fontlist" oncommand="">
+                  <menupopup>
+                    <menuitem id="x3fontdefault" label="&docformatDefault;" />
+                    <menuseparator/>
+                    <menuseparator/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox>
+                <label align="center" value="Old style nums"/>
+                <checkbox label="" id="x3oldstylenums" oncommand="onCheck(this);"/>
+              </vbox>
+              <vbox>
+                <label align="center" value="Swash"/>
+                <checkbox label="" id="x3swash" oncommand="onCheck(this);"/>
+              </vbox>
+            </hbox>
+            <hbox>
+              <label value="Click to go native" onclick="var elt=getElementById('bcx3'); elt.hidden=!(elt.hidden);"/>
+              <textbox multiline="true" flex="1" observes="bcx3" id="x3native"/>
+              <broadcaster id="bcx3" hidden="true"/>
+            </hbox>
           </groupbox>
         </vbox>
       </tabpanel>
+      <tabpanel id="docformatSectionsPanel"></tabpanel>
       <tabpanel id="docformatHeadersPanel"></tabpanel>
       <tabpanel id="docformatNotesPanel"></tabpanel>
       <tabpanel id="docformatAdvancedPanel"></tabpanel>
