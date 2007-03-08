@@ -517,7 +517,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
     data.pipeconsole.open(500,80,false);
     data.pipetransport = Components.classes["@mozilla.org/process/pipe-transport;1"].createInstance(Components.interfaces.nsIPipeTransport);
     var args = ["-output-directory", outputDir, infileLeaf, passCount];
-    data.pipetransport.init(exefile.path, args, args.length, "", 0, 2000, "", true, true, data.pipeconsole );
+    data.pipetransport.init(exefile.path, args, args.length, "", 0, 2000, "", true, false, data.pipeconsole );
     data.pipetransport.loggingEnabled = true;
     data.pipetransport.asyncRead(data.pipeconsole, null, 0, -1, 0);
     data.stdin = data.pipetransport.openOutputStream(0,-1,0);
