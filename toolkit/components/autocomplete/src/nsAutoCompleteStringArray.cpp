@@ -156,13 +156,31 @@ nsStringArray * nsAutoCompleteSearchStringArrayImp::GetStringArrayForCategory( c
 {
   stringStringArray * pssa = m_stringArrays;
   nsStringArray * psa = nsnull;
-  
+  nsAString::const_iterator start, end;
+  nsAString::const_iterator startsave, endsave;
+  PRUint32 i;  
   while (pssa)
   {
-    if (pssa->strCategory.Equals(strCategory))
+    strCategory.BeginReading(start);
+    startsave = start;
+    strCategory.EndReading(end);
+    endsave = end;
+    if (FindInReadable(pssa->strCategory, start, end))
     {
-      psa = pssa->strArray;
-      break;
+      // pssa->strCategory is in the space-separated list; check to see if it is at the beginning
+      // or end of the list or bounded by a space.
+      if (start == startsave || *(--start) == ' ')
+      {
+        if ((end == endsave) || (*end == ' '))
+        {
+          if (psa == nsnull) psa = pssa->strArray;
+          else 
+          {
+            for (i = 0; i < pssa->strArray->Count(); i++)
+              psa->AppendString(*(pssa->strArray->StringAt(i)));
+          }
+        }                                                                       
+      }
     }
     pssa = pssa->next;
   }
