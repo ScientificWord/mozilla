@@ -45,6 +45,8 @@ tab[selected="true"] {
 
 tab {
   margin-bottom: 1px;
+  background-image: url("chrome://editor/skin/icons/background.png");
+  background-repeat: repeat-x;
 }
 
 .tab-drop-indicator-bar {
