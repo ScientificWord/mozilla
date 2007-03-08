@@ -968,7 +968,11 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       if (s2.EqualsLiteral("*"))
         fCanContain = PR_TRUE;
       else
-  		  mtagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"), strTagName, nsAtom, &fCanContain);
+      {
+        nsAutoString tagClass;
+        mtagListManager->GetClassOfTag(strTagName, nsAtom, tagClass);
+  		  fCanContain = (tagClass.EqualsLiteral("structtag")||tagClass.EqualsLiteral("envtag"));
+      }
 	    if (fCanContain)
 	    {
 		    nsEditor::DeleteNode(splitNode);
