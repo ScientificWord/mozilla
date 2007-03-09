@@ -32,7 +32,6 @@ GPL.
 */
 
 // Initialize msiCommon
-//EnigInitCommon("msiConsole");
 
 
 function msiConsoleLoad() {
@@ -48,9 +47,9 @@ function msiConsoleLoad() {
   window.consoleIntervalId = window.setInterval(msiRefreshConsole, 1000);
   var contentFrame = document.getElementById("contentFrame");
   if (!contentFrame)
-    return false;
+    return;
   var consoleElement = contentFrame.contentDocument.getElementById("console");
-  consoleElement.makeEditable("html", false);  
+  contentFrame.makeEditable("html", false);  
   msiRefreshConsole();
 }
 
@@ -90,13 +89,18 @@ function msiRefreshConsole() {
     var contentFrame = document.getElementById("contentFrame");
     if (!contentFrame)
       return false;
+    var editor = msiGetEditor(contentFrame);
+    if (!editor) {
+      window.close();
+      return false;
+    }
 
     var consoleElement = contentFrame.contentDocument.getElementById("console");
 
     consoleElement.firstChild.data = data.pipeconsole.getData();
 
     if (!contentFrame.mouseDownState)
-       consoleElement.contentWindow.getSelection().collapseToEnd();
+       editor.selectionController.completeMove(true, false);
   }
   if (!data.pipetransport.isAttached())
   {
