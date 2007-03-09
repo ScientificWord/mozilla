@@ -717,18 +717,47 @@ function saveFontSpecs(docFormatNode)
   
   var fontNode = editor.createNode('fontchoices', docFormatNode,0);
   var nodecounter = 0;
+  var options;
+  var internalname;
   var node = editor.createNode('mainfont', fontNode, nodecounter++);
   node.setAttribute('name',document.getElementById('mainfontlist').value);
+  options = document.getElementById('romannative').value;
+  node.setAttribute('options',options);
   node = editor.createNode('sansfont', fontNode, nodecounter++);
   node.setAttribute('name',document.getElementById('sansfontlist').value);
+  options = document.getElementById('sansnative').value;
+  node.setAttribute('options',options);
   node = editor.createNode('fixedfont', fontNode, nodecounter++);
   node.setAttribute('name', document.getElementById('fixedfontlist').value);
-  node = editor.createNode('x1font', fontNode, nodecounter++);
-  node.setAttribute('name', document.getElementById('x1fontlist').value);
-  node = editor.createNode('x2font', fontNode, nodecounter++);
-  node.setAttribute('name', document.getElementById('x2fontlist').value);
-  node = editor.createNode('x3font', fontNode, nodecounter++);
-  node.setAttribute('name', document.getElementById('x3fontlist').value);
+  options = document.getElementById('fixednative').value;
+  node.setAttribute('options',options);
+  internalname = document.getElementById('f1name').value;
+  if (internalname.length > 0)
+  {
+    node = editor.createNode('x1font', fontNode, nodecounter++);
+    node.setAttribute('internalname', internalname);
+    node.setAttribute('name', document.getElementById('x1fontlist').value);
+    options = document.getElementById('x1native').value;
+    node.setAttribute('options',options);
+  }
+  internalname = document.getElementById('f2name').value;
+  if (internalname.length > 0)
+  {
+    node = editor.createNode('x2font', fontNode, nodecounter++);
+    node.setAttribute('internalname', internalname);
+    node.setAttribute('name', document.getElementById('x2fontlist').value);
+    options = document.getElementById('x2native').value;
+    node.setAttribute('options',options);
+  }
+  internalname = document.getElementById('f3name').value;
+  if (internalname.length > 0)
+  {
+    node = editor.createNode('x3font', fontNode, nodecounter++);
+    node.setAttribute('internalname', internalname);
+    node.setAttribute('name', document.getElementById('x3fontlist').value);
+    options = document.getElementById('x3native').value;
+    node.setAttribute('options',options);
+  }
 }
 
 function getFontSpecs()
@@ -739,22 +768,98 @@ function getFontSpecs()
   var docFormatNode = preamble.getElementsByTagName('docformat')[0];
   if (!docFormatNode) return;
   var fontNodes = docFormatNode.getElementsByTagName('fontchoices');
-  var node;
+  var node, textbox;
+  var options;
   var i;
   for ( i = 0; i < fontNodes.length; i++)
   {
     node = fontNodes[i].getElementsByTagName('mainfont')[0];
-    if (node) document.getElementById('mainfontlist').value = node.getAttribute('name');  
+    if (node)
+    {
+      document.getElementById('mainfontlist').value = node.getAttribute('name');
+      options = node.getAttribute('options');
+      if (options)
+        options = trimBlanks(options);
+      if (options.length > 0)
+      {
+        textbox = document.getElementById('romannative');
+        textbox.value = options;
+        onOptionTextChanged( textbox );
+      }
+    }   
     node = fontNodes[i].getElementsByTagName('sansfont')[0];
-    if (node) document.getElementById('sansfontlist').value = node.getAttribute('name');  
+    if (node)
+    {
+      document.getElementById('sansfontlist').value = node.getAttribute('name');
+      options = node.getAttribute('options');
+      if (options)
+        options = trimBlanks(options);
+      if (options.length > 0)
+      {
+        textbox = document.getElementById('sansnative');
+        textbox.value = options;
+        onOptionTextChanged( textbox );
+      }
+    }   
     node = fontNodes[i].getElementsByTagName('fixedfont')[0];
-    if (node) document.getElementById('fixedfontlist').value = node.getAttribute('name'); 
+    if (node)
+    {
+      document.getElementById('fixedfontlist').value = node.getAttribute('name');
+      options = node.getAttribute('options');
+      if (options)
+        options = trimBlanks(options);
+      if (options.length > 0)
+      {
+        textbox = document.getElementById('fixednative');
+        textbox.value = options;
+        onOptionTextChanged( textbox );
+      }
+    }   
     node = fontNodes[i].getElementsByTagName('x1font')[0];
-    if (node) document.getElementById('x1fontlist').value = node.getAttribute('name'); 
+    if (node  && node.getAttribute('internalname').length > 0)
+    {
+      document.getElementById('f1name').value = node.getAttribute('internalname');
+      document.getElementById('x1fontlist').value = node.getAttribute('name');
+      options = node.getAttribute('options');
+      if (options)
+        options = trimBlanks(options);
+      if (options.length > 0)
+      {
+        textbox = document.getElementById('x1native');
+        textbox.value = options;
+        onOptionTextChanged( textbox );
+      }
+    }   
     node = fontNodes[i].getElementsByTagName('x2font')[0];
-    if (node) document.getElementById('x2fontlist').value = node.getAttribute('name'); 
+    if (node  && node.getAttribute('internalname').length > 0)
+    {
+      document.getElementById('f2name').value = node.getAttribute('internalname');
+      document.getElementById('x2fontlist').value = node.getAttribute('name');
+      options = node.getAttribute('options');
+      if (options)
+        options = trimBlanks(options);
+      if (options.length > 0)
+      {
+        textbox = document.getElementById('x2native');
+        textbox.value = options;
+        onOptionTextChanged( textbox );
+      }
+    }   
     node = fontNodes[i].getElementsByTagName('x3font')[0];
-    if (node) document.getElementById('x3fontlist').value = node.getAttribute('name'); 
+    if (node  && node.getAttribute('internalname').length > 0)
+    {
+      document.getElementById('f3name').value = node.getAttribute('internalname');
+      document.getElementById('x3fontlist').value = node.getAttribute('name');
+      options = node.getAttribute('options');
+      if (options)
+        options = trimBlanks(options);
+      if (options.length > 0)
+      {
+        textbox = document.getElementById('x3native');
+        textbox.value = options;
+        onOptionTextChanged( textbox );
+      }
+    }   
   } 
 }
 

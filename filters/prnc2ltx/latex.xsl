@@ -80,23 +80,31 @@
 \usepackage{xltxtra}
 \TeXXeTstate=1
 \defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
-\font\hebrew="Narkisim"
 <xsl:apply-templates/></xsl:template>  
 
 <xsl:template match="html:mainfont">
-\setmainfont{<xsl:value-of select="@name"/>}</xsl:template>
+\setmainfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:mainfont[@name='Default']"></xsl:template>
 
 <xsl:template match="html:sansfont">
-\setsansfont{<xsl:value-of select="@name"/>}</xsl:template>
+\setsansfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:sansfont[@name='']"></xsl:template>
 
 <xsl:template match="html:fixedfont">
-\setmonofont{<xsl:value-of select="@name"/>}</xsl:template>
+\setmonofont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:fixedfont[@name='']"></xsl:template>
+
+<xsl:template match="html:x1font">
+\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
+
+<xsl:template match="html:x2font">
+\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
+
+<xsl:template match="html:x3font">
+\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:latex">\LaTeX</xsl:template>
 <xsl:template match="mml:math">\textbf{Math here}</xsl:template>
