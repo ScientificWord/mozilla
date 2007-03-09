@@ -377,13 +377,13 @@
             </hbox>
             <hbox>
               <label value="Click to go native" onclick="var elt=getElementById('bcfixed'); elt.hidden=!(elt.hidden);"/>
-              <textbox multiline="true" flex="1" observes="bcfixed" id="fixedsnative"/>
+              <textbox multiline="true" flex="1" observes="bcfixed" id="fixednative"/>
               <broadcaster id="bcfixed" hidden="true"/>
             </hbox>
           </groupbox>
           <groupbox>
             <caption label="Additional fonts"/>
-            <hbox><label value="Internal font name"/><textbox id="f1native"/></hbox>
+            <hbox><label value="Internal font name"/><textbox id="f1name"/></hbox>
             <hbox>
               <vbox>
                 <label align="right" value="Extra font 1"/>
@@ -409,7 +409,7 @@
               <textbox multiline="true" flex="1" observes="bcx1" id="x1native"/>
               <broadcaster id="bcx1" hidden="true"/>
             </hbox>
-            <hbox><label value="Internal font name"/><textbox id="f2native"/></hbox>
+            <hbox><label value="Internal font name"/><textbox id="f2name"/></hbox>
             <hbox>
               <vbox>
                 <label align="right" value="Extra font 2"/>
@@ -432,10 +432,10 @@
             </hbox>
             <hbox>
               <label value="Click to go native" onclick="var elt=getElementById('bcx2'); elt.hidden=!(elt.hidden);"/>
-              <textbox multiline="true" flex="1" observes="bcx2" id="x2native"/>
+              <textbox multiline="true" flex="1" observes="bcx2" id="x2name"/>
               <broadcaster id="bcx2" hidden="true"/>
             </hbox>
-            <hbox><label value="Internal font name"/><textbox id="f3native"/></hbox>
+            <hbox><label value="Internal font name"/><textbox id="f3name"/></hbox>
             <hbox>
               <vbox>
                 <label align="right" value="Extra font 3"/>
@@ -458,7 +458,7 @@
             </hbox>
             <hbox>
               <label value="Click to go native" onclick="var elt=getElementById('bcx3'); elt.hidden=!(elt.hidden);"/>
-              <textbox multiline="true" flex="1" observes="bcx3" id="x3native"/>
+              <textbox multiline="true" flex="1" observes="bcx3" id="x3name"/>
               <broadcaster id="bcx3" hidden="true"/>
             </hbox>
           </groupbox>
