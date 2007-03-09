@@ -107,6 +107,6 @@ interface msiIMathMLEditor : nsISupports
                                                 out nsITransaction transaction);                                                                           
 
   [noscript] void CreateReplaceScriptBaseTransaction(in nsIDOMNode script,
-                                                     in nsIDOMNOde newbase,
+                                                     in nsIDOMNode newbase,
                                                      out nsITransaction transaction);                                                                           
 };
