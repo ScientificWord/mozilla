@@ -595,8 +595,9 @@ function getPrevTagWindow(commandID)
 
 function doTagKeyCommand(event, commandID, value)
 {
-  if (event.keyCode == KeyEvent.DOM_VK_RETURN) msiDoStatefulCommand(commandID, value);
-  else if (event.keyCode == KeyEvent.DOM_VK_ESCAPE) msiGetActiveEditorElement().contentWindow.focus();
+//  if (event.keyCode == KeyEvent.DOM_VK_RETURN) msiDoStatefulCommand(commandID, value);
+//  else 
+  if (event.keyCode == KeyEvent.DOM_VK_ESCAPE) msiGetActiveEditorElement().contentWindow.focus();
   else if (event.keyCode == KeyEvent.DOM_VK_TAB)
   {
     if (event.shiftKey) getPrevTagWindow(commandID).focus();
