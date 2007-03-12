@@ -136,14 +136,16 @@
 </xsl:template>
 
 <xsl:template match="html:author">
-\author{<xsl:value-of select="child::text()"/> <xsl:apply-templates select="address"/>}</xsl:template>
+\author{<xsl:value-of select="child::text()"/><apply-templates select="html:address::*"/>}</xsl:template>
 
-<xsl:template match="html:address">\\<xsl:value-of select="."/></xsl:template>
+<xsl:template match="html:address">
+\\<xsl:value-of select="."/></xsl:template>
 
 <xsl:template match="html:abstract">
 \begin{abstract}
 <xsl:apply-templates/>
 \end{abstract}
+\maketitle
 </xsl:template>
 
 <xsl:template match="html:maketitle">
