@@ -512,20 +512,24 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   dump("\nexecutable file: "+exefile.path+"\n");
   try 
   {
-    var data=new Object();
-    data.pipeconsole = Components.classes["@mozilla.org/process/pipe-console;1"].createInstance(Components.interfaces.nsIPipeConsole);
-    data.pipeconsole.open(500,80,false);
-    data.pipetransport = Components.classes["@mozilla.org/process/pipe-transport;1"].createInstance(Components.interfaces.nsIPipeTransport);
+    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+    theProcess.init(exefile);
     var args = ["-output-directory", outputDir, infileLeaf, passCount];
-    data.pipetransport.init(exefile.path, args, args.length, "", 0, 2000, "", true, false, data.pipeconsole );
-    data.pipetransport.loggingEnabled = true;
-    data.pipetransport.asyncRead(data.pipeconsole, null, 0, -1, 0);
-    data.stdin = data.pipetransport.openOutputStream(0,-1,0);
-    data.clean = false;
-    window.openDialog("chrome://prince/content/msiConsole.xul", "_blank", "chrome,close,titlebar,modal", data);
-    data.pipetransport.join();
-    // we need to kill the process
-    
+    theProcess.run(true, args, args.length);
+//    var data=new Object();
+//    data.pipeconsole = Components.classes["@mozilla.org/process/pipe-console;1"].createInstance(Components.interfaces.nsIPipeConsole);
+//    data.pipeconsole.open(500,80,false);
+//    data.pipetransport = Components.classes["@mozilla.org/process/pipe-transport;1"].createInstance(Components.interfaces.nsIPipeTransport);
+//    var args = ["-output-directory", outputDir, infileLeaf, passCount];
+//    data.pipetransport.init(exefile.path, args, args.length, "", 0, 2000, "", true, false, data.pipeconsole );
+//    data.pipetransport.loggingEnabled = true;
+//    data.pipetransport.asyncRead(data.pipeconsole, null, 0, -1, 0);
+//    data.stdin = data.pipetransport.openOutputStream(0,-1,0);
+//    data.clean = false;
+//    window.openDialog("chrome://prince/content/msiConsole.xul", "_blank", "chrome,close,titlebar,modal", data);
+//    data.pipetransport.join();
+//    // we need to kill the process
+//    
   } 
   catch (ex) {
     dump("\nUnable to run TeX:\n");
