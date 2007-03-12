@@ -163,7 +163,7 @@ MODULES_core :=                                 \
   mozilla/rdf                                   \
   mozilla/security/manager                      \
   mozilla/sun-java                              \
-  mozilla/ipc/ipcd                              \
+  mozilla/ipc                                   \
   mozilla/modules/libpr0n                       \
   mozilla/modules/libmar                        \
   mozilla/modules/libbz2                        \
