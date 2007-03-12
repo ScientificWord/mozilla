@@ -711,6 +711,32 @@ msiMCaretBase::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** 
   return CaretRight(editor, flags, node, offset);
 }
 
+NS_IMETHODIMP
+msiMCaretBase::TabLeft(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  if (!node || !offset || !m_mathmlNode || !editor)
+    return NS_ERROR_FAILURE;
+  nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+  msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_TRUE, mathmlEditing);
+  if (mathmlEditing)
+    return mathmlEditing->TabLeft(editor, node, offset); 
+  else 
+    return NS_ERROR_FAILURE;
+}
+
+NS_IMETHODIMP
+msiMCaretBase::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  if (!node || !offset || !m_mathmlNode || !editor)
+    return NS_ERROR_FAILURE;
+  nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+  msiUtils::SetupPassOffCaretToParent(editor, m_mathmlNode, PR_TRUE, mathmlEditing);
+  if (mathmlEditing)
+    return mathmlEditing->TabRight(editor, node, offset); 
+  else 
+    return NS_ERROR_FAILURE;
+}
+
 // Mouse Util functions
 
 nsresult msiMCaretBase::GetNodeFromFrame(nsIFrame* frame, nsCOMPtr<nsIDOMNode> & node)
