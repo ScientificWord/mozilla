@@ -216,3 +216,14 @@ msiWhitespaceCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNod
   return CaretRight(editor, flags, node, offset);
 }
 
+NS_IMETHODIMP
+msiWhitespaceCaret::TabLeft(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return msiMCaretBase::TabLeft(editor, node, offset);
+}
+
+NS_IMETHODIMP
+msiWhitespaceCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return msiMCaretBase::TabRight(editor, node, offset);
+}

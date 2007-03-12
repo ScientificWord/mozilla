@@ -339,7 +339,6 @@ msiMathCaret::CaretObjectRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** 
   return res;  
 }
 
-
 NS_IMETHODIMP
 msiMathCaret::CaretObjectUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
@@ -352,4 +351,15 @@ msiMathCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** n
   return CaretRight(editor, flags, node, offset);
 }
 
+NS_IMETHODIMP
+msiMathCaret::TabLeft(nsIEditor *editor, nsIDOMNode **node, PRUint32 *offset)
+{
+  return NS_OK;  // nowhere to go
+}
+
+NS_IMETHODIMP
+msiMathCaret::TabRight(nsIEditor *editor, nsIDOMNode **node, PRUint32 *offset)
+{
+  return NS_OK;  // nowhere to go
+}
 
