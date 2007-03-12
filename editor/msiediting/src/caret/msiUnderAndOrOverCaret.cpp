@@ -90,7 +90,6 @@ msiUnderAndOrOverCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsI
   return msiMCaretBase::AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
                                                           mouseEvent, node, offset);
 }                                                       
-
        
 NS_IMETHODIMP 
 msiUnderAndOrOverCaret::GetSelectableMathFragment(nsIEditor  *editor, 
@@ -245,8 +244,6 @@ msiUnderAndOrOverCaret::AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPo
   return res;
 }
 
-                                
-
 NS_IMETHODIMP
 msiUnderAndOrOverCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
@@ -333,7 +330,6 @@ msiUnderAndOrOverCaret::SplitAtDecendents(nsIEditor* editor,
                                           right_leftPart, right_rightPart);
 }
 
-
 NS_IMETHODIMP
 msiUnderAndOrOverCaret::Split(nsIEditor *editor, 
                               nsIDOMNode *appendLeft, 
@@ -364,7 +360,6 @@ msiUnderAndOrOverCaret::SetupDeletionTransactions(nsIEditor * editor,
                                                   nsIDOMNode ** coalesceNode,
                                                   PRUint32 * coalesceOffset)
 {
-
   if (m_mathmlNode || !editor || !transactionList || !coalesceNode || !coalesceOffset )
     return NS_ERROR_FAILURE;
   if (!start || !end || !(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
@@ -551,22 +546,47 @@ msiUnderAndOrOverCaret::CaretObjectRight(nsIEditor *editor, PRUint32 flags, nsID
 }
 
 NS_IMETHODIMP
-msiUnderAndOrOverCaret::CaretObjectUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
+msiUnderAndOrOverCaret::CaretObjectUp(nsIEditor *editor, PRUint32 flags, nsIDOMNode **node, PRUint32 *offset)
 {
   return CaretLeft(editor, flags, node, offset);
 }
 
 NS_IMETHODIMP
-msiUnderAndOrOverCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
+msiUnderAndOrOverCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode **node, PRUint32 *offset)
 {
   return CaretRight(editor, flags, node, offset);
+}
+
+NS_IMETHODIMP
+msiUnderAndOrOverCaret::TabLeft(nsIEditor *editor, nsIDOMNode **node, PRUint32 *offset)
+{
+  return TabRight(editor, node, offset);
+}
+
+NS_IMETHODIMP
+msiUnderAndOrOverCaret::TabRight(nsIEditor *editor, nsIDOMNode **node, PRUint32 *offset)
+{
+  if (m_numKids != 3 || m_offset == 0)
+    return msiMCaretBase::TabRight(editor, node, offset);
+  PRUint32 newflags;
+  if (m_offset == 1 || m_offset == 2)
+  {
+    m_offset = 2;
+    newflags = FROM_BELOW;
+  }
+  else
+  {
+    m_offset = 1;
+    newflags = FROM_ABOVE;
+  }
+  return Accept(editor, newflags, node, offset);
 }
 
 //private
 nsresult
 msiUnderAndOrOverCaret::GetFramesAndRects(const nsIFrame * underOver, 
-                                 nsIFrame ** base, nsIFrame ** script1, nsIFrame ** script2,
-                                 nsRect & uoRect, nsRect &bRect, nsRect& s1Rect, nsRect& s2Rect)
+                                 nsIFrame **base, nsIFrame **script1, nsIFrame **script2,
+                                 nsRect &uoRect, nsRect &bRect, nsRect &s1Rect, nsRect &s2Rect)
 { // relative to scritp's view
   nsresult res(NS_ERROR_FAILURE);
   *script2 = nsnull;

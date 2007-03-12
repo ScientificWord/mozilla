@@ -452,6 +452,18 @@ msiMrowFenceCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode
   return CaretRight(editor, flags, node, offset);
 }
 
+NS_IMETHODIMP
+msiMrowFenceCaret::TabLeft(nsIEditor *editor, nsIDOMNode **node, PRUint32 *offset)
+{
+  return msiMCaretBase::TabLeft(editor, node, offset);
+}
+
+NS_IMETHODIMP
+msiMrowFenceCaret::TabRight(nsIEditor *editor, nsIDOMNode **node, PRUint32 *offset)
+{
+  return msiMCaretBase::TabRight(editor, node, offset);
+}
+
 //private
 #define MIN_THRESHOLD 2 //TODO -- how should this be determined.      
 void msiMrowFenceCaret::GetThresholds(const nsRect &frameRect, 

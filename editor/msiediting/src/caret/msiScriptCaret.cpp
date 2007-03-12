@@ -813,6 +813,31 @@ msiScriptCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode **
   return CaretRight(editor, flags, node, offset);
 }
 
+NS_IMETHODIMP
+msiScriptCaret::TabLeft(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return TabRight(editor, node, offset);
+}
+
+NS_IMETHODIMP
+msiScriptCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  if (m_numKids != 3 || m_offset == 0)
+    return msiMCaretBase::TabRight(editor, node, offset);
+  PRUint32 newflags;
+  if (m_offset == 1 || m_offset == 2)
+  {
+    m_offset = 2;
+    newflags = FROM_BELOW;
+  }
+  else
+  {
+    m_offset = 1;
+    newflags = FROM_ABOVE;
+  }
+  return Accept(editor, newflags, node, offset);
+}
+
 //private
 nsresult
 msiScriptCaret::GetFramesAndRects(const nsIFrame * script, 

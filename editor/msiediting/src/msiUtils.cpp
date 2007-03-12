@@ -1821,6 +1821,27 @@ PRBool msiUtils::IsMrow(nsISupports * isupports)
   return (mathmltype == msiIMathMLEditingBC::MATHML_MROW);
 }
 
+nsresult msiUtils::GetTableCell(nsIEditor * editor,
+                                nsIDOMNode * node,
+                                nsCOMPtr<nsIDOMNode> & mtdCell)
+{
+  PRUint32 mathmltype;
+  nsresult res = GetMathmlNodeType(editor, node, mathmltype);
+  if (NS_SUCCEEDED(res) && mathmltype == msiIMathMLEditingBC::MATHML_MTD) {
+    mtdCell = node;
+    return NS_OK;
+  }
+  nsCOMPtr<nsIDOMNode> thisMtd;
+  res = msiUtils::GetMathTagParent(node, msiEditingAtoms::mtd, thisMtd);
+  if (NS_SUCCEEDED(res) && thisMtd)
+  {
+    mtdCell = thisMtd;
+    return NS_OK;
+  }
+  else
+    return NS_ERROR_FAILURE;
+}
+
 PRBool msiUtils::NodeHasCaretMark(nsIDOMNode * node, PRUint32& pos, PRBool& caretOnText)
 {
   PRBool rv(PR_FALSE);
@@ -2051,8 +2072,9 @@ nsresult msiUtils::ClearCaretPositionMark(nsIEditor * editor,
   return res;
 }                                          
 
-nsresult msiUtils::GetMathParent(nsIDOMNode * node,
-                                 nsCOMPtr<nsIDOMNode> & mathParent)
+nsresult msiUtils::GetMathTagParent(nsIDOMNode * node,
+                                    nsIAtom * tagAtom,
+                                    nsCOMPtr<nsIDOMNode> & mathParent)
 {
   nsresult res(NS_ERROR_FAILURE);
   mathParent = nsnull;
@@ -2067,7 +2089,7 @@ nsresult msiUtils::GetMathParent(nsIDOMNode * node,
     PRInt32 nsID(kNameSpaceID_Unknown);
     msiNameSpaceUtils::GetNameSpaceID(nsURI, nsID);
     
-    if (msiEditingAtoms::math->Equals(localName) && nsID == kNameSpaceID_MathML)
+    if (tagAtom->Equals(localName) && nsID == kNameSpaceID_MathML)
     {
       mathParent = p;
       p = nsnull;
@@ -2080,6 +2102,11 @@ nsresult msiUtils::GetMathParent(nsIDOMNode * node,
     }
   }
   return res;
+}
+nsresult msiUtils::GetMathParent(nsIDOMNode * node,
+                                 nsCOMPtr<nsIDOMNode> & mathParent)
+{
+  return GetMathTagParent(node,msiEditingAtoms::math,mathParent);
 }   
 
 nsresult msiUtils::GetNumberofChildren(nsIDOMNode * node,

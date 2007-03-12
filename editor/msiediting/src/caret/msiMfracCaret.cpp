@@ -486,6 +486,28 @@ msiMfracCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** 
   return CaretRight(editor, flags, node, offset);
 }
 
+NS_IMETHODIMP
+msiMfracCaret::TabLeft(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return TabRight(editor, node, offset);  // only two tab positions, so direction irrelevant
+}
+
+NS_IMETHODIMP
+msiMfracCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  PRUint32 newflags;
+  if (m_offset == 1)
+  {
+    newflags = FROM_ABOVE;
+  }
+  else
+  {
+    m_offset = 0;
+    newflags = FROM_BELOW;
+  }
+  return Accept(editor, newflags, node, offset);
+}
+
 //protected
 nsresult
 msiMfracCaret::GetFramesAndRects(const nsIFrame * frac, 

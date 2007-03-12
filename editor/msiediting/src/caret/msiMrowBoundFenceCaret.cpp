@@ -100,7 +100,6 @@ msiMrowBoundFenceCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsI
   return res;   
 }                                                       
 
-
 NS_IMETHODIMP
 msiMrowBoundFenceCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
@@ -230,7 +229,6 @@ msiMrowBoundFenceCaret::SplitAtDecendents(nsIEditor* editor,
                                           left_leftPart, left_rightPart, 
                                           right_leftPart, right_rightPart);
 }
-
 
 NS_IMETHODIMP
 msiMrowBoundFenceCaret::Split(nsIEditor *editor, 
@@ -404,6 +402,18 @@ NS_IMETHODIMP
 msiMrowBoundFenceCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
   return CaretRight(editor, flags, node, offset);
+}
+
+NS_IMETHODIMP
+msiMrowBoundFenceCaret::TabLeft(nsIEditor *editor, nsIDOMNode **node, PRUint32 *offset)
+{
+  return msiMCaretBase::TabLeft(editor, node, offset);
+}
+
+NS_IMETHODIMP
+msiMrowBoundFenceCaret::TabRight(nsIEditor *editor, nsIDOMNode **node, PRUint32 *offset)
+{
+  return msiMCaretBase::TabRight(editor, node, offset);
 }
 
 //private

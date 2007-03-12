@@ -6,5 +6,4 @@
 msiMnCaret::msiMnCaret(nsIDOMNode* mathmlNode, PRUint32 offset) :
  msiMleafCaret(mathmlNode, offset, MATHML_MN)
 {
-  
 }
