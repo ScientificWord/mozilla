@@ -57,7 +57,10 @@ msiMtrCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUin
     NS_ASSERTION(child, "Null child node");
     if (child)
     {
-      PRUint32 newPos = flags & FROM_RIGHT ? RIGHT_MOST : 0;
+      PRUint32 newPos = 0;
+      if (flags & FROM_RIGHT)
+        if (!(flags & FROM_ABOVE))  // special case for SHIFT-TAB
+          flags = RIGHT_MOST;
       nsCOMPtr<msiIMathMLCaret> mathmlEditing;
       msiUtils::GetMathMLCaretInterface(editor, child, newPos, mathmlEditing);
       NS_ASSERTION(mathmlEditing, "Null mathmlEditing interface");
@@ -270,3 +273,17 @@ msiMtrCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** no
 {
   return CaretRight(editor, flags, node, offset);
 }
+
+NS_IMETHODIMP
+msiMtrCaret::TabLeft(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return msiMCaretBase::TabLeft(editor, node, offset);
+}
+
+NS_IMETHODIMP
+msiMtrCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return msiMCaretBase::TabRight(editor, node, offset);
+}
+
+

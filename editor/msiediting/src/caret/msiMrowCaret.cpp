@@ -385,3 +385,16 @@ msiMrowCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** n
 {
   return CaretRight(editor, flags, node, offset);
 }
+
+NS_IMETHODIMP
+msiMrowCaret::TabLeft(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return msiMCaretBase::TabLeft(editor, node, offset);
+}
+
+NS_IMETHODIMP
+msiMrowCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return msiMCaretBase::TabRight(editor, node, offset);
+}
+

@@ -324,9 +324,17 @@ public:
                                     
   static PRUint32 GetMathmlNodeType(nsISupports * isupports);
   
+  static nsresult GetMathTagParent(nsIDOMNode * node,
+                                   nsIAtom * elementAtom,
+                                   nsCOMPtr<nsIDOMNode> & tagParent);
+
   static nsresult GetMathParent(nsIDOMNode * node,
                                 nsCOMPtr<nsIDOMNode> & mathParent);
 
+  static nsresult GetTableCell(nsIEditor* editor,
+                               nsIDOMNode * node,
+                               nsCOMPtr<nsIDOMNode> & mtdCell);
+                        
   static nsresult CreateMathMLElement(nsIEditor* editor, nsIAtom * type, 
                                       nsCOMPtr<nsIDOMElement> & mmlElement);
                                       

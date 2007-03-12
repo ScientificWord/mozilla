@@ -27,18 +27,22 @@ interface msiIMathMLCaret : nsISupports
   const unsigned long    CARET_OBJECTRIGHT          = 10;
   const unsigned long    CARET_OBJECTUP             = 11;
   const unsigned long    CARET_OBJECTDOWN           = 12;
-  const unsigned long    SELECT_LEFT                = 13;
-  const unsigned long    SELECT_RIGHT               = 14;
-  const unsigned long    SELECT_UP                  = 15;
-  const unsigned long    SELECT_DOWN                = 16;
-  const unsigned long    SELECT_NODELEFT            = 17;
-  const unsigned long    SELECT_NODERIGHT           = 18;
-  const unsigned long    SELECT_NODEUP              = 19;
-  const unsigned long    SELECT_NODEDOWN            = 20;
-  const unsigned long    SELECT_OBJECTLEFT          = 21;
-  const unsigned long    SELECT_OBJECTRIGHT         = 22;
-  const unsigned long    SELECT_OBJECTUP            = 23;
-  const unsigned long    SELECT_OBJECTDOWN          = 24;
+  const unsigned long    TAB_LEFT                   = 13;
+  const unsigned long    TAB_RIGHT                  = 14;
+  const unsigned long    SELECT_LEFT                = 15;
+  const unsigned long    SELECT_RIGHT               = 16;
+  const unsigned long    SELECT_UP                  = 17;
+  const unsigned long    SELECT_DOWN                = 18;
+  const unsigned long    SELECT_NODELEFT            = 19;
+  const unsigned long    SELECT_NODERIGHT           = 20;
+  const unsigned long    SELECT_NODEUP              = 21;
+  const unsigned long    SELECT_NODEDOWN            = 22;
+  const unsigned long    SELECT_OBJECTLEFT          = 23;
+  const unsigned long    SELECT_OBJECTRIGHT         = 24;
+  const unsigned long    SELECT_OBJECTUP            = 25;
+  const unsigned long    SELECT_OBJECTDOWN          = 26;
+  const unsigned long    SELECT_TAB_LEFT            = 27;
+  const unsigned long    SELECT_TAB_RIGHT           = 28;
   
   void PrepareForCaret(in nsIEditor editor);
     
@@ -172,4 +176,13 @@ interface msiIMathMLCaret : nsISupports
                        in PRUint32 flags,
                        out nsIDOMNode node,
                        out PRUint32 offset);
+
+  void TabLeft(in nsIEditor editor,
+               out nsIDOMNode node,
+               out PRUint32 offset);
+                 
+  void TabRight(in nsIEditor editor,
+                out nsIDOMNode node,
+                out PRUint32 offset);
+              
 };

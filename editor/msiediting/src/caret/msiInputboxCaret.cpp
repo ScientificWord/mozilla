@@ -299,3 +299,15 @@ msiInputboxCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode 
   return CaretRight(editor, flags, node, offset);
 }
 
+NS_IMETHODIMP
+msiInputboxCaret::TabLeft(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return msiMCaretBase::TabLeft(editor, node, offset);
+}
+
+NS_IMETHODIMP
+msiInputboxCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return msiMCaretBase::TabRight(editor, node, offset);
+}
+
