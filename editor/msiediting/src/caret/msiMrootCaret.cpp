@@ -155,6 +155,48 @@ msiMrootCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRU
         res = NS_ERROR_FAILURE;
     }    
   }
+  else if (flags & FROM_ABOVE)
+  {
+    if (m_offset == 0)
+    {
+      res = msiUtils::GetChildNode(m_mathmlNode, 0, child);
+      NS_ASSERTION(child, "Yuck - child is null");
+      if (NS_SUCCEEDED(res) && child)
+      {
+        msiUtils::GetMathMLCaretInterface(editor, child, 0, mathmlEditing);
+        NS_ASSERTION(mathmlEditing, "Yuck - mathml caret interface is null");
+        if (mathmlEditing)
+          res = mathmlEditing->Accept(editor, FROM_ABOVE|FROM_PARENT, node, offset);
+        else
+          res = NS_ERROR_FAILURE;
+      }
+      else
+        res = NS_ERROR_FAILURE;
+    }    
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  else if (flags & FROM_BELOW)
+  {
+    if (m_offset == 1)
+    {
+      res = msiUtils::GetChildNode(m_mathmlNode, 1, child);
+      NS_ASSERTION(child, "Yuck - child is null");
+      if (NS_SUCCEEDED(res) && child)
+      {
+        msiUtils::GetMathMLCaretInterface(editor, child, 0, mathmlEditing);
+        NS_ASSERTION(mathmlEditing, "Yuck - mathml caret interface is null");
+        if (mathmlEditing)
+          res = mathmlEditing->Accept(editor, FROM_ABOVE|FROM_PARENT, node, offset);
+        else
+          res = NS_ERROR_FAILURE;
+      }
+      else
+        res = NS_ERROR_FAILURE;
+    }    
+    else
+      res = NS_ERROR_FAILURE;
+  }
   if (*node == nsnull && !(flags & FROM_CHILD))
   {
     PRUint32 index = m_offset == 2 ? 1 : 0;
@@ -428,5 +470,24 @@ msiMrootCaret::AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPoint,
   return msiMCaretBase::AdjustSelectionPoint(editor, leftSelPoint, selectionNode, selectionOffset, parentCaret);
 }
 
+NS_IMETHODIMP
+msiMrootCaret::TabLeft(nsIEditor *editor, nsIDOMNode **node, PRUint32 *offset)
+{
+  return TabRight(editor, node, offset);  // only two tab positions, so direction irrelevant
+}
 
- 
+NS_IMETHODIMP
+msiMrootCaret::TabRight(nsIEditor *editor, nsIDOMNode **node, PRUint32 *offset)
+{
+  PRUint32 newflags;
+  if (m_offset == 1)
+  {
+    newflags = FROM_BELOW;
+  }
+  else
+  {
+    m_offset = 0;
+    newflags = FROM_ABOVE;
+  }
+  return Accept(editor, newflags, node, offset);
+}

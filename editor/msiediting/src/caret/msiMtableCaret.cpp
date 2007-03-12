@@ -2,8 +2,15 @@
 
 #include "msiMtableCaret.h"
 #include "msiUtils.h"
+#include "msiEditingAtoms.h"
+
 #include "nsCOMPtr.h"
 #include "nsIDOMNode.h"
+#include "nsIEnumerator.h"
+#include "nsIContent.h"
+#include "nsIContentIterator.h"
+#include "nsComponentManagerUtils.h"
+#include "nsIServiceManager.h"
 #include "nsIEditor.h"
 
 msiMtableCaret::msiMtableCaret(nsIDOMNode* mathmlNode, PRUint32 offset)
@@ -345,3 +352,135 @@ msiMtableCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode **
 {
   return CaretRight(editor, flags, node, offset);
 }
+
+NS_IMETHODIMP
+msiMtableCaret::TabLeft(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return Tab(editor, PR_TRUE, node, offset);
+}
+
+// See nsHTMLEditor::TabInTable() for a similar function, but for us, tab moves
+// circularly through the table.
+NS_IMETHODIMP
+msiMtableCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return Tab(editor, PR_FALSE, node, offset);
+}
+
+// See nsHTMLEditor::TabInTable() for a similar function, but for us, tab moves
+// circularly through the table.
+nsresult
+msiMtableCaret::Tab(nsIEditor *editor, PRBool inIsShift, nsIDOMNode ** node, PRUint32 *offset)
+{
+  nsresult res = NS_OK;
+  nsCOMPtr<nsIDOMNode> currentNode;
+
+  //SLS marked stuff needs to be refactored
+  nsCOMPtr<nsISelection>selection;
+  res = editor->GetSelection(getter_AddRefs(selection));
+  if (NS_FAILED(res)) return res;
+  if (!selection) return NS_ERROR_NULL_POINTER;
+
+  nsCOMPtr<nsIDOMNode> focusNode;
+  res = selection->GetFocusNode(getter_AddRefs(focusNode));
+  if(NS_FAILED(res)) return res;
+  if (!focusNode)  return NS_ERROR_FAILURE;
+
+  // Try to get the actual selected node
+  PRBool hasChildren = PR_FALSE;
+  focusNode->HasChildNodes(&hasChildren);
+  if (hasChildren)
+  {
+    PRInt32 offset;
+    res = selection->GetFocusOffset(&offset);
+    if (NS_FAILED(res)) return res;
+    res = msiUtils::GetChildNode(focusNode, offset, currentNode);
+  }
+  // anchor node is probably a text node - just use that
+  if (!currentNode)
+    currentNode = focusNode;
+  //SLS end refactor area
+
+  nsCOMPtr<nsIDOMNode> mtdNode;
+  res = msiUtils::GetMathTagParent(currentNode, msiEditingAtoms::mtd, mtdNode);
+  if(NS_FAILED(res)) return res;
+  if (!mtdNode) return NS_OK;  // failed reality check
+
+  nsCOMPtr<nsIDOMNode> mtableNode;
+  res = msiUtils::GetMathTagParent(mtdNode, msiEditingAtoms::mtable, mtableNode);
+  if(NS_FAILED(res)) return res;
+  if (!mtableNode) return NS_OK;  // failed reality check
+
+  nsCOMPtr<nsIContentIterator> iter =
+      do_CreateInstance("@mozilla.org/content/post-content-iterator;1", &res);
+  if (NS_FAILED(res)) return res;
+  if (!iter) return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<nsIContent> cTbl = do_QueryInterface(mtableNode);
+  nsCOMPtr<nsIContent> cBlock = do_QueryInterface(mtdNode);
+  res = iter->Init(cTbl);
+  if (NS_FAILED(res)) return res;
+  res = iter->PositionAt(cBlock);
+  if (NS_FAILED(res)) return res;
+
+  nsCOMPtr<nsIDOMNode> currnode;
+  do
+  {
+    if (inIsShift)
+      iter->Prev();
+    else
+      iter->Next();
+
+    currnode = do_QueryInterface(iter->GetCurrentNode());
+
+    if (currnode)
+    {
+      nsCOMPtr<nsIDOMNode> thisMtd;
+      res = msiUtils::GetTableCell(editor,currnode,thisMtd);
+      if (NS_SUCCEEDED(res) && thisMtd && thisMtd != mtdNode) {
+        nsCOMPtr<nsIDOMNode> thisTable;
+        res = msiUtils::GetMathTagParent(currnode, msiEditingAtoms::mtable, thisTable);
+        if (NS_FAILED(res) || !thisTable)
+          continue;
+
+        if (thisTable == mtableNode)
+        {
+          nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+          msiUtils::GetMathMLCaretInterface(editor, thisMtd, 0, mathmlEditing);
+          NS_ASSERTION(mathmlEditing, "Yuck - mathml caret interface is null");
+          if (mathmlEditing)
+          {
+            return mathmlEditing->Accept(editor, FROM_PARENT|FROM_LEFT, node, offset); 
+          }
+          else
+            return NS_ERROR_FAILURE;
+        }
+      }
+    }
+  } while (!iter->IsDone());
+
+  if (!inIsShift)
+  {
+    m_offset = 0;
+    return Accept(editor, FROM_PARENT|FROM_LEFT, node, offset);  // back to first cell
+  }
+  else
+  {
+    nsCOMPtr<nsIDOMNode> child;
+    res = msiUtils::GetChildNode(m_mathmlNode, m_numKids-1, child);
+    NS_ASSERTION(child, "Yuck - child is null");
+    if (NS_SUCCEEDED(res) && child)
+    {
+      nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+      msiUtils::GetMathMLCaretInterface(editor, child, RIGHT_MOST, mathmlEditing);
+      NS_ASSERTION(mathmlEditing, "Yuck - mathml caret interface is null");
+      if (mathmlEditing)
+        res = mathmlEditing->Accept(editor, FROM_RIGHT|FROM_ABOVE|FROM_PARENT, node, offset);
+      else
+        res = NS_ERROR_FAILURE;
+    }
+    else
+      res = NS_ERROR_FAILURE;
+  }
+  return res;
+}
+

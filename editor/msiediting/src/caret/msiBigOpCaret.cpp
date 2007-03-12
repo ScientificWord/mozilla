@@ -685,6 +685,31 @@ msiBigOperatorCaret::CaretObjectDown(nsIEditor *editor, PRUint32 flags, nsIDOMNo
   return CaretRight(editor, flags, node, offset);
 }
 
+NS_IMETHODIMP
+msiBigOperatorCaret::TabLeft(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  return TabRight(editor, node, offset);
+}
+
+NS_IMETHODIMP
+msiBigOperatorCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
+{
+  if (m_numKids != 3 || m_offset == 0)
+    return msiMCaretBase::TabRight(editor, node, offset);
+  PRUint32 newflags;
+  if (m_offset == 1 || m_offset == 2)
+  {
+    m_offset = 2;
+    newflags = FROM_BELOW;
+  }
+  else
+  {
+    m_offset = 1;
+    newflags = FROM_ABOVE;
+  }
+  return Accept(editor, newflags, node, offset);
+}
+
 //private
 nsresult
 msiBigOperatorCaret::GetFramesAndRects(const nsIFrame * script, 
@@ -727,8 +752,6 @@ msiBigOperatorCaret::GetAtRightThresholds(const nsRect& sRect, const nsRect& bRe
   if ( right > sRect.x + sRect.width)  
     right = sRect.x + sRect.width;
 }                           
-
-
 
 void
 msiBigOperatorCaret::GetAboveBelowThresholds(const nsRect& sRect, const nsRect& bRect, const nsRect& s1Rect, nsRect& s2Rect,

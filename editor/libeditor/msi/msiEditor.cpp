@@ -949,25 +949,23 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
         res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
         if (NS_SUCCEEDED(res) && currFocusNode && NodeInMath(currFocusNode))
         {
+          PRBool preventDefault(PR_FALSE);
           if (symbol == ' ')
           {
             // SWP actually has some special behavior if you're at the end of math
-            PRBool preventDefault(PR_FALSE);
             res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault); 
-            if (NS_SUCCEEDED(res) && preventDefault)
-              aKeyEvent->PreventDefault();
           }
           else if (symbol == '\t')
           {
-            //TODO TAB behavior (for now, NOP in math)
-            aKeyEvent->PreventDefault();
+            res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_TAB, isShift, ctrlKey, altKey, metaKey, preventDefault); 
           }
           else
           {
             res = InsertSymbol(symbol);
-            if (NS_SUCCEEDED(res))
-              aKeyEvent->PreventDefault();
+            preventDefault = PR_TRUE;
           }
+          if (NS_SUCCEEDED(res) && preventDefault)
+            aKeyEvent->PreventDefault();
         }    
       }    
     }    
@@ -1554,6 +1552,18 @@ msiEditor::KeyCodeToCaretOp(PRUint32 keyCode, PRBool isShift, PRBool ctrlKey)
         rv = msiIMathMLCaret::CARET_DOWN;
     }    
   }
+  else if (keyCode == nsIDOMKeyEvent::DOM_VK_TAB)
+  {
+    if (!ctrlKey) //TODO -- not sure what to do
+    {
+      if (isShift)
+        rv = msiIMathMLCaret::TAB_LEFT;
+      else
+        rv = msiIMathMLCaret::TAB_RIGHT;
+    }    
+  }
+  else
+    NS_ASSERTION(keyCode==0,"Unknown/unhandled keycode.");
   return rv;
 }
 
@@ -1598,7 +1608,14 @@ msiEditor::GetNodeAndOffsetFromMMLCaretOp(PRUint32 caretOp,
       case msiIMathMLCaret::CARET_OBJECTDOWN:
         res = mathmlCaret->CaretObjectDown(this, msiIMathMLCaret::FLAGS_NONE, getter_AddRefs(newNode), &newOffset);
       break;
+      case msiIMathMLCaret::TAB_LEFT:
+        res = mathmlCaret->TabLeft(this, getter_AddRefs(newNode), &newOffset);
+      break;
+      case msiIMathMLCaret::TAB_RIGHT:
+        res = mathmlCaret->TabRight(this, getter_AddRefs(newNode), &newOffset);
+      break;
       default:
+        NS_ASSERTION(0,"Unhandled caretOp.");
         res = NS_ERROR_FAILURE;
       break;
     }
@@ -1957,6 +1974,8 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
   if (NodeInMath(currNode))
   {
     PRUint32 caretOp = KeyCodeToCaretOp(keyCode, isShift, ctrlDown);
+    if (caretOp == msiIMathMLCaret::TAB_LEFT)  // SLS this seems really ugly
+      isShift = PR_FALSE;
     res = GetNodeAndOffsetFromMMLCaretOp(caretOp, currNode, currOffset, newFocus, newOffset);
   }
   else

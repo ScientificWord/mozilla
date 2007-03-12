@@ -13,6 +13,9 @@ public:
   msiMtableCaret(nsIDOMNode* mathmlNode, PRUint32 offset);
   //msiIMathMLCaret
   NS_DECL_MSIIMATHMLCARET
+
+private:
+  nsresult Tab(nsIEditor *editor, PRBool inIsShift, nsIDOMNode ** node, PRUint32 *offset);
 };
 
 #endif // msiMtableCaret_h___
