@@ -337,7 +337,8 @@ MODULES_xulrunner :=                            \
   $(MODULES_toolkit)                            \
   mozilla/xulrunner                             \
   mozilla/Prince                                \
-  mozilla/filters                               \
+  mozilla/filters								\
+  mozilla/ipc		                            \
   $(NULL)
 
 LOCALES_xulrunner :=                            \
