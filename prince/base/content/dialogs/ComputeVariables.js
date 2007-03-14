@@ -25,35 +25,6 @@ function Startup(){
   }
   catch(exc) {dump("In Startup for ComputeVariables dialog, error initializing editor vars-frame: [" + exc + "].\n");}
 
-////SLS the following copied from editor.js
-//  gSourceContentWindow = document.getElementById("content-frame");
-//  gSourceContentWindow.makeEditable("html", false);
-//
-//  EditorStartup();
-//
-//  // Initialize our source text <editor>
-//  try {
-//    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
-////SLS don't know why this doesn't work here...doesn't really matter since we have no source view.
-////    gSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-////    gSourceTextEditor.enableUndo(false);
-////    gSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
-////    gSourceTextEditor.rootElement.style.whiteSpace = "pre";
-////    gSourceTextEditor.rootElement.style.margin = 0;
-//    var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
-//                               .createInstance(Components.interfaces.nsIControllerContext);
-//    controller.init(null);
-//    controller.setCommandContext(gSourceContentWindow);
-//    gSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
-//    var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-//                                 .getInterface(Components.interfaces.nsIControllerCommandTable);
-//    commandTable.registerCommand("cmd_find",        nsFindCommand);
-//    commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
-//    commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
-//    
-//    SetupMSIMathMenuCommands();
-//
-//  } catch (e) { dump("makeEditable failed in Startup(): "+e+"\n"); }
 }
 
 function OK(){
@@ -67,7 +38,6 @@ function OK(){
   }
   data.vars = runFixup(GetMathAsString(mathnodes[0]));
 
-//  var editorElement = msiGetParentEditorElementForDialog(window);
 //  dump("In OK for ComputeVariables dialog, data.dialogTimer is [" + data.dialogTimer + "].\n");
   return true;
 }
@@ -75,7 +45,7 @@ function OK(){
 function doPostDialogFunction()
 {
   var editorElement = msiGetParentEditorElementForDialog(window);
-  dump("Hit postdialog function in ComputeVariables dialog.\n");
+//  dump("Hit postdialog function in ComputeVariables dialog.\n");
   ShutdownEditorsForWindow();
   if (data.mParentWin && ("postDialogTimerCallback" in data.mParentWin))
     data.mDialogTimer = data.mParentWin.setTimeout(data.mParentWin.postDialogTimerCallback, 0, editorElement, data);
