@@ -288,12 +288,14 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
   var startText;
   if ( (initialText.length > 0) || bWithContainingHTML )
   {
-    if (bWithContainingHTML)
+    if (bWithContainingHTML && !initialText.length)
     {
       if (editorElement.mbInitialContentsMultiPara)
-        startText = "<body>" + initialText + "</body>";
+        startText = "<body></body>";
+//        startText = "<body>" + initialText + "</body>";
       else
-        startText = "<para>" + initialText + "</para>";
+        startText = "<para></para>";
+//        startText = "<para>" + initialText + "</para>";
 //      startText = "<html><head></head><BODY><para>" + initialText + "</para></BODY></html>";
     }
     else
@@ -327,8 +329,11 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
     
     msiSetupMSIMathMenuCommands(editorElement);
     msiSetupMSIComputeMenuCommands(editorElement);
-    msiSetupMSITypesetMenuCommands(editorElement);
-    msiSetupMSITypesetInsertMenuCommands(editorElement);
+    if ("msiSetupMSITypesetMenuCommands" in window)
+    {
+      msiSetupMSITypesetMenuCommands(editorElement);
+      msiSetupMSITypesetInsertMenuCommands(editorElement);
+    }
   } catch (e) { msiDumpWithID("msiInitializeEditorForElement [@] failed: "+e+"\n", editorElement); }
 }
 
@@ -543,6 +548,9 @@ function ShutdownAllEditors()
 function msiEditorDocumentObserver(editorElement)
 {
   this.mEditorElement = editorElement;
+//  this.mDumpMessage = 3;
+  this.mbInsertInitialContents = true;
+  this.mbAddOverrideStyleSheets = true;
   this.doInitFastCursor = function() 
   {
     if (this.mEditorElement && ("fastCursorInit" in this.mEditorElement) && this.mEditorElement.fastCursorInit!==null)
@@ -564,7 +572,8 @@ function msiEditorDocumentObserver(editorElement)
     var edStr = "";
     if (editor != null)
       edStr = "non-null";
-//    msiDumpWithID("In documentCreated observer for editor [@]; aTopic is [" + aTopic + "], msiGetEditor returned [" + edStr + "] before switch.\n", editorElement);
+//    if (this.mDumpMessage > 0)
+//      msiDumpWithID("In documentCreated observer for editor [@]; aTopic is [" + aTopic + "], aData is [" + aData + "]; msiGetEditor returned [" + edStr + "] before switch.\n", editorElement);
 
     switch(aTopic)
     {
@@ -617,13 +626,21 @@ function msiEditorDocumentObserver(editorElement)
         if (!("InsertCharWindow" in window))
           window.InsertCharWindow = null;
 
+        var bIsRealDocument = false;
+        var currentURL = msiGetEditorURL(this.mEditorElement);
+        if (currentURL != null)
+        {
+          var fileName = GetFilename(currentURL);
+          bIsRealDocument = (fileName != null && fileName.length > 0);
+        }
+
         try {
           editor.QueryInterface(nsIEditorStyleSheets);
 
           //  and extra styles for showing anchors, table borders, smileys, etc
           editor.addOverrideStyleSheet(kNormalStyleSheet);
           editor.addOverrideStyleSheet(gMathStyleSheet);
-          if (this.mEditorElement.overrideStyleSheets && this.mEditorElement.overrideStyleSheets != null)
+          if (bIsRealDocument && this.mbAddOverrideStyleSheets && this.mEditorElement.overrideStyleSheets && this.mEditorElement.overrideStyleSheets != null)
           {
             for (var ix = 0; ix < this.mEditorElement.overrideStyleSheets.length; ++ix)
             {
@@ -632,6 +649,7 @@ function msiEditorDocumentObserver(editorElement)
               editor.addOverrideStyleSheet(this.mEditorElement.overrideStyleSheets[ix]);
             }
           }
+          this.mbAddOverrideStyleSheets = false;
         } catch (e) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding overrideStyleSheets: " + e);}
 
 //        // Things for just the Web Composer application
@@ -740,7 +758,15 @@ function msiEditorDocumentObserver(editorElement)
 //          initializeAutoCompleteStringArrayForEditor(editor);
         }
 
-        if (("initialEditorContents" in this.mEditorElement) && (this.mEditorElement.initialEditorContents.length > 0))
+//        if (this.mDumpMessage)
+//        {
+//          msiDumpWithID("Current contents of editor [@] with URL [" + currentURL + "] are: [\n", this.mEditorElement);
+//          if (editor != null)
+//            editor.dumpContentTree();
+//          dump("\n].\n");
+//        }
+        if (bIsRealDocument && this.mbInsertInitialContents && ("initialEditorContents" in this.mEditorElement) && (this.mEditorElement.initialEditorContents != null)
+                       && (this.mEditorElement.initialEditorContents.length > 0))
         {
           msiDumpWithID("Adding initial contents for editorElement [@].\n", this.mEditorElement);
           var htmlEditor = this.mEditorElement.getHTMLEditor(this.mEditorElement.contentWindow);
@@ -748,8 +774,10 @@ function msiEditorDocumentObserver(editorElement)
           if (this.mEditorElement.mbInitialContentsMultiPara)
             bIsSinglePara = false;
 //          htmlEditor.insertHTML(editorElement.initialEditorContents);
-          insertXMLAtCursor(htmlEditor, this.mEditorElement.initialEditorContents, bIsSinglePara);
+          if (insertXMLAtCursor(htmlEditor, this.mEditorElement.initialEditorContents, bIsSinglePara))
+            this.mbInsertInitialContents = false;
         }
+//        --this.mDumpMessage;
         break;
 
       case "cmd_setDocumentModified":
@@ -767,9 +795,24 @@ function msiEditorDocumentObserver(editorElement)
         // Ignore this when editor doesn't exist,
         //   which happens once when page load starts
         if (editor)
+        {
+          var params = newCommandParams();
+          if (!params)
+            return;
+//          try {
+//            commandManager.getCommandState(aTopic, this.mEditorElement.contentWindow, params);
+//            var newURI = params.getISupportsValue("state_data");
+//            if (newURI != null)
+//            {
+//              newURI.QueryInterface(Components.interfaces.nsIURI);
+//              dump("Document location changed; new path is [" + newURI.path + "].\n");
+//            }
+//          } catch(exc) { dump("Exception in getting URI in obs_documentLocationChanged observer: [" + exc + "].\n"); }
+
           try {
             editor.updateBaseURL();
           } catch(e) { dump (e); }
+        }
         break;
 
       case "cmd_bold":

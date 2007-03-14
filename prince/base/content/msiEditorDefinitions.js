@@ -64,6 +64,7 @@ const msigWin = "Win";
 const msigUNIX = "UNIX";
 const msigMac = "Mac";
 
+const msiInputBoxCaretOffset = 1;
 //var gLastFocusNode = null;
 //var gLastFocusNodeWasSelected = false;
 
