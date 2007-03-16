@@ -704,13 +704,13 @@ function toggleSidebar(aCommandID, forceOpen) {
 
   var elt = document.getElementById(aCommandID);  // elt is a broadcaster object
   var sidebar = document.getElementById("sidebar"); // a deck
-  var sidebarTitle = document.getElementById("sidebar-title");
+  var sidebarTitle = document.getElementById("sidebar-title-box");
   var sidebarSplitter = document.getElementById("sidebar-splitter");
 
   if (!forceOpen && elt.getAttribute("checked") == "true") {
     elt.removeAttribute("checked");
     sidebarBox.setAttribute("sidebarcommand", "");
-    sidebarTitle.setAttribute("value", "");
+    sidebarTitle.setAttribute("label", "");
     sidebarBox.hidden = true;
     sidebarSplitter.hidden = true;
     content.focus();
@@ -739,7 +739,7 @@ function toggleSidebar(aCommandID, forceOpen) {
     if (nodelist.item(i).id == url)
       sidebar.selectedIndex = i;
   sidebarBox.setAttribute("sidebarcommand", elt.id);
-  sidebarTitle.setAttribute("value", title);
+  sidebarTitle.setAttribute("label", title);
 }
 
 
