@@ -249,8 +249,8 @@
     </menupopup>
   </menu>
   
-  <menu id="viewMenu" label="View" accesskey="" >
-    <menupopup id="viewPopup">
+  <menu id="viewMenu" label="&viewMenu.label;" accesskey="&viewMenu.accesskey;" >
+    <menupopup id="viewMenuPopup">
       <menuitem id="viewNormalMode"   type="radio" group="mode" accesskey="&NormalMode.accesskey;"     observes="cmd_NormalMode"
         label="&NormalMode.label;"/>
       <menuitem id="viewAllTagsMode"  type="radio" group="mode" accesskey="&TagsMode.accesskey;"    observes="cmd_AllTagsMode"
@@ -259,6 +259,10 @@
          label="&SourceMode.label;"/>
       <menuitem id="viewPreviewMode"  type="radio" group="mode" accesskey="&PreviewMode.accesskey;"    observes="cmd_PreviewMode"
         label="&PreviewMode.label;"/>
+      <menuseparator/>
+      <menu id="viewShowHide" label="&viewShowHideMenu.label;" accesskey="&viewShowHideMenu.accesskey;" >
+        <menupopup id="viewShowHidePopup"/>
+      </menu>
     </menupopup>
   </menu>
   
@@ -544,7 +548,7 @@
     <menuitem label="Start animation"
             oncommand='msiStartAnimation();' />
     <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://editor/content/chamtest.xul","Cham Test", 
-      "chrome,close,titlebar,modal=false");' /> 
+      "chrome,close,titlebar,resizable,modal=false");' /> 
     <menuitem label="Charset" oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding');"/>
     </menupopup>
   </menu>
