@@ -692,3 +692,55 @@ function initializeAutoCompleteStringArray()
 //In msiEditor.js       goDoCommand(cmdstr);  
 //In msiEditor.js    }
 //In msiEditor.js }
+
+
+// |forceOpen| is a bool that indicates that the sidebar should be forced open.  In other words
+// the toggle won't be allowed to close the sidebar.
+function toggleSidebar(aCommandID, forceOpen) {
+
+  var sidebarBox = document.getElementById("sidebar-box");
+  if (!aCommandID)
+    aCommandID = sidebarBox.getAttribute("sidebarcommand");
+
+  var elt = document.getElementById(aCommandID);  // elt is a broadcaster object
+  var sidebar = document.getElementById("sidebar"); // a deck
+  var sidebarTitle = document.getElementById("sidebar-title");
+  var sidebarSplitter = document.getElementById("sidebar-splitter");
+
+  if (!forceOpen && elt.getAttribute("checked") == "true") {
+    elt.removeAttribute("checked");
+    sidebarBox.setAttribute("sidebarcommand", "");
+    sidebarTitle.setAttribute("value", "");
+    sidebarBox.hidden = true;
+    sidebarSplitter.hidden = true;
+    content.focus();
+    return;
+  }
+
+  var elts = document.getElementsByAttribute("group", "sidebar");
+  for (var i = 0; i < elts.length; ++i)
+    elts[i].removeAttribute("checked");
+
+  elt.setAttribute("checked", "true");;
+
+  if (sidebarBox.hidden) {
+    sidebarBox.hidden = false;
+    sidebarSplitter.hidden = false;
+  }
+
+  var url = elt.getAttribute("sidebarurl");
+  var title = elt.getAttribute("sidebartitle");
+  if (!title)
+    title = elt.getAttribute("label");
+  var i;
+  var deckpaneltoshow;
+  var nodelist = sidebar.childNodes;
+  for (i = 0; i < nodelist.length; i++)
+    if (nodelist.item(i).id == url)
+      sidebar.selectedIndex = i;
+  sidebarBox.setAttribute("sidebarcommand", elt.id);
+  sidebarTitle.setAttribute("value", title);
+}
+
+
+
