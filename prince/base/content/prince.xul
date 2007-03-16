@@ -13,6 +13,7 @@
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/ComputeOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/typesetOverlay.xul" ?>
+<?xul-overlay href="chrome://prince/content/sidebarOverlay.xul" ?>
 
 <!DOCTYPE window [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
@@ -32,7 +33,7 @@
         contenttitlesetting="true"
         titlemodifier="&editorWindow.titlemodifier;"
         titlemenuseparator="&editorWindow.titlemodifiermenuseparator;"
-  windowtype="composer:html"     
+  windowtype="composer:html"        
   screenX="10" screenY="10" width="640" height="480"
   persist="screenX screenY width height sizemode"
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -71,6 +72,16 @@
   <broadcasterset id="broadcasterset"/>
   <broadcaster id="args" value="about:blank"/>
   <broadcaster id="canPrint"/>
+  
+  <broadcasterset id="mainBroadcasterSet">
+    <broadcaster id="viewFragDirSidebar" autoCheck="false" label="View Fragments"
+                 type="checkbox" group="sidebar" sidebarurl="frag-tree"
+                 oncommand="toggleSidebar('viewFragDirSidebar');"/>
+    <broadcaster id="viewOutlineSidebar" autoCheck="false" label="Document Outline"
+                 type="checkbox" group="sidebar" sidebarurl="docoutline"
+                 oncommand="toggleSidebar('viewOutlineSidebar');"/>
+  </broadcasterset>
+
   
   <keyset id="editorKeys">
     <keyset id="tasksKeys"/>

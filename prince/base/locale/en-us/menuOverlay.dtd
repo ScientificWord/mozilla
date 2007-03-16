@@ -78,7 +78,10 @@
 <!ENTITY selectAllCmd.accesskey				"a"> 
 
 <!-- View menu items -->
-
+<!ENTITY viewMenu.label "View" >
+<!ENTITY viewMenu.accesskey "V" >
+<!ENTITY viewShowHideMenu.label "Show/Hide" >
+<!ENTITY viewShowHideMenu.accesskey "S" >
 
 <!-- For a "Paste" submenu when more than 1 
      clipboard formats are available -->
