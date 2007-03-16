@@ -58,16 +58,15 @@
     <menu id="sidebar-menu" type="checkbox"
       label="&sidebarCmd.label;"
       accesskey="&sidebarCmd.accesskey;"
-      oncommand="toggleSidebar('viewFragDirSidebar');"
       key="showHideSidebar">
       <menupopup id="viewSidebarPopup">
         <menuitem id="sidebar-fragments" type="checkbox"
-          label="&sidebar.fragments.label;"
+          label="&sidebar.fragments.label;" observes="viewFragDirSidebar"
           accesskey="&sidebar.fragments.accesskey;"
           oncommand="toggleSidebar('viewFragDirSidebar');"
           />
         <menuitem id="sidebar-outline" type="checkbox"
-          label="&sidebar.outline.label;"
+          label="&sidebar.outline.label;" observes='viewOutlineSidebar'
           accesskey="&sidebar.outline.accesskey;"
           oncommand="toggleSidebar('viewOutlineSidebar');"
           />
@@ -75,7 +74,7 @@
     </menu>
   </menu>
 
-  <vbox id="sidebar-box" persist="hidden width collapsed" flex="1">
+  <vbox id="sidebar-box" persist="hidden width collapsed" flex="1" >
     <splitter id="sidebar-panels-splitter" collapse="after" persist="state"
       onmouseup="PersistHeight();" hidden="true">
       <grippy/>
@@ -83,23 +82,19 @@
     <vbox id="sidebar-panels-splitter-box" flex="1" 
       persist="collapsed">
       <sidebarheader id="sidebar-title-box" class="sidebarheader-main"
-        persist="hidden" type="box"
+        persist="hidden" type="box" label="Sidebar"
         collapse="after" onmouseup="PersistHeight();" prefixhidden="true"
         tooltipopen="&sidebar.open.tooltip;" 
         tooltipclose="&sidebar.close.tooltip;">
         <label id="sidebar-label">&sidebar.panels.label;</label>
         <toolbarbutton type="menu" id="sidebar-panel-picker" menubuttontype="sidebar-panels"
           label="&sidebar.picker.label;" >
-          <menupopup id="sidebar-panel-picker-popup" popupanchor="bottomleft"
-            oncommand="SidebarTogglePanel(event.target);" >
-            <menuitem label="&sidebar.fragments.label;" accesskey="&sidebar.fragments.accesskey;"
-                      oncommand="document.getElementById('sidebar').selectedIndex = 0;" />
-            <menuitem id="sidebar.outline"
-                      label="&sidebar.outline.label;"
-                      oncommand="document.getElementById('sidebar').selectedIndex = 1;" />
+          <menupopup id="sidebar-panel-picker-popup" popupanchor="bottomleft" >
+            <menuitem type="checkbox"  observes="viewFragDirSidebar" />
+            <menuitem type="checkbox"  observes="viewOutlineSidebar" />
           </menupopup>
         </toolbarbutton>
-        <toolbarbutton id="sidebar-close-button" oncommand="SidebarShowHide();"
+        <toolbarbutton id="sidebar-close-button" oncommand="toggleSidebar('');"
                        tooltiptext="&sidebar.close.tooltip;"/>
       </sidebarheader>
   
@@ -109,11 +104,11 @@
                sortActive="true" sortDirection="ascending"
                sortResource="http://homefile.netscape.com/NC-rdf#Name" >
           <treecols>
-            <treecol id="Name" label="Name" primary="true" flex="1"/>
+            <treecol id="Name" label="Name" primary="true" flex="1" persist="width ordinal hidden" />
             <splitter/>
-            <treecol id="Date" label="Date" flex="1"/>  
+            <treecol id="Date" label="Date" hidden="true" flex="1"  persist="width ordinal hidden"/>  
             <splitter/>
-            <treecol id="Size" label="Size" flex="1"/>
+            <treecol id="Size" label="Size" hidden="true" flex="1"  persist="width ordinal hidden"/>
           </treecols>
 
             <template>
@@ -121,8 +116,8 @@
                 <treechildren>
                   <treeitem uri="rdf:*">
                     <treerow>
-                      <treecell label="rdf:http://home.netscape.com/NC-rdf#Name"
-                            src="rdf:http://home.netscape.com/NC-rdf#Icon"/>
+                      <treecell label="rdf:http://home.netscape.com/NC-rdf#Name" />
+                         <!--   src="rdf:http://home.netscape.com/NC-rdf#Icon"/ -->
                       <treecell label="rdf:http://home.netscape.com/WEB-rdf#LastModifiedDate"/>
                       <treecell label="rdf:http://home.netscape.com/NC-rdf#Content-Length"/>
                     </treerow>
@@ -131,7 +126,7 @@
               </rule>
             </template>
         </tree>
-      
+        <hbox id="docoutline" >No document outline yet</hbox>
       </deck>
     </vbox>
     <vbox flex="0">
