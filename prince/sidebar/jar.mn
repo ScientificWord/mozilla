@@ -1,0 +1,33 @@
+prince.jar:
+% content prince %content/  
+  content/branding/icon64.png       (content/icon64.png) 
+* content/customize.xul                (content/customize.xul)
+* content/customize.js                 (content/customize.js)
+* content/customize-panel.xul           (content/customize-panel.xul)
+  content/customize-panel.js           (content/customize-panel.js)
+* content/PageNotFound.xul       (content/PageNotFound.xul)
+* content/preview.js          (content/preview.js)
+* content/preview.xul         (content/preview.xul)
+* content/sidebarOverlay.js         (content/sidebarOverlay.js)
+* content/sidebarOverlay.xul         (content/sidebarOverlay.xul)
+  content/sidebarBindings.xml		  (content/sidebarBindings.xml)
+  content/local-panels.rdf			   (content/local-panels.rdf)
+  content/sidebarOverlay.css       (content/sidebarOverlay.css)
+
+en-US.jar:
+% locale prince en-US %locale/
+  locale/sidebarOverlay.dtd                       (locale/en-us/sidebarOverlay.dtd)
+  locale/preview.dtd                       (locale/en-us/preview.dtd)
+  locale/local-panels.dtd                       (locale/en-us/local-panels.dtd)
+  locale/customize.dtd                       (locale/en-us/customize.dtd)
+  locale/sidebar.properties                       (locale/en-us/sidebar.properties) 
+
+classic.jar:
+% skin prince classic %skin/classic/
+  skin/classic/customize.css       (skin/classic/customize.css)
+  skin/classic/preview.css       (skin/classic/preview.css)
+  skin/classic/sidebar.css       (skin/classic/sidebar.css)
+  skin/classic/sidebarListView.css       (skin/classic/sidebarListView.css)
+  skin/classic/sidebarBindings.xml       (skin/classic/sidebarBindings.xml)
+  skin/classic/sbtab-twisty.gif       (skin/classic/sbtab-twisty.gif)
+  skin/classic/sbtab-twisty-open.gif       (skin/classic/sbtab-twisty-open.gif)

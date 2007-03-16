@@ -395,9 +395,9 @@
     onfocus="this.select();"
     ontextentered=" msiDoStatefulCommand('cmd_othertag',this.value);" />
     
-  <menu id="menu_Toolbars">
+  <menu id="viewShowHide">
 <!-- the order here should match the order at the top of the screen -->
-    <menupopup id="view_toolbars_popup"> 
+    <menupopup id="viewShowHidePopup"> 
       <menuitem id="viewStandardToolbar"      label="&ViewStandardToolbar.label;" type="checkbox" accesskey="&ViewStandardToolbar.accesskey;" observes="cmd_viewStandardToolbar" />
       <menuitem id="viewTagSelectToolbar"      label="&ViewTagSelectToolbar.label;" type="checkbox" accesskey="&ViewTagSelectToolbar.accesskey;" observes="cmd_viewTagSelectToolbar" />
       <menuitem id="viewMathToolbar"      label="&ViewMathToolbar.label;" type="checkbox" accesskey="&ViewMathToolbar.accesskey;" observes="cmd_viewMathToolbar" />
