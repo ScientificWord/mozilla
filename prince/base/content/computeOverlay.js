@@ -905,7 +905,7 @@ function doGlobalComputeCommand(cmd, editorElement)
     doComputeRandomNumbers(editorElement);
     break;
   case "cmd_compute_SetBasisVariables":
-    doComputeSetBasisVars(editorElement);
+    doComputeSetBasisVars(editorElement, cmd);
     break;
   case "cmd_compute_ShowDefs":
     doComputeShowDefs(editorElement);
@@ -2250,7 +2250,7 @@ function doComputeClearDefs()
   GetCurrentEngine().clearDefinitions();
 }
 
-function doComputeSetBasisVars(editorElement)
+function doComputeSetBasisVars(editorElement, cmd)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
@@ -2259,16 +2259,32 @@ function doComputeSetBasisVars(editorElement)
   msiComputeLogger.Sent("vector basis","queried");
 
   var o = new Object();
-
   o.vars = runFixup(compsample.getVectorBasis());
-  var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeVarList.xul", "_blank", "chrome,close,titlebar,modal", o);
-  if (o.Cancel) {
-    return;
-  }
+  o.mParentWin = this;
+  o.theEngine = compsample;
+  o.afterDialog = function(editorElement)
+  { 
+    if (this.Cancel)
+      return;
+    this.mParentWin.finishComputeSetBasisVars(this.vars, this.theEngine);
+  };
 
-  compsample.setVectorBasis(o.vars);
-  msiComputeLogger.Sent("new vector basis",o.vars);
+  try {
+    var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVarList.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
+                                      editorElement, cmd, null, o);
+  } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMinPoly: [" + e + "]"); return;}
+
+//  var parentWin = msiGetParentWindowForNewDialog(editorElement);
+//  parentWin.openDialog("chrome://prince/content/ComputeVarList.xul", "_blank", "chrome,close,titlebar,modal", o);
+//  if (o.Cancel) {
+//    return;
+//  }
+}
+
+function finishComputeSetBasisVars(vars, compsample)
+{
+  compsample.setVectorBasis(vars);
+  msiComputeLogger.Sent("new vector basis",vars);
 }
 
 function doComputeUserSettings()
