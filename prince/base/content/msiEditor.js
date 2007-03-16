@@ -774,7 +774,7 @@ function msiEditorDocumentObserver(editorElement)
           if (this.mEditorElement.mbInitialContentsMultiPara)
             bIsSinglePara = false;
 //          htmlEditor.insertHTML(editorElement.initialEditorContents);
-          if (insertXMLAtCursor(htmlEditor, this.mEditorElement.initialEditorContents, bIsSinglePara))
+          if (insertXMLAtCursor(htmlEditor, this.mEditorElement.initialEditorContents, bIsSinglePara, true))
             this.mbInsertInitialContents = false;
         }
 //        --this.mDumpMessage;

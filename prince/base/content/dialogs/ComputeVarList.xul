@@ -1,16 +1,17 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
-<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/Editor.css" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://communicator/skin/" type="text/css"? -->
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
-<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? -->
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
 <!DOCTYPE dialog [
 <!ENTITY % DTD SYSTEM "chrome://prince/locale/ComputeVarList.dtd" >
@@ -25,25 +26,32 @@
 <dialog title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "Startup()"
-    onunload="EditorShutdown()"
+    onunload="doPostDialogFunction()"
     ondialogaccept = "return OK()"
     ondialogcancel = "return Cancel()"
     buttons="accept,cancel">
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <!-- script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <script type="application/x-javascript" src="chrome://prince/content/ComputeVarList.js" />
 
+  <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
+
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
+
+  <popupset id="msiEditorContentContextSet"/>
 
   <broadcaster id="args" value="about:blank"/>
 
@@ -65,7 +73,7 @@
     <keyset id="MSIKeySet"/>
   </keyset>
 
-  <toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
+  <!-- toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
   <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippytooltiptext="&menuBar.tooltip;">
     <menu id="editMenu"/>
 
@@ -84,13 +92,13 @@
     <menu id="tableMenu"/>
     <spacer flex="1"/>
   </menubar>
-  </toolbox>
+  </toolbox -->
 
   <hbox>
     <vbox>
       <groupbox>
         <caption label="&vars.label;"/>
-        <editor editortype="html" type="content-primary" context="editorContentContext" id="content-frame"/>
+        <editor editortype="html" type="content-primary" context="msiEditorContentContext" height="60" width="200" id="varList-frame"/>
       </groupbox>
     </vbox>
   </hbox>
