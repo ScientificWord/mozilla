@@ -610,7 +610,7 @@ function populateDialog (plotno) {
 //  dump("Preparing to insert XML in GraphSettings dialog. Editor currently contains: [" + debugStr + "]\n");
 //  dump("Current focus is at node [" + editor.selection.focusNode.localName + "], offset [" + editor.selection.focusOffset + "].\n");
 //  dump("In populateDialog, string to be inserted is: [" + str + "].\n");
-  insertXMLAtCursor(editor, str, true);
+  insertXMLAtCursor(editor, str, true, false);
   debugStr = serializer.serializeToString(doc.documentElement);
 //  dump("Editor contains: [" + debugStr + "]\n");
 

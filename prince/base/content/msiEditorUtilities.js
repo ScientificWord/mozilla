@@ -962,7 +962,7 @@ function insertXML(editor, text, node, offset, bDump)
   }
 }
 
-function insertXMLAtCursor(editor, text, bWithinPara)
+function insertXMLAtCursor(editor, text, bWithinPara, bSetCaret)
 {
   if (!editor)
   {
@@ -973,15 +973,13 @@ function insertXMLAtCursor(editor, text, bWithinPara)
     text = "<para>" + text + "</para>";
   else
     text = "<body>" + text + "</body>";
-//  if (editor.selection != null)
   var theElement = null;
   var theOffset = 0;
   var theLength = 0;
   var bOK = true;
   try
   {
-//    editor.selection.collapseToEnd();
-    dump("Going to insertXML, text before call is [" + text + "].\n");
+//    dump("Going to insertXML, text before call is [" + text + "].\n");
     theElement = editor.selection.focusNode;
     theOffset = editor.selection.focusOffset;
     var fixedPos = fixInsertPosition(editor, theElement, theOffset);
@@ -991,12 +989,9 @@ function insertXMLAtCursor(editor, text, bWithinPara)
       theOffset = fixedPos.theOffset;
     }
     theLength = theElement.childNodes.length;
-//    var theRange = editor.selection.getRangeAt(0);
-//    insertXML(editor, text, theRange.endContainer, theRange.endOffset);
     insertXML(editor, text, theElement, theOffset, true);
     dump("insertXML now done.\n");
   }
-//  else
   catch(exc)
   {
     dump("In insertXMLAtCursor, couldn't use editor.selection! (Exception: [" + exc + "]\n");
@@ -1019,7 +1014,7 @@ function insertXMLAtCursor(editor, text, bWithinPara)
       theLength = theOffset = theElement.childNodes.length;
       try
       {
-        insertXML(editor, text, theElement, theOffset, true);
+        insertXML(editor, text, theElement, theOffset, false);
       } 
       catch(exc)
       {
@@ -1052,103 +1047,42 @@ function insertXMLAtCursor(editor, text, bWithinPara)
     //Find inserted nodes now in order to rationally place cursor.
     var newLength = theElement.childNodes.length;
 
-    var caretNodeData = findCaretPositionAfterInsert(editor.document, theElement, theOffset, newElement, newOffset);
-
-//    var newNodes = null;
-//    if (newLength <= theLength)
-//    {
-//      //Do what?? Whatever we inserted was apparently (hopefully) completely absorbed at theElement.childNodes[theOffset-1].
-//      if (theOffset >= newLength)
-//        newNodes = new Array( theElement.childNodes[newLength-1] );
-//      else
-//        newNodes = new Array( theElement.childNodes[theOffset-1] );
-//    }
-//    else
-//    {
-//      newNodes = new Array();
-//      for (var ii = theOffset-1; ii <= theOffset + newLength - theLength; ++ii)
-//      {
-//        if (ii >= 0 && ii < theElement.childNodes.length)
-//          newNodes.push( theElement.childNodes[ii] );
-//      }
-//    }
-//    if (newNodes == null && editor.document.rootElement.childNodes.length > 0)
-//    {
-//      var targetTag = "body";
-//      if (bWithinPara)
-//        targetTag = "para";
-//      newNodes = editor.document.rootElement.getElementsByTagName(targetTag);
-//      if (newNodes.length == 0 && bWithinPara)
-//        newNodes = editor.document.rootElement.getElementsByTagName("p");
-//      if (newNodes.length == 0)
-//        newNodes = editor.document.rootElement.childNodes;
-//    }
-//    dump("New contents of editor are: [\n");
-//    if (editor != null)
-//      editor.dumpContentTree();
-//    dump("\n].\n");
-//    if (newNodes != null)
-//      dump("\n]; array newNodes has [" + newNodes.length + "] elements.\n");
-
-//    var caretNodeData = null;
-//    var newCaretData = null;
-//    for (var ix = 0; ix < newNodes.length; ++ix)
-//    {
-//      try
-//      {
-//        newCaretData = findCaretPositionInNode(newNodes[ix]);
-//      } catch(excep) {
-//        if (newNodes[ix] == null)
-//          dump("In insertXMLAtCursor, exception calling findCaretPositionInNode with empty node, exception: [" + excep + "].\n");
-//        else
-//          dump("In insertXMLAtCursor, exception calling findCaretPositionInNode with node [" + newNodes[ix].nodeName + "], exception: [" + excep + "].\n");
-//      }
-////      var caretReportStr = "Searching for caret pos in node  [";
-////      if (newNodes[ix] != null)
-////        caretReportStr += newNodes[ix].nodeName;
-//      if (newCaretData != null)
-//      {
-////        caretReportStr += "], found in node [";
-////        if (newCaretData.theNode != null)
-////          caretReportStr += newCaretData.theNode.nodeName;
-////        caretReportStr += "], at offset [" + newCaretData.theOffset + "] of type [" + newCaretData.theType + "].\n";
-//        if (newCaretData.theType == "caretpos")
-//        {
-//          caretNodeData = newCaretData;
-////          dump(caretReportStr);
-//          break;
-//        }
-//        else if ((caretNodeData==null || caretNodeData.theType == "any") && newCaretData.theType != "any")
-//          caretNodeData = newCaretData;
-//      }
-////      else
-////        caretReportStr += "], found nothing.\n";
-////      dump(caretReportStr);
-//    }
-    if (caretNodeData == null && newElement != null)
+    if (bSetCaret)
     {
-      caretNodeData = new Object();
-      caretNodeData.theNode = newElement;
-      caretNodeData.theOffset = newOffset;
-    }
-    if (caretNodeData != null)
-    {
-      if (caretNodeData.theNode == null)
+      var caretNodeData = findCaretPositionAfterInsert(editor.document, theElement, theOffset, newElement, newOffset);
+
+//      dump("New contents of editor are: [\n");
+//      if (editor != null)
+//        editor.dumpContentTree();
+//      dump("\n].\n");
+//      if (caretNodeData == null && newElement != null)
+//      {
+//        caretNodeData = new Object();
+//        caretNodeData.theNode = newElement;
+//        caretNodeData.theOffset = newOffset;
+//      }
+      if (caretNodeData != null)
       {
-        dump("In insertXMLAtCursor, got non-null caretNodeData with null caretNodeData.theNode!\n");
+        if (caretNodeData.theNode == null)
+        {
+          dump("In insertXMLAtCursor, got non-null caretNodeData with null caretNodeData.theNode!\n");
+        }
+        else
+        {
+          var adjustedCaret = moveCaretToTextChild(caretNodeData.theNode, caretNodeData.theOffset);
+          if (adjustedCaret != null)
+            caretNodeData = adjustedCaret;
+          try
+          {
+            editor.selection.collapse(caretNodeData.theNode, caretNodeData.theOffset);
+  //          dump("In insertXMLAtCursor, set caret inside node [" + caretNodeData.theNode.nodeName + "], at offset [" + caretNodeData.theOffset + "], with old length = [" + theLength + "] and new length = [" + newLength + "].\n");
+          }
+          catch(exc) {dump("In insertXMLAtCursor, unable to set caret inside node [" + caretNodeData.theNode.nodeName + "]; exception is [" + exc + "].\n");}
+        }
       }
       else
-      {
-        try
-        {
-          editor.selection.collapse(caretNodeData.theNode, caretNodeData.theOffset);
-//          dump("In insertXMLAtCursor, set caret inside node [" + caretNodeData.theNode.nodeName + "], at offset [" + caretNodeData.theOffset + "], with old length = [" + theLength + "] and new length = [" + newLength + "].\n");
-        }
-        catch(exc) {dump("In insertXMLAtCursor, unable to set caret inside node [" + caretNodeData.theNode.nodeName + "]; exception is [" + exc + "].\n");}
-      }
+        dump("In insertXMLAtCursor, no caretNode found.\n");
     }
-    else
-      dump("In insertXMLAtCursor, no caretNode found.\n");
   }
   return bOK;
 }
@@ -1194,7 +1128,6 @@ function fixInsertPosition(editor, theNode, offset)
   retVal.theOffset = offset;
 
   var theElement = theNode;
-//  var topNode = editor.document.rootElement;
   var topNode = msiGetRealBodyElement(editor.document);
   if (topNode == null)
     topNode = editor.document.documentElement;
@@ -1271,16 +1204,14 @@ function msiGetBlockNodeParent(editor, aNode)
   return null;
 }
 
-//Here you want to be careful. It's even possible that the position before insertion would point to, say, position 1 in a
-//list but that the insertion would be absorbed and that the position after insertion would point to a new child of the object
-//at that position, and so would appear to be prior to the pre-position?
-//On the other hand, this kind of coalescing should happen only when using the msiEditor insertion functions, in which case
-//we shouldn't be doing this anyway...
 //The idea is to use a NodeIterator to walk the new or affected nodes. We want to find the marked caret position (using the
 //"caretpos" attribute), or the first input box (always in an <mi>?), or, failing that, to leave it at the postNode and postOffset.
 function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, postOffset)
 {
-  var retVal = null;
+  //What we return if nothing found.
+  var retVal = new Object();
+  retVal.theNode = postNode;
+  retVal.theOffset = postOffset;
 
   var startNode = preNode;
   var startOffset = preOffset;
@@ -1324,21 +1255,19 @@ function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, po
   if (treeWalker)
   {
     var nextPos = treeWalker.currentNode = startNode;
-    var bDone = false;
+    var bFoundInput = false;
     var bFoundCaretPos = false;
     while (!bFoundCaretPos && nextPos != null && nextPos.compareDocumentPosition(endNode) != Node.DOCUMENT_POSITION_PRECEDING)
     {
       if (nextPos.hasAttribute("caretpos"))
       {
         bFoundCaretPos = true;
-        if (retVal == null)
-          retVal = new Object();
         retVal.theNode = nextPos;
         retVal.theOffset = nextPos.getAttribute("caretpos");
       }
-      else if (retVal==null && nextPos.hasAttribute("tempinput") && nextPos.getAttribute("tempinput")=="true")
+      else if (!bFoundInput && nextPos.hasAttribute("tempinput") && nextPos.getAttribute("tempinput")=="true")
       {
-        retVal = new Object();
+        bFoundInput = true;
         retVal.theNode = nextPos;
         retVal.theOffset = msiInputBoxCaretOffset;  //set to 1
       }
@@ -1346,25 +1275,139 @@ function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, po
     }
   }
 
-  if (retVal != null) //In these cases we attempt to put the caret inside a child text node.
-  {
-    var nNonEmptyTextChild = -1;
-    for (var kx = 0; kx < retVal.theNode.childNodes.length; ++kx)
-    {
-      if (retVal.theNode.childNodes[kx].nodeType != Components.interfaces.nsIDOMNode.TEXT_NODE)
-      {
-        nNonEmptyTextChild = -1;  //There are non-text children, so we don't want to assume the offset's intended to go inside a text child.
-        break;
-      }
-      if (nNonEmptyTextChild < 0 && retVal.theNode.childNodes[kx].nodeValue.length > 0)
-        nNonEmptyTextChild = kx;
-    }
-    if (nNonEmptyTextChild >= 0)
-      retVal.theNode = retVal.theNode.childNodes[nNonEmptyTextChild];
-  }
+////  if (retVal != null) //In these cases we attempt to put the caret inside a child text node.
+////  {
+//  var nNonEmptyTextChild = -1;
+//  for (var kx = 0; kx < retVal.theNode.childNodes.length; ++kx)
+//  {
+//    if (retVal.theNode.childNodes[kx].nodeType != Components.interfaces.nsIDOMNode.TEXT_NODE)
+//    {
+//      nNonEmptyTextChild = -1;  //There are non-text children, so we don't want to assume the offset's intended to go inside a text child.
+//      break;
+//    }
+//    if (nNonEmptyTextChild < 0 && retVal.theNode.childNodes[kx].nodeValue.length > 0)
+//      nNonEmptyTextChild = kx;
+//  }
+//  if (nNonEmptyTextChild >= 0)
+//    retVal.theNode = retVal.theNode.childNodes[nNonEmptyTextChild];
+////  }
 
   return retVal;
 }
+
+////Returns the index in theNode.childNodes of a unique nonempty text node, or a node containing only one child
+////  which contains only one nonempty text node, if that's all it contains.
+////Returns -1 if containing any other non-trivial structure.
+//function getSingleNonemptyTextNode(theNode)
+//{
+//  var nNonEmptyTextChild = -1;
+//  var nNonEmptyOtherChild = -1;
+//  for (var kx = 0; kx < theNode.childNodes.length; ++kx)
+//  {
+//    if (theNode.childNodes[kx].nodeType != Components.interfaces.nsIDOMNode.TEXT_NODE)
+//    {
+//      if (nNonEmptyOtherChild >= 0 || nNonEmptyTextChild >= 0)
+//        return null;
+//      nNonEmptyOtherChild = kx;
+//    }
+//    else if (theNode.childNodes[kx].nodeValue.length > 0)  //found a text node
+//    {
+//      if (nNonEmptyTextChild >= 0 || nNonEmptyOtherChild >= 0)  //found something else previously
+//        return null;
+//      nNonEmptyTextChild = kx;
+//    }
+//  }
+//  if (nNonEmptyOtherChild >= 0)
+//    return getSingleNonemptyTextNode(theNode.childNodes[nNonEmptyOtherChild]);
+//  if (nNonEmptyTextChild >= 0)
+//    return theNode.childNodes[nNonEmptyTextChild];
+//  return null;
+//}
+
+//Cases still needing special treatment in placement of the caret:
+//  i) If a Node's children are all text nodes, they may be regarded as one text-node child, and the offset should
+//     be used to index into the string as a whole.
+// ii) If a Node contains, other than empty text nodes, only one child Node, the offset may be passed into it to check
+//     for situation (i).
+//iii) Otherwise, if a Node contains a child Node at the passed-in non-zero offset (that is, at childNodes[theOffset-1], except
+//     that -1 is regarded as "last"), the decision should be passed on to the child Node, with an offset of -1; while if
+//     the offset is 0, the decision should be passed on the childNodes[0] with an offset of 0.
+//Most of the above is rubbish. We have to assume the node and offset are meaningful positions in the DOM, thus the only
+//business we have is to go to the position and see whether there's a good text-node position to place the caret at.
+function moveCaretToTextChild(theNode, theOffset)
+{
+  if (theNode.nodeType == Components.interfaces.nsIDOMNode.TEXT_NODE)
+  {
+    var posObject = new Object();
+    posObject.theNode = theNode;
+    if (theNode.parentNode.hasAttribute("tempinput") && theNode.parentNode.getAttribute("tempinput")=="true")
+      posObject.theOffset = msiInputBoxCaretOffset;  //set to 1
+    else if (theOffset == -1 || theOffset > theNode.nodeValue.length)
+      posObject.theOffset = theNode.nodeValue.length;
+    else
+      posObject.theOffset = theOffset;
+    return posObject;
+  }
+  //Okay, we aren't a text node. Where does theOffset point?
+  var theChild = null;
+  var nLength = theNode.childNodes.length;
+  if (!nLength)
+    return null;
+
+  if (theOffset == -1 || theOffset > nLength)
+  {
+    for (var jx = nLength; jx > 0; --jx)
+    {
+      if (theNode.childNodes[jx-1].nodeType != Components.interfaces.nsIDOMNode.TEXT_NODE || theNode.childNodes[jx-1].nodeValue.length > 0)
+      {
+        theChild = theNode.childNodes[jx-1];
+        break;
+      }
+    }
+  }
+  else if (theOffset == 0)
+  {
+    for (var jx = 0; jx < nLength; ++jx)
+    {
+      if (theNode.childNodes[jx].nodeType != Components.interfaces.nsIDOMNode.TEXT_NODE || theNode.childNodes[jx].nodeValue.length > 0)
+      {
+        theChild = theNode.childNodes[jx];
+        break;
+      }
+    }
+  }
+  else
+    theChild = theNode.childNodes[theOffset - 1];
+
+  if (theOffset != 0)
+    theOffset = -1;
+  return moveCaretToTextChild(theChild, theOffset);
+}
+
+//function moveCaretToTextChild(theNode, theOffset)
+//{
+//  if (theNode.nodeType == Components.interfaces.nsIDOMNode.TEXT_NODE)
+//  {
+//    var posObject = new Object();
+//    posObject.theNode = theNode;
+//    if (theOffset == -1 || theOffset > theNode.nodeValue.length)
+//      posObject.theOffset = theNode.nodeValue.length;
+//    else
+//      posObject.theOffset = theOffset;
+//    return posObject;
+//  }
+//
+//  var childNode = null;
+//  if (theNode.childNodes.length > 0)
+//  {
+//    if (bFromLeft)
+//      return moveCaretToTextChild(theNode.childNodes[0], true);
+//    else
+//      return moveCaretToTextChild(theNode.childNodes[theNode.childNodes.length - 1], false);
+//  }
+//
+//  return null;
+//}
 
 function findCaretPositionInNode(parentNode)
 {
@@ -1422,7 +1465,6 @@ function findCaretPositionInNode(parentNode)
       caretNode = searchNodes[jx];
       bFoundAny = bFoundNew = true;
     }
-//    if (bFoundNew && caretNode != null && !bFoundCaretPos) //In these cases we attempt to put the caret inside a child text node.
     if (bFoundNew && caretNode != null) //In these cases we attempt to put the caret inside a child text node.
     {
       var nNonEmptyTextChild = -1;
