@@ -1,6 +1,5 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
-
 function msiShowHideToolbarSeparators(toolbar) {
   dump("===> msiShowHideToolbarSeparators\n");
 
@@ -70,7 +69,7 @@ function msiMainWindowMouseDownListener(event)
 //  window.bIgnoreNextFocus = !changeActiveEditor;
   if (!changeActiveEditor)
   {
-    msiResetActiveEditorElement(this.document.defaultView);
+    msiResetActiveEditorElement(this.document.defaultView);                             
   }
 }
 
@@ -162,6 +161,14 @@ function msiEditorOnLoad()
     msiSetupMSITypesetMenuCommands(editorElement);
     msiSetupMSITypesetInsertMenuCommands(editorElement);
   } catch (e) { dump("makeEditable failed: "+e+"\n"); }
+  // Since RDF file trees can't take RESOURCE:// path names, we need to convert the
+  // fragmentsBaseDirectory to a FILE:// url.
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+  var dir1 =dsprops.get("resource:app", Components.interfaces.nsIFile);
+  dir1.append("res");
+  dir1.append("fragments");
+  var fragmentsBaseDirectory = "file:///" + dir1.path.replace("\\","/","g");
+  document.getElementById("frag-tree").setAttribute("ref", fragmentsBaseDirectory);
 }
 
 
