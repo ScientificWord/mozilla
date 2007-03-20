@@ -83,3 +83,8 @@ sidebarheader[type="splitter"] {
       min-width           : 1px;
     }
 
+treechildren::-moz-tree-row(selected) {background-color: #FFFFAA;}
+treechildren::-moz-tree-row(odd) {background-color: #EEEEEE;}
+treechildren::-moz-tree-row(odd,selected) {background-color: #FFFFAA;}
+treechildren::-moz-tree-cell-text(selected) {color: #000000;}
+treechildren::-moz-tree-cell-text(odd,selected) {color: #000000;}
