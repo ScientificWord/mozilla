@@ -19,6 +19,8 @@
 %editorDTD;
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/typesetManualCitation.dtd" >
 %dialogDTD;
+<!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
+%menuOverlayDTD;
 ]>
 
 <dialog title="&windowTitle.label;"
@@ -31,7 +33,7 @@
   <!-- script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
-  <!-- script type="application/x-javascript" src="chrome://editor/content/msiEdDialogCommon.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <!-- Following scripts are needed specifically by this dialog -->
@@ -46,12 +48,23 @@
   <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
   <!-- Following scripts are needed if the editor wants to allow computation -->
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
 
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
+
+  <popupset id="msiEditorContentContextSet"/>
   <commandset id="tasksCommands">
-    <command id="cmd_open" oncommand="doOpen()"/>
-    <command id="cmd_print" oncommand="goDoCommand('cmd_print')"/>
-    <command id="cmd_quit" oncommand="doQuit()"/>
-    <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
     <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
     <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
   </commandset>
@@ -95,7 +108,7 @@
 		<hbox>
 			<description value='&remarkCaption.label;' accesskey='&remarkCaption.accessKey;'/>
 			<!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
-      <editor editortype="html" type="content-primary" context="editorContentContext" id="remarkEditControl" flex="1" height="350" width="450"/>
+      <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="remarkEditControl" flex="1" height="350" width="450"/>
 		</hbox>
 		<spacer flex='1'/>
 	</vbox>
