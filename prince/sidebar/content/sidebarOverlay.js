@@ -1499,7 +1499,7 @@ function loadFragment(event,tree)
     while (tree.view.getParentIndex(i) >= 0)
     {           
       i = tree.view.getParentIndex(i);
-      s = tree.view.getCellText(i,namecol)+ "\\" + s;
+      s = tree.view.getCellText(i,namecol)+ "/" + s;
     }
   }
   // s is now the path of the clicked file relative to the fragment root.
@@ -1507,7 +1507,7 @@ function loadFragment(event,tree)
   {
     var xmlDoc = document.implementation.createDocument("", "frag", null);
     xmlDoc.async = false;
-    if (xmlDoc.load("file:///c:/prince2/obj-Prince/dist/xpi-stage/prince/res/fragments/"+s))
+    if (xmlDoc.load(tree.getAttribute("ref") + "/" +s))
     {
       var contextString="";
       var dataString=null;
@@ -1539,8 +1539,7 @@ function loadFragment(event,tree)
       var editor = msiGetEditor(editorElement);
       try
       {
-        editor.insertHTMLWithContext(dataString, contextString, infoString, "text/html", null,
-          null, 0, true);
+        insertXMLAtCursor(editor, dataString, false, true);
 //      editor.insertHTML(dataString);
       } catch(e) {}
     }
@@ -1551,3 +1550,113 @@ function loadFragment(event,tree)
   }
 }
 
+var fragObserver = 
+{ 
+  onDragStart: function (evt, transferData, action)
+  {
+    var tree = evt.currentTarget;
+    var namecol = tree.columns.getNamedColumn('Name');
+    var i = tree.currentIndex;
+    var s = tree.view.getCellText( i,namecol);
+    if (!tree.view.isContainer(i))
+    {  
+      while (tree.view.getParentIndex(i) >= 0)
+      {           
+        i = tree.view.getParentIndex(i);
+        s = tree.view.getCellText(i,namecol)+ "/" + s;
+      }
+    }
+    // s is now the path of the clicked file relative to the fragment root.
+    try 
+    {
+      var xmlDoc = document.implementation.createDocument("", "frag", null);
+      xmlDoc.async = false;
+      if (xmlDoc.load(tree.getAttribute("ref") + "/" +s))
+      {
+        var dataString=null;
+        var node;
+        node = xmlDoc.getElementsByTagName("data").item(0);
+        if (node)
+        {
+          node = node.firstChild;
+          while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
+          if (node) dataString = node.nodeValue;
+        }
+        if (dataString.length == 0) return;
+        transferData.data = new TransferData();
+        transferData.data.addDataForFlavour("text/html",dataString);
+        transferData.data.addDataForFlavour("text/unicode",dataString);
+        
+      }
+    }
+    catch(e) {}
+  },
+  
+  onDrop: function(evt, dropData, session)
+  {
+    var tree = evt.currentTarget;
+    var bo = tree.treeBoxObject;
+    var namecol = tree.columns.getNamedColumn('Name');
+    var saveref = tree.getAttribute("ref");
+    var pathbase = saveref + "/";
+    pathbase = pathbase.substr(8); // omit "path:///" at the start
+    var path="";
+    var row = new Object;
+    var column = new Object;
+    var part = new Object;
+    bo.getCellAt(evt.clientX, evt.clientY, row, column, part);
+    var i = row.value;
+    if (i >= 0)
+    {
+      if (tree.view.isContainer(i)) 
+        path = tree.view.getCellText(i,namecol)+"/";
+      while (tree.view.getParentIndex(i) >= 0)
+      {           
+        i = tree.view.getParentIndex(i);
+        path = tree.view.getCellText(i,namecol)+ "/" + path;
+      }
+    }
+    dump("New fragment file path is "+pathbase + path + "\n");
+    var data = new Object;
+    window.openDialog("chrome://prince/content/fragmentname.xul", "", "modal,chrome,resizable=yes", data);
+    if (data.filename.length > 0)
+    {
+      var sFileContent = '<?xml version="1.0"?>\n<fragment>\n  <data>\n    <![CDATA[' +dropData.data+
+        ']]>\n  </data>\n  <context/>\n  <info/>\n</fragment>';
+      var filepath = pathbase + path + data.filename;
+      if (filepath.search(/.frg/) == -1) filepath += ".frg";
+      filepath = filepath.replace("/","\\","g");
+      try
+      {
+        var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        file.QueryInterface(Components.interfaces.nsIFile);
+        file.initWithPath( filepath );
+        if( file.exists() == true ) file.remove( false );
+        var strm = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+        strm.QueryInterface(Components.interfaces.nsIOutputStream);
+        strm.QueryInterface(Components.interfaces.nsISeekableStream);
+        strm.init( file, 0x04 | 0x08, 420, 0 );
+        strm.write( sFileContent, sFileContent.length );
+        strm.flush();
+        strm.close();
+      }
+      catch(ex)
+      {
+        window.alert(ex.message);
+      } 
+      tree.setAttribute("ref",saveref);
+    }
+  },
+  
+  onDragOver: function(evt, flavour, session) 
+  {
+  },
+  
+  getSupportedFlavours: function()
+  {
+    var flavours = new FlavourSet();
+    flavours.appendFlavour("text/html");
+    flavours.appendFlavour("text/unicode");
+    return flavours;
+  }
+}  
