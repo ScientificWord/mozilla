@@ -1486,3 +1486,68 @@ if (!SB_DEBUG) {
 //////////////////////////////////////////////////////////////
 addEventListener("load", sidebar_overlay_init, false);
 addEventListener("unload", sidebar_overlay_destruct, false);
+
+
+function loadFragment(event,tree)
+{
+  var namecol = tree.columns.getNamedColumn('Name');
+  var i = tree.currentIndex;
+  var s = tree.view.getCellText( i,namecol);
+  if (event.type=="keypress" && event.keyCode!=event.DOM_VK_RETURN) return;
+  if (!tree.view.isContainer(i))
+  {  
+    while (tree.view.getParentIndex(i) >= 0)
+    {           
+      i = tree.view.getParentIndex(i);
+      s = tree.view.getCellText(i,namecol)+ "\\" + s;
+    }
+  }
+  // s is now the path of the clicked file relative to the fragment root.
+  try 
+  {
+    var xmlDoc = document.implementation.createDocument("", "frag", null);
+    xmlDoc.async = false;
+    if (xmlDoc.load("file:///c:/prince2/obj-Prince/dist/xpi-stage/prince/res/fragments/"+s))
+    {
+      var contextString="";
+      var dataString=null;
+      var infoString=null; 
+      var node;
+      node = xmlDoc.getElementsByTagName("data").item(0);
+      if (node)
+      {
+        node = node.firstChild;
+        while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
+        if (node) dataString = node.nodeValue;
+      }
+      if (dataString.length == 0) return;
+      node = xmlDoc.getElementsByTagName("context").item(0);
+      if (node) 
+      {
+        node = node.firstChild;
+        while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
+        if (node) contextString = node.nodeValue;
+      }
+      node  = xmlDoc.getElementsByTagName("info").item(0);
+      if (node)
+      {
+        node = node.firstChild;
+        while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
+        if (node) infoString = node.nodeValue;
+      }
+      var editorElement = document.getElementById("content-frame");
+      var editor = msiGetEditor(editorElement);
+      try
+      {
+        editor.insertHTMLWithContext(dataString, contextString, infoString, "text/html", null,
+          null, 0, true);
+//      editor.insertHTML(dataString);
+      } catch(e) {}
+    }
+  }
+  catch(e)
+  {
+//    alert(e);
+  }
+}
+
