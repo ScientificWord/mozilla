@@ -30,6 +30,15 @@
 <overlay id="sidebarOverlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
+  <script type="application/x-javascript"
+    src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript"
+    src="chrome://global/content/nsDragAndDrop.js"/>
+  <script type="application/x-javascript"
+    src="chrome://global/content/nsTransferable.js"/>
+ 
+
+
   <command id="toggleSidebar" oncommand="toggleSidebar();"/>
   <key id="showHideSidebar" keycode="VK_F9" oncommand="toggleSidebar();"/>
   <popup id="sidebarPopup" 
@@ -101,15 +110,21 @@
       <deck id="sidebar" flex="1">
         <tree id="frag-tree" flex="1" enableColumnDrag="true" seltype="single" ondblclick="loadFragment(event,this);"
                onkeypress="loadFragment(event, this);"
-               datasources="rdf:files" ref="file:///c:/prince2/obj-Prince/dist/xpi-stage/prince/res/fragments/" flags="dont-build-content"
+               ondraggesture = "nsDragAndDrop.startDrag(event,fragObserver);"
+               ondragdrop = "nsDragAndDrop.drop(event,fragObserver);"
+               ondragover = "nsDragAndDrop.dragOver(event, fragObserver);"
+               datasources="rdf:files" flags="dont-build-content"
                sortActive="true" sortDirection="ascending"
                sortResource="http://homefile.netscape.com/NC-rdf#Name" >
           <treecols>
-            <treecol id="Name" label="Name" primary="true" flex="1" persist="width ordinal hidden" />
+            <treecol id="Name" label="Name" primary="true" flex="1" persist="width ordinal hidden"
+              sortactive="true" sortDirection = "ascending" />
             <splitter/>
-            <treecol id="Date" label="Date" hidden="true" flex="1"  persist="width ordinal hidden"/>  
+            <treecol id="Date" label="Date" hidden="true" flex="1"  persist="width ordinal hidden"
+              sortDirection = "ascending"/>  
             <splitter/>
-            <treecol id="Size" label="Size" hidden="true" flex="1"  persist="width ordinal hidden"/>
+            <treecol id="Size" label="Size" hidden="true" flex="1"  persist="width ordinal hidden" 
+              sortDirection = "ascending"/>
           </treecols>
 
             <template>
