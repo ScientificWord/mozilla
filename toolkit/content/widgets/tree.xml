@@ -144,7 +144,7 @@
             var cols = [];
             var i;
             for (i = 0; i < this.columns.count; ++i)
-              cols.push(this.columns[i].element);
+              cols.push(this.columns.getColumnAt(i).element);
             for (i = 0; i < cols.length; ++i)
               cols[i].setAttribute("ordinal", (i*2)+1);
 
