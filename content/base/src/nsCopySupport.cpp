@@ -356,8 +356,10 @@ nsresult nsCopySupport::IsPlainTextContext(nsISelection *aSel, nsIDocument *aDoc
   // document. Note that XHTML is not counted as HTML here, because we can't
   // copy it properly (all the copy code for non-plaintext assumes using HTML
   // serializers and parsers is OK, and those mess up XHTML).
+  //
+  // BBM: I changed this. We will have to switch over to XML serializers and parsers
   nsCOMPtr<nsIHTMLDocument> htmlDoc = do_QueryInterface(aDoc);
-  if (!htmlDoc || aDoc->IsCaseSensitive())
+  if (!htmlDoc) // || aDoc->IsCaseSensitive())
     *aIsPlainTextContext = PR_TRUE;
 
   return NS_OK;
@@ -515,7 +517,7 @@ static nsresult AppendDOMNode(nsITransferable *aTransferable,
   nsCOMPtr<nsIHTMLDocument> htmlDoc = do_QueryInterface(domDocument, &rv);
   NS_ENSURE_SUCCESS(rv, NS_OK);
 
-  NS_ENSURE_TRUE(!(document->IsCaseSensitive()), NS_OK);
+  //NS_ENSURE_TRUE(!(document->IsCaseSensitive()), NS_OK);
 
   // init encoder with document and node
   rv = docEncoder->Init(domDocument, NS_LITERAL_STRING(kHTMLMime),

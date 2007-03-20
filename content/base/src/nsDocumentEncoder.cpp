@@ -1136,7 +1136,7 @@ nsHTMLCopyEncoder::SetSelection(nsISelection* aSelection)
   
   // also consider ourselves in a text widget if we can't find an html document
   nsCOMPtr<nsIHTMLDocument> htmlDoc = do_QueryInterface(mDocument);
-  if (!htmlDoc || mDocument->IsCaseSensitive())
+  if (!htmlDoc) // || mDocument->IsCaseSensitive())
     mIsTextWidget = PR_TRUE;
   
   // normalize selection if we are not in a widget
@@ -1258,6 +1258,12 @@ nsHTMLCopyEncoder::IncludeInContext(nsIDOMNode *aNode)
   if (!content)
     return PR_FALSE;
 
+//   nsAutoString tagClass;
+//   mtagListManager->getClassOfTag(content->Tag(), nsnull);
+//   if (tagClass.EqualsLiteral("texttag"))
+//   {
+//     return PR_TRUE;
+//   }
   nsIAtom *tag = content->Tag();
 
   return (tag == nsHTMLAtoms::b        ||

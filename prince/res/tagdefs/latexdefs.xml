@@ -18,7 +18,7 @@
 			<contains>texttag</contains>
 			<contains>paratag</contains>
 			<contains>structtag</contains>
-			<contains>sw:xref</contains>
+			<contains>othertag</contains>
 			<tags>
 				<tag nm="html:body"><description>Body</description></tag>
 				<tag nm="sw:docbody"><description>DocBody</description></tag>
@@ -29,7 +29,7 @@
       <contains>#text</contains>
       <contains>table</contains>
 			<contains>texttag</contains>
-			<contains>sw:xref</contains>
+			<contains>othertag</contains>
 			<contains>mml:math</contains>
 			<tags>
 				<tag nm="sw:bold"><description>Bold</description></tag>
@@ -63,7 +63,7 @@
 			<contains>texttag</contains>
 			<contains>listtag</contains>
 			<contains>sw:quote</contains>
-			<contains>sw:xref</contains>
+			<contains>othertag</contains>
 			<contains>mml:math</contains>
 			<contains>html:br</contains>
 			<contains>sw:quote</contains>
@@ -323,6 +323,8 @@
 			<tagclassname>othertag</tagclassname>
 			<tags>
 				<tag nm="sw:xref"><description>An instance of an "other" tag</description></tag>
+        <tag nm="sw:latex"><description>LaTeX logo</description></tag>
+        <tag nm="sw:tex"><description>TeX logo</description></tag>
 			</tags>
 		</tagclass>
 	</tagclasses>
