@@ -61,6 +61,14 @@ function msiMainWindowMouseDownListener(event)
       case "toolbaritem":
         changeActiveEditor = false;
       break;
+      case "input":
+      case "html:input":
+      case "textbox":
+        if (msiFindParentOfType(target, "toolbar", "window"))
+          changeActiveEditor = false;
+      break;
+      default:
+      break;
     }
     nodeStr = target.nodeName;
   }
@@ -492,14 +500,31 @@ function msiEditorWindowOnFocus()
       case "listcell":
         changeActiveEditor = false;
       break;
+      case "input":
+      case "html:input":
+      case "textbox":
+        if (msiFindParentOfType(currElement, "toolbar", "window"))
+          changeActiveEditor = false;
+      break;
     }
-    msiKludgeLogString("Focus element reported as [" + currElement.nodeName + "] in msiEditorOnFocus.\n");
+//Logging stuff only
+    var logString = "Focus element reported as [" + currElement.nodeName + "] in msiEditorOnFocus; changeActiveEditor is [";
+    if (changeActiveEditor)
+      logString += "true";
+    else
+      logString += "false";
+    msiKludgeLogString(logString + "].\n");
+//End logging stuff only
   }
 
   if (changeActiveEditor)
   {
     var editorElement = GetCurrentEditorElement();
     msiSetActiveEditor(editorElement, true);
+  }
+  else
+  {
+    msiResetActiveEditorElement(this.document.defaultView);
   }
 
 //  //Finally call "EditorOnFocus" on our containing window - for the time being anyway.
