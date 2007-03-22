@@ -1093,4 +1093,3 @@ function msiFillLinkMenulist(linkMenulist, headingsArray, editorElement)
 //  // Put focus into the input field
 //  SetTextboxFocus(gDialog.hrefInput);
 //}
-
