@@ -286,31 +286,65 @@ function msiIsWebComposer(theWindow)
   return false;
 }
 
-function clearPrevActiveEditor()
+function clearPrevActiveEditor(timerData)
 {
   var theWindow = msiGetTopLevelWindow();
 
 //Logging stuff only
   var logStr = msiEditorStateLogString(theWindow);
+  var currFocusedElement = null;
   if (!theWindow.msiActiveEditorElement)
   {
-    var winWatcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
-                         .getService(Components.interfaces.nsIWindowWatcher);
-    var activeWin = winWatcher.activeWindow;
+    try
+    {
+      var winWatcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+                           .getService(Components.interfaces.nsIWindowWatcher);
+      var activeWin = winWatcher.activeWindow;
+      var commandDispatcher = activeWin.document.commandDispatcher;
+      currFocusedElement = commandDispatcher.focusedElement;
+    } catch(exc) {dump("In clearPrevActiveEditor, unable to retrieve curr focused element, error is [" + exc + "].\n");}
   }
 //End logging stuff
-  if (theWindow.msiClearEditorTimer != null)
+  if (theWindow.msiClearEditorTimerList != null)
   {
-    logStr += ";\n  clearPrevActiveEditor called, deleting reference to prev editor.\n";
-    clearTimeout(theWindow.msiClearEditorTimer);
-    theWindow.msiClearEditorTimer = 0;
-    theWindow.msiPrevEditorElement = null;
-    if (theWindow.msiSingleDialogList)
+    logStr += ";\n  clearPrevActiveEditor called, ";
+    if (!theWindow.msiActiveEditorElement)
     {
-      theWindow.msiSingleDialogList.reparentAppropriateDialogs(theWindow.msiActiveEditorElement);
+      logStr += "with curr focused element [";
+      if (currFocusedElement != null)
+      {
+        logStr += currFocusedElement.nodeName;
+        if (currFocusedElement.id)
+          logStr += ", id " + currFocusedElement.id;
+      }
+      logStr += "],";
     }
-    msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
-//    theWindow.updateCommands("style");
+    try
+    {
+      theWindow.clearTimeout(timerData.nTimerID);
+    } catch(exc) {dump("Exception in clearPrevActiveEditor; theWindow couldn't clear timeout [" + timerData.nTimerID + "], exception [" + exc + "].\n");}
+    var nFound = msiFindTimerInArray(theWindow.msiClearEditorTimerList, timerData);
+    if (nFound >= 0)
+    {
+      theWindow.msiClearEditorTimerList.splice(nFound, 1);
+      if (theWindow.msiClearEditorTimerList.length == 0)
+      {
+        logStr += "deleting reference to prev editor.\n";
+        theWindow.msiPrevEditorElement = null;
+        if (theWindow.msiSingleDialogList)
+          theWindow.msiSingleDialogList.reparentAppropriateDialogs(theWindow.msiActiveEditorElement);
+        msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
+      }
+      else
+        logStr += "but timer list still contains [" + theWindow.msiClearEditorTimerList.toString() + "], so not deleting prev editor.\n";
+    }
+    else
+    {
+      logStr += "but timer [";
+      if (timerData != null)
+        logStr += timerData.nTimerID;
+      logStr += "] not found; doing nothing (?).\n";
+    }
   }
   else
     logStr += ";\n  clearPrevActiveEditor called, but no timer to clear.\n";
@@ -322,8 +356,8 @@ function msiResetActiveEditorElement()
 {
   var topWindow = msiGetTopLevelWindow();
 //Logging stuff only
-  var logStr = "In msiResetActiveEditorElement; ";
-  logStr += msiEditorStateLogString(topWindow);
+//  var logStr = "In msiResetActiveEditorElement; ";
+//  logStr += msiEditorStateLogString(topWindow);
 //End logging stuff
 
 //  if (topWindow.msiPrevEditorElement && topWindow.msiActiveEditorElement && topWindow.msiPrevEditorElement != topWindow.msiActiveEditorElement)
@@ -332,21 +366,21 @@ function msiResetActiveEditorElement()
     topWindow.msiActiveEditorElement = topWindow.msiPrevEditorElement;
     topWindow.msiPrevEditorElement = null;
 //Logging stuff only
-    logStr += ";\n  reverting to prev editor element.\n";
+//    logStr += ";\n  reverting to prev editor element.\n";
   }
-  else
-    logStr += ";\n  making no change.\n";
-  if (topWindow.msiClearEditorTimer != null)
-  {
-    clearTimeout(topWindow.msiClearEditorTimer);
-    topWindow.msiClearEditorTimer = null;
-  }
-  msiKludgeLogString(logStr);
+//Logging stuff only
+//  else
+//    logStr += ";\n  making no change.\n";
 //End logging stuff
+  if (topWindow.msiClearEditorTimerList != null)
+    msiClearAllFocusTimers(topWindow, topWindow.msiClearEditorTimerList);
+//  msiKludgeLogString(logStr);
 }
 
 function msiEditorStateLogString(theWindow)
 {
+  return "";
+
   if (!theWindow)
     theWindow = msiGetTopLevelWindow();
   var currEdId = "";
@@ -356,13 +390,37 @@ function msiEditorStateLogString(theWindow)
   if ( ("msiPrevEditorElement" in theWindow) && (theWindow.msiPrevEditorElement != null) )
     prevEdId = theWindow.msiPrevEditorElement.id;
   var logStr = "Current msiActiveEditor is [" + currEdId + "], prevEdId is [" + prevEdId + "]";
-  logStr += ", clearEditorTimer ID is [";
-  if ("msiClearEditorTimer" in theWindow)
-    logStr += theWindow.msiClearEditorTimer;
+  logStr += ", clearEditorTimer IDs are [";
+  if ("msiClearEditorTimerList" in theWindow && theWindow.msiClearEditorTimerList != null)
+    logStr += theWindow.msiClearEditorTimerList.toString();
   logStr += "], for window titled [";
   logStr += theWindow.document.title;
   logStr += "]";
   return logStr;
+}
+
+function msiFindTimerInArray(timerList, timerData)
+{
+  var nIndex = -1;
+  for (var ix = 0; nIndex < 0 && ix < timerList.length; ++ix)
+  {
+    if (timerList[ix] == timerData.nTimerID)
+      nIndex = ix;
+  }
+  return nIndex;
+}
+
+function msiClearAllFocusTimers(theWindow, timerList)
+{
+  for (var ix = timerList.length - 1; ix >= 0; --ix)
+  {
+    try
+    {
+      theWindow.clearTimeout(timerList[ix]);
+      timerList.splice(ix, 1);
+    } catch(exc) {dump("In msiClearAllFocusTimers, theWindow couldn't clear timer [" + timerList[ix] + "], exception [" + exc + "].\n");}
+  }
+//  timerList.splice(0, timerList.length);
 }
 
 function msiSetActiveEditor(editorElement, bIsFocusEvent)
@@ -386,34 +444,34 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
   {
 //Logging stuff only:
 //    var logStr = "In msiSetActiveEditor, current msiActiveEditor is [" + currEdId + "], prevEdId is [" + prevEdId + "]";
-    var logStr = msiEditorStateLogString(theWindow);
-    logStr += ",\n  trying to change to [" + newEdId + "], setting; bIsFocusEvent is  "
-    if (bIsFocusEvent)
-      logStr += "true";
-    else
-      logStr += "false";
+//    var logStr = msiEditorStateLogString(theWindow);
+//    logStr += ",\n  trying to change to [" + newEdId + "], setting; bIsFocusEvent is  "
+//    if (bIsFocusEvent)
+//      logStr += "true";
+//    else
+//      logStr += "false";
 //End logging stuff
     if (bIsFocusEvent)
     {
       if (!theWindow.msiPrevEditorElement)
         theWindow.msiPrevEditorElement = theWindow.msiActiveEditorElement;
-      if (theWindow.msiClearEditorTimer != null)
-      {
-        clearTimeout(theWindow.msiClearEditorTimer);
-        theWindow.msiClearEditorTimer = null;
-      }
-//      {
-        theWindow.msiClearEditorTimer = setTimeout(clearPrevActiveEditor, 0);
+//    {
+      var newTimerData = new Object();
+      var nNewTimer = theWindow.setTimeout(clearPrevActiveEditor, 0, newTimerData);
+      if (theWindow.msiClearEditorTimerList == null)
+        theWindow.msiClearEditorTimerList = new Array();
+      theWindow.msiClearEditorTimerList.push(nNewTimer);
+      newTimerData.nTimerID = nNewTimer;
 //Logging stuff only:
-        logStr += ", new clearEditorTimer ID is " + theWindow.msiClearEditorTimer;
-//      }
+//      logStr += ", new clearEditorTimer ID is " + nNewTimer;
+//    }
     }
-    logStr += ".\n";
-    msiKludgeLogString(logStr);
+//    logStr += ".\n";
+//    msiKludgeLogString(logStr);
 //End logging stuff
     //To Do: re-parent appropriate dialogs at this point? or if there's a timer set, wait for it?
     theWindow.msiActiveEditorElement = editorElement;
-    if (theWindow.msiClearEditorTimer==null && theWindow.msiSingleDialogList)
+    if ((theWindow.msiClearEditorTimerList==null || theWindow.msiClearEditorTimerList.length == 0) && theWindow.msiSingleDialogList)
     {
       theWindow.msiSingleDialogList.reparentAppropriateDialogs(theWindow.msiActiveEditorElement);
       msiDoUpdateCommands("style", theWindow.msiActiveEditorElement);
@@ -1202,6 +1260,23 @@ function msiGetBlockNodeParent(editor, aNode)
       return theParent;
   }
   return null;
+}
+
+function msiFindParentOfType(startNode, nodeType, stopAt)
+{
+  var retNode = null;
+  var theNode = startNode;
+  if (stopAt == null || stopAt.length == 0)
+    stopAt = "#document";
+  while (retNode==null && theNode != null)
+  {
+    if (theNode.nodeName == nodeType)
+      retNode = theNode;
+    if (theNode.nodeName == stopAt)
+      break;
+    theNode = theNode.parentNode;
+  }
+  return retNode;
 }
 
 //The idea is to use a NodeIterator to walk the new or affected nodes. We want to find the marked caret position (using the
@@ -2900,6 +2975,7 @@ function addDataToFile(aFilePath, aDataStream)
 function msiKludgeLogString(logStr)
 {
   return;
+  dump(logStr);
 
   if (!("msiLogPath" in window) || !window.msiLogPath)
   {
