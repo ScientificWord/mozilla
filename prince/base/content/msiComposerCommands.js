@@ -354,7 +354,10 @@ function msiGoDoCommandParams(command, params, editorElement)
 //    var controller = top.document.commandDispatcher.getControllerForCommand(command);
     var controller = msiGetControllerForCommand(command, editorElement);
     if (!controller)
+    {
+      msiDumpWithID("In msiGoDoCommandParams, controller not found for command [" + command + "] for editor [@].\n", editorElement);
       controller = top.document.commandDispatcher.getControllerForCommand(command);
+    }
 
     if (controller && controller.isCommandEnabled(command))
     {
