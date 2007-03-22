@@ -71,7 +71,7 @@
 <!ENTITY MSInormCmd.accesskey "e">
 <!ENTITY MSInormCmd.accesskey "n">
 
-<!ENTITY MSIgenBracketsCmd.label "Generalized Brackets">
+<!ENTITY MSIgenBracketsCmd.label "Generalized Brackets...">
 <!ENTITY MSIgenBracketsCmd.accesskey "k">
 
 <!ENTITY MSIbinomialsCmd.label "Binomials">
