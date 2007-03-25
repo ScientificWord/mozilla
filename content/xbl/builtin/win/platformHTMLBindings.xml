@@ -153,6 +153,7 @@
       <handler event="keypress" keycode="VK_PAGE_UP" modifiers="shift" command="cmd_selectPageUp"/>
       <handler event="keypress" keycode="VK_PAGE_DOWN" modifiers="shift" command="cmd_selectPageDown"/>
       <handler event="keypress" key="y" modifiers="accel" command="cmd_redo"/>
+      <handler event="keypress" key=" " modifiers="accel" command="cmd_macrofragment"/>
     </handlers>
   </binding>
 </bindings>
