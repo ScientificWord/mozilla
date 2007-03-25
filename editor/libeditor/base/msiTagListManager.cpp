@@ -436,7 +436,6 @@ struct userArgStruct {
   msiTagListManager * ptlm;
 };
 
-/* nsStringArray getStringArray (in AString strTagClass); */
 PLDHashOperator
 nsDEnumRead(const nsAString_internal& aKey, TagData* aData, void* userArg) 
 {  // this is a callback to the hash table enumerator that adds to a string array all the data that 
@@ -464,7 +463,7 @@ msiTagListManager::BuildStringArray(const nsAString & strTagClass)
   ua.ptlm = this;
 //  printf("%S:\n", strTagClass.BeginReading());
   msiTagHashtable.EnumerateRead(nsDEnumRead, &(ua));
-  // now we need to sort the array
+  // the array gets sorted later by a call to SortArrays
   return NS_OK;
 }
 
