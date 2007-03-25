@@ -154,6 +154,8 @@
 </hbox><!-- sidebar-parent -->
 
   <statusbar class="chromeclass-status" id="status-bar">
+    <statusbarpanel id="macroEntryPanel" hidden="false"/>
+    <statusbarpanel id="fastCursorPanel" hidden="true">
       <toolbar id="FastCursorToolbar" hidden="true" align="center" fullscreentoolbar="true">
       <toolbarbutton id="fastcursor-closebutton" tooltiptext="&fastcursorCloseButton.tooltip;"
                      hidden="true" oncommand="closeFastCursorBar();"/>  
@@ -176,9 +178,10 @@
       <image id="fastcursor-status-icon"/>
       <label id="fastcursor-status"/>
     </toolbar>
+    </statusbarpanel>
 
 
-    <statusbarpanel id="component-bar"/>
+    <!-- what is this for??? statusbarpanel id="component-bar"/  -->
     <spacer flex="1"/>
     <statusbarpanel id="structToolbar" flex="100" pack="end">
     <label id="structSpacer" value="" flex="100"/>
