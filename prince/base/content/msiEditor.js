@@ -753,6 +753,8 @@ function msiEditorDocumentObserver(editorElement)
           msiOnFontColorChange();
           msiOnBackgroundColorChange();
           editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
+          // also initialize the sidebar in this case
+          initSidebar();
 //temp?          editor.SetTagListPath("chrome://editor/content/default.xml");
           // the order here is important, since the autocomplete component has to read the tag names 
 //          initializeAutoCompleteStringArrayForEditor(editor);
