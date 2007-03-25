@@ -86,6 +86,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_updateStructToolbar", msiUpdateStructToolbarCommand);
   commandTable.registerCommand("cmd_insertReturnFancy", msiInsertReturnFancyCommand);
   commandTable.registerCommand("cmd_insertSubstructure", msiInsertSubstructureCommand);
+  commandTable.registerCommand("cmd_macrofragment", msiMacroFragmentCommand);
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -3583,6 +3584,31 @@ var msiInsertSubstructureCommand =
     }
   }
 };
+
+//-----------------------------------------------------------------------------------
+
+var msiMacroFragmentCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand, dummy)
+  {
+    var macrofragmentStatusPanel = document.getElementById('macroEntryPanel');
+    if (macrofragmentStatusPanel)
+    {
+      macrofragmentStatusPanel.setAttribute("hidden", "false");
+      document.getElementById('macroAndFragments').focus();
+    }
+  }
+};
+
 
 //-----------------------------------------------------------------------------------
 var msiGridCommand =
