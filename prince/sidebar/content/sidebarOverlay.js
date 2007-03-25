@@ -1598,27 +1598,14 @@ function initSidebar()
   }
 }
 
-
-function loadFragment(event,tree)
+function insertFragmentContents( tree, pathname)
 {
-  var namecol = tree.columns.getNamedColumn('Name');
-  var i = tree.currentIndex;
-  var s = tree.view.getCellText( i,namecol);
-  if (event.type=="keypress" && event.keyCode!=event.DOM_VK_RETURN) return;
-  if (!tree.view.isContainer(i))
-  {  
-    while (tree.view.getParentIndex(i) >= 0)
-    {           
-      i = tree.view.getParentIndex(i);
-      s = tree.view.getCellText(i,namecol)+ "/" + s;
-    }
-  }
-  // s is now the path of the clicked file relative to the fragment root.
+  // pathname is now the path of the clicked file relative to the fragment root.
   try 
   {
     var xmlDoc = document.implementation.createDocument("", "frag", null);
     xmlDoc.async = false;
-    if (xmlDoc.load(tree.getAttribute("ref") + "/" +s))
+    if (xmlDoc.load(pathname))
     {
       var contextString="";
       var dataString=null;
@@ -1653,6 +1640,24 @@ function loadFragment(event,tree)
   {
 //    alert(e);
   }
+}
+
+function loadFragment(event,tree)
+{
+  var namecol = tree.columns.getNamedColumn('Name');
+  var i = tree.currentIndex;
+  var s = tree.view.getCellText( i,namecol);
+  if (event.type=="keypress" && event.keyCode!=event.DOM_VK_RETURN) return;
+  if (!tree.view.isContainer(i))
+  {  
+    while (tree.view.getParentIndex(i) >= 0)
+    {           
+      i = tree.view.getParentIndex(i);
+      s = tree.view.getCellText(i,namecol)+ "/" + s;
+    }
+  }
+  s = tree.getAttribute("ref") + "/" +s;
+  insertFragmentContents(tree, s);
   focusOnEditor();
 }
 
@@ -1683,7 +1688,17 @@ function onMacroOrFragmentEntered( aString )
   else
   {
     s = fragmentArray[aString];
-    if (s) insertDataAtCursor( s.data );
+    if (s)
+    {
+      var tree = document.getElementById("frag-tree");
+      if (!tree) return;
+      var dirpath = s.dirpath;
+// if Windows
+      dirpath = dirpath.replace("\\","/","g");
+      dirpath = "file:///" + dirpath + "/" + aString + ".frg";      
+      
+      insertFragmentContents( tree, dirpath );
+    }
   }
   var macrofragmentStatusPanel = document.getElementById('macroEntryPanel');
   if (macrofragmentStatusPanel)
