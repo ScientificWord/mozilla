@@ -1012,8 +1012,29 @@ function insertXML(editor, text, node, offset, bDump)
   var nodeList = doc.documentElement.childNodes;
   if (bDump)
     dump("\nIn insertXML, inserting [" + text + "], with documentElement [" + doc.documentElement.nodeName + "] in node [" + node.nodeName + "] at offset [" + offset + "].\n");
-  var nodeListLength = nodeList.length;
   var i;
+  // we can only insert nodes under an element, not under anything else such as a text node or a
+  // processing instruction node. The cursor is likely in a text node
+  //
+  if (node.nodeType != node.ELEMENT_NODE)
+  {
+    if (node.nodeType != node.TEXT_NODE)
+    {
+      dump("Unexpected node type = "+node.nodeType);
+      return;
+    }
+    else
+    {
+    // split the text node
+      editor.splitNode(node, offset, newNode);
+      var list = node.parentNode.childNodes;
+      for (i = 0; i< list.length; i++) 
+        if (list[i]==node) break;
+      offset = i;
+      node = node.parentNode;
+    }
+  }
+  var nodeListLength = nodeList.length;
   for (i = nodeListLength-1; i >= 0; --i)
   {
     editor.insertNode( nodeList[i], node, offset );
@@ -1052,6 +1073,7 @@ function insertXMLAtCursor(editor, text, bWithinPara, bSetCaret)
   }
   catch(exc)
   {
+    dump("If you see this dump, Barry loses his bet\n");
     dump("In insertXMLAtCursor, couldn't use editor.selection! (Exception: [" + exc + "]\n");
     theElement = editor.document.rootElement;
     if (theElement != null && theElement.childNodes.length > 0)
