@@ -23,7 +23,8 @@ NS_IMPL_QUERY_INTERFACE2(nsAutoCompleteSearchStringArrayImp, nsIAutoCompleteSear
 // in our case, we'd have to come up with a string id for each document and then use strings like 'doc1:texttag', etc. 
 // 
 // Instead, we create a unique nsIAutoCompleteSearchStringArray implementation that forwards the implementation of its methods
-// to an internal ponsAutoCompleteSearchStringArrayImp pointer to an implementation of an interface for a single document only. When the focus changes to another
+// to an internal ponsAutoCompleteSearchStringArrayImp pointer to an implementation of an interface for a single document only. When
+// the focus changes to another
 // document, this internal pointer must be switched. Thus each tag manager implementation owns an autocompletestring implementation
 // and we switch between these as the focus of the user changes.
 // 
