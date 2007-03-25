@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<macros>
+  <m nm="alpha" fm="1"><data>&#x03B1;</data></m>
+  <m nm="beta" fm="1"><data>&#x03B2;</data></m>
+  <m nm="gamma" fm="1"><data>&#x03B3;</data></m>
+  <m nm="delta" fm="1"><data>&#x03B4;</data></m>
+  <m nm="epsilon" fm="1"><data>&#x03B5;</data></m>
+  <m nm="zeta" fm="1"><data>&#x03B6;</data></m>
+  <m nm="eta" fm="1"><data>&#x03B7;</data></m>
+  <m nm="theta" fm="1"><data>&#x03B8;</data></m>
+  <m nm="iota" fm="1"><data>&#x03B9;</data></m>
+  <m nm="kappa" fm="1"><data>&#x03BA;</data></m>
+  <m nm="lambda" fm="1"><data>&#x03BB;</data></m>
+  <m nm="mu" fm="1"><data>&#x03BC;</data></m>
+  <m nm="nu" fm="1"><data>&#x03BD;</data></m>
+  <m nm="xi" fm="1"><data>&#x03BE;</data></m>
+  <m nm="omicron" fm="1"><data>&#x03BF;</data></m>
+</macros>
