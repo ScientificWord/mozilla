@@ -1,6 +1,5 @@
 prince.jar:
 % content prince %content/  
-  content/branding/icon64.png       (content/icon64.png) 
 * content/customize.xul                (content/customize.xul)
 * content/customize.js                 (content/customize.js)
 * content/customize-panel.xul           (content/customize-panel.xul)
