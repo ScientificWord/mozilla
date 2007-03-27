@@ -13,8 +13,7 @@
  * The Original Code is Mozilla Communicator client code, released
  * March 31, 1998.
  *
- * The Initial Developer of the Original Code is Netscape
- * Communications Corporation. Portions created by Netscape are
+e * Communications Corporation. Portions created by Netscape are
  * Copyright (C) 1998-1999 Netscape Communications Corporation. All
  * Rights Reserved.
  */
@@ -1516,7 +1515,9 @@ function rebuildFragmentTree(tree, buildListOnly)
   dirpath = dirpath.substring(8,dirpath.length-1);
     // take ref attribute and lop off "file:///" and last "/"
   // for Windows
+#ifdef XP_WIN32
   dirpath = dirpath.replace("/","\\","g");
+#endif
   dir.initWithPath(dirpath);
    addFragmentsToList(ACSA, dir);
 }
@@ -1565,9 +1566,9 @@ function initSidebar()
   var dir1 = basedir.clone();
   dir1.append("fragments");
   var dirpath = dir1.path + "/";
-  // The next line is for Windows only
+#ifdef XP_WIN32
   dirpath = dirpath.replace("\\","/","g");
-  
+#endif
   var fragmentsBaseDirectory = "file:///" + dirpath;
   document.getElementById("frag-tree").setAttribute("ref", fragmentsBaseDirectory);
   rebuildFragmentTree(document.getElementById("frag-tree"),true);
@@ -1693,8 +1694,9 @@ function onMacroOrFragmentEntered( aString )
       var tree = document.getElementById("frag-tree");
       if (!tree) return;
       var dirpath = s.dirpath;
-// if Windows
+#ifdef XP_WIN32
       dirpath = dirpath.replace("\\","/","g");
+#endif
       dirpath = "file:///" + dirpath + "/" + aString + ".frg";      
       
       insertFragmentContents( tree, dirpath );
@@ -1796,7 +1798,9 @@ var fragObserver =
           ']]>\n  </data>\n  <context/>\n  <info/>\n</fragment>';
         var filepath = pathbase + path + data.filename;
         if (filepath.search(/.frg/) == -1) filepath += ".frg";
+#ifdef XP_WIN32
         filepath = filepath.replace("/","\\","g");
+#endif
         try
         {
           var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
