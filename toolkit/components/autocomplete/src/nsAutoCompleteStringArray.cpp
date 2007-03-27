@@ -310,7 +310,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::StartSearch(
       str.BeginReading(start);
       originalStart = start;
       str.EndReading(end);
-      if (FindInReadable(searchString,  start, end, nsCaseInsensitiveStringComparator())) {
+      if (FindInReadable(searchString,  start, end, nsDefaultStringComparator())) {
         if (start==originalStart) { // pattern was found at the beginning of 
                                     // the string
           mResult->AppendString(str); 
