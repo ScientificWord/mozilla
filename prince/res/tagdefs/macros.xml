@@ -1,18 +1,534 @@
 <?xml version="1.0"?>
+<!DOCTYPE macros PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
 <macros>
-  <m nm="alpha" fm="1"><data>&#x03B1;</data></m>
-  <m nm="beta" fm="1"><data>&#x03B2;</data></m>
-  <m nm="gamma" fm="1"><data>&#x03B3;</data></m>
-  <m nm="delta" fm="1"><data>&#x03B4;</data></m>
-  <m nm="epsilon" fm="1"><data>&#x03B5;</data></m>
-  <m nm="zeta" fm="1"><data>&#x03B6;</data></m>
-  <m nm="eta" fm="1"><data>&#x03B7;</data></m>
-  <m nm="theta" fm="1"><data>&#x03B8;</data></m>
-  <m nm="iota" fm="1"><data>&#x03B9;</data></m>
-  <m nm="kappa" fm="1"><data>&#x03BA;</data></m>
-  <m nm="lambda" fm="1"><data>&#x03BB;</data></m>
-  <m nm="mu" fm="1"><data>&#x03BC;</data></m>
-  <m nm="nu" fm="1"><data>&#x03BD;</data></m>
-  <m nm="xi" fm="1"><data>&#x03BE;</data></m>
+  <m nm="alpha" fm="1"><data>&alpha;</data></m>
+  <m nm="beta" fm="1"><data>&beta;</data></m>
+  <m nm="gamma" fm="1"><data>&gamma;</data></m>
+  <m nm="delta" fm="1"><data>&delta;</data></m>
+  <m nm="epsilon" fm="1"><data>&epsi;</data></m>
+  <m nm="zeta" fm="1"><data>&zeta;</data></m>
+  <m nm="eta" fm="1"><data>&eta;</data></m>
+  <m nm="theta" fm="1"><data>&theta;</data></m>
+  <m nm="iota" fm="1"><data>&iota;</data></m>
+  <m nm="kappa" fm="1"><data>&kappa;</data></m>
+  <m nm="lambda" fm="1"><data>&lambda;</data></m>
+  <m nm="mu" fm="1"><data>&mu;</data></m>
+  <m nm="nu" fm="1"><data>&nu;</data></m>
+  <m nm="xi" fm="1"><data>&xi;</data></m>
   <m nm="omicron" fm="1"><data>&#x03BF;</data></m>
+  <m nm="upsilon" fm="1"><data>&upsi;</data></m>
+  <m nm="varepsilon" fm="1"><data>&epsiv;</data></m>
+  <m nm="chi" fm="1"><data>&chi;</data></m>
+  <m nm="omega" fm="1"><data>&omega;</data></m>
+  <m nm="varkappa" fm="1"><data>&kappav;</data></m>
+  <m nm="phi" fm="1"><data>&phi;</data></m>
+  <m nm="varphi" fm="1"><data>&phiv;</data></m>
+  <m nm="pi" fm="1"><data>&pi;</data></m>
+  <m nm="varpi" fm="1"><data>&piv;</data></m>
+  <m nm="psi" fm="1"><data>&psi;</data></m>
+  <m nm="varrho" fm="1"><data>&rhov;</data></m>
+  <m nm="rho" fm="1"><data>&rho;</data></m>
+  <m nm="varsigma" fm="1"><data>&sigmav;</data></m>
+  <m nm="sigma" fm="1"><data>&sigma;</data></m>
+  <m nm="vartheta" fm="1"><data>&thetav;</data></m>
+  <m nm="tau" fm="1"><data>&tau;</data></m>
+
+  <m nm="bigcap" fm="1"><data>&xcap;</data></m>
+  <m nm="coprod" fm="1"><data>&coprod;</data></m>
+  <m nm="bigcup" fm="1"><data>&xcup;</data></m>
+  <m nm="idotsint" fm="1"><data>&int;&ctdot;&int;</data></m>
+  <m nm="bigodot" fm="1"><data>&xodot;</data></m>
+  <m nm="iiiint" fm="1"><data>&qint;</data></m>
+  <m nm="bigoplus" fm="1"><data>&xoplus;</data></m>
+  <m nm="iiint" fm="1"><data>&tint;</data></m>
+  <m nm="bigotimes" fm="1"><data>&xotime;</data></m>
+  <m nm="iint" fm="1"><data>&Int;</data></m>
+  <m nm="bigsqcup" fm="1"><data>&xsqcup;</data></m>
+  <m nm="int" fm="1"><data>&int;</data></m>
+  <m nm="biguplus" fm="1"><data>&xuplus;</data></m>
+  <m nm="oint" fm="1"><data>&conint;</data></m>
+  <m nm="bigvee" fm="1"><data>&xvee;</data></m>
+  <m nm="prod" fm="1"><data>&prod;</data></m>
+  <m nm="bigwedge" fm="1"><data>&xwedge;</data></m>
+  <m nm="sum" fm="1"><data>&sum;</data></m>
+												  
+  <m nm="Delta" fm="1"><data>&Delta;</data></m>
+  <m nm="Pi" fm="1"><data>&Pi;</data></m>
+  <m nm="digamma" fm="1"><data>&gammad;</data></m>
+  <m nm="Psi" fm="1"><data>&Psi;</data></m>
+  <m nm="Gamma" fm="1"><data>&Gamma;</data></m>
+  <m nm="Sigma" fm="1"><data>&Sigma;</data></m>
+  <m nm="Lambda" fm="1"><data>&Lambda;</data></m>
+  <m nm="Theta" fm="1"><data>&Theta;</data></m>
+  <m nm="Omega" fm="1"><data>&Omega;</data></m>
+  <m nm="Upsilon" fm="1"><data>&Upsi;</data></m>
+  <m nm="Phi" fm="1"><data>&Phi;</data></m>
+  <m nm="Xi" fm="1"><data>&Xi;</data></m>
+
+
+  <m nm="amalg" fm="1"><data>&amalg;</data></m>
+  <m nm="cup" fm="1"><data>&cup;</data></m>
+  <m nm="rhd" fm="1"><data>&vrtri;</data></m>
+  <m nm="And" fm="1"><data>&amp;</data></m>
+  <m nm="curlyvee" fm="1"><data>&cuvee;</data></m>
+  <m nm="rightthreetimes" fm="1"><data>&rthree;</data></m>
+  <m nm="ast" fm="1"><data>&midast;</data></m>
+  <m nm="curlywedge" fm="1"><data>&cuwed;</data></m>
+  <m nm="rtimes" fm="1"><data>&rtimes;</data></m>
+  <m nm="barwedge" fm="1"><data>&barwed;</data></m>
+  <m nm="dagger" fm="1"><data>&dagger;</data></m>
+  <m nm="setmminus" fm="1"><data>&setmn;</data></m>
+  <m nm="bigcirc" fm="1"><data>&cir;</data></m>
+  <m nm="ddagger" fm="1"><data>&Dagger;</data></m>
+  <m nm="smallint" fm="1"><data>&int;</data></m>
+  <m nm="bigtriangledown" fm="1"><data>&xdtri;</data></m>
+  <m nm="diamond" fm="1"><data>&diam;</data></m>
+  <m nm="smallsetminus" fm="1"><data>&ssetmn;</data></m>
+  <m nm="bigtriangleup" fm="1"><data>&xutri;</data></m>
+  <m nm="div" fm="1"><data>&divide;</data></m>
+  <m nm="sqcap" fm="1"><data>&sqcap;</data></m>
+  <m nm="boxdot" fm="1"><data>&sdotb;</data></m>
+  <m nm="divideontimes" fm="1"><data>&divonx;</data></m>
+  <m nm="sqcup" fm="1"><data>&sqcup;</data></m>
+  <m nm="boxminus" fm="1"><data>&minusb;</data></m>
+  <m nm="dotplus" fm="1"><data>&plusdo;</data></m>
+  <m nm="star" fm="1"><data>&sstarf;</data></m>
+  <m nm="boxplus" fm="1"><data>&plusb;</data></m>
+  <m nm="doublebarwedge" fm="1"><data>&Barwed;</data></m>
+  <m nm="times" fm="1"><data>&times;</data></m>
+  <m nm="boxtimes" fm="1"><data>&#x22A0;</data></m>
+  <m nm="intercal" fm="1"><data>&intcal;</data></m>
+  <m nm="triangleleft" fm="1"><data>&#x25C3;</data></m>
+  <m nm="bullet" fm="1"><data>&bull;</data></m>
+  <m nm="leftthreetimes" fm="1"><data>&#x22CB;</data></m>
+  <m nm="triangleright" fm="1"><data>&rtri;</data></m>
+  <m nm="cap" fm="1"><data>&cap;</data></m>
+  <m nm="lhd" fm="1"><data>&vltri;</data></m>
+  <m nm="unlhd" fm="1"><data>&#x22B4;</data></m>
+  <m nm="Cap" fm="1"><data>&#x22D2;</data></m>
+  <m nm="ltimes" fm="1"><data>&#x22C9;</data></m>
+  <m nm="unrhd" fm="1"><data>&rtrie;</data></m>
+  <m nm="cdot" fm="1"><data>&sdot;</data></m>
+  <m nm="mp" fm="1"><data>&mnplus;</data></m>
+  <m nm="uplus" fm="1"><data>&uplus;</data></m>
+  <m nm="centerdot" fm="1"><data>&middot;</data></m>
+  <m nm="odot" fm="1"><data>&odot;</data></m>
+  <m nm="vee" fm="1"><data>&or;</data></m>
+  <m nm="circ" fm="1"><data>&compfn;</data></m>
+  <m nm="ominus" fm="1"><data>&ominus;</data></m>
+  <m nm="veebar" fm="1"><data>&veebar;</data></m>
+  <m nm="circledast" fm="1"><data>&oast;</data></m>
+  <m nm="oplus" fm="1"><data>&oplus;</data></m>
+  <m nm="wedge" fm="1"><data>&and;</data></m>
+  <m nm="circledcirc" fm="1"><data>&ocir;</data></m>
+  <m nm="oslash" fm="1"><data>&osol;</data></m>
+  <m nm="wr" fm="1"><data>&wreath;</data></m>
+  <m nm="circleddash" fm="1"><data>&odash;</data></m>
+  <m nm="otimes" fm="1"><data>&otimes;</data></m>
+  <m nm="Cup" fm="1"><data>&#x22D3;</data></m>
+  <m nm="pm" fm="1"><data>&plusmn;</data></m>
+
+  <m nm="approx" fm="1"><data>&approx;</data></m>
+  <m nm="gtreqless" fm="1"><data>&gel;</data></m>
+  <m nm="smallfrown" fm="1"><data>&frown;</data></m>
+  <m nm="approxeq" fm="1"><data>&ape;</data></m>
+  <m nm="gtreqqless" fm="1"><data>&gEl;</data></m>
+  <m nm="smallsmile" fm="1"><data>&smile;</data></m>
+  <m nm="asymp" fm="1"><data>&#x224D;</data></m>
+  <m nm="gtrless" fm="1"><data>&gl;</data></m>
+  <m nm="smile" fm="1"><data>&smile;</data></m>
+  <m nm="backepsilon" fm="1"><data>&SuchThat;</data></m>
+  <m nm="gtrsim" fm="1"><data>&gsim;</data></m>
+  <m nm="sqsubset" fm="1"><data>&sqsub;</data></m>
+  <m nm="backsim" fm="1"><data>&bsim;</data></m>
+  <m nm="in" fm="1"><data>&Element;</data></m>
+  <m nm="sqsubseteq" fm="1"><data>&sqsube;</data></m>
+  <m nm="backsimeq" fm="1"><data>&bsime;</data></m>
+  <m nm="Join" fm="1"><data>&bowtie;</data></m>
+  <m nm="sqsupset" fm="1"><data>&sqsup;</data></m>
+  <m nm="because" fm="1"><data>&Because;</data></m>
+  <m nm="leq" fm="1"><data>&le;</data></m>
+  <m nm="sqsupseteq" fm="1"><data>&sqsupe;</data></m>
+  <m nm="between" fm="1"><data>&twixt;</data></m>
+  <m nm="leqq" fm="1"><data>>&lE;</data></m>
+  <m nm="Subset" fm="1"><data>&Sub;</data></m>
+  <m nm="blacktriangleleft" fm="1"><data>&#x25C2;</data></m>
+  <m nm="leqslant" fm="1"><data>&les;</data></m>
+  <m nm="subset" fm="1"><data>&sub;</data></m>
+  <m nm="blacktriangleright" fm="1"><data>&rtrif;</data></m>
+  <m nm="lessapprox" fm="1"><data>&lap;</data></m>
+  <m nm="subseteq" fm="1"><data>&sube;</data></m>
+  <m nm="bowtie" fm="1"><data>&bowtie;</data></m>
+  <m nm="lessdot" fm="1"><data>&#x22D6;</data></m>
+  <m nm="subseteqq" fm="1"><data>&subE;</data></m>
+  <m nm="bumpeq" fm="1"><data>&bumpe;</data></m>
+  <m nm="lesseqgtr" fm="1"><data>&leg;</data></m>
+  <m nm="succ" fm="1"><data>&sc;</data></m>
+  <m nm="Bumpeq" fm="1"><data>&bump;</data></m>
+  <m nm="lesseqqgtr" fm="1"><data>&lEg;</data></m>
+  <m nm="succapprox" fm="1"><data>&scap;</data></m>
+  <m nm="circeq" fm="1"><data>&cire;</data></m>
+  <m nm="lessgtr" fm="1"><data>&lg;</data></m>
+  <m nm="succcurlyeq" fm="1"><data>&sccue;</data></m>
+  <m nm="cong" fm="1"><data>&cong;</data></m>
+  <m nm="lesssim" fm="1"><data>&lsim;</data></m>
+  <m nm="succeq" fm="1"><data>&sce;</data></m>
+  <m nm="curlyeqprec" fm="1"><data>&cuepr;</data></m>
+  <m nm="ll" fm="1"><data>&ll;</data></m>
+  <m nm="succsim" fm="1"><data>&scsim;</data></m>
+  <m nm="curlyeqsucc" fm="1"><data>&cuesc;</data></m>
+  <m nm="lll" fm="1"><data>&Ll;</data></m>
+  <m nm="supset" fm="1"><data>&sup;</data></m>
+  <m nm="dashv" fm="1"><data>&dashv;</data></m>
+  <m nm="mid" fm="1"><data>&mid;</data></m>
+  <m nm="Supset" fm="1"><data>&Sup;</data></m>
+  <m nm="doteq" fm="1"><data>&esdot;</data></m>
+  <m nm="models" fm="1"><data>&models;</data></m>
+  <m nm="supseteq" fm="1"><data>&supe;</data></m>
+  <m nm="doteqdot" fm="1"><data>&eDot;</data></m>
+  <m nm="ni" fm="1"><data>&ni;</data></m>
+  <m nm="supseteqq" fm="1"><data>&supE;</data></m>
+  <m nm="eqcirc" fm="1"><data>&ecir;</data></m>
+  <m nm="parallel" fm="1"><data>&par;</data></m>
+  <m nm="therefore" fm="1"><data>&Therefore;</data></m>
+  <m nm="eqsim" fm="1"><data>&eqsim;</data></m>
+  <m nm="perp" fm="1"><data>&perp;</data></m>
+  <m nm="thickapprox" fm="1"><data>&thkap;</data></m>
+  <m nm="eqslantgtr" fm="1"><data>&egs;</data></m>
+  <m nm="pitchfork" fm="1"><data>&fork;</data></m>
+  <m nm="thicksim" fm="1"><data>&thksim;</data></m>
+  <m nm="eqslantless" fm="1"><data>&els;</data></m>
+  <m nm="prec" fm="1"><data>&pr;</data></m>
+  <m nm="trianglelefteq" fm="1"><data>&#x22B4;</data></m>
+  <m nm="equiv" fm="1"><data>&equiv;</data></m>
+  <m nm="precapprox" fm="1"><data>&prap;</data></m>
+  <m nm="triangleq" fm="1"><data>&trie;</data></m>
+  <m nm="fallingdotseq" fm="1"><data>&efDot;</data></m>
+  <m nm="preccurlyeq" fm="1"><data>&prcue;</data></m>
+  <m nm="trianglerighteq" fm="1"><data>&rtrie;</data></m>
+  <m nm="frown" fm="1"><data>&frown;</data></m>
+  <m nm="preceq" fm="1"><data>&pre;</data></m>
+  <m nm="varpropto" fm="1"><data>&vprop;</data></m>
+  <m nm="geq" fm="1"><data>&ge;</data></m>
+  <m nm="precsim" fm="1"><data>&prsim;</data></m>
+  <m nm="vartriangle" fm="1"><data>&utri;</data></m>
+  <m nm="geqq" fm="1"><data>&gE;</data></m>
+  <m nm="propto" fm="1"><data>&prop;</data></m>
+  <m nm="vartriangleleft" fm="1"><data>&vltri;</data></m>
+  <m nm="geqslant" fm="1"><data>&ges;</data></m>
+  <m nm="risingdotseq" fm="1"><data>&erDot;</data></m>
+  <m nm="vartriangleright" fm="1"><data>&vrtri;</data></m>
+  <m nm="gg" fm="1"><data>&gg;</data></m>
+  <m nm="shortmid" fm="1"><data>&shortmid;</data></m> 
+  <m nm="vDash" fm="1"><data>&vDash;</data></m>
+  <m nm="ggg" fm="1"><data>&Gg;</data></m>
+  <m nm="shortparallel" fm="1"><data>&shortparallel;</data></m>
+  <m nm="Vdash" fm="1"><data>&Vdash;</data></m>
+  <m nm="gtrapprox" fm="1"><data>&gap;</data></m>
+  <m nm="sim" fm="1"><data>&sim;</data></m>
+  <m nm="vdash" fm="1"><data>&vdash;</data></m>
+  <m nm="gtrdot" fm="1"><data>&#x22D7;</data></m>
+  <m nm="simeq" fm="1"><data>&simeq;</data></m>
+  <m nm="Vvdash" fm="1"><data>&Vvdash;</data></m> 
+
+  <m nm="gnapprox" fm="1"><data>&gnap;</data></m>
+  <m nm="nshortmid" fm="1"><data>&nsmid;</data></m>
+  <m nm="gneq" fm="1"><data>&gne;</data></m>
+  <m nm="nshortparallel" fm="1"><data>&nspar;</data></m>
+  <m nm="gneqq" fm="1"><data>>&gnE;</data></m>
+  <m nm="nsim" fm="1"><data>&nsim;</data></m>
+  <m nm="gnsim" fm="1"><data>&gnsim;</data></m>
+  <m nm="nsubseteq" fm="1"><data>&nsube;</data></m>
+  <m nm="gvertneqq" fm="1"><data>&gvnE;</data></m>
+  <m nm="nsubseteqq" fm="1"><data>&nsubE;</data></m>
+  <m nm="lnapprox" fm="1"><data>&lnap;</data></m>
+  <m nm="nsucc" fm="1"><data>&nsc;</data></m>
+  <m nm="lneq" fm="1"><data>&lne;</data></m>
+  <m nm="nsucceq" fm="1"><data>&nsce;</data></m>
+  <m nm="lneqq" fm="1"><data>&lnE;</data></m>
+  <m nm="nsupseteq" fm="1"><data>&nsupe;</data></m>
+  <m nm="lnsim" fm="1"><data>&lnsim;</data></m>
+  <m nm="nsupseteqq" fm="1"><data>&nsupE;</data></m>
+  <m nm="lvertneqq" fm="1"><data>&lvnE;</data></m>
+  <m nm="ntriangleleft" fm="1"><data>&nltri;</data></m>	 
+  <m nm="ncong" fm="1"><data>&ncong;</data></m>
+  <m nm="ntrianglelefteq" fm="1"><data>&nltrie;</data></m>
+  <m nm="neq" fm="1"><data>&ne;</data></m>
+  <m nm="ntriangleright" fm="1"><data>&nrtri;</data></m>
+  <m nm="ngeq" fm="1"><data>&nge;</data></m>
+  <m nm="ntrianglerighteq" fm="1"><data>&nrtrie;</data></m>
+  <m nm="ngeqq" fm="1"><data>&ngE;</data></m>
+  <m nm="nvdash" fm="1"><data>&nvdash;</data></m>
+  <m nm="ngeqslant" fm="1"><data>&nges;</data></m>
+  <m nm="nVdash" fm="1"><data>&nVdash;</data></m>
+  <m nm="ngtr" fm="1"><data>&ngt;</data></m>
+  <m nm="nvDash" fm="1"><data>&nvDash;</data></m>
+  <m nm="nLeftarrow" fm="1"><data>&nlArr;</data></m>
+  <m nm="nVDash" fm="1"><data>&nVDash;</data></m>
+  <m nm="nleftarrow" fm="1"><data>&nlarr;</data></m>
+  <m nm="precnapprox" fm="1"><data>&prnap;</data></m>
+  <m nm="nleftrightarrow" fm="1"><data>&nharr;</data></m>
+  <m nm="precneqq" fm="1"><data>&prnE;</data></m>
+  <m nm="nLeftrightarrow" fm="1"><data>&nhArr;</data></m>
+  <m nm="precnsim" fm="1"><data>&prnsim;</data></m>
+  <m nm="nleq" fm="1"><data>&nle;</data></m>
+  <m nm="subsetneq" fm="1"><data>&subne;</data></m>
+  <m nm="nleqq" fm="1"><data>&nlE;</data></m>
+  <m nm="subsetneqq" fm="1"><data>&subnE;</data></m>
+  <m nm="nleqslant" fm="1"><data>&nles;</data></m>
+  <m nm="succnapprox" fm="1"><data>&scnap;</data></m>
+  <m nm="nless" fm="1"><data>&nlt;</data></m>
+  <m nm="succneqq" fm="1"><data>&scnE;</data></m>
+  <m nm="nmid" fm="1"><data>&nmid;</data></m>
+  <m nm="succnsim" fm="1"><data>&scnsim;</data></m>
+  <m nm="notin" fm="1"><data>&notin;</data></m>
+  <m nm="supsetneq" fm="1"><data>&supne;</data></m>
+  <m nm="nparallel" fm="1"><data>&npar;</data></m>
+  <m nm="supsetneqq" fm="1"><data>&supnE;</data></m>
+  <m nm="nprec" fm="1"><data>&npr;</data></m>
+  <m nm="varsubsetneq" fm="1"><data>&vsubne;</data></m>
+  <m nm="npreceq" fm="1"><data>&npre;</data></m>
+  <m nm="varsubsetneqq" fm="1"><data>&vsubnE;</data></m>
+  <m nm="nRightarrow" fm="1"><data>&nrArr;</data></m>
+  <m nm="varsupsetneq" fm="1"><data>&vsupne;</data></m>
+  <m nm="nrightarrow" fm="1"><data>&nrarr;</data></m>
+  <m nm="varsupsetneqq" fm="1"><data>&vsupnE;</data></m>
+  <m nm="nshortmid" fm="1"><data>&nsmid;</data></m>	
+
+  <m nm="circlearrowleft" fm="1"><data>&#x21BA;</data></m>
+  <m nm="longmapsto" fm="1"><data>&xmap;</data></m>
+  <m nm="circlearrowright" fm="1"><data>&#x21BB;</data></m>
+  <m nm="Longrightarrow" fm="1"><data>&xrArr;</data></m>
+  <m nm="curvearrowleft" fm="1"><data>&cularr;</data></m>
+  <m nm="longrightarrow" fm="1"><data>&xrarr;</data></m>
+  <m nm="curvearrowright" fm="1"><data>&curarr;</data></m>
+  <m nm="looparrowleft" fm="1"><data>&larrlp;</data></m>
+  <m nm="dashleftarrow" fm="1"><data>&lBarr;</data></m>
+  <m nm="looparrowright" fm="1"><data>&rarrlp;</data></m>
+  <m nm="dashrightarrow" fm="1"><data>&rBarr;</data></m>
+  <m nm="Lsh" fm="1"><data>&lsh;</data></m>
+  <m nm="Downarrow" fm="1"><data>&dArr;</data></m>
+  <m nm="mapsto" fm="1"><data>&map;</data></m>
+  <m nm="downarrow" fm="1"><data>&darr;</data></m>
+  <m nm="multimap" fm="1"><data>&mumap;</data></m>
+  <m nm="downdownarrows" fm="1"><data>&ddarr;</data></m>
+  <m nm="nearrow" fm="1"><data>&nearr;</data></m> 
+  <m nm="downharpoonleft" fm="1"><data>&dharl;</data></m>
+  <m nm="nwarrow" fm="1"><data>&nwarr;</data></m>
+  <m nm="downharpoonright" fm="1"><data>&dharr;</data></m>
+  <m nm="Rightarrow" fm="1"><data>&rArr;</data></m>
+  <m nm="hookleftarrow" fm="1"><data>&larrhk;</data></m>
+  <m nm="rightarrow" fm="1"><data>&rarr;</data></m>
+  <m nm="hookrightarrow" fm="1"><data>&rarrhk;</data></m>
+  <m nm="rightarrowtail" fm="1"><data>&rarrtl;</data></m>
+  <m nm="iff" fm="1"><data>&iff;</data></m>
+  <m nm="rightharpoondown" fm="1"><data>&rhard;</data></m>
+  <m nm="impliedby" fm="1"><data>&lArr;</data></m>
+  <m nm="rightharpoonup" fm="1"><data>&rharu;</data></m>
+  <m nm="implies" fm="1"><data>&Implies;</data></m>
+  <m nm="rightleftarrows" fm="1"><data>&rlarr;</data></m>
+  <m nm="leadsto" fm="1"><data>&rarrc;</data></m>
+  <m nm="rightlefthrpoons" fm="1"><data>&rlhar;</data></m>
+  <m nm="Leftarrow" fm="1"><data>&lArr;</data></m>
+  <m nm="rightrightarrows" fm="1"><data>&rrarr;</data></m>
+  <m nm="leftarrow" fm="1"><data>&larr;</data></m>
+  <m nm="rightsquigarrow" fm="1"><data>&rarrw;</data></m>
+  <m nm="leftarrowtail" fm="1"><data>&larrtl;</data></m>
+  <m nm="Rrightarrow" fm="1"><data>&rAarr;</data></m>
+  <m nm="leftharpoondown" fm="1"><data>&lhard;</data></m>
+  <m nm="Rsh" fm="1"><data>&rsh;</data></m>
+  <m nm="leftharpoonup" fm="1"><data>&lharu;</data></m>
+  <m nm="searrow" fm="1"><data>&searr;</data></m>
+  <m nm="leftleftarrows" fm="1"><data>&llarr;</data></m>
+  <m nm="swarrow" fm="1"><data>&swarr;</data></m>
+  <m nm="Leftrightarrow" fm="1"><data>&hArr;</data></m>
+  <m nm="twoheadleftarrow" fm="1"><data>&Larr;</data></m>
+  <m nm="leftrightarrow" fm="1"><data>&harr;</data></m>
+  <m nm="twoheadrightarrow" fm="1"><data>&Rarr;</data></m>
+  <m nm="leftrightarrows" fm="1"><data>&lrarr;</data></m>
+  <m nm="Uparrow" fm="1"><data>&uArr;</data></m>
+  <m nm="leftrightharpoons" fm="1"><data>&lrhar;</data></m>
+  <m nm="uparrow" fm="1"><data>&uarr;</data></m>
+  <m nm="leftrightsquigarrow" fm="1"><data>&harrw;</data></m>
+  <m nm="Updownarrow" fm="1"><data>&vArr;</data></m>
+  <m nm="Lleftarrow" fm="1"><data>&lAarr;</data></m>
+  <m nm="updownarrow" fm="1"><data>&varr;</data></m>
+  <m nm="Longleftarrow" fm="1"><data>&xlArr;</data></m>
+  <m nm="upharpoonleft" fm="1"><data>&uharl;</data></m>
+  <m nm="longleftarrow" fm="1"><data>&xlarr;</data></m>
+  <m nm="upharpoonright" fm="1"><data>&uharr;</data></m>
+  <m nm="Longleftrightarrow" fm="1"><data>&xhArr;</data></m>
+  <m nm="upuparrows" fm="1"><data>&uuarr;</data></m>
+  <m nm="longleftrightarrow" fm="1"><data>&xharr;</data></m>   
+
+  <m nm="lceil" fm="1"><data>&lceil;</data></m>
+  <m nm="rceil" fm="1"><data>&rceil;</data></m>
+  <m nm="langle" fm="1"><data>&langle;</data></m>
+  <m nm="rangle" fm="1"><data>&rangle;</data></m>
+  <m nm="lfloor" fm="1"><data>&lfloor;</data></m>
+  <m nm="rfloor" fm="1"><data>&rfloor;</data></m>
+  <m nm="ulcorner" fm="1"><data>&ulcorn;</data></m>
+  <m nm="urcorner" fm="1"><data>&urcorn;</data></m>
+  <m nm="llcorner" fm="1"><data>&dlcorn;</data></m>
+  <m nm="lrcornr" fm="1"><data>&drcorn;</data></m>	
+
+  <m nm="aleph" fm="1"><data>&aleph;</data></m>
+  <m nm="heartsuit" fm="1"><data>&heartsuit;</data></m>
+  <m nm="angle" fm="1"><data>&ang;</data></m>
+  <m nm="hslash" fm="1"><data>&#x210F;</data></m> 
+  <m nm="backprime" fm="1"><data>&bprime;</data></m>
+  <m nm="Im" fm="1"><data>&image;</data></m>
+  <m nm="backslash" fm="1"><data>&bsol;</data></m>
+  <m nm="imath" fm="1"><data>&imath;</data></m>
+
+  <m nm="Bbbk" fm="1"><data></data></m>
+<!--- %%% exported as :        <mml:mi mathvariant="double-struck">k</mml:mi -->
+
+  <m nm="infty" fm="1"><data>&infin;</data></m>
+  <m nm="beth" fm="1"><data>&beth;</data></m>
+  <m nm="jmath" fm="1"><data>&jmath;</data></m>
+  <m nm="bigstar" fm="1"><data>&starf;</data></m>
+
+  <m nm="lambdabar" fm="1"><data></data></m>
+<!--- %%%% exported as : <mml:mi>\lambdabar</mml:mi> -->
+  
+  <m nm="blacklozenge" fm="1"><data>&lozf;</data></m>
+  <m nm="lbrace" fm="1"><data>{</data></m>
+  <m nm="blacksquare" fm="1"><data>&squarf;</data></m>
+  <m nm="lbrack" fm="1"><data>[</data></m>
+  <m nm="blacktriangle" fm="1"><data>&utrif;</data></m>
+  <m nm="ldots" fm="1"><data>&hellip;</data></m>
+  <m nm="blacktriangledown" fm="1"><data>&dtrif;</data></m>
+  <m nm="lnot" fm="1"><data>&not;</data></m>
+  <m nm="bot" fm="1"><data>&bottom;</data></m>
+  <m nm="lozenge" fm="1"><data>&lozenge;</data></m>
+  <m nm="cdots" fm="1"><data>&ctdot;</data></m>
+  <m nm="maltese" fm="1"><data>&malt;</data></m>
+  <m nm="cents" fm="1"><data>&#xa2;</data></m>
+  <m nm="measuredangle" fm="1"><data>&angmsd;</data></m>
+  <m nm="checkmark" fm="1"><data>&check;</data></m>
+  <m nm="mho" fm="1"><data>&mho;</data></m>
+  <m nm="circledR" fm="1"><data>&circledR;</data></m>
+  <m nm="nabla" fm="1"><data>&nabla;</data></m>
+  <m nm="circledS" fm="1"><data>&oS;</data></m>
+  <m nm="natural" fm="1"><data>&natur;</data></m>
+  <m nm="clubsuit" fm="1"><data>&clubs;</data></m>
+  <m nm="nexists" fm="1"><data>&NotExists;</data></m>
+  <m nm="complement" fm="1"><data>&comp;</data></m>
+  <m nm="partial" fm="1"><data>&PartialD;</data></m>
+  <m nm="dag" fm="1"><data>&dagger;</data></m>
+  <m nm="pounds" fm="1"><data>&#xa3;</data></m>
+  <m nm="daleth" fm="1"><data>&daleth;</data></m>
+  <m nm="prime" fm="1"><data>&prime;</data></m>
+  <m nm="ddag" fm="1"><data>&Dagger;</data></m>
+  <m nm="rbrace" fm="1"><data>}</data></m>
+  <m nm="ddots" fm="1"><data>&dtdot;</data></m>
+  <m nm="rbrack" fm="1"><data>]</data></m>
+
+  <m nm="diagdown" fm="1"><data></data></m>
+<!--%%%% exported as : <mml:mi>\diagdown</mml:mi>   -->
+ 
+  <m nm="Re" fm="1"><data>&real;</data></m>
+
+  <m nm="diagup" fm="1"><data></data></m>
+<!--%%%% exported as : <mml:mi>\diagup</mml:mi> -->
+   
+  <m nm="sharp" fm="1"><data>&sharp;</data></m>
+  <m nm="Diamond" fm="1"><data>&Diamond;</data></m>
+  <m nm="spadesuit" fm="1"><data>&spades;</data></m>
+  <m nm="diamontsuit" fm="1"><data>&diams;</data></m>
+  <m nm="sphericalangle" fm="1"><data>&angsph;</data></m>
+
+  <m nm="dots" fm="1"><data></data></m>
+
+  <m nm="square" fm="1"><data>&square;</data></m>
+  <m nm="ell" fm="1"><data>&ell;</data></m>
+  <m nm="surd" fm="1"><data>&radic;</data></m>
+  <m nm="emptyset" fm="1"><data>&empty;</data></m>
+  <m nm="texttrademark" fm="1"><data>&trade;</data></m>
+  <m nm="eth" fm="1"><data>&eth;</data></m>
+  <m nm="top" fm="1"><data>&top;</data></m>
+  <m nm="euro" fm="1"><data>&euro;</data></m>
+  <m nm="triangle" fm="1"><data>&utri;</data></m>
+  <m nm="exists" fm="1"><data>&Exists;</data></m>
+  <m nm="triangledown" fm="1"><data>&dtri;</data></m>
+
+  <m nm="Finv" fm="1"><data></data></m>
+<!--%%%% exported as : <mml:mi>\Finv</mml:mi>  -->
+
+  <m nm="varnothing" fm="1"><data>&emptyv;</data></m>
+  <m nm="flat" fm="1"><data>&flat;</data></m>
+  <m nm="vdots" fm="1"><data>&vellip;</data></m>
+  <m nm="forall" fm="1"><data>&ForAll;</data></m>
+  <m nm="Vert" fm="1"><data>&Verbar;</data></m>
+
+  <m nm="Game" fm="1"><data></data></m>
+<!-- %%%% exported as : <mml:mi>\Game</mml:mi> -->
+
+
+  <m nm="wp" fm="1"><data>&weierp;</data></m>
+  <m nm="gimel" fm="1"><data>&gimel;</data></m>
+  <m nm="yen" fm="1"><data>&yen;</data></m>
+  <m nm="hbar" fm="1"><data>&#xE2D5;</data></m>
+
+  <m nm="AA" fm="1"><data>&#xc5;</data></m>
+  <m nm="lnot" fm="1"><data>&not;</data></m>
+  <m nm="aa" fm="1"><data>&#xe5;</data></m>
+  <m nm="pm" fm="1"><data>&plusmn;</data></m>
+  <m nm="AE" fm="1"><data>&#xc6;</data></m>
+  <m nm="pounds" fm="1"><data>&#xa3;</data></m>
+  <m nm="ae" fm="1"><data>&#xe6;</data></m>
+  <m nm="ss" fm="1"><data>&#xdf;</data></m>
+  <m nm="cents" fm="1"><data>&#xa2;</data></m>
+  <m nm="textexclamdown" fm="1"><data>&#xa1;</data></m>
+  <m nm="copyright" fm="1"><data>&#xa9;</data></m>
+  <m nm="textperiodcentered" fm="1"><data>.</data></m>
+  <m nm="degree" fm="1"><data>&deg;</data></m>
+  <m nm="textquestiondown" fm="1"><data>&#xbf;</data></m>
+  <m nm="DH" fm="1"><data>&#xd0;</data></m>
+  <m nm="textregistered" fm="1"><data>&#xae;</data></m>
+  <m nm="dh" fm="1"><data>&#xf0;</data></m>
+  <m nm="TH" fm="1"><data>&#xde;</data></m>
+  <m nm="div" fm="1"><data>&divide;</data></m>
+  <m nm="th" fm="1"><data>&#xfe;</data></m>
+  <m nm="guillemotleft" fm="1"><data>&#xab;</data></m>
+  <m nm="times" fm="1"><data>&times;</data></m>
+  <m nm="guillemotright" fm="1"><data>&#xbb;</data></m>
+  <m nm="yen" fm="1"><data>&#xa5;</data></m>
+
+  <m nm="DJ" fm="1"><data>&#x110;</data></m>
+  <m nm="dj" fm="1"><data>&#x111;</data></m>
+  <m nm="imath" fm="1"><data>&#x0131;</data></m>
+  <m nm="NG" fm="1"><data>&#x14a;</data></m>
+  <m nm="ng" fm="1"><data>&#x14b;</data></m>
+  <m nm="OE" fm="1"><data>&#x152;</data></m>
+  <m nm="oe" fm="1"><data>&#x153;</data></m>
+
+  <m nm="emdash" fm="1"><data></data></m>
+<!-- %%%% exported as :    -->
+
+  <m nm="endash" fm="1"><data></data></m>
+<!-- %%%% exported as :   -->
+
+  <m nm="guilsinglleft" fm="1"><data>&#x2039;</data></m>
+  <m nm="guilsinglright" fm="1"><data>&#x203a;</data></m>
+
+  <m nm="lq" fm="1"><data></data></m>
+<!-- %%%% exported as : `  -->
+   
+  <m nm="quotedblbase" fm="1"><data></data></m>
+<!-- %%%% exported as : \-->
+
+  <m nm="quotesinglbase" fm="1"><data></data></m>
+<!-- %%%% exported as : \-->
+ 
+  <m nm="rq" fm="1"><data></data></m>
+<!-- %%%% exported as : '-->
+
+  <m nm="textquotedblleft" fm="1"><data></data></m>
+<!-- %%%% exported as : "-->
+
+  <m nm="textquotedblright" fm="1"><data></data></m>
+<!-- %%%% exported as : "-->
+ 
 </macros>
