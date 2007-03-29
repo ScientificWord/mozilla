@@ -1,0 +1,76 @@
+#include "nsISupports.idl"
+
+interface msiIAutosub;
+
+[scriptable, uuid(FE4847EE-9B9B-4025-9562-8827BB20CD21)]
+interface msiIAutosub : nsISupports
+{
+  /*
+   * Possible values for the context attribute
+   */
+  const unsigned short CONTEXT_MATHONLY = 1;
+  const unsigned short CONTEXT_TEXTONLY = 2;
+  const unsigned short CONTEXT_MATHANDTEXT = 3;
+
+  /*
+   * Possible values for the action attribute
+   */
+  const unsigned short ACTION_SUBSTITUTE = 1;
+  const unsigned short ACTION_EXECUTE = 2;
+
+
+  /*
+   * Possible values for the lookup state
+   */
+  const unsigned short STATE_INIT = 1;
+  const unsigned short STATE_MATCHESSOFAR = 2;
+  const unsigned short STATE_SUCCESS = 3;
+  const unsigned short STATE_FAIL = 4;
+
+  /*
+   * Initialize the lookup table by reading an XML file
+   */
+   
+  void initialize(in AString fileURI);
+  
+  
+  /*
+   * Add or remove an entry to the table (presumably via a dialog), return whether succsessful
+   */
+   
+  boolean addEntry( in AString pattern, in long ctt, in long action, in AString data );
+ 
+  boolean removeEntry( in AString pattern );
+  
+  /*
+   * Get the data corresponding to a match. This is valid only after nextCh has returned
+   * STATE_SUCCESS.
+   */
+   
+  AString getCurrentData( out long ctx, out long action );
+  
+  /* 
+   * Return the state of the lookup after sending another character. Note that characters
+   * are sent in *reverse* order. Thus sending 'e', 'h', and then 't' will match the 
+   * pattern 'the'. The return values of nextChar will be STATE_MATCHESSOFAR twice and
+   * STATE_SUCCESS once.
+   */
+   
+  long nextChar( in wchar ch );
+
+  /* 
+   * Resets the state of the lookup engine. Generally this will be done each time a character
+   * is entered. Then nextChar will send the characters in reverse order starting from the
+   * cursor position until STATE_SUCCESS or STATE_FAIL is returned.
+   */
+  
+  void Reset();
+  
+  /*
+   * if the user changed the lookup table with addEntry or removeEntry, we need to save the
+   * altered table. We use the same file that was named in initialize(). Using a new file is
+   * possible, but not yet implemented. Returns whether successful.
+   */ 
+   
+  boolean Save();
+};
