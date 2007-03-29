@@ -83,7 +83,11 @@
 #define NS_URLCLASSIFIERSTREAMUPDATER_CONTRACTID \
     "@mozilla.org/url-classifier/streamupdater;1"
 
-#define NS_SCRIPTABLEUNESCAPEHTML_CONTRACTID "@mozilla.org/feed-unescapehtml;1"
+#define NS_SCRIPTABLEUNESCAPEHTML_CONTRACTID \
+    "@mozilla.org/feed-unescapehtml;1"
+
+#define MSI_AUTOSUBSTITUTE_CONTRACTID \
+    "@mozilla.org/autosubstitute;1"
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -141,3 +145,6 @@
 // {10f2f5f0-f103-4901-980f-ba11bd70d60d}
 #define NS_SCRIPTABLEUNESCAPEHTML_CID  \
 { 0x10f2f5f0, 0xf103, 0x4901, { 0x98, 0x0f, 0xba, 0x11, 0xbd, 0x70, 0xd6, 0x0d} }
+
+#define MSI_AUTOSUBSTITUTE_CID \
+{ 0xfe4847ee, 0x9b9b, 0x4025, { 0x95, 0x62, 0x88, 0x27, 0xbb, 0x20, 0xcd, 0x21} }
