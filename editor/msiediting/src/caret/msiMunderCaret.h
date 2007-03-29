@@ -11,6 +11,9 @@ class msiMunderCaret : public msiUnderAndOrOverCaret
 {
 public:
   msiMunderCaret(nsIDOMNode* mathmlNode, PRUint32 offset);
+
+  // override msiIMathMLCaret
+  NS_DECL_MSIIMATHMLCARET
 };
 
 #endif // msiMunderCaret_h___
