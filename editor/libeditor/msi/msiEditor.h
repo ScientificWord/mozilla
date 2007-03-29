@@ -11,6 +11,7 @@
 #include "nsIRangeUtils.h"
 #include "msiILayoutUtils.h"
 #include "msiISelection.h"
+#include "msiIAutosub.h"
 
 
 class msiEditorMouseListener;
@@ -60,6 +61,7 @@ protected:
   nsCOMPtr <msiIEditingManager> m_msiEditingMan;
   static nsIRangeUtils * m_rangeUtils;
   nsCOMPtr<nsIDOMEventListener> m_mouseMotionListener;
+  nsCOMPtr<msiIAutosub> m_autosub;
   
   
   friend class msiEditorMouseListener;
@@ -129,7 +131,7 @@ nsresult CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
                                           nsIEditor::EDirection aAction,
                                           EditAggregateTxn     *aTxn);
                                      
-
+nsresult CheckForAutoSubstitute();
 
 };
 
