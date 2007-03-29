@@ -1,7 +1,14 @@
 <?xml version="1.0"?>
 <!DOCTYPE macros PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
 <subs>
-  <sub ctx="text" act="subst"><pattern>--</pattern><data>&#2013;</data></sub>
-  <sub ctx="text" act="subst"><pattern>&#2013;-</pattern><data>&#2014;</data></sub>
-  <sub ctx="text" act="subst"><pattern>---</pattern><data>&#2014;</data></sub>
+  <sub ctx="text" act="subst"><pattern>--</pattern><data>&#x2013;</data></sub>
+  <sub ctx="text" act="subst"><pattern>&#x2013;-</pattern><data>&#x2014;</data></sub>
+  <sub ctx="text" act="subst"><pattern>---</pattern><data>&#x2014;</data></sub>
+  <sub ctx="text" act="subst"><pattern>``</pattern><data>“</data></sub>
+  <sub ctx="text" act="subst"><pattern>''</pattern><data>”</data></sub>
+  <sub ctx="text" act="subst"><pattern>BBM</pattern><data>Barry MacKichan</data></sub>
+  <sub ctx="text" act="subst"><pattern>&#x2013;&gt;;</pattern><data>&rarr;</data></sub>
+  <sub ctx="text" act="subst"><pattern>&lt;&#x2013;;</pattern><data>&larr;</data></sub>
+  <sub ctx="text" act="subst"><pattern>|^;</pattern><data>&uarr;</data></sub>
+  <sub ctx="text" act="subst"><pattern>|^;</pattern><data>&uarr;</data></sub>
 </subs>
