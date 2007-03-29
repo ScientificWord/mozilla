@@ -146,7 +146,9 @@ nsresult msiUtils::SetupPassOffCaretToParent(nsIEditor * editor,
   PRUint32 offset(0);
   if (editor && child)
   {
-    GetIndexOfChildInParent(child, offset);
+    res = GetIndexOfChildInParent(child, offset);
+    if (NS_FAILED(res))
+      return res;
     if (incrementOffset)
       offset += 1;
     child->GetParentNode(getter_AddRefs(parent));
@@ -1134,7 +1136,6 @@ nsresult msiUtils::CreateMroot(nsIEditor * editor,
     else 
       res = NS_ERROR_FAILURE;
   }
-  
   return res;
 }        
 
@@ -1547,27 +1548,30 @@ nsresult msiUtils::WrapNodeInMStyle(nsIEditor * editor, nsIDOMNode * node, nsCOM
 nsresult msiUtils::GetIndexOfChildInParent(nsIDOMNode * child, PRUint32 &index)
 {
   nsresult res(NS_ERROR_FAILURE);
+  nsCOMPtr <nsIDOMNode> parent;
   if (child)
   {
-    nsCOMPtr <nsIDOMNode> parent;
-    child->GetParentNode(getter_AddRefs(parent));
-    if (parent)
+    res = child->GetParentNode(getter_AddRefs(parent));
+    if (NS_SUCCEEDED(res) && parent)
     {
       nsCOMPtr<nsIDOMNodeList> children;
-      parent->GetChildNodes(getter_AddRefs(children));
-      if (children) 
+      res = parent->GetChildNodes(getter_AddRefs(children));
+      if (NS_SUCCEEDED(res) && children) 
       {
         PRUint32 i, count;
-        children->GetLength(&count);
-        for (i=0; i < count; i++) 
+        res = children->GetLength(&count);
+        if (NS_SUCCEEDED(res))
         {
-          nsCOMPtr<nsIDOMNode> currChild;
-          children->Item(i, getter_AddRefs(currChild));
-          if (currChild == child)
+          for (i=0; i < count; i++) 
           {
-            index = i;
-            res = NS_OK;
-            break;
+            nsCOMPtr<nsIDOMNode> currChild;
+            res = children->Item(i, getter_AddRefs(currChild));
+            if (NS_SUCCEEDED(res) && currChild == child)
+            {
+              index = i;
+              res = NS_OK;
+              break;
+            }
           }
         }
       }  
@@ -1912,7 +1916,6 @@ nsresult msiUtils::MarkCaretPosition(nsIEditor * editor,
     }  
   }
   return res;
-
 }                                                 
 
 //ljh The location of the caret is given via the temp attribute 
