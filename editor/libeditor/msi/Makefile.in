@@ -28,7 +28,8 @@ REQUIRES = xpcom \
            msiediting \
            js \
            xpconnect \
-           txtsvc \
+           txtsvc  \
+           autosub \
 		   $(NULL)
 
 
