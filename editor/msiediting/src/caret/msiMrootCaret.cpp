@@ -91,8 +91,6 @@ msiMrootCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell
   return msiMCaretBase::AdjustNodeAndOffsetFromMouseEvent(editor, presShell, flags, 
                                                           mouseEvent, node, offset);
 }                                                       
-
-
                                         
 NS_IMETHODIMP
 msiMrootCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
@@ -313,7 +311,6 @@ msiMrootCaret::SplitAtDecendents(nsIEditor* editor,
                                           right_leftPart, right_rightPart);
 }
 
-
 NS_IMETHODIMP
 msiMrootCaret::Split(nsIEditor *editor, 
                      nsIDOMNode *appendLeft, 
@@ -348,7 +345,6 @@ msiMrootCaret::SetupDeletionTransactions(nsIEditor * editor,
                                              end,  endOffset, transactionList,
                                              coalesceNode, coalesceOffset);  
 }
-
 
 NS_IMETHODIMP
 msiMrootCaret::SetupCoalesceTransactions(nsIEditor * editor,

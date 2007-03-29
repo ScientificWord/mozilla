@@ -80,8 +80,6 @@ msiMencloseCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresSh
   return res;                                                                 
 }                                                       
 
-                               
-
 NS_IMETHODIMP
 msiMencloseCaret::AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPoint, 
                                        nsIDOMNode** selectionNode, PRUint32 * selectionOffset,
@@ -90,14 +88,12 @@ msiMencloseCaret::AdjustSelectionPoint(nsIEditor *editor, PRBool leftSelPoint,
   return msiMCaretBase::AdjustSelectionPoint(editor, leftSelPoint, selectionNode, selectionOffset, parentCaret);
 }
 
-
 NS_IMETHODIMP
 msiMencloseCaret::SetDeletionTransaction(nsIEditor * editor,
                                          PRBool deletingToTheRight, 
                                          nsITransaction ** txn,
                                          PRBool * toRightInParent)
 {
-
   NS_ASSERTION(PR_FALSE, "Should not be here since 0th and last offsets are inside the enclose element\n");
   return msiMCaretBase::SetDeletionTransaction(editor, deletingToTheRight, txn, toRightInParent);
 }                                      
@@ -115,7 +111,6 @@ msiMencloseCaret::SetupDeletionTransactions(nsIEditor * editor,
   return msiMCaretBase::InputboxSetupDelTxns(editor, m_mathmlNode, m_numKids, start, startOffset,
                                              end, endOffset, transactionList, coalesceNode, coalesceOffset);
 }                                                     
-
 
 #define MIN_THRESHOLD 2 //TODO -- how should this be determined.      
 void msiMencloseCaret::GetThresholds(const nsRect &encloseRect, 
@@ -193,4 +188,19 @@ msiMencloseCaret::CaretObjectRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode
   else
     res = msiMContainerCaret::CaretObjectRight(editor, flags, node, offset);
   return res;
+}
+
+NS_IMETHODIMP
+msiMencloseCaret::TabLeft(nsIEditor *editor, 
+                          nsIDOMNode **node, 
+                          PRUint32 *offset)
+{
+  return msiMContainerCaret::TabLeft(editor,node,offset);
+}
+NS_IMETHODIMP
+msiMencloseCaret::TabRight(nsIEditor *editor, 
+                           nsIDOMNode **node, 
+                           PRUint32 *offset)
+{
+  return msiMContainerCaret::TabRight(editor,node,offset);
 }
