@@ -50,6 +50,7 @@ msiEditor::msiEditor()
   if (!m_rangeUtils)
     CallGetService("@mozilla.org/content/range-utils;1",  &m_rangeUtils);
   instanceCounter += 1;
+  m_autosub = do_CreateInstance("@mozilla.org/autosubstitute;1", &dummy);
 }
 
 msiEditor::~msiEditor()
@@ -979,7 +980,10 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     if (defaultPrevented)
       return res;
     else 
-      return nsHTMLEditor::HandleKeyPress(aKeyEvent);
+      res = nsHTMLEditor::HandleKeyPress(aKeyEvent);
+      if (NS_SUCCEEDED(res)) res = CheckForAutoSubstitute();
+      return res;
+      
   }
   else
     return NS_ERROR_FAILURE;
@@ -2377,3 +2381,57 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //    return NS_ERROR_FAILURE;
 //}
   
+
+nsresult
+msiEditor::CheckForAutoSubstitute()
+{
+  nsCOMPtr<msiISelection> msiSelection;
+  GetMSISelection(msiSelection); 
+  // this is called immediately after an insertion, so the selection is collapsed. Thus we can check any of of the
+  // nodes.
+  nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOM3Node> textNode;
+  PRInt32 ctx, action; 
+  PRUint32 offset;
+  PRInt32 signedOffset;
+  PRUint32 newOffset;
+  nsAutoString theText;
+  PRInt32 lookupResult;
+  nsAutoString data;       
+  msiSelection->GetMsiAnchorNode((nsIDOMNode **) getter_AddRefs(node));
+  msiSelection->GetMsiAnchorOffset( &offset );
+  signedOffset = (PRInt32)offset;
+  if (IsTextContentNode(node))
+  {
+    textNode = do_QueryInterface(node);
+    textNode->GetTextContent(theText);
+    m_autosub->Reset();
+    while (--signedOffset >= 0)
+    {
+      m_autosub->NextChar(theText[signedOffset],&lookupResult);
+      switch (lookupResult)
+      {
+        case msiIAutosub::STATE_SUCCESS:
+          // printf("Found the pattern\n");
+          // the pattern consists of characters signedOffset .. offset in the text node
+          m_autosub->GetCurrentData(&ctx, &action, data);
+          theText.Replace(signedOffset, offset, data);
+          textNode->SetTextContent(theText);
+          // we need to update the cursor if the sizes don't match
+          newOffset = signedOffset + data.Length();
+          msiSelection->Set(node,newOffset,node,newOffset,node,newOffset,node,newOffset);
+          
+          return NS_OK;
+        case msiIAutosub::STATE_MATCHESSOFAR:
+          break;
+        case msiIAutosub::STATE_FAIL:
+          return NS_OK;
+        default:
+          printf("Error in CheckForAutoSubstitute");
+          return NS_OK;  // find the right error return value
+      }
+    }
+    return NS_OK;
+  } 
+  return NS_OK;
+}
