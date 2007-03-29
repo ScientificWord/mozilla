@@ -13,8 +13,8 @@
 #include "nsIDOMCharacterData.h"
 
 msiBigOpInfoImp::msiBigOpInfoImp(nsIDOMNode* mathmlNode, PRUint32 offset) :
-m_rawMathmlNode(mathmlNode), m_rawOffset(offset), m_flags(BOFlag_none),
-m_scriptType(msiIMathMLEditingBC::MATHML_UNKNOWN)
+  m_rawMathmlNode(mathmlNode), m_rawOffset(offset), m_flags(BOFlag_none),
+  m_scriptType(msiIMathMLEditingBC::MATHML_UNKNOWN)
 {
   nsAutoString localName;
   nsresult res(NS_OK);
@@ -193,7 +193,6 @@ NS_IMETHODIMP msiBigOpInfoImp::GetUseSubSupLimits(PRBool *useSubSupLimits)
          *useSubSupLimits = moData.Equals(integral);
       }
     }
-    
   }
   return NS_OK;
 }
