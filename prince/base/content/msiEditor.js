@@ -755,6 +755,9 @@ function msiEditorDocumentObserver(editorElement)
           editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
           // also initialize the sidebar in this case
           initSidebar();
+          // now is the time to initialize the autosubstitute engine
+          var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+          autosub.initialize("resource:///res/tagdefs/autosubs.xml");
 //temp?          editor.SetTagListPath("chrome://editor/content/default.xml");
           // the order here is important, since the autocomplete component has to read the tag names 
 //          initializeAutoCompleteStringArrayForEditor(editor);
