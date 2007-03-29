@@ -11,6 +11,9 @@ class msiMoverCaret : public msiUnderAndOrOverCaret
 {
 public:
   msiMoverCaret(nsIDOMNode* mathmlNode, PRUint32 offset);
+
+  // override msiIMathMLCaret
+  NS_DECL_MSIIMATHMLCARET
 };
 
 #endif // msiMoverCaret_h___
