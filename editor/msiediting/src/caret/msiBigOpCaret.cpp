@@ -16,8 +16,8 @@
 #include "nsComponentManagerUtils.h"
 
 msiBigOperatorCaret::msiBigOperatorCaret(nsIDOMNode* mathmlNode, PRUint32 offset,
-                                         nsCOMPtr<msiIBigOpInfo> & bigOpInfo)
-:msiMCaretBase(mathmlNode, offset, MSI_BIGOPERATOR), m_bigOpInfo(bigOpInfo)
+                                         nsCOMPtr<msiIBigOpInfo> & bigOpInfo) :
+ msiMCaretBase(mathmlNode, offset, MSI_BIGOPERATOR), m_bigOpInfo(bigOpInfo)
 {
 }
 
@@ -694,20 +694,96 @@ msiBigOperatorCaret::TabLeft(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *of
 NS_IMETHODIMP
 msiBigOperatorCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
 {
-  if (m_numKids != 3 || m_offset == 0)
+  if (m_offset == 1 || m_offset == 0)
     return msiMCaretBase::TabRight(editor, node, offset);
-  PRUint32 newflags;
-  if (m_offset == 1 || m_offset == 2)
+  if (m_numKids == 3)
   {
-    m_offset = 2;
-    newflags = FROM_BELOW;
+    PRUint32 newflags;
+    if (m_offset == 2)
+    {
+      m_offset = 2;
+      newflags = FROM_BELOW;
+    }
+    else
+    {
+      m_offset = 1;
+      newflags = FROM_ABOVE;
+    }
+    return Accept(editor, newflags, node, offset);
   }
   else
   {
-    m_offset = 1;
-    newflags = FROM_ABOVE;
+    PRUint32 scriptType(MATHML_UNKNOWN);
+    if (m_bigOpInfo)
+      m_bigOpInfo->GetScriptType(&scriptType);
+    PRBool hasSup = (scriptType == msiIMathMLEditingBC::MATHML_MSUP ||
+                     scriptType == msiIMathMLEditingBC::MATHML_MOVER);
+    PRBool isUnderOver = (scriptType == msiIMathMLEditingBC::MATHML_MOVER ||
+                          scriptType == msiIMathMLEditingBC::MATHML_MUNDER);
+
+    nsresult res;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    nsCOMPtr<nsIDOMNode> base, script;
+    msiUtils::GetChildNode(m_mathmlNode, 0, base);
+    msiUtils::GetChildNode(m_mathmlNode, 1, script);
+    nsCOMPtr<nsIDOMNode> cloneBase, cloneScript;
+    res = msiUtils::CloneNode(base, cloneBase);
+    if (NS_FAILED(res))
+      return res;
+    res = msiUtils::CloneNode(script, cloneScript);
+    if (NS_FAILED(res))
+      return res;
+    nsAutoString emptyString;
+    nsCOMPtr<nsIDOMElement> bigopElement;
+    if (isUnderOver)
+    {
+      if (hasSup)
+        res = msiUtils::CreateMunderover(editor, cloneBase, nsnull, cloneScript,
+                                         PR_FALSE, PR_TRUE, PR_TRUE,
+                                         flags, emptyString, emptyString, bigopElement);
+      else
+        res = msiUtils::CreateMunderover(editor, cloneBase, cloneScript, nsnull,
+                                         PR_FALSE, PR_TRUE, PR_TRUE,
+                                         flags, emptyString, emptyString, bigopElement);
+    }
+    else
+    {
+      if (hasSup)
+        res = msiUtils::CreateMSubSup(editor, cloneBase, nsnull, cloneScript,
+                                      PR_FALSE, PR_TRUE, PR_TRUE,
+                                      flags, emptyString, emptyString, bigopElement);
+      else
+        res = msiUtils::CreateMSubSup(editor, cloneBase, cloneScript, nsnull,
+                                      PR_FALSE, PR_TRUE, PR_TRUE,
+                                      flags, emptyString, emptyString, bigopElement);
+    }
+    if (NS_FAILED(res))
+      return res;
+    nsCOMPtr<nsIDOMNode> parent;
+    m_mathmlNode->GetParentNode(getter_AddRefs(parent));
+    nsCOMPtr<nsIDOMNode> bigopNode(do_QueryInterface(bigopElement));
+    if (bigopNode && parent)
+    {
+      nsCOMPtr<nsIDOMNode> dontcare;
+      res = parent->ReplaceChild(bigopNode, m_mathmlNode, getter_AddRefs(dontcare));
+    } 
+    else
+    {
+      res = NS_ERROR_FAILURE;  //maybe NS_ERROR_DOM_NOT_FOUND_ERR?
+    }
+    if (NS_FAILED(res))
+      return res;
+    //give the caret to the other script
+    nsCOMPtr<nsIDOMNode> otherscript;
+    msiUtils::GetChildNode(bigopNode, hasSup ? 1 : 2, otherscript);
+    nsCOMPtr<msiIMathMLCaret> mathmlCaret;
+    msiUtils::GetMathMLCaretInterface(editor, otherscript, 0, mathmlCaret);
+    if (mathmlCaret)
+      res = mathmlCaret->Accept(editor, FROM_PARENT|FROM_LEFT, node, offset); 
+    else 
+      res = NS_ERROR_FAILURE;
+    return res;
   }
-  return Accept(editor, newflags, node, offset);
 }
 
 //private
@@ -716,7 +792,7 @@ msiBigOperatorCaret::GetFramesAndRects(const nsIFrame * script,
                                  nsIFrame ** base, nsIFrame ** script1, nsIFrame ** script2,
                                  nsRect & sRect, nsRect &bRect, nsRect& s1Rect, nsRect& s2Rect,
                                  PRBool& isAboveBelow)
-{ // relative to scritp's view
+{ // relative to script's view
   nsresult res(NS_ERROR_FAILURE);
   *script2 = nsnull;
   s2Rect= nsRect(0,0,0,0);
@@ -779,5 +855,4 @@ msiBigOperatorCaret::GetAboveBelowThresholds(const nsRect& sRect, const nsRect& 
     aboveSet = PR_TRUE;
     belowSet = PR_TRUE;
   }
-
 }                                             

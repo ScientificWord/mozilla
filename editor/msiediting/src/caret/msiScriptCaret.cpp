@@ -745,7 +745,7 @@ NS_IMETHODIMP
 msiScriptCaret::CaretDown(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset)
 {
   if (!(m_numKids == 3 && m_offset == 2))
-    return msiMCaretBase::CaretUp(editor,flags,node,offset);
+    return msiMCaretBase::CaretDown(editor,flags,node,offset);
   m_offset = 1;
   return Accept(editor, FROM_ABOVE, node, offset);
 }
@@ -822,20 +822,28 @@ msiScriptCaret::TabLeft(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
 NS_IMETHODIMP
 msiScriptCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset)
 {
-  if (m_numKids != 3 || m_offset == 0)
+  if (m_numKids < 2 || m_numKids > 3 || m_offset == 1 || m_offset == 0)
     return msiMCaretBase::TabRight(editor, node, offset);
-  PRUint32 newflags;
-  if (m_offset == 1 || m_offset == 2)
+  if (m_numKids == 3)
   {
-    m_offset = 2;
-    newflags = FROM_BELOW;
+    PRUint32 newflags;
+    if (m_offset == 2)
+    {
+      m_offset = 2;
+      newflags = FROM_BELOW;
+    }
+    else
+    {
+      m_offset = 1;
+      newflags = FROM_ABOVE;
+    }
+    return Accept(editor, newflags, node, offset);
   }
   else
   {
-    m_offset = 1;
-    newflags = FROM_ABOVE;
+    //TODO
+    return msiMCaretBase::TabRight(editor, node, offset);
   }
-  return Accept(editor, newflags, node, offset);
 }
 
 //private
@@ -843,7 +851,7 @@ nsresult
 msiScriptCaret::GetFramesAndRects(const nsIFrame * script, 
                                   nsIFrame ** base, nsIFrame ** script1, nsIFrame ** script2,
                                   nsRect & sRect, nsRect &bRect, nsRect& s1Rect, nsRect& s2Rect)
-{ // relative to scritp's view
+{ // relative to script's view
   nsresult res(NS_ERROR_FAILURE);
   *script2 = nsnull;
   s2Rect= nsRect(0,0,0,0);

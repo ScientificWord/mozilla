@@ -28,8 +28,6 @@ protected:
   void GetThresholds(const nsRect &sRect, 
                      const nsRect &bRect, const nsRect& s1Rect, nsRect& s2Rect,
                      PRInt32 &left, PRInt32& midLf, PRInt32& midRt, PRInt32 & right);
-                             
-  
 };
 
 #endif // msiScriptCaret_h___

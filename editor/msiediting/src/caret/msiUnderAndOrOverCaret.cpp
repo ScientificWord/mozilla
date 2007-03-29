@@ -14,8 +14,8 @@
 #include "nsComponentManagerUtils.h"
 #include "nsIDOMNodeList.h"
 
-msiUnderAndOrOverCaret::msiUnderAndOrOverCaret(nsIDOMNode* mathmlNode, PRUint32 offset, PRUint32 mathmlType)
-:msiMCaretBase(mathmlNode, offset, mathmlType)
+msiUnderAndOrOverCaret::msiUnderAndOrOverCaret(nsIDOMNode* mathmlNode, PRUint32 offset, PRUint32 mathmlType) :
+  msiMCaretBase(mathmlNode, offset, mathmlType)
 {
 }
 
@@ -569,7 +569,7 @@ msiUnderAndOrOverCaret::TabRight(nsIEditor *editor, nsIDOMNode **node, PRUint32 
   if (m_numKids != 3 || m_offset == 0)
     return msiMCaretBase::TabRight(editor, node, offset);
   PRUint32 newflags;
-  if (m_offset == 1 || m_offset == 2)
+  if (m_offset == 2)
   {
     m_offset = 2;
     newflags = FROM_BELOW;
