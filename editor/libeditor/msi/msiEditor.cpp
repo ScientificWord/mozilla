@@ -2071,9 +2071,12 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
       }
     }  
   }
-  if (NS_SUCCEEDED(res) && newFocus && newOffset <= msiIMathMLEditingBC::LAST_VALID)
+  if (NS_SUCCEEDED(res))
   {
-    res = SetSelection(newFocus, newOffset, isShift, preventDefault); 
+    if (newFocus && newOffset <= msiIMathMLEditingBC::LAST_VALID)
+      res = SetSelection(newFocus, newOffset, isShift, preventDefault); 
+    else
+      preventDefault = PR_TRUE;
   }
   return res;  
 }
