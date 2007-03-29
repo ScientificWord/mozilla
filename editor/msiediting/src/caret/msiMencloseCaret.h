@@ -44,6 +44,8 @@ public:
   NS_IMETHOD CaretObjectLeft(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset);
   NS_IMETHOD CaretObjectRight(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, PRUint32 *offset);
   
+  NS_IMETHOD TabLeft(nsIEditor *editor, nsIDOMNode **node, PRUint32 *offset);
+  NS_IMETHOD TabRight(nsIEditor *editor, nsIDOMNode **node, PRUint32 *offset);
   // end msiIMathmlCaret overrides
   
 protected:
