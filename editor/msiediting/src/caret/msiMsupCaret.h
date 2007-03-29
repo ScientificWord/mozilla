@@ -11,6 +11,9 @@ class msiMsupCaret : public msiScriptCaret
 {
 public:
   msiMsupCaret(nsIDOMNode* mathmlNode, PRUint32 offset);
+  
+  // override msiIMathMLCaret
+  NS_DECL_MSIIMATHMLCARET
 };
 
 #endif // msiMsupCaret_h___

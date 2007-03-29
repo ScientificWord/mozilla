@@ -1004,8 +1004,7 @@ msiMCaretBase::StandardSetupDelTxns(nsIEditor * editor,
     }  
   }
   return res;
-  
-} 
+}
 
 nsresult
 msiMCaretBase::InputboxSetupDelTxns(nsIEditor * editor,
@@ -1031,7 +1030,6 @@ msiMCaretBase::InputboxSetupDelTxns(nsIEditor * editor,
   topNode->GetChildNodes(getter_AddRefs(children));
   if (!children)
     return NS_ERROR_FAILURE;  
-      
     
   nsresult res(NS_OK);
   nsCOMPtr<nsIMutableArray> leftTxnList = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
@@ -1044,8 +1042,6 @@ msiMCaretBase::InputboxSetupDelTxns(nsIEditor * editor,
   if (NS_SUCCEEDED(res))                                                   
     res = msiMCaretBase::SetUpDeleteTxnsFromDescendent(editor, topNode, numKids, end, 
                                                        endOffset, PR_FALSE, rightTxnList, rightOffsetInTop);
-  
-  
   PRBool coalesceSet(PR_FALSE);
   if (leftOffsetInTop == 0 && rightOffsetInTop == numKids)
   { 
@@ -1216,6 +1212,3 @@ msiMCaretBase::FracRootSetupDelTxns(nsIEditor * editor,
   return res;
 }
 // End selection Util functions
-
-
-
