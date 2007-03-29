@@ -57,6 +57,7 @@ DIRS += \
 	filepicker \
 	console \
 	viewconfig \
+	autosub \
 	$(NULL)
 ifndef MOZ_SUITE
 # XXX Suite doesn't want these just yet
