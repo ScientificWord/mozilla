@@ -176,6 +176,7 @@ endif
 
 tier_9_dirs	+= \
 		toolkit/components/autocomplete/public \
+		toolkit/components/autosub/public \
 		uriloader \
 		modules/libpref \
 		modules/libimg \
