@@ -106,13 +106,13 @@ function msiEditPage(url, launchWindow, delay)
         }
 //        else if (!emptyWindow && msiPageIsEmptyAndUntouched(editorElement)
 //        else if (!emptyWindow)
-        else if (!useEditorElement)
-        {
-          var editorElement = msiGetPrimaryEditorElementForWindow(win);
-          if (msiPageIsEmptyAndUntouched(editorElement))
-            useEditorElement = editorElement;
-//            emptyWindow = win;
-        }
+//        else if (!useEditorElement)
+//        {
+//          var editorElement = msiGetPrimaryEditorElementForWindow(win);
+//          if (msiPageIsEmptyAndUntouched(editorElement))
+//            useEditorElement = editorElement;
+////            emptyWindow = win;
+//        }
       }
     }
 
