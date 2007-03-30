@@ -156,7 +156,7 @@
   <statusbar class="chromeclass-status" id="status-bar">
     <statusbarpanel id="macroEntryPanel" hidden="false"/>
     <statusbarpanel id="fastCursorPanel" hidden="true">
-      <toolbar id="FastCursorToolbar" hidden="true" align="center" fullscreentoolbar="true">
+      <toolbar id="FastCursorToolbar" align="center" fullscreentoolbar="true">
       <toolbarbutton id="fastcursor-closebutton" tooltiptext="&fastcursorCloseButton.tooltip;"
                      hidden="true" oncommand="closeFastCursorBar();"/>  
 
