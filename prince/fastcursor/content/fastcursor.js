@@ -314,7 +314,7 @@ function openFastCursorBar()
     gNotFoundStr = bundle.getString("NotFound");
   }
 
-  var FastCursorToolbar = document.getElementById("FastCursorToolbar");
+  var FastCursorToolbar = document.getElementById("fastCursorPanel");
 //  if (FastCursorToolbar.hidden) {
     FastCursorToolbar.hidden = false;
   
@@ -352,7 +352,7 @@ function closeFastCursorBar()
     _content.focus();
   }
 
-  var fastCursorToolbar = document.getElementById("FastCursorToolbar");
+  var fastCursorToolbar = document.getElementById("fastCursorPanel");
   fastCursorToolbar.hidden = true;
   gTypeAheadFindBuffer = "";
   changeSelectionColor(false);
@@ -394,7 +394,7 @@ function onFastCursorBarBlur()
 
 function onBrowserMouseDown(evt)
 {
-  var fastcursorToolbar = document.getElementById("FastCursorToolbar");
+  var fastcursorToolbar = document.getElementById("fastCursorPanel");
   if (!fastcursorToolbar.hidden && gFindMode != FIND_NORMAL)
     closeFastCursorBar();
 }
@@ -433,7 +433,7 @@ function onBrowserKeyUp(evt)
     gArrowStateService.findArrowKeyState(isArrow, arrowKeyCode, isRepeating,
       isVertical, isForward, keyCode.value, isFirstArrowPress);
     if (!isArrow.value) {
-      var fastcursorToolbar = document.getElementById("FastCursorToolbar");
+      var fastcursorToolbar = document.getElementById("fastCursorPanel");
       fastcursorToolbar.hidden = true;
     }
   }
@@ -459,7 +459,7 @@ function onBrowserKeyPress(evt)
   gArrowStateService.findKeyCode(evt, keyCode, isArrow);
   if (!isArrow.value) {
     if (keyCode.value == KeyEvent.DOM_VK_ESCAPE) {
-      document.getElementById("FastCursorToolbar").hidden =true;
+      document.getElementById("fastCursorPanel").hidden =true;
     }
     gArrowStateService.nonArrowKeyPress(keyCode.value, evt.charCode);
     // if we are deleting, we want to search again from the beginning
@@ -473,7 +473,7 @@ function onBrowserKeyPress(evt)
       gFindService.findBackwards = !(isForward.value); 
       selection = window._content.getSelection();     
       if (isVertical.value)  {
-        if (findField.value.length > 0) document.getElementById("FastCursorToolbar").hidden = false;
+        if (findField.value.length > 0) document.getElementById("fastCursorPanel").hidden = false;
         if (findField.value.length == 1) { // this is the first find in this incremental search; save cursor position
           selection = window._content.getSelection();
           startSelectionNode = selection.focusNode;
@@ -661,7 +661,7 @@ function find(val)
 
 function flashFastCursorBar()
 {
-  var fastCursorToolbar = document.getElementById("FastCursorToolbar");
+  var fastCursorToolbar = document.getElementById("fastCursorPanel");
   if (gFlashFastCursorBarCount-- == 0) {
     clearInterval(gFlashFastCursorBarTimeout);
     fastCursorToolbar.removeAttribute("flash");
@@ -721,7 +721,7 @@ function setHighlightTimeout()
 
 function isFastCursorBarVisible()
 {
-  var fastCursorBar = document.getElementById("FastCursorToolbar");
+  var fastCursorBar = document.getElementById("fastCursorPanel");
   return !fastCursorBar.hidden;
 }
 
@@ -746,7 +746,7 @@ function findPrevious()
 
 function updateStatus(res)
 {
-  var fastCursorBar = document.getElementById("FastCursorToolbar");
+  var fastCursorBar = document.getElementById("fastCursorPanel");
   var field = document.getElementById("fastcursor-field");
   var statusIcon = document.getElementById("fastcursor-status-icon");
   var statusText = document.getElementById("fastcursor-status");
