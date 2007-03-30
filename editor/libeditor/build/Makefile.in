@@ -64,6 +64,7 @@ EXTRA_DSO_LDOPTS = \
 		$(MOZ_JS_LIBS)           \
 		$(NULL)
 REQUIRES	= xpcom \
+          autosub \
 		  string \
 		  dom \
 		  layout \
