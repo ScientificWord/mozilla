@@ -2489,7 +2489,7 @@ function msiCloseWindow(theWindow)
 //      SwitchInsertCharToAnotherEditorOrClose();
 //Ought to do what here? We'll assume that any dialog dependent on this window will be dealt with by our dialog management
 //code, and not worry it.  rwa
-
+    ShutdownAnEditor(editorElement);
     try {
       var basewin = theWindow.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                       .getInterface(Components.interfaces.nsIWebNavigation)
