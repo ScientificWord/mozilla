@@ -62,25 +62,22 @@
               oncommand=""/>
   </popup>
   
-  <menu id="viewShowHidePopup" >
-    <menuseparator/>
-    <menu id="sidebar-menu" type="checkbox"
-      label="&sidebarCmd.label;"
-      accesskey="&sidebarCmd.accesskey;"
-      key="showHideSidebar">
-      <menupopup id="viewSidebarPopup">
-        <menuitem id="sidebar-fragments" type="checkbox"
-          label="&sidebar.fragments.label;" observes="viewFragDirSidebar"
-          accesskey="&sidebar.fragments.accesskey;"
-          oncommand="toggleSidebar('viewFragDirSidebar');"
-          />
-        <menuitem id="sidebar-outline" type="checkbox"
-          label="&sidebar.outline.label;" observes='viewOutlineSidebar'
-          accesskey="&sidebar.outline.accesskey;"
-          oncommand="toggleSidebar('viewOutlineSidebar');"
-          />
-      </menupopup>
-    </menu>
+  <menu id="sidebar-menu" type="checkbox"
+    label="&sidebarCmd.label;"
+    accesskey="&sidebarCmd.accesskey;"
+    key="showHideSidebar">
+    <menupopup id="viewSidebarPopup">
+      <menuitem id="sidebar-fragments" type="checkbox"
+        label="&sidebar.fragments.label;" observes="viewFragDirSidebar"
+        accesskey="&sidebar.fragments.accesskey;"
+        oncommand="toggleSidebar('viewFragDirSidebar');"
+        />
+      <menuitem id="sidebar-outline" type="checkbox"
+        label="&sidebar.outline.label;" observes='viewOutlineSidebar'
+        accesskey="&sidebar.outline.accesskey;"
+        oncommand="toggleSidebar('viewOutlineSidebar');"
+        />
+    </menupopup>
   </menu>
 
   <vbox id="sidebar-box" persist="hidden width collapsed" flex="1" >
