@@ -259,9 +259,7 @@
       <menuitem id="viewPreviewMode"  type="radio" group="mode" accesskey="&PreviewMode.accesskey;"    observes="cmd_PreviewMode"
         label="&PreviewMode.label;"/>
       <menuseparator/>
-      <menu id="viewShowHide" label="&viewShowHideMenu.label;" accesskey="&viewShowHideMenu.accesskey;" >
-        <menupopup id="viewShowHidePopup"/>
-      </menu>
+      <menu id="sidebar-menu" />
     </menupopup>
   </menu>
   
