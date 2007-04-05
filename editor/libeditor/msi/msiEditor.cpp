@@ -2380,6 +2380,59 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //  else
 //    return NS_ERROR_FAILURE;
 //}
+
+
+// a recursive function that walks the DOM backwards from a staring position and returns characters
+// in reverse order. There are some conditions that will cause it to quit:
+// 1. There are no more patterns that could match
+// 2. We have hit the beginning of a tag other than a text formatting tag. We do not allow patterns to span
+//    paragraphs or other block object, and we do not go into or out of math if we started on the outside or 
+//    inside, respectively.
+// 3. In math, we will quit once we encounter a node other than <mi> or <mo>. If we encounter a multicharacter <mi>,
+//    we sent fCanEndHere to false until we are returning the first character in the <mi>. This keeps us from 
+//    matching a proper subset of a multicharacter <mi> (but we can include al of the <mi> contents in a match).
+// 4. Multiple white space characters will be coalesced into a space, and &invisibletimes is ignored. For this reason
+//    we pass the last character matched (actually, a boolean telling if the last character matched was a space would
+//    be sufficient).
+
+nsresult 
+msiEditor::GetNextCharacter( nsIDOMNode * pNode, PRUint32& offset, PRUnichar prevChar, PRInt32 & _result)
+{
+  nsCOMPtr<nsIDOM3Node> textNode;
+  nsAutoString theText;
+  if (IsTextContentNode(pNode))
+  {
+    textNode = do_QueryInterface(pNode);
+    textNode->GetTextContent(theText);
+    if (offset > theText.Length()) offset = theText.Length();
+    while (--offset >= 0)
+    {
+      m_autosub->NextChar(theText[offset],& _result);
+      if (_result != msiIAutosub::STATE_MATCHESSOFAR) return NS_OK;
+    }
+  }
+  // pNode is not a text node, or we have already gone through it
+  PRBool fHasChildren;
+  pNode->HasChildNodes(&fHasChildren);
+  nsCOMPtr<nsIDOMNodeList> nodeList;
+  nsCOMPtr<nsIDOMNode> pNode2;
+//  PRUint32 length, offset2;
+//  if (fHasChildren)  // in particular pNode is not a text node
+//  {
+//    pElement->GetChildNodes( getter_AddRefs(nodeList));
+//    nodeList->GetLength(&length);
+//    offset2 = (PRUint32)(-1);
+//    while (--length >= 0)
+//    {
+//      nodeList->Item(length, getter_AddRefs(pNode2));
+//      GetNextCharacter( pNode, offset2, prevChar, _result);
+//      if (_result != msiIAutosub::STATE_MATCHESSOFAR) return NS_OK;
+//    }
+//  }
+//  pElement->GetPreviousSibling(getter_AddRefs(pNode2));
+//  offset2 = (PRUint32)(-1);
+//  if (pNode2) GetNextCharacter(pNode2, offset2, prevChar, _result); 
+}
   
 
 nsresult
@@ -2391,47 +2444,35 @@ msiEditor::CheckForAutoSubstitute()
   // nodes.
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOM3Node> textNode;
+  PRUnichar ch;
   PRInt32 ctx, action; 
   PRUint32 offset;
   PRInt32 signedOffset;
-  PRUint32 newOffset;
+  PRUint32 newOffset,newCursorOffset;
   nsAutoString theText;
   PRInt32 lookupResult;
   nsAutoString data;       
   msiSelection->GetMsiAnchorNode((nsIDOMNode **) getter_AddRefs(node));
   msiSelection->GetMsiAnchorOffset( &offset );
+  newOffset = offset;
   signedOffset = (PRInt32)offset;
+  m_autosub->Reset();
   if (IsTextContentNode(node))
   {
     textNode = do_QueryInterface(node);
     textNode->GetTextContent(theText);
-    m_autosub->Reset();
-    while (--signedOffset >= 0)
-    {
-      m_autosub->NextChar(theText[signedOffset],&lookupResult);
-      switch (lookupResult)
-      {
-        case msiIAutosub::STATE_SUCCESS:
-          // printf("Found the pattern\n");
-          // the pattern consists of characters signedOffset .. offset in the text node
-          m_autosub->GetCurrentData(&ctx, &action, data);
-          theText.Replace(signedOffset, offset, data);
-          textNode->SetTextContent(theText);
-          // we need to update the cursor if the sizes don't match
-          newOffset = signedOffset + data.Length();
-          msiSelection->Set(node,newOffset,node,newOffset,node,newOffset,node,newOffset);
-          
-          return NS_OK;
-        case msiIAutosub::STATE_MATCHESSOFAR:
-          break;
-        case msiIAutosub::STATE_FAIL:
-          return NS_OK;
-        default:
-          printf("Error in CheckForAutoSubstitute");
-          return NS_OK;  // find the right error return value
-      }
-    }
-    return NS_OK;
-  } 
+  }
+  GetNextCharacter(node, newOffset, ch, lookupResult);
+  if (lookupResult == msiIAutosub::STATE_SUCCESS)
+  {
+    // printf("Found the pattern\n");
+    // the pattern consists of characters signedOffset .. offset in the text node
+    m_autosub->GetCurrentData(&ctx, &action, data);
+    theText.Replace(newOffset, offset, data);
+    textNode->SetTextContent(theText);
+    // we need to update the cursor if the sizes don't match
+    newCursorOffset = newOffset + data.Length();
+    msiSelection->Set(node,newCursorOffset,node,newCursorOffset,node,newCursorOffset,node,newCursorOffset); 
+  }
   return NS_OK;
 }
