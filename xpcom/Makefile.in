@@ -58,7 +58,6 @@ DIRS		= \
 		reflect \
 		proxy \
 		build \
-		obsolete \
 		$(NULL)
 
 ifndef MOZ_ENABLE_LIBXUL
