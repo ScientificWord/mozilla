@@ -64,6 +64,8 @@ prince.jar:
 * content/ComputeVariables.xul      (content/dialogs/ComputeVariables.xul)
 * content/ComputeVarList.js     (content/dialogs/ComputeVarList.js)
 * content/ComputeVarList.xul        (content/dialogs/ComputeVarList.xul)
+* content/ComputeVcamSettings.js       (content/dialogs/ComputeVcamSettings.js)
+* content/ComputeVcamSettings.xul      (content/dialogs/ComputeVcamSettings.xul)
 * content/Decorations.js        (content/dialogs/Decorations.js)
 * content/Decorations.xul       (content/dialogs/Decorations.xul)
 * content/EdSpellCheck.xul       (content/dialogs/EdSpellCheck.xul)
