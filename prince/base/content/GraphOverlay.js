@@ -436,6 +436,7 @@ function PlotReadPlotAttributesFromDOM (DOMPlot, plotno) {
 
 /**----------------------------------------------------------------------------------*/
 // Handle a mouse double click on a graph image in the document. This is bound in editor.js.
+// This function should be deprecated. It handled <img> elements inside <graph> elements
 function graphClickEvent (cmdstr, editorElement)
 {
 //  dump("Entering graphClickEvent.\n");
@@ -452,6 +453,37 @@ function graphClickEvent (cmdstr, editorElement)
     }
   }
   catch(exc) {AlertWithTitle("Error in GraphOverlay.js", "Error in graphClickEvent: " + exc);}
+}
+
+
+/**----------------------------------------------------------------------------------*/
+// Handle a mouse double click on a <graph> <object> element. This is bound in msiEditor.js.
+function graphObjectClickEvent ()
+{
+  dump("SMR In graphObjectClickEvent\n");
+  try
+  { var editorElement = msiGetActiveEditorElement();
+    var selection = msiGetEditor(editorElement).selection;
+    if (selection)
+    {
+      var element = findtagparent(selection.focusNode, "graph");
+      if (element) {
+        dump ("SMR found a <graph> element\n");
+        // only open one dialog per graph element
+        if (DOMGListMemberP (element, currentDOMGs)) {
+          return;
+        }
+        DOMGListAdd (element, currentDOMGs);
+
+        var graph = new Graph();
+        graph.extractGraphAttributes (element);
+        // non-modal dialog, the return is immediate
+        window.openDialog ("chrome://prince/content/ComputeVcamSettings.xul",
+                           "", "chrome,close,titlebar,dependent", graph, element, currentDOMGs);
+      }
+    }
+  }
+  catch(exc) {AlertWithTitle("Error in GraphOverlay.js", "Error in graphObjectClickEvent: " + exc);}
 }
 
 
