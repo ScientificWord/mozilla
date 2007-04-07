@@ -6,18 +6,16 @@
 //    it only makes sense to have one dialog per <graph> element. Don't 
 //    allow any others. 
 
-
+var graph;
 
 function VCAMEditorOnLoad() {
   dump("SMR VCAMEditorOnLoad\n");
-  var plotFileName = window.arguments[0].getValue ("ImageFile");
+  graph = window.arguments[0];
+  var plotFileName = graph.getValue ("ImageFile");
   dump("SMR VCAMEditorOnLoad plot file name is " + plotFileName + "\n");
   
-  plot = document.getElementById('plot');
-  cam = plot.camera;
-  graph = new Graph();                                               
-  var DOMGraphElement = document.getElementById('graphelement');         
-  graph.extractGraphAttributes (DOMGraphElement);                        
+  var plot = document.getElementById('plot');
+  var cam = plot.camera;
       
   var i;
   i = document.getElementById('animateReset');
@@ -67,12 +65,17 @@ function VCAMEditorOnLoad() {
   i.onchange = loadUrl;
   i = document.getElementById('URLLoad');
   i.onchange = loadUrl;
-
-  plot.load (plotFileName);
+  dump("SMR ComputeVcamSettings 68, plot file is " + plotFileName + "\n");
+  plot.load ("file:///" + plotFileName);
+  dump("SMR ComputeVcamSettings after plot.load\n");
   plot.addEvent('readyStateChange', onStateChange);
+  dump("SMR ComputeVcamSettings addEvent\n");
   plot.addEvent('queryNoHit', onNoHit);
+  dump("SMR ComputeVcamSettings NoHit\n");
   msiReadGraph();
+  dump("SMR ComputeVcamSettings after msiReadGraph()\n");
 }
+
 
 //-----------------------------------------------------
 

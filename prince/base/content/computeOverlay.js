@@ -305,6 +305,7 @@ function doSetupMSIComputeMenuCommands(commandTable)
   commandTable.registerCommand("cmd_MSIComputePlot3DATube",       msiEvaluateCommand);         
   commandTable.registerCommand("cmd_MSIComputePlot3DAGradient",   msiEvaluateCommand);         
   commandTable.registerCommand("cmd_MSIComputePlot3DAVector",     msiEvaluateCommand);         
+  commandTable.registerCommand("cmd_MSIComputeEditPlot",          msiEvaluateCommand);         
   commandTable.registerCommand("cmd_MSIComputeSetBasisVariables", msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeDefine",        msiDefineCommand);
   commandTable.registerCommand("cmd_MSIComputeUndefine",      msiDefineCommand);     
@@ -869,6 +870,9 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       break;
     case "cmd_compute_Plot3DAVector":
       doComputePlot(element, 3, "vectorField", true, editorElement);
+      break;
+    case "cmd_compute_EditPlot":
+      doEditPlot();
       break;
     case "cmd_compute_Define":
       doComputeDefine(element, editorElement);
@@ -2463,6 +2467,10 @@ function doComputePlot(math, dimension, type, animate, editorElement)
   insertNewGraph(math, dimension, type, animate, editorElement);
 }
 
+function doEditPlot()
+{
+  graphObjectClickEvent();
+}
 
 // form a single run of math and put caret on end
 function coalescemath(editorElement) {
