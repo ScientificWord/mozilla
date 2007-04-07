@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
 
+<?xml-stylesheet href="chrome://prince/skin/Editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
 
@@ -64,9 +67,7 @@
 	    <button id="animateReset" label="|&lt;" />
 	    <button id="animateStart" label="&gt;" />
 	    <button id="animateStop"  label="||" />
-        <xul:slider flex="1">
-            <xul:thumb/>
-        </xul:slider>
+   <!--      <xul:slider flex="1">	<xul:thumb/> </xul:slider>  -->
         <button id="animateEnd"   label="&gt;|"/>
 		<groupbox>
            <menulist id="animateSpeed">
@@ -91,7 +92,7 @@
 
 
 	  </hbox>
-	  <hbox>
+ 	  <hbox>
         <html:object type="application/x-mupad-graphics+gzip"
              id="plot" width="300" height="400">
         </html:object>
