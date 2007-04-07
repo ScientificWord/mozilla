@@ -182,6 +182,7 @@
     <command id="cmd_MSIComputePlot3DATube"              oncommand="doComputeCommand('cmd_compute_Plot3DATube')"/>
     <command id="cmd_MSIComputePlot3DAGradient"          oncommand="doComputeCommand('cmd_compute_Plot3DAGradient')"/>
     <command id="cmd_MSIComputePlot3DAVector"            oncommand="doComputeCommand('cmd_compute_Plot3DAVector')"/>
+    <command id="cmd_MSIComputeEditPlot"                 oncommand="doComputeCommand('cmd_compute_EditPlot')"/>
     <command id="cmd_MSIComputeDefine"                   oncommand="doComputeCommand('cmd_compute_Define')"/>
     <command id="cmd_MSIComputeUndefine"                 oncommand="doComputeCommand('cmd_compute_Undefine')"/>
     <command id="cmd_MSIComputeSetBasisVariables"        oncommand="doGlobalComputeCommand('cmd_compute_SetBasisVariables')"/>
@@ -455,6 +456,7 @@
           <menuitem label="&plottypevector.label;"      observes="cmd_MSIComputePlot3DAVector"/>
         </menupopup>
       </menu>   
+      <menuitem label="Edit Plot"                       observes="cmd_MSIComputeEditPlot"/>
       <menuseparator/>                                                                                                                                        
       <menu id="MSIDefinitionsMenu" label="&MSIDefinitionsMenu.label;" accesskey="&MSIDefinitionsMenu.accesskey;">
         <menupopup id="MSIDefinitionsPopup">
