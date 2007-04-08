@@ -1350,7 +1350,7 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
   if (NS_FAILED(res)) return res;
 
   // dont put text in places that can't have it
-  if (!mHTMLEditor->IsTextNode(selNode) &&
+  if (!bPlaintext && !mHTMLEditor->IsTextNode(selNode) &&
       !mHTMLEditor->CanContainTag(selNode, NS_LITERAL_STRING("#text")))
   {
     // TODO: BBM. If a text node is not allowed, check to see if the default paragraph
