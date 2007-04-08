@@ -103,6 +103,9 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
   nsCOMPtr<nsIDOM3Node> textNode; 
   nsCOMPtr<nsIDOMNode> patternNode;
   nsCOMPtr<nsIDOMNode> dataNode;
+  state = msiIAutosub::STATE_INIT;
+  startIndex = 0;
+  lastIndex = 0;
   // load the XML autosubs file 
   docAutosubs = do_CreateInstance(kXMLDocumentCID, &rv);
   if (rv) return rv;
@@ -114,6 +117,7 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
   if (subsTags) subsTags->GetLength(&autosubCount);
   if (autosubCount > 0)
   {
+    lastIndex = autosubCount - 1;
     autosubarray = new autosubentry[autosubCount];
     arraylength = autosubCount;
     for (PRUint32 i = 0; i < autosubCount; i++)
