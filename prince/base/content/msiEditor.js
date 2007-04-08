@@ -2323,7 +2323,7 @@ function msiSetEditMode(mode, editorElement)
     } catch (e) {}
 
     flags |= 1024; // OutputLFLineBreak
-    var source = editor.outputToString(kHTMLMimeType, flags);
+    var source = editor.outputToString("text/xml", flags);
     var start = source.search(/<html/i);
     if (start == -1) start = 0;
     var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
