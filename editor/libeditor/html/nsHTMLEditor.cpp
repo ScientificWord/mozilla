@@ -1836,14 +1836,14 @@ nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString)
   nsReadingIterator<PRUnichar> endbody;
   aSourceString.BeginReading(beginbody);
   aSourceString.EndReading(endbody);
-  PRBool foundbody = CaseInsensitiveFindInReadable(NS_LITERAL_STRING("<body"),
+  PRBool foundbody = /*CaseInsensitive*/FindInReadable(NS_LITERAL_STRING("<body"),
                                                    beginbody, endbody);
 
   nsReadingIterator<PRUnichar> beginhead;
   nsReadingIterator<PRUnichar> endhead;
   aSourceString.BeginReading(beginhead);
   aSourceString.EndReading(endhead);
-  PRBool foundhead = CaseInsensitiveFindInReadable(NS_LITERAL_STRING("<head"),
+  PRBool foundhead = /*CaseInsensitive*/FindInReadable(NS_LITERAL_STRING("<head"),
                                                    beginhead, endhead);
 
   nsReadingIterator<PRUnichar> beginclosehead;
@@ -1852,9 +1852,9 @@ nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString)
   aSourceString.EndReading(endclosehead);
 
   // Find the index after "<head>"
-  PRBool foundclosehead = CaseInsensitiveFindInReadable(
+  PRBool foundclosehead = /*CaseInsensitive*/FindInReadable(
            NS_LITERAL_STRING("</head>"), beginclosehead, endclosehead);
-  
+
   // Time to change the document
   nsAutoEditBatch beginBatching(this);
 
@@ -1863,7 +1863,7 @@ nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString)
 
   if (foundhead) {
     if (foundclosehead)
-      res = ReplaceHeadContentsWithHTML(Substring(beginhead, beginclosehead));
+      res = ReplaceHeadContentsWithHTML(Substring(beginhead, endclosehead));
     else if (foundbody)
       res = ReplaceHeadContentsWithHTML(Substring(beginhead, beginbody));
     else
@@ -1876,7 +1876,7 @@ nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString)
     aSourceString.BeginReading(begintotal);
     NS_NAMED_LITERAL_STRING(head, "<head>");
     if (foundclosehead)
-      res = ReplaceHeadContentsWithHTML(head + Substring(begintotal, beginclosehead));
+      res = ReplaceHeadContentsWithHTML(head + Substring(begintotal, endclosehead));
     else if (foundbody)
       res = ReplaceHeadContentsWithHTML(head + Substring(begintotal, beginbody));
     else
@@ -1914,7 +1914,17 @@ nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString)
 
     return BeginningOfDocument();
   }
+  // endtotal now points past </html> but <html> appears before beginbody
+  nsReadingIterator<PRUnichar> beginclosehtml;
+  nsReadingIterator<PRUnichar> endclosehtml;
+  aSourceString.BeginReading(beginclosehtml);
+  aSourceString.EndReading(endclosehtml);
 
+  // Find the index after "<head>"
+  PRBool foundclosehtml = /*CaseInsensitive*/FindInReadable(
+           NS_LITERAL_STRING("</html>"), beginclosehtml, endclosehtml);
+  if (foundclosehtml) endtotal = beginclosehtml;
+  
   res = LoadHTML(Substring(beginbody, endtotal));
   if (NS_FAILED(res)) return res;
 
@@ -1933,7 +1943,8 @@ nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString)
   // Kludge of the year: fool the parser by replacing "body" with "div" so we get a node
   nsAutoString bodyTag;
   bodyTag.AssignLiteral("<div ");
-  bodyTag.Append(Substring(endbody, endclosebody));
+  bodyTag.Append(Substring(endbody, beginclosebody));
+  bodyTag.Append(NS_LITERAL_STRING("/>"));
 
   nsCOMPtr<nsIDOMRange> range;
   res = selection->GetRangeAt(0, getter_AddRefs(range));
