@@ -585,3 +585,40 @@ function msiTestPreparePlotGraph() {
     testQueryGraph (mathelems[i], editorElement);
   }
 }
+
+function msiDumpClipboard() {
+  var textmimetypes = new Object();
+  textmimetypes.kUnicodeMime                 = "text/unicode";
+  textmimetypes.kHTMLMime                    = "text/html";
+  textmimetypes.kHTMLContext                 = "text/_moz_htmlcontext";
+  textmimetypes.kHTMLInfo                    = "text/_moz_htmlinfo";
+//  textmimetypes.kNativeHTMLMime              = "application/x-moz-nativehtml";
+
+  var pastetext;
+  var clip = Components.classes["@mozilla.org/widget/clipboard;1"].
+    getService(Components.interfaces.nsIClipboard); 
+  if (!clip) return false; 
+  var trans = Components.classes["@mozilla.org/widget/transferable;1"].
+    createInstance(Components.interfaces.nsITransferable); 
+  if (!trans) return false; 
+  dump("\nClipboard contents: \n\n"); 
+  for (var i in textmimetypes)
+  {
+    trans.addDataFlavor(textmimetypes[i]);
+    clip.getData(trans,clip.kGlobalClipboard); 
+    var str = new Object(); 
+    var strLength = new Object();
+    try
+    {
+      trans.getTransferData(textmimetypes[i],str,strLength);
+      if (str) str = str.value.QueryInterface(Components.interfaces.nsISupportsString); 
+      if (str) pastetext = str.data.substring(0,strLength.value / 2);
+      dump("  "+textmimetypes[i]+": \"" + pastetext+"\"\n\n");
+    }
+    catch (e)
+    {
+      dump("  "+textmimetypes[i]+" not supported\n\n");
+    }
+    trans.removeDataFlavor(textmimetypes[i]);
+  }
+}
