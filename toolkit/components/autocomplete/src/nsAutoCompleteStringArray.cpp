@@ -391,7 +391,9 @@ NS_IMETHODIMP nsAutoCompleteResultStringArray::GetMatchCount(PRUint32 *aMatchCou
 /* AString getValueAt (in long index); */
 NS_IMETHODIMP nsAutoCompleteResultStringArray::GetValueAt(PRInt32 index, nsAString & _retval)
 {
-    mReturnStrings->StringAt(index, _retval);
+    if (mReturnStrings->Count() > index)
+      mReturnStrings->StringAt(index, _retval);
+    else _retval = NS_LITERAL_STRING("");
     return NS_OK;
 }
 
