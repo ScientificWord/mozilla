@@ -281,7 +281,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                                     PRBool aDeleteSelection)
 {
   if (!mRules) return NS_ERROR_NOT_INITIALIZED;
-
+  nsAutoTxnsConserveSelection dontSpazMySelection(this);
   // force IME commit; set up rules sniffing and batching
   ForceCompositionEnd();
   nsAutoEditBatch beginBatching(this);
@@ -2842,9 +2842,9 @@ nsresult nsHTMLEditor::ParseFragment(const nsAString & aFragStr,
   // create the html fragment sink
   nsCOMPtr<nsIContentSink> sink;
   if (bContext)
-    sink = do_CreateInstance(NS_HTMLFRAGMENTSINK2_CONTRACTID);
+    sink = do_CreateInstance(NS_XMLFRAGMENTSINK2_CONTRACTID);
   else
-    sink = do_CreateInstance(NS_HTMLFRAGMENTSINK_CONTRACTID);
+    sink = do_CreateInstance(NS_XMLFRAGMENTSINK_CONTRACTID);
 
   NS_ENSURE_TRUE(sink, NS_ERROR_FAILURE);
   nsCOMPtr<nsIFragmentContentSink> fragSink(do_QueryInterface(sink));
@@ -2855,9 +2855,9 @@ nsresult nsHTMLEditor::ParseFragment(const nsAString & aFragStr,
   // parse the fragment
   parser->SetContentSink(sink);
   if (bContext)
-    parser->Parse(aFragStr, (void*)0, NS_LITERAL_CSTRING("text/html"), PR_TRUE, eDTDMode_fragment);
+    parser->Parse(aFragStr, (void*)0, NS_LITERAL_CSTRING("text/xml"), PR_TRUE, eDTDMode_fragment);
   else
-    parser->ParseFragment(aFragStr, 0, aTagStack, PR_FALSE, NS_LITERAL_CSTRING("text/html"), eDTDMode_quirks);
+    parser->ParseFragment(aFragStr, 0, aTagStack, PR_TRUE, NS_LITERAL_CSTRING("text/xml"), eDTDMode_quirks);
   // get the fragment node
   nsCOMPtr<nsIDOMDocumentFragment> contextfrag;
   res = fragSink->GetFragment(getter_AddRefs(contextfrag));
