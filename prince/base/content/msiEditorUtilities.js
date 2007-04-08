@@ -541,6 +541,8 @@ function msiGetActiveEditorElement(currWindow)
   var editorElement = msiGetCurrentEditorElementForWindow(currWindow);
   if (!editorElement)
     editorElement = currWindow.GetCurrentEditorElement();  //Give up?
+  if (!editorElement)
+    dump("\nCan't find active editor element!\n");
   return editorElement;
 }
 
@@ -555,6 +557,8 @@ function msiGetTopLevelEditorElement(currWindow)  //Is this right?
 //  return msiGetActiveEditorElement(window);
   if (!editorElement)
     editorElement = msiGetPrimaryEditorElementForWindow(currWindow);
+  if (!editorElement)
+    dump("\nmsiGetTopLevelEditorElement returning void or null\m");
   return editorElement;
 }
 
@@ -587,6 +591,8 @@ function msiGetCurrentEditorElementForWindow(theWindow)
   }
   if (!editorElement)
     editorElement = editorList[0];  //just return the first one in the list
+  if (!editorElement)
+    dump("\nmsiGetCurrentEditorElementForWindow returning void or null\m");
   return editorElement;
 }
 
@@ -603,6 +609,8 @@ function msiGetPrimaryEditorElementForWindow(theWindow)
   }
   if (!theEditor)
     theEditor = editorElements[0];
+  if (!theEditor)
+    dump("\nmsiGetPrimaryEditorElementForWindow returning void or null\m");
   return theEditor;
 }
 
@@ -633,10 +641,14 @@ function msiGetParentEditor(editorElement)
 //    return editorElement.msiParentEditor;
   var parentWindow = msiGetWindowContainingEditor(editorElement);
   if ("msiParentEditor" in parentWindow)
+  {
+    if (!parentWindow.msiParentEditor)
+      dump("\nmsiGetParentEditor returning void or null\m");
     return parentWindow.msiParentEditor;
 //  var docElement = parentWindow.document.documentElement;
 //  if ("msiParentEditor" in docElement)
 //    return docElement.msiParentEditor;
+  }
   AlertWithTitle("Error", "Can't find parent editor for editorElement " + editorElement.id);
   return null;
 }
@@ -646,6 +658,8 @@ function msiSetParentEditor(parentEditor, theWindow)
   var retVal = false;
   if (!theWindow)
     theWindow = window;
+  if (!parentEditor)
+    dump("\nmsiSetParentEditor was given null or void SetParentEditor\n");    
   if ("msiParentEditor" in theWindow)
   {
     if (theWindow.msiParentEditor != parentEditor)
@@ -692,6 +706,7 @@ function msiCurrEditorSetFocus(theWindow)
 function msiGetEditor(editorElement)
 {
   var editor;
+  if (!editorElement) return null;
   try
   {
     editor = editorElement.getEditor(editorElement.contentWindow);
@@ -702,7 +717,7 @@ function msiGetEditor(editorElement)
   }
   catch(e) 
   { 
-    dump(e) + "\n"; 
+    dump("msiGetEditor: " + e + "\n"); 
   }
   return editor;
 }
