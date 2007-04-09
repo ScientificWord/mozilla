@@ -764,8 +764,7 @@ msiBigOperatorCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *o
     nsCOMPtr<nsIDOMNode> bigopNode(do_QueryInterface(bigopElement));
     if (bigopNode && parent)
     {
-      nsCOMPtr<nsIDOMNode> dontcare;
-      res = parent->ReplaceChild(bigopNode, m_mathmlNode, getter_AddRefs(dontcare));
+      res = editor->ReplaceNode(bigopNode, m_mathmlNode, parent);
     } 
     else
     {
