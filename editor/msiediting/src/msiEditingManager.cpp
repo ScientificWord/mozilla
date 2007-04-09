@@ -116,8 +116,6 @@ msiEditingManager::~msiEditingManager()
    msiNameSpaceUtils::Shutdown();
 }
 
-
-
 NS_IMETHODIMP
 msiEditingManager::GetMathMLEditingBC(nsIDOMNode* rawNode, 
                                       PRUint32    rawOffset,
@@ -143,7 +141,6 @@ msiEditingManager::GetMathMLEditingBC(nsIDOMNode* rawNode,
   }
   return res;
 }
-
 
 NS_IMETHODIMP
 msiEditingManager::GetMathMLInsertionInterface(nsIDOMNode* rawNode, 
@@ -479,7 +476,6 @@ msiEditingManager::GetMathMLCaretInterface(nsIEditor* editor,
   return res;
 }
 
-
 NS_IMETHODIMP
 msiEditingManager::SupportsMathMLCaretInterface(nsIDOMNode* node, PRBool *supportsMathml)
 {
@@ -667,7 +663,6 @@ msiEditingManager::InsertMath(nsIEditor * editor,
   }  
   return res;
 }
-
 
 NS_IMETHODIMP
 msiEditingManager::InsertSymbol(nsIEditor * editor,
@@ -883,7 +878,6 @@ msiEditingManager::InsertOperator(nsIEditor * editor,
   return res;
 }
 
-
 NS_IMETHODIMP
 msiEditingManager::InsertScript(nsIEditor * editor,
                                 nsISelection * selection,
@@ -927,8 +921,6 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
   }
   return res;
 }                
-
-
 
 nsresult msiEditingManager::DetermineParentLeftRight(nsIDOMNode * node,
                                                      PRUint32 & offset,
@@ -1552,7 +1544,6 @@ PRBool msiEditingManager::GetBigOpNodes(nsIDOMNode* mathmlNode, const nsAString 
   }
   return rv;
 }
-
 
 PRUint32 msiEditingManager::GetMoNodeType(nsIDOMNode * mathmlNode)
 {
