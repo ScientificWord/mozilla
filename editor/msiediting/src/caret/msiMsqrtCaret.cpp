@@ -44,8 +44,7 @@ msiMsqrtCaret::TabRight(nsIEditor *editor,
   nsCOMPtr<nsIDOMNode> mrootNode(do_QueryInterface(mrootElement));
   if (mrootNode && parent)
   {
-    nsCOMPtr<nsIDOMNode> dontcare;
-    res = parent->ReplaceChild(mrootNode, m_mathmlNode, getter_AddRefs(dontcare));
+    res = editor->ReplaceNode(mrootNode, m_mathmlNode, parent);
   } 
   else
   {
