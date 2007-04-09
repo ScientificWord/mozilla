@@ -218,8 +218,7 @@ msiMunderCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset
   nsCOMPtr<nsIDOMNode> msubsupNode(do_QueryInterface(msubsupElement));
   if (msubsupNode && parent)
   {
-    nsCOMPtr<nsIDOMNode> dontcare;
-    res = parent->ReplaceChild(msubsupNode, m_mathmlNode, getter_AddRefs(dontcare));
+    res = editor->ReplaceNode(msubsupNode, m_mathmlNode, parent);
   } 
   else
   {
