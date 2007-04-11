@@ -61,7 +61,7 @@ protected:
   nsCOMPtr <msiIEditingManager> m_msiEditingMan;
   static nsIRangeUtils * m_rangeUtils;
   nsCOMPtr<nsIDOMEventListener> m_mouseMotionListener;
-  nsCOMPtr<msiIAutosub> m_autosub;
+  static nsCOMPtr<msiIAutosub> m_autosub;
   
   
   friend class msiEditorMouseListener;
