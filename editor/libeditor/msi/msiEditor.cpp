@@ -42,15 +42,16 @@
 
 static PRInt32 instanceCounter = 0;
 nsIRangeUtils * msiEditor::m_rangeUtils = nsnull;
+nsCOMPtr<msiIAutosub> msiEditor::m_autosub = nsnull;
 
 msiEditor::msiEditor()
 {
-  nsresult dummy(NS_OK);
-  m_msiEditingMan = do_CreateInstance(MSI_EDITING_MANAGER_CONTRACTID, &dummy);
+  nsresult res(NS_OK);
+  m_msiEditingMan = do_CreateInstance(MSI_EDITING_MANAGER_CONTRACTID, &res);
   if (!m_rangeUtils)
     CallGetService("@mozilla.org/content/range-utils;1",  &m_rangeUtils);
   instanceCounter += 1;
-  m_autosub = do_CreateInstance("@mozilla.org/autosubstitute;1", &dummy);
+  CallGetService("@mozilla.org/autosubstitute;1",(msiIAutosub **)&m_autosub);
 }
 
 msiEditor::~msiEditor()
@@ -981,7 +982,8 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
       return res;
     else 
       res = nsHTMLEditor::HandleKeyPress(aKeyEvent);
-      if (NS_SUCCEEDED(res)) res = CheckForAutoSubstitute();
+      if (NS_SUCCEEDED(res) &&(!(mFlags & eEditorPlaintextMask)))
+		  res = CheckForAutoSubstitute();
       return res;
       
   }
@@ -1310,8 +1312,9 @@ NS_IMETHODIMP msiEditor::InsertText(const nsAString &aStringToInsert)
         res = InsertSymbolEx(selection, theNode, theOffset, aStringToInsert.First());
       return res;
     }
+    return nsHTMLEditor::InsertText(aStringToInsert);
   }
-  return nsHTMLEditor::InsertText(aStringToInsert);
+  return nsPlaintextEditor::InsertText(aStringToInsert);
 }
 
 PRBool msiEditor::NodeInMath(nsIDOMNode* node)
@@ -2456,7 +2459,7 @@ msiEditor::CheckForAutoSubstitute()
   msiSelection->GetMsiAnchorOffset( &offset );
   newOffset = offset;
   signedOffset = (PRInt32)offset;
-  m_autosub->Reset();
+//  m_autosub->Reset();
   if (IsTextContentNode(node))
   {
     textNode = do_QueryInterface(node);
