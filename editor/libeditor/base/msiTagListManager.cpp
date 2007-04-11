@@ -364,6 +364,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           if (!(pTagKeyListHead->pListHead)) pTagKeyListHead->pListHead = pTagKeyListHead->pListTail;
         }
       
+#ifdef DEBUG_CONTAINMENT
         // Write out the list
         if (tagContainsCount >0)
         {
@@ -375,6 +376,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
             pTagKeyList = pTagKeyList->pNext;
           }
         }
+#endif        
       }
       
       /////////
