@@ -160,18 +160,21 @@ main(int argc, char **argv)
       { "xulrunner", "true" }
     };
 
-    rv = GRE_GetGREPathWithProperties(&range, 1,
-                                      kProperties, NS_ARRAY_LENGTH(kProperties),
-                                      greDir, sizeof(greDir));
-    if (NS_FAILED(rv)) {
+// Commented out by BBM
+// At this point greDir is what we want: <starting directory>/xulrunner
+// We won't check version numbers because we always supply a modified xulrunner 
+//    rv = GRE_GetGREPathWithProperties(&range, 1,
+//                                      kProperties, NS_ARRAY_LENGTH(kProperties),
+//                                      greDir, sizeof(greDir));
+//    if (NS_FAILED(rv)) {
       // XXXbsmedberg: Do something much smarter here: notify the
       // user/offer to download/?
 
-      fprintf(stderr,
-              "Could not find compatible GRE between version %s and %s.\n", 
-              range.lower, range.upper);
-      return 1;
-    }
+//      fprintf(stderr,
+//              "Could not find compatible GRE between version %s and %s.\n", 
+//              range.lower, range.upper);
+//      return 1;
+//    }
   }
 
   lastSlash = strrchr(greDir, PATH_SEPARATOR_CHAR);
