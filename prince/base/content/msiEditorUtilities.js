@@ -1182,6 +1182,32 @@ function insertXMLAtCursor(editor, text, bWithinPara, bSetCaret)
   return bOK;
 }
 
+function msiGetDocumentHead(theEditor)
+{
+  var docHead = null;
+  var childElements = theEditor.document.documentElement.getElementsByTagName("*");
+  var testFor = ["preamble", "meta", "title", "link"];
+  for (var ix = 0; (docHead == null) && (ix < childElements.length); ++ix)
+  {
+    for (var jx = 0; jx < testFor.length; ++jx)
+    {
+      var testList = childElements[ix].getElementsByTagName(testFor[jx]);
+      if (testList.length > 0)
+      {
+        docHead = childElements[ix];
+        break;
+      }
+    }
+  }
+  if (docHead == null)
+  {
+    var headList = theEditor.document.getElementsByTagName("head");
+    if (headList.length > 0)
+      docHead = headList[0];
+  }
+  return docHead;
+}
+
 function msiGetRealBodyElement(document)
 {
   var theElement = null;
@@ -2389,6 +2415,22 @@ function GetBoolPref(name)
   return false;
 }
 
+function GetIntPref(name)
+{
+  try
+  {
+    return GetPrefs().getIntPref(name);
+  } catch(exc) {dump("Exception trying to get int pref " + name + ": [" + exc + "].\n");}
+  return 0;
+}
+
+function SetIntPref(name, value)
+{
+  var prefs = GetPrefs();
+  if (prefs)
+    prefs.setIntValue(name, value);
+}
+
 function SetUnicharPref(aPrefName, aPrefValue)
 {
   var prefs = GetPrefs();
@@ -2507,25 +2549,36 @@ function IsUrlAboutBlank(urlString)
   return (urlString == "about:blank");
 }
 
-function MakeRelativeUrl(url)
+function msiMakeRelativeUrl(url, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+
   var inputUrl = TrimString(url);
   if (!inputUrl)
     return inputUrl;
 
   // Get the filespec relative to current document's location
   // NOTE: Can't do this if file isn't saved yet!
-  var docUrl = GetDocumentBaseUrl();
-  var docScheme = GetScheme(docUrl);
+  var docUrl = msiGetDocumentBaseUrl(editorElement);
+  return msiMakeUrlRelativeTo(inputUrl, docUrl);
+}
 
-  // Can't relativize if no doc scheme (page hasn't been saved)
-  if (!docScheme)
+function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+
+  var baseScheme = GetScheme(baseUrl);
+
+  // Can't relativize if no base scheme (page hasn't been saved)
+  if (!baseScheme)
     return inputUrl;
 
   var urlScheme = GetScheme(inputUrl);
 
   // Do nothing if not the same scheme or url is already relativized
-  if (docScheme != urlScheme)
+  if (baseScheme != urlScheme)
     return inputUrl;
 
   var IOService = msiGetIOService();
@@ -2533,39 +2586,39 @@ function MakeRelativeUrl(url)
     return inputUrl;
 
   // Host must be the same
-  var docHost = GetHost(docUrl);
+  var baseHost = GetHost(baseUrl);
   var urlHost = GetHost(inputUrl);
-  if (docHost != urlHost)
+  if (baseHost != urlHost)
     return inputUrl;
 
 
   // Get just the file path part of the urls
   // XXX Should we use GetCurrentEditor().documentCharacterSet for 2nd param ?
-  var docPath = IOService.newURI(docUrl, GetCurrentEditor().documentCharacterSet, null).path;
-  var urlPath = IOService.newURI(inputUrl, GetCurrentEditor().documentCharacterSet, null).path;
+  var basePath = IOService.newURI(baseUrl, msiGetEditor(editorElement).documentCharacterSet, null).path;
+  var urlPath = IOService.newURI(inputUrl, msiGetEditor(editorElement).documentCharacterSet, null).path;
 
   // We only return "urlPath", so we can convert
-  //  the entire docPath for case-insensitive comparisons
+  //  the entire basePath for case-insensitive comparisons
   var os = GetOS();
-  var doCaseInsensitive = (docScheme == "file" && os == msigWin);
+  var doCaseInsensitive = (baseScheme == "file" && os == msigWin);
   if (doCaseInsensitive)
-    docPath = docPath.toLowerCase();
+    basePath = basePath.toLowerCase();
 
-  // Get document filename before we start chopping up the docPath
-  var docFilename = GetFilename(docPath);
+  // Get base filename before we start chopping up the basePath
+  var baseFilename = GetFilename(basePath);
 
-  // Both url and doc paths now begin with "/"
+  // Both url and base paths now begin with "/"
   // Look for shared dirs starting after that
   urlPath = urlPath.slice(1);
-  docPath = docPath.slice(1);
+  basePath = basePath.slice(1);
 
   var firstDirTest = true;
-  var nextDocSlash = 0;
+  var nextBaseSlash = 0;
   var done = false;
 
-  // Remove all matching subdirs common to both doc and input urls
+  // Remove all matching subdirs common to both base and input urls
   do {
-    nextDocSlash = docPath.indexOf("\/");
+    nextBaseSlash = basePath.indexOf("\/");
     var nextUrlSlash = urlPath.indexOf("\/");
 
     if (nextUrlSlash == -1)
@@ -2575,32 +2628,32 @@ function MakeRelativeUrl(url)
       done = true;
 
       // Remove filename for named anchors in the same file
-      if (nextDocSlash == -1 && docFilename)
+      if (nextBaseSlash == -1 && baseFilename)
       { 
         var anchorIndex = urlPath.indexOf("#");
         if (anchorIndex > 0)
         {
           var urlFilename = doCaseInsensitive ? urlPath.toLowerCase() : urlPath;
         
-          if (urlFilename.indexOf(docFilename) == 0)
+          if (urlFilename.indexOf(baseFilename) == 0)
             urlPath = urlPath.slice(anchorIndex);
         }
       }
     }
-    else if (nextDocSlash >= 0)
+    else if (nextBaseSlash >= 0)
     {
       // Test for matching subdir
-      var docDir = docPath.slice(0, nextDocSlash);
+      var baseDir = basePath.slice(0, nextBaseSlash);
       var urlDir = urlPath.slice(0, nextUrlSlash);
       if (doCaseInsensitive)
         urlDir = urlDir.toLowerCase();
 
-      if (urlDir == docDir)
+      if (urlDir == baseDir)
       {
 
         // Remove matching dir+"/" from each path
         //  and continue to next dir
-        docPath = docPath.slice(nextDocSlash+1);
+        basePath = basePath.slice(nextBaseSlash+1);
         urlPath = urlPath.slice(nextUrlSlash+1);
       }
       else
@@ -2613,28 +2666,31 @@ function MakeRelativeUrl(url)
         //   relativize to different drives/volumes.
         // UNIX doesn't have volumes, so we must not do this else
         //  the first directory will be misinterpreted as a volume name
-        if (firstDirTest && docScheme == "file" && os != msigUNIX)
+        if (firstDirTest && baseScheme == "file" && os != msigUNIX)
           return inputUrl;
       }
     }
-    else  // No more doc dirs left, we're done
+    else  // No more base dirs left, we're done
       done = true;
 
     firstDirTest = false;
   }
   while (!done);
 
-  // Add "../" for each dir left in docPath
-  while (nextDocSlash > 0)
+  // Add "../" for each dir left in basePath
+  while (nextBaseSlash > 0)
   {
     urlPath = "../" + urlPath;
-    nextDocSlash = docPath.indexOf("\/", nextDocSlash+1);
+    nextBaseSlash = basePath.indexOf("\/", nextBaseSlash+1);
   }
   return urlPath;
 }
 
-function MakeAbsoluteUrl(url)
+function msiMakeAbsoluteUrl(url, editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+
   var resultUrl = TrimString(url);
   if (!resultUrl)
     return resultUrl;
@@ -2645,7 +2701,7 @@ function MakeAbsoluteUrl(url)
   if (urlScheme)
     return resultUrl;
 
-  var docUrl = GetDocumentBaseUrl();
+  var docUrl = msiGetDocumentBaseUrl(editorElement);
   var docScheme = GetScheme(docUrl);
 
   // Can't relativize if no doc scheme (page hasn't been saved)
@@ -2658,7 +2714,7 @@ function MakeAbsoluteUrl(url)
   
   // Make a URI object to use its "resolve" method
   var absoluteUrl = resultUrl;
-  var docUri = IOService.newURI(docUrl, GetCurrentEditor().documentCharacterSet, null);
+  var docUri = IOService.newURI(docUrl, msiGetCurrentEditor().documentCharacterSet, null);
 
   try {
     absoluteUrl = docUri.resolve(resultUrl);
@@ -2674,6 +2730,8 @@ function MakeAbsoluteUrl(url)
 // returns empty string if no base href and document hasn't been saved yet
 function msiGetDocumentBaseUrl(editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   try {
     var docUrl;
 
@@ -2888,7 +2946,7 @@ function InsertUsernameIntoUrl(urlspec, username)
 
   try {
     var ioService = msiGetIOService();
-    var URI = ioService.newURI(urlspec, GetCurrentEditor().documentCharacterSet, null);
+    var URI = ioService.newURI(urlspec, msiGetCurrentEditor().documentCharacterSet, null);
     URI.username = username;
     return URI.spec;
   } catch (e) {}
@@ -2955,6 +3013,106 @@ function msiGetHTMLOrCSSStyleValue(editorElement, element, attrName, cssProperty
 }
 
 /************* Miscellaneous ***************/
+//Fix This!
+//Following needs to be filled in meaningfully - but for now, just return a default.
+function msiGetCurrViewFlags(editor)
+{
+  var viewSettings = new Object();
+  viewSettings.showInvisibles = false;
+  viewSettings.showHelperLines = true;
+  viewSettings.showInputBoxes = true;
+  viewSettings.showMarkers = true;
+  viewSettings.showIndexEntries = true;
+  return viewSettings;
+}
+
+//Fix This!
+function msiGetCurrViewPerCent(editorElement)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  return 100;
+}
+
+//The default print options should be stored as a numerical bit-encoded value, as of old? (Since otherwise they'd
+//  be a bit lengthy.) But we should return an object with the bits interpreted(?).
+//NOTE that this doesn't do any querying of current view settings (if that flag is set). It simply translates
+//  the bits.
+function msiPrintOptions(printFlags)
+{
+  this.useCurrViewSettings = (printFlags & msiDocumentInfoBase.printUseViewSettingsFlag) != 0;
+  this.printInvisibles = (printFlags & msiDocumentInfoBase.printShowInvisiblesFlag) != 0;    
+  this.printHelperLines = (printFlags & msiDocumentInfoBase.printShowMatrixLinesFlag) != 0;
+  this.printInputBoxes = (printFlags & msiDocumentInfoBase.printShowInputBoxesFlag) != 0;
+  this.printMarkers = (printFlags & msiDocumentInfoBase.printShowIndexFieldsFlag) != 0;
+  this.printIndexEntries = (printFlags & msiDocumentInfoBase.printShowMarkerFieldsFlag) != 0;
+  this.allTextInBlack = (printFlags & msiDocumentInfoBase.printBlackTextFlag) != 0;
+  this.allLinesInBlack = (printFlags & msiDocumentInfoBase.printBlackLinesFlag) != 0;
+  this.backgroundsTransparent = (printFlags & msiDocumentInfoBase.printTransparentBackgroundFlag) != 0;
+  this.grayButtonsTransparent = (printFlags & msiDocumentInfoBase.printTransparentGrayButtonsFlag) != 0;
+  this.suppressGrayBoxes = (printFlags & this.printSuppressGrayButtonsFlag) != 0;
+  this.useCurrViewZoom = (printFlags & msiDocumentInfoBase.printUseViewSettingZoomFlag) != 0;
+
+  this.reflectViewSettings = function(editor)
+  {
+    if (this.useCurrViewSettings)
+    {
+      var viewSettings = msiGetCurrViewFlags(editor);
+      this.printInvisibles = viewSettings.showInvisibles;
+      this.printHelperLines = viewSettings.showHelperLines;
+      this.printInputBoxes = viewSettings.showInputBoxes;
+      this.printMarkers = viewSettings.showMarkers;
+      this.printIndexEntries = viewSettings.showIndexEntries;
+    }
+  };
+
+  this.getFlags = function()
+  {
+    var printFlags = 0;
+    if (this.useCurrViewSettings)
+      printFlags |= msiDocumentInfoBase.printUseViewSettingsFlag;
+    if (this.printInvisibles)
+      printFlags |= msiDocumentInfoBase.printShowInvisiblesFlag;
+    if (this.printHelperLines)
+      printFlags |= msiDocumentInfoBase.printShowMatrixLinesFlag;
+    if (this.printInputBoxes)
+      printFlags |= msiDocumentInfoBase.printShowInputBoxesFlag;
+    if (this.printMarkers)
+      printFlags |= msiDocumentInfoBase.printShowIndexFieldsFlag;
+    if (this.printIndexEntries)
+      printFlags |= msiDocumentInfoBase.printShowMarkerFieldsFlag;
+    if (this.allTextInBlack)
+      printFlags |= msiDocumentInfoBase.printBlackTextFlag;
+    if (this.allLinesInBlack)
+      printFlags |= msiDocumentInfoBase.printBlackLinesFlag;
+    if (this.backgroundsTransparent)
+      printFlags |= msiDocumentInfoBase.printTransparentBackgroundFlag;
+    if (this.grayButtonsTransparent)
+      printFlags |= msiDocumentInfoBase.printTransparentGrayButtonsFlag;
+    if (this.suppressGrayBoxes)
+      printFlags |= msiDocumentInfoBase.printSuppressGrayButtonsFlag;
+    if (this.useCurrViewZoom)
+      printFlags |= msiDocumentInfoBase.printUseViewSettingZoomFlag;
+    return printFlags;
+  };
+}
+
+//Returns an msiPrintOptions object reflecting the bits in default "printOptions". If view settings need to be taken
+//  into account, the caller will have to do that.
+function msiGetDefaultPrintOptions()
+{
+  var printFlags = GetIntPref("printOptions");
+  var theOptions = new msiPrintOptions(printFlags);
+  return theOptions;
+}
+
+//"theOptions" is understood to be a msiPrintOptions object.
+function msiSetDefaultPrintOptions(theOptions)
+{
+  var printFlags = theOptions.getFlags();
+  SetIntPref("printOptions", printFlags);
+}
+
 // Clone simple JS objects
 //function Clone(obj) 
 //{ 

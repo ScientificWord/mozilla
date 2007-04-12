@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://prince/skin/Editor.css" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://communicator/skin/" type="text/css"? -->
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<!-- ?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"? -->
+<!-- ?xul-overlay href="chrome://editor/content/composerOverlay.xul"? -->
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? -->
+<!-- ?xul-overlay href="chrome://communicator/content/contentAreaContextOverlay.xul"? -->
+
+<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
+<!-- ?xul-overlay href="chrome://prince/content/menuOverlay.xul"? -->
+<!-- ?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"? -->
+<!-- ?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"? -->
+<!-- If an editor control is to support context menus, also need: -->
+<!-- ?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"? -->
+
+<!DOCTYPE dialog [									 
+<!ENTITY % DTD SYSTEM "chrome://prince/locale/DocumentInfo.dtd" >
+%DTD;
+<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
+%editorDTD;
+]>
+
+
+<!-- dialog containing a control requiring initial setup -->
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "Startup()"
+    ondialogaccept = "return onAccept()"
+    ondialogcancel = "return onCancel()"
+    buttons="accept,cancel">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/DocumentInfo.js" />
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+   
+  <stringbundle id="metadataRelationStrings" src="chrome://prince/locale/docInfoDialog.properties"/>
+
+  <tabbox id="docinfo-outer-box" flex="1">
+    <tabs class="tabs-top">
+	    <tab label="&tabbar.general;"       selected="1" />
+	    <tab label="&tabbar.comments;"        selected="0" />
+	    <tab label="&tabbar.printOptions;"      selected="0" />
+	    <tab label="&tabbar.metadata;"   selected="0" />
+	    <tab label="&tabbar.saveOptions;"        selected="0" />
+	  </tabs>
+
+    <tabpanels>
+
+      <tabpanel id="generalPage">
+	      <vbox>
+    	    <grid flex = "1">
+	          <columns>
+	            <column flex="1"/>
+	            <column flex="1"/>
+    	      </columns>
+	          <rows>
+			        <row>
+  	            <label value="&filename.label;"/>
+				        <textbox id="filenameBox" size="80" readonly="true"/>
+				      </row>
+			        <row>
+  	            <label value="&directory.label;"/>
+				        <textbox id="directoryBox" size="80" readonly="true"/>
+				      </row>
+			        <row>
+  	            <label value="&created.label;"/>
+				        <textbox id="createdBox" size="80" readonly="true"/>
+				      </row>
+			        <row>
+  	            <label value="&lastRevised.label;"/>
+				        <textbox id="lastRevisedBox" size="80" readonly="true"/>
+				      </row>
+			        <row>
+  	            <label value="&language.label;"/>
+				        <textbox id="languageBox" size="80" readonly="true"/>
+				      </row>
+			        <row>
+  	            <label value="&docShell.label;"/>
+				        <textbox id="docShellBox" size="80" readonly="true"/>
+				      </row>
+			        <row>
+  	            <label value="&docTitle.label;"/>
+				        <textbox id="docTitleBox" size="80" accesskey="&docTitle.accesskey;"/>
+				      </row>
+            </rows>
+	  		  </grid>
+        </vbox>
+      </tabpanel>
+
+      <tabpanel id="commentsPage">
+        <vbox>
+          <groupbox>
+            <caption label="&explanationNote.label;"/>
+		        <description value='&explanationText.label;'/>
+          </groupbox>
+  	      <label value="&commentsBox.label;"/>
+				  <textbox id="commentsBox" multiline="true" cols="80" rows="6" accesskey="&commentsBox.accessKey;"/>
+  	      <label value="&descriptionBox.label;"/>
+				  <textbox id="descriptionBox" multiline="true" cols="80" rows="6" accesskey="&descriptionBox.accessKey;"/>
+       </vbox>
+      </tabpanel>      
+
+      <tabpanel id="printOptionsPage">
+        <vbox>
+          <hbox>
+		        <checkbox id="defaultPrintOptionsCheckbox" label="&defaultPrintOptions.label;" accesskey="&defaultPrintOptions.accessKey;" oncommand="checkEnablePrintControls();"/> 
+            <spacer flex="2"/>
+					  <button id="makePrintOptionsDefault" label="&makePrintOptionsDefault.label;" accesskey="&makePrintOptionsDefault.accessKey;" oncommand="makePrintOptionsDefault();"/>
+          </hbox>
+          <groupbox>
+            <caption>
+              <checkbox id="printUseCurrViewSettings" label="&printUseCurrViewSettings.label;" accesskey="&printUseCurrViewSettings.accessKey;" oncommand="checkEnablePrintControls();"/>
+            </caption>
+            <checkbox id="printInvisibles" label="&printInvisibles.label;" accesskey="&printInvisibles.accessKey;"/>
+            <checkbox id="printHelperLines" label="&printHelperLines.label;" accesskey="&printHelperLines.accessKey;"/>
+            <checkbox id="printInputBoxes" label="&printInputBoxes.label;" accesskey="&printInputBoxes.accessKey;"/>
+            <checkbox id="printMarkers" label="&printMarkers.label;" accesskey="&printMarkers.accessKey;"/>
+            <checkbox id="printIndexEntries" label="&printIndexEntries.label;" accesskey="&printIndexEntries.accessKey;"/>
+          </groupbox>
+          <groupbox>
+            <caption label="&printSpecificOptions.label;"/>
+            <checkbox id="printAllTextInBlack" label="&printAllTextInBlack.label;" accesskey="&printAllTextInBlack.accessKey;"/>
+            <checkbox id="printAllLinesInBlack" label="&printAllLinesInBlack.label;" accesskey="&printAllLinesInBlack.accessKey;"/>
+            <checkbox id="printBackgroundsTransparent" label="&printBackgroundsTransparent.label;" accesskey="&printBackgroundsTransparent.accessKey;"/>
+            <checkbox id="printGrayButtonsTransparent" label="&printGrayButtonsTransparent.label;" accesskey="&printGrayButtonsTransparent.accessKey;"/>
+            <checkbox id="printSuppressGrayBoxes" label="&printSuppressGrayBoxes.label;" accesskey="&printSuppressGrayBoxes.accessKey;"/>
+          </groupbox>
+          <groupbox>
+            <caption>
+              <checkbox id="printUseCurrViewZoom" label="&printUseCurrViewZoom.label;" accesskey="&printUseCurrViewZoom.accessKey;" oncommand="checkEnablePrintControls();"/>
+            </caption>
+            <label value="&zoomPercentage.label;"/>
+            <textbox id="printZoomPercentageBox" size="30" accesskey="&zoomPercentage.accessKey;"/>
+          </groupbox>
+        </vbox>
+      </tabpanel>
+
+      <tabpanel id="metadataPage">
+        <vbox>
+          <label value="&metadataRelation.label;"/>
+					<listbox id="metadataRelationsListbox" accesskey="&metadataRelation.accessKey;" onselect="changeMetadataRelation(this.selectedItem);"/>
+          <spacer flex="2"/>
+          <radiogroup id="metadataTypeRadioGroup" orient="horizontal" oncommand="setMetadataType(event.target);">
+            <radio label="&metadataTypeDataRadio.label;" group="metadataTypeRadioGroup" value="meta" id="metadataTypeDataRadio" accesskey="&metadataTypeDataRadio.accessKey;"/>
+            <radio label="&metadataTypeLinkRadio.label;" group="metadataTypeRadioGroup" value="link" id="metadataTypeLinkRadio" accesskey="&metadataTypeLinkRadio.accessKey;"/>
+          </radiogroup>
+          <label value="&metadataValue.label;"/>
+          <textbox id="metadataValueBox" accesskey="&metadataValueBox.accessKey;" oninput="checkEnableMetadataControls();" size="80"/>
+          <hbox>
+					  <button id="setMetadataSelectionButton" label="&setMetadataSelectionButton.label;" accesskey="&setMetadataSelectionButton.accessKey;" oncommand="setMetadataSelection();"/>
+					  <button id="unsetMetadataSelectionButton" label="&unsetMetadataSelectionButton.label;" accesskey="&unsetMetadataSelectionButton.accessKey;" oncommand="unsetMetadataSelection();"/>
+            <button id="linksFileBrowseButton" label="&linksFileBrowseButton.label;" accesskey="&linksFileBrowseButton.accessKey;" oncommand="doBrowseFileLinks();"/>
+          </hbox>
+        </vbox>
+      </tabpanel>
+
+      <tabpanel id="saveOptionsPage">
+        <vbox>
+          <groupbox>
+            <caption label="&saveOptionsGraphics.label;"/>
+            <checkbox id="relativeGraphicsPathsCheckbox" label="&relativeGraphicsPathsCheckbox.label;" accesskey="&relativeGraphicsPathsCheckbox.accessKey;"/>
+          </groupbox>
+          <spacer flex="1"/>
+          <groupbox>
+            <caption label="&saveOptionsViewSettings.label;"/>
+            <checkbox id="storeViewSettingsCheckbox" label="&storeViewSettingsCheckbox.label;" accesskey="&storeViewSettingsCheckbox.accessKey;"/>
+            <checkbox id="storeViewPercentCheckbox" label="&storeViewPercentCheckbox.label;" accesskey="&storeViewPercentCheckbox.accessKey;"/>
+          </groupbox>
+          <spacer flex="1"/>
+          <groupbox>
+            <caption label="&saveOptionsNoteSettings.label;"/>
+            <checkbox id="storeNoteViewSettingsCheckbox" label="&storeNoteViewSettingsCheckbox.label;" accesskey="&storeNoteViewSettingsCheckbox.accessKey;"/>
+            <checkbox id="storeNoteViewPercentCheckbox" label="&storeNoteViewPercentCheckbox.label;" accesskey="&storeNoteViewPercentCheckbox.accessKey;"/>
+          </groupbox>
+          <spacer flex="1"/>
+        </vbox>
+      </tabpanel>
+    </tabpanels>
+
+  </tabbox>
+</dialog>
