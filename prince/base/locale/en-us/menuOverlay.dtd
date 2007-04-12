@@ -24,6 +24,8 @@
 <!ENTITY filesave.keybinding "s">
 <!ENTITY saveAsCmd.label "Save As...">
 <!ENTITY filesaveas.accesskey "A">
+<!ENTITY docInfo.label "Document Info...">
+<!ENTITY docInfo.accesskey "D">
 
 <!ENTITY publishCmd.label "Publish">
 <!ENTITY publishcmd.accesskey "u">

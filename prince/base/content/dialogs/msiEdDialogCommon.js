@@ -533,9 +533,11 @@ function msiCreateHTTPEquivMetaElement(name)
 
 function msiCreateHTTPEquivElement(name)
 {
-  var editorElement = msiGetActiveEditorElement();
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  var editor = GetCurrentEditor();
+//  var editor = GetCurrentEditor();
   try {
     var metaElement = editor.createElementWithDefaults("meta");
     metaElement.setAttribute("http-equiv", name);

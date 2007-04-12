@@ -9,7 +9,8 @@ var data;
 // dialog initialization code
 function Startup()
 {
-  var editor = GetCurrentEditor();
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
   if (!editor) {
     window.close();
     return;
