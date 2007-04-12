@@ -196,7 +196,7 @@ function msiEditorCanClose(editorElement)
 {
   // Returns FALSE only if user cancels save action
   if (!editorElement)
-    editorElement = GetCurrentEditorElement();
+    editorElement = msiGetCurrentEditorElementForWindow(window);
 
   // "true" means allow "Don't Save" button
   var canClose = msiCheckAndSaveDocument(editorElement, "cmd_close", true);
@@ -511,7 +511,8 @@ function msiEditorWindowOnFocus()
 
   if (changeActiveEditor)
   {
-    var editorElement = GetCurrentEditorElement();
+//    var editorElement = GetCurrentEditorElement();
+    var editorElement = msiGetCurrentEditorElementForWindow(window);
     msiSetActiveEditor(editorElement, true);
   }
   else
@@ -547,7 +548,7 @@ function UpdateTOC()
 
 function InitTOCMenu()
 {
-  var elt = GetCurrentEditor().document.getElementById("mozToc");
+  var elt = msiGetCurrentEditor().document.getElementById("mozToc");
   var createMenuitem = document.getElementById("insertTOCMenuitem");
   var updateMenuitem = document.getElementById("updateTOCMenuitem");
   var removeMenuitem = document.getElementById("removeTOCMenuitem");
@@ -567,7 +568,7 @@ function InitTOCMenu()
 
 function RemoveTOC()
 {
-  var theDocument = GetCurrentEditor().document;
+  var theDocument = msiGetCurrentEditor().document;
   var elt = theDocument.getElementById("mozToc");
   if (elt) {
     elt.parentNode.removeChild(elt);

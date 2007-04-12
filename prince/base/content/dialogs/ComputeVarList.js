@@ -4,27 +4,27 @@ var data;
 const math = '<math>';
 //const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
-// implements nsIObserver
-var msiEditorDocumentObserver =
-{ 
-  observe: function(aSubject, aTopic, aData)
-  {
-    dump("ComputeVarList observer hit!\n");
-    var editor = GetCurrentEditor();
-    switch(aTopic)
-    {
-      case "obs_documentCreated":
-    
-        // try to paste data into editor!
-        var doc = document.getElementById("content-frame").contentDocument;
-        var body = doc.getElementsByTagName("body");
-        editor.insertHTMLWithContext(
-            data.vars.replace(math,fullmath),
-            "", "", "", null,
-            body[0], 0, false );
-    }
-  }
-}
+//// implements nsIObserver
+//var msiEditorDocumentObserver =
+//{ 
+//  observe: function(aSubject, aTopic, aData)
+//  {
+//    dump("ComputeVarList observer hit!\n");
+//    var editor = GetCurrentEditor();
+//    switch(aTopic)
+//    {
+//      case "obs_documentCreated":
+//    
+//        // try to paste data into editor!
+//        var doc = document.getElementById("content-frame").contentDocument;
+//        var body = doc.getElementsByTagName("body");
+//        editor.insertHTMLWithContext(
+//            data.vars.replace(math,fullmath),
+//            "", "", "", null,
+//            body[0], 0, false );
+//    }
+//  }
+//}
 
 
 function Startup(){
