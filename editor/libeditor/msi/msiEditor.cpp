@@ -42,7 +42,6 @@
 
 static PRInt32 instanceCounter = 0;
 nsIRangeUtils * msiEditor::m_rangeUtils = nsnull;
-nsCOMPtr<msiIAutosub> msiEditor::m_autosub = nsnull;
 
 msiEditor::msiEditor()
 {
@@ -51,7 +50,8 @@ msiEditor::msiEditor()
   if (!m_rangeUtils)
     CallGetService("@mozilla.org/content/range-utils;1",  &m_rangeUtils);
   instanceCounter += 1;
-  CallGetService("@mozilla.org/autosubstitute;1",(msiIAutosub **)&m_autosub);
+  if (!m_autosub)
+    CallGetService("@mozilla.org/autosubstitute;1", (msiIAutosub **)&m_autosub);
 }
 
 msiEditor::~msiEditor()
@@ -2408,7 +2408,7 @@ msiEditor::GetNextCharacter( nsIDOMNode * pNode, PRUint32& offset, PRUnichar pre
     textNode = do_QueryInterface(pNode);
     textNode->GetTextContent(theText);
     if (offset > theText.Length()) offset = theText.Length();
-    while (--offset >= 0)
+    while ((PRInt32)(--offset) >= 0)
     {
       m_autosub->NextChar(theText[offset],& _result);
       if (_result != msiIAutosub::STATE_MATCHESSOFAR) return NS_OK;
@@ -2441,6 +2441,7 @@ msiEditor::GetNextCharacter( nsIDOMNode * pNode, PRUint32& offset, PRUnichar pre
 nsresult
 msiEditor::CheckForAutoSubstitute()
 {
+  if (!m_autosub) return NS_ERROR_FAILURE;
   nsCOMPtr<msiISelection> msiSelection;
   GetMSISelection(msiSelection); 
   // this is called immediately after an insertion, so the selection is collapsed. Thus we can check any of of the
@@ -2450,7 +2451,6 @@ msiEditor::CheckForAutoSubstitute()
   PRUnichar ch;
   PRInt32 ctx, action; 
   PRUint32 offset;
-  PRInt32 signedOffset;
   PRUint32 newOffset,newCursorOffset;
   nsAutoString theText;
   PRInt32 lookupResult;
@@ -2458,8 +2458,7 @@ msiEditor::CheckForAutoSubstitute()
   msiSelection->GetMsiAnchorNode((nsIDOMNode **) getter_AddRefs(node));
   msiSelection->GetMsiAnchorOffset( &offset );
   newOffset = offset;
-  signedOffset = (PRInt32)offset;
-//  m_autosub->Reset();
+  m_autosub->Reset();
   if (IsTextContentNode(node))
   {
     textNode = do_QueryInterface(node);
@@ -2469,7 +2468,7 @@ msiEditor::CheckForAutoSubstitute()
   if (lookupResult == msiIAutosub::STATE_SUCCESS)
   {
     // printf("Found the pattern\n");
-    // the pattern consists of characters signedOffset .. offset in the text node
+    // the pattern consists of characters newOffset .. offset in the text node
     m_autosub->GetCurrentData(&ctx, &action, data);
     theText.Replace(newOffset, offset, data);
     textNode->SetTextContent(theText);
