@@ -342,7 +342,7 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
 function msiSourceTextListener(editorElement)
 {
   this.mEditorElement = editorElement;
-  this.NotifyDocumentCreated = function NotifyDocumentCreated() {};
+  this.NotifyDocumentCreated = function NotifyDocumentCreated() {msiDumpWithID("In msiSourceTextListener for editorElement [@], NotifyDocumentCreated.\n", editorElement);};
   this.NotifyDocumentWillBeDestroyed = function NotifyDocumentWillBeDestroyed() {};
   this.NotifyDocumentStateChanged = function NotifyDocumentStateChanged(isChanged)
   {
@@ -1271,7 +1271,7 @@ function msiGetMarkupDocumentViewer(editorElement)
   if (editorElement)
     contentViewer = editorElement.docShell.contentViewer;
   if (!contentViewer)
-    contentViewer = GetCurrentEditorElement().docShell.contentViewer;
+    contentViewer = msiGetActiveEditorElement().docShell.contentViewer;
   contentViewer.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
   return contentViewer;
 }
@@ -2327,6 +2327,14 @@ function msiSetEditMode(mode, editorElement)
     var start = source.search(/<html/i);
     if (start == -1) start = 0;
     var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
+    dump("In msiSetEditMode setting mode to Source; string to insert is: [\n" + source.slice(start) + "\n]; start is set to [" + start + "].\n");
+    try
+    {
+      var theSelection = sourceTextEditor.selection;
+      dump("Editor's selection is [" + theSelection.toString() + "].\n");
+    }
+    catch(ex) {dump("Unable to dump selection from source editor, error is [" + ex + "].\n");}
+    sourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
     var sourceContentWindow = msiGetHTMLSourceTextWindow(editorElement);
     if (!editorElement.mSourceTextObserver)
       editorElement.mSourceTextObserver = new msiSourceTextObserver(editorElement);
@@ -4208,7 +4216,7 @@ var msiCommandUpdater = {
         try
         {
           bIsEnabled = controller.isCommandEnabled(command);
-        } catch(exc) {dump("Error in msiEditor.js, in msiCommandUpdater._getControllerForCommand, command is [" + command + "]");}
+        } catch(exc) {dump("Error in msiEditor.js, in msiCommandUpdater._getControllerForCommand, command is [" + command + "], error is [" + exc + "].\n");}
       }
       if (bIsEnabled)
         return controller;
@@ -4223,7 +4231,11 @@ var msiCommandUpdater = {
           return current;
       }
       catch (e) {
-        dump("Error in msiEditor.js, in msiCommandUpdater._getControllerForCommand, controller is [" + command + "]");
+        var dumpingStr = "Error in msiEditor.js, in msiCommandUpdater._getControllerForCommand, command is [" + command + "], controller is [";
+        if (current != null)
+          dumpingStr += "non-null";
+        dumpingStr += "], error is [" + e + "].\n";
+        dump(dumpingStr);
       }
     }
     return controller || window.controllers.getControllerForCommand(command);

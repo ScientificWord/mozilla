@@ -492,3 +492,20 @@ function unionArrayWith(theArray, otherArray)
   }
   return theArray;
 }
+
+
+function enableControlsByID(theControls, bEnable)
+{
+  var theControl = null;
+  for (var ix = 0; ix < theControls.length; ++ix)
+  {
+    theControl = document.getElementById(theControls[ix]);
+    if (theControl != null)
+    {
+      if (!bEnable)
+        theControl.disabled = true;
+      else if (bEnable && theControl.disabled)
+        theControl.disabled = false;
+    }
+  }
+}

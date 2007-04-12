@@ -1,0 +1,90 @@
+<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Document Info">
+
+<!ENTITY tabbar.general "General">
+<!ENTITY tabbar.comments "Comments">
+<!ENTITY tabbar.printOptions "Print options">
+<!ENTITY tabbar.metadata "Document links and Metadata">
+<!ENTITY tabbar.saveOptions "Save options">
+
+<!ENTITY filename.label "Filename:">
+<!ENTITY directory.label "Directory:">
+<!ENTITY created.label "Created:">
+<!ENTITY lastRevised.label "Last revised:">
+<!ENTITY language.label "Language:">
+<!ENTITY docShell.label "Document shell:">
+<!ENTITY docTitle.label "Title:">
+<!ENTITY docTitle.accesskey "T">
+
+<!ENTITY explanationNote.label "Note:">
+<!ENTITY explanationText.label "Text that you can use to give a complete explanation of your document's purpose. The Comment field places comments at the beginning of the LaTeX document. The Description field is for use in this dialog.">
+<!ENTITY commentsBox.label "Comments:">
+<!ENTITY commentsBox.accessKey "C">
+<!ENTITY descriptionBox.label "Description:">
+<!ENTITY descriptionBox.accessKey "D">
+
+<!ENTITY defaultPrintOptions.label "Use default print options">
+<!ENTITY defaultPrintOptions.accessKey "d">
+<!ENTITY makePrintOptionsDefault.label "Make default">
+<!ENTITY makePrintOptionsDefault.accessKey "d">
+<!ENTITY printUseCurrViewSettings.label "Use current view settings">
+<!ENTITY printUseCurrViewSettings.accessKey "U">
+<!ENTITY printInvisibles.label "Invisibles">
+<!ENTITY printInvisibles.accessKey "I">
+<!ENTITY printHelperLines.label "Helper lines">
+<!ENTITY printHelperLines.accessKey "H">
+<!ENTITY printInputBoxes.label "Input boxes">
+<!ENTITY printInputBoxes.accessKey "b">
+<!ENTITY printMarkers.label "Markers">
+<!ENTITY printMarkers.accessKey "k">
+<!ENTITY printIndexEntries.label "Index entries">
+<!ENTITY printIndexEntries.accessKey "x">
+<!ENTITY printSpecificOptions.label "Print">
+<!ENTITY printAllTextInBlack.label "All text in black">
+<!ENTITY printAllTextInBlack.accessKey "A">
+<!ENTITY printAllLinesInBlack.label "All lines in black">
+<!ENTITY printAllLinesInBlack.accessKey "l">
+<!ENTITY printBackgroundsTransparent.label "Backgrounds as transparent">
+<!ENTITY printBackgroundsTransparent.accessKey "g">
+<!ENTITY printGrayButtonsTransparent.label "Gray boxes as transparent">
+<!ENTITY printGrayButtonsTransparent.accessKey "G">
+<!ENTITY printSuppressGrayBoxes.label "Suppress gray boxes (except markers)">
+<!ENTITY printSuppressGrayBoxes.accessKey "S">
+<!ENTITY printUseCurrViewZoom.label "Use current view zoom settings">
+<!ENTITY printUseCurrViewZoom.accessKey "z">
+<!ENTITY zoomPercentage.label "Zoom percentage">
+<!ENTITY zoomPercentage.accessKey "p">
+
+<!ENTITY metadataRelation.label "Relation:">
+<!ENTITY metadataRelation.accessKey "R">
+<!ENTITY metadataValue.label "Metadata value or link target:">
+<!ENTITY metadataValueBox.accessKey "v">
+<!ENTITY linksFileSelection.label "Link target:">
+<!ENTITY linksFileSelectionBox.accessKey "t">
+<!ENTITY metadataTypeDataRadio.label "Metadata">
+<!ENTITY metadataTypeDataRadio.accessKey "M">
+<!ENTITY metadataTypeLinkRadio.label "Link">
+<!ENTITY metadataTypeLinkRadio.accessKey "L">
+<!ENTITY setMetadataSelectionButton.label "Set">
+<!ENTITY setMetadataSelectionButton.accessKey "S">
+<!ENTITY unsetMetadataSelectionButton.label "Unset">
+<!ENTITY unsetMetadataSelectionButton.accessKey "U">
+<!ENTITY linksFileBrowseButton.label "Browse...">
+<!ENTITY linksFileBrowseButton.accessKey "B">
+
+<!ENTITY saveOptionsGraphics.label "Graphics">
+<!ENTITY relativeGraphicsPathsCheckbox.label "Store relative graphics paths">
+<!ENTITY relativeGraphicsPathsCheckbox.accessKey "G">
+<!ENTITY saveOptionsViewSettings.label "View">
+<!ENTITY storeViewSettingsCheckbox.label "Store view settings in file">
+<!ENTITY storeViewSettingsCheckbox.accessKey "S">
+<!ENTITY storeViewPercentCheckbox.label "Store view percent in file">
+<!ENTITY storeViewPercentCheckbox.accessKey "p">
+<!ENTITY saveOptionsNoteSettings.label "Notes">
+<!ENTITY storeNoteViewSettingsCheckbox.label "Store notes view settings in file">
+<!ENTITY storeNoteViewSettingsCheckbox.accessKey "v">
+<!ENTITY storeNoteViewPercentCheckbox.label "Store notes view percent in file">
+<!ENTITY storeNoteViewPercentCheckbox.accessKey "n">
+
+<!-- <!ENTITY .tooltip "">  -->

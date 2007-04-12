@@ -12,12 +12,6 @@ var data;
 // dialog initialization code
 function Startup()
 {
-  var editor = GetCurrentEditor();
-  if (!editor) {
-    window.close();
-    return;
-  }
-
   doSetOKCancel(onAccept, onAccept);
   data = window.arguments[0];
   data.Cancel = false;
