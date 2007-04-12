@@ -58,10 +58,10 @@ protected:
   virtual void     RemoveEventListeners();
   
 protected:
-  nsCOMPtr <msiIEditingManager> m_msiEditingMan;
+  nsCOMPtr<msiIEditingManager> m_msiEditingMan;
   static nsIRangeUtils * m_rangeUtils;
   nsCOMPtr<nsIDOMEventListener> m_mouseMotionListener;
-  static nsCOMPtr<msiIAutosub> m_autosub;
+  nsCOMPtr<msiIAutosub> m_autosub;
   
   
   friend class msiEditorMouseListener;
