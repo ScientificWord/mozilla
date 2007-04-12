@@ -151,6 +151,8 @@ prince.jar:
 * content/msiEdReplace.js           (content/dialogs/msiEdReplace.js)
   content/EditorPublishProgress.xul  (content/dialogs/msiEditorPublishProgress.xul) 
   content/EditorPublishProgress.js   (content/dialogs/msiEditorPublishProgress.js) 
+  content/DocumentInfo.xul           (content/dialogs/DocumentInfo.xul) 
+  content/DocumentInfo.js            (content/dialogs/DocumentInfo.js) 
 
 en-US.jar:
 % locale prince en-US %locale/
@@ -216,6 +218,8 @@ en-US.jar:
   locale/msifinddialog.properties         (locale/en-us/dialogs/msifinddialog.properties)
 *  locale/branding/brand.dtd              (locale/en-us/brand.dtd)
 *  locale/branding/brand.properties       (locale/en-us/brand.properties)
+  locale/DocumentInfo.dtd                 (locale/en-us/dialogs/DocumentInfo.dtd)
+  locale/docInfoDialog.properties         (locale/en-us/dialogs/docInfoDialog.properties)
  
 classic.jar:
 % skin prince classic %skin/classic/

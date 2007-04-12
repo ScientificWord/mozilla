@@ -86,6 +86,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_updateStructToolbar", msiUpdateStructToolbarCommand);
   commandTable.registerCommand("cmd_insertReturnFancy", msiInsertReturnFancyCommand);
   commandTable.registerCommand("cmd_insertSubstructure", msiInsertSubstructureCommand);
+  commandTable.registerCommand("cmd_documentInfo",       msiDocumentInfoCommand);
   commandTable.registerCommand("cmd_macrofragment", msiMacroFragmentCommand);
 }
 
@@ -2856,7 +2857,7 @@ var msiRewrapCommand =
 
   doCommand: function(aCommand)
   {
-    GetCurrentEditor().QueryInterface(Components.interfaces.nsIEditorMailSupport).rewrap(false);
+    msiGetCurrentEditor().QueryInterface(Components.interfaces.nsIEditorMailSupport).rewrap(false);
   }
 };
 
@@ -3678,6 +3679,1075 @@ var msiPagePropertiesCommand =
     editorElement.focus();
   }
 };
+
+
+//-----------------------------------------------------------------------------------
+var msiDocumentInfoCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetTopLevelEditorElement();
+    if (msiGetEditorURL(editorElement).length > 0)
+      return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+    return false;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    // Launch Document Info dialog
+    var editorElement = msiGetTopLevelEditorElement();
+    var documentInfo = new msiDocumentInfo(editorElement);
+    documentInfo.initializeDocInfo();
+    var dlgInfo = documentInfo.getDialogInfo();
+
+    try {
+      msiOpenModelessDialog("chrome://prince/content/DocumentInfo.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, "cmd_documentInfo", this, dlgInfo);
+    }
+    catch(ex) {
+      dump("*** Exception: couldn't open DocInfo Dialog: " + ex + "\n");
+    }
+    editorElement.contentWindow.focus();
+  }
+};
+
+
+function msiFinishDocumentInfoDialog(editorElement, dlgInfo)
+{
+  if (!dlgInfo.cancel)
+  {
+    var docInfo = dlgInfo.parentData;
+    docInfo.resetFromDialogInfo(dlgInfo);
+    docInfo.putDocInfoToDocument();
+  }
+}
+
+//The msiDocumentInfo object contains (under the following sub-objects) children which reflect the document nodes
+//  containing arbitrary metadata and proprietary information encoded as XML comments. Metadata of particular interest
+//  (i.e., that appearing in the Doc Info dialog) is captured in the appropriate sub-object. Each of these basic children
+//  will have:
+//    (i) a "name" field (the keyword as it appears in the document, for instance, the "rel" attribute of a <link>
+//        or the "name" attribute of a <meta> or the key in a "TCIDATA" key-value comment;
+//   (ii) either a "contents" or a "uri" field ("uri" only for <link> or <!-- TCIDATA LINK... --> comment);
+//  (iii) a "type" field to be used in putting the revised data back into the document - this should be one of the
+//        strings "title" (used only for a <title> element), "meta", "link", "comment-meta", "comment-link",
+//        "comment-key-value", "comment-meta-alt", or "comment-link-alt", where the "-alt" versions mean the
+//        comment contained the contents or href within single rather than double quotes - this is done so a simple regular
+//        expression String.replace() can find and replace the value when rewriting the node;
+//   (iv) a "status" field which can contain the strings "changed", "deleted", or "done", again to facilitate replacement
+//        in the document.
+
+//The function msiDocumentInfo.getDialogInfo() will return a dialogInfo object, where the document data will be
+//  digested into the print and save flags and strings appearing in the dialog. (No digestion of the "metadata" or "comments"
+//  sub-objects is necessary.)
+
+//The sub-objects other than "dialogInfo" will be:
+//  msiDocumentInfo.generalSettings - an object containing the data appearing in the first page of the DocumentInfo dialog. The
+//    data objects reflecting the document nodes appear as children of this object. When getDialogInfo() is called, the actual
+//    strings appearing in the dialog will be elements of dialogInfo.general.
+//  msiDocumentInfo.comments - an object containing the "comment" and "description" data reflected in the Comments page
+//    of the dialog. These are data objects reflecting the document nodes; they are msiDocumentInfo.comments.comment and
+//    msiDocumentInfo.comments.description.
+//  msiDocumentInfo.metadata - an object containing members indexed by (our internal) metadatum name. Each member is an object
+//    containing either a "uri" member or a "content" member, depending on whether it represents a <meta> or a <link>.
+//    The "internal metadatum name" is taken from the keys in the file docInfoDialog.properties, with the prefix (before
+//    the dot) removed.
+//    E.g.:
+//      data.metadata.author.contents = "Noam Chomsky"
+//      data.metadata.previous.uri = "../siblingDirectory/documentBeforeThisOne.xhtml"
+//      data.metadata.chapter.uri = "http://junk.mackichan.com/internal/sillyDocuments/chapterTwo.xhtml"
+//    When getDialogInfo() is called, the returned dialogInfo will contain a metadata member which is the same as this.
+//  msiDocumentInfo.printSettings - an object containing the data children pertaining to print options. The actual dialog
+//    values for flags etc. are returned in dialogInfo.printOptions, which is an msiPrintOptions object (see msiEditorUtilities.js).
+//  msiDocumentInfo.saveSettings = an object containing the data children pertaining to save options. The actual dialog
+//    values for flags etc. are returned in dialogInfo.saveOptions.
+
+//BEWARE ALSO the dual use of the word "comment" here - the member functions referring to "comment" have to do with inserting
+//   or parsing "#comment" nodes (XML comments) in the document. The member items called "comments" refer to the "Comment"
+//   and "Description" fields as of old, which are presumably to be encoded as <meta name="Comment" content="Gee this is quaint."/>
+
+function msiDocumentInfo(editorElement)
+{
+  this.mEditorElement = editorElement;
+  this.mEditor = msiGetEditor(editorElement);
+
+  this.findMetadataNodes = function(aNode)
+  {
+    var theName = aNode.localName;
+    if (!theName || !theName.length)
+      theName = aNode.nodeName;
+    switch(theName.toLowerCase())
+    {
+      case "meta":
+      case "link":
+      case "#comment":
+      case "title":
+      case "author":
+      case "address":
+        return NodeFilter.FILTER_ACCEPT;
+      break;
+      
+      default:
+        return NodeFilter.FILTER_SKIP;
+      break;
+    }
+  };
+
+  this.initializeDocInfo = function()
+  {
+    var docHead = msiGetDocumentHead(this.mEditor);
+
+    this.generalSettings = new Object();
+    this.comments = new Object();
+    this.printSettings = new Object();
+    this.metadata = new Object();
+    this.saveSettings = new Object();
+
+    var treeWalker = this.mEditor.document.createTreeWalker(docHead,
+                                                            NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_COMMENT,
+                                                            this.findMetadataNodes,
+                                                            true);
+    if (treeWalker)
+    {
+      for (var currNode = treeWalker.nextNode(); currNode != null; currNode = treeWalker.nextNode())
+      {
+        var theName = currNode.localName;
+        if (!theName || !theName.length)
+          theName = currNode.nodeName;
+        var subObject = null;
+
+        switch(theName.toLowerCase())
+        {
+          case "meta":
+          {
+            var metaName = currNode.getAttribute("name").toLowerCase();
+            var metaValue = currNode.getAttribute("content");
+            if (metaName && metaValue && metaName.length && metaValue.length)
+            {
+              var metaObj = new Object();
+              metaObj.contents = metaValue;
+              metaObj.name = currNode.getAttribute("name");  //Name in document, rather than one used to index.
+              metaObj.type = "meta";
+              switch(metaName)
+              {
+                case "created":
+                case "lastrevised":
+                case "language":
+                  subObject = this.generalSettings;
+                break;
+                case "comment":
+                case "description":
+                  subObject = this.comments;
+                break;
+                default:
+                  subObject = this.metadata;
+                break;
+              }
+              subObject[metaName] = metaObj;
+            }
+          }
+          break;
+          case "link":
+          {
+            var linkName = currNode.getAttribute("rel").toLowerCase();
+            var linkTarget = currNode.getAttribute("href");
+            if (linkName && linkTarget && linkName.length && linkTarget.length)
+            {
+              var linkObj = new Object();
+              linkObj.name = currNode.getAttribute("rel");  //Name in document, rather than one used to index.
+              linkObj.type = "link";
+              linkObj.uri = linkTarget;
+              if (linkName == "documentshell")
+                this.generalSettings.documentshell = linkObj;
+              else
+                this.metadata[linkName] = linkObj;
+            }
+          }
+          break;
+          case "title":
+          {
+            var titleObj = new Object();
+            titleObj.name = "title";
+            titleObj.type = "title";
+            titleObj.contents = "";
+            for (var ix = 0; ix < currNode.childNodes.length; ++ix)
+            {
+              if (currNode.childNodes[ix].nodeName == "#text")
+                titleObj.contents += currNode.childNodes[ix].nodeValue;
+            }
+            this.generalSettings["title"] = titleObj;
+          }
+          break;
+          case "address":
+          break;
+          case "#comment":
+          {
+            var commentData = this.parseComment(currNode);
+            if (commentData != null)
+            {
+              var commentName = commentData.name.toLowerCase();
+              switch(commentName)
+              {
+                case "lastrevised":
+                case "documentshell":
+                case "language":
+                case "outputfilter":
+                case "version":
+                case "bibliographyscheme":
+                  subObject = this.generalSettings;
+                break;
+                case "graphicssave":
+                case "viewsettings":
+                case "viewpercent":
+                case "noteviewsettings":
+                case "noteviewpercent":
+                case "saveformode":
+                  subObject = this.saveSettings;
+                break;
+                case "printoptions":
+                case "printviewpercent":
+                  subObject = this.printSettings;
+                break;
+                case "comment":
+                case "description":
+                  subObject = this.comments;
+                break;
+
+                default:
+                break;
+              }
+            }
+            if (subObject != null)
+              subObject[commentName] = commentData;
+          }
+          break;
+        }
+      }
+    }
+
+  };
+
+  this.getDialogInfo = function()
+  {
+    var dlgInfo = new Object();
+    this.setGeneralSettingsFromData(dlgInfo);
+    this.setDialogCommentsFromData(dlgInfo);
+//    dlgInfo.comments = this.comments;
+    dlgInfo.metadata = this.metadata;
+    this.setPrintFlagsFromData(dlgInfo);
+    this.setSaveFlagsFromData(dlgInfo);
+    dlgInfo.parentData = this;  //keep to use when the dialog completes (dialog should be modeless for copy-paste purposes)
+    return dlgInfo;
+  };
+
+  this.resetFromDialogInfo = function(dlgInfo)
+  {
+    this.setDataFromGeneralSettings(dlgInfo);
+    this.setDataFromDialogComments(dlgInfo);
+//    this.comments = dlgInfo.comments;
+    this.metadata = dlgInfo.metadata;
+    this.setDataFromSaveFlags(dlgInfo);
+    this.setDataFromPrintFlags(dlgInfo);
+  };
+
+  this.putDocInfoToDocument = function()
+  {
+    var docHead = msiGetDocumentHead(this.mEditor);
+    var treeWalker = this.mEditor.document.createTreeWalker(docHead,
+                                                            NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_COMMENT,
+                                                            this.findMetadataNodes,
+                                                            true);
+    if (treeWalker)
+    {
+      for (var currNode = treeWalker.nextNode(); currNode != null; )
+      {
+        var objParent = null; 
+        var objName = null;
+        var theName = currNode.localName;
+        if (!theName || !theName.length)
+          theName = currNode.nodeName;
+        switch(theName.toLowerCase())
+        {
+          case "meta":
+          {
+            var metaName = currNode.getAttribute("name").toLowerCase();
+            var metaValue = currNode.getAttribute("content");
+            if (metaName && metaValue && metaName.length && metaValue.length)
+            {
+              objName = metaName;
+              switch(metaName)
+              {
+                case "created":
+                case "lastrevised":
+                case "language":
+                  objParent = this.generalSettings;
+                break;
+                case "comment":
+                case "description":
+                  objParent = this.comments;
+                break;
+                default:
+                  objParent = this.metadata;
+                break;
+              }
+            }
+          }
+          break;
+          case "link":
+          {
+            var linkName = currNode.getAttribute("rel").toLowerCase();
+            var linkTarget = currNode.getAttribute("href");
+            if (linkName && linkTarget && linkName.length && linkTarget.length)
+            {
+              objName = linkName;
+              if (linkName == "documentshell")
+                objParent = this.generalSettings;
+              else
+                objParent = this.metadata;
+            }
+          }
+          break;
+          case "title":
+            objName = "title";
+            objParent = this.generalSettings;
+//            this.mDocumentTitle = "";
+//            for (var ix = 0; ix < currNode.childNodes; ++ix)
+//            {
+//              if (currNode.childNodes[ix].nodeName == "#text")
+//                this.mDocumentTitle += currNode.childNodes[ix].nodeValue;
+//            }
+          break;
+          case "author":
+          case "address":
+          break;
+          case "#comment":
+          {
+            var commentData = this.parseComment(currNode);
+            if (commentData != null)
+            {
+              objName = commentData.name;
+              switch(commentData.name)
+              {
+                case "lastrevised":
+                case "documentshell":
+                case "language":
+                  objParent = this.generalSettings;
+                break;
+                case "graphicssave":
+                case "viewsettings":
+                case "viewpercent":
+                case "noteviewsettings":
+                case "noteviewpercent":
+                  objParent = this.saveSettings;
+                break;
+                case "printoptions":
+                case "printviewpercent":
+                  objParent = this.printSettings;
+                break;
+                case "comment":
+                case "description":
+                  objParent = this.comments;
+                break;
+
+                case "outputfilter":
+                case "version":
+                case "saveformode":
+                case "bibliographyscheme":
+                break;
+
+                default:
+                break;
+              }
+            }
+          }
+          break;
+        }
+        var nextNode = treeWalker.nextNode();  //Do this way in case we need to delete "currNode" in the revise step.
+        if (objParent && objName.length > 0)
+          this.reviseIfChanged(objParent, objName, currNode);
+        currNode = nextNode;
+      }
+    }
+
+    var lastMetaNode = null;
+    var lastLinkNode = null;
+    var lastCommentNode = null;
+    var newTreeWalker = this.mEditor.document.createTreeWalker(docHead,
+                                                            NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_COMMENT,
+                                                            this.findMetadataNodes,
+                                                            true);
+    if (newTreeWalker)
+    {
+      for (var currNode = newTreeWalker.nextNode(); currNode != null; currNode = newTreeWalker.nextNode())
+      {
+        var theName = currNode.localName;
+        if (!theName || !theName.length)
+          theName = currNode.nodeName;
+        switch(theName.toLowerCase())
+        {
+          case "meta":
+            lastMetaNode = currNode.nextSibling;
+          break;
+          case "link":
+            lastLinkNode = currNode.nextSibling;
+          break;
+          case "#comment":
+            lastCommentNode = currNode.nextSibling;
+          break;
+          default:
+        }
+      }
+    }
+
+    function insertNewNode(newNode)
+    {
+      var linebreakNode = document.createTextNode("\n");
+      var theTest = [lastMetaNode, lastLinkNode, lastCommentNode];
+      var theName = newNode.localName;
+      if (!theName || theName.length == 0)
+        theName = newNode.nodeName;
+      switch(theName.toLowerCase())
+      {
+        case "meta":
+        break;
+        case "link":
+          theTest = [lastLinkNode, lastMetaNode, lastCommentNode];
+        break;
+        case "#comment":
+          theTest = [lastCommentNode, lastMetaNode, lastLinkNode];
+        break;
+        default:
+          theTest = [];
+        break;
+      }
+      var bDone = false;
+      for (var ii = 0; !bDone && (ii < theTest.length); ++ii)
+      {
+        if (theTest[ii] != null)
+        {
+          docHead.insertBefore(linebreakNode, theTest[ii]);
+          docHead.insertBefore(newNode, theTest[ii]);
+          bDone = true;
+        }
+      }
+      if (!bDone)
+      {
+        docHead.appendChild(newNode);
+        docHead.appendChild(linebreakNode);
+      }
+    }
+
+    var ourChildren = [this.generalSettings, this.saveSettings, this.printSetting, this.comments, this.metadata];
+    for (var ix = 0; ix < ourChildren.length; ++ix)
+    {
+      for (var childObj in ourChildren[ix])
+      {
+        if (ourChildren[ix][childObj].status == "changed")
+        {
+          var newNode = this.createNewNode(ourChildren[ix][childObj]);
+          insertNewNode(newNode);
+        }
+      }
+    }
+//    for (var genObj in this.generalSettings)
+//    {
+//      if (this.generalSettings[genObj].status == "changed")
+//      {
+//        var newNode = this.createNewNode(this.generalSettings[genObj]);
+//        insertNewNode(newNode);
+//      }
+//    }
+//    for (var commObj in this.comments)
+//    {
+//      if (this.comments[commObj].status == "changed")
+//      {
+//        var newNode = this.createNewNode(this.comments[commObj]);
+//        insertNewNode(newNode);
+//      }
+//    }
+//    for (var printObj in this.printSettings)
+//    {
+//      if (this.printSettings[printObj].status == "changed")
+//      {
+//        var newNode = this.createNewNode(this.printSettings[printObj]);
+//        insertNewNode(newNode);
+//      }
+//    }
+//    for (var saveObj in this.saveSettings)
+//    {
+//      if (this.saveSettings[saveObj].status == "changed")
+//      {
+//        var newNode = this.createNewNode(this.saveSettings[saveObj]);
+//        insertNewNode(newNode);
+//      }
+//    }
+
+  };
+
+  this.createNewNode = function(dataObj)
+  {
+    var newNode = null;
+    switch(dataObj.type)
+    {
+      case "title":
+      {
+        var newTextNode = this.mEditor.document.createTextNode(dataObj.contents);
+        newNode = this.mEditor.document.createElement("title");
+        newNode.appendChild(newTextNode);
+      }
+      break;
+      case "meta":
+        newNode = this.mEditor.document.createElement("meta");
+        newNode.setAttribute("name", dataObj.name);
+        newNode.setAttribute("content", dataObj.contents);
+      break;
+      case "link":
+        newNode = this.mEditor.document.createElement("link");
+        newNode.setAttribute("rel", dataObj.name);
+        newNode.setAttribute("href", dataObj.uri);
+      break;
+      case "comment-meta":
+      case "comment-meta-alt":
+      case "comment-link":
+      case "comment-link-alt":
+      case "comment-key-value":
+        newNode = this.createNewCommentNode(dataObj);
+      break;
+      default:
+      break;
+    }
+    return newNode;
+  };
+
+  this.createNewCommentNode = function(dataObj)
+  {
+    var newNode = null;
+    var nameStr = dataObj.name;
+    var uriStr = "";
+    var contentStr = "";
+    if (("uri" in dataObj) && (dataObj.uri != null))
+      uriStr = dataObj.uri;
+    else if (("contents" in dataObj) && (dataObj.contents != null))
+      contentStr = dataObj.contents;
+    var theType = dataObj.type;
+    if (contentStr.indexOf("\"") >= 0)
+    {
+      if (contentStr.indexOf("'") < 0)
+      {
+        if (theType == "comment-meta")
+          theType = "comment-meta=alt";
+        else if (theType == "comment-link")
+          theType = "comment-link-alt";
+      }
+      else if (theType != "comment-key-value")
+      {
+        dump("Content string for comment contains both single and double quotes! Using \\ escape.\n");
+        contentStr = contentStr.replace(/\\\"/, "&dblquote;");
+        contentStr = contentStr.replace(/\\'/, "&singlequote;");
+        contentStr = contentStr.replace(/\"/, "&dblquote;");
+        contentStr = contentStr.replace(/'/, "&singlequote;");
+        contentStr = contentStr.replace("&dblquote;", "\\\"");
+        contentStr = contentStr.replace("&singlequote;", "\\'");
+      }
+    }  
+    var commentStr = "";
+
+    switch(theType)
+    {
+      case "comment-meta":
+        commentStr = "TCIDATA{meta name=\"" + nameStr + "\" content=\"" + contentStr + "\"}";
+      break;
+      case "comment-meta-alt":
+        commentStr = "TCIDATA{meta name='" + nameStr + "' content='" + contentStr + "'}";
+      break;
+      case "comment-link":
+        commentStr = "TCIDATA{link rel=\"" + nameStr + "\" href=\"" + contentStr + "\"}";
+      break;
+      case "comment-link-alt":
+        commentStr = "TCIDATA{link name='" + nameStr + "' href='" + contentStr + "'}";
+      break;
+      case "comment-key-value":
+        commentStr = "TCIDATA{" + nameStr + "=" + contentStr + "}";
+      break;
+    }
+
+    if (commentStr.length > 0)
+      newNode = this.mEditor.document.createComment(commentStr);
+    return newNode;
+  };
+
+  this.parseComment = function(commentNode)
+  {
+    //Here we're looking for something like "<!-- TCIDATA{<META NAME="GraphicsSave" CONTENT="32">} -->  ?
+    //Preferred: <!-- TCIDATA META NAME="GraphicsSave" CONTENT="32" -->
+    //But also may get: <!-- TCIDATA Version=5.50.0.2953 -->
+    //Also, we probably don't want to expect the "TCIDATA" string. But some use of comments to store our proprietary
+    //  information is probably desirable. Will have to be decided soon.
+    var retVal = null;
+    var theData = commentNode.data;  //Do we need to query for the Comment interface first?
+    theData = theData.toLowerCase();
+
+//    var tcidataRegExp = /tcidata[\s]*\{((?:(?:\\\})|(?:[^\}]))+)\}/i;
+//	  var fullNameSyntax = /meta[\s]+.*name=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+//	  var fullContentsSyntax = /meta[\s]+.*content=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+//	  var altfullNameSyntax = /meta[\s]+.*name=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+//	  var altfullContentsSyntax = /meta[\s]+.*content=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+//	  var fullLinkSyntax = /link[\s]+.*rel=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+//	  var fullLinkRefSyntax = /link[\s]+.*href=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+//	  var altfullLinkSyntax = /link[\s]+.*rel=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+//	  var altfullLinkRefSyntax = /link[\s]+.*href=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+//	  var keyValueSyntax = /([\S]+)=(.*)/;
+//	  var keyValueValueSyntax = /?:([\S]+)=(.*)/;
+
+    dump("In parseComment, comment data is [" + theData + "].\n");
+    var tciData = theData.match(this.tcidataRegExp);
+    //NOTE! In JavaScript String.match(regExp), the first thing returned is the full matching expression; capturing-parentheses
+    //  matches are returned in subsequent array members. So we're after array[1] in each case...
+    if (tciData && (tciData.length > 1))  
+    {
+      var metaName = tciData[1].match(this.fullNameSyntax);
+      if (metaName.length == 0)
+        metaName = tciData.match(this.altfullNameSyntax);
+      if (metaName.length > 1)
+      {
+        var theType = "comment-meta";
+        var contents = tciData[1].match(this.fullContentsSyntax);
+        if (contents.length == 0)
+        {
+          theType = "comment-meta-alt";
+          contents = tciData[1].match(this.altfullContentsSyntax);
+        }
+        if (contents.length > 1)
+        {
+          retVal = new Object();
+          retVal.name = metaName[1];
+          retVal.contents = contents[1];
+          retVal.type = theType;
+        }
+      }
+      else
+      {
+        var linkName = tciData[1].match(this.fullLinkSyntax);
+        var theType = "comment-link";
+        if (linkName.length == 0)
+          linkName = tciData[1].match(this.altfullLinkSyntax);
+        if (linkName.length > 1)
+        {
+          var ref = tciData[1].match(this.fullLinkRefSyntax);
+          if (ref.length == 0)
+          {
+            theType = "comment-link-alt";
+            ref = tciData[1].match(this.altfullLinkRefSyntax);
+          }
+          if (ref.length > 1)
+          {
+            retVal = new Object();
+            retVal.name = linkName[1];
+            retVal.uri = ref[1];
+            retVal.type = theType;
+          }
+        }
+        else
+        {
+          var keyValuePair = tciData[1].match(this.keyValueSyntax);
+          if (keyValuePair.length > 2)
+          {
+            retVal = new Object();
+            retVal.name = keyValuePair[1];
+            retVal.contents = keyValuePair[2];
+            retVal.type = "comment-key-value";
+          }
+        }
+      }
+    }
+    return retVal;
+  };
+
+  this.reviseComment = function(theObj, theNode)
+  {
+    var theData = theNode.data;  //Do we need to query for the Comment interface first?
+    theData = theData.toLowerCase();
+
+    var tcidataReplaceRegExp = /(tcidata[\s]*\{)((?:(?:\\\})|(?:[^\}]))+)\}/i;
+//	  var fullNameReplaceSyntax = /meta[\s]+.*name=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+	  var fullContentsReplaceSyntax = /(meta[\s]+.*content=\")((?:(?:\\\")|(?:[^\"]))+)\"/i;
+//	  var altfullNameReplaceSyntax = /meta[\s]+.*name=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+	  var altfullContentsReplaceSyntax = /(meta[\s]+.*content=\')((?:(?:\\\')|(?:[^\']))+)\'/i;
+//	  var fullLinkReplaceSyntax = /link[\s]+.*rel=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+	  var fullLinkRefReplaceSyntax = /(link[\s]+.*href=\")((?:(?:\\\")|(?:[^\"]))+)\"/i;
+//	  var altfullLinkReplaceSyntax = /link[\s]+.*rel=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+	  var altfullLinkRefReplaceSyntax = /(link[\s]+.*href=\')((?:(?:\\\')|(?:[^\']))+)\'/i;
+	  var keyValueReplaceSyntax = /((?:[\S]+)=)(.*)/;
+
+    dump("In reviseComment, comment data is [" + theData + "].\n");
+    var tciData = theData.match(tcidataReplaceRegExp);
+
+    if (tciData && (tciData.length > 2))
+    {
+      var newData = "";
+      switch(theObj.type)
+      {
+        case "comment-meta":
+          newData = tciData[2].replace(fullContentsReplaceSyntax, "$`$1" + theObj.contents + "\"$'");
+        break;
+        case "comment-meta-alt":
+          newData = tciData[2].replace(altfullContentsReplaceSyntax, "$`$1" + theObj.contents + "'$'");
+        break;
+        case "comment-link":
+          newData = tciData[2].replace(fullLinkRefReplaceSyntax, "$`$1" + theObj.uri + "\"$'");
+        break;
+        case "comment-link-alt":
+          newData = tciData[2].replace(altfullLinkRefReplaceSyntax, "$`$1" + theObj.uri + "'$'");
+        break;
+        case "comment-key-value":
+          newData = tciData[2].replace(keyValueReplaceSyntax, "$`$1" + theObj.contents + "$'");
+        break;
+      }
+      if (newData.length > 0)
+        theNode.data = theData.replace(tcidataReplaceRegExp, "$`$1" + newData + "}$'");
+    }
+  };
+
+  this.setGeneralSettingsFromData = function(dlgInfo)
+  {
+    if (!("general" in dlgInfo) || (dlgInfo.general == null))
+      dlgInfo.general = new Object();
+    if (this.generalSettings)
+    {
+      dlgInfo.general.documentUri = msiGetEditorURL(this.mEditorElement);
+      if (("created" in this.generalSettings) && (this.generalSettings.created != null))
+        dlgInfo.general.created = this.generalSettings.created.contents;
+      if (("lastrevised" in this.generalSettings) && (this.generalSettings.lastrevised != null))
+        dlgInfo.general.lastRevised = this.generalSettings.lastrevised.contents;
+      if (("language" in this.generalSettings) && (this.generalSettings.language != null))
+        dlgInfo.general.language = this.generalSettings.language.contents;
+      if (("documentshell" in this.generalSettings) && (this.generalSettings.documentshell != null))
+        dlgInfo.general.documentShell = this.generalSettings.documentshell.contents;
+      if (("title" in this.generalSettings) && (this.generalSettings.title != null))
+        dlgInfo.general.documentTitle = this.generalSettings.title.contents;
+    }
+  };
+
+  this.setDataFromGeneralSettings = function(dlgInfo)
+  {
+    if (!this.generalSettings)
+    {
+      dump("In msiDocumentInfo.setDataFromGeneralSettings, generalSettings object is missing!\n");
+      this.generalSettings = new Object();
+    }
+    var theContents = "";
+    if (("created" in dlgInfo.general) && (dlgInfo.general.created != null))
+      theContents = dlgInfo.general.created;
+    this.setObjectFromData(this.generalSettings, "created", (theContents.length > 0), "Created", theContents, "meta");
+
+    theContents = "";
+    if (("lastRevised" in dlgInfo.general) && (dlgInfo.general.lastRevised != null))
+      theContents = dlgInfo.general.lastRevised;
+    this.setObjectFromData(this.generalSettings, "lastrevised", (theContents.length > 0), "LastRevised", theContents, "meta");
+
+    theContents = "";
+    if (("language" in dlgInfo.general) && (dlgInfo.general.language != null))
+      theContents = dlgInfo.general.language;
+    this.setObjectFromData(this.generalSettings, "language", (theContents.length > 0), "Language", theContents, "meta");
+
+    theContents = "";
+    if (("documentShell" in dlgInfo.general) && (dlgInfo.general.documentShell != null))
+      theContents = dlgInfo.general.documentShell;
+    this.setObjectFromData(this.generalSettings, "documentshell", (theContents.length > 0), "DocumentShell", theContents, "comment-link");
+
+    theContents = "";
+    if (("documentTitle" in dlgInfo.general) && (dlgInfo.general.documentTitle != null))
+      theContents = dlgInfo.general.documentTitle;
+    this.setObjectFromData(this.generalSettings, "title", (theContents.length > 0), "Title", theContents, "title");
+  };
+
+  this.setDialogCommentsFromData = function(dlgInfo)
+  {
+    if (!("comments" in dlgInfo) || (dlgInfo.comments == null))
+      dlgInfo.comments = new Object();
+    dlgInfo.comments.comment = "";
+    if (("comment" in this.comments) && ("contents" in this.comments.comment))
+      dlgInfo.comments.comment = this.comments.comment.contents;
+    dlgInfo.comments.description = "";
+    if (("description" in this.comments) && ("contents" in this.comments.description))
+      dlgInfo.comments.description = this.comments.description.contents;
+  };
+
+  this.setDataFromDialogComments = function(dlgInfo)
+  {
+    if (!this.comments)
+    {
+      dump("In msiDocumentInfo.setDataFromDialogComments, comments object is missing!\n");
+      this.comments = new Object();
+    }
+    var theContents = dlgInfo.comments.comment;
+    this.setObjectFromData(this.comments, "comment", (theContents.length > 0), "Comment", theContents, "meta");
+
+    theContents = dlgInfo.comments.description;
+    this.setObjectFromData(this.comments, "description", (theContents.length > 0), "Description", theContents, "meta");
+  };
+
+  this.setPrintFlagsFromData = function(dlgInfo)
+  {
+    if (!("printOptions" in dlgInfo) || (dlgInfo.printOptions == null))
+      dlgInfo.printOptions = new Object();
+
+    var theFlags = 0;
+    if (this.printSettings && this.printSettings.printoptions)
+      theFlags = this.printSettings.printoptions.contents.valueOf();
+    var bUseDefaultPrintOptions = (theFlags == 0);
+    if (bUseDefaultPrintOptions)
+      dlgInfo.printOptions.theOptions = msiGetDefaultPrintOptions();  //in msiEditorUtilities.js
+    else
+      dlgInfo.printOptions.theOptions = new msiPrintOptions(theFlags);  //in msiEditorUtilities.js
+    dlgInfo.printOptions.theOptions.useDefaultPrintOptions = bUseDefaultPrintOptions;
+
+    dlgInfo.printOptions.zoomPercentage = 100;
+    if (dlgInfo.printOptions.theOptions.useCurrViewZoom)
+      dlgInfo.printOptions.zoomPercentage = msiGetCurrViewPerCent(this.mEditorElement);  //in msiEditorUtilities.js, though not yet really implemented
+    else if (this.printSettings.printviewpercent != null && this.printSettings.printviewpercent.contents != null)
+      dlgInfo.printOptions.zoomPercentage = this.printSettings.printviewpercent.contents.valueOf();
+  };
+
+  this.setDataFromPrintFlags = function(dlgInfo)
+  {
+    if (!this.printSettings)
+    {
+      dump("In msiDocumentInfo.setDataFromPrintFlags, printSettings object is missing!\n");
+      this.printSettings = new Object();
+    }
+
+    if (!this.printSettings.printoptions)
+    {
+      this.printSettings.printoptions = new Object();
+      this.printSettings.printoptions.name = "PrintOptions";
+      this.printSettings.printoptions.type = "comment-meta";
+    }
+
+    var printFlags = dlgInfo.printOptions.theOptions.getFlags();
+    if (!("contents" in this.printSettings.printoptions) || (this.printSettings.printoptions.contents == null)
+                   || (this.printSettings.printoptions.contents.valueOf() != printFlags))
+    {
+      this.printSettings.printoptions.status = "changed";
+      this.printSettings.printoptions.contents = String(printFlags);
+    }
+    else
+      this.printSettings.printoptions.status = "unchanged";
+
+    if (!dlgInfo.printOptions.theOptions.useCurrViewZoom)
+    {
+      if (!this.printSettings.printviewpercent)
+      {
+        this.printSettings.printviewpercent = new Object();
+        this.printSettings.printviewpercent.name = "PrintViewPercent";
+        this.printSettings.printviewpercent.type = "comment-meta";
+      }
+      var zoomPercent = 100;
+      if  (("zoomPercentage" in dlgInfo.printOptions.theOptions) && (dlgInfo.printOptions.theOptions.zoomPercentage != null))
+        zoomPercent = dlgInfo.printOptions.theOptions.zoomPercentage;
+      if (!("contents" in this.printSettings.printviewpercent) || (this.printSettings.printviewpercent.contents == null)
+                  || (this.printSettings.printviewpercent.contents.valueOf() != zoomPercent))
+      {
+        this.printSettings.printviewpercent.status = "changed";
+        this.printSettings.printviewpercent.contents = String(zoomPercent);
+      }
+      else
+        this.printSettings.printviewpercent.status = "unchanged";
+    }
+  };
+
+  this.setSaveFlagsFromData = function(dlgInfo)
+  {
+    if (!("saveOptions" in dlgInfo) || (dlgInfo.saveOptions == null))
+      dlgInfo.saveOptions = new Object();
+
+    if ("graphicssave" in this.saveSettings && this.saveSettings.graphicssave != null)
+    {
+      var nValue = this.saveSettings.graphicssave.contents.valueOf();
+      dlgInfo.saveOptions.useRelativeGraphicsPaths = ((nValue & this.graphicsSaveRelativeFlag) != 0);
+    }
+    else
+      dlgInfo.saveOptions.useRelativeGraphicsPaths = true;
+
+    if (("viewsettings" in this.saveSettings) && this.saveSettings.viewsettings != null)
+      dlgInfo.saveOptions.storeViewSettings = (this.saveSettings.viewsettings.contents.valueOf() != 0);
+    else
+      dlgInfo.saveOptions.storeViewSettings = false;
+
+    if (("viewpercent" in this.saveSettings) && this.saveSettings.viewpercent != null)
+      dlgInfo.saveOptions.storeViewPercent = true;
+    else
+      dlgInfo.saveOptions.storeViewPercent = false;
+
+    if (("noteviewsettings" in this.saveSettings) && this.saveSettings.noteviewsettings != null)
+      dlgInfo.saveOptions.storeNoteViewSettings = (this.saveSettings.noteviewsettings.contents.valueOf() != 0);
+    else
+      dlgInfo.saveOptions.storeNoteViewSettings = false;
+
+    if (("noteviewpercent" in this.saveSettings) && this.saveSettings.noteviewpercent != null)
+      dlgInfo.saveOptions.storeNoteViewPercent = true;
+    else
+      dlgInfo.saveOptions.storeNoteViewPercent = false;
+  };
+
+  this.setDataFromSaveFlags = function(dlgInfo)
+  {
+    var theContents = 0;
+    if (dlgInfo.saveOptions.useRelativeGraphicsPaths)
+      theContents = this.graphicsSaveRelativeFlag;
+    this.setObjectFromData(this.saveSettings, "graphicssave", dlgInfo.saveOptions.useRelativeGraphicsPaths, "GraphicsSave", String(theContents), "comment-meta");
+
+    theContents = dlgInfo.saveOptions.storeViewSettings ? 1 : 0;
+    this.setObjectFromData(this.saveSettings, "viewsettings", dlgInfo.saveOptions.storeViewSettings, "ViewSettings", String(theContents), "comment-meta");
+
+    theContents = msiGetCurrViewPerCent(this.mEditorElement);
+    this.setObjectFromData(this.saveSettings, "viewpercent", dlgInfo.saveOptions.storeViewPercent, "ViewPercent", String(theContents), "comment-meta");
+
+    theContents = dlgInfo.saveOptions.storeNoteViewSettings ? 1 : 0;
+    this.setObjectFromData(this.saveSettings, "noteviewsettings", dlgInfo.saveOptions.storeNoteViewSettings, "NoteViewSettings", String(theContents), "comment-meta");
+
+    theContents = GetIntPref("NoteViewPercent");
+    if (!theContents)
+      theContents = 100;
+    this.setObjectFromData(this.saveSettings, "noteviewpercent", dlgInfo.saveOptions.storeNoteViewPercent, "NoteViewPercent", String(theContents), "comment-meta");
+  };
+
+  this.setObjectFromData = function(theParent, theObject, bSet, theName, theContents, theType)
+  {
+    if (!theParent)
+    {
+      dump("Error in msiDocumentInfo.setObjectFromData = null parent object passed in!\n");
+      return;
+    }
+    if (bSet && (!(theObject in theParent) || (theParent[theObject] == null)) )
+    {
+      theParent[theObject] = new Object();
+      theParent[theObject].name = theName;
+      theParent[theObject].type = theType;
+      theParent[theObject].status = "changed";
+    }
+    if ((theObject in theParent) && (theParent[theObject] != null))
+    {
+      theParent[theObject].status = "changed";
+      if (theParent[theObject].type == theType)
+      {
+        if ( ("uri" in theParent[theObject]) && (theParent[theObject].uri != null) )
+        {
+          if (theParent[theObject].uri == theContents)
+            theParent[theObject].status = "unchanged";
+        }
+        else if ( ("contents" in theParent[theObject]) && (theParent[theObject].contents != null) )
+        {
+          if (theParent[theObject].contents == theContents)
+            theParent[theObject].status = "unchanged";
+        }
+      }
+      if (bSet)
+      {
+        if (theType == "link")
+          theParent[theObject].uri = theContents;
+        else
+          theParent[theObject].contents = theContents;
+      }
+      else
+        theParent[theObject].status = "deleted";
+    }
+  };
+
+  this.reviseIfChanged = function(parent, objName, theNode)
+  {
+    if ((objName in parent) && (parent[objName] != null))
+    {
+      if (parent[objName].status == "changed")
+      {
+        switch(parent[objName].type)
+        {
+          case "meta":
+            theNode.setAttribute("content", parent[objName].contents);
+            parent[objName].status = "done";
+          break;
+          case "link":
+            theNode.setAttribute("href", parent[objName].uri);
+            parent[objName].status = "done";
+          break;
+          case "comment-meta":
+          case "comnment-meta-alt":
+          case "comment-link":
+          case "comment-link-alt":
+          case "comment-key-value":
+            this.reviseComment(parent[objName], theNode);
+          break;
+          case "title":
+          {
+            var textNodes = theNode.childNodes;
+            var bDone = false;
+            for (var ix = 0; ix < textNodes.length; ++ix)
+            {
+              if ( (textNodes[ix].nodeName == "#text") && (textNodes[ix].nodeValue.length > 0) )
+              {
+                if (!bDone)
+                {
+                  textNodes[ix].nodeValue = parent[objName].contents;
+                  bDone = true;
+                }
+                else
+                  textNodes[ix].nodeValue = "";
+              }
+            }
+            if (!bDone)
+            {
+              var newNode = theNode.ownerDocument.createTextNode(parent[objName].contents);
+              theNode.appendChild(newNode);
+            }
+            parent[objName].status = "done";
+          }
+          break;
+        }
+      }
+      else if ( (parent[objName].status == "deleted") || (parent[objName].status == "done") )
+      {
+        theNode.parentNode.removeChild(theNode);
+        parent[objName].status = "done";
+      }
+    }
+  };
+
+  this.tcidataRegExp = /tcidata[\s]*\{((?:(?:\\\})|(?:[^\}]))+)\}/i;
+	this.fullNameSyntax = /meta[\s]+.*name=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+	this.fullContentsSyntax = /meta[\s]+.*content=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+	this.altfullNameSyntax = /meta[\s]+.*name=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+	this.altfullContentsSyntax = /meta[\s]+.*content=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+	this.fullLinkSyntax = /link[\s]+.*rel=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+	this.fullLinkRefSyntax = /link[\s]+.*href=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+	this.altfullLinkSyntax = /link[\s]+.*rel=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+	this.altfullLinkRefSyntax = /link[\s]+.*href=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+	this.keyValueSyntax = /([\S]+)=(.*)/;
+	this.keyValueValueSyntax = /(?:[\S]+)=(.*)/;
+
+}
+
+var msiDocumentInfoBase =
+{
+  graphicsSaveRelativeFlag:             0x20,
+  printShowInvisiblesFlag:                 1,
+  printShowMatrixLinesFlag:                2,
+  printShowInputBoxesFlag:                 4,
+  printShowIndexFieldsFlag:                8,  
+  printShowMarkerFieldsFlag:          0x0010,
+  printUseViewSettingsFlag:           0x0020,
+  printUseViewOverridesFlag:          0x0040,
+  printBlackTextFlag:                 0x0080,
+  printBlackLinesFlag:                0x0100,
+  printTransparentBackgroundFlag:     0x0200,
+  printTransparentGrayButtonsFlag:    0x0400,
+  printSuppressGrayButtonsFlag:       0x0800,
+  printUseViewSettingZoomFlag:        0x2000
+};
+
+msiDocumentInfo.prototype = msiDocumentInfoBase;
 
 
 //-----------------------------------------------------------------------------------
