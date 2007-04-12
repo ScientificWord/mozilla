@@ -8,7 +8,7 @@
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
-<!DOCTYPE dialog SYSTEM "chrome://editor/locale/texbuttoncontents.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/texbuttoncontents.dtd">
 
 <dialog title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -16,9 +16,9 @@
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();">
 
-  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/texbuttoncontents.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/texbuttoncontents.js"/>
 
   <!-- keyset>
     <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>

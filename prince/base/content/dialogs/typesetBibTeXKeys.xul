@@ -18,7 +18,7 @@
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();">
 
-  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/typesetBibTeXKeys.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/typesetDialogUtils.js"/>

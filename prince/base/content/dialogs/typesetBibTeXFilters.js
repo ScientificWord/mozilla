@@ -11,12 +11,6 @@ var bibTeXSplitExp = new RegExp("(\\\\[^a-zA-Z0-9])|([\$=@%{}\\\"\\[\\]\\(\\),])
 // dialog initialization code
 function Startup()
 {
-  var editor = GetCurrentEditor();
-  if (!editor) {
-    window.close();
-    return;
-  }
-
   doSetOKCancel(onAccept, onCancel);
   data = window.arguments[0];
   data.Cancel = false;
