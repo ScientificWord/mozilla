@@ -2525,7 +2525,7 @@ var msiOpenRemoteCommand =
 	     Use 0 and the default checkbox will be to load into an editor
 	     and loading into existing browser option is removed
 	   */
-	  window.openDialog( "chrome://communicator/content/openLocation.xul", "_blank", "chrome,modal,titlebar", 0);
+	  window.openDialog( "chrome://prince/content/openLocation.xul", "_blank", "chrome,modal,titlebar", 0);
     window.content.focus();
   }
 };
