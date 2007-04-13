@@ -2415,6 +2415,15 @@ function GetBoolPref(name)
   return false;
 }
 
+function PrefHasValue(name)
+{
+  try
+  {
+    return GetPrefs().prefHasUserValue(name);
+  } catch(exc) {dump("Exception trying to query whether pref " + name + " is set: [" + exc + "].\n");}
+  return false;
+}
+
 function GetIntPref(name)
 {
   try
@@ -2428,7 +2437,7 @@ function SetIntPref(name, value)
 {
   var prefs = GetPrefs();
   if (prefs)
-    prefs.setIntValue(name, value);
+    prefs.setIntPref(name, value);
 }
 
 function SetUnicharPref(aPrefName, aPrefValue)
@@ -3050,7 +3059,7 @@ function msiPrintOptions(printFlags)
   this.allLinesInBlack = (printFlags & msiDocumentInfoBase.printBlackLinesFlag) != 0;
   this.backgroundsTransparent = (printFlags & msiDocumentInfoBase.printTransparentBackgroundFlag) != 0;
   this.grayButtonsTransparent = (printFlags & msiDocumentInfoBase.printTransparentGrayButtonsFlag) != 0;
-  this.suppressGrayBoxes = (printFlags & this.printSuppressGrayButtonsFlag) != 0;
+  this.suppressGrayBoxes = (printFlags & msiDocumentInfoBase.printSuppressGrayButtonsFlag) != 0;
   this.useCurrViewZoom = (printFlags & msiDocumentInfoBase.printUseViewSettingZoomFlag) != 0;
 
   this.reflectViewSettings = function(editor)
@@ -3095,13 +3104,44 @@ function msiPrintOptions(printFlags)
       printFlags |= msiDocumentInfoBase.printUseViewSettingZoomFlag;
     return printFlags;
   };
+  this.match = function(otherOptions)
+  {
+    if (this.useCurrViewSettings != otherOptions.useCurrViewSettings)
+      return false;
+    if (this.printInvisibles != otherOptions.printInvisibles)
+      return false;
+    if (this.printHelperLines != otherOptions.printHelperLines)
+      return false;
+    if (this.printInputBoxes != otherOptions.printInputBoxes)
+      return false;
+    if (this.printMarkers != otherOptions.printMarkers)
+      return false;
+    if (this.printIndexEntries != otherOptions.printIndexEntries)
+      return false;
+    if (this.allTextInBlack != otherOptions.allTextInBlack)
+      return false;
+    if (this.allLinesInBlack != otherOptions.allLinesInBlack)
+      return false;
+    if (this.backgroundsTransparent != otherOptions.backgroundsTransparent)
+      return false;
+    if (this.grayButtonsTransparent != otherOptions.grayButtonsTransparent)
+      return false;
+    if (this.suppressGrayBoxes != otherOptions.suppressGrayBoxes)
+      return false;
+    if (this.useCurrViewZoom != otherOptions.useCurrViewZoom)
+      return false;
+
+    return true;
+  };
 }
 
 //Returns an msiPrintOptions object reflecting the bits in default "printOptions". If view settings need to be taken
 //  into account, the caller will have to do that.
 function msiGetDefaultPrintOptions()
 {
-  var printFlags = GetIntPref("printOptions");
+  var printFlags = (msiDocumentInfoBase.printUseViewSettingsFlag | msiDocumentInfoBase.printBlackTextFlag | msiDocumentInfoBase.printBlackLinesFlag | msiDocumentInfoBase.printTransparentBackgroundFlag | msiDocumentInfoBase.printUseViewSettingZoomFlag);
+  if (PrefHasValue("printOptions"))
+    printFlags = GetIntPref("printOptions");
   var theOptions = new msiPrintOptions(printFlags);
   return theOptions;
 }
