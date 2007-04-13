@@ -4140,14 +4140,14 @@ function msiDocumentInfo(editorElement)
       }
     }
 
-    var ourChildren = [this.generalSettings, this.saveSettings, this.printSetting, this.comments, this.metadata];
+    var ourChildren = [this.generalSettings, this.saveSettings, this.printSettings, this.comments, this.metadata];
     for (var ix = 0; ix < ourChildren.length; ++ix)
     {
       for (var childObj in ourChildren[ix])
       {
         if (ourChildren[ix][childObj].status == "changed")
         {
-          var newNode = this.createNewNode(ourChildren[ix][childObj]);
+          var newNode = this.createNewNode(ourChildren[ix][childObj], childObj);
           insertNewNode(newNode);
         }
       }
@@ -4187,7 +4187,7 @@ function msiDocumentInfo(editorElement)
 
   };
 
-  this.createNewNode = function(dataObj)
+  this.createNewNode = function(dataObj, ourName)
   {
     var newNode = null;
     switch(dataObj.type)
@@ -4201,12 +4201,14 @@ function msiDocumentInfo(editorElement)
       break;
       case "meta":
         newNode = this.mEditor.document.createElement("meta");
-        newNode.setAttribute("name", dataObj.name);
+//        newNode.setAttribute("name", dataObj.name);
+        newNode.setAttribute("name", ourName);
         newNode.setAttribute("content", dataObj.contents);
       break;
       case "link":
         newNode = this.mEditor.document.createElement("link");
-        newNode.setAttribute("rel", dataObj.name);
+//        newNode.setAttribute("rel", dataObj.name);
+        newNode.setAttribute("rel", ourName);
         newNode.setAttribute("href", dataObj.uri);
       break;
       case "comment-meta":
@@ -4546,8 +4548,8 @@ function msiDocumentInfo(editorElement)
         this.printSettings.printviewpercent.type = "comment-meta";
       }
       var zoomPercent = 100;
-      if  (("zoomPercentage" in dlgInfo.printOptions.theOptions) && (dlgInfo.printOptions.theOptions.zoomPercentage != null))
-        zoomPercent = dlgInfo.printOptions.theOptions.zoomPercentage;
+      if  (("zoomPercentage" in dlgInfo.printOptions) && (dlgInfo.printOptions.zoomPercentage != null))
+        zoomPercent = dlgInfo.printOptions.zoomPercentage;
       if (!("contents" in this.printSettings.printviewpercent) || (this.printSettings.printviewpercent.contents == null)
                   || (this.printSettings.printviewpercent.contents.valueOf() != zoomPercent))
       {
@@ -4557,6 +4559,8 @@ function msiDocumentInfo(editorElement)
       else
         this.printSettings.printviewpercent.status = "unchanged";
     }
+    else if (("printviewpercent" in this.printSettings) && (this.printSettings.printviewpercent != null))
+      this.printSettings.printviewpercent.status = "deleted";
   };
 
   this.setSaveFlagsFromData = function(dlgInfo)
@@ -4679,6 +4683,7 @@ function msiDocumentInfo(editorElement)
           case "comment-link-alt":
           case "comment-key-value":
             this.reviseComment(parent[objName], theNode);
+            parent[objName].status = "done";
           break;
           case "title":
           {
@@ -4709,7 +4714,14 @@ function msiDocumentInfo(editorElement)
       }
       else if ( (parent[objName].status == "deleted") || (parent[objName].status == "done") )
       {
+        var prevSibling = theNode.previousSibling;
         theNode.parentNode.removeChild(theNode);
+        if ((prevSibling != null) && (prevSibling.nodeName == "#text"))
+        {
+          theText = TrimString(prevSibling.nodeValue);
+          if (!theText.length)
+            theNode.parentNode.removeChild(prevSibling);
+        }
         parent[objName].status = "done";
       }
     }
