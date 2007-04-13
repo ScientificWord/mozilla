@@ -254,7 +254,10 @@ function storePrintOptions(theData)
   if (!("printOptions" in theData))
     theData.printOptions = new Object();
   if (!("theOptions" in theData.printOptions))
-    theData.printOptions.theOptions = new Object();
+  {
+    dump("In DocumentInfo dialog, in storePrintOptions(), the Data has no printOptions object!\n");
+    theData.printOptions.theOptions = msiGetDefaultPrintOptions();  //just get the default one to have the right object, then fix the values below.
+  }
 
   getDataFromCheckbox(theData.printOptions.theOptions, "useDefaultPrintOptions", true, "defaultPrintOptionsCheckbox");
   getDataFromCheckbox(theData.printOptions.theOptions, "useCurrViewSettings", true, "printUseCurrViewSettings");
@@ -397,10 +400,10 @@ function findRelationInListbox(theListbox, theRelation)
   return nIndex;
 }
 
-var printSettingsControlIDs = ["printUseCurrViewInvisibles", "printHelperLines",
+var printViewSettingsControlIDs = ["printInvisibles", "printHelperLines",
                                "printInputBoxes", "printMarkers",
                                "printIndexEntries"];
-var printViewSettingsControlIDs = ["printAllTextInBlack", "printAllLinesInBlack",
+var printSettingsControlIDs = ["printAllTextInBlack", "printAllLinesInBlack",
                                    "printBackgroundsTransparent", "printGrayButtonsTransparent",
                                    "printSuppressGrayBoxes"];
 
@@ -419,9 +422,17 @@ function checkEnablePrintControls()
   enableControlsByID(["makePrintOptionsDefault"], !printSettingsMatchDefaults());
 }
 
+function makePrintOptionsDefault()
+{
+  storePrintOptions(data);  //Doesn't hurt to store this periodically; allows use of object to reflect checkboxes.
+  msiSetDefaultPrintOptions(data.printOptions.theOptions);
+}
+
 function printSettingsMatchDefaults()
 {
-  return false;  //Need to re-examine this - for now we'll just allow the "Set as Default" button to always be enabled.
+  var defaultOptions = msiGetDefaultPrintOptions();
+  storePrintOptions(data);
+  return data.printOptions.theOptions.match(defaultOptions);
 }
 
 //This enables the three button controls in the Metadata page ("Set", "Unset", "Browse"), plus the "Type" radio group.
@@ -558,15 +569,15 @@ function changeMetadataRelation(selItem)
   if (selItem.value in data.metadata)
   {
     theObj = data.metadata[selItem.value];
-    if (("type" in theObj) && (theObj.type != null))
-      currType = theObj.type;
-    else if ( ("uri" in theObj) && theObj.uri != null)
+    if ( ("uri" in theObj) && theObj.uri != null)
     {
       valStr = theObj.uri;
       currType = "link";
     }
     else if ( ("contents" in theObj) && theObj.contents != null)
       valStr = theObj.contents;
+    if (("type" in theObj) && (theObj.type != null))
+      currType = theObj.type;
   }
   var valueTextbox = document.getElementById("metadataValueBox");
   valueTextbox.value = valStr;
