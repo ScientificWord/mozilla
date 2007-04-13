@@ -4,6 +4,7 @@ prince.jar:
   content/branding/icon64.png       (content/icon64.png) 
 * content/prince.xul                (content/prince.xul)
 * content/prince.js                 (content/prince.js)
+  content/openLocation.xul          (content/openLocation.xul)
 * content/aboutDialog.xul           (content/aboutDialog.xul)
   content/aboutPrince.png           (content/aboutPrince.png)
 * content/toolbarsOverlay.xul       (content/toolbarsOverlay.xul)
@@ -220,6 +221,8 @@ en-US.jar:
 *  locale/branding/brand.properties       (locale/en-us/brand.properties)
   locale/DocumentInfo.dtd                 (locale/en-us/dialogs/DocumentInfo.dtd)
   locale/docInfoDialog.properties         (locale/en-us/dialogs/docInfoDialog.properties)
+  locale/openLocation.dtd				  (locale/en-us/openLocation.dtd)
+  locale/openLocation.properties		  (locale/en-us/openLocation.properties)
  
 classic.jar:
 % skin prince classic %skin/classic/

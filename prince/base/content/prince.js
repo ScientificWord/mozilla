@@ -13,9 +13,8 @@ function goAboutDialog() {
 function doOpen() {
   var fp = Components.classes["@mozilla.org/filepicker;1"].
              createInstance(Components.interfaces.nsIFilePicker);
-  fp.init(window, "Open HTML File", Components.interfaces.nsIFilePicker.modeOpen);
-  fp.appendFilters(Components.interfaces.nsIFilePicker.filterHTML);
-  fp.appendFilters(Components.interfaces.nsIFilePicker.filterXML);
+  fp.init(window, "Open Scientific WorkPlace File", Components.interfaces.nsIFilePicker.modeOpen);
+  fp.appendFilters("SWP Documents, ","*.swd");
   fp.appendFilter("XHTML Files","*.xhtml; *.xht");
   fp.appendFilters(Components.interfaces.nsIFilePicker.filterText);
   fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
@@ -59,9 +58,6 @@ function doNew() {
     dump("Ready to edit shell: " + fp.fileURL.spec +"\n");
     try {
       msiEditPage(fp.fileURL.spec, window, false);
-//      GetCurrentEditorElement().webNavigation.loadURI(fp.fileURL.spec,
-//               Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,
-//               null, null, null);
     } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
 } }
 
