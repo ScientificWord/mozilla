@@ -39,6 +39,7 @@
 #include "msiDeleteRangeTxn.h"
 
 #include  "nsEditorUtils.h"
+#include "msiIScriptRunner.h"
 
 static PRInt32 instanceCounter = 0;
 nsIRangeUtils * msiEditor::m_rangeUtils = nsnull;
@@ -983,7 +984,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     else 
       res = nsHTMLEditor::HandleKeyPress(aKeyEvent);
       if (NS_SUCCEEDED(res) &&(!(mFlags & eEditorPlaintextMask)))
-		  res = CheckForAutoSubstitute();
+		    res = CheckForAutoSubstitute();
       return res;
       
   }
@@ -2454,7 +2455,7 @@ msiEditor::CheckForAutoSubstitute()
   PRUint32 newOffset,newCursorOffset;
   nsAutoString theText;
   PRInt32 lookupResult;
-  nsAutoString data;       
+  nsAutoString data, pasteContext, pasteInfo, error;       
   msiSelection->GetMsiAnchorNode((nsIDOMNode **) getter_AddRefs(node));
   msiSelection->GetMsiAnchorOffset( &offset );
   newOffset = offset;
@@ -2467,14 +2468,20 @@ msiEditor::CheckForAutoSubstitute()
   GetNextCharacter(node, newOffset, ch, lookupResult);
   if (lookupResult == msiIAutosub::STATE_SUCCESS)
   {
-    // printf("Found the pattern\n");
-    // the pattern consists of characters newOffset .. offset in the text node
-    m_autosub->GetCurrentData(&ctx, &action, data);
-    theText.Replace(newOffset, offset, data);
-    textNode->SetTextContent(theText);
-    // we need to update the cursor if the sizes don't match
-    newCursorOffset = newOffset + data.Length();
-    msiSelection->Set(node,newCursorOffset,node,newCursorOffset,node,newCursorOffset,node,newCursorOffset); 
+    msiSelection->Set(node,newOffset,node,offset,node,offset,node,newOffset); 
+    m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
+    if (action == msiIAutosub::ACTION_SUBSTITUTE)
+      InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE); 
+    else if (action == msiIAutosub::ACTION_EXECUTE)
+    {
+      nsresult res;
+      nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
+      if (res == NS_OK)
+      {
+        sr->Eval(data, error);
+        if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
+      }
+    }
   }
   return NS_OK;
 }
