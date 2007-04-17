@@ -1584,17 +1584,27 @@ function initSidebar()
   macrofile.append("macros.xml");
   var xmlDoc = document.implementation.createDocument("", "macros", null);
   var nodeList;
+  var node;
   var s;
+  var arrayElement;
   xmlDoc.async = false;
   if (xmlDoc.load("file:///"+macrofile.path))
   {
     nodeList = xmlDoc.getElementsByTagName("m");
     for (var i = 0; i < nodeList.length; i++)
     {
-      s = nodeList.item(i).getAttribute("nm");
-      macroArray[s] = new Object();
-      macroArray[s].forcesMath = (nodeList.item(i).getAttribute("fm") =="1");
-      macroArray[s].data = nodeList.item(i).firstChild.textContent;
+      node = nodeList.item(i);
+      s = node.getAttribute("nm");
+      arrayElement = new Object();
+      arrayElement.forcesMath = (node.getAttribute("fm") == "1");
+      arrayElement.script = (node.getAttribute("tp") == "sc");
+      arrayElement.data = node.getElementsByTagName("data").item(0).textContent;
+      if (!arrayElement.script)
+      {
+        arrayElement.context = node.getElementsByTagName("context").item(0).textContent;
+        arrayElement.info = node.getElementsByTagName("info").item(0).textContent;
+      }
+      macroArray[s] = arrayElement;
       ACSA.addString("macros",s);
     }
   }
@@ -1669,15 +1679,24 @@ function loadFragment(event,tree)
   focusOnEditor();
 }
 
-function insertDataAtCursor( dataString )
+function insertDataAtCursor( arrayElement )
 {
-  var editorElement = document.getElementById("content-frame");
-  var editor = msiGetEditor(editorElement);
   try
   {
-    insertXMLAtCursor(editor, dataString, false, true);
-  //      editor.insertHTML(dataString);
-  } catch(e) {}
+    focusOnEditor();
+    if (arrayElement.script)
+    {
+      eval(arrayElement.data);
+    }
+    else
+    {
+      var editorElement = document.getElementById("content-frame");
+      var editor = msiGetEditor(editorElement);
+      editor.insertHTMLWithContext(arrayElement.data,
+                                   arrayElement.context, arrayElement.info, "text/xml",
+                                   null,null,0,true);
+    }
+  } catch(e) {dump("Error in insertDataAtCursor: "+e); }
 }
 
 
@@ -1687,11 +1706,7 @@ function onMacroOrFragmentEntered( aString )
   var s = macroArray[aString];
   if (s) 
   {
-    if (s.forcesMath == true)
-    {
-      doParamCommand('cmd_MSIsymbolCmd',s.data);
-    }
-    else insertDataAtCursor( s.data );
+    insertDataAtCursor( s );
   }
   else
   {
