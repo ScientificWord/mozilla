@@ -8,11 +8,13 @@ struct autosubentry
   PRUint32 context;
   PRUint32 action;
   nsString data;
+  nsString pastecontext;
+  nsString pasteinfo;
   
-  autosubentry( nsString p, PRUint32 c, PRUint32 a, nsString d)
-	  : pattern(p), context(c), action(a), data(d) {}
+  autosubentry( nsString p, PRUint32 c, PRUint32 a, nsString d, nsString pastectx, nsString info)
+	  : pattern(p), context(c), action(a), data(d), pastecontext(pastectx), pasteinfo(info) {}
   autosubentry() : pattern(NS_LITERAL_STRING("")), context(msiIAutosub::CONTEXT_TEXTONLY), 
-    action(msiIAutosub::ACTION_SUBSTITUTE), data(NS_LITERAL_STRING("")) {}
+    action(msiIAutosub::ACTION_SUBSTITUTE), data(NS_LITERAL_STRING("")), pastecontext(NS_LITERAL_STRING("")), pasteinfo(NS_LITERAL_STRING("")) {}
 // Comparison functions for sorting
   PRBool operator< ( autosubentry& b);
   PRBool operator< ( nsString & b);

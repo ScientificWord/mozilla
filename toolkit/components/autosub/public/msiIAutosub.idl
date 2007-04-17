@@ -38,7 +38,7 @@ interface msiIAutosub : nsISupports
    * Add or remove an entry to the table (presumably via a dialog), return whether succsessful
    */
    
-  boolean addEntry( in AString pattern, in long ctt, in long action, in AString data );
+  boolean addEntry( in AString pattern, in long ctt, in long action, in AString data, in AString pasteContext, in AString pasteInfo );
  
   boolean removeEntry( in AString pattern );
   
@@ -47,7 +47,7 @@ interface msiIAutosub : nsISupports
    * STATE_SUCCESS.
    */
    
-  AString getCurrentData( out long ctx, out long action );
+  AString getCurrentData( out long ctx, out long action, out AString pasteContext, out AString pasteInfo );
   
   /* 
    * Return the state of the lookup after sending another character. Note that characters
