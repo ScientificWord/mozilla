@@ -1,14 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE macros PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
 <subs>
-  <sub ctx="text" act="subst"><pattern>--</pattern><data>&#x2013;</data></sub>
-  <sub ctx="text" act="subst"><pattern>&#x2013;-</pattern><data>&#x2014;</data></sub>
-  <sub ctx="text" act="subst"><pattern>``</pattern><data>&#x201C;</data></sub>
-  <sub ctx="text" act="subst"><pattern>''</pattern><data>&#x201D;</data></sub>
-  <sub ctx="text" act="subst"><pattern>BBM</pattern><data>Barry MacKichan</data></sub>
-  <sub ctx="text" act="subst"><pattern>&#x2013;&gt;#</pattern><data>&#x2192;</data></sub>
-  <sub ctx="text" act="subst"><pattern>&lt;&#x2013;#</pattern><data>&#x2190;</data></sub>
-  <sub ctx="text" act="subst"><pattern>|^#</pattern><data>&#x2191;</data></sub>
-  <sub ctx="text" act="subst"><pattern>|v#</pattern><data>&#x2193;</data></sub>
-  <sub ctx="text" act="subst"><pattern>...</pattern><data>&#x2026;</data></sub>
+  <sub ctx="text" tp="subst"><pattern>--</pattern><data>&#x2013;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>&#x2013;-</pattern><data>&#x2014;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>``</pattern><data>&#x201C;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>''</pattern><data>&#x201D;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>BBM</pattern><data>Barry MacKichan</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>&#x2013;&gt;#</pattern><data>&#x2192;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>&lt;&#x2013;#</pattern><data>&#x2190;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>|^#</pattern><data>&#x2191;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>|v#</pattern><data>&#x2193;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>...</pattern><data>&#x2026;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="sc"><pattern>yell</pattern><data>yell('Hey!');</data></sub>
 </subs>
