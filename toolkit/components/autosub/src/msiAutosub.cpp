@@ -93,16 +93,18 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
   PRUint32 action = msiIAutosub::ACTION_SUBSTITUTE;
   nsAutoString s;
   nsAutoString data;
+  nsAutoString pastectx;
+  nsAutoString pasteinfo;
   nsAutoString pattern;
   nsAutoString pattern2;
   nsCOMPtr<nsIDOMNodeList> subsTags;
   nsCOMPtr<nsIDOMNodeList> patternTags;
-  nsCOMPtr<nsIDOMNodeList> dataTags;
+  nsCOMPtr<nsIDOMNodeList> dataTags, contextTags, infoTags;
   nsCOMPtr<nsIDOMNode> subsNode;
   nsCOMPtr<nsIDOMElement> subsElement;
   nsCOMPtr<nsIDOM3Node> textNode; 
   nsCOMPtr<nsIDOMNode> patternNode;
-  nsCOMPtr<nsIDOMNode> dataNode;
+  nsCOMPtr<nsIDOMNode> dataNode, contextNode, infoNode;
   state = msiIAutosub::STATE_INIT;
   startIndex = 0;
   lastIndex = 0;
@@ -129,8 +131,8 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
         subsElement->GetAttribute(NS_LITERAL_STRING("ctx"),s);
         if (s.EqualsLiteral("text")) ctx = msiIAutosub::CONTEXT_TEXTONLY; 
         if (s.EqualsLiteral("textmath")) ctx = msiIAutosub::CONTEXT_MATHANDTEXT; 
-        subsElement->GetAttribute(NS_LITERAL_STRING("act"),s);
-        if (s.EqualsLiteral("exec")) action = msiIAutosub::ACTION_EXECUTE;
+        subsElement->GetAttribute(NS_LITERAL_STRING("tp"),s);
+        if (s.EqualsLiteral("sc")) action = msiIAutosub::ACTION_EXECUTE;
         subsElement->GetElementsByTagName(NS_LITERAL_STRING("pattern"),getter_AddRefs(patternTags));
         if (patternTags)
         {
@@ -154,8 +156,25 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
           dataTags->Item(0,(nsIDOMNode **)getter_AddRefs(dataNode));
           textNode = do_QueryInterface(dataNode);
           textNode->GetTextContent(data); 
-        }        
-        autosubarray[i] = autosubentry(pattern, ctx, action, data);
+        }
+        if (action != msiIAutosub::ACTION_EXECUTE)
+        { 
+          subsElement->GetElementsByTagName(NS_LITERAL_STRING("context"),getter_AddRefs(contextTags));
+          if (contextTags)
+          {
+            contextTags->Item(0,(nsIDOMNode **)getter_AddRefs(contextNode));
+            textNode = do_QueryInterface(contextNode);
+            textNode->GetTextContent(pastectx); 
+          }
+          subsElement->GetElementsByTagName(NS_LITERAL_STRING("info"),getter_AddRefs(infoTags));
+          if (infoTags)
+          {
+            infoTags->Item(0,(nsIDOMNode **)getter_AddRefs(infoNode));
+            textNode = do_QueryInterface(infoNode);
+            textNode->GetTextContent(pasteinfo); 
+          }
+        }       
+        autosubarray[i] = autosubentry(pattern, ctx, action, data, pastectx, pasteinfo);
       } 
     }
     NS_QuickSort(autosubarray, arraylength, sizeof(autosubentry), compare, nsnull);
@@ -164,7 +183,8 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
 }
 
 /* boolean addEntry (in string pattern, in long ctt, in long action, in string data); */
-NS_IMETHODIMP msiAutosub::AddEntry(const nsAString & pattern, PRInt32 ctt, PRInt32 action, const nsAString & data, PRBool *_retval)
+NS_IMETHODIMP msiAutosub::AddEntry(const nsAString & pattern, PRInt32 ctt, PRInt32 action, const nsAString & data, 
+  const nsAString & pasteContext, const nsAString & pasteInfo, PRBool *_retval)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -176,11 +196,13 @@ NS_IMETHODIMP msiAutosub::RemoveEntry(const nsAString & pattern, PRBool *_retval
 }
 
 /* string getCurrentData (out long ctx, out long action); */
-NS_IMETHODIMP msiAutosub::GetCurrentData(PRInt32 *ctx, PRInt32 *action, nsAString & _retval)
+NS_IMETHODIMP msiAutosub::GetCurrentData(PRInt32 *ctx, PRInt32 *action, nsAString & pasteContext, nsAString & pasteInfo, nsAString & _retval)
 {
     autosubentry se = autosubarray[startIndex];
     *ctx = se.context;
     *action = se.action;
+    pasteContext = se.pastecontext;
+    pasteInfo = se.pasteinfo;
     _retval = se.data;
     return NS_OK;
 }
