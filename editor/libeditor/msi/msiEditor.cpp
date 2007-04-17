@@ -39,7 +39,7 @@
 #include "msiDeleteRangeTxn.h"
 
 #include  "nsEditorUtils.h"
-#include "msiIScriptRunner.h"
+//#include "msiIScriptRunner.h"
 
 static PRInt32 instanceCounter = 0;
 nsIRangeUtils * msiEditor::m_rangeUtils = nsnull;
