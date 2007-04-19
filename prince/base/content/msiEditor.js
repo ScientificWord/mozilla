@@ -753,6 +753,7 @@ function msiEditorDocumentObserver(editorElement)
           msiOnFontColorChange();
           msiOnBackgroundColorChange();
           editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
+          editor.setTopXULWindow(window);
           // also initialize the sidebar in this case
           initSidebar();
           // now is the time to initialize the autosubstitute engine
