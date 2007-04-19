@@ -57,6 +57,7 @@
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/mainCore.js" />
   <script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/>
+  <script type="application/x-javascript" src="resource://res/tagdefs/user.js"/>
 
   <popupset id="msiEditorContentContextSet"/>
   <popup id="sidebarPopup"/>
