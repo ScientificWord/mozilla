@@ -49,6 +49,7 @@
 
 #include "nsIAtom.h"
 #include "nsIDOMDocument.h"
+#include "nsIDOMWindow.h"
 #include "nsISelection.h"
 #include "nsIDOMCharacterData.h"
 #include "nsIPrivateTextRange.h"
@@ -651,6 +652,7 @@ protected:
   nsCOMPtr<nsIDOMEventListener> mCompositionListenerP;
   nsCOMPtr<nsIDOMEventListener> mDragListenerP;
   nsCOMPtr<nsIDOMEventListener> mFocusListenerP;
+  nsCOMPtr<nsIDOMWindow> m_window;
 
   friend PRBool NSCanUnload(nsISupports* serviceMgr);
   friend class nsAutoTxnsConserveSelection;

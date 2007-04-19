@@ -189,6 +189,7 @@ tier_9_dirs	+= \
 		sun-java \
 		modules/plugin \
 		dom \
+		prince/scriptrunner \
 		view \
 		widget \
 		content \
