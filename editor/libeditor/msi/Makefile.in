@@ -30,6 +30,7 @@ REQUIRES = xpcom \
            xpconnect \
            txtsvc  \
            autosub \
+		   scriptrunner \
 		   $(NULL)
 
 

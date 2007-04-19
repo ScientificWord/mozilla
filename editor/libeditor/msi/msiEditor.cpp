@@ -1,6 +1,4 @@
 // Copyright (c) 2006, MacKichan Software, Inc.  All rights reserved.
-
-
 #include "nsCOMPtr.h"
 #include "msiEditor.h"
 #include "msiIMathMLInsertion.h"
@@ -11,7 +9,7 @@
 #include "msiEditorMouseMotionListener.h"
 #include "TransactionFactory.h"
 #include "EditAggregateTxn.h"
-
+#include "nsIDOMWindow.h"
 #include "nsContentUtils.h"
 #include "nsIDOMDocumentFragment.h"
 #include "nsIDocument.h"
@@ -38,8 +36,8 @@
 #include "msiSelectionManager.h"
 #include "msiDeleteRangeTxn.h"
 
-#include  "nsEditorUtils.h"
-//#include "msiIScriptRunner.h"
+#include "nsEditorUtils.h"
+#include "msiIScriptRunner.h"
 
 static PRInt32 instanceCounter = 0;
 nsIRangeUtils * msiEditor::m_rangeUtils = nsnull;
@@ -2447,6 +2445,7 @@ msiEditor::CheckForAutoSubstitute()
   GetMSISelection(msiSelection); 
   // this is called immediately after an insertion, so the selection is collapsed. Thus we can check any of of the
   // nodes.
+  nsresult res = NS_OK;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOM3Node> textNode;
   PRUnichar ch;
@@ -2474,14 +2473,14 @@ msiEditor::CheckForAutoSubstitute()
       InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE); 
     else if (action == msiIAutosub::ACTION_EXECUTE)
     {
-      nsresult res;
       nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
       if (res == NS_OK)
       {
+        sr->SetCtx(m_window);
         sr->Eval(data, error);
         if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
       }
     }
   }
-  return NS_OK;
+  return res;
 }
