@@ -5619,3 +5619,10 @@ nsEditor::SwitchTextDirection()
   return rv;
 }
 
+NS_IMETHODIMP 
+nsEditor::SetTopXULWindow(nsIDOMWindow *window)
+{
+    m_window = window;
+    return NS_OK;
+}
+

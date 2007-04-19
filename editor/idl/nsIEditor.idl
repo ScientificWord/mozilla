@@ -51,6 +51,7 @@ interface nsITransaction;
 interface nsIEditorObserver;
 interface nsIEditActionListener;
 interface nsIInlineSpellChecker;
+interface nsIDOMWindow;
 
 %{C++
 class nsIPresShell;
@@ -552,6 +553,8 @@ interface nsIEditor  : nsISupports
 
   /** Remove a DocumentStateListener to the editors list of doc state listeners. */
   void removeDocumentStateListener(in nsIDocumentStateListener listener);
+  
+  void setTopXULWindow( in nsIDOMWindow window);
 
 
   /* ------------ Debug methods -------------- */
