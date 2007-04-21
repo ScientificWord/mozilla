@@ -1142,21 +1142,25 @@ nsresult msiUtils::CreateMroot(nsIEditor * editor,
 nsresult msiUtils::CreateMathname(nsIEditor * editor,
                                   const nsAString & name,
                                   PRUint32 & flags,
+                                  PRBool isUnit,
                                   nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
   nsresult res(NS_ERROR_FAILURE); 
   nsCOMPtr<nsIDOMNode> theChild;
   nsCOMPtr<nsIDOMElement> mathname;
   PRUint32 caretPos(msiIMathMLEditingBC::INVALID);
-  nsAutoString msimathname, msitrue;
-  msiEditingAtoms::msimathname->ToString(msimathname);
+  nsAutoString msimathname, msitrue, msiunit;
+  if (isUnit) 
+    msiEditingAtoms::msiunit->ToString(msiunit);
+  else
+    msiEditingAtoms::msimathname->ToString(msimathname);
   msiEditingAtoms::msitrue->ToString(msitrue);
   if (name.Length() > 0)
     caretPos = name.Length();
   res = CreateMathMLLeafElement(editor, name, msiIMathMLEditingBC::MATHML_MI, caretPos, flags, mathname);
   if (NS_SUCCEEDED(res) && mathname) 
   {
-    mathname->SetAttribute(msimathname, msitrue);
+    mathname->SetAttribute(isUnit?msiunit:msimathname, msitrue);
     mathmlElement = mathname;
   }
   return res;
@@ -1170,7 +1174,7 @@ nsresult msiUtils::CreateEngineFunction(nsIEditor * editor,
   nsresult res(NS_ERROR_FAILURE); 
   nsCOMPtr<nsIDOMNode> theChild;
   nsCOMPtr<nsIDOMElement> mathname;
-  msiUtils::CreateMathname(editor, name, flags, mathname);
+  msiUtils::CreateMathname(editor, name, flags, PR_FALSE, mathname);
   nsAutoString msiclass, enginefunction;
   msiEditingAtoms::msiclass->ToString(msiclass);
   msiEditingAtoms::enginefunction->ToString(enginefunction);

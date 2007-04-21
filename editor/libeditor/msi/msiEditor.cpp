@@ -24,6 +24,7 @@
 #include "nsIDOMEventReceiver.h"
 #include "nsIDOMEventGroup.h"
 #include "nsIServiceManager.h"
+#include "nsServiceManagerUtils.h"
 #include "nsIEditActionListener.h"
 
 #include "DeleteTextTxn.h"
@@ -40,25 +41,26 @@
 #include "msiIScriptRunner.h"
 
 static PRInt32 instanceCounter = 0;
-nsIRangeUtils * msiEditor::m_rangeUtils = nsnull;
+nsCOMPtr<nsIRangeUtils> msiEditor::m_rangeUtils = nsnull;
+nsCOMPtr<msiIAutosub> msiEditor::m_autosub = nsnull;
 
 msiEditor::msiEditor()
 {
   nsresult res(NS_OK);
   m_msiEditingMan = do_CreateInstance(MSI_EDITING_MANAGER_CONTRACTID, &res);
   if (!m_rangeUtils)
-    CallGetService("@mozilla.org/content/range-utils;1",  &m_rangeUtils);
+    m_rangeUtils = do_GetService("@mozilla.org/content/range-utils;1");
   instanceCounter += 1;
   if (!m_autosub)
-    CallGetService("@mozilla.org/autosubstitute;1", (msiIAutosub **)&m_autosub);
+    m_autosub = do_GetService("@mozilla.org/autosubstitute;1");
 }
 
 msiEditor::~msiEditor()
 {
   instanceCounter -= 1;
   m_msiEditingMan = nsnull;
-  if (instanceCounter <= 0)
-    NS_IF_RELEASE(m_rangeUtils);
+//  if (instanceCounter <= 0)
+//    NS_IF_RELEASE(m_rangeUtils);
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(msiEditor, nsHTMLEditor, msiIMathMLEditor)
@@ -525,6 +527,47 @@ msiEditor::InsertMathname(const nsAString & mathname)
     }
   }
   else if (mathname.Length() == 0)
+    res = NS_OK;
+  return res;
+}
+
+
+NS_IMETHODIMP
+msiEditor::InsertMathunit(const nsAString & mathunit)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(mathunit.Length() > 0, "Mathunit must be at least a single character.");
+  if (mathunit.Length() > 0 && !(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
+  {
+    nsCOMPtr<nsISelection> selection;
+    nsCOMPtr<nsIDOMNode> startNode, endNode;
+    PRInt32 startOffset(0), endOffset(0);
+    PRBool bCollapsed(PR_FALSE);
+    res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
+                           endOffset, bCollapsed);
+    if (NS_SUCCEEDED(res)) 
+    {
+      nsCOMPtr<nsIDOMNode> theNode;
+      PRInt32 theOffset(0);
+      if (!bCollapsed)
+      {
+        res = NS_ERROR_FAILURE;
+        // TODO add stuff so that selected stuff is changed to become the base  or the script ?
+        // current SWP behavoir is to make it the script, but this may not be correct in light
+        // of the fact that sub and sup have a well defined base in mathml.
+        // Also need to deal with the case where we are not in math, or part of the selection is not
+        // in math.
+      }
+      else
+      {
+        theNode = startNode;
+        theOffset = startOffset;
+      }
+      if (NS_SUCCEEDED(res))
+        res = InsertMathunitEx(selection, theNode, theOffset, mathunit);
+    }
+  }
+  else if (mathunit.Length() == 0)
     res = NS_OK;
   return res;
 }
@@ -1509,6 +1552,18 @@ msiEditor::InsertMathnameEx(nsISelection * aSelection, nsIDOMNode * aNode,
 }
 
 nsresult
+msiEditor::InsertMathunitEx(nsISelection * aSelection, nsIDOMNode * aNode, 
+                           PRInt32 aOffset, const nsAString & aMathunit)
+{
+  nsresult res(NS_OK);
+  nsCOMPtr<nsIEditor> editor;
+  QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
+  res = m_msiEditingMan->InsertMathunit(editor, aSelection, aNode, aOffset, aMathunit);
+  return res;
+}
+
+
+nsresult
 msiEditor::InsertEngineFunctionEx(nsISelection * aSelection, nsIDOMNode * aNode, 
                                   PRInt32 aOffset, const nsAString & aName)
 {
@@ -2434,6 +2489,7 @@ msiEditor::GetNextCharacter( nsIDOMNode * pNode, PRUint32& offset, PRUnichar pre
 //  pElement->GetPreviousSibling(getter_AddRefs(pNode2));
 //  offset2 = (PRUint32)(-1);
 //  if (pNode2) GetNextCharacter(pNode2, offset2, prevChar, _result); 
+  return NS_OK;
 }
   
 
@@ -2448,10 +2504,10 @@ msiEditor::CheckForAutoSubstitute()
   nsresult res = NS_OK;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOM3Node> textNode;
-  PRUnichar ch;
+  PRUnichar ch = 0;
   PRInt32 ctx, action; 
   PRUint32 offset;
-  PRUint32 newOffset,newCursorOffset;
+  PRUint32 newOffset;
   nsAutoString theText;
   PRInt32 lookupResult;
   nsAutoString data, pasteContext, pasteInfo, error;       

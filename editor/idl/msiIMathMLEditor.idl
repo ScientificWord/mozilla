@@ -22,6 +22,7 @@ interface msiIMathMLEditor : nsISupports
   void InsertRoot();
   void InsertSymbol(in unsigned long symbol);
   void InsertMathname(in DOMString name);
+  void InsertMathunit(in DOMString name);
   void InsertEngineFunction(in DOMString name);
   void InsertFence(in DOMString open,
                    in DOMString close);
