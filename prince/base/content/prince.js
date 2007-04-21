@@ -739,25 +739,4 @@ function toggleSidebar(aCommandID, forceOpen) {
 }
 
 
-// Some utility function for the use of macros and autosubstitute
 
-function insertMathSymbol( s )
-{
-//  var editorElement = document.getElementById("content-frame");
-//  var editor = msiGetEditor(editorElement);
-//  var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-  doParamCommand('cmd_MSIsymbolCmd',s);
-}
-
-function insertText ( textString )
-{
-  var editorElement = document.getElementById("content-frame");
-  var editor = msiGetEditor(editorElement);
-  var plaintextEditor = editor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-  plaintextEditor.insertText( textString);
-}
-
-function yell ( textString )
-{
-  alert(textString);
-}
