@@ -802,7 +802,27 @@ msiEditingManager::InsertMathname(nsIEditor* editor,
   {
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateMathname(editor, mathname, flags, mathmlElement);
+    res = msiUtils::CreateMathname(editor, mathname, flags, PR_FALSE, mathmlElement);
+    if (NS_SUCCEEDED(res) && mathmlElement)
+      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
+  }
+  return res;
+}                                                 
+
+NS_IMETHODIMP
+msiEditingManager::InsertMathunit(nsIEditor* editor,
+                                  nsISelection * selection,
+                                  nsIDOMNode* node, 
+                                  PRUint32 offset,
+                                  const nsAString & mathunit)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMathname");
+  if (editor && selection && node)
+  {
+    nsCOMPtr<nsIDOMElement> mathmlElement;
+    PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+    res = msiUtils::CreateMathname(editor, mathunit, flags, PR_TRUE, mathmlElement);
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
   }

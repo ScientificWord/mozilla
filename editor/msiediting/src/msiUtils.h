@@ -174,6 +174,7 @@ public:
   static nsresult CreateMathname(nsIEditor * editor,
                                  const nsAString & name,
                                  PRUint32 & flags,
+                                 PRBool isUnit,
                                  nsCOMPtr<nsIDOMElement> & mathmlElement);
 
   static nsresult CreateEngineFunction(nsIEditor * editor,

@@ -154,6 +154,17 @@ interface msiIEditingManager : nsISupports
                       in PRUint32 offset,
                       in DOMString mathname);
                       
+                   
+  /**
+   * Call insertMathunit to create a mathunit object (m, in, sec etc) from the 
+   * string mathunit and insert based on node and offset.
+  */
+  void insertMathunit(in nsIEditor editor,
+                      in nsISelection selection,
+                      in nsIDOMNode node,
+                      in PRUint32 offset,
+                      in DOMString mathunit);
+                      
   /**
    * Call insertEngineFunction to create a mathname object which is an engine function,  
    * string mathname and insert based on node and offset.
