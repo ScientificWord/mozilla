@@ -11,14 +11,18 @@
   <sub ctx="text" tp="subst"><pattern>|^#</pattern><data>&#x2191;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>|v#</pattern><data>&#x2193;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>...</pattern><data>&#x2026;</data><context/><info>0,0</info></sub>
-  <sub ctx="text" tp="sc"><pattern>.yell.</pattern><data>msiGoDoCommand('cmd_delete');yell('Hey!');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.spell.</pattern><data>msiGoDoCommand('cmd_delete');msiGoDoCommand('cmd_spelling');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.it.</pattern><data>msiGoDoCommand('cmd_delete');msiDoStatefulCommand('cmd_texttag','it');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.bd.</pattern><data>msiGoDoCommand('cmd_delete');msiDoStatefulCommand('cmd_texttag','bold');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.em.</pattern><data>msiGoDoCommand('cmd_delete');msiDoStatefulCommand('cmd_texttag','em');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.sf.</pattern><data>msiGoDoCommand('cmd_delete');msiDoStatefulCommand('cmd_texttag','sf');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.lg.</pattern><data>msiGoDoCommand('cmd_delete');msiDoStatefulCommand('cmd_texttag','large');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.Lg.</pattern><data>msiGoDoCommand('cmd_delete');msiDoStatefulCommand('cmd_texttag','Large');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.LG.</pattern><data>msiGoDoCommand('cmd_delete');msiDoStatefulCommand('cmd_texttag','LARGE');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.preview.</pattern><data>msiGoDoCommand('cmd_delete');printTeX(true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.yell.</pattern><data>yell('Hey!');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.spell.</pattern><data>checkSpelling();</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.preview.</pattern><data>previewPDF();</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.it.</pattern><data>toggleTextTag('it');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.bd.</pattern><data>toggleTextTag('bold');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.em.</pattern><data>toggleTextTag('em');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.sf.</pattern><data>toggleTextTag('sf');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.lg.</pattern><data>toggleTextTag('large');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.Lg.</pattern><data>toggleTextTag('Large');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.LG.</pattern><data>toggleTextTag('LARGE');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.sec.</pattern><data>insertSectionTag('section');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.tit.</pattern><data>insertParaTag('title');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertSectionTag('author');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.addr.</pattern><data>insertParaTag('address');</data></sub>
 </subs>
