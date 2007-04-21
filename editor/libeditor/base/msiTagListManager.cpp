@@ -954,7 +954,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
       firstNode->GetParentNode(getter_AddRefs(parentNode));
       rv = firstNode->CloneNode(PR_FALSE, getter_AddRefs(newNode));
       nsCOMPtr<nsIDOMNSHTMLElement> firstElement(do_QueryInterface(newNode));
-      firstElement->SetInnerHTML(strContents);
+      if (firstElement) firstElement->SetInnerHTML(strContents);
 //      NS_ADDREF((nsIDOMNode *)newNode);
       meditor->ReplaceNode(newNode, firstNode, parentNode);
       meditor->MarkNodeDirty(newNode);
