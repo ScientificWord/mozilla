@@ -806,6 +806,19 @@ function insertmathname(name, editorElement)
   } 
   catch (e) {}
 }
+function insertmathunit(name, editorElement) 
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
+  try 
+  {
+    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    mathmlEditor.InsertMathunit(name);
+    editorElement.contentWindow.focus();
+  } 
+  catch (e) {}
+}
 
 function insertenginefunction(name, editorElement) 
 {

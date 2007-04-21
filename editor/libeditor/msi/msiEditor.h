@@ -59,9 +59,9 @@ protected:
   
 protected:
   nsCOMPtr<msiIEditingManager> m_msiEditingMan;
-  static nsIRangeUtils * m_rangeUtils;
   nsCOMPtr<nsIDOMEventListener> m_mouseMotionListener;
-  nsCOMPtr<msiIAutosub> m_autosub;
+  static nsCOMPtr<nsIRangeUtils> m_rangeUtils;
+  static nsCOMPtr<msiIAutosub> m_autosub;
   
   
   friend class msiEditorMouseListener;
@@ -98,6 +98,8 @@ nsresult InsertSymbolEx(nsISelection * aSelection, nsIDOMNode * aNode,
                         PRInt32 aOffset, PRUint32 aSymbol);
 nsresult InsertMathnameEx(nsISelection * aSelection, nsIDOMNode * aNode, 
                            PRInt32 aOffset, const nsAString & aMathname);
+nsresult InsertMathunitEx(nsISelection * aSelection, nsIDOMNode * aNode, 
+                           PRInt32 aOffset, const nsAString & aMathunit);
 nsresult InsertEngineFunctionEx(nsISelection * aSelection, nsIDOMNode * aNode, 
                                 PRInt32 aOffset, const nsAString & aName);
 nsresult InsertMath(PRBool isDisplay);
