@@ -40,10 +40,11 @@ function doNew() {
              createInstance(Components.interfaces.nsIFilePicker);
   fp.defaultExtension = ".shl";
   var dir1 =dsprops.get("resource:app", Components.interfaces.nsIFile);
+  dir1.append("res");
   dir1.append("shells");;
   fp.displayDirectory = dir1;
   fp.init(window, "Open Shell File", Components.interfaces.nsIFilePicker.modeOpen);
-  fp.appendFilter("Shell Files","*.xhtml; *.xht; *.shl");
+  fp.appendFilter("Shell Files","*.shl");
   fp.appendFilters(Components.interfaces.nsIFilePicker.filterText);
   fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
 

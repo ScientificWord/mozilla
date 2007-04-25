@@ -10,7 +10,8 @@ pref("nglayout.debug.disable_xul_fastload", true);
 
 pref("javascript.enabled",                  true);
 
-
+pref("swp.defaultShell", "c:\\prince2\\obj-Prince\\dist\\xpi-stage\\prince\\res\\shells\\article\\LaTeXArticleShell.swdppp\\LaTeXArticleShell.shl");
+pref("swp.prefDocumentDir", "c:\\documents and settings\\barry\\application data\\mackichan software, inc\\scientific workplace\\swp docs");
 pref("editor.author",                       "");
 
 pref("editor.text_color",                   "#000000");
