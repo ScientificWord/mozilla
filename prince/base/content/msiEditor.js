@@ -840,12 +840,20 @@ function msiSetFocusOnStartup(editorElement)
   } catch(e) {}
 }
 
+
+function isShell (filename)
+{
+  var re = /\.shl\s*$/i;
+  return re.test(filename);
+}
+
 function EditorStartupForEditorElement(editorElement)
 {
 
 //  msiDumpWithID("Entering EditorStartupForEditorElement for element [@].\n", editorElement);
   var is_HTMLEditor = msiIsHTMLEditor(editorElement);
   var is_topLevel = msiIsTopLevelEditor(editorElement);
+  var prefs = GetPrefs();
 
   editorElement.mPreviousNonSourceDisplayMode = 0;
   editorElement.mEditorDisplayMode = -1;
@@ -888,7 +896,6 @@ function EditorStartupForEditorElement(editorElement)
   var cmd = document.getElementById("cmd_highlight");
   if (cmd)
   {
-    var prefs = GetPrefs();
     var useCSS = prefs.getBoolPref("editor.use_css");
     if (!useCSS && is_HTMLEditor)
     {
@@ -897,15 +904,75 @@ function EditorStartupForEditorElement(editorElement)
   }
 
   // Get url for editor content and load it.
-  // the editor gets instantiated by the edittingSession when the URL has finished loading.
+  // the editor gets instantiated by the editingSession when the URL has finished loading.
   try {
     var theArgs = document.getElementById("args");
     var url = "";
+    var docname = "";
+    var docdir;
     var charset = "";
+    var leafname = "";
     if (theArgs)
     {
-      url = document.getElementById("args").getAttribute("value");
-      charset = document.getElementById("args").getAttribute("charset");
+      docname = document.getElementById("args").getAttribute("value");
+      charset = document.getElementById("args").getAttribute("charset")
+    };
+    if (docname.length == 0)
+    {
+       docname=prefs.getCharPref("swp.defaultShell");
+    } 
+    if (isShell(docname))
+    {
+      // copy the shell to the default document area
+      try
+      {
+        var docdirname = prefs.getCharPref("swp.prefDocumentDir");
+        docdir = Components.classes["@mozilla.org/file/local;1"].
+            createInstance(Components.interfaces.nsILocalFile);
+        docdir.initWithPath(docdirname);
+        if (true != docdir.exists())
+          docdir.create(1, 0755);
+      }
+      catch (e)
+      {
+//        var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+//        docdir = dsprops.get("UAppDir", Components.interfaces.nsILocalFile);
+//        docdir.append("SWP docs");
+      }
+      // find n where untitledn.swd is the first unused file name in that folder
+      try
+      {
+        var shelldir = Components.classes["@mozilla.org/file/local;1"].
+            createInstance(Components.interfaces.nsILocalFile);
+        shelldir.initWithPath(docname);
+        leafname = shelldir.leafName;
+        // temporarily, docname points to a file in the directory rather than to the directory
+        // itself. We now go up to the directory.
+        shelldir = shelldir.parent;
+        var filename = 'untitled';
+        var n = 1;
+        while (n < 100)
+        {
+          try {
+            shelldir.copyTo(docdir,filename+n+".swd");
+            break;
+          }
+          catch(e) {
+            n++;
+          }
+        }
+      }// at this point, shelldir is .../untitledxxx.swd
+      catch(e)
+      {
+        dump("Unable to open document for editing\n");
+      }
+      // set the url for the xhtml portion of the document
+      docdir.append(filename+n+".swd");
+      docdir.append(leafname); // this is the copied shell file
+      docdir.moveTo(null, filename+n+".xhtml"); // name it with the same root as the directory
+      url = docdir.path;
+      
+      // set document title when??
     }
 //    var contentViewer = GetCurrentEditorElement().docShell.contentViewer;
     var contentViewer = null;
