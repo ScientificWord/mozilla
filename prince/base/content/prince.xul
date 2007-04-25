@@ -72,7 +72,7 @@
   </commandset>
   
   <broadcasterset id="broadcasterset"/>
-  <broadcaster id="args" value="about:blank"/>
+  <broadcaster id="args" value=""/>
   <broadcaster id="canPrint"/>
   
   <broadcasterset id="mainBroadcasterSet">
