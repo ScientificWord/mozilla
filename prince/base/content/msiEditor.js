@@ -915,6 +915,12 @@ function EditorStartupForEditorElement(editorElement)
     if (theArgs)
     {
       docname = document.getElementById("args").getAttribute("value");
+      docname = docname.replace("file:///","");
+      docname = docname.replace("file://","");
+  // for Windows
+#ifdef XP_WIN32
+      docname = docname.replace("/","\\","g");
+#endif
       charset = document.getElementById("args").getAttribute("charset")
     };
     if (docname.length == 0)
