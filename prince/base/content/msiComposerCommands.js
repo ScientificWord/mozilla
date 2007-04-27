@@ -1078,8 +1078,9 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
   if (aDoSaveAsText)
     fp.appendFilters(msIFilePicker.filterText);
   else
-    fp.appendFilters(msIFilePicker.filterHTML);
+    fp.appendFilter("SWP Documents","*.swd");
   fp.appendFilters(msIFilePicker.filterAll);
+//  msiSetFilePickerDirectory(fp, "swd");
 
   // now let's actually set the filepicker's suggested filename
   var suggestedFileName = msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement);
@@ -1103,6 +1104,8 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
     if (isLocalFile)
     {
       var fileLocation = fileHandler.getFileFromURLSpec(aDocumentURLString); // this asserts if url is not local
+      // in SWP we go up to the enclosing directory
+      if (fileLocation.isFile()) fileLocation = fileLocation.parent;
       parentLocation = fileLocation.parent;
     }
     if (parentLocation)
@@ -1962,7 +1965,12 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
 	    replacing = (dialogResult.filepickerClick == msIFilePicker.returnReplace);
 	    urlstring = dialogResult.resultingURIString;
 	    tempLocalFile = dialogResult.resultingLocalFile;
- 
+      if (tempLocalFile)
+      {
+        localFileLeaf = tempLocalFile.leafName;
+        localFileLeaf = localFileLeaf.replace(".swd",".xhtml");
+        tempLocalFile.append(localFileLeaf);
+      }
       // update the new URL for the webshell unless we are saving a copy
       if (!aSaveCopy)
         doUpdateURI = true;
