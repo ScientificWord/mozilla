@@ -742,7 +742,7 @@ function msiEditorDocumentObserver(editorElement)
 //        }
 //Comment this one out for now        initFastCursorBar();
         this.doInitFastCursor();
-
+        UpdateWindowTitle();
         // Add mouse click watcher if right type of editor
         if (msiIsHTMLEditor(this.mEditorElement))
         {
@@ -854,6 +854,7 @@ function EditorStartupForEditorElement(editorElement)
   var is_HTMLEditor = msiIsHTMLEditor(editorElement);
   var is_topLevel = msiIsTopLevelEditor(editorElement);
   var prefs = GetPrefs();
+  var filename = "untitled";
 
   editorElement.mPreviousNonSourceDisplayMode = 0;
   editorElement.mEditorDisplayMode = -1;
@@ -912,6 +913,7 @@ function EditorStartupForEditorElement(editorElement)
     var docdir;
     var charset = "";
     var leafname = "";
+    var changename = false;
     if (theArgs)
     {
       docname = document.getElementById("args").getAttribute("value");
@@ -936,7 +938,7 @@ function EditorStartupForEditorElement(editorElement)
         docdir = Components.classes["@mozilla.org/file/local;1"].
             createInstance(Components.interfaces.nsILocalFile);
         docdir.initWithPath(docdirname);
-        if (true != docdir.exists())
+        if (!valueOf(docdir.exists()))
           docdir.create(1, 0755);
       }
       catch (e)
@@ -955,7 +957,6 @@ function EditorStartupForEditorElement(editorElement)
         // temporarily, docname points to a file in the directory rather than to the directory
         // itself. We now go up to the directory.
         shelldir = shelldir.parent;
-        var filename = 'untitled';
         var n = 1;
         while (n < 100)
         {
@@ -978,8 +979,14 @@ function EditorStartupForEditorElement(editorElement)
       docdir.moveTo(null, filename+n+".xhtml"); // name it with the same root as the directory
       url = docdir.path;
       
-      // set document title when??
+      // set document title when?? It is too early now, so we will save the name in the XUL
+      document.getElementById("filename").value = filename+n;
     }
+    else
+    {
+      url = docname;
+      document.getElementById("filename").value = GetLastDirectory(url);
+    }  
 //    var contentViewer = GetCurrentEditorElement().docShell.contentViewer;
     var contentViewer = null;
     if (editorElement.docShell)
@@ -992,7 +999,9 @@ function EditorStartupForEditorElement(editorElement)
     }
     msiEditorLoadUrl(editorElement, url);
 //    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
-  } catch (e) {}
+  } catch (e) {
+    dump(e + "\n");
+  }
 }
 
 function msiEditorLoadUrl(editorElement, url)
