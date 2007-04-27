@@ -14,9 +14,9 @@ function doOpen() {
   var fp = Components.classes["@mozilla.org/filepicker;1"].
              createInstance(Components.interfaces.nsIFilePicker);
   fp.init(window, "Open Scientific WorkPlace File", Components.interfaces.nsIFilePicker.modeOpen);
-  fp.appendFilters("SWP Documents, ","*.swd");
+  msiSetFilePickerDirectory(fp, "swd");
+  fp.appendFilter("SWP Documents","*.swd");
   fp.appendFilter("XHTML Files","*.xhtml; *.xht");
-  fp.appendFilters(Components.interfaces.nsIFilePicker.filterText);
   fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
 
   try {
@@ -29,15 +29,48 @@ function doOpen() {
   if (fp.file && fp.file.path.length > 0) {
     dump("Ready to edit page: " + fp.fileURL.spec +"\n");
     try {
-      msiEditPage(fp.fileURL.spec, window, false);
+      var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+      documentfile.initWithPath( fp.file.path );
+      var directory;
+      var path;
+      if (documentfile.isDirectory())
+      {
+        directory = documentfile.path;
+        // we need to find the main xhtml file in the directory. We look first for the one with
+        // the same name as the directory.
+        var re = /([a-zA-Z0-9% ]+)\.[a-zA-Z0-9]+\//;
+        var match = re.exec(directory);
+        if (match.count() > 1) dirbase = match[1];
+        var dir2 = directory.clone;
+        dir2.append(dirbase + ".xhtml");
+        if (dir2.exists()) path = dir2.path;
+        else
+        {
+          dir2 = directory.clone;
+          dir2.append("main.xhtml");
+          if (dir2.exists()) path = dir2.path;
+        }
+      }
+      else 
+      {
+        path = documentfile.path;
+        directory = documentfile.parent.path;
+        documentfile = documentfile.parent;
+      }
+      /* we should copy the current directory to a .bak name */
+      msiCopyDirectoryToBak(documentfile);
+      msiEditPage(path, window, false);
+      msiSaveFilePickerDirectoryEx(fp, directory, "swd");
     } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
-} }
+  } 
+}
 
 
 function doNew() {
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
   var fp = Components.classes["@mozilla.org/filepicker;1"].
              createInstance(Components.interfaces.nsIFilePicker);
+  msiSetFilePickerDirectory(fp, "shl");
   fp.defaultExtension = ".shl";
   var dir1 =dsprops.get("resource:app", Components.interfaces.nsIFile);
   dir1.append("res");
@@ -59,8 +92,10 @@ function doNew() {
     dump("Ready to edit shell: " + fp.fileURL.spec +"\n");
     try {
       msiEditPage(fp.fileURL.spec, window, false);
+//      msiSaveFilePickerDirectoryEx(fp, directory, "swd");
     } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
-} }
+  } 
+}
 
 function GetCurrentEditor() {
   var editor;
