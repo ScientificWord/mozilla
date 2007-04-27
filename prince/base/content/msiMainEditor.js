@@ -220,18 +220,21 @@ function msiEditorCanClose(editorElement)
 function UpdateWindowTitle()
 {
   try {
-    var windowTitle = GetDocumentTitle();
+    var windowTitle = msiGetDocumentTitle();
     if (!windowTitle)
       windowTitle = GetString("untitled");
 
     // Append just the 'leaf' filename to the Doc. Title for the window caption
+    // We actually use the penultimate directory name, the one with .swd extension
 //    var docUrl = GetDocumentUrl();
     var editorElement = msiGetTopLevelEditorElement();
     var docUrl = msiGetEditorURL(editorElement);
     if (docUrl && !IsUrlAboutBlank(docUrl))
     {
       var scheme = GetScheme(docUrl);
-      var filename = GetFilename(docUrl);
+      var filename  = GetLastDirectory(docUrl);
+      if (!filename || filename.length == 0)
+        filename = GetFilename(docUrl);
       if (filename)
         windowTitle += " [" + scheme + ":/.../" + filename + "]";
 
@@ -240,9 +243,12 @@ function UpdateWindowTitle()
     }
     // Set window title with " - Composer" appended
     var xulWin = document.documentElement;
-    window.title = windowTitle + xulWin.getAttribute("titlemenuseparator") + 
+    document.title = windowTitle + xulWin.getAttribute("titlemenuseparator") + 
                    xulWin.getAttribute("titlemodifier");
-  } catch (e) { dump(e); }
+  } catch (e) 
+  {
+    dump(e+"\n"); 
+  }
 }
 
 function BuildRecentFilesMenu()
@@ -302,7 +308,7 @@ function SaveRecentFilesPrefs()
 
   if (historyCount && !IsUrlAboutBlank(curUrl) &&  GetScheme(curUrl) != "data")
   {
-    titleArray.push(GetDocumentTitle());
+    titleArray.push(msiGetDocumentTitle());
     urlArray.push(curUrl);
   }
 
