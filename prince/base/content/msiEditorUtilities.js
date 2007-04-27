@@ -2241,6 +2241,8 @@ function msiGetParentEditorElementForDialog(dialogWindow)
 
 function msiGetDocumentTitle(editorElement)
 {
+  var title = document.getElementById("filename").value;
+  if (title.length > 0) return title;
   try {
     return new XPCNativeWrapper(msiGetEditor(editorElement).document, "title").title;
   } catch (e) {}
@@ -2250,16 +2252,17 @@ function msiGetDocumentTitle(editorElement)
 
 function msiSetDocumentTitle(editorElement, title)
 {
-
+  // if we changed the name of a shell document, we saved the filename in 
+  // a broadcaster with id="filename"
+//  var newtitle = document.getElementById("filename").value;
+//  if (newtitle.length > 0) title = newtitle;
   try {
     msiGetEditor(editorElement).setDocumentTitle(title);
 
     // Update window title (doesn't work if called from a dialog)
     if ("UpdateWindowTitle" in window)
     {
-      alert("3");
       window.UpdateWindowTitle();
-      alert("4");
     }
   } catch (e) {}
 }
@@ -2515,6 +2518,49 @@ function msiSaveFilePickerDirectory(filePicker, fileType)
     filePicker.displayDirectory = window.gFilePickerDirectory;
 
   window.gFilePickerDirectory = null;
+}
+
+
+// Save the directory of the selected file to prefs (Extended so we can choose a parent of the selected file)
+function msiSaveFilePickerDirectoryEx(filePicker, path, fileType)
+{
+  if (filePicker && path)
+  {
+    try {
+      var prefBranch = GetPrefs();
+
+      var fileDir = Components.classes["@mozilla.org/file/local;1"].
+          createInstance(Components.interfaces.nsILocalFile);
+      fileDir.initWithPath(path);
+      fileDir = fileDir.parent.QueryInterface(Components.interfaces.nsILocalFile);
+
+      if (prefBranch)
+       prefBranch.setComplexValue("editor.lastFileLocation."+fileType, Components.interfaces.nsILocalFile, fileDir);
+    
+      var prefsService = GetPrefsService();
+        prefsService.savePrefFile(null);
+    } catch (e) {}
+  }
+
+  // Restore the directory used before SetFilePickerDirectory was called;
+  // This reduces interference with Browser and other module directory defaults
+  if ("gFilePickerDirectory" in window)
+    filePicker.displayDirectory = window.gFilePickerDirectory;
+
+  window.gFilePickerDirectory = null;
+}
+
+function msiCopyDirectoryToBak( directory ) // an nsILocalFile
+{
+  try {
+    var newdirname = directory.leafName;
+    newdirname = newdirname.replace(".swd", ".bak");
+    var newdir = directory.parent.clone();
+    newdir.append(newdirname);
+    if (newdir.exists()) newdir.remove(true);
+    directory.copyTo( null, newdirname );
+  }
+  catch (e) {}
 }
 
 function GetDefaultBrowserColors()
@@ -2847,6 +2893,36 @@ function GetFilename(urlspec)
     }
   } catch (e) {}
 
+  return filename ? filename : "";
+}
+
+function GetLastDirectory(urlspec)
+{
+  if (!urlspec || IsUrlAboutBlank(urlspec))
+    return "";
+
+  var IOService = msiGetIOService();
+  if (!IOService)
+    return "";
+
+  var filename;
+
+  try {
+    var uri = IOService.newURI(urlspec, null, null);
+    if (uri)
+    {
+      var url = uri.QueryInterface(Components.interfaces.nsIURL);
+      if (url)
+        filename = url.directory;
+    }
+  } catch (e) {}
+
+  var re = /[a-zA-Z0-9\%\.]+\/$/;
+  try {
+    filename = re.exec(filename)[0];
+    filename = filename.substr(0,filename.length - 1);
+  }
+  catch(e) { filename = ""; }
   return filename ? filename : "";
 }
 
