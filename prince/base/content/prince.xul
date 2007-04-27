@@ -73,6 +73,7 @@
   
   <broadcasterset id="broadcasterset"/>
   <broadcaster id="args" value=""/>
+  <broadcaster id="filename" value=""/>
   <broadcaster id="canPrint"/>
   
   <broadcasterset id="mainBroadcasterSet">
