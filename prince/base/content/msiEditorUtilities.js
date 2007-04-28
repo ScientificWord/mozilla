@@ -2554,7 +2554,7 @@ function msiCopyDirectoryToBak( directory ) // an nsILocalFile
 {
   try {
     var newdirname = directory.leafName;
-    newdirname = newdirname.replace(".swd", ".bak");
+    newdirname = newdirname.replace(".sci", ".bak");
     var newdir = directory.parent.clone();
     newdir.append(newdirname);
     if (newdir.exists()) newdir.remove(true);

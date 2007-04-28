@@ -13,7 +13,7 @@ include $(topsrcdir)/config/rules.mk
 SHELL_RESOURCES := $(wildcard	$(srcdir)/*.shl)
 
 libs::	$(SHELL_RESOURCES)
-	$(INSTALL)	"$(SHELL_RESOURCES)"	$(FINAL_TARGET)/res/shells/article/LaTeXArticleShell.swd
+	$(INSTALL)	"$(SHELL_RESOURCES)"	$(FINAL_TARGET)/res/shells/article/LaTeXArticleShell.sci
 
 
 

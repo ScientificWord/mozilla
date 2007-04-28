@@ -225,7 +225,7 @@ function UpdateWindowTitle()
       windowTitle = GetString("untitled");
 
     // Append just the 'leaf' filename to the Doc. Title for the window caption
-    // We actually use the penultimate directory name, the one with .swd extension
+    // We actually use the penultimate directory name, the one with .sci extension
 //    var docUrl = GetDocumentUrl();
     var editorElement = msiGetTopLevelEditorElement();
     var docUrl = msiGetEditorURL(editorElement);
