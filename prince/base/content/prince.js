@@ -14,8 +14,8 @@ function doOpen() {
   var fp = Components.classes["@mozilla.org/filepicker;1"].
              createInstance(Components.interfaces.nsIFilePicker);
   fp.init(window, "Open Scientific WorkPlace File", Components.interfaces.nsIFilePicker.modeOpen);
-  msiSetFilePickerDirectory(fp, "swd");
-  fp.appendFilter("SWP Documents","*.swd");
+  msiSetFilePickerDirectory(fp, "sci");
+  fp.appendFilter("SWP Documents","*.sci");
   fp.appendFilter("XHTML Files","*.xhtml; *.xht");
   fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
 
@@ -60,7 +60,7 @@ function doOpen() {
       /* we should copy the current directory to a .bak name */
       msiCopyDirectoryToBak(documentfile);
       msiEditPage(path, window, false);
-      msiSaveFilePickerDirectoryEx(fp, directory, "swd");
+      msiSaveFilePickerDirectoryEx(fp, directory, "sci");
     } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
   } 
 }
@@ -92,7 +92,7 @@ function doNew() {
     dump("Ready to edit shell: " + fp.fileURL.spec +"\n");
     try {
       msiEditPage(fp.fileURL.spec, window, false);
-//      msiSaveFilePickerDirectoryEx(fp, directory, "swd");
+//      msiSaveFilePickerDirectoryEx(fp, directory, "sci");
     } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
   } 
 }
@@ -488,7 +488,7 @@ function currentFileName()
   var filename = "";
   if (docUrl && !IsUrlAboutBlank(docUrl))
     filename = GetFilename(docUrl);
-  // BBM todo: we should check to see if the parent is a .swd directory, and if so, use that name  
+  // BBM todo: we should check to see if the parent is a .sci directory, and if so, use that name  
   return filename;
 }
 
