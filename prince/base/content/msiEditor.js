@@ -943,11 +943,15 @@ function EditorStartupForEditorElement(editorElement)
       }
       catch (e)
       {
-//        var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-//        docdir = dsprops.get("UAppDir", Components.interfaces.nsILocalFile);
-//        docdir.append("SWP docs");
+        var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+        docdir = dsprops.get("AppData", Components.interfaces.nsILocalFile);
+        // depending on the app
+        docdir.append("Scientific WorkPlace");
+        // docdir.append("Scientific Word");
+        // docdir.append("Scientific Notebook");
+        docdir.append("Docs");
       }
-      // find n where untitledn.swd is the first unused file name in that folder
+      // find n where untitledn.sci is the first unused file name in that folder
       try
       {
         var shelldir = Components.classes["@mozilla.org/file/local;1"].
@@ -961,20 +965,20 @@ function EditorStartupForEditorElement(editorElement)
         while (n < 100)
         {
           try {
-            shelldir.copyTo(docdir,filename+n+".swd");
+            shelldir.copyTo(docdir,filename+n+".sci");
             break;
           }
           catch(e) {
             n++;
           }
         }
-      }// at this point, shelldir is .../untitledxxx.swd
+      }// at this point, shelldir is .../untitledxxx.sci
       catch(e)
       {
         dump("Unable to open document for editing\n");
       }
       // set the url for the xhtml portion of the document
-      docdir.append(filename+n+".swd");
+      docdir.append(filename+n+".sci");
       docdir.append(leafname); // this is the copied shell file
       docdir.moveTo(null, filename+n+".xhtml"); // name it with the same root as the directory
       url = docdir.path;
