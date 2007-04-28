@@ -1078,9 +1078,9 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
   if (aDoSaveAsText)
     fp.appendFilters(msIFilePicker.filterText);
   else
-    fp.appendFilter("SWP Documents","*.swd");
+    fp.appendFilter("SWP Documents","*.sci");
   fp.appendFilters(msIFilePicker.filterAll);
-//  msiSetFilePickerDirectory(fp, "swd");
+//  msiSetFilePickerDirectory(fp, "sci");
 
   // now let's actually set the filepicker's suggested filename
   var suggestedFileName = msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement);
@@ -1968,7 +1968,7 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
       if (tempLocalFile)
       {
         localFileLeaf = tempLocalFile.leafName;
-        localFileLeaf = localFileLeaf.replace(".swd",".xhtml");
+        localFileLeaf = localFileLeaf.replace(".sci",".xhtml");
         tempLocalFile.append(localFileLeaf);
       }
       // update the new URL for the webshell unless we are saving a copy
