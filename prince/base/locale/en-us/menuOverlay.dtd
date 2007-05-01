@@ -84,6 +84,16 @@
 <!ENTITY viewMenu.accesskey "V" >
 <!ENTITY viewShowHideMenu.label "Show/Hide" >
 <!ENTITY viewShowHideMenu.accesskey "S" >
+<!ENTITY viewInvisibles.label "Invisibles" >
+<!ENTITY viewInvisibles.accesskey "I" >
+<!ENTITY viewHelperLines.label "Helper lines" >
+<!ENTITY viewHelperLines.accesskey "H" >
+<!ENTITY viewInputBoxes.label "Input boxes" >
+<!ENTITY viewInputBoxes.accesskey "p" >
+<!ENTITY viewIndexEntries.label "Index Entries" >
+<!ENTITY viewIndexEntries.accesskey "x" >
+<!ENTITY viewMarkers.label "Markers" >
+<!ENTITY viewMarkers.accesskey "M" >
 
 <!-- For a "Paste" submenu when more than 1 
      clipboard formats are available -->
