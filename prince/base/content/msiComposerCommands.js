@@ -88,6 +88,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_insertSubstructure", msiInsertSubstructureCommand);
   commandTable.registerCommand("cmd_documentInfo",       msiDocumentInfoCommand);
   commandTable.registerCommand("cmd_macrofragment", msiMacroFragmentCommand);
+  commandTable.registerCommand("cmd_viewInvisibles", msiViewInvisiblesCommand);
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -290,6 +291,10 @@ function msiGoUpdateCommandState(command, editorElement)
       case "cmd_othertag":
         msiPokeTagStateUI(command, params);
         break;
+
+      case "cmd_viewInvisibles":
+        updateViewMenuFromEditor(editorElement);
+      break;
 
       case "cmd_decreaseZIndex":
       case "cmd_increaseZIndex":
@@ -608,6 +613,53 @@ function doTagKeyCommand(event, commandID, value)
     if (event.shiftKey) getPrevTagWindow(commandID).focus();
     else getNextTagWindow(commandID).focus();
   } 
+}
+
+function getViewSettingsFromViewMenu()
+{
+  var viewSettings = new msiViewSettings(0);
+  var invisChoices = [["viewInvisibles","showInvisibles"], ["viewHelperLines","showHelperLines"], 
+                      ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
+                      ["viewMarkers","showMarkers"]];
+  for (var ix = 0; ix < invisChoices.length; ++ix)
+  {
+    var menuItem = document.getElementById(invisChoices[ix][0]);
+    if (menuItem && (menuItem.getAttribute("checked") == "true"))
+      viewSettings[invisChoices[ix][1]] = true;
+    else
+      viewSettings[invisChoices[ix][1]] = false;
+  }
+  return viewSettings;
+}
+
+function updateEditorFromViewMenu(editorElement)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var viewSettings = getViewSettingsFromViewMenu();
+  dump("Calling msiEditorDoShowInvisibles, with viewSettings = [invis: " + viewSettings.showInvisibles + ", helperLines: " + viewSettings.showHelperLines + ", inputBoxes: " + viewSettings.showInputBoxes + ", indexEntries: " + viewSettings.showIndexEntries + ", markers: " + viewSettings.showMarkers + "]\n");
+  msiEditorDoShowInvisibles(editorElement, viewSettings);
+}
+
+function updateViewMenuFromEditor(editorElement)
+{
+  if (!("viewSettings" in editorElement) || (editorElement.viewSettings == null))
+    return;  //No settings in the editor - leave menu as is.
+
+  var invisChoices = [["viewInvisibles","showInvisibles"], ["viewHelperLines","showHelperLines"], 
+                      ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
+                      ["viewMarkers","showMarkers"]];
+  for (var ix = 0; ix < invisChoices.length; ++ix)
+  {
+    var menuItem = document.getElementById(invisChoices[ix][0]);
+    if (menuItem != null)
+    {
+      if (editorElement.viewSettings[invisChoices[ix][1]])
+        menuItem.setAttribute("checked", "true");
+      else
+        menuItem.setAttribute("checked", "false");
+    }
+  }
 }
 
 ////-----------------------------------------------------------------------------------
@@ -4513,6 +4565,8 @@ function msiDocumentInfo(editorElement)
       dlgInfo.printOptions.theOptions = msiGetDefaultPrintOptions();  //in msiEditorUtilities.js
     else
       dlgInfo.printOptions.theOptions = new msiPrintOptions(theFlags);  //in msiEditorUtilities.js
+    if (dlgInfo.printOptions.theOptions.useCurrViewSettings)
+      dlgInfo.printOptions.theOptions.reflectViewSettings(this.mEditorElement);
     dlgInfo.printOptions.theOptions.useDefaultPrintOptions = bUseDefaultPrintOptions;
 
     dlgInfo.printOptions.zoomPercentage = 100;
@@ -4585,7 +4639,7 @@ function msiDocumentInfo(editorElement)
       dlgInfo.saveOptions.useRelativeGraphicsPaths = true;
 
     if (("viewsettings" in this.saveSettings) && this.saveSettings.viewsettings != null)
-      dlgInfo.saveOptions.storeViewSettings = (this.saveSettings.viewsettings.contents.valueOf() != 0);
+      dlgInfo.saveOptions.storeViewSettings = true;
     else
       dlgInfo.saveOptions.storeViewSettings = false;
 
@@ -4595,7 +4649,7 @@ function msiDocumentInfo(editorElement)
       dlgInfo.saveOptions.storeViewPercent = false;
 
     if (("noteviewsettings" in this.saveSettings) && this.saveSettings.noteviewsettings != null)
-      dlgInfo.saveOptions.storeNoteViewSettings = (this.saveSettings.noteviewsettings.contents.valueOf() != 0);
+      dlgInfo.saveOptions.storeNoteViewSettings = true;
     else
       dlgInfo.saveOptions.storeNoteViewSettings = false;
 
@@ -4612,13 +4666,17 @@ function msiDocumentInfo(editorElement)
       theContents = this.graphicsSaveRelativeFlag;
     this.setObjectFromData(this.saveSettings, "graphicssave", dlgInfo.saveOptions.useRelativeGraphicsPaths, "GraphicsSave", String(theContents), "comment-meta");
 
-    theContents = dlgInfo.saveOptions.storeViewSettings ? 1 : 0;
+    theContents = 1;
+    if (dlgInfo.saveOptions.storeViewSettings)
+      theContents = msiGetCurrViewSettings(this.mEditorElement).getFlags();
     this.setObjectFromData(this.saveSettings, "viewsettings", dlgInfo.saveOptions.storeViewSettings, "ViewSettings", String(theContents), "comment-meta");
 
     theContents = msiGetCurrViewPerCent(this.mEditorElement);
     this.setObjectFromData(this.saveSettings, "viewpercent", dlgInfo.saveOptions.storeViewPercent, "ViewPercent", String(theContents), "comment-meta");
 
-    theContents = dlgInfo.saveOptions.storeNoteViewSettings ? 1 : 0;
+    theContents = 1;
+    if (dlgInfo.saveOptions.storeNoteViewSettings)
+      theContents = msiGetCurrNoteViewSettings(this.mEditorElement).getFlags();
     this.setObjectFromData(this.saveSettings, "noteviewsettings", dlgInfo.saveOptions.storeNoteViewSettings, "NoteViewSettings", String(theContents), "comment-meta");
 
     theContents = GetIntPref("NoteViewPercent");
@@ -4735,6 +4793,26 @@ function msiDocumentInfo(editorElement)
     }
   };
 
+  this.getDocumentViewSettings = function()
+  {
+    if (("viewsettings" in this.saveSettings) && this.saveSettings.viewsettings != null)
+    {
+      var viewFlags = this.saveSettings.viewsettings.contents.valueOf();
+      return new msiViewSettings(viewFlags);
+    }
+    return null;
+  };
+
+  this.getDocumentNoteViewSettings = function()
+  {
+    if (("noteviewsettings" in this.saveSettings) && this.saveSettings.noteviewsettings != null)
+    {
+      var viewFlags = this.saveSettings.noteviewsettings.contents.valueOf();
+      return new msiViewSettings(viewFlags);
+    }
+    return null;
+  };
+
   this.tcidataRegExp = /tcidata[\s]*\{((?:(?:\\\})|(?:[^\}]))+)\}/i;
 	this.fullNameSyntax = /meta[\s]+.*name=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
 	this.fullContentsSyntax = /meta[\s]+.*content=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
@@ -4769,6 +4847,27 @@ var msiDocumentInfoBase =
 
 msiDocumentInfo.prototype = msiDocumentInfoBase;
 
+//-----------------------------------------------------------------------------------
+
+var msiViewInvisiblesCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+//    updateViewMenuFromEditor(editorElement);
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    updateEditorFromViewMenu(editorElement);
+  }
+
+};
 
 //-----------------------------------------------------------------------------------
 var msiObjectPropertiesCommand =

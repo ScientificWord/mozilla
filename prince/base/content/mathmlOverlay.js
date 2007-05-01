@@ -84,9 +84,9 @@ function msiSetupMSIMathMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSIoperatorsCmd",    msiOperators);
   commandTable.registerCommand("cmd_MSIdecorationsCmd",  msiDecorations);
 
-  try {
-    gMathStyleSheet = msiColorObj.Format();
-  } catch(e) { dump("Error setting up msiColorObj\n"); msiKludgeLogString("Error setting up msiColorObj\n"); }
+//  try {
+//    editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
+//  } catch(e) { dump("Error setting up msiColorObj\n"); msiKludgeLogString("Error setting up msiColorObj\n"); }
 
 // too slow for debugging.  Turn back on if you want style-correct toolbars
 //  // build symbol panels, since overlays don't seem to fire onload handlers
@@ -878,8 +878,109 @@ var msiColorObj =
     }
     res += "mi[msiclass=\"enginefunction\"] { text-decoration: underline; } ";
     res += "p[class=\"msi_passthrough\"] { padding-left: 2em; } ";
+
     return res;
   },
+
+
+//Following doesn't belong here at all. Move this functionality.
+//Additionally, implementation of hiding "helper lines" should be via putting a "not([hideHelperLines])" at the outside?
+//Probably not - just making an overriding rule.
+  FormatStyleSheet : function(editorElement)
+  {
+    if (!editorElement)
+      editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+    var theTagManager = editor ? editor.tagListManager : null;
+
+    function getParaTagList(tagManager)
+    {
+      return ["para","p","mathp"];
+    }
+    function getMarkerTagList(tagManager)
+    {
+      return ["marker"];  //what should this be?
+    }
+    function getIndexTagList(tagManager)
+    {
+      return ["indexEntry"];  //what should this be?
+    }
+    function getHelperLineSelectors(tagManager)
+    {
+      return ["mtable[border=\"0\"]", "mtable[border=\"0\"] > mtr > mtd", "mtable:not([border])", "mtable:not([border]) > mtr > mtd"];
+    }
+    function getInputBoxSelectors(tagManager)
+    {
+      return ["mi[tempinput=\"true\"]"];
+    }
+
+    var res = "data:text/css,";
+    if (this.mathColor.length > 0)
+      res += "math { color: "+this.mathColor+"; } ";
+    if (this.mathnameColor.length > 0)
+      res += "mi[msiMathname=\"true\"] { color: "+this.mathnameColor+"; } ";
+    if (this.unitColor.length > 0)
+      res += "mi[class=\"msi_unit\"], mstyle[class=\"msi_unit\"] { color: "+this.unitColor+"; font-style: normal; } ";
+    if (this.mtextColor.length > 0)
+      res += "mtext { color: "+this.mtextColor+"; } ";
+    if (this.matrixColor.length > 0) {
+      res += "mi[tempinput=\"true\"] { color: "+this.matrixColor+"; } ";
+      res += "mtable[border=\"0\"], mtable[border=\"0\"] > mtr > mtd, mtable:not([border]), mtable:not([border]) > mtr > mtd { border: 1px solid "+this.matrixColor+"; } ";
+    }
+    res += "mi[msiclass=\"enginefunction\"] { text-decoration: underline; } ";
+    res += "p[class=\"msi_passthrough\"] { padding-left: 2em; } ";
+
+    var invisColorStr = "green";
+    var paraSelectors = getParaTagList(theTagManager);
+    for (var ix = 0; ix < paraSelectors.length; ++ix)
+    {
+      if (ix > 0)
+        res += ", ";
+      res += "[showinvis=\"true\"] " + paraSelectors[ix] + ":after"
+    }
+    res +=  " {content: \"\\B6\"; display: inline; font-family: Courier New; color: " + invisColorStr + "; font-weight: bold;} ";
+
+    var markerTags = getMarkerTagList(theTagManager);
+    for (var ix = 0; ix < markerTags.length; ++ix)
+    {
+      if (ix > 0)
+        res += ", ";
+      res += "[hideMarkers=\"true\"] " + markerTags[ix];
+    }
+    res += " {display: none;} ";
+
+    var indexEntryTags = getIndexTagList(theTagManager);
+    for (var ix = 0; ix < indexEntryTags.length; ++ix)
+    {
+      if (ix > 0)
+        res += ", "
+      res += "[hideIndexEntries=\"true\"] " + indexEntryTags[ix];
+    }
+    res += " {display: none;} ";
+
+    var helperLineSelectors = getHelperLineSelectors(theTagManager);
+    for (var ix = 0; ix < helperLineSelectors.length; ++ix)
+    {
+      if (ix > 0)
+        res += ", ";
+      res += "[hideHelperLines=\"true\"] " + helperLineSelectors[ix];
+    }
+    res += " {border: 0px;} ";
+
+    var inputBoxTags = getInputBoxSelectors(theTagManager);
+    for (var ix = 0; ix < inputBoxTags.length; ++ix)
+    {
+      if (ix > 0)
+        res += ", ";
+      res += "[hideInputBoxes=\"true\"] " + inputBoxTags[ix];
+    }
+    res += " {visibility: hidden}";
+
+    return res;
+
+  },
+
+
   Init: function()
   {
     dump("\Init() not implemented!\n");
@@ -910,10 +1011,18 @@ function doColorsDlg(editorElement)
 
   try {
     editor.QueryInterface(nsIEditorStyleSheets);
-
     editor.removeOverrideStyleSheet(gMathStyleSheet);
-    gMathStyleSheet = msiColorObj.Format();
-    editor.addOverrideStyleSheet(gMathStyleSheet);
+    if (editorElement.mgMathStyleSheet != null)
+    {
+      editor.removeOverrideStyleSheet(editorElement.mgMathStyleSheet);
+      editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
+      editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
+    }
+    else
+    {
+      gMathStyleSheet = msiColorObj.Format();
+      editor.addOverrideStyleSheet(gMathStyleSheet);
+    }
   } catch (e) {
     dump("Something wrong with stylesheet mechanism\n");
   }
