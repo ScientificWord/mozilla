@@ -3100,14 +3100,86 @@ function msiGetHTMLOrCSSStyleValue(editorElement, element, attrName, cssProperty
 /************* Miscellaneous ***************/
 //Fix This!
 //Following needs to be filled in meaningfully - but for now, just return a default.
-function msiGetCurrViewFlags(editor)
+//Note that in the document info for old SWP .tex files, the flags for ViewSettings are:
+//     don't ShowInvisibles =  1
+//     don't ShowHelperLines = 2
+//     don't ShowInputBoxes =  4
+//     don't ShowMarkers =     8
+//     don't ShowIndexEntries = 16
+// Thus showing everything results in ViewSettings = "0".
+function msiViewSettings(viewFlags)
 {
-  var viewSettings = new Object();
-  viewSettings.showInvisibles = false;
-  viewSettings.showHelperLines = true;
-  viewSettings.showInputBoxes = true;
-  viewSettings.showMarkers = true;
-  viewSettings.showIndexEntries = true;
+  this.showInvisibles = ((viewFlags & this.hideInvisiblesFlag) == 0);
+  this.showHelperLines = ((viewFlags & this.hideHelperLinesFlag) == 0);
+  this.showInputBoxes = ((viewFlags & this.hideInputBoxesFlag) == 0);
+  this.showMarkers = ((viewFlags & this.hideMarkersFlag) == 0);
+  this.showIndexEntries = ((viewFlags & this.hideIndexEntriesFlag) == 0);
+
+  this.match = function(otherSettings)
+  {
+    if (this.showInvisibles != otherSettings.showInvisibles)
+      return false;
+    if (this.showHelperLines != otherSettings.showHelperLines)
+      return false;
+    if (this.showInputBoxes != otherSettings.showInputBoxes)
+      return false;
+    if (this.showMarkers != otherSettings.showMarkers)
+      return false;
+    if (this.showIndexEntries != otherSettings.showIndexEntries)
+      return false;
+    return true;
+  };
+
+  this.getFlags = function()
+  {
+    var theFlags = 0;
+    if (!this.showInvisibles)
+      theFlags |= this.hideInvisiblesFlag;
+    if (!this.showHelperLines)
+      theFlags |= this.hideHelperLinesFlag;
+    if (!this.showInputBoxes)
+      theFlags |= this.hideInputBoxesFlag;
+    if (!this.showMarkers)
+      theFlags |= this.hideMarkersFlag;
+    if (!this.showIndexEntries)
+      theFlags |= this.hideIndexEntriesFlag;
+    return theFlags;
+  };
+
+}
+
+var msiViewSettingsBase =
+{ 
+  hideInvisiblesFlag   :  1,
+  hideHelperLinesFlag  :  2,
+  hideInputBoxesFlag   :  4,
+  hideMarkersFlag      :  8,
+  hideIndexEntriesFlag : 16
+};
+
+msiViewSettings.prototype = msiViewSettingsBase;
+
+function msiGetCurrViewSettings(editorElement)
+{
+  var viewSettings = null;
+  if (("viewSettings" in editorElement) && (editorElement.viewSettings != null))
+    viewSettings = editorElement.viewSettings;
+  else
+    viewSettings = getViewSettingsFromViewMenu();
+
+  return viewSettings;
+}
+
+function msiGetCurrNoteViewSettings(editorElement)
+{
+  var viewSettings = null;
+  if (("noteViewSettings" in editorElement) && (editorElement.noteViewSettings != null))
+    viewSettings = editorElement.noteViewSettings;
+  else if (PrefHasValue("noteViewSettings"))
+    viewSettings = new msiViewSettings( GetIntPref("noteViewSettings") );
+  else
+    viewSettings = msiGetCurrViewSettings(editorElement);
+
   return viewSettings;
 }
 
@@ -3138,11 +3210,11 @@ function msiPrintOptions(printFlags)
   this.suppressGrayBoxes = (printFlags & msiDocumentInfoBase.printSuppressGrayButtonsFlag) != 0;
   this.useCurrViewZoom = (printFlags & msiDocumentInfoBase.printUseViewSettingZoomFlag) != 0;
 
-  this.reflectViewSettings = function(editor)
+  this.reflectViewSettings = function(editorElement)
   {
     if (this.useCurrViewSettings)
     {
-      var viewSettings = msiGetCurrViewFlags(editor);
+      var viewSettings = msiGetCurrViewFlags(editorElement);
       this.printInvisibles = viewSettings.showInvisibles;
       this.printHelperLines = viewSettings.showHelperLines;
       this.printInputBoxes = viewSettings.showInputBoxes;
