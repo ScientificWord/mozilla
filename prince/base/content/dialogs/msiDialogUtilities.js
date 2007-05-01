@@ -509,3 +509,54 @@ function enableControlsByID(theControls, bEnable)
     }
   }
 }
+
+
+//The following are taken from Barry's typesetDocFormat.js. They are put here for general use by dialogs involving units.
+var msiUnitConversions =
+{
+  pt: .3514598,  //mm per pt
+  in: 25.4,  //mm per in
+  mm: 1, // mm per mm
+  cm: 10 // mm per cm
+};
+
+function msiConvertUnits(invalue, inunit, outunit) // Converts invalue inunits into x outunits
+{
+  if (inunit == outunit) return invalue;
+  var outvalue = invalue*msiUnitConversions[inunit];
+  outvalue /= msiUnitConversions[outunit];
+  dump(invalue+inunit+" = "+outvalue+outunit+"\n");
+  return outvalue;
+}
+
+function msiGetNumberValueFromNumberWithUnit(numberwithunit)
+{
+  var reNum = /\d*\.?\d*/;
+  var reUnit = /in|pt|mm|cm/;
+  var num = reNum.exec(numberwithunit);
+  if (num.length > 0)
+  {
+    dump(reUnit.exec()+"\n");
+    return Number(num);
+  }
+  return 0;
+}
+
+function msiUnitRound( size, whichUnit )
+{
+  var places;
+  // round off to a number of decimal places appropriate for the units
+  switch (whichUnit) {
+    case "mm" : places = 10;
+      break;
+    case "cm" : places = 100;
+      break;
+    case "pt" : places = 10;
+      break;
+    case "in" : places = 100;
+      break;
+    default   : places = 100;
+  }
+  return Math.round(size*places)/places;
+}
+
