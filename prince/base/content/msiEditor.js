@@ -634,12 +634,24 @@ function msiEditorDocumentObserver(editorElement)
           bIsRealDocument = (fileName != null && fileName.length > 0);
         }
 
+        if (msiIsHTMLEditor(this.mEditorElement))
+        {
+          editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
+          try {
+            editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
+            dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
+          } catch(e) { dump("Error formatting style sheet using msiColorObj: [" + e + "]\n"); }
+        }
+
         try {
           editor.QueryInterface(nsIEditorStyleSheets);
 
           //  and extra styles for showing anchors, table borders, smileys, etc
           editor.addOverrideStyleSheet(kNormalStyleSheet);
-          editor.addOverrideStyleSheet(gMathStyleSheet);
+          if (this.mEditorElement.mgMathStyleSheet != null)
+            editor.addOverrideStyleSheet(this.mEditorElement.mgMathStyleSheet);
+          else
+            editor.addOverrideStyleSheet(gMathStyleSheet);
           if (bIsRealDocument && this.mbAddOverrideStyleSheets && this.mEditorElement.overrideStyleSheets && this.mEditorElement.overrideStyleSheets != null)
           {
             for (var ix = 0; ix < this.mEditorElement.overrideStyleSheets.length; ++ix)
@@ -652,95 +664,6 @@ function msiEditorDocumentObserver(editorElement)
           this.mbAddOverrideStyleSheets = false;
         } catch (e) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding overrideStyleSheets: " + e);}
 
-//        // Things for just the Web Composer application
-//        if (EditorIsWebComposer(editor))
-//        {
-//          // Set focus to content window if not a mail composer
-//          // Race conditions prevent us from setting focus here
-//          //   when loading a url into blank window
-//          setTimeout(SetFocusOnStartup, 0);
-//
-//          // Call EditorSetDefaultPrefsAndDoctype first so it gets the default author before initing toolbars
-//          SetDefaultPrefsAndDoctypeForEditor(editor);
-//
-//          // We may load a text document into an html editor,
-//          //   so be sure editortype is set correctly
-//          // XXX We really should use the "real" plaintext editor for this!
-//          if (editor.contentsMIMEType == "text/plain")
-//          {
-//            try {
-//              GetCurrentEditorElement().editortype = "text";
-//            } catch (e) { dump (e)+"\n"; }
-//
-//            // Hide or disable UI not used for plaintext editing
-//            HideItem("FormatToolbar");
-//            HideItem("EditModeToolbar");
-//            HideItem("formatMenu");
-//            HideItem("tableMenu");
-//            HideItem("menu_validate");
-//            HideItem("sep_validate");
-//            HideItem("previewButton");
-//            HideItem("imageButton");
-//            HideItem("linkButton");
-//            HideItem("namedAnchorButton");
-//            HideItem("hlineButton");
-//            HideItem("tableButton");
-//
-//            HideItem("fileExportToText");
-//            HideItem("previewInBrowser");
-//
-///* XXX When paste actually converts formatted rich text to pretty formatted plain text
-//       and pasteNoFormatting is fixed to paste the text without formatting (what paste
-//       currently does), then this item shouldn't be hidden: */
-//            HideItem("menu_pasteNoFormatting"); 
-//
-//            HideItem("cmd_viewFormatToolbar");
-//            HideItem("cmd_viewEditModeToolbar");
-//
-//            HideItem("viewSep1");
-//            HideItem("viewNormalMode");
-//            HideItem("viewAllTagsMode");
-//            HideItem("viewSourceMode");
-//            HideItem("viewPreviewMode");
-//
-//            HideItem("structSpacer");
-//
-//            // from mathmlOverlay
-//            HideItem("MSIMathMenu");
-//            // from computeOverlay
-//            HideItem("ComputeToolbar");
-//            HideItem("cmd_viewComputeToolbar");
-//            HideItem("TagSelectBar");
-//            HideItem("MSIComputeMenu");
-//            HideItem("SymbolToolbar");
-//            HideItem("MSITypesetMenu");
-//            HideItem("MSIInsertTypesetObjectMenu");
-//            
-//            // Hide everything in "Insert" except for "Symbols"
-//            var menuPopup = document.getElementById("insertMenuPopup");
-//            if (menuPopup)
-//            {
-//              var children = menuPopup.childNodes;
-//              for (var i=0; i < children.length; i++) 
-//              {
-//                var item = children.item(i);
-//                if (item.id != "insertChars")
-//                  item.hidden = true;
-//              }
-//            }
-//          }
-//    
-//          // Set window title
-//          UpdateWindowTitle();
-//
-//          // We must wait until document is created to get proper Url
-//          // (Windows may load with local file paths)
-//          SetSaveAndPublishUI(GetDocumentUrl());
-//
-//          // Start in "Normal" edit mode
-//          SetDisplayMode(kDisplayModeNormal);
-//        }
-//Comment this one out for now        initFastCursorBar();
         this.doInitFastCursor();
         UpdateWindowTitle();
         // Add mouse click watcher if right type of editor
@@ -752,7 +675,7 @@ function msiEditorDocumentObserver(editorElement)
           // Force color widgets to update
           msiOnFontColorChange();
           msiOnBackgroundColorChange();
-          editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
+//          editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
           editor.setTopXULWindow(window);
           // also initialize the sidebar in this case
           initSidebar();
@@ -771,6 +694,17 @@ function msiEditorDocumentObserver(editorElement)
 //            editor.dumpContentTree();
 //          dump("\n].\n");
 //        }
+        if (bIsRealDocument)
+        {
+          var documentInfo = new msiDocumentInfo(editorElement);
+          documentInfo.initializeDocInfo();
+          var dlgInfo = documentInfo.getDialogInfo();  //We aren't going to launch the dialog, just want the data in this form.
+          if (dlgInfo.saveOptions.storeViewSettings)
+            editorElement.viewSettings = msiGetViewSettingsFromDocument(editorElement);
+          else
+            msiEditorDoShowInvisibles(editorElement, getViewSettingsFromViewMenu());
+        }
+
         if (bIsRealDocument && this.mbInsertInitialContents && ("initialEditorContents" in this.mEditorElement) && (this.mEditorElement.initialEditorContents != null)
                        && (this.mEditorElement.initialEditorContents.length > 0))
         {
@@ -2625,6 +2559,8 @@ function msiSetDisplayMode(editorElement, mode)
         case kDisplayModePreview:
           // Disable all extra "edit mode" style sheets 
           editor.enableStyleSheet(kNormalStyleSheet, false);
+          if (editorElement.mgMathStyleSheet != null)
+            editor.enableStyleSheet(editorElement.mgMathStyleSheet, false);
           editor.enableStyleSheet(gMathStyleSheet, false);
           editor.enableStyleSheet(kAllTagsStyleSheet, false);
           editor.isImageResizingEnabled = true;
@@ -2632,7 +2568,10 @@ function msiSetDisplayMode(editorElement, mode)
 
         case kDisplayModeNormal:
           editor.addOverrideStyleSheet(kNormalStyleSheet);
-          editor.addOverrideStyleSheet(gMathStyleSheet);
+          if (editorElement.mgMathStyleSheet != null)
+            editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
+          else
+            editor.addOverrideStyleSheet(gMathStyleSheet);
           // Disable ShowAllTags mode
           editor.enableStyleSheet(kAllTagsStyleSheet, false);
           editor.isImageResizingEnabled = true;
@@ -2641,7 +2580,10 @@ function msiSetDisplayMode(editorElement, mode)
 
         case kDisplayModeAllTags:
           editor.addOverrideStyleSheet(kNormalStyleSheet);
-          editor.addOverrideStyleSheet(gMathStyleSheet);
+          if (editorElement.mgMathStyleSheet != null)
+            editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
+          else
+            editor.addOverrideStyleSheet(gMathStyleSheet);
           editor.addOverrideStyleSheet(kAllTagsStyleSheet);
           // don't allow resizing in AllTags mode because the visible tags
           // change the computed size of images and tables...
@@ -2719,6 +2661,212 @@ function msiEditorToggleParagraphMarks(editorElement)
         editor.enableStyleSheet(kParagraphMarksStyleSheet, false);
     }
     catch(e) { return; }
+  }
+}
+
+function msiEditorDoShowInvisibles(editorElement, viewSettings)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  if (!editorElement)
+  {
+    alert("No active editor to apply the invisibles command to!");
+    return;
+  }
+  if (("viewSettings" in editorElement) && (editorElement.viewSettings != null)
+             && editorElement.viewSettings.match(viewSettings))
+  {
+    //already done
+    return;
+  }
+
+  var editor = msiGetEditor(editorElement);
+//  if (!editor.QueryInterface(Components.interfaces.nsIEditorStyleSheets))
+//  {
+//    alert("Can't get nsIEditorStyleSheets interface in msiEditorDoShowInvisibles!");
+//    return;
+//  }
+
+  var theBody = msiGetRealBodyElement(editor.document);
+  if (viewSettings.showInvisibles)
+    theBody.setAttribute("showinvis", "true");
+  else
+    theBody.removeAttribute("showinvis");
+  if (!viewSettings.showHelperLines)
+    theBody.setAttribute("hideHelperLines", "true");
+  else
+    theBody.removeAttribute("hideHelperLines");
+  if (!viewSettings.showInputBoxes)
+    theBody.setAttribute("hideInputBoxes", "true");
+  else
+    theBody.removeAttribute("hideInputBoxes");
+  if (!viewSettings.showIndexEntries)
+    theBody.setAttribute("hideIndexEntries", "true");
+  else
+    theBody.removeAttribute("hideIndexEntries");
+  if (!viewSettings.showMarkers)
+    theBody.setAttribute("hideMarkers", "true");
+  else
+    theBody.removeAttribute("hideMarkers");
+
+  var dumpStr = "Element [" + theBody.nodeName + "] now has settings: [";
+  var attribNames = ["showinvis", "hideHelperLines", "hideInputBoxes", "hideIndexEntries", "hideMarkers"];
+  for (var ix = 0; ix < attribNames.length; ++ix)
+  {
+    if (ix > 0)
+      dumpStr += ", ";
+    dumpStr += attribNames[ix] + ": ";
+    if (theBody.hasAttribute(attribNames[ix]))
+      dumpStr += theBody.getAttribute(attribNames[ix]);
+    else
+      dumpStr += "(none)";
+  }
+  dump(dumpStr + "]\n");
+  //viewSettings is an object containing members showInvisibles, showHelperLines, showInputBoxes,
+  // showIndexEntries, showMarkers. Here we want to take the actual actions to cause these effects.
+//  if (editorElement.mInvisiblesStyleSheet)
+//    editor.removeOverrideStyleSheet(editorElement.mInvisiblesStyleSheet);
+//  if (currSettings.showInvisibles != viewSettings.showInvisibles)  //this requires changing all the whitespace in the document! Here goes:
+//  {
+//    if (viewSettings.showInvisibles)
+//      msiRewriteShowInvisibles(editor);
+//    else
+//      msiRewriteHideInvisibles(editor);
+//  }
+//  editorElement.mInvisiblesStyleSheet = viewSettings.formatStyleSheet();
+//  editor.addOverrideStyleSheet(editorElement.mInvisiblesStyleSheet);
+  editorElement.viewSettings = viewSettings;
+
+} 
+
+function msiGetViewSettingsFromDocument(editorElement)
+{
+  var retVal = msiGetCurrViewSettings(editorElement);
+  var editor = msiGetEditor(editorElement);
+  var theBody = null;
+  if (editor != null)
+    theBody = msiGetRealBodyElement(editor.document);
+  if (!theBody)
+  {
+    dump("Can't get body element of document in getViewSettingsFromDocument! Aborting...\n");
+    return retVal;
+  }
+
+  if (theBody.hasAttribute("showinvis"))
+    retVal.showInvisibles = (theBody.getAttribute("showinvis")=="true");
+  if (theBody.hasAttribute("hideHelperLines"))
+    retVal.showHelperLines = (theBody.getAttribute("hideHelperLines")!="true");
+  if (theBody.hasAttribute("hideInputBoxes"))
+    retVal.showInputBoxes = (theBody.getAttribute("hideInputBoxes")!="true");
+  if (theBody.hasAttribute("hideIndexEntries"))
+    retVal.showIndexEntries = (theBody.getAttribute("hideIndexEntries")!="true");
+  if (theBody.hasAttribute("hideMarkers"))
+    retVal.showMarkers = (theBody.getAttribute("hideMarkers")!="true");
+
+  return retVal;
+}
+
+function msiGetSpaceTypeFromString(theText)
+{
+  switch(theText)
+  {
+    case " ":        return "normal";
+    default:         return "custom";
+  }
+}
+
+function msiRewriteShowInvisibles(editor)
+{
+//if you find invisibles in the text node, replace them by CSS-addressable nodes
+
+  //NOTE: the "\s" specifier is equivalent to: [\t\n\v\f\r \u00a0\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u200b\u2028\u2029\u3000]
+  // (per the JavaScript1.5 online reference).
+  function replaceTextNodeByInvisibles(aNode)
+  {
+    var invisRegExp = /[\s]/g;
+    var theParent = aNode.parentNode;
+    var nextNode = aNode.nextSibling;
+    var theString = aNode.nodeValue;
+    var invisMatches;
+    var startPos = 0;
+    while ((invisMatches = invisRegExp.exec(theString)) != undefined)
+    {
+      if (startPos < invisMatches.index)
+      {
+        var newTextNode = aNode.ownerDocument.createTextNode(theString.substring(startPos, invisMatches.index));
+        if (nextNode)
+          theParent.insertBefore(newTextNode, nextNode);
+        else
+          theParent.appendChild(newTextNode);
+      }
+      var newInvisNode = aNode.ownerDocument.createElement("space");
+      newInvisNode.setAttribute("msitemp-invis", "true");
+      newInvisNode.setAttribute( "spacingType", msiGetSpaceTypeFromString(invisMatches[0]) );
+      newInvisNode.appendChild( aNode.ownerDocument.createTextNode(invisMatches[0]) );
+      if (nextNode)
+        theParent.insertBefore(newInvisNode, nextNode);
+      else
+        theParent.appendChild(newInvisNode);
+      startPos = invisRegExp.lastIndex;
+    }
+  }
+
+  var rootElement = editor.document.documentElement;
+  var treeWalker = editor.document.createTreeWalker(rootElement, NodeFilter.SHOW_TEXT, null, true);
+  if (treeWalker)
+  {
+    for (var currNode = treeWalker.nextNode(); currNode != null; )
+    {
+      var nextNode = treeWalker.nextNode();
+      replaceTextNodeByInvisibles(currNode);
+      currNode = nextNode;
+    }
+  }
+}
+
+function msiRewriteHideInvisibles(editor)
+{
+  function findInvisNodes(aNode)
+  {
+    if (aNode.hasAttribute("msitemp-invis"))
+      return NodeFilter.FILTER_ACCEPT;
+    return NodeFilter.FILTER_SKIP;
+  }
+
+  //The use of this little function assumes that no Node with non-trivial (non-#text) child nodes will ever be given
+  //the attribute "msitemp-invis"; also that no such Node will ever manage to absorb children. Perhaps this is too strong
+  //an assumption??
+  //In practice, if during editing one of these msitemp-invis nodes were to accept content, it would mess up the invisible's
+  //appearance. Somehow this needs to be precluded - can we get TagManager to do it? Probably! So let's assume this is done.
+  function replaceByTextNode(aNode)
+  {
+    var theText = "";
+    for (var ix = 0; ix < aNode.childNodes.length; ++ix)
+    {
+      if (aNode.childNodes[ix].nodeName == "#text")
+        theText += aNode.childNodes[ix].nodeValue;
+    }
+    var newNode = aNode.ownerDocument.createTextNode(theText);
+    var nextNode = aNode.nextSibling;
+    var parentNode = aNode.parentNode;
+    parentNode.removeChild(aNode);
+    if (nextNode != null)
+      parentNode.insertBefore(newNode, nextNode);
+    else
+      parentNode.appendChild(newNode);
+  }
+
+  var rootElement = editor.document.documentElement;
+  var treeWalker = editor.document.createTreeWalker(rootElement, NodeFilter.SHOW_ELEMENT, findInvisNodes, true);
+  if (treeWalker)
+  {
+    for (var currNode = treeWalker.nextNode(); currNode != null; )
+    {
+      var nextNode = treeWalker.nextNode();
+      replaceByTextNode(currNode);
+      currNode = nextNode;
+    }
+    rootElement.normalize();
   }
 }
 

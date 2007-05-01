@@ -263,6 +263,17 @@
         label="&PreviewMode.label;"/>
       <menuseparator/>
       <menu id="sidebar-menu" />
+      <menuseparator/>
+      <menuitem id="viewInvisibles" type="checkbox" accesskey="&viewInvisibles.accesskey;"    observes="cmd_viewInvisibles"
+        label="&viewInvisibles.label;"/>
+      <menuitem id="viewHelperLines" type="checkbox" accesskey="&viewHelperLines.accesskey;" checked="true"   observes="cmd_viewInvisibles"
+        label="&viewHelperLines.label;"/>
+      <menuitem id="viewInputBoxes" type="checkbox" accesskey="&viewInputBoxes.accesskey;"  checked="true"   observes="cmd_viewInvisibles"
+        label="&viewInputBoxes.label;"/>
+      <menuitem id="viewIndexEntries" type="checkbox" accesskey="&viewIndexEntries.accesskey;"  checked="true"   observes="cmd_viewInvisibles"
+        label="&viewIndexEntries.label;"/>
+      <menuitem id="viewMarkers"  type="checkbox" accesskey="&viewMarkers.accesskey;"  checked="true"   observes="cmd_viewInvisibles"
+        label="&viewMarkers.label;"/>
     </menupopup>
   </menu>
   
@@ -328,6 +339,7 @@
     <command id="cmd_AllTagsMode"      oncommand="msiGoDoCommand('cmd_AllTagsMode')"/>
     <command id="cmd_HTMLSourceMode"   oncommand="msiGoDoCommand('cmd_HTMLSourceMode')"/>
     <command id="cmd_PreviewMode"      oncommand="msiGoDoCommand('cmd_PreviewMode')"/>
+    <command id="cmd_viewInvisibles"   oncommand="msiGoDoCommand('cmd_viewInvisibles')"/>
 
     <!-- only used in context popup menu -->
     <command id="cmd_editLink"         oncommand="msiGoDoCommand('cmd_editLink')"/>
