@@ -66,3 +66,15 @@ sw|button [class="texbutton"] {
   background-color: ThreeDFace;
   -moz-user-select: none;
 }
+
+
+sw|space[dim="2em"] {
+  width: 2em;
+  height: 1ex;
+  display: -moz-inline-box;
+  vertical-align: textbase;
+}
+  
+*[showinvis="true"] sw|space {
+  border-bottom: thin solid green;
+}
