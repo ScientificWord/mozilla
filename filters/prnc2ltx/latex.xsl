@@ -108,6 +108,13 @@
 
 <xsl:template match="html:latex">\LaTeX</xsl:template>
 <xsl:template match="mml:math">\textbf{Math here}</xsl:template>
+
+<xsl:template match="html:hspace">
+  <xsl:choose>
+    <xsl:when test="@dim='2em'">\qquad </xsl:when>
+	<xsl:otherwise> </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
  
 <xsl:template match="html:documentclass">
 \documentclass{<xsl:value-of select="@class"/>}</xsl:template>
