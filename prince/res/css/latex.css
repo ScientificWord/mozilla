@@ -6,6 +6,10 @@ tex {
   -moz-binding: url("resource://app/res/xbl/latex.xml#tex");
 }
 
+hspace {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#hspace");
+}
+
 invis {
   display: none;
 }
