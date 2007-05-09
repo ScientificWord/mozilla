@@ -158,6 +158,7 @@ function msiSetupComposerWindowCommands(editorElement)
   commandTable.registerCommand("cmd_open",           msiOpenCommand);
   commandTable.registerCommand("cmd_save",           msiSaveCommand);
   commandTable.registerCommand("cmd_saveAs",         msiSaveAsCommand);
+  commandTable.registerCommand("cmd_saveCopyAs",     msiSaveCopyAsCommand);
   commandTable.registerCommand("cmd_exportToText",   msiExportToTextCommand);
   commandTable.registerCommand("cmd_saveAndChangeEncoding",  msiSaveAndChangeEncodingCommand);
   commandTable.registerCommand("cmd_publish",        msiPublishCommand);
@@ -743,11 +744,11 @@ var msiOpenCommand =
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
     fp.init(window, GetString("OpenHTMLFile"), msIFilePicker.modeOpen);
 
-    msiSetFilePickerDirectory(fp, "xhtml");
+    msiSetFilePickerDirectory(fp, MSI_EXTENSION);
 
     // When loading into Composer, direct user to prefer HTML files and text files,
     //   so we call separately to control the order of the filter list
-    fp.appendFilters(msIFilePicker.filterHTML);
+    fp.appendFilter(MSI_EXTENSION);
     fp.appendFilters(msIFilePicker.filterText);
     fp.appendFilters(msIFilePicker.filterAll);
 
@@ -765,7 +766,7 @@ var msiOpenCommand =
      *  since file.URL will be "file:///" if no filename picked (Cancel button used)
      */
     if (fp.file && fp.file.path.length > 0) {
-      msiSaveFilePickerDirectory(fp, "xhtml");
+      msiSaveFilePickerDirectory(fp, MSI_EXTENSION);
       msiEditPage(fp.fileURL.spec, window, false);
     }
   }
@@ -804,7 +805,7 @@ var msiSaveCommand =
       var docUrl = msiGetEditorURL(editorElement);
       return msiIsDocumentEditable(editorElement) &&
         (msiIsDocumentModified(editorElement) || msiIsHTMLSourceChanged(editorElement) ||
-         IsUrlAboutBlank(docUrl) || GetScheme(docUrl) != "file");
+         IsUrlAboutBlank(docUrl) || IsUrlUntitled(docUrl) || GetScheme(docUrl) != "file");
     } catch (e) {return false;}
   },
   
@@ -822,7 +823,8 @@ var msiSaveCommand =
     if (editor)
     {
       msiFinishHTMLSource(editorElement);
-      result = msiSaveDocument(IsUrlAboutBlank(msiGetEditorURL(editorElement)), false, editor.contentsMIMEType, editorElement);
+      var url = msiGetEditorURL(editorElement);
+      result = msiSaveDocument(IsUrlAboutBlank(url)||IsUrlUntitled(url), false, editor.contentsMIMEType, editorElement);
       editorElement.contentWindow.focus();
     }
     return result;
@@ -858,6 +860,41 @@ var msiSaveAsCommand =
     return false;
   }
 }
+
+
+
+var msiSaveCopyAsCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return false;
+    return msiIsDocumentEditable(editorElement);
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return false;
+    var editor = msiGetEditor(editorElement);
+    if (editor)
+    {
+      msiFinishHTMLSource(editorElement);
+      var result = msiSaveDocument(true, true, editor.contentsMIMEType, editorElement);
+      editorElement.contentWindow.focus();
+      return result;
+    }
+    return false;
+  }
+}
+
+
 
 var msiExportToTextCommand =
 {
@@ -948,7 +985,7 @@ var msiPublishCommand =
 //        return IsDocumentModified() || IsHTMLSourceChanged()
 //               || IsUrlAboutBlank(docUrl) || GetScheme(docUrl) == "file";
         return (msiIsDocumentModified(editorElement) || msiIsHTMLSourceChanged(editorElement) ||
-                IsUrlAboutBlank(docUrl) || GetScheme(docUrl) == "file");
+                IsUrlAboutBlank(docUrl) || IsUrlUntitled(docUrl) || GetScheme(docUrl) == "file");
       } catch (e) {return false;}
     }
     return false;
@@ -1059,9 +1096,9 @@ function msiGetExtensionBasedOnMimeType(aMIMEType)
     var fileExtension = mimeService.getPrimaryExtension(aMIMEType, null);
 
     // the MIME service likes to give back ".htm" for text/html files,
-    // so do a special-case fix here.
-    if (fileExtension == "htm")
-      fileExtension = "html";
+    // so do a special-case fix here. Also we want to use the sci extension
+    if (fileExtension == "htm" || fileExtension == "xml")
+      fileExtension = MSI_EXTENSION;
 
     return fileExtension;
   }
@@ -1097,7 +1134,7 @@ function msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement)
   // check if there is a title we can use
   var title = msiGetDocumentTitle(editorElement);
   // generate a valid filename, if we can't just go with "untitled"
-  return GenerateValidFilename(title, extension) || GetString("untitled") + extension;
+  return title+extension;
 }
 
 // returns file picker result
@@ -1130,9 +1167,12 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
   if (aDoSaveAsText)
     fp.appendFilters(msIFilePicker.filterText);
   else
-    fp.appendFilter("SWP Documents","*.sci");
+  {
+    fp.appendFilter("SWP Documents","*."+MSI_EXTENSION);
+    fp.defaultExtension = MSI_EXTENSION;
+  }
   fp.appendFilters(msIFilePicker.filterAll);
-//  msiSetFilePickerDirectory(fp, "sci");
+//  msiSetFilePickerDirectory(fp, MSI_EXTENSION);
 
   // now let's actually set the filepicker's suggested filename
   var suggestedFileName = msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement);
@@ -1156,8 +1196,6 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
     if (isLocalFile)
     {
       var fileLocation = fileHandler.getFileFromURLSpec(aDocumentURLString); // this asserts if url is not local
-      // in SWP we go up to the enclosing directory
-      if (fileLocation.isFile()) fileLocation = fileLocation.parent;
       parentLocation = fileLocation.parent;
     }
     if (parentLocation)
@@ -1677,7 +1715,7 @@ function msigEditorOutputProgressListener(editorElement)
 
   this.confirmCheck = function(dlgTitle, text, checkBoxLabel, checkObj)
   {
-    var promptServ = GetPromptService();
+    var promptServ = msiGetPromptService();
     if (!promptServ)
       return;
 
@@ -1687,7 +1725,7 @@ function msigEditorOutputProgressListener(editorElement)
 
   this.confirmEx = function(dlgTitle, text, btnFlags, btn0Title, btn1Title, btn2Title, checkBoxLabel, checkVal)
   {
-    var promptServ = GetPromptService();
+    var promptServ = msiGetPromptService();
     if (!promptServ)
      return 0;
 
@@ -1698,7 +1736,7 @@ function msigEditorOutputProgressListener(editorElement)
 
   this.prompt = function(dlgTitle, text, inoutText, checkBoxLabel, checkObj)
   {
-    var promptServ = GetPromptService();
+    var promptServ = msiGetPromptService();
     if (!promptServ)
      return false;
 
@@ -1708,7 +1746,7 @@ function msigEditorOutputProgressListener(editorElement)
   this.promptPassword = function(dlgTitle, text, pwObj, checkBoxLabel, savePWObj)
   {
 
-    var promptServ = GetPromptService();
+    var promptServ = msiGetPromptService();
     if (!promptServ)
      return false;
 
@@ -1744,7 +1782,7 @@ function msigEditorOutputProgressListener(editorElement)
 
   this.select = function(dlgTitle, text, count, selectList, outSelection)
   {
-    var promptServ = GetPromptService();
+    var promptServ = msiGetPromptService();
     if (!promptServ)
       return false;
 
@@ -1754,7 +1792,7 @@ function msigEditorOutputProgressListener(editorElement)
 // nsIAuthPrompt
   this.prompt = function(dlgTitle, text, pwrealm, savePW, defaultText, result)
   {
-    var promptServ = GetPromptService();
+    var promptServ = msiGetPromptService();
     if (!promptServ)
       return false;
 
@@ -1778,7 +1816,7 @@ function msigEditorOutputProgressListener(editorElement)
   {
     var ret = false;
     try {
-      var promptServ = GetPromptService();
+      var promptServ = msiGetPromptService();
       if (!promptServ)
         return false;
 
@@ -1814,7 +1852,7 @@ function msiPromptUsernameAndPassword(dlgTitle, text, savePW, userObj, pwObj, ed
 
   var ret = false;
   try {
-    var promptServ = GetPromptService();
+    var promptServ = msiGetPromptService();
     if (!promptServ)
       return false;
 
@@ -1966,29 +2004,29 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (!aMimeType || aMimeType == "" || !editor)
-    throw NS_ERROR_NOT_INITIALIZED;
+    throw Components.results.NS_ERROR_NOT_INITIALIZED;
 
   var editorDoc = editor.document;
   if (!editorDoc)
-    throw NS_ERROR_NOT_INITIALIZED;
+    throw Components.results.NS_ERROR_NOT_INITIALIZED;
 
   // if we don't have the right editor type bail (we handle text and html)
   var editorType = msiGetEditorType(editorElement);
   if (editorType != "text" && editorType != "html" 
       && editorType != "htmlmail" && editorType != "textmail")
-    throw NS_ERROR_NOT_IMPLEMENTED;
+    throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 
   var saveAsTextFile = msiIsSupportedTextMimeType(aMimeType);
 
   // check if the file is to be saved is a format we don't understand; if so, bail
-  if (aMimeType != "text/html" && aMimeType != "application/xhtml+xml" && !saveAsTextFile)
-    throw NS_ERROR_NOT_IMPLEMENTED;
+  if (aMimeType != "text/html" && aMimeType != "application/xhtml+xml" && aMimeType != "text/xml" && !saveAsTextFile)
+    throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 
   if (saveAsTextFile)
     aMimeType = "text/plain";
 
   var urlstring = msiGetEditorURL(editorElement);
-  var mustShowFileDialog = (aSaveAs || IsUrlAboutBlank(urlstring) || (urlstring == ""));
+  var mustShowFileDialog = (aSaveAs || IsUrlAboutBlank(urlstring) || IsUrlUntitled(urlstring) || (urlstring == ""));
 
   // If editing a remote URL, force SaveAs dialog
   if (!mustShowFileDialog && GetScheme(urlstring) != "file")
@@ -1998,7 +2036,8 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
   var titleChanged = false;
   var doUpdateURI = false;
   var tempLocalFile = null;
-
+  var currentFile = null;
+  
   if (mustShowFileDialog)
   {
 	  try {
@@ -2009,8 +2048,16 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
 	      if (!userContinuing)
 	        return false;
 	    }
-
-	    var dialogResult = msiPromptForSaveLocation(saveAsTextFile, editorType, aMimeType, urlstring, editorElement);
+      currentFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+      var currFilePath = GetFilepath(urlstring);
+  // for Windows
+#ifdef XP_WIN32
+      currFilePath = currFilePath.replace("/","\\","g");
+#endif
+      currentFile.initWithPath( currFilePath );
+      dump("currentFile is " + currentFile.path + "; urlstring is "+urlstring+"\n");
+	    var dialogResult = msiPromptForSaveLocation(saveAsTextFile, editorType=="html"?MSI_EXTENSION:editorType, 
+        aMimeType, urlstring, editorElement);
 	    if (dialogResult.filepickerClick == msIFilePicker.returnCancel)
 	      return false;
 
@@ -2020,13 +2067,13 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
       if (tempLocalFile)
       {
         localFileLeaf = tempLocalFile.leafName;
-        localFileLeaf = localFileLeaf.replace(".sci",".xhtml");
-        tempLocalFile.append(localFileLeaf);
       }
       // update the new URL for the webshell unless we are saving a copy
       if (!aSaveCopy)
         doUpdateURI = true;
-   } catch (e) {  return false; }
+   } catch (e) {
+       return false; 
+     }
   } // mustShowFileDialog
 
   var success = true;
@@ -2099,7 +2146,7 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
       destinationLocation = tempLocalFile;
     else
       destinationLocation = docURI;
-
+    dump("Trying to save file as "+destinationLocation.path+"\n");
     success = msiOutputFileWithPersistAPI(editorDoc, destinationLocation, relatedFilesDir, aMimeType, editorElement);
   }
   catch (e)
@@ -2109,7 +2156,9 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
 
   if (success)
   {
-    try {
+    try { 
+      // copy the associated xxxx_files directory
+      
       if (doUpdateURI)
       {
          // If a local file, we must create a new uri from nsILocalFile
@@ -2118,8 +2167,13 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
 
         // We need to set new document uri before notifying listeners
         SetDocumentURI(docURI);
+        document.getElementById("filename").value = tempLocalFile.leafName.substr(0,tempLocalFile.leafName.lastIndexOf("."));
       }
-
+      if (currentFile != null)
+        msiCopyAuxDirectory(currentFile, tempLocalFile);
+      // After a save we need to make a new backup file
+      if (doUpdateURI) msiRevertFile(currentFile); // restore the original file; changes are in the new file.
+      msiCopyFileAndDirectoryToBak( tempLocalFile );
       // Update window title to show possibly different filename
       // This also covers problem that after undoing a title change,
       //   window title loses the extra [filename] part that this adds
@@ -2130,8 +2184,11 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
       // this should cause notification to listeners that document has changed
 
       // Set UI based on whether we're editing a remote or local url
-      msiSetSaveAndPublishUI(urlstring, editorElement);
-    } catch (e) {}
+      if (!aSaveCopy)
+        msiSetSaveAndPublishUI(urlstring, editorElement);
+    } catch (e) {
+        dump(e + "\n");
+      }
   }
   else
   {
@@ -2142,14 +2199,15 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
   return success;
 }
 
-//function SetDocumentURI(uri)
-//{
-//  try {
-//    // XXX WE'LL NEED TO GET "CURRENT" CONTENT FRAME ONCE MULTIPLE EDITORS ARE ALLOWED
-//    GetCurrentEditorElement().docShell.setCurrentURI(uri);
-//  } catch (e) { dump("SetDocumentURI:\n"+e +"\n"); }
-//}
-//
+function SetDocumentURI(uri)
+{
+  try {
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement)) return;
+    editorElement.docShell.setCurrentURI(uri);
+  } catch (e) { dump("SetDocumentURI:\n"+e +"\n"); }
+}
+
 
 ////-------------------------------  Publishing
 //var gPublishData;
@@ -2403,7 +2461,7 @@ var msiPublishSettingsCommand =
       try {
         var docUrl = msiGetEditorURL(editorElement);
         return msiIsDocumentModified(editorElement) || msiIsHTMLSourceChanged(editorElement)
-               || IsUrlAboutBlank(docUrl) || GetScheme(docUrl) == "file";
+               || IsUrlAboutBlank(docUrl) || IsUrlUntitled(docUrl) || GetScheme(docUrl) == "file";
       } catch (e) {return false;}
     }
     return false;
@@ -2467,15 +2525,15 @@ var msiPublishSettingsCommand =
 
 //-----------------------------------------------------------------------------------
 
-//The "Revert" command may be quite useful, on the other hand. However, the usual version applies only to documents with
-//stored forms (URLs); a new implementation is needed otherwise, and a common one isn't obvious.
+// The Revert command replaces the current files with the .bak versions. It should be disabled if there are no .bak files.
 var msiRevertCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
+    var url = msiGetEditorURL(editorElement);
     return (msiIsDocumentEditable(editorElement) && msiIsDocumentModified(editorElement)
-              && !IsUrlAboutBlank(msiGetEditorURL(editorElement)));
+              && !IsUrlUntitled(url) && !IsUrlAboutBlank(url));
 //    return (IsDocumentEditable() &&
 //            IsDocumentModified() &&
 //            !IsUrlAboutBlank(GetDocumentUrl()));
@@ -2487,7 +2545,7 @@ var msiRevertCommand =
   doCommand: function(aCommand)
   {
     // Confirm with the user to abandon current changes
-    var promptService = GetPromptService();
+    var promptService = msiGetPromptService();
     if (promptService)
     {
       // Put the page title in the message string
@@ -2507,7 +2565,15 @@ var msiRevertCommand =
       if(result == 0)
       {
         msiCancelHTMLSource(editorElement);
-//        EditorLoadUrl(GetDocumentUrl());
+        var urlstring = msiGetEditorURL(editorElement);
+        var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        var currFilePath = GetFilepath(urlstring);
+// for Windows
+#ifdef XP_WIN32
+      currFilePath = currFilePath.replace("/","\\","g");
+#endif
+        documentfile.initWithPath( currFilePath );
+        msiRevertFile( documentfile );
         msiEditorLoadUrl(editorElement, msiGetEditorURL(editorElement));
       }
     }

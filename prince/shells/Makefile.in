@@ -10,11 +10,14 @@ XPI_NAME	= prince
 include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/rules.mk
 
-SHELL_RESOURCES := $(wildcard	$(srcdir)/*.shl)
+SHELL_RESOURCES := $(wildcard	$(srcdir)/*.sci) \
+	$(NULL)
 
-libs::	$(SHELL_RESOURCES)
-	$(INSTALL)	"$(SHELL_RESOURCES)"	$(FINAL_TARGET)/res/shells/article/LaTeXArticleShell.sci
+SHELL_RESOURCE_DIRECTORIES := $(wildcard	$(srcdir)/*_files)
 
+libs::	$(SHELL_RESOURCES)	$(SHELL_RESOURCE_DIRECTORIES)
+	$(INSTALL)	"$(SHELL_RESOURCES)"	$(FINAL_TARGET)/shells/article
+	cp -R "$(SHELL_RESOURCE_DIRECTORIES)" $(FINAL_TARGET)/shells/article
 
 
 
