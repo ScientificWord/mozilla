@@ -853,7 +853,7 @@ function doMatrixDlg(editorElement)
   o.rows = 0;
   o.cols = 0;
   o.rowsignature = "";
-  window.openDialog("chrome://prince/content/MathmlMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
   if (o.rows > 0 && o.cols > 0)
     insertmatrix(o.rows, o.cols, o.rowsignature, editorElement);
 }
