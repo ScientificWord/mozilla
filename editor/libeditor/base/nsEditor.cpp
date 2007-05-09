@@ -41,6 +41,7 @@
 #include "pratom.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMHTMLDocument.h"
+#include "nsIDOMXMLDocument.h"
 #include "nsIDOMHTMLElement.h"
 #include "nsIDOMEventReceiver.h"
 #include "nsIEventListenerManager.h"
@@ -2471,6 +2472,8 @@ nsEditor::GetQueryCaretRect(nsQueryCaretRectEventReply* aReply)
 NS_IMETHODIMP 
 nsEditor::GetRootElement(nsIDOMElement **aRootElement)
 {
+  PRBool isXML = PR_FALSE;
+  nsresult result;
   if (!aRootElement)
     return NS_ERROR_NULL_POINTER;
 
@@ -2485,22 +2488,43 @@ nsEditor::GetRootElement(nsIDOMElement **aRootElement)
   *aRootElement = 0;
 
   NS_PRECONDITION(mDocWeak, "bad state, null mDocWeak");
+  nsCOMPtr<nsIDOMXMLDocument> xmldoc;
   nsCOMPtr<nsIDOMHTMLDocument> doc = do_QueryReferent(mDocWeak);
-  if (!doc) return NS_ERROR_NOT_INITIALIZED;
+  if (!doc) 
+  {
+    xmldoc = do_QueryReferent(mDocWeak);
+    isXML = PR_TRUE;
+    if (!xmldoc)
+    return NS_ERROR_NOT_INITIALIZED;
+  }
+  if (xmldoc)
+  {
+    nsCOMPtr<nsIDOMElement> docElement;
+    result = xmldoc->GetDocumentElement(getter_AddRefs(docElement));
+    if (NS_FAILED(result))
+      return result;
+    if (!docElement)
+      return NS_ERROR_NULL_POINTER;
 
-  // Use the documents body element as the editor root if we didn't
-  // get a root element during initialization.
+    mRootElement = docElement;
+    *aRootElement = docElement;
+  }
+  else
+  {
+    // Use the documents body element as the editor root if we didn't
+    // get a root element during initialization.
 
-  nsCOMPtr<nsIDOMHTMLElement> bodyElement; 
-  nsresult result = doc->GetBody(getter_AddRefs(bodyElement));
-  if (NS_FAILED(result))
-    return result;
+    nsCOMPtr<nsIDOMHTMLElement> bodyElement; 
+    result = doc->GetBody(getter_AddRefs(bodyElement));
+    if (NS_FAILED(result))
+      return result;
 
-  if (!bodyElement)
-    return NS_ERROR_NULL_POINTER;
+    if (!bodyElement)
+      return NS_ERROR_NULL_POINTER;
 
-  mRootElement = bodyElement;
-  *aRootElement = bodyElement;
+    mRootElement = bodyElement;
+    *aRootElement = bodyElement;
+  }
   NS_ADDREF(*aRootElement);
 
   return NS_OK;
