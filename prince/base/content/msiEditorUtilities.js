@@ -649,7 +649,7 @@ function msiGetParentEditor(editorElement)
 //  if ("msiParentEditor" in docElement)
 //    return docElement.msiParentEditor;
   }
-  AlertWithTitle("Error", "Can't find parent editor for editorElement " + editorElement.id);
+  dump("Can't find parent editor for editorElement " + editorElement.id);
   return null;
 }
 
@@ -997,11 +997,17 @@ function msiIsDocumentModified(editorElement)
 
 function msiGetEditorURL(editorElement)
 {
+  var editor;
   try
   {
-    var aDOMHTMLDoc = msiGetEditor(editorElement).document.QueryInterface(Components.interfaces.nsIDOMHTMLDocument);
+    editor = msiGetEditor(editorElement);
+    var aDOMHTMLDoc = editor.document.QueryInterface(Components.interfaces.nsIDOMHTMLDocument);
     return aDOMHTMLDoc.URL;
-  } catch (e) {}
+  } catch (e) {
+    try {
+      return editor.document.documentURI;
+    } catch (e){}
+  }
   return "";
 }
 
@@ -2254,8 +2260,8 @@ function msiSetDocumentTitle(editorElement, title)
 {
   // if we changed the name of a shell document, we saved the filename in 
   // a broadcaster with id="filename"
-//  var newtitle = document.getElementById("filename").value;
-//  if (newtitle.length > 0) title = newtitle;
+  var newtitle = document.getElementById("filename").value;
+  if (newtitle.length > 0) title = newtitle;
   try {
     msiGetEditor(editorElement).setDocumentTitle(title);
 
@@ -2532,7 +2538,7 @@ function msiSaveFilePickerDirectoryEx(filePicker, path, fileType)
       var fileDir = Components.classes["@mozilla.org/file/local;1"].
           createInstance(Components.interfaces.nsILocalFile);
       fileDir.initWithPath(path);
-      fileDir = fileDir.parent.QueryInterface(Components.interfaces.nsILocalFile);
+      fileDir = fileDir.QueryInterface(Components.interfaces.nsILocalFile);
 
       if (prefBranch)
        prefBranch.setComplexValue("editor.lastFileLocation."+fileType, Components.interfaces.nsILocalFile, fileDir);
@@ -2550,17 +2556,96 @@ function msiSaveFilePickerDirectoryEx(filePicker, path, fileType)
   window.gFilePickerDirectory = null;
 }
 
-function msiCopyDirectoryToBak( directory ) // an nsILocalFile
+function msiCopyFileAndDirectoryToBak( documentfile ) // an nsILocalFile
 {
   try {
-    var newdirname = directory.leafName;
-    newdirname = newdirname.replace(".sci", ".bak");
-    var newdir = directory.parent.clone();
-    newdir.append(newdirname);
-    if (newdir.exists()) newdir.remove(true);
-    directory.copyTo( null, newdirname );
+  // new scheme: save the bak files with no name change in the ..._files/bak directory
+    var leafname = documentfile.leafName;
+    var i = leafname.lastIndexOf(".");
+    if (i > 0) leafname = leafname.substr(0,i);
+    var parentdir = documentfile.parent.clone();
+    var _filesdir = parentdir.clone();
+    _filesdir.append(leafname+"_files");
+    var tempbakdir = parentdir.clone();
+    tempbakdir.append("bak");
+    var finalbakdir = _filesdir.clone();
+    finalbakdir.append("bak");
+  // nuke current bak dir contents if there are any
+    if (finalbakdir.exists()) finalbakdir.remove(true);
+  // copy stuff to temp bak dir
+    documentfile.copyTo(tempbakdir, documentfile.leafName);
+  // copy _files to temp bak dir
+    _filesdir.copyTo(tempbakdir, leafname+"_files");
+  // now move the temp dir to ..._files/bak
+    tempbakdir.moveTo(_filesdir, "bak"); 
+  // now clean up
+    tempbakdir.remove(); 
   }
-  catch (e) {}
+  catch (e) {
+    dump("msiCopyFileAndDirectoryToBak failed: "+e+"\n");
+  }
+}
+
+function msiCopyAuxDirectory( originalfile, newfile ) // both nsILocalFiles
+{
+  try
+  {
+    var filename = originalfile.leafName;
+    var newfilename = newfile.leafName;
+    var i = filename.lastIndexOf(".");
+    if (i >= 0) filename = filename.substr(0,i);
+    i = newfilename.lastIndexOf(".");
+    if (i >= 0) newfilename = newfilename.substr(0,i);
+    filename += "_files";
+    newfilename += "_files";
+    var parentdir = originalfile.parent.clone();
+    var newdir = newfile.parent.clone();
+    var testfile = newdir.clone();
+    testfile.append(newfilename);
+    if (testfile.exists()) testfile.remove();
+    parentdir.append(filename);
+    parentdir.copyTo(newdir, newfilename);
+  }
+  catch(e) {
+    dump("unable to copy aux directory: "+e+"\n");
+  }
+}
+
+// This replaces a file with its backup file, and the same for its associated directory
+// The File/Revert calls this function, but also reloads the reverted file. The pre-reverted
+// file is saved in the revert directory
+
+function msiRevertFile (documentfile) // an nsILocalFile
+{
+  try {
+  // new scheme: save the bak files with no name change in the ..._files/bak directory
+    var leafname = documentfile.leafName;
+    var i = leafname.lastIndexOf(".");
+    if (i > 0) leafname = leafname.substr(0,i);
+    var parentdir = documentfile.parent.clone();
+    var _filesdir = parentdir.clone();
+    _filesdir.append(leafname+"_files");
+    var revertdir = _filesdir.clone();
+    revertdir.append("revert");
+    var bakdir = _filesdir.clone();
+    bakdir.append("bak");
+    var bakdir_files = bakdir.clone()
+    bakdir_files.append(leafname+"_files");
+  // nuke current bak dir contents if there are any
+    if (revertdir.exists()) revertdir.remove(true);
+  // copy stuff to revert dir
+    documentfile.copyTo(revertdir, documentfile.leafName);
+    _filesdir.copyTo(revertdir, leafname+"_files");
+  // now we're ready to restore
+  // copy _files to temp temp dir
+    bakdir_files.copyTo(parentdir, leafname+"_files");
+    bakdir.append(leafname+"."+MSI_EXTENSION);
+    bakdir.copyto(parentdir, bakdir.leafName);
+  // we intentionally leave the bak dir in place.
+  }
+  catch(e) {
+    dump("msiRevertFile failed: "+e+"\n");
+  }
 }
 
 function GetDefaultBrowserColors()
@@ -2598,6 +2683,13 @@ function TextIsURI(selectedText)
     ^ftp:\/\/|^about:|^mailto:|^news:|^snews:|^telnet:|^ldap:|\
     ^ldaps:|^gopher:|^finger:|^javascript:/i.test(selectedText);
 }
+
+function IsUrlUntitled(urlString)
+{
+  var re = new RegExp("/"+GetString("untitled")+"[0-9]*\.", "i");
+  return re.test(urlString);
+}
+
 
 function IsUrlAboutBlank(urlString)
 {
@@ -2801,7 +2893,7 @@ function msiGetDocumentBaseUrl(editorElement)
     if (!docUrl)
       docUrl = msiGetEditorURL(editorElement);
 
-    if (!IsUrlAboutBlank(docUrl))
+//    if (!IsUrlAboutBlank(docUrl))
       return docUrl;
   } catch (e) {}
   return "";
@@ -2896,7 +2988,7 @@ function GetFilename(urlspec)
   return filename ? filename : "";
 }
 
-function GetLastDirectory(urlspec)
+function GetFilepath(urlspec)
 {
   if (!urlspec || IsUrlAboutBlank(urlspec))
     return "";
@@ -2905,7 +2997,7 @@ function GetLastDirectory(urlspec)
   if (!IOService)
     return "";
 
-  var filename;
+  var filepath;
 
   try {
     var uri = IOService.newURI(urlspec, null, null);
@@ -2913,18 +3005,44 @@ function GetLastDirectory(urlspec)
     {
       var url = uri.QueryInterface(Components.interfaces.nsIURL);
       if (url)
-        filename = url.directory;
+        filepath = decodeURIComponent(url.path.substr(1));
     }
   } catch (e) {}
 
-  var re = /[a-zA-Z0-9\%\.]+\/$/;
-  try {
-    filename = re.exec(filename)[0];
-    filename = filename.substr(0,filename.length - 1);
-  }
-  catch(e) { filename = ""; }
-  return filename ? filename : "";
+  return filepath ? filepath : "";
 }
+
+
+// apparently no longer needed 
+//function GetLastDirectory(urlspec)
+//{
+//  if (!urlspec || IsUrlAboutBlank(urlspec))
+//    return "";
+//
+//  var IOService = msiGetIOService();
+//  if (!IOService)
+//    return "";
+//
+//  var filename;
+//
+//  try {
+//    var uri = IOService.newURI(urlspec, null, null);
+//    if (uri)
+//    {
+//      var url = uri.QueryInterface(Components.interfaces.nsIURL);
+//      if (url)
+//        filename = url.directory;
+//    }
+//  } catch (e) {}
+//
+//  var re = /[a-zA-Z0-9\%\.]+\/$/;
+//  try {
+//    filename = re.exec(filename)[0];
+//    filename = filename.substr(0,filename.length - 1);
+//  }
+//  catch(e) { filename = ""; }
+//  return filename ? filename : "";
+//}
 
 // Return the url without username and password
 // Optional output objects return extracted username and password strings
@@ -3214,7 +3332,7 @@ function msiPrintOptions(printFlags)
   {
     if (this.useCurrViewSettings)
     {
-      var viewSettings = msiGetCurrViewFlags(editorElement);
+      var viewSettings = msiGetCurrViewSettings(editorElement);
       this.printInvisibles = viewSettings.showInvisibles;
       this.printHelperLines = viewSettings.showHelperLines;
       this.printInputBoxes = viewSettings.showInputBoxes;
