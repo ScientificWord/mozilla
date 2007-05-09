@@ -225,14 +225,12 @@ function UpdateWindowTitle()
       windowTitle = GetString("untitled");
 
     // Append just the 'leaf' filename to the Doc. Title for the window caption
-    // We actually use the penultimate directory name, the one with .sci extension
-//    var docUrl = GetDocumentUrl();
     var editorElement = msiGetTopLevelEditorElement();
     var docUrl = msiGetEditorURL(editorElement);
-    if (docUrl && !IsUrlAboutBlank(docUrl))
+    if (docUrl) // && !IsUrlAboutBlank(docUrl))
     {
       var scheme = GetScheme(docUrl);
-      var filename  = GetLastDirectory(docUrl);
+      var filename  = GetFilename(docUrl);
       if (!filename || filename.length == 0)
         filename = GetFilename(docUrl);
       if (filename)
@@ -241,7 +239,7 @@ function UpdateWindowTitle()
       // Save changed title in the recent pages data in prefs
       SaveRecentFilesPrefs();
     }
-    // Set window title with " - Composer" appended
+    // Set window title with " - Scientific WorkPlace/Word/Notebook" appended
     var xulWin = document.documentElement;
     document.title = windowTitle + xulWin.getAttribute("titlemenuseparator") + 
                    xulWin.getAttribute("titlemodifier");
