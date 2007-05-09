@@ -24,6 +24,9 @@
 <!ENTITY filesave.keybinding "s">
 <!ENTITY saveAsCmd.label "Save As...">
 <!ENTITY filesaveas.accesskey "A">
+<!ENTITY saveCopyAsCmd.label "Save Copy As...">
+<!ENTITY filesavecopyas.accesskey "c">
+<!ENTITY filesavecopyas.keybinding "c">
 <!ENTITY docInfo.label "Document Info...">
 <!ENTITY docInfo.accesskey "D">
 
