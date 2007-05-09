@@ -323,6 +323,7 @@ nsHTMLEditRules::BeforeEdit(PRInt32 action, nsIEditor::EDirection aDirection)
 
   if (!mActionNesting)
   {
+//    printf("===BeforeEdit: mActionNesting == (should be 0) %d\n", mActionNesting);
     // clear our flag about if just deleted a range
     mDidRangedDelete = PR_FALSE;
     
@@ -331,19 +332,19 @@ nsHTMLEditRules::BeforeEdit(PRInt32 action, nsIEditor::EDirection aDirection)
     // get selection
     nsCOMPtr<nsISelection>selection;
     nsresult res = mHTMLEditor->GetSelection(getter_AddRefs(selection));
-    if (NS_FAILED(res)) return res;
+    if (NS_FAILED(res)) { mActionNesting++; return res; }
   
     // get the selection start location
     nsCOMPtr<nsIDOMNode> selStartNode, selEndNode;
     PRInt32 selOffset;
     res = mHTMLEditor->GetStartNodeAndOffset(selection, address_of(selStartNode), &selOffset);
-    if (NS_FAILED(res)) return res;
+    if (NS_FAILED(res)) { mActionNesting++; return res; }
     mRangeItem.startNode = selStartNode;
     mRangeItem.startOffset = selOffset;
 
     // get the selection end location
     res = mHTMLEditor->GetEndNodeAndOffset(selection, address_of(selEndNode), &selOffset);
-    if (NS_FAILED(res)) return res;
+    if (NS_FAILED(res)) { mActionNesting++; return res; }
     mRangeItem.endNode = selEndNode;
     mRangeItem.endOffset = selOffset;
 
@@ -359,14 +360,14 @@ nsHTMLEditRules::BeforeEdit(PRInt32 action, nsIEditor::EDirection aDirection)
     {
       nsrange = do_QueryInterface(mDocChangeRange);
       if (!nsrange)
-        return NS_ERROR_FAILURE;
+        { mActionNesting++; return NS_ERROR_FAILURE;}
       nsrange->NSDetach();  // clear out our accounting of what changed
     }
     if(mUtilRange)
     {
       nsrange = do_QueryInterface(mUtilRange);
       if (!nsrange)
-        return NS_ERROR_FAILURE;
+        { mActionNesting++; return NS_ERROR_FAILURE;}
       nsrange->NSDetach();  // ditto for mUtilRange.  
     }
 
@@ -380,7 +381,8 @@ nsHTMLEditRules::BeforeEdit(PRInt32 action, nsIEditor::EDirection aDirection)
       if (aDirection == nsIEditor::eNext)
         selNode = selEndNode;
       res = CacheInlineStyles(selNode);
-      if (NS_FAILED(res)) return res;
+      if (NS_FAILED(res)) { mActionNesting++; return res; }
+
     }
     
     // check that selection is in subtree defined by body node
@@ -389,6 +391,7 @@ nsHTMLEditRules::BeforeEdit(PRInt32 action, nsIEditor::EDirection aDirection)
     mTheAction = action;
   }
   mActionNesting++;
+//  printf("===BeforeEdit: mActionNesting incremented to %d\n", mActionNesting);
   return NS_OK;
 }
 
@@ -399,11 +402,12 @@ nsHTMLEditRules::AfterEdit(PRInt32 action, nsIEditor::EDirection aDirection)
   if (mLockRulesSniffing) return NS_OK;
 
   nsAutoLockRulesSniffing lockIt(this);
-
+//  printf("===AfterEdit: mActionNesting == %d\n", mActionNesting);
   NS_PRECONDITION(mActionNesting>0, "bad action nesting!");
   nsresult res = NS_OK;
   if (!--mActionNesting)
   {
+//    printf("===AfterEdit: mActionNesting decremented to %d\n", mActionNesting);
     // do all the tricky stuff
     res = AfterEditInner(action, aDirection);
 
