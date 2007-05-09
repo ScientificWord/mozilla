@@ -11,7 +11,7 @@
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?> 
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
-<!DOCTYPE dialog SYSTEM "chrome://prince/locale/MathmlMatrix.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/mathmlMatrix.dtd">
 
 <dialog id="MatrixDlg"
   title="&windowTitle.label;"
