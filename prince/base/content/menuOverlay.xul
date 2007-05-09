@@ -45,6 +45,8 @@
         label="&saveCmd.label;" />
       <menuitem accesskey="&filesaveas.accesskey;" observes="cmd_saveAs"
         label="&saveAsCmd.label;"/>
+      <menuitem accesskey="&filesavecopyas.accesskey;" observes="cmd_saveCopyAs"
+        label="&saveCopyAsCmd.label;"/>
       <menuitem accesskey="&filerevert.accesskey;" observes="cmd_revert"
         label="&fileRevert.label;" />
       <menuseparator/>
@@ -355,6 +357,7 @@
   >
     <command id="cmd_save"           label="&saveCmd.label;"           oncommand="msiGoDoCommand('cmd_save')"/>
     <command id="cmd_saveAs"         label="&saveAsCmd.label;"         oncommand="msiGoDoCommand('cmd_saveAs')"/>
+    <command id="cmd_saveCopyAs"     label="&saveCopyAsCmd.label;"     oncommand="msiGoDoCommand('cmd_saveCopyAs')"/>
     <command id="cmd_exportToText"   label="&exportToTextCmd.label;"   oncommand="msiGoDoCommand('cmd_exportToText')"/>
     <command id="cmd_saveAndChangeEncoding"  label="&saveAndChangeEncodingCmd.label;"  oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding')"/>
     <command id="cmd_publish"        label="&publishCmd.label;"        oncommand="msiGoDoCommand('cmd_publish')"/>
