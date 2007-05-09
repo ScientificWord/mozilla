@@ -4,6 +4,8 @@ const NS_PIPECONSOLE_CONTRACTID = "@mozilla.org/process/pipe-console;1";
 const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
 const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
+const MSI_EXTENSION = "sci";
+
 var gPipeConsole;
 
 function goAboutDialog() {
@@ -14,8 +16,8 @@ function doOpen() {
   var fp = Components.classes["@mozilla.org/filepicker;1"].
              createInstance(Components.interfaces.nsIFilePicker);
   fp.init(window, "Open Scientific WorkPlace File", Components.interfaces.nsIFilePicker.modeOpen);
-  msiSetFilePickerDirectory(fp, "sci");
-  fp.appendFilter("SWP Documents","*.sci");
+  msiSetFilePickerDirectory(fp, MSI_EXTENSION);
+  fp.appendFilter("SWP Documents","*."+MSI_EXTENSION);
   fp.appendFilter("XHTML Files","*.xhtml; *.xht");
   fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
 
@@ -32,35 +34,13 @@ function doOpen() {
       var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
       documentfile.initWithPath( fp.file.path );
       var directory;
-      var path;
-      if (documentfile.isDirectory())
-      {
-        directory = documentfile.path;
-        // we need to find the main xhtml file in the directory. We look first for the one with
-        // the same name as the directory.
-        var re = /([a-zA-Z0-9% ]+)\.[a-zA-Z0-9]+\//;
-        var match = re.exec(directory);
-        if (match.count() > 1) dirbase = match[1];
-        var dir2 = directory.clone;
-        dir2.append(dirbase + ".xhtml");
-        if (dir2.exists()) path = dir2.path;
-        else
-        {
-          dir2 = directory.clone;
-          dir2.append("main.xhtml");
-          if (dir2.exists()) path = dir2.path;
-        }
-      }
-      else 
-      {
-        path = documentfile.path;
-        directory = documentfile.parent.path;
-        documentfile = documentfile.parent;
-      }
-      /* we should copy the current directory to a .bak name */
-      msiCopyDirectoryToBak(documentfile);
-      msiEditPage(path, window, false);
-      msiSaveFilePickerDirectoryEx(fp, directory, "sci");
+//      var path;
+//      path = documentfile.path;
+      directory = documentfile.parent.path;
+      /* we should copy the current directory to the bak directory */
+      msiCopyFileAndDirectoryToBak(documentfile);
+      msiEditPage(documentfile.path, window, false);
+      msiSaveFilePickerDirectoryEx(fp, directory, MSI_EXTENSION);
     } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
   } 
 }
@@ -70,14 +50,13 @@ function doNew() {
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
   var fp = Components.classes["@mozilla.org/filepicker;1"].
              createInstance(Components.interfaces.nsIFilePicker);
-  msiSetFilePickerDirectory(fp, "shl");
-  fp.defaultExtension = ".shl";
+  msiSetFilePickerDirectory(fp, "shell");
+  fp.defaultExtension = "."+MSI_EXTENSION;
   var dir1 =dsprops.get("resource:app", Components.interfaces.nsIFile);
-  dir1.append("res");
   dir1.append("shells");;
   fp.displayDirectory = dir1;
   fp.init(window, "Open Shell File", Components.interfaces.nsIFilePicker.modeOpen);
-  fp.appendFilter("Shell Files","*.shl");
+  fp.appendFilter("Shell Files","*."+MSI_EXTENSION);
   fp.appendFilters(Components.interfaces.nsIFilePicker.filterText);
   fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
 
@@ -85,14 +64,14 @@ function doNew() {
     fp.show();
   }
   catch (ex) {
-    dump("filePicker.show() threw an exception\n");
+    dump("filePicker.show() threw an exception: "+ex+"\n");
   }
 
   if (fp.file && fp.file.path.length > 0) {
     dump("Ready to edit shell: " + fp.fileURL.spec +"\n");
     try {
       msiEditPage(fp.fileURL.spec, window, false);
-//      msiSaveFilePickerDirectoryEx(fp, directory, "sci");
+//      msiSaveFilePickerDirectoryEx(fp, directory, MSI_EXTENSION);
     } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
   } 
 }
@@ -126,6 +105,7 @@ function GetCurrentEditorElement() {
 }
 
 function doQuit() {
+  ShutdownAllEditors();
   var appStartup = Components.classes["@mozilla.org/toolkit/app-startup;1"].
                      getService(Components.interfaces.nsIAppStartup);
 
@@ -364,7 +344,7 @@ function openTeX()
   fp.appendFilter("TeX files", "*.tex; *.ltx; *.shl");
   fp.appendFilters(msIFilePicker.filterXML)
 
- // SetFilePickerDirectory(fp, "tex");
+  msiSetFilePickerDirectory(fp, "tex");
 
 
   try {
@@ -488,7 +468,6 @@ function currentFileName()
   var filename = "";
   if (docUrl && !IsUrlAboutBlank(docUrl))
     filename = GetFilename(docUrl);
-  // BBM todo: we should check to see if the parent is a .sci directory, and if so, use that name  
   return filename;
 }
 
@@ -504,8 +483,8 @@ function exportTeX()
 
    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
    fp.init(window, "Export TeX File", msIFilePicker.modeSave);
-   fp.appendFilters(msIFilePicker.filterText);
    fp.appendFilter("TeX files", "*.tex; *.ltx");
+   fp.appendFilters(msIFilePicker.filterText);
    fp.defaultExtension = ".tex";
    try 
    {
@@ -583,122 +562,141 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
 }
 
 
-function printTeX( pdftex )
+function printTeX( pdftex, preview )
 {
-  var editor = GetCurrentEditor();
-  if (!editor) return;
-  var str = documentAsTeX(editor.document, "chrome://prnc2ltx/content/latex.xsl" );
-// now save this TeX string and run TeX on it.  
-// BBM todo: We want the directory name above the file.
-  var editorElement = msiGetTopLevelEditorElement();
-  var docUrl = msiGetEditorURL(editorElement);
-//  var docUrl = GetDocumentUrl();
-  var scheme, filebase;
-  if (docUrl && !IsUrlAboutBlank(docUrl))
-  {
-    scheme = GetScheme(docUrl);
-    filebase = GetFilename(docUrl);
-  }
-  var filename = filebase.substring(0,filebase.lastIndexOf(".")) + ".tex";
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-  var texfile = dsprops.get("TmpD", Components.interfaces.nsILocalFile);
-  texfile.append(filename);
-  texfile.createUnique(0, 0755);
-  // capture the file name that was constructed
-  var texfileLeaf = texfile.leafName;
-  texfileLeaf = texfileLeaf.substring(0, texfileLeaf.lastIndexOf("."));
-  var outputfile = dsprops.get("TmpD", Components.interfaces.nsILocalFile);
-  dump("\ntexfile="+texfile.path);  
-  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-  fos.init(texfile, -1, -1, false);
-  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-    .createInstance(Components.interfaces.nsIConverterOutputStream);
-  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-  os.writeString(str);
-  os.close();
-//   fos.close();
-  if (compileTeXFile(pdftex, texfileLeaf, texfile.path, outputfile.path, 1))
-  {
-    if (pdftex)
-      texfileLeaf += ".pdf";
+  try {
+    var editor = GetCurrentEditor();
+    if (!editor) return;
+    var str = documentAsTeX(editor.document, "chrome://prnc2ltx/content/latex.xsl" );
+  // now save this TeX string and run TeX on it.  
+    var editorElement = msiGetTopLevelEditorElement();
+    var docUrl = msiGetEditorURL(editorElement);
+    var docPath = GetFilepath(docUrl);
+    var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  // for Windows
+#ifdef XP_WIN32
+      docPath = docPath.replace("/","\\","g");
+#endif
+    outputfile.initWithPath( docPath ); // outputfile now points to our document file
+    var outleaf = outputfile.leafName;
+    outleaf = outleaf.substr(0, outleaf.lastIndexOf("."));
+    outputfile = outputfile.parent;
+    outputfile.append(outleaf + "_files");
+    if (!outputfile.exists()) outputfile.create(1, 0755);
+    outputfile.append("tex");
+    if (!outputfile.exists()) outputfile.create(1, 0755);
+    var dvipdffile = outputfile.clone();
+    outputfile.append(outleaf+".tex");
+    if (outputfile.exists()) outputfile.remove(false);
+    dvipdffile.append(outleaf+ (pdftex?".pdf":".dvi"));
+    if (dvipdffile.exists()) dvipdffile.remove(false);
+    
+    dump("\TeX file="+outputfile.path);  
+    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+    fos.init(outputfile, -1, -1, false);
+    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+      .createInstance(Components.interfaces.nsIConverterOutputStream);
+    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+    os.writeString(str);
+    os.close();
+  //   fos.close();
+    if (compileTeXFile(pdftex, outleaf, outputfile.path, dvipdffile.parent.path, 1))
+    {
+      if (!dvipdffile.exists())
+        AlertWithTitle("TeX Error", "Need to offer to show log");
+      dump("outputfile to be launched: "+dvipdffile.path+"\n");
+      if (preview)
+      {
+        document.getElementById("preview-frame").loadURI(dvipdffile.path);
+        // Switch to the preview pane (third in the deck)
+        goDoCommand("cmd_PreviewMode"); 
+      }     
+    }
     else
-      texfileLeaf += ".dvi";
-    outputfile.append(texfileLeaf);
-    dump("outputfile to be launched: "+outputfile.path+"\n");
-    document.getElementById("preview-frame").loadURI(outputfile.path);
-    // Switch to the preview pane (third in the deck)
-    goDoCommand("cmd_PreviewMode");      
-  }
-  else
-    dump("\nRunning TeX failed to create a file!");
+      dump("\nRunning TeX failed to create a file!");
+   }
+   catch(e) {
+     dump(e+"\n");
+   }
 }
 
 function previewTeX(pdftex)
 {
-  printTeX(pdftex);
+  printTeX(pdftex, true);
 };
 
 function compileTeX(pdftex)
 {
-  var editorElement = msiGetTopLevelEditorElement();
-  var docUrl = msiGetEditorURL(editorElement);
-//  var docUrl = GetDocumentUrl();
-  dump('\nThis doc url = ' + docUrl);
-  var scheme, filename;
-  if (docUrl && !IsUrlAboutBlank(docUrl))
+  try
   {
-    scheme = GetScheme(docUrl);
-    filename = GetFilename(docUrl);
-  }
-  dump('\nThis doc = ' + filename);
+    var editor = GetCurrentEditor();
+    if (!editor) return;
+    var str = documentAsTeX(editor.document, "chrome://prnc2ltx/content/latex.xsl" );
+  // now save this TeX string and run TeX on it.  
+    var editorElement = msiGetTopLevelEditorElement();
+    var docUrl = msiGetEditorURL(editorElement);
+    var docPath = GetFilepath(docUrl);
+    var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  // for Windows
+#ifdef XP_WIN32
+    docPath = docPath.replace("/","\\","g");
+#endif
+    outputfile.initWithPath( docPath ); // outputfile now points to our document file
+    var outleaf = outputfile.leafName;
+    outleaf = outleaf.substr(0, outleaf.lastIndexOf("."));
+    outputfile = outputfile.parent;
+    outputfile.append(outleaf + "_files");
+    if (!outputfile.exists()) outputfile.create(1, 0755);
+    outputfile.append("tex");
+    if (!outputfile.exists()) outputfile.create(1, 0755);
+    var dvipdffile = outputfile.clone();
+    outputfile.append(outleaf+".tex");
+    if (outputfile.exists()) outputfile.remove(false);
+    dvipdffile.append(outleaf+ (pdftex?".pdf":".dvi"));
+    if (dvipdffile.exists()) dvipdffile.remove(false);
+    
+    dump("\TeX file="+outputfile.path);  
+    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
+    fp.init(window, "Save "+(pdftex?"PDF":"DVI")+" file", msIFilePicker.modeSave);
 
-  if (filename.length < 0)
-     return;     
-  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
-  fp.init(window, "Save "+(pdftex?"PDF":"DVI")+" file", msIFilePicker.modeSave);
+    fp.appendFilter("Compiled files","*.pdf; *.dvi");
+    fp.appendFilters(msIFilePicker.filterAll);
 
-  // BBM todo: we need to set up file pickers for pdf and dvi files 
-  fp.appendFilters(msIFilePicker.filterAll);
-
-  try 
-  {
-    fp.show();
-    // need to handle cancel (uncaught exception at present) 
-  }
-  catch (ex) 
-  {
-    dump("filePicker threw an exception\n");
-  }
+    try 
+    {
+      fp.show();
+      // need to handle cancel (uncaught exception at present) 
+    }
+    catch (ex) 
+    {
+      dump("filePicker threw an exception\n");
+      return;
+    }
   
-  if (fp.file && fp.file.path.length > 0) 
-  {
-     var exportfile =  fp.file.path;
-    	dump("\nCompiled file: " + exportfile);
-  }
-  var editor = GetCurrentEditor();
-  if (!editor) return;
-  var texfile = dsprops.get("TmpD", Components.interfaces.nsILocalFile);
-  texfile.append("temp.tex");
-  texfile.createUnique(0, 0755);
-  // capture the file name that was constructed
-  var texfileLeaf = texfile.leafName;
-  texfileLeaf = texfileLeaf.substring(0, texfileLeaf.lastIndexOf("."));
-  var outputDir = dsprops.get("TmpD", Components.interfaces.nsILocalFile);
- 
-  documentAsTeXFile(editor.document, "chrome://prnc2ltx/content/latex.xsl", texfile );
-  if (compileTeXFile( pdftex, texfileLeaf, texfile.path, outputDir.path, 1 ))
-  {
-    if (pdftex)
-      texfileLeaf += ".pdf";
+    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+    fos.init(outputfile, -1, -1, false);
+    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+      .createInstance(Components.interfaces.nsIConverterOutputStream);
+    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+    os.writeString(str);
+    os.close();
+  //   fos.close();
+    if (compileTeXFile(pdftex, outleaf, outputfile.path, dvipdffile.parent.path, 1))
+    {
+      if (!dvipdffile.exists())
+        AlertWithTitle("TeX Error", "Need to offer to show log");
+      else
+      // move the output result to the place indicated by fp.
+        dvipdffile.move(fp.file.parent, fp.file.leafName); 
+    } 
     else
-      texfileLeaf += ".dvi";
-    outputDir.append(texfileLeaf);  
-    // move the output result to the place indicated by fp.
-    outputDir.move(fp.file.parent, fp.file.leafName);  
+      dump("\nRunning TeX failed to create a file!");
   }
-}  
-
-
+  catch(e) {
+    dump(e+"\n");
+    return;
+  }
+}
 
 function initializeAutoCompleteStringArray()
  

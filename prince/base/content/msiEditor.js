@@ -533,7 +533,10 @@ function ShutdownAllEditors()
     for (var i = 0; i < editorList.length; ++i)
     {
       if (editorList.item(i))
+      {
+        msiCheckAndSaveDocument(editorList.item(i), "cmd_close", true);
         ShutdownAnEditor(editorList.item(i));
+      }
     }
 
 //    tmpWindow = tmpWindow.opener;
@@ -777,8 +780,16 @@ function msiSetFocusOnStartup(editorElement)
 
 function isShell (filename)
 {
-  var re = /\.shl\s*$/i;
-  return re.test(filename);
+  var foundit;
+  var re = /\/shells\//i;
+  foundit = re.test(filename);
+  if (!foundit)
+  {
+    re = /\\shells\\/i;
+    foundit = re.test(filename);
+  }
+  dump("isShell is " + foundit + "\n");
+  return foundit;
 }
 
 function EditorStartupForEditorElement(editorElement)
@@ -842,33 +853,53 @@ function EditorStartupForEditorElement(editorElement)
   // the editor gets instantiated by the editingSession when the URL has finished loading.
   try {
     var theArgs = document.getElementById("args");
+    var n = 1;
     var url = "";
     var docname = "";
     var docdir;
+    var shelldir;
+    var shellfile;
     var charset = "";
     var leafname = "";
     var changename = false;
     if (theArgs)
     {
       docname = document.getElementById("args").getAttribute("value");
-      docname = docname.replace("file:///","");
-      docname = docname.replace("file://","");
+      if (docname.indexOf("file://") == 0) docname = GetFilepath(docname);
   // for Windows
 #ifdef XP_WIN32
       docname = docname.replace("/","\\","g");
 #endif
       charset = document.getElementById("args").getAttribute("charset")
     };
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+    dump("docname starts out as " + docname + "\n");
     if (docname.length == 0)
     {
        docname=prefs.getCharPref("swp.defaultShell");
+       shellfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+       shellfile.append("shells");
+       dump("shelldir is "+shellfile.path + "\n");
+       docname = shellfile.path + "/" + docname;
+  // for Windows
+#ifdef XP_WIN32
+      docname = docname.replace("/","\\","g");
+#endif
+      dump("Docname is " + docname + "\n");
+    }
+    else
+    {
+      shellfile = Components.classes["@mozilla.org/file/local;1"].
+            createInstance(Components.interfaces.nsILocalFile);
     } 
     if (isShell(docname))
     {
+      shellfile.initWithPath(docname);
       // copy the shell to the default document area
       try
       {
         var docdirname = prefs.getCharPref("swp.prefDocumentDir");
+        dump("swp.prefDcoumentDir is ", docdirname + "\n");
         docdir = Components.classes["@mozilla.org/file/local;1"].
             createInstance(Components.interfaces.nsILocalFile);
         docdir.initWithPath(docdirname);
@@ -877,45 +908,59 @@ function EditorStartupForEditorElement(editorElement)
       }
       catch (e)
       {
-        var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+        // if we can't find the one in the prefs, get the default
         docdir = dsprops.get("AppData", Components.interfaces.nsILocalFile);
-        // depending on the app
+        // Mozilla custom would put this next to profile data, which requires the next line:
+        // docdir.append("MacKichan Software, Inc"); except on the Mac
+        // Choose one of the three following lines depending on the app
         docdir.append("Scientific WorkPlace");
         // docdir.append("Scientific Word");
         // docdir.append("Scientific Notebook");
         docdir.append("Docs");
+        dump("default document directory is "+docdir.path+"\n");
       }
-      // find n where untitledn.sci is the first unused file name in that folder
+      // find n where untitledn.MSI_EXTENSION is the first unused file name in that folder
       try
       {
-        var shelldir = Components.classes["@mozilla.org/file/local;1"].
-            createInstance(Components.interfaces.nsILocalFile);
-        shelldir.initWithPath(docname);
-        leafname = shelldir.leafName;
-        // temporarily, docname points to a file in the directory rather than to the directory
-        // itself. We now go up to the directory.
-        shelldir = shelldir.parent;
-        var n = 1;
+        dump("shellfile is " + shellfile.path + "\n");
+        leafname = shellfile.leafName;
+        var i = leafname.lastIndexOf(".");
+        if (i > 0) leafname = leafname.substr(0,i);
+        dump("leafname is " + leafname + "\n");
         while (n < 100)
         {
           try {
-            shelldir.copyTo(docdir,filename+n+".sci");
+            dump("Copying "+shellfile.path + " to directory " + docdir.path + ", file "+filename+n+"."+MSI_EXTENSION+"\n");
+            shellfile.copyTo(docdir,filename+n+"."+MSI_EXTENSION);
+            // if the copy succeeded, continue to copy the "..._files" directory
+            try {
+              dump("Succeeded\n");
+              var auxdir = shellfile.parent.clone();
+              dump("auxdir is " + auxdir.path+"\n");
+              auxdir.append(leafname+"_files");
+              dump("Succeeded. auxdir is " + auxdir.path + "\n");
+              dump("Trying to copy auxdir to docdir\n");
+              auxdir.copyTo(docdir,filename+n+"_files");
+            }
+            catch(e) {
+              dump("Copying auxdir caused error "+e+"\n");
+            }
             break;
           }
           catch(e) {
             n++;
           }
         }
-      }// at this point, shelldir is .../untitledxxx.sci
+      }// at this point, shellfile is .../untitledxxx.MSI_EXTENSION
       catch(e)
       {
         dump("Unable to open document for editing\n");
       }
       // set the url for the xhtml portion of the document
-      docdir.append(filename+n+".sci");
-      docdir.append(leafname); // this is the copied shell file
-      docdir.moveTo(null, filename+n+".xhtml"); // name it with the same root as the directory
+      docdir.append("untitled"+n+"." + MSI_EXTENSION);
+      dump("Final docdir path is " + docdir.path + "\n");
       url = docdir.path;
+      dump("url is " + url + "\n");
       
       // set document title when?? It is too early now, so we will save the name in the XUL
       document.getElementById("filename").value = filename+n;
@@ -923,7 +968,13 @@ function EditorStartupForEditorElement(editorElement)
     else
     {
       url = docname;
-      document.getElementById("filename").value = GetLastDirectory(url);
+  // for Windows
+#ifdef XP_WIN32
+      docname = docname.replace("\\","/","g");
+#endif
+      var dotIndex = docname.lastIndexOf(".");
+      var lastSlash = docname.lastIndexOf("/")+1;
+      document.getElementById("filename").value = dotIndex == -1?docname.slice(lastSlash):docname.slice(lastSlash,dotIndex);
     }  
 //    var contentViewer = GetCurrentEditorElement().docShell.contentViewer;
     var contentViewer = null;
@@ -1117,7 +1168,7 @@ function msiDocumentHasBeenSaved(editorElement)
     return false;
   }
 
-  if (!fileurl || IsUrlAboutBlank(fileurl))
+  if (!fileurl || IsUrlUntitled(fileurl) || IsUrlAboutBlank(fileurl))
     return false;
 
   // We have a file URL already
@@ -1163,7 +1214,8 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     
   var reasonToSave = strID ? GetString(strID) : "";
 
-  var title = document.title;
+//  var title = document.title;
+  var title = window.document.getElementById("filename").value;
   if (!title)
     title = GetString("untitled");
 
@@ -1229,9 +1281,23 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     return success;
   }
 
-  if (result == 2) // "Don't Save"
+  if (result == 2) 
+  {
+    // "Don't Save"
+    if (command == "cmd_close")
+    {
+      var urlstring = msiGetEditorURL(editorElement);
+      var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+      var currFilePath = GetFilepath(urlstring);
+  // for Windows
+#ifdef XP_WIN32
+      currFilePath = currFilePath.replace("/","\\","g");
+#endif
+      documentfile.initWithPath( currFilePath );
+      msiRevertFile( documentfile );
+    }
     return true;
-
+  }
   // Default or result == 1 (Cancel)
   return false;
 }
@@ -1830,7 +1896,7 @@ function msiGetBackgroundElementWithColor(editorElement)
 
   editorElement.mColorObj.Type = "";
   editorElement.mColorObj.PageColor = "";
-  geditorElement.mColorObj.TableColor = "";
+  editorElement.mColorObj.TableColor = "";
   editorElement.mColorObj.CellColor = "";
   editorElement.mColorObj.BackgroundColor = "";
   editorElement.mColorObj.SelectedType = "";
@@ -2152,9 +2218,9 @@ function EditorDblClick(event)
         element = msiGetEditor(editorElement).getSelectedElement("href");
       } catch (e) {}
 
-    dump("In EditorDblClick, element is [" + element.nodeName + "].\n");
     if (element)
     {
+      dump("In EditorDblClick, element is [" + element.nodeName + "].\n");
       goDoPrinceCommand("cmd_objectProperties", element, editorElement);
       event.preventDefault();
     }
@@ -3197,7 +3263,8 @@ function msiEditorSetDefaultPrefsAndDoctype(editorElement)
   }
 
   /* only set default prefs for new documents */
-  if (!IsUrlAboutBlank(msiGetEditorUrl(editorElement)))
+  var url = msiGetEditorUrl(editorElement);
+  if (!IsUrlAboutBlank(url)&&!IsUrlUntitled(url) )
     return;
 
   // search for author meta tag.
