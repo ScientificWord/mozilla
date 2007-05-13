@@ -247,7 +247,7 @@ nsHTMLEditRules::~nsHTMLEditRules()
 
 NS_IMPL_ADDREF_INHERITED(nsHTMLEditRules, nsTextEditRules)
 NS_IMPL_RELEASE_INHERITED(nsHTMLEditRules, nsTextEditRules)
-NS_IMPL_QUERY_INTERFACE4(nsHTMLEditRules, nsIHTMLEditRules, nsIEditRules, nsIEditActionListener, msiIEditActionListenerExtension)
+NS_IMPL_QUERY_INTERFACE3(nsHTMLEditRules, nsIHTMLEditRules, nsIEditRules, nsIEditActionListener)
 
 
 /********************************************************
@@ -8863,25 +8863,6 @@ nsHTMLEditRules::DidInsertNode(nsIDOMNode *aNode,
   res = UpdateDocChangeRange(mUtilRange);
   return res;  
 }
-
-//ljh TODO -- determine what if any functionality is needed for these two functions.
-NS_IMETHODIMP 
-nsHTMLEditRules::WillReplaceNode(nsIDOMNode *aNewNode, nsIDOMNode *aOldChild, nsIDOMNode *aParent)
-{
-  return NS_OK;  
-}
-
-
-NS_IMETHODIMP 
-nsHTMLEditRules::DidReplaceNode(nsIDOMNode *aNewNode, 
-                                nsIDOMNode *aOldNode, 
-                                nsIDOMNode *aParent, 
-                                nsresult    aResult)
-{
- return NS_OK;
-}
-
-
 
 NS_IMETHODIMP 
 nsHTMLEditRules::WillDeleteNode(nsIDOMNode *aChild)
