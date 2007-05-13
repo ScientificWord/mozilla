@@ -48,7 +48,6 @@
 #include "nsEditorUtils.h"
 #include "TypeInState.h"
 #include "nsReadableUtils.h"
-#include "msiIEditActionListenerExtension.h"
 
 class nsVoidArray;
 class nsIDOMElement;
@@ -68,8 +67,7 @@ struct StyleCache : public PropItem
 
 #define SIZE_STYLE_TABLE 19
 
-class nsHTMLEditRules : public nsIHTMLEditRules, public nsTextEditRules, public nsIEditActionListener,
-                        public msiIEditActionListenerExtension
+class nsHTMLEditRules : public nsIHTMLEditRules, public nsTextEditRules, public nsIEditActionListener
 {
 public:
 
@@ -116,10 +114,6 @@ public:
   NS_IMETHOD WillDeleteSelection(nsISelection *aSelection);
   NS_IMETHOD DidDeleteSelection(nsISelection *aSelection);
   
-  // msiIEditActionListenerExtension methods
-  NS_IMETHOD WillReplaceNode(nsIDOMNode *aNewNode, nsIDOMNode *aOldNode, nsIDOMNode *aParent);
-  NS_IMETHOD DidReplaceNode(nsIDOMNode *aNewNode, nsIDOMNode *aOldNode, nsIDOMNode *aParent, nsresult aResult);
-
 protected:
 
   enum RulesEndpoint
@@ -151,7 +145,7 @@ protected:
   nsresult StandardBreakImpl(nsIDOMNode *aNode, PRInt32 aOffset, nsISelection *aSelection);
   nsresult DidInsertBreak(nsISelection *aSelection, nsresult aResult);
   nsresult SplitMailCites(nsISelection *aSelection, PRBool aPlaintext, PRBool *aHandled);
-  nsresult WillDeleteSelection(nsISelection *aSelection, nsIEditor::EDirection aAction, 
+  virtual nsresult WillDeleteSelection(nsISelection *aSelection, nsIEditor::EDirection aAction, 
                                PRBool *aCancel, PRBool *aHandled);
   nsresult DidDeleteSelection(nsISelection *aSelection, 
                               nsIEditor::EDirection aDir, 
