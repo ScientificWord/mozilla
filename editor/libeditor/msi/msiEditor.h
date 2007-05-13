@@ -13,11 +13,9 @@
 #include "msiISelection.h"
 #include "msiIAutosub.h"
 
-
 class msiEditorMouseListener;
 class msiISelection;
 class msiSelectionManager;
-
 
 class msiEditor : 
 #ifdef ENABLE_EDITOR_API_LOG
@@ -38,21 +36,17 @@ public:
   NS_DECL_MSIIMATHMLEDITOR
   
   // nsIEditor overrides
+  NS_IMETHOD Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRoot, nsISelectionController *aSelCon, PRUint32 aFlags);
   NS_IMETHOD HandleKeyPress(nsIDOMKeyEvent* aKeyEvent);  //non-scriptable
   NS_IMETHOD InsertText(const nsAString &aStringToInsert);
-  NS_IMETHOD Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRoot, nsISelectionController *aSelCon, PRUint32 aFlags);
   // End of nsIEditor overrides
   
   // nsEditor method
   virtual nsresult DeleteSelectionImpl(EDirection aAction);
-  
-  
-  
-  
-  
-  
 
 protected:
+  NS_IMETHOD  InitRules();
+
   virtual nsresult InstallEventListeners();
   virtual nsresult CreateEventListeners();
   virtual void     RemoveEventListeners();
@@ -63,14 +57,16 @@ protected:
   static nsCOMPtr<nsIRangeUtils> m_rangeUtils;
   static nsCOMPtr<msiIAutosub> m_autosub;
   
-  
   friend class msiEditorMouseListener;
   friend class msiEditorMouseMotionListener;
   friend class msiSelectionManager;
   
-protected:
+public:
 //Utility functions
 PRBool   NodeInMath(nsIDOMNode* node);
+
+protected:
+//Utility functions
 nsresult GetMathParent(nsIDOMNode * node, nsCOMPtr<nsIDOMNode> & mathParent);
 
 nsresult ExtractDataFromKeyEvent(nsIDOMKeyEvent * aKeyEvent,
@@ -89,7 +85,6 @@ nsresult GetNSSelectionData(nsCOMPtr<nsISelection> &selection,
 PRBool IsSelectionCollapsed();
 nsresult IsPointWithinCurrentSelection(nsCOMPtr<nsIDOMNode> & node, PRUint32 offset, 
                                        PRBool & withinSelection);
-
                             
 nsresult EnsureMathWithSelectionCollapsed(nsCOMPtr<nsIDOMNode> &node,
                                           PRInt32 & offset);
