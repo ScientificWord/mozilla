@@ -36,6 +36,7 @@
 #include "msiIEditingManager.h"
 #include "msiSelectionManager.h"
 #include "msiDeleteRangeTxn.h"
+#include "msiEditRules.h"
 
 #include "nsEditorUtils.h"
 #include "msiIScriptRunner.h"
@@ -139,7 +140,7 @@ msiEditor::RemoveEventListeners()
   nsCOMPtr<nsIDOMEventReceiver> erP = GetDOMEventReceiver();
   if (erP)
   {
-    // unregister the event listeners with the DOM event reveiver
+    // unregister the event listeners with the DOM event receiver
 
     if (m_mouseMotionListener)
     {
@@ -151,6 +152,7 @@ msiEditor::RemoveEventListeners()
   nsHTMLEditor::RemoveEventListeners();
   return;
 }
+
 
 //Begin msiIMathMLEditor
 
@@ -2540,3 +2542,15 @@ msiEditor::CheckForAutoSubstitute()
   }
   return res;
 }
+
+NS_IMETHODIMP
+msiEditor::InitRules()
+{
+  nsresult res = NS_NewMSIEditRules(getter_AddRefs(mRules));
+  if (NS_FAILED(res)) return res;
+  if (!mRules) return NS_ERROR_UNEXPECTED;
+  res = mRules->Init(NS_STATIC_CAST(nsPlaintextEditor*,this), mFlags);
+  
+  return res;
+}
+

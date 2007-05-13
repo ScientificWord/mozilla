@@ -37,6 +37,7 @@ REQUIRES = xpcom \
 
 CPPSRCS  = \
            msiEditor.cpp \
+           msiEditRules.cpp \
            msiEditorMouseListener.cpp \
            msiEditorMouseMotionListener.cpp \
            msiSelectionManager.cpp \

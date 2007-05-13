@@ -12,7 +12,7 @@ An extension of the Editor Action Listener interface to outside world
 
 
 /**
- * An extenstion to the generic editor action listener interface. 
+ * An extension to the generic editor action listener interface. 
  * <P>
  * msiIEditActionListenerExtension  is the interface used by applications wishing to be notified
  * when the editor modifies the DOM tree.
