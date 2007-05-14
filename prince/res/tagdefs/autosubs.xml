@@ -23,6 +23,8 @@
   <sub ctx="text" tp="sc"><pattern>.LG.</pattern><data>toggleTextTag('LARGE');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.sec.</pattern><data>insertSectionTag('section');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.tit.</pattern><data>insertParaTag('title');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertSectionTag('author');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertParaTag('author');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.addr.</pattern><data>insertParaTag('address');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>sin</pattern><data>insertMathname('sin');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.maket.</pattern><data>insertTag('maketitle');</data></sub>
 </subs>
