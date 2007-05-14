@@ -10,7 +10,15 @@ XPI_NAME	= prince
 include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/rules.mk
 
-DICT_RESOURCES := $(wildcard	$(srcdir)/*.*)
+DICT_RESOURCES := $(wildcard	$(srcdir)/de-DE.*) \
+	$(wildcard	$(srcdir)/en-US.*) \
+	$(wildcard	$(srcdir)/en-GB.*) \
+	$(wildcard	$(srcdir)/fr-FR.*) \
+	$(wildcard	$(srcdir)/es-ES.*) \
+	$(wildcard	$(srcdir)/es-MX.*) \
+	$(wildcard	$(srcdir)/it.*) \
+	$(wildcard	$(srcdir)/he-IL.*) \
+	$(NULL)
 
 libs::	$(DICT_RESOURCES)
 	$(INSTALL)	$(DICT_RESOURCES)	$(FINAL_TARGET)/dictionaries
