@@ -10,7 +10,7 @@ pref("nglayout.debug.disable_xul_fastload", true);
 
 pref("javascript.enabled",                  true);
 
-pref("swp.defaultShell", "article/LaTeXArticle.sci");
+pref("swp.defaultShell", "article/LaTeXArticleShell.sci");
 pref("editor.author",                       "");
 
 pref("editor.text_color",                   "#000000");
