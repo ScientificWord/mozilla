@@ -20,10 +20,23 @@ function insertMathunit( unit )
 {
   var editorElement = document.getElementById("content-frame");
   insertmathunit(unit, editorElement);
-  //var editor = msiGetEditor(editorElement);
-  //var MathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-  //MathmlEditor.insertMathunit( unit );
 }
+
+function insertMathname( name )
+{
+  var editorElement = document.getElementById("content-frame");
+  insertmathname(name, editorElement);
+}
+
+function insertTag( name )
+{
+  var editorElement = document.getElementById("content-frame");
+  var editor = msiGetEditor(editorElement);
+  var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+  deleteSelection(); 
+  HTMLEditor.insertHTML("<"+name+"/>");
+}
+  
 
 function insertText ( textString )
 {
