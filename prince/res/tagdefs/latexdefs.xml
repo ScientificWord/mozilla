@@ -71,11 +71,10 @@
 			<contains>sw:defaulttitletag</contains>
 			<tags>
 				<tag nm="sw:address">
+          <nexttag>sw:para</nexttag>
           <description>Author address</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
-          </initialcontentsforempty>
-          <nextafteremptyblock>para</nextafteremptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]></initialcontentsforempty>
         </tag>
 				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
@@ -83,6 +82,12 @@
           <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
           </initialcontentsforempty>
 				</tag>
+				<tag nm="sw:author">
+          <nexttag>sw:para</nexttag>
+          <description>Author name</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]></initialcontentsforempty>
+        </tag>
 				<tag nm="html:p">
 					<description>HTML paragraph</description>
           <discardemptyblock>true</discardemptyblock>
@@ -262,14 +267,6 @@
           <description>Abstract</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[ <para><cursor/><br/></para>]]>
-          </initialcontents>
-          <nextafteremptyblock>para</nextafteremptyblock>
-        </tag>
-				<tag nm="sw:author">
-          <level>*</level>
-          <description>Author name</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[<cursor/><br/>]]>
           </initialcontents>
           <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
