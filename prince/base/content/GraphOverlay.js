@@ -265,7 +265,7 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
   if (filetype == "xvz") {
     img    = document.createElementNS(htmlns,"object");
     img.setAttribute("type","application/x-mupad-graphics+gzip"); 
-    img.setAttribute("data", "file://"+this.getGraphAttribute("ImageFile"));
+    img.setAttribute("data", this.getGraphAttribute("ImageFile"));
     img.setAttribute("alt", "Generated Plot");
     img.setAttribute("msigraph","true");
     img.setAttribute("width","300");
@@ -510,42 +510,40 @@ function addGraphElementToDocument(DOMGraphNode, siblingNode, editorElement)
 // Arguments: <name>: first characters of returned name
 //            <ext>:  file extension
 // Returns <path><name><date>.<ext>
-//  where <path> is the current document directory, or if there is no
-//  current directory, the mozilla TmpD directory, or if we can't
-//  find this, then return empty string
+//  where <path>, relative to the current document directory, is <docdir_files>/plots/
+//  There must be a current document directory
 //  <date> is the system time from the Date method.
+
 function createUniqueFileName(name, ext, editorElement) {
   var pathname = "";
   var urlstring = msiGetEditorURL(editorElement);
-  var isBlank = (IsUrlAboutBlank(urlstring) || (urlstring == ""));
+  // var isBlank = (IsUrlAboutBlank(urlstring) || (urlstring == ""));
 
   // if no current doc path, get the mozilla tmp directory
-  if (isBlank) {
-    var dp = Components.classes["@mozilla.org/file/directory_service;1"];
-    dp = dp.getService(Components.interfaces.nsIDirectoryService);
-    dp = dp.QueryInterface(Components.interfaces.nsIProperties);
-    pathname = dp.get("TmpD", Components.interfaces.nsIFile);
-    pathname = pathname.path + "\/";
-  } else {   // if there's a current dir, use it
-    pathname = urlstring;
-    var lastSlash = pathname.lastIndexOf("\/");
-    if (lastSlash != -1) {
-      pathname = urlstring.slice(0, lastSlash+1);
-    }
-    if (pathname.indexOf("file:///") != -1) {
-      pathname = pathname.slice(8);
-    }
+//  if (isBlank) {
+//    var dp = Components.classes["@mozilla.org/file/directory_service;1"];
+//    dp = dp.getService(Components.interfaces.nsIDirectoryService);
+//    dp = dp.QueryInterface(Components.interfaces.nsIProperties);
+//    pathname = dp.get("TmpD", Components.interfaces.nsIFile);
+//    pathname = pathname.path + "\/";
+//  } else {   // if there's a current dir, use it
+  pathname = GetFilename(urlstring);
+  var lastDot = pathname.lastIndexOf(".");
+  if (lastDot != -1) {
+    pathname = pathname.slice(0, lastDot);
   }
+  pathname = pathname + "_files/plots/";
+//  }
 
-  if (pathname == "") {
-    // should do something better here: file select dialog?
-    AlertWithTitle(GetComputeString("Error.title"), GetComputeString("Error.notempdir"));
-    return "";
-  } else {
-    var newdate = new Date();
-    var fn = name + newdate.getTime() + "." + ext;
-    return pathname + fn;
-  }
+//  if (pathname == "") {
+//    // should do something better here: file select dialog?
+//    AlertWithTitle(GetComputeString("Error.title"), GetComputeString("Error.notempdir"));
+//    return "";
+//  } else {
+  var newdate = new Date();
+  var fn = name + newdate.getTime() + "." + ext;
+  return pathname + fn;
+//  }
 }
 
 
@@ -629,13 +627,16 @@ function insertGraph (siblingElement, graph, editorElement) {
   try
   {
     var filename = createUniqueFileName("plot", filetype, editorElement);
-    graph.setGraphAttribute("ImageFile", filename);
+    var longfilename = msiMakeAbsoluteUrl(filename,editorElement);
+    longfilename = GetFilepath(longfilename);
+    graph.setGraphAttribute("ImageFile", longfilename);
     msiGetEditor(editorElement).setCaretAfterElement (siblingElement);
   } catch (e) {
     dump ("Warning: unable to setCaretAfterElement while inserting graph\n");
   }
 //  dump("In insertGraph, about to computeGraph.\n");
   graph.computeGraph (editorElement);
+  graph.setGraphAttribute("ImageFile", filename);
   addGraphElementToDocument (graph.createGraphDOMElement(false), siblingElement, editorElement);
 }
 
