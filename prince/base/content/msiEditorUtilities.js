@@ -2576,10 +2576,16 @@ function msiCopyFileAndDirectoryToBak( documentfile ) // an nsILocalFile
     documentfile.copyTo(tempbakdir, documentfile.leafName);
   // copy _files to temp bak dir
     _filesdir.copyTo(tempbakdir, leafname+"_files");
+  // We can copy the 'revert' directory to 'bak' or we can copy 'bak' to 'revert',
+  // but we can't do both without getting recursion. So delete the 'revert' directory
+  // that we just copied.
+    var revertdir = tempbakdir.clone();
+    revertdir.append(leafname+"_files");
+    revertdir.append("revert");
+    if (revertdir.exists()) revertdir.remove(true);
+    
   // now move the temp dir to ..._files/bak
     tempbakdir.moveTo(_filesdir, "bak"); 
-  // now clean up
-    tempbakdir.remove(); 
   }
   catch (e) {
     dump("msiCopyFileAndDirectoryToBak failed: "+e+"\n");
@@ -2615,6 +2621,10 @@ function msiCopyAuxDirectory( originalfile, newfile ) // both nsILocalFiles
 // The File/Revert calls this function, but also reloads the reverted file. The pre-reverted
 // file is saved in the revert directory
 
+// BBM this can fail if the file has been renamed, so the .sci file in the bak directory has
+// a different name. We should fall back to searching for the only .sci file or the only directory
+// in the bak directory.
+
 function msiRevertFile (documentfile) // an nsILocalFile
 {
   try {
@@ -2622,26 +2632,42 @@ function msiRevertFile (documentfile) // an nsILocalFile
     var leafname = documentfile.leafName;
     var i = leafname.lastIndexOf(".");
     if (i > 0) leafname = leafname.substr(0,i);
+    var templeafname = leafname+"_temp";
     var parentdir = documentfile.parent.clone();
+    var tempdir = parentdir.clone();
+    tempdir.append(templeafname+"_files");
+    if (tempdir.exists()) tempdir.remove(true);
     var _filesdir = parentdir.clone();
     _filesdir.append(leafname+"_files");
-    var revertdir = _filesdir.clone();
-    revertdir.append("revert");
     var bakdir = _filesdir.clone();
     bakdir.append("bak");
-    var bakdir_files = bakdir.clone()
-    bakdir_files.append(leafname+"_files");
-  // nuke current bak dir contents if there are any
-    if (revertdir.exists()) revertdir.remove(true);
-  // copy stuff to revert dir
-    documentfile.copyTo(revertdir, documentfile.leafName);
-    _filesdir.copyTo(revertdir, leafname+"_files");
-  // now we're ready to restore
-  // copy _files to temp temp dir
-    bakdir_files.copyTo(parentdir, leafname+"_files");
-    bakdir.append(leafname+"."+MSI_EXTENSION);
-    bakdir.copyto(parentdir, bakdir.leafName);
-  // we intentionally leave the bak dir in place.
+    var working = bakdir.clone();
+    working.append(leafname+"."+MSI_EXTENSION);
+    // copy doc_files/bak/doc.sci to doc_temp.sci
+    working.moveTo(parentdir,templeafname+"."+MSI_EXTENSION);
+    working = bakdir.clone();
+    working.append(leafname + "_files");                     
+    // copy doc_files/bak/doc_files to doc_temp_files
+    working.moveTo(parentdir, templeafname + "_files");
+    // remove bak and revert for doc_temp_files
+    vorking = tempdir.clone();
+    working.append("bak");
+    if (working.exists()) working.remove(true);
+    working = tempdir.clone();
+    working.append("revert");
+    if (working.exists()) working.remove(true);
+    working = tempdir.clone();
+    working.append("revert");
+    working.create(1, 0755);
+    // save current document and doc_files in the new revert directory
+    documentfile.moveTo(working, null);
+    _filesdir.moveTo(working, null);
+    // rename the temp files
+    tempdir.moveTo(parentdir, leafname+"_files");  
+    working = parentdir.clone();
+    working.append(templeafname + "." + MSI_EXTENSION);
+    working.moveTo(parentdir, leafname + "." + MSI_EXTENSION);
+      
   }
   catch(e) {
     dump("msiRevertFile failed: "+e+"\n");
@@ -2654,7 +2680,7 @@ function GetDefaultBrowserColors()
   var colors = { TextColor:0, BackgroundColor:0, LinkColor:0, ActiveLinkColor:0 , VisitedLinkColor:0 };
   var useSysColors = false;
   try { useSysColors = prefs.getBoolPref("browser.display.use_system_colors"); } catch (e) {}
-
+                        
   if (!useSysColors)
   {
     try { colors.TextColor = prefs.getCharPref("browser.display.foreground_color"); } catch (e) {}
