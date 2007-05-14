@@ -913,7 +913,7 @@ function EditorStartupForEditorElement(editorElement)
         // Mozilla custom would put this next to profile data, which requires the next line:
         // docdir.append("MacKichan Software, Inc"); except on the Mac
         // Choose one of the three following lines depending on the app
-        docdir.append("Scientific WorkPlace");
+        docdir.append("SWPPro");
         // docdir.append("Scientific Word");
         // docdir.append("Scientific Notebook");
         docdir.append("Docs");
@@ -948,6 +948,7 @@ function EditorStartupForEditorElement(editorElement)
             break;
           }
           catch(e) {
+            dump("File already exists? "+e+"\n");
             n++;
           }
         }
@@ -1185,7 +1186,11 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     if (!document)
       return true;
     if (!editor.documentModified && !msiIsHTMLSourceChanged(editorElement))
+    {
+      if (command == "cmd_close")
+        doRevert(editorElement);
       return true;
+    }
   } catch (e) { return true; }
 
   // call window.focus, since we need to pop up a dialog
@@ -1285,23 +1290,26 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   {
     // "Don't Save"
     if (command == "cmd_close")
-    {
-      var urlstring = msiGetEditorURL(editorElement);
-      var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-      var currFilePath = GetFilepath(urlstring);
-  // for Windows
-#ifdef XP_WIN32
-      currFilePath = currFilePath.replace("/","\\","g");
-#endif
-      documentfile.initWithPath( currFilePath );
-      msiRevertFile( documentfile );
-    }
+      doRevert(editorElement);
     return true;
   }
   // Default or result == 1 (Cancel)
   return false;
 }
 
+
+function doRevert(editorElement)
+{
+  var urlstring = msiGetEditorURL(editorElement);
+  var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  var currFilePath = GetFilepath(urlstring);
+// for Windows
+#ifdef XP_WIN32
+  currFilePath = currFilePath.replace("/","\\","g");
+#endif
+  documentfile.initWithPath( currFilePath );
+  msiRevertFile( documentfile );
+}
 // --------------------------- File menu ---------------------------
 //The File menu items should only be accessible by the main editor window, really. Commented out here, available in msiMainEditor.js.
 
