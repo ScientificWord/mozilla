@@ -908,15 +908,24 @@ function EditorStartupForEditorElement(editorElement)
       }
       catch (e)
       {
+        var dirkey;
+#ifdef XP_WIN
+          dirkey = "Pers";
+#else
+#ifdef XP_MACOSX
+          dirkey = "UsrDocs";
+#else
+          dirkey = "Home";
+#endif
+#endif
         // if we can't find the one in the prefs, get the default
-        docdir = dsprops.get("AppData", Components.interfaces.nsILocalFile);
-        // Mozilla custom would put this next to profile data, which requires the next line:
-        // docdir.append("MacKichan Software, Inc"); except on the Mac
+        docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
+        if (!docdir.exists()) docdir.create(1,0755);
         // Choose one of the three following lines depending on the app
-        docdir.append("SWPPro");
-        // docdir.append("Scientific Word");
-        // docdir.append("Scientific Notebook");
-        docdir.append("Docs");
+        docdir.append("SWP Docs");
+        if (!docdir.exists()) docdir.create(1,0755);
+        // docdir.append("SW Docs");
+        // docdir.append("SNB Docs");
         dump("default document directory is "+docdir.path+"\n");
       }
       // find n where untitledn.MSI_EXTENSION is the first unused file name in that folder
