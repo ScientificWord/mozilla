@@ -2453,44 +2453,81 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 // 4. Multiple white space characters will be coalesced into a space, and &invisibletimes is ignored. For this reason
 //    we pass the last character matched (actually, a boolean telling if the last character matched was a space would
 //    be sufficient).
+//
+//  If we return STATE_SUCCESS, the node and offset of the last checked character have to be returned.
 
 nsresult 
-msiEditor::GetNextCharacter( nsIDOMNode * pNode, PRUint32& offset, PRUnichar prevChar, PRInt32 & _result)
+msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, nsIDOMNode ** nodeOut, PRUint32& offset, PRUnichar prevChar, PRInt32 & _result)
 {
   nsCOMPtr<nsIDOM3Node> textNode;
+  nsCOMPtr<nsIDOMNode> pNode3;
+  nsCOMPtr<nsIDOMNode>pNode2;
+  PRUint32 length, offset2;
   nsAutoString theText;
-  if (IsTextContentNode(pNode))
+  if (IsTextContentNode(nodeIn))
   {
-    textNode = do_QueryInterface(pNode);
+    textNode = do_QueryInterface(nodeIn);
     textNode->GetTextContent(theText);
     if (offset > theText.Length()) offset = theText.Length();
     while ((PRInt32)(--offset) >= 0)
     {
-      m_autosub->NextChar(theText[offset],& _result);
-      if (_result != msiIAutosub::STATE_MATCHESSOFAR) return NS_OK;
+      while (prevChar == ' ' && theText[offset] == ' ') --offset;
+      prevChar = theText[offset];
+      m_autosub->NextChar(prevChar,& _result);
+      if (_result != msiIAutosub::STATE_MATCHESSOFAR) 
+      {
+        *nodeOut = nodeIn;
+        NS_ADDREF(*nodeOut);
+        return NS_OK;
+      }
     }
   }
-  // pNode is not a text node, or we have already gone through it
+  // *pNode is not a text node, or we have already gone through it
   PRBool fHasChildren;
-  pNode->HasChildNodes(&fHasChildren);
+  nodeIn->HasChildNodes(&fHasChildren);
   nsCOMPtr<nsIDOMNodeList> nodeList;
-  nsCOMPtr<nsIDOMNode> pNode2;
-//  PRUint32 length, offset2;
-//  if (fHasChildren)  // in particular pNode is not a text node
-//  {
-//    pElement->GetChildNodes( getter_AddRefs(nodeList));
-//    nodeList->GetLength(&length);
-//    offset2 = (PRUint32)(-1);
-//    while (--length >= 0)
-//    {
-//      nodeList->Item(length, getter_AddRefs(pNode2));
-//      GetNextCharacter( pNode, offset2, prevChar, _result);
-//      if (_result != msiIAutosub::STATE_MATCHESSOFAR) return NS_OK;
-//    }
-//  }
-//  pElement->GetPreviousSibling(getter_AddRefs(pNode2));
-//  offset2 = (PRUint32)(-1);
-//  if (pNode2) GetNextCharacter(pNode2, offset2, prevChar, _result); 
+  if (fHasChildren)  // in particular *pNode is not a text node
+  {
+    nodeIn->GetChildNodes( getter_AddRefs(nodeList));
+    nodeList->GetLength(&length);
+    offset2 = (PRUint32)(-1);
+    while (--length >= 0)
+    {
+      nodeList->Item(length, getter_AddRefs(pNode2));
+      GetNextCharacter(pNode2, getter_AddRefs(pNode3),offset2, prevChar, _result);
+      if (_result != msiIAutosub::STATE_MATCHESSOFAR)
+      {
+        *nodeOut = pNode3;
+        NS_ADDREF(*nodeOut);
+        offset = offset2;
+        return NS_OK;
+      }
+    }
+  }
+  pNode2 = nsnull;
+  nsCOMPtr<nsIDOMNode> tempnode;
+  tempnode = nodeIn;
+  while (pNode2 == nsnull)
+  {
+    tempnode->GetPreviousSibling(getter_AddRefs(pNode2));
+    // if no previous sibling under this node, go up one level and try again
+    if (!pNode2)
+    {
+      tempnode->GetParentNode(getter_AddRefs(pNode2));
+      if (!pNode2) return NS_OK; // no more nodes available. return _result.
+      tempnode = pNode2;
+      pNode2 = nsnull; // go around again to get the previous sibling
+    }
+  }
+  offset2 = (PRUint32)(-1);
+  GetNextCharacter(pNode2, getter_AddRefs(pNode3), offset2, prevChar, _result); 
+  if (_result != msiIAutosub::STATE_MATCHESSOFAR)
+  {
+    *nodeOut = pNode3;
+    NS_ADDREF(*nodeOut);
+    offset = offset2;
+    return NS_OK;
+  }
   return NS_OK;
 }
   
@@ -2498,34 +2535,39 @@ msiEditor::GetNextCharacter( nsIDOMNode * pNode, PRUint32& offset, PRUnichar pre
 nsresult
 msiEditor::CheckForAutoSubstitute()
 {
+  nsresult res = NS_OK;
   if (!m_autosub) return NS_ERROR_FAILURE;
-  nsCOMPtr<msiISelection> msiSelection;
-  GetMSISelection(msiSelection); 
+  nsCOMPtr<nsISelection> selection;
+  GetSelection(getter_AddRefs(selection)); 
+  if (!selection) return res;
   // this is called immediately after an insertion, so the selection is collapsed. Thus we can check any of of the
   // nodes.
-  nsresult res = NS_OK;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOM3Node> textNode;
   PRUnichar ch = 0;
   PRInt32 ctx, action; 
+  PRInt32 intOffset;
   PRUint32 offset;
-  PRUint32 newOffset;
   nsAutoString theText;
   PRInt32 lookupResult;
   nsAutoString data, pasteContext, pasteInfo, error;       
-  msiSelection->GetMsiAnchorNode((nsIDOMNode **) getter_AddRefs(node));
-  msiSelection->GetMsiAnchorOffset( &offset );
-  newOffset = offset;
+  selection->GetAnchorNode((nsIDOMNode **) getter_AddRefs(node));
+  if (!node) return res;
+  selection->GetAnchorOffset( &intOffset );
+  offset = (PRUint32)intOffset;
   m_autosub->Reset();
   if (IsTextContentNode(node))
   {
     textNode = do_QueryInterface(node);
     textNode->GetTextContent(theText);
   }
-  GetNextCharacter(node, newOffset, ch, lookupResult);
+  nsCOMPtr<nsIDOMNode> originalNode = node;
+  PRUint32 originalOffset = offset;
+  GetNextCharacter(originalNode, getter_AddRefs(node), offset, ch, lookupResult);
   if (lookupResult == msiIAutosub::STATE_SUCCESS)
   {
-    msiSelection->Set(node,newOffset,node,offset,node,offset,node,newOffset); 
+    selection->Collapse(node, offset);
+    selection->Extend(originalNode,originalOffset);
     m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
     if (action == msiIAutosub::ACTION_SUBSTITUTE)
       InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE); 
