@@ -580,18 +580,36 @@ function printTeX( pdftex, preview )
     outputfile.initWithPath( docPath ); // outputfile now points to our document file
     var outleaf = outputfile.leafName;
     outleaf = outleaf.substr(0, outleaf.lastIndexOf("."));
+    var extendedoutleaf = outleaf;
     outputfile = outputfile.parent;
     outputfile.append(outleaf + "_files");
     if (!outputfile.exists()) outputfile.create(1, 0755);
     outputfile.append("tex");
     if (!outputfile.exists()) outputfile.create(1, 0755);
     var dvipdffile = outputfile.clone();
-    outputfile.append(outleaf+".tex");
-    if (outputfile.exists()) outputfile.remove(false);
+    var dvipdffileroot = outputfile.clone();
     dvipdffile.append(outleaf+ (pdftex?".pdf":".dvi"));
-    if (dvipdffile.exists()) dvipdffile.remove(false);
+    if (dvipdffile.exists()) 
+    {
+      document.getElementById("preview-frame").loadURI("about:blank");
+      try {
+        dvipdffile.remove(false);
+      }
+      catch(e) {
+        var n = 0;
+        while (dvipdffile.exists())
+        {
+          dvipdffile = dvipdffileroot.clone();
+          extendedoutleaf = outleaf + "_" + n++;
+          dvipdffile.append(extendedoutleaf + (pdftex?".pdf":".dvi"));
+        }
+      }
+    }
+    outputfile.append(extendedoutleaf+".tex");
+    if (outputfile.exists()) outputfile.remove(false);
     
-    dump("\TeX file="+outputfile.path);  
+    dump("\TeX file="+outputfile.path + "\n");
+    dump("DVI/PDF file is " + dvipdffile.path + "\n"); 
     var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
     fos.init(outputfile, -1, -1, false);
     var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
@@ -600,7 +618,7 @@ function printTeX( pdftex, preview )
     os.writeString(str);
     os.close();
   //   fos.close();
-    if (compileTeXFile(pdftex, outleaf, outputfile.path, dvipdffile.parent.path, 1))
+    if (compileTeXFile(pdftex, extendedoutleaf, outputfile.path, dvipdffile.parent.path, 1))
     {
       if (!dvipdffile.exists())
         AlertWithTitle("TeX Error", "Need to offer to show log");
