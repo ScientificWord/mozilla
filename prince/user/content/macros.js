@@ -78,5 +78,11 @@ function insertFragmentOrMacro( name )
   
 function previewPDF()
 {
-  deleteSelection(); printTeX(true);
+  deleteSelection(); printTeX(true,true);
 }
+
+function previewDVI()
+{
+  deleteSelection(); printTeX(false,true);
+}
+
