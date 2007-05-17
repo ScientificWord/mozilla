@@ -12,69 +12,6 @@ function goAboutDialog() {
   window.openDialog("chrome://prince/content/aboutDialog.xul", "About", "modal,chrome,resizable=yes");
 }
 
-function doOpen() {
-  var fp = Components.classes["@mozilla.org/filepicker;1"].
-             createInstance(Components.interfaces.nsIFilePicker);
-  fp.init(window, "Open Scientific WorkPlace File", Components.interfaces.nsIFilePicker.modeOpen);
-  msiSetFilePickerDirectory(fp, MSI_EXTENSION);
-  fp.appendFilter("SWP Documents","*."+MSI_EXTENSION);
-  fp.appendFilter("XHTML Files","*.xhtml; *.xht");
-  fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
-
-  try {
-    fp.show();
-  }
-  catch (ex) {
-    dump("filePicker.show() threw an exception\n");
-  }
-
-  if (fp.file && fp.file.path.length > 0) {
-    dump("Ready to edit page: " + fp.fileURL.spec +"\n");
-    try {
-      var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-      documentfile.initWithPath( fp.file.path );
-      var directory;
-//      var path;
-//      path = documentfile.path;
-      directory = documentfile.parent.path;
-      /* we should copy the current directory to the bak directory */
-      msiCopyFileAndDirectoryToBak(documentfile);
-      msiEditPage(documentfile.path, window, false);
-      msiSaveFilePickerDirectoryEx(fp, directory, MSI_EXTENSION);
-    } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
-  } 
-}
-
-
-function doNew() {
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-  var fp = Components.classes["@mozilla.org/filepicker;1"].
-             createInstance(Components.interfaces.nsIFilePicker);
-  msiSetFilePickerDirectory(fp, "shell");
-  fp.defaultExtension = "."+MSI_EXTENSION;
-  var dir1 =dsprops.get("resource:app", Components.interfaces.nsIFile);
-  dir1.append("shells");;
-  fp.displayDirectory = dir1;
-  fp.init(window, "Open Shell File", Components.interfaces.nsIFilePicker.modeOpen);
-  fp.appendFilter("Shell Files","*."+MSI_EXTENSION);
-  fp.appendFilters(Components.interfaces.nsIFilePicker.filterText);
-  fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
-
-  try {
-    fp.show();
-  }
-  catch (ex) {
-    dump("filePicker.show() threw an exception: "+ex+"\n");
-  }
-
-  if (fp.file && fp.file.path.length > 0) {
-    dump("Ready to edit shell: " + fp.fileURL.spec +"\n");
-    try {
-      msiEditPage(fp.fileURL.spec, window, false);
-//      msiSaveFilePickerDirectoryEx(fp, directory, MSI_EXTENSION);
-    } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
-  } 
-}
 
 function GetCurrentEditor() {
   var editor;

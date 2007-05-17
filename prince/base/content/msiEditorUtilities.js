@@ -78,7 +78,7 @@ function GetString(name)
       strBundleService = 
           strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
 
-      gStringBundle = strBundleService.createBundle("chrome://editor/locale/editor.properties"); 
+      gStringBundle = strBundleService.createBundle("chrome://prince/locale/editor.properties"); 
 
     } catch (ex) {}
   }
