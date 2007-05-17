@@ -1009,6 +1009,8 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
           {
             res = InsertSymbol(symbol);
             preventDefault = PR_TRUE;
+            if (NS_SUCCEEDED(res))
+		          res = CheckForAutoSubstitute(PR_TRUE);
           }
           if (NS_SUCCEEDED(res) && preventDefault)
             aKeyEvent->PreventDefault();
@@ -1027,7 +1029,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     else 
       res = nsHTMLEditor::HandleKeyPress(aKeyEvent);
       if (NS_SUCCEEDED(res) &&(!(mFlags & eEditorPlaintextMask)))
-		    res = CheckForAutoSubstitute();
+		    res = CheckForAutoSubstitute(PR_FALSE);
       return res;
       
   }
@@ -2533,7 +2535,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, nsIDOMNode ** nodeOut, PRUint32
   
 
 nsresult
-msiEditor::CheckForAutoSubstitute()
+msiEditor::CheckForAutoSubstitute(PRBool inmath)
 {
   nsresult res = NS_OK;
   if (!m_autosub) return NS_ERROR_FAILURE;
@@ -2566,19 +2568,23 @@ msiEditor::CheckForAutoSubstitute()
   GetNextCharacter(originalNode, getter_AddRefs(node), offset, ch, lookupResult);
   if (lookupResult == msiIAutosub::STATE_SUCCESS)
   {
-    selection->Collapse(node, offset);
-    selection->Extend(originalNode,originalOffset);
     m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
-    if (action == msiIAutosub::ACTION_SUBSTITUTE)
-      InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE); 
-    else if (action == msiIAutosub::ACTION_EXECUTE)
+    if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath || 
+      inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
     {
-      nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
-      if (res == NS_OK)
+      selection->Collapse(node, offset);
+      selection->Extend(originalNode,originalOffset);
+      if (action == msiIAutosub::ACTION_SUBSTITUTE)
+        InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE); 
+      else if (action == msiIAutosub::ACTION_EXECUTE)
       {
-        sr->SetCtx(m_window);
-        sr->Eval(data, error);
-        if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
+        nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
+        if (res == NS_OK)
+        {
+          sr->SetCtx(m_window);
+          sr->Eval(data, error);
+          if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
+        }
       }
     }
   }

@@ -24,6 +24,7 @@ function insertMathunit( unit )
 
 function insertMathname( name )
 {
+  deleteSelection();
   var editorElement = document.getElementById("content-frame");
   insertmathname(name, editorElement);
 }
