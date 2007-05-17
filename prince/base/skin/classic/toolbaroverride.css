@@ -25,3 +25,26 @@ toolbox[iconsize="small"]
 {
   background-image: url("chrome://prince/skin/icons/background-sm.png");
 }
+
+
+#SymbolToolbox tabpanel
+{
+  display: block;
+}
+
+#SymbolToolbox tabpanels
+{
+  width: auto;
+  
+}
+
+#SymbolToolbox tabbox 
+{
+  width: auto;
+}
+
+#SymbolToolbox 
+{
+  width: 100%;
+}
+
