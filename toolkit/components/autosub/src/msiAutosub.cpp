@@ -130,9 +130,11 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
         subsElement =  do_QueryInterface(subsNode);
         subsElement->GetAttribute(NS_LITERAL_STRING("ctx"),s);
         if (s.EqualsLiteral("text")) ctx = msiIAutosub::CONTEXT_TEXTONLY; 
-        if (s.EqualsLiteral("textmath")) ctx = msiIAutosub::CONTEXT_MATHANDTEXT; 
+        else if (s.EqualsLiteral("both")) ctx = msiIAutosub::CONTEXT_MATHANDTEXT; 
+        else if (s.EqualsLiteral("math")) ctx = msiIAutosub::CONTEXT_MATHONLY; 
         subsElement->GetAttribute(NS_LITERAL_STRING("tp"),s);
         if (s.EqualsLiteral("sc")) action = msiIAutosub::ACTION_EXECUTE;
+		else if (s.EqualsLiteral("subst")) action = msiIAutosub::ACTION_SUBSTITUTE;
         subsElement->GetElementsByTagName(NS_LITERAL_STRING("pattern"),getter_AddRefs(patternTags));
         if (patternTags)
         {
