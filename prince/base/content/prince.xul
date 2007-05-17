@@ -63,7 +63,7 @@
   <popup id="sidebarPopup"/>
 
   <commandset id="tasksCommands">
-    <command id="cmd_open" oncommand="doOpen()"/>
+    <command id="cmd_open" oncommand="msiGoDoCommand('cmd_open')"/>
     <command id="cmd_print" oncommand="msiGoDoCommand('cmd_print')"/>
     <command id="cmd_quit" oncommand="doQuit()"/>
     <command id="cmd_save" oncommand="msiGoDoCommand('cmd_save')"/>
