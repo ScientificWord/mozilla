@@ -8,9 +8,9 @@
   <sub ctx="text" tp="subst"><pattern>BBM</pattern><data>Barry MacKichan</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>&#x2013;&gt;#</pattern><data>&#x2192;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>&lt;&#x2013;#</pattern><data>&#x2190;</data><context/><info>0,0</info></sub>
-  <sub ctx="text" tp="subst"><pattern>|^#</pattern><data>&#x2191;</data><context/><info>0,0</info></sub>
-  <sub ctx="text" tp="subst"><pattern>|v#</pattern><data>&#x2193;</data><context/><info>0,0</info></sub>
-  <sub ctx="text" tp="subst"><pattern>...</pattern><data>&#x2026;</data><context/><info>0,0</info></sub>
+  <sub ctx="both" tp="subst"><pattern>|^#</pattern><data>&#x2191;</data><context/><info>0,0</info></sub>
+  <sub ctx="both" tp="subst"><pattern>|v#</pattern><data>&#x2193;</data><context/><info>0,0</info></sub>
+  <sub ctx="both" tp="subst"><pattern>...</pattern><data>&#x2026;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="sc"><pattern>.yell.</pattern><data>yell('Hey!');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.spell.</pattern><data>checkSpelling();</data></sub>
   <sub ctx="text" tp="sc"><pattern>.preview.</pattern><data>previewPDF();</data></sub>
@@ -25,6 +25,11 @@
   <sub ctx="text" tp="sc"><pattern>.tit.</pattern><data>insertParaTag('title');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertParaTag('author');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.addr.</pattern><data>insertParaTag('address');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>sin</pattern><data>insertMathname('sin');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.maket.</pattern><data>insertTag('maketitle');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>sin</pattern><data>insertMathname('sin');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>sinh</pattern><data>insertMathname('sinh');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>cos</pattern><data>insertMathname('cos');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>cosh</pattern><data>insertMathname('cosh');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>tan</pattern><data>insertMathname('tan');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>tanh</pattern><data>insertMathname('tanh');</data></sub >
 </subs>
