@@ -10,8 +10,9 @@
 
 toolbarbutton {
   -moz-appearance: toolbarbutton;
-  -moz-box-align: center;
-  -moz-box-pack: center;
+/*  -moz-box-align: center;
+  -moz-box-pack: center;   */
+  display: inline;
   margin: 0 !important;
   border: 0 !important;
   padding: 0 !important;
