@@ -156,6 +156,7 @@ function msiSetupComposerWindowCommands(editorElement)
 
   // File-related commands
   commandTable.registerCommand("cmd_open",           msiOpenCommand);
+  commandTable.registerCommand("cmd_new",            msiNewCommand);
   commandTable.registerCommand("cmd_save",           msiSaveCommand);
   commandTable.registerCommand("cmd_saveAs",         msiSaveAsCommand);
   commandTable.registerCommand("cmd_saveCopyAs",     msiSaveCopyAsCommand);
@@ -741,36 +742,82 @@ var msiOpenCommand =
 
   doCommand: function(aCommand)
   {
-    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
-    fp.init(window, GetString("OpenHTMLFile"), msIFilePicker.modeOpen);
-
+    var fp = Components.classes["@mozilla.org/filepicker;1"].
+               createInstance(Components.interfaces.nsIFilePicker);
+    fp.init(window, GetString("OpenSWPFile"), Components.interfaces.nsIFilePicker.modeOpen);
     msiSetFilePickerDirectory(fp, MSI_EXTENSION);
+    fp.appendFilter(GetString("SWP Documents"),"*."+MSI_EXTENSION);
+    fp.appendFilter(GetString("XHTMLFiles"),"*.xhtml; *.xht");
+    fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
 
-    // When loading into Composer, direct user to prefer HTML files and text files,
-    //   so we call separately to control the order of the filter list
-    fp.appendFilter(MSI_EXTENSION);
-    fp.appendFilters(msIFilePicker.filterText);
-    fp.appendFilters(msIFilePicker.filterAll);
-
-    /* doesn't handle *.shtml files */
     try {
       fp.show();
-      /* need to handle cancel (uncaught exception at present) */
     }
     catch (ex) {
-      dump("filePicker.chooseInputFile threw an exception\n");
+      dump("filePicker.show() threw an exception\n");
     }
-  
-    /* This checks for already open window and activates it... 
-     * note that we have to test the native path length
-     *  since file.URL will be "file:///" if no filename picked (Cancel button used)
-     */
+
     if (fp.file && fp.file.path.length > 0) {
-      msiSaveFilePickerDirectory(fp, MSI_EXTENSION);
-      msiEditPage(fp.fileURL.spec, window, false);
-    }
+      dump("Ready to edit page: " + fp.fileURL.spec +"\n");
+      try {                                
+        var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        documentfile.initWithPath( fp.file.path );
+        var directory;
+        directory = documentfile.parent.path;
+        /* we should copy the current directory to the bak directory */
+        msiCopyFileAndDirectoryToBak(documentfile);
+        msiEditPage(documentfile.path, window, false);
+        msiSaveFilePickerDirectoryEx(fp, directory, MSI_EXTENSION);
+      } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
+    } 
   }
 };
+
+
+
+//-----------------------------------------------------------------------------------
+var msiNewCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;    // we can always do this
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+    var fp = Components.classes["@mozilla.org/filepicker;1"].
+               createInstance(Components.interfaces.nsIFilePicker);
+    msiSetFilePickerDirectory(fp, "shell");
+    fp.defaultExtension = "."+MSI_EXTENSION;
+    var dir1 =dsprops.get("resource:app", Components.interfaces.nsIFile);
+    dir1.append("shells");;
+    fp.displayDirectory = dir1;
+    fp.init(window, "Open Shell File", Components.interfaces.nsIFilePicker.modeOpen);
+    fp.appendFilter("Shell Files","*."+MSI_EXTENSION);
+    fp.appendFilters(Components.interfaces.nsIFilePicker.filterText);
+    fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
+
+    try {
+      fp.show();
+    }
+    catch (ex) {
+      dump("filePicker.show() threw an exception: "+ex+"\n");
+    }
+
+    if (fp.file && fp.file.path.length > 0) {
+      dump("Ready to edit shell: " + fp.fileURL.spec +"\n");
+      try {
+        msiEditPage(fp.fileURL.spec, window, false);
+  //      msiSaveFilePickerDirectoryEx(fp, directory, MSI_EXTENSION);
+      } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
+    }
+  }
+} 
+
 
 //// STRUCTURE TOOLBAR
 ////
@@ -2098,48 +2145,48 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
     var relatedFilesDir = null;
     
     // First check pref for saving associated files
-    var saveAssociatedFiles = false;
-    try {
-      var prefs = GetPrefs();
-      saveAssociatedFiles = prefs.getBoolPref("editor.save_associated_files");
-    } catch (e) {}
-
-    // Only change links or move files if pref is set 
-    //  and we are saving to a new location
-    if (saveAssociatedFiles && aSaveAs)
-    {
-      try {
-        if (tempLocalFile)
-        {
-          // if we are saving to the same parent directory, don't set relatedFilesDir
-          // grab old location, chop off file
-          // grab new location, chop off file, compare
-          var oldLocation = msiGetEditorURL(editorElement);
-          var oldLocationLastSlash = oldLocation.lastIndexOf("\/");
-          if (oldLocationLastSlash != -1)
-            oldLocation = oldLocation.slice(0, oldLocationLastSlash);
-
-          var relatedFilesDirStr = urlstring;
-          var newLocationLastSlash = relatedFilesDirStr.lastIndexOf("\/");
-          if (newLocationLastSlash != -1)
-            relatedFilesDirStr = relatedFilesDirStr.slice(0, newLocationLastSlash);
-          if (oldLocation == relatedFilesDirStr || IsUrlAboutBlank(oldLocation))
-            relatedFilesDir = null;
-          else
-            relatedFilesDir = tempLocalFile.parent;
-        }
-        else
-        {
-          var lastSlash = urlstring.lastIndexOf("\/");
-          if (lastSlash != -1)
-          {
-            var relatedFilesDirString = urlstring.slice(0, lastSlash + 1);  // include last slash
-            ioService = msiGetIOService();
-            relatedFilesDir = ioService.newURI(relatedFilesDirString, editor.documentCharacterSet, null);
-          }
-        }
-      } catch(e) { relatedFilesDir = null; }
-    }
+//    var saveAssociatedFiles = false;
+//    try {
+//      var prefs = GetPrefs();
+//      saveAssociatedFiles = prefs.getBoolPref("editor.save_associated_files");
+//    } catch (e) {}
+//
+//    // Only change links or move files if pref is set 
+//    //  and we are saving to a new location
+//    if (saveAssociatedFiles && aSaveAs)
+//    {
+//      try {
+//        if (tempLocalFile)
+//        {
+//          // if we are saving to the same parent directory, don't set relatedFilesDir
+//          // grab old location, chop off file
+//          // grab new location, chop off file, compare
+//          var oldLocation = msiGetEditorURL(editorElement);
+//          var oldLocationLastSlash = oldLocation.lastIndexOf("\/");
+//          if (oldLocationLastSlash != -1)
+//            oldLocation = oldLocation.slice(0, oldLocationLastSlash);
+//
+//          var relatedFilesDirStr = urlstring;
+//          var newLocationLastSlash = relatedFilesDirStr.lastIndexOf("\/");
+//          if (newLocationLastSlash != -1)
+//            relatedFilesDirStr = relatedFilesDirStr.slice(0, newLocationLastSlash);
+//          if (oldLocation == relatedFilesDirStr || IsUrlAboutBlank(oldLocation))
+//            relatedFilesDir = null;
+//          else
+//            relatedFilesDir = tempLocalFile.parent;
+//        }
+//        else
+//        {
+//          var lastSlash = urlstring.lastIndexOf("\/");
+//          if (lastSlash != -1)
+//          {
+//            var relatedFilesDirString = urlstring.slice(0, lastSlash + 1);  // include last slash
+//            ioService = msiGetIOService();
+//            relatedFilesDir = ioService.newURI(relatedFilesDirString, editor.documentCharacterSet, null);
+//          }
+//        }
+//      } catch(e) { relatedFilesDir = null; }
+//    }
 
     var destinationLocation;
     if (tempLocalFile)

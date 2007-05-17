@@ -112,7 +112,7 @@
     </popup>
     <toolbarpalette id="EditingToolbarPalette" >
       <toolbarbutton id="noteButton" tooltiptext="&noteButton.tooltip;"/>
-      <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;"/>
+      <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;" />
       <toolbarbutton id="htlinkButton" tooltiptext="&htlinkButton.tooltip;"/>
       <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;"/>
       <toolbarbutton id="frontmatterButton" tooltiptext="&frontmatterButton.tooltip;"/>
