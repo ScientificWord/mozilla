@@ -2010,14 +2010,32 @@ toolbox[iconsize="small"] textbox { min-height : 15px; margin: 0;}
 
 toolbar {
   border: 0;
+  width: 100%;
 }
 
+toolbox {
+  width: 100%;
+}
+
+
+#Symboltoolbox tabpanel
+{
+  overflow: auto;
+  display: block;
+}
+
+
+#Symbol-tabbox tabs
+{
+  -moz-box-align: start;
+}
 
 #Symbol-tabbox toolbarbutton
 { 
   margin: 0px;
   padding: 2px 4px;
   border-style: none;
+  display: inline;
 }
 
 #Symbol-tabbox[iconsize="small"] toolbarbutton

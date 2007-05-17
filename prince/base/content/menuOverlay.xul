@@ -285,8 +285,8 @@
           events="create"
           oncommandupdate="msiGoUpdateComposerMenuItems(this)"
   >
-    <command id="cmd_newDocument"  oncommand="doNew();"/>
-    <command id="cmd_open"                                          oncommand="msiGoDoCommand('cmd_open')"/>
+    <command id="cmd_newDocument"  oncommand="msiGoDoCommand('cmd_new');"/>
+    <command id="cmd_open"         oncommand="msiGoDoCommand('cmd_open')"/>
     <command id="cmd_openRemote"   label="&openremoteCmd.label;"    oncommand="msiGoDoCommand('cmd_openRemote')"/>
     <command id="cmd_close"        label="&closeCmd.label;"         oncommand="msiGoDoCommand('cmd_close')"/>
     <command id="cmd_printSetup"   oncommand="msiGoDoCommand('cmd_printSetup')"/>

@@ -164,7 +164,7 @@
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x0141;&#x011B;" tooltiptext="&MSISymbolTabLatinE;"        selected="0" />
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x021C;&#x021D;" tooltiptext="&MSISymbolTabPunctuation;"        selected="0" />
     </tabs>
-    <tabpanels oncommand="doParamCommand('cmd_MSIsymbolCmd',event.target.getAttribute('msivalue'))" equalsize="never" >
+    <tabpanels id="symbol-tabpanels" oncommand="doParamCommand('cmd_MSIsymbolCmd',event.target.getAttribute('msivalue'))" equalsize="never" hidden="false" >
 
 <!-- LOWERCASE GREEK -->
 	  <tabpanel id="symbol_lcGreek" autostretch="never" align="baseline"> 
