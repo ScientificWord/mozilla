@@ -164,10 +164,11 @@
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x0141;&#x011B;" tooltiptext="&MSISymbolTabLatinE;"        selected="0" />
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x021C;&#x021D;" tooltiptext="&MSISymbolTabPunctuation;"        selected="0" />
     </tabs>
-    <tabpanels oncommand="doParamCommand('cmd_MSIsymbolCmd',event.target.getAttribute('msivalue'))">
+    <tabpanels oncommand="doParamCommand('cmd_MSIsymbolCmd',event.target.getAttribute('msivalue'))" equalsize="never" >
 
 <!-- LOWERCASE GREEK -->
 	  <tabpanel id="symbol_lcGreek" autostretch="never" align="baseline"> 
+      <observes element="prince" attribute="width"/>
         <toolbarbutton label="&#x03B1;" tooltiptext="&symbolalpha.tooltip;"  msivalue="&#x03B1;"
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03B2;" tooltiptext="&symbolbeta.tooltip;"   msivalue="&#x03B2;"
@@ -238,6 +239,7 @@
      
 <!-- UPPERCASE GREEK -->
      <tabpanel id="symbol_ucGreek" align="baseline">
+      <observes element="prince" attribute="width"/>
         <toolbarbutton label="&#x0393;" tooltiptext="&symbolGamma.tooltip;"  msivalue="&#x0393;"
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x0394;" tooltiptext="&symbolDelta.tooltip;"  msivalue="&#x0394;"
@@ -266,6 +268,7 @@
 
 <!-- BINARY OPERATIONS -->
 	<tabpanel id="symbol_binOp"  align="baseline">
+      <observes element="prince" attribute="width"/>
         <toolbarbutton label="&#x00B1;" tooltiptext="&symbolplusminus.tooltip;"       msivalue="&#x00B1;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x2213;" tooltiptext="&symbolminusplus.tooltip;"       msivalue="&#x2213;"
@@ -388,7 +391,7 @@
 
 <!-- BINARY RELATIONS -->
       <tabpanel id="symbol_binRel" align="baseline">
-      <description>
+      <observes element="prince" attribute="width"/>
         <toolbarbutton label="&#x2264;" tooltiptext="&symbolleq.tooltip;"              msivalue="&#x2264;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x227A;" tooltiptext="&symbolprec.tooltip;"              msivalue="&#x227A;"
@@ -511,8 +514,7 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x22B4;" tooltiptext="&symboltrianglelefteq.tooltip;"              msivalue="&#x22B4;"
            observes="cmd_MSIsymbolCmd"/>
-    </description>
-		<toolbarbutton label="&#x226C;" tooltiptext="&symbolbetween.tooltip;"              msivalue="&#x226C;"
+	<toolbarbutton label="&#x226C;" tooltiptext="&symbolbetween.tooltip;"              msivalue="&#x226C;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x25B8;" tooltiptext="&symbolblacktriangleright.tooltip;"              msivalue="&#x25B8;"
            observes="cmd_MSIsymbolCmd"/>
@@ -564,6 +566,7 @@
 
 <!-- NEGATED RELATIONS -->
       <tabpanel id="symbol_negRel" align="baseline">
+      <observes element="prince" attribute="width"/>
         <toolbarbutton label="&#x2260;" tooltiptext="&symbolneq.tooltip;"              msivalue="&#x2260;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x2209;" tooltiptext="&symbolnotin.tooltip;"      msivalue="&#x2209;"
@@ -646,6 +649,7 @@
 
 <!-- ARROWS -->
       <tabpanel id="symbol_arrow" align="baseline">
+      <observes element="prince" attribute="width"/>
         <toolbarbutton label="&#x2190;" tooltiptext="&symbolleftarrow.tooltip;"              msivalue="&#x2190;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x21D0;" tooltiptext="&symbolLeftarrow.tooltip;"              msivalue="&#x21D0;"
@@ -780,6 +784,7 @@
 <!-- MISCELLANEOUS SYMBOLS -->
       </tabpanel>
       <tabpanel id="symbol_misc" align="baseline">
+      <observes element="prince" attribute="width"/>
         <toolbarbutton label="&#x221E;" tooltiptext="&symbolinfinity.tooltip;"        msivalue="&#x221E;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x2202;" tooltiptext="&symbolpartial.tooltip;"         msivalue="&#x2202;"
@@ -918,6 +923,7 @@
 
 <!-- DELIMITERS -->
       <tabpanel id="symbol_delims" align="baseline">
+      <observes element="prince" attribute="width"/>
         <toolbarbutton label="&#x230A;" tooltiptext="&symbollfloor.tooltip;"       msivalue="&#x230A;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x230B;" tooltiptext="&symbolrfloor.tooltip;"      msivalue="&#x230B;"
@@ -942,6 +948,7 @@
 
 <!-- LATIN-1 -->
       <tabpanel id="symbol_latin1" align="baseline">
+      <observes element="prince" attribute="width"/>
         <toolbarbutton label="&#x00B0;" tooltiptext="&symboldeg.tooltip;"       msivalue="&#x00B0;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x00C0;" tooltiptext="&symbolAgrave.tooltip;"       msivalue="&#x00C0;"
@@ -1130,6 +1137,7 @@
 
 <!-- LATIN EXTENDED -->
       <tabpanel id="symbol_latinextended" align="baseline">
+      <observes element="prince" attribute="width"/>
         <toolbarbutton label="&#x0100;" tooltiptext="&symbolAmacr.tooltip;"       msivalue="&#x0100;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x0110;" tooltiptext="&symbolDJ.tooltip;"       msivalue="&#x0110;"
@@ -1386,6 +1394,7 @@
 
 <!-- PUNCTUATION -->
       <tabpanel id="symbol_punctuation" align="baseline">
+      <observes element="prince" attribute="width"/>
         <toolbarbutton label="&#x2013;" tooltiptext="&symbolendash.tooltip;"       msivalue="&#x2013;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x2014;" tooltiptext="&symbolemdash.tooltip;"       msivalue="&#x2014;"
