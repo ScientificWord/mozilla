@@ -75,6 +75,9 @@
 <!ENTITY pasteCmd.label						"Paste">  
 <!ENTITY pasteCmd.key						"V">  
 <!ENTITY pasteCmd.accesskey					"p"> 
+<!ENTITY pasteNoFormattingCmd.accesskey			"n"> 
+<!ENTITY pasteNoFormattingCmd.label			"Paste (no formatting)">  
+<!ENTITY pasteNoFormattingCmd.key				"q">  
 <!ENTITY deleteCmd.label					"Delete">  
 <!ENTITY deleteCmd.key						"D">  
 <!ENTITY deleteCmd.accesskey				"d"> 

@@ -157,6 +157,11 @@
                 key="key_paste"
                 accesskey="&pasteCmd.accesskey;"
                 command="cmd_paste"/>
+      <menuitem id="menu_pastenoformatting"
+                label="&pasteNoFormattingCmd.label;"
+                key="key_paste"
+                accesskey="&pasteNoFormattingCmd.accesskey;"
+                command="cmd_pasteNoFormatting"/>
       <menuitem id="menu_delete"
                 label="&deleteCmd.label;"
                 key="key_delete"
@@ -291,7 +296,7 @@
     <command id="cmd_close"        label="&closeCmd.label;"         oncommand="msiGoDoCommand('cmd_close')"/>
     <command id="cmd_printSetup"   oncommand="msiGoDoCommand('cmd_printSetup')"/>
 <!--
-    <command id="cmd_printPreview" label="_amp_printPreviewCmd.label;"  oncommand="msiGoDoCommand('cmd_printPreview')"/>
+    <command id="cmd_printPreview" label="printPreviewCmd.label;"  oncommand="msiGoDoCommand('cmd_printPreview')"/>
 -->
     <command id="cmd_openTeX" oncommand="openTeX();" />
     <command id="cmd_exportTeX" oncommand="exportTeX();" />
@@ -391,7 +396,7 @@
              oncommand="msiGoDoCommand('cmd_paste')"
              disabled="true"/>
     <command id="cmd_pasteNoFormatting" oncommand="msiGoDoCommand('cmd_pasteNoFormatting')"
-               label="amp_pasteNoFormatting.label;" accesskey="_amp_pasteNoFormatting.accesskey;"/>
+               label="&pasteNoFormattingCmd.label;" accesskey="&pasteNoFormattingCmd.accesskey;"/>
     <command id="cmd_delete"
              oncommand="msiGoDoCommand('cmd_delete')"
              valueDefault="&deleteCmd.label;"
