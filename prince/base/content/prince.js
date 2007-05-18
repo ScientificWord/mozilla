@@ -9,7 +9,7 @@ const MSI_EXTENSION = "sci";
 var gPipeConsole;
 
 function goAboutDialog() {
-  window.openDialog("chrome://prince/content/aboutDialog.xul", "About", "modal,chrome,resizable=yes");
+  window.openDialog("chrome://prince/content/aboutDialog.xul", GetString("About"), "modal,chrome,resizable=yes");
 }
 
 
@@ -58,8 +58,11 @@ var compengine;
 function GetCurrentEngine() {
   if (!compsample) {
     compsample = Components.classes["@mackichan.com/simplecomputeengine;2"].getService(Components.interfaces.msiISimpleComputeEngine);
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+    var gmrfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+    gmrfile.append("mupInstall.gmr");
     try {
-      compsample.startup("mupInstall.gmr");
+      compsample.startup(gmrfile.path);
       compengine = 2;
     } catch(e) {
       var msg_key;
@@ -277,8 +280,8 @@ function openTeX()
   dump("Open TeX \n");
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
-  fp.init(window, "Open TeX File", msIFilePicker.modeOpen);     // BBM todo -- use properties file here for the strings
-  fp.appendFilter("TeX files", "*.tex; *.ltx; *.shl");
+  fp.init(window, GetString("OpenTeXFile"), msIFilePicker.modeOpen);     // BBM todo -- use properties file here for the strings
+  fp.appendFilter(GetString("TeXFiles"), "*.tex; *.ltx; *.shl");
   fp.appendFilters(msIFilePicker.filterXML)
 
   msiSetFilePickerDirectory(fp, "tex");
