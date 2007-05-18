@@ -223,7 +223,8 @@ en-US.jar:
   locale/docInfoDialog.properties         (locale/en-us/dialogs/docInfoDialog.properties)
   locale/openLocation.dtd				  (locale/en-us/openLocation.dtd)
   locale/openLocation.properties		  (locale/en-us/openLocation.properties)
- 
+  locale/editor.properties		          (locale/en-us/editor.properties)
+
 classic.jar:
 % skin prince classic %skin/classic/
   skin/classic/toolbarsOverlay.css       (skin/classic/toolbarsOverlay.css)
