@@ -38,6 +38,7 @@
  * ***** END LICENSE BLOCK ***** */
 #include "nsEditorEventListeners.h"
 #include "nsEditor.h"
+#include "nsIHTMLEditor.h"
 
 #include "nsIDOMEvent.h"
 #include "nsIDOMNSEvent.h"
@@ -266,8 +267,21 @@ nsTextEditorKeyListener::KeyPress(nsIDOMEvent* aKeyEvent)
       case nsIDOMKeyEvent::DOM_VK_RETURN:
       case nsIDOMKeyEvent::DOM_VK_ENTER:
         if (isAnyModifierKeyButShift)
+        {
+        // BBM:  I can't get the Mac to recognize Ctrl+Return using platformHTMLBindings.xml,
+        // so I'm sticking this code in here.
+          PRBool fCtrl;
+          rv = keyEvent->GetCtrlKey(&fCtrl);
+          // maybe we should check that the other modifier keys are not pressed
+          if (NS_FAILED(rv)) return rv;
+          if (fCtrl)
+          {
+            nsCOMPtr<nsIHTMLEditor> htmleditor(do_QueryInterface(mEditor));
+            if (htmleditor)
+              htmleditor->InsertReturnFancy();
+          }
           return NS_OK;
-
+        }
         if (!(flags & nsIPlaintextEditor::eEditorSingleLineMask))
         {
           textEditor->HandleKeyPress(keyEvent);
