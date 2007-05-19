@@ -50,6 +50,9 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_insertHTMLWithDialog", msiInsertHTMLWithDialogCommand);
   commandTable.registerCommand("cmd_insertBreak",   msiInsertBreakCommand);
   commandTable.registerCommand("cmd_insertBreakAll",msiInsertBreakAllCommand);
+  commandTable.registerCommand("cmd_insertHorizontalSpaces", msiInsertHorizontalSpacesCommand);
+  commandTable.registerCommand("cmd_insertVerticalSpaces", msiInsertVerticalSpacesCommand);
+  
 
   commandTable.registerCommand("cmd_table",              msiInsertOrEditTableCommand);
   commandTable.registerCommand("cmd_editTable",          msiEditTableCommand);
@@ -3711,6 +3714,183 @@ var msiInsertBreakAllCommand =
 
 //-----------------------------------------------------------------------------------
 
+var msiInsertHorizontalSpacesCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var hSpaceData = new Object();
+    hSpaceData.spaceType = "normalSpace";
+    try {
+      msiOpenModelessDialog("chrome://prince/content/HorizontalSpaces.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, "cmd_insertHorizontalSpaces", this, hSpaceData);
+    }
+    catch(ex) {
+      dump("*** Exception: couldn't open HorizontalSpaces Dialog: " + ex + "\n");
+    }
+  }
+};
+
+function msiInsertHorizontalSpace(dialogData, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  var parentNode = editor.selection.anchorNode;
+  var insertPos = editor.selection.anchorOffset;
+  if (dialogData.spaceType == "normalSpace")
+  {
+    editor.insertHTMLWithContext(" ", "", "", "", null, parentNode, insertPos, false);
+    dump("In msiInsertHorizontalSpace, inserting normal space.\n");
+    return;
+  }
+  var dimensionsFromSpaceType = 
+  {
+//    requiredSpace:
+//    nonBreakingSpace:
+    emSpace:        "1em",
+    twoEmSpace:       "2em",
+    thinSpace:      "0.17em",
+    thickSpace:     "0.5em",
+    italicCorrectionSpace: "0.083en",
+    negativeThinSpace:   "0.0em",
+    zeroSpace:           "0.0em",
+    noIndent:            "0.0em"
+  };
+  var contentFromSpaceType = 
+  {
+    requiredSpace:     "&#x205f;",  //MEDIUM MATHEMATICAL SPACE in Unicode?
+    nonBreakingSpace:  "&#x00a0;",
+    emSpace:           "&#x2003;",
+    twoEmSpace:          "&#x2001;",  //EM QUAD
+    thinSpace:         "&#x2009;",
+    thickSpace:        "&#x2002;",  //"EN SPACE" in Unicode?
+    italicCorrectionSpace:  "&#x200a;",  //the "HAIR SPACE" in Unicode?
+    zeroSpace:          "&#x200b;"
+//    negativeThinSpace:
+//    noIndent:
+  };
+  var specialShowInvisibleChars = 
+  {
+    noIndent:          "&#x2190;"  //left arrow
+  };
+  var spaceStr = "<hspace type=\"";
+  if (dialogData.spaceType != "customSpace")
+  {
+    spaceStr += dialogData.spaceType;
+    if (dialogData.spaceType in dimensionsFromSpaceType)
+      spaceStr += "\" dim=\"" + dimensionsFromSpaceType[dialogData.spaceType];
+  }
+  else if (dialogData.customSpaceData.customType == "fixed")
+  {
+    spaceStr += "customSpace\" dim=\"";
+    spaceStr += String(dialogData.customSpaceData.fixedData.size) + dialogData.customSpaceData.fixedData.units;
+  }
+  else if (dialogData.customSpaceData.customType == "stretchy")
+  {
+    spaceStr += "stretchySpace\" class=\"stretchySpace\" flex=\"";
+    spaceStr += String(dialogData.customSpaceData.stretchData.factor);
+    if (dialogData.customSpaceData.stretchData.fillWith == "fillLine")
+      spaceStr += "\" fillWith=\"line";
+    else if (dialogData.customSpaceData.stretchData.fillWith == "fillDots")
+      spaceStr += "\" fillWith=\"dots";
+  }
+  if (dialogData.spaceType in contentFromSpaceType)
+    spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</hspace>";
+  else
+    spaceStr += "\"/>";
+  dump("In msiInsertHorizontalSpace, inserting space: [" + spaceStr + "].\n");
+//  editor.insertHTMLWithContext(spaceStr, "", "", "", null, parentNode, insertPos, false);
+  insertXMLAtCursor(editor, spaceStr, true, false);
+}
+
+//-----------------------------------------------------------------------------------
+var msiInsertVerticalSpacesCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var vSpaceData = new Object();
+    vSpaceData.spaceType = "smallSkip";
+    try {
+      msiOpenModelessDialog("chrome://prince/content/VerticalSpaces.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, "cmd_insertVerticalSpaces", this, vSpaceData);
+    }
+    catch(ex) {
+      dump("*** Exception: couldn't open VerticalSpaces Dialog: " + ex + "\n");
+    }
+  }
+};
+
+function msiInsertVerticalSpace(dialogData, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+//  var parentNode = editor.selection.anchorNode;
+//  var insertPos = editor.selection.anchorOffset;
+  var dimensionsFromSpaceType = 
+  {
+//    requiredSpace:
+//    nonBreakingSpace:
+    smallSkip:        "3pt",
+    mediumSkip:       "6pt",
+    bigSkip:         "12pt"
+  };
+  var lineHeightFromSpaceType = 
+  {
+    strut:     "100%",
+    mathStrut: "100%"   //not really right, but for the moment
+  };
+  var contentFromSpaceType = 
+  {
+//    zeroSpace:          "&#x200b;"
+////    negativeThinSpace:
+////    noIndent:
+  };
+  var specialShowInvisibleChars = 
+  {
+    strut:          ""  //
+  };
+  var spaceStr = "<vspace type=\"";
+  if (dialogData.spaceType != "customSpace")
+  {
+    spaceStr += dialogData.spaceType;
+    if (dialogData.spaceType in dimensionsFromSpaceType)
+      spaceStr += "\" dim=\"" + dimensionsFromSpaceType[dialogData.spaceType];
+    else if (dialogData.spaceType in lineHeightFromSpaceType)
+      spaceStr += "\" lineHt=\"" + lineHeightFromSpaceType[dialogData.spaceType];
+  }
+  else
+  {
+    spaceStr += "customSpace\" dim=\"";
+    spaceStr += String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
+  }
+  if (dialogData.spaceType in contentFromSpaceType)
+    spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</vspace>";
+  else
+    spaceStr += "\"/>";
+  dump("In msiInsertHorizontalSpace, inserting space: [" + spaceStr + "].\n");
+//  editor.insertHTMLWithContext(spaceStr, "", "", "", null, parentNode, insertPos, false);
+  insertXMLAtCursor(editor, spaceStr, true, false);
+}
+
+
+//-----------------------------------------------------------------------------------
 var msiInsertReturnFancyCommand =
 {
   isCommandEnabled: function(aCommand, dummy)

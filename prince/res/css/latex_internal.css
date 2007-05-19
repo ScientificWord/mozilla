@@ -68,13 +68,62 @@ sw|button [class="texbutton"] {
 }
 
 
-sw|space[dim="2em"] {
-  width: 2em;
-  height: 1ex;
+sw|space {
   display: -moz-inline-box;
-  vertical-align: textbase;
+  vertical-align: baseline;
 }
   
 *[showinvis="true"] sw|space {
-  border-bottom: thin solid green;
+  border-bottom-width: thin;
+  border-bottom-style: solid;
+  border-bottom-color: green;
 }
+
+*[showinvis="true"] sw|space[type="noIndent"] {
+  display: none;
+}
+
+*[showinvis="true"] sw|space[type="noIndent"]:after {
+  content: "\002190";
+  color: green;
+}
+
+sw|linebox {
+  display: -moz-inline-box;
+  width: 100%;
+}
+
+/*
+sw|space.stretchySpace[fillWith="line"] {
+  border-bottom: thin solid;  Note that omitting the border-color causes the text color to be used (per CSS 2.1 specification)
+}
+
+sw|space.stretchySpace[fillWith="dots"] {
+  border-bottom: thin dotted;
+}
+
+*[showinvis="true"] sw|space.stretchySpace {
+  border-bottom-color: green;
+}
+*/
+
+/*  Display values: "inline-block", "inline-table" produces parsing error. "-moz-inline-box", "inline" ignore width and padding.
+      "-moz-inline-block" breaks line, also ignores width and padding. 
+    Solution used is derived from Bugzilla comment at "https://bugzilla.mozilla.org/show_bug.cgi?id=9458#c37", and is
+    partially embedded in the XBL in latex.xml#vspace. */
+sw|vertspace {
+  display: -moz-inline-box;
+  vertical-align: baseline;
+  overflow: hidden;
+  max-width: 1px;
+  white-space: pre;
+}
+  
+span.vertspace {
+  display: block;
+}
+
+*[showinvis="true"] span.vertspace {
+  border-left: thin solid green;
+}
+
