@@ -1,0 +1,33 @@
+<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Vertical Spaces">
+
+<!ENTITY spacesRadioGroupbox.label "Spacing Types">
+
+<!ENTITY smallSkip.label "Small skip">
+<!ENTITY smallSkip.accessKey "S">
+<!ENTITY mediumSkip.label "Medium skip">
+<!ENTITY mediumSkip.accessKey "M">
+<!ENTITY bigSkip.label "Big skip">
+<!ENTITY bigSkip.accessKey "B">
+<!ENTITY strut.label "Strut">
+<!ENTITY strut.accessKey "t">
+<!ENTITY mathStrut.label "Math strut">
+<!ENTITY mathStrut.accessKey "u">
+<!ENTITY customSpace.label "Custom">
+<!ENTITY customSpace.accessKey "C">
+
+
+<!ENTITY sizeGroupbox.label "Size">
+<!ENTITY fixedDepth.label "Depth">
+<!ENTITY fixedDepth.accessKey "D">
+<!ENTITY fixedSizeUnits.label "Units">
+<!ENTITY fixedSizeUnits.accessKey "U">
+
+<!ENTITY typesetGroup.label "Typeset behavior">
+<!ENTITY typesetDiscardAtLineEnd.label "Discard at line end">
+<!ENTITY typesetDiscardAtLineEnd.accessKey "e">
+<!ENTITY typesetAlways.label "Always">
+<!ENTITY typesetAlways.accessKey "A">
+
+<!-- <!ENTITY .tooltip "">  -->
