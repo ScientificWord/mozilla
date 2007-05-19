@@ -1047,6 +1047,7 @@ function insertXML(editor, text, node, offset, bDump)
     else
     {
     // split the text node
+      var newNode = editor.document.createTextNode("");
       editor.splitNode(node, offset, newNode);
       var list = node.parentNode.childNodes;
       for (i = 0; i< list.length; i++) 

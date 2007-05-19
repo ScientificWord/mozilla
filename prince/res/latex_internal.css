@@ -1,42 +1,107 @@
 @namespace sw url("http://www.sciword.com/namespaces/sciword");
 
-latex2 {
-  font-family: "Times-Roman";
+sw|latex2 {
+/*  font-family: "Times-Roman"; */
   letter-spacing: -0.2em;
   visibility: visible;
-
+  -moz-user-select: all;
+  -moz-user-modify: read-only;
+  background-color: rgb(200,255,200);
 }
 
-latexa {
+latexstyleb sw|latex2 {
+  background-color: transparent;
+}
+
+
+sw|latexa {
   font-size: smaller;
   position: relative;
   bottom: .15em;
   left: -0.20em;
 }
 
-latext {
+sw|latext {
   position: relative;
   left: -0.13em;
   }
 
-latexe {
+sw|latexe {
   position: relative;
   bottom: -0.2em;
   left: -0.09em;
   }
 
-tex2 {
-  font-family: "Times-Roman";
+sw|tex2 {
+/*  font-family: "Times-Roman";  */
   letter-spacing: -0.14em;
   visibility: visible;
+  -moz-user-select: none;
+  background-color: rgb(200,255,200);
 }
 
-texe {
+sw|texe {
   position: relative;
   bottom: -0.2em;
   left: -.02em;
   }
 
-invis {
+sw|invis {
   display: none;
+}
+
+sw|texbdata {
+  display: none;
+}
+
+sw|button [class="texbutton"] {
+  -moz-appearance: button;
+  margin: 0px 5px 0px 5px;
+  min-width: 6.3em;
+  border: 3px solid;
+  -moz-border-top-colors: transparent ThreeDHighlight ThreeDLightShadow;
+  -moz-border-right-colors: transparent ThreeDDarkShadow ThreeDShadow;
+  -moz-border-bottom-colors: transparent ThreeDDarkShadow ThreeDShadow;
+  -moz-border-left-colors: transparent ThreeDHighlight ThreeDLightShadow;
+  background-color: ThreeDFace;
+  -moz-user-select: none;
+}
+
+
+sw|space[dim] {
+  display: -moz-inline-box;
+  vertical-align: baseline;
+  width: 1em;
+  height: 1ex;
+}
+  
+sw|space[dim="1em"] {
+  width: 1em;
+  height: 1ex;
+}
+
+sw|space[dim="2em"] {
+  width: 2em;
+  height: 1ex;
+}
+
+*[showinvis="true"] sw|space {
+  border-bottom: thin solid green;
+}
+
+*[showinvis="true"] sw|space[type="noIndent"] {
+  display: none;
+}
+
+*[showinvis="true"] sw|space[type="noIndent"]:after {
+  content: "\002190";
+  color: green;
+}
+
+sw|space[fillWith="line"] {
+  border-bottom: thin solid;  /*Note that omitting the border-color causes the text color to be used (per CSS 2.1 specification)*/
+}
+
+sw|space[fillWith="dots"] {
+  border-bottom: thin dotted;
 }
