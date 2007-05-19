@@ -82,11 +82,81 @@
 	  </xbl:resources>
 	  <xbl:content>
       <sw:invis><xbl:children/></sw:invis>
-      <sw:space xbl:inherits="flex,dim"/> 
+      <sw:space xbl:inherits="flex,dim,fillWith"/>
     </xbl:content>
+    <xbl:implementation>
+      <xbl:constructor>
+        <![CDATA[
+        var theDim = this.getAttribute("dim");
+        if (theDim != null && theDim.length > 0)
+        {
+          var spaceObj = document.getAnonymousNodes(this)[1];
+          var spanObj = document.createElement("span");
+          spanObj.setAttribute("style","width: " + theDim + ";");
+          spaceObj.appendChild(spanObj);
+        }
+        else
+        {
+          var theFlex = this.getAttribute("flex");
+          if (theFlex != null && theFlex.length > 0)
+          {
+            var spaceObj = document.getAnonymousNodes(this)[1];
+            /*var sepObj = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "spacer");
+            sepObj.setAttribute("flex", theFlex);  */
+            var theFill = this.getAttribute("fillWith");
+            var theStyle = "";  /*may need to set this to -moz-box-flex: + theFlex? Depends on whether the attribute takes.*/
+            if (theFill == "line")
+              theStyle += "border-bottom-width: thin; border-bottom-style: solid;"
+            else if (theFill == "dots")
+              theStyle += "border-bottom-width: medium; border-bottom-style: dotted;"
+            if (theStyle.length > 0)
+              spaceObj.setAttribute("style", theStyle);
+            /*  sepObj.setAttribute("style", theStyle);
+              spaceObj.appendChild(sepObj); */
+          }
+          dump("XBL hspace content doesn't have dim attribute!\n");
+        }
+        ]]>
+      </xbl:constructor>
+    </xbl:implementation>
   </xbl:binding>
 
-  
+	<xbl:binding id="vspace">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <sw:invis><xbl:children/></sw:invis>
+      <sw:vertspace xbl:inherits="dim,lineHt"/>
+    </xbl:content>
+    <xbl:implementation>
+      <xbl:constructor>
+        <![CDATA[
+        var theDim = this.getAttribute("dim");
+        var theLineHeight = this.getAttribute("lineHt");
+        var styleAttr = "";
+        if (theDim != null && theDim.length > 0)
+          styleAttr = "padding-bottom: " + theDim + ";";
+        if (theLineHeight != null && theLineHeight.length > 0)
+          styleAttr += "line-height: " + theLineHeight + ";";
+        if (styleAttr.length > 0)
+        {
+          var spaceObj = document.getAnonymousNodes(this)[1];
+          var spanObj = document.createElement("span");
+          spanObj.setAttribute("class", "vertspace");
+          spanObj.setAttribute("style", styleAttr);
+          var textObj = document.createTextNode(" ");
+          spanObj.appendChild(textObj);
+          spaceObj.appendChild(spanObj);
+          /* spaceObj.setAttribute("style", styleAttr); */
+        }
+        else
+          dump("XBL vspace content doesn't have dim or lineHt attribute!\n");
+        ]]>
+      </xbl:constructor>
+    </xbl:implementation>
+  </xbl:binding>
+
 </xbl:bindings>
 
 			

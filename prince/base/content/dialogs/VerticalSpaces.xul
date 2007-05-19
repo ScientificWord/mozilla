@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://communicator/skin/" type="text/css"? -->
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://prince/skin/operatorsDialog.css" type="text/css"? -->
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/VerticalSpaces.dtd">
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/ -->
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/VerticalSpaces.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiButtonGroup.js"/>
+
+  <keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset>
+
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <broadcasterset>
+    <broadcaster id="enableBrackets" disabled="false"/>
+  </broadcasterset>
+
+  <vbox>
+    <hbox>
+      <groupbox id="spacesRadioGroupbox">
+        <caption label="&spacesRadioGroupbox.label;"/>
+        <radiogroup id="spacesRadioGroup" oncommand="checkEnableControls();">
+			  <grid flex="1">
+				  <rows>
+					  <row/>
+					  <row/>
+					  <row/>
+				  </rows>
+				  <columns>
+				    <column>
+              <radio label="&smallSkip.label;" value="smallSkip" group="spacesRadioGroup"/>
+              <radio label="&mediumSkip.label;" value="mediumSkip" group="spacesRadioGroup"/>
+              <radio label="&bigSkip.label;" value="bigSkip" group="spacesRadioGroup"/>
+				    </column>
+				    <column>
+              <radio label="&strut.label;" value="strut" group="spacesRadioGroup"/>
+              <radio label="&mathStrut.label;" value="mathStrut" group="spacesRadioGroup"/>
+              <radio label="&customSpace.label;" value="customSpace" group="spacesRadioGroup"/>
+					  </column>
+				  </columns>
+			  </grid>
+        </radiogroup>
+      </groupbox>
+    </hbox>
+    <hbox id="customControls" collapsed="true">
+      <groupbox id="sizeGroupbox" orient="horizontal">
+        <caption label="&sizeGroupbox.label;"/>
+        <vbox id="fixedSizeControls">
+          <hbox>
+            <label control="fixedSizeTextbox" value="&fixedDepth.label;"	accesskey="&fixedDepth.accessKey;"/>
+            <textbox id="fixedSizeTextbox" />
+          </hbox>
+          <hbox>
+            <label control="fixedSizeUnitsbox" value="&fixedSizeUnits.label;"	accesskey="&fixedSizeUnits.accessKey;"/>
+            <menulist id="fixedSizeUnitsbox"  oncommand="changeUnits(this);"  >
+               <menupopup>
+               </menupopup>
+             </menulist>
+            <!-- listbox id="fixedSizeUnitsbox" onselect="changeUnits(this);"/ -->
+          </hbox>
+        </vbox>
+      </groupbox>
+      <groupbox id="typesetGroupbox">
+        <caption label="&typesetGroup.label;"/>
+        <radiogroup id="typesetRadioGroup" orient="vertical">
+          <radio id="typesetDiscardAtLineEnd" label="&typesetDiscardAtLineEnd.label;" value="discardAtLineEnd" accesskey="&typesetDiscardAtLineEnd.accessKey;"/>
+          <radio id="typesetAlways" label="&typesetAlways.label;" value="always" accesskey="&typesetAlways.accessKey;"/>
+        </radiogroup>
+      </groupbox>
+    </hbox>
+  </vbox>
+</dialog>
