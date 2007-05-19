@@ -233,6 +233,14 @@
         </menupopup>
       </menu-->
       <menuseparator id="insertMenuSeparator"/>
+      <menu accesskey="&insertSpacingObjects.accessKey;"   id="insertSpacesMenu"        label="&insertSpacingObjects.label;">
+        <menupopup>
+          <menuitem accesskey="&insertHorizontalSpaces.accessKey;"      observes="cmd_insertHorizontalSpaces"      label="&insertHorizontalSpaces.label;"/>
+          <menuitem accesskey="&insertVerticalSpaces.accessKey;"        observes="cmd_insertVerticalSpaces"        label="&insertVerticalSpaces.label;"/>
+          <menuitem accesskey="&insertRules.accessKey;"                 observes="cmd_insertRules"                 label="&insertRules.label;"/>
+          <menuitem accesskey="&insertBreaks.accessKey;"                observes="cmd_insertBreaks"                label="&insertBreaks.label;"/>
+        </menupopup>
+      </menu>
 <!-- Activate this after Enter key inserts P tag and not BR
       <menuitem accesskey="&insertbreak.accesskey;"      observes="cmd_insertBreak"      label="&insertBreakCmd.label;"/>
 -->
@@ -342,6 +350,12 @@
 
     <command id="cmd_insertBreak"      oncommand="msiGoDoCommand('cmd_insertBreak')"/>
     <command id="cmd_insertBreakAll"   oncommand="msiGoDoCommand('cmd_insertBreakAll')"/>
+
+    <command id="cmd_insertHorizontalSpaces"   oncommand="msiGoDoCommand('cmd_insertHorizontalSpaces')"/>
+    <command id="cmd_insertVerticalSpaces"     oncommand="msiGoDoCommand('cmd_insertVerticalSpaces')"/>
+    <command id="cmd_insertRules"              oncommand="msiGoDoCommand('cmd_insertRules')"/>
+    <command id="cmd_insertBreaks"             oncommand="msiGoDoCommand('cmd_insertBreaks')"/>
+
     <command id="cmd_NormalMode"       oncommand="msiGoDoCommand('cmd_NormalMode')"/>
     <command id="cmd_AllTagsMode"      oncommand="msiGoDoCommand('cmd_AllTagsMode')"/>
     <command id="cmd_HTMLSourceMode"   oncommand="msiGoDoCommand('cmd_HTMLSourceMode')"/>

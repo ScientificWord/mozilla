@@ -154,6 +154,10 @@ prince.jar:
   content/EditorPublishProgress.js   (content/dialogs/msiEditorPublishProgress.js) 
   content/DocumentInfo.xul           (content/dialogs/DocumentInfo.xul) 
   content/DocumentInfo.js            (content/dialogs/DocumentInfo.js) 
+  content/HorizontalSpaces.xul       (content/dialogs/HorizontalSpaces.xul) 
+  content/HorizontalSpaces.js        (content/dialogs/HorizontalSpaces.js) 
+  content/VerticalSpaces.xul         (content/dialogs/VerticalSpaces.xul) 
+  content/VerticalSpaces.js          (content/dialogs/VerticalSpaces.js) 
 
 en-US.jar:
 % locale prince en-US %locale/
@@ -221,7 +225,10 @@ en-US.jar:
 *  locale/branding/brand.properties       (locale/en-us/brand.properties)
   locale/DocumentInfo.dtd                 (locale/en-us/dialogs/DocumentInfo.dtd)
   locale/docInfoDialog.properties         (locale/en-us/dialogs/docInfoDialog.properties)
+  locale/HorizontalSpaces.dtd             (locale/en-us/dialogs/HorizontalSpaces.dtd)
+  locale/VerticalSpaces.dtd               (locale/en-us/dialogs/VerticalSpaces.dtd)
   locale/openLocation.dtd				  (locale/en-us/openLocation.dtd)
+  locale/msiDialogs.properties		      (locale/en-us/dialogs/msiDialogs.properties)
   locale/openLocation.properties		  (locale/en-us/openLocation.properties)
   locale/editor.properties		          (locale/en-us/editor.properties)
 

@@ -10,6 +10,10 @@ hspace {
   -moz-binding: url("resource://app/res/xbl/latex.xml#hspace");
 }
 
+vspace {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#vspace");
+}
+
 invis {
   display: none;
 }

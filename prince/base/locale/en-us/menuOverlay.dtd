@@ -189,7 +189,16 @@
 <!ENTITY insertbreak.accesskey "b">
 <!ENTITY insertBreakAllCmd.label "Break Below Image(s)">
 <!ENTITY insertbreakall.accesskey "k">
-
+<!ENTITY insertSpacingObjects.label "Spacing Objects">
+<!ENTITY insertSpacingObjects.accessKey "S">
+<!ENTITY insertHorizontalSpaces.label "Horizontal Spaces...">
+<!ENTITY insertHorizontalSpaces.accessKey "H">
+<!ENTITY insertVerticalSpaces.label "Vertical Spaces...">
+<!ENTITY insertVerticalSpaces.accessKey "V">
+<!ENTITY insertRules.label "Rules...">
+<!ENTITY insertRules.accessKey "R">
+<!ENTITY insertBreaks.label "Breaks...">
+<!ENTITY insertBreaks.accessKey "B">
 <!-- Insert form menu items -->
 <!ENTITY insertFormCmd.label "Define Form...">
 <!ENTITY insertform.accesskey "D">

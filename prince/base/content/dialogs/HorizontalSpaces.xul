@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://communicator/skin/" type="text/css"? -->
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://prince/skin/operatorsDialog.css" type="text/css"? -->
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/HorizontalSpaces.dtd">
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/ -->
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/HorizontalSpaces.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiButtonGroup.js"/>
+
+  <keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset>
+
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <broadcasterset>
+    <broadcaster id="enableBrackets" disabled="false"/>
+  </broadcasterset>
+
+  <vbox>
+    <hbox>
+      <groupbox id="spacesRadioGroupbox">
+        <caption label="&spacesRadioGroupbox.label;"/>
+        <radiogroup id="spacesRadioGroup" oncommand="checkEnableControls();">
+			  <grid flex="1">
+				  <rows>
+					  <row/>
+					  <row/>
+					  <row/>
+					  <row/>
+					  <row/>
+					  <row/>
+				  </rows>
+				  <columns>
+				    <column>
+              <radio label="&normalSpace.label;" value="normalSpace" group="spacesRadioGroup"/>
+              <radio label="&requiredSpace.label;" value="requiredSpace" group="spacesRadioGroup"/>
+              <radio label="&nonBreakingSpace.label;" value="nonBreakingSpace" group="spacesRadioGroup"/>
+              <radio label="&emSpace.label;" value="emSpace" group="spacesRadioGroup"/>
+              <radio label="&twoEmSpace.label;" value="twoEmSpace" group="spacesRadioGroup"/>
+              <radio label="&thinSpace.label;" value="thinSpace" group="spacesRadioGroup"/>
+				    </column>
+				    <column>
+              <radio label="&thickSpace.label;" value="thickSpace" group="spacesRadioGroup"/>
+              <radio label="&italicCorrectionSpace.label;" value="italicCorrectionSpace" group="spacesRadioGroup"/>
+              <radio label="&negativeThinSpace.label;" value="negativeThinSpace" group="spacesRadioGroup"/>
+              <radio label="&zeroSpace.label;" value="zeroSpace" group="spacesRadioGroup"/>
+              <radio label="&noIndent.label;" value="noIndent" group="spacesRadioGroup"/>
+              <radio label="&customSpace.label;" value="customSpace" group="spacesRadioGroup"/>
+					  </column>
+				  </columns>
+			  </grid>
+        </radiogroup>
+      </groupbox>
+    </hbox>
+    <hbox id="customControls" collapsed="true">
+      <vbox>
+        <hbox id="customSizeControlBlock">
+          <groupbox id="sizeGroupbox" orient="horizontal">
+            <caption label="&sizeGroupbox.label;"/>
+            <radiogroup id="fixedOrStretchyRadioGroup" orient="vertical" oncommand="checkEnableControls();">
+              <radio label="&fixedSize.label;" value="fixed" accesskey="&fixedSize.accessKey;"/>
+              <radio label="&stretchySize.label;" value="stretchy" accesskey="&stretchySize.accessKey;"/>
+            </radiogroup>
+            <spacer flex="1"/>
+            <vbox id="fixedSizeControls">
+              <hbox>
+                <label control="fixedSizeTextbox" value="&fixedWidth.label;"	accesskey="&fixedWidth.accessKey;"/>
+                <textbox id="fixedSizeTextbox" />
+              </hbox>
+              <hbox>
+                <label control="fixedSizeUnitsbox" value="&fixedSizeUnits.label;"	accesskey="&fixedSizeUnits.accessKey;"/>
+                <menulist id="fixedSizeUnitsbox"  oncommand="changeUnits(this);"  >
+                   <menupopup>
+                   </menupopup>
+                 </menulist>
+                <!-- listbox id="fixedSizeUnitsbox" onselect="changeUnits(this);"/ -->
+              </hbox>
+            </vbox>
+            <vbox id="stretchySizeControls" collapsed="true">
+              <label control="stretchySizeFactor" value="&stretchySizeFactor.label;"	accesskey="&stretchySizeFactor.accessKey;"/>
+              <textbox id="stretchySizeFactor" />
+            </vbox>
+          </groupbox>
+        </hbox>
+        <hbox id="customFillAndTypesetControlBlock">
+          <groupbox id="fillWithGroupbox">
+            <caption label="&fillWithGroup.label;"/>
+            <radiogroup id="fillWithRadioGroup" orient="vertical">
+              <radio label="&fillNothing.label;" value="fillNothing" accesskey="&fillNothing.accessKey;"/>
+              <radio label="&fillLine.label;" value="fillLine" accesskey="&fillLine.accessKey;"/>
+              <radio label="&fillDots.label;" value="fillDots" accesskey="&fillDots.accessKey;"/>
+            </radiogroup>
+          </groupbox>
+          <groupbox id="typesetGroupbox">
+            <caption label="&typesetGroup.label;"/>
+            <radiogroup id="typesetRadioGroup" orient="vertical">
+              <radio id="typesetDiscardAtLineEnd" label="&typesetDiscardAtLineEnd.label;" value="discardAtLineEnd" accesskey="&typesetDiscardAtLineEnd.accessKey;"/>
+              <radio id="typesetAlways" label="&typesetAlways.label;" value="always" accesskey="&typesetAlways.accessKey;"/>
+            </radiogroup>
+          </groupbox>
+        </hbox>
+      </vbox>
+    </hbox>
+  </vbox>
+</dialog>
