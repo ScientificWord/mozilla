@@ -1,0 +1,58 @@
+<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Horizontal Spaces">
+
+<!ENTITY spacesRadioGroupbox.label "Spacing Types">
+
+<!ENTITY normalSpace.label "Normal">
+<!ENTITY normalSpace.accessKey "N">
+<!ENTITY requiredSpace.label "Required space">
+<!ENTITY requiredSpace.accessKey "q">
+<!ENTITY nonBreakingSpace.label "Non-breaking space">
+<!ENTITY nonBreakingSpace.accessKey "k">
+<!ENTITY emSpace.label "Em space">
+<!ENTITY emSpace.accessKey "m">
+<!ENTITY twoEmSpace.label "2 em space">
+<!ENTITY twoEmSpace.accessKey "2">
+<!ENTITY thinSpace.label "Thin space">
+<!ENTITY thinSpace.accessKey "T">
+<!ENTITY thickSpace.label "Thick space">
+<!ENTITY thickSpace.accessKey "h">
+<!ENTITY italicCorrectionSpace.label "Italic correction">
+<!ENTITY italicCorrectionSpace.accessKey "I">
+<!ENTITY negativeThinSpace.label "Negative thin space">
+<!ENTITY negativeThinSpace.accessKey "g">
+<!ENTITY zeroSpace.label "Zero space">
+<!ENTITY zeroSpace.accessKey "Z">
+<!ENTITY noIndent.label "No indent">
+<!ENTITY noIndent.accessKey "d">
+<!ENTITY customSpace.label "Custom">
+<!ENTITY customSpace.accessKey "C">
+
+
+<!ENTITY sizeGroupbox.label "Size">
+<!ENTITY fixedSize.label "Fixed">
+<!ENTITY fixedSize.accessKey "x">
+<!ENTITY fixedWidth.label "Width">
+<!ENTITY fixedWidth.accessKey "W">
+<!ENTITY fixedSizeUnits.label "Units">
+<!ENTITY fixedSizeUnits.accessKey "U">
+<!ENTITY stretchySize.label "Stretchy">
+<!ENTITY stretchySize.accessKey "y">
+<!ENTITY stretchySizeFactor.label "Factor">
+<!ENTITY stretchySizeFactor.accessKey "F">
+
+<!ENTITY fillWithGroup.label "Fill with">
+<!ENTITY fillNothing.label "Nothing">
+<!ENTITY fillNothing.accessKey "N">
+<!ENTITY fillLine.label "Line">
+<!ENTITY fillLine.accessKey "L">
+<!ENTITY fillDots.label "Dots">
+<!ENTITY fillDots.accessKey "D">
+<!ENTITY typesetGroup.label "Typeset behavior">
+<!ENTITY typesetDiscardAtLineEnd.label "Discard at line end">
+<!ENTITY typesetDiscardAtLineEnd.accessKey "e">
+<!ENTITY typesetAlways.label "Always">
+<!ENTITY typesetAlways.accessKey "A">
+
+<!-- <!ENTITY .tooltip "">  -->
