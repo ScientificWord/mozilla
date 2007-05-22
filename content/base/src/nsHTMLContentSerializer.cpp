@@ -548,7 +548,7 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
 {
   nsresult rv;
   PRUint32 index, count;
-  nsAutoString nameStr, valueStr;
+  nsAutoString nameStr, valueStr, prefixStr;
 
   count = aContent->GetAttrCount();
 
@@ -562,6 +562,7 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
     const nsAttrName* name = aContent->GetAttrNameAt(index);
     PRInt32 namespaceID = name->NamespaceID();
     nsIAtom* attrName = name->LocalName();
+    nsIAtom* prefixName = name->GetPrefix();
 
     // Filter out any attribute starting with [-|_]moz
     const char* sharedName;
@@ -612,6 +613,8 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
     }
 
     attrName->ToString(nameStr);
+    if (prefixName) prefixName->ToString(prefixStr);
+    if (nameStr.EqualsLiteral("xmlns")) prefixStr.Truncate(0);e
     
     /*If we already crossed the MaxColumn limit or 
     * if this attr name-value pair(including a space,=,opening and closing quotes) is greater than MaxColumn limit
@@ -630,7 +633,8 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
     if (IsShorthandAttr(attrName, aTagName) && valueStr.IsEmpty()) {
       valueStr = nameStr;
     }
-    SerializeAttr(EmptyString(), nameStr, valueStr, aStr, !isJS);
+    
+    SerializeAttr(prefixStr, nameStr, valueStr, aStr, !isJS);
   }
 }
 
@@ -642,6 +646,8 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
   NS_ENSURE_ARG(aElement);
 
   nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
+  nsCOMPtr<nsIDOMNode> domNode = do_QueryInterface(aElement);
+  nsCOMPtr<nsIDOM3Node> dom3Node = do_QueryInterface(aElement);
   if (!content) return NS_ERROR_FAILURE;
 
   // The _moz_dirty attribute is emitted by the editor to
@@ -692,6 +698,16 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
   AppendToString(kLessThan, aStr);
 
   nsAutoString nameStr;
+  nsAutoString prefixStr;
+  nsAutoString nsStr;
+  if (dom3Node) {
+    domNode->GetNamespaceURI(nsStr);
+    if (!nsStr.IsEmpty()) dom3Node->LookupPrefix(nsStr, prefixStr);
+    if (!prefixStr.IsEmpty()) {
+      AppendToString(prefixStr.get(), -1, aStr);
+      AppendToString(NS_LITERAL_STRING(":").get(), -1, aStr);
+    }
+  }
   name->ToString(nameStr);
   AppendToString(nameStr.get(), -1, aStr);
 
@@ -756,6 +772,8 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
   NS_ENSURE_ARG(aElement);
 
   nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
+  nsCOMPtr<nsIDOMNode> domNode = do_QueryInterface(aElement);
+  nsCOMPtr<nsIDOM3Node> dom3Node = do_QueryInterface(aElement);
   if (!content) return NS_ERROR_FAILURE;
 
   PRBool hasDirtyAttr = content->HasAttr(kNameSpaceID_None,
@@ -819,6 +837,16 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
   name->ToString(nameStr);
 
   AppendToString(kEndTag, aStr);
+  nsAutoString prefixStr;
+  nsAutoString nsStr;
+  if (dom3Node) {
+    domNode->GetNamespaceURI(nsStr);
+    if (!nsStr.IsEmpty()) dom3Node->LookupPrefix(nsStr, prefixStr);
+    if (!prefixStr.IsEmpty()) {
+      AppendToString(prefixStr.get(), -1, aStr);
+      AppendToString(NS_LITERAL_STRING(":").get(), -1, aStr);
+    }
+  }
   AppendToString(nameStr.get(), -1, aStr);
   AppendToString(kGreaterThan, aStr);
 
