@@ -614,7 +614,7 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
 
     attrName->ToString(nameStr);
     if (prefixName) prefixName->ToString(prefixStr);
-    if (nameStr.EqualsLiteral("xmlns")) prefixStr.Truncate(0);e
+    if (nameStr.EqualsLiteral("xmlns")) prefixStr.Truncate(0);
     
     /*If we already crossed the MaxColumn limit or 
     * if this attr name-value pair(including a space,=,opening and closing quotes) is greater than MaxColumn limit
