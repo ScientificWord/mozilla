@@ -136,7 +136,8 @@
 
 const PRUnichar nbsp = 160;
 
-static NS_DEFINE_CID(kCParserCID,     NS_PARSER_CID);
+static NS_DEFINE_CID(kCParserCID,     NS_PARSER_CID);                                
+
 
 // private clipboard data flavors for html copy/paste
 #define kHTMLContext   "text/_moz_htmlcontext"
@@ -2872,6 +2873,7 @@ nsresult nsHTMLEditor::CreateTagStack(nsVoidArray &aTagStack, nsIDOMNode *aNode)
   nsresult res = NS_OK;
   nsCOMPtr<nsIDOMNode> node= aNode;
   PRBool bSeenBody = PR_FALSE;
+  PRUint32 index, count;
   
   while (node) 
   {
@@ -2884,7 +2886,39 @@ nsresult nsHTMLEditor::CreateTagStack(nsVoidArray &aTagStack, nsIDOMNode *aNode)
     if (nsIDOMNode::ELEMENT_NODE == nodeType)
     {
       nsAutoString tagName;
-      node->GetNodeName(tagName);
+      nsAutoString attrnameStr;
+      nsAutoString prefixStr;
+      nsAutoString valueStr;
+      nsCOMPtr<nsIDOMElement> element; 
+      nsCOMPtr<nsIDOMNamedNodeMap> attributeMap;
+      
+      element = do_QueryInterface(node);
+      element->GetNodeName(tagName);      
+      //BBM experimental: add attributes also.
+      element->GetAttributes(getter_AddRefs(attributeMap));
+      attributeMap->GetLength(&count);
+      for (index = count; index > 0; )
+      {
+        --index;
+        nsCOMPtr<nsIDOMNode> attrNode;
+        attributeMap->Item(index, getter_AddRefs(attrNode));
+        attrNode->GetLocalName(attrnameStr);
+        nsCOMPtr<nsIDOM3Node> attr3Node;
+        attr3Node = do_QueryInterface(attrNode);
+        nsAutoString namespaceURI;
+        attrNode->GetNamespaceURI(namespaceURI);
+        attr3Node->LookupPrefix(namespaceURI, prefixStr);
+        res = element->GetAttribute(prefixStr, valueStr);
+        tagName.AppendLiteral(" ");
+        tagName.Append(attrnameStr);
+        tagName.AppendLiteral("=\"");
+        tagName.Append(valueStr);
+        tagName.AppendLiteral("\"");
+      }
+        
+        
+        
+        
       // XXX Wish we didn't have to allocate here
       PRUnichar* name = ToNewUnicode(tagName);
       if (!name) 
