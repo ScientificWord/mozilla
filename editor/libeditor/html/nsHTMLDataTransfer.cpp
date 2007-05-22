@@ -133,6 +133,7 @@
 #include "nsIPrefBranch.h"
 #include "nsIPrefService.h"
 #include "nsIContentFilter.h"
+#include "../../../content/base/src/nsAttrName.h"
 
 const PRUnichar nbsp = 160;
 
@@ -152,14 +153,15 @@ static nsresult RemoveFragComments(nsCString &theStr);
 static void RemoveBodyAndHead(nsIDOMNode *aNode);
 static nsresult FindTargetNode(nsIDOMNode *aStart, nsCOMPtr<nsIDOMNode> &aResult);
 
-#if DEBUG_barry || DEBUG_Barry
-nsString DebTagName;
-void DebExamineNode(nsIDOMNode * aNode)
-{
-  if (aNode) nsEditor::GetTagString(aNode, DebTagName);
-  else DebTagName = NS_LITERAL_STRING("Null");
-}
-#endif
+//#if DEBUG_barry || DEBUG_Barry
+//nsString DebTagName;
+//void DebExamineNode(nsIDOMNode * aNode)
+//{
+//  if (aNode) nsEditor::GetTagString(aNode, DebTagName);
+//  else DebTagName = NS_LITERAL_STRING("Null");
+//}
+//#endif
+void DebExamineNode(nsIDOMNode * aNode) {}
 
 nsCOMPtr<nsIDOMNode> nsHTMLEditor::GetListParent(nsIDOMNode* aNode)
 {
@@ -2890,26 +2892,33 @@ nsresult nsHTMLEditor::CreateTagStack(nsVoidArray &aTagStack, nsIDOMNode *aNode)
       nsAutoString prefixStr;
       nsAutoString valueStr;
       nsCOMPtr<nsIDOMElement> element; 
-      nsCOMPtr<nsIDOMNamedNodeMap> attributeMap;
+      nsCOMPtr<nsIContent> content;
+//      nsCOMPtr<nsIDOMNamedNodeMap> attributeMap;
       
       element = do_QueryInterface(node);
+      content = do_QueryInterface(node);
       element->GetNodeName(tagName);      
       //BBM experimental: add attributes also.
-      element->GetAttributes(getter_AddRefs(attributeMap));
-      attributeMap->GetLength(&count);
+      count = content->GetAttrCount();
       for (index = count; index > 0; )
       {
         --index;
-        nsCOMPtr<nsIDOMNode> attrNode;
-        attributeMap->Item(index, getter_AddRefs(attrNode));
-        attrNode->GetLocalName(attrnameStr);
-        nsCOMPtr<nsIDOM3Node> attr3Node;
-        attr3Node = do_QueryInterface(attrNode);
-        nsAutoString namespaceURI;
-        attrNode->GetNamespaceURI(namespaceURI);
-        attr3Node->LookupPrefix(namespaceURI, prefixStr);
-        res = element->GetAttribute(prefixStr, valueStr);
+        const nsAttrName* name = content->GetAttrNameAt(index);
+        PRInt32 namespaceID = name->NamespaceID();
+        nsIAtom* attrName = name->LocalName();
+        nsIAtom* prefixName = name->GetPrefix();
+
+        attrName->ToString(attrnameStr);
+        if (prefixName) prefixName->ToString(prefixStr);
+        if (attrnameStr.EqualsLiteral("xmlns") && prefixStr.EqualsLiteral("xmlns"))
+          prefixStr.Truncate(0);
+        content->GetAttr(namespaceID, attrName, valueStr);
         tagName.AppendLiteral(" ");
+        if (!prefixStr.IsEmpty()) 
+        {
+          tagName.Append(prefixStr);
+          tagName.AppendLiteral(":");
+        }
         tagName.Append(attrnameStr);
         tagName.AppendLiteral("=\"");
         tagName.Append(valueStr);
