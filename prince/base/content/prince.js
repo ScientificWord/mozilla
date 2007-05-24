@@ -31,7 +31,7 @@ function GetCurrentEditorElement() {
   
   do {
     var editorList = tmpWindow.document.getElementsByTagName("editor");
-
+    // Doesn't this assume one editor per window?? --BBM
     if (editorList.item(0))
       return editorList.item(0);
 
@@ -42,12 +42,16 @@ function GetCurrentEditorElement() {
 }
 
 function doQuit() {
-  ShutdownAllEditors();
-  var appStartup = Components.classes["@mozilla.org/toolkit/app-startup;1"].
-                     getService(Components.interfaces.nsIAppStartup);
+  var cancel = ShutdownAllEditors();
+  if (!cancel)
+  {
+    var appStartup = Components.classes["@mozilla.org/toolkit/app-startup;1"].
+                       getService(Components.interfaces.nsIAppStartup);
 
-  appStartup.quit(Components.interfaces.nsIAppStartup.eAttemptQuit);
-  return true;
+    appStartup.quit(Components.interfaces.nsIAppStartup.eAttemptQuit);
+    return true;
+  }
+  return false;
 }
 
 /////////////////////////////////////////////////
@@ -731,4 +735,5 @@ function toggleSidebar(aCommandID, forceOpen) {
 }
 
 
+ 
 
