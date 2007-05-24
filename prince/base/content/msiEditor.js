@@ -525,17 +525,19 @@ function msiEditorOnBlur(event)
 function ShutdownAllEditors()
 {
   var tmpWindow = window;
+  var keepgoing = true;
   
 //  do {
     // Get the <editor> element(s)
     var editorList = document.getElementsByTagName("editor");
-
     for (var i = 0; i < editorList.length; ++i)
     {
       if (editorList.item(i))
       {
-        msiCheckAndSaveDocument(editorList.item(i), "cmd_close", true);
-        ShutdownAnEditor(editorList.item(i));
+        keepgoing = msiCheckAndSaveDocument(editorList.item(i), "cmd_close", true);
+        if (keepgoing)
+          ShutdownAnEditor(editorList.item(i));
+        else break;
       }
     }
 
@@ -543,7 +545,7 @@ function ShutdownAllEditors()
 //  } 
 //  while (tmpWindow);
 
-  return null;
+  return !keepgoing;
 }
 
 // implements nsIObserver
@@ -681,7 +683,7 @@ function msiEditorDocumentObserver(editorElement)
 //          editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
           editor.setTopXULWindow(window);
           // also initialize the sidebar in this case
-          initSidebar();
+          try {initSidebar();} catch(e){}
           // now is the time to initialize the autosubstitute engine
           var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
           autosub.initialize("resource:///res/tagdefs/autosubs.xml");

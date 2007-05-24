@@ -28,7 +28,7 @@
   id    = "prince"
   title = "&prince.title;"
   onload="msiEditorOnLoad()"
-  onunload="ShutdownAllEditors()"
+  onunload=""
   onclose="return msiEditorCanClose()"
   onfocus="msiEditorWindowOnFocus()"
   contenttitlesetting="true"
