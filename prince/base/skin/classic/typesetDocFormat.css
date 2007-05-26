@@ -30,3 +30,7 @@
 }
 
 *[active="1"] { background-color:#ffc0c0; }
+
+#docformatFontsPanel menulist {
+  min-width: 300px;
+}

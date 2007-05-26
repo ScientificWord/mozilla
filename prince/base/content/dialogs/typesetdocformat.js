@@ -37,11 +37,11 @@ function Startup()
   dump("current unit = "+currentUnit+"\n");
   // font page
   initSystemFontMenu("mainfontlist");
-  initSystemFontMenu("sansfontlist");
-  initSystemFontMenu("fixedfontlist");
-  initSystemFontMenu("x1fontlist");
-  initSystemFontMenu("x2fontlist");
-  initSystemFontMenu("x3fontlist");
+//  initSystemFontMenu("sansfontlist");
+//  initSystemFontMenu("fixedfontlist");
+//  initSystemFontMenu("x1fontlist");
+//  initSystemFontMenu("x2fontlist");
+//  initSystemFontMenu("x3fontlist");
   getFontSpecs();
 }
 
@@ -1047,5 +1047,45 @@ function onCheck( checkbox ) // the checkbox is for old style nums or swashes
   document.getElementById(base+"native").value = stringFrom(objarray);
 }
   
+
+// font section
+var gFontMenuInitialized = new Object;
+var systemFontCount = new Object;
+
+function initSystemFontMenu(menuPopupId)
+{
+  var menuPopup = document.getElementById(menuPopupId).firstChild;
+  // fill in the menu only once...
+  if (gFontMenuInitialized[menuPopupId ])
+    return;
+  gFontMenuInitialized[menuPopupId ] = menuPopupId ;
+
+  var fontlister = Components.classes["@mackichan.com/otfontlist;1"]
+    .getService(Components.interfaces.msiIOTFontlist);
+  var systemfonts = fontlister.getOTFontlist(systemFontCount);
+  
+  for (var i = 0; i < systemfonts.length; ++i)
+  {
+    if (systemfonts[i] != "")
+    {
+      var itemNode = document.createElementNS(XUL_NS, "menuitem");
+      itemNode.setAttribute("label", systemfonts[i]);
+      itemNode.setAttribute("value", systemfonts[i]);
+      menuPopup.appendChild(itemNode);
+    }
+  }
+}
     
   
+function onMenulistFocus(menulist)
+{
+  var tempnodes = menulist.getElementsByTagName("menupopup");
+  var tempnode = tempnodes[0];
+  if (tempnode.id != "systemfontlist")
+  {
+    var savednode = tempnode.cloneNode(true);
+    var newnode = document.getElementById("systemfontlist");
+    newnode.parentNode.replaceChild(savednode, newnode);
+    menulist.replaceChild(newnode,tempnode);
+  }
+}
