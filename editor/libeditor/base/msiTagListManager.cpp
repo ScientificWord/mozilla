@@ -364,7 +364,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           if (!(pTagKeyListHead->pListHead)) pTagKeyListHead->pListHead = pTagKeyListHead->pListTail;
         }
       
-#ifdef DEBUG_CONTAINMENT
+//#ifdef DEBUG_CONTAINMENT
         // Write out the list
         if (tagContainsCount >0)
         {
@@ -374,9 +374,9 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           {
             printf("  can contain \"%S\n", ((nsString)pTagKeyList->key).BeginReading());
             pTagKeyList = pTagKeyList->pNext;
-          }
+          }                                    
         }
-#endif        
+//#endif        
       }
       
       /////////
@@ -390,7 +390,8 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           tagNameElement = do_QueryInterface(tagName);
           rv = tagNameElement->GetAttribute(NS_LITERAL_STRING("nm"),strName);
           key = TagKey(strName);
-          TagData *pdata = new TagData;               
+          TagData *pdata = new TagData; 
+          tagNameElement->HasAttribute(NS_LITERAL_STRING("hidden"),&(pdata->hidden));              
           pdata->tagClass = strClassName;
           pdata->description = GetStringProperty(NS_LITERAL_STRING("description"), tagNameElement);
           pdata->initialContentsForEmpty = 
