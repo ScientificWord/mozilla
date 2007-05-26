@@ -2443,7 +2443,7 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //}
 
 
-// a recursive function that walks the DOM backwards from a staring position and returns characters
+// a recursive function that walks the DOM backwards from a starting position and returns characters
 // in reverse order. There are some conditions that will cause it to quit:
 // 1. There are no more patterns that could match
 // 2. We have hit the beginning of a tag other than a text formatting tag. We do not allow patterns to span
@@ -2458,14 +2458,17 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //
 //  If we return STATE_SUCCESS, the node and offset of the last checked character have to be returned.
 
+
 nsresult 
-msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, nsIDOMNode ** nodeOut, PRUint32& offset, PRUnichar prevChar, PRInt32 & _result)
+msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode ** nodeOut, PRUint32& offsetOut, PRUnichar prevChar, 
+ PRInt32 & _result)
 {
   nsCOMPtr<nsIDOM3Node> textNode;
-  nsCOMPtr<nsIDOMNode> pNode3;
-  nsCOMPtr<nsIDOMNode>pNode2;
-  PRUint32 length, offset2;
+  nsCOMPtr<nsIDOMNode> node2;
+  nsCOMPtr<nsIDOMNode> node3;
+  PRUint32 offset, length, offset2;
   nsAutoString theText;
+  offset = offsetIn;
   if (IsTextContentNode(nodeIn))
   {
     textNode = do_QueryInterface(nodeIn);
@@ -2476,15 +2479,23 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, nsIDOMNode ** nodeOut, PRUint32
       while (prevChar == ' ' && theText[offset] == ' ') --offset;
       prevChar = theText[offset];
       m_autosub->NextChar(prevChar,& _result);
-      if (_result != msiIAutosub::STATE_MATCHESSOFAR) 
+      if (_result == msiIAutosub::STATE_SUCCESS)
       {
         *nodeOut = nodeIn;
-        NS_ADDREF(*nodeOut);
+        offsetOut = offset;
+      }
+      else if (_result == msiIAutosub::STATE_FAIL) 
+      {
+        if (*nodeOut) // we did find a match earlier
+        {
+          // *nodeOut and offsetOut should still be valid
+          NS_ADDREF(*nodeOut);
+        } 
         return NS_OK;
       }
     }
   }
-  // *pNode is not a text node, or we have already gone through it
+  // nodeIn is not a text node, or we have already gone through it
   PRBool fHasChildren;
   nodeIn->HasChildNodes(&fHasChildren);
   nsCOMPtr<nsIDOMNodeList> nodeList;
@@ -2495,41 +2506,33 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, nsIDOMNode ** nodeOut, PRUint32
     offset2 = (PRUint32)(-1);
     while (--length >= 0)
     {
-      nodeList->Item(length, getter_AddRefs(pNode2));
-      GetNextCharacter(pNode2, getter_AddRefs(pNode3),offset2, prevChar, _result);
-      if (_result != msiIAutosub::STATE_MATCHESSOFAR)
-      {
-        *nodeOut = pNode3;
-        NS_ADDREF(*nodeOut);
-        offset = offset2;
+      nodeList->Item(length, getter_AddRefs(node2));
+      GetNextCharacter(node2, offset2, nodeOut, offsetOut, prevChar, _result);
+      if (_result == msiIAutosub::STATE_FAIL)
         return NS_OK;
-      }
     }
   }
-  pNode2 = nsnull;
+  node2 = nsnull;
   nsCOMPtr<nsIDOMNode> tempnode;
   tempnode = nodeIn;
-  while (pNode2 == nsnull)
+  while (node2 == nsnull)
   {
-    tempnode->GetPreviousSibling(getter_AddRefs(pNode2));
+    tempnode->GetPreviousSibling(getter_AddRefs(node2));
     // if no previous sibling under this node, go up one level and try again
-    if (!pNode2)
+    if (!node2)
     {
-      tempnode->GetParentNode(getter_AddRefs(pNode2));
-      if (!pNode2) return NS_OK; // no more nodes available. return _result.
-      tempnode = pNode2;
-      pNode2 = nsnull; // go around again to get the previous sibling
+      tempnode->GetParentNode(getter_AddRefs(node2));
+      if (!node2)
+      {
+        _result = msiIAutosub::STATE_FAIL;
+         return NS_OK; // no more nodes available. return _result.
+      }
+      tempnode = node2;
+      node2 = nsnull; // go around again to get the previous sibling
     }
   }
   offset2 = (PRUint32)(-1);
-  GetNextCharacter(pNode2, getter_AddRefs(pNode3), offset2, prevChar, _result); 
-  if (_result != msiIAutosub::STATE_MATCHESSOFAR)
-  {
-    *nodeOut = pNode3;
-    NS_ADDREF(*nodeOut);
-    offset = offset2;
-    return NS_OK;
-  }
+  if (node2) GetNextCharacter(node2, offset2, nodeOut, offsetOut, prevChar, _result); 
   return NS_OK;
 }
   
@@ -2546,6 +2549,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   // nodes.
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOM3Node> textNode;
+  nsCOMPtr<nsIDOMNode> originalNode;
   PRUnichar ch = 0;
   PRInt32 ctx, action; 
   PRInt32 intOffset;
@@ -2553,20 +2557,19 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   nsAutoString theText;
   PRInt32 lookupResult;
   nsAutoString data, pasteContext, pasteInfo, error;       
-  selection->GetAnchorNode((nsIDOMNode **) getter_AddRefs(node));
-  if (!node) return res;
+  selection->GetAnchorNode((nsIDOMNode **) getter_AddRefs(originalNode));
+  if (!originalNode) return res;
   selection->GetAnchorOffset( &intOffset );
   offset = (PRUint32)intOffset;
   m_autosub->Reset();
-  if (IsTextContentNode(node))
-  {
-    textNode = do_QueryInterface(node);
-    textNode->GetTextContent(theText);
-  }
-  nsCOMPtr<nsIDOMNode> originalNode = node;
+//  if (IsTextContentNode(node))
+//  {
+//    textNode = do_QueryInterface(node);
+//    textNode->GetTextContent(theText);
+//  }
   PRUint32 originalOffset = offset;
-  GetNextCharacter(originalNode, getter_AddRefs(node), offset, ch, lookupResult);
-  if (lookupResult == msiIAutosub::STATE_SUCCESS)
+  GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, ch, lookupResult);
+  if (node)  // there was success somewhere
   {
     m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
     if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath || 
