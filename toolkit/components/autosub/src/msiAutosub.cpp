@@ -200,7 +200,7 @@ NS_IMETHODIMP msiAutosub::RemoveEntry(const nsAString & pattern, PRBool *_retval
 /* string getCurrentData (out long ctx, out long action); */
 NS_IMETHODIMP msiAutosub::GetCurrentData(PRInt32 *ctx, PRInt32 *action, nsAString & pasteContext, nsAString & pasteInfo, nsAString & _retval)
 {
-    autosubentry se = autosubarray[startIndex];
+    autosubentry se = autosubarray[lastSuccessIndex];
     *ctx = se.context;
     *action = se.action;
     pasteContext = se.pastecontext;
@@ -231,7 +231,10 @@ NS_IMETHODIMP msiAutosub::NextChar(PRUnichar ch, PRInt32 *_retval)
       // is a shorter string that starts with patternSoFar.
       while (startIndex > 0 && autosubarray[startIndex-1] == (patternSoFar)) startIndex--;
       if (nsCRT::strncmp(autosubarray[startIndex].pattern.BeginReading(), patternSoFar.BeginReading(), autosubarray[startIndex].pattern.Length())==0) 
+      {
+        lastSuccessIndex = startIndex;
         *_retval = msiIAutosub::STATE_SUCCESS;
+      }
       else
         *_retval = msiIAutosub::STATE_MATCHESSOFAR;
       return NS_OK;
@@ -242,7 +245,8 @@ NS_IMETHODIMP msiAutosub::NextChar(PRUnichar ch, PRInt32 *_retval)
       while (lastIndex > 0 && autosubarray[lastIndex-1] == (patternSoFar)) lastIndex--;
       if (nsCRT::strncmp(autosubarray[lastIndex].pattern.BeginReading(), patternSoFar.BeginReading(), autosubarray[lastIndex].pattern.Length())==0)
       {
-        startIndex = lastIndex;
+        lastSuccessIndex = lastIndex;
+        while (lastIndex < arraylength-1 && autosubarray[lastIndex+1] == (patternSoFar)) lastIndex++;
         *_retval = msiIAutosub::STATE_SUCCESS;
         return NS_OK;
       }
@@ -257,8 +261,9 @@ NS_IMETHODIMP msiAutosub::NextChar(PRUnichar ch, PRInt32 *_retval)
       return NS_OK;
     }
     int m = (startIndex + lastIndex)/2;
-    autosubarray[m] < patternSoFar ? startIndex = m : lastIndex = m;
- }
+    if (autosubarray[m] < patternSoFar) startIndex = m;
+    else lastIndex = m;
+  }
   *_retval = msiIAutosub::STATE_FAIL;
   return NS_OK;
 }
@@ -270,6 +275,7 @@ NS_IMETHODIMP msiAutosub::Reset()
     state = msiIAutosub::STATE_INIT;
     startIndex = 0;
     lastIndex = arraylength - 1;
+    lastSuccessIndex = 0;
     return NS_OK;
 }
 
