@@ -1,0 +1,18 @@
+XPI_NAME	= prince
+DEPTH = ../..
+topsrcdir = @top_srcdir@
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE		= otfontlist
+XPIDL_MODULE = otfontlist
+
+# GRE_MODULE	= 1
+EXTRA_COMPONENTS = otfontlist.js
+
+XPIDLSRCS	= msiiotfontlist.idl \
+
+
+include $(topsrcdir)/config/rules.mk
