@@ -2598,7 +2598,9 @@ enumProc(const LOGFONT* logFont, const TEXTMETRIC* metrics,
   if (logFont->lfFaceName[0] == '@') {
     return 1;
   }
-
+  // BBM: SW and SWP want only Truetype and Opentype fonts
+  if (!(fontType & 6)) return 1;
+  
   for (int i = nsFontMetricsWin::gGlobalFonts->Count()-1; i >= 0; --i) {
     nsGlobalFont* font = (nsGlobalFont*)nsFontMetricsWin::gGlobalFonts->ElementAt(i);
     if (!strcmp(font->logFont.lfFaceName, logFont->lfFaceName)) {
