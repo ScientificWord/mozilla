@@ -150,9 +150,9 @@ CheckFontExistence(nsPresContext* aPresContext, const nsString& aFontName)
 static void
 AlertMissingFonts(nsString& aMissingFonts)
 {
-  nsCOMPtr<nsIStringBundleService> sbs(do_GetService(NS_STRINGBUNDLE_CONTRACTID));
-  if (!sbs)
-    return;
+   nsCOMPtr<nsIStringBundleService> sbs(do_GetService(NS_STRINGBUNDLE_CONTRACTID));
+   if (!sbs)
+     return;
 
   nsCOMPtr<nsIStringBundle> sb;
   sbs->CreateBundle("resource://gre/res/fonts/mathfont.properties", getter_AddRefs(sb));
@@ -165,19 +165,20 @@ AlertMissingFonts(nsString& aMissingFonts)
   sb->FormatStringFromName(NS_LITERAL_STRING("mathfont_missing_dialog_message").get(),
                            strings, 1, getter_Copies(message));
 
-  nsCOMPtr<nsIWindowWatcher> wwatch(do_GetService(NS_WINDOWWATCHER_CONTRACTID));
-  if (!wwatch)
-    return;
-
-  nsCOMPtr<nsIDOMWindow> parent;
-  wwatch->GetActiveWindow(getter_AddRefs(parent));
-  nsresult rv;
-  nsCOMPtr<nsINonBlockingAlertService> prompter =
-    do_GetService("@mozilla.org/embedcomp/nbalert-service;1", &rv);
-
-  if (prompter && parent) {
-    prompter->ShowNonBlockingAlert(parent, title.get(), message.get());
-  }
+//   nsCOMPtr<nsIWindowWatcher> wwatch(do_GetService(NS_WINDOWWATCHER_CONTRACTID));
+//   if (!wwatch)
+//     return;
+// 
+//   nsCOMPtr<nsIDOMWindow> parent;
+//   wwatch->GetActiveWindow(getter_AddRefs(parent));
+//   nsresult rv;
+//   nsCOMPtr<nsINonBlockingAlertService> prompter =
+//     do_GetService("@mozilla.org/embedcomp/nbalert-service;1", &rv);
+// 
+//   if (prompter && parent) {
+//     prompter->ShowNonBlockingAlert(parent, title.get(), message.get());
+//   }
+  printf("%S: %S\n", title.get(), message.get());
 }
 
 // helper to trim off comments from data in a MathFont Property File
@@ -1209,6 +1210,7 @@ InitGlobals(nsPresContext* aPresContext)
   // alert the user if some of the expected fonts are missing
   if (!missingFamilyList.IsEmpty()) {
     AlertMissingFonts(missingFamilyList);
+
   }
 
   // Let the particular characters have their preferred fonts
