@@ -621,4 +621,5 @@ function msiDumpClipboard() {
     }
     trans.removeDataFlavor(textmimetypes[i]);
   }
+  return false;
 }
