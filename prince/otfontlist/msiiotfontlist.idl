@@ -1,0 +1,8 @@
+#include "nsISupports.idl"
+#include "nsIDOMDocument.idl"
+
+[scriptable, uuid(88D14045-E268-41a8-BE7F-B8C3DAEA5051)]
+interface msiIOTFontlist : nsISupports
+{
+  void getOTFontlist(out PRUint32 aCount, [retval, array, size_is(aCount)] out wstring aResult);
+};
