@@ -524,6 +524,9 @@
            oncommand="msiEditorGetText()"/>
     <menuitem label="&outputHTMLCmd.label;"
            oncommand="msiEditorGetHTML()"/>
+    <menuitem label="Execute JavaScript"
+           oncommand='window.openDialog("chrome://prince/content/ExecuteJS.xul","Execute JavaScript", 
+      "chrome,close,titlebar,resizable,modal=false");' />  
     <menuseparator />
     <menuitem label="&pasteAsQuotationCmd.label;"
            accesskey="&editpastequotation.accesskey;"
@@ -547,6 +550,7 @@
            oncommand="msiEditorDumpContent()"/>
     <menuitem label="&testDocumentCmd.label;"
            oncommand="msiEditorTestDocument()"/>
+    <menuitem label="Dump clipboard contents" oncommand="msiDumpClipboard();" />
     <menuitem label="&runUnitTestsCmd.label;"
            oncommand="msiEditorUnitTests()"/>
     <menuseparator />
@@ -585,7 +589,6 @@
     <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://editor/content/chamtest.xul","Cham Test", 
       "chrome,close,titlebar,resizable,modal=false");' /> 
     <menuitem label="Charset" oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding');"/>
-    <menuitem label="Dump clipboard contents" oncommand="msiDumpClipboard();" />
     </menupopup>
   </menu>
   <!-- end DEBUG only -->
