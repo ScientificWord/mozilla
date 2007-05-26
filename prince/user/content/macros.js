@@ -18,6 +18,7 @@ function insertMathSymbol( s )
 
 function insertMathunit( unit )
 {
+  deleteSelection();
   var editorElement = document.getElementById("content-frame");
   insertmathunit(unit, editorElement);
 }

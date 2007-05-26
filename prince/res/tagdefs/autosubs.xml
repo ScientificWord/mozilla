@@ -31,5 +31,200 @@
   <sub ctx="math" tp="sc"><pattern>cos</pattern><data>insertMathname('cos');</data></sub>
   <sub ctx="math" tp="sc"><pattern>cosh</pattern><data>insertMathname('cosh');</data></sub>
   <sub ctx="math" tp="sc"><pattern>tan</pattern><data>insertMathname('tan');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>tanh</pattern><data>insertMathname('tanh');</data></sub >
+  <sub ctx="math" tp="sc"><pattern>tanh</pattern><data>insertMathname('tanh');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>arccos</pattern><data>insertMathname('arccos');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>arcsin</pattern><data>insertMathname('arcsin');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>arctan</pattern><data>insertMathname('arctan');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>arg</pattern><data>insertMathname('arg');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>cot</pattern><data>insertMathname('cot');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>coth</pattern><data>insertMathname('coth');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>csc</pattern><data>insertMathname('csc');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>deg</pattern><data>insertMathname('deg');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>det</pattern><data>insertMathname('det');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>dim</pattern><data>insertMathname('dim');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>exp</pattern><data>insertMathname('exp');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>gcd</pattern><data>insertMathname('gcd');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>hom</pattern><data>insertMathname('hom');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>inf</pattern><data>insertMathname('inf');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>injlim</pattern><data>insertMathname('injlim');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ker</pattern><data>insertMathname('ker');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>lg</pattern><data>insertMathname('lg');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>lim</pattern><data>insertMathname('lim');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>liminf</pattern><data>insertMathname('liminf');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>limsup</pattern><data>insertMathname('limsup');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ln</pattern><data>insertMathname('ln');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>log</pattern><data>insertMathname('log');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>max</pattern><data>insertMathname('max');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>min</pattern><data>insertMathname('min');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>Pr</pattern><data>insertMathname('Pr');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>projlim</pattern><data>insertMathname('projlim');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>sec</pattern><data>insertMathname('sec');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>sup</pattern><data>insertMathname('sup');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>varinjlim</pattern><data>insertMathname('varinjlim');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>varliminf</pattern><data>insertMathname('varliminf');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>varlimsup</pattern><data>insertMathname('varlimsup');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>varprojlim</pattern><data>insertMathname('varprojlim');</data></sub>
+
+  <sub ctx="math" tp="sc"><pattern>uA</pattern><data>insertMathunit('A');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uacre</pattern><data>insertMathunit('acre');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uame</pattern><data>insertMathunit('am');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uamol</pattern><data>insertMathunit('amol');</data></sub>
+<!--  <sub ctx="math" tp="sc"><pattern>uan</pattern><data>insertMathunit('');</data></sub> -->
+  <sub ctx="math" tp="sc"><pattern>uas</pattern><data>insertMathunit('as');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uatm</pattern><data>insertMathunit('atm');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ubar</pattern><data>insertMathunit('bar');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uBq</pattern><data>insertMathunit('Bq');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uBtu</pattern><data>insertMathunit('Btu');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ucal</pattern><data>insertMathunit('cal');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ucd</pattern><data>insertMathunit('cd');</data></sub>
+<!--  <sub ctx="math" tp="sc"><pattern>ucel</pattern><data>insertMathunit('');</data></sub>	 -->
+  <sub ctx="math" tp="sc"><pattern>ucg</pattern><data>insertMathunit('cg');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uCi</pattern><data>insertMathunit('Ci');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ucm</pattern><data>insertMathunit('cm');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uCo</pattern><data>insertMathunit('C');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uda</pattern><data>insertMathunit('d');</data></sub>
+<!--  <sub ctx="math" tp="sc"><pattern>udeg</pattern><data>insertMathunit('');</data></sub>	-->
+  <sub ctx="math" tp="sc"><pattern>udg</pattern><data>insertMathunit('dg');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>udme</pattern><data>insertMathunit('dm');</data></sub>
+<!--  <sub ctx="math" tp="sc"><pattern>udmn</pattern><data>insertMathunit('');</data></sub> -->
+<!--  <sub ctx="math" tp="sc"><pattern>uds</pattern><data>insertMathunit('');</data></sub> -->
+  <sub ctx="math" tp="sc"><pattern>udyn</pattern><data>insertMathunit('dyn');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uEHz</pattern><data>insertMathunit('EHz');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uEmol</pattern><data>insertMathunit('Emol');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uerg</pattern><data>insertMathunit('erg');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ueV</pattern><data>insertMathunit('eV');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uF</pattern><data>insertMathunit('F');</data></sub>
+<!--  <sub ctx="math" tp="sc"><pattern>ufahr</pattern><data>insertMathunit('');</data></sub>  -->
+  <sub ctx="math" tp="sc"><pattern>ufc</pattern><data>insertMathunit('fc');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ufme</pattern><data>insertMathunit('fm');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ufmol</pattern><data>insertMathunit('fmol');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ufs</pattern><data>insertMathunit('fs');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uft</pattern><data>insertMathunit('ft');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uGa</pattern><data>insertMathunit('G');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ugal</pattern><data>insertMathunit('gal');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uGeV</pattern><data>insertMathunit('GeV');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uGHz</pattern><data>insertMathunit('GHz');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uGJ</pattern><data>insertMathunit('GJ');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uGmol</pattern><data>insertMathunit('Gmol');</data></sub>
+<!--  <sub ctx="math" tp="sc"><pattern>uGohm</pattern><data>insertMathunit('');</data></sub> -->
+  <sub ctx="math" tp="sc"><pattern>ugr</pattern><data>insertMathunit('g');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uGWa</pattern><data>insertMathunit('GW');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uHe</pattern><data>insertMathunit('H');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uhectare</pattern><data>insertMathunit('hectare');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uhp</pattern><data>insertMathunit('hp');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uhr</pattern><data>insertMathunit('h');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uHz</pattern><data>insertMathunit('Hz');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uin</pattern><data>insertMathunit('in');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uJ</pattern><data>insertMathunit('J');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uK</pattern><data>insertMathunit('K');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ukA</pattern><data>insertMathunit('kA');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ukbar</pattern><data>insertMathunit('kbar');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ukcal</pattern><data>insertMathunit('kcal');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ukg</pattern><data>insertMathunit('kg');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ukHz</pattern><data>insertMathunit('kHz');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ukJ</pattern><data>insertMathunit('kJ');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ukme</pattern><data>insertMathunit('km');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ukmol</pattern><data>insertMathunit('kmol');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ukN</pattern><data>insertMathunit('kN');</data></sub>
+<!--  <sub ctx="math" tp="sc"><pattern>ukohm</pattern><data>insertMathunit('');</data></sub> -->
+  <sub ctx="math" tp="sc"><pattern>ukPa</pattern><data>insertMathunit('kPa');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ukS</pattern><data>insertMathunit('kS');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ukV</pattern><data>insertMathunit('kV');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ukWa</pattern><data>insertMathunit('kW');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ulbf</pattern><data>insertMathunit('lbf');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ulbm</pattern><data>insertMathunit('lb');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uli</pattern><data>insertMathunit('l');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ulm</pattern><data>insertMathunit('lm');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ulx</pattern><data>insertMathunit('lx');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umA</pattern><data>insertMathunit('mA');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umbar</pattern><data>insertMathunit('mbar');</data></sub>
+<!--  <sub ctx="math" tp="sc"><pattern>umcA</pattern><data>insertMathunit('');</data></sub> -->
+<!--  <sub ctx="math" tp="sc"><pattern>umcF</pattern><data>insertMathunit('');</data></sub>	-->
+<!--  <sub ctx="math" tp="sc"><pattern>umcg</pattern><data>insertMathunit('');</data></sub> -->
+<!--  <sub ctx="math" tp="sc"><pattern>umcH</pattern><data>insertMathunit('');</data></sub>	-->
+<!--  <sub ctx="math" tp="sc"><pattern>umcJ</pattern><data>insertMathunit('');</data></sub> -->
+<!--  <sub ctx="math" tp="sc"><pattern>umcme</pattern><data>insertMathunit('');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcmol</pattern><data>insertMathunit('');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcN</pattern><data>insertMathunit('');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcPa</pattern><data>insertMathunit('');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcrad</pattern><data>insertMathunit('');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcs</pattern><data>insertMathunit('');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcS</pattern><data>insertMathunit('');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcT</pattern><data>insertMathunit('');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcV</pattern><data>insertMathunit('');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcWa</pattern><data>insertMathunit('');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umcWb</pattern><data>insertMathunit('');</data></sub>   -->
+  <sub ctx="math" tp="sc"><pattern>ume</pattern><data>insertMathunit('m');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uMeV</pattern><data>insertMathunit('MeV');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umF</pattern><data>insertMathunit('mF');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umg</pattern><data>insertMathunit('mg');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umH</pattern><data>insertMathunit('mH');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uMHz</pattern><data>insertMathunit('MHz');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umi</pattern><data>insertMathunit('mi');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umJ</pattern><data>insertMathunit('mJ');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uMJ</pattern><data>insertMathunit('MJ');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uml</pattern><data>insertMathunit('ml');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umme</pattern><data>insertMathunit('mm');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ummHg</pattern><data>insertMathunit('mmHg');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uMmol</pattern><data>insertMathunit('Mmol');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ummol</pattern><data>insertMathunit('mmol');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umN</pattern><data>insertMathunit('mN');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umn</pattern><data>insertMathunit('min');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uMN</pattern><data>insertMathunit('MN');</data></sub>
+<!--  <sub ctx="math" tp="sc"><pattern>uMohm</pattern><data>insertMathunit('');</data></sub> -->
+<!--  <sub ctx="math" tp="sc"><pattern>umohm</pattern><data>insertMathunit('');</data></sub> -->
+  <sub ctx="math" tp="sc"><pattern>umol</pattern><data>insertMathunit('mol');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uMPa</pattern><data>insertMathunit('MPa');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umrad</pattern><data>insertMathunit('mrad');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ums</pattern><data>insertMathunit('ms');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umS</pattern><data>insertMathunit('mS');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umT</pattern><data>insertMathunit('mT');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umV</pattern><data>insertMathunit('mV');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uMV</pattern><data>insertMathunit('MV');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umWa</pattern><data>insertMathunit('mW');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uMWa</pattern><data>insertMathunit('MW');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umWb</pattern><data>insertMathunit('mWb');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uMx</pattern><data>insertMathunit('Mx');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uN</pattern><data>insertMathunit('N');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>unA</pattern><data>insertMathunit('nA');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>unF</pattern><data>insertMathunit('nF');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>unJ</pattern><data>insertMathunit('nJ');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>unme</pattern><data>insertMathunit('nm');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>unmol</pattern><data>insertMathunit('nmol');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uns</pattern><data>insertMathunit('ns');</data></sub>
+
+  <sub ctx="math" tp="sc"><pattern>unT</pattern><data>insertMathunit('nT');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>unV</pattern><data>insertMathunit('nV');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>unWa</pattern><data>insertMathunit('nW');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>unWb</pattern><data>insertMathunit('nWb');</data></sub>
+<!--  <sub ctx="math" tp="sc"><pattern>uohm</pattern><data>insertMathunit('');</data></sub>	-->
+  <sub ctx="math" tp="sc"><pattern>uozf</pattern><data>insertMathunit('ozf');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uPa</pattern><data>insertMathunit('Pa');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>upF</pattern><data>insertMathunit('pF');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uphot</pattern><data>insertMathunit('phot');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uPHz</pattern><data>insertMathunit('PHz');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>upint</pattern><data>insertMathunit('pint');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>upme</pattern><data>insertMathunit('pm');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uPmol</pattern><data>insertMathunit('Pmol');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>upmol</pattern><data>insertMathunit('pmol');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ups</pattern><data>insertMathunit('ps');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>upT</pattern><data>insertMathunit('pT');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>upV</pattern><data>insertMathunit('pV');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uqt</pattern><data>insertMathunit('qt');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>urad</pattern><data>insertMathunit('rad');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uS</pattern><data>insertMathunit('S');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>usb</pattern><data>insertMathunit('sb');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>use</pattern><data>insertMathunit('s');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uslug</pattern><data>insertMathunit('slug');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>usr</pattern><data>insertMathunit('sr');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uTe</pattern><data>insertMathunit('Te');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uTHz</pattern><data>insertMathunit('THz');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uTmol</pattern><data>insertMathunit('Tmol');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>utorr</pattern><data>insertMathunit('torr');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uu</pattern><data>insertMathunit('u');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uV</pattern><data>insertMathunit('V');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uWa</pattern><data>insertMathunit('W');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uWb</pattern><data>insertMathunit('Wb');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>udeg</pattern><data>insertMathunit('°');</data></sub>
+
 </subs>

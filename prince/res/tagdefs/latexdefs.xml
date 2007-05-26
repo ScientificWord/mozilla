@@ -31,6 +31,7 @@
 			<contains>texttag</contains>
 			<contains>othertag</contains>
 			<contains>mml:math</contains>
+      <contains>line</contains>
 			<tags>
 				<tag nm="sw:bold"><description>Bold</description></tag>
 				<tag nm="sw:bbold"><description>Blackboard Bold</description></tag>
@@ -69,6 +70,7 @@
 			<contains>sw:quote</contains>
 			<contains>cursor</contains>
 			<contains>sw:defaulttitletag</contains>
+      <contains>line</contains>
 			<tags>
 				<tag nm="sw:address">
           <nexttag>sw:para</nexttag>
@@ -126,6 +128,18 @@
           <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br/>]]>
           </initialcontents>
 				</tag>
+				<tag nm="sw:line">
+					<nexttag>sw:line</nexttag>
+					<description>Line</description>
+          <initialcontents> <![CDATA[<cursor/><br/>]]>
+          </initialcontents>
+				</tag>
+				<tag nm="sw:dialogbase" hidden="1">
+					<nexttag>sw:para</nexttag>
+					<description>Hidden dialog base</description>
+          <initialcontents> <![CDATA[<cursor/><br/>]]>
+          </initialcontents>
+				</tag>
 			</tags>
 		</tagclass>
 		<tagclass>
@@ -135,6 +149,7 @@
 			<contains>mml:math</contains>
 			<contains>sw:xref</contains>
 			<contains>html:br</contains>
+      <contains>line</contains>
 			<tags>
 				<tag nm="sw:itemizedlistitem">
           <description>Bulleted list time</description>
