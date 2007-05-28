@@ -26,6 +26,7 @@
   <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertParaTag('author');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.addr.</pattern><data>insertParaTag('address');</data></sub>
   <sub ctx="text" tp="sc"><pattern>.maket.</pattern><data>insertTag('maketitle');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.lorem.</pattern><data>insertFragmentOrMacro('Lorem');</data></sub>
   <sub ctx="math" tp="sc"><pattern>sin</pattern><data>insertMathname('sin');</data></sub>
   <sub ctx="math" tp="sc"><pattern>sinh</pattern><data>insertMathname('sinh');</data></sub>
   <sub ctx="math" tp="sc"><pattern>cos</pattern><data>insertMathname('cos');</data></sub>
