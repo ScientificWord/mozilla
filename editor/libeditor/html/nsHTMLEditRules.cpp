@@ -1301,7 +1301,7 @@ nsHTMLEditRules::DidInsert(nsISelection *aSelection, nsresult aResult)
 
 nsresult
 nsHTMLEditRules::WillInsertText(PRInt32          aAction,
-                                nsISelection *aSelection, 
+                                nsISelection *   aSelection, 
                                 PRBool          *aCancel,
                                 PRBool          *aHandled,
                                 const nsAString *inString,
@@ -1365,7 +1365,17 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
     if (!mHTMLEditor->CanContainTag(selNode, defPara))  
       return NS_ERROR_FAILURE;
     // else insert the default paragraph
-    printf("Insert default paragraph (%s) here\n", defPara.BeginReading());
+    mHTMLEditor->SetParagraphFormat(defPara);
+    // We want to move the selection here as well.
+    // selNode is the parent node
+    nsCOMPtr<nsIDOMNodeList> nodelist;
+    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(selNode);
+    if (!element) return false;
+    res = element->GetElementsByTagName(defPara, getter_AddRefs(nodelist));
+    res = nodelist->Item(0, getter_AddRefs(selNode)); // now selNode is the new selection node.
+    aSelection->Collapse(selNode,0);
+    
+    printf("Just inserted default paragraph (%s) here\n", defPara.BeginReading());
   }
   // we need to get the doc
   nsCOMPtr<nsIDOMDocument>doc;
