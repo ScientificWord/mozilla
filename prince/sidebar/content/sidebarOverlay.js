@@ -774,9 +774,9 @@ function sidebar_overlay_init() {
 }
 
 function sidebar_overlay_destruct() {
-    var panels = document.getElementById('sidebar-panels');
-    debug("Removing observer from database.");
-    panels.database.RemoveObserver(panel_observer);
+//    var panels = document.getElementById('sidebar-panels');
+//    debug("Removing observer from database.");
+//    panels.database.RemoveObserver(panel_observer);
 }
 
 var gBusyOpeningDefault = false;
