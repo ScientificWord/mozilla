@@ -120,7 +120,7 @@ function initFastCursorBar()
 
 function Find(pattern)
 {
-  var editorElement = document.getElementById("content-source");  
+  var editorElement = msiGetActiveEditorElement();
   var pat = pattern;
   if (!pat) pat = document.getElementById("fastcursor-field").value;
 //  if (!gFindInst) 
