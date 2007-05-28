@@ -75,7 +75,7 @@ function yell ( textString )
 
 function insertFragmentOrMacro( name )
 {
-  deleteSelection(); onMacroOrFragmentEntered( aString );
+  deleteSelection(); onMacroOrFragmentEntered( name );
 }
   
 function previewPDF()
