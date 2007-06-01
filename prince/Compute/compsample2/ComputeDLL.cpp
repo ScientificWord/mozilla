@@ -76,7 +76,7 @@ void ComputeDLL::TermCompDLL()
 //  "C:\\xml\\compute\\testjig\\mupInstall.gmr"
 // returns an engine "ID"
 
-U32 ComputeDLL::InstallEngine(U32 trans_ID, const char *install_script, int *result_code)
+U32 ComputeDLL::InstallEngine(U32 trans_ID, nsILocalFile *install_script, int *result_code)
 {
   TRANS_REC *rover = LocateTransRecord(trans_ID);
 

@@ -17,6 +17,7 @@
 #include "Mpl2Tree.h"
 #include "eAnalyzer.h"
 #include "../Grammar.h"
+#include "nsILocalFile.h"
 
 enum MaplePackages
 {
@@ -341,22 +342,22 @@ SEMANTICS_NODE *MapleWrapper::iProcessRequest(MathServiceRequest * msr,
   return s_tree;
 }
 
-bool MapleWrapper::iLoadStrsAndDLL(const char *engp, const char *libp)
+bool MapleWrapper::iLoadStrsAndDLL(nsILocalFile *engp, nsILocalFile *libp)
 {
   bool rv = false;
 
-  TCIString engpath = engp;
-  TCIString libpath = libp;
-  return mapl_eng->LoadStrsAndDLL(engpath, libpath);
+//  TCIString engpath = engp;
+//  TCIString libpath = libp;
+  return mapl_eng->LoadStrsAndDLL(engp, libp);
 }
 
-bool MapleWrapper::iInitialize(const char *libp, const char *champ)
+bool MapleWrapper::iInitialize(nsILocalFile *libp, nsILocalFile *champ)
 {
   bool rv = false;
 
-  TCIString libpath = libp;
-  TCIString champath = champ;
-  return mapl_eng->Initialize(libpath, champath);
+//  TCIString libpath = libp;
+//  TCIString champath = champ;
+  return mapl_eng->Initialize(libp, champ);
 }
 
 bool MapleWrapper::SetEngineState(int attr_ID, const char *new_value)

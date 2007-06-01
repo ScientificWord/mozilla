@@ -5,6 +5,7 @@
 
 #include <ByteArry.h>
 #include <TCIStrin.h>
+#include "nsILocalFile.h"
 
 #define I32 int
 #define I16 short
@@ -28,9 +29,9 @@ public:
   void ReportError(const TCICHAR *);
   void ReportWarning(const TCICHAR *);
 
-  bool LoadStrsAndDLL(const TCIString & engpath,
-                          const TCIString & libpath);
-  bool Initialize(const TCIString & libpath, const TCIString & champath);
+  bool LoadStrsAndDLL(nsILocalFile * engpath,
+                          nsILocalFile * libpath);
+  bool Initialize(nsILocalFile * libpath,nsILocalFile * champath);
   int GetEngStrPtr(int str_ID, char **engstr, int *engstr_ln);
 
   void CleanupAndUnloadDLL();

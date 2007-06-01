@@ -10,7 +10,34 @@
 #include "Engines/CompEngine.h"
 #include "Engines/Grammar.h"
 #include "Engines/fltutils.h"
+#include "nsXPCOMStrings.h"
+#include "nsStringAPI.h"
 
+
+// start with a utility function with nsILocalFile
+
+void AppendSubpath( nsILocalFile * file, const char * asciiPath )
+{
+  if (!asciiPath) return;
+  size_t zln = strlen(asciiPath);
+  char *tmp = new char[zln + 1];
+  strcpy(tmp, asciiPath);
+  char * pch = tmp;
+  char * pchStart = tmp;
+  nsAutoString pathStr;
+  bool done = false;
+  while (!done){
+    while (*pch && *pch != '\\' && *pch != '/') pch++;
+    done = (*pch == 0);
+    (*pch) = 0;
+    pathStr = NS_ConvertUTF8toUTF16(pchStart);
+    file->Append(pathStr);
+    if (!done) *pch++; // skip past the null we put in
+    while (*pch && *pch == '\\' && *pch == '/') pch++;
+    pchStart = pch;
+  }
+}
+      
 MathWorkShop::MathWorkShop()
 {
   engine_list = NULL;
@@ -142,12 +169,17 @@ void MathWorkShop::ReleaseClientHandle(U32 targ_handle)
 // For now, "install_script" is a grammar file (mplInstall.gmr)
 // The return value here is a handle
 
-U32 MathWorkShop::InstallCompEngine(const char *install_script,
+U32 MathWorkShop::InstallCompEngine(nsILocalFile *install_script,
                                     MathResult & mr)
 {
   U32 rv = 0;
-
-  FILE *fp = fopen(install_script, "r");
+  nsCOMPtr<nsILocalFile> workingDir;
+  nsCOMPtr<nsIFile> parentDir, wd;
+  install_script->GetParent(getter_AddRefs(parentDir));
+  parentDir->Clone(getter_AddRefs(wd));
+  workingDir = do_QueryInterface(wd);
+  FILE *fp;
+  install_script->OpenANSIFileDesc("r", &fp);
   if (fp) {
     // Lookup is on IDs
     Grammar *install_dBase = new Grammar(fp, true);
@@ -186,7 +218,13 @@ U32 MathWorkShop::InstallCompEngine(const char *install_script,
                                         &db_dummy, &db_ztemplate);
         // entity_dbase<uID7.0>C:\xml\compute\MMLents.gmr
         if (db_ztemplate && *db_ztemplate) {
-          FILE *fp = fopen(db_ztemplate, "r");
+          nsCOMPtr<nsILocalFile> entityFile;
+          nsCOMPtr<nsIFile> tempFile;
+          workingDir->Clone(getter_AddRefs(tempFile));
+          entityFile = do_QueryInterface(tempFile);
+          AppendSubpath(entityFile,db_ztemplate);
+          FILE *fp;
+          entityFile->OpenANSIFileDesc("r",&fp);
           if (fp) {
             mml_entities = new Grammar(fp, false);
             fclose(fp);
@@ -196,8 +234,12 @@ U32 MathWorkShop::InstallCompEngine(const char *install_script,
           }
         }
       }
-
-      rv = FinishInstall(db_eng_dbase, db_zname, install_dBase, mr);
+      nsCOMPtr<nsILocalFile> eng_dbaseFile;
+      nsCOMPtr<nsIFile> temp2File;
+      workingDir->Clone(getter_AddRefs(temp2File));
+      eng_dbaseFile = do_QueryInterface(temp2File);
+      AppendSubpath(eng_dbaseFile,db_eng_dbase);
+      rv = FinishInstall(eng_dbaseFile, db_zname, install_dBase, mr);
     } else {
       TCI_ASSERT(0);
       mr.PutResultCode(CR_ScriptNoEngineDbase);
@@ -264,7 +306,7 @@ void MathWorkShop::UninstallCompEngine(char *targ_eng_name,
 
 // rv is a handle
 
-U32 MathWorkShop::FinishInstall(const char *eng_dbase_file,
+U32 MathWorkShop::FinishInstall(nsILocalFile *eng_dbase_file,
                                 const char *eng_name, Grammar * install_dBase,
                                 MathResult & mr)
 {
@@ -281,12 +323,13 @@ U32 MathWorkShop::FinishInstall(const char *eng_dbase_file,
   // Note that the engine database file is processed twice
   //  We're creating 2 database objects, one has the records
   //  keyed by number, the other is keyed by names.
-  FILE *fp = fopen(eng_dbase_file, "r");
+  FILE *fp;
+  eng_dbase_file->OpenANSIFileDesc("r",&fp);
   if (fp) {
     ID_dBase = new Grammar(fp, true);
     fclose(fp);
 
-    fp = fopen(eng_dbase_file, "r");
+    eng_dbase_file->OpenANSIFileDesc("r",&fp);
     NOM_dBase = new Grammar(fp, false);
     fclose(fp);
   } else {
@@ -298,8 +341,11 @@ U32 MathWorkShop::FinishInstall(const char *eng_dbase_file,
   comp_engine =
     new CompEngine(ID_dBase, NOM_dBase, mml_entities, uprefs_store);
   TCI_ASSERT(comp_engine);
-
-  bool result = comp_engine->InitUnderlyingEngine(install_dBase, mr);
+  nsCOMPtr<nsIFile> temp;
+  nsCOMPtr<nsILocalFile> baseDir;
+  eng_dbase_file->GetParent(getter_AddRefs(temp));
+  baseDir = do_QueryInterface(temp);
+  bool result = comp_engine->InitUnderlyingEngine(install_dBase, baseDir, mr);
   if (result) {
     // Add this engine to WorkShop's current engines list
     install_counter++;

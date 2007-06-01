@@ -19,6 +19,8 @@
 #define MPL_READLIB         32
 
 #include "MathIDs.h"
+#include "nsStringAPI.h"
+
 
 enum MType
 {
@@ -161,8 +163,8 @@ void MapleEngine::ReportWarning(const TCICHAR * msg)
   // eventually, these need to be logged
 }
 
-bool MapleEngine::LoadStrsAndDLL(const TCIString & engpath,
-                                     const TCIString & libpath)
+bool MapleEngine::LoadStrsAndDLL(nsILocalFile * engpath,
+                                     nsILocalFile * libpath)
 {
   bool rv = false;
 
@@ -177,8 +179,10 @@ bool MapleEngine::LoadStrsAndDLL(const TCIString & engpath,
       return rv;
     }
   }
-
-  LoadDLL(engpath);
+  nsAutoString path;
+  engpath->GetPath(path);
+  
+  LoadDLL(NS_LossyConvertUTF16toASCII(path).get());
   if (MapleH)
     rv = true;
 
@@ -191,22 +195,27 @@ BOOL FileSys_Exists(const char *fspec)
   return (stat(fspec, &fs) == 0);
 }
 
-bool MapleEngine::Initialize(const TCIString & libpath,
-                                 const TCIString & champath)
+bool MapleEngine::Initialize(nsILocalFile * libpath,
+                                 nsILocalFile * champath)
 {
-  bool rv = Init(libpath);
+  nsAutoString path;
+  libpath->GetPath(path);
+  bool rv = Init(NS_LossyConvertUTF16toASCII(path).get());
 
   if (!rv)
     UnloadDLL();
 
   InitPlots();
-  TCIString fcnfile(champath);
-  fcnfile += "/tcifcns.m";
-  if (!FileSys_Exists(fcnfile)) {
+  libpath->Append(NS_LITERAL_STRING("tcifcns.m"));
+  PRBool fExists;
+  libpath->Exists(&fExists);
+  if (!fExists) {
     rv = false;
   } else
-    PrepareProcessor(NULL, champath);
-
+  {
+    champath->GetPath(path);
+    PrepareProcessor(NULL, NS_LossyConvertUTF16toASCII(path).get());
+  }
   return rv;
 }
 

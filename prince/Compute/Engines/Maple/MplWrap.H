@@ -14,6 +14,7 @@
 #include "../../CmpTypes.h"
 #include "../EngWrap.h"
 #include "../fltutils.h"
+#include "nsILocalFile.h"
 
 class eAnalyzer;
 class Grammar;
@@ -27,8 +28,8 @@ public:
   MapleWrapper( void* ID_dBase,void* NOM_dBase );
   ~MapleWrapper();
 
-  bool iLoadStrsAndDLL( const char* engpath, const char* libpath );
-  bool iInitialize( const char* libpath, const char* champath );
+  bool iLoadStrsAndDLL( nsILocalFile* engpath, nsILocalFile* libpath );
+  bool iInitialize( nsILocalFile* libpath, nsILocalFile* champath );
   bool SetEngineState( int attr_ID, const char* new_value );
   void     iDisposeSList( SEMANTICS_NODE* slist );
   int      iGetEngStrPtr( int str_ID,char** engstr, int* engstr_ln );

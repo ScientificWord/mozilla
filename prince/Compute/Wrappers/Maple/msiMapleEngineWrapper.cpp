@@ -11,6 +11,7 @@
 #include "../../MResult.h"
 #include "../fltutils.h"
 #include <stdio.h>
+#include "nsILocalFile.h"
 
 
 NS_IMPL_ISUPPORTS1(msiMapleEngineWrapper, msiIEngineWrapper)
@@ -25,7 +26,7 @@ msiMapleEngineWrapper::~msiMapleEngineWrapper()
 }
 
 /* long loadStrsAndDLL (in string engpath, in string libpath, in voidPtr ID_dbase, in voidPtr NOM_dbase); */
-NS_IMETHODIMP msiMapleEngineWrapper::LoadStrsAndDLL(const char *engpath, const char *libpath, void * ID_dbase, void * NOM_dbase, PRInt32 *_retval)
+NS_IMETHODIMP msiMapleEngineWrapper::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath, void * ID_dbase, void * NOM_dbase, PRInt32 *_retval)
 {
   Maple_wrapper = new MapleWrapper(ID_dbase, NOM_dbase);
   *_retval = Maple_wrapper->iLoadStrsAndDLL(engpath, libpath);
@@ -33,7 +34,7 @@ NS_IMETHODIMP msiMapleEngineWrapper::LoadStrsAndDLL(const char *engpath, const c
 }
 
 /* long initialize (in string libpath, in string champath, in string vcampath); */
-NS_IMETHODIMP msiMapleEngineWrapper::Initialize(const char *libpath, const char *champath, const char *vcampath, PRInt32 *_retval)
+NS_IMETHODIMP msiMapleEngineWrapper::Initialize(nsILocalFile *libpath, nsILocalFile *champath, nsILocalFile *vcampath, PRInt32 *_retval)
 {
   *_retval = Maple_wrapper->iInitialize(libpath, champath);
   return NS_OK;
