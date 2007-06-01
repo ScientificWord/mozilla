@@ -1227,8 +1227,13 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
   // now let's actually set the filepicker's suggested filename
   var suggestedFileName = msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement);
   if (suggestedFileName)
+  {
+    var lastDot = suggestedFileName.lastIndexOf(".");
+    if (lastDot != -1)
+      suggestedFileName = suggestedFileName.slice(0, lastDot-1);
+  
     fp.defaultString = suggestedFileName;
-
+  }
   // set the file picker's current directory
   // assuming we have information needed (like prior saved location)
   try {
@@ -2222,7 +2227,7 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
       if (currentFile != null)
         msiCopyAuxDirectory(currentFile, tempLocalFile);
       // After a save we need to make a new backup file
-      if (doUpdateURI) msiRevertFile(currentFile); // restore the original file; changes are in the new file.
+      if (doUpdateURI) msiRevertFile(currentFile, true); // restore the original file; changes are in the new file.
       msiCopyFileAndDirectoryToBak( tempLocalFile );
       // Update window title to show possibly different filename
       // This also covers problem that after undoing a title change,
@@ -2623,7 +2628,7 @@ var msiRevertCommand =
       currFilePath = currFilePath.replace("/","\\","g");
 #endif
         documentfile.initWithPath( currFilePath );
-        msiRevertFile( documentfile );
+        msiRevertFile( documentfile, false );
         msiEditorLoadUrl(editorElement, msiGetEditorURL(editorElement));
       }
     }
