@@ -123,7 +123,7 @@ function Startup()
   globalElement = imageElement.cloneNode(false);
 
   // We only need to test for this once per dialog load
-  gHaveDocumentUrl = GetDocumentBaseUrl();
+  gHaveDocumentUrl = msiGetDocumentBaseUrl();
 
   InitDialog();
   if (gAnchorElement)
