@@ -19,9 +19,9 @@ var gPrefsBranch;
 //var gFilePickerDirectory;
 //
 var gOS = "";
-//const gWin = "Win";
-//const gUNIX = "UNIX";
-//const gMac = "Mac";
+//const msigWin = "Win";
+//const msigUNIX = "UNIX";
+//const msigMac = "Mac";
 //
 //const kWebComposerWindowID = "editorWindow";
 //const kMailComposerWindowID = "msgcomposeWindow";
@@ -2621,12 +2621,14 @@ function msiCopyAuxDirectory( originalfile, newfile ) // both nsILocalFiles
 // This replaces a file with its backup file, and the same for its associated directory
 // The File/Revert calls this function, but also reloads the reverted file. The pre-reverted
 // file is saved in the revert directory
+// If there is no backup file (i.e., the file has never been changed) and delete==true, then
+// we delete the file and its associated directory.
 
 // BBM this can fail if the file has been renamed, so the .sci file in the bak directory has
 // a different name. We should fall back to searching for the only .sci file or the only directory
 // in the bak directory.
 
-function msiRevertFile (documentfile) // an nsILocalFile
+function msiRevertFile (documentfile, del) // an nsILocalFile
 {
   try {
   // new scheme: save the bak files with no name change in the ..._files/bak directory
@@ -2642,33 +2644,41 @@ function msiRevertFile (documentfile) // an nsILocalFile
     _filesdir.append(leafname+"_files");
     var bakdir = _filesdir.clone();
     bakdir.append("bak");
-    var working = bakdir.clone();
-    working.append(leafname+"."+MSI_EXTENSION);
-    // copy doc_files/bak/doc.sci to doc_temp.sci
-    working.moveTo(parentdir,templeafname+"."+MSI_EXTENSION);
-    working = bakdir.clone();
-    working.append(leafname + "_files");                     
-    // copy doc_files/bak/doc_files to doc_temp_files
-    working.moveTo(parentdir, templeafname + "_files");
-    // remove bak and revert for doc_temp_files
-    vorking = tempdir.clone();
-    working.append("bak");
-    if (working.exists()) working.remove(true);
-    working = tempdir.clone();
-    working.append("revert");
-    if (working.exists()) working.remove(true);
-    working = tempdir.clone();
-    working.append("revert");
-    working.create(1, 0755);
-    // save current document and doc_files in the new revert directory
-    documentfile.moveTo(working, null);
-    _filesdir.moveTo(working, null);
-    // rename the temp files
-    tempdir.moveTo(parentdir, leafname+"_files");  
-    working = parentdir.clone();
-    working.append(templeafname + "." + MSI_EXTENSION);
-    working.moveTo(parentdir, leafname + "." + MSI_EXTENSION);
-      
+    if (_filesdir.exists() && !bakdir.exists() && del)
+    {
+      // reverting a file that has not ever been saved
+      _filesdir.remove(true);
+      documentfile.remove(false);
+    }
+    else
+    {
+      var working = bakdir.clone();
+      working.append(leafname+"."+MSI_EXTENSION);
+      // copy doc_files/bak/doc.sci to doc_temp.sci
+      working.moveTo(parentdir,templeafname+"."+MSI_EXTENSION);
+      working = bakdir.clone();
+      working.append(leafname + "_files");                     
+      // copy doc_files/bak/doc_files to doc_temp_files
+      working.moveTo(parentdir, templeafname + "_files");
+      // remove bak and revert for doc_temp_files
+      vorking = tempdir.clone();
+      working.append("bak");
+      if (working.exists()) working.remove(true);
+      working = tempdir.clone();
+      working.append("revert");
+      if (working.exists()) working.remove(true);
+      working = tempdir.clone();
+      working.append("revert");
+      working.create(1, 0755);
+      // save current document and doc_files in the new revert directory
+      documentfile.moveTo(working, null);
+      _filesdir.moveTo(working, null);
+      // rename the temp files
+      tempdir.moveTo(parentdir, leafname+"_files");  
+      working = parentdir.clone();
+      working.append(templeafname + "." + MSI_EXTENSION);
+      working.moveTo(parentdir, leafname + "." + MSI_EXTENSION);
+    }
   }
   catch(e) {
     dump("msiRevertFile failed: "+e+"\n");
