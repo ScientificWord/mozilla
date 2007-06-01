@@ -403,57 +403,57 @@ function msiInitPixelOrPercentMenulist(elementForAtt, elementInDoc, attribute, m
 //  // Only EdTableProps.js currently implements this
 //}
 //
-//const nsIFilePicker = Components.interfaces.nsIFilePicker;
-//
-//function GetLocalFileURL(filterType)
-//{
-//  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-//  var fileType = "html";
-//
-//  if (filterType == "img")
-//  {
-//    fp.init(window, GetString("SelectImageFile"), nsIFilePicker.modeOpen);
-//    fp.appendFilters(nsIFilePicker.filterImages);
-//    fileType = "image";
-//  }
-//  // Current usage of this is in Link dialog,
-//  //  where we always want HTML first
-//  else if (filterType.indexOf("html") == 0)
-//  {
-//    fp.init(window, GetString("OpenHTMLFile"), nsIFilePicker.modeOpen);
-//
-//    // When loading into Composer, direct user to prefer HTML files and text files,
-//    //   so we call separately to control the order of the filter list
-//    fp.appendFilters(nsIFilePicker.filterHTML);
-//    fp.appendFilters(nsIFilePicker.filterText);
-//
-//    // Link dialog also allows linking to images
-//    if (filterType.indexOf("img") > 0)
-//      fp.appendFilters(nsIFilePicker.filterImages);
-//
-//  }
-//  // Default or last filter is "All Files"
-//  fp.appendFilters(nsIFilePicker.filterAll);
-//
-//  // set the file picker's current directory to last-opened location saved in prefs
-//  SetFilePickerDirectory(fp, fileType);
-//
-//
-//  /* doesn't handle *.shtml files */
-//  try {
-//    var ret = fp.show();
-//    if (ret == nsIFilePicker.returnCancel)
-//      return null;
-//  }
-//  catch (ex) {
-//    dump("filePicker.chooseInputFile threw an exception\n");
-//    return null;
-//  }
-//  SaveFilePickerDirectory(fp, fileType);
-//  
-//  var fileHandler = GetFileProtocolHandler();
-//  return fp.file ? fileHandler.getURLSpecFromFile(fp.file) : null;
-//}
+const nsIFilePicker = Components.interfaces.nsIFilePicker;
+
+function GetLocalFileURL(filterType)
+{
+  var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+  var fileType = "html";
+
+  if (filterType == "img")
+  {
+    fp.init(window, GetString("SelectImageFile"), nsIFilePicker.modeOpen);
+    fp.appendFilters(nsIFilePicker.filterImages);
+    fileType = "image";
+  }
+  // Current usage of this is in Link dialog,
+  //  where we always want HTML first
+  else if (filterType.indexOf("html") == 0)
+  {
+    fp.init(window, GetString("OpenHTMLFile"), nsIFilePicker.modeOpen);
+
+    // When loading into Composer, direct user to prefer HTML files and text files,
+    //   so we call separately to control the order of the filter list
+    fp.appendFilters(nsIFilePicker.filterHTML);
+    fp.appendFilters(nsIFilePicker.filterText);
+
+    // Link dialog also allows linking to images
+    if (filterType.indexOf("img") > 0)
+      fp.appendFilters(nsIFilePicker.filterImages);
+
+  }
+  // Default or last filter is "All Files"
+  fp.appendFilters(nsIFilePicker.filterAll);
+
+  // set the file picker's current directory to last-opened location saved in prefs
+  msiSetFilePickerDirectory(fp, fileType);
+
+
+  /* doesn't handle *.shtml files */
+  try {
+    var ret = fp.show();
+    if (ret == nsIFilePicker.returnCancel)
+      return null;
+  }
+  catch (ex) {
+    dump("filePicker.chooseInputFile threw an exception\n");
+    return null;
+  }
+  SaveFilePickerDirectory(fp, fileType);
+  
+  var fileHandler = GetFileProtocolHandler();
+  return fp.file ? fileHandler.getURLSpecFromFile(fp.file) : null;
+}
 
 function msiGetMetaElement(name)
 {
@@ -657,102 +657,102 @@ function AppendHeadElement(element)
 
 //Two functions following are presumably not needed for editors except the top-level one. Though I've rewritten them,
 //I'll leave them commented out. rwa
-//function msiSetRelativeCheckbox(checkbox)
-//{
-//  if (!checkbox) {
-//    checkbox = document.getElementById("MakeRelativeCheckbox");
-//    if (!checkbox)
-//      return;
-//  }
-//
-//  var editorElement = msiGetActiveEditorElement();
-//  var editor = msiGetEditor(editorElement);
-//  // Mail never allows relative URLs, so hide the checkbox
-//  if (editor && (editor.flags & Components.interfaces.nsIPlaintextEditor.eEditorMailMask))
-//  {
-//    checkbox.collapsed = true;
-//    return;
-//  }
-//
-//  var input =  document.getElementById(checkbox.getAttribute("for"));
-//  if (!input)
-//    return;
-//
-//  var url = TrimString(input.value);
-//  var urlScheme = GetScheme(url);
-//
-//  // Check it if url is relative (no scheme).
-//  checkbox.checked = url.length > 0 && !urlScheme;
-//
-//  // Now do checkbox enabling:
-//  var enable = false;
-//
+function msiSetRelativeCheckbox(checkbox)
+{
+  if (!checkbox) {
+    checkbox = document.getElementById("MakeRelativeCheckbox");
+    if (!checkbox)
+      return;
+  }
+
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  // Mail never allows relative URLs, so hide the checkbox
+  if (editor && (editor.flags & Components.interfaces.nsIPlaintextEditor.eEditorMailMask))
+  {
+    checkbox.collapsed = true;
+    return;
+  }
+
+  var input =  document.getElementById(checkbox.getAttribute("for"));
+  if (!input)
+    return;
+
+  var url = TrimString(input.value);
+  var urlScheme = GetScheme(url);
+
+  // Check it if url is relative (no scheme).
+  checkbox.checked = url.length > 0 && !urlScheme;
+
+  // Now do checkbox enabling:
+  var enable = false;
+
+  var docUrl = GetDocumentBaseUrl();
+  var docScheme = GetScheme(docUrl);
+
+  if (url && docUrl && docScheme)
+  {
+    if (urlScheme)
+    {
+      // Url is absolute
+      // If we can make a relative URL, then enable must be true!
+      // (this lets the smarts of MakeRelativeUrl do all the hard work)
+      enable = (GetScheme(MakeRelativeUrl(url)).length == 0);
+    }
+    else
+    {
+      // Url is relative
+      // Check if url is a named anchor
+      //  but document doesn't have a filename
+      // (it's probably "index.html" or "index.htm",
+      //  but we don't want to allow a malformed URL)
+      if (url[0] == "#")
+      {
+        var docFilename = GetFilename(docUrl);
+        enable = docFilename.length > 0;
+      }
+      else
+      {
+        // Any other url is assumed 
+        //  to be ok to try to make absolute
+        enable = true;
+      }
+    }
+  }
+
+  SetElementEnabled(checkbox, enable);
+}
+
+// oncommand handler for the Relativize checkbox in EditorOverlay.xul
+function msiMakeInputValueRelativeOrAbsolute(checkbox)
+{
+  var input =  document.getElementById(checkbox.getAttribute("for"));
+  if (!input)
+    return;
+
 //  var docUrl = GetDocumentBaseUrl();
-//  var docScheme = GetScheme(docUrl);
-//
-//  if (url && docUrl && docScheme)
-//  {
-//    if (urlScheme)
-//    {
-//      // Url is absolute
-//      // If we can make a relative URL, then enable must be true!
-//      // (this lets the smarts of MakeRelativeUrl do all the hard work)
-//      enable = (GetScheme(MakeRelativeUrl(url)).length == 0);
-//    }
-//    else
-//    {
-//      // Url is relative
-//      // Check if url is a named anchor
-//      //  but document doesn't have a filename
-//      // (it's probably "index.html" or "index.htm",
-//      //  but we don't want to allow a malformed URL)
-//      if (url[0] == "#")
-//      {
-//        var docFilename = GetFilename(docUrl);
-//        enable = docFilename.length > 0;
-//      }
-//      else
-//      {
-//        // Any other url is assumed 
-//        //  to be ok to try to make absolute
-//        enable = true;
-//      }
-//    }
-//  }
-//
-//  SetElementEnabled(checkbox, enable);
-//}
-//
-//// oncommand handler for the Relativize checkbox in EditorOverlay.xul
-//function msiMakeInputValueRelativeOrAbsolute(checkbox)
-//{
-//  var input =  document.getElementById(checkbox.getAttribute("for"));
-//  if (!input)
-//    return;
-//
-////  var docUrl = GetDocumentBaseUrl();
-//  var editorElement = msiGetActiveEditorElement();
-//  var docUrl = msiGetDocumentBaseUrl(editorElement);
-//  if (!docUrl)
-//  {
-//    // Checkbox should be disabled if not saved,
-//    //  but keep this error message in case we change that
-//    AlertWithTitle("", GetString("SaveToUseRelativeUrl"));
-//    window.focus();
-//  }
-//  else 
-//  {
-//    // Note that "checked" is opposite of its last state,
-//    //  which determines what we want to do here
-//    if (checkbox.checked)
-//      input.value = MakeRelativeUrl(input.value);
-//    else
-//      input.value = MakeAbsoluteUrl(input.value);
-//
-//    // Reset checkbox to reflect url state
-//    msiSetRelativeCheckbox(checkbox);
-//  }
-//}
+  var editorElement = msiGetActiveEditorElement();
+  var docUrl = msiGetDocumentBaseUrl(editorElement);
+  if (!docUrl)
+  {
+    // Checkbox should be disabled if not saved,
+    //  but keep this error message in case we change that
+    AlertWithTitle("", GetString("SaveToUseRelativeUrl"));
+    window.focus();
+  }
+  else 
+  {
+    // Note that "checked" is opposite of its last state,
+    //  which determines what we want to do here
+    if (checkbox.checked)
+      input.value = MakeRelativeUrl(input.value);
+    else
+      input.value = MakeAbsoluteUrl(input.value);
+
+    // Reset checkbox to reflect url state
+    msiSetRelativeCheckbox(checkbox);
+  }
+}
 
 //var IsBlockParent = {
 //  APPLET: true,
