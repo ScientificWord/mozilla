@@ -7,6 +7,7 @@
 #include "fltutils.h"
 #include "msiIEngineWrapper.h"
 #include "nsCOMPtr.h"
+#include "nsILocalFile.h"
 
 typedef struct tagENG_ATTR_REC
 {
@@ -32,7 +33,7 @@ public:
              Grammar * mathml_grammar, PrefsStore * up_store);
   ~CompEngine();
 
-  bool InitUnderlyingEngine(Grammar * install_dbase, MathResult & mr);
+  bool InitUnderlyingEngine(Grammar * install_dbase, nsILocalFile * baseDir, MathResult & mr);
 
   void Execute(MathServiceRequest & msr, MathResult & mr);
 

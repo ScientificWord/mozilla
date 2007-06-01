@@ -4,6 +4,7 @@
 #define WORKSHOP_H
 
 #include "CmpTypes.h"
+#include "nsILocalFile.h"
 
 class MathServiceRequest;
 class MathResult;
@@ -53,7 +54,7 @@ public:
   void  ClearDefs( U32 client_ID,U32 engine_ID );
 
 
-  U32   InstallCompEngine( const char* install_script,MathResult& mr );
+  U32   InstallCompEngine( nsILocalFile * install_script,MathResult& mr );
   void  UninstallCompEngine( char* eng_name,U32 eng_ID );
 
   const char* GetNextSupportedCommand( U32 engine_ID,U32* curr_cmd_ID );
@@ -72,7 +73,7 @@ private:
   EngineInfo* LocateEngineInfo( const char* targ_nom,U32 targ_engine_ID );
   ClientInfo* LocateClientRec( U32 targ_handle );
 
-  U32         FinishInstall( const char* eng_dbase_file,const char* eng_name,
+  U32         FinishInstall( nsILocalFile * eng_dbase_file,const char* eng_name,
                              Grammar* install_dBase,MathResult& mr );
 
   Grammar* mml_entities;

@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 
 #include "mupkernel.h"
+#include "nsStringAPI.h"
 
 static jmp_buf mupad_mark;      // Address for long jump to jump to -- used in case of MuPAD DLL crash
 
@@ -263,24 +264,31 @@ int MuPADEngine::GetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln)
   return rv;
 }
 
-bool MuPADEngine::LoadStrsAndDLL(const char *engpath, const char *libpath)
+bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath)
 {
   bool rv = false;
   TCIString ErrorMessage;
+  TCIString pathLib;
+  TCIString pathEng;
 
+  nsAutoString temp;
+  engpath->GetPath(temp);
+  pathEng = NS_LossyConvertUTF16toASCII(temp).get();
+  libpath->GetPath(temp);
+  pathLib = NS_LossyConvertUTF16toASCII(temp).get();
   TCI_ASSERT(m_client == 0);
   m_client = new MuPADMssgHandler();
   if (!m_client)
     return rv;
-  m_client->SetLibPath(libpath);
+  m_client->SetLibPath(pathLib);
 
   MUP_set_event_handler(Stop_MuPAD, 0);
 
   TCI_ASSERT(m_kernel == 0);
 #ifdef XP_WIN
-  m_kernel = MUP_get_lib_kernel(libpath);
+  m_kernel = MUP_get_lib_kernel(pathLib);
 #else
-  m_kernel = MUP_get_uds_kernel(engpath,NULL,1);
+  m_kernel = MUP_get_uds_kernel(pathEng,NULL,1);
 #endif
   if (m_kernel) {
     MUP_set_event_handler(Stop_MuPAD, m_kernel);
@@ -318,13 +326,18 @@ bool MuPADEngine::LoadStrsAndDLL(const char *engpath, const char *libpath)
   return rv;
 }
 
-int MuPADEngine::Initialize(const char *libpath, const char *champath)
+int MuPADEngine::Initialize(nsILocalFile *libpath, nsILocalFile *champath)
 {
+  TCIString pathCham;
+  nsAutoString temp;
+  champath->GetPath(temp);
+  pathCham = NS_LossyConvertUTF16toASCII(temp).get();
+  
   // set output formatting
   MUP_send_pretty_print(m_kernel,0);
   MUP_send_textwidth(m_kernel,0x7fffffff); // 2^31-1
 
-  return PrepareProcessor(champath);
+  return PrepareProcessor(pathCham);
 }
 
 void MuPADEngine::CleanupAndUnloadDLL()
