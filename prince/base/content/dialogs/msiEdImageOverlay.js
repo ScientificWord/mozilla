@@ -67,6 +67,7 @@ var gOriginalSrc = "";
 var gHaveDocumentUrl = false;
 var gTimerID;
 var gValidateTab;
+var gDialog;
 
 // These must correspond to values in EditorDialog.css for each theme
 // (unfortunately, setting "style" attribute here doesn't work!)
@@ -77,6 +78,7 @@ var gPreviewImageHeight = 50;
 
 function ImageStartup()
 {
+  gDialog = new Object();
   gDialog.tabBox            = document.getElementById( "TabBox" );
   gDialog.tabLocation       = document.getElementById( "imageLocationTab" );
   gDialog.tabDimensions     = document.getElementById( "imageDimensionsTab" );
@@ -115,7 +117,7 @@ function InitImage()
   gDialog.srcInput.value = globalElement.getAttribute("src");
 
   // Set "Relativize" checkbox according to current URL state
-  SetRelativeCheckbox();
+  msiSetRelativeCheckbox();
 
   // Force loading of image from its source and show preview image
   LoadPreviewImage();
@@ -282,7 +284,7 @@ function chooseFile()
 
     gDialog.srcInput.value = fileName;
 
-    SetRelativeCheckbox();
+    msiSetRelativeCheckbox();
     doOverallEnabling();
   }
   LoadPreviewImage();
@@ -398,7 +400,7 @@ function ChangeImageSrc()
 
   gTimerID = setTimeout("LoadPreviewImage()", 800);
 
-  SetRelativeCheckbox();
+  msiSetRelativeCheckbox();
   doOverallEnabling();
 }
 
