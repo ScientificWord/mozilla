@@ -56,34 +56,34 @@ function doQuit() {
 
 /////////////////////////////////////////////////
 // our connection to the computation code
-var compsample;
-var compengine;
-
-function GetCurrentEngine() {
-  if (!compsample) {
-    compsample = Components.classes["@mackichan.com/simplecomputeengine;2"].getService(Components.interfaces.msiISimpleComputeEngine);
-    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-    var gmrfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-    gmrfile.append("mupInstall.gmr");
-    try {
-      compsample.startup(gmrfile.path);
-      compengine = 2;
-    } catch(e) {
-      var msg_key;
-      if (e.result == Components.results.NS_ERROR_NOT_AVAILABLE)
-        msg_key = "Error.notavailable";
-      else if (e.result == Components.results.NS_ERROR_FILE_NOT_FOUND)
-        msg_Key = "Error.notfound";
-      else if (e.result == Components.results.NS_ERROR_NOT_INITIALIZED)
-        msg_key = "Error.notinitialized";
-      else if (e.result == Components.results.NS_ERROR_FAILURE)
-        msg_key = "Error.failure";
-      else
-        throw e;
-      AlertWithTitle("Error.title", msg_key);
-  } }
-  return compsample;
-}
+//var compsample;
+//var compengine;
+//
+//function GetCurrentEngine() {
+//  if (!compsample) {
+//    compsample = Components.classes["@mackichan.com/simplecomputeengine;2"].getService(Components.interfaces.msiISimpleComputeEngine);
+//    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+//    var gmrfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+//    gmrfile.append("mupInstall.gmr");
+//    try {
+//      compsample.startup(gmrfile.path);
+//      compengine = 2;
+//    } catch(e) {
+//      var msg_key;
+//      if (e.result == Components.results.NS_ERROR_NOT_AVAILABLE)
+//        msg_key = "Error.notavailable";
+//      else if (e.result == Components.results.NS_ERROR_FILE_NOT_FOUND)
+//        msg_Key = "Error.notfound";
+//      else if (e.result == Components.results.NS_ERROR_NOT_INITIALIZED)
+//        msg_key = "Error.notinitialized";
+//      else if (e.result == Components.results.NS_ERROR_FAILURE)
+//        msg_key = "Error.failure";
+//      else
+//        throw e;
+//      AlertWithTitle("Error.title", msg_key);
+//  } }
+//  return compsample;
+//}
 
 //const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
