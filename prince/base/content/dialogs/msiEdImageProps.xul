@@ -42,10 +42,10 @@
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
-<?xul-overlay href="chrome://prince/content/EdImageOverlay.xul"?> 
+<?xul-overlay href="chrome://prince/content/msiEdImageOverlay.xul"?> 
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> <!--DO NOT DELETE -->
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
-<?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"?> 
+<!--?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"? -->
 
 <!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorImageProperties.dtd">
 
@@ -59,9 +59,9 @@
     ondialogcancel="return onCancel();"
     ondialoghelp="return doHelpButton();">
   
-  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdImageProps.js"/>
 #  <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
 #  <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
@@ -77,7 +77,7 @@
       <tab id="imageLinkTab"/>
     </tabs>
     <tabpanels>
-      <!-- panels overlayed from EdImageOverlay.xul -->
+      <!-- panels overlayed from msiEdImageOverlay.xul -->
       <vbox id="imageLocation"/>
       <vbox id="imageDimensions"/>
       <hbox id="imageAppearance"/>
