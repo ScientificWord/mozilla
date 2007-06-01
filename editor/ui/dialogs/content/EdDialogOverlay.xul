@@ -80,7 +80,7 @@
   id        = "MakeRelativeCheckbox"
   label     = "&makeUrlRelative.label;"
   accesskey = "&makeUrlRelative.accessKey;"
-  oncommand = "MakeInputValueRelativeOrAbsolute(this);"
+  oncommand = "msiMakeInputValueRelativeOrAbsolute(this);"
   tooltiptext = "&makeUrlRelative.tooltip;"/>
 
 <vbox id="LinkLocationBox">
@@ -99,7 +99,7 @@
               for="hrefInput"
               label="&makeUrlRelative.label;"
               accesskey="&makeUrlRelative.accessKey;"
-              oncommand="MakeInputValueRelativeOrAbsolute(this);"
+              oncommand="msiMakeInputValueRelativeOrAbsolute(this);"
               tooltiptext="&makeUrlRelative.tooltip;"/>
     <spacer flex="1"/>
     <button label="&chooseButton.label;" accesskey="&chooseFileLink.accessKey;" oncommand="chooseLinkFile();"/>
