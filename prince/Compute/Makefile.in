@@ -10,7 +10,8 @@ include $(DEPTH)/config/autoconf.mk
 MODULE = compute
 LIBRARY_NAME = computelib_s
 
-DIRS		=  libtci public Engines compsample2 Wrappers Testjig2
+DIRS		=  libtci public Engines compsample2 Wrappers 
+# Testjig2
 
 include $(topsrcdir)/config/config.mk
 
@@ -45,6 +46,11 @@ MuPADlib	:= \
 			$(srcdir)/MuPAD/lib/sysinit.mu \
 			$(wildcard $(srcdir)/MuPAD/lib/xmlprint.*) \
 			$(NULL)
+
+VCamFiles  := \
+			$(wildcard $(srcdir)/vcam/win32/*.dll) \
+			$(wildcard $(srcdir)/vcam/win32/VCamNG.*) \
+			$(NULL)
 endif
 
 ifeq ($(OS_ARCH),WINNT)
@@ -67,8 +73,11 @@ include $(topsrcdir)/config/rules.mk
 
 ifeq ($(OS_ARCH),WINNT)
 export:: $(MuPADlib)
-	$(INSTALL) $(MuPADlib) $(DIST)/bin/MuPAD/lib
+	$(INSTALL) $(MuPADlib)$(FINAL_TARGET)/MuPAD/lib
 endif
 
 export:: $(SupportFiles) $(GMR_FILES)
-	$(INSTALL) $(SupportFiles) $(GMR_FILES) $(DIST)/bin
+	$(INSTALL) $(SupportFiles) $(GMR_FILES) $(FINAL_TARGET)
+
+export:: $(VCamFiles)
+	$(INSTALL) $(VCamFiles) $(FINAL_TARGET)/vcam

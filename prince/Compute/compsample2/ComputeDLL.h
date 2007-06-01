@@ -5,6 +5,7 @@
 
 #include "../CmpTypes.h"
 #include "../MRequest.h"
+#include "nsILocalFile.h"
 
 class ComputeDLL
 {
@@ -12,7 +13,7 @@ public:
   static int InitCompDLL();
   static void TermCompDLL();
 
-  static U32 InstallEngine(U32 trans_ID, const char *install_script,
+  static U32 InstallEngine(U32 trans_ID, nsILocalFile *install_script,
                              int *result_code);
   static void UninstallEngine(U32 eng_ID);
 

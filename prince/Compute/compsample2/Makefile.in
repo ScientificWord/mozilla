@@ -37,6 +37,8 @@ XPIDLSRCS	= msiISimpleComputeEngine.idl
 
 include $(topsrcdir)/config/config.mk
 
+          
+
 # separate libraries linked in.
 EXTRA_DSO_LDOPTS = \
   $(DIST)/lib/$(LIB_PREFIX)computelib_s.$(LIB_SUFFIX) \
@@ -53,10 +55,10 @@ LOCAL_INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../libtci
 
 
 libs:: $(TARGETS)
-	$(INSTALL) $(srcdir)/simplecompute2.html $(DIST)/bin/res/samples
+	$(INSTALL) $(srcdir)/simplecompute2.html $(FINAL_TARGET)/res/samples
 
 install:: $(TARGETS)
-	$(SYSINSTALL) $(IFLAGS1) $(srcdir)/simplecompute2 $(DESTDIR)$(mozappdir)/res/samples
+	$(SYSINSTALL) $(IFLAGS1) $(srcdir)/simplecompute2 $(FINAL_TARGET)/res/samples
 
 msiISimpleComputeEngine.idl:: msiISimpleComputeEngine.idl.c ../iCmpIDs.h
 	$(CPP) $<  | sed "s/^IDLinclude/#include/" > msiISimpleComputeEngine.idl

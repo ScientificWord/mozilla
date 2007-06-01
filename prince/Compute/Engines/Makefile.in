@@ -7,6 +7,7 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
+
 ifneq ($(OS_ARCH),WINNT)
 # ie gcc
 CPPEXTRAARGS = -x c
@@ -58,4 +59,4 @@ GMR_FILES := \
 include $(topsrcdir)/config/rules.mk
 
 export:: $(GMR_FILES)
-	$(INSTALL) $(GMR_FILES) $(DIST)/bin
+	$(INSTALL) $(GMR_FILES) $(FINAL_TARGET)
