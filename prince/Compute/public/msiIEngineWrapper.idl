@@ -2,6 +2,7 @@
 // msiIEngineWrapper.idl
 
 #include "nsISupports.idl"
+#include "nsILocalFile.idl"
 
 /*
  * msiIEngineWrapper - low level connection to computation engine.
@@ -16,11 +17,11 @@ interface msiIEngineWrapper : nsISupports
   /**
    * get all the engine data ready. Returns 1 if OK.
    */
-  long loadStrsAndDLL(in string engpath, in string libpath, in voidPtr ID_dbase, in voidPtr NOM_dbase);
+  long loadStrsAndDLL(in nsILocalFile engpath, in nsILocalFile libpath, in voidPtr ID_dbase, in voidPtr NOM_dbase);
   /**
    * start up the engine
    */
-  long initialize(in string libpath, in string champath, in string vcampath);
+  long initialize(in nsILocalFile libpath, in nsILocalFile champath, in nsILocalFile vcampath);
 
   /**
    * process the math service request. Returns 1 if OK.

@@ -3,6 +3,7 @@
 
 // how I get #include past the preprocessor
 IDLinclude "nsISupports.idl"
+IDLinclude "nsILocalFile.idl"
 
 #include "../iCmpIDs.h"
 
@@ -25,7 +26,7 @@ interface msiISimpleComputeEngine : nsISupports
   /**
    * Start the engine
   */
-  void startup(in wstring engFile);
+  void startup(in nsILocalFile engFile);
 
   /**
    * Evaluate the input

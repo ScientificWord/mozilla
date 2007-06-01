@@ -764,61 +764,61 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       break;
 
     case "cmd_compute_Plot2DRectangular":
-      doComputePlot(element, 2, "rectangular", editorElement);
+      doComputePlot(element, 2, "rectangular", false, editorElement);
       break;
     case "cmd_compute_Plot2DPolar":
-      doComputePlot(element, 2, "polar", editorElement);
+      doComputePlot(element, 2, "polar", false, editorElement);
       break;
     case "cmd_compute_Plot2DImplicit":
-      doComputePlot(element, 2, "implicit", editorElement);
+      doComputePlot(element, 2, "implicit", false, editorElement);
       break;
     case "cmd_compute_Plot2DInequality":
-      doComputePlot(element, 2, "inequality", editorElement);
+      doComputePlot(element, 2, "inequality", false, editorElement);
       break;
     case "cmd_compute_Plot2DParametric":
-      doComputePlot(element, 2, "parametric", editorElement);
+      doComputePlot(element, 2, "parametric", false, editorElement);
       break;
     case "cmd_compute_Plot2DConformal":
-      doComputePlot(element, 2, "conformal", editorElement);
+      doComputePlot(element, 2, "conformal", false, editorElement);
       break;
     case "cmd_compute_Plot2DGradient":
-      doComputePlot(element, 2, "gradient", editorElement);
+      doComputePlot(element, 2, "gradient", false, editorElement);
       break;
     case "cmd_compute_Plot2DVector":
-      doComputePlot(element, 2, "vectorField", editorElement);
+      doComputePlot(element, 2, "vectorField", false, editorElement);
       break;
     case "cmd_compute_Plot2DODE":
-      doComputePlot(element, 2, "ode", editorElement);
+      doComputePlot(element, 2, "ode", false, editorElement);
       break;
     case "cmd_compute_Plot2DAI":
-      doComputePlot(element, 2, "approximateIntegral", editorElement);
+      doComputePlot(element, 2, "approximateIntegral", false, editorElement);
       break;
     case "cmd_compute_Plot3DRectangular":
-      doComputePlot(element, 3, "rectangular", editorElement);
+      doComputePlot(element, 3, "rectangular", false, editorElement);
       break;
     case "cmd_compute_Plot3DCurve":
-      doComputePlot(element, 3, "curve", editorElement);
+      doComputePlot(element, 3, "curve", false, editorElement);
       break;
     case "cmd_compute_Plot3DCylindrical":
-      doComputePlot(element, 3, "cylindrical", editorElement);
+      doComputePlot(element, 3, "cylindrical", false, editorElement);
       break;
     case "cmd_compute_Plot3DSpherical":
-      doComputePlot(element, 3, "spherical", editorElement);
+      doComputePlot(element, 3, "spherical", false, editorElement);
       break;
     case "cmd_compute_Plot3DParametric":
-      doComputePlot(element, 3, "parametric", editorElement);
+      doComputePlot(element, 3, "parametric", false, editorElement);
       break;
     case "cmd_compute_Plot3DImplicit":
-      doComputePlot(element, 3, "implicit", editorElement);
+      doComputePlot(element, 3, "implicit", false, editorElement);
       break;
     case "cmd_compute_Plot3DTube":
-      doComputePlot(element, 3, "tube", editorElement);
+      doComputePlot(element, 3, "tube", false, editorElement);
       break;
     case "cmd_compute_Plot3DGradient":
-      doComputePlot(element, 3, "gradient", editorElement);
+      doComputePlot(element, 3, "gradient", false, editorElement);
       break;
     case "cmd_compute_Plot3DVector":
-      doComputePlot(element, 3, "vectorField", editorElement);
+      doComputePlot(element, 3, "vectorField", false, editorElement);
       break;
     case "cmd_compute_Plot2DARectangular":
       doComputePlot(element, 2, "rectangular", true, editorElement);
@@ -947,8 +947,7 @@ function GetCurrentEngine()
 //      var inifile = dsprops.get("resource:app", Components.interfaces.nsIFile);
       var inifile = dsprops.get("GreD", Components.interfaces.nsIFile);
       inifile.append("mupInstall.gmr");
-      var inipath = inifile.path;
-      compsample.startup(inifile.path);
+      compsample.startup(inifile);
       compengine = 2;
       msiComputeLogger.Init();
     } catch(e) {
@@ -983,7 +982,8 @@ function RestoreCursor(editorElement)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var theWin = msiGetWindowContainingEditor(editorElement);
-  theWin.setCursor( "default" );
+  if (theWin)
+    theWin.setCursor( "default" );
 }
 
 // return node on RHS of =, if structure is that simple
