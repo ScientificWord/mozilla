@@ -12,6 +12,10 @@ LIBRARY_NAME	= MplWrapperDLL_s
 
 include $(topsrcdir)/config/config.mk
 
+REQUIRES = strings \
+	xpcom \
+	$(NULL)
+
 CPPSRCS =				\
   eAnalyzer.cpp \
   mapl_eng.cpp \

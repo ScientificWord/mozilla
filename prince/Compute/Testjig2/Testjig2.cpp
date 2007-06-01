@@ -6,10 +6,13 @@
 #include "nsXPCOMGlue.h"
 #include "nsXPCOM.h"
 #include "nsCOMPtr.h"
+#include "nsStringAPI.h"
+#include "nsILocalFile.h"
 #include "nsEmbedString.h"
 #include "msiISimpleComputeEngine.h"
 #include "nsIServiceManager.h"
 #include "nsIComponentManager.h"
+#include "nsComponentManagerUtils.h"
 #include "nsIComponentRegistrar.h"
 
 
@@ -31,7 +34,7 @@ U32 MuPAD_eng_ID;
 class CompEngine {
 public:
   bool Init(nsCOMPtr<nsIComponentManager> aManager);
-  bool SwitchEngine(U32 engine_ID);
+  bool SwitchEngine(U32 engine_ID, nsILocalFile * baseDir );
   bool Shutdown();
 
   void SetClientPref(U32 pref_ID, long val);
@@ -135,7 +138,16 @@ bool CompEngine::Init(nsCOMPtr<nsIComponentManager> aManager)
     return false;
   }
 
-  rv = mysample->Startup(NS_LITERAL_STRING("mupInstall.gmr").get());
+  nsCOMPtr<nsIFile> bd;
+  nsCOMPtr<nsILocalFile> baseDir;
+  PRBool fPersistent;
+  rv = DSP->GetFile("GreD", &fPersistent, getter_AddRefs(bd));
+  if (rv) return false;
+  baseDir = do_QueryInterface(bd);
+  nsAutoString temp;
+  baseDir->Append(NS_LITERAL_STRING("mupInstall.gmr"));
+  
+  rv = mysample->Startup(baseDir);
   if (NS_FAILED(rv)) {
     printf("ERROR: Calling msiISimpleComputeEngine::Startup() [%x]\n", rv);
     return false;
@@ -147,7 +159,7 @@ bool CompEngine::Init(nsCOMPtr<nsIComponentManager> aManager)
   return true;
 }
 
-bool CompEngine::SwitchEngine(U32 engine_ID)
+bool CompEngine::SwitchEngine(U32 engine_ID, nsILocalFile * baseDir )
 {
   NS_ASSERTION(engine_ID == 1 || engine_ID == 2, "engine ID out of range");
   nsresult rv = mysample->Shutdown();
@@ -159,8 +171,15 @@ bool CompEngine::SwitchEngine(U32 engine_ID)
     printf(" Shutdown OK in SwitchEngine()\n");
 #endif
   }
+  nsAutoString temp;
+  if (engine_ID == 2)
+    baseDir->Append(NS_LITERAL_STRING("mupInstall.gmr"));
+  else
+    baseDir->Append(NS_LITERAL_STRING("mplInstall.gmr"));
+    
+//  baseDir->GetPath(temp);
 
-  rv = mysample->Startup(engine_ID == 2 ? NS_LITERAL_STRING("mupInstall.gmr").get() : NS_LITERAL_STRING("mplInstall.gmr").get());
+  rv = mysample->Startup(baseDir);
   if (NS_FAILED(rv)) {
     printf("ERROR: Calling msiISimpleComputeEngine::Startup() during SwitchEngine() [%x]\n", rv);
     return false;

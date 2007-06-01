@@ -8,6 +8,7 @@
 #include "../../MResult.h"
 #include "../fltutils.h"
 #include <stdio.h>
+#include "nsILocalFile.h"
 
 
 NS_IMPL_ISUPPORTS1(msiMuPADEngineWrapper, msiIEngineWrapper)
@@ -22,7 +23,7 @@ msiMuPADEngineWrapper::~msiMuPADEngineWrapper()
 }
 
 /* long loadStrsAndDLL (in string engpath, in string libpath, in voidPtr ID_dbase, in voidPtr NOM_dbase); */
-NS_IMETHODIMP msiMuPADEngineWrapper::LoadStrsAndDLL(const char *engpath, const char *libpath, void * ID_dbase, void * NOM_dbase, PRInt32 *_retval)
+NS_IMETHODIMP msiMuPADEngineWrapper::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath, void * ID_dbase, void * NOM_dbase, PRInt32 *_retval)
 {
   MuPAD_wrapper = new MuPADWrapper(ID_dbase, NOM_dbase);
   *_retval = MuPAD_wrapper->iLoadStrsAndDLL(engpath, libpath);
@@ -30,7 +31,7 @@ NS_IMETHODIMP msiMuPADEngineWrapper::LoadStrsAndDLL(const char *engpath, const c
 }
 
 /* long initialize (in string libpath, in string champath, in string vcampath); */
-NS_IMETHODIMP msiMuPADEngineWrapper::Initialize(const char *libpath, const char *champath, const char *vcampath, PRInt32 *_retval)
+NS_IMETHODIMP msiMuPADEngineWrapper::Initialize(nsILocalFile *libpath, nsILocalFile *champath, nsILocalFile *vcampath, PRInt32 *_retval)
 {
   *_retval = MuPAD_wrapper->iInitialize(libpath, champath, vcampath);
   return NS_OK;

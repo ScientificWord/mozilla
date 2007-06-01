@@ -26,6 +26,7 @@
 #include "MuP2Tree.h"
 #include "MuAnalyzer.h"
 #include "../Grammar.h"
+#include "nsStringAPI.h"
 
 MuPADEngine *mupd_eng = NULL;
 
@@ -315,24 +316,27 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
   return s_tree;
 }
 
-bool MuPADWrapper::iLoadStrsAndDLL(const char *engp, const char *libp)
+bool MuPADWrapper::iLoadStrsAndDLL(nsILocalFile *engp, nsILocalFile *libp)
 {
-  TCIString engpath = engp;
-  TCIString libpath = libp;
-  return mupd_eng->LoadStrsAndDLL(engpath, libpath);
+//  TCIString engpath = engp;
+//  TCIString libpath = libp;
+  return mupd_eng->LoadStrsAndDLL(engp, libp);
 }
 
-int MuPADWrapper::iInitialize(const char *libp, const char *champ,
-                                   const char *vcampath)
+int MuPADWrapper::iInitialize(nsILocalFile *libp, nsILocalFile *champ,
+                                   nsILocalFile *vcamp)
 {
-  if (vcampath) {
-    size_t zln = strlen(vcampath);
+  nsAutoString vcampath;
+  vcamp->GetPath(vcampath);
+  nsCString vcampathstr = NS_LossyConvertUTF16toASCII(vcampath);
+  if (vcampathstr.get()) {
+    size_t zln = strlen(vcampathstr.get());
     vcam_path = new char[zln + 1];
-    strcpy(vcam_path, vcampath);
+    strcpy(vcam_path, vcampathstr.get());
   }
-  TCIString libpath = libp;
-  TCIString champath = champ;
-  return mupd_eng->Initialize(libpath, champath);
+//  TCIString libpath = libp;
+//  TCIString champath = champ;
+  return mupd_eng->Initialize(libp, champ);
 }
 
 bool MuPADWrapper::SetEngineState(int attr_ID, const char *new_value)
@@ -400,9 +404,9 @@ bool MuPADWrapper::RenderPlot(const char *VCamFile, const char *outFile)
   out.Replace("/","\\");
   cmdLine += "\"";
   cmdLine += out;
-  cmdLine += "\"";
-  cmdLine += " ";
+  cmdLine += "\" \"";
   cmdLine += VCamFile;
+  cmdLine += "\"";
   TCICHAR *msSucks =
     const_cast < TCICHAR * >(static_cast < const TCICHAR * >(cmdLine));
 

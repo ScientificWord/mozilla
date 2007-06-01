@@ -56,17 +56,17 @@ BOOL APIENTRY DllMain(HANDLE hModule,
   return true;
 }
 
-ENGWRAPDLL_API int __cdecl iLoadStrsAndDLL(const char *engpath,
-                                           const char *libpath,
+ENGWRAPDLL_API int __cdecl iLoadStrsAndDLL(nsILocalFile *engpath,
+                                           nsILocalFile *libpath,
                                            void *ID_dBase, void *NOM_dBase)
 {
   maple_wrapper = new MapleWrapper(ID_dBase, NOM_dBase);
   return maple_wrapper->iLoadStrsAndDLL(engpath, libpath);
 }
 
-ENGWRAPDLL_API int __cdecl iInitialize(const char *libpath,
-                                       const char *champath,
-                                       const char *vcampath)
+ENGWRAPDLL_API int __cdecl iInitialize(nsILocalFile *libpath,
+                                       nsILocalFile *champath,
+                                       nsILocalFile *vcampath)
 {
   return maple_wrapper->iInitialize(libpath, champath);
 }

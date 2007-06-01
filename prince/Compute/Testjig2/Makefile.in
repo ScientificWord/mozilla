@@ -53,7 +53,7 @@ include $(topsrcdir)/config/rules.mk
 
 
 export:: $(TESTBATS)
-	$(INSTALL) $(TESTBATS) $(DIST)/bin/TestJigData
+	$(INSTALL) $(TESTBATS) $(FINAL_TARGET)/TestJigData
 	
 
                  

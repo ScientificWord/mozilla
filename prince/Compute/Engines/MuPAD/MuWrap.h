@@ -9,6 +9,7 @@
 #include "../../CmpTypes.h"
 #include "../fltutils.h"
 #include "../EngWrap.h"
+#include "nsILocalFile.h"
 
 class MuAnalyzer;
 class Grammar;
@@ -23,8 +24,8 @@ public:
   MuPADWrapper( void* ID_dBase,void* NOM_dBase );
   ~MuPADWrapper();
 
-  bool iLoadStrsAndDLL( const char* engpath,const char* libpath );
-  int iInitialize( const char* libpath,const char* champath,const char* vcampath );
+  bool iLoadStrsAndDLL( nsILocalFile* engpath,nsILocalFile* libpath );
+  int iInitialize( nsILocalFile* libpath,nsILocalFile* champath,nsILocalFile* vcampath );
   bool SetEngineState( int attr_ID,const char* new_value );
   void     iDisposeSList( SEMANTICS_NODE* slist );
   int      iGetEngStrPtr( int str_ID, const char** engstr, int* engstr_ln );

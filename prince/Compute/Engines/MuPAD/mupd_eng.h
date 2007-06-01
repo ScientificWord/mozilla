@@ -4,6 +4,7 @@
 #define MUPD_ENG_H
 
 #include <tcistrin.h>
+#include "nsILocalFile.h"
 
 typedef class MUP_KernelImpl * MUP_Kernel;
 class MuPADMssgHandler;
@@ -15,8 +16,8 @@ public:
   MuPADEngine();
   ~MuPADEngine();
 
-  bool LoadStrsAndDLL(const char *engpath, const char *libpath);
-  int Initialize(const char *libpath, const char *champath);
+  bool LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath);
+  int Initialize(nsILocalFile *libpath, nsILocalFile *champath);
   bool SendToProcessor(TCIString &cmd);
   bool SendPlotToProcessor(TCIString &cmd);
   void ClearEngStrPtrs();
