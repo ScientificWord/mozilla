@@ -316,11 +316,11 @@
               </vbox>
               <vbox>
                 <label align="center" value="Old style nums"/>
-                <checkbox label="" id="romanoldstylenums" oncommand="onCheck(this);"/>
+                <checkbox id="romanoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox>
                 <label align="center" value="Swash"/>
-                <checkbox label="" id="romanswash" oncommand="onCheck(this);"/>
+                <checkbox id="romanswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox>
