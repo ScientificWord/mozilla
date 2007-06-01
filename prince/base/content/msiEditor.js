@@ -1199,7 +1199,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     if (!editor.documentModified && !msiIsHTMLSourceChanged(editorElement))
     {
       if (command == "cmd_close")
-        doRevert(editorElement);
+        doRevert(editorElement, true);
       return true;
     }
   } catch (e) { return true; }
@@ -1301,7 +1301,10 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   {
     // "Don't Save"
     if (command == "cmd_close")
-      doRevert(editorElement);
+    {
+      var del = true;
+      doRevert(editorElement, del);
+    }
     return true;
   }
   // Default or result == 1 (Cancel)
@@ -1309,7 +1312,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
 }
 
 
-function doRevert(editorElement)
+function doRevert(editorElement, del)
 {
   var urlstring = msiGetEditorURL(editorElement);
   var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
@@ -1319,7 +1322,7 @@ function doRevert(editorElement)
   currFilePath = currFilePath.replace("/","\\","g");
 #endif
   documentfile.initWithPath( currFilePath );
-  msiRevertFile( documentfile );
+  msiRevertFile( documentfile, del );
 }
 // --------------------------- File menu ---------------------------
 //The File menu items should only be accessible by the main editor window, really. Commented out here, available in msiMainEditor.js.
