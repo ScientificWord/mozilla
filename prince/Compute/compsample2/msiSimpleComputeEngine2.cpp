@@ -46,8 +46,8 @@ msiSimpleComputeEngine2::~msiSimpleComputeEngine2()
 
 NS_IMPL_ISUPPORTS1_CI(msiSimpleComputeEngine2, msiISimpleComputeEngine)
 
-/* void startup (in wstring engFile); */
-NS_IMETHODIMP msiSimpleComputeEngine2::Startup(const PRUnichar *engFile)
+/* void startup (in nsILocalFile engFile); */
+NS_IMETHODIMP msiSimpleComputeEngine2::Startup(nsILocalFile *engFile)
 {
   nsresult rv = NS_OK;
   
@@ -67,9 +67,7 @@ NS_IMETHODIMP msiSimpleComputeEngine2::Startup(const PRUnichar *engFile)
       U32 trans_ID  =  ComputeDLL::CreateTransaction( client_handle,NULL,0,0 );
 
       int result_code = 0;
-      MuPAD_eng_ID  =  ComputeDLL::InstallEngine( trans_ID,
-                                                  NS_LossyConvertUTF16toASCII(engFile).get(),
-                                                  &result_code );
+      MuPAD_eng_ID  =  ComputeDLL::InstallEngine( trans_ID, engFile, &result_code );
       if (MuPAD_eng_ID == 0
       ||  result_code == CR_ScriptOpenFailed
       ||  result_code == CR_ScriptNoEngineDbase

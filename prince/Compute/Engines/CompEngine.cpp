@@ -40,8 +40,32 @@
 #include "STree2MML.h"
 
 #include "nsServiceManagerUtils.h"
+#include "nsComponentManagerUtils.h"
+#include "nsStringAPI.h"
 
 
+void AppendSubPath( nsILocalFile * file, const char * asciiPath )
+{
+  if (!asciiPath) return;
+  size_t zln = strlen(asciiPath);
+  char *tmp = new char[zln + 1];
+  strcpy(tmp, asciiPath);
+  char * pch = tmp;
+  char * pchStart = tmp;
+  nsAutoString pathStr;
+  bool done = false;
+  while (!done){
+    while (*pch && *pch != '\\' && *pch != '/') pch++;
+    done = (*pch == 0);
+    (*pch) = 0;
+    pathStr = NS_ConvertUTF8toUTF16(pchStart);
+    file->Append(pathStr);
+    if (!done) *pch++; // skip past the null we put in
+    while (*pch && *pch == '\\' && *pch == '/') pch++;
+    pchStart = pch;
+  }
+}
+      
 CompEngine::CompEngine(Grammar * ID_dBase, Grammar * NOM_dBase,
                        Grammar * mathml_grammar, PrefsStore * up_store)
 {
@@ -84,73 +108,71 @@ CompEngine::~CompEngine()
   }
 }
 
-bool CompEngine::InitUnderlyingEngine(Grammar * install_dbase,
+bool CompEngine::InitUnderlyingEngine(Grammar * install_dbase, nsILocalFile * baseDir, 
                                           MathResult & mr)
 {
   bool rv = false;
 
   char path[500];
   path[0] = 0;
-
+  nsresult res;
+  nsCOMPtr<nsIFile> bd;
+  nsCOMPtr<nsILocalFile> libFile;
+  nsCOMPtr<nsILocalFile> vcamFile;
+  nsCOMPtr<nsILocalFile> engFile;
+  
   const char *eng_name;
   const char *eRecord;
   if (install_dbase->
       GetRecordFromIDs("ENGINFO", ENG_wrapperDLL, 0, &eng_name, &eRecord))
     strcpy(path, eRecord);
+    // the path now is actually "@mackichan.com/mupadenginewrapper;1"
+    // so we don't need to make it absolute
   else
     TCI_ASSERT(!"Failed to lookup ENGINFO/wrapperDLL");
 
   if (LoadEngWrapperDLL(path)) {
-    const char *engpath = NULL;
-    const char *libpath = NULL;
 
     const char *dest_zname;
     const char *eRecord;
 
     if (install_dbase->
         GetRecordFromIDs("ENGINFO", ENG_engpath, 0, &dest_zname, &eRecord)) {
-      engpath = eRecord;
+      res = baseDir->Clone(getter_AddRefs(bd));
+      engFile = do_QueryInterface(bd);
+      AppendSubPath(engFile,eRecord);
     } else {
       TCI_ASSERT(!"Failed to lookup ENGINFO/engpath");
-      engpath = "C:\\swp50\\mapleoem.dll";
+      //engpath = "C:\\swp50\\mapleoem.dll";
     }
 
     if (install_dbase->
         GetRecordFromIDs("ENGINFO", ENG_libp, 0, &dest_zname, &eRecord)) {
-      libpath = eRecord;
+      res = baseDir->Clone(getter_AddRefs(bd));
+      libFile = do_QueryInterface(bd);
+      AppendSubPath(libFile,eRecord);
     } else {
       TCI_ASSERT(!"Failed to lookup ENGINFO/libp");
-      libpath = "C:\\swp50\\Maple";
+      //libpath = "C:\\swp50\\Maple";
     }
 
     int inner_rv;
-    nsresult res = wrapper->LoadStrsAndDLL(engpath, libpath, (void *)id_dBase, (void *)nom_dBase, &inner_rv);
+    res = wrapper->LoadStrsAndDLL(engFile, libFile, (void *)id_dBase, (void *)nom_dBase, &inner_rv);
 
     if (NS_SUCCEEDED(res) && inner_rv) {
-      // OF COURSE, THE PROGRAM DIRECTORY WON'T COME FROM THE INSTALL SCRIPT  WHEN WE'RE DONE!!
-
-      const char *champath;
-      if (install_dbase->
-          GetRecordFromIDs("ENGINFO", ENG_champath, 0, &dest_zname,
-                           &eRecord)) {
-        champath = eRecord;
-      } else {
-        TCI_ASSERT(!"Failed to lookup ENGINFO/champath");
-        champath = "C:\\xml\\compute\\testjig";
-      }
-
-      const char *vcampath;
       if (install_dbase->
           GetRecordFromIDs("ENGINFO", ENG_vcampath, 0, &dest_zname,
                            &eRecord)) {
-        vcampath = eRecord;
+        res = baseDir->Clone(getter_AddRefs(bd));
+        vcamFile = do_QueryInterface(bd);
+        AppendSubPath(vcamFile,eRecord);
       } else {
         TCI_ASSERT(!"Failed to lookup ENGINFO/vcampath");
-        vcampath =
-          "C:\\Program Files\\SciFace\\MuPAD Pro 3.1\\bin\\VCamNG.exe";
+        //vcampath =
+        //  "C:\\Program Files\\SciFace\\MuPAD Pro 3.1\\bin\\VCamNG.exe";
       }
 
-      res = wrapper->Initialize(libpath, champath, vcampath, &inner_rv);
+      res = wrapper->Initialize(libFile, baseDir, vcamFile, &inner_rv);
       if (NS_SUCCEEDED(res) && inner_rv) {
         rv = true;
         ResetState(true);
