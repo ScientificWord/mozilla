@@ -1946,7 +1946,7 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
                                PRBool altDown, PRBool metaDown, PRBool & preventDefault)
 {
   preventDefault = PR_FALSE;
-  if (altDown || metaDown)
+  if (altDown || metaDown || ctrlDown)
     return NS_OK;
   nsCOMPtr<msiISelection> msiSelection;
   GetMSISelection(msiSelection);
