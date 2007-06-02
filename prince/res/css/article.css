@@ -1,3 +1,7 @@
+math {
+  direction: ltr;
+}
+
 part {
   display: block;
   counter-increment: part;
@@ -143,6 +147,13 @@ p {
 
 para {
   display: block;
+  margin: 10pt 10pt 5pt 5pt;
+}
+
+rtlpara {
+  display: block;
+  direction: rtl;
+  unicode-bidi: bidi-override; 
   margin: 10pt 10pt 5pt 5pt;
 }
 
@@ -297,7 +308,7 @@ tt {
   font-weight: 700
 }
 
-hebrew {
+rtl {
   color: rgb(100,50,0);
   direction: rtl;
   unicode-bidi: bidi-override 
