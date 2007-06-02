@@ -183,6 +183,8 @@
 <xsl:template match="html:para">
 <xsl:apply-templates/>\par </xsl:template>
 
+<xsl:template match="html:rtlpara">
+{\rtl\beginR <xsl:apply-templates/>\endR\par </xsl:template>
 
 
 <xsl:template match="html:sectiontitle">
@@ -278,7 +280,7 @@
 <xsl:template match="html:sc">\textsc{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:tt">\texttt{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:em">\emph{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:hebrew">{\hebrew\beginR <xsl:apply-templates/> \endR} </xsl:template>
+<xsl:template match="html:rtl">{\rtl\beginR <xsl:apply-templates/> \endR} </xsl:template>
 
 <xsl:template match="html:tiny">{\tiny <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:scriptsize">{\scriptsize <xsl:apply-templates/>}</xsl:template>
