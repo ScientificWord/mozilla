@@ -39,7 +39,7 @@
 				<tag nm="sw:em"><description>Emphasized</description></tag>
 				<tag nm="sw:footnotesize"><description>Footnote size</description></tag>
 				<tag nm="sw:fraktur"><description>Fraktur</description></tag>
-				<tag nm="sw:hebrew"><description>Hebrew font</description></tag>
+				<tag nm="sw:rtl"><description>Right-to-left font</description></tag>
 				<tag nm="sw:Huge"><description>Huge</description></tag>
 				<tag nm="sw:huge"><description>huge</description></tag>
 				<tag nm="sw:it"><description>Italics</description></tag>
@@ -80,6 +80,12 @@
         </tag>
 				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
+          </initialcontentsforempty>
+				</tag>
+				<tag nm="sw:rtlpara">
+					<description>Right to left body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
           </initialcontentsforempty>
