@@ -257,6 +257,7 @@
                 accesskey="&inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
       <menuitem label="Extensions" id="menu_extensions" observes="Tools:Extensions"/>
       <menuitem label="Themes" id="menu_themes" observes="Tools:Themes"/>
+      <menuitem label="Tag appearance" id="cascades" observes="Cascades"/>
     </menupopup>
   </menu>
   
@@ -509,6 +510,7 @@
     <command id="Tasks:InspectPage" oncommand="inspectDOMDocument(_content.document);"/>
     <command id="Tools:Extensions" oncommand="OpenExtensions('extensions');"/>
     <command id="Tools:Themes" oncommand="OpenExtensions('themes');"/>
+    <command id="Cascades" oncommand="window.openDialog('chrome://cascades/content/EdCssProps.xul','_blank', 'chrome,close,modal,titlebar');window.content.focus();"/>
   </commandset>
 
   <keyset id="tasksKeys">
