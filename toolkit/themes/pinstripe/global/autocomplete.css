@@ -121,7 +121,7 @@ treechildren.autocomplete-treebody::-moz-tree-row(selected) {
 }
 
 treechildren.autocomplete-treebody::-moz-tree-cell-text(selected) {
-  color: #FFFFFF !important;
+  color: #000000 !important;
 }
 
 /* ::::: textboxes inside toolbarpaletteitems ::::: */
