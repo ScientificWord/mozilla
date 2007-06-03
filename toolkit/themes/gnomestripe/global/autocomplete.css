@@ -155,7 +155,7 @@ treechildren.autocomplete-treebody::-moz-tree-row(selected) {
 }
 
 treechildren.autocomplete-treebody::-moz-tree-cell-text(selected) {
-  color: HighlightText !important;
+  color: #000000 !important;
 }
 
 /* thunderbird does not use the new autocomplete widget yet so we need a couple of the old styles rules for it */
