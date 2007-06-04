@@ -3214,22 +3214,22 @@ function GetOS()
   return gOS;
 }
 
-//function ConvertRGBColorIntoHEXColor(color)
-//{
-//  if ( /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/.test(color) ) {
-//    var r = Number(RegExp.$1).toString(16);
-//    if (r.length == 1) r = "0"+r;
-//    var g = Number(RegExp.$2).toString(16);
-//    if (g.length == 1) g = "0"+g;
-//    var b = Number(RegExp.$3).toString(16);
-//    if (b.length == 1) b = "0"+b;
-//    return "#"+r+g+b;
-//  }
-//  else
-//  {
-//    return color;
-//  }
-//}
+function ConvertRGBColorIntoHEXColor(color)
+{
+  if ( /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/.test(color) ) {
+    var r = Number(RegExp.$1).toString(16);
+    if (r.length == 1) r = "0"+r;
+    var g = Number(RegExp.$2).toString(16);
+    if (g.length == 1) g = "0"+g;
+    var b = Number(RegExp.$3).toString(16);
+    if (b.length == 1) b = "0"+b;
+    return "#"+r+g+b;
+  }
+  else
+  {
+    return color;
+  }
+}
 
 /************* CSS ***************/
 
