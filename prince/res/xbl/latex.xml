@@ -156,6 +156,36 @@
       </xbl:constructor>
     </xbl:implementation>
   </xbl:binding>
+  
+  <xbl:binding id="OTFont">
+	  <xbl:content>
+      <html:span anonid="fontspan"><xbl:children/></html:span>
+    </xbl:content>
+    <xbl:implementation>
+      <xbl:constructor>
+        <![CDATA[
+          var style = "font-family: " + this.getAttribute("fontname"); 
+          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontspan");
+          span.setAttribute("style", style);  
+          this.addEventListener("DOMAttrModified", attrChanged, false);
+          function attrChanged { this.fontname = this.getAttribute("fontname");}
+      ]]></xbl:constructor>
+      <xbl:property name="fontname">   
+        <xbl:getter><![CDATA[
+          return this.getAttribute("fontname");
+        ]]></xbl:getter>
+        <xbl:setter><![CDATA[
+          this.setAttribute("fontname", val);
+          var style = "font-family: " + val; 
+          dump("Setting font to " + style + "\n");
+          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontspan");
+          span.setAttribute("style", style);  
+        ]]></xbl:setter>
+      </xbl:property>
+    </xbl:implementation>
+  </xbl:binding>
+
+
 
 </xbl:bindings>
 

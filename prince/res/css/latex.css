@@ -18,6 +18,10 @@ invis {
   display: none;
 }
 
+OTFont {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#OTFont");
+}
+
 
 img {
   -moz-force-broken-image-icon: 1;
