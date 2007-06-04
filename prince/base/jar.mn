@@ -158,6 +158,8 @@ prince.jar:
   content/HorizontalSpaces.js        (content/dialogs/HorizontalSpaces.js) 
   content/VerticalSpaces.xul         (content/dialogs/VerticalSpaces.xul) 
   content/VerticalSpaces.js          (content/dialogs/VerticalSpaces.js) 
+  content/ExecuteJS.xul         (content/dialogs/ExecuteJS.xul) 
+  content/ExecuteJS.js          (content/dialogs/ExecuteJS.js) 
 
 en-US.jar:
 % locale prince en-US %locale/
@@ -242,7 +244,7 @@ classic.jar:
   skin/classic/editorModeToolbar.css     (skin/classic/editorModeToolbar.css)
   skin/classic/EditorDialog.css          (skin/classic/EditorDialog.css)
   skin/classic/typesetDocFormat.css      (skin/classic/typesetDocFormat.css)
-  skin/classic/Editor.css		 (skin/classic/editor.css)
+  skin/classic/editor.css		  		(skin/classic/editor.css)
   skin/classic/binomialsDialog.css       (skin/classic/binomialsDialog.css)
   skin/classic/bracketsDialog.css        (skin/classic/bracketsDialog.css)
   skin/classic/decorationsDialog.css     (skin/classic/decorationsDialog.css)
