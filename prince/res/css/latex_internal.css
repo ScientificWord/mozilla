@@ -127,3 +127,6 @@ span.vertspace {
   border-left: thin solid green;
 }
 
+span {
+  display: inline;
+}
