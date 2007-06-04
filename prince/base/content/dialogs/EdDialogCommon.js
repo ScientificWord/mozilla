@@ -51,7 +51,7 @@ const gPixel = 0;
 const gPercent = 1;
 
 const gMaxPixels  = 100000; // Used for image size, borders, spacing, and padding
-// Gecko code uses 1000 for maximum rowspan, colspan
+// Gecko code uses 1000 ffor maximum rowspan, colspan
 // Also, editing performance is really bad above this
 const gMaxRows    = 1000;
 const gMaxColumns = 1000;
