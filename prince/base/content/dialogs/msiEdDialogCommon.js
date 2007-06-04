@@ -319,54 +319,54 @@ function msiInitPixelOrPercentMenulist(elementForAtt, elementInDoc, attribute, m
 //  }
 //}
 
-//function getColor(ColorPickerID)
-//{
-//  var colorPicker = document.getElementById(ColorPickerID);
-//  var color;
-//  if (colorPicker)
-//  {
-//    // Extract color from colorPicker and assign to colorWell.
-//    color = colorPicker.getAttribute("color");
-//    if (color && color == "")
-//      return null;
-//    // Clear color so next if it's called again before
-//    //  color picker is actually used, we dedect the "don't set color" state
-//    colorPicker.setAttribute("color","");
-//  }
-//
-//  return color;
-//}
-//
-//function setColorWell(ColorWellID, color)
-//{
-//  var colorWell = document.getElementById(ColorWellID);
-//  if (colorWell)
-//  {
-//    if (!color || color == "")
-//    {
-//      // Don't set color (use default)
-//      // Trigger change to not show color swatch
-//      colorWell.setAttribute("default","true");
-//      // Style in CSS sets "background-color",
-//      //   but color won't clear unless we do this:
-//      colorWell.removeAttribute("style");
-//    }
-//    else
-//    {
-//      colorWell.removeAttribute("default");
-//      // Use setAttribute so colorwell can be a XUL element, such as button
-//      colorWell.setAttribute("style", "background-color:"+color);
-//    }
-//  }
-//}
-//
-//function getColorAndSetColorWell(ColorPickerID, ColorWellID)
-//{
-//  var color = getColor(ColorPickerID);
-//  setColorWell(ColorWellID, color);
-//  return color;
-//}
-//
+function getColor(ColorPickerID)
+{
+  var colorPicker = document.getElementById(ColorPickerID);
+  var color;
+  if (colorPicker)
+  {
+    // Extract color from colorPicker and assign to colorWell.
+    color = colorPicker.getAttribute("color");
+    if (color && color == "")
+      return null;
+    // Clear color so next if it's called again before
+    //  color picker is actually used, we dedect the "don't set color" state
+    colorPicker.setAttribute("color","");
+  }
+
+  return color;
+}
+
+function setColorWell(ColorWellID, color)
+{
+  var colorWell = document.getElementById(ColorWellID);
+  if (colorWell)
+  {
+    if (!color || color == "")
+    {
+      // Don't set color (use default)
+      // Trigger change to not show color swatch
+      colorWell.setAttribute("default","true");
+      // Style in CSS sets "background-color",
+      //   but color won't clear unless we do this:
+      colorWell.removeAttribute("style");
+    }
+    else
+    {
+      colorWell.removeAttribute("default");
+      // Use setAttribute so colorwell can be a XUL element, such as button
+      colorWell.setAttribute("style", "background-color:"+color);
+    }
+  }
+}
+
+function getColorAndSetColorWell(ColorPickerID, ColorWellID)
+{
+  var color = getColor(ColorPickerID);
+  setColorWell(ColorWellID, color);
+  return color;
+}
+
 //function InitMoreFewer()
 //{
 //  // Set SeeMore bool to the OPPOSITE of the current state,
@@ -625,29 +625,29 @@ function AppendHeadElement(element)
   }
 }
 
-//function SetWindowLocation()
-//{
-//  gLocation = document.getElementById("location");
-//  if (gLocation)
-//  {
-//    window.screenX = Math.max(0, Math.min(window.opener.screenX + Number(gLocation.getAttribute("offsetX")),
-//                                          screen.availWidth - window.outerWidth));
-//    window.screenY = Math.max(0, Math.min(window.opener.screenY + Number(gLocation.getAttribute("offsetY")),
-//                                          screen.availHeight - window.outerHeight));
-//  }
-//}
-//
-//function SaveWindowLocation()
-//{
-//  if (gLocation)
-//  {
-//    var newOffsetX = window.screenX - window.opener.screenX;
-//    var newOffsetY = window.screenY - window.opener.screenY;
-//    gLocation.setAttribute("offsetX", window.screenX - window.opener.screenX);
-//    gLocation.setAttribute("offsetY", window.screenY - window.opener.screenY);
-//  }
-//}
-//
+function SetWindowLocation()
+{
+  gLocation = document.getElementById("location");
+  if (gLocation)
+  {
+    window.screenX = Math.max(0, Math.min(window.opener.screenX + Number(gLocation.getAttribute("offsetX")),
+                                          screen.availWidth - window.outerWidth));
+    window.screenY = Math.max(0, Math.min(window.opener.screenY + Number(gLocation.getAttribute("offsetY")),
+                                          screen.availHeight - window.outerHeight));
+  }
+}
+
+function SaveWindowLocation()
+{
+  if (gLocation)
+  {
+    var newOffsetX = window.screenX - window.opener.screenX;
+    var newOffsetY = window.screenY - window.opener.screenY;
+    gLocation.setAttribute("offsetX", window.screenX - window.opener.screenX);
+    gLocation.setAttribute("offsetY", window.screenY - window.opener.screenY);
+  }
+}
+
 //function onCancel()
 //{
 //  SaveWindowLocation();
