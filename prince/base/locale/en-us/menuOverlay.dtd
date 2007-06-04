@@ -510,12 +510,12 @@
 <!ENTITY debugMenu.label "Debug">
 <!ENTITY newEditorTestPage.label "Prince with Test Page">
 <!ENTITY textEditorCmd.label "Plaintext Editor">
-<!ENTITY outputTextCmd.label "Output Text">
-<!ENTITY outputHTMLCmd.label "Output HTML">
+<!ENTITY outputTextCmd.label "Output plain text">
+<!ENTITY outputHTMLCmd.label "Output XHTML">
 <!ENTITY insertTextCmd.label "Insert Text">
-<!ENTITY testSelectionCmd.label "Test Selection">
+<!ENTITY testSelectionCmd.label "Dump Selection">
 <!ENTITY testTableLayoutCmd.label "Test Table Layout">
-<!ENTITY testDocumentCmd.label "Test Document">
+<!ENTITY testDocumentCmd.label "Dump Document">
 <!ENTITY showEmbeddedCmd.label "Show Embedded Objects">
 <!ENTITY dumpContentCmd.label "Dump Content Tree">
 <!ENTITY runUnitTestsCmd.label "Run Unit Tests">
@@ -558,7 +558,7 @@
 <!ENTITY textColorCaption.label "Text Color">
 <!ENTITY TextColorButton.tooltip "Choose color for text">
 <!ENTITY BackgroundColorButton.tooltip "Choose color for background">
-<!ENTITY throbber.tooltip "This is Prince">
+<!ENTITY throbber.tooltip "This is Scientfic WorkPlace">
 <!ENTITY HighlightColorButton.tooltip "Choose highlight color for text">
 
 <!ENTITY formToolbarCmd.label "Form">
