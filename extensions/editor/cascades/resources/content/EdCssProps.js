@@ -59,8 +59,8 @@ const kAsyncTimeout = 1500; // 1.5 second
 
 var objectsArray = null;
 var gTimerID;
+var gDialog = {};
 var gAsyncLoadingTimerID;
-
 // needed for commonCssProps.js
 var gHaveDocumentUrl = false;
 
@@ -69,16 +69,16 @@ var gInsertIndex = -1;
 // * dialog initialization code
 function Startup()
 {
-  // are we in a pre-1.3 Mozilla ?
-  if (typeof window.InitEditorShell == "function") {
-    // yes, so let's get an editorshell
-    if (!InitEditorShell())
-      return;
-  }
-  else if (typeof window.GetCurrentEditor != "function" || !GetCurrentEditor()) {
-    window.close();
-    return;
-  }
+//  // are we in a pre-1.3 Mozilla ?
+//  if (typeof window.InitEditorShell == "function") {
+//    // yes, so let's get an editorshell
+//    if (!InitEditorShell())
+//      return;
+//  }
+//  else if (typeof window.GetCurrentEditor != "function" || !GetCurrentEditor()) {
+//    window.close();
+//    return;
+//  }
 
   // gDialog is declared in EdDialogCommon.js
 
@@ -155,7 +155,7 @@ function Startup()
   gDialog.modified = false;
   gDialog.selectedIndex = -1;
 
-  gHaveDocumentUrl = GetDocumentBaseUrl();
+  gHaveDocumentUrl = msiGetDocumentBaseUrl(null);
 
   // Initialize all dialog widgets here,
   // e.g., get attributes from an element for property dialog
@@ -243,52 +243,75 @@ function CleanSheetsTree(sheetsTreeChildren)
 
 function AddSheetEntryToTree(sheetsTree, ownerNode)
 {
-  if (ownerNode.nodeType == Node.ELEMENT_NODE) {
+// <?xml-stylesheet href="resource://app/res/css/baselatex.css" type="text/css" ?>
+
+  if (ownerNode.nodeType == Node.ELEMENT_NODE || 
+    ownerNode.nodeType == Node.PROCESSING_INSTRUCTION_NODE) {
     var ownerTag  = ownerNode.nodeName.toLowerCase()
-    var relType   = ownerNode.getAttribute("rel");
-    if (relType) relType = relType.toLowerCase();
-    if (ownerTag == "style" ||
-        (ownerTag == "link" && relType.indexOf("stylesheet") != -1)) {
+    try {
+      var relType   = ownerNode.getAttribute("rel");
+      if (relType) relType = relType.toLowerCase();
+    } catch(e) {}
+    try {
+      if (ownerTag == "style" || ownerNode.nodeType == Node.PROCESSING_INSTRUCTION_NODE
+          && ownerTag =="xml-stylesheet" ||
+          (ownerTag == "link" && relType.indexOf("stylesheet") != -1)) {
 
-      var treeitem  = document.createElementNS(XUL_NS, "treeitem");
-      var treerow   = document.createElementNS(XUL_NS, "treerow");
-      var treecell  = document.createElementNS(XUL_NS, "treecell");
+        var treeitem  = document.createElementNS(XUL_NS, "treeitem");
+        var treerow   = document.createElementNS(XUL_NS, "treerow");
+        var treecell  = document.createElementNS(XUL_NS, "treecell");
 
-      // what kind of owner node do we have here ?
-      // a style element indicates an embedded stylesheet,
-      // while a link element indicates an external stylesheet;
-      // the case of an XML Processing Instruction is not handled, we
-      // are supposed to be in HTML 4
-      var external = false;
-      if (ownerTag == "style") {
-        treecell.setAttribute("label", "internal stylesheet");
-      }
-      else if (ownerTag == "link") {
-        // external stylesheet, let's present its URL to user
-        treecell.setAttribute("label", ownerNode.href);
-        external = true;
-        if ( /(\w*):.*/.test(ownerNode.href) ) {
-          if (RegExp.$1 == "file") {
+        // what kind of owner node do we have here ?
+        // a style element indicates an embedded stylesheet,
+        // while a link element or processing instruction indicates an external stylesheet;
+        var external = false;
+        if (ownerTag == "style") {
+          treecell.setAttribute("label", "internal stylesheet");
+        }
+        else if (ownerTag == "link") {
+          // external stylesheet, let's present its URL to user
+          treecell.setAttribute("label", ownerNode.href);
+          external = true;
+          if ( /(\w*):.*/.test(ownerNode.href) ) {
+            if (RegExp.$1 == "file") {
+              external = false;
+            }
+          }
+          else
             external = false;
+        }
+        else if (ownerTag == "xml-stylesheet") {
+          var stringarray = ownerNode.data.split(" ");
+          var strarr2;
+          var i;
+          for (i=0; i<stringarray.length; i++)
+          {
+            strarr2 = stringarray[i].split("=");
+            if (strarr2[0] == "href") {
+              treecell.setAttribute("label", strarr2[1]);
+              external = true;
+              break;
+            }
           }
         }
-        else
-          external = false;
-      }
-      // add a new entry to the tree
-      var o = newObject( treeitem, external, SHEET, ownerNode.sheet, false, 0 );
-      PushInObjectsArray(o);
+        // add a new entry to the tree
+        var o = newObject( treeitem, external, SHEET, ownerNode.sheet, false, 0 );
+        PushInObjectsArray(o);
       
-      treerow.appendChild(treecell);
-      treeitem.appendChild(treerow);
-      treeitem.setAttribute("container", "true");
-      // add enties to the tree for the rules in the current stylesheet
-      var rules = null;
-      if (ownerNode.sheet)
-        rules = ownerNode.sheet.cssRules;
-      AddRulesToTreechildren(treeitem, rules, external, 1);
+        treerow.appendChild(treecell);
+        treeitem.appendChild(treerow);
+        treeitem.setAttribute("container", "true");
+        // add enties to the tree for the rules in the current stylesheet
+        var rules = null;
+        if (ownerNode.sheet)
+          rules = ownerNode.sheet.cssRules;
+        AddRulesToTreechildren(treeitem, rules, external, 1);
 
-      sheetsTree.appendChild(treeitem);
+        sheetsTree.appendChild(treeitem);
+      }
+    }
+    catch (e) {
+      dump(e+"\n");
     }
   }
 }
@@ -315,19 +338,39 @@ function InitSheetsTree(sheetsTree)
   // Get them from the STYLE and LINK elements because of async sheet loading :
   // the LINK element is always here while the corresponding sheet might be
   // delayed by network
-  var headNode = GetHeadElement();
-  if ( headNode && headNode.hasChildNodes() ) {
-    var ssn = headNode.childNodes.length;
-    objectsArray = new Array();
-    if (ssn) {
-      var i;
-      gInsertIndex = -1;
-      for (i=0; i<ssn; i++) {
-        var ownerNode = headNode.childNodes[i];
-        AddSheetEntryToTree(sheetsTree, ownerNode); 
+  editor = getCurrentEditor();
+  var headNode = editor.document;
+  var ssn;
+  var i;
+  var ownerNode;
+  try {
+    if ( headNode && headNode.hasChildNodes() ) {
+      ssn = headNode.childNodes.length;
+      objectsArray = new Array();
+      if (ssn) {
+        gInsertIndex = -1;
+        for (i=0; i<ssn; i++) {
+          ownerNode = headNode.childNodes[i];
+          AddSheetEntryToTree(sheetsTree, ownerNode); 
+        }
       }
     }
   }
+  catch (e) { }
+  try {
+    headNode = GetHeadElement();
+    if ( headNode && headNode.hasChildNodes() ) {
+      ssn = headNode.childNodes.length;
+  //    objectsArray = new Array();
+      if (ssn) {
+        gInsertIndex = -1;
+        for (i=0; i<ssn; i++) {
+          ownerNode = headNode.childNodes[i];
+          AddSheetEntryToTree(sheetsTree, ownerNode); 
+        }
+      }
+    }
+  }catch (e) {}
 }
 
 // * create a new "object" corresponding to an entry in the tree
@@ -1687,10 +1730,9 @@ function onExportStylesheet() {
 }
 
 function getCurrentEditor() {
-  if (typeof window.InitEditorShell == "function")
-    return editorShell.editor;
-  else
-    return GetCurrentEditor();
+  var editorElement = window.opener.document.activeElement;
+  var editor = msiGetEditor(editorElement);
+  return editor;
 }
 
 function AddCSSLevelChoice(rows)
