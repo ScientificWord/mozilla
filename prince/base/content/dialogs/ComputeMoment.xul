@@ -3,7 +3,7 @@
 
 <!-- ?xml-stylesheet href="chrome://communicator/skin/" type="text/css"? -->
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/skin/Editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>

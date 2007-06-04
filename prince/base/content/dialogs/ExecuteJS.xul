@@ -11,14 +11,14 @@
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/fragmentname.dtd">
 
-<dialog title="&fragmentname.title;"
+<dialog title="&executejs.title;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" persist="height width"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();">
 
-  <script type="application/x-javascript" src="chrome://prince/content/fragmentname.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/ExecuteJS.js"/>
   
-  <label value = "&fragmentname.fragmentname;"/>
+  <label value = "&executejs.label;"/>
   <spacer flex="1"/>
-  <textbox id = "fragment-name"/>
+  <textbox id = "javascript-text"/>
 </dialog>
