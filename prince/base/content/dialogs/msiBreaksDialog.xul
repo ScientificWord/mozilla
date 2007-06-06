@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://communicator/skin/" type="text/css"? -->
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://prince/skin/operatorsDialog.css" type="text/css"? -->
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiBreaksDialog.dtd">
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/ -->
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiBreaksDialog.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiButtonGroup.js"/>
+
+  <keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset>
+
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+
+  <vbox>
+    <groupbox id="breakTypesGroupbox">
+      <caption label="&breakTypesGroupbox.label;"/>
+      <radiogroup id="breaksRadioGroup" oncommand="checkEnableControls();">
+			  <grid flex="1">
+				  <rows>
+					  <row/>
+					  <row/>
+					  <row/>
+					  <row/>
+				  </rows>
+				  <columns>
+				    <column>
+              <radio label="&allowBreak.label;" accesskey="&allowBreak.accessKey;" value="allowBreak" group="breaksRadioGroup"/>
+              <radio label="&discretionaryHyphen.label;" accesskey="&discretionaryHyphen.accessKey;" value="discretionaryHyphen" group="breaksRadioGroup"/>
+              <radio label="&noBreak.label;" accesskey="&noBreak.accessKey;" value="noBreak" group="breaksRadioGroup"/>
+              <radio label="&pageBreak.label;" accesskey="&pageBreak.accessKey;" value="pageBreak" group="breaksRadioGroup"/>
+				    </column>
+				    <column>
+              <radio label="&newPage.label;" accesskey="&newPage.accessKey;" value="newPage" group="breaksRadioGroup"/>
+              <radio label="&lineBreak.label;" accesskey="&lineBreak.accessKey;" value="lineBreak" group="breaksRadioGroup"/>
+              <radio label="&newLine.label;" accesskey="&newLine.accessKey;" value="newLine" group="breaksRadioGroup"/>
+              <radio label="&customNewLine.label;" accesskey="&customNewLine.accessKey;" value="customNewLine" group="breaksRadioGroup"/>
+					  </column>
+				  </columns>
+			  </grid>
+      </radiogroup>
+    </groupbox>
+  </vbox>
+  <spacer flex="1"/>
+  <vbox id="customControls" collapsed="true">
+    <hbox>
+      <groupbox id="additionalVertSpaceControls">
+        <caption label="&additionalVertSpaceControls.label;"/>
+        <hbox>
+          <label control="depthSizeTextbox" value="&depthSize.label;"	accesskey="&depthSize.accessKey;"/>
+          <textbox id="depthSizeTextbox" />
+        </hbox>
+        <hbox>
+          <label control="sizeUnitsbox" value="&sizeUnits.label;"	accesskey="&sizeUnits.accessKey;"/>
+          <menulist id="sizeUnitsbox"  oncommand="changeUnits(this);"  >
+             <menupopup>
+             </menupopup>
+           </menulist>
+          <!-- listbox id="fixedSizeUnitsbox" onselect="changeUnits(this);"/ -->
+        </hbox>
+      </groupbox>
+      <groupbox id="typesetGroupbox">
+        <caption label="&typesetGroup.label;"/>
+        <radiogroup id="typesetRadioGroup" orient="vertical">
+          <radio id="typesetDiscardAtLineEnd" label="&typesetDiscardAtLineEnd.label;" value="discardAtLineEnd" accesskey="&typesetDiscardAtLineEnd.accessKey;"/>
+          <radio id="typesetAlways" label="&typesetAlways.label;" value="always" accesskey="&typesetAlways.accessKey;"/>
+        </radiogroup>
+      </groupbox>
+    </hbox>
+  </vbox>
+</dialog>
