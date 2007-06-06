@@ -52,7 +52,9 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_insertBreakAll",msiInsertBreakAllCommand);
   commandTable.registerCommand("cmd_insertHorizontalSpaces", msiInsertHorizontalSpacesCommand);
   commandTable.registerCommand("cmd_insertVerticalSpaces", msiInsertVerticalSpacesCommand);
-  
+  commandTable.registerCommand("cmd_msiInsertRules", msiInsertRulesCommand);
+  commandTable.registerCommand("cmd_msiInsertBreaks", msiInsertBreaksCommand);
+                                              
 
   commandTable.registerCommand("cmd_table",              msiInsertOrEditTableCommand);
   commandTable.registerCommand("cmd_editTable",          msiEditTableCommand);
@@ -3889,9 +3891,130 @@ function msiInsertVerticalSpace(dialogData, editorElement)
     spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</vspace>";
   else
     spaceStr += "\"/>";
-  dump("In msiInsertHorizontalSpace, inserting space: [" + spaceStr + "].\n");
+  dump("In msiInsertVerticalSpace, inserting space: [" + spaceStr + "].\n");
 //  editor.insertHTMLWithContext(spaceStr, "", "", "", null, parentNode, insertPos, false);
   insertXMLAtCursor(editor, spaceStr, true, false);
+}
+
+
+//-----------------------------------------------------------------------------------
+var msiInsertRulesCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var rulesData = new Object();
+    try {
+      msiOpenModelessDialog("chrome://prince/content/msiRulesDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, "cmd_msiInsertRules", this, rulesData);
+    }
+    catch(ex) {
+      dump("*** Exception: couldn't open msiRules Dialog: " + ex + "\n");
+    }
+  }
+};
+
+function msiInsertRules(dialogData, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+//  var parentNode = editor.selection.anchorNode;
+//  var insertPos = editor.selection.anchorOffset;
+  var ruleStr = "<msirule ";
+  ruleStr += "lift=\"";
+  ruleStr += String(dialogData.lift.size) + dialogData.lift.units;
+  ruleStr += "\" width=\"";
+  ruleStr += String(dialogData.width.size) + dialogData.width.units;
+  ruleStr += "\" height=\"";
+  ruleStr += String(dialogData.height.size) + dialogData.height.units;
+  ruleStr += "\" color=\"" + dialogData.ruleColor;
+  ruleStr += "\"/>";
+  dump("In msiInsertRules, inserting rule: [" + ruleStr + "].\n");
+//  editor.insertHTMLWithContext(spaceStr, "", "", "", null, parentNode, insertPos, false);
+  insertXMLAtCursor(editor, ruleStr, true, false);
+}
+
+
+//-----------------------------------------------------------------------------------
+var msiInsertBreaksCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var breaksData = new Object();
+    try {
+      msiOpenModelessDialog("chrome://prince/content/msiBreaksDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, "cmd_msiInsertBreaks", this, breaksData);
+    }
+    catch(ex) {
+      dump("*** Exception: couldn't open msiBreaksDialog: " + ex + "\n");
+    }
+  }
+};
+
+function msiInsertBreaks(dialogData, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+//  var parentNode = editor.selection.anchorNode;
+//  var insertPos = editor.selection.anchorOffset;
+  var contentFromBreakType =
+  {
+    allowBreak:             "&#x200b;",  //this is the zero-width space
+    discretionaryHyphen:    "&#x00ad;",
+    noBreak:                "&#x2060;",
+    pageBreak:              "&#x000c;",  //formfeed?
+    newPage:                "&#x000c;",  //formfeed?
+    lineBreak:              "<br xmlns=\"" + xhtmlns + "\"></br>",
+    newLine:                "<br xmlns=\"" + xhtmlns + "\"></br>"
+  };
+  var alternateContentFromBreakType = 
+  {
+    allowBreak:             "|",
+    discretionaryHyphen:    "-",
+    noBreak:                "~",
+    pageBreak:              "&#x21b5;",  //formfeed?
+    newPage:                "&#x21b5;",  //formfeed?
+    lineBreak:              "&#x21b5;",
+    newLine:                "&#x21b5;"
+  };
+  var breakStr = "<msibreak type=\"";
+  if (dialogData.breakType == "customNewLine")
+  {
+    breakStr += "customNewLine\" dim=\"";
+    breakStr += String(dialogData.customBreakData.sizeData.size) + dialogData.customBreakData.sizeData.units;
+  }
+  else
+  {
+    breakStr += dialogData.breakType;
+  }
+
+  if (dialogData.breakType in alternateContentFromBreakType)
+    breakStr += "\" invisDisplay=\"" + alternateContentFromBreakType[dialogData.breakType];
+  if (dialogData.breakType in contentFromBreakType)
+    breakStr += "\">" + contentFromBreakType[dialogData.breakType] + "</msibreak>";
+//    breakStr += "\"/>" + contentFromBreakType[dialogData.breakType];
+  else
+    breakStr += "\"/>";
+
+  dump("In msiInsertBreaks, inserting break: [" + breakStr + "].\n");
+  insertXMLAtCursor(editor, breakStr, true, false);
 }
 
 
