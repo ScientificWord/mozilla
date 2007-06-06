@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://communicator/skin/" type="text/css"? -->
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://prince/skin/operatorsDialog.css" type="text/css"? -->
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiRulesDialog.dtd">
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/ -->
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiRulesDialog.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiButtonGroup.js"/>
+
+  <keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset>
+
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+
+  <vbox>
+    <groupbox id="sizeGroupbox">
+      <caption label="&sizeGroupbox.label;"/>
+      <vbox id="sizeControls">
+        <hbox>
+          <label control="liftSizeTextbox" value="&liftSize.label;"	accesskey="&liftSize.accessKey;"/>
+          <textbox id="liftSizeTextbox" />
+        </hbox>
+        <hbox>
+          <label control="widthSizeTextbox" value="&widthSize.label;"	accesskey="&widthSize.accessKey;"/>
+          <textbox id="widthSizeTextbox" />
+        </hbox>
+        <hbox>
+          <label control="heightSizeTextbox" value="&heightSize.label;"	accesskey="&heightSize.accessKey;"/>
+          <textbox id="heightSizeTextbox" />
+        </hbox>
+        <hbox>
+          <label control="sizeUnitsbox" value="&sizeUnits.label;"	accesskey="&sizeUnits.accessKey;"/>
+          <menulist id="sizeUnitsbox"  oncommand="changeUnits(this);"  >
+             <menupopup>
+             </menupopup>
+           </menulist>
+          <!-- listbox id="fixedSizeUnitsbox" onselect="changeUnits(this);"/ -->
+        </hbox>
+      </vbox>
+    </groupbox>
+  </vbox>
+  <vbox>
+    <spacer flex="1"/>
+    <label control="colorButton" value="&colorButton.label;"	accesskey="&colorButton.accessKey;"/>
+    <button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
+      <spacer id="colorWell" class="color-well"/>
+    </button>
+  </vbox>
+</dialog>

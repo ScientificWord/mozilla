@@ -119,12 +119,40 @@ sw|vertspace {
   white-space: pre;
 }
   
-span.vertspace {
+span.vertspace, span.breakvspace {
   display: block;
 }
 
 *[showinvis="true"] span.vertspace {
   border-left: thin solid green;
+}
+
+sw|rulebox {
+  display: -moz-inline-box;
+  /*vertical-align: baseline;*/
+  position: relative;
+  overflow: hidden;
+  white-space: pre;
+}
+
+span.msirule {
+  display: block;
+  overflow: hidden;
+}
+
+msibreak {
+  display: inline;
+  white-space: pre;
+}
+
+sw|breakobj {
+  display: inline;
+  white-space: pre;
+}
+
+*[showinvis="true"] sw|breakobj:before {
+  color: green;
+  content: attr(invisDisplay);
 }
 
 span {

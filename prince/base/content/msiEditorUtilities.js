@@ -3456,6 +3456,98 @@ function msiSetDefaultPrintOptions(theOptions)
   SetIntPref("printOptions", printFlags);
 }
 
+/**********************Units management functions************************/
+//The following are derived from Barry's typesetDocFormat.js. They are put here for general use involving units.
+
+function msiUnitsList(unitConversions) 
+{
+  this.mUnitFactors = unitConversions;
+
+  this.defaultUnit = function()
+  {
+    if ((this.mUnitfactors == null) || ("mm" in this.mUnitFactors))
+      return "mm";
+    return this.mUnitFactors[0];
+  };
+
+  this.convertUnits = function(invalue, inunit, outunit)
+  {
+    if (inunit == outunit) return invalue;
+    if (!(inunit in this.mUnitFactors) || !(outunit in this.mUnitFactors))
+    {
+      var dumpStr = "Bad units in msiUnitsList.convertUnits;";
+      if (!(inunit in this))
+        dumpStr += " in unit is [" + inunit + "];";
+      if (!(outunit in this))
+        dumpStr += " out unit is [" + outunit + "];";
+      dump( dumpStr + " returning.\n");
+      return invalue;
+    }
+    var outvalue = invalue*this.mUnitFactors[inunit];
+    outvalue /= this.mUnitFactors[outunit];
+    dump(invalue+inunit+" = "+outvalue+outunit+"\n");
+    return outvalue;
+  };
+
+  this.getDisplayString = function(theUnit)
+  {
+    if (!this.mStringBundle)
+    {
+      try {
+        var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(); 
+        strBundleService = strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
+        this.mStringBundle = strBundleService.createBundle("chrome://prince/locale/msiDialogs.properties"); 
+      } catch (ex) {dump("Problem in initializing string bundle in msiUnitsList.getDisplayString: exception is [" + ex + "].\n");}
+    }
+    if (this.mStringBundle)
+    {
+      var unitsPrefix = "units.";
+      try
+      {
+        return this.mStringBundle.GetStringFromName(unitsPrefix + theUnit);
+      } catch (e) {dump("Problem in msiUnitsList.getDisplayString for unit [" + theUnit + "]: exception is [" + e + "].\n");}
+    }
+    return null;
+  };
+
+  this.getNumberAndUnitFromString = function(valueStr)
+  {
+    var unitsStr = "";
+    for (var aUnit in this.mUnitFactors)
+    {
+      if (unitsStr.length > 0)
+        unitsStr += "|";
+      unitsStr += aUnit;
+    }
+    var ourRegExp = new RegExp("(\\-?\\d*\\.?\\d*).*(" + unitsStr + ")");
+    var matchArray = ourRegExp.exec(valueStr);
+    if (matchArray != null)
+    {
+      var retVal = new Object();
+      retVal.number = Number(matchArray[1]);
+      retVal.unit = matchArray[2];
+      return retVal;
+    }
+    return null;
+  };
+
+}
+
+//Following need to be added to. They're called "CSSUnitConversions", but are intended to handle any units showing up in
+//markup - particularly in XBL (see latex.xml!).
+var msiCSSUnitConversions =
+{
+  pt: .3514598,  //mm per pt
+  in: 25.4,  //mm per in
+  mm: 1, // mm per mm
+  cm: 10 // mm per cm
+};
+
+var msiCSSUnitsList = new msiUnitsList(msiCSSUnitConversions);
+msiCSSUnitsList.defaultUnit = function() {return "pt";}
+
+/**************************More general utilities**********************/
+
 // Clone simple JS objects
 //function Clone(obj) 
 //{ 
