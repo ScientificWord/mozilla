@@ -512,7 +512,7 @@ function enableControlsByID(theControls, bEnable)
 
 
 //The following are taken from Barry's typesetDocFormat.js. They are put here for general use by dialogs involving units.
-var msiUnitConversions =
+var msiDlgUnitConversions =
 {
   pt: .3514598,  //mm per pt
   in: 25.4,  //mm per in
@@ -520,104 +520,11 @@ var msiUnitConversions =
   cm: 10 // mm per cm
 };
 
-var msiUnitsList = 
-{
-  mUnitFactors: msiUnitConversions,
-
-  defaultUnit: function()
-  {
-    if ((this.mUnitfactors == null) || ("mm" in this.mUnitFactors))
-      return "mm";
-    return this.mUnitFactors[0];
-  },
-
-  convertUnits: function(invalue, inunit, outunit)
-  {
-    if (inunit == outunit) return invalue;
-    if (!(inunit in this.mUnitFactors) || !(outunit in this.mUnitFactors))
-    {
-      var dumpStr = "Bad units in msiUnitsList.convertUnits;";
-      if (!(inunit in this))
-        dumpStr += " in unit is [" + inunit + "];";
-      if (!(outunit in this))
-        dumpStr += " out unit is [" + outunit + "];";
-      dump( dumpStr + " returning.\n");
-      return invalue;
-    }
-    var outvalue = invalue*this.mUnitFactors[inunit];
-    outvalue /= this.mUnitFactors[outunit];
-    dump(invalue+inunit+" = "+outvalue+outunit+"\n");
-    return outvalue;
-  },
-
-  getDisplayString: function(theUnit)
-  {
-    if (!this.mStringBundle)
-    {
-      try {
-        var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(); 
-        strBundleService = strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
-        this.mStringBundle = strBundleService.createBundle("chrome://prince/locale/msiDialogs.properties"); 
-      } catch (ex) {dump("Problem in initializing string bundle in msiUnitsList.getDisplayString: exception is [" + ex + "].\n");}
-    }
-    if (this.mStringBundle)
-    {
-      var unitsPrefix = "units.";
-      try
-      {
-        return this.mStringBundle.GetStringFromName(unitsPrefix + theUnit);
-      } catch (e) {dump("Problem in msiUnitsList.getDisplayString for unit [" + theUnit + "]: exception is [" + e + "].\n");}
-    }
-    return null;
-  },
-
-  fillListBox: function(theListbox, initialUnit)
-  {
-    if (initialUnit == null)
-      initialUnit = "mm";
-    var selectedItem = null;
-    for (var theUnit in this.mUnitFactors)
-    {
-      var unitStr = this.getDisplayString(theUnit);
-      if (unitStr != null)
-      {
-        if (theUnit == initialUnit)
-          selectedItem = theListbox.appendItem(unitStr, theUnit);
-        else
-          theListbox.appendItem(unitStr, theUnit);
-      }
-    }
-    if (selectedItem != null)
-      theListbox.selectedItem = selectedItem;
-    return selectedItem;
-  },
-
-  getNumberAndUnitFromString: function(valueStr)
-  {
-    var unitsStr = "";
-    for (var aUnit in this.mUnitFactors)
-    {
-      if (unitsStr.length > 0)
-        unitsStr += "|";
-      unitsStr += aUnit;
-    }
-    var ourRegExp = new RegExp("(\\d*\\.?\\d*).*(" + unitsStr + ")");
-    var matchArray = ourRegExp.exec(valueStr);
-    if (matchArray != null)
-    {
-      var retVal = new Object();
-      retVal.number = Number(matchArray[1]);
-      retVal.unit = matchArray[2];
-      return retVal;
-    }
-    return null;
-  }
-
-};
+var msiDlgUnitsList = new msiUnitsList(msiDlgUnitConversions);
 
 function msiConvertUnits(invalue, inunit, outunit) // Converts invalue inunits into x outunits
 {
-  return msiUnitsList.convertUnits(invalue, inunit, outunit);
+  return msiDlgUnitsList.convertUnits(invalue, inunit, outunit);
 }
 
 function msiGetNumberValueFromNumberWithUnit(numberwithunit)
@@ -652,33 +559,58 @@ function msiUnitRound(size, whichUnit)
 }
 
 //Following constructs an object to manage units listboxes and associated textboxes.
-function msiUnitsListbox(listBox, controlGroup)
+function msiUnitsListbox(listBox, controlGroup, theUnitsList)
 {
   this.mListbox = listBox;
   this.mControlArray = controlGroup;
-  this.mCurrUnit = msiUnitsList.defaultUnit();
+  if (!theUnitsList)
+    theUnitsList = msiDlgUnitsList;
+  this.mUnitsList = theUnitsList;
+  this.mCurrUnit = theUnitsList.defaultUnit();
   this.setUp = function(initialUnit, valueArray)
   {
     this.mCurrUnit = initialUnit;
-    msiUnitsList.fillListBox(this.mListbox, initialUnit);
+    this.fillListBox(initialUnit);
     if ( (valueArray == null) || (this.mControlArray.length == null) || !("length" in valueArray) )
       return;
     for (var ix = 0; ix < valueArray.length; ++ix)
     {
       if (ix > this.mControlArray.length)
         return;
-      var numAndUnit = msiUnitsList.getNumberAndUnitFromString(valueArray[ix]);
+      var numAndUnit = this.mUnitsList.getNumberAndUnitFromString(valueArray[ix]);
       if (numAndUnit)
-        this.mControlArray[ix].value = msiUnitsList.convertUnits(numAndUnit.number, numAndUnit.unit, initialUnit);
+        this.mControlArray[ix].value = this.mUnitsList.convertUnits(numAndUnit.number, numAndUnit.unit, initialUnit);
       else
         this.mControlArray[ix].value = "0";
     }
   };
+
+  this.fillListBox = function(initialUnit)
+  {
+    if (initialUnit == null)
+      initialUnit = "mm";
+    var selectedItem = null;
+    for (var theUnit in this.mUnitsList.mUnitFactors)
+    {
+      var unitStr = this.mUnitsList.getDisplayString(theUnit);
+      if (unitStr != null)
+      {
+        if (theUnit == initialUnit)
+          selectedItem = this.mListbox.appendItem(unitStr, theUnit);
+        else
+          this.mListbox.appendItem(unitStr, theUnit);
+      }
+    }
+    if (selectedItem != null)
+      this.mListbox.selectedItem = selectedItem;
+    return selectedItem;
+  };
+
   this.changeUnits = function(newUnit)
   {
     for (var ix = 0; ix < this.mControlArray.length; ++ix)
     {
-      var newNumber = msiUnitsList.convertUnits(this.mControlArray[ix].value, this.mCurrUnit, newUnit);
+      var newNumber = this.mUnitsList.convertUnits(this.mControlArray[ix].value, this.mCurrUnit, newUnit);
       this.mControlArray[ix].value = newNumber;
     }
     this.mCurrUnit = newUnit;

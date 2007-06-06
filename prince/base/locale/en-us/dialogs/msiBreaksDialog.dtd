@@ -1,0 +1,37 @@
+<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Breaks">
+
+<!ENTITY breakTypesGroupbox.label "Break types">
+
+<!ENTITY allowBreak.label "Allowbreak">
+<!ENTITY allowBreak.accessKey "A">
+<!ENTITY discretionaryHyphen.label "Discretionary hyphen">
+<!ENTITY discretionaryHyphen.accessKey "h">
+<!ENTITY noBreak.label "No break">
+<!ENTITY noBreak.accessKey "b">
+<!ENTITY pageBreak.label "Pagebreak">
+<!ENTITY pageBreak.accessKey "g">
+<!ENTITY newPage.label "Newpage">
+<!ENTITY newPage.accessKey "p">
+<!ENTITY lineBreak.label "Linebreak">
+<!ENTITY lineBreak.accessKey "k">
+<!ENTITY newLine.label "Newline">
+<!ENTITY newLine.accessKey "N">
+<!ENTITY customNewLine.label "Custom newline">
+<!ENTITY customNewLine.accessKey "C">
+
+
+<!ENTITY additionalVertSpaceControls.label "Additional vertical space">
+<!ENTITY depthSize.label "Depth">
+<!ENTITY depthSize.accessKey "D">
+<!ENTITY sizeUnits.label "Units">
+<!ENTITY sizeUnits.accessKey "U">
+
+<!ENTITY typesetGroup.label "Typeset">
+<!ENTITY typesetDiscardAtLineEnd.label "Discard at line end">
+<!ENTITY typesetDiscardAtLineEnd.accessKey "e">
+<!ENTITY typesetAlways.label "Always">
+<!ENTITY typesetAlways.accessKey "A">
+
+<!-- <!ENTITY .tooltip "">  -->
