@@ -1,0 +1,19 @@
+<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Rules">
+
+<!ENTITY sizeGroupbox.label "Size and position">
+
+<!ENTITY liftSize.label "Lift">
+<!ENTITY liftSize.accessKey "L">
+<!ENTITY widthSize.label "Width">
+<!ENTITY widthSize.accessKey "W">
+<!ENTITY heightSize.label "Height">
+<!ENTITY heightSize.accessKey "H">
+<!ENTITY sizeUnits.label "Units">
+<!ENTITY sizeUnits.accessKey "U">
+
+<!ENTITY colorButton.label "Color">
+<!ENTITY colorButton.accessKey "C">
+
+<!-- <!ENTITY .tooltip "">  -->

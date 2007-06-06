@@ -1,3 +1,5 @@
+@namespace mml url("http://www.w3.org/1998/Math/MathML");
+
 latex {
   -moz-binding: url("resource://app/res/xbl/latex.xml#latex");
 }
@@ -12,6 +14,18 @@ hspace {
 
 vspace {
   -moz-binding: url("resource://app/res/xbl/latex.xml#vspace");
+}
+
+msirule {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#msirule");
+}
+
+msibreak {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#msibreak");
+}
+
+mml|math msibreak {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#mathmsibreak");
 }
 
 invis {

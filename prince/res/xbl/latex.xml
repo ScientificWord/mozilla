@@ -4,7 +4,8 @@
 	xmlns:xbl="http://www.mozilla.org/xbl" 
   xmlns:sw="http://www.sciword.com/namespaces/sciword"
   xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  xmlns:html="http://www.w3.org/1999/xhtml" >
+  xmlns:html="http://www.w3.org/1999/xhtml" 
+  xmlns:mml="http://www.w3.org/1998/Math/MathML" >
 
 
 	<xbl:binding id="latex">
@@ -186,6 +187,261 @@
   </xbl:binding>
 
 
+
+	<xbl:binding id="msirule">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <sw:invis><xbl:children/></sw:invis>
+      <sw:rulebox xbl:inherits="lift,width,height,color"/>
+    </xbl:content>
+    <xbl:implementation>
+      <xbl:method name="getNumberAndUnitFromString">
+        <xbl:parameter name="theString"/>
+        <xbl:body>
+          <![CDATA[
+            var matchArray = this.ourRegExp.exec(theString);
+            if (matchArray != null)
+            {
+              var retVal = new Object();
+              retVal.number = Number(matchArray[1]);
+              retVal.unit = matchArray[2];
+              return retVal;
+            }
+            return null;
+          ]]>
+        </xbl:body>
+      </xbl:method>
+
+      <xbl:method name="convertUnits">
+        <xbl:parameter name="invalue"/>
+        <xbl:parameter name="inunit"/>
+        <xbl:parameter name="outunit"/>
+        <xbl:body>
+          <![CDATA[
+            if (inunit == outunit) return invalue;
+            if (!(inunit in this.mUnitFactors) || !(outunit in this.mUnitFactors))
+            {
+              var dumpStr = "Bad units in msiUnitsList.convertUnits;";
+              if (!(inunit in this))
+                dumpStr += " in unit is [" + inunit + "];";
+              if (!(outunit in this))
+                dumpStr += " out unit is [" + outunit + "];";
+              dump( dumpStr + " returning.\n");
+              return invalue;
+            }
+            var outvalue = invalue*this.mUnitFactors[inunit];
+            outvalue /= this.mUnitFactors[outunit];
+            return outvalue;
+          ]]>
+        </xbl:body>
+      </xbl:method>
+
+      <xbl:constructor>
+        <![CDATA[
+        this.mUnitFactors = 
+        {
+          pt: .3514598,  //mm per pt
+          in: 25.4,  //mm per in
+          mm: 1, // mm per mm
+          cm: 10 // mm per cm
+        };
+        var unitsStr = "";
+        for (var aUnit in this.mUnitFactors)
+        {
+          if (unitsStr.length > 0)
+            unitsStr += "|";
+          unitsStr += aUnit;
+        }
+        this.ourRegExp = new RegExp("(\\-?\\d*\\.?\\d*).*(" + unitsStr + ")");
+        var theWidth = this.getAttribute("width");
+        var theHeight = this.getAttribute("height");
+        var theLift = this.getAttribute("lift");
+        var theColor = this.getAttribute("color");
+        var styleAttr = "";
+        if (theWidth != null && theWidth.length > 0)
+          styleAttr = "width: " + theWidth + ";";
+        var putColorOn = "background-color: ";
+        if (theLift != null && theLift.length > 0)
+        {
+          var theUnitsList = window.msiCSSUnitsList;
+          var liftWithUnits = this.getNumberAndUnitFromString(theLift);
+          var htWithUnits = this.getNumberAndUnitFromString(theHeight);
+          if (htWithUnits.unit != liftWithUnits.unit)
+          {
+            htWithUnits.number = this.convertUnits(htWithUnits.number, htWithUnits.unit, liftWithUnits.unit);
+            htWithUnits.unit = liftWithUnits.unit;
+          }
+          if (liftWithUnits.number < 0)
+          {
+            htWithUnits.number += liftWithUnits.number;
+            liftWithUnits.number = -liftWithUnits.number;
+            if (htWithUnits.number > 0)
+              styleAttr += "padding-bottom: " + liftWithUnits.number + liftWithUnits.unit + "; line-height: " + htWithUnits.number + htWithUnits.unit + ";";
+            else
+            {
+              if (htWithUnits.number < 0)
+                styleAttr += "padding-bottom: " + (-htWithUnits.number) + liftWithUnits.unit + "; "
+              styleAttr += "border-bottom-style: solid; border-bottom-width: " + theHeight + "; ";
+              putColorOn = "border-bottom-color: ";
+            }
+          }
+          else if (liftWithUnits.number > 0)
+          {
+            htWithUnits.number += liftWithUnits.number;
+            liftWithUnits.number = -liftWithUnits.number;
+            styleAttr += "margin-bottom: " + liftWithUnits.number + liftWithUnits.unit + "; line-height: " + htWithUnits.number + htWithUnits.unit + " ;";
+          }
+          else
+            styleAttr += "line-height: " + theHeight + ";";
+          // styleAttr += "vertical-align: " + theLift + ";";
+        } else if (theHeight != null && theHeight.length > 0)
+          styleAttr += "line-height: " + theHeight + ";";
+        var parentStyleAttr = "height: " + theHeight + ";";
+        if (theColor != null && theColor.length > 0)
+          styleAttr += putColorOn + theColor + ";";
+        if (styleAttr.length > 0)
+        {
+//          styleAttr += "font-size: " + theHeight + ";";
+          var spaceObj = document.getAnonymousNodes(this)[1];
+          var spanObj = document.createElement("span");
+          spanObj.setAttribute("class", "msirule");
+          if (styleAttr.length > 0)
+            spanObj.setAttribute("style", styleAttr);
+          dump("Creating span.msirule with style attribute [" + styleAttr + "].\n");
+          var textObj = document.createTextNode("");
+          spanObj.appendChild(textObj);
+          spaceObj.appendChild(spanObj);
+//          if (parentStyleAttr.length > 0)
+//            spaceObj.setAttribute("style", parentStyleAttr);
+        }
+        else
+          dump("XBL msirule content doesn't have dimensions or color attribute!\n");
+        ]]>
+      </xbl:constructor>
+    </xbl:implementation>
+
+  </xbl:binding>
+
+	<xbl:binding id="msibreak">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <sw:breakobj xbl:inherits="invisDisplay,dim" />
+      <xbl:children/>
+    </xbl:content>
+    <xbl:implementation>
+      <xbl:constructor>
+        <![CDATA[
+        var theDim = this.getAttribute("dim");
+        var styleAttr = "";
+        if (theDim != null && theDim.length > 0)
+          styleAttr = "padding-bottom: " + theDim + ";";
+        var displayForm = this.getAttribute("invisDisplay");
+        var nNumAnonObjs = document.getAnonymousNodes(this).length;
+        var breakObj = document.getAnonymousNodes(this)[0];
+        var firstChild = null;
+        if (breakObj.childNodes.length > 0)
+          firstChild = breakObj.childNodes[0];
+        if (styleAttr.length > 0)
+        {
+          var spanObj = document.createElement("span");
+          spanObj.setAttribute("class", "breakvspace");
+          spanObj.setAttribute("style", styleAttr);
+          var textObj = document.createTextNode(" ");
+          spanObj.appendChild(textObj);
+          if (firstChild != null)
+            breakObj.insertBefore(spanObj, firstChild);
+          else
+            breakObj.appendChild(spanObj);
+        }
+//        if (displayForm != null)
+//        {
+//          var dumpStr = "In displayForm clause; num anonymous nodes is [" + nNumAnonObjs + "], breakObj is [" + breakObj.nodeName + "], firstChild is [";
+//          if (firstChild == null)
+//            dumpStr += "null];";
+//          else
+//            dumpStr += firstChild.nodeName + "];";
+//          var displayObj = document.createElement("span");
+//          displayObj.setAttribute("class", "breakdisplay");
+//          var textObj = document.createTextNode(displayForm);
+//          displayObj.appendChild(textObj);
+//          if (firstChild != null)
+//            breakObj.insertBefore(displayObj, firstChild);
+//          else
+//            breakObj.appendChild(displayObj);
+//          if (breakObj.childNodes.length ==0)
+//            dumpStr += " after insertion breakObj has no children.\n";
+//          else
+//            dumpStr += " after insertion breakObj has a child [" + breakObj.childNodes[0].nodeName + "].\n";
+//          dump(dumpStr);
+//        }
+        ]]>
+      </xbl:constructor>
+    </xbl:implementation>
+  </xbl:binding>
+
+	<xbl:binding id="mathmsibreak">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <sw:breakobj xbl:inherits="invisDisplay,dim" />
+      <xbl:children />
+    </xbl:content>
+    <xbl:implementation>
+      <xbl:constructor>
+        <![CDATA[
+        var theDim = this.getAttribute("dim");
+        var breakObj = document.getAnonymousNodes(this)[0];
+//        var mathObj = null;
+//        var mathObj = document.getAnonymousNodes(this)[0];
+        if (theDim != null && theDim.length > 0)
+        {
+          var mmlNode = document.createElementNS("mml", "mspace");
+          mmlNode.setAttribute("depth", theDim);
+          breakObj.appendChild(mmlNode);
+          //mathObj.setAttribute("depth", theDim);
+          var mmlBreak = document.createElementNS("mml", "mspace");
+          mmlBreak.setAttribute("linebreak", "newline");
+          //mathObj.parentNode.appendChild(mmlBreak);
+          breakObj.appendChild(mmlBreak);
+        }
+        else //just a plain break
+        {
+          var theType = this.getAttribute("type");
+          var mmlTranslations = 
+          {
+            allowBreak: "goodbreak",
+            noBreak:    "nobreak",
+            lineBreak:  "newline",
+            newLine:    "newline",
+            pageBreak:  "newline"
+          };
+          if (theType in mmlTranslations)
+          {
+            var mmlBreak = document.createElementNS("mml", "mspace");
+            mmlBreak.setAttribute("linebreak", mmlTranslations[theType]);
+            //mathObj.setAttribute("linebreak", mmlTranslations[theType]);
+            breakObj.appendChild(mmlBreak);
+          }
+          else
+          {
+            switch(theType)
+            {
+              case "discretionaryHyphen":
+              break;
+              case "newPage":
+              break;
+            }
+          }
+        }
+        ]]>
+      </xbl:constructor>
+    </xbl:implementation>
+  </xbl:binding>
 
 </xbl:bindings>
 
