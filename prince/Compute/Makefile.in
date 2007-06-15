@@ -47,10 +47,6 @@ MuPADlib	:= \
 			$(wildcard $(srcdir)/MuPAD/lib/xmlprint.*) \
 			$(NULL)
 
-VCamFiles  := \
-			$(wildcard $(srcdir)/vcam/win32/*.dll) \
-			$(wildcard $(srcdir)/vcam/win32/VCamNG.*) \
-			$(NULL)
 endif
 
 ifeq ($(OS_ARCH),WINNT)
@@ -79,5 +75,3 @@ endif
 export:: $(SupportFiles) $(GMR_FILES)
 	$(INSTALL) $(SupportFiles) $(GMR_FILES) $(FINAL_TARGET)
 
-export:: $(VCamFiles)
-	$(INSTALL) $(VCamFiles) $(FINAL_TARGET)/vcam
