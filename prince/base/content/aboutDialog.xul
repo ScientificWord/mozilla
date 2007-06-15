@@ -46,6 +46,6 @@
     
     <!-- Localizable strings (from .dtd) -->
     <strings style="display:none;">
-      <string id="brandShortName">Prince</string>
+      <string id="brandShortName">Scientific WorkPlace</string>
     </strings>
 </dialog>
