@@ -896,6 +896,7 @@ function EditorStartupForEditorElement(editorElement)
     } 
     if (isShell(docname))
     {
+      editorElement.isShellFile = true;
       shellfile.initWithPath(docname);
       // copy the shell to the default document area
       try
@@ -1198,7 +1199,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
       return true;
     if (!editor.documentModified && !msiIsHTMLSourceChanged(editorElement))
     {
-      if (command == "cmd_close")
+      if (command == "cmd_close" && ("isShellFile" in editorElement) && editorElement.isShellFile)
         doRevert(editorElement, true);
       return true;
     }
@@ -1300,7 +1301,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   if (result == 2) 
   {
     // "Don't Save"
-    if (command == "cmd_close")
+    if (command == "cmd_close" && ("isShellFile" in editorElement) && editorElement.isShellFile)
     {
       var del = true;
       doRevert(editorElement, del);
