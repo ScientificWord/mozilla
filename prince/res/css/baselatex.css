@@ -76,6 +76,7 @@ texb, latexstyleb {
 }
 
 maketitle { display:block;
+  min-height: 10pt;
 }
 
 maketitle:before { content: "Title page goes here";
