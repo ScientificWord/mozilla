@@ -343,6 +343,7 @@
 				<tag nm="sw:xref"><description>An instance of an "other" tag</description></tag>
         <tag nm="sw:latex"><description>LaTeX logo</description></tag>
         <tag nm="sw:tex"><description>TeX logo</description></tag>
+        <tag nm="sw:maketitle"><description>Make title here</description></tag>
 			</tags>
 		</tagclass>
 	</tagclasses>
