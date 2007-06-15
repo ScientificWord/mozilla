@@ -93,7 +93,7 @@
 
 	  </hbox>
  	  <hbox>
-        <html:object type="application/x-mupad-graphics+gzip"
+        <html:object type="application/x-mupad-graphics+xml"
              id="plot" width="300" height="400">
         </html:object>
 	 </hbox>
