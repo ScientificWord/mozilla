@@ -115,7 +115,7 @@ pref("prince.graph.YAxisLabel", "");
 pref("prince.graph.ZAxisLabel", "");
 pref("prince.graph.Dimension",  "2");
 pref("prince.graph.ZAxisLabel", "");
-pref("prince.graph.DefaultFileType", "xvz");
+pref("prince.graph.DefaultFileType", "xvc");
 pref("prince.plot.XMax", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>6</mn></mrow></math>"); 
 pref("prince.plot.XMin", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mo form=\"prefix\">-</mo><mn>6</mn></mrow></math>");
 pref("prince.plot.YMax", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>6</mn></mrow></math>");
