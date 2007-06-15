@@ -295,6 +295,12 @@ nsXREDirProvider::GetFile(const char* aProperty, PRBool* aPersistent,
   else if (!strcmp(aProperty, "resource:app")) {
     rv = GetAppDir()->Clone(getter_AddRefs(file));
   }
+  
+  else if (!strcmp(aProperty, "resource:docdir")) {
+    *aPersistent = PR_FALSE;
+    printf("Looking for resource:docdir\n");
+    rv = NS_OK;
+  }
 
   else if (!strcmp(aProperty, NS_APP_PROFILE_DIR_STARTUP) && mProfileDir) {
     return mProfileDir->Clone(aFile);
