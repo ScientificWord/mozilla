@@ -696,8 +696,22 @@ nsObjectLoadingContent::LoadObject(const nsAString& aURI,
   GetObjectBaseURI(thisContent, getter_AddRefs(baseURI));
 
   nsCOMPtr<nsIURI> uri;
+  nsAutoString theURI;
+  if (doc) { 
+    nsIURI *documentURI = doc->GetDocumentURI();
+    nsCAutoString str;
+    nsCAutoString docSpec;
+    nsCAutoString spec = NS_LossyConvertUTF16toASCII(aURI);
+    documentURI->GetSpec(docSpec);
+    NS_MakeAbsoluteURIWithDocPath(str, spec, docSpec); 
+    if (!(str.Equals(spec))) 
+    {
+      theURI.Assign(NS_ConvertUTF8toUTF16(str));
+    }
+    else theURI = aURI;
+  } else theURI = aURI; 
   nsContentUtils::NewURIWithDocumentCharset(getter_AddRefs(uri),
-                                            aURI, doc,
+                                            theURI, doc,
                                             baseURI);
   // If URI creation failed, fallback immediately - this only happens for
   // malformed URIs

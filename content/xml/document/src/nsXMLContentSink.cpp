@@ -1151,7 +1151,16 @@ nsXMLContentSink::HandleDoctypeDecl(const nsAString & aSubset,
     // bug 124570 - we only expect additional agent sheets for now -- ignore
     // exit codes, error are not fatal here, just that the stylesheet won't apply
     nsCOMPtr<nsIURI> uri(do_QueryInterface(aCatalogData));
-    if (uri) {
+    if (uri){
+      if (mDocument) { 
+        nsCAutoString str;
+        nsCAutoString spec;
+        nsCAutoString docSpec;
+        uri->GetSpec(spec);
+        (mDocument->GetDocumentURI())->GetSpec(docSpec);
+        NS_MakeAbsoluteURIWithDocPath(str, spec, docSpec); 
+        if (!(str.Equals(spec))) uri->SetSpec(str);
+      }  
       nsCOMPtr<nsICSSStyleSheet> sheet;
       mCSSLoader->LoadSheetSync(uri, PR_TRUE, getter_AddRefs(sheet));
       

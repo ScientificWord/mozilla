@@ -89,6 +89,9 @@
 #include "nsServiceManagerUtils.h"
 #include "nsINestedURI.h"
 #include "nsIMutable.h"
+#ifdef MOZILLA_INTERNAL_API
+#include "nsAString.h"
+#endif
 
 // Helper, to simplify getting the I/O service.
 inline const nsGetServiceByContractIDWithError
@@ -247,6 +250,41 @@ NS_MakeAbsoluteURI(nsACString       &result,
         rv = baseURI->Resolve(spec, result);
     return rv;
 }
+#ifdef MOZILLA_INTERNAL_API
+inline nsresult
+NS_MakeAbsoluteURIWithDocPath(nsACString       &result,
+                              const nsACString &spec, 
+                              nsACString        &docPath )
+{
+    nsresult rv = NS_OK;
+    PRUint32 docPathLen = docPath.Length();
+    nsCAutoString Spec;
+    char * pPattern = "resource://docdir";
+    PRUint32 patlen = strlen(pPattern);
+    Spec.Assign(spec);
+    Spec.Truncate(patlen);
+    if (Spec.LowerCaseEqualsASCII(pPattern, patlen))
+    {
+       nsACString::const_iterator itBegin;
+       docPath.BeginReading(itBegin);
+       nsACString::const_iterator itEnd, itSave;
+       docPath.EndReading(itEnd);
+       itSave = itEnd;
+       ToLowerCase(spec, Spec);
+       if (CaseInsensitiveFindInReadable(NS_LITERAL_CSTRING(".sci"),itBegin,itEnd)
+         && itEnd == itSave)
+       {
+         result.Assign(docPath);
+         result.Truncate(docPath.Length() - 4);
+         result.AppendASCII("_files");
+         result.Append(Spec.BeginReading()+ strlen(pPattern));
+         return rv;
+       }
+    }    
+    result.Assign(spec); 
+    return rv;
+}
+#endif
 
 inline nsresult
 NS_MakeAbsoluteURI(char        **result,
