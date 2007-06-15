@@ -27,6 +27,9 @@
 #include "MuAnalyzer.h"
 #include "../Grammar.h"
 #include "nsStringAPI.h"
+#include "nsCOMPtr.h"
+#include "nsILocalFile.h"
+#include "nsComponentManagerUtils.h"
 
 MuPADEngine *mupd_eng = NULL;
 
@@ -151,7 +154,7 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
   SEMANTICS_NODE *s_tree = NULL;
   SEMANTICS_NODE *root = mr->GetSemanticsTree();
   curr_msr = msr;
-  const char *plotfilename = NULL;
+  const char *plotfilename  = NULL;
 
   // We need the ID of the client we're serving for possible name mangling
   client_ID = msr->GetClientHandle();
@@ -166,7 +169,8 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
   if (!cmd_ID) {
     TCI_ASSERT(0);
     return s_tree;
-  }
+  }                                
+
   // The math content of engine strings depend on the command
   //  being processed.  We'll need compound dBase records
   //  or more dBase sections to support this.
@@ -238,7 +242,28 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
         // let plotqueries be handled by the standard code
         if ((context_cmdtype == CC_PLOTFUNC) && (context_cmdtemplatetype != CT_PLOTQUERY)) {
           // convert VCam to filename
-          bool plotOK = RenderPlot(zeng_output, plotfilename);
+          // BBM. The file is already a vcam file. We will simply copy it -- a better longterm 
+          //   solution is for the engine to save it in the right place with the right name 
+          // copy the file zeng_output to the file plotfilename
+          nsCOMPtr<nsILocalFile> engOutput, plotfile;
+          nsCOMPtr<nsIFile> destdirectory;
+          nsAutoString strLeafName;
+          nsresult rv;
+          bool plotOK;
+          engOutput = do_CreateInstance("@mozilla.org/file/local;1", &rv);
+          plotOK = (rv == NS_OK);
+          if (plotOK)
+          {
+              plotfile = do_CreateInstance("@mozilla.org/file/local;1", &rv);
+              rv = engOutput->InitWithNativePath( nsDependentCString(zeng_output) );
+              rv = plotfile->InitWithNativePath( nsDependentCString(plotfilename) );
+              plotfile->GetParent( getter_AddRefs(destdirectory));
+              plotfile->GetLeafName( strLeafName );
+              plotfile->Remove(PR_FALSE);
+              rv = engOutput->CopyTo( destdirectory, strLeafName );
+              plotOK = (rv == NS_OK);
+          }   
+          // plotOK = RenderPlot(zeng_output, plotfilename);
           mr->PutResultCode(plotOK ? CR_success : CR_failure);
 
         } else if (cmd_ID == CCID_Define ||
