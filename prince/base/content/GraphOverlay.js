@@ -99,9 +99,8 @@ function PlotAttrName (str, num) {
 
 
 // call the compute engine to create an image
-function GraphComputeGraph (editorElement) {
+function GraphComputeGraph (editorElement, filename) {
 //  dump("Entering GraphComputeGraph.\n");
-  var filename = this.getGraphAttribute ("ImageFile");
 //  var dumpStr = "In GraphComputeGraph, about to put on ComputeCursor; editorElement is [";
 //  if (editorElement)
 //    dumpStr += editorElement.id;
@@ -114,6 +113,9 @@ function GraphComputeGraph (editorElement) {
   if (this.errStr == "") {
     try {
       var topWin = msiGetTopLevelWindow();
+      // the code in plotfuncCmd is simpler if we force a file with filename
+//      var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+//      outputfile.initWithPath(filename);
       topWin.msiComputeLogger.Sent4 ("plotfuncCmd", filename, str, "");
       //msiComputeLogger.Sent4 ("plotfuncCmd", filename, "", "");
       var out=GetCurrentEngine().plotfuncCmd (str);
@@ -270,9 +272,17 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
     img.setAttribute("msigraph","true");
     img.setAttribute("width","300");
     img.setAttribute("height","400");
+  } else if (filetype == "xvc") {
+    img    = document.createElementNS(htmlns,"object");
+    img.setAttribute("type","application/x-mupad-graphics+xml"); 
+    img.setAttribute("data", this.getGraphAttribute("ImageFile"));
+    img.setAttribute("alt", "Generated Plot");
+    img.setAttribute("msigraph","true");
+    img.setAttribute("width","300");
+    img.setAttribute("height","400");
   } else {
     img    = document.createElementNS(htmlns,"img");
-    img.setAttribute("src", "file://"+this.getGraphAttribute("ImageFile"));
+    img.setAttribute("src", this.getGraphAttribute("ImageFile"));
     img.setAttribute("alt", "Generated Plot");
     img.setAttribute("msigraph","true");
   }  
@@ -509,41 +519,18 @@ function addGraphElementToDocument(DOMGraphNode, siblingNode, editorElement)
 /**----------------------------------------------------------------------------------*/
 // Arguments: <name>: first characters of returned name
 //            <ext>:  file extension
-// Returns <path><name><date>.<ext>
+//            (out):  currdir -- an nsIFile for the current document directory
+//            (out):  docdir -- an nsIFile containing the document aux files
+// Returns <name><date>.<ext>
 //  where <path>, relative to the current document directory, is <docdir_files>/plots/
 //  There must be a current document directory
 //  <date> is the system time from the Date method.
 
-function createUniqueFileName(name, ext, editorElement) {
-  var pathname = "";
-  var urlstring = msiGetEditorURL(editorElement);
-  // var isBlank = (IsUrlAboutBlank(urlstring) || (urlstring == ""));
-
-  // if no current doc path, get the mozilla tmp directory
-//  if (isBlank) {
-//    var dp = Components.classes["@mozilla.org/file/directory_service;1"];
-//    dp = dp.getService(Components.interfaces.nsIDirectoryService);
-//    dp = dp.QueryInterface(Components.interfaces.nsIProperties);
-//    pathname = dp.get("TmpD", Components.interfaces.nsIFile);
-//    pathname = pathname.path + "\/";
-//  } else {   // if there's a current dir, use it
-  pathname = GetFilename(urlstring);
-  var lastDot = pathname.lastIndexOf(".");
-  if (lastDot != -1) {
-    pathname = pathname.slice(0, lastDot);
-  }
-  pathname = pathname + "_files/plots/";
-//  }
-
-//  if (pathname == "") {
-//    // should do something better here: file select dialog?
-//    AlertWithTitle(GetComputeString("Error.title"), GetComputeString("Error.notempdir"));
-//    return "";
-//  } else {
+function createUniqueFileName(name, ext) {
+// now gin up a unique name  
   var newdate = new Date();
   var fn = name + newdate.getTime() + "." + ext;
-  return pathname + fn;
-//  }
+  return fn;
 }
 
 
@@ -624,19 +611,46 @@ function insertGraph (siblingElement, graph, editorElement) {
 //  var editorElement = null;
   if (!editorElement || editorElement == null)
     editorElement = findEditorElementForDocument(siblingElement.ownerDocument);
+  var longfilename;
+  var leaf;
   try
   {
-    var filename = createUniqueFileName("plot", filetype, editorElement);
-    var longfilename = msiMakeAbsoluteUrl(filename,editorElement);
-    longfilename = GetFilepath(longfilename);
+    var documentfile;
+    var docauxdirectory;
+    var currdocdirectory;
+    var urlstring = msiGetEditorURL(editorElement);
+    var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+    var currFilePath = GetFilepath(urlstring);
+  // for Windows
+#ifdef XP_WIN32
+    currFilePath = currFilePath.replace("/","\\","g");
+#endif
+    documentfile.initWithPath( currFilePath );
+
+    var newdirname = documentfile.leafName;
+    var lastDot = newdirname.lastIndexOf(".");
+    if (lastDot != -1) {
+      newdirname = newdirname.slice(0, lastDot);
+    }
+    newdirname = newdirname + "_files";
+    currdocdirectory = documentfile.parent.clone();
+    docauxdirectory = currdocdirectory.clone();
+    docauxdirectory.append(newdirname);
+    if (!docauxdirectory.exists()) docauxdirectory.create(1, 0755);
+    docauxdirectory.append("plots");
+    if (!docauxdirectory.exists()) docauxdirectory.create(1, 0755);
+    leaf = createUniqueFileName("plot", filetype);
+    docauxdirectory.append(leaf);  // docauxdirectory is now the name of the file we are creating
+    if (!docauxdirectory.exists()) docauxdirectory.create(0, 0755);
+    longfilename = docauxdirectory.path;
     graph.setGraphAttribute("ImageFile", longfilename);
     msiGetEditor(editorElement).setCaretAfterElement (siblingElement);
   } catch (e) {
-    dump ("Warning: unable to setCaretAfterElement while inserting graph\n");
+    dump ("Error: "+e+"\n");
   }
 //  dump("In insertGraph, about to computeGraph.\n");
-  graph.computeGraph (editorElement);
-  graph.setGraphAttribute("ImageFile", filename);
+  graph.computeGraph (editorElement, longfilename);
+  graph.setGraphAttribute("ImageFile", "resource://docdir/plots/"+leaf);
   addGraphElementToDocument (graph.createGraphDOMElement(false), siblingElement, editorElement);
 }
 
