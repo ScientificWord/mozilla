@@ -2216,6 +2216,7 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
     try { 
       // copy the associated xxxx_files directory
       
+      editorElement.isShellFile = false;
       if (doUpdateURI)
       {
          // If a local file, we must create a new uri from nsILocalFile
