@@ -74,6 +74,7 @@
 #include "nsContentUtils.h"
 #include "nsIJSContextStack.h"
 #include "nsIScriptSecurityManager.h"
+#include "nsnetutil.h"
 
 // -------------------------------
 // Style Rule List for the DOM
@@ -920,7 +921,20 @@ NS_IMETHODIMP
 nsCSSStyleSheet::ContainsStyleSheet(nsIURI* aURL, PRBool& aContains, nsIStyleSheet** aTheChild /*=nsnull*/)
 {
   NS_PRECONDITION(nsnull != aURL, "null arg");
-
+  nsCOMPtr<nsIURI> theURI;
+  nsAutoString str;
+  if (mDocument) { 
+    nsCAutoString str;
+    nsCAutoString spec;
+    nsCAutoString docSpec;
+    nsCOMPtr<nsIURI> docURI = mDocument->GetDocumentURI();
+    aURL->GetSpec(spec);
+    docURI->GetSpec(docSpec);
+    NS_MakeAbsoluteURIWithDocPath(str, spec, docSpec); 
+    if (!(str.Equals(spec)))
+      NS_NewURI(getter_AddRefs(theURI), str);
+    else theURI = aURL;
+  } else theURI = aURL; 
   if (!mInner || !mInner->mSheetURI) {
     // We're not yet far enough along in our load to know what our URL is (we
     // may still get redirected and such).  Assert (caller should really not be
@@ -931,7 +945,7 @@ nsCSSStyleSheet::ContainsStyleSheet(nsIURI* aURL, PRBool& aContains, nsIStyleShe
   }
   
   // first check ourself out
-  nsresult rv = mInner->mSheetURI->Equals(aURL, &aContains);
+  nsresult rv = mInner->mSheetURI->Equals(theURI, &aContains);
   if (NS_FAILED(rv)) aContains = PR_FALSE;
 
   if (aContains) {
@@ -943,7 +957,7 @@ nsCSSStyleSheet::ContainsStyleSheet(nsIURI* aURL, PRBool& aContains, nsIStyleShe
     nsCSSStyleSheet*  child = mFirstChild;
     // now check the chil'ins out (recursively)
     while ((PR_FALSE == aContains) && (nsnull != child)) {
-      child->ContainsStyleSheet(aURL, aContains, aTheChild);
+      child->ContainsStyleSheet(theURI, aContains, aTheChild);
       if (aContains) {
         break;
       } else {
