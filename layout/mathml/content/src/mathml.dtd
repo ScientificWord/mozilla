@@ -101,7 +101,7 @@
 <!ENTITY circ '&#x005E;'>
 <!ENTITY lowbar '&#x005F;'>
 <!ENTITY DiacriticalGrave '&#x0060;'>  <!ENTITY grave '&#x0060;'>
-<!ENTITY jmath '&#xEEF0;'>
+<!ENTITY jmath '&#xEEF0;'> 
 <!ENTITY lbrace '&#x007B;'>  <!ENTITY lcub '&#x007B;'>
 <!ENTITY VerticalLine '&#x007C;'>  <!ENTITY verbar '&#x007C;'>  <!ENTITY vert '&#x007C;'>
 <!ENTITY rbrace '&#x007D;'>  <!ENTITY rcub '&#x007D;'>
@@ -128,7 +128,11 @@
 <!ENTITY DiacriticalAcute '&#x00B4;'>  <!ENTITY acute '&#x00B4;'>
 <!ENTITY micro '&#x00B5;'>
 <!ENTITY para '&#x00B6;'>
-<!ENTITY CenterDot '&#x00B7;'>  <!ENTITY centerdot '&#x00B7;'>  <!ENTITY middot '&#x00B7;'>
+
+<!-- !ENTITY CenterDot '&#x00B7;'>  <!ENTITY centerdot '&#x00B7;'>  <!ENTITY middot '&#x00B7;'> --> 
+<!ENTITY CenterDot '&#x00B7;'>  <!ENTITY middot '&#x00B7;'>
+<!ENTITY centerdot '&#xEE2E;'>
+
 <!ENTITY Cedilla '&#x00B8;'>  <!ENTITY cedil '&#x00B8;'>
 <!ENTITY sup1 '&#x00B9;'>
 <!ENTITY ordm '&#x00BA;'>
@@ -245,7 +249,7 @@
 <!ENTITY Iogon '&#x012E;'>
 <!ENTITY iogon '&#x012F;'>
 <!ENTITY Idot '&#x0130;'>
-<!ENTITY imath '&#x0131;'>  <!ENTITY inodot '&#x0131;'>
+<!ENTITY imath '&#x0131;'>  <!ENTITY inodot '&#x0131;'> 
 <!ENTITY IJlig '&#x0132;'>
 <!ENTITY ijlig '&#x0133;'>
 <!ENTITY Jcirc '&#x0134;'>
@@ -579,7 +583,7 @@
 <!ENTITY Gopf '&#xEF91;'>
 <!ENTITY Iopf '&#xEF92;'>
 <!ENTITY Jopf '&#xEF93;'>
-<!ENTITY Kopf '&#xEF94;'>
+<!ENTITY Kopf '&#xEF94;'> 
 <!ENTITY Lopf '&#xEF95;'>  <!ENTITY imped '&#xEF95;'>
 <!ENTITY Mopf '&#xEF96;'>
 <!ENTITY Oopf '&#xEF97;'>
@@ -600,7 +604,10 @@
 <!ENTITY hopf '&#xEFA6;'>
 <!ENTITY iopf '&#xEFA7;'>
 <!ENTITY jopf '&#xEFA8;'>
-<!ENTITY kopf '&#xEFA9;'>
+
+<!-- <!ENTITY kopf '&#xEFA9;'> -->
+<!ENTITY kopf '&#x1D55C;'>
+
 <!ENTITY lopf '&#xEFAA;'>
 <!ENTITY mopf '&#xEFAB;'>
 <!ENTITY nopf '&#xEFAC;'>
@@ -646,7 +653,11 @@
 <!ENTITY bdquo '&#x201E;'>  <!ENTITY ldquor '&#x201E;'>
 <!ENTITY dagger '&#x2020;'>
 <!ENTITY Dagger '&#x2021;'>  <!ENTITY ddagger '&#x2021;'>
-<!ENTITY bull '&#x2022;'>  <!ENTITY bullet '&#x2022;'>
+
+<!-- <!ENTITY bull '&#x2022;'>  <!ENTITY bullet '&#x2022;'>-->
+<!ENTITY bull '&#x2219;'>  
+<!ENTITY textbullet '&#x2022;'> 
+
 <!ENTITY nldr '&#x2025;'>
 <!ENTITY hellip '&#x2026;'>  <!ENTITY mldr '&#x2026;'>
 <!ENTITY permil '&#x2030;'>
@@ -678,7 +689,11 @@
 <!ENTITY Hopf '&#x210D;'>  <!ENTITY quaternions '&#x210D;'>
 <!ENTITY planckh '&#x210E;'>
 <!ENTITY hslash '&#x210F;'>  <!ENTITY plankv '&#x210F;'>
-<!ENTITY hbar '&#xEEF6;'>  <!ENTITY planck '&#xEEF6;'>
+
+<!-- !ENTITY hbar '&#xEEF6;'>  <!ENTITY planck '&#xEEF6;'> -->
+<!ENTITY hbar '&#xE2D5;'>  <!ENTITY planck '&#xE2D5;'>
+
+	
 <!ENTITY Iscr '&#x2110;'>  <!ENTITY imagline '&#x2110;'>
 <!ENTITY Ifr '&#x2111;'>  <!ENTITY Im '&#x2111;'>  <!ENTITY image '&#x2111;'>  <!ENTITY imagpart '&#x2111;'>
 <!ENTITY Laplacetrf '&#x2112;'>  <!ENTITY Lscr '&#x2112;'>  <!ENTITY lagran '&#x2112;'>
@@ -828,7 +843,10 @@
 <!ENTITY MinusPlus '&#x2213;'>  <!ENTITY mnplus '&#x2213;'>  <!ENTITY mp '&#x2213;'>
 <!ENTITY dotplus '&#x2214;'>  <!ENTITY plusdo '&#x2214;'>
 <!ENTITY Backslash '&#x2216;'>  <!ENTITY setminus '&#x2216;'>  <!ENTITY setmn '&#x2216;'>
-<!ENTITY smallsetminus '&#xEEFD;'>  <!ENTITY ssetmn '&#xEEFD;'>
+
+<!-- <!ENTITY smallsetminus '&#xEEFD;'>  <!ENTITY ssetmn '&#xEEFD;'> -->
+<!ENTITY smallsetminus '&#x2216;'>  <!ENTITY ssetmn '&#x2216;'>
+ 
 <!ENTITY lowast '&#x2217;'>
 <!ENTITY SmallCircle '&#x2218;'>  <!ENTITY compfn '&#x2218;'>
 <!ENTITY Sqrt '&#x221A;'>  <!ENTITY radic '&#x221A;'>
@@ -842,12 +860,18 @@
 <!ENTITY VerticalBar '&#x2223;'>  <!ENTITY mid '&#x2223;'>
 <!ENTITY shortmid '&#xEEFF;'>  <!ENTITY smid '&#xEEFF;'>
 <!ENTITY NotVerticalBar '&#x2224;'>  <!ENTITY nmid '&#x2224;'>
-<!ENTITY nshortmid '&#xEF00;'>  <!ENTITY nsmid '&#xEF00;'>
+
+<!-- <!ENTITY nshortmid '&#xEF00;'>  <!ENTITY nsmid '&#xEF00;'> -->
+<!ENTITY nshortmid '&#xE2AA;'>  <!ENTITY nsmid '&#xE2AA;'>
+ 
 <!ENTITY DoubleVerticalBar '&#x2225;'>  <!ENTITY par '&#x2225;'>  <!ENTITY parallel '&#x2225;'>
 <!ENTITY parsl '&#xEF01;'>  <!ENTITY shortparallel '&#xEF01;'>  <!ENTITY spar '&#xEF01;'>
 <!ENTITY nparsl '&#xEF02;'>
 <!ENTITY NotDoubleVerticalBar '&#x2226;'>  <!ENTITY npar '&#x2226;'>  <!ENTITY nparallel '&#x2226;'>
-<!ENTITY nshortparallel '&#xEF03;'>  <!ENTITY nspar '&#xEF03;'>
+
+<!-- <!ENTITY nshortparallel '&#xEF03;'>  <!ENTITY nspar '&#xEF03;'>  -->
+<!ENTITY nshortparallel '&#xE2AB;'>  <!ENTITY nspar '&#xE2AB;'>
+
 <!ENTITY and '&#x2227;'>  <!ENTITY wedge '&#x2227;'>
 <!ENTITY or '&#x2228;'>  <!ENTITY vee '&#x2228;'>
 <!ENTITY cap '&#x2229;'>
@@ -871,7 +895,10 @@
 <!ENTITY mDDot '&#x223A;'>
 <!ENTITY homtht '&#x223B;'>
 <!ENTITY Tilde '&#x223C;'>  <!ENTITY sim '&#x223C;'>
-<!ENTITY thicksim '&#xEF06;'>  <!ENTITY thksim '&#xEF06;'>
+
+<!-- <!ENTITY thicksim '&#xEF06;'>  <!ENTITY thksim '&#xEF06;'> -->
+<!ENTITY thicksim '&#x223C;'>  <!ENTITY thksim '&#x223C;'> 
+
 <!ENTITY backsim '&#x223D;'>  <!ENTITY bsim '&#x223D;'>
 <!ENTITY mstpos '&#x223E;'>
 <!ENTITY acd '&#x223F;'>
@@ -886,7 +913,7 @@
 <!ENTITY simne '&#x2246;'>
 <!ENTITY NotTildeFullEqual '&#x2247;'>  <!ENTITY ncong '&#x2247;'>
 <!ENTITY TildeTilde '&#x2248;'>  <!ENTITY ap '&#x2248;'>  <!ENTITY approx '&#x2248;'>  <!ENTITY asymp '&#x2248;'>
-<!ENTITY thickapprox '&#xEF09;'>  <!ENTITY thkap '&#xEF09;'>
+<!ENTITY thickapprox '&#xEF09;'>  <!ENTITY thkap '&#xEF09;'> 
 <!ENTITY NotTildeTilde '&#x2249;'>  <!ENTITY nap '&#x2249;'>  <!ENTITY napprox '&#x2249;'>
 <!ENTITY nvap '&#xEF0A;'>
 <!ENTITY apE '&#x224A;'>  <!ENTITY ape '&#x224A;'>  <!ENTITY approxeq '&#x224A;'>
@@ -899,7 +926,11 @@
 <!ENTITY HumpEqual '&#x224F;'>  <!ENTITY bumpe '&#x224F;'>  <!ENTITY bumpeq '&#x224F;'>
 <!ENTITY NotHumpEqual '&#xEF0D;'>  <!ENTITY nbumpe '&#xEF0D;'>
 <!ENTITY DotEqual '&#x2250;'>  <!ENTITY doteq '&#x2250;'>  <!ENTITY esdot '&#x2250;'>
-<!ENTITY doteqdot '&#x2251;'>  <!ENTITY eDot '&#x2251;'>
+
+<!-- <!ENTITY doteqdot '&#x2251;'>  <!ENTITY eDot '&#x2251;'> -->
+<!ENTITY doteqdot '&#x2251;'>  <!ENTITY eDot '&#x2251;'> <!ENTITY Doteq '&#x2251;'>
+
+
 <!ENTITY efDot '&#x2252;'>  <!ENTITY fallingdotseq '&#x2252;'>
 <!ENTITY erDot '&#x2253;'>  <!ENTITY risingdotseq '&#x2253;'>
 <!ENTITY Assign '&#x2254;'>  <!ENTITY colone '&#x2254;'>  <!ENTITY coloneq '&#x2254;'>
@@ -911,7 +942,10 @@
 <!ENTITY easter '&#x225B;'>
 <!ENTITY triangleq '&#x225C;'>  <!ENTITY trie '&#x225C;'>
 <!ENTITY equest '&#x225F;'>  <!ENTITY questeq '&#x225F;'>
-<!ENTITY NotEqual '&#x2260;'>  <!ENTITY ne '&#x2260;'>
+
+<!-- <!ENTITY NotEqual '&#x2260;'>  <!ENTITY ne '&#x2260;'> -->
+<!ENTITY NotEqual '&#x2260;'>  <!ENTITY ne '&#x2260;'> <!ENTITY neq '&#x2260;'> 
+ 
 <!ENTITY nedot '&#xEF0E;'>
 <!ENTITY Congruent '&#x2261;'>  <!ENTITY equiv '&#x2261;'>
 <!ENTITY bnequiv '&#xEF0F;'>
@@ -920,10 +954,21 @@
 <!ENTITY GreaterEqual '&#x2265;'>  <!ENTITY ge '&#x2265;'>  <!ENTITY geq '&#x2265;'>
 <!ENTITY LessFullEqual '&#x2266;'>  <!ENTITY lE '&#x2266;'>  <!ENTITY leqq '&#x2266;'>
 <!ENTITY GreaterFullEqual '&#x2267;'>  <!ENTITY gE '&#x2267;'>  <!ENTITY geqq '&#x2267;'>
-<!-- !ENTITY lnE '&#x2268;'>  <!ENTITY lne '&#x2268;'>  <!ENTITY lneq '&#x2268;'>  <!ENTITY lneqq '&#x2268;'> -->
-<!ENTITY lvertneqq '&#xEF10;'>  <!ENTITY lvnE '&#xEF10;'>
-<!-- !ENTITY gnE '&#x2269;'>  <!ENTITY gne '&#x2269;'>  <!ENTITY gneq '&#x2269;'>  <!ENTITY gneqq '&#x2269;'> -->
-<!ENTITY gvertneqq '&#xEF11;'>  <!ENTITY gvnE '&#xEF11;'>
+
+<!-- <!ENTITY lnE '&#x2268;'>  <!ENTITY lne '&#x2268;'>  <!ENTITY lneq '&#x2268;'>  <!ENTITY lneqq '&#x2268;'> -->
+<!ENTITY lne '&#x2A87;'>  <!ENTITY lneq '&#x2A87;'> 
+<!ENTITY lnE '&#x2268;'>  <!ENTITY lneqq '&#x2268;'>
+
+<!-- <!ENTITY lvertneqq '&#xEF10;'>  <!ENTITY lvnE '&#xEF10;'> -->
+<!ENTITY lvertneqq '&#xE2A4;'>  <!ENTITY lvnE '&#xE2A4;'>
+
+<!-- !ENTITY gnE '&#x2269;'>  <!ENTITY gne '&#x2269;'>  <!ENTITY gneq '&#x2269;'>  <!ENTITY gneqq '&#x2269;'>	-->
+<!ENTITY gnE '&#x2269;'>  <!ENTITY gneqq '&#x2269;'>
+<!ENTITY gne '&#x2A88;'>  <!ENTITY gneq '&#x2A88;'> 
+
+<!-- <!ENTITY gvertneqq '&#xEF11;'>  <!ENTITY gvnE '&#xEF11;'> -->
+<!ENTITY gvertneqq '&#xE2A1;'>  <!ENTITY gvnE '&#xE2A1;'>
+
 <!ENTITY Lt '&#x226A;'>  <!ENTITY NestedLessLess '&#x226A;'>  <!ENTITY ll '&#x226A;'>
 <!ENTITY nLt '&#xEF12;'>
 <!ENTITY NotLessLess '&#xEF13;'>  <!ENTITY nLtv '&#xEF13;'>
@@ -934,12 +979,31 @@
 <!ENTITY NotCupCap '&#x226D;'>
 <!ENTITY NotLess '&#x226E;'>  <!ENTITY nless '&#x226E;'>  <!ENTITY nlt '&#x226E;'>  <!ENTITY nvlt '&#x226E;'>
 <!ENTITY NotGreater '&#x226F;'>  <!ENTITY ngt '&#x226F;'>  <!ENTITY ngtr '&#x226F;'>  <!ENTITY nvgt '&#x226F;'>
-<!ENTITY NotGreaterFullEqual '&#x2270;'>  <!ENTITY NotLessSlantEqual '&#x2270;'>  <!ENTITY nlE '&#x2270;'>  <!ENTITY nleqq '&#x2270;'>  <!ENTITY nleqslant '&#x2270;'>  <!ENTITY nles '&#x2270;'>  <!ENTITY nvle '&#x2270;'>
-<!ENTITY NotLessEqual '&#xEF16;'>  <!ENTITY nle '&#xEF16;'>  <!ENTITY nleq '&#xEF16;'>
-<!ENTITY NotGreaterSlantEqual '&#x2271;'>  <!ENTITY ngE '&#x2271;'>  <!ENTITY ngeqq '&#x2271;'>  <!ENTITY ngeqslant '&#x2271;'>  <!ENTITY nges '&#x2271;'>  <!ENTITY nvge '&#x2271;'>
-<!ENTITY NotGreaterEqual '&#xEF17;'>  <!ENTITY nge '&#xEF17;'>  <!ENTITY ngeq '&#xEF17;'>
-<!-- !ENTITY LessTilde '&#x2272;'>  <!ENTITY lap '&#x2272;'>  <!ENTITY lessapprox '&#x2272;'>  <!ENTITY lesssim '&#x2272;'>  <!ENTITY lsim '&#x2272;'> -->
-<!-- !ENTITY GreaterTilde '&#x2273;'>  <!ENTITY gap '&#x2273;'>  <!ENTITY gsim '&#x2273;'>  <!ENTITY gtrapprox '&#x2273;'>  <!ENTITY gtrsim '&#x2273;'>  -->
+
+<!-- <!ENTITY NotGreaterFullEqual '&#x2270;'>  <!ENTITY NotLessSlantEqual '&#x2270;'>  <!ENTITY nlE '&#x2270;'>  <!ENTITY nleqq '&#x2270;'>  <!ENTITY nleqslant '&#x2270;'>  <!ENTITY nles '&#x2270;'>  <!ENTITY nvle '&#x2270;'> -->
+<!ENTITY NotLessSlantEqual '&#xE2A7;'> <!ENTITY nleqslant '&#xE2A7;'>  <!ENTITY nles '&#xE2A7;'>   
+<!ENTITY NotLessFullEqual '&#xE2A8;'><!ENTITY nlE '&#xE2A8;'>  <!ENTITY nleqq '&#xE2A8;'>
+<!ENTITY nvle '&#xE2C1;'>
+
+<!-- <!ENTITY NotGreaterSlantEqual '&#x2271;'>  <!ENTITY ngE '&#x2271;'>  <!ENTITY ngeqq '&#x2271;'>  <!ENTITY ngeqslant '&#x2271;'>  <!ENTITY nges '&#x2271;'>  <!ENTITY nvge '&#x2271;'> -->
+<!ENTITY NotGreaterFullEqual '&#xE2A5;'><!ENTITY ngE '&#xE2A5;'>  <!ENTITY ngeqq '&#xE2A5;'>  
+<!ENTITY NotGreaterSlantEqual '&#xE2A6;'> <!ENTITY ngeqslant '&#xE2A6;'> <!ENTITY nges '&#xE2A6;'>   
+<!ENTITY nvge '&#xE2C2;'>
+
+<!-- <!ENTITY NotLessEqual '&#xEF16;'>  <!ENTITY nle '&#xEF16;'>  <!ENTITY nleq '&#xEF16;'> -->
+<!ENTITY NotLessEqual '&#x2270;'>  <!ENTITY nle '&#x2270;'>  <!ENTITY nleq '&#x2270;'>
+
+<!-- <!ENTITY NotGreaterEqual '&#xEF17;'>  <!ENTITY nge '&#xEF17;'>  <!ENTITY ngeq '&#xEF17;'>  -->
+<!ENTITY NotGreaterEqual '&#x2271;'>  <!ENTITY nge '&#x2271;'>  <!ENTITY ngeq '&#x2271;'>  
+ 
+<!-- <!ENTITY LessTilde '&#x2272;'>  <!ENTITY lap '&#x2272;'>  <!ENTITY lessapprox '&#x2272;'>  <!ENTITY lesssim '&#x2272;'>  <!ENTITY lsim '&#x2272;'>  -->
+<!ENTITY LessTilde '&#x2272;'>  <!ENTITY lesssim '&#x2272;'>  <!ENTITY lsim '&#x2272;'>
+<!ENTITY lessapprox '&#x2A85;'> <!ENTITY lap '&#x2A85;'>
+
+<!-- <!ENTITY GreaterTilde '&#x2273;'>  <!ENTITY gap '&#x2273;'>  <!ENTITY gsim '&#x2273;'>  <!ENTITY gtrapprox '&#x2273;'>  <!ENTITY gtrsim '&#x2273;'>  -->
+<!ENTITY GreaterTilde '&#x2273;'>  <!ENTITY gsim '&#x2273;'>  <!ENTITY gtrsim '&#x2273;'>
+<!ENTITY gtrapprox '&#x2A86;'> <!ENTITY gap '&#x2A86;'> 
+ 
 <!ENTITY NotLessTilde '&#x2274;'>  <!ENTITY nlsim '&#x2274;'>
 <!ENTITY NotGreaterTilde '&#x2275;'>  <!ENTITY ngsim '&#x2275;'>
 <!ENTITY LessGreater '&#x2276;'>  <!ENTITY lessgtr '&#x2276;'>  <!ENTITY lg '&#x2276;'>
@@ -950,8 +1014,15 @@
 <!ENTITY Succeeds '&#x227B;'>  <!ENTITY sc '&#x227B;'>  <!ENTITY succ '&#x227B;'>
 <!ENTITY PrecedesSlantEqual '&#x227C;'>  <!ENTITY prcue '&#x227C;'>  <!ENTITY preccurlyeq '&#x227C;'>
 <!ENTITY SucceedsEqual '&#x227D;'>  <!ENTITY SucceedsSlantEqual '&#x227D;'>  <!ENTITY sccue '&#x227D;'>  <!ENTITY sce '&#x227D;'>  <!ENTITY succcurlyeq '&#x227D;'>  <!ENTITY succeq '&#x227D;'>
-<!-- !ENTITY PrecedesTilde '&#x227E;'>  <!ENTITY prap '&#x227E;'>  <!ENTITY precapprox '&#x227E;'>  <!ENTITY precsim '&#x227E;'>  <!ENTITY prsim '&#x227E;'>  <!ENTITY scE '&#x227E;'> -->
-<!-- !ENTITY SucceedsTilde '&#x227F;'>  <!ENTITY scap '&#x227F;'>  <!ENTITY scsim '&#x227F;'>  <!ENTITY succapprox '&#x227F;'>  <!ENTITY succsim '&#x227F;'> -->
+
+<!-- <!ENTITY PrecedesTilde '&#x227E;'>  <!ENTITY prap '&#x227E;'>  <!ENTITY precapprox '&#x227E;'>  <!ENTITY precsim '&#x227E;'>  <!ENTITY prsim '&#x227E;'>  <!ENTITY scE '&#x227E;'> -->
+<!ENTITY PrecedesTilde '&#x227E;'>  <!ENTITY precsim '&#x227E;'>  <!ENTITY prsim '&#x227E;'>  <!ENTITY scE '&#x227E;'>
+<!ENTITY precapprox '&#x2AB7;'>  <!ENTITY prap '&#x2AB7;'>
+
+<!-- <!ENTITY SucceedsTilde '&#x227F;'>  <!ENTITY scap '&#x227F;'>  <!ENTITY scsim '&#x227F;'>  <!ENTITY succapprox '&#x227F;'>  <!ENTITY succsim '&#x227F;'> -->
+<!ENTITY SucceedsTilde '&#x227F;'>  <!ENTITY scsim '&#x227F;'>  <!ENTITY succsim '&#x227F;'> 
+<!ENTITY succapprox '&#x2AB8;'>	 <!ENTITY scap '&#x2AB8;'>
+
 <!ENTITY NotSucceedsTilde '&#xEF18;'>
 <!ENTITY NotPrecedes '&#x2280;'>  <!ENTITY npr '&#x2280;'>  <!ENTITY nprec '&#x2280;'>
 <!ENTITY NotSucceeds '&#x2281;'>  <!ENTITY nsc '&#x2281;'>  <!ENTITY nsucc '&#x2281;'>
@@ -960,14 +1031,39 @@
 <!ENTITY suphsol '&#xEF19;'>
 <!ENTITY NotSubset '&#x2284;'>  <!ENTITY nsub '&#x2284;'>  <!ENTITY nsubset '&#x2284;'>  <!ENTITY vnsub '&#x2284;'>
 <!ENTITY NotSuperset '&#x2285;'>  <!ENTITY nsup '&#x2285;'>  <!ENTITY nsupset '&#x2285;'>  <!ENTITY vnsup '&#x2285;'>
-<!-- !ENTITY SubsetEqual '&#x2286;'>  <!ENTITY subE '&#x2286;'>  <!ENTITY sube '&#x2286;'>  <!ENTITY subseteq '&#x2286;'>  <!ENTITY subseteqq '&#x2286;'> -->
-<!-- !ENTITY SupersetEqual '&#x2287;'>  <!ENTITY supE '&#x2287;'>  <!ENTITY supe '&#x2287;'>  <!ENTITY supseteq '&#x2287;'>  <!ENTITY supseteqq '&#x2287;'> -->
-<!ENTITY NotSubsetEqual '&#x2288;'>  <!ENTITY nsubE '&#x2288;'>  <!ENTITY nsube '&#x2288;'>  <!ENTITY nsubseteq '&#x2288;'>  <!ENTITY nsubseteqq '&#x2288;'>
-<!ENTITY NotSupersetEqual '&#x2289;'>  <!ENTITY nsupE '&#x2289;'>  <!ENTITY nsupe '&#x2289;'>  <!ENTITY nsupseteq '&#x2289;'>  <!ENTITY nsupseteqq '&#x2289;'>
-<!-- !ENTITY subnE '&#x228A;'>  <!ENTITY subne '&#x228A;'>  <!ENTITY subsetneq '&#x228A;'>  <!ENTITY subsetneqq '&#x228A;'> -->
-<!ENTITY varsubsetneq '&#xEF1A;'>  <!ENTITY varsubsetneqq '&#xEF1A;'>  <!ENTITY vsubnE '&#xEF1A;'>  <!ENTITY vsubne '&#xEF1A;'>
-<!-- !ENTITY supnE '&#x228B;'>  <!ENTITY supne '&#x228B;'>  <!ENTITY supsetneq '&#x228B;'>  <!ENTITY supsetneqq '&#x228B;'> -->
-<!ENTITY varsupsetneq '&#xEF1B;'>  <!ENTITY varsupsetneqq '&#xEF1B;'>  <!ENTITY vsupnE '&#xEF1B;'>  <!ENTITY vsupne '&#xEF1B;'>
+
+<!-- <!ENTITY SubsetEqual '&#x2286;'>  <!ENTITY subE '&#x2286;'>  <!ENTITY sube '&#x2286;'>  <!ENTITY subseteq '&#x2286;'>  <!ENTITY subseteqq '&#x2286;'> -->
+<!ENTITY SubsetEqual '&#x2286;'>  <!ENTITY sube '&#x2286;'>  <!ENTITY subseteq '&#x2286;'>  
+<!ENTITY subseteqq '&#x2AC5;'>	<!ENTITY subE '&#x2AC5;'>
+
+<!-- <!ENTITY SupersetEqual '&#x2287;'>  <!ENTITY supE '&#x2287;'>  <!ENTITY supe '&#x2287;'>  <!ENTITY supseteq '&#x2287;'>  <!ENTITY supseteqq '&#x2287;'> -->
+<!ENTITY SupersetEqual '&#x2287;'>  <!ENTITY supe '&#x2287;'>  <!ENTITY supseteq '&#x2287;'> 
+<!ENTITY supseteqq '&#x2AC6;'> 	<!ENTITY supE '&#x2AC6;'>
+
+<!-- <!ENTITY NotSubsetEqual '&#x2288;'>  <!ENTITY nsubE '&#x2288;'>  <!ENTITY nsube '&#x2288;'>  <!ENTITY nsubseteq '&#x2288;'>  <!ENTITY nsubseteqq '&#x2288;'> -->
+<!ENTITY NotSubsetEqual '&#xE2AE;'>  <!ENTITY nsubE '&#xE2AE;'>  <!ENTITY nsubseteqq '&#xE2AE;'>
+<!ENTITY nsube '&#x2288;'>   <!ENTITY nsubseteq '&#x2288;'> 
+
+<!-- <!ENTITY NotSupersetEqual '&#x2289;'>  <!ENTITY nsupE '&#x2289;'>  <!ENTITY nsupe '&#x2289;'>  <!ENTITY nsupseteq '&#x2289;'>  <!ENTITY nsupseteqq '&#x2289;'> -->
+<!ENTITY NotSupersetEqual '&#xE2B0;'>  <!ENTITY nsupE '&#xE2B0;'>   <!ENTITY nsupseteqq '&#xE2B0;'>
+<!ENTITY nsupe '&#x2289;'> <!ENTITY nsupseteq '&#x2289;'>
+
+<!-- <!ENTITY subnE '&#x228A;'>  <!ENTITY subne '&#x228A;'>  <!ENTITY subsetneq '&#x228A;'>  <!ENTITY subsetneqq '&#x228A;'> -->
+<!ENTITY subne '&#x228A;'>  <!ENTITY subsetneq '&#x228A;'>   
+<!ENTITY subnE '&#x2ACB;'>  <!ENTITY subsetneqq '&#x2ACB;'>
+
+<!-- <!ENTITY varsubsetneq '&#xEF1A;'>  <!ENTITY varsubsetneqq '&#xEF1A;'>  <!ENTITY vsubnE '&#xEF1A;'>  <!ENTITY vsubne '&#xEF1A;'> -->
+<!ENTITY varsubsetneq '&#xE2B9;'>  <!ENTITY vsubne '&#xE2B9;'>
+<!ENTITY varsubsetneqq '&#xE2B8;'> 	<!ENTITY vsubnE '&#xE2B8;'>
+
+<!-- <!ENTITY supnE '&#x228B;'>  <!ENTITY supne '&#x228B;'>  <!ENTITY supsetneq '&#x228B;'>  <!ENTITY supsetneqq '&#x228B;'> -->
+<!ENTITY supne '&#x228B;'>  <!ENTITY supsetneq '&#x228B;'>  
+<!ENTITY supnE '&#x2ACC;'>  <!ENTITY supsetneqq '&#x2ACC;'>
+ 
+<!-- <!ENTITY varsupsetneq '&#xEF1B;'>  <!ENTITY varsupsetneqq '&#xEF1B;'>  <!ENTITY vsupnE '&#xEF1B;'>  <!ENTITY vsupne '&#xEF1B;'> -->
+<!ENTITY varsupsetneq '&#xE2BA;'>   <!ENTITY vsupne '&#xE2BA;'>
+<!ENTITY varsupsetneqq '&#xE2BB;'>  <!ENTITY vsupnE '&#xE2BB;'> 
+
 <!ENTITY cupdot '&#x228D;'>
 <!ENTITY UnionPlus '&#x228E;'>  <!ENTITY biguplus '&#x228E;'>  <!ENTITY uplus '&#x228E;'>  <!ENTITY xuplus '&#x228E;'>
 <!ENTITY SquareSubset '&#x228F;'>  <!ENTITY sqsub '&#x228F;'>  <!ENTITY sqsubset '&#x228F;'>
@@ -995,7 +1091,11 @@
 <!ENTITY RightTee '&#x22A2;'>  <!ENTITY vdash '&#x22A2;'>
 <!ENTITY LeftTee '&#x22A3;'>  <!ENTITY dashv '&#x22A3;'>
 <!ENTITY DownTee '&#x22A4;'>  <!ENTITY top '&#x22A4;'>
-<!ENTITY UpTee '&#x22A5;'>  <!ENTITY bot '&#x22A5;'>  <!ENTITY bottom '&#x22A5;'>  <!ENTITY perp '&#x22A5;'>
+
+<!-- <!ENTITY UpTee '&#x22A5;'>  <!ENTITY bot '&#x22A5;'>  <!ENTITY bottom '&#x22A5;'>  <!ENTITY perp '&#x22A5;'> -->
+<!ENTITY UpTee '&#x22A5;'>  <!ENTITY bot '&#x22A5;'>  <!ENTITY bottom '&#x22A5;'>  
+<!ENTITY perp '&#x27C2;'> 
+
 <!ENTITY models '&#x22A7;'>
 <!ENTITY DoubleRightTee '&#x22A8;'>  <!ENTITY vDash '&#x22A8;'>
 <!ENTITY Vdash '&#x22A9;'>
@@ -1024,7 +1124,11 @@
 <!ENTITY Vee '&#x22C1;'>  <!ENTITY bigvee '&#x22C1;'>  <!ENTITY xvee '&#x22C1;'>
 <!ENTITY Intersection '&#x22C2;'>  <!ENTITY bigcap '&#x22C2;'>  <!ENTITY xcap '&#x22C2;'>
 <!ENTITY Union '&#x22C3;'>  <!ENTITY bigcup '&#x22C3;'>  <!ENTITY xcup '&#x22C3;'>
-<!ENTITY Diamond '&#x22C4;'>  <!ENTITY diam '&#x22C4;'>  <!ENTITY diamond '&#x22C4;'>
+
+<!-- <!ENTITY Diamond '&#x22C4;'>  <!ENTITY diam '&#x22C4;'>  <!ENTITY diamond '&#x22C4;'> -->
+<!ENTITY Diamond '&#x25C7;'>  
+<!ENTITY diam '&#x22C4;'>  <!ENTITY diamond '&#x22C4;'> <!ENTITY smalldiamond '&#x22C4;'>
+
 <!ENTITY sdot '&#x22C5;'>
 <!ENTITY Star '&#x22C6;'>  <!ENTITY sstarf '&#x22C6;'>  <!ENTITY star '&#x22C6;'>
 <!ENTITY divideontimes '&#x22C7;'>  <!ENTITY divonx '&#x22C7;'>
@@ -1048,12 +1152,23 @@
 <!ENTITY nLl '&#xEF20;'>
 <!ENTITY Gg '&#x22D9;'>  <!ENTITY ggg '&#x22D9;'>
 <!ENTITY nGg '&#xEF21;'>
-<!-- !ENTITY LessEqualGreater '&#x22DA;'>  <!ENTITY lEg '&#x22DA;'>  <!ENTITY leg '&#x22DA;'>  <!ENTITY lesseqgtr '&#x22DA;'>  <!ENTITY lesseqqgtr '&#x22DA;'>  -->
+
+<!-- <!ENTITY LessEqualGreater '&#x22DA;'>  <!ENTITY lEg '&#x22DA;'>  <!ENTITY leg '&#x22DA;'>  <!ENTITY lesseqgtr '&#x22DA;'>  <!ENTITY lesseqqgtr '&#x22DA;'>  -->
+<!ENTITY LessEqualGreater '&#x22DA;'> <!ENTITY leg '&#x22DA;'>  <!ENTITY lesseqgtr '&#x22DA;'>  
+<!ENTITY lesseqqgtr '&#x2A8B;'> <!ENTITY lEg '&#x2A8B;'>  
+
 <!ENTITY lesg '&#xEF22;'>
-<!-- !ENTITY GreaterEqualLess '&#x22DB;'>  <!ENTITY gEl '&#x22DB;'>  <!ENTITY gel '&#x22DB;'>  <!ENTITY gtreqless '&#x22DB;'>  <!ENTITY gtreqqless '&#x22DB;'>  -->
+<!-- <!ENTITY GreaterEqualLess '&#x22DB;'>  <!ENTITY gEl '&#x22DB;'>  <!ENTITY gel '&#x22DB;'>  <!ENTITY gtreqless '&#x22DB;'>  <!ENTITY gtreqqless '&#x22DB;'>  -->
+<!ENTITY GreaterEqualLess '&#x22DB;'> <!ENTITY gel '&#x22DB;'>  <!ENTITY gtreqless '&#x22DB;'>  
+<!ENTITY gtreqqless '&#x2A8C;'> <!ENTITY gEl '&#x2A8C;'>  
+
 <!ENTITY gesl '&#xEF23;'>
-<!ENTITY els '&#x22DC;'>  <!ENTITY eqslantless '&#x22DC;'>
-<!ENTITY egs '&#x22DD;'>  <!ENTITY eqslantgtr '&#x22DD;'>
+<!-- <!ENTITY els '&#x22DC;'>  <!ENTITY eqslantless '&#x22DC;'> -->
+<!ENTITY els '&#x2A95;'>  <!ENTITY eqslantless '&#x2A95;'>
+ 
+<!-- <!ENTITY egs '&#x22DD;'>  <!ENTITY eqslantgtr '&#x22DD;'> -->
+<!ENTITY egs '&#x2A96;'>  <!ENTITY eqslantgtr '&#x2A96;'>
+
 <!ENTITY cuepr '&#x22DE;'>  <!ENTITY curlyeqprec '&#x22DE;'>
 <!ENTITY cuesc '&#x22DF;'>  <!ENTITY curlyeqsucc '&#x22DF;'>
 <!ENTITY NotPrecedesSlantEqual '&#x22E0;'>  <!ENTITY nprcue '&#x22E0;'>
@@ -1062,8 +1177,15 @@
 <!ENTITY NotSquareSupersetEqual '&#x22E3;'>  <!ENTITY nsqsupe '&#x22E3;'>
 <!ENTITY lnsim '&#x22E6;'>
 <!ENTITY gnsim '&#x22E7;'>
-<!-- !ENTITY precnapprox '&#x22E8;'>  <!ENTITY precnsim '&#x22E8;'>  <!ENTITY prnap '&#x22E8;'>  <!ENTITY prnsim '&#x22E8;'> -->
-<!-- !ENTITY scnap '&#x22E9;'>  <!ENTITY scnsim '&#x22E9;'>  <!ENTITY succnapprox '&#x22E9;'>  <!ENTITY succnsim '&#x22E9;'> -->
+
+<!-- <!ENTITY precnapprox '&#x22E8;'>  <!ENTITY precnsim '&#x22E8;'>  <!ENTITY prnap '&#x22E8;'>  <!ENTITY prnsim '&#x22E8;'> -->
+<!ENTITY precnsim '&#x22E8;'>  <!ENTITY prnsim '&#x22E8;'>
+<!ENTITY precnapprox '&#x2AB9;'>  <!ENTITY prnap '&#x2AB9;'>  
+
+<!-- <!ENTITY scnap '&#x22E9;'>  <!ENTITY scnsim '&#x22E9;'>  <!ENTITY succnapprox '&#x22E9;'>  <!ENTITY succnsim '&#x22E9;'> -->
+<!ENTITY scnsim '&#x22E9;'>  <!ENTITY succnsim '&#x22E9;'>
+<!ENTITY scnap '&#x2ABA;'>  <!ENTITY succnapprox '&#x2ABA;'> 
+
 <!ENTITY NotLeftTriangle '&#x22EA;'>  <!ENTITY nltri '&#x22EA;'>  <!ENTITY ntriangleleft '&#x22EA;'>
 <!ENTITY NotRightTriangle '&#x22EB;'>  <!ENTITY nrtri '&#x22EB;'>  <!ENTITY ntriangleright '&#x22EB;'>
 <!ENTITY NotLeftTriangleEqual '&#x22EC;'>  <!ENTITY nltrie '&#x22EC;'>  <!ENTITY ntrianglelefteq '&#x22EC;'>
@@ -1089,7 +1211,10 @@
 <!ENTITY notnivb '&#x22FE;'>
 <!ENTITY ShortUpArrow '&#xEF27;'>
 <!ENTITY ShortDownArrow '&#xEF28;'>
-<!ENTITY Barwed '&#x2306;'>  <!ENTITY doublebarwedge '&#x2306;'>
+
+<!-- <!ENTITY Barwed '&#x2306;'>  <!ENTITY doublebarwedge '&#x2306;'>  -->
+<!ENTITY Barwed '&#x2A5E;'> <!ENTITY doublebarwedge '&#x2A5E;'>
+
 <!ENTITY LeftCeiling '&#x2308;'>  <!ENTITY lceil '&#x2308;'>
 <!ENTITY RightCeiling '&#x2309;'>  <!ENTITY rceil '&#x2309;'>
 <!ENTITY LeftFloor '&#x230A;'>  <!ENTITY lfloor '&#x230A;'>
@@ -1109,8 +1234,13 @@
 <!ENTITY drcorn '&#x231F;'>  <!ENTITY lrcorner '&#x231F;'>
 <!ENTITY frown '&#x2322;'>
 <!ENTITY smile '&#x2323;'>
-<!ENTITY LeftAngleBracket '&#x2329;'>  <!ENTITY lang '&#x2329;'>  <!ENTITY langle '&#x2329;'>
-<!ENTITY RightAngleBracket '&#x232A;'>  <!ENTITY rang '&#x232A;'>  <!ENTITY rangle '&#x232A;'>
+
+<!-- <!ENTITY LeftAngleBracket '&#x2329;'>  <!ENTITY lang '&#x2329;'>  <!ENTITY langle '&#x2329;'> -->
+<!ENTITY LeftAngleBracket '&#x27E8;'>  <!ENTITY lang '&#x27E8;'>  <!ENTITY langle '&#x27E8;'>
+
+<!-- <!ENTITY RightAngleBracket '&#x232A;'>  <!ENTITY rang '&#x232A;'>  <!ENTITY rangle '&#x232A;'>	-->
+<!ENTITY RightAngleBracket '&#x27E9;'>  <!ENTITY rang '&#x27E9;'>  <!ENTITY rangle '&#x27E9;'>
+
 <!ENTITY cylcty '&#x232D;'>
 <!ENTITY profalar '&#x232E;'>
 <!ENTITY topbot '&#x2336;'>
@@ -1179,12 +1309,18 @@
 <!ENTITY blacktriangle '&#x25B4;'>  <!ENTITY utrif '&#x25B4;'>
 <!ENTITY triangle '&#x25B5;'>  <!ENTITY utri '&#x25B5;'>
 <!ENTITY blacktriangleright '&#x25B8;'>  <!ENTITY rtrif '&#x25B8;'>
-<!ENTITY rtri '&#x25B9;'>  <!ENTITY triangleright '&#x25B9;'>
+
+<!-- <!ENTITY rtri '&#x25B9;'>  <!ENTITY triangleright '&#x25B9;'> -->
+<!ENTITY rtri '&#x25B9;'>  <!ENTITY triangleright '&#x25B9;'> <!ENTITY smalltriangleright '&#x25B9;'>
+
 <!ENTITY bigtriangledown '&#x25BD;'>  <!ENTITY xdtri '&#x25BD;'>
 <!ENTITY blacktriangledown '&#x25BE;'>  <!ENTITY dtrif '&#x25BE;'>
 <!ENTITY dtri '&#x25BF;'>  <!ENTITY triangledown '&#x25BF;'>
 <!ENTITY blacktriangleleft '&#x25C2;'>  <!ENTITY ltrif '&#x25C2;'>
-<!ENTITY ltri '&#x25C3;'>  <!ENTITY triangleleft '&#x25C3;'>
+
+<!-- <!ENTITY ltri '&#x25C3;'>  <!ENTITY triangleleft '&#x25C3;'> -->
+<!ENTITY ltri '&#x25C3;'>  <!ENTITY triangleleft '&#x25C3;'> <!ENTITY smalltriangleleft '&#x25C3;'>
+
 <!ENTITY loz '&#x25CA;'>  <!ENTITY lozenge '&#x25CA;'>
 <!ENTITY cir '&#x25CB;'>
 <!ENTITY tridot '&#x25EC;'>
@@ -1202,7 +1338,10 @@
 <!ENTITY heartsuit '&#x2661;'>
 <!ENTITY clubs '&#x2663;'>  <!ENTITY clubsuit '&#x2663;'>
 <!ENTITY hearts '&#x2665;'>
+
 <!-- <!ENTITY diamondsuit '&#x2666;'>  <!ENTITY diams '&#x2666;'> -->
+<!ENTITY diams '&#x2662;'> <!ENTITY diamondsuit '&#x2662;'>
+
 <!ENTITY sung '&#x266A;'>
 <!ENTITY flat '&#x266D;'>
 <!ENTITY natur '&#x266E;'>  <!ENTITY natural '&#x266E;'>
@@ -1480,8 +1619,13 @@
 <!ENTITY lates '&#xEF32;'>
 <!ENTITY bumpE '&#x2AAE;'>
 <!ENTITY PrecedesEqual '&#x2AAF;'>  <!ENTITY prE '&#x2AAF;'>  <!ENTITY pre '&#x2AAF;'>  <!ENTITY preceq '&#x2AAF;'>
-<!ENTITY NotPrecedesEqual '&#xEF33;'>  <!ENTITY npre '&#xEF33;'>  <!ENTITY npreceq '&#xEF33;'>
-<!ENTITY NotSucceedsEqual '&#xEF34;'>  <!ENTITY nsce '&#xEF34;'>  <!ENTITY nsucceq '&#xEF34;'>
+
+<!-- <!ENTITY NotPrecedesEqual '&#xEF33;'>  <!ENTITY npre '&#xEF33;'>  <!ENTITY npreceq '&#xEF33;'> -->
+<!ENTITY NotPrecedesEqual '&#xE5D6;'>  <!ENTITY npre '&#xE5D6;'>  <!ENTITY npreceq '&#xE5D6;'>
+
+<!-- <!ENTITY NotSucceedsEqual '&#xEF34;'>  <!ENTITY nsce '&#xEF34;'>  <!ENTITY nsucceq '&#xEF34;'>	-->
+<!ENTITY NotSucceedsEqual '&#xE5F1;'>  <!ENTITY nsce '&#xE5F1;'>  <!ENTITY nsucceq '&#xE5F1;'>
+
 <!ENTITY precneqq '&#x2AB5;'>  <!ENTITY prnE '&#x2AB5;'>
 <!ENTITY scnE '&#x2AB6;'>  <!ENTITY succneqq '&#x2AB6;'>
 <!ENTITY Pr '&#x2ABB;'>
@@ -1533,13 +1677,28 @@
 <!ENTITY RightDoubleBracket '&#x301B;'>  <!ENTITY robrk '&#x301B;'>
 <!ENTITY loang '&#xF558;'>
 <!ENTITY roang '&#xF559;'>
-<!ENTITY LongLeftArrow '&#xF576;'>  <!ENTITY longleftarrow '&#xF576;'>  <!ENTITY xlarr '&#xF576;'>
-<!ENTITY LongRightArrow '&#xF577;'>  <!ENTITY longrightarrow '&#xF577;'>  <!ENTITY xrarr '&#xF577;'>
-<!ENTITY LongLeftRightArrow '&#xF578;'>  <!ENTITY longleftrightarrow '&#xF578;'>  <!ENTITY xharr '&#xF578;'>
-<!ENTITY DoubleLongLeftArrow '&#xF579;'>  <!ENTITY Longleftarrow '&#xF579;'>  <!ENTITY xlArr '&#xF579;'>
-<!ENTITY DoubleLongRightArrow '&#xF57A;'>  <!ENTITY Longrightarrow '&#xF57A;'>  <!ENTITY xrArr '&#xF57A;'>
-<!ENTITY DoubleLongLeftRightArrow '&#xF57B;'>  <!ENTITY Longleftrightarrow '&#xF57B;'>  <!ENTITY xhArr '&#xF57B;'>
-<!ENTITY longmapsto '&#xF57D;'>  <!ENTITY xmap '&#xF57D;'>
+
+<!-- <!ENTITY LongLeftArrow '&#xF576;'>  <!ENTITY longleftarrow '&#xF576;'>  <!ENTITY xlarr '&#xF576;'> -->
+<!ENTITY LongLeftArrow '&#x27F5;'>  <!ENTITY longleftarrow '&#x27F5;'>  <!ENTITY xlarr '&#x27F5;'> 
+
+<!-- <!ENTITY LongRightArrow '&#xF577;'>  <!ENTITY longrightarrow '&#xF577;'>  <!ENTITY xrarr '&#xF577;'> -->
+<!ENTITY LongRightArrow '&#x27F6;'>  <!ENTITY longrightarrow '&#x27F6;'>  <!ENTITY xrarr '&#x27F6;'> 
+
+<!-- <!ENTITY LongLeftRightArrow '&#xF578;'>  <!ENTITY longleftrightarrow '&#xF578;'>  <!ENTITY xharr '&#xF578;'> -->
+<!ENTITY LongLeftRightArrow '&#x27F7;'>  <!ENTITY longleftrightarrow '&#x27F7;'>  <!ENTITY xharr '&#x27F7;'> 
+
+<!-- <!ENTITY DoubleLongLeftArrow '&#xF579;'>  <!ENTITY Longleftarrow '&#xF579;'>  <!ENTITY xlArr '&#xF579;'> -->
+<!ENTITY DoubleLongLeftArrow '&#x27F8;'>  <!ENTITY Longleftarrow '&#x27F8;'>  <!ENTITY xlArr '&#x27F8;'> 
+
+<!-- <!ENTITY DoubleLongRightArrow '&#xF57A;'>  <!ENTITY Longrightarrow '&#xF57A;'>  <!ENTITY xrArr '&#xF57A;'> -->
+<!ENTITY DoubleLongRightArrow '&#x27F9;'>  <!ENTITY Longrightarrow '&#x27F9;'>  <!ENTITY xrArr '&#x27F9;'> 
+
+<!-- <!ENTITY DoubleLongLeftRightArrow '&#xF57B;'>  <!ENTITY Longleftrightarrow '&#xF57B;'>  <!ENTITY xhArr '&#xF57B;'> -->
+<!ENTITY DoubleLongLeftRightArrow '&#x27FA;'>  <!ENTITY Longleftrightarrow '&#x27FA;'>  <!ENTITY xhArr '&#x27FA;'> 
+
+<!-- <!ENTITY longmapsto '&#xF57D;'>  <!ENTITY xmap '&#xF57D;'>	-->
+<!ENTITY longmapsto '&#x27FC;'>  <!ENTITY xmap '&#x27FC;'>
+
 <!ENTITY FilledVerySmallSquare '&#xF59B;'>
 <!ENTITY EmptyVerySmallSquare '&#xF59C;'>
 <!ENTITY dzigrarr '&#xF5A2;'>
@@ -1563,51 +1722,13 @@
 <!ENTITY ibreve '&#x012D;'>
 <!ENTITY Obreve '&#x014E;'>
 <!ENTITY obreve '&#x014F;'>
+<!ENTITY Finv '&#x2132;'>
+<!ENTITY lambdabar '&#x019B;'>
+<!ENTITY ampersand '&#x0026;'>
 
-<!-- Corrections/Changes from MacKichan Software -->
-<!-- The original version of each the first of each pair of entries is commented out above -->
 
-<!ENTITY GreaterTilde '&#x2273;'>  <!ENTITY gsim '&#x2273;'>  <!ENTITY gtrsim '&#x2273;'>
-<!ENTITY gtrapprox '&#x2A86;'> <!ENTITY gap '&#x2A86;'> 
 
-<!ENTITY LessTilde '&#x2272;'>  <!ENTITY lesssim '&#x2272;'>  <!ENTITY lsim '&#x2272;'>
-<!ENTITY lessapprox '&#x2A85;'> <!ENTITY lap '&#x2A85;'>
 
-<!ENTITY GreaterEqualLess '&#x22DB;'> <!ENTITY gel '&#x22DB;'>  <!ENTITY gtreqless '&#x22DB;'>  
-<!ENTITY gtreqqless '&#x2A8C;'> <!ENTITY gEl '&#x2A8C;'>  
 
-<!ENTITY LessEqualGreater '&#x22DA;'> <!ENTITY leg '&#x22DA;'>  <!ENTITY lesseqgtr '&#x22DA;'>  
-<!ENTITY lesseqqgtr '&#x2A8B;'> <!ENTITY lEg '&#x2A8B;'>  
 
-<!ENTITY SubsetEqual '&#x2286;'>  <!ENTITY sube '&#x2286;'>  <!ENTITY subseteq '&#x2286;'>  
-<!ENTITY subseteqq '&#x2AC5;'>	<!ENTITY subE '&#x2AC5;'>
-
-<!ENTITY SupersetEqual '&#x2287;'>  <!ENTITY supe '&#x2287;'>  <!ENTITY supseteq '&#x2287;'> 
-<!ENTITY supseteqq '&#x2AC6;'> 	<!ENTITY supE '&#x2AC6;'>
-
-<!ENTITY SucceedsTilde '&#x227F;'>  <!ENTITY scsim '&#x227F;'>  <!ENTITY succsim '&#x227F;'> 
-<!ENTITY succapprox '&#x2AB8;'>	 <!ENTITY scap '&#x2AB8;'>
-
-<!ENTITY PrecedesTilde '&#x227E;'>  <!ENTITY precsim '&#x227E;'>  <!ENTITY prsim '&#x227E;'>  <!ENTITY scE '&#x227E;'>
-<!ENTITY precapprox '&#x2AB7;'>  <!ENTITY prap '&#x2AB7;'>
-
-<!ENTITY lnE '&#x2268;'>  <!ENTITY lneqq '&#x2268;'>
-<!ENTITY lne '&#x2A87;'>  <!ENTITY lneq '&#x2A87;'> 
-
-<!ENTITY gnE '&#x2269;'>  <!ENTITY gneqq '&#x2269;'>
-<!ENTITY gne '&#x2A88;'>  <!ENTITY gneq '&#x2A88;'> 
-
-<!ENTITY precnsim '&#x22E8;'>  <!ENTITY prnsim '&#x22E8;'>
-<!ENTITY precnapprox '&#x2AB9;'>  <!ENTITY prnap '&#x2AB9;'>  
-
-<!ENTITY scnsim '&#x22E9;'>  <!ENTITY succnsim '&#x22E9;'>
-<!ENTITY scnap '&#x2ABA;'>  <!ENTITY succnapprox '&#x2ABA;'> 
-
-<!ENTITY subne '&#x228A;'>  <!ENTITY subsetneq '&#x228A;'>   
-<!ENTITY subnE '&#x2ACB;'>  <!ENTITY subsetneqq '&#x2ACB;'>
-
-<!ENTITY supne '&#x228B;'>  <!ENTITY supsetneq '&#x228B;'>  
-<!ENTITY supnE '&#x2ACC;'>  <!ENTITY supsetneqq '&#x2ACC;'>
  
-<!ENTITY diams '&#x2666;'>
-<!ENTITY diamondsuit '&#x2662;'>
