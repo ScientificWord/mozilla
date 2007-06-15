@@ -146,7 +146,7 @@
 \author{<xsl:value-of select="child::text()"/>}</xsl:template>
 
 <xsl:template match="html:address">
-\address{<xsl:value-of select="."/>}</xsl:template>
+{<xsl:value-of select="."/>}\\</xsl:template>
 
 <xsl:template match="html:abstract">
 \begin{abstract}
@@ -290,13 +290,13 @@
 
 <xsl:template match="html:large">{\large <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:Large">{\Large <xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:LARGE">{\LARGE <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="LARGE">{\LARGE <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:huge">{\huge <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:Huge">{\Huge <xsl:apply-templates/>}</xsl:template>
 
 <xsl:template match="html:tex">\TeX{}</xsl:template>
 <xsl:template match="html:textquotedblleft">\textquotedblleft </xsl:template>
-<xsl:template match="html:textquotedblright">\textquotedblright </xsl:template>
-<xsl:template match="html:textbackslash">\textbackslash </xsl:template>
+<xsl:template match="textquotedblright">\textquotedblright </xsl:template>
+<xsl:template match="textbackslash">\textbackslash </xsl:template>
 
 </xsl:stylesheet>
