@@ -1229,6 +1229,21 @@ CSSLoaderImpl::LoadSheet(SheetLoadData* aLoadData, StyleSheetState aSheetState)
     SheetComplete(aLoadData, NS_BINDING_ABORTED);
     return NS_BINDING_ABORTED;
   }
+  nsCOMPtr<nsIURI> theURI;
+  if (mDocument) { 
+    nsCAutoString str;
+    nsCAutoString spec;
+    nsCAutoString docSpec;
+    nsCOMPtr<nsIURI> docURI = mDocument->GetDocumentURI();
+    aLoadData->mURI->GetSpec(spec);
+    docURI->GetSpec(docSpec);
+    NS_MakeAbsoluteURIWithDocPath(str, spec, docSpec); 
+    if (!(str.Equals(spec)))
+    {
+       NS_NewURI(getter_AddRefs(theURI), str);
+       aLoadData->mURI = theURI;
+    }
+  }  
 
   if (aLoadData->mSyncLoad) {
     LOG(("  Synchronous load"));

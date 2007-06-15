@@ -135,6 +135,7 @@ static NS_DEFINE_CID(kXTFServiceCID, NS_XTFSERVICE_CID);
 #include "nsIEventListenerManager.h"
 #include "nsAttrName.h"
 #include "nsIDOMUserDataHandler.h"
+#include "nsnetutil.h"
 
 // for ReportToConsole
 #include "nsIStringBundle.h"
@@ -1966,7 +1967,7 @@ nsContentUtils::LoadImage(nsIURI* aURI, nsIDocument* aLoadingDocument,
   NS_PRECONDITION(aURI, "Must have a URI");
   NS_PRECONDITION(aLoadingDocument, "Must have a document");
   NS_PRECONDITION(aRequest, "Null out param");
-
+  nsCOMPtr<nsIURI> theURI;
   if (!sImgLoader) {
     // nothing we can do here
     return NS_OK;
@@ -1976,10 +1977,23 @@ nsContentUtils::LoadImage(nsIURI* aURI, nsIDocument* aLoadingDocument,
   NS_ASSERTION(loadGroup, "Could not get loadgroup; onload may fire too early");
 
   nsIURI *documentURI = aLoadingDocument->GetDocumentURI();
+  if (aLoadingDocument) { 
+    nsCAutoString str;
+    nsCAutoString spec;
+    nsCAutoString docSpec;
+    aURI->GetSpec(spec);
+    documentURI->GetSpec(docSpec);
+    NS_MakeAbsoluteURIWithDocPath(str, spec, docSpec); 
+    if (!(str.Equals(spec))) 
+    {
+      NS_NewURI(getter_AddRefs(theURI), str);
+    }
+    else theURI = aURI;
+  } else theURI = aURI; 
 
   // XXXbz using "documentURI" for the initialDocumentURI is not quite
   // right, but the best we can do here...
-  return sImgLoader->LoadImage(aURI,                 /* uri to load */
+  return sImgLoader->LoadImage(theURI,               /* uri to load */
                                documentURI,          /* initialDocumentURI */
                                aReferrer,            /* referrer */
                                loadGroup,            /* loadgroup */
