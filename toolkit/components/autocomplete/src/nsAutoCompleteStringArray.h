@@ -53,7 +53,7 @@ protected:
   nsStringArray * m_markedStrings;
   
 protected:  
-  nsStringArray * GetStringArrayForCategory( const nsAString & strCategory);
+  nsStringArray * GetStringArrayForCategory( const nsAString & strCategory, PRBool doCopy);
 private:
   /* additional members */
 };

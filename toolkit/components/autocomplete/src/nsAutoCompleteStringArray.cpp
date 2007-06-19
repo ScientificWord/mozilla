@@ -153,7 +153,7 @@ nsAutoCompleteSearchStringArrayImp::~nsAutoCompleteSearchStringArrayImp()
    }
 }
 
-nsStringArray * nsAutoCompleteSearchStringArrayImp::GetStringArrayForCategory( const nsAString & strCategory)
+nsStringArray * nsAutoCompleteSearchStringArrayImp::GetStringArrayForCategory( const nsAString & strCategory, PRBool doCopy)
 {
   stringStringArray * pssa = m_stringArrays;
   nsStringArray * psa = nsnull;
@@ -174,11 +174,20 @@ nsStringArray * nsAutoCompleteSearchStringArrayImp::GetStringArrayForCategory( c
       {
         if ((end == endsave) || (*end == ' '))
         {
-          if (psa == nsnull) psa = pssa->strArray;
+          if (psa == nsnull) 
+          {
+            if (doCopy) 
+            {
+              psa = new nsStringArray;
+		          for (i = 0; i < pssa->strArray->Count(); i++)
+  			        psa->AppendString(*(pssa->strArray->StringAt(i)));
+            }
+            else psa = pssa->strArray;
+          }
           else 
           {
-            for (i = 0; i < pssa->strArray->Count(); i++)
-              psa->AppendString(*(pssa->strArray->StringAt(i)));
+		        for (i = 0; i < pssa->strArray->Count(); i++)
+  			      psa->AppendString(*(pssa->strArray->StringAt(i)));
           }
         }                                                                       
       }
@@ -194,7 +203,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddString(const nsAString & st
 {
   stringStringArray * pssa = m_stringArrays;
   nsString str;
-  nsStringArray * psa = GetStringArrayForCategory(strCategory);
+  nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
   if (!psa) // string category was not found, add a new one
   {
     psa = new nsStringArray;
@@ -227,7 +236,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddString(const nsAString & st
 /* boolean deleteString (in AString strCategory, in AString strDelete); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::DeleteString(const nsAString & strCategory, const nsAString & strDelete, PRBool *_retval)
 {
-  nsStringArray * psa = GetStringArrayForCategory(strCategory);
+  nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
   if (psa)  // found string array for the category.
     *_retval = psa->RemoveString(strDelete);
   else *_retval = PR_FALSE;
@@ -292,15 +301,15 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::StartSearch(
     // initially, ignore previousResult and searchParam
   nsAString::const_iterator start, end, originalStart;
   nsString str;
-  nsString str2;
-  nsStringArray * psa = GetStringArrayForCategory(searchParam);
+  nsStringArray * psa = GetStringArrayForCategory(searchParam, PR_TRUE);
   if (!psa) return  PR_INVALID_ARGUMENT_ERROR;
+  PRUint32 count = psa->Count();
   nsCOMPtr<nsAutoCompleteResultStringArray> mResult = new nsAutoCompleteResultStringArray(m_markedStrings);
   if (!mResult) return NS_ERROR_FAILURE;
   mResult->SetSearchString(searchString);
   mResult->SetSearchResult(nsIAutoCompleteResult::RESULT_NOMATCH);
 
-  for (int i = 0; i < psa->Count(); i++) {
+  for (int i = 0; i < count; i++) {
     psa->StringAt(i, str);
     if (searchString.IsEmpty()) {   // everything matches the empty string
       mResult->AppendString(str); 
