@@ -19,6 +19,7 @@
 <!ENTITY plottypecylindrical.label "Cylindrical">
 <!ENTITY plottypepolar.label       "Polar">
 <!ENTITY plottypesphere.label      "Spherical">
+<!ENTITY plottypeimplicit.label    "Implicit">
 
 <!ENTITY plottype.label           "Plot type">
 <!ENTITY plottypeexpression.label "Expression">
@@ -96,6 +97,7 @@
 <!ENTITY labelingkey.label          "Key">
 <!ENTITY labelingname.label         "Name">
 <!ENTITY labelingcaption.label      "Caption">
+
 <!ENTITY labelingabove.label        "Above">
 <!ENTITY labelingbelow.label        "Below">
 <!ENTITY labelingcaptiontext.label  "Caption Text">
