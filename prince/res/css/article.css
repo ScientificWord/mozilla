@@ -283,6 +283,14 @@ bold {
   font-weight: 700
 }
 
+bbold {
+  font-weight: 700
+}
+
+fraktur {
+  font-weight: 700
+}
+
 it {
   font-style: italic
 }
