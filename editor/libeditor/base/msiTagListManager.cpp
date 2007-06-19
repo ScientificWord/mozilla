@@ -1074,6 +1074,11 @@ NS_IMETHODIMP
 msiTagListManager::SelectionContainedInTag(const nsAString & strTag, nsIAtom *atomNS, PRBool *_retval)
 {
   nsAutoString str;
+  if (!mparentTags)
+  {
+    *_retval = PR_FALSE;
+    return NS_OK;
+  }
   int j = mparentTags->Count();
   for (int i = 0; i < j; i++)
 	{
