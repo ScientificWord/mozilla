@@ -19,11 +19,9 @@
 <?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
 
 <!DOCTYPE dialog [
-<!ENTITY % DTD SYSTEM "chrome://prince/content/ComputeGraphSettings.dtd" >
+<!ENTITY % DTD SYSTEM "chrome://prince/locale/ComputeGraphSettings.dtd" >
 %DTD;
 <!ENTITY % editorDTD SYSTEM "chrome://editor/locale/editor.dtd" >
-<!ENTITY plottypeimplicit.label   "Implicit">
-
 %editorDTD;
 <!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
 %editorOverlayDTD;
