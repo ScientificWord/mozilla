@@ -5,10 +5,10 @@
 <!-- File menu items -->
 <!ENTITY fileMenu.label "File">
 <!ENTITY filemenu.accesskey "f">
-<!ENTITY newDocument.label "New document">
+<!ENTITY newDocument.label "New Document">
 <!ENTITY newDocument.accesskey "N" >
 <!ENTITY newDocument.label "New">
-<!ENTITY newDocument.tooltip "New document">
+<!ENTITY newDocument.tooltip "New Document">
 <!ENTITY openFileCmd.label "Open File...">
 <!ENTITY fileopen.accesskey "o">
 <!ENTITY fileopen.keybinding "o">
@@ -142,10 +142,23 @@
 <!ENTITY editcheckspelling.accesskey "s">
 <!ENTITY editcheckspelling.keybinding "k">
 
-<!ENTITY helpMenu.label    "Help">
-<!ENTITY helpMenu.accesskey    "H">
-
-<!ENTITY aboutCmd.label    "About Scientific WorkPlace">
+<!ENTITY helpmenu.label    "Help">
+<!ENTITY helpmenu.accesskey    "H">
+<!ENTITY helpmenuContents.label    "Contents">
+<!ENTITY helpmenuContents.accesskey    "C">
+<!ENTITY helpmenuSearch.label    "Search...">
+<!ENTITY helpmenuSearch.accesskey    "S">
+<!ENTITY helpmenuIndex.label    "Index">
+<!ENTITY helpmenuIndex.accesskey    "I">
+<!ENTITY helpmenuWebsite.label    "MacKichan Software Website">
+<!ENTITY helpmenuWebsite.accesskey    "M">
+<!ENTITY helpmenuRegister.label    "Register...">
+<!ENTITY helpmenuRegister.accesskey    "e">
+<!ENTITY helpmenuFeatures.label    "System Features...">
+<!ENTITY helpmenuFeatures.accesskey    "F">
+<!ENTITY helpmenuLicense.label    "License Information">
+<!ENTITY helpmenuLicense.accesskey    "L">
+<!ENTITY aboutCmd.label    "About Scientific WorkPlace...">
 <!ENTITY aboutCmd.accesskey    "A">
 
 <!-- View menu items -->
@@ -165,8 +178,6 @@
 <!ENTITY viewparagraphmarks.accesskey "p">
 
 <!-- Insert menu items -->
-<!ENTITY insertMenu.label "Insert">
-<!ENTITY insertmenu.accesskey "i">
 <!ENTITY insertLinkCmd.label "Link...">
 <!ENTITY insertlink.accesskey "l">
 <!ENTITY insertlink.keybinding "l">
@@ -505,6 +516,36 @@
 <!ENTITY toolsetfocus.accesskey "f">
 <!ENTITY venkman.label "JavaScript debugger">
 <!ENTITY venkman.accesskey "d">
+
+<!-- Go menu -->
+<!ENTITY gomenu.label "Go">
+<!ENTITY gomenu.accesskey "G">
+<!ENTITY gomenuPrevSection.label "Previous Section">
+<!ENTITY gomenuPrevSection.accesskey "p">
+<!ENTITY gomenuNextSection.label "Next Section">
+<!ENTITY gomenuNextSection.accesskey "n">
+<!ENTITY gomenuLinks.label "Links">
+<!ENTITY gomenuLinks.accesskey "L">
+<!ENTITY gomenuMarker.label "To Marker...">
+<!ENTITY gomenuMarker.accesskey "M">
+<!ENTITY gomenuParagraph.label "To Paragraph">
+<!ENTITY gomenuParagraph.accesskey "r">
+<!ENTITY gomenuViewHistory.label "View History...">
+<!ENTITY gomenuViewHistory.accesskey "H">
+<!ENTITY gomenuHistoryBack.label "History Back">
+<!ENTITY gomenuHistoryBack.accesskey "B">
+<!ENTITY gomenuHistoryForward.label "History Forward">
+<!ENTITY gomenuHistoryForward.accesskey "F">
+
+<!-- Tag menu -->
+<!ENTITY tagmenu.label "Tag">
+<!ENTITY tagmenu.accesskey "T">
+<!ENTITY tagmenuAppearance.label "Appearance...">
+<!ENTITY tagmenuAppearance.accesskey "p">
+<!ENTITY tagmenuFunctionKeys.label "Function Keys...">
+<!ENTITY tagmenuFunctionKeys.accesskey "F">
+<!ENTITY tagmenuApply.label "Apply...">
+<!ENTITY tagmenuApply.accesskey "A">
 
 <!-- Debug menu items -->
 <!ENTITY debugMenu.label "Debug">

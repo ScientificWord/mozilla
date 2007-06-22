@@ -12,8 +12,8 @@
 <!ENTITY MSItextCmd.label "Text">
 <!ENTITY MSItextCmd.accesskey "t">
 <!ENTITY MSIfractionCmd.label "Fraction">
-<!ENTITY MSIfractionCmd.accesskey "f">
-<!ENTITY MSIfractionCmd.keybinding "f">
+<!ENTITY MSIfractionCmd.accesskey "F">
+<!ENTITY MSIfractionCmd.keybinding "/">
 <!ENTITY MSIrootCmd.label "Root">
 <!ENTITY MSIrootCmd.accesskey "o">
 <!ENTITY MSIradicalCmd.label "Radical">
@@ -30,8 +30,8 @@
 <!ENTITY MSItensorCmd.label "Tensor">
 <!ENTITY MSItensorCmd.accesskey "e">
 
-<!ENTITY MSImathnameMenu.label "Mathname">
-<!ENTITY MSImathnameMenu.accesskey "a">
+<!ENTITY MSImathnameMenu.label "Math Name...">
+<!ENTITY MSImathnameMenu.accesskey "N">
 
 <!ENTITY MSIsinCmd.label  "sin">
 <!ENTITY MSIsinCmd.accesskey "s">
@@ -45,8 +45,8 @@
 <!ENTITY MSIlogCmd.accesskey "o" >
 <!ENTITY MSIexpCmd.label  "exp">
 <!ENTITY MSIexpCmd.accesskey "e" >
-<!ENTITY MSImathnameCmd.label  "Mathname...">
-<!ENTITY MSImathnameCmd.accesskey "M" >
+<!ENTITY MSImathnameCmd.label  "Math Name...">
+<!ENTITY MSImathnameCmd.accesskey "N" >
 
 <!ENTITY MSIfenceMenu.label "Fence">
 <!ENTITY MSIfenceMenu.accesskey "c">
@@ -71,20 +71,46 @@
 <!ENTITY MSInormCmd.accesskey "e">
 <!ENTITY MSInormCmd.accesskey "n">
 
-<!ENTITY MSIgenBracketsCmd.label "Generalized Brackets...">
+<!ENTITY MSIgenBracketsCmd.label "Brackets...">
 <!ENTITY MSIgenBracketsCmd.accesskey "k">
 
-<!ENTITY MSIbinomialsCmd.label "Binomials">
+<!ENTITY MSIbinomialsCmd.label "Binomial...">
 <!ENTITY MSIbinomialsCmd.accesskey "B">
 
-<!ENTITY MSIoperatorsCmd.label "Operators">
-<!ENTITY MSIoperatorsCmd.accesskey "p">
+<!ENTITY MSIoperatorsCmd.label "Operator...">
+<!ENTITY MSIoperatorsCmd.accesskey "O">
 
-<!ENTITY MSIdecorationsCmd.label "Decorations">
-<!ENTITY MSIdecorationsCmd.accesskey "D">
+<!ENTITY MSIdecorationsCmd.label "Decoration...">
+<!ENTITY MSIdecorationsCmd.accesskey "c">
 
 <!ENTITY MSIColorsCmd.label "Math Colors...">
 <!ENTITY MSIColorsCmd.accesskey "C">
+
+<!ENTITY insertmenu.label "Insert">
+<!ENTITY insertmenu.accesskey "I">
+<!ENTITY insertSpacingObjects.label "Spacing">
+<!ENTITY insertSpacingObjects.accessKey "S">
+<!ENTITY insertHorizontalSpaces.label "Horizontal Space...">
+<!ENTITY insertHorizontalSpaces.accessKey "H">
+<!ENTITY insertVerticalSpaces.label "Vertical Space...">
+<!ENTITY insertVerticalSpaces.accessKey "V">
+<!ENTITY insertRules.label "Rule...">
+<!ENTITY insertRules.accessKey "R">
+<!ENTITY insertBreaks.label "Break...">
+<!ENTITY insertBreaks.accessKey "B">
+<!ENTITY insertTableCmd.label "Table...">
+<!ENTITY inserttable.accesskey "a">
+<!ENTITY insertmenuNote.label "Note...">
+<!ENTITY insertmenuNote.accesskey "e">
+<!ENTITY insertmenuFormula.label "Formula...">
+<!ENTITY insertmenuFormula.accesskey "u">
+<!ENTITY insertmenuMarker.label "Marker...">
+<!ENTITY insertmenuMarker.accesskey "">
+<!ENTITY insertmenuHTMLField.label "HTML Field...">
+<!ENTITY insertmenuHTMLField.accesskey "H">
+<!ENTITY insertmenuUnitNames.label "Unit Name...">
+<!ENTITY insertmenuUnitNames.accesskey "U">
+
 
 <!ENTITY MSISymbolTabLCGreek     "Lowercase Greek">
 <!ENTITY MSISymbolTabCCGreek     "Uppercase Greek">

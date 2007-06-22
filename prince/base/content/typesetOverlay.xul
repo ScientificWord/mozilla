@@ -97,8 +97,8 @@
     </menupopup>
   </menu>
 
-  <menu id="insertMenu">
-    <menupopup id="insertMenuPopup">
+  <menu id="MSIMathMenu">
+    <menupopup id="MSIMathPopup">
       <menu id="MSIInsertTypesetObjectMenu" 
         label="&MSIInsertTypesetObjectMenu.label;" 
         accesskey="&MSIInsertTypesetObjectMenu.accesskey;">
