@@ -64,6 +64,7 @@
   <popup id="sidebarPopup"/>
 
   <commandset id="tasksCommands">
+    <command id="cmd_unimp" oncommand="alert('Command not yet implemented');"/>
     <command id="cmd_open" oncommand="msiGoDoCommand('cmd_open')"/>
     <command id="cmd_print" oncommand="msiGoDoCommand('cmd_print')"/>
     <command id="cmd_quit" oncommand="doQuit()"/>
@@ -98,22 +99,25 @@
     <key id="printkb"        key="&fileprint.keybinding;" observes="cmd_print" modifiers="accel"/>
     <key id="key_quit"       key="&filequit.keybinding;"  observes="cmd_quit" modifiers="accel"/>
     <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
+    <key id="keyhelpcontents" keycode="&helpmenuContents.keybinding;" observes="cmd_unimp"/>>
   </keyset>
 
   <toolbox class="toolbox-top" id="EditorToolbox">
     <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed">
       <menu id="fileMenu" />
       <menu id="editMenu" />
+      <menu id="MSIMathMenu" label="Insert"/>
       <menu id="viewMenu" />
-      <menu id="insertMenu" />
-      <menu id="MSIMathMenu" />
-      <menu id="MSIComputeMenu" />
+      <menu id="goMenu" />
+      <menu id="tagMenu" />
       <menu id="MSITypesetMenu" />
       <menu id="toolsMenu" />
+      <menu id="MSIComputeMenu" />
+      <menu id="windowMenu" />
       <!-- DEBUG only -->
       <menu id="debugMenu" /> 
       <!-- end DEBUG only -->
-      <menu id="helpMenu" />
+      <menu id="helpmenu" />
       <spacer flex="1"/>
     </menubar>
   </toolbox>
