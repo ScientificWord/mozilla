@@ -8,6 +8,12 @@
 #include "nsIDOMDocument.h"
 #include "nsIDOMXMLDocument.h"
 #include "nsIDOMNodeList.h"
+#include "nsIIOService.h"
+#include "nsIFile.h"
+#include "nsILocalFIle.h"
+#include "nsIFileURL.h"
+#include "nsIFileStreams.h"
+#include "nsIConverterOutputStream.h"
 #include "nsContentCID.h"
 #include "nsIGenericFactory.h"
 #include "../../build/nsToolkitCompsCID.h"
@@ -80,6 +86,19 @@ msiAutosub::~msiAutosub()
   /* destructor code */
 }
 
+void reverse( nsString& str )
+{
+  nsAutoString str2;
+  str2.Assign(str);
+  nsString::const_iterator start;
+  str2.BeginReading(start);
+  nsString::const_iterator end;
+  str2.EndReading(end);
+  nsString::iterator dest_end;
+  str.EndWriting(dest_end);
+  while (start != end) *(--dest_end) = *(start++);
+}
+  
 static NS_DEFINE_CID( kXMLDocumentCID, NS_XMLDOCUMENT_CID );
 
 /* void initialize (in string fileURI); */
@@ -91,6 +110,7 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
   PRUint32 autosubCount = 0;
   PRUint32 ctx =  msiIAutosub::CONTEXT_MATHONLY;;
   PRUint32 action = msiIAutosub::ACTION_SUBSTITUTE;
+  mFileURI = NS_ConvertUTF16toUTF8(fileURI);
   nsAutoString s;
   nsAutoString data;
   nsAutoString pastectx;
@@ -108,6 +128,7 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
   state = msiIAutosub::STATE_INIT;
   startIndex = 0;
   lastIndex = 0;
+  arraylength = 0;
   // load the XML autosubs file 
   docAutosubs = do_CreateInstance(kXMLDocumentCID, &rv);
   if (rv) return rv;
@@ -134,7 +155,7 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
         else if (s.EqualsLiteral("math")) ctx = msiIAutosub::CONTEXT_MATHONLY; 
         subsElement->GetAttribute(NS_LITERAL_STRING("tp"),s);
         if (s.EqualsLiteral("sc")) action = msiIAutosub::ACTION_EXECUTE;
-		else if (s.EqualsLiteral("subst")) action = msiIAutosub::ACTION_SUBSTITUTE;
+		    else if (s.EqualsLiteral("subst")) action = msiIAutosub::ACTION_SUBSTITUTE;
         subsElement->GetElementsByTagName(NS_LITERAL_STRING("pattern"),getter_AddRefs(patternTags));
         if (patternTags)
         {
@@ -142,15 +163,7 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
           textNode = do_QueryInterface(patternNode);
           textNode->GetTextContent(pattern);
           // we need to reverse the characters in pattern
-          pattern2 = pattern;
-          
-          nsString::const_iterator start;
-          pattern2.BeginReading(start);
-          nsString::const_iterator end;
-          pattern2.EndReading(end);
-          nsString::iterator dest_end;
-          pattern.EndWriting(dest_end);
-          while (start != end) *(--dest_end) = *(start++);
+          reverse(pattern);
         }
         subsElement->GetElementsByTagName(NS_LITERAL_STRING("data"),getter_AddRefs(dataTags));
         if (dataTags)
@@ -181,14 +194,32 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
     }
     NS_QuickSort(autosubarray, arraylength, sizeof(autosubentry), compare, nsnull);
   }
-  NS_OK;
+  PRBool fSaved; //  These three lines are for testing only
+  AddEntry(NS_LITERAL_STRING("foo"), msiIAutosub::CONTEXT_TEXTONLY, msiIAutosub::ACTION_SUBSTITUTE, NS_LITERAL_STRING("bar"), NS_LITERAL_STRING(""), NS_LITERAL_STRING(""), &fSaved); 
+  Save(&fSaved);
+  return NS_OK;
 }
 
 /* boolean addEntry (in string pattern, in long ctt, in long action, in string data); */
-NS_IMETHODIMP msiAutosub::AddEntry(const nsAString & pattern, PRInt32 ctt, PRInt32 action, const nsAString & data, 
+NS_IMETHODIMP msiAutosub::AddEntry(const nsAString & pattern, PRInt32 ctx, PRInt32 action, const nsAString & data, 
   const nsAString & pasteContext, const nsAString & pasteInfo, PRBool *_retval)
 {
-    return NS_ERROR_NOT_IMPLEMENTED;
+    autosubentry * newArray = new autosubentry[arraylength+1];
+    nsAutoString p(pattern);
+    nsAutoString d(data);
+    nsAutoString pc(pasteContext);
+    nsAutoString pi(pasteInfo);
+    PRUint32 i;
+    for (i = 0; i<arraylength; i++)
+      newArray[i] = autosubarray[i];
+    reverse(p);
+    newArray[arraylength++] = autosubentry(p, ctx, action, d, pc, pi);
+    autosubentry * oldArray = autosubarray;
+    autosubarray = newArray;
+    delete[] oldArray;
+    NS_QuickSort(autosubarray, arraylength, sizeof(autosubentry), compare, nsnull);
+    *_retval = PR_TRUE;
+    return NS_OK;
 }
 
 /* boolean removeEntry (in string pattern); */
@@ -282,7 +313,96 @@ NS_IMETHODIMP msiAutosub::Reset()
 /* boolean Save (); */
 NS_IMETHODIMP msiAutosub::Save(PRBool *_retval)
 {
-    return NS_ERROR_NOT_IMPLEMENTED;
+  nsString sFile = NS_LITERAL_STRING("<?xml version=\"1.0\"?>\n") +
+    NS_LITERAL_STRING("<!DOCTYPE macros PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd\">\n") +
+    NS_LITERAL_STRING("<subs>\n");
+  nsAutoString line;
+  nsAutoString temp;
+  nsAutoString pattern;
+  nsCString scFile;
+  autosubentry* ase;
+  PRUint32 i;
+  for (i = 0; i < arraylength; i++)
+  {
+    ase = &(autosubarray[i]);
+    line = NS_LITERAL_STRING("  <sub ctx=\"");
+    temp.Truncate(0); 
+    switch (ase->context) {
+      case msiIAutosub::CONTEXT_MATHONLY:    temp = NS_LITERAL_STRING("math");
+        break;
+      case msiIAutosub::CONTEXT_TEXTONLY:    temp = NS_LITERAL_STRING("text");
+        break;
+      case msiIAutosub::CONTEXT_MATHANDTEXT: temp = NS_LITERAL_STRING("both");
+        break;
+      default: break;
+    }
+    line += temp;
+    temp = NS_LITERAL_STRING("\" tp=\"") + (ase->action == msiIAutosub::ACTION_SUBSTITUTE ? NS_LITERAL_STRING("subst") : NS_LITERAL_STRING("sc"));
+    line += temp;
+    pattern = ase->pattern;
+    reverse(pattern); 
+    temp = NS_LITERAL_STRING("\"><pattern><![CDATA[") + pattern + NS_LITERAL_STRING("]]></pattern><data><![CDATA[") + ase->data + NS_LITERAL_STRING("]]></data>");
+    line += temp;
+    if (ase->action == msiIAutosub::ACTION_SUBSTITUTE)
+    {
+      temp = NS_LITERAL_STRING("<context");
+      if (ase->pastecontext.IsEmpty())
+        temp += NS_LITERAL_STRING("/>");
+      else
+        temp += NS_LITERAL_STRING("><![CDATA[") + ase->pastecontext +  NS_LITERAL_STRING("]]></context>");
+      temp += NS_LITERAL_STRING("<info>") + ase->pasteinfo +  NS_LITERAL_STRING("</info>");
+      line += temp;
+    }
+    temp = NS_LITERAL_STRING("</sub>\n");
+    line += temp;
+    sFile += line;
+  }
+  sFile += NS_LITERAL_STRING("</subs>\n");
+  // now write sFile out to a file
+  nsresult rv;
+  nsCOMPtr<nsIIOService> serv(do_GetService("@mozilla.org/network/io-service;1", &rv));
+  if (NS_FAILED(rv))
+    return rv;
+  nsCOMPtr<nsIURI> uri;
+  rv = serv->NewURI(mFileURI, nsnull, nsnull, getter_AddRefs(uri));
+  if (NS_FAILED(rv))
+    return rv;
+  nsCOMPtr<nsIFileURL> fileURL = do_QueryInterface(uri);
+  nsCOMPtr<nsIFile> file1;
+  nsCOMPtr<nsIFile> file;
+  fileURL->GetFile(getter_AddRefs(file1));
+  if (NS_FAILED(rv))
+    return rv;
+  rv = file1->Clone(getter_AddRefs(file));
+  if (NS_FAILED(rv))
+    return rv;
+  PRBool fExists;
+  rv = file->Exists(&fExists);
+  if (NS_FAILED(rv))
+    return rv;
+  if (fExists) rv = file->Remove(PR_FALSE);
+  if (NS_FAILED(rv))
+    return rv;
+  rv = file->Create(0, 0755);
+  nsCOMPtr<nsIFileOutputStream> fos = do_CreateInstance("@mozilla.org/network/file-output-stream;1", &rv);
+  if (NS_FAILED(rv))
+    return rv;
+  rv = fos->Init(file, -1, -1, PR_FALSE);
+  if (NS_FAILED(rv))
+    return rv;
+  nsCOMPtr<nsIConverterOutputStream> os = do_CreateInstance("@mozilla.org/intl/converter-output-stream;1", &rv);
+  if (NS_FAILED(rv))
+    return rv;
+  rv = os->Init(fos, "UTF-8", 4096, '?');
+  if (NS_FAILED(rv))
+    return rv;
+  PRBool fSuccess;
+  rv = os->WriteString(sFile, &fSuccess);
+  if (NS_FAILED(rv))
+    return rv;
+  rv = os->Close();
+  *_retval = PR_TRUE;  
+  return rv;    
 }
 
 msiAutosub* sMsiAutosub;
