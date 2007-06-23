@@ -45,7 +45,7 @@ private:
         // (when state == matchesSoFar or success). It is -1 when state == init
   PRUint32 lastIndex;  // an index pointing to the last possible position of patternSoFar
   PRUint32 lastSuccessIndex;
-  nsString pathname;  // the file the list was loaded from
+  nsCString mFileURI;  // the file the list was loaded from
   PRUint32 arraylength;
   ~msiAutosub();
 
