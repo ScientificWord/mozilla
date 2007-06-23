@@ -20,6 +20,7 @@ REQUIRES	= dom \
 	  autosub \
 	  string \
 	  widget \
+	  necko \
 	  $(NULL)
 
 CPPSRCS = msiAutosub.cpp \
