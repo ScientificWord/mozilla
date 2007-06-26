@@ -306,7 +306,7 @@
             <hbox>
               <vbox>
                 <label align="right" value="&docformatRoman;"/>
-                <menulist id="mainfontlist" oncommand="" onfocus="onMenulistFocus(this);">
+                <menulist id="mainfontlist" oncommand="" >
                   <menupopup id="systemfontlist">
                     <menuitem id="romanfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
@@ -332,7 +332,7 @@
               <vbox>
                 <label value="&docformatSans;"/>
                 <menulist id="sansfontlist" 
-                  oncommand="" onfocus="onMenulistFocus(this);">
+                  oncommand="" >
                   <menupopup >
                     <menuitem id="sansfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
@@ -358,7 +358,7 @@
               <vbox>
                 <label value="&docformatFixed;"/>
                 <menulist id="fixedfontlist" label="&docformatFixed;"
-                  oncommand=""  onfocus="onMenulistFocus(this);">
+                  oncommand=""  >
                   <menupopup >
                     <menuitem id="fixedfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
@@ -387,7 +387,7 @@
             <hbox>
               <vbox>
                 <label align="right" value="Extra font 1"/>
-                <menulist id="x1fontlist" oncommand=""  onfocus="onMenulistFocus(this);">
+                <menulist id="x1fontlist" oncommand=""  >
                   <menupopup>
                     <menuitem id="x1fontdefault" label="&docformatDefault;" />
                     <menuseparator/>
@@ -413,7 +413,7 @@
             <hbox>
               <vbox>
                 <label align="right" value="Extra font 2"/>
-                <menulist id="x2fontlist" oncommand=""  onfocus="onMenulistFocus(this);">
+                <menulist id="x2fontlist" oncommand=""  >
                   <menupopup>
                     <menuitem id="x2fontdefault" label="&docformatDefault;" />
                     <menuseparator/>                                               
@@ -439,7 +439,7 @@
             <hbox>
               <vbox>
                 <label align="right" value="Extra font 3"/>
-                <menulist id="x3fontlist" oncommand=""  onfocus="onMenulistFocus(this);">
+                <menulist id="x3fontlist" oncommand=""  >
                   <menupopup>
                     <menuitem id="x3fontdefault" label="&docformatDefault;" />
                     <menuseparator/>
