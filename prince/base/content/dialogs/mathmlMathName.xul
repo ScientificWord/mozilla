@@ -9,9 +9,23 @@
 
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?> 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
-<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? -->
 
-<!DOCTYPE dialog SYSTEM "chrome://prince/locale/mathmlMathname.dtd">
+<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+<!-- If an editor control is to support context menus, also need: -->
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
+
+<!DOCTYPE dialog [
+<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
+%editorDTD;
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/mathmlMathname.dtd" >
+%dialogDTD;
+<!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
+%menuOverlayDTD;
+]>
 
 <dialog id="MathNameDlg"
   title="&windowTitle.label;"
@@ -21,24 +35,105 @@
   onload="Startup()"
 >
 
- <script src="chrome://global/content/dialogOverlay.js" />
- <script src="chrome://prince/content/mathmlMathname.js"/>
+ <!-- script src="chrome://global/content/dialogOverlay.js" / -->
+  <script type="application/x-javascript" src="chrome://prince/content/mathmlMathname.js"/>
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
 
+  <!-- Following scripts are needed by any MSI dialog containing an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <!-- Following script needed if the editor wants to support a toolbox? -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
+
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
+
+  <popupset id="msiEditorContentContextSet"/>
+
+  <commandset id="tasksCommands">
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
+    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+  </commandset>
+  <commandset id="MSImathMenuCommands"/>
+  
+  <keyset id="editorKeys">
+    <keyset id="tasksKeys"/>
+    <keyset id="MSIKeySet"/>
+    <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
+  </keyset>
+
+  <hbox>  
     <vbox flex="1">
-      <description>&enter.label;</description>
+      <description>&mathNamesBox.label;</description>
       <separator class="thin"/>
 
-      <hbox align="center">
-        <textbox id="dialog.input" flex="1" maxlength="60"/>
+      <hbox>
+        <!-- menulist id="mathNamesBox"  editable="true" disableautoselect="true" onkeypress="textEntered(event);" onselect="changeName(this);"  >
+          <menupopup>
+          </menupopup>
+        </menulist -->
+        <textbox id="mathNamesBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+          completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="mathnames" 
+		      tooltiptext="&mathNamesBox.tooltip;" label="&mathNamesBox.label;"   
+          onfocus="this.select();"
+          ontextentered="changeName(this.value);" />
       </hbox>
-      <groupbox>
-        <caption label="&engfunc.label;"/>
-        <hbox>
-          <description>&engfunc.desc;</description>
-          <spacer flex="1"/>
-          <checkbox id="enginefunction"/>
-        </hbox>
+      <!-- groupbox>
+        <caption label="&mathAppearance.label;"/>
+        <editor editortype="html" type="content" flex="1" width="100" height="60" context="msiEditorContentContext" id="mathName-appearance-frame"/>
+      </groupbox -->
+    </vbox>
+    <vbox>
+      <groupbox id="nameTypeGroup">
+        <caption label="&nameType.label;" id="nameTypeLabel"/>
+        <radiogroup id="nameTypeRadioGroup" orient="vertical" oncommand="updateControls();">
+          <radio id="typeOperator" label="&typeOperator.label;" value="operator" accesskey="&typeOperator.accessKey;"/>
+          <radio id="typeFunction" label="&typeFunction.label;" value="function" accesskey="&typeFunction.accessKey;"/>
+          <radio id="typeFunction" label="&typeVariable.label;" value="variable" accesskey="&typeVariable.accessKey;"/>
+        </radiogroup>
+      </groupbox>
+      <groupbox id="limitPlacementGroup">
+        <caption label="&operatorLimitPlacement.label;" id="limitPlacementGroupCaption" />
+        <radiogroup id="operatorLimitPlacementRadioGroup" orient="vertical">
+          <radio id="limitPlacementAuto" label="&limitPlacementAuto.label;" accesskey="&limitPlacementAuto.accessKey;" value="auto"/>
+          <radio id="limitPlacementAboveBelow" label="&limitPlacementAboveBelow.label;" accesskey="&limitPlacementAboveBelow.accessKey;" value="aboveBelow"/>
+          <radio id="limitPlacementAtRight" label="&limitPlacementAtRight.label;" accesskey="&limitPlacementAtRight.accessKey;" value="atRight"/>
+        </radiogroup>
       </groupbox>
       <separator class="thin"/>
+      <!-- groupbox -->
+        <!-- caption label="&engfunc.label;"/ -->
+        <hbox>
+          <description id="enginefunctionDescription" control="enginefunction">&engfunc.desc;</description>
+          <spacer flex="1"/>
+          <checkbox id="enginefunction" accesskey="&engfunc.accessKey;"/>
+        </hbox>
+        <hbox>
+          <description id="addAutoSubstitutionDescription" control="addAutoSubstitution">&addAutoSubstitution.label;</description>
+          <checkbox id="addAutoSubstitution" accesskey="&addAutoSubstitution.accessKey;"/>
+        </hbox>
+      <!-- /groupbox -->
     </vbox>
+    <vbox>
+      <button id="addButton" label="&addButton.label;" accesskey="&addButton.accessKey;" oncommand="addCurrentName();" />
+      <button id="deleteButton" label="&deleteButton.label;" accesskey="&deleteButton.accessKey;" oncommand="deleteCurrentName();" />
+    </vbox>
+  </hbox>  
 </dialog>
