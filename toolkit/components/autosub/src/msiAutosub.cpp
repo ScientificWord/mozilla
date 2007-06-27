@@ -225,7 +225,32 @@ NS_IMETHODIMP msiAutosub::AddEntry(const nsAString & pattern, PRInt32 ctx, PRInt
 /* boolean removeEntry (in string pattern); */
 NS_IMETHODIMP msiAutosub::RemoveEntry(const nsAString & pattern, PRBool *_retval)
 {
-    return NS_ERROR_NOT_IMPLEMENTED;
+    nsAutoString p(pattern);
+    PRUint32 i, j, numDelete;
+    reverse(p);
+    j = 0;
+    numDelete = 0;
+    for (i = 0; i<arraylength; i++)
+    {
+      if (autosubarray[i] == p)
+        ++numDelete;
+    }
+    autosubentry * newArray = new autosubentry[arraylength - numDelete];
+    j = 0;
+    for (i = 0; i < arraylength; ++i)
+    {
+      if ( !(autosubarray[i] == p) )
+        newArray[j++] = autosubarray[i];
+    }
+    arraylength -= numDelete;
+    autosubentry * oldArray = autosubarray;
+    autosubarray = newArray;
+    delete[] oldArray;
+    NS_QuickSort(autosubarray, arraylength, sizeof(autosubentry), compare, nsnull);
+    if (numDelete > 0)
+      *_retval = PR_TRUE;
+    return NS_OK;
+//    return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 /* string getCurrentData (out long ctx, out long action); */
