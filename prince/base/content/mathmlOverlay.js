@@ -386,7 +386,7 @@ var msiMathname =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    doMathnameDlg(editorElement);
+    doMathnameDlg(editorElement, "cmd_MSImathnameCmd", this);
   }
 };
 
@@ -834,17 +834,70 @@ function insertenginefunction(name, editorElement)
   catch (e) {}
 }
 
-function doMathnameDlg(editorElement)
+function doMathnameDlg(editorElement, commandID, commandHandler)
 {
   var o = new Object();
   o.val = "";
-  window.openDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,modal", o);
-  if (o.val.length > 0) {
-    if (o.enginefunction)
-      insertenginefunction(o.val, editorElement);
+//  window.openDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,modal", o);
+  msiOpenModelessDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, commandID, commandHandler, o);
+}
+
+function insertMathnameObject(mathNameObj, editorElement)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
+  if (mathNameObj.val.length > 0)
+  {
+    if (mathNameObj.enginefunction)
+      insertenginefunction(mathNameObj.val, editorElement);
+    else if (("appearance" in mathNameObj) && (mathNameObj.appearance != null))
+    {
+      var insertNodes = mathNameObj.appearance.childNodes;
+      for (var ix = 0; ix < insertNodes.length; ++ix)
+      {
+        var newNode = insertNodes[ix].cloneNode(true);
+        editor.insertElementAtSelection(newNode, (ix==0));  //"true" means delete selection, so want to do it on first insertion
+      }
+    }
+    else if (mathNameObj.type == "operator")
+    {
+      var limitPlacement = "auto";
+      var sizeSpec = "auto";
+      if ("limitPlacement" in mathNameObj)
+        limitPlacement = mathNameObj.limitPlacement;
+      if ("size" in mathNameObj)
+        sizeSpec = mathNameObj.size;
+      insertOperator(mathNameObj.val, limitPlacement, sizeSpec, editorElement);
+      //need to give it the msimathname="true" attribute also!
+      var sel = editor.selection;
+      if (sel != null)
+      {
+        var opNode = editor.getElementOrParentByTagName("mo", sel.focusNode);
+        if (opNode != null)
+          opNode.setAttribute("msimathname", "true");
+//        var focusNode = sel.focusNode;
+//        var focusOffset = sel.focusOffset;
+//        dump("After inserting math operator, focus node and offset are [" + focusNode.nodeName + ", " + focusOffset + "].\n");
+      }
+    }
     else
-      insertmathname(o.val, editorElement);
+      insertmathname(mathNameObj.val, editorElement);
   }
+}
+
+function doInsertMathName(aName, editorElement)
+{
+  var mathNameObj = msiBaseMathNameList.getMathNameData(aName);
+  if (mathNameObj == null)
+  {
+    mathNameObj = new Object();
+    mathNameObj.type = "function";
+    mathNameObj.val = aName;
+    mathNameObj.enginefunction = false;
+  }
+  insertMathnameObject(mathNameObj, editorElement);
 }
 
 function doMatrixDlg(editorElement)

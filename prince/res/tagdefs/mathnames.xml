@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE mathnames PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd" [
+  <!ATTLIST mathnames id  ID  #IMPLIED>
+  <!ATTLIST mathname id  ID  #IMPLIED>
+]>
+<mathnames id="nameBase">
+  <mathname id="sin" type="function" builtIn="true"><data>insertMathname('sin');</data></mathname>
+  <mathname id="sinh" type="function" builtIn="true"><data>insertMathname('sinh');</data></mathname>
+  <mathname id="cos" type="function" builtIn="true"><data>insertMathname('cos');</data></mathname>
+  <mathname id="cosh" type="function" builtIn="true"><data>insertMathname('cosh');</data></mathname>
+  <mathname id="tan" type="function" builtIn="true"><data>insertMathname('tan');</data></mathname>
+  <mathname id="tanh" type="function" builtIn="true"><data>insertMathname('tanh');</data></mathname>
+  <mathname id="arccos" type="function" builtIn="true"><data>insertMathname('arccos');</data></mathname>
+  <mathname id="arcsin" type="function" builtIn="true"><data>insertMathname('arcsin');</data></mathname>
+  <mathname id="arctan" type="function" builtIn="true"><data>insertMathname('arctan');</data></mathname>
+  <mathname id="arg" type="function" builtIn="true"><data>insertMathname('arg');</data></mathname>
+  <mathname id="cot" type="function" builtIn="true"><data>insertMathname('cot');</data></mathname>
+  <mathname id="coth" type="function" builtIn="true"><data>insertMathname('coth');</data></mathname>
+  <mathname id="csc" type="function" builtIn="true"><data>insertMathname('csc');</data></mathname>
+  <mathname id="deg" type="function" builtIn="true"><data>insertMathname('deg');</data></mathname>
+  <mathname id="det" type="operator" builtIn="true"><data>insertMathnameOperator('det');</data></mathname>
+  <mathname id="dim" type="function" builtIn="true"><data>insertMathname('dim');</data></mathname>
+  <mathname id="exp" type="function" builtIn="true"><data>insertMathname('exp');</data></mathname>
+  <mathname id="gcd" type="operator" builtIn="true"><data>insertMathnameOperator('gcd');</data></mathname>
+  <mathname id="hom" type="function" builtIn="true"><data>insertMathname('hom');</data></mathname>
+  <mathname id="inf" type="operator" builtIn="true"><data>insertMathnameOperator('inf');</data></mathname>
+  <mathname id="injlim" type="operator" builtIn="true"><data>insertMathnameOperator('injlim');</data></mathname>
+  <mathname id="ker" type="function" builtIn="true"><data>insertMathname('ker');</data></mathname>
+  <mathname id="lg" type="function" builtIn="true"><data>insertMathname('lg');</data></mathname>
+  <mathname id="lim" type="operator" builtIn="true"><data>insertMathnameOperator('lim');</data></mathname>
+  <mathname id="liminf" type="operator" builtIn="true"><data>insertMathnameOperator('liminf');</data></mathname>
+  <mathname id="limsup" type="operator" builtIn="true"><data>insertMathnameOperator('limsup');</data></mathname>
+  <mathname id="ln" type="function" builtIn="true"><data>insertMathname('ln');</data></mathname>
+  <mathname id="log" type="function" builtIn="true"><data>insertMathname('log');</data></mathname>
+  <mathname id="max" type="operator" builtIn="true"><data>insertMathnameOperator('max');</data></mathname>
+  <mathname id="min" type="operator" builtIn="true"><data>insertMathnameOperator('min');</data></mathname>
+  <mathname id="Pr" type="operator" builtIn="true"><data>insertMathnameOperator('Pr');</data></mathname>
+  <mathname id="projlim" type="operator" builtIn="true"><data>insertMathnameOperator('projlim');</data></mathname>
+  <mathname id="sec" type="function" builtIn="true"><data>insertMathname('sec');</data></mathname>
+  <mathname id="sup" type="operator" builtIn="true"><data>insertMathnameOperator('sup');</data></mathname>
+  <mathname id="varinjlim" type="operator" builtIn="true"><appearance><munder><mi>lim</mi><mo stretchy="true" accent="true">&rarr;</mo></munder></appearance><data>insertMathnameOperator('varinjlim');</data></mathname>
+  <mathname id="varliminf" type="operator" builtIn="true"><appearance><munder><mi>lim</mi><mo stretchy="true" accent="true">&UnderBar;</mo></munder></appearance><data>insertMathnameOperator('varliminf');</data></mathname>
+  <mathname id="varlimsup" type="operator" builtIn="true"><appearance><mover><mi>lim</mi><mo stretchy="true" accent="true">&OverBar;</mo></mover></appearance><data>insertMathnameOperator('varlimsup');</data></mathname>
+  <mathname id="varprojlim" type="operator" builtIn="true"><appearance><munder><mi>lim</mi><mo stretchy="true" accent="true">&larr;</mo></munder></appearance><data>insertMathnameOperator('varprojlim');</data></mathname>
+</mathnames>

@@ -2,6 +2,28 @@
 
 <!ENTITY windowTitle.label	"Math Name">
 
-<!ENTITY enter.label "Name">
-<!ENTITY engfunc.label "Engine Function">
+<!ENTITY mathNamesBox.label "Name">
+<!ENTITY mathNamesBox.tooltip "Enter a math name or select from the list.">
+<!ENTITY mathAppearance.label "Appearance">
+<!ENTITY nameType.label "Name Type">
+<!ENTITY typeOperator.label "Operator">
+<!ENTITY typeOperator.accessKey "O">
+<!ENTITY typeFunction.label "Function">
+<!ENTITY typeFunction.accessKey "F">
+<!ENTITY typeVariable.label "Variable">
+<!ENTITY typeVariable.accessKey "V">
+<!ENTITY operatorLimitPlacement.label "Operator Limit Placement">
+<!ENTITY limitPlacementAuto.label "Auto">
+<!ENTITY limitPlacementAuto.accessKey "u">
+<!ENTITY limitPlacementAboveBelow.label "Above/Below">
+<!ENTITY limitPlacementAboveBelow.accessKey "b">
+<!ENTITY limitPlacementAtRight.label "At right">
+<!ENTITY limitPlacementAtRight.accessKey "r">
+<!ENTITY addAutoSubstitution.label "Add automatic substitution">
+<!ENTITY addAutoSubstitution.accessKey "s">
 <!ENTITY engfunc.desc "This is an engine string.">
+<!ENTITY engfunc.accessKey "e">
+<!ENTITY addButton.label "Add">
+<!ENTITY addButton.accessKey "A">
+<!ENTITY deleteButton.label "Delete">
+<!ENTITY deleteButton.accessKey "D">
