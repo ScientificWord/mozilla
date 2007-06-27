@@ -3546,6 +3546,317 @@ var msiCSSUnitConversions =
 var msiCSSUnitsList = new msiUnitsList(msiCSSUnitConversions);
 msiCSSUnitsList.defaultUnit = function() {return "pt";}
 
+var msiBaseMathNameList = 
+{
+  bInitialized: false,
+  namesDoc : null,
+  sourceFile : "mathnames.xml",
+  bModified: false,
+  bModifiedAutoSubs: false,
+
+  initialize : function()
+  {
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+    var basedir =dsprops.get("resource:app", Components.interfaces.nsIFile);
+    basedir.append("res");
+
+//    var theFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+//    theFile.initWithPath(this.sourceFile);
+//    var inputStream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
+//    inputStream.init(theFile, -1, -1, false);  //these values for parameters taken from various examples...?
+//    this.namesDoc = domParser.parseFromStream(inputStream, "utf-8", inputStream.available(), "text/xml");
+//    inputstream.close();
+
+    var mathNameFile = basedir;
+    mathNameFile.append("tagdefs");
+    mathNameFile.append(this.sourceFile);
+    this.sourceFile = mathNameFile.path;
+    this.namesDoc = document.implementation.createDocument("", "mathnames", null);
+    var nodeList;
+    var node;
+    var s;
+    var arrayElement;
+    this.namesDoc.async = false;
+    if (this.namesDoc.load("file:///" + mathNameFile.path))
+    {
+      this.bInitialized = true;
+      this.initAutoCompleteList();
+    }
+  },
+
+  initAutoCompleteList : function()
+  {
+    if (!this.bInitialized)
+    {
+      dump("In msiBaseMathNameList, initAutoCompleteList being called without bInitialized being set!?\n");
+      this.initialize();
+    }
+    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var nameNodesList = this.namesDoc.getElementsByTagName("mathname");
+    for (var ix = 0; ix < nameNodesList.length; ++ix)
+    {
+      var theId = nameNodesList[ix].getAttribute("id");
+      ACSA.addString("mathnames", theId);
+    }
+    ACSA.sortArrays();
+  },
+
+  createDialogNameList : function()
+  {
+    if (!this.bInitialized)
+      this.initialize();
+    var newNameList = new Object();
+    var nameNodesList = this.namesDoc.getElementsByTagName("mathname");
+    for (var ix = 0; ix < nameNodesList.length; ++ix)
+    {
+      var theId = nameNodesList[ix].getAttribute("id");
+      newNameList[theId] = this.copyDataToObject(nameNodesList[ix]);
+    }
+    return newNameList;
+  },
+
+  getMathNameData : function(aName)
+  {
+    if (!this.bInitialized)
+      this.initialize();
+    var theNode = this.namesDoc.getElementById(aName);
+    if (theNode != null)
+      return this.copyDataToObject(theNode)
+    return null;
+  },
+
+  copyDataToObject : function(nameNode)
+  {
+    if (!nameNode)
+    {
+      dump("Error in msiEditorUtilities.js, in msiBaseMathNameList.copyDataToObject; null nameNode passed in!\n");
+      return null;
+    }
+    var nameData = new Object();
+    nameData.val = nameNode.getAttribute("id");
+    nameData.type = nameNode.getAttribute("type");
+    var theAppearanceList = nameNode.getElementsByTagName("appearance");
+    if (theAppearanceList != null && theAppearanceList.length > 0)
+      nameData.appearance = theAppearanceList[0].cloneNode(true);
+    nameData.builtIn = (nameNode.hasAttribute("builtIn") && nameNode.getAttribute("builtIn") == "true");
+    if (nameNode.hasAttribute("limitPlacement"))
+      nameData.limitPlacement = nameNode.getAttribute("limitPlacement");
+    if ( (nameNode.hasAttribute("engineFunction")) && (nameNode.getAttribute("engineFunction") == "true") )
+      nameData.enginefunction = true;
+    if (this.nameHasAutoSubstitution(nameData.val))
+      nameData.autoSubstitute = true;
+    return nameData;
+  },
+
+  deleteName : function(aName)
+  {
+    var nameNode = this.namesDoc.getElementById(aName);
+    if (nameNode != null)
+    {
+      var isBuiltIn = nameNode.getAttribute("builtIn");
+      if ((!isBuiltIn) || (isBuiltIn != "true"))
+      {
+        if (this.nameHasAutoSubstitution(aName))
+          this.removeAutoSubstitution(aName);
+        nameNode.parentNode.removeChild(nameNode);
+        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+        ACSA.deleteString("mathnames", aName);
+        this.bModified = true;
+        return true;
+      }
+    }
+    return false;
+  },
+
+  addName : function(aName, aNameData)
+  {
+    var nameNode = this.namesDoc.getElementById(aName);
+    if (nameNode != null)
+    {
+      var isBuiltIn = nameNode.getAttribute("builtIn");
+      if (isBuiltIn && (isBuiltIn == "true"))
+        return false;
+      nameNode.parentNode.removeChild(nameNode);
+    }
+    var parentNode = this.namesDoc.getElementById("nameBase");
+    var newNode = this.namesDoc.createElement("mathname");
+    newNode.setAttribute("id", aName);
+    newNode.setAttribute("type", aNameData.type);
+    if ("appearance" in aNameData)
+    {
+      var newAppearance = aNameData.appearance.cloneNode(true);
+      newNode.appendChild(newAppearance);
+    }
+    var newData = null;
+    if (("nameData" in aNameData) && (aNameData.nameData != null) && ("nodeType" in aNameData.nameData))
+    {
+      newData = aNameData.nameData.cloneNode(true);
+      newNode.appendChild(newData);
+    }
+    if ("limitPlacement" in aNameData)
+      newNode.setAttribute("limitPlacement", aNameData.limitPlacement);
+    parentNode.appendChild(newNode);
+    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    ACSA.addString("mathnames", aName);
+    ACSA.sortArrays();
+    if (aNameData.autoSubstitute == true)
+      this.addAutoSubstitution(aName);
+    this.bModified = true;
+    return true;
+  },
+
+  updateName : function(aName, aNameData)
+  {
+    return this.addName(aName, aNameData);  //is this what we should do?
+  },
+
+  nameHasAutoSubstitution : function(aName)
+  {
+    var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+    autosub.Reset();
+    var result = Components.interfaces.msiIAutosub.STATE_INIT;
+    for (var ix = aName.length - 1; ix >= 0; --ix)
+    {
+      result = autosub.nextChar(aName.charAt(ix));
+      if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
+        return false;
+    }
+    return (result == Components.interfaces.msiIAutosub.STATE_SUCCESS);
+  },
+
+  addAutoSubstitution : function(aName)
+  {
+    dump("In msiBaseMathNameList.addAutoSubstitution for name " + aName + "\n.");
+    if (this.nameHasAutoSubstitution(aName))
+      return;
+      //The following should be reinstated as soon as it's implemented in the object.
+    var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+    var bAdded = autosub.addEntry( aName, Components.interfaces.msiIAutosub.CONTEXT_MATHONLY, Components.interfaces.msiIAutosub.ACTION_EXECUTE,
+                      "insertMathname('" + aName + "')", "", "" );
+    dump("autosub.addEntry returned " + (bAdded ? "true" : "false") + "\n.");
+    this.bModifiedAutoSubs = true;
+  },
+
+  removeAutoSubstitution : function(aName)
+  {
+    var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+    autosub.removeEntry( aName);
+    this.bModifiedAutoSubs = true;
+  },
+
+  updateFile : function()
+  {
+    dump("msiBaseMathNameList.updateFile being called; this.bModified is " + (this.bModified ? "true" : "false") + ".\n");
+    if (this.bModified && (this.namesDoc != null))
+    {
+      var theFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+      theFile.initWithPath(this.sourceFile);
+      var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+      var fileMode = 0x22;  //MODE_WRONLY|MODE_TRUNCATE - rewrite the file
+      var permissions = 0x777; //all permissions for everybody?
+      outputStream.init(theFile, fileMode, permissions, 0);
+      var serializer = new XMLSerializer();
+      serializer.serializeToStream(this.namesDoc, outputStream, "utf-8");
+      outputStream.close();
+      this.bModified = false;
+      //The following should be reinstated as soon as it's implemented in the object.
+      if (this.bModifiedAutoSubs)
+      {
+        var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+        var bSaved = autosub.Save();  //not currently implemented
+        dump("autosub.Save() returned " + (bSaved ? "true" : "false") + "\n");
+        this.bModifiedAutoSubs = false;
+      }
+    }
+  }
+};
+
+function msiMathNameList()
+{
+  this.names = msiBaseMathNameList.createDialogNameList();
+  this.updateBaseList = function()
+  {
+//    for (var aName in this.names)
+//    {
+//      try
+//      {
+//        if (("bDeleted" in this.names[aName]) && (this.names[aName].bDeleted == true))
+//          msiBaseMathNameList.deleteName(aName);
+//        else if (("added" in this.names[aName]) && (this.names[aName].added == true))
+//          msiBaseMathNameList.addName(aName, this.names[aName]);
+//        else if (("changed" in this.names[aName]) && (this.names[aName].changed == true))
+//          msiBaseMathNameList.updateName(aName, this.names[aName]);
+//      } catch(exc) {dump("Problem checking properties for member [" + aName + "] of msiMathNameList.names: [" + exc + "].\n");}
+//    }
+    msiBaseMathNameList.updateFile();
+  };
+  this.canDelete = function(aName)
+  {
+    if ((aName in this.names) && (this.names[aName] != null) && (!this.names[aName].builtIn))
+    {
+//      return !("bDeleted" in this.names[aName]) || (this.names[aName].bDeleted != true);
+      return true;
+    }
+    return false;
+  };
+  this.canAdd = function(aName)
+  {
+    if ((aName in this.names) && (this.names[aName] != null))
+    {
+      return (!this.names[aName].builtIn) && ("bDeleted" in this.names[aName]) && (this.names[aName].bDeleted == true);
+//      return (!this.names[aName].builtIn);
+    }
+    return true;
+  };
+  this.hasAutoSubstitution = function(aName)
+  {
+    if ((aName in this.names) && ("autoSubstitute" in this.names[aName]) && (this.names[aName].autoSubstitute == true))
+      return true;
+    return false;
+  };
+  this.isBuiltIn = function(aName)
+  {
+    if ((aName in this.names) && (this.names[aName] != null))
+    {
+      if (this.names[aName].builtIn == true)
+        return true;
+    }
+    return false;
+  };
+  this.addName = function(aName, aType, bEngineFunction, bAutoSubstitute, aLimitPlacement, appearanceList)
+  {
+    var nameData = new Object();
+    nameData.val = aName;
+    nameData.type = aType;
+//    nameData.added = true;
+    if (appearanceList != null && !this.appearanceIsUsual(appearanceList, aName, aType, aLimitPlacement))
+      nameData.appearance = appearanceList;
+    nameData.builtIn = false;
+    if ((aType == "operator") && (aLimitPlacement != null) && (aLimitPlacement.length > 0) && (aLimitPlacement != "auto"))
+      nameData.limitPlacement = aLimitPlacement;
+    nameData.enginefunction = bEngineFunction;
+    nameData.autoSubstitute = bAutoSubstitute;
+    this.names[aName] = nameData;
+    msiBaseMathNameList.addName(aName, nameData);
+  };
+  this.deleteName = function(aName)
+  {
+    if (this.canDelete(aName))
+    {
+      msiBaseMathNameList.deleteName(aName);
+      delete this.names[aName];
+    }
+//      this.names[aName].bDeleted = true;
+  };
+  this.appearanceIsUsual = function(appearanceList, aName, aType, aLimitPlacement)
+  {
+    return true;  //need to settle how this should be passed in first - is it guaranteed to be a NodeList?
+  };
+}
+
 /**************************More general utilities**********************/
 
 // Clone simple JS objects
