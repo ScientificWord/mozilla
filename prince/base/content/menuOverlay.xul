@@ -186,7 +186,7 @@
   </menu>
 
   <!-- Insert menu -->
-  <menu id="insertMenuDisable" label="amp_insertMenu.label;" accesskey="amp_insertmenu.accesskey;">
+  <menu id="insertMenu" >
     <menupopup id="insertMenuPopup">
       <menuitem id="insertImage" accesskey="&insertimage.accesskey;"      observes="cmd_image"       label="&insertImageCmd.label;"/>
       <menuitem id="insertTable" accesskey="&inserttable.accesskey;"      observes="cmd_InsertTable" label="&insertTableCmd.label;"/>

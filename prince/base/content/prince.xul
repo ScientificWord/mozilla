@@ -106,7 +106,7 @@
     <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed">
       <menu id="fileMenu" />
       <menu id="editMenu" />
-      <menu id="MSIMathMenu" label="Insert"/>
+      <menu id="insertMenu"/>
       <menu id="viewMenu" />
       <menu id="goMenu" />
       <menu id="tagMenu" />
