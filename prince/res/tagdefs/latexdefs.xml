@@ -22,6 +22,7 @@
 			<tags>
 				<tag nm="html:body"><description>Body</description></tag>
 				<tag nm="sw:docbody"><description>DocBody</description></tag>
+        <tag nm="html:img"><description>Image</description></tag>
 			</tags>
 		</tagclass>
 		<tagclass>
@@ -31,6 +32,7 @@
 			<contains>texttag</contains>
 			<contains>othertag</contains>
 			<contains>mml:math</contains>
+			<contains>html:img</contains>
       <contains>line</contains>
 			<tags>
 				<tag nm="sw:bold"><description>Bold</description></tag>
@@ -70,6 +72,7 @@
 			<contains>sw:quote</contains>
 			<contains>cursor</contains>
 			<contains>sw:defaulttitletag</contains>
+			<contains>html:img</contains>
       <contains>line</contains>
 			<tags>
 				<tag nm="sw:address">
