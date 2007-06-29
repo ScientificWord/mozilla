@@ -151,10 +151,10 @@ function InitImage()
   }
 
   // setup the height and width widgets
-  var width = InitPixelOrPercentMenulist(globalElement,
+  var width = msiInitPixelOrPercentMenulist(globalElement,
                     gInsertNewImage ? null : imageElement,
                     "width", "widthUnitsMenulist", gPixel);
-  var height = InitPixelOrPercentMenulist(globalElement,
+  var height = msiInitPixelOrPercentMenulist(globalElement,
                     gInsertNewImage ? null : imageElement,
                     "height", "heightUnitsMenulist", gPixel);
 
@@ -280,7 +280,7 @@ function chooseFile()
   {
     // Always try to relativize local file URLs
     if (gHaveDocumentUrl)
-      fileName = MakeRelativeUrl(fileName);
+      fileName = msiMakeRelativeUrl(fileName);
 
     gDialog.srcInput.value = fileName;
 
@@ -350,7 +350,7 @@ function LoadPreviewImage()
     if (IOService)
     {
       // We must have an absolute URL to preview it or remove it from the cache
-      imageSrc = MakeAbsoluteUrl(imageSrc);
+      imageSrc = msiMakeAbsoluteUrl(imageSrc);
 
       if (GetScheme(imageSrc))
       {
@@ -553,20 +553,8 @@ function ValidateImage()
   else
     globalElement.removeAttribute("title");
 
-  // Force user to enter Alt text only if "Alternate text" radio is checked
-  // Don't allow just spaces in alt text
-  var alt = "";
-  var useAlt = gDialog.altTextRadioGroup.selectedItem == gDialog.altTextRadio;
-  if (useAlt)
-    alt = TrimString(gDialog.altTextInput.value);
+  alt = TrimString(gDialog.altTextInput.value);
 
-  if (gDoAltTextError && useAlt && !alt)
-  {
-    AlertWithTitle(null, GetString("NoAltText"));
-    SwitchToValidatePanel();
-    gDialog.altTextInput.focus();
-    return false;
-  }
   globalElement.setAttribute("alt", alt);
 
   var width = "";
@@ -576,12 +564,12 @@ function ValidateImage()
   if (!gDialog.actualSizeRadio.selected)
   {
     // Get user values for width and height
-    width = ValidateNumber(gDialog.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
+    width = msiValidateNumber(gDialog.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
                            globalElement, "width", false, true);
     if (gValidationError)
       return false;
 
-    height = ValidateNumber(gDialog.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
+    height = msiValidateNumber(gDialog.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
                             globalElement, "height", false, true);
     if (gValidationError)
       return false;
@@ -609,18 +597,18 @@ function ValidateImage()
 
   // spacing attributes
   gValidateTab = gDialog.tabBorder;
-  ValidateNumber(gDialog.imagelrInput, null, 0, gMaxPixels, 
+  msiValidateNumber(gDialog.imagelrInput, null, 0, gMaxPixels, 
                  globalElement, "hspace", false, true, true);
   if (gValidationError)
     return false;
 
-  ValidateNumber(gDialog.imagetbInput, null, 0, gMaxPixels, 
+  msiValidateNumber(gDialog.imagetbInput, null, 0, gMaxPixels, 
                  globalElement, "vspace", false, true);
   if (gValidationError)
     return false;
 
   // note this is deprecated and should be converted to stylesheets
-  ValidateNumber(gDialog.border, null, 0, gMaxPixels, 
+  msiValidateNumber(gDialog.border, null, 0, gMaxPixels, 
                  globalElement, "border", false, true);
   if (gValidationError)
     return false;

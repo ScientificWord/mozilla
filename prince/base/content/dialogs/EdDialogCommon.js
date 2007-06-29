@@ -758,7 +758,7 @@ function MakeInputValueRelativeOrAbsolute(checkbox)
     // Note that "checked" is opposite of its last state,
     //  which determines what we want to do here
     if (checkbox.checked)
-      input.value = MakeRelativeUrl(input.value);
+      input.value = msiMakeRelativeUrl(input.value);
     else
       input.value = MakeAbsoluteUrl(input.value);
 
