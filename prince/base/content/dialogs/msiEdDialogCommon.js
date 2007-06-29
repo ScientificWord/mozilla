@@ -8,26 +8,26 @@
 //
 //var gValidationError = false;
 //
-//// Use for 'defaultIndex' param in InitPixelOrPercentMenulist
-//const gPixel = 0;
-//const gPercent = 1;
-//
-//const gMaxPixels  = 100000; // Used for image size, borders, spacing, and padding
-//// Gecko code uses 1000 for maximum rowspan, colspan
-//// Also, editing performance is really bad above this
-//const gMaxRows    = 1000;
-//const gMaxColumns = 1000;
-//const gMaxTableSize = 1000000; // Width or height of table or cells
+// Use for 'defaultIndex' param in InitPixelOrPercentMenulist
+const gPixel = 0;
+const gPercent = 1;
+
+const gMaxPixels  = 100000; // Used for image size, borders, spacing, and padding
+// Gecko code uses 1000 for maximum rowspan, colspan
+// Also, editing performance is really bad above this
+const gMaxRows    = 1000;
+const gMaxColumns = 1000;
+const gMaxTableSize = 1000000; // Width or height of table or cells
 //
 //// For dialogs that expand in size. Default is smaller size see "onMoreFewer()" below
 //var SeeMore = false;
 //
-//// A XUL element with id="location" for managing
-//// dialog location relative to parent window
-//var gLocation;
+// A XUL element with id="location" for managing
+// dialog location relative to parent window
+var gLocation;
 //
-//// The element being edited - so AdvancedEdit can have access to it
-//var globalElement;
+// The element being edited - so AdvancedEdit can have access to it
+var globalElement;
 
 /* Validate contents of an input field 
  *
@@ -104,7 +104,9 @@ function msiValidateNumber(inputWidget, listWidget, minVal, maxVal, element, att
     {
       msiGetEditor(editorElement).removeAttributeOrEquivalent(element, attName, true);
     }
-    catch(exc) {AlertWithTitle("Error in msiValidateNumber in msiEdDialogCommon.js!", exc);}
+    catch(exc) {
+      //AlertWithTitle("Error in msiValidateNumber in msiEdDialogCommon.js!", exc);
+    }
   }
   return numString;
 }
@@ -174,16 +176,16 @@ function msiValidateNumber(inputWidget, listWidget, minVal, maxVal, element, att
 //  SetTextboxFocus(document.getElementById(id));
 //}
 //
-//function SetTextboxFocus(textbox)
-//{
-//  if (textbox)
-//  {
-//    //XXX Using the setTimeout is hacky workaround for bug 103197
-//    // Must create a new function to keep "textbox" in scope
-//    setTimeout( function(textbox) { textbox.focus(); textbox.select(); }, 0, textbox );
-//  }
-//}
-//
+function SetTextboxFocus(textbox)
+{
+  if (textbox)
+  {
+    //XXX Using the setTimeout is hacky workaround for bug 103197
+    // Must create a new function to keep "textbox" in scope
+    setTimeout( function(textbox) { textbox.focus(); textbox.select(); }, 0, textbox );
+  }
+}
+
 //function ShowInputErrorMessage(message)
 //{
 //  AlertWithTitle(GetString("InputError"), message);
@@ -300,24 +302,24 @@ function msiInitPixelOrPercentMenulist(elementForAtt, elementInDoc, attribute, m
 }
 
 //RWA: NOTE this may need to be overwritten!
-//function onAdvancedEdit()
-//{
-//  // First validate data from widgets in the "simpler" property dialog
-//  if (ValidateData())
-//  {
-//    // Set true if OK is clicked in the Advanced Edit dialog
-//    window.AdvancedEditOK = false;
-//    // Open the AdvancedEdit dialog, passing in the element to be edited
-//    //  (the copy named "globalElement")
-//    window.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", "", globalElement);
-//    window.focus();
-//    if (window.AdvancedEditOK)
-//    {
-//      // Copy edited attributes to the dialog widgets:
-//      InitDialog();
-//    }
-//  }
-//}
+function onAdvancedEdit()
+{
+  // First validate data from widgets in the "simpler" property dialog
+  if (ValidateData())
+  {
+    // Set true if OK is clicked in the Advanced Edit dialog
+    window.AdvancedEditOK = false;
+    // Open the AdvancedEdit dialog, passing in the element to be edited
+    //  (the copy named "globalElement")
+    window.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", "", globalElement);
+    window.focus();
+    if (window.AdvancedEditOK)
+    {
+      // Copy edited attributes to the dialog widgets:
+      InitDialog();
+    }
+  }
+}
 
 function getColor(ColorPickerID)
 {
@@ -449,9 +451,9 @@ function GetLocalFileURL(filterType)
     dump("filePicker.chooseInputFile threw an exception\n");
     return null;
   }
-  SaveFilePickerDirectory(fp, fileType);
+  msiSaveFilePickerDirectory(fp, fileType);
   
-  var fileHandler = GetFileProtocolHandler();
+  var fileHandler = msiGetFileProtocolHandler();
   return fp.file ? fileHandler.getURLSpecFromFile(fp.file) : null;
 }
 
@@ -648,12 +650,12 @@ function SaveWindowLocation()
   }
 }
 
-//function onCancel()
-//{
-//  SaveWindowLocation();
-//  // Close dialog by returning true
-//  return true;
-//}
+function onCancel()
+{
+  SaveWindowLocation();
+  // Close dialog by returning true
+  return true;
+}
 
 //Two functions following are presumably not needed for editors except the top-level one. Though I've rewritten them,
 //I'll leave them commented out. rwa
@@ -682,12 +684,12 @@ function msiSetRelativeCheckbox(checkbox)
   var urlScheme = GetScheme(url);
 
   // Check it if url is relative (no scheme).
-  checkbox.checked = url.length > 0 && !urlScheme;
+  checkbox.setAttribute("checked", (url.length > 0) && (!urlScheme));
 
   // Now do checkbox enabling:
   var enable = false;
 
-  var docUrl = GetDocumentBaseUrl();
+  var docUrl = msiGetDocumentBaseUrl();
   var docScheme = GetScheme(docUrl);
 
   if (url && docUrl && docScheme)
@@ -696,8 +698,8 @@ function msiSetRelativeCheckbox(checkbox)
     {
       // Url is absolute
       // If we can make a relative URL, then enable must be true!
-      // (this lets the smarts of MakeRelativeUrl do all the hard work)
-      enable = (GetScheme(MakeRelativeUrl(url)).length == 0);
+      // (this lets the smarts of msiMakeRelativeUrl do all the hard work)
+      enable = (GetScheme(msiMakeRelativeUrl(url)).length == 0);
     }
     else
     {
@@ -730,7 +732,7 @@ function msiMakeInputValueRelativeOrAbsolute(checkbox)
   if (!input)
     return;
 
-//  var docUrl = GetDocumentBaseUrl();
+//  var docUrl = msiGetDocumentBaseUrl();
   var editorElement = msiGetActiveEditorElement();
   var docUrl = msiGetDocumentBaseUrl(editorElement);
   if (!docUrl)
@@ -745,9 +747,9 @@ function msiMakeInputValueRelativeOrAbsolute(checkbox)
     // Note that "checked" is opposite of its last state,
     //  which determines what we want to do here
     if (checkbox.checked)
-      input.value = MakeRelativeUrl(input.value);
+      input.value = msiMakeRelativeUrl(input.value);
     else
-      input.value = MakeAbsoluteUrl(input.value);
+      input.value = msiMakeAbsoluteUrl(input.value);
 
     // Reset checkbox to reflect url state
     msiSetRelativeCheckbox(checkbox);
@@ -1084,7 +1086,7 @@ function msiFillLinkMenulist(linkMenulist, headingsArray, editorElement)
 //  {
 //    // Always try to relativize local file URLs
 //    if (gHaveDocumentUrl)
-//      fileName = MakeRelativeUrl(fileName);
+//      fileName = msiMakeRelativeUrl(fileName);
 //
 //    gDialog.hrefInput.value = fileName;
 //
