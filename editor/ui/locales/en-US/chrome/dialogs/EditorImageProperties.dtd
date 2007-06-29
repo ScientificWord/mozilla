@@ -44,17 +44,19 @@
 <!ENTITY percentPopup.value "percent">
 
 <!-- These are in the Location tab panel -->
-<!ENTITY locationEditField.label "Image Location:">
-<!ENTITY locationEditField.accessKey "L">
+<!ENTITY importButton.label "Import">
+<!ENTITY importButton.accessKey "I">
+<!ENTITY referenceButton.label "Reference external image">
+<!ENTITY referenceButton.accessKey "R">
+<!ENTITY locationEditField.label "Image File">
+<!ENTITY locationEditField.accessKey "F">
 <!ENTITY locationEditField.tooltip "Type the image's filename or location">
-<!ENTITY title.label "Tooltip:">
-<!ENTITY title.accessKey "T">
-<!ENTITY title.tooltip "The html 'title' attribute that displays as a tooltip">
+<!ENTITY title.label "Caption">
+<!ENTITY title.accessKey "C">
+<!ENTITY title.tooltip "The image's caption, if any">
 <!ENTITY altText.label "Alternate text:">
 <!ENTITY altText.accessKey "A">
 <!ENTITY altTextEditField.tooltip "Type text to display in place of the image">
-<!ENTITY noAltText.label "Don't use alternate text">
-<!ENTITY noAltText.accessKey "D">
 
 <!ENTITY previewBox.label "Image Preview">
 <!ENTITY MoreFewerButton.tooltip "Display more or fewer properties to edit">
