@@ -875,6 +875,16 @@ function insertMathnameObject(mathNameObj, editorElement)
       if (sel != null)
       {
         var opNode = editor.getElementOrParentByTagName("mo", sel.focusNode);
+        if (opNode == null)  //thus the focus is not in the added operator element - look to the left?
+        {
+          var nOffset = sel.focusOffset;
+          if (nOffset > 0)
+          {
+            var prevNode = sel.focusNode.childNodes[nOffset - 1];
+            if (prevNode && prevNode.nodeName == "mo")
+              opNode = prevNode;
+          }
+        }
         if (opNode != null)
           opNode.setAttribute("msimathname", "true");
 //        var focusNode = sel.focusNode;
