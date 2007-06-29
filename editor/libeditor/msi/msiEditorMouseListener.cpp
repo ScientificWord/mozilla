@@ -46,7 +46,7 @@ msiEditorMouseListener::MouseDown(nsIDOMEvent* aMouseEvent)
   m_msiEditor->GetMSISelection(msiSelection);
   if (msiSelection)
     msiSelection->SetDOMEvent(aMouseEvent);
-  return NS_OK;
+  return nsHTMLEditorMouseListener::MouseDown(aMouseEvent);
 }  
 
 
@@ -59,7 +59,7 @@ msiEditorMouseListener::MouseUp(nsIDOMEvent* aMouseEvent)
   m_msiEditor->GetMSISelection(msiSelection);
   if (msiSelection)
     msiSelection->SetDOMEvent(aMouseEvent);
-  return NS_OK;
+  return nsHTMLEditorMouseListener::MouseUp(aMouseEvent);
 }
 
 //msiIMouse
