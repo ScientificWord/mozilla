@@ -70,8 +70,8 @@
 
 
 
-  <menu id="MSIMathMenu" label="Insert" accesskey="&insertmenu.accesskey;">
-    <menupopup id="MSIMathPopup" onpopupshowing="msiInitFontStyleMenu(this)">
+  <menu id="insertMenu" label="Insert" accesskey="&insertmenu.accesskey;">
+    <menupopup id="insertMenuPopup" onpopupshowing="msiInitFontStyleMenu(this)">
       <menuitem label="&MSIinlineMathCmd.label;" accesskey="&MSIinlineMathCmd.accesskey;" key="MSIinlineMathKey" observes="cmd_MSImathtext"   type="checkbox"/>
       <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"                              command="cmd_MSItextCmd"/>  
       <menuseparator />

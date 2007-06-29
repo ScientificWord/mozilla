@@ -21,6 +21,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdImageOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 
   <tab id="imageInputTab" label="&imageInputTab.label;"/>
   <tab id="imageLocationTab" label="&imageLocationTab.label;"/>
@@ -30,6 +31,16 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
   <vbox id="imageLocation"> 
     <spacer class="spacer"/>
+    <radiogroup id="importRefRadioGroup" orient="horizontal" flex="1">
+      <radio id = "importRadio" 
+        label   = "&importButton.label;"
+        accesskey = "&importButton.accessKey;"
+        oncommand = "SetImport(true);"/>
+      <radio id = "referenceRadio" 
+        label   = "&referenceButton.label;"
+        accesskey = "&referenceButton.accessKey;"
+        oncommand = "SetImport(false);"/>
+    </radiogroup>
     <label control = "srcInput"
       value = "&locationEditField.label;"
       accesskey="&locationEditField.accessKey;"
@@ -46,13 +57,13 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
       <button id="ChooseFile"  tabindex="3"/>
     </hbox>
     <spacer class="spacer"/>
-    <radiogroup id="altTextRadioGroup" flex="1">
+    <groupbox orient="vertical" flex="1">
       <grid>
         <columns><column/><column flex="1"/></columns>
         <rows>
           <row align="center">
             <label 
-              style   = "margin-left: 26px"
+              style   = "margin-left: 5px"
               control = "titleInput"
               accesskey = "&title.accessKey;"
               value   ="&title.label;"
@@ -65,12 +76,13 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
               tabindex="4"/>
           </row>
           <row align="center">
-            <radio id = "altTextRadio" 
-              label   = "&altText.label;"
+            <label 
+              style   = "margin-left: 5px"
+              control = "altTextInput"
               accesskey = "&altText.accessKey;"
+              value   ="&altText.label;"
               tooltiptext="&altTextEditField.tooltip;"
-              oncommand = "SetAltTextDisabled(false);"
-              tabindex="5"/>
+              for     = "titleInput"/>
             <textbox flex="1"
               id      = "altTextInput"
               class   = "MinWidth20em"
@@ -80,14 +92,8 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
           </row>
         </rows>
       </grid>
-
-      <radio id = "noAltTextRadio" 
-        label   = "&noAltText.label;"
-        accesskey = "&noAltText.accessKey;"
-        oncommand = "SetAltTextDisabled(true);"/>
-    </radiogroup>
+    </groupbox>
   </vbox>
-
   <groupbox id="imagePreview" orient="horizontal" flex="1">
     <caption label="&previewBox.label;"/>
     <hbox id="preview-image-box" align="center">
