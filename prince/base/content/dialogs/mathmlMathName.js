@@ -12,6 +12,7 @@ function parseBool(s){
 function Startup() {
   target = window.arguments[0];
   gDialog.nameList = new msiMathNameList();  //see msiEditorUtilities.js
+  gDialog.bStopNextEnter = false;
 
   function sortNames(name1, name2) {  //the idea is to sort irrespective of case, unless two names differ only by case.
     var lc1 = name1.toLowerCase();
@@ -164,13 +165,40 @@ function updateControls()
 //  changeName();
 //}
 
-//function checkKeyPressEvent(theEvent)
-//{
-//  if (!theEvent.altKey && theEvent.keyCode==KeyEvent.DOM_VK_RETURN) 
-//  {
-//    theEvent.
-//  }
-//}
+function checkKeyPressEvent(control, theEvent)
+{
+  var dumpStr = "In checkKeyPressEvent handler, gDialog.bStopNextEnter is [";
+  if (gDialog.bStopNextEnter)
+    dumpStr += "true]; ";
+  else
+    dumpStr += "false]; ";
+  if (!theEvent.altKey)
+  {
+    if (theEvent.keyCode==KeyEvent.DOM_VK_RETURN)
+    {
+      if (gDialog.bStopNextEnter)
+      {
+        gDialog.bStopNextEnter = false;
+        if (!control)
+        {
+          dump("Null control in checkKeyPressEvent!\n");
+          control = document.getElementById("mathNamesBox");
+        }
+        control.controller.handleEnter();
+        theEvent.stopPropagation();
+        theEvent.preventDefault();
+        dumpStr += "called theEvent.stopPropagation().\n";
+      }
+    }
+    else //now we're typing into the name field, so we assume we should stop the next enter from accepting the dialog
+    {
+      gDialog.bStopNextEnter = true;
+      dumpStr += "setting gDialog.bStopNextEnter.\n";
+    }
+  }
+  dump(dumpStr);
+  //Now hopefully continue processing as usual.
+}
 
 function changeName(currName)
 {
@@ -241,6 +269,11 @@ function onOK() {
 //  gDialog.nameList.updateBaseList();  //see msiEditorUtilities.js
 
   var parentEditorElement = msiGetParentEditorElementForDialog(window);
+  var dumpStr = "In mathmlMathName.js onOK(); inserting mathname object [" + target.val + "] in editor element [";
+  if (parentEditorElement != null)
+    dumpStr += parentEditorElement.id;
+  dumpStr += "].\n";
+  dump(dumpStr);
   var theWindow = window.opener;
   if (!theWindow || !("insertMathnameObject" in theWindow))
     theWindow = msiGetTopLevelWindow();

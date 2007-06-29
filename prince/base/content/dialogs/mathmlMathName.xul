@@ -93,6 +93,7 @@
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="mathnames" 
 		      tooltiptext="&mathNamesBox.tooltip;" label="&mathNamesBox.label;"   
           onfocus="this.select();"
+          onkeypress="checkKeyPressEvent(this, event);"
           ontextentered="changeName(this.value);" />
       </hbox>
       <!-- groupbox>
