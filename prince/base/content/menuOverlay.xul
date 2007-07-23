@@ -18,6 +18,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript"  src="chrome://venkman/content/venkman-overlay.js"/>
   <script type="application/x-javascript"  src="chrome://inspector/content/hooks.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/viewZoomOverlay.js"/>
   
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
     <menupopup id="menu_FilePopup" onpopupshowing="msiEditorInitFileMenu();">
@@ -341,6 +342,17 @@
         label="&viewIndexEntries.label;"/>
       <menuitem id="viewMarkers"  type="checkbox" accesskey="&viewMarkers.accesskey;"  checked="true"   observes="cmd_viewInvisibles"
         label="&viewMarkers.label;"/>
+      <menuseparator/>
+      <menu id="viewZoom" accesskey="&viewZoom.accesskey;" label="&viewZoom.label;" >
+        <menupopup id="viewZoomPopup" >
+          <menuitem id="viewZoomEnlarge" accesskey="&viewZoomEnlarge.accesskey;" label="&viewZoomEnlarge.label;" 
+            observes="cmd_textZoomEnlarge"/>
+          <menuitem id="viewZoomReduce" accesskey="&viewZoomReduce.accesskey;" label="&viewZoomReduce.label;" 
+            observes="cmd_textZoomReduce"/>
+          <menuitem id="viewZoomReset" accesskey="&viewZoomReset.accesskey;" label="&viewZoomReset.label;" 
+            observes="cmd_textZoomReset"/>
+        </menupopup>
+      </menu>
     </menupopup>
   </menu>
   
@@ -370,6 +382,9 @@
     <command id="cmd_compileDvi"  oncommand="msiGoDoCommand('cmd_compileDvi')"/>
     <command id="cmd_documentInfo" oncommand="msiGoDoCommand('cmd_documentInfo')"/>
     <command id="cmd_quit"        oncommand="msiGoDoCommand('cmd_quit')"/>
+    <command id="cmd_textZoomReduce" oncommand="ZoomManager.prototype.getInstance().reduce();"/>
+    <command id="cmd_textZoomEnlarge" oncommand="ZoomManager.prototype.getInstance().enlarge();"/>
+    <command id="cmd_textZoomReset" oncommand="ZoomManager.prototype.getInstance().reset();"/>
   </commandset>
 
   <commandset id="composerMenuItems"
