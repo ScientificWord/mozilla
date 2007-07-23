@@ -3,13 +3,7 @@
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       xmlns:msxsl="urn:schemas-microsoft-com:xslt"
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
-      xmlns:msi="C:/xml/xsl/lbtest"
       version="1.1">
-
-
-<!-- This style sheet scripts 2 dialects of LaTeX.
-  The following variable determines which dialect is generated.
--->
 
   <xsl:variable name="output-mode">
     <xsl:text>SW-LaTeX</xsl:text>
@@ -32,52 +26,61 @@
   </xsl:variable>
 
 
-
-
   <xsl:template match="mml:math">
+     <xsl:variable name="the-math">
+        <xsl:choose>
+           <xsl:when test="count(*)=1">
+               <sw-domath><xsl:copy-of select="*"/></sw-domath>
+           </xsl:when>
 
-<!-- Record some info about the top level structure of the math -->
+           <xsl:otherwise>
+               <sw-domath><mml:mrow><xsl:copy-of select="*"/></mml:mrow></sw-domath>
+           </xsl:otherwise>
+        </xsl:choose>
+     </xsl:variable>
+     <xsl:apply-templates select="$the-math"/>
+  </xsl:template>
 
-    <xsl:variable name="math-structure.tr">
 
-<!-- mml:math is expected to contain 1 child??? -->
+  <xsl:template match="sw-domath">
+    
+  <!-- Record some info about the top level structure of the math -->
 
-	  <xsl:choose>
+     <xsl:variable name="math-structure.tr">
 
-        <xsl:when test="count(*)=1
-	    and             ./*[1][self::mml:mrow]">
-	      <xsl:choose>
+      <!-- mml:math is expected to contain 1 child??? -->
 
-<!-- if structure is math/mrow/mstyle,
-     examine objects within the mstyle -->
+	    <xsl:choose>
+        <xsl:when test="count(*)=1 and ./*[1][self::mml:mrow]">
+	        <xsl:choose>
 
-	        <xsl:when test="./mml:mrow[1]/*[1][self::mml:mstyle]
-	        and             count(./mml:mrow[1]/*)=1">
+            <!-- if structure is math/mrow/mstyle, examine objects within the mstyle -->
+
+	          <xsl:when test="./mml:mrow[1]/*[1][self::mml:mstyle] and count(./mml:mrow[1]/*)=1">
 
               <xsl:for-each select="./*[1]">
-              <xsl:for-each select="./*[1]">
-		        <displaystyle>
-                  <xsl:value-of select="@displaystyle"/>
-                </displaystyle>
-		        <n-children>
-                  <xsl:value-of select="count(*)"/>
-                </n-children>
-                <xsl:if test="./*[1][self::mml:mtable]">
-                  <first-is-table>
-                    <xsl:text>true</xsl:text>
-                  </first-is-table>
-                </xsl:if>
+                <xsl:for-each select="./*[1]">
+		              <displaystyle>
+                    <xsl:value-of select="@displaystyle"/>
+                  </displaystyle>
+		              <n-children>
+                    <xsl:value-of select="count(*)"/>
+                  </n-children>
+                  <xsl:if test="./*[1][self::mml:mtable]">
+                    <first-is-table>
+                      <xsl:text>true</xsl:text>
+                    </first-is-table>
+                  </xsl:if>
+                </xsl:for-each>
               </xsl:for-each>
-              </xsl:for-each>
+	          </xsl:when>
 
-	        </xsl:when>
-
-	        <xsl:otherwise>
+	          <xsl:otherwise>
 <!-- if math/mrow look at objects within the mrow -->
               <displaystyle>
                 <xsl:text>false</xsl:text>
               </displaystyle>
-			  <n-children>
+			        <n-children>
                 <xsl:value-of select="count(./*[1]/*)"/>
               </n-children>
               <xsl:if test="./mml:mrow[1]/*[1][self::mml:mtable]">
@@ -85,65 +88,70 @@
                   <xsl:text>true</xsl:text>
                 </first-is-table>
               </xsl:if>
-		    </xsl:otherwise>
-		  </xsl:choose>
-	    </xsl:when>
+		        </xsl:otherwise>
+		      </xsl:choose>
+	      </xsl:when>
 
         <xsl:otherwise>
 <!-- if math/1 container object,  look at the object -->
-		  <displaystyle>
-            <xsl:text>false</xsl:text>
+		      <displaystyle>
+                <xsl:text>false</xsl:text>
           </displaystyle>
-		  <n-children>
-            <xsl:value-of select="count(*)"/>
+		      <n-children>
+              <xsl:value-of select="count(*)"/>
           </n-children>
+      
           <xsl:if test="./*[1][self::mml:mtable]">
-            <first-is-table>
-              <xsl:text>true</xsl:text>
-            </first-is-table>
+              <first-is-table>
+                  <xsl:text>true</xsl:text>
+              </first-is-table>
           </xsl:if>
-		</xsl:otherwise>
-
-	  </xsl:choose>
-
+		    </xsl:otherwise>
+	    </xsl:choose>
     </xsl:variable>
+    
     <xsl:variable name="math-structure" select="$math-structure.tr"/>
 
-
-
-
-
-<!-- Decide if inline OR display.  The <mml:math> tag should contain
-     contain a "display" tag with a value of 'inline' or 'block' -->
+    <!-- Decide if inline OR display.  The <mml:math> tag should contain
+         contain a "display" tag with a value of 'inline' or 'block' -->
 
     <xsl:variable name="is-display.tr">
       <xsl:choose>
-	    <xsl:when test="@display='inline'">
+
+	      <xsl:when test="@display='inline'">
           <xsl:text>false</xsl:text>
-	    </xsl:when>
-	    <xsl:when test="@display='block'">
+	      </xsl:when>
+
+	      <xsl:when test="@display='block'">
           <xsl:text>true</xsl:text>
-	    </xsl:when>
-<!-- mode attrib deprecated in MathML 2.0 -->
-	    <xsl:when test="@mode='inline'">
+	      </xsl:when>
+        
+        <!-- mode attrib deprecated in MathML 2.0 -->
+	      <xsl:when test="@mode='inline'">
           <xsl:text>false</xsl:text>
-	    </xsl:when>
-	    <xsl:when test="@mode='display'">
+	      </xsl:when>
+	      
+	      <xsl:when test="@mode='display'">
           <xsl:text>true</xsl:text>
-	    </xsl:when>
-	    <xsl:otherwise>
+	      </xsl:when>
+	      
+	      <xsl:otherwise>
           <xsl:choose>
-            <xsl:when test="string-length($math-structure/displaystyle)&gt;0">
+            <xsl:when test="string-length(math-structure/displaystyle)&gt;0">
               <xsl:value-of select="$math-structure/displaystyle"/>
             </xsl:when>
-	        <xsl:otherwise>
+	          
+	          <xsl:otherwise>
               <xsl:text>false</xsl:text>
-	        </xsl:otherwise>
+	          </xsl:otherwise>
           </xsl:choose>
-	    </xsl:otherwise>
-	  </xsl:choose>
+	      </xsl:otherwise>
+	    </xsl:choose>
     </xsl:variable>
     <xsl:variable name="is-display" select="$is-display.tr"/>
+
+
+
 
 <!--
 <xsl:text>AAA-</xsl:text>
@@ -157,10 +165,11 @@
 
 <stream-with-break-tokens>
     <xsl:choose>
-
+<!-- JCS 
       <xsl:when test="count(*)&gt;1">
-        <xsl:text>ERROR - multiple first level children in math.</xsl:text>
+        <xsl:text>ERROR? - multiple first level children in math.</xsl:text>
       </xsl:when>
+-->
 
 <!-- Handle display MATH -->
 
@@ -187,60 +196,70 @@
                   <xsl:for-each select="./*[1][self::mml:mrow]">
 <!-- if math/mrow/mstyle look at objects within the mstyle -->
                     <xsl:choose>
-	                  <xsl:when test="./*[1][self::mml:mstyle]">
-                        <xsl:for-each select="./*[1][self::mml:mstyle]">
-                          <xsl:for-each select="./*[1][self::mml:mtable]">
-		  	  	  	        <n-mtr>
-                              <xsl:value-of select="count(mml:mtr)"/>
-                            </n-mtr>
-		  	  	  	        <n-mlabeledtr>
-                              <xsl:value-of select="count(mml:mlabeledtr)"/>
-                            </n-mlabeledtr>
-                            <xsl:for-each select="mml:mtr|mml:mlabeledtr">
-                              <xsl:sort select="count(mml:mtd)"/>
-		  	  	  	          <n-cells>
-                                <xsl:value-of select="count(mml:mtd)"/>
-                              </n-cells>
-                            </xsl:for-each>
-                            <xsl:for-each select="mml:mtr|mml:mlabeledtr">
-                              <xsl:sort select="count(./mml:mtd/mml:mrow/mml:maligngroup)"/>
-    	                      <n-aligns>
-                                <xsl:value-of select="count(./mml:mtd/mml:mrow/mml:maligngroup)"/>
-                              </n-aligns>
+	                    <xsl:when test="./*[1][self::mml:mstyle]">
+                          <xsl:for-each select="./*[1][self::mml:mstyle]">
+                            <xsl:for-each select="./*[1][self::mml:mtable]">
+
+		  	  	  	              <n-mtr>
+                                <xsl:value-of select="count(mml:mtr)"/>
+                              </n-mtr>
+
+		  	  	  	              <n-mlabeledtr>
+                                <xsl:value-of select="count(mml:mlabeledtr)"/>
+                              </n-mlabeledtr>
+
+                              <xsl:for-each select="mml:mtr|mml:mlabeledtr">
+                                <xsl:sort select="count(mml:mtd)"/>
+		  	  	  	                  <n-cells>
+                                    <xsl:value-of select="count(mml:mtd)"/>
+                                  </n-cells>
+                              </xsl:for-each>
+
+                              <xsl:for-each select="mml:mtr|mml:mlabeledtr">
+                                <xsl:sort select="count(./mml:mtd/mml:mrow/mml:maligngroup)"/>
+    	                            <n-aligns>
+                                    <xsl:value-of select="count(./mml:mtd/mml:mrow/mml:maligngroup)"/>
+                                  </n-aligns>
+                              </xsl:for-each>
                             </xsl:for-each>
                           </xsl:for-each>
-                        </xsl:for-each>
-	                  </xsl:when>
-	                  <xsl:otherwise>
+	                    </xsl:when>
+	                    
+	                    <xsl:otherwise>
 <!-- if math/mrow look at objects within the mrow -->
                         <xsl:for-each select="./*[1][self::mml:mtable]">
-	  	  	  	          <n-mtr>
+
+	  	  	  	            <n-mtr>
                             <xsl:value-of select="count(mml:mtr)"/>
                           </n-mtr>
-	  	  	  	          <n-mlabeledtr>
+
+	  	  	  	            <n-mlabeledtr>
                             <xsl:value-of select="count(mml:mlabeledtr)"/>
                           </n-mlabeledtr>
+
                           <xsl:for-each select="mml:mtr|mml:mlabeledtr">
                             <xsl:sort select="count(mml:mtd)"/>
-	  	  	  	            <n-cells>
+	  	  	  	              <n-cells>
                               <xsl:value-of select="count(mml:mtd)"/>
                             </n-cells>
                           </xsl:for-each>
+
                           <xsl:for-each select="mml:mtr|mml:mlabeledtr">
                             <xsl:sort select="count(./mml:mtd/mml:mrow/mml:maligngroup)"/>
-							  <n-aligns>
-                              <xsl:value-of select="count(./mml:mtd/mml:mrow/mml:maligngroup)"/>
-                            </n-aligns>
+							                <n-aligns>
+                                <xsl:value-of select="count(./mml:mtd/mml:mrow/mml:maligngroup)"/>
+                              </n-aligns>
                           </xsl:for-each>
+
                         </xsl:for-each>
-	                  </xsl:otherwise>
+	                    </xsl:otherwise>
                     </xsl:choose>
 
                   </xsl:for-each>
                 </xsl:variable>
+
+
                 <xsl:variable name="table-structure" select="$table-structure.tr"/>
-
-
                 <xsl:choose>
 <!-- mtables with 1 cell per row -->
 
@@ -357,12 +376,12 @@
   </xsl:template>
 
 
-  <!-- xsl:include href="chrome://prnc2ltx/attrutil.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/mathmap.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/textmap.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/mtext.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/mstyle.xsl"/>
--->
+  <xsl:include href="attrutil.xsl"/>
+  <xsl:include href="mathmap.xsl"/>
+  <xsl:include href="textmap.xsl"/>
+  <xsl:include href="mtext.xsl"/>
+  <xsl:include href="mstyle.xsl"/>
+
 
 
 
@@ -460,13 +479,12 @@ no indent - disregarded completely
     <!-- xsl:text xml:space="preserve"> &amp; </xsl:text -->
   </xsl:template>
 
+  <xsl:include href="mn.xsl"/>
+  <xsl:include href="fencemo.xsl"/>
+  <xsl:include href="mo.xsl"/>
+  <xsl:include href="mi.xsl"/>
+  <xsl:include href="mfrac.xsl"/>
 
-  <!--- xsl:include href="chrome://prnc2ltx/mn.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/fencemo.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/mo.xsl"/>
-
-  <xsl:include href="chrome://prnc2ltx/mi.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/mfrac.xsl"/>		--->
 
 
   <xsl:template match="mml:msqrt">
@@ -701,11 +719,12 @@ no indent - disregarded completely
   </xsl:template>
 
 
-  <!-- xsl:include href="chrome://prnc2ltx/mfenced.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/scripts.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/munder.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/mover.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/munderover.xsl"/>   -->
+  <xsl:include href="mfenced.xsl"/>
+  <xsl:include href="scripts.xsl"/>
+  <xsl:include href="munder.xsl"/>
+  <xsl:include href="mover.xsl"/>
+  <xsl:include href="munderover.xsl"/>
+ 
 
 
   <xsl:template match="mml:mprescripts">
@@ -954,6 +973,7 @@ no indent - disregarded completely
   </xsl:template>
 
 
+ 
 <!-- Template for mtable variants that translate
   to LaTeX objects that occur within MATH.
 
@@ -1107,9 +1127,9 @@ no indent - disregarded completely
 
 
 
-  <!--- xsl:include href="chrome://prnc2ltx/MML2arry.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/MML2eqna.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/MML2tabular.xsl"/>	-->
+  <xsl:include href="MML2arry.xsl"/>
+  <xsl:include href="MML2eqna.xsl"/>
+  <xsl:include href="MML2tabular.xsl"/>	
 
 <!-- Frequently, the numbered children of a MathML schemata
   translate to an argument of some LaTeX command.
@@ -1251,9 +1271,7 @@ no indent - disregarded completely
 	</xsl:choose>
   </xsl:template>
 
-
-  <!-- xsl:include href="chrome://prnc2ltx/HTM2LTeX.xsl"/ --->
+  <xsl:include href="HTM2LTeX.xsl"/>
 
 
 </xsl:stylesheet>
-
