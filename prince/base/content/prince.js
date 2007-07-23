@@ -367,21 +367,60 @@ function openTeX()
 
 function documentAsTeX( document, xslSheetPath )
 {
-  var str = "";
-  if (!document) return str;
-  if (xslSheetPath.length == 0) return str;
-  var xsltProcessor = new XSLTProcessor();
-  var myXMLHTTPRequest = new XMLHttpRequest();
-  myXMLHTTPRequest.open("GET", xslSheetPath, false);
-  myXMLHTTPRequest.send(null);
+    dump("\nDocument as TeX");
 
-  var xslStylesheet = myXMLHTTPRequest.responseXML;
-  xsltProcessor.importStylesheet(xslStylesheet);
-  var newDoc = xsltProcessor.transformToDocument(document);
-  str = newDoc.documentElement.textContent;
-  dump("\n"+str);
-  return str;
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+
+    var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
+    exefile.append("Transform.exe");
+
+    var outfile = dsprops.get("TmpD", Components.interfaces.nsIFile);
+    outfile.append("acopy.xml");
+        
+    dump("\nOutput file = " + outfile.path);
+    var s = new XMLSerializer();
+    var str = s.serializeToString(document);
+
+
+    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+    fos.init(outfile, -1, -1, false);
+    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+      .createInstance(Components.interfaces.nsIConverterOutputStream);
+    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+    os.writeString(str);
+    os.close();
+
+
+    try 
+    {
+      var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+      theProcess.init(exefile);
+      var args =['-s', outfile.path, '-o', 'demo.tex', xslSheetPath, ];
+      theProcess.run(true, args, args.length);
+    } 
+    catch (ex) 
+    {
+      dump("\nUnable to export TeX:\n");
+      dump(ex);
+    }      
+
 }
+//{
+//  var str = "";
+//  if (!document) return str;
+//  if (xslSheetPath.length == 0) return str;
+//  var xsltProcessor = new XSLTProcessor();
+//  var myXMLHTTPRequest = new XMLHttpRequest();
+//  myXMLHTTPRequest.open("GET", xslSheetPath, false);
+//  myXMLHTTPRequest.send(null);
+//
+//  var xslStylesheet = myXMLHTTPRequest.responseXML;
+//  xsltProcessor.importStylesheet(xslStylesheet);
+//  var newDoc = xsltProcessor.transformToDocument(document);
+//  str = newDoc.documentElement.textContent;
+//  dump("\n"+str);
+//  return str;
+//}
 
 function documentAsTeXFile( document, xslSheetPath, outputFile )
 {
