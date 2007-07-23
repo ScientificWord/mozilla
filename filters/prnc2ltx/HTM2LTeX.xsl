@@ -111,22 +111,22 @@ after \allowbreak.  More \LBo's can be scripted as needed.
   <xsl:text>&gt;</xsl:text>
 
   <xsl:for-each select="./node()">
-    <xsl:text xsl:space="preserve">&lt;</xsl:text>
+    <xsl:text xml:space="preserve">&lt;</xsl:text>
     <xsl:value-of select="name(.)"/>
     <xsl:text>&gt;</xsl:text>
 
     <xsl:for-each select="./node()">
-      <xsl:text xsl:space="preserve">&lt;</xsl:text>
+      <xsl:text xml:space="preserve">&lt;</xsl:text>
       <xsl:value-of select="name(.)"/>
       <xsl:text>&gt;</xsl:text>
 
       <xsl:for-each select="./node()">
-        <xsl:text xsl:space="preserve">&lt;</xsl:text>
+        <xsl:text xml:space="preserve">&lt;</xsl:text>
         <xsl:value-of select="name(.)"/>
         <xsl:text>&gt;</xsl:text>
 
         <xsl:for-each select="./node()">
-          <xsl:text xsl:space="preserve">&lt;</xsl:text>
+          <xsl:text xml:space="preserve">&lt;</xsl:text>
           <xsl:value-of select="name(.)"/>
           <xsl:text>&gt;</xsl:text>
 
@@ -198,7 +198,7 @@ after \allowbreak.  More \LBo's can be scripted as needed.
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text xsl:space="preserve">\ &lt;EOLN/&gt;</xsl:text>
+        <xsl:text xml:space="preserve">\ &lt;EOLN/&gt;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
 
@@ -459,10 +459,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
     <xsl:choose>
       <xsl:when test="string-length($line-so-far)=0
       or              preceding-sibling::*[1][self::line-frag]">
-        <xsl:text xsl:space="preserve"></xsl:text>
+        <xsl:text xml:space="preserve"></xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text xsl:space="preserve"> </xsl:text>
+        <xsl:text xml:space="preserve"> </xsl:text>
       </xsl:otherwise>
     </xsl:choose>
     </xsl:variable>
@@ -671,9 +671,9 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 <!-- ENTITY % ul "(li)+" -->
 
   <xsl:template match="msi:ul">
-    <xsl:text xsl:space="preserve">\begin{itemize}&lt;EOLN/&gt;</xsl:text>
+    <xsl:text xml:space="preserve">\begin{itemize}&lt;EOLN/&gt;</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text xsl:space="preserve">\end{itemize}&lt;EOLN/&gt;</xsl:text>
+    <xsl:text xml:space="preserve">\end{itemize}&lt;EOLN/&gt;</xsl:text>
 <!-- Script an empty line to end our LaTeX paragraph. -->
     <xsl:text>&lt;EOLN/&gt;</xsl:text>
   </xsl:template>
@@ -681,9 +681,9 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
 <!-- ENTITY % ol "(li)+" -->
   <xsl:template match="msi:ol">
-    <xsl:text xsl:space="preserve">\begin{enumerate}&lt;EOLN/&gt;</xsl:text>
+    <xsl:text xml:space="preserve">\begin{enumerate}&lt;EOLN/&gt;</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text xsl:space="preserve">\end{enumerate}&lt;EOLN/&gt;</xsl:text>
+    <xsl:text xml:space="preserve">\end{enumerate}&lt;EOLN/&gt;</xsl:text>
 <!-- Script an empty line to end our LaTeX paragraph. -->
     <xsl:text>&lt;EOLN/&gt;</xsl:text>
   </xsl:template>
@@ -691,16 +691,16 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
 <!-- ENTITY % li "(p)+" -->
   <xsl:template match="msi:li">
-    <xsl:text xsl:space="preserve">\item </xsl:text>
+    <xsl:text xml:space="preserve">\item </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
 
 <!-- ENTITY % dl "(dt*, dd)+" -->
   <xsl:template match="msi:dl">
-    <xsl:text xsl:space="preserve">\begin{description}&lt;EOLN/&gt;</xsl:text>
+    <xsl:text xml:space="preserve">\begin{description}&lt;EOLN/&gt;</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text xsl:space="preserve">\end{description}&lt;EOLN/&gt;</xsl:text>
+    <xsl:text xml:space="preserve">\end{description}&lt;EOLN/&gt;</xsl:text>
 <!-- Script an empty line to end our LaTeX paragraph. -->
     <xsl:text>&lt;EOLN/&gt;</xsl:text>
   </xsl:template>
@@ -708,9 +708,9 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
 <!-- ENTITY % dt "(#PCDATA)" -->
   <xsl:template match="msi:dt">
-    <xsl:text xsl:space="preserve">\item[</xsl:text>
+    <xsl:text xml:space="preserve">\item[</xsl:text>
     <xsl:apply-templates/>
-    <xsl:text xsl:space="preserve">] </xsl:text>
+    <xsl:text xml:space="preserve">] </xsl:text>
   </xsl:template>
 
 
@@ -1039,12 +1039,12 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
       <xsl:when test="@style='width:1em'">
 <tagged-text>
-        <xsl:text xsl:space="preserve">\quad </xsl:text>
+        <xsl:text xml:space="preserve">\quad </xsl:text>
 </tagged-text>
       </xsl:when>
       <xsl:when test="@style='width:2em'">
 <tagged-text>
-        <xsl:text xsl:space="preserve">\qquad </xsl:text>
+        <xsl:text xml:space="preserve">\qquad </xsl:text>
 </tagged-text>
       </xsl:when>
       <xsl:otherwise>
@@ -1091,7 +1091,7 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
 <hr>
     <xsl:choose>
       <xsl:when test="@class='hrulefill'">
-        <xsl:text xsl:space="preserve">\hrulefill </xsl:text>
+        <xsl:text xml:space="preserve">\hrulefill </xsl:text>
       </xsl:when>
       <xsl:otherwise>
       </xsl:otherwise>
@@ -1103,7 +1103,7 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
 
   <xsl:template match="msi:br">
 <br>
-    <xsl:text xsl:space="preserve">\smallskip </xsl:text>
+    <xsl:text xml:space="preserve">\smallskip </xsl:text>
 </br>
   </xsl:template>
 
