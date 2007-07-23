@@ -506,12 +506,14 @@
     </xsl:choose>
   </xsl:template>
 
-
-  <xsl:template match="mml:mi" mode="in-text">
+<!-- JCS
+  <xsl:template match="mml:mi" >
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
   </xsl:template>
+
+-->
 
 </xsl:stylesheet>
 
