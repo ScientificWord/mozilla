@@ -3,7 +3,7 @@
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       xmlns:msxsl="urn:schemas-microsoft-com:xslt"
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
-      version="1.0">
+      version="1.1">
 
 <!-- mfenced is deprecated in MathML 2.0
 
