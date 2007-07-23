@@ -69,7 +69,7 @@ ZoomManager.prototype = {
   get textZoom() {
     var currentZoom;
     try {
-      currentZoom = Math.round(getMarkupDocumentViewer().textZoom * 100);
+      currentZoom = Math.round(msiGetMarkupDocumentViewer().textZoom * 100);
       if (this.indexOf(currentZoom) == -1) {
         if (currentZoom != this.factorOther) {
           this.factorOther = currentZoom;
@@ -86,7 +86,7 @@ ZoomManager.prototype = {
     if (aZoom < this.MIN || aZoom > this.MAX)
       throw Components.results.NS_ERROR_INVALID_ARG;
 
-    getMarkupDocumentViewer().textZoom = aZoom / 100;
+    msiGetMarkupDocumentViewer().textZoom = aZoom / 100;
   },
 
   enlarge : function() {
