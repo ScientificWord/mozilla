@@ -100,6 +100,15 @@
 <!ENTITY viewIndexEntries.accesskey "x" >
 <!ENTITY viewMarkers.label "Markers" >
 <!ENTITY viewMarkers.accesskey "M" >
+<!ENTITY viewZoom.label "Zoom" >
+<!ENTITY viewZoom.accesskey "Z" >
+<!ENTITY viewZoomReduce.label "Reduce" >
+<!ENTITY viewZoomReduce.accesskey "R" >
+<!ENTITY viewZoomEnlarge.label "Enlarge" >
+<!ENTITY viewZoomEnlarge.accesskey "E" >
+<!ENTITY viewZoomReset.label "Reset" >
+<!ENTITY viewZoomReset.accesskey "s" >
+
 
 <!-- For a "Paste" submenu when more than 1 
      clipboard formats are available -->
