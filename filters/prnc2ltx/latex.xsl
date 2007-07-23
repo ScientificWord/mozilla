@@ -1,15 +1,19 @@
 <!-- Topic.xsl -->
-<xsl:stylesheet version="2.0" 
+
+<xsl:stylesheet version="1.1" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
 >
-<!-- xsl:include href="chrome://prnc2ltx/content/mml2ltex.xsl"/ -->
+
+
+<xsl:include href="mml2ltex.xsl"/>
+
+
 <xsl:output method="text" encoding="UTF-8"/>
 <xsl:strip-space elements="*"/>
 <xsl:preserve-space elements="pre"/>
-
 
 
 <xsl:template match="/"><xsl:apply-templates/></xsl:template>
@@ -18,10 +22,11 @@
 
 <xsl:template match="html:html"><xsl:apply-templates/></xsl:template>
 <xsl:template match="html:head"><xsl:apply-templates/></xsl:template>
-
+<!-- JCS
 <xsl:template match="html:body">
 <xsl:apply-templates/>
 </xsl:template>
+-->
 
 <xsl:template match="html:preamble">
 <xsl:apply-templates/>
@@ -107,7 +112,7 @@
 \newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:latex">\LaTeX</xsl:template>
-<xsl:template match="mml:math">\textbf{Math here}</xsl:template>
+<!-- xsl:template match="mml:math">[Math Here]</xsl:template -->
 
 <xsl:template match="html:hspace">
   <xsl:choose>
@@ -146,7 +151,7 @@
 \author{<xsl:value-of select="child::text()"/>}</xsl:template>
 
 <xsl:template match="html:address">
-{<xsl:value-of select="."/>}\\</xsl:template>
+\address{<xsl:value-of select="."/>}</xsl:template>
 
 <xsl:template match="html:abstract">
 \begin{abstract}
@@ -183,8 +188,6 @@
 <xsl:template match="html:para">
 <xsl:apply-templates/>\par </xsl:template>
 
-<xsl:template match="html:rtlpara">
-{\rtl\beginR <xsl:apply-templates/>\endR\par </xsl:template>
 
 
 <xsl:template match="html:sectiontitle">
@@ -280,7 +283,7 @@
 <xsl:template match="html:sc">\textsc{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:tt">\texttt{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:em">\emph{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:rtl">{\rtl\beginR <xsl:apply-templates/> \endR} </xsl:template>
+<xsl:template match="html:hebrew">{\hebrew\beginR <xsl:apply-templates/> \endR} </xsl:template>
 
 <xsl:template match="html:tiny">{\tiny <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:scriptsize">{\scriptsize <xsl:apply-templates/>}</xsl:template>
@@ -290,13 +293,15 @@
 
 <xsl:template match="html:large">{\large <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:Large">{\Large <xsl:apply-templates/>}</xsl:template>
-<xsl:template match="LARGE">{\LARGE <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:LARGE">{\LARGE <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:huge">{\huge <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:Huge">{\Huge <xsl:apply-templates/>}</xsl:template>
 
 <xsl:template match="html:tex">\TeX{}</xsl:template>
 <xsl:template match="html:textquotedblleft">\textquotedblleft </xsl:template>
-<xsl:template match="textquotedblright">\textquotedblright </xsl:template>
-<xsl:template match="textbackslash">\textbackslash </xsl:template>
+<xsl:template match="html:textquotedblright">\textquotedblright </xsl:template>
+<xsl:template match="html:textbackslash">\textbackslash </xsl:template>
 
 </xsl:stylesheet>
+
+
