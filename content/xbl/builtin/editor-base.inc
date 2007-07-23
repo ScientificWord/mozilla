@@ -18,3 +18,6 @@
       <handler event="keypress" key="2" action="document.getElementById('ParaTagSelections').focus();" modifiers="alt"/>
       <handler event="keypress" key="3" action="document.getElementById('StructTagSelections').focus();" modifiers="alt"/>
       <handler event="keypress" key="4" action="document.getElementById('OtherTagSelections').focus();" modifiers="alt"/>
+      <handler event="keypress" key="+" action="ZoomManager.prototype.getInstance().enlarge();" modifiers="accel,shift"/>
+      <handler event="keypress" key="-" action="ZoomManager.prototype.getInstance().reduce();" modifiers="accel"/>
+      <handler event="keypress" key="0" action="ZoomManager.prototype.getInstance().reset();" modifiers="accel"/>
