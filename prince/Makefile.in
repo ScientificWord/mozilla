@@ -5,7 +5,7 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DIRS		=  base samples res plugins fastcursor scriptrunner otfontlist sidebar shells TeX dictionaries user
+DIRS		=  base samples res plugins fastcursor scriptrunner otfontlist sidebar shells TeX dictionaries user saxon
 DIRS	+=  Compute
 
 MODULE		= prince
