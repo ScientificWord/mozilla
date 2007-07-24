@@ -10,3 +10,8 @@ include $(DEPTH)/config/autoconf.mk
 
 include $(topsrcdir)/config/rules.mk
 
+
+XSL_RESOURCES := $(wildcard $(srcdir)/*.xsl)
+
+libs::	$(XSL_RESOURCES)
+	$(INSTALL)	$(XSL_RESOURCES)	$(FINAL_TARGET)/res/xsl
