@@ -1,0 +1,38 @@
+
+DEPTH		= ../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+XPI_NAME	= prince
+
+
+include $(DEPTH)/config/autoconf.mk
+include $(topsrcdir)/config/rules.mk
+
+
+ifeq ($(OS_ARCH),WINNT)
+platform	= windows
+else
+ifeq ($(OS_ARCH),Linux)
+platform	= linux
+else
+platform	= osx
+endif
+endif
+
+DLL_RESOURCES := $(wildcard	$(srcdir)/$(platform)/*.dll)
+EXE_RESOURCES := $(wildcard $(srcdir)//$(platform)/*.exe)
+OTHER_RESOURCES := $(wildcard $(srcdir)/$(platform)/*.netmodule)
+
+libs::	$(DLL_RESOURCES) $(EXE_RESOURCES)
+	$(INSTALL)	$(DLL_RESOURCES)	$(FINAL_TARGET)
+	$(INSTALL)	$(EXE_RESOURCES)	$(FINAL_TARGET)
+	$(INSTALL)	$(OTHER_RESOURCES)	$(FINAL_TARGET)
+				  
+
+
+
+
+
+	
