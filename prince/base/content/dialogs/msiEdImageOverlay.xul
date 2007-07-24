@@ -155,24 +155,36 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
             accesskey = "&widthEditField.accessKey;"
             value = "&widthEditField.label;" />
           <textbox
-            id       = "widthInput" 
-            class    = "narrow"
-            oninput  = "constrainProportions(this.id, 'heightInput')"/>
-          <menulist id = "widthUnitsMenulist"
-            oncommand = "doDimensionEnabling();" />
-          <!-- contents are appended by JS -->
+            id        = "widthInput" 
+            class     = "narrow"
+            oninput   = "constrainProportions(this.id, 'heightInput')"/>
         </row>
         <row align="center">
-          <label id    = "heightLabel"
+          <label id   = "heightLabel"
             control   = "heightInput"
             accesskey = "&heightEditField.accessKey;"
             value = "&heightEditField.label;" />
           <textbox
-            id       = "heightInput" 
-            class    = "narrow"
-            oninput  = "constrainProportions(this.id, 'widthInput')"/>
-          <menulist id = "heightUnitsMenulist"
-            oncommand = "doDimensionEnabling();" />
+            id        = "heightInput" 
+            class     = "narrow"
+            oninput   = "constrainProportions(this.id, 'widthInput')"/>
+        </row>
+        <row align="center">
+          <label id   = "unitLabel"
+            control   = "unitMenulist"
+            accesskey = "&unitLabel.accessKey;"
+            value     = "&unitLabel.label;" />
+          <menulist id = "unitMenulist"
+            oncommand  = "doDimensionEnabling();" >
+            <menupopup>
+              <menuitem value="in" label="in"/>
+              <menuitem value="cm" label="cm"/>
+              <menuitem value="pt" label="pt" />
+              <menuitem value="mm" label="mm"/>
+              <menuitem value="pica" label="pica"/>
+              <menuitem value="pixel" label="pixel"/>
+            </menupopup>
+          </menulist>
           <!-- contents are appended by JS -->
         </row>
       </rows>          
