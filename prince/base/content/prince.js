@@ -425,7 +425,7 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
     {
       var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
       theProcess.init(exefile);
-      var args =['-s', '"'+outfilePath+'"', '-o', '"'+outfileTeXPath+'"', xslPath, ];
+      var args =['-s', outfilePath, '-o', outfileTeXPath, xslPath, ];
       theProcess.run(true, args, args.length);
     } 
     catch (ex) 
