@@ -94,8 +94,7 @@ function ImageStartup()
   gDialog.constrainCheckbox = document.getElementById( "constrainCheckbox" );
   gDialog.widthInput        = document.getElementById( "widthInput" );
   gDialog.heightInput       = document.getElementById( "heightInput" );
-  gDialog.widthUnitsMenulist   = document.getElementById( "widthUnitsMenulist" );
-  gDialog.heightUnitsMenulist  = document.getElementById( "heightUnitsMenulist" );
+  gDialog.unitMenulist      = document.getElementById( "unitMenulist" );
   gDialog.imagelrInput      = document.getElementById( "imageleftrightInput" );
   gDialog.imagetbInput      = document.getElementById( "imagetopbottomInput" );
   gDialog.border            = document.getElementById( "border" );
@@ -106,6 +105,9 @@ function ImageStartup()
   gDialog.PreviewSize       = document.getElementById( "PreviewSize" );
   gDialog.PreviewImage      = null;
   gDialog.OkButton          = document.documentElement.getButton("accept");
+  
+  msiCSSUnitConversions.pica = 4.2333333; //mm per pica
+  msiCSSUnitConversions.pixel = 0.26458342; //mm per pixel at 96 pixels/inch.
 }
 
 // Set dialog widgets with attribute data
@@ -151,12 +153,12 @@ function InitImage()
   }
 
   // setup the height and width widgets
-  var width = msiInitPixelOrPercentMenulist(globalElement,
-                    gInsertNewImage ? null : imageElement,
-                    "width", "widthUnitsMenulist", gPixel);
-  var height = msiInitPixelOrPercentMenulist(globalElement,
-                    gInsertNewImage ? null : imageElement,
-                    "height", "heightUnitsMenulist", gPixel);
+//  var width = msiInitPixelOrPercentMenulist(globalElement,
+//                    gInsertNewImage ? null : imageElement,
+//                    "width", "widthUnitsMenulist", gPixel);
+//  var height = msiInitPixelOrPercentMenulist(globalElement,
+//                    gInsertNewImage ? null : imageElement,
+//                    "height", "heightUnitsMenulist", gPixel);
 
   // Set actual radio button if both set values are the same as actual
   SetSizeWidgets(width, height);
@@ -242,33 +244,33 @@ function SetAltTextDisabled(disable)
   gDialog.altTextInput.disabled = disable;
 }
 
-function GetImageMap()
-{
-  var usemap = globalElement.getAttribute("usemap");
-  if (usemap)
-  {
-    gCanRemoveImageMap = true;
-    var mapname = usemap.substring(1, usemap.length);
-    var mapCollection;
-    try {
-      var editorElement = msiGetParentEditorElementForDialog(window);
-      var editor = msiGetEditor(editorElement);
-      mapCollection = editor.document.getElementsByName(mapname);
-    } catch (e) {}
-    if (mapCollection && mapCollection[0] != null)
-    {
-      gInsertNewIMap = false;
-      return mapCollection[0];
-    }
-  }
-  else
-  {
-    gCanRemoveImageMap = false;
-  }
-
-  gInsertNewIMap = true;
-  return null;
-}
+//function GetImageMap()
+//{
+//  var usemap = globalElement.getAttribute("usemap");
+//  if (usemap)
+//  {
+//    gCanRemoveImageMap = true;
+//    var mapname = usemap.substring(1, usemap.length);
+//    var mapCollection;
+//    try {
+//      var editorElement = msiGetParentEditorElementForDialog(window);
+//      var editor = msiGetEditor(editorElement);
+//      mapCollection = editor.document.getElementsByName(mapname);
+//    } catch (e) {}
+//    if (mapCollection && mapCollection[0] != null)
+//    {
+//      gInsertNewIMap = false;
+//      return mapCollection[0];
+//    }
+//  }
+//  else
+//  {
+//    gCanRemoveImageMap = false;
+//  }
+//
+//  gInsertNewIMap = true;
+//  return null;
+//}
 
 function chooseFile()
 {
@@ -288,7 +290,7 @@ function chooseFile()
     doOverallEnabling();
   }
   LoadPreviewImage();
-
+  // copy to the resource://docdir/graphics directory
   // Put focus into the input field
   SetTextboxFocus(gDialog.srcInput);
 }
@@ -387,9 +389,8 @@ function LoadPreviewImage()
 function SetActualSize()
 {
   gDialog.widthInput.value = gActualWidth ? gActualWidth : "";
-  gDialog.widthUnitsMenulist.selectedIndex = 0;
   gDialog.heightInput.value = gActualHeight ? gActualHeight : "";
-  gDialog.heightUnitsMenulist.selectedIndex = 0;
+  gDialog.unitMenulist.selectedIndex = 0;
   doDimensionEnabling();
 }
 
@@ -414,15 +415,15 @@ function doDimensionEnabling()
   //   even though focus isn't set to it.
   SetElementEnabledById( "heightInput", enable );
   SetElementEnabledById( "heightLabel", enable );
-  SetElementEnabledById( "heightUnitsMenulist", enable );
 
   SetElementEnabledById( "widthInput", enable );
   SetElementEnabledById( "widthLabel", enable);
-  SetElementEnabledById( "widthUnitsMenulist", enable );
 
-  var constrainEnable = enable
-         && ( gDialog.widthUnitsMenulist.selectedIndex == 0 )
-         && ( gDialog.heightUnitsMenulist.selectedIndex == 0 );
+  SetElementEnabledById( "unitMenulist", enable );
+
+  var constrainEnable = enable ;
+//         && ( gDialog.widthUnitsMenulist.selectedIndex == 0 )
+//         && ( gDialog.heightUnitsMenulist.selectedIndex == 0 );
 
   SetElementEnabledById( "constrainCheckbox", constrainEnable );
 }
@@ -444,9 +445,9 @@ function ToggleConstrain()
 {
   // If just turned on, save the current width and height as basis for constrain ratio
   // Thus clicking on/off lets user say "Use these values as aspect ration"
-  if (gDialog.constrainCheckbox.checked && !gDialog.constrainCheckbox.disabled
-     && (gDialog.widthUnitsMenulist.selectedIndex == 0)
-     && (gDialog.heightUnitsMenulist.selectedIndex == 0))
+  if (gDialog.constrainCheckbox.checked && !gDialog.constrainCheckbox.disabled) ;
+//     && (gDialog.widthUnitsMenulist.selectedIndex == 0)
+//     && (gDialog.heightUnitsMenulist.selectedIndex == 0))
   {
     gConstrainWidth = Number(TrimString(gDialog.widthInput.value));
     gConstrainHeight = Number(TrimString(gDialog.heightInput.value));
@@ -470,10 +471,10 @@ function constrainProportions( srcID, destID )
       !(gDialog.constrainCheckbox.checked && !gDialog.constrainCheckbox.disabled))
     return;
 
-  // double-check that neither width nor height is in percent mode; bail if so!
-  if ( (gDialog.widthUnitsMenulist.selectedIndex != 0)
-     || (gDialog.heightUnitsMenulist.selectedIndex != 0) )
-    return;
+//  // double-check that neither width nor height is in percent mode; bail if so!
+//  if ( (gDialog.widthUnitsMenulist.selectedIndex != 0)
+//     || (gDialog.heightUnitsMenulist.selectedIndex != 0) )
+//    return;
 
   // This always uses the actual width and height ratios
   // which is kind of funky if you change one number without the constrain
@@ -494,28 +495,28 @@ function constrainProportions( srcID, destID )
 */
 }
 
-function editImageMap()
-{
-  // Create an imagemap for image map editor
-  if (gInsertNewIMap)
-  {
-    try {
-      var editorElement = msiGetParentEditorElementForDialog(window);
-      var editor = msiGetEditor(editorElement);
-      gImageMap = editor.createElementWithDefaults("map");
-    } catch (e) {}
-  }
-
-  // Note: We no longer pass in a copy of the global ImageMap. ImageMap editor should create a copy and manage onOk and onCancel behavior
-  window.openDialog("chrome://editor/content/EdImageMap.xul", "_blank", "chrome,close,titlebar,modal", globalElement, gImageMap);
-}
-
-function removeImageMap()
-{
-  gRemoveImageMap = true;
-  gCanRemoveImageMap = false;
-  SetElementEnabledById("removeImageMap", false);
-}
+//function editImageMap()
+//{
+//  // Create an imagemap for image map editor
+//  if (gInsertNewIMap)
+//  {
+//    try {
+//      var editorElement = msiGetParentEditorElementForDialog(window);
+//      var editor = msiGetEditor(editorElement);
+//      gImageMap = editor.createElementWithDefaults("map");
+//    } catch (e) {}
+//  }
+//
+//  // Note: We no longer pass in a copy of the global ImageMap. ImageMap editor should create a copy and manage onOk and onCancel behavior
+//  window.openDialog("chrome://editor/content/EdImageMap.xul", "_blank", "chrome,close,titlebar,modal", globalElement, gImageMap);
+//}
+//
+//function removeImageMap()
+//{
+//  gRemoveImageMap = true;
+//  gCanRemoveImageMap = false;
+//  SetElementEnabledById("removeImageMap", false);
+//}
 
 function SwitchToValidatePanel()
 {
@@ -564,15 +565,15 @@ function ValidateImage()
   if (!gDialog.actualSizeRadio.selected)
   {
     // Get user values for width and height
-    width = msiValidateNumber(gDialog.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
-                           globalElement, "width", false, true);
-    if (gValidationError)
-      return false;
-
-    height = msiValidateNumber(gDialog.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
-                            globalElement, "height", false, true);
-    if (gValidationError)
-      return false;
+//    width = msiValidateNumber(gDialog.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
+//                           globalElement, "width", false, true);
+//    if (gValidationError)
+//      return false;
+//
+//    height = msiValidateNumber(gDialog.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
+//                            globalElement, "height", false, true);
+//    if (gValidationError)
+//      return false;
   }
 
   // We always set the width and height attributes, even if same as actual.
