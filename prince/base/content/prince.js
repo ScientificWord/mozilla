@@ -22,7 +22,7 @@ function GetCurrentEditor() {
     editor instanceof Components.interfaces.nsIPlaintextEditor;
     editor instanceof Components.interfaces.nsIHTMLEditor;
   } catch (e) { dump (e)+"\n"; }
-
+                                                                                                     
   return editor;
 }
 
@@ -118,7 +118,7 @@ function runFixup(math)
     var out = GetCurrentEngine().perform(math,GetCurrentEngine().Fixup);
     return out;
   } catch(e) {
-    dump("runFixup(): "+e);
+    dump("runFixup(): "+e+"\n");
     return math;
 } }
 
@@ -133,7 +133,7 @@ function doEvalComputation(math,op,joiner,remark) {
     var out = GetCurrentEngine().perform(mathstr,op);
     appendResult(out,joiner,math);
   } catch (e) {
-    dump("doEvalComputation(): " + e);
+    dump("doEvalComputation(): " + e+"\n");
 } }
 
 function doComputeCommand(cmd) {
@@ -323,7 +323,7 @@ function openTeX()
     msiSaveFilePickerDirectory(fp, "tex");
     var filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
     var infile =  "\""+fp.file.path+"\"";
-    dump("Open Tex: " + infile);
+    dump("Open Tex: " + infile+"\n");
     var outfile = dsprops.get("TmpD", Components.interfaces.nsIFile);
     outfile.append(filename);
     var outdir = outfile.clone();
@@ -357,7 +357,7 @@ function openTeX()
     catch (ex) 
     {
          dump("\nUnable to open TeX:\n");
-         dump(ex);
+         dump(ex+"\n");
     }      
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
     
@@ -365,19 +365,36 @@ function openTeX()
   }                       
 }
 
-function documentAsTeX( document, xslSheetPath )
+function documentAsTeXFile( document, xslSheet, outTeXfile )
 {
-    dump("\nDocument as TeX");
+    dump("\nDocument as TeXFile\n");
 
     var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
 
     var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
+    var stylefile = exefile.clone();
     exefile.append("Transform.exe");
+    var bareleaf = document.documentURI;
+    bareleaf = unescape(bareleaf);
+    var index =  bareleaf.lastIndexOf(".");
+    if (index > 0) bareleaf = bareleaf.substr(0,index);
+    index = bareleaf.lastIndexOf("/");
+    if (index > 0) bareleaf = bareleaf.substr(index+1);
 
-    var outfile = dsprops.get("TmpD", Components.interfaces.nsIFile);
-    outfile.append("acopy.xml");
+    var outfile = msiAuxDirFromDocPath(document.documentURI);
+    var outTeX = outfile.clone();
+    outfile.append("temp");
+    if (!(outfile.exists())) outfile.create(1, 0755);
+    outfile.append(bareleaf + ".xml");
+    if (outTeXfile == null)
+    {
+      outTeXfile = outTeX;
+      outTeXfile.append("tex");
+      if (!outTeXfile.exists()) outTeXfile.create(1, 0755);
+      outTeXfile.append(bareleaf + ".tex");
+    }
         
-    dump("\nOutput file = " + outfile.path);
+    dump("\nOutput file = " + outfile.path+"\n");
     var s = new XMLSerializer();
     var str = s.serializeToString(document);
 
@@ -389,19 +406,32 @@ function documentAsTeX( document, xslSheetPath )
     os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
     os.writeString(str);
     os.close();
+    fos.close();
 
-
+    stylefile.append("res");
+    stylefile.append("xsl");
+    stylefile.append(xslSheet);
+    var xslPath = stylefile.path;
+    var outfilePath = outfile.path;
+    var outfileTeXPath = outTeXfile.path;
+    while (xslPath.charAt(0) == "/".charAt(0)) xslPath = xslPath.substr(1);
+  // for Windows
+#ifdef XP_WIN32
+    xslPath = xslPath.replace("\\","/","g");
+    outfilePath = outfilePath.replace("\\","/","g");
+    outfileTeXPath = outfileTeXPath.replace("\\","/","g");
+#endif
     try 
     {
       var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
       theProcess.init(exefile);
-      var args =['-s', outfile.path, '-o', 'demo.tex', xslSheetPath, ];
+      var args =['-s', '"'+outfilePath+'"', '-o', '"'+outfileTeXPath+'"', xslPath, ];
       theProcess.run(true, args, args.length);
     } 
     catch (ex) 
     {
       dump("\nUnable to export TeX:\n");
-      dump(ex);
+      dump(ex+"\n");
     }      
 
 }
@@ -422,24 +452,24 @@ function documentAsTeX( document, xslSheetPath )
 //  return str;
 //}
 
-function documentAsTeXFile( document, xslSheetPath, outputFile )
-{
-  if (outputFile && outputFile.path.length > 0) 
-  {
-    var str = documentAsTeX(document, xslSheetPath );
-    if (outputFile.exists()) 
-    outputFile.remove(false);
-    outputFile.create(0, 0755);
-    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-    fos.init(outputFile, -1, -1, false);
-    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-      .createInstance(Components.interfaces.nsIConverterOutputStream);
-    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-    os.writeString(str);
-    os.close();
-//   fos.close();
-  }
-}
+//function documentAsTeXFile( document, xslSheet, outputFile )
+//{
+//  if (outputFile && outputFile.path.length > 0) 
+//  {
+//    var str = documentAsTeX(document, xslSheet );
+//    if (outputFile.exists()) 
+//    outputFile.remove(false);
+//    outputFile.create(0, 0755);
+//    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+//    fos.init(outputFile, -1, -1, false);
+//    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+//      .createInstance(Components.interfaces.nsIConverterOutputStream);
+//    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+//    os.writeString(str);
+//    os.close();
+////   fos.close();
+//  }
+// }
 
 
 function currentFileName()
@@ -447,7 +477,7 @@ function currentFileName()
 //  var docUrl = GetDocumentUrl();
   var editorElement = msiGetTopLevelEditorElement();
   var docUrl = msiGetEditorURL(editorElement);
-  dump('\nThis doc url = ' + docUrl);
+  dump('\nThis doc url = ' + docUrl+"\n");
   var filename = "";
   if (docUrl && !IsUrlAboutBlank(docUrl))
     filename = GetFilename(docUrl);
@@ -477,7 +507,7 @@ function exportTeX()
    {
      dump("filePicker threw an exception\n");
    }
-   documentAsTeXFile(editor.document, "chrome://prnc2ltx/content/latex.xsl", fp.file );
+   documentAsTeXFile(editor.document, "latex.xsl", fp.file );
 }
 
 /* ==== */
@@ -527,7 +557,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   } 
   catch (ex) {
     dump("\nUnable to run TeX:\n");
-    dump(ex);
+    dump(ex+"\n");
     return false;
   }
   // check for a dvi or pdf file
@@ -536,7 +566,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
     outfileLeaf += ".pdf";
   else
     outfileLeaf += ".dvi";
-  dump("\nOutputleaf="+outfileLeaf);
+  dump("\nOutputleaf="+outfileLeaf+"\n");
   var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   outputfile.initWithPath( outputDir );
   outputfile.append(outfileLeaf);
@@ -550,8 +580,6 @@ function printTeX( pdftex, preview )
   try {
     var editor = GetCurrentEditor();
     if (!editor) return;
-    var str = documentAsTeX(editor.document, "chrome://prnc2ltx/content/latex.xsl" );
-  // now save this TeX string and run TeX on it.  
     var editorElement = msiGetTopLevelEditorElement();
     var docUrl = msiGetEditorURL(editorElement);
     var docPath = GetFilepath(docUrl);
@@ -593,14 +621,15 @@ function printTeX( pdftex, preview )
     
     dump("\TeX file="+outputfile.path + "\n");
     dump("DVI/PDF file is " + dvipdffile.path + "\n"); 
-    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-    fos.init(outputfile, -1, -1, false);
-    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-      .createInstance(Components.interfaces.nsIConverterOutputStream);
-    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-    os.writeString(str);
-    os.close();
+//    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+//    fos.init(outputfile, -1, -1, false);
+//    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+//      .createInstance(Components.interfaces.nsIConverterOutputStream);
+//    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+//    os.writeString(str);
+//    os.close();
   //   fos.close();
+    documentAsTeXFile(editor.document, "latex.xsl", outputfile );
     if (compileTeXFile(pdftex, extendedoutleaf, outputfile.path, dvipdffile.parent.path, 1))
     {
       if (!dvipdffile.exists())
@@ -614,7 +643,7 @@ function printTeX( pdftex, preview )
       }     
     }
     else
-      dump("\nRunning TeX failed to create a file!");
+      dump("\nRunning TeX failed to create a file!\n");
    }
    catch(e) {
      dump(e+"\n");
@@ -632,7 +661,6 @@ function compileTeX(pdftex)
   {
     var editor = GetCurrentEditor();
     if (!editor) return;
-    var str = documentAsTeX(editor.document, "chrome://prnc2ltx/content/latex.xsl" );
   // now save this TeX string and run TeX on it.  
     var editorElement = msiGetTopLevelEditorElement();
     var docUrl = msiGetEditorURL(editorElement);
@@ -656,7 +684,7 @@ function compileTeX(pdftex)
     dvipdffile.append(outleaf+ (pdftex?".pdf":".dvi"));
     if (dvipdffile.exists()) dvipdffile.remove(false);
     
-    dump("\TeX file="+outputfile.path);  
+    dump("TeX file="+outputfile.path)+"\n";  
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
     fp.init(window, "Save "+(pdftex?"PDF":"DVI")+" file", msIFilePicker.modeSave);
 
@@ -674,14 +702,15 @@ function compileTeX(pdftex)
       return;
     }
   
-    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-    fos.init(outputfile, -1, -1, false);
-    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-      .createInstance(Components.interfaces.nsIConverterOutputStream);
-    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-    os.writeString(str);
-    os.close();
+//    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+//    fos.init(outputfile, -1, -1, false);
+//    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+//      .createInstance(Components.interfaces.nsIConverterOutputStream);
+//    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+//    os.writeString(str);
+//    os.close();
   //   fos.close();
+    documentAsTeXFile(editor.document, "latex.xsl", outputfile );
     if (compileTeXFile(pdftex, outleaf, outputfile.path, dvipdffile.parent.path, 1))
     {
       if (!dvipdffile.exists())
@@ -691,7 +720,7 @@ function compileTeX(pdftex)
         dvipdffile.move(fp.file.parent, fp.file.leafName); 
     } 
     else
-      dump("\nRunning TeX failed to create a file!");
+      dump("\nRunning TeX failed to create a file!\n");
   }
   catch(e) {
     dump(e+"\n");
