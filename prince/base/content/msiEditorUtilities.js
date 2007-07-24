@@ -3951,3 +3951,43 @@ function msiDumpWithID(str, element)
   dump( str.replace("@", replStr) );
 }
 
+function msiAuxDirFromDocPath(documentURI)
+{
+  var spec = unescape(documentURI);
+  var i = spec.lastIndexOf(".");
+  if (i > 0) spec = spec.substr(0,i);
+  dump("spec is " + spec + "\n");
+  spec = spec+"_files";
+  var dir = Components.classes["@mozilla.org/file/local;1"].
+    createInstance(Components.interfaces.nsILocalFile);
+  var url = Components.classes["@mozilla.org/network/simple-uri;1"].
+    createInstance(Components.interfaces.nsIURI);
+  url.spec = spec;
+  var path = url.path;
+  while (path.charAt(0)=="/".charAt(0)) path=path.substr(1);
+  // for Windows
+#ifdef XP_WIN32
+   path = path.replace("/","\\","g");
+#endif
+  dir.initWithPath(path);
+  if (!dir.exists()) dir.create(1, 0755);
+  return dir.clone();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                             
