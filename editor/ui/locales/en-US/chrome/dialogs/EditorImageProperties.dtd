@@ -76,7 +76,9 @@
 <!ENTITY widthEditField.accessKey "W">
 <!ENTITY constrainCheckbox.label "Constrain">
 <!ENTITY constrainCheckbox.accessKey "C">
-<!ENTITY constrainCheckbox.tooltip "Maintain the image's aspect ratio">
+<!ENTITY constrainCheckbox.tooltip "Keep height and width in proportion">
+<!ENTITY unitLabel.accessKey "U">
+<!ENTITY unitLabel.label "Units">
 
 <!-- These controls are in the Image Map box of the expanded area -->
 <!ENTITY imagemapBox.label "Image Map">
