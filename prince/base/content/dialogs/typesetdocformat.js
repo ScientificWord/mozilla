@@ -126,7 +126,8 @@ function getPageLayout()
     if (node)
     {
       value = node.getAttribute('twoside');
-      document.getElementById('twosides').checked=value;
+      document.getElementById('twosides').checked=(value=='true');
+      setTwosidedState(document.getElementById('twosides'));
       value = node.getAttribute('paper');
       if (value) document.getElementById('docformat.papersize').value = value;
       value = node.getAttribute('width');
@@ -157,7 +158,8 @@ function getPageLayout()
     if (node)
     {
       value = node.getAttribute('count');
-      if (value) document.getElementById('columns').checked=(value?2:1);
+      document.getElementById('columns').checked=(value=='2');
+      broadcastColCount();
       value = node.getAttribute('sep');
       if (value) document.getElementById('tbcolsep').value=getNumberValue(value);
     }
@@ -171,7 +173,7 @@ function getPageLayout()
       value = node.getAttribute('push');
       if (value) document.getElementById('tbmnpush').value=getNumberValue(value);
       value = node.getAttribute('hidden');
-      if (value) document.getElementById('disablemn').checked=value;
+      if (value) document.getElementById('disablemn').checked=(value=='true');
         else document.getElementById('disablemn').checked=false;
     }
     node = docFormatNodeList[i].getElementsByTagName('header')[0];
