@@ -1213,6 +1213,26 @@ function insertsymbol(s, editorElement)
   }
 }
 
+
+function inserttext(s, editorElement) 
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  try 
+  {
+    var plaintextEditor = editor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+    plaintextEditor.insertText(s);
+    editorElement.contentWindow.focus();
+  } 
+  catch (e) 
+  {
+    dump("inserttext failed: "+e+"\n");
+  }
+}
+
+
+
 function insertfence(left, right, editorElement) 
 {
   if (!editorElement)
