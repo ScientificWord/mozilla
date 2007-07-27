@@ -137,3 +137,12 @@ img {
 graphSpec {
   display: none;
 }  
+
+upper {
+  text-transform: uppercase;
+}
+  
+lower {
+  text-transform: lowercase;
+}
+  
