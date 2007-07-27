@@ -546,7 +546,14 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
     if (!cmdParams) return;
 
     cmdParams.setCStringValue("state_attribute", newState);
-    msiGoDoCommandParams(commandID, cmdParams, editorElement);
+    var editor = msiGetEditor(editorElement);
+    var ns = new Object;
+    if (commandID=="cmd_texttag" && editor && editor.tagListManager && editor.tagListManager.getClearTextTag(ns) == newState)
+    {
+      msiGoDoCommand('cmd_removeStyles');
+    }
+    else
+      msiGoDoCommandParams(commandID, cmdParams, editorElement);
     // BBM: temporary hack!
     switch (commandID)
     {
