@@ -55,7 +55,8 @@
     <command id="cmd_MSIbraceCmd"       oncommand="msiGoDoCommand('cmd_MSIbraceCmd')"/>
     <command id="cmd_MSIabsvalueCmd"    oncommand="msiGoDoCommand('cmd_MSIabsvalueCmd')"/>
     <command id="cmd_MSInormCmd"        oncommand="msiGoDoCommand('cmd_MSInormCmd')"/>
-    <command id="cmd_MSIsymbolCmd"      />
+    <command id="cmd_MSIsymbolCmd"      oncommand="doParamCommand('cmd_MSIsymbolCmd',event.target.getAttribute('msivalue'));" />
+    <command id="cmd_MSItextCmd"        oncommand="inserttext(event.target.getAttribute('msivalue'));" />
     <command id="cmd_MSIColorsCmd"        oncommand="msiGoDoCommand('cmd_MSIColorsCmd')"/>
 	  <command id="cmd_MSIgenBracketsCmd"   oncommand="msiGoDoCommand('cmd_MSIgenBracketsCmd')"/>
 		<command id="cmd_MSIbinomialsCmd"     oncommand="msiGoDoCommand('cmd_MSIbinomialsCmd')"/>
@@ -134,7 +135,7 @@
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x0141;&#x011B;" tooltiptext="&MSISymbolTabLatinE;"        selected="0" />
 			<tab image="chrome://prince/skin/icons/redarrow.png" dir="rtl" label="&#x201C;&#x201D;" tooltiptext="&MSISymbolTabPunctuation;"        selected="0" />
     </tabs>
-    <tabpanels id="symbol-tabpanels" oncommand="doParamCommand('cmd_MSIsymbolCmd',event.target.getAttribute('msivalue'))" equalsize="never" hidden="false" >
+    <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" > <!--oncommand="if (!event.target.getAttribute('msiText'))  else msiGetEditor.insertText(event.target.getAttribute('msivalue'));" equalsize="never" hidden="false" -->
 
 <!-- LOWERCASE GREEK -->
 	  <tabpanel id="symbol_lcGreek" autostretch="never" align="baseline"> 
@@ -1047,7 +1048,7 @@
         <toolbarbutton label="&#x00B6;" tooltiptext="&symbolP.tooltip;"       msivalue="&#x00B6;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x00A7;" tooltiptext="&symbolS.tooltip;"       msivalue="&#x00A7;"
-           observes="cmd_MSIsymbolCmd"/>
+           observes="cmd_MSItextCmd"/>
         <toolbarbutton label="&#x00B7;" tooltiptext="&symbolcdotp.tooltip;"       msivalue="&#x00B7;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x00B4;" tooltiptext="&symboltextasciiacute.tooltip;"       msivalue="&#x00B4;"
