@@ -39,12 +39,13 @@ interface msiITagListManager : nsISupports
 	boolean nodeCanContainTag( in nsIDOMNode node, in AString strTagInner, in nsIAtom atomNSInner);
 	boolean nodeCanContainNode( in nsIDOMNode nodeOuter, in nsIDOMNode nodeInner);
 	boolean levelCanContainLevel( in AString strTagOuter, in nsIAtom atomNSOuter, in AString strTagInner, in nsIAtom atomNSInner);
-    boolean getDiscardEmptyBlockNode( in nsIDOMNode node);
+  boolean getDiscardEmptyBlockNode( in nsIDOMNode node);
 	void fixTagsAfterSplit( in nsIDOMNode firstNode, inout nsIDOMNode secondNode);
-    AString getStringPropertyForTag( in AString strTag, in nsIAtom atomNS, in AString propertyName );
-    AString getTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
-    void buildParentTagList();
+  AString getStringPropertyForTag( in AString strTag, in nsIAtom atomNS, in AString propertyName );
+  AString getTagOfNode( in nsIDOMNode node, out nsIAtom atomNS);
+  void buildParentTagList();
 	nsIAtom nameSpaceAtomOfTagKey( in AString key);
 	AString getDefaultParagraphTag( out nsIAtom atomNamespace );
+	AString getClearTextTag( out nsIAtom atomNamespace );
 	boolean selectionContainedInTag( in AString strTag, in nsIAtom atomNS);
 };
