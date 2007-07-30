@@ -74,6 +74,7 @@ protected:
   namespaceLookup * plookup;
   nsClassHashtable<nsStringHashKey, TagData> msiTagHashtable;
   TagKey mdefaultParagraph;
+  TagKey mclearTextTag;
   TagKeyListHead * pContainsList;
 };
 
