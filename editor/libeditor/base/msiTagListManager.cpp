@@ -40,7 +40,7 @@ nsIAtom * msiTagListManager::htmlnsAtom = nsnull;
 
 msiTagListManager::msiTagListManager()
 :  meditor(nsnull), mparentTags(nsnull), mInitialized(PR_FALSE), plookup(nsnull), pContainsList(nsnull),
-    mdefaultParagraph(NS_LITERAL_STRING("")) 
+    mdefaultParagraph(NS_LITERAL_STRING("")), mclearTextTag(NS_LITERAL_STRING("")) 
 {
   nsresult rv;
   if (!htmlnsAtom) htmlnsAtom  = NS_NewAtom(NS_LITERAL_STRING("http://www.w3.org/1999/xhtml"));
@@ -219,10 +219,15 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
   // get the default paragraph tag
   nsCOMPtr<nsIDOMElement> nodeElement;
   nsString strDefPara;
+  nsString strClearTextTag;
   rv = docTagInfo->GetElementById(NS_LITERAL_STRING("defaultparagraph"), getter_AddRefs(nodeElement));
   if (rv == NS_OK && nodeElement)
     rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strDefPara);
   if (rv==NS_OK) mdefaultParagraph.key.Assign(strDefPara);
+  rv = docTagInfo->GetElementById(NS_LITERAL_STRING("cleartexttag"), getter_AddRefs(nodeElement));
+  if (rv == NS_OK && nodeElement)
+    rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strClearTextTag);
+  if (rv==NS_OK) mclearTextTag.key.Assign(strClearTextTag);
   // build the name space list
   nsCOMPtr<nsIDOMNodeList> nodeList;
   nsString strNameSpace;
@@ -1064,6 +1069,13 @@ NS_IMETHODIMP msiTagListManager::GetDefaultParagraphTag(nsIAtom **atomNamespace,
 {
   _retval = mdefaultParagraph.localName();
   *atomNamespace = NS_NewAtom(mdefaultParagraph.prefix());
+  return NS_OK;
+}
+
+NS_IMETHODIMP msiTagListManager::GetClearTextTag(nsIAtom **atomNamespace, nsAString & _retval)
+{
+  _retval = mclearTextTag.localName();
+  *atomNamespace = NS_NewAtom(mclearTextTag.prefix());
   return NS_OK;
 }
 
