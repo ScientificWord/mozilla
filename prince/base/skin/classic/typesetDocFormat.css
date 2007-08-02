@@ -19,6 +19,33 @@
   background-color:white;
 }
 
+*[role="sectionmargin"] {
+  border-style:solid;
+  border-color: #CCCCCC;
+  border-width: 1px;
+  background-color:white;
+}
+
+*[role="sectionlayer"] {
+  border-style:solid;
+  border-color: #CCCCCC;
+  border-width: 1px;
+  background-color:white;
+}
+
+*[role="spacer"] {
+  border-style: none;
+}
+
+*[role="sectionlayer"][sectionselected="true"] {
+  background-color:#ffc0c0;
+}
+
+*[role="sectionmargin"][sectionselected="true"] {
+  background-color:#ffc0c0;
+}
+
+
 *[hidden="true"] {display:none;}
 
 *[role="mn"] {border-style:solid;
