@@ -33,6 +33,7 @@ function SetupMSIMathMenuCommands()
   commandTable.registerCommand("cmd_MSIbinomialsCmd",    msiBinomials);
   commandTable.registerCommand("cmd_MSIoperatorsCmd",    msiOperators);
   commandTable.registerCommand("cmd_MSIdecorationsCmd",  msiDecorations);
+  commandTable.registerCommand("cmd_MSIunitsCommand",    msiUnitsDialog);
 
   try {
     gMathStyleSheet = msiColorObj.Format();
@@ -83,6 +84,7 @@ function msiSetupMSIMathMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSIbinomialsCmd",    msiBinomials);
   commandTable.registerCommand("cmd_MSIoperatorsCmd",    msiOperators);
   commandTable.registerCommand("cmd_MSIdecorationsCmd",  msiDecorations);
+  commandTable.registerCommand("cmd_MSIunitsCommand",    msiUnitsDialog);
 
 //  try {
 //    editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
@@ -599,6 +601,24 @@ var msiDecorations =
   }
 };
 
+var msiUnitsDialog = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    dump("Reached the msiUnitsDialog command handler.\n");
+    var editorElement = msiGetActiveEditorElement(window);
+    doUnitsDlg("", "cmd_MSIunitsCommand", editorElement, this);
+  }
+};
+
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
@@ -811,10 +831,35 @@ function insertmathunit(name, editorElement)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
+  var nameData = msiBaseMathUnitsList.getUnitNameData(name);
+
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    mathmlEditor.InsertMathunit(name);
+    var bUsedAppearance = false;
+    if (nameData.appearance != null)
+    {
+      if (("nodeName" in nameData.appearance) && nameData.appearance.childNodes.length > 0)
+      {
+//        ADD HERE if !math mathmlEditor.insertMath();
+        bUsedAppearance = true;
+        for (var ix = 0; ix < nameData.appearance.childNodes.length; ++ix)
+        {
+          try
+          {
+            insertfragment(editor, nameData.appearance.childNodes[ix]);
+//            editor.insertElementAtSelection(nameData.appearance.childNodes[ix], (ix==0)); //"true" means delete selection - should only apply to the first insertion
+          } catch(exc)
+          {
+            var nodeStr = nameData.appearance.childNodes[ix].nodeName;
+            nodeStr += ", " + nameData.appearance.childNodes[ix].nodeValue;
+            dump("Exception in insertmathunit, exception is [" + exc + "], trying to insert node [" + nodeStr + "].\n");
+          }
+        }
+      }
+    }
+    if (!bUsedAppearance)
+      mathmlEditor.InsertMathunit(nameData.data);
     editorElement.contentWindow.focus();
   } 
   catch (e) {}
@@ -1166,6 +1211,14 @@ function doDecorationsDlg(decorationAboveStr, decorationBelowStr, decorationArou
   insertDecoration(decorationData.decorationAboveStr, decorationData.decorationBelowStr, decorationData.decorationAroundStr, editorElement);
 }
 
+
+function doUnitsDlg(unitStr, commandID, editorElement, commandHandler)
+{
+  var unitsData = new Object();
+  unitsData.unitString = unitStr;
+  msiOpenModelessDialog("chrome://prince/content/mathUnitsDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, commandID, commandHandler, unitsData);
+}
 
 // change symbol panels to MathML so they're styled correctly.
 // for some reason, just adding the children to the button doesn't do the job, so we have to build 

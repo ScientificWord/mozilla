@@ -62,6 +62,7 @@
 		<command id="cmd_MSIbinomialsCmd"     oncommand="msiGoDoCommand('cmd_MSIbinomialsCmd')"/>
 		<command id="cmd_MSIoperatorsCmd"     oncommand="msiGoDoCommand('cmd_MSIoperatorsCmd')"/>
 		<command id="cmd_MSIdecorationsCmd"   oncommand="msiGoDoCommand('cmd_MSIdecorationsCmd')"/>
+    <command id="cmd_MSIunitsCommand"     oncommand="msiGoDoCommand('cmd_MSIunitsCommand')"/>
   </commandset>
 
   <!-- style related commands that update on creation, and on selection change (editorOverlay.xul)-->
@@ -90,7 +91,7 @@
       <menuitem label="&MSIbinomialsCmd.label;"       accesskey="&MSIbinomialsCmd.accesskey;"       command="cmd_MSIbinomialsCmd"/>
       <menuitem label="&MSIdecorationsCmd.label;"     accesskey="&MSIdecorationsCmd.accesskey;"     command="cmd_MSIdecorationsCmd"/>
       <menuitem id="insertmenuUnitNames" label="&insertmenuUnitNames.label;"
-        accesskey="&insertmenuUnitNames.accesskey;" observes="cmd_unimp" />
+        accesskey="&insertmenuUnitNames.accesskey;" command="cmd_MSIunitsCommand" />
       <menuitem label="&MSItensorCmd.label;"   accesskey="&MSItensorCmd.accesskey;"                              command="cmd_MSItensorCmd"/>
       <menuseparator/>
       <menu accesskey="&insertSpacingObjects.accessKey;"   id="insertSpacesMenu"        label="&insertSpacingObjects.label;">
