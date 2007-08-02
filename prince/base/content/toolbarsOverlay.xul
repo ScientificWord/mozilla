@@ -39,7 +39,7 @@
       <toolbarbutton id="stopButton"/>
     </toolbarpalette>
     <toolbar id="StandardToolbar" class="chromeclass-toolbar" persist="collapsed" 
-      defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton" customizable="true" mode="icons" />
+      tbalign="center" defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton" customizable="true" mode="icons" />
     <toolbar id="TagSelectToolbar" class="chromeclass-toolbar" persist="collapsed" >
       <textbox id="TextTagSelections"/>
       <textbox id="ParaTagSelections"/>
@@ -49,7 +49,7 @@
   </toolbox>
 
   <toolbox id="MathToolbox" orient="horizontal" mode="icons" context="math-toolbar-context-menu">
-    <popup id="math-toolbar-context-menu" >
+    <popup id="math-toolbar-context-menu" crop="right">
       <menuitem oncommand="CustomizeMainToolbar('MathToolbox');"
         label="Customize math toolbar" />
     </popup>
