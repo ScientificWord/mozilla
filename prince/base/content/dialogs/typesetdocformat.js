@@ -1112,3 +1112,57 @@ function initSystemFontMenu(menuPopupId)
 //    menulist.replaceChild(newnode,tempnode);
 //  }
 //}
+
+// functions for typesetsectionsoverlay
+
+function setalign(which)
+{
+  var element;
+  var otherelement;
+  if (which == "center")
+  {
+    element = document.getElementById("sectionleftmargin");
+    otherelement = document.getElementById('sectionrightmargin');
+    element.setAttribute("role", "spacer");
+    element.setAttribute("flex", "1");
+  }
+  else
+  {
+    if (which == "left")
+    {
+      element = document.getElementById("sectionleftmargin");
+      otherelement = document.getElementById('sectionrightmargin');
+    }
+    else if (which == "right")
+    {
+      element = document.getElementById("sectionrightmargin");
+      otherelement = document.getElementById('sectionleftmargin');
+    }
+    element.setAttribute("role", "sectionmargin");
+    element.setAttribute("flex", "0");
+  }
+  otherelement.setAttribute("role", "spacer");
+  otherelement.setAttribute("flex", "1");
+}
+    
+
+function clearselection(element)
+{
+ if (element.getAttribute('sectionselected') != null)
+    element.setAttribute('sectionselected', 'false');
+  var node;
+  for (var i = 0; i < element.childNodes.length; i++) 
+  { 
+    clearselection(element.childNodes[i]);
+  }
+} 
+   
+function toggleselection( element )
+{
+  var root = document.getElementById("sectionparts");
+  clearselection(root);
+  if (element.getAttribute('sectionselected') == "true")
+    element.setAttribute('sectionselected', 'false');
+  else
+    element.setAttribute('sectionselected','true');
+}
