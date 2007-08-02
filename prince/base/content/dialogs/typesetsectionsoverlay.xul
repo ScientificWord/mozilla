@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetDocFormat.dtd">
+
+<overlay id="docformatsectionsoverlay.dialog"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <script type="application/x-javascript" src="chrome://prince/content/typesetSectionsOverlay.js"/>
+  <tabpanel id="docformatSectionsPanel" align="vertical">
+    <vbox>
+      <label>Hello!</label>
+      <hbox>
+        <vbox align="center">
+         <label>Section type</label>
+         <menulist id="sections.name" >
+           <menupopup>
+             <menuitem id="sections.chapter" label="Chapter" value="0"/>
+             <menuitem id="sections.section" label="Section" value="1"/>
+             <menuitem id="sections.subsection" label="Subsection" value="2"/>
+             <menuitem id="sections.subsubsection" label="Subsubsection" value="3"/>
+             <menuitem id="sections.paragraph" label="Paragraph" value="4"/>
+             <menuitem id="sections.subparagraph" label="Subparagraph" value="5"/>
+           </menupopup>
+         </menulist>
+        </vbox>
+        <vbox align="center">
+         <label>Header style</label>
+         <menulist id="sections.style" >
+           <menupopup>
+             <menuitem id="sections.hang" label="Hang" value="hang"/>
+             <menuitem id="sections.display" label="Display" value="display"/>
+             <menuitem id="sections.block" label="Block" value="block"/>
+             <menuitem id="sections.wrap" label="Wrap" value="wrap"/>
+             <menuitem id="sections.leftmargin" label="Left Margin" value="leftmargin"/>
+             <menuitem id="sections.rightmargin" label="Right Margin" value="rightmargin"/>
+           </menupopup>
+         </menulist>
+        </vbox>
+        <vbox align="center">
+         <label>Alignment</label>
+         <radiogroup orient="horizontal">
+           <radio id="sectionleft" label="left" oncommand="setalign('left');"/>
+           <radio id="sectioncenter" label="center" oncommand="setalign('center');"/>
+           <radio id="sectionright" label="right" oncommand="setalign('right');"/>
+         </radiogroup>
+        </vbox>
+      </hbox>
+      <hbox style="height:10px"/>
+      <vbox>
+        <hbox>
+          <vbox style="width:50px; height:60px"/>
+          <vbox>
+            <vbox role="textarea" style="height:60px; width:375px">
+              <label>text</label>
+            </vbox>   
+            <hbox id="sectionparts" style="align:center;" pack="end">
+              <vbox id="sectionleftmargin" role="sectionmargin" 
+                tooltiptext="Click to set left margin" style="height:60px; width:30px"
+                onclick="toggleselection(this);"/>
+              <vbox>
+                <hbox role="sectionlayer" tooltiptext="Click to set top margin or to enter text"
+                  style="height:20px; width:200px" onclick="toggleselection(this);"/>
+                <hbox role="sectionlayer" tooltiptext="Click to enter section text"
+                  style="height:20px; width:200px" onclick="toggleselection(this);"/>
+                <hbox role="sectionlayer" tooltiptext="Click to set bottom margin or to enter text"
+                  style="height:20px; width:200px" onclick="toggleselection(this);"/>
+              </vbox>  
+              <vbox id="sectionrightmargin" role="sectionmargin" style="height:60px; width:30px"
+                onclick="toggleselection(this);"/>
+            </hbox>
+            <vbox role="textarea" style="height:60px; width:375px"/>
+          </vbox>
+        </hbox>
+      </vbox>
+    </vbox>
+  </tabpanel>
+
+
+
+
+</overlay>
