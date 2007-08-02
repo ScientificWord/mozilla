@@ -1033,6 +1033,11 @@ function insertXML(editor, text, node, offset, bDump)
   var nodeList = doc.documentElement.childNodes;
   if (bDump)
     dump("\nIn insertXML, inserting [" + text + "], with documentElement [" + doc.documentElement.nodeName + "] in node [" + node.nodeName + "] at offset [" + offset + "].\n");
+  insertXMLNodes(editor, nodeList, node, offset);
+}
+
+function insertXMLNodes(editor, nodeList, node, offset)
+{
   var i;
   // we can only insert nodes under an element, not under anything else such as a text node or a
   // processing instruction node. The cursor is likely in a text node
@@ -1065,22 +1070,29 @@ function insertXML(editor, text, node, offset, bDump)
 
 function insertXMLAtCursor(editor, text, bWithinPara, bSetCaret)
 {
+  if (bWithinPara)
+    text = "<para>" + text + "</para>";
+  else
+    text = "<body>" + text + "</body>";
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(text,"application/xhtml+xml");
+  var nodeList = doc.documentElement.childNodes;
+  return insertXMLNodesAtCursor(editor, nodeList, bSetCaret);
+}
+
+function insertXMLNodesAtCursor(editor, nodeList, bSetCaret)
+{
   if (!editor)
   {
     dump("Error in msiEditorUtilities.js, insertXMLAtCursor - null editor!\n");
     return false;
   }
-  if (bWithinPara)
-    text = "<para>" + text + "</para>";
-  else
-    text = "<body>" + text + "</body>";
   var theElement = null;
   var theOffset = 0;
   var theLength = 0;
   var bOK = true;
   try
   {
-//    dump("Going to insertXML, text before call is [" + text + "].\n");
     theElement = editor.selection.focusNode;
     theOffset = editor.selection.focusOffset;
     var fixedPos = fixInsertPosition(editor, theElement, theOffset);
@@ -1090,7 +1102,7 @@ function insertXMLAtCursor(editor, text, bWithinPara, bSetCaret)
       theOffset = fixedPos.theOffset;
     }
     theLength = theElement.childNodes.length;
-    insertXML(editor, text, theElement, theOffset, true);
+    insertXMLNodes(editor, nodeList, theElement, theOffset, true);
     dump("insertXML now done.\n");
   }
   catch(exc)
@@ -1116,12 +1128,12 @@ function insertXMLAtCursor(editor, text, bWithinPara, bSetCaret)
       theLength = theOffset = theElement.childNodes.length;
       try
       {
-        insertXML(editor, text, theElement, theOffset, false);
+        insertXMLNodes(editor, nodeList, theElement, theOffset, false);
       } 
       catch(exc)
       {
         bOK = false;
-        dump("In insertXMLAtCursor, unable to insert at all! Exception: [" + exc + "].\n");
+        dump("In insertXMLNodesAtCursor, unable to insert at all! Exception: [" + exc + "].\n");
       }
     }
     else
@@ -1187,6 +1199,23 @@ function insertXMLAtCursor(editor, text, bWithinPara, bSetCaret)
     }
   }
   return bOK;
+}
+
+function msiDeleteBodyContents(editor)
+{
+  if (!editor || (editor==null))
+    editor = msiGetCurrentEditor();
+  if (!editor)
+  {
+    dump("Error in msiEditorUtilities.js, msiDeleteBodyContents! No editor available!\n");
+    return false;
+  }
+  var bodyElement = msiGetRealBodyElement(editor.document);
+  editor.selection.anchorNode = bodyElement;
+  editor.selection.anchorOffset = 0;
+  editor.selection.focusNode = bodyElement;
+  editor.selection.focusOffset = bodyElement.childNodes.length;
+  editor.deleteSelection(nsIEditor.ePrevious);
 }
 
 function msiGetDocumentHead(theEditor)
@@ -3854,6 +3883,369 @@ function msiMathNameList()
   this.appearanceIsUsual = function(appearanceList, aName, aType, aLimitPlacement)
   {
     return true;  //need to settle how this should be passed in first - is it guaranteed to be a NodeList?
+  };
+}
+
+var msiBaseMathUnitsList = 
+{
+  bInitialized: false,
+  namesDoc : null,
+  sourceFile : "unitnames.xml",
+  bModified: false,
+  bModifiedAutoSubs: false,
+
+  initialize : function()
+  {
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+    var basedir =dsprops.get("resource:app", Components.interfaces.nsIFile);
+    basedir.append("res");
+
+//    var theFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+//    theFile.initWithPath(this.sourceFile);
+//    var inputStream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
+//    inputStream.init(theFile, -1, -1, false);  //these values for parameters taken from various examples...?
+//    this.namesDoc = domParser.parseFromStream(inputStream, "utf-8", inputStream.available(), "text/xml");
+//    inputstream.close();
+
+    var unitNameFile = basedir;
+    unitNameFile.append("tagdefs");
+    unitNameFile.append(this.sourceFile);
+    this.sourceFile = unitNameFile.path;
+    this.namesDoc = document.implementation.createDocument("", "unitnames", null);
+    var nodeList;
+    var node;
+    var s;
+    var arrayElement;
+    this.namesDoc.async = false;
+    if (this.namesDoc.load("file:///" + unitNameFile.path))
+    {
+      this.bInitialized = true;
+//      this.initAutoCompleteList();
+    }
+  },
+
+//  initAutoCompleteList : function()
+//  {
+//    if (!this.bInitialized)
+//    {
+//      dump("In msiBaseMathNameList, initAutoCompleteList being called without bInitialized being set!?\n");
+//      this.initialize();
+//    }
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var nameNodesList = this.namesDoc.getElementsByTagName("mathname");
+//    for (var ix = 0; ix < nameNodesList.length; ++ix)
+//    {
+//      var theId = nameNodesList[ix].getAttribute("id");
+//      ACSA.addString("mathnames", theId);
+//    }
+//    ACSA.sortArrays();
+//  },
+
+  createDialogNameList : function()
+  {
+    if (!this.bInitialized)
+      this.initialize();
+    var newNameList = new Object();
+    var nameNodesList = this.namesDoc.getElementsByTagName("unitname");
+    for (var ix = 0; ix < nameNodesList.length; ++ix)
+    {
+      var theId = nameNodesList[ix].getAttribute("id");
+      newNameList[theId] = this.copyDataToObject(nameNodesList[ix]);
+    }
+    return newNameList;
+  },
+
+  getUnitNameData : function(aName)
+  {
+    if (!this.bInitialized)
+      this.initialize();
+    var theNode = this.namesDoc.getElementById(aName);
+    if (theNode != null)
+      return this.copyDataToObject(theNode)
+    return null;
+  },
+
+  copyDataToObject : function(nameNode)
+  {
+    if (!nameNode)
+    {
+      dump("Error in msiEditorUtilities.js, in msiBaseMathUnitsList.copyDataToObject; null nameNode passed in!\n");
+      return null;
+    }
+    var nameData = new Object();
+    nameData.id = nameNode.getAttribute("id");
+    nameData.name = nameNode.getAttribute("name");
+    nameData.data = this.getUnitStrFromNode(nameNode);
+    nameData.type = nameNode.getAttribute("type");
+    nameData.builtIn = (nameNode.hasAttribute("builtIn") && nameNode.getAttribute("builtIn") == "true");
+    var theConversionList = nameNode.getElementsByTagName("conversion");
+    if (theConversionList != null && theConversionList.length > 0)
+      nameData.conversion = theConversionList[0].cloneNode(true);
+    var appearanceList = nameNode.getElementsByTagName("appearance");
+    if (appearanceList != null && appearanceList.length > 0 && appearanceList[0].childNodes.length > 0)
+    {
+      nameData.appearance = appearanceList[0].cloneNode(true);
+      if (appearanceList[0].namespaceURI != null && appearanceList[0].namespaceURI.length > 0)
+        dump("In msiBaseMathUnitsList.copyDataToObject, cloning node with namespace [" + appearanceList[0].namespaceURI + "], got one with namespace [" + nameData.appearance.namespaceURI + "].\n");
+    }
+    if (theConversionList != null && theConversionList.length > 0)
+      nameData.conversion = theConversionList[0].cloneNode(true);
+    if (this.nameHasAutoSubstitution(nameData.id))
+      nameData.autoSubstitute = true;
+    return nameData;
+  },
+
+  getUnitStrFromNode : function(nameNode)
+  {
+    var theDataList = nameNode.getElementsByTagName("data");
+    if (theDataList != null && theDataList.length > 0)
+      return theDataList.item(0).textContent;
+  },
+
+  deleteName : function(aName)
+  {
+    var nameNode = this.namesDoc.getElementById(aName);
+    if (nameNode != null)
+    {
+      var isBuiltIn = nameNode.getAttribute("builtIn");
+      if ((!isBuiltIn) || (isBuiltIn != "true"))
+      {
+        var unitStr = this.getUnitStrFromNode(nameNode);
+        if (this.nameHasAutoSubstitution(unitStr))
+          this.removeAutoSubstitution(unitStr);
+        nameNode.parentNode.removeChild(nameNode);
+//        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//        ACSA.deleteString("unitnames", aName);
+        this.bModified = true;
+        return true;
+      }
+    }
+    return false;
+  },
+
+  addName : function(aName, aNameData)
+  {
+    var nameNode = this.namesDoc.getElementById(aName);
+    if (nameNode != null)
+    {
+      var isBuiltIn = nameNode.getAttribute("builtIn");
+      if (isBuiltIn && (isBuiltIn == "true"))
+        return false;
+      nameNode.parentNode.removeChild(nameNode);
+    }
+    var parentNode = this.namesDoc.getElementById("nameBase");
+    var newNode = this.namesDoc.createElement("unitname");
+    newNode.setAttribute("id", aName);
+    newNode.setAttribute("type", aNameData.type);
+    if ("conversion" in aNameData)
+    {
+      var newConversion = aNameData.conversion.cloneNode(true);
+      newNode.appendChild(newConversion);
+    }
+    if (("data" in aNameData) && (aNameData.data != null) && (aNameData.data.length > 0))
+    {
+      var newData = this.namesDoc.createElement("data");
+      newData.appendChild(this.namesDoc.createTextNode(aNameData.data));
+      newNode.appendChild(newData);
+    }
+    if ("appearance" in aNameData)
+    {
+      var newAppearance = aNameData.appearance.cloneNode(true);
+      newNode.appendChild(newAppearance);
+    }
+    parentNode.appendChild(newNode);
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    ACSA.addString("unitnames", aName);
+//    ACSA.sortArrays();
+    if (aNameData.autoSubstitute == true)
+      this.addAutoSubstitution(aNameData.id);
+    this.bModified = true;
+    return true;
+  },
+//
+//  updateName : function(aName, aNameData)
+//  {
+//    return this.addName(aName, aNameData);  //is this what we should do?
+//  },
+
+  nameHasAutoSubstitution : function(unitStr)
+  {
+//    if (!this.bInitialized)
+//      this.initialize();
+//    var theNode = this.namesDoc.getElementById(aName);
+//    var unitStr = "u" + this.getUnitStrFromNode(aNode);
+    unitStr = "u" + unitStr;
+
+    var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+    autosub.Reset();
+    var result = Components.interfaces.msiIAutosub.STATE_INIT;
+    for (var ix = unitStr.length - 1; ix >= 0; --ix)
+    {
+      result = autosub.nextChar(unitStr.charAt(ix));
+      if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
+        return false;
+    }
+    return (result == Components.interfaces.msiIAutosub.STATE_SUCCESS);
+  },
+
+  addAutoSubstitution : function(unitStr)
+  {
+    dump("In msiBaseMathUnitsList.addAutoSubstitution for unit string " + unitStr + "\n.");
+    var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+    var autoStr = "u" + unitStr;
+    var bAdded = autosub.addEntry( autoStr, Components.interfaces.msiIAutosub.CONTEXT_MATHONLY, Components.interfaces.msiIAutosub.ACTION_EXECUTE,
+                      "insertMathunit('" + unitStr + "')", "", "" );
+    dump("autosub.addEntry returned " + (bAdded ? "true" : "false") + "\n.");
+    this.bModifiedAutoSubs = true;
+  },
+
+  removeAutoSubstitution : function(unitStr)
+  {
+    var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+    unitStr = "u" + unitStr;
+    autosub.removeEntry(unitStr);
+    this.bModifiedAutoSubs = true;
+  },
+
+  updateFile : function()
+  {
+    dump("msiBaseMathUnitsList.updateFile being called; this.bModified is " + (this.bModified ? "true" : "false") + ".\n");
+    if (this.bModified && (this.namesDoc != null))
+    {
+      var theFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+      theFile.initWithPath(this.sourceFile);
+      var outputStream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+      var fileMode = 0x22;  //MODE_WRONLY|MODE_TRUNCATE - rewrite the file
+      var permissions = 0x777; //all permissions for everybody?
+      outputStream.init(theFile, fileMode, permissions, 0);
+      var serializer = new XMLSerializer();
+      serializer.serializeToStream(this.namesDoc, outputStream, "utf-8");
+      outputStream.close();
+      this.bModified = false;
+    }
+    if (this.bModifiedAutoSubs)
+    {
+      var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+      var bSaved = autosub.Save();
+      dump("autosub.Save() returned " + (bSaved ? "true" : "false") + "\n");
+      this.bModifiedAutoSubs = false;
+    }
+  }
+};
+
+function msiMathUnitsList()
+{
+  this.names = msiBaseMathUnitsList.createDialogNameList();
+  this.prepareTypeList = function()
+  {
+    var theTypeList = new Object();
+    for (var aUnit in this.names)
+    {
+      if (!("type" in this.names[aUnit]))
+      {
+        dump("In msiMathUnitsList.prepareTypeList, no type for unit [" + aUnit + "].\n");
+        continue;
+      }
+      var theType = this.names[aUnit].type;
+      if (!(theType in theTypeList))
+        theTypeList[theType] = new Array();
+      theTypeList[theType].push(aUnit);
+    }
+    return theTypeList;
+  };
+  this.typeList = this.prepareTypeList();
+//  this.updateBaseList = function()
+//  {
+//    msiBaseMathUnitsList.updateFile();
+//  };
+  this.canDelete = function(aName)
+  {
+    if ((aName in this.names) && (this.names[aName] != null) && (!this.names[aName].builtIn))
+    {
+      return true;
+    }
+    return false;
+  };
+  this.canAdd = function(aName)
+  {
+    if ((aName in this.names) && (this.names[aName] != null))
+    {
+      return (!this.names[aName].builtIn);
+    }
+    return true;
+  };
+  this.findUnitByString = function(unitStr)
+  {
+    for (var aName in this.names)
+    {
+      if (this.names[aName].data == unitStr)
+        return this.names[aName];
+    }
+    return null;
+  };
+  this.hasAutoSubstitution = function(aName)
+  {
+    if ((aName in this.names) && ("autoSubstitute" in this.names[aName]) && (this.names[aName].autoSubstitute == true))
+      return true;
+    return false;
+  };
+  this.isBuiltIn = function(aName)
+  {
+    if ((aName in this.names) && (this.names[aName] != null))
+    {
+      if (this.names[aName].builtIn == true)
+        return true;
+    }
+    return false;
+  };
+  this.addToTypeList = function(aName, aType)
+  {
+    if (!("typeList" in this) || (this.typeList == null))
+      this.typeList = this.prepareTypeList();
+    if (!(aType in this.typeList))
+      this.typeList[aType] = new Array();
+    this.typeList[aType].push(aName);
+  };
+  this.addUnitName = function(aName, aLongName, aType, bAutoSubstitute, unitString, appearanceNode, conversionNode)
+  {
+    var nameData = new Object();
+    nameData.id = aName;
+    if (aLongName == null || aLongName.length == 0)
+      aLongName = aName;
+    nameData.name = aLongName;
+    nameData.type = aType;
+    nameData.data = unitString;
+    if (appearanceNode != null)
+      nameData.appearance = appearanceNode.cloneNode(true);
+    if (conversionNode != null)
+      nameData.conversion = conversionNode.cloneNode(true);
+    nameData.builtIn = false;
+    nameData.autoSubstitute = bAutoSubstitute;
+    this.names[aName] = nameData;
+    this.addToTypeList(aName, aType);
+    msiBaseMathNameList.addName(aName, nameData);
+  };
+  this.removeFromTypeList = function(aName, aType)
+  {
+    if (!("typeList" in this) || (this.typeList == null))
+      return;
+    if (!(aType in this.typeList) || this.typeList[aType] == null)
+      return;
+    var nIndex = this.typeList[aType].indexOf(aName);
+    if (nIndex >= 0)
+      this.typeList[aType].splice(nIndex, 1);
+  };
+  this.deleteUnitName = function(aName)
+  {
+    if (this.canDelete(aName))
+    {
+      msiBaseMathUnitsList.deleteName(aName);
+      removeFromTypeList(aName, this.names[aName].type);
+      delete this.names[aName];
+    }
   };
 }
 

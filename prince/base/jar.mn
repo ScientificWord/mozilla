@@ -163,7 +163,9 @@ prince.jar:
   content/msiBreaksDialog.xul        (content/dialogs/msiBreaksDialog.xul) 
   content/msiBreaksDialog.js         (content/dialogs/msiBreaksDialog.js) 
   content/ExecuteJS.xul         (content/dialogs/ExecuteJS.xul) 
-  content/ExecuteJS.js          (content/dialogs/ExecuteJS.js) 
+  content/ExecuteJS.js          (content/dialogs/ExecuteJS.js)
+  content/mathUnitsDialog.xul		 (content/dialogs/mathUnitsDialog.xul)
+  content/mathUnitsDialog.js		 (content/dialogs/mathUnitsDialog.js)
 
 en-US.jar:
 % locale prince en-US %locale/
@@ -239,6 +241,8 @@ en-US.jar:
   locale/msiDialogs.properties		      (locale/en-us/dialogs/msiDialogs.properties)
   locale/openLocation.properties		  (locale/en-us/openLocation.properties)
   locale/editor.properties		          (locale/en-us/editor.properties)
+  locale/mathUnitsDialog.dtd			  (locale/en-us/dialogs/mathUnitsDialog.dtd)
+  locale/unitsDialog.properties		      (locale/en-us/dialogs/unitsDialog.properties)
 
 classic.jar:
 % skin prince classic %skin/classic/
