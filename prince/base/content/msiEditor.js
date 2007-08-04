@@ -670,7 +670,8 @@ function msiEditorDocumentObserver(editorElement)
         } catch (e) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding overrideStyleSheets: " + e);}
 
         this.doInitFastCursor();
-        UpdateWindowTitle();
+        if ("UpdateWindowTitle" in window)
+          UpdateWindowTitle();
         // Add mouse click watcher if right type of editor
         if (msiIsHTMLEditor(this.mEditorElement))
         {
