@@ -1557,7 +1557,7 @@ int Tree2StdMML::GetIntegralCount(MNODE * mml_node)
   if (strcmp(mml_node->src_tok,"mo"))
     return 0;
   //TODO study Unicode list (this list from SWP)
-  char *ptr = strstr(mml_node->p_chdata, "&#x");
+  const char *ptr = strstr(mml_node->p_chdata, "&#x");
   if (ptr) {
     U32 unicode = ASCII2U32(ptr + 3, 16);
     switch (unicode) {
@@ -1780,7 +1780,7 @@ char *Tree2StdMML::ChdataToString(const char *p_chdata)
               GetRecordFromName("MATH", entity, zln, ID, subID, &p_data)) {
             if (p_data && *p_data) {
               //&ApplyFunction;<uID3.5.6>infix,65,U02061
-              char *ptr = strstr(p_data, ",U");
+              const char *ptr = strstr(p_data, ",U");
               if (ptr) {
                 unicode = ASCII2U32(ptr + 2, 16);
               } else {
