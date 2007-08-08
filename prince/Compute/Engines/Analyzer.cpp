@@ -2763,7 +2763,7 @@ Analyzer::BaseType Analyzer::GetBaseType(MNODE * mml_script_schemata, bool isLHS
     MNODE *nn = mml_script_schemata->next;
     const char *next_elem_nom = nn->src_tok;
     if (!strcmp(next_elem_nom, "mo")) {
-      char *ptr = strstr(nn->p_chdata, "&#x");
+      const char *ptr = strstr(nn->p_chdata, "&#x");
       if (ptr) {
         U32 unicode = ASCII2U32(ptr + 3, 16);
         if (unicode == 0x2061) {  //&ApplyFunction;
@@ -2837,7 +2837,7 @@ Analyzer::ExpType Analyzer::GetExpType(BaseType base_type, MNODE * exp)
     if (exp_contents) {
       int base = 16;
       int off = 3;
-      char *ptr = strstr(exp_contents, "&#x");
+      const char *ptr = strstr(exp_contents, "&#x");
       if (!ptr) {
         ptr = strstr(exp_contents, "&#");
         if (ptr) {
@@ -2928,7 +2928,7 @@ SemanticType Analyzer::GetBigOpType(const char *op_chdata, SemanticVariant & n_i
   n_integs = SNV_None;
 
   if (op_chdata) {
-    char *ptr = strstr(op_chdata, "&#x");
+    const char *ptr = strstr(op_chdata, "&#x");
     if (ptr) {
       U32 unicode = ASCII2U32(ptr + 3, 16);
       switch (unicode) {
@@ -2981,7 +2981,7 @@ bool Analyzer::IsLaplacian(MNODE * op_node)
   bool rv = false;
 
   if (op_node && op_node->p_chdata) {
-    char *ptr = strstr(op_node->p_chdata, "&#x");
+    const char *ptr = strstr(op_node->p_chdata, "&#x");
     if (ptr) {
       U32 unicode = ASCII2U32(ptr + 3, 16);
       if (unicode == 0x2207) {  // nabla
@@ -3349,7 +3349,7 @@ void Analyzer::OperandToBucketList(MNODE * big_op_node, SemanticType bigop_type,
             integrand_ender = integrand_ender->prev;
 
             if (!strcmp(integrand_ender->src_tok, "mo")) {
-              char *ptr = strstr(integrand_ender->p_chdata, "&#x");
+              const char *ptr = strstr(integrand_ender->p_chdata, "&#x");
               if (ptr) {
                 U32 unicode = ASCII2U32(ptr + 3, 16);
                 TCI_ASSERT(unicode == 0x2062);
@@ -4570,7 +4570,7 @@ Analyzer::PrefixOpIlk Analyzer::GetPrefixOpCode(const char *op_name, SemanticVar
   PrefixOpIlk rv = POI_none;
   n_integs = SNV_None;
 
-  char *ptr = strchr(op_name, '&');
+  const char *ptr = strchr(op_name, '&');
   if (ptr) {
     U32 unicodes[8];
     int char_tally = ChData2Unicodes(op_name, unicodes, 8);
@@ -5568,7 +5568,7 @@ Analyzer::OpMatrixIntervalType Analyzer::GetOpType(MNODE * mo)
   OpMatrixIntervalType rv = OMI_none;
 
   if (mo && mo->p_chdata) {
-    char *ptr = strstr(mo->p_chdata, "&#x");
+    const char *ptr = strstr(mo->p_chdata, "&#x");
     if (ptr) {
       U32 unicode = ASCII2U32(ptr + 3, 16);
       if (unicode == 0x2212     // &minus;
@@ -5600,7 +5600,7 @@ bool Analyzer::IsApplyFunction(MNODE * next_elem)
 
   const char *next_elem_nom = next_elem->src_tok;
   if (!strcmp(next_elem_nom, "mo")) {
-    char *ptr = strstr(next_elem->p_chdata, "&#x");
+    const char *ptr = strstr(next_elem->p_chdata, "&#x");
     if (ptr) {
       U32 unicode = ASCII2U32(ptr + 3, 16);
       if (unicode == 0x2061)    // &Applyfunction;
@@ -6131,7 +6131,7 @@ int Analyzer::ChData2Unicodes(const char *p_chdata, U32 * unicodes, int limit)
               GetRecordFromName("MATH", entity, zln, ID, subID, &p_data)) {
             if (p_data && *p_data) {
               //&ApplyFunction;<uID3.5.6>infix,65,U02061
-              char *ptr = strstr(p_data, ",U");
+              const char *ptr = strstr(p_data, ",U");
               if (ptr) {
                 unicodes[rv] = ASCII2U32(ptr + 2, 16);
                 rv++;
@@ -6527,7 +6527,7 @@ int Analyzer::GetVarLimType(char *op_name, MNODE * base)
       && base && base->next && base->next->p_chdata) {
     MNODE *under_decoration = base->next;
     const char *decor = under_decoration->p_chdata;
-    char *ptr = strstr(decor, "&#x");
+    const char *ptr = strstr(decor, "&#x");
     if (ptr) {
       U32 unicode = ASCII2U32(ptr + 3, 16);
       switch (unicode) {
