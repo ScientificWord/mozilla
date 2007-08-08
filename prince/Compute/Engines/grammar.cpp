@@ -43,12 +43,12 @@ bool Grammar::EnvOK(const char *zcurr_env, HASH_TABLE * table)
 
 void Grammar::LocateOffsets(const char *fline, int * offsets)
 {
-  char *ptr = strstr(fline, "<uID");
+  const char *ptr = strstr(fline, "<uID");
   if (ptr) {
     offsets[0] = ptr - fline;
     offsets[1] = offsets[0] + 4;
 
-    char *p2 = ptr;
+    const char *p2 = ptr;
     while (*p2 && *p2 != '>')
       p2++;
 
