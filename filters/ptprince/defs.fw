@@ -439,7 +439,8 @@ Now we want to remove surrounding braces if the parameter consists
 of a single group.
 
 @$@<Tidy up parameter@>==@{@-
-if ((CURRENT_PARAM -> front().Type() == TT_LEFT_BRACE) &&
+if ((CURRENT_PARAM -> size() > 1) && 
+    (CURRENT_PARAM -> front().Type() == TT_LEFT_BRACE) &&
     (CURRENT_PARAM -> back().Type() == TT_RIGHT_BRACE)){
    CURRENT_PARAM -> pop_front();
    CURRENT_PARAM -> pop_back();

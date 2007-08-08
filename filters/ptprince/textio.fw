@@ -323,7 +323,7 @@ public:
 private:
    // Unimplemented
    Latin_1_in(const Latin_1_in&);
-   operator=(const Latin_1_in&);
+   Latin_1_in& operator=(const Latin_1_in&);
 };
 @}
 
@@ -374,7 +374,7 @@ public:
 private:
    // Unimplemented
    Codepage932_in(const Codepage932_in&);
-   operator=(const Codepage932_in&);
+   Codepage932_in& operator=(const Codepage932_in&);
 };
 @}
 
@@ -436,7 +436,7 @@ public:
 private:
    // Unimplemented
    Codepage936_in(const Codepage936_in&);
-   operator=(const Codepage936_in&);
+   Codepage936_in& operator=(const Codepage936_in&);
 };
 @}
 
@@ -497,7 +497,7 @@ public:
 private:
    // Unimplemented
    Codepage949_in(const Codepage949_in&);
-   operator=(const Codepage949_in&);
+   Codepage949_in& operator=(const Codepage949_in&);
 };
 @}
 
@@ -558,7 +558,7 @@ public:
 private:
    // Unimplemented
    Codepage950_in(const Codepage950_in&);
-   operator=(const Codepage950_in&);
+   Codepage950_in& operator=(const Codepage950_in&);
 };
 @}
 

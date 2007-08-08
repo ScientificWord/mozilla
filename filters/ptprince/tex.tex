@@ -1842,10 +1842,10 @@ private:
    FilenameData* m_filenameData;
 public:
    Filename();
-   Filename(const char*);
+   Filename(const char*, bool fExternal = false);
    ~Filename();
 
-   bool Accept(TeXChar c);
+   bool Accept(TeXChar c, bool fExternal);
    bool Finished() const;
    //bool GetNameString(char*,int) const;
    const char* GetFullName() const;
@@ -1900,12 +1900,12 @@ post-state}
 {
 }
 
-Filename::Filename(const char* name)
+Filename::Filename(const char* name, bool fExternal)
    : m_filenameData(new FilenameData)
 {
    ASSERT(name != 0);
    for (int i = 0; i < strlen(name); ++i){
-      Accept((TeXChar) name[i]);
+      Accept((TeXChar) name[i], fExternal);
    }
 }
 
@@ -1916,7 +1916,7 @@ Filename::~Filename()
    m_filenameData = 0;
 }
 
-bool Filename::Accept(TeXChar c)
+bool Filename::Accept(TeXChar c, bool fExternal)
 {
   ASSERT(m_filenameData != 0);
 
@@ -1925,13 +1925,15 @@ bool Filename::Accept(TeXChar c)
   // For the time being:
   if (HiByte(c) != '\0')
      return false;
-//  if (c == L' ')
-//     return false;
+// BBM: we have to support spaces in paths when they
+// come from outside the TeX file
+  if (!fExternal && (c == L' '))
+     return false;
   if (c == L'{' || c == '}')
      return false;
   if (c == L'[' || c == ']')
      return false;
-  if (c == L'/') {
+  if ((c == L'/')||(fExternal &&(c==L'\\'))) {
      m_filenameData -> area_delim = m_filenameData -> m_strFullName.size();
      c = L'\\';
   }
@@ -2119,7 +2121,7 @@ hence the assertion in the second line of this function.x
 
     const char* uni = "testfilename.dat";
     for(unsigned int i = 0; i < strlen(uni); ++i){
-      if (!fn.Accept((TeXChar)(uni[i]))){
+      if (!fn.Accept((TeXChar, false)(uni[i]))){
          break;
       }
     }
@@ -2216,7 +2218,7 @@ protected:
 private:
    // Do not implement
    OutputByteStream(const OutputByteStream&);
-   OutputByteStream& operator=(const OutputByteStream&);
+   OutputByteStream& OutputByteStream& operator=(const OutputByteStream&);
 };
 ]fwetx=%
 \fwcdef 
@@ -2274,7 +2276,7 @@ public:
    Byte Get();
 private:
    InputByteFile(const InputByteFile&);
-   operator=(const InputByteFile&);
+   InputByteFile& operator=(const InputByteFile&);
 };
 ]fwetx=%
 \fwcdef 
@@ -2399,7 +2401,6 @@ InputByteFile::~InputByteFile()
       return false;
    }
    LOG("\nOpened for reading: " << filepath.c_str());
-
    // Get the first byte into the buffer
    m_byteFileData -> m_buf =  m_byteFileData -> m_file.get();
    return true;
@@ -2603,6 +2604,24 @@ private:
 {
    delete m_byteFileData;
 }
+
+
+const char* SearchForOutput(const char* searchfile)
+{
+   // Search for file in MSIOUTPUT environment variable
+
+   static char pathbuffer[_MAX_PATH];
+   char envvar[] = "MSIOUTPUT";
+
+   _searchenv( searchfile, envvar, pathbuffer );
+   if( *pathbuffer != '\0' ){
+      LOG("\nPath for " << searchfile << " == " << pathbuffer);
+      return pathbuffer;
+   } else {
+      LOG("\nDid not find path for " << searchfile);
+      return(0);
+   }
+}
 ]fwetx=%
 \fwcdef 
 \fwbeginmacronotes
@@ -2627,12 +2646,15 @@ private:
    }
 
    std::string filepath = CatFilename(area, name, ext, false);
-   const char* path = SearchFor(filepath.c_str());
+   const char* path = SearchForOutput(filepath.c_str());
    if (path == 0){
       LOG("\nFailed to locate " << filepath.c_str());
-      return false;
+      path = filepath.c_str();
+      // BBM: we want to create the file if it doesn't exist
+      // return false;
    }
-   m_byteFileData -> m_file.open(path, std::ios::out | std::ios::binary);
+   m_byteFileData -> m_file.open(path, std::ios::out
+     | std::ios::binary | std::ios::app );
    if ( ! m_byteFileData -> m_file.is_open() ){
       LOG("\nFailed to open " << path);
       return false;
@@ -2686,6 +2708,7 @@ private:
    for (int i = 0; i < str.Size(); ++i){
      Put(str[i]);
    }
+   Put('\n');
 }
 ]fwetx=%
 \fwcdef 
@@ -3239,7 +3262,7 @@ public:
 private:
    // Unimplemented
    Latin_1_in(const Latin_1_in&);
-   operator=(const Latin_1_in&);
+   Latin_1_in& operator=(const Latin_1_in&);
 };
 ]fwetx=%
 \fwcdef 
@@ -3302,7 +3325,7 @@ public:
 private:
    // Unimplemented
    Codepage932_in(const Codepage932_in&);
-   operator=(const Codepage932_in&);
+   Codepage932_in& operator=(const Codepage932_in&);
 };
 ]fwetx=%
 \fwcdef 
@@ -3376,7 +3399,7 @@ public:
 private:
    // Unimplemented
    Codepage936_in(const Codepage936_in&);
-   operator=(const Codepage936_in&);
+   Codepage936_in& operator=(const Codepage936_in&);
 };
 ]fwetx=%
 \fwcdef 
@@ -3449,7 +3472,7 @@ public:
 private:
    // Unimplemented
    Codepage949_in(const Codepage949_in&);
-   operator=(const Codepage949_in&);
+   Codepage949_in& operator=(const Codepage949_in&);
 };
 ]fwetx=%
 \fwcdef 
@@ -3522,7 +3545,7 @@ public:
 private:
    // Unimplemented
    Codepage950_in(const Codepage950_in&);
-   operator=(const Codepage950_in&);
+   Codepage950_in& operator=(const Codepage950_in&);
 };
 ]fwetx=%
 \fwcdef 
@@ -9490,7 +9513,7 @@ while (true){
        CurTok().Type() == TT_ACTIVE){
       InputStack::Putback(CurTok());
       break;
-   } else if (!fn.Accept(CurTok().ChrCode())){
+   } else if (!fn.Accept(CurTok().ChrCode(),false)){
       break;
    } else {
       GetToken();
@@ -11160,7 +11183,7 @@ that is listed in the enumerated type \fwlit{CommandCode}.
         TokenList* pTokenList = new TokenList;
         pTokenList -> push_back(TeXToken(TT_END_MATCH,0,0));
 
-        pTokenList -> AppendSymbol("msitag");
+        pTokenList -> AppendSymbol("msitexb");
         pTokenList -> push_back(TeXToken(TT_LEFT_BRACE,'{',0));
         pTokenList -> push_back(TeXToken(CurTok()));
         pTokenList -> push_back(TeXToken(TT_RIGHT_BRACE,'}',0));
@@ -12951,9 +12974,9 @@ NewPrimitive("msiextproc", CMD_EXTENSION, false, EXT_EXTPROC);
          LOG("\n----Opening output "
                      << m << " as "
                      << fn.GetNameString());
-         if (Global::g_readFile[m] != 0){
-            LOG("\nDeleting already open read file");
-            delete Global::g_readFile[m];
+         if (Global::g_writeFile[m] != 0){
+            LOG("\nDeleting already open write file");
+            delete Global::g_writeFile[m];
          }
 
          Global::g_writeFile[m] = new OutputByteFile;
@@ -18305,7 +18328,7 @@ HINSTANCE s_hApp;
 HINSTANCE s_hDLL;
 
 std::string s_mathml;
-
+extern char* s_mmldirname;
 
 bool SetupMathMLDLL()
 {
@@ -18315,10 +18338,11 @@ bool SetupMathMLDLL()
     // GetModuleFileName( s_hApp, path, MAXPATH );
     // FileSpec fsPath(path);
     // std::string strPath = fsPath.GetDir();
-    std::string strPath = "mmldll.dll";
+    std::string strPath = s_mmldirname;
+    strPath += "\\mmldll.dll";
     s_hDLL = ::LoadLibrary( strPath.c_str() );
     if (s_hDLL == NULL) {
-      // TCI_ASSERT(FALSE);
+      std::cout << "Load library failed for " << strPath.c_str() << "\n";
       return false;
     }
 
@@ -18375,7 +18399,7 @@ bool SetupMathMLDLL()
     // TCI_ASSERT(FALSE);
     return false;
   }
-  HRESULT hr = (*Initialize)( (const char*) ".",
+  HRESULT hr = (*Initialize)( (const char*) s_mmldirname,
                                 (const char*)"mml:",
                                 (const char**)upref_zstrs );
   if (hr != S_OK) {
@@ -20854,19 +20878,23 @@ bool s_bTapped;
 extern Typesetter ts;
 
 const char* s_inputfilename;
+char* s_mmldirname = ".";
 
 void usage()
 {
   std::cout <<
-    "usage: pretex [-i<dir>] [-f<format file>] [-h] "
-        "[-c<inputfilter>] "
+    "usage: pretex [-i <dir>] [-f <format file>] [-h] "
+        "[-c<codepage>] "
         "<input file> <output file>\n"
     "   -h        Print this text.\n"
-    "   -i<dir>   The directory where the pretex formats"
-    " and style files are.\n"
-    "   -f<file>  The format file to use.\n"
-    "   -c<multibyte codepage> e.g. -cp932.\n"
-    "Set the MSITEXINPUT environment variable.\n";
+    "   -i <dir>   The directory where the pretex formats"
+    " and style files are (defaults to MSITEXINPUT evironment variable.\n"
+    "   -f <file>  The format file to use (defaults to msilatex.tex).\n"
+    "   -o <dir>   The directory in which to put auxiliary files,"
+                " such as .css.\n"
+    "   -m <dir>   The directory containing mmldll.dll "
+    "and its auxiliary .gmr files.\n"
+    "   -c<multibyte codepage> e.g. -cp932.\n";
   exit(1);
 }
 
@@ -20896,28 +20924,56 @@ int main(int argc, char* argv[])
 
    // Set up tex input directory
    char envInput[_MAX_PATH+12];
+   char envOutput[_MAX_PATH+12];
    strcpy(envInput, "MSITEXINPUT=");
-   for (int j = 0; j < argc; ++j){
-      if (argv[j][0] == '-'){
-         if (strlen(argv[j]) > 2 && argv[j][1]=='i'){
-           const char* inputdir = &argv[j][2];
-           strcat(envInput, inputdir);
-           _putenv(envInput);
-         } 
-       }
+   strcpy(envOutput, "MSIOUTPUT=");
+   for (int j = 0; j < argc; ++j)
+   {
+      if (argv[j][0] == '-')
+      {
+        if (argv[j][1]=='i')
+        {
+         char* inputdir = strdup(argv[j+1]);
+         // check for double quotes around the path
+         if (inputdir[0]=='"') inputdir++;
+         if (inputdir[strlen(inputdir)-1]=='"')
+            inputdir[strlen(inputdir)-1] = '\0';
+         strcat(envInput, inputdir);
+         _putenv(envInput);
+         std::cout << "Set input environment " << envInput << "\n";
+         delete inputdir;
+        }
+        else if (argv[j][1]=='o')
+        {
+          char* outputdir = strdup(argv[j+1]);
+          // check for double quotes around the path
+          if (outputdir[0]=='"') outputdir++;
+          if (outputdir[strlen(outputdir)-1]=='"')
+           outputdir[strlen(outputdir)-1] = '\0';
+          strcat(envOutput, outputdir);
+          _putenv(envOutput);
+          std::cout << "Set output environment " << envOutput << "\n";
+          delete outputdir;
+        }
+        else if (argv[j][1]=='m')
+        {
+          s_mmldirname = strdup(argv[j+1]);
+          std::cout << "Set mmldirname to " << s_mmldirname << "\n";
+        }
+      }
    }
 
    // Read a "format" file
    const char* format = "msilatex.tex";
    for (int i = 0; i < argc; ++i){
       if (argv[i][0] == '-'){
-         if (strlen(argv[i]) > 2 && argv[i][1]=='f'){
-           format = &argv[i][2];
+         if (strlen(argv[i]) > 1 && argv[i][1]=='f'){
+           format = argv[i+1];
          }
       }
    }
    LOG("\nReading format file " << format);
-   Filename fn0(format);
+   Filename fn0(format, true);
    InputByteFile* pbf0 = new InputByteFile;
    if (!pbf0 -> Open(fn0)){
       std::cout << "\nFailed to open format file: " << format<<"\n";
@@ -20934,7 +20990,7 @@ int main(int argc, char* argv[])
    try{
       s_inputfilename = argv[argc-2];
       LOG("\nReading input file " << s_inputfilename);
-      Filename fn(s_inputfilename);
+      Filename fn(s_inputfilename, true);
       InputByteFile* pbf = new InputByteFile;
       pbf -> Open(fn);
 
