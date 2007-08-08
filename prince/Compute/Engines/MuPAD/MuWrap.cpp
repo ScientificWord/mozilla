@@ -1399,7 +1399,7 @@ char *MuPADWrapper::LIMFUNCtoEstr(SEMANTICS_NODE * limfunc_info,
     char *ll_str = NULL;
     char *ul_str = NULL;
 
-    char *ptr = strstr(db_production, "%arg_list%");
+    const char *ptr = strstr(db_production, "%arg_list%");
     if (ptr) {
       // limfunc type operator takes an operand
       BUCKET_REC *arg_bucket =
@@ -1411,9 +1411,9 @@ char *MuPADWrapper::LIMFUNCtoEstr(SEMANTICS_NODE * limfunc_info,
         return NULL;
     }
 
-    char *p_lim_exp = NULL;
-    char *p_ll = NULL;
-    char *p_ul = NULL;
+    const char *p_lim_exp = NULL;
+    const char *p_ll = NULL;
+    const char *p_ul = NULL;
     BUCKET_REC *l_bucket = FindBucketRec(limfunc_info->bucket_list,
                                          MB_LOWERLIMIT);
     if (l_bucket) {
@@ -2060,7 +2060,7 @@ char *MuPADWrapper::BIGOPtoEstr(SEMANTICS_NODE * bigop_snode,
       } else
         TCI_ASSERT(0);
 
-      char *ptr = strstr(db_production, "%operand%");
+      const char *ptr = strstr(db_production, "%operand%");
       if (ptr) {
         // big prefix operator takes an operand
         BUCKET_REC *operand_bucket =
@@ -2296,7 +2296,7 @@ char *MuPADWrapper::OPERATORtoEstr(SEMANTICS_NODE * sem_op_node,
         op_found = true;
         TCI_ASSERT(0);
         // Operators should be distinguished from function by this point!
-        char *ptr = strstr(db_maple_op, "%val%");
+        const char *ptr = strstr(db_maple_op, "%val%");
         if (ptr)
           rv = PROBFUNCtoEstr(sem_op_node, db_maple_op, ID, error_code);
         else
@@ -2836,7 +2836,7 @@ char *MuPADWrapper::TABULATIONtoEstr(SEMANTICS_NODE * table_info,
     char *row_list_str = NULL;
     U32 cln = 0;
 
-    char *ptr = strstr(db_production, "%row_list%");
+    const char *ptr = strstr(db_production, "%row_list%");
     if (ptr) {
       // For MuPAD, SWPmatrix takes a list of rows
 
@@ -2959,7 +2959,7 @@ char *MuPADWrapper::SIMPLEXtoEstr(SEMANTICS_NODE * simplex_info,
       error_code = err_code;
       return NULL;
     }
-    char *ptr = strstr(db_production, "%var%");
+    const char *ptr = strstr(db_production, "%var%");
     if (ptr) {
       // Need to pass this in!
       var_str = new char[2];
@@ -4273,7 +4273,7 @@ char *MuPADWrapper::CreateSIntegraleStr(MathServiceRequest & msr, U32 cmd_ID,
       } else {
         TCI_ASSERT(0);
       }
-      char *ptr = strstr(eng_zstr, "hold(int)");
+      const char *ptr = strstr(eng_zstr, "hold(int)");
       if (ptr) {
         size_t zln = strlen(cmd_template) + strlen(eng_zstr) + strlen(part);
         zh_rv = new char[zln];
@@ -5254,7 +5254,7 @@ char *MuPADWrapper::FUNCDEFtoEstr(SEMANTICS_NODE * s_funcdef,
       f_nom_str = GetEngNameForUserFunc(s_func);
 
       // Handle the function variables
-      char *ptr = strstr(db_production, "%var_list%");
+      const char *ptr = strstr(db_production, "%var_list%");
       if (ptr) {
         int err_code = 0;
         var_list_str = LISTtoEstr(s_func, NULL, NULL, ",", NULL, err_code);
@@ -5608,7 +5608,7 @@ char *MuPADWrapper::Piecewise2Estr(SEMANTICS_NODE * pw_list, int& error_code)
     char *dr_list_str = NULL;
     U32 dr_ln = 0;
 
-    char *ptr = strstr(db_production, "%dr_list%");
+    const char *ptr = strstr(db_production, "%dr_list%");
     if (ptr) {
       // MuPAD "piecewise" takes a list   "[domain,expr],[domain,expr],..[domain,expr]"
       // piecewise(
@@ -6171,7 +6171,7 @@ char *MuPADWrapper::TRANSFORMtoEstr(SEMANTICS_NODE * s_transform,
   //  variable is "s".
 
   if (!var_str) {
-    char *is_laplace = strstr(production, "laplace");
+    const char *is_laplace = strstr(production, "laplace");
 
     const char *nom = is_laplace ? "s" : "w";
     const char *t_nom = is_laplace ? "t" : "x";
@@ -6184,7 +6184,7 @@ char *MuPADWrapper::TRANSFORMtoEstr(SEMANTICS_NODE * s_transform,
       strcpy(user_name, nom);
       tvar_str = CreateEngName(client_ID, NULL, user_name, use_alias, Ilk_Var);
     }
-    char *ptr = strstr(production, "inv");
+    const char *ptr = strstr(production, "inv");
     if (ptr) {
       char *tmp = tvar_str;
       tvar_str = var_str;
@@ -6373,7 +6373,7 @@ char *MuPADWrapper::POLISHOPtoEstr(SEMANTICS_NODE * s_rpolish_op,
         delete[] operand;
       } else if (req_eng_format == 2) { // engine form is prefix
         // tcidprod(operand,operand)      
-        char *ptr = strstr(production, "%arg_list%");
+        const char *ptr = strstr(production, "%arg_list%");
         if (ptr) {
           int err_code = 0;
 

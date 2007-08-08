@@ -869,7 +869,8 @@ static void M_DECL PlotCallBack(void *data, MPlot plot)
   TCI_ASSERT(LastPlotID == NO_LAST_PLOT);
 
   /* Find a free plot device to use */
-  for (I16 i = 0; i < MAPLE_NUM_PLOTS; i++) {
+  I16 i; 
+  for (i = 0; i < MAPLE_NUM_PLOTS; i++) {
     if (plot_devs[i] == NULL)
       break;
   }
