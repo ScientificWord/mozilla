@@ -1009,7 +1009,7 @@ public:
    Byte Get();
 private:
    InputByteFile(const InputByteFile&);
-   operator=(const InputByteFile&);
+   InputByteFile& operator=(const InputByteFile&);
 };
 @}
 
@@ -1208,7 +1208,7 @@ public:
    void Write(String& str);
 private:
    OutputByteFile(const OutputByteFile&);
-   operator=(const OutputByteFile&);
+   OutputByteFile& operator=(const OutputByteFile&);
 };
 @}
 
