@@ -495,7 +495,7 @@ static int s_paramno = 0; // Used to print  #1, #2, etc
 
 @$@<TeXToken logging imp@>+=@{@-
 #ifdef LOGGING
-static s_bLogSymbolNumber = false;
+static bool s_bLogSymbolNumber = false;
 
 LogFile& operator<<(LogFile& f, const TeXToken& tt)
 {
