@@ -275,32 +275,32 @@
 <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:bold">\textbf{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:it">\textit{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:rm">\textrm{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:sf">\textsf{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:sl">\textsl{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:sc">\textsc{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:tt">\texttt{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:em">\emph{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:hebrew">{\hebrew\beginR <xsl:apply-templates/> \endR} </xsl:template>
+<xsl:template match="bold">\textbf{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="it">\textit{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="rm">\textrm{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="sf">\textsf{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="sl">\textsl{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="sc">\textsc{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="tt">\texttt{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="em">\emph{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="hebrew">{\hebrew\beginR <xsl:apply-templates/> \endR} </xsl:template>
 
-<xsl:template match="html:tiny">{\tiny <xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:scriptsize">{\scriptsize <xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:footnotesize">{\footnotesize <xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:small">{\small <xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:normalsize">{\normalsize <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="tiny">{\tiny <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="scriptsize">{\scriptsize <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="footnotesize">{\footnotesize <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="small">{\small <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="normalsize">{\normalsize <xsl:apply-templates/>}</xsl:template>
 
-<xsl:template match="html:large">{\large <xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:Large">{\Large <xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:LARGE">{\LARGE <xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:huge">{\huge <xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:Huge">{\Huge <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="large">{\large <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="Large">{\Large <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="LARGE">{\LARGE <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="huge">{\huge <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="Huge">{\Huge <xsl:apply-templates/>}</xsl:template>
 
-<xsl:template match="html:tex">\TeX{}</xsl:template>
-<xsl:template match="html:textquotedblleft">\textquotedblleft </xsl:template>
-<xsl:template match="html:textquotedblright">\textquotedblright </xsl:template>
-<xsl:template match="html:textbackslash">\textbackslash </xsl:template>
+<xsl:template match="tex">\TeX{}</xsl:template>
+<xsl:template match="textquotedblleft">\textquotedblleft </xsl:template>
+<xsl:template match="textquotedblright">\textquotedblright </xsl:template>
+<xsl:template match="textbackslash">\textbackslash </xsl:template>
 
 </xsl:stylesheet>
 
