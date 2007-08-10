@@ -237,7 +237,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   nsAutoString focusTagName;
   res = focusElement->GetTagName(focusTagName);
   if (NS_FAILED(res)) return res;
-  ToLowerCase(focusTagName);
+//  ToLowerCase(focusTagName);
   nsCOMPtr<nsIAtom> focusTagAtom = do_GetAtom(focusTagName);
 
   nsCOMPtr<nsIDOMElement> absPosElement;
