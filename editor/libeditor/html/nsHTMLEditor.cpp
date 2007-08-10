@@ -708,7 +708,7 @@ nsHTMLEditor::NodeIsBlockStatic(nsIDOMNode *aNode, PRBool *aIsBlock)
     result = element->GetTagName(tagName);
     if (NS_SUCCEEDED(result))
     {
-      ToLowerCase(tagName);
+//      ToLowerCase(tagName);
       nsCOMPtr<nsIAtom> tagAtom = do_GetAtom(tagName);
       if (!tagAtom) { return NS_ERROR_NULL_POINTER; }
 
@@ -2174,7 +2174,7 @@ nsHTMLEditor::InsertNodeAtPoint(nsIDOMNode *aNode,
   nsresult res = NS_OK;
   nsAutoString tagName;
   aNode->GetNodeName(tagName);
-  ToLowerCase(tagName);
+//  ToLowerCase(tagName);
   nsCOMPtr<nsIDOMNode> parent = *ioParent;
   nsCOMPtr<nsIDOMNode> topChild = *ioParent;
   nsCOMPtr<nsIDOMNode> tmp;
@@ -3230,7 +3230,7 @@ nsHTMLEditor::GetElementOrParentByTagName(const nsAString& aTagName, nsIDOMNode 
   }
    
   nsAutoString TagName(aTagName);
-  ToLowerCase(TagName);
+//  ToLowerCase(TagName);
   PRBool getLink = IsLinkTag(TagName);
   PRBool getNamedAnchor = IsNamedAnchorTag(TagName);
   if ( getLink || getNamedAnchor)
@@ -3367,7 +3367,7 @@ nsHTMLEditor::GetSelectedElement(const nsAString& aTagName, nsIDOMElement** aRet
     if (selectedNode)
     {
       selectedNode->GetNodeName(domTagName);
-      ToLowerCase(domTagName);
+//      ToLowerCase(domTagName);
 
       // Test for appropriate node type requested
       if (anyTag || (TagName == domTagName) ||
@@ -3494,13 +3494,13 @@ nsHTMLEditor::GetSelectedElement(const nsAString& aTagName, nsIDOMElement** aRet
               }
 
               selectedElement->GetNodeName(domTagName);
-              ToLowerCase(domTagName);
+//              ToLowerCase(domTagName);
 
               if (anyTag)
               {
                 // Get name of first selected element
                 selectedElement->GetTagName(TagName);
-                ToLowerCase(TagName);
+//                ToLowerCase(TagName);
                 anyTag = PR_FALSE;
               }
 
@@ -3559,7 +3559,7 @@ nsHTMLEditor::CreateElementWithDefaults(const nsAString& aTagName, nsIDOMElement
     return NS_ERROR_NULL_POINTER;
     
   nsAutoString TagName(aTagName);
-  ToLowerCase(TagName);
+//  ToLowerCase(TagName);
   nsAutoString realTagName;
 
   if (IsLinkTag(TagName) || IsNamedAnchorTag(TagName))
@@ -4163,7 +4163,7 @@ nsHTMLEditor::GetEmbeddedObjects(nsISupportsArray** aNodeList)
       {
         nsAutoString tagName;
         node->GetNodeName(tagName);
-        ToLowerCase(tagName);
+//        ToLowerCase(tagName);
 
         // See if it's an image or an embed
         if (tagName.EqualsLiteral("img") || tagName.EqualsLiteral("embed"))
@@ -5997,7 +5997,7 @@ nsHTMLEditor::CopyLastEditableChildStyles(nsIDOMNode * aPreviousBlock, nsIDOMNod
         nsEditor::NodeIsType(child, nsEditProperty::span)) {
       nsAutoString domTagName;
       child->GetNodeName(domTagName);
-      ToLowerCase(domTagName);
+//      ToLowerCase(domTagName);
       if (newStyles) {
         nsCOMPtr<nsIDOMNode> newContainer;
         res = InsertContainerAbove(newStyles, address_of(newContainer), domTagName);
