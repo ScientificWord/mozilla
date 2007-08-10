@@ -120,10 +120,12 @@
       <spacer flex="1"/>
     </menubar>
   </toolbox>
-  <toolbox id="StandardToolbox" />
-  <toolbox id="MathToolbox" />
-  <toolbox id="EditingToolbox" />
-  <toolbox id="SymbolToolbox" />
+  <vbox style="overflow:hidden">
+    <toolbox id="StandardToolbox" />
+    <toolbox id="MathToolbox" />
+    <toolbox id="EditingToolbox" />
+    <toolbox id="SymbolToolbox" />
+  </vbox>
   
 <!-- sidebar/toolbar/content/status -->
 <hbox id="sidebar-parent" flex="1">
@@ -133,10 +135,8 @@
 
   <vbox id="appcontent" flex="1">
     <deck id="ContentWindowDeck" selectedIndex="0" flex="1">
-      <stack>
-        <editor id="content-frame" type="content-primary" context="msiEditorContentContext"
+      <editor id="content-frame" type="content-primary" context="msiEditorContentContext"
                 editortype="html" flex="1" spellcheck="true" tooltip="aHTMLTooltip"/>
-      </stack>
       <vbox>
         <label id="doctype-text" crop="right"/>
         <editor id="content-source" type="content" context="editorSourceContext"
@@ -208,6 +208,7 @@
   <commandset id="MSItypesetMenuCommands"/>
   <commandset id="MSItypesetInsertMenuCommands"/>
   <commandset id="MSImathMenuCommands"/>
+  <commandset id="tagsMenuCommands"/>
   
 </window>
 
