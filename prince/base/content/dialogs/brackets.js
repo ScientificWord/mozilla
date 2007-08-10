@@ -233,7 +233,8 @@ function onAccept()
 //End logging stuff
     theWindow = msiGetTopLevelWindow();
   }
-  theWindow.insertfence(data.leftBracket, data.rightBracket, data.separator, editorElement);
+//  theWindow.insertfence(data.leftBracket, data.rightBracket, data.separator, editorElement);
+  theWindow.insertfence(data.leftBracket, data.rightBracket, editorElement);
   SaveWindowLocation();
   return false;
 }
