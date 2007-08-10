@@ -1137,7 +1137,7 @@ nsTextEditRules::WillOutputText(nsISelection *aSelection,
   *aHandled = PR_FALSE;
 
   nsAutoString outputFormat(*aOutputFormat);
-  ToLowerCase(outputFormat);
+//  ToLowerCase(outputFormat);
   if (outputFormat.EqualsLiteral("text/plain"))
   { // only use these rules for plain text output
     if (mFlags & nsIPlaintextEditor::eEditorPasswordMask)

@@ -930,7 +930,7 @@ nsHTMLEditRules::GetAlignment(PRBool *aMixed, nsIHTMLEditor::EAlignment *aAlign)
       {
         nsAutoString typeAttrVal;
         res = elem->GetAttribute(NS_LITERAL_STRING("align"), typeAttrVal);
-        ToLowerCase(typeAttrVal);
+//        ToLowerCase(typeAttrVal);
         if (NS_SUCCEEDED(res) && typeAttrVal.Length())
         {
           if (typeAttrVal.EqualsLiteral("center"))
@@ -2617,7 +2617,7 @@ nsHTMLEditRules::JoinBlocks(nsCOMPtr<nsIDOMNode> *aLeftBlock,
         *aRightBlock = rightList;
         bMergeLists = PR_TRUE;
         mHTMLEditor->GetTagString(leftList, existingListStr);
-        ToLowerCase(existingListStr);
+//        ToLowerCase(existingListStr);
       }
     }
   }
@@ -2789,7 +2789,7 @@ nsHTMLEditRules::MoveNodeSmart(nsIDOMNode *aSource, nsIDOMNode *aDest, PRInt32 *
   nsresult res;
   res = mHTMLEditor->GetTagString(aSource, tag);
   if (NS_FAILED(res)) return res;
-  ToLowerCase(tag);
+//  ToLowerCase(tag);
   // check if this node can go into the destination node
   if (mHTMLEditor->CanContainTag(aDest, tag))
   {
@@ -3063,7 +3063,7 @@ nsHTMLEditRules::WillMakeList(nsISelection *aSelection,
     {
       nsAutoString existingListStr;
       res = mHTMLEditor->GetTagString(curNode, existingListStr);
-      ToLowerCase(existingListStr);
+//      ToLowerCase(existingListStr);
       // do we have a curList already?
       if (curList && !nsEditorUtils::IsDescendantOf(curNode, curList))
       {
@@ -3094,7 +3094,7 @@ nsHTMLEditRules::WillMakeList(nsISelection *aSelection,
     {
       nsAutoString existingListStr;
       res = mHTMLEditor->GetTagString(curParent, existingListStr);
-      ToLowerCase(existingListStr);
+//      ToLowerCase(existingListStr);
       if ( existingListStr != *aListType )
       {
         // list item is in wrong type of list.  
@@ -3748,7 +3748,7 @@ nsHTMLEditRules::WillCSSIndent(nsISelection *aSelection, PRBool *aCancel, PRBool
       {
         nsAutoString listTag;
         nsEditor::GetTagString(curParent,listTag);
-        ToLowerCase(listTag);
+//        ToLowerCase(listTag);
         // create a new nested list of correct type
         res = SplitAsNeeded(&listTag, address_of(curParent), &offset);
         if (NS_FAILED(res)) return res;
@@ -3894,7 +3894,7 @@ nsHTMLEditRules::WillHTMLIndent(nsISelection *aSelection, PRBool *aCancel, PRBoo
       {
         nsAutoString listTag;
         nsEditor::GetTagString(curParent,listTag);
-        ToLowerCase(listTag);
+//        ToLowerCase(listTag);
         // create a new nested list of correct type
         res = SplitAsNeeded(&listTag, address_of(curParent), &offset);
         if (NS_FAILED(res)) return res;
@@ -3937,7 +3937,7 @@ nsHTMLEditRules::WillHTMLIndent(nsISelection *aSelection, PRBool *aCancel, PRBoo
         {
           nsAutoString listTag;
           nsEditor::GetTagString(curParent,listTag);
-          ToLowerCase(listTag);
+//          ToLowerCase(listTag);
           // create a new nested list of correct type
           res = SplitAsNeeded(&listTag, address_of(curParent), &offset);
           if (NS_FAILED(res)) return res;
@@ -6917,7 +6917,7 @@ nsHTMLEditRules::RemoveBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes)
     if (NS_FAILED(res)) return res;
     nsAutoString curNodeTag, curBlockTag;
     nsEditor::GetTagString(curNode, curNodeTag);
-    ToLowerCase(curNodeTag);
+//    ToLowerCase(curNodeTag);
  
     // if curNode is a address, p, header, address, or pre, remove it 
     if (nsHTMLEditUtils::IsFormatNode(curNode, mtagListManager))
@@ -7208,7 +7208,7 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
     if (NS_FAILED(res)) return res;
     nsAutoString curNodeTag;
     nsEditor::GetTagString(curNode, curNodeTag);
-    ToLowerCase(curNodeTag);
+//    ToLowerCase(curNodeTag);
  
     // is it already the right kind of block?
     if (curNodeTag == *aStructureTag)
@@ -9453,7 +9453,7 @@ nsHTMLEditRules::WillAbsolutePosition(nsISelection *aSelection, PRBool *aCancel,
       {
         nsAutoString listTag;
         nsEditor::GetTagString(curParent,listTag);
-        ToLowerCase(listTag);
+//        ToLowerCase(listTag);
         // create a new nested list of correct type
         res = SplitAsNeeded(&listTag, address_of(curParent), &offset);
         if (NS_FAILED(res)) return res;
@@ -9503,7 +9503,7 @@ nsHTMLEditRules::WillAbsolutePosition(nsISelection *aSelection, PRBool *aCancel,
         {
           nsAutoString listTag;
           nsEditor::GetTagString(curParent,listTag);
-          ToLowerCase(listTag);
+//          ToLowerCase(listTag);
           // create a new nested list of correct type
           res = SplitAsNeeded(&listTag, address_of(curParent), &offset);
           if (NS_FAILED(res)) return res;
