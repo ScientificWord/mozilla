@@ -639,7 +639,7 @@ nsHTMLEditor::SetInlinePropertyOnNode( nsIDOMNode *aNode,
   nsCOMPtr<nsIDOMNode> tmp;
   nsAutoString tag;
   aProperty->ToString(tag);
-  ToLowerCase(tag);
+//  ToLowerCase(tag);
   
   PRBool useCSS;
   GetIsCSSEnabled(&useCSS);

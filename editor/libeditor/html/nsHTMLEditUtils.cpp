@@ -400,7 +400,7 @@ nsHTMLEditUtils::IsMailCite(nsIDOMNode *node, msiITagListManager * manager)
   // don't ask me why, but our html mailcites are id'd by "type=cite"...
   nsAutoString attrVal;
   nsresult res = elem->GetAttribute(attrName, attrVal);
-  ToLowerCase(attrVal);
+//  ToLowerCase(attrVal);
   if (NS_SUCCEEDED(res))
   {
     if (attrVal.EqualsLiteral("cite"))
@@ -412,7 +412,7 @@ nsHTMLEditUtils::IsMailCite(nsIDOMNode *node, msiITagListManager * manager)
   res = elem->GetAttribute(attrName, attrVal);
   if (NS_SUCCEEDED(res))
   {
-    ToLowerCase(attrVal);
+//    ToLowerCase(attrVal);
     if (attrVal.EqualsLiteral("true"))
       return PR_TRUE;
   }
