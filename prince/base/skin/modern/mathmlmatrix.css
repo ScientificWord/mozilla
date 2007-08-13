@@ -1,0 +1,27 @@
+*.sizeSelector label {
+  width: 2em;
+  margin: 0px ! important;
+}
+
+#matrixgrid:hover *.sizeSelector label:hover, #matrixgrid:hover *.sizeSelector label.selected {
+  background-color: rgb(100,100,100) ! important;
+}
+
+*.sizeSelector label {
+  border: 2px ridge !important;
+}
+
+#widthPixelOrPercentMenulist {
+  min-width: 10em;
+}
+
+*.sizeSelector label[mark="true"] {
+  background-color: rgb(0,0,0)
+}
+
+#matrixgrid:hover *.sizeSelector label[mark="true"]:hover, #matrixgrid:hover *.sizeSelector label[mark="true"].selected {
+  background-color: rgb(50,50,50) ! important;
+}
+
+#gridcoordinates { visibility: hidden; }
+#matrixgrid:hover #gridcoordinates { visibility: visible; }
