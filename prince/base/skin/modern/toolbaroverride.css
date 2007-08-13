@@ -1,0 +1,50 @@
+/* Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. */
+
+
+
+toolbar
+{
+  min-height: 0;
+  background-image: url("chrome://prince/skin/icons/background.png");
+  background-repeat: repeat-x;
+}
+
+toolbar[iconsize="small"]
+{
+  background-image: url("chrome://prince/skin/icons/background-sm.png");
+}
+
+toolbox
+{
+  min-height: 0;
+  background-image: url("chrome://prince/skin/icons/background.png");
+  background-repeat: repeat-x;
+}
+
+toolbox[iconsize="small"]
+{
+  background-image: url("chrome://prince/skin/icons/background-sm.png");
+}
+
+
+#SymbolToolbox tabpanel
+{
+  display: block;
+}
+
+#SymbolToolbox tabpanels
+{
+  width: auto;
+  
+}
+
+#SymbolToolbox tabbox 
+{
+  width: auto;
+}
+
+#SymbolToolbox 
+{
+  width: 100%;
+}
+

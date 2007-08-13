@@ -1,0 +1,69 @@
+/* ==== editor.css ==========================================================
+   == Styles shared throughout the Editor application.
+   ========================================================================== */
+
+@import url("chrome://communicator/skin/");
+@import url("chrome://communicator/skin/sidebar/sidebar.css");
+
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+#content-frame { 
+  min-width: 10px; 
+  min-height: 10px;
+  height: 400px;
+  background-color: #FFBBBB;
+} 
+
+.source-editor,
+.source-editor:focus {
+  margin: 0px 5px 5px 0px;
+  border: 0px;
+  /* Scroll bars are in content, 
+     so we can't use right and bottom padding! */
+  padding: 5px 0px 0px 5px;
+}
+
+/* Multiline textarea for HTML source editing */
+#content-source,
+#doctype-text {
+  font-family: -moz-fixed;
+  font-size: -moz-initial;
+}
+
+#appcontent {
+  border-left: 1px solid ThreeDShadow;
+  border-top: 1px solid ThreeDDarkShadow;
+  border-right: 1px solid ThreeDHighlight;
+}
+
+#ContentWindowDeck {
+  border-left: 1px solid ThreeDDarkShadow;
+  border-right: 1px solid ThreeDLightShadow;
+}
+
+/* ::::: struct toolbar ::::: */
+
+#structToolbar {
+  min-width: 1px;
+  overflow: -moz-hidden-unscrollable;
+}
+
+#structSpacer {
+  margin: 2px 0px;
+}
+
+.struct-button {
+  padding: 2px;
+}
+
+.struct-button[checked="true"] {
+  font-weight: bold;
+}
+
+.struct-textbox {
+  -moz-appearance: none !important;
+  padding: 0px !important;
+  margin: 0px !important;
+  border: none !important;
+}
+
