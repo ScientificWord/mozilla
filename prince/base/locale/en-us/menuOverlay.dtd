@@ -551,6 +551,10 @@
 <!ENTITY tagmenu.accesskey "T">
 <!ENTITY tagmenuAppearance.label "Appearance...">
 <!ENTITY tagmenuAppearance.accesskey "p">
+<!ENTITY tagmenuFont.label "Font...">
+<!ENTITY tagmenuFont.accesskey "f">
+<!ENTITY tagmenuFontSize.label "Size...">
+<!ENTITY tagmenuFontSize.accesskey "s">
 <!ENTITY tagmenuFunctionKeys.label "Function Keys...">
 <!ENTITY tagmenuFunctionKeys.accesskey "F">
 <!ENTITY tagmenuApply.label "Apply...">

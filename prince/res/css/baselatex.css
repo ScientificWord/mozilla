@@ -146,3 +146,6 @@ lower {
   text-transform: lowercase;
 }
   
+otfont {
+  display: inline;
+}

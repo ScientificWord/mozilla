@@ -15,8 +15,8 @@
 	  <xbl:content>
       <!-- we include the children invisibly. Omitting the children doesn't work. The tag generally will contain the 
       text 'LaTeX' so it displays something approximated correct when this xbl file is not available. -->
-      <sw:invis><xbl:children/></sw:invis>
-      <sw:latex2>L<sw:latexa>A</sw:latexa><sw:latext>T</sw:latext><sw:latexe>E</sw:latexe>X</sw:latex2> 
+      &#x2009;<sw:invis><xbl:children/></sw:invis>
+      <sw:latex2>L<sw:latexa>A</sw:latexa><sw:latext>T</sw:latext><sw:latexe>E</sw:latexe>X</sw:latex2>&#x2009; 
     </xbl:content>
   </xbl:binding>
 
@@ -158,36 +158,6 @@
     </xbl:implementation>
   </xbl:binding>
   
-  <xbl:binding id="OTFont">
-	  <xbl:content>
-      <html:span anonid="fontspan"><xbl:children/></html:span>
-    </xbl:content>
-    <xbl:implementation>
-      <xbl:constructor>
-        <![CDATA[
-          var style = "font-family: " + this.getAttribute("fontname"); 
-          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontspan");
-          span.setAttribute("style", style);  
-          this.addEventListener("DOMAttrModified", attrChanged, false);
-          function attrChanged { this.fontname = this.getAttribute("fontname");}
-      ]]></xbl:constructor>
-      <xbl:property name="fontname">   
-        <xbl:getter><![CDATA[
-          return this.getAttribute("fontname");
-        ]]></xbl:getter>
-        <xbl:setter><![CDATA[
-          this.setAttribute("fontname", val);
-          var style = "font-family: " + val; 
-          dump("Setting font to " + style + "\n");
-          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontspan");
-          span.setAttribute("style", style);  
-        ]]></xbl:setter>
-      </xbl:property>
-    </xbl:implementation>
-  </xbl:binding>
-
-
-
 	<xbl:binding id="msirule">
 	  <xbl:resources>
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
@@ -442,6 +412,65 @@
       </xbl:constructor>
     </xbl:implementation>
   </xbl:binding>
+  
+  <xbl:binding id="otfont">
+	  <xbl:content>
+      <html:span anonid="fontspan"><xbl:children/></html:span>
+    </xbl:content>
+    <xbl:implementation>
+      <xbl:constructor>
+        <![CDATA[
+          var style = "font-family: " + this.getAttribute("fontname"); 
+          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontspan");
+          span.setAttribute("style", style);  
+          this.addEventListener("DOMAttrModified", attrChanged, false);
+          function attrChanged { this.fontname = this.getAttribute("fontname");}
+      ]]></xbl:constructor>
+      <xbl:property name="fontname">   
+        <xbl:getter><![CDATA[
+          return this.getAttribute("fontname");
+        ]]></xbl:getter>
+        <xbl:setter><![CDATA[
+          this.setAttribute("fontname", val);
+          var style = "font-family: " + val; 
+          dump("Setting font to " + style + "\n");
+          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontspan");
+          span.setAttribute("style", style);  
+        ]]></xbl:setter>
+      </xbl:property>
+    </xbl:implementation>
+  </xbl:binding>
+
+
+  
+  <xbl:binding id="fontsize">
+	  <xbl:content>
+      <html:span anonid="fontsizespan"><xbl:children/></html:span>
+    </xbl:content>
+    <xbl:implementation>
+      <xbl:constructor>
+        <![CDATA[
+          var style = "font-size: " + this.getAttribute("size"); 
+          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontsizespan");
+          span.setAttribute("style", style);  
+          this.addEventListener("DOMAttrModified", attrChanged, false);
+          function attrChanged { this.size = this.getAttribute("size");}
+      ]]></xbl:constructor>
+      <xbl:property name="size">   
+        <xbl:getter><![CDATA[
+          return this.getAttribute("size");
+        ]]></xbl:getter>
+        <xbl:setter><![CDATA[
+          this.setAttribute("size", val);
+          var style = "font-size: " + val; 
+          dump("Setting font size to " + style + "\n");
+          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontsizespan");
+          span.setAttribute("style", style);  
+        ]]></xbl:setter>
+      </xbl:property>
+    </xbl:implementation>
+  </xbl:binding>
+
 
 </xbl:bindings>
 

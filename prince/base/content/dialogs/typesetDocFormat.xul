@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
@@ -46,7 +47,7 @@
     </tabs>
     <tabpanels>
      <tabpanel id="docformatGeneralPanel"></tabpanel>
-     <tabpanel id="docformatPageLayoutPanel" flex="1">
+     <tabpanel id="docformatPageLayoutPanel" style="overflow:auto">
        <vbox>
          <hbox>
            <vbox flex="1">
@@ -86,7 +87,7 @@
                <vbox align="center">
                  <label>&docformatPaperSize;</label>
                  <menulist id="docformat.papersize"
-                    oncommand="setPageDimensions();OnWindowSizeReset(false);">
+                    oncommand="changePaperSize(this);OnWindowSizeReset(false);">
                    <menupopup >
                      <menuitem id="docformat.letter" label="&docformatLetter;" value="letter"/>
                      <menuitem id="docformat.a4" label="A4" value="a4"/>
@@ -115,6 +116,7 @@
              <hbox>
                <hbox style="width:1em" />
     <!-- beginning of layout diagram -->
+               <vbox id="pageh" >
                <hbox  id="page" role="page" >
                  <vbox id="lmargin">
                    <hbox>
@@ -182,6 +184,7 @@
                    </vbox>
                  </vbox>
                </hbox>
+               </vbox>
     <!-- end of layout diagram 1-->           
              </hbox>
            </vbox>
