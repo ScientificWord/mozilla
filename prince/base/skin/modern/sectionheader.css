@@ -1,0 +1,10 @@
+
+
+*[type = "greenbox"] {
+  border: 1px;
+  border-color: green;
+}
+
+label {
+  color: green;
+}
