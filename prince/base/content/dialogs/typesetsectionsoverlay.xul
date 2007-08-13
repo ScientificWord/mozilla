@@ -5,78 +5,150 @@
 
 <overlay id="docformatsectionsoverlay.dialog"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    onload="Startup()"
+    onload="Startup(); setalign('left');"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();">
 
-  <script type="application/x-javascript" src="chrome://prince/content/typesetSectionsOverlay.js"/>
-  <tabpanel id="docformatSectionsPanel" align="vertical">
-    <vbox>
-      <label>Hello!</label>
-      <hbox>
-        <vbox align="center">
-         <label>Section type</label>
-         <menulist id="sections.name" >
-           <menupopup>
-             <menuitem id="sections.chapter" label="Chapter" value="0"/>
-             <menuitem id="sections.section" label="Section" value="1"/>
-             <menuitem id="sections.subsection" label="Subsection" value="2"/>
-             <menuitem id="sections.subsubsection" label="Subsubsection" value="3"/>
-             <menuitem id="sections.paragraph" label="Paragraph" value="4"/>
-             <menuitem id="sections.subparagraph" label="Subparagraph" value="5"/>
-           </menupopup>
-         </menulist>
-        </vbox>
-        <vbox align="center">
-         <label>Header style</label>
-         <menulist id="sections.style" >
-           <menupopup>
-             <menuitem id="sections.hang" label="Hang" value="hang"/>
-             <menuitem id="sections.display" label="Display" value="display"/>
-             <menuitem id="sections.block" label="Block" value="block"/>
-             <menuitem id="sections.wrap" label="Wrap" value="wrap"/>
-             <menuitem id="sections.leftmargin" label="Left Margin" value="leftmargin"/>
-             <menuitem id="sections.rightmargin" label="Right Margin" value="rightmargin"/>
-           </menupopup>
-         </menulist>
-        </vbox>
-        <vbox align="center">
-         <label>Alignment</label>
-         <radiogroup orient="horizontal">
-           <radio id="sectionleft" label="left" oncommand="setalign('left');"/>
-           <radio id="sectioncenter" label="center" oncommand="setalign('center');"/>
-           <radio id="sectionright" label="right" oncommand="setalign('right');"/>
-         </radiogroup>
-        </vbox>
-      </hbox>
-      <hbox style="height:10px"/>
-      <vbox>
-        <hbox>
-          <vbox style="width:50px; height:60px"/>
-          <vbox>
-            <vbox role="textarea" style="height:60px; width:375px">
-              <label>text</label>
-            </vbox>   
-            <hbox id="sectionparts" style="align:center;" pack="end">
-              <vbox id="sectionleftmargin" role="sectionmargin" 
-                tooltiptext="Click to set left margin" style="height:60px; width:30px"
-                onclick="toggleselection(this);"/>
-              <vbox>
-                <hbox role="sectionlayer" tooltiptext="Click to set top margin or to enter text"
-                  style="height:20px; width:200px" onclick="toggleselection(this);"/>
-                <hbox role="sectionlayer" tooltiptext="Click to enter section text"
-                  style="height:20px; width:200px" onclick="toggleselection(this);"/>
-                <hbox role="sectionlayer" tooltiptext="Click to set bottom margin or to enter text"
-                  style="height:20px; width:200px" onclick="toggleselection(this);"/>
-              </vbox>  
-              <vbox id="sectionrightmargin" role="sectionmargin" style="height:60px; width:30px"
-                onclick="toggleselection(this);"/>
-            </hbox>
-            <vbox role="textarea" style="height:60px; width:375px"/>
-          </vbox>
-        </hbox>
+  <tabpanel id="docformatSectionsPanel" orient="vertical">
+    <script type="application/x-javascript" src="chrome://prince/content/typesetSectionsOverlay.js"/>
+    <broadcasterset>
+      <broadcaster id="atpagetop" hidden="false"/>
+      <broadcaster id="leftalignment" hidden="false"/>
+      <broadcaster id="rightalignment" hidden="true"/>
+      <broadcaster id="notcenteralignment" hidden="false" disabled="true"/>
+      <broadcaster id="toporbottommargin" disabled="true"/>
+      <broadcaster id="notmargin" disabled="true"/>
+    </broadcasterset>  
+    <label>Hello!</label>
+    <hbox>
+      <vbox flex="1"/>
+      <vbox align="center">
+       <label>Section type</label>
+       <menulist id="sections.name" >
+         <menupopup>
+           <menuitem id="sections.chapter" label="Chapter" value="0"/>
+           <menuitem id="sections.section" label="Section" value="1"/>
+           <menuitem id="sections.subsection" selected="true" label="Subsection" value="2"/>
+           <menuitem id="sections.subsubsection" label="Subsubsection" value="3"/>
+           <menuitem id="sections.paragraph" label="Paragraph" value="4"/>
+           <menuitem id="sections.subparagraph" label="Subparagraph" value="5"/>
+         </menupopup>
+       </menulist>
       </vbox>
+      <vbox align="center">
+        <label>Start new page</label>
+        <checkbox id="sectionstartnewpage" oncommand="settopofpage(this);"/>
+      </vbox>
+      <vbox align="center">
+       <label>&docformatUnits;</label>
+       <menulist id="docformat.units"  
+              oncommand="switchUnits();"  >
+         <menupopup>
+           <menuitem id="docformat.inch" label="&docformatInch;" value="in"/>
+           <menuitem id="docformat.cm" label="&docformatCentimeter;" value="cm"/>
+           <menuitem id="docformat.pt" selected="true" label="&docformatPoints;" value="pt"/>
+           <menuitem id="docformat.mm" label="&docformatMillimeter;" value="mm"/>
+         </menupopup>
+       </menulist>
+      </vbox>
+      <vbox flex="1"/>
+    </hbox>
+    <separator class="groove"/>
+    <spacer/>
+    <hbox>
+      <vbox flex="1"/>
+      <vbox align="center">
+       <label>Header style</label>
+       <menulist id="sections.style" >
+         <menupopup>
+           <menuitem id="sections.hang" selected="true" label="Hang" value="hang"/>
+           <menuitem id="sections.display" label="Display" value="display"/>
+           <menuitem id="sections.block" label="Block" value="block"/>
+           <menuitem id="sections.wrap" label="Wrap" value="wrap"/>
+           <menuitem id="sections.leftmargin" label="Left indent" value="leftmargin"/>
+           <menuitem id="sections.rightmargin" label="Right indent" value="rightmargin"/>
+         </menupopup>
+       </menulist>
+      </vbox>
+      <vbox align="center">
+       <label>Alignment</label>
+       <radiogroup orient="horizontal">
+         <radio id="sectionleft" label="left" selected="true" oncommand="setalign('left');"/>
+         <radio id="sectioncenter" label="center" oncommand="setalign('center');"/>
+         <radio id="sectionright" label="right" oncommand="setalign('right');"/>
+       </radiogroup>
+      </vbox>
+      <vbox flex="1"/>
+    </hbox>
+    <separator class="groove"/>
+    <spacer/>
+    <hbox style="height:10px"/>
+    <vbox>
+      <hbox align="center">
+        <vbox flex="1"/>
+        <!-- vbox style="width:50px; height:60px"/ -->
+        <vbox>
+          <vbox role="textarea" style="height:60px; width:375px" observes="atpagetop">
+            <vbox flex="1"/>
+            <hbox><hbox flex="1"/><label>text</label><hbox flex="1"/></hbox>
+            <vbox flex="1"/>
+          </vbox>   
+          <hbox id="sectionparts" pack="end">
+            <vbox id="sectionleftmargin" role="sectionmargin" 
+              tooltiptext="Click to set left indent" style="height:60px; width:30px"
+              onclick="toggleselection(this);"/>
+            <vbox>
+              <hbox id="topmargin" role="sectionlayer" tooltiptext="Click to set top margin or to enter text"
+                style="height:20px; width:200px" onclick="toggleselection(this);"/>
+              <hbox id="sectiontextarea" role="sectionlayer" tooltiptext="Click to enter section text"
+                style="height:20px; width:200px" onclick="toggleselection(this);"/>
+              <hbox id="bottommargin" role="sectionlayer" tooltiptext="Click to set bottom margin or to enter text"
+                style="height:20px; width:200px" onclick="toggleselection(this);"/>
+            </vbox>  
+            <vbox id="sectionrightmargin" role="sectionmargin" style="height:60px; width:30px"
+              onclick="toggleselection(this);"/>
+          </hbox>
+          <vbox role="textarea" style="height:60px; width:375px">
+            <vbox flex="1"/>
+            <hbox><hbox flex="1"/><label>text</label><hbox flex="1"/></hbox>
+            <vbox flex="1"/>
+          </vbox>   
+        </vbox>
+        <vbox flex="1"/>
+      </hbox>
     </vbox>
+    <separator class="groove"/>
+    <spacer/>
+    <hbox id="marginsection" observes="notcenteralignment" align="center">
+      <vbox flex="1"/>
+      <vbox align="center">
+        <label observes="notcenteralignment" value="Left heading indent"/>
+        <textbox id="tbleftheadingmargin" style="width: 3.5em" onkeypress="handleChar(event,'leftheadingmargin');"
+          tooltip="The left indent for the heading" observes="leftalignment"/>
+      </vbox>
+      <spacer/>
+      <label observes="notcenteralignment">Use negative size to outdent</label>
+      <spacer/>
+      <vbox align="center">
+        <label value="Right heading indent" observes="notcenteralignment"/>
+        <textbox id="tbrightheadingmargin" style="width: 3.5em" onkeypress="handleChar(event,'rightheadingmargin');"
+          tooltip="The right indent for the heading" observes="rightalignment"/>
+      </vbox>
+      <vbox flex="1"/>
+    </hbox>
+    <separator observes="notcenteralignment" class="groove"/>
+    <spacer/>
+    <hbox align="center">
+      <vbox flex="1"/>
+      <button observes="toporbottommargin" label="Add rule"/>
+      <spacer/>
+      <button observes="toporbottommargin" label="Add vertical space"/>
+      <spacer/>
+      <button observes="toporbottommargin" label="Remove top rule or space"/>
+      <spacer/>
+      <button observes="notmargin" label="Insert text"/>
+      <vbox flex="1"/>
+    </hbox>
   </tabpanel>
 
 

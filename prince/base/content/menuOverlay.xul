@@ -275,8 +275,10 @@
     <menupopup id="tagPopup">
       <menuitem  label="&tagmenuAppearance.label;" id="tagmenuAppearance" 
         observes="cmd_unimp" accesskey="&tagmenuAppearance.accesskey;"/>
+      <menuitem label="&tagmenuFont.label;" id="tagmenuFont" observes="cmd_otfont" accesskey="&tagmenuFont.accesskey;"/>
+      <menuitem label="&tagmenuFontSize.label;" id="tagmenuFontSize" observes="cmd_fontsize" accesskey="&tagmenuFontSize.accesskey;"/>
       <menuitem  label="&tagmenuFunctionKeys.label;" id="tagmenuFunctionKeys" 
-        observes="cmd_unimp" accesskey="&tagmenuFunctionKeys.accesskey;"/>
+        observes="cmd_tagkeyassignments" accesskey="&tagmenuFunctionKeys.accesskey;"/>
       <menuitem  label="&tagmenuApply.label;" id="tagmenuApply" 
         observes="cmd_unimp" accesskey="&tagmenuApply.accesskey;"/>
     </menupopup>
@@ -577,6 +579,11 @@
     <command id="Tools:Extensions" oncommand="OpenExtensions('extensions');"/>
     <command id="Tools:Themes" oncommand="OpenExtensions('themes');"/>
     <command id="Cascades" oncommand="window.openDialog('chrome://cascades/content/EdCssProps.xul','_blank', 'chrome,close,modal,titlebar');window.content.focus();"/>
+  </commandset>
+  <commandset id="tagsMenuCommands">
+    <command id="cmd_otfont" oncommand="window.openDialog('chrome://prince/content/otfont.xul','_blank', 'chrome,close,titlebar,resizable');"/>
+    <command id="cmd_fontsize" oncommand="window.openDialog('chrome://prince/content/fontsize.xul','_blank', 'chrome,modal,close,titlebar,resizable');"/>
+    <command id="cmd_tagkeyassignments" oncommand="window.openDialog('chrome://prince/content/tagkeyassignments.xul','_blank', 'chrome,modal,close,titlebar,resizable');"/>
   </commandset>
 
   <keyset id="tasksKeys">

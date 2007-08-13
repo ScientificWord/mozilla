@@ -32,9 +32,14 @@ invis {
   display: none;
 }
 
-OTFont {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#OTFont");
+otfont {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#otfont");
 }
+
+fontsize {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#fontsize");
+}
+
 
 
 img {
