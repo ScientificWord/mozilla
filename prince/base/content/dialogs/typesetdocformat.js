@@ -4,6 +4,7 @@ var heightElements;
 var unitConversions;
 var pagewidth;   // in mm
 var pageheight;
+var paper;
 var landscape;
 var currentUnit;
 var scale = 0.5;
@@ -28,8 +29,8 @@ function Startup()
   unitConversions.in=25.4;  //mm per in
   unitConversions.mm=1; // mm per mm
   unitConversions.cm=10; // mm per cm
-  setPageDimensions();
-  setDefaults();
+//  setPageDimensions()
+//  setDefaults();
   getPageLayout();
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
@@ -100,6 +101,9 @@ function getNumberValue(numberwithunit)
 
 function getPageLayout()
 {
+//  paper = "letter";
+//  landscape = false;
+//  currentUnit="in";
   var doc = editor.document;
   var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
   if (!preamble) return;
@@ -109,6 +113,11 @@ function getPageLayout()
   var subnode;
   var i;
   var value;
+  if (docFormatNodeList.length == 0)
+  {
+    setPageDimensions();
+    setDefaults();
+  }  
   for ( i = 0; i < docFormatNodeList.length; i++)
   // we expect only one node in this list, but if there are several, we read them all
   // in the case of conflicts, last man wins
@@ -129,6 +138,7 @@ function getPageLayout()
       document.getElementById('twosides').checked=(value=='true');
       setTwosidedState(document.getElementById('twosides'));
       value = node.getAttribute('paper');
+      paper = value;
       if (value) document.getElementById('docformat.papersize').value = value;
       value = node.getAttribute('width');
       if (value) pagewidth = getNumberValue(value);
@@ -138,6 +148,8 @@ function getPageLayout()
       if (value=='true') landscape = true; else landscape = false;
       document.getElementById('landscape').checked=landscape;
     }                                                    
+    setPageDimensions();
+    setDefaults();
     node = docFormatNodeList[i].getElementsByTagName('textregion')[0];
     if (node)
     {
@@ -305,14 +317,26 @@ function setDefaults()
   setHeight("bottommarginnote", bodyheight*.1);
 }
 
+function changePaperSize(menu)
+{
+  paper = menu.value;
+  if (paper = "other")
+  {
+    pagewidth = 90;
+    pageheight = 124;
+  }
+  setPageDimensions();
+}
+
 
 // Page layout stuff  
 
-function setPageDimensions( )
+function setPageDimensions()
 {
-  var paper = "letter";
-  currentUnit ="in"; 
-  landscape = false;
+//  paper = "letter";
+//  currentUnit ="in"; 
+//  landscape = false;
+  
   switch (paper) {
     case "letter":   // these dimensions are in millimeters
       pagewidth = 215.9;
@@ -322,7 +346,9 @@ function setPageDimensions( )
       pagewidth = 210;
       pageheight = 297;
       break;
-		case "screen":
+		case "other":
+      break;
+    case "screen":
       pagewidth = 225;
       pageheight = 180;
       break;
@@ -389,9 +415,11 @@ function setPageDimensions( )
 		case "legal":
       pagewidth = 216;
       pageheight = 356;
-    default:
+      break;
+    default:  // default to letter
       pagewidth = 215.9;
       pageheight = 279.4;
+      break;
   }
 
   if (landscape) {
@@ -403,6 +431,8 @@ function setPageDimensions( )
     pagewidth = convert(pagewidth, "mm", currentUnit);
     pageheight = convert(pageheight, "mm", currentUnit);
   }
+//  setHeight("pageh", pageheight);
+//  setWidth("page", pagewidth);
   document.getElementById("tbpagewidth").value = unitRound(pagewidth);
   document.getElementById("tbpageheight").value = unitRound(pageheight);
 }
@@ -712,51 +742,78 @@ function setTwosidedState(elt)
 // font section
 function saveFontSpecs(docFormatNode)
 {
+  // we don't want to generate anything unless at least one font was defined.
   var fontspecList = docFormatNode.getElementsByTagName('fontchoices');
   var i;
-  for (i = fontspecList.length - 1; i >= 0; i--)
+  if (fontspecList) 
+  {
+    for (i = fontspecList.length - 1; i >= 0; i--)
       editor.deleteNode(fontspecList[i])
+  }
+  var fontids = ["mainfontlist","sansfontlist","fixedfontlist","f1name","f2name","f3name"];
+  var fontchoices = ["","","","","",""];
+  var goahead = false;
+  for (i = 0; i < fontids.length; i++)
+  {
+    fontchoices[i] = document.getElementById(fontids[i]).value;
+    if (fontchoices[i].length > 0) goahead = true;
+  }
+  if (!goahead) return;
   
   var fontNode = editor.createNode('fontchoices', docFormatNode,0);
   var nodecounter = 0;
   var options;
   var internalname;
-  var node = editor.createNode('mainfont', fontNode, nodecounter++);
-  node.setAttribute('name',document.getElementById('mainfontlist').value);
-  options = document.getElementById('romannative').value;
-  node.setAttribute('options',options);
-  node = editor.createNode('sansfont', fontNode, nodecounter++);
-  node.setAttribute('name',document.getElementById('sansfontlist').value);
-  options = document.getElementById('sansnative').value;
-  node.setAttribute('options',options);
-  node = editor.createNode('fixedfont', fontNode, nodecounter++);
-  node.setAttribute('name', document.getElementById('fixedfontlist').value);
-  options = document.getElementById('fixednative').value;
-  node.setAttribute('options',options);
+  var fontname;
+  fontname = fontchoices[0];
+  var node;
+  if (fontname && fontname.length>0) {
+    node = editor.createNode('mainfont', fontNode, nodecounter++);
+    node.setAttribute('name',fontname);
+    options = document.getElementById('romannative').value;
+    node.setAttribute('options',options);
+  }
+  fontname = fontchoices[1];
+  if (fontname && fontname.length>0) {
+    node = editor.createNode('sansfont', fontNode, nodecounter++);
+    node.setAttribute('name',fontname);
+    options = document.getElementById('sansnative').value;
+    node.setAttribute('options',options);
+  }
+  fontname = fontchoices[2];
+  if (fontname && fontname.length>0) {
+    node = editor.createNode('fixedfont', fontNode, nodecounter++);
+    node.setAttribute('name', fontname);
+    options = document.getElementById('fixednative').value;
+    node.setAttribute('options',options);
+  }
+  fontname = fontchoices[3];
   internalname = document.getElementById('f1name').value;
-  if (internalname.length > 0)
+  if (fontname.length > 0 && internalname.length > 0)
   {
     node = editor.createNode('x1font', fontNode, nodecounter++);
     node.setAttribute('internalname', internalname);
-    node.setAttribute('name', document.getElementById('x1fontlist').value);
+    node.setAttribute('name', fontname);
     options = document.getElementById('x1native').value;
     node.setAttribute('options',options);
   }
+  fontname = fontchoices[4];
   internalname = document.getElementById('f2name').value;
-  if (internalname.length > 0)
+  if (fontname.length > 0 && internalname.length > 0)
   {
     node = editor.createNode('x2font', fontNode, nodecounter++);
     node.setAttribute('internalname', internalname);
-    node.setAttribute('name', document.getElementById('x2fontlist').value);
+    node.setAttribute('name', fontname);
     options = document.getElementById('x2native').value;
     node.setAttribute('options',options);
   }
+  fontname = fontchoices[5];
   internalname = document.getElementById('f3name').value;
-  if (internalname.length > 0)
+  if (fontname.length > 0 && internalname.length > 0)
   {
     node = editor.createNode('x3font', fontNode, nodecounter++);
     node.setAttribute('internalname', internalname);
-    node.setAttribute('name', document.getElementById('x3fontlist').value);
+    node.setAttribute('name', fontname);
     options = document.getElementById('x3native').value;
     node.setAttribute('options',options);
   }
@@ -1121,6 +1178,9 @@ function setalign(which)
   var otherelement;
   if (which == "center")
   {
+    document.getElementById("leftalignment").setAttribute("hidden","true");
+    document.getElementById("rightalignment").setAttribute("hidden","true");
+    document.getElementById("notcenteralignment").setAttribute("hidden","true");
     element = document.getElementById("sectionleftmargin");
     otherelement = document.getElementById('sectionrightmargin');
     element.setAttribute("role", "spacer");
@@ -1128,13 +1188,18 @@ function setalign(which)
   }
   else
   {
+    document.getElementById("notcenteralignment").setAttribute("hidden","false");
     if (which == "left")
     {
+      document.getElementById("leftalignment").setAttribute("hidden","false");
+      document.getElementById("rightalignment").setAttribute("hidden","true");
       element = document.getElementById("sectionleftmargin");
       otherelement = document.getElementById('sectionrightmargin');
     }
     else if (which == "right")
     {
+      document.getElementById("leftalignment").setAttribute("hidden","true");
+      document.getElementById("rightalignment").setAttribute("hidden","false");
       element = document.getElementById("sectionrightmargin");
       otherelement = document.getElementById('sectionleftmargin');
     }
@@ -1160,9 +1225,37 @@ function clearselection(element)
 function toggleselection( element )
 {
   var root = document.getElementById("sectionparts");
+  var NCAbroadcaster = document.getElementById("notcenteralignment");
+  var TOBbroadcaster=document.getElementById("toporbottommargin");
+  var NMbroadcaster=document.getElementById("notmargin");
   clearselection(root);
-  if (element.getAttribute('sectionselected') == "true")
-    element.setAttribute('sectionselected', 'false');
+  element.setAttribute('sectionselected','true');
+  if (element.id == "sectionleftmargin" || element.id=="sectionrightmargin")
+  {
+    NCAbroadcaster.setAttribute("disabled","false");
+    TOBbroadcaster.setAttribute("disabled", "true");
+    NMbroadcaster.setAttribute("disabled", "true");
+  }
   else
-    element.setAttribute('sectionselected','true');
+  {
+    NCAbroadcaster.setAttribute("disabled","true");
+    NMbroadcaster.setAttribute("disabled", "false");
+    if (element.id == "topmargin" || element.id == "bottommargin")
+    {
+      TOBbroadcaster.setAttribute("disabled", "false");
+    }
+    else 
+      TOBbroadcaster.setAttribute("disabled", "true");
+  } 
 }
+
+function settopofpage( checkbox )
+{
+  var broadcaster = document.getElementById("atpagetop");
+  if (!broadcaster) return;
+  if (checkbox.checked)
+    broadcaster.hidden = true;
+  else
+    broadcaster.hidden=false;
+}
+    
