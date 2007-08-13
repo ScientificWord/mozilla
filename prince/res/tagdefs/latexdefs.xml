@@ -41,6 +41,8 @@
 				<tag nm="sw:cal"><description>Calligraphic</description></tag>
 				<tag nm="sw:em"><description>Emphasized</description></tag>
 				<tag nm="sw:footnotesize"><description>Footnote size</description></tag>
+				<tag nm="sw:otfont"><description>Open TypeFont</description></tag>
+				<tag nm="sw:fontsize"><description>Font size</description></tag>
 				<tag nm="sw:fraktur"><description>Fraktur</description></tag>
 				<tag nm="sw:rtl"><description>Right-to-left font</description></tag>
 				<tag nm="sw:Huge"><description>Huge</description></tag>
