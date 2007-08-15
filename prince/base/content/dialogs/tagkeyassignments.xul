@@ -10,7 +10,7 @@
 %dialogDTD;
 ]>
 
-<dialog title="Tag key assignments"
+<dialog title="Function key assignments"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "startUp();"
     ondialogaccept="return onAccept();"
@@ -19,27 +19,28 @@
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/fontsize.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/tagkeyassignment.js"/>
+  <spacer/>
+  <radiogroup id="keyresult">
+  <label>Press new keys</label>
   <hbox>
-    <vbox>
-      <textbox id="alltaglist" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-        completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag paratag structtag envtag othertag" 
-		    tooltiptext="Select a tag; then assign a key combination" 
-		    label="All tags"   
-        onfocus="this.select();"
-        ontextentered="alert('Do something');" />
-      <spacer/>
-      <label>Show curr. assign. here</label>
-      <spacer/>
-    </vbox>
-    <vbox>
-      <label>Press new keys</label>
-      <textbox id="newkeys" style="width: 3.5em" onkeypress="handleChar(event,this);"
-       tooltip="Enter the combination of keys to use for this tag"/>
-      <spacer/>
-      <label> Your new assignments</label>
-      <label> none </label> 
-      <spacer/>
-    </vbox>
-  </hbox> 
+    <textbox id="newkeys" style="width: 3.5em" onkeypress="handleChar(event,this);"
+     tooltip="Enter the combination of keys to use"/>
+    <radio label="Apply tag"/>
+    <textbox id="alltaglist" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+      completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag paratag structtag envtag othertag" 
+	    tooltiptext="Select a tag; then assign a key combination" 
+	    label="All tags"   
+      onfocus="this.select();"
+      ontextentered="alert('Do something');" />
+  </hbox>
+  <label>Current assignments</label>
+  <hbox>
+    <textbox id="currentkeys" style="width: 3.5em" onkeypress=""
+     tooltip="The current key assignments"/>
+    <radio label="Run script"/>
+    <textbox id="keyscript" style="width: 3.5em" onkeypress=""
+     tooltip="Enter the script to run when the keys are pressed"/>
+  </hbox>
+  </radiogroup> 
 </dialog>

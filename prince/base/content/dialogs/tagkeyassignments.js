@@ -2,6 +2,7 @@
 
 function handleChar(event, object)
 {
+
 }
 
 
