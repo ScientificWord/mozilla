@@ -62,32 +62,42 @@
 <!ENTITY editmenu.accesskey "e">
 <!ENTITY undoCmd.label						"Undo">  
 <!ENTITY undoCmd.key						"Z">  
+<!ENTITY undoCmd.acceltext						"Ctrl+Z">  
 <!ENTITY undoCmd.accesskey					"U"> 
 <!ENTITY redoCmd.label						"Redo">  
 <!ENTITY redoCmd.key						"Y">  
 <!ENTITY redoCmd.accesskey					"R"> 
+<!ENTITY redoCmd.acceltext					"Ctrl+Y"> 
 <!ENTITY cutCmd.label						"Cut">  
 <!ENTITY cutCmd.key							"X">  
 <!ENTITY cutCmd.accesskey					"t"> 
+<!ENTITY cutCmd.acceltext					"Ctrl+X"> 
 <!ENTITY copyCmd.label						"Copy">  
 <!ENTITY copyCmd.key						"C">  
+<!ENTITY copyCmd.accel						"C">  
 <!ENTITY copyCmd.accesskey					"c"> 
+<!ENTITY copyCmd.acceltext					"Ctrl+C"> 
 <!ENTITY pasteCmd.label						"Paste">  
 <!ENTITY pasteCmd.key						"V">  
 <!ENTITY pasteCmd.accesskey					"p"> 
+<!ENTITY pasteCmd.acceltext					"Ctrl+V"> 
 <!ENTITY pasteNoFormattingCmd.accesskey			"n"> 
 <!ENTITY pasteNoFormattingCmd.label			"Paste (no formatting)">  
 <!ENTITY pasteNoFormattingCmd.key				"q">  
 <!ENTITY deleteCmd.label					"Delete">  
 <!ENTITY deleteCmd.key						"D">  
 <!ENTITY deleteCmd.accesskey				"d"> 
+<!ENTITY deleteCmd.acceltext				"Del"> 
 <!ENTITY selectAllCmd.label					"Select All">  
 <!ENTITY selectAllCmd.key					"A">  
 <!ENTITY selectAllCmd.accesskey				"a"> 
+<!ENTITY selectAllCmd.acceltext				"Ctrl+A"> 
 
 <!-- View menu items -->
 <!ENTITY viewMenu.label "View" >
 <!ENTITY viewMenu.accesskey "V" >
+<!ENTITY viewStatusBar.accesskey "S" >
+<!ENTITY viewStatusBar.label "Status bar" >
 <!ENTITY viewShowHideMenu.label "Show/Hide" >
 <!ENTITY viewShowHideMenu.accesskey "S" >
 <!ENTITY viewInvisibles.label "Invisibles" >
@@ -139,11 +149,11 @@
 <!ENTITY findAgainCmd.label "Find Again">
 <!ENTITY editfindnext.accesskey "g">
 <!ENTITY editfindnext.keybinding "g">
-<!ENTITY editfindnext.keybinding2 "VK_F3">
+<!ENTITY editfindnext.acceltext "F3">
 <!ENTITY findPrevCmd.label "Find Previous">
 <!ENTITY editfindprev.accesskey "v">
 <!ENTITY editfindprev.keybinding "g">
-<!ENTITY editfindprev.keybinding2 "VK_F3">
+<!ENTITY editfindprev.acceltext "Shift+F3">
 <!ENTITY checkSpellingCmd.label "Check Spelling">
 <!ENTITY validateCmd.label "Validate HTML">
 <!ENTITY validate.accesskey "v">
@@ -195,8 +205,8 @@
 <!ENTITY insertImageCmd.label "Image...">
 <!ENTITY insertimage.accesskey "i">
 <!ENTITY insertImageMapCmd.label "Image Map...">
-<!ENTITY insertHLineCmd.label "Horizontal Line">
-<!ENTITY inserthline.accesskey "o">
+<!ENTITY insertLine.label "Line...">
+<!ENTITY insertline.accesskey "l">
 <!ENTITY insertTableCmd.label "Table...">
 <!ENTITY inserttable.accesskey "t">
 <!ENTITY insertFormMenu.label "Form...">
