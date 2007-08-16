@@ -802,6 +802,15 @@ function toggleSidebar(aCommandID, forceOpen) {
   sidebarTitle.setAttribute("label", title);
 }
 
-
- 
+function setStatusBarVisibility()
+{
+  var currentstate;
+  currentstate=document.getElementById("viewstatusbar").getAttribute("checked");
+  var statusbar = document.getElementById("status-bar");
+  if (currentstate=="true")
+  {
+    statusbar.setAttribute("hidden","false");
+  }
+  else statusbar.setAttribute("hidden","true");
+}
 
