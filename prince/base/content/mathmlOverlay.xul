@@ -74,6 +74,7 @@
 
   <menu id="insertMenu" label="Insert" accesskey="&insertmenu.accesskey;">
     <menupopup id="insertMenuPopup" onpopupshowing="msiInitFontStyleMenu(this)">
+      <menuseparator/>
       <menuitem label="&MSIinlineMathCmd.label;" accesskey="&MSIinlineMathCmd.accesskey;" key="MSIinlineMathKey" observes="cmd_MSImathtext"   type="checkbox"/>
       <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"                              command="cmd_MSItextCmd"/>  
       <menuseparator />
@@ -82,8 +83,7 @@
       <menuitem label="&MSIsupCmd.label;"      accesskey="&MSIsupCmd.accesskey;"      key="MSIsupKey"            command="cmd_MSIsupCmd"/>      
       <menuitem label="&MSIsubCmd.label;"      accesskey="&MSIsubCmd.accesskey;"      key="MSIsubKey"            command="cmd_MSIsubCmd"/>          
       <menuitem label="&MSIdisplayCmd.label;"    accesskey="&MSIdisplayCmd.accesskey;"    key="MSIdisplayKey"    command="cmd_MSIdisplayMathCmd"/>
-      <menuseparator/>                                                                                                                       
-      <menuitem label="&MSIrootCmd.label;"     accesskey="&MSIrootCmd.accesskey;"                                command="cmd_MSIrootCmd"/>
+      <!--menuitem label="&MSIrootCmd.label;"     accesskey="&MSIrootCmd.accesskey;"                                command="cmd_MSIrootCmd"/ -->
       <menuitem label="&MSIoperatorsCmd.label;"       accesskey="&MSIoperatorsCmd.accesskey;"       command="cmd_MSIoperatorsCmd"/>
       <menuitem label="&MSIgenBracketsCmd.label;"     accesskey="&MSIgenBracketsCmd.accesskey;"     command="cmd_MSIgenBracketsCmd"/>
       <menuitem label="&MSIMatrixCmd.label;"   accesskey="&MSIMatrixCmd.accesskey;"                              command="cmd_MSIMatrixCmd"/>
@@ -93,29 +93,20 @@
       <menuitem id="insertmenuUnitNames" label="&insertmenuUnitNames.label;"
         accesskey="&insertmenuUnitNames.accesskey;" command="cmd_MSIunitsCommand" />
       <menuitem label="&MSItensorCmd.label;"   accesskey="&MSItensorCmd.accesskey;"                              command="cmd_MSItensorCmd"/>
-      <menuseparator/>
-      <menu accesskey="&insertSpacingObjects.accessKey;"   id="insertSpacesMenu"        label="&insertSpacingObjects.label;">
-        <menupopup>
-          <menuitem accesskey="&insertHorizontalSpaces.accessKey;"      observes="cmd_insertHorizontalSpaces"      label="&insertHorizontalSpaces.label;"/>
-          <menuitem accesskey="&insertVerticalSpaces.accessKey;"        observes="cmd_insertVerticalSpaces"        label="&insertVerticalSpaces.label;"/>
-          <menuitem accesskey="&insertRules.accessKey;"                 observes="cmd_msiInsertRules"              label="&insertRules.label;"/>
-          <menuitem accesskey="&insertBreaks.accessKey;"                observes="cmd_msiInsertBreaks"                label="&insertBreaks.label;"/>
-        </menupopup>
-      </menu>
-      <menuitem id="insertTable" accesskey="&inserttable.accesskey;"    observes="cmd_InsertTable" label="&insertTableCmd.label;"/>
-      <menuseparator/>
-      <menuitem id="insertmenuNote" label="&insertmenuNote.label;"
-        accesskey="&insertmenuNote.accesskey;" observes="cmd_unimp" />
       <menuitem id="insertmenuFormula" label="&insertmenuFormula.label;"
         accesskey="&insertmenuFormula.accesskey;" observes="cmd_unimp" />
       <menuseparator/>
       <menuitem id="insertmenuMarker" label="&insertmenuMarker.label;"
         accesskey="&insertmenuMarker.accesskey;" observes="cmd_unimp" />
-      <menuseparator/>
+      <menuitem id="insertmenuNote" label="&insertmenuNote.label;"
+        accesskey="&insertmenuNote.accesskey;" observes="cmd_unimp" />
+      <menuitem id="insertmenuTypesetObject" label="&insertmenuTSO.label;"
+        accesskey="&insertmenuTSO.accesskey;" observes="cmd_unimp" />
+      <menuitem id="insertmenuHyperlink" label="&insertmenuHyperlink.label;"
+        accesskey="&insertmenuHyperlink.accesskey;" observes="cmd_unimp" />
       <menuitem id="insertmenuHTMLField" label="&insertmenuHTMLField.label;"
         accesskey="&insertmenuHTMLField.accesskey;" observes="cmd_unimp" />
-      <menuseparator/>
-      <menuitem label="&MSIColorsCmd.label;" accesskey="&MSIColorsCmd.accesskey;" command="cmd_MSIColorsCmd"/>
+      <!--menuitem label="&MSIColorsCmd.label;" accesskey="&MSIColorsCmd.accesskey;" command="cmd_MSIColorsCmd"/ -->
      </menupopup>
    </menu>
 								  
