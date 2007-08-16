@@ -330,7 +330,7 @@
 //        if (displayForm != null)
 //        {
 //          var dumpStr = "In displayForm clause; num anonymous nodes is [" + nNumAnonObjs + "], breakObj is [" + breakObj.nodeName + "], firstChild is [";
-//          if (firstChild == null)
+h//          if (firstChild == null)
 //            dumpStr += "null];";
 //          else
 //            dumpStr += firstChild.nodeName + "];";
@@ -423,21 +423,21 @@
           var style = "font-family: " + this.getAttribute("fontname"); 
           var span = document.getAnonymousElementByAttribute(this, "anonid", "fontspan");
           span.setAttribute("style", style);  
-          this.addEventListener("DOMAttrModified", attrChanged, false);
-          function attrChanged { this.fontname = this.getAttribute("fontname");}
+//          this.addEventListener("DOMAttrModified", attrChanged, false);
+//          function attrChanged { this.fontname = this.getAttribute("fontname");}
       ]]></xbl:constructor>
-      <xbl:property name="fontname">   
-        <xbl:getter><![CDATA[
-          return this.getAttribute("fontname");
-        ]]></xbl:getter>
-        <xbl:setter><![CDATA[
-          this.setAttribute("fontname", val);
-          var style = "font-family: " + val; 
-          dump("Setting font to " + style + "\n");
-          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontspan");
-          span.setAttribute("style", style);  
-        ]]></xbl:setter>
-      </xbl:property>
+//      <xbl:property name="fontname">   
+//        <xbl:getter><![CDATA[
+//          return this.getAttribute("fontname");
+//        ]]></xbl:getter>
+//        <xbl:setter><![CDATA[
+//          this.setAttribute("fontname", val);
+//          var style = "font-family: " + val; 
+//          dump("Setting font to " + style + "\n");
+//          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontspan");
+//          span.setAttribute("style", style);  
+//        ]]></xbl:setter>
+//      </xbl:property>
     </xbl:implementation>
   </xbl:binding>
 
@@ -452,22 +452,23 @@
         <![CDATA[
           var style = "font-size: " + this.getAttribute("size"); 
           var span = document.getAnonymousElementByAttribute(this, "anonid", "fontsizespan");
+          dump("Setting style on fontsize object to "+style+"\n");
           span.setAttribute("style", style);  
-          this.addEventListener("DOMAttrModified", attrChanged, false);
-          function attrChanged { this.size = this.getAttribute("size");}
+//          this.addEventListener("DOMAttrModified", attrChanged, false);
+//          function attrChanged { this.size = this.getAttribute("size");}
       ]]></xbl:constructor>
-      <xbl:property name="size">   
-        <xbl:getter><![CDATA[
-          return this.getAttribute("size");
-        ]]></xbl:getter>
-        <xbl:setter><![CDATA[
-          this.setAttribute("size", val);
-          var style = "font-size: " + val; 
-          dump("Setting font size to " + style + "\n");
-          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontsizespan");
-          span.setAttribute("style", style);  
-        ]]></xbl:setter>
-      </xbl:property>
+//      <xbl:property name="size">   
+//        <xbl:getter><![CDATA[
+//          return this.getAttribute("size");
+//        ]]></xbl:getter>
+//        <xbl:setter><![CDATA[
+//          this.setAttribute("size", val);
+//          var style = "font-size: " + val; 
+//          dump("Setting font size to " + style + "\n");
+//          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontsizespan");
+//          span.setAttribute("style", style);  
+//        ]]></xbl:setter>
+//      </xbl:property>
     </xbl:implementation>
   </xbl:binding>
 
