@@ -19,28 +19,28 @@
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/tagkeyassignment.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/tagkeyassignments.js"/>
   <spacer/>
-  <radiogroup id="keyresult">
+  <radiogroup id="keyresult" oncommand="radioswitched(this);">
   <label>Press new keys</label>
   <hbox>
-    <textbox id="newkeys" style="width: 3.5em" onkeypress="handleChar(event,this);"
+    <textbox id="newkeys" style="width: 11.5em" onkeypress="handleChar(event,this);"
      tooltip="Enter the combination of keys to use"/>
-    <radio label="Apply tag"/>
+    <radio label="Apply tag" selected="true" value="alltaglist"/>
     <textbox id="alltaglist" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
       completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag paratag structtag envtag othertag" 
-	    tooltiptext="Select a tag; then assign a key combination" 
-	    label="All tags"   
+	    tooltiptext="Select a tag; then assign a key combination"
+ 	    label="All tags"   
       onfocus="this.select();"
-      ontextentered="alert('Do something');" />
+      ontextentered="assignTag(this);" />
   </hbox>
   <label>Current assignments</label>
   <hbox>
-    <textbox id="currentkeys" style="width: 3.5em" onkeypress=""
+    <textbox id="currentkeys" style="width: 11.5em" onkeypress=""
      tooltip="The current key assignments"/>
-    <radio label="Run script"/>
-    <textbox id="keyscript" style="width: 3.5em" onkeypress=""
-     tooltip="Enter the script to run when the keys are pressed"/>
+    <radio label="Run script" selected="false" value="keyscript"/>
+    <textbox id="keyscript" style="width: 16em" onkeypress=""
+     tooltip="Enter the script to run when the keys are pressed" disabled="true"/>
   </hbox>
   </radiogroup> 
 </dialog>

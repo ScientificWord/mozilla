@@ -110,7 +110,10 @@
 <!ENTITY insertmenuHTMLField.accesskey "H">
 <!ENTITY insertmenuUnitNames.label "Unit Name...">
 <!ENTITY insertmenuUnitNames.accesskey "U">
-
+<!ENTITY insertmenuTSO.label "Typeset object...">
+<!ENTITY insertmenuTSO.accesskey "y">
+<!ENTITY insertmenuHyperlink.label "Hyperlink...">
+<!ENTITY insertmenuHyperlink.accesskey "h">
 
 <!ENTITY MSISymbolTabLCGreek     "Lowercase Greek">
 <!ENTITY MSISymbolTabCCGreek     "Uppercase Greek">

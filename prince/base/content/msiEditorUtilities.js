@@ -2303,11 +2303,11 @@ function msiSetDocumentTitle(editorElement, title)
   } catch (e) {}
 }
 
-//var gAtomService;
-//function GetAtomService()
-//{
-//  gAtomService = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
-//}
+var gAtomService;
+function GetAtomService()
+{
+  gAtomService = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
+}
 
 function msiEditorGetTextProperty(editorElement, property, attribute, value, firstHas, anyHas, allHas)
 {
@@ -2331,7 +2331,9 @@ function msiEditorSetTextProperty(editorElement, property, attribute, value)
     if (!msiCurrEditorSetFocus(window) && "gContentWindow" in window)
       window.gContentWindow.focus();
   }
-  catch(e) {}
+  catch(e) {
+    dump("Error is msiEditorSetTextProperty, e= "+e);
+  }
 }
 
 function msiEditorRemoveTextProperty(editorElement, property, attribute)

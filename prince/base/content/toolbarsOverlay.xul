@@ -294,11 +294,11 @@
         <observes id="pmitb10" element="defaultCompiler" attribute="defcomp" />
       </menuitem>        
       <menuitem id="pdfPreviewMenuItem" label="&pdfpreviewButton.label;" persist="default" default="false"
-                oncommand="previewTeX(true);event.stopPropagation();" for="pdf" onbroadcast="setDefault(this);">
+                observes="cmd_previewPdf" for="pdf" onbroadcast="setDefault(this);">
         <observes id="pmitb11" element="defaultCompiler" attribute="defcomp" />
       </menuitem>        
       <menuitem id="dviPreviewMenuItem" label="&dvipreviewButton.label;" persist="default" default="false"
-                oncommand="previewTeX(false);event.stopPropagation();" for="dvi" onbroadcast="setDefault(this);">  
+                observes="cmd_previewDvi" for="dvi" onbroadcast="setDefault(this);">  
         <observes id="pmitb12" element="defaultCompiler" attribute="defcomp" />
       </menuitem>        
       <menuseparator/>
