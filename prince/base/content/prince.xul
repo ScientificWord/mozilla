@@ -160,7 +160,7 @@
   </vbox>
 </hbox><!-- sidebar-parent -->
 
-  <statusbar class="chromeclass-status" id="status-bar">
+  <statusbar class="chromeclass-status" id="status-bar" hidden="false">
     <statusbarpanel id="macroEntryPanel" hidden="false"/>
     <statusbarpanel id="fastCursorPanel" hidden="true">
       <toolbar id="FastCursorToolbar" align="center" fullscreentoolbar="true">
