@@ -39,35 +39,41 @@
   <vbox>
     <groupbox id="sizeGroupbox">
       <caption label="&sizeGroupbox.label;"/>
-      <vbox id="sizeControls">
-        <hbox>
-          <label control="liftSizeTextbox" value="&liftSize.label;"	accesskey="&liftSize.accessKey;"/>
-          <textbox id="liftSizeTextbox" />
-        </hbox>
-        <hbox>
-          <label control="widthSizeTextbox" value="&widthSize.label;"	accesskey="&widthSize.accessKey;"/>
-          <textbox id="widthSizeTextbox" />
-        </hbox>
-        <hbox>
-          <label control="heightSizeTextbox" value="&heightSize.label;"	accesskey="&heightSize.accessKey;"/>
-          <textbox id="heightSizeTextbox" />
-        </hbox>
-        <hbox>
-          <label control="sizeUnitsbox" value="&sizeUnits.label;"	accesskey="&sizeUnits.accessKey;"/>
-          <menulist id="sizeUnitsbox"  oncommand="changeUnits(this);"  >
-             <menupopup>
-             </menupopup>
-           </menulist>
-          <!-- listbox id="fixedSizeUnitsbox" onselect="changeUnits(this);"/ -->
-        </hbox>
-      </vbox>
+      <grid id="sizeControls">
+        <columns>
+          <column flex="1"/>
+          <column flex="2"/>
+        </columns>
+        <rows>
+          <row>
+            <label control="liftSizeTextbox" value="&liftSize.label;"	accesskey="&liftSize.accessKey;"/>
+            <textbox id="liftSizeTextbox" />
+          </row>
+          <row>
+            <label control="widthSizeTextbox" value="&widthSize.label;"	accesskey="&widthSize.accessKey;"/>
+            <textbox id="widthSizeTextbox" />
+          </row>
+          <row>
+            <label control="heightSizeTextbox" value="&heightSize.label;"	accesskey="&heightSize.accessKey;"/>
+            <textbox id="heightSizeTextbox" />
+          </row>
+          <row>
+            <label control="sizeUnitsbox" value="&sizeUnits.label;"	accesskey="&sizeUnits.accessKey;"/>
+            <menulist id="sizeUnitsbox"  oncommand="changeUnits(this);"  >
+               <menupopup>
+               </menupopup>
+             </menulist>
+            <!-- listbox id="fixedSizeUnitsbox" onselect="changeUnits(this);"/ -->
+          </row>
+        </rows>
+      </grid>
     </groupbox>
   </vbox>
-  <vbox>
-    <spacer flex="1"/>
+  <hbox>
     <label control="colorButton" value="&colorButton.label;"	accesskey="&colorButton.accessKey;"/>
     <button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
       <spacer id="colorWell" class="color-well"/>
     </button>
-  </vbox>
+    <spacer flex="1"/>
+  </hbox>
 </dialog>

@@ -2861,7 +2861,7 @@ var msiPrintCommand =
   },
   doCommand: function(aCommand)
   {
-    printTeX(aCommand=='cmd_printPdf');  
+    printTeX(aCommand=='cmd_printPdf',false);  
   }
 };
 
@@ -2882,7 +2882,7 @@ var msiPreviewCommand =
   },
   doCommand: function(aCommand)
   {
-    printTeX(aCommand=='cmd_previewPdf');  
+    printTeX(aCommand=='cmd_previewPdf',true);  
   }
 };
 
@@ -6557,3 +6557,27 @@ function msiStartAnimation()
 //};
 
 
+function callFunctionKeyDialog()
+{
+  var editorElement = msiGetActiveEditorElement();
+  var theDialog = msiOpenModelessDialog("chrome://prince/content/tagkeyassignments.xul", "_blank", 
+      "chrome,close,titlebar,resizable,dependent",
+      editorElement, "cmd_tagkeyassignments", null, null);
+}
+
+function callOTFontDialog()
+{
+  var editorElement = msiGetActiveEditorElement();
+  var theDialog = msiOpenModelessDialog("chrome://prince/content/otfont.xul", "_blank", 
+      "chrome,close,titlebar,resizable,dependent",
+      editorElement, "cmd_otfont", null, null);
+}
+
+
+function callFontSizeDialog()
+{
+  var editorElement = msiGetActiveEditorElement();
+  var theDialog = msiOpenModelessDialog("chrome://prince/content/fontsize.xul", "_blank", 
+      "chrome,close,titlebar,resizable,dependent",
+      editorElement, "cmd_fontsize", null, null);
+}

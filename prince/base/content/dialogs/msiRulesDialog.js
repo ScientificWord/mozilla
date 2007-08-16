@@ -53,7 +53,7 @@ function setUpData()
     if (!(dataComponents[ix] in data) || (data[dataComponents[ix]] == null))
     {
       data[dataComponents[ix]] = new Object();
-      data[dataComponents[ix]].units = "in";
+      data[dataComponents[ix]].units = "pt";
       data[dataComponents[ix]].size = 0.00;
     }
   }

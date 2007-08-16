@@ -1581,11 +1581,11 @@ function onFontSizeChange(fontSizeMenulist, commandID)
 
 function msiEditorSetFontSize(size, editorElement)
 {
-  if (!editorElement)
-    editorElement = msiGetActiveEditorElement();
+  var editorElement = msiGetParentEditorElementForDialog(window);
+//  var editor = msiGetEditor(editorElement);
   if (!editorElement)
   {
-    AlertWithTitle("Error", "No editor element in msiEditorSetFontSize!");
+    AlertWithTitle("Error", "No editor in msiEditorSetFontSize!");
 //
   }
 //  if( size == "0" || size == "normal" ||
@@ -1617,6 +1617,7 @@ function msiEditorSetFontSize(size, editorElement)
 //        size = "+3";
 //        break;
 //    }
+  var fsAtom = 
   msiEditorSetTextProperty(editorElement, "fontsize", "size", size);
 //  }
   editorElement.contentWindow.focus();
