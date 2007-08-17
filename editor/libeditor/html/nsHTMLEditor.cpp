@@ -6224,6 +6224,13 @@ nsHTMLEditor::GetTagListManager( msiITagListManager ** _retVal)
 }
 
 nsresult
+nsHTMLEditor::SetTagListManager( msiITagListManager * pTagListMan)
+{ 
+  mtagListManager = nsCOMPtr<msiITagListManager>(pTagListMan);
+  return NS_OK;
+}
+
+nsresult
 nsHTMLEditor::AddTagInfo( const nsAString & strPath )
 { 
   if (mtagListManager == nsnull)

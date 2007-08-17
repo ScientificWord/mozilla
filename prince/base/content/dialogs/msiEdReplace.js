@@ -37,11 +37,9 @@ function loadDialog()
   var theStringSource = (gFindInst.searchString ? gFindInst.searchString
                                                 : gFindService.searchString);
   msiInitializeEditorForElement(gReplaceDialog.findInput, theStringSource, true);
-  gReplaceDialog.findInput.makeEditable("html", false);
 
   theStringSource = gFindService.replaceString;
   msiInitializeEditorForElement(gReplaceDialog.replaceInput, theStringSource, true);
-  gReplaceDialog.replaceInput.makeEditable("html", false);
 
   gReplaceDialog.caseSensitive.checked   = (gFindInst.matchCase
                                             ? gFindInst.matchCase

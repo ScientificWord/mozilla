@@ -4,8 +4,6 @@ const NS_PIPECONSOLE_CONTRACTID = "@mozilla.org/process/pipe-console;1";
 const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
 const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
-const MSI_EXTENSION = "sci";
-
 var gPipeConsole;
 
 function goAboutDialog() {

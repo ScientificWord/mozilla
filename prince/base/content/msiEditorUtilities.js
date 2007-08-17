@@ -635,6 +635,14 @@ function msiGetTopLevelWindow(currWindow)  //do we need a different function for
   return currWindow;
 }
 
+function msiGetParentOrTopLevelEditor(editorElement)
+{
+  var parent = msiGetParentEditor(editorElement);
+  if (parent == null)
+    parent = msiGetTopLevelEditorElement();
+  return parent;
+}
+
 function msiGetParentEditor(editorElement)
 {
 //  if ("msiParentEditor" in editorElement)
@@ -717,7 +725,8 @@ function msiGetEditor(editorElement)
   }
   catch(e) 
   { 
-    dump("msiGetEditor: " + e + "\n"); 
+    dump("msiGetEditor exception: " + e + "\n");
+    editor = null;
   }
   return editor;
 }
@@ -726,7 +735,7 @@ function msiGetCommandManager(editorElement)
 {
   var commandManager;
   try {commandManager = editorElement.commandManager;}
-  catch(e) {}
+  catch(e) {dump("In msiGetCommandManager, exception: " + e + "\n"); commandManager = null;}
   return commandManager;
 }
 
@@ -2277,7 +2286,10 @@ function msiGetParentEditorElementForDialog(dialogWindow)
 
 function msiGetDocumentTitle(editorElement)
 {
-  var title = document.getElementById("filename").value;
+  var theFilename = document.getElementById("filename");
+  var title = "";
+  if (theFilename != null)
+    title = theFilename.value;
   if (title.length > 0) return title;
   try {
     return new XPCNativeWrapper(msiGetEditor(editorElement).document, "title").title;
@@ -2290,7 +2302,10 @@ function msiSetDocumentTitle(editorElement, title)
 {
   // if we changed the name of a shell document, we saved the filename in 
   // a broadcaster with id="filename"
-  var newtitle = document.getElementById("filename").value;
+  var theFilename = document.getElementById("filename");
+  var newtitle = "";
+  if (theFilename != null)
+    newtitle = theFilename.value;
   if (newtitle.length > 0) title = newtitle;
   try {
     msiGetEditor(editorElement).setDocumentTitle(title);
@@ -4307,42 +4322,42 @@ function addDataToFile(aFilePath, aDataStream)
   }
 }
 
-function msiKludgeLogString(logStr)
-{
-  return;
-  dump(logStr);
-
-  if (!("msiLogPath" in window) || !window.msiLogPath)
-  {
-    var logLocalFile = null;
-    try
-    {
-      var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-      logLocalFile = dsprops.get("CurProcD", Components.interfaces.nsIFile);
-    } 
-    catch(exception) {alert("Couldn't set log path in msiKludgeLotString!"); window.msiLogPath = "failed"; return;}
-    if (!logLocalFile)
-    {
-      var localFileInstance = Components.classes["@mozilla.org/file/local;1"].createInstance(nsILocalFile);
-      localFileInstance.initWithPath("C:\\");
-      logLocalFile = localFileInstance;
-    }
-//    alert("Initial log path is " + logLocalFile.path);
-    if (!logLocalFile.isDirectory())
-      logLocalFile = logLocalFile.parent;
-    logLocalFile.append("msiInfo.log");
-    window.msiLogPath = logLocalFile.path;
-//    alert("Log path is " + window.msiLogPath);
-  }
-  addDataToFile(window.msiLogPath, logStr);
-}
-
 function msiDumpWithID(str, element)
 {
   var replStr = "";
   if (element!=null && element.id)
     replStr = element.id;
   dump( str.replace("@", replStr) );
+}
+
+function msiKludgeLogString(logStr)
+{
+  return;
+  dump(logStr);
+
+//  if (!("msiLogPath" in window) || !window.msiLogPath)
+//  {
+//    var logLocalFile = null;
+//    try
+//    {
+//      var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+//      logLocalFile = dsprops.get("CurProcD", Components.interfaces.nsIFile);
+//    } 
+//    catch(exception) {alert("Couldn't set log path in msiKludgeLotString!"); window.msiLogPath = "failed"; return;}
+//    if (!logLocalFile)
+//    {
+//      var localFileInstance = Components.classes["@mozilla.org/file/local;1"].createInstance(nsILocalFile);
+//      localFileInstance.initWithPath("C:\\");
+//      logLocalFile = localFileInstance;
+//    }
+////    alert("Initial log path is " + logLocalFile.path);
+//    if (!logLocalFile.isDirectory())
+//      logLocalFile = logLocalFile.parent;
+//    logLocalFile.append("msiInfo.log");
+//    window.msiLogPath = logLocalFile.path;
+////    alert("Log path is " + window.msiLogPath);
+//  }
+//  addDataToFile(window.msiLogPath, logStr);
 }
 
 function msiAuxDirFromDocPath(documentURI)

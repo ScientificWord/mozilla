@@ -37,7 +37,6 @@ function Startup(){
   {
     var editorControl = document.getElementById("varList-frame");
     msiInitializeEditorForElement(editorControl, theStringSource, true);
-    editorControl.makeEditable("html", false);
   }
   catch(exc) {dump("In Startup for ComputeVarLists dialog, error initializing editor varList-frame: [" + exc + "].\n");}
 ////SLS the following copied from editor.js
