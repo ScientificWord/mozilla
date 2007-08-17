@@ -636,7 +636,7 @@ interface nsIHTMLEditor : nsISupports
    * @return    true if CR in a paragraph creates a new paragraph
    */
   attribute boolean returnInParagraphCreatesNewParagraph;
-  readonly attribute msiITagListManager tagListManager;
+  attribute msiITagListManager tagListManager;
   void addTagInfo( in AString strPath );
 };
 

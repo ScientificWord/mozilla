@@ -59,6 +59,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <!-- Following scripts are needed if the editor wants to support a toolbox? -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
 
