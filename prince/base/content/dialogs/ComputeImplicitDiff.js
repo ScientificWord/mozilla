@@ -21,10 +21,8 @@ function Startup(){
   var theStringSource = GetComputeString("Math.emptyForInput");
   var indEditor = document.getElementById("indVarFrame");
   msiInitializeEditorForElement(indEditor, theStringSource, true);
-  indEditor.makeEditable("html", false);
   var depEditor = document.getElementById("depVarFrame");
   msiInitializeEditorForElement(depEditor, theStringSource, true);
-  depEditor.makeEditable("html", false);
 
 ////SLS the following copied from editor.js
 //  gSourceContentWindow = document.getElementById("content-frame");

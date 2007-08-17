@@ -171,8 +171,10 @@ prince.jar:
   content/otfont.js 				 (content/dialogs/otfont.js)
   content/fontsize.xul				 (content/dialogs/fontsize.xul)
   content/fontsize.js				 (content/dialogs/fontsize.js)
+#ifdef 0
   content/color.xul				 	 (content/dialogs/color.xul)
   content/color.js				 	 (content/dialogs/color.js)
+#endif
   content/tagkeyassignments.xul		 (content/dialogs/tagkeyassignments.xul)
   content/tagkeyassignments.js		 (content/dialogs/tagkeyassignments.js)
 
@@ -265,7 +267,7 @@ classic.jar:
   skin/classic/editorModeToolbar.css     (skin/classic/editorModeToolbar.css)
   skin/classic/EditorDialog.css          (skin/classic/EditorDialog.css)
   skin/classic/typesetDocFormat.css      (skin/classic/typesetDocFormat.css)
-  skin/classic/editor.css		  		(skin/classic/editor.css)
+  skin/classic/editor.css               (skin/classic/editor.css)
   skin/classic/binomialsDialog.css       (skin/classic/binomialsDialog.css)
   skin/classic/bracketsDialog.css        (skin/classic/bracketsDialog.css)
   skin/classic/decorationsDialog.css     (skin/classic/decorationsDialog.css)
