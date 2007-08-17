@@ -534,7 +534,8 @@ function ShutdownAllEditors()
     {
       if (editorList.item(i))
       {
-        keepgoing = msiCheckAndSaveDocument(editorList.item(i), "cmd_close", true);
+        keepgoing = (!msiIsTopLevelEditor(editorList.item(i))) ||
+                       msiCheckAndSaveDocument(editorList.item(i), "cmd_close", true);
         if (keepgoing)
           ShutdownAnEditor(editorList.item(i));
         else break;
@@ -565,15 +566,24 @@ function msiEditorDocumentObserver(editorElement)
     }
   }
   this.observe = function(aSubject, aTopic, aData)
-  {
+  {              
     // Should we allow this even if NOT the focused editor?
+    msiDumpWithID("In documentCreated observer for editor [@], observing [" + aTopic + "]; editor's boxObject is [" + editorElement.boxObject + "]\n", editorElement);
     var commandManager = msiGetCommandManager(this.mEditorElement);
     if (commandManager != aSubject)
     {
-      msiDumpWithID("In documentCreated observer for editor [@]; returning, as commandManager doesn't equal aSubject.\n", this.mEditorElement);
-      return;
+      msiDumpWithID("In documentCreated observer for editor [@], observing [" + aTopic + "]; returning, as commandManager doesn't equal aSubject; aSubject is [" + aSubject + "], while commandManager is [" + commandManager + "].\n", this.mEditorElement);
+//      if (commandManager != null)
+        return;
     }
-    var editor = msiGetEditor(this.mEditorElement);
+    var editor = null;
+    try
+    { editor = msiGetEditor(this.mEditorElement); }
+    catch(exc) 
+    { msiDumpWithID("In documentCreated observer for editorElement [@]; error trying to get editor: " + exc + "\n", editorElement);
+      editor = null;
+    }
+
     var edStr = "";
     if (editor != null)
       edStr = "non-null";
@@ -648,6 +658,16 @@ function msiEditorDocumentObserver(editorElement)
           } catch(e) { dump("Error formatting style sheet using msiColorObj: [" + e + "]\n"); }
         }
 
+        var is_topLevel = msiIsTopLevelEditor(this.mEditorElement);
+        if (!is_topLevel)
+        {
+          var parentEditorElement = msiGetParentOrTopLevelEditor(this.mEditorElement);
+          if (parentEditorElement != null)
+            msiFinishInitDialogEditor(this.mEditorElement, parentEditorElement);
+          else
+            msiDumpWithID("No parent editor element for editorElement [@] found in documentCreated observer!", this.mEditorElement);
+        }
+
         try {
           editor.QueryInterface(nsIEditorStyleSheets);
 
@@ -702,28 +722,53 @@ function msiEditorDocumentObserver(editorElement)
 //        }
         if (bIsRealDocument)
         {
-          var documentInfo = new msiDocumentInfo(editorElement);
-          documentInfo.initializeDocInfo();
-          var dlgInfo = documentInfo.getDialogInfo();  //We aren't going to launch the dialog, just want the data in this form.
-          if (dlgInfo.saveOptions.storeViewSettings)
-            editorElement.viewSettings = msiGetViewSettingsFromDocument(editorElement);
-          else
-            msiEditorDoShowInvisibles(editorElement, getViewSettingsFromViewMenu());
+          try
+          {
+            var documentInfo = new msiDocumentInfo(editorElement);
+            documentInfo.initializeDocInfo();
+            var dlgInfo = documentInfo.getDialogInfo();  //We aren't going to launch the dialog, just want the data in this form.
+            if (dlgInfo.saveOptions.storeViewSettings)
+              editorElement.viewSettings = msiGetViewSettingsFromDocument(editorElement);
+            else
+              msiEditorDoShowInvisibles(editorElement, getViewSettingsFromViewMenu());
+          }
+          catch (exc) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, showing invisibles: " + exc + "\n");}
         }
 
         if (bIsRealDocument && this.mbInsertInitialContents && ("initialEditorContents" in this.mEditorElement) && (this.mEditorElement.initialEditorContents != null)
                        && (this.mEditorElement.initialEditorContents.length > 0))
         {
-          msiDumpWithID("Adding initial contents for editorElement [@].\n", this.mEditorElement);
-          var htmlEditor = this.mEditorElement.getHTMLEditor(this.mEditorElement.contentWindow);
-          var bIsSinglePara = true;
-          if (this.mEditorElement.mbInitialContentsMultiPara)
-            bIsSinglePara = false;
-//          htmlEditor.insertHTML(editorElement.initialEditorContents);
-          if (insertXMLAtCursor(htmlEditor, this.mEditorElement.initialEditorContents, bIsSinglePara, true))
-            this.mbInsertInitialContents = false;
+          try
+          {
+            msiDumpWithID("Adding initial contents for editorElement [@].\n", this.mEditorElement);
+            var htmlEditor = this.mEditorElement.getHTMLEditor(this.mEditorElement.contentWindow);
+            var bIsSinglePara = true;
+            if (this.mEditorElement.mbInitialContentsMultiPara)
+              bIsSinglePara = false;
+  //          htmlEditor.insertHTML(editorElement.initialEditorContents);
+            if (insertXMLAtCursor(htmlEditor, this.mEditorElement.initialEditorContents, bIsSinglePara, true))
+              this.mbInsertInitialContents = false;
+          }
+          catch (exc) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding initialContents: " + exc + "\n");}
         }
 //        --this.mDumpMessage;
+        if (bIsRealDocument && ("mInitialEditorObserver" in editorElement) && (editorElement.mInitialEditorObserver != null))
+        {
+          var editorStr = "non-null";
+          if (editor == null)
+            editorStr = "null";
+          msiDumpWithID("Adding mInitialEditorObserver for editor [@]; editor is " + editorStr + ".\n", editorElement);
+          try
+          {
+            for (var ix = 0; ix < editorElement.mInitialEditorObserver.length; ++ix)
+            {
+//              var editor = msiGetEditor(editorElement);
+              editor.addEditorObserver( editorElement.mInitialEditorObserver[ix] );
+            }
+          }    
+          catch (exc) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding initialEditorObserver: " + exc);}
+        }
+
         break;
 
       case "cmd_setDocumentModified":
@@ -852,9 +897,25 @@ function EditorStartupForEditorElement(editorElement)
     }
   }
 
+  msiDumpWithID("Just before loading Shell URL in EditorStartupForEditorElement, for editorElement [@]; docShell is currently [" + editorElement.docShell + "].\n", editorElement);
+  msiLoadInitialDocument(editorElement, is_topLevel);
+//  else
+//  {
+//    var parentEditor = msiGetParentOrTopLevelEditor(editorElement);
+//    if (parentEditor != null)
+//      msiFinishInitDialogEditor(editorElement, parentEditor);
+//    else
+//      msiLoadInitialDocument(editorElement);  //What else to do?
+//  }
+}
+
   // Get url for editor content and load it.
   // the editor gets instantiated by the editingSession when the URL has finished loading.
+function msiLoadInitialDocument(editorElement, bTopLevel)
+{
   try {
+    var prefs = GetPrefs();
+    var filename = "untitled";
     var theArgs = document.getElementById("args");
     var n = 1;
     var url = "";
@@ -863,8 +924,8 @@ function EditorStartupForEditorElement(editorElement)
     var shelldir;
     var shellfile;
     var charset = "";
-    var leafname = "";
-    var changename = false;
+//rwa    var leafname = "";
+//rwa    var changename = false;
     if (theArgs)
     {
       docname = document.getElementById("args").getAttribute("value");
@@ -890,107 +951,119 @@ function EditorStartupForEditorElement(editorElement)
 #endif
       dump("Docname is " + docname + "\n");
     }
-    else
-    {
-      shellfile = Components.classes["@mozilla.org/file/local;1"].
-            createInstance(Components.interfaces.nsILocalFile);
-    } 
+//rwa    else
+//rwa    {
+//rwa      shellfile = Components.classes["@mozilla.org/file/local;1"].
+//rwa            createInstance(Components.interfaces.nsILocalFile);
+//rwa    } 
     if (isShell(docname))
     {
       editorElement.isShellFile = true;
-      shellfile.initWithPath(docname);
-      // copy the shell to the default document area
-      try
-      {
-        var docdirname = prefs.getCharPref("swp.prefDocumentDir");
-        dump("swp.prefDcoumentDir is ", docdirname + "\n");
-        docdir = Components.classes["@mozilla.org/file/local;1"].
-            createInstance(Components.interfaces.nsILocalFile);
-        docdir.initWithPath(docdirname);
-        if (!valueOf(docdir.exists()))
-          docdir.create(1, 0755);
-      }
-      catch (e)
-      {
-        var dirkey;
-#ifdef XP_WIN
-          dirkey = "Pers";
-#else
-#ifdef XP_MACOSX
-          dirkey = "UsrDocs";
-#else
-          dirkey = "Home";
-#endif
-#endif
-        // if we can't find the one in the prefs, get the default
-        docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
-        if (!docdir.exists()) docdir.create(1,0755);
-        // Choose one of the three following lines depending on the app
-        docdir.append("SWP Docs");
-        if (!docdir.exists()) docdir.create(1,0755);
-        // docdir.append("SW Docs");
-        // docdir.append("SNB Docs");
-        dump("default document directory is "+docdir.path+"\n");
-      }
-      // find n where untitledn.MSI_EXTENSION is the first unused file name in that folder
-      try
-      {
-        dump("shellfile is " + shellfile.path + "\n");
-        leafname = shellfile.leafName;
-        var i = leafname.lastIndexOf(".");
-        if (i > 0) leafname = leafname.substr(0,i);
-        dump("leafname is " + leafname + "\n");
-        while (n < 100)
-        {
-          try {
-            dump("Copying "+shellfile.path + " to directory " + docdir.path + ", file "+filename+n+"."+MSI_EXTENSION+"\n");
-            shellfile.copyTo(docdir,filename+n+"."+MSI_EXTENSION);
-            // if the copy succeeded, continue to copy the "..._files" directory
-            try {
-              dump("Succeeded\n");
-              var auxdir = shellfile.parent.clone();
-              dump("auxdir is " + auxdir.path+"\n");
-              auxdir.append(leafname+"_files");
-              dump("Succeeded. auxdir is " + auxdir.path + "\n");
-              dump("Trying to copy auxdir to docdir\n");
-              auxdir.copyTo(docdir,filename+n+"_files");
-            }
-            catch(e) {
-              dump("Copying auxdir caused error "+e+"\n");
-            }
-            break;
-          }
-          catch(e) {
-            dump("File already exists? "+e+"\n");
-            n++;
-          }
-        }
-      }// at this point, shellfile is .../untitledxxx.MSI_EXTENSION
-      catch(e)
-      {
-        dump("Unable to open document for editing\n");
-      }
-      // set the url for the xhtml portion of the document
-      docdir.append("untitled"+n+"." + MSI_EXTENSION);
-      dump("Final docdir path is " + docdir.path + "\n");
-      url = docdir.path;
-      dump("url is " + url + "\n");
+      if (bTopLevel)
+        docname = msiPrepareDocumentTargetForShell(docname);
+
+//*******************BEGIN SECTION REFACTORED OUT
+//      shellfile.initWithPath(docname);
+//      // copy the shell to the default document area
+//      try
+//      {
+//        var docdirname = prefs.getCharPref("swp.prefDocumentDir");
+//        dump("swp.prefDcoumentDir is ", docdirname + "\n");
+//        docdir = Components.classes["@mozilla.org/file/local;1"].
+//            createInstance(Components.interfaces.nsILocalFile);
+//        docdir.initWithPath(docdirname);
+//        if (!valueOf(docdir.exists()))
+//          docdir.create(1, 0755);
+//      }
+//      catch (e)
+//      {
+//        var dirkey;
+//#ifdef XP_WIN
+//          dirkey = "Pers";
+//#else
+//#ifdef XP_MACOSX
+//          dirkey = "UsrDocs";
+//#else
+//          dirkey = "Home";
+//#endif
+//#endif
+//        // if we can't find the one in the prefs, get the default
+//        docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
+//        if (!docdir.exists()) docdir.create(1,0755);
+//        // Choose one of the three following lines depending on the app
+//        docdir.append("SWP Docs");
+//        if (!docdir.exists()) docdir.create(1,0755);
+//        // docdir.append("SW Docs");
+//        // docdir.append("SNB Docs");
+//        dump("default document directory is "+docdir.path+"\n");
+//      }
+//      // find n where untitledn.MSI_EXTENSION is the first unused file name in that folder
+//      try
+//      {
+//        dump("shellfile is " + shellfile.path + "\n");
+//        leafname = shellfile.leafName;
+//        var i = leafname.lastIndexOf(".");
+//        if (i > 0) leafname = leafname.substr(0,i);
+//        dump("leafname is " + leafname + "\n");
+//        while (n < 100)
+//        {
+//          try {
+//            dump("Copying "+shellfile.path + " to directory " + docdir.path + ", file "+filename+n+"."+MSI_EXTENSION+"\n");
+//            shellfile.copyTo(docdir,filename+n+"."+MSI_EXTENSION);
+//            // if the copy succeeded, continue to copy the "..._files" directory
+//            try {
+//              dump("Succeeded\n");
+//              var auxdir = shellfile.parent.clone();
+//              dump("auxdir is " + auxdir.path+"\n");
+//              auxdir.append(leafname+"_files");
+//              dump("Succeeded. auxdir is " + auxdir.path + "\n");
+//              dump("Trying to copy auxdir to docdir\n");
+//              auxdir.copyTo(docdir,filename+n+"_files");
+//            }
+//            catch(e) {
+//              dump("Copying auxdir caused error "+e+"\n");
+//            }
+//            break;
+//          }
+//          catch(e) {
+//            dump("File already exists? "+e+"\n");
+//            n++;
+//          }
+//        }
+//      }// at this point, shellfile is .../untitledxxx.MSI_EXTENSION
+//      catch(e)
+//      {
+//        dump("Unable to open document for editing\n");
+//      }
+//      // set the url for the xhtml portion of the document
+//      docdir.append("untitled"+n+"." + MSI_EXTENSION);
+//      dump("Final docdir path is " + docdir.path + "\n");
+//      url = docdir.path;
+//      dump("url is " + url + "\n");
+//*******************END SECTION REFACTORED OUT
+
       
-      // set document title when?? It is too early now, so we will save the name in the XUL
-      document.getElementById("filename").value = filename+n;
+//*************FOLLOWING NOW HANDLED UNIFORMLY BELOW
+//rwa      // set document title when?? It is too early now, so we will save the name in the XUL
+//rwa      var theFilename = document.getElementById("filename");
+//rwa      if (theFilename != null)
+//rwa        theFilename.value = filename+n;
     }
-    else
-    {
-      url = docname;
+
+//rwa    else
+//rwa    {
+    url = docname;
   // for Windows
 #ifdef XP_WIN32
-      docname = docname.replace("\\","/","g");
+    docname = docname.replace("\\","/","g");
 #endif
-      var dotIndex = docname.lastIndexOf(".");
-      var lastSlash = docname.lastIndexOf("/")+1;
-      document.getElementById("filename").value = dotIndex == -1?docname.slice(lastSlash):docname.slice(lastSlash,dotIndex);
-    }  
-//    var contentViewer = GetCurrentEditorElement().docShell.contentViewer;
+    var dotIndex = docname.lastIndexOf(".");
+    var lastSlash = docname.lastIndexOf("/")+1;
+    var theFilename = document.getElementById("filename");
+    if (theFilename != null)
+      theFilename.value = dotIndex == -1?docname.slice(lastSlash):docname.slice(lastSlash,dotIndex);
+//rwa    }
+
     var contentViewer = null;
     if (editorElement.docShell)
       contentViewer = editorElement.docShell.contentViewer;
@@ -1001,9 +1074,209 @@ function EditorStartupForEditorElement(editorElement)
       contentViewer.forceCharacterSet = charset;
     }
     msiEditorLoadUrl(editorElement, url);
-//    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
+    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
   } catch (e) {
-    dump(e + "\n");
+    dump("Error in loading URL in msiLoadInitialDocument: [" + e + "]\n");
+  }
+}
+
+  // Get url for editor content and load it.
+  // the editor gets instantiated by the editingSession when the URL has finished loading.
+function msiPrepareDocumentTargetForShell(docname)
+{
+  try {
+    var prefs = GetPrefs();
+    var filename = "untitled";
+    var theArgs = document.getElementById("args");
+    var n = 1;
+    var url = "";
+    var docdir;
+//    var shelldir;
+//    var shellfile;
+//    var charset = "";
+    var leafname = "";
+//    if (theArgs)
+//    {
+//      docname = document.getElementById("args").getAttribute("value");
+//      if (docname.indexOf("file://") == 0) docname = GetFilepath(docname);
+//  // for Windows
+//#ifdef XP_WIN32
+//      docname = docname.replace("/","\\","g");
+//#endif
+//      charset = document.getElementById("args").getAttribute("charset")
+//    };
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+//    dump("docname starts out as " + docname + "\n");
+//    if (docname.length == 0)
+//    {
+//       docname=prefs.getCharPref("swp.defaultShell");
+//       shellfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+//       shellfile.append("shells");
+//       dump("shelldir is "+shellfile.path + "\n");
+//       docname = shellfile.path + "/" + docname;
+//  // for Windows
+//#ifdef XP_WIN32
+//      docname = docname.replace("/","\\","g");
+//#endif
+//      dump("Docname is " + docname + "\n");
+//    }
+//    else
+//    {
+//      shellfile = Components.classes["@mozilla.org/file/local;1"].
+//            createInstance(Components.interfaces.nsILocalFile);
+//    } 
+//    if (isShell(docname))
+//    {
+//      editorElement.isShellFile = true;
+
+
+    var shellfile = Components.classes["@mozilla.org/file/local;1"].
+          createInstance(Components.interfaces.nsILocalFile);
+    shellfile.initWithPath(docname);
+    // copy the shell to the default document area
+    try
+    {
+      var docdirname = prefs.getCharPref("swp.prefDocumentDir");
+      dump("swp.prefDcoumentDir is ", docdirname + "\n");
+      docdir = Components.classes["@mozilla.org/file/local;1"].
+          createInstance(Components.interfaces.nsILocalFile);
+      docdir.initWithPath(docdirname);
+      if (!valueOf(docdir.exists()))
+        docdir.create(1, 0755);
+    }
+    catch (e)
+    {
+      var dirkey;
+#ifdef XP_WIN
+        dirkey = "Pers";
+#else
+#ifdef XP_MACOSX
+        dirkey = "UsrDocs";
+#else
+        dirkey = "Home";
+#endif
+#endif
+      // if we can't find the one in the prefs, get the default
+      docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
+      if (!docdir.exists()) docdir.create(1,0755);
+      // Choose one of the three following lines depending on the app
+      docdir.append("SWP Docs");
+      if (!docdir.exists()) docdir.create(1,0755);
+      // docdir.append("SW Docs");
+      // docdir.append("SNB Docs");
+      dump("default document directory is "+docdir.path+"\n");
+    }
+    // find n where untitledn.MSI_EXTENSION is the first unused file name in that folder
+    try
+    {
+      dump("shellfile is " + shellfile.path + "\n");
+      leafname = shellfile.leafName;
+      var i = leafname.lastIndexOf(".");
+      if (i > 0) leafname = leafname.substr(0,i);
+      dump("leafname is " + leafname + "\n");
+      while (n < 100)
+      {
+        try {
+          dump("Copying "+shellfile.path + " to directory " + docdir.path + ", file "+filename+n+"."+MSI_EXTENSION+"\n");
+          shellfile.copyTo(docdir,filename+n+"."+MSI_EXTENSION);
+          // if the copy succeeded, continue to copy the "..._files" directory
+          try {
+            dump("Succeeded\n");
+            var auxdir = shellfile.parent.clone();
+            dump("auxdir is " + auxdir.path+"\n");
+            auxdir.append(leafname+"_files");
+            dump("Succeeded. auxdir is " + auxdir.path + "\n");
+            dump("Trying to copy auxdir to docdir\n");
+            auxdir.copyTo(docdir,filename+n+"_files");
+          }
+          catch(e) {
+            dump("Copying auxdir caused error "+e+"\n");
+          }
+          break;
+        }
+        catch(e) {
+          dump("File already exists? "+e+"\n");
+          n++;
+        }
+      }
+    }// at this point, shellfile is .../untitledxxx.MSI_EXTENSION
+    catch(e)
+    {
+      dump("Unable to open document for editing\n");
+    }
+    // set the url for the xhtml portion of the document
+    docdir.append(filename + n+"." + MSI_EXTENSION);
+    dump("Final docdir path is " + docdir.path + "\n");
+    url = docdir.path;
+    dump("url is " + url + "\n");
+  }
+  catch(e)
+  {
+    dump("Uncaught error in msiPrepareDocumentTargetForShell: " + e + "\n.");
+  }
+  return url;
+      
+//      // set document title when?? It is too early now, so we will save the name in the XUL
+//      var theFilename = document.getElementById("filename");
+//      if (theFilename != null)
+//        theFilename.value = filename+n;
+//    }
+//    else
+//    {
+//      url = docname;
+//  // for Windows
+//#ifdef XP_WIN32
+//      docname = docname.replace("\\","/","g");
+//#endif
+//      var dotIndex = docname.lastIndexOf(".");
+//      var lastSlash = docname.lastIndexOf("/")+1;
+//      var theFilename = document.getElementById("filename");
+//      if (theFilename != null)
+//        theFilename.value = dotIndex == -1?docname.slice(lastSlash):docname.slice(lastSlash,dotIndex);
+//    }  
+////    var contentViewer = GetCurrentEditorElement().docShell.contentViewer;
+//    var contentViewer = null;
+//    if (editorElement.docShell)
+//      contentViewer = editorElement.docShell.contentViewer;
+//    if (contentViewer)
+//    {
+//      contentViewer.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
+//      contentViewer.defaultCharacterSet = charset;
+//      contentViewer.forceCharacterSet = charset;
+//    }
+//    msiEditorLoadUrl(editorElement, url);
+////    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
+//  } catch (e) {
+//    dump("Error in loading URL in EditorStartupForEditorElement: [" + e + "]\n");
+//  }
+}
+
+function msiFinishInitDialogEditor(editorElement, parentEditorElement)
+{
+
+//  var editor = msiGetEditor(editorElement);
+  var parentEditor = msiGetEditor(parentEditorElement);
+  msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editorElement [@], parentEditor is [" + parentEditor + "].\n", editorElement);
+  if (parentEditor)
+  {
+//put this somewhere!!!!!    editor.tagListManager = parentEditor.tagListManager;
+    //editor.QueryInterface(nsIEditorStyleSheets);
+    try
+    {
+      var parentDOMStyle = parentEditor.document.QueryInterface(Components.interfaces.nsIDOMDocumentStyle);
+      var parentSheets = parentDOMStyle.styleSheets;
+      if (parentSheets.length > 0)
+      {
+        if (!("overrideStyleSheets" in editorElement) || (editorElement.overrideStyleSheets == null))
+          editorElement.overrideStyleSheets = new Array();
+      }
+      for (var ix = 0; ix < parentSheets.length; ++ix)
+      {
+        editorElement.overrideStyleSheets.push( parentSheets.item(ix).href );  //parentSheets.item(ix) is an nsIDOMStyleSheet, supposedly.
+        msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editor [@], adding parent style sheet href = [" + parentSheets.item(ix).href + "].\n", editorElement);
+      }
+    }
+    catch(exc) { msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editor [@], unable to access parent style sheets: [" + exc + "].\n", editorElement); }
   }
 }
 
@@ -1062,16 +1335,19 @@ function SharedStartupForEditor(editorElement)
 
     if ("mInitialDocObserver" in editorElement && editorElement.mInitialDocObserver != null)
     {
-      msiDumpWithID("Adding mInitialDocObserver for editor [@].\n", editorElement);
       for (var ix = 0; ix < editorElement.mInitialDocObserver.length; ++ix)
       {
+        if (("bAdded" in editorElement.mInitialDocObserver[ix]) && (editorElement.mInitialDocObserver[ix].bAdded == true))
+          continue;
+        msiDumpWithID("Adding mInitialDocObserver for command " + editorElement.mInitialDocObserver[ix].mCommand + " for editor [@].\n", editorElement);
         commandManager.addCommandObserver(editorElement.mInitialDocObserver[ix].mObserver, editorElement.mInitialDocObserver[ix].mCommand);
+        editorElement.mInitialDocObserver[ix].bAdded = true;
 //        msiDumpWithID("Adding doc observer for editor [@]; for command [" + editorElement.mInitialDocObserver[ix].mCommand + "].\n", editorElement);
       }
 //      commandManager.addCommandObserver(editorElement.mInitialDocCreatedObserver, "obs_documentCreated");
-      editorElement.mInitialDocCreatedObserver = null;
+//      editorElement.mInitialDocCreatedObserver = null;
     }
-  } catch (e) { dump(e); }
+  } catch (e) { dump("In SharedStartupForEditor, exception: [" + e + "].\n"); }
 
   var isMac = (GetOS() == msigMac);
 
@@ -1149,21 +1425,35 @@ function msiEditorResetFontAndColorAttributes(editorElement)
 
 function ShutdownAnEditor(editorElement)
 {
-  SetUnicharPref("prince.zoom_factor", msiGetMarkupDocumentViewer(editorElement).textZoom);
+  try
+  {
+    SetUnicharPref("prince.zoom_factor", msiGetMarkupDocumentViewer(editorElement).textZoom);
+  } catch(e) { dump( "In ShutdownAnEditor, setting unicharpref, error: " + e + "\n" ); }
 
   try
   {
     msiRemoveActiveEditor(editorElement);
     msiRemoveToolbarPrefListener(editorElement);
     editorElement.mCSSPrefListener.shutdown();
-  } catch(e) { dump (e); }
+  } catch(e) { dump( "In ShutdownAnEditor, removing active editor and toolbar pref listener, error: " + e + "\n" ); }
 
   try {
     var commandManager = msiGetCommandManager(editorElement);
     commandManager.removeCommandObserver(editorElement.mEditorDocumentObserver, "obs_documentCreated");
     commandManager.removeCommandObserver(editorElement.mEditorDocumentObserver, "obs_documentWillBeDestroyed");
     commandManager.removeCommandObserver(editorElement.mEditorDocumentObserver, "obs_documentLocationChanged");
-  } catch (e) { dump (e); }   
+    if ("mInitialDocObserver" in editorElement && editorElement.mInitialDocObserver != null)
+    {
+      for (var ix = 0; ix < editorElement.mInitialDocObserver.length; ++ix)
+      {
+        if (("bAdded" in editorElement.mInitialDocObserver[ix]) && (editorElement.mInitialDocObserver[ix].bAdded == true))
+        {
+          commandManager.removeCommandObserver(editorElement.mInitialDocObserver[ix].mObserver, editorElement.mInitialDocObserver[ix].mCommand);
+          editorElement.mInitialDocObserver[ix].bAdded = false;
+        }
+      }
+    }
+  } catch (e) {dump( "In ShutdownAnEditor, removing command observers, error: " + e + "\n" );}   
 }
 
 function SafeSetAttribute(theDocument, nodeID, attributeName, attributeValue)
@@ -1233,9 +1523,11 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   var reasonToSave = strID ? GetString(strID) : "";
 
 //  var title = document.title;
-  var title = window.document.getElementById("filename").value;
-  if (!title)
-    title = GetString("untitled");
+  var title = GetString("untitled");
+  var theFilename = document.getElementById("filename");
+  if (theFilename != null)
+    title = theFilename.value;
+//  if (!title)
 
   var dialogTitle = GetString(doPublish ? "PublishPage" : "SaveDocument");
   var dialogMsg = GetString(doPublish ? "PublishPrompt" : "SaveFilePrompt");

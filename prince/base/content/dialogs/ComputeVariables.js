@@ -21,7 +21,6 @@ function Startup(){
   {
     var editorControl = document.getElementById("vars-frame");
     msiInitializeEditorForElement(editorControl, theStringSource, true);
-    editorControl.makeEditable("html", false);
   }
   catch(exc) {dump("In Startup for ComputeVariables dialog, error initializing editor vars-frame: [" + exc + "].\n");}
 

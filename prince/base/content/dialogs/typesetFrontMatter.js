@@ -38,7 +38,6 @@ function InitDialog()
     theFirstText = "<span style='font-weight: bold;'>Some bold text?</span>";
   theFirstText = "<para>" + theFirstText + "</para>";
   msiInitializeEditorForElement(editorControl, theFirstText);
-  editorControl.makeEditable("html", false);
 
 //  var editorControlTwo = document.getElementById("editControlTwo");
 //  var commandManagerTwo = editorControlTwo.commandManager;
@@ -46,7 +45,6 @@ function InitDialog()
 ////  EditorStartupForEditorElement(editorControlTwo);
 //  var theSecondText = "<span style='font-style: italic;'>Some italic text?</span>";
 //  msiInitializeEditorForElement(editorControlTwo, theSecondText);
-//  editorControlTwo.makeEditable("html", false);
   checkInaccessibleAcceleratorKeys(document.documentElement);
 
   gDialog.tabOrderArray = new Array( editorControl, /* editorControlTwo, */

@@ -180,6 +180,8 @@ function msiSetupComposerWindowCommands(editorElement)
   commandTable.registerCommand("cmd_close",          msiCloseCommand);
   commandTable.registerCommand("cmd_preferences",    nsPreferencesCommand);
 
+  commandTable.registerCommand("cmd_MSIAutoSubDlg",  msiAutoSubDlgCommand);
+
   // Edit Mode commands
   if (msiWindowHasHTMLEditor(topWin))
 //  if (msiGetEditorType(editorElement) == "html")
@@ -2953,6 +2955,33 @@ var nsQuitCommand =
     goQuitApplication();
   }
   */
+};
+
+//-----------------------------------------------------------------------------------
+var msiAutoSubDlgCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    AlertWithTitle("Unimplemented", "AutoSubstitution dialog not yet available.");
+//    var editorElement = msiGetActiveEditorElement();
+//    try {
+//      msiOpenModelessDialog("chrome://prince/content/autoSubstituteDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                        editorElement, "cmd_MSIAutoSubDlg", this, editorElement);
+////      window.openDialog("chrome://editor/content/EdReplace.xul", "_blank",
+////                        "chrome,modal,titlebar", editorElement);
+//    }
+//    catch(ex) {
+//      dump("*** Exception: couldn't open AutoSubstitution Dialog: " + ex + "\n");
+//    }
+  }
 };
 
 //-----------------------------------------------------------------------------------

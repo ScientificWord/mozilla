@@ -43,7 +43,6 @@ function Startup(){
   {
     var degreeEditorControl = document.getElementById("degree-frame");
     msiInitializeEditorForElement(degreeEditorControl, theStringSource, true);
-    degreeEditorControl.makeEditable("html", false);
   }
   catch(exc) {dump("In Startup for ComputeMoment dialog, error initializing editor degree-frame: [" + exc + "].\n");}
 
@@ -60,7 +59,6 @@ function Startup(){
 //    originEditorControl.mInitialDocObserver[1].mObserver = computeMomentEditorDocumentObserver;
 //    originEditorControl.mInitialDocObserver[1].mCommand = "cmd_setDocumentModified";
     msiInitializeEditorForElement(originEditorControl, theStringSource, true);
-    originEditorControl.makeEditable("html", false);
   }
   catch(exc) {dump("In Startup for ComputeMoment dialog, error initializing editor origin-frame: [" + exc + "].\n");}
 
