@@ -793,7 +793,7 @@ protected:
 
   nsCOMPtr<nsIDOMNode> mCachedNode;
   //TagListManager
-  nsCOMPtr<msiTagListManager> mtagListManager;
+  nsCOMPtr<msiITagListManager> mtagListManager;
 
   PRPackedBool mCRInParagraphCreatesParagraph;
 
