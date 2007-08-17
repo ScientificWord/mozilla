@@ -45,6 +45,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
+  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
 
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->

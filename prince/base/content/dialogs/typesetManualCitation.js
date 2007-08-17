@@ -42,7 +42,6 @@ function InitDialog()
   var theStringSource = "<span style='font-weight: bold;'>" + gDialog.remark + "</span>";
   var editorControl = document.getElementById("remarkEditControl");
   msiInitializeEditorForElement(editorControl, theStringSource);
-  editorControl.makeEditable("html", false);
 //  attachEditorToTextbox(document.getElementById("remarkTextbox"), theStringSource)
   //This next will have to be replaced by code to set up the MathML editor for the Remark field
 //  document.getElementById("remarkTextbox").value = gDialog.remark;

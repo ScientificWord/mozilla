@@ -58,7 +58,6 @@ function Startup(){
   docObserver.mCommand = "obs_documentCreated";
   editorControl.mInitialDocObserver = new Array(docObserver);
   msiInitializeEditorForElement(editorControl, theStringSource, true);
-//  editorControl.makeEditable("html", false);
 
 //  try {
 //    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);

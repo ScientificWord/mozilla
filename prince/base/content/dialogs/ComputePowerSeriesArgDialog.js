@@ -38,7 +38,6 @@ function Startup(){
     var varEditorControl = document.getElementById("mmlArg-var-frame");
 //  editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
     msiInitializeEditorForElement(varEditorControl, theStringSource, true);
-    varEditorControl.makeEditable("html", false);
   }
   catch(exc) {dump("In Startup for ComputePowerSeriesArgDialog, error initializing editor mmlArg-var-frame: [" + exc + "].\n");}
   try
@@ -46,7 +45,6 @@ function Startup(){
     theStringSource = data.initialvalue[1];
     var initEditorControl = document.getElementById("mmlArg-initVal-frame");
     msiInitializeEditorForElement(initEditorControl, theStringSource, true);
-    initEditorControl.makeEditable("html", false);
   }
   catch(exc) {dump("In Startup for ComputePowerSeriesArgDialog, error initializing editor mmlArg-initVal-frame: [" + exc + "].\n");}
   try
@@ -54,7 +52,6 @@ function Startup(){
     theStringSource = data.initialvalue[2];
     var termsEditorControl = document.getElementById("mmlArg-numTerms-frame");
     msiInitializeEditorForElement(termsEditorControl, theStringSource, true);
-    termsEditorControl.makeEditable("html", false);
   }
   catch(exc) {dump("In Startup for ComputePowerSeriesArgDialog, error initializing editor mmlArg-numTerms-frame: [" + exc + "].\n");}
 }

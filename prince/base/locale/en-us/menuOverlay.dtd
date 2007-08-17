@@ -535,6 +535,8 @@
 <!ENTITY toolsetfocus.accesskey "f">
 <!ENTITY venkman.label "JavaScript debugger">
 <!ENTITY venkman.accesskey "d">
+<!ENTITY autoSubstituteDlg.label "Auto Substitution...">
+<!ENTITY autoSubstituteDlg.accessKey "A">
 
 <!-- Go menu -->
 <!ENTITY gomenu.label "Go">

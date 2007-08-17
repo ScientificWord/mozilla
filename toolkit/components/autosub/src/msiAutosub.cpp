@@ -339,7 +339,7 @@ NS_IMETHODIMP msiAutosub::Reset()
 NS_IMETHODIMP msiAutosub::Save(PRBool *_retval)
 {
   nsString sFile = NS_LITERAL_STRING("<?xml version=\"1.0\"?>\n") +
-    NS_LITERAL_STRING("<!DOCTYPE macros PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd\">\n") +
+    NS_LITERAL_STRING("<!DOCTYPE subs PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd\">\n") +
     NS_LITERAL_STRING("<subs>\n");
   nsAutoString line;
   nsAutoString temp;

@@ -299,6 +299,8 @@
       <menuitem label="Extensions" id="menu_extensions" observes="Tools:Extensions"/>
       <menuitem label="Themes" id="menu_themes" observes="Tools:Themes"/>
       <menuitem label="Tag appearance" id="cascades" observes="Cascades"/>
+      <menuseparator id="toolsMenuSeparator"/>
+      <menuitem label="&autoSubstituteDlg.label;" accesskey="&autoSubstituteDlg.accessKey;" command="cmd_MSIAutoSubDlg"/>
     </menupopup>
   </menu>
   
@@ -594,6 +596,7 @@
     <command id="Tools:Extensions" oncommand="OpenExtensions('extensions');"/>
     <command id="Tools:Themes" oncommand="OpenExtensions('themes');"/>
     <command id="Cascades" oncommand="window.openDialog('chrome://cascades/content/EdCssProps.xul','_blank', 'chrome,close,modal,titlebar');window.content.focus();"/>
+    <command id="cmd_MSIAutoSubDlg"       oncommand="msiGoDoCommand('cmd_MSIAutoSubDlg')"/>
   </commandset>
   <commandset id="tagsMenuCommands">
     <command id="cmd_otfont" oncommand="callOTFontDialog();"/>
