@@ -1617,7 +1617,6 @@ function msiEditorSetFontSize(size, editorElement)
 //        size = "+3";
 //        break;
 //    }
-  var fsAtom = 
   msiEditorSetTextProperty(editorElement, "fontsize", "size", size);
 //  }
   editorElement.contentWindow.focus();
