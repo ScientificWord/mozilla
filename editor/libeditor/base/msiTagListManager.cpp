@@ -453,7 +453,7 @@ nsDEnumRead(const nsAString_internal& aKey, TagData* aData, void* userArg)
   tk.key = aKey;;
   userArgStruct * ua = (userArgStruct *) userArg;
 //   printf("  enumerated %s = \"%s\"\n", aKey.get(), aData->tagClass.get());
-  if (aData->tagClass == ua->tagClass)
+  if (aData->tagClass == ua->tagClass && !(aData->hidden))
   {
     nsString name = tk.altForm();
     ua->ptlm->pACSSA->AddString(ua->tagClass, name, &bres);
