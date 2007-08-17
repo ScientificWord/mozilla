@@ -565,6 +565,8 @@
 <!ENTITY tagmenuFont.accesskey "f">
 <!ENTITY tagmenuFontSize.label "Size...">
 <!ENTITY tagmenuFontSize.accesskey "s">
+<!ENTITY tagmenuColor.label "Color...">
+<!ENTITY tagmenuColor.accesskey "c">
 <!ENTITY tagmenuFunctionKeys.label "Function Keys...">
 <!ENTITY tagmenuFunctionKeys.accesskey "F">
 <!ENTITY tagmenuApply.label "Apply...">
