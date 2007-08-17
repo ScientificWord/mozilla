@@ -6581,3 +6581,25 @@ function callFontSizeDialog()
       "chrome,close,titlebar,resizable,dependent",
       editorElement, "cmd_fontsize", null, null);
 }
+
+
+function callColorDialog()
+{
+  // TODO: get the current color if we are within a fontcolor tag
+  var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
+
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "_blank", "chrome,close,titlebar,modal", 
+  "", colorObj);
+
+  // User canceled the dialog
+  if (colorObj.Cancel)
+    return;
+    
+  var editorElement = msiGetActiveEditorElement();
+  if (!editorElement)
+  {
+    AlertWithTitle("Error", "No editor in callColorDialog");
+  }
+  msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
+  editorElement.contentWindow.focus();
+}
