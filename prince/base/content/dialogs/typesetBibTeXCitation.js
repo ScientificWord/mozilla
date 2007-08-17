@@ -44,7 +44,6 @@ function InitDialog()
   var theStringSource = "<span style='font-weight: bold;'>" + gDialog.remark + "</span>";
   var editorControl = document.getElementById("remarkEditControl");
   msiInitializeEditorForElement(editorControl, theStringSource);
-  editorControl.makeEditable("html", false);
 
   fillDatabaseFileListbox();
   checkDisableControls();
