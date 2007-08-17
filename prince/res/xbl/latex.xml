@@ -472,6 +472,36 @@ h//          if (firstChild == null)
     </xbl:implementation>
   </xbl:binding>
 
+  
+  <xbl:binding id="fontcolor">
+	  <xbl:content>
+      <html:span anonid="fontcolorspan"><xbl:children/></html:span>
+    </xbl:content>
+    <xbl:implementation>
+      <xbl:constructor>
+        <![CDATA[
+          var style = "color: " + this.getAttribute("color"); 
+          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontcolorspan");
+          dump("Setting style on fontcolor object to "+style+"\n");
+          span.setAttribute("style", style);  
+//          this.addEventListener("DOMAttrModified", attrChanged, false);
+//          function attrChanged { this.size = this.getAttribute("size");}
+      ]]></xbl:constructor>
+//      <xbl:property name="size">   
+//        <xbl:getter><![CDATA[
+//          return this.getAttribute("size");
+//        ]]></xbl:getter>
+//        <xbl:setter><![CDATA[
+//          this.setAttribute("size", val);
+//          var style = "font-size: " + val; 
+//          dump("Setting font size to " + style + "\n");
+//          var span = document.getAnonymousElementByAttribute(this, "anonid", "fontsizespan");
+//          span.setAttribute("style", style);  
+//        ]]></xbl:setter>
+//      </xbl:property>
+    </xbl:implementation>
+  </xbl:binding>
+
 
 </xbl:bindings>
 

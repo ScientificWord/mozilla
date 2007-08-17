@@ -40,6 +40,9 @@ fontsize {
   -moz-binding: url("resource://app/res/xbl/latex.xml#fontsize");
 }
 
+fontcolor {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#fontcolor");
+}
 
 
 img {
