@@ -283,7 +283,8 @@
         <menupopup>
           <menuitem label="&tagmenuFont.label;" id="tagmenuFont" observes="cmd_otfont" accesskey="&tagmenuFont.accesskey;"/>
           <menuitem label="&tagmenuFontSize.label;" id="tagmenuFontSize" observes="cmd_fontsize" accesskey="&tagmenuFontSize.accesskey;"/>
-        </menupopup>
+  		  <menuitem label="&tagmenuColor.label;" id="tagmenuColor" observes="cmd_color" accesskey="&tagmenuColor.accesskey;"/>
+              </menupopup>
       </menu>
     </menupopup>
   </menu>
@@ -597,6 +598,7 @@
   <commandset id="tagsMenuCommands">
     <command id="cmd_otfont" oncommand="callOTFontDialog();"/>
     <command id="cmd_fontsize" oncommand="callFontSizeDialog();"/>
+    <command id="cmd_color" oncommand="callColorDialog();"/>
     <command id="cmd_tagkeyassignments" oncommand="callFunctionKeyDialog();"/>
   </commandset>
 
