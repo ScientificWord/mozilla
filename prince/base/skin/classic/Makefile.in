@@ -1,11 +1,9 @@
 XPI_NAME	= prince
 
-DEPTH		= ../..
+DEPTH		= ../../../..
 topsrcdir	= @top_srcdir@
 srcdir	    = @srcdir@
 VPATH		= @srcdir@
-
-DIRS		=  content locale/en-us skin/classic skin/modern
 
 include $(DEPTH)/config/autoconf.mk
 
