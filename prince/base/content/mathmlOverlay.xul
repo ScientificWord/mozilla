@@ -74,28 +74,29 @@
 
   <menu id="insertMenu" label="Insert" accesskey="&insertmenu.accesskey;">
     <menupopup id="insertMenuPopup" onpopupshowing="msiInitFontStyleMenu(this)">
-      <menuseparator/>
       <menuitem label="&MSIinlineMathCmd.label;" accesskey="&MSIinlineMathCmd.accesskey;" key="MSIinlineMathKey" observes="cmd_MSImathtext"   type="checkbox"/>
       <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"                              command="cmd_MSItextCmd"/>  
-      <menuseparator />
-      <menuitem label="&MSIfractionCmd.label;" accesskey="&MSIfractionCmd.accesskey;" key="MSIfractionKey"       command="cmd_MSIfractionCmd"/>
-      <menuitem label="&MSIradicalCmd.label;"  accesskey="&MSIradicalCmd.accesskey;"  key="MSIradicalKey"        command="cmd_MSIradicalCmd"/>
-      <menuitem label="&MSIsupCmd.label;"      accesskey="&MSIsupCmd.accesskey;"      key="MSIsupKey"            command="cmd_MSIsupCmd"/>      
-      <menuitem label="&MSIsubCmd.label;"      accesskey="&MSIsubCmd.accesskey;"      key="MSIsubKey"            command="cmd_MSIsubCmd"/>          
-      <menuitem label="&MSIdisplayCmd.label;"    accesskey="&MSIdisplayCmd.accesskey;"    key="MSIdisplayKey"    command="cmd_MSIdisplayMathCmd"/>
-      <!--menuitem label="&MSIrootCmd.label;"     accesskey="&MSIrootCmd.accesskey;"                                command="cmd_MSIrootCmd"/ -->
-      <menuitem label="&MSIoperatorsCmd.label;"       accesskey="&MSIoperatorsCmd.accesskey;"       command="cmd_MSIoperatorsCmd"/>
-      <menuitem label="&MSIgenBracketsCmd.label;"     accesskey="&MSIgenBracketsCmd.accesskey;"     command="cmd_MSIgenBracketsCmd"/>
-      <menuitem label="&MSIMatrixCmd.label;"   accesskey="&MSIMatrixCmd.accesskey;"                              command="cmd_MSIMatrixCmd"/>
-      <menuitem label="&MSImathnameCmd.label;" accesskey="&MSImathnameCmd.accesskey;" command="cmd_MSImathnameCmd"/>
-      <menuitem label="&MSIbinomialsCmd.label;"       accesskey="&MSIbinomialsCmd.accesskey;"       command="cmd_MSIbinomialsCmd"/>
-      <menuitem label="&MSIdecorationsCmd.label;"     accesskey="&MSIdecorationsCmd.accesskey;"     command="cmd_MSIdecorationsCmd"/>
-      <menuitem id="insertmenuUnitNames" label="&insertmenuUnitNames.label;"
-        accesskey="&insertmenuUnitNames.accesskey;" command="cmd_MSIunitsCommand" />
-      <menuitem label="&MSItensorCmd.label;"   accesskey="&MSItensorCmd.accesskey;"                              command="cmd_MSItensorCmd"/>
-      <menuitem id="insertmenuFormula" label="&insertmenuFormula.label;"
-        accesskey="&insertmenuFormula.accesskey;" observes="cmd_unimp" />
-      <menuseparator/>
+      <menu id="mathobjectsmenu" label="Math objects" >
+	    <menupopup id="mathobjectsPopup" onpopupshowing="msiInitFontStyleMenu(this)">
+	      <menuitem label="&MSIfractionCmd.label;" accesskey="&MSIfractionCmd.accesskey;" key="MSIfractionKey"       command="cmd_MSIfractionCmd"/>
+	      <menuitem label="&MSIradicalCmd.label;"  accesskey="&MSIradicalCmd.accesskey;"  key="MSIradicalKey"        command="cmd_MSIradicalCmd"/>
+	      <menuitem label="&MSIsupCmd.label;"      accesskey="&MSIsupCmd.accesskey;"      key="MSIsupKey"            command="cmd_MSIsupCmd"/>      
+	      <menuitem label="&MSIsubCmd.label;"      accesskey="&MSIsubCmd.accesskey;"      key="MSIsubKey"            command="cmd_MSIsubCmd"/>          
+	      <menuitem label="&MSIdisplayCmd.label;"    accesskey="&MSIdisplayCmd.accesskey;"    key="MSIdisplayKey"    command="cmd_MSIdisplayMathCmd"/>
+	      <!--menuitem label="&MSIrootCmd.label;"     accesskey="&MSIrootCmd.accesskey;"                                command="cmd_MSIrootCmd"/ -->
+	      <menuitem label="&MSIoperatorsCmd.label;"       accesskey="&MSIoperatorsCmd.accesskey;"       command="cmd_MSIoperatorsCmd"/>
+	      <menuitem label="&MSIgenBracketsCmd.label;"     accesskey="&MSIgenBracketsCmd.accesskey;"     command="cmd_MSIgenBracketsCmd"/>
+	      <menuitem label="&MSIMatrixCmd.label;"   accesskey="&MSIMatrixCmd.accesskey;"                              command="cmd_MSIMatrixCmd"/>
+	      <menuitem label="&MSImathnameCmd.label;" accesskey="&MSImathnameCmd.accesskey;" command="cmd_MSImathnameCmd"/>
+	      <menuitem label="&MSIbinomialsCmd.label;"       accesskey="&MSIbinomialsCmd.accesskey;"       command="cmd_MSIbinomialsCmd"/>
+	      <menuitem label="&MSIdecorationsCmd.label;"     accesskey="&MSIdecorationsCmd.accesskey;"     command="cmd_MSIdecorationsCmd"/>
+	      <menuitem id="insertmenuUnitNames" label="&insertmenuUnitNames.label;"
+	        accesskey="&insertmenuUnitNames.accesskey;" command="cmd_MSIunitsCommand" />
+	      <menuitem label="&MSItensorCmd.label;"   accesskey="&MSItensorCmd.accesskey;"                              command="cmd_MSItensorCmd"/>
+	      <menuitem id="insertmenuFormula" label="&insertmenuFormula.label;"
+	        accesskey="&insertmenuFormula.accesskey;" observes="cmd_unimp" />
+	    </menupopup>
+      </menu>
       <menuitem id="insertmenuMarker" label="&insertmenuMarker.label;"
         accesskey="&insertmenuMarker.accesskey;" observes="cmd_unimp" />
       <menuitem id="insertmenuNote" label="&insertmenuNote.label;"
