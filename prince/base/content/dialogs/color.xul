@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!--?xml-stylesheet href="chrome://prince/skin/" type="text/css"? -->
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+
+<!DOCTYPE dialog [
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/otfont.dtd" >
+%dialogDTD;
+]>
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "return startup();"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();"
+    buttons="apply,accept,cancel" 
+    width="300px" height="200px">
+
+  <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/otfont.js"/>
+  <label>Generally you should use the tags such as emph, sf, large, and small to change font characteristics. Use this dialog sparingly.</label>
+  <menulist id="otfontlist" oncommand="">
+    <menupopup id="systemfontlist">
+      <menuitem id="otfont.instruction" label="(Select a font)"/>
+    </menupopup>
+  </menulist>
+  <label value="Advanced"/>
+  <textbox id="otfont.advanced" />
+  <!-- hbox>
+    <vbox>
+      <label>Font size</label>
+      <textbox id="otfont.fontsize" style="width: 3.5em" onkeypress="handleChar(event,this);"
+       max="200" min="5" increment="1" tooltip="The size of the font"/>
+    </vbox>
+    <vbox align="center">
+     <label>Units</label>
+     <menulist id="otfont.units"  
+            oncommand="switchUnits();"  >
+       <menupopup>
+         <menuitem id="otfont.pt" label="pt" value="pt"/>
+         <menuitem id="otfont.cm" label="cm" value="cm"/>
+         <menuitem id="otfont.mm" label="mm" value="mm"/>
+         <menuitem id="otfont.inch" label="in" value="in"/>
+       </menupopup>
+     </menulist>
+     <hbox flex="1"/>
+    </vbox>
+  </hbox -->
+    
+</dialog>
