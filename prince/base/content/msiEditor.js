@@ -255,6 +255,77 @@ function msiButtonPrefListener(editorElement)
 //  }      
 //}
 
+function msiEditorArrayInitializer()
+{
+  this.mInfoList = new Array();
+  this.addEditorInfo = function(anEditorElement, anInitialText, bIsMultiPara)
+  {
+    if (this.findEditorInfo(anEditorElement) < 0)
+    {
+      var newInfo = new Object();
+      newInfo.mEditorElement = anEditorElement;
+      newInfo.mInitialText = anInitialText;
+      if (bIsMultiPara == null)
+        newInfo.mbWithContainingHTML = false;
+      else
+        newInfo.mbWithContainingHTML = bIsMultiPara;
+      newInfo.bDone = false;
+      this.mInfoList.push(newInfo);
+      anEditorElement.mEditorSeqInitializer = this;
+    }
+  };
+  this.doInitialize = function()
+  {
+    this.initializeNextEditor(0);
+  };
+  this.finishedEditor = function(anEditorElement)
+  {
+    var editorIndex = this.findEditorInfo(anEditorElement);
+    if (editorIndex >= 0)
+    {
+      this.mInfoList[editorIndex].bDone = true;
+    }
+    anEditorElement.mEditorSeqInitializer = null;
+    ++editorIndex;
+    this.initializeNextEditor(editorIndex);
+  };
+  this.findEditorInfo = function(anEditorElement)
+  {
+    if (anEditorElement == null)
+      return -1;
+    for (var ix = 0; ix < this.mInfoList.length; ++ix)
+    {
+      if (this.mInfoList[ix].mEditorElement == anEditorElement)
+      {
+        return ix;
+      }
+    }
+    dump("In msiEditorArrayInitializer, unable to find editorElement " + anEditorElement.id + "!\n");
+    return -1;
+  };
+  this.initializeNextEditor = function(editorIndex)
+  {
+    var nFound = -1;
+    if (editorIndex < 0)
+      editorIndex = 0;
+    for (var ix = editorIndex; (nFound < 0) && (ix < this.mInfoList.length); ++ix)
+    {
+      if (!this.mInfoList[ix].bDone)
+      {
+        nFound = ix;
+        break;
+      }
+    }
+    if (nFound >= 0)
+    {
+      var theEditorElement = this.mInfoList[nFound].mEditorElement;
+//      theEditorElement.mEditorSeqInitializer = this;  should we set this only for one at a time, or when we add the item? Try the latter for now.
+      msiInitializeEditorForElement(theEditorElement, this.mInfoList[nFound].mInitialText, this.mInfoList[nFound].mbWithContainingHTML);
+    }
+  };
+}
+
+
 function msiInitializeEditorForElement(editorElement, initialText, bWithContainingHTML)
 {
 //  // See if argument was passed.
@@ -286,19 +357,20 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
 //  var editorElement = document.getElementById("content-frame");
 //  msiDumpWithID("Entering msiInitializeEditorForElement for element [@].\n", editorElement);
   var startText;
-  if ( (initialText.length > 0) || bWithContainingHTML )
+//  if ( ((initialText != null) && (initialText.length > 0)) || bWithContainingHTML )
+  if ( (initialText != null) && (initialText.length > 0) )
   {
-    if (bWithContainingHTML && !initialText.length)
-    {
-      if (editorElement.mbInitialContentsMultiPara)
-        startText = "<body></body>";
-//        startText = "<body>" + initialText + "</body>";
-      else
-        startText = "<para></para>";
-//        startText = "<para>" + initialText + "</para>";
-//      startText = "<html><head></head><BODY><para>" + initialText + "</para></BODY></html>";
-    }
-    else
+//    if (bWithContainingHTML && ((initialText==null) || !initialText.length))
+//    {
+//      if (editorElement.mbInitialContentsMultiPara)
+//        startText = "<body></body>";
+////        startText = "<body>" + initialText + "</body>";
+//      else
+//        startText = "<para></para>";
+////        startText = "<para>" + initialText + "</para>";
+////      startText = "<html><head></head><BODY><para>" + initialText + "</para></BODY></html>";
+//    }
+//    else
       startText = initialText;
     editorElement.initialEditorContents = startText;
   }
@@ -568,7 +640,7 @@ function msiEditorDocumentObserver(editorElement)
   this.observe = function(aSubject, aTopic, aData)
   {              
     // Should we allow this even if NOT the focused editor?
-    msiDumpWithID("In documentCreated observer for editor [@], observing [" + aTopic + "]; editor's boxObject is [" + editorElement.boxObject + "]\n", editorElement);
+//    msiDumpWithID("In documentCreated observer for editor [@], observing [" + aTopic + "]; editor's boxObject is [" + editorElement.boxObject + "]\n", editorElement);
     var commandManager = msiGetCommandManager(this.mEditorElement);
     if (commandManager != aSubject)
     {
@@ -740,7 +812,7 @@ function msiEditorDocumentObserver(editorElement)
         {
           try
           {
-            msiDumpWithID("Adding initial contents for editorElement [@].\n", this.mEditorElement);
+            msiDumpWithID("Adding initial contents for editorElement [@]; contents are [" + this.mEditorElement.initialEditorContents + "].\n", this.mEditorElement);
             var htmlEditor = this.mEditorElement.getHTMLEditor(this.mEditorElement.contentWindow);
             var bIsSinglePara = true;
             if (this.mEditorElement.mbInitialContentsMultiPara)
@@ -752,23 +824,26 @@ function msiEditorDocumentObserver(editorElement)
           catch (exc) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding initialContents: " + exc + "\n");}
         }
 //        --this.mDumpMessage;
-        if (bIsRealDocument && ("mInitialEditorObserver" in editorElement) && (editorElement.mInitialEditorObserver != null))
+        if (bIsRealDocument && ("mInitialEditorObserver" in this.mEditorElement) && (this.mEditorElement.mInitialEditorObserver != null))
         {
           var editorStr = "non-null";
           if (editor == null)
             editorStr = "null";
-          msiDumpWithID("Adding mInitialEditorObserver for editor [@]; editor is " + editorStr + ".\n", editorElement);
+          msiDumpWithID("Adding mInitialEditorObserver for editor [@]; editor is " + editorStr + ".\n", this.mEditorElement);
           try
           {
-            for (var ix = 0; ix < editorElement.mInitialEditorObserver.length; ++ix)
+            for (var ix = 0; ix < this.mEditorElement.mInitialEditorObserver.length; ++ix)
             {
 //              var editor = msiGetEditor(editorElement);
-              editor.addEditorObserver( editorElement.mInitialEditorObserver[ix] );
+              editor.addEditorObserver( this.mEditorElement.mInitialEditorObserver[ix] );
             }
           }    
           catch (exc) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding initialEditorObserver: " + exc);}
         }
-
+        if (bIsRealDocument && ("mEditorSeqInitializer" in this.mEditorElement) && (this.mEditorElement.mEditorSeqInitializer != null))
+        {
+          this.mEditorElement.mEditorSeqInitializer.finishedEditor(this.mEditorElement);
+        }
         break;
 
       case "cmd_setDocumentModified":
@@ -940,11 +1015,17 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     dump("docname starts out as " + docname + "\n");
     if (docname.length == 0)
     {
-       docname=prefs.getCharPref("swp.defaultShell");
-       shellfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-       shellfile.append("shells");
-       dump("shelldir is "+shellfile.path + "\n");
-       docname = shellfile.path + "/" + docname;
+      if (!bTopLevel)
+      {
+        try { docname = prefs.getCharPref("swp.defaultDialogShell"); }
+        catch(exc) {docname = "";}
+      }
+      if (docname.length == 0)
+        docname = prefs.getCharPref("swp.defaultShell");
+      shellfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+      shellfile.append("shells");
+      dump("shelldir is "+shellfile.path + "\n");
+      docname = shellfile.path + "/" + docname;
   // for Windows
 #ifdef XP_WIN32
       docname = docname.replace("/","\\","g");
@@ -1254,12 +1335,13 @@ function msiPrepareDocumentTargetForShell(docname)
 function msiFinishInitDialogEditor(editorElement, parentEditorElement)
 {
 
-//  var editor = msiGetEditor(editorElement);
   var parentEditor = msiGetEditor(parentEditorElement);
   msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editorElement [@], parentEditor is [" + parentEditor + "].\n", editorElement);
   if (parentEditor)
   {
-//put this somewhere!!!!!    editor.tagListManager = parentEditor.tagListManager;
+    var editor = msiGetEditor(editorElement);
+    if (editor != null)
+      editor.tagListManager = parentEditor.tagListManager;
     //editor.QueryInterface(nsIEditorStyleSheets);
     try
     {
@@ -1331,7 +1413,7 @@ function SharedStartupForEditor(editorElement)
     //  we will observe just the bold command to trigger update of
     //  all toolbar style items
     commandManager.addCommandObserver(editorElement.mEditorDocumentObserver, "cmd_bold");
-//    msiDumpWithID("In SharedStartupForEditor for editor [@], got through adding CommandObservers.\n", editorElement);
+    msiDumpWithID("In SharedStartupForEditor for editor [@], got through adding CommandObservers.\n", editorElement);
 
     if ("mInitialDocObserver" in editorElement && editorElement.mInitialDocObserver != null)
     {
