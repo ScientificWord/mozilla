@@ -42,7 +42,7 @@
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-  <!-- script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/ -->
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
 
   <!-- Scripts specific to this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEdReplace.js"/>
@@ -110,7 +110,7 @@
             <label value="&replaceField.label;" accesskey="&replaceField.accesskey;" control="dialog.replaceInput"/>
             <!-- textbox id="dialog.replaceInput" oninput="doEnabling();"/ -->
             <groupbox>
-              <editor editortype="html" context="msiEditorContentContext" id="replaceInput" flex="1" height="60" width="250"/>
+              <editor editortype="html" type="content" context="msiEditorContentContext" id="replaceInput" flex="1" height="60" width="250"/>
             </groupbox>
           </row>
           <row align="start">
