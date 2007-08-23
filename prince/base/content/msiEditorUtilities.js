@@ -1253,21 +1253,21 @@ function msiGetDocumentHead(theEditor)
   return docHead;
 }
 
-function msiGetRealBodyElement(document)
+function msiGetRealBodyElement(theDocument)
 {
   var theElement = null;
   var targetTag = "body";
   var theNodes = null;
-  if (!document.rootElement)
+  if (!theDocument.rootElement)
   {
     dump("No rootElement for document in msiGetRealBodyElement!\n");
-    theNodes = document.getElementsByTagName(targetTag);
+    theNodes = theDocument.getElementsByTagName(targetTag);
   }
   else
   {
-    if (document.rootElement.nodeName == "body")
-      return document.rootElement;
-    theNodes = document.rootElement.getElementsByTagName(targetTag);
+    if (theDocument.rootElement.nodeName == "body")
+      return theDocument.rootElement;
+    theNodes = theDocument.rootElement.getElementsByTagName(targetTag);
   }
   if (theNodes.length > 0)
   {
@@ -1283,7 +1283,7 @@ function msiGetRealBodyElement(document)
       theElement = theNodes[0];
   }
   else
-    theElement = document.rootElement;
+    theElement = theDocument.rootElement;
   return theElement;
 }
 
@@ -1409,19 +1409,25 @@ function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, po
     endNode = preNode;
     endOffset = preOffset;
   }
+  if (startOffset > startNode.childNodes.length)
+    startOffset = startNode.childNodes.length;
   if (startOffset > 0 && startNode.childNodes.length > startOffset)
   {
     startNode = startNode.childNodes[startOffset];
     startOffset = 0;
   }
+  if (endOffset > endNode.childNodes.length)
+    endOffset = endNode.childNodes.length;
   if (endOffset > 0 && endNode.childNodes.length > endOffset)
   {
     endNode = endNode.childNodes[endOffset];
     endOffset = endNode.childNodes.length;
   }
   var theRange = document.createRange();
-  theRange.setStart(preNode, preOffset);
-  theRange.setEnd(postNode, postOffset);
+//  theRange.setStart(preNode, preOffset);
+//  theRange.setEnd(postNode, postOffset);
+  theRange.setStart(startNode, startOffset);
+  theRange.setEnd(endNode, endOffset);
   var rootNode = theRange.commonAncestorContainer;
   theRange.detach();
   
