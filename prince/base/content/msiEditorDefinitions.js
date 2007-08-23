@@ -13,6 +13,7 @@ const nsIHTMLEditor = Components.interfaces.nsIHTMLEditor;
 const nsITableEditor = Components.interfaces.nsITableEditor;
 const nsIEditorStyleSheets = Components.interfaces.nsIEditorStyleSheets;
 const nsIEditingSession = Components.interfaces.nsIEditingSession;
+const nsIDOMNode = Components.interfaces.nsIDOMNode;
 
 const kDisplayModeNormal = 0;
 const kDisplayModeAllTags = 1;
