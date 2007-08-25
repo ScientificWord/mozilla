@@ -131,6 +131,7 @@
 #include "nsIWidget.h"
 #include "nsIParserService.h"
 #include "msiTagListManager.h"
+#include "msiKeyMap.h"
 
 // Some utilities to handle annoying overloading of "A" tag for link and named anchor
 static char hrefText[] = "href";
@@ -175,6 +176,7 @@ nsHTMLEditor::nsHTMLEditor()
   manager = new msiTagListManager;
   manager->SetEditor(this);
   mtagListManager = do_QueryInterface(manager);
+  mKeyMap = do_QueryInterface(new msiKeyMap);
 } 
 
 nsHTMLEditor::~nsHTMLEditor()
