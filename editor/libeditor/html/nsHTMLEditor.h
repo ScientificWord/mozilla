@@ -75,6 +75,7 @@
 #include "nsPoint.h"
 // New XML tag stuff
 #include "msiTagListManager.h"
+#include "msiIKeyMap.h"
 
 class nsIDOMKeyEvent;
 class nsITransferable;
@@ -794,6 +795,8 @@ protected:
   nsCOMPtr<nsIDOMNode> mCachedNode;
   //TagListManager
   nsCOMPtr<msiITagListManager> mtagListManager;
+  //KeyMaps
+  nsCOMPtr<msiIKeyMap> mKeyMap;
 
   PRPackedBool mCRInParagraphCreatesParagraph;
 
