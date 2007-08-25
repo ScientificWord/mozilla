@@ -80,6 +80,7 @@ CPPSRCS		=                           \
 		nsEditorUtils.cpp           \
 		nsSelectionState.cpp        \
 		msiTagListManager.cpp       \
+		msiKeyMap.cpp				\
 		$(NULL)
 
 # Transactions: we'd like to split these off,
