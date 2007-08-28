@@ -82,5 +82,6 @@ const kEditorToolbarPrefs = "editor.toolbars.showbutton.";
 const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const mmlns    = "http://www.w3.org/1998/Math/MathML";
 const xhtmlns  = "http://www.w3.org/1999/xhtml";
+const sciwordns = "http://www.sciword.com/namespaces/sciword";
 
 const MSI_EXTENSION = "sci";
