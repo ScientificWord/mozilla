@@ -200,7 +200,7 @@ function msiDialogEditorContentFilter(anEditorElement)
 
   this.dlgNodeFilter = function(aNode)
   {
-    var nodename = aNode.nodeMame;
+    var nodename = aNode.nodeName;
     var namespaceAtom = null;
     if (aNode.namespaceURI != null)
       namespaceAtom = this.mAtomService.getAtom(aNode.namespaceURI);
@@ -225,19 +225,10 @@ function msiDialogEditorContentFilter(anEditorElement)
           return this.acceptAll;
       break;
     }
-    var fulltagStr = "";
-    if (aNode.namespaceURI != null)
-      fulltagStr += aNode.namespaceURI;
-    fulltagStr += aNode.nodeName;
-    switch( fulltagStr )
-    {
-      case "sw:dialogbase":
-        return this.skip;
-      break;
-    }
     switch(aNode.nodeName)
     {
       case "dialogbase":
+      case "sw:dialogbase":
         return this.skip;
       break;
     }
@@ -246,66 +237,97 @@ function msiDialogEditorContentFilter(anEditorElement)
     //Examples may include field tags, list tags, etc.; the point being that one may occur as the parent of something like a
     //  sw:dialogbase paragraph. Not implemented that way at this point.  rwa, 8-
   };
-  this.getXMLNodesForParent = function(parentNode)
+  this.getXMLNodesForParent = function(newParent, parentNode)
   {
-    var theNodes = new Array();
     for (var ix = 0; ix < parentNode.childNodes.length; ++ix)
     {
       switch( this.dlgNodeFilter(parentNode.childNodes[ix]) )
       {
         case this.acceptAll:
-          theNodes.push( parentNode.childNodes[ix].cloneNode(true) );
+          newParent.appendChild( parentNode.childNodes[ix].cloneNode(true) );
         break;
         case this.skip:
-          theNodes = theNodes.concat( this.getXMLNodesForParent(parentNode.childNodes[ix]) );
+          this.getXMLNodesForParent( newParent, parentNode.childNodes[ix] );
         break;
         case this.accept:
         {
           var aNewNode = parentNode.childNodes[ix].cloneNode(false);
-          var childList = this.getXMLNodesForParent( parentNode.childNodes[ix] );
-          for (var jx = 0; jx < childList.length; ++jx)
-            aNewNode.appendChild( childList[jx] );
-          theNodes.push( aNewNode );
+          this.getXMLNodesForParent( aNewNode, parentNode.childNodes[ix] );
+          newParent.appendChild( aNewNode );
         }
         break;
         case this.reject:
         break;
       }
     }
-    return theNodes;
   };
-  this.getXMLNodes = function()
+  this.getXMLNodesAsDocFragment = function()
   {
-    var nodeList = new Array();
+    var docFragment = null;
     var doc = this.mEditorElement.contentDocument;
     var editor = msiGetEditor(this.mEditorElement);
     if (doc != null)
     {
+      docFragment = doc.createDocumentFragment();
       var rootNode = msiGetRealBodyElement(doc);
-      nodeList = this.getXMLNodesForParent( rootNode );
-//      for (var ix = 0; ix < rootNode.childNodes.length; ++ix)
-//      {
-//      var treeWalker = doc.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT, this.dlgNodeFilter, true);
-//      if (treeWalker)
-//      {
-//        var nextNode = treeWalker.nextNode();
-//        while (nextNode)
-//        {
-//          nodeList.push(nextNode.cloneNode(false));
-//          nextNode = treeWalker.nextNode();
-//        }
-//      }
+      this.getXMLNodesForParent( docFragment, rootNode );
     }
-    var dumpStr = "In msiDialogEditorContentFilter.getXMLNodes, returning a nodeList containing: [";
-    for (var ix = 0; ix < nodeList.length; ++ix)
-    {
-      if (ix > 0)
-        dumpStr += ", " + nodeList[ix].nodeName;
-      else
-        dumpStr += nodeList[ix].nodeName;
-    }
+    this.checkForTrailingBreak(docFragment);
+    var dumpStr = "In msiDialogEditorContentFilter.getXMLNodes, returning a docFragment containing: [";
+    for (var ix = 0; ix < docFragment.childNodes.length; ++ix)
+      dumpStr += this.mXmlSerializer.serializeToString(docFragment.childNodes[ix]);
     dump(dumpStr + "] for editorElement [" + this.mEditorElement.id + "].\n");
-    return nodeList;
+    return docFragment;
+  };
+  this.nodeHasRealContent = function(parentElement, bIsLast)
+  {
+    var bFoundContent = false;
+    if (parentElement != null)
+    {
+      for (var ix = 0; (!bFoundContent) && (ix < parentElement.childNodes.length); ++ix)
+      {
+        switch( this.dlgNodeFilter(parentElement.childNodes[ix]) )
+        {
+          case this.skip:
+            bFoundContent = this.nodeHasRealContent( parentElement.childNodes[ix], (bIsLast && (ix==parentElement.childNodes.length - 1)) );
+          break;
+          case this.acceptAll:
+          case this.accept:
+            if (bIsLast && (ix == parentElement.childNodes.length - 1))
+              bFoundContent = (parentElement.childNodes[ix].nodeName != "br");
+            else
+              bFoundContent = true;
+          break;
+          case this.reject:
+          break;
+        }
+      }
+      return bFoundContent;
+    }
+  };
+  this.isNonEmpty = function()
+  {
+    var parentElement = null;
+    var doc = this.mEditorElement.contentDocument;
+    if (doc != null)
+      parentElement = msiGetRealBodyElement(doc);
+    return this.nodeHasRealContent( parentElement, true );
+  };
+  this.checkForTrailingBreak = function(parentNode)
+  {
+    var lastNode = parentNode.lastChild;
+    if (lastNode != null && lastNode != parentNode)
+    {
+      if (lastNode.nodeName == "br")
+        parentNode.removeChild(lastNode);
+      else if (lastNode.nodeType == nsIDOMNode.TEXT_NODE)
+      {
+        if (this.mDOMUtils.isIgnorableWhitespace(lastNode))
+          parentNode.removeChild(lastNode);
+      }
+      else
+        this.checkForTrailingBreak(lastNode);
+    }
   };
   this.getContentsAsRange = function()
   {
@@ -327,13 +349,48 @@ function msiDialogEditorContentFilter(anEditorElement)
         initialParaNode = initialParaList[0];
       else
         initialParaNode = rootNode.childNodes[0];
+      var startNode = null;
+      if (initialParaNode.childNodes.length)
+        startNode = initialParaNode.childNodes[0];
       var docRangeObj = doc.QueryInterface(Components.interfaces.nsIDOMDocumentRange);
       theRange = docRangeObj.createRange();
-      theRange.setStart(initialParaNode, 0);
+      theRange.setStart(startNode, 0);
       var lastNode = rootNode.childNodes[rootNode.childNodes.length - 1];
-      theRange.setEndAfter(lastNode);
+      var trailingBreak = this.findTrailingWhiteSpace(rootNode);
+      if (trailingBreak != null)
+        theRange.setEndBefore(trailingBreak);
+      else
+        theRange.setEndAfter(lastNode);
+    }
+    if (theRange != null)
+    {
+      dump("In msiEdReplace.js, msiDialogEditorContentFilter.getContentsAsRange for editor element [" + this.mEditorElement.id + "], start of range is at [" + theRange.startContainer.nodeName + ", " + theRange.startOffset + "], while end is at [" + theRange.endContainer.nodeName + ", " + theRange.endOffset + "].\n");
+      var topChildrenStr = "";
+      if (rootNode.childNodes.length > 0)
+        topChildrenStr = rootNode.childNodes[0].nodeName;
+      for (var ix = 1; ix < rootNode.childNodes.length; ++ix)
+        topChildrenStr += ", " + rootNode.childNodes[ix].nodeName;
+      dump("  [Note: the rootNode is [" + rootNode.nodeName + "], with child nodes [" + topChildrenStr + "].]\n");
     }
     return theRange;
+  };
+  this.findTrailingWhiteSpace = function(parentNode)
+  {
+    var spaceNode = null;
+    if (parentNode.nodeName == "br")
+      spaceNode = parentNode;
+    else if (parentNode.nodeType == nsIDOMNode.TEXT_NODE)
+    {
+      if (this.mDOMUtils.isIgnorableWhitespace(parentNode))
+        spaceNode = parentNode;
+    }
+    else if (parentNode.childNodes && parentNode.childNodes.length > 0)
+    {
+      var lastNode = parentNode.childNodes[parentNode.childNodes.length - 1];
+      if (lastNode != parentNode)
+        spaceNode = this.findTrailingWhiteSpace(lastNode);
+    }
+    return spaceNode;
   };
   this.getContentsAsDocumentFragment = function()
   {
@@ -349,19 +406,23 @@ function msiDialogEditorContentFilter(anEditorElement)
   this.getDocumentFragmentString = function()
   {
     var theString = "";
-    var theRange = this.getContentsAsRange();
-    if (theRange != null)
-      theString = theRange.toString();
+    var theFragment = this.getContentsAsDocumentFragment();
+    if (theFragment != null)
+    {
+      for (var ix = 0; ix < theFragment.childNodes.length; ++ix)
+        theString += this.mXmlSerializer.serializeToString(theFragment.childNodes[ix]);
+    }
+    dump("In msiDialogEditorContentFilter.getDocumentFragmentString, returning [" + theString + "] for editorElement [" + this.mEditorElement.id + "].\n");
     return theString;
   };
   this.getMarkupString = function()
   {
     var theString = "";
-    var nodeList = this.getXMLNodes();
-    if (nodeList != null)
+    var docFragment = this.getXMLNodesAsDocFragment();
+    if (docFragment != null)
     {
-      for (var ix = 0; ix < nodeList.length; ++ix)
-        theString += this.mXmlSerializer.serializeToString(nodeList[ix]);
+      for (var ix = 0; ix < docFragment.childNodes.length; ++ix)
+        theString += this.mXmlSerializer.serializeToString(docFragment.childNodes[ix]);
     }
     dump("In msiDialogEditorContentFilter.getMarkupString, returning [" + theString + "] for editorElement [" + this.mEditorElement.id + "].\n");
     return theString;
@@ -370,8 +431,17 @@ function msiDialogEditorContentFilter(anEditorElement)
   {
     var theFragment = this.getContentsAsDocumentFragment();
     if (theFragment != null)
+    {
+      dump("In msiDialogEditorContentFilter.getTextString, returning [" + theFragment.textContent + "] for editorElement [" + this.mEditorElement.id + "].\n");
       return theFragment.textContent;
+    }
+    dump("In msiDialogEditorContentFilter.getTextString, returning [] for editorElement [" + this.mEditorElement.id + "].\n");
     return "";
+  };
+  this.hasTextContent = function()
+  {
+    var str = this.getTextString();
+    return ( (str != null) && (str.length > 0) );
   };
 }
 
@@ -482,13 +552,19 @@ function onReplace()
 //  var serializer = new XMLSerializer();
 //  var replStr = serializer.serializeToString(gReplaceDialog.replaceInput.contentDocument.documentElement);
 //  var replStr = getStringFromEditor(gReplaceDialog.replaceInput);
-//  var replNodes = gReplaceDialog.replaceContentFilter.getXMLNodes();
-  var replFrag = gReplaceDialog.replaceContentFilter.getContentsAsDocumentFragment();
+//  var replNodes = gReplaceDialog.replaceContentFilter.getXMLNodesAsDocFragment();
+//rwa  var replFrag = gReplaceDialog.replaceContentFilter.getContentsAsDocumentFragment();
+//  var replString = gReplaceDialog.replaceContentFilter.getDocumentFragmentString();
+  var replString = gReplaceDialog.replaceContentFilter.getMarkupString();
 
 //rwa  if (replStr == "")
     gEditor.deleteSelection(0);
-  if (replFrag != null)
-    insertXMLNodesAtCursor(gEditor, replFrag.childNodes, true);
+  if (replString != null && replString.length > 0)
+  {
+    dump("In msiEdReplace.onReplace(), inserting HTML [" + replString + "].\n");
+    gEditor.insertHTMLWithContext(replString, null, null, "text/html", null,null,0,true);
+  }
+//rwa    insertXMLNodesAtCursor(gEditor, replFrag.childNodes, true);
 //rwa    insertXMLNodesAtCursor(gEditor, replNodes, true);
 //rwa  else
 //rwa    insertXMLAtCursor(gEditor, replStr, bIsSinglePara, true);
@@ -526,8 +602,10 @@ function onReplaceAll()
     gReplaceDialog.replaceContentFilter = new msiDialogEditorContentFilter(gReplaceDialog.replaceInput);
 
 //  var repStr = getStringFromEditor(gReplaceDialog.replaceInput);
-//  var repNodes = gReplaceDialog.replaceContentFilter.getXMLNodes();
-  var repFrag = gReplaceDialog.replaceContentFilter.getContentsAsDocumentFragment();
+//  var repNodes = gReplaceDialog.replaceContentFilter.getXMLNodesAsDocFragment();
+//rwa  var repFrag = gReplaceDialog.replaceContentFilter.getContentsAsDocumentFragment();
+//  var repString = gReplaceDialog.replaceContentFilter.getDocumentFragmentString();
+  var repString = gReplaceDialog.replaceContentFilter.getMarkupString();
 //  var repStr = gReplaceDialog.replaceInput.value;
 
   var finder = Components.classes["@mozilla.org/embedcomp/rangefind;1"].createInstance().QueryInterface(Components.interfaces.nsIFind);
@@ -595,8 +673,10 @@ function onReplaceAll()
 //rwa        gEditor.insertHTML(repStr);
 //rwa      else
 //rwa        gEditor.insertText(repStr);
-        if (repFrag != null)
-          insertXMLNodesAtCursor(gEditor, repFrag.childNodes, true);
+      if (replString != null && replString.length > 0)
+        gEditor.insertHTMLWithContext(replString, null, null, "text/html", null,null,0,true);
+//rwa        if (repFrag != null)
+//rwa          insertXMLNodesAtCursor(gEditor, repFrag.childNodes, true);
 //rwa        insertXMLNodesAtCursor(gEditor, replNodes, true);
 
       // If we're going forward, we didn't save selecRange before, so do it now:
