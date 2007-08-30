@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<tables>
+
+<!-- assignment of function keys to macros, mostly tag selection macros 
+  Note: names are names of keys, not characters. The full name is gotten by prepending 'DOM_VK_', so
+  the first key is DOM_VK_F1. -->
+
+  <keytable id="functionkeys" name="FKeys" keycount="20" keytype="script">
+    <key name="F1" vk="1" reserved="1"/>
+    <key name="F4" alt="1"  vk="1" reserved="1"/>
+	  <key name="F10" reserved="1"/>
+	  <key name="F3" vk="1" >msiDoStatefulCommand('cmd_paratag', 'para');</key>
+	  <key name="F4" vk="1" >msiDoStatefulCommand('cmd_texttag','(normal)');</key>
+	  <key name="F5" vk="1" >msiDoStatefulCommand('cmd_texttag','bold');</key>
+	  <key name="F6" vk="1" >msiDoStatefulCommand('cmd_texttag','em');</key>
+	  <key name="F9" vk="1" >msiDoStatefulCommand('cmd_texttag','tt');</key>
+	  <key name="F11" vk="1" >msiDoStatefulCommand('cmd_structtag', 'section');</key>
+	  <key name="F12" vk="1" >msiDoStatefulCommand('cmd_structtag', 'subsection');</key>
+  </keytable>
+
+<!-- layout of the Greek keyboard -->
+
+  <keytable name="greek" keycount="50" keytype="char">
+    <key name="g">&#x03B3;</key>
+    <key name="G">&#x0393;</key>
+  </keytable>
+
+<!-- layout of the Symbol keyboard -->
+
+  <keytable name="symbol" keycount="50" keytype="char">
+  </keytable>  
+
+</tables>
