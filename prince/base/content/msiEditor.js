@@ -728,6 +728,15 @@ function msiEditorDocumentObserver(editorElement)
             editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
             dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
           } catch(e) { dump("Error formatting style sheet using msiColorObj: [" + e + "]\n"); }
+          // Now is a good time to initialize the key mapping. This is a service, and so is initialized only one. Later
+          // initializations will not do anything
+          var keymapper;
+          try {
+            keymapper =  Components.classes["@mackichan.com/keymap/keymap_service;1"]
+                                 .createInstance(Components.interfaces.msiIKeyMap);
+            keymapper.loadKeyMapFile("resource://app/res/tagdefs/keytables.xml");
+          }
+          catch(e) { dump("Failed to load keytables.xml -- "+e); }
         }
 
         var is_topLevel = msiIsTopLevelEditor(this.mEditorElement);
