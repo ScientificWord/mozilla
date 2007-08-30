@@ -190,6 +190,7 @@ tier_9_dirs	+= \
 		modules/plugin \
 		dom \
 		prince/scriptrunner \
+		prince/keymap \
 		view \
 		widget \
 		content \
