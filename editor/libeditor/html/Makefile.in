@@ -63,6 +63,8 @@ REQUIRES	= xpcom \
 		  widget \
 		  view \
 		  webshell \
+		  scriptrunner \
+		  keymap \
 		  $(NULL)
 
 # Building the full blown HTML Editor  so add its source files and objects:
