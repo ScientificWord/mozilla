@@ -131,7 +131,8 @@
 #include "nsIWidget.h"
 #include "nsIParserService.h"
 #include "msiTagListManager.h"
-#include "msiKeyMap.h"
+#include "msiIKeyMap.h"
+#include "msiIScriptRunner.h"
 
 // Some utilities to handle annoying overloading of "A" tag for link and named anchor
 static char hrefText[] = "href";
@@ -170,13 +171,15 @@ nsHTMLEditor::nsHTMLEditor()
 , mSnapToGridEnabled(PR_FALSE)
 , mIsInlineTableEditingEnabled(PR_TRUE)
 , mGridSize(0)
+, m_fOneShot(PR_FALSE)
 {
   mHTMLCSSUtils = nsnull;
   nsCOMPtr<msiTagListManager> manager;
   manager = new msiTagListManager;
   manager->SetEditor(this);
   mtagListManager = do_QueryInterface(manager);
-  mKeyMap = do_QueryInterface(new msiKeyMap);
+  nsresult result = CallGetService("@mackichan.com/keymap/keymap_service;1", NS_GET_IID(msiIKeyMap),
+                            (void**)&mKeyMap);
 } 
 
 nsHTMLEditor::~nsHTMLEditor()
@@ -355,6 +358,16 @@ nsHTMLEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,
 
   if (NS_FAILED(rulesRes)) return rulesRes;
   return result;
+}
+
+
+/* void setOneShotTranslation (in AString tablename); */
+NS_IMETHODIMP 
+nsHTMLEditor::SetOneShotTranslation(const nsAString & tablename)
+{
+  m_fOneShot = PR_TRUE;
+  m_oneShotName.Assign(tablename);
+  return NS_OK;
 }
 
 nsresult
@@ -1340,7 +1353,7 @@ nsHTMLEditor::UpdateBaseURL()
 NS_IMETHODIMP nsHTMLEditor::HandleKeyPress(nsIDOMKeyEvent* aKeyEvent)
 {
   PRUint32 keyCode, character;
-  PRBool   isShift, ctrlKey, altKey, metaKey;
+  PRBool   isShift, ctrlKey, altKey, metaKey, vk;
   nsresult res;
 
   if (!aKeyEvent) return NS_ERROR_NULL_POINTER;
@@ -1421,16 +1434,89 @@ NS_IMETHODIMP nsHTMLEditor::HandleKeyPress(nsIDOMKeyEvent* aKeyEvent)
       nsString empty;
       return TypedText(empty, eTypedText);
     }
-    
+  }  
     // if we got here we either fell out of the tab case or have a normal character.
     // Either way, treat as normal character.
-    if (character && !altKey && !ctrlKey && !metaKey)
+    
+    // Check for mapped characters -- function keys or one-shot mapping
+    
+  if (mKeyMap)
+  {
+    nsAutoString mapName;
+    nsAutoString script;
+    nsAutoString error;
+    PRUint16 mapType;
+    PRUint32 newCharCode;
+    PRBool fExists = PR_FALSE;
+    PRBool reserved = PR_FALSE;
+    if (m_fOneShot)
     {
-      aKeyEvent->PreventDefault();
-      nsAutoString key(character);
-      return TypedText(key, eTypedText);
+      res = mKeyMap->MapExists(m_oneShotName, &mapType, &fExists );
+      if (fExists) mapName.Assign(m_oneShotName);
+      m_fOneShot = PR_FALSE;
     }
+    else if ((keyCode >= nsIDOMKeyEvent::DOM_VK_F1) && (keyCode <= nsIDOMKeyEvent::DOM_VK_F24))
+    {
+      nsAutoString FkeyStr;
+      FkeyStr = NS_LITERAL_STRING("FKeys");
+      res = mKeyMap->MapExists(FkeyStr, &mapType, &fExists );
+      if (fExists)
+        mapName.Assign(FkeyStr);
+    }
+    if (fExists)
+    {
+      PRUint32 code;
+      if (keyCode == 0)
+      {
+        code = character;
+        vk = PR_FALSE;
+        isShift = PR_FALSE;
+      }
+      else
+      {
+        code = keyCode;
+        vk = PR_TRUE;
+      }
+      if (mapType == msiIKeyMap::CHARACTER) {
+        res = mKeyMap->MapKeyToCharacter( mapName, code, altKey, ctrlKey, isShift, metaKey, vk, &reserved, &newCharCode );
+        if (!reserved)
+        {
+          aKeyEvent->PreventDefault();
+          if (!newCharCode) return NS_ERROR_UNEXPECTED;
+          nsAutoString key(newCharCode);
+          return TypedText(key, eTypedText);
+        }
+      }
+      else
+      {
+        res = mKeyMap->MapKeyToScript(mapName, code, altKey, ctrlKey, isShift, metaKey, vk, &reserved, script);
+        if (res == NS_OK)
+        {
+          if (!reserved)
+          {
+            nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
+            if (res == NS_OK)
+            {
+              sr->SetCtx(m_window);
+              sr->Eval(script, error);
+              if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
+              aKeyEvent->PreventDefault();
+              return NS_OK;
+            }
+          }
+          else printf("key %d is reserved\n", keyCode);
+        }  
+      }
+    }
+  }           
+    
+  if (character && !altKey && !ctrlKey && !metaKey)
+  {
+    aKeyEvent->PreventDefault();
+    nsAutoString key(character);
+    return TypedText(key, eTypedText);
   }
+
   return NS_ERROR_FAILURE;
 }
 
@@ -6246,3 +6332,4 @@ nsHTMLEditor::AddTagInfo( const nsAString & strPath )
   mtagListManager->AddTagInfo(strPath, &bresult);
   return NS_OK;
 }
+

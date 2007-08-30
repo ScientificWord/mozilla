@@ -31,6 +31,7 @@ REQUIRES = xpcom \
            txtsvc  \
            autosub \
 		   scriptrunner \
+		   keymap \
 		   $(NULL)
 
 
