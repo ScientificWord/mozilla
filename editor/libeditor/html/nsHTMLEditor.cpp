@@ -1438,77 +1438,77 @@ NS_IMETHODIMP nsHTMLEditor::HandleKeyPress(nsIDOMKeyEvent* aKeyEvent)
     // if we got here we either fell out of the tab case or have a normal character.
     // Either way, treat as normal character.
     
-    // Check for mapped characters -- function keys or one-shot mapping
-    
-  if (mKeyMap)
-  {
-    nsAutoString mapName;
-    nsAutoString script;
-    nsAutoString error;
-    PRUint16 mapType;
-    PRUint32 newCharCode;
-    PRBool fExists = PR_FALSE;
-    PRBool reserved = PR_FALSE;
-    if (m_fOneShot)
-    {
-      res = mKeyMap->MapExists(m_oneShotName, &mapType, &fExists );
-      if (fExists) mapName.Assign(m_oneShotName);
-      m_fOneShot = PR_FALSE;
-    }
-    else if ((keyCode >= nsIDOMKeyEvent::DOM_VK_F1) && (keyCode <= nsIDOMKeyEvent::DOM_VK_F24))
-    {
-      nsAutoString FkeyStr;
-      FkeyStr = NS_LITERAL_STRING("FKeys");
-      res = mKeyMap->MapExists(FkeyStr, &mapType, &fExists );
-      if (fExists)
-        mapName.Assign(FkeyStr);
-    }
-    if (fExists)
-    {
-      PRUint32 code;
-      if (keyCode == 0)
-      {
-        code = character;
-        vk = PR_FALSE;
-        isShift = PR_FALSE;
-      }
-      else
-      {
-        code = keyCode;
-        vk = PR_TRUE;
-      }
-      if (mapType == msiIKeyMap::CHARACTER) {
-        res = mKeyMap->MapKeyToCharacter( mapName, code, altKey, ctrlKey, isShift, metaKey, vk, &reserved, &newCharCode );
-        if (!reserved)
-        {
-          aKeyEvent->PreventDefault();
-          if (!newCharCode) return NS_ERROR_UNEXPECTED;
-          nsAutoString key(newCharCode);
-          return TypedText(key, eTypedText);
-        }
-      }
-      else
-      {
-        res = mKeyMap->MapKeyToScript(mapName, code, altKey, ctrlKey, isShift, metaKey, vk, &reserved, script);
-        if (res == NS_OK)
-        {
-          if (!reserved)
-          {
-            nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
-            if (res == NS_OK)
-            {
-              sr->SetCtx(m_window);
-              sr->Eval(script, error);
-              if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
-              aKeyEvent->PreventDefault();
-              return NS_OK;
-            }
-          }
-          else printf("key %d is reserved\n", keyCode);
-        }  
-      }
-    }
-  }           
+//     // Check for mapped characters -- function keys or one-shot mapping
+//   MOVED to msiEditor  
+//   if (mKeyMap)
+//   {
+//     nsAutoString mapName;
+//     nsAutoString script;
+//     nsAutoString error;
+//     PRUint16 mapType;
+//     PRUint32 newCharCode;
+//     PRBool fExists = PR_FALSE;
+//     PRBool reserved = PR_FALSE;
+//     if (m_fOneShot)
+//     {
+//       res = mKeyMap->MapExists(m_oneShotName, &mapType, &fExists );
+//       if (fExists) mapName.Assign(m_oneShotName);
+//       m_fOneShot = PR_FALSE;
+//     }
+//     else if ((keyCode >= nsIDOMKeyEvent::DOM_VK_F1) && (keyCode <= nsIDOMKeyEvent::DOM_VK_F24))
+//     {
+//       nsAutoString FkeyStr;
+//       FkeyStr = NS_LITERAL_STRING("FKeys");
+//       res = mKeyMap->MapExists(FkeyStr, &mapType, &fExists );
+//       if (fExists)
+//         mapName.Assign(FkeyStr);
+//     }
+//     if (fExists)
+//     {
+//       PRUint32 code;
+//       if (keyCode == 0)
+//       {
+//         code = character;
+//         vk = PR_FALSE;
+//         isShift = PR_FALSE;
+//       }
+//       else
+//       {
+//         code = keyCode;
+//         vk = PR_TRUE;
+//       }
+//       if (mapType == msiIKeyMap::CHARACTER) {
+//         res = mKeyMap->MapKeyToCharacter( mapName, code, altKey, ctrlKey, isShift, metaKey, vk, &reserved, &newCharCode );
+//         if (!reserved)
+//         {
+//           aKeyEvent->PreventDefault();
+//           if (!newCharCode) return NS_ERROR_UNEXPECTED;
+//           nsAutoString key(newCharCode);
+//           return TypedText(key, eTypedText);
+//         }
+//       }
+//       else
+//       {
+//         res = mKeyMap->MapKeyToScript(mapName, code, altKey, ctrlKey, isShift, metaKey, vk, &reserved, script);
+//         if (res == NS_OK)
+//         {
+//           if (!reserved)
+//           {
+//             nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
+//             if (res == NS_OK)
+//             {
+//               sr->SetCtx(m_window);
+//               sr->Eval(script, error);
+//               if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
+//               aKeyEvent->PreventDefault();
+//               return NS_OK;
+//             }
+//           }
+//           else printf("key %d is reserved\n", keyCode);
+//         }  
+//       }
+//     }
+//   }           
     
   if (character && !altKey && !ctrlKey && !metaKey)
   {
