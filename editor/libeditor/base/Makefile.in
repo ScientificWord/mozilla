@@ -49,6 +49,7 @@ LIBXUL_LIBRARY	= 1
 REQUIRES	= xpcom \
           autocomplete \
 		  autosub \
+		  keymap \
 		  string \
 		  dom \
 		  locale \
@@ -80,7 +81,6 @@ CPPSRCS		=                           \
 		nsEditorUtils.cpp           \
 		nsSelectionState.cpp        \
 		msiTagListManager.cpp       \
-		msiKeyMap.cpp				\
 		$(NULL)
 
 # Transactions: we'd like to split these off,

@@ -797,6 +797,8 @@ protected:
   nsCOMPtr<msiITagListManager> mtagListManager;
   //KeyMaps
   nsCOMPtr<msiIKeyMap> mKeyMap;
+  PRBool m_fOneShot;
+  nsAutoString m_oneShotName;
 
   PRPackedBool mCRInParagraphCreatesParagraph;
 
