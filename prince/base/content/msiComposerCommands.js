@@ -112,6 +112,8 @@ function msiSetupTextEditorCommands(editorElement)
   commandTable.registerCommand("cmd_validate",   msiValidateCommand);
   commandTable.registerCommand("cmd_checkLinks", msiCheckLinksCommand);
   commandTable.registerCommand("cmd_insertChars", msiInsertCharsCommand);
+  commandTable.registerCommand("cmd_oneshotGreek", msiOneShotGreek);
+  commandTable.registerCommand("cmd_oneshotSymbol", msiOneShotSymbol);
 }
 
 function msiSetupComposerWindowCommands(editorElement)
@@ -2934,6 +2936,57 @@ var msiPrintSetupCommand =
     NSPrintSetup();
   }
 };
+
+//-----------------------------------------------------------------------------------
+var msiOneShotGreek =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+    
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+  },
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+//    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+//    htmleditor
+    editor.setOneShotTranslation("greek");  
+  }
+};
+
+//-----------------------------------------------------------------------------------
+var msiOneShotSymbol =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+    
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+  },
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+    htmleditor.setOneShotTranslation("symbol");  
+  }
+};
+
+
 
 //-----------------------------------------------------------------------------------
 //msiQuitCommand not even implemented - the comments in the original nsQuitCommand remain relevant, and it's left alone.
