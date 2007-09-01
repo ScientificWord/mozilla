@@ -287,6 +287,7 @@ function msiEditorArrayInitializer()
     }
     anEditorElement.mEditorSeqInitializer = null;
     ++editorIndex;
+//    dump( "In msiEditorArrayInitializer.finishedEditor for editor [" + anEditorElement.id + "]; moving on to editor number" + editorIndex + "].\n" );
     this.initializeNextEditor(editorIndex);
   };
   this.findEditorInfo = function(anEditorElement)
@@ -319,9 +320,12 @@ function msiEditorArrayInitializer()
     if (nFound >= 0)
     {
       var theEditorElement = this.mInfoList[nFound].mEditorElement;
+//      msiDumpWithID("In msiEditorArrayInitializer.initializeNextEditor, about to initialize editor [@].", theEditorElement);
 //      theEditorElement.mEditorSeqInitializer = this;  should we set this only for one at a time, or when we add the item? Try the latter for now.
       msiInitializeEditorForElement(theEditorElement, this.mInfoList[nFound].mInitialText, this.mInfoList[nFound].mbWithContainingHTML);
     }
+//    else
+//      dump("In msiEditorArrayInitializer.initializeNextEditor, found no next editor to initialize.\n");
   };
 }
 
@@ -713,14 +717,6 @@ function msiEditorDocumentObserver(editorElement)
         if (!("InsertCharWindow" in window))
           window.InsertCharWindow = null;
 
-        var bIsRealDocument = false;
-        var currentURL = msiGetEditorURL(this.mEditorElement);
-        if (currentURL != null)
-        {
-          var fileName = GetFilename(currentURL);
-          bIsRealDocument = (fileName != null && fileName.length > 0);
-        }
-
         if (msiIsHTMLEditor(this.mEditorElement))
         {
           editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
@@ -749,31 +745,41 @@ function msiEditorDocumentObserver(editorElement)
             msiDumpWithID("No parent editor element for editorElement [@] found in documentCreated observer!", this.mEditorElement);
         }
 
+        var bIsRealDocument = false;
+        var currentURL = msiGetEditorURL(this.mEditorElement);
+        msiDumpWithID("For editor element [@], currentURL is " + currentURL + "].\n", this.mEditorElement);
+        if (currentURL != null)
+        {
+          var fileName = GetFilename(currentURL);
+          bIsRealDocument = (fileName != null && fileName.length > 0);
+        }
+
         try {
           editor.QueryInterface(nsIEditorStyleSheets);
 
           //  and extra styles for showing anchors, table borders, smileys, etc
           editor.addOverrideStyleSheet(kNormalStyleSheet);
-          if (this.mEditorElement.mgMathStyleSheet != null)
-            editor.addOverrideStyleSheet(this.mEditorElement.mgMathStyleSheet);
-          else
-            editor.addOverrideStyleSheet(gMathStyleSheet);
           if (bIsRealDocument && this.mbAddOverrideStyleSheets && this.mEditorElement.overrideStyleSheets && this.mEditorElement.overrideStyleSheets != null)
           {
             for (var ix = 0; ix < this.mEditorElement.overrideStyleSheets.length; ++ix)
             {
-              msiDumpWithID("Adding override style sheet [" + this.mEditorElement.overrideStyleSheets[ix] + "] for editor [@].\n", this.mEditorElement);
+//              msiDumpWithID("Adding override style sheet [" + this.mEditorElement.overrideStyleSheets[ix] + "] for editor [@].\n", this.mEditorElement);
 //              dump("Adding override style sheet [" + editorElement.overrideStyleSheets[ix] + "] for editor [" + editorElement.id + "].\n");
               editor.addOverrideStyleSheet(this.mEditorElement.overrideStyleSheets[ix]);
             }
           }
           this.mbAddOverrideStyleSheets = false;
+          if (this.mEditorElement.mgMathStyleSheet != null)
+            editor.addOverrideStyleSheet(this.mEditorElement.mgMathStyleSheet);
+          else
+            editor.addOverrideStyleSheet(gMathStyleSheet);
         } catch (e) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding overrideStyleSheets: " + e);}
 
         this.doInitFastCursor();
         if ("UpdateWindowTitle" in window)
           UpdateWindowTitle();
         // Add mouse click watcher if right type of editor
+//        msiDumpWithID("About to enter 'if msiIsHTMLEditor' clause in msiEditorDocumentObserver obs_documentCreated for editor [@].\n", this.mEditorElement);
         if (msiIsHTMLEditor(this.mEditorElement))
         {
           addClickEventListenerForEditor(this.mEditorElement);
@@ -816,23 +822,26 @@ function msiEditorDocumentObserver(editorElement)
           catch (exc) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, showing invisibles: " + exc + "\n");}
         }
 
+//        msiDumpWithID("About to check for mbInsertInitialContents in msiEditorDocumentObserver obs_documentCreated for editor [@].\n", this.mEditorElement);
         if (bIsRealDocument && this.mbInsertInitialContents && ("initialEditorContents" in this.mEditorElement) && (this.mEditorElement.initialEditorContents != null)
                        && (this.mEditorElement.initialEditorContents.length > 0))
         {
           try
           {
-            msiDumpWithID("Adding initial contents for editorElement [@]; contents are [" + this.mEditorElement.initialEditorContents + "].\n", this.mEditorElement);
+//            msiDumpWithID("Adding initial contents for editorElement [@]; contents are [" + this.mEditorElement.initialEditorContents + "].\n", this.mEditorElement);
             var htmlEditor = this.mEditorElement.getHTMLEditor(this.mEditorElement.contentWindow);
             var bIsSinglePara = true;
             if (this.mEditorElement.mbInitialContentsMultiPara)
               bIsSinglePara = false;
   //          htmlEditor.insertHTML(editorElement.initialEditorContents);
+//              htmlEditor.insertHTMLWithContext(this.mEditorElement.mInitialEditorContents, null, null, "text/html", null,null,0,true);
             if (insertXMLAtCursor(htmlEditor, this.mEditorElement.initialEditorContents, bIsSinglePara, true))
               this.mbInsertInitialContents = false;
           }
           catch (exc) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding initialContents: " + exc + "\n");}
         }
 //        --this.mDumpMessage;
+//        msiDumpWithID("About to check for mInitialEditorObserver in msiEditorDocumentObserver obs_documentCreated for editor [@].\n", this.mEditorElement);
         if (bIsRealDocument && ("mInitialEditorObserver" in this.mEditorElement) && (this.mEditorElement.mInitialEditorObserver != null))
         {
           var editorStr = "non-null";
@@ -849,6 +858,14 @@ function msiEditorDocumentObserver(editorElement)
           }    
           catch (exc) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding initialEditorObserver: " + exc);}
         }
+//        var extraDumpStr = "  bIsRealDocument is ";
+//        if (bIsRealDocument)
+//          extraDumpStr += "true, and mEditorSeqInitializer is [";
+//        else
+//          extraDumpStr += "false, and mEditorSeqInitializer is [";
+//        extraDumpStr += this.mEditorElement.mEditorSeqInitializer;
+//        dump(extraDumpStr + "].\n");
+//        msiDumpWithID("About to check for mEditorSeqInitializer in msiEditorDocumentObserver obs_documentCreated for editor [@].\n", this.mEditorElement);
         if (bIsRealDocument && ("mEditorSeqInitializer" in this.mEditorElement) && (this.mEditorElement.mEditorSeqInitializer != null))
         {
           this.mEditorElement.mEditorSeqInitializer.finishedEditor(this.mEditorElement);
@@ -981,7 +998,7 @@ function EditorStartupForEditorElement(editorElement)
     }
   }
 
-  msiDumpWithID("Just before loading Shell URL in EditorStartupForEditorElement, for editorElement [@]; docShell is currently [" + editorElement.docShell + "].\n", editorElement);
+//  msiDumpWithID("Just before loading Shell URL in EditorStartupForEditorElement, for editorElement [@]; docShell is currently [" + editorElement.docShell + "].\n", editorElement);
   msiLoadInitialDocument(editorElement, is_topLevel);
 //  else
 //  {
@@ -1013,7 +1030,8 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     if (theArgs)
     {
       docname = document.getElementById("args").getAttribute("value");
-      if (docname.indexOf("file://") == 0) docname = GetFilepath(docname);
+      if ( (docname.indexOf("file://") == 0) || (docname.indexOf("about:") == 0) )
+        docname = GetFilepath(docname);
   // for Windows
 #ifdef XP_WIN32
       docname = docname.replace("/","\\","g");
@@ -1345,7 +1363,7 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
 {
 
   var parentEditor = msiGetEditor(parentEditorElement);
-  msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editorElement [@], parentEditor is [" + parentEditor + "].\n", editorElement);
+//  msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editorElement [@], parentEditor is [" + parentEditor + "].\n", editorElement);
   if (parentEditor)
   {
     var editor = msiGetEditor(editorElement);
@@ -1364,7 +1382,7 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
       for (var ix = 0; ix < parentSheets.length; ++ix)
       {
         editorElement.overrideStyleSheets.push( parentSheets.item(ix).href );  //parentSheets.item(ix) is an nsIDOMStyleSheet, supposedly.
-        msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editor [@], adding parent style sheet href = [" + parentSheets.item(ix).href + "].\n", editorElement);
+//        msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editor [@], adding parent style sheet href = [" + parentSheets.item(ix).href + "].\n", editorElement);
       }
     }
     catch(exc) { msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editor [@], unable to access parent style sheets: [" + exc + "].\n", editorElement); }
@@ -1422,7 +1440,7 @@ function SharedStartupForEditor(editorElement)
     //  we will observe just the bold command to trigger update of
     //  all toolbar style items
     commandManager.addCommandObserver(editorElement.mEditorDocumentObserver, "cmd_bold");
-    msiDumpWithID("In SharedStartupForEditor for editor [@], got through adding CommandObservers.\n", editorElement);
+//    msiDumpWithID("In SharedStartupForEditor for editor [@], got through adding CommandObservers.\n", editorElement);
 
     if ("mInitialDocObserver" in editorElement && editorElement.mInitialDocObserver != null)
     {
@@ -1430,7 +1448,7 @@ function SharedStartupForEditor(editorElement)
       {
         if (("bAdded" in editorElement.mInitialDocObserver[ix]) && (editorElement.mInitialDocObserver[ix].bAdded == true))
           continue;
-        msiDumpWithID("Adding mInitialDocObserver for command " + editorElement.mInitialDocObserver[ix].mCommand + " for editor [@].\n", editorElement);
+//        msiDumpWithID("Adding mInitialDocObserver for command " + editorElement.mInitialDocObserver[ix].mCommand + " for editor [@].\n", editorElement);
         commandManager.addCommandObserver(editorElement.mInitialDocObserver[ix].mObserver, editorElement.mInitialDocObserver[ix].mCommand);
         editorElement.mInitialDocObserver[ix].bAdded = true;
 //        msiDumpWithID("Adding doc observer for editor [@]; for command [" + editorElement.mInitialDocObserver[ix].mCommand + "].\n", editorElement);
@@ -5118,6 +5136,265 @@ function msiGoOnEvent(node, event) { msiCommandUpdater.onEvent(node, event); }
 //      controller.onEvent(event);
 //  }
 //}
+
+
+function msiDialogEditorContentFilter(anEditorElement)
+{
+  this.reject = 0;
+  this.accept = 1;
+  this.skip = 2;
+  this.acceptAll = 3;
+  this.mEditorElement = anEditorElement;
+  this.mAtomService = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
+  this.mXmlSerializer = new XMLSerializer();
+  this.mDOMUtils = Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils);
+
+  this.dlgNodeFilter = function(aNode)
+  {
+    var nodename = aNode.nodeName;
+    var namespaceAtom = null;
+    if (aNode.namespaceURI != null)
+      namespaceAtom = this.mAtomService.getAtom(aNode.namespaceURI);
+    var editor = msiGetEditor(this.mEditorElement);
+    if (editor==null)
+    {
+      dump("Null editor in msiDialogEditorContentFilter.dlgNodeFilter for editorElement " + this.mEditorElement.id + ".\n");
+      return this.acceptAll;
+    }
+    if (editor.tagListManager)
+    {
+      var isHidden = editor.tagListManager.getStringPropertyForTag(nodename, namespaceAtom, "hidden");
+      if (isHidden != null && isHidden=="1")
+        return this.skip;
+    }
+    switch(aNode.nodeType)
+    {
+      case nsIDOMNode.TEXT_NODE:
+        if (this.mDOMUtils.isIgnorableWhitespace(aNode))
+          return this.reject;
+        else
+          return this.acceptAll;
+      break;
+    }
+    switch(aNode.nodeName)
+    {
+      case "dialogbase":
+      case "sw:dialogbase":
+        return this.skip;
+      break;
+    }
+    return this.acceptAll;  
+    //We still need to fill in the tags for which we want to accept the tag but leave open the possibility of not accepting a child.
+    //Examples may include field tags, list tags, etc.; the point being that one may occur as the parent of something like a
+    //  sw:dialogbase paragraph. Not implemented that way at this point.  rwa, 8-
+  };
+  this.getXMLNodesForParent = function(newParent, parentNode)
+  {
+    for (var ix = 0; ix < parentNode.childNodes.length; ++ix)
+    {
+      switch( this.dlgNodeFilter(parentNode.childNodes[ix]) )
+      {
+        case this.acceptAll:
+          newParent.appendChild( parentNode.childNodes[ix].cloneNode(true) );
+        break;
+        case this.skip:
+          this.getXMLNodesForParent( newParent, parentNode.childNodes[ix] );
+        break;
+        case this.accept:
+        {
+          var aNewNode = parentNode.childNodes[ix].cloneNode(false);
+          this.getXMLNodesForParent( aNewNode, parentNode.childNodes[ix] );
+          newParent.appendChild( aNewNode );
+        }
+        break;
+        case this.reject:
+        break;
+      }
+    }
+  };
+  this.getXMLNodesAsDocFragment = function()
+  {
+    var docFragment = null;
+    var doc = this.mEditorElement.contentDocument;
+    var editor = msiGetEditor(this.mEditorElement);
+    if (doc != null)
+    {
+      docFragment = doc.createDocumentFragment();
+      var rootNode = msiGetRealBodyElement(doc);
+      this.getXMLNodesForParent( docFragment, rootNode );
+    }
+    this.checkForTrailingBreak(docFragment);
+//    var dumpStr = "In msiDialogEditorContentFilter.getXMLNodes, returning a docFragment containing: [";
+//    for (var ix = 0; ix < docFragment.childNodes.length; ++ix)
+//      dumpStr += this.mXmlSerializer.serializeToString(docFragment.childNodes[ix]);
+//    dump(dumpStr + "] for editorElement [" + this.mEditorElement.id + "].\n");
+    return docFragment;
+  };
+  this.nodeHasRealContent = function(parentElement, bIsLast)
+  {
+    var bFoundContent = false;
+    if (parentElement != null)
+    {
+      for (var ix = 0; (!bFoundContent) && (ix < parentElement.childNodes.length); ++ix)
+      {
+        switch( this.dlgNodeFilter(parentElement.childNodes[ix]) )
+        {
+          case this.skip:
+            bFoundContent = this.nodeHasRealContent( parentElement.childNodes[ix], (bIsLast && (ix==parentElement.childNodes.length - 1)) );
+          break;
+          case this.acceptAll:
+          case this.accept:
+            if (bIsLast && (ix == parentElement.childNodes.length - 1))
+              bFoundContent = (parentElement.childNodes[ix].nodeName != "br");
+            else
+              bFoundContent = true;
+          break;
+          case this.reject:
+          break;
+        }
+      }
+      return bFoundContent;
+    }
+  };
+  this.isNonEmpty = function()
+  {
+    var parentElement = null;
+    var doc = this.mEditorElement.contentDocument;
+    if (doc != null)
+      parentElement = msiGetRealBodyElement(doc);
+    return this.nodeHasRealContent( parentElement, true );
+  };
+  this.checkForTrailingBreak = function(parentNode)
+  {
+    var lastNode = parentNode.lastChild;
+    if (lastNode != null && lastNode != parentNode)
+    {
+      if (lastNode.nodeName == "br")
+        parentNode.removeChild(lastNode);
+      else if (lastNode.nodeType == nsIDOMNode.TEXT_NODE)
+      {
+        if (this.mDOMUtils.isIgnorableWhitespace(lastNode))
+          parentNode.removeChild(lastNode);
+      }
+      else
+        this.checkForTrailingBreak(lastNode);
+    }
+  };
+  this.getContentsAsRange = function()
+  {
+    var theRange = null;
+    var doc = null;
+    var editor = msiGetEditor(this.mEditorElement);
+    if (editor != null)
+      doc = editor.document;
+    if (doc != null)
+    {
+      var rootNode = msiGetRealBodyElement(doc);
+      var initialParaNode = null;
+      var initialParaList = rootNode.getElementsByTagNameNS("sw", "dialogbase");
+      if (initialParaList.length == 0)
+        initialParaList = rootNode.getElementsByTagName("sw:dialogbase");
+      if (initialParaList.length == 0)
+        initialParaList = rootNode.getElementsByTagName("dialogbase");
+      if (initialParaList.length > 0)
+        initialParaNode = initialParaList[0];
+      else
+        initialParaNode = rootNode.childNodes[0];
+      var startNode = null;
+      if (initialParaNode.childNodes.length)
+        startNode = initialParaNode.childNodes[0];
+      var docRangeObj = doc.QueryInterface(Components.interfaces.nsIDOMDocumentRange);
+      theRange = docRangeObj.createRange();
+      theRange.setStart(startNode, 0);
+      var lastNode = rootNode.childNodes[rootNode.childNodes.length - 1];
+      var trailingBreak = this.findTrailingWhiteSpace(rootNode);
+      if (trailingBreak != null)
+        theRange.setEndBefore(trailingBreak);
+      else
+        theRange.setEndAfter(lastNode);
+    }
+    if (theRange != null)
+    {
+//      dump("In msiEdReplace.js, msiDialogEditorContentFilter.getContentsAsRange for editor element [" + this.mEditorElement.id + "], start of range is at [" + theRange.startContainer.nodeName + ", " + theRange.startOffset + "], while end is at [" + theRange.endContainer.nodeName + ", " + theRange.endOffset + "].\n");
+      var topChildrenStr = "";
+      if (rootNode.childNodes.length > 0)
+        topChildrenStr = rootNode.childNodes[0].nodeName;
+      for (var ix = 1; ix < rootNode.childNodes.length; ++ix)
+        topChildrenStr += ", " + rootNode.childNodes[ix].nodeName;
+//      dump("  [Note: the rootNode is [" + rootNode.nodeName + "], with child nodes [" + topChildrenStr + "].]\n");
+    }
+    return theRange;
+  };
+  this.findTrailingWhiteSpace = function(parentNode)
+  {
+    var spaceNode = null;
+    if (parentNode.nodeName == "br")
+      spaceNode = parentNode;
+    else if (parentNode.nodeType == nsIDOMNode.TEXT_NODE)
+    {
+      if (this.mDOMUtils.isIgnorableWhitespace(parentNode))
+        spaceNode = parentNode;
+    }
+    else if (parentNode.childNodes && parentNode.childNodes.length > 0)
+    {
+      var lastNode = parentNode.childNodes[parentNode.childNodes.length - 1];
+      if (lastNode != parentNode)
+        spaceNode = this.findTrailingWhiteSpace(lastNode);
+    }
+    return spaceNode;
+  };
+  this.getContentsAsDocumentFragment = function()
+  {
+    var theFragment = null;
+    var theRange = this.getContentsAsRange();
+    if (theRange != null)
+    {
+      theFragment = theRange.cloneContents();
+      theFragment.normalize();
+    }
+    return theFragment;
+  };
+  this.getDocumentFragmentString = function()
+  {
+    var theString = "";
+    var theFragment = this.getContentsAsDocumentFragment();
+    if (theFragment != null)
+    {
+      for (var ix = 0; ix < theFragment.childNodes.length; ++ix)
+        theString += this.mXmlSerializer.serializeToString(theFragment.childNodes[ix]);
+    }
+//    dump("In msiDialogEditorContentFilter.getDocumentFragmentString, returning [" + theString + "] for editorElement [" + this.mEditorElement.id + "].\n");
+    return theString;
+  };
+  this.getMarkupString = function()
+  {
+    var theString = "";
+    var docFragment = this.getXMLNodesAsDocFragment();
+    if (docFragment != null)
+    {
+      for (var ix = 0; ix < docFragment.childNodes.length; ++ix)
+        theString += this.mXmlSerializer.serializeToString(docFragment.childNodes[ix]);
+    }
+//    dump("In msiDialogEditorContentFilter.getMarkupString, returning [" + theString + "] for editorElement [" + this.mEditorElement.id + "].\n");
+    return theString;
+  };
+  this.getTextString = function()
+  {
+    var theFragment = this.getContentsAsDocumentFragment();
+    if (theFragment != null)
+    {
+//      dump("In msiDialogEditorContentFilter.getTextString, returning [" + theFragment.textContent + "] for editorElement [" + this.mEditorElement.id + "].\n");
+      return theFragment.textContent;
+    }
+//    dump("In msiDialogEditorContentFilter.getTextString, returning [] for editorElement [" + this.mEditorElement.id + "].\n");
+    return "";
+  };
+  this.hasTextContent = function()
+  {
+    var str = this.getTextString();
+    return ( (str != null) && (str.length > 0) );
+  };
+}
 
 
 function OpenExtensions(aOpenMode)
