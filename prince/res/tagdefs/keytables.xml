@@ -1,14 +1,15 @@
 <?xml version="1.0"?>
+<!DOCTYPE tables PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
 <tables>
 
 <!-- assignment of function keys to macros, mostly tag selection macros 
   Note: names are names of keys, not characters. The full name is gotten by prepending 'DOM_VK_', so
   the first key is DOM_VK_F1. -->
 
-  <keytable id="functionkeys" name="FKeys" keycount="20" keytype="script">
+  <keytable id="FKeys" name="FKeys" keycount="20" keytype="script">
     <key name="F1" vk="1" reserved="1"/>
     <key name="F4" alt="1"  vk="1" reserved="1"/>
-	  <key name="F10" reserved="1"/>
+	  <key name="F10" vk="1" reserved="1"/>
 	  <key name="F3" vk="1" >msiDoStatefulCommand('cmd_paratag', 'para');</key>
 	  <key name="F4" vk="1" >msiDoStatefulCommand('cmd_texttag','(normal)');</key>
 	  <key name="F5" vk="1" >msiDoStatefulCommand('cmd_texttag','bold');</key>
@@ -19,15 +20,121 @@
   </keytable>
 
 <!-- layout of the Greek keyboard -->
-
-  <keytable name="greek" keycount="50" keytype="char">
-    <key name="g">&#x03B3;</key>
-    <key name="G">&#x0393;</key>
+                    
+  <keytable id="greek" name="greek" keycount="50" keytype="script">
+	  <key name="q">insertMathSymbol("&chi;");</key>
+	  <key name="w">insertMathSymbol("&omega;");</key>
+	  <key name="W">insertMathSymbol("&Omega;");</key>
+	  <key name="e">insertMathSymbol("&varepsilon;");</key>
+	  <key name="E">insertMathSymbol("&epsi;");</key>
+	  <key name="r">insertMathSymbol("&rho;");</key>
+	  <key name="R">insertMathSymbol("&rhov;");</key>
+	  <key name="t">insertMathSymbol("&tau;");</key>
+	  <key name="T">insertMathSymbol("&sigmav;");</key>
+	  <key name="y">insertMathSymbol("&theta;");</key>
+	  <key name="Y">insertMathSymbol("&Theta;");</key>
+	  <key name="u">insertMathSymbol("&upsi;");</key>
+	  <key name="U">insertMathSymbol("&Upsi;");</key>
+	  <key name="i">insertMathSymbol("&iota;");</key>
+	  <key name="I">insertMathSymbol("&gammad;");</key>
+	  <key name="p">insertMathSymbol("&pi;");</key>
+	  <key name="P">insertMathSymbol("&Pi;");</key>
+	  <key name="a">insertMathSymbol("&alpha;");</key>
+	  <key name="s">insertMathSymbol("&sigma;");</key>
+	  <key name="S">insertMathSymbol("&Sigma;");</key>
+	  <key name="d">insertMathSymbol("&delta;");</key>
+	  <key name="D">insertMathSymbol("&Delta;");</key>
+	  <key name="f">insertMathSymbol("&phi;");</key>
+	  <key name="F">insertMathSymbol("&Phi;");</key>
+	  <key name="g">insertMathSymbol("&gamma;");</key>
+	  <key name="G">insertMathSymbol("&Gamma;");</key>
+	  <key name="h">insertMathSymbol("&eta;");</key>
+	  <key name="i">insertMathSymbol("&iota;");</key>
+	  <key name="j">insertMathSymbol("&phiv;");</key>
+	  <key name="k">insertMathSymbol("&kappa;");</key>
+	  <key name="K">insertMathSymbol("&kappav;");</key>
+	  <key name="l">insertMathSymbol("&lambda;");</key>
+	  <key name="L">insertMathSymbol("&Lambda;");</key>
+	  <key name="z">insertMathSymbol("&zeta;");</key>
+	  <key name="Z">insertMathSymbol("&thetav;");</key>
+	  <key name="x">insertMathSymbol("&xi;");</key>
+	  <key name="X">insertMathSymbol("&Xi;");</key>
+	  <key name="c">insertMathSymbol("&psi;");</key>
+	  <key name="C">insertMathSymbol("&Psi;");</key>
+	  <key name="v">insertMathSymbol("&piv;");</key>
+	  <key name="b">insertMathSymbol("&beta;");</key>
+	  <key name="n">insertMathSymbol("&nu;");</key>
+	  <key name="m">insertMathSymbol("&mu;");</key>
   </keytable>
 
 <!-- layout of the Symbol keyboard -->
 
-  <keytable name="symbol" keycount="50" keytype="char">
+  <keytable id="symbol" name="symbol" keycount="50" keytype="script">
+    <key name="1">insertMathSymbol("&rarr;");</key>
+    <key name="!">insertMathSymbol("&rArr;");</key>
+    <key name="2">insertMathSymbol("&uarr;");</key>
+    <key name="@">insertMathSymbol("&uArr;");</key>
+    <key name="3">insertMathSymbol("&larr;");</key>
+    <key name="#">insertMathSymbol("&lArr;");</key>
+    <key name="4">insertMathSymbol("&darr;");</key>
+    <key name="$">insertMathSymbol("&dArr;");</key>
+    <key name="5">insertMathSymbol("&supseteq;");</key>
+    <key name="%">insertMathSymbol("&supset;");</key>
+    <key name="6">insertMathSymbol("&cap;");</key>
+    <key name="7">insertMathSymbol("&subseteq;");</key>
+    <key name="&amp;">insertMathSymbol("&subset;");</key>
+    <key name="8">insertMathSymbol("&cup;");</key>
+    <!--<key name="9">insertMathSymbol("&;");</key>
+    <key name="0">insertMathSymbol("&;");</key>
+    <key name="(">insertMathSymbol("&;");</key>
+    <key name=")">insertMathSymbol("&;");</key>  -->
+    <key name="-">insertMathSymbol("&equiv;");</key>
+    <key name="_">insertMathSymbol("&cong;");</key>
+    <key name="=">insertMathSymbol("&neq;");</key>
+    <key name="+">insertMathSymbol("&plusmn;");</key>
+    <key name="w">insertMathSymbol("&approx;");</key>
+    <key name="W">insertMathSymbol("&aleph;");</key>
+    <key name="e">insertMathSymbol("&Element;");</key>
+    <key name="E">insertMathSymbol("&notin;");</key>
+    <!--<key name="r">insertMathSymbol("&;");</key>
+    <key name="R">insertMathSymbol("&;");</key>  -->
+    <key name="t">insertMathSymbol("&otimes;");</key>
+    <key name="T">insertMathSymbol("&otimes;");</key>
+    <key name="i">insertMathSymbol("&int;");</key>
+    <key name="I">insertMathSymbol("&infin;");</key>
+    <key name="o">insertMathSymbol("&emptyset;");</key>
+    <key name="p">insertMathSymbol("&prod;");</key>
+    <key name="P">insertMathSymbol("&weierp;");</key>
+    <!--<key name="[">insertMathSymbol("&;");</key>
+    <key name="{">insertMathSymbol("&;");</key> 
+    <key name="]">insertMathSymbol("&;");</key>
+    <key name="}">insertMathSymbol("&;");</key>-->
+    <key name="a">insertMathSymbol("&angle;");</key>
+    <key name="A">insertMathSymbol("&ForAll;");</key>
+    <key name="s">insertMathSymbol("&sum;");</key>
+    <key name="S">insertMathSymbol("&oplus;");</key>
+    <key name="d">insertMathSymbol("&PartialD;");</key>
+    <key name="D">insertMathSymbol("&diam;");</key>
+    <!--<key name="f">insertMathSymbol("&;");</key>
+    <key name="F">insertMathSymbol("&;");</key> 
+    <key name="h">insertMathSymbol("&;");</key>
+    <key name="H">insertMathSymbol("&;");</key>
+    <key name="l">insertMathSymbol("&;");</key>
+    <key name="L">insertMathSymbol("&;");</key> -->
+    <key name="z">insertMathSymbol("&Exists;");</key>
+    <key name="x">insertMathSymbol("&times;");</key>
+    <key name="X">insertMathSymbol("&divide;");</key>
+    <!--<key name="m">insertMathSymbol("&;");</key> 
+    <key name="M">insertMathSymbol("&;");</key>-->
+    <key name="c">insertMathSymbol("&subset;");</key>
+    <key name="C">insertMathSymbol("&cdot;");</key>
+    <key name="v">insertMathSymbol("&vee;");</key>
+    <key name="V">insertMathSymbol("&and;");</key>
+    <key name="b">insertMathSymbol("&bull;");</key>
+    <key name="n">insertMathSymbol("&nabla;");</key>
+    <key name="N">insertMathSymbol("&not;");</key>
+    <key name="&lt;">insertMathSymbol("&le;");</key>
+    <key name="&gt;">insertMathSymbol("&ge;");</key>
   </keytable>  
 
 </tables>
