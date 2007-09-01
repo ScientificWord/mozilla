@@ -4,6 +4,8 @@
 #include "nsIDOMDocument.h"
 #include "nsIDOMXMLDocument.h"
 #include "nsIDOMNodeList.h"
+#include "nsIFileStreams.h"
+#include "nsIConverterOutputStream.h"
 #include "nsComponentManagerUtils.h"
 #include "nsComponentManagerUtils.h"
 #include "nsDirectoryServiceUtils.h"
@@ -14,6 +16,17 @@
  {0x93, 0x2e, 0x00, 0x80, 0x5f, 0x8a, 0xdd, 0x32}}
  
 msiKeyMap* msiKeyMap::sInstance = NULL;
+
+void
+keyStruct::ExtractInfo ( PRUint32 *virtualKey, PRBool *altKey, PRBool *ctrlKey, PRBool *shiftKey, PRBool *metaKey, PRBool *vk )
+{
+  *virtualKey = m_encodedInfo>>16;
+  *shiftKey = m_encodedInfo & 1;
+  *altKey = m_encodedInfo>>1 & 1;
+  *ctrlKey = m_encodedInfo>>2 & 1; 
+  *metaKey = m_encodedInfo>>3 & 1;
+  *vk = m_encodedInfo>>4 & 1;
+}  
 
 /* Implementation file */
 msiKeyMap*
@@ -42,238 +55,86 @@ NS_IMPL_ISUPPORTS1(msiKeyMap, msiIKeyMap)
 
 msiKeyMap::msiKeyMap() :m_fDirty(PR_FALSE),m_fFileLoaded(PR_FALSE),m_pnhp(nsnull)
 {
-  nsString x[] = 
+  keyNameAndCode x[] = 
     {  
     //  BBM TODO: It is probably more efficient to store the string and the value, and remove all
     //  the EmptyStrings. This would change the 
-    EmptyString(),  // 0x00
-    EmptyString(),  // 0x01
-    EmptyString(),  // 0x02
-    NS_LITERAL_STRING("CANCEL"),  // 0x03;
-    EmptyString(),  // 0x04
-    EmptyString(),  // 0x05
-    NS_LITERAL_STRING("HELP"),  // 0x06;
-    EmptyString(),  // 0x07
-    NS_LITERAL_STRING("BACK_SPACE"),  // 0x08;
-    NS_LITERAL_STRING("TAB"),  // 0x09;
-    EmptyString(),  // 0x0A
-    EmptyString(),  // 0x0B
-    NS_LITERAL_STRING("CLEAR"),  // 0x0C;
-    NS_LITERAL_STRING("RETURN"),  // 0x0D;
-    NS_LITERAL_STRING("ENTER"),  // 0x0E;
-    EmptyString(),  // 0x0F
-    NS_LITERAL_STRING("SHIFT"),  // 0x10;
-    NS_LITERAL_STRING("CONTROL"),  // 0x11;
-    NS_LITERAL_STRING("ALT"),  // 0x12;
-    NS_LITERAL_STRING("PAUSE"),  // 0x13;
-    NS_LITERAL_STRING("CAPS_LOCK"),  // 0x14;
-    EmptyString(),  // 0x15
-    EmptyString(),  // 0x16
-    EmptyString(),  // 0x17
-    EmptyString(),  // 0x18
-    EmptyString(),  // 0x19
-    EmptyString(),  // 0x1A
-    NS_LITERAL_STRING("ESCAPE"),  // 0x1B;
-    EmptyString(),  // 0x1C
-    EmptyString(),  // 0x1D
-    EmptyString(),  // 0x1E
-    EmptyString(),  // 0x1F
-    NS_LITERAL_STRING("SPACE"),  // 0x20;
-    NS_LITERAL_STRING("PAGE_UP"),  // 0x21;
-    NS_LITERAL_STRING("PAGE_DOWN"),  // 0x22;
-    NS_LITERAL_STRING("END"),  // 0x23;
-    NS_LITERAL_STRING("HOME"),  // 0x24;
-    NS_LITERAL_STRING("LEFT"),  // 0x25;
-    NS_LITERAL_STRING("UP"),  // 0x26;
-    NS_LITERAL_STRING("RIGHT"),  // 0x27;
-    NS_LITERAL_STRING("DOWN"),  // 0x28;
-    EmptyString(),  // 0x29
-    EmptyString(),  // 0x2A
-    EmptyString(),  // 0x2B
-    NS_LITERAL_STRING("PRINTSCREEN"),  // 0x2C;
-    NS_LITERAL_STRING("INSERT"),  // 0x2D;
-    NS_LITERAL_STRING("DELETE"),  // 0x2E;
-    EmptyString(),  // 0x2F
-    NS_LITERAL_STRING("0"),  // 0x30;
-    NS_LITERAL_STRING("1"),  // 0x31;
-    NS_LITERAL_STRING("2"),  // 0x32;
-    NS_LITERAL_STRING("3"),  // 0x33;
-    NS_LITERAL_STRING("4"),  // 0x34;
-    NS_LITERAL_STRING("5"),  // 0x35;
-    NS_LITERAL_STRING("6"),  // 0x36;
-    NS_LITERAL_STRING("7"),  // 0x37;
-    NS_LITERAL_STRING("8"),  // 0x38;
-    NS_LITERAL_STRING("9"),  // 0x39;
-    EmptyString(),  // 0x3A
-    NS_LITERAL_STRING("SEMICOLON"),  // 0x3B;
-    EmptyString(),  // 0x3C
-    NS_LITERAL_STRING("EQUALS"),  // 0x3D;
-    EmptyString(),  // 0x3E
-    EmptyString(),  // 0x3F
-    EmptyString(),  // 0x40
-    NS_LITERAL_STRING("A"),  // 0x41;
-    NS_LITERAL_STRING("B"),  // 0x42;
-    NS_LITERAL_STRING("C"),  // 0x43;
-    NS_LITERAL_STRING("D"),  // 0x44;
-    NS_LITERAL_STRING("E"),  // 0x45;
-    NS_LITERAL_STRING("F"),  // 0x46;
-    NS_LITERAL_STRING("G"),  // 0x47;
-    NS_LITERAL_STRING("H"),  // 0x48;
-    NS_LITERAL_STRING("I"),  // 0x49;
-    NS_LITERAL_STRING("J"),  // 0x4A;
-    NS_LITERAL_STRING("K"),  // 0x4B;
-    NS_LITERAL_STRING("L"),  // 0x4C;
-    NS_LITERAL_STRING("M"),  // 0x4D;
-    NS_LITERAL_STRING("N"),  // 0x4E;
-    NS_LITERAL_STRING("O"),  // 0x4F;
-    NS_LITERAL_STRING("P"),  // 0x50;
-    NS_LITERAL_STRING("Q"),  // 0x51;
-    NS_LITERAL_STRING("R"),  // 0x52;
-    NS_LITERAL_STRING("S"),  // 0x53;
-    NS_LITERAL_STRING("T"),  // 0x54;
-    NS_LITERAL_STRING("U"),  // 0x55;
-    NS_LITERAL_STRING("V"),  // 0x56;
-    NS_LITERAL_STRING("W"),  // 0x57;
-    NS_LITERAL_STRING("X"),  // 0x58;
-    NS_LITERAL_STRING("Y"),  // 0x59;
-    NS_LITERAL_STRING("Z"),  // 0x5A;
-    EmptyString(),  // 0x5B
-    EmptyString(),  // 0x5C
-    NS_LITERAL_STRING("CONTEXT_MENU"),  // 0x5D;
-    EmptyString(),  // 0x5E
-    EmptyString(),  // 0x5F
-    NS_LITERAL_STRING("NUMPAD0"),  // 0x60;
-    NS_LITERAL_STRING("NUMPAD1"),  // 0x61;
-    NS_LITERAL_STRING("NUMPAD2"),  // 0x62;
-    NS_LITERAL_STRING("NUMPAD3"),  // 0x63;
-    NS_LITERAL_STRING("NUMPAD4"),  // 0x64;
-    NS_LITERAL_STRING("NUMPAD5"),  // 0x65;
-    NS_LITERAL_STRING("NUMPAD6"),  // 0x66;
-    NS_LITERAL_STRING("NUMPAD7"),  // 0x67;
-    NS_LITERAL_STRING("NUMPAD8"),  // 0x68;
-    NS_LITERAL_STRING("NUMPAD9"),  // 0x69;
-    NS_LITERAL_STRING("MULTIPLY"),  // 0x6A;
-    NS_LITERAL_STRING("ADD"),  // 0x6B;
-    NS_LITERAL_STRING("SEPARATOR"),  // 0x6C;
-    NS_LITERAL_STRING("SUBTRACT"),  // 0x6D;
-    NS_LITERAL_STRING("DECIMAL"),  // 0x6E;
-    NS_LITERAL_STRING("DIVIDE"),  // 0x6F;
-    NS_LITERAL_STRING("F1"),  // 0x70;
-    NS_LITERAL_STRING("F2"),  // 0x71;
-    NS_LITERAL_STRING("F3"),  // 0x72;
-    NS_LITERAL_STRING("F4"),  // 0x73;
-    NS_LITERAL_STRING("F5"),  // 0x74;
-    NS_LITERAL_STRING("F6"),  // 0x75;
-    NS_LITERAL_STRING("F7"),  // 0x76;
-    NS_LITERAL_STRING("F8"),  // 0x77;
-    NS_LITERAL_STRING("F9"),  // 0x78;
-    NS_LITERAL_STRING("F10"),  // 0x79;
-    NS_LITERAL_STRING("F11"),  // 0x7A;
-    NS_LITERAL_STRING("F12"),  // 0x7B;
-    NS_LITERAL_STRING("F13"),  // 0x7C;
-    NS_LITERAL_STRING("F14"),  // 0x7D;
-    NS_LITERAL_STRING("F15"),  // 0x7E;
-    NS_LITERAL_STRING("F16"),  // 0x7F;
-    NS_LITERAL_STRING("F17"),  // 0x80;
-    NS_LITERAL_STRING("F18"),  // 0x81;
-    NS_LITERAL_STRING("F19"),  // 0x82;
-    NS_LITERAL_STRING("F20"),  // 0x83;
-    NS_LITERAL_STRING("F21"),  // 0x84;
-    NS_LITERAL_STRING("F22"),  // 0x85;
-    NS_LITERAL_STRING("F23"),  // 0x86;
-    NS_LITERAL_STRING("F24"),  // 0x87;
-    EmptyString(),  // 0x88
-    EmptyString(),  // 0x89
-    EmptyString(),  // 0x8A
-    EmptyString(),  // 0x8B
-    EmptyString(),  // 0x8C
-    EmptyString(),  // 0x8D
-    EmptyString(),  // 0x8E
-    EmptyString(),  // 0x8F
-    NS_LITERAL_STRING("NUM_LOCK"),  // 0x90;
-    NS_LITERAL_STRING("SCROLL_LOCK"),  // 0x91;
-    EmptyString(),  // 0x92
-    EmptyString(),  // 0x93
-    EmptyString(),  // 0x94
-    EmptyString(),  // 0x95
-    EmptyString(),  // 0x96
-    EmptyString(),  // 0x97
-    EmptyString(),  // 0x98
-    EmptyString(),  // 0x99
-    EmptyString(),  // 0x9A
-    EmptyString(),  // 0x9B
-    EmptyString(),  // 0x9C
-    EmptyString(),  // 0x9D
-    EmptyString(),  // 0x9E
-    EmptyString(),  // 0x9F
-    EmptyString(),  // 0xA0
-    EmptyString(),  // 0xA1
-    EmptyString(),  // 0xA2
-    EmptyString(),  // 0xA3
-    EmptyString(),  // 0xA4
-    EmptyString(),  // 0xA5
-    EmptyString(),  // 0xA6
-    EmptyString(),  // 0xA7
-    EmptyString(),  // 0xA8
-    EmptyString(),  // 0xA9
-    EmptyString(),  // 0xAA
-    EmptyString(),  // 0xAB
-    EmptyString(),  // 0xAC
-    EmptyString(),  // 0xAD
-    EmptyString(),  // 0xAE
-    EmptyString(),  // 0xAF
-    EmptyString(),  // 0xB0
-    EmptyString(),  // 0xB1
-    EmptyString(),  // 0xB2
-    EmptyString(),  // 0xB3
-    EmptyString(),  // 0xB4
-    EmptyString(),  // 0xB5
-    EmptyString(),  // 0xB6
-    EmptyString(),  // 0xB7
-    EmptyString(),  // 0xB8
-    EmptyString(),  // 0xB9
-    EmptyString(),  // 0xBA
-    EmptyString(),  // 0xBB
-    NS_LITERAL_STRING("COMMA"),  // 0xBC;
-    EmptyString(),  // 0xBD
-    NS_LITERAL_STRING("PERIOD"),  // 0xBE;
-    NS_LITERAL_STRING("SLASH"),  // 0xBF;
-    NS_LITERAL_STRING("BACK_QUOTE"),  // 0xC0;
-    EmptyString(),  // 0xC1
-    EmptyString(),  // 0xC2
-    EmptyString(),  // 0xC3
-    EmptyString(),  // 0xC4
-    EmptyString(),  // 0xC5
-    EmptyString(),  // 0xC6
-    EmptyString(),  // 0xC7
-    EmptyString(),  // 0xC8
-    EmptyString(),  // 0xC9
-    EmptyString(),  // 0xCA
-    EmptyString(),  // 0xCB
-    EmptyString(),  // 0xCC
-    EmptyString(),  // 0xCD
-    EmptyString(),  // 0xCE
-    EmptyString(),  // 0xCF
-    EmptyString(),  // 0xD0
-    EmptyString(),  // 0xD1
-    EmptyString(),  // 0xD2
-    EmptyString(),  // 0xD3
-    EmptyString(),  // 0xD4
-    EmptyString(),  // 0xD5
-    EmptyString(),  // 0xD6
-    EmptyString(),  // 0xD7
-    EmptyString(),  // 0xD8
-    EmptyString(),  // 0xD9
-    EmptyString(),  // 0xDA
-    NS_LITERAL_STRING("OPEN_BRACKET"),  // 0xDB;
-    NS_LITERAL_STRING("BACK_SLASH"),  // 0xDC;
-    NS_LITERAL_STRING("CLOSE_BRACKET"),  // 0xDD;
-    NS_LITERAL_STRING("QUOTE"),  // 0xDE;
-    EmptyString(),  // 0xDF
-    NS_LITERAL_STRING("META"),  // 0xE0;
-    NS_LITERAL_STRING("") //  0x00; //sentinel for the end
+    {NS_LITERAL_STRING("CANCEL"),  0x03},
+    {NS_LITERAL_STRING("HELP"),  0x06},
+    {NS_LITERAL_STRING("BACK_SPACE"),  0x08},
+    {NS_LITERAL_STRING("TAB"),  0x09},
+    {NS_LITERAL_STRING("CLEAR"),  0x0C},
+    {NS_LITERAL_STRING("RETURN"),  0x0D},
+    {NS_LITERAL_STRING("ENTER"),  0x0E},
+    {NS_LITERAL_STRING("SHIFT"),  0x10},
+    {NS_LITERAL_STRING("CONTROL"),  0x11},
+    {NS_LITERAL_STRING("ALT"),  0x12},
+    {NS_LITERAL_STRING("PAUSE"),  0x13},
+    {NS_LITERAL_STRING("CAPS_LOCK"),  0x14},
+    {NS_LITERAL_STRING("ESCAPE"),  0x1B},
+    {NS_LITERAL_STRING("SPACE"),  0x20},
+    {NS_LITERAL_STRING("PAGE_UP"),  0x21},
+    {NS_LITERAL_STRING("PAGE_DOWN"),  0x22},
+    {NS_LITERAL_STRING("END"),  0x23},
+    {NS_LITERAL_STRING("HOME"),  0x24},
+    {NS_LITERAL_STRING("LEFT"),  0x25},
+    {NS_LITERAL_STRING("UP"),  0x26},
+    {NS_LITERAL_STRING("RIGHT"),  0x27},
+    {NS_LITERAL_STRING("DOWN"),  0x28},
+    {NS_LITERAL_STRING("PRINTSCREEN"),  0x2C},
+    {NS_LITERAL_STRING("INSERT"),  0x2D},
+    {NS_LITERAL_STRING("DELETE"),  0x2E},
+    {NS_LITERAL_STRING("CONTEXT_MENU"),  0x5D},
+    {NS_LITERAL_STRING("NUMPAD0"),  0x60},
+    {NS_LITERAL_STRING("NUMPAD1"),  0x61},
+    {NS_LITERAL_STRING("NUMPAD2"),  0x62},
+    {NS_LITERAL_STRING("NUMPAD3"),  0x63},
+    {NS_LITERAL_STRING("NUMPAD4"),  0x64},
+    {NS_LITERAL_STRING("NUMPAD5"),  0x65},
+    {NS_LITERAL_STRING("NUMPAD6"),  0x66},
+    {NS_LITERAL_STRING("NUMPAD7"),  0x67},
+    {NS_LITERAL_STRING("NUMPAD8"),  0x68},
+    {NS_LITERAL_STRING("NUMPAD9"),  0x69},
+    {NS_LITERAL_STRING("MULTIPLY"),  0x6A},
+    {NS_LITERAL_STRING("ADD"),  0x6B},
+    {NS_LITERAL_STRING("SEPARATOR"),  0x6C},
+    {NS_LITERAL_STRING("SUBTRACT"),  0x6D},
+    {NS_LITERAL_STRING("DECIMAL"),  0x6E},
+    {NS_LITERAL_STRING("DIVIDE"),  0x6F},
+    {NS_LITERAL_STRING("F1"),  0x70},
+    {NS_LITERAL_STRING("F2"),  0x71},
+    {NS_LITERAL_STRING("F3"),  0x72},
+    {NS_LITERAL_STRING("F4"),  0x73},
+    {NS_LITERAL_STRING("F5"),  0x74},
+    {NS_LITERAL_STRING("F6"),  0x75},
+    {NS_LITERAL_STRING("F7"),  0x76},
+    {NS_LITERAL_STRING("F8"),  0x77},
+    {NS_LITERAL_STRING("F9"),  0x78},
+    {NS_LITERAL_STRING("F10"),  0x79},
+    {NS_LITERAL_STRING("F11"),  0x7A},
+    {NS_LITERAL_STRING("F12"),  0x7B},
+    {NS_LITERAL_STRING("F13"),  0x7C},
+    {NS_LITERAL_STRING("F14"),  0x7D},
+    {NS_LITERAL_STRING("F15"),  0x7E},
+    {NS_LITERAL_STRING("F16"),  0x7F},
+    {NS_LITERAL_STRING("F17"),  0x80},
+    {NS_LITERAL_STRING("F18"),  0x81},
+    {NS_LITERAL_STRING("F19"),  0x82},
+    {NS_LITERAL_STRING("F20"),  0x83},
+    {NS_LITERAL_STRING("F21"),  0x84},
+    {NS_LITERAL_STRING("F22"),  0x85},
+    {NS_LITERAL_STRING("F23"),  0x86},
+    {NS_LITERAL_STRING("F24"),  0x87},
+    {NS_LITERAL_STRING("NUM_LOCK"),  0x90},
+    {NS_LITERAL_STRING("SCROLL_LOCK"),  0x91},
+    {NS_LITERAL_STRING("OPEN_BRACKET"),  0xDB},
+    {NS_LITERAL_STRING("BACK_SLASH"),  0xDC},
+    {NS_LITERAL_STRING("CLOSE_BRACKET"),  0xDD},
+    {NS_LITERAL_STRING("QUOTE"),  0xDE},
+    {NS_LITERAL_STRING("META"),  0xE0},
+    {NS_LITERAL_STRING(""),   0x00}, //sentinel for the end
   };
-  for (PRUint32 i = 0; i < 225; i++) virtKeyArray[i] = x[i];
+  for (PRUint32 i = 0; i==0 || x[i-1].keyCode != 0; i++) virtKeyArray[i] = x[i];
 }
 
 msiKeyMap::~msiKeyMap()
@@ -284,20 +145,59 @@ msiKeyMap::~msiKeyMap()
 
 PRUint32 msiKeyMap::VKeyStringToIndex( const nsString keyname)
 {
-  for (PRUint32 i = 0; i < 225; i++)          // 225 is the length of the array
-    if (keyname.Equals(virtKeyArray[i])) return i;
+  PRUint32 i = 0;
+  while (virtKeyArray[i].keyCode != 0)         
+  {
+    if (keyname.Equals(virtKeyArray[i].keyName)) 
+      return virtKeyArray[i].keyCode;
+    i++;
+  }
   return 0;
 }
+
+nsString  msiKeyMap::VKeyIndexToString ( PRUint32 index )
+{
+  PRUint32 i = 0;
+  while (virtKeyArray[i].keyCode != 0)         
+  {
+    if (index == (virtKeyArray[i].keyCode)) 
+      return virtKeyArray[i].keyName;
+    i++;
+  }
+}
+
 
 static NS_DEFINE_CID( kXMLDocumentCID, NS_XMLDOCUMENT_CID );
 
 /* boolean loadKeyMapFile (in string fileName); */
-NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(const nsAString & filePath, PRBool *_retval)
+NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(PRBool *_retval)
 {
 // We first look for the file name in the user profile area. If it is not there, we look in the program resource area.
 // Parsing and generating the hash tables is pretty straigntforward.
   if (m_fFileLoaded) return NS_OK;
   nsresult rv;
+  PRBool fExists = PR_FALSE;
+  nsAutoString fileName = NS_LITERAL_STRING("keytables.xml");
+  nsAutoString finalPath;
+  nsAutoString temp;
+  
+  nsCOMPtr<nsIFile> mapfile;
+  rv = NS_GetSpecialDirectory("ProfD", (nsIFile **)&mapfile);
+  if (rv == NS_OK)
+  {
+    mapfile->Append(fileName);
+    mapfile->Exists(&fExists);
+    if (fExists) rv = mapfile->GetPath(finalPath);
+    temp.Assign(NS_LITERAL_STRING("file:///"));
+    temp.Append(finalPath.BeginReading());
+    finalPath.Assign(temp);
+  }
+  if (!fExists)
+  {
+    finalPath = NS_LITERAL_STRING("resource://app/res/tagdefs/");
+    finalPath.Append(fileName.BeginReading());
+  }  
+  
   nsAutoString str;
   nsAutoString strData;
   nsAutoString keyname;
@@ -321,7 +221,7 @@ NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(const nsAString & filePath, PRBool *_ret
   if (rv) return rv;
   rv = docKeyMaps->SetAsync(PR_FALSE);
   if (rv) return rv;
-  rv = docKeyMaps->Load( filePath, _retval);
+  rv = docKeyMaps->Load( finalPath, _retval);
   if (rv) return rv;
   rv = docKeyMaps->GetElementsByTagName(NS_LITERAL_STRING("keytable"), getter_AddRefs(keyTables));
   if (keyTables) keyTables->GetLength(&keyTableCount);
@@ -538,10 +438,136 @@ NS_IMETHODIMP msiKeyMap::DelKeyMapping(const nsAString & mapname, PRUint32 virtu
     return NS_OK;
 }
 
+
+PLDHashOperator
+nsDEnumRead(const PRUint32& aKey, nsString_external * aData, void* outString);
+
+
 /* boolean saveKeyMaps (); */
 NS_IMETHODIMP msiKeyMap::SaveKeyMaps(PRBool *_retval)
 {
-    m_fDirty = PR_FALSE;
+//  if (!m_fDirty) return NS_OK;
+  nsresult rv;
+
+  nsAutoString sFile = NS_LITERAL_STRING("<?xml version=\"1.0\"?>\n");
+  sFile +=  NS_LITERAL_STRING("<!DOCTYPE tables PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd\">\n");
+  sFile +=  NS_LITERAL_STRING("<tables>\n");
+
+  nsAutoString str;
+ 
+  nameHashPair * p = m_pnhp;
+  while (p)
+  {
+    str = p->m_name;
+    sFile += NS_LITERAL_STRING("  <keytable id=\"");
+    sFile += str;
+    sFile += NS_LITERAL_STRING("\" name=\"");
+    sFile += str;
+    sFile += NS_LITERAL_STRING("\" keytype=\"");
+    sFile += (p->m_fScript ? NS_LITERAL_STRING("script\">\n") : NS_LITERAL_STRING("char\">\n"));
+  
+    p->m_table.EnumerateRead(nsDEnumRead, &(sFile));
+    sFile += NS_LITERAL_STRING("  </keytable>\n");
+    p = p->m_pNext;
+  }
+  sFile += NS_LITERAL_STRING("</tables>\n");
+
+  PRBool fExists = PR_FALSE;
+  nsAutoString fileName = NS_LITERAL_STRING("keytables.xml");
+  nsAutoString temp;
+
+  nsCOMPtr<nsIFile> mapfile;
+  nsCOMPtr<nsIFile> profdir;
+  rv = NS_GetSpecialDirectory("ProfD", (nsIFile **)&profdir);
+  if (rv != NS_OK)
+  {
+    *_retval = PR_FALSE;
     return NS_OK;
+  }
+  profdir->Clone((nsIFile **)&mapfile);
+  profdir->Append(fileName);
+  profdir->Exists(&fExists);
+  // should we save a backup file?
+  if (fExists) rv = mapfile->MoveTo(nsnull,NS_LITERAL_STRING("keytables.bak"));
+  mapfile->Append(fileName);
+  rv = mapfile->Create(0, 0755);
+  nsCOMPtr<nsIFileOutputStream> fos = do_CreateInstance("@mozilla.org/network/file-output-stream;1", &rv);
+  if (NS_FAILED(rv))
+    return rv;
+  rv = fos->Init(mapfile, -1, -1, PR_FALSE);
+  if (NS_FAILED(rv))
+    return rv;
+  nsCOMPtr<nsIConverterOutputStream> os = do_CreateInstance("@mozilla.org/intl/converter-output-stream;1", &rv);
+  if (NS_FAILED(rv))
+    return rv;
+  rv = os->Init(fos, "UTF-8", 4096, '?');
+  if (NS_FAILED(rv))
+    return rv;
+  PRBool fSuccess;
+  rv = os->WriteString(sFile, &fSuccess);
+  if (NS_FAILED(rv))
+    return rv;
+  rv = os->Close();
+  *_retval = PR_TRUE;  
+  return rv;    
+}
+      
+
+
+
+
+PLDHashOperator
+nsDEnumRead(const PRUint32& aKey, nsString_external * aData, void* outString)
+{  
+  keyStruct ks(aKey);
+  PRUint32 keyCode;
+  nsAutoString s;
+  nsAutoString s2;
+  s2.Assign(NS_LITERAL_STRING("1"));
+  PRBool altKey, shiftKey, ctrlKey, metaKey, virtualKey;
+  ks.ExtractInfo(&keyCode, &altKey, &ctrlKey, &shiftKey, &metaKey, &virtualKey);
+  nsString * os = (nsString *) outString;
+  nsAutoString thisLine = NS_LITERAL_STRING("    <key name=\"");
+  if (virtualKey)
+  {
+    s = msiKeyMap::sInstance->VKeyIndexToString(keyCode); //get the right stuff from the virtKeyArray
+    thisLine.Append(s);
+  }
+  else
+  {
+    if (keyCode == 0x26) s2 = NS_LITERAL_STRING("&amp;");    
+    else if (keyCode == 0x3c) s2 = NS_LITERAL_STRING("lt;");
+    else s2 = nsString((nsString::char_type*)&keyCode,1);
+    thisLine.Append(s2);
+  }
+  thisLine.Append(NS_LITERAL_STRING("\" "));
+  if (altKey)
+    thisLine.Append(NS_LITERAL_STRING(" alt=\"1\""));
+  if (ctrlKey)
+    thisLine.Append(NS_LITERAL_STRING(" ctrl=\"1\""));
+  if (shiftKey)
+    thisLine.Append(NS_LITERAL_STRING(" shift=\"1\""));
+  if (metaKey)
+    thisLine.Append(NS_LITERAL_STRING(" meta=\"1\""));
+  if (virtualKey)
+    thisLine.Append(NS_LITERAL_STRING(" vk=\"1\""));
+  PRBool fReserved;
+  if (NS_LITERAL_STRING("reserved").Equals(*aData))
+  {
+    thisLine.Append(NS_LITERAL_STRING(" reserved=\"1\"/>\n"));
+  }
+  else
+  {
+    thisLine.Append(NS_LITERAL_STRING(">"));
+//    if (virtualKey)
+      thisLine.Append(*aData);
+//    else
+//    {
+//      PRUint32 n = (PRUint32)
+    thisLine.Append(NS_LITERAL_STRING("</key>\n"));
+  }
+//  printf("&S",thisLine.get());
+  os->Append(thisLine);
+  return PL_DHASH_NEXT;
 }
 
