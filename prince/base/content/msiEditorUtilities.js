@@ -1014,6 +1014,7 @@ function msiGetEditorURL(editorElement)
     return aDOMHTMLDoc.URL;
   } catch (e) {
     try {
+      editor = msiGetEditor(editorElement);
       return editor.document.documentURI;
     } catch (e){}
   }
@@ -1366,6 +1367,13 @@ function msiGetBlockNodeParent(editor, aNode)
   {
     if (editor.nodeIsBlock(theParent))
       return theParent;
+    switch(theParent.nodeName)
+    {
+      case "dialogbase":
+      case "sw:dialogbase":
+        return theParent;
+      break;
+    }
   }
   return null;
 }

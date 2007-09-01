@@ -56,28 +56,50 @@ function Startup(){
   captionControl.label = data.prompt[2];
 
   // Initialize our source text <editor>s
-  var theStringSource = data.initialvalue[0];
-  try
+  var theStringSource1 = "";
+  var theStringSource2 = "";
+  var theStringSource3 = "";
+  if ( data && ("initialvalue" in data) && (data.initialvalue.length > 0) )
   {
-    var exprEditorControl = document.getElementById("mmlArg-expr-frame");
-//  editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
-    msiInitializeEditorForElement(exprEditorControl, theStringSource, true);
+    theStringSource1 = data.initialvalue[0];
+    if (data.initialvalue.length > 1)
+    {
+      theStringSource2 = data.initialvalue[1];
+      if (data.initialvalue.length > 2)
+        theStringSource3 = data.initialvalue[2];
+    }
   }
-  catch(exc) {dump("In Startup for ComputeMathMLArgDialog, error initializing editor mmlArg-expr-frame: [" + exc + "].\n");}
-  try
-  {
-    theStringSource = data.initialvalue[1];
-    var initEditorControl = document.getElementById("mmlArg-initVal-frame");
-    msiInitializeEditorForElement(initEditorControl, theStringSource, true);
-  }
-  catch(exc) {dump("In Startup for ComputeMathMLArgDialog, error initializing editor mmlArg-initVal-frame: [" + exc + "].\n");}
-  try
-  {
-    theStringSource = data.initialvalue[2];
-    var termsEditorControl = document.getElementById("mmlArg-numTerms-frame");
-    msiInitializeEditorForElement(termsEditorControl, theStringSource, true);
-  }
-  catch(exc) {dump("In Startup for ComputeMathMLArgDialog, error initializing editor mmlArg-numTerms-frame: [" + exc + "].\n");}
+  var exprEditorControl = document.getElementById("mmlArg-expr-frame");
+  var initEditorControl = document.getElementById("mmlArg-initVal-frame");
+  var termsEditorControl = document.getElementById("mmlArg-numTerms-frame");
+
+//  try
+//  {
+//    var exprEditorControl = document.getElementById("mmlArg-expr-frame");
+////  editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
+//    msiInitializeEditorForElement(exprEditorControl, theStringSource, true);
+//  }
+//  catch(exc) {dump("In Startup for ComputeMathMLArgDialog, error initializing editor mmlArg-expr-frame: [" + exc + "].\n");}
+//  try
+//  {
+//  var theStringSource2 = data.initialvalue[1];
+//    var initEditorControl = document.getElementById("mmlArg-initVal-frame");
+//    msiInitializeEditorForElement(initEditorControl, theStringSource, true);
+//  }
+//  catch(exc) {dump("In Startup for ComputeMathMLArgDialog, error initializing editor mmlArg-initVal-frame: [" + exc + "].\n");}
+//  try
+//  {
+//  var theStringSource3 = data.initialvalue[2];
+//    var termsEditorControl = document.getElementById("mmlArg-numTerms-frame");
+//    msiInitializeEditorForElement(termsEditorControl, theStringSource, true);
+//  }
+//  catch(exc) {dump("In Startup for ComputeMathMLArgDialog, error initializing editor mmlArg-numTerms-frame: [" + exc + "].\n");}
+
+  var editorInitializer = new msiEditorArrayInitializer();
+  editorInitializer.addEditorInfo(exprEditorControl, theStringSource1, true);
+  editorInitializer.addEditorInfo(initEditorControl, theStringSource2, true);
+  editorInitializer.addEditorInfo(termsEditorControl, theStringSource3, true);
+  editorInitializer.doInitialize();
 }
 
 function OK(){
