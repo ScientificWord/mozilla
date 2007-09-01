@@ -13,7 +13,9 @@ struct keyStruct
 {
   PRUint32 m_encodedInfo;
   keyStruct( PRUint32 virtualKey, PRBool altKey, PRBool ctrlKey, PRBool shiftKey, PRBool metaKey, PRBool vk )
-  { m_encodedInfo = virtualKey+(shiftKey?(1<<16):0)+(altKey?(1<<17):0)+(ctrlKey?(1<<18):0)+(metaKey?(1<<19):0)+(vk?(1<<20):0);} 
+  { m_encodedInfo = (virtualKey<<16) +(shiftKey?1:0)+(altKey?(1<<1):0)+(ctrlKey?(1<<2):0)+(metaKey?(1<<3):0)+(vk?(1<<4):0);}
+  keyStruct( PRUint32 encodedInfo ){ m_encodedInfo=encodedInfo;}
+  void ExtractInfo ( PRUint32 *virtualKey, PRBool *altKey, PRBool *ctrlKey, PRBool *shiftKey, PRBool *metaKey, PRBool *vk );
 };
   
 struct nameHashPair
@@ -24,6 +26,12 @@ struct nameHashPair
   nameHashPair * m_pNext;
   nameHashPair( const nsAString & name, PRBool fScript ): m_pNext(NULL), m_fScript(fScript) { m_name.Assign(name); m_table.Init(30);} 
   ~nameHashPair(){ delete m_pNext; }
+};
+
+struct keyNameAndCode
+{
+  nsString keyName;
+  PRUint32 keyCode;
 };
 
 
@@ -44,7 +52,12 @@ public:
   msiKeyMap();
 static  msiKeyMap* msiKeyMap::GetInstance();
 static  void       msiKeyMap::ReleaseInstance();
+static msiKeyMap   *sInstance;
   
+PRUint32 VKeyStringToIndex( const nsString keyname);
+nsString VKeyIndexToString ( PRUint32 index );
+keyNameAndCode virtKeyArray[80];
+
 private:
   ~msiKeyMap();
 
@@ -53,9 +66,6 @@ protected:
   PRBool m_fFileLoaded;
   nameHashPair * m_pnhp;
   /* additional members */
-  PRUint32 VKeyStringToIndex( const nsString keyname);
-  nsString virtKeyArray[225];
-  static msiKeyMap *sInstance;
 };
 
 

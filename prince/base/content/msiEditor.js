@@ -734,7 +734,7 @@ function msiEditorDocumentObserver(editorElement)
           try {
             keymapper =  Components.classes["@mackichan.com/keymap/keymap_service;1"]
                                  .createInstance(Components.interfaces.msiIKeyMap);
-            keymapper.loadKeyMapFile("resource://app/res/tagdefs/keytables.xml");
+            keymapper.loadKeyMapFile();
           }
           catch(e) { dump("Failed to load keytables.xml -- "+e); }
         }
