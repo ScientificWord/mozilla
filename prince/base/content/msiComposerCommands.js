@@ -635,17 +635,23 @@ function doTagKeyCommand(event, commandID, value)
 
 function getViewSettingsFromViewMenu()
 {
-  var viewSettings = new msiViewSettings(0);
+  var viewSettings = new msiViewSettings(1);   //1 is really the default - hide invisibles, show everything else
   var invisChoices = [["viewInvisibles","showInvisibles"], ["viewHelperLines","showHelperLines"], 
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
                       ["viewMarkers","showMarkers"]];
-  for (var ix = 0; ix < invisChoices.length; ++ix)
+  var theWindow = msiGetTopLevelWindow();
+  var theDocument = theWindow ? theWindow.document : null;
+  if (theDocument != null)
   {
-    var menuItem = document.getElementById(invisChoices[ix][0]);
-    if (menuItem && (menuItem.getAttribute("checked") == "true"))
-      viewSettings[invisChoices[ix][1]] = true;
-    else
-      viewSettings[invisChoices[ix][1]] = false;
+    for (var ix = 0; ix < invisChoices.length; ++ix)
+    {
+      var menuItem = document.getElementById(invisChoices[ix][0]);
+      if (menuItem)
+      {
+        if (menuItem.getAttribute("checked") == "true")
+          viewSettings[invisChoices[ix][1]] = true;
+      }
+    }
   }
   return viewSettings;
 }
