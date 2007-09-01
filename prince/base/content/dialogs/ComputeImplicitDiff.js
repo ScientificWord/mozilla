@@ -20,9 +20,14 @@ function Startup(){
 
   var theStringSource = GetComputeString("Math.emptyForInput");
   var indEditor = document.getElementById("indVarFrame");
-  msiInitializeEditorForElement(indEditor, theStringSource, true);
+//  msiInitializeEditorForElement(indEditor, theStringSource, true);
   var depEditor = document.getElementById("depVarFrame");
-  msiInitializeEditorForElement(depEditor, theStringSource, true);
+//  msiInitializeEditorForElement(depEditor, theStringSource, true);
+
+  var editorInitializer = new msiEditorArrayInitializer();
+  editorInitializer.addEditorInfo(indEditor, theStringSource, true);
+  editorInitializer.addEditorInfo(depEditor, theStringSource, true);
+  editorInitializer.doInitialize();
 
 ////SLS the following copied from editor.js
 //  gSourceContentWindow = document.getElementById("content-frame");

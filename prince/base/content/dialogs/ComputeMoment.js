@@ -38,29 +38,34 @@ function Startup(){
 //    center.setAttribute("label", data.label);
 //  }
 
-  var theStringSource = GetComputeString("Moment.defaultDegree");
-  try
-  {
-    var degreeEditorControl = document.getElementById("degree-frame");
-    msiInitializeEditorForElement(degreeEditorControl, theStringSource, true);
-  }
-  catch(exc) {dump("In Startup for ComputeMoment dialog, error initializing editor degree-frame: [" + exc + "].\n");}
+  var theStringSource1 = GetComputeString("Moment.defaultDegree");
+//  try
+//  {
+  var degreeEditorControl = document.getElementById("degree-frame");
+//    msiInitializeEditorForElement(degreeEditorControl, theStringSource, true);
+//  }
+//  catch(exc) {dump("In Startup for ComputeMoment dialog, error initializing editor degree-frame: [" + exc + "].\n");}
 
-  theStringSource = GetComputeString("Moment.defaultOrigin");
-  try
-  {
-    var originEditorControl = document.getElementById("origin-frame");
-    originEditorControl.mInitialDocObserver = new Array(1);
-//    originEditorControl.mInitialDocObserver = new Array(2);
-    originEditorControl.mInitialDocObserver[0] = new Object();
-    originEditorControl.mInitialDocObserver[0].mObserver = computeMomentEditorDocumentObserver;
-    originEditorControl.mInitialDocObserver[0].mCommand = "obs_documentCreated";
-//    originEditorControl.mInitialDocObserver[1] = new Object();
-//    originEditorControl.mInitialDocObserver[1].mObserver = computeMomentEditorDocumentObserver;
-//    originEditorControl.mInitialDocObserver[1].mCommand = "cmd_setDocumentModified";
-    msiInitializeEditorForElement(originEditorControl, theStringSource, true);
-  }
-  catch(exc) {dump("In Startup for ComputeMoment dialog, error initializing editor origin-frame: [" + exc + "].\n");}
+  var theStringSource2 = GetComputeString("Moment.defaultOrigin");
+//  try
+//  {
+  var originEditorControl = document.getElementById("origin-frame");
+//rwa    originEditorControl.mInitialDocObserver = new Array(1);
+//rwa//    originEditorControl.mInitialDocObserver = new Array(2);
+//rwa    originEditorControl.mInitialDocObserver[0] = new Object();
+//rwa    originEditorControl.mInitialDocObserver[0].mObserver = computeMomentEditorDocumentObserver;
+//rwa    originEditorControl.mInitialDocObserver[0].mCommand = "obs_documentCreated";
+//rwa//    originEditorControl.mInitialDocObserver[1] = new Object();
+//rwa//    originEditorControl.mInitialDocObserver[1].mObserver = computeMomentEditorDocumentObserver;
+//rwa//    originEditorControl.mInitialDocObserver[1].mCommand = "cmd_setDocumentModified";
+//    msiInitializeEditorForElement(originEditorControl, theStringSource, true);
+//  }
+//  catch(exc) {dump("In Startup for ComputeMoment dialog, error initializing editor origin-frame: [" + exc + "].\n");}
+
+  var editorInitializer = new msiEditorArrayInitializer();
+  editorInitializer.addEditorInfo(degreeEditorControl, theStringSource1, true);
+  editorInitializer.addEditorInfo(originEditorControl, theStringSource2, true);
+  editorInitializer.doInitialize();
 
 //  checkEnableControls();
 
