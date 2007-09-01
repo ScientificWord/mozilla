@@ -1003,7 +1003,7 @@ var msiColorObj =
 
     function getParaTagList(tagManager)
     {
-      return ["para","p","mathp"];
+      return ["para","p","mathp", "*|dialogbase"];
     }
     function getMarkerTagList(tagManager)
     {

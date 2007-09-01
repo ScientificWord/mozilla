@@ -32,28 +32,38 @@ function Startup(){
   captionControl.label = data.prompt[2];
 
   // Initialize our source text <editor>s
-  var theStringSource = data.initialvalue[0];
-  try
-  {
-    var varEditorControl = document.getElementById("mmlArg-var-frame");
+  var theStringSource1 = data.initialvalue[0];
+//  theStringSource1 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mi tempinput=\"true\">&#x2039;&#x203a;</mi></math>";
+//that is, by default, theStringSource1 = "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mi tempinput=\"true\">&#x2039;&#x203a;</mi></mrow></math>";
+//  try
+//  {
+  var varEditorControl = document.getElementById("mmlArg-var-frame");
 //  editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
-    msiInitializeEditorForElement(varEditorControl, theStringSource, true);
-  }
-  catch(exc) {dump("In Startup for ComputePowerSeriesArgDialog, error initializing editor mmlArg-var-frame: [" + exc + "].\n");}
-  try
-  {
-    theStringSource = data.initialvalue[1];
-    var initEditorControl = document.getElementById("mmlArg-initVal-frame");
-    msiInitializeEditorForElement(initEditorControl, theStringSource, true);
-  }
-  catch(exc) {dump("In Startup for ComputePowerSeriesArgDialog, error initializing editor mmlArg-initVal-frame: [" + exc + "].\n");}
-  try
-  {
-    theStringSource = data.initialvalue[2];
-    var termsEditorControl = document.getElementById("mmlArg-numTerms-frame");
-    msiInitializeEditorForElement(termsEditorControl, theStringSource, true);
-  }
-  catch(exc) {dump("In Startup for ComputePowerSeriesArgDialog, error initializing editor mmlArg-numTerms-frame: [" + exc + "].\n");}
+//    msiInitializeEditorForElement(varEditorControl, theStringSource, true);
+//  }
+//  catch(exc) {dump("In Startup for ComputePowerSeriesArgDialog, error initializing editor mmlArg-var-frame: [" + exc + "].\n");}
+//  try
+//  {
+  var theStringSource2 = data.initialvalue[1];
+  var initEditorControl = document.getElementById("mmlArg-initVal-frame");
+//    msiInitializeEditorForElement(initEditorControl, theStringSource, true);
+//  }
+//  catch(exc) {dump("In Startup for ComputePowerSeriesArgDialog, error initializing editor mmlArg-initVal-frame: [" + exc + "].\n");}
+//  try
+//  {
+  var theStringSource3 = data.initialvalue[2];
+  var termsEditorControl = document.getElementById("mmlArg-numTerms-frame");
+//    msiInitializeEditorForElement(termsEditorControl, theStringSource, true);
+//  }
+//  catch(exc) {dump("In Startup for ComputePowerSeriesArgDialog, error initializing editor mmlArg-numTerms-frame: [" + exc + "].\n");}
+
+  var editorInitializer = new msiEditorArrayInitializer();
+  editorInitializer.addEditorInfo(varEditorControl, theStringSource1, true);
+  editorInitializer.addEditorInfo(initEditorControl, theStringSource2, true);
+  editorInitializer.addEditorInfo(termsEditorControl, theStringSource3, true);
+  editorInitializer.doInitialize();
+
+  varEditorControl.focus();
 }
 
 function OK(){
@@ -66,14 +76,18 @@ function OK(){
   data.mathresult = new Array (3);
   for (var i=0; i<3; ++i)
   {
-    var doc = document.getElementById(mathFieldNames[i]).contentDocument;
+    var editElement = document.getElementById(mathFieldNames[i]);
+    var doc = editElement.contentDocument;
     var mathnodes = doc.getElementsByTagName("math");
     if (mathnodes.length == 0) {
       dump("Not enough math fields in input!\n");
       return false;  // should leave dialog up but doesn't seem to work
     }
     if (HasEmptyMath(mathnodes[0])) {
-      dump("math has temp input or is empty!\n");
+      var editContentFilter = new msiDialogEditorContentFilter(editElement);
+      dump("math has temp input or is empty in edit field [" + mathFieldNames[i] + "]!\n");
+      var contentStr = editContentFilter.getMarkupString();
+      dump("  Contents are: [" + contentStr + "].\n");
       data.Cancel = true;
       return false;
     }
