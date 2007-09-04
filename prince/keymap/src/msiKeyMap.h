@@ -7,6 +7,7 @@
 #include "nsCOMPtr.h"
 #include "nsHashKeys.h"
 #include "nsClassHashtable.h"
+#include "nsTArray.h"
 
 
 struct keyStruct
@@ -56,6 +57,7 @@ static msiKeyMap   *sInstance;
   
 PRUint32 VKeyStringToIndex( const nsString keyname);
 nsString VKeyIndexToString ( PRUint32 index );
+void keyArrayToString( nsTArray<PRUint32>& ka, nsString& sFile, nsClassHashtable<nsUint32HashKey, nsString>& table);
 keyNameAndCode virtKeyArray[80];
 
 private:
