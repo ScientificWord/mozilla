@@ -117,7 +117,16 @@ groupbox {
 
 .menu-list[focused="true"] {
   color: white;
+} 
+
+listitem[reserved="true"] {
+  color: red;
 }
+
+label[reserved="true"] {
+  color: red;
+}
+
 
 #ColorPicker {
   -moz-user-focus: normal;

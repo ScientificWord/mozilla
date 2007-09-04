@@ -6,11 +6,11 @@
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 
 <!DOCTYPE dialog [
-<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/tagkeyassignment.dtd" >
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/tagkeyassignments.dtd" >
 %dialogDTD;
 ]>
 
-<dialog title="Function key assignments"
+<dialog title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "startUp();"
     ondialogaccept="return onAccept();"
@@ -19,28 +19,49 @@
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/tagkeyassignments.js"/>
   <spacer/>
   <radiogroup id="keyresult" oncommand="radioswitched(this);">
-  <label>Press new keys</label>
+  <label>&newKey.label;</label>
   <hbox>
     <textbox id="newkeys" style="width: 11.5em" onkeypress="handleChar(event,this);"
-     tooltip="Enter the combination of keys to use"/>
-    <radio label="Apply tag" selected="true" value="alltaglist"/>
-    <textbox id="alltaglist" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-      completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag paratag structtag envtag othertag" 
-	    tooltiptext="Select a tag; then assign a key combination"
- 	    label="All tags"   
-      onfocus="this.select();"
-      ontextentered="assignTag(this);" />
+     tooltip="&newKey.tooltip;"/>
+    <vbox>
+      <hbox>
+        <radio id = "taglistradio" label="&tagradio.label;" selected="true" value="alltaglist"/>
+        <textbox timeout="50" id="alltaglist" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+          completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag paratag structtag envtag othertag" 
+	        tooltiptext="&alltaglist.tooltip;"
+ 	        label="&alltaglist.label;"   
+          onfocus="this.select();"
+          ontextentered="assignTag(this);" />
+      </hbox>
+      <hbox>
+        <radio label="&scriptradio.label;" selected="false" persist = "selected" value="keyscript"/>
+        <textbox id="keyscript" style="width: 16em" onkeypress=""
+          tooltip="&scripttext.tooltip;" disabled="true" persist="disabled"/>
+      </hbox>
+      <hbox>
+        <radio label="Reserve for operating system use" selected="false" persist="selected" value="reservedforOS" />
+      </hbox>
+      <button id="assignkey" label="" disabled="true" oncommand="assignKey();"/>
+    </vbox>
   </hbox>
-  <label>Current assignments</label>
+  <groupbox align="vertical" label="&currentassignment.label;">
   <hbox>
-    <textbox id="currentkeys" style="width: 11.5em" onkeypress=""
-     tooltip="The current key assignments"/>
-    <radio label="Run script" selected="false" value="keyscript"/>
-    <textbox id="keyscript" style="width: 16em" onkeypress=""
-     tooltip="Enter the script to run when the keys are pressed" disabled="true"/>
+    <listbox id="currentkeyslist" tooltip="&currentkeys.tooltip;" 
+          style="max-width:10em; max-height:50em;" onselect="selectCurrentKey(this);"  >
+    </listbox>
+    <vbox>
+      <spacer flex="1"/>
+      <label id="tagorscript" value=""/>
+      <textbox id="nameoftagorscript" multiline="true" readonly="true" value="" />
+      <spacer flex=".2"/>
+      <button id="deleteassignment" label = "" disabled="true" oncommand="deleteAssignment();"/>
+      <spacer flex="1"/>
+    </vbox>
   </hbox>
+  </groupbox>
   </radiogroup> 
 </dialog>
