@@ -731,6 +731,7 @@ function msiEditorDocumentObserver(editorElement)
             keymapper =  Components.classes["@mackichan.com/keymap/keymap_service;1"]
                                  .createInstance(Components.interfaces.msiIKeyMap);
             keymapper.loadKeyMapFile();
+            keymapper.saveKeyMaps();
           }
           catch(e) { dump("Failed to load keytables.xml -- "+e); }
         }

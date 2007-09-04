@@ -38,4 +38,10 @@ interface msiIKeyMap : nsISupports
   boolean delKeyMapping( in AString mapname, in unsigned long virtualKey,
     in boolean altKey, in boolean ctrlKey, in boolean shiftKey, in boolean metaKey, in boolean isVirtual );
   boolean saveKeyMaps();
+  // getTableKeys returns a sorted list (first on virtual key name, or character, then on alt, shift, etc.
+  // The format of the returned string is of the form:
+  // "F1-acsmv F2-csv F3-v a - --c"
+  // First comes the name or the character, then a hyphen and a subset of the characters a,c,s,m,v and r.
+  // The - stands for the hyphen character with no modifiers, --c stands for Ctrl+-, and -c is illegal
+  AString getTableKeys(in AString mapname);
 };
