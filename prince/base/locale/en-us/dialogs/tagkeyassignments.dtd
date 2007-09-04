@@ -1,0 +1,12 @@
+<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Function key assignments">
+<!ENTITY newKey.label "Press a function key">
+<!ENTITY newKey.tooltip "Enter the combination of keys to use">
+<!ENTITY tagradio.label "Apply tag">
+<!ENTITY alltaglist.tooltip "Select a tag; then assign a key combination">
+<!ENTITY alltaglist.label "All tags">
+<!ENTITY currentassignment.label "Current assignments">
+<!ENTITY currentkeys.tooltip "Currently assigned keys">
+<!ENTITY scriptradio.label "Run script">
+<!ENTITY scripttext.tooltip "Enter the script to run when the keys are pressed">
