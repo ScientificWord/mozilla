@@ -134,7 +134,7 @@ msiKeyMap::msiKeyMap() :m_fDirty(PR_FALSE),m_fFileLoaded(PR_FALSE),m_pnhp(nsnull
     {NS_LITERAL_STRING("META"),  0xE0},
     {NS_LITERAL_STRING(""),   0x00}, //sentinel for the end
   };
-  for (PRUint32 i = 0; i==0 || x[i-1].keyCode != 0; i++) virtKeyArray[i] = x[i];
+  for (PRInt32 i = 0; i==0 || x[i-1].keyCode != 0; i++) virtKeyArray[i] = x[i];
 }
 
 msiKeyMap::~msiKeyMap()
@@ -227,7 +227,7 @@ NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(PRBool *_retval)
   if (keyTables) keyTables->GetLength(&keyTableCount);
   if (keyTableCount > 0)
   {
-    for (PRUint32 i = 0; i < keyTableCount; i++)
+    for (PRInt32 i = keyTableCount-1; i >= 0; i--)
     {
       keyTables->Item(i, (nsIDOMNode **) getter_AddRefs(keyTable));
       // new keytable. Create new table in the list
@@ -442,6 +442,57 @@ NS_IMETHODIMP msiKeyMap::DelKeyMapping(const nsAString & mapname, PRUint32 virtu
 PLDHashOperator
 nsDEnumRead(const PRUint32& aKey, nsString_external * aData, void* outString);
 
+void msiKeyMap::keyArrayToString( nsTArray<PRUint32>& ka, nsString& sFile, nsClassHashtable<nsUint32HashKey, nsString>& table)
+{
+  PRUint32 len = ka.Length();
+  nsAutoString thisLine;
+  nsAutoString s;
+  nsAutoString s2;
+  nsString * pstr = nsnull;
+  PRUint32 keyCode;
+  PRBool altKey, ctrlKey, shiftKey, metaKey, vKey;
+  for (PRUint32 i = 0; i < len; i++)
+  {
+    keyStruct ks(ka[i]);
+    ks.ExtractInfo(&keyCode, &altKey, &ctrlKey, &shiftKey, &metaKey, &vKey);
+    thisLine = NS_LITERAL_STRING("    <key name=\"");
+    if (vKey)
+    {
+      s = msiKeyMap::sInstance->VKeyIndexToString(keyCode); //get the right stuff from the virtKeyArray
+      thisLine.Append(s);
+    }
+    else
+    {
+      if (keyCode == 0x26) s2 = NS_LITERAL_STRING("&amp;");    
+      else if (keyCode == 0x3c) s2 = NS_LITERAL_STRING("lt;");
+      else s2 = nsString((nsString::char_type*)&keyCode,1);
+      thisLine.Append(s2);
+    }
+    thisLine.Append(NS_LITERAL_STRING("\" "));
+    if (altKey)
+      thisLine.Append(NS_LITERAL_STRING(" alt=\"1\""));
+    if (ctrlKey)
+      thisLine.Append(NS_LITERAL_STRING(" ctrl=\"1\""));
+    if (shiftKey)
+      thisLine.Append(NS_LITERAL_STRING(" shift=\"1\""));
+    if (metaKey)
+      thisLine.Append(NS_LITERAL_STRING(" meta=\"1\""));
+    if (vKey)
+      thisLine.Append(NS_LITERAL_STRING(" vk=\"1\""));
+    if (!table.Get(ka[i], & pstr)) break;
+    if (NS_LITERAL_STRING("reserved").Equals(*pstr))
+    {
+      thisLine.Append(NS_LITERAL_STRING(" reserved=\"1\"/>\n"));
+    }
+    else
+    {
+      thisLine.Append(NS_LITERAL_STRING(">"));
+      thisLine.Append(*pstr);
+      thisLine.Append(NS_LITERAL_STRING("</key>\n"));
+    }
+    sFile.Append(thisLine);
+  }
+}
 
 /* boolean saveKeyMaps (); */
 NS_IMETHODIMP msiKeyMap::SaveKeyMaps(PRBool *_retval)
@@ -456,6 +507,7 @@ NS_IMETHODIMP msiKeyMap::SaveKeyMaps(PRBool *_retval)
   nsAutoString str;
  
   nameHashPair * p = m_pnhp;
+  nsTArray<PRUint32> keyArray;
   while (p)
   {
     str = p->m_name;
@@ -466,7 +518,9 @@ NS_IMETHODIMP msiKeyMap::SaveKeyMaps(PRBool *_retval)
     sFile += NS_LITERAL_STRING("\" keytype=\"");
     sFile += (p->m_fScript ? NS_LITERAL_STRING("script\">\n") : NS_LITERAL_STRING("char\">\n"));
   
-    p->m_table.EnumerateRead(nsDEnumRead, &(sFile));
+    p->m_table.EnumerateRead(nsDEnumRead, &(keyArray));
+    keyArray.Sort();
+    keyArrayToString(keyArray, sFile, p->m_table);
     sFile += NS_LITERAL_STRING("  </keytable>\n");
     p = p->m_pNext;
   }
@@ -517,57 +571,79 @@ NS_IMETHODIMP msiKeyMap::SaveKeyMaps(PRBool *_retval)
 
 
 PLDHashOperator
-nsDEnumRead(const PRUint32& aKey, nsString_external * aData, void* outString)
+nsDEnumRead(const PRUint32& aKey, nsString_external * aData, void* keyArray)
 {  
   keyStruct ks(aKey);
-  PRUint32 keyCode;
-  nsAutoString s;
-  nsAutoString s2;
-  s2.Assign(NS_LITERAL_STRING("1"));
-  PRBool altKey, shiftKey, ctrlKey, metaKey, virtualKey;
-  ks.ExtractInfo(&keyCode, &altKey, &ctrlKey, &shiftKey, &metaKey, &virtualKey);
-  nsString * os = (nsString *) outString;
-  nsAutoString thisLine = NS_LITERAL_STRING("    <key name=\"");
-  if (virtualKey)
-  {
-    s = msiKeyMap::sInstance->VKeyIndexToString(keyCode); //get the right stuff from the virtKeyArray
-    thisLine.Append(s);
-  }
-  else
-  {
-    if (keyCode == 0x26) s2 = NS_LITERAL_STRING("&amp;");    
-    else if (keyCode == 0x3c) s2 = NS_LITERAL_STRING("lt;");
-    else s2 = nsString((nsString::char_type*)&keyCode,1);
-    thisLine.Append(s2);
-  }
-  thisLine.Append(NS_LITERAL_STRING("\" "));
-  if (altKey)
-    thisLine.Append(NS_LITERAL_STRING(" alt=\"1\""));
-  if (ctrlKey)
-    thisLine.Append(NS_LITERAL_STRING(" ctrl=\"1\""));
-  if (shiftKey)
-    thisLine.Append(NS_LITERAL_STRING(" shift=\"1\""));
-  if (metaKey)
-    thisLine.Append(NS_LITERAL_STRING(" meta=\"1\""));
-  if (virtualKey)
-    thisLine.Append(NS_LITERAL_STRING(" vk=\"1\""));
-  PRBool fReserved;
-  if (NS_LITERAL_STRING("reserved").Equals(*aData))
-  {
-    thisLine.Append(NS_LITERAL_STRING(" reserved=\"1\"/>\n"));
-  }
-  else
-  {
-    thisLine.Append(NS_LITERAL_STRING(">"));
-//    if (virtualKey)
-      thisLine.Append(*aData);
-//    else
-//    {
-//      PRUint32 n = (PRUint32)
-    thisLine.Append(NS_LITERAL_STRING("</key>\n"));
-  }
-//  printf("&S",thisLine.get());
-  os->Append(thisLine);
+  nsTArray<PRUint32> *pka = (nsTArray<PRUint32> *)keyArray;
+  pka->AppendElements(&aKey, 1);
   return PL_DHASH_NEXT;
+}
+
+/* AString getTableKeys (in AString mapname); */
+NS_IMETHODIMP msiKeyMap::GetTableKeys(const nsAString & mapname, nsAString & _retval)
+{
+    _retval = EmptyString();
+    PRUint32 len;
+    nsAutoString strReturn;
+    nsTArray<PRUint32> keyArray;
+    nameHashPair * p = m_pnhp;
+    while (p)
+    {
+      if (p->m_name.Equals(mapname))
+      {
+        p->m_table.EnumerateRead(nsDEnumRead, &(keyArray));
+        len = keyArray.Length();
+        keyArray.Sort();
+        nsAutoString s;
+        nsAutoString s2;
+        nsAutoString strModifiers;
+        nsString * pstr = nsnull;
+        PRUint32 keyCode;
+        PRBool altKey, ctrlKey, shiftKey, metaKey, vKey;
+        for (PRUint32 i = 0; i < len; i++)
+        {
+          keyStruct ks(keyArray[i]);
+          strModifiers = EmptyString();
+          ks.ExtractInfo(&keyCode, &altKey, &ctrlKey, &shiftKey, &metaKey, &vKey);
+          if (vKey)
+          {
+            s = msiKeyMap::sInstance->VKeyIndexToString(keyCode); //get the right stuff from the virtKeyArray
+            strReturn.Append(s);
+          }
+          else
+          {
+            if (keyCode == 0x26) s2 = NS_LITERAL_STRING("&amp;");    
+            else if (keyCode == 0x3c) s2 = NS_LITERAL_STRING("lt;");
+            else s2 = nsString((nsString::char_type*)&keyCode,1);
+            strReturn.Append(s2);
+          }
+          if (altKey)
+            strModifiers.Append(NS_LITERAL_STRING("a"));
+          if (ctrlKey)
+            strModifiers.Append(NS_LITERAL_STRING("c"));
+          if (shiftKey)
+            strModifiers.Append(NS_LITERAL_STRING("s"));
+          if (metaKey)
+            strModifiers.Append(NS_LITERAL_STRING("m"));
+          if (vKey)
+            strModifiers.Append(NS_LITERAL_STRING("v"));
+          if (!p->m_table.Get(keyArray[i], & pstr)) break;
+          if (NS_LITERAL_STRING("reserved").Equals(*pstr))
+          {
+            strModifiers.Append(NS_LITERAL_STRING("r"));
+          }
+          if (!strModifiers.IsEmpty())
+          {
+            strReturn += NS_LITERAL_STRING("-");
+            strReturn += strModifiers;
+          }
+          strReturn += NS_LITERAL_STRING(" ");
+        }
+        _retval = strReturn;
+        return NS_OK;  
+      }
+      p = p->m_pNext;
+    }
+    return NS_OK;
 }
 
