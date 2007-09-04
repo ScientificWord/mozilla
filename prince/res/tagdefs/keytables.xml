@@ -90,7 +90,7 @@
     <key name=")">insertMathSymbol("&;");</key>  -->
     <key name="-">insertMathSymbol("&equiv;");</key>
     <key name="_">insertMathSymbol("&cong;");</key>
-    <key name="=">insertMathSymbol("&neq;");</key>
+    <!--key name="=">insertMathSymbol("&neq;");</key -->
     <key name="+">insertMathSymbol("&plusmn;");</key>
     <key name="w">insertMathSymbol("&approx;");</key>
     <key name="W">insertMathSymbol("&aleph;");</key>
