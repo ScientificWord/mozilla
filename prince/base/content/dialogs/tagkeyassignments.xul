@@ -14,49 +14,59 @@
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "startUp();"
     ondialogaccept="return onAccept();"
-    buttons="apply,accept,cancel" 
-    width="400px" height="300px" >
+    buttons="accept,cancel"
+    buttonlabelaccept="Save changes to file"
+    buttonlabelcancel="Done" 
+    persist="height width" >
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/tagkeyassignments.js"/>
+  <broadcaster id="dirty" disabled="true"/>
   <spacer/>
   <radiogroup id="keyresult" oncommand="radioswitched(this);">
-  <label>&newKey.label;</label>
-  <hbox>
-    <textbox id="newkeys" style="width: 11.5em" onkeypress="handleChar(event,this);"
-     tooltip="&newKey.tooltip;"/>
-    <vbox>
-      <hbox>
-        <radio id = "taglistradio" label="&tagradio.label;" selected="true" value="alltaglist"/>
-        <textbox timeout="50" id="alltaglist" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-          completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag paratag structtag envtag othertag" 
-	        tooltiptext="&alltaglist.tooltip;"
- 	        label="&alltaglist.label;"   
-          onfocus="this.select();"
-          ontextentered="assignTag(this);" />
-      </hbox>
-      <hbox>
-        <radio label="&scriptradio.label;" selected="false" persist = "selected" value="keyscript"/>
-        <textbox id="keyscript" style="width: 16em" onkeypress=""
-          tooltip="&scripttext.tooltip;" disabled="true" persist="disabled"/>
-      </hbox>
-      <hbox>
-        <radio label="Reserve for operating system use" selected="false" persist="selected" value="reservedforOS" />
-      </hbox>
-      <button id="assignkey" label="" disabled="true" oncommand="assignKey();"/>
-    </vbox>
-  </hbox>
-  <groupbox align="vertical" label="&currentassignment.label;">
+  <groupbox>
+    <caption label="Add new function key assignments"/>
+    <label>&newKey.label;</label>
+    <hbox>
+      <vbox>
+        <textbox id="newkeys" style="width: 11.5em" onkeypress="handleChar(event,this);"
+          tooltip="&newKey.tooltip;"/>
+        <vbox flex="1"/>
+      </vbox>  
+      <vbox style="width:3in">
+        <hbox>
+          <radio id = "taglistradio" label="&tagradio.label;" selected="true" value="alltaglist"/>
+          <textbox timeout="50" id="alltaglist" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+            completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag paratag structtag envtag othertag" 
+	          tooltiptext="&alltaglist.tooltip;"
+ 	          label="&alltaglist.label;"   
+            ontextentered="assignTag(this);" />
+            <!--onfocus="this.select();" -->
+        </hbox>
+        <hbox>
+          <radio id="scriptradio" label="&scriptradio.label;" selected="false" persist = "selected" value="keyscript"/>
+          <textbox id="keyscript" style="width: 16em" onkeypress=""
+            tooltip="&scripttext.tooltip;" disabled="true" persist="disabled"/>
+        </hbox>
+        <hbox>
+          <radio label="Reserve for operating system use" selected="false" persist="selected" value="reservedforOS" />
+        </hbox>
+        <button id="assignkey" label="" disabled="true" oncommand="assignKey();"/>
+      </vbox>
+    </hbox>
+  </groupbox>
+  <groupbox align="vertical" >
+  <caption label="&currentassignment.label;"/>
   <hbox>
     <listbox id="currentkeyslist" tooltip="&currentkeys.tooltip;" 
           style="max-width:10em; max-height:50em;" onselect="selectCurrentKey(this);"  >
     </listbox>
-    <vbox>
+    <vbox style="width:3.5in">
       <spacer flex="1"/>
       <label id="tagorscript" value=""/>
-      <textbox id="nameoftagorscript" multiline="true" readonly="true" value="" />
+      <textbox id="nameoftagorscript" multiline="true" readonly="true" value="" flex="1"/>
       <spacer flex=".2"/>
       <button id="deleteassignment" label = "" disabled="true" oncommand="deleteAssignment();"/>
       <spacer flex="1"/>
