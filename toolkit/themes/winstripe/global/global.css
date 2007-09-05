@@ -73,7 +73,7 @@ dialog,
 wizard,
 prefwindow {
   -moz-appearance: window;
-  background-color: #EEEEEE;
+  background-color: -moz-Dialog;
   color: -moz-DialogText;
   font: message-box;
 }
@@ -171,8 +171,8 @@ sidebarheader {
   height: 25px;
   background-color: -moz-Dialog;
   -moz-appearance: toolbox;
-  border-bottom: 2px solid transparent;
-  -moz-border-bottom-colors: ThreeDHighlight ThreeDShadow;
+  border-bottom: 1px solid ThreeDShadow;
+  border-top: 1px solid ThreeDHighlight;
 }
 
 sidebarheader > label {
@@ -183,4 +183,26 @@ sidebarheader > label {
 
 .toolbar-focustarget {
   -moz-user-focus: ignore !important;
+}
+
+/* :::::: autoscroll popup ::::: */
+
+#autoscroller {
+  height: 28px;
+  width: 28px;
+  border: none;
+  margin: -14px;
+  padding: 0;
+  background-image: url("chrome://global/skin/icons/autoscroll.png");
+  background-color: transparent;
+  background-position: right top;
+  -moz-appearance: none;
+}
+
+#autoscroller[scrolldir="NS"] {
+  background-position: right center;
+}
+
+#autoscroller[scrolldir="EW"] {
+  background-position: right bottom;
 }
