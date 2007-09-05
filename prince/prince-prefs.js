@@ -10,6 +10,10 @@ pref("nglayout.debug.disable_xul_fastload", true);
 
 pref("javascript.enabled",                  true);
 
+pref("toolkit.scrollbar.clickToScroll.scrollDelay", 100);
+pref("toolkit.scrollbar.scrollIncrement", 20);
+pref("toolkit.scrollbar.smoothscroll", true);
+
 pref("swp.defaultShell", "article/LaTeXArticleShell.sci");
 pref("swp.defaultDialogShell", "article/LaTeXDialogShell.sci");
 pref("editor.author",                       "");
