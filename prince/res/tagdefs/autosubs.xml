@@ -11,21 +11,21 @@
   <sub ctx="both" tp="subst"><pattern>|^#</pattern><data>&#x2191;</data><context/><info>0,0</info></sub>
   <sub ctx="both" tp="subst"><pattern>|v#</pattern><data>&#x2193;</data><context/><info>0,0</info></sub>
   <sub ctx="both" tp="subst"><pattern>...</pattern><data>&#x2026;</data><context/><info>0,0</info></sub>
-  <sub ctx="text" tp="sc"><pattern>.yell.</pattern><data>yell('Hey!');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.spell.</pattern><data>checkSpelling();</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.preview.</pattern><data>previewPDF();</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.it.</pattern><data>toggleTextTag('it');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.bd.</pattern><data>toggleTextTag('bold');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.em.</pattern><data>toggleTextTag('em');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.sf.</pattern><data>toggleTextTag('sf');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.lg.</pattern><data>toggleTextTag('large');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.Lg.</pattern><data>toggleTextTag('Large');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.LG.</pattern><data>toggleTextTag('LARGE');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.sec.</pattern><data>insertSectionTag('section');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.tit.</pattern><data>insertParaTag('title');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertParaTag('author');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.addr.</pattern><data>insertParaTag('address');</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.maket.</pattern><data>insertTag('maketitle');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.yell.</pattern><data>yell('Hey!',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.spell.</pattern><data>checkSpelling(true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.preview.</pattern><data>previewPDF(true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.it.</pattern><data>toggleTextTag('it',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.bd.</pattern><data>toggleTextTag('bold',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.em.</pattern><data>toggleTextTag('em',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.sf.</pattern><data>toggleTextTag('sf',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.lg.</pattern><data>toggleTextTag('large',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.Lg.</pattern><data>toggleTextTag('Large',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.LG.</pattern><data>toggleTextTag('LARGE',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.sec.</pattern><data>insertSectionTag('section',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.tit.</pattern><data>insertParaTag('title',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertParaTag('author',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.addr.</pattern><data>insertParaTag('address',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.maket.</pattern><data>insertTag('maketitle',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.lorem.</pattern><data>insertFragmentOrMacro('Lorem');</data></sub>
   <sub ctx="math" tp="sc"><pattern>sin</pattern><data>insertMathname('sin');</data></sub>
   <sub ctx="math" tp="sc"><pattern>sinh</pattern><data>insertMathname('sinh');</data></sub>
