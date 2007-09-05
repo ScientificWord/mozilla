@@ -16,26 +16,26 @@ function insertMathSymbol( s )
   doParamCommand('cmd_MSIsymbolCmd',s);
 }
 
-function insertMathunit( unit )
+function insertMathunit( unit, delSelection )
 {
-  deleteSelection();
+  if (delSelection) deleteSelection();
   var editorElement = document.getElementById("content-frame");
   insertmathunit(unit, editorElement);
 }
 
-function insertMathname( name )
+function insertMathname( name, delSelection )
 {
-  deleteSelection();
+  if (delSelection) deleteSelection();
   var editorElement = document.getElementById("content-frame");
   doInsertMathName(name, editorElement);
 }
 
-function insertTag( name )
+function insertTag( name, delSelection )
 {
   var editorElement = document.getElementById("content-frame");
   var editor = msiGetEditor(editorElement);
   var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
-  deleteSelection(); 
+  if (delSelection) deleteSelection();
   HTMLEditor.insertHTML("<"+name+"/>");
 }
   
@@ -48,43 +48,51 @@ function insertText ( textString )
   plaintextEditor.insertText( textString);
 }
 
-function checkSpelling()
+function checkSpelling(delSelection, delSelection)
 {
-  deleteSelection(); msiGoDoCommand('cmd_spelling');
+  if (delSelection) deleteSelection(); 
+  msiGoDoCommand('cmd_spelling');
 }
 
-function toggleTextTag( tagname )
+function toggleTextTag( tagname, delSelection )
 {
-  deleteSelection(); msiDoStatefulCommand('cmd_texttag', tagname );
+  if (delSelection) deleteSelection();
+  msiDoStatefulCommand('cmd_texttag', tagname );
 }
 
-function insertParaTag( tagname )
+function insertParaTag( tagname, delSelection )
 {
-  deleteSelection(); msiDoStatefulCommand('cmd_paratag', tagname );
+  if (delSelection) deleteSelection();
+  msiDoStatefulCommand('cmd_paratag', tagname );
 }
 
-function insertSectionTag( tagname )
+function insertSectionTag( tagname, delSelection )
 {
-  deleteSelection(); msiDoStatefulCommand('cmd_structtag', tagname );
+  if (delSelection) deleteSelection();
+  msiDoStatefulCommand('cmd_structtag', tagname );
 }
 
-function yell ( textString )
+function yell ( textString, delSelection )
 {
-  deleteSelection(); alert(textString);
+  if (delSelection) deleteSelection();
+  alert(textString);
 }
 
-function insertFragmentOrMacro( name )
+function insertFragmentOrMacro( name, delSelection )
 {
-  deleteSelection(); onMacroOrFragmentEntered( name );
+  if (delSelection) deleteSelection();
+  onMacroOrFragmentEntered( name );
 }
   
-function previewPDF()
+function previewPDF(delSelection)
 {
-  deleteSelection(); printTeX(true,true);
+  if (delSelection) deleteSelection();
+  printTeX(true,true);
 }
 
-function previewDVI()
+function previewDVI(delSelection)
 {
-  deleteSelection(); printTeX(false,true);
+  if (delSelection) deleteSelection();
+  printTeX(false,true);
 }
 
