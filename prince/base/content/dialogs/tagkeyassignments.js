@@ -6,6 +6,17 @@ function clear(event)
   event.preventDefault();
 }
 
+function clearInputs()
+{
+// clear the values of the script input box and the tag selection
+  document.getElementById("keyresult").selectedIndex = 0;
+  document.getElementById("alltaglist").value = "";
+  document.getElementById("alltaglist").disabled = false;
+  document.getElementById("keyscript").value = "";
+  document.getElementById("keyscript").disable = true;
+  
+}
+
 function handleChar(event, object)
 {
   var key=event.keyCode;
@@ -17,6 +28,7 @@ function handleChar(event, object)
     clear(event);
     return;
   }
+  clearInputs();
   var display="";
   var keycode = "F"+(event.keyCode - event.DOM_VK_F1 +1);
   if (event.shiftKey) display += "Shift+";
@@ -24,6 +36,34 @@ function handleChar(event, object)
   if (event.altKey) display += "Alt+";
   if (event.metaKey) display += "Meta+";
   display += keycode;
+  // look up the key to see if there is a current assignment
+  var reserved = new Boolean(false);
+  reserved.value = false;
+  var mapsTo = keymapper.mapKeyToScript("FKeys", event.keyCode, event.altKey, event.ctrlKey, event.shiftKey, event.metaKey, true, reserved);
+  if (reserved.value)
+  {
+    document.getElementById("keyresult").selectedIndex = 2;
+  }
+  if (mapsTo.length >0)
+  {
+    if (mapsTo.search(/toggleTextTag|insertParaTag|insertSectionTag|insertTag/) >= 0)
+    {
+      var myArray = mapsTo.match("'([a-zA-Z()]+)'");
+      if (myArray != null)
+      {
+        document.getElementById("keyresult").selectedIndex = 0;
+        document.getElementById("alltaglist").value=myArray[1];
+        document.getElementById("keyscript").disabled=true;
+      }
+    }
+    else
+    {
+      if (!reserved.value) dcoument.getElementById("keyresult").selectedIndex = 1;
+      document.getElementById("alltaglist").disabled=true;
+    }
+  }  
+  document.getElementById("keyscript").value = mapsTo;
+      
   
   // F1 and F10 are reserved, plain and shifted
 //   if ((key==event.DOM_VK_F1 || key==event.DOM_VK_F10) &&
@@ -33,7 +73,8 @@ function handleChar(event, object)
 //   }
 //   else
   document.getElementById("newkeys").value = display;
-  document.getElementById("assignkey").disabled = false;
+  document.getElementById("assignkey").disabled = display.length > 0?false:true;
+  document.getElementById("assignkey").label = "Assign action to "+display;
   event.preventDefault();
 }
 
@@ -56,6 +97,7 @@ function startUp()
 {
   document.getElementById("alltaglist").height = document.getElementById("keyscript").height;
  // Build the list of key combinations that have been assigned values or have been reserved
+  clearInputs();
   keymapper =  Components.classes["@mackichan.com/keymap/keymap_service;1"]
                        .createInstance(Components.interfaces.msiIKeyMap);
   var strOfKeys = keymapper.getTableKeys("FKeys");
@@ -63,9 +105,12 @@ function startUp()
   var currKey;
   var firstPart, secondPart;
   var len = keylist.length;
-  var i;   
+  var i,j;   
   var keyParts;
   var popup = document.getElementById("currentkeyslist");
+  var cnt = popup.getRowCount();
+  for (j=cnt-1; j>= 0; j--)
+    popup.removeItemAt(j);
   for (i = 0; i < len; i++)
   {
     currKey = keylist[i];
@@ -111,24 +156,28 @@ function assignTag( obj )
   var editor = msiGetEditor(editorElement);
   var tag = obj.value;
   var tagmanager = editor.tagListManager;
+  var command="";
   var data="";
   var tagclass = tagmanager.getClassOfTag(tag,null);
   if (tagclass == "texttag")
-    data = "toggleTextTag('"+tag+"');";
+    data = "toggleTextTag('"+tag+"',false);";
   else if (tagclass == "paratag")
-    data = "insertParaTag('"+tag+"');";
+    data = "insertParaTag('"+tag+"',false);";
   else if (tagclass == "structtag")
-    data = "insertSectionTag('"+tag+"');";
+    data = "insertSectionTag('"+tag+"',false);";
   else
-    data = "insertTag('"+tag+"');";
+    data = "insertTag('"+tag+"',false);";
   document.getElementById("keyscript").value = data;
+  
 }
   
 
 function selectCurrentKey( amenulist )
 {
   // this code strongly depends on the fact that the only keys allowed are function keys
+  if (!amenulist) amenulist=document.getElementById("currentkeyslist");
   var keycodes = amenulist.value;
+  if (!keycodes) return;
   var alt = false;
   var ctrl = false;
   var shift = false;
@@ -152,14 +201,12 @@ function selectCurrentKey( amenulist )
     } 
     reserved.value = false;
     var mapsTo = keymapper.mapKeyToScript("FKeys", keycode, alt, ctrl, shift, meta, true, reserved);
-    // now put the value in the text box
-    document.getElementById("keyscript").value = mapsTo;
     // now if this is a command to change a tag, put the tag in the other text box and set the radio button
     // this needs to be made more robust. My regular expressions for finding the whole pattern didn't work.
     var button = document.getElementById("deleteassignment");
     button.disabled = false;
     button.label = "Delete assignment for " + amenulist.selectedItem.label;
-    if (mapsTo.search("msiDoStatefulCommand") == 0)
+    if (mapsTo.search(/toggleTextTag|insertParaTag|insertSectionTag|insertTag/) >= 0)
     {
       var myArray = mapsTo.match("'([a-zA-Z()]+)'");
       if (myArray != null)
@@ -206,15 +253,16 @@ function deleteAssignment()
       if (secondPart[i] == "m"[0]) meta = true;
     } 
     keymapper.delKeyMapping("FKeys", keycode, alt, ctrl, shift, meta, true);
-    keymapper.saveKeyMaps();
+//    keymapper.saveKeyMaps();
     list.removeItemAt(list.selectedIndex);
   }
+  selectCurrentKey(); // updates the other list box if necessary
 }
     
  
 function assignKey()
 {
-  return;
+//  return;
   // parse the contents of the text box with id="newkeys"
   var keyname = document.getElementById("newkeys").value;
   var alt = false;
@@ -224,22 +272,22 @@ function assignKey()
   if (keyname.search(/Alt\+/) >= 0)
   {
     alt=true;
-    keyname = keyname.Replace("Alt+","");
+    keyname = keyname.replace("Alt+","");
   }
   if (keyname.search(/Ctrl\+/) >= 0)
   {
     ctrl=true;
-    keyname = keyname.Replace("Ctrl+","");
+    keyname = keyname.replace("Ctrl+","");
   }
   if (keyname.search(/Shift\+/) >= 0)
   {
     shift=true;
-    keyname = keyname.Replace("Shift+","");
+    keyname = keyname.replace("Shift+","");
   }
   if (keyname.search(/Meta\+/) >= 0)
   {
     meta=true;
-    keyname = keyname.Replace("Meta+","");
+    keyname = keyname.replace("Meta+","");
   }
   // now keyname should just be Fn
   if (keyname.length == 0 || keyname[0] != "F"[0]) return;
@@ -257,8 +305,14 @@ function assignKey()
   }
   else data = document.getElementById("keyscript").value;
   keymapper.addScriptMapping("FKeys", keycode, alt, ctrl, shift, meta, true, data);
-  keymapper.saveKeyMaps();
+//  keymapper.saveKeyMaps();
+  selectCurrentKey(); // updates the other list box if necessary
   startUp(); //reloads everything
 }
   
-   
+function onAccept()
+{
+  keymapper.saveKeyMaps();
+  acceptDialog();
+  return true;
+}   
