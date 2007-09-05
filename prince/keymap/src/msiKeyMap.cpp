@@ -401,6 +401,7 @@ NS_IMETHODIMP msiKeyMap::AddCharacterMapping(const nsAString & mapname, PRUint32
 NS_IMETHODIMP msiKeyMap::AddScriptMapping(const nsAString & mapname, PRUint32 virtualKey, 
   PRBool altKey, PRBool ctrlKey, PRBool shiftKey, PRBool metaKey, PRBool vk, const nsAString & theScript, PRBool *_retval)
 {
+    nsAutoPtr<nsString> newString(new nsString(theScript));
     m_fDirty = PR_TRUE;
     *_retval = PR_FALSE;
     nsString str(theScript);
@@ -409,7 +410,8 @@ NS_IMETHODIMP msiKeyMap::AddScriptMapping(const nsAString & mapname, PRUint32 vi
     {
       if (p->m_name.Equals(mapname))
       {
-        p->m_table.Put(keyStruct(virtualKey,altKey,ctrlKey,shiftKey,metaKey,vk).m_encodedInfo, &str);
+        p->m_table.Put(keyStruct(virtualKey,altKey,ctrlKey,shiftKey,metaKey,vk).m_encodedInfo, newString);
+        newString.forget();
         *_retval = PR_TRUE;
         return NS_OK;  
       }
