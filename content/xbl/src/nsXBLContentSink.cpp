@@ -112,6 +112,13 @@ nsXBLContentSink::Init(nsIDocument* aDoc,
   return rv;
 }
 
+void
+nsXBLContentSink::MaybeStartLayout()
+{
+  return;
+}
+
+
 nsresult
 nsXBLContentSink::FlushText(PRBool aCreateTextNode,
                             PRBool* aDidFlush)
