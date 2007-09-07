@@ -5608,10 +5608,10 @@ function msiDoAdvancedProperties(element, editorElement)
     var dlgParentWindow = msiGetWindowContainingEditor(editorElement);
     if (element)
     {
-      if (element.role)
+      if (element.role || element.localName == "texb")
       {
         var data = new Object();
-        if (element.role == "texbutton")
+        if (element.role == "texbutton" || element.localName == "texb")
         {
         // security restrictions prohibit calling openDialog from within XBL code,
         // but we don't want to hard-wire tag names in this code. Thus, the compromise
@@ -5620,12 +5620,12 @@ function msiDoAdvancedProperties(element, editorElement)
         // as a role, and currently that role is played by texb tags, but any other tag
         // could play this role as well. 
           try {
-            data.tex = element.value;
-            dlgParentWindow.openDialog("chrome://editor/content/texbuttoncontents.xul","_blank","chrome,close,titlebar,resizable=yes,modal", data);
+            data.tex = element.firstChild.nodeValue;
+            dlgParentWindow.openDialog("chrome://prince/content/texbuttoncontents.xul","_blank","chrome,close,titlebar,resizable=yes,modal", data);
             editorElement.contentWindow.focus();
             if (!data.Cancel)
             {
-              element.value = data.tex;
+              element.firstChild.nodeValue = data.tex;
             }
           }
           catch (e)
