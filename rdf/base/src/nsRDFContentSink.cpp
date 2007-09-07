@@ -158,6 +158,7 @@ public:
     NS_DECL_NSIEXPATSINK
 
     // nsIContentSink
+    NS_IMETHOD WillTokenize(void);
     NS_IMETHOD WillBuildModel(void);
     NS_IMETHOD DidBuildModel(void);
     NS_IMETHOD WillInterrupt(void);
@@ -600,6 +601,13 @@ RDFContentSinkImpl::ReportError(const PRUnichar* aErrorText,
 
 ////////////////////////////////////////////////////////////////////////
 // nsIContentSink interface
+NS_IMETHODIMP 
+RDFContentSinkImpl::WillTokenize(void)
+{
+    return NS_OK;
+}
+
+
 
 NS_IMETHODIMP 
 RDFContentSinkImpl::WillBuildModel(void)
