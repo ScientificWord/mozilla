@@ -140,7 +140,7 @@ static NS_DEFINE_CID(kDOMEventGroupCID, NS_DOMEVENTGROUP_CID);
 
 #include "nsICharsetAlias.h"
 #include "nsIParser.h"
-
+#include "nsIContentSink.h"
 #include "nsDateTimeFormatCID.h"
 #include "nsIDateTimeFormat.h"
 #include "nsEventDispatcher.h"
@@ -4169,6 +4169,16 @@ nsDocument::CreateEventGroup(nsIDOMEventGroup **aInstancePtrResult)
 void
 nsDocument::FlushPendingNotifications(mozFlushType aType)
 {
+  // Determine if it is safe to flush the sink notifications
+  // by determining if it safe to flush all the presshells.
+  if ((aType & Flush_Content) && mParser &&
+      (!(aType & Flush_SinkNotifications) || IsSafeToFlush())) {
+    nsCOMPtr<nsIContentSink> sink = mParser->GetContentSink();
+    if (sink) {
+      sink->FlushPendingNotifications(aType);
+    }
+  }
+
   nsPIDOMWindow *window = GetWindow();
 
   if (aType == (aType & (Flush_Content | Flush_SinkNotifications)) ||
