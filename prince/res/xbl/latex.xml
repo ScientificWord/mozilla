@@ -37,12 +37,12 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <sw:button class="texbutton">
+      <sw:button class="texbutton" >
         <html:label>
           <sw:tex2>T<sw:texe>E</sw:texe>X</sw:tex2>
         </html:label>
       </sw:button>
-      <sw:texbdata anonid = "data" ><xbl:children/></sw:texbdata>
+      <xbl:children/>
     </xbl:content>
     
     <xbl:implementation>
