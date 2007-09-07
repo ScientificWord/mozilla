@@ -20,6 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Henri Sivonen <hsivonen@iki.fi>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -64,13 +65,23 @@ public:
   NS_DECLARE_STATIC_IID_ACCESSOR(NS_ICONTENT_SINK_IID)
 
   /**
+   * This method gets called before the nsParser calls tokenize.
+   * This is needed because the XML side actually builds
+   * the content model as part of the tokenization and
+   * not on BuildModel(). The XML side can use this call
+   * to do stuff that the HTML side does in WillProcessTokens().
+   *
+   * @update 2006-10-17 hsivonen
+   */
+  NS_IMETHOD WillTokenize(void)=0;
+  
+  /**
    * This method gets called when the parser begins the process
    * of building the content model via the content sink.
    *
    * @update 5/7/98 gess
-   */     
+  */
   NS_IMETHOD WillBuildModel(void)=0;
-
   /**
    * This method gets called when the parser concludes the process
    * of building the content model via the content sink.

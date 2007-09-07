@@ -93,6 +93,12 @@ void WriteTabs(PRFileDesc * out,int aTabCount) {
     PR_fprintf(out, "  ");
 }
 
+NS_IMETHODIMP
+nsLoggingSink::WillTokenize() {
+  return NS_OK;
+}
+
+
 
 NS_IMETHODIMP
 nsLoggingSink::WillBuildModel() {
