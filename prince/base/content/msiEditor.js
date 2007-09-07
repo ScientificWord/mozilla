@@ -4710,15 +4710,15 @@ function FillInHTMLTooltip(tooltip)
  
 // handle events on prince-specific elements here, or call the default goDoCommand() 
 function goDoPrinceCommand (cmdstr, element, editorElement) 
-{ dump ("SMR msiEditor.js got doPrinceCommand " +  element.localName.toLowerCase() + " " + element.getAttribute("msigraph") + "\n");
+{ dump ("SMR msiEditor.js got doPrinceCommand " +  element.localName + " " + element.getAttribute("msigraph") + "\n");
   try
   {
     if (!editorElement)
       editorElement = findEditorElementForDocument(element.ownerDocument);
 
-    var elementName = element.localName.toLowerCase();
+    var elementName = element.localName;
     if (elementName == "object")
-      elementName = element.parentNode.localName.toLowerCase();
+      elementName = element.parentNode.localName;
     if ((elementName == "img") || (elementName=="graph"))
     {
       var bIsGraph = (element.getAttribute("msigraph") == "true");
@@ -4741,7 +4741,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
 //      else
 //        dump("In goDoPrinceCommand, bIsGraph is false.\n");
     }
-    else if ((element.localName.toLowerCase() == "object") && (element.getAttribute("msigraph") == "true"))
+    else if ((element.localName == "object") && (element.getAttribute("msigraph") == "true"))
     {      dump ("SMR msiEditor.js got double click on msigraph object\n");
       var theWindow = window;
       if (!("graphClickEvent" in theWindow))
