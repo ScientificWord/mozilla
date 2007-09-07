@@ -73,6 +73,7 @@ REQUIRES	= xpcom \
 		  prefetch \
 		  xuldoc \
 		  uriloader \
+		  util \
 		  $(NULL)
 
 EXPORTS		= \
