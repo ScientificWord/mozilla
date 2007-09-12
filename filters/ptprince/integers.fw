@@ -85,6 +85,7 @@ MakeIntegerParameter("spacefactor",       &Global::spacefactor);
 MakeIntegerParameter("msi@@dobraces",     &Global::msidobraces);
 MakeIntegerParameter("msi@@dollar",       &Global::msidollar);
 MakeIntegerParameter("msi@@output",       &Global::msioutput);
+MakeIntegerParameter("msi@@output",       &Global::msitraceall);
 @}
 
 @$@<Basic assignment commands@>+=@{@-

@@ -45,13 +45,13 @@ void ScanBox()
       ScanBoxSpec();
       NewLevel(VBOX_GROUP);
       ts.StartBox();
-      ts.AppendTag("{");
+      //ts.AppendTag("{");
       LOG("\nStart vbox");
    } else if (CurCmdCode() == CMD_HBOX){
       ScanBoxSpec();
       NewLevel(HBOX_GROUP);
       ts.StartBox();
-      ts.AppendTag("{");
+      //ts.AppendTag("{");
       LOG("\nStart hbox");
    } else if (CurCmdCode() == CMD_LASTBOX){
       LOG("\nUnimplemented handling of \\lastbox assignment");
@@ -70,7 +70,7 @@ case CMD_HBOX:
       new IntRestoration(&Global::msidollar, "msidollar"), false);
    Global::msidollar = '$';
    ts.StartBox();
-   ts.AppendTag("{");
+   //ts.AppendTag("{");
    Typesetter::GotoHMode();
    Typesetter::SetInner(true);
    LOG("\nStart hbox");
@@ -85,7 +85,7 @@ case CMD_VBOX:
    ScanBoxSpec();
    NewLevel(VBOX_GROUP);
    ts.StartBox();
-   ts.AppendTag("{");
+   //ts.AppendTag("{");
    Typesetter::GotoVMode();
    Typesetter::SetInner(true);
    LOG("\nStart vbox");
