@@ -83,6 +83,7 @@ static int spacefactor;
 static int msidobraces;
 static int msidollar;
 static int msioutput;
+static int msitraceall;
 @}
 
 
@@ -151,6 +152,7 @@ int Global::spacefactor;
 int Global::msidobraces;
 int Global::msidollar;
 int Global::msioutput;
+int Global::msitraceall;
 @}
 
 

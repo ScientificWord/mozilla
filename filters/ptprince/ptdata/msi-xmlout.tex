@@ -163,6 +163,11 @@
 
 
 
+%% Citations and cross refs
+
+
+\def\out@citex[#1]#2{\msiopentag{cite}{<cite>}#2\msiclosetag{cite}{</cite>}}
+\def\out@citey#1{\msiopentag{cite}{<cite>}#1\msiclosetag{cite}{</cite>}}
 
 
 
@@ -199,7 +204,9 @@
 }
 
 
-\def\out@bibitemA[#1]#2{
+
+
+\def\out@bibitemA[#1]#2{%
    \if@first@item
      \@first@itemfalse
    \else
@@ -209,13 +216,13 @@
    \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
 }
 
-\def\out@bibitemB#1{
+\def\out@bibitemB#1{%
    \if@first@item
      \@first@itemfalse
    \else
      \msiclosetag{bibitem}{</bibitem>}%
    \fi
-   \br\msihmode\msiopentag{bibitem}{<bibitem ref="#1">}%
+   \msitag{^^0a}\msiopentag{bibitem}{<bibitem ref="#1">}%
 }
 
 
@@ -231,7 +238,11 @@
 \def\msi@begin@description{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{description}{<description>}}
 \def\msi@end@description{\br\msiclosetag{description}{</description>}}
 
+\def\msi@begin@thebibliography#1{%
+  \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue \msiopentag{thebibliography}{<thebibliography>}%
+}
 
+\def\msi@end@thebibliography{\br\msiclosetag{description}{</description>}}
 
 
 \def\msi@thm@like#1{}

@@ -140,12 +140,12 @@ int main(int argc, char* argv[])
       InputByteFile* pbf = new InputByteFile;
       pbf -> Open(fn);
 
-      // Open a tap file for holding defs
-      std::string tappath = fn.GetAreaString();
-      s_tapfilename = fn.GetNameString();
-      s_tapfilename += "-defs.tex";
-      tappath += s_tapfilename;
-      s_tapfile.open(tappath.c_str());
+      // // Open a tap file for holding defs
+      // std::string tappath = fn.GetAreaString();
+      // s_tapfilename = fn.GetNameString();
+      // s_tapfilename += "-defs.tex";
+      // tappath += s_tapfilename;
+      // s_tapfile.open(tappath.c_str());
 
       s_bTapped = false;
       const char* filter = "latin1";
