@@ -2218,7 +2218,7 @@ protected:
 private:
    // Do not implement
    OutputByteStream(const OutputByteStream&);
-   OutputByteStream& OutputByteStream& operator=(const OutputByteStream&);
+   OutputByteStream& operator=(const OutputByteStream&);
 };
 ]fwetx=%
 \fwcdef 
@@ -2557,7 +2557,7 @@ public:
    void Write(String& str);
 private:
    OutputByteFile(const OutputByteFile&);
-   operator=(const OutputByteFile&);
+   OutputByteFile& operator=(const OutputByteFile&);
 };
 ]fwetx=%
 \fwcdef 
@@ -5076,7 +5076,7 @@ static int s_paramno = 0; // Used to print  #1, #2, etc
 
 \fwbeginmacro
 \fwmacroname{TeXToken logging imp}{162}\fwplusequals \fwodef \fwbtx[#ifdef LOGGING
-static s_bLogSymbolNumber = false;
+static bool s_bLogSymbolNumber = false;
 
 LogFile& operator<<(LogFile& f, const TeXToken& tt)
 {
@@ -15848,13 +15848,13 @@ NewPrimitive("lastbox", CMD_LASTBOX);
       ScanBoxSpec();
       NewLevel(VBOX_GROUP);
       ts.StartBox();
-      ts.AppendTag("{");
+      //ts.AppendTag("{");
       LOG("\nStart vbox");
    } else if (CurCmdCode() == CMD_HBOX){
       ScanBoxSpec();
       NewLevel(HBOX_GROUP);
       ts.StartBox();
-      ts.AppendTag("{");
+      //ts.AppendTag("{");
       LOG("\nStart hbox");
    } else if (CurCmdCode() == CMD_LASTBOX){
       LOG("\nUnimplemented handling of \\lastbox assignment");
@@ -15880,7 +15880,7 @@ NewPrimitive("lastbox", CMD_LASTBOX);
       new IntRestoration(&Global::msidollar, "msidollar"), false);
    Global::msidollar = '$';
    ts.StartBox();
-   ts.AppendTag("{");
+   //ts.AppendTag("{");
    Typesetter::GotoHMode();
    Typesetter::SetInner(true);
    LOG("\nStart hbox");
@@ -15902,7 +15902,7 @@ NewPrimitive("lastbox", CMD_LASTBOX);
    ScanBoxSpec();
    NewLevel(VBOX_GROUP);
    ts.StartBox();
-   ts.AppendTag("{");
+   //ts.AppendTag("{");
    Typesetter::GotoVMode();
    Typesetter::SetInner(true);
    LOG("\nStart vbox");
@@ -16701,7 +16701,8 @@ Now we want to remove surrounding braces if the parameter consists
 of a single group.
 
 \fwbeginmacro
-\fwmacroname{Tidy up parameter}{651}\fwequals \fwodef \fwbtx[if ((CURRENT_PARAM -> front().Type() == TT_LEFT_BRACE) &&
+\fwmacroname{Tidy up parameter}{651}\fwequals \fwodef \fwbtx[if ((CURRENT_PARAM -> size() > 1) && 
+    (CURRENT_PARAM -> front().Type() == TT_LEFT_BRACE) &&
     (CURRENT_PARAM -> back().Type() == TT_RIGHT_BRACE)){
    CURRENT_PARAM -> pop_front();
    CURRENT_PARAM -> pop_back();
@@ -20994,12 +20995,12 @@ int main(int argc, char* argv[])
       InputByteFile* pbf = new InputByteFile;
       pbf -> Open(fn);
 
-      // Open a tap file for holding defs
-      std::string tappath = fn.GetAreaString();
-      s_tapfilename = fn.GetNameString();
-      s_tapfilename += "-defs.tex";
-      tappath += s_tapfilename;
-      s_tapfile.open(tappath.c_str());
+      // // Open a tap file for holding defs
+      // std::string tappath = fn.GetAreaString();
+      // s_tapfilename = fn.GetNameString();
+      // s_tapfilename += "-defs.tex";
+      // tappath += s_tapfilename;
+      // s_tapfile.open(tappath.c_str());
 
       s_bTapped = false;
       const char* filter = "latin1";
