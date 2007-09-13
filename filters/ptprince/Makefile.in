@@ -94,7 +94,7 @@ include $(topsrcdir)/config/config.mk
 
 include $(topsrcdir)/config/rules.mk
 
-$(CPPSRCS):
+$(CPPSRCS):$(FWSRCS)
 	-$(srcdir)/funnelweb +t +D tex
 
 # why doesn't this work?
