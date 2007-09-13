@@ -119,9 +119,7 @@ alternative would be to write something like
        friend LogFile& operator<<(LogFile&, int);
        friend LogFile& operator<<(LogFile&, TeXChar);
    };
-   #define LOG(X) if(Global::msitraceall) {\
-                     LogFile::TheLog() << X; LogFile::Flush();\
-                  }
+  #define LOG(X) LogFile::TheLog() << X; LogFile::Flush()
 #else
    #define LOG(X)
 #endif
