@@ -57,3 +57,14 @@ graphSpec {
 
 * [msiunit="true"] { color: green; }
 * [msimathname="true"] {color: gray; }
+
+
+mml|mi[tempinput="true"]::before {
+  content: "["; /*url("resource://app/res/css/lefttempinput.png"); */
+}
+mml|mi[tempinput="true"]::after {
+  content: "]"; /*url("resource://app/res/css/righttempinput.png");*/
+}
+/* mml|mi[tempinput="true"]{
+  -moz-math-font-style: normal !important;
+}  */

@@ -1720,8 +1720,9 @@ nsFrame::IsSelectable(PRBool* aSelectable, PRUint8* aSelectStyle) const
     *aSelectable = (selectStyle != NS_STYLE_USER_SELECT_NONE);
   if (aSelectStyle)
     *aSelectStyle = selectStyle;
-  if (mState & NS_FRAME_GENERATED_CONTENT)
-    *aSelectable = PR_FALSE;
+    // BBM - I commented out the next two lines to improve selectability
+//  if (mState & NS_FRAME_GENERATED_CONTENT)
+//    *aSelectable = PR_FALS
   return NS_OK;
 }
 
