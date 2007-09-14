@@ -203,6 +203,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddString(const nsAString & st
 {
   stringStringArray * pssa = m_stringArrays;
   nsString str;
+  *_retval = PR_TRUE;
   nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
   if (!psa) // string category was not found, add a new one
   {
