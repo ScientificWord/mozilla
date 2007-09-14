@@ -87,9 +87,11 @@ msiInputboxCaret::Accept(nsIEditor *editor, PRUint32 flags, nsIDOMNode ** node, 
   if (node && m_mathmlNode)
   {
     nsCOMPtr<nsIDOMNode> child;
-    msiUtils::GetChildNode(m_mathmlNode, 0, child);  // get text node child.
-    *node = child;
-    *offset = 1;
+//    msiUtils::GetChildNode(m_mathmlNode, 0, child);  // get text node child.
+//    *node = child;
+//    *offset = 1;
+    *node = m_mathmlNode;
+    *offset = 0;
     NS_ADDREF(*node);
     res = NS_OK;
   }  
