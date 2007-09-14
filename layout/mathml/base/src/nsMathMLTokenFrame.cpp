@@ -308,7 +308,12 @@ nsMathMLTokenFrame::SetTextStyle(nsPresContext* aPresContext)
     // bug 65951 - a non-stylable character has its own intrinsic appearance
     fontstyle.AssignLiteral("invariant");
   }
-  if (fontstyle.IsEmpty()) {
+  // BBM Do not set to italics if this is a tempinput box
+  nsAutoString tempinput;
+  if (GetAttribute(mContent, mPresentationData.mstyle, nsMathMLAtoms::tempinput_, tempinput)&&
+    tempinput.EqualsLiteral("true")) 
+    fontstyle.AssignASCII("normal");
+  else if (fontstyle.IsEmpty()) {
     fontstyle.AssignASCII((1 == length) ? "italic" : "normal"); 
   }
 
