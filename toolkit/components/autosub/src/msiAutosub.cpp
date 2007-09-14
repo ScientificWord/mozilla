@@ -194,9 +194,6 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
     }
     NS_QuickSort(autosubarray, arraylength, sizeof(autosubentry), compare, nsnull);
   }
-  PRBool fSaved; //  These three lines are for testing only
-  AddEntry(NS_LITERAL_STRING("foo"), msiIAutosub::CONTEXT_TEXTONLY, msiIAutosub::ACTION_SUBSTITUTE, NS_LITERAL_STRING("bar"), NS_LITERAL_STRING(""), NS_LITERAL_STRING(""), &fSaved); 
-  Save(&fSaved);
   return NS_OK;
 }
 
