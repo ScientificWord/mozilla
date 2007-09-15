@@ -89,9 +89,11 @@ public:
    TeXChar chGet();
    void    Putback(TeXChar c);
    int     nRemaining() const; // How many chars left in line?
-   TeXChar chPeek(int n = 0);   // Peek ahead n chars
+   TeXChar chPeek(int n = 0) const;   // Peek ahead n chars
+   bool    bPeek(const char* str) const; // See if str comes next
    void    SkipToEnd();
    TeXChar operator[](int) const;
+   void    StripTCIMEnd();
 };
 @};
 
@@ -121,9 +123,9 @@ struct LineOfTextData {
         m_cursor(0)
         // m_cursor(m_line.begin())
    {}
+   
 };
 @}
-
 
 @$@<LineOfText implementation@>+=@{@-
 
@@ -192,9 +194,47 @@ int LineOfText::nRemaining() const
    return ( (m_lineData -> m_line.length()) - (m_lineData -> m_cursor) );
 }
 
-TeXChar LineOfText::chPeek(int n /* = 0*/)
+TeXChar LineOfText::chPeek(int n /* = 0*/) const
 {
    return m_lineData -> m_line[m_lineData -> m_cursor + n];
+}
+
+bool LineOfText::bPeek(const char* str) const
+{
+  //LOG("n\nRemaining == " << nRemaining());
+  if (nRemaining() < strlen(str)){
+      return false;
+  }else{
+      for (int i = 0; i < strlen(str); ++i)
+      {
+         //LOG("i == " << i << ",  chPeek(i) == " << 
+         //    chPeek(i) << ",  str[i] == " << str[i]);
+         if (chPeek(i) != str[i])
+           return false;
+      }
+      // Found str, remove from line
+      m_lineData -> m_cursor += strlen(str);
+      return true;
+  }
+}
+
+
+void LineOfText::StripTCIMEnd()
+{
+   std::basic_string<TeXChar>& str = m_lineData -> m_line;
+   int n = str.length();
+   std::string realstring;
+   for (int i = 0; i < str.length(); ++i){
+      realstring += (char)str[i];
+   }
+   LOG("\nStrip string: " << realstring.c_str());
+   if ( (str[n-2] == (TeXChar)'%')  && (str[n-3] == (TeXChar)'}')){
+      str.erase(n-3, 2);
+   } else {
+      // Shouldn't happen normally
+      LOG("\nStrip: ." << (char)str[n-3] << "." << (char)str[n-1]);
+      ASSERT(false);
+   }
 }
 
 @}
@@ -210,6 +250,18 @@ TeXChar LineOfText::chPeek(int n /* = 0*/)
        return f;
    }
 #endif
+@}
+
+@$@<LineOfText implementation@>+=@{@-
+bool CopyLine(LineOfText* src, LineOfText* dst)
+{
+    while (!src -> bEmpty()){
+      dst -> Append( src -> chGet() ); 
+    }
+    
+    return true;
+}
+
 @}
 
 
@@ -653,14 +705,23 @@ class and converts it to a sequence of @{LinesOfText@}.
 
 @$@<class LineSource@>==@{@-
 class LineSource {
+public:
+   enum TCIMState {TCIM_OUTSIDE, TCIM_INHEAD, TCIM_INEXP};
+
 private:
    CharStream& m_charStream;
-
+   TCIMState m_tcimState;
+   LineOfText* m_held;
+   
 public:
    LineSource(CharStream&);
    ~LineSource();
    bool bEmpty() const;
    bool GetLine(LineOfText* line);
+   bool GetRawLine(LineOfText* pLine);
+   bool ScanALine(LineOfText* pLine);
+   
+   
 private:
    // Unimplemented
    LineSource(const LineSource&);
@@ -671,7 +732,7 @@ private:
 
 @$@<LineSource implementation@>+=@{@-
 LineSource::LineSource(CharStream& cs)
-   : m_charStream(cs)
+   : m_charStream(cs), m_tcimState(TCIM_OUTSIDE), m_held(0)
 {
 }
 @}
@@ -699,13 +760,9 @@ the system uses.
 @$@<LineSource implementation@>+=@{@-
 const TeXChar LINE_END = 0x000A;
 
-bool LineSource::GetLine(LineOfText* pLine)
+
+bool LineSource::ScanALine(LineOfText* pLine)
 {
-   ASSERT(pLine != 0);
-   if (m_charStream.bEOS()){
-      return false;
-   }
-   pLine -> Clear();
    while (true){
       TeXChar ch = m_charStream.Get();
       if (ch == LINE_END){
@@ -722,6 +779,63 @@ bool LineSource::GetLine(LineOfText* pLine)
    // a line end character or not, so I'll
    // remove this for now.
    //pLine -> Append(LINE_END);
+   
+   return true;
+}
+
+bool LineSource::GetRawLine(LineOfText* pLine)
+{
+   ASSERT(pLine != 0);
+   if (m_charStream.bEOS()){
+      return false;
+   }
+   pLine -> Clear();
+   ScanALine(pLine);
+}
+
+bool LineSource::GetLine(LineOfText* pLine)
+{
+   if (m_held != 0){
+      pLine -> Clear();
+      CopyLine(m_held, pLine);
+      delete m_held;
+      m_held = 0;
+      return true;
+   }
+   
+   if (!GetRawLine(pLine))
+      return false;
+   
+   // Adjust for TCIMACROs
+          if (pLine -> bPeek("%TCIMACRO{")){
+              LOG("\nTCIMACRO START");
+              // scan ahead removing leading % until a line starts
+              // with %BeginExpansion or a non %. Then remove 
+              // the preceeding brace-percent
+              while (true){
+                LineOfText* pNextLine = new LineOfText;
+                if ( GetRawLine(pNextLine) ){
+                    if ( pNextLine -> bPeek("%BeginExpansion") ) {
+                       LOG("\nFound BeginExpansion");
+                       pLine -> StripTCIMEnd();
+                       do{
+                         GetRawLine(pNextLine);
+                       } while (!pNextLine -> bPeek("%EndExpansion"));
+                       delete pNextLine;                       
+                       break;
+                    } else if ( pNextLine -> bPeek("%" )) {
+                       CopyLine (pNextLine, pLine); 
+                       delete pNextLine;
+                    } else {
+                       pLine -> StripTCIMEnd();
+                       m_held = pNextLine;
+                    }
+                }
+                 
+              }               
+          }
+     
+    
    return true;
 }
 @}
