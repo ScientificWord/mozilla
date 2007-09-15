@@ -183,9 +183,26 @@ public:
    bool bEmpty() const;
    void GetToken(TeXToken*);
    TeXChar GetNextChar();
+   bool Peek(const char* str) const;
 };
 @}
 
+
+@$@<TokenizerImp implementation@>+=@{@-
+bool TokenizerImp::Peek(const char* str) const
+{
+    if (m_line.nRemaining() < strlen(str)){
+        return false;
+    }else{
+        for (int i = 0; i < strlen(str); ++i)
+        {
+           if (m_line.chPeek(i) != str[i])
+             return false;
+        }
+        return true;
+    }
+}
+@}
 
 
 @$@<TokenizerImp implementation@>+=@{@-
@@ -487,6 +504,10 @@ case CC_ACTIVE:{
 
 @$@<Tokenizer cases@>+=@{@-
 case CC_COMMENT:{
+   if ( Peek("TCIMACRO{") ){
+        LOG("\nTCIMACRO A");
+   }
+
    m_line.SkipToEnd();
    // and try again...
    m_state = STATE_NEWLINE;
