@@ -1,3 +1,5 @@
+\makeatletter
+
 %% Sectioning
 
 \newsection{part}{1}{Part \the\sectionnumber}{sectiontitle}%
@@ -54,3 +56,5 @@
 
 \immediate\openout2={my.css}
 \immediate\write2{@import url("resource://app/res/css/article.css");}
+
+\makeatother
