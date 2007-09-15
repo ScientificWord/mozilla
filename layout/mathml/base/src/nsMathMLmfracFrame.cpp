@@ -223,7 +223,7 @@ nsMathMLmfracFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
   } else {
     rv = DisplayBar(aBuilder, this, mLineRect, aLists);
   }
-
+  DisplaySelectionOverlay(aBuilder, aLists,  nsISelectionDisplay::DISPLAY_TEXT);
   return rv;
 }
 
