@@ -712,7 +712,7 @@ void PrintDefn(TokenList& tl)
       Typesetter::AppendTag(s_tapfilename.c_str());
       s_bTapped = true;
    }
-
+   
    s_tapfile << "\n";
    TokenList::const_iterator it;
 
@@ -732,7 +732,6 @@ void PrintDefn(TokenList& tl)
                } else {
                   s_tapfile  << "[chr " << (int) s[i] << "]";
                }
-
             }
             if ((s.Size() > 1) || GetCatcode(s[0] == CC_LETTER)){
                s_tapfile << " ";
@@ -771,8 +770,9 @@ void DefAssignment(CommandCode curcmd, int prefixes){
    TokenList* pTL = 0;
    MacroDef* pMD = 0;
    TokenList* pTap = new TokenList();
-   bool tapping = (Global::msioutput == 0) &&
-                  InputStack::StartTap(pTap);
+   // bool tapping = (Global::msioutput == 0) &&
+   //                InputStack::StartTap(pTap);
+   bool tapping = false;
    if (tapping){
      if (bGlobal){
        // push back \global
@@ -834,8 +834,9 @@ void EdefAssignment(CommandCode curcmd, int prefixes)
    MacroDef* pMD = 0;
 
    TokenList* pTap = new TokenList();
-   bool tapping = (Global::msioutput == 0) &&
-                  InputStack::StartTap(pTap);
+   //bool tapping = (Global::msioutput == 0) &&
+   //               InputStack::StartTap(pTap);
+   bool tapping = false;
    if (tapping){
      if (bGlobal){
        // push back \global

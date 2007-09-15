@@ -1,4 +1,4 @@
-\makeatletter
+
 
 %% Sectioning
 
@@ -11,24 +11,24 @@
 
 %% Environments
 
-\msi@environment{center}
-\msi@environment{flushleft}
-\msi@environment{flushright}
-\msi@environment{quote}
-\msi@environment{quotation}
-% Handled separately? (gp) {verbatim}
-% Handled separately? (gp) {verbatim*}
-\msi@environment{enumerate}
-\msi@environment{itemize}
-\msi@environment{description}
-\msi@environment{verse}
-\msi@environment{figure}
-\msi@environment{figure*}
-\msi@environment{table}
-\msi@environment{table*}
-\msi@environment{titlepage}
-\msi@environment{thebibliography}
-\msi@environment{theindex}
+%\newenvironment{center}
+%\newenvironment{flushleft}
+%\newenvironment{flushright}
+%\newenvironment{quote}
+%\newenvironment{quotation}
+%% Handled separately? (gp) {verbatim}
+%% Handled separately? (gp) {verbatim*}
+%\newenvironment{enumerate}
+%\newenvironment{itemize}
+%\newenvironment{description}
+%\newenvironment{verse}
+%\newenvironment{figure}
+%\newenvironment{figure*}
+%\newenvironment{table}
+%\newenvironment{table*}
+%\newenvironment{titlepage}
+%\newenvironment{thebibliography}
+%\newenvironment{theindex}
 
 %% Text tags
 
