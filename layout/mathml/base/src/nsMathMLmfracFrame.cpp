@@ -211,6 +211,7 @@ nsMathMLmfracFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
                                      const nsDisplayListSet& aLists)
 {
   /////////////
+  DisplaySelectionOverlay(aBuilder, aLists,  nsISelectionDisplay::DISPLAY_ALL);
   // paint the numerator and denominator
   nsresult rv = nsMathMLContainerFrame::BuildDisplayList(aBuilder, aDirtyRect, aLists);
   NS_ENSURE_SUCCESS(rv, rv);
@@ -223,7 +224,6 @@ nsMathMLmfracFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
   } else {
     rv = DisplayBar(aBuilder, this, mLineRect, aLists);
   }
-  DisplaySelectionOverlay(aBuilder, aLists,  nsISelectionDisplay::DISPLAY_TEXT);
   return rv;
 }
 
