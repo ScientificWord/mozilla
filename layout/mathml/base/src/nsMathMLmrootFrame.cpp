@@ -126,6 +126,7 @@ nsMathMLmrootFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
                                      const nsDisplayListSet& aLists)
 {
   /////////////
+  DisplaySelectionOverlay(aBuilder, aLists,  nsISelectionDisplay::DISPLAY_ALL);
   // paint the content we are square-rooting
   nsresult rv = nsMathMLContainerFrame::BuildDisplayList(aBuilder, aDirtyRect, aLists);
   NS_ENSURE_SUCCESS(rv, rv);
