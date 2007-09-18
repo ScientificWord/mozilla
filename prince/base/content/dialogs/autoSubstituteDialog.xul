@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?> 
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<!-- If an editor control is to support context menus, also need: -->
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+
+<!DOCTYPE dialog [
+<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
+%editorDTD;
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/autoSubstituteDialog.dtd" >
+%dialogDTD;
+<!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
+%menuOverlayDTD;
+]>
+
+<dialog id="AutoSubstitutionDlg"
+  title="&windowTitle.label;"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  ondialogaccept="return onOK();"
+  ondialogcancel="return onCancel();"
+  onunload="ShutdownAllEditors();"
+  onload="Startup();"
+>
+
+ <!-- script src="chrome://global/content/dialogOverlay.js" / -->
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+
+  <!-- Scripts specific to this dialog -->
+  <script type="application/x-javascript" src="chrome://prince/content/autoSubstituteDialog.js"/>
+
+  <!-- Following scripts are needed by any MSI dialog containing an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
+  <!-- Following script needed if the editor wants to support a toolbox? -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
+
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
+
+  <popupset id="msiEditorContentContextSet"/>
+
+  <commandset id="tasksCommands">
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
+    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+  </commandset>
+  <commandset id="MSImathMenuCommands"/>
+  
+  <keyset id="editorKeys">
+    <keyset id="tasksKeys"/>
+    <keyset id="MSIKeySet"/>
+    <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
+  </keyset>
+
+  <hbox>  
+    <vbox flex="1">
+      <description>&keystrokesBox.label;</description>
+      <separator class="thin"/>
+      <hbox>
+        <textbox id="keystrokesBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+          completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="autosubstitution" 
+		      tooltiptext="&keystrokesBox.tooltip;" label="&keystrokesBox.label;"
+          onkeypress="checkKeyPressEvent(this, event);"
+          onfocus="this.select();"
+          ontextentered="changePattern(this.value);" />
+      </hbox>
+      <hbox>
+        <groupbox id="autosubTypeGroup">
+          <caption label="&autosubType.label;" id="autosubTypeLabel"/>
+          <radiogroup id="autosubTypeRadioGroup" orient="vertical" oncommand="changeType(this.value);">
+            <radio id="typeSubstitution" label="&typeSubstitution.label;" value="substitution" accesskey="&typeSubstitution.accessKey;"/>
+            <radio id="typeExecuteScript" label="&typeExecuteScript.label;" value="script" accesskey="&typeExecuteScript.accessKey;"/>
+          </radiogroup>
+        </groupbox>
+        <groupbox id="autosubContextGroup">
+          <caption label="&autosubContext.label;" id="autosubContextLabel"/>
+          <radiogroup id="autosubContextRadioGroup" orient="vertical" oncommand="changeContext(this.value);">
+            <radio id="contextMath" label="&contextMath.label;" value="math" accesskey="&contextMath.accessKey;"/>
+            <radio id="contextText" label="&contextText.label;" value="text" accesskey="&contextText.accessKey;"/>
+            <radio id="contextMathOrText" label="&contextMathOrText.label;" value="mathOrText" accesskey="&contextMathOrText.accessKey;"/>
+          </radiogroup>
+        </groupbox>
+      </hbox>
+    </vbox>
+    <vbox>
+      <groupbox>
+        <!-- caption id="replacementLabel" label="&substitution.label;" accesskey="&substitution.accessKey;"/ -->
+        <label id="substitutionLabel" control="substitution-frame" value="&substitution.label;" accesskey="&substitution.accessKey;"/>
+        <editor editortype="html" type="content" width="200" height="100" context="msiEditorContentContext" id="subst-frame"/>
+        <label id="scriptLabel" control="scriptTextbox" value="&script.label;"	accesskey="&script.accessKey;"/>
+        <textbox id="scriptTextbox" size="60"  onkeypress="checkScriptControl(this);"/>
+      </groupbox>
+      <spacer flex="1"/>
+      <groupbox>
+        <caption label="&enableDisableAutosubs.label;"/>
+        <checkbox id="enableSubsInMath" label="&enableSubsInMath.label;" accesskey="&enableSubsInMath.accessKey;"/>
+        <checkbox id="enableSubsInText" label="&enableSubsInText.label;" accesskey="&enableSubsInText.accessKey;"/>
+        <!-- checkbox id="enableUnitSubs" label="&enableUnitSubs.label;" accesskey="&enableUnitSubs.accessKey;"/>
+        <checkbox id="enableMathNameSubs" label="&enableMathNameSubs.label;" accesskey="&enableMathNameSubs.accessKey;"/ -->
+        <!-- description id="enableAutoSubDescription" control="enableAutoSub">&enableAutoSub.description;</description -->
+      </groupbox>
+    </vbox>
+    <vbox>
+      <button id="addOrModifyButton" label="&addButton.label;" accesskey="&addButton.accessKey;" oncommand="saveCurrentSub();" />
+      <label id="addButtonLabel" value="&addButton.label;" accesskey="&addButton.accessKey;" hidden="true"/>
+      <label id="modifyButtonLabel" value="&modifyButton.label;" accesskey="&modifyButton.accessKey;" hidden="true"/>
+      <button id="removeButton" label="&removeButton.label;" accesskey="&removeButton.accessKey;" oncommand="removeCurrentSub();" />
+    </vbox>
+  </hbox>  
+</dialog>
