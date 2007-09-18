@@ -517,6 +517,9 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
   return null;
 }
 
+//When this function is called, we need to not be returning null (as opposed to msiGetActiveEditorElement,
+//which will return null if an editor isn't currently set as active - though that may not be correct either,
+//it is intentional, so that for instance menu items can be disabled if no editor currently has focus.)
 function msiGetCurrentEditor(theWindow)
 {
   if (!theWindow)
@@ -524,7 +527,10 @@ function msiGetCurrentEditor(theWindow)
   var editorElement = msiGetActiveEditorElement(theWindow);
   if (editorElement)
     return msiGetEditor(editorElement);
-  return GetCurrentEditor();  //punt
+  var currWindow = msiGetTopLevelWindow(currWindow);
+  editorElement = msiGetCurrentEditorElementForWindow(currWindow);
+  return msiGetEditor(editorElement);
+//  return GetCurrentEditor();  //punt - this functionality should be handled by the above calls.
 }
 
 function msiGetActiveEditorElement(currWindow)
@@ -1221,11 +1227,90 @@ function msiDeleteBodyContents(editor)
     return false;
   }
   var bodyElement = msiGetRealBodyElement(editor.document);
-  editor.selection.anchorNode = bodyElement;
-  editor.selection.anchorOffset = 0;
-  editor.selection.focusNode = bodyElement;
-  editor.selection.focusOffset = bodyElement.childNodes.length;
-  editor.deleteSelection(nsIEditor.ePrevious);
+  var anchorNode = bodyElement;
+  var focusNode = bodyElement;
+  var focusOffset = 0;
+
+  var DOMUtils = Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils);
+  function useNodeForSelection(aNode)
+  {
+    switch (aNode.nodeName)
+    {
+      case "dialogbase":
+      case "sw:dialogbase":
+        return true;
+      break;
+    }
+    if (aNode.nodeType == Components.interfaces.nsIDOMNode.TEXT_NODE)
+      return !DOMUtils.isIgnorableWhitespace(aNode);
+    return true;
+  }
+
+  if (bodyElement.childNodes.length)
+  {
+    for (var ix = 0; ix < bodyElement.childNodes.length; ++ix)
+    {
+      if (useNodeForSelection(bodyElement.childNodes[ix]))
+      {
+        anchorNode = bodyElement.childNodes[ix];
+        break;
+      }
+    }
+    for (var ix = bodyElement.childNodes.length - 1; ix >= 0; --ix)
+    {
+      if (useNodeForSelection(bodyElement.childNodes[ix]))
+      {
+        focusNode = bodyElement.childNodes[ix];
+        break;
+      }
+    }
+  }
+  if (focusNode.childNodes && focusNode.childNodes.length)
+    focusOffset = focusNode.childNodes.length;
+  else if ("textContent" in focusNode)
+    focusOffset = focusNode.textContent.length;
+
+//  editor.selection.anchorNode = bodyElement;
+//  editor.selection.anchorOffset = 0;
+  editor.selection.collapse(anchorNode, 0);
+//  editor.selection.focusNode = bodyElement;
+//  editor.selection.focusOffset = bodyElement.childNodes.length;
+  editor.selection.extend(focusNode, focusOffset);
+//  dump( "In msiDeleteBodyContents, anchorNode and offset are [" + msiDumpDocLocation(editor.selection.anchorNode) + "; " + editor.selection.anchorOffset + "], while focusNode and offset are [" + msiDumpDocLocation(editor.selection.focusNode) + "; " + editor.selection.focusOffset + "].\n" );
+//  dump("In msiDeleteBodyContents, anchorNode and offset are [" + editor.selection.anchorNode.nodeName + "," + editor.selection.anchorOffset + "], while focusNode and offset are [" + editor.selection.focusNode.nodeName + "," + editor.selection.focusOffset + "].\n");
+  editor.deleteSelection(Components.interfaces.nsIEditor.eNone);
+}
+
+function msiDumpDocLocation(node)
+{
+  function positionInParent(aNode)
+  {
+    if (aNode.parentNode != null)
+    {
+      for (var ix = 0; ix < aNode.parentNode.childNodes.length; ++ix)
+      {
+        if (aNode.parentNode.childNodes[ix] == aNode)
+          return ix;
+      }
+    }
+    return -1;
+  }
+  var outString = "";
+  var ancestors = new Array();
+  for (var currNode = node; currNode.parentNode != null && currNode.nodeType != node.DOCUMENT_NODE; currNode = currNode.parentNode)
+  {
+    var ancestorRef = new Object();
+    ancestorRef.nodename = currNode.nodeName;
+    ancestorRef.nodeposition = positionInParent(currNode);
+    ancestors.push(ancestorRef);
+  }
+  for (var jx = ancestors.length - 1; jx >= 0; --jx)
+  {
+    if (jx < ancestors.length - 1)
+      outString += ", ";
+    outString += "(" + ancestors[jx].nodeposition + ": " + ancestors[jx].nodename + ")";
+  }
+  return outString;
 }
 
 function msiGetDocumentHead(theEditor)
@@ -4280,6 +4365,121 @@ function msiMathUnitsList()
   };
 }
 
+var msiAutosubstitutionList = 
+{
+
+  bInitialized: false,
+  autosubsFilename : "autosubs.xml",
+  bModified: false,
+  mSubsList: null,
+
+  loadDocument : function()
+  {
+    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+    var basedir = dsprops.get("resource:app", Components.interfaces.nsIFile);
+    basedir.append("res");
+    var autosubsFile = basedir;
+    autosubsFile.append("tagdefs");
+    autosubsFile.append(this.autosubsFilename);
+    var subsDoc = document.implementation.createDocument("", "subs", null);
+    subsDoc.async = false;
+    if (subsDoc.load("file:///" + autosubsFile.path))
+    {
+      this.bInitialized = true;
+    }
+    else
+    {
+      dump("Unable to load autosubstitution file \"" + autosubsFile.path + "\"; aborting Auto Substitution dialog.\n");
+      return null;
+    }
+    return subsDoc;
+  },
+
+  initialize: function()
+  {
+    var subsDoc = this.loadDocument();
+    if (subsDoc == null)
+      return;
+
+    this.mSubsList = new Object();
+    var retVal = false;  //until we get something in the list
+    // We need to prebuild these so that the keyboard shortcut works
+    // ACSA = autocomplete string array
+    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+  
+    var rootElementList = subsDoc.getElementsByTagName("subs");
+    dump("In msiAutoSubstitutionList.initialize(), subsDoc loaded, rootElementList has length [" + rootElementList.length + "].\n");
+    var nameNodesList = null;
+    if (rootElementList.length > 0)
+      nameNodesList = rootElementList[0].getElementsByTagName("sub");
+    else
+      nameNodesList = subsDoc.getElementsByTagName("sub");
+    dump("In autoSubstituteDialog.js, in createSubstitutionList(), subsDoc loaded, nameNodesList has length [" + nameNodesList.length + "].\n");
+    if (nameNodesList.length == 0)
+      AlertWithTitle("autoSubstituteDialog.js", "Empty nameNodesList returned.");
+    var thePattern = "";
+    var stringType = "";
+    var newObject = null;
+  //  var unitRegExp = /insertMathunit\([\'\"]([^\'\"]+)[\'\"]\);/;
+  //  var mathnameRegExp = /insertMathname\([\'\"]([^\'\"]+)[\'\"]\);/;
+    var nAddedToList = 0;
+    for (var ix = 0; ix < nameNodesList.length; ++ix)
+    {
+      thePattern = nameNodesList[ix].getElementsByTagName("pattern").item(0).textContent;
+      if (thePattern != null && thePattern.length > 0)
+      {
+        newObject = new Object();
+        stringType = nameNodesList[ix].getAttribute("tp");
+        newObject.mathContext = nameNodesList[ix].getAttribute("ctx");
+        newObject.theData = nameNodesList[ix].getElementsByTagName("data").item(0).textContent;
+        if (stringType == "sc")
+        {
+          newObject.theContext = "";
+          newObject.theInfo = "";
+        }
+        else
+        {
+          newObject.theContext = nameNodesList[ix].getElementsByTagName("context").item(0).textContent;
+          newObject.theInfo = nameNodesList[ix].getElementsByTagName("info").item(0).textContent;
+        }
+        if (stringType == "sc")
+        {
+          newObject.type = "script";
+        }
+        else if (stringType == "subst")
+          newObject.type = "substitution";
+        else
+          newObject.type = "";
+
+        if (newObject.type.length > 0)
+        {
+          if (ACSA.addString("autosubstitution", thePattern))
+            ++nAddedToList;
+          this.mSubsList[thePattern] = newObject;
+          retVal = true;
+  //        dump("In autoSubstituteDialog.createSubstitutionList, adding pattern [" + thePattern + "] with data [" + newObject.theData + "].\n");
+        }
+      }
+    }
+    ACSA.sortArrays();
+    dump("In msiAutosubstitutionList.createDialogSubstitutionList, added " + nAddedToList + " elements to autocomplete array.\n");
+//    return theSubsList;
+  },
+
+  createDialogSubstitutionList: function()
+  {
+    var returnList = new Object();
+    if (!this.bInitialized)
+      this.initialize();
+    for (var aPattern in this.mSubsList)
+    {
+      returnList[aPattern] = this.mSubsList[aPattern];
+    }
+    return returnList;
+  }
+
+};
 /**************************More general utilities**********************/
 
 // Clone simple JS objects

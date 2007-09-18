@@ -3029,17 +3029,17 @@ var msiAutoSubDlgCommand =
 
   doCommand: function(aCommand)
   {
-    AlertWithTitle("Unimplemented", "AutoSubstitution dialog not yet available.");
-//    var editorElement = msiGetActiveEditorElement();
-//    try {
-//      msiOpenModelessDialog("chrome://prince/content/autoSubstituteDialog.xul", "_blank", "chrome,close,titlebar,dependent",
-//                                        editorElement, "cmd_MSIAutoSubDlg", this, editorElement);
-////      window.openDialog("chrome://editor/content/EdReplace.xul", "_blank",
-////                        "chrome,modal,titlebar", editorElement);
-//    }
-//    catch(ex) {
-//      dump("*** Exception: couldn't open AutoSubstitution Dialog: " + ex + "\n");
-//    }
+//    AlertWithTitle("Unimplemented", "AutoSubstitution dialog not yet available.");
+    var editorElement = msiGetActiveEditorElement();
+    try {
+      msiOpenModelessDialog("chrome://prince/content/autoSubstituteDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, "cmd_MSIAutoSubDlg", this, editorElement);
+//      window.openDialog("chrome://editor/content/EdReplace.xul", "_blank",
+//                        "chrome,modal,titlebar", editorElement);
+    }
+    catch(ex) {
+      dump("*** Exception: couldn't open AutoSubstitution Dialog: " + ex + "\n");
+    }
   }
 };
 
@@ -3054,6 +3054,8 @@ var msiFindCommand =
   isCommandEnabled: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
+    if (!editorElement)
+      return false;
     try
     {
       return editorElement.getEditor(editorElement.contentWindow) != null;
@@ -3089,6 +3091,8 @@ var msiFindAgainCommand =
     // we can only do this if the search pattern is non-empty. Not sure how
     // to get that from here
     var editorElement = msiGetActiveEditorElement();
+    if (!editorElement)
+      return false;
     try
     {
       return editorElement.getEditor(editorElement.contentWindow) != null;
