@@ -1,0 +1,38 @@
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label	"Auto Substitution">
+
+<!ENTITY keystrokesBox.label "Keystrokes">
+<!ENTITY keystrokesBox.accessKey "K">
+<!ENTITY keystrokesBox.tooltip "Enter the keystroke sequence to be recognized.">
+<!ENTITY autosubType.label "Type of substitution">
+<!ENTITY typeSubstitution.label "Simple substitution">
+<!ENTITY typeSubstitution.accessKey "b">
+<!ENTITY typeExecuteScript.label "Script to execute">
+<!ENTITY typeExecuteScript.accessKey "x">
+<!ENTITY autosubContext.label "Context for substitution">
+<!ENTITY contextMath.label "In Math">
+<!ENTITY contextMath.accessKey "M">
+<!ENTITY contextText.label "In Text">
+<!ENTITY contextText.accessKey "T">
+<!ENTITY contextMathOrText.label "In Math or Text">
+<!ENTITY contextMathOrText.accessKey "o">
+<!ENTITY substitution.label "Substitution">
+<!ENTITY substitution.accessKey "S">
+<!ENTITY script.label "Javascript to execute">
+<!ENTITY script.accessKey "J">
+<!ENTITY enableDisableAutosubs.label "Enable or disable auto substitution:">
+<!ENTITY enableSubsInMath.label "In Math">
+<!ENTITY enableSubsInMath.accessKey "h">
+<!ENTITY enableSubsInText.label "In text">
+<!ENTITY enableSubsInText.accessKey "e">
+<!ENTITY enableUnitSubs.label "Units">
+<!ENTITY enableUnitSubs.accessKey "i">
+<!ENTITY enableMathNameSubs.label "Math Names">
+<!ENTITY enableMathNameSubs.accessKey "M">
+<!ENTITY addButton.label "Add">
+<!ENTITY addButton.accessKey "A">
+<!ENTITY modifyButton.label "Modify">
+<!ENTITY modifyButton.accessKey "M">
+<!ENTITY removeButton.label "Remove">
+<!ENTITY removeButton.accessKey "R">
