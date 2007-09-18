@@ -644,7 +644,12 @@ function msiEditorDocumentObserver(editorElement)
   this.observe = function(aSubject, aTopic, aData)
   {              
     // Should we allow this even if NOT the focused editor?
-//    msiDumpWithID("In documentCreated observer for editor [@], observing [" + aTopic + "]; editor's boxObject is [" + editorElement.boxObject + "]\n", editorElement);
+    if (!this.mEditorElement.docShell)
+    {
+      msiDumpWithID("In documentCreated observer for editor [@], observing [" + aTopic + "]; returning, as editor has no doc shell!\m", this.mEditorElement);
+      return;
+    }
+//    msiDumpWithID("In documentCreated observer for editor [@], observing [" + aTopic + "]; editor's boxObject is [" + this.mEditorElement.boxObject + "]\n", this.mEditorElement);
     var commandManager = msiGetCommandManager(this.mEditorElement);
     if (commandManager != aSubject)
     {
@@ -656,7 +661,7 @@ function msiEditorDocumentObserver(editorElement)
     try
     { editor = msiGetEditor(this.mEditorElement); }
     catch(exc) 
-    { msiDumpWithID("In documentCreated observer for editorElement [@]; error trying to get editor: " + exc + "\n", editorElement);
+    { msiDumpWithID("In documentCreated observer for editorElement [@]; error trying to get editor: " + exc + "\n", this.mEditorElement);
       editor = null;
     }
 
@@ -764,7 +769,7 @@ function msiEditorDocumentObserver(editorElement)
           {
             for (var ix = 0; ix < this.mEditorElement.overrideStyleSheets.length; ++ix)
             {
-//              msiDumpWithID("Adding override style sheet [" + this.mEditorElement.overrideStyleSheets[ix] + "] for editor [@].\n", this.mEditorElement);
+              msiDumpWithID("Adding override style sheet [" + this.mEditorElement.overrideStyleSheets[ix] + "] for editor [@].\n", this.mEditorElement);
 //              dump("Adding override style sheet [" + editorElement.overrideStyleSheets[ix] + "] for editor [" + editorElement.id + "].\n");
               editor.addOverrideStyleSheet(this.mEditorElement.overrideStyleSheets[ix]);
             }
@@ -829,7 +834,7 @@ function msiEditorDocumentObserver(editorElement)
         {
           try
           {
-//            msiDumpWithID("Adding initial contents for editorElement [@]; contents are [" + this.mEditorElement.initialEditorContents + "].\n", this.mEditorElement);
+            msiDumpWithID("Adding initial contents for editorElement [@]; contents are [" + this.mEditorElement.initialEditorContents + "].\n", this.mEditorElement);
             var htmlEditor = this.mEditorElement.getHTMLEditor(this.mEditorElement.contentWindow);
             var bIsSinglePara = true;
             if (this.mEditorElement.mbInitialContentsMultiPara)
@@ -999,7 +1004,7 @@ function EditorStartupForEditorElement(editorElement)
     }
   }
 
-//  msiDumpWithID("Just before loading Shell URL in EditorStartupForEditorElement, for editorElement [@]; docShell is currently [" + editorElement.docShell + "].\n", editorElement);
+  msiDumpWithID("Just before loading Shell URL in EditorStartupForEditorElement, for editorElement [@]; docShell is currently [" + editorElement.docShell + "].\n", editorElement);
   msiLoadInitialDocument(editorElement, is_topLevel);
 //  else
 //  {
@@ -1183,7 +1188,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       contentViewer.forceCharacterSet = charset;
     }
     msiEditorLoadUrl(editorElement, url);
-    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
+//    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
   } catch (e) {
     dump("Error in loading URL in msiLoadInitialDocument: [" + e + "]\n");
   }
@@ -1383,7 +1388,7 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
       for (var ix = 0; ix < parentSheets.length; ++ix)
       {
         editorElement.overrideStyleSheets.push( parentSheets.item(ix).href );  //parentSheets.item(ix) is an nsIDOMStyleSheet, supposedly.
-//        msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editor [@], adding parent style sheet href = [" + parentSheets.item(ix).href + "].\n", editorElement);
+        msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editor [@], adding parent style sheet href = [" + parentSheets.item(ix).href + "].\n", editorElement);
       }
     }
     catch(exc) { msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editor [@], unable to access parent style sheets: [" + exc + "].\n", editorElement); }
@@ -1442,6 +1447,7 @@ function SharedStartupForEditor(editorElement)
     //  all toolbar style items
     commandManager.addCommandObserver(editorElement.mEditorDocumentObserver, "cmd_bold");
 //    msiDumpWithID("In SharedStartupForEditor for editor [@], got through adding CommandObservers.\n", editorElement);
+    dump("  Currently the docshell is [" + editorElement.docShell + "] and commandManager is [" + editorElement.commandManager + "]; commandManager to which observers were added is [" + commandManager + "].\n");
 
     if ("mInitialDocObserver" in editorElement && editorElement.mInitialDocObserver != null)
     {
@@ -1983,8 +1989,12 @@ function onFontSizeChange(fontSizeMenulist, commandID)
 
 function msiEditorSetFontSize(size, editorElement)
 {
-  var editorElement = msiGetParentEditorElementForDialog(window);
+//  var editorElement = msiGetParentEditorElementForDialog(window);
 //  var editor = msiGetEditor(editorElement);
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  if (!editorElement)
+    editorElement = msiGetTopLevelEditorElement();
   if (!editorElement)
   {
     AlertWithTitle("Error", "No editor in msiEditorSetFontSize!");
@@ -5280,6 +5290,30 @@ function msiDialogEditorContentFilter(anEditorElement)
       else
         this.checkForTrailingBreak(lastNode);
     }
+  };
+  this.hasNonEmptyMathContent = function()
+  {
+    var retval = false;
+    var editor = msiGetEditor(this.mEditorElement);
+    if (editor != null)
+    {
+      var mathNodes = editor.document.getElementsByTagName("math");
+      for (var ix = 0; (!retval) && (ix < mathNodes.length); ++ix)
+      {
+        var bIsLast = false;
+        var parent = mathNodes[ix].parentNode;
+        if ((parent != null) && (parent.childNodes != null) && (parent.childNodes.length > 0))
+          bIsLast = (parent.childNodes[parent.childNodes.length - 1] == mathNodes[ix]).
+        retval = this.nodeHasRealContent(mathNodes[ix], bIsLast);
+      }
+    }
+    return retval;
+  };
+  this.hasNonEmptyContent = function(bMathOnly)
+  {
+    if (bMathOnly)
+      return this.hasNonEmptyMathContent();
+    return this.isNonEmpty();
   };
   this.getContentsAsRange = function()
   {
