@@ -824,7 +824,7 @@ function insertmathname(name, editorElement)
     mathmlEditor.InsertMathname(name);
     editorElement.contentWindow.focus();
   } 
-  catch (e) {}
+  catch (e) {dump("In mathmlOverlay.js, insertmathname(" + name + ") for editorElement [" + editorElement.id + "], error: [" + e + "].\n");}
 }
 function insertmathunit(name, editorElement) 
 {
