@@ -1183,135 +1183,164 @@
 
 \def\.#1{\@accent{#1}{dot}}
 
+\def\r#1{\@accent{#1}{r}}
+
+
+
+\def\msi@uni#1#2{\@namedef{#1}{\@hex{#2}}}
 
 \def\i{\@hex{131}}
-%\def\j{\@hex{132}}
+\def\j{\@hex{132}}
 
 
-\@namedef{A-grave}{\@hex{c0}}
-\def\DH{\@hex{d0}}
-\@namedef{a-grave}{\@hex{e0}}
-\def\dh{\@hex{f0}}
+\msi@uni{A-grave}{c0}
+\msi@uni{a-grave}{e0}
+\msi@uni{DH}{d0}
+\msi@uni{dh}{f0}
 
-\def\textexclamdown{\@hex{a1}}
+\msi@uni{textexclamdown}{a1}
 
-\@namedef{A-acute}{\@hex{c1}}
-\@namedef{N-tilde}{\@hex{d1}}
-\@namedef{a-acute}{\@hex{e1}}
-\@namedef{n-tilde}{\@hex{f1}}
+\msi@uni{A-acute}{c1}
+\msi@uni{N-tilde}{d1}
+\msi@uni{a-acute}{e1}
+\msi@uni{n-tilde}{f1}
 
-\def\cents{\@hex{a2}}
-\@namedef{A-caret}{\@hex{c2}}
-\@namedef{O-grave}{\@hex{d2}}
-\@namedef{a-caret}{\@hex{e2}}
-\@namedef{o-grave}{\@hex{f2}}
-
-\def\pounds{\@hex{a3}}
-
-\@namedef{A-tilde}{\@hex{c3}}
-\@namedef{O-acute}{\@hex{d3}}
-\@namedef{a-tilde}{\@hex{e3}}
-\@namedef{o-acute}{\@hex{f3}}
+\msi@uni{cents}{a2}
 
 
-\def\textcurrency{\@hex{a4}}
-\@namedef{-acute}{\@hex{b4}}
-\@namedef{A-umlat}{\@hex{c4}}
-\@namedef{O-caret}{\@hex{d4}}
-\@namedef{a-umlat}{\@hex{e4}}
-\@namedef{o-caret}{\@hex{f4}}
+\msi@uni{A-caret}{c2}
+\msi@uni{O-grave}{d2}
+\msi@uni{a-caret}{e2}
+\msi@uni{o-grave}{f2}
+
+\msi@uni{pounds}{a3}
+
+\msi@uni{A-tilde}{c3}
+\msi@uni{O-acute}{d3}
+\msi@uni{a-tilde}{e3}
+\msi@uni{o-acute}{f3}
 
 
-\def\yen{\@hex{a5}}
+\msi@uni{textcurrency}{a4}
 
-\def\AA{\@hex{c5}}
-\@namedef{O-tilde}{\@hex{d5}}
-\def\aa{\@hex{e5}}
-\@namedef{o-tilde}{\@hex{f5}}
-
-\def\P{\@hex{b6}}
-\def\AE{\@hex{c6}}
-\@namedef{O-umlat}{\@hex{d6}}
-\def\ae{\@hex{e6}}
-\@namedef{o-umlat}{\@hex{f6}}
-
-\def\S{\@hex{a7}}
-\def\textperiodcentered{\@hex{b7}}
-\@namedef{C-ced}{\@hex{c7}}
-\@namedef{c-ced}{\@hex{e7}}
-
-\@namedef{-umlat}{\@hex{a8}}
-\@namedef{-ced}{\@hex{b8}}
-\@namedef{E-grave}{\@hex{c8}}
-\def\O{\@hex{d8}}
-\@namedef{e-grave}{\@hex{e8}}
-\def\o{\@hex{f8}}
+\msi@uni{-acute}{b4}
+\msi@uni{A-umlat}{c4}
+\msi@uni{O-caret}{d4}
+\msi@uni{a-umlat}{e4}
+\msi@uni{o-caret}{f4}
 
 
-\def\copyright{\@hex{a9}}
-\@namedef{E-acute}{\@hex{c9}}
-\@namedef{U-grave}{\@hex{d9}}
-\@namedef{e-acute}{\@hex{e9}}
-\@namedef{u-grave}{\@hex{f9}}
+\msi@uni{yen}{a5}
 
-\@namedef{E-caret}{\@hex{ca}}
-\@namedef{U-acute}{\@hex{da}}
-\@namedef{e-caret}{\@hex{ea}}
-\@namedef{u-acute}{\@hex{fa}}
+\msi@uni{AA}{c5}
+
+\msi@uni{O-tilde}{d5}
+\msi@uni{aa}{e5}
+\msi@uni{o-tilde}{f5}
+
+\msi@uni{P}{b6}
+\msi@uni{AE}{c6}
+\msi@uni{O-umlat}{d6}
+\msi@uni{ae}{e6}
+\msi@uni{o-umlat}{f6}
+
+\msi@uni{S}{a7}
+\msi@uni{textperiodcentered}{b7}
+\msi@uni{C-ced}{c7}
+\msi@uni{c-ced}{e7}
+
+\msi@uni{-umlat}{a8}
+\msi@uni{-ced}{b8}
+\msi@uni{E-grave}{c8}
+
+\msi@uni{O}{d8}
+\msi@uni{e-grave}{e8}
+\msi@uni{o}{f8}
 
 
-\def\guillemotleft{\@hex{ab}}
-\def\guillemotright{\@hex{bb}}
-\@namedef{E-umlat}{\@hex{cb}}
-\@namedef{U-caret}{\@hex{db}}
-\@namedef{e-umlat}{\@hex{eb}}
-\@namedef{u-caret}{\@hex{fb}}
+\msi@uni{copyright}{a9}
 
-\@namedef{I-grave}{\@hex{cc}}
-\@namedef{U-umlat}{\@hex{dc}}
-\@namedef{dotlessi-grave}{\@hex{ec}}
-\@namedef{u-umlat}{\@hex{fc}}
+\msi@uni{E-acute}{c9}
+\msi@uni{U-grave}{d9}
+\msi@uni{e-acute}{e9}
+\msi@uni{u-grave}{f9}
+\msi@uni{E-caret}{ca}
+\msi@uni{U-acute}{da}
+\msi@uni{e-caret}{ea}
+\msi@uni{u-acute}{fa}
 
-\@namedef{I-acute}{\@hex{cd}}
-\@namedef{Y-acute}{\@hex{dd}}
-\@namedef{dotlessi-acute}{\@hex{ed}}
-\@namedef{y-acute}{\@hex{fd}}
 
-\def\registered{\@hex{ae}}
-\@namedef{I-caret}{\@hex{ce}}
-\def\TH{\@hex{de}}
-\@namedef{dotlessi-caret}{\@hex{ee}}    
-\def\th{\@hex{fe}}
+\msi@uni{guillemotleft}{ab}
+\msi@uni{guillemotright}{bb}
 
-\@namedef{-bar}{\@hex{af}}
-\def\textquestiondown{\@hex{bf}}
-\@namedef{I-umlat}{\@hex{cf}}
-\def\ss{\@hex{df}}
-\@namedef{dotlessi-umlat}{\@hex{ef}}
-\@namedef{y-umlat}{\@hex{ff}}
+\msi@uni{E-umlat}{cb}
+\msi@uni{U-caret}{db}
+\msi@uni{e-umlat}{eb}
+\msi@uni{u-caret}{fb}
+\msi@uni{I-grave}{cc}
+\msi@uni{U-umlat}{dc}
+
+\msi@uni{dotlessi-grave}{ec}
+
+\msi@uni{u-umlat}{fc}
+\msi@uni{I-acute}{cd}
+\msi@uni{Y-acute}{dd}
+\msi@uni{dotlessi-acute}{ed}
+\msi@uni{y-acute}{fd}
+
+\msi@uni{registered}{ae}
+\msi@uni{I-caret}{ce}
+\msi@uni{TH}{de}
+\msi@uni{dotlessi-caret}{ee}
+\msi@uni{th}{fe}
+
+\msi@uni{-bar}{af}
+\msi@uni{textquestiondown}{bf}
+
+\msi@uni{I-umlat}{cf}
+\msi@uni{ss}{df}
+\msi@uni{dotlessi-umlat}{ef}
+\msi@uni{y-umlat}{ff}
 
 
 %%%% Latin-extended
 %%%
-\@namedef{A-bar}{\@hex{100}}
-\@namedef{a-bar}{\@hex{101}}
+\msi@uni{A-bar}{100}
+\msi@uni{a-bar}{101}
+\msi@uni{G-dot}{120}
+\msi@uni{g-dot}{121}
+\msi@uni{I-dot}{130}
+\msi@uni{E-bar}{112}
+\msi@uni{e-bar}{113}
+\msi@uni{G-ced}{122}
+\msi@uni{g-ced}{123}
+\msi@uni{T-ced}{162}
+\msi@uni{t-ced}{163}
+\msi@uni{N-ced}{145}
+\msi@uni{n-ced}{146}
 
 
-\@namedef{G-dot}{\@hex{120}}
-\@namedef{g-dot}{\@hex{121}}
-\@namedef{I-dot}{\@hex{130}}
+\msi@uni{C-acute}{106}
+\msi@uni{c-acute}{107}
+\msi@uni{N-acute}{143}
+\msi@uni{n-acute}{144}
+\msi@uni{H-caret}{124}
+\msi@uni{h-caret}{125}
+\msi@uni{J-caret}{134}
+\msi@uni{j-caret}{[[j-caret?]]}
+\msi@uni{C-caret}{108}
+\msi@uni{c-caret}{109}
+\msi@uni{C-dot}{10a}
+\msi@uni{c-dot}{10b}
 
-\@namedef{E-bar}{\@hex{112}}
-\@namedef{e-bar}{\@hex{113}}
+\msi@uni{R-acute}{154}
+\msi@uni{r-acute}{155}
+\msi@uni{W-caret}{174}
+\msi@uni{w-caret}{175}
 
-\@namedef{G-ced}{\@hex{122}}
-\@namedef{g-ced}{\@hex{123}}
-\@namedef{T-ced}{\@hex{162}}
+%%\msi@uni{dotlessj-caret}{[[dotless j caret]]}
 
-\@namedef{C-acute}{\@hex{106}}
-\@namedef{c-acute}{\@hex{107}}
-\@namedef{N-acute}{\@hex{143}}
-\@namedef{n-acute}{\@hex{144}} 
+ 
 
 
 %Various Unicode
@@ -1329,6 +1358,8 @@
      [[H \{#1\}]]
    \fi\fi\fi\fi
 }
+
+
 
 \def\v#1{%
   \if#1S%
@@ -1351,11 +1382,13 @@
 }
 
 
-\def\k#1{%
-  \if#1A\U{104}%
-  \else\if#1a\U{105}%
-  \fi\fi
-}
+
+\def\k#1{\@accent{#1}{k}}
+
+\msi@uni{A-k}{104}
+\msi@uni{a-k}{105}
+\msi@uni{U-k}{172}
+\msi@uni{u-k}{173}
 
 \def\L{\U{141}}
 \def\l{\U{142}}
@@ -1370,6 +1403,9 @@
 \def\oe{\U{153}}
 
 \def\dj{\U{111}}
+
+\msi@uni{U-r}{16e}
+\msi@uni{u-r}{16f}
 
 
 
