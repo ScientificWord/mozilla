@@ -684,35 +684,6 @@
 \msi@mathmlpass{\cos}
 
 
-%Various Unicode
-
-\def\H#1{%
-   \if#1O%
-     \U{150}%
-   \else\if#1U%
-     \U{170}%
-   \else\if#1o%
-     \U{151}%
-   \else\if#1u%
-     \U{171}%
-   \else
-     [[H \{#1\}]]
-   \fi\fi\fi\fi
-}
-
-\def\v#1{%
-  \if#1S%
-    \U{160}%
-  \else\if#1s%
-    \U{161}%
-  \else\if#1T%
-    \U{164}%
-  \else\if#1t%
-    \U{165}%
-  \fi\fi\fi\fi
-}
-
-\def\dj{\U{111}}
 
 % Lowercase Greek 
 \msi@mathmlpass{\alpha}
@@ -1320,12 +1291,86 @@
 \@namedef{y-umlat}{\@hex{ff}}
 
 
-% Latin-extended
-
+%%%% Latin-extended
+%%%
 \@namedef{A-bar}{\@hex{100}}
-\def\DJ{\@hex{110}}
+\@namedef{a-bar}{\@hex{101}}
+
+
 \@namedef{G-dot}{\@hex{120}}
+\@namedef{g-dot}{\@hex{121}}
 \@namedef{I-dot}{\@hex{130}}
+
+\@namedef{E-bar}{\@hex{112}}
+\@namedef{e-bar}{\@hex{113}}
+
+\@namedef{G-ced}{\@hex{122}}
+\@namedef{g-ced}{\@hex{123}}
+\@namedef{T-ced}{\@hex{162}}
+
+\@namedef{C-acute}{\@hex{106}}
+\@namedef{c-acute}{\@hex{107}}
+\@namedef{N-acute}{\@hex{143}}
+\@namedef{n-acute}{\@hex{144}} 
+
+
+%Various Unicode
+
+\def\H#1{%
+   \if#1O%
+     \U{150}%
+   \else\if#1U%
+     \U{170}%
+   \else\if#1o%
+     \U{151}%
+   \else\if#1u%
+     \U{171}%
+   \else
+     [[H \{#1\}]]
+   \fi\fi\fi\fi
+}
+
+\def\v#1{%
+  \if#1S%
+    \U{160}%
+  \else\if#1s%
+    \U{161}%
+  \else\if#1T%
+    \U{164}%
+  \else\if#1t%
+    \U{165}%
+  \fi\fi\fi\fi
+}
+
+\def\u#1{%
+  \if#1A\U{102}%
+  \else\if#1a\U{103}%
+  \else\if#1E\U{114}%
+  \else\if#1e\U{115}%
+  \fi\fi\fi\fi
+}
+
+
+\def\k#1{%
+  \if#1A\U{104}%
+  \else\if#1a\U{105}%
+  \fi\fi
+}
+
+\def\L{\U{141}}
+\def\l{\U{142}}
+%%\def\r
+\def\NG{\U{14a}}
+\def\ng{\U{14b}}
+
+\def\DJ{\U{110}}
+
+
+\def\OE{\U{152}}
+\def\oe{\U{153}}
+
+\def\dj{\U{111}}
+
 
 
 
