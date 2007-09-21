@@ -827,8 +827,10 @@ bool LineSource::GetLine(LineOfText* pLine)
                        CopyLine (pNextLine, pLine); 
                        delete pNextLine;
                     } else {
+                       LOG("\nNon-comment next line");
                        pLine -> StripTCIMEnd();
                        m_held = pNextLine;
+                       break;
                     }
                 }
                  
