@@ -305,6 +305,8 @@ void EndLevel()
 @$@<Command Codes@>+=@{@-
 CMD_BREAKPOINT,
 CMD_CHECKOUTER,
+CMD_MSITRACEON,
+CMD_MSITRACEOFF,
 @}
 
 
@@ -312,6 +314,8 @@ CMD_CHECKOUTER,
 @$@<Create symbols@>+=@{@-
 NewPrimitive("msibreak", CMD_BREAKPOINT);
 NewPrimitive("msicheckouter", CMD_CHECKOUTER);
+NewPrimitive("msitraceon", CMD_MSITRACEON);
+NewPrimitive("msitraceoff", CMD_MSITRACEOFF);
 @}
 
 
@@ -329,6 +333,21 @@ case CMD_CHECKOUTER: {
    }
    break;
 }
+
+case CMD_MSITRACEON:{
+  #ifdef LOGGING
+     LogFile::TheLog().TurnOn();
+  #endif
+  break;
+}
+
+case CMD_MSITRACEOFF:{
+  #ifdef LOGGING
+     LogFile::TheLog().TurnOff();
+  #endif
+  break;
+}
+
 @}
 
 
