@@ -114,12 +114,17 @@ alternative would be to write something like
        static void Start();
        static void Close();
        static void Flush();
+       static void TurnOn();
+       static void TurnOff();
+       static bool isLogging();
        friend LogFile& operator<<(LogFile&, const char*);
        friend LogFile& operator<<(LogFile&, char);
        friend LogFile& operator<<(LogFile&, int);
        friend LogFile& operator<<(LogFile&, TeXChar);
    };
-  #define LOG(X) LogFile::TheLog() << X; LogFile::Flush()
+  #define LOG(X) if ( LogFile::isLogging() ){\
+                        LogFile::TheLog() << X; LogFile::Flush();\
+                 }
 #else
    #define LOG(X)
 #endif
@@ -129,6 +134,7 @@ alternative would be to write something like
 #ifdef LOGGING
    LogFile* s_pLog = 0;
    std::ofstream* s_pStream = 0;
+   static bool s_bTracing = false;
 
    LogFile& LogFile::TheLog()
    {
@@ -137,6 +143,21 @@ alternative would be to write something like
       }
       ASSERT(s_pLog != 0);
       return *s_pLog;
+   }
+
+   void LogFile::TurnOn()
+   {
+     s_bTracing = true;
+   }
+
+   void LogFile::TurnOff()
+   {
+     s_bTracing = false;;
+   }
+
+   bool LogFile::isLogging()
+   {
+     return s_bTracing;
    }
 
    void LogFile::Start()
