@@ -1189,12 +1189,12 @@
 
 \def\msi@uni#1#2{\@namedef{#1}{\@hex{#2}}}
 
-\def\i{\@hex{131}}
-\def\j{\@hex{132}}
-
+\msi@uni{i}{131} %dotless i
+\msi@uni{j}{132} %dotless j
 
 \msi@uni{A-grave}{c0}
 \msi@uni{a-grave}{e0}
+
 \msi@uni{DH}{d0}
 \msi@uni{dh}{f0}
 
@@ -1312,12 +1312,29 @@
 \msi@uni{I-dot}{130}
 \msi@uni{E-bar}{112}
 \msi@uni{e-bar}{113}
+\msi@uni{E-dot}{116}
+\msi@uni{e-dot}{117}
 \msi@uni{G-ced}{122}
 \msi@uni{g-ced}{123}
 \msi@uni{T-ced}{162}
 \msi@uni{t-ced}{163}
 \msi@uni{N-ced}{145}
 \msi@uni{n-ced}{146}
+\msi@uni{K-ced}{136}
+\msi@uni{k-ced}{137}
+\msi@uni{R-ced}{156}
+\msi@uni{Y-caret}{176}
+\msi@uni{y-caret}{177}
+\msi@uni{N-v}{147}
+\msi@uni{r-ced}{157}
+\msi@uni{E-k}{118}
+\msi@uni{I-tilde}{128}
+\msi@uni{n-v}{148}
+\msi@uni{R-v}{158}
+\msi@uni{U-tilde}{168}
+
+
+
 
 
 \msi@uni{C-acute}{106}
@@ -1337,50 +1354,31 @@
 \msi@uni{r-acute}{155}
 \msi@uni{W-caret}{174}
 \msi@uni{w-caret}{175}
+\msi@uni{Y-umlat}{178}
 
 %%\msi@uni{dotlessj-caret}{[[dotless j caret]]}
 
+
+\def\H#1{\@accent{#1}{H}}
+\def\v#1{\@accent{#1}{v}}
+\def\u#1{\@accent{#1}{u}}
+
+
  
+\msi@uni{O-H}{150}
+\msi@uni{U-H}{170}
+\msi@uni{o-H}{151}
+\msi@uni{u-H}{171}
 
+\msi@uni{S-v}{160}
+\msi@uni{s-v}{161}
+\msi@uni{T-v}{164}
+\msi@uni{t-v}{165}
 
-%Various Unicode
-
-\def\H#1{%
-   \if#1O%
-     \U{150}%
-   \else\if#1U%
-     \U{170}%
-   \else\if#1o%
-     \U{151}%
-   \else\if#1u%
-     \U{171}%
-   \else
-     [[H \{#1\}]]
-   \fi\fi\fi\fi
-}
-
-
-
-\def\v#1{%
-  \if#1S%
-    \U{160}%
-  \else\if#1s%
-    \U{161}%
-  \else\if#1T%
-    \U{164}%
-  \else\if#1t%
-    \U{165}%
-  \fi\fi\fi\fi
-}
-
-\def\u#1{%
-  \if#1A\U{102}%
-  \else\if#1a\U{103}%
-  \else\if#1E\U{114}%
-  \else\if#1e\U{115}%
-  \fi\fi\fi\fi
-}
-
+\msi@uni{A-u}{102}
+\msi@uni{a-u}{103}
+\msi@uni{E-u}{114}
+\msi@uni{e-u}{115}
 
 
 \def\k#1{\@accent{#1}{k}}
@@ -1389,20 +1387,73 @@
 \msi@uni{a-k}{105}
 \msi@uni{U-k}{172}
 \msi@uni{u-k}{173}
+\msi@uni{e-k}{119}
+\msi@uni{dotlessi-tilde}{129}
+\msi@uni{L-acute}{139}
+\msi@uni{r-v}{159}
+\msi@uni{u-tilde}{169}
+\msi@uni{Z-acute}{179}
 
-\def\L{\U{141}}
-\def\l{\U{142}}
-%%\def\r
-\def\NG{\U{14a}}
-\def\ng{\U{14b}}
+\msi@uni{E-v}{11a}
+\msi@uni{I-bar}{12a}
+\msi@uni{l-acute}{13a}
+\msi@uni{S-acute}{15a}
+\msi@uni{U-bar}{16a}
+\msi@uni{z-acute}{17a}
 
-\def\DJ{\U{110}}
+\msi@uni{e-v}{11b}
+\msi@uni{dotlessi-bar}{12b}
+\msi@uni{L-ced}{13b}
+\msi@uni{s-acute}{15b}
+\msi@uni{u-bar}{16b}
+\msi@uni{Z-dot}{17b}
+
+\msi@uni{C-v}{10c}
+\msi@uni{G-caret}{11c}
+\msi@uni{I-u}{12c}
+\msi@uni{l-ced}{13c}
+\msi@uni{O-bar}{14c}
+\msi@uni{S-caret}{15c}
+\msi@uni{U-u}{16c}
+\msi@uni{z-dot}{17c}
+
+\msi@uni{c-v}{10d}
+\msi@uni{g-caret}{11d}
+\msi@uni{dotlessi-u}{12d}
+\msi@uni{L-v}{13d}
+\msi@uni{o-bar}{14d}
+\msi@uni{s-caret}{15d}
+\msi@uni{u-u}{16d}
+\msi@uni{Z-v}{17d}
+
+\msi@uni{D-v}{10e}
+\msi@uni{G-u}{11e}
+\msi@uni{I-k}{12e}
+\msi@uni{l-v}{13e}
+\msi@uni{O-u}{14e}
+\msi@uni{S-ced}{15e}
+\msi@uni{z-v}{17e}
 
 
-\def\OE{\U{152}}
-\def\oe{\U{153}}
+\msi@uni{d-v}{10f}
+\msi@uni{g-u}{11f}
+\msi@uni{i-k}{12f}
+\msi@uni{o-u}{14f}
+\msi@uni{s-ced}{15f}
 
-\def\dj{\U{111}}
+
+
+
+
+
+\msi@uni{L}{141}
+\msi@uni{l}{142}
+\msi@uni{NG}{14a}
+\msi@uni{ng}{14b}
+\msi@uni{DJ}{110}
+\msi@uni{dj}{111}
+\msi@uni{OE}{152}
+\msi@uni{oe}{153}
 
 \msi@uni{U-r}{16e}
 \msi@uni{u-r}{16f}
