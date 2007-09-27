@@ -55,6 +55,19 @@ graphSpec {
   display: none;
 }
 
+graph {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#graph");
+}
+
+plotwrapper {
+  display: -moz-stack;
+  cursor: pointer;
+  -moz-user-select: all;
+  -moz-user-focus: normal;
+  padding: 10px;
+}
+
+
 * [msiunit="true"] { color: green; }
 * [msimathname="true"] {color: gray; }
 
@@ -65,6 +78,7 @@ mml|mi[tempinput="true"]::before {
 mml|mi[tempinput="true"]::after {
   content: "]"; /*url("resource://app/res/css/righttempinput.png");*/
 }
-/* mml|mi[tempinput="true"]{
-  -moz-math-font-style: normal !important;
-}  */
+mml|mi[tempinput="true"]{
+  /* -moz-math-font-style: normal !important;   */
+  letter-spacing: -0.04em;
+}
