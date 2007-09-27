@@ -27,6 +27,8 @@ NS_IMPL_QUERY_INTERFACE2(nsAutoCompleteSearchStringArrayImp, nsIAutoCompleteSear
 // the focus changes to another
 // document, this internal pointer must be switched. Thus each tag manager implementation owns an autocompletestring implementation
 // and we switch between these as the focus of the user changes.
+//
+// There is in addition a unique global one for things such as macro names, autosubstitute, etc.
 // 
 
 // IMPLEMENTATION OF nsAutoCompleteSearchStringArray
@@ -35,6 +37,7 @@ NS_IMPL_ADDREF(nsAutoCompleteSearchStringArray)
 NS_IMPL_RELEASE(nsAutoCompleteSearchStringArray)
 
 nsAutoCompleteSearchStringArray * nsAutoCompleteSearchStringArray::sAutoCompleteSearchStringArray;
+nsAutoCompleteSearchStringArray * nsAutoCompleteSearchStringArray::sGlobalAutoCompleteSearchStringArray;
 
 nsAutoCompleteSearchStringArray::nsAutoCompleteSearchStringArray()
 {
@@ -127,6 +130,47 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::GetNewImplementation(nsIAutoCompl
     NS_ADDREF(*_retval);
    return NS_OK;
 }
+/* long sizeofArray (in AString strCategory); 
+   returns size of the array or -1 if not found. */
+NS_IMETHODIMP nsAutoCompleteSearchStringArray::SizeofArray(const nsAString & strCategory, PRInt32 *_retval)
+{
+    if (m_imp) return m_imp->SizeofArray(strCategory, _retval);
+    printf("nsAutoCompletSearchStringArray uninitialized\n");
+    return NS_OK; // is there an NS_UNINITIALIZED ??
+}
+
+/* void resetArray (in AString strCategory); */
+NS_IMETHODIMP nsAutoCompleteSearchStringArray::ResetArray(const nsAString & strCategory)
+{
+    if (m_imp) return m_imp->ResetArray(strCategory);
+    printf("nsAutoCompletSearchStringArray uninitialized\n");
+    return NS_OK; // is there an NS_UNINITIALIZED ??
+}
+
+/* void resetAll (); */
+NS_IMETHODIMP nsAutoCompleteSearchStringArray::ResetAll()
+{
+    if (m_imp) return m_imp->ResetAll();
+    printf("nsAutoCompletSearchStringArray uninitialized\n");
+    return NS_OK; // is there an NS_UNINITIALIZED ??
+}
+
+/* void sortArray (in AString strCategory); */
+NS_IMETHODIMP nsAutoCompleteSearchStringArray::SortArray(const nsAString & strCategory)
+{
+    if (m_imp) return m_imp->SortArray(strCategory);
+    printf("nsAutoCompletSearchStringArray uninitialized\n");
+    return NS_OK; // is there an NS_UNINITIALIZED ??
+}
+
+/* nsIAutoCompleteSearchStringArray getGlobalSearchStringArray (); */
+NS_IMETHODIMP nsAutoCompleteSearchStringArray::GetGlobalSearchStringArray(nsIAutoCompleteSearchStringArray **_retval)
+{
+    if (m_imp) return m_imp->GetGlobalSearchStringArray(_retval);
+    printf("nsAutoCompletSearchStringArray uninitialized\n");
+    return NS_OK; // is there an NS_UNINITIALIZED ??
+}
+
 
 
 
@@ -159,7 +203,7 @@ nsStringArray * nsAutoCompleteSearchStringArrayImp::GetStringArrayForCategory( c
   nsStringArray * psa = nsnull;
   nsAString::const_iterator start, end;
   nsAString::const_iterator startsave, endsave;
-  PRUint32 i;  
+  PRInt32 i;  
   while (pssa)
   {
     strCategory.BeginReading(start);
@@ -291,6 +335,73 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::GetNewImplementation(nsIAutoCo
   return NS_OK;
 }
 
+/* long sizeofArray (in AString strCategory); 
+   returns size of the array or -1 if not found. */
+NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SizeofArray(const nsAString & strCategory, PRInt32 *_retval)
+{
+  nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
+  *_retval = psa?psa->Count():-1;
+  return NS_OK;
+}
+
+/* void resetArray (in AString strCategory); */
+NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ResetArray(const nsAString & strCategory)
+{
+  nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
+  if (psa) {
+    delete psa;
+    psa = nsnull;
+  }
+  return NS_OK;
+}
+
+/* void resetAll (); */
+NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ResetAll()
+{
+  stringStringArray * pssa = m_stringArrays;
+  
+  while (pssa)
+  {
+    if (pssa->strArray)
+    {
+      delete pssa->strArray;
+      pssa->strArray = nsnull;
+    }
+    pssa = pssa->next;
+  }
+  return NS_OK;
+}
+
+/* void sortArray (in AString strCategory); */
+NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SortArray(const nsAString & strCategory)
+{
+  nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
+  if (psa) psa->Sort();
+  return NS_OK;
+}
+
+/* nsIAutoCompleteSearchStringArray getGlobalSearchStringArray (); */
+NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::GetGlobalSearchStringArray(nsIAutoCompleteSearchStringArray **_retval)
+{
+  if (!nsAutoCompleteSearchStringArray::sGlobalAutoCompleteSearchStringArray) {
+    nsAutoCompleteSearchStringArray::sGlobalAutoCompleteSearchStringArray = new nsAutoCompleteSearchStringArray();
+    if (!nsAutoCompleteSearchStringArray::sGlobalAutoCompleteSearchStringArray)
+    {
+      *_retval = nsnull;
+      return NS_ERROR_FAILURE;
+    }
+    else
+    {
+      NS_ADDREF(nsAutoCompleteSearchStringArray::sGlobalAutoCompleteSearchStringArray);
+      nsIAutoCompleteSearchStringArray * p_imp;
+      GetNewImplementation(&p_imp);
+      nsAutoCompleteSearchStringArray::sGlobalAutoCompleteSearchStringArray->SetImplementation(p_imp);
+    }
+  }
+  *_retval = nsAutoCompleteSearchStringArray::sGlobalAutoCompleteSearchStringArray;
+  NS_ADDREF(*_retval);
+  return NS_OK; // is there an NS_UNINITIALIZED ??
+}
 
 
 /* void startSearch (in AString searchString, in AString searchParam, in nsIAutoCompleteResult previousResult, in nsIAutoCompleteObserver listener); */
@@ -310,7 +421,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::StartSearch(
   mResult->SetSearchString(searchString);
   mResult->SetSearchResult(nsIAutoCompleteResult::RESULT_NOMATCH);
 
-  for (int i = 0; i < count; i++) {
+  for (PRUint32 i = 0; i < count; i++) {
     psa->StringAt(i, str);
     if (searchString.IsEmpty()) {   // everything matches the empty string
       mResult->AppendString(str); 

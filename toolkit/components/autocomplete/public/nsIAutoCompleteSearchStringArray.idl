@@ -7,9 +7,14 @@ interface nsIAutoCompleteSearchStringArray : nsIAutoCompleteSearch
 {
   boolean addString( in AString strCategory, in AString strAdd);
   boolean deleteString( in AString strCategory, in AString strDelete);
-  void sortArrays(); // in the future we may need more granularity.
+  long sizeofArray( in AString strCategory );
+  void resetArray( in AString strCategory );
+  void resetAll();
+  void sortArray( in AString strCategory );
+  void sortArrays(); 
   void setImplementation( in nsIAutoCompleteSearchStringArray imp);
   nsIAutoCompleteSearchStringArray getNewImplementation();
+  nsIAutoCompleteSearchStringArray getGlobalSearchStringArray();
   [noscript]
   void setMarkedStrings( in nsNativeStringArray sa);
 };

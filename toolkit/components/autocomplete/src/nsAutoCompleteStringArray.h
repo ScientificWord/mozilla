@@ -19,6 +19,8 @@ public:
   static nsAutoCompleteSearchStringArray* GetInstance();
   static
     nsAutoCompleteSearchStringArray* sAutoCompleteSearchStringArray;  
+  static
+    nsAutoCompleteSearchStringArray* sGlobalAutoCompleteSearchStringArray;  
   
 protected:  
   nsCOMPtr<nsAutoCompleteSearchStringArrayImp> m_imp; 
