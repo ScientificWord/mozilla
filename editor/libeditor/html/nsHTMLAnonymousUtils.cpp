@@ -219,7 +219,7 @@ nsHTMLEditor::DeleteRefToAnonymousNode(nsIDOMElement* aElement,
 NS_IMETHODIMP
 nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
 {
-  NS_ENSURE_ARG_POINTER(aSelection);
+	NS_ENSURE_ARG_POINTER(aSelection);
 
   // early way out if all contextual UI extensions are disabled
   if (!mIsObjectResizingEnabled &&
@@ -233,6 +233,11 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   if (!focusElement) return NS_OK;
   if (NS_FAILED(res)) return res;
 
+  // is the -msi-resize attribute set?
+  nsAutoString strResizeAttr;
+  PRBool resizeRequested = PR_FALSE;
+  res = focusElement->GetAttribute(NS_LITERAL_STRING("msi_resize"), strResizeAttr);
+  if (strResizeAttr.EqualsLiteral("true")) resizeRequested = PR_TRUE;
   // what's its tag?  
   nsAutoString focusTagName;
   res = focusElement->GetTagName(focusTagName);
@@ -274,7 +279,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
 
   // we allow resizers only around images, tables, and absolutely positioned
   // elements. If we don't have image/table, let's look at the latter case.
-  if (nsEditProperty::img != focusTagAtom &&
+  if (!resizeRequested && nsEditProperty::img != focusTagAtom &&
       nsEditProperty::table != focusTagAtom)
     focusElement = absPosElement;
 
@@ -311,7 +316,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   // now, let's display all contextual UI for good
 
   if (mIsObjectResizingEnabled && focusElement) {
-    if (nsEditProperty::img == focusTagAtom)
+    if (nsEditProperty::img == focusTagAtom || resizeRequested)
       mResizedObjectIsAnImage = PR_TRUE;
     if (refreshResizing)
       res = RefreshResizers();
@@ -391,7 +396,14 @@ nsHTMLEditor::GetPositionAndDimensions(nsIDOMElement * aElement,
   else {
     mResizedObjectIsAbsolutelyPositioned = PR_FALSE;
     nsCOMPtr<nsIDOMNSHTMLElement> nsElement = do_QueryInterface(aElement);
-    if (!nsElement) {return NS_ERROR_NULL_POINTER; }
+    if (!nsElement) 
+    {
+      // BBM hack: if our element is a XUL element, we put an html element around it with the same size
+      nsCOMPtr<nsIDOMNode> el;
+      res = aElement->GetParentNode(getter_AddRefs(el));
+      nsElement = do_QueryInterface(el);
+      if (!nsElement) return res;
+    }
 
     GetElementOrigin(aElement, aX, aY);
 
