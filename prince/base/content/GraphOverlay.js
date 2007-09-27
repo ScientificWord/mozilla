@@ -216,9 +216,13 @@ function GraphGetGraphValue (key) {
 // Otherwise, create one suitable for putting into the document
 // An optional second argument is the number of the one plot to include for query
 function GraphMakeDOMGraphElement (forComp, optplot) {
-  var msins="http://www.sciword.com/namespaces/sciword";
-  var DOMGraph  = document.createElementNS(msins,"graph");
-  var DOMGs     = document.createElementNS(msins,"graphSpec");
+  var htmlns="http://www.w3.org/1999/xhtml";
+  var DOMGraph  = document.createElementNS(htmlns, "graph");
+  var DOMGs     = document.createElementNS(htmlns, "graphSpec");
+  var DOMPw     = document.createElementNS(htmlns, "plotwrapper");
+  // set attributes that selection works. I think only one of these is necessary.
+  DOMPw.setAttribute("msi_resize","true");
+//  DOMGraph.setAttribute("msi_resize","true");
 
   // loop through graph attributes and insert them
   var alist;
@@ -286,14 +290,15 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
     img.setAttribute("alt", "Generated Plot");
     img.setAttribute("msigraph","true");
   }  
-  DOMGraph.appendChild(img);
+  DOMPw.appendChild(img);
+  DOMGraph.appendChild(DOMPw);
   return(DOMGraph);
 }
 
 // walk down <graphSpec> and extract attributes and elements from existing graph
 function GraphReadGraphAttributesFromDOM (DOMGraph) {
   var msins="http://www.sciword.com/namespaces/sciword";
-  var DOMGs = DOMGraph.getElementsByTagNameNS(msins, "graphSpec");
+  var DOMGs = DOMGraph.getElementsByTagName("graphSpec");
   if (DOMGs.length > 0) {
     DOMGs = DOMGs[0];
     for (i=0; i<DOMGs.attributes.length; i++) {
@@ -302,11 +307,11 @@ function GraphReadGraphAttributesFromDOM (DOMGraph) {
 //      dump("Adding key[" + key + "], value[" + value + "] to graph object.\n");  //rwa
       this.setGraphAttribute(key, value);
     }
-    var DOMPlots = DOMGraph.getElementsByTagNameNS(msins, "plot");
+    var DOMPlots = DOMGraph.getElementsByTagName("plot");
     var debugStr = "Number of plot children of DOMGraph is [" + DOMPlots.length + "]";  //rwa
     if (DOMPlots.length <= 0)  //rwa
     {             //rwa
-      DOMPlots = DOMGs.getElementsByTagNameNS(msins, "plot");   //rwa
+      DOMPlots = DOMGs.getElementsByTagName("plot");   //rwa
       debugStr += "; number of plot children of graphSpec is [" + DOMPlots.length + "]";  //rwa
     }
     window.dump("Setting up graph dialog. " + debugStr + ".\n");  //rwa
@@ -386,8 +391,8 @@ function PlotMakeDOMPlotElement (doc, forComp, plotno) {
   // do the plot attributes as DOM attributes of <plot>
   var status = this.getPlotValue("PlotStatus",plotno);
   if (status != "Deleted") {
-    var msins="http://www.sciword.com/namespaces/sciword";
-    var DOMPlot = doc.createElementNS(msins,"plot");
+ //   var msins="http://www.sciword.com/namespaces/sciword";
+    var DOMPlot = doc.createElement("plot");
     var attributes = (forComp) ? this.plotCompAttributeList(plotno) : this.plotAttributeList();
     for (var i=0; i<attributes.length; i++) {
       if ((this.isModified(PlotAttrName(attributes[i],plotno))) || forComp) {
@@ -400,7 +405,7 @@ function PlotMakeDOMPlotElement (doc, forComp, plotno) {
     attributes = (forComp) ? this.plotCompElementList(plotno) : this.plotElementList();
     for (var i=0; i<attributes.length; i++) {
       if (forComp || (this.isModified(PlotAttrName(attributes[i],plotno)))) {
-        var DOMEnode = doc.createElementNS(msins,attributes[i]);
+        var DOMEnode = doc.createElement(attributes[i]);
         var textval = this.getPlotValue(attributes[i],plotno);
         if ((textval != "") && (textval != "unspecified")) {
           var tNode = (new DOMParser()).parseFromString (textval, "text/xml");
