@@ -15,8 +15,8 @@
 	  <xbl:content>
       <!-- we include the children invisibly. Omitting the children doesn't work. The tag generally will contain the 
       text 'LaTeX' so it displays something approximated correct when this xbl file is not available. -->
-      &#x2009;<sw:invis><xbl:children/></sw:invis>
-      <sw:latex2>L<sw:latexa>A</sw:latexa><sw:latext>T</sw:latext><sw:latexe>E</sw:latexe>X</sw:latex2>&#x2009; 
+      <sw:invis><xbl:children/></sw:invis>
+      <sw:latex2 style="-moz-user-select: element; -moz-user-focus: none; display: -moz-inline-block">L<sw:latexa>A</sw:latexa><sw:latext>T</sw:latext><sw:latexe>E</sw:latexe>X</sw:latex2> 
     </xbl:content>
   </xbl:binding>
 
@@ -500,6 +500,20 @@ h//          if (firstChild == null)
 //        ]]></xbl:setter>
 //      </xbl:property>
     </xbl:implementation>
+  </xbl:binding>
+
+	<xbl:binding id="graph">
+	  <xbl:resources>
+	    <xbl:stylesheet  src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <xbl:children/>
+      <sw:invis>
+        <xbl:children includes="graphSpec"/>
+      </sw:invis>
+      <xbl:children includes="plotwrapper"/>
+      <xbl:children includes="caption"/>
+    </xbl:content>
   </xbl:binding>
 
 
