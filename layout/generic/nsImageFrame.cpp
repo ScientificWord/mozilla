@@ -1413,7 +1413,8 @@ nsImageFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
     }
   }
 
-  // XXX what on EARTH is this code for?
+  // BBM This is the code that causes images to be overlaid with partially transparent overlays
+  // when selected.
   PRInt16 displaySelection = 0;
   nsresult result;
   nsPresContext* presContext = GetPresContext();
