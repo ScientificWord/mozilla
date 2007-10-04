@@ -637,6 +637,7 @@ interface nsIHTMLEditor : nsISupports
    */
   attribute boolean returnInParagraphCreatesNewParagraph;
   attribute msiITagListManager tagListManager;
+  attribute nsIDOMElement focusedPlot;
   void addTagInfo( in AString strPath );
   void setOneShotTranslation( in AString tablename );
 };

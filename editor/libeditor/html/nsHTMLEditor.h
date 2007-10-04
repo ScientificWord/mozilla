@@ -795,6 +795,8 @@ protected:
   nsCOMPtr<nsIDOMNode> mCachedNode;
   //TagListManager
   nsCOMPtr<msiITagListManager> mtagListManager;
+  
+  nsCOMPtr<nsIDOMElement> mfocusedPlot;
   //KeyMaps
   nsCOMPtr<msiIKeyMap> mKeyMap;
   PRBool m_fOneShot;
