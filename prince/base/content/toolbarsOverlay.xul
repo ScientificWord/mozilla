@@ -128,194 +128,255 @@
       <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;"/>
       <toolbarbutton id="javascriptButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&javascriptToolbarButton.tooltip;" label="&javascriptToolbarButton.label;"/>
-  
+      <toolbarbutton id="vc-rotateleft" class="toolbarbutton-1" label="Rotate left" observes="cmd_vcRotateLeft"/>
     </toolbarpalette>
     <toolbar id="EditingToolbar" class="chromeclass-toolbar" persist="collapsed" 
-      defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,subdocButton,bibliographyButton,gifsAnimatedButton"
+      defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,subdocButton,bibliographyButton,gifsAnimatedButton,vc-rotateleft"
       mode="icons" customizable="true" />
   </toolbox>
 
-<!-- Button section -->  
+  
+  <!--toolbox id="VCamToolbox" orient="horizontal" context="vcam-toolbar-context-menu" observes="vcamactive"> 
+    <popup id="vcam-toolbar-context-menu" >
+      <menuitem oncommand="CustomizeMainToolbar('VCamToolbox');"
+        label="Customize plot control toolbar" />
+    </popup>
+    <toolbarpalette id="VCamToolbarPalette" >
+    </toolbarpalette -->
+    <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed" 
+      mode="icons" customizable="true"  hidden = "true" observes="vcamactive">
+      <toolbarbutton id="vc-RotateLeft" class="toolbarbutton-1" type="checkbox" label="Rotate left" command="cmd_vcRotateLeft" observes="3dplot"/>
+      <toolbarbutton id="vc-RotateRight" class="toolbarbutton-1" type="checkbox" label="vcRotateRight" command="cmd_vcRotateRight" observes="3dplot"/>
+      <toolbarbutton id="vc-RotateUp" class="toolbarbutton-1" type="checkbox" label="vcRotateUp" command="cmd_vcRotateUp" observes="3dplot"/>
+      <toolbarbutton id="vc-RotateDown" class="toolbarbutton-1" type="checkbox" label="vcRotateDown" command="cmd_vcRotateDown" observes="3dplot"/>
+      <toolbarbutton id="vc-RotateScene" class="toolbarbutton-1" label="vcRotateScene" command="cmd_vcRotateScene" observes="3dplot"/>
+      <toolbarbutton id="vc-Zoom" class="toolbarbutton-1" label="vcZoom" command="cmd_vcZoom"/>
+      <toolbarbutton id="vc-Move" class="toolbarbutton-1" label="vcMove" command="cmd_vcMove"/>
+      <toolbarbutton id="vc-AutoSpeed" type="menu-button" class="toolbarbutton-1" label="vcAutoSpeed" observes="3dplot">
+        <menupopup>
+          <menuitem id="actionspeed8s" type="radio" label="8x slower" oncommand="setActionSpeed(0.125);" />
+          <menuitem id="actionspeed4s" type="radio" label="4x slower" oncommand="setActionSpeed(0.25);" />
+          <menuitem id="actionspeed2s" type="radio" label="2x slower" oncommand="setActionSpeed(0.5);" />
+          <menuitem id="actionspeedN" type="radio" checked="true" label="Natural" oncommand="setActionSpeed(1.0);" />
+          <menuitem id="actionspeed2f" type="radio" label="2x faster" oncommand="setActionSpeed(2.0);" />
+          <menuitem id="actionspeed4f" type="radio" label="4x faster" oncommand="setActionSpeed(4.0);" />
+          <menuitem id="actionspeed8f" type="radio" label="8x faster" oncommand="setActionSpeed(8.0);" />
+        </menupopup>
+      </toolbarbutton>
+      <toolbarbutton id="vc-AnimSpeed" type="menu-button" class="toolbarbutton-1" label="vcAnimSpeed" observes="animplot">
+        <menupopup>
+          <menuitem id="animspeed8s" type="radio" label="8x slower" oncommand="setAnimSpeed(0.125);" />
+          <menuitem id="animspeed4s" type="radio" label="4x slower" oncommand="setAnimSpeed(0.250);" />
+          <menuitem id="animspeed2s" type="radio" label="2x slower" oncommand="setAnimSpeed(0.5);" />
+          <menuitem id="animspeedN" type="radio" checked="true" label="Natural" oncommand="setAnimSpeed(1.0);" />
+          <menuitem id="animspeed2f" type="radio" label="2x faster" oncommand="setAnimSpeed(2.0);" />
+          <menuitem id="animspeed4f" type="radio" label="4x faster" oncommand="setAnimSpeed(4.0);" />
+          <menuitem id="animspeed8f" type="radio" label="8x faster" oncommand="setAnimSpeed(8.0);" />
+        </menupopup>
+      </toolbarbutton>
+      
+      <toolbarbutton id="vc-AutoZoomIn" class="toolbarbutton-1" type="checkbox" label="vcAutoZoomIn" command="cmd_vcAutoZoomIn" observes="3dplot"/>
+      <toolbarbutton id="vc-AutoZoomOut" class="toolbarbutton-1" type="checkbox" label="vcAutoZoomOut" command="cmd_vcAutoZoomOut" observes="3dplot"/>
+      <toolbarbutton id="vc-GoToStart" class="toolbarbutton-1" label="vcGoToStart" command="cmd_vcGoToStart" observes="animplot"/>
+      <scale id="vc-AnimScale" width="150" observes="animplot"/>
+      <toolbarbutton id="vc-GoToEnd" class="toolbarbutton-1" label="vcGoToEnd" command="cmd_vcGoToEnd" observes="animplot"/>
+      <toolbarbutton id="vc-LoopType" type="menu-button" class="toolbarbutton-1" label="vcLoopType" observes="animplot">
+        <menupopup>
+          <menuitem id="runonce" type="radio" checked="true" label="Run once" oncommand="setLoopMode(0);" />
+          <menuitem id="loop" type="radio" label="Loop" oncommand="setLoopMode(1);" />
+          <menuitem id="backandforth" type="radio" label="Back and forth" oncommand="setLoopMode(2);" />
+        </menupopup>
+      </toolbarbutton>
+      <toolbarbutton id="vc-Play" class="toolbarbutton-1" type="checkbox" label="vcPlay" command="cmd_vcPlay" observes="animplot"/>
+      <toolbarbutton id="vc-Query" class="toolbarbutton-1" label="vcQuery" command="cmd_vcQuery"/>
+      <!--toolbarbutton id="vc-SelObj" class="toolbarbutton-1" label="vcSelObj" command="cmd_vcSelObj"/  -->
+      <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset"/>
+      <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" observes="3dplot"/>
+    </toolbar>
+  <!--/toolbox -->
+
+
+<!-- Button section -->
   <toolbarbutton id="mathtextButton" class="toolbarbutton-1" type="checkbox" autoCheck="true" observes="cmd_MSImathtext" tooltiptext="&mathtextButton.tooltip;"
     label="&mathtextButton.label;" oncommand="insertinlinemath();">
     <observes element="cmd_MSImathtext" type="checkbox" attribute="state" onbroadcast="msiOnButtonUpdate(this.parentNode,'cmd_MSImathtext')"/>
   </toolbarbutton>
- 
-  <toolbarbutton id="evalButton" class="toolbarbutton-1" tooltiptext="&MSIComputeEval.tooltip;" 
+
+  <toolbarbutton id="evalButton" class="toolbarbutton-1" tooltiptext="&MSIComputeEval.tooltip;"
     label="&MSIComputeEval.label;" observes="cmd_MSIComputeEval" >
   </toolbarbutton>
 
-  <toolbarbutton id="evalnumButton" class="toolbarbutton-1" tooltiptext="&MSIComputeEvalNum.tooltip;" 
+  <toolbarbutton id="evalnumButton" class="toolbarbutton-1" tooltiptext="&MSIComputeEvalNum.tooltip;"
     label="&MSIComputeEvalNum.label;" observes="cmd_MSIComputeEvalNum">
   </toolbarbutton>
 #
-  <toolbarbutton id="solveButton" class="toolbarbutton-1" tooltiptext="&MSIComputeSolveExact.tooltip;" 
+  <toolbarbutton id="solveButton" class="toolbarbutton-1" tooltiptext="&MSIComputeSolveExact.tooltip;"
     label="&MSIComputeSolveExact.label;" observes="cmd_MSIComputeSolveExact">
   </toolbarbutton>
 
-  <toolbarbutton id="simplifyButton" class="toolbarbutton-1" tooltiptext="&MSIComputeSimplify.tooltip;" 
+  <toolbarbutton id="simplifyButton" class="toolbarbutton-1" tooltiptext="&MSIComputeSimplify.tooltip;"
     label="&MSIComputeSimplify.label;" observes="cmd_MSIComputeSimplify">
   </toolbarbutton>
 
-  <toolbarbutton id="expandButton" class="toolbarbutton-1" tooltiptext="&MSIComputeExpand.tooltip;" 
+  <toolbarbutton id="expandButton" class="toolbarbutton-1" tooltiptext="&MSIComputeExpand.tooltip;"
     label="&MSIComputeExpand.label;" observes="cmd_MSIComputeExpand">
   </toolbarbutton>
 
-  <toolbarbutton id="plotButton" class="toolbarbutton-1" tooltiptext="&MSIComputePlot2D.tooltip;" 
+  <toolbarbutton id="plotButton" class="toolbarbutton-1" tooltiptext="&MSIComputePlot2D.tooltip;"
     label="&MSIComputePlot2D.label;" observes="cmd_MSIComputePlot2DRectangular">
   </toolbarbutton>
 
-  <toolbarbutton id="plotButton3D" class="toolbarbutton-1" tooltiptext="&MSIComputePlot3D.tooltip;" 
+  <toolbarbutton id="plotButton3D" class="toolbarbutton-1" tooltiptext="&MSIComputePlot3D.tooltip;"
     label="&MSIComputePlot3D.label;" observes="cmd_MSIComputePlot3DRectangular">
   </toolbarbutton>
 #
-  <toolbarbutton id="defineButton" class="toolbarbutton-1" tooltiptext="&MSIComputeDefine.tooltip;" 
+  <toolbarbutton id="defineButton" class="toolbarbutton-1" tooltiptext="&MSIComputeDefine.tooltip;"
     label="&MSIComputeDefine.label;" observes="cmd_MSIComputeDefine">
   </toolbarbutton>
 
-  <toolbarbutton id="showdefsButton" class="toolbarbutton-1" tooltiptext="&MSIComputeShowDefs.tooltip;" 
+  <toolbarbutton id="showdefsButton" class="toolbarbutton-1" tooltiptext="&MSIComputeShowDefs.tooltip;"
     label="&MSIComputeShowDefs.label;" observes="cmd_MSIComputeShowDefs">
   </toolbarbutton>
 
-  <toolbarbutton id="stopButton" class="toolbarbutton-1" tooltoptext="&stopButton.tooltip;" 
+  <toolbarbutton id="stopButton" class="toolbarbutton-1" tooltoptext="&stopButton.tooltip;"
     label="&stopButton.label;" onclick="alert('Implement me!');" >
   </toolbarbutton>
- 
-  <toolbarbutton id="fractionButton" class="toolbarbutton-1" tooltiptext="&fractionButton.tooltip;" 
+
+  <toolbarbutton id="fractionButton" class="toolbarbutton-1" tooltiptext="&fractionButton.tooltip;"
     label="&fractionButton.label;" observes="cmd_MSIfractionCmd"/>
- 
-  <toolbarbutton id="radicalButton" class="toolbarbutton-1" tooltiptext="&radicalButton.tooltip;" 
+
+  <toolbarbutton id="radicalButton" class="toolbarbutton-1" tooltiptext="&radicalButton.tooltip;"
     label="&radicalButton.label;" observes="cmd_MSIradicalCmd"/>
-#  
-  <toolbarbutton id="superscriptButton" class="toolbarbutton-1" tooltiptext="&superscriptButton.tooltip;" 
+#
+  <toolbarbutton id="superscriptButton" class="toolbarbutton-1" tooltiptext="&superscriptButton.tooltip;"
     label="&superscriptButton.label;" observes="cmd_MSIsupCmd"/>
-  
-  <toolbarbutton id="subscriptButton" class="toolbarbutton-1" tooltiptext="&subscriptButton.tooltip;" 
+
+  <toolbarbutton id="subscriptButton" class="toolbarbutton-1" tooltiptext="&subscriptButton.tooltip;"
     label="&subscriptButton.label;" observes="cmd_MSIsubCmd" />
-  
-  <toolbarbutton id="parenthesesButton" class="toolbarbutton-1" tooltiptext="&parenthesesButton.tooltip;" 
+
+  <toolbarbutton id="parenthesesButton" class="toolbarbutton-1" tooltiptext="&parenthesesButton.tooltip;"
     label="&parenthesesButton.label;" observes="cmd_MSIparenCmd"/>
-  
-  <toolbarbutton id="bracketsButton" class="toolbarbutton-1" tooltiptext="&bracketsButton.tooltip;" 
+
+  <toolbarbutton id="bracketsButton" class="toolbarbutton-1" tooltiptext="&bracketsButton.tooltip;"
     label="&bracketsButton.label;" observes="cmd_MSIbracketCmd"/>
-    
-  <toolbarbutton id="sumButton" class="toolbarbutton-1" tooltiptext="&sumButton.tooltip;" 
+
+  <toolbarbutton id="sumButton" class="toolbarbutton-1" tooltiptext="&sumButton.tooltip;"
     label="&sumButton.label;" onclick="insertOperator('&#x2211;', 'auto', 'auto');"/>
-  
-  <toolbarbutton id="integralButton" class="toolbarbutton-1" tooltiptext="&integralButton.tooltip;" 
+
+  <toolbarbutton id="integralButton" class="toolbarbutton-1" tooltiptext="&integralButton.tooltip;"
     label="&integralButton.label;" onclick="insertOperator('&#x222B;', 'auto', 'auto');"/>
- 
-  <toolbarbutton id="unitnameButton" class="toolbarbutton-1" tooltiptext="&unitnameButton.tooltip;" 
+
+  <toolbarbutton id="unitnameButton" class="toolbarbutton-1" tooltiptext="&unitnameButton.tooltip;"
     label="&unitnameButton.label;" onclick="alert('Implement me!');"/>
-#  
-  <toolbarbutton id="displayButton" class="toolbarbutton-1" tooltiptext="&displayButton.tooltip;" 
+#
+  <toolbarbutton id="displayButton" class="toolbarbutton-1" tooltiptext="&displayButton.tooltip;"
     label="&displayButton.label;" observes="cmd_MSIdisplayMathCmd"/>
-  
-  <toolbarbutton id="bigopButton" class="toolbarbutton-1" tooltiptext="&bigopButton.tooltip;" 
+
+  <toolbarbutton id="bigopButton" class="toolbarbutton-1" tooltiptext="&bigopButton.tooltip;"
     label="&bigopButton.label;" observes="cmd_MSIoperatorsCmd"/>
 
-  <toolbarbutton id="matrixButton" class="toolbarbutton-1" tooltiptext="&matrixButton.tooltip;" 
+  <toolbarbutton id="matrixButton" class="toolbarbutton-1" tooltiptext="&matrixButton.tooltip;"
     label="&matrixButton.label;" observes="cmd_MSIMatrixCmd" />
-  
-  <toolbarbutton id="bracketsButton" class="toolbarbutton-1" tooltiptext="&bracketsButton.tooltip;" 
+
+  <toolbarbutton id="bracketsButton" class="toolbarbutton-1" tooltiptext="&bracketsButton.tooltip;"
     label="&bracketsButton.label;" observes="cmd_MSIbracketCmd" />
-  
-  <toolbarbutton id="mathnameButton" class="toolbarbutton-1" tooltiptext="&mathnameButton.tooltip;" 
+
+  <toolbarbutton id="mathnameButton" class="toolbarbutton-1" tooltiptext="&mathnameButton.tooltip;"
     label="&mathnameButton.label;" observes="cmd_MSImathnameCmd"/>
-  
-  <toolbarbutton id="binomialButton" class="toolbarbutton-1" tooltiptext="&binomialButton.tooltip;" 
+
+  <toolbarbutton id="binomialButton" class="toolbarbutton-1" tooltiptext="&binomialButton.tooltip;"
     label="&binomialButton.label;" observes="cmd_MSIbinomialsCmd"/>
-  
-  <toolbarbutton id="labelButton" class="toolbarbutton-1" tooltiptext="&labelButton.tooltip;" 
+
+  <toolbarbutton id="labelButton" class="toolbarbutton-1" tooltiptext="&labelButton.tooltip;"
     label="&labelButton.label;" oncommand="alert('Implement me!');"/>
-  
-  <toolbarbutton id="decorationButton" class="toolbarbutton-1" tooltiptext="&decorationButton.tooltip;" 
+
+  <toolbarbutton id="decorationButton" class="toolbarbutton-1" tooltiptext="&decorationButton.tooltip;"
     label="&decorationButton.label;" observes="cmd_MSIdecorationsCmd"/>
-#  
+#
   <toolbarbutton id="newButton" class="toolbarbutton-1"
                  label="&newDocumentToolbarCmd.label;" observes="cmd_newDocument"
                  tooltiptext="&newDocumentToolbarCmd.tooltip;"/>
-  
+
   <toolbarbutton id="openButton" class="toolbarbutton-1"
                  label="&openToolbarCmd.label;" observes="cmd_open"
                  tooltiptext="&openToolbarCmd.tooltip;"/>
-  
+
   <toolbarbutton id="saveButton" class="toolbarbutton-1" observes="cmd_save"
                  tooltiptext="&saveToolbarCmd.tooltip;"
                   label="&saveToolbarCmd.label;" />
-#  
+#
   <toolbarbutton id="printButton" type="menu-button" class="toolbarbutton-1"
                  label="&printToolbarCmd.label;"
                  tooltiptext="&printToolbarCmd.tooltip;"
-                 persist="defcomp oncommand" 
+                 persist="defcomp oncommand"
                  oncommand="" >
     <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp" />
     <menupopup id="printMenu" tooltiptext="" >
       <menuitem id="printMenuItem1" label="&printButton.label;" persist="default" default="true"
                 oncommand="goDoCommand('cmd_printDirect');event.stopPropagation();" for="" onbroadcast="setDefault(this);" >
         <observes id="pmitb1" element="defaultCompiler" attribute="defcomp" />
-      </menuitem>        
+      </menuitem>
       <menuitem id="printMenuItem1pdf" label="&pdfprintButton.label;" persist="default" default="false"
                 oncommand="goDoCommand('cmd_printPdf');event.stopPropagation();"  for="pdf" onbroadcast="setDefault(this);">
         <observes id="pmitb2" element="defaultCompiler" attribute="defcomp"  />
-      </menuitem>        
+      </menuitem>
       <menuitem id="printMenuItem1dvi" label="&dviprintButton.label;" persist="default" default="false"
                 oncommand="goDoCommand('cmd_printDvi');event.stopPropagation();"  for="dvi" onbroadcast="setDefault(this);">
         <observes id="pmitb3" element="defaultCompiler" attribute="defcomp"  />
-      </menuitem>        
+      </menuitem>
       <menuseparator/>
       <menu id="chooseDefPrinter" label="&chooseDefPrinter.label;" >
 	      <menupopup id="menuChooseDefPrinterPopup">
-	        <menuitem id="directMode" label="&direct;" checked="true" 
+	        <menuitem id="directMode" label="&direct;" checked="true"
             oncommand="return setDefaultPrinter('',event);" for="" onbroadcast="setDefault(this);">
             <observes id="pmitb7" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>        
-	        <menuitem id="pdfMode" label="&pdf;" 
+          </menuitem>
+	        <menuitem id="pdfMode" label="&pdf;"
             oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefault(this);">
             <observes id="pmitb8" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>        
-	        <menuitem id="dviMode" label="&dvi;" 
+          </menuitem>
+	        <menuitem id="dviMode" label="&dvi;"
             oncommand="return setDefaultPrinter('dvi',event);" for="dvi" onbroadcast="setDefault(this);">
              <observes id="pmitb9" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>        
+          </menuitem>
 	      </menupopup>
       </menu>
     </menupopup>
   </toolbarbutton>
-#    
+#
   <toolbarbutton id="printPreviewButton" type="menu-button" class="toolbarbutton-1"
-                 label="&printPreviewToolbarCmd.label;" 
-                 tooltiptext="&printPreviewToolbarCmd.tooltip;" 
+                 label="&printPreviewToolbarCmd.label;"
+                 tooltiptext="&printPreviewToolbarCmd.tooltip;"
                  persist="defcomp oncommand" oncommand="alert('Default to direct print preview');">
     <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp" />
     <menupopup id="previewMenu">
       <menuitem id="directPreviewMenuItem" label="&printPreviewToolbarCmd.label;" persist="default" default="true"
                 oncommand="alert('Direct print preview');event.stopPropagation();" for="" onbroadcast="setDefault(this);" >
         <observes id="pmitb10" element="defaultCompiler" attribute="defcomp" />
-      </menuitem>        
+      </menuitem>
       <menuitem id="pdfPreviewMenuItem" label="&pdfpreviewButton.label;" persist="default" default="false"
                 observes="cmd_previewPdf" for="pdf" onbroadcast="setDefault(this);">
         <observes id="pmitb11" element="defaultCompiler" attribute="defcomp" />
-      </menuitem>        
+      </menuitem>
       <menuitem id="dviPreviewMenuItem" label="&dvipreviewButton.label;" persist="default" default="false"
-                observes="cmd_previewDvi" for="dvi" onbroadcast="setDefault(this);">  
+                observes="cmd_previewDvi" for="dvi" onbroadcast="setDefault(this);">
         <observes id="pmitb12" element="defaultCompiler" attribute="defcomp" />
-      </menuitem>        
+      </menuitem>
       <menuseparator/>
       <menu id="chooseDefPrinter2" label="&chooseDefPrinter.label;" >
 	      <menupopup id="menuChooseDefPrinterPopup2">
-	        <menuitem id="directMode2" label="&direct;" checked="true" 
+	        <menuitem id="directMode2" label="&direct;" checked="true"
             oncommand="return setDefaultPrinter('',event);" for="" onbroadcast="setDefault(this);">
             <observes id="pmitb6" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>        
-	        <menuitem id="pdfMode2" label="&pdf;" 
+          </menuitem>
+	        <menuitem id="pdfMode2" label="&pdf;"
             oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefault(this);">
             <observes id="pmitb6" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>        
-	        <menuitem id="dviMod2e" label="&dvi;" 
+          </menuitem>
+	        <menuitem id="dviMod2e" label="&dvi;"
             oncommand="return setDefaultPrinter('dvi',event);" for="dvi" onbroadcast="setDefault(this);">
              <observes id="pmitb6" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>        
+          </menuitem>
 	      </menupopup>
       </menu>
     </menupopup>
@@ -323,23 +384,23 @@
   <toolbarbutton id="dvicompileButton" class="toolbarbutton-1" observes="cmd_compileDvi" tooltiptext="&dvicompileButton.tooltip;"/>
   <toolbarbutton id="pdfcompileButton" class="toolbarbutton-1" observes="cmd_compilePdf" tooltiptext="&pdfcompileButton.tooltip;"/>
 
-#  
+#
   <toolbarbutton id="cutButton" class="toolbarbutton-1"
                  label="&cutCmd.label;" command="cmd_cut"
                  tooltiptext="&cutCmd.label;"/>
-  
+
   <toolbarbutton id="copyButton" class="toolbarbutton-1"
                  label="&copyCmd.label;" command="cmd_copy"
                  tooltiptext="&copyCmd.tooltip;"/>
-  
+
   <toolbarbutton id="pasteButton" class="toolbarbutton-1"
                  label="&pasteCmd.label;" command="cmd_paste"
                  tooltiptext="&pasteCmd.label;"/>
-  
+
   <toolbarbutton id="undoButton" class="toolbarbutton-1"
                  label="&undoCmd.label;" command="cmd_undo"
                  tooltiptext="&undoCmd.label;"/>
-  
+
   <toolbarbutton id="redoButton" class="toolbarbutton-1"
                  label="&redoCmd.label;" command="cmd_redo"
                  tooltiptext="&redoCmd.label;"/>
@@ -347,55 +408,55 @@
   <toolbarbutton id="findButton" class="toolbarbutton-1"
                  label="&findToolbarCmd.label;" observes="cmd_find"
                  tooltiptext="&findToolbarCmd.tooltip;"/>
-  
+
   <toolbarbutton id="spellingButton" class="toolbarbutton-1" disabled="true"
                  label="&spellToolbarCmd.label;" observes="cmd_spelling"
                  tooltiptext="&spellToolbarCmd.tooltip;"/>
- 
+
   <toolbarbutton id="exporttexButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&exporttexToolbarButton.tooltip;" label="&exporttexToolbarButton.label;"/>
-  
+
   <toolbarbutton id="exportwebButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&exportwebToolbarButton.tooltip;" label="&exportwebToolbarButton.label;"/>
-  
+
   <toolbarbutton id="importimageButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&importimageToolbarButton.tooltip;" label="&importimageToolbarButton.label;"/>
-  
+
   <toolbarbutton id="importtexButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&importtexToolbarButton.tooltip;" label="&importtexToolbarButton.label;"/>
-  
-  
+
+
 	<textbox id="TextTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag" 
+    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag"
 		tooltiptext="&texttagselect.tooltip;" onkeypress="doTagKeyCommand(event,'cmd_texttag',this.value);"
-		label="&texttagselect.label;"  
+		label="&texttagselect.label;"
     onfocus="this.select();"
     ontextentered="msiDoStatefulCommand('cmd_texttag',this.value);" />
-	
+
   <textbox id="ParaTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="paratag listtag" 
+    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="paratag listtag"
 		tooltiptext="&paratagselect.tooltip;" onkeypress="doTagKeyCommand(event,'cmd_paratag',this.value);"
-		label="&paratagselect.label;"  
+		label="&paratagselect.label;"
     onfocus="this.select();"
     ontextentered="msiDoStatefulCommand('cmd_paratag',this.value);" />
-	
+
   <textbox id="StructTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="structtag envtag" 
+    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="structtag envtag"
 		tooltiptext="&secttagselect.tooltip;" onkeypress="doTagKeyCommand(event,'cmd_structtag',this.value);"
-		label="&secttagselect.label;"   
+		label="&secttagselect.label;"
     onfocus="this.select();"
     ontextentered="msiDoStatefulCommand('cmd_structtag',this.value);" />
-	
+
   <textbox id="OtherTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="othertag" 
+    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="othertag"
 		tooltiptext="&othertagselect.tooltip;" onkeypress="doTagKeyCommand(event,'cmd_othertag',this.value);"
-		label="&othertagselect.label;"  
+		label="&othertagselect.label;"
     onfocus="this.select();"
     ontextentered=" msiDoStatefulCommand('cmd_othertag',this.value);" />
-    
+
   <menu id="viewShowHide">
 <!-- the order here should match the order at the top of the screen -->
-    <menupopup id="viewShowHidePopup"> 
+    <menupopup id="viewShowHidePopup">
       <menuitem id="viewStandardToolbar"      label="&ViewStandardToolbar.label;" type="checkbox" accesskey="&ViewStandardToolbar.accesskey;" observes="cmd_viewStandardToolbar" />
       <menuitem id="viewTagSelectToolbar"      label="&ViewTagSelectToolbar.label;" type="checkbox" accesskey="&ViewTagSelectToolbar.accesskey;" observes="cmd_viewTagSelectToolbar" />
       <menuitem id="viewMathToolbar"      label="&ViewMathToolbar.label;" type="checkbox" accesskey="&ViewMathToolbar.accesskey;" observes="cmd_viewMathToolbar" />
@@ -403,7 +464,7 @@
       <menuitem id="viewSymbolToolbar"      label="&ViewSymbolToolbar.label;" type="checkbox" accesskey="&ViewSymbolToolbar.accesskey;" observes="cmd_viewSymbolToolbar" />
     </menupopup>
   </menu>
- 
+
   <broadcasterset id="broadcasterset">
     <command id="cmd_viewStandardToolbar"  oncommand="goToggleToolbar('StandardToolbar','cmd_viewStandardToolbar');"   checked="true"/>
     <command id="cmd_viewTagSelectToolbar"  oncommand="goToggleToolbar('TagSelectToolbar','cmd_viewTagSelectToolbar');"   checked="true"/>
@@ -413,6 +474,6 @@
     <command id="cmd_compactSymbolPanels"  oncommand="setCompact('menuCompactSymbolPanels','cmd_compactSymbolPanels');"   checked="false"/>
     <broadcaster id="defaultCompiler" persist="defcomp" defcomp="" />
   </broadcasterset>
- 
-      
+
+
 </overlay>

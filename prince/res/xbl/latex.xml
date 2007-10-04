@@ -507,13 +507,101 @@ h//          if (firstChild == null)
 	    <xbl:stylesheet  src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <xbl:children/>
-      <sw:invis>
-        <xbl:children includes="graphSpec"/>
-      </sw:invis>
-      <xbl:children includes="plotwrapper"/>
-      <xbl:children includes="caption"/>
+        <sw:invis>
+          <xbl:children includes="graphSpec"/>
+        </sw:invis>
+        <xbl:children includes="plotwrapper"/>
+        <xbl:children includes="plotcaption"/>
     </xbl:content>
+    <xbl:implementation>
+      <xbl:field name="plotplugin" >
+        this.getElementsByTagName('object')[0];
+      </xbl:field> 
+      <xbl:field name="document" >
+        this.plotplugin.document;
+      </xbl:field>
+      <xbl:field name="camera">
+        this.plotplugin.camera;
+      </xbl:field>
+    <!-- read-only properties -->
+      <xbl:property name="dimension" readonly="true" onget="return this.plotplugin.dimension;" />
+      <xbl:property name="readyState" readonly="true" onget="return this.plotplugin.readyState;" />
+      <xbl:property name="useGdiplus" readonly="true" onget="return this.plotplugin.useGdiplus;" />
+      <xbl:property name="isAnimated" readonly="true" 
+        onget="return this.plotplugin.isAnimated;" />
+      <xbl:property name="beginTime" readonly="true" 
+        onget="return this.plotplugin.beginTime;" />
+      <xbl:property name="endTime" readonly="true" onget="return this.plotplugin.endTime;" />
+    <!-- read-write properties -->
+      <xbl:property name="currentTime" onget="return this.plotplugin.currentTime;"
+        onset="this.plotplugin.currentTime = val; return val;"  />
+      <xbl:property name="cursorTool" onget="return this.plotplugin.cursorTool;"
+        onset="this.plotplugin.cursorTool = val; return val;"  />
+      <xbl:property name="animationLoopingMode" onget="return this.plotplugin.animationLoopingMode;" 
+        onset="this.plotplugin.animationLoopingMode = val; return val;"  />
+      <xbl:property name="animationSpeed" onget="return this.plotplugin.animationSpeed;" 
+        onset="this.plotplugin.animationSpeed = val; return val;"  />
+      <xbl:property name="rotateVerticalAction" onget="return this.plotplugin.rotateVerticalAction;" 
+        onset="this.plotplugin.rotateVerticalAction = val; return val;"  />
+      <xbl:property name="rotateHorizontalAction" onget="return this.plotplugin.rotateHorizontalAction;" 
+        onset="this.plotplugin.rotateHorizontalAction = val; return val;"  />
+      <xbl:property name="zoomAction" onget="return this.plotplugin.zoomAction;" 
+        onset="this.plotplugin.zoomAction = val; return val;"  />
+      <xbl:property name="actionSpeed" onget="return this.plotplugin.actionSpeed;" 
+        onset="this.plotplugin.actionSpeed = val; return val;"  />
+    <!-- methods -->
+      <xbl:method name="startAnimation">
+        <xbl:body>
+          this.plotplugin.startAnimation();
+        </xbl:body>
+      </xbl:method>
+      <xbl:method name="stopAnimation">
+        <xbl:body>
+          this.plotplugin.stopAnimation();
+        </xbl:body>
+      </xbl:method>
+      <xbl:method name="stepAnimationForwards">
+        <xbl:body>
+          this.plotplugin.stepAnimationForwards();
+        </xbl:body>
+      </xbl:method>
+      <xbl:method name="stepAnimationBackwards">
+        <xbl:body>
+          this.plotplugin.stepAnimationBackwards();
+        </xbl:body>
+      </xbl:method>
+      <xbl:method name="resetViewpoint">
+        <xbl:body>
+          this.plotplugin.resetViewpoint();
+        </xbl:body>
+      </xbl:method>
+      <xbl:method name="fitContents">
+        <xbl:body>
+          this.plotplugin.fitContents();
+        </xbl:body>
+      </xbl:method>
+      <xbl:method name="addEvent">
+        <xbl:parameter name="name"/>
+        <xbl:parameter name="handler"/>
+        <xbl:body>
+          this.plotplugin.addEvent(name, handler);
+        </xbl:body>
+      </xbl:method>
+      <xbl:method name="removeEvent">
+        <xbl:parameter name="name"/>
+        <xbl:parameter name="handler"/>
+        <xbl:body>
+          this.plotplugin.removeEvent(name, handler);
+        </xbl:body>
+      </xbl:method>
+      <xbl:method name="load">
+        <xbl:parameter name="url"/>
+        <xbl:body>
+          this.plotplugin.load(url);
+        </xbl:body>
+      </xbl:method>
+        
+    </xbl:implementation>
   </xbl:binding>
 
 
