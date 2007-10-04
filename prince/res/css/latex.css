@@ -51,20 +51,29 @@ img {
 }
 
 
-graphSpec {
-  display: none;
-}
-
 graph {
   -moz-binding: url("resource://app/res/xbl/latex.xml#graph");
 }
 
+graph {
+  display: -moz-box;  
+  cursor: pointer;
+  -moz-box-orient: vertical;
+}
+
 plotwrapper {
   display: -moz-stack;
-  cursor: pointer;
   -moz-user-select: all;
   -moz-user-focus: normal;
   padding: 10px;
+  cursor: pointer;
+}
+
+plotcaption {
+  display: block;
+  text-align: center;
+  -moz-box-flex: 1;
+  min-height: 20px;
 }
 
 
@@ -81,4 +90,8 @@ mml|mi[tempinput="true"]::after {
 mml|mi[tempinput="true"]{
   /* -moz-math-font-style: normal !important;   */
   letter-spacing: -0.04em;
+}
+
+#rotateleft{
+  list-style-image: url("chrome://prince/skin/icons/vc-rotateleft.png");
 }
