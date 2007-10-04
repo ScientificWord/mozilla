@@ -167,6 +167,10 @@ function GraphSerializeGraph (optionalplot) {
     // strip off the temporary namespace headers ...
     str = str.replace (/<[a-zA-Z0-9]{2}:/g,"<");
     str = str.replace (/<\/[a-zA-Z0-9]{2}:/g,"<\/");
+//    // and put in some line breaks so we humans can read the result
+//    str = str.replace (/<graph/,"\n<graph");
+//    str = str.replace (/<plot/,"\n<plot");
+//    str = str.replace (/<\/graph>/,"</graph>\n");
   }
   catch (e) {
     // dump("SMR GraphSerialize exception caught\n");

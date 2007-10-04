@@ -934,6 +934,169 @@ function doGlobalComputeCommand(cmd, editorElement)
     return;
 } }
 
+function getActiveGraph(editorElement)
+{
+  if(!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  if (!editorElement) return null;
+  var editor = msiGetEditor(editorElement);
+  if (!editor) return null;
+  var element = editor.focusedPlot;
+  if (!element) return null;
+  var graph;
+  while (element && (element.localName != "graph")) element = element.parentNode; 
+  if (!element) return null;   // not necessary if we know for sure that element != void
+  return element;
+}
+
+
+function doVCamCommand(cmd, editorElement)
+{
+//  if(!editorElement)
+//    editorElement = msiGetActiveEditorElement();
+//  var editor = msiGetEditor(editorElement);
+//  var plotElement = editor.focusedPlot;
+//  if (!plotElement) return;
+//  var obj = plotElement.getElementsByTagName("object")[0];
+  var graph = getActiveGraph(editorElement);
+  if (!graph) return;
+  var obj = graph.plotplugin;
+  if (!obj) return;
+  switch (cmd) {
+  case "cmd_vcRotateLeft":
+    if (obj.rotateVerticalAction == 2) obj.rotateVerticalAction = 0; else obj.rotateVerticalAction = 2;
+    break;
+  case "cmd_vcRotateRight":
+    if (obj.rotateVerticalAction == 1) obj.rotateVerticalAction = 0; else obj.rotateVerticalAction = 1;
+    break;
+  case "cmd_vcRotateUp":
+    if (obj.rotateHorizontalAction == 1) obj.rotateHorizontalAction = 0; else obj.rotateHorizontalAction = 1;
+    break;
+  case "cmd_vcRotateDown":
+    if (obj.rotateHorizontalAction == 2) obj.rotateHorizontalAction = 0; else obj.rotateHorizontalAction = 2;
+    break;
+  case "cmd_vcRotateScene":
+    graph.cursorTool = "rotate";
+    break;
+  case "cmd_vcZoom":
+    graph.cursorTool = "zoom";
+    break;
+  case "cmd_vcMove":
+    graph.cursorTool = "move";
+    break;
+  case "cmd_vcQuery":
+    graph.cursorTool = "query";
+    break;
+  case "cmd_vcAutoSpeed":
+    dump("cmd_vcAutoSpeed not implemented");
+    break;
+  case "cmd_vcAnimSpeed":
+    dump("cmd_vcAnimSpeed not implemented");
+    break;
+  case "cmd_vcAutoZoomIn":
+    if (graph.zoomAction == 1) graph.zoomAction = 0; else graph.zoomAction = 1;
+    break;
+  case "cmd_vcAutoZoomOut":
+    if (graph.zoomAction == 2) graph.zoomAction = 0; else graph.zoomAction = 2;
+    break;
+  case "cmd_vcGoToEnd":
+    graph.currentTime = graph.endTime;
+    break;
+  case "cmd_vcGoToStart":
+    graph.currentTime = graph.beginTime;
+    break;
+  case "cmd_vcLoopType":
+    dump("cmd_vcLoopType not implemented");
+    break;
+  case "cmd_vcPlay":
+    graph.startAnimation();
+    break;
+  case "cmd_vcSelObj":
+    dump("cmd_vcSelObj not implemented");
+    break;
+  case "cmd_vcFitContents":
+    graph.fitContents();
+    break;
+  default:
+  }
+  return;
+}
+
+var gProgressbar;
+
+function doVCamInitialize(event)
+{
+  dump("doVCamInitialize");
+  var graph = getActiveGraph();
+  if (!graph) return;
+  var threedplot = document.getElementById("3dplot");
+  if (threedplot) threedplot.setAttribute("hidden", graph.dimension==3?"false":"true");
+  var animplot = document.getElementById("animplot");
+  // graph.isAnimated seems to be unimplemented: use graphSpec instead.
+  var graphspec = graph.firstChild;
+  var isanimated = (graphspec.firstChild.getAttribute("Animate")=="true");
+  if (animplot) animplot.setAttribute("hidden", isanimated?"false":"true");
+  if (isanimated) // set up the progress bar
+  {
+    try {
+      gProgressbar = document.getElementById("vc-AnimScale");
+      graph.addEvent("currentTimeChange", showAnimationTime );
+//      gProgressbar.onchange="setAnimationTime();";
+    }
+    catch (e)
+    {
+      dump("failure: " + e.toString() + "\n");
+    }
+  }
+    
+}
+
+
+function showAnimationTime(time)
+{
+  var graph = getActiveGraph();
+//  gProgressbar.onchange=dontSetAnimationTime;
+  var newval = Math.round(100*(time/(graph.endTime - graph.beginTime)));
+//  dump("Changing progressbar value to " + newval + "\n");
+  gProgressbar.value = newval;
+//  gProgressbar.onchage=setAnimationTime;
+} 
+
+function setAnimationTime()
+{
+  var graph = getActiveGraph();
+  var time = graph.beginTime + (gProgressbar.value/100)*(graph.endTime-graph.beginTime);
+  dump("Progressbar setting time to " + time + "\n");
+  graph.currentTime = time;
+}
+
+function dontSetAnimationTime()
+{
+  return;
+}
+
+function setLoopMode()
+{}
+
+function setActionSpeed( factor )
+{
+  var graph = getActiveGraph();
+  graph.actionSpeed = factor;
+}
+
+function setAnimSpeed( factor )
+{
+  var graph = getActiveGraph();
+  graph.animationSpeed = factor;
+}
+
+function setLoopMode( mode )
+{
+  var graph = getActiveGraph();
+  graph.animationLoopingMode = mode;
+}
+
+
 // our connection to the computation code
 var compsample;
 var compengine;
