@@ -140,7 +140,7 @@ function init() {
   strBundle = document.getElementById("bundle_help");
   emptySearchText = strBundle.getString("emptySearchText");
 
-  gFindBar.initFindBar();
+//  gFindBar.initFindBar();
 
   // Get the content pack, base URL, and help topic
   var helpTopic = defaultTopic;
