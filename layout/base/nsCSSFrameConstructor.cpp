@@ -2508,6 +2508,7 @@ IsTableRelated(PRUint8 aDisplay,
                PRBool  aIncludeSpecial) 
 {
   if ((aDisplay == NS_STYLE_DISPLAY_TABLE)              ||
+      (aDisplay == NS_STYLE_DISPLAY_INLINE_TABLE)              ||
       (aDisplay == NS_STYLE_DISPLAY_TABLE_HEADER_GROUP) ||
       (aDisplay == NS_STYLE_DISPLAY_TABLE_ROW_GROUP)    ||
       (aDisplay == NS_STYLE_DISPLAY_TABLE_FOOTER_GROUP) ||
@@ -2875,9 +2876,17 @@ nsCSSFrameConstructor::CreatePseudoTableFrame(nsTableCreator&          aTableCre
   parentStyle = parentFrame->GetStyleContext(); 
   nsIContent* parentContent = parentFrame->GetContent();   
 
+  // Thankfully, the parent can't change display type without causing
+  // frame reconstruction, so this won't need to change.
+  nsIAtom *pseudoType;
+  if (parentStyle->GetStyleDisplay()->mDisplay == NS_STYLE_DISPLAY_INLINE)
+    pseudoType = nsCSSAnonBoxes::inlineTable;
+  else
+    pseudoType = nsCSSAnonBoxes::table;
+
   // create the SC for the inner table which will be the parent of the outer table's SC
   childStyle = mPresShell->StyleSet()->ResolvePseudoStyleFor(parentContent,
-                                                             nsCSSAnonBoxes::table,
+                                                             pseudoType,
                                                              parentStyle);
 
   nsPseudoFrameData& pseudoOuter = aState.mPseudoFrames.mTableOuter;
@@ -6089,7 +6098,8 @@ nsCSSFrameConstructor::ConstructXULFrame(nsFrameConstructorState& aState,
   NS_ASSERTION(aTag != nsnull, "null XUL tag");
   if (aTag == nsnull)
     return NS_OK;
-
+  if (nsHTMLAtoms::body == aTag)
+    isReplaced = PR_FALSE;
   const nsStyleDisplay* display = aStyleContext->GetStyleDisplay();
   
   PRBool isXULNS = (aNameSpaceID == kNameSpaceID_XUL);
@@ -6751,6 +6761,7 @@ nsCSSFrameConstructor::ConstructFrameByDisplayType(nsFrameConstructorState& aSta
                                                    nsFrameItems&            aFrameItems,
                                                    PRBool                   aHasPseudoParent)
 {
+  // BBM This is where to add selection information, if needed.
   PRBool    primaryFrameSet = PR_FALSE;
   nsIFrame* newFrame = nsnull;  // the frame we construct
   nsTableCreator tableCreator(mPresShell); // Used to make table frames.
@@ -6781,6 +6792,7 @@ nsCSSFrameConstructor::ConstructFrameByDisplayType(nsFrameConstructorState& aSta
   // XXX Ignore tables for the time being
   if (aDisplay->IsBlockLevel() &&
       aDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE &&
+      aDisplay->mDisplay != NS_STYLE_DISPLAY_INLINE_TABLE &&
       aDisplay->IsScrollableOverflow() &&
       !propagatedScrollToViewport) {
 
@@ -6941,6 +6953,7 @@ nsCSSFrameConstructor::ConstructFrameByDisplayType(nsFrameConstructorState& aSta
     // Use the 'display' property to choose a frame type
     switch (aDisplay->mDisplay) {
     case NS_STYLE_DISPLAY_TABLE:
+    case NS_STYLE_DISPLAY_INLINE_TABLE:
     {
       // XXXbz this isn't quite right, but checking for aHasPseudoParent here
       // would just lead us to ProcessPseudoFrames inside ConstructTableFrame.

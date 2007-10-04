@@ -161,7 +161,7 @@ struct nsContentAndOffset
 };
 
 // Some Misc #defines
-#define SELECTION_DEBUG        0
+#define SELECTION_DEBUG        1
 #define FORCE_SELECTION_UPDATE 1
 #define CALC_DEBUG             0
 
@@ -3313,6 +3313,7 @@ nsFrame::IsFrameTreeTooDeep(const nsHTMLReflowState& aReflowState,
   // Absolute positioning causes |display->mDisplay| to be set to block,
   // if needed.
   return display->mDisplay == NS_STYLE_DISPLAY_BLOCK || 
+         display->mDisplay == NS_STYLE_DISPLAY_INLINE_BLOCK ||
          display->mDisplay == NS_STYLE_DISPLAY_LIST_ITEM ||
          display->mDisplay == NS_STYLE_DISPLAY_TABLE_CELL;
 }
