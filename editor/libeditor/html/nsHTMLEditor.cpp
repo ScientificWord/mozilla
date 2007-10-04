@@ -172,6 +172,7 @@ nsHTMLEditor::nsHTMLEditor()
 , mIsInlineTableEditingEnabled(PR_TRUE)
 , mGridSize(0)
 , m_fOneShot(PR_FALSE)
+, mfocusedPlot(nsnull)
 {
   mHTMLCSSUtils = nsnull;
   nsCOMPtr<msiTagListManager> manager;
@@ -6331,5 +6332,20 @@ nsHTMLEditor::AddTagInfo( const nsAString & strPath )
   mtagListManager->Enable();
   mtagListManager->AddTagInfo(strPath, &bresult);
   return NS_OK;
+}
+
+/* attribute nsIDOMElement focusedPlot; */
+NS_IMETHODIMP nsHTMLEditor::GetFocusedPlot(nsIDOMElement * *aFocusedPlot)
+{
+    *aFocusedPlot = mfocusedPlot;
+    if (*aFocusedPlot) NS_ADDREF(*aFocusedPlot);
+    return NS_OK;
+}
+
+
+NS_IMETHODIMP nsHTMLEditor::SetFocusedPlot(nsIDOMElement * aFocusedPlot)
+{
+    mfocusedPlot = aFocusedPlot;
+    return NS_OK;
 }
 
