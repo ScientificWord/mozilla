@@ -19,6 +19,7 @@
   <script type="application/x-javascript"  src="chrome://venkman/content/venkman-overlay.js"/>
   <script type="application/x-javascript"  src="chrome://inspector/content/hooks.js"/>
   <script type="application/x-javascript" src="chrome://global/content/viewZoomOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
   
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
     <menupopup id="menu_FilePopup" onpopupshowing="msiEditorInitFileMenu();">
@@ -307,7 +308,7 @@
   <menu id="helpmenu" label="&helpmenu.label;" accesskey="&helpmenu.accesskey;">
     <menupopup id="helpPopup">
       <menuitem id="helpmenuContents" label="&helpmenuContents.label;" 
-        accesskey="&helpmenuContents.accesskey;" key="keyhelpcontents" observes="cmd_unimp"/>
+        accesskey="&helpmenuContents.accesskey;" key="keyhelpcontents" oncommand="openHelp('swp-doc','chrome://prince/locale/helpfiles/swp.rdf');"/>
       <menuitem id="helpmenuSearch" label="&helpmenuSearch.label;" 
         accesskey="&helpmenuSearch.accesskey;" observes="cmd_unimp"/>
       <menuitem id="helpmenuIndex" label="&helpmenuIndex.label;" 

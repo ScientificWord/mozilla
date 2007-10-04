@@ -195,6 +195,38 @@
     <command id="cmd_MSIComputeFixup"                    oncommand="doComputeCommand('cmd_compute_Fixup')"/>
     <command id="cmd_MSIComputePassthru"                 oncommand="doGlobalComputeCommand('cmd_compute_Passthru')"/>
   </commandset>
+ 
+  <commandset id="MSIVCamCommands"
+                  commandupdater="true"
+                  events="create, mode_switch"
+                  oncommandupdate="goUpdateMSIcomputeMenuItems(this)">
+    <command id="cmd_vcRotateLeft"    oncommand="doVCamCommand('cmd_vcRotateLeft')"/>
+    <command id="cmd_vcRotateRight"   oncommand="doVCamCommand('cmd_vcRotateRight')"/>
+    <command id="cmd_vcRotateUp"      oncommand="doVCamCommand('cmd_vcRotateUp')"/>
+    <command id="cmd_vcRotateDown"    oncommand="doVCamCommand('cmd_vcRotateDown')"/>
+    <command id="cmd_vcRotateScene"   oncommand="doVCamCommand('cmd_vcRotateScene')"/>
+    <command id="cmd_vcZoom"          oncommand="doVCamCommand('cmd_vcZoom')"/>
+    <command id="cmd_vcMove"          oncommand="doVCamCommand('cmd_vcMove')"/>
+    <command id="cmd_vcAutoSpeed"     oncommand="doVCamCommand('cmd_vcAutoSpeed')"/>
+    <command id="cmd_vcAnimSpeed"     oncommand="doVCamCommand('cmd_vcAnimSpeed')"/>
+    <command id="cmd_vcAutoZoomIn"    oncommand="doVCamCommand('cmd_vcAutoZoomIn')"/>
+    <command id="cmd_vcAutoZoomOut"   oncommand="doVCamCommand('cmd_vcAutoZoomOut')"/>
+    <command id="cmd_vcGoToEnd"       oncommand="doVCamCommand('cmd_vcGoToEnd')"/>
+    <command id="cmd_vcGoToStart"     oncommand="doVCamCommand('cmd_vcGoToStart')"/>
+    <command id="cmd_vcLoopType"      oncommand="doVCamCommand('cmd_vcLoopType')"/>
+    <command id="cmd_vcPlay"          oncommand="doVCamCommand('cmd_vcPlay')"/>
+    <command id="cmd_vcQuery"         oncommand="doVCamCommand('cmd_vcQuery')"/>
+    <command id="cmd_vcSelObj"        oncommand="doVCamCommand('cmd_vcSelObj')"/>
+    <command id="cmd_vcFitContents"   oncommand="doVCamCommand('cmd_vcFitContents')"/>
+  </commandset>
+
+  <broadcasterset id="vcam_broadcasterset">
+    <broadcaster id="vcamactive" hidden = "true"/>
+    <broadcaster id="3dplot" hidden = "true" />
+    <broadcaster id="animplot" hidden = "true" />
+    <observes element="vcamactive" attribute="hidden" onbroadcast="doVCamInitialize(event);"/>
+  </broadcasterset>
+  
   
   <broadcasterset id="broadcasterset">
     <command id="cmd_viewComputeToolbar"  oncommand="goToggleToolbar('ComputeToolbar','cmd_viewComputeToolbar');"   checked="true"/>
