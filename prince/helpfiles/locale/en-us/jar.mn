@@ -1,0 +1,18 @@
+
+en-US.jar:
+% locale prince en-US %locale/
+% locale helpfiles en-US %locale/helpfiles/
+  locale/helpfiles/swp.rdf                       	(swp.rdf)
+  locale/helpfiles/glossary.xhtml					(glossary.xhtml)
+  locale/helpfiles/help-toc.rdf						(help-toc.rdf)
+  locale/helpfiles/swp-glossary.rdf					(swp-glossary.rdf)
+  locale/helpfiles/swp-toc.rdf						(swp-toc.rdf)
+  locale/helpfiles/welcome.xhtml					(welcome.xhtml)
+  locale/helpfiles/composer_help.xhtml			    (composer_help.xhtml)
+  locale/helpfiles/shortcuts.xhtml			    	(shortcuts.xhtml)
+  locale/helpfiles/images/anchor-in-doc.gif			(images/anchor-in-doc.gif)
+  locale/helpfiles/images/bullets.gif			    (images/bullets.gif)
+  locale/helpfiles/images/link.gif			    	(images/link.gif)
+  locale/helpfiles/images/numbers.gif			    (images/numbers.gif)
+  locale/helpfiles/images/table.gif			    	(images/table.gif)
+  locale/helpfiles/images/image.gif			    	(images/image.gif)
