@@ -85,6 +85,7 @@
                  type="checkbox" group="sidebar" sidebarurl="docoutline"
                  oncommand="toggleSidebar('viewOutlineSidebar');"/>
   </broadcasterset>
+  <broadcasterset id="vcam_broadcasterset"/>
 
   
   <keyset id="editorKeys">
@@ -124,6 +125,8 @@
     <toolbox id="StandardToolbox" />
     <toolbox id="MathToolbox" />
     <toolbox id="EditingToolbox" />
+    <toolbar id="VCamToolbar" />
+    <!--toolbox id="VCamToolbox" / -->
     <toolbox id="SymbolToolbox" />
   </vbox>
   </arrowscrollbox>
@@ -206,6 +209,7 @@
   <commandset id="composerListMenuItems" />
   <commandset id="composerTableMenuItems" />
   <commandset id="MSIcomputeMenuCommands" />
+  <commandset id="MSIVCamCommands" />
   <commandset id="MSItypesetMenuCommands"/>
   <commandset id="MSItypesetInsertMenuCommands"/>
   <commandset id="MSImathMenuCommands"/>
