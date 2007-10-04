@@ -242,6 +242,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   nsAutoString focusTagName;
   res = focusElement->GetTagName(focusTagName);
   if (NS_FAILED(res)) return res;
+
 //  ToLowerCase(focusTagName);
   nsCOMPtr<nsIAtom> focusTagAtom = do_GetAtom(focusTagName);
 
@@ -298,9 +299,26 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     if (NS_FAILED(res)) return res;
     refreshPositioning = PR_FALSE;
   }
-
   if (mIsObjectResizingEnabled && mResizedObject &&
       mResizedObject != focusElement) {
+    nsAutoString resizedTagName;
+    res = mResizedObject->GetTagName(resizedTagName);
+    if (NS_FAILED(res)) return res;
+      
+    if (resizedTagName.EqualsLiteral("plotwrapper"))
+    {
+      res = SetFocusedPlot(nsnull);
+      nsCOMPtr<nsIDOMDocument> domdoc1;
+      nsCOMPtr<nsIDOMElement> broadcaster;
+//      res = GetXuldoc(getter_AddRefs(domdoc));
+      if (!NS_FAILED(res))
+      {
+        res = m_window->GetDocument( getter_AddRefs(domdoc1));
+        res = domdoc1->GetElementById(NS_LITERAL_STRING("vcamactive"), getter_AddRefs(broadcaster));
+        if (!NS_FAILED(res) && broadcaster)
+          broadcaster->SetAttribute(NS_LITERAL_STRING("hidden"), NS_LITERAL_STRING("true"));
+      }
+    }
     res = HideResizers();
     if (NS_FAILED(res)) return res;
     refreshResizing = PR_FALSE;
@@ -320,8 +338,21 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
       mResizedObjectIsAnImage = PR_TRUE;
     if (refreshResizing)
       res = RefreshResizers();
-    else
+    else {
+      if (focusTagName.EqualsLiteral("plotwrapper"))
+        res = SetFocusedPlot(focusElement);
       res = ShowResizers(focusElement);
+      nsCOMPtr<nsIDOMDocument> domdoc2;
+      nsCOMPtr<nsIDOMElement> broadcaster;
+//      res = GetXuldoc(getter_AddRefs(domdoc));
+      if (!NS_FAILED(res))
+      {
+        res = m_window->GetDocument( getter_AddRefs(domdoc2));
+        res = domdoc2->GetElementById(NS_LITERAL_STRING("vcamactive"), getter_AddRefs(broadcaster));
+        if (!NS_FAILED(res) && broadcaster)
+          broadcaster->SetAttribute(NS_LITERAL_STRING("hidden"), NS_LITERAL_STRING("false"));
+      }
+    }
     if (NS_FAILED(res)) return res;
   }
 
