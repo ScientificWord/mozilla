@@ -262,7 +262,7 @@ NS_MakeAbsoluteURIWithDocPath(nsACString       &result,
     char * pPattern = "resource://docdir";
     PRUint32 patlen = strlen(pPattern);
     Spec.Assign(spec);
-    Spec.Truncate(patlen);
+    Spec.SetLength(patlen);
     if (Spec.LowerCaseEqualsASCII(pPattern, patlen))
     {
        nsACString::const_iterator itBegin;
@@ -275,7 +275,7 @@ NS_MakeAbsoluteURIWithDocPath(nsACString       &result,
          && itEnd == itSave)
        {
          result.Assign(docPath);
-         result.Truncate(docPath.Length() - 4);
+         result.SetLength(docPath.Length() - 4);
          result.AppendASCII("_files");
          result.Append(Spec.BeginReading()+ strlen(pPattern));
          return rv;
