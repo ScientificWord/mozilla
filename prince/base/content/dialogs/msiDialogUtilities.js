@@ -616,3 +616,91 @@ function msiUnitsListbox(listBox, controlGroup, theUnitsList)
     this.mCurrUnit = newUnit;
   };
 }
+
+
+function msiDialogConfigManager(theDialogWindow)
+{
+  this.mDlgWindow = theDialogWindow;
+  this.mDlgWindow.mDialogConfigMan = this;
+  this.mbIsRevise = false;
+
+  var topWindow = msiGetTopLevelWindow();
+  if (topWindow.msiPropertiesDialogList != null)
+  {
+    if ( topWindow.msiPropertiesDialogList.findEntryForDialog(theDialogWindow) != null )
+      this.mbIsRevise = true;
+  }
+
+  this.mbIsModeless = true;
+  this.mbCloseOnAccept = false;
+  var windowWatcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"].getService(Components.interfaces.nsIWindowWatcher);
+  var dlgChrome = windowWatcher.getChromeForWindow(theDialogWindow);
+  if (dlgChrome != null)
+    this.mbIsModeless = ( (dlgChrome.chromeFlags & Components.interfaces.nsIWebBrowserChrome.CHROME_MODAL) != 0 );
+  if (!this.mbIsModeless)
+    this.mbCloseOnAccept = true;
+
+  this.mStringBundle = null;
+
+  this.configureDialog = function()
+  {
+    if (!this.mStringBundle)
+      this.initialize();
+    var gDlg = this.mDlgWindow.document.documentElement;
+    if (this.mbIsModeless)
+    {
+      if (!this.mbCloseOnAccept)
+      {
+//        this.mOrigAcceptHandler = gDlg.getAttribute("ondialogaccept");
+        this.mOrigAcceptHandler = new Function(gDlg.getAttribute("ondialogaccept"));
+        gDlg.setAttribute("ondialogaccept", "return mDialogConfigMan.doAccept();");
+        var applyButton = gDlg.getButton("extra1");
+        applyButton.label = this.mStringBundle.GetStringFromName("msiDlgButton.apply");
+        applyButton.hidden = false;
+        applyButton.setAttribute("oncommand", "return mDialogConfigMan.doApply();");
+      }
+    }
+    if (this.mbIsRevise)
+    {
+      var reviseTitle = gDlg.getElementById("msiDialogPropertiesTitle");
+      if (reviseTitle != null)
+        this.mDlgWindow.title = reviseTitle.value;
+    }
+  };
+  this.initialize = function()
+  {
+    if (!this.mStringBundle)
+    {
+      try {
+        var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(); 
+        strBundleService = strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
+        this.mStringBundle = strBundleService.createBundle("chrome://prince/locale/msiDialogs.properties"); 
+
+      } catch (ex) {dump("Error in initializing strings for msiDialogConfigManager; error is [" + ex + "].\n");}
+    }
+  };
+  this.doAccept = function()
+  {
+//    var rv = eval(this.mOrigAcceptHandler);
+    var rv = this.mOrigAcceptHandler();
+    return rv;
+  };
+  this.doApply = function()
+  {
+//    var rv = eval(this.mOrigAcceptHandler);
+    var rv = this.mOrigAcceptHandler();
+    if (rv)
+    {
+      if (!this.mbCloseOnAccept)
+        this.cancelToClose();
+      return this.mbCloseOnAccept;
+    }
+    return rv;
+  };
+  this.cancelToClose = function()
+  {
+    var gDlg = this.mDlgWindow.document.documentElement;
+    var cancelButton = gDlg.getButton("cancel");
+    cancelButton.label = this.mStringBundle.GetStringFromName("msiDlgButton.close");
+  };
+}

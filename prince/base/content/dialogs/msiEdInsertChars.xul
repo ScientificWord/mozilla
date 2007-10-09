@@ -18,9 +18,10 @@
         ondialogcancel = "return onClose();">
 
   <!-- Methods common to all editor dialogs -->
-  <script type="application/x-javascript" src="chrome://editor/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/msiEdInsertChars.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdInsertChars.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>

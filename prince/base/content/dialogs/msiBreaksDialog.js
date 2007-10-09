@@ -32,6 +32,9 @@ function Startup()
 
   InitDialog();
 
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  window.mMSIDlgManager.configureDialog();
+
   document.getElementById("breaksRadioGroup").focus();
 
   SetWindowLocation();
@@ -150,7 +153,8 @@ function onAccept()
   theWindow.msiInsertBreaks(data, editorElement);
 
   SaveWindowLocation();
-  return false;
+  return true;
+//  return false;
 }
 
 function onCancel()
