@@ -2340,6 +2340,13 @@ function propertyDialogList(theWindow)
   }
   this.getParentEditorElementByDialog = function(theDialog)
   {
+    var theEntry = this.findEntryForDialog(theDialog);
+    if (theEntry != null)
+      return theEntry.theEditor;
+    return null;
+  }
+  this.findEntryForDialog = function(theDialog)
+  {
     for (var entry in this.ourList)
     {
       for (var i = 0; i < this.ourList[entry].length; ++i)
@@ -2347,7 +2354,7 @@ function propertyDialogList(theWindow)
         if (this.ourList[entry][i].theDialog == theDialog)
         {
 //          msiKludgeLogString("Removing dialog entry in closing observer.\n");
-          return this.ourList[entry][i].theEditor;
+          return this.ourList[entry][i];
           break;
         }
       }

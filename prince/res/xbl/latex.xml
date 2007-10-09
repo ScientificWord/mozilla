@@ -330,7 +330,7 @@
 //        if (displayForm != null)
 //        {
 //          var dumpStr = "In displayForm clause; num anonymous nodes is [" + nNumAnonObjs + "], breakObj is [" + breakObj.nodeName + "], firstChild is [";
-h//          if (firstChild == null)
+//          if (firstChild == null)
 //            dumpStr += "null];";
 //          else
 //            dumpStr += firstChild.nodeName + "];";

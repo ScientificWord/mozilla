@@ -32,6 +32,9 @@ function Startup()
 
   InitDialog();
 
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  window.mMSIDlgManager.configureDialog();
+
   document.getElementById("liftSizeTextbox").focus();
 
   SetWindowLocation();
@@ -126,7 +129,7 @@ function onAccept()
   theWindow.msiInsertRules(data, editorElement);
 
   SaveWindowLocation();
-  return false;
+  return true;
 }
 
 function onCancel()
