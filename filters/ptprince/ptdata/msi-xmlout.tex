@@ -3,6 +3,7 @@
    \def\css{2}	  % the css output file
    \openout\css=my.css %% the CSS style file for this document
    \write\css{@import url("resource://app/res/css/baselatex.css");}
+   \write\css{@import url("resource://app/res/css/latex.css");}
    \closeout\css
 
 \msi@dollar=`\$
@@ -338,11 +339,12 @@
    \fi
 }
 
+
 \def\hspace#1{%
    \ifmmode
      \string\hspace\@brace{#1}%
    \else
-     \msitag{<hspace width="#1"/>}%
+     \msitag{<hspace dim="#1" type="customSpace"></hspace>}%
    \fi
 }
 
@@ -1442,10 +1444,6 @@
 \msi@uni{s-ced}{15f}
 
 
-
-
-
-
 \msi@uni{L}{141}
 \msi@uni{l}{142}
 \msi@uni{NG}{14a}
@@ -1457,6 +1455,57 @@
 
 \msi@uni{U-r}{16e}
 \msi@uni{u-r}{16f}
+
+\msi@uni{guilsinglleft}{2039}
+\msi@uni{guilsinglright}{203a}
+
+%% Spacing
+
+
+\def\qquad{\msitag{<hspace dim="2em" type="twoEmSpace">}\@hex{2001}\msitag{</hspace>}}
+\def\quad{\msitag{<hspace dim="1em" type="emSpace">}\@hex{2003}\msitag{</hspace>}}
+\def\ {\msitag{<hspace type="requiredSpace">}\@hex{205f}\msitag{</hspace>}}
+\def~{\msitag{<hspace type="nonBreakingSpace">}\@hex{a0}\msitag{</hspace>}}
+\def\/{\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}}
+
+
+\def\noindent{\par\msitag{<hspace dim="0.0em" type="noIndent"></hspace>}}
+
+
+\def\thinspace{%
+   \ifmmode
+      \string\thinspace
+   \else
+     \msitag{<hspace dim="0.17em" type="thinSpace">}\@hex{2009}\msitag{</hspace>}%
+   \fi
+}
+
+\def\thickspace{%
+   \ifmmode
+      \string\thickspace
+   \else
+      \msitag{<hspace dim="0.5em" type="thickSpace">}\@hex{2002}\msitag{</hspace>}%
+   \fi
+}
+
+
+\def\negthinspace{%
+   \ifmmode
+      \string\negthinspace
+   \else
+      \msitag{<hspace dim="0.0em" type="negativeThinSpace"></hspace>}%
+   \fi
+}
+
+
+%%\def\msi@hook@hfil{\msitag{\hfil}}
+%%\def\msi@hook@hfill{\msitag{\hfill}}
+%%\def\msi@hook@hss{\msitag{\hss}}
+
+
+%%\def\msi@hook@vfil{\msitag{\vfil}}
+%%\def\msi@hook@vfill{\msitag{\vfill}}
+%%\def\msi@hook@vss{\msitag{\vss}}
 
 
 
@@ -1515,7 +1564,6 @@
 
 %\msi@mathmlpass{\thinspace}
 
-\def\thinspace{\ifmmode\string\thinspace\else\ \fi}
 
 
 \def\mathpass@arg#1{%
