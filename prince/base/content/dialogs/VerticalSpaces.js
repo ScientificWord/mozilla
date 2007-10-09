@@ -32,6 +32,9 @@ function Startup()
 
   InitDialog();
 
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  window.mMSIDlgManager.configureDialog();
+
   document.getElementById("spacesRadioGroup").focus();
 
   SetWindowLocation();
@@ -150,7 +153,8 @@ function onAccept()
   theWindow.msiInsertVerticalSpace(data, editorElement);
 
   SaveWindowLocation();
-  return false;
+//  return false;
+  return true;
 }
 
 function onCancel()

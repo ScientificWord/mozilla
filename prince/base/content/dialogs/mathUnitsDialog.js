@@ -24,6 +24,9 @@ function Startup()
 
   InitDialog();
 
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  window.mMSIDlgManager.configureDialog();
+
   SetWindowLocation();
 }
 
@@ -209,8 +212,8 @@ function onAccept()
   theWindow.insertmathunit(theUnitName, editorElement);
 
 //  SaveWindowLocation();
-//  return true;
-  return false;  //don't close
+  return true;
+//  return false;  //don't close
 }
 
 function onCancel()

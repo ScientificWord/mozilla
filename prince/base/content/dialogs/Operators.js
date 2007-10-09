@@ -40,6 +40,9 @@ function Startup()
 
   InitDialog();
 
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  window.mMSIDlgManager.configureDialog();
+
   gDialog.limitsSpecGroup.focus();
 
   SetWindowLocation();
@@ -92,7 +95,8 @@ function onAccept()
   theWindow.insertOperator(data.operator, data.limitsSpec, data.sizeSpec, editorElement);
 
   SaveWindowLocation();
-  return false;
+  return true;
+//  return false;
 }
 
 function onCancel()

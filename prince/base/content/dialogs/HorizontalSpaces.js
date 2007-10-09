@@ -32,6 +32,9 @@ function Startup()
 
   InitDialog();
 
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  window.mMSIDlgManager.configureDialog();
+
   document.getElementById("spacesRadioGroup").focus();
 
   SetWindowLocation();
@@ -193,7 +196,7 @@ function onAccept()
   theWindow.msiInsertHorizontalSpace(data, editorElement);
 
   SaveWindowLocation();
-  return false;
+  return true;
 }
 
 function onCancel()
