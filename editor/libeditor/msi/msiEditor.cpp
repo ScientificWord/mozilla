@@ -1084,7 +1084,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
             if (NS_SUCCEEDED(res))
 		          res = CheckForAutoSubstitute(PR_TRUE);
           }
-          if (NS_SUCCEEDED(res) && preventDefault)
+          if (preventDefault)
             aKeyEvent->PreventDefault();
         }    
       }    
