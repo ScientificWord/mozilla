@@ -61,6 +61,9 @@ function Startup()
 
   InitDialog();
 
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  window.mMSIDlgManager.configureDialog();
+
   gDialog.lineSpecGroup.focus();
 
   SetWindowLocation();
@@ -209,7 +212,8 @@ function onAccept()
   theWindow.insertBinomial(data.leftBracket, data.rightBracket, data.lineSpec, data.sizeSpec, editorElement);
 
   SaveWindowLocation();
-  return false;
+  return true;
+//  return false;
 }
 
 function onCancel()

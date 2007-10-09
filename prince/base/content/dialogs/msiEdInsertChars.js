@@ -24,6 +24,9 @@ function Startup()
 
   StartupLatin();
 
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  window.mMSIDlgManager.configureDialog();
+
   // Set a variable on the opener window so we
   //  can track ownership of close this window with it
 //  window.opener.InsertCharWindow = window;
@@ -47,7 +50,8 @@ function onAccept()
   CategoryGroup.setAttribute("char_index", indexM);
   
   // Don't close the dialog
-  return false;
+//  return false;
+  return true;
 }
 
 // Don't allow inserting in HTML Source Mode
