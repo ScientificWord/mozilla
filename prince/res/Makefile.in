@@ -11,17 +11,17 @@ include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/rules.mk
 
 CSS_RESOURCES := $(wildcard	$(srcdir)/css/*.css)
-ICON_RESOURCES := $(wildcard $(srcdir)/css/*.png)
+# ICON_RESOURCES := $(wildcard $(srcdir)/css/*.png)
 XBL_RESOURCES := $(wildcard $(srcdir)/xbl/*.xml)
 TAGDEF_RESOURCES := $(wildcard $(srcdir)/tagdefs/*.xml)
 FRAG_RESOURCES := $(wildcard $(srcdir)/fragments/*.frg)
 
 libs::	$(CSS_RESOURCES) $(XBL_RESOURCES)
 	$(INSTALL)	$(CSS_RESOURCES)	$(FINAL_TARGET)/res/css
-	$(INSTALL)	$(ICON_RESOURCES)	$(FINAL_TARGET)/res/css
 	$(INSTALL)	$(XBL_RESOURCES)	$(FINAL_TARGET)/res/xbl
 	$(INSTALL)	$(TAGDEF_RESOURCES)	$(FINAL_TARGET)/res/tagdefs
 	$(INSTALL)	$(FRAG_RESOURCES)	$(FINAL_TARGET)/res/fragments
+#	$(INSTALL)	$(ICON_RESOURCES)	$(FINAL_TARGET)/res/css
 				  
 
 
