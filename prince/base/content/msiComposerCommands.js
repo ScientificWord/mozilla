@@ -4089,8 +4089,8 @@ function msiInsertBreaks(dialogData, editorElement)
     allowBreak:             "|",
     discretionaryHyphen:    "-",
     noBreak:                "~",
-    pageBreak:              "&#x21b5;",  //formfeed?
-    newPage:                "&#x21b5;",  //formfeed?
+    pageBreak:              "&#x21b5;",
+    newPage:                "&#x21b5;",
     lineBreak:              "&#x21b5;",
     newLine:                "&#x21b5;"
   };
