@@ -725,7 +725,10 @@ function msiEditorDocumentObserver(editorElement)
         if (msiIsHTMLEditor(this.mEditorElement))
         {
           editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
-          editor.xuldoc = window.document;
+          try
+          {
+            editor.xuldoc = window.document;
+          } catch(exc) {dump("Error setting editor.xuldoc in msiEditor.js, msiEditorDocumentObserver.observe(obs_documentCreated); error is [" + exc + "].\n");}
           try {
             editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
             dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");

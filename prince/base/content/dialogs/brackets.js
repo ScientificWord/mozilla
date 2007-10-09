@@ -47,6 +47,9 @@ function Startup()
 
   InitDialog();
 
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  window.mMSIDlgManager.configureDialog();
+
   gDialog.LeftBracketGroup.focus();
 
   SetWindowLocation();
@@ -144,42 +147,20 @@ function drawSample(sampleControl)
 //  document.getElementById("leftBracketSample").textContent = gDialog.LeftBracketGroup.valueStr;
 //  document.getElementById("rightBracketSample").textContent = gDialog.RightBracketGroup.valueStr;
   var leftBrackSamp = document.getElementById("leftBracketSample");
-  var leftText = document.createTextNode(gDialog.LeftBracketGroup.valueStr);
-  var n = leftBrackSamp.childNodes.length;
-  for (var i = n-1; i >= 0; --i)
-    leftBrackSamp.removeChild(leftBrackSamp.childNodes[i]);
-  leftBrackSamp.appendChild(leftText);
-  document.getElementById("rightBracketSample").textContent = gDialog.RightBracketGroup.valueStr;
+  leftBrackSamp.firstChild.nodeValue = gDialog.LeftBracketGroup.valueStr;
+//  var leftText = document.createTextNode(gDialog.LeftBracketGroup.valueStr);
+//  var n = leftBrackSamp.childNodes.length;
+//  for (var i = n-1; i >= 0; --i)
+//    leftBrackSamp.removeChild(leftBrackSamp.childNodes[i]);
+//  leftBrackSamp.appendChild(leftText);
+//  document.getElementById("rightBracketSample").textContent = gDialog.RightBracketGroup.valueStr;
   var rightBrackSamp = document.getElementById("rightBracketSample");
-  var rightText = document.createTextNode(gDialog.RightBracketGroup.valueStr);
-  n = rightBrackSamp.childNodes.length;
-  for (var i = n-1; i >= 0; --i)
-    rightBrackSamp.removeChild(rightBrackSamp.childNodes[i]);
-  rightBrackSamp.appendChild(rightText);
-//  var opening = document.createElementNS(mmlns, "mo");
-//  opening.setAttribute("form", "prefix");
-//  opening.setAttribute("fence", "true");
-//  opening.setAttribute("stretchy", "true");
-//  opening.appendChild(document.createTextNode(gDialog.LeftBracketGroup.valueStr));
-//  var closing = document.createElementNS(mmlns, "mo");
-//  closing.setAttribute("form", "postfix");
-//  closing.setAttribute("fence", "true");
-//  closing.setAttribute("stretchy", "true");
-//  closing.appendChild(document.createTextNode(gDialog.RightBracketGroup.valueStr));
-//  var content = document.createElementNS(mmlns,"mi");
-//  content.appendChild(document.createTextNode(String.fromCharCode(0x2039,0x203a)));
-////  content.appendChild(document.createTextNode(emptyElementStr));
-//  var mrow = document.createElementNS(mmlns, "mrow");
-//  mrow.appendChild(opening);
-//  mrow.appendChild(content);
-//  mrow.appendChild(closing);
-//  var div = document.createElementNS(xhtmlns,"div");
-//  div.appendChild(mrow);
-//  var math = document.createElementNS(mmlns,"math");
-//  math.setAttribute("display","inline");
-//  math.appendChild(div);
-//  var oldMathKids = sampleControl.getElementsByTagNameNS(mmlns, "math");
-//  sampleControl.replaceChild(math, oldMathKids.item(0));
+  rightBrackSamp.firstChild.nodeValue = gDialog.RightBracketGroup.valueStr;
+//  var rightText = document.createTextNode(gDialog.RightBracketGroup.valueStr);
+//  n = rightBrackSamp.childNodes.length;
+//  for (var i = n-1; i >= 0; --i)
+//    rightBrackSamp.removeChild(rightBrackSamp.childNodes[i]);
+//  rightBrackSamp.appendChild(rightText);
 }
 
 function onAccept()
@@ -236,7 +217,8 @@ function onAccept()
 //  theWindow.insertfence(data.leftBracket, data.rightBracket, data.separator, editorElement);
   theWindow.insertfence(data.leftBracket, data.rightBracket, editorElement);
   SaveWindowLocation();
-  return false;
+//  return false;
+  return true;
 }
 
 function onCancel()
