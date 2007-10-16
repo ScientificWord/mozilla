@@ -1,0 +1,4 @@
+
+<!ENTITY  windowTitle.label         "Enter formatted section title">
+<!ENTITY  sectionCodeDescription.accessKey         "T">
+<!ENTITY  sectionCodeDescription.label	"Here go the instructions on how to enter the section title<br/>use #T for title, #N for number, ...">
