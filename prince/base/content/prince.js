@@ -282,7 +282,7 @@ function openTeX()
   dump("Open TeX \n");
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
-  fp.init(window, GetString("OpenTeXFile"), msIFilePicker.modeOpen);     // BBM todo -- use properties file here for the strings
+  fp.init(window, GetString("OpenTeXFile"), msIFilePicker.modeOpen);     
   fp.appendFilter(GetString("TeXFiles"), "*.tex; *.ltx; *.shl");
   fp.appendFilters(msIFilePicker.filterXML)
 
@@ -309,28 +309,70 @@ function openTeX()
 //      Prepare to run pretex.exe. We need to send it some directories:                                       //
 //       The input directory gives the location of the .cls and .tex files that pretex reads to               //
 //         determine how to translate the TeX. This is usually prince/ptdata.                                 //
-//       The output directory where the auxiliary files that are generated (such as .css, etc.) go.           //
-//         This is a generated directory in the temp directory. It will be taken out of the temp directory    //
-//         once the user saves the document.                                                                  //
 //       The MathML conversion directory. This is where the DLL used to convert math and its associated .gmr  //
-//         files are. This is usuall prince.                                                                  //
+//         files are. This is usually resource://app.                                                                  //
 //       The input .tex file.                                                                                 //
-//       The output .xhtml file, which is usually in the output directory.                                    //
+//       The output directory where the auxiliary files that are generated (such as .css, etc.) go.           //
+//         This is the <filename>__files directory in the directory containing the output file.
+//       The output <filename>.sci file.                                    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     msiSaveFilePickerDirectory(fp, "tex");
     var filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
     var infile =  "\""+fp.file.path+"\"";
     dump("Open Tex: " + infile+"\n");
-    var outfile = dsprops.get("TmpD", Components.interfaces.nsIFile);
-    outfile.append(filename);
-    var outdir = outfile.clone();
-    if (!outdir.exists()) outdir.create(1 , 0755);
-    outfile.append("doc.xhtml");
+
+// Get the directory for the result from the preferences, or default to the SWP Docs directory
+    var docdir;
+    try
+    {
+      var docdirname = prefs.getCharPref("swp.prefDocumentDir");
+      dump("swp.prefDcoumentDir is ", docdirname + "\n");
+      docdir = Components.classes["@mozilla.org/file/local;1"].
+          createInstance(Components.interfaces.nsILocalFile);
+      docdir.initWithPath(docdirname);
+      if (!valueOf(docdir.exists()))
+        docdir.create(1, 0755);
+    }
+    catch (e)
+    {
+      var dirkey;
+#ifdef XP_WIN
+        dirkey = "Pers";
+#else
+#ifdef XP_MACOSX
+        dirkey = "UsrDocs";
+#else
+        dirkey = "Home";
+#endif
+#endif
+      // if we can't find the one in the prefs, get the default
+      docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
+      if (!docdir.exists()) docdir.create(1,0755);
+      // Choose one of the three following lines depending on the app
+	  // BBM Replace this code by using a string from a branding file
+      docdir.append("SWP Docs");
+      // docdir.append("SW Docs");
+      // docdir.append("SNB Docs");
+      if (!docdir.exists()) docdir.create(1,0755);
+      dump("default document directory is "+docdir.path+"\n");
+    }
+
+    var outfile = docdir.clone();
+    var outdir = docdir.clone();
+    outfile.append(filename+".sci");
+    outdir.append(filename + "_files");
+	if (outdir.exists()) outdir.remove(false);
+    outdir.create(1 , 0755);
     var css = outdir.clone();
-    css.append("my.css");
-    if (css.exists()) css.remove(false); 
-    css.create(0 , 0755);
+    css.append("css");
+    css.create(1 , 0755);
+    var graphics = outdir.clone();
+    graphics.append("graphics");
+    graphics.create(1 , 0755);
+    var plots = outdir.clone();
+    plots.append("plots");
+    plots.create(1 , 0755);
     if (outfile.exists()) outfile.remove(false);
     var mmldir = dsprops.get("resource:app", Components.interfaces.nsIFile);
     var exefile=dsprops.get("resource:app", Components.interfaces.nsIFile);
@@ -343,6 +385,8 @@ function openTeX()
     dump("\ninfile=\""+fp.file.path);
     dump("\ndataDir=\""+dataDir.path);
     dump("\nmmldir=\""+mmldir.path+"\n");
+	dump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+fp.file.path+", "+outfile.path);
+
     // run pretex.exe
     
     try 

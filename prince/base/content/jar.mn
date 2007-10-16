@@ -177,5 +177,5 @@ prince.jar:
   content/tagkeyassignments.js       (dialogs/tagkeyassignments.js)
   content/autoSubstituteDialog.xul   (dialogs/autoSubstituteDialog.xul)
   content/autoSubstituteDialog.js    (dialogs/autoSubstituteDialog.js)
-
+  content/sectiontext.xul   		 (dialogs/sectiontext.xul)
 
