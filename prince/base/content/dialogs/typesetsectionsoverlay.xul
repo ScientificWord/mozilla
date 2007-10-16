@@ -146,7 +146,8 @@
       <spacer/>
       <button observes="toporbottommargin" label="Remove top rule or space"/>
       <spacer/>
-      <button observes="notmargin" label="Insert text"/>
+      <button observes="notmargin" label="Insert text" oncommand=
+  		'window.openDialog("chrome://prince/content/sectiontext.xul", "_blank", "chrome,close,titlebar,modal", "");'/>
       <vbox flex="1"/>
     </hbox>
   </tabpanel>
