@@ -90,7 +90,7 @@
 				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<vspace type="bigSkip" dim="12pt" /><cursor/>]]>
+          <initialcontentsforempty> <![CDATA[<hspace type="zeroSpace" dim="0.0em" /><cursor/>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="sw:rtlpara">

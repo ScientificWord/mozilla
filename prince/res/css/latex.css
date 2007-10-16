@@ -89,7 +89,7 @@ mml|mi[tempinput="true"]::after {
 }
 mml|mi[tempinput="true"]{
   /* -moz-math-font-style: normal !important;   */
-  letter-spacing: -0.04em;
+  letter-spacing: -0.015em;
 }
 
 #rotateleft{
