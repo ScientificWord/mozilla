@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetDocFormat.dtd">
 
@@ -140,14 +140,14 @@
     <spacer/>
     <hbox align="center">
       <vbox flex="1"/>
-      <button observes="toporbottommargin" label="Add rule"/>
+      <button observes="toporbottommargin" label="Add rule" oncommand='window.openDialog("chrome://prince/content/addruleforsection.xul", "_blank", "chrome,close,titlebar","");'/>
       <spacer/>
       <button observes="toporbottommargin" label="Add vertical space"/>
       <spacer/>
       <button observes="toporbottommargin" label="Remove top rule or space"/>
       <spacer/>
       <button observes="notmargin" label="Insert text" oncommand=
-  		'window.openDialog("chrome://prince/content/sectiontext.xul", "_blank", "chrome,close,titlebar,modal", "");'/>
+  		'window.openDialog("chrome://prince/content/sectiontext.xul", "_blank", "chrome,close,titlebar", "");'/>
       <vbox flex="1"/>
     </hbox>
   </tabpanel>
