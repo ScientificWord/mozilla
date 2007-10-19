@@ -79,3 +79,4 @@ en-US.jar:
   locale/tagkeyassignments.dtd            (dialogs/tagkeyassignments.dtd)
   locale/autoSubstituteDialog.dtd         (dialogs/autoSubstituteDialog.dtd)
   locale/sectiontext.dtd         		  (dialogs/sectiontext.dtd)
+  locale/addruleforsection.dtd         		  (dialogs/addruleforsection.dtd)
