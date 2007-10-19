@@ -1,7 +1,7 @@
 \makeatletter
 
    \def\css{2}	  % the css output file
-   \openout\css=my.css %% the CSS style file for this document
+   \openout\css={css/doc.css} %% the CSS style file for this document
    \write\css{@import url("resource://app/res/css/baselatex.css");}
    \write\css{@import url("resource://app/res/css/latex.css");}
    \closeout\css
