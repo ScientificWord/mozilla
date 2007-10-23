@@ -1,15 +1,28 @@
  
+var currentUnit;
+var unitConversions;
 var widthElements;
 var heightElements;
-var unitConversions;
 var pagewidth;   // in mm
 var pageheight;
 var paper;
 var landscape;
-var currentUnit;
 var scale = 0.5;
 
 var editor;
+var sectitleformat;
+
+function InitializeUnits()
+{
+  currentUnit = document.getElementById("docformat.units").selectedItem.value;
+  setDecimalPlaces();
+  unitConversions = new Object;
+  unitConversions.pt=.3514598;  //mm per pt
+  unitConversions.in=25.4;  //mm per in
+  unitConversions.mm=1; // mm per mm
+  unitConversions.cm=10; // mm per cm
+}
+
 
 function Startup()
 {
@@ -18,32 +31,41 @@ function Startup()
     window.close();
     return;
   }
-
   widthElements=new Array("lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin");
   heightElements=new Array("tmargin","header","headersep",
     "bodyheight","footer","footersep", "mnpush", "computedbmargin");
-  currentUnit = document.getElementById("docformat.units").selectedItem.value;
-  setDecimalPlaces();
-  unitConversions = new Object;
-  unitConversions.pt=.3514598;  //mm per pt
-  unitConversions.in=25.4;  //mm per in
-  unitConversions.mm=1; // mm per mm
-  unitConversions.cm=10; // mm per cm
-//  setPageDimensions()
-//  setDefaults();
-  getPageLayout();
+  InitializeUnits();
+  var doc = editor.document;
+  var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
+  if (!preamble) {
+    dump("No preamble in document\n");
+    return;
+  }
+  var docFormatNodeList = preamble.getElementsByTagName('docformat');
+  var node;
+  if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
+  else node = docFormatNodeList[0].getElementsByTagName('pagelayout')[0];
+  getPageLayout(node);
+  
+  
+
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
   OnWindowSizeReset(true);
-  dump("current unit = "+currentUnit+"\n");
-  // font page
   initSystemFontMenu("mainfontlist");
   initSystemFontMenu("sansfontlist");
   initSystemFontMenu("fixedfontlist");
   initSystemFontMenu("x1fontlist");
   initSystemFontMenu("x2fontlist");
   initSystemFontMenu("x3fontlist");
-  getFontSpecs();
+  if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
+  else node = docFormatNodeList[0].getElementsByTagName('fontchoices')[0];
+  getFontSpecs(node);
+  var sectitlenodelist;
+  if (!(docFormatNodeList && docFormatNodeList.length>=1)) sectitlenodelist=null;
+  else sectitlenodelist = docFormatNodeList[0].getElementsByTagName('sectitleformat');
+  sectitleformat = new Object();
+  getSectionFormatting(sectitlenodelist, sectitleformat);
 }
 
 function savePageLayout(docFormatNode)
@@ -99,114 +121,144 @@ function getNumberValue(numberwithunit)
 }
 
 
-function getPageLayout()
+function getPageLayout(node)
 {
-//  paper = "letter";
-//  landscape = false;
-//  currentUnit="in";
-  var doc = editor.document;
-  var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
-  if (!preamble) return;
-  var docFormatNodeList = preamble.getElementsByTagName('docformat');
-  if (!docFormatNodeList) return;
-  var node;
+  //node is the pageformat node, or null
   var subnode;
   var i;
   var value;
-  if (docFormatNodeList.length == 0)
+  if (!node)
   {
     setPageDimensions();
     setDefaults();
   }  
-  for ( i = 0; i < docFormatNodeList.length; i++)
-  // we expect only one node in this list, but if there are several, we read them all
-  // in the case of conflicts, last man wins
-  {
-    node = docFormatNodeList[i].getElementsByTagName('pagelayout')[0];
-    if (node)
-    {
-      value = node.getAttribute('unit');
-      if (value) {
-        currentUnit = value;
-        document.getElementById('docformat.units').value = currentUnit;
-      }
+  if (node){                                                                             
+    value = node.getAttribute('unit');
+    if (value) {
+      currentUnit = value;
+      document.getElementById('docformat.units').value = currentUnit;
     }
-    node = docFormatNodeList[i].getElementsByTagName('page')[0];
-    if (node)
+    subnode = node.getElementsByTagName('page')[0];
+    if (subnode)
     {
-      value = node.getAttribute('twoside');
+      value = subnode.getAttribute('twoside');
       document.getElementById('twosides').checked=(value=='true');
       setTwosidedState(document.getElementById('twosides'));
-      value = node.getAttribute('paper');
+      value = subnode.getAttribute('paper');
       paper = value;
       if (value) document.getElementById('docformat.papersize').value = value;
-      value = node.getAttribute('width');
+      value = subnode.getAttribute('width');
       if (value) pagewidth = getNumberValue(value);
-      value = node.getAttribute('height');
+      value = subnode.getAttribute('height');
       if (value) pageheight = getNumberValue(value);
-      value = node.getAttribute('landscape');
+      value = subnode.getAttribute('landscape');
       if (value=='true') landscape = true; else landscape = false;
       document.getElementById('landscape').checked=landscape;
     }                                                    
     setPageDimensions();
     setDefaults();
-    node = docFormatNodeList[i].getElementsByTagName('textregion')[0];
-    if (node)
+    subnode = node.getElementsByTagName('textregion')[0];
+    if (subnode)
     {
-      value = node.getAttribute('width');
+      value = subnode.getAttribute('width');
       if (value) document.getElementById('tbbodywidth').value=getNumberValue(value);
-      value = node.getAttribute('height');
+      value = subnode.getAttribute('height');
       if (value) document.getElementById('tbbodyheight').value=getNumberValue(value);
     }
-    node = docFormatNodeList[i].getElementsByTagName('margin')[0];
-    if (node)
+    subnode = node.getElementsByTagName('margin')[0];
+    if (subnode)
     {
-      value = node.getAttribute('left');
+      value = subnode.getAttribute('left');
       if (value) document.getElementById('tblmargin').value=getNumberValue(value);
-      value = node.getAttribute('top');
+      value = subnode.getAttribute('top');
       if (value) document.getElementById('tbtmargin').value=getNumberValue(value);
     }
-    node = docFormatNodeList[i].getElementsByTagName('columns')[0];
-    if (node)
+    subnode = node.getElementsByTagName('columns')[0];
+    if (subnode)
     {
-      value = node.getAttribute('count');
+      value = subnode.getAttribute('count');
       document.getElementById('columns').checked=(value=='2');
       broadcastColCount();
-      value = node.getAttribute('sep');
+      value = subnode.getAttribute('sep');
       if (value) document.getElementById('tbcolsep').value=getNumberValue(value);
     }
-    node = docFormatNodeList[i].getElementsByTagName('marginnote')[0];
-    if (node)
+    subnode = node.getElementsByTagName('marginnote')[0];
+    if (subnode)
     {
-      value = node.getAttribute('width');
+      value = subnode.getAttribute('width');
       if (value) document.getElementById('tbmnwidth').value=getNumberValue(value);
-      value = node.getAttribute('sep');
+      value = subnode.getAttribute('sep');
       if (value) document.getElementById('tbmnsep').value=getNumberValue(value);
-      value = node.getAttribute('push');
+      value = subnode.getAttribute('push');
       if (value) document.getElementById('tbmnpush').value=getNumberValue(value);
-      value = node.getAttribute('hidden');
+      value = subnode.getAttribute('hidden');
       if (value) document.getElementById('disablemn').checked=(value=='true');
         else document.getElementById('disablemn').checked=false;
     }
-    node = docFormatNodeList[i].getElementsByTagName('header')[0];
-    if (node)
+    subnode = node.getElementsByTagName('header')[0];
+    if (subnode)
     {
-      value = node.getAttribute('height');
+      value = subnode.getAttribute('height');
       if (value) document.getElementById('tbheader').value=getNumberValue(value);
-      value = node.getAttribute('sep');
+      value = subnode.getAttribute('sep');
       if (value) document.getElementById('tbheadersep').value=getNumberValue(value);
     }
-    node = docFormatNodeList[i].getElementsByTagName('footer')[0];
-    if (node)
+    subnode = node.getElementsByTagName('footer')[0];
+    if (subnode)
     {
-      value = node.getAttribute('height');
+      value = subnode.getAttribute('height');
       if (value) document.getElementById('tbfooter').value=getNumberValue(value);
-      value = node.getAttribute('sep');
+      value = subnode.getAttribute('sep');
       if (value) document.getElementById('tbfootersep').value=getNumberValue(value);
     }
   }
 }
 
+
+function getSectionFormatting(sectitlenodelist, sectitleformat)
+{
+  var i;
+  var node;
+  var level;
+  var titleformat;
+  if (sectitlenodelist)
+  {
+    for (i=0; i< sectitlenodelist.length; i++)
+    {
+      node = sectitlenodelist[i];
+      level = node.getAttribute("level");
+      try {
+        titleformat = node.getElementsByTagName("titleprototype");
+        sectitleformat[level] = titleformat;
+      }
+      catch(e)
+      {
+        dump("exception in getSectionFormatting: "+e+"\n");
+      }
+    }
+  }
+  var sectype = document.getElementById("sections.style").value;
+  var titleinfo;
+  if (titleinfo = sectitleformat[sectype])
+  {
+    dump("Put some stuff in the title field\n");
+  }
+}
+
+
+function textEditor()
+{
+  var secname=document.getElementById("sections.name").label;
+  var units=document.getElementById("secoverlay.units").value;
+  window.openDialog("chrome://prince/content/sectiontext.xul", "_blank", "chrome,close,titlebar", sectitleformat,
+      secname, units);
+}
+
+function setSectionFormatting(sectitleformat)
+{
+}
+      
+      
 function onAccept()
 {
 // first check that something is set
@@ -819,38 +871,30 @@ function saveFontSpecs(docFormatNode)
   }
 }
 
-function getFontSpecs()
+function getFontSpecs(node)
 {
-  var doc = editor.document;
-  var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
-  if (!preamble) return;
-  var docFormatNode = preamble.getElementsByTagName('docformat')[0];
-  if (!docFormatNode) return;
-  var fontNodes = docFormatNode.getElementsByTagName('fontchoices');
-  var node, textbox;
+// node is the fontspecs node, or null
+  var textbox;
   var options;
-  var i;
-  for ( i = 0; i < fontNodes.length; i++)
+  var subnode;
+  if (node)
   {
-    node = fontNodes[i].getElementsByTagName('mainfont')[0];
-    if (node)
+    subnode = node.getElementsByTagName('mainfont')[0];
+    document.getElementById('mainfontlist').value = subnode.getAttribute('name');
+    options = subnode.getAttribute('options');
+    if (options)
+      options = trimBlanks(options);
+    if (options.length > 0)
     {
-      document.getElementById('mainfontlist').value = node.getAttribute('name');
-      options = node.getAttribute('options');
-      if (options)
-        options = trimBlanks(options);
-      if (options.length > 0)
-      {
-        textbox = document.getElementById('romannative');
-        textbox.value = options;
-        onOptionTextChanged( textbox );
-      }
-    }   
-    node = fontNodes[i].getElementsByTagName('sansfont')[0];
-    if (node)
+      textbox = document.getElementById('romannative');
+      textbox.value = options;
+      onOptionTextChanged( textbox );
+    }
+    subnode = node.getElementsByTagName('sansfont')[0];
+    if (subnode)
     {
-      document.getElementById('sansfontlist').value = node.getAttribute('name');
-      options = node.getAttribute('options');
+      document.getElementById('sansfontlist').value = subnode.getAttribute('name');
+      options = subnode.getAttribute('options');
       if (options)
         options = trimBlanks(options);
       if (options.length > 0)
@@ -860,11 +904,11 @@ function getFontSpecs()
         onOptionTextChanged( textbox );
       }
     }   
-    node = fontNodes[i].getElementsByTagName('fixedfont')[0];
-    if (node)
+    subnode = node.getElementsByTagName('fixedfont')[0];
+    if (subnode)
     {
       document.getElementById('fixedfontlist').value = node.getAttribute('name');
-      options = node.getAttribute('options');
+      options = subnode.getAttribute('options');
       if (options)
         options = trimBlanks(options);
       if (options.length > 0)
@@ -874,12 +918,12 @@ function getFontSpecs()
         onOptionTextChanged( textbox );
       }
     }   
-    node = fontNodes[i].getElementsByTagName('x1font')[0];
-    if (node  && node.getAttribute('internalname').length > 0)
+    subnode = node.getElementsByTagName('x1font')[0];
+    if (subnode  && subnode.getAttribute('internalname').length > 0)
     {
-      document.getElementById('f1name').value = node.getAttribute('internalname');
-      document.getElementById('x1fontlist').value = node.getAttribute('name');
-      options = node.getAttribute('options');
+      document.getElementById('f1name').value = subnode.getAttribute('internalname');
+      document.getElementById('x1fontlist').value = subnode.getAttribute('name');
+      options = subnode.getAttribute('options');
       if (options)
         options = trimBlanks(options);
       if (options.length > 0)
@@ -889,12 +933,12 @@ function getFontSpecs()
         onOptionTextChanged( textbox );
       }
     }   
-    node = fontNodes[i].getElementsByTagName('x2font')[0];
-    if (node  && node.getAttribute('internalname').length > 0)
+    subnode = node.getElementsByTagName('x2font')[0];
+    if (subnode  && subnode.getAttribute('internalname').length > 0)
     {
-      document.getElementById('f2name').value = node.getAttribute('internalname');
-      document.getElementById('x2fontlist').value = node.getAttribute('name');
-      options = node.getAttribute('options');
+      document.getElementById('f2name').value = subnode.getAttribute('internalname');
+      document.getElementById('x2fontlist').value = subnode.getAttribute('name');
+      options = subnode.getAttribute('options');
       if (options)
         options = trimBlanks(options);
       if (options.length > 0)
@@ -904,12 +948,12 @@ function getFontSpecs()
         onOptionTextChanged( textbox );
       }
     }   
-    node = fontNodes[i].getElementsByTagName('x3font')[0];
-    if (node  && node.getAttribute('internalname').length > 0)
+    subnode = node.getElementsByTagName('x3font')[0];
+    if (subnode  && subnode.getAttribute('internalname').length > 0)
     {
-      document.getElementById('f3name').value = node.getAttribute('internalname');
-      document.getElementById('x3fontlist').value = node.getAttribute('name');
-      options = node.getAttribute('options');
+      document.getElementById('f3name').value = subnode.getAttribute('internalname');
+      document.getElementById('x3fontlist').value = subnode.getAttribute('name');
+      options = subnode.getAttribute('options');
       if (options)
         options = trimBlanks(options);
       if (options.length > 0)
@@ -1176,8 +1220,10 @@ function setalign(which)
 {
   var element;
   var otherelement;
+  var sectionparts = document.getElementById("sectionparts");
   if (which == "center")
   {
+    sectionparts.setAttribute("pack","center");
     document.getElementById("leftalignment").setAttribute("hidden","true");
     document.getElementById("rightalignment").setAttribute("hidden","true");
     document.getElementById("notcenteralignment").setAttribute("hidden","true");
@@ -1191,6 +1237,7 @@ function setalign(which)
     document.getElementById("notcenteralignment").setAttribute("hidden","false");
     if (which == "left")
     {
+      sectionparts.setAttribute("pack", "start");
       document.getElementById("leftalignment").setAttribute("hidden","false");
       document.getElementById("rightalignment").setAttribute("hidden","true");
       element = document.getElementById("sectionleftmargin");
@@ -1198,6 +1245,7 @@ function setalign(which)
     }
     else if (which == "right")
     {
+      sectionparts.setAttribute("pack", "end");
       document.getElementById("leftalignment").setAttribute("hidden","true");
       document.getElementById("rightalignment").setAttribute("hidden","false");
       element = document.getElementById("sectionrightmargin");
