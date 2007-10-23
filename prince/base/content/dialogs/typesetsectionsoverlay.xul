@@ -15,7 +15,7 @@
       <broadcaster id="atpagetop" hidden="false"/>
       <broadcaster id="leftalignment" hidden="false"/>
       <broadcaster id="rightalignment" hidden="true"/>
-      <broadcaster id="notcenteralignment" hidden="false" disabled="true"/>
+      <broadcaster id="notcenteralignment" hidden="false"/>
       <broadcaster id="toporbottommargin" disabled="true"/>
       <broadcaster id="notmargin" disabled="true"/>
     </broadcasterset>  
@@ -41,13 +41,13 @@
       </vbox>
       <vbox align="center">
        <label>&docformatUnits;</label>
-       <menulist id="docformat.units"  
+       <menulist id="secoverlay.units"  
               oncommand="switchUnits();"  >
          <menupopup>
-           <menuitem id="docformat.inch" label="&docformatInch;" value="in"/>
-           <menuitem id="docformat.cm" label="&docformatCentimeter;" value="cm"/>
-           <menuitem id="docformat.pt" selected="true" label="&docformatPoints;" value="pt"/>
-           <menuitem id="docformat.mm" label="&docformatMillimeter;" value="mm"/>
+           <menuitem id="secoverlay.inch" label="&docformatInch;" value="in"/>
+           <menuitem id="secoverlay.cm" label="&docformatCentimeter;" value="cm"/>
+           <menuitem id="secoverlay.pt" selected="true" label="&docformatPoints;" value="pt"/>
+           <menuitem id="secoverlay.mm" label="&docformatMillimeter;" value="mm"/>
          </menupopup>
        </menulist>
       </vbox>
@@ -93,20 +93,21 @@
             <hbox><hbox flex="1"/><label>text</label><hbox flex="1"/></hbox>
             <vbox flex="1"/>
           </vbox>   
-          <hbox id="sectionparts" pack="end">
-            <vbox id="sectionleftmargin" role="sectionmargin" 
-              tooltiptext="Click to set left indent" style="height:60px; width:30px"
+          <hbox id="sectionparts" pack="start">
+            <vbox id="sectionleftmargin" role="sectionmargin"  observes="leftalignment"
+              tooltiptext="Set left indent to change width" style="width:30px"
               onclick="toggleselection(this);"/>
             <vbox>
               <hbox id="topmargin" role="sectionlayer" tooltiptext="Click to set top margin or to enter text"
                 style="height:20px; width:200px" onclick="toggleselection(this);"/>
-              <hbox id="sectiontextarea" role="sectionlayer" tooltiptext="Click to enter section text"
-                style="height:20px; width:200px" onclick="toggleselection(this);"/>
+              <iframe id="sectiontextarea" role="sectionlayer" tooltiptext="Click to enter section text"
+                style="min-height:20px; min-width:200px;" onclick="toggleselection(this);"
+                src="resource://app/shells/article/LaTeXDialogShell.sci"/>
               <hbox id="bottommargin" role="sectionlayer" tooltiptext="Click to set bottom margin or to enter text"
                 style="height:20px; width:200px" onclick="toggleselection(this);"/>
             </vbox>  
-            <vbox id="sectionrightmargin" role="sectionmargin" style="height:60px; width:30px"
-              onclick="toggleselection(this);"/>
+            <vbox id="sectionrightmargin" role="sectionmargin" style="width:30px"
+              tooltiptext="Set right indent to change width" onclick="toggleselection(this);" observes="rightalignment"/>
           </hbox>
           <vbox role="textarea" style="height:60px; width:375px">
             <vbox flex="1"/>
@@ -122,7 +123,7 @@
     <hbox id="marginsection" observes="notcenteralignment" align="center">
       <vbox flex="1"/>
       <vbox align="center">
-        <label observes="notcenteralignment" value="Left heading indent"/>
+        <label observes="leftalignment" value="Left heading indent"/>
         <textbox id="tbleftheadingmargin" style="width: 3.5em" onkeypress="handleChar(event,'leftheadingmargin');"
           tooltip="The left indent for the heading" observes="leftalignment"/>
       </vbox>
@@ -130,7 +131,7 @@
       <label observes="notcenteralignment">Use negative size to outdent</label>
       <spacer/>
       <vbox align="center">
-        <label value="Right heading indent" observes="notcenteralignment"/>
+        <label value="Right heading indent" observes="rightalignment"/>
         <textbox id="tbrightheadingmargin" style="width: 3.5em" onkeypress="handleChar(event,'rightheadingmargin');"
           tooltip="The right indent for the heading" observes="rightalignment"/>
       </vbox>
@@ -146,8 +147,7 @@
       <spacer/>
       <button observes="toporbottommargin" label="Remove top rule or space"/>
       <spacer/>
-      <button observes="notmargin" label="Insert text" oncommand=
-  		'window.openDialog("chrome://prince/content/sectiontext.xul", "_blank", "chrome,close,titlebar", "");'/>
+      <button observes="notmargin" label="Insert text" oncommand= 'textEditor();' />
       <vbox flex="1"/>
     </hbox>
   </tabpanel>
