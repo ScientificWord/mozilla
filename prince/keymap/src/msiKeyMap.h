@@ -51,8 +51,8 @@ public:
   NS_DECL_MSIIKEYMAP
 
   msiKeyMap();
-static  msiKeyMap* msiKeyMap::GetInstance();
-static  void       msiKeyMap::ReleaseInstance();
+static  msiKeyMap* GetInstance();
+static  void       ReleaseInstance();
 static msiKeyMap   *sInstance;
   
 PRUint32 VKeyStringToIndex( const nsString keyname);
