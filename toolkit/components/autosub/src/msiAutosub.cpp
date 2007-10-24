@@ -10,7 +10,7 @@
 #include "nsIDOMNodeList.h"
 #include "nsIIOService.h"
 #include "nsIFile.h"
-#include "nsILocalFIle.h"
+#include "nsILocalFile.h"
 #include "nsIFileURL.h"
 #include "nsIFileStreams.h"
 #include "nsIConverterOutputStream.h"
