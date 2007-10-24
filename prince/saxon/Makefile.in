@@ -14,25 +14,19 @@ include $(topsrcdir)/config/rules.mk
 ifeq ($(OS_ARCH),WINNT)
 platform	= windows
 else
-ifeq ($(OS_ARCH),Linux)
-platform	= linux
-else
-platform	= osx
-endif
+platform	= notwindows
 endif
 
 DLL_RESOURCES := $(wildcard	$(srcdir)/$(platform)/*.dll)
 EXE_RESOURCES := $(wildcard $(srcdir)//$(platform)/*.exe)
+JAVA_RESOURCES := $(wildcard $(srcdir)/$(platform)/*.jar)
 OTHER_RESOURCES := $(wildcard $(srcdir)/$(platform)/*.netmodule)
 
-libs::	$(DLL_RESOURCES) $(EXE_RESOURCES)
+libs::	$(DLL_RESOURCES) $(EXE_RESOURCES) $(JAVA_RESOURCES)
+ifeq ($(platform),windows)
 	$(INSTALL)	$(DLL_RESOURCES)	$(FINAL_TARGET)
 	$(INSTALL)	$(EXE_RESOURCES)	$(FINAL_TARGET)
 	$(INSTALL)	$(OTHER_RESOURCES)	$(FINAL_TARGET)
-				  
-
-
-
-
-
-	
+else
+	$(INSTALL)	$(JAVA_RESOURCES)	$(FINAL_TARGET)
+endif
