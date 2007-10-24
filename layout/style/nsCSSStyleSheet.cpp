@@ -74,7 +74,7 @@
 #include "nsContentUtils.h"
 #include "nsIJSContextStack.h"
 #include "nsIScriptSecurityManager.h"
-#include "nsnetutil.h"
+#include "nsNetUtil.h"
 
 // -------------------------------
 // Style Rule List for the DOM
