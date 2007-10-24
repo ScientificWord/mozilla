@@ -135,7 +135,7 @@ static NS_DEFINE_CID(kXTFServiceCID, NS_XTFSERVICE_CID);
 #include "nsIEventListenerManager.h"
 #include "nsAttrName.h"
 #include "nsIDOMUserDataHandler.h"
-#include "nsnetutil.h"
+#include "nsNetUtil.h"
 
 // for ReportToConsole
 #include "nsIStringBundle.h"
