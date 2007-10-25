@@ -128,10 +128,10 @@
       <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;"/>
       <toolbarbutton id="javascriptButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&javascriptToolbarButton.tooltip;" label="&javascriptToolbarButton.label;"/>
-      <toolbarbutton id="vc-rotateleft" class="toolbarbutton-1" label="Rotate left" observes="cmd_vcRotateLeft"/>
+      <toolbarbutton id="vc_rotateleft" class="toolbarbutton-1" label="Rotate left" observes="cmd_vcRotateLeft"/>
     </toolbarpalette>
     <toolbar id="EditingToolbar" class="chromeclass-toolbar" persist="collapsed" 
-      defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,subdocButton,bibliographyButton,gifsAnimatedButton,vc-rotateleft"
+      defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,subdocButton,bibliographyButton,gifsAnimatedButton,vc_rotateleft"
       mode="icons" customizable="true" />
   </toolbox>
 
