@@ -5,24 +5,25 @@ var units;
 function Startup() {
   titleformat = window.arguments[0];
   seclevel = window.arguments[1];
+  seclevel = seclevel.toLowerCase();
   dump("seclevel = "+seclevel+"\n");
   units = window.arguments[2];
+  units = units.toLowerCase();
   dump("units = "+units+"\n");
-  var substitutionStr = "";
+  var initialStr;
+  if (titleformat[seclevel]) initialStr = titleformat[seclevel];
   gDialog.bDataModified = false;
   gDialog.bEditorReady = false;
 
   var editElement = document.getElementById("sectiontitle-frame");
-  msiInitializeEditorForElement(editElement, substitutionStr);
+  msiInitializeEditorForElement(editElement, initialStr);
 }
                       
-function findBasePara( )
+function getBaseNode( )
 {
   var sw = "http://www.sciword.com/namespaces/sciword";
   var editElement = document.getElementById("sectiontitle-frame");
-  if (!editElement) return;
-  var editor = msiGetEditor(editElement);
-  var doc = editor.document;
+  var doc = editElement.contentDocument;
   var theNodes = doc.getElementsByTagNameNS(sw,"dialogbase");
   var theNode;
   if (theNodes) theNode = theNodes[0]; 
@@ -46,47 +47,30 @@ function findBasePara( )
 
 function stashTitlePrototype()
 {
-//  var editElement = document.getElementById("sectiontitle-frame");
-//  if (!editElement) return;
-//  var editor = msiGetEditor(editElement);
-  var sectitlenode;
-  try {
-     sectitlenode = data.sectitle;
-  }
-  catch(e) {
-    sectitlenode = document.createElement("sectitle");
-  }
-  var titleprotonode = document.createElement("titleprototype");
-  sectitlenode.appendChild(titleprotonode);
   var sourceNode = getBaseNode();
   if (!sourceNode) return;
-  var node;
-  for (i=0; i < sourceNode.childNodes.length; i++)
-  {
-    node = sourceNode.childNodes[i];
-    titleprotonode.appendChild(node.cloneNode(true));
-  }
-  // now dump to see if we have the right thing. It would be more revealing to use
-  // an XML serializer
-  dump("\n** " + titleprotonode.textContent + "\n");
-  acceptDialog();
+  var ser = new XMLSerializer();
+  var xmlcode = ser.serializeToString(sourceNode);
+//  var re = /<sw:dialogbase[^>]*>/;
+//  var s = xmlcode.replace(re, "");
+//  var re2 = /<\/sw:dialogbase>/;
+//  titleformat[seclevel] = s.replace(re2,"");
+  titleformat[seclevel] = xmlcode;
+  titleformat.refresh(titleformat.destNode);
+  dump("***** saving '"+titleformat[seclevel]+"'\n");
+// we still need to replace the text of the section title area in the main dialog.
 }
-  
-  
-  
-
-
-
-
 
 function onOK() {
 // Copy the contents of the editor to the section header form
   stashTitlePrototype();
   SaveWindowLocation();
-  return false;
+  close();
+  return (false);
 }
 
 function onCancel() {
+  close();
   return(true);
 }
 
