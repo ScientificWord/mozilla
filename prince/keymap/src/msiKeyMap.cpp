@@ -164,6 +164,7 @@ nsString  msiKeyMap::VKeyIndexToString ( PRUint32 index )
       return virtKeyArray[i].keyName;
     i++;
   }
+  return EmptyString();
 }
 
 
