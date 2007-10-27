@@ -4,7 +4,7 @@ var unitConversions;
 var widthElements;
 var heightElements;
 var pagewidth;   // in mm
-var pageheight;
+var pageheight;                                                     
 var paper;
 var landscape;
 var scale = 0.5;
@@ -64,6 +64,10 @@ function Startup()
   var sectitlenodelist;
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) sectitlenodelist=null;
   else sectitlenodelist = docFormatNodeList[0].getElementsByTagName('sectitleformat');
+  
+//  var editElement = document.getElementById("sectiontitle-frame");
+//  msiInitializeEditorForElement(editElement, "");
+
   sectitleformat = new Object();
   getSectionFormatting(sectitlenodelist, sectitleformat);
 }
@@ -216,10 +220,12 @@ function getPageLayout(node)
 
 
 function getSectionFormatting(sectitlenodelist, sectitleformat)
+// sectitlenodelist is a list of nodes of sectitleformat nodes, and sectitleformat is a new object to hold the results from these nodes.
 {
   var i;
   var node;
   var level;
+  var titleformat;
   var titleformat;
   if (sectitlenodelist)
   {
@@ -228,7 +234,7 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
       node = sectitlenodelist[i];
       level = node.getAttribute("level");
       try {
-        titleformat = node.getElementsByTagName("titleprototype");
+        titleformat = node.getElementsByTagName("titleprototype")[0];
         sectitleformat[level] = titleformat;
       }
       catch(e)
@@ -237,19 +243,66 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
       }
     }
   }
-  var sectype = document.getElementById("sections.style").value;
-  var titleinfo;
-  if (titleinfo = sectitleformat[sectype])
+  displayTextForSectionHeader();
+}
+
+                      
+function getBaseNodeForIFrame( )
+{
+  var sw = "http://www.sciword.com/namespaces/sciword";
+  var iframe = document.getElementById("sectiontextarea");
+  if (!iframe) return;
+  var doc = iframe.contentDocument;
+  var theNodes = doc.getElementsByTagNameNS(sw,"dialogbase");
+  var theNode;
+  if (theNodes) theNode = theNodes[0]; 
+  else 
   {
-    dump("Put some stuff in the title field\n");
+    theNodes = doc.getElementsByTagNameNS(sw,"para");
+    if (theNodes) theNode = theNodes[0]; 
   }
+  if (!theNode)
+  {
+    var bodies = doc.getElementsByTagName("body");
+    if (bodies) for ( var i = 0; i < bodies.length; i++)
+    {
+      theNode = bodies[i];
+      if (theNode.nodeType == theNode.ELEMENT_NODE)
+        return theNode;
+     }
+  }
+  return theNode;
+}
+
+function displayTextForSectionHeader()
+{
+  var seclevel = document.getElementById("sections.style").value;
+  var basepara;
+  if (destNode) basepara = destNode;
+  else basepara = getBaseNodeForIFrame();
+  var strContents = sectitleformat[seclevel];
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(strContents,"application/xhtml+xml");
+  basepara.parentNode.replaceChild(doc.documentElement, basepara);
 }
 
 
+function refresh() // a version of displayTextForSectionHeader designed to be used as a callback
+{
+  var strContents = sectitleformat[sectitleformat.currentLevel];
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(strContents,"application/xhtml+xml");
+  sectitleformat.destNode.parentNode.replaceChild(doc.documentElement, sectitleformat.destNode);
+  sectitleformat.destNode = null;
+}
+      
 function textEditor()
 {
   var secname=document.getElementById("sections.name").label;
   var units=document.getElementById("secoverlay.units").value;
+  sectitleformat.refresh = refresh;
+  sectitleformat.destNode = getBaseNodeForIFrame();
+  sectitleformat.currentLevel = secname.toLowerCase();
   window.openDialog("chrome://prince/content/sectiontext.xul", "_blank", "chrome,close,titlebar", sectitleformat,
       secname, units);
 }
@@ -283,6 +336,7 @@ function onAccept()
     saveFontSpecs(newNode);
   }
 }  
+
 
 function onCancel()
 {
@@ -372,16 +426,22 @@ function setDefaults()
 function changePaperSize(menu)
 {
   paper = menu.value;
-  if (paper = "other")
-  {
-    pagewidth = 90;
-    pageheight = 124;
-  }
+  if (paper == "other")
+    //enable setting paper size
+    document.getElementById("bc.papersize").setAttribute("disabled","false");
+  else
+    document.getElementById("bc.papersize").setAttribute("disabled","true");
   setPageDimensions();
 }
 
 
 // Page layout stuff  
+function changePageDim(textbox)
+{
+  if (textbox.id == tbpageheight) pageheight = Number(textbox.value);
+  else pagewidth = Number(textbox.value);
+  setPageDimensions();
+}
 
 function setPageDimensions()
 {
@@ -399,7 +459,7 @@ function setPageDimensions()
       pageheight = 297;
       break;
 		case "other":
-      break;
+      return;
     case "screen":
       pagewidth = 225;
       pageheight = 180;
@@ -1261,6 +1321,7 @@ function setalign(which)
 
 function clearselection(element)
 {
+ if (element.nodeType != element.ELEMENT_NODE) return;
  if (element.getAttribute('sectionselected') != null)
     element.setAttribute('sectionselected', 'false');
   var node;
