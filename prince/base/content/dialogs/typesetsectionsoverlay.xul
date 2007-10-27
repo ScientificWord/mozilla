@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+<?xml-stylesheet href="resource://res/css/baselatex.css" type="text/css"?>
+<?xml-stylesheet href="resource://res/css/article.css" type="text/css"?>
+<?xml-stylesheet href="resource://res/css/latex.css.css" type="text/css"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetDocFormat.dtd">
 
@@ -101,8 +104,12 @@
               <hbox id="topmargin" role="sectionlayer" tooltiptext="Click to set top margin or to enter text"
                 style="height:20px; width:200px" onclick="toggleselection(this);"/>
               <iframe id="sectiontextarea" role="sectionlayer" tooltiptext="Click to enter section text"
-                style="min-height:20px; min-width:200px;" onclick="toggleselection(this);"
-                src="resource://app/shells/article/LaTeXDialogShell.sci"/>
+                style="display:box; height=20px; min-height:20px; min-width:200px;" onclick="toggleselection(this);"
+                src="resource://app/shells/article/latexDialogShell.sci">
+                <!--sw:dialogbase xmlns:sw="http://www.sciword.com/namespaces/sciword"><sc><bold>Foo</bold></sc><br/><em>bar</em></sw:dialogbase-->
+              </iframe>                                                                                                                          
+              <!--editor  editortype="html" type="content" width="200" height="40"  id="sectiontitle-frame"  context="msiEditorContentContext"
+                style="min-height:20px; min-width:200px;" /-->
               <hbox id="bottommargin" role="sectionlayer" tooltiptext="Click to set bottom margin or to enter text"
                 style="height:20px; width:200px" onclick="toggleselection(this);"/>
             </vbox>  

@@ -85,6 +85,7 @@
                  </menulist>
                </vbox>
                <vbox align="center">
+                 <broadcaster id="bc.papersize" disabled="true"/>
                  <label>&docformatPaperSize;</label>
                  <menulist id="docformat.papersize"
                     oncommand="changePaperSize(this);OnWindowSizeReset(false);">
@@ -186,6 +187,22 @@
                </hbox>
                </vbox>
     <!-- end of layout diagram 1-->           
+               <hbox>
+                 <spacer flex="1"/>
+                 <vbox align="center">
+                   <label value="Page height"/>
+                   <textbox id="tbpageheight" style="width: 3.5em" readonly="false" observes="bc.papersize" oninput="changePageDim(this);" 
+                     onchange="changePageDim(this);" />
+                   <spacer/>
+                 </vbox>
+                 <vbox align="center">
+                   <label value="Page width"/>
+                   <textbox id="tbpagewidth" style="width: 3.5em" readonly="false" observes="bc.papersize" oninput="changePageDim(this);"  
+                     onchange="changePageDim(this);"/>
+                   <spacer/>
+                 </vbox>
+                 <spacer flex="1"/>
+               </hbox>
              </hbox>
            </vbox>
            <vbox align="center">
@@ -223,7 +240,7 @@
                    <label value="&docformatLeftMargin;" observes="oneside" />
                    <label value="&docformatInsideMargin;" observes="twoside" />
                    </hbox>
-                   <textbox id="tblmargin" style="width: 3em" voninput="layoutPage('lmargin');" onkeypress="handleChar(event,'lmargin');" 
+                   <textbox id="tblmargin" style="width: 3em" oninput="layoutPage('lmargin');" onkeypress="handleChar(event,'lmargin');" 
                      onchange="layoutPage('lmargin');" onfocus="activate('lmarginbody');" onblur="deactivate('lmarginbody');" observes="bc.hcenter"/>
                    <label value="&docformatTopMargin;"/>
                    <textbox id="tbtmargin" style="width: 3em" oninput="layoutPage('tmargin');"  onkeypress="handleChar(event,'tmargin');"
@@ -232,9 +249,6 @@
                </hbox>
                <hbox>
                  <label value="&docformatComputedMargins;"/>
-               </hbox>
-               <hbox>
-                 <label value="&docformatPageDimensions;"/>
                </hbox>
              </vbox>
              <vbox>
@@ -250,9 +264,6 @@
                <hbox>
                  <label observes="oneside" value="&docformatRightMarginLabel;" /><label observes="twoside" value="&docformatOutsideMarginLabel;" /><label id="tbcomputedrmargin" />
                </hbox>
-               <hbox>
-                 <label value="&docformatPageWidth;"/><label id="tbpagewidth" />
-               </hbox>
                <label id="tbcomputedrmargin" />
              </vbox>
              <vbox align="center">
@@ -267,9 +278,6 @@
                </groupbox>
                <hbox>
                  <label value="&docformatBottomMargin;"/><label id="tbcomputedbmargin" />
-               </hbox>
-               <hbox>
-                 <label value="&docformatPageHeight;"/><label id="tbpageheight" />
                </hbox>
              </vbox>
              <groupbox align="center">
