@@ -1,20 +1,18 @@
-<!-- Topic.xsl -->
-
 <xsl:stylesheet version="1.1" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
+    xmlns:exslt="http://exslt.org/common"
 >
-
-
-<xsl:include href="mml2ltex.xsl"/>
-
-
 <xsl:output method="text" encoding="UTF-8"/>
 <xsl:strip-space elements="*"/>
 <xsl:preserve-space elements="pre"/>
 
+
+<xsl:include href="mml2ltex.xsl"/>
+<xsl:include href="preamble.xsl"/>
+	
 
 <xsl:template match="/"><xsl:apply-templates/></xsl:template>
 
@@ -28,88 +26,8 @@
 </xsl:template>
 -->
 
-<xsl:template match="html:preamble">
-<xsl:apply-templates/>
-</xsl:template>
-
-<!-- use docformat information to call the geometry package -->
-<xsl:template match="html:pagelayout[@latex='true']">
-<xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable>
-
-\usepackage[ <xsl:apply-templates/>
-]{geometry}
-</xsl:template>
-
-<xsl:template match="html:page">
-  paper=<xsl:value-of select="@paper"/>paper,
-  twoside=<xsl:value-of select="@twoside"/>,
-  landscape=<xsl:value-of select="@landscape"/>,</xsl:template>
-
-<xsl:template match="html:page[@paper='screen']">
-  paper=screen,
-  twoside=false,
-  landscape=false,</xsl:template>
-
-<xsl:template match="html:page[@paper='other']">
-  paperwidth=<xsl:value-of select="@width"/>,
-  paperheight=<xsl:value-of select="@height"/>, </xsl:template>
-
-<xsl:template match="html:textregion">
-  textwidth=<xsl:value-of select="@width"/>,		    
-  textheight=<xsl:value-of select="@height"/>, </xsl:template>
-
-<xsl:template match="html:margin">
-  left=<xsl:value-of select="@left"/>,
-  top=<xsl:value-of select="@top"/>, </xsl:template>
-
-<xsl:template match="html:header">
-  headheight=<xsl:value-of select="@height"/>,
-  headsep=<xsl:value-of select="@sep"/>, </xsl:template>
-
-<xsl:template match="html:columns[@count='2']">
-  twocolumn=true,
-  columnsep=<xsl:value-of select="@sep"/>, </xsl:template>
-
-<xsl:template match="html:marginnote[@hidden='false']">
-  marginparwidth=<xsl:value-of select="@width"/>,
-  marginparsep=<xsl:value-of select="@sep"/>,	</xsl:template>
-
-<xsl:template match="html:footer">
-  footskip=<xsl:value-of 
-  select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep)-2)),substring(@sep,string-length(@sep)-2))"/></xsl:template>
 
 
-<xsl:template match="html:fontchoices">
-\usepackage{fontspec}
-\usepackage{xunicode}
-\usepackage{xltxtra}
-\TeXXeTstate=1
-\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
-<xsl:apply-templates/></xsl:template>  
-
-<xsl:template match="html:mainfont">
-\setmainfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
-
-<xsl:template match="html:mainfont[@name='Default']"></xsl:template>
-
-<xsl:template match="html:sansfont">
-\setsansfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
-
-<xsl:template match="html:sansfont[@name='']"></xsl:template>
-
-<xsl:template match="html:fixedfont">
-\setmonofont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
-
-<xsl:template match="html:fixedfont[@name='']"></xsl:template>
-
-<xsl:template match="html:x1font">
-\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
-
-<xsl:template match="html:x2font">
-\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
-
-<xsl:template match="html:x3font">
-\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:latex">\LaTeX</xsl:template>
 <!-- xsl:template match="mml:math">[Math Here]</xsl:template -->
@@ -122,7 +40,8 @@
 </xsl:template>
  
 <xsl:template match="html:documentclass">
-\documentclass{<xsl:value-of select="@class"/>}</xsl:template>
+\documentclass{<xsl:value-of select="@class"/>}
+</xsl:template>
 
 <xsl:template match="//html:docformat">
 <xsl:apply-templates/>
@@ -134,7 +53,7 @@
 <xsl:template match="html:newtheorem">
 \newtheorem{<xsl:value-of select="@name"/>}<xsl:if test="not(not(@counter))">[<xsl:value-of select="@counter"/>]</xsl:if>{<xsl:value-of select="@label"/>}
 </xsl:template>
-						  
+
 
 <xsl:template match="html:body">
 \begin{document}
