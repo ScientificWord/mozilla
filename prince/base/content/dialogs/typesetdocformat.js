@@ -72,40 +72,66 @@ function Startup()
   getSectionFormatting(sectitlenodelist, sectitleformat);
 }
 
+
+function lineend(node, spacecount)
+{
+  var spacer = "\n";
+  for (var i = 0; i < spacecount; i++) 
+    spacer = spacer + "  ";
+  node.appendChild(node.ownerDocument.createTextNode(spacer));
+}
+  
 function savePageLayout(docFormatNode)
 {
+  lineend(docFormatNode, 1);
   var pfNode = editor.createNode('pagelayout', docFormatNode,0);
   var nodecounter = 0;
   var units;
   pfNode.setAttribute('latex',true);
   units=document.getElementById('docformat.units').value;
   pfNode.setAttribute('unit',units);
+  lineend(pfNode, 2);
+  nodecounter++;
   var node = editor.createNode('requirespackage', pfNode, nodecounter++);
   node.nodeValue = "geometry";
+  lineend(pfNode, 2);
+  nodecounter++;
   node = editor.createNode('page', pfNode, nodecounter++);
   node.setAttribute('twoside',document.getElementById('twosides').checked);
   node.setAttribute('paper',document.getElementById('docformat.papersize').value);
   node.setAttribute('width',pagewidth+units);
   node.setAttribute('height',pageheight+units);
   node.setAttribute('landscape',document.getElementById('landscape').checked);
+  lineend(pfNode, 2);
+  nodecounter++;
   node = editor.createNode('textregion',pfNode,nodecounter++);
   node.setAttribute('width',document.getElementById('tbbodywidth').value+units);
   node.setAttribute('height', document.getElementById('tbbodyheight').value+units);
+  lineend(pfNode, 2);
+  nodecounter++;
   node = editor.createNode('margin',pfNode,nodecounter++);
   node.setAttribute('left',document.getElementById('tblmargin').value+units);
   node.setAttribute('top', document.getElementById('tbtmargin').value+units);
+  lineend(pfNode, 2);
+  nodecounter++;
   node = editor.createNode('columns',pfNode,nodecounter++);
   node.setAttribute('count',(document.getElementById('columns').checked?2:1));
   node.setAttribute('sep',document.getElementById('tbfootersep').value+units);
+  lineend(pfNode, 2);
+  nodecounter++;
   node = editor.createNode('marginnote',pfNode,nodecounter++);
 //  node.setAttribute('reversed',document.getElementById('*****').checked);
   node.setAttribute('width',document.getElementById('tbmnwidth').value+units);
   node.setAttribute('sep',document.getElementById('tbmnsep').value+units);
   node.setAttribute('push',document.getElementById('tbmnpush').value+units);
   node.setAttribute('hidden', document.getElementById('disablemn').checked);
+  lineend(pfNode, 2);
+  nodecounter++;
   node = editor.createNode('header',pfNode,nodecounter++);
   node.setAttribute('height',document.getElementById('tbheader').value+units);
   node.setAttribute('sep',document.getElementById('tbheadersep').value+units);
+  lineend(pfNode, 2);
+  nodecounter++;
   node = editor.createNode('footer',pfNode,nodecounter++);
   node.setAttribute('height',document.getElementById('tbfooter').value+units);
   node.setAttribute('sep',document.getElementById('tbfootersep').value+units);
@@ -225,8 +251,8 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
   var i;
   var node;
   var level;
-  var titleformat;
-  var titleformat;
+  var dialogbase;
+  var sw = "http://www.sciword.com/namespaces/sciword";
   if (sectitlenodelist)
   {
     for (i=0; i< sectitlenodelist.length; i++)
@@ -234,8 +260,13 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
       node = sectitlenodelist[i];
       level = node.getAttribute("level");
       try {
-        titleformat = node.getElementsByTagName("titleprototype")[0];
-        sectitleformat[level] = titleformat;
+        dialogbase = node.getElementsByTagNameNS(sw,"dialogbase")[0];
+        var ser = new XMLSerializer();
+        var xmlcode = ser.serializeToString(dialogbase);
+        xmlcode = xmlcode.replace(/#1/,"#T");
+        var pattern = "\\the"+level;
+        xmlcode = xmlcode.replace(pattern, "#N");
+        sectitleformat[level] = xmlcode;
       }
       catch(e)
       {
@@ -246,7 +277,51 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
   displayTextForSectionHeader();
 }
 
-                      
+function saveSectionFormatting( docFormatNode, sectitleformat )
+{
+  // get the list of section-like objects
+  var menulist = document.getElementById("sections.name");
+  var itemlist = menulist.getElementsByTagName("menuitem");
+  var bRequiresPackage = true;
+  var reqpackageNode;
+  for (var i = 0; i < itemlist.length; i++)
+  {
+    var name;
+    try {
+      name = itemlist[i].getAttribute("id").split(".")[1];
+    }
+    catch(e) {
+      continue;
+    }
+    name = name.toLowerCase();
+    if (!sectitleformat[name]) continue;
+    if (bRequiresPackage)
+    {
+      bRequiresPackage = false;
+      reqpackageNode = editor.createNode('requirespackage',docFormatNode.parentNode, 0);
+      reqpackageNode.setAttribute('package',"titlesec");
+    } 
+    lineend(docFormatNode, 1);
+    var stNode = editor.createNode('sectitleformat', docFormatNode,0);
+    stNode.setAttribute('level', name);
+    stNode.setAttribute('style', "hang");
+    lineend(stNode, 2);
+    var proto = editor.createNode('titleprototype', stNode, 0);
+    var fragment = sectitleformat[name];
+    // replace #N with \the(section, subsection, etc) and #T with #1
+    fragment = fragment.replace(/#N/,"\\the"+name);
+    fragment = fragment.replace(/#T/,"#1");
+    dump("Contents being saved as section title prototype: "+fragment+"\n");
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(fragment,"application/xhtml+xml");
+    lineend(proto, 3);
+    proto.appendChild(doc.documentElement);
+    // stNode.setAttribute( -- find the section format type: hang, runin, etc.
+    docFormatNode.appendChild(stNode);
+  }  
+}
+
+
 function getBaseNodeForIFrame( )
 {
   var sw = "http://www.sciword.com/namespaces/sciword";
@@ -276,11 +351,10 @@ function getBaseNodeForIFrame( )
 
 function displayTextForSectionHeader()
 {
-  var seclevel = document.getElementById("sections.style").value;
+  var secname = document.getElementById("sections.name").label.toLowerCase();
   var basepara;
-  if (destNode) basepara = destNode;
-  else basepara = getBaseNodeForIFrame();
-  var strContents = sectitleformat[seclevel];
+  basepara = getBaseNodeForIFrame();
+  var strContents = sectitleformat[secname];
   var parser = new DOMParser();
   var doc = parser.parseFromString(strContents,"application/xhtml+xml");
   basepara.parentNode.replaceChild(doc.documentElement, basepara);
@@ -334,6 +408,7 @@ function onAccept()
   {
     savePageLayout(newNode);
     saveFontSpecs(newNode);
+    saveSectionFormatting(newNode, sectitleformat);
   }
 }  
 
