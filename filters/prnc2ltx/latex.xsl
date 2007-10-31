@@ -51,8 +51,7 @@
 \usepackage{<xsl:value-of select="@package"/>}</xsl:template>
 
 <xsl:template match="html:newtheorem">
-\newtheorem{<xsl:value-of select="@name"/>}<xsl:if test="not(not(@counter))">[<xsl:value-of select="@counter"/>]</xsl:if>{<xsl:value-of select="@label"/>}
-</xsl:template>
+\newtheorem{<xsl:value-of select="@name"/>}<xsl:if test="not(not(@counter))">[<xsl:value-of select="@counter"/>]</xsl:if>{<xsl:value-of select="@label"/>}</xsl:template>
 
 
 <xsl:template match="html:body">
