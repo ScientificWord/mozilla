@@ -92,7 +92,6 @@ function savePageLayout(docFormatNode)
   pfNode.setAttribute('unit',units);
   lineend(pfNode, 2);
   nodecounter++;
-  var node = editor.createNode('requirespackage', pfNode, nodecounter++);
   node.nodeValue = "geometry";
   lineend(pfNode, 2);
   nodecounter++;
@@ -298,7 +297,7 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
     if (bRequiresPackage)
     {
       bRequiresPackage = false;
-      reqpackageNode = editor.createNode('requirespackage',docFormatNode.parentNode, 0);
+      reqpackageNode = editor.createNode('requirespackage',docFormatNode, 0);
       reqpackageNode.setAttribute('package',"titlesec");
     } 
     lineend(docFormatNode, 1);
