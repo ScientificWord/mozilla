@@ -10,6 +10,9 @@
 <!-- Package handling. Packages are not inserted directly, but with requirespackage tags. We collect them and remove
   duplicates, and then sort according to the pri attribute -->
 
+<xsl:variable name="masterpackagelist" select="document('packages.xml',.)"/>
+  
+
 <xsl:variable name="requiredpackages.tf">
   <xsl:for-each select="//html:requirespackage">
     <xsl:sort select="@package"/>
@@ -22,10 +25,29 @@
 <xsl:variable name="packagelist.tf"> 
   <xsl:for-each select="$requiredpackages/*">
     <xsl:variable name="pos" select="position()"/>
-	<xsl:variable name="currentpackage" select="@package"/>
-	<xsl:if
-	  test="$pos=1 or not($currentpackage=$requiredpackages/*[$pos - 1]/@package)">
-	  <xsl:copy-of select="."/>
+	  <xsl:variable name="currentpackage" select="@package"/>
+	  <xsl:if
+	    test="$pos=1 or not($currentpackage=$requiredpackages/*[$pos - 1]/@package)">
+	    <xsl:element name="requiredpackage" >
+	      <xsl:attribute name="package"><xsl:value-of select="@package"/></xsl:attribute>
+	      <xsl:if test="@options"><xsl:attribute name="options"><xsl:value-of select="@options"/></xsl:attribute></xsl:if>
+	      <xsl:attribute name="pri">
+	  	    <xsl:choose>
+	  	      <xsl:when test="@pri">
+	  	        <xsl:value-of select="@pri"/>
+	  	      </xsl:when>
+	  		    <xsl:otherwise>
+              <xsl:variable name="pkg" select="@package"/>
+              <xsl:variable name="pri" select="$masterpackagelist/packages/package[@name=$pkg]/@pri"/>
+              <xsl:choose>
+                <xsl:when test="$pri"><xsl:value-of select="$pri"/></xsl:when>
+                <xsl:otherwise>100</xsl:otherwise>
+              </xsl:choose>
+            </xsl:otherwise>
+	  	    </xsl:choose>
+	      </xsl:attribute>
+      </xsl:element>
+	        <!-- xsl:copy-of select="."/ -->
     </xsl:if>
   </xsl:for-each>
 </xsl:variable>
@@ -35,7 +57,8 @@
 
 <xsl:template match="html:preamble">
   <xsl:for-each select="$packagelist/*">
-\usepackage[<xsl:value-of select="@options"/>]{<xsl:value-of select="@package"/>}</xsl:for-each>
+    <xsl:sort select="@pri" data-type="number"/>
+\usepackage<xsl:if test="@options">[<xsl:value-of select="@options"/>]</xsl:if>{<xsl:value-of select="@package"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each>
   <xsl:apply-templates/>
 </xsl:template>
 

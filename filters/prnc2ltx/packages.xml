@@ -1,0 +1,6 @@
+<packages>
+	<package name="titlesec" pri="100"/>
+	<package name="amsfonts" pri="010"/>
+	<package name="amsmath" pri="010"/>
+	<package name="xcolor" pri="200"/>
+</packages>
