@@ -92,9 +92,6 @@ function savePageLayout(docFormatNode)
   pfNode.setAttribute('unit',units);
   lineend(pfNode, 2);
   nodecounter++;
-  node.nodeValue = "geometry";
-  lineend(pfNode, 2);
-  nodecounter++;
   node = editor.createNode('page', pfNode, nodecounter++);
   node.setAttribute('twoside',document.getElementById('twosides').checked);
   node.setAttribute('paper',document.getElementById('docformat.papersize').value);
