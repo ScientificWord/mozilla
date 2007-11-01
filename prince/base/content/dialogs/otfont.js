@@ -29,8 +29,9 @@ function onAccept()
     var editorElement = msiGetParentEditorElementForDialog(window);
     if (!editorElement)
     {
-    AlertWithTitle("Error", "No editor in otfont.OnAccept!");
+      AlertWithTitle("Error", "No editor in otfont.OnAccept!");
     }
+    msiRequirePackage(editorElement, "fontspec");
     msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
   }
   editorElement.contentWindow.focus();

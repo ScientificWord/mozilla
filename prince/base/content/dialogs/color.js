@@ -26,11 +26,12 @@ function onAccept()
   if (list.selectedIndex  > 0)
   {
     fontname = list.value;
-    var editorElement = msiGetParentEditorElementForDialog(window);
+    var editorElement = msiGetActiveEditorElement(window);
     if (!editorElement)
     {
     AlertWithTitle("Error", "No editor in otfont.OnAccept!");
     }
+    msiRequirePackage(editorElement, "xcolor");
     msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
   }
   editorElement.contentWindow.focus();
