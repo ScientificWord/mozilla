@@ -698,15 +698,15 @@ protected:
                            PRInt32 aStartOffset,
                            PRInt32 aEndOffset,
                            nsString &tagLocalName,
-                           nsIAtom *atomNS /* perhaps later, add these: 
-                           const nsAString *aAttribute,
-                           const nsAString *aValue */);
+                           nsIAtom *atomNS, 
+                           const nsAString *aAttribute = nsnull,
+                           const nsAString *aValue = nsnull );
 
   nsresult SetTextTagOnNode( nsIDOMNode *aTextNode, 
                            nsString &tagLocalName,
-                           nsIAtom *atomNS /* perhaps later, add these: 
-                           const nsAString *aAttribute,
-                           const nsAString *aValue */);
+                           nsIAtom *atomNS, 
+                           const nsAString *aAttribute = nsnull,
+                           const nsAString *aValue = nsnull );
                                        
                                        
 

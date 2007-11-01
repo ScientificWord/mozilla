@@ -205,7 +205,7 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
           nsString localname = tagkey.localName();
           nsCOMPtr<nsIAtom> nsAtom;
           mtagListManager->NameSpaceAtomOfTagKey(tagkey.key, (nsIAtom**)address_of(nsAtom));
-          res = SetTextTagNode(nodeAsText, startOffset, endOffset, localname, nsAtom /* and perhaps later add "", &aAttribute, &aValue" "*/);
+          res = SetTextTagNode(nodeAsText, startOffset, endOffset, localname, nsAtom,  &aAttribute, &aValue);
         }
         else
           res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, endOffset, aProperty, &aAttribute, &aValue);
@@ -269,7 +269,7 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
             nsString localname = tagkey.localName();
             nsCOMPtr<nsIAtom> nsAtom;
             mtagListManager->NameSpaceAtomOfTagKey(tagkey.key, (nsIAtom**)address_of(nsAtom));
-            res = SetTextTagNode(nodeAsText, startOffset, textLen, localname, nsAtom /* and perhaps later add "", &aAttribute, &aValue" "*/);
+            res = SetTextTagNode(nodeAsText, startOffset, textLen, localname, nsAtom, &aAttribute, &aValue);
           }
           else
             res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, textLen, aProperty, &aAttribute, &aValue);
@@ -301,7 +301,7 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
             nsString localname = tagkey.localName();
             nsCOMPtr<nsIAtom> nsAtom;
             mtagListManager->NameSpaceAtomOfTagKey(tagkey.key, (nsIAtom**)address_of(nsAtom));
-            res = SetTextTagNode(nodeAsText, 0, endOffset, localname, nsAtom /* and perhaps later add "", &aAttribute, &aValue" "*/);
+            res = SetTextTagNode(nodeAsText, 0, endOffset, localname, nsAtom, &aAttribute, &aValue);
           }
           else
             res = SetInlinePropertyOnTextNode(nodeAsText, 0, endOffset, aProperty, &aAttribute, &aValue);
@@ -325,9 +325,9 @@ nsHTMLEditor::SetTextTagNode( nsIDOMCharacterData *aTextNode,
                                             PRInt32 aStartOffset,
                                             PRInt32 aEndOffset,
                                             nsString &tagLocalName,
-                                            nsIAtom * atomNS /* perhaps later add these: 
+                                            nsIAtom * atomNS, 
                                             const nsAString *aAttribute,
-                                            const nsAString *aValue  */ )
+                                            const nsAString *aValue  )
 // This is the analogue of SetInlinePropertyOnTextNone                                            
 {
   if (!aTextNode) return NS_ERROR_NULL_POINTER;
@@ -416,7 +416,7 @@ nsHTMLEditor::SetTextTagNode( nsIDOMCharacterData *aTextNode,
   }
   
   // reparent the node inside inline node
-  return SetTextTagOnNode(node, tagLocalName, atomNS);
+  return SetTextTagOnNode(node, tagLocalName, atomNS, aAttribute, aValue);
 }
 
 
@@ -424,9 +424,9 @@ nsHTMLEditor::SetTextTagNode( nsIDOMCharacterData *aTextNode,
 nsresult
 nsHTMLEditor::SetTextTagOnNode( nsIDOMNode *aNode,
                                             nsString &tagLocalName,
-                                            nsIAtom * atomNS /* perhaps later add these: 
+                                            nsIAtom * atomNS, 
                                             const nsAString *aAttribute,
-                                            const nsAString *aValue  */ )
+                                            const nsAString *aValue  )
 {
   if (!aNode || !tagLocalName.Length()) return NS_ERROR_NULL_POINTER;
 
@@ -488,7 +488,8 @@ nsHTMLEditor::SetTextTagOnNode( nsIDOMNode *aNode,
       }
     }
     // ok, chuck it in it's very own container
-    res = InsertContainerAboveNS(aNode, address_of(tmp), tagLocalName, atomNS);
+//    res = InsertContainerAboveNS(aNode, address_of(tmp), tagLocalName, atomNS, aAttribute, aValue);
+    res = InsertContainerAbove(aNode, address_of(tmp), tagLocalName, aAttribute, aValue);
     if (NS_FAILED(res)) return res;
     // BBM TODO: Remove instances of this tag that might be inside.
     // return RemoveStyleInside(aNode, aProperty, aAttribute);
@@ -523,7 +524,7 @@ nsHTMLEditor::SetTextTagOnNode( nsIDOMNode *aNode,
       for (j = 0; j < listCount; j++)
       {
         node = arrayOfNodes[j];
-        res = SetTextTagOnNode(node, tagLocalName, atomNS);
+        res = SetTextTagOnNode(node, tagLocalName, atomNS, aAttribute, aValue);
         if (NS_FAILED(res)) return res;
       }
       arrayOfNodes.Clear();

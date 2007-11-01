@@ -1821,9 +1821,9 @@ nsresult
 nsEditor::InsertContainerAboveNS( nsIDOMNode *inNode, 
                                 nsCOMPtr<nsIDOMNode> *outNode, 
                                 const nsAString &aNodeType,
-                                nsIAtom * atomNS
-                                //, const nsAString *aAttribute,
-                                //const nsAString *aValue
+                                nsIAtom * atomNS,
+                                const nsAString *aAttribute,
+                                const nsAString *aValue
                                 )
 {
   if (!inNode || !outNode)
@@ -1849,6 +1849,7 @@ nsEditor::InsertContainerAboveNS( nsIDOMNode *inNode,
   if (strPrefix.Length()>0) strQualifiedName = strPrefix + NS_LITERAL_STRING(":") + aNodeType;
   else strQualifiedName = aNodeType;
   res = CreateContentNS(strQualifiedName, atomNS, getter_AddRefs(newElement));
+  if (aAttribute && aValue) res = newElement->SetAttribute(*aAttribute, *aValue);
   *outNode = do_QueryInterface(newElement);
   
   // set attribute if needed
