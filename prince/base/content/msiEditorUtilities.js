@@ -1027,6 +1027,23 @@ function msiGetEditorURL(editorElement)
   return "";
 }
 
+
+function msiRequirePackage(editorElement, packagename)
+{
+  try {
+    var editor = msiGetEditor(editorElement);
+    var doc = editor.document;
+    var preamble = doc.getElementsByTagName("preamble")[0];
+    var reqpkg = doc.createElement("requirespackage");
+    reqpkg.setAttribute("package", packagename);
+    preamble.appendChild(reqpkg);
+  }
+  catch(e)
+  {
+    dump("Exception in msiRequirePackage: "+e+"\n");
+  }
+}
+    
 //function IsHTMLSourceChanged()
 //{
 //  return gSourceTextEditor.documentModified;
