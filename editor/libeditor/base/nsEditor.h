@@ -187,9 +187,9 @@ public:
   nsresult InsertContainerAboveNS(nsIDOMNode *inNode, 
                                 nsCOMPtr<nsIDOMNode> *outNode, 
                                 const nsAString &aNodeType,
-                                nsIAtom * atomNS // name space atom
-                                //const nsAString *aAttribute = nsnull,
-                                //const nsAString *aValue = nsnull
+                                nsIAtom * atomNS,
+                                const nsAString *aAttribute = nsnull,
+                                const nsAString *aValue = nsnull
                                 );
   nsresult MoveNode(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 aOffset);
 
