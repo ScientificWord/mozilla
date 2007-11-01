@@ -69,7 +69,7 @@
 \author{<xsl:value-of select="child::text()"/>}</xsl:template>
 
 <xsl:template match="html:address">
-\address{<xsl:value-of select="."/>}</xsl:template>
+\address{<xsl:apply-templates/>}</xsl:template>
 
 <xsl:template match="html:abstract">
 \begin{abstract}
@@ -110,19 +110,19 @@
 
 <xsl:template match="html:sectiontitle">
 <xsl:if test="name(..)='section'">
-\section{<xsl:value-of select="."/>}
+\section{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='subsection'">
-\subsection{<xsl:value-of select="."/>}
+\subsection{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='subsubsection'">
-\subsubsection{<xsl:value-of select="."/>}
+\subsubsection{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='paragraph'">
-\paragraph{<xsl:value-of select="."/>}
+\paragraph{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='subparagraph'">
-\subparagraph{<xsl:value-of select="."/>}
+\subparagraph{<xsl:apply-templates/>}
 </xsl:if>
 
 </xsl:template>
@@ -201,6 +201,8 @@
 <xsl:template match="html:sc">\textsc{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:tt">\texttt{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:em">\emph{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:upper">\uppercase{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:lower">\lowercase{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:hebrew">{\hebrew\beginR <xsl:apply-templates/> \endR} </xsl:template>
 
 <xsl:template match="html:tiny">{\tiny <xsl:apply-templates/>}</xsl:template>
