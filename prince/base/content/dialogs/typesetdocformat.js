@@ -31,7 +31,8 @@ function Startup()
     window.close();
     return;
   }
-  widthElements=new Array("lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin");
+  widthElements=new Array("lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin",
+    "leftheadingmargin", "rightheadingmargin");
   heightElements=new Array("tmargin","header","headersep",
     "bodyheight","footer","footersep", "mnpush", "computedbmargin");
   InitializeUnits();
@@ -262,6 +263,13 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
         xmlcode = xmlcode.replace(/#1/,"#T");
         var pattern = "\\the"+level;
         xmlcode = xmlcode.replace(pattern, "#N");
+//        var re=/<sw:dialogbase[^>]*>/;
+//        var l;
+//        do
+//        {
+//          l = xmlcode.length;
+//          xmlcode = xmlcode.replace(re,"").replace("</sw:dialogbase>",'');
+//        } while (xmlcode.length > 0 && xmlcode.length < l);
         sectitleformat[level] = xmlcode;
       }
       catch(e)
@@ -875,19 +883,19 @@ function handleBodyMouseClick(event)
 }
 
 
-function handleChar(event, id)
+function handleChar(event, id, tbid)
 {
   var element = event.currentTarget;
   if (event.keyCode == event.DOM_VK_UP)
-    goUp(id);
+    goUp(tbid);
   else if (event.keyCode == event.DOM_VK_DOWN)
-    goDown(id);
+    goDown(tbid);
   if (id != "colums") layoutPage(id);
 }
 
 function goUp(id)
 {
-  var element = document.getElementById("tb"+id);
+  var element = document.getElementById(id);
   var value = Number(element.value);
   if (value == NaN) return;
   var max = Number(element.getAttribute("max"));
@@ -899,7 +907,7 @@ function goUp(id)
 
 function goDown(id)
 {
-  var element = document.getElementById("tb"+id);
+  var element = document.getElementById(id);
   var value = Number(element.value);
   if (value == NaN) return;
   var min = Number(element.getAttribute("min"));
