@@ -8,6 +8,7 @@
 
 <overlay id="docformatsectionsoverlay.dialog"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:html="http://www.w3.org/1999/xhtml"
     onload="Startup(); setalign('left');"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();">
@@ -87,8 +88,8 @@
     <separator class="groove"/>
     <spacer/>
     <hbox style="height:10px"/>
-    <vbox>
-      <hbox align="center">
+    <vbox style="overflow:visible;">
+      <hbox align="center" style="overflow:visible;">
         <vbox flex="1"/>
         <!-- vbox style="width:50px; height:60px"/ -->
         <vbox>
@@ -97,13 +98,21 @@
             <hbox><hbox flex="1"/><label>text</label><hbox flex="1"/></hbox>
             <vbox flex="1"/>
           </vbox>   
-          <hbox id="sectionparts" pack="start">
+          <hbox id="sectionparts" pack="start" style="overflow:visible;">
             <vbox id="sectionleftmargin" role="sectionmargin"  observes="leftalignment"
               tooltiptext="Set left indent to change width" style="width:30px"
               onclick="toggleselection(this);"/>
-            <vbox>
-              <hbox id="topmargin" role="sectionlayer" tooltiptext="Click to set top margin or to enter text"
-                style="height:20px; width:200px" onclick="toggleselection(this);"/>
+            <vbox style="overflow:visible;">
+              <vbox id="topmargin" pack="end" dir="rtl" role="sectionlayer" tooltiptext="Click to set top margin or to enter text"
+                style="height:20px; width:200px; overflow:visible" onclick="toggleselection(this);">
+                <vbox size="short" role="vspace" style="background-color: rgb(200,265,200); overflow: visible; height:10px; width:10in;"/>  
+                <vbox size="short" role="rule" style="background-color: red; overflow: visible; height:3px; width:10in;"/>  
+                <vbox size="short" role="vspace" style="background-color: rgb(200,265,200); overflow: visible; height:10px; width:10in;"/>  
+                <vbox size="short" role="rule" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
+                <vbox size="short" role="vspace" style="background-color: rgb(200,265,200); overflow: visible; height:10px; width:10in;"/>  
+                <vbox size="short" role="rule" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
+                <vbox size="short" role="vspace" style="background-color: rgb(200,265,200); overflow: visible; height:10px; width:10in;"/>  
+              </vbox>
               <iframe id="sectiontextarea" role="sectionlayer" tooltiptext="Click to enter section text"
                 style="display:block; height=20px; min-height:20px; min-width:200px;" onclick="toggleselection(this);"
                 src="resource://app/shells/article/latexDialogShell.sci">
@@ -111,8 +120,16 @@
               </iframe>                                                                                                                          
               <!--editor  editortype="html" type="content" width="200" height="40"  id="sectiontitle-frame"  context="msiEditorContentContext"
                 style="min-height:20px; min-width:200px;" /-->
-              <hbox id="bottommargin" role="sectionlayer" tooltiptext="Click to set bottom margin or to enter text"
-                style="height:20px; width:200px" onclick="toggleselection(this);"/>
+              <vbox id="bottom" role="sectionlayer" tooltiptext="Click to set top margin or to enter text"
+                style="height:20px; width:200px; overflow:visible" onclick="toggleselection(this);">
+                <vbox size="short" role="vspace" style="background-color: rgb(200,265,200); overflow: visible; height:10px; width:10in;"/>  
+                <vbox size="short" role="rule" style="background-color: red; overflow: visible; height:3px; width:10in;"/>  
+                <vbox size="short" role="vspace" style="background-color: rgb(200,265,200); overflow: visible; height:10px; width:10in;"/>  
+                <vbox size="short" role="rule" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
+                <vbox size="short" role="vspace" style="background-color: rgb(200,265,200); overflow: visible; height:10px; width:10in;"/>  
+                <vbox size="short" role="rule" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
+                <vbox size="short" role="vspace" style="background-color: rgb(200,265,200); overflow: visible; height:10px; width:10in;"/>  
+              </vbox>
             </vbox>  
             <vbox id="sectionrightmargin" role="sectionmargin" style="width:30px"
               tooltiptext="Set right indent to change width" onclick="toggleselection(this);" observes="rightalignment"/>
@@ -132,7 +149,7 @@
       <vbox flex="1"/>
       <vbox align="center">
         <label observes="leftalignment" value="Left heading indent"/>
-        <textbox id="tbleftheadingmargin" style="width: 3.5em" onkeypress="handleChar(event,'leftheadingmargin');"
+        <textbox id="tbleftheadingmargin" style="width: 3.5em" onkeypress="handleChar(event,'leftheadingmargin','tbleftheadingmargin');"
           tooltip="The left indent for the heading" observes="leftalignment"/>
       </vbox>
       <spacer/>
@@ -140,7 +157,7 @@
       <spacer/>
       <vbox align="center">
         <label value="Right heading indent" observes="rightalignment"/>
-        <textbox id="tbrightheadingmargin" style="width: 3.5em" onkeypress="handleChar(event,'rightheadingmargin');"
+        <textbox id="tbrightheadingmargin" style="width: 3.5em" onkeypress="handleChar(event,'rightheadingmargin','tbrightheadingmargin);"
           tooltip="The right indent for the heading" observes="rightalignment"/>
       </vbox>
       <vbox flex="1"/>
