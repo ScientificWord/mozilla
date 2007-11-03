@@ -18,13 +18,15 @@
 <dialog id="SectionRuleDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  ondialogaccept="return onOK();"
+  buttons="accept,cancel"
+  ondialogaccept="return onAccept();"
   ondialogcancel="return onCancel();"
-  onload="Startup();"
+  onload="startUp();"
 >
 
   <!-- Scripts specific to this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/addruleforsection.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/EdDialogCommon.js"/>
 
   <vbox>
     <groupbox>
@@ -45,16 +47,16 @@
       </vbox>
       <vbox>
         <label value="&ruleHeight.label;" accesskey="&ruleHeight.accessKey;"/>
-        <textbox id="ruleheight" style="width: 3.5em" onkeypress="handleChar(event,'ruleheight');"
+        <textbox id="ruleHeight" style="width: 3.5em" onkeypress="handleChar(event,'ruleheight');"
           tooltip="&ruleHeight.label;"/>
       </vbox>
       <vbox>
         <label>&ruleWidth.label;</label>
-        <radiogroup orient="vertical">
-          <radio id="wide" label="&wide.label;" accesskey="&wide.accessKey;" selected="true" oncommand=""/>
-          <radio id="narrow" label="&narrow.label;" accesskey="&narrow.accessKey;" oncommand=""/>
+        <radiogroup id="rulesize" orient="vertical">
+          <radio id="wide" label="&wide.label;" value="wide" accesskey="&wide.accessKey;" selected="true" oncommand=""/>
+          <radio id="narrow" label="&narrow.label;" value="narrow" accesskey="&narrow.accessKey;" oncommand=""/>
           <hbox>
-            <radio id="other" label="&other.label;"  accesskey="&other.accessKey;" oncommand=""/>
+            <radio id="other" label="&other.label;"  value="other" accesskey="&other.accessKey;" oncommand=""/>
             <textbox id="ruleWidth" style="width: 3.5em" onkeypress="handleChar(event,'rulewidth');"
               tooltip="&ruleWidth.label;"/>
           </hbox>
