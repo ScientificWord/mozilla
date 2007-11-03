@@ -12,6 +12,10 @@ function Startup() {
   dump("units = "+units+"\n");
   var initialStr;
   if (titleformat[seclevel]) initialStr = titleformat[seclevel];
+  var re = /<sw:dialogbase[^>]*>/;
+  var s = initialStr.replace(re, "");
+  var re2 = /<\/sw:dialogbase>/;
+  initialStr = s.replace(re2,"");
   gDialog.bDataModified = false;
   gDialog.bEditorReady = false;
 
