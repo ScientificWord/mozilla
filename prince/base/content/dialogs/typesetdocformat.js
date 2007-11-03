@@ -381,7 +381,7 @@ function textEditor()
   sectitleformat.refresh = refresh;
   sectitleformat.destNode = getBaseNodeForIFrame();
   sectitleformat.currentLevel = secname.toLowerCase();
-  window.openDialog("chrome://prince/content/sectiontext.xul", "_blank", "chrome,close,titlebar", sectitleformat,
+  window.openDialog("chrome://prince/content/sectiontext.xul", "_blank", "chrome,close,titlebar,alwaysRaised", sectitleformat,
       secname, units);
 }
 
@@ -890,7 +890,18 @@ function handleChar(event, id, tbid)
     goUp(tbid);
   else if (event.keyCode == event.DOM_VK_DOWN)
     goDown(tbid);
-  if (id != "colums") layoutPage(id);
+}
+
+function geomHandleChar(event, id, tbid)
+{
+  handleChar(event, id, tbid);
+  if (id!="columns") layoutPage(id);
+}
+
+function sectHandleChar(event, id, tbid)
+{
+  handleChar(event, id, tbid);
+  sectLayout(id, tbid);
 }
 
 function goUp(id)
@@ -1409,16 +1420,17 @@ function clearselection(element)
     clearselection(element.childNodes[i]);
   }
 } 
-   
+var lastselected = null;   
 function toggleselection( element )
 {
+  lastselected = element;
   var root = document.getElementById("sectionparts");
   var NCAbroadcaster = document.getElementById("notcenteralignment");
   var TOBbroadcaster=document.getElementById("toporbottommargin");
   var NMbroadcaster=document.getElementById("notmargin");
   clearselection(root);
   element.setAttribute('sectionselected','true');
-  if (element.id == "sectionleftmargin" || element.id=="sectionrightmargin")
+  if (element.id == "leftheadingmargin" || element.id=="rightheadingmargin")
   {
     NCAbroadcaster.setAttribute("disabled","false");
     TOBbroadcaster.setAttribute("disabled", "true");
@@ -1446,4 +1458,82 @@ function settopofpage( checkbox )
   else
     broadcaster.hidden=false;
 }
+    
+function sectLayout(id, tbid)
+{
+  var textbox = document.getElementById(tbid);
+  var box = document.getElementById(tbid);
+  var dim = Number(textbox.value);
+  setWidth(box,dim);
+}
+
+function addrule()
+{
+  // find which is selected
+  if (!lastselected) return;
+  var boxlist = lastselected.getElementsByTagName("vbox");
+  var nextbox;
+  for (var i = 0; i<boxlist.length; i++)
+  {
+    if (boxlist[i].getAttribute("hidden") == "true")
+    {
+      nextbox = boxlist[i];
+      break;
+    }
+  }
+  if (!nextbox) return;
+  nextbox.setAttribute("role","rule");
+  nextbox.setAttribute("hidden","false");
+  nextbox.setAttribute("style","height:3px;background-color:black;");
+  window.openDialog("chrome://prince/content/addruleforsection.xul", "_blank", "chrome,close,titlebar,alwaysRaised",nextbox, "black");
+}
+
+
+function addspace()
+{
+  // find which is selected
+  if (!lastselected) return;
+  var boxlist = lastselected.getElementsByTagName("vbox");
+  var nextbox;
+  for (var i = 0; i<boxlist.length; i++)
+  {
+    if (boxlist[i].getAttribute("hidden") == "true")
+    {
+      nextbox = boxlist[i];
+      break;
+    }
+  }
+  if (!nextbox) return;
+  nextbox.setAttribute("role","vspace");
+  nextbox.setAttribute("hidden","false");
+  nextbox.setAttribute("style","height:6px;background-color:silver;");
+  // call the rule dialog on this object
+}
+
+function removeruleorspace()
+{
+  // find which is selected
+  if (!lastselected) return;
+  var boxlist = lastselected.getElementsByTagName("vbox");
+  var lastbox;
+  for (var i = 0; i<boxlist.length; i++)
+  {
+    if (boxlist[i].getAttribute("hidden") == "false")
+      lastbox = boxlist[i];
+    else break;
+  }
+  if (!lastbox) return;
+  lastbox.setAttribute("hidden","true");
+}
+
+function reviseruleorspace(element)
+{
+  if (element.getAttribute("role")=="rule")
+    window.openDialog("chrome://prince/content/addruleforsection.xul", 
+      "_blank", "chrome,close,titlebar,alwaysRaised",element, element.getAttribute("color"));
+  else if (element.getAttribute("role")=="vspace")
+    window.openDialog("chrome://prince/content/addspaceforsection.xul", 
+      "_blank", "chrome,close,titlebar,alwaysRaised",element);
+}
+  
     
