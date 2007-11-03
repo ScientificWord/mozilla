@@ -212,7 +212,7 @@
              <broadcaster id="singlecolumn" /><!-- observers of this will be visible only when there is a single column; not used yet -->
              <label value="&docformatColSeparation;" observes="multicolumn" />
              <textbox id="tbcolsep" style="width: 3em" observes="multicolumn" oninput="layoutPage('colsep');" 
-               onkeypress="handleChar(event,'colsep', 'tbcolsep');" 
+               onkeypress="geomHandleChar(event,'colsep', 'tbcolsep');" 
                onchange="layoutPage('colsep');" onfocus="activate('colsep');" onblur="deactivate('colsep');"/>
            </vbox>
          </hbox>  
@@ -223,7 +223,7 @@
                  <groupbox align="center">
                    <caption label="&docformatTextBody;"/>
                    <label value="&docformatTextBodyWidth;"/>
-                   <textbox id="tbbodywidth" style="width: 3.5em" onkeypress="handleChar(event,'bodywidth', 'tbbodywidth');"
+                   <textbox id="tbbodywidth" style="width: 3.5em" onkeypress="geomHandleChar(event,'bodywidth', 'tbbodywidth');"
                      onchange="layoutPage('bodywidth');"
                      onfocus="activate('bodyleft');activate('bodyright');" onblur="deactivate('bodyleft');deactivate('bodyright');"
                      tooltip="The width of the main text"/>
@@ -232,7 +232,7 @@
                      onchange="layoutPage('bodyheight');" 
                      onfocus="activate('bodyleft');activate('bodyright');" 
                      onblur="deactivate('bodyleft');deactivate('bodyright');"
-                     tooltip="&tbbodyheight.tooltip;" onkeypress="handleChar(event,'bodyheight', 'tbbodyheight');"/>
+                     tooltip="&tbbodyheight.tooltip;" onkeypress="geomHandleChar(event,'bodyheight', 'tbbodyheight');"/>
                  </groupbox>
                  <groupbox align="center">
                    <caption label="&docformatMargins;"/>
@@ -240,10 +240,10 @@
                    <label value="&docformatLeftMargin;" observes="oneside" />
                    <label value="&docformatInsideMargin;" observes="twoside" />
                    </hbox>
-                   <textbox id="tblmargin" style="width: 3em" oninput="layoutPage('lmargin');" onkeypress="handleChar(event,'lmargin', 'tblmargin');" 
+                   <textbox id="tblmargin" style="width: 3em" oninput="layoutPage('lmargin');" onkeypress="geomHandleChar(event,'lmargin', 'tblmargin');" 
                      onchange="layoutPage('lmargin');" onfocus="activate('lmarginbody');" onblur="deactivate('lmarginbody');" observes="bc.hcenter"/>
                    <label value="&docformatTopMargin;"/>
-                   <textbox id="tbtmargin" style="width: 3em" oninput="layoutPage('tmargin');"  onkeypress="handleChar(event,'tmargin', 'tbtmargin');"
+                   <textbox id="tbtmargin" style="width: 3em" oninput="layoutPage('tmargin');"  onkeypress="geomHandleChar(event,'tmargin', 'tbtmargin');"
                      onchange="layoutPage('tmargin');" onfocus="activate('tmargin');" onblur="deactivate('tmargin');" observes="bc.vcenter"/>
                  </groupbox>
                </hbox>
@@ -255,10 +255,10 @@
                <groupbox align="center">
                  <caption label="&docformatHeader;"/>
                  <label value="&docformatHeaderSeparation;"/>
-                 <textbox id="tbheadersep" style="width: 3em" oninput="layoutPage('headersep');" onkeypress="handleChar(event,'headersep','tbheadersep');"
+                 <textbox id="tbheadersep" style="width: 3em" oninput="layoutPage('headersep');" onkeypress="geomHandleChar(event,'headersep','tbheadersep');"
                    onchange="layoutPage('headersep');" onfocus="activate('headersep');" onblur="deactivate('headersep');"/>
                  <label value="&docformatHeaderHeight;"/>
-                 <textbox id="tbheader" style="width: 3em" oninput="layoutPage('header');" onkeypress="handleChar(event,'header','tbheader');"
+                 <textbox id="tbheader" style="width: 3em" oninput="layoutPage('header');" onkeypress="geomHandleChar(event,'header','tbheader');"
                    onchange="layoutPage('header');" onfocus="activate('header');" onblur="deactivate('header');"/>
                </groupbox>
                <hbox>
@@ -270,10 +270,10 @@
                <groupbox align="center">
                  <caption label="&docformatFooter;"/>
                  <label value="&docformatFooterSeparation;"/>
-                 <textbox id="tbfootersep" style="width: 3em" oninput="layoutPage('footersep');" onkeypress="handleChar(event,'footersep','tbfootersep');"
+                 <textbox id="tbfootersep" style="width: 3em" oninput="layoutPage('footersep');" onkeypress="geomHandleChar(event,'footersep','tbfootersep');"
                   onchange="layoutPage('footersep');" onfocus="activate('footersep');" onblur="deactivate('footersep');"/>
                  <label value="&docformatFooterHeight;"/>
-                 <textbox id="tbfooter" style="width: 3em" oninput="layoutPage('footer');" onkeypress="handleChar(event,'footer','tbfooter');"
+                 <textbox id="tbfooter" style="width: 3em" oninput="layoutPage('footer');" onkeypress="geomHandleChar(event,'footer','tbfooter');"
                    onchange="layoutPage('footer');" onfocus="activate('footer');" onblur="deactivate('footer');"/>
                </groupbox>
                <hbox>
@@ -283,17 +283,17 @@
              <groupbox align="center">
                <caption label="&docformatMarginNotes;"/>
                <label value="&docformatMNWidth;"/>
-               <textbox id="tbmnwidth" style="width: 3em" value="1"  oninput="layoutPage('mnwidth');" onkeypress="handleChar(event,'mnwidth','tbmnwidth');"
+               <textbox id="tbmnwidth" style="width: 3em" value="1"  oninput="layoutPage('mnwidth');" onkeypress="geomHandleChar(event,'mnwidth','tbmnwidth');"
                  onchange="layoutPage('mnwidth');" onfocus="activate('mnbody');" onblur="deactivate('mnbody');" >
                  <observes element="disablemarginnotes" attribute="disabled"  />
                </textbox>  
                <label value="&docformatMNSeparation;"/>
-               <textbox id="tbmnsep" style="width: 3em" value="1"  oninput="layoutPage('mnsep');"  onkeypress="handleChar(event,'mnsep','tbmnsep');"
+               <textbox id="tbmnsep" style="width: 3em" value="1"  oninput="layoutPage('mnsep');"  onkeypress="geomHandleChar(event,'mnsep','tbmnsep');"
                  onchange="layoutPage('mnsep');" onfocus="activate('mnsepbody');" onblur="deactivate('mnsepbody');">
                  <observes element="disablemarginnotes" attribute="disabled"  />
                </textbox>  
                <label value="&docformatMNPush;"/>
-               <textbox id="tbmnpush" style="width: 3em" value="1"  oninput="layoutPage('mnpush');" onkeypress="handleChar(event,'mnpush','tbmnpush');"
+               <textbox id="tbmnpush" style="width: 3em" value="1"  oninput="layoutPage('mnpush');" onkeypress="geomHandleChar(event,'mnpush','tbmnpush');"
                  onchange="layoutPage('mnpush');" onfocus="activate('mnpush');" onblur="deactivate('mnpush');"  
                  tooltip="The minimum separation between margin notes" >
                  <observes element="disablemarginnotes" attribute="disabled"  />
