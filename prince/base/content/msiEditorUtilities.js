@@ -1296,6 +1296,7 @@ function msiDeleteBodyContents(editor)
 //  dump( "In msiDeleteBodyContents, anchorNode and offset are [" + msiDumpDocLocation(editor.selection.anchorNode) + "; " + editor.selection.anchorOffset + "], while focusNode and offset are [" + msiDumpDocLocation(editor.selection.focusNode) + "; " + editor.selection.focusOffset + "].\n" );
 //  dump("In msiDeleteBodyContents, anchorNode and offset are [" + editor.selection.anchorNode.nodeName + "," + editor.selection.anchorOffset + "], while focusNode and offset are [" + editor.selection.focusNode.nodeName + "," + editor.selection.focusOffset + "].\n");
   editor.deleteSelection(Components.interfaces.nsIEditor.eNone);
+  return true;
 }
 
 function msiDumpDocLocation(node)
@@ -4141,6 +4142,7 @@ var msiBaseMathUnitsList =
     var theDataList = nameNode.getElementsByTagName("data");
     if (theDataList != null && theDataList.length > 0)
       return theDataList.item(0).textContent;
+    return '';
   },
 
   deleteName : function(aName)
