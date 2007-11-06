@@ -5259,13 +5259,14 @@ function msiDialogEditorContentFilter(anEditorElement)
               bFoundContent = (parentElement.childNodes[ix].nodeName != "br");
             else
               bFoundContent = true;
-          break;
+            break;
           case this.reject:
-          break;
+            break;
         }
       }
-      return bFoundContent;
+//      return bFoundContent;
     }
+    return bFoundContent;
   };
   this.isNonEmpty = function()
   {
