@@ -10,7 +10,7 @@ function Startup() {
   units = window.arguments[2];
   units = units.toLowerCase();
   dump("units = "+units+"\n");
-  var initialStr;
+  var initialStr="";
   if (titleformat[seclevel]) initialStr = titleformat[seclevel];
   var re = /<sw:dialogbase[^>]*>/;
   var s = initialStr.replace(re, "");

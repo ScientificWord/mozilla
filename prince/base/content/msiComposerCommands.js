@@ -4375,6 +4375,7 @@ function msiDocumentInfo(editorElement)
         return NodeFilter.FILTER_SKIP;
       break;
     }
+    return NodeFilter.FILTER_SKIP;
   };
 
   this.initializeDocInfo = function()
