@@ -3899,6 +3899,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
   {
     spaceStr += "customSpace\" dim=\"";
     spaceStr += String(dialogData.customSpaceData.fixedData.size) + dialogData.customSpaceData.fixedData.units;
+	spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
   }
   else if (dialogData.customSpaceData.customType == "stretchy")
   {
@@ -3986,6 +3987,7 @@ function msiInsertVerticalSpace(dialogData, editorElement)
   {
     spaceStr += "customSpace\" dim=\"";
     spaceStr += String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
+	spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
   }
   if (dialogData.spaceType in contentFromSpaceType)
     spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</vspace>";
@@ -6688,11 +6690,15 @@ function callColorDialog()
   if (colorObj.Cancel)
     return;
     
-  var editorElement = msiGetActiveEditorElement();
+  var editorElement = msiGetParentEditorElementForDialog(window);
   if (!editorElement)
   {
-    AlertWithTitle("Error", "No editor in callColorDialog");
+    AlertWithTitle("Error", "No editor in otfont.OnAccept!");
   }
-  msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
+	var theWindow = window.opener;
+	if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
+	  theWindow = msiGetTopLevelWindow();
+  theWindow.msiRequirePackage(editorElement, "xcolor");
+  theWindow.msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
   editorElement.contentWindow.focus();
 }
