@@ -12,6 +12,7 @@
 
 <xsl:include href="mml2ltex.xsl"/>
 <xsl:include href="preamble.xsl"/>
+<xsl:include href="spaces.xsl"/>
 	
 
 <xsl:template match="/"><xsl:apply-templates/></xsl:template>
