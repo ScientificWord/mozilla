@@ -26,13 +26,16 @@ function onAccept()
   if (list.selectedIndex  > 0)
   {
     fontname = list.value;
-    var editorElement = msiGetActiveEditorElement(window);
+	var editorElement = msiGetParentEditorElementForDialog(window);
     if (!editorElement)
     {
-    AlertWithTitle("Error", "No editor in otfont.OnAccept!");
+      AlertWithTitle("Error", "No editor in color.OnAccept!");
     }
-    msiRequirePackage(editorElement, "xcolor");
-    msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
+	var theWindow = window.opener;
+	if (!theWindow || !("msiInsertHorizontalSpace" in theWindow))
+	  theWindow = msiGetTopLevelWindow();
+    theWindow.msiRequirePackage(editorElement, "xcolor");
+    theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
   }
   editorElement.contentWindow.focus();
 }
