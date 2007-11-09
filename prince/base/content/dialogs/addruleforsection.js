@@ -42,9 +42,9 @@ function onAccept()
 {
   var n = document.getElementById("ruleHeight").value;
   // should check for validity.
-  ruleElement.setAttribute("ruleheight", n);
+  ruleElement.setAttribute("height", n);
   ruleElement.setAttribute("color", color);
-  var style= "height:"+n+"px; background-color:"+color;
+  var style= "background-color:"+color;
   var size = document.getElementById("rulesize").value;
   if (size=="other") 
   {

@@ -31,8 +31,11 @@ function onAccept()
     {
       AlertWithTitle("Error", "No editor in otfont.OnAccept!");
     }
-    msiRequirePackage(editorElement, "fontspec");
-    msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
+	var theWindow = window.opener;
+	if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
+	  theWindow = msiGetTopLevelWindow();
+    theWindow.msiRequirePackage(editorElement, "fontspec");
+    theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
   }
   editorElement.contentWindow.focus();
 }
