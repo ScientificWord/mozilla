@@ -6,7 +6,15 @@ function onAccept()
   var size=Number(document.getElementById("otfont.fontsize").value);
   if (size==NaN) return;
   var sizewithunits = size+document.getElementById("otfont.units").value;
-  msiEditorSetFontSize(sizewithunits);
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  if (!editorElement)
+  {
+    AlertWithTitle("Error", "No editor in otfont.OnAccept!");
+  }
+	var theWindow = window.opener;
+	if (!theWindow || !("msiEditorSetFontSize" in theWindow))
+	  theWindow = msiGetTopLevelWindow();
+  theWindow.msiEditorSetFontSize(sizewithunits, editorElement);
 }
 
 

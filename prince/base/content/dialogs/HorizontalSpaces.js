@@ -198,7 +198,6 @@ function onAccept()
   SaveWindowLocation();
   return true;
 }
-
 function onCancel()
 {
   data.Cancel = true;
