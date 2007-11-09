@@ -1507,7 +1507,8 @@ function addspace()
   nextbox.setAttribute("role","vspace");
   nextbox.setAttribute("hidden","false");
   nextbox.setAttribute("style","height:6px;background-color:silver;");
-  // call the rule dialog on this object
+	window.openDialog("chrome://prince/content/vspaceforsection.xul", 
+	  "_blank", "chrome,close,titlebar,alwaysRaised",nextbox);
 }
 
 function removeruleorspace()
@@ -1532,7 +1533,7 @@ function reviseruleorspace(element)
     window.openDialog("chrome://prince/content/addruleforsection.xul", 
       "_blank", "chrome,close,titlebar,alwaysRaised",element, element.getAttribute("color"));
   else if (element.getAttribute("role")=="vspace")
-    window.openDialog("chrome://prince/content/addspaceforsection.xul", 
+    window.openDialog("chrome://prince/content/vspaceforsection.xul", 
       "_blank", "chrome,close,titlebar,alwaysRaised",element);
 }
   
