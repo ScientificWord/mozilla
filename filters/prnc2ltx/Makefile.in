@@ -12,6 +12,8 @@ include $(topsrcdir)/config/rules.mk
 
 
 XSL_RESOURCES := $(wildcard $(srcdir)/*.xsl)
+XML_RESOURCES := $(wildcard $(srcdir)/*.xml)
 
 libs::	$(XSL_RESOURCES)
 	$(INSTALL)	$(XSL_RESOURCES)	$(FINAL_TARGET)/res/xsl
+	$(INSTALL)	$(XML_RESOURCES)	$(FINAL_TARGET)/res/xsl
