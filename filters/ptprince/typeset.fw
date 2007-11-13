@@ -382,11 +382,11 @@ void Typesetter::EndProcess()
          convertfunc  = (LPCONVERT)GetProcAddress(s_hDLL,"ConvertInline");
          convertfunc( theCStr, mathmlHandler, 2 );
          LOG("\nGot back " << s_mathml.c_str());
-         std::string str;
-         str +=  "<mml:math>";
-         str +=  s_mathml;
-         str +=  "</mml:math>";
-         AppendTag(str.c_str());
+         //std::string str;
+         //str +=  "<mml:math>";
+         //str +=  s_mathml;
+         //str +=  "</mml:math>";
+         AppendTag(s_mathml.c_str());
          s_mathml = "";
       }
    }
