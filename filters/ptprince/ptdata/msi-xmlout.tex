@@ -1,7 +1,7 @@
 \makeatletter
 
    \def\css{2}	  % the css output file
-   \openout\css={css/doc.css} %% the CSS style file for this document
+   \openout\css=my.css %% the CSS style file for this document
    \write\css{@import url("resource://app/res/css/baselatex.css");}
    \write\css{@import url("resource://app/res/css/latex.css");}
    \closeout\css
@@ -400,40 +400,40 @@
   \gdef\@scan@eqnarray@star#1\end{eqnarray*}[%
      \egroup
      \@make@braces@normal
-     %\temptoksa=[\begin{eqnarray*}#1\end{eqnarray*}]%
+     \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
      \msiextproc[jbm][\begin{eqnarray*}#1\end{eqnarray*}]%
+     \msiclosetag[mml][</mml:math>]
   ]
   \gdef\@scan@eqnarray#1\end{eqnarray}[%
      \egroup
      \@make@braces@normal
-     %\temptoksa=[\begin{eqnarray}#1\end{eqnarray}]%     
+     \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
      \msiextproc[jbm][\begin{eqnarray}#1\end{eqnarray}]%
+     \msiclosetag[mml][</mml:math>]
   ]
   \gdef\@scan@align@star#1\end{align*}[%
      \egroup
      \@make@braces@normal
-     %\temptoksa=[\begin{align*}#1\end{align*}]%
+     \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
      \msiextproc[jbm][\begin{align*}#1\end{align*}]%
+     \msiclosetag[mml][</mml:math>]
   ]  
   \gdef\@scan@equation@star#1\end{equation*}[%
      \egroup
      \@make@braces@normal
-     %\temptoksa=[\begin{equation*}#1\end{equation*}]%
+     \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
      \msiextproc[jbm][\begin{equation*}#1\end{equation*}]%
+     \msiclosetag[mml][</mml:math>]
   ]
   \gdef\msi@mtabular#1#2\end{tabular}[%
      \egroup
      \@make@braces@normal
      \msitag[\begin{tabular}{#1}#2\end{tabular}]
-     %\temptoksa=[\begin{tabular}{#1}#2\end{tabular}]
-     %\the\temptoksa
   ]
   \gdef\@scan@array#1\end{array}[%
      \egroup
      \@make@braces@normal
      \msitag[\begin{array}#1\end{array}]
-     %\temptoksa=[\begin{array}#1\end{array}]%
-     %\the\temptoksa
   ]
   \def\endarray[\cr\egroup\string\end\char`\{array\char`\}]
   \gdef\@scan@bmatrix#1\end{bmatrix}[%
@@ -684,6 +684,18 @@
 
 \msi@mathmlpass{\sin}
 \msi@mathmlpass{\cos}
+\msi@mathmlpass{\tan}
+\msi@mathmlpass{\cot}
+\msi@mathmlpass{\sec}
+\msi@mathmlpass{\csc}
+
+\msi@mathmlpass{\ln}
+
+\msi@mathmlpass{\limits}
+\msi@mathmlpass{\substack}
+\msi@mathmlpass{\\}
+\msi@mathmlpass{\arg}
+
 
 
 
@@ -1462,11 +1474,16 @@
 %% Spacing
 
 
-\def\qquad{\msitag{<hspace dim="2em" type="twoEmSpace">}\@hex{2001}\msitag{</hspace>}}
-\def\quad{\msitag{<hspace dim="1em" type="emSpace">}\@hex{2003}\msitag{</hspace>}}
-\def\ {\msitag{<hspace type="requiredSpace">}\@hex{205f}\msitag{</hspace>}}
-\def~{\msitag{<hspace type="nonBreakingSpace">}\@hex{a0}\msitag{</hspace>}}
-\def\/{\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}}
+\def\qquad{\msihmode\msitag{<hspace dim="2em" type="twoEmSpace">}\@hex{2001}\msitag{</hspace>}}
+\def\quad{\msihmode\msitag{<hspace dim="1em" type="emSpace">}\@hex{2003}\msitag{</hspace>}}
+\def\ {\msihmode\msitag{<hspace type="requiredSpace">}\@hex{205f}\msitag{</hspace>}}
+\def~{\msihmode\msitag{<hspace type="nonBreakingSpace">}\@hex{a0}\msitag{</hspace>}}
+\def\/{\msihmode\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}}
+
+\bgroup
+  \catcode`\%=12
+  \gdef\strut{\msitag{<vspace lineHt="100%" type="strut"/>}}
+\egroup
 
 
 \def\noindent{\par\msitag{<hspace dim="0.0em" type="noIndent"></hspace>}}
@@ -1476,7 +1493,7 @@
    \ifmmode
       \string\thinspace
    \else
-     \msitag{<hspace dim="0.17em" type="thinSpace">}\@hex{2009}\msitag{</hspace>}%
+      \msihmode\msitag{<hspace dim="0.17em" type="thinSpace">}\@hex{2009}\msitag{</hspace>}%
    \fi
 }
 
@@ -1484,7 +1501,7 @@
    \ifmmode
       \string\thickspace
    \else
-      \msitag{<hspace dim="0.5em" type="thickSpace">}\@hex{2002}\msitag{</hspace>}%
+      \msihmode\msitag{<hspace dim="0.5em" type="thickSpace">}\@hex{2002}\msitag{</hspace>}%
    \fi
 }
 
@@ -1493,7 +1510,7 @@
    \ifmmode
       \string\negthinspace
    \else
-      \msitag{<hspace dim="0.0em" type="negativeThinSpace"></hspace>}%
+      \msihmode\msitag{<hspace dim="0.0em" type="negativeThinSpace"></hspace>}%
    \fi
 }
 
@@ -1615,7 +1632,9 @@
 %  \mathpass@arg@arg@arg{}
 %  
 
-%  \def\QABOVED#1#2#3#4#5{{#4 \abovewithdelims#1#2#3 #5}}%
+
+\msi@mathmlpass{\QABOVED}
+%\def\QABOVED#1#2#3#4#5{{#4 \abovewithdelims#1#2#3 #5}}%
 %  \def\QTABOVED#1#2#3#4#5{{\textstyle 
 %     {#4 \abovewithdelims#1#2#3 #5}}}%
 %  \def\QDABOVED#1#2#3#4#5{{\displaystyle 
@@ -1628,6 +1647,13 @@
 \msi@mathmlpass{\left}
 \msi@mathmlpass{\right}
 \msi@mathmlpass{\in}
+\msi@mathmlpass{\overset}
+\msi@mathmlpass{\underset}
+\msi@mathmlpass{\sinh}
+\msi@mathmlpass{\cosh}
+\msi@mathmlpass{\tanh}
+\msi@mathmlpass{\mathstrut}
+
 \def\text#1{\msitag{\text{#1}}}
 
 \def\vspace#1{\ifmmode\else\msitag{<vspace/>}\fi}
