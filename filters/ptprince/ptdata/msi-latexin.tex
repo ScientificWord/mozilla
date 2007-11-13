@@ -1,4 +1,3 @@
-
 \catcode`\{=1
 \catcode`\}=2
 \catcode`\#=6
@@ -764,6 +763,7 @@
 \newskip\@tempskipa
 \newskip\@tempskipb
 \newtoks\@temptokena
+\newtoks\@temptokenb
 \newskip\@flushglue \@flushglue = 0pt plus 1fil
 %%% From File: ltcntrl.dtx
 \message{control,}
@@ -6879,16 +6879,36 @@
 \def\msi@getfilename#1filename#2;#3XXXXX{#2}
 
 \def\FRAME#1#2#3#4#5#6#7#8{%
-   \begingroup
-     \let\special\msi@special
-     #8
-   \endgroup
+   \@temptokena={#7}
+   \@temptokenb={Plot}
+   \ifx\@temptokena\@temptokenb
+   \else
+     \begingroup
+       \let\special\msi@special
+       #8
+     \endgroup
+   \fi
 }%
+
+
 
 
 \def\U#1{\char`\&\char`\#x#1;}
 
 
+\def\CustomNote#1{%
+  \ifx#1[
+    \CustomNoteA
+  \else
+    \CustomNoteB
+  \fi
+}
 
+\def\CustomNoteA[#1]#2#3{%
+
+}
+
+\def\CustomNoteB#1#2{%
+}
 
 \makeatother
