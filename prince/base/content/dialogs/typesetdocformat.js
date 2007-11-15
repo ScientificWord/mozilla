@@ -1,5 +1,6 @@
  
 var currentUnit;
+var sectionUnit;
 var unitConversions;
 var widthElements;
 var heightElements;
@@ -11,10 +12,14 @@ var scale = 0.5;
 
 var editor;
 var sectitleformat;
+var sectScale = 1;
+
 
 function InitializeUnits()
 {
   currentUnit = document.getElementById("docformat.units").selectedItem.value;
+	sectionUnit = currentUnit;
+	document.getElementById("secoverlay.units").selectedItem.value = sectionUnit;
   setDecimalPlaces();
   unitConversions = new Object;
   unitConversions.pt=.3514598;  //mm per pt
@@ -32,7 +37,7 @@ function Startup()
     return;
   }
   widthElements=new Array("lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin",
-    "leftheadingmargin", "rightheadingmargin");
+    "sectrightheadingmargin", "sectleftheadingmargin");
   heightElements=new Array("tmargin","header","headersep",
     "bodyheight","footer","footersep", "mnpush", "computedbmargin");
   InitializeUnits();
@@ -68,7 +73,7 @@ function Startup()
   
 //  var editElement = document.getElementById("sectiontitle-frame");
 //  msiInitializeEditorForElement(editElement, "");
-
+	dump ("initializing sectitleformat\n");
   sectitleformat = new Object();
   getSectionFormatting(sectitlenodelist, sectitleformat);
 }
@@ -241,154 +246,6 @@ function getPageLayout(node)
   }
 }
 
-
-function getSectionFormatting(sectitlenodelist, sectitleformat)
-// sectitlenodelist is a list of nodes of sectitleformat nodes, and sectitleformat is a new object to hold the results from these nodes.
-{
-  var i;
-  var node;
-  var level;
-  var dialogbase;
-  var sw = "http://www.sciword.com/namespaces/sciword";
-  if (sectitlenodelist)
-  {
-    for (i=0; i< sectitlenodelist.length; i++)
-    {
-      node = sectitlenodelist[i];
-      level = node.getAttribute("level");
-      try {
-        dialogbase = node.getElementsByTagNameNS(sw,"dialogbase")[0];
-        var ser = new XMLSerializer();
-        var xmlcode = ser.serializeToString(dialogbase);
-        xmlcode = xmlcode.replace(/#1/,"#T");
-        var pattern = "\\the"+level;
-        xmlcode = xmlcode.replace(pattern, "#N");
-//        var re=/<sw:dialogbase[^>]*>/;
-//        var l;
-//        do
-//        {
-//          l = xmlcode.length;
-//          xmlcode = xmlcode.replace(re,"").replace("</sw:dialogbase>",'');
-//        } while (xmlcode.length > 0 && xmlcode.length < l);
-        sectitleformat[level] = xmlcode;
-      }
-      catch(e)
-      {
-        dump("exception in getSectionFormatting: "+e+"\n");
-      }
-    }
-  }
-  displayTextForSectionHeader();
-}
-
-function saveSectionFormatting( docFormatNode, sectitleformat )
-{
-  // get the list of section-like objects
-  var menulist = document.getElementById("sections.name");
-  var itemlist = menulist.getElementsByTagName("menuitem");
-  var bRequiresPackage = true;
-  var reqpackageNode;
-  for (var i = 0; i < itemlist.length; i++)
-  {
-    var name;
-    try {
-      name = itemlist[i].getAttribute("id").split(".")[1];
-    }
-    catch(e) {
-      continue;
-    }
-    name = name.toLowerCase();
-    if (!sectitleformat[name]) continue;
-    if (bRequiresPackage)
-    {
-      bRequiresPackage = false;
-      reqpackageNode = editor.createNode('requirespackage',docFormatNode, 0);
-      reqpackageNode.setAttribute('package',"titlesec");
-    } 
-    lineend(docFormatNode, 1);
-    var stNode = editor.createNode('sectitleformat', docFormatNode,0);
-    stNode.setAttribute('level', name);
-    stNode.setAttribute('style', "hang");
-    lineend(stNode, 2);
-    var proto = editor.createNode('titleprototype', stNode, 0);
-    var fragment = sectitleformat[name];
-    // replace #N with \the(section, subsection, etc) and #T with #1
-    fragment = fragment.replace(/#N/,"\\the"+name);
-    fragment = fragment.replace(/#T/,"#1");
-    dump("Contents being saved as section title prototype: "+fragment+"\n");
-    var parser = new DOMParser();
-    var doc = parser.parseFromString(fragment,"application/xhtml+xml");
-    lineend(proto, 3);
-    proto.appendChild(doc.documentElement);
-    // stNode.setAttribute( -- find the section format type: hang, runin, etc.
-    docFormatNode.appendChild(stNode);
-  }  
-}
-
-
-function getBaseNodeForIFrame( )
-{
-  var sw = "http://www.sciword.com/namespaces/sciword";
-  var iframe = document.getElementById("sectiontextarea");
-  if (!iframe) return;
-  var doc = iframe.contentDocument;
-  var theNodes = doc.getElementsByTagNameNS(sw,"dialogbase");
-  var theNode;
-  if (theNodes) theNode = theNodes[0]; 
-  else 
-  {
-    theNodes = doc.getElementsByTagNameNS(sw,"para");
-    if (theNodes) theNode = theNodes[0]; 
-  }
-  if (!theNode)
-  {
-    var bodies = doc.getElementsByTagName("body");
-    if (bodies) for ( var i = 0; i < bodies.length; i++)
-    {
-      theNode = bodies[i];
-      if (theNode.nodeType == theNode.ELEMENT_NODE)
-        return theNode;
-     }
-  }
-  return theNode;
-}
-
-function displayTextForSectionHeader()
-{
-  var secname = document.getElementById("sections.name").label.toLowerCase();
-  var basepara;
-  basepara = getBaseNodeForIFrame();
-  var strContents = sectitleformat[secname];
-  var parser = new DOMParser();
-  var doc = parser.parseFromString(strContents,"application/xhtml+xml");
-  basepara.parentNode.replaceChild(doc.documentElement, basepara);
-}
-
-
-function refresh() // a version of displayTextForSectionHeader designed to be used as a callback
-{
-  var strContents = sectitleformat[sectitleformat.currentLevel];
-  var parser = new DOMParser();
-  var doc = parser.parseFromString(strContents,"application/xhtml+xml");
-  sectitleformat.destNode.parentNode.replaceChild(doc.documentElement, sectitleformat.destNode);
-  sectitleformat.destNode = null;
-}
-      
-function textEditor()
-{
-  var secname=document.getElementById("sections.name").label;
-  var units=document.getElementById("secoverlay.units").value;
-  sectitleformat.refresh = refresh;
-  sectitleformat.destNode = getBaseNodeForIFrame();
-  sectitleformat.currentLevel = secname.toLowerCase();
-  window.openDialog("chrome://prince/content/sectiontext.xul", "_blank", "chrome,close,titlebar,alwaysRaised", sectitleformat,
-      secname, units);
-}
-
-function setSectionFormatting(sectitleformat)
-{
-}
-      
       
 function onAccept()
 {
@@ -1366,6 +1223,211 @@ function initSystemFontMenu(menuPopupId)
 
 // functions for typesetsectionsoverlay
 
+var sectionUnits;
+
+
+function getSectionFormatting(sectitlenodelist, sectitleformat)
+// sectitlenodelist is a list of nodes of sectitleformat nodes, and sectitleformat is a new object to hold the results from these nodes.
+{
+  var i;
+  var node;
+  var level;
+  var dialogbase;
+  var sw = "http://www.sciword.com/namespaces/sciword";
+  if (sectitlenodelist)
+  {
+    for (i=0; i< sectitlenodelist.length; i++)
+    {
+      node = sectitlenodelist[i];
+      level = node.getAttribute("level");
+      try {
+        dialogbase = node.getElementsByTagNameNS(sw,"dialogbase")[0];
+        var ser = new XMLSerializer();
+        var xmlcode = ser.serializeToString(dialogbase);
+        xmlcode = xmlcode.replace(/#1/,"#T");
+        var pattern = "\\the"+level;
+        xmlcode = xmlcode.replace(pattern, "#N");
+//        var re=/<sw:dialogbase[^>]*>/;
+//        var l;
+//        do
+//        {
+//          l = xmlcode.length;
+//          xmlcode = xmlcode.replace(re,"").replace("</sw:dialogbase>",'');
+//        } while (xmlcode.length > 0 && xmlcode.length < l);
+        sectitleformat[level] = xmlcode;
+      }
+      catch(e)
+      {
+        dump("exception in getSectionFormatting: "+e+"\n");
+      }
+    }
+  }
+  displayTextForSectionHeader();
+}
+
+function saveSectionFormatting( docFormatNode, sectitleformat )
+{
+  // get the list of section-like objects
+  var menulist = document.getElementById("sections.name");
+  var itemlist = menulist.getElementsByTagName("menuitem");
+  var bRequiresPackage = true;
+  var reqpackageNode;
+  for (var i = 0; i < itemlist.length; i++)
+  {
+    var name;
+    try {
+      name = itemlist[i].getAttribute("id").split(".")[1];
+    }
+    catch(e) {
+      continue;
+    }
+    name = name.toLowerCase();
+    if (!sectitleformat[name]) continue;
+    if (bRequiresPackage)
+    {
+      bRequiresPackage = false;
+      reqpackageNode = editor.createNode('requirespackage',docFormatNode, 0);
+      reqpackageNode.setAttribute('package',"titlesec");
+    } 
+    lineend(docFormatNode, 1);
+    var stNode = editor.createNode('sectitleformat', docFormatNode,0);
+    stNode.setAttribute('level', name);
+    stNode.setAttribute('sectstyle', "hang");
+    lineend(stNode, 2);
+    var proto = editor.createNode('titleprototype', stNode, 0);
+    var fragment = sectitleformat[name];
+    // replace #N with \the(section, subsection, etc) and #T with #1
+    fragment = fragment.replace(/#N/,"\\the"+name);
+    fragment = fragment.replace(/#T/,"#1");
+    dump("Contents being saved as section title prototype: "+fragment+"\n");
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(fragment,"application/xhtml+xml");
+    lineend(proto, 3);
+    proto.appendChild(doc.documentElement);
+    // stNode.setAttribute( -- find the section format type: hang, runin, etc.
+    docFormatNode.appendChild(stNode);
+  }  
+}
+
+
+function getBaseNodeForIFrame( )
+{
+  var sw = "http://www.sciword.com/namespaces/sciword";
+  var iframe = document.getElementById("sectiontextarea");
+  if (!iframe) return;
+  var doc = iframe.contentDocument;
+  var theNodes = doc.getElementsByTagNameNS(sw,"dialogbase");
+  var theNode;
+  if (theNodes) theNode = theNodes[0]; 
+  else 
+  {
+    theNodes = doc.getElementsByTagNameNS(sw,"para");
+    if (theNodes) theNode = theNodes[0]; 
+  }
+  if (!theNode)
+  {
+    var bodies = doc.getElementsByTagName("body");
+    if (bodies) for ( var i = 0; i < bodies.length; i++)
+    {
+      theNode = bodies[i];
+      if (theNode.nodeType == theNode.ELEMENT_NODE)
+        return theNode;
+     }
+  }
+  return theNode;
+}
+
+function switchSectionUnits()
+{
+  var newUnit = document.getElementById("secoverlay.units").selectedItem.value;
+  var factor = convert(1, sectionUnit, newUnit);
+  dump("section factor is "+factor+"\n");
+  sectScale = sectScale/factor;
+  sectionUnit = newUnit; // this has to be set before unitRound and setDecimalPlaces are called
+  sectSetDecimalPlaces();
+  document.getElementById("tbsectrightheadingmargin").value = unitRound(factor*document.getElementById("tbsectrightheadingmargin").value);
+  document.getElementById("tbsectleftheadingmargin").value = unitRound(factor*document.getElementById("tbsectleftheadingmargin").value); 
+}
+
+
+function sectSetDecimalPlaces() // and increments
+{
+  var places;
+  var increment;
+  var elt;
+  var i;
+  var s;
+  switch (sectionUnit) {
+    case "in" : increment = .1; places = 2; break;
+    case "cm" : increment = .1; places = 2; break;
+    case "mm" : increment = 1; places = 1; break;
+    case "pt" : increment = 1; places = 1; break;
+    default : increment = 1; places = 1; break;
+  }
+  elt = document.getElementById("tbsectrightheadingmargin");
+  elt.setAttribute("increment", increment);
+  elt.setAttribute("decimalplaces", places);
+  elt = document.getElementById("tbsectleftheadingmargin");
+  elt.setAttribute("increment", increment);
+  elt.setAttribute("decimalplaces", places);
+}    
+
+
+function displayTextForSectionHeader()
+{
+  var secname = document.getElementById("sections.name").label.toLowerCase();
+  var basepara;
+//	var width;
+	var height;
+  basepara = getBaseNodeForIFrame();
+  var strContents = sectitleformat[secname];
+	if (strContents && strContents.length > 0)
+	{
+	  var parser = new DOMParser();
+	  var doc = parser.parseFromString(strContents,"application/xhtml+xml");
+	  basepara.parentNode.replaceChild(doc.documentElement, basepara);
+		basepara = getBaseNodeForIFrame();
+		var htmlNode=basepara.parentNode.parentNode;
+		var boxObject=htmlNode.ownerDocument.getBoxObjectFor(htmlNode);
+//		width = boxObject.width;
+		height = boxObject.height;
+	}
+	else
+	{
+	  height = 20;
+//		width = 200;
+  }
+	var iframecontainer = document.getElementById("sectiontextareacontainer");
+	setStyleAttribute(iframecontainer,"height",Number(height)+"px");
+//	setStyleAttribute(iframecontainer,"width",width+sectionUnit));
+}
+
+
+function refresh() // a version of displayTextForSectionHeader designed to be used as a callback
+{
+//  var strContents = sectitleformat[sectitleformat.currentLevel];
+//  var parser = new DOMParser();
+//  var doc = parser.parseFromString(strContents,"application/xhtml+xml");
+//	sectitleformat.destNode.parentNode.replaceChild(doc.documentElement, sectitleformat.destNode);
+//  sectitleformat.destNode = null;
+}
+      
+function textEditor()
+{
+  var secname=document.getElementById("sections.name").label;
+  var units=document.getElementById("secoverlay.units").value;
+  sectitleformat.refresh = refresh;
+  sectitleformat.destNode = getBaseNodeForIFrame();
+  sectitleformat.currentLevel = secname.toLowerCase();
+  window.openDialog("chrome://prince/content/sectiontext.xul", "_blank", "modal,chrome,close,titlebar,alwaysRaised", sectitleformat,
+      secname, units);																									 
+  displayTextForSectionHeader();
+}
+
+function setSectionFormatting(sectitleformat)																	 
+{
+}
+      
 function setalign(which)
 {
   var element;
@@ -1374,38 +1436,57 @@ function setalign(which)
   if (which == "center")
   {
     sectionparts.setAttribute("pack","center");
-    document.getElementById("leftalignment").setAttribute("hidden","true");
-    document.getElementById("rightalignment").setAttribute("hidden","true");
-    document.getElementById("notcenteralignment").setAttribute("hidden","true");
-    element = document.getElementById("sectionleftmargin");
-    otherelement = document.getElementById('sectionrightmargin');
-    element.setAttribute("role", "spacer");
-    element.setAttribute("flex", "1");
+    document.getElementById("leftalignment").setAttribute("msicollapsed","true");
+		document.getElementById("leftalignment").setAttribute("width","1px");
+    document.getElementById("rightalignment").setAttribute("msicollapsed","true");
+		document.getElementById("rightalignment").setAttribute("width","1px");
+    document.getElementById("notcenteralignment").setAttribute("msicollapsed","true");
+    element = document.getElementById("sectleftheadingmargin");
+    otherelement = document.getElementById('sectrightheadingmargin');
+    //element.setAttribute("role", "spacer");
+    document.getElementById("sectleftmargin").setAttribute("flex", "1");
+    document.getElementById("sectleftmargin").setAttribute("width", "40px");
+		document.getElementById("sectrightmargin").setAttribute("flex", "1");
+		document.getElementById("sectrightmargin").setAttribute("width", "40px");
   }
   else
   {
-    document.getElementById("notcenteralignment").setAttribute("hidden","false");
+    document.getElementById("notcenteralignment").setAttribute("msicollapsed","false");
     if (which == "left")
     {
       sectionparts.setAttribute("pack", "start");
-      document.getElementById("leftalignment").setAttribute("hidden","false");
-      document.getElementById("rightalignment").setAttribute("hidden","true");
-      element = document.getElementById("sectionleftmargin");
-      otherelement = document.getElementById('sectionrightmargin');
+      var width = document.getElementById("tbsectleftheadingmargin").value;
+			if (Number(width) ==  NaN) width=30;                												 
+      document.getElementById("leftalignment").setAttribute("msicollapsed","false");
+      document.getElementById("leftalignment").setAttribute("width",width+"px");
+      document.getElementById("rightalignment").setAttribute("msicollapsed","true");
+		  document.getElementById("rightalignment").setAttribute("width","1px");
+      element = document.getElementById("sectleftheadingmargin");
+      otherelement = document.getElementById('sectrightheadingmargin');
+	    document.getElementById("sectleftmargin").setAttribute("flex", "0");
+	    document.getElementById("sectleftmargin").setAttribute("width", "40px");
+			document.getElementById("sectrightmargin").setAttribute("flex", "1");
+			document.getElementById("sectrightmargin").setAttribute("width", "40px");
     }
     else if (which == "right")
     {
       sectionparts.setAttribute("pack", "end");
-      document.getElementById("leftalignment").setAttribute("hidden","true");
-      document.getElementById("rightalignment").setAttribute("hidden","false");
-      element = document.getElementById("sectionrightmargin");
-      otherelement = document.getElementById('sectionleftmargin');
+      var rwidth = document.getElementById("tbsectrightheadingmargin").value;
+			if (Number(rwidth) ==  NaN) width=30;                												 
+      document.getElementById("leftalignment").setAttribute("msicollapsed","true");
+		  document.getElementById("leftalignment").setAttribute("width","1px");
+      document.getElementById("rightalignment").setAttribute("msicollapsed","false");
+      document.getElementById("rightalignment").setAttribute("width",rwidth+"px");
+      element = document.getElementById("sectrightheadingmargin");
+      otherelement = document.getElementById('sectleftheadingmargin');
+			document.getElementById("sectrightmargin").setAttribute("flex","0");
+	    document.getElementById("sectleftmargin").setAttribute("flex","1");
+	    document.getElementById("sectleftmargin").setAttribute("width", "40px");
+			document.getElementById("sectrightmargin").setAttribute("width", "40px");
     }
     element.setAttribute("role", "sectionmargin");
-    element.setAttribute("flex", "0");
   }
-  otherelement.setAttribute("role", "spacer");
-  otherelement.setAttribute("flex", "1");
+  //otherelement.setAttribute("role", "spacer");
 }
     
 
@@ -1430,7 +1511,7 @@ function toggleselection( element )
   var NMbroadcaster=document.getElementById("notmargin");
   clearselection(root);
   element.setAttribute('sectionselected','true');
-  if (element.id == "leftheadingmargin" || element.id=="rightheadingmargin")
+  if (element.id == "sectleftheadingmargin" || element.id=="sectrightheadingmargin")
   {
     NCAbroadcaster.setAttribute("disabled","false");
     TOBbroadcaster.setAttribute("disabled", "true");
@@ -1462,10 +1543,42 @@ function settopofpage( checkbox )
 function sectLayout(id, tbid)
 {
   var textbox = document.getElementById(tbid);
-  var box = document.getElementById(tbid);
+  var box = document.getElementById(id);
   var dim = Number(textbox.value);
-  setWidth(box,dim);
-}
+  secSetWidth(box,dim);
+}		 
+
+function secSetWidth(box, dim)
+{
+  // dim is in the current units -- add conversion to pixels
+	var theotherbox;
+	if (box.id == "sectleftheadingmargin")
+	{
+	  theotherbox = document.getElementById("sectleftmargin");
+	  if (dim < 0) {
+	    box.setAttribute("width", "0");
+			theotherbox.setAttribute("width",40-Number(-dim));
+		}
+		else
+		{
+			box.setAttribute("width",Number(dim));
+			theotherbox.setAttribute("width",40);
+		}
+  }
+	else
+	{
+	  theotherbox = document.getElementById("sectrightmargin");
+	  if (dim < 0) {
+	    box.setAttribute("width", "0");
+			theotherbox.setAttribute("width",40-Number(-dim));
+		}
+		else
+		{
+			box.setAttribute("width",Number(dim));
+			theotherbox.setAttribute("width",40);
+		}
+  }
+}		  
 
 function addrule()
 {
