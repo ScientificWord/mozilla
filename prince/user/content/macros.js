@@ -48,7 +48,7 @@ function insertText ( textString )
   plaintextEditor.insertText( textString);
 }
 
-function checkSpelling(delSelection, delSelection)
+function checkSpelling(delSelection)
 {
   if (delSelection) deleteSelection(); 
   msiGoDoCommand('cmd_spelling');
