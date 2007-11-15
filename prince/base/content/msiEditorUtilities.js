@@ -4624,19 +4624,29 @@ function msiAuxDirFromDocPath(documentURI)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                             
+// receives a style string, sets a new value for attribute
+function setStyleAttribute( element, attribute, value)
+{
+  var inStyleString = element.getAttribute("style");
+  var array = inStyleString.split(";");
+  var i;
+  var found = false;
+  for (i=0; i<array.length; i++)
+  {
+    array[i] = array[i].split(":");
+	array[i][0] = (array[i][0]).replace(" ","","g");
+  }
+  for (i=0; i<array.length; i++)
+  {
+    if (array[i][0] == attribute)
+	{
+	  array[i][1] = value;
+	  found = true;
+	}
+	array[i] = array[i].join(":"); 
+  }
+  var outStyleString = array.join(";");
+  if (!found)  outStyleString = attribute+": "+value+";"+outStyleString;
+  element.setAttribute("style", outStyleString);
+}
+	  
