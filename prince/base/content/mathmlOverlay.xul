@@ -1,6 +1,11 @@
 <?xml version="1.0"?>             <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!DOCTYPE overlay SYSTEM "chrome://prince/locale/mathmlOverlay.dtd">
+<!DOCTYPE overlay [
+<!ENTITY % mathmloverlaydtd SYSTEM "chrome://prince/locale/mathmlOverlay.dtd">
+%mathmloverlaydtd;
+<!ENTITY % mathmldtd SYSTEM "resource://gre/dtd/mathml.dtd">
+%mathmldtd;
+]>
 
 <overlay id="mathmlOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -136,7 +141,7 @@
 
 <!-- LOWERCASE GREEK -->
 	  <tabpanel id="symbol_lcGreek" autostretch="never" align="baseline"> 
-        <toolbarbutton label="&#x03B1;" tooltiptext="&symbolalpha.tooltip;"  msivalue="&#x03B1;"
+        <toolbarbutton label="&alpha;" tooltiptext="&symbolalpha.tooltip;"  msivalue="&#x03B1;"
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03B2;" tooltiptext="&symbolbeta.tooltip;"   msivalue="&#x03B2;"
             observes="cmd_MSIsymbolCmd"/>
