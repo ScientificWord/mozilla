@@ -132,7 +132,7 @@
 <!ENTITY symbolbeta.tooltip        "beta">
 <!ENTITY symbolgamma.tooltip       "gamma">    
 <!ENTITY symboldelta.tooltip       "delta">    
-<!ENTITY symbolepsilon.tooltip     "epsilon">
+<!ENTITY symbolvarepsilon.tooltip     "varepsilon">
 <!ENTITY symbolzeta.tooltip        "zeta">
 <!ENTITY symboleta.tooltip         "eta">
 <!ENTITY symboltheta.tooltip       "theta">
@@ -149,17 +149,17 @@
 <!ENTITY symbolsigma.tooltip       "sigma">    
 <!ENTITY symboltau.tooltip         "tau">      
 <!ENTITY symbolupsilon.tooltip     "upsilon">  
-<!ENTITY symbolphi.tooltip         "phi">     
+<!ENTITY symbolvarphi.tooltip         "varphi">     
 <!ENTITY symboltextchi.tooltip         "chi">      
 <!ENTITY symbolpsi.tooltip         "psi">      
 <!ENTITY symbolomega.tooltip       "omega">
 <!ENTITY symbolvartheta.tooltip      "vartheta">   
-<!ENTITY symbolvarphi.tooltip      "varphi">
+<!ENTITY symbolphi.tooltip      "phi">
 <!ENTITY symbolvarpi.tooltip         "varpi">      
 <!ENTITY symbolstigma.tooltip      "stigma">   
 <!ENTITY symbolvarkappa.tooltip      "varkappa">   
 <!ENTITY symbolvarrho.tooltip        "varrho">     
-<!ENTITY symbolvarepsilon.tooltip    "straightepsilon">
+<!ENTITY symbolepsilon.tooltip    "epsilon">
 <!ENTITY symbolbackepsilon.tooltip "backepsilon">
 
 <!ENTITY symbolGamma.tooltip   "Gamma">
