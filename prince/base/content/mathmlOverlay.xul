@@ -144,7 +144,7 @@
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03B4;" tooltiptext="&symboldelta.tooltip;"    msivalue="&#x03B4;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton label="&#x03B5;" tooltiptext="&symbolepsilon.tooltip;" msivalue="&#x03B5;"
+        <toolbarbutton label="&#x03B5;" tooltiptext="&symbolvarepsilon.tooltip;" msivalue="&#x03B5;"
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03B6;" tooltiptext="&symbolzeta.tooltip;"    msivalue="&#x03B6;"
             observes="cmd_MSIsymbolCmd"/>
@@ -178,7 +178,7 @@
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03C5;" tooltiptext="&symbolupsilon.tooltip;" msivalue="&#x03C5;"
             observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton label="&#x03C6;" tooltiptext="&symbolphi.tooltip;"   msivalue="&#x03C6;"
+        <toolbarbutton label="&#x03C6;" tooltiptext="&symbolvarphi.tooltip;"   msivalue="&#x03C6;"
              observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03C7;" tooltiptext="&symboltextchi.tooltip;"    msivalue="&#x03C7;"
              observes="cmd_MSIsymbolCmd"/>
@@ -188,7 +188,7 @@
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03D1;" tooltiptext="&symbolvartheta.tooltip;" msivalue="&#x03D1;"
              observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton label="&#x03D5;" tooltiptext="&symbolvarphi.tooltip;" msivalue="&#x03D5;"
+        <toolbarbutton label="&#x03D5;" tooltiptext="&symbolphi.tooltip;" msivalue="&#x03D5;"
             observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03D6;" tooltiptext="&symbolvarpi.tooltip;"    msivalue="&#x03D6;"
              observes="cmd_MSIsymbolCmd"/>
@@ -198,7 +198,7 @@
              observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03F1;" tooltiptext="&symbolvarrho.tooltip;"   msivalue="&#x03F1;"
              observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton label="&#x03F5;" tooltiptext="&symbolvarepsilon.tooltip;" msivalue="&#x03F5;"
+        <toolbarbutton label="&#x03F5;" tooltiptext="&symbolepsilon.tooltip;" msivalue="&#x03F5;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x03F6;" tooltiptext="&symbolbackepsilon.tooltip;" msivalue="&#x03F6;"
         observes="cmd_MSIsymbolCmd"/>
@@ -300,7 +300,7 @@
         <toolbarbutton label="&#x2A5E;" tooltiptext="&symboldoublebarwedge.tooltip;"         msivalue="&#x2A5E;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x2A3F;" tooltiptext="&symbolamalg.tooltip;"         msivalue="&#x2A3F;"
-           observes="cmd_MSIsymbolCmd"/> -->
+           observes="cmd_MSIsymbolCmd"/> 
 <!-- Latex 2.09 <toolbarbutton label="&#x22B4;" tooltiptext="&symbolunlhd.tooltip;"         msivalue="&#x22B4;"
            observes="cmd_MSIsymbolCmd"/> -->
 <!-- Latex 2.09 <toolbarbutton label="&#x22B5;" tooltiptext="&symbolunrhd.tooltip;"         msivalue="&#x22B5;"
@@ -747,8 +747,9 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x21C1;" tooltiptext="&symbolrightharpoondown.tooltip;"       msivalue="&#x21C1;"
            observes="cmd_MSIsymbolCmd"/>
-<!-- Latex 2.09 <toolbarbutton label="&#x2933;" tooltiptext="&symbolleadsto.tooltip;"       msivalue="&#x2933;"
-           observes="cmd_MSIsymbolCmd"/> -->
+<!-- Latex 2.09 symbol: leadsto  -->
+        <toolbarbutton label="&#x2933;" tooltiptext="&symbolleadsto.tooltip;"       msivalue="&#x2933;"
+           observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x21D5;" tooltiptext="&symbolUpdownarrow.tooltip;"       msivalue="&#x21D5;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton label="&#x2197;" tooltiptext="&symbolnearrow.tooltip;"       msivalue="&#x2197;"
@@ -886,6 +887,8 @@
         <toolbarbutton label="&#x00F0;" tooltiptext="&symboldh.tooltip;"       msivalue="&#x00F0;"
            observes="cmd_MSIsymbolCmd"/>
 
+        <toolbarbutton label="&#x019B;" tooltiptext="&symbollambdabar.tooltip;"       msivalue="&#x019B;"
+           observes="cmd_MSIsymbolCmd"/>
 
         <toolbarbutton label="&#x2220;" tooltiptext="&symbolangle.tooltip;"       msivalue="&#x2220;"
            observes="cmd_MSIsymbolCmd"/>

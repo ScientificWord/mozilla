@@ -6,7 +6,7 @@
   <m nm="beta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&beta;<![CDATA[");]]></data></m>
   <m nm="gamma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&gamma;<![CDATA[");]]></data></m>
   <m nm="delta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&delta;<![CDATA[");]]></data></m>
-  <m nm="epsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&epsi;<![CDATA[");]]></data></m>
+  <m nm="varepsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&epsiv;<![CDATA[");]]></data></m>
   <m nm="zeta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&zeta;<![CDATA[");]]></data></m>
   <m nm="eta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&eta;<![CDATA[");]]></data></m>
   <m nm="theta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&theta;<![CDATA[");]]></data></m>
@@ -18,7 +18,7 @@
   <m nm="xi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&xi;<![CDATA[");]]></data></m>
   <m nm="omicron" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&omicron;<![CDATA[");]]></data></m>
   <m nm="upsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&upsi;<![CDATA[");]]></data></m>
-  <m nm="varepsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&varepsilon;<![CDATA[");]]></data></m>
+  <m nm="epsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&epsi;<![CDATA[");]]></data></m>
   <m nm="chi" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&chi;<![CDATA[");]]></data></m>
   <m nm="omega" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&omega;<![CDATA[");]]></data></m>
   <m nm="varkappa" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&kappav;<![CDATA[");]]></data></m>
@@ -31,6 +31,7 @@
   <m nm="rho" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&rho;<![CDATA[");]]></data></m>
   <m nm="varsigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&sigmav;<![CDATA[");]]></data></m>
   <m nm="sigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&sigma;<![CDATA[");]]></data></m>
+  <m nm="stigma" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&stigma;<![CDATA[");]]></data></m>
   <m nm="vartheta" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&thetav;<![CDATA[");]]></data></m>
   <m nm="tau" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&tau;<![CDATA[");]]></data></m>
   <m nm="backepsilon" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&backepsilon;<![CDATA[");]]></data></m>
@@ -154,7 +155,7 @@
   <m nm="leq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&le;<![CDATA[");]]></data></m>
   <m nm="sqsupseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sqsupe;<![CDATA[");]]></data></m>
   <m nm="between"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&twixt;<![CDATA[");]]></data></m>
-  <m nm="leqq"  tp="sc"><data><![CDATA[insertMathSymbol(]]>>&leqq;<![CDATA[");]]></data></m>
+  <m nm="leqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&leqq;<![CDATA[");]]></data></m>
   <m nm="Subset"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Sub;<![CDATA[");]]></data></m>
   <m nm="smallblacktriangleleft"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&blacktriangleleft;<![CDATA[");]]></data></m>
   <m nm="leqslant"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&leqslant;<![CDATA[");]]></data></m>
@@ -165,7 +166,7 @@
   <m nm="bowtie"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bowtie;<![CDATA[");]]></data></m>
   <m nm="lessdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lessdot;<![CDATA[");]]></data></m>
   <m nm="subseteqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&subE;<![CDATA[");]]></data></m>
-  <m nm="bumpeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bumpe;<![CDATA[");]]></data></m>
+  <m nm="bumpeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bumpe;<![CDATA[");]]></data></m>	  
   <m nm="lesseqgtr"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&leg;<![CDATA[");]]></data></m>
   <m nm="succ"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&sc;<![CDATA[");]]></data></m>
   <m nm="Bumpeq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&bump;<![CDATA[");]]></data></m>
@@ -224,7 +225,7 @@
   <m nm="risingdotseq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&erDot;<![CDATA[");]]></data></m>
   <m nm="vartriangleright"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vrtri;<![CDATA[");]]></data></m>
   <m nm="gg"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gg;<![CDATA[");]]></data></m>
- <m nm="shortmid"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&shortmid;<![CDATA[");]]></data></m> 
+<!--  <m nm="shortmid"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&shortmid;<![CDATA[");]]></data></m> -->
   <m nm="vDash"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&vDash;<![CDATA[");]]></data></m>
   <m nm="ggg"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Gg;<![CDATA[");]]></data></m>
 <!-- AMS  <m nm="shortparallel"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&shortparallel;<![CDATA[");]]></data></m> -->
@@ -248,7 +249,7 @@
   <m nm="nprec"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&npr;<![CDATA[");]]></data></m>
   <m nm="nsucc"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nsc;<![CDATA[");]]></data></m>
   <m nm="lneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lnE;<![CDATA[");]]></data></m>
-  <m nm="gneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>>&gnE;<![CDATA[");]]></data></m>
+  <m nm="gneqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&gnE;<![CDATA[");]]></data></m>
   <m nm="nleqslant"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nles;<![CDATA[");]]></data></m> 
   <m nm="ngeqslant"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&nges;<![CDATA[");]]></data></m> 
   <m nm="lneq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&lne;<![CDATA[");]]></data></m>
