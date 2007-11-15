@@ -1,3 +1,4 @@
+/* Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. */
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
 *[role="page"] {border-style:solid;
@@ -64,5 +65,6 @@
 #sectiontextarea {
   min-height:20px; 
   min-width:200px;
-  height: !important;
+  height: inherit !important;
+  width: inherit !important;
 }
