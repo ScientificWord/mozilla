@@ -14,4 +14,7 @@
 <!ENTITY other.label	"Other: ">
 <!ENTITY other.accessKey	"O">
 <!ENTITY ruleColor.label	"Rule color">
+<!ENTITY spaceHeight.label	"Vertical space height">
+<!ENTITY spaceHeight.accessKey	"H">
 <!ENTITY ruleColor.accessKey	"C">
+<!ENTITY vspaceWindowTitle.label	"Add vertical space">

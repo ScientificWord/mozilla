@@ -29,8 +29,31 @@
 *[role="sectionlayer"] {
   border-style:solid;
   border-color: #CCCCCC;
-  border-width: 1px;
+  border-width: 1px 0px;
+  padding: 0;
   background-color:white;
+}
+
+
+*[role="sectionmargin"][msicollapsed="false"] {
+  border-width: 1px;
+}
+
+#marginsection[msicollapsed="true"] {
+  visibility: hidden;
+}
+
+textbox[msicollapsed="true"] {
+  visibility: hidden;
+}
+
+label[msicollapsed="true"] {
+  visibility: hidden;
+}
+
+*[role="sectionmargin"][msicollapsed="true"] {
+  border-width: 0px 1px 0px 0px;
+  width: 1px;
 }
 
 *[role="spacer"] {
@@ -64,6 +87,7 @@
 
 #sectiontextarea {
   min-height:20px; 
-  min-width:200px;
-  height: ;
+  border-width: 0;
+  height: inherit;
+  width: inherit;
 }
