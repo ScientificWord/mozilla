@@ -434,6 +434,7 @@
     <command id="cmd_insertVerticalSpaces"     oncommand="msiGoDoCommand('cmd_insertVerticalSpaces')"/>
     <command id="cmd_msiInsertRules"   oncommand="msiGoDoCommand('cmd_msiInsertRules')"/>
     <command id="cmd_msiInsertBreaks"             oncommand="msiGoDoCommand('cmd_msiInsertBreaks')"/>
+    <command id="cmd_note"             oncommand="msiGoDoCommand('cmd_note')"/>
 
     <command id="cmd_NormalMode"       oncommand="msiGoDoCommand('cmd_NormalMode')"/>
     <command id="cmd_AllTagsMode"      oncommand="msiGoDoCommand('cmd_AllTagsMode')"/>

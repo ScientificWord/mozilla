@@ -94,6 +94,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_documentInfo",       msiDocumentInfoCommand);
   commandTable.registerCommand("cmd_macrofragment", msiMacroFragmentCommand);
   commandTable.registerCommand("cmd_viewInvisibles", msiViewInvisiblesCommand);
+  commandTable.registerCommand("cmd_note", msiNoteCommand);
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -5394,6 +5395,28 @@ var msiViewInvisiblesCommand =
 };
 
 //-----------------------------------------------------------------------------------
+
+var msiNoteCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    //temporary
+    // need to get current note if it exists -- if none, initialize as follows 
+  }
+};
+
+//-----------------------------------------------------------------------------------
 var msiObjectPropertiesCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -6626,7 +6649,35 @@ var msiConvertToTable =
   }
 };
 
-
+function msiNote(currNode, editorElement)
+{
+  var data;
+  data.editorElement = editorElement;
+  var currNodeTag = "";
+  if (currNode) {
+    currNodeTag = currNode.localName;
+    if (currNodeTag != "footnote" && currNodeTag != "marginnote" &&
+        currNodeTag != "marginhint" && currNodeTag != "solutionnote" &&
+        currNodeTag != "problemhint" && currNodeTag != "note" ) &&
+        currNodeTag != "answernote" ) exit;
+    data.notetype = currNodeTag;
+    var ser = new XMLSerializer();
+    var xmlcode = ser.serializeToString(currNode);
+    data.content = xmlcode;
+    // grab icon type also, or will that continue to be hard-wired into the tag name
+  }
+  else
+  {
+    //defaults
+    data.notetype = "";
+    data.content = "";  
+  }
+  window.openDialog("chrome://prince/content/Note.xul","_blank", "chrome,close,titlebar,resizable=yes", data);
+  // data comes back altered
+  dump(data.content + "\n");
+  dump(data.notetype + "\n");
+}
+    
 function msiStopAnimation()
 {
   var cmdParams = newCommandParams();

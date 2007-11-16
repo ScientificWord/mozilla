@@ -80,3 +80,4 @@ en-US.jar:
   locale/autoSubstituteDialog.dtd         (dialogs/autoSubstituteDialog.dtd)
   locale/sectiontext.dtd         		  (dialogs/sectiontext.dtd)
   locale/addruleforsection.dtd         	  (dialogs/addruleforsection.dtd)
+  locale/Note.dtd         		          (dialogs/Note.dtd)
