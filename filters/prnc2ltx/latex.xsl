@@ -31,7 +31,6 @@
 
 
 <xsl:template match="html:latex">\LaTeX</xsl:template>
-<!-- xsl:template match="mml:math">[Math Here]</xsl:template -->
 
 <xsl:template match="html:hspace">
   <xsl:choose>
@@ -61,6 +60,10 @@
 \end{document}
 </xsl:template>
 
+<xsl:template match="html:br[@hard='1']">\\
+</xsl:template>
+
+<xsl:template match="html:br[@temp]"></xsl:template>
 
 <xsl:template match="html:title">
 \title{<xsl:apply-templates/>}
@@ -159,7 +162,8 @@
 
 
 <xsl:template match="html:footnote">\footnote{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:marginpar">\marginpar{<xsl:apply-templates/>}</xsl:template>
+
+<xsl:template match="html:marginnote">\marginpar{<xsl:apply-templates/>}</xsl:template>
 
 
 <xsl:template match="html:quote">
