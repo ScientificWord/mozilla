@@ -1,0 +1,16 @@
+
+<!ENTITY  windowTitle.label         "Note">
+<!ENTITY  noteType.label            "Type of Note">
+
+
+<!ENTITY  footnote.label			"Footnote">
+<!ENTITY  marginNote.label			"Margin note">
+<!ENTITY  marginHint.selected		"Margin hint">
+<!ENTITY  solutionNote.label		"Solution note">
+<!ENTITY  problemHint.label			"Problem solving hint">
+<!ENTITY  note.label				"Note">
+<!ENTITY  answerNote.label			"Answer note">
+					  
+<!ENTITY  OK.label					"OK">
+<!ENTITY  Cancel.label				"Cancel">
+<!ENTITY  Options.label				"Options">
