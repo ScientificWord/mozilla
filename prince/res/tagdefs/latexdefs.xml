@@ -63,6 +63,24 @@
 				<tag nm="sw:tiny"><description>Tiny</description></tag>
 				<tag nm="sw:tt"><description>Typewriter font</description></tag>
 				<tag nm="sw:upper"><description>Upper case</description></tag>
+				<tag nm="sw:footnote">
+          <level>*</level>
+          <description>Footnote</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <para><br/></para>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="sw:marginnote">
+          <level>*</level>
+          <description>Margin note</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <para><br/></para>
+              ]]>
+          </initialcontents>
+        </tag>
 			</tags>
 		</tagclass>
 		<tagclass>
@@ -85,7 +103,7 @@
           <nexttag>sw:para</nexttag>
           <description>Author address</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]></initialcontentsforempty>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]></initialcontentsforempty>
         </tag>
 				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
@@ -96,14 +114,14 @@
 				<tag nm="sw:rtlpara">
 					<description>Right to left body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="sw:author">
           <nexttag>sw:para</nexttag>
           <description>Author name</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]></initialcontentsforempty>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]></initialcontentsforempty>
         </tag>
 				<tag nm="html:p">
 					<description>HTML paragraph</description>
@@ -121,13 +139,13 @@
 					<nexttag>sw:para</nexttag>
 					<description>Title of section</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br/>]]>
+          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br temp="1"/>]]>
           </initialcontents>
 				</tag>
 				<tag nm="sw:quote">
 					<nexttag>sw:quote</nexttag>
 					<description>Quote</description>
-          <initialcontentsforempty> <![CDATA[<cursor/><br/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
           </initialcontentsforempty>
 			  </tag>
 				<tag nm="sw:quotation">
@@ -140,19 +158,19 @@
 				<tag nm="sw:title">
 					<nexttag>sw:para</nexttag>
 					<description>Title</description>
-          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br/>]]>
+          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br temp="1"/>]]>
           </initialcontents>
 				</tag>
 				<tag nm="sw:line">
 					<nexttag>sw:line</nexttag>
 					<description>Line</description>
-          <initialcontents> <![CDATA[<cursor/><br/>]]>
+          <initialcontents> <![CDATA[<cursor/><br temp="1"/>]]>
           </initialcontents>
 				</tag>
 				<tag nm="sw:dialogbase" hidden="1">
 					<nexttag>sw:para</nexttag>
 					<description>Hidden dialog base</description>
-          <initialcontents> <![CDATA[<cursor/><br/>]]>
+          <initialcontents> <![CDATA[<cursor/><br temp="1"/>]]>
           </initialcontents>
 				</tag>
 			</tags>
@@ -221,7 +239,7 @@
           <description>Chapter</description>
           <titletag>sectiontitle</titletag>
           <discardemptyblock>false</discardemptyblock>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle>]]>
           </initialcontents>
           <prefsub>section</prefsub>
         </tag>
@@ -230,7 +248,7 @@
           <description>Section</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>chapter</nextafteremptyblock>
           <prefsub>subsection</prefsub>
@@ -240,7 +258,7 @@
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>section</nextafteremptyblock>
           <prefsub>subsubsection</prefsub>
@@ -250,7 +268,7 @@
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>subsection</nextafteremptyblock>
           <prefsub>paragraph</prefsub>
@@ -260,7 +278,7 @@
           <description>Subsubsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle> ]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle> ]]>
           </initialcontents>
           <nextafteremptyblock>subsubsection</nextafteremptyblock>
           <prefsub>subparagraph</prefsub>
@@ -270,7 +288,7 @@
           <description>Section (dynamic level)</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>paragraph</nextafteremptyblock>
         </tag>
@@ -296,7 +314,7 @@
           <nexttag>para</nexttag>
           <description>Abstract</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[ <para><cursor/><br/></para>]]>
+          <initialcontents> <![CDATA[ <para><cursor/><br temp="1"/></para>]]>
           </initialcontents>
           <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
@@ -305,7 +323,7 @@
           <description>Dedication</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br/></para>
+              <para><cursor/><br temp="1"/></para>
               ]]>
           </initialcontents>
         </tag>

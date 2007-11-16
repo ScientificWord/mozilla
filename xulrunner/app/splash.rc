@@ -48,9 +48,9 @@ IDI_APPLICATION ICON XULRUNNER_ICO
 STRINGTABLE DISCARDABLE
 BEGIN
 #ifdef DEBUG
-    IDS_STARTMENU_APPNAME,              "Firefox Debug"
+    IDS_STARTMENU_APPNAME,              "Scientific WorkPlace Debug"
 #else
-    IDS_STARTMENU_APPNAME,              "Firefox"
+    IDS_STARTMENU_APPNAME,              "Scientific WorkPlace"
 #endif
 END
 
