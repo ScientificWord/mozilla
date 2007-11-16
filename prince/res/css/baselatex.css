@@ -149,3 +149,19 @@ lower {
 otfont {
   display: inline;
 }
+
+footnote {
+  border-width: 2px 0;
+  border-color: blue;
+  border-style: solid;
+  display: block;
+  color: blue;
+}
+
+marginnote {
+  border-width: 2px 0;
+  border-color: red;
+  border-style: solid;
+  display: block;
+  color: red;
+}
