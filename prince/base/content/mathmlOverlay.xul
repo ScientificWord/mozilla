@@ -106,7 +106,7 @@
       <menuitem id="insertmenuMarker" label="&insertmenuMarker.label;"
         accesskey="&insertmenuMarker.accesskey;" observes="cmd_unimp" />
       <menuitem id="insertmenuNote" label="&insertmenuNote.label;"
-        accesskey="&insertmenuNote.accesskey;" observes="cmd_unimp" />
+        accesskey="&insertmenuNote.accesskey;" observes="cmd_note" />
       <menuitem id="insertmenuTypesetObject" label="&insertmenuTSO.label;"
         accesskey="&insertmenuTSO.accesskey;" observes="cmd_unimp" />
       <menuitem id="insertmenuHyperlink" label="&insertmenuHyperlink.label;"
