@@ -2031,7 +2031,9 @@ function msiEditorSetFontSize(size, editorElement)
 //    }
   msiEditorSetTextProperty(editorElement, "fontsize", "size", size);
 //  }
-  editorElement.contentWindow.focus();
+  try {if (editorElement.contentWindow) editorElement.contentWindow.focus();}
+  catch (e)
+  {}
 }
 
 function msiInitFontFaceMenu(menuPopup, editorElement)
