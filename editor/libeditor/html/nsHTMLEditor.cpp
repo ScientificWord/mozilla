@@ -1354,7 +1354,7 @@ nsHTMLEditor::UpdateBaseURL()
 NS_IMETHODIMP nsHTMLEditor::HandleKeyPress(nsIDOMKeyEvent* aKeyEvent)
 {
   PRUint32 keyCode, character;
-  PRBool   isShift, ctrlKey, altKey, metaKey, vk;
+  PRBool   isShift, ctrlKey, altKey, metaKey;
   nsresult res;
 
   if (!aKeyEvent) return NS_ERROR_NULL_POINTER;
@@ -1751,6 +1751,8 @@ NS_IMETHODIMP nsHTMLEditor::InsertBR(nsCOMPtr<nsIDOMNode> *outBRNode)
   
   res = CreateBR(selNode, selOffset, outBRNode);
   if (NS_FAILED(res)) return res;
+  nsCOMPtr<nsIDOMElement> brElement(do_QueryInterface(*outBRNode));
+  if (brElement) brElement->SetAttribute(NS_LITERAL_STRING("hard"),NS_LITERAL_STRING("1"));
     
   // position selection after br
   res = GetNodeLocation(*outBRNode, address_of(selNode), &selOffset);
