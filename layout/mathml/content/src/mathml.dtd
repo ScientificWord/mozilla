@@ -327,7 +327,10 @@
 <!ENTITY zcaron '&#x017E;'>
 <!ENTITY fnof '&#x0192;'>
 <!ENTITY gacute '&#x01F5;'>
-<!ENTITY epsiv '&#x025B;'>  <!ENTITY varepsilon '&#x025B;'>
+
+<!-- <!ENTITY epsiv '&#x025B;'>  <!ENTITY varepsilon '&#x025B;'> -->
+<!ENTITY epsiv '&#x03B5;'>  <!ENTITY varepsilon '&#x03B5;'>
+
 <!ENTITY circ '&#x02C6;'>
 <!ENTITY Hacek '&#x02C7;'>  <!ENTITY caron '&#x02C7;'>
 <!ENTITY Breve '&#x02D8;'>  <!ENTITY breve '&#x02D8;'>
@@ -367,7 +370,10 @@
 <!ENTITY beta '&#x03B2;'>
 <!ENTITY gamma '&#x03B3;'>
 <!ENTITY delta '&#x03B4;'>
-<!ENTITY epsi '&#x03B5;'>  <!ENTITY epsilon '&#x03B5;'>  <!ENTITY straightepsilon '&#x03B5;'>
+
+<!-- <!ENTITY epsi '&#x03B5;'>  <!ENTITY epsilon '&#x03B5;'>  <!ENTITY straightepsilon '&#x03B5;'> -->
+<!ENTITY epsi '&#x03F5;'>  <!ENTITY epsilon '&#x03F5;'>  <!ENTITY straightepsilon '&#x03F5;'> 
+
 <!ENTITY zeta '&#x03B6;'>
 <!ENTITY eta '&#x03B7;'>
 <!ENTITY theta '&#x03B8;'>
@@ -384,13 +390,19 @@
 <!ENTITY sigma '&#x03C3;'>
 <!ENTITY tau '&#x03C4;'>
 <!ENTITY upsi '&#x03C5;'>  <!ENTITY upsilon '&#x03C5;'>
-<!ENTITY phi '&#x03C6;'>  <!ENTITY straightphi '&#x03C6;'>
+
+<!-- <!ENTITY phi '&#x03C6;'>  <!ENTITY straightphi '&#x03C6;'> -->
+<!ENTITY phi '&#x03D5;'>  <!ENTITY straightphi '&#x03D5;'>
+ 
 <!ENTITY chi '&#x03C7;'>
 <!ENTITY psi '&#x03C8;'>
 <!ENTITY omega '&#x03C9;'>
 <!ENTITY thetasym '&#x03D1;'>  <!ENTITY thetav '&#x03D1;'>  <!ENTITY vartheta '&#x03D1;'>
 <!ENTITY Upsi '&#x03D2;'>  <!ENTITY Upsilon '&#x03D2;'>  <!ENTITY upsih '&#x03D2;'>
-<!ENTITY phiv '&#x03D5;'>  <!ENTITY varphi '&#x03D5;'>
+
+<!-- <!ENTITY phiv '&#x03D5;'>  <!ENTITY varphi '&#x03D5;'> -->
+<!ENTITY phiv '&#x03C6;'>  <!ENTITY varphi '&#x03C6;'>	  
+
 <!ENTITY piv '&#x03D6;'>  <!ENTITY varpi '&#x03D6;'>
 <!ENTITY Gammad '&#x03DC;'>  <!ENTITY digamma '&#x03DC;'>  <!ENTITY gammad '&#x03DC;'>
 <!ENTITY kappav '&#x03F0;'>  <!ENTITY varkappa '&#x03F0;'>
@@ -1013,7 +1025,10 @@
 <!ENTITY Precedes '&#x227A;'>  <!ENTITY pr '&#x227A;'>  <!ENTITY prec '&#x227A;'>
 <!ENTITY Succeeds '&#x227B;'>  <!ENTITY sc '&#x227B;'>  <!ENTITY succ '&#x227B;'>
 <!ENTITY PrecedesSlantEqual '&#x227C;'>  <!ENTITY prcue '&#x227C;'>  <!ENTITY preccurlyeq '&#x227C;'>
-<!ENTITY SucceedsEqual '&#x227D;'>  <!ENTITY SucceedsSlantEqual '&#x227D;'>  <!ENTITY sccue '&#x227D;'>  <!ENTITY sce '&#x227D;'>  <!ENTITY succcurlyeq '&#x227D;'>  <!ENTITY succeq '&#x227D;'>
+
+<!-- <!ENTITY SucceedsEqual '&#x227D;'>  <!ENTITY SucceedsSlantEqual '&#x227D;'>  <!ENTITY sccue '&#x227D;'>  <!ENTITY sce '&#x227D;'>  <!ENTITY succcurlyeq '&#x227D;'>  <!ENTITY succeq '&#x227D;'> -->
+<!ENTITY SucceedsEqual '&#x227D;'>  <!ENTITY SucceedsSlantEqual '&#x227D;'>  <!ENTITY sccue '&#x227D;'>  <!ENTITY succcurlyeq '&#x227D;'>  
+<!ENTITY sce '&#x2AB0;'> <!ENTITY succeq '&#x2AB0;'>
 
 <!-- <!ENTITY PrecedesTilde '&#x227E;'>  <!ENTITY prap '&#x227E;'>  <!ENTITY precapprox '&#x227E;'>  <!ENTITY precsim '&#x227E;'>  <!ENTITY prsim '&#x227E;'>  <!ENTITY scE '&#x227E;'> -->
 <!ENTITY PrecedesTilde '&#x227E;'>  <!ENTITY precsim '&#x227E;'>  <!ENTITY prsim '&#x227E;'>  <!ENTITY scE '&#x227E;'>
@@ -1725,6 +1740,7 @@
 <!ENTITY Finv '&#x2132;'>
 <!ENTITY lambdabar '&#x019B;'>
 <!ENTITY ampersand '&#x0026;'>
+<!ENTITY stigma '&#x03DB;'> 
 
 
 
