@@ -6658,7 +6658,7 @@ function msiNote(currNode, editorElement)
     currNodeTag = currNode.localName;
     if (currNodeTag != "footnote" && currNodeTag != "marginnote" &&
         currNodeTag != "marginhint" && currNodeTag != "solutionnote" &&
-        currNodeTag != "problemhint" && currNodeTag != "note" ) &&
+        currNodeTag != "problemhint" && currNodeTag != "note"  &&
         currNodeTag != "answernote" ) exit;
     data.notetype = currNodeTag;
     var ser = new XMLSerializer();
