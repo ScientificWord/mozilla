@@ -10,7 +10,7 @@
 function msiSetupHTMLEditorCommands(editorElement)
 {
   var commandTable = msiGetComposerCommandTable(editorElement);
-  if (!commandTable)
+  if (!commandTable)                   
   {
     alert("No command table for editor element in msiSetupHTMLEditorCommands!");
     return;
@@ -3703,10 +3703,10 @@ var msiLinkCommand =
   doCommand: function(aCommand, dummy)
   {
     // If selected element is an image, launch that dialog instead 
-    // since last tab panel handles link around an image
+    // since last tab panel handles 
     var editorElement = msiGetActiveEditorElement();
     var element = msiGetObjectForProperties(editorElement);
-    if (element && element.nodeName.toLowerCase() == "img")
+    if (element && element.nodeName == "img")
       window.openDialog("chrome://prince/content/EdImageProps.xul","_blank", "chrome,close,titlebar,modal", null, true);
     else
       window.openDialog("chrome://editor/content/EdLinkProps.xul","_blank", "chrome,close,titlebar,modal");
@@ -5413,6 +5413,7 @@ var msiNoteCommand =
     var editorElement = msiGetActiveEditorElement();
     //temporary
     // need to get current note if it exists -- if none, initialize as follows 
+    msiNote(null, editorElement);
   }
 };
 
@@ -6651,35 +6652,33 @@ var msiConvertToTable =
 
 function msiNote(currNode, editorElement)
 {
-  var data;
+  var data= new Object();
   data.editorElement = editorElement;
   var currNodeTag = "";
   if (currNode) {
-    currNodeTag = currNode.localName;
-    if (currNodeTag != "footnote" && currNodeTag != "marginnote" &&
-        currNodeTag != "marginhint" && currNodeTag != "solutionnote" &&
-        currNodeTag != "problemhint" && currNodeTag != "note"  &&
-        currNodeTag != "answernote" ) exit;
-    data.notetype = currNodeTag;
-    var ser = new XMLSerializer();
-    var xmlcode = ser.serializeToString(currNode);
-    data.content = xmlcode;
-    // grab icon type also, or will that continue to be hard-wired into the tag name
+    data.type = currNode.getAttribute("type");
+    // also need icon type, if there is one
   }
   else
   {
     //defaults
-    data.notetype = "";
-    data.content = "";  
+    data.type = "";
   }
-  window.openDialog("chrome://prince/content/Note.xul","_blank", "chrome,close,titlebar,resizable=yes", data);
+  window.openDialog("chrome://prince/content/Note.xul","_blank", "chrome,close,titlebar,resizable=yes,modal", data);
   // data comes back altered
-  dump(data.content + "\n");
-  dump(data.notetype + "\n");
+  dump(data.type + "\n");
+  var editor = msiGetEditor(editorElement);
+  var namespace = new Object();
+  var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
+  var xml = "<notewrapper xmlns='http://www.w3.org/1999/xhtml'" + ((data.type=='footnote')?" type='footnote'":"")+"><note type='"+data.type
+   +"'><"+paraTag+"><br/></"+paraTag+"></note></notewrapper>"; 
+  editor.deleteSelection(0);
+  insertXMLAtCursor(editor,xml,true,false);
 }
-    
+
+
 function msiStopAnimation()
-{
+{                
   var cmdParams = newCommandParams();
   if (!cmdParams) return;
   cmdParams.setLongValue("imageAnimation", 1);
