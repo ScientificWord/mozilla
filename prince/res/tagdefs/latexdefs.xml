@@ -17,6 +17,7 @@
 			<tagclassname>hidden</tagclassname>
 			<contains>texttag</contains>
 			<contains>paratag</contains>
+			<contains>listtag</contains>
 			<contains>structtag</contains>
 			<contains>othertag</contains>
 			<tags>
@@ -30,10 +31,12 @@
       <contains>#text</contains>
       <contains>table</contains>
 			<contains>texttag</contains>
+			<contains>listtag</contains>
 			<contains>othertag</contains>
 			<contains>mml:math</contains>
 			<contains>html:img</contains>
       <contains>line</contains>
+      <contains>a</contains>
 			<tags>
 				<tag nm="sw:(normal)" id="cleartexttag" ><description>Clear text tags</description></tag>
 				<tag nm="sw:bold"><description>Bold</description></tag>
@@ -63,24 +66,6 @@
 				<tag nm="sw:tiny"><description>Tiny</description></tag>
 				<tag nm="sw:tt"><description>Typewriter font</description></tag>
 				<tag nm="sw:upper"><description>Upper case</description></tag>
-				<tag nm="sw:footnote">
-          <level>*</level>
-          <description>Footnote</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <para><br/></para>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="sw:marginnote">
-          <level>*</level>
-          <description>Margin note</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <para><br/></para>
-              ]]>
-          </initialcontents>
-        </tag>
 			</tags>
 		</tagclass>
 		<tagclass>
@@ -98,6 +83,7 @@
 			<contains>sw:defaulttitletag</contains>
 			<contains>html:img</contains>
       <contains>line</contains>
+      <contains>a</contains>
 			<tags>
 				<tag nm="sw:address">
           <nexttag>sw:para</nexttag>
@@ -183,9 +169,10 @@
 			<contains>sw:xref</contains>
 			<contains>html:br</contains>
       <contains>line</contains>
+      <contains>a</contains>
 			<tags>
 				<tag nm="sw:itemizedlistitem">
-          <description>Bulleted list time</description>
+          <description>Bulleted list item</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
               <para><cursor/></para>
@@ -208,7 +195,7 @@
               ]]>
           </initialcontents>
         </tag>
-			</tags>
+	  </tags>
 		</tagclass>
 		<tagclass>
 			<tagclassname>structtag</tagclassname>
@@ -308,13 +295,14 @@
 			<tagclassname>envtag</tagclassname>
 			<contains>paratag</contains>
 			<contains>structtag</contains>
+			<contains>a</contains>
 			<tags>
 				<tag nm="sw:abstract">
           <level>*</level>
           <nexttag>para</nexttag>
           <description>Abstract</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[ <para><cursor/><br temp="1"/></para>]]>
+          <initialcontents> <![CDATA[ <para><cursor/><br/></para>]]>
           </initialcontents>
           <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
@@ -359,10 +347,20 @@
           <description>Bibliography</description>
           <discardemptyblock>true</discardemptyblock>
         </tag>
-				<tag nm="sw:verbatim">
-					<description>Verbatim text</description>
-				</tag>
-			</tags>
+  		<tag nm="sw:verbatim">
+  			<description>Verbatim text</description>
+  		</tag>
+  		<tag nm="sw:note">
+          <level>*</level>
+          <description>Note</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <para><br/></para>
+              ]]>
+          </initialcontents>
+  		  <inclusion>true</inclusion>
+          </tag>
+   		</tags>
 		</tagclass>
 		<tagclass>
 			<tagclassname>othertag</tagclassname>

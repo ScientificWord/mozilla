@@ -110,7 +110,7 @@
       <menuitem id="insertmenuTypesetObject" label="&insertmenuTSO.label;"
         accesskey="&insertmenuTSO.accesskey;" observes="cmd_unimp" />
       <menuitem id="insertmenuHyperlink" label="&insertmenuHyperlink.label;"
-        accesskey="&insertmenuHyperlink.accesskey;" observes="cmd_unimp" />
+        accesskey="&insertmenuHyperlink.accesskey;" observes="cmd_link" />
       <menuitem id="insertmenuHTMLField" label="&insertmenuHTMLField.label;"
         accesskey="&insertmenuHTMLField.accesskey;" observes="cmd_unimp" />
       <!--menuitem label="&MSIColorsCmd.label;" accesskey="&MSIColorsCmd.accesskey;" command="cmd_MSIColorsCmd"/ -->
