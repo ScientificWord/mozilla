@@ -416,6 +416,8 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           }
           pdata->discardEmptyBlock = 
             GetStringProperty(NS_LITERAL_STRING("discardemptyblock"), tagNameElement)==NS_LITERAL_STRING("true");
+          pdata->inclusion = 
+            GetStringProperty(NS_LITERAL_STRING("inclusion"), tagNameElement)==NS_LITERAL_STRING("true");
           // save the key, data pair
           TagKey nextTagKey(GetStringProperty(NS_LITERAL_STRING("nexttag"), tagNameElement));
           pdata->nextTag = nextTagKey.key;
@@ -898,6 +900,8 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
       _retval = data->prefsub;
     else if (propertyName.EqualsLiteral("discardemptyblock"))
       _retval = data->discardEmptyBlock?NS_LITERAL_STRING("true"):NS_LITERAL_STRING("false");
+    else if (propertyName.EqualsLiteral("inclusion"))
+      _retval = data->inclusion?NS_LITERAL_STRING("true"):NS_LITERAL_STRING("false");
     else if (propertyName.EqualsLiteral("nexttag"))
       _retval = data->nextTag;
     else _retval.Assign(emptyString);
