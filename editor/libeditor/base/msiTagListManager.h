@@ -28,9 +28,10 @@ public:
   nsString level;
   nsString prefsub;
   PRBool   discardEmptyBlock;
+  PRBool   inclusion;
   PRBool   hidden;
   TagData()
-    : discardEmptyBlock(PR_FALSE)
+    : discardEmptyBlock(PR_FALSE), inclusion(PR_FALSE)
     {}
 };
 
