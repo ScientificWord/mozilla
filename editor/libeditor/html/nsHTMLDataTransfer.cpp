@@ -979,7 +979,9 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
 	    if (fCanContain)
 	    {
 		    nsEditor::DeleteNode(splitNode);
-		    res = InsertReturnAt(newsplitpointNode, newsplitpointOffset, fFancy);
+        res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("inclusion"), s2);
+	      if (!s2.EqualsLiteral("true"))
+          res = InsertReturnAt(newsplitpointNode, newsplitpointOffset, fFancy);  
 	    }
     }
   } 
