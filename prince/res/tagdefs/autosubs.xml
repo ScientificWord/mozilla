@@ -5,6 +5,7 @@
   <sub ctx="text" tp="subst"><pattern>&#x2013;-</pattern><data>&#x2014;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>``</pattern><data>&#x201C;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>''</pattern><data>&#x201D;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>^A</pattern><data>Â</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>BBM</pattern><data>Barry MacKichan</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>&#x2013;&gt;#</pattern><data>&#x2192;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>&lt;&#x2013;#</pattern><data>&#x2190;</data><context/><info>0,0</info></sub>
