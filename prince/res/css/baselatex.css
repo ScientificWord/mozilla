@@ -150,18 +150,38 @@ otfont {
   display: inline;
 }
 
-footnote {
+/*footnote {
+  display: none;
+} */
+
+
+note[type="footnote"] {
+  margin: 1px 0;
   border-width: 2px 0;
   border-color: blue;
   border-style: solid;
-  display: block;
   color: blue;
+  display: block; 
+  width: inherit;
+  float: none;
+}	 
+
+notewrapper[type="footnote"]:before { content: counter(footnote);
+  counter-increment: footnote;
+  vertical-align: super;
+} 
+
+notewrapper {
+  display: inline;
 }
 
-marginnote {
-  border-width: 2px 0;
+note {
+  margin: 0px 20px;
+  border-width: 2px;
   border-color: red;
   border-style: solid;
   display: block;
   color: red;
+  float: right;
+  width: 3in
 }
