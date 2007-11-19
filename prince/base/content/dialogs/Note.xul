@@ -3,41 +3,23 @@
 
 
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?> 
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 
-<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
-<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
-<!-- If an editor control is to support context menus, also need: -->
-<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
-<!--?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"? -->
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/note.dtd" >
 
-<!DOCTYPE dialog [
-<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
-%editorDTD;
-<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/note.dtd" >
-%dialogDTD;
-<!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
-%menuOverlayDTD;
-]>
-
-<dialog id="SectionTextDlg"
+<dialog id="NoteDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   ondialogaccept="return onOK();"
   ondialogcancel="return onCancel();"
-  onunload="ShutdownAllEditors();"
-  onload="Startup();"
+  onload="startUp();"
+  persist="screenX screenY width height"
 >
 
- <!-- script src="chrome://global/content/dialogOverlay.js" / -->
-  <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
@@ -45,67 +27,22 @@
   <!-- Scripts specific to this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/note.js"/>
 
-  <!-- Following scripts are needed by any MSI dialog containing an editor -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
-  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
-  <!-- Following script needed if the editor wants to support a toolbox? -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
-
-  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
-
-  <popupset id="msiEditorContentContextSet"/>
-
-  <commandset id="tasksCommands">
-    <commandset id="globalEditMenuItems"/>
-    <commandset id="selectEditMenuItems"/>
-    <commandset id="undoEditMenuItems"/>
-    <commandset id="clipboardEditMenuItems"/>
-    <commandset id="composerMenuItems"/>
-    <commandset id="composerEditMenuItems"/>
-    <commandset id="composerStyleMenuItems"/>
-    <commandset id="composerTableMenuItems"/>
-    <commandset id="composerListMenuItems"/>
-    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
-    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
-  </commandset>
-  <commandset id="MSImathMenuCommands"/>
-  
-  <keyset id="editorKeys">
-    <keyset id="tasksKeys"/>
-    <keyset id="MSIKeySet"/>
-    <key id="MSIevalKey" key="amp_MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
-  </keyset>
-
-	<hbox>
-    <vbox>
-	    <groupbox>
-	      <editor editortype="html" type="content" width="400" height="300" context="msiEditorContentContext" id="note-frame"/>
-	    </groupbox>
-	    <spacer flex="1"/>
-	  </vbox>
+  <hbox>
     <vbox align="center">
-      <!--button label= "&OK.label;"/>
-      <button label="&Cancel.label;"/ -->
-      <button label="&Options.label;"/>
-       <label value="&noteType.label;"/>
-       <menulist id="note.names" >
-         <menupopup>
-           <menuitem id="footnote" label="Footnote" value="footnote"/>
-           <menuitem id="marginNote" label="Margin note" value="marginnote"/>
-           <menuitem id="marginHint" selected="Margin hint" label="Section" value="marginhint"/>
-           <menuitem id="solutionNote" label="Solution note" value="solutionnote"/>
-           <menuitem id="problemHint" label="Problem solving hint" value="problemhint"/>
-           <menuitem id="note" label="Note" value="note"/>
-           <menuitem id="answerNote" label="Answer note" value="answernote"/>
-         </menupopup>
-       </menulist>
+     nm<label value="&noteType.label;"/>
+     <menulist id="note.names" >
+       <menupopup>
+         <menuitem id="footnote" label="Footnote" value="footnote"/>
+         <menuitem id="marginNote" label="Margin note" value="marginnote"/>
+         <menuitem id="marginHint" selected="Margin hint" label="Section" value="marginhint"/>
+         <menuitem id="solutionNote" label="Solution note" value="solutionnote"/>
+         <menuitem id="problemHint" label="Problem solving hint" value="problemhint"/>
+         <menuitem id="note" label="Note" value="note"/>
+         <menuitem id="answerNote" label="Answer note" value="answernote"/>
+       </menupopup>
+     </menulist>
+     <separator/>
+     <button label="&Options.label;"/>
     </vbox>
 	</hbox>
 </dialog>

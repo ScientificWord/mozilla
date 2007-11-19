@@ -206,7 +206,9 @@
 <!ENTITY insertimage.accesskey "i">
 <!ENTITY insertImageMapCmd.label "Image Map...">
 <!ENTITY insertLine.label "Line...">
-<!ENTITY insertline.accesskey "l">
+<!ENTITY insertline.accesskey "L">
+<!ENTITY insertFrame.label "Frame...">
+<!ENTITY insertframe.accesskey "F">
 <!ENTITY insertTableCmd.label "Table...">
 <!ENTITY inserttable.accesskey "t">
 <!ENTITY insertFormMenu.label "Form...">
