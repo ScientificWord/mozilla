@@ -160,10 +160,10 @@
 <xsl:template match="html:ref">\ref{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:pageref">\pageref{<xsl:apply-templates/>}</xsl:template>
 
+<xsl:template match="html:notewrapper"><xsl:apply-templates/></xsl:template>
+<xsl:template match="html:note[@type='footnote']">\footnote{<xsl:apply-templates/>}</xsl:template>
 
-<xsl:template match="html:footnote">\footnote{<xsl:apply-templates/>}</xsl:template>
-
-<xsl:template match="html:marginnote">\marginpar{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:note">\marginpar{<xsl:apply-templates/>}</xsl:template>
 
 
 <xsl:template match="html:quote">
