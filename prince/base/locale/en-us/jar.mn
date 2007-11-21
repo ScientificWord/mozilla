@@ -81,3 +81,4 @@ en-US.jar:
   locale/sectiontext.dtd         		  (dialogs/sectiontext.dtd)
   locale/addruleforsection.dtd         	  (dialogs/addruleforsection.dtd)
   locale/Note.dtd         		          (dialogs/Note.dtd)
+  locale/Frame.dtd         		          (dialogs/Frame.dtd)

@@ -185,3 +185,12 @@ note {
   float: right;
   width: 3in
 }
+
+frame {
+  margin: 10px;
+  border-width: 2px;
+  border-style: solid;
+  color: green;
+  float: left;
+  width: 3in;
+}
