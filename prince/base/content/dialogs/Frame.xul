@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?> 
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/Frame.dtd" >
+
+<dialog id="FrameDlg"
+  title="&windowTitle.label;"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  ondialogaccept="return onOK();"
+  ondialogcancel="return onCancel();"
+  onload="startUp();"
+  persist="screenX screenY width height"
+>
+
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+
+  <!-- Scripts specific to this dialog -->
+  <script type="application/x-javascript" src="chrome://prince/content/Frame.js"/>
+
+  <hbox>
+    <vbox align="center">
+		// unit menu goes here??
+     <label value="&position.label;"/>
+     <menulist id="frame.position" >
+       <menupopup>
+         <menuitem id="left" label="&left;" value="left"/>
+         <menuitem id="inline" label="&inline;" value="inline"/>
+         <menuitem id="display" label="&display;" value="display"/>
+         <menuitem id="right" label="&right;" value="right"/>
+       </menupopup>
+     </menulist>
+     <separator/>
+     <label value="&alignment.label;"/>
+     <menulist id="frame.alignment" >
+       <menupopup>
+         <menuitem id="left" label="&leftAlign;" value="left"/>
+         <menuitem id="center" label="&centerAlign;" value="center"/>
+         <menuitem id="justified" label="&justAlign;" value="just"/>
+         <menuitem id="right" label="&rightAlign;" value="right"/>
+       </menupopup>
+     </menulist>
+     <separator/>
+     <label value="&borderstyle.label;"/>
+     <menulist id="borderstyle" >
+       <menupopup>
+         <menuitem id="none" label="&none;" value="none"/>
+         <menuitem id="solid" label="&solid;" value="solid"/>
+         <menuitem id="dashed" label="&dashed;" value="dashed"/>
+       </menupopup>
+     </menulist>
+    </vbox>
+		<vbox align="center">
+			<label value="&width;"/>
+			<textbox id="width;"/>
+			// height goes here??
+			<label value="&outdent;"/>
+			<textbox id="outdent;"	/>
+			<label value="&marginTopAndBottom;"/>
+			<textbox id="marginTop;"	/>
+			<label value="&marginSide;"/>
+			<textbox id="marginSide;"	/>
+			<label value="&marginSide;"/>
+			<textbox id="marginSide;"	/>
+			<label value="&borderTopAndBottom;"/>
+			<textbox id="borderTop;"/>
+			<label value="&borderSide;"/>
+			<textbox id="borderSide;"	/>
+			<label value="&paddingTopAndBottom;"/>
+			<textbox id="paddingTop;"/>
+		</vbox>
+	</hbox>
+</dialog>

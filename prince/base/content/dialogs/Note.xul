@@ -34,7 +34,7 @@
        <menupopup>
          <menuitem id="footnote" label="Footnote" value="footnote"/>
          <menuitem id="marginNote" label="Margin note" value="marginnote"/>
-         <menuitem id="marginHint" selected="Margin hint" label="Section" value="marginhint"/>
+         <menuitem id="marginHint" label="Margin hint" value="marginhint"/>
          <menuitem id="solutionNote" label="Solution note" value="solutionnote"/>
          <menuitem id="problemHint" label="Problem solving hint" value="problemhint"/>
          <menuitem id="note" label="Note" value="note"/>
