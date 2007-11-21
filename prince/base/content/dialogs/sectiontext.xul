@@ -85,7 +85,6 @@
 
 	<vbox>
 	  <groupbox>
-	    <!-- caption id="replacementLabel" label="&substitution.label;" accesskey="&substitution.accessKey;"/ -->
 	    <label id="sectionCodeDescription" control="sectiontitle-frame" accesskey="&sectionCodeDescription.accessKey;">
         &sectionCodeDescription.label;
       </label>
