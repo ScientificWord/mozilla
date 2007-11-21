@@ -3,4 +3,6 @@
 	<package name="amsfonts" pri="010"/>
 	<package name="amsmath" pri="010"/>
 	<package name="xcolor" pri="200"/>
-</packages>
+	<package name="wrapfig" pri="100"/>
+	<package name="boxedminipage" pri="200"/>
+</packages>													 

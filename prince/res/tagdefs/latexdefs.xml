@@ -358,7 +358,17 @@
               <para><br/></para>
               ]]>
           </initialcontents>
-  		  <inclusion>true</inclusion>
+	  		  <inclusion>true</inclusion>
+          </tag>
+  		<tag nm="sw:frame">
+          <level>*</level>
+          <description>Frame</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <para><br/></para>
+              ]]>
+          </initialcontents>
+	  		  <inclusion>true</inclusion>
           </tag>
    		</tags>
 		</tagclass>
