@@ -95,6 +95,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_macrofragment", msiMacroFragmentCommand);
   commandTable.registerCommand("cmd_viewInvisibles", msiViewInvisiblesCommand);
   commandTable.registerCommand("cmd_note", msiNoteCommand);
+  commandTable.registerCommand("cmd_frame", msiFrameCommand);
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -5418,6 +5419,29 @@ var msiNoteCommand =
 };
 
 //-----------------------------------------------------------------------------------
+
+var msiFrameCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    //temporary
+    // need to get current note if it exists -- if none, initialize as follows 
+    msiFrame(null, editorElement);
+  }
+};
+
+//-----------------------------------------------------------------------------------
 var msiObjectPropertiesCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -6672,6 +6696,30 @@ function msiNote(currNode, editorElement)
   var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
   var xml = "<notewrapper xmlns='http://www.w3.org/1999/xhtml'" + ((data.type=='footnote')?" type='footnote'":"")+"><note type='"+data.type
    +"'><"+paraTag+"><br/></"+paraTag+"></note></notewrapper>"; 
+  editor.deleteSelection(0);
+  insertXMLAtCursor(editor,xml,true,false);
+}
+
+function msiFrame(currNode, editorElement)
+{
+  var data= new Object();
+  data.editorElement = editorElement;
+  var currNodeTag = "";
+  if (currNode) {
+//  initialize the dialog fields
+  }
+  else
+  {
+    //defaults
+  }
+  window.openDialog("chrome://prince/content/Frame.xul","_blank", "chrome,close,titlebar,resizable=yes,modal", data);
+  // data comes back altered
+  var editor = msiGetEditor(editorElement);
+  var namespace = new Object();
+  var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
+  var xml = "<requirespackage package='wrapfig'/><requirespackage package='boxedminipage'/><frame xmlns='http://www.w3.org/1999/xhtml'" + 
+    //((data.type=='footnote')?" type='footnote'":"") +
+   "><"+paraTag+"><br/></"+paraTag+"></frame>"; 
   editor.deleteSelection(0);
   insertXMLAtCursor(editor,xml,true,false);
 }
