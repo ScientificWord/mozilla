@@ -6681,7 +6681,11 @@ function msiNote(currNode, editorElement)
   var currNodeTag = "";
   if (currNode) {
     data.type = currNode.getAttribute("type");
-    // also need icon type, if there is one
+    try
+    {
+      if (currNode.getAttribute("hide") == "true") data.hide=true;
+    }
+    catch(e){}
   }
   else
   {
@@ -6693,12 +6697,24 @@ function msiNote(currNode, editorElement)
   dump(data.type + "\n");
   if (data.type != 'footnote') msiRequirePackage(editorElement, "ragged2e", "raggedrightboxes"); 
   var editor = msiGetEditor(editorElement);
-  var namespace = new Object();
-  var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
-  var xml = "<notewrapper xmlns='http://www.w3.org/1999/xhtml'" + ((data.type=='footnote')?" type='footnote'":"")+"><note type='"+data.type
-   +"'><"+paraTag+"><br/></"+paraTag+"></note></notewrapper>"; 
-  editor.deleteSelection(0);
-  insertXMLAtCursor(editor,xml,true,false);
+  if (currNode)  // currnode is a note node
+  {
+    if (data.type == 'footnote') currNode.parentNode.setAttribute("type","footnote");
+    else currNode.parentNode.removeAttribute("type");
+    currNode.setAttribute("type",data.type);
+    if (data.hide) currNode.setAttribute("hide","true")
+    else currNode.removeAttribute("hide");
+  }
+  else
+  {
+    var namespace = new Object();
+    var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
+    var xml = "<notewrapper xmlns='http://www.w3.org/1999/xhtml'" + ((data.type=='footnote')?" type='footnote'":"")+
+      "><note type='"+data.type+"'"+ ((data.hidenote)?" hide='true'":"")
+     +"><"+paraTag+"><br/></"+paraTag+"></note></notewrapper>"; 
+    editor.deleteSelection(0);
+    insertXMLAtCursor(editor,xml,true,false);
+  }
 }
 
 function msiFrame(currNode, editorElement)

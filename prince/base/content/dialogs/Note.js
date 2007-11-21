@@ -6,6 +6,7 @@ function startUp()
   if (data.type)
   {
     document.getElementById("note.names").value = data.type;
+    document.getElementById("hidenote").checked = data.hide;
   }
   else data.type = document.getElementById("note.names").value;
 }
@@ -13,6 +14,7 @@ function startUp()
   
 function onOK() {
   data.type = document.getElementById("note.names").value;
+  data.hide = document.getElementById("hidenote").checked;
   close();
   return (false);
 }
