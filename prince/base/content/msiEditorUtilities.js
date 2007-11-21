@@ -1028,7 +1028,7 @@ function msiGetEditorURL(editorElement)
 }
 
 
-function msiRequirePackage(editorElement, packagename)
+function msiRequirePackage(editorElement, packagename, options)
 {
   try {
     var editor = msiGetEditor(editorElement);
@@ -1036,6 +1036,8 @@ function msiRequirePackage(editorElement, packagename)
     var preamble = doc.getElementsByTagName("preamble")[0];
     var reqpkg = doc.createElement("requirespackage");
     reqpkg.setAttribute("package", packagename);
+    if (options && options.length > 0)
+      reqpkg.setAttribute("options", options);
     preamble.appendChild(reqpkg);
   }
   catch(e)
