@@ -4,6 +4,7 @@ body {
   margin-left: 20pt;
   font-size: 12pt;
   line-height: 14pt;
+  counter-reset: footnote
 }
 
 
@@ -190,6 +191,7 @@ frame {
   margin: 10px;
   border-width: 2px;
   border-style: solid;
+  border-color: green;
   color: green;
   float: left;
   width: 3in;
