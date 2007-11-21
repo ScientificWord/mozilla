@@ -183,4 +183,5 @@ prince.jar:
   content/addruleforsection.js       (dialogs/addruleforsection.js)
   content/Note.xul            		 (dialogs/Note.xul)
   content/Note.js   	     		 (dialogs/Note.js)
-
+  content/Frame.xul            		 (dialogs/Frame.xul)
+  content/Frame.js   	     		 (dialogs/Frame.js)
