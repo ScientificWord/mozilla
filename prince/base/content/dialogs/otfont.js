@@ -34,7 +34,7 @@ function onAccept()
 	var theWindow = window.opener;
 	if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
 	  theWindow = msiGetTopLevelWindow();
-    theWindow.msiRequirePackage(editorElement, "fontspec");
+    theWindow.msiRequirePackage(editorElement, "fontspec", null);
     theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
   }
   editorElement.contentWindow.focus();
