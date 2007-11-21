@@ -151,10 +151,19 @@ otfont {
   display: inline;
 }
 
-/*footnote {
-  display: none;
-} */
 
+
+note[hide="true"] {
+  display: none;
+} 
+
+*[hide="true"] note {
+  display: none !important;
+}
+
+*[hide="false"] note {
+  display: block !important;
+}
 
 note[type="footnote"] {
   margin: 1px 0;
@@ -162,7 +171,6 @@ note[type="footnote"] {
   border-color: blue;
   border-style: solid;
   color: blue;
-  display: block; 
   width: inherit;
   float: none;
 }	 

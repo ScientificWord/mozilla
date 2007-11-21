@@ -4731,7 +4731,16 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     var elementName = element.localName;
     if (elementName == "object")
       elementName = element.parentNode.localName;
-    if ((elementName == "img") || (elementName=="graph"))
+    if (elementName == "notewrapper")
+    {
+      element = element.getElementsByTagName("note")[0];
+      if (element) elementName = element.localName;
+    }
+    if (elementName == "note")
+    {
+      msiNote(element,editorElement);
+    }
+    else if ((elementName == "img") || (elementName=="graph"))
     {
       var bIsGraph = (element.getAttribute("msigraph") == "true");
       if (!bIsGraph)
