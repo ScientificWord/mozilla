@@ -6691,6 +6691,7 @@ function msiNote(currNode, editorElement)
   window.openDialog("chrome://prince/content/Note.xul","_blank", "chrome,close,titlebar,resizable=yes,modal", data);
   // data comes back altered
   dump(data.type + "\n");
+  if (data.type != 'footnote') msiRequirePackage(editorElement, "ragged2e", "raggedrightboxes"); 
   var editor = msiGetEditor(editorElement);
   var namespace = new Object();
   var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
@@ -6717,7 +6718,9 @@ function msiFrame(currNode, editorElement)
   var editor = msiGetEditor(editorElement);
   var namespace = new Object();
   var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
-  var xml = "<requirespackage package='wrapfig'/><requirespackage package='boxedminipage'/><frame xmlns='http://www.w3.org/1999/xhtml'" + 
+  msiRequirePackage(editorElement, "wrapfig", null);
+  msiRequirePackage(editorElement, "boxedminipage", null);
+  var xml = "<frame xmlns='http://www.w3.org/1999/xhtml'" + 
     //((data.type=='footnote')?" type='footnote'":"") +
    "><"+paraTag+"><br/></"+paraTag+"></frame>"; 
   editor.deleteSelection(0);
@@ -6796,7 +6799,7 @@ function callColorDialog()
 	var theWindow = window.opener;
 	if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
 	  theWindow = msiGetTopLevelWindow();
-  theWindow.msiRequirePackage(editorElement, "xcolor");
+  theWindow.msiRequirePackage(editorElement, "xcolor", null);
   theWindow.msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
   editorElement.contentWindow.focus();
 }

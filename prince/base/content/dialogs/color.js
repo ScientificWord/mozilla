@@ -34,7 +34,7 @@ function onAccept()
 	var theWindow = window.opener;
 	if (!theWindow || !("msiInsertHorizontalSpace" in theWindow))
 	  theWindow = msiGetTopLevelWindow();
-    theWindow.msiRequirePackage(editorElement, "xcolor");
+    theWindow.msiRequirePackage(editorElement, "xcolor", null);
     theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
   }
   editorElement.contentWindow.focus();
