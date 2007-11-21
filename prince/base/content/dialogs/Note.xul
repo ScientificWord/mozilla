@@ -43,6 +43,8 @@
      </menulist>
      <separator/>
      <button label="&Options.label;"/>
+		 <label value="&HideNote.label;"/>
+		 <checkbox id="hidenote" />
     </vbox>
 	</hbox>
 </dialog>
