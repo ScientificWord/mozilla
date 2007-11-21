@@ -1,0 +1,26 @@
+
+<!ENTITY  windowTitle.label         "Frame">
+<!ENTITY  position.label            "Note position">
+
+
+<!ENTITY  left						"Left">
+<!ENTITY  inline					"In line">
+<!ENTITY  display					"Displayed">
+<!ENTITY  right						"Right">
+<!ENTITY  alignment.label			"Text alignment">
+<!ENTITY  leftAlign					"Align on left">
+<!ENTITY  centerAlign				"Center">
+<!ENTITY  justAlign					"Justified">
+<!ENTITY  rightAlign			  	"Align on right">
+<!ENTITY  borderstyle.label			"Border style">
+<!ENTITY  none						"None">
+<!ENTITY  solid						"Solid">
+<!ENTITY  dashed					"Dashed">
+<!ENTITY  width						"Width">
+<!ENTITY  outdent					"Outdent">
+<!ENTITY  marginTopAndBottom		"Top and bottom margin">  
+<!ENTITY  marginSide				"Side margin">
+<!ENTITY  borderSide				"Side border">
+<!ENTITY  borderTopAndBottom		"Top and bottom  margin">
+<!ENTITY  marginSide				"Side margin">
+<!ENTITY  paddingTopAndBottom		"Top and bottom padding">
