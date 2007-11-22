@@ -1,0 +1,23 @@
+
+
+
+*[type="text"]{
+  background-color: silver;
+}
+
+#thenote {
+  margin-right: 8px;
+  border: 1px;
+  padding: 2px;
+  border-color: green;
+  border-style: solid;
+}
+
+#innerbox {
+  border: 1px;
+  border-style: dotted;
+}
+  
+#illustration[outer="true"] hbox {
+  direction: rtl;
+}
