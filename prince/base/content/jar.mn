@@ -185,3 +185,4 @@ prince.jar:
   content/Note.js   	     		 (dialogs/Note.js)
   content/Frame.xul            		 (dialogs/Frame.xul)
   content/Frame.js   	     		 (dialogs/Frame.js)
+  content/Frame.css   	     		 (dialogs/Frame.css)
