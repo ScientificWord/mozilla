@@ -1,82 +1,149 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
-
-
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
-
+<?xml-stylesheet href="chrome://prince/content/Frame.css" type="text/css"?>
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
-<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?> 
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
-
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Frame.dtd" >
-
 <dialog id="FrameDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   ondialogaccept="return onOK();"
   ondialogcancel="return onCancel();"
   onload="startUp();"
+  buttons="accept,cancel"
+  buttonlabelaccept="OK"
+  buttonlabelcancel="Cancel"
   persist="screenX screenY width height"
 >
-
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
-
   <!-- Scripts specific to this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/Frame.js"/>
-
   <hbox>
-    <vbox align="center">
-		// unit menu goes here??
-     <label value="&position.label;"/>
-     <menulist id="frame.position" >
-       <menupopup>
-         <menuitem id="left" label="&left;" value="left"/>
-         <menuitem id="inline" label="&inline;" value="inline"/>
-         <menuitem id="display" label="&display;" value="display"/>
-         <menuitem id="right" label="&right;" value="right"/>
-       </menupopup>
-     </menulist>
-     <separator/>
-     <label value="&alignment.label;"/>
-     <menulist id="frame.alignment" >
-       <menupopup>
-         <menuitem id="left" label="&leftAlign;" value="left"/>
-         <menuitem id="center" label="&centerAlign;" value="center"/>
-         <menuitem id="justified" label="&justAlign;" value="just"/>
-         <menuitem id="right" label="&rightAlign;" value="right"/>
-       </menupopup>
-     </menulist>
-     <separator/>
-     <label value="&borderstyle.label;"/>
-     <menulist id="borderstyle" >
-       <menupopup>
-         <menuitem id="none" label="&none;" value="none"/>
-         <menuitem id="solid" label="&solid;" value="solid"/>
-         <menuitem id="dashed" label="&dashed;" value="dashed"/>
-       </menupopup>
-     </menulist>
+    <grid flex="1">
+      <columns>
+        <column/>
+        <column/>
+        <column/>
+        <column/>
+      </columns>
+      <rows>
+        <row>
+          <hbox><spacer flex="1"/><label value="&units;" control="units"/></hbox>
+          <menulist id="units"  
+                oncommand="switchUnits();"  >
+            <menupopup>
+              <menuitem id="inch" label="&inch;" value="in"/>
+              <menuitem id="cm" label="&centimeter;" value="cm"/>
+              <menuitem id="pt" label="&point;" value="pt"/>
+              <menuitem id="mm" label="&millimeter;" value="mm"/>
+            </menupopup>
+          </menulist>
+          <spacer/>
+          <spacer/>
+        </row>
+        <row>
+          <hbox><spacer flex="1"/><label value="&position.label;" control="frame.position"/></hbox>
+          <menulist id="frame.position" >
+            <menupopup>
+              <menuitem id="left" label="&left;" value="left"/>
+              <menuitem id="inline" label="&inline;" value="inline"/>
+              <menuitem id="display" label="&display;" value="display"/>
+              <menuitem id="right" label="&right;" value="right"/>
+            </menupopup>
+          </menulist>
+          <hbox><spacer flex="1"/><label value="&width;" control="width" /></hbox>
+          <textbox id="width;" width="40px"/>
+        </row>
+        <row>
+          <spacer/>
+          <spacer/>
+          <hbox><spacer flex="1"/><label value="&height;" control="height"/></hbox>
+          <textbox id="height" width="40px" value="auto"/>
+        </row>
+        <row>
+          <hbox><spacer flex="1"/><label value="&alignment.label;" control="frame.alignment"/></hbox>
+          <menulist id="frame.alignment" >
+            <menupopup>
+              <menuitem id="left" label="&leftAlign;" value="left"/>
+              <menuitem id="center" label="&centerAlign;" value="center"/>
+              <menuitem id="justified" label="&justAlign;" value="just"/>
+              <menuitem id="right" label="&rightAlign;" value="right"/>
+            </menupopup>
+          </menulist>
+          <hbox><spacer flex="1"/><label value="&overhang;" control="overhang"/></hbox>
+          <textbox id="overhang"  width="40px"  />
+        </row>
+        <row>
+          <spacer/>
+          <hbox><spacer flex="1"/><label value="&margin;"/></hbox>
+          <hbox><spacer flex="1"/><label value="&topAndBottom;" control="marginTop"/></hbox>
+          <textbox id="marginTop;"    />
+        </row>
+        <row>
+          <spacer/>
+          <spacer/>
+          <hbox><spacer flex="1"/><label value="&side;" control="marginSide"/></hbox>
+          <textbox id="marginSide;"    />                                    
+        </row>
+        <row>
+          <spacer/>
+          <spacer/>
+          <hbox><spacer flex="1"/><label value="&border;"/></hbox>
+          <textbox id="border;"    />
+        </row>
+        <row align="baseline">
+          <spacer/>
+          <spacer/>
+          <hbox><spacer flex="1"/><label value="&padding;"/></hbox>
+          <textbox id="padding;"    />
+        </row>
+        <row>
+          <hbox><spacer flex="1"/><label value="&rotation;" control="rotation"/></hbox>
+          <menulist id="rotation" >
+            <menupopup>
+              <menuitem id="rot0" label="&rot0;" value="rot0"/>
+              <menuitem id="rot270" label="&rot270;" value="rot270"/>
+              <menuitem id="rot90" label="&rot90;" value="rot90"/>
+            </menupopup>
+          </menulist>
+          <hbox><spacer flex="1"/><label value="&color;" control="colorButton"/></hbox>
+          <hbox><button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
+              <spacer id="colorWell" class="color-well"/>
+            </button><spacer flex="1"/>
+          </hbox>
+        </row>
+      </rows>
+    </grid>
+    <vbox id="illustration" width="170px" > <!-- the illustration -->
+      <hbox height="30px">
+        <hbox width="60px"/><hbox type="text" width="100px"/><hbox width="10px"/>
+      </hbox>
+      <hbox height="10px">
+        <hbox id="lefttopmargin" flex="1"/><hbox type="text" observes="textwidth"/><hbox width="10px"/>
+      </hbox>
+      <hbox observes="noteheight">
+        <hbox id="reducedleftmargin" flex="1"/> 
+        <hbox id="thenote" observes="notewidth">
+          <hbox id="innerbox" flex="1"/>
+        </hbox>
+        <hbox type="text" observes="textwidth"/><hbox width="10px"/>
+      </hbox>
+      <hbox height="10px">
+        <hbox id="leftbottommargin" flex="1"/><hbox type="text" observes="textwidth"/><hbox width="10px"/>
+      </hbox>
+      <hbox height="30px">
+        <hbox flex="1"/><hbox type="text" width="100px"/><hbox width="10px"/>
+      </hbox>
     </vbox>
-		<vbox align="center">
-			<label value="&width;"/>
-			<textbox id="width;"/>
-			// height goes here??
-			<label value="&outdent;"/>
-			<textbox id="outdent;"	/>
-			<label value="&marginTopAndBottom;"/>
-			<textbox id="marginTop;"	/>
-			<label value="&marginSide;"/>
-			<textbox id="marginSide;"	/>
-			<label value="&marginSide;"/>
-			<textbox id="marginSide;"	/>
-			<label value="&borderTopAndBottom;"/>
-			<textbox id="borderTop;"/>
-			<label value="&borderSide;"/>
-			<textbox id="borderSide;"	/>
-			<label value="&paddingTopAndBottom;"/>
-			<textbox id="paddingTop;"/>
-		</vbox>
-	</hbox>
+  </hbox>
+  <broadcaster id="textwidth" width="52"/> <!-- = 100 + overhang - notewidth - sidemargin -->
+  <broadcaster id="notewidth" width="60"/>
+  <broadcaster id="noteheight" height="40"/>
+  <broadcaster id="reducedleftmargin" width="40"   /> <!-- 60 - overhang -->        
 </dialog>
+ 
