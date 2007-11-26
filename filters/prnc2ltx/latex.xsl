@@ -13,7 +13,7 @@
 <xsl:include href="mml2ltex.xsl"/>
 <xsl:include href="preamble.xsl"/>
 <xsl:include href="spaces.xsl"/>
-	
+<xsl:include href="frame.xsl"/>
 
 <xsl:template match="/"><xsl:apply-templates/></xsl:template>
 
@@ -164,7 +164,6 @@
 <xsl:template match="html:note[@type='footnote']">\footnote{<xsl:apply-templates/>}</xsl:template>
 
 <xsl:template match="html:note">\marginpar{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:frame">\begin{wrapfigure}{l}[.75in]{2in}\begin{boxedminipage}[t]{2in}<xsl:apply-templates/>\end{boxedminipage}\end{wrapfigure}</xsl:template>
 
 
 <xsl:template match="html:quote">
