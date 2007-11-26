@@ -35,7 +35,7 @@
         <row>
           <hbox><spacer flex="1"/><label value="&units;" control="units"/></hbox>
           <menulist id="units"  
-                oncommand="switchUnits();"  >
+                oncommand="switchUnits(this.value);"  >
             <menupopup>
               <menuitem id="inch" label="&inch;" value="in"/>
               <menuitem id="cm" label="&centimeter;" value="cm"/>
@@ -48,59 +48,48 @@
         </row>
         <row>
           <hbox><spacer flex="1"/><label value="&position.label;" control="frame.position"/></hbox>
-          <menulist id="frame.position" >
+          <menulist id="frame.position" oncommand="setPosition(this.value);" >
             <menupopup>
-              <menuitem id="left" label="&left;" value="left"/>
+              <menuitem id="inner" label="&inner;" value="inner"/>
               <menuitem id="inline" label="&inline;" value="inline"/>
               <menuitem id="display" label="&display;" value="display"/>
-              <menuitem id="right" label="&right;" value="right"/>
+              <menuitem id="outer" label="&outer;" value="outer"/>
             </menupopup>
           </menulist>
           <hbox><spacer flex="1"/><label value="&width;" control="width" /></hbox>
-          <textbox id="width;" width="40px"/>
+          <textbox id="width" style='width: 6em' value="2" min="0" increment="1" oninput="updateParameter('notedata','width');" onkeypress="handleChar(event,'notedata','width');"/>
         </row>
         <row>
           <spacer/>
           <spacer/>
           <hbox><spacer flex="1"/><label value="&height;" control="height"/></hbox>
-          <textbox id="height" width="40px" value="auto"/>
+          <textbox id="height" style='width: 6em' value="auto"  min="0" increment="1" oninput="updateParameter('noteheight','height');" onkeypress="handleChar(event,'noteheight','height');"/>
         </row>
         <row>
-          <hbox><spacer flex="1"/><label value="&alignment.label;" control="frame.alignment"/></hbox>
-          <menulist id="frame.alignment" >
+          <hbox><spacer flex="1"/><label value="&alignment.label;" control="textalignment"/></hbox>
+          <menulist id="textalignment" >
             <menupopup>
-              <menuitem id="left" label="&leftAlign;" value="left"/>
+              <menuitem id="inner" label="&innerAlign;" value="inner"/>
               <menuitem id="center" label="&centerAlign;" value="center"/>
               <menuitem id="justified" label="&justAlign;" value="just"/>
-              <menuitem id="right" label="&rightAlign;" value="right"/>
+              <menuitem id="outer" label="&outerAlign;" value="outer"/>
             </menupopup>
           </menulist>
           <hbox><spacer flex="1"/><label value="&overhang;" control="overhang"/></hbox>
-          <textbox id="overhang"  width="40px"  />
+          <textbox id="overhang"  style='width: 6em'  min="-100" max="100"	value="0"
+           increment="1" oninput="updateParameter(null,'overhang');" onkeypress="handleChar(event,null,'overhang');" />
         </row>
         <row>
           <spacer/>
           <hbox><spacer flex="1"/><label value="&margin;"/></hbox>
           <hbox><spacer flex="1"/><label value="&topAndBottom;" control="marginTop"/></hbox>
-          <textbox id="marginTop;"    />
+          <textbox id="marginTop" style='width: 6em' value=".07" min="0" increment="1" oninput="updateParameter('topmargin','marginTop');" onkeypress="handleChar(event,'topmargin','marginTop');"/>
         </row>
         <row>
           <spacer/>
           <spacer/>
           <hbox><spacer flex="1"/><label value="&side;" control="marginSide"/></hbox>
-          <textbox id="marginSide;"    />                                    
-        </row>
-        <row>
-          <spacer/>
-          <spacer/>
-          <hbox><spacer flex="1"/><label value="&border;"/></hbox>
-          <textbox id="border;"    />
-        </row>
-        <row align="baseline">
-          <spacer/>
-          <spacer/>
-          <hbox><spacer flex="1"/><label value="&padding;"/></hbox>
-          <textbox id="padding;"    />
+          <textbox id="marginSide" style='width: 6em' value=".07" min="0" increment="1" oninput="updateParameter('sidemargin','marginSide');" onkeypress="handleChar(event,'sidemargin','marginSide');"/>                                    
         </row>
         <row>
           <hbox><spacer flex="1"/><label value="&rotation;" control="rotation"/></hbox>
@@ -111,29 +100,40 @@
               <menuitem id="rot90" label="&rot90;" value="rot90"/>
             </menupopup>
           </menulist>
-          <hbox><spacer flex="1"/><label value="&color;" control="colorButton"/></hbox>
+          <hbox><spacer flex="1"/><label value="&border;"/></hbox>
+          <textbox id="border" value=".02" style='width: 6em' onkeypress="updateBorderWidth(event,this);"  />
+        </row>
+        <row align="baseline">
+          <spacer/>
+          <spacer/>
+          <hbox><spacer flex="1"/><label value="&padding;"/></hbox>
+          <textbox id="padding" value=".02" style='width: 6em' onkeypress="updatePadding(event,this);" />	 
+        </row>
+        <row>
+<!--          <hbox><spacer flex="1"/><label value="&color;" control="colorButton"/></hbox>
           <hbox><button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
               <spacer id="colorWell" class="color-well"/>
             </button><spacer flex="1"/>
-          </hbox>
+          </hbox> -->
         </row>
       </rows>
     </grid>
-    <vbox id="illustration" width="170px" > <!-- the illustration -->
+    <vbox id="illustration" width="210px" outer="false"> <!-- the illustration -->
       <hbox height="30px">
-        <hbox width="60px"/><hbox type="text" width="100px"/><hbox width="10px"/>
+        <hbox width="100px"/><hbox type="text" width="100px"/><hbox width="10px"/>
       </hbox>
-      <hbox height="10px">
-        <hbox id="lefttopmargin" flex="1"/><hbox type="text" observes="textwidth"/><hbox width="10px"/>
+      <hbox observes="topmargin">
+        <hbox flex="1"/><hbox type="text" observes="textwidth"/><hbox width="10px"/>
       </hbox>
       <hbox observes="noteheight">
         <hbox id="reducedleftmargin" flex="1"/> 
-        <hbox id="thenote" observes="notewidth">
+        <hbox id="thenote" observes="notedata">
           <hbox id="innerbox" flex="1"/>
         </hbox>
+        <hbox observes="sidemargin"/>
         <hbox type="text" observes="textwidth"/><hbox width="10px"/>
       </hbox>
-      <hbox height="10px">
+      <hbox observes="topmargin">>
         <hbox id="leftbottommargin" flex="1"/><hbox type="text" observes="textwidth"/><hbox width="10px"/>
       </hbox>
       <hbox height="30px">
@@ -141,9 +141,11 @@
       </hbox>
     </vbox>
   </hbox>
-  <broadcaster id="textwidth" width="52"/> <!-- = 100 + overhang - notewidth - sidemargin -->
-  <broadcaster id="notewidth" width="60"/>
+  <broadcaster id="textwidth" width="52"/> <!-- = 100 + overhang - notedata.width - sidemargin -->
   <broadcaster id="noteheight" height="40"/>
   <broadcaster id="reducedleftmargin" width="40"   /> <!-- 60 - overhang -->        
+  <broadcaster id="sidemargin" width="8"/>         
+  <broadcaster id="topmargin" height="8"/> 
+  <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>        
 </dialog>
  

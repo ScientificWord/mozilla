@@ -195,12 +195,4 @@ note {
   width: 3in
 }
 
-frame {
-  margin: 10px;
-  border-width: 2px;
-  border-style: solid;
-  border-color: green;
-  color: green;
-  float: left;
-  width: 3in;
-}
+
