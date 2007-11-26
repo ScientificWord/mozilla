@@ -1,26 +1,41 @@
 
 <!ENTITY  windowTitle.label         "Frame">
-<!ENTITY  position.label            "Note position">
+<!ENTITY  position.label            "Frame position">
 
 
-<!ENTITY  left						"Left">
+<!ENTITY  inner						"Inner margin">
 <!ENTITY  inline					"In line">
 <!ENTITY  display					"Displayed">
-<!ENTITY  right						"Right">
+<!ENTITY  outer						"Outer margin">
 <!ENTITY  alignment.label			"Text alignment">
-<!ENTITY  leftAlign					"Align on left">
+<!ENTITY  innerAlign				"Inner side">
 <!ENTITY  centerAlign				"Center">
 <!ENTITY  justAlign					"Justified">
-<!ENTITY  rightAlign			  	"Align on right">
+<!ENTITY  outerAlign			  	"Outer side">
 <!ENTITY  borderstyle.label			"Border style">
 <!ENTITY  none						"None">
 <!ENTITY  solid						"Solid">
 <!ENTITY  dashed					"Dashed">
 <!ENTITY  width						"Width">
-<!ENTITY  outdent					"Outdent">
-<!ENTITY  marginTopAndBottom		"Top and bottom margin">  
-<!ENTITY  marginSide				"Side margin">
-<!ENTITY  borderSide				"Side border">
-<!ENTITY  borderTopAndBottom		"Top and bottom  margin">
-<!ENTITY  marginSide				"Side margin">
-<!ENTITY  paddingTopAndBottom		"Top and bottom padding">
+<!ENTITY  height					"Height">
+<!ENTITY  overhang					"Overhang">
+<!ENTITY  margin					"Margin">  
+<!ENTITY  side						"Side">
+<!ENTITY  topAndBottom				"Top and bottom">
+<!ENTITY  padding					"Padding">
+<!ENTITY  border					"Border width">
+<!ENTITY  solid					    "Solid">
+<!ENTITY  dotted					"Dotted">
+<!ENTITY  dashed					"Dashed">
+<!ENTITY  rotation					"Rotation">
+<!ENTITY  rot0						"None">
+<!ENTITY  rot270					"90 clockwise">
+<!ENTITY  rot90						"90 CCW">
+<!ENTITY  color						"Border color">
+<!ENTITY  units						"Units">
+<!ENTITY  inch						"inch">
+<!ENTITY  centimeter				"centimeter">
+<!ENTITY  point						"point">
+<!ENTITY  millimeter				"millimeter">
+<!ENTITY  position.label			"Position">
+<!ENTITY  units						"Units">

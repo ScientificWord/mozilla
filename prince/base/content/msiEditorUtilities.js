@@ -4627,28 +4627,37 @@ function msiAuxDirFromDocPath(documentURI)
 
 
 // receives a style string, sets a new value for attribute
+// if the new value is null, we remove the style attribute
 function setStyleAttribute( element, attribute, value)
 {
+//  element.style[attribute]=value;
   var inStyleString = element.getAttribute("style");
   var array = inStyleString.split(";");
-  var i;
+  var i, foundindex;
   var found = false;
   for (i=0; i<array.length; i++)
   {
     array[i] = array[i].split(":");
-	array[i][0] = (array[i][0]).replace(" ","","g");
+  	array[i][0] = (array[i][0]).replace(" ","","g");
   }
   for (i=0; i<array.length; i++)
   {
     if (array[i][0] == attribute)
-	{
-	  array[i][1] = value;
-	  found = true;
-	}
-	array[i] = array[i].join(":"); 
-  }
+	  {
+	    array[i][1] = value;
+	    found = true;
+      foundindex = i;
+	  }
+	  array[i] = array[i].join(":"); 
+  }  
+  if (value==null && found) array.splice(foundindex,1);  
   var outStyleString = array.join(";");
-  if (!found)  outStyleString = attribute+": "+value+";"+outStyleString;
+  if (!found)  outStyleString = attribute+": "+value+"; "+outStyleString;
   element.setAttribute("style", outStyleString);
 }
 	  
+
+function msiToPixels(distance,unit)
+{
+  return msiCSSUnitsList.convertUnits(distance, unit, 'in')*100;  //100 pixels/inch
+}

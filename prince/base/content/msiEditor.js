@@ -4740,6 +4740,10 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       msiNote(element,editorElement);
     }
+    if (elementName == "msiframe")
+    {
+      msiFrame(element,editorElement);
+    }
     else if ((elementName == "img") || (elementName=="graph"))
     {
       var bIsGraph = (element.getAttribute("msigraph") == "true");
