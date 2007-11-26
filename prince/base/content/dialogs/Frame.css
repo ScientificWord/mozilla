@@ -6,11 +6,7 @@
 }
 
 #thenote {
-  margin-right: 8px;
-  border: 1px;
-  padding: 2px;
-  border-color: green;
-  border-style: solid;
+  margin: 0px;
 }
 
 #innerbox {
