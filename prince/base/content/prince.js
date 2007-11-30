@@ -362,7 +362,7 @@ function openTeX()
     var outdir = docdir.clone();
     outfile.append(filename+".sci");
     outdir.append(filename + "_files");
-	if (outdir.exists()) outdir.remove(false);
+	if (outdir.exists()) outdir.remove(true);
     outdir.create(1 , 0755);
     var css = outdir.clone();
     css.append("css");
