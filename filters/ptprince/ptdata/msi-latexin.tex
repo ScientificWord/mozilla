@@ -6895,20 +6895,14 @@
 
 \def\U#1{\char`\&\char`\#x#1;}
 
-
-\def\CustomNote#1{%
-  \ifx#1[
-    \CustomNoteA
-  \else
-    \CustomNoteB
-  \fi
-}
-
-\def\CustomNoteA[#1]#2#3{%
+\def\CustomNote{%
+   \@ifnextchar[{\@CustomNoteA}{\@CustomNoteB}}
+   
+\def\@CustomNoteA[#1]#2#3{%
 
 }
 
-\def\CustomNoteB#1#2{%
+\def\@CustomNoteB#1#2{%
 }
 
 \makeatother
