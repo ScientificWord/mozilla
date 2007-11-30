@@ -270,8 +270,6 @@
 
 
 
-\def\@end@footnote{\msiclosetag{footnote}{</footnote>}}
-\def\footnote#{\br\msiopentag{footnote}{<footnote>}\aftergroup\@end@footnote}
 
 %\input msiframe.tex
 
@@ -321,11 +319,15 @@
 \newsection{chapter}{1}{Chapter \the\chapternumber}{sectiontitle}%
 
 \def\out@marginparA#1#2{%
-  \msiopentag{marginpar}{<marginpar opt="#1">}#2\msiclosetag{marginpar}{</marginpar>}%
+  \@start@notewrapper
+  \msiopentag{note}{<note type="marginpar" opt="#1">}#2\msiclosetag{note}{</note>}%
+  \@end@notewrapper
 }
 
 \def\out@marginparB#1{%
-  \msiopentag{marginpar}{<marginpar>}#1\msiclosetag{marginpar}{</marginpar>}%
+  \@start@notewrapper
+  \msiopentag{note}{<note type="marginpar">}#1\msiclosetag{note}{</note>}%
+  \@end@notewrapper
 }
 
 \def\rule{%
@@ -1703,6 +1705,24 @@
       \aftergroup\@closelasttexttag
    }
 }
+
+%% Various note type things
+
+\def\@start@notewrapper{%
+    \msiopentag{notewrapper}{<notewrapper xmlns="http://www.w3.org/1999/xhtml">}}
+\def\@end@notewrapper{%
+    \msiclosetag{notewrapper}{</notewrapper>}}
+
+\def\@end@footnote{\msiclosetag{note}{</note>}\@end@notewrapper}
+\def\@innote{\bgroup\aftergroup\@end@footnote}
+
+
+\def\footnote#1{%
+    \br\@start@notewrapper
+    \msiopentag{note}{<note type="footnote">}
+    #1
+    \msiclosetag{note}{</note>}%
+    \@end@notewrapper}
 
 %% \def\msi@opendocument{%
 %%    \msitag{<?xml version="1.0"?>}\br
