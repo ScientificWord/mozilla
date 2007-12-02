@@ -1500,6 +1500,17 @@ function msiFindParentOfType(startNode, nodeType, stopAt)
   return retNode;
 }
 
+function msiGetBaseNodeName(node)
+{
+  if (node != null)
+  {
+    if (node.localName != null && node.localName.length > 0)
+      return node.localName;
+    return node.nodeName;
+  }
+  return null;
+}
+
 //The idea is to use a NodeIterator to walk the new or affected nodes. We want to find the marked caret position (using the
 //"caretpos" attribute), or the first input box (always in an <mi>?), or, failing that, to leave it at the postNode and postOffset.
 function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, postOffset)
@@ -2094,6 +2105,7 @@ function msiOpenModelessDialog(chromeUrl, dlgName, options, targetEditorElement,
 {
   var editor = msiGetEditor(targetEditorElement);
   var reviseObject = null;
+//  if (commandHandler && ("bRevising" in commandHandler) && commandHandler.bRevising && ("msiGetReviseObject" in commandHandler))
   if (commandHandler && ("msiGetReviseObject" in commandHandler))
     reviseObject = commandHandler.msiGetReviseObject(editor);
   var extraArgsArray = new Array();
@@ -4433,8 +4445,9 @@ var msiAutosubstitutionList =
     var retVal = false;  //until we get something in the list
     // We need to prebuild these so that the keyboard shortcut works
     // ACSA = autocomplete string array
-    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSAService = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+    ACSAService.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var ACSA = ACSAService.getGlobalSearchStringArray();
   
     var rootElementList = subsDoc.getElementsByTagName("subs");
     dump("In msiAutoSubstitutionList.initialize(), subsDoc loaded, rootElementList has length [" + rootElementList.length + "].\n");
