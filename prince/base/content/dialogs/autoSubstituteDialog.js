@@ -657,7 +657,7 @@ function checkSubstitutionControl(editControl)
     gDialog.substContentFilter = new msiDialogEditorContentFilter(editControl);
   var theContext = document.getElementById("autosubContextRadioGroup").value;
   var bNonEmpty = gDialog.substContentFilter.hasNonEmptyContent( (theContext == "math") );
-  var bNonEmpty = !editor.documentIsEmpty;
+//  var bNonEmpty = !editor.documentIsEmpty;
   dump("In autoSubstituteDialog.js, checkSubstitutionControl, editor.documentModified returns [" + bModified + "] and editor.documentIsEmpty returns [" + editor.documentIsEmpty + "].\n");
   if (bModified != gDialog.bDataModified || bNonEmpty != gDialog.bDataNonEmpty)
   {

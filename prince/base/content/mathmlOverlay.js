@@ -35,6 +35,20 @@ function SetupMSIMathMenuCommands()
   commandTable.registerCommand("cmd_MSIdecorationsCmd",  msiDecorations);
   commandTable.registerCommand("cmd_MSIunitsCommand",    msiUnitsDialog);
 
+  commandTable.registerCommand("cmd_MSIreviseFractionCmd",     msiReviseFractionCmd);
+  commandTable.registerCommand("cmd_MSIreviseRadicalCmd",      msiReviseRadicalCmd);
+//  commandTable.registerCommand("cmd_MSIreviseScriptsCmd",      msiReviseScriptsCmd);
+  commandTable.registerCommand("cmd_MSIreviseMatrixCmd",       msiReviseMatrixCmd);
+  commandTable.registerCommand("cmd_MSIreviseTensorCmd",       msiDoSomething);
+  commandTable.registerCommand("cmd_MSIreviseMathnameCmd",     msiReviseMathnameCmd);
+//    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
+  commandTable.registerCommand("cmd_MSIreviseGenBracketsCmd",  msiReviseGenBracketsCmd);
+	commandTable.registerCommand("cmd_MSIreviseBinomialsCmd",    msiReviseBinomialsCmd);
+	commandTable.registerCommand("cmd_MSIreviseOperatorsCmd",    msiReviseOperatorsCmd);
+	commandTable.registerCommand("cmd_MSIreviseDecorationsCmd",  msiReviseDecorationsCmd);
+  commandTable.registerCommand("cmd_MSIreviseUnitsCommand",    msiReviseUnitsCommand);
+
+
   try {
     gMathStyleSheet = msiColorObj.Format();
   } catch(e) { dump("Error setting up msiColorObj\n");  }
@@ -85,6 +99,19 @@ function msiSetupMSIMathMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSIoperatorsCmd",    msiOperators);
   commandTable.registerCommand("cmd_MSIdecorationsCmd",  msiDecorations);
   commandTable.registerCommand("cmd_MSIunitsCommand",    msiUnitsDialog);
+
+  commandTable.registerCommand("cmd_MSIreviseFractionCmd",     msiReviseFractionCmd);
+  commandTable.registerCommand("cmd_MSIreviseRadicalCmd",      msiReviseRadicalCmd);
+//  commandTable.registerCommand("cmd_MSIreviseScriptsCmd",      msiReviseScriptsCmd);
+  commandTable.registerCommand("cmd_MSIreviseMatrixCmd",       msiReviseMatrixCmd);
+  commandTable.registerCommand("cmd_MSIreviseTensorCmd",       msiDoSomething);
+  commandTable.registerCommand("cmd_MSIreviseMathnameCmd",     msiReviseMathnameCmd);
+//    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
+  commandTable.registerCommand("cmd_MSIreviseGenBracketsCmd",  msiReviseGenBracketsCmd);
+	commandTable.registerCommand("cmd_MSIreviseBinomialsCmd",    msiReviseBinomialsCmd);
+	commandTable.registerCommand("cmd_MSIreviseOperatorsCmd",    msiReviseOperatorsCmd);
+	commandTable.registerCommand("cmd_MSIreviseDecorationsCmd",  msiReviseDecorationsCmd);
+  commandTable.registerCommand("cmd_MSIreviseUnitsCommand",    msiReviseUnitsCommand);
 
 //  try {
 //    editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
@@ -168,6 +195,25 @@ var msiFraction =
   }
 };
 
+var msiReviseFractionCmd = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  { return true; },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var theFrac = aParams.getISupportsValue("reviseObject");
+    AlertWithTitle("mathmlOverlay.js", "In msiReviseFractionCmd, trying to revise fraction, dialog unimplemented.");
+//    reviseFraction(editorElement, theFrac);
+  },
+
+  doCommand: function(aCommand)
+  {
+  }
+};
+
 var msiRoot =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -202,6 +248,25 @@ var msiRadical =
   }
 };
 
+
+var msiReviseRadicalCmd =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  { return true; },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var theRadical = aParams.getISupportsValue("reviseObject");
+    AlertWithTitle("mathmlOverlay.js", "In msiReviseRadicalCmd, trying to revise radical, dialog unimplemented.");
+//    reviseFraction(editorElement, theFrac);
+  },
+
+  doCommand: function(aCommand)
+  {
+  }
+};
 
 
 var msiSuperscript =
@@ -392,6 +457,25 @@ var msiMathname =
   }
 };
 
+var msiReviseMathnameCmd =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  { return true; },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var theMathname = aParams.getISupportsValue("reviseObject");
+    AlertWithTitle("mathmlOverlay.js", "In msiReviseMathnameCmd, trying to revise mathname, dialog unimplemented.");
+//    reviseFraction(editorElement, theFrac);
+  },
+
+  doCommand: function(aCommand)
+  {
+  }
+};
+
 var msiParen =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -515,6 +599,25 @@ var msiMatrix =
   }
 };
 
+var msiReviseMatrixCmd =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  { return true; },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var theMatrix = aParams.getISupportsValue("reviseObject");
+    AlertWithTitle("mathmlOverlay.js", "In msiReviseMatrixCmd, trying to revise matrix, dialog unimplemented.");
+//    reviseFraction(editorElement, theFrac);
+  },
+
+  doCommand: function(aCommand)
+  {
+  }
+};
+
 var msiColors =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -549,6 +652,26 @@ var msiGenBrackets =
   }
 };
 
+var msiReviseGenBracketsCmd =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  { return true; },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var theBrackets = aParams.getISupportsValue("reviseObject");
+    AlertWithTitle("mathmlOverlay.js", "In msiReviseGenBracketsCmd, trying to revise brackets, dialog unimplemented.");
+//    reviseFraction(editorElement, theFrac);
+  },
+
+  doCommand: function(aCommand)
+  {
+  }
+};
+
+
 var msiBinomials = 
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -567,6 +690,25 @@ var msiBinomials =
 };
 
 
+var msiReviseBinomialsCmd =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  { return true; },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var theBinomial = aParams.getISupportsValue("reviseObject");
+    AlertWithTitle("mathmlOverlay.js", "In msiReviseBinomialsCmd, trying to revise binomial, dialog unimplemented.");
+//    reviseFraction(editorElement, theFrac);
+  },
+
+  doCommand: function(aCommand)
+  {
+  }
+};
+
 var msiOperators = 
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -581,6 +723,25 @@ var msiOperators =
   {
     var editorElement = msiGetActiveEditorElement(window);
     doOperatorsDlg(String.fromCharCode(0x222B), "auto", "auto", "cmd_MSIoperatorsCmd", editorElement, this);
+  }
+};
+
+var msiReviseOperatorsCmd =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  { return true; },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var theOperator = aParams.getISupportsValue("reviseObject");
+    AlertWithTitle("mathmlOverlay.js", "In msiReviseOperatorsCmd, trying to revise operator, dialog unimplemented.");
+//    reviseFraction(editorElement, theFrac);
+  },
+
+  doCommand: function(aCommand)
+  {
   }
 };
 
@@ -601,6 +762,25 @@ var msiDecorations =
   }
 };
 
+var msiReviseDecorationsCmd =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  { return true; },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var theDecoration = aParams.getISupportsValue("reviseObject");
+    AlertWithTitle("mathmlOverlay.js", "In msiReviseDecorationsCmd, trying to revise decoration, dialog unimplemented.");
+//    reviseFraction(editorElement, theFrac);
+  },
+
+  doCommand: function(aCommand)
+  {
+  }
+};
+
 var msiUnitsDialog = 
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -616,6 +796,25 @@ var msiUnitsDialog =
     dump("Reached the msiUnitsDialog command handler.\n");
     var editorElement = msiGetActiveEditorElement(window);
     doUnitsDlg("", "cmd_MSIunitsCommand", editorElement, this);
+  }
+};
+
+var msiReviseUnitsCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  { return true; },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var theUnit = aParams.getISupportsValue("reviseObject");
+    AlertWithTitle("mathmlOverlay.js", "In msiReviseUnitsCmd, trying to revise unit, dialog unimplemented.");
+//    reviseFraction(editorElement, theFrac);
+  },
+
+  doCommand: function(aCommand)
+  {
   }
 };
 
@@ -704,6 +903,32 @@ function insertfraction(lineSpec, sizeSpec, editorElement)
   } 
   catch (e) 
   {
+  }
+}
+
+function reviseFraction(lineSpec, sizeSpec, editorElement, theFraction)
+{
+  if (!theFraction || !editorElement)
+  {
+    dump("Entering reviseFraction with a null editorElement or fraction! Aborting...\n");
+    return;
+  }
+  var editor = msiGetEditor(editorElement);
+  try
+  {
+    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    var sizeFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_autoSize;
+    if (sizeSpec == "small")
+      sizeFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_smallSize;
+    else if (sizeSpec == "big")
+      sizeFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_displaySize;
+    AlertWithTitle("mathmlOverlay.js", "In reviseFraction, functionality needs to be implemented.");
+//    mathmlEditor.InsertFraction(lineSpec, sizeFlags);
+    editorElement.contentWindow.focus();
+  }
+  catch(e)
+  {
+    dump("Exception in mathmlOverlay.js, in reviseFraction; exception is [" + e + "].\n");
   }
 }
 

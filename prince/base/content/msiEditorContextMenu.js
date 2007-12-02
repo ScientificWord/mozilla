@@ -20,7 +20,9 @@ function msiEditorFillContextMenu(event, contextMenuNode)
   // Special case of an image inside a link
   if (objectName == "img")
   try {
-    isInLink = msiGetEditor(editorElement).getElementOrParentByTagName("href", msiGetObjectForProperties(editorElement));
+    var objData = msiGetObjectDataForProperties(editorElement);
+    if (objData != null && objData.theNode != null)
+      isInLink = msiGetEditor(editorElement).getElementOrParentByTagName("href", objData.theNode);
   } catch (e) {}
 
   msiInitRemoveStylesMenuitems(editorElement, "removeStylesMenuitem_cm", "removeLinksMenuitem_cm", "removeNamedAnchorsMenuitem_cm");
