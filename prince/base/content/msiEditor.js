@@ -2706,6 +2706,59 @@ function EditorClick(event)
   }
 }
 
+function msiGetCharForProperties(editorElement)
+{
+  var nodeData = msiGetObjectDataForProperties(editorElement);
+  if (nodeData != null && nodeData.theNode != null && nodeData.theOffset != null)
+  {
+    return nodeData;
+  }
+  return null;
+}
+
+//Resolves whether the object at anIndex inside aNode is a character or a node.
+function msiPropertiesObjectData(aNode, anIndex)
+{
+  if (aNode == null)
+  {
+    dump("In msiPropertiesObjectData constructor, null node was passed in!\n");
+    return null;
+  }
+
+  if (anIndex != null)
+  {
+    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+    {
+      //What do we return to say we want the character to the left?
+      this.theNode = aNode;
+      this.theOffset = anIndex;
+    }
+    else if (anIndex < aNode.childNodes.length)
+    {
+      this.theNode = aNode.childNodes[anIndex];
+      this.theOffset = null;
+    }
+    else  //trouble??
+    {
+      dump("Problem case in msiPropertiesObjectData - aNode is [" + aNode.nodeName + "], with length [" + aNode.childNodes.length + "], and anIndex is [" + anIndex + "].\n");
+      this.theNode = aNode;
+      this.theOffset = null;
+    }
+  }
+  else
+  {
+    this.theNode = aNode;
+    this.theOffset = null;
+  }
+}
+
+function msiGetObjectDataForProperties(editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  var nodeData = msiSelectPropertiesObjectFromSelection(editor);
+  return nodeData;
+}
+
 /*TODO: We need an oncreate hook to do enabling/disabling for the
         Format menu. There should be code like this for the
         object-specific "Properties" item
@@ -2735,8 +2788,18 @@ function msiEditorGetObjectForProperties(editor)
   // Find nearest parent of selection anchor node
   //   that is a link, list, table cell, or table
 
+  var nodeData = msiSelectPropertiesObjectFromSelection(editor);
+  if (nodeData != null && nodeData.theNode != null)
+  {
+    if (nodeData.theOffset == null)
+      return nodeData.theNode;
+    else
+      return null; //Calls to this function are assumed to want some object or other to revise - those which can
+                   //revise a character in text should go in through the msiGetCharForProperties(editorElement) method,
+                   //or directly through the msiSelectPropertiesObjectFromSelection function?
+  }
+  var node = null;
   var anchorNode;
-  var node;
   try {
     anchorNode = editor.selection.anchorNode;
     if (anchorNode.firstChild)
@@ -2751,6 +2814,10 @@ function msiEditorGetObjectForProperties(editor)
       node = anchorNode;
   } catch (e) {}
 
+  var origNode = node;
+
+  //We didn't pick up anything. Try again the old-fashioned (Composer code) way.
+  node = origNode;
   while (node)
   {
     if (node.nodeName)
@@ -2773,6 +2840,452 @@ function msiEditorGetObjectForProperties(editor)
   return null;
 }
 
+function msiSelectPropertiesObjectFromSelection(editor)
+{
+  if (editor.selection.isCollapsed)
+    return msiSelectPropertiesObjectFromCursor(editor);
+
+  var theRange = editor.selection.getRangeAt(0);
+  if (theRange == null)
+  {
+    theRange = editor.document.createRange();
+    theRange.setStart(editor.selection.anchorNode, editor.selection.anchorOffset);
+    theRange.setEnd(editor.selection.focusNode, editor.selection.focusOffset);
+    if (theRange.collapsed)  //According to the W3C DOM Range interface specification, this will happen if anchor was after focus.
+    {
+      theRange.setStart(editor.selection.focusNode, editor.selection.focusOffset);
+      theRange.setEnd(editor.selection.anchorNode, editor.selection.anchorOffset);
+    }
+  }
+  if (theRange.collapsed)
+    return msiSelectPropertiesObjectFromCursor(editor);
+
+  return msiSelectPropertiesObjectFromRange(editor, theRange);
+
+  //We're trying to identify the situation where there's essentially (to be laboriously defined below) one object selected.
+  //The plan is:
+  //  (1) In the best situation, we'll find that anchorNode and focusNode are children of the same element, with a difference
+  //        of one in their offsets. That node is then the revisable one.
+  //  (2) If one of anchorNode/focusNode is a child of the common ancestor but the other isn't, we want to look for the situation
+  //        where the non-direct child is essentially at the start/end of the node we're hoping for in (1). This should be handled
+  //        carefully, but the idea is much like the msiFindRevisableObjectToLeft() function - we'd like to be able to move up
+  //        to the parent but have to ensure the situation warrants it.
+  //  (3) If neither is a direct child of commonAncestor, we try to move both positions up to the parents. The hope is that the
+  //        positions passed in are just beyond the ends of an object, with nothing significant between; failing that, the hope is
+  //        that they're just inside the ends of an object.
+  //  Now write the code?
+//  var rangeContentList = msiNavigationUtils.getSignificantRangeContent(theRange);
+
+}
+
+function msiSelectPropertiesObjectFromRange(editor, aRange)
+{
+  var aNode = null;
+  var anOffset = null;
+
+  if (aRange.startContainer == aRange.endContainer)  //the simple case
+  {
+    if (aRange.endOffset - aRange.startOffset == 1)  //the simplest (hoped-for) case
+    {
+      //Want something else here - another function that returns one of our "properties objects" from a node and offset?
+      //Even in the simplest case, have to distinguish between selecting a character (parent is Text) and selecting a node.
+      return new msiPropertiesObjectData(aRange.startContainer, aRange.startOffset);
+    }
+    if (msiNavigationUtils.positionIsAtStart(aRange.startContainer, aRange.startOffset) && msiNavigationUtils.positionIsAtEnd(aRange.endContainer, aRange.endOffset))
+    {
+      return new msiPropertiesObjectData(aRange.startContainer, null);
+    }
+    return null;
+  }
+  else  //Can we move up the tree without essentially changing the range?
+  {
+    var retVal = null;
+    var ancestorNode = aRange.commonAncestorContainer;
+    var trialSequenceStart = [0];
+    if (aRange.startContainer != ancestorNode)
+      trialSequenceStart = [1,2];  //means try left first, then right
+    var trialSequenceEnd = [0];
+    if (aRange.endContainer != ancestorNode)
+      trialSequenceEnd = [2,1];  //means try right first, then left
+
+    for (var jx = 0; jx < trialSequenceStart.length; ++jx)
+    {
+      for (var kx = 0; kx < trialSequenceEnd.length; ++kx)
+      {
+        var bChanged = false;
+        var newRange = aRange.cloneRange();
+        if ((trialSequenceStart[jx] == 1) && msiNavigationUtils.positionIsAtStart(aRange.startContainer, aRange.startOffset))
+        {
+          bChanged = true;
+          newRange.setStartBefore(aRange.startContainer);
+//          msiNavigationUtils.moveRangeStartOutOfObject(newRange, false);  //the "false" means "to left" as opposed to "to right"
+        }
+        else if ((trialSequenceStart[jx] == 2) && msiNavigationUtils.positionIsAtEnd(aRange.startContainer, aRange.startOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.startContainer, editor))
+        {
+          bChanged = true;
+          newRange.setStartAfter(aRange.startContainer);
+//          msiNavigationUtils.moveRangeStartOutOfObject(newRange, true);  //the "true" means "to right"
+        }
+        if ((trialSequenceEnd[kx] == 1) && msiNavigationUtils.positionIsAtStart(aRange.endContainer, aRange.endOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.endContainer, editor))
+        {
+          bChanged = true;
+          newRange.setEndBefore(aRange.endContainer);
+//          msiNavigationUtils.moveRangeEndOutOfObject(newRange, false);  //the "false" means "to left" as opposed to "to right"
+        }
+        else if ((trialSequenceEnd[kx] == 2) && msiNavigationUtils.positionIsAtEnd(aRange.endContainer, aRange.endOffset))
+        {
+          bChanged = true;
+          newRange.setEndAfter(aRange.endContainer);
+//          msiNavigationUtils.moveRangeEndOutOfObject(newRange, true);  //the "true" means "to right"
+        }
+
+        if (bChanged)
+          retVal = msiSelectPropertiesObjectFromRange(editor, newRange);
+      }
+
+      if ((retVal != null))
+      {
+        return retVal;
+        break;
+      }
+    }
+  }
+
+  return null;
+}
+
+function msiSelectPropertiesObjectFromCursor(editor)
+{
+  var currNode = editor.selection.anchorNode;
+  //Look to the left of the cursor:
+  return msiFindRevisableObjectToLeft(currNode, editor.selection.anchorOffset, editor);
+}
+
+function msiFindRevisableObjectToLeft(aNode, anOffset, editor)
+{
+  var returnVal = new Object();
+  returnVal.theNode = null;
+  returnVal.theOffset = null;
+  if (aNode.nodeType == nsIDOMNode.TEXT_NODE && anOffset > 0)
+  {
+    //What do we return to say we want the character to the left?
+    returnVal.theNode = aNode;
+    returnVal.theOffset = anOffset - 1;
+    return returnVal;
+  }
+  var nextNode = null;
+  for (var ix = anOffset; ix > 0; --ix)
+  {
+    //NOTE that we should never be in this clause if this is a text node, since unless anOffset == 0 we would have bailed out in the previous clause.
+    if ( !msiNavigationUtils.isIgnorableWhitespace(aNode.childNodes[ix-1]) )
+    {
+      nextNode = aNode.childNodes[ix-1];
+      break;
+    }
+  }
+  if (ix != 0 && nextNode == null)
+  {
+    dump("Unexpected result in msiFindObjectToLeft! Return null.\n");
+    return returnVal;
+  }
+  while ((nextNode == null) && msiNavigationUtils.boundaryIsTransparent(aNode, editor))
+  {
+    //Move to left and try again...
+    nextNode = aNode.previousSibling;
+    if (nextNode == null)
+      aNode = aNode.parentNode;
+  }
+  if (nextNode != null)
+  {
+    aNode = nextNode;
+    nextNode = null;
+    while (aNode != null && msiNavigationUtils.boundaryIsTransparent(aNode, editor))
+      aNode = aNode.lastChild;
+  }
+  returnVal.theNode = aNode;
+  if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+    returnVal.theOffset = aNode.length - 1;
+  else
+    returnVal.theOffset = null;
+  return returnVal;
+}
+
+var msiNavigationUtils = 
+{
+  m_DOMUtils : Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils),
+  mAtomService : Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService),
+
+  isIgnorableWhitespace : function(node)
+  {
+    if (node.nodeType != nsIDOMNode.TEXT_NODE)
+      return false;
+    return this.m_DOMUtils.isIgnorableWhitespace(node);
+  },
+
+  boundaryIsTransparent : function(node, editor)  //This has to do with whether node's children at right or left are considered adjacent to following or preceding objects, not with cursor movement.
+  {
+    if (node.nodeType == nsIDOMNode.TEXT_NODE)
+      return true;
+
+    switch( this.getTagClass( node, editor) )
+    {
+      case "texttag":
+//  In the cases below, we'd want to identify a space or break at the end of a paragraph as an object to be revised from the right?
+//      case "paratag":
+//      case "listtag":
+//      case "structtag":
+//      case "envtag":
+        return true;
+      case "othertag":
+      default:
+      break;
+    }
+    switch(node.nodeName)
+    {
+      case "mrow":
+      //Need to examine stuff here - like is the parent an mfrac? Is the mrow a fence?
+      {
+        if (this.isFence(node))
+          return false;
+        if (node.parentNode != null)
+        {
+          var parentName = msiGetBaseNodeName(node.parentNode);
+          switch(parentName)
+          {
+            case "mfrac":
+            case "mroot":
+            case "msqrt":
+            case "mradical":
+            case "msub":
+            case "msup":
+            case "msubsup":
+            case "mmultiscripts":
+            case "munder":
+            case "mover":
+            case "munderover":
+              return false;
+            break;
+          }
+        }
+        return true;
+      }
+      break;
+      default:
+      break;
+    }
+    return false;
+  },
+
+  positionIsAtStart : function(aNode, anOffset)
+  {
+    if (anOffset == 0)
+      return true;
+    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+      return this.isIgnorableWhitespace(aNode);
+    else if (anOffset < aNode.childNodes.length)
+    {
+      for (var ix = anOffset; ix > 0; --ix)
+      {
+        if (!this.isIgnorableWhitespace(aNode.childNodes[ix - 1]))
+          break;
+      }
+      if (ix == 0)
+        return true;
+    }
+    return false;
+  },
+
+  positionIsAtEnd : function(aNode, anOffset)
+  {
+    var nLength = 0;
+    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+      nLength = aNode.data.length;
+    else
+      nLength = aNode.childNodes.length;
+    if (anOffset == nLength)
+      return true;
+    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+      return this.isIgnorableWhitespace(aNode);
+    else if (anOffset < nLength)
+    {
+      for (var ix = anOffset; ix < nLength; ++ix)
+      {
+        if (!this.isIgnorableWhitespace(aNode.childNodes[ix]))
+          break;
+      }
+      if (ix == nLength)
+        return true;
+    }
+    return false;
+  },
+
+//  getIndexOfNodeInParent : function(aNode)
+//  {
+//    if (aNode == null)
+//    {
+//      dump("In msiNavigationUtils.getIndexOfNodeInParent, null node passed in.\n");
+//      return -1;
+//    }
+//    if (aNode.parentNode == null)
+//    {
+//      dump("In msiNavigationUtils.getIndexOfNodeInParent, node passed in with null parent--node is [" + aNode.nodeName + "].\n");
+//      return -1;
+//    }
+//    for (var ix = 0; ix < aNode.parentNode.childNodes.length; ++ix)
+//    {
+//      if (aNode.parentNode.childNodes[ix] == aNode)
+//        return ix;
+//    }
+//    return -1;
+//  },
+//
+//  moveRangeStartOutOfObject : function(aRange, bToRight)
+//  {
+//    var index = this.getIndexOfNodeInParent(aRange.startContainer);
+//    if (index < 0)
+//      return false;
+//    aRange.
+//  },
+//
+//  moveRangeEndOutOfObject : function(aRange, bToRight)
+//  {
+//  },
+
+  getTagClass : function(node, editor)
+  {
+    var nsAtom = null;
+    if (node.namespaceURI != null)
+      nsAtom = this.mAtomService.getAtom(node.namespaceURI);
+
+    var retVal = editor.tagListManager.getClassOfTag( node.nodeName, nsAtom);
+    if (retVal == null || retVal.length == 0)
+      retVal = editor.tagListManager.getClassOfTag( node.nodeName, null );
+    return retVal;
+  },
+
+  isFence : function(node)
+  {
+    var nodeName = msiGetBaseNodeName(node);
+    if (nodeName == 'mrow')
+    {
+
+      if ( (msiGetBaseNodeName(node.firstChild) == "mo") && (node.firstChild.getAttribute("fence") == "true") && (node.firstChild.getAttribute("form") == "prefix")
+            && (msiGetBaseNodeName(node.lastChild) == "mo") && (node.lastChild.getAttribute("fence") == "true") && (node.lastChild.getAttribute("form") == "postfix") )
+        return true;
+    }
+    return false;
+  },
+
+  getSignificantContents : function(node)
+  {
+    var retList = new Array();
+    for (var ix = 0; ix < node.childNodes.length; ++ix)
+    {
+      if (!this.isIgnorableWhitespace(node.childNodes[ix]))
+        retList.push(node.childNodes[ix]);
+    }
+    return retList;
+  },
+
+  getSignificantRangeContent : function(range)
+  {
+    var retList = new Array();
+    var clonedDocFragment = range.cloneContents();
+    for (var ix = 0; ix < clonedDocFragment.childNodes.length; ++ix)
+    {
+      if (!this.isIgnorableWhitespace(clonedDocFragment.childNodes[ix]))
+        retList.push(clonedDocFragment.childNodes[ix]);
+    }
+    return retList;
+  },
+
+  isBoundFence : function(node)
+  {
+    return ( this.isFence(node) 
+               && node.firstChild.hasAttribute("msiBoundFence") && (node.firstChild.getAttribute("msiBoundFence") == "true") 
+               && node.lastChild.hasAttribute("msiBoundFence") && (node.lastChild.getAttribute("msiBoundFence") == "true") );
+  },
+
+  isBinomial : function(node)
+  {
+    if (this.isBoundFence(node))
+    {
+      var children = this.getSignificantContents(node);
+      if (children.length == 3)
+      {
+        if (msiGetBaseNodeName(children[1]) == "mfrac")
+          return true;
+      }
+    }
+    return false;
+  },
+
+  isMathTemplate : function(node)
+  {
+    if (node == null)
+      return false;
+
+    switch(msiGetBaseNodeName(node))
+    {
+      case "mfrac":
+      case "msub":
+      case "msubsup":
+      case "msup":
+      case "munder":
+      case "mover":
+      case "munderover":
+      case "mroot":
+      case "msqrt":
+        return true;
+      break;
+      case "mrow":
+        return this.isFence(node);
+      break;
+    }
+  },
+
+  isUnit : function(node)
+  {
+    if ( node != null && node.hasAttribute("msiunit") && (node.getAttribute("msiunit") == "true") )
+      return true;
+    return false;
+  },
+
+  isMathname : function(node)
+  {
+    if ( node != null && node.hasAttribute("msimathname") && (node.getAttribute("msimathname") == "true") )
+      return true;
+    return false;
+  },
+
+  isEmbellishedOperator : function(node)
+  {
+    if ( node != null)
+    {
+      switch(msiGetBaseNodeName(node))
+      {
+        case 'msub':
+        case 'msup':
+        case 'msubsup':
+        case 'mover':
+        case 'munder':
+        case 'munderover':
+        case 'mmultiscripts':
+        //According to the MathML 2.1 spec, we should also include 'mfrac" here. I'm not convinced that would give the right thing generally here.
+        {
+          var opNode = node.firstChild;
+          if ( opNode != null && (msiGetBaseNodeName(opNode) == 'mo') 
+                 && opNode.hasAttribute("largeop") && (opNode.getAttribute("largeop") == "true") )
+            return true;
+        }
+        break;
+        default:
+        break;
+      }
+    }
+    return false;
+  }
+};
 
 /******Display Mode stuff - for the time being, only applicable to main editor window, but leave the functions here anyway******/
 
@@ -3409,20 +3922,31 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
   var menuItem = document.getElementById(id);
   if (!menuItem) return null;
 
+  var nodeData;
   var element;
   var menuStr = GetString("AdvancedProperties");
   var name;
 
   if (msiIsEditingRenderedHTML(editorElement))
-    element = msiGetObjectForProperties(editorElement);
+  {
+    nodeData = msiGetObjectDataForProperties(editorElement);
+    if (nodeData && nodeData.theNode != null)
+      element = nodeData.theNode;
+  }
 
   if (element && element.nodeName)
   {
     var objStr = "";
     menuItem.setAttribute("disabled", "");
-    name = element.nodeName.toLowerCase();
+//    name = element.nodeName.toLowerCase();
+    name = msiGetBaseNodeName(element);
+    if (name != null)
+      name = name.toLowerCase();
     switch (name)
     {
+      case "#text":
+      break;
+
       case "img":
         // Check if img is enclosed in link
         //  (use "href" to not be fooled by named anchor)
@@ -3491,6 +4015,84 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
           name = "href";
         }
         break;
+
+      case 'hspace':
+        objStr = GetString("HorizontalSpace");
+      break;
+
+      case 'vspace':
+        objStr = GetString("VerticalSpace");
+      break;
+
+      case 'msirule':
+        objStr = GetString("Rule");
+      break;
+
+      case 'msibreak':
+        objStr = GetString("GenBreak");
+      break;
+
+      case 'mfrac':
+        objStr = GetString("Fraction");
+      break;
+
+      case 'mroot':
+      case 'msqrt':
+        objStr = GetString("Radical");
+      break;
+
+      case 'msub':
+      case 'msup':
+      case 'msubsup':
+        if (msiNavigationUtils.isEmbellishedOperator(element))
+          objStr = GetString("Operator");
+//        msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
+// Should be no Properties dialog available for these cases? SWP has none...
+      break;
+
+      case 'mover':
+      case 'munder':
+      case 'munderover':
+        if (msiNavigationUtils.isEmbellishedOperator(element))
+          objStr = GetString("Operator");
+        else
+          objStr = GetString("Decoration");
+      break;
+
+      case 'mmultiscripts':
+        if (msiNavigationUtils.isEmbellishedOperator(element))
+          objStr = GetString("Operator");
+        else
+          objStr = GetString("Tensor");
+      break;
+
+      case 'mmatrix':
+        objStr = GetString("Matrix");
+      break;
+
+      case 'mi':
+        if (msiNavigationUtils.isUnit(element))
+          objStr = GetString("Unit");
+        else if (msiNavigationUtils.isMathname(element))
+          objStr = GetString("MathName");
+      break;
+
+//  commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
+
+      case 'mrow':
+        if (msiNavigationUtils.isFence(element))
+        {
+          if (msiNavigationUtils.isBinomial(element))
+            objStr = GetString("Binomial");
+          else
+            objStr = GetString("GenBracket");
+        }
+      break;
+
+      case 'mo':
+        objStr = GetString("Operator");
+      break;
+
     }
     if (objStr)
       menuStr = GetString("ObjectProperties").replace(/%obj%/,objStr);
@@ -5135,7 +5737,25 @@ var msiCommandUpdater = {
       if ( controller )
         controller.onEvent(event);
     }
-  }  
+  }
+  
+//  doReviseCommand: function(command, editorElement) {
+//    if (!editorElement)
+//      editorElement = msiGetActiveEditorElement();
+//    try {
+////      if ( controller && controller.isCommandEnabled(command))
+////        controller.doCommand(command);
+//      var controller = this._getControllerForCommand(command, editorElement);
+//      if (!controller)
+//        return;
+//      controller.bRevising = true;
+//      controller.doCommand(command);
+//      controller.bRevising = false;
+//    }
+//    catch (e) {
+//      dump("An error occurred executing the "+command+" command\n");
+//    }
+//  }  
 };
 // Shim for compatibility with existing code. 
 function msiGoDoCommand(command, editorElement) { msiCommandUpdater.doCommand(command, editorElement); }
@@ -5144,6 +5764,7 @@ function msiGoSetCommandEnabled(command, enabled, editorElement) { msiCommandUpd
 function msiGoSetMenuValue(command, labelAttribute, editorElement) { msiCommandUpdater.setMenuValue(command, labelAttribute, editorElement); }
 function msiGoSetAccessKey(command, valueAttribute, editorElement) { msiCommandUpdater.setAccessKey(command, valueAttribute, editorElement); }
 function msiGoOnEvent(node, event) { msiCommandUpdater.onEvent(node, event); }
+//function msiGoDoReviseCommand(command, editorElement) { msiCommandUpdate.doReviseCommand(command, editorElement); }
 
 
 
@@ -5207,6 +5828,10 @@ function msiDialogEditorContentFilter(anEditorElement)
       case "dialogbase":
       case "sw:dialogbase":
         return this.skip;
+      break;
+      case "mi":
+        if (aNode.hasAttribute("tempinput") && (aNode.getAttribute("tempinput")=="true") )
+          return this.reject;
       break;
     }
     return this.acceptAll;  
@@ -5319,7 +5944,7 @@ function msiDialogEditorContentFilter(anEditorElement)
         var bIsLast = false;
         var parent = mathNodes[ix].parentNode;
         if ((parent != null) && (parent.childNodes != null) && (parent.childNodes.length > 0))
-          bIsLast = (parent.childNodes[parent.childNodes.length - 1] == mathNodes[ix]).
+          bIsLast = (parent.childNodes[parent.childNodes.length - 1] == mathNodes[ix]);
         retval = this.nodeHasRealContent(mathNodes[ix], bIsLast);
       }
     }
