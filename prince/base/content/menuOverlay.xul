@@ -131,7 +131,7 @@
     </menupopup>
   </menu>
   
-  <menu id="editMenu" label="&editMenu.label;" accesskey="&editmenu.accesskey;">
+  <menu id="editMenu" label="&editMenu.label;" accesskey="&editmenu.accesskey;" onpopupshowing="msiEditorInitFormatMenu();">
     <menupopup id="edEditMenuPopup">
       <menuitem id="menu_undo"
                 label="&undoCmd.label;"
@@ -143,6 +143,8 @@
                 key="key_redo"
                 accesskey="&redoCmd.accesskey;"
                 observes="cmd_redo"/>
+      <menuitem id="objectProperties" observes="cmd_objectProperties"/>
+        <!-- label and accesskey are set in InitObjectProperties -->
       <menuseparator id="edEditMenuSep1" />
       <menuitem id="menu_cut"
                 label="&cutCmd.label;"
@@ -448,7 +450,30 @@
     <command id="cmd_viewStatusBar"    oncommand="setStatusBarVisibility();" />
 
     <!-- only used in context popup menu -->
-    <command id="cmd_editLink"         oncommand="msiGoDoCommand('cmd_editLink')"/>
+    <command id="cmd_editLink"                 oncommand="msiGoDoCommand('cmd_editLink')"/>
+    <command id="cmd_msiReviseHyperlink"       oncommand="msiGoDoCommand('cmd_msiReviseHyperlink')"/>
+    <command id="cmd_reviseAnchor"             oncommand="msiGoDoCommand('cmd_reviseAnchor')"/>
+    <command id="cmd_reviseImage"              oncommand="msiGoDoCommand('cmd_reviseImage')"/>
+    <command id="cmd_reviseLine"               oncommand="msiGoDoCommand('cmd_reviseLine')"/>
+    <!-- command id="cmd_reviseTable"            oncommand="msiGoDoCommand('cmd_reviseTable')"/ -->
+    <command id="cmd_reviseForm"               oncommand="msiGoDoCommand('cmd_reviseForm')"/>
+    <!-- command id="cmd_inputtag"         oncommand="msiGoDoCommand('cmd_inputtag')"/>
+    <command id="cmd_inputimage"       oncommand="msiGoDoCommand('cmd_inputimage')"/ -->
+    <command id="cmd_reviseTextarea"           oncommand="msiGoDoCommand('cmd_reviseTextarea')"/>
+    <command id="cmd_reviseButton"             oncommand="msiGoDoCommand('cmd_reviseButton')"/>
+    <command id="cmd_reviseLabel"              oncommand="msiGoDoCommand('cmd_reviseLabel')"/>
+    <command id="cmd_reviseFieldset"           oncommand="msiGoDoCommand('cmd_reviseFieldset')"/>
+    <!-- command id="cmd_isindex"          oncommand="msiGoDoCommand('cmd_isindex')"/ -->
+    <command id="cmd_reviseChars"              oncommand="msiGoDoCommand('cmd_reviseChars')"/>
+    <command id="cmd_reviseHTML"               oncommand="msiGoDoCommand('cmd_reviseHTML')"/>
+
+    <command id="cmd_reviseBreak"              oncommand="msiGoDoCommand('cmd_reviseBreak')"/>
+    <!-- command id="cmd_insertBreakAll"   oncommand="msiGoDoCommand('cmd_insertBreakAll')"/ -->
+
+    <command id="cmd_reviseHorizontalSpaces"   oncommand="msiGoDoCommand('cmd_reviseHorizontalSpaces')"/>
+    <command id="cmd_reviseVerticalSpaces"     oncommand="msiGoDoCommand('cmd_reviseVerticalSpaces')"/>
+    <command id="cmd_msiReviseRules"           oncommand="msiGoDoCommand('cmd_msiReviseRules')"/>
+    <command id="cmd_msiReviseBreaks"          oncommand="msiGoDoCommand('cmd_msiReviseBreaks')"/>
 
     <!-- dummy command used just to disable things in non-HTML modes -->
     <command id="cmd_renderedHTMLEnabler"/>

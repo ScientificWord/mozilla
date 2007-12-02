@@ -141,6 +141,9 @@ function Startup()
     gDialog.widthUnitsMenulist.selectedIndex == 0 &&
     gDialog.heightUnitsMenulist.selectedIndex == 0;
 
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  window.mMSIDlgManager.configureDialog();
+
   // Start in "Link" tab if 2nd arguement is true
   if (gDialog.linkTab && "arguments" in window && window.arguments[1])
   {
@@ -326,5 +329,6 @@ function onAccept()
 
   gDoAltTextError = false;
 
-  return false;
+  return true;
+//  return false;
 }

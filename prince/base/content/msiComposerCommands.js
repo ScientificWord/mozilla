@@ -94,6 +94,21 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_documentInfo",       msiDocumentInfoCommand);
   commandTable.registerCommand("cmd_macrofragment", msiMacroFragmentCommand);
   commandTable.registerCommand("cmd_viewInvisibles", msiViewInvisiblesCommand);
+  commandTable.registerCommand("cmd_msiReviseHyperlink", msiReviseHyperlinkCommand);
+  commandTable.registerCommand("cmd_reviseAnchor", msiReviseAnchorCommand);
+  commandTable.registerCommand("cmd_reviseImage", msiReviseImageCommand);
+//  commandTable.registerCommand("cmd_reviseLine",  msiReviseLineCommand);
+  commandTable.registerCommand("cmd_reviseForm",  msiReviseFormCommand);
+  commandTable.registerCommand("cmd_reviseTextarea", msiReviseTextareaCommand);
+  commandTable.registerCommand("cmd_reviseButton",  msiReviseButtonCommand);
+  commandTable.registerCommand("cmd_reviseLabel",  msiReviseLabelCommand);
+  commandTable.registerCommand("cmd_reviseFieldset", msiReviseFieldsetCommand);
+  commandTable.registerCommand("cmd_reviseChars",  msiReviseCharsCommand);
+  commandTable.registerCommand("cmd_reviseHTML",   msiReviseHTMLCommand);
+  commandTable.registerCommand("cmd_reviseHorizontalSpaces", msiReviseHorizontalSpacesCommand);
+  commandTable.registerCommand("cmd_reviseVerticalSpaces", msiReviseVerticalSpacesCommand);
+  commandTable.registerCommand("cmd_msiReviseRules",   msiReviseRulesCommand);
+  commandTable.registerCommand("cmd_msiReviseBreaks",  msiReviseBreaksCommand);
   commandTable.registerCommand("cmd_note", msiNoteCommand);
   commandTable.registerCommand("cmd_frame", msiFrameCommand);
 }
@@ -3297,6 +3312,26 @@ var msiFormCommand =
   }
 };
 
+var msiReviseFormCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var formNode = aParams.getISupportsValue("reviseObject");
+    if (formNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseFormCommand, trying to revise a form, dialog not yet implemented.");
+//      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdFormProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                                                     editorElement, "cmd_reviseForm", this);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
+};
+
 //-----------------------------------------------------------------------------------
 //We do need this one.
 var msiInputTagCommand =
@@ -3396,6 +3431,26 @@ var msiTextAreaCommand =
   }
 };
 
+var msiReviseTextareaCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var textAreaNode = aParams.getISupportsValue("reviseObject");
+    if (textAreaNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseTextareaCommand, trying to revise a textarea, dialog not yet implemented.");
+//      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdTextAreaProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                                                     editorElement, "cmd_reviseTextarea", this);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
+};
+
 //-----------------------------------------------------------------------------------
 var msiSelectCommand =
 {
@@ -3460,6 +3515,26 @@ var msiButtonCommand =
   }
 };
 
+var msiReviseButtonCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var buttonNode = aParams.getISupportsValue("reviseObject");
+    if (buttonNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseButtonCommand, trying to revise a button, dialog not yet implemented.");
+//      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdTextAreaProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                                                     editorElement, "cmd_reviseTextarea", this);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
+};
+
 //-----------------------------------------------------------------------------------
 var msiLabelCommand =
 {
@@ -3515,6 +3590,26 @@ var msiLabelCommand =
   }
 };
 
+var msiReviseLabelCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var labelNode = aParams.getISupportsValue("reviseObject");
+    if (labelNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseLabelCommand, trying to revise a label, dialog not yet implemented.");
+//      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdTextAreaProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                                                     editorElement, "cmd_reviseTextarea", this);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
+};
+
 //-----------------------------------------------------------------------------------
 //Again, we need to do something to tie the editor to the dialog used.
 var msiFieldSetCommand =
@@ -3551,6 +3646,26 @@ var msiFieldSetCommand =
     } catch (e) {}
     return fieldsetElement;
   }
+};
+
+var msiReviseFieldsetCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var fieldSetNode = aParams.getISupportsValue("reviseObject");
+    if (fieldSetNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseFieldsetCommand, trying to revise a fieldset, dialog not yet implemented.");
+//      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdTextAreaProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                                                     editorElement, "cmd_reviseTextarea", this);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
 };
 
 //-----------------------------------------------------------------------------------
@@ -3613,6 +3728,26 @@ var msiImageCommand =
     } catch (e) {}
     return imageElement;
   }
+};
+
+var msiReviseImageCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var imageNode = aParams.getISupportsValue("reviseObject");
+    if (imageNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseImageCommand, trying to revise an image, dialog not yet implemented.");
+//      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                                                     editorElement, "cmd_reviseImage", this);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
 };
 
 //-----------------------------------------------------------------------------------
@@ -3707,12 +3842,31 @@ var msiLinkCommand =
     // since last tab panel handles 
     var editorElement = msiGetActiveEditorElement();
     var element = msiGetObjectForProperties(editorElement);
-    if (element && element.nodeName == "img")
+    if (element && msiGetBaseNodeName(element).toLowerCase() == "img")
       window.openDialog("chrome://prince/content/EdImageProps.xul","_blank", "chrome,close,titlebar,modal", null, true);
     else
       window.openDialog("chrome://editor/content/EdLinkProps.xul","_blank", "chrome,close,titlebar,modal");
     editorElement.focus();
   }
+};
+
+var msiReviseHyperlinkCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var linkNode = aParams.getISupportsValue("reviseObject");
+    if (linkNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseHyperlinkCommand, trying to revise a hyperlink, dialog not implemented.");
+//      window.openDialog("chrome://editor/content/EdNamedAnchorProps.xul", "_blank", "chrome,close,titlebar,modal", "", editorElement);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
 };
 
 //-----------------------------------------------------------------------------------
@@ -3736,6 +3890,25 @@ var msiAnchorCommand =
   }
 };
 
+var msiReviseAnchorCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var anchorNode = aParams.getISupportsValue("reviseObject");
+    if (anchorNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseAnchorCommand, trying to revise hyperlink anchor, dialog not implemented.");
+//      window.openDialog("chrome://editor/content/EdNamedAnchorProps.xul", "_blank", "chrome,close,titlebar,modal", "", editorElement);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
+};
+
 //-----------------------------------------------------------------------------------
 //Need to tie the editor to the dialog.
 var msiInsertHTMLWithDialogCommand =
@@ -3755,6 +3928,25 @@ var msiInsertHTMLWithDialogCommand =
     window.openDialog("chrome://editor/content/EdInsSrc.xul","_blank", "chrome,close,titlebar,modal,resizable", "", editorElement);
     editorElement.focus();
   }
+};
+
+var msiReviseHTMLCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var htmlNode = aParams.getISupportsValue("reviseObject");
+    if (htmlNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseHTMLCommand, trying to revise encapsulated HTML, dialog not implemented.");
+//      window.openDialog("chrome://editor/content/EdInsSrc.xul","_blank", "chrome,close,titlebar,modal,resizable", "", editorElement);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
 };
 
 //-----------------------------------------------------------------------------------
@@ -3779,6 +3971,25 @@ var msiInsertCharsCommand =
   }
 };
 
+var msiReviseCharsCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var charsObject = aParams.getISupportsValue("reviseObject");
+    if (charsObject != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseCharsCommand, trying to revise a character, dialog not yet implemented.");
+//      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdTextAreaProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                                                     editorElement, "cmd_reviseTextarea", this);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
+};
 //-----------------------------------------------------------------------------------
 var msiInsertBreakCommand =
 {
@@ -3847,6 +4058,26 @@ var msiInsertHorizontalSpacesCommand =
       dump("*** Exception: couldn't open HorizontalSpaces Dialog: " + ex + "\n");
     }
   }
+};
+
+var msiReviseHorizontalSpacesCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var hspaceNode = aParams.getISupportsValue("reviseObject");
+    if (hspaceNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseHorizontalSpacesCommand, trying to revise a horizontal space, dialog not yet implemented.");
+//      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdTextAreaProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                                                     editorElement, "cmd_reviseTextarea", this);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
 };
 
 function msiInsertHorizontalSpace(dialogData, editorElement)
@@ -3948,6 +4179,26 @@ var msiInsertVerticalSpacesCommand =
   }
 };
 
+var msiReviseVerticalSpacesCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var vspaceNode = aParams.getISupportsValue("reviseObject");
+    if (vspaceNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseVerticalSpacesCommand, trying to revise a vertical space, dialog not yet implemented.");
+//      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdTextAreaProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                                                     editorElement, "cmd_reviseTextarea", this);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
+};
+
 function msiInsertVerticalSpace(dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
@@ -4027,6 +4278,26 @@ var msiInsertRulesCommand =
   }
 };
 
+var msiReviseRulesCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var ruleNode = aParams.getISupportsValue("reviseObject");
+    if (ruleNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseRulesCommand, trying to revise a rule, dialog not yet implemented.");
+//      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdTextAreaProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                                                     editorElement, "cmd_reviseTextarea", this);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
+};
+
 function msiInsertRules(dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
@@ -4071,6 +4342,26 @@ var msiInsertBreaksCommand =
       dump("*** Exception: couldn't open msiBreaksDialog: " + ex + "\n");
     }
   }
+};
+
+var msiReviseBreaksCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)  {return true;},
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var breakNode = aParams.getISupportsValue("reviseObject");
+    if (breakNode != null && editorElement != null)
+    {
+      AlertWithTitle("msiComposerCommands.js", "In msiReviseBreaksCommand, trying to revise a break, dialog not yet implemented.");
+//      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdTextAreaProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                                                     editorElement, "cmd_reviseTextarea", this);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand, dummy)  {}
 };
 
 function msiInsertBreaks(dialogData, editorElement)
@@ -4363,7 +4654,7 @@ function msiDocumentInfo(editorElement)
   {
     var theName = aNode.localName;
     if (!theName || !theName.length)
-      theName = aNode.nodeName;
+      theName = msiGetBaseNodeName(aNode);
     switch(theName.toLowerCase())
     {
       case "meta":
@@ -5450,8 +5741,10 @@ var msiObjectPropertiesCommand =
     var editorElement = msiGetActiveEditorElement();
     if (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement))
     {
-      isEnabled = (msiGetObjectForProperties(editorElement) != null ||
-                   msiGetEditor(editorElement).getSelectedElement("href") != null);
+      var nodeData = msiGetObjectDataForProperties(editorElement);
+      var editor = msiGetEditor(editorElement);
+      isEnabled = ( (nodeData != null && nodeData.theNode != null) ||
+                    (editor != null && editor.getSelectedElement("href") != null) );
     }
     return isEnabled;
   },
@@ -5463,66 +5756,170 @@ var msiObjectPropertiesCommand =
   {
     // Launch Object properties for appropriate selected element 
     var editorElement = msiGetActiveEditorElement();
-    var element = msiGetObjectForProperties(editorElement);
+    var nodeData = msiGetObjectDataForProperties(editorElement);
+    var element = nodeData.theNode;
     if (element)
     {
-      var name = element.nodeName.toLowerCase();
+      if (element.nodeType == nsIDOMNode.TEXT_NODE)
+      {
+        if (nodeData.theOffset != null)
+        {
+          //Need to bring up the ReviseCharacter dialog. Not yet implemented.
+          var theCharacter = element.data.charAt(nodeData.theOffset);
+        }
+        else
+        {
+          dump("No offset specified in text node for Properties dialog! Aborting.\n");
+          return;
+        }
+      }
+      var cmdParams = newCommandParams();
+      if (!cmdParams)
+      {
+        dump("Trouble in msiObjectPropertiesCommand.doCommand! Can't create new CommandParams - aborting.\n");
+        return;
+      }
+
+      cmdParams.setISupportsValue("reviseObject", element);
+      var name = msiGetBaseNodeName(element).toLowerCase();
       switch (name)
       {
         case 'img':
-          msiGoDoCommand("cmd_image", editorElement);
-          break;
+          msiGoDoCommandParams("cmd_reviseImage", cmdParams, editorElement);
+        break;
         case 'hr':
-          msiGoDoCommand("cmd_hline", editorElement);
-          break;
+          msiGoDoCommandParams("cmd_reviseLine", cmdParams, editorElement);
+        break;
         case 'form':
-          msiGoDoCommand("cmd_form", editorElement);
-          break;
+          msiGoDoCommandParams("cmd_reviseForm", cmdParams, editorElement);
+        break;
         case 'input':
           var type = element.getAttribute("type");
           if (type && type.toLowerCase() == "image")
             msiGoDoCommand("cmd_inputimage", editorElement);
           else
             msiGoDoCommand("cmd_inputtag", editorElement);
-          break;
+        break;
         case 'textarea':
-          msiGoDoCommand("cmd_textarea", editorElement);
-          break;
+          msiGoDoCommandParams("cmd_reviseTextarea", cmdParams, editorElement);
+        break;
         case 'select':
-          msiGoDoCommand("cmd_select", editorElement);
-          break;
+//          msiGoDoCommand("cmd_select", editorElement);
+//  Don't think we want to support this???
+        break;
         case 'button':
-          msiGoDoCommand("cmd_button", editorElement);
-          break;
+          msiGoDoCommandParams("cmd_reviseButton", cmdParams, editorElement);
+        break;
         case 'label':
-          msiGoDoCommand("cmd_label", editorElement);
-          break;
+          msiGoDoCommandParams("cmd_reviseLabel", cmdParams, editorElement);
+        break;
         case 'fieldset':
-          msiGoDoCommand("cmd_fieldset", editorElement);
-          break;
+          msiGoDoCommandParams("cmd_reviseFieldset", cmdParams, editorElement);
+        break;
+
         case 'table':
           msiEditorInsertOrEditTable(false, editorElement, "cmd_objectProperties", this);
-          break;
+        break;
         case 'td':
         case 'th':
           msiEditorTableCellProperties(editorElement);
-          break;
+        break;
+
         case 'ol':
         case 'ul':
         case 'dl':
         case 'li':
           msiGoDoCommand("cmd_listProperties", editorElement);
-          break;
+        break;
+
         case 'a':
           if (element.name)
           {
-            msiGoDoCommand("cmd_anchor", editorElement);
+            msiGoDoCommandParams("cmd_reviseAnchor", cmdParams, editorElement);
           }
           else if(element.href)
           {
-            msiGoDoCommand("cmd_link", editorElement);
+            msiGoDoCommandParams("cmd_msiReviseHyperlink", cmdParams, editorElement);
           }
-          break;
+        break;
+
+        case 'hspace':
+          msiGoDoCommandParams("cmd_reviseHorizontalSpaces", cmdParams, editorElement);
+        break;
+
+        case 'vspace':
+          msiGoDoCommandParams("cmd_reviseVerticalSpaces", cmdParams, editorElement);
+        break;
+
+        case 'msirule':
+          msiGoDoCommandParams("cmd_msiReviseRules", cmdParams, editorElement);
+        break;
+
+        case 'msibreak':
+          msiGoDoCommandParams("cmd_msiReviseBreaks", cmdParams, editorElement);
+        break;
+
+        case 'mfrac':
+          msiGoDoCommandParams("cmd_MSIreviseFractionCmd", cmdParams, editorElement);
+        break;
+
+        case 'mroot':
+        case 'msqrt':
+          msiGoDoCommandParams("cmd_MSIreviseRadicalCmd", cmdParams, editorElement);
+        break;
+
+        case 'msub':
+        case 'msup':
+        case 'msubsup':
+          if (msiNavigationUtils.isEmbellishedOperator(element))
+            msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+//          msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
+// Should be no Properties dialog available for these cases? SWP has none...
+        break;
+
+        case 'mmatrix':
+          msiGoDoCommandParams("cmd_MSIreviseMatrixCmd", cmdParams, editorElement);
+        break;
+
+        case 'mmultiscripts':
+          if (msiNavigationUtils.isEmbellishedOperator(element))
+            msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+          else
+            msiGoDoCommandParams("cmd_MSIreviseTensorCmd", cmdParams, editorElement);
+        break;
+
+        case 'mi':
+          if (msiNavigationUtils.isUnit(element))
+            msiGoDoCommandParams("cmd_MSIreviseUnitsCommand", cmdParams, editorElement);
+          else if (msiNavigationUtils.isMathname(element))
+            msiGoDoCommandParams("cmd_MSIreviseMathnameCmd", cmdParams, editorElement);
+        break;
+
+//    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
+
+        case 'mrow':
+          if (msiNavigationUtils.isFence(element))
+          {
+            if (msiNavigationUtils.isBinomial(element))
+              msiGoDoCommandParams("cmd_MSIreviseBinomialsCmd", cmdParams, editorElement);
+            else
+              msiGoDoCommandParams("cmd_MSIreviseGenBracketsCmd", cmdParams, editorElement);
+          }
+        break;
+
+        case 'mo':
+          msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+        break;
+
+        case 'mover':
+        case 'munder':
+        case 'munderover':
+          if (msiNavigationUtils.isEmbellishedOperator(element))
+            msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+          else
+            msiGoDoCommandParams("cmd_MSIreviseDecorationsCmd", cmdParams, editorElement);
+        break;
+
         default:
           msiDoAdvancedProperties(element, editorElement);
           break;
@@ -5533,7 +5930,18 @@ var msiObjectPropertiesCommand =
         element = msiGetEditor(editorElement).getSelectedElement("href");
       } catch (e) {}
       if (element)
-        msiGoDoCommand("cmd_link", editorElement);
+      {
+        var cmdParams = newCommandParams();
+        if (!cmdParams)
+        {
+          dump("Trouble in msiObjectPropertiesCommand.doCommand! Can't create new CommandParams - aborting.\n");
+          return;
+        }
+
+        cmdParams.setISupportsValue("reviseObject", element);
+        msiGoDoCommandParams("cmd_msiReviseHyperlink", cmdParams, editorElement);
+//        msiGoDoReviseCommand("cmd_link", editorElement);
+      }
     }
     editorElement.contentWindow.focus();
   },

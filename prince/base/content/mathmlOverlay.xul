@@ -71,6 +71,24 @@
     <command id="cmd_MSIunitsCommand"     oncommand="msiGoDoCommand('cmd_MSIunitsCommand')"/>
   </commandset>
 
+  <commandset id="MSImathReviseCommands"
+                  commandupdater="true"
+                  events="create, mode_switch"
+                  oncommandupdate="goUpdateMSIMathMenuItems(this)">
+    <command id="cmd_MSIreviseFractionCmd"      oncommand="msiGoDoCommand('cmd_MSIreviseFractionCmd')"/>
+    <command id="cmd_MSIreviseRadicalCmd"       oncommand="msiGoDoCommand('cmd_MSIradicalCmd')"/>
+    <command id="cmd_MSIreviseScriptsCmd"       oncommand="msiGoDoCommand('cmd_MSIreviseScriptsCmd')"/>
+    <command id="cmd_MSIreviseMatrixCmd"        oncommand="msiGoDoCommand('cmd_MSIreviseMatrixCmd')"/>
+    <command id="cmd_MSIreviseTensorCmd"        disabled="true" oncommand="msiGoDoCommand('cmd_MSIreviseTensorCmd')"/>
+    <command id="cmd_MSIreviseMathnameCmd"      oncommand="msiGoDoCommand('cmd_MSIreviseMathnameCmd')"/>
+    <!-- command id="cmd_MSIreviseSymbolCmd"        oncommand="doParamCommand('cmd_MSIsymbolCmd',event.target.getAttribute('msivalue'));" / -->
+	  <command id="cmd_MSIreviseGenBracketsCmd"   oncommand="msiGoDoCommand('cmd_MSIreviseGenBracketsCmd')"/>
+		<command id="cmd_MSIreviseBinomialsCmd"     oncommand="msiGoDoCommand('cmd_MSIreviseBinomialsCmd')"/>
+		<command id="cmd_MSIreviseOperatorsCmd"     oncommand="msiGoDoCommand('cmd_MSIreviseOperatorsCmd')"/>
+		<command id="cmd_MSIreviseDecorationsCmd"   oncommand="msiGoDoCommand('cmd_MSIreviseDecorationsCmd')"/>
+    <command id="cmd_MSIreviseUnitsCommand"     oncommand="msiGoDoCommand('cmd_MSIreviseUnitsCommand')"/>
+  </commandset>
+
   <!-- style related commands that update on creation, and on selection change (editorOverlay.xul)-->
   <commandset id="composerStyleMenuItems">
     <command id="cmd_MSImathtext"   state="false"     oncommand="msiGoDoCommand('cmd_MSIinlineMathCmd')"/>
