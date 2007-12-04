@@ -22,3 +22,4 @@ public:
 private:
   MuPADWrapper *MuPAD_wrapper;
 };
+

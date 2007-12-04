@@ -3,8 +3,8 @@
 #include "msiSimpleComputeEngine2.h"
 
 #include "nsMemory.h"
-#include "nsEmbedString.h"
 #include "nsIClassInfoImpl.h"
+#include "nsString.h"
 
 #include "ComputeDLL.h"
 #include "iCmpTypes.h"
