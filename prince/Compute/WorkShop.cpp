@@ -11,8 +11,7 @@
 #include "Engines/Grammar.h"
 #include "Engines/fltutils.h"
 #include "nsXPCOMStrings.h"
-#include "nsStringAPI.h"
-
+#include "nsString.h"
 
 // start with a utility function with nsILocalFile
 
