@@ -26,8 +26,7 @@
 #include "MuP2Tree.h"
 #include "MuAnalyzer.h"
 #include "../Grammar.h"
-#include "nsStringAPI.h"
-#include "nsCOMPtr.h"
+#include "nsString.h"
 #include "nsILocalFile.h"
 #include "nsComponentManagerUtils.h"
 
