@@ -19,7 +19,7 @@
 #define MPL_READLIB         32
 
 #include "MathIDs.h"
-//#include "nsStringAPI.h"
+#include "nsString.h"
 
 
 enum MType

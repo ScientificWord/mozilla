@@ -4,7 +4,7 @@
 #include "MplWrap.h"
 
 #include "nsMemory.h"
-#include "nsEmbedString.h"
+#include "nsString.h"
 
 #include "../../CmpTypes.h"
 #include "../../MRequest.h"
