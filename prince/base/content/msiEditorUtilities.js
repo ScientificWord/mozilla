@@ -1138,7 +1138,7 @@ function insertXMLNodesAtCursor(editor, nodeList, bSetCaret)
     }
     theLength = theElement.childNodes.length;
     insertXMLNodes(editor, nodeList, theElement, theOffset, true);
-    dump("insertXML now done.\n");
+//    dump("insertXML now done.\n");
   }
   catch(exc)
   {
