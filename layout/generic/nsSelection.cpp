@@ -1254,6 +1254,9 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
   default :return NS_ERROR_FAILURE;
   }
   PostReason(nsISelectionListener::KEYPRESS_REASON);
+  // BBM Since this is calling frame code, and there are special frames for all math objects, we should probably override
+  // PeekOffset in these frames. I think this handles the cases when the cursor is in math at the start of the command. We also
+  // have to handle the transitions to and from math.
   if (NS_SUCCEEDED(result = frame->PeekOffset(context, &pos)) && pos.mResultContent)
   {
     nsIFrame *theFrame;
