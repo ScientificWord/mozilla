@@ -4462,14 +4462,34 @@ NS_IMETHODIMP
 nsFrame::GetFrameFromDirection(nsPresContext* aPresContext, nsPeekOffsetStruct *aPos)
 {
   // Find the prev/next selectable frame
+  // BBM This code always looks for frames down at the leaf level, but for mathematics we want to look at a higher level, for
+  // properly placing the cursor in fractions, radicals, etc.
   PRBool selectable = PR_FALSE;
   nsIFrame *traversedFrame = this;
+  // BBM a quick check to see if we are going into mathematics is to check the next (or previous) sibling, and if it is 
+  // math, use that instead of going down to the leaf level. The next sibling is already in the frame structure, the previous
+  // one requires a bit of work.
+  
+  // nsIFrame * mathFrame = nsnull;
+  // PRBool isMath;
+  // if (aPos->mDirection == eDirNext)
+  // {                                
+  //    mathFrame = traversedFrame.mNextSibling;
+  //    mathFrame->IsMath(&isMath);
+  //    if (isMath)
+  //    {
+  //      aPos->mResultFrame = mathFrame;
+  //      aPos->mStartOffset = 0;
+  //      ...
+  //  }
+           
+  //  
   while (!selectable) {
     nsIFrame *blockFrame;
-    nsCOMPtr<nsILineIteratorNavigator> it; 
+    nsCOMPtr<nsILineIteratorNavigator> it;                             
     
     PRInt32 thisLine = GetLineNumber(traversedFrame, &blockFrame);
-    if (thisLine < 0)
+    if (thisLine < 0)                               
       return NS_ERROR_FAILURE;
     nsresult result = blockFrame->QueryInterface(NS_GET_IID(nsILineIteratorNavigator),getter_AddRefs(it));
     NS_ASSERTION(NS_SUCCEEDED(result) && it, "GetLineNumber() succeeded but no block frame?");
@@ -4564,6 +4584,7 @@ nsFrame::GetFrameFromDirection(nsPresContext* aPresContext, nsPeekOffsetStruct *
     traversedFrame->IsSelectable(&selectable, nsnull);
   } // while (!selectable)
   
+printf("Moved to a new frame; check to see if we are in math\n");
   if (aPos->mDirection == eDirNext)
     aPos->mStartOffset = 0;
   else
