@@ -19,6 +19,7 @@ REQUIRES	= dom \
 	  content \
 	  autosub \
 	  string \
+	  unicharutil \
 	  widget \
 	  necko \
 	  $(NULL)
