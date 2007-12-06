@@ -94,7 +94,7 @@ enum
 };
 
 
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
 void DebExamineNode(nsIDOMNode * aNode);
 #endif 
 
@@ -3340,7 +3340,7 @@ nsHTMLEditRules::WillMakeBasicBlock(nsISelection *aSelection,
   PRInt32 i;
   for (i=listCount-1; i>=0; i--)
   {
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
     DebExamineNode(arrayOfNodes[i]);
 #endif
     if (!mHTMLEditor->IsEditable(arrayOfNodes[i]))
@@ -5734,19 +5734,19 @@ nsHTMLEditRules::PromoteRange(nsIDOMRange *inRange,
   PRInt32 opStartOffset, opEndOffset;
   nsCOMPtr<nsIDOMRange> opRange;
   
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
   DebExamineNode(startNode);
 #endif
   res = GetPromotedPoint( kStart, startNode, startOffset, inOperationType, address_of(opStartNode), &opStartOffset);
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
   DebExamineNode(opStartNode);
 #endif
   if (NS_FAILED(res)) return res;
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
   DebExamineNode(endNode);
 #endif
   res = GetPromotedPoint( kEnd, endNode, endOffset, inOperationType, address_of(opEndNode), &opEndOffset);
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
   DebExamineNode(opEndNode);
 #endif
   if (NS_FAILED(res)) return res;
@@ -7482,7 +7482,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   {
    // TODO: skip this if the existing node is the same type as the new node
    // there is a title. Convert inNode to the title node.
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
    DebExamineNode(inNode);
 #endif
     res = mHTMLEditor->ReplaceContainer(inNode, address_of(currentNode), strTitle);
@@ -7498,7 +7498,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &offset);
 //    printf("Parent of target tag: \n");
 //    mHTMLEditor->DumpNode(parent); 
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
    DebExamineNode(inNode);
 #endif
     if (NS_FAILED(res)) return res;
@@ -7527,8 +7527,8 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   // offsetOfNewStructure is incremented to point to nodes following our new node.
   if (NS_FAILED(res)) return res;
   
-  printf("New structure inserted: \n");
-    mHTMLEditor->DumpNode(parentOfNewStructure);
+  //  printf("New structure inserted: \n");
+  //    mHTMLEditor->DumpNode(parentOfNewStructure);
   
   // move the title node there.
   // now march up the tree while the new tagtype (aStructureType, atomNamespace) is *not*
@@ -7546,7 +7546,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   while (parent)
   {
     res = mtagListManager->NodeCanContainTag(parent, aStructureType, atomNamespace, &fCanContain);
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
    DebExamineNode(inNode);
 #endif
     if (NS_FAILED(res)) return res;
@@ -7566,7 +7566,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
         else
         {
           printf("Moving node: \n");
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
    DebExamineNode(inNode);
 #endif
            mHTMLEditor->DumpNode(node);
@@ -7610,14 +7610,14 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     savedParent = parent;
     currentNode = parent;
     res = nsEditor::GetNodeLocation(currentNode, address_of(parent), &offset);
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
    DebExamineNode(inNode);
 #endif
     if (NS_FAILED(res)) return res;
     if (fDelParent)
     {
       printf("Deleting empty node: \n");
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
    DebExamineNode(inNode);
 #endif
       mHTMLEditor->DumpNode(savedParent);
@@ -7634,7 +7634,7 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
     mtagListManager->NodeCanContainNode (*outNode, node, &fCanContain );
     if (fCanContain)
     {
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
       printf("Moving nodes to the right of the target node: \n");
       DebExamineNode(inNode);
 
