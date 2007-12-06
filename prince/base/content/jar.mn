@@ -171,8 +171,6 @@ prince.jar:
   content/otfont.js                  (dialogs/otfont.js)
   content/fontsize.xul               (dialogs/fontsize.xul)
   content/fontsize.js                (dialogs/fontsize.js)
-  content/color.xul                  (dialogs/color.xul)
-  content/color.js                   (dialogs/color.js)
   content/tagkeyassignments.xul      (dialogs/tagkeyassignments.xul)
   content/tagkeyassignments.js       (dialogs/tagkeyassignments.js)
   content/autoSubstituteDialog.xul   (dialogs/autoSubstituteDialog.xul)
