@@ -30,7 +30,7 @@
 
 
 
-<xsl:template match="html:latex">\LaTeX</xsl:template>
+<xsl:template match="html:latex">\LaTeX{}</xsl:template>
 
 <xsl:template match="html:hspace">
   <xsl:choose>
