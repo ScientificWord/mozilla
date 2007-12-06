@@ -727,7 +727,7 @@ function msiEditorDocumentObserver(editorElement)
           editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
           try {
             editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
-            dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
+//            dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
           } catch(e) { dump("Error formatting style sheet using msiColorObj: [" + e + "]\n"); }
           // Now is a good time to initialize the key mapping. This is a service, and so is initialized only one. Later
           // initializations will not do anything
@@ -3726,19 +3726,19 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings)
   else
     theBody.removeAttribute("hideMarkers");
 
-  var dumpStr = "Element [" + theBody.nodeName + "] now has settings: [";
-  var attribNames = ["showinvis", "hideHelperLines", "hideInputBoxes", "hideIndexEntries", "hideMarkers"];
-  for (var ix = 0; ix < attribNames.length; ++ix)
-  {
-    if (ix > 0)
-      dumpStr += ", ";
-    dumpStr += attribNames[ix] + ": ";
-    if (theBody.hasAttribute(attribNames[ix]))
-      dumpStr += theBody.getAttribute(attribNames[ix]);
-    else
-      dumpStr += "(none)";
-  }
-  dump(dumpStr + "]\n");
+  //  var dumpStr = "Element [" + theBody.nodeName + "] now has settings: [";
+  //  var attribNames = ["showinvis", "hideHelperLines", "hideInputBoxes", "hideIndexEntries", "hideMarkers"];
+  //  for (var ix = 0; ix < attribNames.length; ++ix)
+  //  {
+  //    if (ix > 0)
+  //      dumpStr += ", ";
+  //    dumpStr += attribNames[ix] + ": ";
+  //    if (theBody.hasAttribute(attribNames[ix]))
+  //      dumpStr += theBody.getAttribute(attribNames[ix]);
+  //    else
+  //      dumpStr += "(none)";
+  //  }
+  //  dump(dumpStr + "]\n");
   //viewSettings is an object containing members showInvisibles, showHelperLines, showInputBoxes,
   // showIndexEntries, showMarkers. Here we want to take the actual actions to cause these effects.
 //  if (editorElement.mInvisiblesStyleSheet)
