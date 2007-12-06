@@ -57,7 +57,6 @@ DIRS += \
 	filepicker \
 	console \
 	viewconfig \
-	autosub \
 	$(NULL)
 ifndef MOZ_SUITE
 # XXX Suite doesn't want these just yet
@@ -90,8 +89,9 @@ ifndef MOZ_SUITE
 ifdef MOZ_XUL
 DIRS += \
 	autocomplete \
+	autosub \
 	history \
-	passwordmgr \
+ 	passwordmgr	\
 	satchel \
 	$(NULL)
 endif # MOZ_XUL
