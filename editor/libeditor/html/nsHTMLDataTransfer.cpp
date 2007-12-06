@@ -871,21 +871,21 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
    nsCOMPtr<nsIDOM3Node> dom3tempnode;
    nsString s;
 #if DEBUG_barry || DEBUG_Barry
-   printf("\noffset is %d, number of nodes is %d\n", newsplitpointOffset, length);
+//   printf("\noffset is %d, number of nodes is %d\n", newsplitpointOffset, length);
 #endif
    for (int i = newsplitpointOffset; i < length; i++)
    {
      res = children->Item(i, getter_AddRefs(tempNode));
      res = tempNode->GetLocalName(s);
 #if DEBUG_barry || DEBUG_Barry
-     printf("tag #%d: %S\n", i, s.BeginReading());
+//     printf("tag #%d: %S\n", i, s.BeginReading());
 #endif
      dom3tempnode = do_QueryInterface(tempNode);
 		 dom3tempnode->GetTextContent(s);
 		 if (!IsWhiteSpaceOnly(s))
 		 {
 #if DEBUG_barry || DEBUG_Barry
-			 printf("nonempty node: contents = %S\n", s.BeginReading());
+//			 printf("nonempty node: contents = %S\n", s.BeginReading());
 #endif
        isAtEnd = PR_FALSE;
 		 }
@@ -988,8 +988,8 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   else
   {
     res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
-      &outOffset, PR_FALSE, address_of(outLeftNode), address_of(outRightNode)); 
-    mtagListManager->FixTagsAfterSplit( outLeftNode, (nsIDOMNode **)address_of(outRightNode));
+      &outOffset, PR_FALSE, &outLeftNode, &outRightNode); 
+    if (outRightNode) mtagListManager->FixTagsAfterSplit( outLeftNode, (nsIDOMNode **)&outRightNode);
   }
   return res;
 }
