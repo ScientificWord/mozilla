@@ -369,7 +369,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           if (!(pTagKeyListHead->pListHead)) pTagKeyListHead->pListHead = pTagKeyListHead->pListTail;
         }
       
-//#ifdef DEBUG_CONTAINMENT
+#ifdef DEBUG_CONTAINMENT
         // Write out the list
         if (tagContainsCount >0)
         {
@@ -381,7 +381,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
             pTagKeyList = pTagKeyList->pNext;
           }                                    
         }
-//#endif        
+#endif        
       }
       
       /////////
@@ -717,7 +717,7 @@ NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter,
 #else
   TagKey tagkeyLookup(strTemp);
 #endif
-  printf("Looking for tag %S\n", tagkeyLookup.key.BeginReading());
+//  printf("Looking for tag %S\n", tagkeyLookup.key.BeginReading());
   pTKL = pTagKeyListHead->pListHead;
   while (pTKL && !(tagkeyLookup.key.Equals(pTKL->key.key))) pTKL = pTKL->pNext;
   if (pTKL) // a match was found
@@ -913,7 +913,7 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
 /* void FixTagsAfterSplit (in nsIDOMNode firstNode, inout nsIDOMNode secondNode); */
 NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOMNode **secondNode)
 {
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
   DebExamineNode(firstNode);
   DebExamineNode(*secondNode);
   printf("=====FixTagsAfterSplit=============================================\n");
@@ -1036,7 +1036,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   selPriv->SetInterlinePosition(PR_TRUE);
   rv = selection->Collapse(*secondNode, 0);
 diagnostics:
-#if DEBUG_barry || DEBUG_Barry
+#if DEBUG_barryNo || DEBUG_BarryNo
   printf("==Leaving: firstNode: \n");
   editor->DumpNode(firstNode);
   printf("==*secondNode:\n");
