@@ -272,6 +272,8 @@ nsTextEditorKeyListener::KeyPress(nsIDOMEvent* aKeyEvent)
         // so I'm sticking this code in here.
           PRBool fCtrl;
           rv = keyEvent->GetCtrlKey(&fCtrl);
+          if (NS_FAILED(rv)) return rv;
+          if (!fCtrl) rv = keyEvent->GetMetaKey(&fCtrl);
           // maybe we should check that the other modifier keys are not pressed
           if (NS_FAILED(rv)) return rv;
           if (fCtrl)
@@ -290,7 +292,6 @@ nsTextEditorKeyListener::KeyPress(nsIDOMEvent* aKeyEvent)
         return NS_OK;
     }
   }
-
   textEditor->HandleKeyPress(keyEvent);
   return NS_OK; // we don't PreventDefault() here or keybindings like control-x won't work 
 }
