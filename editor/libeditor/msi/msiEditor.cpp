@@ -970,10 +970,11 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT  ||  keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT ||
         keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
     {
-      PRBool preventDefault(PR_FALSE);
-      res = HandleArrowKeyPress(keyCode, isShift, ctrlKey, altKey, metaKey, preventDefault); 
-      if (NS_SUCCEEDED(res) && preventDefault)
-        aKeyEvent->PreventDefault();
+//      PRBool preventDefault(PR_FALSE);
+//      res = HandleArrowKeyPress(keyCode, isShift, ctrlKey, altKey, metaKey, preventDefault); 
+//      if (NS_SUCCEEDED(res) && preventDefault)
+//        aKeyEvent->PreventDefault();
+      return NS_OK;
     }
     // Check for mapped characters -- function keys or one-shot mapping
     
@@ -2137,7 +2138,11 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
               nsCOMPtr<nsIDOMNode> nextnode;
               GetNextNode(currNode, PR_FALSE, address_of(nextnode), PR_FALSE); 
               if (nextnode)
+              {
                 testNode = nextnode;
+                newFocus = nextnode;
+                newOffset = 1;
+              }
             }
             else 
             {
@@ -2152,7 +2157,11 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
         nsCOMPtr<nsIDOMNode> nextnode;
         GetNextNode(currNode, currOffset, PR_FALSE, address_of(nextnode), PR_FALSE); 
         if (nextnode)
+        {
           testNode = nextnode;
+          newFocus = currNode;
+          newOffset = 1;
+        }
       }
     }  
     else if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT)
@@ -2164,7 +2173,11 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
           nsCOMPtr<nsIDOMNode> priornode;
           GetPriorNode(currNode, PR_FALSE, address_of(priornode), PR_FALSE); 
           if (priornode)
+          {
             testNode = priornode;
+            newFocus = currNode;
+            newOffset = 0; // BBM fix this
+          } 
         }
         else 
         {
