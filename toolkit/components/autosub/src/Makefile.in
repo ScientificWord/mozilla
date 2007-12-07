@@ -7,8 +7,8 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE = autosub
 MODULE_NAME = tkAutosubModule
-LIBRARY_NAME = tkautosub
-SHORT_LIBNAME = tkautos
+LIBRARY_NAME = tkautosub_s
+# SHORT_LIBNAME = tkautos
 IS_COMPONENT = 1
 EXPORT_LIBRARY = 1
 LIBXUL_LIBRARY = 1
