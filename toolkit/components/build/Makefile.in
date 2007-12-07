@@ -107,8 +107,8 @@ SHARED_LIBRARY_LIBS = \
 	$(NULL)
 
 ifdef MOZ_MSI_PRINCE
-SHARED_LIBRARY_LIBS += ../autocomplete/src/$(LIB_PREFIX)tkautocomplete.$(LIB_SUFFIX) 
-SHARED_LIBRARY_LIBS += ../autosub/src/$(LIB_PREFIX)tkautosub.$(LIB_SUFFIX)
+SHARED_LIBRARY_LIBS += ../autocomplete/src/$(LIB_PREFIX)tkautocomplete_s.$(LIB_SUFFIX) 
+SHARED_LIBRARY_LIBS += ../autosub/src/$(LIB_PREFIX)tkautos.$(LIB_SUFFIX)
 endif
 
 ifndef MOZ_SUITE
