@@ -18,7 +18,7 @@ endif
 	$(CPP) $(CPPEXTRAARGS) $(_VPATH_SRCS)  | sed "/^$$/d" | sed "/^#.*$$/d" > $*.gmr
 
 MODULE = compute
-# LIBRARY_NAME = enginelib_s
+LIBRARY_NAME = enginelib_s
 
 DIRS		=  MuPAD
 ifeq ($(OS_ARCH),WINNT)
