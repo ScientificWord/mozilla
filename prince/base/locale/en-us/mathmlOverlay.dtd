@@ -101,7 +101,7 @@
 <!ENTITY insertTableCmd.label "Table...">
 <!ENTITY inserttable.accesskey "a">
 <!ENTITY insertmenuNote.label "Note...">
-<!ENTITY insertmenuNote.accesskey "e">
+<!ENTITY insertmenuNote.accesskey "N">
 <!ENTITY insertmenuFormula.label "Formula...">
 <!ENTITY insertmenuFormula.accesskey "u">
 <!ENTITY insertmenuMarker.label "Marker...">
