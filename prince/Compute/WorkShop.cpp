@@ -10,8 +10,8 @@
 #include "Engines/CompEngine.h"
 #include "Engines/Grammar.h"
 #include "Engines/fltutils.h"
-#include "nsXPCOMStrings.h"
-#include "nsString.h"
+#include "xpcom-config.h"
+#include "nsStringAPI.h"
 
 // start with a utility function with nsILocalFile
 
