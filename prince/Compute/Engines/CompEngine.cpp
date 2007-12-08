@@ -39,6 +39,7 @@
 #include "Analyzer.h"
 #include "STree2MML.h"
 
+#include "xpcom-config.h"
 #include "nsServiceManagerUtils.h"
 #include "nsComponentManagerUtils.h"
 #include "nsStringAPI.h"

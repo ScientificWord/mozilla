@@ -9,14 +9,9 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE = compute
 LIBRARY_NAME	= MuPWrapperDLL_s
-LIBXUL_LIBRARY = 1
 
 include $(topsrcdir)/config/config.mk
 
-REQUIRES =	xpcom \
-		string \
-		$(NULL)
-        
 CPPSRCS =				\
   MuAnalyzer.cpp \
   mupd_eng.cpp \
