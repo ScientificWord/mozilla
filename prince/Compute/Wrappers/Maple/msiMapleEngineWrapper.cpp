@@ -4,7 +4,8 @@
 #include "MplWrap.h"
 
 #include "nsMemory.h"
-#include "nsString.h"
+#include "xpcom-config.h"
+#include "nsStringAPI.h"
 
 #include "../../CmpTypes.h"
 #include "../../MRequest.h"

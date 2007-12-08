@@ -11,7 +11,6 @@ MODULE		    = mupadenginewrapper
 XPIDL_MODULE	= mupadenginewrapper
 LIBRARY_NAME	= mupadenginewrapper
 SHORT_LIBNAME	= mupwrap
-LIBXUL_LIBRARY	= 1
 
 IS_COMPONENT	= 1
 
@@ -19,8 +18,8 @@ MODULE_NAME	= msiMuPADEngineWrapperModule
 
 
 REQUIRES	= string \
-		  enginewrapper \
 		  xpcom \
+		  enginewrapper \
 		  $(NULL)
 
 CPPSRCS		=		   \
@@ -32,12 +31,10 @@ include $(topsrcdir)/config/config.mk
 
 # separate libraries linked in.
 EXTRA_DSO_LDOPTS = \
-	$(LIBS_DIR) \
-	$(EXTRA_DSO_LIBS) \
-	$(MOZ_UNICHARUTIL_LIBS) \
-	$(MOZ_COMPONENT_LIBS) \
-	$(MOZ_JS_LIBS) \
       $(DIST)/lib/$(LIB_PREFIX)MuPWrapperDLL_s.$(LIB_SUFFIX) \
+      $(DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
+      $(DIST)/lib/$(LIB_PREFIX)xpcom.$(LIB_SUFFIX) \
+      $(DIST)/lib/$(LIB_PREFIX)nspr4.$(LIB_SUFFIX) \
       $(DIST)/lib/$(LIB_PREFIX)computelib_s.$(LIB_SUFFIX) \
       $(DIST)/lib/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
       $(DIST)/lib/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \

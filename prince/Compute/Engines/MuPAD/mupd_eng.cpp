@@ -15,7 +15,8 @@
 #include <sys/stat.h>
 
 #include "mupkernel.h"
-#include "nsString.h"
+#include "xpcom-config.h"
+#include "nsStringAPI.h"
 #include "nsCOMPtr.h"
 
 static jmp_buf mupad_mark;      // Address for long jump to jump to -- used in case of MuPAD DLL crash

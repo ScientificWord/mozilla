@@ -3,8 +3,9 @@
 #include "msiSimpleComputeEngine2.h"
 
 #include "nsMemory.h"
+#include "xpcom-config.h"
 #include "nsIClassInfoImpl.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 
 #include "ComputeDLL.h"
 #include "iCmpTypes.h"

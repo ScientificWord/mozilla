@@ -11,7 +11,7 @@ MODULE		    = mapleenginewrapper
 XPIDL_MODULE	= mapleenginewrapper
 LIBRARY_NAME	= mapleenginewrapper
 SHORT_LIBNAME	= mapwrap
-LIBXUL_LIBRARY	= 1
+
 IS_COMPONENT	= 1
 MODULE_NAME	= msiMapleEngineWrapperModule
 
@@ -29,34 +29,43 @@ CPPSRCS		=		   \
 include $(topsrcdir)/config/config.mk
 
 # separate libraries linked in.
-EXTRA_DSO_LDOPTS += \
-	$(LIBS_DIR) \
-	$(EXTRA_DSO_LIBS) \
-	$(MOZ_UNICHARUTIL_LIBS) \
-	$(MOZ_COMPONENT_LIBS) \
-	$(MOZ_JS_LIBS) \
-	$(NULL)
-
-ifeq ($(OS_ARCH)$(OS_RELEASE),FreeBSD2)
-LIBS		= -lpcap
-endif
-
-ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
-EXTRA_DSO_LDOPTS += \
-		$(TK_LIBS) \
-		$(NULL)
-
-LIBS += \
-		$(TK_LIBS) \
-		$(NULL)
-endif
-
-SHARED_LIBRARY_LIBS += \
+EXTRA_DSO_LDOPTS = \
+		$(DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
+		$(XPCOM_FROZEN_LDOPTS) \
+		$(NSPR_LIBS) \
       $(DIST)/lib/$(LIB_PREFIX)MplWrapperDLL_s.$(LIB_SUFFIX) \
       $(DIST)/lib/$(LIB_PREFIX)computelib_s.$(LIB_SUFFIX) \
       $(DIST)/lib/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
       $(DIST)/lib/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \
-  $(NULL)
+		$(NULL)
+
+ifeq ($(OS_ARCH),WINNT)
+EXTRA_LIBS += \
+		ole32.lib \
+		oleaut32.lib \
+		oledlg.lib \
+		$(NULL)
+endif
+
+ifeq ($(OS_ARCH),Darwin)
+EXTRA_LIBS += \
+		$(srcdir)/../../Maple/Darwin/libexpat.a \
+		$(srcdir)/../../Maple/Darwin/liblibstream.a \
+		$(srcdir)/../../Maple/Darwin/libmupudskernel.a \
+		$(srcdir)/../../Maple/Darwin/libmut.a \
+		-lz -framework Carbon \
+		$(NULL)
+endif
+
+ifeq ($(OS_ARCH),Linux)
+EXTRA_LIBS += \
+		$(srcdir)/../../Maple/linux/libmupudskernel.a \
+		$(srcdir)/../../Maple/linux/libexpat.a \
+		$(srcdir)/../../Maple/linux/libmut.a \
+		$(srcdir)/../../Maple/linux/liblibstream.a \
+		$(srcdir)/../../Maple/linux/libz.a \
+		$(NULL)
+endif
 
 include $(topsrcdir)/config/rules.mk
 
