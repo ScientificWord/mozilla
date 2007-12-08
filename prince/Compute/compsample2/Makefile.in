@@ -7,14 +7,10 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-MODULE		= compute
-XPIDL_MODULE = simplecomputeengine
-
 MODULE		    = simplecomputeengine
 XPIDL_MODULE	= simplecomputeengine
 LIBRARY_NAME	= simplecomputeengine
 SHORT_LIBNAME	= compeng2
-LIBXUL_LIBRARY = 1
 
 IS_COMPONENT	= 1
 MODULE_NAME	= msiSimpleComputeEngine2Module
@@ -44,17 +40,14 @@ include $(topsrcdir)/config/config.mk
           
 
 # separate libraries linked in.
-# EXTRA_DSO_LDOPTS = \
-#   $(DIST)/lib/$(LIB_PREFIX)computelib_s.$(LIB_SUFFIX) \
-#   $(DIST)/lib/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
-#   $(DIST)/lib/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \
-#   $(NULL)
-  
 EXTRA_DSO_LDOPTS = \
-	$(EXTRA_DSO_LIBS) \
-  	$(MOZ_COMPONENT_LIBS) \
-	$(NULL)
-
+  $(DIST)/lib/$(LIB_PREFIX)computelib_s.$(LIB_SUFFIX) \
+  $(DIST)/lib/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
+  $(DIST)/lib/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \
+  $(DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
+  $(XPCOM_FROZEN_LDOPTS) \
+  $(NSPR_LIBS) \
+  $(NULL)
 
 include $(topsrcdir)/config/rules.mk
 
