@@ -3,9 +3,9 @@
 #include <time.h>
 #include <ctype.h>
 
-#include "nsXPCOMGlue.h"
 #include "nsXPCOM.h"
 #include "nsCOMPtr.h"
+#include "xpcom-config.h"
 #include "nsStringAPI.h"
 #include "nsILocalFile.h"
 #include "nsEmbedString.h"
