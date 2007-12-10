@@ -330,7 +330,8 @@ nsHTMLCSSUtils::IsCSSEditableProperty(nsIDOMNode * aNode,
                                       const nsAString * aAttribute)
 {
   NS_ASSERTION(aNode, "Shouldn't you pass aNode? - Bug 214025");
-
+  // BBM: added this 2007/12/09
+  return PR_FALSE;
   nsCOMPtr<nsIDOMNode> node = aNode;
   // we need an element node here
   if (mHTMLEditor->IsTextNode(aNode)) {

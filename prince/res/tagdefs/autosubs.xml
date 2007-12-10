@@ -16,6 +16,7 @@
   <sub ctx="text" tp="sc"><pattern>.spell.</pattern><data>checkSpelling(true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.preview.</pattern><data>previewPDF(true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.it.</pattern><data>toggleTextTag('it',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.tt.</pattern><data>toggleTextTag('tt',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.bd.</pattern><data>toggleTextTag('bold',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.em.</pattern><data>toggleTextTag('em',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.sf.</pattern><data>toggleTextTag('sf',true);</data></sub>

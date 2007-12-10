@@ -914,7 +914,7 @@ function getFontSpecs(node)
     subnode = node.getElementsByTagName('fixedfont')[0];
     if (subnode)
     {
-      document.getElementById('fixedfontlist').value = node.getAttribute('name');
+      document.getElementById('fixedfontlist').value = subnode.getAttribute('name');
       options = subnode.getAttribute('options');
       if (options)
         options = trimBlanks(options);

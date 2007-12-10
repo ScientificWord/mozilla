@@ -57,6 +57,9 @@
 <xsl:template match="html:body">
 \begin{document}
 <xsl:apply-templates/>
+<xsl:if test="$endnotes='true'">
+\theendnotes
+</xsl:if>
 \end{document}
 </xsl:template>
 
@@ -161,7 +164,15 @@
 <xsl:template match="html:pageref">\pageref{<xsl:apply-templates/>}</xsl:template>
 
 <xsl:template match="html:notewrapper"><xsl:apply-templates/></xsl:template>
-<xsl:template match="html:note[@type='footnote']">\footnote{<xsl:apply-templates/>}</xsl:template>
+
+<xsl:template match="html:note[@type='footnote']">
+<xsl:choose>
+  <xsl:when test="$endnotes">\endnote{</xsl:when>
+  <xsl:otherwise>\footnote{</xsl:otherwise>
+</xsl:choose>
+<xsl:apply-templates/>
+}
+</xsl:template>
 
 <xsl:template match="html:note">\marginpar{<xsl:apply-templates/>}</xsl:template>
 
