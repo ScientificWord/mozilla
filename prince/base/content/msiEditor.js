@@ -1998,37 +1998,7 @@ function msiEditorSetFontSize(size, editorElement)
   if (!editorElement)
   {
     AlertWithTitle("Error", "No editor in msiEditorSetFontSize!");
-//
   }
-//  if( size == "0" || size == "normal" ||
-//      size == "medium" )
-//  {
-//    msiEditorRemoveTextProperty(editorElement, "font", "size");
-//    // Also remove big and small,
-//    //  else it will seem like size isn't changing correctly
-//    msiEditorRemoveTextProperty(editorElement, "small", "");
-//    msiEditorRemoveTextProperty(editorElement, "big", "");
-//  } else {
-//    // Temp: convert from new CSS size strings to old HTML size strings
-//    switch (size)
-//    {
-//      case "xx-small":
-//      case "x-small":
-//        size = "-2";
-//        break;
-//      case "small":
-//        size = "-1";
-//        break;
-//      case "large":
-//        size = "+1";
-//        break;
-//      case "x-large":
-//        size = "+2";
-//        break;
-//      case "xx-large":
-//        size = "+3";
-//        break;
-//    }
   msiEditorSetTextProperty(editorElement, "fontsize", "size", size);
 //  }
   try {if (editorElement.contentWindow) editorElement.contentWindow.focus();}
