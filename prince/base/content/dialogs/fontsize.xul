@@ -11,7 +11,7 @@
 %dialogDTD;
 ]>
 
-<dialog title="Set font size"
+<dialog title="&fontsizetitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     ondialogaccept="return onAccept();"
     buttons="apply,accept,cancel" 
@@ -21,21 +21,17 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/fontsize.js"/>
   <label>Generally you should use the tags such as large, huge, and small to change font size. Use this dialog sparingly.</label>
-  <!--menulist id="otfontlist" oncommand="">
-    <menupopup id="systemfontlist">
-      <menuitem id="otfont.instruction" label="(Select a font)"/>
-    </menupopup>
-  </menulist>
-  <label value="Advanced"/>
-  <textbox id="otfont.advanced" / -->
   <hbox>
     <vbox>
-      <label>Font size</label>
+      <label value="&fontsize.label;" control="otfont.fontsize" />
       <textbox id="otfont.fontsize" style="width: 3.5em" onkeypress="handleChar(event,this);"
-       max="200" min="5" increment="1" tooltip="The size of the font"/>
+       max="200" min="5" increment="1" tooltip="&fontsize.tooltip;"/>
+      <label value="&leading.label;" control="leading" />>
+      <textbox id="leading" style="width: 3.5em" onkeypress="handleChar(event,this);"
+       max="200" min="5" increment="1" tooltip="&leading.tooltip;"/>
     </vbox>
     <vbox align="center">
-     <label>Units</label>
+     <label value="&units.label;"/>
      <menulist id="otfont.units">
        <menupopup>
          <menuitem id="otfont.pt" label="pt" value="pt"/>
