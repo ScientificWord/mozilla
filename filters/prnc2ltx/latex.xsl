@@ -15,7 +15,9 @@
 <xsl:include href="spaces.xsl"/>
 <xsl:include href="frame.xsl"/>
 
-<xsl:template match="/"><xsl:apply-templates/></xsl:template>
+<xsl:template match="/">
+  <xsl:apply-templates/>
+</xsl:template>
 
 <xsl:template match="*"><!-- Matches everything but the root --></xsl:template>
 
@@ -57,7 +59,7 @@
 <xsl:template match="html:body">
 \begin{document}
 <xsl:apply-templates/>
-<xsl:if test="$endnotes='true'">
+<xsl:if test="$endnotes &gt; 0">
 \theendnotes
 </xsl:if>
 \end{document}
@@ -167,7 +169,7 @@
 
 <xsl:template match="html:note[@type='footnote']">
 <xsl:choose>
-  <xsl:when test="$endnotes">\endnote{</xsl:when>
+  <xsl:when test="$endnotes &gt; 0">\endnote{</xsl:when>
   <xsl:otherwise>\footnote{</xsl:otherwise>
 </xsl:choose>
 <xsl:apply-templates/>
