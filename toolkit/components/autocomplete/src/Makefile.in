@@ -48,9 +48,8 @@ MODULE_NAME = tkAutoCompleteModule
 LIBRARY_NAME = tkautocomplete
 # SHORT_LIBNAME = tkautoc
 IS_COMPONENT = 1
+LIBXUL_LIBRARY	= 1
 EXPORT_LIBRARY = 1
-FORCE_STATIC_LIB = 1
-LIBXUL_LIBRARY = 1
 
 REQUIRES =	xpcom \
         autocomplete \
@@ -78,7 +77,9 @@ CPPSRCS += nsAutoCompleteMdbResult.cpp
 endif
 
 EXTRA_DSO_LDOPTS += \
-	$(MOZ_UNICHARUTIL_LIBS) \
+	$(LIBS_DIR) \
+ 	$(EXTRA_DSO_LIBS) \
+ 	$(MOZ_UNICHARUTIL_LIBS) \
 	$(MOZ_COMPONENT_LIBS) \
 	$(NULL)
 
