@@ -9,7 +9,6 @@
 
 <!-- Package handling. Packages are not inserted directly, but with requirespackage tags. We collect them and remove
   duplicates, and then sort according to the pri attribute -->
-
 <xsl:variable name="masterpackagelist" select="document('packages.xml',.)"/>
   
 
@@ -36,7 +35,7 @@
 	  	      <xsl:when test="@pri">
 	  	        <xsl:value-of select="@pri"/>
 	  	      </xsl:when>
-	  		    <xsl:otherwise>
+	  		  <xsl:otherwise>
               <xsl:variable name="pkg" select="@package"/>
               <xsl:variable name="pri" select="$masterpackagelist/packages/package[@name=$pkg]/@pri"/>
               <xsl:choose>
@@ -53,6 +52,8 @@
 </xsl:variable>
  
 <xsl:variable name="packagelist" select ="exslt:node-set($packagelist.tf)"/>
+
+<xsl:variable name="endnotes" select="count(//html:endnotes)"/>
 
 
 <xsl:template match="html:preamble">
@@ -115,7 +116,8 @@
 \usepackage{xunicode}
 \usepackage{xltxtra}
 \TeXXeTstate=1
-\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
+<!-- \defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text} -->
+\defaultfontfeatures{Mapping=tex-text}
 <xsl:apply-templates/></xsl:template>  
 
 <xsl:template match="html:mainfont">
@@ -157,7 +159,6 @@
 <xsl:template match="sw:dialogbase">
 <xsl:apply-templates/>
 </xsl:template>
-
 
 <!-- end of section headings -->
 
