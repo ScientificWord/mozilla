@@ -1,2 +1,9 @@
 
 <!ENTITY windowTitle.label "Select OpenType font and size">
+
+<!ENTITY fontsizetitle.label "Set font size and spacing">
+<!ENTITY fontsize.label "Font size">
+<!ENTITY fontsize.tooltip "The size of the font">
+<!ENTITY units.label "Units">
+<!ENTITY leading.tooltip "The line spacing for the font">
+<!ENTITY leading.label "Line spacing">

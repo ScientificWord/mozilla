@@ -9,36 +9,6 @@ const CLASS_ID = Components.ID("{88D14045-E268-41a8-BE7F-B8C3DAEA5051}");
 const CLASS_NAME = "Open Type font listing component";
 const CONTRACT_ID = "@mackichan.com/otfontlist;1";
 
-var gSystemFonts;
-var gSystemFontCount;
-// class definition
-
-// constructor
-
-function OTFontlist()
-{};
-
-// class definition
-
-OTFontlist.prototype = {
-  getOTFontlist: function( count ) { 
-    if (!gSystemFonts)
-    {
-      gSystemFonts = Components.classes["@mozilla.org/array;1"].createInstance(Components.interfaces.nsIArray);
-      // Build list of all system fonts once per editor
-      try 
-      {
-        var enumerator = Components.classes["@mozilla.org/gfx/fontenumerator;1"]
-                                   .getService(Components.interfaces.nsIFontEnumerator);
-        gSystemFontCount = { value: 0 }
-        gSystemFonts = enumerator.EnumerateAllFonts(gSystemFontCount);
-      }
-      catch(e) { }
-    }
-    count = gSystemFontCount;
-    return gSystemFonts;
-  },
-    
   QueryInterface: function(aIID)
   {
     dump("Fontlist queryinterface\n");
