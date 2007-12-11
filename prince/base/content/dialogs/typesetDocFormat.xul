@@ -85,32 +85,16 @@
                  </menulist>
                </vbox>
                <vbox align="center">
-                 <broadcaster id="bc.papersize" disabled="true"/>
-                 <label>&docformatPaperSize;</label>
-                 <menulist id="docformat.papersize"
-                    oncommand="changePaperSize(this);OnWindowSizeReset(false);">
-                   <menupopup >
-                     <menuitem id="docformat.letter" label="&docformatLetter;" value="letter"/>
-                     <menuitem id="docformat.a4" label="A4" value="a4"/>
-                     <menuitem id="docformat.screen" label="&docformatScreen;" value="screen"/>
-                     <menuitem id="docformat.other" label="&docformatOther;" value="other"/>
-                     <menuitem id="docformat.a0" label="A0" value="a0"/>
-                     <menuitem id="docformat.a1" label="A1" value="a1"/>
-                     <menuitem id="docformat.a2" label="A2" value="a2"/>
-                     <menuitem id="docformat.a3" label="A3" value="a3"/>
-                     <menuitem id="docformat.a5" label="A5" value="a5"/>
-                     <menuitem id="docformat.a6" label="A6" value="a6"/>
-                     <menuitem id="docformat.b0" label="B0" value="b0"/>
-                     <menuitem id="docformat.b1" label="B1" value="b1"/>
-                     <menuitem id="docformat.b2" label="B2" value="b2"/>
-                     <menuitem id="docformat.b3" label="B3" value="b3"/>
-                     <menuitem id="docformat.b4" label="B4" value="b4"/>
-                     <menuitem id="docformat.b5" label="B5" value="b5"/>
-                     <menuitem id="docformat.b6" label="B6" value="b6"/>
-                     <menuitem id="docformat.executive" label="&docformatExecutive;" value="executive"/>
-                     <menuitem id="docformat.legal" label="&docformatLegal;" value="legal"/>
-                   </menupopup>
-                 </menulist>
+                 <label value="&docformatTwoColumns;"/>
+                 <checkbox id="columns" oncommand="broadcastColCount();" />
+               </vbox>
+               <vbox>
+                 <broadcaster id="multicolumn" hidden="true" /><!-- observers of this will be visible only when there are multiple columns -->
+                 <broadcaster id="singlecolumn" /><!-- observers of this will be visible only when there is a single column; not used yet -->
+                 <label value="&docformatColSeparation;" observes="multicolumn" />
+                 <textbox id="tbcolsep" style="width: 3em" observes="multicolumn" oninput="layoutPage('colsep');" 
+                   onkeypress="geomHandleChar(event,'colsep', 'tbcolsep');" 
+                   onchange="layoutPage('colsep');" onfocus="activate('colsep');" onblur="deactivate('colsep');"/>
                </vbox>
              </hbox>
              <spacer flex="1"/>
@@ -188,32 +172,118 @@
                </vbox>
     <!-- end of layout diagram 1-->           
                <hbox>
-                 <spacer flex="1"/>
-                 <vbox align="center">
-                   <label value="Page height"/>
-                   <textbox id="tbpageheight" style="width: 3.5em" readonly="false" observes="bc.papersize" oninput="changePageDim(this);" 
-                     onchange="changePageDim(this);" />
-                   <spacer/>
-                 </vbox>
-                 <vbox align="center">
-                   <label value="Page width"/>
-                   <textbox id="tbpagewidth" style="width: 3.5em" readonly="false" observes="bc.papersize" oninput="changePageDim(this);"  
-                     onchange="changePageDim(this);"/>
-                   <spacer/>
-                 </vbox>
-                 <spacer flex="1"/>
+                <vbox>
+                 <groupbox align="center">
+                   <caption label="Finish page size"/>
+                   <label>&docformatfinishpageSize;</label>
+                   <menulist id="docformat.finishpagesize"
+                      oncommand="changefinishpageSize(this);OnWindowSizeReset(false);">
+                     <menupopup >
+                       <menuitem id="docformat.letter" label="&docformatLetter;" value="letter"/>
+                       <menuitem id="docformat.a4" label="A4" value="a4"/>
+                       <menuitem id="docformat.screen" label="&docformatScreen;" value="screen"/>
+                       <menuitem id="docformat.other" label="&docformatOther;" value="other"/>
+                       <menuitem id="docformat.a0" label="A0" value="a0"/>
+                       <menuitem id="docformat.a1" label="A1" value="a1"/>
+                       <menuitem id="docformat.a2" label="A2" value="a2"/>
+                       <menuitem id="docformat.a3" label="A3" value="a3"/>
+                       <menuitem id="docformat.a5" label="A5" value="a5"/>
+                       <menuitem id="docformat.a6" label="A6" value="a6"/>
+                       <menuitem id="docformat.b0" label="B0" value="b0"/>
+                       <menuitem id="docformat.b1" label="B1" value="b1"/>
+                       <menuitem id="docformat.b2" label="B2" value="b2"/>
+                       <menuitem id="docformat.b3" label="B3" value="b3"/>
+                       <menuitem id="docformat.b4" label="B4" value="b4"/>
+                       <menuitem id="docformat.b5" label="B5" value="b5"/>
+                       <menuitem id="docformat.b6" label="B6" value="b6"/>
+                       <menuitem id="docformat.executive" label="&docformatExecutive;" value="executive"/>
+                       <menuitem id="docformat.legal" label="&docformatLegal;" value="legal"/>
+                     </menupopup>
+                   </menulist>
+                   <hbox>
+                     <broadcaster id="bc.finishpagesize" />
+                     <spacer flex="1"/>
+                     <vbox align="center">
+                       <label value="Page height"/>
+                       <textbox id="tbpageheight" style="width: 3.5em"  observes="bc.finishpagesize" 
+                          oninput="changePageDim(this);OnWindowSizeReset(false);" 
+                          onkeypress="geomHandleChar(event,'pageheight', 'tbpageheight');changePageDim(this);OnWindowSizeReset(false);" 
+                          onchange="changePageDim(this);OnWindowSizeReset(false);" />
+                       <spacer/>
+                     </vbox>
+                     <vbox align="center">
+                       <label value="Page width"/>
+                       <textbox id="tbpagewidth" style="width: 3em" observes="bc.finishpagesize" 
+                          oninput="changePageDim(this);OnWindowSizeReset(false);" 
+                          onkeypress="geomHandleChar(event,'pagewidth', 'tbpagewidth');changePageDim(this);OnWindowSizeReset(false);" 
+                          onchange="changePageDim(this);OnWindowSizeReset(false);" />
+                       <spacer/>
+                     </vbox>
+                   </hbox>
+                 </groupbox>
+                 <groupbox>
+                  <checkbox id="useCropmarks" label="Crop marks" oncommand="cropmarkRequest(this);"/>
+                  <broadcaster id="cropmarks" hidden="true"/>
+                  <radiogroup id="cropGroup" orient="horizontal"  observes="cropmarks">
+                    <vbox align="center">                        
+                      <label value="&camera.label;" control="camera"/> 
+                      <radio id="camera" value="cam" accesskey="&camera.accessKey;" selected="true"/>
+                    </vbox>
+                    <vbox>
+                      <label value="&cross.label;" conrol="cross"/> 
+                      <radio id="cross" value="cross" accesskey="&cross.accessKey;"/>
+                    </vbox>
+                    <vbox>
+                      <label value="&frame.label;" />
+                      <radio id="frame"  value="frame" accesskey="&frame.accessKey;"/>
+                    </vbox>
+                  </radiogroup>      
+                 </groupbox>
+                 <groupbox observes="cropmarks">
+                   <caption label="Paper size"/>
+                   <label value="&docformatpaperSize;" />
+                   <menulist id="docformat.papersize" oncommand="changepaperSize(this);">
+                     <menupopup >
+                       <menuitem label="&docformatLetter;" value="letter"/>
+                       <menuitem label="A4" value="a4"/>
+                       <menuitem label="&docformatOther;" value="other"/>
+                       <menuitem label="A0" value="a0"/>
+                       <menuitem label="A1" value="a1"/>
+                       <menuitem label="A2" value="a2"/>
+                       <menuitem label="A3" value="a3"/>
+                       <menuitem label="A5" value="a5"/>
+                       <menuitem label="A6" value="a6"/>
+                       <menuitem label="B0" value="b0"/>
+                       <menuitem label="B1" value="b1"/>
+                       <menuitem label="B2" value="b2"/>
+                       <menuitem label="B3" value="b3"/>
+                       <menuitem label="B4" value="b4"/>
+                       <menuitem label="B5" value="b5"/>
+                       <menuitem label="B6" value="b6"/>
+                       <menuitem label="&docformatExecutive;" value="executive"/>
+                       <menuitem label="&docformatLegal;" value="legal"/>
+                     </menupopup>
+                   </menulist>
+                   <hbox>
+                     <broadcaster id="bc.papersize" />
+                     <spacer flex="1"/>
+                     <vbox align="center">
+                       <label value="Paper height"/>
+                       <textbox id="tbpaperheight" style="width: 3.5em"  observes="bc.papersize" 
+                          onkeypress="geomHandleChar(event,'paperheight', 'tbpaperheight');"/> 
+                       <spacer/>
+                     </vbox>
+                     <vbox align="center">
+                       <label value="Paper width"/>
+                       <textbox id="tbpaperwidth" style="width: 3em" observes="bc.papersize"
+                          onkeypress="geomHandleChar(event,'paperwidth', 'tbpaperwidth');"/>
+                       <spacer/>
+                     </vbox>
+                   </hbox>
+                 </groupbox>
+                </vbox>
                </hbox>
              </hbox>
-           </vbox>
-           <vbox align="center">
-             <label value="&docformatTwoColumns;"/>
-             <checkbox id="columns" oncommand="broadcastColCount();" />
-             <broadcaster id="multicolumn" hidden="true" /><!-- observers of this will be visible only when there are multiple columns -->
-             <broadcaster id="singlecolumn" /><!-- observers of this will be visible only when there is a single column; not used yet -->
-             <label value="&docformatColSeparation;" observes="multicolumn" />
-             <textbox id="tbcolsep" style="width: 3em" observes="multicolumn" oninput="layoutPage('colsep');" 
-               onkeypress="geomHandleChar(event,'colsep', 'tbcolsep');" 
-               onchange="layoutPage('colsep');" onfocus="activate('colsep');" onblur="deactivate('colsep');"/>
            </vbox>
          </hbox>  
          <vbox>

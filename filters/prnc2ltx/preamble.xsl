@@ -63,6 +63,22 @@
   <xsl:apply-templates/>
 </xsl:template>
 
+<!-- use docformat information to call the crop package -->
+<xsl:template match="html:crop">
+<xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable>
+\usepackage[ 
+  <xsl:value-of select="@type"/><xsl:text>, </xsl:text> 
+  <xsl:choose>
+  	<xsl:when test="@paper='other'">
+  width = <xsl:value-of select="@width"/><xsl:text>, </xsl:text>> 
+  height = <xsl:value-of select="@height"/><xsl:text>, </xsl:text> 
+    </xsl:when>
+    <xsl:otherwise>
+  <xsl:value-of select="@paper"/><xsl:text>, </xsl:text> 
+    </xsl:otherwise>
+  </xsl:choose> center
+]{crop}
+</xsl:template>
 
 <!-- use docformat information to call the geometry package -->
 <xsl:template match="html:pagelayout[@latex='true']">
