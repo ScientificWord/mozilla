@@ -70,13 +70,13 @@
   <xsl:value-of select="@type"/><xsl:text>, </xsl:text> 
   <xsl:choose>
   	<xsl:when test="@paper='other'">
-  width = <xsl:value-of select="@width"/><xsl:text>, </xsl:text>> 
-  height = <xsl:value-of select="@height"/><xsl:text>, </xsl:text> 
+  width = <xsl:value-of select="@width"/><xsl:value-of select="$unit"/><xsl:text>, </xsl:text> 
+  height = <xsl:value-of select="@height"/><xsl:value-of select="$unit"/><xsl:text>, </xsl:text> 
     </xsl:when>
     <xsl:otherwise>
   <xsl:value-of select="@paper"/><xsl:text>, </xsl:text> 
     </xsl:otherwise>
-  </xsl:choose> center
+  </xsl:choose> center <!-- you can add any crop options you want here, separated with commas -->
 ]{crop}
 </xsl:template>
 

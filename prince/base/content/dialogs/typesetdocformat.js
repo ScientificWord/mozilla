@@ -149,6 +149,7 @@ function saveCropMarks(docFormatNode)
   if (document.getElementById("useCropmarks").checked)
   {
     var cropNode = editor.createNode('crop', docFormatNode, 0);
+    cropNode.setAttribute("unit", currentUnit);
     cropNode.setAttribute("type", document.getElementById("cropGroup").value);
     var paper = document.getElementById("docformat.papersize").value;
     cropNode.setAttribute("paper", paper);
