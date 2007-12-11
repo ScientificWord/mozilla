@@ -15,7 +15,7 @@
 <!ENTITY docformatTwosided "Two Sided">
 <!ENTITY docformatTwoColumns "2 Columns">
 <!ENTITY docformatUnits	"Units">
-<!ENTITY docformatPaperSize	"Paper Size">
+<!ENTITY docformatfinishpageSize	"Finished Page Size">
 <!ENTITY docformatLandscape "Landscape">
 <!ENTITY docformatCentered "Center">
 <!ENTITY docformatInch "in">
@@ -58,9 +58,14 @@
 <!ENTITY docformatMNPush  "Push">
 <!ENTITY docformatHideNotes "Hide Notes">
 <!ENTITY docformatTwoPageMessage	"You are laying out the right page. The left page is a mirror image of this.">
-
-
-
+<!ENTITY docformatpaperSize	"Paper Size">
+<!ENTITY camera.label	"Camera">
+<!ENTITY camera.accessKey	"C">
+<!ENTITY cross.label	"Cross">
+<!ENTITY cross.accessKey	"X">
+<!ENTITY frame.label	"Frame">
+<!ENTITY frame.accessKey	"F">
+					
 <!ENTITY docformatUseOpenType "Use OpenType fonts (may make your document not portable)?">
 <!ENTITY mainFontsGroup "Main document fonts">
 <!ENTITY docformatDefault "Default">

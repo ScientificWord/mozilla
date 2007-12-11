@@ -6,7 +6,10 @@ var widthElements;
 var heightElements;
 var pagewidth;   // in mm
 var pageheight;                                                     
-var paper;
+var finishpage;
+var papertype;
+var paperwidth;
+var paperheight;
 var landscape;
 var scale = 0.5;
 
@@ -37,9 +40,9 @@ function Startup()
     return;
   }
   widthElements=new Array("lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin",
-    "sectrightheadingmargin", "sectleftheadingmargin");
+    "sectrightheadingmargin", "sectleftheadingmargin", "pagewidth", "paperwidth");
   heightElements=new Array("tmargin","header","headersep",
-    "bodyheight","footer","footersep", "mnpush", "computedbmargin");
+    "bodyheight","footer","footersep", "mnpush", "computedbmargin", "pageheight", "paperheight");
   InitializeUnits();
   var doc = editor.document;
   var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
@@ -52,9 +55,10 @@ function Startup()
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
   else node = docFormatNodeList[0].getElementsByTagName('pagelayout')[0];
   getPageLayout(node);
+  if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
+  else node = docFormatNodeList[0].getElementsByTagName('crop')[0];
+  getCropInfo(node);
   
-  
-
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
   OnWindowSizeReset(true);
@@ -100,7 +104,7 @@ function savePageLayout(docFormatNode)
   nodecounter++;
   node = editor.createNode('page', pfNode, nodecounter++);
   node.setAttribute('twoside',document.getElementById('twosides').checked);
-  node.setAttribute('paper',document.getElementById('docformat.papersize').value);
+  node.setAttribute('paper',document.getElementById('docformat.finishpagesize').value);
   node.setAttribute('width',pagewidth+units);
   node.setAttribute('height',pageheight+units);
   node.setAttribute('landscape',document.getElementById('landscape').checked);
@@ -139,6 +143,24 @@ function savePageLayout(docFormatNode)
   node.setAttribute('sep',document.getElementById('tbfootersep').value+units);
 }
 
+function saveCropMarks(docFormatNode)
+{
+  lineend(docFormatNode, 1);
+  if (document.getElementById("useCropmarks").checked)
+  {
+    var cropNode = editor.createNode('crop', docFormatNode, 0);
+    cropNode.setAttribute("type", document.getElementById("cropGroup").value);
+    var paper = document.getElementById("docformat.papersize").value;
+    cropNode.setAttribute("paper", paper);
+    if (paper == "other")
+    {
+      cropNode.setAttribute("width", document.getElementById("tbpaperwidth").value);
+      cropNode.setAttribute("height", document.getElementById("tbpaperheight").value);
+    }
+  }
+}
+
+
 function getNumberValue(numberwithunit)
 {
   var reNum = /\d*\.?\d*/;
@@ -162,6 +184,7 @@ function getPageLayout(node)
   if (!node)
   {
     setPageDimensions();
+    setPaperDimensions();
     setDefaults();
   }  
   if (node){                                                                             
@@ -177,8 +200,9 @@ function getPageLayout(node)
       document.getElementById('twosides').checked=(value=='true');
       setTwosidedState(document.getElementById('twosides'));
       value = subnode.getAttribute('paper');
-      paper = value;
-      if (value) document.getElementById('docformat.papersize').value = value;
+      finishpage = value;
+      if (value) document.getElementById('docformat.finishpagesize').value = value; 
+      if (value != "other") document.getElementById("bc.finishpagesize").setAttribute("disabled","true");
       value = subnode.getAttribute('width');
       if (value) pagewidth = getNumberValue(value);
       value = subnode.getAttribute('height');
@@ -188,6 +212,7 @@ function getPageLayout(node)
       document.getElementById('landscape').checked=landscape;
     }                                                    
     setPageDimensions();
+    setPaperDimensions();
     setDefaults();
     subnode = node.getElementsByTagName('textregion')[0];
     if (subnode)
@@ -267,6 +292,7 @@ function onAccept()
 // should check that the user wants to use geometry package.
   if (newNode) 
   {
+    saveCropMarks(newNode);
     savePageLayout(newNode);
     saveFontSpecs(newNode);
     saveSectionFormatting(newNode, sectitleformat);
@@ -359,14 +385,18 @@ function setDefaults()
   setHeight("bottommarginnote", bodyheight*.1);
 }
 
-function changePaperSize(menu)
+function changefinishpageSize(menu)
 {
-  paper = menu.value;
-  if (paper == "other")
-    //enable setting paper size
-    document.getElementById("bc.papersize").setAttribute("disabled","false");
+  finishpage = menu.value;
+  if (finishpage == "other")
+  {
+    //enable setting finishpage size
+    document.getElementById("bc.finishpagesize").removeAttribute("disabled");
+  }
   else
-    document.getElementById("bc.papersize").setAttribute("disabled","true");
+  {
+    document.getElementById("bc.finishpagesize").setAttribute("disabled","true");
+  }
   setPageDimensions();
 }
 
@@ -374,102 +404,116 @@ function changePaperSize(menu)
 // Page layout stuff  
 function changePageDim(textbox)
 {
-  if (textbox.id == tbpageheight) pageheight = Number(textbox.value);
-  else pagewidth = Number(textbox.value);
+  if (textbox.id == "tbpageheight") pageheight = convert(Number(textbox.value),currentUnit,"mm");
+  else pagewidth = convert(Number(textbox.value),currentUnit,"mm");
   setPageDimensions();
+}
+
+//this gets the page dimensions for page type obj.pagename and returns them as obj.width 
+// and obj.height. If the pagename is 'other', it does not set the heightand width and returns
+// false. Otherwise it returns true.
+function getPageDimensions( obj)
+{
+  switch (obj.pagename) {
+    case "letter":   // these dimensions are in millimeters
+      obj.width = 215.9;
+      obj.height = 279.4;
+      break;
+		case "a4":
+      obj.width = 210;
+      obj.height = 297;
+      break;
+		case "other":
+      return false;
+    case "screen":
+      obj.width = 225;
+      obj.height = 180;
+      break;
+		case "a0":
+      obj.width = 841;
+      obj.height = 1189;
+      break;
+		case "a1":
+      obj.width = 594;
+      obj.height = 841;
+      break;
+		case "a2":
+      obj.width = 420;
+      obj.height = 594;
+      break;
+		case "a3":
+      obj.width = 297;
+      obj.height = 420;
+      break;
+		case "a5":
+      obj.width = 148;
+      obj.height = 210;
+      break;
+		case "a6":
+      obj.width = 105;
+      obj.height = 148;
+      break;
+		case "b0":
+      obj.width = 1000;
+      obj.height = 1414;
+      break;
+		case "b1":
+      obj.width = 707;
+      obj.height = 1000;
+      break;
+		case "b2":
+      obj.width = 500;
+      obj.height = 707;
+      break;
+		case "b3":
+      obj.width = 353;
+      obj.height = 500;
+      break;
+		case "b4":
+      obj.width = 250;
+      obj.height = 353;
+      break;
+		case "b5":
+      obj.width = 176;
+      obj.height = 250;
+      break;
+		case "b6":
+      obj.width = 125;
+      obj.height = 176;
+      break;
+		case "executive":
+      obj.width = 184;
+      obj.height = 267;
+      break;
+		case "legal":
+      obj.width = 216;
+      obj.height = 356;
+      break;
+    default:  // default to letter
+      obj.width = 215.9;
+      obj.height = 279.4;
+      break;
+  }
+  return true;
 }
 
 function setPageDimensions()
 {
-//  paper = "letter";
+//  finishpage = "letter";
 //  currentUnit ="in"; 
 //  landscape = false;
+  var obj = new Object();
+  obj.pagename = finishpage;
   
-  switch (paper) {
-    case "letter":   // these dimensions are in millimeters
-      pagewidth = 215.9;
-      pageheight = 279.4;
-      break;
-		case "a4":
-      pagewidth = 210;
-      pageheight = 297;
-      break;
-		case "other":
-      return;
-    case "screen":
-      pagewidth = 225;
-      pageheight = 180;
-      break;
-		case "other":
-      pagewidth = 215.9;
-      pageheight = 279.4;
-      break;
-		case "a0":
-      pagewidth = 841;
-      pageheight = 1189;
-      break;
-		case "a1":
-      pagewidth = 594;
-      pageheight = 841;
-      break;
-		case "a2":
-      pagewidth = 420;
-      pageheight = 594;
-      break;
-		case "a3":
-      pagewidth = 297;
-      pageheight = 420;
-      break;
-		case "a5":
-      pagewidth = 148;
-      pageheight = 210;
-      break;
-		case "a6":
-      pagewidth = 105;
-      pageheight = 148;
-      break;
-		case "b0":
-      pagewidth = 1000;
-      pageheight = 1414;
-      break;
-		case "b1":
-      pagewidth = 707;
-      pageheight = 1000;
-      break;
-		case "b2":
-      pagewidth = 500;
-      pageheight = 707;
-      break;
-		case "b3":
-      pagewidth = 353;
-      pageheight = 500;
-      break;
-		case "b4":
-      pagewidth = 250;
-      pageheight = 353;
-      break;
-		case "b5":
-      pagewidth = 176;
-      pageheight = 250;
-      break;
-		case "b6":
-      pagewidth = 125;
-      pageheight = 176;
-      break;
-		case "executive":
-      pagewidth = 184;
-      pageheight = 267;
-      break;
-		case "legal":
-      pagewidth = 216;
-      pageheight = 356;
-      break;
-    default:  // default to letter
-      pagewidth = 215.9;
-      pageheight = 279.4;
-      break;
+  if (!getPageDimensions(obj))
+  { 
+    pagewidth = convert(Number(document.getElementById("tbpagewidth").value), currentUnit,"mm");
+    pageheight = convert(Number(document.getElementById("tbpageheight").value), currentUnit,"mm");
+  } else
+  {
+    pagewidth = obj.width;
+    pageheight = obj.height;
   }
-
   if (landscape) {
     var temp = pageheight;
     pageheight = pagewidth;
@@ -481,8 +525,95 @@ function setPageDimensions()
   }
 //  setHeight("pageh", pageheight);
 //  setWidth("page", pagewidth);
-  document.getElementById("tbpagewidth").value = unitRound(pagewidth);
-  document.getElementById("tbpageheight").value = unitRound(pageheight);
+  if (finishpage != "other")
+  {
+    document.getElementById("tbpagewidth").value = unitRound(pagewidth);
+    document.getElementById("tbpageheight").value = unitRound(pageheight);
+    document.getElementById("bc.finishpagesize").setAttribute("disabled","true");
+  }
+  else document.getElementById("bc.finishpagesize").removeAttribute("disabled");
+}
+
+function changepaperSize(menu)
+{
+  papertype = menu.value;
+  if (papertype == "other")
+  {
+    //enable setting finishpage size
+    document.getElementById("bc.papersize").removeAttribute("disabled");
+  }
+  else
+  {
+    document.getElementById("bc.papersize").setAttribute("disabled","true");
+  }
+  setPaperDimensions();
+}
+
+function getCropInfo(node)
+{
+  var broadcaster = document.getElementById("cropmarks");        
+  if (!node) {
+    papertype="letter";
+    document.getElementById("useCropmarks").checked=false;
+    document.getElementById("bc.papersize").setAttribute("disabled","true");
+    broadcaster.setAttribute("hidden",true);
+  }
+  else
+  {
+    document.getElementById("useCropmarks").checked=true;
+    broadcaster.removeAttribute("hidden");
+    document.getElementById("bc.papersize").removeAttribute("disabled");
+    var croptype = node.getAttribute("type");
+    if (!croptype) croptype = "camera";
+    document.getElementById("cropGroup").value = croptype;
+    var paper = node.getAttribute("paper");
+    if (!paper) paper="letter";
+    document.getElementById("docformat.papersize").value = paper;
+    papertype = paper;
+    if (paper == "other")
+    {
+      paperheight = node.getAttribute("height");
+      if (!paperheight) paperheight = document.getElementById("tbpageheight").value; 
+      document.getElementById("tbpaperheight").value = paperheight;
+      paperwidth = node.getAttribute("width");
+      if (!paperwidth) paperwidth = document.getElementById("tbpaperwidth").value; 
+      document.getElementById("tbpaperwidth").value = paperwidth;
+    }
+  }
+  setPaperDimensions();
+}
+
+
+function setPaperDimensions()
+{
+  var obj = new Object();
+  obj.pagename = papertype;
+  
+  if (!getPageDimensions(obj))
+  { 
+    paperwidth = convert(Number(document.getElementById("tbpaperwidth").value), currentUnit,"mm");
+    paperheight = convert(Number(document.getElementById("tbpaperheight").value), currentUnit,"mm");
+  } else
+  {
+    paperwidth = obj.width;
+    paperheight = obj.height;
+  }
+  if (landscape) {
+    var temp = pageheight;
+    paperheight = paperwidth;
+    paperwidth = temp;
+  }
+  if (currentUnit != "mm") {
+    paperwidth = convert(paperwidth, "mm", currentUnit);
+    paperheight = convert(paperheight, "mm", currentUnit);
+  }
+  if (papertype != "other")
+  {
+    document.getElementById("tbpaperwidth").value = unitRound(paperwidth);
+    document.getElementById("tbpaperheight").value = unitRound(paperheight);
+    document.getElementById("bc.papersize").setAttribute("disabled","true");
+  }
+  else document.getElementById("bc.papersize").removeAttribute("disabled");
 }
 
 function unitRound( size )
@@ -507,7 +638,7 @@ function unitRound( size )
 function OnWindowSizeReset(initial)
 {
   var twomargins = 60; //20 pixels per margin for the layout page
-  var oldscale = scale;
+  //var oldscale = scale;
   var width = 1.8*document.getElementById("gb.dimension").boxObject.width;
 //  if (!initial) {
 //    var winwidth = document.getElementById("docformat.dialog").boxObject.width-20;
@@ -515,7 +646,7 @@ function OnWindowSizeReset(initial)
 //  }
 //  if (width < 2*twomargins) return;
   scale = width/pagewidth;
-  if (oldscale != scale)
+  //if (oldscale != scale)
     layoutPage("all");
 }
 
@@ -605,7 +736,7 @@ function updateComputedMargins()
   document.getElementById("tbcomputedrmargin").value = unitRound(pagewidth - wtotal);                
   document.getElementById("tbcomputedbmargin").value = unitRound(pageheight - htotal);
   // now check for overflow conditions
-  // overflow occurs if an element goes beyond the edge of the paper.
+  // overflow occurs if an element goes beyond the edge of the finishpage.
   var vcenter = document.getElementById("vcenter").checked;
   var hcenter = document.getElementById("hcenter").checked;
   var overflow = false;
@@ -728,8 +859,19 @@ function switchUnits()
   document.getElementById("tbpagewidth").value = unitRound(pagewidth);
   document.getElementById("tbpageheight").value = unitRound(pageheight);
   updateComputedMargins();
+  document.getElementById("tbpaperwidth").value = unitRound(factor*document.getElementById("tbpaperwidth").value);;
+  document.getElementById("tbpaperheight").value = unitRound(factor*document.getElementById("tbpaperheight").value);
 }
 
+function cropmarkRequest(checkbox)
+{
+  var broadcaster = document.getElementById("cropmarks");        
+  if (checkbox.checked)
+    broadcaster.removeAttribute("hidden");
+  else
+    broadcaster.setAttribute("hidden","true");
+}
+  
 function handleBodyMouseClick(event)
 {
   var element = event.target;
