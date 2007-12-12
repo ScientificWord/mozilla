@@ -300,7 +300,7 @@
     MODULE(NSS)                              \
     SYSTEMPREF_MODULES                       \
     /* end of list */
-                                 r
+                                 
 #define MODULE(_name) \
 NSGETMODULE_ENTRY_POINT(_name) (nsIComponentManager*, nsIFile*, nsIModule**);
 
