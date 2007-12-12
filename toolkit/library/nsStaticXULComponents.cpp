@@ -278,7 +278,6 @@
     MODULE(Browser_Embedding_Module)         \
     MODULE(nsEditorModule)                   \
     MODULE(msieditingModule)                 \
-    MODULE(tkAutosubModule)                  \
     OJI_MODULES                              \
     ACCESS_MODULES                           \
     MODULE(appshell)                         \
@@ -301,7 +300,7 @@
     MODULE(NSS)                              \
     SYSTEMPREF_MODULES                       \
     /* end of list */
-
+                                 r
 #define MODULE(_name) \
 NSGETMODULE_ENTRY_POINT(_name) (nsIComponentManager*, nsIFile*, nsIModule**);
 
