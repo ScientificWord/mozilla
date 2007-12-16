@@ -5780,8 +5780,14 @@ var msiObjectPropertiesCommand =
         return;
       }
 
-      cmdParams.setISupportsValue("reviseObject", element);
       var name = msiGetBaseNodeName(element).toLowerCase();
+      cmdParams.setISupportsValue("reviseObject", element);
+      if (name == 'mstyle')
+      {
+        var wrappedChildElement = msiNavigationUtils.getSingleWrappedChild(element);
+        if (wrappedChildElement != null)
+          name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
+      }
       switch (name)
       {
         case 'img':
@@ -5896,6 +5902,16 @@ var msiObjectPropertiesCommand =
         break;
 
 //    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
+
+        case 'mstyle':
+          if (msiNavigationUtils.isFence(element))
+          {
+            if (msiNavigationUtils.isBinomial(element))
+              msiGoDoCommandParams("cmd_MSIreviseBinomialsCmd", cmdParams, editorElement);
+            else
+              msiGoDoCommandParams("cmd_MSIreviseGenBracketsCmd", cmdParams, editorElement);
+          }
+        break;
 
         case 'mrow':
           if (msiNavigationUtils.isFence(element))
