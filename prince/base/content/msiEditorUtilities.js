@@ -4521,6 +4521,357 @@ var msiAutosubstitutionList =
   }
 
 };
+
+
+/**************************msiNavigationUtils**********************/
+var msiNavigationUtils = 
+{
+  m_DOMUtils : Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils),
+  mAtomService : Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService),
+
+  isIgnorableWhitespace : function(node)
+  {
+    if (node.nodeType != nsIDOMNode.TEXT_NODE)
+      return false;
+    return this.m_DOMUtils.isIgnorableWhitespace(node);
+  },
+
+  boundaryIsTransparent : function(node, editor)  //This has to do with whether node's children at right or left are considered adjacent to following or preceding objects, not with cursor movement.
+  {
+    if (node.nodeType == nsIDOMNode.TEXT_NODE)
+      return true;
+
+    switch( this.getTagClass( node, editor) )
+    {
+      case "texttag":
+//  In the cases below, we'd want to identify a space or break at the end of a paragraph as an object to be revised from the right?
+//      case "paratag":
+//      case "listtag":
+//      case "structtag":
+//      case "envtag":
+        return true;
+      case "othertag":
+      default:
+      break;
+    }
+    switch(msiGetBaseNodeName(node))
+    {
+      case "mrow":
+      case "mstyle":
+      //Need to examine stuff here - like is the parent an mfrac? Is the mrow a fence?
+      {
+        if (this.isFence(node))
+          return false;
+        if (node.parentNode != null)
+        {
+          var parentName = msiGetBaseNodeName(node.parentNode);
+          switch(parentName)
+          {
+            case "mfrac":
+            case "mroot":
+            case "msqrt":
+            case "mradical":
+            case "msub":
+            case "msup":
+            case "msubsup":
+            case "mmultiscripts":
+            case "munder":
+            case "mover":
+            case "munderover":
+              return false;
+            break;
+          }
+        }
+        return true;
+      }
+      break;
+      case "math":
+        if (!node.hasAttribute("display") || (node.getAttribute("display") != "block") )
+          return true;
+      break;
+      default:
+      break;
+    }
+    return false;
+  },
+
+  positionIsAtStart : function(aNode, anOffset)
+  {
+    if (anOffset == 0)
+      return true;
+    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+      return this.isIgnorableWhitespace(aNode);
+    else if (anOffset < aNode.childNodes.length)
+    {
+      for (var ix = anOffset; ix > 0; --ix)
+      {
+        if (!this.isIgnorableWhitespace(aNode.childNodes[ix - 1]))
+          break;
+      }
+      if (ix == 0)
+        return true;
+    }
+    return false;
+  },
+
+  positionIsAtEnd : function(aNode, anOffset)
+  {
+    var nLength = 0;
+    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+      nLength = aNode.data.length;
+    else
+      nLength = aNode.childNodes.length;
+    if (anOffset == nLength)
+      return true;
+    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+      return this.isIgnorableWhitespace(aNode);
+    else if (anOffset < nLength)
+    {
+      for (var ix = anOffset; ix < nLength; ++ix)
+      {
+        if (!this.isIgnorableWhitespace(aNode.childNodes[ix]))
+          break;
+      }
+      if (ix == nLength)
+        return true;
+    }
+    return false;
+  },
+
+  getTagClass : function(node, editor)
+  {
+    var nsAtom = null;
+    if (node.namespaceURI != null)
+      nsAtom = this.mAtomService.getAtom(node.namespaceURI);
+
+    var retVal = editor.tagListManager.getClassOfTag( node.nodeName, nsAtom);
+    if (retVal == null || retVal.length == 0)
+      retVal = editor.tagListManager.getClassOfTag( node.nodeName, null );
+    return retVal;
+  },
+
+  isFence : function(node)
+  {
+    var nodeName = msiGetBaseNodeName(node);
+    if (nodeName == "mstyle" && node.childNodes.length == 1)
+      return this.isFence(node.childNodes[0]);
+    if (nodeName == 'mrow' || nodeName == "mstyle")
+    {
+      if ( (msiGetBaseNodeName(node.firstChild) == "mo") && (node.firstChild.getAttribute("fence") == "true") && (node.firstChild.getAttribute("form") == "prefix")
+            && (msiGetBaseNodeName(node.lastChild) == "mo") && (node.lastChild.getAttribute("fence") == "true") && (node.lastChild.getAttribute("form") == "postfix") )
+        return true;
+    }
+    return false;
+  },
+
+  getSignificantContents : function(node)
+  {
+    var retList = new Array();
+    for (var ix = 0; ix < node.childNodes.length; ++ix)
+    {
+      if (!this.isIgnorableWhitespace(node.childNodes[ix]))
+        retList.push(node.childNodes[ix]);
+    }
+    return retList;
+  },
+
+  getSignificantRangeContent : function(range)
+  {
+    var retList = new Array();
+    var clonedDocFragment = range.cloneContents();
+    for (var ix = 0; ix < clonedDocFragment.childNodes.length; ++ix)
+    {
+      if (!this.isIgnorableWhitespace(clonedDocFragment.childNodes[ix]))
+        retList.push(clonedDocFragment.childNodes[ix]);
+    }
+    return retList;
+  },
+
+  isBoundFence : function(node)
+  {
+    if (msiGetBaseNodeName(node) == "mstyle" && node.childNodes.length == 1)
+      return this.isBoundFence(node.childNodes[0]);
+
+    return ( this.isFence(node) 
+               && node.firstChild.hasAttribute("msiBoundFence") && (node.firstChild.getAttribute("msiBoundFence") == "true") 
+               && node.lastChild.hasAttribute("msiBoundFence") && (node.lastChild.getAttribute("msiBoundFence") == "true") );
+  },
+
+  isBinomial : function(node)
+  {
+    if (msiGetBaseNodeName(node) == "mstyle" && node.childNodes.length == 1)
+      return this.isBinomial(node.childNodes[0]);
+    if (this.isBoundFence(node))
+    {
+      var children = this.getSignificantContents(node);
+      if (children.length == 3)
+      {
+        if (msiGetBaseNodeName(children[1]) == "mfrac")
+          return true;
+      }
+    }
+    return false;
+  },
+
+  isMathTemplate : function(node)
+  {
+    if (node == null)
+      return false;
+
+    switch(msiGetBaseNodeName(node))
+    {
+      case "mfrac":
+      case "msub":
+      case "msubsup":
+      case "msup":
+      case "munder":
+      case "mover":
+      case "munderover":
+      case "mroot":
+      case "msqrt":
+        return true;
+      break;
+      case "mrow":
+        return this.isFence(node);
+      break;
+      case "mstyle":
+        if (this.isFence(node))
+          return true;
+        if (node.childNodes.length == 1 && this.isMathTemplate(node.childNodes[0]))
+          return true;
+      break;
+    }
+
+    return false;
+  },
+
+  isUnit : function(node)
+  {
+    if ( node != null && node.hasAttribute("msiunit") && (node.getAttribute("msiunit") == "true") )
+      return true;
+    if (msiGetBaseNodeName(node) == "mstyle" && node.childNodes.length == 1)
+      return this.isUnit(node.childNodes[0]);
+    return false;
+  },
+
+  isMathname : function(node)
+  {
+    if ( node == null)
+    {
+      dump("Bad input to msiNavigationUtils.isMathname - null node!\n");
+      return false;
+    }
+    if (node.hasAttribute("msimathname") && (node.getAttribute("msimathname") == "true") )
+      return true;
+    if (msiGetBaseNodeName(node) == "mstyle" && node.childNodes.length == 1)
+      return this.isMathname(node.childNodes[0]);
+
+    return false;
+  },
+
+  isEmbellishedOperator : function(node)
+  {
+    if ( node != null)
+    {
+      switch(msiGetBaseNodeName(node))
+      {
+        case 'msub':
+        case 'msup':
+        case 'msubsup':
+        case 'mover':
+        case 'munder':
+        case 'munderover':
+        case 'mmultiscripts':
+        //According to the MathML 2.1 spec, we should also include 'mfrac" here. I'm not convinced that would give the right thing generally here.
+        {
+          var opNode = node.firstChild;
+          if ( opNode != null && (msiGetBaseNodeName(opNode) == 'mo') 
+                 && opNode.hasAttribute("largeop") && (opNode.getAttribute("largeop") == "true") )
+            return true;
+        }
+        break;
+        default:
+        break;
+      }
+    }
+    if (msiGetBaseNodeName(node) == "mstyle" && node.childNodes.length == 1)
+      return this.isEmbellishedOperator(node.childNodes[0]);
+
+    return false;
+  },
+
+  getSingleWrappedChild : function(aNode)
+  {
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case 'mstyle':
+      case 'mrow':
+        var nodeContents = this.getSignificantContents(aNode);
+        if (nodeContents.length == 1)
+          return nodeContents[0];
+      break;
+
+      default:
+      break;
+    }
+    return null;
+  },
+
+  getWrappedObject : function(aNode, objType)
+  {
+    var theName = msiGetBaseNodeName(aNode);
+    var singleKid = null;
+    switch(theName)
+    {
+      case 'mstyle':
+        singleKid = this.getSingleWrappedChild(aNode);
+        if (singleKid != null)
+          return this.getWrappedObject(singleKid, objType);
+        if (objType == "fence" && this.isFence(aNode))
+          return aNode;
+        else if (objType == "binomial" && this.isBinomial(aNode))
+          return aNode;
+      break;
+
+      case 'mrow':
+        if (objType == "fence" && this.isFence(aNode))
+          return aNode;
+        else if (objType == "binomial" && this.isBinomial(aNode))
+          return aNode;
+        else
+        {
+          singleKid = this.getSingleWrappedChild(aNode);
+          if (singleKid != null)
+            return this.getWrappedObject(singleKid, objType);
+        }
+      break;
+
+      default:
+        if (theName == objType)
+          return aNode;
+      break;
+    }
+    return null;
+  },
+
+  findWrappingStyleNode : function(aNode)
+  {
+    if (msiGetBaseNodeName(aNode) == "mstyle")
+      return aNode;
+
+    if ( (aNode != null) && (aNode.parentNode != null) )
+    {
+      if ( this.getSingleWrappedChild(aNode.parentNode) == aNode )
+      {
+        return this.findWrappingStyleNode(aNode.parentNode);
+      }
+    }
+    return null;
+  }
+
+};
+
+
 /**************************More general utilities**********************/
 
 // Clone simple JS objects

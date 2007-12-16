@@ -205,8 +205,14 @@ var msiReviseFractionCmd =
   {
     var editorElement = msiGetActiveEditorElement(window);
     var theFrac = aParams.getISupportsValue("reviseObject");
-    AlertWithTitle("mathmlOverlay.js", "In msiReviseFractionCmd, trying to revise fraction, dialog unimplemented.");
-//    reviseFraction(editorElement, theFrac);
+    if ( (editorElement != null) && (theFrac != null) )
+    {
+      var fractionData = new Object();
+      fractionData.reviseObject = theFrac;
+      var argArray = [fractionData];
+      msiOpenModelessPropertiesDialog("chrome://prince/content/fractionProperties.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, "cmd_MSIreviseFractionCmd", theFrac, argArray);
+    }
   },
 
   doCommand: function(aCommand)
@@ -906,23 +912,36 @@ function insertfraction(lineSpec, sizeSpec, editorElement)
   }
 }
 
-function reviseFraction(lineSpec, sizeSpec, editorElement, theFraction)
+function reviseFraction(theFraction, lineSpec, sizeSpec, editorElement)
 {
   if (!theFraction || !editorElement)
   {
     dump("Entering reviseFraction with a null editorElement or fraction! Aborting...\n");
-    return;
+    return null;
   }
+  var retVal = theFraction;
   var editor = msiGetEditor(editorElement);
   try
   {
-    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    var sizeFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_autoSize;
+//    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    var realFrac = msiNavigationUtils.getWrappedObject(theFraction, "mfrac");
+    if (realFrac != null)
+      realFrac.setAttribute("linethickness", lineSpec);
+    else
+    {
+      AlertWithTitle("mathmlOverlay.js", "Problem in reviseFraction! No fraction found in node passed in...\n");
+      return theFraction;
+    }
+    var styleObj = new Object();
     if (sizeSpec == "small")
-      sizeFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_smallSize;
+      styleObj["displaystyle"] = "false";
     else if (sizeSpec == "big")
-      sizeFlags = Components.interfaces.msiIMMLEditDefines.MO_ATTR_displaySize;
-    AlertWithTitle("mathmlOverlay.js", "In reviseFraction, functionality needs to be implemented.");
+      styleObj["displaystyle"] = "true";
+    else
+      styleObj["displaystyle"] = "";
+    retVal = applyMathStyleToObject(styleObj, "mfrac", theFraction);
+
+//    AlertWithTitle("mathmlOverlay.js", "In reviseFraction, functionality needs to be implemented.");
 //    mathmlEditor.InsertFraction(lineSpec, sizeFlags);
     editorElement.contentWindow.focus();
   }
@@ -930,6 +949,7 @@ function reviseFraction(lineSpec, sizeSpec, editorElement, theFraction)
   {
     dump("Exception in mathmlOverlay.js, in reviseFraction; exception is [" + e + "].\n");
   }
+  return retVal;
 }
 
 function insertBinomial(openingBracket, closingBracket, lineSpec, sizeSpec, editorElement)
@@ -1472,6 +1492,148 @@ function doPanelLoad(panel,elementtype)
 
     panel.replaceChild(newbutton,button);
   }
+}
+
+//In the following, "styleVals" is assumed to be passed in as a key-value type object (i.e., styleVals[key]=value).
+function applyMathStyleToObject(styleVals, objType, targ)
+{
+  //First we need to see whether the "targ" object or a near descendant (or ancestor? shouldn't happen, but may) is an "mstyle".
+  //By "near descendant or ancestor" I mean a node which is essentially a wrapper around "targ", or which "targ" is a wrapper around.
+  
+  var foundAttrs = new Object();
+  var styleNode = null;
+
+//  aNode = targ;
+//  while (aNode != null)
+//  {
+//    var nodeName = msiGetBaseNodeName(aNode);
+//    if (nodeName == objType)
+//      break;
+//    else if (nodeName == "mrow")
+//    {
+//      if (objType == "fence" && msiNavigationUtils.isFence(aNode))
+//        break;
+//      if (objType == "binomial" && msiNavigationUtils.isBinomial(aNode))
+//        break;
+//    }
+//    else if (nodeName == "mstyle")
+//    {
+//      styleNode = aNode;
+//    }
+//
+//    if (!msiNavigationUtils.nodeWrapsContent)
+//      aNode = null;
+//    else
+//    {
+//      var nodeContents = msiNavigationUtils.getSignificantContents(aNode);
+//      if (nodeContents.length > 1)
+//        break;
+//      aNode = nodeContents[0];
+//    }
+//  }
+
+  function findStyleUntilObj(targNode, objTypeStr, expectedStyle, foundStyle)
+  {
+    var retStyleNode = null;
+    var nodeName = msiGetBaseNodeName(targNode);
+    if (nodeName == "mstyle")
+    {
+      retStyleNode = targNode;
+      for each (var styleItem in expectedStyle)
+      {
+        if (targNode.hasAttribute(styleItem))
+          foundStyle[styleItem] = targNode.getAttribute(styleItem);
+      }
+    }
+    var wrappedChild = msiNavigationUtils.getSingleWrappedChild(targNode);
+    if (wrappedChild != null)
+    {
+      var otherStyle = findStyleUntilObj(wrappedChild, objTypeStr, expectedStyle, foundStyle);
+      if (otherStyle != null)
+        retStyleNode = otherStyle;
+    }
+    //Following seems to be unnecessary!
+//    switch(objTypeStr)
+//    {
+//      case "fence":
+//        if (nodeName == "mrow" && msiNavigationUtils.isFence(targNode))
+//          return retStyleNode;
+//      break;
+//      case "binomial":
+//        if (nodeName == "mrow" && msiNavigationUtils.isBinomial(targNode))
+//          return retStyleNode;
+//      break;
+//      default:
+//        if (nodeName == objTypeStr)
+//          return retStyleNode;
+//      break; 
+//    }
+    return retStyleNode;
+  }
+
+  styleNode = findStyleUntilObj(targ, objType, styleVals, foundAttrs);
+  
+  var bAddStyleNode = false;
+  if (styleNode == null)
+  {
+    styleNode = targ.ownerDocument.createElement("mstyle");
+    bAddStyleNode = true;
+  }
+  
+  for (var attrib in styleVals)
+  {
+    if ( !(attrib in foundAttrs) || (foundAttrs[attrib] != styleVals[attrib]) )
+    {
+      if (styleVals[attrib].length > 0)
+        styleNode.setAttribute(attrib, styleVals[attrib]);
+      else if (styleNode.hasAttribute(attrib))
+        styleNode.removeAttribute(attrib);
+    }
+    delete styleVals[attrib];
+  }
+
+  if (styleNode.attributes.length == 0)  //no more attributes - get rid of the mstyle!
+  {
+    if (!bAddStyleNode)
+    {
+      var kid = msiNavigationUtils.getSingleWrappedChild(styleNode);
+      if (kid != null)
+      {
+        var nextSib = styleNode.nextSibling;
+        if (nextSib != null)
+        {
+          //NOTE! Here we set "targ" so it can be used as the return value - it's the new revisable object
+          targ = styleNode.parentNode.insertBefore(styleNode.removeChild(kid), nextSib);
+          styleNode.parentNode.removeChild(styleNode);
+        }
+        else
+        {
+          //NOTE! Here we set "targ" so it can be used as the return value - it's the new revisable object
+          targ = styleNode.parentNode.appendChild(styleNode.removeChild(kid));
+          styleNode.parentNode.removeChild(styleNode);
+        }
+      }
+    }
+  }
+  else if (bAddStyleNode)
+  {
+    var nextSib = targ.nextSibling;
+    var theParent = targ.parentNode;
+    var newTarg = theParent.removeChild(targ);
+    styleNode.appendChild(newTarg);
+    if (nextSib != null)
+    {
+      theParent.insertBefore(styleNode, nextSib);
+    }
+    else
+    {
+      theParent.appendChild(styleNode);
+    }
+  }
+
+  if (bAddStyleNode)
+    return styleNode;
+  return targ;
 }
 
 function insertsymbol(s, editorElement) 
