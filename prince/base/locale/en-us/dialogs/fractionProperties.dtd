@@ -1,0 +1,22 @@
+<!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Fraction Properties">
+<!-- <!ENTITY colors.desc "You can override the page colors to make editing certain math objects easier."> -->
+
+<!ENTITY lineRadioGroup.label "Line">
+<!ENTITY lineNoneRadio.label "None">
+<!ENTITY lineNoneRadio.accessKey "o">
+<!ENTITY lineNormalRadio.label "Normal">
+<!ENTITY lineNormalRadio.accessKey "N">
+<!ENTITY lineThickRadio.label "Thick">
+<!ENTITY lineThickRadio.accessKey "T">
+
+<!ENTITY sizeRadioGroup.label "Size">
+<!ENTITY sizeAutoRadio.label "Auto">
+<!ENTITY sizeAutoRadio.accessKey "A">
+<!ENTITY sizeBigRadio.label "Big">
+<!ENTITY sizeBigRadio.accessKey "B">
+<!ENTITY sizeSmallRadio.label "Small">
+<!ENTITY sizeSmallRadio.accessKey "S">
+
+<!-- <!ENTITY .tooltip "">  -->
