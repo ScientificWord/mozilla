@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/binomialsDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/fractionProperties.dtd">
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/ -->
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/fractionProperties.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiButtonGroup.js"/>
+
+  <keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset>
+
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <!-- broadcasterset>
+    <broadcaster id="enableBrackets" disabled="false"/>
+  </broadcasterset -->
+
+  <vbox>
+    <hbox>
+      <spacer flex="1"/>
+      <groupbox align="start" orient="vertical">
+        <caption label="&lineRadioGroup.label;"/>
+        <radiogroup id="lineRadioGroup" oncommand="setLineThickness(event.target);">
+          <radio label="&lineNoneRadio.label;" group="lineRadioGroup" value="0" id="noLineRadio" accesskey="&lineNoneRadio.accessKey;"/>
+          <radio label="&lineNormalRadio.label;" group="lineRadioGroup" value="" id="normalLineRadio" accesskey="&lineNormalRadio.accessKey;"/>
+          <radio label="&lineThickRadio.label;" group="lineRadioGroup" value="thick" id="thickLineRadio" accesskey="&lineThickRadio.accessKey;"/>
+        </radiogroup>
+      </groupbox>
+        <spacer flex="1"/>
+      <groupbox align="start" orient="vertical">
+        <caption label="&sizeRadioGroup.label;"/>
+        <radiogroup id="sizeRadioGroup" oncommand="setFractionSize(event.target);">
+          <radio label="&sizeAutoRadio.label;" group="sizeRadioGroup" value="auto" id="autoSizeRadio" accesskey="&sizeAutoRadio.accessKey;"/>
+          <radio label="&sizeBigRadio.label;" group="sizeRadioGroup" value="big" id="bigSizeRadio" accesskey="&sizeBigRadio.accessKey;"/>
+          <radio label="&sizeSmallRadio.label;" group="sizeRadioGroup" value="small" id="smallSizeRadio" accesskey="&sizeSmallRadio.accessKey;"/>
+        </radiogroup>
+      </groupbox>
+      <spacer flex="1"/>
+      <vbox>
+      <description id="FractionPreview" class="MSISample"	flex="1"
+           xmlns:xhtml="http://www.w3.org/1999/xhtml"
+           xmlns:mml="http://www.w3.org/1998/Math/MathML">
+			<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+            <!-- mml:math display="inline" -->
+              <!-- xhtml:div -->
+				<mstyle  id="fractionSampleMStyle">
+          <mrow>
+            <mfrac id="fractionSampleMFrac">
+              <mi tempinput="true">&#x2039;&#x203a;</mi>
+              <mi tempinput="true">&#x2039;&#x203a;</mi>
+            </mfrac>
+          </mrow>
+				</mstyle>
+              <!-- /xhtml:div -->
+      </math>
+      </description>
+      <spacer flex="1"/>
+      </vbox>
+      <spacer flex="1"/>
+    </hbox>
+  </vbox>
+</dialog>
