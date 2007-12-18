@@ -25,7 +25,7 @@
   \br\msitag{<texb>\newcounter{#1}</texb>}%   
 }
 
-\def\out@newcounterB#1[#2]{%
+\def\out@newcounterB#1[#2]{%                                                              
   \br\msitag{<texb>\newcounter{#1}[#2]</texb>}%
 }
 
@@ -61,13 +61,13 @@
 
 \def\out@begin@document{%
    \msiclosetag{preamble}{</sw:preamble>}%
-   \msihmode\br\msiopentag{docbody}{<sw:docbody>}%
+   %%\msihmode\br\msiopentag{docbody}{<sw:docbody>}%
    \@paragraphs
    \msivmode
 }
 
 \def\out@end@document{%
-   \br\msiclosetag{docbody}{</sw:docbody>}%
+   %%\br\msiclosetag{docbody}{</sw:docbody>}%
    \br\msitag{</html:body>}
    \br\msitag{</html:html>}%
    \endinput
@@ -1674,7 +1674,10 @@
 
 \def\emph#1{\msiopentag{em}{<em>}#1\msiclosetag{em}{</em>}}
 
-\def\@writehyperref#1#2#3#4{%
+
+\def\&{\char`\&amp;}
+
+\def\out@hyperref#1#2#3#4{%
    \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}
 }
 
@@ -1691,6 +1694,7 @@
 
 \def\@ttclose#1{\msiclosetag{#1}{</#1>}}
 \def\@closelasttexttag{\expandafter\@ttclose\expandafter{\@lasttexttag}}
+
 
 
 \def\@text@tag#1{%
@@ -1717,12 +1721,31 @@
 \def\@innote{\bgroup\aftergroup\@end@footnote}
 
 
-\def\footnote#1{%
+\def\footnote{%
     \br\@start@notewrapper
     \msiopentag{note}{<note type="footnote">}
-    #1
+    \afterassignment\@footnoteb
+    \let\junk
+}
+\def\@footnoteb{
+    \bgroup
+    \aftergroup\@footnotec
+}
+
+\def\@footnotec{
     \msiclosetag{note}{</note>}%
     \@end@notewrapper}
+
+\def\out@CustomNoteA[#1]#2#3{%
+    \msiopentag{notewrapper}{<notewrapper xmlns="http://www.w3.org/1999/xhtml">}%
+    
+  
+}
+
+\def\out@CustomNoteB#1#2{%
+}
+
+
 
 %% \def\msi@opendocument{%
 %%    \msitag{<?xml version="1.0"?>}\br
