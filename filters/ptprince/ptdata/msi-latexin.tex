@@ -6895,11 +6895,19 @@
 
 \def\U#1{\char`\&\char`\#x#1;}
 
+\def\msihyperref#1#2#3#4{%
+  \out@hyperref{#1}{#2}{#3}{#4}%
+}
+
+\def\hyperref#1#2#3#4{%
+  \out@hyperref{#1}{#2}{#3}{#4}%
+}
+
+
 \def\CustomNote{%
    \@ifnextchar[{\@CustomNoteA}{\@CustomNoteB}}
    
 \def\@CustomNoteA[#1]#2#3{%
-
 }
 
 \def\@CustomNoteB#1#2{%

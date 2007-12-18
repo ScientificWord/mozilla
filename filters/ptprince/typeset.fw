@@ -389,6 +389,9 @@ void Typesetter::EndProcess()
          AppendTag(s_mathml.c_str());
          s_mathml = "";
       }
+   } else if (strcmp(proc, "frame") == 0){
+      // Put code for handling \FRAME here
+      LOG("\nSending to frame function: " << theCStr);
    }
 }
 @}
