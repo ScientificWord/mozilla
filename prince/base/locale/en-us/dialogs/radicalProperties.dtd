@@ -1,0 +1,9 @@
+<!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Radical Properties">
+<!-- <!ENTITY colors.desc "You can override the page colors to make editing certain math objects easier."> -->
+
+<!ENTITY styleButtonGroup.label "Style">
+<!ENTITY styleButtonGroup.accessKey "S">
+
+<!-- <!ENTITY .tooltip "">  -->
