@@ -265,8 +265,15 @@ var msiReviseRadicalCmd =
   {
     var editorElement = msiGetActiveEditorElement(window);
     var theRadical = aParams.getISupportsValue("reviseObject");
-    AlertWithTitle("mathmlOverlay.js", "In msiReviseRadicalCmd, trying to revise radical, dialog unimplemented.");
-//    reviseFraction(editorElement, theFrac);
+    if ( (editorElement != null) && (theRadical != null) )
+    {
+      var radicalData = new Object();
+      radicalData.reviseObject = theRadical;
+      var argArray = [radicalData];
+      msiOpenModelessPropertiesDialog("chrome://prince/content/radicalProperties.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, "cmd_MSIreviseRadicalCmd", theRadical, argArray);
+    }
+//    AlertWithTitle("mathmlOverlay.js", "In msiReviseRadicalCmd, trying to revise radical, dialog unimplemented.");
   },
 
   doCommand: function(aCommand)
@@ -1058,6 +1065,82 @@ function insertradical(editorElement)
 }
 
 
+function reviseRadical(theRadical, objectName, editorElement)
+{
+  if (!theRadical || !editorElement)
+  {
+    dump("Entering reviseRadical with a null editorElement or radical! Aborting...\n");
+    return null;
+  }
+  var retVal = theRadical;
+  var editor = msiGetEditor(editorElement);
+  try
+  {
+//    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+
+    var currRoot = msiNavigationUtils.getWrappedObject(theRadical, objectName);
+    if (currRoot != null)
+      return theRadical;  //it was already of the desired kind - we're done.
+
+    var oldName = "mroot";
+    if (objectName == "mroot")
+      oldName = "msqrt";
+    currRoot = msiNavigationUtils.getWrappedObject(theRadical, oldName);
+    if (currRoot != null)
+    {
+      var newRoot = theRadical.ownerDocument.createElementNS(mmlns, objectName);
+      var nextSibling = currRoot.nextSibling;
+      if (nextSibling == null)
+        newRoot = currRoot.parentNode.appendChild(newRoot);
+      else
+        newRoot = currRoot.parentNode.insertBefore(newRoot, nextSibling);
+      var children = msiNavigationUtils.getSignificantContents(currRoot);
+      if (objectName == "mroot")  //Changing a square root to a general root.
+      {
+        if (children.length == 1)
+          newRoot.appendChild(children[0]);
+        else
+        {
+          var newRow = theRadical.ownerDocument.createElementNS(mmlns, "mrow");
+          for (var ix = 0; ix < children.length; ++ix)
+            newRow.appendChild( theRadical.removeChild(children[ix]) );
+          newRoot.appendChild(newRow);
+        }
+        newRoot.appendChild(newbox(editor));  //create an empty "root" box
+      }
+      else  //creating a msqrt - any "inferred row" of children is okay
+      {
+        if ( msiNavigationUtils.isOrdinaryMRow(children[0]) )
+        {
+          var newChildren = msiNavigationUtils.getSignificantContent(children[0]);
+          for (var jx = 0; jx < newChildren.length; ++jx)
+            newRoot.appendChild( children[0].removeChild(newChildren[jx]) );
+        }
+        else
+          newRoot.appendChild( currRoot.removeChild(children[0]) );
+      }
+      if (currRoot == theRadical)  //radical was top level object being modified; new one should be the return value
+        retVal = newRoot;          //(otherwise original object should still be returned)
+      currRoot.parentNode.removeChild(currRoot);
+    }
+    else
+    {
+      AlertWithTitle("mathmlOverlay.js", "Problem in reviseFraction! No fraction found in node passed in...\n");
+      return theRadical;
+    }
+
+//    AlertWithTitle("mathmlOverlay.js", "In reviseFraction, functionality needs to be implemented.");
+//    mathmlEditor.InsertFraction(lineSpec, sizeFlags);
+    editorElement.contentWindow.focus();
+  }
+  catch(e)
+  {
+    dump("Exception in mathmlOverlay.js, in reviseRadical; exception is [" + e + "].\n");
+  }
+  return retVal;
+}
+
+
 function insertmathname(name, editorElement) 
 {
   if (!editorElement)
@@ -1731,7 +1814,8 @@ function insertmath(editorElement)
 function newbox(editor) 
 {
   var box = editor.document.createElementNS(mmlns,"mi");
-  box.appendChild(editor.document.createTextNode("\u25A1"));
+//  box.appendChild(editor.document.createTextNode("\u25A1"));
+  box.appendChild(editor.document.createTextNode("\u200B"));
   box.setAttribute("tempinput","true");
   return box;
 }
