@@ -4867,6 +4867,30 @@ var msiNavigationUtils =
       }
     }
     return null;
+  },
+
+  isOrdinaryMRow : function(aNode)
+  {
+    if (msiGetBaseNodeName(aNode) == "mrow")
+    {
+      if (this.isFence(aNode))
+        return false;
+      var retVal = true;
+      var theAttrs = aNode.attributes;
+      for (var jx = 0; (jx < theAttrs.length) && retVal; ++jx)
+      {
+        switch(theAttrs.item(jx).nodeName)
+        {
+          case "moz-dirty":
+          break;
+          default:
+            retVal = false;
+          break;
+        }
+      }
+      return retVal;
+    }
+    return false;
   }
 
 };
