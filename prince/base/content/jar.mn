@@ -186,3 +186,5 @@ prince.jar:
   content/Frame.css                  (dialogs/Frame.css)
   content/fractionProperties.xul     (dialogs/fractionProperties.xul)
   content/fractionProperties.js      (dialogs/fractionProperties.js)
+  content/radicalProperties.xul      (dialogs/radicalProperties.xul)
+  content/radicalProperties.js       (dialogs/radicalProperties.js)
