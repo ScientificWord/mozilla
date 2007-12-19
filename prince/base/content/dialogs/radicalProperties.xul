@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/decorationsDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/radicalProperties.dtd">
+
+<dialog title="&windowTitle.label;"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="Startup()"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();">
+
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/ -->
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/radicalProperties.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiButtonGroup.js"/>
+
+  <keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset>
+
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <!-- broadcasterset>
+    <broadcaster id="enableBrackets" disabled="false"/>
+  </broadcasterset -->
+
+  <vbox xmlns:xhtml="http://www.w3.org/1999/xhtml"
+           xmlns:mml="http://www.w3.org/1998/Math/MathML">
+    <groupbox align="start" orient="horizontal" id="radicalButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
+      <caption label="&styleButtonGroup.label;"/>
+      <hbox>
+        <spacer flex="1"/>
+        <button group="radicalButtonGroup" autoCheck="false" value="msqrt">
+          <description>
+            <mml:math display="inline">
+              <mml:mrow>
+                <mml:msqrt>
+                  <mml:mrow class="phantomBox">
+                    <mml:mphantom>
+                      <mml:mi>abX</mml:mi>
+                    </mml:mphantom>
+                  </mml:mrow>
+                </mml:msqrt>
+              </mml:mrow>
+            </mml:math>
+          </description>
+        </button>
+        <button group="radicalButtonGroup" autoCheck="false" value="mroot">
+          <description>
+            <mml:math display="inline">
+              <mml:mrow>
+                <mml:mroot>
+                  <mml:mrow class="phantomBox">
+                    <mml:mphantom>
+                      <mml:mi>abX</mml:mi>
+                    </mml:mphantom>
+                  </mml:mrow>
+                  <mml:mrow class="phantomBox">
+                    <mml:mphantom>
+                      <mml:mi>a</mml:mi>
+                    </mml:mphantom>
+                  </mml:mrow>
+                </mml:mroot>
+              </mml:mrow>
+            </mml:math>
+          </description>
+        </button>
+        <spacer flex="1"/>
+      </hbox>
+    </groupbox>
+    <spacer flex="1"/>
+  </vbox>
+</dialog>
