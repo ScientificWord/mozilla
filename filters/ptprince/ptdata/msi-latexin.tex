@@ -463,7 +463,8 @@
 \def\ooalign{\lineskiplimit-\maxdimen \oalign}
 \def\sh@ft#1{\dimen@.00#1ex\multiply\dimen@\fontdimen1\font
   \kern-.0156\dimen@} % compensate for slant in lowered accents
-\def\hrulefill{\leavevmode\leaders\hrule\hfill\kern\z@}
+%%\def\hrulefill{\leavevmode\leaders\hrule\hfill\kern\z@}
+\def\hrulefill{\out@hrulefill}
 \def\dotfill{%
   \leavevmode
   \cleaders \hb@xt@ .44em{\hss.\hss}\hfill
@@ -6905,12 +6906,7 @@
 
 
 \def\CustomNote{%
-   \@ifnextchar[{\@CustomNoteA}{\@CustomNoteB}}
+   \@ifnextchar[{\out@CustomNoteA}{\out@CustomNoteB}}%
    
-\def\@CustomNoteA[#1]#2#3{%
-}
-
-\def\@CustomNoteB#1#2{%
-}
 
 \makeatother

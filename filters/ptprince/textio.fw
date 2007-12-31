@@ -807,37 +807,37 @@ bool LineSource::GetLine(LineOfText* pLine)
       return false;
    
    // Adjust for TCIMACROs
-          if (pLine -> bPeek("%TCIMACRO{")){
-              LOG("\nTCIMACRO START");
-              // scan ahead removing leading % until a line starts
-              // with %BeginExpansion or a non %. Then remove 
-              // the preceeding brace-percent
-              while (true){
-                LineOfText* pNextLine = new LineOfText;
-                if ( GetRawLine(pNextLine) ){
-                    if ( pNextLine -> bPeek("%BeginExpansion") ) {
-                       LOG("\nFound BeginExpansion");
-                       pLine -> StripTCIMEnd();
-                       do{
-                         GetRawLine(pNextLine);
-                       } while (!pNextLine -> bPeek("%EndExpansion"));
-                       delete pNextLine;                       
-                       break;
-                    } else if ( pNextLine -> bPeek("%" )) {
-                       CopyLine (pNextLine, pLine); 
-                       delete pNextLine;
-                    } else {
-                       LOG("\nNon-comment next line");
-                       pLine -> StripTCIMEnd();
-                       m_held = pNextLine;
-                       break;
-                    }
+   // note: check longer string first
+   if (pLine -> bPeek("%TCIMACRO{%\x0D") || pLine -> bPeek("%TCIMACRO{")){
+        LOG("\nTCIMACRO START");
+        // scan ahead removing leading % until a line starts
+        // with %BeginExpansion or a non %. Then remove 
+        // the preceeding brace-percent
+        while (true){
+            LineOfText* pNextLine = new LineOfText;
+            if ( GetRawLine(pNextLine) ){
+                if ( pNextLine -> bPeek("%BeginExpansion") ) {
+                   LOG("\nFound BeginExpansion");
+                   pLine -> StripTCIMEnd();
+                   do{
+                     GetRawLine(pNextLine);
+                   } while (!pNextLine -> bPeek("%EndExpansion"));
+                   delete pNextLine;                       
+                   break;
+                } else if ( pNextLine -> bPeek("%" )) {
+                   CopyLine (pNextLine, pLine); 
+                   delete pNextLine;
+                } else {
+                   LOG("\nNon-comment next line");
+                   pLine -> StripTCIMEnd();
+                   m_held = pNextLine;
+                   break;
                 }
-                 
-              }               
-          }
-     
-    
+            }
+             
+        }               
+   }
+      
    return true;
 }
 @}
