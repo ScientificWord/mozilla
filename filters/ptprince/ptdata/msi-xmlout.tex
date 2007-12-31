@@ -68,7 +68,7 @@
 
 \def\out@end@document{%
    %%\br\msiclosetag{docbody}{</sw:docbody>}%
-   \br\msitag{</html:body>}
+   \br\msiclosetag{body}{</html:body>}
    \br\msitag{</html:html>}%
    \endinput
    \closeout\csi
@@ -1517,6 +1517,12 @@
 }
 
 
+
+
+\def\out@hrulefill{%
+   <hspace fillWith="line" flex="1" class="stretchySpace" type="stretchySpace"></hspace>}
+
+
 %%\def\msi@hook@hfil{\msitag{\hfil}}
 %%\def\msi@hook@hfill{\msitag{\hfill}}
 %%\def\msi@hook@hss{\msitag{\hss}}
@@ -1714,6 +1720,7 @@
 
 \def\@start@notewrapper{%
     \msiopentag{notewrapper}{<notewrapper xmlns="http://www.w3.org/1999/xhtml">}}
+
 \def\@end@notewrapper{%
     \msiclosetag{notewrapper}{</notewrapper>}}
 
@@ -1738,11 +1745,24 @@
 
 \def\out@CustomNoteA[#1]#2#3{%
     \msiopentag{notewrapper}{<notewrapper xmlns="http://www.w3.org/1999/xhtml">}%
-    
-  
+    \msiopentag{note}{<note type="#2">}%
+    \bgroup
+      \@in@texttagfalse% turn this off so we don't close pending tags if we nest a font switch. 
+      #3%
+    \egroup
+    \msiclosetag{note}{</note>}%
+    \msiclosetag{notewrapper}{</notewrapper>}%
 }
 
 \def\out@CustomNoteB#1#2{%
+    \msiopentag{notewrapper}{<notewrapper xmlns="http://www.w3.org/1999/xhtml">}%
+    \msiopentag{note}{<note type="#1">}%
+    \bgroup
+      \@in@texttagfalse% turn this off so we don't close pending tags if we nest a font switch. 
+      #2%
+    \egroup
+    \msiclosetag{note}{</note>}%
+    \msiclosetag{notewrapper}{</notewrapper>}%
 }
 
 
@@ -1777,7 +1797,7 @@
    
    \br\msitag{<html:head>}
    \br\msitag{</html:head>}
-   \br\msitag{<html:body>}
+   \br\msiopentag{body}{<html:body>}
    \br\msiopentag{preamble}{<sw:preamble>}
 }
 
