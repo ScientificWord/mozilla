@@ -5924,7 +5924,10 @@ var msiObjectPropertiesCommand =
         break;
 
         case 'mo':
-          msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+          if (msiNavigationUtils.isMathname(element))
+            msiGoDoCommandParams("cmd_MSIreviseMathnameCmd", cmdParams, editorElement);
+          else
+            msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
         break;
 
         case 'mover':
