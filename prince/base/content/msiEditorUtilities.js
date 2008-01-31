@@ -1511,6 +1511,27 @@ function msiGetBaseNodeName(node)
   return null;
 }
 
+function msiElementCanHaveAttribute(elementNode, attribName)
+{
+  var retVal = true;  //by default, prevent nothing
+  var elementName = msiGetBaseNodeName(elementNode);
+
+  switch( attribName.toLowerCase() )  //copy attributes we always need
+  {
+    case "limitPlacement":
+      if (elementName != "mo")
+        retVal = false;
+    break;
+    case "msiclass":
+      if (elementName != "mi")
+        retVal = false;  //is this right?
+    break;
+    default:  //don't bother generally? Maybe not a good idea
+    break;
+  }
+  return retVal;
+}
+
 //The idea is to use a NodeIterator to walk the new or affected nodes. We want to find the marked caret position (using the
 //"caretpos" attribute), or the first input box (always in an <mi>?), or, failing that, to leave it at the postNode and postOffset.
 function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, postOffset)
@@ -4653,12 +4674,12 @@ var msiNavigationUtils =
   isFence : function(node)
   {
     var nodeName = msiGetBaseNodeName(node);
-    if (nodeName == "mstyle" && node.childNodes.length == 1)
+    if (nodeName == 'mstyle' && node.childNodes.length == 1)
       return this.isFence(node.childNodes[0]);
-    if (nodeName == 'mrow' || nodeName == "mstyle")
+    if (nodeName == 'mrow' || nodeName == 'mstyle')
     {
-      if ( (msiGetBaseNodeName(node.firstChild) == "mo") && (node.firstChild.getAttribute("fence") == "true") && (node.firstChild.getAttribute("form") == "prefix")
-            && (msiGetBaseNodeName(node.lastChild) == "mo") && (node.lastChild.getAttribute("fence") == "true") && (node.lastChild.getAttribute("form") == "postfix") )
+      if ( (msiGetBaseNodeName(node.firstChild) == 'mo') && (node.firstChild.getAttribute('fence') == 'true') && (node.firstChild.getAttribute('form') == 'prefix')
+            && (msiGetBaseNodeName(node.lastChild) == 'mo') && (node.lastChild.getAttribute('fence') == 'true') && (node.lastChild.getAttribute('form') == 'postfix') )
         return true;
     }
     return false;
@@ -4689,24 +4710,24 @@ var msiNavigationUtils =
 
   isBoundFence : function(node)
   {
-    if (msiGetBaseNodeName(node) == "mstyle" && node.childNodes.length == 1)
+    if (msiGetBaseNodeName(node) == 'mstyle' && node.childNodes.length == 1)
       return this.isBoundFence(node.childNodes[0]);
 
     return ( this.isFence(node) 
-               && node.firstChild.hasAttribute("msiBoundFence") && (node.firstChild.getAttribute("msiBoundFence") == "true") 
-               && node.lastChild.hasAttribute("msiBoundFence") && (node.lastChild.getAttribute("msiBoundFence") == "true") );
+               && node.firstChild.hasAttribute('msiBoundFence') && (node.firstChild.getAttribute('msiBoundFence') == 'true') 
+               && node.lastChild.hasAttribute('msiBoundFence') && (node.lastChild.getAttribute('msiBoundFence') == 'true') );
   },
 
   isBinomial : function(node)
   {
-    if (msiGetBaseNodeName(node) == "mstyle" && node.childNodes.length == 1)
+    if (msiGetBaseNodeName(node) == 'mstyle' && node.childNodes.length == 1)
       return this.isBinomial(node.childNodes[0]);
     if (this.isBoundFence(node))
     {
       var children = this.getSignificantContents(node);
       if (children.length == 3)
       {
-        if (msiGetBaseNodeName(children[1]) == "mfrac")
+        if (msiGetBaseNodeName(children[1]) == 'mfrac')
           return true;
       }
     }
@@ -4720,21 +4741,21 @@ var msiNavigationUtils =
 
     switch(msiGetBaseNodeName(node))
     {
-      case "mfrac":
-      case "msub":
-      case "msubsup":
-      case "msup":
-      case "munder":
-      case "mover":
-      case "munderover":
-      case "mroot":
-      case "msqrt":
+      case 'mfrac':
+      case 'msub':
+      case 'msubsup':
+      case 'msup':
+      case 'munder':
+      case 'mover':
+      case 'munderover':
+      case 'mroot':
+      case 'msqrt':
         return true;
       break;
-      case "mrow":
+      case 'mrow':
         return this.isFence(node);
       break;
-      case "mstyle":
+      case 'mstyle':
         if (this.isFence(node))
           return true;
         if (node.childNodes.length == 1 && this.isMathTemplate(node.childNodes[0]))
@@ -4827,16 +4848,16 @@ var msiNavigationUtils =
         singleKid = this.getSingleWrappedChild(aNode);
         if (singleKid != null)
           return this.getWrappedObject(singleKid, objType);
-        if (objType == "fence" && this.isFence(aNode))
+        if (objType == 'fence' && this.isFence(aNode))
           return aNode;
-        else if (objType == "binomial" && this.isBinomial(aNode))
+        else if (objType == 'binomial' && this.isBinomial(aNode))
           return aNode;
       break;
 
       case 'mrow':
-        if (objType == "fence" && this.isFence(aNode))
+        if (objType == 'fence' && this.isFence(aNode))
           return aNode;
-        else if (objType == "binomial" && this.isBinomial(aNode))
+        else if (objType == 'binomial' && this.isBinomial(aNode))
           return aNode;
         else
         {
@@ -4847,8 +4868,21 @@ var msiNavigationUtils =
       break;
 
       default:
-        if (theName == objType)
-          return aNode;
+        switch(objType)
+        {
+          case 'mathname':
+            if (this.isMathname(aNode))
+              return aNode;
+          break;
+          case 'unit':
+            if (this.isUnit(aNode))
+              return aNode;
+          break;
+          default:
+            if (theName == objType)
+              return aNode;
+          break;
+        }
       break;
     }
     return null;
@@ -4856,7 +4890,7 @@ var msiNavigationUtils =
 
   findWrappingStyleNode : function(aNode)
   {
-    if (msiGetBaseNodeName(aNode) == "mstyle")
+    if (msiGetBaseNodeName(aNode) == 'mstyle')
       return aNode;
 
     if ( (aNode != null) && (aNode.parentNode != null) )
@@ -4871,7 +4905,7 @@ var msiNavigationUtils =
 
   isOrdinaryMRow : function(aNode)
   {
-    if (msiGetBaseNodeName(aNode) == "mrow")
+    if (msiGetBaseNodeName(aNode) == 'mrow')
     {
       if (this.isFence(aNode))
         return false;
@@ -4881,7 +4915,7 @@ var msiNavigationUtils =
       {
         switch(theAttrs.item(jx).nodeName)
         {
-          case "moz-dirty":
+          case 'moz-dirty':
           break;
           default:
             retVal = false;
@@ -4891,6 +4925,67 @@ var msiNavigationUtils =
       return retVal;
     }
     return false;
+  },
+
+  getLeafNodeText : function(aNode)
+  {
+    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+      return aNode.data;
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "mi":
+      case "mo":
+      {
+        var childNodes = this.getSignificantContents(aNode);
+        if (childNodes.length != 1)
+          dump("In msiNavigationUtils.getLeafNodeText, found too many children for node of type " + msigetBaseNodeName(aNode) + ".\n");
+        return this.getLeafNodeText(childNodes[0]);
+      }
+      break;
+    }
+    var kid = this.getSingleWrappedChild(aNode);
+    if (kid != null)
+      return this.getLeafNodeText(kid);
+    return null;
+  },
+
+  findStyleEnclosingObj : function(targNode, objTypeStr, expectedStyle, foundStyle)
+  {
+    var retStyleNode = null;
+    var nodeName = msiGetBaseNodeName(targNode);
+    if (nodeName == "mstyle")
+    {
+      retStyleNode = targNode;
+      for each (var styleItem in expectedStyle)
+      {
+        if (targNode.hasAttribute(styleItem))
+          foundStyle[styleItem] = targNode.getAttribute(styleItem);
+      }
+    }
+    var wrappedChild = this.getSingleWrappedChild(targNode);
+    if (wrappedChild != null)
+    {
+      var otherStyle = this.findStyleEnclosingObj(wrappedChild, objTypeStr, expectedStyle, foundStyle);
+      if (otherStyle != null)
+        retStyleNode = otherStyle;
+    }
+    //Following seems to be unnecessary!
+//    switch(objTypeStr)
+//    {
+//      case "fence":
+//        if (nodeName == "mrow" && msiNavigationUtils.isFence(targNode))
+//          return retStyleNode;
+//      break;
+//      case "binomial":
+//        if (nodeName == "mrow" && msiNavigationUtils.isBinomial(targNode))
+//          return retStyleNode;
+//      break;
+//      default:
+//        if (nodeName == objTypeStr)
+//          return retStyleNode;
+//      break; 
+//    }
+    return retStyleNode;
   }
 
 };

@@ -1,6 +1,7 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <!ENTITY windowTitle.label	"Math Name">
+<!ENTITY windowPropertiesTitle.label "Math Name Properties">
 
 <!ENTITY mathNamesBox.label "Name">
 <!ENTITY mathNamesBox.tooltip "Enter a math name or select from the list.">
