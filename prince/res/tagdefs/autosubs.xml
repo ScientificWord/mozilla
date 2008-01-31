@@ -229,5 +229,8 @@
   <sub ctx="math" tp="sc"><pattern>uWa</pattern><data>insertMathunit('W','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uWb</pattern><data>insertMathunit('Wb','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>udeg</pattern><data>insertMathunit('°','true');</data></sub>
-
+  <sub ctx="math" tp="subst"><pattern>varinjlim</pattern><data><munder><mi>lim</mi><mo stretchy="true" accent="true">&rarr;</mo></munder></data><context/><info>0,0</info></sub>
+  <sub ctx="math" tp="subst"><pattern>varliminf</pattern><data><munder><mi>lim</mi><mo stretchy="true" accent="true">&UnderBar;</mo></munder></data><context/><info>0,0</info></sub>
+  <sub ctx="math" tp="subst"><pattern>varlimsup</pattern><data><mover><mi>lim</mi><mo stretchy="true" accent="true">&OverBar;</mo></mover></data><context/><info>0,0</info></sub>
+  <sub ctx="math" tp="subst"><pattern>varprojlim</pattern><data><munder><mi>lim</mi><mo stretchy="true" accent="true">&larr;</mo></munder></data><context/><info>0,0</info></sub>
 </subs>
