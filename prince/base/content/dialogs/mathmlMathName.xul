@@ -80,7 +80,8 @@
     <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
   </keyset>
 
-  <hbox>  
+  <hbox>
+    <label id="propertiesTitle" display="none" value="&windowPropertiesTitle.label;" />
     <vbox flex="1">
       <description>&mathNamesBox.label;</description>
       <separator class="thin"/>
