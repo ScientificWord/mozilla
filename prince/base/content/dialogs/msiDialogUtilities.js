@@ -662,7 +662,15 @@ function msiDialogConfigManager(theDialogWindow)
     }
     if (this.mbIsRevise)
     {
-      var reviseTitle = gDlg.getElementById("msiDialogPropertiesTitle");
+      var reviseTitle = null;
+      if ("getPropertiesDialogTitle" in this.mDlgWindow)
+        reviseTitle = this.mDlgWindow.getPropertiesDialogTitle();
+      if (reviseTitle == null)
+      {
+        var reviseTitleElement = this.mDlgWindow.getElementById("msiDialogPropertiesTitle");
+        if (reviseTitleElement != null)
+          reviseTitle = reviseTitleElement.value;
+      }
       if (reviseTitle != null)
         this.mDlgWindow.title = reviseTitle.value;
     }
