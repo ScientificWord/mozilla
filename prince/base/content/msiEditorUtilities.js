@@ -537,10 +537,10 @@ function msiGetActiveEditorElement(currWindow)
 {
   if (!currWindow)
     currWindow = window.document.defaultView;
-  if ("msiActiveEditorElement" in currWindow)
+  if ("msiActiveEditorElement" in currWindow && (currWindow.msiActiveEditorElement != null) )
     return currWindow.msiActiveEditorElement;
   currWindow = msiGetTopLevelWindow(currWindow);
-  if ("msiActiveEditorElement" in currWindow)
+  if ("msiActiveEditorElement" in currWindow  && (currWindow.msiActiveEditorElement != null) )
     return currWindow.msiActiveEditorElement;
 //  if (!editorElement && currWindow.opener && currWindow.opener != currWindow)
 //    editorElement = msiGetActiveEditorElement(currWindow.opener);
@@ -3473,6 +3473,8 @@ function msiViewSettings(viewFlags)
   this.showHelperLines = ((viewFlags & this.hideHelperLinesFlag) == 0);
   this.showInputBoxes = ((viewFlags & this.hideInputBoxesFlag) == 0);
   this.showMarkers = ((viewFlags & this.hideMarkersFlag) == 0);
+  this.showFootnotes = ((viewFlags & this.hideFootnotesFlag) == 0);
+  this.showOtherNotes = ((viewFlags & this.hideOtherNotesFlag) == 0);
   this.showIndexEntries = ((viewFlags & this.hideIndexEntriesFlag) == 0);
 
   this.match = function(otherSettings)
@@ -3484,6 +3486,10 @@ function msiViewSettings(viewFlags)
     if (this.showInputBoxes != otherSettings.showInputBoxes)
       return false;
     if (this.showMarkers != otherSettings.showMarkers)
+      return false;
+    if (this.showMFootnotes != otherSettings.showFootnotes)
+      return false;
+    if (this.showOtherNotess != otherSettings.showOtherNotes)
       return false;
     if (this.showIndexEntries != otherSettings.showIndexEntries)
       return false;
@@ -3503,6 +3509,10 @@ function msiViewSettings(viewFlags)
       theFlags |= this.hideMarkersFlag;
     if (!this.showIndexEntries)
       theFlags |= this.hideIndexEntriesFlag;
+    if (!this.showFootnotes)
+      theFlags |= this.hideFootnotesFlag;
+    if (!this.showOtherNotes)
+      theFlags |= this.hideOtherNotesFlag;
     return theFlags;
   };
 
@@ -3514,7 +3524,9 @@ var msiViewSettingsBase =
   hideHelperLinesFlag  :  2,
   hideInputBoxesFlag   :  4,
   hideMarkersFlag      :  8,
-  hideIndexEntriesFlag : 16
+  hideIndexEntriesFlag : 16,
+  hideFootnotesFlag    : 32,
+  hideOtherNotesFlag   : 64
 };
 
 msiViewSettings.prototype = msiViewSettingsBase;
@@ -5144,3 +5156,81 @@ function msiToPixels(distance,unit)
 {
   return msiCSSUnitsList.convertUnits(distance, unit, 'in')*100;  //100 pixels/inch
 }
+
+// a timer for automatic soft saves
+
+
+function SS_Timer(delayMS, editor, editorElement) {
+  this.debuginfo = "soft save timer";
+  this.editor = editor;
+  this.editorElement = editorElement;
+  this.modCount = 0;
+  var prefService = Components.classes["@mozilla.org/preferences-service;1"]
+                              .getService(Components.interfaces.nsIPrefBranch);
+
+  var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+
+  var interval = prefService.getIntPref("swp.saveintervalminutes");
+  if (!interval || interval == 0) return;
+  this.timer_ = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
+//  this.observerService_ = new G_ObserverServiceObserver(
+//                                        'xpcom-shutdown',
+//                                        BindToObject(this.cancel, this));
+
+  // Ask the timer to use nsITimerCallback (.notify()) when ready
+  // Interval is the time between saves in minutes
+  this.timer_.initWithCallback(this, interval*60*1000, 1);
+}
+
+SS_Timer.prototype.callback_ = function()
+{
+  var modCt = this.editor.getModificationCount();
+  if (modCt != this.modCount) doSoftSave(this.editorElement, this.editor);
+  this.modCount = modCt;
+  return true;
+}
+
+
+
+/**
+ * Cancel this timer 
+ */
+SS_Timer.prototype.cancel = function() {
+  if (!this.timer_) {
+    return;
+  }
+
+  this.timer_.cancel();
+  // Break circular reference created between this.timer_ and the SS_Timer
+  // instance (this)
+  this.timer_ = null;
+  this.callback_ = null;
+
+  // We don't need the shutdown observer anymore
+//  this.observerService_.unregister();
+}
+
+/**
+ * Invoked by the timer when it fires
+ * 
+ * @param timer Reference to the nsITimer which fired (not currently 
+ *              passed along)
+ */
+SS_Timer.prototype.notify = function(timer) {
+  // fire callback and save results
+  var ret = this.callback_();
+  
+  return ret;
+}
+
+/**
+ * XPCOM cruft
+ */
+SS_Timer.prototype.QueryInterface = function(iid) {
+  if (iid.equals(Components.interfaces.nsISupports) ||
+      iid.equals(Components.interfaces.nsITimerCallback))
+    return this;
+
+  throw Components.results.NS_ERROR_NO_INTERFACE;
+}
+
