@@ -207,7 +207,7 @@ function msiEditorCanClose(editorElement)
   //   editor or close any non-modal windows now
   if (canClose && "InsertCharWindow" in window && window.InsertCharWindow)
     SwitchInsertCharToAnotherEditorOrClose();
-
+  if (canClose) ShutdownAnEditor(editorElement);
   return canClose;
 }
 
