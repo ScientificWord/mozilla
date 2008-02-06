@@ -157,7 +157,19 @@ note[hide="true"] {
   display: none;
 } 
 
-*[hide="true"] note {
+*[hideFootnotes="true"] note[type="footnote"] {
+  display: none !important;
+}
+
+*[hideOtherNotes="true"] note {
+  display: none !important;
+}
+
+*[hideOtherNotes="true"] note[type="footnote"] {
+  display: block !important;
+}
+
+*[hideOtherNotes="true"][hideFootnotes="true"] note[type="footnote"] {
   display: none !important;
 }
 
@@ -196,3 +208,10 @@ note {
 }
 
 
+
+drop {
+  float: left;
+  font-size: 4.2em;
+  line-height: .7;
+  padding-top: .08em;
+}
