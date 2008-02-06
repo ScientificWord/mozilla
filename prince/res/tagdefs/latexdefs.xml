@@ -39,6 +39,7 @@
       <contains>a</contains>
 			<tags>
 				<tag nm="sw:(normal)" id="cleartexttag" ><description>Clear text tags</description></tag>
+				<tag nm="sw:alt"><description>Stylistic alternate</description></tag>
 				<tag nm="sw:bold"><description>Bold</description></tag>
 				<tag nm="sw:bbold"><description>Blackboard Bold</description></tag>
 				<tag nm="sw:cal"><description>Calligraphic</description></tag>
