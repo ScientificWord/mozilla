@@ -309,7 +309,16 @@
       <menuitem label="&autoSubstituteDlg.label;" accesskey="&autoSubstituteDlg.accessKey;" command="cmd_MSIAutoSubDlg"/>
     </menupopup>
   </menu>
-  
+  <menu id="windowMenu" label="Window" oncommand="switchFocus(event.target);">
+    <menupopup id="window-menupopup" datasources="rdf:window-mediator" ref="NC:WindowMediatorRoot">
+      <template>
+        <rule>
+          <menuitem uri="rdf:*" label="rdf:http://home.netscape.com/NC-rdf#Name"/>
+        </rule>
+      </template>
+    </menupopup>
+  </menu>          
+
   <menu id="helpmenu" label="&helpmenu.label;" accesskey="&helpmenu.accesskey;">
     <menupopup id="helpPopup">
       <menuitem id="helpmenuContents" label="&helpmenuContents.label;" 
@@ -349,6 +358,10 @@
       <menuitem id="viewstatusbar" type="checkbox" checked="true" observes="cmd_viewStatusBar" accesskey="&viewStatusBar.accesskey;"
         label="&viewStatusBar.label;" />
       <menuseparator/>
+      <menuitem id="viewFootnotes" type="checkbox" checked="true" persist="checked" accesskey="&viewFootnotes.accesskey;"    observes="cmd_viewInvisibles"
+        label="&viewFootnotes.label;"/>
+      <menuitem id="viewOtherNotes" type="checkbox" checked="true" persist="checked" accesskey="&viewOtherNotes.accesskey;"    observes="cmd_viewInvisibles"
+        label="&viewOtherNotes.label;"/>
       <menuitem id="viewInvisibles" type="checkbox" accesskey="&viewInvisibles.accesskey;"    observes="cmd_viewInvisibles"
         label="&viewInvisibles.label;"/>
       <menuitem id="viewHelperLines" type="checkbox" accesskey="&viewHelperLines.accesskey;" checked="true"   observes="cmd_viewInvisibles"
