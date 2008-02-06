@@ -610,8 +610,10 @@ function ShutdownAllEditors()
     {
       if (editorList.item(i))
       {
-        keepgoing = (!msiIsTopLevelEditor(editorList.item(i))) ||
-                       msiCheckAndSaveDocument(editorList.item(i), "cmd_close", true);
+        // the next two lines assign the OR of the two return values, but we can't use || since we
+        // want the side effects of both function calls
+        keepgoing = (!msiIsTopLevelEditor(editorList.item(i)));
+        if (msiCheckAndSaveDocument(editorList.item(i), "cmd_close", true)) keepgoing = true;
         if (keepgoing)
           ShutdownAnEditor(editorList.item(i));
         else break;
@@ -719,6 +721,7 @@ function msiEditorDocumentObserver(editorElement)
 //        var isInlineSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
 //        editor.getInlineSpellChecker(true).enableRealTimeSpell = isInlineSpellCheckerEnabled;
 
+        editorElement.softsavetimer = new SS_Timer(2*60*1000, editor, editorElement);
         if (!("InsertCharWindow" in window))
           window.InsertCharWindow = null;
 
@@ -1545,7 +1548,7 @@ function ShutdownAnEditor(editorElement)
   {
     SetUnicharPref("prince.zoom_factor", msiGetMarkupDocumentViewer(editorElement).textZoom);
   } catch(e) { dump( "In ShutdownAnEditor, setting unicharpref, error: " + e + "\n" ); }
-
+  if (editorElement.softsavetimer) editorElement.softsavetimer.cancel();
   try
   {
     msiRemoveActiveEditor(editorElement);
@@ -1601,12 +1604,14 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   try {
     // if we don't have an editor or an document, bail
     var editor = msiGetEditor(editorElement);
+    if (!editor) return true;
     document = editor.document;
     if (!document)
       return true;
     if (!editor.documentModified && !msiIsHTMLSourceChanged(editorElement))
     {
       if (command == "cmd_close" && ("isShellFile" in editorElement) && editorElement.isShellFile)
+      // if the document is a shell and has never been saved, it will be deleted by Revert
         doRevert(editorElement, true);
       return true;
     }
@@ -1638,12 +1643,8 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     
   var reasonToSave = strID ? GetString(strID) : "";
 
-//  var title = document.title;
-  var title = GetString("untitled");
-  var theFilename = document.getElementById("filename");
-  if (theFilename != null)
-    title = theFilename.value;
-//  if (!title)
+  var title = GetFilename(msiGetDocumentBaseUrl(editorElement));
+  if (!title) title="untitled document";
 
   var dialogTitle = GetString(doPublish ? "PublishPage" : "SaveDocument");
   var dialogMsg = GetString(doPublish ? "PublishPrompt" : "SaveFilePrompt");
@@ -1703,7 +1704,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
       contentsMIMEType = editor.contentsMIMEType;
     else
       contentsMIMEType = kTextMimeType;
-    var success = msiSaveDocument(false, false, contentsMIMEType, editorElement);
+    var success = msiSaveDocument(false, false, false, contentsMIMEType, editorElement);
     return success;
   }
 
@@ -3069,11 +3070,9 @@ function msiSetEditMode(mode, editorElement)
     var start = source.search(/<html/i);
     if (start == -1) start = 0;
     var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
-    dump("In msiSetEditMode setting mode to Source; string to insert is: [\n" + source.slice(start) + "\n]; start is set to [" + start + "].\n");
     try
     {
       var theSelection = sourceTextEditor.selection;
-      dump("Editor's selection is [" + theSelection.toString() + "].\n");
     }
     catch(ex) {dump("Unable to dump selection from source editor, error is [" + ex + "].\n");}
     sourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
@@ -3260,7 +3259,7 @@ function msiSetDisplayMode(editorElement, mode)
     msiHideItem("structToolbar");
     if ("gSourceContentWindow" in window)
       window.gSourceContentWindow.contentWindow.focus();
-    // Switch to the sourceWindow or previewWindow(second or third in the deck)
+    // Switch to the sourceWindow or bWindow(second or third in the deck)
     if ("gContentWindowDeck" in window)
       window.gContentWindowDeck.selectedIndex = (mode==kDisplayModeSource?1:2);
   }
@@ -3429,6 +3428,14 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings)
     theBody.setAttribute("hideMarkers", "true");
   else
     theBody.removeAttribute("hideMarkers");
+  if (!viewSettings.showFootnotes)
+    theBody.setAttribute("hideFootnotes", "true");
+  else
+    theBody.removeAttribute("hideFootnotes");
+  if (!viewSettings.showOtherNotes)
+    theBody.setAttribute("hideOtherNotes", "true");
+  else
+    theBody.removeAttribute("hideOtherNotes");
 
   //  var dumpStr = "Element [" + theBody.nodeName + "] now has settings: [";
   //  var attribNames = ["showinvis", "hideHelperLines", "hideInputBoxes", "hideIndexEntries", "hideMarkers"];
