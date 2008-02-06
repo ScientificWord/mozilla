@@ -40,7 +40,15 @@ function GetCurrentEditorElement() {
 }
 
 function doQuit() {
-  var cancel = ShutdownAllEditors();
+  var cancel = false;
+  var wm=Components.classes["@mozilla.org/appshell/window-mediator;1"].getService();
+  wm=wm.QueryInterface(Components.interfaces.nsIWindowMediator);
+  var wlist=wm.getEnumerator(null);
+  while (!cancel && wlist.hasMoreElements())
+  {
+    var w=wlist.getNext();
+    if (w && ("ShutdownAllEditors" in w)) cancel |= w.ShutdownAllEditors();
+  }
   if (!cancel)
   {
     var appStartup = Components.classes["@mozilla.org/toolkit/app-startup;1"].
@@ -856,3 +864,15 @@ function setStatusBarVisibility()
   else statusbar.setAttribute("hidden","true");
 }
 
+function switchFocus(elem)
+{
+  var mediator = Components.classes["@mozilla.org/rdf/datasource;1?name=window-mediator"].getService();
+  mediator.QueryInterface(Components.interfaces.nsIWindowDataSource);
+
+  var resource = elem.getAttribute('id');
+  var switchwindow = mediator.getWindowForResource(resource);
+
+  if (switchwindow){
+    switchwindow.focus();
+  }
+}
