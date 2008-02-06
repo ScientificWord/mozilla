@@ -205,9 +205,17 @@ function getPageLayout(node)
       if (value) document.getElementById('docformat.finishpagesize').value = value; 
       if (value != "other") document.getElementById("bc.finishpagesize").setAttribute("disabled","true");
       value = subnode.getAttribute('width');
-      if (value) pagewidth = getNumberValue(value);
+      if (value) 
+      {
+        pagewidth = getNumberValue(value);
+        document.getElementById("tbpagewidth").value = pagewidth;
+      }
       value = subnode.getAttribute('height');
-      if (value) pageheight = getNumberValue(value);
+      if (value) 
+      {
+        pageheight = getNumberValue(value);
+        document.getElementById("tbpageheight").value = pageheight;
+      }
       value = subnode.getAttribute('landscape');
       if (value=='true') landscape = true; else landscape = false;
       document.getElementById('landscape').checked=landscape;
@@ -556,6 +564,7 @@ function getCropInfo(node)
   if (!node) {
     papertype="letter";
     document.getElementById("useCropmarks").checked=false;
+    document.getElementById("cropGroup").value = "cam";
     document.getElementById("bc.papersize").setAttribute("disabled","true");
     broadcaster.setAttribute("hidden",true);
   }
@@ -565,7 +574,7 @@ function getCropInfo(node)
     broadcaster.removeAttribute("hidden");
     document.getElementById("bc.papersize").removeAttribute("disabled");
     var croptype = node.getAttribute("type");
-    if (!croptype) croptype = "camera";
+    if (!croptype) croptype = "cam";
     document.getElementById("cropGroup").value = croptype;
     var paper = node.getAttribute("paper");
     if (!paper) paper="letter";
