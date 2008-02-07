@@ -41,6 +41,7 @@ function GetCurrentEditorElement() {
 
 function doQuit() {
   var cancel = false;
+  // call ShutdownAllEditors on all editing windows
   var wm=Components.classes["@mozilla.org/appshell/window-mediator;1"].getService();
   wm=wm.QueryInterface(Components.interfaces.nsIWindowMediator);
   var wlist=wm.getEnumerator(null);
