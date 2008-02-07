@@ -1612,6 +1612,7 @@ ReadCMAPTableFormat12(PRUint8* aBuf, PRInt32 len, PRUint32 **aExtMap)
         aExtMap[plane] = new PRUint32[UCS2_MAP_LEN];
         if (!aExtMap[plane])
           return; // i.e., we will only retain the BMP and what we were able to allocate so far
+        memset(aExtMap[plane], 0, sizeof(PRUint32*)*UCS2_MAP_LEN);
       }
       ADD_GLYPH(aExtMap[plane], c & 0xffff);
     }
