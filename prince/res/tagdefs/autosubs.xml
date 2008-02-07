@@ -5,6 +5,8 @@
   <sub ctx="text" tp="subst"><pattern>&#x2013;-</pattern><data>&#x2014;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>``</pattern><data>&#x201C;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>''</pattern><data>&#x201D;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>"</pattern><data>&#x201C;</data><context/><info>0,0</info></sub>
+  <sub ctx="text" tp="subst"><pattern>&#x201C;&#x20;</pattern><data>&#x201D;&#x20;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>^A</pattern><data>Â</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>BBM</pattern><data>Barry MacKichan</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>&#x2013;&gt;#</pattern><data>&#x2192;</data><context/><info>0,0</info></sub>
@@ -29,6 +31,7 @@
   <sub ctx="text" tp="sc"><pattern>.addr.</pattern><data>insertParaTag('address',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.maket.</pattern><data>insertTag('maketitle',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.lorem.</pattern><data>insertFragmentOrMacro('Lorem');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>+-</pattern><data>insertMathSymbol('±',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>sin</pattern><data>insertMathname('sin','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>sinh</pattern><data>insertMathname('sinh','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>cos</pattern><data>insertMathname('cos','true');</data></sub>
