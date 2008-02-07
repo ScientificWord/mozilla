@@ -91,6 +91,10 @@
 \maketitle
 </xsl:template>
 
+<xsl:template match="html:chapter">
+<xsl:apply-templates/>
+</xsl:template>
+
 <xsl:template match="html:section">
 <xsl:apply-templates/>
 </xsl:template>
@@ -118,6 +122,9 @@
 
 
 <xsl:template match="html:sectiontitle">
+<xsl:if test="name(..)='chapter'">
+\chapter{<xsl:apply-templates/>}
+</xsl:if>
 <xsl:if test="name(..)='section'">
 \section{<xsl:apply-templates/>}
 </xsl:if>
@@ -135,6 +142,12 @@
 </xsl:if>
 
 </xsl:template>
+
+
+<xsl:template match="html:drop">
+\lettrine[lhang=.2]{\textbf{<xsl:apply-templates/>}}{}
+</xsl:template>
+
 
 <xsl:template match="html:enumerate">
 \begin{enumerate}
@@ -211,6 +224,7 @@
 <xsl:apply-templates/>
 </xsl:template>
 
+<xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:bold">\textbf{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:it">\textit{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:rm">\textrm{<xsl:apply-templates/>}</xsl:template>
