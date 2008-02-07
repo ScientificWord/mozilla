@@ -16,6 +16,7 @@ pref("toolkit.scrollbar.smoothscroll", true);
 
 pref("swp.defaultShell", "article/LaTeXArticleShell.sci");
 pref("swp.defaultDialogShell", "article/LaTeXDialogShell.sci");
+pref("swp.saveintervalminutes",2);
 pref("editor.author",                       "");
 
 pref("editor.text_color",                   "#000000");
