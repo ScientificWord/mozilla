@@ -47,6 +47,7 @@ private:
   PRUint32 lastSuccessIndex;
   nsCString mFileURI;  // the file the list was loaded from
   PRUint32 arraylength;
+  PRBool   isInitialized;
   ~msiAutosub();
 
 protected:
