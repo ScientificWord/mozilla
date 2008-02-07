@@ -76,7 +76,7 @@ compare( const void * a, const void * b, void * notused)
   return 0;
 }
 
-msiAutosub::msiAutosub()
+msiAutosub::msiAutosub(): isInitialized(PR_FALSE)
 {
   /* member initializers and constructor code */
 }
@@ -194,6 +194,7 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
     }
     NS_QuickSort(autosubarray, arraylength, sizeof(autosubentry), compare, nsnull);
   }
+  isInitialized = PR_TRUE;
   return NS_OK;
 }
 
@@ -265,6 +266,11 @@ NS_IMETHODIMP msiAutosub::GetCurrentData(PRInt32 *ctx, PRInt32 *action, nsAStrin
 /* long nextChar (in wchar ch); */
 NS_IMETHODIMP msiAutosub::NextChar(PRUnichar ch, PRInt32 *_retval)
 {
+  if (!isInitialized)
+  {
+    *_retval = msiIAutosub::STATE_FAIL;
+    return NS_OK;
+  }
   nsAutoString s;
   s.SetLength(1);
   nsString::iterator start;
