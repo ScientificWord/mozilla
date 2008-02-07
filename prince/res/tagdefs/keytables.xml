@@ -17,6 +17,8 @@
 	  <key name="F9" vk="1" >toggleTextTag('tt',false);</key>
 	  <key name="F11" vk="1" >insertSectionTag('section',false);</key>
 	  <key name="F12" vk="1" >insertSectionTag('subsection',false);</key>
+	  <key name="F12" alt="1" vk="1" >dumpMath();</key>
+    <key name="F11" alt="1" vk="1" >softSave();</key>
   </keytable>
 
 <!-- layout of the Greek keyboard -->
