@@ -40,13 +40,17 @@ chapter sectiontitle {
   display: block;
   font-size: x-large;
   font-weight: bold;
+  line-height: 24pt;
+  text-align: center;
 }
 
 chapter>sectiontitle:before {
   content: "Chapter " counter(chapter,upper-roman);
   display: block;
-  font-size: xx-large;
+  font-size: x-large;
   font-weight: bold;
+  line-height: 24pt;
+  text-align: center;
 }
 
 section {
@@ -270,13 +274,17 @@ em span.inlineMath {
 }
 
 rm {
-  font-family: Times New Roman;
+  font-family: Times New Roman, serif;
   color: rgb(0,0,255)
 }
 
 cal, *[mathvariant="script"] {
   font-family: monotype corsiva;
   color: rgb(0,0,255)
+}
+
+alt {
+  color: rgb(0,255,0)
 }
 
 bold {
