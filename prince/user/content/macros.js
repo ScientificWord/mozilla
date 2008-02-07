@@ -97,6 +97,7 @@ function previewDVI(delSelection)
   printTeX(false,true);
 }
 
+     
 // The following was added by BBM for diagnostic purposes. It should not be in the release version
 // If the selection is collapsed and in a math object, this will dump the math object and show
 // the location of the selection point.
