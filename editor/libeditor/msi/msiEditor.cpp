@@ -967,15 +967,19 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     PRBool isShift(PR_FALSE), ctrlKey(PR_FALSE), altKey(PR_FALSE), metaKey(PR_FALSE);
     res = ExtractDataFromKeyEvent(aKeyEvent, keyCode, symbol, isShift, ctrlKey,
                                   altKey, metaKey);
+// BBM
+// Commenting the next block of code removes Larry's cursor handling code and restores
+// (since preventDefault is not called) the Mozilla cursor handling
+//
     if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT  ||  keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT ||
         keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
-    {
-//      PRBool preventDefault(PR_FALSE);
-//      res = HandleArrowKeyPress(keyCode, isShift, ctrlKey, altKey, metaKey, preventDefault); 
-//      if (NS_SUCCEEDED(res) && preventDefault)
-//        aKeyEvent->PreventDefault();
-      return NS_OK;
-    }
+   {
+     PRBool preventDefault(PR_FALSE);
+     res = HandleArrowKeyPress(keyCode, isShift, ctrlKey, altKey, metaKey, preventDefault); 
+     if (NS_SUCCEEDED(res) && preventDefault)
+       aKeyEvent->PreventDefault();
+     return NS_OK;
+   }
     // Check for mapped characters -- function keys or one-shot mapping
     
     if (mKeyMap)
