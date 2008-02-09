@@ -2352,12 +2352,13 @@ function propertyDialogList(theWindow)
       var bFound = false;
       for (var entry in topWin.msiPropertiesDialogList.ourList)
       {
-        for (var i = 0; i < topWin.msiPropertiesDialogList.ourList[entry].length; ++i)
+        for (var i = topWin.msiPropertiesDialogList.ourList[entry].length; i >= 1; --i)
         {
-          if (topWin.msiPropertiesDialogList.ourList[entry][i].theDialog == theDialog)
+          if (topWin.msiPropertiesDialogList.ourList[entry][i-1].theDialog == theDialog)
           {
   //          msiKludgeLogString("Removing dialog entry in closing observer.\n");
-            delete topWin.msiPropertiesDialogList.ourList[entry][i];
+            topWin.msiPropertiesDialogList.ourList[entry].splice(i-1, 1);
+//            delete topWin.msiPropertiesDialogList.ourList[entry][i-1];
             bFound = true;
             if (topWin.msiPropertiesDialogList.ourList[entry].length == 0)
               delete topWin.msiPropertiesDialogList.ourList[entry];

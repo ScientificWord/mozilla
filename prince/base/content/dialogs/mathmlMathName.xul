@@ -81,7 +81,7 @@
   </keyset>
 
   <hbox>
-    <label id="propertiesTitle" display="none" value="&windowPropertiesTitle.label;" />
+    <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
     <vbox flex="1">
       <description>&mathNamesBox.label;</description>
       <separator class="thin"/>
