@@ -24,18 +24,32 @@ function Startup()
 
   InitDialog();
 
-  window.mMSIDlgManager = new msiDialogConfigManager(window);
-  window.mMSIDlgManager.configureDialog();
+//  window.mMSIDlgManager = new msiDialogConfigManager(window);
+//  window.mMSIDlgManager.configureDialog();
 
   SetWindowLocation();
 }
 
 function InitDialog()
 {
-  var nWhichSel = -1;
-  fillTypesListbox();
+//  fillTypesListbox();
   var startUnit = null;
   var startType = null;
+  var bIsRevise = false;
+  if (data != null && ("reviseObject" in data))
+  {
+    bIsRevise = true;
+    setDataFromReviseObject(data.reviseObject);
+  }
+    
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  if (bIsRevise)
+  {
+    window.mMSIDlgManager.mbIsRevise = true;
+    window.mMSIDlgManager.mbCloseOnAccept = true;
+  }
+  window.mMSIDlgManager.configureDialog();
+  
   if (data != null && ("unitString" in data))
   {
     var startUnitStr = data.unitString;
@@ -57,6 +71,22 @@ function InitDialog()
 //                                       document.documentElement.getButton("cancel") );
 
   document.documentElement.getButton("accept").setAttribute("default", true);
+}
+
+function setDataFromReviseObject(reviseNode)
+{
+  var wrappedUnitNode = msiNavigationUtils.getWrappedObject(reviseNode, "unit");
+  data.unitString = wrappedUnitNode.textContent;
+}
+
+function isReviseDialog()
+{
+  return ((data != null) && ("reviseObject" in data) && (data.reviseObject != null));
+}
+
+function getPropertiesDialogTitle()
+{
+  return document.getElementById("propertiesTitle").value;
 }
 
 function fillTypesListbox(selectType)
@@ -81,7 +111,7 @@ function fillTypesListbox(selectType)
   typeInfoList.sort(sortByDisplayString);
   for (var ix = 0; ix < typeInfoList.length; ++ix)
   {
-    if (selectType != null && selectType == aType)
+    if (selectType != null && selectType == typeInfoList[ix].rawString)
       selectItem = theListbox.appendItem(typeInfoList[ix].displayString, typeInfoList[ix].rawString);
     else
       theListbox.appendItem(typeInfoList[ix].displayString, typeInfoList[ix].rawString);
@@ -155,7 +185,8 @@ function setUnitType(whichType, unitToSelect)
   unitInfoList.sort(sortByDisplayString);
   for (var ix = 0; ix < unitInfoList.length; ++ix)
   {
-    if (unitToSelect != null && unitToSelect == unitInfoList[ix].displayString)
+//    if (unitToSelect != null && unitToSelect == unitInfoList[ix].displayString)
+    if (unitToSelect != null && unitToSelect == unitInfoList[ix].rawString)
       unitsListbox.selectItem(unitsListbox.appendItem(unitInfoList[ix].displayString, unitInfoList[ix].rawString));
     else
       unitsListbox.appendItem(unitInfoList[ix].displayString, unitInfoList[ix].rawString);
@@ -207,9 +238,19 @@ function onAccept()
   var editorElement = msiGetParentEditorElementForDialog(window);
 
   var theWindow = window.opener;
-  if (!theWindow || !("insertmathunit" in theWindow))
-    theWindow = msiGetTopLevelWindow();
-  theWindow.insertmathunit(theUnitName, editorElement);
+  if (isReviseDialog())
+  {
+    if (!theWindow || !("reviseMathUnit" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    var unitNode = data.reviseObject;
+    theWindow.reviseMathUnit(unitNode, theUnitName, editorElement);
+  }
+  else
+  {
+    if (!theWindow || !("insertmathunit" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    theWindow.insertmathunit(theUnitName, editorElement);
+  }
 
 //  SaveWindowLocation();
   return true;

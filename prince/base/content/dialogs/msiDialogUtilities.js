@@ -672,7 +672,7 @@ function msiDialogConfigManager(theDialogWindow)
           reviseTitle = reviseTitleElement.value;
       }
       if (reviseTitle != null)
-        this.mDlgWindow.title = reviseTitle.value;
+        this.mDlgWindow.title = reviseTitle;
     }
   };
   this.initialize = function()
