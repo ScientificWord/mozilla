@@ -37,6 +37,7 @@
 	
 	<vbox>
 		<hbox>
+      <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
 		  <vbox>
 		    <description value='&unitTypesListbox.label;' accesskey='&unitTypesListbox.accessKey;'/>
 		    <listbox id='unitTypesListbox' rows='15' onselect='setUnitType(this.selectedItem.value);'/>
