@@ -828,8 +828,17 @@ var msiReviseUnitsCommand =
   {
     var editorElement = msiGetActiveEditorElement(window);
     var theUnit = aParams.getISupportsValue("reviseObject");
-    AlertWithTitle("mathmlOverlay.js", "In msiReviseUnitsCmd, trying to revise unit, dialog unimplemented.");
-//    reviseFraction(editorElement, theFrac);
+//    AlertWithTitle("mathmlOverlay.js", "In msiReviseUnitsCmd, trying to revise unit, dialog unimplemented.");
+//    doUnitsDlg("", "cmd_MSIunitsCommand", editorElement, this);
+    try
+    {
+      var unitsData = new Object();
+      unitsData.reviseObject = theUnit;
+      var argArray = [unitsData];
+      msiOpenModelessPropertiesDialog("chrome://prince/content/mathUnitsDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, "cmd_MSIreviseUnitsCmd", theUnit, argArray);
+    }
+    catch(exc) { dump("In msiReviseUnitsCommand, exception: " + exc + ".\n"); }
   },
 
   doCommand: function(aCommand)
@@ -1350,12 +1359,12 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
 }
 
 
-function insertmathunit(name, editorElement) 
+function insertmathunit(unitName, editorElement) 
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
-  var nameData = msiBaseMathUnitsList.getUnitNameData(name);
+  var nameData = msiBaseMathUnitsList.getUnitNameData(unitName);
 
   try 
   {
@@ -1387,6 +1396,61 @@ function insertmathunit(name, editorElement)
     editorElement.contentWindow.focus();
   } 
   catch (e) {}
+}
+
+function reviseMathUnit(unitNode, newName, editorElement) 
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
+  var nameData = msiBaseMathUnitsList.getUnitNameData(newName);
+
+  try 
+  {
+    var wrappedUnitNode = msiNavigationUtils.getWrappedObject(unitNode, "unit");
+    var retVal = unitNode;
+    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    var bUsedAppearance = false;
+    if (nameData.appearance != null)
+    {
+      if (("nodeName" in nameData.appearance) && nameData.appearance.childNodes.length > 0)
+      {
+        bUsedAppearance = true;
+        var insertNode = null;
+        if (nameData.appearance.childNodes.length == 1)
+        {
+          insertNode = nameData.appearance.childNodes[0].cloneNode(true);
+        }
+        else
+        {
+          insertNode = editor.document.createElementNS(mmlns, "mrow");
+          for (var ix = 0; ix < nameData.appearance.childNodes.length; ++ix)
+          {
+            insertNode.appendChild( nameData.appearance.childNodes[ix].cloneNode(true) );
+          }
+        }
+        var nextNode = wrappedUnitNode.nextSibling;
+        if (insertNode != null)
+        {
+          if (nextNode != null)
+            wrappedUnitNode.parentNode.insertBefore(insertNode, nextNode);
+          else
+            wrappedUnitNode.parentNode.appendChild(insertNode);
+          wrappedUnitNode.parentNode.removeChild(wrappedUnitNode);
+          if (wrappedUnitNode == unitNode)
+            retVal = insertNode;
+        }
+      }
+    }
+    if (!bUsedAppearance)
+    {
+      wrappedUnitNode.textContent = nameData.data;
+    }
+    editorElement.contentWindow.focus();
+  } 
+  catch (e) {}
+
+  return retVal;
 }
 
 function insertenginefunction(name, editorElement) 

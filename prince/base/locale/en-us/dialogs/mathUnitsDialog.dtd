@@ -1,6 +1,7 @@
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <!ENTITY windowTitle.label "Unit Name">
+<!ENTITY windowPropertiesTitle.label "Unit Properties">
 
 <!ENTITY unitTypesListbox.label "Physical quantity">
 <!ENTITY unitTypesListbox.accessKey "P">
