@@ -37,6 +37,7 @@
 
 #include "nsIGenericFactory.h"
 #include "nsAppStartup.h"
+#include "msiAutosub.h"
 #include "nsUserInfo.h"
 #include "nsXPFEComponentsCID.h"
 #include "nsToolkitCompsCID.h"
@@ -92,6 +93,9 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsUrlClassifierStreamUpdater)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsScriptableUnescapeHTML)
 #endif
 
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
+
+
 /////////////////////////////////////////////////////////////////////////////
 
 static const nsModuleComponentInfo components[] =
@@ -101,6 +105,11 @@ static const nsModuleComponentInfo components[] =
     NS_APPSTARTUP_CONTRACTID,
     nsAppStartupConstructor },
 
+  { "Autosubstitute",
+    MSI_AUTOSUBSTITUTE_CID ,
+    MSI_AUTOSUBSTITUTE_CONTRACTID,
+    msiAutosubConstructor },
+    
   { "User Info Service",
     NS_USERINFO_CID,
     NS_USERINFO_CONTRACTID,

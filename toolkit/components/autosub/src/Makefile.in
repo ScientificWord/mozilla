@@ -5,16 +5,10 @@ VPATH=@srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-MODULE = autosub
-MODULE_NAME = tkAutosubModule
-LIBRARY_NAME = tkautosub_s
-# SHORT_LIBNAME = tkautos
-IS_COMPONENT = 1
-EXPORT_LIBRARY = 1
-# FORCE_STATIC_LIB = 1
-
-# LIBXUL_LIBRARY = 1
-MOZILLA_INTERNAL_API = 1
+MODULE = toolkitcomps
+LIBRARY_NAME = tkautos_s
+FORCE_STATIC_LIB = 1
+LIBXUL_LIBRARY = 1 
 
 REQUIRES	= dom \
       xpcom \
@@ -31,7 +25,7 @@ CPPSRCS = msiAutosub.cpp \
           $(NULL)
 
 EXTRA_DSO_LDOPTS += \
-	$(MOZ_UNICHARUTIL_LIBS) \
+ 	$(MOZ_UNICHARUTIL_LIBS) \
 	$(MOZ_COMPONENT_LIBS) \
 	$(NULL)
 
