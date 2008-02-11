@@ -66,6 +66,7 @@ REQUIRES = 	\
 		intl \
 		docshell \
 		autocomplete \
+		autosub \
 		appcomps \
 		downloads \
 		fastfind \
@@ -100,6 +101,7 @@ LOCAL_INCLUDES = \
 	-I$(srcdir)/../alerts/src \
 	-I$(srcdir)/../url-classifier/src \
 	-I$(srcdir)/../feeds/src \
+	-I$(srcdir)/../autosub/src \
 	$(NULL)
 
 SHARED_LIBRARY_LIBS = \
@@ -108,7 +110,9 @@ SHARED_LIBRARY_LIBS = \
 
 ifdef MOZ_MSI_PRINCE
 # SHARED_LIBRARY_LIBS += ../autocomplete/src/$(LIB_PREFIX)tkautocomplete.$(LIB_SUFFIX) 
-# SHARED_LIBRARY_LIBS += ../autosub/src/$(LIB_PREFIX)tkautosub_s.$(LIB_SUFFIX)
+SHARED_LIBRARY_LIBS += \
+	../autosub/src/$(LIB_PREFIX)tkautos_s.$(LIB_SUFFIX) \
+	$(NULL)
 endif
 
 ifndef MOZ_SUITE
