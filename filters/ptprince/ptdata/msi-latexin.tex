@@ -1395,9 +1395,9 @@
 
 
 
-\def\newlength#1{\newskip#1\br\msitag{\newlength{#1}}}
-\def\setlength#1#2{#1#2\br\msitag{\setlength{#1}{#2}}}
-\def\addtolength#1#2{\advance#1 by #2\br\msitag{\addtolength{#1}{#2}}}
+\def\newlength#1{\newskip#1}
+\def\setlength#1#2{}
+\def\addtolength#1#2{}
 
 \msi@pass@newline{\@settodim}
 \msi@pass@newline{\settoheight}
