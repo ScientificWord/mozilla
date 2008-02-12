@@ -151,7 +151,7 @@ extern const char* s_inputfilename;
 
 bool xfcnJobname(int /* ignored */, TeXToken*, SymbolData**)
 {
-   Filename fn(s_inputfilename);
+   Filename fn(s_inputfilename, true);
    StringUtils::AppendCStr(fn.GetNameString());
    String str = StringBuilder::Create();
    TokenList* toks = new TokenList;;
@@ -159,6 +159,9 @@ bool xfcnJobname(int /* ignored */, TeXToken*, SymbolData**)
    InputStack::Putback(*toks);
    return false;
 }
+
+
+
 @}
 
 

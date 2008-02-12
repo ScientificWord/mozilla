@@ -93,7 +93,7 @@ public:
    bool    bPeek(const char* str) const; // See if str comes next
    void    SkipToEnd();
    TeXChar operator[](int) const;
-   void    StripTCIMEnd();
+   void    StripTCIMEnd(bool bMiddle = false);
 };
 @};
 
@@ -219,7 +219,7 @@ bool LineOfText::bPeek(const char* str) const
 }
 
 
-void LineOfText::StripTCIMEnd()
+void LineOfText::StripTCIMEnd(bool bMiddle)
 {
    std::basic_string<TeXChar>& str = m_lineData -> m_line;
    int n = str.length();
@@ -228,12 +228,23 @@ void LineOfText::StripTCIMEnd()
       realstring += (char)str[i];
    }
    LOG("\nStrip string: " << realstring.c_str());
-   if ( (str[n-2] == (TeXChar)'%')  && (str[n-3] == (TeXChar)'}')){
-      str.erase(n-3, 2);
+   if (bMiddle){
+       if ( (str[n-1] == (TeXChar)'\x0d'))
+         if ( str[n-2] == '%' )        
+            str.erase(n-3, 2);
+         else
+            str.erase(n-2,1);
+         
+       
+      
    } else {
-      // Shouldn't happen normally
-      LOG("\nStrip: ." << (char)str[n-3] << "." << (char)str[n-1]);
-      ASSERT(false);
+      if ( (str[n-2] == (TeXChar)'%')  && (str[n-3] == (TeXChar)'}')){
+         str.erase(n-3, 2);
+      } else {
+         // Shouldn't happen normally
+         LOG("\nStrip: ." << (char)str[n-3] << "." << (char)str[n-1]);
+         ASSERT(false);
+      }
    }
 }
 
@@ -258,7 +269,6 @@ bool CopyLine(LineOfText* src, LineOfText* dst)
     while (!src -> bEmpty()){
       dst -> Append( src -> chGet() ); 
     }
-    
     return true;
 }
 
@@ -825,6 +835,7 @@ bool LineSource::GetLine(LineOfText* pLine)
                    delete pNextLine;                       
                    break;
                 } else if ( pNextLine -> bPeek("%" )) {
+                   pLine -> StripTCIMEnd(true);
                    CopyLine (pNextLine, pLine); 
                    delete pNextLine;
                 } else {
