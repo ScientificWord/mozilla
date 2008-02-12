@@ -42,6 +42,9 @@ const FIND_TYPEAHEAD = 1;
 const FIND_LINKS = 2;
 const FIND_ARROW = 3;
 
+const SEL_COLLAPSED = 0;
+const SEL_EXTEND = 1;
+
 // Global find variables
 var gFindMode = FIND_NORMAL;
 var gQuickFindTimeout = null;
@@ -62,6 +65,7 @@ var gTypeAheadLinksOnly = false;
 var gFindInst = null;
 var gFindService = null;
 var gArrowStateService = null;
+var gSelMode = SEL_COLLAPSED;
 
 // DOMRange used during highlighting
 var searchRange;
@@ -103,10 +107,22 @@ function initFastCursorBar()
   // this doesn't seem to work when initFastCursorBar is called from its present
   // position.  I'll have to try to delay the call.
   try {
-	  window._content.addEventListener("keypress", onBrowserKeyPress, false);
-	  window._content.addEventListener("mousedown", onBrowserMouseDown, false);
-    window._content.addEventListener("keydown", onBrowserKeyDown, false);
-    window._content.addEventListener("keyup", onBrowserKeyUp, false);
+	  var normaleditor = document.getElementById("content-frame");
+    if (normaleditor)
+    {
+      normaleditor.addEventListener("keypress", onBrowserKeyPress, false);
+	    normaleditor.addEventListener("mousedown", onBrowserMouseDown, false);
+      normaleditor.addEventListener("keydown", onBrowserKeyDown, false);
+      normaleditor.addEventListener("keyup", onBrowserKeyUp, false);
+    }
+	  var sourceeditor = document.getElementById("content-source");
+    if (sourceeditor)
+    {
+      sourceeditor.addEventListener("keypress", onBrowserKeyPress, false);
+	    sourceeditor.addEventListener("mousedown", onBrowserMouseDown, false);
+      sourceeditor.addEventListener("keydown", onBrowserKeyDown, false);
+      sourceeditor.addEventListener("keyup", onBrowserKeyUp, false);
+    }
   } catch(e) {  }
   
   var prefService = Components.classes["@mozilla.org/preferences-service;1"]
@@ -144,10 +160,22 @@ function uninitFastCursorBar()
    var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
    pbi.removeObserver(gTypeAheadFind.useFCPref, gFastCursor);
 
-   getBrowser().removeEventListener("keypress", onBrowserKeyPress, false);
-   getBrowser().removeEventListener("keyup", onBrowserKeyUp, false);
-   getBrowser().removeEventListener("keydown", onBrowserKeyDown, false);
-   getBrowser().removeEventListener("mousedown", onBrowserMouseDown, false);
+  var normaleditor = document.getElementById("content-frame");
+  if (normaleditor)
+  {
+    normaleditor.removeEventListener("keypress", onBrowserKeyPress, false);
+    normaleditor.removeEventListener("mousedown", onBrowserMouseDown, false);
+    normaleditor.removeEventListener("keydown", onBrowserKeyDown, false);
+    normaleditor.removeEventListener("keyup", onBrowserKeyUp, false);
+  }
+  var sourceeditor = document.getElementById("content-source");
+  if (sourceeditor)
+  {
+    sourceeditor.removeEventListener("keypress", onBrowserKeyPress, false);
+    sourceeditor.removeEventListener("mousedown", onBrowserMouseDown, false);
+    sourceeditor.removeEventListener("keydown", onBrowserKeyDown, false);
+    sourceeditor.removeEventListener("keyup", onBrowserKeyUp, false);
+  }
 }
 
 function toggleHighlight(aHighlight)
@@ -392,6 +420,19 @@ function onFastCursorBarBlur()
   changeSelectionColor(false);
 }
 
+function dumpglobals()
+{
+  var selection;
+  selection = window._content.getSelection();
+  dump("startFocusNode="+startFocusNode+"\n");
+  dump("startFocusOffset="+startFocusOffset+"\n");
+  dump("startAnchorNode="+startAnchorNode+"\n");
+  dump("startAnchorOffset="+startAnchorOffset+"\n");
+  dump("searchStartNode="+searchStartNode+"\n");
+  dump("searchStartOffset="+searchStartOffset+"\n");
+  dump("selection.anchorOffset="+selection.anchorOffset+", selection.focusOffset="+selection.focusOffset+"\n");
+}
+
 function onBrowserMouseDown(evt)
 {
   var fastcursorToolbar = document.getElementById("fastCursorPanel");
@@ -399,18 +440,128 @@ function onBrowserMouseDown(evt)
     closeFastCursorBar();
 }
 
-var startSelectionNode;
-var startSelectionOffset;
+var startFocusNode;
+var startFocusOffset;
+var startAnchorNode;
+var startAnchorOffset;
+var searchStartNode;
+var searchStartOffset;
+//var searchEndNode;
+//var searchEndOffset;
+
+function recordFindResults(isVertical, isForward)
+{
+//  dump("Entering FindResults\n");
+//  dumpglobals();
+  var selection;
+  var selEndNode;
+  var selEndOffset;
+  var selStartNode;
+  var selStartOffset;
+  selection = window._content.getSelection();
+  if (isVertical.value) // incremental find, not character find
+  {
+    selEndNode = selection.focusNode;
+    selEndOffset = selection.focusOffset;
+    if (isForward.value) {
+      searchStartNode = selection.anchorNode;
+      searchStartOffset = selection.anchorOffset;
+    } else {
+      selEndNode = selection.anchorNode;
+      selEndOffset = selection.anchorOffset;
+      selection.collapseToEnd();
+      goDoCommand("cmd_charNext");
+      searchStartNode = selection.anchorNode;
+      searchStartOffset = selection.anchorOffset;
+    }
+    if (gSelMode == SEL_COLLAPSED)
+    {
+      if (!isForward.value)
+      {
+        selection.collapse(selStartNode, selStartOffset);
+        selection.extend(selEndNode, selEndOffset);
+      } // otherwise the selection is fine as it is.
+    }
+    else
+    {
+      selection.collapse(startAnchorNode, startAnchorOffset)
+      selection.extend(selEndNode, selEndOffset);
+    }
+  }
+  else
+  {
+    if (gSelMode == SEL_COLLAPSED) {
+  //    if (isForward.value){
+  //      selection.collapseToStart();
+  //    }
+  //    else {
+  //      selection.collapseToEnd();
+  //      goDoCommand("cmd_charNext");
+  //    }
+      if (isForward.value) {
+        searchStartNode = selection.focusNode;
+        searchStartOffset = selection.focusOffset;
+      } else {
+        searchStartNode = selection.anchorNode;
+        searchStartOffset = selection.anchorOffset;
+      }
+    } else //SEL_EXTEND
+    {
+      if (isForward.value){
+        searchStartNode = selection.focusNode;
+        searchStartOffset = selection.focusOffset;
+        selEndNode = selection.focusNode;
+        selEndOffset = selection.focusOffset;
+        selection.collapse(startAnchorNode, startAnchorOffset);
+        selection.extend(selEndNode, selEndOffset);
+      }
+      else {
+        selStartNode = selection.anchorNode;
+        selStartOffset = selection.anchorOffset;
+        dump("selection.anchorOffset="+selStartOffset+", selection.focusOffset="+selection.focusOffset+"\n");
+        searchStartNode = selection.anchorNode;
+        searchStartOffset = selection.anchorOffset;
+        selection.collapse(startAnchorNode, startAnchorOffset);
+        selection.extend(selStartNode, selStartOffset);
+      }
+    }
+  }  
+//  dump("Exiting FindResults\n");
+//  dumpglobals();
+}      
+
 
 function onBrowserKeyDown(evt)
 {
   var keyCode = new Number();
   var isArrow = new Boolean();
+  var wasArrow = new Boolean();
+  var arrowKeyCode = new Number();
+  var selection;
+  var isRepeating = new Boolean();
+  var isVertical = new Boolean();
+  var isForward = new Boolean();
+  var isFirstArrowPress = new Boolean();
   var selection;
   gArrowStateService.findKeyCode(evt, keyCode, isArrow);
   if (!keyCode.value) return 0;
   if (isArrow.value)
   {
+    gArrowStateService.findArrowKeyState(wasArrow, arrowKeyCode, isRepeating,
+      isVertical, isForward, keyCode.value, isFirstArrowPress);
+    if (!wasArrow.value) // if an arrow is being pressed so that it changes the state, check the shift key
+      // to determine if we are setting or extending the selection.
+    {
+      fFindInitialized = false;
+      if (evt.shiftKey) gSelMode = SEL_EXTEND
+      else gSelMode = SEL_COLLAPSED;
+      selection = window._content.getSelection();
+      searchStartNode = selection.focusNode;
+      searchStartOffset = selection.focusOffset;
+      startAnchorNode = selection.anchorNode;
+      startAnchorOffset = selection.anchorOffset;
+      
+    }
     gArrowStateService.arrowKeyDown( keyCode.value );
   }
   return 0;
@@ -440,7 +591,17 @@ function onBrowserKeyUp(evt)
   return 0;
 }
 
+function prepareForFind(selection, isForward)
+{
+//  dump("Entering prepareForFind\n");
+//  dumpglobals();
+  selection.collapse(searchStartNode, searchStartOffset);
+//  dump("Exiting prepareForFind\n");
+//  dumpglobals();
+}
 
+
+var fFindInitialized = false;
 
 function onBrowserKeyPress(evt)
 {  
@@ -467,31 +628,35 @@ function onBrowserKeyPress(evt)
       isVertical, isForward, keyCode.value, isFirstArrowPress);
     if (isArrow.value) {
       if (keyCode.value == KeyEvent.DOM_VK_BACK_SPACE)
-        window._content.getSelection().collapse(startSelectionNode, startSelectionOffset);
+      {
+        searchStartNode = startFocusNode;
+        searchStartOffset = startFocusOffset;
+      }
       var findField = document.getElementById("fastcursor-field");
       findField.value = gArrowStateService.findBuffer;
       gFindService.findBackwards = !(isForward.value); 
       selection = window._content.getSelection();     
       if (isVertical.value)  {
         if (findField.value.length > 0) document.getElementById("fastCursorPanel").hidden = false;
-        if (findField.value.length == 1) { // this is the first find in this incremental search; save cursor position
+        if (!fFindInitialized && (findField.value.length == 1)) { // this is the first find in this incremental search; save cursor position
           selection = window._content.getSelection();
-          startSelectionNode = selection.focusNode;
-          startSelectionOffset = selection.focusOffset;
+          searchStartNode = selection.focusNode;
+          searchStartOffset = selection.focusOffset;
+          startFocusNode = selection.focusNode;
+          startFocusOffset = selection.focusOffset;
+          startAnchorNode = selection.anchorNode;
+          startAnchorOffset = selection.anchorOffset;
+          fFindInitialized = true;
         }
-        if (isForward.value){
-          selection.collapseToStart();
-        }
-        else {
-          selection.collapseToEnd();
-          goDoCommand("cmd_charNext");
-        }
-        res = Find(findField.value); 
+        prepareForFind(selection, isForward);
+        res = Find(findField.value);
+        recordFindResults(isVertical, isForward);
         updateStatus(res);
-      } else {
-          if (isForward.value) selection.collapseToEnd();
-          else selection.collapseToStart();
-          res = Find(findField.value);
+      } else 
+      {
+        prepareForFind(selection, isForward);
+        res = Find(findField.value);
+        recordFindResults(isVertical, isForward);
       }
     }
   }
