@@ -1,10 +1,15 @@
 \makeatletter
 
+
+\def\msimakecss{
+   \msitraceon
    \def\css{2}	  % the css output file
-   \openout\css=my.css %% the CSS style file for this document
+   \openout\css={css/my.css} %% the CSS style file for this document
    \write\css{@import url("resource://app/res/css/baselatex.css");}
    \write\css{@import url("resource://app/res/css/latex.css");}
    \closeout\css
+   \msitraceoff
+}
 
 \msi@dollar=`\$
 
@@ -36,7 +41,7 @@
 \msi@everycellstart{<td>}
 \msi@everycellend{</td>}
 
-\def\msi@stylesheets{\msitag{<?xml-stylesheet href="my.css" type="text/css"?>}\br}
+\def\msi@stylesheets{\msitag{<?xml-stylesheet href="}\jobname\char`_files/css/\msitag{my.css" type="text/css"?>}\br}
 
 
 \def\@brace#1{\char123\relax#1\char125\relax}
@@ -437,7 +442,7 @@
      \@make@braces@normal
      \msitag[\begin{array}#1\end{array}]
   ]
-  \def\endarray[\cr\egroup\string\end\char`\{array\char`\}]
+  \def\endarray[\cr\egroup\string\end`\{array\char`\}]
   \gdef\@scan@bmatrix#1\end{bmatrix}[%
      \egroup
      \@make@braces@normal
@@ -1786,8 +1791,9 @@
 %% Temporary until prince can read xml
 
 \def\msi@opendocument{%
+   \msimakecss
    \msitag{<?xml version="1.0"?>}\br
-   \msitag{<?xml-stylesheet href="my.css" type="text/css"?>}\br
+   \msitag{<?xml-stylesheet href="}\jobname\char`_files\msitag{/css/my.css" type="text/css"?>}\br
    \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">}
    
    
