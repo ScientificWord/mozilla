@@ -12,6 +12,7 @@
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/typesetsectionsoverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/typesetgeneraloverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetDocFormat.dtd">
 
@@ -46,7 +47,201 @@
       <tab label="&docformatAdvancedtab;"/>
     </tabs>
     <tabpanels>
-     <tabpanel id="docformatGeneralPanel"></tabpanel>
+  <tabpanel id="docformatgeneralpanel" orient="vertical">
+    <grid flex="1">
+      <columns>
+        <column flex="1"/>
+        <column flex="1"/>
+        <column flex="1"/>
+        <column flex="1"/>
+      </columns>
+   
+      <rows>
+        <row align="end" style="height: 5em">
+          <vbox align="center">
+            <spacer height="1em"/>
+            <label value="Orientation"/>
+            <menulist minwidth="6em">
+              <menupopup style="width: 9em" >
+                <menuitem value="port" label="Portrait"/>
+                <menuitem value="land" label="Landscape"/>
+              </menupopup>
+            </menulist>
+          </vbox>
+          <vbox align="center">
+            <label value="Page size"/>
+            <menulist>
+              <menupopup style="width: 9em" >
+                <menuitem value="custom" label="Custom"/>
+              </menupopup>
+            </menulist>
+          </vbox>
+          <vbox align="center">
+            <label value="Sides"/>
+            <menulist>
+              <menupopup style="width: 9em" >
+                <menuitem value="1" label="One"/>
+                <menuitem value="2" label="Two"/>
+              </menupopup>
+            </menulist>
+          </vbox>
+          <vbox align="center">
+            <label value="Quality"/>
+            <menulist style="width: 9em" >
+              <menupopup>
+                <menuitem value="final" label="Final"/>
+                <menuitem value="draft" label="Draft"/>
+              </menupopup>
+            </menulist>
+          </vbox>
+        </row>
+        <row align="end" style="height: 5em">
+          <vbox align="center">
+            <spacer height="1 em"/>
+            <label value="Title page"/>
+            <menulist>
+              <menupopup style="width: 9em" >
+                <menuitem value="title" label="Yes"/>
+                <menuitem value="notitle" label="No"/>
+              </menupopup>
+            </menulist>
+          </vbox>
+          <vbox align="center">
+            <label value="Columns"/>
+            <menulist>
+              <menupopup style="width: 9em" >
+                <menuitem value="1" label="One"/>
+                <menuitem value="2" label="Two"/>
+              </menupopup>
+            </menulist>
+          </vbox>
+          <vbox align="center">
+            <label value="Bibliography style"/>
+            <menulist>
+              <menupopup style="width: 9em" >
+                <menuitem value="comp" label="Compressed"/>
+                <menuitem value="open" label="Open"/>
+              </menupopup>
+            </menulist>
+          </vbox>
+          <vbox align="center">
+            <label value="Body text font size"/>
+            <menulist >
+              <menupopup style="width: 9em" >
+                <menuitem value="10" label="10 pt"/>
+                <menuitem value="11" label="11 pt"/>
+                <menuitem value="12" label="12 pt"/>
+              </menupopup>
+            </menulist>
+          </vbox>
+        </row>
+        <row align="end" style="height: 5em">
+            <vbox align="center">
+              <label value="Eqn number position"/>
+              <menulist>
+                <menupopup style="width: 9em" >
+                  <menuitem value="left" label="On the left"/>
+                  <menuitem value="right" label="On the right"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+            <vbox align="center">
+              <label value="Displayed eqn position"/>
+              <menulist>
+                <menupopup style="width: 9em" >
+                  <menuitem value="left" label="Flush left"/>
+                  <menuitem value="center" label="Centered"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+            <spacer/>
+            <vbox align="center">
+              <label value="Leading in points"/>
+              <textbox style="width: 9em" value="12"/>
+            </vbox>
+        </row>
+        <row align="end" style="height: 5em">
+            <vbox align="center">
+              <label value="Language"/>
+              <menulist>
+                <menupopup style="width: 9em" >
+                  <menuitem value="USenglish" label="US English"/>
+                  <menuitem value="UKenglish" label="UK English"/>
+                  <menuitem value="acadian" label="Acadian"/>
+                  <menuitem value="albanian" label="Albanian"/>
+                  <menuitem value="afrikaans" label="Afrikaans"/>
+                  <menuitem value="american" label="American"/>
+                  <menuitem value="australian" label="Australian"/>
+                  <menuitem value="austrian" label="Austrian"/>
+                  <menuitem value="bahasa" label="Bahasa"/>
+                  <menuitem value="indonesian" label="Indonesian"/>
+                  <menuitem value="indon" label="indon"/>
+                  <menuitem value="bahasai" label="Bahasa Indonesian"/>
+                  <menuitem value="malay" label="Malay"/>
+                  <menuitem value="meyalu" label="Meyalu"/>
+                  <menuitem value="bahasam" label="Bahasa Malaysia"/>
+                  <menuitem value="basque" label="Basque"/>
+                  <menuitem value="brazil" label="Brazil"/>
+                  <menuitem value="brazilian" label="Brazilian"/>
+                  <menuitem value="breton" label="Breton"/>
+                  <menuitem value="british" label="British"/>
+                  <menuitem value="bulgarian" label="Bulgarian"/>
+                  <menuitem value="canadian" label="Canadian"/>
+                  <menuitem value="canadien" label="Canadien"/>
+                  <menuitem value="catalan" label="Catalan"/>
+                  <menuitem value="croatian" label="Croatian"/>
+                  <menuitem value="czech" label="Czech"/>
+                  <menuitem value="danish" label="Danish"/>
+                  <menuitem value="dutch" label="Dutch"/>
+                  <menuitem value="english" label="English"/>
+                  <menuitem value="esperanto" label="Esperanto"/>
+                  <menuitem value="estonian" label="Estonian"/>
+                  <menuitem value="finnish" label="Finnish"/>
+                  <menuitem value="francais" label="Francais"/>
+                  <menuitem value="frenchb" label="Frenchb"/>
+                  <menuitem value="french" label="French"/>
+                  <menuitem value="galician" label="Galician"/>
+                  <menuitem value="german" label="German"/>
+                  <menuitem value="germanb" label="Germanb"/>
+                  <menuitem value="greek" label="Greek"/>
+                  <menuitem value="polutonikogreek" label="Polutoniko Greek"/>
+                  <menuitem value="hebrew" label="Hebrew"/>
+                  <menuitem value="hungarian" label="Hungarian"/>
+                  <menuitem value="icelandic" label="Icelandic"/>
+                  <menuitem value="interlingua" label="Interlingua"/>
+                  <menuitem value="irish" label="Irish"/>
+                  <menuitem value="italian" label="Italian"/>
+                  <menuitem value="latin" label="Latin"/>
+                  <menuitem value="lowersorbian" label="Lower Sorbian"/>
+                  <menuitem value="magyar" label="Magyar"/>
+                  <menuitem value="naustrian" label="NAustrian"/>
+                  <menuitem value="newzealand" label="New Zealand"/>
+                  <menuitem value="ngerman" label="NGerman"/>
+                  <menuitem value="norsk" label="Norsk"/>
+                  <menuitem value="samin" label="Samin"/>
+                  <menuitem value="nynorsk" label="Nynorsk"/>
+                  <menuitem value="polish" label="Polish"/>
+                  <menuitem value="portuges" label="Portuges"/>
+                  <menuitem value="portuguese" label="Portuguese"/>
+                  <menuitem value="romanian" label="Romanian"/>
+                  <menuitem value="russian" label="Russian"/>
+                  <menuitem value="scottish" label="Scottish"/>
+                  <menuitem value="serbian" label="Serbian"/>
+                  <menuitem value="slovak" label="Slovak"/>
+                  <menuitem value="slovene" label="Slovene"/>
+                  <menuitem value="spanish" label="Spanish"/>
+                  <menuitem value="swedish" label="Swedish"/>
+                  <menuitem value="turkish" label="Turkish"/>
+                  <menuitem value="ukrainian" label="Ukrainian"/>
+                  <menuitem value="uppersorbian" label="Upper Sorbian"/>
+                  <menuitem value="welsh" label="Welsh"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+          </row>
+        </rows>
+      </grid>
+    </tabpanel>   
      <tabpanel id="docformatPageLayoutPanel" style="overflow:auto">
        <vbox>
          <hbox>
