@@ -1294,12 +1294,16 @@ bool OutputByteFile::Open(const Filename& fullpath)
    const char* path = SearchForOutput(filepath.c_str());
    if (path == 0){
       LOG("\nFailed to locate " << filepath.c_str());
+      filepath = getenv("MSIOUTPUT");
+      filepath += "\\";
+      filepath += CatFilename(area, name, ext, false);
       path = filepath.c_str();
+
       // BBM: we want to create the file if it doesn't exist
       // return false;
    }
-   m_byteFileData -> m_file.open(path, std::ios::out
-     | std::ios::binary | std::ios::app );
+
+   m_byteFileData -> m_file.open(path, std::ios::out | std::ios::binary );
    if ( ! m_byteFileData -> m_file.is_open() ){
       LOG("\nFailed to open " << path);
       return false;
@@ -1332,6 +1336,7 @@ void OutputByteFile::Write(String& str)
    for (int i = 0; i < str.Size(); ++i){
      Put(str[i]);
    }
+   Put('\r'); // 
    Put('\n');
 }
 @}
