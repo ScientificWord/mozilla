@@ -6,11 +6,10 @@
 <!ENTITY ruleHeight.label	"Rule height">
 <!ENTITY ruleHeight.accessKey	"H">
 <!ENTITY ruleWidth.label	"Rule width">
-<!ENTITY ruleWidth.accessKey	"W">
-<!ENTITY wide.label	"wide (margin to margin)">
-<!ENTITY wide.accessKey	"w">
-<!ENTITY narrow.label	"narrow (width of title)">
-<!ENTITY narrow.accessKey	"n">
+<!ENTITY wide.label	"Margin to margin">
+<!ENTITY wide.accessKey	"M">
+<!ENTITY narrow.label	"Width of title">
+<!ENTITY narrow.accessKey	"W">
 <!ENTITY other.label	"Other: ">
 <!ENTITY other.accessKey	"O">
 <!ENTITY ruleColor.label	"Rule color">
