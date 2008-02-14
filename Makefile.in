@@ -189,8 +189,8 @@ tier_9_dirs	+= \
 		sun-java \
 		modules/plugin \
 		dom \
-		prince/scriptrunner \
-		prince/keymap/public \
+		Prince/scriptrunner \
+		Prince/keymap/public \
 		view \
 		widget \
 		content \
