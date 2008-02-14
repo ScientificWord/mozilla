@@ -100,7 +100,7 @@ prince.jar:
   content/plugins.html       (plugins.html)
 * content/texbuttoncontents.js      (dialogs/texbuttoncontents.js)
 * content/texbuttoncontents.xul     (dialogs/texbuttoncontents.xul)
-* content/typesetDocFormat.js      (dialogs/typesetDocFormat.js)
+* content/typesetDocFormat.js      (dialogs/typesetdocformat.js)
 * content/typesetDocFormat.xul     (dialogs/typesetDocFormat.xul)
 * content/typesetAddPackage.js      (dialogs/typesetAddPackage.js)
 * content/typesetAddPackage.xul     (dialogs/typesetAddPackage.xul)
