@@ -1,5 +1,6 @@
 var color;
 var ruleElement;
+var ruleUnits;
 
 
 function startUp()
@@ -9,7 +10,9 @@ function startUp()
   color = window.arguments[1];
   if (!color) color = ruleElement.getAttribute("color");
   setColorWell("colorWell",color);
-  document.getElementById("ruleHeight").setAttribute("value",ruleElement.getAttribute("height"));
+  ruleUnits = window.arguments[2];
+  var size = ruleElement.getAttribute("size");
+  document.getElementById("ruleUnits").setAttribute("value",ruleUnits);
   var size = ruleElement.getAttribute("size");
   if (size == "wide" || size == "narrow") document.getElementById("rulesize").selectedIndex=(size=="wide"?0:1);
   else {
