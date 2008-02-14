@@ -12,7 +12,6 @@
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/typesetsectionsoverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/typesetgeneraloverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetDocFormat.dtd">
 
@@ -235,6 +234,58 @@
                   <menuitem value="ukrainian" label="Ukrainian"/>
                   <menuitem value="uppersorbian" label="Upper Sorbian"/>
                   <menuitem value="welsh" label="Welsh"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+          </row>
+        <row align="end" style="height: 5em">
+            <vbox align="center">
+              <label value="Footnotes"/>
+              <menulist>
+                <menupopup style="width: 9em" >
+                  <menuitem value="foot" label="Footnotes"/>
+                  <menuitem value="end" label="Endnotes"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+            <vbox align="center">
+              <label value="Table of contents"/>
+              <menulist>
+                <menupopup style="width: 9em" >
+                  <menuitem value="document" label="Document"/>
+                  <menuitem value="chapter" label="Chapter"/>
+                  <menuitem value="none" label="None"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+            <vbox align="center">
+              <label value="List of figures"/>
+              <menulist>
+                <menupopup style="width: 9em" >
+                  <menuitem value="document" label="Document"/>
+                  <menuitem value="chapter" label="Chapter"/>
+                  <menuitem value="none" label="None"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+              <vbox align="center">
+              <label value="List of tables"/>
+              <menulist>
+                <menupopup style="width: 9em" >
+                  <menuitem value="document" label="Document"/>
+                  <menuitem value="chapter" label="Chapter"/>
+                  <menuitem value="none" label="None"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+          </row>
+        <row align="end" style="height: 5em">
+            <vbox align="center">
+              <label value="Show keys"/>
+              <menulist>
+                <menupopup style="width: 9em" >
+                  <menuitem value="yes" label="Yes"/>
+                  <menuitem value="no" label="No"/>
                 </menupopup>
               </menulist>
             </vbox>

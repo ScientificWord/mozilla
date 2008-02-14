@@ -22,7 +22,7 @@ function InitializeUnits()
 {
   currentUnit = document.getElementById("docformat.units").selectedItem.value;
 	sectionUnit = currentUnit;
-	document.getElementById("secoverlay.units").selectedItem.value = sectionUnit;
+	document.getElementById("secoverlay.units").value = sectionUnit;
   setDecimalPlaces();
   unitConversions = new Object;
   unitConversions.pt=.3514598;  //mm per pt
@@ -1782,7 +1782,7 @@ function addrule()
   nextbox.setAttribute("role","rule");
   nextbox.setAttribute("hidden","false");
   nextbox.setAttribute("style","height:3px;background-color:black;");
-  window.openDialog("chrome://prince/content/addruleforsection.xul", "_blank", "chrome,close,titlebar,alwaysRaised",nextbox, "black");
+  window.openDialog("chrome://prince/content/addruleforsection.xul", "_blank", "chrome,close,titlebar,alwaysRaised",nextbox, "black", sectionUnit);
 }
 
 
@@ -1805,7 +1805,7 @@ function addspace()
   nextbox.setAttribute("hidden","false");
   nextbox.setAttribute("style","height:6px;background-color:silver;");
 	window.openDialog("chrome://prince/content/vspaceforsection.xul", 
-	  "_blank", "chrome,close,titlebar,alwaysRaised",nextbox);
+	  "_blank", "chrome,close,titlebar,alwaysRaised",nextbox, sectionUnit);
 }
 
 function removeruleorspace()
@@ -1828,10 +1828,10 @@ function reviseruleorspace(element)
 {
   if (element.getAttribute("role")=="rule")
     window.openDialog("chrome://prince/content/addruleforsection.xul", 
-      "_blank", "chrome,close,titlebar,alwaysRaised",element, element.getAttribute("color"));
+      "_blank", "chrome,close,titlebar,alwaysRaised",element, element.getAttribute("color"), sectionUnit);
   else if (element.getAttribute("role")=="vspace")
     window.openDialog("chrome://prince/content/vspaceforsection.xul", 
-      "_blank", "chrome,close,titlebar,alwaysRaised",element);
-}
+      "_blank", "chrome,close,titlebar,alwaysRaised",element, sectionUnit);
+}                                                                                                          ÿÿ
   
     
