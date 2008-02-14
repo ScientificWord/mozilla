@@ -33,17 +33,7 @@
       <caption id="ruleLabel" label="&rule.label;" accesskey="&rule.accessKey;"/>
   <!-- we need width, height, units, color, and as an alternative to width, wide (margin-to-margin) and narrow (width of title) -->
       <vbox align="center">
-        <label>&docformatUnits;</label>
-        <!-- maybe we should inherit units from the parent dialog -->
-        <menulist id="docformat.units"  
-	            oncommand="switchUnits();"  >
-          <menupopup>
-            <menuitem id="docformat.inch" label="&docformatInch;" value="in"/>
-            <menuitem id="docformat.cm" label="&docformatCentimeter;" value="cm"/>
-            <menuitem id="docformat.pt" label="&docformatPoints;" value="pt"/>
-            <menuitem id="docformat.mm" label="&docformatMillimeter;" value="mm"/>
-          </menupopup>
-        </menulist>
+    	  <label>Units are: </label><label id="ruleUnits" value=""/>
       </vbox>
       <vbox>
         <label value="&ruleHeight.label;" accesskey="&ruleHeight.accessKey;"/>

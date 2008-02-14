@@ -179,6 +179,8 @@ prince.jar:
   content/sectiontext.js         (dialogs/sectiontext.js)
   content/addruleforsection.xul      (dialogs/addruleforsection.xul)
   content/addruleforsection.js       (dialogs/addruleforsection.js)
+  content/vspaceforsection.xul       (dialogs/vspaceforsection.xul)
+  content/vspaceforsection.js        (dialogs/vspaceforsection.js)
   content/Note.xul                   (dialogs/Note.xul)
   content/Note.js                    (dialogs/Note.js)
   content/Frame.xul                  (dialogs/Frame.xul)
