@@ -1832,6 +1832,6 @@ function reviseruleorspace(element)
   else if (element.getAttribute("role")=="vspace")
     window.openDialog("chrome://prince/content/vspaceforsection.xul", 
       "_blank", "chrome,close,titlebar,alwaysRaised",element, sectionUnit);
-}                                                                                                          ÿÿ
+}                                                                                                          
   
     
