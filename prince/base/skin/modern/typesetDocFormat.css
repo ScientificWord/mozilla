@@ -39,17 +39,10 @@
   border-width: 1px;
 }
 
-#marginsection[msicollapsed="true"] {
+*[msicollapsed="true"] {
   visibility: hidden;
 }
 
-textbox[msicollapsed="true"] {
-  visibility: hidden;
-}
-
-label[msicollapsed="true"] {
-  visibility: hidden;
-}
 
 *[role="sectionmargin"][msicollapsed="true"] {
   border-width: 0px 1px 0px 0px;
