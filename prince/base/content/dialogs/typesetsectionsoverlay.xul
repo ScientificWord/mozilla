@@ -108,26 +108,34 @@
 	              onclick="toggleselection(this);document.getElementById('tbsectleftheadingmargin').focus();"/>
 	            <vbox style="overflow:visible;">
 	              <vbox id="topmargin" pack="start" dir="rtl" role="sectionlayer" tooltiptext="Click to set top margin or to enter text"
-	                style="height:20px; width:200px; overflow:visible" onclick="toggleselection(this);">
-	                <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)" 
+	                style="height:20px; width:200px; overflow:visible" onclick="toggleselection(this);">   
+                <deck>
+                  <vbox>                
+	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)" 
+	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
+	                  <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
+	                    height="3" style="background-color: red; overflow: visible; height:3px; width:10in;"/>  
+	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
 	                    height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                  height="3" style="background-color: red; overflow: visible; height:3px; width:10in;"/>  
-	                <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                  height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                  height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
-	                <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                  height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                  height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
-	                <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                  height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	              </vbox>
+	                  <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
+	                    height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
+	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
+	                    height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
+	                  <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
+	                    height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
+	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
+	                    height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
+	                </vbox>
+                  <hbox>
+                    Click here to enter rules below the heading
+                  </hbox>
+	              </deck>
+                </vbox>
 								<vbox id="sectiontextareacontainer"  style="overflow: hidden; width:200px; min-height:20px"  >
 		              <iframe id="sectiontextarea" tooltiptext="Click to enter section text"
 		                onclick="toggleselection(this);"	
-		                src="resource://app/shells/article/latexDialogShell.sci">
+		                src="resource://app/shells/article/latexDialogShell.sci"> 
+                    Click here to enter text formatting
 		                <!--sw:dialogbase xmlns:sw="http://www.sciword.com/namespaces/sciword"><sc><bold>Foo</bold></sc><br/><em>bar</em></sw:dialogbase-->
 		              </iframe> 
 		            </vbox>                                                                                                                         
@@ -176,8 +184,8 @@
         <label observes="leftalignment" value="Left heading indent"> <observes element="leftalignment"	attribute="msicollapsed"/></label>
         <textbox id="tbsectleftheadingmargin" style="width: 3.5em" min="-300" increment="1" onkeypress="sectHandleChar(event,'sectleftheadingmargin','tbsectleftheadingmargin');"
           tooltip="The left indent for the heading" observes="leftalignment" value="30" onfocus="toggleselection(document.getElementById('sectleftheadingmargin'));">
-          	<observes element="leftalignment"	attribute="msicollapsed"/>
         </textbox>
+        <observes element="leftalignment"	attribute="msicollapsed"/>
       </vbox>
       <spacer/>
       <label observes="notcenteralignment">Use negative size to outdent</label>
@@ -186,8 +194,8 @@
         <label value="Right heading indent" ><observes element="rightalignment"	attribute="msicollapsed"/></label>
         <textbox id="tbsectrightheadingmargin" style="width: 3.5em" min="-300" increment="1" onkeypress="sectHandleChar(event,'sectrightheadingmargin','tbsectrightheadingmargin');"
           tooltip="The right indent for the heading" observes="rightalignment" value="30" onfocus="toggleselection(document.getElementById('sectrightheadingmargin'));">
-          	<observes element="rightalignment"	attribute="msicollapsed"/>
         </textbox>
+        <observes element="rightalignment"	attribute="msicollapsed"/>
       </vbox>
       <vbox flex="1"/>
     </hbox>
