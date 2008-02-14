@@ -195,7 +195,7 @@ menulist > menupopup > menuitem,
 menulist > menupopup > menu {
   border: 1px solid transparent;
   padding-top: 1px;
-  -moz-padding-end: 30px;
+  -moz-padding-end: 5px;
   padding-bottom: 1px;
   -moz-padding-start: 5px;
   max-width: none;
