@@ -15,11 +15,11 @@ prince.jar:
 
 en-US.jar:
 % locale prince en-US %locale/
-  locale/sidebarOverlay.dtd                       (locale/en-us/sidebarOverlay.dtd)
-  locale/preview.dtd                       (locale/en-us/preview.dtd)
-  locale/local-panels.dtd                       (locale/en-us/local-panels.dtd)
-  locale/customize.dtd                       (locale/en-us/customize.dtd)
-  locale/sidebar.properties                       (locale/en-us/sidebar.properties) 
+  locale/sidebarOverlay.dtd                       (locale/en-US/sidebarOverlay.dtd)
+  locale/preview.dtd                       (locale/en-US/preview.dtd)
+  locale/local-panels.dtd                       (locale/en-US/local-panels.dtd)
+  locale/customize.dtd                       (locale/en-US/customize.dtd)
+  locale/sidebar.properties                       (locale/en-US/sidebar.properties) 
 
 classic.jar:
 % skin prince classic %skin/classic/
