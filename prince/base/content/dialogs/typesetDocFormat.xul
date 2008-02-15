@@ -47,94 +47,98 @@
     </tabs>
     <tabpanels>
   <tabpanel id="docformatgeneralpanel" orient="vertical">
-    <grid flex="1">
-      <columns>
-        <column flex="1"/>
-        <column flex="1"/>
-        <column flex="1"/>
-        <column flex="1"/>
-      </columns>
-   
-      <rows>
-        <row align="end" style="height: 5em">
-          <vbox align="center">
-            <spacer height="1em"/>
-            <label value="Orientation"/>
-            <menulist minwidth="6em">
-              <menupopup style="width: 9em" >
-                <menuitem value="port" label="Portrait"/>
-                <menuitem value="land" label="Landscape"/>
-              </menupopup>
-            </menulist>
-          </vbox>
-          <vbox align="center">
-            <label value="Page size"/>
-            <menulist>
-              <menupopup style="width: 9em" >
-                <menuitem value="custom" label="Custom"/>
-              </menupopup>
-            </menulist>
-          </vbox>
-          <vbox align="center">
-            <label value="Sides"/>
-            <menulist>
-              <menupopup style="width: 9em" >
-                <menuitem value="1" label="One"/>
-                <menuitem value="2" label="Two"/>
-              </menupopup>
-            </menulist>
-          </vbox>
-          <vbox align="center">
-            <label value="Quality"/>
-            <menulist style="width: 9em" >
-              <menupopup>
-                <menuitem value="final" label="Final"/>
-                <menuitem value="draft" label="Draft"/>
-              </menupopup>
-            </menulist>
-          </vbox>
-        </row>
-        <row align="end" style="height: 5em">
-          <vbox align="center">
-            <spacer height="1 em"/>
-            <label value="Title page"/>
-            <menulist>
-              <menupopup style="width: 9em" >
-                <menuitem value="title" label="Yes"/>
-                <menuitem value="notitle" label="No"/>
-              </menupopup>
-            </menulist>
-          </vbox>
-          <vbox align="center">
-            <label value="Columns"/>
-            <menulist>
-              <menupopup style="width: 9em" >
-                <menuitem value="1" label="One"/>
-                <menuitem value="2" label="Two"/>
-              </menupopup>
-            </menulist>
-          </vbox>
-          <vbox align="center">
-            <label value="Bibliography style"/>
-            <menulist>
-              <menupopup style="width: 9em" >
-                <menuitem value="comp" label="Compressed"/>
-                <menuitem value="open" label="Open"/>
-              </menupopup>
-            </menulist>
-          </vbox>
-          <vbox align="center">
-            <label value="Body text font size"/>
-            <menulist >
-              <menupopup style="width: 9em" >
-                <menuitem value="10" label="10 pt"/>
-                <menuitem value="11" label="11 pt"/>
-                <menuitem value="12" label="12 pt"/>
-              </menupopup>
-            </menulist>
-          </vbox>
-        </row>
-        <row align="end" style="height: 5em">
+    <label class="heading" value="General document options"/>
+    <label value="Warning goes here"/> 
+    <groupbox>
+      <caption label="Basic layout options"/>
+      <grid>
+        <columns>
+          <column flex="1"/>
+          <column flex="1"/>
+          <column flex="1"/>
+          <column flex="1"/>
+        </columns>
+     
+        <rows>
+          <row align="end" style="height: 5em">
+            <vbox align="center">
+              <label value="Orientation"/>
+              <menulist minwidth="6em">
+                <menupopup style="width: 9em" >
+                  <menuitem value="port" label="Portrait"/>
+                  <menuitem value="land" label="Landscape"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+            <vbox align="center">
+              <label value="Page size"/>
+              <menulist>
+                <menupopup style="width: 9em" >
+                  <menuitem value="custom" label="Custom"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+            <vbox align="center">
+              <label value="Sides"/>
+              <menulist>
+                <menupopup style="width: 9em" >
+                  <menuitem value="1" label="One"/>
+                  <menuitem value="2" label="Two"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+            <vbox align="center">
+              <label value="Quality"/>
+              <menulist style="width: 9em" >
+                <menupopup>
+                  <menuitem value="final" label="Final"/>
+                  <menuitem value="draft" label="Draft"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+          </row>
+          <row align="end" style="height: 5em">
+            <vbox align="center">
+              <label value="Columns"/>
+              <menulist>
+                <menupopup style="width: 9em" >
+                  <menuitem value="1" label="One"/>
+                  <menuitem value="2" label="Two"/>
+                  <menuitem value="3" label="Three"/>
+                  <menuitem value="4" label="Four"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+            <vbox align="center">
+              <label value="Body text font size"/>
+              <menulist >
+                <menupopup style="width: 9em" >
+                  <menuitem value="10" label="10 pt"/>
+                  <menuitem value="11" label="11 pt"/>
+                  <menuitem value="12" label="12 pt"/>
+                </menupopup>
+              </menulist>
+            </vbox>
+            <vbox align="center">
+              <label value="Leading in points"/>
+              <textbox style="width: 6em" value="12"/><spinbuttons/>
+            </vbox>
+          </row>
+        </rows>
+      </grid>
+    </groupbox>
+    <groupbox>  
+      <caption label="Mathematics display options"/>
+      <grid>
+        <columns>
+          <column flex="1"/>
+          <column flex="1"/>
+          <column flex="1"/>
+          <column flex="1"/>
+        </columns>
+     
+        <rows>
+          <row align="end" style="height: 5em">
             <vbox align="center">
               <label value="Eqn number position"/>
               <menulist>
@@ -153,13 +157,24 @@
                 </menupopup>
               </menulist>
             </vbox>
-            <spacer/>
-            <vbox align="center">
-              <label value="Leading in points"/>
-              <textbox style="width: 9em" value="12"/>
-            </vbox>
-        </row>
-        <row align="end" style="height: 5em">
+            <vbox  style="width: 9em;" />
+            <vbox  style="width: 9em;" />
+          </row>
+        </rows>
+      </grid>
+    </groupbox>
+    <groupbox>
+      <caption label="Babel options"/>
+      <grid>
+        <columns>
+          <column flex="1"/>
+          <column flex="1"/>
+          <column flex="1"/>
+          <column flex="1"/>
+        </columns>
+     
+        <rows>
+          <row align="end" style="height: 5em">
             <vbox align="center">
               <label value="Language"/>
               <menulist>
@@ -237,61 +252,128 @@
                 </menupopup>
               </menulist>
             </vbox>
-          </row>
-        <row align="end" style="height: 5em">
-            <vbox align="center">
-              <label value="Footnotes"/>
-              <menulist>
-                <menupopup style="width: 9em" >
-                  <menuitem value="foot" label="Footnotes"/>
-                  <menuitem value="end" label="Endnotes"/>
-                </menupopup>
-              </menulist>
-            </vbox>
-            <vbox align="center">
-              <label value="Table of contents"/>
-              <menulist>
-                <menupopup style="width: 9em" >
-                  <menuitem value="document" label="Document"/>
-                  <menuitem value="chapter" label="Chapter"/>
-                  <menuitem value="none" label="None"/>
-                </menupopup>
-              </menulist>
-            </vbox>
-            <vbox align="center">
-              <label value="List of figures"/>
-              <menulist>
-                <menupopup style="width: 9em" >
-                  <menuitem value="document" label="Document"/>
-                  <menuitem value="chapter" label="Chapter"/>
-                  <menuitem value="none" label="None"/>
-                </menupopup>
-              </menulist>
-            </vbox>
-              <vbox align="center">
-              <label value="List of tables"/>
-              <menulist>
-                <menupopup style="width: 9em" >
-                  <menuitem value="document" label="Document"/>
-                  <menuitem value="chapter" label="Chapter"/>
-                  <menuitem value="none" label="None"/>
-                </menupopup>
-              </menulist>
-            </vbox>
-          </row>
-        <row align="end" style="height: 5em">
-            <vbox align="center">
-              <label value="Show keys"/>
-              <menulist>
-                <menupopup style="width: 9em" >
-                  <menuitem value="yes" label="Yes"/>
-                  <menuitem value="no" label="No"/>
-                </menupopup>
-              </menulist>
-            </vbox>
+            <vbox  style="width: 9em;" />
+            <vbox  style="width: 9em;" />
+            <vbox  style="width: 9em;" />
           </row>
         </rows>
       </grid>
+      </groupbox>
+      <groupbox>
+        <caption label="Front and back matter options"/>
+        <grid>
+          <columns>
+            <column flex="1"/>
+            <column flex="1"/>
+            <column flex="1"/>
+            <column flex="1"/>
+          </columns>
+       
+          <rows>
+            <row align="end" style="height: 5em">
+              <vbox align="center">
+                <label value="Title page"/>
+                <menulist>
+                  <menupopup style="width: 9em" >
+                    <menuitem value="title" label="Yes"/>
+                    <menuitem value="notitle" label="No"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox align="center">
+                <label value="Table of contents"/>
+                <menulist>
+                  <menupopup style="width: 9em" >
+                    <menuitem value="document" label="Document"/>
+                    <menuitem value="chapter" label="Chapter"/>
+                    <menuitem value="none" label="None"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox align="center">
+                <label value="List of figures"/>
+                <menulist>
+                  <menupopup style="width: 9em" >
+                    <menuitem value="document" label="Document"/>
+                    <menuitem value="chapter" label="Chapter"/>
+                    <menuitem value="none" label="None"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+                <vbox align="center">
+                <label value="List of tables"/>
+                <menulist>
+                  <menupopup style="width: 9em" >
+                    <menuitem value="document" label="Document"/>
+                    <menuitem value="chapter" label="Chapter"/>
+                    <menuitem value="none" label="None"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+            </row>
+            <row align="end" style="height: 5em">
+              <vbox align="center">
+                <label value="Footnotes"/>
+                <menulist>
+                  <menupopup style="width: 9em" >
+                    <menuitem value="foot" label="Footnotes"/>
+                    <menuitem value="end" label="Endnotes"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox align="center">
+                <label value="Bibliography style"/>
+                <menulist>
+                  <menupopup style="width: 9em" >
+                    <menuitem value="comp" label="Compressed"/>
+                    <menuitem value="open" label="Open"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+            </row>
+          </rows>
+        </grid>
+      </groupbox>
+      <groupbox>
+        <caption label="Draft tools"/>
+        <grid>
+          <columns>
+            <column flex="1"/>
+            <column flex="1"/>
+            <column flex="1"/>
+            <column flex="1"/>
+          </columns>
+       
+          <rows>
+            <row align="end" style="height: 5em">
+              <vbox align="center">
+                <label value="Show keys"/>
+                <menulist>
+                  <menupopup style="width: 9em" >
+                    <menuitem value="yes" label="Yes"/>
+                    <menuitem value="no" label="No"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox align="center">
+                <label value="Line spacing"/>
+                <menulist>
+                  <menupopup style="width: 9em" >
+                    <menuitem value="one" label="One"/>
+                    <menuitem value="sesqui" label="One and a half"/>
+                    <menuitem value="two" label="Two"/>
+                  </menupopup>
+                </menulist>
+              </vbox>
+              <vbox align="center">
+                <label value="Magnification"/>
+                <textbox style="width: 9em" value="1"/>
+              </vbox>
+              <vbox  style="width: 9em;" />
+            </row>
+          </rows>
+        </grid>
+      </groupbox>
     </tabpanel>   
      <tabpanel id="docformatPageLayoutPanel" style="overflow:auto">
        <vbox>
@@ -305,9 +387,13 @@
                  <broadcaster id="twoside" hidden="true" />
                </vbox>
                <vbox align="center">
-                 <label>&docformatLandscape;</label>
-                 <checkbox id="landscape" 
-                   oncommand="setPageDimensions();OnWindowSizeReset(false);"/>
+                 <label>Orientation</label>
+                  <menulist id="landscape" minwidth="6em">
+                    <menupopup style="width: 9em" >
+                      <menuitem value="port" label="Portrait"/>
+                      <menuitem value="land" label="Landscape"/>
+                    </menupopup>
+                  </menulist>
                </vbox>
                <vbox align="center">
                  <label>&docformatCentered;</label>
@@ -320,7 +406,7 @@
                </vbox>
                <vbox align="center">
                  <label>&docformatUnits;</label>
-                 <menulist id="docformat.units"  
+                 <menulist id="docformat.units" style="width: 5em"  
                         oncommand="switchUnits();"  >
                    <menupopup>
                      <menuitem id="docformat.inch" label="&docformatInch;" value="in"/>
@@ -331,8 +417,17 @@
                  </menulist>
                </vbox>
                <vbox align="center">
-                 <label value="&docformatTwoColumns;"/>
-                 <checkbox id="columns" oncommand="broadcastColCount();" />
+                <vbox align="center">
+                  <label value="Columns"/>
+                  <menulist id="columncount">
+                    <menupopup style="width: 9em" >
+                      <menuitem value="1" label="One"/>
+                      <menuitem value="2" label="Two"/>
+                      <menuitem value="3" label="Three"/>
+                      <menuitem value="4" label="Four"/>
+                    </menupopup>
+                  </menulist>
+                </vbox>
                </vbox>
                <vbox>
                  <broadcaster id="multicolumn" hidden="true" /><!-- observers of this will be visible only when there are multiple columns -->
@@ -451,10 +546,11 @@
                      <spacer flex="1"/>
                      <vbox align="center">
                        <label value="Page height"/>
-                       <textbox id="tbpageheight" style="width: 3.5em"  observes="bc.finishpagesize" 
+                       <hbox><textbox type="number" id="tbpageheight" style="width: 3.5em"  observes="bc.finishpagesize" 
                           oninput="changePageDim(this);OnWindowSizeReset(false);" 
                           onkeypress="geomHandleChar(event,'pageheight', 'tbpageheight');changePageDim(this);OnWindowSizeReset(false);" 
                           onchange="changePageDim(this);OnWindowSizeReset(false);" />
+                        </hbox>
                        <spacer/>
                      </vbox>
                      <vbox align="center">
@@ -489,7 +585,7 @@
                    <caption label="Paper size"/>
                    <label value="&docformatpaperSize;" />
                    <menulist id="docformat.papersize" oncommand="changepaperSize(this);">
-                     <menupopup >
+                     <menupopup style="width: 9em;">
                        <menuitem label="&docformatLetter;" value="letter"/>
                        <menuitem label="A4" value="a4"/>
                        <menuitem label="&docformatOther;" value="other"/>
