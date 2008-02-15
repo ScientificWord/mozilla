@@ -33,6 +33,22 @@
   background-color:white;
 }
 
+
+*[role="sectionmargin"][msicollapsed="false"] {
+  border-width: 1px;
+}
+
+*[msicollapsed="true"] {
+  visibility: hidden;
+}
+
+
+*[role="sectionmargin"][msicollapsed="true"] {
+  border-width: 0px 1px 0px 0px;
+  width: 1px;
+}
+
+
 *[role="spacer"] {
   border-style: none;
 }
@@ -68,3 +84,4 @@
   height: inherit !important;
   width: inherit !important;
 }
+
