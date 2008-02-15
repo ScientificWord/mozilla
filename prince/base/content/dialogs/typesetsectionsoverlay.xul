@@ -26,7 +26,7 @@
       <vbox flex="1"/>
       <vbox align="center">
        <label>Section type</label>
-       <menulist id="sections.name" >
+       <menulist id="sections.name" persist="value" >
          <menupopup>
            <menuitem id="sections.part" label="Part" value="-1"/>
            <menuitem id="sections.chapter" label="Chapter" value="0"/>
@@ -40,11 +40,11 @@
       </vbox>
       <vbox align="center">
         <label>Start new page</label>
-        <checkbox id="sectionstartnewpage" oncommand="settopofpage(this);"/>
+        <checkbox id="sectionstartnewpage" persist="checked" oncommand="settopofpage(this);"/>
       </vbox>
       <vbox align="center">
        <label>&docformatUnits;</label>
-       <menulist id="secoverlay.units"  
+       <menulist id="secoverlay.units" persist="value" 
               oncommand="switchSectionUnits();"  >
          <menupopup>
            <menuitem id="secoverlay.inch" label="&docformatInch;" value="in"/>
@@ -62,7 +62,7 @@
       <vbox flex="1"/>
       <vbox align="center">
        <label>Header style</label>
-       <menulist id="sections.style" >
+       <menulist id="sections.style" persist="value" >
          <menupopup>
            <menuitem id="sections.hang" selected="true" label="Hang" value="hang"/>
            <menuitem id="sections.runin" label="Runin" value="runin"/>
@@ -108,7 +108,7 @@
 	              onclick="toggleselection(this);document.getElementById('tbsectleftheadingmargin').focus();"/>
 	            <vbox style="overflow:visible;">
 	              <vbox id="topmargin" pack="start" dir="rtl" role="sectionlayer" tooltiptext="Click to set top margin or to enter text"
-	                style="height:20px; width:200px; overflow:visible" onclick="toggleselection(this);">   
+	                style="height:20px; width:200px;" onclick="toggleselection(this);">   
                 <deck>
                   <vbox>                
 	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)" 
@@ -207,7 +207,7 @@
       <spacer/>
       <button observes="toporbottommargin" label="Add vertical space" oncommand="addspace();" />
       <spacer/>
-      <button observes="toporbottommargin" label="Remove top rule or space cp" oncommand="removeruleorspace();"/>
+      <button observes="toporbottommargin" label="Remove top rule or space" oncommand="removeruleorspace();"/>
       <spacer/>
       <button observes="notmargin" label="Insert text" oncommand= 'textEditor();' />
       <vbox flex="1"/>
