@@ -22,12 +22,12 @@
     <command id="cmd_MSIbibChoiceCmd"                       oncommand="goDoCommand('cmd_MSIbibChoiceCmd');"/>
     <command id="cmd_MSItypesetOptionsAndPackagesCmd"       oncommand="goDoCommand('cmd_MSItypesetOptionsAndPackagesCmd');"/>
     <command id="cmd_MSItypesetOutputChoiceCmd"             oncommand="goDoCommand('cmd_MSItypesetOutputChoiceCmd');"/>
-    <command id="cmd_MSItypesetPreviewCmd"                  oncommand="goDoCommand('cmd_MSItypesetPreviewCmd');"/>
-    <command id="cmd_MSItypesetPrintCmd"                    oncommand="goDoCommand('cmd_MSItypesetPrintCmd');"/>
-    <command id="cmd_MSItypesetCompileCmd"                  oncommand="goDoCommand('cmd_MSItypesetCompileCmd');"/>
-    <command id="cmd_MSItypesetPDFPreviewCmd"               oncommand="goDoCommand('cmd_MSItypesetPDFPreviewCmd');"/>
-    <command id="cmd_MSItypesetPDFPrintCmd"                 oncommand="goDoCommand('cmd_MSItypesetPDFPrintCmd');"/>
-    <command id="cmd_MSItypesetPDFCompileCmd"               oncommand="goDoCommand('cmd_MSItypesetPDFCompileCmd');"/>
+    <command id="cmd_MSItypesetPreviewCmd"                  oncommand="goDoCommand('cmd_previewDvi');"/>
+    <command id="cmd_MSItypesetPrintCmd"                    oncommand="goDoCommand('cmd_printDvi');"/>
+    <command id="cmd_MSItypesetCompileCmd"                  oncommand="goDoCommand('cmd_compileDvi');"/>
+    <command id="cmd_MSItypesetPDFPreviewCmd"               oncommand="goDoCommand('cmd_previewPdf');"/>
+    <command id="cmd_MSItypesetPDFPrintCmd"                 oncommand="goDoCommand('cmd_printPdf'');"/>
+    <command id="cmd_MSItypesetPDFCompileCmd"               oncommand="goDoCommand('cmd_compilePdf');"/>
     <command id="cmd_MSItypesetGenSettingsCmd"              oncommand="goDoCommand('cmd_MSItypesetGenSettingsCmd');"/>
     <command id="cmd_MSItypesetExpertSettingsCmd"           oncommand="goDoCommand('cmd_MSItypesetExpertSettingsCmd');"/>
     <command id="cmd_MSIrunBibTeXCmd"                       oncommand="goDoCommand('cmd_MSIrunBibTeXCmd');"/>
@@ -69,13 +69,6 @@
       <menuitem label="&MSItypesetOutputChoiceCmd.label;"    
         accesskey="&MSItypesetOutputChoiceCmd.accesskey;"  
         command="cmd_MSItypesetOutputChoiceCmd"/>
-      <menuseparator/>                                                                                                                       
-      <menuitem label="&MSItypesetCompileCmd.label;"         
-        accesskey="&MSItypesetCompileCmd.accesskey;"       
-        command="cmd_MSItypesetCompileCmd"/>
-      <menuitem label="&MSItypesetPDFCompileCmd.label;"      
-        accesskey="&MSItypesetPDFCompileCmd.accesskey;"    
-        command="cmd_MSItypesetPDFCompileCmd"/>
       <menuseparator/>
       <menu label="&MSItypesetToolsMenu.label;"              
         accesskey="&MSItypesetToolsMenu.accesskey;">        
