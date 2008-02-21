@@ -16,7 +16,7 @@ function msiEditorFillContextMenu(event, contextMenuNode)
   dump(dumpStr + "]\n");
   var objectName = msiInitObjectPropertiesMenuitem(editorElement, "objectProperties_cm");
   var isInLink = objectName == "href";
-
+//BBM here is where to put in paragraph properties hook
   // Special case of an image inside a link
   if (objectName == "img")
   try {
