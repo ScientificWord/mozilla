@@ -29,7 +29,8 @@
 *[role="sectionlayer"] {
   border-style:solid;
   border-color: #CCCCCC;
-  border-width: 1px;
+  border-width: 1px 0px;
+  padding: 0;
   background-color:white;
 }
 
@@ -47,7 +48,6 @@
   border-width: 0px 1px 0px 0px;
   width: 1px;
 }
-
 
 *[role="spacer"] {
   border-style: none;
@@ -85,3 +85,11 @@
   width: inherit !important;
 }
 
+.gray_instruction {
+  font-weight: bold;
+  color: gray;
+}
+
+*[hidden="true"] {
+  display: none;
+}

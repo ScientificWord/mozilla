@@ -80,7 +80,16 @@
 
 #sectiontextarea {
   min-height:20px; 
-  border-width: 0;
-  height: inherit;
-  width: inherit;
+  min-width:200px;
+  height: inherit !important;
+  width: inherit !important;
+}
+
+.gray_instruction {
+  font-weight: bold;
+  color: gray;
+}
+
+*[hidden="true"] {
+  display: none;
 }
