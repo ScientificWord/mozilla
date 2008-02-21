@@ -26,7 +26,7 @@
       <vbox flex="1"/>
       <vbox align="center">
        <label>Section type</label>
-       <menulist id="sections.name" persist="value" >
+       <menulist id="sections.name" oncommand="switchSectionType();" persist="value" >
          <menupopup>
            <menuitem id="sections.part" label="Part" value="-1"/>
            <menuitem id="sections.chapter" label="Chapter" value="0"/>
@@ -46,7 +46,7 @@
        <label>&docformatUnits;</label>
        <menulist id="secoverlay.units" persist="value" 
               oncommand="switchSectionUnits();"  >
-         <menupopup>
+         <menupopup style="width: 4em;">
            <menuitem id="secoverlay.inch" label="&docformatInch;" value="in"/>
            <menuitem id="secoverlay.cm" label="&docformatCentimeter;" value="cm"/>
            <menuitem id="secoverlay.pt" selected="true" label="&docformatPoints;" value="pt"/>
@@ -63,7 +63,7 @@
       <vbox align="center">
        <label>Header style</label>
        <menulist id="sections.style" persist="value" >
-         <menupopup>
+         <menupopup style="width: 6em;">
            <menuitem id="sections.hang" selected="true" label="Hang" value="hang"/>
            <menuitem id="sections.runin" label="Runin" value="runin"/>
            <!--menuitem id="sections.display" label="Display" value="display"/>
@@ -76,10 +76,10 @@
       </vbox>
       <vbox align="center">
        <label>Alignment</label>
-       <radiogroup orient="horizontal">
-         <radio id="sectionleft" label="left" selected="true" oncommand="setalign('left');"/>
-         <radio id="sectioncenter" label="center" oncommand="setalign('center');"/>
-         <radio id="sectionright" label="right" oncommand="setalign('right');"/>
+       <radiogroup id="sections.align" orient="horizontal">
+         <radio id="sectionleft" label="left" value="l" selected="true" oncommand="setalign('l');"/>
+         <radio id="sectioncenter" label="center" value="c" oncommand="setalign('c');"/>
+         <radio id="sectionright" label="right" value="r" oncommand="setalign('r');"/>
        </radiogroup>
       </vbox>
       <vbox flex="1"/>
@@ -109,8 +109,11 @@
 	            <vbox style="overflow:visible;">
 	              <vbox id="topmargin" pack="start" dir="rtl" role="sectionlayer" tooltiptext="Click to set top margin or to enter text"
 	                style="height:20px; width:200px;" onclick="toggleselection(this);">   
-                <deck>
-                  <vbox>                
+                <deck id="tso_toprules" selectedIndex="0">
+                  <hbox>
+                    <label class="gray_instruction" value="Click here to enter rules above the heading"/>
+                  </hbox>
+                  <vbox id = "toprules" pack="start" dir="reverse">                
 	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)" 
 	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
 	                  <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
@@ -126,37 +129,44 @@
 	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
 	                    height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
 	                </vbox>
-                  <hbox>
-                    Click here to enter rules below the heading
-                  </hbox>
 	              </deck>
                 </vbox>
-								<vbox id="sectiontextareacontainer"  style="overflow: hidden; width:200px; min-height:20px"  >
-		              <iframe id="sectiontextarea" tooltiptext="Click to enter section text"
-		                onclick="toggleselection(this);"	
-		                src="resource://app/shells/article/latexDialogShell.sci"> 
-                    Click here to enter text formatting
-		                <!--sw:dialogbase xmlns:sw="http://www.sciword.com/namespaces/sciword"><sc><bold>Foo</bold></sc><br/><em>bar</em></sw:dialogbase-->
-		              </iframe> 
-		            </vbox>                                                                                                                         
+								<deck id="tso_template" selectedIndex="0">
+                  <hbox onclick='textEditor();'>
+                    <label class="gray_instruction" value="Click here to enter a format template"/>
+                  </hbox>
+                  <vbox id="sectiontextareacontainer"  style="overflow: hidden; width:200px; min-height:20px"  >
+		                <iframe id="sectiontextarea" tooltiptext="Click to enter section text"
+		                  onclick="toggleselection(this);"	
+		                  src="resource://app/shells/article/latexDialogShell.sci"> 
+		                </iframe> 
+		              </vbox>
+                </deck>                                                                                                                         
 	              <!--editor  editortype="html" type="content" width="200" height="40"  id="sectiontitle-frame"  context="msiEditorContentContext"
 	                style="min-height:20px; min-width:200px;" /-->
 	              <vbox id="bottommargin" role="sectionlayer" pack="start" tooltiptext="Click to set top margin or to enter text"
 	                style="height:20px; width:200px; overflow:visible" onclick="toggleselection(this);">
-	                <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                  height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                  height="3" style="background-color: red; overflow: visible; height:3px; width:10in;"/>  
-	                <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                  height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                  height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
-	                <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                  height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                  height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
-	                <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                  height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
+	                <deck id="tso_toprules" selectedIndex="0">
+                    <hbox >
+                      <label class="gray_instruction" value="Click here to enter rules below the heading"/>
+                    </hbox>
+                    <vbox pack="start">
+                      <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
+	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
+	                    <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
+	                      height="3" style="background-color: red; overflow: visible; height:3px; width:10in;"/>  
+	                    <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
+	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
+	                    <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
+	                      height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
+	                    <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
+	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
+	                    <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
+	                      height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
+	                    <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
+	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/> 
+                    </vbox>
+                  </deck> 
 	              </vbox>
 	            </vbox>  
 	            <vbox id="sectrightheadingmargin" width="30px" role="sectionmargin"	 msicollapsed="true"
@@ -178,12 +188,12 @@
     </vbox>
     <separator class="groove"/>
     <spacer/>
-    <hbox id="marginsection" observes="notcenteralignment" align="center">
+    <hbox id="marginsection" observes="notcenteralignment" align="center" onkeypress="sectHandleChar(event);">
       <vbox flex="1"/>
       <vbox align="center">
         <label observes="leftalignment" value="Left heading indent"> <observes element="leftalignment"	attribute="msicollapsed"/></label>
-        <textbox id="tbsectleftheadingmargin" style="width: 3.5em" min="-300" increment="1" onkeypress="sectHandleChar(event,'sectleftheadingmargin','tbsectleftheadingmargin');"
-          tooltip="The left indent for the heading" observes="leftalignment" value="30" onfocus="toggleselection(document.getElementById('sectleftheadingmargin'));">
+        <textbox id="tbsectleftheadingmargin" style="width: 3.5em" min="-300" increment="1"
+          tooltip="The left indent for the heading" observes="leftalignment" value="0" onfocus="toggleselection(document.getElementById('sectleftheadingmargin'));">
         </textbox>
         <observes element="leftalignment"	attribute="msicollapsed"/>
       </vbox>
@@ -192,7 +202,7 @@
       <spacer/>
       <vbox align="center">
         <label value="Right heading indent" ><observes element="rightalignment"	attribute="msicollapsed"/></label>
-        <textbox id="tbsectrightheadingmargin" style="width: 3.5em" min="-300" increment="1" onkeypress="sectHandleChar(event,'sectrightheadingmargin','tbsectrightheadingmargin');"
+        <textbox id="tbsectrightheadingmargin" style="width: 3.5em" min="-300" increment="1" 
           tooltip="The right indent for the heading" observes="rightalignment" value="30" onfocus="toggleselection(document.getElementById('sectrightheadingmargin'));">
         </textbox>
         <observes element="rightalignment"	attribute="msicollapsed"/>

@@ -14,8 +14,16 @@ function startUp()
 function onAccept()
 {
   var n = document.getElementById("spaceHeight").value;
+  var element = spaceElement;
+  while (element && element.localName != "deck") element = element.parentNode;
+    // element is now the deck.
   // should check for validity.
-  spaceElement.setAttribute("height", n);
+  if (n>0) {
+    spaceElement.setAttribute("height", n+unit);
+    element.setAttribute("selectedIndex", "1");
+  }
+  else
+    element.setAttribute("selectedIndex", "0");
 }
 
 

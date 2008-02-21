@@ -121,7 +121,7 @@ function savePageLayout(docFormatNode)
   lineend(pfNode, 2);
   nodecounter++;
   node = editor.createNode('columns',pfNode,nodecounter++);
-  node.setAttribute('count',(document.getElementById('columns').checked?2:1));
+  node.setAttribute('count',(document.getElementById('columns').value));
   node.setAttribute('sep',document.getElementById('tbfootersep').value+units);
   lineend(pfNode, 2);
   nodecounter++;
@@ -243,7 +243,7 @@ function getPageLayout(node)
     if (subnode)
     {
       value = subnode.getAttribute('count');
-      document.getElementById('columns').checked=(value=='2');
+      document.getElementById('columns').value=value;
       broadcastColCount();
       value = subnode.getAttribute('sep');
       if (value) document.getElementById('tbcolsep').value=getNumberValue(value);
@@ -891,27 +891,93 @@ function handleBodyMouseClick(event)
     document.getElementById("tbbodyheight").focus();
 }
 
+// since the onkeypress event gets called *before* the value of a text box is updated,
+// we handle the updating here. This function takes a textbox element and an event and returns sets
+// the value of the text box
+
+function updateTextNumber(textelement, event)
+{
+  var val = textelement.value;
+  var selStart = textelement.selectionStart;
+  var selEnd = textelement.selectionEnd;
+  var keycode = event.keyCode;
+  var charcode = event.charCode;
+  
+  if (keycode == event.DOM_VK_BACK_SPACE) {
+    if (selStart > 0) {
+      selStart--;
+      val = val.slice(0,selStart)+val.slice(selEnd);
+    }
+  }
+  else 
+  if (keycode == event.DOM_VK_DELETE) {
+    selEnd++;
+    val = val.slice(0,selStart)+val.slice(selEnd);
+  }
+  else
+  if (charcode == "-".charCodeAt(0) || charcode == "+".charCodeAt(0) || charcode == ".".charCodeAt(0) ||
+    (charcode >= 48 && charcode <58))
+  {
+    if (selEnd >= selStart) val = val.slice(0,selStart)+ String.fromCharCode(charcode)+val.slice(selEnd);
+    selStart++;
+  }
+  else return;
+  // now check to see if we have a string
+  try {
+    dump("val = "+val+"\n");
+    if (!isNaN(Number(val))) 
+    {
+      textelement.value = val;
+      textelement.setSelectionRange(selStart, selStart)
+      event.preventDefault();
+    }
+  }
+  catch(e)
+  {
+    dump(e.toString + "\n");
+  }
+}           
+ 
 
 function handleChar(event, id, tbid)
 {
-  var element = event.currentTarget;
+  var element = event.originalTarget;
   if (event.keyCode == event.DOM_VK_UP)
     goUp(tbid);
   else if (event.keyCode == event.DOM_VK_DOWN)
     goDown(tbid);
+  else
+    updateTextNumber(element,event);
 }
 
 function geomHandleChar(event, id, tbid)
 {
   handleChar(event, id, tbid);
+  geomInputChar(event, id, tbid);
+}
+
+function sectHandleChar(event)
+{
+  var tbid = event.target.id;
+  var id;
+  if (tbid == "tbsectleftheadingmargin")
+    id = "sectleftheadingmargin";
+  else if (tbid == "tbsectrightheadingmargin")
+    id = "sectrightheadingmargin";
+  else return;  
+  handleChar(event, id, tbid);
+  sectInputChar(event, id, tbid);
+}
+
+function geomInputChar(event, id, tbid)
+{
   if (id!="columns") layoutPage(id);
 }
 
-function sectHandleChar(event, id, tbid)
+function sectInputChar(event, id, tbid)
 {
-  handleChar(event, id, tbid);
   sectLayout(id, tbid);
-}
+}  
 
 function goUp(id)
 {
@@ -939,9 +1005,9 @@ function goDown(id)
 
 function broadcastColCount()
 {
-  var twocolumns = document.getElementById("columns").checked;
-  document.getElementById("multicolumn").setAttribute("hidden", !twocolumns);
-  document.getElementById("singlecolumn").setAttribute("hidden", twocolumns);
+  var multicolumns = document.getElementById("columncount").value > 1;
+  document.getElementById("multicolumn").setAttribute("hidden", !multicolumns);
+  document.getElementById("singlecolumn").setAttribute("hidden", multicolumns);
 }
 
 function setTwosidedState(elt)
@@ -1417,6 +1483,7 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
   var node;
   var level;
   var dialogbase;
+  var xmlcode;
   var sw = "http://www.sciword.com/namespaces/sciword";
   if (sectitlenodelist)
   {
@@ -1424,13 +1491,17 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
     {
       node = sectitlenodelist[i];
       level = node.getAttribute("level");
+      sectitleformat[level] = new Object();
       try {
         dialogbase = node.getElementsByTagNameNS(sw,"dialogbase")[0];
-        var ser = new XMLSerializer();
-        var xmlcode = ser.serializeToString(dialogbase);
-        xmlcode = xmlcode.replace(/#1/,"#T");
-        var pattern = "\\the"+level;
-        xmlcode = xmlcode.replace(pattern, "#N");
+        if (dialogbase)
+        {
+          var ser = new XMLSerializer();
+          xmlcode = ser.serializeToString(dialogbase);
+          xmlcode = xmlcode.replace(/#1/,"#T");
+          var pattern = "\\the"+level;
+          xmlcode = xmlcode.replace(pattern, "#N");
+        }
 //        var re=/<sw:dialogbase[^>]*>/;
 //        var l;
 //        do
@@ -1438,7 +1509,43 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
 //          l = xmlcode.length;
 //          xmlcode = xmlcode.replace(re,"").replace("</sw:dialogbase>",'');
 //        } while (xmlcode.length > 0 && xmlcode.length < l);
-        sectitleformat[level] = xmlcode;
+        if (!xmlcode) xmlcode="";
+        sectitleformat[level].proto = xmlcode;
+        sectitleformat[level].newPage = (node.getAttribute("newPage")=="true");
+        sectitleformat[level].sectStyle = node.getAttribute("sectStyle");
+        sectitleformat[level].align = node.getAttribute("align");
+        sectitleformat[level].units = node.getAttribute("units");
+        sectitleformat[level].lhindent = node.getAttribute("lhindent");
+        sectitleformat[level].rhindent = node.getAttribute("rhindent");
+        // now check for rules and spaces
+        var rulenodelist = node.getElementsByTagName("toprules");
+        var color;
+        if (rulenodelist && rulenodelist.length >0)
+        {
+          sectitleformat[level].toprules = new Array(rulenodelist.length);
+          for (i>0; i < rulenodelist.length; i--)
+          {
+            sectitleformat[level].toprules[i].height = rulenodelist[i].getAttribute("height");
+            sectitleformat[level].toprules[i].width = rulenodelist[i].getAttribute("width");
+            sectitleformat[level].toprules[i].role = rulenodelist[i].getAttribute("role");
+            color = rulenodelist[i].getAttribute("color");
+            if (!color) color = "black";
+            sectitleformat[level].toprules[i].color = color;
+          }
+        }
+        rulenodelist = node.getElementsByTagName("bottomrules");
+        if (rulenodelist && rulenodelist.length >0)
+        {
+          sectitleformat[level].bottomrules = new Array(rulenodelist.length);
+          for (i>0; i < rulenodelist.length; i--)
+          {
+            sectitleformat[level].bottomrules[i].height = rulenodelist[i].getAttribute("height");
+            sectitleformat[level].bottomrules[i].width = rulenodelist[i].getAttribute("width");
+            color = rulenodelist[i].getAttribute("color");
+            if (!color) color = "black";
+            sectitleformat[level].bottomrules[i].color = color;
+          }
+        }
       }
       catch(e)
       {
@@ -1449,13 +1556,85 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
   displayTextForSectionHeader();
 }
 
+var currentSectionType = "section";
+function switchSectionType()
+{
+  var i;
+  var from = currentSectionType;
+  var to = document.getElementById("sections.name").label.toLowerCase();
+  currentSectionType = to;
+  var boxlist;
+  if (!sectitleformat[from]) sectitleformat[from] = new Object();
+  var sec = sectitleformat[from];
+  sec.newPage = document.getElementById("sectionstartnewpage").checked;
+  sec.sectStyle = document.getElementById("sections.style").value;
+  sec.align = document.getElementById("sections.align").value; 
+  sec.units = document.getElementById("secoverlay.units").value; 
+  sec.lhindent = document.getElementById("tbsectleftheadingmargin").value; 
+  sec.rhindent = document.getElementById("tbsectrightheadingmargin").value; 
+  //toprules, bottomrules, and proto, if they have been changed, have been updated by subdialogs 
+  //Now initialize for the new section type
+  if (from != to)
+  {
+    if (!sectitleformat[to])
+    {
+      sectitleformat[to] = new Object();
+      return; // the dialog will default to the last sections headings. Can we do better? BBM
+    }
+    sec = sectitleformat[to];
+    newpage = sec.newPage
+    if (!newpage) newpage = false;
+    document.getElementById("sectionstartnewpage").checked = newpage;
+    document.getElementById("sections.style").value = sec.sectStyle;
+    document.getElementById("sections.align").value = sec.align; 
+    document.getElementById("secoverlay.units").value = sec.units;
+    sectionUnits = sec.units; 
+    document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
+    document.getElementById("tbsectrightheadingmargin").value = sec.rhindent; 
+    if (sec.toprules && sec.toprules.length > 0)
+    {
+      boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
+      for (i=0; i < Math.min(boxlist.length, sec.toprules.length); i++)
+      {
+        boxlist[i].setAttribute("hidden", "false");
+        boxlist[i].setAttribute("role", sec.toprules[i].role);
+        boxlist[i].setAttribute("width", sec.toprules[i].width);
+        boxlist[i].setAttribute("height", sec.toprules[i].height);
+        boxlist[i].setAttribute("color", sec.toprules[i].color);
+      }
+      for (i = sec.toprules.length; i<boxlist.length; i++);
+        boxlist[i].setAttribute("hidden", "true");
+    }
+    if (sec.bottomrules && sec.bottomrules.length > 0)
+    {
+      boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
+      for (i=0; i < Math.min(boxlist.length, sec.bottomrules.length); i++)
+      {
+        boxlist[i].setAttribute("hidden", "false");
+        boxlist[i].setAttribute("role", sec.bottomrules[i].role);
+        boxlist[i].setAttribute("width", sec.bottomrules[i].width);
+        boxlist[i].setAttribute("height", sec.bottomrules[i].height);
+        boxlist[i].setAttribute("color", sec.bottomrules[i].color);
+      }
+      for (i = sec.bottomrules.length; i<boxlist.length; i++);
+        boxlist[i].setAttribute("hidden", "true");
+    }
+  }
+  displayTextForSectionHeader();
+  setalign(sec.align);
+  settopofpage(newpage);
+}
+
 function saveSectionFormatting( docFormatNode, sectitleformat )
 {
   // get the list of section-like objects
   var menulist = document.getElementById("sections.name");
   var itemlist = menulist.getElementsByTagName("menuitem");
+  var sectiondata;
+  // should actually look to see if the titlesec package is already in the document
   var bRequiresPackage = true;
   var reqpackageNode;
+  switchSectionType();
   for (var i = 0; i < itemlist.length; i++)
   {
     var name;
@@ -1466,30 +1645,42 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       continue;
     }
     name = name.toLowerCase();
-    if (!sectitleformat[name]) continue;
-    if (bRequiresPackage)
+    if (sectitleformat[name])
     {
-      bRequiresPackage = false;
-      reqpackageNode = editor.createNode('requirespackage',docFormatNode, 0);
-      reqpackageNode.setAttribute('package',"titlesec");
-    } 
-    lineend(docFormatNode, 1);
-    var stNode = editor.createNode('sectitleformat', docFormatNode,0);
-    stNode.setAttribute('level', name);
-    stNode.setAttribute('sectstyle', "hang");
-    lineend(stNode, 2);
-    var proto = editor.createNode('titleprototype', stNode, 0);
-    var fragment = sectitleformat[name];
-    // replace #N with \the(section, subsection, etc) and #T with #1
-    fragment = fragment.replace(/#N/,"\\the"+name);
-    fragment = fragment.replace(/#T/,"#1");
-    dump("Contents being saved as section title prototype: "+fragment+"\n");
-    var parser = new DOMParser();
-    var doc = parser.parseFromString(fragment,"application/xhtml+xml");
-    lineend(proto, 3);
-    proto.appendChild(doc.documentElement);
-    // stNode.setAttribute( -- find the section format type: hang, runin, etc.
-    docFormatNode.appendChild(stNode);
+      if (bRequiresPackage)
+      {
+        bRequiresPackage = false;
+        reqpackageNode = editor.createNode('requirespackage',docFormatNode, 0);
+        reqpackageNode.setAttribute('package',"titlesec");
+        reqpackageNode.setAttribute('options',"calcwidth");
+      } 
+      lineend(docFormatNode, 1);
+      sectiondata = sectitleformat[name]; 
+      var stNode = editor.createNode('sectitleformat', docFormatNode,0);
+      stNode.setAttribute('level', name);
+      stNode.setAttribute('sectStyle', sectiondata.sectStyle);
+      stNode.setAttribute('align', sectiondata.align);
+      stNode.setAttribute('units', sectiondata.units);
+      stNode.setAttribute('newPage', sectiondata.newPage?"true":"false");
+      stNode.setAttribute('lhindent', sectiondata.lhindent);
+      stNode.setAttribute('rhindent', sectiondata.rhindent);
+      lineend(stNode, 2);
+      var proto = editor.createNode('titleprototype', stNode, 0);
+      var fragment = sectiondata.proto;
+      if (fragment)
+      {
+        // replace #N with \the(section, subsection, etc) and #T with #1
+        fragment = fragment.replace(/#N/,"\\the"+name);
+        fragment = fragment.replace(/#T/,"#1");
+        dump("Contents being saved as section title prototype: "+fragment+"\n");
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(fragment,"application/xhtml+xml");
+        proto.appendChild(doc.documentElement);
+      }
+      // stNode.setAttribute( -- find the section format type: hang, runin, etc.
+      docFormatNode.appendChild(stNode);
+      // to do: the rule lists
+    }
   }  
 }
 
@@ -1564,7 +1755,7 @@ function displayTextForSectionHeader()
 //	var width;
 	var height;
   basepara = getBaseNodeForIFrame();
-  var strContents = sectitleformat[secname];
+  var strContents = sectitleformat[secname].proto;
 	if (strContents && strContents.length > 0)
 	{
 	  var parser = new DOMParser();
@@ -1575,10 +1766,12 @@ function displayTextForSectionHeader()
 		var boxObject=htmlNode.ownerDocument.getBoxObjectFor(htmlNode);
 //		width = boxObject.width;
 		height = boxObject.height;
+    document.getElementById("tso_template").setAttribute("selectedIndex","1");
 	}
 	else
 	{
 	  height = 20;
+    document.getElementById("tso_template").setAttribute("selectedIndex","0");
 //		width = 200;
   }
 	var iframecontainer = document.getElementById("sectiontextareacontainer");
@@ -1607,17 +1800,13 @@ function textEditor()
       secname, units);																									 
   displayTextForSectionHeader();
 }
-
-function setSectionFormatting(sectitleformat)																	 
-{
-}
       
 function setalign(which)
 {
   var element;
   var otherelement;
   var sectionparts = document.getElementById("sectionparts");
-  if (which == "center")
+  if (which == "c")
   {
     sectionparts.setAttribute("pack","center");
     document.getElementById("leftalignment").setAttribute("msicollapsed","true");
@@ -1636,7 +1825,7 @@ function setalign(which)
   else
   {
     document.getElementById("notcenteralignment").setAttribute("msicollapsed","false");
-    if (which == "left")
+    if (which == "l")
     {
       sectionparts.setAttribute("pack", "start");
       var width = document.getElementById("tbsectleftheadingmargin").value;
@@ -1652,7 +1841,7 @@ function setalign(which)
 			document.getElementById("sectrightmargin").setAttribute("flex", "1");
 			document.getElementById("sectrightmargin").setAttribute("width", "40px");
     }
-    else if (which == "right")
+    else if (which == "r")
     {
       sectionparts.setAttribute("pack", "end");
       var rwidth = document.getElementById("tbsectrightheadingmargin").value;
@@ -1770,7 +1959,7 @@ function addrule()
   if (!lastselected) return;
   var boxlist = lastselected.getElementsByTagName("vbox");
   var nextbox;
-  for (var i = 0; i<boxlist.length; i++)
+  for (var i = 1; i < boxlist.length; i++)    // we start at 1 because the first is the parent of the others
   {
     if (boxlist[i].getAttribute("hidden") == "true")
     {
@@ -1792,7 +1981,7 @@ function addspace()
   if (!lastselected) return;
   var boxlist = lastselected.getElementsByTagName("vbox");
   var nextbox;
-  for (var i = 0; i<boxlist.length; i++)
+  for (var i = 1; i<boxlist.length; i++)
   {
     if (boxlist[i].getAttribute("hidden") == "true")
     {
@@ -1814,9 +2003,9 @@ function removeruleorspace()
   if (!lastselected) return;
   var boxlist = lastselected.getElementsByTagName("vbox");
   var lastbox;
-  for (var i = 0; i<boxlist.length; i++)
+  for (var i = 1; i<boxlist.length; i++)
   {
-    if (boxlist[i].getAttribute("hidden") == "false")
+    if (boxlist[i].getAttribute("hidden") != "true")
       lastbox = boxlist[i];
     else break;
   }
