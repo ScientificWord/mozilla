@@ -412,7 +412,7 @@ function openTeX()
     }      
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
     
-    msiEditPage("file:///" + outfile.path.replace(/\\/g,"/"), window, true);
+    msiEditPage("file:///" + outfile.path.replace(/\\/g,"/"), window, false);
   }                       
 }
 
@@ -635,7 +635,7 @@ function printTeX( pdftex, preview )
     var docUrl = msiGetEditorURL(editorElement);
     var docPath = GetFilepath(docUrl);
     var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  // for Windows
+      // for Windows
 #ifdef XP_WIN32
       docPath = docPath.replace("/","\\","g");
 #endif
@@ -684,7 +684,10 @@ function printTeX( pdftex, preview )
     if (compileTeXFile(pdftex, extendedoutleaf, outputfile.path, dvipdffile.parent.path, 1))
     {
       if (!dvipdffile.exists())
-        AlertWithTitle("TeX Error", "Need to offer to show log");
+      {
+        AlertWithTitle("TeX Error", "Click on View/TeX Log to see the log file");
+        goDoCommand("cmd_showTeXLog");
+      }
       dump("outputfile to be launched: "+dvipdffile.path+"\n");
       if (preview)
       {
@@ -762,16 +765,24 @@ function compileTeX(pdftex)
 //    os.close();
   //   fos.close();
     documentAsTeXFile(editor.document, "latex.xsl", outputfile );
-    if (compileTeXFile(pdftex, outleaf, outputfile.path, dvipdffile.parent.path, 1))
+    if (!outputfile.exists())
     {
-      if (!dvipdffile.exists())
-        AlertWithTitle("TeX Error", "Need to offer to show log");
-      else
-      // move the output result to the place indicated by fp.
-        dvipdffile.move(fp.file.parent, fp.file.leafName); 
-    } 
-    else
-      dump("\nRunning TeX failed to create a file!\n");
+      AlertWithTitle("XSLT Error", "Need to offer to show log");
+      goDoCommand("cmd_showXSLTLog");
+    } else
+    {
+      if (compileTeXFile(pdftex, outleaf, outputfile.path, dvipdffile.parent.path, 1))
+      {
+        if (!dvipdffile.exists())
+        {
+          AlertWithTitle("TeX Error", "Need to offer to show log");
+          goDoCommand("cmd_showTeXLog");
+        }
+        else
+        // move the output result to the place indicated by fp.
+          dvipdffile.move(fp.file.parent, fp.file.leafName); 
+      } 
+    }
   }
   catch(e) {
     dump(e+"\n");
