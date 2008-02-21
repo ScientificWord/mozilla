@@ -100,6 +100,10 @@
 <!ENTITY viewStatusBar.label "Status bar" >
 <!ENTITY viewShowHideMenu.label "Show/Hide" >
 <!ENTITY viewShowHideMenu.accesskey "S" >
+<!ENTITY viewTeXLog.accesskey "T" >
+<!ENTITY viewTeXLog.label "Show TeX Log" >
+<!ENTITY viewXSLTLog.accesskey "L" >
+<!ENTITY viewXSLTLog.label "Show XSLT Log" >
 <!ENTITY viewFootnotes.label "Footnotes" >
 <!ENTITY viewFootnotes.accesskey "F" >
 <!ENTITY viewOtherNotes.label "Other notes" >

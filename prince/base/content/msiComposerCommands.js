@@ -111,6 +111,8 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_msiReviseBreaks",  msiReviseBreaksCommand);
   commandTable.registerCommand("cmd_note", msiNoteCommand);
   commandTable.registerCommand("cmd_frame", msiFrameCommand);
+  commandTable.registerCommand("cmd_showTeXLog", msiShowTeXLogCommand);
+  commandTable.registerCommand("cmd_showXSLTLog", msiShowXSLTLogCommand);
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -7422,3 +7424,63 @@ function callColorDialog()
   theWindow.msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
   editorElement.contentWindow.focus();
 }
+
+var msiShowTeXLogCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    result = false;
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return result;
+
+    var editor = msiGetEditor(editorElement);
+    if (editor)
+    {
+      var url = msiGetEditorURL(editorElement);
+      var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
+      var match = re.exec(url);
+      if (match)
+      {
+        var resurl = match[1]+"/"+match[2]+"_files/tex/"+match[2]+".log";
+        var thefile = Components.classes["@mozilla.org/file/local;1"].
+        createInstance(Components.interfaces.nsILocalFile);
+        thefile.initWithPath(resurl);
+        result = thefile.exists();
+      }
+    }
+    return result;
+  },
+  
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    result = true;
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return result;
+
+    var editor = msiGetEditor(editorElement);
+    if (editor)
+    {
+      var url = msiGetEditorURL(editorElement);
+//      var re = /\/([a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+$/i;
+      var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
+      var match = re.exec(url);
+      if (match)
+      {
+        var resurl = match[1]+"/"+match[2]+"_files/tex/"+match[2]+".log";
+        openDialog("chrome://global/content/viewSource.xul",
+               "_blank",
+               "all,dialog=no",
+               resurl, null, null);
+      }
+    }
+    return result;
+  }
+}
+
+var msiShowXSLTLogCommand
+{}
