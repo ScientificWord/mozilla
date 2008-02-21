@@ -471,6 +471,8 @@
     <command id="cmd_viewEditingToolbar"  oncommand="goToggleToolbar('EditingToolbar','cmd_viewEditingToolbar');"   checked="true"/>
     <command id="cmd_viewSymbolToolbar"  oncommand="goToggleToolbar('SymbolToolbar','cmd_viewSymbolToolbar');"   checked="true"/>
     <command id="cmd_compactSymbolPanels"  oncommand="setCompact('menuCompactSymbolPanels','cmd_compactSymbolPanels');"   checked="false"/>
+    <command id="cmd_showTeXLog" oncommand="goDoCommand('cmd_showTeXLog');" />
+    <command id="cmd_showXSLTLog" oncommand="goDoCommand('cmd_showXSLTLog');" />
     <broadcaster id="defaultCompiler" persist="defcomp" defcomp="" />
   </broadcasterset>
 
