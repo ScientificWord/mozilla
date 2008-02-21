@@ -19,7 +19,8 @@
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();">
 
-  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <!-- script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/ -->
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/Operators.js"/>
@@ -41,6 +42,7 @@
 
   <vbox>
     <hbox>
+      <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
       <groupbox align="start" orient="vertical">
         <caption label="&limitPositionRadioGroup.label;"/>
         <radiogroup id="limitPositionRadioGroup">
@@ -49,7 +51,24 @@
           <radio label="&limitPositionAtRightRadio.label;" group="limitPositionRadioGroup" value="atRight" id="atRightLimitPositionRadio" accesskey="&limitPositionAtRightRadio.accessKey;"/>
         </radiogroup>
       </groupbox>
-        <spacer flex="1"/>
+      <spacer flex="1"/>
+      <description id="OperatorPreview" class="MSISample"	flex="1"
+           xmlns:xhtml="http://www.w3.org/1999/xhtml"
+           xmlns:mml="http://www.w3.org/1998/Math/MathML">
+			<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+            <!-- mml:math display="inline" -->
+              <!-- xhtml:div -->
+				<mstyle  id="operatorSampleMStyle">
+          <munderover>
+            <mo minsize="minsize" maxsize="maxsize" rspace="rspace" lspace="lspace" movablelimits="false" largeop="true" id="operatorSampleBase">&#x222B;</mo>
+            <mi tempinput="true">&#x2039;&#x203a;</mi>
+            <mi tempinput="true">&#x2039;&#x203a;</mi>
+          </munderover>
+				</mstyle>
+              <!-- /xhtml:div -->
+      </math>
+      </description>
+      <spacer flex="1"/>
       <groupbox align="start" orient="vertical">
         <caption label="&sizeRadioGroup.label;"/>
         <radiogroup id="sizeRadioGroup">
@@ -60,7 +79,7 @@
       </groupbox>
       <spacer flex="1"/>
     </hbox>
-    <groupbox id="operatorsButtonGroup" oncommand="setSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
+    <groupbox selectsOnFocus="false" id="operatorsButtonGroup" oncommand="setSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
 			<caption label="&operatorsButtonGroup.label;" accesskey="&operatorsButtonGroup.accessKey;"/>
 			<grid flex="1">
 				<columns>

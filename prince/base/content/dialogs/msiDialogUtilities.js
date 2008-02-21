@@ -435,7 +435,8 @@ function checkRedrawSample(event)
 
     if ((theTarget != null) && (gDialog.sampleControlArray[i].sampleDependsOn != null) && (lookUpInArray(theTarget, gDialog.sampleControlArray[i].sampleDependsOn) >= 0))
     {
-      drawSample(gDialog.sampleControlArray[i]);
+      if ( (event.type == "ButtonGroupSelectionChange") || (!theTarget.isMSIButtonGroup) )  //Added this to avoid responding twice to button group changes
+        drawSample(gDialog.sampleControlArray[i]);
 //      gDialog.sampleControlArray[i].sizeToContent();
 //      bRedraw = true;
     }

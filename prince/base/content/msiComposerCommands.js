@@ -5925,7 +5925,7 @@ var msiObjectPropertiesCommand =
         case 'msub':
         case 'msup':
         case 'msubsup':
-          if (msiNavigationUtils.isEmbellishedOperator(element))
+          if (msiNavigationUtils.getEmbellishedOperator(element) != null)
             msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
 //          msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
 // Should be no Properties dialog available for these cases? SWP has none...
@@ -5936,7 +5936,7 @@ var msiObjectPropertiesCommand =
         break;
 
         case 'mmultiscripts':
-          if (msiNavigationUtils.isEmbellishedOperator(element))
+          if (msiNavigationUtils.getEmbellishedOperator(element) != null)
             msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
           else
             msiGoDoCommandParams("cmd_MSIreviseTensorCmd", cmdParams, editorElement);
@@ -5981,7 +5981,7 @@ var msiObjectPropertiesCommand =
         case 'mover':
         case 'munder':
         case 'munderover':
-          if (msiNavigationUtils.isEmbellishedOperator(element))
+          if (msiNavigationUtils.getEmbellishedOperator(element) != null)
             msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
           else
             msiGoDoCommandParams("cmd_MSIreviseDecorationsCmd", cmdParams, editorElement);
