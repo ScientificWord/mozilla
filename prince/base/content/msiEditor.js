@@ -3656,11 +3656,9 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
 
     if (name == 'mstyle')
     {
-      if (element.childNodes.length == 1)
-      {
-        var childElement = element.childNodes[0];
+      var childElement = msiNavigationUtils.getSingleWrappedChild(element);
+      if (childElement != null)
         name = msiGetBaseNodeName(childElement).toLowerCase();
-      }
     }
 
     switch (name)
@@ -3765,7 +3763,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       case 'msub':
       case 'msup':
       case 'msubsup':
-        if (msiNavigationUtils.isEmbellishedOperator(element))
+        if (msiNavigationUtils.getEmbellishedOperator(element) != null)
           objStr = GetString("Operator");
 //        msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
 // Should be no Properties dialog available for these cases? SWP has none...
@@ -3774,14 +3772,14 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       case 'mover':
       case 'munder':
       case 'munderover':
-        if (msiNavigationUtils.isEmbellishedOperator(element))
+        if (msiNavigationUtils.getEmbellishedOperator(element) != null)
           objStr = GetString("Operator");
         else
           objStr = GetString("Decoration");
       break;
 
       case 'mmultiscripts':
-        if (msiNavigationUtils.isEmbellishedOperator(element))
+        if (msiNavigationUtils.getEmbellishedOperator(element) != null)
           objStr = GetString("Operator");
         else
           objStr = GetString("Tensor");

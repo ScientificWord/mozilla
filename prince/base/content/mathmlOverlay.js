@@ -487,7 +487,6 @@ var msiReviseMathnameCmd =
     msiOpenModelessPropertiesDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,dependent",
                                       editorElement, "cmd_MSIreviseMathnameCmd", theMathname, argArray);
 //    AlertWithTitle("mathmlOverlay.js", "In msiReviseMathnameCmd, trying to revise mathname, dialog unimplemented.");
-//    reviseFraction(editorElement, theFrac);
   },
 
   doCommand: function(aCommand)
@@ -755,8 +754,13 @@ var msiReviseOperatorsCmd =
   {
     var editorElement = msiGetActiveEditorElement(window);
     var theOperator = aParams.getISupportsValue("reviseObject");
-    AlertWithTitle("mathmlOverlay.js", "In msiReviseOperatorsCmd, trying to revise operator, dialog unimplemented.");
-//    reviseFraction(editorElement, theFrac);
+    var operatorData = new Object();
+    operatorData.reviseObject = theOperator;
+    var argArray = [operatorData];
+    msiOpenModelessPropertiesDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,dependent",
+                                      editorElement, "cmd_MSIreviseOperatorsCmd", theOperator, argArray);
+//    AlertWithTitle("mathmlOverlay.js", "In msiReviseOperatorsCmd, trying to revise operator, dialog unimplemented.");
+
   },
 
   doCommand: function(aCommand)
@@ -1028,6 +1032,122 @@ function insertOperator(operator, limitPlacement, sizeSpec, editorElement)
   catch (e) 
   {
   }
+}
+
+function reviseOperator(objectNode, newOperatorStr, limitPlacement, sizeSpec, editorElement)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
+
+  var retVal = objectNode;
+  try 
+  {
+    var outerOperator = msiNavigationUtils.getWrappedObject(objectNode, "operator");
+    var bWrapped = (objectNode != outerOperator);
+    var operatorNode = null;
+    if (msiGetBaseNodeName(outerOperator) == "mo")
+      operatorNode = outerOperator;
+    else
+      operatorNode = msiNavigationUtils.getEmbellishedOperator(outerOperator);
+//    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    var limitPlacementStr = "";
+    var bMovableLimits = "false";
+    if (limitPlacement == "atRight")
+      limitPlacementStr = "msiLimitsAtRight";
+    else if (limitPlacement == "aboveBelow")
+      limitPlacementStr = "msiLimitsAboveBelow";
+    else
+      bMovableLimits = "true";
+
+    msiEnsureElementAttribute( operatorNode, "movablelimits", bMovableLimits );
+    var bLimitPlacementChanged = msiEnsureElementAttribute( operatorNode, "msiLimitPlacement", ((limitPlacementStr.length > 0) ? limitPlacementStr : null) );
+
+    //Now try to match the new ones with the old; if they differ on limit placement, we may have to replace <msubsup>/<msub>/<msup>
+    //  by <munderover>/<munder>/<mover> or vice versa, while if they differ on size, we have to invoke the mathStyle mechanism to fix it.
+    if (bLimitPlacementChanged && (operatorNode != outerOperator))  //So this operator has limits already:
+    {
+      var newNodeName = oldNodeName;
+      var oldNodeName = msiGetBaseNodeName(outerOperator);
+      switch(oldNodeName)
+      {
+        case "mover":
+        case "msup":
+          if (limitPlacementStr == "msiLimitsAboveBelow")
+            newNodeName = "mover";
+          else
+            newNodeName = "msup";
+        break;
+        case "munder":
+        case "msub":
+          if (limitPlacementStr == "msiLimitsAboveBelow")
+            newNodeName = "munder";
+          else
+            newNodeName = "msub";
+        break;
+        case "munderover":
+        case "msubsup":
+          if (limitPlacementStr == "msiLimitsAboveBelow")
+            newNodeName = "munderover";
+          else
+            newNodeName = "msubsup";
+        break;
+      }
+      if (newNodeName != oldNodeName)
+      {
+        var newNode = null;
+        if (newNodeName.length > 0)
+          newNode = outerOperator.ownerDocument.createElementNS(mmlns, newNodeName);
+
+        var theParent = outerOperator.parentNode;
+        if (newNode != null)
+        {
+          var theChildren = msiNavigationUtils.getSignificantContents(outerOperator);
+          for (var ix = 0; ix < theChildren.length; ++ix)
+//            newNode.appendChild( theChildren[ix].cloneNode(true) );
+            newNode.appendChild( outerOperator.removeChild(theChildren[ix]) );
+          for (var ii = 0; ii < outerOperator.attributes.length; ++ii)
+          {
+            var theAttr = outerOperator.attributes.item(ii);
+            var attrName = msiGetBaseNodeName( theAttr );
+            if (msiElementCanHaveAttribute(newNode, attrName))
+              newNode.setAttributeNode( outerOperator.removeAttributeNode(theAttr) );
+          }
+          theParent.replaceChild(newNode, outerOperator);
+          outerOperator = newNode;
+        }
+        else
+        {
+          theParent.removeChild(newNode, outerOperator);
+          outerOperator = operatorNode;
+        }
+      }
+      if (!bWrapped)
+        objectNode = outerOperator;
+    }
+
+    operatorNode.textContent = newOperatorStr;
+
+    var styleObj = new Object();
+    if (sizeSpec == "small")
+      styleObj["displaystyle"] = "false";
+    else if (sizeSpec == "big")
+      styleObj["displaystyle"] = "true";
+    else
+      styleObj["displaystyle"] = "";
+    var objTypeStr = "operator";
+    if (outerOperator != operatorNode)
+      objTypeStr = msiGetBaseNodeName(outerOperator);
+    retVal = applyMathStyleToObject(styleObj, objTypeStr, objectNode);
+    
+    editorElement.contentWindow.focus();
+  } 
+  catch (e) 
+  {
+    dump("Error in mathmlOverlay.js, reviseOperator; error is [" + e + "].\n");
+  }
+
+  return retVal;
 }
 
 function insertDecoration(decorationAboveStr, decorationBelowStr, decorationAroundStr, editorElement)
