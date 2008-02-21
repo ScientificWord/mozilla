@@ -45,17 +45,26 @@ function onAccept()
 {
   var n = document.getElementById("ruleHeight").value;
   // should check for validity.
-  ruleElement.setAttribute("height", n);
-  ruleElement.setAttribute("color", color);
-  var style= "background-color:"+color;
-  var size = document.getElementById("rulesize").value;
-  if (size=="other") 
-  {
-    size = document.getElementById("ruleWidth").value+"px";
-    style += ";width:"+size;
+  var element = ruleElement;
+  while (element && element.localName != "deck") element = element.parentNode;
+    // element is now the deck.
+    // should check for validity.
+  if (n>0) {
+    ruleElement.setAttribute("height", n+ruleUnits);
+    ruleElement.setAttribute("color", color);
+    var style= "background-color:"+color +"; height:"+n+ruleUnits;
+    var size = document.getElementById("rulesize").value+ruleUnits;
+    if (size=="other") 
+    {
+      size = document.getElementById("ruleWidth").value+ruleUnits;
+      style += ";width:"+size;
+    }
+    ruleElement.setAttribute("size",size);
+    ruleElement.setAttribute("style", style);
+    element.setAttribute("selectedIndex", "1");
   }
-  ruleElement.setAttribute("size",size);
-  ruleElement.setAttribute("style", style);
+  else
+    element.setAttribute("selectedIndex", "0");
 }
 
 
