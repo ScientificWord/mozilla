@@ -56,6 +56,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/viewSource.js" />
   <script type="application/x-javascript" src="chrome://prince/content/mainCore.js" />
   <script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
