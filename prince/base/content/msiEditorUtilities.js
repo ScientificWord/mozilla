@@ -1532,6 +1532,29 @@ function msiElementCanHaveAttribute(elementNode, attribName)
   return retVal;
 }
 
+//This function sets an attribute value if needed and returns true if the value was changed.
+function msiEnsureElementAttribute(elementNode, attribName, attribValue)
+{
+  var retVal = false;
+  if (attribValue == null)
+  {
+    if (elementNode.hasAttribute(attribName))
+    {
+      elementNode.removeAttribute(attribName);
+      retVal = true;
+    }
+  }
+  else
+  {
+    if ( !elementNode.hasAttribute(attribName) || (elementNode.getAttribute(attribName) != attribValue) )
+    {
+      elementNode.setAttribute(attribName, attribValue);
+      retVal = true;
+    }
+  }
+  return retVal;
+}
+
 //The idea is to use a NodeIterator to walk the new or affected nodes. We want to find the marked caret position (using the
 //"caretpos" attribute), or the first input box (always in an <mi>?), or, failing that, to leave it at the postNode and postOffset.
 function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, postOffset)
@@ -4709,6 +4732,14 @@ var msiNavigationUtils =
     return retList;
   },
 
+  getFirstSignificantChild : function(node)
+  {
+    var children = this.getSignificantContents(node);
+    if (children.length > 0)
+      return children[0];
+    return null;
+  },
+
   getSignificantRangeContent : function(range)
   {
     var retList = new Array();
@@ -4723,12 +4754,22 @@ var msiNavigationUtils =
 
   isBoundFence : function(node)
   {
-    if (msiGetBaseNodeName(node) == 'mstyle' && node.childNodes.length == 1)
-      return this.isBoundFence(node.childNodes[0]);
+//    if (msiGetBaseNodeName(node) == 'mstyle' && node.childNodes.length == 1)
+//      return this.isBoundFence(node.childNodes[0]);
+    var singleChild = this.getSingleWrappedChild(node);
+    if (singleChild != null)
+      return this.isBoundFence(singleChild);
 
-    return ( this.isFence(node) 
-               && node.firstChild.hasAttribute('msiBoundFence') && (node.firstChild.getAttribute('msiBoundFence') == 'true') 
-               && node.lastChild.hasAttribute('msiBoundFence') && (node.lastChild.getAttribute('msiBoundFence') == 'true') );
+    if( this.isFence(node) )
+    {
+      var children = this.getSignificantContents(node);
+      if (children.length > 1)
+      {
+        return (children[0].hasAttribute('msiBoundFence') && (children[0].getAttribute('msiBoundFence') == 'true') 
+               && children[children.length - 1].hasAttribute('msiBoundFence') && (children[children.length - 1].getAttribute('msiBoundFence') == 'true') );
+      }
+    }
+    return false;
   },
 
   isBinomial : function(node)
@@ -4771,7 +4812,8 @@ var msiNavigationUtils =
       case 'mstyle':
         if (this.isFence(node))
           return true;
-        if (node.childNodes.length == 1 && this.isMathTemplate(node.childNodes[0]))
+        var singleChild = this.getSingleWrappedChild(node);
+        if (this.isMathTemplate(singleChild))
           return true;
       break;
     }
@@ -4803,7 +4845,7 @@ var msiNavigationUtils =
     return false;
   },
 
-  isEmbellishedOperator : function(node)
+  getEmbellishedOperator : function(node)
   {
     if ( node != null)
     {
@@ -4818,20 +4860,29 @@ var msiNavigationUtils =
         case 'mmultiscripts':
         //According to the MathML 2.1 spec, we should also include 'mfrac" here. I'm not convinced that would give the right thing generally here.
         {
-          var opNode = node.firstChild;
-          if ( opNode != null && (msiGetBaseNodeName(opNode) == 'mo') 
-                 && opNode.hasAttribute("largeop") && (opNode.getAttribute("largeop") == "true") )
-            return true;
+          var opNode = this.getFirstSignificantChild(node);
+          if (opNode != null)
+          {
+            var opNodeName = msiGetBaseNodeName(opNode);
+            if ( (opNodeName == 'mstyle') || (opNodeName == 'mrow') )
+              opNode = this.getSingleWrappedChild(opNode);
+            if ( (opNode != null) && (msiGetBaseNodeName(opNode) == 'mo') && opNode.hasAttribute("largeop")
+                                          && (opNode.getAttribute("largeop") == "true") )
+              return opNode;
+          }
         }
         break;
         default:
         break;
       }
     }
-    if (msiGetBaseNodeName(node) == "mstyle" && node.childNodes.length == 1)
-      return this.isEmbellishedOperator(node.childNodes[0]);
+    var singleChild = this.getSingleWrappedChild(node);
+    if (singleChild != null)
+      return this.getEmbellishedOperator(singleChild);
+//    if (msiGetBaseNodeName(node) == "mstyle" && node.childNodes.length == 1)
+//      return this.isEmbellishedOperator(node.childNodes[0]);
 
-    return false;
+    return null;
   },
 
   getSingleWrappedChild : function(aNode)
@@ -4889,6 +4940,12 @@ var msiNavigationUtils =
           break;
           case 'unit':
             if (this.isUnit(aNode))
+              return aNode;
+          break;
+          case 'operator':
+            if (theName == 'mo')
+              return aNode;
+            if (this.getEmbellishedOperator(aNode) != null)
               return aNode;
           break;
           default:
@@ -4969,7 +5026,7 @@ var msiNavigationUtils =
     if (nodeName == "mstyle")
     {
       retStyleNode = targNode;
-      for each (var styleItem in expectedStyle)
+      for (var styleItem in expectedStyle)
       {
         if (targNode.hasAttribute(styleItem))
           foundStyle[styleItem] = targNode.getAttribute(styleItem);
