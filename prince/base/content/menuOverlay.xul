@@ -354,6 +354,11 @@
       <menuitem id="viewPreviewMode"  type="radio" group="mode" accesskey="&PreviewMode.accesskey;"    observes="cmd_PreviewMode"
         label="&PreviewMode.label;"/>
       <menuseparator/>
+      <menuitem id="viewTeXLog"  accesskey="&viewTeXLog.accesskey;"    observes="cmd_showTeXLog" 
+        label="&viewTeXLog.label;"/>
+      <menuitem id="viewXSLTLog"  accesskey="&viewXSLTLog.accesskey;"    observes="cmd_showXSLTLog"
+        label="&viewXSLTLog.label;"/>
+      <menuseparator/>
       <menu id="sidebar-menu" />
       <menuitem id="viewstatusbar" type="checkbox" checked="true" observes="cmd_viewStatusBar" accesskey="&viewStatusBar.accesskey;"
         label="&viewStatusBar.label;" />
