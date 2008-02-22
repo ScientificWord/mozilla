@@ -37,7 +37,9 @@
    persist="screenX screenY"
    buttons="cancel"
    onload = "onLoad()"
-   ondialogaccept="return onFindNext();">
+   ondialogaccept="return onFindNext();"
+   height="270"
+   width="500">
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
@@ -93,27 +95,29 @@
     <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
   </keyset>
 
-  <hbox>
-    <vbox>
-      <spacer class="spacer"/>
-      <grid align="start">
-        <columns><column/><column/></columns>
+  <hbox flex="1">
+    <vbox flex="1">
+      <spacer class="spacer" flex="0"/>
+      <grid align="start" flex="1">
+        <columns><column/><column flex="1"/></columns>
         <rows>
-          <row align="center">
+          <row align="start" flex="1">
             <label value="&findField.label;" accesskey="&findField.accesskey;" control="dialog.findInput"/>
             <!-- textbox id="dialog.findInput" oninput="doEnabling();"/ -->
-            <groupbox>
-              <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="findInput" flex="1" height="60" width="250" onblur="doEnabling();"/>
+            <groupbox flex="1" align="stretch">
+              <editor editortype="html" type="content" context="msiEditorContentContext" id="findInput" flex="1" align="stretch"
+                minheight="60" minwidth="250" height="600px" onblur="doEnabling();"/>
             </groupbox>
           </row>
-          <row align="center">
+          <row align="start" flex="1">
             <label value="&replaceField.label;" accesskey="&replaceField.accesskey;" control="dialog.replaceInput"/>
             <!-- textbox id="dialog.replaceInput" oninput="doEnabling();"/ -->
-            <groupbox>
-              <editor editortype="html" type="content" context="msiEditorContentContext" id="replaceInput" flex="1" height="60" width="250"/>
+            <groupbox flex="1">
+              <editor editortype="html" type="content" context="msiEditorContentContext" id="replaceInput" flex="1" minheight="60" minwidth="250"
+               height="600px" />
             </groupbox>
           </row>
-          <row align="start">
+          <row align="start" >
             <spacer/>
             <vbox align="start">
               <spacer class="bigspacer"/>
