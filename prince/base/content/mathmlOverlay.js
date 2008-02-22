@@ -680,8 +680,14 @@ var msiReviseGenBracketsCmd =
   {
     var editorElement = msiGetActiveEditorElement(window);
     var theBrackets = aParams.getISupportsValue("reviseObject");
-    AlertWithTitle("mathmlOverlay.js", "In msiReviseGenBracketsCmd, trying to revise brackets, dialog unimplemented.");
-//    reviseFraction(editorElement, theFrac);
+    var bracketData = new Object();
+    bracketData.reviseObject = theBrackets;
+    var argArray = [bracketData];
+    msiOpenModelessPropertiesDialog("chrome://prince/content/Brackets.xul", "_blank", "chrome,close,titlebar,dependent",
+                                      editorElement, "cmd_MSIreviseGenBracketsCmd", theBrackets, argArray);
+
+
+//    AlertWithTitle("mathmlOverlay.js", "In msiReviseGenBracketsCmd, trying to revise brackets, dialog unimplemented.");
   },
 
   doCommand: function(aCommand)
@@ -1122,11 +1128,13 @@ function reviseOperator(objectNode, newOperatorStr, limitPlacement, sizeSpec, ed
           outerOperator = operatorNode;
         }
       }
-      if (!bWrapped)
-        objectNode = outerOperator;
     }
 
-    operatorNode.textContent = newOperatorStr;
+    var newOp = msiSetMathTokenText(operatorNode, newOperatorStr);
+    if (operatorNode == outerOperator)
+      outerOperator = newOp;
+    if (!bWrapped)
+      objectNode = outerOperator;
 
     var styleObj = new Object();
     if (sizeSpec == "small")
@@ -2139,6 +2147,61 @@ function insertfence(left, right, editorElement)
     if (logStr.length > 0)
       msiKludgeLogString(logStr);
   }
+}
+
+//NOTE!! All the convoluted replacement code used below is necessary due to a bug in Mozilla MathML rendering.
+//Changing the textContent of a token node <mo> or <mi> does not reliably force a rerendering.
+function reviseFence(fenceNode, left, right, editorElement) 
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
+  var retVal = fenceNode;
+
+  try 
+  {
+    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    if (!mathmlEditor)
+      logStr = "In insertfence, editor element [" + editorElement.id + "] has editor, but null mathmlEditor!\n";
+
+    var wrappedFenceNode = msiNavigationUtils.getWrappedObject(fenceNode, "fence");
+    if (wrappedFenceNode != null)
+    {
+      var theChildren = msiNavigationUtils.getSignificantContents(wrappedFenceNode);
+      if (theChildren.length > 0)
+      {
+        var firstNode = theChildren[0];
+        var newFirst = msiSetMathTokenText(firstNode, left);
+
+//        if (firstNode.textContent != left)
+//        {
+//          var opening = wrappedFenceNode.ownerDocument.createElementNS(mmlns, "mo");
+//          msiCopyElementAttributes(opening, firstNode);
+//          opening.appendChild(wrappedFenceNode.ownerDocument.createTextNode(left));
+//          wrappedFenceNode.replaceChild(opening, firstNode);
+////          firstNode.textContent = left;
+//        }
+        var lastNode = theChildren[theChildren.length - 1];
+        var newLast = msiSetMathTokenText(lastNode, right);
+//        if (lastNode.textContent != right)
+//        {
+//          var closing = wrappedFenceNode.ownerDocument.createElementNS(mmlns, "mo");
+//          msiCopyElementAttributes(closing, lastNode);
+//          closing.appendChild(wrappedFenceNode.ownerDocument.createTextNode(right));
+//          wrappedFenceNode.replaceChild(closing, lastNode);
+////          lastNode.textContent = right;
+//        }
+      }
+      else
+        dump("Problem in mathmlOverlay.js, reviseFence - supposed fence node has no children?\n");
+    }
+    else
+      dump("Problem in mathmlOverlay.js, reviseFence - fence node not found!\n");
+    editorElement.contentWindow.focus();
+  } 
+  catch (e) { dump("Error in mathmlOverlay.js, reviseFence! [" + e + "].\n"); }
+
+  return retVal;
 }
 
 function insertmatrix(rows, cols, rowsignature, editorElement) 
