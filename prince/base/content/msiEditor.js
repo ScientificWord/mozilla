@@ -3654,11 +3654,14 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
     if (name != null)
       name = name.toLowerCase();
 
-    if (name == 'mstyle')
+    var wrappedChildElement = element;
+    while ( (name == 'mstyle') || (name == 'mrow') )
     {
-      var childElement = msiNavigationUtils.getSingleWrappedChild(element);
-      if (childElement != null)
-        name = msiGetBaseNodeName(childElement).toLowerCase();
+      var newChildElement = msiNavigationUtils.getSingleWrappedChild(element);
+      if (newChildElement == null)
+        break;
+      wrappedChildElement = newChildElment;
+      name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
     }
 
     switch (name)
@@ -3728,7 +3731,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
           objStr = GetString("NamedAnchor");
           name = "anchor";
         }
-        else if(element.href)
+        else if(wrappedChildElement.href)
         {
           objStr = GetString("Link");
           name = "href";
@@ -3763,7 +3766,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       case 'msub':
       case 'msup':
       case 'msubsup':
-        if (msiNavigationUtils.getEmbellishedOperator(element) != null)
+        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
           objStr = GetString("Operator");
 //        msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
 // Should be no Properties dialog available for these cases? SWP has none...
@@ -3772,14 +3775,14 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       case 'mover':
       case 'munder':
       case 'munderover':
-        if (msiNavigationUtils.getEmbellishedOperator(element) != null)
+        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
           objStr = GetString("Operator");
         else
           objStr = GetString("Decoration");
       break;
 
       case 'mmultiscripts':
-        if (msiNavigationUtils.getEmbellishedOperator(element) != null)
+        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
           objStr = GetString("Operator");
         else
           objStr = GetString("Tensor");
@@ -3790,18 +3793,19 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       break;
 
       case 'mi':
-        if (msiNavigationUtils.isUnit(element))
+        if (msiNavigationUtils.isUnit(wrappedChildElement))
           objStr = GetString("Unit");
-        else if (msiNavigationUtils.isMathname(element))
+        else if (msiNavigationUtils.isMathname(wrappedChildElement))
           objStr = GetString("MathName");
       break;
 
 //  commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
 
       case 'mrow':
-        if (msiNavigationUtils.isFence(element))
+      case 'mstyle':
+        if (msiNavigationUtils.isFence(wrappedChildElement))
         {
-          if (msiNavigationUtils.isBinomial(element))
+          if (msiNavigationUtils.isBinomial(wrappedChildElement))
             objStr = GetString("Binomial");
           else
             objStr = GetString("GenBracket");
@@ -3809,7 +3813,10 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       break;
 
       case 'mo':
-        objStr = GetString("Operator");
+        if (msiNavigationUtils.isMathname(wrappedChildElement))
+          objStr = GetString("MathName");
+        else
+          objStr = GetString("Operator");
       break;
 
     }
