@@ -5832,12 +5832,16 @@ var msiObjectPropertiesCommand =
 
       var name = msiGetBaseNodeName(element).toLowerCase();
       cmdParams.setISupportsValue("reviseObject", element);
-      if (name == 'mstyle')
+      var wrappedChildElement = element;
+      while ((name == 'mstyle') || (name == 'mrow') )
       {
-        var wrappedChildElement = msiNavigationUtils.getSingleWrappedChild(element);
-        if (wrappedChildElement != null)
-          name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
+        var newChildElement = msiNavigationUtils.getSingleWrappedChild(wrappedChildElement);
+        if (newChildElement == null)
+          break;
+        wrappedChildElement = newChildElement;
+        name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
       }
+
       switch (name)
       {
         case 'img':
@@ -5927,7 +5931,7 @@ var msiObjectPropertiesCommand =
         case 'msub':
         case 'msup':
         case 'msubsup':
-          if (msiNavigationUtils.getEmbellishedOperator(element) != null)
+          if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
             msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
 //          msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
 // Should be no Properties dialog available for these cases? SWP has none...
@@ -5938,25 +5942,25 @@ var msiObjectPropertiesCommand =
         break;
 
         case 'mmultiscripts':
-          if (msiNavigationUtils.getEmbellishedOperator(element) != null)
+          if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
             msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
           else
             msiGoDoCommandParams("cmd_MSIreviseTensorCmd", cmdParams, editorElement);
         break;
 
         case 'mi':
-          if (msiNavigationUtils.isUnit(element))
+          if (msiNavigationUtils.isUnit(wrappedChildElement))
             msiGoDoCommandParams("cmd_MSIreviseUnitsCommand", cmdParams, editorElement);
-          else if (msiNavigationUtils.isMathname(element))
+          else if (msiNavigationUtils.isMathname(wrappedChildElement))
             msiGoDoCommandParams("cmd_MSIreviseMathnameCmd", cmdParams, editorElement);
         break;
 
 //    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
 
         case 'mstyle':
-          if (msiNavigationUtils.isFence(element))
+          if (msiNavigationUtils.isFence(wrappedChildElement))
           {
-            if (msiNavigationUtils.isBinomial(element))
+            if (msiNavigationUtils.isBinomial(wrappedChildElement))
               msiGoDoCommandParams("cmd_MSIreviseBinomialsCmd", cmdParams, editorElement);
             else
               msiGoDoCommandParams("cmd_MSIreviseGenBracketsCmd", cmdParams, editorElement);
@@ -5964,9 +5968,9 @@ var msiObjectPropertiesCommand =
         break;
 
         case 'mrow':
-          if (msiNavigationUtils.isFence(element))
+          if (msiNavigationUtils.isFence(wrappedChildElement))
           {
-            if (msiNavigationUtils.isBinomial(element))
+            if (msiNavigationUtils.isBinomial(wrappedChildElement))
               msiGoDoCommandParams("cmd_MSIreviseBinomialsCmd", cmdParams, editorElement);
             else
               msiGoDoCommandParams("cmd_MSIreviseGenBracketsCmd", cmdParams, editorElement);
@@ -5974,7 +5978,7 @@ var msiObjectPropertiesCommand =
         break;
 
         case 'mo':
-          if (msiNavigationUtils.isMathname(element))
+          if (msiNavigationUtils.isMathname(wrappedChildElement))
             msiGoDoCommandParams("cmd_MSIreviseMathnameCmd", cmdParams, editorElement);
           else
             msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
@@ -5983,7 +5987,7 @@ var msiObjectPropertiesCommand =
         case 'mover':
         case 'munder':
         case 'munderover':
-          if (msiNavigationUtils.getEmbellishedOperator(element) != null)
+          if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
             msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
           else
             msiGoDoCommandParams("cmd_MSIreviseDecorationsCmd", cmdParams, editorElement);
