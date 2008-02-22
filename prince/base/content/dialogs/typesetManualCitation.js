@@ -39,9 +39,10 @@ function InitDialog()
   
   if (!gDialog.remark || gDialog.remark.length == 0)
     gDialog.remark = "Is this bold?";
-  var theStringSource = "<span style='font-weight: bold;'>" + gDialog.remark + "</span>";
+  var theStringSource = "<bold>" + gDialog.remark + "</bold>";
   var editorControl = document.getElementById("remarkEditControl");
   msiInitializeEditorForElement(editorControl, theStringSource);
+  
 //  attachEditorToTextbox(document.getElementById("remarkTextbox"), theStringSource)
   //This next will have to be replaced by code to set up the MathML editor for the Remark field
 //  document.getElementById("remarkTextbox").value = gDialog.remark;
@@ -76,12 +77,20 @@ function onAccept()
 
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
-  AlertWithTitle("Information", "Manual Citation Dialog returned key: [" + data.key + "], remark: [" + data.remark + "]; needs to be hooked up to do something!");
   var theWindow = window.opener;
   if (!theWindow || !("updateEditorBibItemList" in theWindow))
     theWindow = msiGetTopLevelWindow();
   if (editor && theWindow)
     theWindow.updateEditorBibItemList(editor, data.keyList);
+
+  var dd =editorControl.contentDocument;
+  var elts = dd.getElementsByTagName("sw:dialogbase");
+  var elt = elts.item(0);
+  var str1 = serializer.serializeToString(elt);
+  var str = "<citation>" + str1 + "</citation>";
+  
+  // .getElementsByTagName("sw:dialogbase")
+  insertXMLAtCursor(editor, str, true, false);
 
   SaveWindowLocation();
   return true;
