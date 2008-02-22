@@ -1555,6 +1555,40 @@ function msiEnsureElementAttribute(elementNode, attribName, attribValue)
   return retVal;
 }
 
+function msiCopyElementAttributes(newElement, oldElement)
+{
+  var theAttrs = oldElement.attributes;
+  for (var jx = 0; jx < theAttrs.length; ++jx)
+  {
+    var attrName = theAttrs.item(jx).nodeName;
+    switch(attrName)
+    {
+      case 'moz-dirty':
+      break;
+      default:
+        if (msiElementCanHaveAttribute(newElement, attrName))
+          msiEnsureElementAttribute(newElement, attrName, theAttrs.item(jx).textContent);
+      break;
+    }
+  }
+}
+
+//NOTE!! This is to get around a bug in Mozilla. When the bug is fixed, this function should just read:
+//  theElement.textContent = newText; 
+//  return theElement;
+function msiSetMathTokenText(theElement, newText)
+{
+  if (theElement.textContent == newText)
+    return theElement;
+
+  var newElement = theElement.ownerDocument.createElementNS(mmlns, theElement.nodeName);
+  msiCopyElementAttributes(newElement, theElement);
+  newElement.appendChild(theElement.ownerDocument.createTextNode(newText));
+  if (theElement.parentNode != null)
+    theElement.parentNode.replaceChild(newElement, theElement);
+  return newElement;
+}
+
 //The idea is to use a NodeIterator to walk the new or affected nodes. We want to find the marked caret position (using the
 //"caretpos" attribute), or the first input box (always in an <mi>?), or, failing that, to leave it at the postNode and postOffset.
 function findCaretPositionAfterInsert(document, preNode, preOffset, postNode, postOffset)
@@ -4710,13 +4744,19 @@ var msiNavigationUtils =
   isFence : function(node)
   {
     var nodeName = msiGetBaseNodeName(node);
-    if (nodeName == 'mstyle' && node.childNodes.length == 1)
-      return this.isFence(node.childNodes[0]);
+//    if (nodeName == 'mstyle' && node.childNodes.length == 1)
+//      return this.isFence(node.childNodes[0]);
+
     if (nodeName == 'mrow' || nodeName == 'mstyle')
     {
-      if ( (msiGetBaseNodeName(node.firstChild) == 'mo') && (node.firstChild.getAttribute('fence') == 'true') && (node.firstChild.getAttribute('form') == 'prefix')
-            && (msiGetBaseNodeName(node.lastChild) == 'mo') && (node.lastChild.getAttribute('fence') == 'true') && (node.lastChild.getAttribute('form') == 'postfix') )
-        return true;
+      var children = this.getSignificantContents(node);
+      if (children.length > 1)
+      {
+        return ( (msiGetBaseNodeName(children[0]) == 'mo') && (children[0].getAttribute('fence') == 'true') && (children[0].getAttribute('form') == 'prefix')
+            && (msiGetBaseNodeName(children[children.length - 1]) == 'mo')
+            && (children[children.length - 1].getAttribute('fence') == 'true')
+            && (children[children.length - 1].getAttribute('form') == 'postfix') )
+      }
     }
     return false;
   },
@@ -4756,9 +4796,9 @@ var msiNavigationUtils =
   {
 //    if (msiGetBaseNodeName(node) == 'mstyle' && node.childNodes.length == 1)
 //      return this.isBoundFence(node.childNodes[0]);
-    var singleChild = this.getSingleWrappedChild(node);
-    if (singleChild != null)
-      return this.isBoundFence(singleChild);
+//    var singleChild = this.getSingleWrappedChild(node);
+//    if (singleChild != null)
+//      return this.isBoundFence(singleChild);
 
     if( this.isFence(node) )
     {
@@ -4807,8 +4847,6 @@ var msiNavigationUtils =
         return true;
       break;
       case 'mrow':
-        return this.isFence(node);
-      break;
       case 'mstyle':
         if (this.isFence(node))
           return true;

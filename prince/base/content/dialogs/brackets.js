@@ -29,6 +29,10 @@ function Startup()
   data = window.arguments[0];
   data.Cancel = false;
 
+  var bRevise = isReviseDialog();
+  if (bRevise)
+    setDataFromReviseObject(data.reviseObject);
+
   gDialog.LeftBracketGroup = document.getElementById("leftBracketGroup");
   gDialog.RightBracketGroup = document.getElementById("rightBracketGroup");
   gDialog.BracketPreview = document.getElementById("BracketPreview");
@@ -47,9 +51,47 @@ function Startup()
 
   InitDialog();
 
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  if (bRevise)
+  {
+    window.mMSIDlgManager.mbIsRevise = true;
+    window.mMSIDlgManager.mbCloseOnAccept = true;
+  }
+  window.mMSIDlgManager.configureDialog();
+
   gDialog.LeftBracketGroup.focus();
 
   SetWindowLocation();
+}
+
+function isReviseDialog()
+{
+  if ( ("reviseObject" in data) && (data.reviseObject != null) )
+    return true;
+  return false;
+}
+
+function setDataFromReviseObject(objectNode)
+{
+  var fenceNode = msiNavigationUtils.getWrappedObject(objectNode, "fence");
+  if (fenceNode == null)
+  {
+    dump("Problem in Brackets.js, setDataFromReviseObject - fence node not found!\n");
+    return;
+  }
+  var children = msiNavigationUtils.getSignificantContents(fenceNode);
+  if (children.length < 1)
+  {
+    dump("Problem in Brackets.js, setDataFromReviseObject - fence node has no children!\n");
+    return;
+  }
+  data.leftBracket = children[0].textContent;
+  data.rightBracket = children[children.length - 1].textContent;
+}
+
+function getPropertiesDialogTitle()
+{
+  return document.getElementById("propertiesTitle").value;
 }
 
 function InitDialog()
@@ -139,33 +181,63 @@ function InitDialog()
   drawSample(gDialog.BracketPreview);
 }
 
+//NOTE!! All the convoluted replacement code used below is necessary due to a bug in Mozilla MathML rendering.
+//Changing the textContent of a token node <mo> or <mi> does not reliably force a rerendering.
 function drawSample(sampleControl)
 {
 //  document.getElementById("leftBracketSample").textContent = gDialog.LeftBracketGroup.valueStr;
 //  document.getElementById("rightBracketSample").textContent = gDialog.RightBracketGroup.valueStr;
   var leftBrackSamp = document.getElementById("leftBracketSample");
-  var leftText = document.createTextNode(gDialog.LeftBracketGroup.valueStr);
-  var n = leftBrackSamp.childNodes.length;
-  for (var i = n-1; i >= 0; --i)
-    leftBrackSamp.removeChild(leftBrackSamp.childNodes[i]);
-  leftBrackSamp.appendChild(leftText);
-  document.getElementById("rightBracketSample").textContent = gDialog.RightBracketGroup.valueStr;
-  var rightBrackSamp = document.getElementById("rightBracketSample");
-  var rightText = document.createTextNode(gDialog.RightBracketGroup.valueStr);
-  n = rightBrackSamp.childNodes.length;
-  for (var i = n-1; i >= 0; --i)
-    rightBrackSamp.removeChild(rightBrackSamp.childNodes[i]);
-  rightBrackSamp.appendChild(rightText);
 //  var opening = document.createElementNS(mmlns, "mo");
 //  opening.setAttribute("form", "prefix");
 //  opening.setAttribute("fence", "true");
 //  opening.setAttribute("stretchy", "true");
 //  opening.appendChild(document.createTextNode(gDialog.LeftBracketGroup.valueStr));
+//  leftBrackSamp.parentNode.replaceChild( opening, leftBrackSamp );
+//  opening.setAttribute("id", "leftBracketSample");
+
+  var opening = msiSetMathTokenText(leftBrackSamp, gDialog.LeftBracketGroup.valueStr);
+  if (opening != leftBrackSamp)
+  {
+    if (opening.getAttribute("id") != "leftBracketSample")
+      dump("Problem in Brackets.js, drawSample! Replacement left bracket has lost the id attribute.\n");
+    leftBrackSamp = opening;
+  }
+
+//  var leftText = document.createTextNode(gDialog.LeftBracketGroup.valueStr);
+//  var n = leftBrackSamp.childNodes.length;
+//  for (var i = n-1; i >= 0; --i)
+//    leftBrackSamp.removeChild(leftBrackSamp.childNodes[i]);
+//  leftBrackSamp.appendChild(leftText);
+//  document.getElementById("rightBracketSample").textContent = gDialog.RightBracketGroup.valueStr;
+  var rightBrackSamp = document.getElementById("rightBracketSample");
 //  var closing = document.createElementNS(mmlns, "mo");
 //  closing.setAttribute("form", "postfix");
 //  closing.setAttribute("fence", "true");
 //  closing.setAttribute("stretchy", "true");
 //  closing.appendChild(document.createTextNode(gDialog.RightBracketGroup.valueStr));
+//  rightBrackSamp.parentNode.replaceChild( closing, rightBrackSamp );
+//  closing.setAttribute("id", "rightBracketSample");
+
+  var closing = msiSetMathTokenText(rightBrackSamp, gDialog.RightBracketGroup.valueStr);
+  if (closing != rightBrackSamp)
+  {
+    if (closing.getAttribute("id") != "rightBracketSample")
+      dump("Problem in Brackets.js, drawSample! Replacement right bracket has lost the id attribute.\n");
+    if (closing.getAttribute("form") != "postfix")
+      dump("Problem in Brackets.js, drawSample! Replacement right bracket has lost the form attribute.\n");
+    if (closing.getAttribute("fence") != "true")
+      dump("Problem in Brackets.js, drawSample! Replacement right bracket has lost the fence attribute.\n");
+    if (closing.getAttribute("stretchy") != "true")
+      dump("Problem in Brackets.js, drawSample! Replacement right bracket has lost the stretchy attribute.\n");
+    rightBrackSamp = closing;
+  }
+
+//  var rightText = document.createTextNode(gDialog.RightBracketGroup.valueStr);
+//  n = rightBrackSamp.childNodes.length;
+//  for (var i = n-1; i >= 0; --i)
+//    rightBrackSamp.removeChild(rightBrackSamp.childNodes[i]);
+//  rightBrackSamp.appendChild(rightText);
 //  var content = document.createElementNS(mmlns,"mi");
 //  content.appendChild(document.createTextNode(String.fromCharCode(0x2039,0x203a)));
 ////  content.appendChild(document.createTextNode(emptyElementStr));
@@ -208,35 +280,46 @@ function onAccept()
 
   var editorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
-  if (!theWindow || !("insertfence" in theWindow))
+  if (isReviseDialog())
   {
-////Logging stuff only
-//    var logStr = "window.opener is [";
-//    if (window.opener)
-//    {
-//      if (window.opener.name)
-//        logStr += window.opener.name;
-//      else if (window.opener.document)
-//      {
-//        if (window.opener.document.localName)
-//          logStr += "document: " + window.opener.document.localName;
-//        else if (window.opener.document.documentElement)
-//          logStr += "document element: " + window.opener.document.documentElement.nodeName;
-//        else
-//          logStr += "Anonymous document";
-//      }
-//      else
-//        logstr += "Anonymous window (without document)";
-//    }
-//    logStr += "]";
-//    msiKludgeLogString(logStr);
-//End logging stuff
-    theWindow = msiGetTopLevelWindow();
+    if (!theWindow || !("reviseFence" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    theWindow.reviseFence(data.reviseObject, data.leftBracket, data.rightBracket, editorElement);
   }
-//  theWindow.insertfence(data.leftBracket, data.rightBracket, data.separator, editorElement);
-  theWindow.insertfence(data.leftBracket, data.rightBracket, editorElement);
+  else
+  {
+    if (!theWindow || !("insertfence" in theWindow))
+    {
+////Logging stuff only
+//      var logStr = "window.opener is [";
+//      if (window.opener)
+//      {
+//        if (window.opener.name)
+//          logStr += window.opener.name;
+//        else if (window.opener.document)
+//        {
+//          if (window.opener.document.localName)
+//            logStr += "document: " + window.opener.document.localName;
+//          else if (window.opener.document.documentElement)
+//            logStr += "document element: " + window.opener.document.documentElement.nodeName;
+//          else
+//            logStr += "Anonymous document";
+//        }
+//        else
+//          logstr += "Anonymous window (without document)";
+//      }
+//      logStr += "]";
+//      msiKludgeLogString(logStr);
+////End logging stuff
+      theWindow = msiGetTopLevelWindow();
+    }
+//    theWindow.insertfence(data.leftBracket, data.rightBracket, data.separator, editorElement);
+    theWindow.insertfence(data.leftBracket, data.rightBracket, editorElement);
+  }
+
   SaveWindowLocation();
-  return false;
+  return true;
+//  return false;
 }
 
 function onCancel()
