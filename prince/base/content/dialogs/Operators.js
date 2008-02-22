@@ -157,7 +157,7 @@ function InitDialog()
   makeSampleWindowDependOn(operatorSample, sampleDependencies);
 
   drawSample(operatorSample);
-  sizeToContent();
+//  sizeToContent();
 }
 
 function getCurrOperatorString()
@@ -192,8 +192,19 @@ function drawSample(sampleControl)
   else
     theOperator.setAttribute("movablelimits", "false");
   var currOperatorStr = getCurrOperatorString();
-  if (theOperator.textContent != currOperatorStr)
-    theOperator.textContent = currOperatorStr;
+  var newOperator = msiSetMathTokenText(theOperator, currOperatorStr);
+  if (newOperator != theOperator)
+    theOperator = newOperator;  //this actually doesn't currently get used below, but just in case...
+//  if (theOperator.textContent != currOperatorStr)
+//  {
+////    theOperator.textContent = currOperatorStr;
+//    var newOp = document.createElementNS(mmlns, "mo");
+//    msiCopyElementAttributes(newOp, theOperator);
+//    newOp.appendChild(document.createTextNode(currOperatorStr));
+//    theOperator.parentNode.replaceChild(newOp, theOperator);
+//    theOperator = newOp;
+////      firstNode.textContent = left;
+//  }
 
   var mStyleContents = msiNavigationUtils.getSignificantContents(sampleMStyle);
   var currOuterOp = mStyleContents[0];
@@ -216,16 +227,16 @@ function drawSample(sampleControl)
     sampleMStyle.replaceChild( newNode, currOuterOp );
   }
 
-  try
-  {
-    var requestor = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
-    if (!requestor && window.parent)
-      requestor = window.parent.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
-    var webnavigation=requestor.getInterface(Components.interfaces.nsIWebNavigation);
-    var basewindow=webnavigation.QueryInterface(Components.interfaces.nsIBaseWindow);
-    basewindow.repaint(true);
-  }
-  catch(exc) {AlertWithTitle("Error", "Unable to get nsIBaseWindow interface in Operators.js, drawSample() - error is [" + exc + "].");}
+//  try
+//  {
+//    var requestor = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+//    if (!requestor && window.parent)
+//      requestor = window.parent.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+//    var webnavigation=requestor.getInterface(Components.interfaces.nsIWebNavigation);
+//    var basewindow=webnavigation.QueryInterface(Components.interfaces.nsIBaseWindow);
+//    basewindow.repaint(true);
+//  }
+//  catch(exc) {AlertWithTitle("Error", "Unable to get nsIBaseWindow interface in Operators.js, drawSample() - error is [" + exc + "].");}
 }
 
 function onAccept()
