@@ -104,7 +104,7 @@
 	<vbox>
 		<hbox>
 		  <description value='&keyCaption.label;' accesskey='&keyCaption.accessKey;'/>
-		  <menulist id='keysListbox' size='30' editable='true' oninput='checkDisableControls();' onselect='checkDisableControls();'/>
+		  <menulist id='keysListbox' size='30' editable='true' oninput='checkDisableControls();' oncommand='checkDisableControls();'/>
 		</hbox>
 		<spacer flex='1'/>
 		<hbox>
