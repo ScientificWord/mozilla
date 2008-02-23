@@ -111,7 +111,6 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_msiReviseBreaks",  msiReviseBreaksCommand);
   commandTable.registerCommand("cmd_note", msiNoteCommand);
   commandTable.registerCommand("cmd_frame", msiFrameCommand);
-
   commandTable.registerCommand("cmd_citation", msiCitationCommand);
   commandTable.registerCommand("cmd_showTeXLog", msiShowTeXLogCommand);
   commandTable.registerCommand("cmd_showXSLTLog", msiShowXSLTLogCommand);
@@ -186,6 +185,7 @@ function msiSetupComposerWindowCommands(editorElement)
   commandTable.registerCommand("cmd_open",           msiOpenCommand);
   commandTable.registerCommand("cmd_new",            msiNewCommand);
   commandTable.registerCommand("cmd_save",           msiSaveCommand);
+  commandTable.registerCommand("cmd_softSave",       msiSoftSaveCommand);
   commandTable.registerCommand("cmd_saveAs",         msiSaveAsCommand);
   commandTable.registerCommand("cmd_saveCopyAs",     msiSaveCopyAsCommand);
   commandTable.registerCommand("cmd_exportToText",   msiExportToTextCommand);
@@ -659,7 +659,8 @@ function getViewSettingsFromViewMenu()
   var viewSettings = new msiViewSettings(1);   //1 is really the default - hide invisibles, show everything else
   var invisChoices = [["viewInvisibles","showInvisibles"], ["viewHelperLines","showHelperLines"], 
                       ["viewInputBoxes","showInputBoxes"], ["viewIndexEntries","showIndexEntries"],
-                      ["viewMarkers","showMarkers"]];
+                      ["viewMarkers","showMarkers"],       ["viewFootnotes", "showFootnotes"],
+                      ["viewOtherNotes","showOtherNotes"]];
   var theWindow = msiGetTopLevelWindow();
   var theDocument = theWindow ? theWindow.document : null;
   if (theDocument != null)
@@ -669,8 +670,7 @@ function getViewSettingsFromViewMenu()
       var menuItem = document.getElementById(invisChoices[ix][0]);
       if (menuItem)
       {
-        if (menuItem.getAttribute("checked") == "true")
-          viewSettings[invisChoices[ix][1]] = true;
+        viewSettings[invisChoices[ix][1]] = (menuItem.getAttribute("checked") == "true");
       }
     }
   }
@@ -914,10 +914,43 @@ var msiSaveCommand =
     {
       msiFinishHTMLSource(editorElement);
       var url = msiGetEditorURL(editorElement);
-      result = msiSaveDocument(IsUrlAboutBlank(url)||IsUrlUntitled(url), false, editor.contentsMIMEType, editorElement);
+      result = msiSaveDocument(IsUrlAboutBlank(url)||IsUrlUntitled(url), false, false, editor.contentsMIMEType, editorElement);
       editorElement.contentWindow.focus();
     }
     return result;
+  }
+}
+
+function doSoftSave(editorElement, editor)
+{
+  if (editor)
+  {
+    msiFinishHTMLSource(editorElement);
+    var url = msiGetEditorURL(editorElement);
+    result = msiSaveDocument(IsUrlAboutBlank(url)||IsUrlUntitled(url), false, true, editor.contentsMIMEType, editorElement);
+  }
+  return result;
+}
+
+var msiSoftSaveCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return msiSaveCommand.isCommandEnabled(aCommand, dummy);
+  },
+  
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var result = false;
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return result;
+
+    var editor = msiGetEditor(editorElement);
+    return doSoftSave(editorElement, editor);
   }
 }
 
@@ -943,11 +976,11 @@ var msiSaveAsCommand =
     if (editor)
     {
       msiFinishHTMLSource(editorElement);
-      var result = msiSaveDocument(true, false, editor.contentsMIMEType, editorElement);
+      var result = msiSaveDocument(true, false, false, editor.contentsMIMEType, editorElement);
       editorElement.contentWindow.focus();
       return result;
     }
-    return false;
+    return false;                                   
   }
 }
 
@@ -976,7 +1009,7 @@ var msiSaveCopyAsCommand =
     if (editor)
     {
       msiFinishHTMLSource(editorElement);
-      var result = msiSaveDocument(true, true, editor.contentsMIMEType, editorElement);
+      var result = msiSaveDocument(true, true, false, editor.contentsMIMEType, editorElement);
       editorElement.contentWindow.focus();
       return result;
     }
@@ -1007,7 +1040,7 @@ var msiExportToTextCommand =
     if (msiGetEditor(editorElement))
     {
       msiFinishHTMLSource(editorElement);
-      var result = msiSaveDocument(true, true, "text/plain", editorElement);
+      var result = msiSaveDocument(true, true, false, "text/plain", editorElement);
       editorElement.contentWindow.focus();
       return result;
     }
@@ -1046,12 +1079,12 @@ var msiSaveAndChangeEncodingCommand =
     {
       if (window.exportToText)
       {
-        window.ok = msiSaveDocument(true, true, "text/plain", editorElement);
+        window.ok = msiSaveDocument(true, true, false, "text/plain", editorElement);
       }
       else
       {
         var editor = msiGetEditor(editorElement);
-        window.ok = msiSaveDocument(true, false, (editor ? editor.contentsMIMEType : null), editorElement);
+        window.ok = msiSaveDocument(true, false, false, (editor ? editor.contentsMIMEType : null), editorElement);
       }
     }
 
@@ -1198,9 +1231,18 @@ function msiGetExtensionBasedOnMimeType(aMIMEType)
 
 function msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement)
 {
+  var filename = GetFilename(aDocumentURLString);
+  if (filename.length > 0) return filename;
+  
+  // I kind of doubt that any of the following code gets used
+  dump("If you see this message, look at msiGetSuggestedFileName in msiComposerCommands\n");
+  
   var extension = msiGetExtensionBasedOnMimeType(aMIMEType);
   if (extension)
+  {
+    if (extension == "xhtml") extension = "sci";
     extension = "." + extension;
+  }
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
 
@@ -1252,7 +1294,6 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
     promptString = GetString("SaveDocumentAs")
 
   fp.init(window, promptString, msIFilePicker.modeSave);
-
   // Set filters according to the type of output
   if (aDoSaveAsText)
     fp.appendFilters(msIFilePicker.filterText);
@@ -1262,7 +1303,6 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
     fp.defaultExtension = MSI_EXTENSION;
   }
   fp.appendFilters(msIFilePicker.filterAll);
-//  msiSetFilePickerDirectory(fp, MSI_EXTENSION);
 
   // now let's actually set the filepicker's suggested filename
   var suggestedFileName = msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement);
@@ -1270,7 +1310,7 @@ function msiPromptForSaveLocation(aDoSaveAsText, aEditorType, aMIMEType, aDocume
   {
     var lastDot = suggestedFileName.lastIndexOf(".");
     if (lastDot != -1)
-      suggestedFileName = suggestedFileName.slice(0, lastDot-1);
+      suggestedFileName = suggestedFileName.slice(0, lastDot);
   
     fp.defaultString = suggestedFileName;
   }
@@ -2093,7 +2133,8 @@ function msiIsSupportedTextMimeType(aMimeType)
 }
 
 // throws an error or returns true if user attempted save; false if user canceled save
-function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
+// SoftSave means save the file but do not change backups or revert data
+function msiSaveDocument(aSaveAs, aSaveCopy, aSoftSave, aMimeType, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
@@ -2121,12 +2162,18 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
     aMimeType = "text/plain";
 
   var urlstring = msiGetEditorURL(editorElement);
-  var mustShowFileDialog = (aSaveAs || IsUrlAboutBlank(urlstring) || IsUrlUntitled(urlstring) || (urlstring == ""));
+  var mustShowFileDialog = !aSoftSave && (aSaveAs || IsUrlAboutBlank(urlstring) || IsUrlUntitled(urlstring) || (urlstring == ""));
 
   // If editing a remote URL, force SaveAs dialog
-  if (!mustShowFileDialog && GetScheme(urlstring) != "file")
-    mustShowFileDialog = true;
-
+  if (!mustShowFileDialog && GetScheme(urlstring) != "file" && GetScheme(urlstring) != "resource")
+  {
+    if (aSoftSave)
+    {
+      dump("Cannot soft save a remote file\n");
+      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
+    } else 
+      mustShowFileDialog = true;
+  }
   var replacing = !aSaveAs;
   var titleChanged = false;
   var doUpdateURI = false;
@@ -2249,7 +2296,7 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
     success = false;
   }
 
-  if (success)
+  if (success && !aSoftSave)
   {
     try { 
       // copy the associated xxxx_files directory
@@ -2286,7 +2333,7 @@ function msiSaveDocument(aSaveAs, aSaveCopy, aMimeType, editorElement)
         dump(e + "\n");
       }
   }
-  else
+  else if (!success)
   {
     var saveDocStr = GetString("SaveDocument");
     var failedStr = GetString("SaveFileFailed");
@@ -5715,7 +5762,6 @@ var msiNoteCommand =
 
 //-----------------------------------------------------------------------------------
 
-
 var msiCitationCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -5733,7 +5779,7 @@ var msiCitationCommand =
     var editorElement = msiGetActiveEditorElement();
     //temporary
     // need to get current note if it exists -- if none, initialize as follows 
-    msiNote(null, editorElement);
+    doInsertCitation(editorElement, "cmd_citation", this);
   }
 };
 
@@ -5759,7 +5805,6 @@ var msiFrameCommand =
     msiFrame(null, editorElement);
   }
 };
-
 
 //-----------------------------------------------------------------------------------
 var msiObjectPropertiesCommand =
