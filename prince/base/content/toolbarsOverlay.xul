@@ -350,7 +350,7 @@
     <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp" />
     <menupopup id="previewMenu">
       <menuitem id="directPreviewMenuItem" label="&printPreviewToolbarCmd.label;" persist="default" default="true"
-                oncommand="alert('Direct print preview');event.stopPropagation();" for="" onbroadcast="setDefault(this);" >
+                observes="cmd_previewDirect" for="" onbroadcast="setDefault(this);" >
         <observes id="pmitb10" element="defaultCompiler" attribute="defcomp" />
       </menuitem>
       <menuitem id="pdfPreviewMenuItem" label="&pdfpreviewButton.label;" persist="default" default="false"
