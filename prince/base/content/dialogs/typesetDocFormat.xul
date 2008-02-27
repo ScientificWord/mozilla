@@ -52,7 +52,7 @@
       <label value="Warning goes here"/>
     </vbox> 
     <groupbox>
-      <caption label="Basic layout options"/>
+      <caption label="Basic layout"/>
       <grid>
         <columns>
           <column flex="1"/>
@@ -64,7 +64,7 @@
         <rows>
           <row align="end" style="height: 3em">
             <vbox align="center">
-              <label value="Orientation"/>
+              <label value="Page orientation"/>
               <menulist minwidth="6em">
                 <menupopup style="width: 9em" >
                   <menuitem value="port" label="Portrait"/>
@@ -207,7 +207,7 @@
       </grid>
     </groupbox>
     <groupbox>  
-      <caption label="Mathematics display options"/>
+      <caption label="Mathematics display"/>
       <grid>
         <columns>
           <column flex="1"/>
@@ -240,29 +240,29 @@
               <label value= "Theorem environments"/>
               <!-- this is pointless unless we can make the menulist multi-select -->
               <menulist>
-                <menupopup>
-                  <menuitem value="theorem" label="Theorem"/>
-                  <menuitem value="acknowledgement" label="Acknowledgement"/>
-                  <menuitem value="algorithm" label="Algorithm"/>
-                  <menuitem value="axiom" label="Axiom"/>
-                  <menuitem value="case" label="Case"/>
-                  <menuitem value="claim" label="Claim"/>
-                  <menuitem value="conclusion" label="Conclusion"/>
-                  <menuitem value="condition" label="Condition"/>
-                  <menuitem value="conjecture" label="Conjecture"/>
-                  <menuitem value="corollary" label="Corollary"/>
-                  <menuitem value="criterion" label="Criterion"/>
-                  <menuitem value="definition" label="Definition"/>
-                  <menuitem value="example" label="Example"/>
-                  <menuitem value="exercise" label="Exercise"/>
-                  <menuitem value="lemma" label="Lemma"/>
-                  <menuitem value="notation" label="Notation"/>
-                  <menuitem value="problem" label="Problem"/>
-                  <menuitem value="proposition" label="Proposition"/>
-                  <menuitem value="remark" label="Remark"/>
-                  <menuitem value="solution" label="Solution"/>
-                  <menuitem value="summary" label="Summary"/>
-                </menupopup>
+                <listbox seltype="multiple">
+                  <listitem value="theorem" label="Theorem"/>
+                  <listitem value="acknowledgement" label="Acknowledgement"/>
+                  <listitem value="algorithm" label="Algorithm"/>
+                  <listitem value="axiom" label="Axiom"/>
+                  <listitem value="case" label="Case"/>
+                  <listitem value="claim" label="Claim"/>
+                  <listitem value="conclusion" label="Conclusion"/>
+                  <listitem value="condition" label="Condition"/>
+                  <listitem value="conjecture" label="Conjecture"/>
+                  <listitem value="corollary" label="Corollary"/>
+                  <listitem value="criterion" label="Criterion"/>
+                  <listitem value="definition" label="Definition"/>
+                  <listitem value="example" label="Example"/>
+                  <listitem value="exercise" label="Exercise"/>
+                  <listitem value="lemma" label="Lemma"/>
+                  <listitem value="notation" label="Notation"/>
+                  <listitem value="problem" label="Problem"/>
+                  <listitem value="proposition" label="Proposition"/>
+                  <listitem value="remark" label="Remark"/>
+                  <listitem value="solution" label="Solution"/>
+                  <listitem value="summary" label="Summary"/>
+                </listbox>
               </menulist>
             </vbox>
             <vbox  style="width: 9em;" />
@@ -271,7 +271,7 @@
       </grid>
     </groupbox>
     <groupbox>
-      <caption label="Front and back matter options"/>
+      <caption label="Front and back matter"/>
       <grid>
         <columns>
           <column flex="1"/>
@@ -294,8 +294,8 @@
               <label value="Table of contents"/>
               <menulist>
                 <menupopup style="width: 9em" >
-                  <menuitem value="document" label="Document"/>
-                  <menuitem value="chapter" label="Chapter"/>
+                  <menuitem value="document" label="For document"/>
+                  <menuitem value="chapter" label="For chapter"/>
                   <menuitem value="none" label="None"/>
                 </menupopup>
               </menulist>
@@ -304,8 +304,8 @@
               <label value="List of figures"/>
               <menulist>
                 <menupopup style="width: 9em" >
-                  <menuitem value="document" label="Document"/>
-                  <menuitem value="chapter" label="Chapter"/>
+                  <menuitem value="document" label="For document"/>
+                  <menuitem value="chapter" label="For chapter"/>
                   <menuitem value="none" label="None"/>
                 </menupopup>
               </menulist>
@@ -314,8 +314,8 @@
               <label value="List of tables"/>
               <menulist>
                 <menupopup style="width: 9em" >
-                  <menuitem value="document" label="Document"/>
-                  <menuitem value="chapter" label="Chapter"/>
+                  <menuitem value="document" label="For document"/>
+                  <menuitem value="chapter" label="For chapter"/>
                   <menuitem value="none" label="None"/>
                 </menupopup>
               </menulist>
