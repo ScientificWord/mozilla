@@ -43,7 +43,7 @@
 <!ENTITY docformatPageDimensions	"Page Dimensions:">
 <!ENTITY docformatHeader "Header">
 <!ENTITY docformatHeaderSeparation "Separation">
-<!ENTITY docformatHeaderHeight  "Header">
+<!ENTITY docformatHeaderHeight  "Height">
 <!ENTITY docformatRightMarginLabel "Right">
 <!ENTITY docformatOutsideMarginLabel "Outside">
 <!ENTITY docformatPageWidth "Width">
