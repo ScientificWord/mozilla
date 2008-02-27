@@ -82,8 +82,10 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_ConvertToTable",     msiConvertToTable);
   commandTable.registerCommand("cmd_MSIAnimateGifsOn",   msiGIFAnimation);
   commandTable.registerCommand("cmd_MSIAnimateGifsOff",  msiGIFAnimation);
+  commandTable.registerCommand("cmd_printDirect",           msiPrintDirectCommand);
   commandTable.registerCommand("cmd_printDvi",           msiPrintCommand);
   commandTable.registerCommand("cmd_printPdf",           msiPrintCommand);
+  commandTable.registerCommand("cmd_previewDirect",         msiPreviewDirectCommand);
   commandTable.registerCommand("cmd_previewDvi",         msiPreviewCommand);
   commandTable.registerCommand("cmd_previewPdf",         msiPreviewCommand);
   commandTable.registerCommand("cmd_compileDvi",         msiCompileCommand);
@@ -1093,6 +1095,52 @@ var msiSaveAndChangeEncodingCommand =
   }
 };
 //
+var msiPrintDirectCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    PrintUtils.print();
+  }
+}
+
+function onEnterPP()
+{
+  var toolbox = document.getElementById("viewSource-toolbox");
+  toolbox.hidden = true;
+}
+
+function onExitPP()
+{
+  var toolbox = document.getElementById("viewSource-toolbox");
+  toolbox.hidden = false;
+}
+
+
+var msiPreviewDirectCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    PrintUtils.printPreview(onEnterPP, onExitPP);
+  }
+}
+
+
 var msiPublishCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -3138,7 +3186,7 @@ var msiFindCommand =
   {
     var editorElement = msiGetActiveEditorElement();
     try {
-      msiOpenModelessDialog("chrome://prince/content/msiEdReplace.xul", "_blank", "chrome,close,titlebar,dependent",
+      msiOpenModelessDialog("chrome://prince/content/msiEdReplace.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                         editorElement, "cmd_find", this, editorElement);
 //      window.openDialog("chrome://editor/content/EdReplace.xul", "_blank",
 //                        "chrome,modal,titlebar", editorElement);
