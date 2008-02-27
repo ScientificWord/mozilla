@@ -92,7 +92,7 @@
         <observes id="printPreviewMenuObs" element="defaultCompiler" attribute="defcomp" />
         <menupopup id="printMenuPop" tooltiptext="" >
           <menuitem id="printMenuItem1" label="&printButton.label;" persist="default" default="true"
-                    oncommand="msiGoDoCommand('cmd_printDirect');;event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);">
+                    oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();" for="" onbroadcast="setDefaultmenu(this);">
             <observes id="ppmObs7" element="defaultCompiler" attribute="defcomp" />
           </menuitem>        
           <menuitem id="printMenuItem1pdf" label="&pdfprintButton.label;" persist="default" default="false"
@@ -407,10 +407,10 @@
 -->
     <command id="cmd_openTeX" oncommand="openTeX();" />
     <command id="cmd_exportTeX" oncommand="exportTeX();" />
-    <command id="cmd_printDirect"  oncommand="msiGoDoCommand('cmd_printDirect')"/>
+    <command id="cmd_printDirect"    oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();"/>
     <command id="cmd_printPdf"    oncommand="printTeX(true,false);event.stopPropagation();"/>
     <command id="cmd_printDvi"    oncommand="printTeX(false,false);event.stopPropagation();"/>
-    <command id="cmd_previewDirect"  oncommand="msiGoDoCommand('cmd_previewDirect')"/>
+    <command id="cmd_previewDirect"  oncommand="msiGoDoCommand('cmd_previewDirect');event.stopPropagation();"/>
     <command id="cmd_previewPdf"  oncommand="previewTeX(true);event.stopPropagation();" />
     <command id="cmd_previewDvi"  oncommand="previewTeX(false);event.stopPropagation();"/>
     <command id="cmd_compilePdf"  oncommand="msiGoDoCommand('cmd_compilePdf')"/>
@@ -730,7 +730,7 @@
             oncommand='msiStopAnimation();' />
     <menuitem label="Start animation"
             oncommand='msiStartAnimation();' />
-    <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://editor/content/chamtest.xul","Cham Test", 
+    <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://prince/content/chamtest.xul","Cham Test", 
       "chrome,close,titlebar,resizable,modal=false");' /> 
     <menuitem label="Charset" oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding');"/>
     </menupopup>
