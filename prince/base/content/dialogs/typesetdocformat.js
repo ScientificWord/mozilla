@@ -29,6 +29,7 @@ function InitializeUnits()
   unitConversions.in=25.4;  //mm per in
   unitConversions.mm=1; // mm per mm
   unitConversions.cm=10; // mm per cm
+  unitConversions.pica=4.2175176; // 12 * (mm per pt)
 }
 
 
@@ -847,7 +848,6 @@ function switchUnits()
 {
   var newUnit = document.getElementById("docformat.units").selectedItem.value;
   var factor = convert(1, currentUnit, newUnit);
-  dump("factor is "+factor+"\n");
   pagewidth *= factor;
   pageheight *= factor;
   scale = scale/factor;
@@ -924,7 +924,6 @@ function updateTextNumber(textelement, event)
   else return;
   // now check to see if we have a string
   try {
-    dump("val = "+val+"\n");
     if (!isNaN(Number(val))) 
     {
       textelement.value = val;
@@ -1408,10 +1407,6 @@ function  getOTFontlist()
       var buffer = s2.read(bytes);
       gSystemFonts = buffer.split("\n");
       gSystemFontCount = gSystemFonts.length;
-      for (var i = 0; i<gSystemFontCount; i++)
-      {
-        dump(gSystemFonts[i]+"\n");
-      }
     }
     catch(e) { 
        3+5;
@@ -1553,76 +1548,89 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
       }
     }
   }
+  switchSectionTypeImp(null, document.getElementById("sections.name").label.toLowerCase());
   displayTextForSectionHeader();
 }
 
-var currentSectionType = "section";
+var currentSectionType = "";
 function switchSectionType()
 {
-  var i;
   var from = currentSectionType;
   var to = document.getElementById("sections.name").label.toLowerCase();
+  return switchSectionTypeImp(from, to);
+}
+
+
+function switchSectionTypeImp(from, to)
+{
+  var i;
   currentSectionType = to;
   var boxlist;
-  if (!sectitleformat[from]) sectitleformat[from] = new Object();
-  var sec = sectitleformat[from];
-  sec.newPage = document.getElementById("sectionstartnewpage").checked;
-  sec.sectStyle = document.getElementById("sections.style").value;
-  sec.align = document.getElementById("sections.align").value; 
-  sec.units = document.getElementById("secoverlay.units").value; 
-  sec.lhindent = document.getElementById("tbsectleftheadingmargin").value; 
-  sec.rhindent = document.getElementById("tbsectrightheadingmargin").value; 
-  //toprules, bottomrules, and proto, if they have been changed, have been updated by subdialogs 
-  //Now initialize for the new section type
-  if (from != to)
+  if (from)
   {
-    if (!sectitleformat[to])
+    if (!sectitleformat[from]) sectitleformat[from] = new Object();
+    var sec = sectitleformat[from];
+    sec.newPage = document.getElementById("sectionstartnewpage").checked;
+    sec.sectStyle = document.getElementById("sections.style").value;
+    sec.align = document.getElementById("sections.align").value; 
+    sec.units = document.getElementById("secoverlay.units").value; 
+    sec.lhindent = document.getElementById("tbsectleftheadingmargin").value; 
+    sec.rhindent = document.getElementById("tbsectrightheadingmargin").value; 
+    //toprules, bottomrules, and proto, if they have been changed, have been updated by subdialogs 
+  }
+  //Now initialize for the new section type
+  if (to)
+  {
+    if (from != to)
     {
-      sectitleformat[to] = new Object();
-      return; // the dialog will default to the last sections headings. Can we do better? BBM
-    }
-    sec = sectitleformat[to];
-    newpage = sec.newPage
-    if (!newpage) newpage = false;
-    document.getElementById("sectionstartnewpage").checked = newpage;
-    document.getElementById("sections.style").value = sec.sectStyle;
-    document.getElementById("sections.align").value = sec.align; 
-    document.getElementById("secoverlay.units").value = sec.units;
-    sectionUnits = sec.units; 
-    document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
-    document.getElementById("tbsectrightheadingmargin").value = sec.rhindent; 
-    if (sec.toprules && sec.toprules.length > 0)
-    {
-      boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
-      for (i=0; i < Math.min(boxlist.length, sec.toprules.length); i++)
+      if (!sectitleformat[to])
       {
-        boxlist[i].setAttribute("hidden", "false");
-        boxlist[i].setAttribute("role", sec.toprules[i].role);
-        boxlist[i].setAttribute("width", sec.toprules[i].width);
-        boxlist[i].setAttribute("height", sec.toprules[i].height);
-        boxlist[i].setAttribute("color", sec.toprules[i].color);
+        sectitleformat[to] = new Object();
+        return; // the dialog will default to the last sections headings. Can we do better? BBM
       }
-      for (i = sec.toprules.length; i<boxlist.length; i++);
-        boxlist[i].setAttribute("hidden", "true");
-    }
-    if (sec.bottomrules && sec.bottomrules.length > 0)
-    {
-      boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
-      for (i=0; i < Math.min(boxlist.length, sec.bottomrules.length); i++)
+      sec = sectitleformat[to];
+      var newpage = sec.newPage
+      if (!newpage) newpage = false;
+      document.getElementById("sectionstartnewpage").checked = newpage;
+      document.getElementById("sections.style").value = sec.sectStyle;
+      document.getElementById("sections.align").value = sec.align; 
+      document.getElementById("secoverlay.units").value = sec.units;
+      sectionUnits = sec.units; 
+      document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
+      document.getElementById("tbsectrightheadingmargin").value = sec.rhindent; 
+      if (sec.toprules && sec.toprules.length > 0)
       {
-        boxlist[i].setAttribute("hidden", "false");
-        boxlist[i].setAttribute("role", sec.bottomrules[i].role);
-        boxlist[i].setAttribute("width", sec.bottomrules[i].width);
-        boxlist[i].setAttribute("height", sec.bottomrules[i].height);
-        boxlist[i].setAttribute("color", sec.bottomrules[i].color);
+        boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
+        for (i=0; i < Math.min(boxlist.length, sec.toprules.length); i++)
+        {
+          boxlist[i].setAttribute("hidden", "false");
+          boxlist[i].setAttribute("role", sec.toprules[i].role);
+          boxlist[i].setAttribute("width", sec.toprules[i].width);
+          boxlist[i].setAttribute("height", sec.toprules[i].height);
+          boxlist[i].setAttribute("color", sec.toprules[i].color);
+        }
+        for (i = sec.toprules.length; i<boxlist.length; i++);
+          boxlist[i].setAttribute("hidden", "true");
       }
-      for (i = sec.bottomrules.length; i<boxlist.length; i++);
-        boxlist[i].setAttribute("hidden", "true");
+      if (sec.bottomrules && sec.bottomrules.length > 0)
+      {
+        boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
+        for (i=0; i < Math.min(boxlist.length, sec.bottomrules.length); i++)
+        {
+          boxlist[i].setAttribute("hidden", "false");
+          boxlist[i].setAttribute("role", sec.bottomrules[i].role);
+          boxlist[i].setAttribute("width", sec.bottomrules[i].width);
+          boxlist[i].setAttribute("height", sec.bottomrules[i].height);
+          boxlist[i].setAttribute("color", sec.bottomrules[i].color);
+        }
+        for (i = sec.bottomrules.length; i<boxlist.length; i++);
+          boxlist[i].setAttribute("hidden", "true");
+      }
+      displayTextForSectionHeader();
+      setalign(sec.align);
+      settopofpage(document.getElementById("sectionstartnewpage"));
     }
   }
-  displayTextForSectionHeader();
-  setalign(sec.align);
-  settopofpage(newpage);
 }
 
 function saveSectionFormatting( docFormatNode, sectitleformat )
@@ -1634,7 +1642,7 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
   // should actually look to see if the titlesec package is already in the document
   var bRequiresPackage = true;
   var reqpackageNode;
-  switchSectionType();
+  switchSectionTypeImp(currentSectionType,null);
   for (var i = 0; i < itemlist.length; i++)
   {
     var name;
@@ -1755,7 +1763,8 @@ function displayTextForSectionHeader()
 //	var width;
 	var height;
   basepara = getBaseNodeForIFrame();
-  var strContents = sectitleformat[secname].proto;
+  var strContents;
+  if (sectitleformat[secname]) strContents = sectitleformat[secname].proto;
 	if (strContents && strContents.length > 0)
 	{
 	  var parser = new DOMParser();
@@ -1840,6 +1849,7 @@ function setalign(which)
 	    document.getElementById("sectleftmargin").setAttribute("width", "40px");
 			document.getElementById("sectrightmargin").setAttribute("flex", "1");
 			document.getElementById("sectrightmargin").setAttribute("width", "40px");
+      element.setAttribute("role", "sectionmargin");
     }
     else if (which == "r")
     {
@@ -1856,8 +1866,8 @@ function setalign(which)
 	    document.getElementById("sectleftmargin").setAttribute("flex","1");
 	    document.getElementById("sectleftmargin").setAttribute("width", "40px");
 			document.getElementById("sectrightmargin").setAttribute("width", "40px");
+      element.setAttribute("role", "sectionmargin");
     }
-    element.setAttribute("role", "sectionmargin");
   }
   //otherelement.setAttribute("role", "spacer");
 }
