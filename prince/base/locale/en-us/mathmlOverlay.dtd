@@ -114,6 +114,8 @@
 <!ENTITY insertmenuTSO.accesskey "y">
 <!ENTITY insertmenuHyperlink.label "Hyperlink...">
 <!ENTITY insertmenuHyperlink.accesskey "h">
+<!ENTITY insertmenuCitation.label "Citation...">
+<!ENTITY insertmenuCitation.accesskey "c">
 
 <!ENTITY MSISymbolTabLCGreek     "Lowercase Greek">
 <!ENTITY MSISymbolTabCCGreek     "Uppercase Greek">
