@@ -39,7 +39,7 @@
 #
 # ***** END LICENSE BLOCK *****
 
-var  XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+//var  XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 
 var gPrintSettingsAreGlobal = false;
 var gSavePrintSettings = false;
@@ -228,7 +228,7 @@ var PrintUtils = {
 
     // show the toolbar after we go into print preview mode so
     // that we can initialize the toolbar with total num pages
-    printPreviewTB = document.createElementNS(XUL_NS, "toolbar");
+    printPreviewTB = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "toolbar");
     printPreviewTB.setAttribute("printpreview", true);
     printPreviewTB.setAttribute("id", "print-preview-toolbar");
 
