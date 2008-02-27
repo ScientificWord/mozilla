@@ -435,7 +435,9 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
     var outfile = msiAuxDirFromDocPath(document.documentURI);
     var outTeX = outfile.clone();
     outfile.append("temp");
-    if (!(outfile.exists())) outfile.create(1, 0755);
+    // clean out the temp directory
+    outfile.remove(true);
+    outfile.create(1, 0755);
     outfile.append(bareleaf + ".xml");
     if (outTeXfile == null)
     {
@@ -647,7 +649,9 @@ function printTeX( pdftex, preview )
     outputfile.append(outleaf + "_files");
     if (!outputfile.exists()) outputfile.create(1, 0755);
     outputfile.append("tex");
-    if (!outputfile.exists()) outputfile.create(1, 0755);
+    // remove and create the tex directory to clean it out
+    outputfile.remove(true);
+    outputfile.create(1, 0755);
     var dvipdffile = outputfile.clone();
     var dvipdffileroot = outputfile.clone();
     dvipdffile.append(outleaf+ (pdftex?".pdf":".dvi"));
