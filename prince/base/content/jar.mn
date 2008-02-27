@@ -27,6 +27,8 @@ prince.jar:
 * content/Binomial.xul      (dialogs/Binomial.xul)
 * content/Brackets.js       (dialogs/brackets.js)
 * content/Brackets.xul      (dialogs/Brackets.xul)
+* content/chamtest.js       (dialogs/chamtest.js)
+* content/chamtest.xul      (dialogs/chamtest.xul)
 * content/ComputeApproxIntegral.js      (dialogs/ComputeApproxIntegral.js)
 * content/ComputeApproxIntegral.xul     (dialogs/ComputeApproxIntegral.xul)
 * content/ComputeFillMatrix.js      (dialogs/ComputeFillMatrix.js)
