@@ -371,7 +371,7 @@ function openTeX()
     var outdir = docdir.clone();
     outfile.append(filename+".sci");
     outdir.append(filename + "_files");
-	if (outdir.exists()) outdir.remove(true);
+	  if (outdir.exists()) outdir.remove(true);
     outdir.create(1 , 0755);
     var css = outdir.clone();
     css.append("css");
@@ -650,8 +650,8 @@ function printTeX( pdftex, preview )
     if (!outputfile.exists()) outputfile.create(1, 0755);
     outputfile.append("tex");
     // remove and create the tex directory to clean it out
-    outputfile.remove(true);
-    outputfile.create(1, 0755);
+//    outputfile.remove(true);
+//    outputfile.create(1, 0755);
     var dvipdffile = outputfile.clone();
     var dvipdffileroot = outputfile.clone();
     dvipdffile.append(outleaf+ (pdftex?".pdf":".dvi"));
