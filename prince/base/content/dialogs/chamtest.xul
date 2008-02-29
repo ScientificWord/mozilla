@@ -1,0 +1,22 @@
+<?xml version="1.0"?> 
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/chamtest.css" type="text/css" ?>
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!DOCTYPE dialog [
+<!ENTITY % customizeToolbarDTD SYSTEM "chrome://global/locale/customizeToolbar.dtd">
+  %customizeToolbarDTD;
+]>
+
+<dialog id="ChamTestWindow"
+        title="ChamTestWindow" modal="false"
+        onload = "Startup()" onclick="offButtonClick();"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript" src="chrome://prince/content/editor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/chamtest.js"/>
+        
+  <button id="foo" label="Hit me" oncommand="fire();" />
+</dialog>
