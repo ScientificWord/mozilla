@@ -21,4 +21,7 @@ prnc2ltx.jar:
   MML2eqna.xsl 				(MML2eqna.xsl) 
   MML2tabular.xsl 			(MML2tabular.xsl) 
   HTM2LTeX.xsl				(HTM2LTeX.xsl)
-							
+  frame.xsl					(frame.xsl)
+  spaces.xsl				(spaces.xsl)
+  preamble.xsl				(preamble.xsl)
+  packages.xml				(packages.xml)							
