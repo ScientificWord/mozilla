@@ -59,6 +59,7 @@
   <script type="application/x-javascript" src="chrome://global/content/viewSource.js" />
   <script type="application/x-javascript" src="chrome://prince/content/mainCore.js" />
   <script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/printUtils.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <popupset id="msiEditorContentContextSet"/>
   <popup id="sidebarPopup"/>
@@ -160,6 +161,8 @@
              oncommand="goDoCommand('cmd_HTMLSourceMode');" tooltiptext="&SourceMode.tooltip;" dir="&SourceTabDirection;"/>
        <tab id="PreviewModeButton"  class="tab-bottom edit-mode _plain" type="text" selected="0" label="&PreviewMode.label;"
              oncommand="goDoCommand('cmd_PreviewMode');" tooltiptext="&PreviewMode.tooltip;"/>
+       <tab id="DirectPreviewModeButton"  class="tab-bottom edit-mode _plain" type="text" selected="0" label="&DirectPreviewMode.label;"
+             oncommand="goDoCommand('cmd_DrectPreviewMode');" tooltiptext="&DirectPreviewMode.tooltip;"/>
       </tabs>
     </hbox>
   </vbox>
