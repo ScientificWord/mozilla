@@ -3,6 +3,8 @@
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarbuttonoverride.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbaroverride.css" type="text/css"?>
+<?xml-stylesheet href="chrome://global/skin/printpreview.css" type="text/css"?>
+
 
 <!DOCTYPE window SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd">
 
