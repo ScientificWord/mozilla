@@ -436,14 +436,20 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
     var outTeX = outfile.clone();
     outfile.append("temp");
     // clean out the temp directory
-    outfile.remove(true);
-    outfile.create(1, 0755);
+    try {if (outfile.exists()) outfile.remove(true);}
+    catch(e){
+      dump("deleting temp directory failed: "+e.toString()+"\n");
+    }
+    try  {outfile.create(1, 0755);}
+    catch(e){
+      dump("creating temp directory failed: "+e.toString()+"\n");
+    }
     outfile.append(bareleaf + ".xml");
+    outTeX.append("tex");
+    if (!outTeX.exists()) outTeX.create(1, 0755);
     if (outTeXfile == null)
     {
       outTeXfile = outTeX;
-      outTeXfile.append("tex");
-      if (!outTeXfile.exists()) outTeXfile.create(1, 0755);
       outTeXfile.append(bareleaf + ".tex");
     }
         
@@ -627,6 +633,27 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   return true;//outputfile.exists();
 }
 
+function printPDFFile( infilePath)
+{
+  // the following requires that the printpdf batch file (or a hard link to it) be in xpi-stage/prince/TeX/bin/printpdf.cmd 
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+  exefile.append("printpdf.cmd");
+  dump("\nexecutable file: "+exefile.path+"\n");
+  try 
+  {
+    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+    theProcess.init(exefile);
+    var args = [infilePath];
+    theProcess.run(true, args, args.length);
+  } 
+  catch (ex) {
+    dump("\nUnable to run Acrobat:\n");
+    dump(ex+"\n");
+    return false;
+  }
+}
+
 
 function printTeX( pdftex, preview )
 {
@@ -698,6 +725,9 @@ function printTeX( pdftex, preview )
         document.getElementById("preview-frame").loadURI(dvipdffile.path);
         // Switch to the preview pane (third in the deck)
         goDoCommand("cmd_PreviewMode"); 
+      } else
+      {
+        printPDFFile(dvipdffile.path);
       }     
     }
     else
