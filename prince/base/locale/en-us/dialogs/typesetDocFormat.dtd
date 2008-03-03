@@ -73,5 +73,8 @@
 <!ENTITY docformatSans "Sans serif">
 <!ENTITY docformatFixed "Fixed width">
 
-
-
+<!ENTITY pageonpaper.label "Place of page on paper">
+<!ENTITY pageonpapercenter.label "Centered">
+<!ENTITY popcenter.accessKey "d">
+<!ENTITY pageonpaperupperleft.label "Upper left">
+<!ENTITY popupperleft.accessKey "U">
