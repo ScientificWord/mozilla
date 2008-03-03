@@ -162,6 +162,11 @@ function saveCropMarks(docFormatNode)
   }
 }
 
+function centerCropmarks(value)
+{
+  var broadcaster = document.getElementById("pageonpapercentered");
+  broadcaster.setAttribute("hidden", (value=="center"?"false":"true"));
+}
 
 function getNumberValue(numberwithunit)
 {
@@ -878,8 +883,10 @@ function cropmarkRequest(checkbox)
   var broadcaster = document.getElementById("cropmarks");        
   if (checkbox.checked)
     broadcaster.removeAttribute("hidden");
-  else
+  else {
     broadcaster.setAttribute("hidden","true");
+    centerCropmarks("");
+  }
 }
   
 function handleBodyMouseClick(event)
