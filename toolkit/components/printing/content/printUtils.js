@@ -142,6 +142,13 @@ var PrintUtils = {
                    .getInterface(Components.interfaces.nsIWebBrowserPrint);
   },
 
+
+  getDocumentViewPrint: function ()
+  {
+    return _content.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                   .getInterface(Components.interfaces.nsIWebBrowserPrint);
+  },
+
   ////////////////////////////////////////
   // "private" methods. Don't use them. //
   ////////////////////////////////////////
@@ -231,7 +238,13 @@ var PrintUtils = {
     printPreviewTB = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "toolbar");
     printPreviewTB.setAttribute("printpreview", true);
     printPreviewTB.setAttribute("id", "print-preview-toolbar");
-
+    var toolbox = document.getElementById("StandardToolbox");
+    try {
+      toolbox.parentNode.insertBefore(printPreviewTB, toolbox);
+    }
+    catch(e) {
+      dump(e);
+    }
 #ifdef MOZ_PHOENIX
     getBrowser().parentNode.insertBefore(printPreviewTB, getBrowser());
 
@@ -274,15 +287,15 @@ var PrintUtils = {
     document.documentElement.setAttribute("onclose", this._closeHandlerPP);
     this._closeHandlerPP = null;
 
-    if ("getStripVisibility" in getBrowser())
-      getBrowser().setStripVisibilityTo(this._chromeState.hadTabStrip);
-
-    var webBrowserPrint = this.getWebBrowserPrint();
-    webBrowserPrint.exitPrintPreview(); 
+//    if ("getStripVisibility" in getBrowser())
+//      getBrowser().setStripVisibilityTo(this._chromeState.hadTabStrip);
 
     // remove the print preview toolbar
     var printPreviewTB = document.getElementById("print-preview-toolbar");
-    getBrowser().parentNode.removeChild(printPreviewTB);
+    printPreviewTB.parentNode.removeChild(printPreviewTB);
+
+    var webBrowserPrint = this.getWebBrowserPrint();
+    webBrowserPrint.exitPrintPreview(); 
 
     _content.focus();
 
