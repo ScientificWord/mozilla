@@ -83,12 +83,12 @@ menulist[open="true"]:focus > .menulist-label-box {
 /* ..... dropmarker ..... */
 
 .menulist-dropmarker {
-  -moz-appearance: menulist-button;
+/*  -moz-appearance: menulist-button;*/
   min-width: 17px;
   -moz-box-align: center;
   -moz-box-pack: center;
   border: 2px solid;
-  background-color: -moz-Dialog;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
   list-style-image: url("chrome://global/skin/arrow/arrow-dn.gif");
 }
 
@@ -124,7 +124,7 @@ menulist:focus > .menulist-label-box {
 /* ..... disabled state ..... */
 
 menulist[disabled="true"] {
-  background-color: -moz-Dialog;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
   color: GrayText;
 }
 
