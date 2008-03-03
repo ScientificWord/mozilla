@@ -46,7 +46,7 @@
 
 toolbox {
   -moz-appearance: toolbox;
-  background-color: -moz-Dialog;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
   border-left: 1px solid ThreeDShadow;
   border-top: 1px solid ThreeDShadow;
   border-right: 1px solid ThreeDHighlight;

@@ -57,7 +57,7 @@ textbox {
 /* ::::: history button ::::: */
 
 .autocomplete-history-dropmarker {
-  -moz-appearance: menulist-button;
+ /* -moz-appearance: menulist-button;*/
   min-width: 17px;
   -moz-box-align: center;
   -moz-box-pack: center;
@@ -66,7 +66,7 @@ textbox {
   -moz-border-right-colors: ThreeDDarkShadow ThreeDShadow;
   -moz-border-bottom-colors: ThreeDDarkShadow ThreeDShadow;
   -moz-border-left-colors: ThreeDLightShadow ThreeDHighlight;
-  background-color: -moz-Dialog;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
   padding: 1px;
   list-style-image: url("chrome://global/skin/arrow/arrow-dn.gif");
 }
