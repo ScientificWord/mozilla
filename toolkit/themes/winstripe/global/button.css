@@ -45,7 +45,7 @@
 /* :::::::::: button :::::::::: */
 
 button {
-  -moz-appearance: button;
+/*  -moz-appearance: button;*/
   margin: 1px 5px 2px 5px;
   min-width: 6.3em;
   border: 3px solid;
@@ -53,7 +53,7 @@ button {
   -moz-border-right-colors: transparent ThreeDDarkShadow ThreeDShadow;
   -moz-border-bottom-colors: transparent ThreeDDarkShadow ThreeDShadow;
   -moz-border-left-colors: transparent ThreeDHighlight ThreeDLightShadow;
-  background-color: ThreeDFace;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
   color: ButtonText;
 }
 

@@ -53,7 +53,7 @@ popup {
   -moz-border-bottom-colors: ThreeDDarkShadow  ThreeDShadow;
   padding: 1px;
   min-width: 1px;
-  background: Menu;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
 }
 
 menupopup > menu > menupopup,
@@ -98,6 +98,6 @@ menulist > menupopup,
   -moz-border-left-colors: -moz-FieldText;
   padding: 0px;
   min-width: 0px;
-  background-color: -moz-Field;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
 }
 

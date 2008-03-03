@@ -53,7 +53,7 @@
 /* ::::: tabpanels ::::: */
 
 tabpanels {
-  -moz-appearance: tabpanels; 
+/*  -moz-appearance: tabpanels;*/ 
   border-right: 2px solid;
   border-bottom: 2px solid;
   border-left: 2px solid;
@@ -61,7 +61,7 @@ tabpanels {
   -moz-border-bottom-colors: ThreeDDarkShadow ThreeDShadow;
   -moz-border-left-colors: ThreeDHighlight ThreeDLightShadow;
   padding: 8px;
-  background-color: -moz-Dialog;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
   color: -moz-DialogText;
 }
 
@@ -69,7 +69,7 @@ tabpanels {
 
 tab 
 {
-  -moz-appearance: tab;
+/*  -moz-appearance: tab;*/
   margin-top: 2px;
   border-top: 2px solid;
   border-right: 2px solid;
@@ -82,7 +82,7 @@ tab
   -moz-border-radius-topright: 2px;
   -moz-border-radius-bottomright: 1px;
   padding: 1px 4px 2px 4px;
-  background-color: -moz-Dialog;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
   color: -moz-DialogText;
 }
 
@@ -92,6 +92,7 @@ tab
 
 tab[selected="true"] {
   -moz-user-focus: normal;
+  background-color: rgb(255,255,255);
   margin-top: 0;
   border-bottom-color: transparent;
   padding: 1px 6px 4px 6px;
@@ -102,13 +103,15 @@ tab:focus > .tab-middle {
 }
 
 tab[beforeselected="true"] {
-  -moz-appearance: tab-left-edge;
+/*  -moz-appearance: tab-left-edge;	*/
   border-right: none;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
   -moz-border-radius-topright: 0;
 }
 
 tab[afterselected="true"] {
-  -moz-appearance: tab-right-edge;
+/*  -moz-appearance: tab-right-edge; */
+  background-color: rgb(234,234,234);/*msi-Dialog*/
   border-left: none;
   -moz-border-radius-topleft: 0;
 }
