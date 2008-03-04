@@ -149,6 +149,7 @@
                 flex="1" tooltip="aSourceTooltip"/>
       </vbox>
       <browser id="preview-frame" flex="1"/>
+      <browser id="directpreview-frame" flex="1"/>
     </deck>
     <hbox id="EditModeToolbar" hidden="false" persist="collapsed">
       <tabs id="EditModeTabs" align="start" class="tabs-bottom" flex="1">
