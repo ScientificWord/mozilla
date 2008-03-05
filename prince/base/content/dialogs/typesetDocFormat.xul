@@ -577,7 +577,7 @@
                           <vbox align="center">
                             <label value="Page height"/>
                             <hbox><textbox type="number" id="tbpageheight" style="width: 3.5em"  observes="bc.finishpagesize" 
-                              onkeypress="geomHhandleChar(event,'pageheight', 'tbpageheight');changePageDim(this);OnWindowSizeReset(false);" 
+                              onkeypress="geomHandleChar(event,'pageheight', 'tbpageheight');changePageDim(this);OnWindowSizeReset(false);" 
                               onchange="changePageDim(this);OnWindowSizeReset(false);" />
                             </hbox>
                             <spacer/>
