@@ -146,18 +146,24 @@ function savePageLayout(docFormatNode)
 
 function saveCropMarks(docFormatNode)
 {
+  var pos;
   lineend(docFormatNode, 1);
   if (document.getElementById("useCropmarks").checked)
   {
     var cropNode = editor.createNode('crop', docFormatNode, 0);
     cropNode.setAttribute("unit", currentUnit);
     cropNode.setAttribute("type", document.getElementById("cropGroup").value);
-    var paper = document.getElementById("docformat.papersize").value;
-    cropNode.setAttribute("paper", paper);
-    if (paper == "other")
+    pos = document.getElementById("pageonpaperlayout").value;
+    cropNode.setAttribute("pos", pos);
+    if (pos == "center")
     {
-      cropNode.setAttribute("width", document.getElementById("tbpaperwidth").value);
-      cropNode.setAttribute("height", document.getElementById("tbpaperheight").value);
+      var paper = document.getElementById("docformat.papersize").value;
+      cropNode.setAttribute("paper", paper);
+      if (paper == "other")
+      {
+        cropNode.setAttribute("width", document.getElementById("tbpaperwidth").value);
+        cropNode.setAttribute("height", document.getElementById("tbpaperheight").value);
+      }
     }
   }
 }
@@ -567,33 +573,40 @@ function changepaperSize(menu)
 function getCropInfo(node)
 {
   var broadcaster = document.getElementById("cropmarks");        
+  var broadcaster2 = document.getElementById("pageonpapercentered");
   if (!node) {
     papertype="letter";
     document.getElementById("useCropmarks").checked=false;
     document.getElementById("cropGroup").value = "cam";
     document.getElementById("bc.papersize").setAttribute("disabled","true");
     broadcaster.setAttribute("hidden",true);
+    broadcaster2.setAttribute("hidden",true);
   }
   else
   {
     document.getElementById("useCropmarks").checked=true;
     broadcaster.removeAttribute("hidden");
-    document.getElementById("bc.papersize").removeAttribute("disabled");
     var croptype = node.getAttribute("type");
     if (!croptype) croptype = "cam";
     document.getElementById("cropGroup").value = croptype;
-    var paper = node.getAttribute("paper");
-    if (!paper) paper="letter";
-    document.getElementById("docformat.papersize").value = paper;
-    papertype = paper;
-    if (paper == "other")
+    var pos = node.getAttribute("pos");
+    document.getElementById("pageonpaperlayout").value=pos;
+    if (pos == "center")
     {
-      paperheight = node.getAttribute("height");
-      if (!paperheight) paperheight = document.getElementById("tbpageheight").value; 
-      document.getElementById("tbpaperheight").value = paperheight;
-      paperwidth = node.getAttribute("width");
-      if (!paperwidth) paperwidth = document.getElementById("tbpaperwidth").value; 
-      document.getElementById("tbpaperwidth").value = paperwidth;
+      broadcaster2.removeAttribute("hidden");
+      var paper = node.getAttribute("paper");
+      if (!paper) paper="letter";
+      document.getElementById("docformat.papersize").value = paper;
+      papertype = paper;
+      if (paper == "other")
+      {
+        paperheight = node.getAttribute("height");
+        if (!paperheight) paperheight = document.getElementById("tbpageheight").value; 
+        document.getElementById("tbpaperheight").value = paperheight;
+        paperwidth = node.getAttribute("width");
+        if (!paperwidth) paperwidth = document.getElementById("tbpaperwidth").value; 
+        document.getElementById("tbpaperwidth").value = paperwidth;
+      }
     }
   }
   setPaperDimensions();
