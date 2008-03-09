@@ -3620,7 +3620,7 @@ function msiEditorInitFormatMenu(editorElement)
   try {
     msiInitObjectPropertiesMenuitem(editorElement, "objectProperties");
     msiInitRemoveStylesMenuitems(editorElement, "removeStylesMenuitem", "removeLinksMenuitem", "removeNamedAnchorsMenuitem");
-  } catch(ex) {}
+  } catch(ex) {dump("Exception in msiEditor.js, msiEditorInitFormatMenu: [" + ex + "].\n");}
 }
 
 function msiInitObjectPropertiesMenuitem(editorElement, id)
@@ -3657,10 +3657,10 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
     var wrappedChildElement = element;
     while ( (name == 'mstyle') || (name == 'mrow') )
     {
-      var newChildElement = msiNavigationUtils.getSingleWrappedChild(element);
+      var newChildElement = msiNavigationUtils.getSingleWrappedChild(wrappedChildElement);
       if (newChildElement == null)
         break;
-      wrappedChildElement = newChildElment;
+      wrappedChildElement = newChildElement;
       name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
     }
 

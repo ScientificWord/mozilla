@@ -196,7 +196,7 @@ function drawSample(sampleControl)
 //  leftBrackSamp.parentNode.replaceChild( opening, leftBrackSamp );
 //  opening.setAttribute("id", "leftBracketSample");
 
-  var opening = msiSetMathTokenText(leftBrackSamp, gDialog.LeftBracketGroup.valueStr);
+  var opening = msiSetMathTokenText(leftBrackSamp, gDialog.LeftBracketGroup.valueStr, null);
   if (opening != leftBrackSamp)
   {
     if (opening.getAttribute("id") != "leftBracketSample")
@@ -219,7 +219,7 @@ function drawSample(sampleControl)
 //  rightBrackSamp.parentNode.replaceChild( closing, rightBrackSamp );
 //  closing.setAttribute("id", "rightBracketSample");
 
-  var closing = msiSetMathTokenText(rightBrackSamp, gDialog.RightBracketGroup.valueStr);
+  var closing = msiSetMathTokenText(rightBrackSamp, gDialog.RightBracketGroup.valueStr, null);
   if (closing != rightBrackSamp)
   {
     if (closing.getAttribute("id") != "rightBracketSample")

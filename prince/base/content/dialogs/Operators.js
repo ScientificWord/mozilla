@@ -192,7 +192,7 @@ function drawSample(sampleControl)
   else
     theOperator.setAttribute("movablelimits", "false");
   var currOperatorStr = getCurrOperatorString();
-  var newOperator = msiSetMathTokenText(theOperator, currOperatorStr);
+  var newOperator = msiSetMathTokenText(theOperator, currOperatorStr, null);
   if (newOperator != theOperator)
     theOperator = newOperator;  //this actually doesn't currently get used below, but just in case...
 //  if (theOperator.textContent != currOperatorStr)
