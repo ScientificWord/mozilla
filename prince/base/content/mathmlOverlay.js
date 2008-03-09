@@ -724,8 +724,13 @@ var msiReviseBinomialsCmd =
   {
     var editorElement = msiGetActiveEditorElement(window);
     var theBinomial = aParams.getISupportsValue("reviseObject");
-    AlertWithTitle("mathmlOverlay.js", "In msiReviseBinomialsCmd, trying to revise binomial, dialog unimplemented.");
-//    reviseFraction(editorElement, theFrac);
+    var binomialData = new Object();
+    binomialData.reviseObject = theBinomial;
+    var argArray = [binomialData];
+    msiOpenModelessPropertiesDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,dependent",
+                                      editorElement, "cmd_MSIreviseBinomialsCmd", theBinomial, argArray);
+    
+//    AlertWithTitle("mathmlOverlay.js", "In msiReviseBinomialsCmd, trying to revise binomial, dialog unimplemented.");
   },
 
   doCommand: function(aCommand)
@@ -1007,6 +1012,72 @@ function insertBinomial(openingBracket, closingBracket, lineSpec, sizeSpec, edit
   }
 }
 
+function reviseBinomial(objectNode, openingBracket, closingBracket, lineSpec, sizeSpec, editorElement)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement(window);
+  var editor = msiGetEditor(editorElement);
+  var retVal = objectNode;
+
+  try 
+  {
+//    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+
+    var wrappedBinomialNode = msiNavigationUtils.getWrappedObject(objectNode, "binomial");
+    if (wrappedBinomialNode != null)
+    {
+      var theChildren = msiNavigationUtils.getSignificantContents(wrappedBinomialNode);
+      if (theChildren.length > 2)
+      {
+        var firstNode = theChildren[0];
+        var newFirst = null;
+        if (openingBracket.length > 0)
+          newFirst = msiSetMathTokenText(firstNode, openingBracket, editor);
+
+        var lastNode = theChildren[theChildren.length - 1];
+        var newLast = null;
+        if (closingBracket.length > 0)
+          newLast = msiSetMathTokenText(lastNode, closingBracket, editor);
+
+        var fracNode = theChildren[1];
+        if (fracNode.nodeName != "mfrac")
+          dump("Problem in reviseBinomial - the second node isn't an mfrac, but is a <" + fracNode.nodeName + ">.\n");
+        var theLineSpec = null;
+        if (lineSpec.length > 0)
+          theLineSpec = lineSpec;
+
+        msiEnsureElementAttribute(fracNode, "linethickness", lineSpec);
+        editor.setAttribute(fracNode, "linethickness", lineSpec);
+
+        if (newFirst == null)
+//          wrappedBinomialNode.removeChild(firstNode);
+          editor.deleteNode(firstNode);
+        if (newLast == null)
+//          wrappedBinomialNode.removeChild(lastNode);
+          editor.deleteNode(lastNode);
+
+        var styleObj = new Object();
+        if (sizeSpec == "small")
+          styleObj["displaystyle"] = "false";
+        else if (sizeSpec == "big")
+          styleObj["displaystyle"] = "true";
+        else
+          styleObj["displaystyle"] = "";
+        retVal = applyMathStyleToObject(styleObj, "binomial", objectNode);
+
+      }
+      else
+        dump("Problem in mathmlOverlay.js, reviseBinomial - supposed binomial node hasn't enough children?\n");
+    }
+    else
+      dump("Problem in mathmlOverlay.js, reviseBinomial - binomial node not found!\n");
+    editorElement.contentWindow.focus();
+  } 
+  catch (e) { dump("Error in mathmlOverlay.js, reviseBinomial! [" + e + "].\n"); }
+
+  return retVal;
+}
+
 function insertOperator(operator, limitPlacement, sizeSpec, editorElement)
 {
   if (!editorElement)
@@ -1130,7 +1201,7 @@ function reviseOperator(objectNode, newOperatorStr, limitPlacement, sizeSpec, ed
       }
     }
 
-    var newOp = msiSetMathTokenText(operatorNode, newOperatorStr);
+    var newOp = msiSetMathTokenText(operatorNode, newOperatorStr, editor);
     if (operatorNode == outerOperator)
       outerOperator = newOp;
     if (!bWrapped)
@@ -1698,6 +1769,111 @@ function doMatrixDlg(editorElement)
     insertmatrix(o.rows, o.cols, o.rowsignature, editorElement);
 }
 
+
+var msiMathStyleUtils =
+{
+  //Here we use the "old-fashioned" code of Roger Sidje that "ruleThickness = NSToCoordRound(40.000f/430.556f * xHeight);"
+  //The "units" parameter is handled by a msiUnitsList() object - see msiEditorUtilities.js for this.
+  getFracLineThickness : function(objectNode, units)
+  {
+    var xHeight = this.getFontXHeight(objectNode, units);
+    if (!isNaN(xHeight))
+    {
+      return ((xHeight * 40.0) / 430.556);
+    }
+    return Number.NaN;
+  },
+
+  //need to use nsIDOMViewCSS::getComputedStyle() to get font information, then get the xHeight out of that
+  getFontXHeight : function(elementNode, units)
+  {
+    var retVal = Number.NaN;
+    if ( (elementNode == null) || (elementNode.ownerDocument == null) )
+    {
+      dump("In mathmlOverlay.js, msiMathStyleUtils.getFontXHeight(), null owner document or elementNode!\n");
+      return retVal;
+    }
+    try
+      {
+  //    var docView = elementNode.ownerDocument.QueryInterface(Components.interfaces.nsIDOMDocumentView);
+  //    if (!docView)
+  //    {
+  //      dump("In mathmlOverlay.js, msiMathStyleUtils.getFontXHeight(), can't get nsIDOMDocumentView interface!\n");
+  //      return Number.NaN;
+  //    }
+      var defView = elementNode.ownerDocument.defaultView;
+      var docCSS = defView.QueryInterface(Components.interfaces.nsIDOMViewCSS);
+      var computedStyle = docCSS.getComputedStyle(elementNode, "");
+      var nsIPrimitive = Components.interfaces.nsIDOMCSSPrimitiveValue;
+      var unitType = null;
+      var theHeight = 0.0;
+      switch(units)
+      {
+        case "cm":         unitType = nsIPrimitive.CSS_CM;             break;
+        case "mm":         unitType = nsIPrimitive.CSS_MM;             break;
+        case "in":         unitType = nsIPrimitive.CSS_IN;             break;
+        case "pt":         unitType = nsIPrimitive.CSS_PT;             break;
+        case "px":         unitType = nsIPrimitive.CSS_PX;             break;
+        case "em":         theHeight = 1.0;                            break;  //is this right??
+        case "ex":         return 1.0;                                 break;
+      }
+      var xMult = 0.50;
+      if (unitType != null)
+      {
+        var fontHeight = computedStyle.getPropertyCSSValue("font-size");
+        theHeight = fontHeight.QueryInterface(nsIPrimitive).getFloatValue(unitType);
+        var sizeAdjust = computedStyle.getPropertyCSSValue("font-size-adjust");
+        if ( (sizeAdjust != null) && (sizeAdjust.cssValueType == Components.interfaces.nsIDOMCSSValue.CSS_PRIMITIVE_VALUE) )
+        {
+          try { xMult = sizeAdjust.QueryInterface(nsIPrimitive).getFloatValue(nsIPrimitive.CSSNumber); }
+          catch(exc) {dump("Exception trying to get float value from font-size-adjust in msiMathStyleUtils.getFontXHeight, exception [" + exc + "].\n");}
+        }
+      }
+      retVal = xMult * theHeight;
+    }
+    catch(exc) {dump("In mathmlOverlay.js, msiMathStyleUtils.getFontXHeight(), exception: [" + exc + "].\n");}
+    return retVal;
+  },
+
+  convertLineThicknessToDialogForm : function(elementNode, theLineSpec)
+  {
+    switch(theLineSpec)
+    {
+      case "thick":
+      case "0":
+      case "":
+        return theLineSpec;
+      break;
+    }
+
+    var retVal = "";
+    var valWithUnits = msiGetNumberAndLengthUnitFromString(theLineSpec);
+    if (valWithUnits != null)
+    {
+      var defaultLineSpec = this.getFracLineThickness(elementNode, valWithUnits.unit);
+      if (!isNaN(defaultLineSpec))
+      {
+        if (valWithUnits.number < 0.3 * defaultLineSpec)
+          retVal = "0";
+        else if (valWithUnits.number >= 2.0 * defaultLineSpec)
+          retVal = "thick";
+      }
+    }
+    else
+    {
+      var lineSpec = parseFloat(theLineSpec);
+      if (!isNaN(lineSpec))
+      {
+        if (lineSpec < 0.3)
+          retVal = "0";
+        else if (lineSpec > 2.0)
+          retVal = "thick";
+      }
+    }
+    return retVal;
+  }
+};
+
 // maintain color attributes and generate corresponding CSS
 var msiColorObj = 
 {
@@ -2171,7 +2347,7 @@ function reviseFence(fenceNode, left, right, editorElement)
       if (theChildren.length > 0)
       {
         var firstNode = theChildren[0];
-        var newFirst = msiSetMathTokenText(firstNode, left);
+        var newFirst = msiSetMathTokenText(firstNode, left, editor);
 
 //        if (firstNode.textContent != left)
 //        {
@@ -2182,7 +2358,7 @@ function reviseFence(fenceNode, left, right, editorElement)
 ////          firstNode.textContent = left;
 //        }
         var lastNode = theChildren[theChildren.length - 1];
-        var newLast = msiSetMathTokenText(lastNode, right);
+        var newLast = msiSetMathTokenText(lastNode, right, editor);
 //        if (lastNode.textContent != right)
 //        {
 //          var closing = wrappedFenceNode.ownerDocument.createElementNS(mmlns, "mo");
