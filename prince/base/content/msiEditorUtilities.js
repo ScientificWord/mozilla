@@ -1576,7 +1576,7 @@ function msiCopyElementAttributes(newElement, oldElement)
 //NOTE!! This is to get around a bug in Mozilla. When the bug is fixed, this function should just read:
 //  theElement.textContent = newText; 
 //  return theElement;
-function msiSetMathTokenText(theElement, newText, editor)
+function msiSetMathTokenText(theElement, newText)
 {
   if (theElement.textContent == newText)
     return theElement;
@@ -1585,12 +1585,7 @@ function msiSetMathTokenText(theElement, newText, editor)
   msiCopyElementAttributes(newElement, theElement);
   newElement.appendChild(theElement.ownerDocument.createTextNode(newText));
   if (theElement.parentNode != null)
-  {
-    if (editor != null)
-      editor.replaceNode(newElement, theElement, theElement.parentNode);
-    else
-      theElement.parentNode.replaceChild(newElement, theElement);
-  }
+    theElement.parentNode.replaceChild(newElement, theElement);
   return newElement;
 }
 
@@ -3310,7 +3305,11 @@ function GetFilepath(urlspec)
     {
       var url = uri.QueryInterface(Components.interfaces.nsIURL);
       if (url)
+#ifdef XP_WIN32
         filepath = decodeURIComponent(url.path.substr(1));
+#else
+        filepath = decodeURIComponent(url.path);
+#endif
     }
   } catch (e) {}
 
@@ -3811,24 +3810,6 @@ function msiUnitsList(unitConversions)
     return null;
   };
 
-  this.compareUnitStrings = function(value1, value2)
-  {
-    var firstValue = this.getNumberAndUnitFromString(value1);
-    var secondValue = this.getNumberAndUnitFromString(value2);
-    if ((first == null) || (second == null))
-    {
-      dump("Problem in msiUnitsList.compareUnitStrings - trying to compare unrecognized units!\n");
-      return Number.NaN;
-    }
-    var convertedFirst = this.convertUnits(value1.number, value1.unit, value2.unit);
-    if(convertedFirst < value2.number)
-      return -1;
-    else if (convertedFirst > value2.number)
-      return 1;
-    else
-      return 0;
-  };
-
 }
 
 //Following need to be added to. They're called "CSSUnitConversions", but are intended to handle any units showing up in
@@ -3843,23 +3824,6 @@ var msiCSSUnitConversions =
 
 var msiCSSUnitsList = new msiUnitsList(msiCSSUnitConversions);
 msiCSSUnitsList.defaultUnit = function() {return "pt";}
-
-function msiGetNumberAndLengthUnitFromString (valueStr)
-{
-  var unitsStr = "pt|in|mm|cm|pc|em|ex|px";
-  var ourRegExp = new RegExp("(\\-?\\d*\\.?\\d*).*(" + unitsStr + ")");
-  var matchArray = ourRegExp.exec(valueStr);
-  if (matchArray != null)
-  {
-    var retVal = new Object();
-    retVal.number = Number(matchArray[1]);
-    retVal.unit = matchArray[2];
-    return retVal;
-  }
-  return null;
-};
-
-
 
 var msiBaseMathNameList = 
 {
