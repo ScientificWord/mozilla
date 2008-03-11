@@ -1264,58 +1264,64 @@ function msiPrepareDocumentTargetForShell(docname)
     catch (e)
     {
       var dirkey;
+      var dirname;
 #ifdef XP_WIN
         dirkey = "Pers";
+        dirname = "SWP Docs";
+        // dirname = "SW Docs";
+        // dirname = "SNB Docs";
 #else
 #ifdef XP_MACOSX
         dirkey = "UsrDocs";
 #else
         dirkey = "Home";
 #endif
+        dirname = "SWP_Docs";
+        // dirname = "SW_Docs";
+        // dirname = "SNB_Docs";
 #endif
       // if we can't find the one in the prefs, get the default
       docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
       if (!docdir.exists()) docdir.create(1,0755);
-      // Choose one of the three following lines depending on the app
-      docdir.append("SWP Docs");
+      docdir.append( dirname );
       if (!docdir.exists()) docdir.create(1,0755);
-      // docdir.append("SW Docs");
-      // docdir.append("SNB Docs");
       dump("default document directory is "+docdir.path+"\n");
     }
-    // find n where untitledn.MSI_EXTENSION is the first unused file name in that folder
+    // find n where untitledn.MSI_EXTENSION is the first unused file name in that folder.
+    // Windows version expected a copy failure to indicate the file already exists.
+    // That doesn't work in Unix---the copy always succeeds.
+    // Instead we explicitly look for a file that doesn't yet exist, and use that file.
     try
     {
-      dump("shellfile is " + shellfile.path + "\n");
       leafname = shellfile.leafName;
       var i = leafname.lastIndexOf(".");
       if (i > 0) leafname = leafname.substr(0,i);
-      dump("leafname is " + leafname + "\n");
+      // dump("leafname is " + leafname + "\n");
       while (n < 100)
       {
-        try {
-          dump("Copying "+shellfile.path + " to directory " + docdir.path + ", file "+filename+n+"."+MSI_EXTENSION+"\n");
+        var targetfile =  Components.classes["@mozilla.org/file/local;1"].
+          createInstance(Components.interfaces.nsILocalFile);
+        targetfile.initWithPath(docdir.path);
+        targetfile.append(filename + n+"." + MSI_EXTENSION);
+        // dump( "File name is "+targetfile.path+"\n");
+        if( targetfile.exists() ) {
+          n++;
+          // dump( targetfile.path+" exists. New n is "+n+"\n");
+        } else break;
+      }
+      if (n>=100) dump("Too many untitled files. using untitled100\n");
+          // dump("Copying "+shellfile.path + " to directory " + docdir.path + ", file "+filename+n+"."+MSI_EXTENSION+"\n");
           shellfile.copyTo(docdir,filename+n+"."+MSI_EXTENSION);
-          // if the copy succeeded, continue to copy the "..._files" directory
+          // dump("Copy done.\n");
           try {
-            dump("Succeeded\n");
             var auxdir = shellfile.parent.clone();
-            dump("auxdir is " + auxdir.path+"\n");
+            // dump("auxdir is " + auxdir.path+"\n");
             auxdir.append(leafname+"_files");
-            dump("Succeeded. auxdir is " + auxdir.path + "\n");
-            dump("Trying to copy auxdir to docdir\n");
             auxdir.copyTo(docdir,filename+n+"_files");
           }
           catch(e) {
             dump("Copying auxdir caused error "+e+"\n");
           }
-          break;
-        }
-        catch(e) {
-          dump("File already exists? "+e+"\n");
-          n++;
-        }
-      }
     }// at this point, shellfile is .../untitledxxx.MSI_EXTENSION
     catch(e)
     {
@@ -1323,9 +1329,9 @@ function msiPrepareDocumentTargetForShell(docname)
     }
     // set the url for the xhtml portion of the document
     docdir.append(filename + n+"." + MSI_EXTENSION);
-    dump("Final docdir path is " + docdir.path + "\n");
+    // dump("Final docdir path is " + docdir.path + "\n");
     url = docdir.path;
-    dump("url is " + url + "\n");
+    // dump("url is " + url + "\n");
   }
   catch(e)
   {
@@ -3620,7 +3626,7 @@ function msiEditorInitFormatMenu(editorElement)
   try {
     msiInitObjectPropertiesMenuitem(editorElement, "objectProperties");
     msiInitRemoveStylesMenuitems(editorElement, "removeStylesMenuitem", "removeLinksMenuitem", "removeNamedAnchorsMenuitem");
-  } catch(ex) {dump("Exception in msiEditor.js, msiEditorInitFormatMenu: [" + ex + "].\n");}
+  } catch(ex) {}
 }
 
 function msiInitObjectPropertiesMenuitem(editorElement, id)
@@ -3654,14 +3660,11 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
     if (name != null)
       name = name.toLowerCase();
 
-    var wrappedChildElement = element;
-    while ( (name == 'mstyle') || (name == 'mrow') )
+    if (name == 'mstyle')
     {
-      var newChildElement = msiNavigationUtils.getSingleWrappedChild(wrappedChildElement);
-      if (newChildElement == null)
-        break;
-      wrappedChildElement = newChildElement;
-      name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
+      var childElement = msiNavigationUtils.getSingleWrappedChild(element);
+      if (childElement != null)
+        name = msiGetBaseNodeName(childElement).toLowerCase();
     }
 
     switch (name)
@@ -3731,7 +3734,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
           objStr = GetString("NamedAnchor");
           name = "anchor";
         }
-        else if(wrappedChildElement.href)
+        else if(element.href)
         {
           objStr = GetString("Link");
           name = "href";
@@ -3766,7 +3769,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       case 'msub':
       case 'msup':
       case 'msubsup':
-        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
+        if (msiNavigationUtils.getEmbellishedOperator(element) != null)
           objStr = GetString("Operator");
 //        msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
 // Should be no Properties dialog available for these cases? SWP has none...
@@ -3775,14 +3778,14 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       case 'mover':
       case 'munder':
       case 'munderover':
-        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
+        if (msiNavigationUtils.getEmbellishedOperator(element) != null)
           objStr = GetString("Operator");
         else
           objStr = GetString("Decoration");
       break;
 
       case 'mmultiscripts':
-        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
+        if (msiNavigationUtils.getEmbellishedOperator(element) != null)
           objStr = GetString("Operator");
         else
           objStr = GetString("Tensor");
@@ -3793,19 +3796,18 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       break;
 
       case 'mi':
-        if (msiNavigationUtils.isUnit(wrappedChildElement))
+        if (msiNavigationUtils.isUnit(element))
           objStr = GetString("Unit");
-        else if (msiNavigationUtils.isMathname(wrappedChildElement))
+        else if (msiNavigationUtils.isMathname(element))
           objStr = GetString("MathName");
       break;
 
 //  commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
 
       case 'mrow':
-      case 'mstyle':
-        if (msiNavigationUtils.isFence(wrappedChildElement))
+        if (msiNavigationUtils.isFence(element))
         {
-          if (msiNavigationUtils.isBinomial(wrappedChildElement))
+          if (msiNavigationUtils.isBinomial(element))
             objStr = GetString("Binomial");
           else
             objStr = GetString("GenBracket");
@@ -3813,10 +3815,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       break;
 
       case 'mo':
-        if (msiNavigationUtils.isMathname(wrappedChildElement))
-          objStr = GetString("MathName");
-        else
-          objStr = GetString("Operator");
+        objStr = GetString("Operator");
       break;
 
     }
