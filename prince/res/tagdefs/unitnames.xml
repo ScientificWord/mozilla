@@ -26,7 +26,7 @@
   <unitname id="u" name="atomicMassUnit" type="mass" builtIn="true"><data>u</data><appearance/></unitname>
   <unitname id="d" name="day" type="time" builtIn="true"><data>d</data><appearance/></unitname>
   <unitname id="h" name="hour" type="time" builtIn="true"><data>h</data><appearance/></unitname>
-  <unitname id="m" name="minute" type="time" builtIn="true"><data>m</data><appearance/></unitname>
+  <unitname id="min" name="minute" type="time" builtIn="true"><data>m</data><appearance/></unitname>
   <unitname id="s" name="second" type="time" builtIn="true"><data>s</data><appearance/></unitname>
   <unitname id="y" name="year" type="time" builtIn="true"><data>y</data><appearance/></unitname>
   <unitname id="ms" name="millisecond" type="time" builtIn="true"><data>ms</data><appearance/></unitname>

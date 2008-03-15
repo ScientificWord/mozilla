@@ -2908,13 +2908,15 @@ function msiSelectPropertiesObjectFromRange(editor, aRange)
           newRange.setStartBefore(aRange.startContainer);
 //          msiNavigationUtils.moveRangeStartOutOfObject(newRange, false);  //the "false" means "to left" as opposed to "to right"
         }
-        else if ((trialSequenceStart[jx] == 2) && msiNavigationUtils.positionIsAtEnd(aRange.startContainer, aRange.startOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.startContainer, editor))
+        else if ((trialSequenceStart[jx] == 2) && msiNavigationUtils.positionIsAtEnd(aRange.startContainer, aRange.startOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.startContainer, editor, msiNavigationUtils.rightEndToRight))
+//RWA-insert        else if ((trialSequenceStart[jx] == 2) && msiNavigationUtils.positionIsAtEnd(aRange.startContainer, aRange.startOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.startContainer, editor, msiNavigationUtils.rightEndToRight))
         {
           bChanged = true;
           newRange.setStartAfter(aRange.startContainer);
 //          msiNavigationUtils.moveRangeStartOutOfObject(newRange, true);  //the "true" means "to right"
         }
-        if ((trialSequenceEnd[kx] == 1) && msiNavigationUtils.positionIsAtStart(aRange.endContainer, aRange.endOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.endContainer, editor))
+        if ((trialSequenceEnd[kx] == 1) && msiNavigationUtils.positionIsAtStart(aRange.endContainer, aRange.endOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.endContainer, editor, msiNavigationUtils.leftEndToLeft))
+//RWA-insert        if ((trialSequenceEnd[kx] == 1) && msiNavigationUtils.positionIsAtStart(aRange.endContainer, aRange.endOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.endContainer, editor, msiNavigationUtils.leftEndToLeft))
         {
           bChanged = true;
           newRange.setEndBefore(aRange.endContainer);
@@ -2954,15 +2956,26 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editor)
   var returnVal = new Object();
   returnVal.theNode = null;
   returnVal.theOffset = null;
-  if (aNode.nodeType == nsIDOMNode.TEXT_NODE && anOffset > 0)
+  if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
   {
-    //What do we return to say we want the character to the left?
-    returnVal.theNode = aNode;
-    returnVal.theOffset = anOffset - 1;
-    return returnVal;
+    if (msiNavigationUtils.isMathname(aNode.parentNode) || msiNavigationUtils.isUnit(aNode.parentNode) )
+    {
+      returnVal.theNode = aNode.parentNode;
+      return returnVal;
+    }
+    if (anOffset > 0)
+    {
+      //What do we return to say we want the character to the left?
+      returnVal.theNode = aNode;
+      returnVal.theOffset = anOffset - 1;
+      return returnVal;
+    }
   }
   var nextNode = null;
-  for (var ix = anOffset; ix > 0; --ix)
+//  if (anOffset >= aNode.childNodes.length)
+  if (msiNavigationUtils.positionIsAtEnd(aNode, anOffset))
+    nextNode = aNode;
+  for (var ix = anOffset; (nextNode == null) && (ix > 0); --ix)
   {
     //NOTE that we should never be in this clause if this is a text node, since unless anOffset == 0 we would have bailed out in the previous clause.
     if ( !msiNavigationUtils.isIgnorableWhitespace(aNode.childNodes[ix-1]) )
@@ -2976,20 +2989,39 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editor)
     dump("Unexpected result in msiFindObjectToLeft! Return null.\n");
     return returnVal;
   }
-  while ((nextNode == null) && msiNavigationUtils.boundaryIsTransparent(aNode, editor))
+
+  //Now the only way that nextNode should be null is really if we're at the beginning of aNode:
+//  while ((nextNode == null) && msiNavigationUtils.boundaryIsTransparent(aNode, editor, posAndDir))
+  while ( (nextNode == null) && msiNavigationUtils.positionIsAtStart(aNode, ix) )
   {
+    if (msiNavigationUtils.boundaryIsTransparent(aNode, editor, msiNavigationUtils.leftEndToLeft))
     //Move to left and try again...
-    nextNode = aNode.previousSibling;
+      nextNode = aNode.previousSibling;
+    else
+      return returnVal;  //No reasonable object to revise here.
+    //Move to our parent since we're at his beginning,
     if (nextNode == null)
-      aNode = aNode.parentNode;
+    {
+      var nextParent = aNode.parentNode;
+//      ix = msiNavigationUtils.offsetInParent(aNode);  //Should we just say 0 since we found no previousSibling?
+      ix = 0;
+      aNode = nextParent;
+    }
   }
-  if (nextNode != null)
+
+  if (nextNode != null)  //In this case we've identified an object to our left. We check whether we should descend into it:
   {
     aNode = nextNode;
     nextNode = null;
-    while (aNode != null && msiNavigationUtils.boundaryIsTransparent(aNode, editor))
-      aNode = aNode.lastChild;
+    while (aNode != null && msiNavigationUtils.boundaryIsTransparent(aNode, editor, msiNavigationUtils.rightEndToLeft))
+      aNode = msiNavigationUtils.getLastSignificantChild(aNode);
+//      aNode = aNode.lastChild;
   }
+
+  //Finally, one last check on the validity of aNode. If it fails, there's nothing good to revise.
+  if (msiNavigationUtils.cannotSelectNodeForProperties(aNode))
+    return returnVal;
+
   returnVal.theNode = aNode;
   if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
     returnVal.theOffset = aNode.length - 1;
@@ -3626,7 +3658,7 @@ function msiEditorInitFormatMenu(editorElement)
   try {
     msiInitObjectPropertiesMenuitem(editorElement, "objectProperties");
     msiInitRemoveStylesMenuitems(editorElement, "removeStylesMenuitem", "removeLinksMenuitem", "removeNamedAnchorsMenuitem");
-  } catch(ex) {}
+  } catch(ex) {dump("Exception in msiEditor.js, msiEditorInitFormatMenu: [" + ex + "].\n");}
 }
 
 function msiInitObjectPropertiesMenuitem(editorElement, id)
@@ -3660,11 +3692,14 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
     if (name != null)
       name = name.toLowerCase();
 
-    if (name == 'mstyle')
+    var wrappedChildElement = element;
+    while ( (name == 'mstyle') || (name == 'mrow') )
     {
-      var childElement = msiNavigationUtils.getSingleWrappedChild(element);
-      if (childElement != null)
-        name = msiGetBaseNodeName(childElement).toLowerCase();
+      var newChildElement = msiNavigationUtils.getSingleWrappedChild(wrappedChildElement);
+      if (newChildElement == null)
+        break;
+      wrappedChildElement = newChildElement;
+      name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
     }
 
     switch (name)
@@ -3734,7 +3769,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
           objStr = GetString("NamedAnchor");
           name = "anchor";
         }
-        else if(element.href)
+          else if(wrappedChildElement.href)
         {
           objStr = GetString("Link");
           name = "href";
@@ -3769,7 +3804,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       case 'msub':
       case 'msup':
       case 'msubsup':
-        if (msiNavigationUtils.getEmbellishedOperator(element) != null)
+        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
           objStr = GetString("Operator");
 //        msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
 // Should be no Properties dialog available for these cases? SWP has none...
@@ -3778,14 +3813,14 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       case 'mover':
       case 'munder':
       case 'munderover':
-        if (msiNavigationUtils.getEmbellishedOperator(element) != null)
+        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
           objStr = GetString("Operator");
         else
           objStr = GetString("Decoration");
       break;
 
       case 'mmultiscripts':
-        if (msiNavigationUtils.getEmbellishedOperator(element) != null)
+        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
           objStr = GetString("Operator");
         else
           objStr = GetString("Tensor");
@@ -3796,18 +3831,19 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       break;
 
       case 'mi':
-        if (msiNavigationUtils.isUnit(element))
+        if (msiNavigationUtils.isUnit(wrappedChildElement))
           objStr = GetString("Unit");
-        else if (msiNavigationUtils.isMathname(element))
+        else if (msiNavigationUtils.isMathname(wrappedChildElement))
           objStr = GetString("MathName");
       break;
 
 //  commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
 
       case 'mrow':
-        if (msiNavigationUtils.isFence(element))
+      case 'mstyle':
+        if (msiNavigationUtils.isFence(wrappedChildElement))
         {
-          if (msiNavigationUtils.isBinomial(element))
+          if (msiNavigationUtils.isBinomial(wrappedChildElement))
             objStr = GetString("Binomial");
           else
             objStr = GetString("GenBracket");
@@ -3815,7 +3851,10 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       break;
 
       case 'mo':
-        objStr = GetString("Operator");
+        if (msiNavigationUtils.isMathname(wrappedChildElement))
+          objStr = GetString("MathName");
+        else
+          objStr = GetString("Operator");
       break;
 
     }

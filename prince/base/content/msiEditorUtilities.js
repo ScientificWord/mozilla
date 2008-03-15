@@ -1532,6 +1532,29 @@ function msiElementCanHaveAttribute(elementNode, attribName)
   return retVal;
 }
 
+function msiEditorEnsureElementAttribute(elementNode, attribName, attribValue, editor)
+{
+  var retVal = false;
+  if ( (attribValue == null) || (attribValue.length == 0) )
+  {
+    if (elementNode.hasAttribute(attribName))
+    {
+      editor.removeAttribute(elementNode, attribName);
+      retVal = true;
+    }
+  }
+  else
+  {
+    if ( !elementNode.hasAttribute(attribName) || (elementNode.getAttribute(attribName) != attribValue) )
+    {
+      editor.setAttribute(elementNode, attribName, attribValue);
+      retVal = true;
+    }
+  }
+  return retVal;
+}
+
+
 //This function sets an attribute value if needed and returns true if the value was changed.
 function msiEnsureElementAttribute(elementNode, attribName, attribValue)
 {
@@ -1555,28 +1578,59 @@ function msiEnsureElementAttribute(elementNode, attribName, attribValue)
   return retVal;
 }
 
-function msiCopyElementAttributes(newElement, oldElement)
+function msiCopyElementAttributes(newElement, oldElement, editor)
 {
   var theAttrs = oldElement.attributes;
   for (var jx = 0; jx < theAttrs.length; ++jx)
   {
+//    var attrName = msiGetBaseNodeName(theAttrs.item(jx));
     var attrName = theAttrs.item(jx).nodeName;
     switch(attrName)
     {
-      case 'moz-dirty':
+      case '_moz-dirty':
+      case '-moz-math-font-style':
       break;
       default:
         if (msiElementCanHaveAttribute(newElement, attrName))
-          msiEnsureElementAttribute(newElement, attrName, theAttrs.item(jx).textContent);
+        {
+          if (editor != null)
+            msiEditorEnsureElementAttribute(newElement, attrName, theAttrs.item(jx).textContent, editor);
+          else
+            msiEnsureElementAttribute(newElement, attrName, theAttrs.item(jx).textContent);
+        }
       break;
     }
   }
 }
 
+//This function appends a child node to a new parent
+function msiEditorMoveChild(newParent, childNode, editor)
+{
+  try
+  {
+    editor.deleteNode(childNode);
+    editor.insertNode(childNode, newParent, newParent.childNodes.length);
+  }
+  catch(exc) {dump("Exception in msiEditorUtilities.js, msiEditorMoveChild; exception is [" + exc + "\.\n");}
+}
+
+
+//This function appends the significant children of "fromElement" to the children of "toElement"
+function msiEditorMoveChildren(toElement, fromElement, editor)
+{
+  var theChildren = msiNavigationUtils.getSignificantContents(fromElement);
+  try
+  {
+    for (var ix = 0; ix < theChildren.length; ++ix)
+      msiEditorMoveChild(toElement, theChildren[ix], editor);
+  }
+  catch(exc) {dump("Exception in msiEditorUtilities.js, msiEditorMoveChildren; exception is [" + exc + "].\n");}
+}
+
 //NOTE!! This is to get around a bug in Mozilla. When the bug is fixed, this function should just read:
 //  theElement.textContent = newText; 
 //  return theElement;
-function msiSetMathTokenText(theElement, newText)
+function msiSetMathTokenText(theElement, newText, editor)
 {
   if (theElement.textContent == newText)
     return theElement;
@@ -1585,7 +1639,12 @@ function msiSetMathTokenText(theElement, newText)
   msiCopyElementAttributes(newElement, theElement);
   newElement.appendChild(theElement.ownerDocument.createTextNode(newText));
   if (theElement.parentNode != null)
-    theElement.parentNode.replaceChild(newElement, theElement);
+  {
+    if (editor != null)
+      editor.replaceNode(newElement, theElement, theElement.parentNode);
+    else
+      theElement.parentNode.replaceChild(newElement, theElement);
+  }
   return newElement;
 }
 
@@ -3810,6 +3869,24 @@ function msiUnitsList(unitConversions)
     return null;
   };
 
+  this.compareUnitStrings = function(value1, value2)
+  {
+    var firstValue = this.getNumberAndUnitFromString(value1);
+    var secondValue = this.getNumberAndUnitFromString(value2);
+    if ((first == null) || (second == null))
+    {
+      dump("Problem in msiUnitsList.compareUnitStrings - trying to compare unrecognized units!\n");
+      return Number.NaN;
+    }
+    var convertedFirst = this.convertUnits(value1.number, value1.unit, value2.unit);
+    if(convertedFirst < value2.number)
+      return -1;
+    else if (convertedFirst > value2.number)
+      return 1;
+    else
+      return 0;
+  };
+
 }
 
 //Following need to be added to. They're called "CSSUnitConversions", but are intended to handle any units showing up in
@@ -3824,6 +3901,21 @@ var msiCSSUnitConversions =
 
 var msiCSSUnitsList = new msiUnitsList(msiCSSUnitConversions);
 msiCSSUnitsList.defaultUnit = function() {return "pt";}
+
+function msiGetNumberAndLengthUnitFromString (valueStr)
+{
+  var unitsStr = "pt|in|mm|cm|pc|em|ex|px";
+  var ourRegExp = new RegExp("(\\-?\\d*\\.?\\d*).*(" + unitsStr + ")");
+  var matchArray = ourRegExp.exec(valueStr);
+  if (matchArray != null)
+  {
+    var retVal = new Object();
+    retVal.number = Number(matchArray[1]);
+    retVal.unit = matchArray[2];
+    return retVal;
+  }
+  return null;
+};
 
 var msiBaseMathNameList = 
 {
@@ -4623,15 +4715,40 @@ var msiNavigationUtils =
 {
   m_DOMUtils : Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils),
   mAtomService : Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService),
+//a few constants:
+  leftEndToLeft : 0,
+  leftEndToRight : 1,
+  rightEndToLeft : 2,
+  rightEndToRight : 3,
+  toLeft : 0,
+  leftEnd : 0,
+  toRight : 1,
+  rightEnd : 2,
 
   isIgnorableWhitespace : function(node)
   {
     if (node.nodeType != nsIDOMNode.TEXT_NODE)
-      return false;
+    {
+      switch(msiGetBaseNodeName(node))
+      {
+        case "mi":
+        case "mo":
+          var childNodes = this.getSignificantContents(node);
+          if (childNodes.length == 0)
+            return true;
+          if (childNodes.length > 1)
+            dump("In msiNavigationUtils.isIgnorableWhitespace, found too many children for node of type " + msiGetBaseNodeName(node) + ".\n");
+          return this.isIgnorableWhitespace(childNodes[0]);
+        break;
+        default:
+          return false;
+        break;
+      }
+    }
     return this.m_DOMUtils.isIgnorableWhitespace(node);
   },
 
-  boundaryIsTransparent : function(node, editor)  //This has to do with whether node's children at right or left are considered adjacent to following or preceding objects, not with cursor movement.
+  boundaryIsTransparent : function(node, editor, posAndDirection)  //This has to do with whether node's children at right or left are considered adjacent to following or preceding objects, not with cursor movement.
   {
     if (node.nodeType == nsIDOMNode.TEXT_NODE)
       return true;
@@ -4660,6 +4777,7 @@ var msiNavigationUtils =
         if (node.parentNode != null)
         {
           var parentName = msiGetBaseNodeName(node.parentNode);
+//          var posInParent = this.significantOffsetInParent(node);
           switch(parentName)
           {
             case "mfrac":
@@ -4673,7 +4791,8 @@ var msiNavigationUtils =
             case "munder":
             case "mover":
             case "munderover":
-              return false;
+              return ( (posAndDirection == this.rightEndToLeft) || (posAndDirection == this.leftEndToRight) );
+//              return false;
             break;
           }
         }
@@ -4733,6 +4852,35 @@ var msiNavigationUtils =
     return false;
   },
 
+  offsetInParent : function(aNode)
+  {
+    var retVal = -1;
+    for (var ix = 0; ix < aNode.parentNode.childNodes.length; ++ix)
+    {
+      if (aNode.parentNode.childNodes[ix] == aNode)
+      {
+        retVal = ix;
+        break;
+      }  
+    }
+    return retVal;
+  },
+
+  significantOffsetInParent : function(aNode)
+  {
+    var siblings = this.getSignificantContents(aNode.parentNode);
+    var retVal = -1;
+    for (var ix = 0; ix < siblings.length; ++ix)
+    {
+      if (siblings[ix] == aNode)
+      {
+        retVal = ix;
+        break;
+      }
+    }
+    return retVal;
+  },
+
   getTagClass : function(node, editor)
   {
     var nsAtom = null;
@@ -4768,6 +4916,9 @@ var msiNavigationUtils =
   getSignificantContents : function(node)
   {
     var retList = new Array();
+    if (node == null)
+      return retList;
+
     for (var ix = 0; ix < node.childNodes.length; ++ix)
     {
       if (!this.isIgnorableWhitespace(node.childNodes[ix]))
@@ -4781,6 +4932,14 @@ var msiNavigationUtils =
     var children = this.getSignificantContents(node);
     if (children.length > 0)
       return children[0];
+    return null;
+  },
+
+  getLastSignificantChild : function(node)
+  {
+    var children = this.getSignificantContents(node);
+    if (children.length > 0)
+      return children[children.length - 1];
     return null;
   },
 
@@ -5098,6 +5257,41 @@ var msiNavigationUtils =
 //      break; 
 //    }
     return retStyleNode;
+  },
+
+  nodeIsPieceOfUnbreakable : function(aNode)
+  {
+    var retVal = false;
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "mo":
+        if (this.isFence(aNode.parentNode))
+        {
+          if (this.getFirstSignificantChild(aNode.parentNode) == aNode)
+            retVal = true;
+          else if (this.getLastSignificantChild(aNode.parentNode) == aNode)
+            retVal = true;
+        }
+      break;
+      case "mfrac":
+        if (this.isBoundFence(aNode.parentNode))
+        {
+          var theKids = this.getSignificantContents(aNode.parentNode);
+          if ( (theKids.length > 2) && (theKids[1] == aNode) )
+            retVal = true;
+        }
+      break;
+      default:
+      break;
+    }
+    return retVal;
+  },
+
+  cannotSelectNodeForProperties : function(aNode)
+  {
+    if (this.nodeIsPieceOfUnbreakable(aNode))
+      return true;
+    return false;
   }
 
 };
