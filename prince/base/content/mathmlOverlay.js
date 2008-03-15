@@ -958,17 +958,21 @@ function reviseFraction(theFraction, lineSpec, sizeSpec, editorElement)
   }
   var retVal = theFraction;
   var editor = msiGetEditor(editorElement);
+  var realFrac = msiNavigationUtils.getWrappedObject(theFraction, "mfrac");
+  if (realFrac == null)
+  {
+    AlertWithTitle("mathmlOverlay.js", "Problem in reviseFraction! No fraction found in node passed in...\n");
+    return theFraction;
+  }
+
+  editor.beginTransaction();
+
   try
   {
 //    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    var realFrac = msiNavigationUtils.getWrappedObject(theFraction, "mfrac");
-    if (realFrac != null)
-      realFrac.setAttribute("linethickness", lineSpec);
-    else
-    {
-      AlertWithTitle("mathmlOverlay.js", "Problem in reviseFraction! No fraction found in node passed in...\n");
-      return theFraction;
-    }
+//      realFrac.setAttribute("linethickness", lineSpec);
+    msiEditorEnsureElementAttribute(realFrac, "linethickness", lineSpec, editor);
+
     var styleObj = new Object();
     if (sizeSpec == "small")
       styleObj["displaystyle"] = "false";
@@ -976,7 +980,7 @@ function reviseFraction(theFraction, lineSpec, sizeSpec, editorElement)
       styleObj["displaystyle"] = "true";
     else
       styleObj["displaystyle"] = "";
-    retVal = applyMathStyleToObject(styleObj, "mfrac", theFraction);
+    retVal = applyMathStyleToObject(styleObj, "mfrac", theFraction, editor);
 
 //    AlertWithTitle("mathmlOverlay.js", "In reviseFraction, functionality needs to be implemented.");
 //    mathmlEditor.InsertFraction(lineSpec, sizeFlags);
@@ -986,6 +990,9 @@ function reviseFraction(theFraction, lineSpec, sizeSpec, editorElement)
   {
     dump("Exception in mathmlOverlay.js, in reviseFraction; exception is [" + e + "].\n");
   }
+
+  editor.endTransaction();
+
   return retVal;
 }
 
@@ -1019,6 +1026,9 @@ function reviseBinomial(objectNode, openingBracket, closingBracket, lineSpec, si
   var editor = msiGetEditor(editorElement);
   var retVal = objectNode;
 
+//  editor.enableUndo(true);
+
+  editor.beginTransaction();
   try 
   {
 //    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
@@ -1046,8 +1056,8 @@ function reviseBinomial(objectNode, openingBracket, closingBracket, lineSpec, si
         if (lineSpec.length > 0)
           theLineSpec = lineSpec;
 
-        msiEnsureElementAttribute(fracNode, "linethickness", lineSpec);
-        editor.setAttribute(fracNode, "linethickness", lineSpec);
+//        editor.setAttribute(fracNode, "linethickness", lineSpec);
+        msiEditorEnsureElementAttribute(fracNode, "linethickness", lineSpec, editor);
 
         if (newFirst == null)
 //          wrappedBinomialNode.removeChild(firstNode);
@@ -1063,7 +1073,7 @@ function reviseBinomial(objectNode, openingBracket, closingBracket, lineSpec, si
           styleObj["displaystyle"] = "true";
         else
           styleObj["displaystyle"] = "";
-        retVal = applyMathStyleToObject(styleObj, "binomial", objectNode);
+        retVal = applyMathStyleToObject(styleObj, "binomial", objectNode, editor);
 
       }
       else
@@ -1074,6 +1084,8 @@ function reviseBinomial(objectNode, openingBracket, closingBracket, lineSpec, si
     editorElement.contentWindow.focus();
   } 
   catch (e) { dump("Error in mathmlOverlay.js, reviseBinomial! [" + e + "].\n"); }
+
+  editor.endTransaction();
 
   return retVal;
 }
@@ -1118,6 +1130,9 @@ function reviseOperator(objectNode, newOperatorStr, limitPlacement, sizeSpec, ed
   var editor = msiGetEditor(editorElement);
 
   var retVal = objectNode;
+
+  editor.beginTransaction();
+
   try 
   {
     var outerOperator = msiNavigationUtils.getWrappedObject(objectNode, "operator");
@@ -1137,8 +1152,8 @@ function reviseOperator(objectNode, newOperatorStr, limitPlacement, sizeSpec, ed
     else
       bMovableLimits = "true";
 
-    msiEnsureElementAttribute( operatorNode, "movablelimits", bMovableLimits );
-    var bLimitPlacementChanged = msiEnsureElementAttribute( operatorNode, "msiLimitPlacement", ((limitPlacementStr.length > 0) ? limitPlacementStr : null) );
+    msiEditorEnsureElementAttribute(operatorNode, "movablelimits", bMovableLimits, editor);
+    var bLimitPlacementChanged = msiEditorEnsureElementAttribute(operatorNode, "msiLimitPlacement", ((limitPlacementStr.length > 0) ? limitPlacementStr : null), editor);
 
     //Now try to match the new ones with the old; if they differ on limit placement, we may have to replace <msubsup>/<msub>/<msup>
     //  by <munderover>/<munder>/<mover> or vice versa, while if they differ on size, we have to invoke the mathStyle mechanism to fix it.
@@ -1179,23 +1194,29 @@ function reviseOperator(objectNode, newOperatorStr, limitPlacement, sizeSpec, ed
         var theParent = outerOperator.parentNode;
         if (newNode != null)
         {
-          var theChildren = msiNavigationUtils.getSignificantContents(outerOperator);
-          for (var ix = 0; ix < theChildren.length; ++ix)
-//            newNode.appendChild( theChildren[ix].cloneNode(true) );
-            newNode.appendChild( outerOperator.removeChild(theChildren[ix]) );
-          for (var ii = 0; ii < outerOperator.attributes.length; ++ii)
-          {
-            var theAttr = outerOperator.attributes.item(ii);
-            var attrName = msiGetBaseNodeName( theAttr );
-            if (msiElementCanHaveAttribute(newNode, attrName))
-              newNode.setAttributeNode( outerOperator.removeAttributeNode(theAttr) );
-          }
-          theParent.replaceChild(newNode, outerOperator);
+//          var theChildren = msiNavigationUtils.getSignificantContents(outerOperator);
+//          for (var ix = 0; ix < theChildren.length; ++ix)
+////            newNode.appendChild( theChildren[ix].cloneNode(true) );
+//            newNode.appendChild( outerOperator.removeChild(theChildren[ix]) );
+          msiEditorMoveChildren(newNode, outerOperator, editor)
+
+//          for (var ii = 0; ii < outerOperator.attributes.length; ++ii)
+//          {
+//            var theAttr = outerOperator.attributes.item(ii);
+//            var attrName = msiGetBaseNodeName( theAttr );
+//            if (msiElementCanHaveAttribute(newNode, attrName))
+//              newNode.setAttributeNode( outerOperator.removeAttributeNode(theAttr) );
+//          }
+          msiCopyElementAttributes(newNode, outerOperator, editor);
+
+//          theParent.replaceChild(newNode, outerOperator);
+          editor.replaceNode(newNode, outerOperator, theParent);
           outerOperator = newNode;
         }
-        else
+        else  //This clause is apparently useless, and was wrong in any case - corrected, but can't be entered I believe.
         {
-          theParent.removeChild(newNode, outerOperator);
+//          theParent.removeChild(newNode, outerOperator);
+          editor.deleteNode(outerOperator);
           outerOperator = operatorNode;
         }
       }
@@ -1217,7 +1238,7 @@ function reviseOperator(objectNode, newOperatorStr, limitPlacement, sizeSpec, ed
     var objTypeStr = "operator";
     if (outerOperator != operatorNode)
       objTypeStr = msiGetBaseNodeName(outerOperator);
-    retVal = applyMathStyleToObject(styleObj, objTypeStr, objectNode);
+    retVal = applyMathStyleToObject(styleObj, objTypeStr, objectNode, editor);
     
     editorElement.contentWindow.focus();
   } 
@@ -1225,6 +1246,8 @@ function reviseOperator(objectNode, newOperatorStr, limitPlacement, sizeSpec, ed
   {
     dump("Error in mathmlOverlay.js, reviseOperator; error is [" + e + "].\n");
   }
+
+  editor.endTransaction();
 
   return retVal;
 }
@@ -1288,60 +1311,58 @@ function reviseRadical(theRadical, objectName, editorElement)
   }
   var retVal = theRadical;
   var editor = msiGetEditor(editorElement);
+
+  var currRoot = msiNavigationUtils.getWrappedObject(theRadical, objectName);
+  if (currRoot != null)
+    return theRadical;  //it was already of the desired kind - we're done.
+
+  var oldName = "mroot";
+  if (objectName == "mroot")
+    oldName = "msqrt";
+  currRoot = msiNavigationUtils.getWrappedObject(theRadical, oldName);
+  if (currRoot == null)
+  {
+    AlertWithTitle("mathmlOverlay.js", "Problem in reviseFraction! No fraction found in node passed in...\n");
+    return theRadical;
+  }
+
+  editor.beginTransaction();
+
   try
   {
 //    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-
-    var currRoot = msiNavigationUtils.getWrappedObject(theRadical, objectName);
-    if (currRoot != null)
-      return theRadical;  //it was already of the desired kind - we're done.
-
-    var oldName = "mroot";
-    if (objectName == "mroot")
-      oldName = "msqrt";
-    currRoot = msiNavigationUtils.getWrappedObject(theRadical, oldName);
-    if (currRoot != null)
+    var newRoot = theRadical.ownerDocument.createElementNS(mmlns, objectName);
+//    var nextSibling = currRoot.nextSibling;
+//    if (nextSibling == null)
+//      newRoot = currRoot.parentNode.appendChild(newRoot);
+//    else
+//      newRoot = currRoot.parentNode.insertBefore(newRoot, nextSibling);
+    var children = msiNavigationUtils.getSignificantContents(currRoot);
+    if (objectName == "mroot")  //Changing a square root to a general root.
     {
-      var newRoot = theRadical.ownerDocument.createElementNS(mmlns, objectName);
-      var nextSibling = currRoot.nextSibling;
-      if (nextSibling == null)
-        newRoot = currRoot.parentNode.appendChild(newRoot);
+      if (children.length == 1)
+        msiEditorMoveChild(newRoot, children[0], editor);
       else
-        newRoot = currRoot.parentNode.insertBefore(newRoot, nextSibling);
-      var children = msiNavigationUtils.getSignificantContents(currRoot);
-      if (objectName == "mroot")  //Changing a square root to a general root.
       {
-        if (children.length == 1)
-          newRoot.appendChild(children[0]);
-        else
-        {
-          var newRow = theRadical.ownerDocument.createElementNS(mmlns, "mrow");
-          for (var ix = 0; ix < children.length; ++ix)
-            newRow.appendChild( theRadical.removeChild(children[ix]) );
-          newRoot.appendChild(newRow);
-        }
-        newRoot.appendChild(newbox(editor));  //create an empty "root" box
+        var newRow = currRoot.ownerDocument.createElementNS(mmlns, "mrow");
+        msiEditorMoveChildren(newRow, currRoot, editor);
+        editor.insertNode(newRow, newRoot, 0);
       }
-      else  //creating a msqrt - any "inferred row" of children is okay
-      {
-        if ( msiNavigationUtils.isOrdinaryMRow(children[0]) )
-        {
-          var newChildren = msiNavigationUtils.getSignificantContent(children[0]);
-          for (var jx = 0; jx < newChildren.length; ++jx)
-            newRoot.appendChild( children[0].removeChild(newChildren[jx]) );
-        }
-        else
-          newRoot.appendChild( currRoot.removeChild(children[0]) );
-      }
-      if (currRoot == theRadical)  //radical was top level object being modified; new one should be the return value
-        retVal = newRoot;          //(otherwise original object should still be returned)
-      currRoot.parentNode.removeChild(currRoot);
+      editor.insertNode(newbox(editor), newRoot, 1);
     }
-    else
+    else  //creating a msqrt - any "inferred row" of children is okay, but only want to move children of first child of mroot
     {
-      AlertWithTitle("mathmlOverlay.js", "Problem in reviseFraction! No fraction found in node passed in...\n");
-      return theRadical;
+      if ( msiNavigationUtils.isOrdinaryMRow(children[0]) )
+      {
+        msiEditorMoveChildren(newRoot, children[0], editor);
+      }
+      else
+        msiEditorMoveChild(newRoot, children[0], editor); 
     }
+    editor.replaceNode(newRoot, currRoot, currRoot.parentNode);
+    if (currRoot == retVal)  //radical was top level object being modified; new one should be the return value
+      retVal = newRoot;          //(otherwise original object should still be returned)
+//    currRoot.parentNode.removeChild(currRoot);
 
 //    AlertWithTitle("mathmlOverlay.js", "In reviseFraction, functionality needs to be implemented.");
 //    mathmlEditor.InsertFraction(lineSpec, sizeFlags);
@@ -1351,6 +1372,9 @@ function reviseRadical(theRadical, objectName, editorElement)
   {
     dump("Exception in mathmlOverlay.js, in reviseRadical; exception is [" + e + "].\n");
   }
+
+  editor.endTransaction();
+
   return retVal;
 }
 
@@ -1379,174 +1403,81 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
   var retVal = theMathnameNode;
   var editor = msiGetEditor(editorElement);
 
+  var wrappedMathName = msiNavigationUtils.getWrappedObject(theMathnameNode, "mathname");
+  if ((wrappedMathName == null) || (newMathNameData.val.length == 0))
+  {
+    AlertWithTitle("mathmlOverlay.js", "Problem in reviseMathName! No fraction found in node passed in...\n");
+    return theRadical;
+  }
+
+  editor.beginTransaction();
+
   try
   {
-    var wrappedMathName = msiNavigationUtils.getWrappedObject(theMathnameNode, "mathname");
-    if ((wrappedMathName != null) && (newMathNameData.val.length > 0))
+    var newNode = null;
+    var oldNodeName = msiGetBaseNodeName(wrappedMathName);
+    if (newMathNameData.type == "operator")  //should now be an "mo"
     {
-      var newNode = null;
-      var oldNodeName = msiGetBaseNodeName(wrappedMathName);
-//All of the following should be moot now - I believe mathnames will be simple <mi>s or <mo>s from here on in?
-//      if (("appearance" in newMathNameData) && (newMathNameData.appearance != null))
-//      {
-//        var newOuterNode = newMathNameData.appearance;
-//        if (newOuterNode.childNodes.length > 1)
-//        {
-//          newNode = wrappedMathName.ownerDocument.createElementNS(mmlns, "mrow");
-//          for (var jx = 0; jx < newOuterNode.childNodes.length; ++jx)
-//            newNode.appendChild(newOuterNode.childNodes[jx].clone(true));
-//        }
-//        else
-//          newNode = newOuterNode.childNodes[0].clone(true);
-//      } else
-      if (newMathNameData.type == "operator")  //should now be an "mo"
+      if (oldNodeName != "mo")
       {
-        if (oldNodeName != "mo")
-        {
-          newNode = wrappedMathName.ownerDocument.createElementNS(mmlns, "mo");
-          var newText = wrappedMathName.owerDocument.createTextNode(newMathNameData.val);
-          newNode.appendChild(newText);
-        }
+        newNode = wrappedMathName.ownerDocument.createElementNS(mmlns, "mo");
+        var newText = wrappedMathName.owerDocument.createTextNode(newMathNameData.val);
+        newNode.appendChild(newText);
       }
-      else    //all others are "mi"
+    }
+    else    //all others are "mi"
+    {
+      if (oldNodeName != "mi")
       {
-        if (oldNodeName != "mi")
-        {
-          newNode = wrappedMathName.ownerDocument.createElementNS(mmlns, "mi");
-          var newText = wrappedMathName.owerDocument.createTextNode(newMathNameData.val);
-          newNode.appendChild(newText);
-        }
+        newNode = wrappedMathName.ownerDocument.createElementNS(mmlns, "mi");
+        var newText = wrappedMathName.owerDocument.createTextNode(newMathNameData.val);
+        newNode.appendChild(newText);
       }
-    
-      if (newNode !=  null)  //Need to replace the old mathname node with the new one
-      {
-        newNode.setAttribute("msimathname", "true");
-        var parent = wrappedMathName.parentNode;
-        var nextSib = wrappedMathName.nextSibling;
-        if (nextSib == null)
-          parent.appendChild(newNode);
-        else
-          parent.insertBefore(newNode, nextSib);
-        wrappedMathName = parent.removeChild( wrappedMathName );
-        for (var ii = 0; ii < wrappedMathName.attributes.length; ++ii)
-        {
-          var theAttr = wrappedMathName.attributes.item(ii);
-          var attrName = msiGetBaseNodeName( theAttr );
-          if (msiElementCanHaveAttribute(newNode, attrName))
-          {
-            newNode.setAttributeNode( wrappedMathName.removeAttributeNode(theAttr) );
-          }
-        }
-        if (theMathnameNode == wrappedMathNode)
-          theMathnameNode = newNode;
-        wrappedMathNode = newNode;  //from here on in we deal with the new one
-      }
-      else
-      {
-        if (wrappedMathName.textContent != newMathNameData.val)
-          wrappedMathName.textContent = newMathNameData.val;
-      }
+    }
+  
+    if (newNode !=  null)  //Need to replace the old mathname node with the new one
+    {
+      newNode.setAttribute("msimathname", "true");
+      var parent = wrappedMathName.parentNode;
+      msiCopyElementAttributes(newNode, wrappedMathName, editor);
+      editor.replaceNode(newNode, wrappedMathName, parent);
+
+      if (theMathnameNode == wrappedMathNode)
+        theMathnameNode = newNode;
+      wrappedMathNode = newNode;  //from here on in we deal with the new one
+    }
+    else
+      wrappedMathName = msiSetMathTokenText(wrappedMathName, newMathNameData.val, editor);
 
     //Now whether we've inserted a new node or not, we adjust attribute and style values.
 
-//Following is another chunk of attempted "appearance" handling code. Should be moot, but I'll check it in once before deleting.
-//    if ( ("appearance" in newMathNameData) && (newMathNameData.appearance != null) )  //once again the troublesome case
-//    {
-//      function nodeTypesAreSimilar(firstType, secondType)
-//      {
-//        switch(firstType)
-//        {
-//          case "munder":
-//          case "mover":
-//          case "munderover":
-//          case "msub":
-//          case "msup":
-//          case "msubsup":
-//            if (secondType == "munder" || secondType == "mover" || secondType == "munderover")
-//              return true;
-//            if (secondType == "msub" || secondType == "msup" || secondType == "msubsup")
-//              return true;
-//          break;
-//          default:
-//          break;
-//        }
-//        return (firstType == secondType);
-//      }
-//
-//      //The purpose of this function is to make simple adjustments (e.g. attribute values) to "origNode" if those are the 
-//      //only differences, or to replace "origNode" by "newNode" and transfer attribute values where appropriate if the
-//      //structures are compatible; if we have to give up - for instance, if the number of child nodes doesn't match - we return null.
-//      function reconcileComplexNodes(origNode, newNode)
-//      {
-//        var retVal = null;
-//        var oldName = msiGetBaseName(origNode);
-//        var newName = msiGetBaseName(newNode);
-//        if (nodeTypesAreSimilar(oldName, newName))
-//        {
-//          retVal = newNode;
-//          var oldList = msiNavigationUtils.getSignificantContents(origNode);
-//          var newList = msiNavigationUtils.getSignificantContents(newNode);
-//          for (var jx = 0; jx < newList.length; ++jx)
-//          {
-//            if (jx < oldList.length)
-//              reconcileComplexNodes(oldList[jx], newList[jx]);
-//          }
-//        }
-//        if (retVal)
-//        {
-//        REWORK THIS!! START HERE
-//          if (newNode.nodeType == Node.ELEMENT_NODE)
-//          {
-//            var oldAttributes = oldNode.attributes;
-//            for (var kx = 0; kx < oldNode.attributes.length(); ++kx)
-//            {
-//              var theAttr = oldNode.attributes.item(ii);
-//              var attrName = msiGetBaseNodeName( theAttr );
-//              if (!newNode.hasAttribute(attrName) && msiElementCanHaveAttribute(newNode, attrName))
-//                newNode.setAttributeNode( wrappedMathName.removeAttributeNode(theAttr) );
-//            }
-//          }  
-//        }
-//        return retVal;
-//      }
-//
-//    } else
-      if (newMathNameData.type == "operator")  //should now be an "mo"
-      {
-        var limitPlacement = "auto";
-        if ("limitPlacement" in newMathNameData)
-          limitPlacement = newMathNameData.limitPlacement;
-        if ( (limitPlacement == "auto") && wrappedMathName.hasAttribute("limitPlacement") )
-          wrappedMathName.removeAttribute("limitPlacement");
-        else if ( !(wrappedMathName.hasAttribute("limitPlacement")) || (wrappedMathName.getAttribute("limitPlacement") != limitPlacement) )
-          wrappedMathName.setAttribute("limitPlacement", limitPlacement);
-      }
-      else  //an "mi"
-      {
-        if (newMathNameData.enginefunction)
-          wrappedMathName.setAttribute("msiclass", "enginefunction");
-        else if (wrappedMathName.hasAttribute("msiclass") && (wrappedMathName.hasAttribute("msiclass") == "enginefunction") )
-          wrappedMathName.removeAttribute("msiclass");
-      }
-
-      var sizeSpec = "";
-      if ( ("size" in newMathNameData) && (newMathNameData.size != "auto") )
-        sizeSpec = newMathNameData.size;
-      var styleObj = new Object();
-      if (sizeSpec == "small")
-        styleObj["displaystyle"] = "false";
-      else if (sizeSpec == "big")
-        styleObj["displaystyle"] = "true";
-      else
-        styleObj["displaystyle"] = "";
-
-      retVal = applyMathStyleToObject(styleObj, msiGetBaseNodeName(wrappedMathName), theMathnameNode);
-    }
-    else
+    if (newMathNameData.type == "operator")  //should now be an "mo"
     {
-      AlertWithTitle("mathmlOverlay.js", "Problem in reviseMathName! No fraction found in node passed in...\n");
-      return theRadical;
+      var limitPlacement = "";
+      if ( ("limitPlacement" in newMathNameData) && (newMathNameData.limitPlacement != "auto") )
+        limitPlacement = newMathNameData.limitPlacement;
+      msiEditorEnsureElementAttribute(wrappedMathName, "limitPlacement", limitPlacement, editor);
     }
+    else  //an "mi"
+    {
+      var msiClassAttr = "";
+      if (newMathNameData.enginefunction)
+        msiClassAttr = "enginefunction";
+      msiEditorEnsureElementAttribute(wrappedMathName, "msiclass", msiClassAttr, editor);
+    }
+
+    var sizeSpec = "";
+    if ( ("size" in newMathNameData) && (newMathNameData.size != "auto") )
+      sizeSpec = newMathNameData.size;
+    var styleObj = new Object();
+    if (sizeSpec == "small")
+      styleObj["displaystyle"] = "false";
+    else if (sizeSpec == "big")
+      styleObj["displaystyle"] = "true";
+    else
+      styleObj["displaystyle"] = "";
+
+    retVal = applyMathStyleToObject(styleObj, msiGetBaseNodeName(wrappedMathName), theMathnameNode, editor);
 
     editorElement.contentWindow.focus();
   }  //end "try"
@@ -1554,6 +1485,9 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
   {
     dump("Exception in mathmlOverlay.js, in reviseMathname; exception is [" + e + "].\n");
   }
+
+  editor.endTransaction();
+
   return retVal;
 }
 
@@ -1604,38 +1538,38 @@ function reviseMathUnit(unitNode, newName, editorElement)
   var editor = msiGetEditor(editorElement);
   var nameData = msiBaseMathUnitsList.getUnitNameData(newName);
 
+  editor.beginTransaction();
   try 
   {
     var wrappedUnitNode = msiNavigationUtils.getWrappedObject(unitNode, "unit");
     var retVal = unitNode;
-    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+//    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
     var bUsedAppearance = false;
     if (nameData.appearance != null)
     {
-      if (("nodeName" in nameData.appearance) && nameData.appearance.childNodes.length > 0)
+      var theChildren = null;
+      if ("nodeName" in nameData.appearance)
+        theChildren = msiNavigationUtils.getSignificantContents(nameData.appearance);
+
+      if (theChildren.length > 0)
       {
         bUsedAppearance = true;
         var insertNode = null;
-        if (nameData.appearance.childNodes.length == 1)
+        if (theChildren.length == 1)
         {
-          insertNode = nameData.appearance.childNodes[0].cloneNode(true);
+          insertNode = theChildren[0].cloneNode(true);
         }
         else
         {
           insertNode = editor.document.createElementNS(mmlns, "mrow");
-          for (var ix = 0; ix < nameData.appearance.childNodes.length; ++ix)
+          for (var ix = 0; ix < theChildren.length; ++ix)
           {
-            insertNode.appendChild( nameData.appearance.childNodes[ix].cloneNode(true) );
+            insertNode.appendChild( theChildren[ix].cloneNode(true) );
           }
         }
-        var nextNode = wrappedUnitNode.nextSibling;
         if (insertNode != null)
         {
-          if (nextNode != null)
-            wrappedUnitNode.parentNode.insertBefore(insertNode, nextNode);
-          else
-            wrappedUnitNode.parentNode.appendChild(insertNode);
-          wrappedUnitNode.parentNode.removeChild(wrappedUnitNode);
+          editor.replaceNode(insertNode, wrappedUnitNode, wrappedUnitNode.parentNode);
           if (wrappedUnitNode == unitNode)
             retVal = insertNode;
         }
@@ -1643,11 +1577,12 @@ function reviseMathUnit(unitNode, newName, editorElement)
     }
     if (!bUsedAppearance)
     {
-      wrappedUnitNode.textContent = nameData.data;
+      msiSetMathTokenText(wrappedUnitNode, nameData.data, editor);
     }
     editorElement.contentWindow.focus();
   } 
-  catch (e) {}
+  catch (e) {dump("Error in mathmlOverlay.js, reviseMathUnit; exception is [" + e + "].\n");}
+  editor.endTransaction();
 
   return retVal;
 }
@@ -2158,11 +2093,11 @@ function doPanelLoad(panel,elementtype)
 }
 
 //In the following, "styleVals" is assumed to be passed in as a key-value type object (i.e., styleVals[key]=value).
-function applyMathStyleToObject(styleVals, objType, targ)
+function applyMathStyleToObject(styleVals, objType, targ, editor)
 {
   //First we need to see whether the "targ" object or a near descendant (or ancestor? shouldn't happen, but may) is an "mstyle".
   //By "near descendant or ancestor" I mean a node which is essentially a wrapper around "targ", or which "targ" is a wrapper around.
-  
+
   var foundAttrs = new Object();
   var styleNode = null;
 
@@ -2208,10 +2143,11 @@ function applyMathStyleToObject(styleVals, objType, targ)
   {
     if ( !(attrib in foundAttrs) || (foundAttrs[attrib] != styleVals[attrib]) )
     {
-      if (styleVals[attrib].length > 0)
-        styleNode.setAttribute(attrib, styleVals[attrib]);
-      else if (styleNode.hasAttribute(attrib))
-        styleNode.removeAttribute(attrib);
+      msiEditorEnsureElementAttribute(styleNode, attrib, styleVals[attrib], editor);
+//      if (styleVals[attrib].length > 0)
+//        styleNode.setAttribute(attrib, styleVals[attrib]);
+//      else if (styleNode.hasAttribute(attrib))
+//        styleNode.removeAttribute(attrib);
     }
     delete styleVals[attrib];
   }
@@ -2223,19 +2159,12 @@ function applyMathStyleToObject(styleVals, objType, targ)
       var kid = msiNavigationUtils.getSingleWrappedChild(styleNode);
       if (kid != null)
       {
-        var nextSib = styleNode.nextSibling;
-        if (nextSib != null)
-        {
-          //NOTE! Here we set "targ" so it can be used as the return value - it's the new revisable object
-          targ = styleNode.parentNode.insertBefore(styleNode.removeChild(kid), nextSib);
-          styleNode.parentNode.removeChild(styleNode);
-        }
-        else
-        {
-          //NOTE! Here we set "targ" so it can be used as the return value - it's the new revisable object
-          targ = styleNode.parentNode.appendChild(styleNode.removeChild(kid));
-          styleNode.parentNode.removeChild(styleNode);
-        }
+        var theParentNode = styleNode.parentNode;
+//        kid = styleNode.removeChild(kid);
+        editor.deleteNode(kid);
+        editor.replaceNode(kid, styleNode, theParentNode);
+        //NOTE! Here we set "targ" so it can be used as the return value - it's the new revisable object
+        targ = kid;
       }
     }
     else
@@ -2243,18 +2172,10 @@ function applyMathStyleToObject(styleVals, objType, targ)
   }
   else if (bAddStyleNode)
   {
-    var nextSib = targ.nextSibling;
     var theParent = targ.parentNode;
-    var newTarg = theParent.removeChild(targ);
+    var newTarg = targ.cloneNode(true);
     styleNode.appendChild(newTarg);
-    if (nextSib != null)
-    {
-      theParent.insertBefore(styleNode, nextSib);
-    }
-    else
-    {
-      theParent.appendChild(styleNode);
-    }
+    editor.replaceNode(styleNode, targ, theParent);
   }
 
   if (bAddStyleNode)
@@ -2333,49 +2254,36 @@ function reviseFence(fenceNode, left, right, editorElement)
     editorElement = msiGetActiveEditorElement(window);
   var editor = msiGetEditor(editorElement);
   var retVal = fenceNode;
+  var wrappedFenceNode = msiNavigationUtils.getWrappedObject(fenceNode, "fence");
 
+  if (wrappedFenceNode == null)
+  {
+    dump("Problem in mathmlOverlay.js, reviseFence - fence node not found!\n");
+    return retVal;
+  }
+  var theChildren = msiNavigationUtils.getSignificantContents(wrappedFenceNode);
+  if (theChildren.length == 0)
+  {
+    dump("Problem in mathmlOverlay.js, reviseFence - supposed fence node has no children?\n");
+    return retVal;
+  }
+
+  editor.beginTransaction();
   try 
   {
-    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    if (!mathmlEditor)
-      logStr = "In insertfence, editor element [" + editorElement.id + "] has editor, but null mathmlEditor!\n";
+//    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+//    if (!mathmlEditor)
+//      logStr = "In insertfence, editor element [" + editorElement.id + "] has editor, but null mathmlEditor!\n";
 
-    var wrappedFenceNode = msiNavigationUtils.getWrappedObject(fenceNode, "fence");
-    if (wrappedFenceNode != null)
-    {
-      var theChildren = msiNavigationUtils.getSignificantContents(wrappedFenceNode);
-      if (theChildren.length > 0)
-      {
-        var firstNode = theChildren[0];
-        var newFirst = msiSetMathTokenText(firstNode, left, editor);
+    var firstNode = theChildren[0];
+    var newFirst = msiSetMathTokenText(firstNode, left, editor);
 
-//        if (firstNode.textContent != left)
-//        {
-//          var opening = wrappedFenceNode.ownerDocument.createElementNS(mmlns, "mo");
-//          msiCopyElementAttributes(opening, firstNode);
-//          opening.appendChild(wrappedFenceNode.ownerDocument.createTextNode(left));
-//          wrappedFenceNode.replaceChild(opening, firstNode);
-////          firstNode.textContent = left;
-//        }
-        var lastNode = theChildren[theChildren.length - 1];
-        var newLast = msiSetMathTokenText(lastNode, right, editor);
-//        if (lastNode.textContent != right)
-//        {
-//          var closing = wrappedFenceNode.ownerDocument.createElementNS(mmlns, "mo");
-//          msiCopyElementAttributes(closing, lastNode);
-//          closing.appendChild(wrappedFenceNode.ownerDocument.createTextNode(right));
-//          wrappedFenceNode.replaceChild(closing, lastNode);
-////          lastNode.textContent = right;
-//        }
-      }
-      else
-        dump("Problem in mathmlOverlay.js, reviseFence - supposed fence node has no children?\n");
-    }
-    else
-      dump("Problem in mathmlOverlay.js, reviseFence - fence node not found!\n");
+    var lastNode = theChildren[theChildren.length - 1];
+    var newLast = msiSetMathTokenText(lastNode, right, editor);
     editorElement.contentWindow.focus();
   } 
   catch (e) { dump("Error in mathmlOverlay.js, reviseFence! [" + e + "].\n"); }
+  editor.endTransaction();
 
   return retVal;
 }
@@ -2412,7 +2320,7 @@ function insertmath(editorElement)
 function newbox(editor) 
 {
   var box = editor.document.createElementNS(mmlns,"mi");
-//  box.appendChild(editor.document.createTextNode("\u25A1"));
+////  box.appendChild(editor.document.createTextNode("\u25A1"));
   box.appendChild(editor.document.createTextNode("\u200B"));
   box.setAttribute("tempinput","true");
   return box;
