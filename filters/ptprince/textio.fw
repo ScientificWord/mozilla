@@ -231,9 +231,9 @@ void LineOfText::StripTCIMEnd(bool bMiddle)
    if (bMiddle){
        if ( (str[n-1] == (TeXChar)'\x0d'))
          if ( str[n-2] == '%' )        
-            str.erase(n-3, 2);
+            str.erase(n-2, 2);
          else
-            str.erase(n-2,1);
+            str.erase(n-1,1);
          
        
       
