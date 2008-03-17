@@ -1081,7 +1081,8 @@ const char* SearchFor(const char* searchfile)
 
    static char pathbuffer[_MAX_PATH];
    char envvar[] = "MSITEXINPUT";
-
+   if (getenv("MSITEXINPUT"))
+     LOG("Search env: MSITEXINPUT =" << getenv("MSITEXINPUT"));
    _searchenv( searchfile, envvar, pathbuffer );
    if( *pathbuffer != '\0' ){
       LOG("\nPath for " << searchfile << " == " << pathbuffer);
