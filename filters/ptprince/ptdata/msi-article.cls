@@ -54,7 +54,6 @@
 
 %% Finish up
 
-\immediate\openout2={css/doc.css}
-\immediate\write2{@import url("resource://app/res/css/article.css");}
+\def\classcss{@import url("resource://app/res/css/article.css");}
 
 \makeatother

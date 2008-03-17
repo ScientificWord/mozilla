@@ -2,13 +2,12 @@
 
 
 \def\msimakecss{
-   \msitraceon
    \def\css{2}	  % the css output file
    \openout\css={css/my.css} %% the CSS style file for this document
    \write\css{@import url("resource://app/res/css/baselatex.css");}
    \write\css{@import url("resource://app/res/css/latex.css");}
+   \write\css{\classcss}
    \closeout\css
-   \msitraceoff
 }
 
 \msi@dollar=`\$
@@ -33,6 +32,17 @@
 \def\out@newcounterB#1[#2]{%                                                              
   \br\msitag{<texb>\newcounter{#1}[#2]</texb>}%
 }
+
+
+%% redefine these to produce output
+\def\setcounter#1#2{%
+    \expandafter\global\csname c@#1\endcsname#2\relax
+    \br\msitag{<texb>\string\setcounter{#1}{#2}</texb>}}
+
+\def\addtocounter#1#2{%
+    \expandafter\global\advance\csname c@#1\endcsname #2\relax
+    \out@addtocounter{#1}{#2}}
+
 
 \msi@inline@proc={jbm}
 \msi@display@proc{jbm}
@@ -179,9 +189,15 @@
 
 \def\ref#1{\msiopentag{ref}{<html:a>}#1\msiclosetag{ref}{</html:a>}}
 \def\pageref#1{\msiopentag{pageref}{<pageref>}#1\msiclosetag{pageref}{</pageref>}}
-\def\pagenumbering#1{\msiopentag{latexstyleb}{<latexstyleb>}\msiopentag{styleprop}
-  {<styleprop>}page number style\msiclosetag{styleprop}{</styleprop>}\msiopentag{styledata}{<styledata>}#1
-  \msiclosetag{styledata}{</styledata>}\msiclosetag{latexstyleb}{</latexstyleb>}}
+\def\pagenumbering#1{%
+   \msiopentag{latexstyleb}{<latexstyleb>}%
+      \msiopentag{styleprop}{<styleprop>}%
+         page number style
+      \msiclosetag{styleprop}{</styleprop>}%
+      \msiopentag{styledata}{<styledata>}%
+         #1
+      \msiclosetag{styledata}{</styledata>}%
+   \msiclosetag{latexstyleb}{</latexstyleb>}}
 
 
 \def\msi@pass#1{\def#1{\msitag{#1}}}
@@ -1170,6 +1186,13 @@
 
 \def\backslash{\@hex{5c}}
 
+%\def\textendash{\@hex{e28093}}
+%\def\textemdash{\@hex{e28094}}
+
+\def\textemdash{\@hex{2014}}
+
+
+
 {\catcode`\$=11\relax
  \gdef\${\char`\$}
 }
@@ -1209,6 +1232,8 @@
 
 
 \def\msi@uni#1#2{\@namedef{#1}{\@hex{#2}}}
+
+
 
 \msi@uni{i}{131} %dotless i
 \msi@uni{j}{132} %dotless j
@@ -1524,6 +1549,9 @@
 
 
 
+
+
+
 \def\out@hrulefill{%
    <hspace fillWith="line" flex="1" class="stretchySpace" type="stretchySpace"></hspace>}
 
@@ -1806,5 +1834,6 @@
    \br\msiopentag{body}{<html:body>}
    \br\msiopentag{preamble}{<sw:preamble>}
 }
+
 
 
