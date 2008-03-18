@@ -1,11 +1,35 @@
-% Macros for Scientific Word and Scientific WorkPlace 5.5 documents saved with the LaTeX filter.
-% Copyright (C) 2005 Mackichan Software, Inc.
 \typeout{TCILATEX Macros for Scientific Word and Scientific WorkPlace 5.5 <06 Oct 2005>.}
-\typeout{NOTICE:  This macro file is NOT proprietary and may be 
-freely copied and distributed.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be freely copied and distributed.}
 %
 \makeatletter
 
+\def\QTR#1{%
+   \let\@temp=\relax
+   \ifmmode
+      \string\QTR\@brace{#1}%
+      \let@temp=\QTRa
+   \else
+      \msiopentag{QTR}{<QTR type="#1">}%
+      \let\@temp=\QTRb   
+   \fi
+   \@temp
+}
+
+\def\QTRa#1{\@brace{#1}}
+
+\def\QTRb{% gobble the brace and start QTRc
+    \afterassignment\QTRc
+    \let\junk
+}
+   
+\def\QTRc{% process the stuff inside the second param to QTR
+    \bgroup
+    \aftergroup\QTRd
+}
+
+\def\QTRd{%
+   \msiclosetag{QTR}{</QTR>}%
+}
 
 %%%%%%%%%%%%%%%%%%%%%
 % pdfTeX related.
@@ -517,9 +541,8 @@ freely copied and distributed.}
 %
 %
 % macros for user - defined functions
-\def\limfunc#1{\mathop{\rm #1}}%
-\def\func#1{\mathop{\rm #1}\nolimits}%
-% macro for unit names
+
+
 \def\unit#1{\mathord{\thinspace\rm #1}}%
 
 %
@@ -532,7 +555,9 @@ freely copied and distributed.}
 \@ifundefined{Qlt}{\def\Qlt#1{#1}}{}
 \def\QWE{}%
 \long\def\QQA#1#2{}%
-\def\QTR#1#2{{\csname#1\endcsname {#2}}}%
+
+
+
   %	Add aliases for the ulem package
   \let\QQQuline\uline
   \let\QQQsout\sout
