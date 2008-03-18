@@ -1698,15 +1698,8 @@
 \def\text#1{\msitag{\text{#1}}}
 
 \def\vspace#1{\ifmmode\else\msitag{<vspace/>}\fi}
-\def\ {\ifmmode\char92\char32\else\msitag{<nbsp/>}\fi}
 
-\def\QTR#1#2{%
-   \ifmmode
-      \string\QTR\@brace{#1}\@brace{#2}%
-   \else
-      \msiopentag{QTR}{<QTR type="#1">}#2\msiclosetag{QTR}{</QTR>}%
-   \fi
-}
+
 
 
 %%\def\msi@textsmall#1{\msiopentag{<small>}#1\msiclosetag{</small>}}
