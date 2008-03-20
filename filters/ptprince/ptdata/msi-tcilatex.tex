@@ -564,7 +564,10 @@
   \let\QQQuuline\uuline
   \let\QQQuwave\uwave
   \let\QQQxout\xout
-\long\def\TeXButton#1#2{#2}%
+
+\def\TeXButton#1#2{%
+   \msitag{<TeXButton><TBLabel>#1</TBLabel><TBTeX>#2</TBTeX></TeXButton>}}
+
 \long\def\QSubDoc#1#2{#2}%
 \def\EXPAND#1[#2]#3{}%
 \def\NOEXPAND#1[#2]#3{}%
@@ -599,41 +602,6 @@
 \def\QQfnmark#1{\footnotemark}
 \def\QQfntext#1#2{\addtocounter{footnote}{#1}\footnotetext{#2}}
 %
-% Macros for indexing.
-%
-\@ifundefined{TCIMAKEINDEX}{}{\makeindex}%
-%
-% Attempts to avoid problems with other styles
-\@ifundefined{abstract}{%
- \def\abstract{%
-  \if@twocolumn
-   \section*{Abstract (Not appropriate in this style!)}%
-   \else \small 
-   \begin{center}{\bf Abstract\vspace{-.5em}\vspace{\z@}}\end{center}%
-   \quotation 
-   \fi
-  }%
- }{%
- }%
-\@ifundefined{endabstract}{\def\endabstract
-  {\if@twocolumn\else\endquotation\fi}}{}%
-\@ifundefined{maketitle}{\def\maketitle#1{}}{}%
-\@ifundefined{affiliation}{\def\affiliation#1{}}{}%
-\@ifundefined{proof}{\def\proof{\noindent{\bfseries Proof. }}}{}%
-\@ifundefined{endproof}{\def\endproof{\mbox{\ \rule{.1in}{.1in}}}}{}%
-\@ifundefined{newfield}{\def\newfield#1#2{}}{}%
-\@ifundefined{chapter}{\def\chapter#1{\par(Chapter head:)#1\par }%
- \newcount\c@chapter}{}%
-\@ifundefined{part}{\def\part#1{\par(Part head:)#1\par }}{}%
-\@ifundefined{section}{\def\section#1{\par(Section head:)#1\par }}{}%
-\@ifundefined{subsection}{\def\subsection#1%
- {\par(Subsection head:)#1\par }}{}%
-\@ifundefined{subsubsection}{\def\subsubsection#1%
- {\par(Subsubsection head:)#1\par }}{}%
-\@ifundefined{paragraph}{\def\paragraph#1%
- {\par(Subsubsubsection head:)#1\par }}{}%
-\@ifundefined{subparagraph}{\def\subparagraph#1%
- {\par(Subsubsubsubsection head:)#1\par }}{}%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % These symbols are not recognized by LaTeX
 \@ifundefined{therefore}{\def\therefore{}}{}%

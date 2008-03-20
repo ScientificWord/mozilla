@@ -33,8 +33,6 @@
 
 %% Miscellaneous commands
 
-\msi@pass{\LaTeX}
-\msi@pass{\TeX}
 \msi@pass{\textquotedblleft}
 \msi@pass{\textquotedblright}
 \msi@pass{\textbackslash}
@@ -122,5 +120,6 @@
 \@text@tag{scriptsize}
 \@text@tag{footnotesize}
 
-\immediate\openout2={my.css}
-\immediate\write2{@import url("resource://app/res/css/book.css");}
+
+\def\classcss{@import url("resource://app/res/css/book.css");}
+
