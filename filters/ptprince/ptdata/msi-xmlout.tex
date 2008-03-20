@@ -1,6 +1,9 @@
 \makeatletter
 
 
+% This writes the css file my.css. 
+% Do this at the end because it happens that we don't know what css are required. 
+ 
 \def\msimakecss{
    \def\css{2}	  % the css output file
    \openout\css={css/my.css} %% the CSS style file for this document
@@ -9,6 +12,8 @@
    \write\css{\classcss}
    \closeout\css
 }
+
+\def\classcss{}
 
 \msi@dollar=`\$
 
@@ -85,8 +90,8 @@
    %%\br\msiclosetag{docbody}{</sw:docbody>}%
    \br\msiclosetag{body}{</html:body>}
    \br\msitag{</html:html>}%
+   \msimakecss
    \endinput
-   \closeout\csi
 }
 
 
@@ -1201,6 +1206,7 @@
 \def\/{\msitag{<italic-correction/>}}
 
 \def\@hex#1{\char38\char35x#1;}
+
 \def\@accent#1#2{%
   \ifx#1\i
     \csname dotlessi-#2\endcsname
@@ -1230,6 +1236,7 @@
 \def\r#1{\@accent{#1}{r}}
 
 
+%% \'{\^{e}}
 
 \def\msi@uni#1#2{\@namedef{#1}{\@hex{#2}}}
 
@@ -1812,7 +1819,6 @@
 %% Temporary until prince can read xml
 
 \def\msi@opendocument{%
-   \msimakecss
    \msitag{<?xml version="1.0"?>}\br
    \msitag{<?xml-stylesheet href="}\jobname\char`_files\msitag{/css/my.css" type="text/css"?>}\br
    \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">}
