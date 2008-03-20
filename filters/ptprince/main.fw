@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
    // Set up tex input directory
    char envInput[_MAX_PATH+12];
    char envOutput[_MAX_PATH+12];
-   strcpy(envInput, "MSITEXINPUT=");
+   strcpy(envInput, "MSITEXINPUT=.;");
    strcpy(envOutput, "MSIOUTPUT=");
    for (int j = 0; j < argc; ++j)
    {
