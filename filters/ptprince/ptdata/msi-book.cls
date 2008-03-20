@@ -33,8 +33,6 @@
 
 %% Miscellaneous commands
 
-\msi@pass{\LaTeX}
-\msi@pass{\TeX}
 \msi@pass{\textquotedblleft}
 \msi@pass{\textquotedblright}
 \msi@pass{\textbackslash}
