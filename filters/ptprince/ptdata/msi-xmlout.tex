@@ -1,6 +1,5 @@
 \makeatletter
 
-
 % This writes the css file my.css. 
 % Do this at the end because it happens that we don't know what css are required. 
  
@@ -531,13 +530,18 @@
 \def\@cr{\@ifnextchar[{\@cra}{\@crb}}
 \def\@cra[#1]{\cr}%
 \def\@crb{\cr}%
-\def\msi@begin@tabular#1{
+\def\msi@begin@tabular{%
+   \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
+}
+
+
+\def\msi@begin@tabularA[#1]#2{%
    \ifmmode
-      \def\donext{\@make@braces@other\relax\msi@mtabular{#1}}%
+      \def\donext{\@make@braces@other\relax\msi@mtabular{#2}}%
    \else
       \def\donext{%
          \begingroup
-            \msiopentag{tabular}{<tabular opt="#1">}%
+            \msiopentag{tabular}{<tabular opt="#2">}%
             \aftergroup\msi@closetabular
             \hbox\bgroup
               \let\\=\@cr
@@ -716,6 +720,11 @@
 \msi@mathmlpass{\cot}
 \msi@mathmlpass{\sec}
 \msi@mathmlpass{\csc}
+
+\msi@pass{\arcsin}
+\msi@pass{\arccos}
+\msi@pass{\arctan}
+
 
 \msi@mathmlpass{\ln}
 
@@ -1700,6 +1709,8 @@
 \msi@mathmlpass{\sinh}
 \msi@mathmlpass{\cosh}
 \msi@mathmlpass{\tanh}
+\msi@mathmlpass{\coth}
+\msi@mathmlpass{\exp}
 \msi@mathmlpass{\mathstrut}
 
 \def\text#1{\msitag{\text{#1}}}

@@ -3,26 +3,15 @@
 
 %% Sectioning
 
-\newsection{part}{1}{Part \the\sectionnumber}{h1}%
-\newsection{chapter}{1}{Chapter \the\sectionnumber}{h1}%
-\newsection{section}{1}{Section \the\sectionnumber}{h1}%
-\newsection{subsection}{2}{\the\sectionnumber.\the\subsectionnumber}{h2}%
-\newsection{subsubsection}{3}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber}{h3}%
-\newsection{paragraph}{4}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{h4}%
-\newsection{subparagraph}{5}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{h4}%
+\newsection{part}{1}{Part \the\sectionnumber}{sectiontitle}%
+\newsection{chapter}{2}{Chapter \the\chapternumber}{sectiontitle}
+\newsection{section}{2}{Section \the\sectionnumber}{sectiontitle}%
+\newsection{subsection}{3}{\the\sectionnumber.\the\subsectionnumber}{sectiontitle}%
+\newsection{subsubsection}{4}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber}{sectiontitle}%
+\newsection{paragraph}{5}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
+\newsection{subparagraph}{6}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
 
-%% Environments
 
-\msi@environment{quotation}
-\msi@environment{quote}
-\msi@environment{enumerate}
-\msi@environment{itemize}
-\msi@environment{description}
-\msi@environment{verse}
-\msi@environment{figure}
-\msi@environment{figure*}
-\msi@environment{table}
-\msi@environment{table*}
 
 
 %% Frontmatter commands
