@@ -94,6 +94,9 @@ public:
    void    SkipToEnd();
    TeXChar operator[](int) const;
    void    StripTCIMEnd(bool bMiddle = false);
+   void    DumpStr();
+
+   friend LogFile& operator<<(LogFile& f, const LineOfText& t);
 };
 @};
 
@@ -223,18 +226,21 @@ void LineOfText::StripTCIMEnd(bool bMiddle)
 {
    std::basic_string<TeXChar>& str = m_lineData -> m_line;
    int n = str.length();
-   std::string realstring;
-   for (int i = 0; i < str.length(); ++i){
-      realstring += (char)str[i];
-   }
-   LOG("\nStrip string: " << realstring.c_str());
+   //std::string realstring;
+   //for (int i = 0; i < str.length(); ++i){
+   //   realstring += (char)str[i];
+   //}
+   //LOG("\nStrip string: " << realstring.c_str());
    if (bMiddle){
-       if ( (str[n-1] == (TeXChar)'\x0d'))
+       if ( (str[n-1] == (TeXChar)'\x0d')) {
          if ( str[n-2] == '%' ){        
             str.erase(n-2, 2);
          } else {
             str.erase(n-1, 1);
-         }      
+         }
+         if (m_lineData -> m_cursor > str.length())
+              m_lineData -> m_cursor = str.length();
+       }      
    } else {
       if ( (str[n-2] == (TeXChar)'%')  && (str[n-3] == (TeXChar)'}')){
          str.erase(n-3, 3);
@@ -253,9 +259,13 @@ void LineOfText::StripTCIMEnd(bool bMiddle)
    LogFile& operator<<(LogFile& f, const LineOfText& t)
    {
        for (int i = 0; i < t.nSize(); ++i){
+           if (i == t.m_lineData->m_cursor){
+              f << " [] ";
+           }
            f << t[i];
        }
-
+       if (t.nSize() == t.m_lineData->m_cursor)
+          f << " [] ";
        return f;
    }
 #endif
@@ -821,12 +831,14 @@ bool LineSource::GetLine(LineOfText* pLine)
         // scan ahead removing leading % until a line starts
         // with %BeginExpansion or a non %. Then remove 
         // the preceeding brace-percent
+        LOG("\nLINE: " << *pLine);
         while (true){
             LineOfText* pNextLine = new LineOfText;
             if ( GetRawLine(pNextLine) ){
                 if ( pNextLine -> bPeek("%BeginExpansion") ) {
                    LOG("\nFound BeginExpansion");
                    pLine -> StripTCIMEnd();
+                   LOG("\nFINAL A: " << *pLine);
                    do{
                      GetRawLine(pNextLine);
                    } while (!pNextLine -> bPeek("%EndExpansion"));
@@ -834,11 +846,13 @@ bool LineSource::GetLine(LineOfText* pLine)
                    break;
                 } else if ( pNextLine -> bPeek("%" )) {
                    pLine -> StripTCIMEnd(true);
-                   CopyLine (pNextLine, pLine); 
+                   CopyLine (pNextLine, pLine);
+                   LOG("\nINTER: " << *pLine); 
                    delete pNextLine;
                 } else {
                    LOG("\nNon-comment next line");
                    pLine -> StripTCIMEnd();
+                   LOG("\nFINAL B: " << *pLine);
                    m_held = pNextLine;
                    break;
                 }
