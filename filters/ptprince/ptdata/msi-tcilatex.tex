@@ -537,13 +537,6 @@
 \def\BF#1{{\bf {#1}}}%
 \def\NEG#1{\leavevmode\hbox{\rlap{\thinspace/}{$#1$}}}%
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%
-% macros for user - defined functions
-
-
-\def\unit#1{\mathord{\thinspace\rm #1}}%
 
 %
 % miscellaneous 
@@ -673,46 +666,6 @@
   \DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
 \fi
 
-%
-% Greek bold macros
-% Redefine all of the math symbols 
-% which might be bolded	 - there are 
-% probably others to add to this list
-
-\def\alpha{{\Greekmath 010B}}%
-\def\beta{{\Greekmath 010C}}%
-\def\gamma{{\Greekmath 010D}}%
-\def\delta{{\Greekmath 010E}}%
-\def\epsilon{{\Greekmath 010F}}%
-\def\zeta{{\Greekmath 0110}}%
-\def\eta{{\Greekmath 0111}}%
-\def\theta{{\Greekmath 0112}}%
-\def\iota{{\Greekmath 0113}}%
-\def\kappa{{\Greekmath 0114}}%
-\def\lambda{{\Greekmath 0115}}%
-\def\mu{{\Greekmath 0116}}%
-\def\nu{{\Greekmath 0117}}%
-\def\xi{{\Greekmath 0118}}%
-\def\pi{{\Greekmath 0119}}%
-\def\rho{{\Greekmath 011A}}%
-\def\sigma{{\Greekmath 011B}}%
-\def\tau{{\Greekmath 011C}}%
-\def\upsilon{{\Greekmath 011D}}%
-\def\phi{{\Greekmath 011E}}%
-\def\chi{{\Greekmath 011F}}%
-\def\psi{{\Greekmath 0120}}%
-\def\omega{{\Greekmath 0121}}%
-\def\varepsilon{{\Greekmath 0122}}%
-\def\vartheta{{\Greekmath 0123}}%
-\def\varpi{{\Greekmath 0124}}%
-\def\varrho{{\Greekmath 0125}}%
-\def\varsigma{{\Greekmath 0126}}%
-\def\varphi{{\Greekmath 0127}}%
-
-\def\nabla{{\Greekmath 0272}}
-\def\FindBoldGroup{%
-   {\setbox0=\hbox{$\mathbf{x\global\edef\theboldgroup{\the\mathgroup}}$}}%
-}
 
 \def\Greekmath#1#2#3#4{%
     \if@compatibility
