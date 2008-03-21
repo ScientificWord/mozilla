@@ -167,6 +167,11 @@ alternative would be to write something like
      s_pStream = new std::ofstream;
      s_pStream -> open("tex.log");
      ASSERT(s_pLog != 0);
+     char path[200];
+     if (_getcwd(path, 200)){
+       (*s_pStream) << "\nCWD = " << path;
+     }
+
    }
 
    void LogFile::Close()
