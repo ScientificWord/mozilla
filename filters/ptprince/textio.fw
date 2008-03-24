@@ -95,8 +95,9 @@ public:
    TeXChar operator[](int) const;
    void    StripTCIMEnd(bool bMiddle = false);
    void    DumpStr();
-
+#ifdef LOGGING
    friend LogFile& operator<<(LogFile& f, const LineOfText& t);
+#endif
 };
 @};
 
