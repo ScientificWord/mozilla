@@ -5182,8 +5182,11 @@
       {\string\indexentry{#1}{\thepage}}%
  \endgroup
  \@esphack}
-\def\index{\@bsphack\begingroup \@sanitize\@index}
-\def\@index#1{\endgroup\@esphack}
+
+%%\def\index{\@bsphack\begingroup \@sanitize\@index}
+\def\index#1{\msitag{<index>#1</index>}}
+
+%%\def\@index#1{\endgroup\@esphack}
 \def\makeglossary{%
   \newwrite\@glossaryfile
   \immediate\openout\@glossaryfile=\jobname.glo
@@ -5352,21 +5355,6 @@
   \global\@twocolumnfalse
   \col@number \@ne
   \@floatplacement}
-\def \newpage {%
-  \if@noskipsec
-    \ifx \@nodocument\relax
-      \leavevmode
-      \global \@noskipsecfalse
-    \fi
-  \fi
-  \if@inlabel
-    \leavevmode
-    \global \@inlabelfalse
-  \fi
-  \if@nobreak \@nobreakfalse \everypar{}\fi
-  \par
-  \vfil
-  \penalty -\@M}
 \def \@emptycol {\vbox{}\penalty -\@M}
 \def \twocolumn {%
   \clearpage
