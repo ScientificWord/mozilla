@@ -13,6 +13,7 @@ files = \
 		$(wildcard $(srcdir)/*.cls) \
 		$(wildcard $(srcdir)/*.tex) \
 		$(wildcard $(srcdir)/*.cfg) \
+    $(wildcard $(srcdir)/*.sty) \
     $(NULL)
 
 include $(topsrcdir)/config/config.mk
