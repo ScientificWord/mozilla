@@ -79,15 +79,44 @@ texb, latexstyleb {
 TBLabel {
     -moz-appearance: button;
     color: gray;
-    border: 3px solid;
-    padding: 2px 10px;
+    border: 1px solid;
+    padding: 1px 2px;
     min-width: 6.3em;
+    font-size: 10pt;
 
 }
 
 TBTeX {
    display: none;
 }
+
+
+
+index {
+  -moz-appearance: button;
+  color: green;
+  font-size: 12pt;
+  border: 1px solid;
+  padding: 1px 2px;
+  min-width: 6.3em;
+  font-size: 10pt;
+
+}
+
+index:before {content:"Index: "}
+
+requestimplementation {
+  -moz-appearance: button;
+  color: brown;
+  font-size: 12pt;
+  border: 1px solid;
+  padding: 1px 2px;
+  min-width: 6.3em;
+  font-size: 10pt;
+}
+
+
+requestimplementation:before {content: "Support Me: "}
 
 maketitle { display:block;
   min-height: 10pt;
