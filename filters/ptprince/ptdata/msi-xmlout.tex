@@ -1,5 +1,8 @@
 \makeatletter
 
+\def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
+
+
 % This writes the css file my.css. 
 % Do this at the end because it happens that we don't know what css are required. 
  
@@ -1572,13 +1575,14 @@
    <hspace fillWith="line" flex="1" class="stretchySpace" type="stretchySpace"></hspace>}
 
 
-%%\def\msi@hook@hfil{\msitag{\hfil}}
-%%\def\msi@hook@hfill{\msitag{\hfill}}
+\msi@rfi{\newpage}{\newpage}
+\msi@rfi{\msi@hook@hfil}{\hfil}
+\msi@rfi{\msi@hook@hfill}{\hfill}
+
+\msi@rfi{\msi@hook@vfil}{\vfil}
+\msi@rfi{\msi@hook@vfill}{\vfill}
+
 %%\def\msi@hook@hss{\msitag{\hss}}
-
-
-%%\def\msi@hook@vfil{\msitag{\vfil}}
-%%\def\msi@hook@vfill{\msitag{\vfill}}
 %%\def\msi@hook@vss{\msitag{\vss}}
 
 
@@ -1715,8 +1719,13 @@
 
 \def\text#1{\msitag{\text{#1}}}
 
-\def\vspace#1{\ifmmode\else\msitag{<vspace/>}\fi}
-
+\def\vspace#1{%
+   \ifmmode
+     \string\vspace\@brace{#1}%
+   \else
+     \msitag{<vspace dim="#1" type="customSpace"></vspace>}%
+   \fi
+}
 
 
 
@@ -1749,6 +1758,7 @@
 
 \def\@text@tag#1{%
    \expandafter\def\csname#1\endcsname{%
+      \msihmode
       \if@in@texttag
          \expandafter\@ttclose\expandafter{\@lasttexttag}%
       \else
