@@ -48,11 +48,6 @@ section sectiontitle {
   font-weight: bold;
 }
 
-/*
-section>sectiontitle:before {
-  content: counter(section) ".  ";
-}
-*/
 
 subsection{
   display: block;
@@ -67,11 +62,7 @@ subsection sectiontitle {
   font-size: large;
 }
 
-/*
-subsection>sectiontitle:before {
-  content: counter(section) "." counter(subsection) ".  ";
-}
-*/
+
 
 subsubsection {
   display:block;
@@ -87,11 +78,6 @@ subsubsection sectiontitle {
   font-weight: bold;
 }
 
-/*
-subsubsection>sectiontitle:before {
-  content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
-}
-*/
 
 paragraph {
   display:block;
@@ -104,11 +90,7 @@ paragraph sectiontitle {
   font-style: italic;
 }
 
-/*  
-paragraph>sectiontitle:before {
-  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  "; 
-}
-*/
+
 
 p {
   display: block;
@@ -411,6 +393,13 @@ QTR[type="MenuDialog"] {
   font-family: Courier;
   font-size: 12pt;
   font-weight: bold;  
+}
+
+QTR[type="NoteLeadin"] {
+  color: red;
+  font-family: Courier;
+  font-size: 12pt;
+  font-weight: bold; 
 }
 
 
