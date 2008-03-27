@@ -1596,9 +1596,10 @@
    \ifmmode
       \string\label\@brace{#1}%
    \else
-      %\msiopentag{<a name="#1">}[label here]\msiclosetag{</a>}
+      \msitag{<marker id="#1"/>}%
    \fi
 }
+
 \def\frac#1#2{\string\frac\@brace{#1}\@brace{#2}}
 \def\dfrac#1#2{\string\dfrac\@brace{#1}\@brace{#2}}
 
