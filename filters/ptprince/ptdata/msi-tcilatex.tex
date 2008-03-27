@@ -31,6 +31,13 @@
    \msiclosetag{QTR}{</QTR>}%
 }
 
+\def\QTP#1{%
+   \msihmode
+   \msiopentag{QTP}{<QTP type="#1">}% 
+   \begingroup
+   \everypar={\msiclosetag{QTP}{</QTP>}\endgroup}%
+}
+
 %%%%%%%%%%%%%%%%%%%%%
 % pdfTeX related.
 \ifx\pdfoutput\relax\let\pdfoutput=\undefined\fi
@@ -542,7 +549,6 @@
 % miscellaneous 
 \long\def\QQQ#1#2{%
      \long\expandafter\def\csname#1\endcsname{#2}}%
-\@ifundefined{QTP}{\def\QTP#1{}}{}
 \@ifundefined{QEXCLUDE}{\def\QEXCLUDE#1{}}{}
 \@ifundefined{Qlb}{\def\Qlb#1{#1}}{}
 \@ifundefined{Qlt}{\def\Qlt#1{#1}}{}

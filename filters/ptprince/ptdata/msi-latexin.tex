@@ -1004,9 +1004,30 @@
   \else
     \@noitemerr
   \fi}
-\def\smallskip{\vspace\smallskipamount}
-\def\medskip{\vspace\medskipamount}
-\def\bigskip{\vspace\bigskipamount}
+
+
+\def\smallskip{
+   \ifmmode\string\smallskip
+   \else
+      \vspace\smallskipamount
+   \fi
+}
+
+\def\medskip{
+   \ifmmode\string\medskip
+   \else
+      \vspace\medskipamount
+   \fi
+}
+
+\def\bigskip{
+   \ifmmode\string\bigskip
+   \else
+      \vspace\bigskipamount
+   \fi
+}
+
+
 \newskip\smallskipamount \smallskipamount=3pt plus 1pt minus 1pt
 \newskip\medskipamount   \medskipamount  =6pt plus 2pt minus 2pt
 \newskip\bigskipamount   \bigskipamount =12pt plus 4pt minus 4pt
@@ -3074,17 +3095,17 @@
     \fi
                        }%
 }
-\DeclareTextFontCommand{\textrm}{\rmfamily}
-\DeclareTextFontCommand{\textsf}{\sffamily}
-\DeclareTextFontCommand{\texttt}{\ttfamily}
-\DeclareTextFontCommand{\textnormal}{\normalfont}
-\DeclareTextFontCommand{\textbf}{\bfseries}
-\DeclareTextFontCommand{\textmd}{\mdseries}
-\DeclareTextFontCommand{\textit}{\itshape}
-\DeclareTextFontCommand{\textsl}{\slshape}
-\DeclareTextFontCommand{\textsc}{\scshape}
-\DeclareTextFontCommand{\textup}{\upshape}
-\DeclareTextFontCommand{\emph}{\em}
+%%% jcs \DeclareTextFontCommand{\textrm}{\rmfamily}
+%%% jcs \DeclareTextFontCommand{\textsf}{\sffamily}
+%%% jcs \DeclareTextFontCommand{\texttt}{\ttfamily}
+%%% jcs \DeclareTextFontCommand{\textnormal}{\normalfont}
+%%% jcs \DeclareTextFontCommand{\textbf}{\bfseries}
+%%% jcs \DeclareTextFontCommand{\textmd}{\mdseries}
+%%% jcs \DeclareTextFontCommand{\textit}{\itshape}
+%%% jcs \DeclareTextFontCommand{\textsl}{\slshape}
+%%% jcs \DeclareTextFontCommand{\textsc}{\scshape}
+%%% jcs \DeclareTextFontCommand{\textup}{\upshape}
+%%% jcs \DeclareTextFontCommand{\emph}{\em}
 \let \nocorr \relax
 \let \check@icl \@empty
 \let \check@icr \@empty
