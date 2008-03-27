@@ -258,5 +258,27 @@ drop {
   padding-top: .08em;
 }
 
+marker {
+  background-color: gray;
+}
+
+marker:before {
+  content: "[Marker: " attr(id) "]";
+}
+
+
+
+IncludeSubdoc {
+  display: block;
+  background-color: gray;
+}
+
+IncludeSubdoc:before {
+  content: "Include: "
+}
+
+IncludeSubdoc>TeX {
+  display: none;
+}
 
 
