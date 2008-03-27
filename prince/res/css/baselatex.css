@@ -259,23 +259,4 @@ drop {
 }
 
 
-QTR[type="MenuDialog"] {
-  color: cyan;
-  font-family: Courier;
-  font-size: 12pt;
-  font-weight: bold;
-
-   
-}
-
-QTR[type="KeyName"] {
-  color: orange;
-  font-family: Courier;
-  font-size: 12pt;
-  font-weight: bold;
-
-   
-}
-
-
 
