@@ -9,6 +9,7 @@
       \string\QTR\@brace{#1}%
       \let@temp=\QTRa
    \else
+      \msihmode
       \msiopentag{QTR}{<QTR type="#1">}%
       \let\@temp=\QTRb   
    \fi
@@ -567,7 +568,12 @@
 \def\TeXButton#1#2{%
    \msitag{<TeXButton><TBLabel>#1</TBLabel><TBTeX>#2</TBTeX></TeXButton>}}
 
-\long\def\QSubDoc#1#2{#2}%
+\def\QSubDoc#1#2{%
+   \msitag{<IncludeSubdoc><Label>#1</Label><TeX>#2</TeX></IncludeSubdoc>}%
+}
+
+
+
 \def\EXPAND#1[#2]#3{}%
 \def\NOEXPAND#1[#2]#3{}%
 \def\PROTECTED{}%
