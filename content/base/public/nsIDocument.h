@@ -41,14 +41,16 @@
 #include "nsStringGlue.h"
 #include "nsIDocumentObserver.h" // for nsUpdateType
 #include "nsCOMPtr.h"
+#include "nsCOMArray.h"
 #include "nsIURI.h"
-#include "nsIBindingManager.h"
 #include "nsWeakPtr.h"
 #include "nsIWeakReferenceUtils.h"
 #include "nsILoadGroup.h"
 #include "nsCRT.h"
 #include "mozFlushType.h"
 #include "nsIAtom.h"
+#include "nsCompatibility.h"
+#include "nsTObserverArray.h"
 
 class nsIContent;
 class nsPresContext;
@@ -75,8 +77,7 @@ class nsIPrincipal;
 class nsIDOMDocument;
 class nsIDOMDocumentType;
 class nsIObserver;
-class nsISupportsArray;
-class nsIScriptLoader;
+class nsScriptLoader;
 class nsIContentSink;
 class nsIScriptEventManager;
 class nsNodeInfoManager;
@@ -88,11 +89,16 @@ class nsIVariant;
 class nsIDOMUserDataHandler;
 template<class E> class nsCOMArray;
 class nsIDocumentObserver;
+class nsBindingManager;
+class nsIDOMNodeList;
+class mozAutoSubtreeModified;
+struct JSObject;
+class nsFrameLoader;
 
 // IID for the nsIDocument interface
 #define NS_IDOCUMENT_IID      \
-{ 0x63f0c69a, 0x255a, 0x432f, \
-  { 0xa7, 0xe4, 0xaf, 0x81, 0x10, 0x56, 0x28, 0xef } }
+{ 0x3c441ae9, 0xaa82, 0x4102, \
+  { 0xa3, 0x16, 0x3b, 0x97, 0x2b, 0x60, 0x2b, 0x05 } }
 
 // Flag for AddStyleSheet().
 #define NS_STYLESHEET_FROM_CATALOG                (1 << 0)
@@ -111,8 +117,13 @@ public:
   nsIDocument()
     : nsINode(nsnull),
       mCharacterSet(NS_LITERAL_CSTRING("ISO-8859-1")),
+      mBindingManager(nsnull),
       mNodeInfoManager(nsnull),
-      mPartID(0)
+      mCompatMode(eCompatibility_FullStandards),
+      mIsInitialDocumentInWindow(PR_FALSE),
+      mMayStartLayout(PR_TRUE),
+      mPartID(0),
+      mJSObject(nsnull)
   {
     mParentPtrBits |= PARENT_BIT_INDOCUMENT;
   }
@@ -141,6 +152,11 @@ public:
    * @param aSink The content sink to use for the data.  If this is null and
    *              the document needs a content sink, it will create one based
    *              on whatever it knows about the data it's going to load.
+   *
+   * Once this has been called, the document will return false for
+   * MayStartLayout() until SetMayStartLayout(PR_TRUE) is called on it.  Making
+   * sure this happens is the responsibility of the caller of
+   * StartDocumentLoad().
    */  
   virtual nsresult StartDocumentLoad(const char* aCommand,
                                      nsIChannel* aChannel,
@@ -228,6 +244,8 @@ public:
     return mCharacterSetSource;
   }
 
+  // This method MUST be called before SetDocumentCharacterSet if
+  // you're planning to call both.
   void SetDocumentCharacterSetSource(PRInt32 aCharsetSource)
   {
     mCharacterSetSource = aCharsetSource;
@@ -263,7 +281,7 @@ public:
     CopyASCIItoUTF16(mContentLanguage, aContentLanguage);
   }
 
-  // The state BidiEnabled should persist across multiple views
+  // The states BidiEnabled and MathMLEnabled should persist across multiple views
   // (screen, print) of the same document.
 
   /**
@@ -285,6 +303,37 @@ public:
   {
     mBidiEnabled = aBidiEnabled;
   }
+  
+  /**
+   * Check if the document contains (or has contained) any MathML elements.
+   */
+  PRBool GetMathMLEnabled() const
+  {
+    return mMathMLEnabled;
+  }
+  
+  void SetMathMLEnabled()
+  {
+    mMathMLEnabled = PR_TRUE;
+  }
+
+  /**
+   * Ask this document whether it's the initial document in its window.
+   */
+  PRBool IsInitialDocument() const
+  {
+    return mIsInitialDocumentInWindow;
+  }
+  
+  /**
+   * Tell this document that it's the initial document in its window.  See
+   * comments on mIsInitialDocumentInWindow for when this should be called.
+   */
+  void SetIsInitialDocument(PRBool aIsInitialDocument)
+  {
+    mIsInitialDocumentInWindow = aIsInitialDocument;
+  }
+  
 
   /**
    * Get the bidi options for this document.
@@ -316,16 +365,18 @@ public:
   /**
    * Create a new presentation shell that will use aContext for its
    * presentation context (presentation contexts <b>must not</b> be
-   * shared among multiple presentation shells).
+   * shared among multiple presentation shells). The caller of this
+   * method is responsible for calling BeginObservingDocument() on the
+   * presshell if the presshell should observe document mutations.
    */
   virtual nsresult CreateShell(nsPresContext* aContext,
                                nsIViewManager* aViewManager,
                                nsStyleSet* aStyleSet,
                                nsIPresShell** aInstancePtrResult) = 0;
   virtual PRBool DeleteShell(nsIPresShell* aShell) = 0;
-  virtual PRUint32 GetNumberOfShells() const = 0;
-  virtual nsIPresShell *GetShellAt(PRUint32 aIndex) const = 0;
-  virtual void SetShellsHidden(PRBool aHide) = 0;
+  virtual nsIPresShell *GetPrimaryShell() const = 0;
+  void SetShellsHidden(PRBool aHide) { mShellsAreHidden = aHide; }
+  PRBool ShellsAreHidden() const { return mShellsAreHidden; }
 
   /**
    * Return the parent document of this document. Will return null
@@ -366,8 +417,12 @@ public:
    */
   nsIContent *GetRootContent() const
   {
-    return mRootContent;
+    return (mCachedRootContent &&
+            mCachedRootContent->GetNodeParent() == this) ?
+           reinterpret_cast<nsIContent*>(mCachedRootContent.get()) :
+           GetRootContentInternal();
   }
+  virtual nsIContent *GetRootContentInternal() const = 0;
 
   /**
    * Accessors to the collection of stylesheets owned by this document.
@@ -480,6 +535,19 @@ public:
   virtual void SetScriptGlobalObject(nsIScriptGlobalObject* aGlobalObject) = 0;
 
   /**
+   * Get/set the object from which the context for the event/script handling can
+   * be got. Normally GetScriptHandlingObject() returns the same object as
+   * GetScriptGlobalObject(), but if the document is loaded as data,
+   * non-null may be returned, even if GetScriptGlobalObject() returns null.
+   * aHasHadScriptHandlingObject is set PR_TRUE if document has had the object
+   * for event/script handling. Do not process any events/script if the method
+   * returns null, but aHasHadScriptHandlingObject is true.
+   */
+  virtual nsIScriptGlobalObject*
+    GetScriptHandlingObject(PRBool& aHasHadScriptHandlingObject) const = 0;
+  virtual void SetScriptHandlingObject(nsIScriptGlobalObject* aScriptObject) = 0;
+
+  /**
    * Get the object that is used as the scope for all of the content
    * wrappers whose owner document is this document. Unlike the script global
    * object, this will only return null when the global object for this
@@ -503,7 +571,7 @@ public:
   /**
    * Get the script loader for this document
    */ 
-  virtual nsIScriptLoader* GetScriptLoader() = 0;
+  virtual nsScriptLoader* ScriptLoader() = 0;
 
   //----------------------------------------------------------------------
 
@@ -559,7 +627,7 @@ public:
    */
   virtual void FlushPendingNotifications(mozFlushType aType) = 0;
 
-  nsIBindingManager* BindingManager() const
+  nsBindingManager* BindingManager() const
   {
     return mBindingManager;
   }
@@ -576,13 +644,21 @@ public:
   /**
    * Reset the document using the given channel and loadgroup.  This works
    * like ResetToURI, but also sets the document's channel to aChannel.
+   * The principal of the document will be set from the channel.
    */
   virtual void Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup) = 0;
 
   /**
-   * Reset this document to aURI and aLoadGroup.  aURI must not be null.
+   * Reset this document to aURI, aLoadGroup, and aPrincipal.  aURI must not be
+   * null.  If aPrincipal is null, a codebase principal based on aURI will be
+   * used.
    */
-  virtual void ResetToURI(nsIURI *aURI, nsILoadGroup* aLoadGroup) = 0;
+  virtual void ResetToURI(nsIURI *aURI, nsILoadGroup* aLoadGroup,
+                          nsIPrincipal* aPrincipal) = 0;
+
+  virtual void AddReference(void *aKey, nsISupports *aReference) = 0;
+  virtual nsISupports *GetReference(void *aKey) = 0;
+  virtual void RemoveReference(void *aKey) = 0;
 
   /**
    * Set the container (docshell) for this document.
@@ -627,11 +703,6 @@ public:
   virtual PRBool IsScriptEnabled() = 0;
 
   virtual nsresult AddXMLEventsContent(nsIContent * aXMLEventsElement) = 0;
-
-  virtual PRBool IsLoadedAsData()
-  {
-    return PR_FALSE;
-  }
 
   /**
    * Create an element with the specified name, prefix and namespace ID.
@@ -791,6 +862,97 @@ public:
    */
   virtual void ClearBoxObjectFor(nsIContent *aContent) = 0;
 
+  /**
+   * Get the compatibility mode for this document
+   */
+  nsCompatibility GetCompatibilityMode() const {
+    return mCompatMode;
+  }
+
+  /**
+   * See GetXBLChildNodesFor on nsBindingManager
+   */
+  virtual nsresult GetXBLChildNodesFor(nsIContent* aContent,
+                                       nsIDOMNodeList** aResult) = 0;
+
+  /**
+   * See GetContentListFor on nsBindingManager
+   */
+  virtual nsresult GetContentListFor(nsIContent* aContent,
+                                     nsIDOMNodeList** aResult) = 0;
+
+  /**
+   * See FlushSkinBindings on nsBindingManager
+   */
+  virtual void FlushSkinBindings() = 0;
+
+  /**
+   * To batch DOMSubtreeModified, document needs to be informed when
+   * a mutation event might be dispatched, even if the event isn't actually
+   * created because there are no listeners for it.
+   *
+   * @param aTarget is the target for the mutation event.
+   */
+  void MayDispatchMutationEvent(nsINode* aTarget)
+  {
+    if (mSubtreeModifiedDepth > 0) {
+      mSubtreeModifiedTargets.AppendObject(aTarget);
+    }
+  }
+
+  /**
+   * Marks as not-going-to-be-collected for the given generation of
+   * cycle collection.
+   */
+  void MarkUncollectableForCCGeneration(PRUint32 aGeneration)
+  {
+    mMarkedCCGeneration = aGeneration;
+  }
+
+  /**
+   * Gets the cycle collector generation this document is marked for.
+   */
+  PRUint32 GetMarkedCCGeneration()
+  {
+    return mMarkedCCGeneration;
+  }
+
+  PRBool IsLoadedAsData()
+  {
+    return mLoadedAsData;
+  }
+
+  PRBool MayStartLayout()
+  {
+    return mMayStartLayout;
+  }
+
+  void SetMayStartLayout(PRBool aMayStartLayout)
+  {
+    mMayStartLayout = aMayStartLayout;
+  }
+
+  JSObject* GetJSObject() const
+  {
+    return mJSObject;
+  }
+
+  void SetJSObject(JSObject *aJSObject)
+  {
+    mJSObject = aJSObject;
+  }
+
+  // This method should return an addrefed nsIParser* or nsnull. Implementations
+  // should transfer ownership of the parser to the caller.
+  virtual already_AddRefed<nsIParser> GetFragmentParser() {
+    return nsnull;
+  }
+
+  virtual void SetFragmentParser(nsIParser* aParser) {
+    // Do nothing.
+  }
+
+  virtual nsresult FinalizeFrameLoader(nsFrameLoader* aLoader) = 0;
 protected:
   ~nsIDocument()
   {
@@ -798,7 +960,18 @@ protected:
     //     releasing it) happens in the nsDocument destructor. We'd prefer to
     //     do it here but nsNodeInfoManager is a concrete class that we don't
     //     want to expose to users of the nsIDocument API outside of Gecko.
+    // XXX Same thing applies to mBindingManager
   }
+
+  /**
+   * These methods should be called before and after dispatching
+   * a mutation event.
+   * To make this easy and painless, use the mozAutoSubtreeModified helper class.
+   */
+  virtual void WillDispatchMutationEvent(nsINode* aTarget) = 0;
+  virtual void MutationEventDispatched(nsINode* aTarget) = 0;
+  friend class mozAutoSubtreeModified;
+  friend class nsPresShellIterator;
 
   nsString mDocumentTitle;
   nsCOMPtr<nsIURI> mDocumentURI;
@@ -814,22 +987,44 @@ protected:
   // This is just a weak pointer; the parent document owns its children.
   nsIDocument* mParentDocument;
 
-  // A weak reference to the only child element, or null if no
-  // such element exists.
-  nsIContent* mRootContent;
+  // A reference to the content last returned from GetRootContent().
+  // This should be an nsIContent, but that would force us to pull in
+  // nsIContent.h
+  nsCOMPtr<nsINode> mCachedRootContent;
 
-  nsCOMPtr<nsIBindingManager> mBindingManager;
+  // We'd like these to be nsRefPtrs, but that'd require us to include
+  // additional headers that we don't want to expose.
+  // The cleanup is handled by the nsDocument destructor.
+  nsBindingManager* mBindingManager; // [STRONG]
   nsNodeInfoManager* mNodeInfoManager; // [STRONG]
-
-  nsICSSLoader* mCSSLoader; // [STRONG; not a COMPtr to avoid
-                            // including nsICSSLoader.h; the ownership
-                            // is managed by nsDocument]
+  nsICSSLoader* mCSSLoader; // [STRONG]
 
   // Table of element properties for this document.
   nsPropertyTable mPropertyTable;
 
+  // Compatibility mode
+  nsCompatibility mCompatMode;
+
   // True if BIDI is enabled.
-  PRBool mBidiEnabled;
+  PRPackedBool mBidiEnabled;
+  // True if a MathML element has ever been owned by this document.
+  PRPackedBool mMathMLEnabled;
+
+  // True if this document is the initial document for a window.  This should
+  // basically be true only for documents that exist in newly-opened windows or
+  // documents created to satisfy a GetDocument() on a window when there's no
+  // document in it.
+  PRPackedBool mIsInitialDocumentInWindow;
+
+  PRPackedBool mShellsAreHidden;
+
+  // True if we're loaded as data and therefor has any dangerous stuff, such
+  // as scripts and plugins, disabled.
+  PRPackedBool mLoadedAsData;
+
+  // If true, whoever is creating the document has gotten it to the
+  // point where it's safe to start layout on it.
+  PRPackedBool mMayStartLayout;
 
   // The bidi options for this document.  What this bitfield means is
   // defined in nsBidiUtils.h
@@ -844,6 +1039,21 @@ protected:
   // if this document is part of a multipart document,
   // the ID can be used to distinguish it from the other parts.
   PRUint32 mPartID;
+  
+  // Cycle collector generation in which we're certain that this document
+  // won't be collected
+  PRUint32 mMarkedCCGeneration;
+
+  nsTObserverArray<nsIPresShell*> mPresShells;
+
+  nsCOMArray<nsINode> mSubtreeModifiedTargets;
+  PRUint32            mSubtreeModifiedDepth;
+
+private:
+  // JSObject cache. Only to be used for performance
+  // optimizations. This will be set once this document is touched
+  // from JS, and it will be unset once the JSObject is finalized.
+  JSObject *mJSObject;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIDocument, NS_IDOCUMENT_IID)
@@ -887,6 +1097,48 @@ private:
   mozAutoDocUpdate MOZ_AUTO_DOC_UPDATE_PASTE(_autoDocUpdater_, __LINE__) \
   (doc,type,notify)
 
+/**
+ * mozAutoSubtreeModified batches DOM mutations so that a DOMSubtreeModified
+ * event is dispatched, if necessary, when the outermost mozAutoSubtreeModified
+ * object is deleted.
+ */
+class mozAutoSubtreeModified
+{
+public:
+  /**
+   * @param aSubTreeOwner The document in which a subtree will be modified.
+   * @param aTarget       The target of the possible DOMSubtreeModified event.
+   *                      Can be nsnull, in which case mozAutoSubtreeModified
+   *                      is just used to batch DOM mutations.
+   */
+  mozAutoSubtreeModified(nsIDocument* aSubtreeOwner, nsINode* aTarget)
+  {
+    UpdateTarget(aSubtreeOwner, aTarget);
+  }
+
+  ~mozAutoSubtreeModified()
+  {
+    UpdateTarget(nsnull, nsnull);
+  }
+
+  void UpdateTarget(nsIDocument* aSubtreeOwner, nsINode* aTarget)
+  {
+    if (mSubtreeOwner) {
+      mSubtreeOwner->MutationEventDispatched(mTarget);
+    }
+
+    mTarget = aTarget;
+    mSubtreeOwner = aSubtreeOwner;
+    if (mSubtreeOwner) {
+      mSubtreeOwner->WillDispatchMutationEvent(mTarget);
+    }
+  }
+
+private:
+  nsCOMPtr<nsINode>     mTarget;
+  nsCOMPtr<nsIDocument> mSubtreeOwner;
+};
+
 // XXX These belong somewhere else
 nsresult
 NS_NewHTMLDocument(nsIDocument** aInstancePtrResult);
@@ -916,7 +1168,8 @@ NS_NewDOMDocument(nsIDOMDocument** aInstancePtrResult,
                   nsIDOMDocumentType* aDoctype,
                   nsIURI* aDocumentURI,
                   nsIURI* aBaseURI,
-                  nsIPrincipal* aPrincipal);
+                  nsIPrincipal* aPrincipal,
+                  PRBool aLoadedAsData);
 nsresult
 NS_NewPluginDocument(nsIDocument** aInstancePtrResult);
 

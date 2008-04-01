@@ -44,7 +44,8 @@
 #include "nsIDocumentTransformer.h"
 #include "nsTArray.h"
 #include "nsCOMPtr.h"
-
+#include "nsCRT.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsIDocument;
 class nsIURI;
@@ -73,6 +74,8 @@ public:
   nsXMLContentSink();
   virtual ~nsXMLContentSink();
 
+  NS_DECL_AND_IMPL_ZEROING_OPERATOR_NEW
+
   nsresult Init(nsIDocument* aDoc,
                 nsIURI* aURL,
                 nsISupports* aContainer,
@@ -80,6 +83,9 @@ public:
 
   // nsISupports
   NS_DECL_ISUPPORTS_INHERITED
+
+  NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED_NO_UNLINK(nsXMLContentSink,
+                                                     nsContentSink)
 
   NS_DECL_NSIEXPATSINK
 
@@ -95,20 +101,24 @@ public:
   virtual nsISupports *GetTarget();
 
   // nsITransformObserver
-  NS_IMETHOD OnDocumentCreated(nsIDOMDocument *aResultDocument);
-  NS_IMETHOD OnTransformDone(nsresult aResult, nsIDOMDocument *aResultDocument);
+  NS_IMETHOD OnDocumentCreated(nsIDocument *aResultDocument);
+  NS_IMETHOD OnTransformDone(nsresult aResult, nsIDocument *aResultDocument);
 
+  // nsICSSLoaderObserver
+  NS_IMETHOD StyleSheetLoaded(nsICSSStyleSheet* aSheet, PRBool aWasAlternate,
+                              nsresult aStatus);
   static void ParsePIData(const nsString &aData, nsString &aHref,
                           nsString &aTitle, nsString &aMedia,
                           PRBool &aIsAlternate);
 
 protected:
-  virtual void MaybeStartLayout();
-  void StartLayout();
+  // Start layout.  If aIgnorePendingSheets is true, this will happen even if
+  // we still have stylesheet loads pending.  Otherwise, we'll wait until the
+  // stylesheets are all done loading.
+  virtual void MaybeStartLayout(PRBool aIgnorePendingSheets);
 
-  nsresult AddAttributes(const PRUnichar** aNode, nsIContent* aContent);
+  virtual nsresult AddAttributes(const PRUnichar** aNode, nsIContent* aContent);
   nsresult AddText(const PRUnichar* aString, PRInt32 aLength);
-  nsresult ProcessEndSCRIPTTag(nsIContent* aContent, nsIContent* aParent);
 
   virtual PRBool OnOpenContainer(const PRUnichar **aAtts, 
                                  PRUint32 aAttsCount, 
@@ -127,11 +137,9 @@ protected:
 
   // aParent is allowed to be null here if this is the root content
   // being closed
-  virtual nsresult CloseElement(nsIContent* aContent, nsIContent* aParent,
-                                PRBool* aAppendContent);
+  virtual nsresult CloseElement(nsIContent* aContent);
 
-  virtual nsresult FlushText(PRBool aCreateTextNode=PR_TRUE,
-                             PRBool* aDidFlush=nsnull);
+  virtual nsresult FlushText();
 
   nsresult AddContentAsLeaf(nsIContent *aContent);
 
@@ -162,13 +170,23 @@ protected:
                                     const nsSubstring& aMedia);
 
   nsresult LoadXSLStyleSheet(nsIURI* aUrl);
+
   PRBool CanStillPrettyPrint();
 
   nsresult MaybePrettyPrint();
   
   PRBool IsMonolithicContainer(nsINodeInfo* aNodeInfo);
 
+  nsresult HandleStartElement(const PRUnichar *aName, const PRUnichar **aAtts, 
+                              PRUint32 aAttsCount, PRInt32 aIndex, 
+                              PRUint32 aLineNumber,
+                              PRBool aInterruptable);
+  nsresult HandleEndElement(const PRUnichar *aName, PRBool aInterruptable);
+  nsresult HandleCharacterData(const PRUnichar *aData, PRUint32 aLength,
+                               PRBool aInterruptable);
+
   nsIContent*      mDocElement;
+  nsCOMPtr<nsIContent> mCurrentHead;  // When set, we're in an XHTML <haed>
   PRUnichar*       mText;
 
   XMLContentSinkState mState;
@@ -177,20 +195,21 @@ protected:
   
   PRInt32 mTextLength;
   PRInt32 mTextSize;
-  PRUint32 mScriptLineNo;
   
   PRInt32 mNotifyLevel;
 
   PRUint8 mConstrainSize : 1;
-  PRUint8 mInTitle : 1;
   PRUint8 mPrettyPrintXML : 1;
   PRUint8 mPrettyPrintHasSpecialRoot : 1;
   PRUint8 mPrettyPrintHasFactoredElements : 1;
   PRUint8 mHasProcessedBase : 1;
   PRUint8 mAllowAutoXLinks : 1;
-  PRUint8 unused : 1;  // bit available if someone needs one
+  PRUint8 mPrettyPrinting : 1;  // True if we called PrettyPrint() and it
+                                // decided we should in fact prettyprint.
+  PRUint8 unused : 1;  // bits available if someone needs one
   
   nsTArray<StackNode>              mContentStack;
+
   nsCOMPtr<nsIDocumentTransformer> mXSLTProcessor;
 };
 

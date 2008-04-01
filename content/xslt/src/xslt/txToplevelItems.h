@@ -51,8 +51,13 @@ class Expr;
 class txToplevelItem
 {
 public:
+    txToplevelItem()
+    {
+        MOZ_COUNT_CTOR(txToplevelItem);
+    }
     virtual ~txToplevelItem()
     {
+        MOZ_COUNT_DTOR(txToplevelItem);
     }
 
     enum type {
@@ -122,13 +127,13 @@ public:
 class txStripSpaceItem : public txToplevelItem
 {
 public:
-    virtual ~txStripSpaceItem();
+    ~txStripSpaceItem();
 
     TX_DECL_TOPLEVELITEM
 
     nsresult addStripSpaceTest(txStripSpaceTest* aStripSpaceTest);
 
-    nsVoidArray mStripSpaceTests;
+    nsTPtrArray<txStripSpaceTest> mStripSpaceTests;
 };
 
 // xsl:template

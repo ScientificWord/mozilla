@@ -51,6 +51,7 @@ REQUIRES	= xpcom \
 		  js \
 		  dom \
 		  gfx \
+		  thebes \
 		  layout \
 		  xultmpl \
 		  widget \
@@ -61,17 +62,13 @@ REQUIRES	= xpcom \
 		  pref \
 		  docshell \
 		  webshell \
-		  lwbrk \
 		  xuldoc \
 		  rdf \
 		  imglib2 \
 		  unicharutil \
 		  locale \
+		  util \
 		  $(NULL)
-
-EXPORTS		= \
-		nsXBLAtoms.h \
-		$(NULL)
 
 CPPSRCS		= \
     nsXBLBinding.cpp \
@@ -85,14 +82,17 @@ CPPSRCS		= \
     nsXBLProtoImplField.cpp \
     nsXBLProtoImpl.cpp \
     nsXBLEventHandler.cpp \
-    nsXBLWindowHandler.cpp \
     nsXBLWindowKeyHandler.cpp \
-    nsXBLWindowDragHandler.cpp \
     nsXBLPrototypeHandler.cpp \
     nsXBLService.cpp \
     nsBindingManager.cpp \
     nsXBLInsertionPoint.cpp \
 		$(NULL)
+
+EXPORTS   = \
+  nsBindingManager.h \
+  nsXBLBinding.h \
+  $(NULL)
 
 include $(topsrcdir)/config/config.mk
 
@@ -107,8 +107,10 @@ LOCAL_INCLUDES	= \
 		-I$(srcdir)/../../html/document/src \
 		-I$(srcdir)/../../xml/document/src \
 		-I$(srcdir)/../../xul/content/src \
+		-I$(srcdir)/../../xul/document/src \
 		-I$(srcdir)/../../events/src \
 		-I$(srcdir)/../../../layout/style \
+		-I$(srcdir)/../../../dom/src/base \
 		$(NULL)
 
 DEFINES += -D_IMPL_NS_LAYOUT

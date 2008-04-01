@@ -42,7 +42,7 @@
 #include "nsDOMAttribute.h"
 #include "nsGenericElement.h"
 #include "nsIContent.h"
-#include "nsITextContent.h"
+#include "nsContentCreatorFunctions.h"
 #include "nsINameSpaceManager.h"
 #include "nsDOMError.h"
 #include "nsContentUtils.h"
@@ -52,11 +52,11 @@
 #include "nsIDOMDocument.h"
 #include "nsIDOM3Attr.h"
 #include "nsIDOMUserDataHandler.h"
-#include "nsITextContent.h"
 #include "nsEventDispatcher.h"
 #include "nsGkAtoms.h"
 #include "nsCOMArray.h"
 #include "nsNodeUtils.h"
+#include "nsIEventListenerManager.h"
 
 //----------------------------------------------------------------------
 PRBool nsDOMAttribute::sInitialized;
@@ -64,7 +64,7 @@ PRBool nsDOMAttribute::sInitialized;
 nsDOMAttribute::nsDOMAttribute(nsDOMAttributeMap *aAttrMap,
                                nsINodeInfo       *aNodeInfo,
                                const nsAString   &aValue)
-  : nsIAttribute(aAttrMap, aNodeInfo), mValue(aValue), mChildList(nsnull)
+  : nsIAttribute(aAttrMap, aNodeInfo), mValue(aValue)
 {
   NS_ABORT_IF_FALSE(mNodeInfo, "We must get a nodeinfo here!");
 
@@ -73,55 +73,43 @@ nsDOMAttribute::nsDOMAttribute(nsDOMAttributeMap *aAttrMap,
   // to drop our reference when it goes away.
 }
 
-nsDOMAttribute::~nsDOMAttribute()
-{
-  nsNodeUtils::NodeWillBeDestroyed(this);
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsDOMAttribute)
 
-  if (mChildList) {
-    mChildList->DropReference();
-    NS_RELEASE(mChildList);
-  }
-}
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(nsDOMAttribute)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mChild)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_LISTENERMANAGER
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_USERDATA
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_PRESERVED_WRAPPER
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
 
-
+NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN(nsDOMAttribute)
+  NS_IMPL_CYCLE_COLLECTION_UNLINK_NSCOMPTR(mChild)
+  NS_IMPL_CYCLE_COLLECTION_UNLINK_LISTENERMANAGER
+  NS_IMPL_CYCLE_COLLECTION_UNLINK_USERDATA
+  NS_IMPL_CYCLE_COLLECTION_UNLINK_PRESERVED_WRAPPER
+NS_IMPL_CYCLE_COLLECTION_UNLINK_END
 // QueryInterface implementation for nsDOMAttribute
-NS_INTERFACE_MAP_BEGIN(nsDOMAttribute)
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsDOMAttribute)
   NS_INTERFACE_MAP_ENTRY(nsIDOMAttr)
   NS_INTERFACE_MAP_ENTRY(nsIAttribute)
   NS_INTERFACE_MAP_ENTRY(nsINode)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMGCParticipant)
   NS_INTERFACE_MAP_ENTRY(nsIDOMNode)
   NS_INTERFACE_MAP_ENTRY(nsIDOM3Node)
   NS_INTERFACE_MAP_ENTRY(nsIDOM3Attr)
-  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMAttr)
+  NS_INTERFACE_MAP_ENTRY(nsPIDOMEventTarget)
+  NS_INTERFACE_MAP_ENTRY_TEAROFF(nsISupportsWeakReference,
+                                 new nsNodeSupportsWeakRefTearoff(this))
+  // nsNodeSH::PreCreate() depends on the identity pointer being the
+  // same as nsINode (which nsIAttribute inherits), so if you change
+  // the below line, make sure nsNodeSH::PreCreate() still does the
+  // right thing!
+  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIAttribute)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(Attr)
 NS_INTERFACE_MAP_END
 
-
-NS_IMPL_ADDREF(nsDOMAttribute)
-NS_IMPL_RELEASE(nsDOMAttribute)
-
-// nsIDOMGCParticipant methods
-nsIDOMGCParticipant*
-nsDOMAttribute::GetSCCIndex()
-{
-  nsIContent *owner = GetContentInternal();
-
-  return owner ? owner->GetSCCIndex() : this;
-}
-
-void
-nsDOMAttribute::AppendReachableList(nsCOMArray<nsIDOMGCParticipant>& aArray)
-{
-  NS_ASSERTION(GetContentInternal() == nsnull,
-               "shouldn't be an SCC index if we're in an element");
-
-  // This node is the root of a subtree that's been removed from the
-  // document (since AppendReachableList is only called on SCC index
-  // nodes).  The document is reachable from it (through
-  // .ownerDocument), but it's not reachable from the document.
-  aArray.AppendObject(GetOwnerDoc());
-}
+NS_IMPL_CYCLE_COLLECTING_ADDREF_AMBIGUOUS(nsDOMAttribute, nsIDOMAttr)
+NS_IMPL_CYCLE_COLLECTING_RELEASE_FULL(nsDOMAttribute, nsIDOMAttr,
+                                      nsNodeUtils::LastRelease(this))
 
 void
 nsDOMAttribute::SetMap(nsDOMAttributeMap *aMap)
@@ -269,14 +257,18 @@ nsDOMAttribute::GetParentNode(nsIDOMNode** aParentNode)
 NS_IMETHODIMP
 nsDOMAttribute::GetChildNodes(nsIDOMNodeList** aChildNodes)
 {
-  if (!mChildList) {
-    mChildList = new nsAttributeChildList(this);
-    NS_ENSURE_TRUE(mChildList, NS_ERROR_OUT_OF_MEMORY);
+  nsSlots *slots = GetSlots();
+  NS_ENSURE_TRUE(slots, NS_ERROR_OUT_OF_MEMORY);
 
-    NS_ADDREF(mChildList);
+  if (!slots->mChildNodes) {
+    slots->mChildNodes = new nsChildContentList(this);
+    NS_ENSURE_TRUE(slots->mChildNodes, NS_ERROR_OUT_OF_MEMORY);
+    NS_ADDREF(slots->mChildNodes);
   }
 
-  return CallQueryInterface(mChildList, aChildNodes);
+  NS_ADDREF(*aChildNodes = slots->mChildNodes);
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -374,46 +366,26 @@ nsDOMAttribute::AppendChild(nsIDOMNode* aNewChild, nsIDOMNode** aReturn)
   return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-NS_IMETHODIMP
-nsDOMAttribute::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
+nsresult
+nsDOMAttribute::Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const
 {
-  *aReturn = nsnull;
-
   nsAutoString value;
-  GetValue(value);
+  const_cast<nsDOMAttribute*>(this)->GetValue(value);
 
-  nsCOMPtr<nsIDOMNode> newAttr = new nsDOMAttribute(nsnull, mNodeInfo, value);
-  if (!newAttr) {
+  *aResult = new nsDOMAttribute(nsnull, aNodeInfo, value);
+  if (!*aResult) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
 
-  nsIDocument *document = GetOwnerDoc();
-  if (document) {
-    // XXX For now, nsDOMAttribute has only one child. We need to notify about
-    //     cloning it, so we force creation here.
-    nsCOMPtr<nsIDOMNode> child;
-    GetFirstChild(getter_AddRefs(child));
-    nsCOMPtr<nsINode> childNode = do_QueryInterface(child);
-    if (childNode && childNode->HasProperties()) {
-      nsCOMPtr<nsIDOMNode> newChild;
-      newAttr->GetFirstChild(getter_AddRefs(newChild));
-      if (newChild) {
-        nsContentUtils::CallUserDataHandler(document,
-                                            nsIDOMUserDataHandler::NODE_CLONED,
-                                            childNode, child, newChild);
-      }
-    }
-
-    if (HasProperties()) {
-      nsContentUtils::CallUserDataHandler(document,
-                                          nsIDOMUserDataHandler::NODE_CLONED,
-                                          this, this, newAttr);
-    }
-  }
-
-  newAttr.swap(*aReturn);
+  NS_ADDREF(*aResult);
 
   return NS_OK;
+}
+
+NS_IMETHODIMP
+nsDOMAttribute::CloneNode(PRBool aDeep, nsIDOMNode** aResult)
+{
+  return nsNodeUtils::CloneNodeImpl(this, aDeep, aResult);
 }
 
 NS_IMETHODIMP
@@ -501,7 +473,7 @@ nsDOMAttribute::IsSupported(const nsAString& aFeature,
                             const nsAString& aVersion,
                             PRBool* aReturn)
 {
-  return nsGenericElement::InternalIsSupported(NS_STATIC_CAST(nsIDOMAttr*, this), 
+  return nsGenericElement::InternalIsSupported(static_cast<nsIDOMAttr*>(this), 
                                                aFeature, aVersion, aReturn);
 }
 
@@ -535,7 +507,7 @@ nsDOMAttribute::IsSameNode(nsIDOMNode* aOther,
 {
   NS_ASSERTION(aReturn, "IsSameNode() called with aReturn == nsnull!");
   
-  *aReturn = SameCOMIdentity(NS_STATIC_CAST(nsIDOMNode*, this), aOther);
+  *aReturn = SameCOMIdentity(static_cast<nsIDOMNode*>(this), aOther);
 
   return NS_OK;
 }
@@ -604,7 +576,7 @@ nsDOMAttribute::GetFeature(const nsAString& aFeature,
                            const nsAString& aVersion,
                            nsISupports** aReturn)
 {
-  return nsGenericElement::InternalGetFeature(NS_STATIC_CAST(nsIDOMAttr*, this), 
+  return nsGenericElement::InternalGetFeature(static_cast<nsIDOMAttr*>(this), 
                                               aFeature, aVersion, aReturn);
 }
 
@@ -613,29 +585,13 @@ nsDOMAttribute::SetUserData(const nsAString& aKey, nsIVariant* aData,
                             nsIDOMUserDataHandler* aHandler,
                             nsIVariant** aResult)
 {
-  nsCOMPtr<nsIAtom> key = do_GetAtom(aKey);
-  if (!key) {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-
-  return nsContentUtils::SetUserData(this, key, aData, aHandler, aResult);
+  return nsNodeUtils::SetUserData(this, aKey, aData, aHandler, aResult);
 }
 
 NS_IMETHODIMP
 nsDOMAttribute::GetUserData(const nsAString& aKey, nsIVariant** aResult)
 {
-  nsIDocument *document = GetOwnerDoc();
-  NS_ENSURE_TRUE(document, NS_ERROR_FAILURE);
-
-  nsCOMPtr<nsIAtom> key = do_GetAtom(aKey);
-  if (!key) {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-
-  *aResult = NS_STATIC_CAST(nsIVariant*, GetProperty(DOM_USER_DATA, key));
-  NS_IF_ADDREF(*aResult);
-
-  return NS_OK;
+  return nsNodeUtils::GetUserData(this, aKey, aResult);
 }
 
 NS_IMETHODIMP
@@ -770,11 +726,53 @@ nsDOMAttribute::DispatchDOMEvent(nsEvent* aEvent, nsIDOMEvent* aDOMEvent,
 }
 
 nsresult
+nsDOMAttribute::GetListenerManager(PRBool aCreateIfNotFound,
+                                   nsIEventListenerManager** aResult)
+{
+  return nsContentUtils::GetListenerManager(this, aCreateIfNotFound, aResult);
+}
+
+nsresult
+nsDOMAttribute::AddEventListenerByIID(nsIDOMEventListener *aListener,
+                                      const nsIID& aIID)
+{
+  nsCOMPtr<nsIEventListenerManager> elm;
+  nsresult rv = GetListenerManager(PR_TRUE, getter_AddRefs(elm));
+  if (elm) {
+    return elm->AddEventListenerByIID(aListener, aIID, NS_EVENT_FLAG_BUBBLE);
+  }
+  return rv;
+}
+
+nsresult
+nsDOMAttribute::RemoveEventListenerByIID(nsIDOMEventListener *aListener,
+                                         const nsIID& aIID)
+{
+  nsCOMPtr<nsIEventListenerManager> elm;
+  GetListenerManager(PR_FALSE, getter_AddRefs(elm));
+  if (elm) {
+    return elm->RemoveEventListenerByIID(aListener, aIID, NS_EVENT_FLAG_BUBBLE);
+  }
+  return NS_OK;
+}
+
+nsresult
+nsDOMAttribute::GetSystemEventGroup(nsIDOMEventGroup** aGroup)
+{
+  nsCOMPtr<nsIEventListenerManager> elm;
+  nsresult rv = GetListenerManager(PR_TRUE, getter_AddRefs(elm));
+  if (elm) {
+    return elm->GetSystemEventGroupLM(aGroup);
+  }
+  return rv;
+}
+
+nsresult
 nsDOMAttribute::EnsureChildState(PRBool aSetText, PRBool &aHasChild) const
 {
   aHasChild = PR_FALSE;
 
-  nsDOMAttribute* mutableThis = NS_CONST_CAST(nsDOMAttribute*, this);
+  nsDOMAttribute* mutableThis = const_cast<nsDOMAttribute*>(this);
 
   nsAutoString value;
   mutableThis->GetValue(value);
@@ -806,42 +804,4 @@ void
 nsDOMAttribute::Shutdown()
 {
   sInitialized = PR_FALSE;
-}
-
-//----------------------------------------------------------------------
-
-nsAttributeChildList::nsAttributeChildList(nsDOMAttribute* aAttribute)
-{
-  // Don't increment the reference count. The attribute will tell
-  // us when it's going away
-  mAttribute = aAttribute;
-}
-
-nsAttributeChildList::~nsAttributeChildList()
-{
-}
-
-NS_IMETHODIMP
-nsAttributeChildList::GetLength(PRUint32* aLength)
-{
-  *aLength = mAttribute ? mAttribute->GetChildCount() : 0;
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsAttributeChildList::Item(PRUint32 aIndex, nsIDOMNode** aReturn)
-{
-  *aReturn = nsnull;
-  if (mAttribute && 0 == aIndex) {
-    mAttribute->GetFirstChild(aReturn);
-  }
-
-  return NS_OK;
-}
-
-void
-nsAttributeChildList::DropReference()
-{
-  mAttribute = nsnull;
 }

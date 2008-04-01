@@ -50,25 +50,23 @@
 #include "nsHashtable.h"
 #include "nsIXBLDocumentInfo.h"
 #include "nsCOMArray.h"
-#include "nsIURL.h"
+#include "nsXBLProtoImpl.h"
 
 class nsIAtom;
 class nsIDocument;
 class nsIScriptContext;
-class nsISupportsArray;
 class nsSupportsHashtable;
 class nsIXBLService;
 class nsFixedSizeAllocator;
-class nsXBLProtoImpl;
+class nsXBLProtoImplField;
 class nsXBLBinding;
 
 // *********************************************************************/
 // The XBLPrototypeBinding class
 
-// References to the prototype binding are held by each nsXBLBinding instance
-// that uses this prototype binding, and also by the XBLDocumentInfo's
-// binding table (with the XUL cache disabled).
-
+// Instances of this class are owned by the nsXBLDocumentInfo object returned
+// by XBLDocumentInfo().  Consumers who want to refcount things should refcount
+// that.
 class nsXBLPrototypeBinding
 {
 public:
@@ -77,11 +75,8 @@ public:
 
   nsIURI* BindingURI() const { return mBindingURI; }
   nsIURI* DocURI() const { return mXBLDocInfoWeak->DocumentURI(); }
-  nsresult GetID(nsACString& aResult) const { return mBindingURI->GetRef(aResult); }
 
   nsresult GetAllowScripts(PRBool* aResult);
-
-  PRBool IsChrome() { return mXBLDocInfoWeak->IsChrome(); }
 
   nsresult BindingAttached(nsIContent* aBoundElement);
   nsresult BindingDetached(nsIContent* aBoundElement);
@@ -99,6 +94,30 @@ public:
   nsXBLProtoImplAnonymousMethod* GetDestructor();
   nsresult SetDestructor(nsXBLProtoImplAnonymousMethod* aDestructor);
 
+  nsXBLProtoImplField* FindField(const nsString& aFieldName) const
+  {
+    return mImplementation ? mImplementation->FindField(aFieldName) : nsnull;
+  }
+
+  // Resolve all the fields for this binding on the object |obj|.
+  // False return means a JS exception was set.
+  PRBool ResolveAllFields(JSContext* cx, JSObject* obj) const
+  {
+    return !mImplementation || mImplementation->ResolveAllFields(cx, obj);
+  }
+
+  // Undefine all our fields from object |obj| (which should be a
+  // JSObject for a bound element).
+  void UndefineFields(JSContext* cx, JSObject* obj) const {
+    if (mImplementation) {
+      mImplementation->UndefineFields(cx, obj);
+    }
+  }
+
+  const nsCString& ClassName() const {
+    return mImplementation ? mImplementation->mClassName : EmptyCString();
+  }
+
   nsresult InitClass(const nsCString& aClassName, JSContext * aContext,
                      JSObject * aGlobal, JSObject * aScriptObject,
                      void ** aClassObject);
@@ -107,6 +126,7 @@ public:
   
   void SetImplementation(nsXBLProtoImpl* aImpl) { mImplementation = aImpl; }
   nsresult InstallImplementation(nsIContent* aBoundElement);
+  PRBool HasImplementation() const { return mImplementation != nsnull; }
 
   void AttributeChanged(nsIAtom* aAttribute, PRInt32 aNameSpaceID,
                         PRBool aRemoveFlag, nsIContent* aChangedElement,
@@ -175,12 +195,15 @@ public:
   nsresult Init(const nsACString& aRef,
                 nsIXBLDocumentInfo* aInfo,
                 nsIContent* aElement);
-  
+
+  void Traverse(nsCycleCollectionTraversalCallback &cb) const;
+  void UnlinkJSObjects();
+  void Trace(TraceCallback aCallback, void *aClosure) const;
+
 // Static members
   static PRUint32 gRefCnt;
  
   static nsFixedSizeAllocator* kAttrPool;
-  static nsFixedSizeAllocator* kInsPool;
 
 // Internal member functions.
 // XXXbz GetImmediateChild needs to be public to be called by SetAttrs,
@@ -231,7 +254,7 @@ protected:
 
 // MEMBER VARIABLES
 protected:
-  nsCOMPtr<nsIURL> mBindingURI;
+  nsCOMPtr<nsIURI> mBindingURI;
   nsCOMPtr<nsIContent> mBinding; // Strong. We own a ref to our content element in the binding doc.
   nsAutoPtr<nsXBLPrototypeHandler> mPrototypeHandler; // Strong. DocInfo owns us, and we own the handlers.
   
@@ -258,8 +281,6 @@ protected:
 
   PRInt32 mBaseNameSpaceID;    // If we extend a tagname/namespace, then that information will
   nsCOMPtr<nsIAtom> mBaseTag;  // be stored in here.
-
-  nsAutoRefCnt mRefCnt;
 
   nsCOMArray<nsXBLKeyEventHandler> mKeyHandlers;
 };

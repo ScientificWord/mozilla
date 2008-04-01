@@ -49,9 +49,13 @@
 #include "txURIUtils.h"
 #include "txXPathTreeWalker.h"
 
-NS_IMPL_ADDREF(nsXPathExpression)
-NS_IMPL_RELEASE(nsXPathExpression)
-NS_INTERFACE_MAP_BEGIN(nsXPathExpression)
+NS_IMPL_CYCLE_COLLECTION_1(nsXPathExpression, mDocument)
+
+NS_IMPL_CYCLE_COLLECTING_ADDREF_AMBIGUOUS(nsXPathExpression,
+                                          nsIDOMXPathExpression)
+NS_IMPL_CYCLE_COLLECTING_RELEASE_AMBIGUOUS(nsXPathExpression,
+                                           nsIDOMXPathExpression)
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsXPathExpression)
   NS_INTERFACE_MAP_ENTRY(nsIDOMXPathExpression)
   NS_INTERFACE_MAP_ENTRY(nsIDOMNSXPathExpression)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMXPathExpression)
@@ -59,13 +63,11 @@ NS_INTERFACE_MAP_BEGIN(nsXPathExpression)
 NS_INTERFACE_MAP_END
 
 nsXPathExpression::nsXPathExpression(nsAutoPtr<Expr>& aExpression,
-                                     txResultRecycler* aRecycler)
+                                     txResultRecycler* aRecycler,
+                                     nsIDOMDocument *aDocument)
     : mExpression(aExpression),
-      mRecycler(aRecycler)
-{
-}
-
-nsXPathExpression::~nsXPathExpression()
+      mRecycler(aRecycler),
+      mDocument(aDocument)
 {
 }
 
@@ -86,13 +88,23 @@ nsXPathExpression::EvaluateWithContext(nsIDOMNode *aContextNode,
                                        nsISupports *aInResult,
                                        nsISupports **aResult)
 {
-    NS_ENSURE_ARG(aContextNode);
+    nsCOMPtr<nsINode> context = do_QueryInterface(aContextNode);
+    NS_ENSURE_ARG(context);
 
     if (aContextPosition > aContextSize)
         return NS_ERROR_FAILURE;
 
     if (!nsContentUtils::CanCallerAccess(aContextNode))
         return NS_ERROR_DOM_SECURITY_ERR;
+
+    if (mDocument && mDocument != aContextNode) {
+        nsCOMPtr<nsIDOMDocument> contextDocument;
+        aContextNode->GetOwnerDocument(getter_AddRefs(contextDocument));
+
+        if (mDocument != contextDocument) {
+            return NS_ERROR_DOM_WRONG_DOCUMENT_ERR;
+        }
+    }
 
     nsresult rv;
     PRUint16 nodeType;
@@ -166,7 +178,7 @@ nsXPathExpression::EvaluateWithContext(nsIDOMNode *aContextNode,
         xpathResult = new nsXPathResult();
         NS_ENSURE_TRUE(xpathResult, NS_ERROR_OUT_OF_MEMORY);
     }
-    rv = xpathResult->SetExprResult(exprResult, resultType);
+    rv = xpathResult->SetExprResult(exprResult, resultType, context);
     NS_ENSURE_SUCCESS(rv, rv);
 
     return CallQueryInterface(xpathResult, aResult);

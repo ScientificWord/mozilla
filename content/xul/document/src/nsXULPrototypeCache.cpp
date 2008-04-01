@@ -40,22 +40,16 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsCOMPtr.h"
-#include "nsXPIDLString.h"
+#include "nsXULPrototypeCache.h"
+
 #include "nsContentUtils.h"
-#include "nsICSSStyleSheet.h"
-#include "nsIXULPrototypeCache.h"
-#include "nsIXULPrototypeDocument.h"
-#include "nsIXULDocument.h"
-#include "nsIURI.h"
-#include "nsIURL.h"
-#include "nsXPIDLString.h"
 #include "plstr.h"
-#include "nsIDocument.h"
-#include "nsIXBLDocumentInfo.h"
-#include "nsIServiceManager.h"
-#include "nsXULDocument.h"
+#include "nsXULPrototypeDocument.h"
+#include "nsICSSStyleSheet.h"
 #include "nsIScriptRuntime.h"
+#include "nsIServiceManager.h"
+#include "nsIURI.h"
+#include "nsIXBLDocumentInfo.h"
 
 #include "nsIChromeRegistry.h"
 #include "nsIFastLoadService.h"
@@ -63,80 +57,14 @@
 #include "nsIFile.h"
 #include "nsIObjectInputStream.h"
 #include "nsIObjectOutputStream.h"
-#include "nsIObserver.h"
 #include "nsIObserverService.h"
 
 #include "nsNetUtil.h"
-#include "nsURIHashKey.h"
-#include "nsInterfaceHashtable.h"
-#include "nsDataHashtable.h"
 #include "nsAppDirectoryServiceDefs.h"
 
-struct CacheScriptEntry
-{
-    PRUint32    mScriptTypeID; // the script language ID.
-    void*       mScriptObject; // the script object.
-};
+#include "jsxdrapi.h"
 
-class nsXULPrototypeCache : public nsIXULPrototypeCache,
-                                   nsIObserver
-{
-public:
-    // nsISupports
-    NS_DECL_ISUPPORTS
-    NS_DECL_NSIOBSERVER
-
-    NS_IMETHOD GetPrototype(nsIURI* aURI, nsIXULPrototypeDocument** _result);
-    NS_IMETHOD PutPrototype(nsIXULPrototypeDocument* aDocument);
-    NS_IMETHOD FlushPrototypes();
-
-    NS_IMETHOD GetStyleSheet(nsIURI* aURI, nsICSSStyleSheet** _result);
-    NS_IMETHOD PutStyleSheet(nsICSSStyleSheet* aStyleSheet);
-    NS_IMETHOD FlushStyleSheets();
-
-    NS_IMETHOD GetScript(nsIURI* aURI, PRUint32 *langID, void** aScriptObject);
-    NS_IMETHOD PutScript(nsIURI* aURI, PRUint32 langID, void* aScriptObject);
-    NS_IMETHOD FlushScripts();
-
-    NS_IMETHOD GetXBLDocumentInfo(nsIURI* aURL, nsIXBLDocumentInfo** _result);
-    NS_IMETHOD PutXBLDocumentInfo(nsIXBLDocumentInfo* aDocumentInfo);
-    NS_IMETHOD FlushXBLInformation();
-
-    NS_IMETHOD Flush();
-
-    NS_IMETHOD GetEnabled(PRBool* aIsEnabled);
-
-    NS_IMETHOD AbortFastLoads();
-    NS_IMETHOD GetFastLoadService(nsIFastLoadService** aResult);
-    NS_IMETHOD RemoveFromFastLoadSet(nsIURI* aDocumentURI);
-    NS_IMETHOD WritePrototype(nsIXULPrototypeDocument* aPrototypeDocument);
-
-protected:
-    friend NS_IMETHODIMP
-    NS_NewXULPrototypeCache(nsISupports* aOuter, REFNSIID aIID, void** aResult);
-
-    nsXULPrototypeCache();
-    virtual ~nsXULPrototypeCache();
-
-    void FlushSkinFiles();
-
-    nsInterfaceHashtable<nsURIHashKey,nsIXULPrototypeDocument> mPrototypeTable;
-    nsInterfaceHashtable<nsURIHashKey,nsICSSStyleSheet>        mStyleSheetTable;
-    nsDataHashtable<nsURIHashKey,CacheScriptEntry>             mScriptTable;
-    nsInterfaceHashtable<nsURIHashKey,nsIXBLDocumentInfo>      mXBLDocTable;
-
-    ///////////////////////////////////////////////////////////////////////////
-    // FastLoad
-    // this is really a hash set, with a dummy data parameter
-    nsDataHashtable<nsURIHashKey,PRUint32> mFastLoadURITable;
-
-    static nsIFastLoadService*    gFastLoadService;
-    static nsIFile*               gFastLoadFile;
-
-    // Bootstrap FastLoad Service
-    nsresult StartFastLoad(nsIURI* aDocumentURI);
-    nsresult StartFastLoadingURI(nsIURI* aURI, PRInt32 aDirectionFlags);
-};
+static NS_DEFINE_CID(kXULPrototypeCacheCID, NS_XULPROTOTYPECACHE_CID);
 
 static PRBool gDisableXULCache = PR_FALSE; // enabled by default
 static const char kDisableXULCachePref[] = "nglayout.debug.disable_xul_cache";
@@ -150,9 +78,7 @@ DisableXULCacheChangedCallback(const char* aPref, void* aClosure)
         nsContentUtils::GetBoolPref(kDisableXULCachePref, gDisableXULCache);
 
     // Flush the cache, regardless
-    static NS_DEFINE_CID(kXULPrototypeCacheCID, NS_XULPROTOTYPECACHE_CID);
-    nsCOMPtr<nsIXULPrototypeCache> cache(do_GetService(kXULPrototypeCacheCID));
-
+    nsXULPrototypeCache* cache = nsXULPrototypeCache::GetInstance();
     if (cache)
         cache->Flush();
 
@@ -164,6 +90,8 @@ DisableXULCacheChangedCallback(const char* aPref, void* aClosure)
 
 nsIFastLoadService*   nsXULPrototypeCache::gFastLoadService = nsnull;
 nsIFile*              nsXULPrototypeCache::gFastLoadFile = nsnull;
+nsXULPrototypeCache*  nsXULPrototypeCache::sInstance = nsnull;
+
 
 nsXULPrototypeCache::nsXULPrototypeCache()
 {
@@ -222,6 +150,25 @@ NS_NewXULPrototypeCache(nsISupports* aOuter, REFNSIID aIID, void** aResult)
     return rv;
 }
 
+/* static */ nsXULPrototypeCache*
+nsXULPrototypeCache::GetInstance()
+{
+    // Theoretically this can return nsnull and callers should handle that.
+    if (!sInstance) {
+        nsIXULPrototypeCache* cache;
+
+        CallGetService(kXULPrototypeCacheCID, &cache);
+
+        sInstance = static_cast<nsXULPrototypeCache*>(cache);
+    }
+    return sInstance;
+}
+
+/* static */ nsIFastLoadService*
+nsXULPrototypeCache::GetFastLoadService()
+{
+    return gFastLoadService;
+}
 
 //----------------------------------------------------------------------
 
@@ -242,18 +189,15 @@ nsXULPrototypeCache::Observe(nsISupports* aSubject,
     return NS_OK;
 }
 
-
-NS_IMETHODIMP
-nsXULPrototypeCache::GetPrototype(nsIURI* aURI, nsIXULPrototypeDocument** _result)
+nsXULPrototypeDocument*
+nsXULPrototypeCache::GetPrototype(nsIURI* aURI)
 {
-    nsresult rv = NS_OK;
+    nsXULPrototypeDocument* protoDoc = mPrototypeTable.GetWeak(aURI);
 
-    mPrototypeTable.Get(aURI, _result);
-
-    if (! *_result) {
+    if (!protoDoc) {
         // No prototype in XUL memory cache. Spin up FastLoad Service and
         // look in FastLoad file.
-        rv = StartFastLoad(aURI);
+        nsresult rv = StartFastLoad(aURI);
         if (NS_SUCCEEDED(rv)) {
             nsCOMPtr<nsIObjectInputStream> objectInput;
             gFastLoadService->GetInputStream(getter_AddRefs(objectInput));
@@ -264,114 +208,66 @@ nsXULPrototypeCache::GetPrototype(nsIURI* aURI, nsIXULPrototypeDocument** _resul
                 gFastLoadService->SelectMuxedDocument(aURI, getter_AddRefs(oldURI));
 
                 // Create a new prototype document.
-                nsCOMPtr<nsIXULPrototypeDocument> protoDoc;
-                rv = NS_NewXULPrototypeDocument(nsnull,
-                                                NS_GET_IID(nsIXULPrototypeDocument),
-                                                getter_AddRefs(protoDoc));
-                if (NS_FAILED(rv)) return rv;
+                nsRefPtr<nsXULPrototypeDocument> newProto;
+                rv = NS_NewXULPrototypeDocument(getter_AddRefs(newProto));
+                if (NS_FAILED(rv)) return nsnull;
 
-                rv = protoDoc->Read(objectInput);
+                rv = newProto->Read(objectInput);
                 if (NS_SUCCEEDED(rv)) {
-                    NS_ADDREF(*_result = protoDoc);
-                    PutPrototype(protoDoc);
+                    rv = PutPrototype(newProto);
+                    if (NS_FAILED(rv))
+                        newProto = nsnull;
 
                     gFastLoadService->EndMuxedDocument(aURI);
+                } else {
+                    newProto = nsnull;
                 }
 
                 RemoveFromFastLoadSet(aURI);
+                protoDoc = newProto;
             }
         }
     }
-
-    return rv;
+    return protoDoc;
 }
 
-NS_IMETHODIMP
-nsXULPrototypeCache::PutPrototype(nsIXULPrototypeDocument* aDocument)
+nsresult
+nsXULPrototypeCache::PutPrototype(nsXULPrototypeDocument* aDocument)
 {
-    nsresult rv;
-    nsCOMPtr<nsIURI> uri;
-    rv = aDocument->GetURI(getter_AddRefs(uri));
-
-    // Put() releases any old value
-    mPrototypeTable.Put(uri, aDocument);
+    nsCOMPtr<nsIURI> uri = aDocument->GetURI();
+    // Put() releases any old value and addrefs the new one
+    NS_ENSURE_TRUE(mPrototypeTable.Put(uri, aDocument), NS_ERROR_OUT_OF_MEMORY);
 
     return NS_OK;
 }
 
-NS_IMETHODIMP
-nsXULPrototypeCache::FlushPrototypes()
-{
-    mPrototypeTable.Clear();
-
-    // Clear the script cache, as it refers to prototype-owned mJSObjects.
-    FlushScripts();
-    return NS_OK;
-}
-
-
-NS_IMETHODIMP
-nsXULPrototypeCache::GetStyleSheet(nsIURI* aURI, nsICSSStyleSheet** _result)
-{
-    mStyleSheetTable.Get(aURI, _result);
-    return NS_OK;
-}
-
-
-NS_IMETHODIMP
+nsresult
 nsXULPrototypeCache::PutStyleSheet(nsICSSStyleSheet* aStyleSheet)
 {
-    nsresult rv;
     nsCOMPtr<nsIURI> uri;
-    rv = aStyleSheet->GetSheetURI(getter_AddRefs(uri));
-    if (NS_SUCCEEDED(rv))
-        mStyleSheetTable.Put(uri, aStyleSheet);
+    nsresult rv = aStyleSheet->GetSheetURI(getter_AddRefs(uri));
+    if (NS_FAILED(rv))
+        return rv;
 
-    return rv;
-}
+   NS_ENSURE_TRUE(mStyleSheetTable.Put(uri, aStyleSheet),
+                  NS_ERROR_OUT_OF_MEMORY);
 
-
-NS_IMETHODIMP
-nsXULPrototypeCache::FlushStyleSheets()
-{
-    mStyleSheetTable.Clear();
     return NS_OK;
 }
 
 
-NS_IMETHODIMP
-nsXULPrototypeCache::GetScript(nsIURI* aURI, PRUint32 *aLangID,
-                               void** aScriptObject)
+void*
+nsXULPrototypeCache::GetScript(nsIURI* aURI, PRUint32 *aLangID)
 {
     CacheScriptEntry entry;
     if (!mScriptTable.Get(aURI, &entry)) {
         *aLangID = nsIProgrammingLanguage::UNKNOWN;
-        *aScriptObject = nsnull;
-    } else {
-        *aScriptObject = entry.mScriptObject;
-        *aLangID = entry.mScriptTypeID;
+        return nsnull;
     }
-    return NS_OK;
+    *aLangID = entry.mScriptTypeID;
+    return entry.mScriptObject;
 }
 
-
-NS_IMETHODIMP
-nsXULPrototypeCache::PutScript(nsIURI* aURI, PRUint32 aLangID, void* aScriptObject)
-{
-    CacheScriptEntry entry = {aLangID, aScriptObject};
-
-    NS_ENSURE_TRUE(mScriptTable.Put(aURI, entry), NS_ERROR_OUT_OF_MEMORY);
-
-    // Lock the object from being gc'd until it is removed from the cache
-    nsresult rv;
-    nsCOMPtr<nsIScriptRuntime> rt;
-    rv = NS_GetScriptRuntimeByID(aLangID, getter_AddRefs(rt));
-    if (NS_SUCCEEDED(rv))
-        rv = rt->HoldScriptObject(aScriptObject);
-    NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to GC lock the object");
-    // On failure doing the lock, we should remove the map entry?
-    return rv;
-}
 
 /* static */
 PR_STATIC_CALLBACK(PLDHashOperator)
@@ -383,42 +279,52 @@ ReleaseScriptObjectCallback(nsIURI* aKey, CacheScriptEntry &aData, void* aClosur
     return PL_DHASH_REMOVE;
 }
 
-NS_IMETHODIMP
+nsresult
+nsXULPrototypeCache::PutScript(nsIURI* aURI, PRUint32 aLangID, void* aScriptObject)
+{
+    CacheScriptEntry existingEntry;
+    if (mScriptTable.Get(aURI, &existingEntry)) {
+        NS_WARNING("loaded the same script twice (bug 392650)");
+
+        // Reuse the callback used for enumeration in FlushScripts
+        ReleaseScriptObjectCallback(aURI, existingEntry, nsnull);
+    }
+
+    CacheScriptEntry entry = {aLangID, aScriptObject};
+
+    NS_ENSURE_TRUE(mScriptTable.Put(aURI, entry), NS_ERROR_OUT_OF_MEMORY);
+
+    // Lock the object from being gc'd until it is removed from the cache
+    nsCOMPtr<nsIScriptRuntime> rt;
+    nsresult rv = NS_GetScriptRuntimeByID(aLangID, getter_AddRefs(rt));
+    if (NS_SUCCEEDED(rv))
+        rv = rt->HoldScriptObject(aScriptObject);
+    NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to GC lock the object");
+
+    // On failure doing the lock, we should remove the map entry?
+    return rv;
+}
+
+void
 nsXULPrototypeCache::FlushScripts()
 {
     // This callback will unlock each object so it can once again be gc'd.
     // XXX - this might be slow - we fetch the runtime each and every object.
     mScriptTable.Enumerate(ReleaseScriptObjectCallback, nsnull);
-    return NS_OK;
 }
 
 
-NS_IMETHODIMP
-nsXULPrototypeCache::GetXBLDocumentInfo(nsIURI* aURL, nsIXBLDocumentInfo** aResult)
-{
-    mXBLDocTable.Get(aURL, aResult);
-    return NS_OK;
-}
-
-
-NS_IMETHODIMP
+nsresult
 nsXULPrototypeCache::PutXBLDocumentInfo(nsIXBLDocumentInfo* aDocumentInfo)
 {
     nsIURI* uri = aDocumentInfo->DocumentURI();
 
     nsCOMPtr<nsIXBLDocumentInfo> info;
     mXBLDocTable.Get(uri, getter_AddRefs(info));
-    if (!info)
-        mXBLDocTable.Put(uri, aDocumentInfo);
-
-    return NS_OK;
-}
-
-
-NS_IMETHODIMP
-nsXULPrototypeCache::FlushXBLInformation()
-{
-    mXBLDocTable.Clear();
+    if (!info) {
+        NS_ENSURE_TRUE(mXBLDocTable.Put(uri, aDocumentInfo),
+                       NS_ERROR_OUT_OF_MEMORY);
+    }
     return NS_OK;
 }
 
@@ -477,36 +383,29 @@ nsXULPrototypeCache::FlushSkinFiles()
 }
 
 
-NS_IMETHODIMP
+void
 nsXULPrototypeCache::Flush()
 {
-    FlushPrototypes();  // flushes the script table as well
-    FlushStyleSheets();
-    FlushXBLInformation();
-    return NS_OK;
+    mPrototypeTable.Clear();
+
+    // Clear the script cache, as it refers to prototype-owned mJSObjects.
+    FlushScripts();
+
+    mStyleSheetTable.Clear();
+    mXBLDocTable.Clear();
 }
 
 
-NS_IMETHODIMP
-nsXULPrototypeCache::GetEnabled(PRBool* aIsEnabled)
+PRBool
+nsXULPrototypeCache::IsEnabled()
 {
-    *aIsEnabled = !gDisableXULCache;
-    return NS_OK;
+    return !gDisableXULCache;
 }
-
-
-NS_IMETHODIMP
-nsXULPrototypeCache::GetFastLoadService(nsIFastLoadService** aResult)
-{
-    NS_IF_ADDREF(*aResult = gFastLoadService);
-    return NS_OK;
-}
-
 
 static PRBool gDisableXULFastLoad = PR_FALSE;           // enabled by default
 static PRBool gChecksumXULFastLoadFile = PR_TRUE;       // XXXbe too paranoid
 
-NS_IMETHODIMP
+void
 nsXULPrototypeCache::AbortFastLoads()
 {
 #ifdef DEBUG_brendan
@@ -525,7 +424,7 @@ nsXULPrototypeCache::AbortFastLoads()
     mFastLoadURITable.Clear();
 
     if (! gFastLoadService)
-        return NS_OK;
+        return;
 
     // Fetch the current input (if FastLoad file existed) or output (if we're
     // creating the FastLoad file during this app startup) stream.
@@ -572,23 +471,20 @@ nsXULPrototypeCache::AbortFastLoads()
     // If the list is empty now, the FastLoad process is done.
     NS_RELEASE(gFastLoadService);
     NS_RELEASE(gFastLoadFile);
-
-    return NS_OK;
 }
 
 
-NS_IMETHODIMP
+void
 nsXULPrototypeCache::RemoveFromFastLoadSet(nsIURI* aURI)
 {
     mFastLoadURITable.Remove(aURI);
-    return NS_OK;
 }
 
 static const char kDisableXULFastLoadPref[] = "nglayout.debug.disable_xul_fastload";
 static const char kChecksumXULFastLoadFilePref[] = "nglayout.debug.checksum_xul_fastload_file";
 
-NS_IMETHODIMP
-nsXULPrototypeCache::WritePrototype(nsIXULPrototypeDocument* aPrototypeDocument)
+nsresult
+nsXULPrototypeCache::WritePrototype(nsXULPrototypeDocument* aPrototypeDocument)
 {
     nsresult rv = NS_OK, rv2 = NS_OK;
 
@@ -604,8 +500,7 @@ nsXULPrototypeCache::WritePrototype(nsIXULPrototypeDocument* aPrototypeDocument)
     gFastLoadService->GetInputStream(getter_AddRefs(objectInput));
     gFastLoadService->GetOutputStream(getter_AddRefs(objectOutput));
 
-    nsCOMPtr<nsIURI> protoURI;
-    aPrototypeDocument->GetURI(getter_AddRefs(protoURI));
+    nsCOMPtr<nsIURI> protoURI = aPrototypeDocument->GetURI();
 
     // Remove this document from the FastLoad table. We use the table's
     // emptiness instead of a counter to decide when the FastLoad process
@@ -847,7 +742,7 @@ nsXULPrototypeCache::StartFastLoad(nsIURI* aURI)
     // Give the FastLoad service an object by which it can get or create a
     // file output stream given an input stream on the same file.
     nsXULFastLoadFileIO* xio = new nsXULFastLoadFileIO(file);
-    nsCOMPtr<nsIFastLoadFileIO> io = NS_STATIC_CAST(nsIFastLoadFileIO*, xio);
+    nsCOMPtr<nsIFastLoadFileIO> io = static_cast<nsIFastLoadFileIO*>(xio);
     if (! io)
         return NS_ERROR_OUT_OF_MEMORY;
     fastLoadService->SetFileIO(io);
@@ -907,12 +802,16 @@ nsXULPrototypeCache::StartFastLoad(nsIURI* aURI)
                 // Get the XUL fastload file version number, which should be
                 // decremented whenever the XUL-specific file format changes
                 // (see public/nsIXULPrototypeCache.h for the #define).
-                PRUint32 version;
-                rv = objectInput->Read32(&version);
+                PRUint32 xulFastLoadVersion, jsByteCodeVersion;
+                rv = objectInput->Read32(&xulFastLoadVersion);
+                rv |= objectInput->Read32(&jsByteCodeVersion);
                 if (NS_SUCCEEDED(rv)) {
-                    if (version != XUL_FASTLOAD_FILE_VERSION) {
+                    if (xulFastLoadVersion != XUL_FASTLOAD_FILE_VERSION ||
+                        jsByteCodeVersion != JSXDR_BYTECODE_VERSION) {
 #ifdef DEBUG
-                        printf("bad FastLoad file version\n");
+                        printf((xulFastLoadVersion != XUL_FASTLOAD_FILE_VERSION)
+                               ? "bad FastLoad file version\n"
+                               : "bad JS bytecode version\n");
 #endif
                         rv = NS_ERROR_UNEXPECTED;
                     } else {
@@ -962,6 +861,7 @@ nsXULPrototypeCache::StartFastLoad(nsIURI* aURI)
                                               getter_AddRefs(objectOutput));
         if (NS_SUCCEEDED(rv)) {
             rv = objectOutput->Write32(XUL_FASTLOAD_FILE_VERSION);
+            rv |= objectOutput->Write32(JSXDR_BYTECODE_VERSION);
             rv |= objectOutput->WriteStringZ(chromePath.get());
             rv |= objectOutput->WriteStringZ(locale.get());
         }

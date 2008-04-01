@@ -39,7 +39,6 @@
 #include "nsSVGTransform.h"
 #include "prdtoa.h"
 #include "nsSVGMatrix.h"
-#include "nsSVGAtoms.h"
 #include "nsSVGValue.h"
 #include "nsISVGValueUtils.h"
 #include "nsISVGValueObserver.h"
@@ -55,8 +54,7 @@
 
 class nsSVGTransform : public nsIDOMSVGTransform,
                        public nsSVGValue,
-                       public nsISVGValueObserver,
-                       public nsSupportsWeakReference
+                       public nsISVGValueObserver
 {
 public:
   static nsresult Create(nsIDOMSVGTransform** aResult);

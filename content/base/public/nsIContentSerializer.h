@@ -51,12 +51,9 @@ class nsAString;
 
 /* starting interface:    nsIContentSerializer */
 
-/* d650439a-ca29-410d-a906-b0557fb62fcd */
 #define NS_ICONTENTSERIALIZER_IID \
-{   0xd650439a, \
-    0xca29, \
-    0x410d, \
-    {0xa9, 0x06, 0xb0, 0x55, 0x7f, 0xb6, 0x2f, 0xcd} }
+{ 0x34769de0, 0x30d0, 0x4cef, \
+  { 0x89, 0x4a, 0xfc, 0xd8, 0xbb, 0x27, 0xc4, 0xb4 } }
 
 class nsIContentSerializer : public nsISupports {
  public: 
@@ -64,7 +61,8 @@ class nsIContentSerializer : public nsISupports {
   NS_DECLARE_STATIC_IID_ACCESSOR(NS_ICONTENTSERIALIZER_IID)
 
   NS_IMETHOD Init(PRUint32 flags, PRUint32 aWrapColumn,
-                  const char* aCharSet, PRBool aIsCopying) = 0;
+                  const char* aCharSet, PRBool aIsCopying,
+                  PRBool aIsWholeDocument) = 0;
 
   NS_IMETHOD AppendText(nsIDOMText* aText, PRInt32 aStartOffset,
                         PRInt32 aEndOffset, nsAString& aStr) = 0;

@@ -36,12 +36,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsSVGAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsSVGLength.h"
 #include "nsSVGAnimatedString.h"
 #include "nsCOMPtr.h"
-#include "nsISVGSVGElement.h"
-#include "nsSVGCoordCtxProvider.h"
 #include "nsIURI.h"
 #include "nsNetUtil.h"
 #include "nsSVGAnimatedPreserveAspectRatio.h"
@@ -53,6 +51,7 @@
 #include "nsIDOMSVGURIReference.h"
 #include "nsImageLoadingContent.h"
 #include "nsSVGLength2.h"
+#include "gfxContext.h"
 
 class nsIDOMSVGAnimatedString;
 class nsIDOMSVGAnimatedPreserveAspectRatio;
@@ -79,7 +78,7 @@ public:
   NS_DECL_NSIDOMSVGURIREFERENCE
 
   // xxx I wish we could use virtual inheritance
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGImageElementBase::)
+  NS_FORWARD_NSIDOMNODE(nsSVGImageElementBase::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGImageElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGImageElementBase::)
 
@@ -88,12 +87,18 @@ public:
                                     nsISVGValue::modificationType aModType);
 
   // nsIContent interface
+  virtual nsresult BindToTree(nsIDocument* aDocument, nsIContent* aParent,
+                              nsIContent* aBindingParent,
+                              PRBool aCompileEventHandlers);
+
   virtual PRInt32 IntrinsicState() const;
 
   NS_IMETHODIMP_(PRBool) IsAttributeMapped(const nsIAtom* name) const;
 
   // nsSVGPathGeometryElement methods:
-  virtual void ConstructPath(cairo_t *aCtx);
+  virtual void ConstructPath(gfxContext *aCtx);
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 
 protected:
 
@@ -164,7 +169,7 @@ nsSVGImageElement::Init()
   {
     rv = NS_NewSVGAnimatedString(getter_AddRefs(mHref));
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = AddMappedSVGValue(nsSVGAtoms::href, mHref, kNameSpaceID_XLink);
+    rv = AddMappedSVGValue(nsGkAtoms::href, mHref, kNameSpaceID_XLink);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
@@ -177,7 +182,7 @@ nsSVGImageElement::Init()
                                           getter_AddRefs(mPreserveAspectRatio),
                                           preserveAspectRatio);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = AddMappedSVGValue(nsSVGAtoms::preserveAspectRatio,
+    rv = AddMappedSVGValue(nsGkAtoms::preserveAspectRatio,
                            mPreserveAspectRatio);
     NS_ENSURE_SUCCESS(rv,rv);
   }
@@ -189,7 +194,7 @@ nsSVGImageElement::Init()
 // nsIDOMNode methods
 
 
-NS_IMPL_DOM_CLONENODE_WITH_INIT(nsSVGImageElement)
+NS_IMPL_ELEMENT_CLONE_WITH_INIT(nsSVGImageElement)
 
 
 //----------------------------------------------------------------------
@@ -302,6 +307,28 @@ nsSVGImageElement::DidModifySVGObservable(nsISVGValue* aObservable,
 //----------------------------------------------------------------------
 // nsIContent methods:
 
+nsresult
+nsSVGImageElement::BindToTree(nsIDocument* aDocument, nsIContent* aParent,
+                              nsIContent* aBindingParent,
+                              PRBool aCompileEventHandlers)
+{
+  nsresult rv = nsSVGImageElementBase::BindToTree(aDocument, aParent,
+                                                  aBindingParent,
+                                                  aCompileEventHandlers);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // Our base URI may have changed; claim that our URI changed, and the
+  // nsImageLoadingContent will decide whether a new image load is warranted.
+  nsAutoString href;
+  if (GetAttr(kNameSpaceID_XLink, nsGkAtoms::href, href)) {
+    // Note: no need to notify here; since we're just now being bound
+    // we don't have any frames or anything yet.
+    LoadImage(href, PR_FALSE, PR_FALSE);
+  }
+
+  return rv;
+}
+
 PRInt32
 nsSVGImageElement::IntrinsicState() const
 {
@@ -326,14 +353,14 @@ nsSVGImageElement::IsAttributeMapped(const nsIAtom* name) const
 /* For the purposes of the update/invalidation logic pretend to
    be a rectangle. */
 void
-nsSVGImageElement::ConstructPath(cairo_t *aCtx)
+nsSVGImageElement::ConstructPath(gfxContext *aCtx)
 {
   float x, y, width, height;
 
   GetAnimatedLengthValues(&x, &y, &width, &height, nsnull);
 
-  if (width == 0 || height == 0)
+  if (width <= 0 || height <= 0)
     return;
 
-  cairo_rectangle(aCtx, x, y, width, height);
+  aCtx->Rectangle(gfxRect(x, y, width, height));
 }

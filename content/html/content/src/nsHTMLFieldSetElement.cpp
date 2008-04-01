@@ -36,9 +36,8 @@
  * ***** END LICENSE BLOCK ***** */
 #include "nsIDOMHTMLFieldSetElement.h"
 #include "nsIDOMHTMLFormElement.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 #include "nsIForm.h"
@@ -56,7 +55,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLFormElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLFormElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLFormElement::)
@@ -72,6 +71,7 @@ public:
   NS_IMETHOD Reset();
   NS_IMETHOD SubmitNamesValues(nsIFormSubmission* aFormSubmission,
                                nsIContent* aSubmitElement);
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 };
 
 // construction, destruction
@@ -96,17 +96,17 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLFieldSetElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLFieldSetElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLFieldSetElement,
-                                    nsGenericHTMLFormElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLFieldSetElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLFieldSetElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_INTERFACE_TABLE_HEAD(nsHTMLFieldSetElement,
+                                     nsGenericHTMLFormElement)
+  NS_INTERFACE_TABLE_INHERITED1(nsHTMLFieldSetElement,
+                                nsIDOMHTMLFieldSetElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLFieldSetElement)
 
 
 // nsIDOMHTMLFieldSetElement
 
 
-NS_IMPL_DOM_CLONENODE(nsHTMLFieldSetElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLFieldSetElement)
 
 
 // nsIDOMHTMLFieldSetElement

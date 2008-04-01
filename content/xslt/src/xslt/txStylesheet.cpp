@@ -47,12 +47,7 @@
 #include "txXPathTreeWalker.h"
 
 txStylesheet::txStylesheet()
-    : mRootFrame(nsnull),
-      mNamedTemplates(PR_FALSE),
-      mDecimalFormats(PR_TRUE),
-      mAttributeSets(PR_FALSE),
-      mGlobalVariables(PR_TRUE),
-      mKeys(PR_TRUE)
+    : mRootFrame(nsnull)
 {
 }
 
@@ -72,6 +67,8 @@ txStylesheet::init()
 
     nsAutoPtr<Expr> nodeExpr(new LocationStep(nt, LocationStep::CHILD_AXIS));
     NS_ENSURE_TRUE(nodeExpr, NS_ERROR_OUT_OF_MEMORY);
+
+    nt.forget();
 
     txPushNewContext* pushContext = new txPushNewContext(nodeExpr);
     mContainerTemplate->mNext = pushContext;
@@ -100,6 +97,8 @@ txStylesheet::init()
     nodeExpr = new LocationStep(nt, LocationStep::SELF_AXIS);
     NS_ENSURE_TRUE(nodeExpr, NS_ERROR_OUT_OF_MEMORY);
 
+    nt.forget();
+
     mCharactersTemplate = new txValueOf(nodeExpr, PR_FALSE);
     NS_ENSURE_TRUE(mCharactersTemplate, NS_ERROR_OUT_OF_MEMORY);
 
@@ -119,17 +118,17 @@ txStylesheet::~txStylesheet()
     delete mRootFrame;
     txListIterator frameIter(&mImportFrames);
     while (frameIter.hasNext()) {
-        delete NS_STATIC_CAST(ImportFrame*, frameIter.next());
+        delete static_cast<ImportFrame*>(frameIter.next());
     }
 
     txListIterator instrIter(&mTemplateInstructions);
     while (instrIter.hasNext()) {
-        delete NS_STATIC_CAST(txInstruction*, instrIter.next());
+        delete static_cast<txInstruction*>(instrIter.next());
     }
     
     // We can't make the map own its values because then we wouldn't be able
     // to merge attributesets of the same name
-    txExpandedNameMap::iterator attrSetIter(mAttributeSets);
+    txExpandedNameMap<txInstruction>::iterator attrSetIter(mAttributeSets);
     while (attrSetIter.next()) {
         delete attrSetIter.value();
     }
@@ -150,9 +149,9 @@ txStylesheet::findTemplate(const txXPathNode& aNode,
     txListIterator frameIter(&mImportFrames);
 
     if (aImportedBy) {
-        ImportFrame* curr = NS_STATIC_CAST(ImportFrame*, frameIter.next());
+        ImportFrame* curr = static_cast<ImportFrame*>(frameIter.next());
         while (curr != aImportedBy) {
-               curr = NS_STATIC_CAST(ImportFrame*, frameIter.next());
+               curr = static_cast<ImportFrame*>(frameIter.next());
         }
         endFrame = aImportedBy->mFirstNotImported;
     }
@@ -163,26 +162,23 @@ txStylesheet::findTemplate(const txXPathNode& aNode,
 
     ImportFrame* frame;
     while (!matchTemplate &&
-           (frame = NS_STATIC_CAST(ImportFrame*, frameIter.next())) &&
+           (frame = static_cast<ImportFrame*>(frameIter.next())) &&
            frame != endFrame) {
 
         // get templatelist for this mode
-        txList* templates =
-            NS_STATIC_CAST(txList*, frame->mMatchableTemplates.get(aMode));
+        nsTArray<MatchableTemplate>* templates =
+            frame->mMatchableTemplates.get(aMode);
 
         if (templates) {
-            txListIterator templateIter(templates);
-
             // Find template with highest priority
-            MatchableTemplate* templ;
-            while (!matchTemplate &&
-                   (templ =
-                    NS_STATIC_CAST(MatchableTemplate*, templateIter.next()))) {
-                if (templ->mMatch->matches(aNode, aContext)) {
-                    matchTemplate = templ->mFirstInstruction;
+            PRUint32 i, len = templates->Length();
+            for (i = 0; i < len && !matchTemplate; ++i) {
+                MatchableTemplate& templ = (*templates)[i];
+                if (templ.mMatch->matches(aNode, aContext)) {
+                    matchTemplate = templ.mFirstInstruction;
                     *aImportFrame = frame;
 #ifdef PR_LOGGING
-                    match = templ->mMatch;
+                    match = templ.mMatch;
 #endif
                 }
             }
@@ -215,13 +211,15 @@ txStylesheet::findTemplate(const txXPathNode& aNode,
 #endif
 
     if (!matchTemplate) {
-        if (txXPathNodeUtils::isElement(aNode) ||
-            txXPathNodeUtils::isRoot(aNode)) {
-            matchTemplate = mContainerTemplate;
-        }
-        else if (txXPathNodeUtils::isAttribute(aNode) ||
-                 txXPathNodeUtils::isText(aNode)) {
+        // Test for these first since a node can be both a text node
+        // and a root (if it is orphaned)
+        if (txXPathNodeUtils::isAttribute(aNode) ||
+            txXPathNodeUtils::isText(aNode)) {
             matchTemplate = mCharactersTemplate;
+        }
+        else if (txXPathNodeUtils::isElement(aNode) ||
+                 txXPathNodeUtils::isRoot(aNode)) {
+            matchTemplate = mContainerTemplate;
         }
         else {
             matchTemplate = mEmptyTemplate;
@@ -234,19 +232,19 @@ txStylesheet::findTemplate(const txXPathNode& aNode,
 txDecimalFormat*
 txStylesheet::getDecimalFormat(const txExpandedName& aName)
 {
-    return NS_STATIC_CAST(txDecimalFormat*, mDecimalFormats.get(aName));
+    return mDecimalFormats.get(aName);
 }
 
 txInstruction*
 txStylesheet::getAttributeSet(const txExpandedName& aName)
 {
-    return NS_STATIC_CAST(txInstruction*, mAttributeSets.get(aName));
+    return mAttributeSets.get(aName);
 }
 
 txInstruction*
 txStylesheet::getNamedTemplate(const txExpandedName& aName)
 {
-    return NS_STATIC_CAST(txInstruction*, mNamedTemplates.get(aName));
+    return mNamedTemplates.get(aName);
 }
 
 txOutputFormat*
@@ -258,10 +256,10 @@ txStylesheet::getOutputFormat()
 txStylesheet::GlobalVariable*
 txStylesheet::getGlobalVariable(const txExpandedName& aName)
 {
-    return NS_STATIC_CAST(GlobalVariable*, mGlobalVariables.get(aName));
+    return mGlobalVariables.get(aName);
 }
 
-const txExpandedNameMap&
+const txOwningExpandedNameMap<txXSLKey>&
 txStylesheet::getKeyMap()
 {
     return mKeys;
@@ -270,7 +268,7 @@ txStylesheet::getKeyMap()
 PRBool
 txStylesheet::isStripSpaceAllowed(const txXPathNode& aNode, txIMatchContext* aContext)
 {
-    PRInt32 frameCount = mStripSpaceTests.Count();
+    PRInt32 frameCount = mStripSpaceTests.Length();
     if (frameCount == 0) {
         return PR_FALSE;
     }
@@ -291,8 +289,7 @@ txStylesheet::isStripSpaceAllowed(const txXPathNode& aNode, txIMatchContext* aCo
     // check Whitespace stipping handling list against given Node
     PRInt32 i;
     for (i = 0; i < frameCount; ++i) {
-        txStripSpaceTest* sst =
-            NS_STATIC_CAST(txStripSpaceTest*, mStripSpaceTests[i]);
+        txStripSpaceTest* sst = mStripSpaceTests[i];
         if (sst->matches(node, aContext)) {
             return sst->stripsSpace() && !XMLUtils::getXMLSpacePreserve(node);
         }
@@ -319,18 +316,18 @@ txStylesheet::doneCompiling()
     // all items
     frameIter.reset();
     ImportFrame* frame;
-    while ((frame = NS_STATIC_CAST(ImportFrame*, frameIter.next()))) {
-        nsVoidArray frameStripSpaceTests;
+    while ((frame = static_cast<ImportFrame*>(frameIter.next()))) {
+        nsTPtrArray<txStripSpaceTest> frameStripSpaceTests;
 
         txListIterator itemIter(&frame->mToplevelItems);
         itemIter.resetToEnd();
         txToplevelItem* item;
-        while ((item = NS_STATIC_CAST(txToplevelItem*, itemIter.previous()))) {
+        while ((item = static_cast<txToplevelItem*>(itemIter.previous()))) {
             switch (item->getType()) {
                 case txToplevelItem::attributeSet:
                 {
-                    rv = addAttributeSet(NS_STATIC_CAST(txAttributeSetItem*,
-                                                        item));
+                    rv = addAttributeSet(static_cast<txAttributeSetItem*>
+                                                    (item));
                     NS_ENSURE_SUCCESS(rv, rv);
                     break;
                 }
@@ -341,19 +338,19 @@ txStylesheet::doneCompiling()
                 }
                 case txToplevelItem::output:
                 {
-                    mOutputFormat.merge(NS_STATIC_CAST(txOutputItem*, item)->mFormat);
+                    mOutputFormat.merge(static_cast<txOutputItem*>(item)->mFormat);
                     break;
                 }
                 case txToplevelItem::stripSpace:
                 {
-                    rv = addStripSpace(NS_STATIC_CAST(txStripSpaceItem*, item),
+                    rv = addStripSpace(static_cast<txStripSpaceItem*>(item),
                                        frameStripSpaceTests);
                     NS_ENSURE_SUCCESS(rv, rv);
                     break;
                 }
                 case txToplevelItem::templ:
                 {
-                    rv = addTemplate(NS_STATIC_CAST(txTemplateItem*, item),
+                    rv = addTemplate(static_cast<txTemplateItem*>(item),
                                      frame);
                     NS_ENSURE_SUCCESS(rv, rv);
 
@@ -361,8 +358,8 @@ txStylesheet::doneCompiling()
                 }
                 case txToplevelItem::variable:
                 {
-                    rv = addGlobalVariable(NS_STATIC_CAST(txVariableItem*,
-                                                          item));
+                    rv = addGlobalVariable(static_cast<txVariableItem*>
+                                                      (item));
                     NS_ENSURE_SUCCESS(rv, rv);
 
                     break;
@@ -418,59 +415,59 @@ txStylesheet::addTemplate(txTemplateItem* aTemplate,
     }
 
     // get the txList for the right mode
-    txList* templates =
-        NS_STATIC_CAST(txList*,
-                       aImportFrame->mMatchableTemplates.get(aTemplate->mMode));
+    nsTArray<MatchableTemplate>* templates =
+        aImportFrame->mMatchableTemplates.get(aTemplate->mMode);
 
     if (!templates) {
-        nsAutoPtr<txList> newList(new txList);
+        nsAutoPtr< nsTArray<MatchableTemplate> > newList(
+            new nsTArray<MatchableTemplate>);
         NS_ENSURE_TRUE(newList, NS_ERROR_OUT_OF_MEMORY);
 
-        rv = aImportFrame->mMatchableTemplates.add(aTemplate->mMode, newList);
+        rv = aImportFrame->mMatchableTemplates.set(aTemplate->mMode, newList);
         NS_ENSURE_SUCCESS(rv, rv);
-        
+
         templates = newList.forget();
     }
 
     // Add the simple patterns to the list of matchable templates, according
     // to default priority
-    txList simpleMatches;
-    rv = aTemplate->mMatch->getSimplePatterns(simpleMatches);
-    if (simpleMatches.get(0) == aTemplate->mMatch) {
-        aTemplate->mMatch.forget();
+    nsAutoPtr<txPattern> simple = aTemplate->mMatch;
+    nsAutoPtr<txPattern> unionPattern;
+    if (simple->getType() == txPattern::UNION_PATTERN) {
+        unionPattern = simple;
+        simple = unionPattern->getSubPatternAt(0);
+        unionPattern->setSubPatternAt(0, nsnull);
     }
-    
-    txListIterator simples(&simpleMatches);
-    while (simples.hasNext()) {
-        // XXX if we fail in this loop, we leak the remaining simple patterns
-        nsAutoPtr<txPattern> simple(NS_STATIC_CAST(txPattern*, simples.next()));
+
+    PRUint32 unionPos = 1; // only used when unionPattern is set
+    while (simple) {
         double priority = aTemplate->mPrio;
         if (Double::isNaN(priority)) {
             priority = simple->getDefaultPriority();
             NS_ASSERTION(!Double::isNaN(priority),
                          "simple pattern without default priority");
         }
-        nsAutoPtr<MatchableTemplate>
-            nt(new MatchableTemplate(instr, simple, priority));
-        NS_ENSURE_TRUE(nt, NS_ERROR_OUT_OF_MEMORY);
 
-        txListIterator templ(templates);
-        while (templ.hasNext()) {
-            MatchableTemplate* mt = NS_STATIC_CAST(MatchableTemplate*,
-                                                   templ.next());
-            if (priority > mt->mPriority) {
-                rv = templ.addBefore(nt);
-                NS_ENSURE_SUCCESS(rv, rv);
-
-                nt.forget();
+        PRUint32 i, len = templates->Length();
+        for (i = 0; i < len; ++i) {
+            if (priority > (*templates)[i].mPriority) {
                 break;
             }
         }
-        if (nt) {
-            rv = templates->add(nt);
-            NS_ENSURE_SUCCESS(rv, rv);
 
-            nt.forget();
+        MatchableTemplate* nt = templates->InsertElementAt(i);
+        NS_ENSURE_TRUE(nt, NS_ERROR_OUT_OF_MEMORY);
+
+        nt->mFirstInstruction = instr;
+        nt->mMatch = simple;
+        nt->mPriority = priority;
+
+        if (unionPattern) {
+            simple = unionPattern->getSubPatternAt(unionPos);
+            if (simple) {
+                unionPattern->setSubPatternAt(unionPos, nsnull);
+            }
+            ++unionPos;
         }
     }
 
@@ -480,15 +477,15 @@ txStylesheet::addTemplate(txTemplateItem* aTemplate,
 nsresult
 txStylesheet::addFrames(txListIterator& aInsertIter)
 {
-    ImportFrame* frame = NS_STATIC_CAST(ImportFrame*, aInsertIter.current());
+    ImportFrame* frame = static_cast<ImportFrame*>(aInsertIter.current());
     nsresult rv = NS_OK;
     txListIterator iter(&frame->mToplevelItems);
     txToplevelItem* item;
-    while ((item = NS_STATIC_CAST(txToplevelItem*, iter.next()))) {
+    while ((item = static_cast<txToplevelItem*>(iter.next()))) {
         if (item->getType() == txToplevelItem::import) {
-            txImportItem* import = NS_STATIC_CAST(txImportItem*, item);
+            txImportItem* import = static_cast<txImportItem*>(item);
             import->mFrame->mFirstNotImported =
-                NS_STATIC_CAST(ImportFrame*, aInsertIter.next());
+                static_cast<ImportFrame*>(aInsertIter.next());
             rv = aInsertIter.addBefore(import->mFrame);
             NS_ENSURE_SUCCESS(rv, rv);
 
@@ -505,23 +502,19 @@ txStylesheet::addFrames(txListIterator& aInsertIter)
 
 nsresult
 txStylesheet::addStripSpace(txStripSpaceItem* aStripSpaceItem,
-                            nsVoidArray& frameStripSpaceTests)
+                            nsTPtrArray<txStripSpaceTest>& aFrameStripSpaceTests)
 {
-    PRInt32 testCount = aStripSpaceItem->mStripSpaceTests.Count();
+    PRInt32 testCount = aStripSpaceItem->mStripSpaceTests.Length();
     for (; testCount > 0; --testCount) {
-        txStripSpaceTest* sst =
-            NS_STATIC_CAST(txStripSpaceTest*,
-                           aStripSpaceItem->mStripSpaceTests[testCount-1]);
+        txStripSpaceTest* sst = aStripSpaceItem->mStripSpaceTests[testCount-1];
         double priority = sst->getDefaultPriority();
-        PRInt32 i, frameCount = frameStripSpaceTests.Count();
+        PRInt32 i, frameCount = aFrameStripSpaceTests.Length();
         for (i = 0; i < frameCount; ++i) {
-            txStripSpaceTest* fsst =
-                NS_STATIC_CAST(txStripSpaceTest*, frameStripSpaceTests[i]);
-            if (fsst->getDefaultPriority() < priority) {
+            if (aFrameStripSpaceTests[i]->getDefaultPriority() < priority) {
                 break;
             }
         }
-        if (!frameStripSpaceTests.InsertElementAt(sst, i)) {
+        if (!aFrameStripSpaceTests.InsertElementAt(i, sst)) {
             return NS_ERROR_OUT_OF_MEMORY;
         }
 
@@ -535,9 +528,7 @@ nsresult
 txStylesheet::addAttributeSet(txAttributeSetItem* aAttributeSetItem)
 {
     nsresult rv = NS_OK;
-    txInstruction* oldInstr =
-        NS_STATIC_CAST(txInstruction*,
-                       mAttributeSets.get(aAttributeSetItem->mName));
+    txInstruction* oldInstr = mAttributeSets.get(aAttributeSetItem->mName);
     if (!oldInstr) {
         rv = mAttributeSets.add(aAttributeSetItem->mName,
                                 aAttributeSetItem->mFirstInstruction);
@@ -599,7 +590,7 @@ txStylesheet::addKey(const txExpandedName& aName,
 {
     nsresult rv = NS_OK;
 
-    txXSLKey* xslKey = NS_STATIC_CAST(txXSLKey*, mKeys.get(aName));
+    txXSLKey* xslKey = mKeys.get(aName);
     if (!xslKey) {
         xslKey = new txXSLKey(aName);
         NS_ENSURE_TRUE(xslKey, NS_ERROR_OUT_OF_MEMORY);
@@ -620,8 +611,7 @@ nsresult
 txStylesheet::addDecimalFormat(const txExpandedName& aName,
                                nsAutoPtr<txDecimalFormat> aFormat)
 {
-    txDecimalFormat* existing =
-        NS_STATIC_CAST(txDecimalFormat*, mDecimalFormats.get(aName));
+    txDecimalFormat* existing = mDecimalFormats.get(aName);
     if (existing) {
         NS_ENSURE_TRUE(existing->isEqual(aFormat),
                        NS_ERROR_XSLT_PARSE_FAILURE);
@@ -637,27 +627,11 @@ txStylesheet::addDecimalFormat(const txExpandedName& aName,
     return NS_OK;
 }
 
-txStylesheet::ImportFrame::ImportFrame()
-    : mMatchableTemplates(MB_TRUE),
-      mFirstNotImported(nsnull)
-{
-}
-
 txStylesheet::ImportFrame::~ImportFrame()
 {
-    // Delete templates in mMatchableTemplates
-    txExpandedNameMap::iterator mapIter(mMatchableTemplates);
-    while (mapIter.next()) {
-        txListIterator templIter(NS_STATIC_CAST(txList*, mapIter.value()));
-        MatchableTemplate* templ;
-        while ((templ = NS_STATIC_CAST(MatchableTemplate*, templIter.next()))) {
-            delete templ;
-        }
-    }
-    
     txListIterator tlIter(&mToplevelItems);
     while (tlIter.hasNext()) {
-        delete NS_STATIC_CAST(txToplevelItem*, tlIter.next());
+        delete static_cast<txToplevelItem*>(tlIter.next());
     }
 }
 

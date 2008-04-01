@@ -49,10 +49,19 @@
 #include "nsIURI.h"
 #include "nsContentUtils.h"
 #include "nsReadableUtils.h"
-#include "nsLayoutAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsComponentManagerUtils.h"
+#include "nsLayoutStatics.h"
 
-PRUint32 nsNodeInfoManager::gNodeManagerCount;
+#ifdef MOZ_LOGGING
+// so we can get logging even in release builds
+#define FORCE_PR_LOG 1
+#endif
+#include "prlog.h"
+
+#ifdef PR_LOGGING
+static PRLogModuleInfo* gNodeInfoManagerLeakPRLog;
+#endif
 
 PLHashNumber
 nsNodeInfoManager::GetNodeInfoInnerHashValue(const void *key)
@@ -60,7 +69,7 @@ nsNodeInfoManager::GetNodeInfoInnerHashValue(const void *key)
   NS_ASSERTION(key, "Null key passed to nsNodeInfo::GetHashValue!");
 
   const nsINodeInfo::nsNodeInfoInner *node =
-    NS_REINTERPRET_CAST(const nsINodeInfo::nsNodeInfoInner *, key);
+    reinterpret_cast<const nsINodeInfo::nsNodeInfoInner *>(key);
 
   // Is this an acceptable hash value?
   return (PLHashNumber(NS_PTR_TO_INT32(node->mName)) & 0xffff) >> 8;
@@ -73,9 +82,9 @@ nsNodeInfoManager::NodeInfoInnerKeyCompare(const void *key1, const void *key2)
   NS_ASSERTION(key1 && key2, "Null key passed to NodeInfoInnerKeyCompare!");
 
   const nsINodeInfo::nsNodeInfoInner *node1 =
-    NS_REINTERPRET_CAST(const nsINodeInfo::nsNodeInfoInner *, key1);
+    reinterpret_cast<const nsINodeInfo::nsNodeInfoInner *>(key1);
   const nsINodeInfo::nsNodeInfoInner *node2 =
-    NS_REINTERPRET_CAST(const nsINodeInfo::nsNodeInfoInner *, key2);
+    reinterpret_cast<const nsINodeInfo::nsNodeInfoInner *>(key2);
 
   return (node1->mName == node2->mName &&
           node1->mPrefix == node2->mPrefix &&
@@ -90,36 +99,38 @@ nsNodeInfoManager::nsNodeInfoManager()
     mCommentNodeInfo(nsnull),
     mDocumentNodeInfo(nsnull)
 {
-  ++gNodeManagerCount;
+  nsLayoutStatics::AddRef();
+
+#ifdef PR_LOGGING
+  if (!gNodeInfoManagerLeakPRLog)
+    gNodeInfoManagerLeakPRLog = PR_NewLogModule("NodeInfoManagerLeak");
+
+  if (gNodeInfoManagerLeakPRLog)
+    PR_LOG(gNodeInfoManagerLeakPRLog, PR_LOG_DEBUG,
+           ("NODEINFOMANAGER %p created", this));
+#endif
 
   mNodeInfoHash = PL_NewHashTable(32, GetNodeInfoInnerHashValue,
                                   NodeInfoInnerKeyCompare,
                                   PL_CompareValues, nsnull, nsnull);
-
-#ifdef DEBUG_jst
-  printf ("Creating NodeInfoManager, gcount = %d\n", gNodeManagerCount);
-#endif
 }
 
 
 nsNodeInfoManager::~nsNodeInfoManager()
 {
-  --gNodeManagerCount;
-
   if (mNodeInfoHash)
     PL_HashTableDestroy(mNodeInfoHash);
-
-
-  if (gNodeManagerCount == 0) {
-    nsNodeInfo::ClearCache();
-  }
 
   // Note: mPrincipal may be null here if we never got inited correctly
   NS_IF_RELEASE(mPrincipal);
 
-#ifdef DEBUG_jst
-  printf ("Removing NodeInfoManager, gcount = %d\n", gNodeManagerCount);
+#ifdef PR_LOGGING
+  if (gNodeInfoManagerLeakPRLog)
+    PR_LOG(gNodeInfoManagerLeakPRLog, PR_LOG_DEBUG,
+           ("NODEINFOMANAGER %p destroyed", this));
 #endif
+
+  nsLayoutStatics::Release();
 }
 
 
@@ -164,6 +175,12 @@ nsNodeInfoManager::Init(nsIDocument *aDocument)
 
   mDocument = aDocument;
 
+#ifdef PR_LOGGING
+  if (gNodeInfoManagerLeakPRLog)
+    PR_LOG(gNodeInfoManagerLeakPRLog, PR_LOG_DEBUG,
+           ("NODEINFOMANAGER %p Init document=%p", this, aDocument));
+#endif
+
   return NS_OK;
 }
 
@@ -187,7 +204,7 @@ nsNodeInfoManager::GetNodeInfo(nsIAtom *aName, nsIAtom *aPrefix,
   void *node = PL_HashTableLookup(mNodeInfoHash, &tmpKey);
 
   if (node) {
-    *aNodeInfo = NS_STATIC_CAST(nsINodeInfo *, node);
+    *aNodeInfo = static_cast<nsINodeInfo *>(node);
 
     NS_ADDREF(*aNodeInfo);
 
@@ -268,7 +285,7 @@ already_AddRefed<nsINodeInfo>
 nsNodeInfoManager::GetTextNodeInfo()
 {
   if (!mTextNodeInfo) {
-    GetNodeInfo(nsLayoutAtoms::textTagName, nsnull, kNameSpaceID_None,
+    GetNodeInfo(nsGkAtoms::textTagName, nsnull, kNameSpaceID_None,
                 &mTextNodeInfo);
   }
   else {
@@ -282,7 +299,7 @@ already_AddRefed<nsINodeInfo>
 nsNodeInfoManager::GetCommentNodeInfo()
 {
   if (!mCommentNodeInfo) {
-    GetNodeInfo(nsLayoutAtoms::commentTagName, nsnull, kNameSpaceID_None,
+    GetNodeInfo(nsGkAtoms::commentTagName, nsnull, kNameSpaceID_None,
                 &mCommentNodeInfo);
   }
   else {
@@ -296,7 +313,7 @@ already_AddRefed<nsINodeInfo>
 nsNodeInfoManager::GetDocumentNodeInfo()
 {
   if (!mDocumentNodeInfo) {
-    GetNodeInfo(nsLayoutAtoms::documentNodeName, nsnull, kNameSpaceID_None,
+    GetNodeInfo(nsGkAtoms::documentNodeName, nsnull, kNameSpaceID_None,
                 &mDocumentNodeInfo);
   }
   else {

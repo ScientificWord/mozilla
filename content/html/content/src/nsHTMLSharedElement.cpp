@@ -42,7 +42,7 @@
 #include "nsIDOMHTMLQuoteElement.h"
 #include "nsIDOMHTMLBaseFontElement.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 #include "nsRuleData.h"
@@ -69,7 +69,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -105,6 +105,8 @@ public:
                                 nsAttrValue& aResult);
   virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 };
 
 
@@ -126,9 +128,10 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLSharedElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLSharedElement
-NS_HTML_CONTENT_INTERFACE_MAP_AMBIGOUS_BEGIN(nsHTMLSharedElement,
-                                             nsGenericHTMLElement,
-                                             nsIDOMHTMLParamElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_AMBIGOUS_HEAD(nsHTMLSharedElement,
+                                              nsGenericHTMLElement,
+                                              nsIDOMHTMLParamElement)
+  NS_INTERFACE_TABLE_TO_MAP_SEGUE
   NS_INTERFACE_MAP_ENTRY_IF_TAG(nsIDOMHTMLParamElement, param)
   NS_INTERFACE_MAP_ENTRY_IF_TAG(nsIDOMHTMLIsIndexElement, isindex)
   NS_INTERFACE_MAP_ENTRY_IF_TAG(nsIDOMHTMLBaseElement, base)
@@ -151,7 +154,7 @@ NS_HTML_CONTENT_INTERFACE_MAP_AMBIGOUS_BEGIN(nsHTMLSharedElement,
 NS_HTML_CONTENT_INTERFACE_MAP_END
 
 
-NS_IMPL_DOM_CLONENODE_AMBIGUOUS(nsHTMLSharedElement, nsIDOMHTMLParamElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLSharedElement)
 
 // nsIDOMHTMLParamElement
 NS_IMPL_STRING_ATTR(nsHTMLSharedElement, Name, name)
@@ -195,29 +198,29 @@ nsHTMLSharedElement::ParseAttribute(PRInt32 aNamespaceID,
                                     nsAttrValue& aResult)
 {
   if (aNamespaceID == kNameSpaceID_None) {
-    if (mNodeInfo->Equals(nsHTMLAtoms::spacer)) {
-      if (aAttribute == nsHTMLAtoms::size) {
+    if (mNodeInfo->Equals(nsGkAtoms::spacer)) {
+      if (aAttribute == nsGkAtoms::size) {
         return aResult.ParseIntWithBounds(aValue, 0);
       }
-      if (aAttribute == nsHTMLAtoms::align) {
+      if (aAttribute == nsGkAtoms::align) {
         return ParseAlignValue(aValue, aResult);
       }
-      if (aAttribute == nsHTMLAtoms::width ||
-          aAttribute == nsHTMLAtoms::height) {
-        return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
+      if (aAttribute == nsGkAtoms::width ||
+          aAttribute == nsGkAtoms::height) {
+        return aResult.ParseSpecialIntValue(aValue, PR_TRUE);
       }
     }
-    else if (mNodeInfo->Equals(nsHTMLAtoms::dir) ||
-             mNodeInfo->Equals(nsHTMLAtoms::menu)) {
-      if (aAttribute == nsHTMLAtoms::type) {
+    else if (mNodeInfo->Equals(nsGkAtoms::dir) ||
+             mNodeInfo->Equals(nsGkAtoms::menu)) {
+      if (aAttribute == nsGkAtoms::type) {
         return aResult.ParseEnumValue(aValue, kListTypeTable);
       }
-      if (aAttribute == nsHTMLAtoms::start) {
+      if (aAttribute == nsGkAtoms::start) {
         return aResult.ParseIntWithBounds(aValue, 1);
       }
     }
-    else if (mNodeInfo->Equals(nsHTMLAtoms::basefont)) {
-      if (aAttribute == nsHTMLAtoms::size) {
+    else if (mNodeInfo->Equals(nsGkAtoms::basefont)) {
+      if (aAttribute == nsGkAtoms::size) {
         return aResult.ParseIntValue(aValue);
       }
     }
@@ -236,7 +239,7 @@ SpacerMapAttributesIntoRule(const nsMappedAttributes* aAttributes,
   nsGenericHTMLElement::MapImageMarginAttributeInto(aAttributes, aData);
   nsGenericHTMLElement::MapImageSizeAttributesInto(aAttributes, aData);
 
-  if (aData->mSID == eStyleStruct_Position) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Position)) {
     const nsStyleDisplay* display = aData->mStyleContext->GetStyleDisplay();
 
     PRBool typeIsBlock = (display->mDisplay == NS_STYLE_DISPLAY_BLOCK);
@@ -244,7 +247,7 @@ SpacerMapAttributesIntoRule(const nsMappedAttributes* aAttributes,
     if (typeIsBlock) {
       // width: value
       if (aData->mPositionData->mWidth.GetUnit() == eCSSUnit_Null) {
-        const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::width);
+        const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::width);
         if (value && value->Type() == nsAttrValue::eInteger) {
           aData->mPositionData->
             mWidth.SetFloatValue((float)value->GetIntegerValue(),
@@ -257,7 +260,7 @@ SpacerMapAttributesIntoRule(const nsMappedAttributes* aAttributes,
 
       // height: value
       if (aData->mPositionData->mHeight.GetUnit() == eCSSUnit_Null) {
-        const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::height);
+        const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::height);
         if (value && value->Type() == nsAttrValue::eInteger) {
           aData->mPositionData->
             mHeight.SetFloatValue((float)value->GetIntegerValue(),
@@ -270,15 +273,16 @@ SpacerMapAttributesIntoRule(const nsMappedAttributes* aAttributes,
     } else {
       // size: value
       if (aData->mPositionData->mWidth.GetUnit() == eCSSUnit_Null) {
-        const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::size);
+        const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::size);
         if (value && value->Type() == nsAttrValue::eInteger)
           aData->mPositionData->
             mWidth.SetFloatValue((float)value->GetIntegerValue(),
                                  eCSSUnit_Pixel);
       }
     }
-  } else if (aData->mSID == eStyleStruct_Display) {
-    const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::align);
+  }
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Display)) {
+    const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::align);
     if (value && value->Type() == nsAttrValue::eEnum) {
       PRInt32 align = value->GetEnumValue();
       if (aData->mDisplayData->mFloat.GetUnit() == eCSSUnit_Null) {
@@ -292,7 +296,7 @@ SpacerMapAttributesIntoRule(const nsMappedAttributes* aAttributes,
     }
 
     if (aData->mDisplayData->mDisplay.GetUnit() == eCSSUnit_Null) {
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::type);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::type);
       if (value && value->Type() == nsAttrValue::eString) {
         nsAutoString tmp(value->GetStringValue());
         if (tmp.LowerCaseEqualsLiteral("line") ||
@@ -315,10 +319,10 @@ static void
 DirectoryMenuMapAttributesIntoRule(const nsMappedAttributes* aAttributes,
                                nsRuleData* aData)
 {
-  if (aData->mSID == eStyleStruct_List) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(List)) {
     if (aData->mListData->mType.GetUnit() == eCSSUnit_Null) {
       // type: enum
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::type);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::type);
       if (value) {
         if (value->Type() == nsAttrValue::eEnum) {
           aData->mListData->mType.SetIntValue(value->GetEnumValue(), eCSSUnit_Enumerated);
@@ -335,12 +339,12 @@ DirectoryMenuMapAttributesIntoRule(const nsMappedAttributes* aAttributes,
 NS_IMETHODIMP_(PRBool)
 nsHTMLSharedElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
-  if (mNodeInfo->Equals(nsHTMLAtoms::spacer)) {
+  if (mNodeInfo->Equals(nsGkAtoms::spacer)) {
     static const MappedAttributeEntry attributes[] = {
       // XXXldb This is just wrong.
-      { &nsHTMLAtoms::usemap },
-      { &nsHTMLAtoms::ismap },
-      { &nsHTMLAtoms::align },
+      { &nsGkAtoms::usemap },
+      { &nsGkAtoms::ismap },
+      { &nsGkAtoms::align },
       { nsnull }
     };
 
@@ -354,10 +358,10 @@ nsHTMLSharedElement::IsAttributeMapped(const nsIAtom* aAttribute) const
     return FindAttributeDependence(aAttribute, map, NS_ARRAY_LENGTH(map));
   }
 
-  if (mNodeInfo->Equals(nsHTMLAtoms::dir)) {
+  if (mNodeInfo->Equals(nsGkAtoms::dir)) {
     static const MappedAttributeEntry attributes[] = {
-      { &nsHTMLAtoms::type },
-      // { &nsHTMLAtoms::compact }, // XXX
+      { &nsGkAtoms::type },
+      // { &nsGkAtoms::compact }, // XXX
       { nsnull} 
     };
   
@@ -375,11 +379,11 @@ nsHTMLSharedElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 nsMapRuleToAttributesFunc
 nsHTMLSharedElement::GetAttributeMappingFunction() const
 {
-  if (mNodeInfo->Equals(nsHTMLAtoms::spacer)) {
+  if (mNodeInfo->Equals(nsGkAtoms::spacer)) {
     return &SpacerMapAttributesIntoRule;
   }
-  else if (mNodeInfo->Equals(nsHTMLAtoms::dir) ||
-           mNodeInfo->Equals(nsHTMLAtoms::menu)) {
+  else if (mNodeInfo->Equals(nsGkAtoms::dir) ||
+           mNodeInfo->Equals(nsGkAtoms::menu)) {
     return &DirectoryMenuMapAttributesIntoRule;
   }
 

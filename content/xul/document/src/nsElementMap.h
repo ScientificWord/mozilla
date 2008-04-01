@@ -65,9 +65,9 @@
 #include "plhash.h"
 #include "nsIContent.h"
 #include "nsFixedSizeAllocator.h"
+#include "nsCOMArray.h"
 
 class nsString;
-class nsISupportsArray;
 
 class nsElementMap
 {
@@ -126,7 +126,7 @@ public:
     Remove(const nsAString& aID, nsIContent* aContent);
 
     nsresult
-    Find(const nsAString& aID, nsISupportsArray* aResults);
+    Find(const nsAString& aID, nsCOMArray<nsIContent>& aResults);
 
     nsresult
     FindFirst(const nsAString& aID, nsIContent** aContent);

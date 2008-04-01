@@ -45,14 +45,51 @@ class nsIDocument;
 class nsINode;
 
 #define NS_IMUTATION_OBSERVER_IID \
-{ 0x0864a23d, 0x824b, 0x48be, \
- { 0x9d, 0x50, 0xff, 0x30, 0x2f, 0xf2, 0x79, 0xfe } }
+{ 0x32e68316, 0x67d4, 0x44a5, \
+ { 0x8d, 0x35, 0xd, 0x39, 0xf, 0xa9, 0xdf, 0x11 } }
 
-// Mutation observer interface
+/**
+ * Information details about a characterdata change
+ */
+struct CharacterDataChangeInfo
+{
+  PRBool mAppend;
+  PRUint32 mChangeStart;
+  PRUint32 mChangeEnd;
+  PRUint32 mReplaceLength;
+};
+
+/**
+ * Mutation observer interface
+ *
+ * WARNING: During these notifications, you are not allowed to perform
+ * any mutations to the current or any other document, or start a
+ * network load.  If you need to perform such operations do that
+ * during the _last_ nsIDocumentObserver::EndUpdate notification.  The
+ * expection for this is ParentChainChanged, where mutations should be
+ * done from an async event, as the notification might not be
+ * surrounded by BeginUpdate/EndUpdate calls.
+ */
 class nsIMutationObserver : public nsISupports
 {
 public:
   NS_DECLARE_STATIC_IID_ACCESSOR(NS_IMUTATION_OBSERVER_IID)
+
+  /**
+   * Notification that the node value of a data node (text, cdata, pi, comment)
+   * will be changed.
+   *
+   * This notification is not sent when a piece of content is
+   * added/removed from the document (the other notifications are used
+   * for that).
+   *
+   * @param aDocument The owner-document of aContent. Can be null.
+   * @param aContent  The piece of content that changed. Is never null.
+   * @param aInfo     The structure with information details about the change.
+   */
+  virtual void CharacterDataWillChange(nsIDocument *aDocument,
+                                       nsIContent* aContent,
+                                       CharacterDataChangeInfo* aInfo) = 0;
 
   /**
    * Notification that the node value of a data node (text, cdata, pi, comment)
@@ -64,11 +101,11 @@ public:
    *
    * @param aDocument The owner-document of aContent. Can be null.
    * @param aContent  The piece of content that changed. Is never null.
-   * @param aAppend   Whether the change was an append
+   * @param aInfo     The structure with information details about the change.
    */
   virtual void CharacterDataChanged(nsIDocument *aDocument,
                                     nsIContent* aContent,
-                                    PRBool aAppend) = 0;
+                                    CharacterDataChangeInfo* aInfo) = 0;
 
   /**
    * Notification that an attribute of an element has changed.
@@ -80,12 +117,15 @@ public:
    * @param aModType     Whether or not the attribute was added, changed, or
    *                     removed. The constants are defined in
    *                     nsIDOMMutationEvent.h.
+   * @param aStateMask If this attribute change caused content state changes,
+   *                   the bits that changed.  Might be 0 if no bits changed.
    */
   virtual void AttributeChanged(nsIDocument* aDocument,
                                 nsIContent*  aContent,
                                 PRInt32      aNameSpaceID,
                                 nsIAtom*     aAttribute,
-                                PRInt32      aModType) = 0;
+                                PRInt32      aModType,
+                                PRUint32     aStateMask) = 0;
 
   /**
    * Notification that one or more content nodes have been appended to the
@@ -152,32 +192,74 @@ public:
    * @param aNode The node being destroyed.
    */
   virtual void NodeWillBeDestroyed(const nsINode *aNode) = 0;
+
+  /**
+   * Notification that the node's parent chain has changed. This
+   * happens when either the node or one of its ancestors is inserted
+   * or removed as a child of another node.
+   *
+   * Note that when a node is inserted this notification is sent to
+   * all descendants of that node, since all such nodes have their
+   * parent chain changed.
+   *
+   * @param aContent  The piece of content that had its parent changed.
+   */
+
+  virtual void ParentChainChanged(nsIContent *aContent) = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIMutationObserver, NS_IMUTATION_OBSERVER_IID)
 
-#define NS_DECL_NSIMUTATIONOBSERVER                                          \
+#define NS_DECL_NSIMUTATIONOBSERVER_CHARACTERDATAWILLCHANGE                  \
+    virtual void CharacterDataWillChange(nsIDocument* aDocument,             \
+                                         nsIContent* aContent,               \
+                                         CharacterDataChangeInfo* aInfo);
+
+#define NS_DECL_NSIMUTATIONOBSERVER_CHARACTERDATACHANGED                     \
     virtual void CharacterDataChanged(nsIDocument* aDocument,                \
                                       nsIContent* aContent,                  \
-                                      PRBool aAppend);                       \
+                                      CharacterDataChangeInfo* aInfo);
+
+#define NS_DECL_NSIMUTATIONOBSERVER_ATTRIBUTECHANGED                         \
     virtual void AttributeChanged(nsIDocument* aDocument,                    \
                                   nsIContent* aContent,                      \
                                   PRInt32 aNameSpaceID,                      \
                                   nsIAtom* aAttribute,                       \
-                                  PRInt32 aModType);                         \
+                                  PRInt32 aModType,                          \
+                                  PRUint32 aStateMask);
+
+#define NS_DECL_NSIMUTATIONOBSERVER_CONTENTAPPENDED                          \
     virtual void ContentAppended(nsIDocument* aDocument,                     \
                                  nsIContent* aContainer,                     \
-                                 PRInt32 aNewIndexInContainer);              \
+                                 PRInt32 aNewIndexInContainer);
+
+#define NS_DECL_NSIMUTATIONOBSERVER_CONTENTINSERTED                          \
     virtual void ContentInserted(nsIDocument* aDocument,                     \
                                  nsIContent* aContainer,                     \
                                  nsIContent* aChild,                         \
-                                 PRInt32 aIndexInContainer);                 \
+                                 PRInt32 aIndexInContainer);
+
+#define NS_DECL_NSIMUTATIONOBSERVER_CONTENTREMOVED                           \
     virtual void ContentRemoved(nsIDocument* aDocument,                      \
                                 nsIContent* aContainer,                      \
                                 nsIContent* aChild,                          \
-                                PRInt32 aIndexInContainer);                  \
+                                PRInt32 aIndexInContainer);
+
+#define NS_DECL_NSIMUTATIONOBSERVER_NODEWILLBEDESTROYED                      \
     virtual void NodeWillBeDestroyed(const nsINode* aNode);
 
+#define NS_DECL_NSIMUTATIONOBSERVER_PARENTCHAINCHANGED                       \
+    virtual void ParentChainChanged(nsIContent *aContent);
+
+#define NS_DECL_NSIMUTATIONOBSERVER                                          \
+    NS_DECL_NSIMUTATIONOBSERVER_CHARACTERDATAWILLCHANGE                      \
+    NS_DECL_NSIMUTATIONOBSERVER_CHARACTERDATACHANGED                         \
+    NS_DECL_NSIMUTATIONOBSERVER_ATTRIBUTECHANGED                             \
+    NS_DECL_NSIMUTATIONOBSERVER_CONTENTAPPENDED                              \
+    NS_DECL_NSIMUTATIONOBSERVER_CONTENTINSERTED                              \
+    NS_DECL_NSIMUTATIONOBSERVER_CONTENTREMOVED                               \
+    NS_DECL_NSIMUTATIONOBSERVER_NODEWILLBEDESTROYED                          \
+    NS_DECL_NSIMUTATIONOBSERVER_PARENTCHAINCHANGED
 
 #define NS_IMPL_NSIMUTATIONOBSERVER_CORE_STUB(_class)                     \
 void                                                                      \
@@ -187,9 +269,15 @@ _class::NodeWillBeDestroyed(const nsINode* aNode)                               
 
 #define NS_IMPL_NSIMUTATIONOBSERVER_CONTENT(_class)                       \
 void                                                                      \
+_class::CharacterDataWillChange(nsIDocument* aDocument,                   \
+                                nsIContent* aContent,                     \
+                                CharacterDataChangeInfo* aInfo)           \
+{                                                                         \
+}                                                                         \
+void                                                                      \
 _class::CharacterDataChanged(nsIDocument* aDocument,                      \
                              nsIContent* aContent,                        \
-                             PRBool aAppend)                              \
+                             CharacterDataChangeInfo* aInfo)              \
 {                                                                         \
 }                                                                         \
 void                                                                      \
@@ -197,7 +285,8 @@ _class::AttributeChanged(nsIDocument* aDocument,                          \
                          nsIContent* aContent,                            \
                          PRInt32 aNameSpaceID,                            \
                          nsIAtom* aAttribute,                             \
-                         PRInt32 aModType)                                \
+                         PRInt32 aModType,                                \
+                         PRUint32 aStateMask)                             \
 {                                                                         \
 }                                                                         \
 void                                                                      \
@@ -219,6 +308,11 @@ _class::ContentRemoved(nsIDocument* aDocument,                            \
                        nsIContent* aChild,                                \
                        PRInt32 aIndexInContainer)                         \
 {                                                                         \
+}                                                                         \
+void                                                                      \
+_class::ParentChainChanged(nsIContent *aContent)                          \
+{                                                                         \
 }
+
 
 #endif /* nsIMutationObserver_h___ */

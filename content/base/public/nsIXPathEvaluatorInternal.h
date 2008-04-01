@@ -39,9 +39,11 @@
 #ifndef nsIXPathEvaluatorInternal_h__
 #define nsIXPathEvaluatorInternal_h__
 
-#include "nsISupports.h"
+#include "nsCOMArray.h"
 
 class nsIDOMDocument;
+class nsIDOMXPathExpression;
+class nsIDOMXPathNSResolver;
 
 #define NS_IXPATHEVALUATORINTERNAL_IID \
   {0xb4b72daa, 0x65d6, 0x440f, \
@@ -57,6 +59,13 @@ public:
    * Sets the document this evaluator corresponds to
    */
   NS_IMETHOD SetDocument(nsIDOMDocument* aDocument) = 0;
+
+  NS_IMETHOD CreateExpression(const nsAString &aExpression,
+                              nsIDOMXPathNSResolver *aResolver,
+                              nsStringArray *aNamespaceURIs,
+                              nsCStringArray *aContractIDs,
+                              nsCOMArray<nsISupports> *aState,
+                              nsIDOMXPathExpression **aResult) = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIXPathEvaluatorInternal,

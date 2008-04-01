@@ -53,8 +53,7 @@
 
 class nsSVGNumberList : public nsIDOMSVGNumberList,
                         public nsSVGValue,
-                        public nsISVGValueObserver,
-                        public nsSupportsWeakReference
+                        public nsISVGValueObserver
 {  
 protected:
   friend nsresult NS_NewSVGNumberList(nsIDOMSVGNumberList** result);
@@ -223,7 +222,7 @@ NS_IMETHODIMP nsSVGNumberList::Initialize(nsIDOMSVGNumber *newItem,
 /* nsIDOMSVGNumber getItem (in unsigned long index); */
 NS_IMETHODIMP nsSVGNumberList::GetItem(PRUint32 index, nsIDOMSVGNumber **_retval)
 {
-  if ((PRInt32)index >= mNumbers.Count()) {
+  if (index >= static_cast<PRUint32>(mNumbers.Count())) {
     *_retval = nsnull;
     return NS_ERROR_DOM_INDEX_SIZE_ERR;
   }
@@ -278,7 +277,7 @@ nsSVGNumberList::ReplaceItem(nsIDOMSVGNumber *newItem,
 /* nsIDOMSVGNumberList removeItem (in unsigned long index); */
 NS_IMETHODIMP nsSVGNumberList::RemoveItem(PRUint32 index, nsIDOMSVGNumber **_retval)
 {
-  if ((PRInt32)index >= mNumbers.Count()) {
+  if (index >= static_cast<PRUint32>(mNumbers.Count())) {
     *_retval = nsnull;
     return NS_ERROR_DOM_INDEX_SIZE_ERR;
   }

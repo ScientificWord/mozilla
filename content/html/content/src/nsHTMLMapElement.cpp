@@ -35,9 +35,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsIDOMHTMLMapElement.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 #include "nsContentList.h"
@@ -56,7 +56,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -72,6 +72,11 @@ public:
                               PRBool aCompileEventHandlers);
   virtual void UnbindFromTree(PRBool aDeep = PR_TRUE,
                               PRBool aNullParent = PR_TRUE);
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+
+  NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED_NO_UNLINK(nsHTMLMapElement,
+                                                     nsGenericHTMLElement)
+
 protected:
   nsRefPtr<nsContentList> mAreas;
 };
@@ -85,15 +90,22 @@ nsHTMLMapElement::nsHTMLMapElement(nsINodeInfo *aNodeInfo)
 {
 }
 
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsHTMLMapElement)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_INHERITED(nsHTMLMapElement,
+                                                  nsGenericHTMLElement)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR_AMBIGUOUS(mAreas,
+                                                       nsBaseContentList)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+
 NS_IMPL_ADDREF_INHERITED(nsHTMLMapElement, nsGenericElement) 
 NS_IMPL_RELEASE_INHERITED(nsHTMLMapElement, nsGenericElement) 
 
 
 // QueryInterface implementation for nsHTMLMapElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLMapElement, nsGenericHTMLElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLMapElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLMapElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_CC_INTERFACE_TABLE_HEAD(nsHTMLMapElement,
+                                        nsGenericHTMLElement)
+  NS_INTERFACE_TABLE_INHERITED1(nsHTMLMapElement, nsIDOMHTMLMapElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLMapElement)
 
 
 nsresult
@@ -127,7 +139,7 @@ nsHTMLMapElement::UnbindFromTree(PRBool aDeep, PRBool aNullParent)
   nsGenericHTMLElement::UnbindFromTree(aDeep, aNullParent);
 }
 
-NS_IMPL_DOM_CLONENODE(nsHTMLMapElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLMapElement)
 
 
 NS_IMETHODIMP
@@ -138,7 +150,7 @@ nsHTMLMapElement::GetAreas(nsIDOMHTMLCollection** aAreas)
   if (!mAreas) {
     // Not using NS_GetContentList because this should not be cached
     mAreas = new nsContentList(this,
-                               nsHTMLAtoms::area,
+                               nsGkAtoms::area,
                                mNodeInfo->NamespaceID(),
                                PR_FALSE);
 

@@ -45,13 +45,18 @@
 #define nsContentList_h___
 
 #include "nsISupports.h"
-#include "nsVoidArray.h"
+#include "nsCOMArray.h"
 #include "nsString.h"
 #include "nsIDOMHTMLCollection.h"
 #include "nsIDOMNodeList.h"
 #include "nsStubMutationObserver.h"
 #include "nsIAtom.h"
 #include "nsINameSpaceManager.h"
+#include "nsCycleCollectionParticipant.h"
+
+// Magic namespace id that means "match all namespaces".  This is
+// negative so it won't collide with actual namespace constants.
+#define kNameSpaceID_Wildcard PR_INT32_MIN
 
 // This is a callback function type that can be used to implement an
 // arbitrary matching algorithm.  aContent is the content that may
@@ -60,7 +65,9 @@
 typedef PRBool (*nsContentListMatchFunc)(nsIContent* aContent,
                                          PRInt32 aNamespaceID,
                                          nsIAtom* aAtom,
-                                         const nsAString& aData);
+                                         void* aData);
+
+typedef void (*nsContentListDestroyFunc)(void* aData);
 
 class nsIDocument;
 class nsIDOMHTMLFormElement;
@@ -72,20 +79,21 @@ public:
   nsBaseContentList();
   virtual ~nsBaseContentList();
 
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
 
   // nsIDOMNodeList
   NS_DECL_NSIDOMNODELIST
+  NS_DECL_CYCLE_COLLECTION_CLASS(nsBaseContentList)
 
-  virtual void AppendElement(nsIContent *aContent);
-  virtual void RemoveElement(nsIContent *aContent);
+  void AppendElement(nsIContent *aContent);
+  void RemoveElement(nsIContent *aContent);
   virtual PRInt32 IndexOf(nsIContent *aContent, PRBool aDoFlush);
-  virtual void Reset();
+  void Reset();
 
   static void Shutdown();
 
 protected:
-  nsAutoVoidArray mElements;
+  nsCOMArray<nsIContent> mElements;
 };
 
 
@@ -97,12 +105,6 @@ class nsFormContentList : public nsBaseContentList
 public:
   nsFormContentList(nsIDOMHTMLFormElement *aForm,
                     nsBaseContentList& aContentList);
-  virtual ~nsFormContentList();
-
-  virtual void AppendElement(nsIContent *aContent);
-  virtual void RemoveElement(nsIContent *aContent);
-
-  virtual void Reset();
 };
 
 /**
@@ -150,6 +152,26 @@ protected:
 };
 
 /**
+ * LIST_UP_TO_DATE means that the list is up to date and need not do
+ * any walking to be able to answer any questions anyone may have.
+ */
+#define LIST_UP_TO_DATE 0
+/**
+ * LIST_DIRTY means that the list contains no useful information and
+ * if anyone asks it anything it will have to populate itself before
+ * answering.
+ */
+#define LIST_DIRTY 1
+/**
+ * LIST_LAZY means that the list has populated itself to a certain
+ * extent and that that part of the list is still valid.  Requests for
+ * things outside that part of the list will require walking the tree
+ * some more.  When a list is in this state, the last thing in
+ * mElements is the last node in the tree that the list looked at.
+ */
+#define LIST_LAZY 2
+
+/**
  * Class that implements a live NodeList that matches nodes in the
  * tree based on some criterion
  */
@@ -163,11 +185,16 @@ public:
 
   /**
    * @param aRootNode The node under which to limit our search.
-   * @param aMatchAtom an atom whose meaning depends on aMatchNameSpaceId
-   * @param aMatchNameSpaceId if kNameSpaceID_Unknown then aMatchAtom is the
-   *                          tagName to match.  Otherwise we match nodes with
-   *                          aMatchNameSpaceId and a localName equal to
-   *                          aMatchAtom
+   * @param aMatchAtom An atom whose meaning depends on aMatchNameSpaceId.
+   *                   The special value "*" always matches whatever aMatchAtom
+   *                   is matched against.
+   * @param aMatchNameSpaceId If kNameSpaceID_Unknown, then aMatchAtom is the
+   *                          tagName to match.
+   *                          If kNameSpaceID_Wildcard, then aMatchAtom is the
+   *                          localName to match.
+   *                          Otherwise we match nodes whose namespace is
+   *                          aMatchNameSpaceId and localName matches
+   *                          aMatchAtom.
    * @param aDeep If false, then look only at children of the root, nothing
    *              deeper.  If true, then look at the whole subtree rooted at
    *              our root.
@@ -180,7 +207,8 @@ public:
   /**
    * @param aRootNode The node under which to limit our search.
    * @param aFunc the function to be called to determine whether we match
-   * @param aData a string that will need to be passed back to aFunc
+   * @param aDestroyFunc the function that will be called to destroy aData
+   * @param aData closure data that will need to be passed back to aFunc
    * @param aDeep If false, then look only at children of the root, nothing
    *              deeper.  If true, then look at the whole subtree rooted at
    *              our root.
@@ -191,7 +219,8 @@ public:
    */  
   nsContentList(nsINode* aRootNode,
                 nsContentListMatchFunc aFunc,
-                const nsAString& aData,
+                nsContentListDestroyFunc aDestroyFunc,
+                void* aData,
                 PRBool aDeep = PR_TRUE,
                 nsIAtom* aMatchAtom = nsnull,
                 PRInt32 aMatchNameSpaceId = kNameSpaceID_None,
@@ -211,21 +240,18 @@ public:
   NS_HIDDEN_(nsIContent*) NamedItem(const nsAString& aName, PRBool aDoFlush);
 
   nsContentListKey* GetKey() {
-    return NS_STATIC_CAST(nsContentListKey*, this);
+    return static_cast<nsContentListKey*>(this);
   }
   
 
   // nsIMutationObserver
-  virtual void AttributeChanged(nsIDocument *aDocument, nsIContent* aContent,
-                                PRInt32 aNameSpaceID, nsIAtom* aAttribute,
-                                PRInt32 aModType);
-  virtual void ContentAppended(nsIDocument *aDocument, nsIContent* aContainer,
-                               PRInt32 aNewIndexInContainer);
-  virtual void ContentInserted(nsIDocument *aDocument, nsIContent* aContainer,
-                               nsIContent* aChild, PRInt32 aIndexInContainer);
-  virtual void ContentRemoved(nsIDocument *aDocument, nsIContent* aContainer,
-                              nsIContent* aChild, PRInt32 aIndexInContainer);
-  virtual void NodeWillBeDestroyed(const nsINode *aNode);
+  NS_DECL_NSIMUTATIONOBSERVER_ATTRIBUTECHANGED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTAPPENDED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTINSERTED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTREMOVED
+  NS_DECL_NSIMUTATIONOBSERVER_NODEWILLBEDESTROYED
+  
+  static void OnDocumentDestroy(nsIDocument *aDocument);
 
 protected:
   /**
@@ -306,21 +332,30 @@ protected:
    * all the nodes we can find.
    */
   inline void BringSelfUpToDate(PRBool aDoFlush);
+
   /**
-   * A function to check whether aContent is anonymous from our point
-   * of view.  If it is, we don't care about it, since we should never
-   * contain it or any of its kids.
+   * Sets the state to LIST_DIRTY and clears mElements array.
+   * @note This is the only acceptable way to set state to LIST_DIRTY.
    */
-  PRBool IsContentAnonymous(nsIContent* aContent);
+  void SetDirty()
+  {
+    mState = LIST_DIRTY;
+    Reset();
+  }
+
   /**
    * Function to use to determine whether a piece of content matches
    * our criterion
    */
   nsContentListMatchFunc mFunc;
   /**
+   * Cleanup closure data with this.
+   */
+  nsContentListDestroyFunc mDestroyFunc;
+  /**
    * Closure data to pass to mFunc when we call it
    */
-  const nsAFlatString* mData;
+  void* mData;
   /**
    * True if we are looking for elements named "*"
    */
@@ -340,27 +375,11 @@ protected:
    * attributes.
    */
   PRPackedBool mFuncMayDependOnAttr;
-};
 
-/**
- * LIST_UP_TO_DATE means that the list is up to date and need not do
- * any walking to be able to answer any questions anyone may have.
- */
-#define LIST_UP_TO_DATE 0
-/**
- * LIST_DIRTY means that the list contains no useful information and
- * if anyone asks it anything it will have to populate itself before
- * answering.
- */
-#define LIST_DIRTY 1
-/**
- * LIST_LAZY means that the list has populated itself to a certain
- * extent and that that part of the list is still valid.  Requests for
- * things outside that part of the list will require walking the tree
- * some more.  When a list is in this state, the last thing in
- * mElements is the last node in the tree that the list looked at.
- */
-#define LIST_LAZY 2
+#ifdef DEBUG_CONTENT_LIST
+  void AssertInSync();
+#endif
+};
 
 already_AddRefed<nsContentList>
 NS_GetContentList(nsINode* aRootNode, nsIAtom* aMatchAtom,

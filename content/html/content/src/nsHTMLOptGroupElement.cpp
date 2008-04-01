@@ -35,9 +35,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsIDOMHTMLOptGroupElement.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 #include "nsIFrame.h"
@@ -48,6 +48,7 @@
 #include "nsISelectElement.h"
 #include "nsIDOMHTMLSelectElement.h"
 #include "nsEventDispatcher.h"
+#include "nsHTMLSelectElement.h"
 
 /**
  * The implementation of &lt;optgroup&gt;
@@ -63,7 +64,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -77,7 +78,6 @@ public:
   // nsGenericElement
   virtual nsresult InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
                                  PRBool aNotify);
-  virtual nsresult AppendChildTo(nsIContent* aKid, PRBool aNotify);
   virtual nsresult RemoveChildAt(PRUint32 aIndex, PRBool aNotify);
 
   // nsIContent
@@ -85,15 +85,7 @@ public:
 
   virtual PRInt32 IntrinsicState() const;
  
-  virtual nsresult UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
-                             PRBool aNotify)
-  {
-    nsresult rv = nsGenericHTMLElement::UnsetAttr(aNameSpaceID, aAttribute,
-                                                  aNotify);
-      
-    AfterSetAttr(aNameSpaceID, aAttribute, nsnull, aNotify);
-    return rv;
-  }
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 
 protected:
 
@@ -101,13 +93,7 @@ protected:
    * Get the select content element that contains this option
    * @param aSelectElement the select element [OUT]
    */
-  void GetSelect(nsISelectElement **aSelectElement);
- 
-  /**
-   * Called when an attribute has just been changed
-   */
-  virtual nsresult AfterSetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                                const nsAString* aValue, PRBool aNotify);
+  nsIContent* GetSelect();
 };
 
 
@@ -129,14 +115,14 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLOptGroupElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLOptGroupElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLOptGroupElement,
-                                    nsGenericHTMLElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLOptGroupElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLOptGroupElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_INTERFACE_TABLE_HEAD(nsHTMLOptGroupElement,
+                                     nsGenericHTMLElement)
+  NS_INTERFACE_TABLE_INHERITED1(nsHTMLOptGroupElement,
+                                nsIDOMHTMLOptGroupElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLOptGroupElement)
 
 
-NS_IMPL_DOM_CLONENODE(nsHTMLOptGroupElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLOptGroupElement)
 
 
 NS_IMPL_BOOL_ATTR(nsHTMLOptGroupElement, Disabled, disabled)
@@ -167,66 +153,45 @@ nsHTMLOptGroupElement::PreHandleEvent(nsEventChainPreVisitor& aVisitor)
   return nsGenericHTMLElement::PreHandleEvent(aVisitor);
 }
 
-void
-nsHTMLOptGroupElement::GetSelect(nsISelectElement **aSelectElement)
+nsIContent*
+nsHTMLOptGroupElement::GetSelect()
 {
-  *aSelectElement = nsnull;
-  for (nsIContent* parent = GetParent(); parent; parent = parent->GetParent()) {
-    CallQueryInterface(parent, aSelectElement);
-    if (*aSelectElement) {
+  nsIContent* parent = this;
+  while ((parent = parent->GetParent()) &&
+         parent->IsNodeOfType(eHTML)) {
+    if (parent->Tag() == nsGkAtoms::select) {
+      return parent;
+    }
+    if (parent->Tag() != nsGkAtoms::optgroup) {
       break;
     }
   }
+  
+  return nsnull;
 }
 
-nsresult
-nsHTMLOptGroupElement::AfterSetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                                    const nsAString* aValue, PRBool aNotify)
-{
-  if (aNotify && aNameSpaceID == kNameSpaceID_None &&
-      aName == nsHTMLAtoms::disabled) {
-    nsIDocument* document = GetCurrentDoc();
-    if (document) {
-      mozAutoDocUpdate upd(document, UPDATE_CONTENT_STATE, PR_TRUE);
-      document->ContentStatesChanged(this, nsnull, NS_EVENT_STATE_DISABLED |
-                                     NS_EVENT_STATE_ENABLED);
-    }
-  }
-
-  return nsGenericHTMLElement::AfterSetAttr(aNameSpaceID, aName, aValue,
-                                            aNotify); 
-}
- 
 nsresult
 nsHTMLOptGroupElement::InsertChildAt(nsIContent* aKid,
                                      PRUint32 aIndex,
                                      PRBool aNotify)
 {
-  nsCOMPtr<nsISelectElement> sel;
-  GetSelect(getter_AddRefs(sel));
-  if (sel) {
-    sel->WillAddOptions(aKid, this, aIndex);
+  nsSafeOptionListMutation safeMutation(GetSelect(), this, aKid, aIndex);
+  nsresult rv = nsGenericHTMLElement::InsertChildAt(aKid, aIndex, aNotify);
+  if (NS_FAILED(rv)) {
+    safeMutation.MutationFailed();
   }
-
-  return nsGenericHTMLElement::InsertChildAt(aKid, aIndex, aNotify);
-}
-
-nsresult
-nsHTMLOptGroupElement::AppendChildTo(nsIContent* aKid, PRBool aNotify)
-{
-  return nsHTMLOptGroupElement::InsertChildAt(aKid, GetChildCount(), aNotify);
+  return rv;
 }
 
 nsresult
 nsHTMLOptGroupElement::RemoveChildAt(PRUint32 aIndex, PRBool aNotify)
 {
-  nsCOMPtr<nsISelectElement> sel;
-  GetSelect(getter_AddRefs(sel));
-  if (sel) {
-    sel->WillRemoveOptions(this, aIndex);
+  nsSafeOptionListMutation safeMutation(GetSelect(), this, nsnull, aIndex);
+  nsresult rv = nsGenericHTMLElement::RemoveChildAt(aIndex, aNotify);
+  if (NS_FAILED(rv)) {
+    safeMutation.MutationFailed();
   }
-
-  return nsGenericHTMLElement::RemoveChildAt(aIndex, aNotify);
+  return rv;
 }
 
 PRInt32
@@ -234,7 +199,7 @@ nsHTMLOptGroupElement::IntrinsicState() const
 {
   PRInt32 state = nsGenericHTMLElement::IntrinsicState();
   PRBool disabled;
-  GetBoolAttr(nsHTMLAtoms::disabled, &disabled);
+  GetBoolAttr(nsGkAtoms::disabled, &disabled);
   if (disabled) {
     state |= NS_EVENT_STATE_DISABLED;
     state &= ~NS_EVENT_STATE_ENABLED;

@@ -54,12 +54,13 @@
  * Note: for NodeSet, see NodeSet.h
 */
 
-class txAExprResult : public TxObject
+class txAExprResult
 {
 public:
     friend class txResultRecycler;
 
-    // Update txLiteralExpr::getReturnType if this enum is changed.
+    // Update txLiteralExpr::getReturnType and sTypes in txEXSLTFunctions.cpp if
+    // this enum is changed.
     enum ResultType {
         NODESET = 0,
         BOOLEAN,
@@ -71,10 +72,14 @@ public:
     txAExprResult(txResultRecycler* aRecycler) : mRecycler(aRecycler)
     {
     }
+    virtual ~txAExprResult()
+    {
+    }
 
     void AddRef()
     {
         ++mRefCnt;
+        NS_LOG_ADDREF(this, mRefCnt, "txAExprResult", sizeof(*this));
     }
     
     void Release(); // Implemented in txResultRecycler.cpp

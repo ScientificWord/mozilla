@@ -52,14 +52,28 @@
 #include "nsIXBLDocumentInfo.h"
 #include "nsIURI.h"
 #include "nsNetUtil.h"
-#include "nsXBLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsFrameManager.h"
 #include "nsStyleContext.h"
 #include "nsXBLPrototypeBinding.h"
 #include "nsCSSRuleProcessor.h"
 #include "nsContentUtils.h"
 
-NS_IMPL_ISUPPORTS1(nsXBLResourceLoader, nsICSSLoaderObserver)
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsXBLResourceLoader)
+NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN(nsXBLResourceLoader)
+NS_IMPL_CYCLE_COLLECTION_UNLINK_NSCOMARRAY(mBoundElements)
+NS_IMPL_CYCLE_COLLECTION_UNLINK_END
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(nsXBLResourceLoader)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMARRAY(mBoundElements)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsXBLResourceLoader)
+  NS_INTERFACE_MAP_ENTRY(nsICSSLoaderObserver)
+  NS_INTERFACE_MAP_ENTRY(nsISupports)
+NS_INTERFACE_MAP_END
+
+NS_IMPL_CYCLE_COLLECTING_ADDREF(nsXBLResourceLoader)
+NS_IMPL_CYCLE_COLLECTING_RELEASE(nsXBLResourceLoader)
 
 nsXBLResourceLoader::nsXBLResourceLoader(nsXBLPrototypeBinding* aBinding,
                                          nsXBLPrototypeResources* aResources)
@@ -98,6 +112,7 @@ nsXBLResourceLoader::LoadResources(PRBool* aResult)
 
   nsICSSLoader* cssLoader = doc->CSSLoader();
   nsIURI *docURL = doc->GetDocumentURI();
+  nsIPrincipal* docPrincipal = doc->NodePrincipal();
 
   nsCOMPtr<nsIURI> url;
 
@@ -109,8 +124,8 @@ nsXBLResourceLoader::LoadResources(PRBool* aResult)
                             doc->GetDocumentCharacterSet().get(), docURL)))
       continue;
 
-    if (curr->mType == nsXBLAtoms::image) {
-      if (!nsContentUtils::CanLoadImage(url, doc, doc)) {
+    if (curr->mType == nsGkAtoms::image) {
+      if (!nsContentUtils::CanLoadImage(url, doc, doc, docPrincipal)) {
         // We're not permitted to load this image, move on...
         continue;
       }
@@ -119,14 +134,15 @@ nsXBLResourceLoader::LoadResources(PRBool* aResult)
       // Passing NULL for pretty much everything -- cause we don't care!
       // XXX: initialDocumentURI is NULL! 
       nsCOMPtr<imgIRequest> req;
-      nsContentUtils::LoadImage(url, doc, docURL, nsnull,
+      nsContentUtils::LoadImage(url, doc, docPrincipal, docURL, nsnull,
                                 nsIRequest::LOAD_BACKGROUND,
                                 getter_AddRefs(req));
     }
-    else if (curr->mType == nsXBLAtoms::stylesheet) {
+    else if (curr->mType == nsGkAtoms::stylesheet) {
       // Kick off the load of the stylesheet.
 
       // Always load chrome synchronously
+      // XXXbz should that still do a content policy check?
       PRBool chrome;
       nsresult rv;
       if (NS_SUCCEEDED(url->SchemeIs("chrome", &chrome)) && chrome)
@@ -142,7 +158,7 @@ nsXBLResourceLoader::LoadResources(PRBool* aResult)
       }
       else
       {
-        rv = cssLoader->LoadSheet(url, this);
+        rv = cssLoader->LoadSheet(url, docPrincipal, this);
         if (NS_SUCCEEDED(rv))
           ++mPendingSheets;
       }
@@ -203,13 +219,9 @@ nsXBLResourceLoader::AddResource(nsIAtom* aResourceType, const nsAString& aSrc)
 void
 nsXBLResourceLoader::AddResourceListener(nsIContent* aBoundElement) 
 {
-  if (!mBoundElements) {
-    NS_NewISupportsArray(getter_AddRefs(mBoundElements));
-    if (!mBoundElements)
-      return;
+  if (aBoundElement) {
+    mBoundElements.AppendObject(aBoundElement);
   }
-
-  mBoundElements->AppendElement(aBoundElement);
 }
 
 void
@@ -218,10 +230,9 @@ nsXBLResourceLoader::NotifyBoundElements()
   nsCOMPtr<nsIXBLService> xblService(do_GetService("@mozilla.org/xbl;1"));
   nsIURI* bindingURI = mBinding->BindingURI();
 
-  PRUint32 eltCount;
-  mBoundElements->Count(&eltCount);
+  PRUint32 eltCount = mBoundElements.Count();
   for (PRUint32 j = 0; j < eltCount; j++) {
-    nsCOMPtr<nsIContent> content(do_QueryElementAt(mBoundElements, j));
+    nsCOMPtr<nsIContent> content = mBoundElements.ObjectAt(j);
     
     PRBool ready = PR_FALSE;
     xblService->BindingReady(content, bindingURI, &ready);
@@ -235,12 +246,6 @@ nsXBLResourceLoader::NotifyBoundElements()
         // Flush first to make sure we can get the frame for content
         doc->FlushPendingNotifications(Flush_Frames);
 
-        // Notify
-        nsIContent* parent = content->GetParent();
-        PRInt32 index = 0;
-        if (parent)
-          index = parent->IndexOf(content);
-        
         // If |content| is (in addition to having binding |mBinding|)
         // also a descendant of another element with binding |mBinding|,
         // then we might have just constructed it due to the
@@ -250,7 +255,7 @@ nsXBLResourceLoader::NotifyBoundElements()
         // has a primary frame and whether it's in the undisplayed map
         // before sending a ContentInserted notification, or bad things
         // will happen.
-        nsIPresShell *shell = doc->GetShellAt(0);
+        nsIPresShell *shell = doc->GetPrimaryShell();
         if (shell) {
           nsIFrame* childFrame = shell->GetPrimaryFrameFor(content);
           if (!childFrame) {
@@ -259,8 +264,7 @@ nsXBLResourceLoader::NotifyBoundElements()
               shell->FrameManager()->GetUndisplayedContent(content);
 
             if (!sc) {
-              nsCOMPtr<nsIDocumentObserver> obs(do_QueryInterface(shell));
-              obs->ContentInserted(doc, parent, content, index);
+              shell->RecreateFramesFor(content);
             }
           }
         }
@@ -273,7 +277,7 @@ nsXBLResourceLoader::NotifyBoundElements()
   }
 
   // Clear out the whole array.
-  mBoundElements = nsnull;
+  mBoundElements.Clear();
 
   // Delete ourselves.
   NS_RELEASE(mResources->mLoader);

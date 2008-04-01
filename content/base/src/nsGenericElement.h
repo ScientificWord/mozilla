@@ -46,27 +46,30 @@
 
 #include "nsCOMPtr.h"
 #include "nsAutoPtr.h"
-#include "nsIXMLContent.h"
+#include "nsIContent.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMDocumentFragment.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsIDOM3EventTarget.h"
 #include "nsIDOM3Node.h"
 #include "nsIDOMNSEventTarget.h"
+#include "nsIDOMNSElement.h"
 #include "nsILinkHandler.h"
 #include "nsGenericDOMNodeList.h"
 #include "nsContentUtils.h"
+#include "nsNodeUtils.h"
 #include "nsAttrAndChildArray.h"
 #include "mozFlushType.h"
+#include "nsDOMAttributeMap.h"
+#include "nsIWeakReference.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsIDOMAttr;
 class nsIDOMEventListener;
 class nsIFrame;
-class nsISupportsArray;
 class nsIDOMNamedNodeMap;
 class nsDOMCSSDeclaration;
 class nsIDOMCSSStyleDeclaration;
-class nsDOMAttributeMap;
 class nsIURI;
 class nsVoidArray;
 class nsINodeInfo;
@@ -106,24 +109,20 @@ private:
 };
 
 /**
- * A tearoff class for nsGenericElement to implement the nsIDOM3Node functions
+ * A tearoff class for nsGenericElement to implement additional interfaces
  */
 class nsNode3Tearoff : public nsIDOM3Node
 {
 public:
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
 
   NS_DECL_NSIDOM3NODE
+
+  NS_DECL_CYCLE_COLLECTION_CLASS(nsNode3Tearoff)
 
   nsNode3Tearoff(nsIContent *aContent) : mContent(aContent)
   {
   }
-
-  static nsresult GetTextContent(nsIContent *aContent,
-                                 nsAString &aTextContent);
-
-  static nsresult SetTextContent(nsIContent *aContent,
-                                 const nsAString &aTextContent);
 
   /**
    * Determines whether two nodes are equal.
@@ -137,25 +136,76 @@ public:
                               nsIContent* aContent2);
 
 protected:
-  virtual ~nsNode3Tearoff() {};
+  virtual ~nsNode3Tearoff() {}
 
 private:
   nsCOMPtr<nsIContent> mContent;
 };
 
+/**
+ * A class that implements nsIWeakReference
+ */
+
+class nsNodeWeakReference : public nsIWeakReference
+{
+public:
+  nsNodeWeakReference(nsINode* aNode)
+    : mNode(aNode)
+  {
+  }
+
+  ~nsNodeWeakReference();
+
+  // nsISupports
+  NS_DECL_ISUPPORTS
+
+  // nsIWeakReference
+  NS_DECL_NSIWEAKREFERENCE
+
+  void NoticeNodeDestruction()
+  {
+    mNode = nsnull;
+  }
+
+private:
+  nsINode* mNode;
+};
+
+/**
+ * Tearoff to use for nodes to implement nsISupportsWeakReference
+ */
+class nsNodeSupportsWeakRefTearoff : public nsISupportsWeakReference
+{
+public:
+  nsNodeSupportsWeakRefTearoff(nsINode* aNode)
+    : mNode(aNode)
+  {
+  }
+
+  // nsISupports
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
+
+  // nsISupportsWeakReference
+  NS_DECL_NSISUPPORTSWEAKREFERENCE
+
+  NS_DECL_CYCLE_COLLECTION_CLASS(nsNodeSupportsWeakRefTearoff)
+
+private:
+  nsCOMPtr<nsINode> mNode;
+};
 
 #define NS_EVENT_TEAROFF_CACHE_SIZE 4
 
 /**
  * nsDOMEventRTTearoff is a tearoff class used by nsGenericElement and
  * nsGenericDOMDataNode classes for implementing the interfaces
- * nsIDOMEventReceiver and nsIDOMEventTarget
+ * nsIDOMEventTarget, nsIDOM3EventTarget and nsIDOMNSEventTarget.
  *
  * Use the method nsDOMEventRTTearoff::Create() to create one of these babies.
  * @see nsDOMEventRTTearoff::Create
  */
 
-class nsDOMEventRTTearoff : public nsIDOMEventReceiver,
+class nsDOMEventRTTearoff : public nsIDOMEventTarget,
                             public nsIDOM3EventTarget,
                             public nsIDOMNSEventTarget
 {
@@ -178,7 +228,6 @@ private:
    */
   void LastRelease();
 
-  nsresult GetEventReceiver(nsIDOMEventReceiver **aReceiver);
   nsresult GetDOM3EventTarget(nsIDOM3EventTarget **aTarget);
 
 public:
@@ -196,7 +245,7 @@ public:
   static void Shutdown();
 
   // nsISupports
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
 
   // nsIDOMEventTarget
   NS_DECL_NSIDOMEVENTTARGET
@@ -204,18 +253,11 @@ public:
   // nsIDOM3EventTarget
   NS_DECL_NSIDOM3EVENTTARGET
 
-  // nsIDOMEventReceiver
-  NS_IMETHOD AddEventListenerByIID(nsIDOMEventListener *aListener,
-                                   const nsIID& aIID);
-  NS_IMETHOD RemoveEventListenerByIID(nsIDOMEventListener *aListener,
-                                      const nsIID& aIID);
-  NS_IMETHOD GetListenerManager(PRBool aCreateIfNotFound,
-                                nsIEventListenerManager** aResult);
-  NS_IMETHOD HandleEvent(nsIDOMEvent *aEvent);
-  NS_IMETHOD GetSystemEventGroup(nsIDOMEventGroup** aGroup);
-
   // nsIDOMNSEventTarget
   NS_DECL_NSIDOMNSEVENTTARGET
+
+  NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsDOMEventRTTearoff,
+                                           nsIDOMEventTarget)
 
 private:
   /**
@@ -267,7 +309,7 @@ public:
    */
   PRBool Mutated(PRUint8 aIgnoreCount)
   {
-    return sMutationCount < NS_STATIC_CAST(PRUint32, eMaxMutations - aIgnoreCount);
+    return sMutationCount < static_cast<PRUint32>(eMaxMutations - aIgnoreCount);
   }
 
   // This function should be called whenever a mutation that we want to keep
@@ -301,13 +343,13 @@ private:
  * A generic base class for DOM elements, implementing many nsIContent,
  * nsIDOMNode and nsIDOMElement methods.
  */
-class nsGenericElement : public nsIXMLContent
+class nsGenericElement : public nsIContent
 {
 public:
   nsGenericElement(nsINodeInfo *aNodeInfo);
   virtual ~nsGenericElement();
 
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
 
   /**
    * Called during QueryInterface to give the binding manager a chance to
@@ -315,23 +357,25 @@ public:
    */
   nsresult PostQueryInterface(REFNSIID aIID, void** aInstancePtr);
 
-  // nsIDOMGCParticipant interface methods
-  virtual nsIDOMGCParticipant* GetSCCIndex();
-  virtual void AppendReachableList(nsCOMArray<nsIDOMGCParticipant>& aArray);
-
   // nsINode interface methods
   virtual PRUint32 GetChildCount() const;
   virtual nsIContent *GetChildAt(PRUint32 aIndex) const;
   virtual PRInt32 IndexOf(nsINode* aPossibleChild) const;
   virtual nsresult InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
                                  PRBool aNotify);
-  virtual nsresult AppendChildTo(nsIContent* aKid, PRBool aNotify);
   virtual nsresult RemoveChildAt(PRUint32 aIndex, PRBool aNotify);
   virtual nsresult PreHandleEvent(nsEventChainPreVisitor& aVisitor);
   virtual nsresult PostHandleEvent(nsEventChainPostVisitor& aVisitor);
   virtual nsresult DispatchDOMEvent(nsEvent* aEvent, nsIDOMEvent* aDOMEvent,
                                     nsPresContext* aPresContext,
                                     nsEventStatus* aEventStatus);
+  virtual nsresult GetListenerManager(PRBool aCreateIfNotFound,
+                                      nsIEventListenerManager** aResult);
+  virtual nsresult AddEventListenerByIID(nsIDOMEventListener *aListener,
+                                         const nsIID& aIID);
+  virtual nsresult RemoveEventListenerByIID(nsIDOMEventListener *aListener,
+                                            const nsIID& aIID);
+  virtual nsresult GetSystemEventGroup(nsIDOMEventGroup** aGroup);
 
   // nsIContent interface methods
   virtual nsresult BindToTree(nsIDocument* aDocument, nsIContent* aParent,
@@ -366,26 +410,39 @@ public:
                              PRBool aNotify);
   virtual const nsAttrName* GetAttrNameAt(PRUint32 aIndex) const;
   virtual PRUint32 GetAttrCount() const;
+  virtual const nsTextFragment *GetText();
+  virtual PRUint32 TextLength();
+  virtual nsresult SetText(const PRUnichar* aBuffer, PRUint32 aLength,
+                           PRBool aNotify);
+  // Need to implement this here too to avoid hiding.
+  nsresult SetText(const nsAString& aStr, PRBool aNotify)
+  {
+    return SetText(aStr.BeginReading(), aStr.Length(), aNotify);
+  }
+  virtual nsresult AppendText(const PRUnichar* aBuffer, PRUint32 aLength,
+                              PRBool aNotify);
+  virtual PRBool TextIsOnlyWhitespace();
+  virtual void AppendTextTo(nsAString& aResult);
   virtual void SetFocus(nsPresContext* aContext);
   virtual nsIContent *GetBindingParent() const;
   virtual PRBool IsNodeOfType(PRUint32 aFlags) const;
   virtual already_AddRefed<nsIURI> GetBaseURI() const;
+  virtual PRBool IsLink(nsIURI** aURI) const;
   virtual void SetMayHaveFrame(PRBool aMayHaveFrame);
   virtual PRBool MayHaveFrame() const;
 
   virtual PRUint32 GetScriptTypeID() const;
   virtual nsresult SetScriptTypeID(PRUint32 aLang);
 
-  /**
-   * This calls Clone to do the actual cloning so that we end up with the
-   * right class for the clone.
-   */
-  nsresult CloneContent(nsNodeInfoManager *aNodeInfoManager, PRBool aDeep,
-                        nsIContent **aResult) const;
-
+  virtual void DestroyContent();
 #ifdef DEBUG
-  virtual void List(FILE* out, PRInt32 aIndent) const;
-  virtual void DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) const;
+  virtual void List(FILE* out, PRInt32 aIndent) const
+  {
+    List(out, aIndent, EmptyCString());
+  }
+  virtual void DumpContent(FILE* out, PRInt32 aIndent, PRBool aDumpAll) const;
+  void List(FILE* out, PRInt32 aIndent, const nsCString& aPrefix) const;
+  void ListAttributes(FILE* out) const;
 #endif
 
   virtual nsIAtom* GetID() const;
@@ -414,9 +471,6 @@ public:
   FindAttributeDependence(const nsIAtom* aAttribute,
                           const MappedAttributeEntry* const aMaps[],
                           PRUint32 aMapCount);
-
-  // nsIXMLContent interface methods
-  NS_IMETHOD MaybeTriggerAutoLink(nsIDocShell *aShell);
 
   // nsIDOMNode method implementation
   NS_IMETHOD GetNodeName(nsAString& aNodeName);
@@ -482,6 +536,10 @@ public:
   NS_IMETHOD HasAttributeNS(const nsAString& aNamespaceURI,
                             const nsAString& aLocalName,
                             PRBool* aReturn);
+  nsresult CloneNode(PRBool aDeep, nsIDOMNode **aResult)
+  {
+    return nsNodeUtils::CloneNodeImpl(this, aDeep, aResult);
+  }
 
   //----------------------------------------
 
@@ -497,28 +555,6 @@ public:
                                   PRBool aDefer = PR_TRUE);
 
   /**
-   * Trigger a link with uri aLinkURI.  If aClick is false, this triggers a
-   * mouseover on the link, otherwise it triggers a load, after doing a
-   * security check.  The node principal of |this| is used for the security
-   * check.
-   *
-   * @param aPresContext the pres context.
-   * @param aVerb how the link will be loaded (replace page, new window, etc.)
-   * @param aLinkURI the URI of the link
-   * @param aTargetSpec the target (like target=, may be empty)
-   * @param aClick whether this was a click or not (if false, it assumes you
-   *        just hovered over the link)
-   * @param aIsUserTriggered whether the user triggered the link.
-   *        This would be false for loads from auto XLinks or from the
-   *        click() method if we ever implement it.
-   */
-  nsresult TriggerLink(nsPresContext* aPresContext,
-                       nsLinkVerb aVerb,
-                       nsIURI* aLinkURI,
-                       const nsAFlatString& aTargetSpec,
-                       PRBool aClick,
-                       PRBool aIsUserTriggered);
-  /**
    * Do whatever needs to be done when the mouse leaves a link
    */
   nsresult LeaveLink(nsPresContext* aPresContext);
@@ -530,19 +566,6 @@ public:
    */
   nsresult JoinTextNodes(nsIContent* aFirst,
                          nsIContent* aSecond);
-
-  /**
-   * Set .document in the immediate children of said content (but not in
-   * content itself).  SetDocument() in the children will recursively call
-   * this.
-   *
-   * @param aContent the content to get the children of
-   * @param aDocument the document to set
-   * @param aCompileEventHandlers whether to initialize the event handlers in
-   *        the document (used by nsXULElement)
-   */
-  static void SetDocumentInChildrenOf(nsIContent* aContent, 
-				      nsIDocument* aDocument, PRBool aCompileEventHandlers);
 
   /**
    * Check whether a spec feature/version is supported.
@@ -566,6 +589,8 @@ public:
     GetDOMFeatureFactory(const nsAString& aFeature, const nsAString& aVersion);
 
   static PRBool ShouldFocus(nsIContent *aContent);
+
+  static PRBool ShouldBlur(nsIContent *aContent);
 
   /**
    * Actual implementation of the DOM InsertBefore and ReplaceChild methods.
@@ -712,6 +737,24 @@ public:
     const nsAttrValue* mValue;
   };
 
+  /**
+   * Returns the attribute map, if there is one.
+   *
+   * @return existing attribute map or nsnull.
+   */
+  nsDOMAttributeMap *GetAttributeMap()
+  {
+    nsDOMSlots *slots = GetExistingDOMSlots();
+
+    return slots ? slots->mAttributeMap.get() : nsnull;
+  }
+
+  virtual void RecompileScriptEventListeners()
+  {
+  }
+
+  NS_DECL_CYCLE_COLLECTION_CLASS(nsGenericElement)
+
 protected:
   /**
    * Set attribute and (if needed) notify documentobservers and fire off
@@ -781,8 +824,6 @@ protected:
    * @param aName the localname of the attribute being set
    * @param aValue the value it's being set to.  If null, the attr is being
    *        removed.
-   * // XXXbz we don't actually call this method when we're removing attrs yet.
-   *          But we will eventually.
    * @param aNotify Whether we plan to notify document observers.
    */
   // Note that this is inlined so that when subclasses call it it gets
@@ -802,8 +843,6 @@ protected:
    * @param aName the localname of the attribute being set
    * @param aValue the value it's being set to.  If null, the attr is being
    *        removed.
-   * // XXXbz we don't actually call this method when we're removing attrs yet.
-   *          But we will eventually.
    * @param aNotify Whether we plan to notify document observers.
    */
   // Note that this is inlined so that when subclasses call it it gets
@@ -834,34 +873,19 @@ protected:
   virtual nsAttrInfo GetAttrInfo(PRInt32 aNamespaceID, nsIAtom* aName) const;
 
   /**
-   * Duplicate children by calling importNode and append them to another
-   * element.
-   *
-   * @param aDst the element to append the imported children to
-   * @param aImportDocument the document to use to call importNode
-   */
-  nsresult ImportChildrenTo(nsGenericElement *aDst,
-                            nsIDOMDocument *aImportDocument) const;
-
-  /**
-   * Clone children and append them to another element.
-   *
-   * @param aDst the element to append the imported children to
-   */
-  nsresult CloneChildrenTo(nsGenericElement *aDst) const;
-
-  /**
-   * Copy attributes and children to another content object
+   * Copy attributes and state to another element
    * @param aDest the object to copy to
-   * @param aDeep whether to copy children
    */
-  nsresult CopyInnerTo(nsGenericElement* aDest, PRBool aDeep) const;
+  nsresult CopyInnerTo(nsGenericElement* aDest) const;
 
   /**
    * Internal hook for converting an attribute name-string to an atomized name
    */
   virtual const nsAttrName* InternalGetExistingAttrNameFromQName(const nsAString& aStr) const;
 
+public:
+  // Because of a bug in MS C++ compiler nsDOMSlots must be declared public,
+  // otherwise nsXULElement::nsXULSlots doesn't compile.
   /**
    * There are a set of DOM- and scripting-specific instance variables
    * that may only be instantiated when a content object is accessed
@@ -875,13 +899,6 @@ protected:
   public:
     nsDOMSlots(PtrBits aFlags);
     virtual ~nsDOMSlots();
-
-    /**
-     * An object implementing nsIDOMNodeList for this content (childNodes)
-     * @see nsIDOMNodeList
-     * @see nsGenericHTMLElement::GetChildNodes
-     */
-    nsRefPtr<nsChildContentList> mChildNodes;
 
     /**
      * The .style attribute (an interface that forwards to the actual
@@ -907,19 +924,25 @@ protected:
       */
       nsIControllers* mControllers; // [OWNER]
     };
+    
+    /**
+     * Weak reference to this node
+     */
+    nsNodeWeakReference* mWeakReference;
   };
 
+protected:
   // Override from nsINode
   virtual nsINode::nsSlots* CreateSlots();
 
   nsDOMSlots *GetDOMSlots()
   {
-    return NS_STATIC_CAST(nsDOMSlots*, GetSlots());
+    return static_cast<nsDOMSlots*>(GetSlots());
   }
 
   nsDOMSlots *GetExistingDOMSlots() const
   {
-    return NS_STATIC_CAST(nsDOMSlots*, GetExistingSlots());
+    return static_cast<nsDOMSlots*>(GetExistingSlots());
   }
 
   /**
@@ -934,32 +957,42 @@ protected:
   void GetContentsAsText(nsAString& aText);
 
   /**
-   * Method to clone this element. This needs to be overriden by all element
-   * classes. aNodeInfo should be identical to this element's nodeInfo, except
-   * for the document which may be different. If aDeep is true all descendants
-   * will be cloned too (by calling the DOM method cloneNode on them if the
-   * ownerDocument of aNodeInfo is the same as the ownerDocument of this
-   * element or by calling the DOM method importNode if they differ).
-   *
-   * @param aNodeInfo the nodeinfo to use for the clone
-   * @param aDeep if true all descendants will be cloned too (attributes are
-   *              always cloned)
-   * @param aResult the clone
+   * Functions to carry out event default actions for links of all types
+   * (HTML links, XLinks, SVG "XLinks", etc.)
    */
-  virtual nsresult Clone(nsINodeInfo *aNodeInfo, PRBool aDeep,
-                         nsIContent **aResult) const = 0;
 
   /**
-   * A basic implementation of the DOM cloneNode method. Calls CloneContent to
-   * do the actual cloning of the element.
+   * Check that we meet the conditions to handle a link event
+   * and that we are actually on a link.
    *
-   * @param aDeep if true all descendants will be cloned too (attributes on the
-   *              element are always cloned)
-   * @param aSource nsIDOMNode pointer to this node
-   * @param aResult the clone
+   * @param aVisitor event visitor
+   * @param aURI the uri of the link, set only if the return value is PR_TRUE [OUT]
+   * @return PR_TRUE if we can handle the link event, PR_FALSE otherwise
    */
-  nsresult CloneNode(PRBool aDeep, nsIDOMNode *aSource,
-                     nsIDOMNode **aResult) const;
+  PRBool CheckHandleEventForLinksPrecondition(nsEventChainVisitor& aVisitor,
+                                              nsIURI** aURI) const;
+
+  /**
+   * Handle status bar updates before they can be cancelled.
+   */
+  nsresult PreHandleEventForLinks(nsEventChainPreVisitor& aVisitor);
+
+  /**
+   * Handle default actions for link event if the event isn't consumed yet.
+   */
+  nsresult PostHandleEventForLinks(nsEventChainPostVisitor& aVisitor);
+
+  /**
+   * Get the target of this link element. Consumers should established that
+   * this element is a link (probably using IsLink) before calling this
+   * function (or else why call it?)
+   *
+   * Note: for HTML this gets the value of the 'target' attribute; for XLink
+   * this gets the value of the xlink:_moz_target attribute, or failing that,
+   * the value of xlink:show, converted to a suitably equivalent named target
+   * (e.g. _blank).
+   */
+  virtual void GetLinkTarget(nsAString& aTarget);
 
   /**
    * Array containing all attributes and children for this element
@@ -967,148 +1000,70 @@ protected:
   nsAttrAndChildArray mAttrsAndChildren;
 };
 
-#define NS_FORWARD_NSIDOMNODE_NO_CLONENODE(_to)                               \
-  NS_IMETHOD GetNodeName(nsAString& aNodeName) {                              \
-    return _to GetNodeName(aNodeName);                                        \
-  }                                                                           \
-  NS_IMETHOD GetNodeValue(nsAString& aNodeValue) {                            \
-    return _to GetNodeValue(aNodeValue);                                      \
-  }                                                                           \
-  NS_IMETHOD SetNodeValue(const nsAString& aNodeValue) {                      \
-    return _to SetNodeValue(aNodeValue);                                      \
-  }                                                                           \
-  NS_IMETHOD GetNodeType(PRUint16* aNodeType) {                               \
-    return _to GetNodeType(aNodeType);                                        \
-  }                                                                           \
-  NS_IMETHOD GetParentNode(nsIDOMNode** aParentNode) {                        \
-    return _to GetParentNode(aParentNode);                                    \
-  }                                                                           \
-  NS_IMETHOD GetChildNodes(nsIDOMNodeList** aChildNodes) {                    \
-    return _to GetChildNodes(aChildNodes);                                    \
-  }                                                                           \
-  NS_IMETHOD GetFirstChild(nsIDOMNode** aFirstChild) {                        \
-    return _to GetFirstChild(aFirstChild);                                    \
-  }                                                                           \
-  NS_IMETHOD GetLastChild(nsIDOMNode** aLastChild) {                          \
-    return _to GetLastChild(aLastChild);                                      \
-  }                                                                           \
-  NS_IMETHOD GetPreviousSibling(nsIDOMNode** aPreviousSibling) {              \
-    return _to GetPreviousSibling(aPreviousSibling);                          \
-  }                                                                           \
-  NS_IMETHOD GetNextSibling(nsIDOMNode** aNextSibling) {                      \
-    return _to GetNextSibling(aNextSibling);                                  \
-  }                                                                           \
-  NS_IMETHOD GetAttributes(nsIDOMNamedNodeMap** aAttributes) {                \
-    return _to GetAttributes(aAttributes);                                    \
-  }                                                                           \
-  NS_IMETHOD GetOwnerDocument(nsIDOMDocument** aOwnerDocument) {              \
-    return _to GetOwnerDocument(aOwnerDocument);                              \
-  }                                                                           \
-  NS_IMETHOD GetNamespaceURI(nsAString& aNamespaceURI) {                      \
-    return _to GetNamespaceURI(aNamespaceURI);                                \
-  }                                                                           \
-  NS_IMETHOD GetPrefix(nsAString& aPrefix) {                                  \
-    return _to GetPrefix(aPrefix);                                            \
-  }                                                                           \
-  NS_IMETHOD SetPrefix(const nsAString& aPrefix) {                            \
-    return _to SetPrefix(aPrefix);                                            \
-  }                                                                           \
-  NS_IMETHOD GetLocalName(nsAString& aLocalName) {                            \
-    return _to GetLocalName(aLocalName);                                      \
-  }                                                                           \
-  NS_IMETHOD InsertBefore(nsIDOMNode* aNewChild, nsIDOMNode* aRefChild,       \
-                          nsIDOMNode** aReturn) {                             \
-    return _to InsertBefore(aNewChild, aRefChild, aReturn);                   \
-  }                                                                           \
-  NS_IMETHOD ReplaceChild(nsIDOMNode* aNewChild, nsIDOMNode* aOldChild,       \
-                          nsIDOMNode** aReturn) {                             \
-    return _to ReplaceChild(aNewChild, aOldChild, aReturn);                   \
-  }                                                                           \
-  NS_IMETHOD RemoveChild(nsIDOMNode* aOldChild, nsIDOMNode** aReturn) {       \
-    return _to RemoveChild(aOldChild, aReturn);                               \
-  }                                                                           \
-  NS_IMETHOD AppendChild(nsIDOMNode* aNewChild, nsIDOMNode** aReturn) {       \
-    return _to AppendChild(aNewChild, aReturn);                               \
-  }                                                                           \
-  NS_IMETHOD HasChildNodes(PRBool* aReturn) {                                 \
-    return _to HasChildNodes(aReturn);                                        \
-  }                                                                           \
-  NS_IMETHOD Normalize() {                                                    \
-    return _to Normalize();                                                   \
-  }                                                                           \
-  NS_IMETHOD IsSupported(const nsAString& aFeature,                           \
-                         const nsAString& aVersion, PRBool* aReturn) {        \
-    return _to IsSupported(aFeature, aVersion, aReturn);                      \
-  }                                                                           \
-  NS_IMETHOD HasAttributes(PRBool* aReturn) {                                 \
-    return _to HasAttributes(aReturn);                                        \
-  }                                                                           \
-  NS_IMETHOD CloneNode(PRBool aDeep, nsIDOMNode** aReturn);                   \
-  virtual nsresult Clone(nsINodeInfo *aNodeInfo, PRBool aDeep,                \
-                         nsIContent **aResult) const;
+/**
+ * Macros to implement Clone(). _elementName is the class for which to implement
+ * Clone.
+ */
+#define NS_IMPL_ELEMENT_CLONE(_elementName)                                 \
+nsresult                                                                    \
+_elementName::Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const        \
+{                                                                           \
+  *aResult = nsnull;                                                        \
+                                                                            \
+  _elementName *it = new _elementName(aNodeInfo);                           \
+  if (!it) {                                                                \
+    return NS_ERROR_OUT_OF_MEMORY;                                          \
+  }                                                                         \
+                                                                            \
+  nsCOMPtr<nsINode> kungFuDeathGrip = it;                                   \
+  nsresult rv = CopyInnerTo(it);                                            \
+  if (NS_SUCCEEDED(rv)) {                                                   \
+    kungFuDeathGrip.swap(*aResult);                                         \
+  }                                                                         \
+                                                                            \
+  return rv;                                                                \
+}
 
+#define NS_IMPL_ELEMENT_CLONE_WITH_INIT(_elementName)                       \
+nsresult                                                                    \
+_elementName::Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const        \
+{                                                                           \
+  *aResult = nsnull;                                                        \
+                                                                            \
+  _elementName *it = new _elementName(aNodeInfo);                           \
+  if (!it) {                                                                \
+    return NS_ERROR_OUT_OF_MEMORY;                                          \
+  }                                                                         \
+                                                                            \
+  nsCOMPtr<nsINode> kungFuDeathGrip = it;                                   \
+  nsresult rv = it->Init();                                                 \
+  rv |= CopyInnerTo(it);                                                    \
+  if (NS_SUCCEEDED(rv)) {                                                   \
+    kungFuDeathGrip.swap(*aResult);                                         \
+  }                                                                         \
+                                                                            \
+  return rv;                                                                \
+}
 
 /**
- * Macros to implement CloneNode(). _elementName is the class for which to
- * implement CloneNode, _implClass is the class to use to cast to
- * nsIDOMNode*.
+ * Yet another tearoff class for nsGenericElement
+ * to implement additional interfaces
  */
-#define NS_IMPL_DOM_CLONENODE_AMBIGUOUS(_elementName, _implClass)           \
-nsresult                                                                    \
-_elementName::Clone(nsINodeInfo *aNodeInfo, PRBool aDeep,                   \
-                    nsIContent **aResult) const                             \
-{                                                                           \
-  *aResult = nsnull;                                                        \
-                                                                            \
-  _elementName *it = new _elementName(aNodeInfo);                           \
-  if (!it) {                                                                \
-    return NS_ERROR_OUT_OF_MEMORY;                                          \
-  }                                                                         \
-                                                                            \
-  nsCOMPtr<nsIContent> kungFuDeathGrip = it;                                \
-  nsresult rv = CopyInnerTo(it, aDeep);                                     \
-  if (NS_SUCCEEDED(rv)) {                                                   \
-    kungFuDeathGrip.swap(*aResult);                                         \
-  }                                                                         \
-                                                                            \
-  return rv;                                                                \
-}                                                                           \
-NS_IMETHODIMP                                                               \
-_elementName::CloneNode(PRBool aDeep, nsIDOMNode **aResult)                 \
-{                                                                           \
-  return nsGenericElement::CloneNode(aDeep,                                 \
-                                     NS_STATIC_CAST(_implClass*, this),     \
-                                     aResult);                              \
-}
+class nsNSElementTearoff : public nsIDOMNSElement
+{
+public:
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
 
-#define NS_IMPL_DOM_CLONENODE(_elementName)                                 \
-NS_IMPL_DOM_CLONENODE_AMBIGUOUS(_elementName, _elementName)
+  NS_DECL_NSIDOMNSELEMENT
 
-#define NS_IMPL_DOM_CLONENODE_WITH_INIT(_elementName)                       \
-nsresult                                                                    \
-_elementName::Clone(nsINodeInfo *aNodeInfo, PRBool aDeep,                   \
-                    nsIContent **aResult) const                             \
-{                                                                           \
-  *aResult = nsnull;                                                        \
-                                                                            \
-  _elementName *it = new _elementName(aNodeInfo);                           \
-  if (!it) {                                                                \
-    return NS_ERROR_OUT_OF_MEMORY;                                          \
-  }                                                                         \
-                                                                            \
-  nsCOMPtr<nsIContent> kungFuDeathGrip = it;                                \
-  nsresult rv = it->Init();                                                 \
-  rv |= CopyInnerTo(it, aDeep);                                             \
-  if (NS_SUCCEEDED(rv)) {                                                   \
-    kungFuDeathGrip.swap(*aResult);                                         \
-  }                                                                         \
-                                                                            \
-  return rv;                                                                \
-}                                                                           \
-NS_IMETHODIMP                                                               \
-_elementName::CloneNode(PRBool aDeep, nsIDOMNode **aResult)                 \
-{                                                                           \
-  return nsGenericElement::CloneNode(aDeep, this, aResult);                 \
-}
+  NS_DECL_CYCLE_COLLECTION_CLASS(nsNSElementTearoff)
+
+  nsNSElementTearoff(nsGenericElement *aContent) : mContent(aContent)
+  {
+  }
+  
+private:
+  nsRefPtr<nsGenericElement> mContent;
+};
 
 #endif /* nsGenericElement_h___ */

@@ -50,19 +50,15 @@
 #include "nsIDOMFormListener.h"
 #include "nsIDOMLoadListener.h"
 #include "nsIDOMDragListener.h"
-#include "nsIDOMPaintListener.h"
 #include "nsIDOMTextListener.h"
 #include "nsIDOMCompositionListener.h"
 #include "nsIDOMXULListener.h"
-#include "nsIDOMScrollListener.h"
-#include "nsIDOMMutationListener.h"
 #include "nsIDOMUIListener.h"
-#include "nsIDOMPageTransitionListener.h"
 #include "nsITextControlFrame.h"
 #ifdef MOZ_SVG
 #include "nsIDOMSVGListener.h"
 #include "nsIDOMSVGZoomListener.h"
-#include "nsSVGAtoms.h"
+#include "nsGkAtoms.h"
 #endif // MOZ_SVG
 #include "nsIEventStateManager.h"
 #include "nsPIDOMWindow.h"
@@ -71,7 +67,6 @@
 #include "prmem.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIScriptRuntime.h"
-#include "nsLayoutAtoms.h"
 #include "nsLayoutUtils.h"
 #ifdef MOZ_XUL
 // XXXbz the fact that this is ifdef MOZ_XUL is good indication that
@@ -79,6 +74,8 @@
 #include "nsITreeBoxObject.h"
 #include "nsITreeColumns.h"
 #include "nsIDOMXULMultSelectCntrlEl.h"
+#include "nsIDOMXULSelectCntrlItemEl.h"
+#include "nsIDOMXULMenuListElement.h"
 #endif
 #include "nsINameSpaceManager.h"
 #include "nsIContent.h"
@@ -109,10 +106,52 @@
 #include "nsEventDispatcher.h"
 #include "nsDOMJSUtils.h"
 #include "nsDOMScriptObjectHolder.h"
+#include "nsDataHashtable.h"
+
+#define EVENT_TYPE_EQUALS( ls, type, userType ) \
+  (ls->mEventType && ls->mEventType == type && \
+  (ls->mEventType != NS_USER_DEFINED_EVENT || ls->mTypeAtom == userType))
+
+#define EVENT_TYPE_DATA_EQUALS( type1, type2 ) \
+  (type1 && type2 && type1->iid && type2->iid && \
+   type1->iid->Equals(*(type2->iid)))
 
 static NS_DEFINE_CID(kDOMScriptObjectFactoryCID,
                      NS_DOM_SCRIPT_OBJECT_FACTORY_CID);
 static NS_DEFINE_CID(kDOMEventGroupCID, NS_DOMEVENTGROUP_CID);
+
+static const PRUint32 kAllMutationBits =
+  NS_EVENT_BITS_MUTATION_SUBTREEMODIFIED |
+  NS_EVENT_BITS_MUTATION_NODEINSERTED |
+  NS_EVENT_BITS_MUTATION_NODEREMOVED |
+  NS_EVENT_BITS_MUTATION_NODEREMOVEDFROMDOCUMENT |
+  NS_EVENT_BITS_MUTATION_NODEINSERTEDINTODOCUMENT |
+  NS_EVENT_BITS_MUTATION_ATTRMODIFIED |
+  NS_EVENT_BITS_MUTATION_CHARACTERDATAMODIFIED;
+
+static PRUint32
+MutationBitForEventType(PRUint32 aEventType)
+{
+  switch (aEventType) {
+    case NS_MUTATION_SUBTREEMODIFIED:
+      return NS_EVENT_BITS_MUTATION_SUBTREEMODIFIED;
+    case NS_MUTATION_NODEINSERTED:
+      return NS_EVENT_BITS_MUTATION_NODEINSERTED;
+    case NS_MUTATION_NODEREMOVED:
+      return NS_EVENT_BITS_MUTATION_NODEREMOVED;
+    case NS_MUTATION_NODEREMOVEDFROMDOCUMENT:
+      return NS_EVENT_BITS_MUTATION_NODEREMOVEDFROMDOCUMENT;
+    case NS_MUTATION_NODEINSERTEDINTODOCUMENT:
+      return NS_EVENT_BITS_MUTATION_NODEINSERTEDINTODOCUMENT;
+    case NS_MUTATION_ATTRMODIFIED:
+      return NS_EVENT_BITS_MUTATION_ATTRMODIFIED;
+    case NS_MUTATION_CHARACTERDATAMODIFIED:
+      return NS_EVENT_BITS_MUTATION_CHARACTERDATAMODIFIED;
+    default:
+      break;
+  }
+  return 0;
+}
 
 typedef
 NS_STDCALL_FUNCPROTO(nsresult,
@@ -134,14 +173,14 @@ NS_STDCALL_FUNCPROTO(nsresult,
 static nsresult DispatchToInterface(nsIDOMEvent* aEvent,
                                     nsIDOMEventListener* aListener,
                                     GenericHandler aMethod,
-                                    const nsIID& aIID,
-                                    PRBool* aHasInterface)
+                                    const nsIID& aIID)
 {
   nsIDOMEventListener* ifaceListener = nsnull;
   nsresult rv = NS_OK;
   aListener->QueryInterface(aIID, (void**) &ifaceListener);
+  NS_WARN_IF_FALSE(ifaceListener,
+                   "DispatchToInterface couldn't QI to the right interface");
   if (ifaceListener) {
-    *aHasInterface = PR_TRUE;
     rv = (ifaceListener->*aMethod)(aEvent);
     NS_RELEASE(ifaceListener);
   }
@@ -152,7 +191,6 @@ struct EventDispatchData
 {
   PRUint32 message;
   GenericHandler method;
-  PRUint8 bits;
 };
 
 struct EventTypeData
@@ -162,198 +200,110 @@ struct EventTypeData
   const nsIID*             iid;
 };
 
-#define HANDLER(x) NS_REINTERPRET_CAST(GenericHandler, x)
+#define HANDLER(x) reinterpret_cast<GenericHandler>(x)
 
 static const EventDispatchData sMouseEvents[] = {
-  { NS_MOUSE_LEFT_BUTTON_DOWN,   HANDLER(&nsIDOMMouseListener::MouseDown),
-    NS_EVENT_BITS_MOUSE_MOUSEDOWN },
-  { NS_MOUSE_MIDDLE_BUTTON_DOWN, HANDLER(&nsIDOMMouseListener::MouseDown),
-    NS_EVENT_BITS_MOUSE_MOUSEDOWN },
-  { NS_MOUSE_RIGHT_BUTTON_DOWN,  HANDLER(&nsIDOMMouseListener::MouseDown),
-    NS_EVENT_BITS_MOUSE_MOUSEDOWN },
-  { NS_MOUSE_LEFT_BUTTON_UP,     HANDLER(&nsIDOMMouseListener::MouseUp),
-    NS_EVENT_BITS_MOUSE_MOUSEUP },
-  { NS_MOUSE_MIDDLE_BUTTON_UP,   HANDLER(&nsIDOMMouseListener::MouseUp),
-    NS_EVENT_BITS_MOUSE_MOUSEUP },
-  { NS_MOUSE_RIGHT_BUTTON_UP,    HANDLER(&nsIDOMMouseListener::MouseUp),
-    NS_EVENT_BITS_MOUSE_MOUSEUP },
-  { NS_MOUSE_LEFT_CLICK,         HANDLER(&nsIDOMMouseListener::MouseClick),
-    NS_EVENT_BITS_MOUSE_CLICK },
-  { NS_MOUSE_MIDDLE_CLICK,       HANDLER(&nsIDOMMouseListener::MouseClick),
-    NS_EVENT_BITS_MOUSE_CLICK },
-  { NS_MOUSE_RIGHT_CLICK,        HANDLER(&nsIDOMMouseListener::MouseClick),
-    NS_EVENT_BITS_MOUSE_CLICK },
-  { NS_MOUSE_LEFT_DOUBLECLICK,   HANDLER(&nsIDOMMouseListener::MouseDblClick),
-    NS_EVENT_BITS_MOUSE_DBLCLICK },
-  { NS_MOUSE_MIDDLE_DOUBLECLICK, HANDLER(&nsIDOMMouseListener::MouseDblClick),
-    NS_EVENT_BITS_MOUSE_DBLCLICK },
-  { NS_MOUSE_RIGHT_DOUBLECLICK,  HANDLER(&nsIDOMMouseListener::MouseDblClick),
-    NS_EVENT_BITS_MOUSE_DBLCLICK },
-  { NS_MOUSE_ENTER_SYNTH,        HANDLER(&nsIDOMMouseListener::MouseOver),
-    NS_EVENT_BITS_MOUSE_MOUSEOVER },
-  { NS_MOUSE_EXIT_SYNTH,         HANDLER(&nsIDOMMouseListener::MouseOut),
-    NS_EVENT_BITS_MOUSE_MOUSEOUT }
+  { NS_MOUSE_BUTTON_DOWN,        HANDLER(&nsIDOMMouseListener::MouseDown)     },
+  { NS_MOUSE_BUTTON_UP,          HANDLER(&nsIDOMMouseListener::MouseUp)       },
+  { NS_MOUSE_CLICK,              HANDLER(&nsIDOMMouseListener::MouseClick)    },
+  { NS_MOUSE_DOUBLECLICK,        HANDLER(&nsIDOMMouseListener::MouseDblClick) },
+  { NS_MOUSE_ENTER_SYNTH,        HANDLER(&nsIDOMMouseListener::MouseOver)     },
+  { NS_MOUSE_EXIT_SYNTH,         HANDLER(&nsIDOMMouseListener::MouseOut)      }
 };
 
 static const EventDispatchData sMouseMotionEvents[] = {
-  { NS_MOUSE_MOVE, HANDLER(&nsIDOMMouseMotionListener::MouseMove),
-    NS_EVENT_BITS_MOUSEMOTION_MOUSEMOVE }
+  { NS_MOUSE_MOVE, HANDLER(&nsIDOMMouseMotionListener::MouseMove) }
 };
 
 static const EventDispatchData sContextMenuEvents[] = {
-  { NS_CONTEXTMENU,     HANDLER(&nsIDOMContextMenuListener::ContextMenu),
-    NS_EVENT_BITS_CONTEXT_MENU },
-  { NS_CONTEXTMENU_KEY, HANDLER(&nsIDOMContextMenuListener::ContextMenu),
-    NS_EVENT_BITS_CONTEXT_MENU }
+  { NS_CONTEXTMENU, HANDLER(&nsIDOMContextMenuListener::ContextMenu) }
 };
 
 static const EventDispatchData sCompositionEvents[] = {
-  { NS_COMPOSITION_START,  HANDLER(&nsIDOMCompositionListener::HandleStartComposition),
-    NS_EVENT_BITS_COMPOSITION_START },
-  { NS_COMPOSITION_END,    HANDLER(&nsIDOMCompositionListener::HandleEndComposition),
-    NS_EVENT_BITS_COMPOSITION_END },
-  { NS_COMPOSITION_QUERY,  HANDLER(&nsIDOMCompositionListener::HandleQueryComposition),
-    NS_EVENT_BITS_COMPOSITION_QUERY },
-  { NS_RECONVERSION_QUERY, HANDLER(&nsIDOMCompositionListener::HandleQueryReconversion),
-    NS_EVENT_BITS_COMPOSITION_RECONVERSION },
-  { NS_QUERYCARETRECT,  HANDLER(&nsIDOMCompositionListener::HandleQueryCaretRect),
-    NS_EVENT_BITS_COMPOSITION_QUERYCARETRECT }
+  { NS_COMPOSITION_START,
+    HANDLER(&nsIDOMCompositionListener::HandleStartComposition)  },
+  { NS_COMPOSITION_END,
+    HANDLER(&nsIDOMCompositionListener::HandleEndComposition)    },
+  { NS_COMPOSITION_QUERY,
+    HANDLER(&nsIDOMCompositionListener::HandleQueryComposition)  },
+  { NS_RECONVERSION_QUERY,
+    HANDLER(&nsIDOMCompositionListener::HandleQueryReconversion) },
+  { NS_QUERYCARETRECT,
+    HANDLER(&nsIDOMCompositionListener::HandleQueryCaretRect)    }
 };
 
 static const EventDispatchData sTextEvents[] = {
-  {NS_TEXT_TEXT,HANDLER(&nsIDOMTextListener::HandleText),NS_EVENT_BITS_TEXT_TEXT},
+  { NS_TEXT_TEXT, HANDLER(&nsIDOMTextListener::HandleText) }
 };
 
 static const EventDispatchData sKeyEvents[] = {
-  {NS_KEY_UP,   HANDLER(&nsIDOMKeyListener::KeyUp),   NS_EVENT_BITS_KEY_KEYUP},
-  {NS_KEY_DOWN, HANDLER(&nsIDOMKeyListener::KeyDown), NS_EVENT_BITS_KEY_KEYDOWN},
-  {NS_KEY_PRESS,HANDLER(&nsIDOMKeyListener::KeyPress),NS_EVENT_BITS_KEY_KEYPRESS},
+  { NS_KEY_UP,    HANDLER(&nsIDOMKeyListener::KeyUp)    },
+  { NS_KEY_DOWN,  HANDLER(&nsIDOMKeyListener::KeyDown)  },
+  { NS_KEY_PRESS, HANDLER(&nsIDOMKeyListener::KeyPress) }
 };
 
 static const EventDispatchData sFocusEvents[] = {
-  {NS_FOCUS_CONTENT,HANDLER(&nsIDOMFocusListener::Focus),NS_EVENT_BITS_FOCUS_FOCUS},
-  {NS_BLUR_CONTENT, HANDLER(&nsIDOMFocusListener::Blur), NS_EVENT_BITS_FOCUS_BLUR }
+  { NS_FOCUS_CONTENT, HANDLER(&nsIDOMFocusListener::Focus) },
+  { NS_BLUR_CONTENT,  HANDLER(&nsIDOMFocusListener::Blur)  }
 };
 
 static const EventDispatchData sFormEvents[] = {
-  {NS_FORM_SUBMIT,  HANDLER(&nsIDOMFormListener::Submit),NS_EVENT_BITS_FORM_SUBMIT},
-  {NS_FORM_RESET,   HANDLER(&nsIDOMFormListener::Reset), NS_EVENT_BITS_FORM_RESET},
-  {NS_FORM_CHANGE,  HANDLER(&nsIDOMFormListener::Change),NS_EVENT_BITS_FORM_CHANGE},
-  {NS_FORM_SELECTED,HANDLER(&nsIDOMFormListener::Select),NS_EVENT_BITS_FORM_SELECT},
-  {NS_FORM_INPUT,   HANDLER(&nsIDOMFormListener::Input), NS_EVENT_BITS_FORM_INPUT}
+  { NS_FORM_SUBMIT,   HANDLER(&nsIDOMFormListener::Submit) },
+  { NS_FORM_RESET,    HANDLER(&nsIDOMFormListener::Reset)  },
+  { NS_FORM_CHANGE,   HANDLER(&nsIDOMFormListener::Change) },
+  { NS_FORM_SELECTED, HANDLER(&nsIDOMFormListener::Select) },
+  { NS_FORM_INPUT,    HANDLER(&nsIDOMFormListener::Input)  }
 };
 
 static const EventDispatchData sLoadEvents[] = {
-  {NS_PAGE_LOAD,   HANDLER(&nsIDOMLoadListener::Load),  NS_EVENT_BITS_LOAD_LOAD},
-  {NS_IMAGE_LOAD,  HANDLER(&nsIDOMLoadListener::Load),  NS_EVENT_BITS_LOAD_LOAD},
-  {NS_SCRIPT_LOAD, HANDLER(&nsIDOMLoadListener::Load),  NS_EVENT_BITS_LOAD_LOAD},
-  {NS_PAGE_UNLOAD, HANDLER(&nsIDOMLoadListener::Unload),NS_EVENT_BITS_LOAD_UNLOAD},
-  {NS_IMAGE_ERROR, HANDLER(&nsIDOMLoadListener::Error), NS_EVENT_BITS_LOAD_ERROR},
-  {NS_SCRIPT_ERROR,HANDLER(&nsIDOMLoadListener::Error), NS_EVENT_BITS_LOAD_ERROR},
-  {NS_BEFORE_PAGE_UNLOAD,HANDLER(&nsIDOMLoadListener::BeforeUnload), NS_EVENT_BITS_LOAD_BEFORE_UNLOAD},
-};
-
-static const EventDispatchData sPaintEvents[] = {
-  {NS_PAINT,       HANDLER(&nsIDOMPaintListener::Paint), NS_EVENT_BITS_PAINT_PAINT},
-  {NS_RESIZE_EVENT,HANDLER(&nsIDOMPaintListener::Resize),NS_EVENT_BITS_PAINT_RESIZE},
-  {NS_SCROLL_EVENT,HANDLER(&nsIDOMPaintListener::Scroll),NS_EVENT_BITS_PAINT_SCROLL}
+  { NS_LOAD,               HANDLER(&nsIDOMLoadListener::Load)         },
+  { NS_PAGE_UNLOAD,        HANDLER(&nsIDOMLoadListener::Unload)       },
+  { NS_LOAD_ERROR,         HANDLER(&nsIDOMLoadListener::Error)        },
+  { NS_BEFORE_PAGE_UNLOAD, HANDLER(&nsIDOMLoadListener::BeforeUnload) }
 };
 
 static const EventDispatchData sDragEvents[] = {
-  {NS_DRAGDROP_ENTER,     HANDLER(&nsIDOMDragListener::DragEnter),  NS_EVENT_BITS_DRAG_ENTER},
-  {NS_DRAGDROP_OVER_SYNTH,HANDLER(&nsIDOMDragListener::DragOver),   NS_EVENT_BITS_DRAG_OVER},
-  {NS_DRAGDROP_EXIT_SYNTH,HANDLER(&nsIDOMDragListener::DragExit),   NS_EVENT_BITS_DRAG_EXIT},
-  {NS_DRAGDROP_DROP,      HANDLER(&nsIDOMDragListener::DragDrop),   NS_EVENT_BITS_DRAG_DROP},
-  {NS_DRAGDROP_GESTURE,   HANDLER(&nsIDOMDragListener::DragGesture),NS_EVENT_BITS_DRAG_GESTURE}
-};
-
-static const EventDispatchData sScrollEvents[] = {
-  { NS_SCROLLPORT_OVERFLOW,        HANDLER(&nsIDOMScrollListener::Overflow),
-    NS_EVENT_BITS_SCROLLPORT_OVERFLOW },
-  { NS_SCROLLPORT_UNDERFLOW,       HANDLER(&nsIDOMScrollListener::Underflow),
-    NS_EVENT_BITS_SCROLLPORT_UNDERFLOW },
-  { NS_SCROLLPORT_OVERFLOWCHANGED, HANDLER(&nsIDOMScrollListener::OverflowChanged),
-    NS_EVENT_BITS_SCROLLPORT_OVERFLOWCHANGED }
+  { NS_DRAGDROP_ENTER,       HANDLER(&nsIDOMDragListener::DragEnter)   },
+  { NS_DRAGDROP_OVER_SYNTH,  HANDLER(&nsIDOMDragListener::DragOver)    },
+  { NS_DRAGDROP_EXIT_SYNTH,  HANDLER(&nsIDOMDragListener::DragExit)    },
+  { NS_DRAGDROP_DRAGDROP,    HANDLER(&nsIDOMDragListener::DragDrop)    },
+  { NS_DRAGDROP_GESTURE,     HANDLER(&nsIDOMDragListener::DragGesture) },
+  { NS_DRAGDROP_DRAG,        HANDLER(&nsIDOMDragListener::Drag)        },
+  { NS_DRAGDROP_END,         HANDLER(&nsIDOMDragListener::DragEnd)     },
+  { NS_DRAGDROP_START,       HANDLER(&nsIDOMDragListener::DragStart)   },
+  { NS_DRAGDROP_LEAVE_SYNTH, HANDLER(&nsIDOMDragListener::DragLeave)   },
+  { NS_DRAGDROP_DROP,        HANDLER(&nsIDOMDragListener::Drop)        },
 };
 
 static const EventDispatchData sXULEvents[] = {
-  { NS_XUL_POPUP_SHOWING,  HANDLER(&nsIDOMXULListener::PopupShowing),
-    NS_EVENT_BITS_XUL_POPUP_SHOWING },
-  { NS_XUL_POPUP_SHOWN,    HANDLER(&nsIDOMXULListener::PopupShown),
-    NS_EVENT_BITS_XUL_POPUP_SHOWN },
-  { NS_XUL_POPUP_HIDING,   HANDLER(&nsIDOMXULListener::PopupHiding),
-    NS_EVENT_BITS_XUL_POPUP_HIDING },
-  { NS_XUL_POPUP_HIDDEN,   HANDLER(&nsIDOMXULListener::PopupHidden),
-    NS_EVENT_BITS_XUL_POPUP_HIDDEN },
-  { NS_XUL_CLOSE,          HANDLER(&nsIDOMXULListener::Close),
-    NS_EVENT_BITS_XUL_CLOSE },
-  { NS_XUL_COMMAND,        HANDLER(&nsIDOMXULListener::Command),
-    NS_EVENT_BITS_XUL_COMMAND },
-  { NS_XUL_BROADCAST,      HANDLER(&nsIDOMXULListener::Broadcast),
-    NS_EVENT_BITS_XUL_BROADCAST },
-  { NS_XUL_COMMAND_UPDATE, HANDLER(&nsIDOMXULListener::CommandUpdate),
-    NS_EVENT_BITS_XUL_COMMAND_UPDATE }
-};
-
-static const EventDispatchData sMutationEvents[] = {
-  { NS_MUTATION_SUBTREEMODIFIED,
-    HANDLER(&nsIDOMMutationListener::SubtreeModified),
-    NS_EVENT_BITS_MUTATION_SUBTREEMODIFIED },
-  { NS_MUTATION_NODEINSERTED,
-    HANDLER(&nsIDOMMutationListener::NodeInserted),
-    NS_EVENT_BITS_MUTATION_NODEINSERTED },
-  { NS_MUTATION_NODEREMOVED,
-    HANDLER(&nsIDOMMutationListener::NodeRemoved),
-    NS_EVENT_BITS_MUTATION_NODEREMOVED },
-  { NS_MUTATION_NODEINSERTEDINTODOCUMENT,
-    HANDLER(&nsIDOMMutationListener::NodeInsertedIntoDocument),
-    NS_EVENT_BITS_MUTATION_NODEINSERTEDINTODOCUMENT },
-  { NS_MUTATION_NODEREMOVEDFROMDOCUMENT,
-    HANDLER(&nsIDOMMutationListener::NodeRemovedFromDocument),
-    NS_EVENT_BITS_MUTATION_NODEREMOVEDFROMDOCUMENT },
-  { NS_MUTATION_ATTRMODIFIED,
-    HANDLER(&nsIDOMMutationListener::AttrModified),
-    NS_EVENT_BITS_MUTATION_ATTRMODIFIED },
-  { NS_MUTATION_CHARACTERDATAMODIFIED,
-    HANDLER(&nsIDOMMutationListener::CharacterDataModified),
-    NS_EVENT_BITS_MUTATION_CHARACTERDATAMODIFIED }
+  { NS_XUL_POPUP_SHOWING,  HANDLER(&nsIDOMXULListener::PopupShowing)  },
+  { NS_XUL_POPUP_SHOWN,    HANDLER(&nsIDOMXULListener::PopupShown)    },
+  { NS_XUL_POPUP_HIDING,   HANDLER(&nsIDOMXULListener::PopupHiding)   },
+  { NS_XUL_POPUP_HIDDEN,   HANDLER(&nsIDOMXULListener::PopupHidden)   },
+  { NS_XUL_CLOSE,          HANDLER(&nsIDOMXULListener::Close)         },
+  { NS_XUL_COMMAND,        HANDLER(&nsIDOMXULListener::Command)       },
+  { NS_XUL_BROADCAST,      HANDLER(&nsIDOMXULListener::Broadcast)     },
+  { NS_XUL_COMMAND_UPDATE, HANDLER(&nsIDOMXULListener::CommandUpdate) }
 };
 
 static const EventDispatchData sUIEvents[] = {
-  { NS_UI_ACTIVATE, HANDLER(&nsIDOMUIListener::Activate),
-    NS_EVENT_BITS_UI_ACTIVATE },
-  { NS_UI_FOCUSIN, HANDLER(&nsIDOMUIListener::FocusIn),
-    NS_EVENT_BITS_UI_FOCUSIN },
-  { NS_UI_FOCUSOUT, HANDLER(&nsIDOMUIListener::FocusOut),
-    NS_EVENT_BITS_UI_FOCUSOUT }
-};
-
-static const EventDispatchData sPageTransitionEvents[] = {
-  { NS_PAGE_SHOW, HANDLER(&nsIDOMPageTransitionListener::PageShow),
-    NS_EVENT_BITS_PAGETRANSITION_SHOW },
-  { NS_PAGE_HIDE, HANDLER(&nsIDOMPageTransitionListener::PageHide),
-    NS_EVENT_BITS_PAGETRANSITION_HIDE }
+  { NS_UI_ACTIVATE, HANDLER(&nsIDOMUIListener::Activate) },
+  { NS_UI_FOCUSIN,  HANDLER(&nsIDOMUIListener::FocusIn)  },
+  { NS_UI_FOCUSOUT, HANDLER(&nsIDOMUIListener::FocusOut) }
 };
 
 #ifdef MOZ_SVG
 static const EventDispatchData sSVGEvents[] = {
-  { NS_SVG_LOAD, HANDLER(&nsIDOMSVGListener::Load),
-    NS_EVENT_BITS_SVG_LOAD },
-  { NS_SVG_UNLOAD, HANDLER(&nsIDOMSVGListener::Unload),
-    NS_EVENT_BITS_SVG_UNLOAD },
-  { NS_SVG_ABORT, HANDLER(&nsIDOMSVGListener::Abort),
-    NS_EVENT_BITS_SVG_ABORT },
-  { NS_SVG_ERROR, HANDLER(&nsIDOMSVGListener::Error),
-    NS_EVENT_BITS_SVG_ERROR },
-  { NS_SVG_RESIZE, HANDLER(&nsIDOMSVGListener::Resize),
-    NS_EVENT_BITS_SVG_RESIZE },
-  { NS_SVG_SCROLL, HANDLER(&nsIDOMSVGListener::Scroll),
-    NS_EVENT_BITS_SVG_SCROLL }
+  { NS_SVG_LOAD,   HANDLER(&nsIDOMSVGListener::Load)   },
+  { NS_SVG_UNLOAD, HANDLER(&nsIDOMSVGListener::Unload) },
+  { NS_SVG_ABORT,  HANDLER(&nsIDOMSVGListener::Abort)  },
+  { NS_SVG_ERROR,  HANDLER(&nsIDOMSVGListener::Error)  },
+  { NS_SVG_RESIZE, HANDLER(&nsIDOMSVGListener::Resize) },
+  { NS_SVG_SCROLL, HANDLER(&nsIDOMSVGListener::Scroll) }
 };
 
 static const EventDispatchData sSVGZoomEvents[] = {
-  { NS_SVG_ZOOM, HANDLER(&nsIDOMSVGZoomListener::Zoom),
-    NS_EVENT_BITS_SVGZOOM_ZOOM }
+  { NS_SVG_ZOOM, HANDLER(&nsIDOMSVGZoomListener::Zoom) }
 };
 #endif // MOZ_SVG
 
@@ -375,14 +325,10 @@ static const EventTypeData sEventTypes[] = {
   IMPL_EVENTTYPEDATA(Focus),
   IMPL_EVENTTYPEDATA(Form),
   IMPL_EVENTTYPEDATA(Drag),
-  IMPL_EVENTTYPEDATA(Paint),
   IMPL_EVENTTYPEDATA(Text),
   IMPL_EVENTTYPEDATA(Composition),
   IMPL_EVENTTYPEDATA(XUL),
-  IMPL_EVENTTYPEDATA(Scroll),
-  IMPL_EVENTTYPEDATA(Mutation),
-  IMPL_EVENTTYPEDATA(UI),
-  IMPL_EVENTTYPEDATA(PageTransition)
+  IMPL_EVENTTYPEDATA(UI)
 #ifdef MOZ_SVG
  ,
   IMPL_EVENTTYPEDATA(SVG),
@@ -391,330 +337,113 @@ static const EventTypeData sEventTypes[] = {
 };
 
 // Strong references to event groups
-nsIDOMEventGroup* gSystemEventGroup;
-nsIDOMEventGroup* gDOM2EventGroup;
+nsIDOMEventGroup* gSystemEventGroup = nsnull;
+nsIDOMEventGroup* gDOM2EventGroup = nsnull;
+
+nsDataHashtable<nsISupportsHashKey, PRUint32>* gEventIdTable = nsnull;
 
 PRUint32 nsEventListenerManager::mInstanceCount = 0;
 
 nsEventListenerManager::nsEventListenerManager() :
-  mManagerType(NS_ELM_NONE),
-  mListenersRemoved(PR_FALSE),
-  mSingleListenerType(eEventArrayType_None),
-  mSingleListener(nsnull),
-  mMultiListeners(nsnull),
-  mGenericListeners(nsnull),
-  mTarget(nsnull)
+  mTarget(nsnull),
+  mMayHaveMutationListeners(PR_FALSE),
+  mNoListenerForEvent(NS_EVENT_TYPE_NULL)
 {
   ++mInstanceCount;
 }
 
-static PRBool PR_CALLBACK
-GenericListenersHashEnum(nsHashKey *aKey, void *aData, void* closure)
-{
-  nsVoidArray* listeners = NS_STATIC_CAST(nsVoidArray*, aData);
-  if (listeners) {
-    PRInt32 i, count = listeners->Count();
-    nsListenerStruct *ls;
-    for (i = count-1; i >= 0; --i) {
-      ls = (nsListenerStruct*)listeners->ElementAt(i);
-      if (ls) {
-        delete ls;
-      }
-    }
-    delete listeners;
-  }
-  return PR_TRUE;
-}
-
 nsEventListenerManager::~nsEventListenerManager() 
 {
+  NS_ASSERTION(!mTarget, "didn't call Disconnect");
   RemoveAllListeners();
 
   --mInstanceCount;
   if(mInstanceCount == 0) {
     NS_IF_RELEASE(gSystemEventGroup);
     NS_IF_RELEASE(gDOM2EventGroup);
+    delete gEventIdTable;
+    gEventIdTable = nsnull;
   }
 }
 
 nsresult
 nsEventListenerManager::RemoveAllListeners()
 {
-  mListenersRemoved = PR_TRUE;
-
-  ReleaseListeners(&mSingleListener);
-  if (!mSingleListener) {
-    mSingleListenerType = eEventArrayType_None;
-    mManagerType &= ~NS_ELM_SINGLE;
-  }
-
-  if (mMultiListeners) {
-    // XXX probably should just be i < Count()
-    for (PRInt32 i=0; i<EVENT_ARRAY_TYPE_LENGTH && i < mMultiListeners->Count(); i++) {
-      nsVoidArray* listeners;
-      listeners = NS_STATIC_CAST(nsVoidArray*, mMultiListeners->ElementAt(i));
-      ReleaseListeners(&listeners);
-    }
-    delete mMultiListeners;
-    mMultiListeners = nsnull;
-    mManagerType &= ~NS_ELM_MULTI;
-  }
-
-  if (mGenericListeners) {
-    mGenericListeners->Enumerate(GenericListenersHashEnum, nsnull);
-    //hash destructor
-    delete mGenericListeners;
-    mGenericListeners = nsnull;
-    mManagerType &= ~NS_ELM_HASH;
-  }
-
+  mListeners.Clear();
   return NS_OK;
 }
 
 void
 nsEventListenerManager::Shutdown()
 {
-    sAddListenerID = JSVAL_VOID;
-
-    nsDOMEvent::Shutdown();
+  sAddListenerID = JSVAL_VOID;
+  nsDOMEvent::Shutdown();
 }
 
-NS_IMPL_ADDREF(nsEventListenerManager)
-NS_IMPL_RELEASE(nsEventListenerManager)
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsEventListenerManager)
 
-
-NS_INTERFACE_MAP_BEGIN(nsEventListenerManager)
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsEventListenerManager)
    NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIEventListenerManager)
    NS_INTERFACE_MAP_ENTRY(nsIEventListenerManager)
    NS_INTERFACE_MAP_ENTRY(nsIDOMEventTarget)
    NS_INTERFACE_MAP_ENTRY(nsIDOM3EventTarget)
-   NS_INTERFACE_MAP_ENTRY(nsIDOMEventReceiver)
 NS_INTERFACE_MAP_END
 
+NS_IMPL_CYCLE_COLLECTING_ADDREF_AMBIGUOUS(nsEventListenerManager, nsIEventListenerManager)
+NS_IMPL_CYCLE_COLLECTING_RELEASE_AMBIGUOUS(nsEventListenerManager, nsIEventListenerManager)
 
-nsVoidArray*
-nsEventListenerManager::GetListenersByType(EventArrayType aType, 
-                                           nsHashKey* aKey, PRBool aCreate)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(nsEventListenerManager)
+  PRUint32 count = tmp->mListeners.Length();
+  for (PRUint32 i = 0; i < count; i++) {
+    cb.NoteXPCOMChild(tmp->mListeners.ElementAt(i).mListener.get());
+  }  
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+
+NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN(nsEventListenerManager)
+  tmp->Disconnect();
+NS_IMPL_CYCLE_COLLECTION_UNLINK_END
+
+
+const EventTypeData*
+nsEventListenerManager::GetTypeDataForIID(const nsIID& aIID)
 {
-  NS_ASSERTION(aType >= 0,"Negative EventListenerType?");
-  //Look for existing listeners
-  if (aType == eEventArrayType_Hash && aKey && (mManagerType & NS_ELM_HASH)) {
-    if (mGenericListeners && mGenericListeners->Exists(aKey)) {
-      nsVoidArray* listeners = NS_STATIC_CAST(nsVoidArray*, mGenericListeners->Get(aKey));
-      return listeners;
+  for (PRUint32 i = 0; i < NS_ARRAY_LENGTH(sEventTypes); ++i) {
+    if (aIID.Equals(*(sEventTypes[i].iid))) {
+      return &sEventTypes[i];
     }
   }
-  else if (mManagerType & NS_ELM_SINGLE) {
-    if (mSingleListenerType == aType) {
-      return mSingleListener;
-    }
-  }
-  else if (mManagerType & NS_ELM_MULTI) {
-    if (mMultiListeners) {
-      PRInt32 index = aType;
-      if (index < mMultiListeners->Count()) {
-        nsVoidArray* listeners;
-        listeners = NS_STATIC_CAST(nsVoidArray*, mMultiListeners->ElementAt(index));
-        if (listeners) {
-          return listeners;
-        }
-      }
-    }
-  }
-
-  //If we've gotten here we didn't find anything.  See if we should create something.
-  if (aCreate) {
-    if (aType == eEventArrayType_Hash && aKey) {
-      if (!mGenericListeners) {
-        mGenericListeners = new nsHashtable();
-        if (!mGenericListeners) {
-          //out of memory
-          return nsnull;
-        }
-      }
-      NS_ASSERTION(!(mGenericListeners->Get(aKey)), "Found existing generic listeners, should be none");
-      nsVoidArray* listeners;
-      listeners = new nsAutoVoidArray();
-      if (!listeners) {
-        //out of memory
-        return nsnull;
-      }
-      mGenericListeners->Put(aKey, listeners);
-      mManagerType |= NS_ELM_HASH;
-      return listeners;
-    }
-    else {
-      if (mManagerType & NS_ELM_SINGLE) {
-        //Change single type into multi, then add new listener with the code for the 
-        //multi type below
-        NS_ASSERTION(!mMultiListeners, "Found existing multi listener array, should be none");
-        mMultiListeners = new nsAutoVoidArray();
-        if (!mMultiListeners) {
-          //out of memory
-          return nsnull;
-        }
-
-        //Move single listener to multi array
-        mMultiListeners->ReplaceElementAt((void*)mSingleListener, mSingleListenerType);
-        mSingleListener = nsnull;
-
-        mManagerType &= ~NS_ELM_SINGLE;
-        mManagerType |= NS_ELM_MULTI;
-        // we'll fall through into the multi case
-      }
-
-      if (mManagerType & NS_ELM_MULTI) {
-        PRInt32 index = aType;
-        if (index >= 0) {
-          nsVoidArray* listeners;
-          NS_ASSERTION(index >= mMultiListeners->Count() || !mMultiListeners->ElementAt(index), "Found existing listeners, should be none");
-          listeners = new nsAutoVoidArray();
-          if (!listeners) {
-            //out of memory
-            return nsnull;
-          }
-          mMultiListeners->ReplaceElementAt((void*)listeners, index);
-          return listeners;
-        }
-      }
-      else {
-        //We had no pre-existing type.  This is our first non-hash listener.
-        //Create the single listener type
-        NS_ASSERTION(!mSingleListener, "Found existing single listener array, should be none");
-        mSingleListener = new nsAutoVoidArray();
-        if (!mSingleListener) {
-          //out of memory
-          return nsnull;
-        }
-        mSingleListenerType = aType;
-        mManagerType |= NS_ELM_SINGLE;
-        return mSingleListener;
-      }
-    }
-  }
-
   return nsnull;
 }
 
-EventArrayType
-nsEventListenerManager::GetTypeForIID(const nsIID& aIID)
-{ 
-  if (aIID.Equals(NS_GET_IID(nsIDOMMouseListener)))
-      return eEventArrayType_Mouse;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMMouseMotionListener)))
-    return eEventArrayType_MouseMotion;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMContextMenuListener)))
-    return eEventArrayType_ContextMenu;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMKeyListener)))
-    return eEventArrayType_Key;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMLoadListener)))
-    return eEventArrayType_Load;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMFocusListener)))
-    return eEventArrayType_Focus;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMFormListener)))
-    return eEventArrayType_Form;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMDragListener)))
-    return eEventArrayType_Drag;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMPaintListener)))
-    return eEventArrayType_Paint;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMTextListener)))
-    return eEventArrayType_Text;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMCompositionListener)))
-    return eEventArrayType_Composition;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMXULListener)))
-    return eEventArrayType_XUL;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMScrollListener)))
-    return eEventArrayType_Scroll;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMMutationListener)))
-    return eEventArrayType_Mutation;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMUIListener)))
-    return eEventArrayType_DOMUI;
-
-#ifdef MOZ_SVG
-  if (aIID.Equals(NS_GET_IID(nsIDOMSVGListener)))
-    return eEventArrayType_SVG;
-
-  if (aIID.Equals(NS_GET_IID(nsIDOMSVGZoomListener)))
-    return eEventArrayType_SVGZoom;
-#endif // MOZ_SVG
-
-  return eEventArrayType_None;
-}
-
-void
-nsEventListenerManager::ReleaseListeners(nsVoidArray** aListeners)
+const EventTypeData*
+nsEventListenerManager::GetTypeDataForEventName(nsIAtom* aName)
 {
-  if (nsnull != *aListeners) {
-    PRInt32 i, count = (*aListeners)->Count();
-    nsListenerStruct *ls;
-    for (i = 0; i < count; i++) {
-      ls = (nsListenerStruct*)(*aListeners)->ElementAt(i);
-      if (ls) {
-        delete ls;
+  PRUint32 event = nsContentUtils::GetEventId(aName);
+  if (event != NS_USER_DEFINED_EVENT) {
+    for (PRUint32 i = 0; i < NS_ARRAY_LENGTH(sEventTypes); ++i) {
+      for (PRInt32 j = 0; j < sEventTypes[i].numEvents; ++j) {
+         if (event == sEventTypes[i].events[j].message) {
+           return &sEventTypes[i];
+         }
       }
     }
-    delete *aListeners;
-    *aListeners = nsnull;
   }
+  return nsnull;
 }
 
-/**
-* Sets events listeners of all types. 
-* @param an event listener
-*/
-
 nsresult
-nsEventListenerManager::AddEventListener(nsIDOMEventListener *aListener, 
-                                         EventArrayType aType, 
-                                         PRInt32 aSubType,
-                                         nsHashKey* aKey,
+nsEventListenerManager::AddEventListener(nsIDOMEventListener *aListener,
+                                         PRUint32 aType,
+                                         nsIAtom* aTypeAtom,
+                                         const EventTypeData* aTypeData,
                                          PRInt32 aFlags,
                                          nsIDOMEventGroup* aEvtGrp)
 {
   NS_ENSURE_TRUE(aListener, NS_ERROR_FAILURE);
+  NS_ENSURE_TRUE(aType || aTypeData, NS_ERROR_FAILURE);
 
-  nsVoidArray* listeners = GetListenersByType(aType, aKey, PR_TRUE);
+  nsRefPtr<nsIDOMEventListener> kungFuDeathGrip = aListener;
 
-  //We asked the GetListenersByType to create the array if it had to.  If it didn't
-  //then we're out of memory (or a bug was added which passed in an unsupported
-  //event type)
-  if (!listeners) {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-
-  // For mutation listeners, we need to update the global bit on the DOM window.
-  // Otherwise we won't actually fire the mutation event.
-  if (aType == eEventArrayType_Mutation) {
-    // Go from our target to the nearest enclosing DOM window.
-    nsCOMPtr<nsPIDOMWindow> window;
-    nsCOMPtr<nsIDocument> document;
-    nsCOMPtr<nsINode> node(do_QueryInterface(mTarget));
-    if (node)
-      document = node->GetOwnerDoc();
-    if (document)
-      window = document->GetInnerWindow();
-    else window = do_QueryInterface(mTarget);
-    if (window) {
-      NS_ASSERTION(window->IsInnerWindow(),
-                   "Setting mutation listener bits on outer window?");
-      window->SetMutationListeners(aSubType);
-    }
-  }
-  
   PRBool isSame = PR_FALSE;
   PRUint16 group = 0;
   nsCOMPtr<nsIDOMEventGroup> sysGroup;
@@ -726,34 +455,78 @@ nsEventListenerManager::AddEventListener(nsIDOMEventListener *aListener,
     }
   }
 
-  PRBool found = PR_FALSE;
-  nsListenerStruct* ls;
-
-  for (PRInt32 i=0; i<listeners->Count(); i++) {
-    ls = (nsListenerStruct*)listeners->ElementAt(i);
-    nsRefPtr<nsIDOMEventListener> iListener = ls->mListener.Get();
-    if (iListener == aListener && ls->mFlags == aFlags &&
-        ls->mGroupFlags == group) {
-      ls->mSubType |= aSubType;
-      found = PR_TRUE;
-      break;
+  if (!aTypeData) {
+    // If we don't have type data, we can try to QI listener to the right
+    // interface and set mTypeData only if QI succeeds. This way we can save
+    // calls to DispatchToInterface (in HandleEvent) in those cases when QI
+    // would fail.
+    // @see also DispatchToInterface()
+    const EventTypeData* td = GetTypeDataForEventName(aTypeAtom);
+    if (td && td->iid) {
+      nsIDOMEventListener* ifaceListener = nsnull;
+      aListener->QueryInterface(*(td->iid), (void**) &ifaceListener);
+      if (ifaceListener) {
+        aTypeData = td;
+        NS_RELEASE(ifaceListener);
+      }
     }
   }
 
-  if (!found) {
-    ls = new nsListenerStruct;
-    if (!ls) {
-      return NS_ERROR_OUT_OF_MEMORY;
+  nsListenerStruct* ls;
+  PRUint32 count = mListeners.Length();
+  for (PRUint32 i = 0; i < count; i++) {
+    ls = &mListeners.ElementAt(i);
+    if (ls->mListener == aListener && ls->mFlags == aFlags &&
+        ls->mGroupFlags == group &&
+        (EVENT_TYPE_EQUALS(ls, aType, aTypeAtom) ||
+         EVENT_TYPE_DATA_EQUALS(aTypeData, ls->mTypeData))) {
+      return NS_OK;
+    }
+  }
+
+  mNoListenerForEvent = NS_EVENT_TYPE_NULL;
+  mNoListenerForEventAtom = nsnull;
+
+  ls = mListeners.AppendElement();
+  NS_ENSURE_TRUE(ls, NS_ERROR_OUT_OF_MEMORY);
+
+  ls->mListener = aListener;
+  ls->mEventType = aType;
+  ls->mTypeAtom = aTypeAtom;
+  ls->mFlags = aFlags;
+  ls->mGroupFlags = group;
+  ls->mHandlerIsString = PR_FALSE;
+  ls->mTypeData = aTypeData;
+
+  // For mutation listeners, we need to update the global bit on the DOM window.
+  // Otherwise we won't actually fire the mutation event.
+  if (aType >= NS_MUTATION_START && aType <= NS_MUTATION_END) {
+    mMayHaveMutationListeners = PR_TRUE;
+    // Go from our target to the nearest enclosing DOM window.
+    nsCOMPtr<nsPIDOMWindow> window;
+    nsCOMPtr<nsIDocument> document;
+    nsCOMPtr<nsINode> node(do_QueryInterface(mTarget));
+    if (node) {
+      // XXX sXBL/XBL2 issue -- do we really want the owner here?  What
+      // if that's the XBL document?
+      document = node->GetOwnerDoc();
+      if (document) {
+        window = document->GetInnerWindow();
+      }
     }
 
-    nsCOMPtr<nsIDOMGCParticipant> participant = do_QueryInterface(mTarget);
-    NS_ASSERTION(participant, "must implement nsIDOMGCParticipant");
-    ls->mListener.Set(aListener, participant);
-    ls->mFlags = aFlags;
-    ls->mSubType = aSubType;
-    ls->mHandlerIsString = 0;
-    ls->mGroupFlags = group;
-    listeners->AppendElement((void*)ls);
+    if (!window) {
+      window = do_QueryInterface(mTarget);
+    }
+    if (window) {
+      NS_ASSERTION(window->IsInnerWindow(),
+                   "Setting mutation listener bits on outer window?");
+      // If aType is NS_MUTATION_SUBTREEMODIFIED, we need to listen all
+      // mutations.
+      window->SetMutationListeners((aType == NS_MUTATION_SUBTREEMODIFIED) ?
+                                   kAllMutationBits :
+                                   MutationBitForEventType(aType));
+    }
   }
 
   return NS_OK;
@@ -761,31 +534,42 @@ nsEventListenerManager::AddEventListener(nsIDOMEventListener *aListener,
 
 nsresult
 nsEventListenerManager::RemoveEventListener(nsIDOMEventListener *aListener, 
-                                            EventArrayType aType, 
-                                            PRInt32 aSubType,
-                                            nsHashKey* aKey,
+                                            PRUint32 aType,
+                                            nsIAtom* aUserType,
+                                            const EventTypeData* aTypeData,
                                             PRInt32 aFlags,
                                             nsIDOMEventGroup* aEvtGrp)
 {
-  nsVoidArray* listeners = GetListenersByType(aType, aKey, PR_FALSE);
-
-  if (!listeners) {
+  if (!aListener || !(aType || aTypeData)) {
     return NS_OK;
+  }
+
+  PRBool isSame = PR_FALSE;
+  PRUint16 group = 0;
+  nsCOMPtr<nsIDOMEventGroup> sysGroup;
+  GetSystemEventGroupLM(getter_AddRefs(sysGroup));
+  if (sysGroup) {
+    sysGroup->IsSameEventGroup(aEvtGrp, &isSame);
+    if (isSame) {
+      group = NS_EVENT_FLAG_SYSTEM_EVENT;
+    }
   }
 
   nsListenerStruct* ls;
   aFlags &= ~NS_PRIV_EVENT_UNTRUSTED_PERMITTED;
 
-  for (PRInt32 i=0; i<listeners->Count(); i++) {
-    ls = (nsListenerStruct*)listeners->ElementAt(i);
-    nsRefPtr<nsIDOMEventListener> iListener = ls->mListener.Get();
-    if (iListener == aListener &&
-        (ls->mFlags & ~NS_PRIV_EVENT_UNTRUSTED_PERMITTED) == aFlags) {
-      ls->mSubType &= ~aSubType;
-      if (ls->mSubType == NS_EVENT_BITS_NONE) {
-        listeners->RemoveElement((void*)ls);
-        delete ls;
-      }
+  PRUint32 count = mListeners.Length();
+  for (PRUint32 i = 0; i < count; ++i) {
+    ls = &mListeners.ElementAt(i);
+    if (ls->mListener == aListener &&
+        ls->mGroupFlags == group &&
+        ((ls->mFlags & ~NS_PRIV_EVENT_UNTRUSTED_PERMITTED) == aFlags) &&
+        (EVENT_TYPE_EQUALS(ls, aType, aUserType) ||
+         (!(ls->mEventType) &&
+          EVENT_TYPE_DATA_EQUALS(ls->mTypeData, aTypeData)))) {
+      mListeners.RemoveElementAt(i);
+      mNoListenerForEvent = NS_EVENT_TYPE_NULL;
+      mNoListenerForEventAtom = nsnull;
       break;
     }
   }
@@ -798,8 +582,8 @@ nsEventListenerManager::AddEventListenerByIID(nsIDOMEventListener *aListener,
                                               const nsIID& aIID,
                                               PRInt32 aFlags)
 {
-  AddEventListener(aListener, GetTypeForIID(aIID), NS_EVENT_BITS_NONE, nsnull,
-                   aFlags, nsnull);
+  AddEventListener(aListener, NS_EVENT_TYPE_NULL, nsnull,
+                   GetTypeDataForIID(aIID), aFlags, nsnull);
   return NS_OK;
 }
 
@@ -808,278 +592,20 @@ nsEventListenerManager::RemoveEventListenerByIID(nsIDOMEventListener *aListener,
                                                  const nsIID& aIID,
                                                  PRInt32 aFlags)
 {
-  RemoveEventListener(aListener, GetTypeForIID(aIID), NS_EVENT_BITS_NONE,
-                      nsnull, aFlags, nsnull);
+  RemoveEventListener(aListener, NS_EVENT_TYPE_NULL, nsnull,
+                      GetTypeDataForIID(aIID), aFlags, nsnull);
   return NS_OK;
 }
 
-nsresult
-nsEventListenerManager::GetIdentifiersForType(nsIAtom* aType,
-                                              EventArrayType* aArrayType,
-                                              PRInt32* aFlags)
+PRBool
+nsEventListenerManager::ListenerCanHandle(nsListenerStruct* aLs,
+                                          nsEvent* aEvent)
 {
-  if (aType == nsLayoutAtoms::onmousedown) {
-    *aArrayType = eEventArrayType_Mouse;
-    *aFlags = NS_EVENT_BITS_MOUSE_MOUSEDOWN;
-  }
-  else if (aType == nsLayoutAtoms::onmouseup) {
-    *aArrayType = eEventArrayType_Mouse;
-    *aFlags = NS_EVENT_BITS_MOUSE_MOUSEUP;
-  }
-  else if (aType == nsLayoutAtoms::onclick) {
-    *aArrayType = eEventArrayType_Mouse;
-    *aFlags = NS_EVENT_BITS_MOUSE_CLICK;
-  }
-  else if (aType == nsLayoutAtoms::ondblclick) {
-    *aArrayType = eEventArrayType_Mouse;
-    *aFlags = NS_EVENT_BITS_MOUSE_DBLCLICK;
-  }
-  else if (aType == nsLayoutAtoms::onmouseover) {
-    *aArrayType = eEventArrayType_Mouse;
-    *aFlags = NS_EVENT_BITS_MOUSE_MOUSEOVER;
-  }
-  else if (aType == nsLayoutAtoms::onmouseout) {
-    *aArrayType = eEventArrayType_Mouse;
-    *aFlags = NS_EVENT_BITS_MOUSE_MOUSEOUT;
-  }
-  else if (aType == nsLayoutAtoms::onkeydown) {
-    *aArrayType = eEventArrayType_Key;
-    *aFlags = NS_EVENT_BITS_KEY_KEYDOWN;
-  }
-  else if (aType == nsLayoutAtoms::onkeyup) {
-    *aArrayType = eEventArrayType_Key;
-    *aFlags = NS_EVENT_BITS_KEY_KEYUP;
-  }
-  else if (aType == nsLayoutAtoms::onkeypress) {
-    *aArrayType = eEventArrayType_Key;
-    *aFlags = NS_EVENT_BITS_KEY_KEYPRESS;
-  }
-  else if (aType == nsLayoutAtoms::onmousemove) {
-    *aArrayType = eEventArrayType_MouseMotion;
-    *aFlags = NS_EVENT_BITS_MOUSEMOTION_MOUSEMOVE;
-  }
-  else if (aType == nsLayoutAtoms::oncontextmenu) {
-    *aArrayType = eEventArrayType_ContextMenu;
-    *aFlags = NS_EVENT_BITS_CONTEXTMENU;
-  }
-  else if (aType == nsLayoutAtoms::onfocus) {
-    *aArrayType = eEventArrayType_Focus;
-    *aFlags = NS_EVENT_BITS_FOCUS_FOCUS;
-  }
-  else if (aType == nsLayoutAtoms::onblur) {
-    *aArrayType = eEventArrayType_Focus;
-    *aFlags = NS_EVENT_BITS_FOCUS_BLUR;
-  }
-  else if (aType == nsLayoutAtoms::onsubmit) {
-    *aArrayType = eEventArrayType_Form;
-    *aFlags = NS_EVENT_BITS_FORM_SUBMIT;
-  }
-  else if (aType == nsLayoutAtoms::onreset) {
-    *aArrayType = eEventArrayType_Form;
-    *aFlags = NS_EVENT_BITS_FORM_RESET;
-  }
-  else if (aType == nsLayoutAtoms::onchange) {
-    *aArrayType = eEventArrayType_Form;
-    *aFlags = NS_EVENT_BITS_FORM_CHANGE;
-  }
-  else if (aType == nsLayoutAtoms::onselect) {
-    *aArrayType = eEventArrayType_Form;
-    *aFlags = NS_EVENT_BITS_FORM_SELECT;
-  }
-  else if (aType == nsLayoutAtoms::oninput) {
-    *aArrayType = eEventArrayType_Form;
-    *aFlags = NS_EVENT_BITS_FORM_INPUT;
-  }
-  else if (aType == nsLayoutAtoms::onload) {
-    *aArrayType = eEventArrayType_Load;
-    *aFlags = NS_EVENT_BITS_LOAD_LOAD;
-  }
-  else if (aType == nsLayoutAtoms::onbeforeunload) {
-    *aArrayType = eEventArrayType_Load;
-    *aFlags = NS_EVENT_BITS_LOAD_BEFORE_UNLOAD;
-  }
-  else if (aType == nsLayoutAtoms::onunload) {
-    *aArrayType = eEventArrayType_Load;
-    *aFlags = NS_EVENT_BITS_LOAD_UNLOAD;
-  }
-  else if (aType == nsLayoutAtoms::onabort) {
-    *aArrayType = eEventArrayType_Load;
-    *aFlags = NS_EVENT_BITS_LOAD_ABORT;
-  }
-  else if (aType == nsLayoutAtoms::onerror) {
-    *aArrayType = eEventArrayType_Load;
-    *aFlags = NS_EVENT_BITS_LOAD_ERROR;
-  }
-  else if (aType == nsLayoutAtoms::onpaint) {
-    *aArrayType = eEventArrayType_Paint;
-    *aFlags = NS_EVENT_BITS_PAINT_PAINT;
-  }
-  else if (aType == nsLayoutAtoms::onresize) {
-    *aArrayType = eEventArrayType_Paint;
-    *aFlags = NS_EVENT_BITS_PAINT_RESIZE;
-  }
-  else if (aType == nsLayoutAtoms::onscroll) {
-    *aArrayType = eEventArrayType_Paint;
-    *aFlags = NS_EVENT_BITS_PAINT_SCROLL;
-  } // extened this to handle IME related events
-  else if (aType == nsLayoutAtoms::onpopupshowing) {
-    *aArrayType = eEventArrayType_XUL; 
-    *aFlags = NS_EVENT_BITS_XUL_POPUP_SHOWING;
-  }
-  else if (aType == nsLayoutAtoms::onpopupshown) {
-    *aArrayType = eEventArrayType_XUL; 
-    *aFlags = NS_EVENT_BITS_XUL_POPUP_SHOWN;
-  }
-  else if (aType == nsLayoutAtoms::onpopuphiding) {
-    *aArrayType = eEventArrayType_XUL; 
-    *aFlags = NS_EVENT_BITS_XUL_POPUP_HIDING;
-  }
-  else if (aType == nsLayoutAtoms::onpopuphidden) {
-    *aArrayType = eEventArrayType_XUL; 
-    *aFlags = NS_EVENT_BITS_XUL_POPUP_HIDDEN;
-  }
-  else if (aType == nsLayoutAtoms::onclose) {
-    *aArrayType = eEventArrayType_XUL; 
-    *aFlags = NS_EVENT_BITS_XUL_CLOSE;
-  }
-  else if (aType == nsLayoutAtoms::oncommand) {
-    *aArrayType = eEventArrayType_XUL; 
-    *aFlags = NS_EVENT_BITS_XUL_COMMAND;
-  }
-  else if (aType == nsLayoutAtoms::onbroadcast) {
-    *aArrayType = eEventArrayType_XUL;
-    *aFlags = NS_EVENT_BITS_XUL_BROADCAST;
-  }
-  else if (aType == nsLayoutAtoms::oncommandupdate) {
-    *aArrayType = eEventArrayType_XUL;
-    *aFlags = NS_EVENT_BITS_XUL_COMMAND_UPDATE;
-  }
-  else if (aType == nsLayoutAtoms::onoverflow) {
-    *aArrayType = eEventArrayType_Scroll;
-    *aFlags = NS_EVENT_BITS_SCROLLPORT_OVERFLOW;
-  }
-  else if (aType == nsLayoutAtoms::onunderflow) {
-    *aArrayType = eEventArrayType_Scroll;
-    *aFlags = NS_EVENT_BITS_SCROLLPORT_UNDERFLOW;
-  }
-  else if (aType == nsLayoutAtoms::onoverflowchanged) {
-    *aArrayType = eEventArrayType_Scroll;
-    *aFlags = NS_EVENT_BITS_SCROLLPORT_OVERFLOWCHANGED;
-  }
-  else if (aType == nsLayoutAtoms::ondragenter) {
-    *aArrayType = eEventArrayType_Drag;
-    *aFlags = NS_EVENT_BITS_DRAG_ENTER;
-  }
-  else if (aType == nsLayoutAtoms::ondragover) {
-    *aArrayType = eEventArrayType_Drag; 
-    *aFlags = NS_EVENT_BITS_DRAG_OVER;
-  }
-  else if (aType == nsLayoutAtoms::ondragexit) {
-    *aArrayType = eEventArrayType_Drag; 
-    *aFlags = NS_EVENT_BITS_DRAG_EXIT;
-  }
-  else if (aType == nsLayoutAtoms::ondragdrop) {
-    *aArrayType = eEventArrayType_Drag; 
-    *aFlags = NS_EVENT_BITS_DRAG_DROP;
-  }
-  else if (aType == nsLayoutAtoms::ondraggesture) {
-    *aArrayType = eEventArrayType_Drag; 
-    *aFlags = NS_EVENT_BITS_DRAG_GESTURE;
-  }
-  else if (aType == nsLayoutAtoms::onDOMSubtreeModified) {
-    *aArrayType = eEventArrayType_Mutation;
-    *aFlags = NS_EVENT_BITS_MUTATION_SUBTREEMODIFIED;
-  }
-  else if (aType == nsLayoutAtoms::onDOMNodeInserted) {
-    *aArrayType = eEventArrayType_Mutation;
-    *aFlags = NS_EVENT_BITS_MUTATION_NODEINSERTED;
-  }
-  else if (aType == nsLayoutAtoms::onDOMNodeRemoved) {
-    *aArrayType = eEventArrayType_Mutation;
-    *aFlags = NS_EVENT_BITS_MUTATION_NODEREMOVED;
-  }
-  else if (aType == nsLayoutAtoms::onDOMNodeInsertedIntoDocument) {
-    *aArrayType = eEventArrayType_Mutation;
-    *aFlags = NS_EVENT_BITS_MUTATION_NODEINSERTEDINTODOCUMENT;
-  }
-  else if (aType == nsLayoutAtoms::onDOMNodeRemovedFromDocument) {
-    *aArrayType = eEventArrayType_Mutation;
-    *aFlags = NS_EVENT_BITS_MUTATION_NODEREMOVEDFROMDOCUMENT;
-  }
-  else if (aType == nsLayoutAtoms::onDOMAttrModified) {
-    *aArrayType = eEventArrayType_Mutation;
-    *aFlags = NS_EVENT_BITS_MUTATION_ATTRMODIFIED;
-  }
-  else if (aType == nsLayoutAtoms::onDOMCharacterDataModified) {
-    *aArrayType = eEventArrayType_Mutation;
-    *aFlags = NS_EVENT_BITS_MUTATION_CHARACTERDATAMODIFIED;
-  }
-  else if (aType == nsLayoutAtoms::onDOMActivate) {
-    *aArrayType = eEventArrayType_DOMUI;
-    *aFlags = NS_EVENT_BITS_UI_ACTIVATE;
-  }
-  else if (aType == nsLayoutAtoms::onDOMFocusIn) {
-    *aArrayType = eEventArrayType_DOMUI;
-    *aFlags = NS_EVENT_BITS_UI_FOCUSIN;
-  }
-  else if (aType == nsLayoutAtoms::onDOMFocusOut) {
-    *aArrayType = eEventArrayType_DOMUI;
-    *aFlags = NS_EVENT_BITS_UI_FOCUSOUT;
-  }
-  else if (aType == nsLayoutAtoms::oncompositionstart) {
-    *aArrayType = eEventArrayType_Composition;
-    *aFlags = NS_EVENT_BITS_COMPOSITION_START;
-  }
-  else if (aType == nsLayoutAtoms::oncompositionend) {
-    *aArrayType = eEventArrayType_Composition;
-    *aFlags = NS_EVENT_BITS_COMPOSITION_END;
-  }
-  else if (aType == nsLayoutAtoms::ontext) {
-    *aArrayType = eEventArrayType_Text;
-    *aFlags = NS_EVENT_BITS_TEXT_TEXT;
-  }
-  else if (aType == nsLayoutAtoms::onpageshow) {
-    *aArrayType = eEventArrayType_PageTransition;
-    *aFlags = NS_EVENT_BITS_PAGETRANSITION_SHOW;
-  }
-  else if (aType == nsLayoutAtoms::onpagehide) {
-    *aArrayType = eEventArrayType_PageTransition;
-    *aFlags = NS_EVENT_BITS_PAGETRANSITION_HIDE;
-  }
-#ifdef MOZ_SVG
-  else if (aType == nsLayoutAtoms::onSVGLoad) {
-    *aArrayType = eEventArrayType_SVG;
-    *aFlags = NS_EVENT_BITS_SVG_LOAD;
-  }
-  else if (aType == nsLayoutAtoms::onSVGUnload) {
-    *aArrayType = eEventArrayType_SVG;
-    *aFlags = NS_EVENT_BITS_SVG_UNLOAD;
-  }
-  else if (aType == nsLayoutAtoms::onSVGAbort) {
-    *aArrayType = eEventArrayType_SVG;
-    *aFlags = NS_EVENT_BITS_SVG_ABORT;
-  }
-  else if (aType == nsLayoutAtoms::onSVGError) {
-    *aArrayType = eEventArrayType_SVG;
-    *aFlags = NS_EVENT_BITS_SVG_ERROR;
-  }
-  else if (aType == nsLayoutAtoms::onSVGResize) {
-    *aArrayType = eEventArrayType_SVG;
-    *aFlags = NS_EVENT_BITS_SVG_RESIZE;
-  }
-  else if (aType == nsLayoutAtoms::onSVGScroll) {
-    *aArrayType = eEventArrayType_SVG;
-    *aFlags = NS_EVENT_BITS_SVG_SCROLL;
-  }
-  else if (aType == nsLayoutAtoms::onSVGZoom) {
-    *aArrayType = eEventArrayType_SVGZoom;
-    *aFlags = NS_EVENT_BITS_SVGZOOM_ZOOM;
-  }
-#endif // MOZ_SVG
-  else {
-    return NS_ERROR_FAILURE;
-  }
-  return NS_OK;
+  if (aEvent->message == NS_USER_DEFINED_EVENT) {
+    // We don't want to check aLs->mEventType here, bug 276846.
+    return (aEvent->userType && aLs->mTypeAtom == aEvent->userType);
+  }
+  return (aLs->mEventType == aEvent->message);
 }
 
 NS_IMETHODIMP
@@ -1088,19 +614,9 @@ nsEventListenerManager::AddEventListenerByType(nsIDOMEventListener *aListener,
                                                PRInt32 aFlags,
                                                nsIDOMEventGroup* aEvtGrp)
 {
-  PRInt32 subType;
-  EventArrayType arrayType;
   nsCOMPtr<nsIAtom> atom = do_GetAtom(NS_LITERAL_STRING("on") + aType);
-
-  if (NS_OK == GetIdentifiersForType(atom, &arrayType, &subType)) {
-    AddEventListener(aListener, arrayType, subType, nsnull, aFlags, aEvtGrp);
-  }
-  else {
-    const nsPromiseFlatString& flatString = PromiseFlatString(aType); 
-    nsStringKey key(flatString);
-    AddEventListener(aListener, eEventArrayType_Hash, NS_EVENT_BITS_NONE, &key, aFlags, aEvtGrp);
-  }
-
+  PRUint32 type = nsContentUtils::GetEventId(atom);
+  AddEventListener(aListener, type, atom, nsnull, aFlags, aEvtGrp);
   return NS_OK;
 }
 
@@ -1110,38 +626,27 @@ nsEventListenerManager::RemoveEventListenerByType(nsIDOMEventListener *aListener
                                                   PRInt32 aFlags,
                                                   nsIDOMEventGroup* aEvtGrp)
 {
-  PRInt32 subType;
-  EventArrayType arrayType;
   nsCOMPtr<nsIAtom> atom = do_GetAtom(NS_LITERAL_STRING("on") + aType);
-
-  if (NS_OK == GetIdentifiersForType(atom, &arrayType, &subType)) {
-    RemoveEventListener(aListener, arrayType, subType, nsnull, aFlags, aEvtGrp);
-  }
-  else {
-    const nsPromiseFlatString& flatString = PromiseFlatString(aType); 
-    nsStringKey key(flatString);
-    RemoveEventListener(aListener, eEventArrayType_Hash, NS_EVENT_BITS_NONE, &key, aFlags, aEvtGrp);
-  }
-
+  PRUint32 type = nsContentUtils::GetEventId(atom);
+  RemoveEventListener(aListener, type, atom, nsnull, aFlags, aEvtGrp);
   return NS_OK;
 }
 
 nsListenerStruct*
-nsEventListenerManager::FindJSEventListener(EventArrayType aType)
+nsEventListenerManager::FindJSEventListener(PRUint32 aEventType,
+                                            nsIAtom* aTypeAtom)
 {
-  nsVoidArray *listeners = GetListenersByType(aType, nsnull, PR_FALSE);
-  if (listeners) {
-    // Run through the listeners for this type and see if a script
-    // listener is registered
-    nsListenerStruct *ls;
-    for (PRInt32 i=0; i < listeners->Count(); i++) {
-      ls = (nsListenerStruct*)listeners->ElementAt(i);
-      if (ls->mFlags & NS_PRIV_EVENT_FLAG_SCRIPT) {
-        return ls;
-      }
+  // Run through the listeners for this type and see if a script
+  // listener is registered
+  nsListenerStruct *ls;
+  PRUint32 count = mListeners.Length();
+  for (PRUint32 i = 0; i < count; ++i) {
+    ls = &mListeners.ElementAt(i);
+    if (EVENT_TYPE_EQUALS(ls, aEventType, aTypeAtom) &&
+        ls->mFlags & NS_PRIV_EVENT_FLAG_SCRIPT) {
+      return ls;
     }
   }
-
   return nsnull;
 }
 
@@ -1154,40 +659,26 @@ nsEventListenerManager::SetJSEventListener(nsIScriptContext *aContext,
                                            PRBool aPermitUntrustedEvents)
 {
   nsresult rv = NS_OK;
-  nsListenerStruct *ls;
-  PRInt32 flags;
-  EventArrayType arrayType;
+  PRUint32 eventType = nsContentUtils::GetEventId(aName);
+  nsListenerStruct* ls = FindJSEventListener(eventType, aName);
 
-  NS_ENSURE_SUCCESS(GetIdentifiersForType(aName, &arrayType, &flags),
-                    NS_ERROR_FAILURE);
-
-  ls = FindJSEventListener(arrayType);
-
-  if (nsnull == ls) {
+  if (!ls) {
     // If we didn't find a script listener or no listeners existed
     // create and add a new one.
     nsCOMPtr<nsIDOMEventListener> scriptListener;
     rv = NS_NewJSEventListener(aContext, aScopeObject, aObject,
                                getter_AddRefs(scriptListener));
     if (NS_SUCCEEDED(rv)) {
-      AddEventListener(scriptListener, arrayType, NS_EVENT_BITS_NONE, nsnull,
+      AddEventListener(scriptListener, eventType, aName, nsnull,
                        NS_EVENT_FLAG_BUBBLE | NS_PRIV_EVENT_FLAG_SCRIPT, nsnull);
 
-      ls = FindJSEventListener(arrayType);
+      ls = FindJSEventListener(eventType, aName);
     }
   }
 
   if (NS_SUCCEEDED(rv) && ls) {
     // Set flag to indicate possible need for compilation later
-    if (aIsString) {
-      ls->mHandlerIsString |= flags;
-    }
-    else {
-      ls->mHandlerIsString &= ~flags;
-    }
-
-    // Set subtype flags based on event
-    ls->mSubType |= flags;
+    ls->mHandlerIsString = aIsString;
 
     if (aPermitUntrustedEvents) {
       ls->mFlags |= NS_PRIV_EVENT_UNTRUSTED_PERMITTED;
@@ -1229,20 +720,11 @@ nsEventListenerManager::AddScriptEventListener(nsISupports *aObject,
 
   if (node) {
     // Try to get context from doc
+    // XXX sXBL/XBL2 issue -- do we really want the owner here?  What
+    // if that's the XBL document?
     doc = node->GetOwnerDoc();
     if (doc)
       global = doc->GetScriptGlobalObject();
-    if (global) {
-      // This might be the first reference to this language in the global
-      // We must init the language before we attempt to fetch its context.
-      if (NS_FAILED(global->EnsureScriptEnvironment(aLanguage))) {
-        NS_WARNING("Failed to setup script environment for this language");
-        // but fall through and let the inevitable failure below handle it.
-      }
-
-      context = global->GetScriptContext(aLanguage);
-      NS_ASSERTION(context, "Failed to get language context from global");
-    }
   } else {
     nsCOMPtr<nsPIDOMWindow> win(do_QueryInterface(aObject));
     if (win) {
@@ -1256,52 +738,23 @@ nsEventListenerManager::AddScriptEventListener(nsISupports *aObject,
     } else {
       global = do_QueryInterface(aObject);
     }
-    if (global) {
-      // As above - ensure the global is setup for the language.
-      if (NS_FAILED(global->EnsureScriptEnvironment(aLanguage))) {
-        NS_WARNING("Failed to setup script environment for this language");
-        // but fall through and let the inevitable failure below handle it.
-      }
-      context = global->GetScriptContext(aLanguage);
-    }
   }
 
-  if (!context) {
-    NS_ASSERTION(aLanguage == nsIProgrammingLanguage::JAVASCRIPT,
-                 "Need a multi-language stack?!?!?");
-    // I've only ever seen the above fire when something else has gone wrong -
-    // in normal processing, languages other than JS should not be able to get
-    // here, as these languages are only called via nsIScriptContext
-
-    // OTOH, maybe using JS will do here - all we need is the global - try and
-    // keep going...
-    JSContext* cx = nsnull;
-    // Get JSContext from stack, or use the safe context (and hidden
-    // window global) if no JS is running.
-    nsCOMPtr<nsIThreadJSContextStack> stack =
-      do_GetService("@mozilla.org/js/xpc/ContextStack;1");
-    NS_ENSURE_TRUE(stack, NS_ERROR_FAILURE);
-    NS_ENSURE_SUCCESS(stack->Peek(&cx), NS_ERROR_FAILURE);
-
-    if (!cx) {
-      stack->GetSafeJSContext(&cx);
-      NS_ENSURE_TRUE(cx, NS_ERROR_FAILURE);
-    }
-
-    context = nsJSUtils::GetDynamicScriptContext(cx);
-    NS_ENSURE_TRUE(context, NS_ERROR_FAILURE);
-
-    global = context->GetGlobalObject();
-    // but if the language is *not* js , we now have the wrong context.
-    context = global->GetScriptContext(aLanguage);
-    NS_ENSURE_TRUE(context, NS_ERROR_FAILURE);
-  }
   if (!global) {
-    NS_ERROR("Context reachable, but no scope reachable in "
-             "AddScriptEventListener()!");
-
-    return NS_ERROR_NOT_AVAILABLE;
+    // This can happen; for example this document might have been
+    // loaded as data.
+    return NS_OK;
   }
+  
+  // This might be the first reference to this language in the global
+  // We must init the language before we attempt to fetch its context.
+  if (NS_FAILED(global->EnsureScriptEnvironment(aLanguage))) {
+    NS_WARNING("Failed to setup script environment for this language");
+    // but fall through and let the inevitable failure below handle it.
+  }
+
+  context = global->GetScriptContext(aLanguage);
+  NS_ENSURE_TRUE(context, NS_ERROR_FAILURE);
 
   void *scope = global->GetScriptGlobal(aLanguage);
   nsresult rv;
@@ -1343,9 +796,7 @@ nsEventListenerManager::AddScriptEventListener(nsISupports *aObject,
       else {
         PRInt32 nameSpace = kNameSpaceID_Unknown;
         if (node && node->IsNodeOfType(nsINode::eCONTENT)) {
-          nsIContent* content =
-            NS_STATIC_CAST(nsIContent*,
-                           NS_STATIC_CAST(nsINode*, node.get()));
+          nsIContent* content = static_cast<nsIContent*>(node.get());
           nameSpace = content->GetNameSpaceID();
         }
         else if (doc) {
@@ -1361,7 +812,12 @@ nsEventListenerManager::AddScriptEventListener(nsISupports *aObject,
         rv = context->CompileEventHandler(aName, argCount, argNames,
                                           aBody,
                                           url.get(), lineNo,
+                                          SCRIPTVERSION_DEFAULT, // for now?
                                           handler);
+        if (rv == NS_ERROR_ILLEGAL_VALUE) {
+          NS_WARNING("Probably a syntax error in the event handler!");
+          return NS_SUCCESS_LOSS_OF_INSIGNIFICANT_DATA;
+        }
         NS_ENSURE_SUCCESS(rv, rv);
         // And bind it.
         rv = context->BindCompiledEventHandler(aObject, scope,
@@ -1376,30 +832,18 @@ nsEventListenerManager::AddScriptEventListener(nsISupports *aObject,
 }
 
 nsresult
-nsEventListenerManager::RemoveScriptEventListener(nsIAtom *aName)
+nsEventListenerManager::RemoveScriptEventListener(nsIAtom* aName)
 {
-  nsresult result = NS_OK;
-  nsListenerStruct *ls;
-  PRInt32 flags;
-  EventArrayType arrayType;
-
-  NS_ENSURE_SUCCESS(GetIdentifiersForType(aName, &arrayType, &flags),
-                    NS_ERROR_FAILURE);
-  ls = FindJSEventListener(arrayType);
+  PRUint32 eventType = nsContentUtils::GetEventId(aName);
+  nsListenerStruct* ls = FindJSEventListener(eventType, aName);
 
   if (ls) {
-    ls->mSubType &= ~flags;
-    if (ls->mSubType == NS_EVENT_BITS_NONE) {
-      //Get the listeners array so we can remove ourselves from it
-      nsVoidArray* listeners;
-      listeners = GetListenersByType(arrayType, nsnull, PR_FALSE);
-      NS_ENSURE_TRUE(listeners, NS_ERROR_FAILURE);
-      listeners->RemoveElement((void*)ls);
-      delete ls;
-    }
+    mListeners.RemoveElementAt(PRUint32(ls - &mListeners.ElementAt(0)));
+    mNoListenerForEvent = NS_EVENT_TYPE_NULL;
+    mNoListenerForEventAtom = nsnull;
   }
 
-  return result;
+  return NS_OK;
 }
 
 jsval
@@ -1473,25 +917,18 @@ nsEventListenerManager::CompileScriptEventListener(nsIScriptContext *aContext,
                                                    PRBool *aDidCompile)
 {
   nsresult rv = NS_OK;
-  nsListenerStruct *ls;
-  PRInt32 subType;
-  EventArrayType arrayType;
-
   *aDidCompile = PR_FALSE;
-
-  rv = GetIdentifiersForType(aName, &arrayType, &subType);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  ls = FindJSEventListener(arrayType);
+  PRUint32 eventType = nsContentUtils::GetEventId(aName);
+  nsListenerStruct* ls = FindJSEventListener(eventType, aName);
 
   if (!ls) {
     //nothing to compile
     return NS_OK;
   }
 
-  if (ls->mHandlerIsString & subType) {
+  if (ls->mHandlerIsString) {
     rv = CompileEventHandlerInternal(aContext, aScope, aObject, aName,
-                                     ls, /*XXX fixme*/nsnull, subType);
+                                     ls, /*XXX fixme*/nsnull);
   }
 
   // Set *aDidCompile to true even if we didn't really compile
@@ -1510,8 +947,7 @@ nsEventListenerManager::CompileEventHandlerInternal(nsIScriptContext *aContext,
                                                     nsISupports *aObject,
                                                     nsIAtom *aName,
                                                     nsListenerStruct *aListenerStruct,
-                                                    nsISupports* aCurrentTarget,
-                                                    PRUint32 aSubType)
+                                                    nsISupports* aCurrentTarget)
 {
   nsresult result = NS_OK;
 
@@ -1525,11 +961,11 @@ nsEventListenerManager::CompileEventHandlerInternal(nsIScriptContext *aContext,
     if (NS_SUCCEEDED(result) && handler) {
       // XXXmarkh - why do we bind here, but not after compilation below?
       result = aContext->BindCompiledEventHandler(aObject, aScope, aName, handler);
-      aListenerStruct->mHandlerIsString &= ~aSubType;
+      aListenerStruct->mHandlerIsString = PR_FALSE;
     }
   }
 
-  if (aListenerStruct->mHandlerIsString & aSubType) {
+  if (aListenerStruct->mHandlerIsString) {
     // This should never happen for anything but content
     // XXX I don't like that we have to reference content
     // from here. The alternative is to store the event handler
@@ -1540,20 +976,20 @@ nsEventListenerManager::CompileEventHandlerInternal(nsIScriptContext *aContext,
       nsAutoString handlerBody;
       nsIAtom* attrName = aName;
 #ifdef MOZ_SVG
-      if (aName == nsLayoutAtoms::onSVGLoad)
-        attrName = nsSVGAtoms::onload;
-      else if (aName == nsLayoutAtoms::onSVGUnload)
-        attrName = nsSVGAtoms::onunload;
-      else if (aName == nsLayoutAtoms::onSVGAbort)
-        attrName = nsSVGAtoms::onabort;
-      else if (aName == nsLayoutAtoms::onSVGError)
-        attrName = nsSVGAtoms::onerror;
-      else if (aName == nsLayoutAtoms::onSVGResize)
-        attrName = nsSVGAtoms::onresize;
-      else if (aName == nsLayoutAtoms::onSVGScroll)
-        attrName = nsSVGAtoms::onscroll;
-      else if (aName == nsLayoutAtoms::onSVGZoom)
-        attrName = nsSVGAtoms::onzoom;
+      if (aName == nsGkAtoms::onSVGLoad)
+        attrName = nsGkAtoms::onload;
+      else if (aName == nsGkAtoms::onSVGUnload)
+        attrName = nsGkAtoms::onunload;
+      else if (aName == nsGkAtoms::onSVGAbort)
+        attrName = nsGkAtoms::onabort;
+      else if (aName == nsGkAtoms::onSVGError)
+        attrName = nsGkAtoms::onerror;
+      else if (aName == nsGkAtoms::onSVGResize)
+        attrName = nsGkAtoms::onresize;
+      else if (aName == nsGkAtoms::onSVGScroll)
+        attrName = nsGkAtoms::onscroll;
+      else if (aName == nsGkAtoms::onSVGZoom)
+        attrName = nsGkAtoms::onzoom;
 #endif // MOZ_SVG
 
       content->GetAttr(kNameSpaceID_None, attrName, handlerBody);
@@ -1592,6 +1028,7 @@ nsEventListenerManager::CompileEventHandlerInternal(nsIScriptContext *aContext,
                                                argCount, argNames,
                                                handlerBody,
                                                url.get(), lineNo,
+                                               SCRIPTVERSION_DEFAULT, // for now?
                                                handler);
         NS_ENSURE_SUCCESS(result, result);
         // And bind it.
@@ -1601,7 +1038,7 @@ nsEventListenerManager::CompileEventHandlerInternal(nsIScriptContext *aContext,
       }
 
       if (NS_SUCCEEDED(result)) {
-        aListenerStruct->mHandlerIsString &= ~aSubType;
+        aListenerStruct->mHandlerIsString = PR_FALSE;
       }
     }
   }
@@ -1614,7 +1051,6 @@ nsEventListenerManager::HandleEventSubType(nsListenerStruct* aListenerStruct,
                                            nsIDOMEventListener* aListener,
                                            nsIDOMEvent* aDOMEvent,
                                            nsISupports* aCurrentTarget,
-                                           PRUint32 aSubType,
                                            PRUint32 aPhaseFlags)
 {
   nsresult result = NS_OK;
@@ -1622,7 +1058,7 @@ nsEventListenerManager::HandleEventSubType(nsListenerStruct* aListenerStruct,
   // If this is a script handler and we haven't yet
   // compiled the event handler itself
   if ((aListenerStruct->mFlags & NS_PRIV_EVENT_FLAG_SCRIPT) &&
-      (aListenerStruct->mHandlerIsString & aSubType)) {
+      aListenerStruct->mHandlerIsString) {
     nsCOMPtr<nsIJSEventListener> jslistener = do_QueryInterface(aListener);
     if (jslistener) {
       nsAutoString eventString;
@@ -1633,23 +1069,25 @@ nsEventListenerManager::HandleEventSubType(nsListenerStruct* aListenerStruct,
                                              jslistener->GetEventScope(),
                                              jslistener->GetEventTarget(),
                                              atom, aListenerStruct,
-                                             aCurrentTarget,
-                                             aSubType);
+                                             aCurrentTarget);
       }
     }
   }
 
-  // nsCxPusher will automatically push and pop the current cx onto the
+  // nsCxPusher will push and pop (automatically) the current cx onto the
   // context stack
-  nsCxPusher pusher(aCurrentTarget);
-
-  if (NS_SUCCEEDED(result)) {
+  nsCxPusher pusher;
+  if (NS_SUCCEEDED(result) && pusher.Push(aCurrentTarget)) {
     // nsIDOMEvent::currentTarget is set in nsEventDispatcher.
     result = aListener->HandleEvent(aDOMEvent);
   }
 
   return result;
 }
+
+static PRUint32                 sLatestEventType = 0;
+static const EventTypeData*     sLatestEventTypeData = nsnull;
+static const EventDispatchData* sLatestEventDispData = nsnull;
 
 /**
 * Causes a check for event listeners and processing by them if they exist.
@@ -1663,11 +1101,15 @@ nsEventListenerManager::HandleEvent(nsPresContext* aPresContext,
                                     PRUint32 aFlags,
                                     nsEventStatus* aEventStatus)
 {
-  NS_ENSURE_ARG_POINTER(aEventStatus);
-  nsresult ret = NS_OK;
+  if (mListeners.IsEmpty() || aEvent->flags & NS_EVENT_FLAG_STOP_DISPATCH) {
+    return NS_OK;
+  }
 
-  if (aEvent->flags & NS_EVENT_FLAG_STOP_DISPATCH) {
-    return ret;
+  // Check if we already know that there is no event listener for the event.
+  if (mNoListenerForEvent == aEvent->message &&
+      (mNoListenerForEvent != NS_USER_DEFINED_EVENT ||
+       mNoListenerForEventAtom == aEvent->userType)) {
+    return NS_OK;
   }
 
   //Set the value of the internal PreventDefault flag properly based on aEventStatus
@@ -1676,82 +1118,82 @@ nsEventListenerManager::HandleEvent(nsPresContext* aPresContext,
   }
   PRUint16 currentGroup = aFlags & NS_EVENT_FLAG_SYSTEM_EVENT;
 
-  /* Without this addref, certain events, notably ones bound to
-     keys which cause window deletion, can destroy this object
-     before we're ready. */
-  nsCOMPtr<nsIEventListenerManager> kungFuDeathGrip(this);
-  nsVoidArray *listeners = nsnull;
-
-  if (aEvent->message == NS_CONTEXTMENU || aEvent->message == NS_CONTEXTMENU_KEY) {
-    ret = FixContextMenuEvent(aPresContext, aCurrentTarget, aEvent, aDOMEvent);
-    if (NS_FAILED(ret)) {
-      NS_WARNING("failed to fix context menu event target");
-      ret = NS_OK;
-    }
+  // Beware! This may flush notifications via synchronous
+  // ScrollSelectionIntoView.
+  if (aEvent->message == NS_CONTEXTMENU &&
+      NS_FAILED(FixContextMenuEvent(aPresContext, aCurrentTarget, aEvent,
+                                    aDOMEvent))) {
+    NS_WARNING("failed to fix context menu event target");
   }
-
 
   const EventTypeData* typeData = nsnull;
   const EventDispatchData* dispData = nsnull;
-
-  if (aEvent->message == NS_USER_DEFINED_EVENT) {
-    listeners = GetListenersByType(eEventArrayType_Hash, aEvent->userType, PR_FALSE);
-  } else {
-    for (PRInt32 i = 0; i < eEventArrayType_Hash; ++i) {
-      typeData = &sEventTypes[i];
-      for (PRInt32 j = 0; j < typeData->numEvents; ++j) {
-        dispData = &(typeData->events[j]);
-        if (aEvent->message == dispData->message) {
-          listeners = GetListenersByType((EventArrayType)i, nsnull, PR_FALSE);
-          goto found;
-        }
-      }
+  if (aEvent->message != NS_USER_DEFINED_EVENT) {
+    // Check if this is the same type of event as what a listener manager
+    // handled last time.
+    if (aEvent->message == sLatestEventType) {
+      typeData = sLatestEventTypeData;
+      dispData = sLatestEventDispData;
+      goto found;
+    }
+    for (PRUint32 i = 0; i < NS_ARRAY_LENGTH(sEventTypes); ++i) {
+     typeData = &sEventTypes[i];
+     for (PRInt32 j = 0; j < typeData->numEvents; ++j) {
+       dispData = &(typeData->events[j]);
+       if (aEvent->message == dispData->message) {
+         sLatestEventType = aEvent->message;
+         sLatestEventTypeData = typeData;
+         sLatestEventDispData = dispData;
+         goto found;
+       }
+     }
+     typeData = nsnull;
+     dispData = nsnull;
     }
   }
 
- found:
-  if (listeners) {
-    if (!*aDOMEvent) {
-      ret = nsEventDispatcher::CreateEvent(aPresContext, aEvent,
-                                           EmptyString(), aDOMEvent);
-    }
+found:
 
-    if (NS_SUCCEEDED(ret)) {
-      PRInt32 count = listeners->Count();
-      nsVoidArray originalListeners(count);
-      originalListeners = *listeners;
-
-      nsAutoPopupStatePusher popupStatePusher(nsDOMEvent::GetEventPopupControlState(aEvent));
-
-      for (PRInt32 k = 0; !mListenersRemoved && listeners && k < count; ++k) {
-        nsListenerStruct* ls = NS_STATIC_CAST(nsListenerStruct*, originalListeners.FastElementAt(k));
-        // Don't fire the listener if it's been removed
-
-        if (listeners->IndexOf(ls) != -1 && ls->mFlags & aFlags &&
+  nsAutoTObserverArray<nsListenerStruct, 2>::EndLimitedIterator iter(mListeners);
+  nsAutoPopupStatePusher popupStatePusher(nsDOMEvent::GetEventPopupControlState(aEvent));
+  PRBool hasListener = PR_FALSE;
+  while (iter.HasMore()) {
+    nsListenerStruct* ls = &iter.GetNext();
+    PRBool useTypeInterface =
+      EVENT_TYPE_DATA_EQUALS(ls->mTypeData, typeData);
+    PRBool useGenericInterface =
+      (!useTypeInterface && ListenerCanHandle(ls, aEvent));
+    // Don't fire the listener if it's been removed.
+    // Check that the phase is same in event and event listener.
+    // Handle only trusted events, except when listener permits untrusted events.
+    if (useTypeInterface || useGenericInterface) {
+      if (ls->mListener) {
+        hasListener = PR_TRUE;
+        if (ls->mFlags & aFlags &&
             ls->mGroupFlags == currentGroup &&
             (NS_IS_TRUSTED_EVENT(aEvent) ||
              ls->mFlags & NS_PRIV_EVENT_UNTRUSTED_PERMITTED)) {
-          nsRefPtr<nsIDOMEventListener> eventListener = ls->mListener.Get();
-          NS_ASSERTION(eventListener, "listener wasn't preserved properly");
-          if (eventListener) {
-            // Try the type-specific listener interface
-            PRBool hasInterface = PR_FALSE;
-            if (typeData)
-              DispatchToInterface(*aDOMEvent, eventListener,
-                                  dispData->method, *typeData->iid,
-                                  &hasInterface);
-
-            // If it doesn't implement that, call the generic HandleEvent()
-            if (!hasInterface && (ls->mSubType == NS_EVENT_BITS_NONE ||
-                                  ls->mSubType & dispData->bits)) {
-              HandleEventSubType(ls, eventListener, *aDOMEvent, aCurrentTarget,
-                                 dispData ? dispData->bits : NS_EVENT_BITS_NONE,
-                                 aFlags);
+          if (!*aDOMEvent) {
+            nsEventDispatcher::CreateEvent(aPresContext, aEvent,
+                                           EmptyString(), aDOMEvent);
+          }
+          if (*aDOMEvent) {
+            if (useTypeInterface) {
+              DispatchToInterface(*aDOMEvent, ls->mListener,
+                                  dispData->method, *typeData->iid);
+            } else if (useGenericInterface) {
+              HandleEventSubType(ls, ls->mListener, *aDOMEvent,
+                                 aCurrentTarget, aFlags);
             }
           }
         }
       }
     }
+  }
+
+  if (!hasListener) {
+    mNoListenerForEvent = aEvent->message;
+    mNoListenerForEventAtom = aEvent->userType;
   }
 
   if (aEvent->flags & NS_EVENT_FLAG_NO_DEFAULT) {
@@ -1761,29 +1203,10 @@ nsEventListenerManager::HandleEvent(nsPresContext* aPresContext,
   return NS_OK;
 }
 
-/**
-* Creates a DOM event
-*/
-
-NS_IMETHODIMP
-nsEventListenerManager::CreateEvent(nsPresContext* aPresContext,
-                                    nsEvent* aEvent,
-                                    const nsAString& aEventType,
-                                    nsIDOMEvent** aDOMEvent)
-{
-  return nsEventDispatcher::CreateEvent(aPresContext, aEvent,
-                                        aEventType, aDOMEvent);
-}
-
 NS_IMETHODIMP
 nsEventListenerManager::Disconnect()
 {
   mTarget = nsnull;
-
-  // Bug 323807: nsDOMClassInfo::PreserveWrapper (and
-  // nsIDOMGCParticipant) require that we remove all event listeners now
-  // to remove any weak references in the nsDOMClassInfo's preserved
-  // wrapper table to the target.
   return RemoveAllListeners();
 }
 
@@ -1841,7 +1264,10 @@ nsEventListenerManager::AddEventListener(const nsAString& aType,
 {
   PRInt32 flags = aUseCapture ? NS_EVENT_FLAG_CAPTURE : NS_EVENT_FLAG_BUBBLE;
 
-  return AddEventListenerByType(aListener, aType, flags, nsnull);
+  nsresult rv = AddEventListenerByType(aListener, aType, flags, nsnull);
+  NS_ASSERTION(NS_FAILED(rv) || HasListenersFor(aType), 
+               "Adding event listener didn't work!");
+  return rv;
 }
 
 NS_IMETHODIMP 
@@ -1863,6 +1289,8 @@ nsEventListenerManager::DispatchEvent(nsIDOMEvent* aEvent, PRBool *_retval)
     return NS_ERROR_FAILURE;
   }
   
+  // XXX sXBL/XBL2 issue -- do we really want the owner here?  What
+  // if that's the XBL document?  Would we want its presshell?  Or what?
   nsCOMPtr<nsIDocument> document = targetContent->GetOwnerDoc();
 
   // Do nothing if the element does not belong to a document
@@ -1871,7 +1299,7 @@ nsEventListenerManager::DispatchEvent(nsIDOMEvent* aEvent, PRBool *_retval)
   }
 
   // Obtain a presentation shell
-  nsIPresShell *shell = document->GetShellAt(0);
+  nsIPresShell *shell = document->GetPrimaryShell();
   nsCOMPtr<nsPresContext> context;
   if (shell) {
     context = shell->GetPresContext();
@@ -1920,49 +1348,13 @@ nsEventListenerManager::IsRegisteredHere(const nsAString & type, PRBool *_retval
   return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-// nsIDOMEventReceiver interface
-NS_IMETHODIMP 
-nsEventListenerManager::AddEventListenerByIID(nsIDOMEventListener *aListener, 
-                                              const nsIID& aIID)
-{
-  return AddEventListenerByIID(aListener, aIID, NS_EVENT_FLAG_BUBBLE);
-}
-
-NS_IMETHODIMP 
-nsEventListenerManager::RemoveEventListenerByIID(nsIDOMEventListener *aListener, const nsIID& aIID)
-{
-  return RemoveEventListenerByIID(aListener, aIID, NS_EVENT_FLAG_BUBBLE);
-}
-
-NS_IMETHODIMP 
-nsEventListenerManager::GetListenerManager(PRBool aCreateIfNotFound,
-                                           nsIEventListenerManager** aResult)
-{
-  NS_ENSURE_ARG_POINTER(aResult);
-  NS_ADDREF(*aResult = this);
-  return NS_OK;
-}
- 
-NS_IMETHODIMP 
-nsEventListenerManager::HandleEvent(nsIDOMEvent *aEvent)
-{
-  PRBool defaultActionEnabled;
-  return DispatchEvent(aEvent, &defaultActionEnabled);
-}
-
-NS_IMETHODIMP
-nsEventListenerManager::GetSystemEventGroup(nsIDOMEventGroup **aGroup)
-{
-  return GetSystemEventGroupLM(aGroup);
-}
-
 nsresult
 nsEventListenerManager::FixContextMenuEvent(nsPresContext* aPresContext,
                                             nsISupports* aCurrentTarget,
                                             nsEvent* aEvent,
                                             nsIDOMEvent** aDOMEvent)
 {
-  nsIPresShell* shell = aPresContext->GetPresShell();
+  nsIPresShell* shell = aPresContext ? aPresContext->GetPresShell() : nsnull;
   if (!shell) {
     // Nothing to do.
     return NS_OK;
@@ -1970,25 +1362,28 @@ nsEventListenerManager::FixContextMenuEvent(nsPresContext* aPresContext,
 
   nsresult ret = NS_OK;
 
+  PRBool contextMenuKey =
+    static_cast<nsMouseEvent*>(aEvent)->context == nsMouseEvent::eContextMenuKey;
   if (nsnull == *aDOMEvent) {
     // If we're here because of the key-equiv for showing context menus, we
     // have to twiddle with the NS event to make sure the context menu comes
     // up in the upper left of the relevant content area before we create
     // the DOM event. Since we never call InitMouseEvent() on the event, 
     // the client X/Y will be 0,0. We can make use of that if the widget is null.
-    if (aEvent->message == NS_CONTEXTMENU_KEY) {
-      NS_IF_RELEASE(((nsGUIEvent*)aEvent)->widget);
-      aPresContext->GetViewManager()->GetWidget(&((nsGUIEvent*)aEvent)->widget);
+    if (contextMenuKey) {
+      aPresContext->GetViewManager()->GetWidget(getter_AddRefs(((nsGUIEvent*)aEvent)->widget));
       aEvent->refPoint.x = 0;
       aEvent->refPoint.y = 0;
     }
-    ret = NS_NewDOMMouseEvent(aDOMEvent, aPresContext, NS_STATIC_CAST(nsInputEvent*, aEvent));
+    ret = NS_NewDOMMouseEvent(aDOMEvent, aPresContext, static_cast<nsInputEvent*>(aEvent));
     NS_ENSURE_SUCCESS(ret, ret);
   }
 
   // see if we should use the caret position for the popup
-  if (aEvent->message == NS_CONTEXTMENU_KEY) {
+  if (contextMenuKey) {
     nsPoint caretPoint;
+    // Beware! This may flush notifications via synchronous
+    // ScrollSelectionIntoView.
     if (PrepareToUseCaretPosition(((nsGUIEvent*)aEvent)->widget,
                                   shell, caretPoint)) {
       // caret position is good
@@ -2004,7 +1399,7 @@ nsEventListenerManager::FixContextMenuEvent(nsPresContext* aPresContext,
   nsCOMPtr<nsIDOMEventTarget> currentTarget = do_QueryInterface(aCurrentTarget);
   nsCOMPtr<nsIDOMElement> currentFocus;
 
-  if (aEvent->message == NS_CONTEXTMENU_KEY) {
+  if (contextMenuKey) {
     nsIDocument *doc = shell->GetDocument();
     if (doc) {
       nsPIDOMWindow* privWindow = doc->GetWindow();
@@ -2035,13 +1430,14 @@ nsEventListenerManager::FixContextMenuEvent(nsPresContext* aPresContext,
 // nsEventListenerManager::PrepareToUseCaretPosition
 //
 //    This checks to see if we should use the caret position for popup context
-//    menus. Returns true if the caret position should be used, and the window
-//    coordinates of that position are placed into WindowX/Y. This function
+//    menus. Returns true if the caret position should be used, and the
+//    coordinates of that position is returned in aTargetPt. This function
 //    will also scroll the window as needed to make the caret visible.
 //
 //    The event widget should be the widget that generated the event, and
 //    whose coordinate system the resulting event's refPoint should be
-//    relative to.
+//    relative to.  The returned point is in device pixels realtive to the
+//    widget passed in.
 
 PRBool
 nsEventListenerManager::PrepareToUseCaretPosition(nsIWidget* aEventWidget,
@@ -2076,31 +1472,31 @@ nsEventListenerManager::PrepareToUseCaretPosition(nsIWidget* aEventWidget,
   NS_ENSURE_SUCCESS(rv, PR_FALSE);
   NS_ENSURE_TRUE(node, PR_FALSE);
   nsCOMPtr<nsIContent> content(do_QueryInterface(node));
-  for ( ; content; content = content->GetParent()) {
-    if (!content->IsNativeAnonymous()) {
-      frame = aShell->GetPrimaryFrameFor(content);
-      NS_ASSERTION(frame, "No frame for focused content?");
-      break;
-    }
+  if (content) {
+    nsIContent* nonNative = content->FindFirstNonNativeAnonymous();
+    content = nonNative;
   }
 
-  // It seems like selCon->ScrollSelectionIntoView should be enough, but it's
-  // not. The problem is that scrolling the selection into view when it is
-  // below the current viewport will align the top line of the frame exactly
-  // with the bottom of the window. This is fine, BUT, the popup event causes
-  // the control to be re-focused which does this exact call to
-  // ScrollFrameIntoView, which has a one-pixel disagreement of whether the
-  // frame is actually in view. The result is that the frame is aligned with
-  // the top of the window, but the menu is still at the bottom.
-  //
-  // Doing this call first forces the frame to be in view, eliminating the
-  // problem. The only difference in the result is that if your cursor is in
-  // an edit box below the current view, you'll get the edit box aligned with
-  // the top of the window. This is arguably better behavior anyway.
-  if (frame) {
-    rv = aShell->ScrollFrameIntoView(frame, NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE,
-                                     NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE);
+  if (content) {
+    // It seems like selCon->ScrollSelectionIntoView should be enough, but it's
+    // not. The problem is that scrolling the selection into view when it is
+    // below the current viewport will align the top line of the frame exactly
+    // with the bottom of the window. This is fine, BUT, the popup event causes
+    // the control to be re-focused which does this exact call to
+    // ScrollContentIntoView, which has a one-pixel disagreement of whether the
+    // frame is actually in view. The result is that the frame is aligned with
+    // the top of the window, but the menu is still at the bottom.
+    //
+    // Doing this call first forces the frame to be in view, eliminating the
+    // problem. The only difference in the result is that if your cursor is in
+    // an edit box below the current view, you'll get the edit box aligned with
+    // the top of the window. This is arguably better behavior anyway.
+    rv = aShell->ScrollContentIntoView(content,
+                                       NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE,
+                                       NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE);
     NS_ENSURE_SUCCESS(rv, PR_FALSE);
+    frame = aShell->GetPrimaryFrameFor(content);
+    NS_WARN_IF_FALSE(frame, "No frame for focused content?");
   }
 
   // Actually scroll the selection (ie caret) into view. Note that this must
@@ -2115,6 +1511,8 @@ nsEventListenerManager::PrepareToUseCaretPosition(nsIWidget* aEventWidget,
   else
     selCon = do_QueryInterface(aShell);
   if (selCon) {
+    // After ScrollSelectionIntoView(), the pending notifications might be
+    // flushed and PresShell/PresContext/Frames may be dead. See bug 418470.
     rv = selCon->ScrollSelectionIntoView(nsISelectionController::SELECTION_NORMAL,
         nsISelectionController::SELECTION_FOCUS_REGION, PR_TRUE);
     NS_ENSURE_SUCCESS(rv, PR_FALSE);
@@ -2139,14 +1537,14 @@ nsEventListenerManager::PrepareToUseCaretPosition(nsIWidget* aEventWidget,
   nsPoint viewDelta = view->GetOffsetTo(widgetView) + viewToWidget;
 
   // caret coordinates are in twips, convert to pixels
-  float t2p = aShell->GetPresContext()->TwipsToPixels();
-  aTargetPt.x = NSTwipsToIntPixels(viewDelta.x + caretCoords.x + caretCoords.width, t2p);
-  aTargetPt.y = NSTwipsToIntPixels(viewDelta.y + caretCoords.y + caretCoords.height, t2p);
+  nsPresContext* presContext = aShell->GetPresContext();
+  aTargetPt.x = presContext->AppUnitsToDevPixels(viewDelta.x + caretCoords.x + caretCoords.width);
+  aTargetPt.y = presContext->AppUnitsToDevPixels(viewDelta.y + caretCoords.y + caretCoords.height);
 
   return PR_TRUE;
 }
 
-// Get coordinates relative to root view for element, 
+// Get coordinates in device pixels relative to root view for element, 
 // first ensuring the element is onscreen
 void
 nsEventListenerManager::GetCoordinatesFor(nsIDOMElement *aCurrentEl, 
@@ -2155,11 +1553,88 @@ nsEventListenerManager::GetCoordinatesFor(nsIDOMElement *aCurrentEl,
                                           nsPoint& aTargetPt)
 {
   nsCOMPtr<nsIContent> focusedContent(do_QueryInterface(aCurrentEl));
+  aPresShell->ScrollContentIntoView(focusedContent,
+                                    NS_PRESSHELL_SCROLL_ANYWHERE,
+                                    NS_PRESSHELL_SCROLL_ANYWHERE);
+
+  PRBool istree = PR_FALSE, checkLineHeight = PR_TRUE;
+  PRInt32 extraPixelsY = 0, extraTreeY = 0;
+
+#ifdef MOZ_XUL
+  // Set the position to just underneath the current item for multi-select
+  // lists or just underneath the selected item for single-select lists. If
+  // the element is not a list, or there is no selection, leave the position
+  // as is.
+  nsCOMPtr<nsIDOMXULSelectControlItemElement> item;
+  nsCOMPtr<nsIDOMXULMultiSelectControlElement> multiSelect =
+    do_QueryInterface(aCurrentEl);
+  if (multiSelect) {
+    checkLineHeight = PR_FALSE;
+    
+    PRInt32 currentIndex;
+    multiSelect->GetCurrentIndex(&currentIndex);
+    if (currentIndex >= 0) {
+      nsCOMPtr<nsIDOMXULElement> xulElement(do_QueryInterface(aCurrentEl));
+      if (xulElement) {
+        nsCOMPtr<nsIBoxObject> box;
+        xulElement->GetBoxObject(getter_AddRefs(box));
+        nsCOMPtr<nsITreeBoxObject> treeBox(do_QueryInterface(box));
+        // Tree view special case (tree items have no frames)
+        // Get the focused row and add its coordinates, which are already in pixels
+        // XXX Boris, should we create a new interface so that event listener manager doesn't
+        // need to know about trees? Something like nsINodelessChildCreator which
+        // could provide the current focus coordinates?
+        if (treeBox) {
+          treeBox->EnsureRowIsVisible(currentIndex);
+          PRInt32 firstVisibleRow, rowHeight;
+          treeBox->GetFirstVisibleRow(&firstVisibleRow);
+          treeBox->GetRowHeight(&rowHeight);
+
+          extraPixelsY = (currentIndex - firstVisibleRow + 1) * rowHeight;
+          istree = PR_TRUE;
+
+          nsCOMPtr<nsITreeColumns> cols;
+          treeBox->GetColumns(getter_AddRefs(cols));
+          if (cols) {
+            nsCOMPtr<nsITreeColumn> col;
+            cols->GetFirstColumn(getter_AddRefs(col));
+            if (col) {
+              nsCOMPtr<nsIDOMElement> colElement;
+              col->GetElement(getter_AddRefs(colElement));
+              nsCOMPtr<nsIContent> colContent(do_QueryInterface(colElement));
+              if (colContent) {
+                nsIFrame* frame = aPresShell->GetPrimaryFrameFor(colContent);
+                if (frame) {
+                  extraTreeY = frame->GetSize().height;
+                }
+              }
+            }
+          }
+        }
+        else {
+          multiSelect->GetCurrentItem(getter_AddRefs(item));
+        }
+      }
+    }
+  }
+  else {
+    // don't check menulists as the selected item will be inside a popup.
+    nsCOMPtr<nsIDOMXULMenuListElement> menulist = do_QueryInterface(aCurrentEl);
+    if (!menulist) {
+      checkLineHeight = PR_FALSE;
+      nsCOMPtr<nsIDOMXULSelectControlElement> select =
+        do_QueryInterface(aCurrentEl);
+      if (select)
+        select->GetSelectedItem(getter_AddRefs(item));
+    }
+  }
+
+  if (item)
+    focusedContent = do_QueryInterface(item);
+#endif
+
   nsIFrame *frame = aPresShell->GetPrimaryFrameFor(focusedContent);
   if (frame) {
-    aPresShell->ScrollFrameIntoView(frame, NS_PRESSHELL_SCROLL_ANYWHERE,
-                                           NS_PRESSHELL_SCROLL_ANYWHERE);
-
     nsPoint frameOrigin(0, 0);
 
     // Get the frame's origin within its view
@@ -2182,91 +1657,114 @@ nsEventListenerManager::GetCoordinatesFor(nsIDOMElement *aCurrentEl,
     // On the other hand, we want to use the frame height if it's less
     // than the current line height, so that the context menu appears
     // associated with the correct frame.
-    nscoord extra = frame->GetSize().height;
-    nsIScrollableView *scrollView =
-      nsLayoutUtils::GetNearestScrollingView(view, nsLayoutUtils::eEither);
-    if (scrollView) {
-      nscoord scrollViewLineHeight;
-      scrollView->GetLineHeight(&scrollViewLineHeight);
-      if (extra > scrollViewLineHeight) {
-        extra = scrollViewLineHeight; 
-      }
-    }
-
-    PRInt32 extraPixelsY = 0;
-#ifdef MOZ_XUL
-    // Tree view special case (tree items have no frames)
-    // Get the focused row and add its coordinates, which are already in pixels
-    // XXX Boris, should we create a new interface so that event listener manager doesn't
-    // need to know about trees? Something like nsINodelessChildCreator which
-    // could provide the current focus coordinates?
-    nsCOMPtr<nsIDOMXULElement> xulElement(do_QueryInterface(aCurrentEl));
-    if (xulElement) {
-      nsCOMPtr<nsIBoxObject> box;
-      xulElement->GetBoxObject(getter_AddRefs(box));
-      nsCOMPtr<nsITreeBoxObject> treeBox(do_QueryInterface(box));
-      if (treeBox) {
-        // Factor in focused row
-        nsCOMPtr<nsIDOMXULMultiSelectControlElement> multiSelect =
-          do_QueryInterface(aCurrentEl);
-        NS_ASSERTION(multiSelect, "No multi select interface for tree");
-
-        PRInt32 currentIndex;
-        multiSelect->GetCurrentIndex(&currentIndex);
-        if (currentIndex >= 0) {
-          treeBox->EnsureRowIsVisible(currentIndex);
-          PRInt32 firstVisibleRow, rowHeight;
-          treeBox->GetFirstVisibleRow(&firstVisibleRow);
-          treeBox->GetRowHeight(&rowHeight);
-          extraPixelsY = (currentIndex - firstVisibleRow + 1) * rowHeight;
-          extra = 0;
-
-          nsCOMPtr<nsITreeColumns> cols;
-          treeBox->GetColumns(getter_AddRefs(cols));
-          if (cols) {
-            nsCOMPtr<nsITreeColumn> col;
-            cols->GetFirstColumn(getter_AddRefs(col));
-            if (col) {
-              nsCOMPtr<nsIDOMElement> colElement;
-              col->GetElement(getter_AddRefs(colElement));
-              nsCOMPtr<nsIContent> colContent(do_QueryInterface(colElement));
-              if (colContent) {
-                frame = aPresShell->GetPrimaryFrameFor(colContent);
-                if (frame) {
-                  frameOrigin.y += frame->GetSize().height;
-                }
-              }
-            }
+    nscoord extra = 0;
+    if (!istree) {
+      extra = frame->GetSize().height;
+      if (checkLineHeight) {
+        nsIScrollableView *scrollView =
+          nsLayoutUtils::GetNearestScrollingView(view, nsLayoutUtils::eEither);
+        if (scrollView) {
+          nscoord scrollViewLineHeight;
+          scrollView->GetLineHeight(&scrollViewLineHeight);
+          if (extra > scrollViewLineHeight) {
+            extra = scrollViewLineHeight; 
           }
         }
       }
     }
-#endif
 
-    // Convert from twips to pixels
-    float t2p = aPresContext->TwipsToPixels();
-    aTargetPt.x = NSTwipsToIntPixels(frameOrigin.x + extra, t2p);
-    aTargetPt.y = NSTwipsToIntPixels(frameOrigin.y + extra, t2p) + extraPixelsY;
+    aTargetPt.x = aPresContext->AppUnitsToDevPixels(frameOrigin.x);
+    aTargetPt.y = aPresContext->AppUnitsToDevPixels(
+                    frameOrigin.y + extra + extraTreeY) + extraPixelsY;
   }
+}
+
+NS_IMETHODIMP
+nsEventListenerManager::HasMutationListeners(PRBool* aListener)
+{
+  *aListener = PR_FALSE;
+  if (mMayHaveMutationListeners) {
+    PRUint32 count = mListeners.Length();
+    for (PRUint32 i = 0; i < count; ++i) {
+      nsListenerStruct* ls = &mListeners.ElementAt(i);
+      if (ls->mEventType >= NS_MUTATION_START &&
+          ls->mEventType <= NS_MUTATION_END) {
+        *aListener = PR_TRUE;
+        break;
+      }
+    }
+  }
+
+  return NS_OK;
+}
+
+PRUint32
+nsEventListenerManager::MutationListenerBits()
+{
+  PRUint32 bits = 0;
+  if (mMayHaveMutationListeners) {
+    PRUint32 count = mListeners.Length();
+    for (PRUint32 i = 0; i < count; ++i) {
+      nsListenerStruct* ls = &mListeners.ElementAt(i);
+      if (ls->mEventType >= NS_MUTATION_START &&
+          ls->mEventType <= NS_MUTATION_END) {
+        if (ls->mEventType == NS_MUTATION_SUBTREEMODIFIED) {
+          return kAllMutationBits;
+        }
+        bits |= MutationBitForEventType(ls->mEventType);
+      }
+    }
+  }
+  return bits;
+}
+
+PRBool
+nsEventListenerManager::HasListenersFor(const nsAString& aEventName)
+{
+  nsCOMPtr<nsIAtom> atom = do_GetAtom(NS_LITERAL_STRING("on") + aEventName);
+  PRUint32 type = nsContentUtils::GetEventId(atom);
+
+  const EventTypeData* typeData = nsnull;
+  const EventDispatchData* dispData = nsnull;
+  if (type != NS_USER_DEFINED_EVENT) {
+    for (PRUint32 i = 0; i < NS_ARRAY_LENGTH(sEventTypes); ++i) {
+     typeData = &sEventTypes[i];
+     for (PRInt32 j = 0; j < typeData->numEvents; ++j) {
+       dispData = &(typeData->events[j]);
+       if (type == dispData->message) {
+         goto found;
+       }
+     }
+     typeData = nsnull;
+     dispData = nsnull;
+    }
+  }
+found:
+
+  PRUint32 count = mListeners.Length();
+  for (PRUint32 i = 0; i < count; ++i) {
+    nsListenerStruct* ls = &mListeners.ElementAt(i);
+    if (ls->mTypeAtom == atom ||
+        EVENT_TYPE_DATA_EQUALS(ls->mTypeData, typeData)) {
+      return PR_TRUE;
+    }
+  }
+  return PR_FALSE;
 }
 
 PRBool
 nsEventListenerManager::HasUnloadListeners()
 {
-  nsVoidArray *listeners = GetListenersByType(eEventArrayType_Load, nsnull,
-                                              PR_FALSE);
-  if (listeners) {
-    PRInt32 count = listeners->Count();
-    for (PRInt32 i = 0; i < count; ++i) {
-      PRUint32 subtype = NS_STATIC_CAST(nsListenerStruct*,
-                                        listeners->FastElementAt(i))->mSubType;
-      if (subtype == NS_EVENT_BITS_NONE ||
-          subtype & (NS_EVENT_BITS_LOAD_UNLOAD |
-                     NS_EVENT_BITS_LOAD_BEFORE_UNLOAD))
-        return PR_TRUE;
+  PRUint32 count = mListeners.Length();
+  for (PRUint32 i = 0; i < count; ++i) {
+    nsListenerStruct* ls = &mListeners.ElementAt(i);
+    if (ls->mEventType == NS_PAGE_UNLOAD ||
+        ls->mEventType == NS_BEFORE_PAGE_UNLOAD ||
+        (ls->mTypeData && ls->mTypeData->iid &&
+         ls->mTypeData->iid->Equals(NS_GET_IID(nsIDOMLoadListener)))) {
+      return PR_TRUE;
     }
   }
-
   return PR_FALSE;
 }
 

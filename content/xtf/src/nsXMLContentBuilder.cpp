@@ -39,7 +39,6 @@
 #include "nsCOMPtr.h"
 #include "nsString.h"
 #include "nsIXMLContentBuilder.h"
-#include "nsISupportsArray.h"
 #include "nsINameSpaceManager.h"
 #include "nsINodeInfo.h"
 #include "nsIContent.h"
@@ -56,7 +55,6 @@
 #include "nsContentUtils.h"
 
 static NS_DEFINE_CID(kXMLDocumentCID, NS_XMLDOCUMENT_CID);
-
 
 class nsXMLContentBuilder : public nsIXMLContentBuilder
 {
@@ -221,7 +219,7 @@ NS_IMETHODIMP nsXMLContentBuilder::GetRoot(nsIDOMElement * *aRoot)
     *aRoot = nsnull;
     return NS_OK;
   }
-  return mTop->QueryInterface(nsIDOMElement::GetIID(), (void**)aRoot);
+  return CallQueryInterface(mTop, aRoot);
 }
 
 /* readonly attribute nsIDOMElement current; */
@@ -231,7 +229,7 @@ NS_IMETHODIMP nsXMLContentBuilder::GetCurrent(nsIDOMElement * *aCurrent)
     *aCurrent = nsnull;
     return NS_OK;
   }  
-  return mCurrent->QueryInterface(nsIDOMElement::GetIID(), (void**)aCurrent);
+  return CallQueryInterface(mCurrent, aCurrent);
 }
 
 //----------------------------------------------------------------------

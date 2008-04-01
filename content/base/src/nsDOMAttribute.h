@@ -53,43 +53,21 @@
 #include "nsIDOM3Node.h"
 #include "nsIDOM3Attr.h"
 #include "nsDOMAttributeMap.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsDOMAttribute;
-class nsITextContent;
-
-// bogus child list for an attribute
-class nsAttributeChildList : public nsGenericDOMNodeList
-{
-public:
-  nsAttributeChildList(nsDOMAttribute* aAttribute);
-  virtual ~nsAttributeChildList();
-
-  // interface nsIDOMNodeList
-  NS_IMETHOD    GetLength(PRUint32* aLength);
-  NS_IMETHOD    Item(PRUint32 aIndex, nsIDOMNode** aReturn);
-
-  void DropReference();
-
-protected:
-  nsDOMAttribute* mAttribute;
-};
 
 // Attribute helper class used to wrap up an attribute with a dom
 // object that implements nsIDOMAttr, nsIDOM3Attr, nsIDOMNode, nsIDOM3Node
-class nsDOMAttribute : public nsIDOMAttr,
-                       public nsIDOM3Attr,
-                       public nsIAttribute
+class nsDOMAttribute : public nsIAttribute,
+                       public nsIDOMAttr,
+                       public nsIDOM3Attr
 {
 public:
   nsDOMAttribute(nsDOMAttributeMap* aAttrMap, nsINodeInfo *aNodeInfo,
                  const nsAString& aValue);
-  virtual ~nsDOMAttribute();
 
-  NS_DECL_ISUPPORTS
-
-  // nsIDOMGCParticipant interface methods
-  virtual nsIDOMGCParticipant* GetSCCIndex();
-  virtual void AppendReachableList(nsCOMArray<nsIDOMGCParticipant>& aArray);
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
 
   // nsIDOMNode interface
   NS_DECL_NSIDOMNODE
@@ -122,8 +100,19 @@ public:
   virtual nsresult DispatchDOMEvent(nsEvent* aEvent, nsIDOMEvent* aDOMEvent,
                                     nsPresContext* aPresContext,
                                     nsEventStatus* aEventStatus);
+  virtual nsresult GetListenerManager(PRBool aCreateIfNotFound,
+                                      nsIEventListenerManager** aResult);
+  virtual nsresult AddEventListenerByIID(nsIDOMEventListener *aListener,
+                                         const nsIID& aIID);
+  virtual nsresult RemoveEventListenerByIID(nsIDOMEventListener *aListener,
+                                            const nsIID& aIID);
+  virtual nsresult GetSystemEventGroup(nsIDOMEventGroup** aGroup);
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+
   static void Initialize();
   static void Shutdown();
+
+  NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsDOMAttribute, nsIAttribute)
 
 protected:
   static PRBool sInitialized;
@@ -134,8 +123,7 @@ private:
   nsString mValue;
   // XXX For now, there's only a single child - a text
   // element representing the value
-  nsCOMPtr<nsITextContent> mChild;
-  nsAttributeChildList* mChildList;
+  nsCOMPtr<nsIContent> mChild;
 
   nsIContent *GetContentInternal() const
   {

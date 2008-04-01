@@ -39,7 +39,7 @@
 #include "nsGenericHTMLElement.h"
 #include "nsPresContext.h"
 #include "nsIPresShell.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsSize.h"
 #include "nsIFrame.h"
 #include "nsIDocument.h"
@@ -74,7 +74,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -88,10 +88,11 @@ public:
   // nsICanvasElement
   NS_IMETHOD GetPrimaryCanvasFrame(nsIFrame **aFrame);
   NS_IMETHOD GetSize(PRUint32 *width, PRUint32 *height);
-  NS_IMETHOD RenderContexts(nsIRenderingContext *ctx);
-  NS_IMETHOD RenderContextsToSurface(struct _cairo_surface *surf);
+  NS_IMETHOD RenderContexts(gfxContext *ctx);
   virtual PRBool IsWriteOnly();
   virtual void SetWriteOnly();
+  NS_IMETHOD InvalidateFrame ();
+  NS_IMETHOD InvalidateFrameSubrect (const nsRect& damageRect);
 
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
@@ -111,6 +112,8 @@ public:
   virtual nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
                            nsIAtom* aPrefix, const nsAString& aValue,
                            PRBool aNotify);
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+
 protected:
   nsIntSize GetWidthHeight();
   nsresult UpdateContext();
@@ -152,13 +155,13 @@ nsHTMLCanvasElement::~nsHTMLCanvasElement()
 NS_IMPL_ADDREF_INHERITED(nsHTMLCanvasElement, nsGenericElement)
 NS_IMPL_RELEASE_INHERITED(nsHTMLCanvasElement, nsGenericElement)
 
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLCanvasElement, nsGenericElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLCanvasElement)
-  NS_INTERFACE_MAP_ENTRY(nsICanvasElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLCanvasElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_INTERFACE_TABLE_HEAD(nsHTMLCanvasElement, nsGenericHTMLElement)
+  NS_INTERFACE_TABLE_INHERITED2(nsHTMLCanvasElement,
+                                nsIDOMHTMLCanvasElement,
+                                nsICanvasElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLCanvasElement)
 
-NS_IMPL_DOM_CLONENODE(nsHTMLCanvasElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLCanvasElement)
 
 nsIntSize
 nsHTMLCanvasElement::GetWidthHeight()
@@ -166,13 +169,13 @@ nsHTMLCanvasElement::GetWidthHeight()
   nsIntSize size(0,0);
   const nsAttrValue* value;
 
-  if ((value = GetParsedAttr(nsHTMLAtoms::width)) &&
+  if ((value = GetParsedAttr(nsGkAtoms::width)) &&
       value->Type() == nsAttrValue::eInteger)
   {
       size.width = value->GetIntegerValue();
   }
 
-  if ((value = GetParsedAttr(nsHTMLAtoms::height)) &&
+  if ((value = GetParsedAttr(nsGkAtoms::height)) &&
       value->Type() == nsAttrValue::eInteger)
   {
       size.height = value->GetIntegerValue();
@@ -197,7 +200,7 @@ nsHTMLCanvasElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
   nsresult rv = nsGenericHTMLElement::SetAttr(aNameSpaceID, aName, aPrefix, aValue,
                                               aNotify);
   if (NS_SUCCEEDED(rv) && mCurrentContext &&
-      (aName == nsHTMLAtoms::width || aName == nsHTMLAtoms::height))
+      (aName == nsGkAtoms::width || aName == nsGkAtoms::height))
   {
     rv = UpdateContext();
     NS_ENSURE_SUCCESS(rv, rv);
@@ -212,8 +215,8 @@ nsHTMLCanvasElement::GetAttributeChangeHint(const nsIAtom* aAttribute,
 {
   nsChangeHint retval =
     nsGenericHTMLElement::GetAttributeChangeHint(aAttribute, aModType);
-  if (aAttribute == nsHTMLAtoms::width ||
-      aAttribute == nsHTMLAtoms::height)
+  if (aAttribute == nsGkAtoms::width ||
+      aAttribute == nsGkAtoms::height)
   {
     NS_UpdateHint(retval, NS_STYLE_HINT_REFLOW);
   }
@@ -236,8 +239,8 @@ nsHTMLCanvasElement::GetAttributeMappingFunction() const
 
 static const nsGenericElement::MappedAttributeEntry
 sImageMarginAttributeMap[] = {
-  { &nsHTMLAtoms::hspace },
-  { &nsHTMLAtoms::vspace },
+  { &nsGkAtoms::hspace },
+  { &nsGkAtoms::vspace },
   { nsnull }
 };
 
@@ -260,8 +263,8 @@ nsHTMLCanvasElement::ParseAttribute(PRInt32 aNamespaceID,
 {
   if (aNamespaceID == kNameSpaceID_None)
   {
-    if ((aAttribute == nsHTMLAtoms::width) ||
-        (aAttribute == nsHTMLAtoms::height))
+    if ((aAttribute == nsGkAtoms::width) ||
+        (aAttribute == nsGkAtoms::height))
     {
       return aResult.ParseIntWithBounds(aValue, 0);
     }
@@ -284,9 +287,9 @@ nsHTMLCanvasElement::ToDataURL(nsAString& aDataURL)
 {
   nsresult rv;
 
-  nsCOMPtr<nsIXPCNativeCallContext> ncc;
+  nsAXPCNativeCallContext *ncc = nsnull;
   rv = nsContentUtils::XPConnect()->
-    GetCurrentNativeCallContext(getter_AddRefs(ncc));
+    GetCurrentNativeCallContext(&ncc);
   NS_ENSURE_SUCCESS(rv, rv);
 
   if (!ncc)
@@ -303,29 +306,10 @@ nsHTMLCanvasElement::ToDataURL(nsAString& aDataURL)
   ncc->GetArgc(&argc);
   ncc->GetArgvPtr(&argv);
 
-  if (mWriteOnly || argc >= 2) {
-    // do a trust check if this is a write-only canvas
-    // or if we're trying to use the 2-arg form
-    nsCOMPtr<nsIScriptSecurityManager> ssm =
-        do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID);
-    if (!ssm)
-        return NS_ERROR_FAILURE;
-
-    PRBool isTrusted = PR_FALSE;
-    PRBool isChrome = PR_FALSE;
-    PRBool hasCap = PR_FALSE;
-
-    // The secman really should handle UniversalXPConnect case, since that
-    // should include UniversalBrowserRead... doesn't right now, though.
-    if ((NS_SUCCEEDED(ssm->SubjectPrincipalIsSystem(&isChrome)) && isChrome) ||
-        (NS_SUCCEEDED(ssm->IsCapabilityEnabled("UniversalBrowserRead", &hasCap)) && hasCap) ||
-        (NS_SUCCEEDED(ssm->IsCapabilityEnabled("UniversalXPConnect", &hasCap)) && hasCap))
-    {
-        isTrusted = PR_TRUE;
-    }
-
-    if (!isTrusted)
-      return NS_ERROR_DOM_SECURITY_ERR;
+  // do a trust check if this is a write-only canvas
+  // or if we're trying to use the 2-arg form
+  if ((mWriteOnly || argc >= 2) && !nsContentUtils::IsCallerTrustedForRead()) {
+    return NS_ERROR_DOM_SECURITY_ERR;
   }
 
   // 0-arg case; convert to png
@@ -333,12 +317,14 @@ nsHTMLCanvasElement::ToDataURL(nsAString& aDataURL)
     return ToDataURLImpl(NS_LITERAL_STRING("image/png"), EmptyString(), aDataURL);
   }
 
+  JSAutoRequest ar(ctx);
+
   // 1-arg case; convert to given mime type
   if (argc == 1) {
     if (!JSVAL_IS_STRING(argv[0]))
       return NS_ERROR_DOM_SYNTAX_ERR;
     JSString *type = JS_ValueToString(ctx, argv[0]);
-    return ToDataURLImpl (nsDependentString(NS_REINTERPRET_CAST(PRUnichar*,(JS_GetStringChars(type)))),
+    return ToDataURLImpl (nsDependentString(reinterpret_cast<PRUnichar*>((JS_GetStringChars(type)))),
                           EmptyString(), aDataURL);
   }
 
@@ -351,8 +337,8 @@ nsHTMLCanvasElement::ToDataURL(nsAString& aDataURL)
     type = JS_ValueToString(ctx, argv[0]);
     params = JS_ValueToString(ctx, argv[1]);
 
-    return ToDataURLImpl (nsDependentString(NS_REINTERPRET_CAST(PRUnichar*,JS_GetStringChars(type))),
-                          nsDependentString(NS_REINTERPRET_CAST(PRUnichar*,JS_GetStringChars(params))),
+    return ToDataURLImpl (nsDependentString(reinterpret_cast<PRUnichar*>(JS_GetStringChars(type))),
+                          nsDependentString(reinterpret_cast<PRUnichar*>(JS_GetStringChars(params))),
                           aDataURL);
   }
 
@@ -389,7 +375,8 @@ nsHTMLCanvasElement::ToDataURLImpl(const nsAString& aMimeType,
   // get image bytes
   nsCOMPtr<nsIInputStream> imgStream;
   NS_ConvertUTF16toUTF8 aMimeType8(aMimeType);
-  rv = context->GetInputStream(aMimeType8, aEncoderOptions,
+  rv = context->GetInputStream(nsPromiseFlatCString(aMimeType8).get(),
+                               nsPromiseFlatString(aEncoderOptions).get(),
                                getter_AddRefs(imgStream));
   // XXX ERRMSG we need to report an error to developers here! (bug 329026)
   NS_ENSURE_SUCCESS(rv, rv);
@@ -472,10 +459,16 @@ nsHTMLCanvasElement::GetContext(const nsAString& aContextId,
       return NS_ERROR_INVALID_ARG;
 
     rv = mCurrentContext->SetCanvasElement(this);
-    NS_ENSURE_SUCCESS(rv, rv);
+    if (NS_FAILED(rv)) {
+      mCurrentContext = nsnull;
+      return rv;
+    }
 
     rv = UpdateContext();
-    NS_ENSURE_SUCCESS(rv, rv);
+    if (NS_FAILED(rv)) {
+      mCurrentContext = nsnull;
+      return rv;
+    }
 
     mCurrentContextId.Assign(aContextId);
   } else if (!mCurrentContextId.Equals(aContextId)) {
@@ -517,21 +510,12 @@ nsHTMLCanvasElement::GetSize(PRUint32 *width, PRUint32 *height)
 }
 
 NS_IMETHODIMP
-nsHTMLCanvasElement::RenderContexts(nsIRenderingContext *rc)
+nsHTMLCanvasElement::RenderContexts(gfxContext *ctx)
 {
   if (!mCurrentContext)
     return NS_OK;
 
-  return mCurrentContext->Render(rc);
-}
-
-NS_IMETHODIMP
-nsHTMLCanvasElement::RenderContextsToSurface(struct _cairo_surface *surf)
-{
-  if (!mCurrentContext)
-    return NS_OK;
-
-  return mCurrentContext->RenderToSurface(surf);
+  return mCurrentContext->Render(ctx);
 }
 
 PRBool
@@ -544,4 +528,28 @@ void
 nsHTMLCanvasElement::SetWriteOnly()
 {
   mWriteOnly = PR_TRUE;
+}
+
+NS_IMETHODIMP
+nsHTMLCanvasElement::InvalidateFrame()
+{
+  nsIFrame *frame = GetPrimaryFrame(Flush_Frames);
+  if (frame) {
+    nsRect r = frame->GetRect();
+    r.x = r.y = 0;
+    frame->Invalidate(r, PR_FALSE);
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsHTMLCanvasElement::InvalidateFrameSubrect(const nsRect& damageRect)
+{
+  nsIFrame *frame = GetPrimaryFrame(Flush_Frames);
+  if (frame) {
+    frame->Invalidate(damageRect, PR_FALSE);
+  }
+
+  return NS_OK;
 }

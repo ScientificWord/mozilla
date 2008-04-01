@@ -48,6 +48,8 @@ class nsIDOMCharacterData;
 class nsIDOMDocument;
 class nsIDOMDocumentFragment;
 class nsITransformObserver;
+class nsIDocument;
+class nsIContent;
 
 class txMozillaTextOutput : public txAOutputXMLEventHandler
 {
@@ -56,19 +58,20 @@ public:
                         nsIDOMDocument* aResultDocument,
                         nsITransformObserver* aObserver);
     txMozillaTextOutput(nsIDOMDocumentFragment* aDest);
-    virtual ~txMozillaTextOutput();
 
     TX_DECL_TXAXMLEVENTHANDLER
     TX_DECL_TXAOUTPUTXMLEVENTHANDLER
 
 private:
-    void createResultDocument(nsIDOMDocument* aSourceDocument,
-                              nsIDOMDocument* aResultDocument);
+    nsresult createResultDocument(nsIDOMDocument* aSourceDocument,
+                                  nsIDOMDocument* aResultDocument);
+    nsresult createXHTMLElement(nsIAtom* aName, nsIContent** aResult);
 
-    nsCOMPtr<nsIDOMCharacterData> mTextNode;
+    nsCOMPtr<nsIContent> mTextParent;
     nsWeakPtr mObserver;
-    nsCOMPtr<nsIDOMDocument> mDocument;
+    nsCOMPtr<nsIDocument> mDocument;
     txOutputFormat mOutputFormat;
+    nsString mText;
 };
 
 #endif

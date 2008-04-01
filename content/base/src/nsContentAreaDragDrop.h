@@ -44,7 +44,7 @@
 
 #include "nsIDragDropHandler.h"
 #include "nsIDOMDragListener.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsPIDOMEventTarget.h"
 #include "nsITransferable.h"
 
 class nsIDOMNode;
@@ -93,6 +93,8 @@ public:
   NS_IMETHOD DragExit(nsIDOMEvent* aMouseEvent);
   NS_IMETHOD DragDrop(nsIDOMEvent* aMouseEvent);
   NS_IMETHOD DragGesture(nsIDOMEvent* aMouseEvent);
+  NS_IMETHOD Drag(nsIDOMEvent* aMouseEvent);
+  NS_IMETHOD DragEnd(nsIDOMEvent* aMouseEvent);
   NS_IMETHOD HandleEvent(nsIDOMEvent *event);
 
 private:
@@ -109,9 +111,7 @@ private:
 
   static nsresult SaveURIToFile(nsAString& inSourceURIString,
                                 nsIFile* inDestFile);
-  
-  nsresult CreateTransferable(nsIDOMEvent* inMouseEvent,
-                              nsITransferable** outTrans);
+
   void ExtractURLFromData(const nsACString & inFlavor,
                           nsISupports* inDataWrapper, PRUint32 inDataLen,
                           nsAString & outURL);
@@ -120,7 +120,7 @@ private:
 
   PRPackedBool mListenerInstalled;
 
-  nsCOMPtr<nsIDOMEventReceiver> mEventReceiver;
+  nsCOMPtr<nsPIDOMEventTarget> mEventTarget;
 
   // weak ref, this is probably my owning webshell
   // FIXME: we set this and never null it out.  That's bad!  See bug 332187.

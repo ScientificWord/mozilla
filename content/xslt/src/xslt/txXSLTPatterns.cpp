@@ -43,52 +43,10 @@
 #include "txForwardContext.h"
 #include "txXMLUtils.h"
 #include "txXSLTFunctions.h"
+#include "nsWhitespaceTokenizer.h"
 #ifndef TX_EXE
 #include "nsIContent.h"
 #endif
-
-/*
- * txPattern
- *
- * Base class of all patterns
- * Implements only a default getSimplePatterns
- */
-nsresult txPattern::getSimplePatterns(txList& aList)
-{
-    aList.add(this);
-    return NS_OK;
-}
-
-txPattern::~txPattern()
-{
-}
-
-
-/*
- * txUnionPattern
- *
- * This pattern is returned by the parser for "foo | bar" constructs.
- * |xsl:template|s should use the simple patterns
- */
-
-/*
- * Destructor, deletes all LocationPathPatterns
- */
-txUnionPattern::~txUnionPattern()
-{
-    txListIterator iter(&mLocPathPatterns);
-    while (iter.hasNext()) {
-        delete (txPattern*)iter.next();
-    }
-}
-
-nsresult txUnionPattern::addPattern(txPattern* aPattern)
-{
-    if (!aPattern)
-        return NS_ERROR_NULL_POINTER;
-    mLocPathPatterns.add(aPattern);
-    return NS_OK;
-}
 
 /*
  * Returns the default priority of this Pattern.
@@ -109,39 +67,34 @@ double txUnionPattern::getDefaultPriority()
  */
 MBool txUnionPattern::matches(const txXPathNode& aNode, txIMatchContext* aContext)
 {
-    txListIterator iter(&mLocPathPatterns);
-    while (iter.hasNext()) {
-        txPattern* p = (txPattern*)iter.next();
-        if (p->matches(aNode, aContext)) {
+    PRUint32 i, len = mLocPathPatterns.Length();
+    for (i = 0; i < len; ++i) {
+        if (mLocPathPatterns[i]->matches(aNode, aContext)) {
             return MB_TRUE;
         }
     }
     return MB_FALSE;
 }
 
-nsresult txUnionPattern::getSimplePatterns(txList& aList)
+txPattern::Type
+txUnionPattern::getType()
 {
-    txListIterator iter(&mLocPathPatterns);
-    while (iter.hasNext()) {
-        aList.add(iter.next());
-        iter.remove();
-    }
-    return NS_OK;
+  return UNION_PATTERN;
 }
 
 TX_IMPL_PATTERN_STUBS_NO_SUB_EXPR(txUnionPattern)
 txPattern*
 txUnionPattern::getSubPatternAt(PRUint32 aPos)
 {
-    return NS_STATIC_CAST(txPattern*, mLocPathPatterns.get(aPos));
+    return mLocPathPatterns.SafeElementAt(aPos);
 }
 
 void
 txUnionPattern::setSubPatternAt(PRUint32 aPos, txPattern* aPattern)
 {
-    NS_ASSERTION(aPos < (PRUint32)mLocPathPatterns.getLength(),
+    NS_ASSERTION(aPos < mLocPathPatterns.Length(),
                  "setting bad subexpression index");
-    mLocPathPatterns.replace(aPos, aPattern);
+    mLocPathPatterns[aPos] = aPattern;
 }
 
 
@@ -152,12 +105,10 @@ txUnionPattern::toString(nsAString& aDest)
 #ifdef DEBUG
     aDest.AppendLiteral("txUnionPattern{");
 #endif
-    txListIterator iter(&mLocPathPatterns);
-    if (iter.hasNext())
-        ((txPattern*)iter.next())->toString(aDest);
-    while (iter.hasNext()) {
-        aDest.AppendLiteral(" | ");
-        ((txPattern*)iter.next())->toString(aDest);
+    for (PRUint32 i = 0; i < mLocPathPatterns.Length(); ++i) {
+        if (i != 0)
+            aDest.AppendLiteral(" | ");
+        mLocPathPatterns[i]->toString(aDest);
     }
 #ifdef DEBUG
     aDest.Append(PRUnichar('}'));
@@ -173,31 +124,21 @@ txUnionPattern::toString(nsAString& aDest)
  * (dealt with by the parser)
  */
 
-/*
- * Destructor, deletes all PathPatterns
- */
-txLocPathPattern::~txLocPathPattern()
+nsresult txLocPathPattern::addStep(txPattern* aPattern, PRBool isChild)
 {
-    txListIterator iter(&mSteps);
-    while (iter.hasNext()) {
-         delete (Step*)iter.next();
-    }
-}
-
-nsresult txLocPathPattern::addStep(txPattern* aPattern, MBool isChild)
-{
-    if (!aPattern)
-        return NS_ERROR_NULL_POINTER;
-    Step* step = new Step(aPattern, isChild);
+    Step* step = mSteps.AppendElement();
     if (!step)
         return NS_ERROR_OUT_OF_MEMORY;
-    mSteps.add(step);
+
+    step->pattern = aPattern;
+    step->isChild = isChild;
+
     return NS_OK;
 }
 
 MBool txLocPathPattern::matches(const txXPathNode& aNode, txIMatchContext* aContext)
 {
-    NS_ASSERTION(mSteps.getLength(), "Internal error");
+    NS_ASSERTION(mSteps.Length() > 1, "Internal error");
 
     /*
      * The idea is to split up a path into blocks separated by descendant
@@ -211,11 +152,8 @@ MBool txLocPathPattern::matches(const txXPathNode& aNode, txIMatchContext* aCont
      * tree.
      */
 
-    txListIterator iter(&mSteps);
-    iter.resetToEnd();
-
-    Step* step;
-    step = (Step*)iter.previous();
+    PRUint32 pos = mSteps.Length();
+    Step* step = &mSteps[--pos];
     if (!step->pattern->matches(aNode, aContext))
         return MB_FALSE;
 
@@ -223,9 +161,9 @@ MBool txLocPathPattern::matches(const txXPathNode& aNode, txIMatchContext* aCont
     PRBool hasParent = walker.moveToParent();
 
     while (step->isChild) {
-        step = (Step*)iter.previous();
-        if (!step)
+        if (!pos)
             return MB_TRUE; // all steps matched
+        step = &mSteps[--pos];
         if (!hasParent || !step->pattern->matches(walker.getCurrentPosition(), aContext))
             return MB_FALSE; // no more ancestors or no match
 
@@ -234,25 +172,26 @@ MBool txLocPathPattern::matches(const txXPathNode& aNode, txIMatchContext* aCont
 
     // We have at least one // path separator
     txXPathTreeWalker blockWalker(walker);
-    txListIterator blockIter(iter);
+    PRUint32 blockPos = pos;
 
-    while ((step = (Step*)iter.previous())) {
+    while (pos) {
         if (!hasParent)
             return MB_FALSE; // There are more steps in the current block 
                              // than ancestors of the tested node
 
+        step = &mSteps[--pos];
         if (!step->pattern->matches(walker.getCurrentPosition(), aContext)) {
             // Didn't match. We restart at beginning of block using a new
             // start node
-            iter = blockIter;
+            pos = blockPos;
             hasParent = blockWalker.moveToParent();
             walker.moveTo(blockWalker);
         }
         else {
             hasParent = walker.moveToParent();
             if (!step->isChild) {
-                // We've matched an entire block. Set new start iter and start node
-                blockIter = iter;
+                // We've matched an entire block. Set new start pos and start node
+                blockPos = pos;
                 blockWalker.moveTo(walker);
             }
         }
@@ -263,28 +202,23 @@ MBool txLocPathPattern::matches(const txXPathNode& aNode, txIMatchContext* aCont
 
 double txLocPathPattern::getDefaultPriority()
 {
-    if (mSteps.getLength() > 1) {
-        return 0.5;
-    }
+    NS_ASSERTION(mSteps.Length() > 1, "Internal error");
 
-    return ((Step*)mSteps.get(0))->pattern->getDefaultPriority();
+    return 0.5;
 }
 
 TX_IMPL_PATTERN_STUBS_NO_SUB_EXPR(txLocPathPattern)
 txPattern*
 txLocPathPattern::getSubPatternAt(PRUint32 aPos)
 {
-    Step* step = NS_STATIC_CAST(Step*, mSteps.get(aPos));
-
-    return step ? step->pattern.get() : nsnull;
+    return aPos < mSteps.Length() ? mSteps[aPos].pattern.get() : nsnull;
 }
 
 void
 txLocPathPattern::setSubPatternAt(PRUint32 aPos, txPattern* aPattern)
 {
-    NS_ASSERTION(aPos < (PRUint32)mSteps.getLength(),
-                 "setting bad subexpression index");
-    Step* step = NS_STATIC_CAST(Step*, mSteps.get(aPos));
+    NS_ASSERTION(aPos < mSteps.Length(), "setting bad subexpression index");
+    Step* step = &mSteps[aPos];
     step->pattern.forget();
     step->pattern = aPattern;
 }
@@ -293,21 +227,17 @@ txLocPathPattern::setSubPatternAt(PRUint32 aPos, txPattern* aPattern)
 void
 txLocPathPattern::toString(nsAString& aDest)
 {
-    txListIterator iter(&mSteps);
 #ifdef DEBUG
     aDest.AppendLiteral("txLocPathPattern{");
 #endif
-    Step* step;
-    step = (Step*)iter.next();
-    if (step) {
-        step->pattern->toString(aDest);
-    }
-    while ((step = (Step*)iter.next())) {
-        if (step->isChild)
-            aDest.Append(PRUnichar('/'));
-        else
-            aDest.AppendLiteral("//");
-        step->pattern->toString(aDest);
+    for (PRUint32 i = 0; i < mSteps.Length(); ++i) {
+        if (i != 0) {
+            if (mSteps[i].isChild)
+                aDest.Append(PRUnichar('/'));
+            else
+                aDest.AppendLiteral("//");
+        }
+        mSteps[i].pattern->toString(aDest);
     }
 #ifdef DEBUG
     aDest.Append(PRUnichar('}'));
@@ -320,10 +250,6 @@ txLocPathPattern::toString(nsAString& aDest)
  *
  * a txPattern matching the document node, or '/'
  */
-
-txRootPattern::~txRootPattern()
-{
-}
 
 MBool txRootPattern::matches(const txXPathNode& aNode, txIMatchContext* aContext)
 {
@@ -361,25 +287,14 @@ txRootPattern::toString(nsAString& aDest)
  * This looks like the id() function, but may only have LITERALs as
  * argument.
  */
-txIdPattern::txIdPattern(const nsAString& aString)
+txIdPattern::txIdPattern(const nsSubstring& aString)
 {
-    nsAString::const_iterator pos, begin, end;
-    aString.BeginReading(begin);
-    aString.EndReading(end);
-    pos = begin;
-    while (pos != end) {
-        while (pos != end && XMLUtils::isWhitespace(*pos))
-            ++pos;
-        begin = pos;
-        while (pos != end && !XMLUtils::isWhitespace(*pos))
-            ++pos;
+    nsWhitespaceTokenizer tokenizer(aString);
+    while (tokenizer.hasMoreTokens()) {
         // this can fail, XXX move to a Init(aString) method
-        mIds.AppendString(Substring(begin, pos));
+        nsCOMPtr<nsIAtom> atom = do_GetAtom(tokenizer.nextToken());
+        mIds.AppendObject(atom);
     }
-}
-
-txIdPattern::~txIdPattern()
-{
 }
 
 MBool txIdPattern::matches(const txXPathNode& aNode, txIMatchContext* aContext)
@@ -389,31 +304,23 @@ MBool txIdPattern::matches(const txXPathNode& aNode, txIMatchContext* aContext)
     }
 
     // Get a ID attribute, if there is
-    nsAutoString value;
 #ifdef TX_EXE
     Element* elem;
     nsresult rv = txXPathNativeNode::getElement(aNode, &elem);
     NS_ASSERTION(NS_SUCCEEDED(rv), "So why claim it's an element above?");
+
+    nsAutoString value;
     if (!elem->getIDValue(value)) {
         return PR_FALSE;
     }
+    nsCOMPtr<nsIAtom> id = do_GetAtom(value);
 #else
     nsIContent* content = txXPathNativeNode::getContent(aNode);
     NS_ASSERTION(content, "a Element without nsIContent");
-    if (!content) {
-        return MB_FALSE;
-    }
 
-    nsIAtom* idAttr = content->GetIDAttributeName();
-    if (!idAttr) {
-        return MB_FALSE; // no ID for this element defined, can't match
-    }
-    content->GetAttr(kNameSpaceID_None, idAttr, value);
-    if (value.IsEmpty()) {
-        return MB_FALSE; // no ID attribute given
-    }
+    nsIAtom* id = content->GetID();
 #endif // TX_EXE
-    return mIds.IndexOf(value) > -1;
+    return id && mIds.IndexOf(id) > -1;
 }
 
 double txIdPattern::getDefaultPriority()
@@ -434,10 +341,14 @@ txIdPattern::toString(nsAString& aDest)
     aDest.AppendLiteral("id('");
     PRUint32 k, count = mIds.Count() - 1;
     for (k = 0; k < count; ++k) {
-        aDest.Append(*mIds[k]);
+        nsAutoString str;
+        mIds[k]->ToString(str);
+        aDest.Append(str);
         aDest.Append(PRUnichar(' '));
     }
-    aDest.Append(*mIds[count]);
+    nsAutoString str;
+    mIds[count]->ToString(str);
+    aDest.Append(str);
     aDest.Append(NS_LITERAL_STRING("')"));
 #ifdef DEBUG
     aDest.Append(PRUnichar('}'));
@@ -453,10 +364,6 @@ txIdPattern::toString(nsAString& aDest)
  * This resembles the key() function, but may only have LITERALs as
  * argument.
  */
-
-txKeyPattern::~txKeyPattern()
-{
-}
 
 MBool txKeyPattern::matches(const txXPathNode& aNode, txIMatchContext* aContext)
 {
@@ -549,7 +456,7 @@ MBool txStepPattern::matches(const txXPathNode& aNode, txIMatchContext* aContext
     // Create the context node set for evaluating the predicates
     nsRefPtr<txNodeSet> nodes;
     nsresult rv = aContext->recycler()->getNodeSet(getter_AddRefs(nodes));
-    NS_ENSURE_SUCCESS(rv, rv);
+    NS_ENSURE_SUCCESS(rv, MB_FALSE);
 
     PRBool hasNext = mIsAttr ? walker.moveToFirstAttribute() :
                                walker.moveToFirstChild();
@@ -561,13 +468,13 @@ MBool txStepPattern::matches(const txXPathNode& aNode, txIMatchContext* aContext
                             walker.moveToNextSibling();
     }
 
-    txListIterator iter(&predicates);
-    Expr* predicate = (Expr*)iter.next();
+    Expr* predicate = mPredicates[0];
     nsRefPtr<txNodeSet> newNodes;
     rv = aContext->recycler()->getNodeSet(getter_AddRefs(newNodes));
-    NS_ENSURE_SUCCESS(rv, rv);
+    NS_ENSURE_SUCCESS(rv, MB_FALSE);
 
-    while (iter.hasNext()) {
+    PRUint32 i, predLen = mPredicates.Length();
+    for (i = 1; i < predLen; ++i) {
         newNodes->clear();
         MBool contextIsInPredicate = MB_FALSE;
         txNodeSetContext predContext(nodes, aContext);
@@ -604,7 +511,7 @@ MBool txStepPattern::matches(const txXPathNode& aNode, txIMatchContext* aContext
         if (!contextIsInPredicate) {
             return MB_FALSE;
         }
-        predicate = (Expr*)iter.next();
+        predicate = mPredicates[i];
     }
     txForwardContext evalContext(aContext, aNode, nodes);
     nsRefPtr<txAExprResult> exprResult;

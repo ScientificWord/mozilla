@@ -36,7 +36,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsGenericElement.h"
-#include "nsLayoutAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsUnicharUtils.h"
 #include "nsXMLProcessingInstruction.h"
 #include "nsParserUtils.h"
@@ -59,7 +59,7 @@ NS_NewXMLProcessingInstruction(nsIContent** aInstancePtrResult,
 
   nsCOMPtr<nsINodeInfo> ni;
   nsresult rv =
-    aNodeInfoManager->GetNodeInfo(nsLayoutAtoms::processingInstructionTagName,
+    aNodeInfoManager->GetNodeInfo(nsGkAtoms::processingInstructionTagName,
                                   nsnull, kNameSpaceID_None,
                                   getter_AddRefs(ni));
   NS_ENSURE_SUCCESS(rv, rv);
@@ -133,7 +133,7 @@ nsXMLProcessingInstruction::GetAttrValue(nsIAtom *aName, nsAString& aValue)
 PRBool
 nsXMLProcessingInstruction::IsNodeOfType(PRUint32 aFlags) const
 {
-  return !(aFlags & ~(eCONTENT | ePROCESSING_INSTRUCTION));
+  return !(aFlags & ~(eCONTENT | ePROCESSING_INSTRUCTION | eDATA_NODE));
 }
 
 // virtual
@@ -170,8 +170,8 @@ nsXMLProcessingInstruction::GetNodeType(PRUint16* aNodeType)
 }
 
 nsGenericDOMDataNode*
-nsXMLProcessingInstruction::Clone(nsINodeInfo *aNodeInfo,
-                                  PRBool aCloneText) const
+nsXMLProcessingInstruction::CloneDataNode(nsINodeInfo *aNodeInfo,
+                                          PRBool aCloneText) const
 {
   nsAutoString data;
   nsGenericDOMDataNode::GetData(data);

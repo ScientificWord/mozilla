@@ -37,7 +37,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsMediaDocument.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsRect.h"
 #include "nsPresContext.h"
 #include "nsIPresShell.h"
@@ -233,7 +233,7 @@ nsMediaDocument::CreateSyntheticDocument()
   nsresult rv;
 
   nsCOMPtr<nsINodeInfo> nodeInfo;
-  rv = mNodeInfoManager->GetNodeInfo(nsHTMLAtoms::html, nsnull,
+  rv = mNodeInfoManager->GetNodeInfo(nsGkAtoms::html, nsnull,
                                      kNameSpaceID_None,
                                      getter_AddRefs(nodeInfo));
   NS_ENSURE_SUCCESS(rv, rv);
@@ -247,7 +247,7 @@ nsMediaDocument::CreateSyntheticDocument()
   rv = AppendChildTo(root, PR_FALSE);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  rv = mNodeInfoManager->GetNodeInfo(nsHTMLAtoms::body, nsnull,
+  rv = mNodeInfoManager->GetNodeInfo(nsGkAtoms::body, nsnull,
                                      kNameSpaceID_None,
                                      getter_AddRefs(nodeInfo));
   NS_ENSURE_SUCCESS(rv, rv);
@@ -256,7 +256,6 @@ nsMediaDocument::CreateSyntheticDocument()
   if (!body) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
-  mBodyContent = do_QueryInterface(body);
 
   root->AppendChildTo(body, PR_FALSE);
 
@@ -266,19 +265,17 @@ nsMediaDocument::CreateSyntheticDocument()
 nsresult
 nsMediaDocument::StartLayout()
 {
-  PRUint32 numberOfShells = GetNumberOfShells();
-  for (PRUint32 i = 0; i < numberOfShells; i++) {
-    nsIPresShell *shell = GetShellAt(i);
-
-    // Make shell an observer for next time.
-    shell->BeginObservingDocument();
-
-    // Initial-reflow this time.
+  mMayStartLayout = PR_TRUE;
+  nsPresShellIterator iter(this);
+  nsCOMPtr<nsIPresShell> shell;
+  while ((shell = iter.GetNextShell())) {
     nsRect visibleArea = shell->GetPresContext()->GetVisibleArea();
+    nsCOMPtr<nsIPresShell> shellGrip = shell;
     nsresult rv = shell->InitialReflow(visibleArea.width, visibleArea.height);
     NS_ENSURE_SUCCESS(rv, rv);
 
-    // Now trigger a refresh.
+    // Now trigger a refresh.  vm might be null if the presshell got
+    // Destroy() called already.
     nsIViewManager* vm = shell->GetViewManager();
     if (vm) {
       vm->EnableRefresh(NS_VMREFRESH_IMMEDIATE);

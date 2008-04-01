@@ -52,11 +52,10 @@ class imgIContainer;
 /*
  * Event state manager interface.
  */
-// {14E5E066-E60A-446b-965F-A9ECAA7098F3}
+// {fb7516ff-2f01-4893-84e8-e4b282813023}
 #define NS_IEVENTSTATEMANAGER_IID \
-{ 0x14e5e066, 0xe60a, 0x446b, \
-  { 0x96, 0x5f, 0xa9, 0xec, 0xaa, 0x70, 0x98, 0xf3 } }
-
+{ 0x522d12ec, 0xde51, 0x4635, \
+  { 0xb0, 0x10, 0x4, 0x2a, 0x6d, 0x5, 0xa0, 0x3e } }
 
 #define NS_EVENT_NEEDS_FRAME(event) (!NS_IS_FOCUS_EVENT(event))
 
@@ -92,7 +91,6 @@ public:
 
   NS_IMETHOD GetEventTarget(nsIFrame **aFrame) = 0;
   NS_IMETHOD GetEventTargetContent(nsEvent* aEvent, nsIContent** aContent) = 0;
-  NS_IMETHOD GetEventRelatedContent(nsIContent** aContent) = 0;
 
   NS_IMETHOD GetContentState(nsIContent *aContent, PRInt32& aState) = 0;
 
@@ -134,8 +132,32 @@ public:
   NS_IMETHOD ChangeFocusWith(nsIContent *aFocusContent, EFocusedWithType aFocusedWith) = 0;
 
   // Access Key Registration
+
+  /**
+   * Register accesskey on the given element. When accesskey is activated then
+   * the element will be notified via nsIContent::PerformAccesskey() method.
+   *
+   * @param  aContent  the given element
+   * @param  aKey      accesskey
+   */
   NS_IMETHOD RegisterAccessKey(nsIContent* aContent, PRUint32 aKey) = 0;
+
+  /**
+   * Unregister accesskey for the given element.
+   *
+   * @param  aContent  the given element
+   * @param  aKey      accesskey
+   */
   NS_IMETHOD UnregisterAccessKey(nsIContent* aContent, PRUint32 aKey) = 0;
+
+  /**
+   * Get accesskey registered on the given element or 0 if there is none.
+   *
+   * @param  aContent  the given element
+   * @param  aKey      registered accesskey
+   * @return           NS_OK
+   */
+  NS_IMETHOD GetRegisteredAccessKey(nsIContent* aContent, PRUint32* aKey) = 0;
 
   NS_IMETHOD SetCursor(PRInt32 aCursor, imgIContainer* aContainer,
                        PRBool aHaveHotspot, float aHotspotX, float aHotspotY,
@@ -145,6 +167,15 @@ public:
   NS_IMETHOD ShiftFocus(PRBool aDirection, nsIContent* aStart)=0;
 
   NS_IMETHOD NotifyDestroyPresContext(nsPresContext* aPresContext) = 0;
+  
+  /**
+   * Returns true if the current code is being executed as a result of user input.
+   * This includes timers or anything else that is initiated from user input.
+   * However, mouse hover events are not counted as user input, nor are
+   * page load events. If this method is called from asynchronously executed code,
+   * such as during layout reflows, it will return false.
+   */
+  NS_IMETHOD_(PRBool) IsHandlingUserInputExternal() = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIEventStateManager, NS_IEVENTSTATEMANAGER_IID)
@@ -170,18 +201,22 @@ NS_DEFINE_STATIC_IID_ACCESSOR(nsIEventStateManager, NS_IEVENTSTATEMANAGER_IID)
 // these two are temporary (see bug 302188)
 #define NS_EVENT_STATE_MOZ_READONLY  0x00008000 // CSS3-UI
 #define NS_EVENT_STATE_MOZ_READWRITE 0x00010000 // CSS3-UI
+#define NS_EVENT_STATE_DEFAULT       0x00020000 // CSS3-UI
 
 // Content could not be rendered (image/object/etc).
-#define NS_EVENT_STATE_BROKEN        0x00020000
+#define NS_EVENT_STATE_BROKEN        0x00040000
 // Content disabled by the user (images turned off, say)
-#define NS_EVENT_STATE_USERDISABLED  0x00040000
+#define NS_EVENT_STATE_USERDISABLED  0x00080000
 // Content suppressed by the user (ad blocking, etc)
-#define NS_EVENT_STATE_SUPPRESSED    0x00080000
+#define NS_EVENT_STATE_SUPPRESSED    0x00100000
 // Content is still loading such that there is nothing to show the
 // user (eg an image which hasn't started coming in yet)
-#define NS_EVENT_STATE_LOADING       0x00100000
+#define NS_EVENT_STATE_LOADING       0x00200000
 // Content is of a type that gecko can't handle
 #define NS_EVENT_STATE_TYPE_UNSUPPORTED \
-                                     0x00200000
+                                     0x00400000
+#ifdef MOZ_MATHML
+#define NS_EVENT_STATE_INCREMENT_SCRIPT_LEVEL 0x00800000
+#endif
 
 #endif // nsIEventStateManager_h__

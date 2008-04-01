@@ -36,7 +36,7 @@
  * ***** END LICENSE BLOCK ***** */
 #include "nsIDOMHTMLFrameElement.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsIPresShell.h"
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
@@ -54,7 +54,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLFrameElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLFrameElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLFrameElement::)
@@ -72,6 +72,7 @@ public:
                                 nsAttrValue& aResult);
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 };
 
 
@@ -93,14 +94,13 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLFrameElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLFrameElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLFrameElement,
-                                    nsGenericHTMLFrameElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLFrameElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLFrameElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_INTERFACE_TABLE_HEAD(nsHTMLFrameElement,
+                                     nsGenericHTMLFrameElement)
+  NS_INTERFACE_TABLE_INHERITED1(nsHTMLFrameElement, nsIDOMHTMLFrameElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLFrameElement)
 
 
-NS_IMPL_DOM_CLONENODE(nsHTMLFrameElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLFrameElement)
 
 
 NS_IMPL_STRING_ATTR(nsHTMLFrameElement, FrameBorder, frameborder)
@@ -126,19 +126,19 @@ nsHTMLFrameElement::ParseAttribute(PRInt32 aNamespaceID,
                                    nsAttrValue& aResult)
 {
   if (aNamespaceID == kNameSpaceID_None) {
-    if (aAttribute == nsHTMLAtoms::bordercolor) {
+    if (aAttribute == nsGkAtoms::bordercolor) {
       return aResult.ParseColor(aValue, GetOwnerDoc());
     }
-    if (aAttribute == nsHTMLAtoms::frameborder) {
+    if (aAttribute == nsGkAtoms::frameborder) {
       return ParseFrameborderValue(aValue, aResult);
     }
-    if (aAttribute == nsHTMLAtoms::marginwidth) {
-      return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
+    if (aAttribute == nsGkAtoms::marginwidth) {
+      return aResult.ParseSpecialIntValue(aValue, PR_TRUE);
     }
-    if (aAttribute == nsHTMLAtoms::marginheight) {
-      return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
+    if (aAttribute == nsGkAtoms::marginheight) {
+      return aResult.ParseSpecialIntValue(aValue, PR_TRUE);
     }
-    if (aAttribute == nsHTMLAtoms::scrolling) {
+    if (aAttribute == nsGkAtoms::scrolling) {
       return ParseScrollingValue(aValue, aResult);
     }
   }

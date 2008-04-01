@@ -37,10 +37,10 @@
 #include "nsIDOMHTMLTableCellElement.h"
 #include "nsIDOMHTMLTableRowElement.h"
 #include "nsIDOMHTMLCollection.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsMappedAttributes.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 #include "nsRuleData.h"
@@ -57,7 +57,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -75,6 +75,8 @@ public:
   virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 
 protected:
   // This does not return a nsresult since all we care about is if we
@@ -102,13 +104,14 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLTableCellElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLTableCellElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLTableCellElement, nsGenericHTMLElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLTableCellElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLTableCellElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_INTERFACE_TABLE_HEAD(nsHTMLTableCellElement,
+                                     nsGenericHTMLElement)
+  NS_INTERFACE_TABLE_INHERITED1(nsHTMLTableCellElement,
+                                nsIDOMHTMLTableCellElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLTableCellElement)
 
 
-NS_IMPL_DOM_CLONENODE(nsHTMLTableCellElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLTableCellElement)
 
 
 // protected method
@@ -136,7 +139,7 @@ nsHTMLTableCellElement::GetTable()
     nsIContent* section = parent->GetParent();
     if (section) {
       if (section->IsNodeOfType(eHTML) &&
-          section->NodeInfo()->Equals(nsHTMLAtoms::table)) {
+          section->NodeInfo()->Equals(nsGkAtoms::table)) {
         // XHTML, without a row group
         result = section;
       } else {
@@ -179,7 +182,7 @@ nsHTMLTableCellElement::GetCellIndex(PRInt32* aCellIndex)
     nsCOMPtr<nsIDOMNode> node;
     cells->Item(i, getter_AddRefs(node));
 
-    if (node.get() == NS_STATIC_CAST(nsIDOMNode *, this)) {
+    if (node.get() == static_cast<nsIDOMNode *>(this)) {
       *aCellIndex = i;
       found = PR_TRUE;
     }
@@ -229,7 +232,7 @@ NS_IMPL_STRING_ATTR(nsHTMLTableCellElement, Width, width)
 NS_IMETHODIMP
 nsHTMLTableCellElement::GetAlign(nsAString& aValue)
 {
-  if (!GetAttr(kNameSpaceID_None, nsHTMLAtoms::align, aValue)) {
+  if (!GetAttr(kNameSpaceID_None, nsGkAtoms::align, aValue)) {
     // There's no align attribute, ask the row for the alignment.
 
     nsCOMPtr<nsIDOMHTMLTableRowElement> row;
@@ -246,7 +249,7 @@ nsHTMLTableCellElement::GetAlign(nsAString& aValue)
 NS_IMETHODIMP
 nsHTMLTableCellElement::SetAlign(const nsAString& aValue)
 {
-  return SetAttr(kNameSpaceID_None, nsHTMLAtoms::align, aValue, PR_TRUE);
+  return SetAttr(kNameSpaceID_None, nsGkAtoms::align, aValue, PR_TRUE);
 }
 
 
@@ -271,11 +274,11 @@ nsHTMLTableCellElement::ParseAttribute(PRInt32 aNamespaceID,
     /* ignore these attributes, stored simply as strings
        abbr, axis, ch, headers
     */
-    if (aAttribute == nsHTMLAtoms::charoff) {
+    if (aAttribute == nsGkAtoms::charoff) {
       /* attributes that resolve to integers with a min of 0 */
       return aResult.ParseIntWithBounds(aValue, 0);
     }
-    if (aAttribute == nsHTMLAtoms::colspan) {
+    if (aAttribute == nsGkAtoms::colspan) {
       PRBool res = aResult.ParseIntWithBounds(aValue, -1);
       if (res) {
         PRInt32 val = aResult.GetIntegerValue();
@@ -288,7 +291,7 @@ nsHTMLTableCellElement::ParseAttribute(PRInt32 aNamespaceID,
       }
       return res;
     }
-    if (aAttribute == nsHTMLAtoms::rowspan) {
+    if (aAttribute == nsGkAtoms::rowspan) {
       PRBool res = aResult.ParseIntWithBounds(aValue, -1, MAX_ROWSPAN);
       if (res) {
         PRInt32 val = aResult.GetIntegerValue();
@@ -299,22 +302,22 @@ nsHTMLTableCellElement::ParseAttribute(PRInt32 aNamespaceID,
       }
       return res;
     }
-    if (aAttribute == nsHTMLAtoms::height) {
-      return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
+    if (aAttribute == nsGkAtoms::height) {
+      return aResult.ParseSpecialIntValue(aValue, PR_TRUE);
     }
-    if (aAttribute == nsHTMLAtoms::width) {
-      return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
+    if (aAttribute == nsGkAtoms::width) {
+      return aResult.ParseSpecialIntValue(aValue, PR_TRUE);
     }
-    if (aAttribute == nsHTMLAtoms::align) {
+    if (aAttribute == nsGkAtoms::align) {
       return ParseTableCellHAlignValue(aValue, aResult);
     }
-    if (aAttribute == nsHTMLAtoms::bgcolor) {
+    if (aAttribute == nsGkAtoms::bgcolor) {
       return aResult.ParseColor(aValue, GetOwnerDoc());
     }
-    if (aAttribute == nsHTMLAtoms::scope) {
+    if (aAttribute == nsGkAtoms::scope) {
       return aResult.ParseEnumValue(aValue, kCellScopeTable);
     }
-    if (aAttribute == nsHTMLAtoms::valign) {
+    if (aAttribute == nsGkAtoms::valign) {
       return ParseTableVAlignValue(aValue, aResult);
     }
   }
@@ -327,10 +330,10 @@ static
 void MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
                            nsRuleData* aData)
 {
-  if (aData->mSID == eStyleStruct_Position) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Position)) {
     // width: value
     if (aData->mPositionData->mWidth.GetUnit() == eCSSUnit_Null) {
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::width);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::width);
       if (value && value->Type() == nsAttrValue::eInteger) {
         if (value->GetIntegerValue() > 0)
           aData->mPositionData->mWidth.SetFloatValue((float)value->GetIntegerValue(), eCSSUnit_Pixel); 
@@ -345,7 +348,7 @@ void MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
 
     // height: value
     if (aData->mPositionData->mHeight.GetUnit() == eCSSUnit_Null) {
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::height);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::height);
       if (value && value->Type() == nsAttrValue::eInteger) {
         if (value->GetIntegerValue() > 0)
           aData->mPositionData->mHeight.SetFloatValue((float)value->GetIntegerValue(), eCSSUnit_Pixel);
@@ -358,29 +361,29 @@ void MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
       }
     }
   }
-  else if (aData->mSID == eStyleStruct_Text) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Text)) {
     if (aData->mTextData->mTextAlign.GetUnit() == eCSSUnit_Null) {
       // align: enum
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::align);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::align);
       if (value && value->Type() == nsAttrValue::eEnum)
         aData->mTextData->mTextAlign.SetIntValue(value->GetEnumValue(), eCSSUnit_Enumerated);
     }
 
     if (aData->mTextData->mWhiteSpace.GetUnit() == eCSSUnit_Null) {
       // nowrap: enum
-      if (aAttributes->GetAttr(nsHTMLAtoms::nowrap)) {
+      if (aAttributes->GetAttr(nsGkAtoms::nowrap)) {
         // See if our width is not a integer width.
-        const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::width);
+        const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::width);
         nsCompatibility mode = aData->mPresContext->CompatibilityMode();
         if (!value || value->Type() != nsAttrValue::eInteger || eCompatibility_NavQuirks != mode)
           aData->mTextData->mWhiteSpace.SetIntValue(NS_STYLE_WHITESPACE_NOWRAP, eCSSUnit_Enumerated);
       }
     }
   }
-  else if (aData->mSID == eStyleStruct_TextReset) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(TextReset)) {
     if (aData->mTextData->mVerticalAlign.GetUnit() == eCSSUnit_Null) {
       // valign: enum
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::valign);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::valign);
       if (value && value->Type() == nsAttrValue::eEnum)
         aData->mTextData->mVerticalAlign.SetIntValue(value->GetEnumValue(), eCSSUnit_Enumerated);
     }
@@ -394,19 +397,19 @@ NS_IMETHODIMP_(PRBool)
 nsHTMLTableCellElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
   static const MappedAttributeEntry attributes[] = {
-    { &nsHTMLAtoms::align }, 
-    { &nsHTMLAtoms::valign },
-    { &nsHTMLAtoms::nowrap },
+    { &nsGkAtoms::align }, 
+    { &nsGkAtoms::valign },
+    { &nsGkAtoms::nowrap },
 #if 0
     // XXXldb If these are implemented, they might need to move to
     // GetAttributeChangeHint (depending on how, and preferably not).
-    { &nsHTMLAtoms::abbr },
-    { &nsHTMLAtoms::axis },
-    { &nsHTMLAtoms::headers },
-    { &nsHTMLAtoms::scope },
+    { &nsGkAtoms::abbr },
+    { &nsGkAtoms::axis },
+    { &nsGkAtoms::headers },
+    { &nsGkAtoms::scope },
 #endif
-    { &nsHTMLAtoms::width },
-    { &nsHTMLAtoms::height },
+    { &nsGkAtoms::width },
+    { &nsGkAtoms::height },
     { nsnull }
   };
 

@@ -44,49 +44,80 @@ txTextHandler::txTextHandler(MBool aOnlyText) : mLevel(0),
 {
 }
 
-txTextHandler::~txTextHandler()
+nsresult
+txTextHandler::attribute(nsIAtom* aPrefix, nsIAtom* aLocalName,
+                         nsIAtom* aLowercaseLocalName, PRInt32 aNsID,
+                         const nsString& aValue)
 {
+    return NS_OK;
 }
 
-void txTextHandler::attribute(const nsAString& aName,
-                              const PRInt32 aNsID,
-                              const nsAString& aValue)
+nsresult
+txTextHandler::attribute(nsIAtom* aPrefix, const nsSubstring& aLocalName,
+                         const PRInt32 aNsID,
+                         const nsString& aValue)
 {
+    return NS_OK;
 }
 
-void txTextHandler::characters(const nsAString& aData, PRBool aDOE)
+nsresult
+txTextHandler::characters(const nsSubstring& aData, PRBool aDOE)
 {
     if (mLevel == 0)
         mValue.Append(aData);
+
+    return NS_OK;
 }
 
-void txTextHandler::comment(const nsAString& aData)
+nsresult
+txTextHandler::comment(const nsString& aData)
 {
+    return NS_OK;
 }
 
-void txTextHandler::endDocument(nsresult aResult)
+nsresult
+txTextHandler::endDocument(nsresult aResult)
 {
+    return NS_OK;
 }
 
-void txTextHandler::endElement(const nsAString& aName,
-                               const PRInt32 aNsID)
+nsresult
+txTextHandler::endElement()
 {
     if (mOnlyText)
         --mLevel;
+
+    return NS_OK;
 }
 
-void txTextHandler::processingInstruction(const nsAString& aTarget,
-                                          const nsAString& aData)
+nsresult
+txTextHandler::processingInstruction(const nsString& aTarget, const nsString& aData)
 {
+    return NS_OK;
 }
 
-void txTextHandler::startDocument()
+nsresult
+txTextHandler::startDocument()
 {
+    return NS_OK;
 }
 
-void txTextHandler::startElement(const nsAString& aName,
-                                 const PRInt32 aNsID)
+nsresult
+txTextHandler::startElement(nsIAtom* aPrefix, nsIAtom* aLocalName,
+                            nsIAtom* aLowercaseLocalName, const PRInt32 aNsID)
 {
     if (mOnlyText)
         ++mLevel;
+
+    return NS_OK;
+}
+
+nsresult
+txTextHandler::startElement(nsIAtom* aPrefix, const nsSubstring& aLocalName,
+                            const PRInt32 aNsID)
+{
+    if (mOnlyText)
+        ++mLevel;
+
+    return NS_OK;
 }

@@ -36,10 +36,16 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#ifndef nsXBLBinding_h_
+#define nsXBLBinding_h_
+
 #include "nsCOMPtr.h"
 #include "nsAutoPtr.h"
 #include "nsIDOMNodeList.h"
 #include "nsIStyleRuleProcessor.h"
+#include "nsClassHashtable.h"
+#include "nsTArray.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsXBLPrototypeBinding;
 class nsIContent;
@@ -47,6 +53,8 @@ class nsIAtom;
 class nsIDocument;
 class nsIScriptContext;
 class nsObjectHashtable;
+class nsXBLInsertionPoint;
+typedef nsTArray<nsRefPtr<nsXBLInsertionPoint> > nsInsertionPointList;
 struct JSContext;
 struct JSObject;
 
@@ -88,8 +96,10 @@ public:
     return mRefCnt;
   }
 
+  NS_DECL_CYCLE_COLLECTION_NATIVE_CLASS(nsXBLBinding)
+
   nsXBLPrototypeBinding* PrototypeBinding() { return mPrototypeBinding; }
-  nsIContent* GetAnonymousContent() { return mContent; }
+  nsIContent* GetAnonymousContent() { return mContent.get(); }
 
   nsXBLBinding* GetBaseBinding() { return mNextBinding; }
   void SetBaseBinding(nsXBLBinding *aBinding);
@@ -110,21 +120,26 @@ public:
 
   void GenerateAnonymousContent();
   void InstallAnonymousContent(nsIContent* aAnonParent, nsIContent* aElement);
-  void InstallEventHandlers();
-  nsresult InstallImplementation();
+  nsresult EnsureScriptAPI();
 
   void ExecuteAttachedHandler();
   void ExecuteDetachedHandler();
   void UnhookEventHandlers();
 
   nsIAtom* GetBaseTag(PRInt32* aNameSpaceID);
-  nsXBLBinding* GetFirstBindingWithConstructor();
   nsXBLBinding* RootBinding();
   nsXBLBinding* GetFirstStyleBinding();
 
-  // Get the list of insertion points for aParent.  The nsVoidArray is owned
-  // by the binding, you should not delete it.
-  nsresult GetInsertionPointsFor(nsIContent* aParent, nsVoidArray** aResult);
+  // Resolve all the fields for this binding and all ancestor bindings on the
+  // object |obj|.  False return means a JS exception was set.
+  PRBool ResolveAllFields(JSContext *cx, JSObject *obj) const;
+
+  // Get the list of insertion points for aParent. The nsInsertionPointList
+  // is owned by the binding, you should not delete it.
+  nsresult GetInsertionPointsFor(nsIContent* aParent,
+                                 nsInsertionPointList** aResult);
+
+  nsInsertionPointList* GetExistingInsertionPointsFor(nsIContent* aParent);
 
   nsIContent* GetInsertionPoint(nsIContent* aChild, PRUint32* aIndex);
 
@@ -140,22 +155,24 @@ public:
 
   already_AddRefed<nsIDOMNodeList> GetAnonymousNodes();
 
-  static nsresult GetTextData(nsIContent *aParent, nsString& aResult);
-
   static nsresult DoInitJSClass(JSContext *cx, JSObject *global, JSObject *obj,
                                 const nsAFlatCString& aClassName,
+                                nsXBLPrototypeBinding* aProtoBinding,
                                 void **aClassObject);
 
-// Internal member functions
-protected:
-  nsresult InitClass(const nsCString& aClassName, nsIScriptContext* aContext,
-                     nsIDocument* aDocument, void** aScriptObject,
-                     void** aClassObject);
-
   PRBool AllowScripts();  // XXX make const
-  
+
+  void RemoveInsertionParent(nsIContent* aParent);
+  PRBool HasInsertionParent(nsIContent* aParent);
+
 // MEMBER VARIABLES
 protected:
+  // These two functions recursively install the event handlers
+  // and implementation on this binding and its base class bindings.
+  // External callers should call EnsureScriptAPI instead.
+  void InstallEventHandlers();
+  nsresult InstallImplementation();
+
   nsAutoRefCnt mRefCnt;
   nsXBLPrototypeBinding* mPrototypeBinding; // Weak, but we're holding a ref to the docinfo
   nsCOMPtr<nsIContent> mContent; // Strong. Our anonymous content stays around with us.
@@ -163,8 +180,12 @@ protected:
   
   nsIContent* mBoundElement; // [WEAK] We have a reference, but we don't own it.
   
-  nsObjectHashtable* mInsertionPointTable;    // A hash from nsIContent* -> (a sorted array of nsXBLInsertionPoint*)
+  // A hash from nsIContent* -> (a sorted array of nsXBLInsertionPoint)
+  nsClassHashtable<nsISupportsHashKey, nsInsertionPointList>* mInsertionPointTable;
 
   PRPackedBool mIsStyleBinding;
   PRPackedBool mMarkedForDeath;
+  PRPackedBool mInstalledAPI;
 };
+
+#endif // nsXBLBinding_h_
