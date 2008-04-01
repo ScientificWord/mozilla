@@ -50,9 +50,7 @@ valueInterfaceInitCB(AtkValueIface *aIface)
     aIface->get_current_value = getCurrentValueCB;
     aIface->get_maximum_value = getMaximumValueCB;
     aIface->get_minimum_value = getMinimumValueCB;
-#ifdef USE_ATK_VALUE_MINIMUMINCREMENT
     aIface->get_minimum_increment = getMinimumIncrementCB;
-#endif
     aIface->set_current_value = setCurrentValueCB;
 }
 
@@ -119,7 +117,6 @@ getMinimumValueCB(AtkValue *obj, GValue *value)
     g_value_set_double (value, accDouble);
 }
 
-#ifdef USE_ATK_VALUE_MINIMUMINCREMENT
 void
 getMinimumIncrementCB(AtkValue *obj, GValue *minimumIncrement)
 {
@@ -133,20 +130,20 @@ getMinimumIncrementCB(AtkValue *obj, GValue *minimumIncrement)
     if (!accValue)
         return;
 
-    memset (accValue,  0, sizeof (GValue));
+    memset (minimumIncrement,  0, sizeof (GValue));
     double accDouble;
     if (NS_FAILED(accValue->GetMinimumIncrement(&accDouble)))
         return;
     g_value_init (minimumIncrement, G_TYPE_DOUBLE);
     g_value_set_double (minimumIncrement, accDouble);
 }
-#endif
 
 gboolean
 setCurrentValueCB(AtkValue *obj, const GValue *value)
 {
     nsAccessibleWrap *accWrap = GetAccessibleWrap(ATK_OBJECT(obj));
-    NS_ENSURE_TRUE(accWrap, FALSE);
+    if (!accWrap)
+        return FALSE;
 
     nsCOMPtr<nsIAccessibleValue> accValue;
     accWrap->QueryInterface(NS_GET_IID(nsIAccessibleValue),

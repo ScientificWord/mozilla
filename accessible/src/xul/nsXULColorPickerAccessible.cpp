@@ -58,18 +58,23 @@ nsFormControlAccessible(aNode, aShell)
   */
 NS_IMETHODIMP nsXULColorPickerTileAccessible::GetRole(PRUint32 *_retval)
 {
-  *_retval = ROLE_PUSHBUTTON;
+  *_retval = nsIAccessibleRole::ROLE_PUSHBUTTON;
   return NS_OK;
 }
 
 /**
   * Possible states: focused, focusable, selected
   */
-NS_IMETHODIMP nsXULColorPickerTileAccessible::GetState(PRUint32 *_retval)
+NS_IMETHODIMP
+nsXULColorPickerTileAccessible::GetState(PRUint32 *aState, PRUint32 *aExtraState)
 {
   // get focus and disable status from base class
-  nsFormControlAccessible::GetState(_retval);
-  *_retval |= STATE_FOCUSABLE;
+  nsresult rv = nsFormControlAccessible::GetState(aState, aExtraState);
+  NS_ENSURE_SUCCESS(rv, rv);
+  if (!mDOMNode)
+    return NS_OK;
+
+  *aState |= nsIAccessibleStates::STATE_FOCUSABLE;
 
   // Focused?
   nsCOMPtr<nsIDOMElement> element(do_QueryInterface(mDOMNode));
@@ -77,12 +82,12 @@ NS_IMETHODIMP nsXULColorPickerTileAccessible::GetState(PRUint32 *_retval)
   PRBool isFocused = PR_FALSE;
   element->HasAttribute(NS_LITERAL_STRING("hover"), &isFocused);
   if (isFocused)
-    *_retval |= STATE_FOCUSED;
+    *aState |= nsIAccessibleStates::STATE_FOCUSED;
 
   PRBool isSelected = PR_FALSE;
   element->HasAttribute(NS_LITERAL_STRING("selected"), &isSelected);
   if (isFocused)
-    *_retval |= STATE_SELECTED;
+    *aState |= nsIAccessibleStates::STATE_SELECTED;
 
   return NS_OK;
 }
@@ -94,6 +99,9 @@ NS_IMETHODIMP nsXULColorPickerTileAccessible::GetName(nsAString& _retval)
 
 NS_IMETHODIMP nsXULColorPickerTileAccessible::GetValue(nsAString& _retval)
 {
+  if (!mDOMNode)
+    return NS_ERROR_FAILURE;
+
   nsCOMPtr<nsIDOMElement> element(do_QueryInterface(mDOMNode));
   NS_ASSERTION(element, "No XUL Element for colorpicker");
   return element->GetAttribute(NS_LITERAL_STRING("color"), _retval);
@@ -114,18 +122,24 @@ nsXULColorPickerTileAccessible(aNode, aShell)
 /**
   * Possible states: focused, focusable, unavailable(disabled)
   */
-NS_IMETHODIMP nsXULColorPickerAccessible::GetState(PRUint32 *_retval)
+NS_IMETHODIMP
+nsXULColorPickerAccessible::GetState(PRUint32 *aState, PRUint32 *aExtraState)
 {
   // get focus and disable status from base class
-  nsFormControlAccessible::GetState(_retval);
-  *_retval |= STATE_FOCUSABLE | STATE_HASPOPUP;
+  nsresult rv = nsFormControlAccessible::GetState(aState, aExtraState);
+  NS_ENSURE_SUCCESS(rv, rv);
+  if (!mDOMNode)
+    return NS_OK;
+
+  *aState |= nsIAccessibleStates::STATE_FOCUSABLE |
+             nsIAccessibleStates::STATE_HASPOPUP;
 
   return NS_OK;
 }
 
 NS_IMETHODIMP nsXULColorPickerAccessible::GetRole(PRUint32 *_retval)
 {
-  *_retval = ROLE_BUTTONDROPDOWNGRID;
+  *_retval = nsIAccessibleRole::ROLE_BUTTONDROPDOWNGRID;
   return NS_OK;
 }
 
