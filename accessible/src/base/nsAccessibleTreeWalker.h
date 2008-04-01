@@ -47,7 +47,6 @@
 #include "nsIAccessible.h"
 #include "nsIDOMNodeList.h"
 #include "nsIAccessibilityService.h"
-#include "nsIBindingManager.h"
 #include "nsIWeakReference.h"
 
 enum { eSiblingsUninitialized = -1, eSiblingsWalkFrames = -2 };
@@ -75,14 +74,12 @@ public:
   virtual ~nsAccessibleTreeWalker();
 
   NS_IMETHOD GetNextSibling();
-  NS_IMETHOD GetParent();
   NS_IMETHOD GetFirstChild();
 
   WalkState mState;
 
 protected:
   PRBool GetAccessible();
-  NS_IMETHOD GetFullTreeParentNode(nsIDOMNode *aChildNode, nsIDOMNode **aParentNodeOut);
   void GetKids(nsIDOMNode *aParent);
 
   void ClearState();
@@ -94,7 +91,7 @@ protected:
 
   nsCOMPtr<nsIWeakReference> mWeakShell;
   nsCOMPtr<nsIAccessibilityService> mAccService;
-  nsCOMPtr<nsIBindingManager> mBindingManager;
+  PRBool mWalkAnonContent;
 };
 
 #endif 

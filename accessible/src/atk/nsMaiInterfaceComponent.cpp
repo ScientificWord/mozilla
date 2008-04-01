@@ -40,6 +40,12 @@
 
 #include "nsMaiInterfaceComponent.h"
 #include "nsAccessibleWrap.h"
+#include "nsIDOMDocument.h"
+#include "nsIDOMDocumentView.h"
+#include "nsIDOMAbstractView.h"
+#include "nsIDOMWindowInternal.h"
+#include "nsIDocShellTreeItem.h"
+#include "nsIInterfaceRequestorUtils.h"
 
 void
 componentInterfaceInitCB(AtkComponentIface *aIface)
@@ -63,25 +69,28 @@ refAccessibleAtPointCB(AtkComponent *aComponent,
                        AtkCoordType aCoordType)
 {
     nsAccessibleWrap *accWrap = GetAccessibleWrap(ATK_OBJECT(aComponent));
-    NS_ENSURE_TRUE(accWrap, nsnull);
+    if (!accWrap || nsAccessibleWrap::MustPrune(accWrap))
+        return nsnull;
 
-    // or ATK_XY_SCREEN  what is definition this in nsIAccessible ???
+    // nsIAccessible getChildAtPoint (x,y) is in screen pixels.
     if (aCoordType == ATK_XY_WINDOW) {
-        /* deal with the coord type */
+        nsCOMPtr<nsIDOMNode> domNode;
+        accWrap->GetDOMNode(getter_AddRefs(domNode));
+        nsIntPoint winCoords = nsAccUtils::GetScreenCoordsForWindow(domNode);
+        aAccX += winCoords.x;
+        aAccY += winCoords.y;
     }
 
     nsCOMPtr<nsIAccessible> pointAcc;
-    nsresult rv = accWrap->GetChildAtPoint(aAccX, aAccY, getter_AddRefs(pointAcc));
-    if (NS_FAILED(rv))
+    accWrap->GetChildAtPoint(aAccX, aAccY, getter_AddRefs(pointAcc));
+    if (!pointAcc) {
         return nsnull;
+    }
 
-    nsIAccessible *tmpAcc = pointAcc;
-    nsAccessibleWrap *tmpAccWrap =
-        NS_STATIC_CAST(nsAccessibleWrap *, tmpAcc);
-    AtkObject *atkObj = tmpAccWrap->GetAtkObject();
-    if (!atkObj)
-        return nsnull;
-    g_object_ref(atkObj);
+    AtkObject *atkObj = nsAccessibleWrap::GetAtkObject(pointAcc);
+    if (atkObj) {
+        g_object_ref(atkObj);
+    }
     return atkObj;
 }
 
@@ -93,18 +102,24 @@ getExtentsCB(AtkComponent *aComponent,
              gint *aAccHeight,
              AtkCoordType aCoordType)
 {
+    *aAccX = *aAccY = *aAccWidth = *aAccHeight = 0;
+
     nsAccessibleWrap *accWrap = GetAccessibleWrap(ATK_OBJECT(aComponent));
     if (!accWrap)
         return;
 
     PRInt32 nsAccX, nsAccY, nsAccWidth, nsAccHeight;
+    // Returned in screen coordinates
     nsresult rv = accWrap->GetBounds(&nsAccX, &nsAccY,
-                                           &nsAccWidth, &nsAccHeight);
+                                     &nsAccWidth, &nsAccHeight);
     if (NS_FAILED(rv))
         return;
-    // or ATK_XY_SCREEN  what is definition this in nsIAccessible?
     if (aCoordType == ATK_XY_WINDOW) {
-        /* deal with the coord type */
+        nsCOMPtr<nsIDOMNode> domNode;
+        accWrap->GetDOMNode(getter_AddRefs(domNode));
+        nsIntPoint winCoords = nsAccUtils::GetScreenCoordsForWindow(domNode);
+        nsAccX -= winCoords.x;
+        nsAccY -= winCoords.y;
     }
 
     *aAccX = nsAccX;
@@ -117,7 +132,8 @@ gboolean
 grabFocusCB(AtkComponent *aComponent)
 {
     nsAccessibleWrap *accWrap = GetAccessibleWrap(ATK_OBJECT(aComponent));
-    NS_ENSURE_TRUE(accWrap, FALSE);
+    if (!accWrap)
+        return FALSE;
 
     nsresult rv = accWrap->TakeFocus();
     return (NS_FAILED(rv)) ? FALSE : TRUE;

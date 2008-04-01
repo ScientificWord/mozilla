@@ -46,13 +46,15 @@ MODULE = accessibility
 LIBRARY_NAME = accessibility_base_s
 LIBXUL_LIBRARY = 1
 
-REQUIRES	= commandhandler \
+REQUIRES	= appshell \
+		  commandhandler \
 		  composer \
 		  content \
 		  docshell \
 		  dom \
 		  editor \
 		  gfx \
+		  thebes \
 		  intl \
 		  layout \
 		  locale \
@@ -73,15 +75,19 @@ REQUIRES	= commandhandler \
 CPPSRCS = \
   nsAccessNode.cpp \
   nsAccessibleEventData.cpp \
+  nsARIAMap.cpp \
   nsDocAccessible.cpp \
   nsOuterDocAccessible.cpp \
   nsAccessibilityAtoms.cpp \
+  nsAccessibilityUtils.cpp \
   nsAccessibilityService.cpp \
   nsAccessible.cpp \
+  nsAccessibleRelation.cpp \
   nsAccessibleTreeWalker.cpp \
   nsBaseWidgetAccessible.cpp \
   nsFormControlAccessible.cpp \
   nsRootAccessible.cpp \
+  nsApplicationAccessible.cpp \
   nsCaretAccessible.cpp \
   nsTextAccessible.cpp \
   $(NULL)
@@ -104,6 +110,10 @@ LOCAL_INCLUDES += \
   -I$(srcdir)/../../../layout/generic \
   -I$(srcdir)/../../../layout/xul/base/src \
   $(NULL)
+
+ifndef DISABLE_XFORMS_HOOKS
+LOCAL_INCLUDES += -I$(srcdir)/../xforms
+endif
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),gtk2)
 LOCAL_INCLUDES += \

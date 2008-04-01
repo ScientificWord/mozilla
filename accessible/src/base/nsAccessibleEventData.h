@@ -22,6 +22,7 @@
  * Contributor(s):
  *   Kyle Yuan (kyle.yuan@sun.com)
  *   John Sun (john.sun@sun.com)
+ *   Alexander Surkov <surkov.alexander@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -45,91 +46,138 @@
 #include "nsIAccessible.h"
 #include "nsIAccessibleDocument.h"
 #include "nsIDOMNode.h"
+#include "nsString.h"
 
-class nsAccessibleEventData: public nsIAccessibleEvent
+class nsIPresShell;
+
+class nsAccEvent: public nsIAccessibleEvent
 {
-  public:
-    // Initialize with an nsIAccessible
-    nsAccessibleEventData(PRUint32 aEventType, nsIAccessible *aAccessible, 
-                          nsIAccessibleDocument *aDocAccessible, 
-                          void *aEventData);
-    // Initialize with an nsIDOMNode
-    nsAccessibleEventData(PRUint32 aEventType, nsIDOMNode *aDOMNode,
-                          nsIAccessibleDocument *aDocAccessible,
-                          void *aEventData);
-    virtual ~nsAccessibleEventData() {};
+public:
+  // Initialize with an nsIAccessible
+  nsAccEvent(PRUint32 aEventType, nsIAccessible *aAccessible, PRBool aIsAsynch = PR_FALSE);
+  // Initialize with an nsIDOMNode
+  nsAccEvent(PRUint32 aEventType, nsIDOMNode *aDOMNode, PRBool aIsAsynch = PR_FALSE);
+  virtual ~nsAccEvent() {}
 
-    NS_DECL_ISUPPORTS
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIACCESSIBLEEVENT
 
-    //nsIAccessibleEvent
-    NS_IMETHOD GetEventType(PRUint32 *aEventType) {*aEventType = mEventType; return NS_OK;}
-    NS_IMETHOD GetAccessible(nsIAccessible **aAccessible);
-    NS_IMETHOD GetAccessibleDocument(nsIAccessibleDocument **aDocAccessible) 
-      {NS_ADDREF(*aDocAccessible = mDocAccessible); return NS_OK;}
-    NS_IMETHOD GetDOMNode(nsIDOMNode **aDOMNode);
+  static void GetLastEventAttributes(nsIDOMNode *aNode,
+                                     nsIPersistentProperties *aAttributes);
 
-  private:
-    PRUint32 mEventType;
-    nsCOMPtr<nsIAccessible> mAccessible;
-    nsCOMPtr<nsIDOMNode> mDOMNode;
-    nsCOMPtr<nsIAccessibleDocument> mDocAccessible;
-    void *mEventData;
+protected:
+  already_AddRefed<nsIAccessible> GetAccessibleByNode();
+
+  void CaptureIsFromUserInput(PRBool aIsAsynch);
+  PRBool mIsFromUserInput;
+
+private:
+  PRUint32 mEventType;
+  nsCOMPtr<nsIAccessible> mAccessible;
+  nsCOMPtr<nsIDOMNode> mDOMNode;
+  nsCOMPtr<nsIAccessibleDocument> mDocAccessible;
+
+  static PRBool gLastEventFromUserInput;
+  static nsIDOMNode* gLastEventNodeWeak;
+
+public:
+  static void ResetLastInputState()
+   {gLastEventFromUserInput = PR_FALSE; gLastEventNodeWeak = nsnull; }
+
+  /**
+   * Find and cache the last input state. This will be called automatically
+   * for synchronous events. For asynchronous events it should be
+   * called from the synchronous code which is the true source of the event,
+   * before the event is fired.
+   * @param aChangeNode that event will be on
+   * @param aForceIsFromUserInput  PR_TRUE if the caller knows that this event was
+   *                               caused by user input
+   */
+  static void PrepareForEvent(nsIDOMNode *aChangeNode,
+                              PRBool aForceIsFromUserInput = PR_FALSE);
+
+  /**
+   * The input state was previously stored with the nsIAccessibleEvent,
+   * so use that state now -- call this when about to flush an event that 
+   * was waiting in an event queue
+   */
+  static void PrepareForEvent(nsIAccessibleEvent *aEvent,
+                              PRBool aForceIsFromUserInput = PR_FALSE);
 };
 
-// XXX todo: We might want to use XPCOM interfaces instead of structs
-//     e.g., nsAccessibleTextChangeEvent: public nsIAccessibleTextChangeEvent
-//           
+class nsAccStateChangeEvent: public nsAccEvent,
+                             public nsIAccessibleStateChangeEvent
+{
+public:
+  nsAccStateChangeEvent(nsIAccessible *aAccessible,
+                        PRUint32 aState, PRBool aIsExtraState,
+                        PRBool aIsEnabled);
 
-struct AtkStateChange {
-  PRUint32 state;
-  PRUint32 extState;
-  PRBool   enable;
-  AtkStateChange() {
-    state = 0;
-    extState = 0;
-    enable = PR_FALSE;
-  }
+  nsAccStateChangeEvent(nsIDOMNode *aNode,
+                        PRUint32 aState, PRBool aIsExtraState,
+                        PRBool aIsEnabled);
+
+  nsAccStateChangeEvent(nsIDOMNode *aNode,
+                        PRUint32 aState, PRBool aIsExtraState);
+
+  NS_DECL_ISUPPORTS_INHERITED
+  NS_FORWARD_NSIACCESSIBLEEVENT(nsAccEvent::)
+  NS_DECL_NSIACCESSIBLESTATECHANGEEVENT
+
+private:
+  PRUint32 mState;
+  PRBool mIsExtraState;
+  PRBool mIsEnabled;
 };
 
-enum AtkProperty {
-  PROP_0,           // gobject convention
-  PROP_NAME,
-  PROP_DESCRIPTION,
-  PROP_PARENT,      // ancestry has changed
-  PROP_VALUE,
-  PROP_ROLE,
-  PROP_LAYER,
-  PROP_MDI_ZORDER,
-  PROP_TABLE_CAPTION,
-  PROP_TABLE_COLUMN_DESCRIPTION,
-  PROP_TABLE_COLUMN_HEADER,
-  PROP_TABLE_ROW_DESCRIPTION,
-  PROP_TABLE_ROW_HEADER,
-  PROP_TABLE_SUMMARY,
-  PROP_LAST         // gobject convention
+class nsAccTextChangeEvent: public nsAccEvent,
+                            public nsIAccessibleTextChangeEvent
+{
+public:
+  nsAccTextChangeEvent(nsIAccessible *aAccessible, PRInt32 aStart, PRUint32 aLength,
+                       PRBool aIsInserted, PRBool aIsAsynch = PR_FALSE);
+
+  NS_DECL_ISUPPORTS_INHERITED
+  NS_FORWARD_NSIACCESSIBLEEVENT(nsAccEvent::)
+  NS_DECL_NSIACCESSIBLETEXTCHANGEEVENT
+
+private:
+  PRInt32 mStart;
+  PRUint32 mLength;
+  PRBool mIsInserted;
+  nsString mModifiedText;
 };
 
-struct AtkPropertyChange {
-  PRInt32 type;     // property type as listed above 
-  void *oldvalue;  
-  void *newvalue;
+class nsAccCaretMoveEvent: public nsAccEvent,
+                           public nsIAccessibleCaretMoveEvent
+{
+public:
+  nsAccCaretMoveEvent(nsIAccessible *aAccessible, PRInt32 aCaretOffset);
+  nsAccCaretMoveEvent(nsIDOMNode *aNode);
+
+  NS_DECL_ISUPPORTS_INHERITED
+  NS_FORWARD_NSIACCESSIBLEEVENT(nsAccEvent::)
+  NS_DECL_NSIACCESSIBLECARETMOVEEVENT
+
+private:
+  PRInt32 mCaretOffset;
 };
 
-struct AtkChildrenChange {
-  PRInt32      index;  // index of child in parent 
-  nsIAccessible *child;   
-  PRBool        add;    // true for add, false for delete
+class nsAccTableChangeEvent : public nsAccEvent,
+                              public nsIAccessibleTableChangeEvent {
+public:
+  nsAccTableChangeEvent(nsIAccessible *aAccessible, PRUint32 aEventType,
+                        PRInt32 aRowOrColIndex, PRInt32 aNumRowsOrCols,
+                        PRBool aIsAsynch);
+
+  NS_DECL_ISUPPORTS
+  NS_FORWARD_NSIACCESSIBLEEVENT(nsAccEvent::)
+  NS_DECL_NSIACCESSIBLETABLECHANGEEVENT
+
+private:
+  PRUint32 mRowOrColIndex;   // the start row/column after which the rows are inserted/deleted.
+  PRUint32 mNumRowsOrCols;   // the number of inserted/deleted rows/columns
 };
 
-struct AtkTextChange {
-  PRInt32  start;
-  PRUint32 length;
-  PRBool   add;     // true for add, false for delete
-};
+#endif
 
-struct AtkTableChange {
-  PRUint32 index;   // the start row/column after which the rows are inserted/deleted.
-  PRUint32 count;   // the number of inserted/deleted rows/columns
-};
-
-#endif  
