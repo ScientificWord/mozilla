@@ -1,4 +1,3 @@
-#
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -12,18 +11,19 @@
 # for the specific language governing rights and limitations under the
 # License.
 #
-# The Original Code is mozilla.org code.
+# The Original Code is the Mozilla build system.
 #
 # The Initial Developer of the Original Code is
-# Netscape Communications Corporation.
-# Portions created by the Initial Developer are Copyright (C) 1998
+# the Mozilla Foundation <http://www.mozilla.org/>.
+# Portions created by the Initial Developer are Copyright (C) 2006
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
+#   Benjamin Smedberg <benjamin@smedbergs.us> (Initial Code)
 #
 # Alternatively, the contents of this file may be used under the terms of
-# either of the GNU General Public License Version 2 or later (the "GPL"),
-# or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# either the GNU General Public License Version 2 or later (the "GPL"), or
+# the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
 # in which case the provisions of the GPL or the LGPL are applicable instead
 # of those above. If you wish to allow use of your version of this file only
 # under the terms of either the GPL or the LGPL, and not to allow others to
@@ -35,50 +35,13 @@
 #
 # ***** END LICENSE BLOCK *****
 
-DEPTH		= ../..
-topsrcdir	= @top_srcdir@
-srcdir		= @srcdir@
-VPATH		= @srcdir@
+TIERS += nspr
 
-include $(DEPTH)/config/autoconf.mk
-
-# undefine (as best we can, thanks gmake!) so we don't need build_number
-MOZILLA_OFFICIAL =
-BUILD_OFFICIAL   =
-MODULE		 = mkdepend
-HOST_PROGRAM	 = mkdepend$(BIN_SUFFIX)
-ifdef GNU_CC
-MODULE_OPTIMIZE_FLAGS = -O3
-else
-ifeq ($(OS_ARCH),SunOS)
-MODULE_OPTIMIZE_FLAGS = -fast
-endif
+ifdef GC_LEAK_DETECTOR
+tier_nspr_staticdirs = gc/boehm
 endif
 
-ifeq ($(OS_ARCH),WINNT)
-ifndef GNU_CC
-MODULE_OPTIMIZE_FLAGS = -Ox
+ifndef MOZ_NATIVE_NSPR
+tier_nspr_staticdirs += nsprpub
+tier_nspr_dirs += config/nspr
 endif
-endif
-
-HOST_CSRCS	= \
-		cppsetup.c \
-		ifparser.c \
-		include.c \
-		main.c \
-		parse.c \
-		pr.c \
-		$(NULL)
-
-include $(topsrcdir)/config/rules.mk
-
-HOST_CFLAGS	+= -DINCLUDEDIR=\"/usr/include\" -DOBJSUFFIX=\".$(OBJ_SUFFIX)\"
-
-ifdef GNU_CC
-_GCCDIR		= $(shell $(CC) -print-file-name=include)
-HOST_CFLAGS	+= -DPREINCDIR=\"$(_GCCDIR)\"
-endif
-
-export:: $(HOST_PROGRAM)
-
-$(HOST_OBJS): def.h ifparser.h imakemdep.h
