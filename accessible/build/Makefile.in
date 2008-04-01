@@ -73,8 +73,13 @@ ifdef MOZ_XUL
 SHARED_LIBRARY_LIBS += ../src/xul/$(LIB_PREFIX)accessibility_xul_s.$(LIB_SUFFIX)
 endif
 
+ifndef DISABLE_XFORMS_HOOKS
+SHARED_LIBRARY_LIBS += ../src/xforms/$(LIB_PREFIX)accessibility_xforms_s.$(LIB_SUFFIX)
+endif
+
 EXTRA_DSO_LIBS = \
 	gkgfx \
+	thebes \
 	$(NULL)
 
 EXTRA_DSO_LDOPTS =           \
@@ -86,6 +91,10 @@ EXTRA_DSO_LDOPTS =           \
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),gtk2)
 EXTRA_DSO_LDOPTS += $(MOZ_GTK2_LIBS)
+endif
+
+ifeq ($(OS_ARCH),WINNT)
+OS_LIBS += oleaut32.lib
 endif
 
 include $(topsrcdir)/config/rules.mk
