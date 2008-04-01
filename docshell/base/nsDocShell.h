@@ -44,8 +44,6 @@
 #include "nsIPresShell.h"
 #include "nsIDOMNode.h"
 #include "nsIDOMNodeList.h"
-#include "nsIViewManager.h"
-#include "nsIScrollableView.h"
 #include "nsIContentViewer.h"
 #include "nsIPrefBranch.h"
 #include "nsVoidArray.h"
@@ -106,6 +104,10 @@
 #include "nsISecureBrowserUI.h"
 #include "nsIObserver.h"
 #include "nsDocShellLoadTypes.h"
+#include "nsPIDOMEventTarget.h"
+#include "nsIURIClassifier.h"
+
+class nsIScrollableView;
 
 /* load commands were moved to nsIDocShell.h */
 /* load types were moved to nsDocShellLoadTypes.h */
@@ -140,6 +142,29 @@ protected:
     virtual ~nsRefreshTimer();
 };
 
+class nsClassifierCallback : public nsIURIClassifierCallback
+                           , public nsIRunnable
+{
+public:
+    nsClassifierCallback() {}
+    ~nsClassifierCallback() {}
+
+    NS_DECL_ISUPPORTS
+    NS_DECL_NSIURICLASSIFIERCALLBACK
+    NS_DECL_NSIRUNNABLE
+
+    void SetChannel(nsIChannel * aChannel)
+        { mChannel = aChannel; }
+
+    void Cancel();
+private:
+    nsCOMPtr<nsIChannel> mChannel;
+    nsCOMPtr<nsIChannel> mSuspendedChannel;
+
+    void MarkEntryClassified(nsresult status);
+    PRBool HasBeenClassified();
+};
+
 //*****************************************************************************
 //***    nsDocShell
 //*****************************************************************************
@@ -147,7 +172,6 @@ protected:
 class nsDocShell : public nsDocLoader,
                    public nsIDocShell,
                    public nsIDocShellTreeItem, 
-                   public nsIDocShellTreeNode,
                    public nsIDocShellHistory,
                    public nsIWebNavigation,
                    public nsIBaseWindow, 
@@ -219,8 +243,9 @@ protected:
 
     // Content Viewer Management
     NS_IMETHOD EnsureContentViewer();
-    NS_IMETHOD EnsureDeviceContext();
-    nsresult CreateAboutBlankContentViewer();
+    // aPrincipal can be passed in if the caller wants.  If null is
+    // passed in, the about:blank principal will end up being used.
+    nsresult CreateAboutBlankContentViewer(nsIPrincipal* aPrincipal);
     NS_IMETHOD CreateContentViewer(const char * aContentType, 
         nsIRequest * request, nsIStreamListener ** aContentHandler);
     NS_IMETHOD NewContentViewerObj(const char * aContentType, 
@@ -231,7 +256,18 @@ protected:
     void SetupReferrerFromChannel(nsIChannel * aChannel);
     
     NS_IMETHOD GetEldestPresContext(nsPresContext** aPresContext);
-    void GetCurrentDocumentOwner(nsISupports ** aOwner);
+
+    // Get the principal that we'll set on the channel if we're inheriting.  If
+    // aConsiderCurrentDocument is true, we try to use the current document if
+    // at all possible.  If that fails, we fall back on the parent document.
+    // If that fails too, we force creation of a content viewer and use the
+    // resulting principal.  If aConsiderCurrentDocument is false, we just look
+    // at the parent.
+    nsIPrincipal* GetInheritedPrincipal(PRBool aConsiderCurrentDocument);
+
+    // Actually open a channel and perform a URI load.  Note: whatever owner is
+    // passed to this function will be set on the channel.  Callers who wish to
+    // not have an owner on the channel should just pass null.
     virtual nsresult DoURILoad(nsIURI * aURI,
                                nsIURI * aReferrer,
                                PRBool aSendReferrer,
@@ -242,11 +278,19 @@ protected:
                                PRBool firstParty,
                                nsIDocShell ** aDocShell,
                                nsIRequest ** aRequest,
-                               PRBool aIsNewWindowTarget);
+                               PRBool aIsNewWindowTarget,
+                               PRBool aBypassClassifier);
     NS_IMETHOD AddHeadersToChannel(nsIInputStream * aHeadersData, 
                                   nsIChannel * aChannel);
     virtual nsresult DoChannelLoad(nsIChannel * aChannel,
-                                   nsIURILoader * aURILoader);
+                                   nsIURILoader * aURILoader,
+                                   PRBool aBypassClassifier);
+
+    // Check the channel load against the URI classifier service (if it
+    // exists).  The channel will be suspended until the classification is
+    // complete.
+    nsresult CheckClassifier(nsIChannel *aChannel);
+
     NS_IMETHOD ScrollIfAnchor(nsIURI * aURI, PRBool * aWasAnchor,
                               PRUint32 aLoadType, nscoord *cx, nscoord *cy);
 
@@ -337,11 +381,6 @@ protected:
                                        WalkHistoryEntriesFunc aCallback,
                                        void *aData);
 
-    // For each child of aParentEntry, check whether it belongs to aChildShell.
-    // If it does, remove it from the child list of aParentEntry.
-    static void RemoveChildsSHEntriesFrom(nsISHEntry *aParentEntry,
-                                          nsDocShell *aChildShell);
-
     // overridden from nsDocLoader, this provides more information than the
     // normal OnStateChange with flags STATE_REDIRECTING
     virtual void OnRedirectStateChange(nsIChannel* aOldChannel,
@@ -354,6 +393,7 @@ protected:
                                 nsIChannel * aChannel);
 
     // Helper Routines
+    nsresult   ConfirmRepost(PRBool * aRepost);
     NS_IMETHOD GetPromptAndStringBundle(nsIPrompt ** aPrompt,
         nsIStringBundle ** aStringBundle);
     NS_IMETHOD GetChildOffset(nsIDOMNode * aChild, nsIDOMNode * aParent,
@@ -368,9 +408,12 @@ protected:
                                 const PRUnichar *aURL,
                                 nsIChannel* aFailedChannel = nsnull);
     NS_IMETHOD LoadErrorPage(nsIURI *aURI, const PRUnichar *aURL,
-                             const PRUnichar *aPage,
+                             const char *aErrorPage,
+                             const PRUnichar *aErrorType,
                              const PRUnichar *aDescription,
+                             const char *aCSSClass,
                              nsIChannel* aFailedChannel);
+    PRBool IsNavigationAllowed(PRBool aDisplayPrintErrorDialog = PR_TRUE);
     PRBool IsPrintingOrPP(PRBool aDisplayErrorDialog = PR_TRUE);
 
     nsresult SetBaseUrlForWyciwyg(nsIContentViewer * aContentViewer);
@@ -465,8 +508,20 @@ protected:
     // Call BeginRestore(nsnull, PR_FALSE) for each child of this shell.
     nsresult BeginRestoreChildren();
 
+    // Method to get our current position and size without flushing
+    void DoGetPositionAndSize(PRInt32 * x, PRInt32 * y, PRInt32 * cx,
+                              PRInt32 * cy);
+    
     // Check whether aURI should inherit our security context
     static nsresult URIInheritsSecurityContext(nsIURI* aURI, PRBool* aResult);
+
+    // Check whether aURI is about:blank
+    static PRBool IsAboutBlank(nsIURI* aURI);
+
+    // Call this when a URI load is handed to us (via OnLinkClick or
+    // InternalLoad).  This makes sure that we're not inside unload, or that if
+    // we are it's still OK to load this URI.
+    PRBool IsOKToLoadURI(nsIURI* aURI);
     
 protected:
     // Override the parent setter from nsDocLoader
@@ -495,6 +550,9 @@ protected:
     PRPackedBool               mAllowAuth;
     PRPackedBool               mAllowKeywordFixup;
 
+    // This boolean is set to true right before we fire pagehide and generally
+    // unset when we embed a new content viewer.  While it's true no navigation
+    // is allowed in this docshell.
     PRPackedBool               mFiredUnloadEvent;
 
     // this flag is for bug #21358. a docshell may load many urls
@@ -519,7 +577,16 @@ protected:
     PRUint32                   mAppType;
 
     // Offset in the parent's child list.
-    PRInt32                    mChildOffset;
+    // XXXmats the line above is bogus, it's the offset in the parent's
+    // child list at the time this docshell was added to it,
+    // see nsDocShell::AddChild().  It isn't updated after that so if children
+    // with lower indices are removed this offset is no longer valid to be used
+    // as an index into the parent's child list (see bug 162283).  It MUST not
+    // be used for that purpose.  It's used as an index to get/add history
+    // entries into nsIDocShellHistory, although I very much doubt that it
+    // can be correct for that purpose as well...
+    // Try not to use it, we should get rid of it.
+    PRUint32                   mChildOffset;
 
     PRUint32                   mBusyFlags;
 
@@ -542,7 +609,6 @@ protected:
     nsRect                     mBounds; // Dimensions of the docshell
     nsCOMPtr<nsIContentViewer> mContentViewer;
     nsCOMPtr<nsIDocumentCharsetInfo> mDocumentCharsetInfo;
-    nsCOMPtr<nsIDeviceContext> mDeviceContext;
     nsCOMPtr<nsIWidget>        mParentWidget;
     nsCOMPtr<nsIPrefBranch>    mPrefs;
 
@@ -583,12 +649,26 @@ protected:
     // Secure browser UI object
     nsCOMPtr<nsISecureBrowserUI> mSecurityUI;
 
+    // Suspends/resumes channels based on the URI classifier.
+    nsRefPtr<nsClassifierCallback> mClassifier;
+
+    // The URI we're currently loading.  This is only relevant during the
+    // firing of a pagehide/unload.  The caller of FirePageHideNotification()
+    // is responsible for setting it and unsetting it.  It may be null if the
+    // pagehide/unload is happening for some reason other than just loading a
+    // new URI.
+    nsCOMPtr<nsIURI> mLoadingURI;
+
     // WEAK REFERENCES BELOW HERE.
     // Note these are intentionally not addrefd.  Doing so will create a cycle.
     // For that reasons don't use nsCOMPtr.
 
     nsIDocShellTreeOwner *     mTreeOwner; // Weak Reference
-    nsIChromeEventHandler *    mChromeEventHandler; //Weak Reference
+    nsPIDOMEventTarget *       mChromeEventHandler; //Weak Reference
+
+#ifdef DEBUG
+    PRBool mInEnsureScriptEnv;
+#endif
 
     static nsIURIFixup *sURIFixup;
 
