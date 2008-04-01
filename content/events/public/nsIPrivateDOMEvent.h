@@ -53,6 +53,7 @@ class nsPresContext;
 class nsIDOMEventTarget;
 class nsIDOMEvent;
 class nsEvent;
+class nsCommandEvent;
 
 class nsIPrivateDOMEvent : public nsISupports
 {
@@ -73,6 +74,8 @@ NS_DEFINE_STATIC_IID_ACCESSOR(nsIPrivateDOMEvent, NS_IPRIVATEDOMEVENT_IID)
 
 nsresult
 NS_NewDOMEvent(nsIDOMEvent** aInstancePtrResult, nsPresContext* aPresContext, nsEvent *aEvent);
+nsresult
+NS_NewDOMDataContainerEvent(nsIDOMEvent** aInstancePtrResult, nsPresContext* aPresContext, nsEvent *aEvent);
 nsresult
 NS_NewDOMUIEvent(nsIDOMEvent** aInstancePtrResult, nsPresContext* aPresContext, class nsGUIEvent *aEvent);
 nsresult
@@ -97,5 +100,9 @@ NS_NewDOMSVGZoomEvent(nsIDOMEvent** aResult, nsPresContext* aPresContext, class 
 #endif // MOZ_SVG
 nsresult
 NS_NewDOMXULCommandEvent(nsIDOMEvent** aResult, nsPresContext* aPresContext, class nsXULCommandEvent* aEvent);
+nsresult
+NS_NewDOMCommandEvent(nsIDOMEvent** aInstancePtrResult, nsPresContext* aPresContext, nsCommandEvent* aEvent);
+nsresult
+NS_NewDOMMessageEvent(nsIDOMEvent** aInstancePtrResult, nsPresContext* aPresContext, class nsEvent* aEvent);
 
 #endif // nsIPrivateDOMEvent_h__

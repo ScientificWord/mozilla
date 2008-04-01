@@ -52,8 +52,8 @@ class nsIAtom;
  * Event listener manager interface.
  */
 #define NS_IEVENTLISTENERMANAGER_IID \
-{ 0x68588aa5, 0x41e6, 0x4642, \
-  { 0xac, 0x8e, 0x7d, 0x43, 0x9c, 0x7d, 0x2a, 0xaa } }
+{ 0x6ee5eeeb, 0x1bf3, 0x4865, \
+  { 0xa9, 0x52, 0x3b, 0x3e, 0x97, 0x9b, 0x4a, 0xb3 } }
 
 
 class nsIEventListenerManager : public nsISupports {
@@ -143,26 +143,8 @@ public:
                          nsEventStatus* aEventStatus) = 0;
 
   /**
-  * Creates a DOM event.
-  * Preferred way to create an event is to use either
-  * nsEventDispatcher::CreateEvent or nsIDOMDocumentEvent::createEvent.
-  * FIXME! Remove this method, Bug 329126.
-  */
-  NS_IMETHOD CreateEvent(nsPresContext* aPresContext,
-                         nsEvent* aEvent,
-                         const nsAString& aEventType,
-                         nsIDOMEvent** aDOMEvent) = 0;
-
-  /**
   * Tells the event listener manager that its target (which owns it) is
   * no longer using it (and could go away).
-  *
-  * This causes the removal of all event listeners registered by this
-  * instance of the listener manager.  This is important for Bug 323807,
-  * since nsDOMClassInfo::PreserveWrapper (and nsIDOMGCParticipant)
-  * require that we remove all event listeners to remove any weak
-  * references in the nsDOMClassInfo's preserved wrapper table to the
-  * target.
   *
   * It also clears the weak pointer set by the call to
   * |SetListenerTarget|.
@@ -192,6 +174,20 @@ public:
    * listeners registered.
    */
   virtual PRBool HasUnloadListeners() = 0;
+
+  /**
+   * Returns the mutation bits depending on which mutation listeners are
+   * registered to this listener manager.
+   * @note If a listener is an nsIDOMMutationListener, all possible mutation
+   *       event bits are returned. All bits are also returned if one of the
+   *       event listeners is registered to handle DOMSubtreeModified events.
+   */
+  virtual PRUint32 MutationListenerBits() = 0;
+
+  /**
+   * Returns PR_TRUE if there is at least one event listener for aEventName.
+   */
+  virtual PRBool HasListenersFor(const nsAString& aEventName) = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIEventListenerManager,

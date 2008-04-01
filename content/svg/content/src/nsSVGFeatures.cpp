@@ -39,12 +39,12 @@
 
 #include "nsString.h"
 #include "nsSVGUtils.h"
-#include "nsSVGAtoms.h"
+#include "nsGkAtoms.h"
 
 // Test to see if a feature is implemented
 PRBool
 NS_SVG_TestFeature(const nsAString& fstr) {
-  if (!nsSVGUtils::SVGEnabled()) {
+  if (!NS_SVGEnabled()) {
     return PR_FALSE;
   }
   nsAutoString lstr(fstr);
@@ -87,7 +87,7 @@ NS_SVG_TestFeatures(const nsAString& fstr) {
 static PRBool
 NS_SVG_Conditional(const nsIAtom *atom, PRUint16 cond) {
 
-#define SVG_ELEMENT(_atom, _supports) if (atom == nsSVGAtoms::_atom) return (_supports & cond) != 0;
+#define SVG_ELEMENT(_atom, _supports) if (atom == nsGkAtoms::_atom) return (_supports & cond) != 0;
 #include "nsSVGElementList.h"
 #undef SVG_ELEMENT
   return PR_FALSE;

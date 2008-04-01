@@ -154,7 +154,7 @@ void URIUtils::getDocumentBase(const nsAFlatString& href, nsAString& dest)
     PRUint32 iter = href.Length();
     while (iter > 0) {
         if (temp[--iter] == HREF_PATH_SEP) {
-            dest.Append(Substring(href, 0, iter));
+            dest.Append(StringHead(href, iter));
             break;
         }
     }
@@ -241,9 +241,9 @@ URIUtils::ResetWithSource(nsIDocument *aNewDoc, nsIDOMNode *aSourceNode)
     aNewDoc->SetBaseURI(sourceDoc->GetBaseURI());
 
     // Copy charset
-    aNewDoc->SetDocumentCharacterSet(sourceDoc->GetDocumentCharacterSet());
     aNewDoc->SetDocumentCharacterSetSource(
           sourceDoc->GetDocumentCharacterSetSource());
+    aNewDoc->SetDocumentCharacterSet(sourceDoc->GetDocumentCharacterSet());
 }
 
 #endif /* TX_EXE */

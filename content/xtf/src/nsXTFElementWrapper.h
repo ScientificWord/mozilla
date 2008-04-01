@@ -40,11 +40,9 @@
 #define __NS_XTFELEMENTWRAPPER_H__
 
 #include "nsIXTFElementWrapper.h"
-#include "nsIXTFElementWrapperPrivate.h"
 #include "nsXMLElement.h"
 #include "nsIXTFAttributeHandler.h"
 #include "nsIXTFElement.h"
-#include "nsIXTFStyledElementWrapper.h"
 
 typedef nsXMLElement nsXTFElementWrapperBase;
 
@@ -56,25 +54,22 @@ typedef nsXMLElement nsXTFElementWrapperBase;
 
 class nsXTFElementWrapper : public nsXTFElementWrapperBase,
                             public nsIXTFElementWrapper,
-                            public nsIXTFElementWrapperPrivate,
                             public nsIClassInfo
 {
-protected:
-  nsXTFElementWrapper(nsINodeInfo* aNodeInfo);
-  nsresult Init();
-  
 public:
+  nsXTFElementWrapper(nsINodeInfo* aNodeInfo, nsIXTFElement* aXTFElement);
+  virtual ~nsXTFElementWrapper();
+  nsresult Init();
+
   NS_DECLARE_STATIC_IID_ACCESSOR(NS_XTFELEMENTWRAPPER_IID)
 
   // nsISupports interface
   NS_DECL_ISUPPORTS_INHERITED
+  NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED_NO_UNLINK(nsXTFElementWrapper,
+                                                     nsXTFElementWrapperBase)
 
   // nsIXTFElementWrapper
   NS_DECL_NSIXTFELEMENTWRAPPER
-
-  // nsIXTFElementWrapperPrivate
-  // to be implemented by subclass
-  // virtual PRUint32 GetElementType() = 0;
     
   // nsIContent specializations:
   virtual nsresult BindToTree(nsIDocument* aDocument, nsIContent* aParent,
@@ -84,7 +79,6 @@ public:
                               PRBool aNullParent = PR_TRUE);
   nsresult InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
                          PRBool aNotify);
-  nsresult AppendChildTo(nsIContent* aKid, PRBool aNotify);
   nsresult RemoveChildAt(PRUint32 aIndex, PRBool aNotify);
   nsIAtom *GetIDAttributeName() const;
   nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
@@ -112,8 +106,14 @@ public:
   virtual PRInt32 IntrinsicState() const;
 
   virtual void BeginAddingChildren();
-  virtual void DoneAddingChildren(PRBool aHaveNotified);
-  
+  virtual nsresult DoneAddingChildren(PRBool aHaveNotified);
+
+  virtual nsIAtom *GetClassAttributeName() const;
+  virtual const nsAttrValue* GetClasses() const;
+
+  virtual void PerformAccesskey(PRBool aKeyCausesActivation,
+                                PRBool aIsTrustedEvent);
+
   // nsIDOMElement specializations:
   NS_IMETHOD GetAttribute(const nsAString& aName,
                           nsAString& aReturn);
@@ -129,18 +129,23 @@ public:
   {
     return GetXTFElement()->CloneState(aElement);
   }
-  nsresult Clone(nsINodeInfo *aNodeInfo, PRBool aDeep,
-                 nsIContent **aResult) const;
+  nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 
 protected:
-  // to be implemented by subclasses:
-  virtual nsIXTFElement *GetXTFElement() const = 0;
+  virtual nsIXTFElement* GetXTFElement() const
+  {
+    return mXTFElement;
+  }
   
   // implementation helpers:  
   PRBool QueryInterfaceInner(REFNSIID aIID, void** result);
 
   PRBool HandledByInner(nsIAtom* attr) const;
-  
+
+  void RegUnregAccessKey(PRBool aDoReg);
+
+  nsCOMPtr<nsIXTFElement> mXTFElement;
+
   PRUint32 mNotificationMask;
   nsCOMPtr<nsIXTFAttributeHandler> mAttributeHandler;
 
@@ -152,22 +157,14 @@ protected:
 
   // Temporary owner used by GetAttrNameAt
   nsAttrName mTmpAttrName;
+
+  nsCOMPtr<nsIAtom> mClassAttributeName;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsXTFElementWrapper, NS_XTFELEMENTWRAPPER_IID)
 
-class nsXTFStyledElementWrapper : public nsXTFElementWrapper
-{
-public:
-  nsXTFStyledElementWrapper(nsINodeInfo* aNodeInfo);
-
-  // for nsIContent
-  virtual nsIAtom *GetClassAttributeName() const;
-  virtual const nsAttrValue* GetClasses() const;
-  
-  nsresult SetClassAttributeName(nsIAtom* aName);
-protected:
-  nsCOMPtr<nsIAtom> mClassAttributeName;
-};
+nsresult
+NS_NewXTFElementWrapper(nsIXTFElement* aXTFElement, nsINodeInfo* aNodeInfo,
+                        nsIContent** aResult);
 
 #endif // __NS_XTFELEMENTWRAPPER_H__

@@ -289,6 +289,9 @@ txExprParser::createBinaryExpr(nsAutoPtr<Expr>& left, nsAutoPtr<Expr>& right,
     }
     NS_ENSURE_TRUE(expr, NS_ERROR_OUT_OF_MEMORY);
 
+    left.forget();
+    right.forget();
+
     *aResult = expr;
     return NS_OK;
 }
@@ -322,23 +325,26 @@ txExprParser::createExpr(txExprLexer& lexer, txIParseContext* aContext,
         }
 
         if (unary) {
-            expr = new UnaryExpr(expr);
-            if (!expr) {
+            Expr* unaryExpr = new UnaryExpr(expr);
+            if (!unaryExpr) {
                 rv = NS_ERROR_OUT_OF_MEMORY;
                 break;
             }
+            
+            expr.forget();
+            expr = unaryExpr;
         }
 
         Token* tok = lexer.nextToken();
         short tokPrecedence = precedence(tok);
         if (tokPrecedence != 0) {
             while (!exprs.isEmpty() && tokPrecedence
-                   <= precedence(NS_STATIC_CAST(Token*, ops.peek()))) {
+                   <= precedence(static_cast<Token*>(ops.peek()))) {
                 // can't use expr as argument due to order of evaluation
-                nsAutoPtr<Expr> left(NS_STATIC_CAST(Expr*, exprs.pop()));
+                nsAutoPtr<Expr> left(static_cast<Expr*>(exprs.pop()));
                 nsAutoPtr<Expr> right(expr);
                 rv = createBinaryExpr(left, right,
-                                      NS_STATIC_CAST(Token*, ops.pop()),
+                                      static_cast<Token*>(ops.pop()),
                                       getter_Transfers(expr));
                 if (NS_FAILED(rv)) {
                     done = PR_TRUE;
@@ -355,14 +361,14 @@ txExprParser::createExpr(txExprLexer& lexer, txIParseContext* aContext,
     }
 
     while (NS_SUCCEEDED(rv) && !exprs.isEmpty()) {
-        nsAutoPtr<Expr> left(NS_STATIC_CAST(Expr*, exprs.pop()));
+        nsAutoPtr<Expr> left(static_cast<Expr*>(exprs.pop()));
         nsAutoPtr<Expr> right(expr);
-        rv = createBinaryExpr(left, right, NS_STATIC_CAST(Token*, ops.pop()),
+        rv = createBinaryExpr(left, right, static_cast<Token*>(ops.pop()),
                               getter_Transfers(expr));
     }
     // clean up on error
     while (!exprs.isEmpty()) {
-        delete NS_STATIC_CAST(Expr*, exprs.pop());
+        delete static_cast<Expr*>(exprs.pop());
     }
     NS_ENSURE_SUCCESS(rv, rv);
 
@@ -426,6 +432,8 @@ txExprParser::createFilterOrStep(txExprLexer& lexer, txIParseContext* aContext,
         nsAutoPtr<FilterExpr> filterExpr(new FilterExpr(expr));
         NS_ENSURE_TRUE(filterExpr, NS_ERROR_OUT_OF_MEMORY);
 
+        expr.forget();
+
         //-- handle predicates
         rv = parsePredicates(filterExpr, lexer, aContext);
         NS_ENSURE_SUCCESS(rv, rv);
@@ -465,7 +473,7 @@ txExprParser::createFunctionCall(txExprLexer& lexer, txIParseContext* aContext,
     // check extension functions and xslt
     if (!fnCall) {
         rv = aContext->resolveFunctionCall(lName, namespaceID,
-                                           *getter_Transfers(fnCall));
+                                           getter_Transfers(fnCall));
 
         if (rv == NS_ERROR_NOT_IMPLEMENTED) {
             // this should just happen for unparsed-entity-uri()
@@ -608,6 +616,8 @@ txExprParser::createLocationStep(txExprLexer& lexer, txIParseContext* aContext,
     nsAutoPtr<LocationStep> lstep(new LocationStep(nodeTest, axisIdentifier));
     NS_ENSURE_TRUE(lstep, NS_ERROR_OUT_OF_MEMORY);
 
+    nodeTest.forget();
+
     //-- handle predicates
     rv = parsePredicates(lstep, lexer, aContext);
     NS_ENSURE_SUCCESS(rv, rv);
@@ -706,7 +716,7 @@ txExprParser::createPathExpr(txExprLexer& lexer, txIParseContext* aContext,
         NS_ENSURE_TRUE(expr, NS_ERROR_OUT_OF_MEMORY);
 
 #ifdef TX_TO_STRING
-        NS_STATIC_CAST(RootExpr*, expr.get())->setSerialize(PR_FALSE);
+        static_cast<RootExpr*>(expr.get())->setSerialize(PR_FALSE);
 #endif
     }
     
@@ -714,8 +724,10 @@ txExprParser::createPathExpr(txExprLexer& lexer, txIParseContext* aContext,
     nsAutoPtr<PathExpr> pathExpr(new PathExpr());
     NS_ENSURE_TRUE(pathExpr, NS_ERROR_OUT_OF_MEMORY);
 
-    rv = pathExpr->addExpr(expr.forget(), PathExpr::RELATIVE_OP);
+    rv = pathExpr->addExpr(expr, PathExpr::RELATIVE_OP);
     NS_ENSURE_SUCCESS(rv, rv);
+
+    expr.forget();
 
     // this is ugly
     while (1) {
@@ -737,8 +749,10 @@ txExprParser::createPathExpr(txExprLexer& lexer, txIParseContext* aContext,
         rv = createLocationStep(lexer, aContext, getter_Transfers(expr));
         NS_ENSURE_SUCCESS(rv, rv);
 
-        rv = pathExpr->addExpr(expr.forget(), pathOp);
+        rv = pathExpr->addExpr(expr, pathOp);
         NS_ENSURE_SUCCESS(rv, rv);
+
+        expr.forget();
     }
     NS_NOTREACHED("internal xpath parser error");
     return NS_ERROR_UNEXPECTED;
@@ -766,8 +780,10 @@ txExprParser::createUnionExpr(txExprLexer& lexer, txIParseContext* aContext,
     nsAutoPtr<UnionExpr> unionExpr(new UnionExpr());
     NS_ENSURE_TRUE(unionExpr, NS_ERROR_OUT_OF_MEMORY);
 
-    rv = unionExpr->addExpr(expr.forget());
+    rv = unionExpr->addExpr(expr);
     NS_ENSURE_SUCCESS(rv, rv);
+
+    expr.forget();
 
     while (lexer.peek()->mType == Token::UNION_OP) {
         lexer.nextToken(); //-- eat token
@@ -819,8 +835,10 @@ txExprParser::parsePredicates(PredicateList* aPredicateList,
         rv = createExpr(lexer, aContext, getter_Transfers(expr));
         NS_ENSURE_SUCCESS(rv, rv);
 
-        rv = aPredicateList->add(expr.forget());
+        rv = aPredicateList->add(expr);
         NS_ENSURE_SUCCESS(rv, rv);
+
+        expr.forget();
 
         if (lexer.nextToken()->mType != Token::R_BRACKET) {
             lexer.pushBack();
@@ -916,7 +934,7 @@ txExprParser::resolveQName(const nsAString& aQName,
     aNamespace = kNameSpaceID_None;
     PRInt32 idx = aQName.FindChar(':');
     if (idx > 0) {
-        *aPrefix = NS_NewAtom(Substring(aQName, 0, (PRUint32)idx));
+        *aPrefix = NS_NewAtom(StringHead(aQName, (PRUint32)idx));
         if (!*aPrefix) {
             return NS_ERROR_OUT_OF_MEMORY;
         }

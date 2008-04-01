@@ -36,40 +36,24 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsEventDispatcher.h"
-#include "nsIDocument.h"
-#include "nsIAtom.h"
 #include "nsDOMEvent.h"
-#include "nsINode.h"
-#include "nsIChromeEventHandler.h"
+#include "nsPIDOMEventTarget.h"
 #include "nsPresContext.h"
 #include "nsIPrivateDOMEvent.h"
-#include "nsIDOMEventReceiver.h"
-#include "nsIDOMEventTarget.h"
 #include "nsIEventListenerManager.h"
-#include "nsPIDOMWindow.h"
-#include "nsIScriptSecurityManager.h"
 #include "nsContentUtils.h"
 #include "nsDOMError.h"
 #include "nsMutationEvent.h"
 #include NEW_H
 #include "nsFixedSizeAllocator.h"
 
-#define NS_TARGET_CHAIN_IS_NODE                (1 << 0)
-#define NS_TARGET_CHAIN_IS_WINDOW              (1 << 1)
-#define NS_TARGET_CHAIN_IS_CHROMEHANDLER       (1 << 2)
-
-#define NS_TARGET_CHAIN_FORCE_CONTENT_DISPATCH (1 << 3)
-
-#define NS_TARGET_CHAIN_TYPE_MASK \
-  (NS_TARGET_CHAIN_IS_NODE | NS_TARGET_CHAIN_IS_WINDOW | \
-   NS_TARGET_CHAIN_IS_CHROMEHANDLER)
+#define NS_TARGET_CHAIN_FORCE_CONTENT_DISPATCH (1 << 0)
 
 // nsEventTargetChainItem represents a single item in the event target chain.
 class nsEventTargetChainItem
 {
 private:
   nsEventTargetChainItem(nsISupports* aTarget,
-                         PRBool aTargetIsChromeHandler,
                          nsEventTargetChainItem* aChild = nsnull);
 
   void Destroy(nsFixedSizeAllocator* aAllocator);
@@ -77,13 +61,11 @@ private:
 public:
   static nsEventTargetChainItem* Create(nsFixedSizeAllocator* aAllocator, 
                                         nsISupports* aTarget,
-                                        PRBool aTargetIsChromeHandler,
                                         nsEventTargetChainItem* aChild = nsnull)
   {
     void* place = aAllocator->Alloc(sizeof(nsEventTargetChainItem));
     return place
-      ? ::new (place) nsEventTargetChainItem(aTarget, aTargetIsChromeHandler,
-                                             aChild)
+      ? ::new (place) nsEventTargetChainItem(aTarget, aChild)
       : nsnull;
   }
 
@@ -97,7 +79,7 @@ public:
 
   PRBool IsValid()
   {
-    return !!(mFlags & NS_TARGET_CHAIN_TYPE_MASK);
+    return !!(mTarget);
   }
 
   nsISupports* GetNewTarget()
@@ -122,10 +104,10 @@ public:
     return !!(mFlags & NS_TARGET_CHAIN_FORCE_CONTENT_DISPATCH);
   }
 
-  nsISupports* CurrentTarget();
-
-  already_AddRefed<nsIEventListenerManager> GetListenerManager(
-    PRBool aCreateIfNotFound);
+  nsPIDOMEventTarget* CurrentTarget()
+  {
+    return mTarget;
+  }
 
   /**
    * Dispatches event through the event target chain.
@@ -138,9 +120,8 @@ public:
                                   nsDispatchingCallback* aCallback);
 
   /**
-   * Resets aVisitor object and calls PreHandleEvent
-   * (or PreHandleChromeEvent). Copies mItemFlags and mItemData to the
-   * current nsEventTargetChainItem.
+   * Resets aVisitor object and calls PreHandleEvent.
+   * Copies mItemFlags and mItemData to the current nsEventTargetChainItem.
    */
   nsresult PreHandleEvent(nsEventChainPreVisitor& aVisitor);
 
@@ -152,64 +133,34 @@ public:
   nsresult HandleEvent(nsEventChainPostVisitor& aVisitor, PRUint32 aFlags);
 
   /**
-   * Copies mItemFlags and mItemData to aVisitor and calls PostHandleEvent
-   * (or PostHandleChromeEvent).
+   * Copies mItemFlags and mItemData to aVisitor and calls PostHandleEvent.
    */
   nsresult PostHandleEvent(nsEventChainPostVisitor& aVisitor);
 
 
-  union {
-    nsINode*                  mNode;
-    nsPIDOMWindow*            mWindow;
-    nsIChromeEventHandler*    mChromeHandler;
-  };
-  nsEventTargetChainItem*     mChild;
-  nsEventTargetChainItem*     mParent;
-  PRUint16                    mFlags;
-  PRUint16                    mItemFlags;
-  nsCOMPtr<nsISupports>       mItemData;
+  nsCOMPtr<nsPIDOMEventTarget>      mTarget;
+  nsEventTargetChainItem*           mChild;
+  nsEventTargetChainItem*           mParent;
+  PRUint16                          mFlags;
+  PRUint16                          mItemFlags;
+  nsCOMPtr<nsISupports>             mItemData;
   // Event retargeting must happen whenever mNewTarget is non-null.
-  nsCOMPtr<nsISupports>       mNewTarget;
+  nsCOMPtr<nsISupports>             mNewTarget;
+  // Cache mTarget's event listener manager.
+  nsCOMPtr<nsIEventListenerManager> mManager;
 };
 
 nsEventTargetChainItem::nsEventTargetChainItem(nsISupports* aTarget,
-                                               PRBool aTargetIsChromeHandler,
                                                nsEventTargetChainItem* aChild)
-: mNode(nsnull), mChild(aChild), mParent(nsnull), mFlags(0), mItemFlags(0)
+: mChild(aChild), mParent(nsnull), mFlags(0), mItemFlags(0)
 {
+  nsCOMPtr<nsPIDOMEventTarget> t = do_QueryInterface(aTarget);
+  if (t) {
+    mTarget = t->GetTargetForEventTargetChain();
+  }
   if (mChild) {
     mChild->mParent = this;
   }
-
-  // If the target is explicitly marked to be a chrome handler.
-  if (aTargetIsChromeHandler) {
-    nsCOMPtr<nsIChromeEventHandler> ceh = do_QueryInterface(aTarget);
-    if (ceh) {
-      ceh.swap(mChromeHandler);
-      mFlags |= NS_TARGET_CHAIN_IS_CHROMEHANDLER;
-    }
-  } else {
-    nsCOMPtr<nsINode> node = do_QueryInterface(aTarget);
-    if (node) {
-      node.swap(mNode);
-      mFlags |= NS_TARGET_CHAIN_IS_NODE;
-    }  else {
-      nsCOMPtr<nsPIDOMWindow> window =
-        do_QueryInterface(aTarget);
-      if (window) {
-        window.swap(mWindow);
-        mFlags |= NS_TARGET_CHAIN_IS_WINDOW;
-      } else {
-        nsCOMPtr<nsIChromeEventHandler> ceh = do_QueryInterface(aTarget);
-        if (ceh) {
-          ceh.swap(mChromeHandler);
-          mFlags |= NS_TARGET_CHAIN_IS_CHROMEHANDLER;
-        }
-      }
-    }
-  }
-  NS_POSTCONDITION((mFlags & NS_TARGET_CHAIN_TYPE_MASK),
-                   "No event target in event target chain!");
 }
 
 void
@@ -225,119 +176,17 @@ nsEventTargetChainItem::Destroy(nsFixedSizeAllocator* aAllocator)
     mParent = nsnull;
   }
 
-  switch (mFlags & NS_TARGET_CHAIN_TYPE_MASK) {
-    case NS_TARGET_CHAIN_IS_NODE:
-      NS_RELEASE(mNode);
-      break;
-    case NS_TARGET_CHAIN_IS_WINDOW:
-      NS_RELEASE(mWindow);
-      break;
-    case NS_TARGET_CHAIN_IS_CHROMEHANDLER:
-      NS_RELEASE(mChromeHandler);
-      break;
-    default:
-      NS_WARNING("Unknown type in event target chain!!!");
-      break;
-  }
-}
-
-already_AddRefed<nsIEventListenerManager>
-nsEventTargetChainItem::GetListenerManager(PRBool aCreateIfNotFound)
-{
-  nsIEventListenerManager* manager = nsnull;
-  switch (mFlags & NS_TARGET_CHAIN_TYPE_MASK) {
-    case NS_TARGET_CHAIN_IS_NODE:
-    {
-      mNode->GetListenerManager(aCreateIfNotFound, &manager);
-      break;
-    }
-    case NS_TARGET_CHAIN_IS_WINDOW:
-    {
-      nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(mWindow));
-      if (receiver) {
-        receiver->GetListenerManager(aCreateIfNotFound, &manager);
-      }
-      break;
-    }
-    case NS_TARGET_CHAIN_IS_CHROMEHANDLER:
-    {
-      nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(mChromeHandler));
-      if (receiver) {
-        receiver->GetListenerManager(aCreateIfNotFound, &manager);
-      }
-      break;
-    }
-    default:
-    {
-      NS_WARNING("Unknown type in event target chain!!!");
-      break;
-    }
-  }
-
-  return manager;
-}
-
-nsISupports*
-nsEventTargetChainItem::CurrentTarget()
-{
-  nsCOMPtr<nsIDOMEventTarget> eventTarget;
-  switch (mFlags & NS_TARGET_CHAIN_TYPE_MASK) {
-    case NS_TARGET_CHAIN_IS_NODE:
-    {
-      return mNode;
-    }
-    case NS_TARGET_CHAIN_IS_WINDOW:
-    {
-      return mWindow;
-      break;
-    }
-    case NS_TARGET_CHAIN_IS_CHROMEHANDLER:
-    {
-      return mChromeHandler;
-      break;
-    }
-    default:
-    {
-      NS_WARNING("Unknown type in event target chain!!!");
-      break;
-    }
-  }
-
-  return nsnull;
+  mTarget = nsnull;
 }
 
 nsresult
 nsEventTargetChainItem::PreHandleEvent(nsEventChainPreVisitor& aVisitor)
 {
   aVisitor.Reset();
-  nsresult rv = NS_OK;
-  switch (mFlags & NS_TARGET_CHAIN_TYPE_MASK) {
-    case NS_TARGET_CHAIN_IS_NODE:
-    {
-      rv = mNode->PreHandleEvent(aVisitor);
-      break;
-    }
-    case NS_TARGET_CHAIN_IS_WINDOW:
-    {
-      rv = mWindow->PreHandleEvent(aVisitor);
-      break;
-    }
-    case NS_TARGET_CHAIN_IS_CHROMEHANDLER:
-    {
-      rv = mChromeHandler->PreHandleChromeEvent(aVisitor);
-      break;
-    }
-    default:
-    {
-      NS_WARNING("Unknown type in event target chain!!!");
-      break;
-    }
-  }
-
+  nsresult rv = mTarget->PreHandleEvent(aVisitor);
   SetForceContentDispatch(aVisitor.mForceContentDispatch);
   mItemFlags = aVisitor.mItemFlags;
   mItemData = aVisitor.mItemData;
-
   return rv;
 }
 
@@ -345,15 +194,18 @@ nsresult
 nsEventTargetChainItem::HandleEvent(nsEventChainPostVisitor& aVisitor,
                                     PRUint32 aFlags)
 {
-  nsCOMPtr<nsIEventListenerManager> lm =
-    nsEventTargetChainItem::GetListenerManager(PR_FALSE);
-
-  if (lm) {
-    aVisitor.mEvent->currentTarget = CurrentTarget();
-    lm->HandleEvent(aVisitor.mPresContext, aVisitor.mEvent, &aVisitor.mDOMEvent,
-                    aVisitor.mEvent->currentTarget, aFlags,
-                    &aVisitor.mEventStatus);
-    aVisitor.mEvent->currentTarget = nsnull;
+  if (!mManager) {
+    mTarget->GetListenerManager(PR_FALSE, getter_AddRefs(mManager));
+  }
+  if (mManager) {
+    aVisitor.mEvent->currentTarget = CurrentTarget()->GetTargetForDOMEvent();
+    if (aVisitor.mEvent->currentTarget) {
+      mManager->HandleEvent(aVisitor.mPresContext, aVisitor.mEvent,
+                            &aVisitor.mDOMEvent,
+                            aVisitor.mEvent->currentTarget, aFlags,
+                            &aVisitor.mEventStatus);
+      aVisitor.mEvent->currentTarget = nsnull;
+    }
   }
   return NS_OK;
 }
@@ -363,26 +215,7 @@ nsEventTargetChainItem::PostHandleEvent(nsEventChainPostVisitor& aVisitor)
 {
   aVisitor.mItemFlags = mItemFlags;
   aVisitor.mItemData = mItemData;
-  switch (mFlags & NS_TARGET_CHAIN_TYPE_MASK) {
-    case NS_TARGET_CHAIN_IS_NODE:
-    {
-      return mNode->PostHandleEvent(aVisitor);
-    }
-    case NS_TARGET_CHAIN_IS_WINDOW:
-    {
-      return mWindow->PostHandleEvent(aVisitor);
-    }
-    case NS_TARGET_CHAIN_IS_CHROMEHANDLER:
-    {
-      return mChromeHandler->PostHandleChromeEvent(aVisitor);
-    }
-    default:
-    {
-      NS_WARNING("Unknown type in event target chain!!!");
-      break;
-    }
-  }
-
+  mTarget->PostHandleEvent(aVisitor);
   return NS_OK;
 }
 
@@ -534,8 +367,7 @@ nsEventDispatcher::Dispatch(nsISupports* aTarget,
                             nsEvent* aEvent,
                             nsIDOMEvent* aDOMEvent,
                             nsEventStatus* aEventStatus,
-                            nsDispatchingCallback* aCallback,
-                            PRBool aTargetIsChromeHandler)
+                            nsDispatchingCallback* aCallback)
 {
   NS_ASSERTION(aEvent, "Trying to dispatch without nsEvent!");
   NS_ENSURE_TRUE(!NS_IS_EVENT_IN_DISPATCH(aEvent),
@@ -569,7 +401,7 @@ nsEventDispatcher::Dispatch(nsISupports* aTarget,
 
   // Create the event target chain item for the event target.
   nsEventTargetChainItem* targetEtci =
-    nsEventTargetChainItem::Create(pool.GetPool(), aTarget, aTargetIsChromeHandler);
+    nsEventTargetChainItem::Create(pool.GetPool(), aTarget);
   NS_ENSURE_TRUE(targetEtci, NS_ERROR_OUT_OF_MEMORY);
   if (!targetEtci->IsValid()) {
     nsEventTargetChainItem::Destroy(pool.GetPool(), targetEtci);
@@ -578,11 +410,20 @@ nsEventDispatcher::Dispatch(nsISupports* aTarget,
 
   // Make sure that nsIDOMEvent::target and nsIDOMNSEvent::originalTarget
   // point to the last item in the chain.
-  // XXX But if the target is already set, use that. This is a hack
-  //     for the 'load', 'beforeunload' and 'unload' events,
-  //     which are dispatched to |window| but have document as their target.
   if (!aEvent->target) {
-    aEvent->target = aTarget;
+    // Note, CurrentTarget() points always to the object returned by
+    // GetTargetForEventTargetChain().
+    aEvent->target = targetEtci->CurrentTarget();
+  } else {
+    // XXX But if the target is already set, use that. This is a hack
+    //     for the 'load', 'beforeunload' and 'unload' events,
+    //     which are dispatched to |window| but have document as their target.
+    //
+    // Make sure that the event target points to the right object.
+    nsCOMPtr<nsPIDOMEventTarget> t = do_QueryInterface(aEvent->target);
+    NS_ENSURE_STATE(t);
+    aEvent->target = t->GetTargetForEventTargetChain();
+    NS_ENSURE_STATE(aEvent->target);
   }
   aEvent->originalTarget = aEvent->target;
 
@@ -602,7 +443,6 @@ nsEventDispatcher::Dispatch(nsISupports* aTarget,
     while (preVisitor.mParentTarget) {
       nsEventTargetChainItem* parentEtci =
         nsEventTargetChainItem::Create(pool.GetPool(), preVisitor.mParentTarget,
-                                       preVisitor.mParentIsChromeHandler,
                                        topEtci);
       if (!parentEtci) {
         rv = NS_ERROR_OUT_OF_MEMORY;
@@ -690,14 +530,7 @@ nsEventDispatcher::DispatchDOMEvent(nsISupports* aTarget,
 
       if (!trusted) {
         //Check security state to determine if dispatcher is trusted
-        nsIScriptSecurityManager *securityManager =
-          nsContentUtils::GetSecurityManager();
-
-        PRBool enabled;
-        nsresult rv =
-          securityManager->IsCapabilityEnabled("UniversalBrowserWrite",
-                                               &enabled);
-        privEvt->SetTrusted(NS_SUCCEEDED(rv) && enabled);
+        privEvt->SetTrusted(nsContentUtils::IsCallerTrustedForWrite());
       }
 
       return nsEventDispatcher::Dispatch(aTarget, aPresContext, innerEvent,
@@ -722,51 +555,54 @@ nsEventDispatcher::CreateEvent(nsPresContext* aPresContext,
     switch(aEvent->eventStructType) {
     case NS_MUTATION_EVENT:
       return NS_NewDOMMutationEvent(aDOMEvent, aPresContext,
-                                    NS_STATIC_CAST(nsMutationEvent*,aEvent));
+                                    static_cast<nsMutationEvent*>(aEvent));
     case NS_GUI_EVENT:
     case NS_COMPOSITION_EVENT:
     case NS_RECONVERSION_EVENT:
     case NS_QUERYCARETRECT_EVENT:
     case NS_SCROLLPORT_EVENT:
       return NS_NewDOMUIEvent(aDOMEvent, aPresContext,
-                              NS_STATIC_CAST(nsGUIEvent*,aEvent));
+                              static_cast<nsGUIEvent*>(aEvent));
     case NS_KEY_EVENT:
       return NS_NewDOMKeyboardEvent(aDOMEvent, aPresContext,
-                                    NS_STATIC_CAST(nsKeyEvent*,aEvent));
+                                    static_cast<nsKeyEvent*>(aEvent));
     case NS_MOUSE_EVENT:
     case NS_MOUSE_SCROLL_EVENT:
     case NS_POPUP_EVENT:
       return NS_NewDOMMouseEvent(aDOMEvent, aPresContext,
-                                 NS_STATIC_CAST(nsInputEvent*,aEvent));
+                                 static_cast<nsInputEvent*>(aEvent));
     case NS_POPUPBLOCKED_EVENT:
       return NS_NewDOMPopupBlockedEvent(aDOMEvent, aPresContext,
-                                        NS_STATIC_CAST(nsPopupBlockedEvent*,
-                                                       aEvent));
+                                        static_cast<nsPopupBlockedEvent*>
+                                                   (aEvent));
     case NS_TEXT_EVENT:
       return NS_NewDOMTextEvent(aDOMEvent, aPresContext,
-                                NS_STATIC_CAST(nsTextEvent*,aEvent));
+                                static_cast<nsTextEvent*>(aEvent));
     case NS_BEFORE_PAGE_UNLOAD_EVENT:
       return
         NS_NewDOMBeforeUnloadEvent(aDOMEvent, aPresContext,
-                                   NS_STATIC_CAST(nsBeforePageUnloadEvent*,
-                                                  aEvent));
+                                   static_cast<nsBeforePageUnloadEvent*>
+                                              (aEvent));
     case NS_PAGETRANSITION_EVENT:
       return NS_NewDOMPageTransitionEvent(aDOMEvent, aPresContext,
-                                          NS_STATIC_CAST(nsPageTransitionEvent*,
-                                                         aEvent));
+                                          static_cast<nsPageTransitionEvent*>
+                                                     (aEvent));
 #ifdef MOZ_SVG
     case NS_SVG_EVENT:
       return NS_NewDOMSVGEvent(aDOMEvent, aPresContext,
                                aEvent);
     case NS_SVGZOOM_EVENT:
       return NS_NewDOMSVGZoomEvent(aDOMEvent, aPresContext,
-                                   NS_STATIC_CAST(nsGUIEvent*,aEvent));
+                                   static_cast<nsGUIEvent*>(aEvent));
 #endif // MOZ_SVG
 
     case NS_XUL_COMMAND_EVENT:
       return NS_NewDOMXULCommandEvent(aDOMEvent, aPresContext,
-                                      NS_STATIC_CAST(nsXULCommandEvent*,
-                                                     aEvent));
+                                      static_cast<nsXULCommandEvent*>
+                                                 (aEvent));
+    case NS_COMMAND_EVENT:
+      return NS_NewDOMCommandEvent(aDOMEvent, aPresContext,
+                                   static_cast<nsCommandEvent*>(aEvent));
     }
 
     // For all other types of events, create a vanilla event object.
@@ -809,6 +645,14 @@ nsEventDispatcher::CreateEvent(nsPresContext* aPresContext,
   if (aEventType.LowerCaseEqualsLiteral("xulcommandevent") ||
       aEventType.LowerCaseEqualsLiteral("xulcommandevents"))
     return NS_NewDOMXULCommandEvent(aDOMEvent, aPresContext, nsnull);
+  if (aEventType.LowerCaseEqualsLiteral("commandevent") ||
+      aEventType.LowerCaseEqualsLiteral("commandevents"))
+    return NS_NewDOMCommandEvent(aDOMEvent, aPresContext, nsnull);
+  if (aEventType.LowerCaseEqualsLiteral("datacontainerevent") ||
+      aEventType.LowerCaseEqualsLiteral("datacontainerevents"))
+    return NS_NewDOMDataContainerEvent(aDOMEvent, aPresContext, nsnull);
+  if (aEventType.LowerCaseEqualsLiteral("messageevent"))
+    return NS_NewDOMMessageEvent(aDOMEvent, aPresContext, nsnull);
 
   return NS_ERROR_DOM_NOT_SUPPORTED_ERR;
 }

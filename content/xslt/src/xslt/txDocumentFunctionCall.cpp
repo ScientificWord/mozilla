@@ -105,7 +105,7 @@ DocumentFunctionCall::evaluate(txIEvalContext* aContext,
 {
     *aResult = nsnull;
     txExecutionState* es =
-        NS_STATIC_CAST(txExecutionState*, aContext->getPrivateContext());
+        static_cast<txExecutionState*>(aContext->getPrivateContext());
 
     nsRefPtr<txNodeSet> nodeSet;
     nsresult rv = aContext->recycler()->getNodeSet(getter_AddRefs(nodeSet));
@@ -116,20 +116,18 @@ DocumentFunctionCall::evaluate(txIEvalContext* aContext,
         return NS_ERROR_XPATH_BAD_ARGUMENT_COUNT;
     }
 
-    txListIterator iter(&params);
-    Expr* param1 = (Expr*)iter.next();
     nsRefPtr<txAExprResult> exprResult1;
-    rv = param1->evaluate(aContext, getter_AddRefs(exprResult1));
+    rv = mParams[0]->evaluate(aContext, getter_AddRefs(exprResult1));
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsAutoString baseURI;
     MBool baseURISet = MB_FALSE;
 
-    if (iter.hasNext()) {
+    if (mParams.Length() == 2) {
         // We have 2 arguments, get baseURI from the first node
         // in the resulting nodeset
         nsRefPtr<txNodeSet> nodeSet2;
-        rv = evaluateToNodeSet(NS_STATIC_CAST(Expr*, iter.next()),
+        rv = evaluateToNodeSet(mParams[1],
                                aContext, getter_AddRefs(nodeSet2));
         NS_ENSURE_SUCCESS(rv, rv);
 
@@ -145,9 +143,9 @@ DocumentFunctionCall::evaluate(txIEvalContext* aContext,
 
     if (exprResult1->getResultType() == txAExprResult::NODESET) {
         // The first argument is a NodeSet, iterate on its nodes
-        txNodeSet* nodeSet1 = NS_STATIC_CAST(txNodeSet*,
-                                             NS_STATIC_CAST(txAExprResult*,
-                                                            exprResult1));
+        txNodeSet* nodeSet1 = static_cast<txNodeSet*>
+                                         (static_cast<txAExprResult*>
+                                                     (exprResult1));
         PRInt32 i;
         for (i = 0; i < nodeSet1->size(); ++i) {
             const txXPathNode& node = nodeSet1->get(i);
@@ -186,7 +184,7 @@ DocumentFunctionCall::getReturnType()
 PRBool
 DocumentFunctionCall::isSensitiveTo(ContextSensitivity aContext)
 {
-    return argsSensitiveTo(aContext);
+    return (aContext & PRIVATE_CONTEXT) || argsSensitiveTo(aContext);
 }
 
 #ifdef TX_TO_STRING

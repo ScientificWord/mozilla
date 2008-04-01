@@ -51,8 +51,10 @@
 #include "nsIParser.h"
 #include "nsICharsetAlias.h"
 #include "nsIPrincipal.h"
-
-static NS_DEFINE_CID(kXMLDocumentCID, NS_XMLDOCUMENT_CID);
+#include "txURIUtils.h"
+#include "nsContentCreatorFunctions.h"
+#include "nsContentUtils.h"
+#include "nsGkAtoms.h"
 
 txMozillaTextOutput::txMozillaTextOutput(nsIDOMDocument* aSourceDocument,
                                          nsIDOMDocument* aResultDocument,
@@ -64,81 +66,96 @@ txMozillaTextOutput::txMozillaTextOutput(nsIDOMDocument* aSourceDocument,
 
 txMozillaTextOutput::txMozillaTextOutput(nsIDOMDocumentFragment* aDest)
 {
-    nsCOMPtr<nsIDOMDocument> doc;
-    aDest->GetOwnerDocument(getter_AddRefs(doc));
-    NS_ASSERTION(doc, "unable to get ownerdocument");
-    nsCOMPtr<nsIDOMText> textNode;
-    nsresult rv = doc->CreateTextNode(EmptyString(),
-                                      getter_AddRefs(textNode));
-    if (NS_FAILED(rv)) {
-        return;
-    }
-    nsCOMPtr<nsIDOMNode> dummy;
-    rv = aDest->AppendChild(textNode, getter_AddRefs(dummy));
-    if (NS_FAILED(rv)) {
-        return;
-    }
-
-    mTextNode = textNode;
-    return;
+    mTextParent = do_QueryInterface(aDest);
+    mDocument = mTextParent->GetOwnerDoc();
 }
 
-txMozillaTextOutput::~txMozillaTextOutput()
+nsresult
+txMozillaTextOutput::attribute(nsIAtom* aPrefix, nsIAtom* aLocalName,
+                               nsIAtom* aLowercaseLocalName,
+                               PRInt32 aNsID, const nsString& aValue)
 {
+    return NS_OK;
 }
 
-void txMozillaTextOutput::attribute(const nsAString& aName,
-                                    const PRInt32 aNsID,
-                                    const nsAString& aValue)
+nsresult
+txMozillaTextOutput::attribute(nsIAtom* aPrefix, const nsSubstring& aName,
+                               const PRInt32 aNsID,
+                               const nsString& aValue)
 {
+    return NS_OK;
 }
 
-void txMozillaTextOutput::characters(const nsAString& aData, PRBool aDOE)
+nsresult
+txMozillaTextOutput::characters(const nsSubstring& aData, PRBool aDOE)
 {
-    if (mTextNode)
-        mTextNode->AppendData(aData);
+    mText.Append(aData);
+
+    return NS_OK;
 }
 
-void txMozillaTextOutput::comment(const nsAString& aData)
+nsresult
+txMozillaTextOutput::comment(const nsString& aData)
 {
+    return NS_OK;
 }
 
-void txMozillaTextOutput::endDocument(nsresult aResult)
+nsresult
+txMozillaTextOutput::endDocument(nsresult aResult)
 {
+    NS_ENSURE_TRUE(mDocument && mTextParent, NS_ERROR_FAILURE);
+
+    nsCOMPtr<nsIContent> text;
+    nsresult rv = NS_NewTextNode(getter_AddRefs(text),
+                                 mDocument->NodeInfoManager());
+    NS_ENSURE_SUCCESS(rv, rv);
+    
+    text->SetText(mText, PR_FALSE);
+    rv = mTextParent->AppendChildTo(text, PR_TRUE);
+    NS_ENSURE_SUCCESS(rv, rv);
+
     if (NS_SUCCEEDED(aResult)) {
         nsCOMPtr<nsITransformObserver> observer = do_QueryReferent(mObserver);
         if (observer) {
             observer->OnTransformDone(aResult, mDocument);
         }
     }
+
+    return NS_OK;
 }
 
-void txMozillaTextOutput::endElement(const nsAString& aName,
-                                     const PRInt32 aNsID)
+nsresult
+txMozillaTextOutput::endElement()
 {
+    return NS_OK;
 }
 
-void txMozillaTextOutput::processingInstruction(const nsAString& aTarget,
-                                                const nsAString& aData)
+nsresult
+txMozillaTextOutput::processingInstruction(const nsString& aTarget,
+                                           const nsString& aData)
 {
+    return NS_OK;
 }
 
-void txMozillaTextOutput::startDocument()
+nsresult
+txMozillaTextOutput::startDocument()
 {
+    return NS_OK;
 }
 
-void txMozillaTextOutput::createResultDocument(nsIDOMDocument* aSourceDocument,
-                                               nsIDOMDocument* aResultDocument)
+nsresult
+txMozillaTextOutput::createResultDocument(nsIDOMDocument* aSourceDocument,
+                                          nsIDOMDocument* aResultDocument)
 {
     nsresult rv = NS_OK;
-    
+
     /*
      * Create an XHTML document to hold the text.
      *
      * <html>
      *   <head />
      *   <body>
-     *     <pre> * The text comes here * </pre>
+     *     <pre id="transformiixResult"> * The text comes here * </pre>
      *   <body>
      * </html>
      *
@@ -147,22 +164,14 @@ void txMozillaTextOutput::createResultDocument(nsIDOMDocument* aSourceDocument,
      *
      * <transformiix:result> * The text comes here * </transformiix:result>
      */
-     
-    nsCOMPtr<nsIDocument> doc;
+
     if (!aResultDocument) {
         // Create the document
-        doc = do_CreateInstance(kXMLDocumentCID, &rv);
-        NS_ASSERTION(NS_SUCCEEDED(rv), "Couldn't create document");
-        mDocument = do_QueryInterface(doc);
+        rv = NS_NewXMLDocument(getter_AddRefs(mDocument));
+        NS_ENSURE_SUCCESS(rv, rv);
     }
     else {
-        mDocument = aResultDocument;
-        doc = do_QueryInterface(aResultDocument);
-        NS_ASSERTION(doc, "Couldn't QI to nsIDocument");
-    }
-
-    if (!doc) {
-        return;
+        mDocument = do_QueryInterface(aResultDocument);
     }
 
     NS_ASSERTION(mDocument, "Need document");
@@ -173,25 +182,7 @@ void txMozillaTextOutput::createResultDocument(nsIDOMDocument* aSourceDocument,
     }
 
     // Reset and set up document
-    nsCOMPtr<nsIDocument> sourceDoc = do_QueryInterface(aSourceDocument);
-    nsIPrincipal* sourcePrincipal = sourceDoc->NodePrincipal();
-
-    nsCOMPtr<nsILoadGroup> loadGroup = sourceDoc->GetDocumentLoadGroup();
-    nsCOMPtr<nsIChannel> channel = sourceDoc->GetChannel();
-    if (!channel) {
-        // Need to synthesize one
-        if (NS_FAILED(NS_NewChannel(getter_AddRefs(channel),
-                                    sourceDoc->GetDocumentURI(),
-                                    nsnull,
-                                    loadGroup))) {
-            return;
-        }
-        channel->SetOwner(sourcePrincipal);
-    }
-    // Copy the channel and loadgroup from the source document.
-    doc->Reset(channel, loadGroup);
-    doc->SetPrincipal(sourcePrincipal);
-    doc->SetBaseURI(sourceDoc->GetBaseURI());
+    URIUtils::ResetWithSource(mDocument, aSourceDocument);
 
     // Set the charset
     if (!mOutputFormat.mEncoding.IsEmpty()) {
@@ -202,20 +193,16 @@ void txMozillaTextOutput::createResultDocument(nsIDOMDocument* aSourceDocument,
 
         if (calias &&
             NS_SUCCEEDED(calias->GetPreferred(charset, canonicalCharset))) {
-            doc->SetDocumentCharacterSet(canonicalCharset);
-            doc->SetDocumentCharacterSetSource(kCharsetFromOtherComponent);
+            mDocument->SetDocumentCharacterSetSource(kCharsetFromOtherComponent);
+            mDocument->SetDocumentCharacterSet(canonicalCharset);
         }
-    }
-    else {
-        doc->SetDocumentCharacterSet(sourceDoc->GetDocumentCharacterSet());
-        doc->SetDocumentCharacterSetSource(
-            sourceDoc->GetDocumentCharacterSetSource());
     }
 
     // Notify the contentsink that the document is created
     nsCOMPtr<nsITransformObserver> observer = do_QueryReferent(mObserver);
     if (observer) {
-        observer->OnDocumentCreated(mDocument);
+        rv = observer->OnDocumentCreated(mDocument);
+        NS_ENSURE_SUCCESS(rv, rv);
     }
 
     // Create the content
@@ -224,118 +211,85 @@ void txMozillaTextOutput::createResultDocument(nsIDOMDocument* aSourceDocument,
     // observer) we only create a transformiix:result root element.
     // Don't do this when called through nsIXSLTProcessorObsolete (i.e. when
     // aResultDocument is set) for compability reasons
-    nsCOMPtr<nsIDOMNode> textContainer;
     if (!aResultDocument && !observer) {
-        nsCOMPtr<nsIDOMElement> docElement;
-        mDocument->CreateElementNS(NS_LITERAL_STRING(kTXNameSpaceURI),
-                                   NS_LITERAL_STRING(kTXWrapper),
-                                   getter_AddRefs(docElement));
-        NS_ASSERTION(docElement, "Failed to create wrapper element");
-        if (!docElement) {
-            return;
-        }
+        PRInt32 namespaceID;
+        rv = nsContentUtils::NameSpaceManager()->
+            RegisterNameSpace(NS_LITERAL_STRING(kTXNameSpaceURI), namespaceID);
+        NS_ENSURE_SUCCESS(rv, rv);
 
-        rv = mDocument->AppendChild(docElement, getter_AddRefs(textContainer));
-        NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to append the wrapper element");
-        if (NS_FAILED(rv)) {
-            return;
-        }
+        rv = mDocument->CreateElem(nsGkAtoms::result, nsGkAtoms::transformiix,
+                                   namespaceID, PR_FALSE, getter_AddRefs(mTextParent));
+        NS_ENSURE_SUCCESS(rv, rv);
+
+
+        rv = mDocument->AppendChildTo(mTextParent, PR_TRUE);
+        NS_ENSURE_SUCCESS(rv, rv);
     }
     else {
-        nsCOMPtr<nsIDOMElement> element, docElement;
-        nsCOMPtr<nsIDOMNode> parent, pre;
+        nsCOMPtr<nsIContent> html, head, body;
+        rv = createXHTMLElement(nsGkAtoms::html, getter_AddRefs(html));
+        NS_ENSURE_SUCCESS(rv, rv);
 
-        NS_NAMED_LITERAL_STRING(XHTML_NSURI, "http://www.w3.org/1999/xhtml");
+        rv = createXHTMLElement(nsGkAtoms::head, getter_AddRefs(head));
+        NS_ENSURE_SUCCESS(rv, rv);
 
-        mDocument->CreateElementNS(XHTML_NSURI,
-                                   NS_LITERAL_STRING("html"),
-                                   getter_AddRefs(docElement));
-        if (!docElement) {
-            // Out of memory
-            NS_WARNING("Failed to create documentElement");
-            return;
-        }
+        rv = html->AppendChildTo(head, PR_FALSE);
+        NS_ENSURE_SUCCESS(rv, rv);
 
-        rv = mDocument->AppendChild(docElement, getter_AddRefs(parent));
-        if (NS_FAILED(rv)) {
-            return;
-        }
-            
+        rv = createXHTMLElement(nsGkAtoms::body, getter_AddRefs(body));
+        NS_ENSURE_SUCCESS(rv, rv);
 
-        mDocument->CreateElementNS(XHTML_NSURI,
-                                   NS_LITERAL_STRING("head"),
-                                   getter_AddRefs(element));
-        NS_ASSERTION(element, "Failed to create head element");
-        if (!element) {
-            return;
-        }
+        rv = html->AppendChildTo(body, PR_FALSE);
+        NS_ENSURE_SUCCESS(rv, rv);
 
-        rv = docElement->AppendChild(element, getter_AddRefs(parent));
-        NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to append the head element");
-        if (NS_FAILED(rv)) {
-            return;
-        }
+        rv = createXHTMLElement(nsGkAtoms::pre, getter_AddRefs(mTextParent));
+        NS_ENSURE_SUCCESS(rv, rv);
 
-        mDocument->CreateElementNS(XHTML_NSURI,
-                                   NS_LITERAL_STRING("body"),
-                                   getter_AddRefs(element));
-        NS_ASSERTION(element, "Failed to create body element");
-        if (!element) {
-            return;
-        }
+        rv = mTextParent->SetAttr(kNameSpaceID_None, nsGkAtoms::id,
+                                  NS_LITERAL_STRING("transformiixResult"),
+                                  PR_FALSE);
+        NS_ENSURE_SUCCESS(rv, rv);
 
-        rv = docElement->AppendChild(element, getter_AddRefs(parent));
-        NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to append the body element");
-        if (NS_FAILED(rv)) {
-            return;
-        }
+        rv = body->AppendChildTo(mTextParent, PR_FALSE);
+        NS_ENSURE_SUCCESS(rv, rv);
 
-        mDocument->CreateElementNS(XHTML_NSURI,
-                                   NS_LITERAL_STRING("pre"),
-                                   getter_AddRefs(element));
-        NS_ASSERTION(element, "Failed to create pre element");
-        if (!element) {
-            return;
-        }
-
-        rv = parent->AppendChild(element, getter_AddRefs(pre));
-        NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to append the pre element");
-        if (NS_FAILED(rv)) {
-            return;
-        }
-
-        nsCOMPtr<nsIDOMHTMLElement> htmlElement = do_QueryInterface(pre);
-        htmlElement->SetId(NS_LITERAL_STRING("transformiixResult"));
-        NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to append the id");
-        
-        textContainer = pre;
+        rv = mDocument->AppendChildTo(html, PR_TRUE);
+        NS_ENSURE_SUCCESS(rv, rv);
     }
 
-    nsCOMPtr<nsIDOMText> textNode;
-    mDocument->CreateTextNode(EmptyString(),
-                              getter_AddRefs(textNode));
-    NS_ASSERTION(textNode, "Failed to create the text node");
-    if (!textNode) {
-        return;
-    }
-
-    nsCOMPtr<nsIDOMNode> dummy;
-    rv = textContainer->AppendChild(textNode, getter_AddRefs(dummy));
-    NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to append the text node");
-    if (NS_FAILED(rv)) {
-        return;
-    }
-
-    mTextNode = textNode;
+    return NS_OK;
 }
 
-void txMozillaTextOutput::startElement(const nsAString& aName,
-                                       const PRInt32 aNsID)
+nsresult
+txMozillaTextOutput::startElement(nsIAtom* aPrefix, nsIAtom* aLocalName,
+                                  nsIAtom* aLowercaseLocalName, PRInt32 aNsID)
 {
+    return NS_OK;
+}
+
+nsresult
+txMozillaTextOutput::startElement(nsIAtom* aPrefix, const nsSubstring& aName,
+                                  const PRInt32 aNsID)
+{
+    return NS_OK;
 }
 
 void txMozillaTextOutput::getOutputDocument(nsIDOMDocument** aDocument)
 {
-    *aDocument = mDocument;
-    NS_IF_ADDREF(*aDocument);
+    CallQueryInterface(mDocument, aDocument);
 }
+
+nsresult
+txMozillaTextOutput::createXHTMLElement(nsIAtom* aName,
+                                        nsIContent** aResult)
+{
+    *aResult = nsnull;
+
+    nsCOMPtr<nsINodeInfo> ni;
+    nsresult rv = mDocument->NodeInfoManager()->
+        GetNodeInfo(aName, nsnull, kNameSpaceID_XHTML, getter_AddRefs(ni));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    return NS_NewHTMLElement(aResult, ni);
+}
+

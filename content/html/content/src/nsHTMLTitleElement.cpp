@@ -35,9 +35,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsIDOMHTMLTitleElement.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 #include "nsIDOMText.h"
@@ -56,7 +55,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -66,6 +65,8 @@ public:
 
   // nsIDOMHTMLTitleElement
   NS_DECL_NSIDOMHTMLTITLEELEMENT
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 };
 
 
@@ -87,55 +88,30 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLTitleElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLTitleElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLTitleElement, nsGenericHTMLElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLTitleElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLTitleElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_INTERFACE_TABLE_HEAD(nsHTMLTitleElement, nsGenericHTMLElement)
+  NS_INTERFACE_TABLE_INHERITED1(nsHTMLTitleElement, nsIDOMHTMLTitleElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLTitleElement)
 
 
-NS_IMPL_DOM_CLONENODE(nsHTMLTitleElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLTitleElement)
 
 
 NS_IMETHODIMP 
 nsHTMLTitleElement::GetText(nsAString& aTitle)
 {
-  nsresult result = NS_OK;
-  nsCOMPtr<nsIDOMNode> child;
+  nsContentUtils::GetNodeTextContent(this, PR_FALSE, aTitle);
 
-  result = GetFirstChild(getter_AddRefs(child));
-
-  if ((NS_OK == result) && child) {
-    nsCOMPtr<nsIDOMText> text(do_QueryInterface(child));
-
-    if (text) {
-      text->GetData(aTitle);
-    }
-  }
-
-  return result;
+  return NS_OK;
 }
 
 NS_IMETHODIMP 
 nsHTMLTitleElement::SetText(const nsAString& aTitle)
 {
-  nsresult result = NS_OK;
-  nsCOMPtr<nsIDOMNode> child;
-
   nsCOMPtr<nsIDOMHTMLDocument> htmlDoc(do_QueryInterface(GetCurrentDoc()));
 
   if (htmlDoc) {
     htmlDoc->SetTitle(aTitle);
   }   
 
-  result = GetFirstChild(getter_AddRefs(child));
-
-  if ((NS_OK == result) && child) {
-    nsCOMPtr<nsIDOMText> text(do_QueryInterface(child));
-    
-    if (text) {
-      text->SetData(aTitle);
-    }
-  }
-
-  return result;
+  return nsContentUtils::SetNodeTextContent(this, aTitle, PR_TRUE);
 }

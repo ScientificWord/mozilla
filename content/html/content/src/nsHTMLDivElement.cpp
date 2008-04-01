@@ -35,9 +35,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsIDOMHTMLDivElement.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 #include "nsMappedAttributes.h"
@@ -53,7 +53,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -70,6 +70,7 @@ public:
                                 nsAttrValue& aResult);
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 };
 
 
@@ -92,13 +93,11 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLDivElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLDivElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLDivElement, nsGenericHTMLElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLDivElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLDivElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_INTERFACE_TABLE_HEAD(nsHTMLDivElement, nsGenericHTMLElement)
+  NS_INTERFACE_TABLE_INHERITED1(nsHTMLDivElement, nsIDOMHTMLDivElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLDivElement)
 
-
-NS_IMPL_DOM_CLONENODE(nsHTMLDivElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLDivElement)
 
 
 NS_IMPL_STRING_ATTR(nsHTMLDivElement, Align, align)
@@ -111,22 +110,22 @@ nsHTMLDivElement::ParseAttribute(PRInt32 aNamespaceID,
                                  nsAttrValue& aResult)
 {
   if (aNamespaceID == kNameSpaceID_None) {
-    if (mNodeInfo->Equals(nsHTMLAtoms::marquee)) {
-      if ((aAttribute == nsHTMLAtoms::width) ||
-          (aAttribute == nsHTMLAtoms::height)) {
-        return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
+    if (mNodeInfo->Equals(nsGkAtoms::marquee)) {
+      if ((aAttribute == nsGkAtoms::width) ||
+          (aAttribute == nsGkAtoms::height)) {
+        return aResult.ParseSpecialIntValue(aValue, PR_TRUE);
       }
-      if (aAttribute == nsHTMLAtoms::bgcolor) {
+      if (aAttribute == nsGkAtoms::bgcolor) {
         return aResult.ParseColor(aValue, GetOwnerDoc());
       }
-      if ((aAttribute == nsHTMLAtoms::hspace) ||
-          (aAttribute == nsHTMLAtoms::vspace)) {
+      if ((aAttribute == nsGkAtoms::hspace) ||
+          (aAttribute == nsGkAtoms::vspace)) {
         return aResult.ParseIntWithBounds(aValue, 0);
       }
     }
 
-    if (mNodeInfo->Equals(nsHTMLAtoms::div) &&
-        aAttribute == nsHTMLAtoms::align) {
+    if (mNodeInfo->Equals(nsGkAtoms::div) &&
+        aAttribute == nsGkAtoms::align) {
       return ParseDivAlignValue(aValue, aResult);
     }
   }
@@ -154,14 +153,14 @@ MapMarqueeAttributesIntoRule(const nsMappedAttributes* aAttributes, nsRuleData* 
 NS_IMETHODIMP_(PRBool)
 nsHTMLDivElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
-  if (mNodeInfo->Equals(nsHTMLAtoms::div)) {
+  if (mNodeInfo->Equals(nsGkAtoms::div)) {
     static const MappedAttributeEntry* const map[] = {
       sDivAlignAttributeMap,
       sCommonAttributeMap
     };
     return FindAttributeDependence(aAttribute, map, NS_ARRAY_LENGTH(map));
   }
-  if (mNodeInfo->Equals(nsHTMLAtoms::marquee)) {  
+  if (mNodeInfo->Equals(nsGkAtoms::marquee)) {  
     static const MappedAttributeEntry* const map[] = {
       sImageMarginSizeAttributeMap,
       sBackgroundColorAttributeMap,
@@ -176,10 +175,10 @@ nsHTMLDivElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 nsMapRuleToAttributesFunc
 nsHTMLDivElement::GetAttributeMappingFunction() const
 {
-  if (mNodeInfo->Equals(nsHTMLAtoms::div)) {
+  if (mNodeInfo->Equals(nsGkAtoms::div)) {
     return &MapAttributesIntoRule;
   }
-  if (mNodeInfo->Equals(nsHTMLAtoms::marquee)) {
+  if (mNodeInfo->Equals(nsGkAtoms::marquee)) {
     return &MapMarqueeAttributesIntoRule;
   }  
   return nsGenericHTMLElement::GetAttributeMappingFunction();

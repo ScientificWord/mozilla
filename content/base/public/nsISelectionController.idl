@@ -51,7 +51,7 @@ interface nsIDOMNode;
 interface nsISelection;
 interface nsISelectionDisplay;
 
-[scriptable, uuid(93AAA4A9-B78E-42eb-9D67-5DE77EE2F54B)]
+[scriptable, uuid(80d2e85a-4ad2-45be-88e7-8c1fe943ac4d)]
 interface nsISelectionController : nsISelectionDisplay
 {
    const short SELECTION_NONE=0;
@@ -102,6 +102,9 @@ interface nsISelectionController : nsISelectionDisplay
    * @param aIsSynchronous when true, scrolls the selection into view
    * before returning. If false, posts a request which is processed
    * at some point after the method returns.
+   *
+   * Note that if isSynchronous is true, then this might flush the pending
+   * reflow. It's dangerous for some objects. See bug 418470 comment 12.
    */
     void scrollSelectionIntoView(in short type, in short region, in boolean isSynchronous);
    /**
@@ -154,6 +157,12 @@ interface nsISelectionController : nsISelectionDisplay
    */
     void characterMove(in boolean forward, in boolean extend);
 
+   /** CharacterExtendForDelete will extend the selection one character cell
+   *  forward in the document.
+   *  this method is used internally for handling del key.
+   */
+    [noscript] void characterExtendForDelete();
+
    /** WordMove will move the selection one word forward/backward in the document.
    *  this will also have the effect of collapsing the selection if the aExtend = PR_FALSE
    *  the "point" of selection that is extended is considered the "focus" point. 
@@ -163,6 +172,12 @@ interface nsISelectionController : nsISelectionDisplay
    */
 
     void wordMove(in boolean forward, in boolean extend);
+
+   /** wordExtendForDelete will extend the selection one word forward/backward in the document.
+   *  this method is used internally for handling ctrl[option]-backspace and ctrl[option]-del.
+   *  @param aForward forward or backward if PR_FALSE
+   */
+    [noscript] void wordExtendForDelete(in boolean forward);
 
     /** LineMove will move the selection one line forward/backward in the document.
    *  this will also have the effect of collapsing the selection if the aExtend = PR_FALSE

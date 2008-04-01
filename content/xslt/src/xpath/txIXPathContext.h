@@ -73,7 +73,7 @@ public:
      * XSLT. XPath function calls are resolved by the Parser.
      */
     virtual nsresult resolveFunctionCall(nsIAtom* aName, PRInt32 aID,
-                                         FunctionCall*& aFunction) = 0;
+                                         FunctionCall** aFunction) = 0;
 
     /**
      * Should nametests parsed in this context be case-sensitive
@@ -139,10 +139,6 @@ public:
 class txIEvalContext : public txIMatchContext
 {
 public:
-    virtual ~txIEvalContext()
-    {
-    }
-
     /*
      * Get the context node.
      */
