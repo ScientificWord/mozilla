@@ -68,6 +68,12 @@ nsDocShellEditorData::nsDocShellEditorData(nsIDocShell* inOwningDocShell)
 ----------------------------------------------------------------------------*/
 nsDocShellEditorData::~nsDocShellEditorData()
 {
+  TearDownEditor();
+}
+
+void
+nsDocShellEditorData::TearDownEditor()
+{
   if (mEditingSession)
   {
     nsCOMPtr<nsIDOMWindow> domWindow = do_GetInterface(mDocShell);
@@ -104,7 +110,8 @@ nsDocShellEditorData::MakeEditable(PRBool inWaitForUriLoad /*, PRBool inEditable
     mEditor = nsnull;
   }
   
-  mMakeEditable = PR_TRUE;
+  if (inWaitForUriLoad)
+    mMakeEditable = PR_TRUE;
   return NS_OK;
 }
 
@@ -191,6 +198,8 @@ nsDocShellEditorData::SetEditor(nsIEditor *inEditor)
     }
       
     mEditor = inEditor;    // owning addref
+    if (!mEditor)
+      mMakeEditable = PR_FALSE;
   }   
   
   return NS_OK;
