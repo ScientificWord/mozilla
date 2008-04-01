@@ -43,7 +43,7 @@ VPATH   = @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),windows)
-DIRS = msaa
+DIRS = msaa ia2
 endif
 
 MODULE    = accessibility
@@ -51,16 +51,18 @@ XPIDL_MODULE= accessibility
 GRE_MODULE	= 1
 
 XPIDLSRCS = \
+      nsIAccessibleTypes.idl \
       nsIAccessibilityService.idl \
       nsIAccessibleRetrieval.idl \
       nsIAccessible.idl \
+      nsIAccessibleRelation.idl \
+      nsIAccessibleRole.idl \
+      nsIAccessibleStates.idl \
       nsPIAccessible.idl \
-      nsIAccessibleCaret.idl \
       nsIAccessibleDocument.idl \
       nsPIAccessibleDocument.idl \
       nsIAccessibleProvider.idl \
       nsIAccessibleSelectable.idl \
-      nsIAccessibleTreeCache.idl \
       nsIAccessNode.idl \
       nsPIAccessNode.idl \
       nsIAccessibleEvent.idl \
@@ -70,7 +72,14 @@ XPIDLSRCS = \
       nsIAccessibleTable.idl \
       nsIAccessibleText.idl \
       nsIAccessibleValue.idl \
+      nsIAccessibleImage.idl \
       $(NULL)
+
+ifdef MOZ_XUL
+XPIDLSRCS += \
+      nsIAccessibleTreeCache.idl \
+      $(NULL)
+endif
 
 include $(topsrcdir)/config/rules.mk
 
