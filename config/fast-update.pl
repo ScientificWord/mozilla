@@ -24,15 +24,16 @@ my $module="SeaMonkeyAll";
 my $maxdirs=5;
 my $rootdir = "";
 my $hours = 0;
-my $dir = '';
+my @dirs = ();
 my $dirlocal = 0;
 
-&GetOptions('d=s' => \$dir, 'h=s' => \$hours, 'm=s' => \$module, 'r=s' => \$branch, 'l' => \$dirlocal);
+&GetOptions('d=s@' => \@dirs, 'h=s' => \$hours, 'm=s' => \$module, 'r=s' => \$branch, 'l' => \$dirlocal);
 
-#print "dir = ($dir), hours = ($hours), module = ($module), branch = ($branch), dirlocal = ($dirlocal)\n";
-if ($dir) {
-  chdir '..';
-  chdir $dir;
+#print "dirs = (@dirs), hours = ($hours), module = ($module), branch = ($branch), dirlocal = ($dirlocal)\n";
+if (scalar(@dirs) > 0) {
+  # put .fast-update in the first directory listed
+  $filename = "$dirs[0]/$filename";
+  $filename =~ s#mozilla/*##;
 }
 
 if (!$hours) {
@@ -98,9 +99,14 @@ if ($branch) {
 
 my $url = "http://bonsai.mozilla.org/cvsquery.cgi?module=${module}&branch=${branch}&branchtype=match&sortby=File&date=hours&hours=${hours}&cvsroot=%2Fcvsroot";
 
-my $esc_dir = escape($dir);
-if ($dir) {
+my $dir_string = "";
+if (scalar(@dirs) > 0) {
+  $dir_string = join(' ', @dirs);
+  my $esc_dir = escape($dir_string);
   $url .= "&dir=$esc_dir";
+}
+if ($dirlocal) {
+  $url .= "&dirtype=local";
 }
 
 print "Contacting bonsai for updates to ${module} ";
@@ -144,6 +150,7 @@ while (<CHECKINS>) {
   if (/js_file_menu\((.*),\s*\'(.*)\'\s*,\s*(.*),\s*(.*),\s*(.*),\s*(.*)\)/) {
     my ($repos, $dir, $file, $rev, $branch, $event) =
       ($1, $2, $3, $4, $5, $6);
+    $dir =~ s/\/Attic$//;
     push @dirlist, $dir;
   }
 }
@@ -169,8 +176,7 @@ foreach $dir (sort @dirlist) {
 
       if ($dir eq $rootdir) {
         $strippeddir = ".";
-      } elsif (!$dirlocal) {
-        # for local-only updates, skip all sub-dirs
+      } else {
         $strippeddir = substr($dir,(length $rootdir) + 1 );
       }
 
@@ -212,11 +218,18 @@ else {
 close CHECKINS;
 if ($status == 0) {
   set_last_update_time($filename, $start_time);
-  print "successfully updated $module/$dir\n";
+  print "successfully updated ";
 }
 else {
-  print "error while updating $module/$dir\n";
+  print "error while updating ";
 }
+if ($module ne "all") {
+  print "$module/";
+}
+if (scalar(@dirs) > 0) {
+  print $dir_string;
+}
+print "\n";
 
 exit $status;
 
