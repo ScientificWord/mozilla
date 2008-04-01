@@ -97,7 +97,7 @@ public:
     typedef const nsIPrincipal* KeyTypePointer;
 
     PrincipalKey(const nsIPrincipal* key)
-      : mKey(NS_CONST_CAST(nsIPrincipal*, key))
+      : mKey(const_cast<nsIPrincipal*>(key))
     {
     }
 
@@ -115,15 +115,10 @@ public:
         return mKey;
     }
 
-    KeyTypePointer GetKeyPointer() const
-    {
-        return mKey;
-    }
-
     PRBool KeyEquals(KeyTypePointer aKey) const
     {
         PRBool eq;
-        mKey->Equals(NS_CONST_CAST(nsIPrincipal*, aKey),
+        mKey->Equals(const_cast<nsIPrincipal*>(aKey),
                      &eq);
         return eq;
     }
@@ -136,7 +131,7 @@ public:
     static PLDHashNumber HashKey(KeyTypePointer aKey)
     {
         PRUint32 hash;
-        NS_CONST_CAST(nsIPrincipal*, aKey)->GetHashValue(&hash);
+        const_cast<nsIPrincipal*>(aKey)->GetHashValue(&hash);
         return PLDHashNumber(hash);
     }
 
@@ -245,7 +240,6 @@ InitClassPolicyEntry(PLDHashTable *table,
     {
         PL_DHashAllocTable,
         PL_DHashFreeTable,
-        PL_DHashGetKeyStub,
         PL_DHashVoidPtrKeyStub,
         PL_DHashMatchEntryStub,
         PL_DHashMoveEntryStub,
@@ -291,7 +285,6 @@ public:
         {
             PL_DHashAllocTable,
             PL_DHashFreeTable,
-            PL_DHashGetKeyStub,
             PL_DHashStringKey,
             PL_DHashMatchStringKey,
             MoveClassPolicyEntry,
@@ -359,10 +352,10 @@ MoveClassPolicyEntry(PLDHashTable *table,
     memcpy(to, from, table->entrySize);
 
     // Now update the mDefaultPolicy pointer that points to us, if any.
-    ClassPolicy* cp = NS_STATIC_CAST(ClassPolicy*, to);
+    ClassPolicy* cp = static_cast<ClassPolicy*>(to);
     if (cp->mDomainWeAreWildcardFor) {
         NS_ASSERTION(cp->mDomainWeAreWildcardFor->mWildcardPolicy ==
-                     NS_STATIC_CAST(const ClassPolicy*, from),
+                     static_cast<const ClassPolicy*>(from),
                      "Unexpected wildcard policy on mDomainWeAreWildcardFor");
         cp->mDomainWeAreWildcardFor->mWildcardPolicy = cp;
     }
@@ -402,6 +395,18 @@ public:
 
     JSContext* GetSafeJSContext();
 
+    /**
+     * Utility method for comparing two URIs.  For security purposes, two URIs
+     * are equivalent if their schemes, hosts, and ports (if any) match.  This
+     * method returns true if aSubjectURI and aObjectURI have the same origin,
+     * false otherwise.
+     */
+    static PRBool SecurityCompareURIs(nsIURI* aSourceURI, nsIURI* aTargetURI);
+
+    static nsresult 
+    ReportError(JSContext* cx, const nsAString& messageTag,
+                nsIURI* aSource, nsIURI* aTarget);
+
 private:
 
     // GetScriptSecurityManager is the only call that can make one
@@ -416,24 +421,20 @@ private:
     // Returns null if a principal cannot be found; generally callers
     // should error out at that point.
     static nsIPrincipal*
-    doGetObjectPrincipal(JSContext *cx, JSObject *obj,
-                         PRBool aAllowShortCircuit = PR_FALSE);
+    doGetObjectPrincipal(JSObject *obj
+#ifdef DEBUG
+                         , PRBool aAllowShortCircuit = PR_TRUE
+#endif
+                         );
 
     // Returns null if a principal cannot be found.  Note that rv can be NS_OK
     // when this happens -- this means that there was no JS running.
     nsIPrincipal*
     doGetSubjectPrincipal(nsresult* rv);
     
-    static nsresult
-    GetBaseURIScheme(nsIURI* aURI, nsCString& aScheme);
-
-    static nsresult 
-    ReportError(JSContext* cx, const nsAString& messageTag,
-                nsIURI* aSource, nsIURI* aTarget);
-
     nsresult
     CheckPropertyAccessImpl(PRUint32 aAction,
-                            nsIXPCNativeCallContext* aCallContext,
+                            nsAXPCNativeCallContext* aCallContext,
                             JSContext* cx, JSObject* aJSObject,
                             nsISupports* aObj, nsIURI* aTargetURI,
                             nsIClassInfo* aClassInfo,
@@ -546,6 +547,11 @@ private:
     InitPrincipals(PRUint32 prefCount, const char** prefNames,
                    nsISecurityPref* securityPref);
 
+
+    /* encapsulate the file comparison rules */
+    static PRBool SecurityCompareFileURIs(nsIURI* aSourceURI,
+                                          nsIURI* aTargetURI);
+
 #ifdef XPC_IDISPATCH_SUPPORT
     // While this header is included outside of caps, this class isn't 
     // referenced so this should be fine.
@@ -561,10 +567,11 @@ private:
     static jsval sEnabledID;
 
     inline void
-    JSEnabledPrefChanged(nsISecurityPref* aSecurityPref);
+    ScriptSecurityPrefChanged();
 
     static const char sJSEnabledPrefName[];
     static const char sJSMailEnabledPrefName[];
+    static const char sFileOriginPolicyPrefName[];
 
     nsObjectHashtable* mOriginToPolicyMap;
     DomainPolicy* mDefaultPolicy;
@@ -585,10 +592,24 @@ private:
     static const char sXPCDefaultGrantAllName[];
 #endif
 
+    static PRInt32 sFileURIOriginPolicy;
+
     static nsIIOService    *sIOService;
     static nsIXPConnect    *sXPConnect;
     static nsIStringBundle *sStrBundle;
     static JSRuntime       *sRuntime;
 };
+
+// Levels for file: URI same-origin policy:
+//   self:        same-origin only with itself
+//   samedir:     same-origin with files having the same path
+//   subdir:      same-origin with files having longer paths (asymetric)
+//   anyfile:     same-origin with any other file: URI (but not directories)
+//   traditional: any local file, any directory
+#define FILEURI_SOP_SELF        0
+#define FILEURI_SOP_SAMEDIR     1
+#define FILEURI_SOP_SUBDIR      2
+#define FILEURI_SOP_ANYFILE     3
+#define FILEURI_SOP_TRADITIONAL 4
 
 #endif // nsScriptSecurityManager_h__
