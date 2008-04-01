@@ -44,27 +44,30 @@
 #    1. cvs co mozilla/client.mk
 #    2. cd mozilla
 #    3. create your .mozconfig file with
-#       mk_add_options MOZ_CO_PROJECT=suite,browser,mail,minimo,xulrunner
+#       mk_add_options MOZ_CO_PROJECT=
+#         suite,browser
 #    4. gmake -f client.mk 
 #
 # This script will pick up the CVSROOT from the CVS/Root file. If you wish
 # to use a different CVSROOT, you must set CVSROOT in your environment:
 #
-#   export CVSROOT=:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot
+#   export CVSROOT=:pserver:anonymous:anonymous@cvs-mirror.mozilla.org:/cvsroot
 #   export CVSROOT=:pserver:username%somedomain.org@cvs.mozilla.org:/cvsroot
 # 
 # You must specify which products/modules you wish to checkout, with
-#   MOZ_CO_PROJECT, MOZ_CO_MODULE, and BUILD_MODULES variables.
+#   MOZ_CO_PROJECT and MOZ_CO_MODULE variables.
 #
 #   MOZ_CO_PROJECT possibilities include the following:
 #     suite (Seamonkey suite)
 #     browser (aka Firefox)
 #     mail (aka Thunderbird)
 #     minimo (small browser for devices)
+#     prince
 #     composer (standalone composer, aka NVU)
 #     calendar (aka Sunbird, use this to build the calendar extensions also)
 #     xulrunner
-#     macbrowser (aka Camino)
+#     camino
+#     tamarin
 #
 # Other common MOZ_CO_MODULE options include the following:
 #   mozilla/other-licenses/libart_lgpl
@@ -77,7 +80,8 @@
 #    clean (realclean is now the same as clean)
 #    distclean
 #
-# See http://www.mozilla.org/build/ for more information.
+# See http://developer.mozilla.org/en/docs/Build_Documentation for 
+# more information.
 #
 # Options:
 #   MOZ_BUILD_PROJECTS   - Build multiple projects in subdirectories
@@ -109,29 +113,44 @@ AVAILABLE_PROJECTS = \
   mail \
   minimo \
   composer \
+  prince \
   calendar \
   xulrunner \
-  macbrowser \
+  camino \
+  necko \
+  tamarin \
   $(NULL)
 
 # Trailing / on top-level mozilla dir required to stop fast-update thinking
 # it is a module name.
-MODULES_NS_core :=                              \
+MODULES_NS_necko :=                             \
   mozilla/                                      \
-  mozilla/js                                    \
-  mozilla/js/src                                \
-  mozilla/js/jsd                                \
-  $(NULL)                                       \
+  $(NULL)
 
-MODULES_core :=                                 \
+MODULES_necko :=                                \
   mozilla/README                                \
   mozilla/config                                \
   mozilla/build                                 \
+  mozilla/intl                                  \
+  mozilla/modules/libpref                       \
+  mozilla/modules/zlib                          \
+  mozilla/netwerk                               \
+  mozilla/xpcom                                 \
+  mozilla/tools/test-harness                    \
+  $(NULL)
+
+MODULES_NS_core :=                              \
+  $(MODULES_NS_necko)                           \
+  mozilla/js                                    \
+  mozilla/js/src                                \
+  mozilla/js/jsd                                \
+  mozilla/db                                    \
+  $(NULL)
+
+MODULES_core :=                                 \
+  $(MODULES_necko)                              \
   mozilla/caps                                  \
   mozilla/content                               \
-  mozilla/db/.cvsignore                         \
-  mozilla/db/Makefile.in                        \
-  mozilla/db/README.html                        \
   mozilla/db/mdb                                \
   mozilla/db/mork                               \
   mozilla/docshell                              \
@@ -142,61 +161,71 @@ MODULES_core :=                                 \
   mozilla/gfx                                   \
   mozilla/parser                                \
   mozilla/layout                                \
-  mozilla/intl                                  \
+  mozilla/memory/jemalloc                       \
   mozilla/jpeg                                  \
   mozilla/js/src/fdlibm                         \
   mozilla/js/src/liveconnect                    \
   mozilla/js/src/xpconnect                      \
   mozilla/js/jsd/idl                            \
+  mozilla/modules/lcms                          \
   mozilla/modules/libimg                        \
   mozilla/modules/libjar                        \
   mozilla/modules/libpr0n                       \
-  mozilla/modules/libpref                       \
   mozilla/modules/libreg                        \
   mozilla/modules/libutil                       \
   mozilla/modules/oji                           \
   mozilla/modules/plugin                        \
-  mozilla/modules/zlib                          \
-  mozilla/netwerk                               \
+  mozilla/modules/staticmod                     \
   mozilla/plugin/oji                            \
   mozilla/profile                               \
+  mozilla/probes                                \
   mozilla/rdf                                   \
   mozilla/security/manager                      \
   mozilla/sun-java                              \
-  mozilla/ipc                                   \
+  mozilla/ipc/ipcd                              \
   mozilla/modules/libpr0n                       \
   mozilla/modules/libmar                        \
   mozilla/modules/libbz2                        \
   mozilla/accessible                            \
+  mozilla/other-licenses/atk-1.0                \
+  mozilla/other-licenses/ia2                    \
   mozilla/security/manager                      \
   mozilla/tools/elf-dynstr-gc                   \
   mozilla/uriloader                             \
   mozilla/view                                  \
   mozilla/webshell                              \
   mozilla/widget                                \
-  mozilla/xpcom                                 \
   mozilla/xpfe                                  \
   mozilla/xpinstall                             \
   mozilla/toolkit                               \
   mozilla/storage                               \
   mozilla/db/sqlite3                            \
   mozilla/db/morkreader                         \
-  mozilla/tools/cross-commit                    \
-  mozilla/tools/test-harness                    \
+  mozilla/testing/crashtest                     \
+  mozilla/testing/mochitest                     \
+  $(NULL)
+
+LOCALES_necko :=                                \
+  netwerk                                       \
   $(NULL)
 
 LOCALES_core :=                                 \
-  netwerk                                       \
+  $(LOCALES_necko)                              \
   dom                                           \
   $(NULL)
 
-BOOTSTRAP_core :=                               \
+BOOTSTRAP_necko :=                              \
   mozilla/browser/config/version.txt            \
   mozilla/mail/config/version.txt               \
   mozilla/calendar/sunbird/config/version.txt   \
+  mozilla/suite/config/version.txt              \
   $(NULL)
 
-MODULES_NS_toolkit :=                           \
+BOOTSTRAP_core :=                               \
+  $(BOOTSTRAP_necko)                            \
+  $(NULL)
+
+MODULES_NS_toolkitp :=                           \
   $(MODULES_NS_core)                            \
   $(NULL)
 
@@ -223,8 +252,8 @@ MODULES_suite :=                                \
   $(MODULES_toolkit)                            \
   mozilla/directory/xpcom                       \
   mozilla/mailnews                              \
-  mozilla/themes                                \
   mozilla/suite                                 \
+  mozilla/other-licenses/7zstub/seamonkey       \
   $(NULL)
 
 LOCALES_suite :=                                \
@@ -232,6 +261,7 @@ LOCALES_suite :=                                \
   suite                                         \
   editor/ui                                     \
   extensions/reporter                           \
+  extensions/spellcheck                         \
   $(NULL)
 
 BOOTSTRAP_suite :=                              \
@@ -247,13 +277,13 @@ MODULES_browser :=                              \
   mozilla/browser                               \
   mozilla/other-licenses/branding/firefox       \
   mozilla/other-licenses/7zstub/firefox         \
-  mozilla/themes                                \
   $(NULL)
 
 LOCALES_browser :=                              \
   $(LOCALES_toolkit)                            \
   browser                                       \
   extensions/reporter                           \
+  extensions/spellcheck                         \
   other-licenses/branding/firefox               \
   $(NULL)
 
@@ -293,6 +323,7 @@ LOCALES_mail :=                                 \
   mail                                          \
   other-licenses/branding/thunderbird           \
   editor/ui                                     \
+  extensions/spellcheck                         \
   $(NULL)
 
 BOOTSTRAP_mail :=                               \
@@ -303,6 +334,12 @@ BOOTSTRAP_mail :=                               \
 MODULES_composer :=                             \
   $(MODULES_toolkit)                            \
   mozilla/composer                              \
+  $(NULL)
+				
+MODULES_prince :=                             \
+  $(MODULES_NS_toolkit)                         \
+  mozilla/filters							  \
+  mozilla/prince                              \
   $(NULL)
 
 MODULES_NS_calendar :=                          \
@@ -336,9 +373,6 @@ MODULES_NS_xulrunner :=                         \
 MODULES_xulrunner :=                            \
   $(MODULES_toolkit)                            \
   mozilla/xulrunner                             \
-  mozilla/Prince                                \
-  mozilla/filters								\
-  mozilla/ipc		                            \
   $(NULL)
 
 LOCALES_xulrunner :=                            \
@@ -350,19 +384,24 @@ BOOTSTRAP_xulrunner :=                          \
   mozilla/xulrunner/config/mozconfig            \
   $(NULL)
 
-MODULES_NS_macbrowser :=                        \
+MODULES_NS_camino :=                            \
   $(MODULES_NS_toolkit)                         \
   $(NULL)
 
-MODULES_macbrowser :=                           \
+MODULES_camino :=                               \
   $(MODULES_core)                               \
   mozilla/camino                                \
   mozilla/themes                                \
   $(NULL)
 
-BOOTSTRAP_macbrowser :=                         \
+BOOTSTRAP_camino :=                             \
   $(BOOTSTRAP_toolkit)                          \
   mozilla/camino/config/mozconfig               \
+  $(NULL)
+
+MODULES_tamarin :=                              \
+  mozilla/js/tamarin                            \
+  mozilla/modules/zlib                          \
   $(NULL)
 
 MODULES_all :=                                  \
@@ -380,12 +419,10 @@ MODULES_all :=                                  \
 # For branches, uncomment the MOZ_CO_TAG line with the proper tag,
 # and commit this file on that tag.
 #MOZ_CO_TAG          = <tag>
-#PRINCE NSPR_CO_TAG          = NSPRPUB_PRE_4_2_CLIENT_BRANCH
-#PRINCE NSS_CO_TAG           = NSS_3_11_20060609_TAG
-#PRINCE LDAPCSDK_CO_TAG      = ldapcsdk_5_17_client_branch
+NSPR_CO_TAG          = NSPR_4_7_1_BETA1
+NSS_CO_TAG           = NSS_3_12_BETA2
+LDAPCSDK_CO_TAG      = LDAPCSDK_6_0_3_CLIENT_BRANCH
 LOCALES_CO_TAG       =
-
-BUILD_MODULES = all
 
 #######################################################################
 # Defines
@@ -394,6 +431,9 @@ CVS = cvs
 comma := ,
 
 CWD := $(shell pwd)
+ifneq (1,$(words $(CWD)))
+$(error The mozilla directory cannot be located in a path with spaces.)
+endif
 
 ifeq "$(CWD)" "/"
 CWD   := /.
@@ -430,12 +470,25 @@ ifndef MAKE
 MAKE := gmake
 endif
 PERL ?= perl
+PYTHON ?= python
 
 CONFIG_GUESS_SCRIPT := $(wildcard $(TOPSRCDIR)/build/autoconf/config.guess)
 ifdef CONFIG_GUESS_SCRIPT
   CONFIG_GUESS = $(shell $(CONFIG_GUESS_SCRIPT))
 else
   _IS_FIRST_CHECKOUT := 1
+endif
+
+####################################
+# Sanity checks
+
+ifneq (,$(filter MINGW%,$(shell uname -s)))
+# check for CRLF line endings
+ifneq (0,$(shell $(PERL) -e 'binmode(STDIN); while (<STDIN>) { if (/\r/) { print "1"; exit } } print "0"' < $(TOPSRCDIR)/client.mk))
+$(error This source tree appears to have Windows-style line endings. To \
+convert it to Unix-style line endings, run \
+"python mozilla/build/win32/mozilla-dos2unix.py")
+endif
 endif
 
 ####################################
@@ -460,7 +513,7 @@ CVSCO_LOGFILE := $(shell echo $(CVSCO_LOGFILE) | sed s%//%/%)
 
 # if LOCALES_CVSROOT is not specified, set it here
 # (and let mozconfig override it)
-LOCALES_CVSROOT ?= :pserver:anonymous@cvs-mirror.mozilla.org:/l10n
+LOCALES_CVSROOT ?= :pserver:anonymous:anonymous@cvs-mirror.mozilla.org:/l10n
 
 ####################################
 # Load mozconfig Options
@@ -469,7 +522,7 @@ LOCALES_CVSROOT ?= :pserver:anonymous@cvs-mirror.mozilla.org:/l10n
 
 MOZCONFIG_LOADER := mozilla/build/autoconf/mozconfig2client-mk
 MOZCONFIG_FINDER := mozilla/build/autoconf/mozconfig-find 
-MOZCONFIG_MODULES := mozilla/build/unix/modules.mk mozilla/build/unix/uniq.pl
+MOZCONFIG_MODULES := mozilla/build/unix/uniq.pl
 run_for_side_effects := \
   $(shell cd $(ROOTDIR); \
      if test "$(_IS_FIRST_CHECKOUT)"; then \
@@ -478,12 +531,12 @@ run_for_side_effects := \
      fi; \
      $(MOZCONFIG_LOADER) $(TOPSRCDIR) mozilla/.mozconfig.mk > mozilla/.mozconfig.out)
 include $(TOPSRCDIR)/.mozconfig.mk
-include $(TOPSRCDIR)/build/unix/modules.mk
 
 ####################################
 # Options that may come from mozconfig
 
 MOZ_PROJECT_LIST := $(subst $(comma), ,$(MOZ_CO_PROJECT))
+MOZ_PROJECT_LIST := $(subst macbrowser,camino,$(MOZ_PROJECT_LIST))
 
 ifneq (,$(filter-out $(AVAILABLE_PROJECTS),$(MOZ_PROJECT_LIST)))
 $(error MOZ_CO_PROJECT contains an unrecognized project.)
@@ -506,7 +559,7 @@ MOZCONFIG_MODULES := $(sort $(MOZCONFIG_MODULES))
 
 # Change CVS flags if anonymous root is requested
 ifdef MOZ_CO_USE_MIRROR
-  CVS_FLAGS := -d :pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot
+  CVS_FLAGS := -d :pserver:anonymous:anonymous@cvs-mirror.mozilla.org:/cvsroot
 endif
 
 # MOZ_CVS_FLAGS - Basic CVS flags
@@ -575,11 +628,11 @@ ifdef MOZ_CO_FLAGS
 endif
 NSPR_CO_FLAGS := $(NSPR_CO_FLAGS) $(if $(NSPR_CO_TAG),-r $(NSPR_CO_TAG),-A)
 
-# Cannot pull static tags by date
-ifeq ($(NSPR_CO_TAG),NSPRPUB_CLIENT_TAG)
-CVSCO_NSPR = $(CVS) $(CVS_FLAGS) co $(NSPR_CO_FLAGS) $(NSPR_CO_MODULE)
-else
+# Can only pull the tip or branch tags by date
+ifeq (,$(filter-out HEAD %BRANCH,$(NSPR_CO_TAG)))
 CVSCO_NSPR = $(CVS) $(CVS_FLAGS) co $(NSPR_CO_FLAGS) $(CVS_CO_DATE_FLAGS) $(NSPR_CO_MODULE)
+else
+CVSCO_NSPR = $(CVS) $(CVS_FLAGS) co $(NSPR_CO_FLAGS) $(NSPR_CO_MODULE)
 endif
 
 ####################################
@@ -591,31 +644,12 @@ ifdef MOZ_CO_FLAGS
   LDAPCSDK_CO_FLAGS := $(MOZ_CO_FLAGS)
 endif
 LDAPCSDK_CO_FLAGS := $(LDAPCSDK_CO_FLAGS) $(if $(LDAPCSDK_CO_TAG),-r $(LDAPCSDK_CO_TAG),-A)
+
+# Can only pull the tip or branch tags by date
+ifeq (,$(filter-out HEAD %BRANCH,$(LDAPCSDK_CO_TAG)))
 CVSCO_LDAPCSDK = $(CVS) $(CVS_FLAGS) co $(LDAPCSDK_CO_FLAGS) $(CVS_CO_DATE_FLAGS) $(LDAPCSDK_CO_MODULE)
-
-####################################
-# CVS defines for standalone modules
-#
-ifeq ($(BUILD_MODULES),all)
-  CHECKOUT_STANDALONE := true
-  CHECKOUT_STANDALONE_NOSUBDIRS := true
 else
-  STANDALONE_CO_MODULE := $(filter-out $(NSPRPUB_DIR) security directory/c-sdk, $(BUILD_MODULE_CVS))
-  STANDALONE_CO_MODULE += allmakefiles.sh client.mk aclocal.m4 configure configure.in
-  STANDALONE_CO_MODULE += Makefile.in
-
-  MOZ_MODULE_LIST += $(addprefix mozilla/,$(STANDALONE_CO_MODULE))
-  MOZ_MODULE_LIST_NS += $(addprefix mozilla/,$(BUILD_MODULE_CVS_NS))
-
-ifeq (,$(filter $(NSPRPUB_DIR), $(BUILD_MODULE_CVS))$(MOZ_CO_PROJECT))
-  CVSCO_NSPR :=
-endif
-ifeq (,$(filter security security/manager, $(BUILD_MODULE_CVS))$(MOZ_CO_PROJECT))
-  CVSCO_NSS :=
-endif
-ifeq (,$(filter directory/c-sdk, $(BUILD_MODULE_CVS))$(MOZ_CO_PROJECT))
-  CVSCO_LDAPCSDK :=
-endif
+CVSCO_LDAPCSDK = $(CVS) $(CVS_FLAGS) co $(LDAPCSDK_CO_FLAGS) $(LDAPCSDK_CO_MODULE)
 endif
 
 ####################################
@@ -648,6 +682,25 @@ endif
 MOZ_MODULE_LIST := $(sort $(MOZ_MODULE_LIST))
 MOZ_MODULE_LIST_NS := $(sort $(MOZ_MODULE_LIST_NS))
 
+####################################
+# Suppress standalone modules if they're not needed.
+#
+CONFIGURES := $(TOPSRCDIR)/configure
+ifeq (,$(filter mozilla/xpcom,$(MOZ_MODULE_LIST)))
+  CVSCO_NSPR :=
+else
+  CONFIGURES += $(TOPSRCDIR)/nsprpub/configure
+endif
+
+ifeq (,$(filter mozilla/security/manager,$(MOZ_MODULE_LIST)))
+  CVSCO_NSS :=
+endif
+ifeq (,$(filter mozilla/directory/xpcom,$(MOZ_MODULE_LIST)))
+  CVSCO_LDAPCSDK :=
+else
+  CONFIGURES += $(TOPSRCDIR)/directory/c-sdk/configure
+endif
+
 MODULES_CO_FLAGS := -P
 ifdef MOZ_CO_FLAGS
   MODULES_CO_FLAGS := $(MOZ_CO_FLAGS)
@@ -667,7 +720,7 @@ ifeq (,$(MOZ_MODULE_LIST_NS))
 FASTUPDATE_MODULES_NS := true
 CHECKOUT_MODULES_NS   := true
 else
-FASTUPDATE_MODULES_NS := fast_update $(filter-out mozilla/,$(CVSCO_MODULES_NS))
+FASTUPDATE_MODULES_NS := fast_update $(CVSCO_MODULES_NS)
 CHECKOUT_MODULES_NS   := cvs_co      $(CVSCO_MODULES_NS)
 endif
 
@@ -691,9 +744,9 @@ override MOZ_CO_LOCALES := $(subst $(comma), ,$(MOZ_CO_LOCALES))
 ifeq (all,$(MOZ_CO_LOCALES))
 MOZCONFIG_MODULES += $(foreach project,$(MOZ_PROJECT_LIST),mozilla/$(project)/locales/all-locales)
 
-LOCALE_CO_DIRS := $(sort $(foreach project,$(MOZ_PROJECT_LIST),$(foreach locale,$(shell cat mozilla/$(project)/locales/all-locales),$(foreach dir,$(LOCALES_$(project)),l10n/$(locale)/$(dir)))))
+LOCALE_CO_DIRS := $(sort $(foreach project,$(MOZ_PROJECT_LIST),$(foreach locale,$(shell cat mozilla/$(project)/locales/all-locales),l10n/$(locale)/)))
 else # MOZ_CO_LOCALES != all
-LOCALE_CO_DIRS = $(sort $(foreach locale,$(MOZ_CO_LOCALES),$(foreach dir,$(LOCALE_DIRS),l10n/$(locale)/$(dir))))
+LOCALE_CO_DIRS = $(sort $(foreach locale,$(MOZ_CO_LOCALES),l10n/$(locale)/))
 endif
 
 CVSCO_LOCALES := $(CVS) $(CVS_FLAGS) -d $(LOCALES_CVSROOT) co $(LOCALES_CO_FLAGS) $(CVS_CO_LOCALES_DATE_FLAGS) $(LOCALE_CO_DIRS)
@@ -743,13 +796,12 @@ checkout::
 ifdef RUN_AUTOCONF_LOCALLY
 	@echo "Removing local configures" ; \
 	cd $(ROOTDIR) && \
-	$(RM) -f mozilla/configure mozilla/nsprpub/configure \
-		mozilla/directory/c-sdk/configure
+	$(RM) -f $(CONFIGURES)
 endif
 	@echo "checkout start: "`date` | tee $(CVSCO_LOGFILE)
-	@echo '$(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/client.mk $(MOZCONFIG_MODULES)'; \
+	@echo '$(CVSCO) mozilla/client.mk $(MOZCONFIG_MODULES)'; \
         cd $(ROOTDIR) && \
-	$(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/client.mk $(MOZCONFIG_MODULES)
+	$(CVSCO) mozilla/client.mk $(MOZCONFIG_MODULES)
 	@cd $(ROOTDIR) && $(MAKE) -f mozilla/client.mk real_checkout
 
 #	Start the checkout. Split the output to the tty and a log file.
@@ -765,10 +817,15 @@ real_checkout:
 	$(CHECKOUT_MODULES) \
 	$(CHECKOUT_LOCALES);
 	@echo "checkout finish: "`date` | tee -a $(CVSCO_LOGFILE)
-# update the NSS checkout timestamp
-	@if test `egrep -c '^(U|C) mozilla/security/(nss|coreconf)' $(CVSCO_LOGFILE) 2>/dev/null` != 0; then \
+# update the NSS checkout timestamp, if we checked PSM out
+	@if test -d $(TOPSRCDIR)/security/manager -a \
+		 `egrep -c '^(U|C) mozilla/security/(nss|coreconf)' $(CVSCO_LOGFILE) 2>/dev/null` != 0; then \
 		touch $(TOPSRCDIR)/security/manager/.nss.checkout; \
 	fi
+ifdef RUN_AUTOCONF_LOCALLY
+	cd $(ROOTDIR) && \
+	$(RM) -f $(CONFIGURES)
+endif
 #	@: Check the log for conflicts. ;
 	@conflicts=`egrep "^C " $(CVSCO_LOGFILE)` ;\
 	if test "$$conflicts" ; then \
@@ -778,12 +835,6 @@ real_checkout:
 	  false; \
 	else true; \
 	fi
-ifdef RUN_AUTOCONF_LOCALLY
-	@echo Generating configures using $(AUTOCONF) ; \
-	cd $(TOPSRCDIR) && $(AUTOCONF) && \
-	cd $(TOPSRCDIR)/nsprpub && $(AUTOCONF) && \
-	cd $(TOPSRCDIR)/directory/c-sdk && $(AUTOCONF)
-endif
 
 fast-update:
 #	@: Backup the last checkout log.
@@ -794,8 +845,7 @@ fast-update:
 ifdef RUN_AUTOCONF_LOCALLY
 	@echo "Removing local configures" ; \
 	cd $(ROOTDIR) && \
-	$(RM) -f mozilla/configure mozilla/nsprpub/configure \
-		mozilla/directory/c-sdk/configure
+	$(RM) -f $(CONFIGURES)
 endif
 	@echo "checkout start: "`date` | tee $(CVSCO_LOGFILE)
 	@echo '$(CVSCO) mozilla/client.mk $(MOZCONFIG_MODULES)'; \
@@ -814,7 +864,6 @@ real_fast-update:
 	cd $(ROOTDIR); \
 	cvs_co $(CVSCO_NSS); \
 	cd mozilla; \
-	cvs -z3 -q -f up -l -d .; \
 	fast_update $(CVSCO_LDAPCSDK); \
 	$(FASTUPDATE_MODULES); \
 	$(FASTUPDATE_MODULES_NS); \
@@ -824,6 +873,10 @@ real_fast-update:
 	@if test `egrep -c '^(U|C) mozilla/security/(nss|coreconf)' $(CVSCO_LOGFILE) 2>/dev/null` != 0; then \
 		touch $(TOPSRCDIR)/security/manager/.nss.checkout; \
 	fi
+ifdef RUN_AUTOCONF_LOCALLY
+	cd $(ROOTDIR) && \
+	$(RM) -f $(CONFIGURES)
+endif
 #	@: Check the log for conflicts. ;
 	@conflicts=`egrep "^C " $(CVSCO_LOGFILE)` ;\
 	if test "$$conflicts" ; then \
@@ -833,12 +886,6 @@ real_fast-update:
 	  false; \
 	else true; \
 	fi
-ifdef RUN_AUTOCONF_LOCALLY
-	@echo Generating configures using $(AUTOCONF) ; \
-	cd $(TOPSRCDIR) && $(AUTOCONF) && \
-	cd $(TOPSRCDIR)/nsprpub && $(AUTOCONF) && \
-	cd $(TOPSRCDIR)/directory/c-sdk && $(AUTOCONF)
-endif
 
 CVSCO_LOGFILE_L10N := $(ROOTDIR)/cvsco-l10n.log
 CVSCO_LOGFILE_L10N := $(shell echo $(CVSCO_LOGFILE_L10N) | sed s%//%/%)
@@ -850,24 +897,28 @@ l10n-checkout:
 	else true; \
 	fi
 	@echo "checkout start: "`date` | tee $(CVSCO_LOGFILE_L10N)
-	@echo '$(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/client.mk $(MOZCONFIG_MODULES)'; \
+	@echo '$(CVSCO) mozilla/client.mk $(MOZCONFIG_MODULES)'; \
         cd $(ROOTDIR) && \
-	$(CVSCO) $(CVS_CO_DATE_FLAGS) mozilla/client.mk $(MOZCONFIG_MODULES)
+	$(CVSCO) mozilla/client.mk $(MOZCONFIG_MODULES)
 	@cd $(ROOTDIR) && $(MAKE) -f mozilla/client.mk real_l10n-checkout
 
-EN_US_CO_DIRS := $(sort $(foreach dir,$(LOCALE_DIRS),mozilla/$(dir)/locales)) \
-  $(foreach mod,$(MOZ_PROJECT_LIST),mozilla/$(mod)/config) \
+FULL_EN_US_DIRS := toolkit \
+	extensions \
+	$(MOZ_PROJECT_LIST) \
+	$(NULL)
+
+EN_US_LOCALE_DIRS := $(foreach dir, \
+	$(filter-out toolkit extensions/% $(MOZ_PROJECT_LIST), $(LOCALE_DIRS)), \
+	mozilla/$(dir)/locales)
+
+EN_US_CO_DIRS := $(EN_US_LOCALE_DIRS) \
+  $(foreach mod,$(FULL_EN_US_DIRS),mozilla/$(mod)) \
   mozilla/client.mk        \
-  $(MOZCONFIG_MODULES)     \
   mozilla/configure        \
   mozilla/configure.in     \
   mozilla/allmakefiles.sh  \
   mozilla/build            \
   mozilla/config           \
-  $(NULL)
-
-EN_US_CO_FILES_NS :=          \
-  mozilla/toolkit/mozapps/installer \
   $(NULL)
 
 #	Start the checkout. Split the output to the tty and a log file.
@@ -876,7 +927,6 @@ real_l10n-checkout:
 	cvs_co() { set -e; echo "$$@" ; \
 	  "$$@" 2>&1 | tee -a $(CVSCO_LOGFILE_L10N); }; \
 	cvs_co $(CVS) $(CVS_FLAGS) co $(MODULES_CO_FLAGS) $(CVS_CO_DATE_FLAGS) $(EN_US_CO_DIRS); \
-	cvs_co $(CVS) $(CVS_FLAGS) co $(MODULES_CO_FLAGS) $(CVS_CO_DATE_FLAGS) -l $(EN_US_CO_FILES_NS); \
 	cvs_co $(CVSCO_LOCALES)
 	@echo "checkout finish: "`date` | tee -a $(CVSCO_LOGFILE_L10N)
 #	@: Check the log for conflicts. ;
@@ -907,7 +957,7 @@ else
 ifdef MOZ_UNIFY_BDATE
 ifndef MOZ_BUILD_DATE
 ifdef MOZ_BUILD_PROJECTS
-MOZ_BUILD_DATE = $(shell $(PERL) -I$(TOPSRCDIR)/config $(TOPSRCDIR)/config/bdate.pl)
+MOZ_BUILD_DATE = $(shell $(PYTHON) $(TOPSRCDIR)/toolkit/xre/make-platformini.py --print-buildid)
 export MOZ_BUILD_DATE
 endif
 endif
@@ -924,14 +974,14 @@ ifndef MOZ_BUILD_PROJECTS
 # Building a single project, OBJDIR is usable.
 	set -e; \
 	for mkfile in $(MOZ_PREFLIGHT_ALL); do \
-	  $(MAKE) -f $$mkfile preflight_all TOPSRCDIR=$(TOPSRCDIR) OBJDIR=$(OBJDIR) MOZ_OBJDIR=$(MOZ_OBJDIR); \
+	  $(MAKE) -f $(TOPSRCDIR)/$$mkfile preflight_all TOPSRCDIR=$(TOPSRCDIR) OBJDIR=$(OBJDIR) MOZ_OBJDIR=$(MOZ_OBJDIR); \
 	done
 else
 # OBJDIR refers to the project-specific OBJDIR, which is not available at
 # this point when building multiple projects.  Only MOZ_OBJDIR is available.
 	set -e; \
 	for mkfile in $(MOZ_PREFLIGHT_ALL); do \
-	  $(MAKE) -f $$mkfile preflight_all TOPSRCDIR=$(TOPSRCDIR) MOZ_OBJDIR=$(MOZ_OBJDIR) MOZ_BUILD_PROJECTS="$(MOZ_BUILD_PROJECTS)"; \
+	  $(MAKE) -f $(TOPSRCDIR)/$$mkfile preflight_all TOPSRCDIR=$(TOPSRCDIR) MOZ_OBJDIR=$(MOZ_OBJDIR) MOZ_BUILD_PROJECTS="$(MOZ_BUILD_PROJECTS)"; \
 	done
 endif
 endif
@@ -966,18 +1016,24 @@ EXTRA_CONFIG_DEPS := \
 $(TOPSRCDIR)/configure: $(TOPSRCDIR)/configure.in $(EXTRA_CONFIG_DEPS)
 	@echo Generating $@ using autoconf
 	cd $(TOPSRCDIR); $(AUTOCONF)
+
+$(TOPSRCDIR)/nsprpub/configure: $(TOPSRCDIR)/nsprpub/configure.in $(EXTRA_CONFIG_DEPS)
+	@echo Generating $@ using autoconf
+	cd $(TOPSRCDIR)/nsprpub; $(AUTOCONF)
+
+$(TOPSRCDIR)/directory/c-sdk/configure: $(TOPSRCDIR)/directory/c-sdk/configure.in $(EXTRA_CONFIG_DEPS)
+	@echo Generating $@ using autoconf
+	cd $(TOPSRCDIR)/directory/c-sdk; $(AUTOCONF)
 endif
 
 CONFIG_STATUS_DEPS := \
 	$(TOPSRCDIR)/configure \
-	$(TOPSRCDIR)/allmakefiles.sh \
 	$(TOPSRCDIR)/.mozconfig.mk \
 	$(wildcard $(TOPSRCDIR)/nsprpub/configure) \
 	$(wildcard $(TOPSRCDIR)/directory/c-sdk/configure) \
-	$(wildcard $(TOPSRCDIR)/mailnews/makefiles) \
-	$(wildcard $(TOPSRCDIR)/themes/makefiles) \
 	$(wildcard $(TOPSRCDIR)/config/milestone.txt) \
 	$(wildcard $(TOPSRCDIR)/config/chrome-versions.sh) \
+  $(wildcard $(addsuffix confvars.sh,$(wildcard $(TOPSRCDIR)/*/))) \
 	$(NULL)
 
 # configure uses the program name to determine @srcdir@. Calling it without
@@ -993,7 +1049,7 @@ ifdef MOZ_TOOLS
   CONFIGURE = $(TOPSRCDIR)/configure
 endif
 
-configure::
+configure:: $(CONFIGURES)
 ifdef MOZ_BUILD_PROJECTS
 	@if test ! -d $(MOZ_OBJDIR); then $(MKDIR) $(MOZ_OBJDIR); else true; fi
 endif
@@ -1028,7 +1084,7 @@ build profiledbuild alldep preflight::
 ifdef MOZ_PREFLIGHT
 	set -e; \
 	for mkfile in $(MOZ_PREFLIGHT); do \
-	  $(MAKE) -f $$mkfile preflight TOPSRCDIR=$(TOPSRCDIR) OBJDIR=$(OBJDIR) MOZ_OBJDIR=$(MOZ_OBJDIR); \
+	  $(MAKE) -f $(TOPSRCDIR)/$$mkfile preflight TOPSRCDIR=$(TOPSRCDIR) OBJDIR=$(OBJDIR) MOZ_OBJDIR=$(MOZ_OBJDIR); \
 	done
 endif
 
@@ -1049,9 +1105,8 @@ build::  $(OBJDIR)/Makefile $(OBJDIR)/config.status
 profiledbuild:: $(OBJDIR)/Makefile $(OBJDIR)/config.status
 	$(MOZ_MAKE) MOZ_PROFILE_GENERATE=1
 	OBJDIR=${OBJDIR} $(PROFILE_GEN_SCRIPT)
-	$(MOZ_MAKE) clobber_all
+	$(MOZ_MAKE) maybe_clobber_profiledbuild
 	$(MOZ_MAKE) MOZ_PROFILE_USE=1
-	find $(OBJDIR) -name "*.da" -exec rm {} \;
 
 ####################################
 # Other targets
@@ -1067,7 +1122,7 @@ build profiledbuild alldep postflight::
 ifdef MOZ_POSTFLIGHT
 	set -e; \
 	for mkfile in $(MOZ_POSTFLIGHT); do \
-	  $(MAKE) -f $$mkfile postflight TOPSRCDIR=$(TOPSRCDIR) OBJDIR=$(OBJDIR) MOZ_OBJDIR=$(MOZ_OBJDIR); \
+	  $(MAKE) -f $(TOPSRCDIR)/$$mkfile postflight TOPSRCDIR=$(TOPSRCDIR) OBJDIR=$(OBJDIR) MOZ_OBJDIR=$(MOZ_OBJDIR); \
 	done
 endif
 
@@ -1084,14 +1139,14 @@ ifndef MOZ_BUILD_PROJECTS
 # Building a single project, OBJDIR is usable.
 	set -e; \
 	for mkfile in $(MOZ_POSTFLIGHT_ALL); do \
-	  $(MAKE) -f $$mkfile postflight_all TOPSRCDIR=$(TOPSRCDIR) OBJDIR=$(OBJDIR) MOZ_OBJDIR=$(MOZ_OBJDIR); \
+	  $(MAKE) -f $(TOPSRCDIR)/$$mkfile postflight_all TOPSRCDIR=$(TOPSRCDIR) OBJDIR=$(OBJDIR) MOZ_OBJDIR=$(MOZ_OBJDIR); \
 	done
 else
 # OBJDIR refers to the project-specific OBJDIR, which is not available at
 # this point when building multiple projects.  Only MOZ_OBJDIR is available.
 	set -e; \
 	for mkfile in $(MOZ_POSTFLIGHT_ALL); do \
-	  $(MAKE) -f $$mkfile postflight_all TOPSRCDIR=$(TOPSRCDIR) MOZ_OBJDIR=$(MOZ_OBJDIR) MOZ_BUILD_PROJECTS="$(MOZ_BUILD_PROJECTS)"; \
+	  $(MAKE) -f $(TOPSRCDIR)/$$mkfile postflight_all TOPSRCDIR=$(TOPSRCDIR) MOZ_OBJDIR=$(MOZ_OBJDIR) MOZ_BUILD_PROJECTS="$(MOZ_BUILD_PROJECTS)"; \
 	done
 endif
 endif
@@ -1111,7 +1166,7 @@ cleansrcdir:
 # (! IS_FIRST_CHECKOUT)
 endif
 
-echo_objdir:
-	@echo $(OBJDIR)
+echo-variable-%:
+	@echo $($*)
 
-.PHONY: checkout real_checkout depend build export libs alldep install clean realclean distclean cleansrcdir pull_all build_all clobber clobber_all pull_and_build_all everything configure preflight_all preflight postflight postflight_all
+.PHONY: checkout real_checkout depend build profiledbuild export libs alldep install clean realclean distclean cleansrcdir pull_all build_all clobber clobber_all pull_and_build_all everything configure preflight_all preflight postflight postflight_all

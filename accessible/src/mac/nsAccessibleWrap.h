@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: Objective-C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -15,12 +15,12 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Netscape Communications Corporation.
- * Portions created by the Initial Developer are Copyright (C) 2003
+ * Mozilla Foundation.
+ * Portions created by the Initial Developer are Copyright (C) 2006
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   Original Author: Aaron Leventhal (aaronl@netscape.com)
+ *   Original Author: Håkan Waara <hwaara@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -44,13 +44,84 @@
 #define _nsAccessibleWrap_H_
 
 #include "nsCOMPtr.h"
+#include "nsRect.h"
+
+#include "nsTArray.h"
+#include "nsAutoPtr.h"
+
 #include "nsAccessible.h"
+
+struct AccessibleWrapper;
+struct objc_class;
 
 class nsAccessibleWrap : public nsAccessible
 {
   public: // construction, destruction
     nsAccessibleWrap(nsIDOMNode*, nsIWeakReference *aShell);
     virtual ~nsAccessibleWrap();
+    
+    // creates the native accessible connected to this one.
+    NS_IMETHOD Init ();
+    
+    // get the native obj-c object (mozAccessible)
+    NS_IMETHOD GetNativeInterface (void **aOutAccessible);
+    
+    // the objective-c |Class| type that this accessible's native object
+    // should be instantied with.   used on runtime to determine the
+    // right type for this accessible's associated native object.
+    virtual objc_class* GetNativeType ();
+    
+    // returns a pointer to the native window for this accessible tree.
+    void GetNativeWindow (void **aOutNativeWindow);
+    
+    virtual nsresult Shutdown ();
+    virtual nsresult InvalidateChildren ();
+
+    NS_IMETHOD FireAccessibleEvent(nsIAccessibleEvent *aEvent);
+    
+    // ignored means that the accessible might still have children, but is not displayed
+    // to the user. it also has no native accessible object represented for it.
+    PRBool IsIgnored();
+    
+    PRInt32 GetUnignoredChildCount(PRBool aDeepCount);
+    
+    PRBool HasPopup () {
+      PRUint32 state = 0;
+      GetState(&state, nsnull);
+      return (state & nsIAccessibleStates::STATE_HASPOPUP);
+    }
+    
+    // return this accessible's all children, adhering to "flat" accessibles by not returning their children.
+    void GetUnignoredChildren(nsTArray<nsRefPtr<nsAccessibleWrap> > &aChildrenArray);
+    virtual already_AddRefed<nsIAccessible> GetUnignoredParent();
+    
+  protected:
+    
+    PRBool AncestorIsFlat() {
+      // we don't create a native object if we're child of a "flat" accessible; for example, on OS X buttons 
+      // shouldn't have any children, because that makes the OS confused. 
+      //
+      // to maintain a scripting environment where the XPCOM accessible hierarchy look the same 
+      // on all platforms, we still let the C++ objects be created though.
+      
+      nsCOMPtr<nsIAccessible> curParent = GetParent();
+      while (curParent) {
+        if (MustPrune(curParent))
+          return PR_TRUE;
+        nsCOMPtr<nsIAccessible> newParent;
+        curParent->GetParent(getter_AddRefs(newParent));
+        curParent.swap(newParent);
+      }
+      // no parent was flat
+      return PR_FALSE;
+    }
+
+    // Wrapper around our native object.
+    AccessibleWrapper *mNativeWrapper;
 };
+
+// Define unsupported wrap classes here
+typedef class nsHTMLTableCellAccessible    nsHTMLTableCellAccessibleWrap;
+typedef class nsHTMLTableAccessible        nsHTMLTableAccessibleWrap;
 
 #endif

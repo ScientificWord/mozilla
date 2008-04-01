@@ -15,12 +15,12 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Netscape Communications Corporation.
- * Portions created by the Initial Developer are Copyright (C) 2003
+ * Mozilla Foundation.
+ * Portions created by the Initial Developer are Copyright (C) 2006
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   Original Author: Aaron Leventhal (aaronl@netscape.com)
+ *   Original Author: Håkan Waara <hwaara@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -45,11 +45,19 @@
 
 #include "nsRootAccessible.h"
 
-class nsRootAccessibleWrap: public nsRootAccessible
+struct objc_class;
+
+class nsRootAccessibleWrap : public nsRootAccessible
 {
-public:
+  public:
     nsRootAccessibleWrap(nsIDOMNode *aNode, nsIWeakReference *aShell);
     virtual ~nsRootAccessibleWrap();
+
+    objc_class* GetNativeType ();
+    
+    // let's our native accessible get in touch with the
+    // native cocoa view that is our accessible parent.
+    void GetNativeWidget (void **aOutView);
 };
 
 
