@@ -59,9 +59,6 @@ PLSRCS		= nfspwd.pl revdepth.pl
 
 TARGETS		= $(HOST_PROGRAM) $(PLSRCS:.pl=) $(SIMPLE_PROGRAMS)
 
-# Generate the build number on the fly.
-TARGETS		+= build_number nsBuildID.h
-
 ifndef CROSS_COMPILE
 ifdef USE_ELF_DYNSTR_GC
 TARGETS		+= elf-dynstr-gc
@@ -96,7 +93,6 @@ NSPR_CFLAGS	+= -I$(srcdir)/../nsprpub/pr/include/md
 endif
 
 HEADERS = \
-	nsBuildID.h \
 	$(DEPTH)/mozilla-config.h \
 	$(srcdir)/nsStaticComponents.h \
 	$(NULL)
@@ -105,70 +101,42 @@ export:: $(TARGETS) $(HEADERS)
 	$(INSTALL) $(IFLAGS1) $(HEADERS) $(DIST)/include
 	-rm -f $(FINAL_LINK_COMPS) $(FINAL_LINK_LIBS) $(FINAL_LINK_COMP_NAMES)
 	-rm -f $(DIST)/bin/chrome/chromelist.txt
-	$(NSINSTALL) -t $(IFLAGS1) $(HEADERS) $(DIST)/sdk/include
 ifdef HOST_PROGRAM
 	$(INSTALL) $(HOST_PROGRAM) $(DIST)/bin
 endif
 
-
-# Copy NSPR to the SDK
-ifndef LIBXUL_SDK
-ifndef MOZ_NATIVE_NSPR
-ABS_DIST = cd $(DIST) && pwd
-ifeq (,$(CROSS_COMPILE)$(filter-out WINNT,$(OS_ARCH)))
-ifdef CYGDRIVE_MOUNT
-ABS_DIST = cygpath -w $(DIST) | sed -e 's|\\\\|/|g'
-endif
-endif
-libs::
-	_ABS_DIST=`$(ABS_DIST)`; \
-	$(MAKE) -C $(DEPTH)/nsprpub install prefix=$$_ABS_DIST/sdk exec_prefix=$$_ABS_DIST/sdk bindir=$$_ABS_DIST/sdk/dummy includedir=$$_ABS_DIST/sdk/include libdir=$$_ABS_DIST/sdk/lib datadir=$$_ABS_DIST/sdk/dummy DESTDIR=
-	$(RM) -rf $(DIST)/sdk/dummy
-ifneq (,$(filter OS2 WINNT,$(OS_ARCH)))
-	$(RM) -f $(DIST)/sdk/lib/$(DLL_PREFIX)nspr4$(DLL_SUFFIX) $(DIST)/sdk/lib/$(DLL_PREFIX)plc4$(DLL_SUFFIX) $(DIST)/sdk/lib/$(DLL_PREFIX)plds4$(DLL_SUFFIX)
-	$(RM) -f $(DIST)/sdk/lib/$(LIB_PREFIX)nspr4_s.$(LIB_SUFFIX) $(DIST)/sdk/lib/$(LIB_PREFIX)plc4_s.$(LIB_SUFFIX) $(DIST)/sdk/lib/$(LIB_PREFIX)plds4_s.$(LIB_SUFFIX)
+# Generate a new buildid every time we "export" in config... that's only
+# supposed to be once per-build!
+export::
+ifdef MOZ_BUILD_DATE
+	printf "%s" $(MOZ_BUILD_DATE) > buildid
 else
-	$(RM) -f $(DIST)/sdk/lib/$(LIB_PREFIX)nspr4.$(LIB_SUFFIX) $(DIST)/sdk/lib/$(LIB_PREFIX)plc4.$(LIB_SUFFIX) $(DIST)/sdk/lib/$(LIB_PREFIX)plds4.$(LIB_SUFFIX)
+	$(PYTHON) $(topsrcdir)/toolkit/xre/make-platformini.py --print-buildid > buildid
 endif
-endif # MOZ_NATIVE_NSPR
-endif # LIBXUL_SDK
 
 ifdef WRAP_SYSTEM_INCLUDES
 export::
 	if test ! -d system_wrappers; then mkdir system_wrappers; fi
-	$(PERL) $(topsrcdir)/nsprpub/config/make-system-wrappers.pl system_wrappers < $(srcdir)/system-headers
+	$(PERL) $(topsrcdir)/config/preprocessor.pl $(DEFINES) $(ACDEFINES) \
+		-DBUILD_STATIC_LIBS=$(BUILD_STATIC_LIBS) \
+		-DMOZ_TREE_CAIRO=$(MOZ_TREE_CAIRO) \
+		-DMOZ_ENABLE_LIBXUL=$(MOZ_ENABLE_LIBXUL) \
+		-DMOZ_NATIVE_HUNSPELL=$(MOZ_NATIVE_HUNSPELL) \
+		-DMOZ_NATIVE_ZLIB=$(MOZ_NATIVE_ZLIB) \
+		-DMOZ_NATIVE_PNG=$(MOZ_NATIVE_PNG) \
+		-DMOZ_NATIVE_JPEG=$(MOZ_NATIVE_JPEG) \
+		-DMOZ_NATIVE_LCMS=$(MOZ_NATIVE_LCMS) \
+		$(srcdir)/system-headers | $(PERL) $(topsrcdir)/nsprpub/config/make-system-wrappers.pl system_wrappers
 	$(INSTALL) system_wrappers $(DIST)/include
+
+GARBAGE_DIRS += system_wrappers
 endif
 
-# we don't use an explicit dependency here because then we would
-# regenerate nsBuildID.h during the make install phase and that would
-# be bad.
 install::
-	@if test ! -f nsBuildID.h; then\
-		echo "You must have done at least a make export before trying to do a make install."; \
-		echo "(nsBuildID.h is missing.)"; \
-		exit 1; \
-	fi;
-	$(SYSINSTALL) $(IFLAGS1) nsBuildID.h $(DESTDIR)$(includedir)
 	$(SYSINSTALL) $(IFLAGS1) $(DEPTH)/mozilla-config.h $(DESTDIR)$(includedir)
 
-GARBAGE += build_number nsBuildID \
-	$(FINAL_LINK_COMPS) $(FINAL_LINK_LIBS) $(FINAL_LINK_COMP_NAMES)
-
-ifneq (,$(BUILD_OFFICIAL)$(MOZILLA_OFFICIAL))
-_BN_OFFICIAL=1
-else
-_BN_OFFICIAL=
-endif
-
-build_number: FORCE
-	$(PERL) -I$(srcdir) $(srcdir)/bdate.pl $@ $(_BN_OFFICIAL)
-
-nsBuildID.h: nsBuildID.h.in build_number $(srcdir)/milestone.txt Makefile
-	$(RM) $@
-	MOZ_MILESTONE_RELEASE=$(MOZ_MILESTONE_RELEASE); \
-	export MOZ_MILESTONE_RELEASE; \
-	$(PERL) -I$(srcdir) $(srcdir)/aboutime.pl -m $(srcdir)/milestone.txt $@ build_number $(srcdir)/nsBuildID.h.in
+# GARBAGE += \
+#	$(FINAL_LINK_COMPS) $(FINAL_LINK_LIBS) $(FINAL_LINK_COMP_NAMES) buildid $(srcdir)/*.pyc
 
 ifndef CROSS_COMPILE
 ifdef USE_ELF_DYNSTR_GC
@@ -183,3 +151,11 @@ ifdef MKDEPEND_DIR
 clean clobber realclean clobber_all::
 	cd $(MKDEPEND_DIR); $(MAKE) $@
 endif
+
+PYUNITS := unit-Expression.py unit-Preprocessor.py
+
+check::
+	@$(EXIT_ON_ERROR) \
+	for test in $(PYUNITS); do \
+	  $(PYTHON) $(srcdir)/tests/$$test ; \
+	done
