@@ -43,8 +43,8 @@
 
 NS_IMPL_ISUPPORTS_INHERITED0(nsHTMLLinkAccessible, nsLinkableAccessible)
 
-nsHTMLLinkAccessible::nsHTMLLinkAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell, nsIFrame *aFrame):
-nsLinkableAccessible(aDomNode, aShell), mFrame(aFrame)
+nsHTMLLinkAccessible::nsHTMLLinkAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell):
+nsLinkableAccessible(aDomNode, aShell)
 { 
 }
 
@@ -60,15 +60,20 @@ NS_IMETHODIMP nsHTMLLinkAccessible::GetName(nsAString& aName)
 /* unsigned long getRole (); */
 NS_IMETHODIMP nsHTMLLinkAccessible::GetRole(PRUint32 *_retval)
 {
-  *_retval = ROLE_LINK;
+  *_retval = nsIAccessibleRole::ROLE_LINK;
 
   return NS_OK;
 }
 
-NS_IMETHODIMP nsHTMLLinkAccessible::GetState(PRUint32 *aState)
+NS_IMETHODIMP
+nsHTMLLinkAccessible::GetState(PRUint32 *aState, PRUint32 *aExtraState)
 {
-  nsLinkableAccessible::GetState(aState);
-  *aState  &= ~STATE_READONLY;
+  nsresult rv = nsLinkableAccessible::GetState(aState, aExtraState);
+  NS_ENSURE_SUCCESS(rv, rv);
+  if (!mDOMNode)
+    return NS_OK;
+
+  *aState  &= ~nsIAccessibleStates::STATE_READONLY;
 
   nsCOMPtr<nsIContent> content(do_QueryInterface(mDOMNode));
   if (content && content->HasAttr(kNameSpaceID_None,
@@ -76,29 +81,8 @@ NS_IMETHODIMP nsHTMLLinkAccessible::GetState(PRUint32 *aState)
     // This is how we indicate it is a named anchor
     // In other words, this anchor can be selected as a location :)
     // There is no other better state to use to indicate this.
-    *aState |= STATE_SELECTABLE;
+    *aState |= nsIAccessibleStates::STATE_SELECTABLE;
   }
 
   return NS_OK;
-}
-
-nsIFrame* nsHTMLLinkAccessible::GetFrame()
-{
-  if (mWeakShell) {
-    if (!mFrame) {
-      mFrame = nsLinkableAccessible::GetFrame();
-    }
-    return mFrame;
-  }
-  return nsnull;
-}
-
-NS_IMETHODIMP nsHTMLLinkAccessible::FireToolkitEvent(PRUint32 aEvent,
-                                                     nsIAccessible *aTarget,
-                                                     void *aData)
-{
-  if (aEvent == nsIAccessibleEvent::EVENT_HIDE) {
-    mFrame = nsnull;  // Invalidate cached frame
-  }
-  return nsLinkableAccessible::FireToolkitEvent(aEvent, aTarget, aData);
 }

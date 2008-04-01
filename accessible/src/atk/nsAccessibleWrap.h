@@ -44,65 +44,39 @@
 
 #include "nsCOMPtr.h"
 #include "nsAccessible.h"
-
 #include "prlog.h"
 
 #ifdef PR_LOGGING
 #define MAI_LOGGING
 #endif /* #ifdef PR_LOGGING */
 
-// ATK 1.3.3 or later
-#if ATK_MAJOR_VERSION >=2 || \
-    (ATK_MAJOR_VERSION == 1 && ATK_MINOR_VERSION >= 4) || \
-    (ATK_MAJOR_VERSION == 1 && ATK_MINOR_VERSION == 3 && ATK_REV_VERSION >=3)
-#define USE_ATK_ROLE_AUTOCOMPLETE
-#endif
-
-// ATK 1.10.1 or later
-#if ATK_MAJOR_VERSION >=2 || \
-    (ATK_MAJOR_VERSION == 1 && ATK_MINOR_VERSION >= 11) || \
-    (ATK_MAJOR_VERSION == 1 && ATK_MINOR_VERSION == 10 && ATK_REV_VERSION >=1)
-#define USE_ATK_STATE_REQUIRED
-#endif
-
-// ATK 1.11.0 or later
-#if ATK_MAJOR_VERSION >=2 || \
-    (ATK_MAJOR_VERSION == 1 && ATK_MINOR_VERSION >= 11)
-#define USE_ATK_ROLE_CAPTION
-#define USE_ATK_ROLE_ENTRY
-#define USE_ATK_ROLE_CHART             // XXX not currently used
-#define USE_ATK_ROLE_DOCUMENT_FRAME
-#define USE_ATK_ROLE_HEADING
-#define USE_ATK_ROLE_PAGE
-#define USE_ATK_ROLE_SECTION
-#define USE_ATK_ROLE_REDUNDANT_OBJECT  // XXX not currently used
-#define USE_ATK_OBJECT_ATTRIBUTES      // XXX not currently used
-#define USE_ATK_STATE_INVALID_ENTRY
-// When should we use ROLE_AUTCOMPLETE vs. STATE_SUPPORTS_AUTOCOMPLETION?
-#define USE_ATK_STATE_SUPPORTS_AUTOCOMPLETION   // XXX not currently used
-#endif
-  
-// ATK 1.12.0 or later
-#if ATK_MAJOR_VERSION >=2 || \
-    (ATK_MAJOR_VERSION == 1 && ATK_MINOR_VERSION >= 12)
-#define USE_ATK_VALUE_MINIMUMINCREMENT
-#define USE_ATK_STATE_DEFAULT
-#define USE_ATK_STATE_VISITED
-#define USE_ATK_STATE_ANIMATED
-#define USE_ATK_ROLE_FORM
-#define USE_ATK_DESCRIPTION_RELATIONS
-#endif
-
-// ATK 1.12.1 or later
-#if ATK_MAJOR_VERSION >=2 || \
-    (ATK_MAJOR_VERSION == 1 && ATK_MINOR_VERSION >= 13) || \
-    (ATK_MAJOR_VERSION == 1 && ATK_MINOR_VERSION == 12 && ATK_REV_VERSION >= 1)
-#define USE_ATK_ROLE_LINK
-#define USE_ATK_STATE_SELECTABLE_TEXT
-#endif
-
 struct _AtkObject;
 typedef struct _AtkObject AtkObject;
+
+enum AtkProperty {
+  PROP_0,           // gobject convention
+  PROP_NAME,
+  PROP_DESCRIPTION,
+  PROP_PARENT,      // ancestry has changed
+  PROP_ROLE,
+  PROP_LAYER,
+  PROP_MDI_ZORDER,
+  PROP_TABLE_CAPTION,
+  PROP_TABLE_COLUMN_DESCRIPTION,
+  PROP_TABLE_COLUMN_HEADER,
+  PROP_TABLE_ROW_DESCRIPTION,
+  PROP_TABLE_ROW_HEADER,
+  PROP_TABLE_SUMMARY,
+  PROP_LAST         // gobject convention
+};
+
+struct AtkPropertyChange {
+  PRInt32 type;     // property type as listed above
+  void *oldvalue;
+  void *newvalue;
+};
+
+class MaiHyperlink;
 
 /**
  * nsAccessibleWrap, and its descendents in atk directory provide the
@@ -113,6 +87,8 @@ class nsAccessibleWrap: public nsAccessible
 public:
     nsAccessibleWrap(nsIDOMNode*, nsIWeakReference *aShell);
     virtual ~nsAccessibleWrap();
+    void ShutdownAtkObject();
+    NS_IMETHOD Shutdown();
 
 #ifdef MAI_LOGGING
     virtual void DumpnsAccessibleWrapInfo(int aDepth) {}
@@ -120,31 +96,39 @@ public:
     static PRInt32 mAccWrapDeleted;
 #endif
 
-public:
     // return the atk object for this nsAccessibleWrap
     NS_IMETHOD GetNativeInterface(void **aOutAccessible);
+    NS_IMETHOD FireAccessibleEvent(nsIAccessibleEvent *aEvent);
 
     AtkObject * GetAtkObject(void);
+    static AtkObject * GetAtkObject(nsIAccessible * acc);
 
     PRBool IsValidObject();
-
-    static void TranslateStates(PRUint32 aState,
-                                PRUint32 aExtState,
-                                void *aAtkStateSet);
+    
+    // get/set the MaiHyperlink object for this nsAccessibleWrap
+    MaiHyperlink* GetMaiHyperlink(PRBool aCreate = PR_TRUE);
+    void SetMaiHyperlink(MaiHyperlink* aMaiHyperlink);
 
     static const char * ReturnString(nsAString &aString) {
       static nsCString returnedString;
       returnedString = NS_ConvertUTF16toUTF8(aString);
       return returnedString.get();
     }
-    
+
 protected:
-    AtkObject *mMaiAtkObject;
+    nsresult FireAtkStateChangeEvent(nsIAccessibleEvent *aEvent,
+                                     AtkObject *aObject);
+    nsresult FireAtkTextChangedEvent(nsIAccessibleEvent *aEvent,
+                                     AtkObject *aObject);
+    nsresult FireAtkPropChangedEvent(nsIAccessibleEvent *aEvent,
+                                     AtkObject *aObject);
+    nsresult FireAtkShowHideEvent(nsIAccessibleEvent *aEvent,
+                                  AtkObject *aObject, PRBool aIsAdded);
+
+    AtkObject *mAtkObject;
 
 private:
     PRUint16 CreateMaiInterfaces(void);
 };
-
-typedef class nsHTMLRadioButtonAccessible nsHTMLRadioButtonAccessibleWrap;
 
 #endif /* __NS_ACCESSIBLE_WRAP_H__ */

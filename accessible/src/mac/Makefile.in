@@ -1,4 +1,4 @@
-# ***** BEGIN LICENSE BLOCK *****
+ # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
 # The contents of this file are subject to the Mozilla Public License Version
@@ -14,8 +14,8 @@
 # The Original Code is mozilla.org code
 #
 # The Initial Developer of the Original Code is
-# Aaron Leventhal
-# Portions created by the Initial Developer are Copyright (C) 2003
+# Håkan Waara <hwaara@gmail.com>
+# Portions created by the Initial Developer are Copyright (C) 2006
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
@@ -51,7 +51,9 @@ REQUIRES	= content \
 		  dom \
 		  editor \
 		  gfx \
+		  thebes \
 		  intl \
+		  locale \
 		  string \
 		  uriloader \
 		  view \
@@ -59,13 +61,17 @@ REQUIRES	= content \
 		  xpcom \
 		  necko \
 		  $(NULL)
-
-CPPSRCS = \
-  nsAccessNodeWrap.cpp \
-  nsAccessibleWrap.cpp \
-  nsDocAccessibleWrap.cpp \
-  nsRootAccessibleWrap.cpp \
-  $(NULL)
+  
+  
+CMMSRCS = nsAccessNodeWrap.mm \
+          nsRootAccessibleWrap.mm \
+          nsAccessibleWrap.mm \
+          mozAccessible.mm \
+          mozDocAccessible.mm \
+          mozActionElements.mm \
+          mozTextAccessible.mm \
+          $(NULL)
+          
 
 EXPORTS = \
   nsAccessNodeWrap.h \
@@ -73,9 +79,20 @@ EXPORTS = \
   nsAccessibleWrap.h \
   nsDocAccessibleWrap.h \
   nsRootAccessibleWrap.h \
-  nsHTMLFormControlAccessibleWrap.h \
   nsXULMenuAccessibleWrap.h \
   nsXULTreeAccessibleWrap.h \
+  nsHyperTextAccessibleWrap.h \
+  nsHTMLImageAccessibleWrap.h \
+  nsHTMLTableAccessibleWrap.h \
+  nsAccessibleRelationWrap.h \
+  nsApplicationAccessibleWrap.h \
+  mozDocAccessible.h \
+  mozAccessible.h \
+  mozAccessibleWrapper.h \
+  mozAccessibleProtocol.h \
+  mozActionElements.h \
+  mozTextAccessible.h \
+  nsRoleMap.h \
   $(NULL)
 
 # we don't want the shared lib, but we want to force the creation of a static lib.

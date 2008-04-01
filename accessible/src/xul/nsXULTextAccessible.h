@@ -42,18 +42,20 @@
 
 #include "nsBaseWidgetAccessible.h"
 #include "nsTextAccessibleWrap.h"
-#include "nsHyperTextAccessible.h"
+#include "nsHyperTextAccessibleWrap.h"
 
 class nsIWeakReference;
 
-class nsXULTextAccessible : public nsHyperTextAccessible
+class nsXULTextAccessible : public nsHyperTextAccessibleWrap
 {
 
 public:
   nsXULTextAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell);
   NS_IMETHOD GetName(nsAString& _retval); 
-  NS_IMETHOD GetState(PRUint32 *_retval);
-  NS_IMETHOD GetRole(PRUint32 *aRole) { *aRole = ROLE_LABEL; return NS_OK; }
+  NS_IMETHOD GetState(PRUint32 *aState, PRUint32 *aExtraState);
+  NS_IMETHOD GetRole(PRUint32 *aRole) { *aRole = nsIAccessibleRole::ROLE_LABEL; return NS_OK; }
+  NS_IMETHOD GetAccessibleRelated(PRUint32 aRelationType,
+                                  nsIAccessible **aRelated);
 };
 
 class nsXULTooltipAccessible : public nsLeafAccessible
@@ -62,7 +64,7 @@ class nsXULTooltipAccessible : public nsLeafAccessible
 public:
   nsXULTooltipAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell);
   NS_IMETHOD GetName(nsAString& _retval); 
-  NS_IMETHOD GetState(PRUint32 *_retval);
+  NS_IMETHOD GetState(PRUint32 *aState, PRUint32 *aExtraState);
   NS_IMETHOD GetRole(PRUint32 *_retval); 
 };
 
