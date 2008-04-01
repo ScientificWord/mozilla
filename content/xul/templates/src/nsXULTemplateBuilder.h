@@ -46,6 +46,7 @@
 #include "nsStubDocumentObserver.h"
 #include "nsIScriptSecurityManager.h"
 #include "nsIContent.h"
+#include "nsIObserver.h"
 #include "nsIRDFCompositeDataSource.h"
 #include "nsIRDFContainer.h"
 #include "nsIRDFContainerUtils.h"
@@ -62,6 +63,7 @@
 #include "nsTemplateRule.h"
 #include "nsTemplateMatch.h"
 #include "nsIXULTemplateQueryProcessor.h"
+#include "nsCycleCollectionParticipant.h"
 
 #include "prlog.h"
 #ifdef PR_LOGGING
@@ -70,12 +72,14 @@ extern PRLogModuleInfo* gXULTemplateLog;
 
 class nsIXULDocument;
 class nsIRDFCompositeDataSource;
+class nsIObserverService;
 
 /**
  * An object that translates an RDF graph into a presentation using a
  * set of rules.
  */
 class nsXULTemplateBuilder : public nsIXULTemplateBuilder,
+                             public nsIObserver,
                              public nsStubDocumentObserver
 {
 public:
@@ -91,20 +95,20 @@ public:
     virtual void Uninit(PRBool aIsFinal);
 
     // nsISupports interface
-    NS_DECL_ISUPPORTS
+    NS_DECL_CYCLE_COLLECTING_ISUPPORTS
+    NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsXULTemplateBuilder,
+                                             nsIXULTemplateBuilder)
 
     // nsIXULTemplateBuilder interface
     NS_DECL_NSIXULTEMPLATEBUILDER
-   
-    // nsIDocumentObserver
-    virtual void AttributeChanged(nsIDocument *aDocument, nsIContent* aContent,
-                                  PRInt32 aNameSpaceID, nsIAtom* aAttribute,
-                                  PRInt32 aModType);
-    virtual void ContentRemoved(nsIDocument* aDocument,
-                                nsIContent* aContainer,
-                                nsIContent* aChild,
-                                PRInt32 aIndexInContainer);
-    virtual void NodeWillBeDestroyed(const nsINode* aNode);
+
+    // nsIObserver Interface
+    NS_DECL_NSIOBSERVER
+
+    // nsIMutationObserver
+    NS_DECL_NSIMUTATIONOBSERVER_ATTRIBUTECHANGED
+    NS_DECL_NSIMUTATIONOBSERVER_CONTENTREMOVED
+    NS_DECL_NSIMUTATIONOBSERVER_NODEWILLBEDESTROYED
 
     /**
      * Remove an old result and/or add a new result. This method will retrieve
@@ -271,8 +275,30 @@ public:
                    const nsAString& aVariable,
                    void* aClosure);
 
+    /**
+     * Load the datasources for the template. shouldDelayBuilding is an out
+     * parameter which will be set to true to indicate that content building
+     * should not be performed yet as the datasource has not yet loaded. If
+     * false, the datasource has already loaded so building can proceed
+     * immediately. In the former case, the datasource or query processor
+     * should either rebuild the template or update results when the
+     * datasource is loaded as needed.
+     */
     nsresult
-    LoadDataSources(nsIDocument* aDoc);
+    LoadDataSources(nsIDocument* aDoc, PRBool* shouldDelayBuilding);
+
+    /**
+     * Called by LoadDataSources to load a datasource given a uri list
+     * in aDataSource. The list is a set of uris separated by spaces.
+     * If aIsRDFQuery is true, then this is for an RDF datasource which
+     * causes the method to check for additional flags specific to the
+     * RDF processor.
+     */
+    nsresult
+    LoadDataSourceUrls(nsIDocument* aDocument,
+                       const nsAString& aDataSources,
+                       PRBool aIsRDFQuery,
+                       PRBool* aShouldDelayBuilding);
 
     nsresult
     InitHTMLTemplateRoot();
@@ -327,6 +353,7 @@ public:
                                nsIRDFResource** aResource);
 
 protected:
+    nsCOMPtr<nsISupports> mDataSource;
     nsCOMPtr<nsIRDFDataSource> mDB;
     nsCOMPtr<nsIRDFCompositeDataSource> mCompDB;
 
@@ -389,6 +416,7 @@ protected:
     static nsIRDFContainerUtils*     gRDFContainerUtils;
     static nsIScriptSecurityManager* gScriptSecurityManager;
     static nsIPrincipal*             gSystemPrincipal;
+    static nsIObserverService*       gObserverService;
 
     enum {
         eDontTestEmpty = (1 << 0),
@@ -434,12 +462,12 @@ protected:
      * Those results will be generated when the container is opened.
      * If false is returned, no content should be generated. Possible 
      * insertion locations may optionally be set for new content, depending on
-     * the builder being used. Note that some items within aLocations may be
-     * null.
+     * the builder being used. Note that *aLocations or some items within
+     * aLocations may be null.
      */
     virtual PRBool
     GetInsertionLocations(nsIXULTemplateResult* aResult,
-                          nsISupportsArray** aLocations) = 0;
+                          nsCOMArray<nsIContent>** aLocations) = 0;
 
     /**
      * Must be implemented by subclasses. Handle removing the generated
@@ -463,6 +491,15 @@ protected:
      */
     virtual nsresult
     SynchronizeResult(nsIXULTemplateResult* aResult) = 0;
+
+    virtual void Traverse(nsCycleCollectionTraversalCallback &cb) const
+    {
+    }
+
+    /**
+     * Document that we're observing. Weak ref!
+     */
+    nsIDocument* mObservedDocument;
 };
 
 #endif // nsXULTemplateBuilder_h__

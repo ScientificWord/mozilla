@@ -45,7 +45,8 @@
 #include "nsContentUtils.h"
 #include "nsICacheService.h"
 #include "nsICacheSession.h"
-
+#include "nsIParser.h"
+#include "nsThreadUtils.h"
 
 PRLogModuleInfo * gWyciwygLog = nsnull;
 
@@ -56,6 +57,8 @@ PRLogModuleInfo * gWyciwygLog = nsnull;
 nsWyciwygChannel::nsWyciwygChannel()
   : mStatus(NS_OK),
     mIsPending(PR_FALSE),
+    mNeedToWriteCharset(PR_FALSE),
+    mCharsetSource(kCharsetUninitialized),
     mContentLength(-1),
     mLoadFlags(LOAD_NORMAL)
 {
@@ -199,24 +202,11 @@ nsWyciwygChannel::GetURI(nsIURI* *aURI)
 NS_IMETHODIMP
 nsWyciwygChannel::GetOwner(nsISupports **aOwner)
 {
-  nsresult rv = NS_OK;
+  NS_PRECONDITION(mOwner, "Must have a principal!");
+  NS_ENSURE_STATE(mOwner);
 
-  if (!mOwner) {
-    // Create codebase principal with URI of original document, not our URI
-
-    // without an owner or an original URI!
-    NS_ENSURE_TRUE(mOriginalURI, NS_ERROR_FAILURE);
-
-    nsCOMPtr<nsIPrincipal> principal;
-    nsIScriptSecurityManager *secMan = nsContentUtils::GetSecurityManager();
-    rv = secMan->GetCodebasePrincipal(mOriginalURI, getter_AddRefs(principal));
-    if (NS_SUCCEEDED(rv)) {
-      mOwner = principal;
-    }
-  }
-
-  NS_IF_ADDREF(*aOwner = mOwner);
-  return rv;
+  NS_ADDREF(*aOwner = mOwner);
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -299,9 +289,15 @@ nsWyciwygChannel::Open(nsIInputStream ** aReturn)
 NS_IMETHODIMP
 nsWyciwygChannel::AsyncOpen(nsIStreamListener *listener, nsISupports *ctx)
 {
+  // The only places creating wyciwyg: channels should be
+  // HTMLDocument::OpenCommon and session history.  Both should be setting an
+  // owner.
+  NS_PRECONDITION(mOwner, "Must have a principal");
+  
   LOG(("nsWyciwygChannel::AsyncOpen [this=%x]\n", this));
 
   NS_ENSURE_TRUE(!mIsPending, NS_ERROR_IN_PROGRESS);
+  NS_ENSURE_STATE(mOwner);
   NS_ENSURE_ARG_POINTER(listener);
 
   nsCAutoString spec;
@@ -309,7 +305,17 @@ nsWyciwygChannel::AsyncOpen(nsIStreamListener *listener, nsISupports *ctx)
 
   // open a cache entry for this channel...
   PRBool delayed = PR_FALSE;
-  nsresult rv = OpenCacheEntry(spec, nsICache::ACCESS_READ, &delayed);        
+  nsresult rv = OpenCacheEntry(spec, nsICache::ACCESS_READ, &delayed);
+  if (rv == NS_ERROR_CACHE_KEY_NOT_FOUND) {
+    nsCOMPtr<nsIRunnable> ev =
+      new nsRunnableMethod<nsWyciwygChannel>(this,
+                                             &nsWyciwygChannel::NotifyListener);
+    // Overwrite rv on purpose; if event dispatch fails we'll bail, and
+    // otherwise we'll wait until the event fires before calling back.
+    rv = NS_DispatchToCurrentThread(ev);
+    delayed = PR_TRUE;
+  }
+
   if (NS_FAILED(rv)) {
     LOG(("nsWyciwygChannel::OpenCacheEntry failed [rv=%x]\n", rv));
     return rv;
@@ -354,6 +360,11 @@ nsWyciwygChannel::WriteToCacheEntry(const nsAString &aData)
     mCacheEntry->SetSecurityInfo(mSecurityInfo);
   }
 
+  if (mNeedToWriteCharset) {
+    WriteCharsetAndSourceToCache(mCharsetSource, mCharset);
+    mNeedToWriteCharset = PR_FALSE;
+  }
+  
   PRUint32 out;
   if (!mCacheOutputStream) {
     // Get the outputstream from the cache entry.
@@ -396,6 +407,53 @@ nsWyciwygChannel::SetSecurityInfo(nsISupports *aSecurityInfo)
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsWyciwygChannel::SetCharsetAndSource(PRInt32 aSource,
+                                      const nsACString& aCharset)
+{
+  NS_ENSURE_ARG(!aCharset.IsEmpty());
+
+  if (mCacheEntry) {
+    WriteCharsetAndSourceToCache(aSource, PromiseFlatCString(aCharset));
+  } else {
+    mNeedToWriteCharset = PR_TRUE;
+    mCharsetSource = aSource;
+    mCharset = aCharset;
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsWyciwygChannel::GetCharsetAndSource(PRInt32* aSource, nsACString& aCharset)
+{
+  if (!mCacheEntry) {
+    return NS_ERROR_NOT_AVAILABLE;
+  }
+
+  nsXPIDLCString data;
+  mCacheEntry->GetMetaDataElement("charset", getter_Copies(data));
+
+  if (data.IsEmpty()) {
+    return NS_ERROR_NOT_AVAILABLE;
+  }
+
+  nsXPIDLCString sourceStr;
+  mCacheEntry->GetMetaDataElement("charset-source", getter_Copies(sourceStr));
+
+  PRInt32 source;
+  // XXXbz ToInteger takes an PRInt32* but outputs an nsresult in it... :(
+  PRInt32 err;
+  source = sourceStr.ToInteger(&err);
+  if (NS_FAILED(err) || source == 0) {
+    return NS_ERROR_NOT_AVAILABLE;
+  }
+
+  *aSource = source;
+  aCharset = data;
+  return NS_OK;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // nsICachelistener
 //////////////////////////////////////////////////////////////////////////////
@@ -429,18 +487,7 @@ nsWyciwygChannel::OnCacheEntryAvailable(nsICacheEntryDescriptor * aCacheEntry, n
   if (NS_FAILED(rv)) {
     CloseCacheEntry(rv);
 
-    if (mListener) {
-      mListener->OnStartRequest(this, mListenerContext);
-      mListener->OnStopRequest(this, mListenerContext, mStatus);
-      mListener = 0;
-      mListenerContext = 0;
-    }
-
-    mIsPending = PR_FALSE;
-
-    // Remove ourselves from the load group.
-    if (mLoadGroup)
-      mLoadGroup->RemoveRequest(this, nsnull, mStatus);
+    NotifyListener();
   }
 
   return NS_OK;
@@ -589,6 +636,37 @@ nsWyciwygChannel::ReadFromCache()
 
   // Pump the cache data downstream
   return mPump->AsyncRead(this, nsnull);
+}
+
+void
+nsWyciwygChannel::WriteCharsetAndSourceToCache(PRInt32 aSource,
+                                               const nsCString& aCharset)
+{
+  NS_PRECONDITION(mCacheEntry, "Better have cache entry!");
+  
+  mCacheEntry->SetMetaDataElement("charset", aCharset.get());
+
+  nsCAutoString source;
+  source.AppendInt(aSource);
+  mCacheEntry->SetMetaDataElement("charset-source", source.get());
+}
+
+void
+nsWyciwygChannel::NotifyListener()
+{    
+  if (mListener) {
+    mListener->OnStartRequest(this, mListenerContext);
+    mListener->OnStopRequest(this, mListenerContext, mStatus);
+    mListener = 0;
+    mListenerContext = 0;
+  }
+
+  mIsPending = PR_FALSE;
+
+  // Remove ourselves from the load group.
+  if (mLoadGroup) {
+    mLoadGroup->RemoveRequest(this, nsnull, mStatus);
+  }
 }
 
 // vim: ts=2 sw=2

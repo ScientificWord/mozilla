@@ -45,7 +45,6 @@
 
 #include "nsStyleLinkElement.h"
 
-#include "nsHTMLAtoms.h"
 #include "nsIContent.h"
 #include "nsICSSLoader.h"
 #include "nsICSSStyleSheet.h"
@@ -55,10 +54,14 @@
 #include "nsIDOMStyleSheet.h"
 #include "nsIDOMText.h"
 #include "nsIUnicharInputStream.h"
+#include "nsISimpleUnicharStreamFactory.h"
 #include "nsNetUtil.h"
 #include "nsUnicharUtils.h"
 #include "nsVoidArray.h"
 #include "nsCRT.h"
+#include "nsXPCOMCIDInternal.h"
+#include "nsUnicharInputStream.h"
+#include "nsContentUtils.h"
 
 nsStyleLinkElement::nsStyleLinkElement()
   : mDontLoadStyle(PR_FALSE)
@@ -88,7 +91,7 @@ nsStyleLinkElement::SetStyleSheet(nsIStyleSheet* aStyleSheet)
   if (cssSheet) {
     nsCOMPtr<nsIDOMNode> node;
     CallQueryInterface(this,
-                       NS_STATIC_CAST(nsIDOMNode**, getter_AddRefs(node)));
+                       static_cast<nsIDOMNode**>(getter_AddRefs(node)));
     if (node) {
       cssSheet->SetOwningNode(node);
     }
@@ -107,10 +110,8 @@ nsStyleLinkElement::GetStyleSheet(nsIStyleSheet*& aStyleSheet)
 }
 
 NS_IMETHODIMP 
-nsStyleLinkElement::InitStyleLinkElement(nsIParser* aParser,
-                                         PRBool aDontLoadStyle)
+nsStyleLinkElement::InitStyleLinkElement(PRBool aDontLoadStyle)
 {
-  mParser = aParser;
   mDontLoadStyle = aDontLoadStyle;
 
   return NS_OK;
@@ -144,6 +145,13 @@ nsStyleLinkElement::GetCharset(nsAString& aCharset)
 {
   // descendants have to implement this themselves
   return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* virtual */ void
+nsStyleLinkElement::OverrideBaseURI(nsIURI* aNewBaseURI)
+{
+  NS_NOTREACHED("Base URI can't be overriden in this implementation "
+                "of nsIStyleSheetLinkingElement.");
 }
 
 /* virtual */ void
@@ -187,17 +195,33 @@ void nsStyleLinkElement::ParseLinkTypes(const nsAString& aTypes,
   }
 }
 
-#ifdef ALLOW_ASYNCH_STYLE_SHEETS
-const PRBool kBlockByDefault=PR_FALSE;
-#else
-const PRBool kBlockByDefault=PR_TRUE;
-#endif
-
 NS_IMETHODIMP
-nsStyleLinkElement::UpdateStyleSheet(nsIDocument *aOldDocument,
-                                     nsICSSLoaderObserver* aObserver,
-                                     PRBool aForceUpdate)
+nsStyleLinkElement::UpdateStyleSheet(nsICSSLoaderObserver* aObserver,
+                                     PRBool* aWillNotify,
+                                     PRBool* aIsAlternate)
 {
+  return DoUpdateStyleSheet(nsnull, aObserver, aWillNotify, aIsAlternate,
+                            PR_FALSE);
+}
+
+nsresult
+nsStyleLinkElement::UpdateStyleSheetInternal(nsIDocument *aOldDocument,
+                                             PRBool aForceUpdate)
+{
+  PRBool notify, alternate;
+  return DoUpdateStyleSheet(aOldDocument, nsnull, &notify, &alternate,
+                            aForceUpdate);
+}
+
+nsresult
+nsStyleLinkElement::DoUpdateStyleSheet(nsIDocument *aOldDocument,
+                                       nsICSSLoaderObserver* aObserver,
+                                       PRBool* aWillNotify,
+                                       PRBool* aIsAlternate,
+                                       PRBool aForceUpdate)
+{
+  *aWillNotify = PR_FALSE;
+
   if (mStyleSheet && aOldDocument) {
     // We're removing the link element from the document, unload the
     // stylesheet.  We want to do this even if updates are disabled, since
@@ -213,13 +237,6 @@ nsStyleLinkElement::UpdateStyleSheet(nsIDocument *aOldDocument,
     return NS_OK;
   }
 
-  // Keep a strong ref to the parser so it's still around when we pass it
-  // to the CSS loader. Release strong ref in mParser so we don't hang on
-  // to the parser once we start the load or if we fail to load the
-  // stylesheet.
-  nsCOMPtr<nsIParser> parser = mParser;
-  mParser = nsnull;
-
   nsCOMPtr<nsIContent> thisContent;
   QueryInterface(NS_GET_IID(nsIContent), getter_AddRefs(thisContent));
 
@@ -228,6 +245,12 @@ nsStyleLinkElement::UpdateStyleSheet(nsIDocument *aOldDocument,
   nsCOMPtr<nsIDocument> doc = thisContent->GetDocument();
 
   if (!doc) {
+    return NS_OK;
+  }
+
+  PRBool enabled = PR_FALSE;
+  doc->CSSLoader()->GetEnabled(&enabled);
+  if (!enabled) {
     return NS_OK;
   }
 
@@ -268,40 +291,15 @@ nsStyleLinkElement::UpdateStyleSheet(nsIDocument *aOldDocument,
     return NS_OK;
   }
 
-  if (!kBlockByDefault) {
-    parser = nsnull;
-  }
-
-  PRBool doneLoading;
+  PRBool doneLoading = PR_FALSE;
   nsresult rv = NS_OK;
   if (isInline) {
-    PRUint32 count = thisContent->GetChildCount();
-
     nsAutoString content;
+    nsContentUtils::GetNodeTextContent(thisContent, PR_FALSE, content);
 
-    PRUint32 i;
-    for (i = 0; i < count; ++i) {
-      nsIContent *node = thisContent->GetChildAt(i);
-      nsCOMPtr<nsIDOMText> tc = do_QueryInterface(node);
-      // Ignore nodes that are not DOMText.
-      if (!tc) {
-        nsCOMPtr<nsIDOMComment> comment = do_QueryInterface(node);
-        if (comment)
-          // Skip a comment
-          continue;
-        break;
-      }
-
-      nsAutoString tcString;
-      tc->GetData(tcString);
-      content.Append(tcString);
-    }
-
-    // Use of the stream will be done before parsing returns.  So it will go
-    // out of scope before |content| does.
     nsCOMPtr<nsIUnicharInputStream> uin;
-    rv = NS_NewStringUnicharInputStream(getter_AddRefs(uin), &content,
-                                        PR_FALSE);
+    rv = nsSimpleUnicharStreamFactory::GetInstance()->
+      CreateInstanceFromString(content, getter_AddRefs(uin));
     if (NS_FAILED(rv)) {
       return rv;
     }
@@ -310,20 +308,19 @@ nsStyleLinkElement::UpdateStyleSheet(nsIDocument *aOldDocument,
     // style sheet.
     rv = doc->CSSLoader()->
       LoadInlineStyle(thisContent, uin, mLineNumber, title, media,
-                      parser, aObserver, &doneLoading, &isAlternate);
+                      aObserver, &doneLoading, &isAlternate);
   }
   else {
-    doneLoading = PR_FALSE;  // If rv is success, we won't be done loading; if
-                             // it's not, this value doesn't matter.
     rv = doc->CSSLoader()->
-      LoadStyleLink(thisContent, uri, title, media, isAlternate,
-                    parser, aObserver, &isAlternate);
+      LoadStyleLink(thisContent, uri, title, media, isAlternate, aObserver,
+                    &isAlternate);
   }
 
-  if (NS_SUCCEEDED(rv) && parser && !doneLoading && !isAlternate) {
-    rv = NS_ERROR_HTMLPARSER_BLOCK;
-  }
+  NS_ENSURE_SUCCESS(rv, rv);
 
-  return rv;
+  *aWillNotify = !doneLoading;
+  *aIsAlternate = isAlternate;
+
+  return NS_OK;
 }
 

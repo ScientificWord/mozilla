@@ -42,6 +42,7 @@
 #include "nsSVGLength2.h"
 #include "nsGkAtoms.h"
 #include "nsSVGUtils.h"
+#include "gfxContext.h"
 
 typedef nsSVGPathGeometryElement nsSVGEllipseElementBase;
 
@@ -59,12 +60,14 @@ public:
   NS_DECL_NSIDOMSVGELLIPSEELEMENT
 
   // xxx I wish we could use virtual inheritance
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGEllipseElementBase::)
+  NS_FORWARD_NSIDOMNODE(nsSVGEllipseElementBase::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGEllipseElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGEllipseElementBase::)
 
   // nsSVGPathGeometryElement methods:
-  virtual void ConstructPath(cairo_t *aCtx);
+  virtual void ConstructPath(gfxContext *aCtx);
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 
 protected:
 
@@ -110,7 +113,7 @@ nsSVGEllipseElement::nsSVGEllipseElement(nsINodeInfo *aNodeInfo)
 //----------------------------------------------------------------------
 // nsIDOMNode methods
 
-NS_IMPL_DOM_CLONENODE_WITH_INIT(nsSVGEllipseElement)
+NS_IMPL_ELEMENT_CLONE_WITH_INIT(nsSVGEllipseElement)
 
 //----------------------------------------------------------------------
 // nsIDOMSVGEllipseElement methods
@@ -153,15 +156,17 @@ nsSVGEllipseElement::GetLengthInfo()
 // nsSVGPathGeometryElement methods
 
 void
-nsSVGEllipseElement::ConstructPath(cairo_t *aCtx)
+nsSVGEllipseElement::ConstructPath(gfxContext *aCtx)
 {
   float x, y, rx, ry;
 
   GetAnimatedLengthValues(&x, &y, &rx, &ry, nsnull);
 
-  cairo_save(aCtx);
-  cairo_translate(aCtx, x, y);
-  cairo_scale(aCtx, rx, ry);
-  cairo_arc(aCtx, 0, 0, 1, 0, 2 * M_PI);
-  cairo_restore(aCtx);
+  if (rx > 0.0f && ry > 0.0f) {
+    aCtx->Save();
+    aCtx->Translate(gfxPoint(x, y));
+    aCtx->Scale(rx, ry);
+    aCtx->Arc(gfxPoint(0, 0), 1, 0, 2 * M_PI);
+    aCtx->Restore();
+  }
 }

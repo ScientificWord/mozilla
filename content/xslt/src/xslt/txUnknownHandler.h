@@ -48,16 +48,16 @@ class txUnknownHandler : public txBufferingHandler
 {
 public:
     txUnknownHandler(txExecutionState* aEs);
-    virtual ~txUnknownHandler();
 
-    void attribute(const nsAString& aName, const PRInt32 aNsID,
-                   const nsAString& aValue);
-    void endDocument(nsresult aResult);
-    void startElement(const nsAString& aName, const PRInt32 aNsID);
+    nsresult endDocument(nsresult aResult);
+    nsresult startElement(nsIAtom* aPrefix, nsIAtom* aName,
+                          nsIAtom* aLowercaseName, PRInt32 aNsID);
+    nsresult startElement(nsIAtom* aPrefix, const nsSubstring& aLocalName,
+                          const PRInt32 aNsID);
 
 private:
-    nsresult createHandlerAndFlush(txOutputMethod aMethod,
-                                   const nsAString& aName,
+    nsresult createHandlerAndFlush(PRBool aHTMLRoot,
+                                   const nsSubstring& aName,
                                    const PRInt32 aNsID);
 
     /*

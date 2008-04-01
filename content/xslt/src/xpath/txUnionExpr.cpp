@@ -44,38 +44,6 @@
  //- UnionExpr -/
 //-------------/
 
-
-/**
- * Creates a new UnionExpr
-**/
-UnionExpr::UnionExpr() {
-    //-- do nothing
-}
-
-/**
- * Destructor, will delete all Path Expressions
-**/
-UnionExpr::~UnionExpr() {
-    txListIterator iter(&expressions);
-    while (iter.hasNext()) {
-         delete (Expr*)iter.next();
-    }
-} //-- ~UnionExpr
-
-/**
- * Adds the Expr to this UnionExpr
- * @param expr the Expr to add to this UnionExpr
-**/
-nsresult
-UnionExpr::addExpr(Expr* aExpr)
-{
-    nsresult rv = expressions.add(aExpr);
-    if (NS_FAILED(rv)) {
-        delete aExpr;
-    }
-    return rv;
-} //-- addExpr
-
     //-----------------------------/
   //- Virtual methods from Expr -/
 //-----------------------------/
@@ -95,11 +63,10 @@ UnionExpr::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
     nsresult rv = aContext->recycler()->getNodeSet(getter_AddRefs(nodes));
     NS_ENSURE_SUCCESS(rv, rv);
 
-    txListIterator iter(&expressions);
-    while (iter.hasNext()) {
-        Expr* expr = (Expr*)iter.next();
+    PRUint32 i, len = mExpressions.Length();
+    for (i = 0; i < len; ++i) {
         nsRefPtr<txAExprResult> exprResult;
-        rv = expr->evaluate(aContext, getter_AddRefs(exprResult));
+        rv = mExpressions[i]->evaluate(aContext, getter_AddRefs(exprResult));
         NS_ENSURE_SUCCESS(rv, rv);
 
         if (exprResult->getResultType() != txAExprResult::NODESET) {
@@ -108,8 +75,8 @@ UnionExpr::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         }
 
         nsRefPtr<txNodeSet> resultSet, ownedSet;
-        resultSet = NS_STATIC_CAST(txNodeSet*,
-                                   NS_STATIC_CAST(txAExprResult*, exprResult));
+        resultSet = static_cast<txNodeSet*>
+                               (static_cast<txAExprResult*>(exprResult));
         exprResult = nsnull;
         rv = aContext->recycler()->
             getNonSharedNodeSet(resultSet, getter_AddRefs(ownedSet));
@@ -125,14 +92,20 @@ UnionExpr::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
     return NS_OK;
 } //-- evaluate
 
-TX_IMPL_EXPR_STUBS_LIST(UnionExpr, NODESET_RESULT, expressions)
+Expr::ExprType
+UnionExpr::getType()
+{
+  return UNION_EXPR;
+}
+
+TX_IMPL_EXPR_STUBS_LIST(UnionExpr, NODESET_RESULT, mExpressions)
 
 PRBool
 UnionExpr::isSensitiveTo(ContextSensitivity aContext)
 {
-    txListIterator iter(&expressions);
-    while (iter.hasNext()) {
-        if (NS_STATIC_CAST(Expr*, iter.next())->isSensitiveTo(aContext)) {
+    PRUint32 i, len = mExpressions.Length();
+    for (i = 0; i < len; ++i) {
+        if (mExpressions[i]->isSensitiveTo(aContext)) {
             return PR_TRUE;
         }
     }
@@ -144,15 +117,11 @@ UnionExpr::isSensitiveTo(ContextSensitivity aContext)
 void
 UnionExpr::toString(nsAString& dest)
 {
-    txListIterator iter(&expressions);
-
-    short count = 0;
-    while (iter.hasNext()) {
-        //-- set operator
-        if (count > 0)
+    PRUint32 i;
+    for (i = 0; i < mExpressions.Length(); ++i) {
+        if (i > 0)
             dest.AppendLiteral(" | ");
-        ((Expr*)iter.next())->toString(dest);
-        ++count;
+        mExpressions[i]->toString(dest);
     }
 }
 #endif

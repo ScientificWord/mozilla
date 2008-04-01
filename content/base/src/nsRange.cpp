@@ -54,14 +54,8 @@
 #include "nsDOMError.h"
 #include "nsIContentIterator.h"
 #include "nsIDOMNodeList.h"
-
+#include "nsGkAtoms.h"
 #include "nsContentUtils.h"
-
-PRMonitor*   nsRange::mMonitor = nsnull;
-nsVoidArray* nsRange::mStartAncestors = nsnull;      
-nsVoidArray* nsRange::mEndAncestors = nsnull;        
-nsVoidArray* nsRange::mStartAncestorOffsets = nsnull; 
-nsVoidArray* nsRange::mEndAncestorOffsets = nsnull;  
 
 nsresult NS_NewContentIterator(nsIContentIterator** aInstancePtrResult);
 nsresult NS_NewContentSubtreeIterator(nsIContentIterator** aInstancePtrResult);
@@ -69,13 +63,6 @@ nsresult NS_NewContentSubtreeIterator(nsIContentIterator** aInstancePtrResult);
 /******************************************************
  * stack based utilty class for managing monitor
  ******************************************************/
-
-class nsAutoRangeLock
-{
-  public:
-    nsAutoRangeLock()  { nsRange::Lock(); }
-    ~nsAutoRangeLock() { nsRange::Unlock(); }
-};
 
 // NS_ERROR_DOM_NOT_OBJECT_ERR is not the correct one to throw, but spec doesn't say
 // what is
@@ -87,72 +74,10 @@ class nsAutoRangeLock
     if (!nsContentUtils::CanCallerAccess(node_)) {                                 \
       return NS_ERROR_DOM_SECURITY_ERR;                                            \
     }                                                                              \
-    if (IsDetached()) {                                                            \
+    if (mIsDetached) {                                                             \
       return NS_ERROR_DOM_INVALID_STATE_ERR;                                       \
     }                                                                              \
   PR_END_MACRO
-
-
-
-/* static */
-PRInt32
-nsRange::ComparePoints(nsIDOMNode* aParent1, PRInt32 aOffset1,
-                       nsIDOMNode* aParent2, PRInt32 aOffset2)
-{
-  if (aParent1 == aParent2) {
-    return (aOffset1 < aOffset2) ? -1 :
-      ((aOffset1 > aOffset2) ? 1 : 0);
-  }
-
-  return IsIncreasing(aParent1, aOffset1, aParent2, aOffset2) ? -1 : 1;
-}
-
-// Utility routine to detect if a content node intersects a range
-/* static */
-PRBool
-nsRange::IsNodeIntersectsRange(nsIContent* aNode, nsIDOMRange* aRange)
-{
-  // create a pair of dom points that expresses location of node:
-  //     NODE(start), NODE(end)
-  // Let incoming range be:
-  //    {RANGE(start), RANGE(end)}
-  // if (RANGE(start) < NODE(end))  and (RANGE(end) > NODE(start))
-  // then the Node intersect the Range.
-  
-  if (!aNode) return PR_FALSE;
-  nsCOMPtr<nsIDOMNode> parent, rangeStartParent, rangeEndParent;
-  PRInt32 nodeStart, nodeEnd, rangeStartOffset, rangeEndOffset; 
-  
-  // gather up the dom point info
-  if (!GetNodeBracketPoints(aNode, address_of(parent), &nodeStart, &nodeEnd))
-    return PR_FALSE;
-  
-  if (NS_FAILED(aRange->GetStartContainer(getter_AddRefs(rangeStartParent))))
-    return PR_FALSE;
-
-  if (NS_FAILED(aRange->GetStartOffset(&rangeStartOffset)))
-    return PR_FALSE;
-
-  if (NS_FAILED(aRange->GetEndContainer(getter_AddRefs(rangeEndParent))))
-    return PR_FALSE;
-
-  if (NS_FAILED(aRange->GetEndOffset(&rangeEndOffset)))
-    return PR_FALSE;
-
-  // is RANGE(start) < NODE(end) ?
-  PRInt32 comp = ComparePoints(rangeStartParent, rangeStartOffset, parent, nodeEnd);
-  if (comp >= 0)
-    return PR_FALSE; // range start is after node end
-    
-  // is RANGE(end) > NODE(start) ?
-  comp = ComparePoints(rangeEndParent, rangeEndOffset, parent, nodeStart);
-  if (comp <= 0)
-    return PR_FALSE; // range end is before node start
-    
-  // if we got here then the node intersects the range
-  return PR_TRUE;
-}
-
 
 // Utility routine to detect if a content node is completely contained in a range
 // If outNodeBefore is returned true, then the node starts before the range does.
@@ -166,6 +91,19 @@ nsresult
 nsRange::CompareNodeToRange(nsIContent* aNode, nsIDOMRange* aRange,
                             PRBool *outNodeBefore, PRBool *outNodeAfter)
 {
+  nsresult rv;
+  nsCOMPtr<nsIRange> range = do_QueryInterface(aRange, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  return CompareNodeToRange(aNode, range, outNodeBefore, outNodeAfter);
+}
+
+// static
+nsresult
+nsRange::CompareNodeToRange(nsIContent* aNode, nsIRange* aRange,
+                            PRBool *outNodeBefore, PRBool *outNodeAfter)
+{
+  NS_ENSURE_STATE(aNode);
   // create a pair of dom points that expresses location of node:
   //     NODE(start), NODE(end)
   // Let incoming range be:
@@ -173,100 +111,52 @@ nsRange::CompareNodeToRange(nsIContent* aNode, nsIDOMRange* aRange,
   // if (RANGE(start) <= NODE(start))  and (RANGE(end) => NODE(end))
   // then the Node is contained (completely) by the Range.
   
-  if (!aNode) 
-    return NS_ERROR_NULL_POINTER;
-  if (!aRange) 
-    return NS_ERROR_NULL_POINTER;
-  if (!outNodeBefore) 
-    return NS_ERROR_NULL_POINTER;
-  if (!outNodeAfter) 
-    return NS_ERROR_NULL_POINTER;
-  
-  PRBool isPositioned;
-  nsresult err = ((nsRange*)aRange)->GetIsPositioned(&isPositioned);
-  // Why do I have to cast above?  Because GetIsPositioned() is
-  // mysteriously missing from the nsIDOMRange interface.  dunno why.
+  nsresult rv;
+  nsCOMPtr<nsIRange> range = do_QueryInterface(aRange, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
 
-  if (NS_FAILED(err))
-    return err;
-    
-  if (!isPositioned) 
+  if (!range->IsPositioned()) 
     return NS_ERROR_UNEXPECTED; 
   
-  nsCOMPtr<nsIDOMNode> parent, rangeStartParent, rangeEndParent;
-  PRInt32 nodeStart, nodeEnd, rangeStartOffset, rangeEndOffset; 
-  
   // gather up the dom point info
-  if (!GetNodeBracketPoints(aNode, address_of(parent), &nodeStart, &nodeEnd))
-    return NS_ERROR_FAILURE;
-  
-  if (NS_FAILED(aRange->GetStartContainer(getter_AddRefs(rangeStartParent))))
-    return NS_ERROR_FAILURE;
-
-  if (NS_FAILED(aRange->GetStartOffset(&rangeStartOffset)))
-    return NS_ERROR_FAILURE;
-
-  if (NS_FAILED(aRange->GetEndContainer(getter_AddRefs(rangeEndParent))))
-    return NS_ERROR_FAILURE;
-
-  if (NS_FAILED(aRange->GetEndOffset(&rangeEndOffset)))
-    return NS_ERROR_FAILURE;
-
-  *outNodeBefore = PR_FALSE;
-  *outNodeAfter = PR_FALSE;
-  
-  // is RANGE(start) <= NODE(start) ?
-  PRInt32 comp = ComparePoints(rangeStartParent, rangeStartOffset, parent, nodeStart);
-  if (comp > 0)
-    *outNodeBefore = PR_TRUE; // range start is after node start
-    
-  // is RANGE(end) >= NODE(end) ?
-  comp = ComparePoints(rangeEndParent, rangeEndOffset, parent, nodeEnd);
-  if (comp < 0)
-    *outNodeAfter = PR_TRUE; // range end is before node end
-    
-  return NS_OK;
-}
-
-
-// Utility routine to create a pair of dom points to represent 
-// the start and end locations of a single node.  Return false
-// if we dont' succeed.
-PRBool GetNodeBracketPoints(nsIContent* aNode, 
-                            nsCOMPtr<nsIDOMNode>* outParent,
-                            PRInt32* outStartOffset,
-                            PRInt32* outEndOffset)
-{
-  if (!aNode) 
-    return PR_FALSE;
-  if (!outParent) 
-    return PR_FALSE;
-  if (!outStartOffset)
-    return PR_FALSE;
-  if (!outEndOffset)
-    return PR_FALSE;
-    
-  nsIContent* parent = aNode->GetParent();
-
-  if (!parent) // special case for root node
-  {
+  PRInt32 nodeStart, nodeEnd;
+  nsINode* parent = aNode->GetNodeParent();
+  if (!parent) {
     // can't make a parent/offset pair to represent start or 
     // end of the root node, becasue it has no parent.
     // so instead represent it by (node,0) and (node,numChildren)
-    *outParent = do_QueryInterface(aNode);
-    PRUint32 indx = aNode->GetChildCount();
-    if (!indx)
-      return PR_FALSE;
-    *outStartOffset = 0;
-    *outEndOffset = indx;
+    parent = aNode;
+    nodeStart = 0;
+    nodeEnd = aNode->GetChildCount();
+    if (!nodeEnd) {
+      return NS_ERROR_FAILURE;
+    }
   }
-  else
-  {
-    *outParent = do_QueryInterface(parent);
-    *outStartOffset = parent->IndexOf(aNode);
-    *outEndOffset = *outStartOffset+1;
+  else {
+    nodeStart = parent->IndexOf(aNode);
+    nodeEnd = nodeStart + 1;
   }
-  return PR_TRUE;
+
+  nsINode* rangeStartParent = range->GetStartParent();
+  nsINode* rangeEndParent = range->GetEndParent();
+  PRInt32 rangeStartOffset = range->StartOffset();
+  PRInt32 rangeEndOffset = range->EndOffset();
+
+  // is RANGE(start) <= NODE(start) ?
+  PRBool disconnected = PR_FALSE;
+  *outNodeBefore = nsContentUtils::ComparePoints(rangeStartParent,
+                                                 rangeStartOffset,
+                                                 parent, nodeStart,
+                                                 &disconnected) > 0;
+  NS_ENSURE_TRUE(!disconnected, NS_ERROR_DOM_WRONG_DOCUMENT_ERR);
+
+  // is RANGE(end) >= NODE(end) ?
+  *outNodeAfter = nsContentUtils::ComparePoints(rangeEndParent,
+                                                rangeEndOffset,
+                                                parent, nodeEnd,
+                                                &disconnected) < 0;
+  NS_ENSURE_TRUE(!disconnected, NS_ERROR_DOM_WRONG_DOCUMENT_ERR);
+  return NS_OK;
 }
 
 /******************************************************
@@ -287,18 +177,6 @@ NS_NewRangeUtils(nsIRangeUtils** aResult)
 }
 
 /******************************************************
- * constructor/destructor
- ******************************************************/
-
-nsRangeUtils::nsRangeUtils()
-{
-} 
-
-nsRangeUtils::~nsRangeUtils() 
-{
-} 
-
-/******************************************************
  * nsISupports
  ******************************************************/
 NS_IMPL_ISUPPORTS1(nsRangeUtils, nsIRangeUtils)
@@ -311,13 +189,12 @@ NS_IMETHODIMP_(PRInt32)
 nsRangeUtils::ComparePoints(nsIDOMNode* aParent1, PRInt32 aOffset1,
                             nsIDOMNode* aParent2, PRInt32 aOffset2)
 {
-  return nsRange::ComparePoints(aParent1, aOffset1, aParent2, aOffset2);
-}
+  nsCOMPtr<nsINode> parent1 = do_QueryInterface(aParent1);
+  nsCOMPtr<nsINode> parent2 = do_QueryInterface(aParent2);
 
-NS_IMETHODIMP_(PRBool) 
-nsRangeUtils::IsNodeIntersectsRange(nsIContent* aNode, nsIDOMRange* aRange)
-{
-  return nsRange::IsNodeIntersectsRange( aNode,  aRange);
+  NS_ENSURE_TRUE(parent1 && parent2, -1);
+
+  return nsContentUtils::ComparePoints(parent1, aOffset1, parent2, aOffset2);
 }
 
 NS_IMETHODIMP
@@ -349,61 +226,132 @@ NS_NewRange(nsIDOMRange** aResult)
  * constructor/destructor
  ******************************************************/
 
-nsRange::nsRange() :
-  mIsPositioned(PR_FALSE),
-  mIsDetached(PR_FALSE),
-  mStartOffset(0),
-  mEndOffset(0),
-  mStartParent(),
-  mEndParent()
-{
-} 
-
 nsRange::~nsRange() 
 {
-  DoSetRange(nsCOMPtr<nsIDOMNode>(),0,nsCOMPtr<nsIDOMNode>(),0); 
+  DoSetRange(nsnull, 0, nsnull, 0, nsnull);
   // we want the side effects (releases and list removals)
-  // note that "nsCOMPtr<nsIDOMmNode>()" is the moral equivalent of null
 } 
-
-// for layout module destructor
-void nsRange::Shutdown()
-{
-  if (mMonitor) {
-    PR_DestroyMonitor(mMonitor);
-    mMonitor = nsnull;
-  }
-
-  delete mStartAncestors;      
-  mStartAncestors = nsnull;      
-
-  delete mEndAncestors;        
-  mEndAncestors = nsnull;        
-
-  delete mStartAncestorOffsets; 
-  mStartAncestorOffsets = nsnull; 
-
-  delete mEndAncestorOffsets;  
-  mEndAncestorOffsets = nsnull;  
-}
 
 /******************************************************
  * nsISupports
  ******************************************************/
 
-
 // QueryInterface implementation for nsRange
 NS_INTERFACE_MAP_BEGIN(nsRange)
   NS_INTERFACE_MAP_ENTRY(nsIDOMRange)
+  NS_INTERFACE_MAP_ENTRY(nsIRange)
   NS_INTERFACE_MAP_ENTRY(nsIDOMNSRange)
-  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMRange)
+  NS_INTERFACE_MAP_ENTRY(nsIMutationObserver)
+  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIRange)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(Range)
 NS_INTERFACE_MAP_END
-
 
 NS_IMPL_ADDREF(nsRange)
 NS_IMPL_RELEASE(nsRange)
 
+/******************************************************
+ * nsIMutationObserver implementation
+ ******************************************************/
+
+void
+nsRange::CharacterDataChanged(nsIDocument* aDocument,
+                              nsIContent* aContent,
+                              CharacterDataChangeInfo* aInfo)
+{
+  NS_ASSERTION(mIsPositioned, "shouldn't be notified if not positioned");
+
+  // If the changed node contains our start boundary and the change starts
+  // before the boundary we'll need to adjust the offset.
+  if (aContent == mStartParent &&
+      aInfo->mChangeStart < (PRUint32)mStartOffset) {
+    // If boundary is inside changed text, position it before change
+    // else adjust start offset for the change in length
+    mStartOffset = (PRUint32)mStartOffset <= aInfo->mChangeEnd ?
+       aInfo->mChangeStart :
+       mStartOffset + aInfo->mChangeStart - aInfo->mChangeEnd +
+         aInfo->mReplaceLength;
+  }
+
+  // Do the same thing for the end boundary.
+  if (aContent == mEndParent && aInfo->mChangeStart < (PRUint32)mEndOffset) {
+    mEndOffset = (PRUint32)mEndOffset <= aInfo->mChangeEnd ?
+       aInfo->mChangeStart :
+       mEndOffset + aInfo->mChangeStart - aInfo->mChangeEnd +
+         aInfo->mReplaceLength;
+  }
+}
+
+void
+nsRange::ContentInserted(nsIDocument* aDocument,
+                         nsIContent* aContainer,
+                         nsIContent* aChild,
+                         PRInt32 aIndexInContainer)
+{
+  NS_ASSERTION(mIsPositioned, "shouldn't be notified if not positioned");
+
+  nsINode* container = NODE_FROM(aContainer, aDocument);
+
+  // Adjust position if a sibling was inserted.
+  if (container == mStartParent && aIndexInContainer < mStartOffset) {
+    ++mStartOffset;
+  }
+  if (container == mEndParent && aIndexInContainer < mEndOffset) {
+    ++mEndOffset;
+  }
+}
+
+void
+nsRange::ContentRemoved(nsIDocument* aDocument,
+                        nsIContent* aContainer,
+                        nsIContent* aChild,
+                        PRInt32 aIndexInContainer)
+{
+  NS_ASSERTION(mIsPositioned, "shouldn't be notified if not positioned");
+
+  nsINode* container = NODE_FROM(aContainer, aDocument);
+
+  // Adjust position if a sibling was removed...
+  if (container == mStartParent && aIndexInContainer < mStartOffset) {
+    --mStartOffset;
+  }
+  // ...or gravitate if an ancestor was removed.
+  else if (nsContentUtils::ContentIsDescendantOf(mStartParent, aChild)) {
+    mStartParent = container;
+    mStartOffset = aIndexInContainer;
+  }
+
+  // Do same thing for end boundry.
+  if (container == mEndParent && aIndexInContainer < mEndOffset) {
+    --mEndOffset;
+  }
+  else if (nsContentUtils::ContentIsDescendantOf(mEndParent, aChild)) {
+    mEndParent = container;
+    mEndOffset = aIndexInContainer;
+  }
+}
+
+void
+nsRange::NodeWillBeDestroyed(const nsINode* aNode)
+{
+  NS_ASSERTION(mIsPositioned, "shouldn't be notified if not positioned");
+
+  // No need to detach, but reset positions so that the endpoints don't
+  // end up disconnected from each other.
+  // An alternative solution would be to make mRoot a strong pointer.
+  DoSetRange(nsnull, 0, nsnull, 0, nsnull);
+}
+
+void
+nsRange::ParentChainChanged(nsIContent *aContent)
+{
+  NS_ASSERTION(mRoot == aContent, "Wrong ParentChainChanged notification?");
+  nsINode* newRoot = mRoot;
+  nsINode* tmp;
+  while ((tmp = newRoot->GetNodeParent())) {
+    newRoot = tmp;
+  }
+  DoSetRange(mStartParent, mStartOffset, mEndParent, mEndOffset, newRoot);
+}
 
 /********************************************************
  * Utilities for comparing points: API from nsIDOMNSRange
@@ -412,13 +360,16 @@ NS_IMETHODIMP
 nsRange::IsPointInRange(nsIDOMNode* aParent, PRInt32 aOffset, PRBool* aResult)
 {
   PRInt16 compareResult = 0;
-  nsresult res;
-  res = ComparePoint(aParent, aOffset, &compareResult);
-  if (compareResult) 
+  nsresult rv = ComparePoint(aParent, aOffset, &compareResult);
+  // If the node isn't in the range's document, it clearly isn't in the range.
+  if (rv == NS_ERROR_DOM_WRONG_DOCUMENT_ERR) {
     *aResult = PR_FALSE;
-  else 
-    *aResult = PR_TRUE;
-  return res;
+    return NS_OK;
+  }
+
+  *aResult = compareResult == 0;
+
+  return rv;
 }
   
 // returns -1 if point is before range, 0 if point is in range,
@@ -426,169 +377,49 @@ nsRange::IsPointInRange(nsIDOMNode* aParent, PRInt32 aOffset, PRBool* aResult)
 NS_IMETHODIMP
 nsRange::ComparePoint(nsIDOMNode* aParent, PRInt32 aOffset, PRInt16* aResult)
 {
-  // check arguments
-  if (!aResult) 
-    return NS_ERROR_NULL_POINTER;
-  
-  // no trivial cases please
-  if (!aParent) 
-    return NS_ERROR_NULL_POINTER;
-  
+  if (mIsDetached)
+    return NS_ERROR_DOM_INVALID_STATE_ERR;
+
   // our range is in a good state?
   if (!mIsPositioned) 
     return NS_ERROR_NOT_INITIALIZED;
-  
-  // check common case first
-  if ((aParent == mStartParent.get()) && (aParent == mEndParent.get()))
-  {
-    if (aOffset<mStartOffset)
-    {
-      *aResult = -1;
-      return NS_OK;
-    }
-    if (aOffset>mEndOffset)
-    {
-      *aResult = 1;
-      return NS_OK;
-    }
-    *aResult = 0;
-    return NS_OK;
+
+  nsCOMPtr<nsINode> parent = do_QueryInterface(aParent);
+  NS_ENSURE_TRUE(parent, NS_ERROR_DOM_HIERARCHY_REQUEST_ERR);
+
+  if (!nsContentUtils::ContentIsDescendantOf(parent, mRoot)) {
+    return NS_ERROR_DOM_WRONG_DOCUMENT_ERR;
   }
   
-  // more common cases
-  if ((aParent == mStartParent.get()) && (aOffset == mStartOffset)) 
-  {
-    *aResult = 0;
-    return NS_OK;
+  PRInt32 cmp;
+  if ((cmp = nsContentUtils::ComparePoints(parent, aOffset,
+                                           mStartParent, mStartOffset)) <= 0) {
+    
+    *aResult = cmp;
   }
-  if ((aParent == mEndParent.get()) && (aOffset == mEndOffset)) 
-  {
-    *aResult = 0;
-    return NS_OK;
-  }
-  
-  // ok, do it the hard way
-  if (IsIncreasing(aParent,aOffset,mStartParent,mStartOffset)) 
-    *aResult = -1;
-  else if (IsIncreasing(mEndParent,mEndOffset,aParent,aOffset)) 
+  else if (nsContentUtils::ComparePoints(mEndParent, mEndOffset,
+                                         parent, aOffset) == -1) {
     *aResult = 1;
-  else 
-    *aResult = 0;
-  
-  return NS_OK;
-}
-  
-NS_IMETHODIMP
-nsRange::IntersectsNode(nsIDOMNode* aNode, PRBool* aReturn)
-{
-  if (!aReturn)
-    return NS_ERROR_NULL_POINTER;
-  nsCOMPtr<nsIContent> content (do_QueryInterface(aNode));
-  if (!content)
-  {
-    *aReturn = 0;
-    return NS_ERROR_UNEXPECTED;
   }
-  *aReturn = IsNodeIntersectsRange(content, this);
+  else {
+    *aResult = 0;
+  }
+  
   return NS_OK;
 }
-
-// HOW does the node intersect the range?
-NS_IMETHODIMP
-nsRange::CompareNode(nsIDOMNode* aNode, PRUint16* aReturn)
-{
-  if (!aReturn)
-    return NS_ERROR_NULL_POINTER;
-  *aReturn = 0;
-  PRBool nodeBefore, nodeAfter;
-  nsCOMPtr<nsIContent> content (do_QueryInterface(aNode));
-  if (!content)
-    return NS_ERROR_UNEXPECTED;
-
-  nsresult res = CompareNodeToRange(content, this, &nodeBefore, &nodeAfter);
-  if (NS_FAILED(res))
-    return res;
-
-  // nodeBefore -> range start after node start, i.e. node starts before range.
-  // nodeAfter -> range end before node end, i.e. node ends after range.
-  // But I know that I get nodeBefore && !nodeAfter when the node is
-  // entirely inside the selection!  This doesn't make sense.
-  if (nodeBefore && !nodeAfter)
-    *aReturn = nsIDOMNSRange::NODE_BEFORE;  // May or may not intersect
-  else if (!nodeBefore && nodeAfter)
-    *aReturn = nsIDOMNSRange::NODE_AFTER;   // May or may not intersect
-  else if (nodeBefore && nodeAfter)
-    *aReturn = nsIDOMNSRange::NODE_BEFORE_AND_AFTER;  // definitely intersects
-  else
-    *aReturn = nsIDOMNSRange::NODE_INSIDE;            // definitely intersects
-
-  return NS_OK;
-}
-
-
-
-nsresult
-nsRange::NSDetach()
-{
-  return DoSetRange(nsnull,0,nsnull,0);
-}
-
-
-
+  
 /******************************************************
  * Private helper routines
  ******************************************************/
 
-nsresult nsRange::AddToListOf(nsIDOMNode* aNode)
-{
-  if (!aNode) 
-    return NS_ERROR_NULL_POINTER;
-
-  nsresult res;
-  nsCOMPtr<nsIContent> cN = do_QueryInterface(aNode, &res);
-  if (NS_FAILED(res)) 
-    return res;
-
-  res = cN->RangeAdd(NS_STATIC_CAST(nsIDOMRange*,this));
-  return res;
-}
-  
-
-void nsRange::RemoveFromListOf(nsIDOMNode* aNode)
-{
-  nsCOMPtr<nsIContent> content(do_QueryInterface(aNode));
-
-  if (content) 
-    content->RangeRemove(NS_STATIC_CAST(nsIDOMRange *, this));
-}
-
-
 // Get the length of aNode
-PRInt32 nsRange::GetNodeLength(nsIDOMNode *aNode)
+static PRInt32 GetNodeLength(nsINode *aNode)
 {
-  if (!aNode)
-    return 0;
-
-  PRUint16 nodeType;
-  PRInt32 len = -1;
-
-  aNode->GetNodeType(&nodeType);
-  if( (nodeType == nsIDOMNode::CDATA_SECTION_NODE) ||
-      (nodeType == nsIDOMNode::TEXT_NODE) )
-  {
-    nsCOMPtr<nsIDOMText> textText = do_QueryInterface(aNode);
-    if (textText)
-      textText->GetLength((PRUint32 *)&len);
+  if(aNode->IsNodeOfType(nsINode::eDATA_NODE)) {
+    return static_cast<nsIContent*>(aNode)->TextLength();
   }
-  else
-  {
-    nsCOMPtr<nsIDOMNodeList> childList;
-    nsresult res = aNode->GetChildNodes(getter_AddRefs(childList));
-    if (NS_SUCCEEDED(res) && childList)
-      childList->GetLength((PRUint32 *)&len);
-  }
-  
-  return len;
+
+  return aNode->GetChildCount();
 }
 
 // It's important that all setting of the range start/end points 
@@ -596,291 +427,105 @@ PRInt32 nsRange::GetNodeLength(nsIDOMNode *aNode)
 // for content notification of range ownership.  
 // Calling DoSetRange with either parent argument null will collapse
 // the range to have both endpoints point to the other node
-nsresult nsRange::DoSetRange(nsIDOMNode* aStartN, PRInt32 aStartOffset,
-                             nsIDOMNode* aEndN, PRInt32 aEndOffset)
+void
+nsRange::DoSetRange(nsINode* aStartN, PRInt32 aStartOffset,
+                    nsINode* aEndN, PRInt32 aEndOffset,
+                    nsINode* aRoot)
 {
-  //if only one endpoint is null, set it to the other one
-  if (aStartN && !aEndN) 
-  {
-    aEndN = aStartN;
-    aEndOffset = aStartOffset;
-  }
-  if (aEndN && !aStartN)
-  {
-    aStartN = aEndN;
-    aStartOffset = aEndOffset;
-  }
-  
-  if (mStartParent && (mStartParent.get() != aStartN) && (mStartParent.get() != aEndN))
-  {
-    // if old start parent no longer involved, remove range from that
-    // node's range list.
-    RemoveFromListOf(mStartParent);
-  }
-  if (mEndParent && (mEndParent.get() != aStartN) && (mEndParent.get() != aEndN))
-  {
-    // if old end parent no longer involved, remove range from that
-    // node's range list.
-    RemoveFromListOf(mEndParent);
-  }
- 
- 
-  if (mStartParent.get() != aStartN)
-  {
-    mStartParent = do_QueryInterface(aStartN);
-    if (mStartParent) // if it has a new start node, put it on it's list
-    {
-      AddToListOf(mStartParent);  // AddToList() detects duplication for us
+  NS_PRECONDITION((aStartN && aEndN && aRoot) ||
+                  (!aStartN && !aEndN && !aRoot),
+                  "Set all or none");
+  NS_PRECONDITION(!aRoot ||
+                  (nsContentUtils::ContentIsDescendantOf(aStartN, aRoot) &&
+                   nsContentUtils::ContentIsDescendantOf(aEndN, aRoot) &&
+                   aRoot == IsValidBoundary(aStartN) &&
+                   aRoot == IsValidBoundary(aEndN)),
+                  "Wrong root");
+  NS_PRECONDITION(!aRoot ||
+                  (aStartN->IsNodeOfType(nsINode::eCONTENT) &&
+                   aEndN->IsNodeOfType(nsINode::eCONTENT) &&
+                   aRoot ==
+                    static_cast<nsIContent*>(aStartN)->GetBindingParent() &&
+                   aRoot ==
+                    static_cast<nsIContent*>(aEndN)->GetBindingParent()) ||
+                  (!aRoot->GetNodeParent() &&
+                   (aRoot->IsNodeOfType(nsINode::eDOCUMENT) ||
+                    aRoot->IsNodeOfType(nsINode::eATTRIBUTE) ||
+                    aRoot->IsNodeOfType(nsINode::eDOCUMENT_FRAGMENT) ||
+                     /*For backward compatibility*/
+                    aRoot->IsNodeOfType(nsINode::eCONTENT))),
+                  "Bad root");
+
+  if (mRoot != aRoot) {
+    if (mRoot) {
+      mRoot->RemoveMutationObserver(this);
+    }
+    if (aRoot) {
+      aRoot->AddMutationObserver(this);
     }
   }
+ 
+  mStartParent = aStartN;
   mStartOffset = aStartOffset;
-
-  if (mEndParent.get() != aEndN)
-  {
-    mEndParent = do_QueryInterface(aEndN);
-    if (mEndParent) // if it has a new end node, put it on it's list
-    {
-      AddToListOf(mEndParent);  // AddToList() detects duplication for us
-    }
-  }
+  mEndParent = aEndN;
   mEndOffset = aEndOffset;
-
-  if (mStartParent) 
-    mIsPositioned = PR_TRUE;
-  else
-    mIsPositioned = PR_FALSE;
-
-  // FIX ME need to handle error cases 
-  // (range lists return error, or setting only one endpoint to null)
-  return NS_OK;
+  mIsPositioned = !!mStartParent;
+  mRoot = aRoot;
 }
 
-
-PRBool nsRange::IsIncreasing(nsIDOMNode* aStartN, PRInt32 aStartOffset,
-                             nsIDOMNode* aEndN, PRInt32 aEndOffset)
-{
-  PRInt32 startIdx = 0;
-  PRInt32 endIdx = 0;
-  PRInt32 commonNodeStartOffset = 0;
-  PRInt32 commonNodeEndOffset = 0;
-  
-  // no trivial cases please
-  if (!aStartN || !aEndN) 
-    return PR_FALSE;
-  
-  // check common case first
-  if (aStartN==aEndN)
-  {
-    if (aStartOffset>aEndOffset) 
-      return PR_FALSE;
-    else 
-      return PR_TRUE;
-  }
-  
-  // thread safety - need locks around here to end of routine to protect use of static members
-  nsAutoRangeLock lock;
-  
-  // lazy allocation of static arrays
-  if (!mStartAncestors)
-  {
-    mStartAncestors = new nsAutoVoidArray();
-    if (!mStartAncestors) return NS_ERROR_OUT_OF_MEMORY;
-    mStartAncestorOffsets = new nsAutoVoidArray();
-    if (!mStartAncestorOffsets) return NS_ERROR_OUT_OF_MEMORY;
-    mEndAncestors = new nsAutoVoidArray();
-    if (!mEndAncestors) return NS_ERROR_OUT_OF_MEMORY;
-    mEndAncestorOffsets = new nsAutoVoidArray();
-    if (!mEndAncestorOffsets) return NS_ERROR_OUT_OF_MEMORY;
-  }
-
-  // refresh ancestor data
-  mStartAncestors->Clear();
-  mStartAncestorOffsets->Clear();
-  mEndAncestors->Clear();
-  mEndAncestorOffsets->Clear();
-
-  nsContentUtils::GetAncestorsAndOffsets(aStartN, aStartOffset,
-                                         mStartAncestors, mStartAncestorOffsets);
-
-  nsContentUtils::GetAncestorsAndOffsets(aEndN, aEndOffset,
-                                         mEndAncestors, mEndAncestorOffsets);
-
-  // Get the number of ancestors, adjusting for zero-based counting.
-  startIdx = mStartAncestors->Count() - 1;
-  endIdx   = mEndAncestors->Count() - 1;
-
-  // Ensure that we actually have ancestors to iterate through
-  if (startIdx < 0) {
-    if (startIdx < endIdx) {
-      return PR_TRUE;
-    }
-    return PR_FALSE;
-  }
-  if (endIdx < 0) {
-    return PR_FALSE;
-  }
-
-  // back through the ancestors, starting from the root, until first non-matching ancestor found
-  do
-  {
-    --startIdx;
-    --endIdx;
-    // numStartAncestors will only be <0 if one endpoint's node is the
-    // common ancestor of the other
-  } while (startIdx >= 0 && endIdx >= 0 &&
-           mStartAncestors->ElementAt(startIdx) == mEndAncestors->ElementAt(endIdx));
-  // now back up one and that's the last common ancestor from the root,
-  // or the first common ancestor from the leaf perspective
-  ++startIdx;
-  ++endIdx;
-  // both indexes are now >= 0
-  commonNodeStartOffset = NS_PTR_TO_INT32(mStartAncestorOffsets->ElementAt(startIdx));
-  commonNodeEndOffset   = NS_PTR_TO_INT32(mEndAncestorOffsets->ElementAt(endIdx));
-
-  if (commonNodeStartOffset > commonNodeEndOffset) {
-    return PR_FALSE;
-  }
-
-  if (commonNodeStartOffset < commonNodeEndOffset) {
-    return PR_TRUE;
-  }
-
-  // The offsets are equal.  This can happen when one endpoint parent is the common parent
-  // of both endpoints.  In this case, we compare the depth of the ancestor tree to determine
-  // the ordering.
-
-  if (startIdx == endIdx) {
-    // whoa nelly. this shouldn't happen.
-    NS_NOTREACHED("nsRange::IsIncreasing");
-  }
-
-  if (startIdx < endIdx) {
-    return PR_TRUE;
-  }
-
-  return PR_FALSE;
-}
-
-PRInt32 nsRange::IndexOf(nsIDOMNode* aChildNode)
+static PRInt32
+IndexOf(nsIDOMNode* aChildNode)
 {
   // convert node to nsIContent, so that we can find the child index
 
-  nsCOMPtr<nsIContent> contentChild = do_QueryInterface(aChildNode);
-  if (!contentChild) 
-    return 0;
+  nsCOMPtr<nsINode> child = do_QueryInterface(aChildNode);
+  if (!child) {
+    return -1;
+  }
 
-  nsIContent *parent = contentChild->GetParent();
-
-  if (!parent)
-    return 0;
+  nsINode *parent = child->GetNodeParent();
 
   // finally we get the index
-  return parent->IndexOf(contentChild); 
+  return parent ? parent->IndexOf(child) : -1;
 }
 
-nsresult nsRange::PopRanges(nsIDOMNode* aDestNode, PRInt32 aOffset, nsIContent* aSourceNode)
+/******************************************************
+ * nsIRange implementation
+ ******************************************************/
+
+nsINode*
+nsRange::GetCommonAncestor()
 {
-  // utility routine to pop all the range endpoints inside the content subtree defined by 
-  // aSourceNode, into the node/offset represented by aDestNode/aOffset.
-  
-  nsCOMPtr<nsIContentIterator> iter;
-  nsresult res = NS_NewContentIterator(getter_AddRefs(iter));
-  iter->Init(aSourceNode);
-
-  const nsVoidArray* theRangeList;
-
-  while (!iter->IsDone())
-  {
-    nsIContent *cN = iter->GetCurrentNode();
-
-    theRangeList = cN->GetRangeList();
-    if (theRangeList)
-    {
-       nsRange* theRange;
-       PRInt32  theCount = theRangeList->Count();
-       while (theCount)
-       {
-          theRange = NS_STATIC_CAST(nsRange*, (theRangeList->ElementAt(0)));
-          if (theRange)
-          {
-            nsCOMPtr<nsIDOMNode> domNode(do_QueryInterface(cN));
-            NS_POSTCONDITION(domNode, "error updating range list");
-            // sanity check - do range and content agree over ownership?
-            res = theRange->ContentOwnsUs(domNode);
-            NS_POSTCONDITION(NS_SUCCEEDED(res), "range and content disagree over range ownership");
-
-            if (theRange->mStartParent == domNode)
-            {
-              // promote start point up to replacement point
-              res = theRange->SetStart(aDestNode, aOffset);
-              NS_POSTCONDITION(NS_SUCCEEDED(res), "nsRange::PopRanges() got error from SetStart()");
-              if (NS_FAILED(res)) return res;
-            }
-            if (theRange->mEndParent == domNode)
-            {
-              // promote end point up to replacement point
-              res = theRange->SetEnd(aDestNode, aOffset);
-              NS_POSTCONDITION(NS_SUCCEEDED(res), "nsRange::PopRanges() got error from SetEnd()");
-              if (NS_FAILED(res)) return res;
-            }          
-          }
-          // must refresh theRangeList - it might have gone away!
-          theRangeList = cN->GetRangeList();
-          if (theRangeList)
-            theCount = theRangeList->Count();
-          else
-            theCount = 0;
-       } 
-    }
-
-    iter->Next();
-  }
-  
-  return NS_OK;
+  return mIsPositioned ?
+    nsContentUtils::GetCommonAncestor(mStartParent, mEndParent) :
+    nsnull;
 }
 
-// sanity check routine for content helpers.  confirms that given 
-// node owns one or both range endpoints.
-nsresult nsRange::ContentOwnsUs(nsIDOMNode* domNode)
+void
+nsRange::Reset()
 {
-  NS_PRECONDITION(domNode, "null pointer");
-  if ((mStartParent.get() != domNode) && (mEndParent.get() != domNode))
-  {
-    NS_NOTREACHED("nsRange::ContentOwnsUs");
-    return NS_ERROR_UNEXPECTED;
-  }
-  return NS_OK;
+  DoSetRange(nsnull, 0, nsnull, 0, nsnull);
 }
 
 /******************************************************
  * public functionality
  ******************************************************/
 
-nsresult nsRange::GetIsPositioned(PRBool* aIsPositioned)
-{
-  *aIsPositioned = mIsPositioned;
-  return NS_OK;
-}
-
 nsresult nsRange::GetStartContainer(nsIDOMNode** aStartParent)
 {
   if (!mIsPositioned)
     return NS_ERROR_NOT_INITIALIZED;
-  if (!aStartParent)
-    return NS_ERROR_NULL_POINTER;
 
-  *aStartParent = mStartParent;
-  NS_IF_ADDREF(*aStartParent);
-  return NS_OK;
+  return CallQueryInterface(mStartParent, aStartParent);
 }
 
 nsresult nsRange::GetStartOffset(PRInt32* aStartOffset)
 {
   if (!mIsPositioned)
     return NS_ERROR_NOT_INITIALIZED;
-  if (!aStartOffset)
-    return NS_ERROR_NULL_POINTER;
+
   *aStartOffset = mStartOffset;
+
   return NS_OK;
 }
 
@@ -888,147 +533,133 @@ nsresult nsRange::GetEndContainer(nsIDOMNode** aEndParent)
 {
   if (!mIsPositioned)
     return NS_ERROR_NOT_INITIALIZED;
-  if (!aEndParent)
-    return NS_ERROR_NULL_POINTER;
-  //NS_IF_RELEASE(*aEndParent); don't think we should be doing this
-  *aEndParent = mEndParent;
-  NS_IF_ADDREF(*aEndParent);
-  return NS_OK;
+
+  return CallQueryInterface(mEndParent, aEndParent);
 }
 
 nsresult nsRange::GetEndOffset(PRInt32* aEndOffset)
 {
   if (!mIsPositioned)
     return NS_ERROR_NOT_INITIALIZED;
-  if (!aEndOffset)
-    return NS_ERROR_NULL_POINTER;
+
   *aEndOffset = mEndOffset;
+
   return NS_OK;
 }
 
 nsresult nsRange::GetCollapsed(PRBool* aIsCollapsed)
 {
-  if(IsDetached())
+  if(mIsDetached)
     return NS_ERROR_DOM_INVALID_STATE_ERR;
   if (!mIsPositioned)
     return NS_ERROR_NOT_INITIALIZED;
 
-  if (mEndParent == 0 ||
-      (mStartParent == mEndParent && mStartOffset == mEndOffset))
-    *aIsCollapsed = PR_TRUE;
-  else
-    *aIsCollapsed = PR_FALSE;
+  *aIsCollapsed = Collapsed();
+
   return NS_OK;
 }
 
 nsresult nsRange::GetCommonAncestorContainer(nsIDOMNode** aCommonParent)
-{ 
-  if(IsDetached())
+{
+  *aCommonParent = nsnull;
+  if(mIsDetached)
     return NS_ERROR_DOM_INVALID_STATE_ERR;
+  if (!mIsPositioned)
+    return NS_ERROR_NOT_INITIALIZED;
 
-  return nsContentUtils::GetCommonAncestor(mStartParent, mEndParent, aCommonParent);
+  nsINode* container = nsContentUtils::GetCommonAncestor(mStartParent, mEndParent);
+  if (container) {
+    return CallQueryInterface(container, aCommonParent);
+  }
+
+  return NS_ERROR_NOT_INITIALIZED;
 }
 
-nsresult nsRange::IsValidBoundary(nsIDOMNode* aNode)
+nsINode* nsRange::IsValidBoundary(nsINode* aNode)
 {
   if (!aNode) {
-    // DOM 2 Range specification doesn't define the error code for this case,
-    // but this is the best one we have.
-    return NS_ERROR_DOM_RANGE_BAD_BOUNDARYPOINTS_ERR;
+    return nsnull;
   }
 
-  PRUint16 nodeType = 0;
-  aNode->GetNodeType(&nodeType);
-  switch (nodeType) {
-    case nsIDOMNode::DOCUMENT_TYPE_NODE:
-    case nsIDOMNode::ENTITY_NODE:
-    case nsIDOMNode::NOTATION_NODE:
-      return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
-    case nsIDOMNode::DOCUMENT_NODE:
-    case nsIDOMNode::DOCUMENT_FRAGMENT_NODE:
-    case nsIDOMNode::ATTRIBUTE_NODE:
-      return NS_OK;
-    default:
-      break;
-  }
+  if (aNode->IsNodeOfType(nsINode::eCONTENT)) {
+    nsIContent* content = static_cast<nsIContent*>(aNode);
+    if (content->Tag() == nsGkAtoms::documentTypeNodeName) {
+      return nsnull;
+    }
 
-  nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
-  if (!content) {
-    // DOM 2 Range specification doesn't define the error code for this case,
-    // but this is the best one we have.
-    return NS_ERROR_DOM_RANGE_BAD_BOUNDARYPOINTS_ERR;
+    if (!mMaySpanAnonymousSubtrees) {
+      // If the node has a binding parent, that should be the root.
+      // XXXbz maybe only for native anonymous content?
+      nsINode* root = content->GetBindingParent();
+      if (root) {
+        return root;
+      }
+    }
   }
 
   // Elements etc. must be in document or in document fragment,
   // text nodes in document, in document fragment or in attribute.
-  if (content->IsInDoc()) {
-    return NS_OK;
+  nsINode* root = aNode->GetCurrentDoc();
+  if (root) {
+    return root;
   }
 
-  nsINode* parent = content->GetNodeParent();
-  if (parent) {
-    if (parent->IsNodeOfType(nsINode::eATTRIBUTE)) {
-      return NS_OK;
-    }
-
-    do {
-      if (parent->IsNodeOfType(nsINode::eDOCUMENT_FRAGMENT)) {
-        return NS_OK;
-      }
-      parent = parent->GetNodeParent();
-    } while(parent);
+  root = aNode;
+  while ((aNode = aNode->GetNodeParent())) {
+    root = aNode;
   }
+
+  NS_ASSERTION(!root->IsNodeOfType(nsINode::eDOCUMENT),
+               "GetCurrentDoc should have returned a doc");
 
 #ifdef DEBUG_smaug
-  nsAutoString name;
-  content->Tag()->ToString(name);
-  printf("nsRange::IsValidBoundary: node is not a valid boundary point [%s]\n",
-         NS_ConvertUTF16toUTF8(name).get());
+  NS_WARN_IF_FALSE(root->IsNodeOfType(nsINode::eDOCUMENT_FRAGMENT) ||
+                   root->IsNodeOfType(nsINode::eATTRIBUTE),
+                   "Creating a DOM Range using root which isn't in DOM!");
 #endif
 
-  // DOM 2 Range specification doesn't define the error code for this case,
-  // but this is the best one we have.
-  return NS_ERROR_DOM_RANGE_BAD_BOUNDARYPOINTS_ERR;
+  // We allow this because of backward compatibility.
+  return root;
 }
 
 nsresult nsRange::SetStart(nsIDOMNode* aParent, PRInt32 aOffset)
 {
   VALIDATE_ACCESS(aParent);
-  nsresult rv = IsValidBoundary(aParent);
-  NS_ENSURE_SUCCESS(rv, rv);
 
-  PRInt32 len = GetNodeLength(aParent);
-  if ( (aOffset < 0) || (len < 0) || (aOffset > len) )
+  nsCOMPtr<nsINode> parent = do_QueryInterface(aParent);
+  nsINode* newRoot = IsValidBoundary(parent);
+  NS_ENSURE_TRUE(newRoot, NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR);
+
+  PRInt32 len = GetNodeLength(parent);
+  if (aOffset < 0 || aOffset > len)
     return NS_ERROR_DOM_INDEX_SIZE_ERR;
-    
-  if (mIsPositioned) {
-    // if not in the same document as the endpoint,
-    // collapse the endpoint to the new start.
-    if (!nsContentUtils::InSameDoc(aParent, mEndParent)) {
-      return DoSetRange(aParent, aOffset, aParent, aOffset);
-    }
 
-    // the start must be before the end
-    if (!IsIncreasing(aParent, aOffset, mEndParent, mEndOffset)) {
-      return NS_ERROR_ILLEGAL_VALUE;
-    }
+  // Collapse if not positioned yet, if positioned in another doc or
+  // if the new start is after end.
+  if (!mIsPositioned || newRoot != mRoot ||
+      nsContentUtils::ComparePoints(parent, aOffset,
+                                    mEndParent, mEndOffset) == 1) {
+    DoSetRange(parent, aOffset, parent, aOffset, newRoot);
+
+    return NS_OK;
   }
 
-  // if it's in an attribute node, end must be in or descended from same node
-  // XXX write me!
-
-  return DoSetRange(aParent, aOffset, mEndParent, mEndOffset);
+  DoSetRange(parent, aOffset, mEndParent, mEndOffset, mRoot);
+  
+  return NS_OK;
 }
 
 nsresult nsRange::SetStartBefore(nsIDOMNode* aSibling)
 {
   VALIDATE_ACCESS(aSibling);
   
-  nsCOMPtr<nsIDOMNode> nParent;
-  nsresult res = aSibling->GetParentNode(getter_AddRefs(nParent));
-  if (NS_FAILED(res) || !nParent) return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
-  PRInt32 indx = IndexOf(aSibling);
-  return SetStart(nParent,indx);
+  nsCOMPtr<nsIDOMNode> parent;
+  nsresult rv = aSibling->GetParentNode(getter_AddRefs(parent));
+  if (NS_FAILED(rv) || !parent) {
+    return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
+  }
+
+  return SetStart(parent, IndexOf(aSibling));
 }
 
 nsresult nsRange::SetStartAfter(nsIDOMNode* aSibling)
@@ -1037,40 +668,39 @@ nsresult nsRange::SetStartAfter(nsIDOMNode* aSibling)
 
   nsCOMPtr<nsIDOMNode> nParent;
   nsresult res = aSibling->GetParentNode(getter_AddRefs(nParent));
-  if (NS_FAILED(res) || !nParent) return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
-  PRInt32 indx = IndexOf(aSibling) + 1;
-  return SetStart(nParent,indx);
+  if (NS_FAILED(res) || !nParent) {
+    return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
+  }
+
+  return SetStart(nParent, IndexOf(aSibling) + 1);
 }
 
 nsresult nsRange::SetEnd(nsIDOMNode* aParent, PRInt32 aOffset)
 {
   VALIDATE_ACCESS(aParent);
-  nsresult rv = IsValidBoundary(aParent);
-  NS_ENSURE_SUCCESS(rv, rv);
 
-  PRInt32 len = GetNodeLength(aParent);
-  if ( (aOffset < 0) || (len < 0) || (aOffset > len) )
+  nsCOMPtr<nsINode> parent = do_QueryInterface(aParent);
+  nsINode* newRoot = IsValidBoundary(parent);
+  NS_ENSURE_TRUE(newRoot, NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR);
+
+  PRInt32 len = GetNodeLength(parent);
+  if (aOffset < 0 || aOffset > len) {
     return NS_ERROR_DOM_INDEX_SIZE_ERR;
-    
-  nsresult res;
-  
-  nsCOMPtr<nsIDOMNode>theParent( do_QueryInterface(aParent) );
-  
-  // must be in same document as startpoint, else 
-  // endpoint is collapsed to new end.
-  if (mIsPositioned && !nsContentUtils::InSameDoc(theParent,mStartParent))
-  {
-    res = DoSetRange(theParent,aOffset,theParent,aOffset);
-    return res;
   }
-  // start must be before end
-  if (mIsPositioned && !IsIncreasing(mStartParent,mStartOffset,theParent,aOffset))
-    return NS_ERROR_ILLEGAL_VALUE;
-  // if it's in an attribute node, start must be in or descended from same node
-  // (haven't done this one yet)
-  
-  res = DoSetRange(mStartParent,mStartOffset,theParent,aOffset);
-  return res;
+
+  // Collapse if not positioned yet, if positioned in another doc or
+  // if the new end is before start.
+  if (!mIsPositioned || newRoot != mRoot ||
+      nsContentUtils::ComparePoints(mStartParent, mStartOffset,
+                                    parent, aOffset) == 1) {
+    DoSetRange(parent, aOffset, parent, aOffset, newRoot);
+
+    return NS_OK;
+  }
+
+  DoSetRange(mStartParent, mStartOffset, parent, aOffset, mRoot);
+
+  return NS_OK;
 }
 
 nsresult nsRange::SetEndBefore(nsIDOMNode* aSibling)
@@ -1078,10 +708,12 @@ nsresult nsRange::SetEndBefore(nsIDOMNode* aSibling)
   VALIDATE_ACCESS(aSibling);
   
   nsCOMPtr<nsIDOMNode> nParent;
-  nsresult res = aSibling->GetParentNode(getter_AddRefs(nParent));
-  if (NS_FAILED(res) || !nParent) return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
-  PRInt32 indx = IndexOf(aSibling);
-  return SetEnd(nParent,indx);
+  nsresult rv = aSibling->GetParentNode(getter_AddRefs(nParent));
+  if (NS_FAILED(rv) || !nParent) {
+    return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
+  }
+
+  return SetEnd(nParent, IndexOf(aSibling));
 }
 
 nsresult nsRange::SetEndAfter(nsIDOMNode* aSibling)
@@ -1090,85 +722,60 @@ nsresult nsRange::SetEndAfter(nsIDOMNode* aSibling)
   
   nsCOMPtr<nsIDOMNode> nParent;
   nsresult res = aSibling->GetParentNode(getter_AddRefs(nParent));
-  if (NS_FAILED(res) || !nParent) return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
-  PRInt32 indx = IndexOf(aSibling) + 1;
-  return SetEnd(nParent,indx);
+  if (NS_FAILED(res) || !nParent) {
+    return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
+  }
+
+  return SetEnd(nParent, IndexOf(aSibling) + 1);
 }
 
 nsresult nsRange::Collapse(PRBool aToStart)
 {
-  if(IsDetached())
+  if(mIsDetached)
     return NS_ERROR_DOM_INVALID_STATE_ERR;
   if (!mIsPositioned)
     return NS_ERROR_NOT_INITIALIZED;
 
   if (aToStart)
-    return DoSetRange(mStartParent,mStartOffset,mStartParent,mStartOffset);
+    DoSetRange(mStartParent, mStartOffset, mStartParent, mStartOffset, mRoot);
   else
-    return DoSetRange(mEndParent,mEndOffset,mEndParent,mEndOffset);
+    DoSetRange(mEndParent, mEndOffset, mEndParent, mEndOffset, mRoot);
+
+  return NS_OK;
 }
 
 nsresult nsRange::SelectNode(nsIDOMNode* aN)
 {
   VALIDATE_ACCESS(aN);
   
-  nsCOMPtr<nsIDOMNode> parent;
-  PRInt32 start, end;
+  nsCOMPtr<nsINode> node = do_QueryInterface(aN);
+  NS_ENSURE_TRUE(node, NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR);
 
-  PRUint16 type = 0;
-  aN->GetNodeType(&type);
+  nsINode* parent = node->GetNodeParent();
+  nsINode* newRoot = IsValidBoundary(parent);
+  NS_ENSURE_TRUE(newRoot, NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR);
 
-  switch (type) {
-    case nsIDOMNode::ATTRIBUTE_NODE :
-    case nsIDOMNode::ENTITY_NODE :
-    case nsIDOMNode::DOCUMENT_NODE :
-    case nsIDOMNode::DOCUMENT_FRAGMENT_NODE :
-    case nsIDOMNode::NOTATION_NODE :
-      return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
+  PRInt32 index = parent->IndexOf(node);
+  if (index < 0) {
+    return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
   }
 
-  nsresult res;
-  res = aN->GetParentNode(getter_AddRefs(parent));
-  if(NS_SUCCEEDED(res) && parent)
-  {
-    nsCOMPtr<nsIDOMDocument> doc(do_QueryInterface(parent));
-    if(doc)
-    {
-      nsCOMPtr<nsIContent>content(do_QueryInterface(aN));
-      if(!content)
-        return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
-      parent = aN;//parent is now equal to the node you passed in
-      // which is the root.  start is zero, end is the number of children
-      start = 0;
-      end = content->GetChildCount();
-    }
-    else
-    {
-      start = IndexOf(aN);
-      end = start + 1;
-    }
-    return DoSetRange(parent,start,parent,end);
-  }
-  return NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR;
+  DoSetRange(parent, index, parent, index + 1, newRoot);
+  
+  return NS_OK;
 }
 
 nsresult nsRange::SelectNodeContents(nsIDOMNode* aN)
 {
   VALIDATE_ACCESS(aN);
+
+  nsCOMPtr<nsINode> node = do_QueryInterface(aN);
+  nsINode* newRoot = IsValidBoundary(node);
+  NS_ENSURE_TRUE(newRoot, NS_ERROR_DOM_RANGE_INVALID_NODE_TYPE_ERR);
   
-  nsCOMPtr<nsIDOMNode> theNode( do_QueryInterface(aN) );
-  nsCOMPtr<nsIDOMNodeList> aChildNodes;
+  DoSetRange(node, 0, node, GetNodeLength(node), newRoot);
   
-  nsresult res = aN->GetChildNodes(getter_AddRefs(aChildNodes));
-  if (NS_FAILED(res))
-    return res;
-  if (!aChildNodes)
-    return NS_ERROR_UNEXPECTED;
-  PRUint32 indx;
-  res = aChildNodes->GetLength(&indx);
-  if (NS_FAILED(res))
-    return res;
-  return DoSetRange(theNode,0,theNode,indx);
+  return NS_OK;
 }
 
 // The Subtree Content Iterator only returns subtrees that are
@@ -1403,7 +1010,7 @@ RangeSubtreeIterator::Prev()
 }
 
 
-// CollapseRangeAfterDelete() is a utiltiy method that is used by
+// CollapseRangeAfterDelete() is a utility method that is used by
 // DeleteContents() and ExtractContents() to collapse the range
 // in the correct place, under the range's root container (the
 // range end points common container) as outlined by the Range spec:
@@ -1413,7 +1020,8 @@ RangeSubtreeIterator::Prev()
 // has been done already, and left the range in a state where there is
 // no content between the 2 end points.
 
-nsresult nsRange::CollapseRangeAfterDelete(nsIDOMRange *aRange)
+static nsresult
+CollapseRangeAfterDelete(nsIDOMRange *aRange)
 {
   NS_ENSURE_ARG_POINTER(aRange);
 
@@ -1496,12 +1104,15 @@ nsresult nsRange::DeleteContents()
   if(IsDetached())
     return NS_ERROR_DOM_INVALID_STATE_ERR;
 
+  // Batch possible DOMSubtreeModified events.
+  mozAutoSubtreeModified subtree(mRoot ? mRoot->GetOwnerDoc(): nsnull, nsnull);
+
   // Save the range end points locally to avoid interference
   // of Range gravity during our edits!
 
-  nsCOMPtr<nsIDOMNode> startContainer(mStartParent);
+  nsCOMPtr<nsIDOMNode> startContainer = do_QueryInterface(mStartParent);
   PRInt32              startOffset = mStartOffset;
-  nsCOMPtr<nsIDOMNode> endContainer(mEndParent);
+  nsCOMPtr<nsIDOMNode> endContainer = do_QueryInterface(mEndParent);
   PRInt32              endOffset = mEndOffset;
 
   // Create and initialize a subtree iterator that will give
@@ -1627,74 +1238,66 @@ nsresult nsRange::DeleteContents()
 }
 
 NS_IMETHODIMP
-nsRange::CompareBoundaryPoints(PRUint16 how, nsIDOMRange* srcRange,
+nsRange::CompareBoundaryPoints(PRUint16 aHow, nsIDOMRange* aOtherRange,
                                PRInt16* aCmpRet)
 {
-  if(IsDetached())
+  nsCOMPtr<nsIRange> otherRange = do_QueryInterface(aOtherRange);
+  NS_ENSURE_TRUE(otherRange, NS_ERROR_NULL_POINTER);
+
+  if(mIsDetached || otherRange->IsDetached())
     return NS_ERROR_DOM_INVALID_STATE_ERR;
+  if (!mIsPositioned || !otherRange->IsPositioned())
+    return NS_ERROR_NOT_INITIALIZED;
 
-  nsresult res;
-  if (aCmpRet == 0)
-    return NS_ERROR_NULL_POINTER;
-  if (srcRange == 0)
-    return NS_ERROR_INVALID_ARG;
+  nsINode *ourNode, *otherNode;
+  PRInt32 ourOffset, otherOffset;
 
-  nsCOMPtr<nsIDOMNode> boundaryNode;  // the Invoking range
-  nsCOMPtr<nsIDOMNode> sourceNode;    // the sourceRange
-  PRInt32 boundaryOffset, sourceOffset;
-
-  switch (how)
-  {
-  case nsIDOMRange::START_TO_START: // where is the start point of boundary range
-    boundaryNode = mStartParent;    // relative to the start point of the source range?
-    boundaryOffset = mStartOffset;
-    res = srcRange->GetStartContainer(getter_AddRefs(sourceNode));
-    if (NS_SUCCEEDED(res))
-      res = srcRange->GetStartOffset(&sourceOffset);
-    break;
-  case nsIDOMRange::START_TO_END: // where is the end point of the boundary range
-    boundaryNode = mEndParent;  // relative to the start point of source range?
-    boundaryOffset = mEndOffset;
-    res = srcRange->GetStartContainer(getter_AddRefs(sourceNode));
-    if (NS_SUCCEEDED(res))
-      res = srcRange->GetStartOffset(&sourceOffset);
-    break;
-  case nsIDOMRange::END_TO_START: // where is the the start point of the boundary range
-    boundaryNode = mStartParent;    // relative to end point of source range?
-    boundaryOffset = mStartOffset;
-    res = srcRange->GetEndContainer(getter_AddRefs(sourceNode));
-    if (NS_SUCCEEDED(res))
-      res = srcRange->GetEndOffset(&sourceOffset);
-    break;
-  case nsIDOMRange::END_TO_END: // where is the end point of boundary range
-    boundaryNode = mEndParent;  // relative to the end point of the source range?
-    boundaryOffset = mEndOffset;
-    res = srcRange->GetEndContainer(getter_AddRefs(sourceNode));
-    if (NS_SUCCEEDED(res))
-      res = srcRange->GetEndOffset(&sourceOffset);
-    break;
-
-  default:  // shouldn't get here
-    return NS_ERROR_ILLEGAL_VALUE;
+  switch (aHow) {
+    case nsIDOMRange::START_TO_START:
+      ourNode = mStartParent;
+      ourOffset = mStartOffset;
+      otherNode = otherRange->GetStartParent();
+      otherOffset = otherRange->StartOffset();
+      break;
+    case nsIDOMRange::START_TO_END:
+      ourNode = mEndParent;
+      ourOffset = mEndOffset;
+      otherNode = otherRange->GetStartParent();
+      otherOffset = otherRange->StartOffset();
+      break;
+    case nsIDOMRange::END_TO_START:
+      ourNode = mStartParent;
+      ourOffset = mStartOffset;
+      otherNode = otherRange->GetEndParent();
+      otherOffset = otherRange->EndOffset();
+      break;
+    case nsIDOMRange::END_TO_END:
+      ourNode = mEndParent;
+      ourOffset = mEndOffset;
+      otherNode = otherRange->GetEndParent();
+      otherOffset = otherRange->EndOffset();
+      break;
+    default:
+      // We were passed an illegal value
+      return NS_ERROR_ILLEGAL_VALUE;
   }
 
-  if (NS_FAILED(res))
-    return res;
+  if (mRoot != otherRange->GetRoot())
+    return NS_ERROR_DOM_WRONG_DOCUMENT_ERR;
 
-  if ((boundaryNode == sourceNode) && (boundaryOffset == sourceOffset))
-    *aCmpRet = 0;//then the points are equal
-  else if (IsIncreasing(boundaryNode, boundaryOffset, sourceNode, sourceOffset))
-      *aCmpRet = -1;//then boundary point is before source point
-  else
-      *aCmpRet = 1;//then boundary point is after source point
+  *aCmpRet = nsContentUtils::ComparePoints(ourNode, ourOffset,
+                                           otherNode, otherOffset);
 
   return NS_OK;
 }
 
 nsresult nsRange::ExtractContents(nsIDOMDocumentFragment** aReturn)
 { 
-  if(IsDetached())
+  if(mIsDetached)
     return NS_ERROR_DOM_INVALID_STATE_ERR;
+
+  // Batch possible DOMSubtreeModified events.
+  mozAutoSubtreeModified subtree(mRoot ? mRoot->GetOwnerDoc(): nsnull, nsnull);
 
   // XXX_kin: The spec says that nodes that are completely in the
   // XXX_kin: range should be moved into the document fragment, not
@@ -1709,10 +1312,11 @@ nsresult nsRange::ExtractContents(nsIDOMDocumentFragment** aReturn)
   return res; 
 }
 
-nsresult nsRange::CloneParentsBetween(nsIDOMNode *aAncestor,
-                             nsIDOMNode *aNode,
-                             nsIDOMNode **aClosestAncestor,
-                             nsIDOMNode **aFarthestAncestor)
+static nsresult
+CloneParentsBetween(nsIDOMNode *aAncestor,
+                    nsIDOMNode *aNode,
+                    nsIDOMNode **aClosestAncestor,
+                    nsIDOMNode **aFarthestAncestor)
 {
   NS_ENSURE_ARG_POINTER((aAncestor && aNode && aClosestAncestor && aFarthestAncestor));
 
@@ -1769,14 +1373,8 @@ nsresult nsRange::CloneContents(nsIDOMDocumentFragment** aReturn)
   res = GetCommonAncestorContainer(getter_AddRefs(commonAncestor));
   if (NS_FAILED(res)) return res;
 
-  nsCOMPtr<nsIDOMDocument> document;
-  res = mStartParent->GetOwnerDocument(getter_AddRefs(document));
-  if (NS_FAILED(res)) return res;
-
-  if (!document) {
-    document = do_QueryInterface(mStartParent);
-  }
-
+  nsCOMPtr<nsIDOMDocument> document =
+    do_QueryInterface(mStartParent->GetOwnerDoc());
   NS_ASSERTION(document, "CloneContents needs a document to continue.");
   if (!document) return NS_ERROR_FAILURE;
 
@@ -1825,6 +1423,7 @@ nsresult nsRange::CloneContents(nsIDOMDocumentFragment** aReturn)
   while (!iter.IsDone())
   {
     nsCOMPtr<nsIDOMNode> node(iter.GetCurrentNode());
+    nsCOMPtr<nsINode> iNode = do_QueryInterface(node);
     // Clone the current subtree!
 
     nsCOMPtr<nsIDOMNode> clone;
@@ -1841,7 +1440,7 @@ nsresult nsRange::CloneContents(nsIDOMDocumentFragment** aReturn)
 
     if (charData)
     {
-      if (node == mEndParent)
+      if (iNode == mEndParent)
       {
         // We only need the data before mEndOffset, so get rid of any
         // data after it.
@@ -1857,7 +1456,7 @@ nsresult nsRange::CloneContents(nsIDOMDocumentFragment** aReturn)
         }
       }       
 
-      if (node == mStartParent)
+      if (iNode == mStartParent)
       {
         // We don't need any data before mStartOffset, so just
         // delete it!
@@ -1939,7 +1538,7 @@ nsresult nsRange::CloneContents(nsIDOMDocumentFragment** aReturn)
       tmpNode = clone;
       res = tmpNode->GetParentNode(getter_AddRefs(clone));
       if (NS_FAILED(res)) return res;
-      if (!node) return NS_ERROR_FAILURE;
+      if (!clone) return NS_ERROR_FAILURE;
     }
 
     commonCloneAncestor = clone;
@@ -1953,22 +1552,22 @@ nsresult nsRange::CloneContents(nsIDOMDocumentFragment** aReturn)
 
 nsresult nsRange::CloneRange(nsIDOMRange** aReturn)
 {
-  if(IsDetached())
+  if(mIsDetached)
     return NS_ERROR_DOM_INVALID_STATE_ERR;
 
   if (aReturn == 0)
     return NS_ERROR_NULL_POINTER;
 
-  nsresult res = NS_NewRange(aReturn);
-  if (NS_FAILED(res))
-    return res;
+  nsRange* range = new nsRange();
+  NS_ENSURE_TRUE(range, NS_ERROR_OUT_OF_MEMORY);
 
-  res = (*aReturn)->SetStart(mStartParent, mStartOffset);
-  if (NS_FAILED(res))
-    return res;
+  NS_ADDREF(*aReturn = range);
   
-  res = (*aReturn)->SetEnd(mEndParent, mEndOffset);
-  return res;
+  range->SetMaySpanAnonymousSubtrees(mMaySpanAnonymousSubtrees);
+
+  range->DoSetRange(mStartParent, mStartOffset, mEndParent, mEndOffset, mRoot);
+
+  return NS_OK;
 }
 
 nsresult nsRange::InsertNode(nsIDOMNode* aN)
@@ -1989,6 +1588,7 @@ nsresult nsRange::InsertNode(nsIDOMNode* aN)
     nsCOMPtr<nsIDOMNode> tSCParentNode;
     res = tStartContainer->GetParentNode(getter_AddRefs(tSCParentNode));
     if(NS_FAILED(res)) return res;
+    NS_ENSURE_STATE(tSCParentNode);
     
     PRBool isCollapsed;
     res = GetCollapsed(&isCollapsed);
@@ -2085,17 +1685,14 @@ nsresult nsRange::SurroundContents(nsIDOMNode* aNewParent)
 
 nsresult nsRange::ToString(nsAString& aReturn)
 { 
-  if(IsDetached())
+  if(mIsDetached)
     return NS_ERROR_DOM_INVALID_STATE_ERR;
 
-  nsCOMPtr<nsIContent> cStart( do_QueryInterface(mStartParent) );
-  nsCOMPtr<nsIContent> cEnd( do_QueryInterface(mEndParent) );
-  
   // clear the string
   aReturn.Truncate();
   
   // If we're unpositioned, return the empty string
-  if (!cStart || !cEnd) {
+  if (!mIsPositioned) {
     return NS_OK;
   }
 
@@ -2104,7 +1701,7 @@ nsresult nsRange::ToString(nsAString& aReturn)
 #endif /* DEBUG */
     
   // effeciency hack for simple case
-  if (cStart == cEnd)
+  if (mStartParent == mEndParent)
   {
     nsCOMPtr<nsIDOMText> textNode( do_QueryInterface(mStartParent) );
     
@@ -2124,13 +1721,14 @@ nsresult nsRange::ToString(nsAString& aReturn)
     }
   } 
   
-  /* complex case: cStart != cEnd, or cStart not a text node
+  /* complex case: mStartParent != mEndParent, or mStartParent not a text node
      revisit - there are potential optimizations here and also tradeoffs.
   */
 
   nsCOMPtr<nsIContentIterator> iter;
   NS_NewContentIterator(getter_AddRefs(iter));
-  iter->Init(this);
+  nsresult rv = iter->Init(this);
+  NS_ENSURE_SUCCESS(rv, rv);
   
   nsString tempString;
  
@@ -2147,14 +1745,14 @@ nsresult nsRange::ToString(nsAString& aReturn)
     nsCOMPtr<nsIDOMText> textNode( do_QueryInterface(cN) );
     if (textNode) // if it's a text node, get the text
     {
-      if (cN == cStart) // only include text past start offset
+      if (cN == mStartParent) // only include text past start offset
       {
         PRUint32 strLength;
         textNode->GetLength(&strLength);
         textNode->SubstringData(mStartOffset,strLength-mStartOffset,tempString);
         aReturn += tempString;
       }
-      else if (cN == cEnd)  // only include text before end offset
+      else if (cN == mEndParent)  // only include text before end offset
       {
         textNode->SubstringData(0,mEndOffset,tempString);
         aReturn += tempString;
@@ -2180,261 +1778,24 @@ nsresult nsRange::ToString(nsAString& aReturn)
 nsresult
 nsRange::Detach()
 {
-  if(IsDetached())
+  if(mIsDetached)
     return NS_ERROR_DOM_INVALID_STATE_ERR;
+
   mIsDetached = PR_TRUE;
-  return DoSetRange(nsnull,0,nsnull,0);
-}
 
-
-
-nsresult nsRange::OwnerGone(nsIContent* aDyingNode)
-{
-  // nothing for now - should be impossible to getter here
-  // No node should be deleted if it holds a range endpoint,
-  // since the range endpoint addrefs the node.
-  NS_ASSERTION(PR_FALSE,"Deleted content holds a range endpoint");  
-  return NS_OK;
-}
-  
-
-nsresult nsRange::OwnerChildInserted(nsIContent* aParentNode, PRInt32 aOffset)
-{
-  // sanity check - null nodes shouldn't have enclosed ranges
-  if (!aParentNode) return NS_ERROR_UNEXPECTED;
-
-  nsCOMPtr<nsIContent> parent( do_QueryInterface(aParentNode) );
-  // quick return if no range list
-  const nsVoidArray *theRangeList = parent->GetRangeList();
-  if (!theRangeList) return NS_OK;
-
-  nsresult res;
-
-  nsCOMPtr<nsIDOMNode> domNode(do_QueryInterface(parent));
-  if (!domNode) return NS_ERROR_UNEXPECTED;
-
-
-  PRInt32   count = theRangeList->Count();
-  for (PRInt32 loop = 0; loop < count; loop++)
-  {
-    nsRange* theRange = NS_STATIC_CAST(nsRange*, (theRangeList->ElementAt(loop))); 
-    NS_ASSERTION(theRange, "oops, no range");
-
-    // sanity check - do range and content agree over ownership?
-    res = theRange->ContentOwnsUs(domNode);
-    NS_PRECONDITION(NS_SUCCEEDED(res), "range and content disagree over range ownership");
-    if (NS_SUCCEEDED(res))
-    {
-      if (theRange->mStartParent == domNode)
-      {
-        // if child inserted before start, move start offset right one
-        if (aOffset < theRange->mStartOffset) theRange->mStartOffset++;
-      }
-      if (theRange->mEndParent == domNode)
-      {
-        // if child inserted before end, move end offset right one
-        if (aOffset < theRange->mEndOffset) theRange->mEndOffset++;
-      }
-      NS_PRECONDITION(NS_SUCCEEDED(res), "error updating range list");
-    }
-  }
-  return NS_OK;
-}
-  
-
-nsresult nsRange::OwnerChildRemoved(nsIContent* aParentNode, PRInt32 aOffset, nsIContent* aRemovedNode)
-{
-  // sanity check - null nodes shouldn't have enclosed ranges
-  if (!aParentNode) return NS_ERROR_UNEXPECTED;
-
-  nsCOMPtr<nsIContent> parent( do_QueryInterface(aParentNode) );
-  nsCOMPtr<nsIContent> removed( do_QueryInterface(aRemovedNode) );
-
-  // any ranges in the content subtree rooted by aRemovedNode need to
-  // have the enclosed endpoints promoted up to the parentNode/offset
-  nsCOMPtr<nsIDOMNode> domNode(do_QueryInterface(parent));
-  if (!domNode) return NS_ERROR_UNEXPECTED;
-  nsresult res = PopRanges(domNode, aOffset, removed);
-
-  // quick return if no range list
-  const nsVoidArray *theRangeList = parent->GetRangeList();
-  if (!theRangeList) return NS_OK;
-  
-  PRInt32   count = theRangeList->Count();
-  for (PRInt32 loop = 0; loop < count; loop++)
-  {
-    nsRange* theRange = NS_STATIC_CAST(nsRange*, (theRangeList->ElementAt(loop))); 
-    NS_ASSERTION(theRange, "oops, no range");
-
-    // sanity check - do range and content agree over ownership?
-    res = theRange->ContentOwnsUs(domNode);
-    NS_PRECONDITION(NS_SUCCEEDED(res), "range and content disagree over range ownership");
-    if (NS_SUCCEEDED(res))
-    {
-      if (theRange->mStartParent == domNode)
-      {
-        // if child deleted before start, move start offset left one
-        if (aOffset < theRange->mStartOffset) theRange->mStartOffset--;
-      }
-      if (theRange->mEndParent == domNode)
-      {
-        // if child deleted before end, move end offset left one
-        if (aOffset < theRange->mEndOffset) 
-        {
-          if (theRange->mEndOffset>0) theRange->mEndOffset--;
-        }
-      }
-    }
-  }
+  DoSetRange(nsnull, 0, nsnull, 0, nsnull);
   
   return NS_OK;
 }
-  
-
-nsresult nsRange::OwnerChildReplaced(nsIContent* aParentNode, PRInt32 aOffset, nsIContent* aReplacedNode)
-{
-  // sanity check - null nodes shouldn't have enclosed ranges
-  if (!aParentNode) return NS_ERROR_UNEXPECTED;
-
-  // don't need to adjust ranges whose endpoints are in this parent,
-  // but we do need to pop out any range endpoints inside the subtree
-  // rooted by aReplacedNode.
-  
-  nsCOMPtr<nsIContent> parent( do_QueryInterface(aParentNode) );
-  nsCOMPtr<nsIContent> replaced( do_QueryInterface(aReplacedNode) );
-  nsCOMPtr<nsIDOMNode> parentDomNode( do_QueryInterface(parent) ); 
-
-  if (!parentDomNode) return NS_ERROR_UNEXPECTED;
-
-  return PopRanges(parentDomNode, aOffset, replaced);
-}
-  
-
-nsresult
-nsRange::TextOwnerChanged(nsIContent* aTextNode, const nsVoidArray *aRangeList,
-                          PRInt32 aStartChanged, PRInt32 aEndChanged,
-                          PRInt32 aReplaceLength)
-{
-  NS_ASSERTION(aRangeList,
-               "Don't call TextOwnerChanged if aTextNode is not in a range!");
-  NS_ASSERTION(aTextNode, "Null nodes don't have enclosed ranges!");
-
-  nsCOMPtr<nsIDOMNode> domNode(do_QueryInterface(aTextNode));
-  if (!domNode) return NS_ERROR_UNEXPECTED;
-
-  PRInt32   count = aRangeList->Count();
-  for (PRInt32 loop = 0; loop < count; loop++)
-  {
-    nsRange* theRange = NS_STATIC_CAST(nsRange*, (aRangeList->ElementAt(loop))); 
-    NS_ASSERTION(theRange, "oops, no range");
-
-    // sanity check - do range and content agree over ownership?
-    nsresult res = theRange->ContentOwnsUs(domNode);
-    NS_PRECONDITION(NS_SUCCEEDED(res), "range and content disagree over range ownership");
-    if (NS_SUCCEEDED(res))
-    { 
-      PRBool bStartPointInChangedText = PR_FALSE;
-      
-      if (theRange->mStartParent == domNode)
-      {
-        // if range start is inside changed text, position it after change
-        if ((aStartChanged <= theRange->mStartOffset) && (aEndChanged >= theRange->mStartOffset))
-        { 
-          theRange->mStartOffset = aStartChanged+aReplaceLength;
-          bStartPointInChangedText = PR_TRUE;
-        }
-        // else if text changed before start, adjust start offset
-        else if (aEndChanged <= theRange->mStartOffset) 
-          theRange->mStartOffset += aStartChanged + aReplaceLength - aEndChanged;
-      }
-      if (theRange->mEndParent == domNode)
-      {
-        // if range end is inside changed text, position it before change
-        if ((aStartChanged <= theRange->mEndOffset) && (aEndChanged >= theRange->mEndOffset)) 
-        {
-          theRange->mEndOffset = aStartChanged;
-          // hack: if BOTH range endpoints were inside the change, then they
-          // both get collapsed to the beginning of the change.  
-          if (bStartPointInChangedText) theRange->mStartOffset = aStartChanged;
-        }
-        // else if text changed before end, adjust end offset
-        else if (aEndChanged <= theRange->mEndOffset) 
-          theRange->mEndOffset += aStartChanged + aReplaceLength - aEndChanged;
-      }
-    }
-  }
-  
-  return NS_OK;
-}
-
 
 // nsIDOMNSRange interface
 NS_IMETHODIMP    
 nsRange::CreateContextualFragment(const nsAString& aFragment,
                                   nsIDOMDocumentFragment** aReturn)
 {
+  nsCOMPtr<nsIDOMNode> start = do_QueryInterface(mStartParent);
   return
     mIsPositioned
-    ? nsContentUtils::CreateContextualFragment(mStartParent, aFragment, aReturn)
+    ? nsContentUtils::CreateContextualFragment(start, aFragment, aReturn)
     : NS_ERROR_FAILURE;
 }
-
-NS_IMETHODIMP
-nsRange::GetHasGeneratedBefore(PRBool *aBool)
-{
-  NS_ENSURE_ARG_POINTER(aBool);
-  *aBool = mBeforeGenContent;
-  return NS_OK;
-}
-
-NS_IMETHODIMP    
-nsRange::GetHasGeneratedAfter(PRBool *aBool)
-{
-  NS_ENSURE_ARG_POINTER(aBool);
-  *aBool = mAfterGenContent;
-  return NS_OK;
-}
-
-NS_IMETHODIMP    
-nsRange::SetHasGeneratedBefore(PRBool aBool)
-{
-  mBeforeGenContent = aBool;
-  return NS_OK;
-}
-
-NS_IMETHODIMP    
-nsRange::SetHasGeneratedAfter(PRBool aBool)
-{
-  mAfterGenContent = aBool;
-  return NS_OK;
-}
-
-NS_IMETHODIMP    
-nsRange::SetBeforeAndAfter(PRBool aBefore, PRBool aAfter)
-{
-  mBeforeGenContent = aBefore;
-  mBeforeGenContent = aAfter;
-  return NS_OK;
-}
-
-nsresult
-nsRange::Lock()
-{
-  if (!mMonitor)
-    mMonitor = ::PR_NewMonitor();
-
-  if (mMonitor)
-    PR_EnterMonitor(mMonitor);
-
-  return NS_OK;
-}
-
-nsresult
-nsRange::Unlock()
-{
-  if (mMonitor)
-    PR_ExitMonitor(mMonitor);
-
-  return NS_OK;
-}
-

@@ -37,9 +37,9 @@
  * ***** END LICENSE BLOCK ***** */
 #include "nsIDOMHTMLStyleElement.h"
 #include "nsIDOMLinkStyle.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 #include "nsIDOMStyleSheet.h"
@@ -53,7 +53,8 @@
 
 class nsHTMLStyleElement : public nsGenericHTMLElement,
                            public nsIDOMHTMLStyleElement,
-                           public nsStyleLinkElement
+                           public nsStyleLinkElement,
+                           public nsStubMutationObserver
 {
 public:
   nsHTMLStyleElement(nsINodeInfo *aNodeInfo);
@@ -63,7 +64,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -74,10 +75,6 @@ public:
   // nsIDOMHTMLStyleElement
   NS_DECL_NSIDOMHTMLSTYLEELEMENT
 
-  virtual nsresult InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
-                                 PRBool aNotify);
-  virtual nsresult AppendChildTo(nsIContent* aKid, PRBool aNotify);
-  virtual nsresult RemoveChildAt(PRUint32 aIndex, PRBool aNotify);
   virtual nsresult BindToTree(nsIDocument* aDocument, nsIContent* aParent,
                               nsIContent* aBindingParent,
                               PRBool aCompileEventHandlers);
@@ -97,6 +94,14 @@ public:
   virtual nsresult GetInnerHTML(nsAString& aInnerHTML);
   virtual nsresult SetInnerHTML(const nsAString& aInnerHTML);
 
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+
+  // nsIMutationObserver
+  NS_DECL_NSIMUTATIONOBSERVER_CHARACTERDATACHANGED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTAPPENDED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTINSERTED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTREMOVED
+
 protected:
   void GetStyleSheetURL(PRBool* aIsInline,
                         nsIURI** aURI);
@@ -104,6 +109,12 @@ protected:
                          nsAString& aType,
                          nsAString& aMedia,
                          PRBool* aIsAlternate);
+  /**
+   * Common method to call from the various mutation observer methods.
+   * aContent is a content node that's either the one that changed or its
+   * parent; we should only respond to the change if aContent is non-anonymous.
+   */
+  void ContentChanged(nsIContent* aContent);
 };
 
 
@@ -113,6 +124,7 @@ NS_IMPL_NS_NEW_HTML_ELEMENT(Style)
 nsHTMLStyleElement::nsHTMLStyleElement(nsINodeInfo *aNodeInfo)
   : nsGenericHTMLElement(aNodeInfo)
 {
+  AddMutationObserver(this);
 }
 
 nsHTMLStyleElement::~nsHTMLStyleElement()
@@ -125,15 +137,16 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLStyleElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLStyleElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLStyleElement, nsGenericHTMLElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLStyleElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMLinkStyle)
-  NS_INTERFACE_MAP_ENTRY(nsIStyleSheetLinkingElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLStyleElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_INTERFACE_TABLE_HEAD(nsHTMLStyleElement, nsGenericHTMLElement)
+  NS_INTERFACE_TABLE_INHERITED4(nsHTMLStyleElement,
+                                nsIDOMHTMLStyleElement,
+                                nsIDOMLinkStyle,
+                                nsIStyleSheetLinkingElement,
+                                nsIMutationObserver)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLStyleElement)
 
 
-NS_IMPL_DOM_CLONENODE(nsHTMLStyleElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLStyleElement)
 
 
 NS_IMETHODIMP
@@ -174,38 +187,46 @@ nsHTMLStyleElement::SetDisabled(PRBool aDisabled)
 NS_IMPL_STRING_ATTR(nsHTMLStyleElement, Media, media)
 NS_IMPL_STRING_ATTR(nsHTMLStyleElement, Type, type)
 
-nsresult
-nsHTMLStyleElement::InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
-                                  PRBool aNotify)
+void
+nsHTMLStyleElement::CharacterDataChanged(nsIDocument* aDocument,
+                                         nsIContent* aContent,
+                                         CharacterDataChangeInfo* aInfo)
 {
-  nsresult rv = nsGenericHTMLElement::InsertChildAt(aKid, aIndex, aNotify);
-  if (NS_SUCCEEDED(rv)) {
-    UpdateStyleSheet();
-  }
-
-  return rv;
+  ContentChanged(aContent);
 }
 
-nsresult
-nsHTMLStyleElement::AppendChildTo(nsIContent* aKid, PRBool aNotify)
+void
+nsHTMLStyleElement::ContentAppended(nsIDocument* aDocument,
+                                    nsIContent* aContainer,
+                                    PRInt32 aNewIndexInContainer)
 {
-  nsresult rv = nsGenericHTMLElement::AppendChildTo(aKid, aNotify);
-  if (NS_SUCCEEDED(rv)) {
-    UpdateStyleSheet();
-  }
-
-  return rv;
+  ContentChanged(aContainer);
 }
 
-nsresult
-nsHTMLStyleElement::RemoveChildAt(PRUint32 aIndex, PRBool aNotify)
+void
+nsHTMLStyleElement::ContentInserted(nsIDocument* aDocument,
+                                    nsIContent* aContainer,
+                                    nsIContent* aChild,
+                                    PRInt32 aIndexInContainer)
 {
-  nsresult rv = nsGenericHTMLElement::RemoveChildAt(aIndex, aNotify);
-  if (NS_SUCCEEDED(rv)) {
-    UpdateStyleSheet();
-  }
+  ContentChanged(aChild);
+}
 
-  return rv;
+void
+nsHTMLStyleElement::ContentRemoved(nsIDocument* aDocument,
+                                   nsIContent* aContainer,
+                                   nsIContent* aChild,
+                                   PRInt32 aIndexInContainer)
+{
+  ContentChanged(aChild);
+}
+
+void
+nsHTMLStyleElement::ContentChanged(nsIContent* aContent)
+{
+  if (nsContentUtils::IsInSameAnonymousTree(this, aContent)) {
+    UpdateStyleSheetInternal(nsnull);
+  }
 }
 
 nsresult
@@ -218,7 +239,7 @@ nsHTMLStyleElement::BindToTree(nsIDocument* aDocument, nsIContent* aParent,
                                                  aCompileEventHandlers);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  UpdateStyleSheet(nsnull);
+  UpdateStyleSheetInternal(nsnull);
 
   return rv;  
 }
@@ -229,7 +250,7 @@ nsHTMLStyleElement::UnbindFromTree(PRBool aDeep, PRBool aNullParent)
   nsCOMPtr<nsIDocument> oldDoc = GetCurrentDoc();
 
   nsGenericHTMLElement::UnbindFromTree(aDeep, aNullParent);
-  UpdateStyleSheet(oldDoc);
+  UpdateStyleSheetInternal(oldDoc);
 }
 
 nsresult
@@ -240,11 +261,11 @@ nsHTMLStyleElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
   nsresult rv = nsGenericHTMLElement::SetAttr(aNameSpaceID, aName, aPrefix,
                                               aValue, aNotify);
   if (NS_SUCCEEDED(rv)) {
-    UpdateStyleSheet(nsnull, nsnull,
-                     aNameSpaceID == kNameSpaceID_None &&
-                     (aName == nsHTMLAtoms::title ||
-                      aName == nsHTMLAtoms::media ||
-                      aName == nsHTMLAtoms::type));
+    UpdateStyleSheetInternal(nsnull,
+                             aNameSpaceID == kNameSpaceID_None &&
+                             (aName == nsGkAtoms::title ||
+                              aName == nsGkAtoms::media ||
+                              aName == nsGkAtoms::type));
   }
 
   return rv;
@@ -257,11 +278,11 @@ nsHTMLStyleElement::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
   nsresult rv = nsGenericHTMLElement::UnsetAttr(aNameSpaceID, aAttribute,
                                                 aNotify);
   if (NS_SUCCEEDED(rv)) {
-    UpdateStyleSheet(nsnull, nsnull,
-                     aNameSpaceID == kNameSpaceID_None &&
-                     (aAttribute == nsHTMLAtoms::title ||
-                      aAttribute == nsHTMLAtoms::media ||
-                      aAttribute == nsHTMLAtoms::type));
+    UpdateStyleSheetInternal(nsnull,
+                             aNameSpaceID == kNameSpaceID_None &&
+                             (aAttribute == nsGkAtoms::title ||
+                              aAttribute == nsGkAtoms::media ||
+                              aAttribute == nsGkAtoms::type));
   }
 
   return rv;
@@ -270,7 +291,7 @@ nsHTMLStyleElement::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
 nsresult
 nsHTMLStyleElement::GetInnerHTML(nsAString& aInnerHTML)
 {
-  GetContentsAsText(aInnerHTML);
+  nsContentUtils::GetNodeTextContent(this, PR_FALSE, aInnerHTML);
   return NS_OK;
 }
 
@@ -279,11 +300,11 @@ nsHTMLStyleElement::SetInnerHTML(const nsAString& aInnerHTML)
 {
   SetEnableUpdates(PR_FALSE);
 
-  nsresult rv = ReplaceContentsWithText(aInnerHTML, PR_TRUE);
+  nsresult rv = nsContentUtils::SetNodeTextContent(this, aInnerHTML, PR_TRUE);
   
   SetEnableUpdates(PR_TRUE);
   
-  UpdateStyleSheet();
+  UpdateStyleSheetInternal(nsnull);
   return rv;
 }
 
@@ -292,7 +313,7 @@ nsHTMLStyleElement::GetStyleSheetURL(PRBool* aIsInline,
                                      nsIURI** aURI)
 {
   *aURI = nsnull;
-  *aIsInline = !HasAttr(kNameSpaceID_None, nsHTMLAtoms::src);
+  *aIsInline = !HasAttr(kNameSpaceID_None, nsGkAtoms::src);
   if (*aIsInline) {
     return;
   }
@@ -319,14 +340,14 @@ nsHTMLStyleElement::GetStyleSheetInfo(nsAString& aTitle,
   *aIsAlternate = PR_FALSE;
 
   nsAutoString title;
-  GetAttr(kNameSpaceID_None, nsHTMLAtoms::title, title);
+  GetAttr(kNameSpaceID_None, nsGkAtoms::title, title);
   title.CompressWhitespace();
   aTitle.Assign(title);
 
-  GetAttr(kNameSpaceID_None, nsHTMLAtoms::media, aMedia);
+  GetAttr(kNameSpaceID_None, nsGkAtoms::media, aMedia);
   ToLowerCase(aMedia); // HTML4.0 spec is inconsistent, make it case INSENSITIVE
 
-  GetAttr(kNameSpaceID_None, nsHTMLAtoms::type, aType);
+  GetAttr(kNameSpaceID_None, nsGkAtoms::type, aType);
 
   nsAutoString mimeType;
   nsAutoString notUsed;

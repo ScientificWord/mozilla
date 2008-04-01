@@ -42,16 +42,15 @@
 
 #include "domstubs.idl"
 #include "nsISupports.idl"
-#include "nsIRDFCompositeDataSource.idl"
-#include "nsIRDFResource.idl"
 
 interface nsIAtom;
+interface nsIContent;
 interface nsIXULBuilderListener;
 interface nsIXULTemplateResult;
 interface nsIXULTemplateRuleFilter;
 interface nsIXULTemplateQueryProcessor;
-
-[ptr] native nsIContent_ptr(nsIContent);
+interface nsIRDFResource;
+interface nsIRDFCompositeDataSource;
 
 /**
  * A template builder, given an input source of data, a template, and a
@@ -159,7 +158,7 @@ interface nsIXULTemplateQueryProcessor;
  *
  * See http://wiki.mozilla.org/XUL:Templates_Plan for details about templates.
  */
-[scriptable, uuid(e025ef24-d508-11d9-9633-cd2d4a843228)]
+[scriptable, uuid(A583B676-5B02-4F9C-A0C9-CB850CB99818)]
 interface nsIXULTemplateBuilder : nsISupports
 {
     /**
@@ -168,9 +167,23 @@ interface nsIXULTemplateBuilder : nsISupports
     readonly attribute nsIDOMElement root;
 
     /**
+     * The opaque datasource object that is used for the template. This object
+     * is created by the getDataSource method of the query processor. May be
+     * null if the datasource has not been loaded yet. Set this attribute to
+     * use a different datasource and rebuild the template.
+     *
+     * For an RDF datasource, this will be the same as the database. For XML
+     * this will be the nsIDOMNode for the datasource document or node for
+     * an inline reference (such as #name). Other query processors may use
+     * other types for the datasource.
+     */
+    attribute nsISupports datasource;
+
+    /**
      * The composite datasource that the template builder observes
-     * and uses to create content. This is used only for RDF queries and
-     * is maintained for backwards compatibility.
+     * and uses to create content. This is used only for RDF queries and is
+     * maintained for backwards compatibility. It will be the same object as
+     * the datasource property. For non-RDF queries, it will always be null.
      */
     readonly attribute nsIRDFCompositeDataSource database;
 
@@ -180,6 +193,11 @@ interface nsIXULTemplateBuilder : nsISupports
      * with the root node's ref attribute as an argument.
      */
     readonly attribute nsIXULTemplateResult rootResult;
+
+    /**
+     * The query processor used to generate results.
+     */
+    [noscript] readonly attribute nsIXULTemplateQueryProcessor queryProcessor;
 
     /**
      * Force the template builder to rebuild its content. All existing content
@@ -270,6 +288,14 @@ interface nsIXULTemplateBuilder : nsISupports
     nsIXULTemplateResult getResultForId(in AString aId);
 
     /**
+     * Retrieve the result corresponding to a generated element, or null is
+     * there isn't one.
+     *
+     * @param aContent element to result the result of
+     */
+    nsIXULTemplateResult getResultForContent(in nsIDOMElement aElement);
+
+    /**
      * Returns true if the node has content generated for it. This method is
      * intended to be called only by the RDF query processor. If aTag is set,
      * the content must have a tag name that matches aTag. aTag may be ignored
@@ -299,13 +325,16 @@ interface nsIXULTemplateBuilder : nsISupports
      * attribute, which the builder will parse to set up the template
      * builder's datasources.
      */
-    [noscript] void init(in nsIContent_ptr aElement);
+    [noscript] void init(in nsIContent aElement);
 
     /**
-     * Invoked lazily by a XUL element that needs its child content
-     * built.
+     * Invoked lazily by a XUL element that needs its child content built.
+     * If aForceCreation is true, then the contents of an element will be
+     * generated even if it is closed. If false, the element will only
+     * generate its contents if it is open. This behaviour is used with menus.
      */
-    [noscript] void createContents(in nsIContent_ptr aElement);
+    [noscript] void createContents(in nsIContent aElement,
+                                   in boolean aForceCreation);
 
     /**
      * Add a listener to this template builder. The template builder

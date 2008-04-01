@@ -41,6 +41,7 @@
 #include "nsIDOMSVGLineElement.h"
 #include "nsSVGLength2.h"
 #include "nsGkAtoms.h"
+#include "gfxContext.h"
 
 typedef nsSVGPathGeometryElement nsSVGLineElementBase;
 
@@ -58,7 +59,7 @@ public:
   NS_DECL_NSIDOMSVGLINEELEMENT
 
   // xxx I wish we could use virtual inheritance
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGLineElementBase::)
+  NS_FORWARD_NSIDOMNODE(nsSVGLineElementBase::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGLineElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGLineElementBase::)
 
@@ -68,7 +69,9 @@ public:
   // nsSVGPathGeometryElement methods:
   virtual PRBool IsMarkable() { return PR_TRUE; }
   virtual void GetMarkPoints(nsTArray<nsSVGMark> *aMarks);
-  virtual void ConstructPath(cairo_t *aCtx);
+  virtual void ConstructPath(gfxContext *aCtx);
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 
 protected:
 
@@ -114,7 +117,7 @@ nsSVGLineElement::nsSVGLineElement(nsINodeInfo *aNodeInfo)
 //----------------------------------------------------------------------
 // nsIDOMNode methods
 
-NS_IMPL_DOM_CLONENODE_WITH_INIT(nsSVGLineElement)
+NS_IMPL_ELEMENT_CLONE_WITH_INIT(nsSVGLineElement)
 
 //----------------------------------------------------------------------
 // nsIDOMSVGLineElement methods
@@ -150,7 +153,7 @@ NS_IMETHODIMP_(PRBool)
 nsSVGLineElement::IsAttributeMapped(const nsIAtom* name) const
 {
   static const MappedAttributeEntry* const map[] = {
-    sMarkersMap,
+    sMarkersMap
   };
   
   return FindAttributeDependence(name, map, NS_ARRAY_LENGTH(map)) ||
@@ -183,12 +186,12 @@ nsSVGLineElement::GetMarkPoints(nsTArray<nsSVGMark> *aMarks) {
 }
 
 void
-nsSVGLineElement::ConstructPath(cairo_t *aCtx)
+nsSVGLineElement::ConstructPath(gfxContext *aCtx)
 {
   float x1, y1, x2, y2;
 
   GetAnimatedLengthValues(&x1, &y1, &x2, &y2, nsnull);
 
-  cairo_move_to(aCtx, x1, y1);
-  cairo_line_to(aCtx, x2, y2);
+  aCtx->MoveTo(gfxPoint(x1, y1));
+  aCtx->LineTo(gfxPoint(x2, y2));
 }

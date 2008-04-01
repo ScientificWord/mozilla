@@ -42,14 +42,29 @@
 #include "nsCOMArray.h"
 #include "nsIContent.h"
 #include "nsCOMPtr.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsXBLInsertionPoint
 {
 public:
   nsXBLInsertionPoint(nsIContent* aParentElement, PRUint32 aIndex, nsIContent* aDefContent);
   ~nsXBLInsertionPoint();
-  
+
+  nsrefcnt AddRef()
+  {
+    ++mRefCnt;
+    NS_LOG_ADDREF(this, mRefCnt, "nsXBLInsertionPoint",
+                  sizeof(nsXBLInsertionPoint));
+    return mRefCnt;
+  }
+
+  nsrefcnt Release();
+
+  NS_DECL_CYCLE_COLLECTION_NATIVE_CLASS(nsXBLInsertionPoint)
+
   already_AddRefed<nsIContent> GetInsertionParent();
+  void ClearInsertionParent() { mParentElement = nsnull; }
+
   PRInt32 GetInsertionIndex() { return mIndex; }
 
   void SetDefaultContent(nsIContent* aDefaultContent) { mDefaultContent = aDefaultContent; }
@@ -68,7 +83,12 @@ public:
 
   PRBool Matches(nsIContent* aContent, PRUint32 aIndex);
 
+  // Unbind all the default content in this insertion point.  Used
+  // when the insertion parent is going away.
+  void UnbindDefaultContent();
+
 protected:
+  nsAutoRefCnt mRefCnt;
   nsIContent* mParentElement;            // This ref is weak.  The parent of the <children> element.
   PRInt32 mIndex;                        // The index of this insertion point. -1 is a pseudo-point.
   nsCOMArray<nsIContent> mElements;      // An array of elements present at the insertion point.

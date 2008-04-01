@@ -40,7 +40,6 @@
 #include "nsXMLDocument.h"
 #include "nsParserCIID.h"
 #include "nsIParser.h"
-#include "nsIXMLContent.h"
 #include "nsIXMLContentSink.h"
 #include "nsIPresShell.h"
 #include "nsPresContext.h" 
@@ -91,9 +90,7 @@
 #include "nsContentCreatorFunctions.h"
 #include "nsIDOMUserDataHandler.h"
 #include "nsEventDispatcher.h"
-
-// XXX The XML world depends on the html atoms
-#include "nsHTMLAtoms.h"
+#include "nsNodeUtils.h"
 
 
 // ==================================================================
@@ -108,7 +105,8 @@ NS_NewDOMDocument(nsIDOMDocument** aInstancePtrResult,
                   nsIDOMDocumentType* aDoctype,
                   nsIURI* aDocumentURI,
                   nsIURI* aBaseURI,
-                  nsIPrincipal* aPrincipal)
+                  nsIPrincipal* aPrincipal,
+                  PRBool aLoadedAsData)
 {
   // Note: can't require that aDocumentURI/aBaseURI/aPrincipal be non-null,
   // since at least one caller (XMLHttpRequest) doesn't have decent args to
@@ -128,6 +126,7 @@ NS_NewDOMDocument(nsIDOMDocument** aInstancePtrResult,
     return rv;
   }
 
+  doc->SetLoadedAsData(aLoadedAsData);
   doc->nsDocument::SetDocumentURI(aDocumentURI);
   // Must set the principal first, since SetBaseURI checks it.
   doc->SetPrincipal(aPrincipal);
@@ -194,12 +193,13 @@ nsXMLDocument::~nsXMLDocument()
   mLoopingForSyncLoad = PR_FALSE;
 }
 
-
 // QueryInterface implementation for nsXMLDocument
-NS_INTERFACE_MAP_BEGIN(nsXMLDocument)
-  NS_INTERFACE_MAP_ENTRY(nsIInterfaceRequestor)
-  NS_INTERFACE_MAP_ENTRY(nsIChannelEventSink)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMXMLDocument)
+NS_INTERFACE_TABLE_HEAD(nsXMLDocument)
+  NS_INTERFACE_TABLE_INHERITED3(nsXMLDocument,
+                                nsIInterfaceRequestor,
+                                nsIChannelEventSink,
+                                nsIDOMXMLDocument)
+  NS_INTERFACE_TABLE_TO_MAP_SEGUE
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(XMLDocument)
 NS_INTERFACE_MAP_END_INHERITING(nsDocument)
 
@@ -221,20 +221,19 @@ void
 nsXMLDocument::Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup)
 {
   nsDocument::Reset(aChannel, aLoadGroup);
-
-  mScriptContext = nsnull;
 }
 
 void
-nsXMLDocument::ResetToURI(nsIURI *aURI, nsILoadGroup *aLoadGroup)
+nsXMLDocument::ResetToURI(nsIURI *aURI, nsILoadGroup *aLoadGroup,
+                          nsIPrincipal* aPrincipal)
 {
   if (mChannelIsPending) {
     StopDocumentLoad();
     mChannel->Cancel(NS_BINDING_ABORTED);
     mChannelIsPending = nsnull;
   }
-  
-  nsDocument::ResetToURI(aURI, aLoadGroup);
+
+  nsDocument::ResetToURI(aURI, aLoadGroup, aPrincipal);
 }
 
 /////////////////////////////////////////////////////
@@ -282,23 +281,19 @@ nsXMLDocument::OnChannelRedirect(nsIChannel *aOldChannel,
 
   nsIScriptSecurityManager *secMan = nsContentUtils::GetSecurityManager();
 
-  if (mScriptContext && !mCrossSiteAccessEnabled) {
-    nsCOMPtr<nsIJSContextStack> stack(do_GetService("@mozilla.org/js/xpc/ContextStack;1", & rv));
-    if (NS_FAILED(rv))
-      return rv;
+  nsCOMPtr<nsIURI> oldURI;
+  rv = aOldChannel->GetURI(getter_AddRefs(oldURI));
+  NS_ENSURE_SUCCESS(rv, rv);
 
-    JSContext *cx = (JSContext *)mScriptContext->GetNativeContext();
-    if (!cx)
-      return NS_ERROR_UNEXPECTED;
+  nsCOMPtr<nsIURI> newURI;
+  rv = aNewChannel->GetURI(getter_AddRefs(newURI));
+  NS_ENSURE_SUCCESS(rv, rv);
 
-    stack->Push(cx);
+  rv = nsContentUtils::GetSecurityManager()->
+    CheckSameOriginURI(oldURI, newURI, PR_TRUE);
 
-    rv = secMan->CheckSameOrigin(nsnull, newLocation);
-
-    stack->Pop(&cx);
-  
-    if (NS_FAILED(rv))
-      return rv;
+  if (NS_FAILED(rv)) {
+    return rv;
   }
 
   // XXXbz Shouldn't we look at the owner on the new channel at some point?
@@ -349,198 +344,175 @@ nsXMLDocument::SetAsync(PRBool aAsync)
   return NS_OK;
 }
 
-nsresult 
-nsXMLDocument::GetLoadGroup(nsILoadGroup **aLoadGroup)
-{
-  NS_ENSURE_ARG_POINTER(aLoadGroup);
-  *aLoadGroup = nsnull;
-
-  if (mScriptContext) {
-    nsCOMPtr<nsIDOMWindow> window =
-      do_QueryInterface(mScriptContext->GetGlobalObject());
-
-    if (window) {
-      nsCOMPtr<nsIDOMDocument> domdoc;
-      window->GetDocument(getter_AddRefs(domdoc));
-      nsCOMPtr<nsIDocument> doc = do_QueryInterface(domdoc);
-      if (doc) {
-        *aLoadGroup = doc->GetDocumentLoadGroup().get(); // already_AddRefed
-      }
-    }
-  }
-
-  return NS_OK;
-}
-
-
 NS_IMETHODIMP
 nsXMLDocument::Load(const nsAString& aUrl, PRBool *aReturn)
 {
-  NS_ENSURE_ARG_POINTER(aReturn);
-  *aReturn = PR_FALSE;
-
-  nsIScriptContext *callingContext = nsnull;
-
-  nsCOMPtr<nsIJSContextStack> stack =
-    do_GetService("@mozilla.org/js/xpc/ContextStack;1");
-  if (stack) {
-    JSContext *cx;
-    if (NS_SUCCEEDED(stack->Peek(&cx)) && cx) {
-      callingContext = nsJSUtils::GetDynamicScriptContext(cx);
-    }
-  }
-
-  nsIURI *baseURI = mDocumentURI;
-  nsCAutoString charset;
-
-  if (callingContext) {
-    nsCOMPtr<nsIDOMWindow> window =
-      do_QueryInterface(callingContext->GetGlobalObject());
-
-    if (window) {
-      nsCOMPtr<nsIDOMDocument> dom_doc;
-      window->GetDocument(getter_AddRefs(dom_doc));
-      nsCOMPtr<nsIDocument> doc(do_QueryInterface(dom_doc));
-
-      if (doc) {
-        baseURI = doc->GetBaseURI();
-        charset = doc->GetDocumentCharacterSet();
-      }
-    }
-  }
-
-  // Create a new URI
-  nsCOMPtr<nsIURI> uri;
-  nsresult rv = NS_NewURI(getter_AddRefs(uri), aUrl, charset.get(), baseURI);
-  if (NS_FAILED(rv)) {
-    return rv;
-  }
-
-  // Partial Reset, need to restore principal for security reasons and
-  // event listener manager so that load listeners etc. will
-  // remain. This should be done before the security check is done to
-  // ensure that the document is reset even if the new document can't
-  // be loaded.
-  nsCOMPtr<nsIPrincipal> principal = NodePrincipal();
-  nsCOMPtr<nsIEventListenerManager> elm(mListenerManager);
-
-  ResetToURI(uri, nsnull);
-
-  SetPrincipal(principal);
-  mListenerManager = elm;
-
-  // Get security manager, check to see if we're allowed to load this URI
-  nsCOMPtr<nsIScriptSecurityManager> secMan = 
-           do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
-  if (NS_FAILED(rv)) {
-    return rv;
-  }
-
-  rv = secMan->CheckConnect(nsnull, uri, "XMLDocument", "load");
-  if (NS_FAILED(rv)) {
-    // We need to return success here so that JS will get a proper
-    // exception thrown later. Native calls should always result in
-    // CheckConnect() succeeding, but in case JS calls C++ which calls
-    // this code the exception might be lost.
-    return NS_OK;
-  }
-
-  // Store script context, if any, in case we encounter redirect
-  // (because we need it there)
-
-  mScriptContext = callingContext;
-
-  // Find out if UniversalBrowserRead privileges are enabled - we will
-  // need this in case of a redirect
-  PRBool crossSiteAccessEnabled;
-  rv = secMan->IsCapabilityEnabled("UniversalBrowserRead",
-                                   &crossSiteAccessEnabled);
-  if (NS_FAILED(rv)) {
-    return rv;
-  }
-
-  mCrossSiteAccessEnabled = crossSiteAccessEnabled;
-
-  // Create a channel
-  // When we are called from JS we can find the load group for the page,
-  // and add ourselves to it. This way any pending requests
-  // will be automatically aborted if the user leaves the page.
-  nsCOMPtr<nsILoadGroup> loadGroup;
-  GetLoadGroup(getter_AddRefs(loadGroup));
-
-  nsCOMPtr<nsIChannel> channel;
-  // nsIRequest::LOAD_BACKGROUND prevents throbber from becoming active,
-  // which in turn keeps STOP button from becoming active  
-  rv = NS_NewChannel(getter_AddRefs(channel), uri, nsnull, loadGroup, this, 
-                     nsIRequest::LOAD_BACKGROUND);
-  if (NS_FAILED(rv)) {
-    return rv;
-  }
-
-  // Set a principal for this document
-  // XXXbz StartDocumentLoad should handle that.... And we shouldn't be calling
-  // StartDocumentLoad until we get an OnStartRequest from this channel!
-  nsCOMPtr<nsISupports> channelOwner;
-  rv = channel->GetOwner(getter_AddRefs(channelOwner));
-
-  // We don't care if GetOwner() succeeded here, if it failed,
-  // channelOwner will be null, which is what we want in that case.
-  principal = do_QueryInterface(channelOwner);
-
-  if (NS_FAILED(rv) || !principal) {
-    rv = secMan->GetCodebasePrincipal(uri, getter_AddRefs(principal));
-    NS_ENSURE_TRUE(principal, rv);
-  }
-
-  SetPrincipal(principal);
-
-  // Prepare for loading the XML document "into oneself"
-  nsCOMPtr<nsIStreamListener> listener;
-  if (NS_FAILED(rv = StartDocumentLoad(kLoadAsData, channel, 
-                                       loadGroup, nsnull, 
-                                       getter_AddRefs(listener),
-                                       PR_FALSE))) {
-    NS_ERROR("nsXMLDocument::Load: Failed to start the document load.");
-    return rv;
-  }
-
-  // After this point, if we error out of this method we should clear
-  // mChannelIsPending.
-
-  // Start an asynchronous read of the XML document
-  rv = channel->AsyncOpen(listener, nsnull);
-  if (NS_FAILED(rv)) {
-    mChannelIsPending = PR_FALSE;
-    return rv;
-  }
-
-  if (!mAsync) {
-    nsCOMPtr<nsIThread> thread = do_GetCurrentThread();
-
-    mLoopingForSyncLoad = PR_TRUE;
-    while (mLoopingForSyncLoad) {
-      if (!NS_ProcessNextEvent(thread))
-        break;
-    }
-
-    // We set return to true unless there was a parsing error
-    nsCOMPtr<nsIDOMNode> node = do_QueryInterface(mRootContent);
-    if (node) {
-      nsAutoString name, ns;      
-      if (NS_SUCCEEDED(node->GetLocalName(name)) &&
-          name.EqualsLiteral("parsererror") &&
-          NS_SUCCEEDED(node->GetNamespaceURI(ns)) &&
-          ns.EqualsLiteral("http://www.mozilla.org/newlayout/xml/parsererror.xml")) {
-        //return is already false
-      } else {
-        *aReturn = PR_TRUE;
-      }
-    }
-  } else {
-    *aReturn = PR_TRUE;
-  }
-
-  return NS_OK;
+ NS_ENSURE_ARG_POINTER(aReturn);
+ *aReturn = PR_FALSE;
+//
+ nsCOMPtr<nsIDocument> callingDoc =
+   do_QueryInterface(nsContentUtils::GetDocumentFromContext());
+//
+ nsIURI *baseURI = mDocumentURI;
+ nsCAutoString charset;
+//
+ if (callingDoc) {
+   baseURI = callingDoc->GetBaseURI();
+   charset = callingDoc->GetDocumentCharacterSet();
+ }
+//
+ // Create a new URI
+ nsCOMPtr<nsIURI> uri;
+ nsresult rv = NS_NewURI(getter_AddRefs(uri), aUrl, charset.get(), baseURI);
+ if (NS_FAILED(rv)) {
+   return rv;
+ }
+//
+ nsCOMPtr<nsIURI> codebase;
+ NodePrincipal()->GetURI(getter_AddRefs(codebase));
+//
+ // Get security manager, check to see whether the current document
+ // is allowed to load this URI. It's important to use the current
+ // document's principal for this check so that we don't end up in a
+ // case where code with elevated privileges is calling us and
+ // changing the principal of this document.
+ nsIScriptSecurityManager *secMan = nsContentUtils::GetSecurityManager();
+//
+ // Enforce same-origin even for chrome loaders to avoid someone accidentally
+ // using a document that content has a reference to and turn that into a
+ // chrome document.  
+ nsCAutoString cbScheme;
+ 
+ if (codebase && NS_SUCCEEDED(codebase->GetScheme(cbScheme)) && !cbScheme.EqualsLiteral("moz-nullprincipal")) {
+   rv = secMan->CheckSameOriginURI(codebase, uri, PR_FALSE);
+//
+   if (NS_FAILED(rv)) {
+     return rv;
+   }
+ } else {
+   // We're called from chrome, check to make sure the URI we're
+   // about to load is also chrome.
+//
+   PRBool isChrome = PR_FALSE;
+   //BBM -- hack to allow resource:// loading in chrome
+   PRBool isResource = PR_FALSE;
+   rv = uri->SchemeIs("resource",&isResource);
+   if (NS_FAILED(rv) || !isResource) 
+   {
+     if (NS_FAILED(uri->SchemeIs("chrome", &isChrome)) || !isChrome) {
+       return NS_ERROR_DOM_SECURITY_ERR;
+     }
+   }
+ }
+//
+ rv = secMan->CheckConnect(nsnull, uri, "XMLDocument", "load");
+ if (NS_FAILED(rv)) {
+   // We need to return success here so that JS will get a proper
+   // exception thrown later. Native calls should always result in
+   // CheckConnect() succeeding, but in case JS calls C++ which calls
+   // this code the exception might be lost.
+   return NS_OK;
+ }
+//
+ // Partial Reset, need to restore principal for security reasons and
+ // event listener manager so that load listeners etc. will
+ // remain. This should be done before the security check is done to
+ // ensure that the document is reset even if the new document can't
+ // be loaded.  Note that we need to hold a strong ref to |principal|
+ // here, because ResetToURI will null out our node principal before
+ // setting the new one.
+ nsCOMPtr<nsIPrincipal> principal = NodePrincipal();
+ nsCOMPtr<nsIEventListenerManager> elm(mListenerManager);
+ mListenerManager = nsnull;
+//
+ // When we are called from JS we can find the load group for the page,
+ // and add ourselves to it. This way any pending requests
+ // will be automatically aborted if the user leaves the page.
+//
+ nsCOMPtr<nsILoadGroup> loadGroup;
+ if (callingDoc) {
+   loadGroup = callingDoc->GetDocumentLoadGroup();
+ }
+//
+ ResetToURI(uri, loadGroup, principal);
+//
+ mListenerManager = elm;
+//
+ // Create a channel
+//
+ nsCOMPtr<nsIChannel> channel;
+ // nsIRequest::LOAD_BACKGROUND prevents throbber from becoming active,
+ // which in turn keeps STOP button from becoming active  
+ rv = NS_NewChannel(getter_AddRefs(channel), uri, nsnull, loadGroup, this, 
+                    nsIRequest::LOAD_BACKGROUND);
+ if (NS_FAILED(rv)) {
+   return rv;
+ }
+//
+ // Set a principal for this document
+ // XXXbz StartDocumentLoad should handle that.... And we shouldn't be calling
+ // StartDocumentLoad until we get an OnStartRequest from this channel!
+ nsCOMPtr<nsISupports> channelOwner;
+ rv = channel->GetOwner(getter_AddRefs(channelOwner));
+//
+ // We don't care if GetOwner() succeeded here, if it failed,
+ // channelOwner will be null, which is what we want in that case.
+ principal = do_QueryInterface(channelOwner);
+//
+ if (NS_FAILED(rv) || !principal) {
+   rv = secMan->GetCodebasePrincipal(uri, getter_AddRefs(principal));
+   NS_ENSURE_TRUE(principal, rv);
+ }
+//
+ SetPrincipal(principal);
+//
+ // Prepare for loading the XML document "into oneself"
+ nsCOMPtr<nsIStreamListener> listener;
+ if (NS_FAILED(rv = StartDocumentLoad(kLoadAsData, channel, 
+                                      loadGroup, nsnull, 
+                                      getter_AddRefs(listener),
+                                      PR_FALSE))) {
+   NS_ERROR("nsXMLDocument::Load: Failed to start the document load.");
+   return rv;
+ }
+//
+ // After this point, if we error out of this method we should clear
+ // mChannelIsPending.
+//
+ // Start an asynchronous read of the XML document
+ rv = channel->AsyncOpen(listener, nsnull);
+ if (NS_FAILED(rv)) {
+   mChannelIsPending = PR_FALSE;
+   return rv;
+ }
+//
+ if (!mAsync) {
+   nsCOMPtr<nsIThread> thread = do_GetCurrentThread();
+//
+   mLoopingForSyncLoad = PR_TRUE;
+   while (mLoopingForSyncLoad) {
+     if (!NS_ProcessNextEvent(thread))
+       break;
+   }
+//
+   // We set return to true unless there was a parsing error
+   nsCOMPtr<nsIDOMNode> node = do_QueryInterface(GetRootContent());
+   if (node) {
+     nsAutoString name, ns;      
+     if (NS_SUCCEEDED(node->GetLocalName(name)) &&
+         name.EqualsLiteral("parsererror") &&
+         NS_SUCCEEDED(node->GetNamespaceURI(ns)) &&
+         ns.EqualsLiteral("http://www.mozilla.org/newlayout/xml/parsererror.xml")) {
+       //return is already false
+     } else {
+       *aReturn = PR_TRUE;
+     }
+   }
+ } else {
+   *aReturn = PR_TRUE;
+ }
+//
+ return NS_OK;
 }
 
 nsresult
@@ -552,30 +524,17 @@ nsXMLDocument::StartDocumentLoad(const char* aCommand,
                                  PRBool aReset,
                                  nsIContentSink* aSink)
 {
-  if (nsCRT::strcmp(kLoadAsData, aCommand) == 0) {
-    mLoadedAsData = PR_TRUE;
-    // We need to disable script & style loading in this case.
-    // We leave them disabled even in EndLoad(), and let anyone
-    // who puts the document on display to worry about enabling.
-
-    // scripts
-    nsIScriptLoader *loader = GetScriptLoader();
-    if (loader) {
-      loader->SetEnabled(PR_FALSE); // Do not load/process scripts when loading as data
-    }
-
-    // styles
-    CSSLoader()->SetEnabled(PR_FALSE); // Do not load/process styles when loading as data
-  } else if (nsCRT::strcmp("loadAsInteractiveData", aCommand) == 0) {
-    mLoadedAsInteractiveData = PR_TRUE;
-    aCommand = kLoadAsData; // XBL, for example, needs scripts and styles
-  }
-
   nsresult rv = nsDocument::StartDocumentLoad(aCommand,
                                               aChannel, aLoadGroup,
                                               aContainer, 
                                               aDocListener, aReset, aSink);
   if (NS_FAILED(rv)) return rv;
+
+  if (nsCRT::strcmp("loadAsInteractiveData", aCommand) == 0) {
+    mLoadedAsInteractiveData = PR_TRUE;
+    aCommand = kLoadAsData; // XBL, for example, needs scripts and styles
+  }
+
 
   PRInt32 charsetSource = kCharsetFromDocTypeDefault;
   nsCAutoString charset(NS_LITERAL_CSTRING("UTF-8"));
@@ -632,106 +591,19 @@ nsXMLDocument::EndLoad()
     // Generate a document load event for the case when an XML
     // document was loaded as pure data without any presentation
     // attached to it.
-    nsEvent event(PR_TRUE, NS_PAGE_LOAD);
-    nsEventStatus status = nsEventStatus_eIgnore;
-
-    nsIScriptGlobalObject* sgo = nsnull;
-    nsCOMPtr<nsIScriptGlobalObjectOwner> container =
-      do_QueryReferent(mDocumentContainer);
-    if (container) {
-      sgo = container->GetScriptGlobalObject();
-    }
-
-    nsCxPusher pusher(sgo);
-
-    nsEventDispatcher::Dispatch(NS_STATIC_CAST(nsIDocument*, this), nsnull,
-                                &event, nsnull, &status);
+    nsEvent event(PR_TRUE, NS_LOAD);
+    nsEventDispatcher::Dispatch(static_cast<nsIDocument*>(this), nsnull,
+                                &event);
   }    
   nsDocument::EndLoad();  
 }
-
-PRBool
-nsXMLDocument::IsLoadedAsData()
-{
-  return mLoadedAsData;
-}
-  
 
 // nsIDOMNode interface
 
 NS_IMETHODIMP    
 nsXMLDocument::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 {
-  NS_ENSURE_ARG_POINTER(aReturn);
-  *aReturn = nsnull;
-
-  nsresult rv;
-  nsCOMPtr<nsIDOMDocumentType> docType, newDocType;
-  nsCOMPtr<nsIDOMDocument> newDoc;
-
-  // Get the doctype prior to new document construction. There's no big 
-  // advantage now to dealing with the doctype separately, but maybe one 
-  // day we'll do something significant with the doctype on document creation.
-  GetDoctype(getter_AddRefs(docType));
-  if (docType) {
-    nsCOMPtr<nsIDOMNode> newDocTypeNode;
-    rv = docType->CloneNode(PR_TRUE, getter_AddRefs(newDocTypeNode));
-    if (NS_FAILED(rv)) return rv;
-    newDocType = do_QueryInterface(newDocTypeNode);
-  }
-
-  // Create an empty document
-  rv = NS_NewDOMDocument(getter_AddRefs(newDoc), EmptyString(), EmptyString(),
-                         newDocType, nsIDocument::GetDocumentURI(),
-                         nsIDocument::GetBaseURI(), NodePrincipal());
-  if (NS_FAILED(rv)) return rv;
-
-  if (aDeep) {
-    // If there was a doctype, a new one has already been inserted into the
-    // new document. We might have to add nodes before it.
-    PRBool beforeDocType = (docType.get() != nsnull);
-    nsCOMPtr<nsIDOMNodeList> childNodes;
-    
-    GetChildNodes(getter_AddRefs(childNodes));
-    if (childNodes) {
-      PRUint32 index, count;
-      childNodes->GetLength(&count);
-      for (index=0; index < count; index++) {
-        nsCOMPtr<nsIDOMNode> child;
-        childNodes->Item(index, getter_AddRefs(child));
-        if (child && (child != docType)) {
-          nsCOMPtr<nsIDOMNode> newChild;
-          rv = child->CloneNode(aDeep, getter_AddRefs(newChild));
-          if (NS_FAILED(rv)) return rv;
-          
-          nsCOMPtr<nsIDOMNode> dummyNode;
-          if (beforeDocType) {
-            rv = newDoc->InsertBefore(newChild, 
-                                      docType, 
-                                      getter_AddRefs(dummyNode));
-            if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-          }
-          else {
-            rv = newDoc->AppendChild(newChild, 
-                                     getter_AddRefs(dummyNode));
-            if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-          }
-        }
-        else {
-          beforeDocType = PR_FALSE;
-        }
-      }
-    }
-  }
-
-  rv = CallQueryInterface(newDoc, aReturn);
-  if (NS_SUCCEEDED(rv) && HasProperties()) {
-    nsContentUtils::CallUserDataHandler(this,
-                                        nsIDOMUserDataHandler::NODE_CLONED,
-                                        this, this, *aReturn);
-  }
-
-  return rv;
+  return nsNodeUtils::CloneNodeImpl(this, aDeep, aReturn);
 }
  
 // nsIDOMDocument interface
@@ -743,25 +615,48 @@ nsXMLDocument::GetElementById(const nsAString& aElementId,
   NS_ENSURE_ARG_POINTER(aReturn);
   *aReturn = nsnull;
 
-  NS_ASSERTION(!aElementId.IsEmpty(), "getElementById(\"\"), fix caller?");
-  if (aElementId.IsEmpty())
+  if (!CheckGetElementByIdArg(aElementId))
     return NS_OK;
 
   // If we tried to load a document and something went wrong, we might not have
   // root content. This can happen when you do document.load() and the document
   // to load is not XML, for example.
-  if (!mRootContent)
+  nsIContent* root = GetRootContent();
+  if (!root)
     return NS_OK;
 
   // XXX For now, we do a brute force search of the content tree.
   // We should come up with a more efficient solution.
   // Note that content is *not* refcounted here, so do *not* release it!
   nsIContent *content =
-    nsContentUtils::MatchElementId(mRootContent, aElementId);
+    nsContentUtils::MatchElementId(root, aElementId);
 
   if (!content) {
     return NS_OK;
   }
 
   return CallQueryInterface(content, aReturn);
+}
+
+nsresult
+nsXMLDocument::Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const
+{
+  NS_ASSERTION(aNodeInfo->NodeInfoManager() == mNodeInfoManager,
+               "Can't import this document into another document!");
+
+  PRBool hasHadScriptObject = PR_TRUE;
+  nsIScriptGlobalObject* scriptObject =
+    GetScriptHandlingObject(hasHadScriptObject);
+  NS_ENSURE_STATE(scriptObject || !hasHadScriptObject);
+  nsCOMPtr<nsIDOMDocument> newDoc;
+  nsresult rv = NS_NewDOMDocument(getter_AddRefs(newDoc), EmptyString(),
+                                  EmptyString(), nsnull,
+                                  nsIDocument::GetDocumentURI(),
+                                  nsIDocument::GetBaseURI(), NodePrincipal(),
+                                  PR_TRUE);
+  NS_ENSURE_SUCCESS(rv, rv);
+  nsCOMPtr<nsIDocument> document = do_QueryInterface(newDoc);
+  document->SetScriptHandlingObject(scriptObject);
+
+  return CallQueryInterface(newDoc, aResult);
 }

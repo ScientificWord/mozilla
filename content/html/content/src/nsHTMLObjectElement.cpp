@@ -38,7 +38,7 @@
 
 #include "nsGenericHTMLElement.h"
 #include "nsObjectLoadingContent.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsDOMError.h"
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
@@ -60,7 +60,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLFormElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLFormElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLFormElement::)
@@ -93,7 +93,7 @@ public:
   NS_IMETHOD SubmitNamesValues(nsIFormSubmission *aFormSubmission,
                                nsIContent *aSubmitElement);
 
-  virtual void DoneAddingChildren(PRBool aHaveNotified);
+  virtual nsresult DoneAddingChildren(PRBool aHaveNotified);
   virtual PRBool IsDoneAddingChildren();
 
   virtual PRBool ParseAttribute(PRInt32 aNamespaceID,
@@ -103,9 +103,15 @@ public:
   virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom *aAttribute) const;
   virtual PRInt32 IntrinsicState() const;
+  virtual void DestroyContent();
 
   // nsObjectLoadingContent
   virtual PRUint32 GetCapabilities() const;
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+
+  NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED_NO_UNLINK(nsHTMLObjectElement,
+                                                     nsGenericHTMLElement)
 
 private:
   /**
@@ -138,7 +144,7 @@ nsHTMLObjectElement::IsDoneAddingChildren()
   return mIsDoneAddingChildren;
 }
 
-void
+nsresult
 nsHTMLObjectElement::DoneAddingChildren(PRBool aHaveNotified)
 {
   mIsDoneAddingChildren = PR_TRUE;
@@ -148,27 +154,33 @@ nsHTMLObjectElement::DoneAddingChildren(PRBool aHaveNotified)
   if (IsInDoc()) {
     StartObjectLoad(aHaveNotified);
   }
+  return NS_OK;
 }
+
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsHTMLObjectElement)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_INHERITED(nsHTMLObjectElement,
+                                                  nsGenericHTMLFormElement)
+  tmp->Traverse(cb);
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
 
 NS_IMPL_ADDREF_INHERITED(nsHTMLObjectElement, nsGenericElement) 
 NS_IMPL_RELEASE_INHERITED(nsHTMLObjectElement, nsGenericElement) 
 
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLObjectElement,
-                                    nsGenericHTMLFormElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLObjectElement)
-  NS_INTERFACE_MAP_ENTRY(imgIDecoderObserver)
-  NS_INTERFACE_MAP_ENTRY(nsIRequestObserver)
-  NS_INTERFACE_MAP_ENTRY(nsIStreamListener)
-  NS_INTERFACE_MAP_ENTRY(nsIFrameLoaderOwner)
-  NS_INTERFACE_MAP_ENTRY(nsIObjectLoadingContent)
-  NS_INTERFACE_MAP_ENTRY(nsIImageLoadingContent)
-  NS_INTERFACE_MAP_ENTRY(nsIInterfaceRequestor)
-  NS_INTERFACE_MAP_ENTRY(nsIChannelEventSink)
-  NS_INTERFACE_MAP_ENTRY(nsISupportsWeakReference)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLObjectElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_CC_INTERFACE_TABLE_HEAD(nsHTMLObjectElement,
+                                        nsGenericHTMLFormElement)
+  NS_INTERFACE_TABLE_INHERITED9(nsHTMLObjectElement,
+                                nsIDOMHTMLObjectElement,
+                                imgIDecoderObserver,
+                                nsIRequestObserver,
+                                nsIStreamListener,
+                                nsIFrameLoaderOwner,
+                                nsIObjectLoadingContent,
+                                nsIImageLoadingContent,
+                                nsIInterfaceRequestor,
+                                nsIChannelEventSink)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLObjectElement)
 
-NS_IMPL_DOM_CLONENODE(nsHTMLObjectElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLObjectElement)
 
 
 NS_IMETHODIMP
@@ -219,8 +231,11 @@ nsHTMLObjectElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom *aName,
   // get bound after all the attributes have been set, so we'll do the
   // object load from BindToTree/DoneAddingChildren.
   // Skip the LoadObject call in that case.
-  if (aNotify && aNameSpaceID == kNameSpaceID_None &&
-      aName == nsGkAtoms::data) {
+  // We also don't want to start loading the object when we're not yet in
+  // a document, just in case that the caller wants to set additional
+  // attributes before inserting the node into the document.
+  if (aNotify && IsInDoc() && mIsDoneAddingChildren &&
+      aNameSpaceID == kNameSpaceID_None && aName == nsGkAtoms::data) {
     nsAutoString type;
     GetAttr(kNameSpaceID_None, nsGkAtoms::type, type);
     LoadObject(aValue, aNotify, NS_ConvertUTF16toUTF8(type), PR_TRUE);
@@ -307,10 +322,10 @@ nsHTMLObjectElement::SubmitNamesValues(nsIFormSubmission *aFormSubmission,
 NS_IMPL_STRING_ATTR(nsHTMLObjectElement, Align, align)
 NS_IMPL_STRING_ATTR(nsHTMLObjectElement, Archive, archive)
 NS_IMPL_STRING_ATTR(nsHTMLObjectElement, Border, border)
-NS_IMPL_STRING_ATTR(nsHTMLObjectElement, Code, code)
+NS_IMPL_URI_ATTR_WITH_BASE(nsHTMLObjectElement, Code, code, codebase)
 NS_IMPL_URI_ATTR(nsHTMLObjectElement, CodeBase, codebase)
 NS_IMPL_STRING_ATTR(nsHTMLObjectElement, CodeType, codetype)
-NS_IMPL_URI_ATTR(nsHTMLObjectElement, Data, data)
+NS_IMPL_URI_ATTR_WITH_BASE(nsHTMLObjectElement, Data, data, codebase)
 NS_IMPL_BOOL_ATTR(nsHTMLObjectElement, Declare, declare)
 NS_IMPL_STRING_ATTR(nsHTMLObjectElement, Height, height)
 NS_IMPL_INT_ATTR(nsHTMLObjectElement, Hspace, hspace)
@@ -421,4 +436,11 @@ PRUint32
 nsHTMLObjectElement::GetCapabilities() const
 {
   return nsObjectLoadingContent::GetCapabilities() | eSupportClassID;
+}
+
+void
+nsHTMLObjectElement::DestroyContent()
+{
+  RemovedFromDocument();
+  nsGenericHTMLFormElement::DestroyContent();
 }

@@ -43,7 +43,7 @@
 
 #include "nsXMLContentSerializer.h"
 
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsIDOMText.h"
 #include "nsIDOMCDATASection.h"
 #include "nsIDOMProcessingInstruction.h"
@@ -54,14 +54,12 @@
 #include "nsIContent.h"
 #include "nsIDocument.h"
 #include "nsINameSpaceManager.h"
-#include "nsITextContent.h"
 #include "nsTextFragment.h"
 #include "nsString.h"
 #include "prprf.h"
 #include "nsUnicharUtils.h"
 #include "nsCRT.h"
 #include "nsContentUtils.h"
-#include "nsLayoutAtoms.h"
 #include "nsAttrName.h"
 
 typedef struct {
@@ -95,8 +93,10 @@ NS_IMPL_ISUPPORTS1(nsXMLContentSerializer, nsIContentSerializer)
 
 NS_IMETHODIMP 
 nsXMLContentSerializer::Init(PRUint32 flags, PRUint32 aWrapColumn,
-                             const char* aCharSet, PRBool aIsCopying)
+                             const char* aCharSet, PRBool aIsCopying,
+                             PRBool aIsWholeDocument)
 {
+  mCharset = aCharSet;
   return NS_OK;
 }
 
@@ -108,10 +108,11 @@ nsXMLContentSerializer::AppendTextData(nsIDOMNode* aNode,
                                        PRBool aTranslateEntities,
                                        PRBool aIncrColumn)
 {
-  nsCOMPtr<nsITextContent> content(do_QueryInterface(aNode));
-  if (!content) return NS_ERROR_FAILURE;
-
-  const nsTextFragment* frag = content->Text();
+  nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
+  const nsTextFragment* frag;
+  if (!content || !(frag = content->GetText())) {
+    return NS_ERROR_FAILURE;
+  }
 
   PRInt32 endoffset = (aEndOffset == -1) ? frag->GetLength() : aEndOffset;
   PRInt32 length = endoffset - aStartOffset;
@@ -528,7 +529,9 @@ nsXMLContentSerializer::SerializeAttr(const nsAString& aPrefix,
     // need to select the delimiter character and escape characters using
     // character entity references, ignoring the value of aDoEscapeEntities.
     // See http://www.w3.org/TR/REC-html40/appendix/notes.html#h-B.3.2.2 for
-    // the standard on character entity references in values. 
+    // the standard on character entity references in values.  We also have to
+    // make sure to escape any '&' characters.
+    
     PRBool bIncludesSingle = PR_FALSE;
     PRBool bIncludesDouble = PR_FALSE;
     nsAString::const_iterator iCurr, iEnd;
@@ -564,18 +567,16 @@ nsXMLContentSerializer::SerializeAttr(const nsAString& aPrefix,
         (bIncludesDouble && !bIncludesSingle) ? PRUnichar('\'') : PRUnichar('"');
     AppendToString(PRUnichar('='), aStr);
     AppendToString(cDelimiter, aStr);
+    nsAutoString sValue(aValue);
+    sValue.ReplaceSubstring(NS_LITERAL_STRING("&"),
+                            NS_LITERAL_STRING("&amp;"));
     if (bIncludesDouble && bIncludesSingle) {
-      nsAutoString sValue(aValue);
-      sValue.ReplaceSubstring(NS_LITERAL_STRING("\"").get(), NS_LITERAL_STRING("&quot;").get());
-      mInAttribute = PR_TRUE;
-      AppendToString(sValue, aStr, PR_FALSE);
-      mInAttribute = PR_FALSE;
+      sValue.ReplaceSubstring(NS_LITERAL_STRING("\""),
+                              NS_LITERAL_STRING("&quot;"));
     }
-    else {
-      mInAttribute = PR_TRUE;
-      AppendToString(aValue, aStr, PR_FALSE);
-      mInAttribute = PR_FALSE;
-    }
+    mInAttribute = PR_TRUE;
+    AppendToString(sValue, aStr, PR_FALSE);
+    mInAttribute = PR_FALSE;
     AppendToString(cDelimiter, aStr);
   }
 }
@@ -618,7 +619,7 @@ nsXMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
         // XXXbz what if we have both "xmlns" in the null namespace and "xmlns"
         // in the xmlns namespace?
         (namespaceID == kNameSpaceID_None &&
-         attrName == nsLayoutAtoms::xmlns)) {
+         attrName == nsGkAtoms::xmlns)) {
       content->GetAttr(namespaceID, attrName, uriStr);
 
       if (!name->GetPrefix()) {
@@ -874,86 +875,86 @@ nsXMLContentSerializer::IsShorthandAttr(const nsIAtom* aAttrName,
                                         const nsIAtom* aElementName)
 {
   // checked
-  if ((aAttrName == nsHTMLAtoms::checked) &&
-      (aElementName == nsHTMLAtoms::input)) {
+  if ((aAttrName == nsGkAtoms::checked) &&
+      (aElementName == nsGkAtoms::input)) {
     return PR_TRUE;
   }
 
   // compact
-  if ((aAttrName == nsHTMLAtoms::compact) &&
-      (aElementName == nsHTMLAtoms::dir || 
-       aElementName == nsHTMLAtoms::dl ||
-       aElementName == nsHTMLAtoms::menu ||
-       aElementName == nsHTMLAtoms::ol ||
-       aElementName == nsHTMLAtoms::ul)) {
+  if ((aAttrName == nsGkAtoms::compact) &&
+      (aElementName == nsGkAtoms::dir || 
+       aElementName == nsGkAtoms::dl ||
+       aElementName == nsGkAtoms::menu ||
+       aElementName == nsGkAtoms::ol ||
+       aElementName == nsGkAtoms::ul)) {
     return PR_TRUE;
   }
 
   // declare
-  if ((aAttrName == nsHTMLAtoms::declare) &&
-      (aElementName == nsHTMLAtoms::object)) {
+  if ((aAttrName == nsGkAtoms::declare) &&
+      (aElementName == nsGkAtoms::object)) {
     return PR_TRUE;
   }
 
   // defer
-  if ((aAttrName == nsHTMLAtoms::defer) &&
-      (aElementName == nsHTMLAtoms::script)) {
+  if ((aAttrName == nsGkAtoms::defer) &&
+      (aElementName == nsGkAtoms::script)) {
     return PR_TRUE;
   }
 
   // disabled
-  if ((aAttrName == nsHTMLAtoms::disabled) &&
-      (aElementName == nsHTMLAtoms::button ||
-       aElementName == nsHTMLAtoms::input ||
-       aElementName == nsHTMLAtoms::optgroup ||
-       aElementName == nsHTMLAtoms::option ||
-       aElementName == nsHTMLAtoms::select ||
-       aElementName == nsHTMLAtoms::textarea)) {
+  if ((aAttrName == nsGkAtoms::disabled) &&
+      (aElementName == nsGkAtoms::button ||
+       aElementName == nsGkAtoms::input ||
+       aElementName == nsGkAtoms::optgroup ||
+       aElementName == nsGkAtoms::option ||
+       aElementName == nsGkAtoms::select ||
+       aElementName == nsGkAtoms::textarea)) {
     return PR_TRUE;
   }
 
   // ismap
-  if ((aAttrName == nsHTMLAtoms::ismap) &&
-      (aElementName == nsHTMLAtoms::img ||
-       aElementName == nsHTMLAtoms::input)) {
+  if ((aAttrName == nsGkAtoms::ismap) &&
+      (aElementName == nsGkAtoms::img ||
+       aElementName == nsGkAtoms::input)) {
     return PR_TRUE;
   }
 
   // multiple
-  if ((aAttrName == nsHTMLAtoms::multiple) &&
-      (aElementName == nsHTMLAtoms::select)) {
+  if ((aAttrName == nsGkAtoms::multiple) &&
+      (aElementName == nsGkAtoms::select)) {
     return PR_TRUE;
   }
 
   // noresize
-  if ((aAttrName == nsHTMLAtoms::noresize) &&
-      (aElementName == nsHTMLAtoms::frame)) {
+  if ((aAttrName == nsGkAtoms::noresize) &&
+      (aElementName == nsGkAtoms::frame)) {
     return PR_TRUE;
   }
 
   // noshade
-  if ((aAttrName == nsHTMLAtoms::noshade) &&
-      (aElementName == nsHTMLAtoms::hr)) {
+  if ((aAttrName == nsGkAtoms::noshade) &&
+      (aElementName == nsGkAtoms::hr)) {
     return PR_TRUE;
   }
 
   // nowrap
-  if ((aAttrName == nsHTMLAtoms::nowrap) &&
-      (aElementName == nsHTMLAtoms::td ||
-       aElementName == nsHTMLAtoms::th)) {
+  if ((aAttrName == nsGkAtoms::nowrap) &&
+      (aElementName == nsGkAtoms::td ||
+       aElementName == nsGkAtoms::th)) {
     return PR_TRUE;
   }
 
   // readonly
-  if ((aAttrName == nsHTMLAtoms::readonly) &&
-      (aElementName == nsHTMLAtoms::input ||
-       aElementName == nsHTMLAtoms::textarea)) {
+  if ((aAttrName == nsGkAtoms::readonly) &&
+      (aElementName == nsGkAtoms::input ||
+       aElementName == nsGkAtoms::textarea)) {
     return PR_TRUE;
   }
 
   // selected
-  if ((aAttrName == nsHTMLAtoms::selected) &&
-      (aElementName == nsHTMLAtoms::option)) {
+  if ((aAttrName == nsGkAtoms::selected) &&
+      (aElementName == nsGkAtoms::option)) {
     return PR_TRUE;
   }
 
@@ -1002,9 +1003,17 @@ nsXMLContentSerializer::AppendDocumentStart(nsIDOMDocument *aDocument,
 
   aStr += NS_LITERAL_STRING("<?xml version=\"") + version + endQuote;
   
-  if (!encoding.IsEmpty()) {
-    aStr += NS_LITERAL_STRING(" encoding=\"") + encoding + endQuote;
+  if (!mCharset.IsEmpty()) {
+    aStr += NS_LITERAL_STRING(" encoding=\"") +
+      NS_ConvertASCIItoUTF16(mCharset) + endQuote;
   }
+  // Otherwise just don't output an encoding attr.  Not that we expect
+  // mCharset to ever be empty.
+#ifdef DEBUG
+  else {
+    NS_WARNING("Empty mCharset?  How come?");
+  }
+#endif
 
   if (!standalone.IsEmpty()) {
     aStr += NS_LITERAL_STRING(" standalone=\"") + standalone + endQuote;

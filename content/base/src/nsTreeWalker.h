@@ -47,33 +47,31 @@
 #include "nsIDOMTreeWalker.h"
 #include "nsCOMPtr.h"
 #include "nsVoidArray.h"
-#include "nsIDOMGCParticipant.h"
 #include "nsJSUtils.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsINode;
 class nsIDOMNode;
 class nsIDOMNodeFilter;
 
-class nsTreeWalker : public nsIDOMTreeWalker, public nsIDOMGCParticipant
+class nsTreeWalker : public nsIDOMTreeWalker
 {
 public:
-    NS_DECL_ISUPPORTS
+    NS_DECL_CYCLE_COLLECTING_ISUPPORTS
     NS_DECL_NSIDOMTREEWALKER
-
-    // nsIDOMGCParticipant
-    virtual nsIDOMGCParticipant* GetSCCIndex();
-    virtual void AppendReachableList(nsCOMArray<nsIDOMGCParticipant>& aArray);
 
     nsTreeWalker(nsINode *aRoot,
                  PRUint32 aWhatToShow,
                  nsIDOMNodeFilter *aFilter,
                  PRBool aExpandEntityReferences);
     virtual ~nsTreeWalker();
-    /* additional members */
+
+    NS_DECL_CYCLE_COLLECTION_CLASS(nsTreeWalker)
+
 private:
     nsCOMPtr<nsINode> mRoot;
     PRUint32 mWhatToShow;
-    nsMarkedJSFunctionHolder<nsIDOMNodeFilter> mFilter;
+    nsCOMPtr<nsIDOMNodeFilter> mFilter;
     PRBool mExpandEntityReferences;
     nsCOMPtr<nsINode> mCurrentNode;
     
@@ -183,8 +181,9 @@ private:
      */
     void SetChildIndex(PRInt32 aIndexPos, PRInt32 aChildIndex)
     {
-        mPossibleIndexes.ReplaceElementAt(NS_INT32_TO_PTR(aChildIndex),
-                                          aIndexPos);
+        if (aIndexPos != -1)
+            mPossibleIndexes.ReplaceElementAt(NS_INT32_TO_PTR(aChildIndex),
+                                              aIndexPos);
     }
 };
 

@@ -43,13 +43,13 @@
 #ifndef nsDOMAttributeMap_h___
 #define nsDOMAttributeMap_h___
 
-#include "nsIAtom.h"
 #include "nsIDOMNamedNodeMap.h"
-#include "nsVoidArray.h"
 #include "nsString.h"
-#include "plhash.h"
 #include "nsInterfaceHashtable.h"
+#include "nsCycleCollectionParticipant.h"
+#include "prbit.h"
 
+class nsIAtom;
 class nsIContent;
 class nsDOMAttribute;
 class nsINodeInfo;
@@ -93,7 +93,6 @@ public:
   ~nsAttrHashKey() {}
 
   KeyType GetKey() const { return mKey; }
-  KeyTypePointer GetKeyPointer() const { return &mKey; }
   PRBool KeyEquals(KeyTypePointer aKey) const
     {
       return mKey.mLocalName == aKey->mLocalName &&
@@ -106,8 +105,7 @@ public:
       if (!aKey)
         return 0;
 
-      return (aKey->mNamespaceID >> 28) ^
-             (aKey->mNamespaceID << 4) ^
+      return PR_ROTATE_LEFT32(static_cast<PRUint32>(aKey->mNamespaceID), 4) ^
              NS_PTR_TO_INT32(aKey->mLocalName);
     }
   enum { ALLOW_MEMMOVE = PR_TRUE };
@@ -128,7 +126,7 @@ public:
    */
   PRBool Init();
 
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
 
   // nsIDOMNamedNodeMap interface
   NS_DECL_NSIDOMNAMEDNODEMAP
@@ -152,13 +150,34 @@ public:
    */
   void DropAttribute(PRInt32 aNamespaceID, nsIAtom* aLocalName);
 
+  /**
+   * Returns the number of attribute nodes currently in the map.
+   * Note: this is just the number of cached attribute nodes, not the number of
+   * attributes in mContent.
+   *
+   * @return The number of attribute nodes in the map.
+   */
+  PRUint32 Count() const;
+
+  typedef nsInterfaceHashtable<nsAttrHashKey, nsIDOMNode> AttrCache;
+
+  /**
+   * Enumerates over the attribute nodess in the map and calls aFunc for each
+   * one. If aFunc returns PL_DHASH_STOP we'll stop enumerating at that point.
+   *
+   * @return The number of attribute nodes that aFunc was called for.
+   */
+  PRUint32 Enumerate(AttrCache::EnumReadFunction aFunc, void *aUserArg) const;
+
+  NS_DECL_CYCLE_COLLECTION_CLASS(nsDOMAttributeMap)
+
 private:
   nsIContent* mContent; // Weak reference
 
   /**
    * Cache of nsDOMAttributes.
    */
-  nsInterfaceHashtable<nsAttrHashKey, nsIDOMNode> mAttributeCache;
+  AttrCache mAttributeCache;
 
   /**
    * SetNamedItem() (aWithNS = PR_FALSE) and SetNamedItemNS() (aWithNS =

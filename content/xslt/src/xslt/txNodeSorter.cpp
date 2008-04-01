@@ -70,7 +70,7 @@ txNodeSorter::addSortElement(Expr* aSelectExpr, Expr* aLangExpr,
                              Expr* aDataTypeExpr, Expr* aOrderExpr,
                              Expr* aCaseOrderExpr, txIEvalContext* aContext)
 {
-    SortKey* key = new SortKey;
+    nsAutoPtr<SortKey> key(new SortKey);
     NS_ENSURE_TRUE(key, NS_ERROR_OUT_OF_MEMORY);
     nsresult rv = NS_OK;
 
@@ -88,7 +88,6 @@ txNodeSorter::addSortElement(Expr* aSelectExpr, Expr* aLangExpr,
             ascending = MB_FALSE;
         }
         else if (!TX_StringEqualsAtom(attrValue, txXSLTAtoms::ascending)) {
-            delete key;
             // XXX ErrorReport: unknown value for order attribute
             return NS_ERROR_XSLT_BAD_VALUE;
         }
@@ -125,7 +124,6 @@ txNodeSorter::addSortElement(Expr* aSelectExpr, Expr* aLangExpr,
             }
             else if (!TX_StringEqualsAtom(attrValue,
                                           txXSLTAtoms::lowerFirst)) {
-                delete key;
                 // XXX ErrorReport: unknown value for case-order attribute
                 return NS_ERROR_XSLT_BAD_VALUE;
             }
@@ -143,12 +141,14 @@ txNodeSorter::addSortElement(Expr* aSelectExpr, Expr* aLangExpr,
     }
     else {
         // XXX ErrorReport: unknown data-type
-        delete key;
-
         return NS_ERROR_XSLT_BAD_VALUE;
     }
 
-    mSortKeys.add(key);
+    // mSortKeys owns key now. 
+    rv = mSortKeys.add(key);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    key.forget();
     mNKeys++;
 
     return NS_OK;
@@ -177,12 +177,12 @@ txNodeSorter::sortNodeSet(txNodeSet* aNodes, txExecutionState* aEs,
     NS_ENSURE_SUCCESS(rv, rv);
 
     // Create and set up memoryblock for sort-values and indexarray
-    PRUint32 len = NS_STATIC_CAST(PRUint32, aNodes->size());
+    PRUint32 len = static_cast<PRUint32>(aNodes->size());
     void* mem = PR_Malloc(len * (sizeof(PRUint32) + mNKeys * sizeof(TxObject*)));
     NS_ENSURE_TRUE(mem, NS_ERROR_OUT_OF_MEMORY);
 
-    PRUint32* indexes = NS_STATIC_CAST(PRUint32*, mem);
-    TxObject** sortValues = NS_REINTERPRET_CAST(TxObject**, indexes + len);
+    PRUint32* indexes = static_cast<PRUint32*>(mem);
+    TxObject** sortValues = reinterpret_cast<TxObject**>(indexes + len);
 
     PRUint32 i;
     for (i = 0; i < len; ++i) {
@@ -234,12 +234,12 @@ int
 txNodeSorter::compareNodes(const void* aIndexA, const void* aIndexB,
                            void* aSortData)
 {
-    SortData* sortData = NS_STATIC_CAST(SortData*, aSortData);
+    SortData* sortData = static_cast<SortData*>(aSortData);
     NS_ENSURE_SUCCESS(sortData->mRv, -1);
 
     txListIterator iter(&sortData->mNodeSorter->mSortKeys);
-    PRUint32 indexA = *NS_STATIC_CAST(const PRUint32*, aIndexA);
-    PRUint32 indexB = *NS_STATIC_CAST(const PRUint32*, aIndexB);
+    PRUint32 indexA = *static_cast<const PRUint32*>(aIndexA);
+    PRUint32 indexB = *static_cast<const PRUint32*>(aIndexB);
     TxObject** sortValuesA = sortData->mSortValues +
                              indexA * sortData->mNodeSorter->mNKeys;
     TxObject** sortValuesB = sortData->mSortValues +
