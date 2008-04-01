@@ -42,6 +42,7 @@
 
 */
 
+#include "nsAutoPtr.h"
 #include "nsChromeProtocolHandler.h"
 #include "nsChromeRegistry.h"
 #include "nsCOMPtr.h"
@@ -71,7 +72,6 @@
 
 #ifdef MOZ_XUL
 #include "nsIXULPrototypeCache.h"
-#include "nsIXULPrototypeDocument.h"
 #endif
 
 //----------------------------------------------------------------------
@@ -101,6 +101,10 @@ static NS_DEFINE_CID(kXULPrototypeCacheCID,      NS_XULPROTOTYPECACHE_CID);
 //
 #define LOG(args) PR_LOG(gLog, PR_LOG_DEBUG, args)
 
+#define NS_CACHEDCHROMECHANNEL_IMPL_IID \
+{ 0x281371d3, 0x6bc2, 0x499f, \
+  { 0x8d, 0x70, 0xcb, 0xfc, 0x01, 0x1b, 0xa0, 0x43 } }
+
 class nsCachedChromeChannel : public nsIChannel
 {
 protected:
@@ -124,6 +128,8 @@ protected:
 public:
     nsCachedChromeChannel(nsIURI* aURI);
 
+    NS_DECLARE_STATIC_IID_ACCESSOR(NS_CACHEDCHROMECHANNEL_IMPL_IID)
+
     NS_DECL_ISUPPORTS
 
     // nsIRequest
@@ -142,11 +148,15 @@ public:
     NS_DECL_NSICHANNEL
 };
 
+NS_DEFINE_STATIC_IID_ACCESSOR(nsCachedChromeChannel,
+                              NS_CACHEDCHROMECHANNEL_IMPL_IID)
+
 #ifdef PR_LOGGING
 PRLogModuleInfo* nsCachedChromeChannel::gLog;
 #endif
 
-NS_IMPL_ISUPPORTS2(nsCachedChromeChannel, nsIChannel, nsIRequest)
+NS_IMPL_ISUPPORTS3(nsCachedChromeChannel, nsIChannel, nsIRequest,
+                   nsCachedChromeChannel)
 
 nsCachedChromeChannel::nsCachedChromeChannel(nsIURI* aURI)
     : mURI(aURI)
@@ -406,7 +416,7 @@ nsChromeProtocolHandler::AllowPort(PRInt32 port, const char *scheme, PRBool *_re
 NS_IMETHODIMP
 nsChromeProtocolHandler::GetProtocolFlags(PRUint32 *result)
 {
-    *result = URI_STD;
+    *result = URI_STD | URI_IS_UI_RESOURCE;
     return NS_OK;
 }
 
@@ -479,10 +489,10 @@ nsChromeProtocolHandler::NewChannel(nsIURI* aURI,
     // document in the cache.
     nsCOMPtr<nsIXULPrototypeCache> cache
         (do_GetService(kXULPrototypeCacheCID));
-    nsCOMPtr<nsIXULPrototypeDocument> proto;
 
+    PRBool isCached = PR_FALSE;
     if (cache)
-        cache->GetPrototype(aURI, getter_AddRefs(proto));
+        isCached = cache->IsCached(aURI);
     else
         NS_WARNING("Unable to obtain the XUL prototype cache!");
 
@@ -502,7 +512,7 @@ nsChromeProtocolHandler::NewChannel(nsIURI* aURI,
     //        loading chrome for the profile manager itself). This must be 
     //        parsed from disk. 
 
-    if (proto) {
+    if (isCached) {
         // ...in which case, we'll create a dummy stream that'll just
         // load the thing.
         result = new nsCachedChromeChannel(aURI);
@@ -563,9 +573,14 @@ nsChromeProtocolHandler::NewChannel(nsIURI* aURI,
             nsCOMPtr<nsIJARChannel> jarChan
                 (do_QueryInterface(result));
             if (!jarChan) {
-                NS_WARNING("Remote chrome not allowed! Only file:, resource:, and jar: are valid.\n");
-                result = nsnull;
-                return NS_ERROR_FAILURE;
+                nsRefPtr<nsCachedChromeChannel> cachedChannel;
+                if (NS_FAILED(CallQueryInterface(result.get(),
+                        static_cast<nsCachedChromeChannel**>(
+                            getter_AddRefs(cachedChannel))))) {
+                    NS_WARNING("Remote chrome not allowed! Only file:, resource:, jar:, and cached chrome channels are valid.\n");
+                    result = nsnull;
+                    return NS_ERROR_FAILURE;
+                }
             }
         }
 

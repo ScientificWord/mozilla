@@ -87,7 +87,8 @@ nsSystemPrincipal::Release()
 NS_IMETHODIMP
 nsSystemPrincipal::GetPreferences(char** aPrefName, char** aID,
                                   char** aSubjectName,
-                                  char** aGrantedList, char** aDeniedList)
+                                  char** aGrantedList, char** aDeniedList,
+                                  PRBool* aIsTrusted)
 {
     // The system principal should never be streamed out
     *aPrefName = nsnull;
@@ -95,6 +96,7 @@ nsSystemPrincipal::GetPreferences(char** aPrefName, char** aID,
     *aSubjectName = nsnull;
     *aGrantedList = nsnull;
     *aDeniedList = nsnull;
+    *aIsTrusted = PR_FALSE;
 
     return NS_ERROR_FAILURE; 
 }
@@ -110,6 +112,12 @@ NS_IMETHODIMP
 nsSystemPrincipal::Subsumes(nsIPrincipal *other, PRBool *result)
 {
     *result = PR_TRUE;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsSystemPrincipal::CheckMayLoad(nsIURI* uri, PRBool aReport)
+{
     return NS_OK;
 }
 
@@ -278,10 +286,20 @@ nsSystemPrincipal::nsSystemPrincipal()
 {
 }
 
+#define SYSTEM_PRINCIPAL_SPEC "[System Principal]"
+
 nsresult
 nsSystemPrincipal::Init()
 {
-    return mJSPrincipals.Init(this, "[System Principal]"); 
+    // Use an nsCString so we only do the allocation once here and then
+    // share with nsJSPrincipals
+    nsCString str(SYSTEM_PRINCIPAL_SPEC);
+    if (!str.EqualsLiteral(SYSTEM_PRINCIPAL_SPEC)) {
+        NS_WARNING("Out of memory initializing system principal");
+        return NS_ERROR_OUT_OF_MEMORY;
+    }
+    
+    return mJSPrincipals.Init(this, str);
 }
 
 nsSystemPrincipal::~nsSystemPrincipal(void)

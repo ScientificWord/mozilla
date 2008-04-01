@@ -79,7 +79,7 @@ ac_add_options() {
 ac_add_app_options() {
   APP=$1
   shift;
-  if [ "$APP" == "$MOZ_BUILD_APP" ]; then
+  if [ "$APP" = "$MOZ_BUILD_APP" ]; then
       ac_add_options "$*";
   fi
 }
@@ -115,7 +115,7 @@ done
 
 MOZCONFIG=`$_AUTOCONF_TOOLS_DIR/mozconfig-find $topsrcdir`
 if [ "$MOZCONFIG" ]; then
-  . $MOZCONFIG
+  . "$MOZCONFIG"
 fi
 
 if [ "$mozconfig_ac_options" ]; then
