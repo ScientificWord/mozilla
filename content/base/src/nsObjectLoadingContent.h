@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 // vim:set et cin sw=2 sts=2:
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -46,13 +47,11 @@
 
 #include "nsImageLoadingContent.h"
 #include "nsIStreamListener.h"
-#include "nsIFrameLoader.h"
+#include "nsFrameLoader.h"
 #include "nsIInterfaceRequestor.h"
 #include "nsIChannelEventSink.h"
 #include "nsIObjectLoadingContent.h"
 #include "nsIRunnable.h"
-
-#include "nsWeakReference.h"
 
 struct nsAsyncInstantiateEvent;
 class  AutoNotifier;
@@ -83,9 +82,6 @@ class nsObjectLoadingContent : public nsImageLoadingContent
                              , public nsIObjectLoadingContent
                              , public nsIInterfaceRequestor
                              , public nsIChannelEventSink
-                             // Plugins code wants a weak reference to
-                             // notification callbacks
-                             , public nsSupportsWeakReference
 {
   friend class AutoNotifier;
   friend class AutoFallback;
@@ -214,6 +210,8 @@ class nsObjectLoadingContent : public nsImageLoadingContent
      */
     void RemovedFromDocument();
 
+    void Traverse(nsCycleCollectionTraversalCallback &cb);
+
   private:
     /**
      * Check whether the given request represents a successful load.
@@ -253,7 +251,7 @@ class nsObjectLoadingContent : public nsImageLoadingContent
      * Fires the "Plugin not found" event. This function doesn't do any checks
      * whether it should be fired, the caller should do that.
      */
-    static void FirePluginNotFound(nsIContent* thisContent);
+    static void FirePluginError(nsIContent* thisContent, PRBool blocklisted);
 
     ObjectType GetTypeOfContent(const nsCString& aMIMEType);
 
@@ -274,30 +272,83 @@ class nsObjectLoadingContent : public nsImageLoadingContent
 
     /**
      * Gets the frame that's associated with this content node in
-     * presentation 0.
+     * presentation 0.  If aFlushLayout is true, this function will
+     * flush layout before trying to get the frame.  This is needed
+     * in some cases by plug-ins to ensure that NPP_SetWindow() gets
+     * called (from nsObjectFrame::DidReflow).
      */
-    nsIObjectFrame* GetFrame();
+    nsIObjectFrame* GetFrame(PRBool aFlushLayout);
 
     /**
-     * Instantiates the plugin. This differs from GetFrame()->Instantiate() in
-     * that it ensures that the URI will be non-null, and that a MIME type
-     * will be passed.
+     * Handle being blocked by a content policy.  aStatus is the nsresult
+     * return value of the Should* call, while aRetval is what it returned in
+     * its out parameter.
      */
-    nsresult Instantiate(const nsACString& aMIMEType, nsIURI* aURI);
+    void HandleBeingBlockedByContentPolicy(nsresult aStatus,
+                                           PRInt16 aRetval);
+
+    /**
+     * Checks if we have a frame that's ready for instantiation, and
+     * if so, calls Instantiate(). Note that this can cause the frame
+     * to be deleted while we're instantiating the plugin.
+     */
+    nsresult TryInstantiate(const nsACString& aMIMEType, nsIURI* aURI);
+
+    /**
+     * Instantiates the plugin. This differs from
+     * GetFrame()->Instantiate() in that it ensures that the URI will
+     * be non-null, and that a MIME type will be passed. Note that
+     * this can cause the frame to be deleted while we're
+     * instantiating the plugin.
+     */
+    nsresult Instantiate(nsIObjectFrame* aFrame, const nsACString& aMIMEType, nsIURI* aURI);
 
     /**
      * Whether to treat this content as a plugin, even though we can't handle
      * the type. This function impl should match the checks in the plugin host.
+     * aContentType is the MIME type we ended up with.
      */
-    static PRBool ShouldShowDefaultPlugin(nsIContent* aContent);
+    static PRBool ShouldShowDefaultPlugin(nsIContent* aContent,
+                                          const nsCString& aContentType);
+
+    enum PluginSupportState {
+      ePluginUnsupported,  // The plugin is not supported (not installed, say)
+      ePluginDisabled,     // The plugin has been explicitly disabled by the
+                           // user.
+      ePluginBlocklisted,  // The plugin is blocklisted and disabled
+      ePluginOtherState    // Something else (e.g. not a plugin at all as far
+                           // as we can tell).
+    };
 
     /**
-     * Whether this content is an unsupported plugin. This is used for purposes
-     * of determining whether to fire PluginNotFound events etc.
+     * Get the plugin support state for the given content node and MIME type.
+     * This is used for purposes of determining whether to fire PluginNotFound
+     * events etc.  aContentType is the MIME type we ended up with.
      *
      * This should only be called if the type of this content is eType_Null.
      */
-    static PRBool IsUnsupportedPlugin(nsIContent* aContent);
+    static PluginSupportState
+      GetPluginSupportState(nsIContent* aContent,
+                            const nsCString& aContentType);
+
+    /**
+     * If the plugin for aContentType is disabled, return ePluginDisabled.
+     * Otherwise (including if there is no plugin for aContentType at all),
+     * return ePluginUnsupported.
+     *
+     * This should only be called if the type of this content is eType_Null.
+     */
+    static PluginSupportState
+      GetPluginDisabledState(const nsCString& aContentType);
+
+    /**
+     * When there is no usable plugin available this will send UI events and
+     * update the AutoFallback object appropriate to the reason for there being
+     * no plugin available.
+     */
+    static void
+      UpdateFallbackState(nsIContent* aContent, AutoFallback& fallback,
+                          const nsCString& aTypeHint);
 
     /**
      * The final listener to ship the data to (imagelib, uriloader, etc)
@@ -307,7 +358,7 @@ class nsObjectLoadingContent : public nsImageLoadingContent
     /**
      * Frame loader, for content documents we load.
      */
-    nsCOMPtr<nsIFrameLoader>    mFrameLoader;
+    nsRefPtr<nsFrameLoader>     mFrameLoader;
 
     /**
      * A pending nsAsyncInstantiateEvent (may be null).  This is a weak ref.

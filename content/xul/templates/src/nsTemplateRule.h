@@ -48,6 +48,7 @@
 #include "nsVoidArray.h"
 #include "nsString.h"
 #include "nsIXULTemplateRuleFilter.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsIXULTemplateQueryProcessor;
 class nsTemplateQuerySet;
@@ -224,6 +225,12 @@ public:
     nsresult
     AddBindingsToQueryProcessor(nsIXULTemplateQueryProcessor* aProcessor);
 
+    void Traverse(nsCycleCollectionTraversalCallback &cb) const
+    {
+        cb.NoteXPCOMChild(mRuleNode);
+        cb.NoteXPCOMChild(mAction);
+    }
+
 protected:
 
     struct Binding {
@@ -331,13 +338,13 @@ public:
 
     nsTemplateRule* GetRuleAt(PRInt16 aIndex)
     {
-        return NS_STATIC_CAST(nsTemplateRule*, mRules[aIndex]);
+        return static_cast<nsTemplateRule*>(mRules[aIndex]);
     }
 
     void Clear()
     {
         for (PRInt32 r = mRules.Count() - 1; r >= 0; r--) {
-            nsTemplateRule* rule = NS_STATIC_CAST(nsTemplateRule* , mRules[r]);
+            nsTemplateRule* rule = static_cast<nsTemplateRule*>(mRules[r]);
             delete rule;
         }
         mRules.Clear();

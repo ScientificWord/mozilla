@@ -51,6 +51,7 @@
 #include "nsIProtocolHandler.h"
 #include "nsIIOService.h"
 #include "nsIExternalProtocolHandler.h"
+#include "nsNetUtil.h"
 
 NS_IMPL_ISUPPORTS1(nsNoDataProtocolContentPolicy, nsIContentPolicy)
 
@@ -65,14 +66,16 @@ nsNoDataProtocolContentPolicy::ShouldLoad(PRUint32 aContentType,
 {
   *aDecision = nsIContentPolicy::ACCEPT;
 
-  if (aContentType == TYPE_OTHER ||
-      aContentType == TYPE_SCRIPT ||
-      aContentType == TYPE_IMAGE ||
-      aContentType == TYPE_STYLESHEET ||
-      aContentType == TYPE_OBJECT) {
+  // Don't block for TYPE_OBJECT since such URIs are sometimes loaded by the
+  // plugin, so they don't neccesarily open external apps
+  if (aContentType != TYPE_DOCUMENT &&
+      aContentType != TYPE_SUBDOCUMENT &&
+      aContentType != TYPE_OBJECT) {
+
+    // The following are just quick-escapes for the most common cases
+    // where we would allow the content to be loaded anyway.
     nsCAutoString scheme;
     aContentLocation->GetScheme(scheme);
-    // Fast-track for the common cases
     if (scheme.EqualsLiteral("http") ||
         scheme.EqualsLiteral("https") ||
         scheme.EqualsLiteral("ftp") ||
@@ -81,20 +84,12 @@ nsNoDataProtocolContentPolicy::ShouldLoad(PRUint32 aContentType,
       return NS_OK;
     }
 
-    nsIIOService* ios = nsContentUtils::GetIOService();
-    if (!ios) {
-      // default to accept, just in case
-      return NS_OK;
-    }
-    
-    nsCOMPtr<nsIProtocolHandler> handler;
-    ios->GetProtocolHandler(scheme.get(), getter_AddRefs(handler));
-
-    nsCOMPtr<nsIExternalProtocolHandler> extHandler =
-      do_QueryInterface(handler);
-
-    if (extHandler) {
-      *aDecision = nsIContentPolicy::REJECT_SERVER;
+    PRBool shouldBlock;
+    nsresult rv = NS_URIChainHasFlags(aContentLocation,
+                                      nsIProtocolHandler::URI_DOES_NOT_RETURN_DATA,
+                                      &shouldBlock);
+    if (NS_SUCCEEDED(rv) && shouldBlock) {
+      *aDecision = nsIContentPolicy::REJECT_REQUEST;
     }
   }
 

@@ -38,16 +38,6 @@
 
 #include "txExpr.h"
 
-txLiteralExpr::txLiteralExpr(double aDbl)
-    : mValue(new NumberResult(aDbl, nsnull))
-{
-}
-
-txLiteralExpr::txLiteralExpr(const nsAString& aStr)
-    : mValue(new StringResult(aStr, nsnull))
-{
-}
-
 nsresult
 txLiteralExpr::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
 {
@@ -96,6 +86,21 @@ void
 txLiteralExpr::toString(nsAString& aStr)
 {
     switch (mValue->getResultType()) {
+        case txAExprResult::NODESET:
+        {
+            aStr.AppendLiteral(" { Nodeset literal } ");
+            return;
+        }
+        case txAExprResult::BOOLEAN:
+        {
+            if (mValue->booleanValue()) {
+              aStr.AppendLiteral("true()");
+            }
+            else {
+              aStr.AppendLiteral("false()");
+            }
+            return;
+        }
         case txAExprResult::NUMBER:
         {
             Double::toString(mValue->numberValue(), aStr);
@@ -104,8 +109,8 @@ txLiteralExpr::toString(nsAString& aStr)
         case txAExprResult::STRING:
         {
             StringResult* strRes =
-                NS_STATIC_CAST(StringResult*, NS_STATIC_CAST(txAExprResult*,
-                                                             mValue));
+                static_cast<StringResult*>(static_cast<txAExprResult*>
+                                       (mValue));
             PRUnichar ch = '\'';
             if (strRes->mValue.FindChar(ch) != kNotFound) {
                 ch = '\"';
@@ -113,6 +118,11 @@ txLiteralExpr::toString(nsAString& aStr)
             aStr.Append(ch);
             aStr.Append(strRes->mValue);
             aStr.Append(ch);
+            return;
+        }
+        case txAExprResult::RESULT_TREE_FRAGMENT:
+        {
+            aStr.AppendLiteral(" { RTF literal } ");
             return;
         }
     }

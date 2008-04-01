@@ -46,7 +46,7 @@
 #include "nsXMLProcessingInstruction.h"
 #include "nsUnicharUtils.h"
 #include "nsParserUtils.h"
-#include "nsLayoutAtoms.h"
+#include "nsGkAtoms.h"
 
 class nsXMLStylesheetPI : public nsXMLProcessingInstruction,
                           public nsStyleLinkElement
@@ -67,19 +67,24 @@ public:
                               PRBool aCompileEventHandlers);
   virtual void UnbindFromTree(PRBool aDeep = PR_TRUE,
                               PRBool aNullParent = PR_TRUE);
-  
+
+  // nsIStyleSheetLinkingElement
+  virtual void OverrideBaseURI(nsIURI* aNewBaseURI);
+
   // nsStyleLinkElement
   NS_IMETHOD GetCharset(nsAString& aCharset);
 
 protected:
+  nsCOMPtr<nsIURI> mOverriddenBaseURI;
+
   void GetStyleSheetURL(PRBool* aIsInline,
                         nsIURI** aURI);
   void GetStyleSheetInfo(nsAString& aTitle,
                          nsAString& aType,
                          nsAString& aMedia,
                          PRBool* aIsAlternate);
-  virtual nsGenericDOMDataNode* Clone(nsINodeInfo *aNodeInfo,
-                                      PRBool aCloneText) const;
+  virtual nsGenericDOMDataNode* CloneDataNode(nsINodeInfo *aNodeInfo,
+                                              PRBool aCloneText) const;
 };
 
 // nsISupports implementation
@@ -117,7 +122,7 @@ nsXMLStylesheetPI::BindToTree(nsIDocument* aDocument, nsIContent* aParent,
                                                        aCompileEventHandlers);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  UpdateStyleSheet(nsnull);
+  UpdateStyleSheetInternal(nsnull);
 
   return rv;  
 }
@@ -128,7 +133,7 @@ nsXMLStylesheetPI::UnbindFromTree(PRBool aDeep, PRBool aNullParent)
   nsCOMPtr<nsIDocument> oldDoc = GetCurrentDoc();
 
   nsXMLProcessingInstruction::UnbindFromTree(aDeep, aNullParent);
-  UpdateStyleSheet(oldDoc);
+  UpdateStyleSheetInternal(oldDoc);
 }
 
 // nsIDOMNode
@@ -138,7 +143,7 @@ nsXMLStylesheetPI::SetNodeValue(const nsAString& aNodeValue)
 {
   nsresult rv = nsGenericDOMDataNode::SetNodeValue(aNodeValue);
   if (NS_SUCCEEDED(rv)) {
-    UpdateStyleSheet(nsnull, nsnull, PR_TRUE);
+    UpdateStyleSheetInternal(nsnull, PR_TRUE);
   }
   return rv;
 }
@@ -149,6 +154,12 @@ NS_IMETHODIMP
 nsXMLStylesheetPI::GetCharset(nsAString& aCharset)
 {
   return GetAttrValue(nsGkAtoms::charset, aCharset) ? NS_OK : NS_ERROR_FAILURE;
+}
+
+/* virtual */ void
+nsXMLStylesheetPI::OverrideBaseURI(nsIURI* aNewBaseURI)
+{
+  mOverriddenBaseURI = aNewBaseURI;
 }
 
 void
@@ -168,10 +179,10 @@ nsXMLStylesheetPI::GetStyleSheetURL(PRBool* aIsInline,
   nsCAutoString charset;
   nsIDocument *document = GetOwnerDoc();
   if (document) {
-    baseURL = document->GetBaseURI();
+    baseURL = mOverriddenBaseURI ? mOverriddenBaseURI.get() : document->GetBaseURI();
     charset = document->GetDocumentCharacterSet();
   } else {
-    baseURL = nsnull;
+    baseURL = mOverriddenBaseURI;
   }
 
   NS_NewURI(aURI, href, charset.get(), baseURL);
@@ -230,7 +241,7 @@ nsXMLStylesheetPI::GetStyleSheetInfo(nsAString& aTitle,
 }
 
 nsGenericDOMDataNode*
-nsXMLStylesheetPI::Clone(nsINodeInfo *aNodeInfo, PRBool aCloneText) const
+nsXMLStylesheetPI::CloneDataNode(nsINodeInfo *aNodeInfo, PRBool aCloneText) const
 {
   nsAutoString data;
   nsGenericDOMDataNode::GetData(data);
@@ -249,7 +260,7 @@ NS_NewXMLStylesheetProcessingInstruction(nsIContent** aInstancePtrResult,
   
   nsCOMPtr<nsINodeInfo> ni;
   nsresult rv =
-    aNodeInfoManager->GetNodeInfo(nsLayoutAtoms::processingInstructionTagName,
+    aNodeInfoManager->GetNodeInfo(nsGkAtoms::processingInstructionTagName,
                                   nsnull, kNameSpaceID_None,
                                   getter_AddRefs(ni));
   NS_ENSURE_SUCCESS(rv, rv);

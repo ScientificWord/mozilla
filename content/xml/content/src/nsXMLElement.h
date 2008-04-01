@@ -39,14 +39,9 @@
 #ifndef nsXMLElement_h___
 #define nsXMLElement_h___
 
-#include "nsCOMPtr.h"
 #include "nsIDOMElement.h"
-#include "nsIDOMEventReceiver.h"
-#include "nsIXMLContent.h"
 #include "nsGenericElement.h"
 
-class nsIEventListenerManager;
-class nsIURI;
 class nsIDocShell;
 
 class nsXMLElement : public nsGenericElement,
@@ -54,34 +49,31 @@ class nsXMLElement : public nsGenericElement,
 {
 public:
   nsXMLElement(nsINodeInfo *aNodeInfo);
-  virtual ~nsXMLElement();
 
   // nsISupports
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericElement::)
 
-  // nsIXMLContent
-  NS_IMETHOD MaybeTriggerAutoLink(nsIDocShell *aShell);
+  // nsINode interface methods
+  virtual nsresult PreHandleEvent(nsEventChainPreVisitor& aVisitor);
+  virtual nsresult PostHandleEvent(nsEventChainPostVisitor& aVisitor);
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 
   // nsIContent
-  nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                   const nsAString& aValue, PRBool aNotify)
-  {
-    return SetAttr(aNameSpaceID, aName, nsnull, aValue, aNotify);
-  }
-  virtual nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                           nsIAtom* aPrefix, const nsAString& aValue,
-                           PRBool aNotify);
-  virtual nsresult PostHandleEvent(nsEventChainPostVisitor& aVisitor);
+  virtual PRBool IsLink(nsIURI** aURI) const;
+  virtual nsresult MaybeTriggerAutoLink(nsIDocShell *aShell);
   virtual PRBool IsFocusable(PRInt32 *aTabIndex = nsnull);
 
-protected:
-  PRBool mIsLink;
+  // nsGenericElement specializations
+  virtual void GetLinkTarget(nsAString& aTarget);
+
+  // Get target plus a special rv for MaybeTriggerAutoLink's caller
+  nsresult GetLinkTargetAndAutoType(nsAString& aTarget);
 };
 
 #endif // nsXMLElement_h___

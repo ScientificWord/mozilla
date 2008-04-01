@@ -78,29 +78,14 @@ nsXBLProtoImplProperty::nsXBLProtoImplProperty(const PRUnichar* aName,
 nsXBLProtoImplProperty::~nsXBLProtoImplProperty()
 {
   MOZ_COUNT_DTOR(nsXBLProtoImplProperty);
-}
 
-void
-nsXBLProtoImplProperty::Destroy(PRBool aIsCompiled)
-{
-  NS_PRECONDITION(aIsCompiled == mIsCompiled,
-                  "Incorrect aIsCompiled in nsXBLProtoImplProperty::Destroy");
-
-  if ((mJSAttributes & JSPROP_GETTER) && mJSGetterObject) {
-    nsContentUtils::RemoveJSGCRoot(&mJSGetterObject);
-  }
-  else {
+  if (!(mJSAttributes & JSPROP_GETTER)) {
     delete mGetterText;
   }
 
-  if ((mJSAttributes & JSPROP_SETTER) && mJSSetterObject) {
-    nsContentUtils::RemoveJSGCRoot(&mJSSetterObject);
-  }
-  else {
+  if (!(mJSAttributes & JSPROP_SETTER)) {
     delete mSetterText;
   }
-
-  mGetterText = mSetterText = nsnull;
 }
 
 void 
@@ -211,7 +196,7 @@ nsXBLProtoImplProperty::InstallMember(nsIScriptContext* aContext,
     
     nsDependentString name(mName);
     if (!::JS_DefineUCProperty(cx, targetClassObject,
-                               NS_REINTERPRET_CAST(const jschar*, mName), 
+                               reinterpret_cast<const jschar*>(mName), 
                                name.Length(), JSVAL_VOID,  (JSPropertyOp) getter, 
                                (JSPropertyOp) setter, mJSAttributes))
       return NS_ERROR_OUT_OF_MEMORY;
@@ -257,6 +242,7 @@ nsXBLProtoImplProperty::CompileMember(nsIScriptContext* aContext, const nsCStrin
                                      getter, 
                                      functionUri.get(),
                                      mGetterText->GetLineNumber(),
+                                     JSVERSION_LATEST,
                                      PR_TRUE,
                                      (void **) &getterObject);
 
@@ -268,9 +254,6 @@ nsXBLProtoImplProperty::CompileMember(nsIScriptContext* aContext, const nsCStrin
     
       if (mJSGetterObject && NS_SUCCEEDED(rv)) {
         mJSAttributes |= JSPROP_GETTER | JSPROP_SHARED;
-        // Root the compiled prototype script object.
-        rv = nsContentUtils::AddJSGCRoot(&mJSGetterObject,
-                                         "nsXBLProtoImplProperty::mJSGetterObject");
       }
       if (NS_FAILED(rv)) {
         mJSGetterObject = nsnull;
@@ -309,6 +292,7 @@ nsXBLProtoImplProperty::CompileMember(nsIScriptContext* aContext, const nsCStrin
                                      setter, 
                                      functionUri.get(),
                                      mSetterText->GetLineNumber(),
+                                     JSVERSION_LATEST,
                                      PR_TRUE,
                                      (void **) &setterObject);
 
@@ -320,9 +304,6 @@ nsXBLProtoImplProperty::CompileMember(nsIScriptContext* aContext, const nsCStrin
 
       if (mJSSetterObject && NS_SUCCEEDED(rv)) {
         mJSAttributes |= JSPROP_SETTER | JSPROP_SHARED;
-        // Root the compiled prototype script object.
-        rv = nsContentUtils::AddJSGCRoot(&mJSSetterObject,
-                                         "nsXBLProtoImplProperty::mJSSetterObject");
       }
       if (NS_FAILED(rv)) {
         mJSSetterObject = nsnull;
@@ -342,4 +323,16 @@ nsXBLProtoImplProperty::CompileMember(nsIScriptContext* aContext, const nsCStrin
 #endif
   
   return rv;
+}
+
+void
+nsXBLProtoImplProperty::Trace(TraceCallback aCallback, void *aClosure) const
+{
+  if (mJSAttributes & JSPROP_GETTER) {
+    aCallback(nsIProgrammingLanguage::JAVASCRIPT, mJSGetterObject, aClosure);
+  }
+
+  if (mJSAttributes & JSPROP_SETTER) {
+    aCallback(nsIProgrammingLanguage::JAVASCRIPT, mJSSetterObject, aClosure);
+  }
 }

@@ -86,12 +86,11 @@ nsTreeWalker::nsTreeWalker(nsINode *aRoot,
                            PRBool aExpandEntityReferences) :
     mRoot(aRoot),
     mWhatToShow(aWhatToShow),
+    mFilter(aFilter),
     mExpandEntityReferences(aExpandEntityReferences),
     mCurrentNode(aRoot),
     mPossibleIndexesPos(-1)
 {
-    mFilter.Set(aFilter, this);
-
     NS_ASSERTION(aRoot, "invalid root in call to nsTreeWalker constructor");
 }
 
@@ -101,19 +100,22 @@ nsTreeWalker::~nsTreeWalker()
 }
 
 /*
- * nsISupports stuff
+ * nsISupports and cycle collection stuff
  */
 
+NS_IMPL_CYCLE_COLLECTION_3(nsTreeWalker, mFilter, mCurrentNode, mRoot)
+
 // QueryInterface implementation for nsTreeWalker
-NS_INTERFACE_MAP_BEGIN(nsTreeWalker)
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsTreeWalker)
     NS_INTERFACE_MAP_ENTRY(nsIDOMTreeWalker)
-    NS_INTERFACE_MAP_ENTRY(nsIDOMGCParticipant)
     NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMTreeWalker)
     NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(TreeWalker)
 NS_INTERFACE_MAP_END
 
-NS_IMPL_ADDREF(nsTreeWalker)
-NS_IMPL_RELEASE(nsTreeWalker)
+NS_IMPL_CYCLE_COLLECTING_ADDREF(nsTreeWalker)
+NS_IMPL_CYCLE_COLLECTING_RELEASE(nsTreeWalker)
+
+
 
 /*
  * nsIDOMTreeWalker Getters/Setters
@@ -143,7 +145,7 @@ NS_IMETHODIMP nsTreeWalker::GetFilter(nsIDOMNodeFilter * *aFilter)
 {
     NS_ENSURE_ARG_POINTER(aFilter);
 
-    nsCOMPtr<nsIDOMNodeFilter> filter = mFilter.Get();
+    nsCOMPtr<nsIDOMNodeFilter> filter = mFilter;
     filter.swap((*aFilter = nsnull));
 
     return NS_OK;
@@ -178,6 +180,8 @@ NS_IMETHODIMP nsTreeWalker::SetCurrentNode(nsIDOMNode * aCurrentNode)
     NS_ENSURE_SUCCESS(rv, rv);
 
     mCurrentNode = do_QueryInterface(aCurrentNode);
+    mPossibleIndexes.Clear();
+    mPossibleIndexesPos = -1;
 
     return NS_OK;
 }
@@ -307,28 +311,6 @@ NS_IMETHODIMP nsTreeWalker::NextNode(nsIDOMNode **_retval)
     return result ? CallQueryInterface(result, _retval) : NS_OK;
 }
 
-/*
- * nsIDOMGCParticipant functions
- */
-/* virtual */ nsIDOMGCParticipant*
-nsTreeWalker::GetSCCIndex()
-{
-    return this;
-}
-
-/* virtual */ void
-nsTreeWalker::AppendReachableList(nsCOMArray<nsIDOMGCParticipant>& aArray)
-{
-    nsCOMPtr<nsIDOMGCParticipant> gcp;
-    
-    gcp = do_QueryInterface(mRoot);
-    if (gcp)
-        aArray.AppendObject(gcp);
-
-    gcp = do_QueryInterface(mCurrentNode);
-    if (gcp)
-        aArray.AppendObject(gcp);
-}
 
 /*
  * nsTreeWalker helper functions
@@ -609,7 +591,7 @@ nsresult nsTreeWalker::TestNode(nsINode* aNode, PRInt16* _filtered)
         nodeType = nsIDOMNode::ELEMENT_NODE;
     }
     else if (aNode->IsNodeOfType(nsINode::eCONTENT)) {
-        nsIAtom* tag = NS_STATIC_CAST(nsIContent*, aNode)->Tag();
+        nsIAtom* tag = static_cast<nsIContent*>(aNode)->Tag();
         if (tag == nsGkAtoms::textTagName) {
             nodeType = nsIDOMNode::TEXT_NODE;
         }
@@ -635,13 +617,12 @@ nsresult nsTreeWalker::TestNode(nsINode* aNode, PRInt16* _filtered)
         return NS_OK;
     }
 
-    nsCOMPtr<nsIDOMNodeFilter> filter = mFilter.Get();
-    if (filter) {
+    if (mFilter) {
         if (!domNode) {
             domNode = do_QueryInterface(aNode);
         }
 
-        return filter->AcceptNode(domNode, _filtered);
+        return mFilter->AcceptNode(domNode, _filtered);
     }
 
     *_filtered = nsIDOMNodeFilter::FILTER_ACCEPT;

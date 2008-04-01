@@ -35,43 +35,29 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-/*
-
-  An XUL-specific extension to nsIDocument. Includes methods for
-  setting the root resource of the document content model, a factory
-  method for constructing the children of a node, etc.
-
-  XXX This should really be called nsIXULDocument.
-
- */
-
 #ifndef nsIXULDocument_h___
 #define nsIXULDocument_h___
 
 #include "nsISupports.h"
 #include "nsString.h"
+#include "nsCOMArray.h"
 
-class nsForwardReference;
-class nsIAtom;
-class nsIDOMElement;
-class nsIPrincipal;
-class nsIRDFResource;
-class nsISupportsArray;
-class nsIXULPrototypeDocument;
 class nsIXULTemplateBuilder;
-class nsIURI;
 class nsIContent;
-class nsIRDFDataSource;
+class nsIScriptGlobalObjectOwner;
 
-// {7f9c0158-1da3-4279-9ee5-fa7931b94db1}
+
+// {57314526-f749-4cf0-b6b6-3723eba21480}
 #define NS_IXULDOCUMENT_IID \
-{ 0x7f9c0158, 0x1da3, 0x4279, \
- { 0x9e, 0xe5, 0xfa, 0x79, 0x31, 0xb9, 0x4d, 0xb1 } }
+{ 0x57314526, 0xf749, 0x4cf0, \
+  { 0xb6, 0xb6, 0x37, 0x23, 0xeb, 0xa2, 0x14, 0x80 } }
 
-/**
- * XUL extensions to nsIDocument
+
+/*
+ * An XUL-specific extension to nsIDocument. Includes methods for
+ * setting the root resource of the document content model, a factory
+ * method for constructing the children of a node, etc.
  */
-
 class nsIXULDocument : public nsISupports
 {
 public:
@@ -92,36 +78,15 @@ public:
 
   /**
    * Get the elements for a particular resource in the resource-to-element
-   * map. The nsISupportsArray will be truncated and filled in with
+   * map. The nsCOMArray will be truncated and filled in with
    * nsIContent pointers.
    */
-  NS_IMETHOD GetElementsForID(const nsAString& aID, nsISupportsArray* aElements) = 0;
+  NS_IMETHOD GetElementsForID(const nsAString& aID, nsCOMArray<nsIContent>& aElements) = 0;
 
   /**
-   * Add a "forward declaration" of a XUL observer. Such declarations
-   * will be resolved when document loading completes.
+   * Get the nsIScriptGlobalObjectOwner for this document.
    */
-  NS_IMETHOD AddForwardReference(nsForwardReference* aForwardReference) = 0;
-
-  /**
-   * Resolve the all of the document's forward references.
-   */
-  NS_IMETHOD ResolveForwardReferences() = 0;
-
-  /**
-   * Set the master prototype.
-   */
-  NS_IMETHOD SetMasterPrototype(nsIXULPrototypeDocument* aDocument) = 0;
-
-  /**
-   * Get the master prototype.
-   */
-  NS_IMETHOD GetMasterPrototype(nsIXULPrototypeDocument** aPrototypeDocument) = 0;
-
-  /**
-   * Set the current prototype
-   */
-  NS_IMETHOD SetCurrentPrototype(nsIXULPrototypeDocument* aDocument) = 0;
+  NS_IMETHOD GetScriptGlobalObjectOwner(nsIScriptGlobalObjectOwner** aGlobalOwner) = 0;
 
   /**
    * Notify the XUL document that a subtree has been added
@@ -147,11 +112,16 @@ public:
   NS_IMETHOD GetTemplateBuilderFor(nsIContent* aContent, nsIXULTemplateBuilder** aResult) = 0;
 
   /**
-   * Callback notifying this document when its XUL prototype document load
-   * completes.  The prototype load was initiated by another document load
-   * request than the one whose document is being notified here.
+   * This is invoked whenever the prototype for this document is loaded
+   * and should be walked, regardless of whether the XUL cache is
+   * disabled, whether the protototype was loaded, whether the
+   * prototype was loaded from the cache or created by parsing the
+   * actual XUL source, etc.
+   *
+   * @param aResumeWalk whether this should also call ResumeWalk().
+   * Sometimes the caller of OnPrototypeLoadDone resumes the walk itself
    */
-  NS_IMETHOD OnPrototypeLoadDone() = 0;
+  NS_IMETHOD OnPrototypeLoadDone(PRBool aResumeWalk) = 0;
 
   /**
    * Callback notifying when a document could not be parsed properly.

@@ -34,14 +34,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsSVGAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsSVGLength.h"
 #include "nsCOMPtr.h"
-#include "nsISVGSVGElement.h"
-#include "nsSVGCoordCtxProvider.h"
-#include "nsSVGAnimatedEnumeration.h"
-#include "nsSVGAnimatedInteger.h"
-#include "nsSVGEnum.h"
+#include "nsSVGAnimatedString.h"
 #include "nsSVGFilterElement.h"
 
 nsSVGElement::LengthInfo nsSVGFilterElement::sLengthInfo[4] =
@@ -50,6 +46,24 @@ nsSVGElement::LengthInfo nsSVGFilterElement::sLengthInfo[4] =
   { &nsGkAtoms::y, -10, nsIDOMSVGLength::SVG_LENGTHTYPE_PERCENTAGE, nsSVGUtils::Y },
   { &nsGkAtoms::width, 120, nsIDOMSVGLength::SVG_LENGTHTYPE_PERCENTAGE, nsSVGUtils::X },
   { &nsGkAtoms::height, 120, nsIDOMSVGLength::SVG_LENGTHTYPE_PERCENTAGE, nsSVGUtils::Y },
+};
+
+nsSVGElement::IntegerInfo nsSVGFilterElement::sIntegerInfo[2] =
+{
+  { &nsGkAtoms::filterRes, 0 },
+  { &nsGkAtoms::filterRes, 0 }
+};
+
+nsSVGElement::EnumInfo nsSVGFilterElement::sEnumInfo[2] =
+{
+  { &nsGkAtoms::filterUnits,
+    sSVGUnitTypesMap,
+    nsIDOMSVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX
+  },
+  { &nsGkAtoms::primitiveUnits,
+    sSVGUnitTypesMap,
+    nsIDOMSVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE
+  }
 };
 
 NS_IMPL_NS_NEW_SVG_ELEMENT(Filter)
@@ -65,7 +79,7 @@ NS_INTERFACE_MAP_BEGIN(nsSVGFilterElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGFilterElement)
-  NS_INTERFACE_MAP_ENTRY(nsISVGValue)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMSVGURIReference)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(SVGFilterElement)
 NS_INTERFACE_MAP_END_INHERITING(nsSVGFilterElementBase)
 
@@ -83,48 +97,16 @@ nsSVGFilterElement::Init()
   nsresult rv = nsSVGFilterElementBase::Init();
   NS_ENSURE_SUCCESS(rv,rv);
 
-  // Define enumeration mappings
-  static struct nsSVGEnumMapping gUnitMap[] = {
-        {&nsSVGAtoms::objectBoundingBox, nsIDOMSVGFilterElement::SVG_FUNITS_OBJECTBOUNDINGBOX},
-        {&nsSVGAtoms::userSpaceOnUse, nsIDOMSVGFilterElement::SVG_FUNITS_USERSPACEONUSE},
-        {nsnull, 0}
-  };
-
   // Create mapped properties:
 
-  // DOM property: filterUnits ,  #IMPLIED attrib: filterUnits
-  {
-    nsCOMPtr<nsISVGEnum> units;
-    rv = NS_NewSVGEnum(getter_AddRefs(units),
-                       nsIDOMSVGFilterElement::SVG_FUNITS_OBJECTBOUNDINGBOX, gUnitMap);
-    NS_ENSURE_SUCCESS(rv,rv);
-    rv = NS_NewSVGAnimatedEnumeration(getter_AddRefs(mFilterUnits), units);
-    NS_ENSURE_SUCCESS(rv,rv);
-    rv = AddMappedSVGValue(nsSVGAtoms::filterUnits, mFilterUnits);
-    NS_ENSURE_SUCCESS(rv,rv);
-  }
+  // nsIDOMSVGURIReference properties
 
-  // DOM property: primitiveUnits ,  #IMPLIED attrib: primitiveUnits
+  // DOM property: href , #REQUIRED attrib: xlink:href
+  // XXX: enforce requiredness
   {
-    nsCOMPtr<nsISVGEnum> units;
-    rv = NS_NewSVGEnum(getter_AddRefs(units),
-                       nsIDOMSVGFilterElement::SVG_FUNITS_USERSPACEONUSE, gUnitMap);
+    rv = NS_NewSVGAnimatedString(getter_AddRefs(mHref));
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = NS_NewSVGAnimatedEnumeration(getter_AddRefs(mPrimitiveUnits), units);
-    NS_ENSURE_SUCCESS(rv,rv);
-    rv = AddMappedSVGValue(nsSVGAtoms::primitiveUnits, mPrimitiveUnits);
-    NS_ENSURE_SUCCESS(rv,rv);
-  }
-
-  // DOM property: filterResX , #IMPLIED attrib: filterRes
-  {
-    rv = NS_NewSVGAnimatedInteger(getter_AddRefs(mFilterResX), 0);
-    NS_ENSURE_SUCCESS(rv,rv);
-  }
-
-  // DOM property: filterResY , #IMPLIED attrib: filterRes
-  {
-    rv = NS_NewSVGAnimatedInteger(getter_AddRefs(mFilterResY), 0);
+    rv = AddMappedSVGValue(nsGkAtoms::href, mHref, kNameSpaceID_XLink);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
@@ -135,7 +117,7 @@ nsSVGFilterElement::Init()
 // nsIDOMNode methods
 
 
-NS_IMPL_DOM_CLONENODE_WITH_INIT(nsSVGFilterElement)
+NS_IMPL_ELEMENT_CLONE_WITH_INIT(nsSVGFilterElement)
 
 
 //----------------------------------------------------------------------
@@ -168,33 +150,25 @@ NS_IMETHODIMP nsSVGFilterElement::GetHeight(nsIDOMSVGAnimatedLength * *aHeight)
 /* readonly attribute nsIDOMSVGAnimatedEnumeration filterUnits; */
 NS_IMETHODIMP nsSVGFilterElement::GetFilterUnits(nsIDOMSVGAnimatedEnumeration * *aUnits)
 {
-  *aUnits = mFilterUnits;
-  NS_IF_ADDREF(*aUnits);
-  return NS_OK;
+  return mEnumAttributes[FILTERUNITS].ToDOMAnimatedEnum(aUnits, this);
 }
 
 /* readonly attribute nsIDOMSVGAnimatedEnumeration primitiveUnits; */
 NS_IMETHODIMP nsSVGFilterElement::GetPrimitiveUnits(nsIDOMSVGAnimatedEnumeration * *aUnits)
 {
-  *aUnits = mPrimitiveUnits;
-  NS_IF_ADDREF(*aUnits);
-  return NS_OK;
+  return mEnumAttributes[PRIMITIVEUNITS].ToDOMAnimatedEnum(aUnits, this);
 }
 
 /* readonly attribute nsIDOMSVGAnimatedEnumeration filterResY; */
 NS_IMETHODIMP nsSVGFilterElement::GetFilterResX(nsIDOMSVGAnimatedInteger * *aFilterResX)
 {
-  *aFilterResX = mFilterResX;
-  NS_IF_ADDREF(*aFilterResX);
-  return NS_OK;
+  return mIntegerAttributes[FILTERRES_X].ToDOMAnimatedInteger(aFilterResX, this);
 }
 
 /* readonly attribute nsIDOMSVGAnimatedEnumeration filterResY; */
 NS_IMETHODIMP nsSVGFilterElement::GetFilterResY(nsIDOMSVGAnimatedInteger * *aFilterResY)
 {
-  *aFilterResY = mFilterResY;
-  NS_IF_ADDREF(*aFilterResY);
-  return NS_OK;
+  return mIntegerAttributes[FILTERRES_Y].ToDOMAnimatedInteger(aFilterResY, this);
 }
 
 /* void setFilterRes (in unsigned long filterResX, in unsigned long filterResY);
@@ -202,74 +176,71 @@ NS_IMETHODIMP nsSVGFilterElement::GetFilterResY(nsIDOMSVGAnimatedInteger * *aFil
 NS_IMETHODIMP
 nsSVGFilterElement::SetFilterRes(PRUint32 filterResX, PRUint32 filterResY)
 {
-  mFilterResX->SetBaseVal(filterResX);
-  mFilterResY->SetBaseVal(filterResY);
+  mIntegerAttributes[FILTERRES_X].SetBaseValue(filterResX, this, PR_FALSE);
+  mIntegerAttributes[FILTERRES_Y].SetBaseValue(filterResY, this, PR_FALSE);
+  return NS_OK;
+}
+
+//----------------------------------------------------------------------
+// nsIDOMSVGURIReference methods
+
+/* readonly attribute nsIDOMSVGAnimatedString href; */
+NS_IMETHODIMP 
+nsSVGFilterElement::GetHref(nsIDOMSVGAnimatedString * *aHref)
+{
+  *aHref = mHref;
+  NS_IF_ADDREF(*aHref);
   return NS_OK;
 }
 
 //----------------------------------------------------------------------
 // nsIContent methods
 
-nsresult
-nsSVGFilterElement::InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
-                                  PRBool aNotify)
+PRBool
+nsSVGFilterElement::ParseAttribute(PRInt32 aNameSpaceID, nsIAtom* aName,
+                                   const nsAString& aValue,
+                                   nsAttrValue& aResult)
 {
-  WillModify();
-  nsresult rv = nsSVGFilterElementBase::InsertChildAt(aKid, aIndex, aNotify);
-  DidModify();
-
-  return rv;
-}
-
-nsresult
-nsSVGFilterElement::AppendChildTo(nsIContent* aKid, PRBool aNotify)
-{
-  WillModify();
-  nsresult rv = nsSVGFilterElementBase::AppendChildTo(aKid, aNotify);
-  DidModify();
-
-  return rv;
-}
-
-nsresult
-nsSVGFilterElement::RemoveChildAt(PRUint32 aIndex, PRBool aNotify)
-{
-  WillModify();
-  nsresult rv = nsSVGFilterElementBase::RemoveChildAt(aIndex, aNotify);
-  DidModify();
-
-  return rv;
-}
-
-nsresult
-nsSVGFilterElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                            nsIAtom* aPrefix, const nsAString& aValue,
-                            PRBool aNotify)
-{
-  nsresult rv = nsSVGFilterElementBase::SetAttr(aNameSpaceID, aName, aPrefix,
-                                                aValue, aNotify);
-
-  if (aName == nsSVGAtoms::filterRes && aNameSpaceID == kNameSpaceID_None) {
-    PRUint32 resX, resY;
-    char *str;
-    str = ToNewCString(aValue);
-    int num = sscanf(str, "%d %d\n", &resX, &resY);
-    switch (num) {
-    case 2:
-      mFilterResX->SetBaseVal(resX);
-      mFilterResY->SetBaseVal(resY);
-      break;
-    case 1:
-      mFilterResX->SetBaseVal(resX);
-      mFilterResY->SetBaseVal(resX);
-      break;
-    default:
-      break;
-    }
-    nsMemory::Free(str);
+  if (aName == nsGkAtoms::filterRes && aNameSpaceID == kNameSpaceID_None) {
+    return ParseIntegerOptionalInteger(aName, aValue,
+                                       FILTERRES_X, FILTERRES_Y,
+                                       aResult);
   }
+  return nsSVGFilterElementBase::ParseAttribute(aNameSpaceID, aName,
+                                                aValue, aResult);
+}
 
-  return rv;
+NS_IMETHODIMP_(PRBool)
+nsSVGFilterElement::IsAttributeMapped(const nsIAtom* name) const
+{
+  static const MappedAttributeEntry* const map[] = {
+    sFEFloodMap,
+    sFiltersMap,
+    sFontSpecificationMap,
+    sGradientStopMap,
+    sLightingEffectsMap,
+    sMarkersMap,
+    sTextContentElementsMap,
+    sViewportsMap
+  };
+  return FindAttributeDependence(name, map, NS_ARRAY_LENGTH(map)) ||
+    nsSVGGraphicElementBase::IsAttributeMapped(name);
+}
+
+void
+nsSVGFilterElement::Invalidate()
+{
+  nsTObserverArray<nsIMutationObserver*> *observers = GetMutationObservers();
+
+  if (observers && !observers->IsEmpty()) {
+    nsTObserverArray<nsIMutationObserver*>::ForwardIterator iter(*observers);
+    while (iter.HasMore()) {
+      nsCOMPtr<nsIMutationObserver> obs(iter.GetNext());
+      nsCOMPtr<nsISVGFilterProperty> filter = do_QueryInterface(obs);
+      if (filter)
+        filter->Invalidate();
+    }
+  }
 }
 
 //----------------------------------------------------------------------
@@ -280,4 +251,18 @@ nsSVGFilterElement::GetLengthInfo()
 {
   return LengthAttributesInfo(mLengthAttributes, sLengthInfo,
                               NS_ARRAY_LENGTH(sLengthInfo));
+}
+
+nsSVGElement::IntegerAttributesInfo
+nsSVGFilterElement::GetIntegerInfo()
+{
+  return IntegerAttributesInfo(mIntegerAttributes, sIntegerInfo,
+                               NS_ARRAY_LENGTH(sIntegerInfo));
+}
+
+nsSVGElement::EnumAttributesInfo
+nsSVGFilterElement::GetEnumInfo()
+{
+  return EnumAttributesInfo(mEnumAttributes, sEnumInfo,
+                            NS_ARRAY_LENGTH(sEnumInfo));
 }

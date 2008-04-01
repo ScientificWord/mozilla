@@ -39,19 +39,23 @@
 #ifndef __NS_SVGGRADIENTELEMENT_H__
 #define __NS_SVGGRADIENTELEMENT_H__
 
-#include "nsIDOMSVGAnimatedEnum.h"
 #include "nsIDOMSVGURIReference.h"
 #include "nsIDOMSVGGradientElement.h"
+#include "nsIDOMSVGUnitTypes.h"
 #include "nsSVGStylableElement.h"
 #include "nsSVGLength2.h"
+#include "nsSVGEnum.h"
 
 //--------------------- Gradients------------------------
 
 typedef nsSVGStylableElement nsSVGGradientElementBase;
 
 class nsSVGGradientElement : public nsSVGGradientElementBase,
-                             public nsIDOMSVGURIReference
+                             public nsIDOMSVGURIReference,
+                             public nsIDOMSVGUnitTypes
 {
+  friend class nsSVGGradientFrame;
+
 protected:
   nsSVGGradientElement(nsINodeInfo* aNodeInfo);
   nsresult Init();
@@ -66,18 +70,20 @@ public:
   // URI Reference
   NS_DECL_NSIDOMSVGURIREFERENCE
 
-  // nsISVGContent specializations:
-  virtual void ParentChainChanged();
-
   // nsIContent
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
 
 protected:
-  
+
   // nsIDOMSVGGradientElement values
-  nsCOMPtr<nsIDOMSVGAnimatedEnumeration> mGradientUnits;
   nsCOMPtr<nsIDOMSVGAnimatedTransformList> mGradientTransform;
-  nsCOMPtr<nsIDOMSVGAnimatedEnumeration> mSpreadMethod;
+
+  enum { GRADIENTUNITS, SPREADMETHOD };
+  nsSVGEnum mEnumAttributes[2];
+  static nsSVGEnumMapping sSpreadMethodMap[];
+  static EnumInfo sEnumInfo[2];
+
+  virtual EnumAttributesInfo GetEnumInfo();
 
   // nsIDOMSVGURIReference properties
   nsCOMPtr<nsIDOMSVGAnimatedString> mHref;
@@ -110,8 +116,10 @@ public:
   // The Gradient Element base class implements these
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGLinearGradientElementBase::)
 
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGLinearGradientElementBase::)
+  NS_FORWARD_NSIDOMNODE(nsSVGLinearGradientElementBase::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGLinearGradientElementBase::)
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 
 protected:
 
@@ -149,9 +157,11 @@ public:
   NS_DECL_NSIDOMSVGRADIALGRADIENTELEMENT
 
   // xxx I wish we could use virtual inheritance
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGRadialGradientElementBase::)
+  NS_FORWARD_NSIDOMNODE(nsSVGRadialGradientElementBase::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGRadialGradientElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGRadialGradientElementBase::)
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 
 protected:
 

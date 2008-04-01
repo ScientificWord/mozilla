@@ -50,6 +50,7 @@ const nsIDOMSerializer     = I.nsIDOMSerializer;
 const nsIDOMDocument       = I.nsIDOMDocument;
 const nsIDOMElement        = I.nsIDOMElement;
 const nsIDOMNode           = I.nsIDOMNode;
+const nsIDOM3Node          = I.nsIDOM3Node;
 const nsIDOMCharacterData  = I.nsIDOMCharacterData;
 const nsIDOMAttr           = I.nsIDOMAttr;
 const nsIDOMNodeList       = I.nsIDOMNodeList;
@@ -60,13 +61,14 @@ function DOMParser() {
   return C["@mozilla.org/xmlextras/domparser;1"].createInstance(nsIDOMParser);
 }
 
+var __testsDirectory = null;
+
 function ParseFile(file) {
   if (typeof(file) == "string") {
-    var dirServ = C["@mozilla.org/file/directory_service;1"]
-                   .getService(nsIProperties);
-    var dummy = {};
-    var fileObj = dirServ.get("CurProcD", nsILocalFile);
-    fileObj.append("content_unit_tests");
+    if (!__testsDirectory) {
+      __testsDirectory = do_get_file("content/test/unit/");
+    }
+    var fileObj = __testsDirectory.clone();
     fileObj.append(file);
     file = fileObj;
   }
@@ -166,3 +168,21 @@ function do_check_serialize(dom) {
   do_check_equiv(dom, roundtrip(dom));
 }
 
+function Pipe() {
+  var p = C["@mozilla.org/pipe;1"].createInstance(I.nsIPipe);
+  p.init(false, false, 0, 0xffffffff, null);
+  return p;
+}
+
+function ScriptableInput(arg) {
+  if (arg instanceof I.nsIPipe) {
+    arg = arg.inputStream;
+  }
+
+  var str = C["@mozilla.org/scriptableinputstream;1"].
+    createInstance(I.nsIScriptableInputStream);
+
+  str.init(arg);
+
+  return str;
+}

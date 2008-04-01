@@ -41,6 +41,7 @@
 #include "nsSVGLength2.h"
 #include "nsGkAtoms.h"
 #include "nsSVGUtils.h"
+#include "gfxContext.h"
 
 typedef nsSVGPathGeometryElement nsSVGCircleElementBase;
 
@@ -58,12 +59,14 @@ public:
   NS_DECL_NSIDOMSVGCIRCLEELEMENT
 
   // xxx I wish we could use virtual inheritance
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGCircleElementBase::)
+  NS_FORWARD_NSIDOMNODE(nsSVGCircleElementBase::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGCircleElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGCircleElementBase::)
 
   // nsSVGPathGeometryElement methods:
-  virtual void ConstructPath(cairo_t *aCtx);
+  virtual void ConstructPath(gfxContext *aCtx);
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 
 protected:
 
@@ -108,7 +111,7 @@ nsSVGCircleElement::nsSVGCircleElement(nsINodeInfo *aNodeInfo)
 //----------------------------------------------------------------------
 // nsIDOMNode methods
 
-NS_IMPL_DOM_CLONENODE_WITH_INIT(nsSVGCircleElement)
+NS_IMPL_ELEMENT_CLONE_WITH_INIT(nsSVGCircleElement)
 
 //----------------------------------------------------------------------
 // nsIDOMSVGCircleElement methods
@@ -145,11 +148,12 @@ nsSVGCircleElement::GetLengthInfo()
 // nsSVGPathGeometryElement methods
 
 void
-nsSVGCircleElement::ConstructPath(cairo_t *aCtx)
+nsSVGCircleElement::ConstructPath(gfxContext *aCtx)
 {
   float x, y, r;
 
   GetAnimatedLengthValues(&x, &y, &r, nsnull);
 
-  cairo_arc(aCtx, x, y, r, 0, 2*M_PI);
+  if (r > 0.0f)
+    aCtx->Arc(gfxPoint(x, y), r, 0, 2*M_PI);
 }

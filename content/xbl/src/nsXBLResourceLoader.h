@@ -38,7 +38,8 @@
 
 #include "nsCOMPtr.h"
 #include "nsICSSLoaderObserver.h"
-#include "nsISupportsArray.h"
+#include "nsCOMArray.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsIContent;
 class nsIAtom;
@@ -72,7 +73,8 @@ struct nsXBLResource {
 class nsXBLResourceLoader : public nsICSSLoaderObserver
 {
 public:
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTION_CLASS(nsXBLResourceLoader)
 
   // nsICSSLoaderObserver
   NS_IMETHOD StyleSheetLoaded(nsICSSStyleSheet* aSheet, PRBool aWasAlternate,
@@ -103,7 +105,8 @@ public:
   // async loads.
   PRPackedBool mInLoadResourcesFunc;
   PRInt16 mPendingSheets; // The number of stylesheets that have yet to load.
-  
-  nsCOMPtr<nsISupportsArray> mBoundElements; // Bound elements that are waiting on the stylesheets and scripts.
+
+  // Bound elements that are waiting on the stylesheets and scripts.
+  nsCOMArray<nsIContent> mBoundElements;
 };
 

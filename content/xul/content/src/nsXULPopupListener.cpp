@@ -44,34 +44,31 @@
   tracks xul popups and context menus
  */
 
+#include "nsXULPopupListener.h"
 #include "nsCOMPtr.h"
-#include "nsXULAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMXULElement.h"
 #include "nsIDOMNodeList.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMDocumentXBL.h"
-#include "nsIXULPopupListener.h"
-#include "nsIDOMMouseListener.h"
-#include "nsIDOMContextMenuListener.h"
 #include "nsContentCID.h"
 #include "nsContentUtils.h"
+#include "nsXULPopupManager.h"
 
 #include "nsIScriptContext.h"
 #include "nsIDOMWindowInternal.h"
 #include "nsIDOMXULDocument.h"
 #include "nsIDocument.h"
-#include "nsIContent.h"
-#include "nsIDOMMouseEvent.h"
 #include "nsIDOMNSUIEvent.h"
 #include "nsIDOMEventTarget.h"
 #include "nsIDOMNSEvent.h"
 #include "nsServiceManagerUtils.h"
 #include "nsIPrincipal.h"
 #include "nsIScriptSecurityManager.h"
-
-#include "nsIBoxObject.h"
-#include "nsIPopupBoxObject.h"
+#include "nsLayoutUtils.h"
+#include "nsFrameManager.h"
+#include "nsHTMLReflowState.h"
 
 // for event firing in context menus
 #include "nsPresContext.h"
@@ -79,8 +76,9 @@
 #include "nsIEventStateManager.h"
 #include "nsIFocusController.h"
 #include "nsPIDOMWindow.h"
-
-#include "nsIFrame.h"
+#include "nsIViewManager.h"
+#include "nsDOMError.h"
+#include "nsIMenuFrame.h"
 
 // on win32 and os/2, context menus come up on mouse up. On other platforms,
 // they appear on mouse down. Certain bits of code care about this difference.
@@ -88,123 +86,49 @@
 #define NS_CONTEXT_MENU_IS_MOUSEUP 1
 #endif
 
-
-////////////////////////////////////////////////////////////////////////
-// PopupListenerImpl
-//
-//   This is the popup listener implementation for popup menus and context menus.
-//
-class XULPopupListenerImpl : public nsIXULPopupListener,
-                             public nsIDOMMouseListener,
-                             public nsIDOMContextMenuListener
-{
-public:
-    XULPopupListenerImpl(void);
-    virtual ~XULPopupListenerImpl(void);
-
-public:
-    // nsISupports
-    NS_DECL_ISUPPORTS
-
-    // nsIXULPopupListener
-    NS_IMETHOD Init(nsIDOMElement* aElement, const XULPopupType& popupType);
-
-    // nsIDOMMouseListener
-    NS_IMETHOD MouseDown(nsIDOMEvent* aMouseEvent);
-    NS_IMETHOD MouseUp(nsIDOMEvent* aMouseEvent) { return NS_OK; };
-    NS_IMETHOD MouseClick(nsIDOMEvent* aMouseEvent) { return NS_OK; };
-    NS_IMETHOD MouseDblClick(nsIDOMEvent* aMouseEvent) { return NS_OK; };
-    NS_IMETHOD MouseOver(nsIDOMEvent* aMouseEvent) { return NS_OK; };
-    NS_IMETHOD MouseOut(nsIDOMEvent* aMouseEvent) { return NS_OK; };
-
-    // nsIDOMContextMenuListener
-    NS_IMETHOD ContextMenu(nsIDOMEvent* aContextMenuEvent);
-
-    // nsIDOMEventListener
-    NS_IMETHOD HandleEvent(nsIDOMEvent* anEvent) { return NS_OK; };
-
-protected:
-
-    virtual nsresult LaunchPopup(nsIDOMEvent* anEvent);
-    virtual nsresult LaunchPopup(PRInt32 aClientX, PRInt32 aClientY) ;
-    virtual void ClosePopup();
-
-private:
-
-    nsresult PreLaunchPopup(nsIDOMEvent* aMouseEvent);
-    nsresult FireFocusOnTargetContent(nsIDOMNode* aTargetNode);
-
-    // |mElement| is the node to which this listener is attached.
-    nsIDOMElement* mElement;               // Weak ref. The element will go away first.
-
-    // The popup that is getting shown on top of mElement.
-    nsIDOMElement* mPopupContent; 
-
-    // The type of the popup
-    XULPopupType popupType;
-    
-};
-
-////////////////////////////////////////////////////////////////////////
-      
-XULPopupListenerImpl::XULPopupListenerImpl(void)
-  : mElement(nsnull), mPopupContent(nsnull)
+nsXULPopupListener::nsXULPopupListener(nsIDOMElement *aElement, PRBool aIsContext)
+  : mElement(aElement), mPopupContent(nsnull), mIsContext(aIsContext)
 {
 }
 
-XULPopupListenerImpl::~XULPopupListenerImpl(void)
+nsXULPopupListener::~nsXULPopupListener(void)
 {
   ClosePopup();
-  
-#ifdef DEBUG_REFS
-    --gInstanceCount;
-    fprintf(stdout, "%d - RDF: XULPopupListenerImpl\n", gInstanceCount);
-#endif
 }
 
-NS_IMPL_ADDREF(XULPopupListenerImpl)
-NS_IMPL_RELEASE(XULPopupListenerImpl)
+NS_IMPL_CYCLE_COLLECTION_2(nsXULPopupListener, mElement, mPopupContent)
+NS_IMPL_CYCLE_COLLECTING_ADDREF(nsXULPopupListener)
+NS_IMPL_CYCLE_COLLECTING_RELEASE(nsXULPopupListener)
 
-
-NS_INTERFACE_MAP_BEGIN(XULPopupListenerImpl)
-  NS_INTERFACE_MAP_ENTRY(nsIXULPopupListener)
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsXULPopupListener)
   NS_INTERFACE_MAP_ENTRY(nsIDOMMouseListener)
   NS_INTERFACE_MAP_ENTRY(nsIDOMContextMenuListener)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsIDOMEventListener, nsIDOMMouseListener)
-  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIXULPopupListener)
 NS_INTERFACE_MAP_END
-
-NS_IMETHODIMP
-XULPopupListenerImpl::Init(nsIDOMElement* aElement, const XULPopupType& popup)
-{
-  mElement = aElement; // Weak reference. Don't addref it.
-  popupType = popup;
-  return NS_OK;
-}
 
 ////////////////////////////////////////////////////////////////
 // nsIDOMMouseListener
 
 nsresult
-XULPopupListenerImpl::MouseDown(nsIDOMEvent* aMouseEvent)
+nsXULPopupListener::MouseDown(nsIDOMEvent* aMouseEvent)
 {
-  if(popupType != eXULPopupType_context)
+  if(!mIsContext)
     return PreLaunchPopup(aMouseEvent);
   else
     return NS_OK;
 }
 
 nsresult
-XULPopupListenerImpl::ContextMenu(nsIDOMEvent* aMouseEvent)
+nsXULPopupListener::ContextMenu(nsIDOMEvent* aMouseEvent)
 {
-  if(popupType == eXULPopupType_context)
+  if(mIsContext)
     return PreLaunchPopup(aMouseEvent);
   else 
     return NS_OK;
 }
 
 nsresult
-XULPopupListenerImpl::PreLaunchPopup(nsIDOMEvent* aMouseEvent)
+nsXULPopupListener::PreLaunchPopup(nsIDOMEvent* aMouseEvent)
 {
   PRUint16 button;
 
@@ -227,9 +151,27 @@ XULPopupListenerImpl::PreLaunchPopup(nsIDOMEvent* aMouseEvent)
   mouseEvent->GetTarget(getter_AddRefs(target));
   nsCOMPtr<nsIDOMNode> targetNode = do_QueryInterface(target);
 
+  if (!targetNode && mIsContext) {
+    // Not a DOM node, see if it's the DOM window (bug 380818).
+    nsCOMPtr<nsIDOMWindow> domWin = do_QueryInterface(target);
+    if (!domWin) {
+      return NS_ERROR_DOM_WRONG_TYPE_ERR;
+    }
+    // Try to use the root node as target node.
+    nsCOMPtr<nsIDOMDocument> domDoc;
+    domWin->GetDocument(getter_AddRefs(domDoc));
+
+    nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
+    if (doc)
+      targetNode = do_QueryInterface(doc->GetRootContent());
+    if (!targetNode) {
+      return NS_ERROR_FAILURE;
+    }
+  }
+
   PRBool preventDefault;
   nsUIEvent->GetPreventDefault(&preventDefault);
-  if (preventDefault && targetNode && popupType == eXULPopupType_context) {
+  if (preventDefault && targetNode && mIsContext) {
     // Someone called preventDefault on a context menu.
     // Let's make sure they are allowed to do so.
     PRBool eventEnabled =
@@ -257,15 +199,15 @@ XULPopupListenerImpl::PreLaunchPopup(nsIDOMEvent* aMouseEvent)
     return NS_OK;
   }
 
-  // This is a gross hack to deal with a recursive popup situation happening in AIM code. 
-  // See http://bugzilla.mozilla.org/show_bug.cgi?id=96920.
+  // prevent popups on menu and menuitems as they handle their own popups
+  // This was added for bug 96920.
   // If a menu item child was clicked on that leads to a popup needing
   // to show, we know (guaranteed) that we're dealing with a menu or
   // submenu of an already-showing popup.  We don't need to do anything at all.
-  if (popupType == eXULPopupType_popup) {
-    nsCOMPtr<nsIContent> targetContent = do_QueryInterface(target);
-    nsIAtom *tag = targetContent->Tag();
-    if (tag == nsXULAtoms::menu || tag == nsXULAtoms::menuitem)
+  nsCOMPtr<nsIContent> targetContent = do_QueryInterface(target);
+  if (!mIsContext) {
+    nsIAtom *tag = targetContent ? targetContent->Tag() : nsnull;
+    if (tag == nsGkAtoms::menu || tag == nsGkAtoms::menuitem)
       return NS_OK;
   }
 
@@ -275,47 +217,38 @@ XULPopupListenerImpl::PreLaunchPopup(nsIDOMEvent* aMouseEvent)
   // Turn the document into a XUL document so we can use SetPopupNode.
   nsCOMPtr<nsIDOMXULDocument> xulDocument = do_QueryInterface(content->GetDocument());
   if (!xulDocument) {
-    NS_ERROR("Popup attached to an element that isn't in XUL!");
     return NS_ERROR_FAILURE;
   }
 
   // Store clicked-on node in xul document for context menus and menu popups.
-  // CLEAR THE POPUP EVENT BEFORE THIS FUNCTION EXITS
-  xulDocument->SetPopupNode( targetNode );
-  xulDocument->SetTrustedPopupEvent( aMouseEvent );
+  xulDocument->SetPopupNode(targetNode);
 
   nsCOMPtr<nsIDOMNSEvent> nsevent(do_QueryInterface(aMouseEvent));
 
-  switch (popupType) {
-    case eXULPopupType_popup:
-      // Check for left mouse button down
-      mouseEvent->GetButton(&button);
-      if (button == 0) {
-        // Time to launch a popup menu.
-        LaunchPopup(aMouseEvent);
-        aMouseEvent->StopPropagation();
-        aMouseEvent->PreventDefault();
-      }
-      break;
-    case eXULPopupType_context:
-
-      // Time to launch a context menu
+  if (mIsContext) {
 #ifndef NS_CONTEXT_MENU_IS_MOUSEUP
-      // If the context menu launches on mousedown,
-      // we have to fire focus on the content we clicked on
-      FireFocusOnTargetContent(targetNode);
+    // If the context menu launches on mousedown,
+    // we have to fire focus on the content we clicked on
+    FireFocusOnTargetContent(targetNode);
 #endif
-      LaunchPopup(aMouseEvent);
-      aMouseEvent->StopPropagation();
-      aMouseEvent->PreventDefault();
-      break;
   }
-  xulDocument->SetTrustedPopupEvent(nsnull);
+  else {
+    // Only open popups when the left mouse button is down.
+    mouseEvent->GetButton(&button);
+    if (button != 0)
+      return NS_OK;
+  }
+
+  // Open the popup and cancel the default handling of the event.
+  LaunchPopup(aMouseEvent, targetContent);
+  aMouseEvent->StopPropagation();
+  aMouseEvent->PreventDefault();
+
   return NS_OK;
 }
 
 nsresult
-XULPopupListenerImpl::FireFocusOnTargetContent(nsIDOMNode* aTargetNode)
+nsXULPopupListener::FireFocusOnTargetContent(nsIDOMNode* aTargetNode)
 {
   nsresult rv;
   nsCOMPtr<nsIDOMDocument> domDoc;
@@ -325,7 +258,7 @@ XULPopupListenerImpl::FireFocusOnTargetContent(nsIDOMNode* aTargetNode)
     nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
 
     // Get nsIDOMElement for targetNode
-    nsIPresShell *shell = doc->GetShellAt(0);
+    nsIPresShell *shell = doc->GetPrimaryShell();
     if (!shell)
       return NS_ERROR_FAILURE;
 
@@ -362,23 +295,13 @@ XULPopupListenerImpl::FireFocusOnTargetContent(nsIDOMNode* aTargetNode)
 
     if (focusableContent) {
       // Lock to scroll by SetFocus. See bug 309075.
-      nsCOMPtr<nsIFocusController> focusController = nsnull;
-      PRBool isAlreadySuppressed = PR_FALSE;
+      nsFocusScrollSuppressor scrollSuppressor;
       nsPIDOMWindow *ourWindow = doc->GetWindow();
       if (ourWindow) {
-        focusController = ourWindow->GetRootFocusController();
-        if (focusController) {
-          focusController->GetSuppressFocusScroll(&isAlreadySuppressed);
-          if (!isAlreadySuppressed)
-            focusController->SetSuppressFocusScroll(PR_TRUE);
-        }
+        scrollSuppressor.Init(ourWindow->GetRootFocusController());
       }
 
       focusableContent->SetFocus(context);
-
-      // Unlock scroll if it's needed.
-      if (focusController && !isAlreadySuppressed)
-        focusController->SetSuppressFocusScroll(PR_FALSE);
     } else if (!suppressBlur)
       esm->SetContentState(nsnull, NS_EVENT_STATE_FOCUS);
 
@@ -387,7 +310,6 @@ XULPopupListenerImpl::FireFocusOnTargetContent(nsIDOMNode* aTargetNode)
   return rv;
 }
 
-//
 // ClosePopup
 //
 // Do everything needed to shut down the popup.
@@ -395,42 +317,18 @@ XULPopupListenerImpl::FireFocusOnTargetContent(nsIDOMNode* aTargetNode)
 // NOTE: This routine is safe to call even if the popup is already closed.
 //
 void
-XULPopupListenerImpl :: ClosePopup ( )
+nsXULPopupListener::ClosePopup()
 {
-  if ( mPopupContent ) {
-    nsCOMPtr<nsIDOMXULElement> popupElement(do_QueryInterface(mPopupContent));
-    nsCOMPtr<nsIBoxObject> boxObject;
-    if (popupElement)
-      popupElement->GetBoxObject(getter_AddRefs(boxObject));
-    nsCOMPtr<nsIPopupBoxObject> popupObject(do_QueryInterface(boxObject));
-    if (popupObject)
-      popupObject->HidePopup();
-
+  if (mPopupContent) {
+    // this is called when the listener is going away, so make sure that the
+    // popup is hidden. Use asynchronous hiding just to be safe so we don't
+    // fire events during destruction.  
+    nsXULPopupManager* pm = nsXULPopupManager::GetInstance();
+    if (pm)
+      pm->HidePopup(mPopupContent, PR_FALSE, PR_TRUE, PR_TRUE);
     mPopupContent = nsnull;  // release the popup
   }
-
 } // ClosePopup
-
-//
-// LaunchPopup
-//
-nsresult
-XULPopupListenerImpl::LaunchPopup ( nsIDOMEvent* anEvent )
-{
-  // Retrieve our x and y position.
-  nsCOMPtr<nsIDOMMouseEvent> mouseEvent ( do_QueryInterface(anEvent) );
-  if (!mouseEvent) {
-    //non-ui event passed in.  bad things.
-    return NS_OK;
-  }
-
-  PRInt32 xPos, yPos;
-  mouseEvent->GetClientX(&xPos); 
-  mouseEvent->GetClientY(&yPos); 
-
-  return LaunchPopup(xPos, yPos);
-}
-
 
 static void
 GetImmediateChild(nsIContent* aContent, nsIAtom *aTag, nsIContent** aResult) 
@@ -449,53 +347,6 @@ GetImmediateChild(nsIContent* aContent, nsIAtom *aTag, nsIContent** aResult)
   return;
 }
 
-static void ConvertPosition(nsIDOMElement* aPopupElt, nsString& aAnchor, nsString& aAlign, PRInt32& aY)
-{
-  nsAutoString position;
-  aPopupElt->GetAttribute(NS_LITERAL_STRING("position"), position);
-  if (position.IsEmpty())
-    return;
-
-  if (position.EqualsLiteral("before_start")) {
-    aAnchor.AssignLiteral("topleft");
-    aAlign.AssignLiteral("bottomleft");
-  }
-  else if (position.EqualsLiteral("before_end")) {
-    aAnchor.AssignLiteral("topright");
-    aAlign.AssignLiteral("bottomright");
-  }
-  else if (position.EqualsLiteral("after_start")) {
-    aAnchor.AssignLiteral("bottomleft");
-    aAlign.AssignLiteral("topleft");
-  }
-  else if (position.EqualsLiteral("after_end")) {
-    aAnchor.AssignLiteral("bottomright");
-    aAlign.AssignLiteral("topright");
-  }
-  else if (position.EqualsLiteral("start_before")) {
-    aAnchor.AssignLiteral("topleft");
-    aAlign.AssignLiteral("topright");
-  }
-  else if (position.EqualsLiteral("start_after")) {
-    aAnchor.AssignLiteral("bottomleft");
-    aAlign.AssignLiteral("bottomright");
-  }
-  else if (position.EqualsLiteral("end_before")) {
-    aAnchor.AssignLiteral("topright");
-    aAlign.AssignLiteral("topleft");
-  }
-  else if (position.EqualsLiteral("end_after")) {
-    aAnchor.AssignLiteral("bottomright");
-    aAlign.AssignLiteral("bottomleft");
-  }
-  else if (position.EqualsLiteral("overlap")) {
-    aAnchor.AssignLiteral("topleft");
-    aAlign.AssignLiteral("topleft");
-  }
-  else if (position.EqualsLiteral("after_pointer"))
-    aY += 21;
-}
-
 //
 // LaunchPopup
 //
@@ -503,25 +354,22 @@ static void ConvertPosition(nsIDOMElement* aPopupElt, nsString& aAnchor, nsStrin
 // Client and widget coordinates, popup a new window showing the appropriate 
 // content.
 //
-// This looks for an attribute on |aElement| of the appropriate popup type 
+// aTargetContent is the target of the mouse event aEvent that triggered the
+// popup. mElement is the element that the popup menu is attached to.
+// aTargetContent may be equal to mElement or it may be a descendant.
+//
+// This looks for an attribute on |mElement| of the appropriate popup type 
 // (popup, context) and uses that attribute's value as an ID for
 // the popup content in the document.
 //
 nsresult
-XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
+nsXULPopupListener::LaunchPopup(nsIDOMEvent* aEvent, nsIContent* aTargetContent)
 {
   nsresult rv = NS_OK;
 
   nsAutoString type(NS_LITERAL_STRING("popup"));
-  if ( popupType == eXULPopupType_context ) {
+  if (mIsContext)
     type.AssignLiteral("context");
-    
-    // position the menu two pixels down and to the right from the current
-    // mouse position. This makes it easier to dismiss the menu by just
-    // clicking.
-    aClientX += 2;
-    aClientY += 2;
-  }
 
   nsAutoString identifier;
   mElement->GetAttribute(type, identifier);
@@ -547,14 +395,14 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
   }
 
   // Handle the _child case for popups and context menus
-  nsCOMPtr<nsIDOMElement> popupContent;
+  nsCOMPtr<nsIDOMElement> popupElement;
 
   if (identifier.EqualsLiteral("_child")) {
     nsCOMPtr<nsIContent> popup;
 
-    GetImmediateChild(content, nsXULAtoms::menupopup, getter_AddRefs(popup));
+    GetImmediateChild(content, nsGkAtoms::menupopup, getter_AddRefs(popup));
     if (popup)
-      popupContent = do_QueryInterface(popup);
+      popupElement = do_QueryInterface(popup);
     else {
       nsCOMPtr<nsIDOMDocumentXBL> nsDoc(do_QueryInterface(domDocument));
       nsCOMPtr<nsIDOMNodeList> list;
@@ -567,9 +415,9 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
           list->Item(ctr, getter_AddRefs(node));
           nsCOMPtr<nsIContent> childContent(do_QueryInterface(node));
 
-          if (childContent->NodeInfo()->Equals(nsXULAtoms::menupopup,
+          if (childContent->NodeInfo()->Equals(nsGkAtoms::menupopup,
                                                kNameSpaceID_XUL)) {
-            popupContent = do_QueryInterface(childContent);
+            popupElement = do_QueryInterface(childContent);
             break;
           }
         }
@@ -577,42 +425,59 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
     }
   }
   else if (NS_FAILED(rv = domDocument->GetElementById(identifier,
-                                              getter_AddRefs(popupContent)))) {
+                                              getter_AddRefs(popupElement)))) {
     // Use getElementById to obtain the popup content and gracefully fail if 
     // we didn't find any popup content in the document. 
     NS_ERROR("GetElementById had some kind of spasm.");
     return rv;
   }
-  if ( !popupContent )
+
+  // return if no popup was found or the popup is the element itself.
+  if ( !popupElement || popupElement == mElement)
     return NS_OK;
 
-  // We have some popup content. Obtain our window.
-  nsPIDOMWindow *domWindow = document->GetWindow();
+  // Submenus can't be used as context menus or popups, bug 288763.
+  // Similar code also in nsXULTooltipListener::GetTooltipFor.
+  nsCOMPtr<nsIContent> popup = do_QueryInterface(popupElement);
+  nsIContent* parent = popup->GetParent();
+  if (parent) {
+    nsIDocument* doc = parent->GetCurrentDoc();
+    nsIPresShell* presShell = doc ? doc->GetPrimaryShell() : nsnull;
+    nsIFrame* frame = presShell ? presShell->GetPrimaryFrameFor(parent) : nsnull;
+    if (frame && frame->GetType() == nsGkAtoms::menuFrame)
+      return NS_OK;
+  }
 
-  if (domWindow) {
-    // Find out if we're anchored.
-    mPopupContent = popupContent.get();
+  nsXULPopupManager* pm = nsXULPopupManager::GetInstance();
+  if (!pm)
+    return NS_OK;
 
-    nsAutoString anchorAlignment;
-    mPopupContent->GetAttribute(NS_LITERAL_STRING("popupanchor"), anchorAlignment);
+  // For left-clicks, if the popup has an position attribute, or both the
+  // popupanchor and popupalign attributes are used, anchor the popup to the
+  // element, otherwise just open it at the screen position where the mouse
+  // was clicked. Context menus always open at the mouse position.
+  mPopupContent = popup;
+  if (!mIsContext &&
+      (mPopupContent->HasAttr(kNameSpaceID_None, nsGkAtoms::position) ||
+       (mPopupContent->HasAttr(kNameSpaceID_None, nsGkAtoms::popupanchor) &&
+        mPopupContent->HasAttr(kNameSpaceID_None, nsGkAtoms::popupalign)))) {
+    pm->ShowPopup(mPopupContent, content, EmptyString(), 0, 0,
+                  PR_FALSE, PR_TRUE, PR_FALSE, aEvent);
+  }
+  else {
+    PRInt32 xPos = 0, yPos = 0;
+    nsCOMPtr<nsIDOMMouseEvent> mouseEvent = do_QueryInterface(aEvent);
+    mouseEvent->GetScreenX(&xPos);
+    mouseEvent->GetScreenY(&yPos);
 
-    nsAutoString popupAlignment;
-    mPopupContent->GetAttribute(NS_LITERAL_STRING("popupalign"), popupAlignment);
+    if (mIsContext) {
+      // position the menu two pixels down and to the right from the current
+      // mouse position. This makes it easier to dismiss the menu by just clicking
+      xPos += 2;
+      yPos += 2;
+    }
 
-    PRInt32 xPos = aClientX, yPos = aClientY;
-
-    ConvertPosition(mPopupContent, anchorAlignment, popupAlignment, yPos);
-    if (!anchorAlignment.IsEmpty() && !popupAlignment.IsEmpty())
-      xPos = yPos = -1;
-
-    nsCOMPtr<nsIBoxObject> popupBox;
-    nsCOMPtr<nsIDOMXULElement> xulPopupElt(do_QueryInterface(mPopupContent));
-    xulPopupElt->GetBoxObject(getter_AddRefs(popupBox));
-    nsCOMPtr<nsIPopupBoxObject> popupBoxObject(do_QueryInterface(popupBox));
-    if (popupBoxObject)
-      popupBoxObject->ShowPopup(mElement, mPopupContent, xPos, yPos, 
-                                type.get(), anchorAlignment.get(), 
-                                popupAlignment.get());
+    pm->ShowPopupAtScreen(mPopupContent, xPos, yPos, mIsContext, aEvent);
   }
 
   return NS_OK;
@@ -620,13 +485,14 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
 
 ////////////////////////////////////////////////////////////////
 nsresult
-NS_NewXULPopupListener(nsIXULPopupListener** pop)
+NS_NewXULPopupListener(nsIDOMElement* aElement, PRBool aIsContext,
+                       nsIDOMEventListener** aListener)
 {
-    XULPopupListenerImpl* popup = new XULPopupListenerImpl();
-    if (!popup)
+    nsXULPopupListener* pl = new nsXULPopupListener(aElement, aIsContext);
+    if (!pl)
       return NS_ERROR_OUT_OF_MEMORY;
-    
-    NS_ADDREF(popup);
-    *pop = popup;
+
+    *aListener = static_cast<nsIDOMMouseListener *>(pl);
+    NS_ADDREF(*aListener);
     return NS_OK;
 }

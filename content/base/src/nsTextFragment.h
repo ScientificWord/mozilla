@@ -88,6 +88,7 @@ public:
   nsTextFragment()
     : m1b(nsnull), mAllBits(0)
   {
+    NS_ASSERTION(sizeof(FragmentBits) == 4, "Bad field packing!");
   }
 
   ~nsTextFragment();
@@ -138,27 +139,33 @@ public:
    * Get the length of the fragment. The length is the number of logical
    * characters, not the number of bytes to store the characters.
    */
-  PRInt32 GetLength() const
+  PRUint32 GetLength() const
   {
-    return PRInt32(mState.mLength);
+    return mState.mLength;
   }
 
   /**
    * Change the contents of this fragment to be a copy of the given
-   * buffer. Like operator= except a length is specified instead of
-   * assuming 0 termination.
+   * buffer.
    */
   void SetTo(const PRUnichar* aBuffer, PRInt32 aLength);
 
   /**
    * Append aData to the end of this fragment.
    */
-  void Append(const nsAString& aData);
+  void Append(const PRUnichar* aBuffer, PRUint32 aLength);
 
   /**
    * Append the contents of this string fragment to aString
    */
   void AppendTo(nsAString& aString) const;
+
+  /**
+   * Append a substring of the contents of this string fragment to aString.
+   * @param aOffset where to start the substring in this text fragment
+   * @param aLength the length of the substring
+   */
+  void AppendTo(nsAString& aString, PRInt32 aOffset, PRInt32 aLength) const;
 
   /**
    * Make a copy of the fragments contents starting at offset for
@@ -175,7 +182,7 @@ public:
   PRUnichar CharAt(PRInt32 aIndex) const
   {
     NS_ASSERTION(PRUint32(aIndex) < mState.mLength, "bad index");
-    return mState.mIs2b ? m2b[aIndex] : NS_STATIC_CAST(unsigned char, m1b[aIndex]);
+    return mState.mIs2b ? m2b[aIndex] : static_cast<unsigned char>(m1b[aIndex]);
   }
 
   /**
@@ -185,9 +192,14 @@ public:
   void SetBidiFlag();
 
   struct FragmentBits {
-    PRBool mInHeap : 1;
-    PRBool mIs2b : 1;
-    PRBool mIsBidi : 1;
+    // PRUint32 to ensure that the values are unsigned, because we
+    // want 0/1, not 0/-1!
+    // Making these PRPackedBool causes Windows to not actually pack them,
+    // which causes crashes because we assume this structure is no more than
+    // 32 bits!
+    PRUint32 mInHeap : 1;
+    PRUint32 mIs2b : 1;
+    PRUint32 mIsBidi : 1;
     PRUint32 mLength : 29;
   };
 

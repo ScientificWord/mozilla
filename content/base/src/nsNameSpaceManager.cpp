@@ -57,7 +57,7 @@ static NS_DEFINE_CID(kXTFServiceCID, NS_XTFSERVICE_CID);
 #endif
 
 #ifdef MOZ_SVG
-#include "nsSVGUtils.h"
+PRBool NS_SVGEnabled();
 #endif
 
 #define kXMLNSNameSpaceURI "http://www.w3.org/2000/xmlns/"
@@ -71,9 +71,6 @@ static NS_DEFINE_CID(kXTFServiceCID, NS_XTFSERVICE_CID);
 #define kXULNameSpaceURI "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 #define kSVGNameSpaceURI "http://www.w3.org/2000/svg"
 #define kXMLEventsNameSpaceURI "http://www.w3.org/2001/xml-events"
-#define kXHTML2UnofficialNameSpaceURI "http://www.w3.org/TR/xhtml2" // Will eventually change
-#define kWAIRolesNameSpaceURI "http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"
-#define kWAIPropertiesNameSpaceURI "http://www.w3.org/2005/07/aaa"
 
 class nsNameSpaceKey : public PLDHashEntryHdr
 {
@@ -89,10 +86,6 @@ public:
   }
 
   KeyType GetKey() const
-  {
-    return mKey;
-  }
-  KeyTypePointer GetKeyPointer() const
   {
     return mKey;
   }
@@ -141,7 +134,7 @@ private:
   nsStringArray mURIArray;
 };
 
-static NameSpaceManagerImpl* gNameSpaceManager = nsnull;
+static NameSpaceManagerImpl* sNameSpaceManager = nsnull;
 
 NS_IMPL_ISUPPORTS1(NameSpaceManagerImpl, nsINameSpaceManager)
 
@@ -166,10 +159,6 @@ nsresult NameSpaceManagerImpl::Init()
   REGISTER_NAMESPACE(kXULNameSpaceURI, kNameSpaceID_XUL);
   REGISTER_NAMESPACE(kSVGNameSpaceURI, kNameSpaceID_SVG);
   REGISTER_NAMESPACE(kXMLEventsNameSpaceURI, kNameSpaceID_XMLEvents);
-  REGISTER_NAMESPACE(kXHTML2UnofficialNameSpaceURI,
-                     kNameSpaceID_XHTML2_Unofficial);
-  REGISTER_NAMESPACE(kWAIRolesNameSpaceURI, kNameSpaceID_WAIRoles);
-  REGISTER_NAMESPACE(kWAIPropertiesNameSpaceURI, kNameSpaceID_WAIProperties);
 
 #undef REGISTER_NAMESPACE
 
@@ -196,12 +185,16 @@ NameSpaceManagerImpl::RegisterNameSpace(const nsAString& aURI,
     }
   }
 
+  NS_POSTCONDITION(aNameSpaceID >= -1, "Bogus namespace ID");
+  
   return rv;
 }
 
 nsresult
 NameSpaceManagerImpl::GetNameSpaceURI(PRInt32 aNameSpaceID, nsAString& aURI)
 {
+  NS_PRECONDITION(aNameSpaceID >= 0, "Bogus namespace ID");
+  
   PRInt32 index = aNameSpaceID - 1; // id is index + 1
   if (index < 0 || index >= mURIArray.Count()) {
     aURI.Truncate();
@@ -223,8 +216,12 @@ NameSpaceManagerImpl::GetNameSpaceID(const nsAString& aURI)
 
   PRInt32 nameSpaceID;
 
-  return mURIToIDTable.Get(&aURI, &nameSpaceID) ? nameSpaceID :
-                                                  kNameSpaceID_Unknown;
+  if (mURIToIDTable.Get(&aURI, &nameSpaceID)) {
+    NS_POSTCONDITION(nameSpaceID >= 0, "Bogus namespace ID");
+    return nameSpaceID;
+  }
+
+  return kNameSpaceID_Unknown;
 }
 
 nsresult
@@ -245,8 +242,7 @@ NS_NewElement(nsIContent** aResult, PRInt32 aElementType,
   }
 #endif
 #ifdef MOZ_SVG
-  if (aElementType == kNameSpaceID_SVG &&
-      nsSVGUtils::SVGEnabled()) {
+  if (aElementType == kNameSpaceID_SVG && NS_SVGEnabled()) {
     return NS_NewSVGElement(aResult, aNodeInfo);
   }
 #endif
@@ -285,6 +281,11 @@ NameSpaceManagerImpl::HasElementCreator(PRInt32 aNameSpaceID)
 nsresult NameSpaceManagerImpl::AddNameSpace(const nsAString& aURI,
                                             const PRInt32 aNameSpaceID)
 {
+  if (aNameSpaceID < 0) {
+    // We've wrapped...  Can't do anything else here; just bail.
+    return NS_ERROR_OUT_OF_MEMORY;
+  }
+  
   NS_ASSERTION(aNameSpaceID - 1 == mURIArray.Count(),
                "BAD! AddNameSpace not called in right order!");
 
@@ -307,18 +308,18 @@ NS_GetNameSpaceManager(nsINameSpaceManager** aInstancePtrResult)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
-  if (!gNameSpaceManager) {
+  if (!sNameSpaceManager) {
     nsCOMPtr<NameSpaceManagerImpl> manager = new NameSpaceManagerImpl();
     if (manager) {
       nsresult rv = manager->Init();
       if (NS_SUCCEEDED(rv)) {
-        manager.swap(gNameSpaceManager);
+        manager.swap(sNameSpaceManager);
       }
     }
   }
 
-  *aInstancePtrResult = gNameSpaceManager;
-  NS_ENSURE_TRUE(gNameSpaceManager, NS_ERROR_OUT_OF_MEMORY);
+  *aInstancePtrResult = sNameSpaceManager;
+  NS_ENSURE_TRUE(sNameSpaceManager, NS_ERROR_OUT_OF_MEMORY);
 
   NS_ADDREF(*aInstancePtrResult);
 
@@ -328,5 +329,5 @@ NS_GetNameSpaceManager(nsINameSpaceManager** aInstancePtrResult)
 void
 NS_NameSpaceManagerShutdown()
 {
-  NS_IF_RELEASE(gNameSpaceManager);
+  NS_IF_RELEASE(sNameSpaceManager);
 }

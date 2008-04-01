@@ -59,7 +59,6 @@
 #include "nsIDOMDocumentRange.h"
 #include "nsIDOMDocumentTraversal.h"
 #include "nsStubDocumentObserver.h"
-#include "nsIDOMEventReceiver.h"
 #include "nsIDOM3EventTarget.h"
 #include "nsIDOMNSEventTarget.h"
 #include "nsIDOMStyleSheetList.h"
@@ -70,11 +69,10 @@
 #include "nsIDOM3Node.h"
 #include "nsIPrincipal.h"
 #include "nsIParser.h"
-#include "nsIBindingManager.h"
+#include "nsBindingManager.h"
 #include "nsINodeInfo.h"
 #include "nsIDOMDocumentEvent.h"
 #include "nsIDOM3DocumentEvent.h"
-#include "nsCOMArray.h"
 #include "nsHashtable.h"
 #include "nsInterfaceHashtable.h"
 #include "nsIBoxObject.h"
@@ -90,6 +88,8 @@
 #include "nsILoadGroup.h"
 #include "nsTObserverArray.h"
 #include "nsStubMutationObserver.h"
+#include "nsIChannel.h"
+#include "nsCycleCollectionParticipant.h"
 
 // Put these here so all document impls get them automatically
 #include "nsHTMLStyleSheet.h"
@@ -99,6 +99,11 @@
 #include "nsXMLEventsManager.h"
 #include "pldhash.h"
 #include "nsAttrAndChildArray.h"
+#include "nsDOMAttributeMap.h"
+#pragma message("A1")
+#include "nsTObserverArray.h"
+#include "nsPresShellIterator.h"
+#pragma message("B")
 
 #define XML_DECLARATION_BITS_DECLARATION_EXISTS   (1 << 0)
 #define XML_DECLARATION_BITS_ENCODING_EXISTS      (1 << 1)
@@ -108,6 +113,7 @@
 
 class nsIEventListenerManager;
 class nsDOMStyleSheetList;
+class nsDOMStyleSheetSetList;
 class nsIOutputStream;
 class nsDocument;
 class nsIDTD;
@@ -149,13 +155,12 @@ class nsUint32ToContentHashEntry : public PLDHashEntryHdr
       // Pathetic attempt to not die: clear out the other mValOrHash so we're
       // effectively stealing it. If toCopy is destroyed right after this,
       // we'll be OK.
-      NS_CONST_CAST(nsUint32ToContentHashEntry&, toCopy).mValOrHash = nsnull;
+      const_cast<nsUint32ToContentHashEntry&>(toCopy).mValOrHash = nsnull;
       NS_ERROR("Copying not supported. Fasten your seat belt.");
     }
     ~nsUint32ToContentHashEntry() { Destroy(); }
 
     KeyType GetKey() const { return mValue; }
-    KeyTypePointer GetKeyPointer() const { return &mValue; }
 
     PRBool KeyEquals(KeyTypePointer aKey) const { return mValue == *aKey; }
 
@@ -285,7 +290,7 @@ class nsDocument : public nsIDocument,
                    public nsIDOMDocumentXBL,
                    public nsIDOM3Document,
                    public nsSupportsWeakReference,
-                   public nsIDOMEventReceiver,
+                   public nsIDOMEventTarget,
                    public nsIDOM3EventTarget,
                    public nsIDOMNSEventTarget,
                    public nsIScriptObjectPrincipal,
@@ -293,10 +298,11 @@ class nsDocument : public nsIDocument,
                    public nsStubMutationObserver
 {
 public:
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
 
   virtual void Reset(nsIChannel *aChannel, nsILoadGroup *aLoadGroup);
-  virtual void ResetToURI(nsIURI *aURI, nsILoadGroup *aLoadGroup);
+  virtual void ResetToURI(nsIURI *aURI, nsILoadGroup *aLoadGroup,
+                          nsIPrincipal* aPrincipal);
 
   // StartDocumentLoad is pure virtual so that subclasses must override it.
   // The nsDocument StartDocumentLoad does some setup, but does NOT set
@@ -371,14 +377,13 @@ public:
                                nsStyleSet* aStyleSet,
                                nsIPresShell** aInstancePtrResult);
   virtual PRBool DeleteShell(nsIPresShell* aShell);
-  virtual PRUint32 GetNumberOfShells() const;
-  virtual nsIPresShell *GetShellAt(PRUint32 aIndex) const;
-  virtual void SetShellsHidden(PRBool aHide);
+  virtual nsIPresShell *GetPrimaryShell() const;
 
   virtual nsresult SetSubDocumentFor(nsIContent *aContent,
                                      nsIDocument* aSubDoc);
   virtual nsIDocument* GetSubDocumentFor(nsIContent *aContent) const;
   virtual nsIContent* FindContentForSubDocument(nsIDocument *aDocument) const;
+  virtual nsIContent* GetRootContentInternal() const;
 
   /**
    * Get the style sheets owned by this document.
@@ -432,6 +437,10 @@ public:
   virtual nsIScriptGlobalObject* GetScriptGlobalObject() const;
   virtual void SetScriptGlobalObject(nsIScriptGlobalObject* aGlobalObject);
 
+  virtual nsIScriptGlobalObject*
+    GetScriptHandlingObject(PRBool& aHasHadScriptHandlingObject) const;
+  virtual void SetScriptHandlingObject(nsIScriptGlobalObject* aScriptObject);
+
   virtual nsIScriptGlobalObject* GetScopeObject();
 
   /**
@@ -449,7 +458,7 @@ public:
   /**
    * Get the script loader for this document
    */
-  virtual nsIScriptLoader* GetScriptLoader();
+  virtual nsScriptLoader* ScriptLoader();
 
   /**
    * Add a new observer of document change notifications. Whenever
@@ -487,6 +496,9 @@ public:
                                 nsIStyleRule* aStyleRule);
 
   virtual void FlushPendingNotifications(mozFlushType aType);
+  virtual void AddReference(void *aKey, nsISupports *aReference);
+  virtual nsISupports *GetReference(void *aKey);
+  virtual void RemoveReference(void *aKey);
   virtual nsIScriptEventManager* GetScriptEventManager();
   virtual void SetXMLDeclaration(const PRUnichar *aVersion,
                                  const PRUnichar *aEncoding,
@@ -498,6 +510,9 @@ public:
 
   virtual void OnPageShow(PRBool aPersisted);
   virtual void OnPageHide(PRBool aPersisted);
+  
+  virtual void WillDispatchMutationEvent(nsINode* aTarget);
+  virtual void MutationEventDispatched(nsINode* aTarget);
 
   // nsINode
   virtual PRBool IsNodeOfType(PRUint32 aFlags) const;
@@ -513,6 +528,17 @@ public:
   virtual nsresult DispatchDOMEvent(nsEvent* aEvent, nsIDOMEvent* aDOMEvent,
                                     nsPresContext* aPresContext,
                                     nsEventStatus* aEventStatus);
+  virtual nsresult GetListenerManager(PRBool aCreateIfNotFound,
+                                      nsIEventListenerManager** aResult);
+  virtual nsresult AddEventListenerByIID(nsIDOMEventListener *aListener,
+                                         const nsIID& aIID);
+  virtual nsresult RemoveEventListenerByIID(nsIDOMEventListener *aListener,
+                                            const nsIID& aIID);
+  virtual nsresult GetSystemEventGroup(nsIDOMEventGroup** aGroup);
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const
+  {
+    return NS_ERROR_NOT_IMPLEMENTED;
+  }
 
   // nsIRadioGroupContainer
   NS_IMETHOD WalkRadioGroup(const nsAString& aName,
@@ -537,10 +563,6 @@ public:
   // for radio group
   nsresult GetRadioGroup(const nsAString& aName,
                          nsRadioGroupStruct **aRadioGroup);
-
-  // nsIDOMGCParticipant interface methods
-  virtual nsIDOMGCParticipant* GetSCCIndex();
-  virtual void AppendReachableList(nsCOMArray<nsIDOMGCParticipant>& aArray);
 
   // nsIDOMNode
   NS_DECL_NSIDOMNODE
@@ -584,16 +606,6 @@ public:
   // nsIDOMDocumentXBL
   NS_DECL_NSIDOMDOCUMENTXBL
 
-  // nsIDOMEventReceiver interface
-  NS_IMETHOD AddEventListenerByIID(nsIDOMEventListener *aListener,
-                                   const nsIID& aIID);
-  NS_IMETHOD RemoveEventListenerByIID(nsIDOMEventListener *aListener,
-                                      const nsIID& aIID);
-  NS_IMETHOD GetListenerManager(PRBool aCreateIfNotFound,
-                                nsIEventListenerManager** aResult);
-  NS_IMETHOD HandleEvent(nsIDOMEvent *aEvent);
-  NS_IMETHOD GetSystemEventGroup(nsIDOMEventGroup** aGroup);
-
   // nsIDOMEventTarget
   NS_DECL_NSIDOMEVENTTARGET
 
@@ -633,7 +645,31 @@ public:
 
   NS_HIDDEN_(void) ClearBoxObjectFor(nsIContent* aContent);
 
+  virtual NS_HIDDEN_(nsresult) GetXBLChildNodesFor(nsIContent* aContent,
+                                                   nsIDOMNodeList** aResult);
+  virtual NS_HIDDEN_(nsresult) GetContentListFor(nsIContent* aContent,
+                                                 nsIDOMNodeList** aResult);
+  virtual NS_HIDDEN_(void) FlushSkinBindings();
+  
+  virtual NS_HIDDEN_(nsresult) FinalizeFrameLoader(nsFrameLoader* aLoader);
+
+  NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsDocument, nsIDocument)
+
+  /**
+   * Utility method for getElementsByClassName.  aRootNode is the node (either
+   * document or element), which getElementsByClassName was called on.
+   */
+  static nsresult GetElementsByClassNameHelper(nsINode* aRootNode,
+                                               const nsAString& aClasses,
+                                               nsIDOMNodeList** aReturn);
 protected:
+
+  /**
+   * Check that aId is not empty and log a message to the console
+   * service if it is.
+   * @returns PR_TRUE if aId looks correct, PR_FALSE otherwise.
+   */
+  static PRBool CheckGetElementByIdArg(const nsAString& aId);
 
   void DispatchContentLoadedEvents();
 
@@ -657,42 +693,27 @@ protected:
   virtual nsStyleSet::sheetType GetAttrSheetType();
   void FillStyleSet(nsStyleSet* aStyleSet);
 
-  nsresult CreateElement(nsINodeInfo *aNodeInfo, PRInt32 aElementType,
-                         nsIContent** aResult);
-
   // Return whether all the presshells for this document are safe to flush
   PRBool IsSafeToFlush() const;
   
   virtual PRInt32 GetDefaultNamespaceID() const
   {
     return kNameSpaceID_None;
-  };
+  }
 
   // Dispatch an event to the ScriptGlobalObject for this document
   void DispatchEventToWindow(nsEvent *aEvent);
 
-  // NS_DOCUMENT_NOTIFY_OBSERVERS goes backwards for now for backwards compat.
-  // If you change this, update ContentAppended/Inserted/Removed accordingly.
-#define NS_DOCUMENT_NOTIFY_OBSERVERS(func_, params_)                          \
-  do {                                                                        \
-    nsTObserverArray<nsIDocumentObserver>::ReverseIterator                    \
-      iter_(mObservers);                                                      \
-    nsCOMPtr<nsIDocumentObserver> obs_;                                       \
-    while ((obs_ = iter_.GetNext())) {                                        \
-      obs_ -> func_ params_ ;                                                 \
-    }                                                                         \
-  } while (0)
+  // nsContentList match functions for GetElementsByClassName
+  static PRBool MatchClassNames(nsIContent* aContent, PRInt32 aNamespaceID,
+                                nsIAtom* aAtom, void* aData);
 
-#define NS_DOCUMENT_FORWARD_NOTIFY_OBSERVERS(func_, params_)                  \
-  do {                                                                        \
-    nsTObserverArray<nsIDocumentObserver>::ForwardIterator                    \
-      iter_(mObservers);                                                      \
-    nsCOMPtr<nsIDocumentObserver> obs_;                                       \
-    while ((obs_ = iter_.GetNext())) {                                        \
-      obs_ -> func_ params_ ;                                                 \
-    }                                                                         \
-  } while (0)
- 
+  static void DestroyClassNameArray(void* aData);
+
+#define NS_DOCUMENT_NOTIFY_OBSERVERS(func_, params_)                  \
+  NS_OBSERVER_ARRAY_NOTIFY_OBSERVERS(mObservers, nsIDocumentObserver, \
+                                     func_, params_);
+  
 #ifdef DEBUG
   void VerifyRootContentState();
 #endif
@@ -714,16 +735,29 @@ protected:
   // parsed into.
   nsCOMPtr<nsIParser> mParser;
 
+  // Weak reference to our sink for in case we no longer have a parser.  This
+  // will allow us to flush out any pending stuff from the sink even if
+  // EndLoad() has already happened.
+  nsWeakPtr mWeakSink;
+
   nsCOMArray<nsIStyleSheet> mStyleSheets;
   nsCOMArray<nsIStyleSheet> mCatalogSheets;
 
   // Array of observers
-  nsTObserverArray<nsIDocumentObserver> mObservers;
+  nsTObserverArray<nsIDocumentObserver*> mObservers;
 
   // The document's script global object, the object from which the
   // document can get its script context and scope. This is the
   // *inner* window object.
   nsCOMPtr<nsIScriptGlobalObject> mScriptGlobalObject;
+  // Weak reference to mScriptGlobalObject QI:d to nsPIDOMWindow,
+  // updated on every set of mSecriptGlobalObject.
+  nsPIDOMWindow *mWindow;
+
+  // If document is created for example using
+  // document.implementation.createDocument(...), mScriptObject points to
+  // the script global object of the original document.
+  nsWeakPtr mScriptObject;
 
   // Weak reference to the scope object (aka the script global object)
   // that, unlike mScriptGlobalObject, is never unset once set. This
@@ -732,12 +766,11 @@ protected:
 
   nsCOMPtr<nsIEventListenerManager> mListenerManager;
   nsCOMPtr<nsIDOMStyleSheetList> mDOMStyleSheets;
-  nsCOMPtr<nsIScriptLoader> mScriptLoader;
+  nsRefPtr<nsDOMStyleSheetSetList> mStyleSheetSetList;
+  nsRefPtr<nsScriptLoader> mScriptLoader;
   nsDocHeaderData* mHeaderData;
 
-  nsRefPtr<nsChildContentList> mChildNodes;
-
-  nsHashtable mRadioGroups;
+  nsClassHashtable<nsStringHashKey, nsRadioGroupStruct> mRadioGroups;
 
   // True if the document has been detached from its content viewer.
   PRPackedBool mIsGoingAway:1;
@@ -745,14 +778,17 @@ protected:
   PRPackedBool mInDestructor:1;
   // True if the document "page" is not hidden
   PRPackedBool mVisible:1;
+  // True if document has ever had script handling object.
+  PRPackedBool mHasHadScriptHandlingObject:1;
 
-  PRPackedBool mShellsAreHidden:1;
+  PRPackedBool mHasWarnedAboutBoxObjects:1;
 
   PRUint8 mXMLDeclarationBits;
 
   PRUint8 mDefaultElementType;
 
-  nsInterfaceHashtable<nsISupportsHashKey, nsPIBoxObject> *mBoxObjectTable;
+  nsInterfaceHashtable<nsVoidPtrHashKey, nsPIBoxObject> *mBoxObjectTable;
+  nsInterfaceHashtable<nsVoidPtrHashKey, nsISupports> *mContentWrapperHash;
 
   // The channel that got passed to StartDocumentLoad(), if any
   nsCOMPtr<nsIChannel> mChannel;
@@ -764,21 +800,31 @@ protected:
 
   nsString mBaseTarget;
 
+  // Our update nesting level
+  PRUint32 mUpdateNestLevel;
+
 private:
   friend class nsUnblockOnloadEvent;
 
   void PostUnblockOnloadEvent();
   void DoUnblockOnload();
 
-/* See if document is a child of this.  If so, return the frame element in this
- * document that holds currentDoc (or an ancestor). */
-  already_AddRefed<nsIDOMElement> CheckAncestryAndGetFrame(nsIDocument* aDocument) const;
+  /**
+   * See if aDocument is a child of this.  If so, return the frame element in
+   * this document that holds currentDoc (or an ancestor).
+   */
+  already_AddRefed<nsIDOMElement>
+    CheckAncestryAndGetFrame(nsIDocument* aDocument) const;
+
+  // Just like EnableStyleSheetsForSet, but doesn't check whether
+  // aSheetSet is null and allows the caller to control whether to set
+  // aSheetSet as the preferred set in the CSSLoader.
+  void EnableStyleSheetsForSetInternal(const nsAString& aSheetSet,
+                                       PRBool aUpdateCSSLoader);
 
   // These are not implemented and not supported.
   nsDocument(const nsDocument& aOther);
   nsDocument& operator=(const nsDocument& aOther);
-
-  nsSmallVoidArray mPresShells;
 
   nsCOMPtr<nsISupports> mXPathEvaluatorTearoff;
 
@@ -795,6 +841,11 @@ private:
   nsTHashtable<nsUint32ToContentHashEntry> mLinkMap;
   // URIs whose visitedness has changed while we were hidden
   nsCOMArray<nsIURI> mVisitednessChangedURIs;
+
+  // Member to store out last-selected stylesheet set.
+  nsString mLastStyleSheetSet;
+
+  nsTArray<nsRefPtr<nsFrameLoader> > mFinalizableFrameLoaders;
 };
 
 

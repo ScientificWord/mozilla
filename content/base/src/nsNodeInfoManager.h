@@ -158,8 +158,6 @@ private:
   nsINodeInfo *mTextNodeInfo; // WEAK to avoid circular ownership
   nsINodeInfo *mCommentNodeInfo; // WEAK to avoid circular ownership
   nsINodeInfo *mDocumentNodeInfo; // WEAK to avoid circular ownership
-
-  static PRUint32 gNodeManagerCount;
 };
 
 #endif /* nsNodeInfoManager_h___ */

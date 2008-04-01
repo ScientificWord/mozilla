@@ -51,51 +51,39 @@ class nsPresContext;
 class nsVoidArray;
 class nsIDOMEvent;
 class nsIContent;
-class nsISupportsArray;
 class nsIEventListenerManager;
 class nsIURI;
 class nsICSSStyleRule;
 class nsRuleWalker;
 class nsAttrValue;
 class nsAttrName;
+class nsTextFragment;
+class nsIDocShell;
 
 // IID for the nsIContent interface
 #define NS_ICONTENT_IID       \
-{ 0x6aea736c, 0xe909, 0x43b7, \
-  { 0x9c, 0x55, 0xb0, 0xda, 0x9e, 0x37, 0x16, 0x45 } }
-
-// hack to make egcs / gcc 2.95.2 happy
-class nsIContent_base : public nsINode {
-public:
-#ifdef MOZILLA_INTERNAL_API
-  // If you're using the external API, the only thing you can know about
-  // nsIContent is that it exists with an IID
-
-  nsIContent_base(nsINodeInfo *aNodeInfo)
-    : nsINode(aNodeInfo)
-  {
-  }
-#endif
-
-  NS_DECLARE_STATIC_IID_ACCESSOR(NS_ICONTENT_IID)
-};
+{ 0xd3434698, 0x3a16, 0x4dbe, \
+  { 0x9d, 0xed, 0xbe, 0x64, 0x16, 0x1a, 0xa3, 0x52 } }
 
 /**
  * A node of content in a document's content model. This interface
  * is supported by all content objects.
  */
-class nsIContent : public nsIContent_base {
+class nsIContent : public nsINode {
 public:
 #ifdef MOZILLA_INTERNAL_API
   // If you're using the external API, the only thing you can know about
   // nsIContent is that it exists with an IID
 
   nsIContent(nsINodeInfo *aNodeInfo)
-    : nsIContent_base(aNodeInfo)
+    : nsINode(aNodeInfo)
   {
     NS_ASSERTION(aNodeInfo,
                  "No nsINodeInfo passed to nsIContent, PREPARE TO CRASH!!!");
   }
+#endif // MOZILLA_INTERNAL_API
+
+  NS_DECLARE_STATIC_IID_ACCESSOR(NS_ICONTENT_IID)
 
   /**
    * Bind this content node to a tree.  If this method throws, the caller must
@@ -164,12 +152,24 @@ public:
   }
 
   /**
-   * Set whether this content is anonymous
-   * This is virtual and non-inlined due to nsXULElement::SetNativeAnonymous
+   * Makes this content anonymous
    * @see nsIAnonymousContentCreator
-   * @param aAnonymous whether this content is anonymous
    */
-  virtual void SetNativeAnonymous(PRBool aAnonymous);
+  void SetNativeAnonymous()
+  {
+    SetFlags(NODE_IS_ANONYMOUS);
+  }
+
+  /**
+   * Returns |this| if it is not native anonymous, otherwise
+   * first non native anonymous ancestor.
+   */
+  virtual nsIContent* FindFirstNonNativeAnonymous() const;
+
+  /**
+   * Returns PR_TRUE if |this| or any of its ancestors is native anonymous.
+   */
+  virtual PRBool IsInNativeAnonymousSubtree() const;
 
   /**
    * Get the namespace that this element's tag is defined in
@@ -375,6 +375,57 @@ public:
   virtual PRUint32 GetAttrCount() const = 0;
 
   /**
+   * Get direct access (but read only) to the text in the text content.
+   * NOTE: For elements this is *not* the concatenation of all text children,
+   * it is simply null;
+   */
+  virtual const nsTextFragment *GetText() = 0;
+
+  /**
+   * Get the length of the text content.
+   * NOTE: This should not be called on elements.
+   */
+  virtual PRUint32 TextLength() = 0;
+
+  /**
+   * Set the text to the given value. If aNotify is PR_TRUE then
+   * the document is notified of the content change.
+   * NOTE: For elements this always ASSERTS and returns NS_ERROR_FAILURE
+   */
+  virtual nsresult SetText(const PRUnichar* aBuffer, PRUint32 aLength,
+                           PRBool aNotify) = 0;
+
+  /**
+   * Append the given value to the current text. If aNotify is PR_TRUE then
+   * the document is notified of the content change.
+   * NOTE: For elements this always ASSERTS and returns NS_ERROR_FAILURE
+   */
+  virtual nsresult AppendText(const PRUnichar* aBuffer, PRUint32 aLength,
+                              PRBool aNotify) = 0;
+
+  /**
+   * Set the text to the given value. If aNotify is PR_TRUE then
+   * the document is notified of the content change.
+   * NOTE: For elements this always asserts and returns NS_ERROR_FAILURE
+   */
+  nsresult SetText(const nsAString& aStr, PRBool aNotify)
+  {
+    return SetText(aStr.BeginReading(), aStr.Length(), aNotify);
+  }
+
+  /**
+   * Query method to see if the frame is nothing but whitespace
+   * NOTE: Always returns PR_FALSE for elements
+   */
+  virtual PRBool TextIsOnlyWhitespace() = 0;
+
+  /**
+   * Append the text content to aResult.
+   * NOTE: This asserts and returns for elements
+   */
+  virtual void AppendTextTo(nsAString& aResult) = 0;
+
+  /**
    * Set the focus on this content.  This is generally something for the event
    * state manager to do, not ordinary people.  Ordinary people should do
    * something like nsGenericHTMLElement::SetElementFocus().  This method is
@@ -433,6 +484,19 @@ public:
     return PR_FALSE;
   }
 
+  /**
+   * The method focuses (or activates) element that accesskey is bound to. It is
+   * called when accesskey is activated.
+   *
+   * @param aKeyCausesActivation - if true then element should be activated
+   * @param aIsTrustedEvent - if true then event that is cause of accesskey
+   *                          execution is trusted.
+   */
+  virtual void PerformAccesskey(PRBool aKeyCausesActivation,
+                                PRBool aIsTrustedEvent)
+  {
+  }
+
   /*
    * Get desired IME state for the content.
    *
@@ -448,21 +512,36 @@ public:
    *         the previous OPEN/CLOSE state will be restored (unless the newly
    *         focused content specifies the OPEN/CLOSE state by setting the OPEN
    *         or CLOSE flag with the ENABLE flag).
+   *         IME_STATUS_PASSWORD should be returned only from password editor,
+   *         this value has a special meaning. It is used as alternative of
+   *         IME_STATUS_DISABLED.
    */
   enum {
-    IME_STATUS_NONE    = 0x0000,
-    IME_STATUS_ENABLE  = 0x0001,
-    IME_STATUS_DISABLE = 0x0002,
-    IME_STATUS_OPEN    = 0x0004,
-    IME_STATUS_CLOSE   = 0x0008
+    IME_STATUS_NONE     = 0x0000,
+    IME_STATUS_ENABLE   = 0x0001,
+    IME_STATUS_DISABLE  = 0x0002,
+    IME_STATUS_PASSWORD = 0x0004,
+    IME_STATUS_OPEN     = 0x0008,
+    IME_STATUS_CLOSE    = 0x0010
   };
   enum {
-    IME_STATUS_MASK_ENABLED = IME_STATUS_ENABLE | IME_STATUS_DISABLE,
+    IME_STATUS_MASK_ENABLED = IME_STATUS_ENABLE | IME_STATUS_DISABLE |
+                              IME_STATUS_PASSWORD,
     IME_STATUS_MASK_OPENED  = IME_STATUS_OPEN | IME_STATUS_CLOSE
   };
   virtual PRUint32 GetDesiredIMEState()
   {
-    return IME_STATUS_DISABLE;
+    if (!IsEditableInternal())
+      return IME_STATUS_DISABLE;
+    nsIContent *editableAncestor = nsnull;
+    for (nsIContent* parent = GetParent();
+         parent && parent->HasFlag(NODE_IS_EDITABLE);
+         parent = parent->GetParent())
+      editableAncestor = parent;
+    // This is in another editable content, use the result of it.
+    if (editableAncestor)
+      return editableAncestor->GetDesiredIMEState();
+    return IME_STATUS_ENABLE;
   }
 
   /**
@@ -483,6 +562,41 @@ public:
    * @return the base URI
    */
   virtual already_AddRefed<nsIURI> GetBaseURI() const = 0;
+
+  /**
+   * API to check if this is a link that's traversed in response to user input
+   * (e.g. a click event). Specializations for HTML/SVG/generic XML allow for
+   * different types of link in different types of content.
+   *
+   * @param aURI Required out param. If this content is a link, a new nsIURI
+   *             set to this link's URI will be passed out.
+   *
+   * @note The out param, aURI, is guaranteed to be set to a non-null pointer
+   *   when the return value is PR_TRUE.
+   *
+   * XXXjwatt: IMO IsInteractiveLink would be a better name.
+   */
+  virtual PRBool IsLink(nsIURI** aURI) const = 0;
+
+  /**
+   * Give this element a chance to fire links that should be fired
+   * automatically when loaded. If the element was an autoloading link
+   * and it was successfully handled, we will throw special nsresult values.
+   *
+   * @param aShell the current doc shell (to possibly load the link on)
+   * @throws NS_OK if nothing happened
+   * @throws NS_XML_AUTOLINK_EMBED if the caller is loading the link embedded
+   * @throws NS_XML_AUTOLINK_NEW if the caller is loading the link in a new
+   *         window
+   * @throws NS_XML_AUTOLINK_REPLACE if it is loading a link that will replace
+   *         the current window (and thus the caller must stop parsing)
+   * @throws NS_XML_AUTOLINK_UNDEFINED if it is loading in any other way--in
+   *         which case, the caller should stop parsing as well.
+   */
+  virtual nsresult MaybeTriggerAutoLink(nsIDocShell *aShell)
+  {
+    return NS_OK;
+  }
 
   /**
    * This method is called when the parser finishes creating the element.  This
@@ -559,12 +673,22 @@ public:
    * have the parser pass true.  See nsHTMLInputElement.cpp and
    * nsHTMLContentSink::MakeContentObject().
    *
+   * It is ok to ignore an error returned from this function. However the
+   * following errors may be of interest to some callers:
+   *
+   *   NS_ERROR_HTMLPARSER_BLOCK  Returned by script elements to indicate
+   *                              that a script will be loaded asynchronously
+   *
+   * This means that implementations will have to deal with returned error
+   * codes being ignored.
+   *
    * @param aHaveNotified Whether there has been a
    *        ContentInserted/ContentAppended notification for this content node
    *        yet.
    */
-  virtual void DoneAddingChildren(PRBool aHaveNotified)
+  virtual nsresult DoneAddingChildren(PRBool aHaveNotified)
   {
+    return NS_OK;
   }
 
   /**
@@ -589,11 +713,8 @@ public:
    */
   // XXXbz this is PRInt32 because all the ESM content state APIs use
   // PRInt32.  We should really use PRUint32 instead.
-  virtual PRInt32 IntrinsicState() const
-  {
-    return 0;
-  }
-    
+  virtual PRInt32 IntrinsicState() const;
+
   /* The default script type (language) ID for this content.
      All content must support fetching the default script language.
    */
@@ -606,21 +727,6 @@ public:
     NS_NOTREACHED("SetScriptTypeID not implemented");
     return NS_ERROR_NOT_IMPLEMENTED;
   }
-
-  /**
-   * Clones this node, using aNodeInfoManager to get the nodeinfo for the
-   * clone. When cloning an element, all attributes of the element will be
-   * cloned. If aDeep is set, all descendants will also be cloned (by calling
-   * the DOM method cloneNode on them if aNodeInfoManager is the same as
-   * the nodeinfo manager of the mNodeInfo of this content node or by calling
-   * the DOM method importNode if they differ).
-   *
-   * @param aNodeInfoManager the nodeinfo manager to get the nodeinfo for the
-   *                         clone, it should not be null
-   * @param aDeep whether to clone the descendants of this node
-   */
-  virtual nsresult CloneContent(nsNodeInfoManager *aNodeInfoManager,
-                                PRBool aDeep, nsIContent **aResult) const = 0;
 
   /**
    * Get the ID of this content node (the atom corresponding to the
@@ -679,6 +785,18 @@ public:
    */
   virtual nsIAtom *GetClassAttributeName() const = 0;
 
+  /**
+   * Should be called when the node can become editable or when it can stop
+   * being editable (for example when its contentEditable attribute changes,
+   * when it is moved into an editable parent, ...).
+   */
+  virtual void UpdateEditableState();
+
+  /**
+   * Destroy this node and it's children. Ideally this shouldn't be needed
+   * but for now we need to do it to break cycles.
+   */
+  virtual void DestroyContent() = 0;
 
 #ifdef DEBUG
   /**
@@ -709,9 +827,44 @@ public:
   // the tabfocus bit field applies to xul elements.
   static PRBool sTabFocusModelAppliesToXUL;
 
-#endif // MOZILLA_INTERNAL_API
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIContent, NS_ICONTENT_IID)
+
+// Some cycle-collecting helper macros for nsIContent subclasses
+
+#define NS_IMPL_CYCLE_COLLECTION_TRAVERSE_LISTENERMANAGER \
+  if (tmp->HasFlag(NODE_HAS_LISTENERMANAGER)) {           \
+    nsContentUtils::TraverseListenerManager(tmp, cb);     \
+  }
+
+#define NS_IMPL_CYCLE_COLLECTION_TRAVERSE_PRESERVED_WRAPPER      \
+  {                                                              \
+    nsISupports *preservedWrapper = nsnull;                      \
+    if (tmp->GetOwnerDoc())                                      \
+      preservedWrapper = tmp->GetOwnerDoc()->GetReference(tmp);  \
+    cb.NoteXPCOMChild(preservedWrapper);                         \
+  }
+
+#define NS_IMPL_CYCLE_COLLECTION_TRAVERSE_USERDATA \
+  if (tmp->HasProperties()) {                      \
+    nsNodeUtils::TraverseUserData(tmp, cb);        \
+  }
+
+#define NS_IMPL_CYCLE_COLLECTION_UNLINK_LISTENERMANAGER \
+  if (tmp->HasFlag(NODE_HAS_LISTENERMANAGER)) {         \
+    nsContentUtils::RemoveListenerManager(tmp);         \
+    tmp->UnsetFlags(NODE_HAS_LISTENERMANAGER);          \
+  }
+
+#define NS_IMPL_CYCLE_COLLECTION_UNLINK_PRESERVED_WRAPPER \
+  if (tmp->GetOwnerDoc())                                 \
+    tmp->GetOwnerDoc()->RemoveReference(tmp);
+
+#define NS_IMPL_CYCLE_COLLECTION_UNLINK_USERDATA \
+  if (tmp->HasProperties()) {                    \
+    nsNodeUtils::UnlinkUserData(tmp);            \
+  }
+
 
 #endif /* nsIContent_h___ */

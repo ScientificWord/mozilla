@@ -39,14 +39,18 @@
 
 #include "nsSVGGraphicElement.h"
 #include "nsIDOMSVGFilterElement.h"
-#include "nsSVGValue.h"
+#include "nsIDOMSVGURIReference.h"
+#include "nsIDOMSVGUnitTypes.h"
 #include "nsSVGLength2.h"
+#include "nsSVGInteger.h"
+#include "nsSVGEnum.h"
 
 typedef nsSVGGraphicElement nsSVGFilterElementBase;
 
 class nsSVGFilterElement : public nsSVGFilterElementBase,
                            public nsIDOMSVGFilterElement,
-                           public nsSVGValue
+                           public nsIDOMSVGURIReference,
+                           public nsIDOMSVGUnitTypes
 {
   friend class nsSVGFilterFrame;
 
@@ -65,33 +69,43 @@ public:
 
   NS_DECL_ISUPPORTS_INHERITED
   NS_DECL_NSIDOMSVGFILTERELEMENT
+  NS_DECL_NSIDOMSVGURIREFERENCE
 
   // xxx I wish we could use virtual inheritance
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGFilterElementBase::)
+  NS_FORWARD_NSIDOMNODE(nsSVGFilterElementBase::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGFilterElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGFilterElementBase::)
 
   // nsIContent
-  virtual nsresult InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
-                                 PRBool aNotify);
-  virtual nsresult AppendChildTo(nsIContent* aKid, PRBool aNotify);
-  virtual nsresult RemoveChildAt(PRUint32 aIndex, PRBool aNotify);
-  virtual nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                           nsIAtom* aPrefix, const nsAString& aValue,
-                           PRBool aNotify);
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
+
+  // Invalidate users of this filter
+  void Invalidate();
 
 protected:
 
+  virtual PRBool ParseAttribute(PRInt32 aNameSpaceID, nsIAtom* aName,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
+
   virtual LengthAttributesInfo GetLengthInfo();
-  
+  virtual IntegerAttributesInfo GetIntegerInfo();
+  virtual EnumAttributesInfo GetEnumInfo();
+
   enum { X, Y, WIDTH, HEIGHT };
   nsSVGLength2 mLengthAttributes[4];
   static LengthInfo sLengthInfo[4];
 
-  nsCOMPtr<nsIDOMSVGAnimatedEnumeration> mFilterUnits;
-  nsCOMPtr<nsIDOMSVGAnimatedEnumeration> mPrimitiveUnits;
-  nsCOMPtr<nsIDOMSVGAnimatedInteger> mFilterResX;
-  nsCOMPtr<nsIDOMSVGAnimatedInteger> mFilterResY;
+  enum { FILTERRES_X, FILTERRES_Y };
+  nsSVGInteger mIntegerAttributes[2];
+  static IntegerInfo sIntegerInfo[2];
+
+  enum { FILTERUNITS, PRIMITIVEUNITS };
+  nsSVGEnum mEnumAttributes[2];
+  static EnumInfo sEnumInfo[2];
+
+  nsCOMPtr<nsIDOMSVGAnimatedString> mHref;
 };
 
 #endif

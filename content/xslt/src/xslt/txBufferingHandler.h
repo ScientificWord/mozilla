@@ -54,7 +54,14 @@ public:
     ~txResultBuffer();
 
     nsresult addTransaction(txOutputTransaction* aTransaction);
-    nsresult flushToHandler(txAXMLEventHandler* aHandler);
+
+    /**
+     * Flush the transactions to aHandler. Some handlers create a new handler
+     * and replace themselves with the new handler. The pointer that aHandler
+     * points to should be updated in that case.
+     */
+    nsresult flushToHandler(txAXMLEventHandler** aHandler);
+
     txOutputTransaction* getLastTransaction();
 
     nsString mStringValue;
@@ -67,7 +74,6 @@ class txBufferingHandler : public txAXMLEventHandler
 {
 public:
     txBufferingHandler();
-    ~txBufferingHandler();
 
     TX_DECL_TXAXMLEVENTHANDLER
 

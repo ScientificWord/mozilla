@@ -1,4 +1,3 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -65,11 +64,10 @@
 #include "nsIDOMRange.h"
 #include "nsIDOMDocument.h"
 #include "nsICharsetConverterManager.h"
-#include "nsHTMLAtoms.h"
-#include "nsITextContent.h"
+#include "nsGkAtoms.h"
+#include "nsIContent.h"
 #include "nsIEnumerator.h"
 #include "nsISelectionPrivate.h"
-#include "nsISupportsArray.h"
 #include "nsIParserService.h"
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
@@ -449,8 +447,8 @@ ConvertAndWrite(const nsAString& aString,
       NS_ENSURE_SUCCESS(rv, rv);
 
       nsCAutoString entString("&#");
-      if (IS_HIGH_SURROGATE(unicodeBuf[unicodeLength - 1]) && 
-          unicodeLength < startLength && IS_LOW_SURROGATE(unicodeBuf[unicodeLength]))  {
+      if (NS_IS_HIGH_SURROGATE(unicodeBuf[unicodeLength - 1]) && 
+          unicodeLength < startLength && NS_IS_LOW_SURROGATE(unicodeBuf[unicodeLength]))  {
         entString.AppendInt(SURROGATE_TO_UCS4(unicodeBuf[unicodeLength - 1],
                                               unicodeBuf[unicodeLength]));
         unicodeLength += 1;
@@ -649,11 +647,11 @@ nsDocumentEncoder::SerializeRangeNodes(nsIDOMRange* aRange,
   nsCOMPtr<nsIContent> startNode, endNode;
   PRInt32 start = mStartRootIndex - aDepth;
   if (start >= 0 && start <= mStartNodes.Count())
-    startNode = NS_STATIC_CAST(nsIContent *, mStartNodes[start]);
+    startNode = static_cast<nsIContent *>(mStartNodes[start]);
 
   PRInt32 end = mEndRootIndex - aDepth;
   if (end >= 0 && end <= mEndNodes.Count())
-    endNode = NS_STATIC_CAST(nsIContent *, mEndNodes[end]);
+    endNode = static_cast<nsIContent *>(mEndNodes[end]);
 
   if ((startNode != content) && (endNode != content))
   {
@@ -893,7 +891,9 @@ nsDocumentEncoder::EncodeToString(nsAString& aOutputString)
       NS_ENSURE_SUCCESS(rv, rv);
     }
   }
-  mSerializer->Init(mFlags, mWrapColumn, mCharset.get(), mIsCopying);
+  
+  PRBool isWholeDocument = !(mSelection || mRange || mNode);
+  mSerializer->Init(mFlags, mWrapColumn, mCharset.get(), mIsCopying, isWholeDocument);
 
   if (mSelection) {
     nsCOMPtr<nsIDOMRange> range;
@@ -902,10 +902,34 @@ nsDocumentEncoder::EncodeToString(nsAString& aOutputString)
     rv = mSelection->GetRangeCount(&count);
     NS_ENSURE_SUCCESS(rv, rv);
 
+    nsCOMPtr<nsIDOMNode> node, prevNode;
     for (i = 0; i < count; i++) {
       mSelection->GetRangeAt(i, getter_AddRefs(range));
 
+      // Bug 236546: newlines not added when copying table cells into clipboard
+      // Each selected cell shows up as a range containing a row with a single cell
+      // get the row, compare it to previous row and emit </tr><tr> as needed
+      range->GetStartContainer(getter_AddRefs(node));
+      NS_ENSURE_TRUE(node, NS_ERROR_FAILURE);
+      if (node != prevNode) {
+        if (prevNode) {
+          rv = SerializeNodeEnd(prevNode, aOutputString);
+          NS_ENSURE_SUCCESS(rv, rv);
+          prevNode = nsnull;
+        }
+        nsCOMPtr<nsIContent> content = do_QueryInterface(node);
+        if (content && content->Tag() == nsGkAtoms::tr) {
+          rv = SerializeNodeStart(node, 0, -1, aOutputString);
+          NS_ENSURE_SUCCESS(rv, rv);
+          prevNode = node;
+        }
+      }
+
       rv = SerializeRangeToString(range, aOutputString);
+      NS_ENSURE_SUCCESS(rv, rv);
+    }
+    if (prevNode) {
+      rv = SerializeNodeEnd(prevNode, aOutputString);
       NS_ENSURE_SUCCESS(rv, rv);
     }
 
@@ -1112,13 +1136,13 @@ nsHTMLCopyEncoder::SetSelection(nsISelection* aSelection)
   {
     // checking for selection inside a plaintext form widget
     nsIAtom *atom = selContent->Tag();
-    if (atom == nsHTMLAtoms::input ||
-        atom == nsHTMLAtoms::textarea)
+    if (atom == nsGkAtoms::input ||
+        atom == nsGkAtoms::textarea)
     {
       mIsTextWidget = PR_TRUE;
       break;
     }
-    else if (atom == nsHTMLAtoms::body)
+    else if (atom == nsGkAtoms::body)
     {
       // check for moz prewrap style on body.  If it's there we are 
       // in a plaintext editor.  This is pretty cheezy but I haven't 
@@ -1126,7 +1150,7 @@ nsHTMLCopyEncoder::SetSelection(nsISelection* aSelection)
       nsCOMPtr<nsIDOMElement> bodyElem = do_QueryInterface(selContent);
       nsAutoString wsVal;
       rv = bodyElem->GetAttribute(NS_LITERAL_STRING("style"), wsVal);
-      if (NS_SUCCEEDED(rv) && (kNotFound != wsVal.Find(NS_LITERAL_STRING("-moz-pre-wrap"))))
+      if (NS_SUCCEEDED(rv) && (kNotFound != wsVal.Find(NS_LITERAL_STRING("pre-wrap"))))
       {
         mIsTextWidget = PR_TRUE;
         break;
@@ -1212,7 +1236,7 @@ nsHTMLCopyEncoder::EncodeToStringWithContext(nsAString& aContextString,
   PRInt32 i;
   nsCOMPtr<nsIDOMNode> node;
   if (count > 0)
-    node = NS_STATIC_CAST(nsIDOMNode *, mCommonAncestors.ElementAt(0));
+    node = static_cast<nsIDOMNode *>(mCommonAncestors.ElementAt(0));
 
   if (node && IsTextNode(node)) 
   {
@@ -1227,13 +1251,13 @@ nsHTMLCopyEncoder::EncodeToStringWithContext(nsAString& aContextString,
   i = count;
   while (i > 0)
   {
-    node = NS_STATIC_CAST(nsIDOMNode *, mCommonAncestors.ElementAt(--i));
+    node = static_cast<nsIDOMNode *>(mCommonAncestors.ElementAt(--i));
     SerializeNodeStart(node, 0, -1, aContextString);
   }
   //i = 0; guaranteed by above
   while (i < count)
   {
-    node = NS_STATIC_CAST(nsIDOMNode *, mCommonAncestors.ElementAt(i++));
+    node = static_cast<nsIDOMNode *>(mCommonAncestors.ElementAt(i++));
     SerializeNodeEnd(node, aContextString);
   }
 
@@ -1266,32 +1290,32 @@ nsHTMLCopyEncoder::IncludeInContext(nsIDOMNode *aNode)
 //   }
   nsIAtom *tag = content->Tag();
 
-  return (tag == nsHTMLAtoms::b        ||
-          tag == nsHTMLAtoms::i        ||
-          tag == nsHTMLAtoms::u        ||
-          tag == nsHTMLAtoms::a        ||
-          tag == nsHTMLAtoms::tt       ||
-          tag == nsHTMLAtoms::s        ||
-          tag == nsHTMLAtoms::big      ||
-          tag == nsHTMLAtoms::small    ||
-          tag == nsHTMLAtoms::strike   ||
-          tag == nsHTMLAtoms::em       ||
-          tag == nsHTMLAtoms::strong   ||
-          tag == nsHTMLAtoms::dfn      ||
-          tag == nsHTMLAtoms::code     ||
-          tag == nsHTMLAtoms::cite     ||
-          tag == nsHTMLAtoms::variable ||
-          tag == nsHTMLAtoms::abbr     ||
-          tag == nsHTMLAtoms::font     ||
-          tag == nsHTMLAtoms::script   ||
-          tag == nsHTMLAtoms::span     ||
-          tag == nsHTMLAtoms::pre      ||
-          tag == nsHTMLAtoms::h1       ||
-          tag == nsHTMLAtoms::h2       ||
-          tag == nsHTMLAtoms::h3       ||
-          tag == nsHTMLAtoms::h4       ||
-          tag == nsHTMLAtoms::h5       ||
-          tag == nsHTMLAtoms::h6);
+  return (tag == nsGkAtoms::b        ||
+          tag == nsGkAtoms::i        ||
+          tag == nsGkAtoms::u        ||
+          tag == nsGkAtoms::a        ||
+          tag == nsGkAtoms::tt       ||
+          tag == nsGkAtoms::s        ||
+          tag == nsGkAtoms::big      ||
+          tag == nsGkAtoms::small    ||
+          tag == nsGkAtoms::strike   ||
+          tag == nsGkAtoms::em       ||
+          tag == nsGkAtoms::strong   ||
+          tag == nsGkAtoms::dfn      ||
+          tag == nsGkAtoms::code     ||
+          tag == nsGkAtoms::cite     ||
+          tag == nsGkAtoms::variable ||
+          tag == nsGkAtoms::abbr     ||
+          tag == nsGkAtoms::font     ||
+          tag == nsGkAtoms::script   ||
+          tag == nsGkAtoms::span     ||
+          tag == nsGkAtoms::pre      ||
+          tag == nsGkAtoms::h1       ||
+          tag == nsGkAtoms::h2       ||
+          tag == nsGkAtoms::h3       ||
+          tag == nsGkAtoms::h4       ||
+          tag == nsGkAtoms::h5       ||
+          tag == nsGkAtoms::h6);
 }
 
 
@@ -1366,7 +1390,7 @@ nsHTMLCopyEncoder::PromoteAncestorChain(nsCOMPtr<nsIDOMNode> *ioNode,
     else
     {
       // passing parent as last param to GetPromotedPoint() allows it to promote only one level
-      // up the heirarchy.
+      // up the hierarchy.
       rv = GetPromotedPoint( kStart, *ioNode, *ioStartOffset, address_of(frontNode), &frontOffset, parent);
       NS_ENSURE_SUCCESS(rv, rv);
       // then we make the same attempt with the endpoint
@@ -1588,7 +1612,7 @@ nsHTMLCopyEncoder::GetChildAt(nsIDOMNode *aParent, PRInt32 aOffset)
 PRBool 
 nsHTMLCopyEncoder::IsMozBR(nsIDOMNode* aNode)
 {
-  if (IsTag(aNode, nsHTMLAtoms::br))
+  if (IsTag(aNode, nsGkAtoms::br))
   {
     nsCOMPtr<nsIDOMElement> elem = do_QueryInterface(aNode);
     if (elem)
@@ -1634,11 +1658,11 @@ nsHTMLCopyEncoder::IsRoot(nsIDOMNode* aNode)
   if (aNode)
   {
     if (mIsTextWidget) 
-      return (IsTag(aNode, nsHTMLAtoms::div));
+      return (IsTag(aNode, nsGkAtoms::div));
     else
-      return (IsTag(aNode, nsHTMLAtoms::body) || 
-              IsTag(aNode, nsHTMLAtoms::td)   ||
-              IsTag(aNode, nsHTMLAtoms::th));
+      return (IsTag(aNode, nsGkAtoms::body) || 
+              IsTag(aNode, nsGkAtoms::td)   ||
+              IsTag(aNode, nsGkAtoms::th));
   }
   return PR_FALSE;
 }
@@ -1730,12 +1754,8 @@ nsHTMLCopyEncoder::IsLastNode(nsIDOMNode *aNode)
 PRBool
 nsHTMLCopyEncoder::IsEmptyTextContent(nsIDOMNode* aNode)
 {
-  PRBool result = PR_FALSE;
-  nsCOMPtr<nsITextContent> tc(do_QueryInterface(aNode));
-  if (tc) {
-    result = tc->IsOnlyWhitespace();
-  }
-  return result;
+  nsCOMPtr<nsIContent> cont = do_QueryInterface(aNode);
+  return cont && cont->TextIsOnlyWhitespace();
 }
 
 nsresult NS_NewHTMLCopyTextEncoder(nsIDocumentEncoder** aResult); // make mac compiler happy

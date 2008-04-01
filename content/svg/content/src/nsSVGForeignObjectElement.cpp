@@ -36,11 +36,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsSVGAtoms.h"
 #include "nsSVGLength.h"
 #include "nsCOMPtr.h"
-#include "nsISVGSVGElement.h"
-#include "nsSVGCoordCtxProvider.h"
 #include "nsSVGForeignObjectElement.h"
 
 nsSVGElement::LengthInfo nsSVGForeignObjectElement::sLengthInfo[4] =
@@ -78,7 +75,7 @@ nsSVGForeignObjectElement::nsSVGForeignObjectElement(nsINodeInfo *aNodeInfo)
 //----------------------------------------------------------------------
 // nsIDOMNode methods
 
-NS_IMPL_DOM_CLONENODE_WITH_INIT(nsSVGForeignObjectElement)
+NS_IMPL_ELEMENT_CLONE_WITH_INIT(nsSVGForeignObjectElement)
 
 //----------------------------------------------------------------------
 // nsIDOMSVGForeignObjectElement methods:
@@ -114,9 +111,16 @@ NS_IMETHODIMP_(PRBool)
 nsSVGForeignObjectElement::IsAttributeMapped(const nsIAtom* name) const
 {
   static const MappedAttributeEntry* const map[] = {
-    sViewportsMap,
+    sFEFloodMap,
+    sFiltersMap,
+    sFontSpecificationMap,
+    sGradientStopMap,
+    sLightingEffectsMap,
+    sMarkersMap,
+    sTextContentElementsMap,
+    sViewportsMap
   };
-  
+
   return FindAttributeDependence(name, map, NS_ARRAY_LENGTH(map)) ||
     nsSVGForeignObjectElementBase::IsAttributeMapped(name);
 }
