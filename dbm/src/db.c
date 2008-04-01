@@ -10,10 +10,8 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
+ * 3. ***REMOVED*** - see 
+ *    ftp://ftp.cs.berkeley.edu/pub/4bsd/README.Impt.License.Change
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -87,7 +85,7 @@ dbopen(const char *fname, int flags,int mode, DBTYPE type, const void *openinfo)
 #define	DB_FLAGS	(DB_LOCK | DB_SHMEM | DB_TXN)
 
 
-#if 0  /* most systems dont have EXLOCK and SHLOCK */
+#if 0  /* most systems don't have EXLOCK and SHLOCK */
 #define	USE_OPEN_FLAGS							\
 	(O_CREAT | O_EXCL | O_EXLOCK | O_NONBLOCK | O_RDONLY |		\
 	 O_RDWR | O_SHLOCK | O_TRUNC)
