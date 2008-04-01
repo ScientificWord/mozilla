@@ -45,23 +45,66 @@
 
 #include "nsCOMPtr.h"
 #include "nsAccessible.h"
+#include "Accessible2.h"
+#include "CAccessibleComponent.h"
+#include "CAccessibleHyperlink.h"
+#include "CAccessibleValue.h"
 
-class nsAccessibleWrap : public nsAccessible, 
-                         public IAccessible,
-                         public IEnumVARIANT,
-                         public IServiceProvider
+#define DECL_IUNKNOWN_INHERITED                                               \
+public:                                                                       \
+STDMETHODIMP QueryInterface(REFIID, void**);                                  \
+
+#define IMPL_IUNKNOWN_QUERY_HEAD(Class)                                       \
+STDMETHODIMP                                                                  \
+Class::QueryInterface(REFIID iid, void** ppv)                                 \
+{                                                                             \
+  HRESULT hr = E_NOINTERFACE;                                                 \
+  *ppv = NULL;                                                                \
+
+#define IMPL_IUNKNOWN_QUERY_TAIL                                              \
+  return hr;                                                                  \
+}                                                                             \
+
+#define IMPL_IUNKNOWN_QUERY_ENTRY(Class)                                      \
+  hr = Class::QueryInterface(iid, ppv);                                       \
+  if (SUCCEEDED(hr))                                                          \
+    return hr;                                                                \
+
+#define IMPL_IUNKNOWN_INHERITED0(Class, Super)                                \
+  IMPL_IUNKNOWN_QUERY_HEAD(Class)                                             \
+  IMPL_IUNKNOWN_QUERY_ENTRY(Super)                                            \
+  IMPL_IUNKNOWN_QUERY_TAIL                                                    \
+
+#define IMPL_IUNKNOWN_INHERITED1(Class, Super, I1)                            \
+  IMPL_IUNKNOWN_QUERY_HEAD(Class)                                             \
+  IMPL_IUNKNOWN_QUERY_ENTRY(I1);                                              \
+  IMPL_IUNKNOWN_QUERY_ENTRY(Super)                                            \
+  IMPL_IUNKNOWN_QUERY_TAIL                                                    \
+
+#define IMPL_IUNKNOWN_INHERITED2(Class, Super, I1, I2)                        \
+  IMPL_IUNKNOWN_QUERY_HEAD(Class)                                             \
+  IMPL_IUNKNOWN_QUERY_ENTRY(I1);                                              \
+  IMPL_IUNKNOWN_QUERY_ENTRY(I2);                                              \
+  IMPL_IUNKNOWN_QUERY_ENTRY(Super)                                            \
+  IMPL_IUNKNOWN_QUERY_TAIL                                                    \
+
+
+class nsAccessibleWrap : public nsAccessible,
+                         public CAccessibleComponent,
+                         public CAccessibleHyperlink,
+                         public CAccessibleValue,
+                         public IAccessible2,
+                         public IEnumVARIANT
 {
   public: // construction, destruction
     nsAccessibleWrap(nsIDOMNode*, nsIWeakReference *aShell);
     virtual ~nsAccessibleWrap();
 
-  public: // IUnknown methods - see iunknown.h for documentation
-    STDMETHODIMP_(ULONG) AddRef();
-    STDMETHODIMP_(ULONG) Release();
-    STDMETHODIMP QueryInterface(REFIID, void**);
+    // nsISupports
+    NS_DECL_ISUPPORTS_INHERITED
 
-  public: // IServiceProvider
-    STDMETHODIMP QueryService(REFGUID guidService, REFIID riid, void** ppv);
+  public: // IUnknown methods - see iunknown.h for documentation
+    STDMETHODIMP QueryInterface(REFIID, void**);
 
   // Return the registered OLE class ID of this object's CfDataObj.
     CLSID GetClassID() const;
@@ -152,6 +195,72 @@ class nsAccessibleWrap : public nsAccessible,
         /* [optional][in] */ VARIANT varChild,
         /* [in] */ BSTR szValue);
 
+  public: // IAccessible2
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_nRelations(
+        /* [retval][out] */ long *nRelations);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_relation(
+        /* [in] */ long relationIndex,
+        /* [retval][out] */ IAccessibleRelation **relation);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_relations(
+        /* [in] */ long maxRelations,
+        /* [length_is][size_is][out] */ IAccessibleRelation **relation,
+        /* [retval][out] */ long *nRelations);
+
+    virtual HRESULT STDMETHODCALLTYPE role(
+            /* [retval][out] */ long *role);
+
+    virtual HRESULT STDMETHODCALLTYPE scrollTo(
+        /* [in] */ enum IA2ScrollType scrollType);
+
+    virtual HRESULT STDMETHODCALLTYPE scrollToPoint(
+        /* [in] */ enum IA2CoordinateType coordinateType,
+	      /* [in] */ long x,
+	      /* [in] */ long y);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_groupPosition(
+        /* [out] */ long *groupLevel,
+        /* [out] */ long *similarItemsInGroup,
+        /* [retval][out] */ long *positionInGroup);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_states(
+        /* [retval][out] */ AccessibleStates *states);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_extendedRole(
+        /* [retval][out] */ BSTR *extendedRole);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_localizedExtendedRole(
+        /* [retval][out] */ BSTR *localizedExtendedRole);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_nExtendedStates(
+        /* [retval][out] */ long *nExtendedStates);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_extendedStates(
+        /* [in] */ long maxExtendedStates,
+        /* [length_is][length_is][size_is][size_is][out] */ BSTR **extendedStates,
+        /* [retval][out] */ long *nExtendedStates);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_localizedExtendedStates(
+        /* [in] */ long maxLocalizedExtendedStates,
+        /* [length_is][length_is][size_is][size_is][out] */ BSTR **localizedExtendedStates,
+        /* [retval][out] */ long *nLocalizedExtendedStates);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_uniqueID(
+        /* [retval][out] */ long *uniqueID);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_windowHandle(
+        /* [retval][out] */ HWND *windowHandle);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_indexInParent(
+        /* [retval][out] */ long *indexInParent);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_locale(
+        /* [retval][out] */ IA2Locale *locale);
+
+    virtual /* [propget] */ HRESULT STDMETHODCALLTYPE get_attributes(
+        /* [retval][out] */ BSTR *attributes);
+
   public:   // IEnumVariantMethods
     virtual /* [local] */ HRESULT STDMETHODCALLTYPE Next( 
         /* [in] */ ULONG celt,
@@ -177,26 +286,56 @@ class nsAccessibleWrap : public nsAccessible,
         LCID lcid, WORD wFlags, DISPPARAMS *pDispParams,
         VARIANT *pVarResult, EXCEPINFO *pExcepInfo, UINT *puArgErr);
 
+  // nsPIAccessible
+  NS_IMETHOD FireAccessibleEvent(nsIAccessibleEvent *aEvent);
+
+  // Helper methods
+  static PRInt32 GetChildIDFor(nsIAccessible* aAccessible);
+  static HWND GetHWNDFor(nsIAccessible *aAccessible);
+
+  /**
+   * System caret support: update the Windows caret position. 
+   * The system caret works more universally than the MSAA caret
+   * For example, Window-Eyes, JAWS, ZoomText and Windows Tablet Edition use it
+   * We will use an invisible system caret.
+   * Gecko is still responsible for drawing its own caret
+   */
+  void UpdateSystemCaret();
+
   virtual void GetXPAccessibleFor(const VARIANT& aVarChild, nsIAccessible **aXPAccessible);
   NS_IMETHOD GetNativeInterface(void **aOutAccessible);
-  NS_IMETHOD GetDescription(nsAString& aDescription);
 
   // NT4 does not have the oleacc that defines these methods. So we define copies here that automatically
   // load the library only if needed.
   static STDMETHODIMP AccessibleObjectFromWindow(HWND hwnd,DWORD dwObjectID,REFIID riid,void **ppvObject);
   static STDMETHODIMP NotifyWinEvent(DWORD event,HWND hwnd,LONG idObjectType,LONG idObject);
 
+  static IDispatch *NativeAccessible(nsIAccessible *aXPAccessible);
+
 protected:
   // mEnumVARIANTPosition not the current accessible's position, but a "cursor" of 
   // where we are in the current list of children, with respect to
   // nsIEnumVariant::Reset(), Skip() and Next().
-  PRUint16 mEnumVARIANTPosition;  
+  PRUint16 mEnumVARIANTPosition;
 
-  IDispatch *NativeAccessible(nsIAccessible *aXPAccessible);
-
-  // Should this accessible be allowed to have any MSAA children
-  static PRBool MustPrune(nsIAccessible *accessible)
-    { PRUint32 role; return NS_SUCCEEDED(accessible->GetRole(&role)) && (role == ROLE_ENTRY || role == ROLE_PASSWORD_TEXT); }
+  enum navRelations {
+    NAVRELATION_CONTROLLED_BY = 0x1000,
+    NAVRELATION_CONTROLLER_FOR = 0x1001,
+    NAVRELATION_LABEL_FOR = 0x1002,
+    NAVRELATION_LABELLED_BY = 0x1003,
+    NAVRELATION_MEMBER_OF = 0x1004,
+    NAVRELATION_NODE_CHILD_OF = 0x1005,
+    NAVRELATION_FLOWS_TO = 0x1006,
+    NAVRELATION_FLOWS_FROM = 0x1007,
+    NAVRELATION_SUBWINDOW_OF = 0x1008,
+    NAVRELATION_EMBEDS = 0x1009,
+    NAVRELATION_EMBEDDED_BY = 0x100a,
+    NAVRELATION_POPUP_FOR = 0x100b,
+    NAVRELATION_PARENT_WINDOW_OF = 0x100c,
+    NAVRELATION_DEFAULT_BUTTON = 0x100d,
+    NAVRELATION_DESCRIBED_BY = 0x100e,
+    NAVRELATION_DESCRIPTION_FOR = 0x100f
+  };
 };
 
 // Define unsupported wrap classes here

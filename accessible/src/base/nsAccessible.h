@@ -40,16 +40,24 @@
 #define _nsAccessible_H_
 
 #include "nsAccessNodeWrap.h"
-#include "nsAccessibilityAtoms.h"
+#include "nsAccessibilityUtils.h"
+
 #include "nsIAccessible.h"
 #include "nsPIAccessible.h"
 #include "nsIAccessibleHyperLink.h"
 #include "nsIAccessibleSelectable.h"
 #include "nsIAccessibleValue.h"
+#include "nsIAccessibleRole.h"
+#include "nsIAccessibleStates.h"
+#include "nsAccessibleRelationWrap.h"
+#include "nsIAccessibleEvent.h"
+
 #include "nsIDOMNodeList.h"
 #include "nsINameSpaceManager.h"
 #include "nsWeakReference.h"
 #include "nsString.h"
+#include "nsIDOMDOMStringList.h"
+#include "nsARIAMap.h"
 
 struct nsRect;
 class nsIContent;
@@ -57,61 +65,35 @@ class nsIFrame;
 class nsIPresShell;
 class nsIDOMNode;
 class nsIAtom;
+class nsIView;
+
+#define NS_OK_NO_ARIA_VALUE \
+NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_GENERAL, 0x21)
 
 // When mNextSibling is set to this, it indicates there ar eno more siblings
-#define DEAD_END_ACCESSIBLE NS_STATIC_CAST(nsIAccessible*, (void*)1)
+#define DEAD_END_ACCESSIBLE static_cast<nsIAccessible*>((void*)1)
 
 // Saves a data member -- if child count equals this value we haven't
 // cached children or child count yet
 enum { eChildCountUninitialized = -1 };
 
-struct nsStateMapEntry
+class nsAccessibleDOMStringList : public nsIDOMDOMStringList
 {
-  const char* attributeName;  // magic value of nsnull means last entry in map
-  const char* attributeValue; // magic value of nsnull means any value
-  PRUint32 state;       // OR state with this
+public:
+  nsAccessibleDOMStringList();
+  virtual ~nsAccessibleDOMStringList();
+
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIDOMDOMSTRINGLIST
+
+  PRBool Add(const nsAString& aName) {
+    return mNames.AppendString(aName);
+  }
+
+private:
+  nsStringArray mNames;
 };
 
-enum ENameRule {
-  eNameLabelOrTitle,     // Collect name if explicitly specified from 
-                         // 1) content subtree pointed to by labelledby
-                         //    which contains the ID for the label content, or
-                         // 2) title attribute if specified
-  eNameOkFromChildren    // Collect name from
-                         // 1) labelledby attribute if specified, or
-                         // 2) text & img descendents, or
-                         // 3) title attribute if specified
-};
-
-enum EValueRule {
-  eNoValue,
-  eHasValueMinMax    // Supports value, min and max from waistate:valuenow, valuemin and valuemax
-};
-
-#define eNoReqStates 0
-#define END_ENTRY {0, 0, 0}  // To fill in array of state mappings
-#define BOOL_STATE 0
-
-struct nsRoleMapEntry
-{
-  const char *roleString; // such as "button"
-  PRUint32 role;   // use this role
-  ENameRule nameRule;  // how to compute name
-  EValueRule valueRule;  // how to compute name
-  PRUint32 state;  // always OR state with this
-  // For this role with a DOM attribute/value match definined in
-  // nsStateMapEntry.attributeName && .attributeValue, OR accessible state with
-  // nsStateMapEntry.state
-  // Currently you can have up to 3 DOM attributes with accessible state mappings.
-  // A variable sized array would not allow use of C++'s struct initialization feature.
-  nsStateMapEntry attributeMap1;
-  nsStateMapEntry attributeMap2;
-  nsStateMapEntry attributeMap3;
-  nsStateMapEntry attributeMap4;
-  nsStateMapEntry attributeMap5;
-  nsStateMapEntry attributeMap6;
-  nsStateMapEntry attributeMap7;
-};
 
 class nsAccessible : public nsAccessNodeWrap, 
                      public nsIAccessible, 
@@ -121,11 +103,6 @@ class nsAccessible : public nsAccessNodeWrap,
                      public nsIAccessibleValue
 {
 public:
-  // to eliminate the confusion of "magic numbers" -- if ( 0 ){ foo; }
-  enum { eAction_Switch=0, eAction_Jump=0, eAction_Click=0, eAction_Select=0, eAction_Expand=1 };
-  // how many actions
-  enum { eNo_Action=0, eSingle_Action=1, eDouble_Action=2 }; 
-
   nsAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell);
   virtual ~nsAccessible();
 
@@ -137,39 +114,83 @@ public:
   NS_DECL_NSIACCESSIBLEVALUE
 
   // nsIAccessNode
-  NS_IMETHOD Init();
   NS_IMETHOD Shutdown();
 
-  NS_IMETHOD GetState(PRUint32 *aState);  // Must support GetFinalState()
+  /**
+   * Return the state of accessible that doesn't take into account ARIA states.
+   * Use nsIAccessible::finalState() to get all states for accessible. If
+   * second argument is omitted then second bit field of accessible state won't
+   * be calculated.
+   */
+  NS_IMETHOD GetState(PRUint32 *aState, PRUint32 *aExtraState);
 
-#ifdef MOZ_ACCESSIBILITY_ATK
-  static PRBool FindTextFrame(PRInt32 &index, nsPresContext *aPresContext, nsIFrame *aCurFrame, 
-                                   nsIFrame **aFirstTextFrame, const nsIFrame *aTextFrame);
+  /**
+   * Returns attributes for accessible without explicitly setted ARIA
+   * attributes.
+   */
+  virtual nsresult GetAttributesInternal(nsIPersistentProperties *aAttributes);
+
+  /**
+   * Maps ARIA state attributes to state of accessible. Note the given state
+   * argument should hold states for accessible before you pass it into this
+   * method.
+   */
+  PRUint32 GetARIAState();
+
+#ifdef DEBUG_A11Y
+  static PRBool IsTextInterfaceSupportCorrect(nsIAccessible *aAccessible);
 #endif
 
   static PRBool IsCorrectFrameType(nsIFrame* aFrame, nsIAtom* aAtom);
-  static PRUint32 State(nsIAccessible *aAcc) { PRUint32 state; aAcc->GetFinalState(&state); return state; }
+  static PRUint32 State(nsIAccessible *aAcc) { PRUint32 state; aAcc->GetFinalState(&state, nsnull); return state; }
   static PRUint32 Role(nsIAccessible *aAcc) { PRUint32 role; aAcc->GetFinalRole(&role); return role; }
-  static PRBool IsEmbeddedObject(nsIAccessible *aAcc) { PRUint32 role = Role(aAcc); return role != ROLE_TEXT_LEAF && role != ROLE_WHITESPACE; }
+  static PRBool IsText(nsIAccessible *aAcc) { PRUint32 role = Role(aAcc); return role == nsIAccessibleRole::ROLE_TEXT_LEAF || role == nsIAccessibleRole::ROLE_STATICTEXT; }
+  static PRBool IsEmbeddedObject(nsIAccessible *aAcc) { PRUint32 role = Role(aAcc); return role != nsIAccessibleRole::ROLE_TEXT_LEAF && role != nsIAccessibleRole::ROLE_WHITESPACE && role != nsIAccessibleRole::ROLE_STATICTEXT; }
+  static PRInt32 TextLength(nsIAccessible *aAccessible); // Returns -1 on failure
+  static PRBool IsLeaf(nsIAccessible *aAcc) { PRInt32 numChildren; aAcc->GetChildCount(&numChildren); return numChildren > 0; }
+  static PRBool IsNodeRelevant(nsIDOMNode *aNode); // Is node something that could have an attached accessible
+  /**
+   * When exposing to platform accessibility APIs, should the children be pruned off?
+   */
+  static PRBool MustPrune(nsIAccessible *aAccessible);
+  
+  already_AddRefed<nsIAccessible> GetParent() {
+    nsIAccessible *parent = nsnull;
+    GetParent(&parent);
+    return parent;
+  }
+  
+  /**
+   *  Return the nsIContent* to check for ARIA attributes on -- this may not always
+   *  be the DOM node for the accessible. Specifically, for doc accessibles, it is not
+   *  the document node, but either the root element or <body> in HTML.
+   *  @param aDOMNode   The DOM node for the accessible that may be affected by ARIA
+   *  @return The nsIContent which may have ARIA markup
+   */
+  static nsIContent *GetRoleContent(nsIDOMNode *aDOMNode);
 
 protected:
   PRBool MappedAttrState(nsIContent *aContent, PRUint32 *aStateInOut, nsStateMapEntry *aStateMapEntry);
   virtual nsIFrame* GetBoundsFrame();
   virtual void GetBoundsRect(nsRect& aRect, nsIFrame** aRelativeFrame);
-  PRBool IsPartiallyVisible(PRBool *aIsOffscreen); 
-  nsresult GetTextFromRelationID(nsIAtom *aIDAttrib, nsString &aName);
+  PRBool IsVisible(PRBool *aIsOffscreen); 
 
-  static nsIContent *GetContentPointingTo(const nsAString *aId,
-                                          nsIContent *aLookContent,
-                                          nsIAtom *forAttrib,
-                                          PRUint32 aForAttribNamespace = kNameSpaceID_None,
-                                          nsIAtom *aTagType = nsAccessibilityAtoms::label);
-  static nsIContent *GetXULLabelContent(nsIContent *aForNode,
-                                        nsIAtom *aLabelType = nsAccessibilityAtoms::label);
+  // Relation helpers
+
+  /**
+   * For a given ARIA relation, such as labelledby or describedby, get the collated text
+   * for the subtree that's pointed to.
+   *
+   * @param aIDProperty  The ARIA relationship property to get the text for
+   * @param aName        Where to put the text
+   * @return error or success code
+   */
+  nsresult GetTextFromRelationID(nsIAtom *aIDProperty, nsString &aName);
+
   static nsIContent *GetHTMLLabelContent(nsIContent *aForNode);
   static nsIContent *GetLabelContent(nsIContent *aForNode);
-  static nsIContent *GetRoleContent(nsIDOMNode *aDOMNode);
 
+  // Name helpers
   nsresult GetHTMLName(nsAString& _retval, PRBool aCanAggregateSubtree = PR_TRUE);
   nsresult GetXULName(nsAString& aName, PRBool aCanAggregateSubtree = PR_TRUE);
   // For accessibles that are not lists of choices, the name of the subtree should be the 
@@ -186,9 +207,22 @@ protected:
   nsresult AppendFlatStringFromSubtreeRecurse(nsIContent *aContent, nsAString *aFlatString);
 
   // Helpers for dealing with children
-  virtual void CacheChildren(PRBool aWalkAnonContent);
+  virtual void CacheChildren();
+  
+  // nsCOMPtr<>& is useful here, because getter_AddRefs() nulls the comptr's value, and NextChild
+  // depends on the passed-in comptr being null or already set to a child (finding the next sibling).
   nsIAccessible *NextChild(nsCOMPtr<nsIAccessible>& aAccessible);
+    
   already_AddRefed<nsIAccessible> GetNextWithState(nsIAccessible *aStart, PRUint32 matchState);
+
+  /**
+   * Return an accessible for the given DOM node, or if that node isn't accessible, return the
+   * accessible for the next DOM node which has one (based on forward depth first search)
+   * @param aStartNode, the DOM node to start from
+   * @param aRequireLeaf, only accept leaf accessible nodes
+   * @return the resulting accessible
+   */   
+  already_AddRefed<nsIAccessible> GetFirstAvailableAccessible(nsIDOMNode *aStartNode, PRBool aRequireLeaf = PR_FALSE);
 
   // Selection helpers
   static already_AddRefed<nsIAccessible> GetMultiSelectFor(nsIDOMNode *aNode);
@@ -200,14 +234,30 @@ protected:
   static void DoCommandCallback(nsITimer *aTimer, void *aClosure);
   nsresult DoCommand(nsIContent *aContent = nsnull);
 
+  // Check the visibility across both parent content and chrome
+  PRBool CheckVisibilityInParentChain(nsIDocument* aDocument, nsIView* aView);
+
+  /**
+   *  Get the container node for an atomic region, defined by aria-atomic="true"
+   *  @return the container node
+   */
+  nsIDOMNode* GetAtomicRegion();
+
+  /**
+   * Get numeric value of the given ARIA attribute.
+   *
+   * @param aAriaProperty - the ARIA property we're using
+   * @param aValue - value of the attribute
+   *
+   * @return - NS_OK_NO_ARIA_VALUE if there is no setted ARIA attribute
+   */
+  nsresult GetAttrValue(nsIAtom *aAriaProperty, double *aValue);
+
   // Data Members
   nsCOMPtr<nsIAccessible> mParent;
   nsIAccessible *mFirstChild, *mNextSibling;
   nsRoleMapEntry *mRoleMapEntry; // Non-null indicates author-supplied role; possibly state & value as well
   PRInt32 mAccChildCount;
-
-  static nsRoleMapEntry gWAIRoleMap[];
-  static nsStateMapEntry gUnivStateMap[];
 };
 
 
