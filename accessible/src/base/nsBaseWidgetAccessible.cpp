@@ -41,8 +41,10 @@
 #include "nsIAccessibilityService.h"
 #include "nsIAccessibleDocument.h"
 #include "nsAccessibleWrap.h"
+#include "nsAccessibilityUtils.h"
+#include "nsIDOMNSHTMLElement.h"
 #include "nsGUIEvent.h"
-#include "nsHyperTextAccessible.h"
+#include "nsHyperTextAccessibleWrap.h"
 #include "nsILink.h"
 #include "nsIFrame.h"
 #include "nsINameSpaceManager.h"
@@ -83,83 +85,79 @@ NS_IMETHODIMP nsLeafAccessible::GetChildCount(PRInt32 *_retval)
   return NS_OK;
 }
 
+/* readonly attribute boolean allowsAnonChildAccessibles; */
+NS_IMETHODIMP
+nsLeafAccessible::GetAllowsAnonChildAccessibles(PRBool *aAllowsAnonChildren)
+{
+  *aAllowsAnonChildren = PR_FALSE;
+  return NS_OK;
+}
 
 //----------------
 // nsLinkableAccessible
 //----------------
 
 nsLinkableAccessible::nsLinkableAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell) :
-  nsHyperTextAccessible(aNode, aShell),
+  nsHyperTextAccessibleWrap(aNode, aShell),
   mActionContent(nsnull),
   mIsLink(PR_FALSE),
   mIsOnclick(PR_FALSE)
 {
 }
 
-NS_IMPL_ISUPPORTS_INHERITED0(nsLinkableAccessible, nsHyperTextAccessible)
+NS_IMPL_ISUPPORTS_INHERITED0(nsLinkableAccessible, nsHyperTextAccessibleWrap)
 
 NS_IMETHODIMP nsLinkableAccessible::TakeFocus()
 { 
   if (mActionContent && mActionContent->IsFocusable()) {
-    mActionContent->SetFocus(nsCOMPtr<nsPresContext>(GetPresContext()));
+    nsCOMPtr<nsIDOMNSHTMLElement> htmlElement(do_QueryInterface(mActionContent));
+    if (htmlElement) {
+      // HTML Elements also set the caret position
+      // in order to affect tabbing order
+      return htmlElement->Focus();
+    }
+    NS_WARNING("Has action content that is not an HTML element");
   }
   
   return NS_OK;
 }
 
 /* long GetState (); */
-NS_IMETHODIMP nsLinkableAccessible::GetState(PRUint32 *aState)
+NS_IMETHODIMP
+nsLinkableAccessible::GetState(PRUint32 *aState, PRUint32 *aExtraState)
 {
-  nsHyperTextAccessible::GetState(aState);
+  nsresult rv = nsHyperTextAccessibleWrap::GetState(aState, aExtraState);
+  NS_ENSURE_SUCCESS(rv, rv);
+  if (!mDOMNode)
+    return NS_OK;
+
   if (mIsLink) {
-    *aState |= STATE_LINKED;
+    *aState |= nsIAccessibleStates::STATE_LINKED;
     nsCOMPtr<nsILink> link = do_QueryInterface(mActionContent);
     if (link) {
       nsLinkState linkState;
       link->GetLinkState(linkState);
       if (linkState == eLinkState_Visited) {
-        *aState |= STATE_TRAVERSED;
+        *aState |= nsIAccessibleStates::STATE_TRAVERSED;
       }
     }
-    // Make sure we also include all the states of the parent link, such as focusable, focused, etc.
-    PRUint32 role;
-    GetRole(&role);
-    if (role != ROLE_LINK) {
-      nsCOMPtr<nsIAccessible> parentAccessible;
-      GetParent(getter_AddRefs(parentAccessible));
-      if (parentAccessible) {
-        PRUint32 orState = 0;
-        parentAccessible->GetFinalState(&orState);
-        *aState |= orState;
-      }
-    }
-  }
-  if (mActionContent && !mActionContent->IsFocusable()) {
-    *aState &= ~STATE_FOCUSABLE; // Links must have href or tabindex
   }
 
-  // XXX What if we're in a contenteditable container?
-  //     We may need to go up the parent chain unless a better API is found
-  nsCOMPtr<nsIAccessible> docAccessible = 
-    do_QueryInterface(nsCOMPtr<nsIAccessibleDocument>(GetDocAccessible()));
-  if (docAccessible) {
-    PRBool isEditable;
-    docAccessible->GetIsEditable(&isEditable);
-    if (isEditable) {
-      *aState &= ~(STATE_FOCUSED | STATE_FOCUSABLE); // Links not focusable in editor
-    }
-  }
   return NS_OK;
 }
 
-
-NS_IMETHODIMP nsLinkableAccessible::GetValue(nsAString& _retval)
+NS_IMETHODIMP nsLinkableAccessible::GetValue(nsAString& aValue)
 {
+  aValue.Truncate();
+  nsHyperTextAccessible::GetValue(aValue);
+  if (!aValue.IsEmpty())
+    return NS_OK;
+
   if (mIsLink) {
     nsCOMPtr<nsIDOMNode> linkNode(do_QueryInterface(mActionContent));
     nsCOMPtr<nsIPresShell> presShell(do_QueryReferent(mWeakShell));
     if (linkNode && presShell)
-      return presShell->GetLinkLocation(linkNode, _retval);
+      return presShell->GetLinkLocation(linkNode, aValue);
   }
   return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -172,17 +170,19 @@ NS_IMETHODIMP nsLinkableAccessible::GetNumActions(PRUint8 *aNumActions)
   return NS_OK;
 }
 
-/* wstring getAccActionName (in PRUint8 index); */
-NS_IMETHODIMP nsLinkableAccessible::GetActionName(PRUint8 index, nsAString& aActionName)
+/* nsAString GetActionName (in PRUint8 Aindex); */
+NS_IMETHODIMP nsLinkableAccessible::GetActionName(PRUint8 aIndex, nsAString& aName)
 {
   // Action 0 (default action): Jump to link
-  aActionName.Truncate();
-  if (index == eAction_Jump) {   
+  aName.Truncate();
+  if (aIndex == eAction_Jump) {   
     if (mIsLink) {
-      return nsAccessible::GetTranslatedString(NS_LITERAL_STRING("jump"), aActionName); 
+      aName.AssignLiteral("jump");
+      return NS_OK;
     }
     else if (mIsOnclick) {
-      return nsAccessible::GetTranslatedString(NS_LITERAL_STRING("click"), aActionName); 
+      aName.AssignLiteral("click");
+      return NS_OK;
     }
     return NS_ERROR_NOT_IMPLEMENTED;
   }
@@ -225,24 +225,36 @@ void nsLinkableAccessible::CacheActionContent()
   for (nsCOMPtr<nsIContent> walkUpContent(do_QueryInterface(mDOMNode));
        walkUpContent;
        walkUpContent = walkUpContent->GetParent()) {
+    PRBool isOnclick = nsAccUtils::HasListener(walkUpContent, NS_LITERAL_STRING("click"));
     nsIAtom *tag = walkUpContent->Tag();
-    if ((tag == nsAccessibilityAtoms::a || tag == nsAccessibilityAtoms::area)) {
-      // Currently we do not expose <link> tags, because they are not typically
-      // in <body> and rendered.
-      // We do not yet support xlinks
+    if ((tag == nsAccessibilityAtoms::a || tag == nsAccessibilityAtoms::area) &&
+        walkUpContent->IsNodeOfType(nsINode::eHTML)) {
       nsCOMPtr<nsILink> link = do_QueryInterface(walkUpContent);
-      NS_ASSERTION(link, "No nsILink for area or a");
-      nsCOMPtr<nsIURI> uri;
-      link->GetHrefURI(getter_AddRefs(uri));
-      if (uri) {
+      if (link) {
+        // Currently we do not expose <link> tags, because they are not typically
+        // in <body> and rendered.
+        // We do not yet support xlinks
+        nsCOMPtr<nsIURI> uri;
+        link->GetHrefURI(getter_AddRefs(uri));
+        if (uri) {
+          mActionContent = walkUpContent;
+          mIsLink = PR_TRUE;
+          break;
+        }
+      }
+      if (SameCOMIdentity(mDOMNode, walkUpContent)) {
+        // This is the element that caused the creation of a linkable accessible
+        // Don't let it keep walking up, otherwise we may report the wrong container
+        // as the action node
         mActionContent = walkUpContent;
-        mIsLink = PR_TRUE;
+        mIsOnclick = isOnclick;
+        break;
       }
     }
-    if (walkUpContent->HasAttr(kNameSpaceID_None,
-                            nsAccessibilityAtoms::onclick)) {
+    if (isOnclick) {
       mActionContent = walkUpContent;
       mIsOnclick = PR_TRUE;
+      break;
     }
   }
 }
@@ -267,13 +279,13 @@ NS_IMETHODIMP nsLinkableAccessible::GetURI(PRInt32 aIndex, nsIURI **aURI)
 NS_IMETHODIMP nsLinkableAccessible::Init()
 {
   CacheActionContent();
-  return nsHyperTextAccessible::Init();
+  return nsHyperTextAccessibleWrap::Init();
 }
 
 NS_IMETHODIMP nsLinkableAccessible::Shutdown()
 {
   mActionContent = nsnull;
-  return nsHyperTextAccessible::Shutdown();
+  return nsHyperTextAccessibleWrap::Shutdown();
 }
 
 //---------------------

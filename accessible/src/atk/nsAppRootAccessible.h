@@ -42,61 +42,27 @@
 #ifndef __NS_APP_ROOT_ACCESSIBLE_H__
 #define __NS_APP_ROOT_ACCESSIBLE_H__
 
-#include "nsIMutableArray.h"
-#include "nsIAccessibleDocument.h"
-#include "nsAccessibilityService.h"
-#include "nsAccessibleWrap.h"
-#include "nsRootAccessibleWrap.h"
+#include "nsApplicationAccessible.h"
 
-#define MAI_TYPE_APP_ROOT (MAI_TYPE_ATK_OBJECT)
-
-/* nsAppRootAccessible is for the whole application of Mozilla.
- * Only one instance of nsAppRootAccessible exists for one Mozilla instance.
- * And this one should be created when Mozilla Startup (if accessibility
- * feature has been enabled) and destroyed when Mozilla Shutdown.
- *
- * All the accessibility objects for toplevel windows are direct children of
- * the nsAppRootAccessible instance.
- */
-class nsAppRootAccessible;
-class nsAppRootAccessible: public nsAccessibleWrap
+class nsApplicationAccessibleWrap: public nsApplicationAccessible
 {
 public:
-    virtual ~nsAppRootAccessible();
-#ifdef MAI_LOGGING
-    //    virtual void DumpMaiObjectInfo(int aDepth);
-#endif
-
-    static nsAppRootAccessible *Create();
     static void Unload();
+    static void PreCreate();
 
 public:
-    nsAppRootAccessible();
+    nsApplicationAccessibleWrap();
+    virtual ~nsApplicationAccessibleWrap();
 
-    /* virtual function from nsAccessNode */
+    // nsPIAccessNode
     NS_IMETHOD Init();
-
-    /* virtual functions from nsAccessible */
-    NS_IMETHOD GetName(nsAString & aName);
-    NS_IMETHOD GetDescription(nsAString & aDescription);
-    NS_IMETHOD GetRole(PRUint32 *aRole);
-    NS_IMETHOD GetFinalRole(PRUint32 *aFinalRole);
-    NS_IMETHOD GetParent(nsIAccessible * *aParent);
-    NS_IMETHOD GetNextSibling(nsIAccessible * *aNextSibling);
-    NS_IMETHOD GetPreviousSibling(nsIAccessible **aPreviousSibling);
-    NS_IMETHOD GetChildAt(PRInt32 aChildNum, nsIAccessible **aChild);
-
-    NS_IMETHOD GetFirstChild(nsIAccessible * *aFirstChild);
-    NS_IMETHOD GetChildCount(PRInt32 *aAccChildCount);
 
     // return the atk object for app root accessible
     NS_IMETHOD GetNativeInterface(void **aOutAccessible);
 
-    nsresult AddRootAccessible(nsRootAccessibleWrap *aRootAccWrap);
-    nsresult RemoveRootAccessible(nsRootAccessibleWrap *aRootAccWrap);
-private:
-    nsCOMPtr<nsIMutableArray> mChildren;
-    PRBool mInitialized;
+    // nsApplicationAccessible
+    virtual nsresult AddRootAccessible(nsIAccessible *aRootAccWrap);
+    virtual nsresult RemoveRootAccessible(nsIAccessible *aRootAccWrap);
 };
 
 #endif   /* __NS_APP_ROOT_ACCESSIBLE_H__ */

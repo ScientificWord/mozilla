@@ -48,7 +48,8 @@
 
 nsAccessibleTreeWalker::nsAccessibleTreeWalker(nsIWeakReference* aPresShell, nsIDOMNode* aNode, PRBool aWalkAnonContent): 
   mWeakShell(aPresShell), 
-  mAccService(do_GetService("@mozilla.org/accessibilityService;1"))
+  mAccService(do_GetService("@mozilla.org/accessibilityService;1")),
+  mWalkAnonContent(aWalkAnonContent)
 {
   mState.domNode = aNode;
   mState.prevState = nsnull;
@@ -57,11 +58,6 @@ nsAccessibleTreeWalker::nsAccessibleTreeWalker(nsIWeakReference* aPresShell, nsI
   mState.isHidden = false;
   mState.frame = nsnull;
 
-  if (aWalkAnonContent) {
-    nsCOMPtr<nsIPresShell> presShell(do_QueryReferent(mWeakShell));
-    if (presShell)
-      mBindingManager = presShell->GetDocument()->BindingManager();
-  }
   MOZ_COUNT_CTOR(nsAccessibleTreeWalker);
 }
 
@@ -71,37 +67,6 @@ nsAccessibleTreeWalker::~nsAccessibleTreeWalker()
   while (NS_SUCCEEDED(PopState()))
     /* do nothing */ ;
    MOZ_COUNT_DTOR(nsAccessibleTreeWalker);
-}
-
-// GetFullParentNode gets the parent node in the deep tree
-// This might not be the DOM parent in cases where <children/> was used in an XBL binding.
-// In that case, this returns the parent in the XBL'ized tree.
-
-NS_IMETHODIMP nsAccessibleTreeWalker::GetFullTreeParentNode(nsIDOMNode *aChildNode, nsIDOMNode **aParentNodeOut)
-{
-  nsCOMPtr<nsIContent> childContent(do_QueryInterface(aChildNode));
-  nsCOMPtr<nsIContent> bindingParentContent;
-  nsCOMPtr<nsIDOMNode> parentNode;
-
-  if (mState.prevState)
-    parentNode = mState.prevState->domNode;
-  else {
-    if (mBindingManager) {
-      mBindingManager->GetInsertionParent(childContent, getter_AddRefs(bindingParentContent));
-      if (bindingParentContent) 
-        parentNode = do_QueryInterface(bindingParentContent);
-    }
-
-    if (!parentNode) 
-      aChildNode->GetParentNode(getter_AddRefs(parentNode));
-  }
-
-  if (parentNode) {
-    *aParentNodeOut = parentNode;
-    NS_ADDREF(*aParentNodeOut);
-    return NS_OK;
-  }
-  return NS_ERROR_FAILURE;
 }
 
 void nsAccessibleTreeWalker::GetKids(nsIDOMNode *aParentNode)
@@ -122,9 +87,14 @@ void nsAccessibleTreeWalker::GetKids(nsIDOMNode *aParentNode)
   // Walk anonymous content? Not currently used for HTML -- anonymous content there uses frame walking
   mState.siblingIndex = 0;   // Indicates our index into the sibling list
   if (parentContent) {
-    if (mBindingManager && !parentContent->IsNodeOfType(nsINode::eHTML)) {
+    if (mWalkAnonContent) {
       // Walk anonymous content
-      mBindingManager->GetXBLChildNodesFor(parentContent, getter_AddRefs(mState.siblingList)); // returns null if no anon nodes
+      nsIDocument* doc = parentContent->GetOwnerDoc();
+      if (doc) {
+        // returns null if no anon nodes
+        doc->GetXBLChildNodesFor(parentContent,
+                                 getter_AddRefs(mState.siblingList));
+      }
     }
     if (!mState.siblingList) {
       // Walk normal DOM. Just use nsIContent -- it doesn't require 
@@ -145,22 +115,6 @@ void nsAccessibleTreeWalker::GetKids(nsIDOMNode *aParentNode)
   }
 
   mState.siblingList->Item(0 /* 0 == mState.siblingIndex */, getter_AddRefs(mState.domNode));
-}
-
-NS_IMETHODIMP nsAccessibleTreeWalker::GetParent()
-{
-  nsCOMPtr<nsIDOMNode> parent;
-
-  while (NS_SUCCEEDED(GetFullTreeParentNode(mState.domNode, getter_AddRefs(parent)))) {
-    if (NS_FAILED(PopState())) {
-      mState.domNode = parent;
-      GetAccessible();
-    }
-    if (mState.accessible)
-      return NS_OK;
-  }
-
-  return NS_ERROR_FAILURE;
 }
 
 NS_IMETHODIMP nsAccessibleTreeWalker::PopState()
@@ -272,14 +226,48 @@ NS_IMETHODIMP nsAccessibleTreeWalker::GetFirstChild()
 
 void nsAccessibleTreeWalker::UpdateFrame(PRBool aTryFirstChild)
 {
-  if (mState.frame) {
-    mState.frame = aTryFirstChild? mState.frame->GetFirstChild(nsnull) : 
-                                   mState.frame->GetNextSibling();
-    if (mState.frame && mState.siblingIndex < 0 && 
-        mState.frame->GetContent()->IsNativeAnonymous()) {
+  if (!mState.frame) {
+    return;
+  }
+  if (aTryFirstChild) {
+    nsIContent *containerContent = mState.frame->GetContent();
+    mState.frame = mState.frame->GetFirstChild(nsnull);
+// temporary workaround for Bug 359210. We never want to walk frames.
+// Aaron Leventhal will refix :before and :after content later without walking frames.
+#if 0
+    if (mState.frame && mState.siblingIndex < 0) {
+      // Container frames can contain generated content frames from
+      // :before and :after style rules, so we walk their frame trees
+      // instead of content trees
+      // XXX Walking the frame tree doesn't get us Aural CSS nodes, e.g. 
+      // @media screen { display: none; }
+      // Asking the style system might be better (with ProbePseudoStyleFor(),
+      // except that we need to ask only for those display types that support 
+      // :before and :after (which roughly means non-replaced elements)
+      // Here's some code to see if there is an :after rule for an element
+      // nsRefPtr<nsStyleContext> pseudoContext;
+      // nsStyleContext *styleContext = primaryFrame->GetStyleContext();
+      // if (aContent) {
+      //   pseudoContext = presContext->StyleSet()->
+      //     ProbePseudoStyleFor(content, nsAccessibilityAtoms::after, aStyleContext);
       mState.domNode = do_QueryInterface(mState.frame->GetContent());
       mState.siblingIndex = eSiblingsWalkFrames;
     }
+#endif
+    // Special case: <input type="file">
+    // We should still need to walk frames inside the file control frame
+    // This special case may turn into a more general rule after Firefox 3,
+    // if HTML 5 controls use nsIAnonymousContentCreator
+    if (containerContent->Tag() == nsAccessibilityAtoms::input &&
+        containerContent->AttrValueIs(kNameSpaceID_None, nsAccessibilityAtoms::type,
+                                      NS_LITERAL_STRING("file"), eIgnoreCase) &&
+        mState.frame && mState.siblingIndex < 0)  {
+      mState.domNode = do_QueryInterface(mState.frame->GetContent());
+      mState.siblingIndex = eSiblingsWalkFrames;
+    }
+  }
+  else {
+    mState.frame = mState.frame->GetNextSibling();
   }
 }
 
@@ -290,17 +278,15 @@ void nsAccessibleTreeWalker::UpdateFrame(PRBool aTryFirstChild)
 PRBool nsAccessibleTreeWalker::GetAccessible()
 {
   if (!mAccService) {
-    return false;
+    return PR_FALSE;
   }
+
   mState.accessible = nsnull;
   nsCOMPtr<nsIPresShell> presShell(do_QueryReferent(mWeakShell));
 
-  if (NS_SUCCEEDED(mAccService->GetAccessible(mState.domNode, presShell, mWeakShell, 
-                                              &mState.frame, &mState.isHidden,
-                                              getter_AddRefs(mState.accessible)))) {
-    NS_ASSERTION(mState.accessible, "No accessible but no failure return code");
-    return true;
-  }
-  return false;
+  mAccService->GetAccessible(mState.domNode, presShell, mWeakShell,
+                             &mState.frame, &mState.isHidden,
+                             getter_AddRefs(mState.accessible));
+  return mState.accessible ? PR_TRUE : PR_FALSE;
 }
 

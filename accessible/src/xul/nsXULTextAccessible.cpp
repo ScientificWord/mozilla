@@ -39,6 +39,7 @@
 
 // NOTE: alphabetically ordered
 #include "nsAccessibilityAtoms.h"
+#include "nsAccessibilityUtils.h"
 #include "nsBaseWidgetAccessible.h"
 #include "nsIDOMXULDescriptionElement.h"
 #include "nsINameSpaceManager.h"
@@ -49,7 +50,7 @@
   * For XUL descriptions and labels
   */
 nsXULTextAccessible::nsXULTextAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell):
-nsHyperTextAccessible(aDomNode, aShell)
+nsHyperTextAccessibleWrap(aDomNode, aShell)
 { 
 }
 
@@ -60,20 +61,50 @@ NS_IMETHODIMP nsXULTextAccessible::GetName(nsAString& aName)
   if (!content) {
     return NS_ERROR_FAILURE;  // Node shut down
   }
-  if (!content->GetAttr(kNameSpaceID_None, nsAccessibilityAtoms::value,
-                        aName)) {
-    // if the value doesn't exist, flatten the inner content as the name (for descriptions)
-    return AppendFlatStringFromSubtree(content, &aName);
-  }
-  // otherwise, use the value attribute as the name (for labels)
+  // if the value attr doesn't exist, the screen reader must get the accessible text
+  // from the accessible text interface or from the children
+  return content->GetAttr(kNameSpaceID_None, nsAccessibilityAtoms::value, aName);
+}
+
+NS_IMETHODIMP
+nsXULTextAccessible::GetState(PRUint32 *aState, PRUint32 *aExtraState)
+{
+  nsresult rv = nsHyperTextAccessibleWrap::GetState(aState, aExtraState);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // Labels and description have read only state
+  // They are not focusable or selectable
+  *aState |= nsIAccessibleStates::STATE_READONLY;
   return NS_OK;
 }
 
-NS_IMETHODIMP nsXULTextAccessible::GetState(PRUint32 *_retval)
+NS_IMETHODIMP
+nsXULTextAccessible::GetAccessibleRelated(PRUint32 aRelationType,
+                                          nsIAccessible **aRelated)
 {
-  // Labels and description can only have read only state
-  // They are not focusable or selectable
-  *_retval = STATE_READONLY;
+  nsresult rv =
+    nsHyperTextAccessibleWrap::GetAccessibleRelated(aRelationType, aRelated);
+  NS_ENSURE_SUCCESS(rv, rv);
+  if (*aRelated) {
+    return NS_OK;
+  }
+
+  nsIContent *content = GetRoleContent(mDOMNode);
+  if (!content)
+    return NS_ERROR_FAILURE;
+
+  if (aRelationType == nsIAccessibleRelation::RELATION_LABEL_FOR) {
+    // Caption is the label for groupbox
+    nsIContent *parent = content->GetParent();
+    if (parent && parent->Tag() == nsAccessibilityAtoms::caption) {
+      nsCOMPtr<nsIAccessible> parentAccessible;
+      GetParent(getter_AddRefs(parentAccessible));
+      if (Role(parentAccessible) == nsIAccessibleRole::ROLE_GROUPING) {
+        parentAccessible.swap(*aRelated);
+      }
+    }
+  }
+
   return NS_OK;
 }
 
@@ -85,24 +116,25 @@ nsLeafAccessible(aDomNode, aShell)
 { 
 }
 
-NS_IMETHODIMP nsXULTooltipAccessible::GetName(nsAString& _retval)
+NS_IMETHODIMP nsXULTooltipAccessible::GetName(nsAString& aName)
 {
-  //XXX, kyle.yuan@sun.com, we don't know how to get at this information at the moment,
-  //  because it is not loaded until it shows.
-  return NS_OK;
+  return GetXULName(aName, PR_TRUE);
 }
 
-NS_IMETHODIMP nsXULTooltipAccessible::GetState(PRUint32 *_retval)
+NS_IMETHODIMP
+nsXULTooltipAccessible::GetState(PRUint32 *aState, PRUint32 *aExtraState)
 {
-  nsLeafAccessible::GetState(_retval);
-  *_retval &= ~STATE_FOCUSABLE;
-  *_retval |= STATE_READONLY;
+  nsresult rv = nsLeafAccessible::GetState(aState, aExtraState);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  *aState &= ~nsIAccessibleStates::STATE_FOCUSABLE;
+  *aState |= nsIAccessibleStates::STATE_READONLY;
   return NS_OK;
 }
 
 NS_IMETHODIMP nsXULTooltipAccessible::GetRole(PRUint32 *_retval)
 {
-  *_retval = ROLE_TOOLTIP;
+  *_retval = nsIAccessibleRole::ROLE_TOOLTIP;
   return NS_OK;
 }
 
@@ -140,13 +172,9 @@ NS_IMETHODIMP nsXULLinkAccessible::GetName(nsAString& aName)
 
 NS_IMETHODIMP nsXULLinkAccessible::GetRole(PRUint32 *aRole)
 {
-  if (mIsLink) {
-    *aRole = ROLE_LINK;
-  } else {
-    // default to calling the link a button; might have javascript
-    *aRole = ROLE_PUSHBUTTON;
-  }
-  // should there be a third case where it becomes just text?
+  // We used to say ROLE_BUTTON if there was no href, but then screen readers
+  // would tell users to hit the space bar for activation, which is wrong for a link
+  *aRole = nsIAccessibleRole::ROLE_LINK;
   return NS_OK;
 }
 
@@ -164,7 +192,7 @@ void nsXULLinkAccessible::CacheActionContent()
     mIsLink = PR_TRUE;
     mActionContent = mTempContent;
   }
-  else if (mTempContent->HasAttr(kNameSpaceID_None, nsAccessibilityAtoms::onclick)) {
+  else if (nsAccUtils::HasListener(mTempContent, NS_LITERAL_STRING("click"))) {
     mIsOnclick = PR_TRUE;
     mActionContent = mTempContent;
   }

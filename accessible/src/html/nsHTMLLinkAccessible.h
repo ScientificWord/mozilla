@@ -46,22 +46,12 @@ class nsHTMLLinkAccessible : public nsLinkableAccessible
   NS_DECL_ISUPPORTS_INHERITED
 
 public:
-  nsHTMLLinkAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell, nsIFrame *aFrame);
+  nsHTMLLinkAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell);
   
   // nsIAccessible
   NS_IMETHOD GetName(nsAString& _retval); 
   NS_IMETHOD GetRole(PRUint32 *_retval); 
-  NS_IMETHOD GetState(PRUint32 *_retval);
-  
-  // nsPIAccessNode
-  NS_IMETHOD_(nsIFrame *) GetFrame(void);
-
-  // nsPIAccessible
-  NS_IMETHOD FireToolkitEvent(PRUint32 aEvent, nsIAccessible *aTarget,
-                              void *aData);
-
-private:
-  nsIFrame *mFrame;
+  NS_IMETHOD GetState(PRUint32 *aState, PRUint32 *aExtraState);
 };
 
 #endif  
