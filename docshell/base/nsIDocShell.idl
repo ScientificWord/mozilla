@@ -56,7 +56,7 @@ interface nsIURI;
 interface nsIChannel;
 interface nsIContentViewer;
 interface nsIURIContentListener;
-interface nsIChromeEventHandler;
+interface nsIDOMEventTarget;
 interface nsIDocShellLoadInfo;
 interface nsIDocumentCharsetInfo;
 interface nsIWebNavigation;
@@ -68,7 +68,7 @@ interface nsILayoutHistoryState;
 interface nsISecureBrowserUI;
 interface nsIDOMStorage;
 
-[scriptable, uuid(51241d7c-73c9-4b85-970c-bd4f91acfbcc)]
+[scriptable, uuid(4b00222a-8d0a-46d7-a1fe-43bd89d19324)]
 interface nsIDocShell : nsISupports
 {
   /**
@@ -122,8 +122,11 @@ interface nsIDocShell : nsISupports
   const long INTERNAL_LOAD_FLAGS_DONT_SEND_REFERRER      = 0x2;
   const long INTERNAL_LOAD_FLAGS_ALLOW_THIRD_PARTY_FIXUP = 0x4;
 
-  // This flag marks the first load in a new window.
-  const long INTERNAL_LOAD_FLAGS_NEW_WINDOW              = 0x8;
+  // This flag marks the first load in this object
+  // @see nsIWebNavigation::LOAD_FLAGS_FIRST_LOAD
+  const long INTERNAL_LOAD_FLAGS_FIRST_LOAD              = 0x8;
+
+  const long INTERNAL_LOAD_FLAGS_BYPASS_CLASSIFIER       = 0x10;
 
   /**
    * Loads the given URI.  This method is identical to loadURI(...) except
@@ -183,6 +186,9 @@ interface nsIDocShell : nsISupports
    * Notify the associated content viewer and all child docshells that they are
    * about to be hidden.  If |isUnload| is true, then the document is being
    * unloaded as well.
+   *
+   * @param isUnload if true, fire the unload event in addition to the pagehide
+   *                 event.
    */
   [noscript] void firePageHideNotification(in boolean isUnload);
 
@@ -212,7 +218,7 @@ interface nsIDocShell : nsISupports
    * This attribute allows chrome to tie in to handle DOM events that may
    * be of interest to chrome.
    */
-  attribute nsIChromeEventHandler chromeEventHandler;
+  attribute nsIDOMEventTarget chromeEventHandler;
 
   /**
    * The document charset info.  This is used by a load to determine priorities
@@ -416,7 +422,7 @@ interface nsIDocShell : nsISupports
    *
    * @param domain the domain of the storage object to retrieve
    */
-  nsIDOMStorage getSessionStorageForDomain(in ACString aDomain);
+  nsIDOMStorage getSessionStorageForURI(in nsIURI uri);
 
   /*
    * Add a WebApps session storage object to the docshell.
@@ -432,5 +438,24 @@ interface nsIDocShell : nsISupports
    * until after OnLocationChange fires.
    */
   readonly attribute nsIChannel currentDocumentChannel;
+
+  /**
+   * Set the offset of this child in its container.
+   */
+  [noscript] void setChildOffset(in unsigned long offset);
+
+  /**
+   * Find out whether the docshell is currently in the middle of a page
+   * transition (after the onunload event has fired, but before the new
+   * document has been set up)
+   */
+  readonly attribute boolean isInUnload;
+
+  /**
+   * Find out if the currently loaded document came from a suspicious channel
+   * (such as a JAR channel where the server-returned content type isn't a
+   * known JAR type).
+   */
+  readonly attribute boolean channelIsUnsafe;
 };
 

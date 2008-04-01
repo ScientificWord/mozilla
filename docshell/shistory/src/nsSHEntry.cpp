@@ -51,13 +51,52 @@
 #include "nsIDOMDocument.h"
 #include "nsAutoPtr.h"
 #include "nsThreadUtils.h"
+#include "nsIWebNavigation.h"
+#include "nsISHistory.h"
+#include "nsISHistoryInternal.h"
 
+// Hardcode this to time out unused content viewers after 30 minutes
+#define CONTENT_VIEWER_TIMEOUT_SECONDS 30*60
 
+typedef nsExpirationTracker<nsSHEntry,3> HistoryTrackerBase;
+class HistoryTracker : public HistoryTrackerBase {
+public:
+  // Expire cached contentviewers after 20-30 minutes in the cache.
+  HistoryTracker() : HistoryTrackerBase((CONTENT_VIEWER_TIMEOUT_SECONDS/2)*1000) {}
+  
+protected:
+  virtual void NotifyExpired(nsSHEntry* aObj) {
+    RemoveObject(aObj);
+    aObj->Expire();
+  }
+};
+
+static HistoryTracker *gHistoryTracker = nsnull;
 static PRUint32 gEntryID = 0;
+
+nsresult nsSHEntry::Startup()
+{
+  gHistoryTracker = new HistoryTracker();
+  return gHistoryTracker ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
+}
+
+void nsSHEntry::Shutdown()
+{
+  delete gHistoryTracker;
+  gHistoryTracker = nsnull;
+}
+
+static void StopTrackingEntry(nsSHEntry *aEntry)
+{
+  if (aEntry->GetExpirationState()->IsTracked()) {
+    gHistoryTracker->RemoveObject(aEntry);
+  }
+}
 
 //*****************************************************************************
 //***    nsSHEntry: Object Management
 //*****************************************************************************
+
 
 nsSHEntry::nsSHEntry() 
   : mLoadType(0)
@@ -109,6 +148,8 @@ ClearParentPtr(nsISHEntry* aEntry, void* /* aData */)
 
 nsSHEntry::~nsSHEntry()
 {
+  StopTrackingEntry(this);
+
   // Since we never really remove kids from SHEntrys, we need to null
   // out the mParent pointers on all our kids.
   mChildren.EnumerateForwards(ClearParentPtr, nsnull);
@@ -119,6 +160,15 @@ nsSHEntry::~nsSHEntry()
   if (viewer) {
     viewer->Destroy();
   }
+
+#ifdef DEBUG
+  // This is not happening as far as I can tell from breakpad as of early November 2007
+  nsExpirationTracker<nsSHEntry,3>::Iterator iterator(gHistoryTracker);
+  nsSHEntry* elem;
+  while ((elem = iterator.Next()) != nsnull) {
+    NS_ASSERTION(elem != this, "Found dead entry still in the tracker!");
+  }
+#endif
 }
 
 //*****************************************************************************
@@ -177,13 +227,15 @@ nsSHEntry::SetContentViewer(nsIContentViewer *aViewer)
 {
   NS_PRECONDITION(!aViewer || !mContentViewer, "SHEntry already contains viewer");
 
-  if (!aViewer) {
+  if (mContentViewer || !aViewer) {
     DropPresentationState();
   }
 
   mContentViewer = aViewer;
 
   if (mContentViewer) {
+    gHistoryTracker->AddObject(this);
+
     nsCOMPtr<nsIDOMDocument> domDoc;
     mContentViewer->GetDOMDocument(getter_AddRefs(domDoc));
     // Store observed document in strong pointer in case it is removed from
@@ -500,6 +552,13 @@ nsSHEntry::GetOwner(nsISupports **aOwner)
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsSHEntry::SetOwner(nsISupports *aOwner)
+{
+  mOwner = aOwner;
+  return NS_OK;
+}
+
 //*****************************************************************************
 //    nsSHEntry: nsISHContainer
 //*****************************************************************************
@@ -630,12 +689,38 @@ nsSHEntry::DropPresentationState()
   if (mContentViewer)
     mContentViewer->ClearHistoryEntry();
 
+  StopTrackingEntry(this);
   mContentViewer = nsnull;
   mSticky = PR_TRUE;
   mWindowState = nsnull;
   mViewerBounds.SetRect(0, 0, 0, 0);
   mChildShells.Clear();
   mRefreshURIList = nsnull;
+}
+
+void
+nsSHEntry::Expire()
+{
+  // This entry has timed out. If we still have a content viewer, we need to
+  // get it evicted.
+  if (!mContentViewer)
+    return;
+  nsCOMPtr<nsISupports> container;
+  mContentViewer->GetContainer(getter_AddRefs(container));
+  nsCOMPtr<nsIDocShellTreeItem> treeItem = do_QueryInterface(container);
+  if (!treeItem)
+    return;
+  // We need to find the root DocShell since only that object has an
+  // SHistory and we need the SHistory to evict content viewers
+  nsCOMPtr<nsIDocShellTreeItem> root;
+  treeItem->GetSameTypeRootTreeItem(getter_AddRefs(root));
+  nsCOMPtr<nsIWebNavigation> webNav = do_QueryInterface(root);
+  nsCOMPtr<nsISHistory> history;
+  webNav->GetSessionHistory(getter_AddRefs(history));
+  nsCOMPtr<nsISHistoryInternal> historyInt = do_QueryInterface(history);
+  if (!historyInt)
+    return;
+  historyInt->EvictExpiredContentViewerForEntry(this);
 }
 
 //*****************************************************************************
@@ -649,9 +734,16 @@ nsSHEntry::NodeWillBeDestroyed(const nsINode* aNode)
 }
 
 void
+nsSHEntry::CharacterDataWillChange(nsIDocument* aDocument,
+                                   nsIContent* aContent,
+                                   CharacterDataChangeInfo* aInfo)
+{
+}
+
+void
 nsSHEntry::CharacterDataChanged(nsIDocument* aDocument,
                                 nsIContent* aContent,
-                                PRBool aAppend)
+                                CharacterDataChangeInfo* aInfo)
 {
   DocumentMutated();
 }
@@ -661,7 +753,8 @@ nsSHEntry::AttributeChanged(nsIDocument* aDocument,
                             nsIContent* aContent,
                             PRInt32 aNameSpaceID,
                             nsIAtom* aAttribute,
-                            PRInt32 aModType)
+                            PRInt32 aModType,
+                            PRUint32 aStateMask)
 {
   DocumentMutated();
 }
@@ -690,6 +783,11 @@ nsSHEntry::ContentRemoved(nsIDocument* aDocument,
                           PRInt32 aIndexInContainer)
 {
   DocumentMutated();
+}
+
+void
+nsSHEntry::ParentChainChanged(nsIContent *aContent)
+{
 }
 
 class DestroyViewerEvent : public nsRunnable
