@@ -40,14 +40,16 @@
 #include "nsIAtom.h"
 #include "nsIContent.h"
 #include "nsIDOMEventGroup.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventListener.h"
+#include "nsIDOMEventTarget.h"
 #include "nsIDOMKeyEvent.h"
 #include "nsIDOMMouseEvent.h"
 #include "nsIDOMText.h"
 #include "nsIDOM3EventTarget.h"
-#include "nsXBLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsXBLPrototypeHandler.h"
 #include "nsIDOMNSEvent.h"
+#include "nsContentUtils.h"
 
 nsXBLEventHandler::nsXBLEventHandler(nsXBLPrototypeHandler* aHandler)
   : mProtoHandler(aHandler)
@@ -79,9 +81,9 @@ nsXBLEventHandler::HandleEvent(nsIDOMEvent* aEvent)
 
   nsCOMPtr<nsIDOMEventTarget> target;
   aEvent->GetCurrentTarget(getter_AddRefs(target));
-  nsCOMPtr<nsIDOMEventReceiver> receiver = do_QueryInterface(target);
+  nsCOMPtr<nsPIDOMEventTarget> piTarget = do_QueryInterface(target);
 
-  mProtoHandler->ExecuteHandler(receiver, aEvent);
+  mProtoHandler->ExecuteHandler(piTarget, aEvent);
 
   return NS_OK;
 }
@@ -106,7 +108,8 @@ nsXBLKeyEventHandler::nsXBLKeyEventHandler(nsIAtom* aEventType, PRUint8 aPhase,
                                            PRUint8 aType)
   : mEventType(aEventType),
     mPhase(aPhase),
-    mType(aType)
+    mType(aType),
+    mIsBoundToChrome(PR_FALSE)
 {
 }
 
@@ -132,7 +135,7 @@ nsXBLKeyEventHandler::HandleEvent(nsIDOMEvent* aEvent)
 
   nsCOMPtr<nsIDOMEventTarget> target;
   aEvent->GetCurrentTarget(getter_AddRefs(target));
-  nsCOMPtr<nsIDOMEventReceiver> receiver = do_QueryInterface(target);
+  nsCOMPtr<nsPIDOMEventTarget> piTarget = do_QueryInterface(target);
 
   nsCOMPtr<nsIDOMKeyEvent> key(do_QueryInterface(aEvent));
 
@@ -144,11 +147,14 @@ nsXBLKeyEventHandler::HandleEvent(nsIDOMEvent* aEvent)
 
   PRUint32 i;
   for (i = 0; i < count; ++i) {
-    nsXBLPrototypeHandler* handler = NS_STATIC_CAST(nsXBLPrototypeHandler*,
-                                                    mProtoHandlers[i]);
-    if ((trustedEvent || handler->AllowUntrustedEvents()) &&
+    nsXBLPrototypeHandler* handler = static_cast<nsXBLPrototypeHandler*>
+                                                (mProtoHandlers[i]);
+    PRBool hasAllowUntrustedAttr = handler->HasAllowUntrustedAttr();
+    if ((trustedEvent ||
+        (hasAllowUntrustedAttr && handler->AllowUntrustedEvents()) ||
+        (!hasAllowUntrustedAttr && !mIsBoundToChrome)) &&
         handler->KeyEventMatched(key)) {
-      handler->ExecuteHandler(receiver, aEvent);
+      handler->ExecuteHandler(piTarget, aEvent);
     }
   }
 
@@ -162,19 +168,19 @@ NS_NewXBLEventHandler(nsXBLPrototypeHandler* aHandler,
                       nsIAtom* aEventType,
                       nsXBLEventHandler** aResult)
 {
-  if (aEventType == nsXBLAtoms::mousedown ||
-      aEventType == nsXBLAtoms::mouseup ||
-      aEventType == nsXBLAtoms::click ||
-      aEventType == nsXBLAtoms::dblclick ||
-      aEventType == nsXBLAtoms::mouseover ||
-      aEventType == nsXBLAtoms::mouseout ||
-      aEventType == nsXBLAtoms::mousemove ||
-      aEventType == nsXBLAtoms::contextmenu ||
-      aEventType == nsXBLAtoms::dragenter ||
-      aEventType == nsXBLAtoms::dragover ||
-      aEventType == nsXBLAtoms::dragdrop ||
-      aEventType == nsXBLAtoms::dragexit ||
-      aEventType == nsXBLAtoms::draggesture) {
+  if (aEventType == nsGkAtoms::mousedown ||
+      aEventType == nsGkAtoms::mouseup ||
+      aEventType == nsGkAtoms::click ||
+      aEventType == nsGkAtoms::dblclick ||
+      aEventType == nsGkAtoms::mouseover ||
+      aEventType == nsGkAtoms::mouseout ||
+      aEventType == nsGkAtoms::mousemove ||
+      aEventType == nsGkAtoms::contextmenu ||
+      aEventType == nsGkAtoms::dragenter ||
+      aEventType == nsGkAtoms::dragover ||
+      aEventType == nsGkAtoms::dragdrop ||
+      aEventType == nsGkAtoms::dragexit ||
+      aEventType == nsGkAtoms::draggesture) {
     *aResult = new nsXBLMouseEventHandler(aHandler);
   }
   else {

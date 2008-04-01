@@ -45,6 +45,7 @@
 #include "nsIDOMDocument.h"
 #include "nsSyncLoadService.h"
 #include "nsNetUtil.h"
+#include "nsIPrincipal.h"
 #else
 #include "expat_config.h"
 #include "expat.h"
@@ -98,14 +99,16 @@ txParseDocumentFromURI(const nsAString& aHref, const txXPathNode& aLoader,
     nsIDocument* loaderDocument = txXPathNativeNode::getDocument(aLoader);
 
     nsCOMPtr<nsILoadGroup> loadGroup = loaderDocument->GetDocumentLoadGroup();
-    nsIURI *loaderUri = loaderDocument->GetDocumentURI();
-    NS_ENSURE_TRUE(loaderUri, NS_ERROR_FAILURE);
+
+    // For the system principal loaderUri will be null here, which is good
+    // since that means that chrome documents can load any uri.
 
     // Raw pointer, we want the resulting txXPathNode to hold a reference to
     // the document.
     nsIDOMDocument* theDocument = nsnull;
-    rv = nsSyncLoadService::LoadDocument(documentURI, loaderUri, loadGroup,
-                                         PR_TRUE, &theDocument);
+    rv = nsSyncLoadService::LoadDocument(documentURI,
+                                         loaderDocument->NodePrincipal(),
+                                         loadGroup, PR_TRUE, &theDocument);
 
     if (NS_FAILED(rv)) {
         aErrMsg.Append(NS_LITERAL_STRING("Document load of ") + 
@@ -146,7 +149,7 @@ txParseFromStream(istream& aInputStream, const nsAString& aUri,
  */
 
 // shortcut macro for redirection into txXMLParser method calls
-#define TX_XMLPARSER(_userData) NS_STATIC_CAST(txXMLParser*, _userData)
+#define TX_XMLPARSER(_userData) static_cast<txXMLParser*>(_userData)
 #define TX_ENSURE_DATA(_userData)                       \
   PR_BEGIN_MACRO                                        \
     if (!aUserData) {                                   \
@@ -335,9 +338,9 @@ void
 txXMLParser::CharacterData(const XML_Char* aChars, int aLength)
 {
     Node* prevSib = mCurrentNode->getLastChild();
-    const PRUnichar* pChars = NS_STATIC_CAST(const PRUnichar*, aChars);
+    const PRUnichar* pChars = static_cast<const PRUnichar*>(aChars);
     if (prevSib && prevSib->getNodeType() == Node::TEXT_NODE) {
-        NS_STATIC_CAST(NodeDefinition*, prevSib)->appendData(pChars, aLength);
+        static_cast<NodeDefinition*>(prevSib)->appendData(pChars, aLength);
     }
     else {
         // aChars is not null-terminated so we use Substring here.
@@ -351,7 +354,7 @@ void
 txXMLParser::Comment(const XML_Char* aChars)
 {
     Node* node = mDocument->createComment(
-        nsDependentString(NS_STATIC_CAST(const PRUnichar*, aChars)));
+        nsDependentString(static_cast<const PRUnichar*>(aChars)));
     mCurrentNode->appendChild(node);
 }
 

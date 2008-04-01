@@ -69,7 +69,6 @@
 #include "nsINameSpaceManager.h"
 #include "nsIRDFService.h"
 #include "nsIServiceManager.h"
-#include "nsITextContent.h"
 #include "nsIURL.h"
 #include "nsXULContentUtils.h"
 #include "nsIXULPrototypeCache.h"
@@ -78,7 +77,7 @@
 #include "nsRDFCID.h"
 #include "nsString.h"
 #include "nsXPIDLString.h"
-#include "nsXULAtoms.h"
+#include "nsGkAtoms.h"
 #include "prlog.h"
 #include "prtime.h"
 #include "rdf.h"
@@ -195,7 +194,6 @@ nsXULContentUtils::GetCollation()
 }
 
 //------------------------------------------------------------------------
-// nsIXULContentUtils methods
 
 nsresult
 nsXULContentUtils::FindChildByTag(nsIContent* aElement,
@@ -232,7 +230,7 @@ nsXULContentUtils::GetElementResource(nsIContent* aElement, nsIRDFResource** aRe
 
     // Whoa.  Why the "id" attribute?  What if it's not even a XUL
     // element?  This is totally bogus!
-    aElement->GetAttr(kNameSpaceID_None, nsXULAtoms::id, id);
+    aElement->GetAttr(kNameSpaceID_None, nsGkAtoms::id, id);
     if (id.IsEmpty())
         return NS_ERROR_FAILURE;
 
@@ -471,12 +469,12 @@ nsXULContentUtils::SetCommandUpdater(nsIDocument* aDocument, nsIContent* aElemen
         return NS_ERROR_UNEXPECTED;
 
     nsAutoString events;
-    aElement->GetAttr(kNameSpaceID_None, nsXULAtoms::events, events);
+    aElement->GetAttr(kNameSpaceID_None, nsGkAtoms::events, events);
     if (events.IsEmpty())
         events.AssignLiteral("*");
 
     nsAutoString targets;
-    aElement->GetAttr(kNameSpaceID_None, nsXULAtoms::targets, targets);
+    aElement->GetAttr(kNameSpaceID_None, nsGkAtoms::targets, targets);
 
     if (targets.IsEmpty())
         targets.AssignLiteral("*");

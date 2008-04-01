@@ -41,6 +41,53 @@
 #include "nsIDOMSVGMarkerElement.h"
 #include "nsIDOMSVGFitToViewBox.h"
 #include "nsSVGLength2.h"
+#include "nsSVGEnum.h"
+#include "nsSVGAngle.h"
+
+class nsSVGOrientType
+{
+public:
+  nsSVGOrientType()
+   : mAnimVal(nsIDOMSVGMarkerElement::SVG_MARKER_ORIENT_ANGLE),
+     mBaseVal(nsIDOMSVGMarkerElement::SVG_MARKER_ORIENT_ANGLE) {}
+
+  nsresult SetBaseValue(PRUint16 aValue,
+                        nsSVGElement *aSVGElement);
+
+  void SetBaseValue(PRUint16 aValue)
+    { mAnimVal = mBaseVal = PRUint8(aValue); }
+
+  PRUint16 GetBaseValue() const
+    { return mBaseVal; }
+  PRUint16 GetAnimValue() const
+    { return mAnimVal; }
+
+  nsresult ToDOMAnimatedEnum(nsIDOMSVGAnimatedEnumeration **aResult,
+                             nsSVGElement* aSVGElement);
+
+private:
+  nsSVGEnumValue mAnimVal;
+  nsSVGEnumValue mBaseVal;
+
+  struct DOMAnimatedEnum : public nsIDOMSVGAnimatedEnumeration
+  {
+    NS_DECL_ISUPPORTS
+
+    DOMAnimatedEnum(nsSVGOrientType* aVal,
+                    nsSVGElement *aSVGElement)
+      : mVal(aVal), mSVGElement(aSVGElement) {}
+
+    nsSVGOrientType *mVal; // kept alive because it belongs to content
+    nsRefPtr<nsSVGElement> mSVGElement;
+
+    NS_IMETHOD GetBaseVal(PRUint16* aResult)
+      { *aResult = mVal->GetBaseValue(); return NS_OK; }
+    NS_IMETHOD SetBaseVal(PRUint16 aValue)
+      { return mVal->SetBaseValue(aValue, mSVGElement); }
+    NS_IMETHOD GetAnimVal(PRUint16* aResult)
+      { *aResult = mVal->GetAnimValue(); return NS_OK; }
+  };
+};
 
 typedef nsSVGGraphicElement nsSVGMarkerElementBase;
 
@@ -64,7 +111,7 @@ public:
   NS_DECL_NSIDOMSVGFITTOVIEWBOX
 
   // xxx I wish we could use virtual inheritance
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGElement::)
+  NS_FORWARD_NSIDOMNODE(nsSVGElement::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGElement::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGElement::)
 
@@ -75,7 +122,8 @@ public:
   // nsIContent interface
   NS_IMETHODIMP_(PRBool) IsAttributeMapped(const nsIAtom* name) const;
 
-  // nsISVGContent specializations:
+  virtual PRBool GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                         nsAString& aResult) const;
   virtual nsresult UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
                              PRBool aNotify);
 
@@ -88,21 +136,37 @@ public:
                               nsIDOMSVGMatrix **_retval);
   nsresult GetViewboxToViewportTransform(nsIDOMSVGMatrix **_retval);
 
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+
 protected:
 
-  void SetParentCoordCtxProvider(nsSVGCoordCtxProvider *aContext)
-    { mCoordCtx = aContext; mViewBoxToViewportTransform = nsnull; }
+  virtual PRBool ParseAttribute(PRInt32 aNameSpaceID, nsIAtom* aName,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
+
+  void SetParentCoordCtxProvider(nsSVGSVGElement *aContext);
 
   virtual LengthAttributesInfo GetLengthInfo();
- 
+  virtual AngleAttributesInfo GetAngleInfo();
+  virtual EnumAttributesInfo GetEnumInfo();
+
   enum { REFX, REFY, MARKERWIDTH, MARKERHEIGHT };
   nsSVGLength2 mLengthAttributes[4];
   static LengthInfo sLengthInfo[4];
 
-  nsSVGCoordCtxProvider                 *mCoordCtx;
-  nsCOMPtr<nsIDOMSVGAnimatedEnumeration> mMarkerUnits;
-  nsCOMPtr<nsIDOMSVGAnimatedAngle>       mOrient;
+  enum { MARKERUNITS };
+  nsSVGEnum mEnumAttributes[1];
+  static nsSVGEnumMapping sUnitsMap[];
+  static EnumInfo sEnumInfo[1];
 
+  enum { ORIENT };
+  nsSVGAngle mAngleAttributes[1];
+  static AngleInfo sAngleInfo[1];
+
+  // derived properties (from 'orient') handled separately
+  nsSVGOrientType                        mOrientType;
+
+  nsSVGSVGElement                       *mCoordCtx;
   nsCOMPtr<nsIDOMSVGAnimatedRect>        mViewBox;
   nsCOMPtr<nsIDOMSVGAnimatedPreserveAspectRatio> mPreserveAspectRatio;
   nsCOMPtr<nsIDOMSVGMatrix>         mViewBoxToViewportTransform;

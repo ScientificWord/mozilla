@@ -67,6 +67,7 @@
 #include "nsString.h"
 #include "nsClassHashtable.h"
 #include "nsRefPtrHashtable.h"
+#include "nsCycleCollectionParticipant.h"
 
 #include "prlog.h"
 #ifdef PR_LOGGING
@@ -91,7 +92,9 @@ public:
     nsresult InitGlobals();
 
     // nsISupports interface
-    NS_DECL_ISUPPORTS
+    NS_DECL_CYCLE_COLLECTING_ISUPPORTS
+    NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsXULTemplateQueryProcessorRDF,
+                                             nsIXULTemplateQueryProcessor)
 
     // nsIXULTemplateQueryProcessor interface
     NS_DECL_NSIXULTEMPLATEQUERYPROCESSOR
@@ -139,6 +142,12 @@ public:
     nsresult
     CheckEmpty(nsIRDFResource* aTargetResource,
                PRBool* aIsEmpty);
+
+    /**
+     * Check if a resource is a separator
+     */
+    nsresult
+    CheckIsSeparator(nsIRDFResource* aResource, PRBool* aIsSeparator);
 
     /*
      * Compute the containment properties which are additional arcs which
@@ -213,7 +222,7 @@ public:
     /**
      * Compile a query that's specified using the simple template
      * syntax. Each  TestNode is created in a chain, the last compiled node
-     * is retured as aLastNode. All nodes will have been added to mAllTests
+     * is returned as aLastNode. All nodes will have been added to mAllTests
      * which owns the nodes.
      */
     nsresult
@@ -266,6 +275,23 @@ public:
      */
     void RetractElement(const MemoryElement& aMemoryElement);
 
+    /**
+     * Return the index of a result's resource in its RDF container
+     */
+    PRInt32
+    GetContainerIndexOf(nsIXULTemplateResult* aResult);
+
+    /**
+     * Given a result and a predicate to sort on, get the target value of
+     * the triple to use for sorting. The sort predicate is the predicate
+     * with '?sort=true' appended.
+     */
+    nsresult
+    GetSortValue(nsIXULTemplateResult* aResult,
+                 nsIRDFResource* aPredicate,
+                 nsIRDFResource* aSortPredicate,
+                 nsISupports** aResultNode);
+
     nsIRDFDataSource* GetDataSource() { return mDB; }
 
     nsIXULTemplateBuilder* GetBuilder() { return mBuilder; }
@@ -312,8 +338,8 @@ protected:
     // the end node of the default simple node hierarchy
     TestNode* mSimpleRuleMemberTest;
 
-    // fixed size allocator used to allocate rule network structures
-    nsFixedSizeAllocator mPool;
+    // the reference variable
+    nsCOMPtr<nsIAtom> mRefVariable;
 
     // the last ref that was calculated, used for simple rules
     nsCOMPtr<nsIXULTemplateResult> mLastRef;
@@ -364,8 +390,8 @@ protected:
 public:
     static nsIRDFService*            gRDFService;
     static nsIRDFContainerUtils*     gRDFContainerUtils;
-
-    nsFixedSizeAllocator& GetPool() { return mPool; }
+    static nsIRDFResource*           kNC_BookmarkSeparator;
+    static nsIRDFResource*           kRDF_type;
 };
 
 #endif // nsXULTemplateQueryProcessorRDF_h__

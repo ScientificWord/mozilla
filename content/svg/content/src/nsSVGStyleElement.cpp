@@ -37,7 +37,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsSVGElement.h"
-#include "nsSVGAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsIDOMSVGStyleElement.h"
 #include "nsUnicharUtils.h"
 #include "nsIDocument.h"
@@ -47,7 +47,8 @@ typedef nsSVGElement nsSVGStyleElementBase;
 
 class nsSVGStyleElement : public nsSVGStyleElementBase,
                           public nsIDOMSVGStyleElement,
-                          public nsStyleLinkElement
+                          public nsStyleLinkElement,
+                          public nsStubMutationObserver
 {
 protected:
   friend nsresult NS_NewSVGStyleElement(nsIContent **aResult,
@@ -59,15 +60,11 @@ public:
   NS_DECL_NSIDOMSVGSTYLEELEMENT
 
   // xxx I wish we could use virtual inheritance
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGStyleElementBase::)
+  NS_FORWARD_NSIDOMNODE(nsSVGStyleElementBase::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGStyleElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGStyleElementBase::)
 
   // nsIContent
-  virtual nsresult InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
-                                 PRBool aNotify);
-  virtual nsresult AppendChildTo(nsIContent* aKid, PRBool aNotify);
-  virtual nsresult RemoveChildAt(PRUint32 aIndex, PRBool aNotify);
   virtual nsresult BindToTree(nsIDocument* aDocument, nsIContent* aParent,
                               nsIContent* aBindingParent,
                               PRBool aCompileEventHandlers);
@@ -83,9 +80,18 @@ public:
                            PRBool aNotify);
   virtual nsresult UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
                              PRBool aNotify);
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+
+  // nsIMutationObserver
+  NS_DECL_NSIMUTATIONOBSERVER_CHARACTERDATACHANGED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTAPPENDED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTINSERTED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTREMOVED
+
 protected:
   // Dummy init method to make the NS_IMPL_NS_NEW_SVG_ELEMENT and
-  // NS_IMPL_DOM_CLONENODE_WITH_INIT usable with this class. This should be
+  // NS_IMPL_ELEMENT_CLONE_WITH_INIT usable with this class. This should be
   // completely optimized away.
   inline nsresult Init()
   {
@@ -99,6 +105,12 @@ protected:
                          nsAString& aType,
                          nsAString& aMedia,
                          PRBool* aIsAlternate);
+  /**
+   * Common method to call from the various mutation observer methods.
+   * aContent is a content node that's either the one that changed or its
+   * parent; we should only respond to the change if aContent is non-anonymous.
+   */
+  void ContentChanged(nsIContent* aContent);
 };
 
 
@@ -118,6 +130,7 @@ NS_INTERFACE_MAP_BEGIN(nsSVGStyleElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGStyleElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMLinkStyle)
   NS_INTERFACE_MAP_ENTRY(nsIStyleSheetLinkingElement)
+  NS_INTERFACE_MAP_ENTRY(nsIMutationObserver)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(SVGStyleElement)
 NS_INTERFACE_MAP_END_INHERITING(nsSVGStyleElementBase)
 
@@ -127,7 +140,7 @@ NS_INTERFACE_MAP_END_INHERITING(nsSVGStyleElementBase)
 nsSVGStyleElement::nsSVGStyleElement(nsINodeInfo *aNodeInfo)
   : nsSVGStyleElementBase(aNodeInfo)
 {
-
+  AddMutationObserver(this);
 }
 
 
@@ -135,45 +148,11 @@ nsSVGStyleElement::nsSVGStyleElement(nsINodeInfo *aNodeInfo)
 // nsIDOMNode methods
 
 
-NS_IMPL_DOM_CLONENODE_WITH_INIT(nsSVGStyleElement)
+NS_IMPL_ELEMENT_CLONE_WITH_INIT(nsSVGStyleElement)
 
 
 //----------------------------------------------------------------------
 // nsIContent methods
-
-nsresult
-nsSVGStyleElement::InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
-                                 PRBool aNotify)
-{
-  nsresult rv = nsSVGStyleElementBase::InsertChildAt(aKid, aIndex, aNotify);
-  if (NS_SUCCEEDED(rv)) {
-    UpdateStyleSheet();
-  }
-
-  return rv;
-}
-
-nsresult
-nsSVGStyleElement::AppendChildTo(nsIContent* aKid, PRBool aNotify)
-{
-  nsresult rv = nsSVGStyleElementBase::AppendChildTo(aKid, aNotify);
-  if (NS_SUCCEEDED(rv)) {
-    UpdateStyleSheet();
-  }
-
-  return rv;
-}
-
-nsresult
-nsSVGStyleElement::RemoveChildAt(PRUint32 aIndex, PRBool aNotify)
-{
-  nsresult rv = nsSVGStyleElementBase::RemoveChildAt(aIndex, aNotify);
-  if (NS_SUCCEEDED(rv)) {
-    UpdateStyleSheet();
-  }
-
-  return rv;
-}
 
 nsresult
 nsSVGStyleElement::BindToTree(nsIDocument* aDocument, nsIContent* aParent,
@@ -185,7 +164,7 @@ nsSVGStyleElement::BindToTree(nsIDocument* aDocument, nsIContent* aParent,
                                                   aCompileEventHandlers);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  UpdateStyleSheet(nsnull);
+  UpdateStyleSheetInternal(nsnull);
 
   return rv;  
 }
@@ -196,7 +175,7 @@ nsSVGStyleElement::UnbindFromTree(PRBool aDeep, PRBool aNullParent)
   nsCOMPtr<nsIDocument> oldDoc = GetCurrentDoc();
 
   nsSVGStyleElementBase::UnbindFromTree(aDeep, aNullParent);
-  UpdateStyleSheet(oldDoc);
+  UpdateStyleSheetInternal(oldDoc);
 }
 
 nsresult
@@ -207,11 +186,11 @@ nsSVGStyleElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
   nsresult rv = nsSVGStyleElementBase::SetAttr(aNameSpaceID, aName, aPrefix,
                                                aValue, aNotify);
   if (NS_SUCCEEDED(rv)) {
-    UpdateStyleSheet(nsnull, nsnull,
-                     aNameSpaceID == kNameSpaceID_None &&
-                     (aName == nsSVGAtoms::title ||
-                      aName == nsSVGAtoms::media ||
-                      aName == nsSVGAtoms::type));
+    UpdateStyleSheetInternal(nsnull,
+                             aNameSpaceID == kNameSpaceID_None &&
+                             (aName == nsGkAtoms::title ||
+                              aName == nsGkAtoms::media ||
+                              aName == nsGkAtoms::type));
   }
 
   return rv;
@@ -224,14 +203,59 @@ nsSVGStyleElement::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
   nsresult rv = nsSVGStyleElementBase::UnsetAttr(aNameSpaceID, aAttribute,
                                                  aNotify);
   if (NS_SUCCEEDED(rv)) {
-    UpdateStyleSheet(nsnull, nsnull,
-                     aNameSpaceID == kNameSpaceID_None &&
-                     (aAttribute == nsSVGAtoms::title ||
-                      aAttribute == nsSVGAtoms::media ||
-                      aAttribute == nsSVGAtoms::type));
+    UpdateStyleSheetInternal(nsnull,
+                             aNameSpaceID == kNameSpaceID_None &&
+                             (aAttribute == nsGkAtoms::title ||
+                              aAttribute == nsGkAtoms::media ||
+                              aAttribute == nsGkAtoms::type));
   }
 
   return rv;
+}
+
+//----------------------------------------------------------------------
+// nsIMutationObserver methods
+
+void
+nsSVGStyleElement::CharacterDataChanged(nsIDocument* aDocument,
+                                        nsIContent* aContent,
+                                        CharacterDataChangeInfo* aInfo)
+{
+  ContentChanged(aContent);
+}
+
+void
+nsSVGStyleElement::ContentAppended(nsIDocument* aDocument,
+                                   nsIContent* aContainer,
+                                   PRInt32 aNewIndexInContainer)
+{
+  ContentChanged(aContainer);
+}
+ 
+void
+nsSVGStyleElement::ContentInserted(nsIDocument* aDocument,
+                                   nsIContent* aContainer,
+                                   nsIContent* aChild,
+                                   PRInt32 aIndexInContainer)
+{
+  ContentChanged(aChild);
+}
+ 
+void
+nsSVGStyleElement::ContentRemoved(nsIDocument* aDocument,
+                                  nsIContent* aContainer,
+                                  nsIContent* aChild,
+                                  PRInt32 aIndexInContainer)
+{
+  ContentChanged(aChild);
+}
+
+void
+nsSVGStyleElement::ContentChanged(nsIContent* aContent)
+{
+  if (nsContentUtils::IsInSameAnonymousTree(this, aContent)) {
+    UpdateStyleSheetInternal(nsnull);
+  }
 }
 
 //----------------------------------------------------------------------
@@ -240,49 +264,49 @@ nsSVGStyleElement::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
 /* attribute DOMString xmlspace; */
 NS_IMETHODIMP nsSVGStyleElement::GetXmlspace(nsAString & aXmlspace)
 {
-  GetAttr(kNameSpaceID_XML, nsSVGAtoms::space, aXmlspace);
+  GetAttr(kNameSpaceID_XML, nsGkAtoms::space, aXmlspace);
 
   return NS_OK;
 }
 NS_IMETHODIMP nsSVGStyleElement::SetXmlspace(const nsAString & aXmlspace)
 {
-  return SetAttr(kNameSpaceID_XML, nsSVGAtoms::space, aXmlspace, PR_TRUE);
+  return SetAttr(kNameSpaceID_XML, nsGkAtoms::space, aXmlspace, PR_TRUE);
 }
 
 /* attribute DOMString type; */
 NS_IMETHODIMP nsSVGStyleElement::GetType(nsAString & aType)
 {
-  GetAttr(kNameSpaceID_None, nsSVGAtoms::type, aType);
+  GetAttr(kNameSpaceID_None, nsGkAtoms::type, aType);
 
   return NS_OK;
 }
 NS_IMETHODIMP nsSVGStyleElement::SetType(const nsAString & aType)
 {
-  return SetAttr(kNameSpaceID_None, nsSVGAtoms::type, aType, PR_TRUE);
+  return SetAttr(kNameSpaceID_None, nsGkAtoms::type, aType, PR_TRUE);
 }
 
 /* attribute DOMString media; */
 NS_IMETHODIMP nsSVGStyleElement::GetMedia(nsAString & aMedia)
 {
-  GetAttr(kNameSpaceID_None, nsSVGAtoms::media, aMedia);
+  GetAttr(kNameSpaceID_None, nsGkAtoms::media, aMedia);
 
   return NS_OK;
 }
 NS_IMETHODIMP nsSVGStyleElement::SetMedia(const nsAString & aMedia)
 {
-  return SetAttr(kNameSpaceID_XML, nsSVGAtoms::media, aMedia, PR_TRUE);
+  return SetAttr(kNameSpaceID_XML, nsGkAtoms::media, aMedia, PR_TRUE);
 }
 
 /* attribute DOMString title; */
 NS_IMETHODIMP nsSVGStyleElement::GetTitle(nsAString & aTitle)
 {
-  GetAttr(kNameSpaceID_None, nsSVGAtoms::title, aTitle);
+  GetAttr(kNameSpaceID_None, nsGkAtoms::title, aTitle);
 
   return NS_OK;
 }
 NS_IMETHODIMP nsSVGStyleElement::SetTitle(const nsAString & aTitle)
 {
-  return SetAttr(kNameSpaceID_XML, nsSVGAtoms::title, aTitle, PR_TRUE);
+  return SetAttr(kNameSpaceID_XML, nsGkAtoms::title, aTitle, PR_TRUE);
 }
 
 //----------------------------------------------------------------------
@@ -307,16 +331,16 @@ nsSVGStyleElement::GetStyleSheetInfo(nsAString& aTitle,
   *aIsAlternate = PR_FALSE;
 
   nsAutoString title;
-  GetAttr(kNameSpaceID_None, nsSVGAtoms::title, title);
+  GetAttr(kNameSpaceID_None, nsGkAtoms::title, title);
   title.CompressWhitespace();
   aTitle.Assign(title);
 
-  GetAttr(kNameSpaceID_None, nsSVGAtoms::media, aMedia);
+  GetAttr(kNameSpaceID_None, nsGkAtoms::media, aMedia);
   // SVG spec refers to the HTML4.0 spec which is inconsistent, make it
   // case INSENSITIVE
   ToLowerCase(aMedia);
 
-  GetAttr(kNameSpaceID_None, nsSVGAtoms::type, aType);
+  GetAttr(kNameSpaceID_None, nsGkAtoms::type, aType);
 
   return;
 }

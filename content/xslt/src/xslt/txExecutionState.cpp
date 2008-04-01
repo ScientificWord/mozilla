@@ -95,7 +95,6 @@ txExecutionState::txExecutionState(txStylesheet* aStylesheet,
       mTemplateRuleCount(0),
       mEvalContext(nsnull),
       mInitialEvalContext(nsnull),
-//      mRTFDocument(nsnull),
       mGlobalParams(nsnull),
       mKeyHash(aStylesheet->getKeyMap()),
       mDisableLoads(aDisableLoads)
@@ -107,7 +106,6 @@ txExecutionState::~txExecutionState()
     delete mResultHandler;
     delete mLocalVariables;
     delete mEvalContext;
-//    delete mRTFDocument;
 
     PRInt32 i;
     for (i = 0; i < mTemplateRuleCount; ++i) {
@@ -135,13 +133,13 @@ txExecutionState::~txExecutionState()
 
     txStackIterator paramIter(&mParamStack);
     while (paramIter.hasNext()) {
-        delete (txExpandedNameMap*)paramIter.next();
+        delete (txVariableMap*)paramIter.next();
     }
 }
 
 nsresult
 txExecutionState::init(const txXPathNode& aNode,
-                       txExpandedNameMap* aGlobalParams)
+                       txOwningExpandedNameMap<txIGlobalParameter>* aGlobalParams)
 {
     nsresult rv = NS_OK;
 
@@ -204,9 +202,7 @@ nsresult
 txExecutionState::end(nsresult aResult)
 {
     popTemplateRule();
-    mOutputHandler->endDocument(aResult);
-    
-    return NS_OK;
+    return mOutputHandler->endDocument(aResult);
 }
 
 
@@ -250,8 +246,7 @@ txExecutionState::getVariable(PRInt32 aNamespace, nsIAtom* aLName,
 
     // Is this a stylesheet parameter that has a value?
     if (var->mIsParam && mGlobalParams) {
-        txIGlobalParameter* param =
-            (txIGlobalParameter*)mGlobalParams->get(name);
+        txIGlobalParameter* param = mGlobalParams->get(name);
         if (param) {
             rv = param->getValue(&aResult);
             NS_ENSURE_SUCCESS(rv, rv);
@@ -367,34 +362,22 @@ txExecutionState::popEvalContext()
 }
 
 nsresult
-txExecutionState::pushString(const nsAString& aStr)
+txExecutionState::pushBool(PRBool aBool)
 {
-    if (!mStringStack.AppendString(aStr)) {
-        return NS_ERROR_OUT_OF_MEMORY;
-    }
-    
-    return NS_OK;
+    return mBoolStack.AppendElement(aBool) ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
 }
 
-void
-txExecutionState::popString(nsAString& aStr)
+PRBool
+txExecutionState::popBool()
 {
-    PRInt32 count = mStringStack.Count() - 1;
-    NS_ASSERTION(count >= 0, "stack is empty");
-    mStringStack.StringAt(count, aStr);
-    mStringStack.RemoveStringAt(count);
-}
+    NS_ASSERTION(mBoolStack.Length(), "popping from empty stack");
+    PRUint32 last = mBoolStack.Length() - 1;
+    NS_ENSURE_TRUE(last != (PRUint32)-1, PR_FALSE);
 
-nsresult
-txExecutionState::pushInt(PRInt32 aInt)
-{
-    return mIntStack.push(NS_INT32_TO_PTR(aInt));
-}
+    PRBool res = mBoolStack.ElementAt(last);
+    mBoolStack.RemoveElementAt(last);
 
-PRInt32
-txExecutionState::popInt()
-{
-    return NS_PTR_TO_INT32(mIntStack.pop());
+    return res;
 }
 
 nsresult
@@ -502,12 +485,12 @@ txExecutionState::retrieveDocument(const nsAString& aUri)
 
 nsresult
 txExecutionState::getKeyNodes(const txExpandedName& aKeyName,
-                              const txXPathNode& aDocument,
+                              const txXPathNode& aRoot,
                               const nsAString& aKeyValue,
                               PRBool aIndexIfNotFound,
                               txNodeSet** aResult)
 {
-    return mKeyHash.getKeyNodes(aKeyName, aDocument, aKeyValue,
+    return mKeyHash.getKeyNodes(aKeyName, aRoot, aKeyValue,
                                 aIndexIfNotFound, *this, aResult);
 }
 

@@ -38,19 +38,17 @@
 
 #include "nsSVGTransformList.h"
 #include "nsSVGAnimatedTransformList.h"
-#include "nsSVGEnum.h"
-#include "nsSVGAnimatedEnumeration.h"
 #include "nsIDOMSVGAnimatedEnum.h"
 #include "nsSVGAnimatedString.h"
 #include "nsCOMPtr.h"
-#include "nsISVGSVGElement.h"
-#include "nsSVGAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsSVGAnimatedRect.h"
 #include "nsSVGRect.h"
 #include "nsSVGMatrix.h"
 #include "nsSVGAnimatedPreserveAspectRatio.h"
 #include "nsSVGPreserveAspectRatio.h"
 #include "nsSVGPatternElement.h"
+#include "nsIFrame.h"
 
 //--------------------- Patterns ------------------------
 
@@ -60,6 +58,18 @@ nsSVGElement::LengthInfo nsSVGPatternElement::sLengthInfo[4] =
   { &nsGkAtoms::y, 0, nsIDOMSVGLength::SVG_LENGTHTYPE_PERCENTAGE, nsSVGUtils::Y },
   { &nsGkAtoms::width, 100, nsIDOMSVGLength::SVG_LENGTHTYPE_PERCENTAGE, nsSVGUtils::X },
   { &nsGkAtoms::height, 100, nsIDOMSVGLength::SVG_LENGTHTYPE_PERCENTAGE, nsSVGUtils::Y },
+};
+
+nsSVGElement::EnumInfo nsSVGPatternElement::sEnumInfo[2] =
+{
+  { &nsGkAtoms::patternUnits,
+    sSVGUnitTypesMap,
+    nsIDOMSVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX
+  },
+  { &nsGkAtoms::patternContentUnits,
+    sSVGUnitTypesMap,
+    nsIDOMSVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE
+  }
 };
 
 NS_IMPL_NS_NEW_SVG_ELEMENT(Pattern)
@@ -77,6 +87,8 @@ NS_INTERFACE_MAP_BEGIN(nsSVGPatternElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGFitToViewBox)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGURIReference)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGPatternElement)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMSVGUnitTypes)
+  NS_INTERFACE_MAP_ENTRY(nsIMutationObserver)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(SVGPatternElement)
 NS_INTERFACE_MAP_END_INHERITING(nsSVGPatternElementBase)
 
@@ -86,6 +98,7 @@ NS_INTERFACE_MAP_END_INHERITING(nsSVGPatternElementBase)
 nsSVGPatternElement::nsSVGPatternElement(nsINodeInfo* aNodeInfo)
   : nsSVGPatternElementBase(aNodeInfo)
 {
+  AddMutationObserver(this);
 }
 
 nsresult
@@ -94,38 +107,7 @@ nsSVGPatternElement::Init()
   nsresult rv = nsSVGPatternElementBase::Init();
   NS_ENSURE_SUCCESS(rv,rv);
 
-  // Define enumeration mappings
-  static struct nsSVGEnumMapping pUnitMap[] = {
-        {&nsSVGAtoms::objectBoundingBox, nsIDOMSVGPatternElement::SVG_PUNITS_OBJECTBOUNDINGBOX},
-        {&nsSVGAtoms::userSpaceOnUse, nsIDOMSVGPatternElement::SVG_PUNITS_USERSPACEONUSE},
-        {nsnull, 0}
-  };
-
   // Create mapped attributes
-
-  // DOM property: patternUnits ,  #IMPLIED attrib: patternUnits
-  {
-    nsCOMPtr<nsISVGEnum> units;
-    rv = NS_NewSVGEnum(getter_AddRefs(units),
-                       nsIDOMSVGPatternElement::SVG_PUNITS_OBJECTBOUNDINGBOX, pUnitMap);
-    NS_ENSURE_SUCCESS(rv,rv);
-    rv = NS_NewSVGAnimatedEnumeration(getter_AddRefs(mPatternUnits), units);
-    NS_ENSURE_SUCCESS(rv,rv);
-    rv = AddMappedSVGValue(nsSVGAtoms::patternUnits, mPatternUnits);
-    NS_ENSURE_SUCCESS(rv,rv);
-  }
-
-  // DOM property: patternContentUnits ,  #IMPLIED attrib: patternContentUnits
-  {
-    nsCOMPtr<nsISVGEnum> units;
-    rv = NS_NewSVGEnum(getter_AddRefs(units),
-                       nsIDOMSVGPatternElement::SVG_PUNITS_USERSPACEONUSE, pUnitMap);
-    NS_ENSURE_SUCCESS(rv,rv);
-    rv = NS_NewSVGAnimatedEnumeration(getter_AddRefs(mPatternContentUnits), units);
-    NS_ENSURE_SUCCESS(rv,rv);
-    rv = AddMappedSVGValue(nsSVGAtoms::patternContentUnits, mPatternContentUnits);
-    NS_ENSURE_SUCCESS(rv,rv);
-  }
 
   // DOM property: patternTransform ,  #IMPLIED attrib: patternTransform
   {
@@ -135,7 +117,7 @@ nsSVGPatternElement::Init()
     rv = NS_NewSVGAnimatedTransformList(getter_AddRefs(mPatternTransform),
                                         transformList);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = AddMappedSVGValue(nsSVGAtoms::patternTransform, mPatternTransform);
+    rv = AddMappedSVGValue(nsGkAtoms::patternTransform, mPatternTransform);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
@@ -145,7 +127,7 @@ nsSVGPatternElement::Init()
   {
     rv = NS_NewSVGAnimatedString(getter_AddRefs(mHref));
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = AddMappedSVGValue(nsSVGAtoms::href, mHref, kNameSpaceID_XLink);
+    rv = AddMappedSVGValue(nsGkAtoms::href, mHref, kNameSpaceID_XLink);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
@@ -158,7 +140,7 @@ nsSVGPatternElement::Init()
     NS_ENSURE_SUCCESS(rv,rv);
     rv = NS_NewSVGAnimatedRect(getter_AddRefs(mViewBox), viewbox);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = AddMappedSVGValue(nsSVGAtoms::viewBox, mViewBox);
+    rv = AddMappedSVGValue(nsGkAtoms::viewBox, mViewBox);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
@@ -171,7 +153,7 @@ nsSVGPatternElement::Init()
                                           getter_AddRefs(mPreserveAspectRatio),
                                           preserveAspectRatio);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = AddMappedSVGValue(nsSVGAtoms::preserveAspectRatio,
+    rv = AddMappedSVGValue(nsGkAtoms::preserveAspectRatio,
                            mPreserveAspectRatio);
     NS_ENSURE_SUCCESS(rv,rv);
   }
@@ -183,7 +165,7 @@ nsSVGPatternElement::Init()
 //----------------------------------------------------------------------
 // nsIDOMNode method
 
-NS_IMPL_DOM_CLONENODE_WITH_INIT(nsSVGPatternElement)
+NS_IMPL_ELEMENT_CLONE_WITH_INIT(nsSVGPatternElement)
 
 //----------------------------------------------------------------------
 // nsIDOMSVGFitToViewBox methods
@@ -211,17 +193,13 @@ nsSVGPatternElement::GetPreserveAspectRatio(nsIDOMSVGAnimatedPreserveAspectRatio
 /* readonly attribute nsIDOMSVGAnimatedEnumeration patternUnits; */
 NS_IMETHODIMP nsSVGPatternElement::GetPatternUnits(nsIDOMSVGAnimatedEnumeration * *aPatternUnits)
 {
-  *aPatternUnits = mPatternUnits;
-  NS_IF_ADDREF(*aPatternUnits);
-  return NS_OK;
+  return mEnumAttributes[PATTERNUNITS].ToDOMAnimatedEnum(aPatternUnits, this);
 }
 
 /* readonly attribute nsIDOMSVGAnimatedEnumeration patternContentUnits; */
 NS_IMETHODIMP nsSVGPatternElement::GetPatternContentUnits(nsIDOMSVGAnimatedEnumeration * *aPatternUnits)
 {
-  *aPatternUnits = mPatternContentUnits;
-  NS_IF_ADDREF(*aPatternUnits);
-  return NS_OK;
+  return mEnumAttributes[PATTERNCONTENTUNITS].ToDOMAnimatedEnum(aPatternUnits, this);
 }
 
 /* readonly attribute nsIDOMSVGAnimatedTransformList patternTransform; */
@@ -276,9 +254,16 @@ NS_IMETHODIMP_(PRBool)
 nsSVGPatternElement::IsAttributeMapped(const nsIAtom* name) const
 {
   static const MappedAttributeEntry* const map[] = {
-    sViewportsMap,
+    sFEFloodMap,
+    sFiltersMap,
+    sFontSpecificationMap,
+    sGradientStopMap,
+    sLightingEffectsMap,
+    sMarkersMap,
+    sTextContentElementsMap,
+    sViewportsMap
   };
-  
+
   return FindAttributeDependence(name, map, NS_ARRAY_LENGTH(map)) ||
     nsSVGPatternElementBase::IsAttributeMapped(name);
 }
@@ -291,4 +276,74 @@ nsSVGPatternElement::GetLengthInfo()
 {
   return LengthAttributesInfo(mLengthAttributes, sLengthInfo,
                               NS_ARRAY_LENGTH(sLengthInfo));
+}
+
+nsSVGElement::EnumAttributesInfo
+nsSVGPatternElement::GetEnumInfo()
+{
+  return EnumAttributesInfo(mEnumAttributes, sEnumInfo,
+                            NS_ARRAY_LENGTH(sEnumInfo));
+}
+
+//----------------------------------------------------------------------
+// nsIMutationObserver methods
+
+void
+nsSVGPatternElement::PushUpdate()
+{
+  nsIFrame *frame = GetPrimaryFrame();
+
+  if (frame) {
+    nsISVGValue *value = nsnull;
+    CallQueryInterface(frame, &value);
+    if (value) {
+      value->BeginBatchUpdate();
+      value->EndBatchUpdate();
+    }
+  }
+}
+
+void
+nsSVGPatternElement::CharacterDataChanged(nsIDocument *aDocument,
+                                          nsIContent *aContent,
+                                          CharacterDataChangeInfo *aInfo)
+{
+  PushUpdate();
+}
+
+void
+nsSVGPatternElement::AttributeChanged(nsIDocument *aDocument,
+                                      nsIContent *aContent,
+                                      PRInt32 aNameSpaceID,
+                                      nsIAtom *aAttribute,
+                                      PRInt32 aModType,
+                                      PRUint32 aStateMask)
+{
+  PushUpdate();
+}
+
+void
+nsSVGPatternElement::ContentAppended(nsIDocument *aDocument,
+                                     nsIContent *aContainer,
+                                     PRInt32 aNewIndexInContainer)
+{
+  PushUpdate();
+}
+
+void
+nsSVGPatternElement::ContentInserted(nsIDocument *aDocument,
+                                     nsIContent *aContainer,
+                                     nsIContent *aChild,
+                                     PRInt32 aIndexInContainer)
+{
+  PushUpdate();
+}
+
+void
+nsSVGPatternElement::ContentRemoved(nsIDocument *aDocument,
+                                    nsIContent *aContainer,
+                                    nsIContent *aChild,
+                                    PRInt32 aIndexInContainer)
+{
+  PushUpdate();
 }

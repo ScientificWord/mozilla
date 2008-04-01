@@ -50,12 +50,12 @@
 #include "txKey.h"
 #include "txStylesheet.h"
 #include "txXPathTreeWalker.h"
+#include "nsTArray.h"
 
 class txAOutputHandlerFactory;
 class txAXMLEventHandler;
 class txInstruction;
 class txIOutputHandlerFactory;
-class txExpandedNameMap;
 
 class txLoadedDocumentEntry : public nsStringHashKey
 {
@@ -95,7 +95,8 @@ class txExecutionState : public txIMatchContext
 public:
     txExecutionState(txStylesheet* aStylesheet, PRBool aDisableLoads);
     ~txExecutionState();
-    nsresult init(const txXPathNode& aNode, txExpandedNameMap* aGlobalParams);
+    nsresult init(const txXPathNode& aNode,
+                  txOwningExpandedNameMap<txIGlobalParameter>* aGlobalParams);
     nsresult end(nsresult aResult);
 
     TX_DECL_MATCH_CONTEXT;
@@ -113,10 +114,8 @@ public:
     // Stack functions
     nsresult pushEvalContext(txIEvalContext* aContext);
     txIEvalContext* popEvalContext();
-    nsresult pushString(const nsAString& aStr);
-    void popString(nsAString& aStr);
-    nsresult pushInt(PRInt32 aInt);
-    PRInt32 popInt();
+    nsresult pushBool(PRBool aBool);
+    PRBool popBool();
     nsresult pushResultHandler(txAXMLEventHandler* aHandler);
     txAXMLEventHandler* popResultHandler();
     nsresult pushTemplateRule(txStylesheet::ImportFrame* aFrame,
@@ -128,13 +127,19 @@ public:
 
     // state-getting functions
     txIEvalContext* getEvalContext();
-    txExpandedNameMap* getParamMap();
     const txXPathNode* retrieveDocument(const nsAString& aUri);
     nsresult getKeyNodes(const txExpandedName& aKeyName,
-                         const txXPathNode& aDocument,
+                         const txXPathNode& aRoot,
                          const nsAString& aKeyValue, PRBool aIndexIfNotFound,
                          txNodeSet** aResult);
     TemplateRule* getCurrentTemplateRule();
+    const txXPathNode& getSourceDocument()
+    {
+        NS_ASSERTION(mLoadedDocuments.mSourceDocument,
+                     "Need a source document!");
+
+        return *mLoadedDocuments.mSourceDocument;
+    }
 
     // state-modification functions
     txInstruction* getNextInstruction();
@@ -159,10 +164,9 @@ private:
     txStack mReturnStack;
     txStack mLocalVarsStack;
     txStack mEvalContextStack;
-    txStack mIntStack;
+    nsTArray<PRPackedBool> mBoolStack;
     txStack mResultHandlerStack;
     txStack mParamStack;
-    nsStringArray mStringStack;
     txInstruction* mNextInstruction;
     txVariableMap* mLocalVariables;
     txVariableMap mGlobalVariableValues;
@@ -176,7 +180,7 @@ private:
     txIEvalContext* mEvalContext;
     txIEvalContext* mInitialEvalContext;
     //Document* mRTFDocument;
-    txExpandedNameMap* mGlobalParams;
+    txOwningExpandedNameMap<txIGlobalParameter>* mGlobalParams;
 
     txLoadedDocumentsHash mLoadedDocuments;
     txKeyHash mKeyHash;

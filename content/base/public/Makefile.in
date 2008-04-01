@@ -55,15 +55,14 @@ nsContentPolicyUtils.h \
 nsContentUtils.h \
 nsIDocument.h \
 nsIDocumentObserver.h \
-nsIDOMGCParticipant.h \
 nsIMutationObserver.h \
 nsINameSpaceManager.h \
 nsINode.h \
 nsINodeInfo.h \
+nsIRange.h \
 nsIRangeUtils.h \
 nsIScriptElement.h \
 nsIStyleSheetLinkingElement.h \
-nsITextContent.h \
 nsIPrivateDOMImplementation.h \
 nsIContentSerializer.h \
 nsIHTMLToTextSink.h \
@@ -73,7 +72,10 @@ nsCaseTreatment.h \
 nsContentCID.h \
 nsCopySupport.h \
 nsContentCreatorFunctions.h \
+nsLineBreaker.h \
 nsXMLNameSpaceMap.h \
+nsPresShellIterator.h \
+nsDOMFile.h \
 $(NULL)
 
 ifndef DISABLE_XFORMS_HOOKS
@@ -88,13 +90,16 @@ XPIDLSRCS	= \
 		nsIChromeRegistry.idl       \
 		nsIContentPolicy.idl        \
 		nsIDocumentEncoder.idl      \
+		nsIDOMFile.idl \
+		nsIDOMFileList.idl \
+		nsIDOMFileException.idl \
 		nsIDOMParser.idl \
 		nsIDOMSerializer.idl \
+		nsISelection2.idl \
 		nsISelectionController.idl  \
 		nsISelectionDisplay.idl  \
 		nsISelectionListener.idl  \
 		nsISelectionPrivate.idl  \
-		nsIScriptLoader.idl  \
 		nsIScriptLoaderObserver.idl  \
 		nsISyncLoadDOMService.idl  \
 		nsIDragDropHandler.idl \

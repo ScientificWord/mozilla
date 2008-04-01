@@ -50,7 +50,6 @@
 #include "nsISelection.h"
 #include "nsIDOMNode.h"
 #include "nsIDOMNodeList.h"
-#include "nsIDOMEventReceiver.h"
 #include "nsIDOMEvent.h"
 #include "nsIDOMNSEvent.h"
 #include "nsIDOMMouseEvent.h"
@@ -79,10 +78,8 @@
 #include "nsIDocShell.h"
 #include "nsIContent.h"
 #include "nsIImageLoadingContent.h"
-#include "nsIXMLContent.h"
 #include "nsINameSpaceManager.h"
 #include "nsUnicharUtils.h"
-#include "nsHTMLAtoms.h"
 #include "nsIURL.h"
 #include "nsIImage.h"
 #include "nsIDocument.h"
@@ -91,7 +88,6 @@
 #include "nsPresContext.h"
 #include "nsIDocShellTreeItem.h"
 #include "nsIFrame.h"
-#include "nsLayoutAtoms.h"
 #include "nsRange.h"
 #include "nsIWebBrowserPersist.h"
 #include "nsEscape.h"
@@ -99,6 +95,12 @@
 #include "nsIMIMEService.h"
 #include "imgIRequest.h"
 #include "nsContentCID.h"
+#include "nsISelectionController.h"
+#include "nsFrameSelection.h"
+#include "nsIDOMEventTarget.h"
+#include "nsWidgetsCID.h"
+
+static NS_DEFINE_CID(kHTMLConverterCID,        NS_HTMLFORMATCONVERTER_CID);
 
 // private clipboard data flavors for html copy, used by editor when pasting
 #define kHTMLContext   "text/_moz_htmlcontext"
@@ -120,14 +122,9 @@ NS_INTERFACE_MAP_END
 class nsTransferableFactory
 {
 public:
-  static nsresult CreateFromEvent(nsIDOMEvent* inMouseEvent,
-                                  nsIFlavorDataProvider *inFlavorDataProvider,
-                                  nsITransferable** outTrans);
-
-protected:
   nsTransferableFactory(nsIDOMEvent* inMouseEvent,
                         nsIFlavorDataProvider *inFlavorDataProvider);
-  nsresult Produce(nsITransferable** outTrans);
+  nsresult Produce(PRBool *aDragSelection, nsITransferable** outTrans);
 
 private:
   nsresult ConvertStringsToTransferable(nsITransferable** outTrans);
@@ -143,11 +140,8 @@ private:
   static void GetSelectedLink(nsISelection* inSelection,
                               nsIDOMNode **outLinkNode);
 
-  enum serializationMode {serializeAsText, serializeAsHTML};
   // if inNode is null, use the selection from the window
-  static nsresult SerializeNodeOrSelection(serializationMode inMode,
-                                           PRUint32 inFlags,
-                                           nsIDOMWindow* inWindow,
+  static nsresult SerializeNodeOrSelection(nsIDOMWindow* inWindow,
                                            nsIDOMNode* inNode,
                                            nsAString& outResultString,
                                            nsAString& outHTMLContext,
@@ -196,9 +190,9 @@ nsContentAreaDragDrop::HookupTo(nsIDOMEventTarget *inAttachPoint,
                                 nsIWebNavigation* inNavigator)
 {
   NS_ASSERTION(inAttachPoint, "Can't hookup Drag Listeners to NULL receiver");
-  mEventReceiver = do_QueryInterface(inAttachPoint);
-  NS_ASSERTION(mEventReceiver,
-               "Target doesn't implement nsIDOMEventReceiver as needed");
+  mEventTarget = do_QueryInterface(inAttachPoint);
+  NS_ASSERTION(mEventTarget,
+               "Target doesn't implement nsPIDOMEventTarget as needed");
   mNavigator = inNavigator;
 
   return AddDragListener();
@@ -222,10 +216,10 @@ nsContentAreaDragDrop::AddDragListener()
 {
   nsresult rv = NS_ERROR_FAILURE;
 
-  if ( mEventReceiver ) {
-    nsIDOMDragListener *pListener = NS_STATIC_CAST(nsIDOMDragListener *, this);
-    rv = mEventReceiver->AddEventListenerByIID(pListener,
-                                               NS_GET_IID(nsIDOMDragListener));
+  if (mEventTarget) {
+    nsIDOMDragListener *pListener = static_cast<nsIDOMDragListener *>(this);
+    rv = mEventTarget->AddEventListenerByIID(pListener,
+                                             NS_GET_IID(nsIDOMDragListener));
     if (NS_SUCCEEDED(rv))
       mListenerInstalled = PR_TRUE;
   }
@@ -244,14 +238,14 @@ nsContentAreaDragDrop::RemoveDragListener()
 {
   nsresult rv = NS_ERROR_FAILURE;
 
-  if (mEventReceiver) {
-    nsIDOMDragListener *pListener = NS_STATIC_CAST(nsIDOMDragListener *, this);
+  if (mEventTarget) {
+    nsIDOMDragListener *pListener = static_cast<nsIDOMDragListener *>(this);
     rv =
-      mEventReceiver->RemoveEventListenerByIID(pListener,
-                                               NS_GET_IID(nsIDOMDragListener));
+      mEventTarget->RemoveEventListenerByIID(pListener,
+                                             NS_GET_IID(nsIDOMDragListener));
     if (NS_SUCCEEDED(rv))
       mListenerInstalled = PR_FALSE;
-    mEventReceiver = nsnull;
+    mEventTarget = nsnull;
   }
 
   return rv;
@@ -395,6 +389,22 @@ nsContentAreaDragDrop::DragOver(nsIDOMEvent* inEvent)
 //
 NS_IMETHODIMP
 nsContentAreaDragDrop::DragExit(nsIDOMEvent* aMouseEvent)
+{
+  // nothing really to do here.
+  return NS_OK;
+}
+
+
+NS_IMETHODIMP
+nsContentAreaDragDrop::Drag(nsIDOMEvent* aMouseEvent)
+{
+  // nothing really to do here.
+  return NS_OK;
+}
+
+
+NS_IMETHODIMP
+nsContentAreaDragDrop::DragEnd(nsIDOMEvent* aMouseEvent)
 {
   // nothing really to do here.
   return NS_OK;
@@ -656,15 +666,6 @@ nsContentAreaDragDrop::GetEventDocument(nsIDOMEvent* inEvent,
 }
 
 nsresult
-nsContentAreaDragDrop::CreateTransferable(nsIDOMEvent* inMouseEvent,
-                                          nsITransferable** outTrans)
-{
-  return nsTransferableFactory::CreateFromEvent(inMouseEvent,
-                                                NS_STATIC_CAST(nsIFlavorDataProvider*, this),
-                                                outTrans);
-}
-
-nsresult
 nsContentAreaDragDrop::GetHookEnumeratorFromEvent(nsIDOMEvent* inEvent,
                                                   nsISimpleEnumerator **outEnumerator)
 {
@@ -740,10 +741,10 @@ nsContentAreaDragDrop::DragGesture(nsIDOMEvent* inMouseEvent)
     }
   }
 
+  PRBool isSelection = PR_FALSE;
   nsCOMPtr<nsITransferable> trans;
-  nsresult rv = CreateTransferable(inMouseEvent, getter_AddRefs(trans));
-  if (NS_FAILED(rv))
-    return rv;
+  nsTransferableFactory factory(inMouseEvent, static_cast<nsIFlavorDataProvider*>(this));
+  factory.Produce(&isSelection, getter_AddRefs(trans));
 
   if (trans) {
     // if the client has provided an override callback, let them manipulate
@@ -787,7 +788,6 @@ nsContentAreaDragDrop::DragGesture(nsIDOMEvent* inMouseEvent)
     // kick off the drag
     nsCOMPtr<nsIDOMEventTarget> target;
     inMouseEvent->GetTarget(getter_AddRefs(target));
-    nsCOMPtr<nsIDOMNode> targetNode(do_QueryInterface(target));
     nsCOMPtr<nsIDragService> dragService =
       do_GetService("@mozilla.org/widget/dragservice;1");
 
@@ -795,10 +795,31 @@ nsContentAreaDragDrop::DragGesture(nsIDOMEvent* inMouseEvent)
       return NS_ERROR_FAILURE;
     }
 
-    dragService->InvokeDragSession(targetNode, transArray, nsnull,
-                                   nsIDragService::DRAGDROP_ACTION_COPY +
-                                   nsIDragService::DRAGDROP_ACTION_MOVE +
-                                   nsIDragService::DRAGDROP_ACTION_LINK);
+    PRUint32 action = nsIDragService::DRAGDROP_ACTION_COPY +
+                      nsIDragService::DRAGDROP_ACTION_MOVE +
+                      nsIDragService::DRAGDROP_ACTION_LINK;
+
+    nsCOMPtr<nsIDOMMouseEvent> mouseEvent(do_QueryInterface(inMouseEvent));
+
+    if (isSelection) {
+      nsCOMPtr<nsIContent> targetContent(do_QueryInterface(target));
+      nsIDocument* doc = targetContent->GetCurrentDoc();
+      if (doc) {
+        nsIPresShell* presShell = doc->GetPrimaryShell();
+        if (presShell) {
+          nsISelection* selection =
+            presShell->GetCurrentSelection(nsISelectionController::SELECTION_NORMAL);
+          return dragService->InvokeDragSessionWithSelection(selection,
+                                                             transArray,
+                                                             action,
+                                                             mouseEvent);
+        }
+      }
+    }
+
+    nsCOMPtr<nsIDOMNode> targetNode(do_QueryInterface(target));
+    dragService->InvokeDragSessionWithImage(targetNode, transArray, nsnull,
+                                            action, nsnull, 0, 0, mouseEvent);
   }
 
   return NS_OK;
@@ -929,16 +950,6 @@ nsContentAreaDragDrop::GetFlavorData(nsITransferable *aTransferable,
   return rv;
 }
 
-
-nsresult
-nsTransferableFactory::CreateFromEvent(nsIDOMEvent* inMouseEvent,
-                                       nsIFlavorDataProvider *dataProvider,
-                                       nsITransferable** outTrans)
-{
-  nsTransferableFactory factory(inMouseEvent, dataProvider);
-  return factory.Produce(outTrans);
-}
-
 nsTransferableFactory::nsTransferableFactory(nsIDOMEvent* inMouseEvent,
                                              nsIFlavorDataProvider *dataProvider)
   : mInstanceAlreadyUsed(PR_FALSE),
@@ -979,21 +990,14 @@ nsTransferableFactory::FindParentLinkNode(nsIDOMNode* inNode)
 //
 // GetAnchorURL
 //
-// Get the url for this anchor. First try the href, and if that's
-// empty, go for the name.
-//
 void
 nsTransferableFactory::GetAnchorURL(nsIDOMNode* inNode, nsAString& outURL)
 {
-  outURL.Truncate();
-  nsCOMPtr<nsIContent> content(do_QueryInterface(inNode));
-  if (!content) {
+  nsCOMPtr<nsIURI> linkURI;
+  nsCOMPtr<nsIContent> content = do_QueryInterface(inNode);
+  if (!content || !content->IsLink(getter_AddRefs(linkURI))) {
     // Not a link
-    return;
-  }
-
-  nsCOMPtr<nsIURI> linkURI = nsContentUtils::GetLinkURI(content);
-  if (!linkURI) {
+    outURL.Truncate();
     return;
   }
 
@@ -1054,7 +1058,8 @@ nsTransferableFactory::GetNodeString(nsIDOMNode* inNode,
 
 
 nsresult
-nsTransferableFactory::Produce(nsITransferable** outTrans)
+nsTransferableFactory::Produce(PRBool* aDragSelection,
+                               nsITransferable** outTrans)
 {
   if (mInstanceAlreadyUsed) {
     return NS_ERROR_FAILURE;
@@ -1103,6 +1108,7 @@ nsTransferableFactory::Produce(nsITransferable** outTrans)
   // if set, serialize the content under this node
   nsCOMPtr<nsIDOMNode> nodeToSerialize;
   PRBool useSelectedText = PR_FALSE;
+  *aDragSelection = PR_FALSE;
 
   {
     PRBool haveSelectedContent = PR_FALSE;
@@ -1159,6 +1165,7 @@ nsTransferableFactory::Produce(nsITransferable** outTrans)
           }
 
           useSelectedText = PR_TRUE;
+          *aDragSelection = PR_TRUE;
         } else if (selectedImageOrLinkNode) {
           // an image is selected
           image = do_QueryInterface(selectedImageOrLinkNode);
@@ -1331,16 +1338,24 @@ nsTransferableFactory::Produce(nsITransferable** outTrans)
       nodeToSerialize = nsnull;
     }
 
-    SerializeNodeOrSelection(serializeAsHTML,
-                             nsIDocumentEncoder::OutputAbsoluteLinks |
-                             nsIDocumentEncoder::OutputEncodeW3CEntities,
-                             window, nodeToSerialize,
+    SerializeNodeOrSelection(window, nodeToSerialize,
                              mHtmlString, mContextString, mInfoString);
 
-    nsAutoString dummy1, dummy2;
-    SerializeNodeOrSelection(serializeAsText, 0,
-                             window, nodeToSerialize,
-                             mTitleString, dummy1, dummy2);
+    nsCOMPtr<nsIFormatConverter> htmlConverter =
+      do_CreateInstance(kHTMLConverterCID);
+    NS_ENSURE_TRUE(htmlConverter, NS_ERROR_FAILURE);
+
+    nsCOMPtr<nsISupportsString> html =
+      do_CreateInstance(NS_SUPPORTS_STRING_CONTRACTID);
+    NS_ENSURE_TRUE(html, NS_ERROR_FAILURE);
+    html->SetData(mHtmlString);
+
+    nsCOMPtr<nsISupportsString> text;
+    PRUint32 textLen;
+    htmlConverter->Convert(kHTMLMime, html, mHtmlString.Length() * 2,
+                           kUnicodeMime, getter_AddRefs(text), &textLen);
+    NS_ENSURE_TRUE(text, NS_ERROR_FAILURE);
+    text->GetData(mTitleString);
 
 #ifdef CHANGE_SELECTION_ON_DRAG
     // We used to change the selection to wrap the dragged node (mainly
@@ -1629,7 +1644,7 @@ void nsTransferableFactory::GetSelectedLink(nsISelection* inSelection,
   nsAutoString nodeStr;
   selectionStart->GetNodeValue(nodeStr);
   if (nodeStr.IsEmpty() ||
-      startOffset+1 >= NS_STATIC_CAST(PRInt32, nodeStr.Length())) {
+      startOffset+1 >= static_cast<PRInt32>(nodeStr.Length())) {
     nsCOMPtr<nsIDOMNode> curr = selectionStart;
     nsIDOMNode* next;
 
@@ -1681,9 +1696,7 @@ void nsTransferableFactory::GetSelectedLink(nsISelection* inSelection,
 
 // static
 nsresult
-nsTransferableFactory::SerializeNodeOrSelection(serializationMode inMode,
-                                                PRUint32 inFlags,
-                                                nsIDOMWindow* inWindow,
+nsTransferableFactory::SerializeNodeOrSelection(nsIDOMWindow* inWindow,
                                                 nsIDOMNode* inNode,
                                                 nsAString& outResultString,
                                                 nsAString& outContext,
@@ -1692,22 +1705,16 @@ nsTransferableFactory::SerializeNodeOrSelection(serializationMode inMode,
   NS_ENSURE_ARG_POINTER(inWindow);
 
   nsresult rv;
-  nsCOMPtr<nsIDocumentEncoder> encoder;
-  static const char *textplain = "text/plain";
-
-  if (inMode == serializeAsText) {
-    nsCAutoString formatType(NS_DOC_ENCODER_CONTRACTID_BASE);
-    formatType.Append(textplain);
-    encoder = do_CreateInstance(formatType.get(), &rv);
-  } else {
-    encoder = do_CreateInstance(NS_HTMLCOPY_ENCODER_CONTRACTID, &rv);
-  }
-  NS_ENSURE_SUCCESS(rv, rv);
+  nsCOMPtr<nsIDocumentEncoder> encoder =
+    do_CreateInstance(NS_HTMLCOPY_ENCODER_CONTRACTID);
+  NS_ENSURE_TRUE(encoder, NS_ERROR_FAILURE);
 
   nsCOMPtr<nsIDOMDocument> domDoc;
   inWindow->GetDocument(getter_AddRefs(domDoc));
   NS_ENSURE_TRUE(domDoc, NS_ERROR_FAILURE);
 
+  PRUint32 flags = nsIDocumentEncoder::OutputAbsoluteLinks |
+                   nsIDocumentEncoder::OutputEncodeW3CEntities;
   nsCOMPtr<nsIDOMRange> range;
   nsCOMPtr<nsISelection> selection;
   if (inNode) {
@@ -1718,26 +1725,16 @@ nsTransferableFactory::SerializeNodeOrSelection(serializationMode inMode,
     NS_ENSURE_SUCCESS(rv, rv);
   } else {
     inWindow->GetSelection(getter_AddRefs(selection));
-    inFlags |= nsIDocumentEncoder::OutputSelectionOnly;
+    flags |= nsIDocumentEncoder::OutputSelectionOnly;
   }
 
-  if (inMode == serializeAsText) {
-    rv = encoder->Init(domDoc, NS_ConvertASCIItoUTF16(textplain), inFlags);
-  } else {
-    rv = encoder->Init(domDoc, NS_LITERAL_STRING(kHTMLMime), inFlags);
-  }
+  rv = encoder->Init(domDoc, NS_LITERAL_STRING(kHTMLMime), flags);
   NS_ENSURE_SUCCESS(rv, rv);
 
   if (range) {
     encoder->SetRange(range);
   } else if (selection) {
     encoder->SetSelection(selection);
-  }
-
-  if (inMode == serializeAsText) {
-    outContext.Truncate();
-    outInfo.Truncate();
-    return encoder->EncodeToString(outResultString);
   }
 
   return encoder->EncodeToStringWithContext(outContext, outInfo,

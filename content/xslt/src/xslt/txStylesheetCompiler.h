@@ -46,6 +46,9 @@
 #include "nsAutoPtr.h"
 #include "txStylesheet.h"
 
+extern PRBool
+TX_XSLTFunctionAvailable(nsIAtom* aName, PRInt32 aNameSpaceID);
+
 class txHandlerTable;
 class txElementContext;
 class txInstructionContainer;
@@ -140,7 +143,7 @@ public:
     // txIParseContext
     nsresult resolveNamespacePrefix(nsIAtom* aPrefix, PRInt32& aID);
     nsresult resolveFunctionCall(nsIAtom* aName, PRInt32 aID,
-                                 FunctionCall*& aFunction);
+                                 FunctionCall** aFunction);
     PRBool caseInsensitiveNameTests();
 
     /**
@@ -152,6 +155,8 @@ public:
     }
 
     void SetErrorOffset(PRUint32 aOffset);
+
+    static void shutdown();
 
 
     nsRefPtr<txStylesheet> mStylesheet;
@@ -200,6 +205,8 @@ class txStylesheetCompiler : private txStylesheetCompilerState,
 {
 public:
     friend class txStylesheetCompilerState;
+    friend PRBool TX_XSLTFunctionAvailable(nsIAtom* aName,
+                                           PRInt32 aNameSpaceID);
     txStylesheetCompiler(const nsAString& aStylesheetURI,
                          txACompileObserver* aObserver);
     txStylesheetCompiler(const nsAString& aStylesheetURI,

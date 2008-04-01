@@ -41,6 +41,7 @@
 #include "nsIDOMSVGRectElement.h"
 #include "nsSVGLength2.h"
 #include "nsGkAtoms.h"
+#include "gfxContext.h"
 
 typedef nsSVGPathGeometryElement nsSVGRectElementBase;
 
@@ -58,12 +59,14 @@ public:
   NS_DECL_NSIDOMSVGRECTELEMENT
 
   // xxx I wish we could use virtual inheritance
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGRectElementBase::)
+  NS_FORWARD_NSIDOMNODE(nsSVGRectElementBase::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGRectElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGRectElementBase::)
 
   // nsSVGPathGeometryElement methods:
-  virtual void ConstructPath(cairo_t *aCtx);
+  virtual void ConstructPath(gfxContext *aCtx);
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 
 protected:
 
@@ -111,7 +114,7 @@ nsSVGRectElement::nsSVGRectElement(nsINodeInfo *aNodeInfo)
 //----------------------------------------------------------------------
 // nsIDOMNode methods
 
-NS_IMPL_DOM_CLONENODE_WITH_INIT(nsSVGRectElement)
+NS_IMPL_ELEMENT_CLONE_WITH_INIT(nsSVGRectElement)
 
 //----------------------------------------------------------------------
 // nsIDOMSVGRectElement methods
@@ -166,7 +169,7 @@ nsSVGRectElement::GetLengthInfo()
 // nsSVGPathGeometryElement methods
 
 void
-nsSVGRectElement::ConstructPath(cairo_t *aCtx)
+nsSVGRectElement::ConstructPath(gfxContext *aCtx)
 {
   float x, y, width, height, rx, ry;
 
@@ -176,6 +179,12 @@ nsSVGRectElement::ConstructPath(cairo_t *aCtx)
      return a DOM exception. */
   if (width <= 0 || height <= 0 || ry < 0 || rx < 0)
     return;
+
+  /* optimize the no rounded corners case */
+  if (rx == 0 && ry == 0) {
+    aCtx->Rectangle(gfxRect(x, y, width, height));
+    return;
+  }
 
   /* Clamp rx and ry to half the rect's width and height respectively. */
   float halfWidth  = width/2;
@@ -203,35 +212,37 @@ nsSVGRectElement::ConstructPath(cairo_t *aCtx)
   else if (ry > halfHeight)
     rx = ry = halfHeight;
 
-  if (rx == 0 && ry == 0) {
-    cairo_rectangle(aCtx, x, y, width, height);
-  } else {
-    // Conversion factor used for ellipse to bezier conversion.
-    // Gives radial error of 0.0273% in circular case.
-    // See comp.graphics.algorithms FAQ 4.04
-    const float magic = 4*(sqrt(2.)-1)/3;
+  // Conversion factor used for ellipse to bezier conversion.
+  // Gives radial error of 0.0273% in circular case.
+  // See comp.graphics.algorithms FAQ 4.04
+  const float magic = 4*(sqrt(2.)-1)/3;
+  const float magic_x = magic*rx;
+  const float magic_y = magic*ry;
 
-    cairo_move_to(aCtx, x+rx, y);
-    cairo_line_to(aCtx, x+width-rx, y);
-    cairo_curve_to(aCtx,
-                   x+width-rx + magic*rx, y,
-                   x+width, y+ry-magic*ry,
-                   x+width, y+ry);
-    cairo_line_to(aCtx, x+width, y+height-ry);
-    cairo_curve_to(aCtx,
-                   x+width, y+height-ry + magic*ry,
-                   x+width-rx + magic*rx, y+height,
-                   x+width-rx, y+height);
-    cairo_line_to(aCtx, x+rx, y+height);
-    cairo_curve_to(aCtx,
-                   x+rx - magic*rx, y+height,
-                   x, y+height-ry + magic*ry,
-                   x, y+height-ry);
-    cairo_line_to(aCtx, x, y+ry);
-    cairo_curve_to(aCtx,
-                   x, y+ry - magic*ry,
-                   x+rx - magic*rx, y,
-                   x+rx, y);
-    cairo_close_path(aCtx);
-  }
+  aCtx->MoveTo(gfxPoint(x + rx, y));
+  aCtx->LineTo(gfxPoint(x + width - rx, y));
+
+  aCtx->CurveTo(gfxPoint(x + width - rx + magic_x, y),
+                gfxPoint(x + width, y + ry - magic_y),
+                gfxPoint(x + width, y + ry));
+
+  aCtx->LineTo(gfxPoint(x + width, y + height - ry));
+
+  aCtx->CurveTo(gfxPoint(x + width, y + height - ry + magic_y),
+                gfxPoint(x + width - rx + magic_x, y+height),
+                gfxPoint(x + width - rx, y + height));
+
+  aCtx->LineTo(gfxPoint(x + rx, y + height));
+
+  aCtx->CurveTo(gfxPoint(x + rx - magic_x, y + height),
+                gfxPoint(x, y + height - ry + magic_y),
+                gfxPoint(x, y + height - ry));
+
+  aCtx->LineTo(gfxPoint(x, y + ry));
+
+  aCtx->CurveTo(gfxPoint(x, y + ry - magic_y),
+                gfxPoint(x + rx - magic_x, y),
+                gfxPoint(x + rx, y));
+
+  aCtx->ClosePath();
 }

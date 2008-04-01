@@ -48,36 +48,18 @@
 #include "nsContentUtils.h"
 #include "nsDOMError.h"
 
-////////////////////////////////////////////////////////////////////////
-// nsSVGRect class
-
-class nsSVGRect : public nsIDOMSVGRect,
-                  public nsSVGValue
-{
-public:
-  nsSVGRect(float x=0.0f, float y=0.0f, float w=0.0f, float h=0.0f);
-  
-  // nsISupports interface:
-  NS_DECL_ISUPPORTS
-
-  // nsIDOMSVGRect interface:
-  NS_DECL_NSIDOMSVGRECT
-
-  // nsISVGValue interface:
-  NS_IMETHOD SetValueString(const nsAString& aValue);
-  NS_IMETHOD GetValueString(nsAString& aValue);
-
-
-protected:
-  float mX, mY, mWidth, mHeight;
-};
-
 //----------------------------------------------------------------------
 // implementation:
 
 nsSVGRect::nsSVGRect(float x, float y, float w, float h)
     : mX(x), mY(y), mWidth(w), mHeight(h)
 {
+}
+
+void
+nsSVGRect::Clear()
+{
+  mX = mY = mWidth = mHeight = 0.0f;
 }
 
 //----------------------------------------------------------------------
@@ -220,7 +202,7 @@ public:
   nsSVGReadonlyRect(float x, float y, float width, float height)
     : nsSVGRect(x, y, width, height)
   {
-  };
+  }
 
   // override setters to make the whole object readonly
   NS_IMETHODIMP SetX(float) { return NS_ERROR_DOM_NO_MODIFICATION_ALLOWED_ERR; }
@@ -241,6 +223,14 @@ NS_NewSVGRect(nsIDOMSVGRect** result, float x, float y,
   if (!*result) return NS_ERROR_OUT_OF_MEMORY;
   NS_ADDREF(*result);
   return NS_OK;
+}
+
+nsresult
+NS_NewSVGRect(nsIDOMSVGRect** result, const gfxRect& rect)
+{
+  return NS_NewSVGRect(result,
+                       rect.X(), rect.Y(),
+                       rect.Width(), rect.Height());
 }
 
 nsresult

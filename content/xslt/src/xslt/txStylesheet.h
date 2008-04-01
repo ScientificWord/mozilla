@@ -43,7 +43,7 @@
 #include "txExpandedNameMap.h"
 #include "txList.h"
 #include "txXSLTPatterns.h"
-#include "nsVoidArray.h"
+#include "nsTPtrArray.h"
 
 class txInstruction;
 class txToplevelItem;
@@ -52,6 +52,8 @@ class txVariableItem;
 class txStripSpaceItem;
 class txAttributeSetItem;
 class txDecimalFormat;
+class txStripSpaceTest;
+class txXSLKey;
 
 class txStylesheet
 {
@@ -90,7 +92,7 @@ public:
     txInstruction* getNamedTemplate(const txExpandedName& aName);
     txOutputFormat* getOutputFormat();
     GlobalVariable* getGlobalVariable(const txExpandedName& aName);
-    const txExpandedNameMap& getKeyMap();
+    const txOwningExpandedNameMap<txXSLKey>& getKeyMap();
     PRBool isStripSpaceAllowed(const txXPathNode& aNode,
                                txIMatchContext* aContext);
 
@@ -111,20 +113,28 @@ public:
     nsresult addDecimalFormat(const txExpandedName& aName,
                               nsAutoPtr<txDecimalFormat> aFormat);
 
+    struct MatchableTemplate {
+        txInstruction* mFirstInstruction;
+        nsAutoPtr<txPattern> mMatch;
+        double mPriority;
+    };
+
     /**
      * Contain information that is import precedence dependant.
      */
     class ImportFrame {
     public:
-        ImportFrame();
+        ImportFrame()
+            : mFirstNotImported(nsnull)
+        {
+        }
         ~ImportFrame();
 
         // List of toplevel items
         txList mToplevelItems;
 
-        // Map of template modes, each item in the map is a txList
-        // of templates
-        txExpandedNameMap mMatchableTemplates;
+        // Map of template modes
+        txOwningExpandedNameMap< nsTArray<MatchableTemplate> > mMatchableTemplates;
 
         // ImportFrame which is the first one *not* imported by this frame
         ImportFrame* mFirstNotImported;
@@ -142,26 +152,11 @@ public:
     };
 
 private:
-    class MatchableTemplate {
-    public:
-        MatchableTemplate(txInstruction* aFirstInstruction,
-                          nsAutoPtr<txPattern> aPattern,
-                          double aPriority)
-            : mFirstInstruction(aFirstInstruction),
-              mMatch(aPattern),
-              mPriority(aPriority)
-        {
-        }
-        txInstruction* mFirstInstruction;
-        nsAutoPtr<txPattern> mMatch;
-        double mPriority;
-    };
-    
     nsresult addTemplate(txTemplateItem* aTemplate, ImportFrame* aImportFrame);
     nsresult addGlobalVariable(txVariableItem* aVariable);
     nsresult addFrames(txListIterator& aInsertIter);
     nsresult addStripSpace(txStripSpaceItem* aStripSpaceItem,
-                           nsVoidArray& frameStripSpaceTests);
+                           nsTPtrArray<txStripSpaceTest>& aFrameStripSpaceTests);
     nsresult addAttributeSet(txAttributeSetItem* aAttributeSetItem);
 
     // Refcount
@@ -181,22 +176,22 @@ private:
     ImportFrame* mRootFrame;
     
     // Named templates
-    txExpandedNameMap mNamedTemplates;
+    txExpandedNameMap<txInstruction> mNamedTemplates;
     
     // Map with all decimal-formats
-    txExpandedNameMap mDecimalFormats;
+    txOwningExpandedNameMap<txDecimalFormat> mDecimalFormats;
 
     // Map with all named attribute sets
-    txExpandedNameMap mAttributeSets;
+    txExpandedNameMap<txInstruction> mAttributeSets;
     
     // Map with all global variables and parameters
-    txExpandedNameMap mGlobalVariables;
+    txOwningExpandedNameMap<GlobalVariable> mGlobalVariables;
     
     // Map with all keys
-    txExpandedNameMap mKeys;
+    txOwningExpandedNameMap<txXSLKey> mKeys;
     
     // Array of all txStripSpaceTests, sorted in acending order
-    nsVoidArray mStripSpaceTests;
+    nsTPtrArray<txStripSpaceTest> mStripSpaceTests;
     
     // Default templates
     nsAutoPtr<txInstruction> mContainerTemplate;
@@ -238,9 +233,17 @@ protected:
 /**
  * Value of a global parameter
  */
-class txIGlobalParameter : public TxObject
+class txIGlobalParameter
 {
 public:
+    txIGlobalParameter()
+    {
+        MOZ_COUNT_CTOR(txIGlobalParameter);
+    }
+    virtual ~txIGlobalParameter()
+    {
+        MOZ_COUNT_DTOR(txIGlobalParameter);
+    }
     virtual nsresult getValue(txAExprResult** aValue) = 0;
 };
 

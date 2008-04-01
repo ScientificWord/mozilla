@@ -46,6 +46,7 @@
 #include "jsapi.h"              // nsXBLJSClass derives from JSClass
 #include "jsclist.h"            // nsXBLJSClass derives from JSCList
 #include "nsFixedSizeAllocator.h"
+#include "nsTArray.h"
 
 class nsXBLBinding;
 class nsIXBLDocumentInfo;
@@ -54,10 +55,8 @@ class nsIDocument;
 class nsIAtom;
 class nsString;
 class nsIURI;
-class nsIURL;
 class nsSupportsHashtable;
 class nsHashtable;
-class nsIXULPrototypeCache;
 
 class nsXBLService : public nsIXBLService,
                      public nsIObserver,
@@ -66,8 +65,9 @@ class nsXBLService : public nsIXBLService,
   NS_DECL_ISUPPORTS
 
   // This function loads a particular XBL file and installs all of the bindings
-  // onto the element.
-  NS_IMETHOD LoadBindings(nsIContent* aContent, nsIURI* aURL, PRBool aAugmentFlag,
+  // onto the element.  aOriginPrincipal must not be null here.
+  NS_IMETHOD LoadBindings(nsIContent* aContent, nsIURI* aURL,
+                          nsIPrincipal* aOriginPrincipal, PRBool aAugmentFlag,
                           nsXBLBinding** aBinding, PRBool* aResolveStyle);
 
   // Indicates whether or not a binding is fully loaded.
@@ -76,14 +76,18 @@ class nsXBLService : public nsIXBLService,
   // Gets the object's base class type.
   NS_IMETHOD ResolveTag(nsIContent* aContent, PRInt32* aNameSpaceID, nsIAtom** aResult);
 
-  // This method checks the hashtable and then calls FetchBindingDocument on a miss.
-  NS_IMETHOD LoadBindingDocumentInfo(nsIContent* aBoundElement, nsIDocument* aBoundDocument,
+  // This method checks the hashtable and then calls FetchBindingDocument on a
+  // miss.  aOriginPrincipal or aBoundDocument may be null to bypass security
+  // checks.
+  NS_IMETHOD LoadBindingDocumentInfo(nsIContent* aBoundElement,
+                                     nsIDocument* aBoundDocument,
                                      nsIURI* aBindingURI,
-                                     PRBool aForceSyncLoad, nsIXBLDocumentInfo** aResult);
+                                     nsIPrincipal* aOriginPrincipal,
+                                     PRBool aForceSyncLoad,
+                                     nsIXBLDocumentInfo** aResult);
 
   // Used by XUL key bindings and for window XBL.
-  NS_IMETHOD AttachGlobalKeyHandler(nsIDOMEventReceiver* aElement);
-  NS_IMETHOD AttachGlobalDragHandler(nsIDOMEventReceiver* aElement);
+  NS_IMETHOD AttachGlobalKeyHandler(nsPIDOMEventTarget* aTarget);
 
   NS_DECL_NSIOBSERVER
 
@@ -100,23 +104,43 @@ protected:
   
   // This method synchronously loads and parses an XBL file.
   nsresult FetchBindingDocument(nsIContent* aBoundElement, nsIDocument* aBoundDocument,
-                                nsIURI* aDocumentURI, nsIURL* aBindingURL, 
+                                nsIURI* aDocumentURI, nsIURI* aBindingURI, 
                                 PRBool aForceSyncLoad, nsIDocument** aResult);
 
-  nsresult GetXBLDocumentInfo(nsIURI* aURI, nsIContent* aBoundElement, nsIXBLDocumentInfo** aResult);
+  nsIXBLDocumentInfo* GetXBLDocumentInfo(nsIURI* aURI,
+                                         nsIContent* aBoundElement);
 
-  // This method loads a binding doc and then builds the specific binding required.  It
-  // can also peek without building.
+  /**
+   * This method calls the one below with an empty |aDontExtendURIs| array.
+   */
   nsresult GetBinding(nsIContent* aBoundElement, nsIURI* aURI,
-                      PRBool aPeekFlag, PRBool* aIsReady,
-                      nsXBLBinding** aResult);
+                      PRBool aPeekFlag, nsIPrincipal* aOriginPrincipal,
+                      PRBool* aIsReady, nsXBLBinding** aResult);
+
+  /**
+   * This method loads a binding doc and then builds the specific binding
+   * required. It can also peek without building.
+   * @param aBoundElement the element to get a binding for
+   * @param aURI the binding URI
+   * @param aPeekFlag if true then just peek to see if the binding is ready
+   * @param aIsReady [out] if the binding is ready or not
+   * @param aResult [out] where to store the resulting binding (not used if
+   *                      aPeekFlag is true, otherwise it must be non-null)
+   * @param aDontExtendURIs a set of URIs that are already bound to this
+   *        element. If a binding extends any of these then further loading
+   *        is aborted (because it would lead to the binding extending itself)
+   *        and NS_ERROR_ILLEGAL_VALUE is returned.
+   *
+   * @note This method always calls LoadBindingDocumentInfo(), so it's
+   *       enough to funnel all security checks through that function.
+   */
+  nsresult GetBinding(nsIContent* aBoundElement, nsIURI* aURI,
+                      PRBool aPeekFlag, nsIPrincipal* aOriginPrincipal,
+                      PRBool* aIsReady, nsXBLBinding** aResult,
+                      nsTArray<nsIURI*>& aDontExtendURIs);
 
 // MEMBER VARIABLES
 public:
-#ifdef MOZ_XUL
-  static nsIXULPrototypeCache* gXULCache;
-#endif
-    
   static PRUint32 gRefCnt;                   // A count of XBLservice instances.
 
   static PRBool gDisableChromeCache;

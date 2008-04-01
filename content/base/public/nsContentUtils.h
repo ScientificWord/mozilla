@@ -52,6 +52,12 @@
 #include "nsDOMClassInfoID.h"
 #include "nsIClassInfo.h"
 #include "nsIDOM3Node.h"
+#include "nsDataHashtable.h"
+#include "nsIScriptRuntime.h"
+#include "nsIScriptGlobalObject.h"
+#include "nsIDOMEvent.h"
+
+struct nsNativeKeyEvent; // Don't include nsINativeKeyBindings.h here: it will force strange compilation error!
 
 class nsIDOMScriptObjectFactory;
 class nsIXPConnect;
@@ -84,16 +90,37 @@ class nsIWordBreaker;
 class nsIJSRuntimeService;
 class nsIEventListenerManager;
 class nsIScriptContext;
-class nsIScriptGlobalObject;
 template<class E> class nsCOMArray;
 class nsIPref;
 class nsVoidArray;
 struct JSRuntime;
+class nsICaseConversion;
+class nsIWidget;
+class nsPIDOMWindow;
 #ifdef MOZ_XTF
 class nsIXTFService;
 #endif
+#ifdef IBMBIDI
+class nsIBidiKeyboard;
+#endif
 
 extern const char kLoadAsData[];
+
+enum EventNameType {
+  EventNameType_None = 0x0000,
+  EventNameType_HTML = 0x0001,
+  EventNameType_XUL = 0x0002,
+  EventNameType_SVGGraphic = 0x0004, // svg graphic elements
+  EventNameType_SVGSVG = 0x0008, // the svg element
+
+  EventNameType_HTMLXUL = 0x0003,
+  EventNameType_All = 0xFFFF
+};
+
+struct EventNameMapping {
+  PRUint32  mId;
+  PRInt32 mType;
+};
 
 class nsContentUtils
 {
@@ -112,6 +139,22 @@ public:
                                          nsIDocument *aOldDocument);
 
   /**
+   * Get a scope from aOldDocument and one from aNewDocument. Also get a
+   * context through one of the scopes, from the stack or the safe context.
+   *
+   * @param aOldDocument The document to get aOldScope from.
+   * @param aNewDocument The document to get aNewScope from.
+   * @param aCx [out] Context gotten through one of the scopes, from the stack
+   *                  or the safe context.
+   * @param aOldScope [out] Scope gotten from aOldDocument.
+   * @param aNewScope [out] Scope gotten from aNewDocument.
+   */
+  static nsresult GetContextAndScopes(nsIDocument *aOldDocument,
+                                      nsIDocument *aNewDocument,
+                                      JSContext **aCx, JSObject **aOldScope,
+                                      JSObject **aNewScope);
+
+  /**
    * When a document's scope changes (e.g., from document.open(), call this
    * function to move all content wrappers from the old scope to the new one.
    */
@@ -124,13 +167,11 @@ public:
 
   static PRBool   IsCallerTrustedForWrite();
 
-  /*
-   * Returns true if the nodes are both in the same document or
-   * if neither is in a document.
-   * Returns false if the nodes are not in the same document.
+  /**
+   * Check whether a caller is trusted to have aCapability.  This also
+   * checks for UniversalXPConnect in addition to aCapability.
    */
-  static PRBool   InSameDoc(nsIDOMNode *aNode,
-                            nsIDOMNode *aOther);
+  static PRBool   IsCallerTrustedForCapability(const char* aCapability);
 
   /**
    * Do not ever pass null pointers to this method.  If one of your
@@ -223,6 +264,33 @@ public:
   }
 
   /**
+   *  Utility routine to compare two "points", where a point is a
+   *  node/offset pair
+   *  Returns -1 if point1 < point2, 1, if point1 > point2,
+   *  0 if error or if point1 == point2.
+   *  NOTE! If the two nodes aren't in the same connected subtree,
+   *  the result is undefined, but the optional aDisconnected parameter
+   *  is set to PR_TRUE.
+   */
+  static PRInt32 ComparePoints(nsINode* aParent1, PRInt32 aOffset1,
+                               nsINode* aParent2, PRInt32 aOffset2,
+                               PRBool* aDisconnected = nsnull);
+
+  /**
+   * Find the first child of aParent with a resolved tag matching
+   * aNamespace and aTag. Both the explicit and anonymous children of
+   * aParent are examined. The return value is not addrefed.
+   *
+   * XXXndeakin this should return the first child whether in anonymous or
+   * explicit children, but currently XBL doesn't tell us the relative
+   * ordering of anonymous vs explicit children, so instead it searches
+   * the explicit children first then the anonymous children.
+   */
+  static nsIContent* FindFirstChildWithResolvedTag(nsIContent* aParent,
+                                                   PRInt32 aNamespace,
+                                                   nsIAtom* aTag);
+
+  /**
    * Brute-force search of the element subtree rooted at aContent for
    * an element with the given id.  aId must be nonempty, otherwise
    * this method may return nodes even if they have no id!
@@ -283,6 +351,12 @@ public:
   static const nsDependentSubstring TrimWhitespace(const nsAString& aStr,
                                                    PRBool aTrimTrailing = PR_TRUE);
 
+  /**
+   * Returns true if aChar is of class Ps, Pi, Po, Pf, or Pe. (Does not
+   * currently handle non-BMP characters.)
+   */
+  static PRBool IsPunctuationMark(PRUnichar aChar);
+
   static void Shutdown();
 
   /**
@@ -297,6 +371,10 @@ public:
 
   // Check if the (JS) caller can access aNode.
   static PRBool CanCallerAccess(nsIDOMNode *aNode);
+
+  // Check if the (JS) caller can access aWindow.
+  // aWindow can be either outer or inner window.
+  static PRBool CanCallerAccess(nsPIDOMWindow* aWindow);
 
   /**
    * Get the docshell through the JS context that's currently on the stack.
@@ -364,6 +442,10 @@ public:
   static nsIXTFService* GetXTFService();
 #endif
 
+#ifdef IBMBIDI
+  static nsIBidiKeyboard* GetBidiKeyboard();
+#endif
+  
   /**
    * Get the cache security manager service. Can return null if the layout
    * module has been shut down.
@@ -396,6 +478,19 @@ public:
   static nsresult ConvertStringFromCharset(const nsACString& aCharset,
                                            const nsACString& aInput,
                                            nsAString& aOutput);
+
+  /**
+   * Determine whether a buffer begins with a BOM for UTF-8, UTF-16LE,
+   * UTF-16BE, UTF-32LE, UTF-32BE.
+   *
+   * @param aBuffer the buffer to check
+   * @param aLength the length of the buffer
+   * @param aCharset empty if not found
+   * @return boolean indicating whether a BOM was detected.
+   */
+  static PRBool CheckForBOM(const unsigned char* aBuffer, PRUint32 aLength,
+                            nsACString& aCharset);
+
 
   /**
    * Determine whether aContent is in some way associated with aForm.  If the
@@ -453,6 +548,11 @@ public:
   {
     return sWordBreaker;
   }
+  
+  static nsICaseConversion* GetCaseConv()
+  {
+    return sCaseConv;
+  }
 
   /**
    * @return PR_TRUE if aContent has an attribute aName in namespace aNameSpaceID,
@@ -462,11 +562,21 @@ public:
                                 nsIAtom* aName);
 
   /**
+   * Method that gets the primary presContext for the node.
+   * 
+   * @param aContent The content node.
+   * @return the presContext, or nsnull if the content is not in a document
+   *         (if GetCurrentDoc returns nsnull)
+   */
+  static nsPresContext* GetContextForContent(nsIContent* aContent);
+
+  /**
    * Method to do security and content policy checks on the image URI
    *
    * @param aURI uri of the image to be loaded
    * @param aContext the context the image is loaded in (eg an element)
    * @param aLoadingDocument the document we belong to
+   * @param aLoadingPrincipal the principal doing the load
    * @param aImageBlockingStatus the nsIContentPolicy blocking status for this
    *        image.  This will be set even if a security check fails for the
    *        image, to some reasonable REJECT_* value.  This out param will only
@@ -479,18 +589,24 @@ public:
   static PRBool CanLoadImage(nsIURI* aURI,
                              nsISupports* aContext,
                              nsIDocument* aLoadingDocument,
+                             nsIPrincipal* aLoadingPrincipal,
                              PRInt16* aImageBlockingStatus = nsnull);
   /**
    * Method to start an image load.  This does not do any security checks.
+   * This method will attempt to make aURI immutable; a caller that wants to
+   * keep a mutable version around should pass in a clone.
    *
    * @param aURI uri of the image to be loaded
    * @param aLoadingDocument the document we belong to
+   * @param aLoadingPrincipal the principal doing the load
+   * @param aReferrer the referrer URI
    * @param aObserver the observer for the image load
    * @param aLoadFlags the load flags to use.  See nsIRequest
    * @return the imgIRequest for the image load
    */
   static nsresult LoadImage(nsIURI* aURI,
                             nsIDocument* aLoadingDocument,
+                            nsIPrincipal* aLoadingPrincipal,
                             nsIURI* aReferrer,
                             imgIDecoderObserver* aObserver,
                             PRInt32 aLoadFlags,
@@ -532,23 +648,6 @@ public:
   static PRBool IsDraggableLink(nsIContent* aContent);
 
   /**
-   * Method that gets the URI of the link content.  If the content
-   * isn't a link, return null.
-   *
-   * @param aContent The link content
-   * @return the URI the link points to
-   */
-  static already_AddRefed<nsIURI> GetLinkURI(nsIContent* aContent);
-
-  /**
-   * Method that gets the XLink uri for a content node, if it's an XLink
-   *
-   * @param aContent The content node, possibly an XLink
-   * @return Null if aContent is not an XLink, the URI it points to otherwise
-   */
-  static already_AddRefed<nsIURI> GetXLinkURI(nsIContent* aContent);
-
-  /**
    * Convenience method to create a new nodeinfo that differs only by name
    * from aNodeInfo.
    */
@@ -584,6 +683,22 @@ public:
                                PRUint32 *aArgCount, const char*** aArgNames);
 
   /**
+   * If aNode is not an element, return true exactly when aContent's binding
+   * parent is null.
+   *
+   * If aNode is an element, return true exactly when aContent's binding parent
+   * is the same as aNode's.
+   *
+   * This method is particularly useful for callers who are trying to ensure
+   * that they are working with a non-anonymous descendant of a given node.  If
+   * aContent is a descendant of aNode, a return value of PR_FALSE from this
+   * method means that it's an anonymous descendant from aNode's point of view.
+   *
+   * Both arguments to this method must be non-null.
+   */
+  static PRBool IsInSameAnonymousTree(nsINode* aNode, nsIContent* aContent);
+
+  /**
    * Return the nsIXPConnect service.
    */
   static nsIXPConnect *XPConnect()
@@ -613,6 +728,9 @@ public:
     eFORMS_PROPERTIES,
     ePRINTING_PROPERTIES,
     eDOM_PROPERTIES,
+#ifdef MOZ_SVG
+    eSVG_PROPERTIES,
+#endif
     eBRAND_PROPERTIES,
     eCOMMON_DIALOG_PROPERTIES,
     PropertiesFile_COUNT
@@ -671,52 +789,21 @@ public:
   static nsIContentPolicy *GetContentPolicy();
 
   /**
-   * Make sure that whatever value *aPtr contains at any given moment is
-   * protected from JS GC until we remove the GC root.  A call to this that
-   * succeeds MUST be matched by a call to RemoveJSGCRoot to avoid leaking.
-   */
-  static nsresult AddJSGCRoot(jsval* aPtr, const char* aName) {
-    return AddJSGCRoot((void*)aPtr, aName);
-  }
-
-  /**
-   * Make sure that whatever object *aPtr is pointing to at any given moment is
-   * protected from JS GC until we remove the GC root.  A call to this that
-   * succeeds MUST be matched by a call to RemoveJSGCRoot to avoid leaking.
-   */
-  static nsresult AddJSGCRoot(JSObject** aPtr, const char* aName) {
-    return AddJSGCRoot((void*)aPtr, aName);
-  }
-
-  /**
-   * Make sure that whatever object *aPtr is pointing to at any given moment is
-   * protected from JS GC until we remove the GC root.  A call to this that
-   * succeeds MUST be matched by a call to RemoveJSGCRoot to avoid leaking.
-   */
-  static nsresult AddJSGCRoot(void* aPtr, const char* aName);  
-
-  /**
-   * Remove aPtr as a JS GC root
-   */
-  static nsresult RemoveJSGCRoot(jsval* aPtr) {
-    return RemoveJSGCRoot((void*)aPtr);
-  }
-  static nsresult RemoveJSGCRoot(JSObject** aPtr) {
-    return RemoveJSGCRoot((void*)aPtr);
-  }
-  static nsresult RemoveJSGCRoot(void* aPtr);
-
-  /**
    * Quick helper to determine whether there are any mutation listeners
    * of a given type that apply to this content or any of its ancestors.
+   * The method has the side effect to call document's MayDispatchMutationEvent
+   * using aTargetForSubtreeModified as the parameter.
    *
    * @param aNode  The node to search for listeners
    * @param aType  The type of listener (NS_EVENT_BITS_MUTATION_*)
+   * @param aTargetForSubtreeModified The node which is the target of the
+   *                                  possible DOMSubtreeModified event.
    *
    * @return true if there are mutation listeners of the specified type
    */
   static PRBool HasMutationListeners(nsINode* aNode,
-                                     PRUint32 aType);
+                                     PRUint32 aType,
+                                     nsINode* aTargetForSubtreeModified);
 
   /**
    * This method creates and dispatches a trusted event.
@@ -739,41 +826,37 @@ public:
                                        PRBool *aDefaultAction = nsnull);
 
   /**
-   * Add aRange to the list of ranges with a start- or endpoint containing
-   * aNode. aCreated will be set to PR_TRUE if this call created a new list
-   * (meaning the list was empty before the call to AddToRangeList).
+   * Determines if an event attribute name (such as onclick) is valid for
+   * a given element type. Types are from the EventNameType enumeration
+   * defined above.
    *
-   * @param aNode The node contained in the start- or endpoint of aRange.
-   * @param aRange The range containing aNode in its start- or endpoint.
-   * @param aCreated [out] Set to PR_TRUE if a new list was created.
+   * @param aName the event name to look up
+   * @param aType the type of content
    */
-  static nsresult AddToRangeList(nsINode *aNode, nsIDOMRange *aRange,
-                                 PRBool *aCreated);
+  static PRBool IsEventAttributeName(nsIAtom* aName, PRInt32 aType);
 
   /**
-   * Remove aRange from the list of ranges with a start- or endpoint containing
-   * aNode. This will return PR_TRUE if aRange was the last range in the list.
+   * Return the event id for the event with the given name. The name is the
+   * event name with the 'on' prefix. Returns NS_USER_DEFINED_EVENT if the
+   * event doesn't match a known event name.
    *
-   * @param aNode The node for which to remove aRange.
-   * @param aRange The range to remove.
-   * @return PR_TRUE if aRange was the last range in the list.
+   * @param aName the event name to look up
    */
-  static PRBool RemoveFromRangeList(nsINode *aNode, nsIDOMRange *aRange);
+  static PRUint32 GetEventId(nsIAtom* aName);
 
   /**
-   * Look up the list of ranges containing aNode.
+   * Used only during traversal of the XPCOM graph by the cycle
+   * collector: push a pointer to the listener manager onto the
+   * children deque, if it exists. Do nothing if there is no listener
+   * manager.
    *
-   * @param aNode The node for which to look up the range list.
-   * @return The range list if one exists.
-   */
-  static const nsVoidArray* LookupRangeList(const nsINode *aNode);
-
-  /**
-   * Remove the list of ranges containing aNode as their start- or endpoint.
+   * Crucially: does not perform any refcounting operations.
    *
-   * @param aNode The node for which to remove the range list.
+   * @param aNode The node to traverse.
+   * @param children The buffer to push a listener manager pointer into.
    */
-  static void RemoveRangeList(nsINode *aNode);
+  static void TraverseListenerManager(nsINode *aNode,
+                                      nsCycleCollectionTraversalCallback &cb);
 
   /**
    * Get the eventlistener manager for aNode. If a new eventlistener manager
@@ -783,13 +866,10 @@ public:
    * @param aCreateIfNotFound If PR_FALSE, returns a listener manager only if
    *                          one already exists.
    * @param aResult [out] Set to the eventlistener manager for aNode.
-   * @param aCreated [out] Set to PR_TRUE if a new eventlistener manager was
-   *                       created.
    */
   static nsresult GetListenerManager(nsINode *aNode,
                                      PRBool aCreateIfNotFound,
-                                     nsIEventListenerManager **aResult,
-                                     PRBool *aCreated);
+                                     nsIEventListenerManager **aResult);
 
   /**
    * Remove the eventlistener manager for aNode.
@@ -816,53 +896,6 @@ public:
                                 PRInt32 aNamespaceID);
 
   /**
-   * Associate an object aData to aKey on node aNode. If aData is null any
-   * previously registered object and UserDataHandler associated to aKey on
-   * aNode will be removed.
-   * Should only be used to implement the DOM Level 3 UserData API.
-   *
-   * @param aNode canonical nsINode pointer of the node to add aData to
-   * @param aKey the key to associate the object to
-   * @param aData the object to associate to aKey on aNode (may be nulll)
-   * @param aHandler the UserDataHandler to call when the node is
-   *                 cloned/deleted/imported/renamed (may be nulll)
-   * @param aResult [out] the previously registered object for aKey on aNode, if
-   *                      any
-   * @return whether adding the object and UserDataHandler succeeded
-   */
-  static nsresult SetUserData(nsINode *aNode, nsIAtom *aKey, nsIVariant *aData,
-                              nsIDOMUserDataHandler *aHandler,
-                              nsIVariant **aResult);
-
-  /**
-   * Call the UserDataHandler associated with aKey on node aNode.
-   * Should only be used to implement the DOM Level 3 UserData API.
-   *
-   * @param aDocument the document that contains the property table for aNode
-   * @param aOperation the type of operation that is being performed on the
-   *                   node. @see nsIDOMUserDataHandler
-   * @param aNode canonical nsINode pointer of the node to call the
-   *                UserDataHandler for
-   * @param aSource the node that aOperation is being performed on, or null if
-   *                the operation is a deletion
-   * @param aDest the newly created node if any, or null
-   */
-  static void CallUserDataHandler(nsIDocument *aDocument, PRUint16 aOperation,
-                                  const nsINode *aNode, nsIDOMNode *aSource,
-                                  nsIDOMNode *aDest);
-
-  /**
-   * Copy the objects and UserDataHandlers for node aNode from aOldDocument to
-   * the current ownerDocument of aNode.
-   * Should only be used to implement the DOM Level 3 UserData API.
-   *
-   * @param aOldDocument the old document
-   * @param aNode canonical nsINode pointer of the node to copy objects
-   *              and UserDataHandlers for
-   */
-  static void CopyUserData(nsIDocument *aOldDocument, const nsINode *aNode);
-
-  /**
    * Creates a DocumentFragment from text using a context node to resolve
    * namespaces.
    *
@@ -875,8 +908,7 @@ public:
                                            nsIDOMDocumentFragment** aReturn);
 
   /**
-   * Creates a new XML document, setting the document's container to be the
-   * docshell of whatever script is on the JSContext stack.
+   * Creates a new XML document, which is marked to be loaded as data.
    *
    * @param aNamespaceURI Namespace for the root element to create and insert in
    *                      the document. Only used if aQualifiedName is not
@@ -888,6 +920,8 @@ public:
    * @param aDocumentURI URI of the document. Must not be null.
    * @param aBaseURI Base URI of the document. Must not be null.
    * @param aPrincipal Prinicpal of the document. Must not be null.
+   * @param aScriptObject The object from which the context for event handling
+   *                      can be got.
    * @param aResult [out] The document that was created.
    */
   static nsresult CreateDocument(const nsAString& aNamespaceURI, 
@@ -896,15 +930,271 @@ public:
                                  nsIURI* aDocumentURI,
                                  nsIURI* aBaseURI,
                                  nsIPrincipal* aPrincipal,
+                                 nsIScriptGlobalObject* aScriptObject,
                                  nsIDOMDocument** aResult);
 
+  /**
+   * Sets the text contents of a node by replacing all existing children
+   * with a single text child.
+   *
+   * The function always notifies.
+   *
+   * Will reuse the first text child if one is available. Will not reuse
+   * existing cdata children.
+   *
+   * @param aContent Node to set contents of.
+   * @param aValue   Value to set contents to.
+   * @param aTryReuse When true, the function will try to reuse an existing
+   *                  textnodes rather than always creating a new one.
+   */
+  static nsresult SetNodeTextContent(nsIContent* aContent,
+                                     const nsAString& aValue,
+                                     PRBool aTryReuse);
+
+  /**
+   * Get the textual contents of a node. This is a concatenation of all
+   * textnodes that are direct or (depending on aDeep) indirect children
+   * of the node.
+   *
+   * NOTE! No serialization takes place and <br> elements
+   * are not converted into newlines. Only textnodes and cdata nodes are
+   * added to the result.
+   *
+   * @param aNode Node to get textual contents of.
+   * @param aDeep If true child elements of aNode are recursivly descended
+   *              into to find text children.
+   * @param aResult the result. Out param.
+   */
+  static void GetNodeTextContent(nsINode* aNode, PRBool aDeep,
+                                 nsAString& aResult)
+  {
+    aResult.Truncate();
+    AppendNodeTextContent(aNode, aDeep, aResult);
+  }
+
+  /**
+   * Same as GetNodeTextContents but appends the result rather than sets it.
+   */
+  static void AppendNodeTextContent(nsINode* aNode, PRBool aDeep,
+                                    nsAString& aResult);
+
+  /**
+   * Utility method that checks if a given node has any non-empty
+   * children.
+   * NOTE! This method does not descend recursivly into elements.
+   * Though it would be easy to make it so if needed
+   */
+  static PRBool HasNonEmptyTextContent(nsINode* aNode);
+
+  /**
+   * Delete strings allocated for nsContentList matches
+   */
+  static void DestroyMatchString(void* aData)
+  {
+    if (aData) {
+      nsString* matchString = static_cast<nsString*>(aData);
+      delete matchString;
+    }
+  }
+
+  /**
+   * Unbinds the content from the tree and nulls it out if it's not null.
+   */
+  static void DestroyAnonymousContent(nsCOMPtr<nsIContent>* aContent);
+
+  /**
+   * Keep script object aNewObject, held by aScriptObjectHolder, alive.
+   *
+   * NOTE: This currently only supports objects that hold script objects of one
+   *       scripting language.
+   *
+   * @param aLangID script language ID of aNewObject
+   * @param aScriptObjectHolder the object that holds aNewObject
+   * @param aTracer the tracer for aScriptObject
+   * @param aNewObject the script object to hold
+   * @param aWasHoldingObjects whether aScriptObjectHolder was already holding
+   *                           script objects (ie. HoldScriptObject was called
+   *                           on it before, without a corresponding call to
+   *                           DropScriptObjects)
+   */
+  static nsresult HoldScriptObject(PRUint32 aLangID, void* aScriptObjectHolder,
+                                   nsScriptObjectTracer* aTracer,
+                                   void* aNewObject, PRBool aWasHoldingObjects)
+  {
+    if (aLangID == nsIProgrammingLanguage::JAVASCRIPT) {
+      return aWasHoldingObjects ? NS_OK :
+                                  HoldJSObjects(aScriptObjectHolder, aTracer);
+    }
+
+    return HoldScriptObject(aLangID, aNewObject);
+  }
+
+  /**
+   * Drop any script objects that aScriptObjectHolder is holding.
+   *
+   * NOTE: This currently only supports objects that hold script objects of one
+   *       scripting language.
+   *
+   * @param aLangID script language ID of the objects that 
+   * @param aScriptObjectHolder the object that holds script object that we want
+   *                            to drop
+   * @param aTracer the tracer for aScriptObject
+   */
+  static nsresult DropScriptObjects(PRUint32 aLangID, void* aScriptObjectHolder,
+                                    nsScriptObjectTracer* aTracer)
+  {
+    if (aLangID == nsIProgrammingLanguage::JAVASCRIPT) {
+      return DropJSObjects(aScriptObjectHolder);
+    }
+
+    aTracer->Trace(aScriptObjectHolder, DropScriptObject, nsnull);
+
+    return NS_OK;
+  }
+
+  /**
+   * Keep the JS objects held by aScriptObjectHolder alive.
+   *
+   * @param aScriptObjectHolder the object that holds JS objects that we want to
+   *                            keep alive
+   * @param aTracer the tracer for aScriptObject
+   */
+  static nsresult HoldJSObjects(void* aScriptObjectHolder,
+                                nsScriptObjectTracer* aTracer);
+
+  /**
+   * Drop the JS objects held by aScriptObjectHolder.
+   *
+   * @param aScriptObjectHolder the object that holds JS objects that we want to
+   *                            drop
+   */
+  static nsresult DropJSObjects(void* aScriptObjectHolder);
+
+  /**
+   * Convert nsIContent::IME_STATUS_* to nsIKBStateControll::IME_STATUS_*
+   */
+  static PRUint32 GetKBStateControlStatusFromIMEStatus(PRUint32 aState);
+
+  /*
+   * Notify when the first XUL menu is opened and when the all XUL menus are
+   * closed. At opening, aInstalling should be TRUE, otherwise, it should be
+   * FALSE.
+   */
+  static void NotifyInstalledMenuKeyboardListener(PRBool aInstalling);
+
+  /**
+   * Do security checks before loading a resource. Does the following checks:
+   *   nsIScriptSecurityManager::CheckLoadURIWithPrincipal
+   *   NS_CheckContentLoadPolicy
+   *   nsIScriptSecurityManager::CheckSameOriginURI
+   *
+   * You will still need to do at least SameOrigin checks before on redirects.
+   *
+   * @param aURIToLoad         URI that is getting loaded.
+   * @param aLoadingPrincipal  Principal of the resource that is initiating
+   *                           the load
+   * @param aCheckLoadFlags    Flags to be passed to
+   *                           nsIScriptSecurityManager::CheckLoadURIWithPrincipal
+   *                           NOTE: If this contains ALLOW_CHROME the
+   *                                 CheckSameOriginURI check will be skipped if
+   *                                 aURIToLoad is a chrome uri.
+   * @param aAllowData         Set to true to skip CheckSameOriginURI check when
+                               aURIToLoad is a data uri.
+   * @param aContentPolicyType Type     \
+   * @param aContext           Context   |- to be passed to
+   * @param aMimeGuess         Mimetype  |      NS_CheckContentLoadPolicy
+   * @param aExtra             Extra    /
+   */
+  static nsresult CheckSecurityBeforeLoad(nsIURI* aURIToLoad,
+                                          nsIPrincipal* aLoadingPrincipal,
+                                          PRUint32 aCheckLoadFlags,
+                                          PRBool aAllowData,
+                                          PRUint32 aContentPolicyType,
+                                          nsISupports* aContext,
+                                          const nsACString& aMimeGuess = EmptyCString(),
+                                          nsISupports* aExtra = nsnull);
+
+  /**
+   * Trigger a link with uri aLinkURI. If aClick is false, this triggers a
+   * mouseover on the link, otherwise it triggers a load after doing a
+   * security check using aContent's principal.
+   *
+   * @param aContent the node on which a link was triggered.
+   * @param aPresContext the pres context, must be non-null.
+   * @param aLinkURI the URI of the link, must be non-null.
+   * @param aTargetSpec the target (like target=, may be empty).
+   * @param aClick whether this was a click or not (if false, this method
+   *               assumes you just hovered over the link).
+   * @param aIsUserTriggered whether the user triggered the link. This would be
+   *                         false for loads from auto XLinks or from the
+   *                         click() method if we ever implement it.
+   */
+  static void TriggerLink(nsIContent *aContent, nsPresContext *aPresContext,
+                          nsIURI *aLinkURI, const nsString& aTargetSpec,
+                          PRBool aClick, PRBool aIsUserTriggered);
+
+  /**
+   * Return top-level widget in the parent chain.
+   */
+  static nsIWidget* GetTopLevelWidget(nsIWidget* aWidget);
+
+  /**
+   * Return the localized ellipsis for UI.
+   */
+  static const nsDependentString GetLocalizedEllipsis();
+
+  /**
+   * The routine GetNativeEvent is used to fill nsNativeKeyEvent
+   * nsNativeKeyEvent. It's also used in DOMEventToNativeKeyEvent.
+   * See bug 406407 for details.
+   */
+  static nsEvent* GetNativeEvent(nsIDOMEvent* aDOMEvent);
+  static PRBool DOMEventToNativeKeyEvent(nsIDOMEvent* aDOMEvent,
+                                         nsNativeKeyEvent* aNativeEvent,
+                                         PRBool aGetCharCode);
+
+  /**
+   * Hide any XUL popups associated with aDocument, including any documents
+   * displayed in child frames.
+   */
+  static void HidePopupsInDocument(nsIDocument* aDocument);
+
+  /**
+   * Get the application manifest URI for this context.  The manifest URI
+   * is specified in the manifest= attribute of the root element of the
+   * toplevel window.
+   *
+   * @param aWindow The context to check.
+   * @param aURI The manifest URI.
+   */
+  static void GetOfflineAppManifest(nsIDOMWindow *aWindow, nsIURI **aURI);
+
+  /**
+   * Check whether an application should be allowed to use offline APIs.
+   */
+  static PRBool OfflineAppAllowed(nsIURI *aURI);
+
 private:
+
+  static PRBool InitializeEventTable();
+
   static nsresult doReparentContentWrapper(nsIContent *aChild,
                                            JSContext *cx,
                                            JSObject *aOldGlobal,
-                                           JSObject *aNewGlobal);
+                                           JSObject *aNewGlobal,
+                                           nsIDocument *aOldDocument,
+                                           nsIDocument *aNewDocument);
 
   static nsresult EnsureStringBundle(PropertiesFile aFile);
+
+  static nsIDOMScriptObjectFactory *GetDOMScriptObjectFactory();
+
+  static nsresult HoldScriptObject(PRUint32 aLangID, void* aObject);
+  PR_STATIC_CALLBACK(void) DropScriptObject(PRUint32 aLangID, void *aObject,
+                                            void *aClosure);
+
+  static PRBool CanCallerAccess(nsIPrincipal* aSubjectPrincipal,
+                                nsIPrincipal* aPrincipal);
 
   static nsIDOMScriptObjectFactory *sDOMScriptObjectFactory;
 
@@ -932,6 +1222,8 @@ private:
 
   static nsIConsoleService* sConsoleService;
 
+  static nsDataHashtable<nsISupportsHashKey, EventNameMapping>* sEventTable;
+
   static nsIStringBundleService* sStringBundleService;
   static nsIStringBundle* sStringBundles[PropertiesFile_COUNT];
 
@@ -940,27 +1232,38 @@ private:
 
   static nsILineBreaker* sLineBreaker;
   static nsIWordBreaker* sWordBreaker;
+  static nsICaseConversion* sCaseConv;
 
   // Holds pointers to nsISupports* that should be released at shutdown
   static nsVoidArray* sPtrsToPtrsToRelease;
 
-  // For now, we don't want to automatically clean this up in Shutdown(), since
-  // consumers might unfortunately end up wanting to use it after that
-  static nsIJSRuntimeService* sJSRuntimeService;
-  static JSRuntime* sScriptRuntime;
-  static PRInt32 sScriptRootCount;
-  
+  static nsIScriptRuntime* sScriptRuntimes[NS_STID_ARRAY_UBOUND];
+  static PRInt32 sScriptRootCount[NS_STID_ARRAY_UBOUND];
+  static PRUint32 sJSGCThingRootCount;
+
+#ifdef IBMBIDI
+  static nsIBidiKeyboard* sBidiKeyboard;
+#endif
+
   static PRBool sInitialized;
 };
+
+#define NS_HOLD_JS_OBJECTS(obj, clazz)                                         \
+  nsContentUtils::HoldJSObjects(NS_CYCLE_COLLECTION_UPCAST(obj, clazz),        \
+                                &NS_CYCLE_COLLECTION_NAME(clazz))
+
+#define NS_DROP_JS_OBJECTS(obj, clazz)                                         \
+  nsContentUtils::DropJSObjects(NS_CYCLE_COLLECTION_UPCAST(obj, clazz))
 
 
 class nsCxPusher
 {
 public:
-  nsCxPusher(nsISupports *aCurrentTarget);
-  ~nsCxPusher();
+  nsCxPusher();
+  ~nsCxPusher(); // Calls Pop();
 
-  void Push(nsISupports *aCurrentTarget);
+  // Returns PR_FALSE if something erroneous happened.
+  PRBool Push(nsISupports *aCurrentTarget);
   void Pop();
 
 private:
@@ -975,33 +1278,38 @@ public:
   nsAutoGCRoot(jsval* aPtr, nsresult* aResult) :
     mPtr(aPtr)
   {
-    mResult = *aResult =
-      nsContentUtils::AddJSGCRoot(aPtr, "nsAutoGCRoot");
+    mResult = *aResult = AddJSGCRoot(aPtr, "nsAutoGCRoot");
   }
 
   // aPtr should be the pointer to the JSObject* we want to protect
   nsAutoGCRoot(JSObject** aPtr, nsresult* aResult) :
     mPtr(aPtr)
   {
-    mResult = *aResult =
-      nsContentUtils::AddJSGCRoot(aPtr, "nsAutoGCRoot");
+    mResult = *aResult = AddJSGCRoot(aPtr, "nsAutoGCRoot");
   }
 
   // aPtr should be the pointer to the thing we want to protect
   nsAutoGCRoot(void* aPtr, nsresult* aResult) :
     mPtr(aPtr)
   {
-    mResult = *aResult =
-      nsContentUtils::AddJSGCRoot(aPtr, "nsAutoGCRoot");
+    mResult = *aResult = AddJSGCRoot(aPtr, "nsAutoGCRoot");
   }
 
   ~nsAutoGCRoot() {
     if (NS_SUCCEEDED(mResult)) {
-      nsContentUtils::RemoveJSGCRoot(mPtr);
+      RemoveJSGCRoot(mPtr);
     }
   }
 
+  static void Shutdown();
+
 private:
+  static nsresult AddJSGCRoot(void *aPtr, const char* aName);
+  static nsresult RemoveJSGCRoot(void *aPtr);
+
+  static nsIJSRuntimeService* sJSRuntimeService;
+  static JSRuntime* sJSScriptRuntime;
+
   void* mPtr;
   nsresult mResult;
 };
@@ -1014,18 +1322,11 @@ private:
   (ptr, result)
 
 #define NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(_class)                      \
-  if (aIID.Equals(NS_GET_IID(nsIClassInfo))) {                                \
-    foundInterface =                                                          \
-      nsContentUtils::GetClassInfoInstance(eDOMClassInfo_##_class##_id);      \
-    if (!foundInterface) {                                                    \
-      *aInstancePtr = nsnull;                                                 \
-      return NS_ERROR_OUT_OF_MEMORY;                                          \
-    }                                                                         \
-  } else
+  NS_DOM_INTERFACE_MAP_ENTRY_CLASSINFO(_class)
 
 #define NS_INTERFACE_MAP_ENTRY_TEAROFF(_interface, _allocator)                \
   if (aIID.Equals(NS_GET_IID(_interface))) {                                  \
-    foundInterface = NS_STATIC_CAST(_interface *, _allocator);                \
+    foundInterface = static_cast<_interface *>(_allocator);                   \
     if (!foundInterface) {                                                    \
       *aInstancePtr = nsnull;                                                 \
       return NS_ERROR_OUT_OF_MEMORY;                                          \

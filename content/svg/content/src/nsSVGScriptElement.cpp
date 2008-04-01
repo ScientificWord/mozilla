@@ -38,7 +38,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsSVGElement.h"
-#include "nsSVGAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsIDOMSVGScriptElement.h"
 #include "nsIDOMSVGURIReference.h"
 #include "nsCOMPtr.h"
@@ -46,22 +46,15 @@
 #include "nsIDocument.h"
 #include "nsIURI.h"
 #include "nsNetUtil.h"
-#include "nsIScriptElement.h"
-#include "nsIScriptLoader.h"
-#include "nsIScriptLoaderObserver.h"
-#include "nsIPresShell.h"
-#include "nsPresContext.h"
-#include "nsGUIEvent.h"
+#include "nsScriptElement.h"
 #include "nsIDOMText.h"
-#include "nsEventDispatcher.h"
 
 typedef nsSVGElement nsSVGScriptElementBase;
 
 class nsSVGScriptElement : public nsSVGScriptElementBase,
                            public nsIDOMSVGScriptElement, 
                            public nsIDOMSVGURIReference,
-                           public nsIScriptLoaderObserver,
-                           public nsIScriptElement
+                           public nsScriptElement
 {
 protected:
   friend nsresult NS_NewSVGScriptElement(nsIContent **aResult,
@@ -75,11 +68,10 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
   NS_DECL_NSIDOMSVGSCRIPTELEMENT
   NS_DECL_NSIDOMSVGURIREFERENCE
-  NS_DECL_NSISCRIPTLOADEROBSERVER
 
   // xxx If xpcom allowed virtual inheritance we wouldn't need to
   // forward here :-(
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGScriptElementBase::)
+  NS_FORWARD_NSIDOMNODE(nsSVGScriptElementBase::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGScriptElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGScriptElementBase::)
 
@@ -88,39 +80,23 @@ public:
   virtual already_AddRefed<nsIURI> GetScriptURI();
   virtual void GetScriptText(nsAString& text);
   virtual void GetScriptCharset(nsAString& charset); 
-  virtual void SetScriptLineNumber(PRUint32 aLineNumber);
-  virtual PRUint32 GetScriptLineNumber();
-  virtual void SetIsMalformed();
-  virtual PRBool IsMalformed();
+
+  // nsScriptElement
+  virtual PRBool HasScriptContent();
 
   // nsISVGValueObserver specializations:
   NS_IMETHOD DidModifySVGObservable (nsISVGValue* observable,
                                      nsISVGValue::modificationType aModType);
 
   // nsIContent specializations:
+  virtual nsresult DoneAddingChildren(PRBool aHaveNotified);
   virtual nsresult BindToTree(nsIDocument* aDocument, nsIContent* aParent,
                               nsIContent* aBindingParent,
                               PRBool aCompileEventHandlers);
-  virtual nsresult InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
-                                 PRBool aNotify);
-  virtual nsresult AppendChildTo(nsIContent* aKid, PRBool aNotify);
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
     
 protected:
-  /**
-   * Processes the script if it's in the document-tree and links to or
-   * contains a script. Once it has been evaluated there is no way to make it
-   * reevaluate the script, you'll have to create a new element. This also means
-   * that when adding a href attribute to an element that already contains an
-   * inline script, the script referenced by the src attribute will not be
-   * loaded.
-   *
-   * In order to be able to use multiple childNodes, or to use the
-   * fallback-mechanism of using both inline script and linked script you have
-   * to add all attributes and childNodes before adding the element to the
-   * document-tree.
-   */
-  void MaybeProcessScript();
-  
   nsCOMPtr<nsIDOMSVGAnimatedString> mHref;
   PRUint32 mLineNumber;
   PRPackedBool mIsEvaluated;
@@ -143,6 +119,7 @@ NS_INTERFACE_MAP_BEGIN(nsSVGScriptElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGURIReference)
   NS_INTERFACE_MAP_ENTRY(nsIScriptLoaderObserver)
   NS_INTERFACE_MAP_ENTRY(nsIScriptElement)
+  NS_INTERFACE_MAP_ENTRY(nsIMutationObserver)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(SVGScriptElement)
 NS_INTERFACE_MAP_END_INHERITING(nsSVGScriptElementBase)
 
@@ -155,10 +132,9 @@ nsSVGScriptElement::nsSVGScriptElement(nsINodeInfo *aNodeInfo)
     mIsEvaluated(PR_FALSE),
     mEvaluating(PR_FALSE)
 {
-
+  AddMutationObserver(this);
 }
 
-  
 nsresult
 nsSVGScriptElement::Init()
 {
@@ -171,7 +147,7 @@ nsSVGScriptElement::Init()
   {
     rv = NS_NewSVGAnimatedString(getter_AddRefs(mHref));
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = AddMappedSVGValue(nsSVGAtoms::href, mHref, kNameSpaceID_XLink);
+    rv = AddMappedSVGValue(nsGkAtoms::href, mHref, kNameSpaceID_XLink);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
@@ -181,7 +157,7 @@ nsSVGScriptElement::Init()
 //----------------------------------------------------------------------
 // nsIDOMNode methods
 
-NS_IMPL_DOM_CLONENODE_WITH_INIT(nsSVGScriptElement)
+NS_IMPL_ELEMENT_CLONE_WITH_INIT(nsSVGScriptElement)
 
 //----------------------------------------------------------------------
 // nsIDOMSVGScriptElement methods
@@ -190,7 +166,7 @@ NS_IMPL_DOM_CLONENODE_WITH_INIT(nsSVGScriptElement)
 NS_IMETHODIMP
 nsSVGScriptElement::GetType(nsAString & aType)
 {
-  GetAttr(kNameSpaceID_None, nsSVGAtoms::type, aType);
+  GetAttr(kNameSpaceID_None, nsGkAtoms::type, aType);
 
   return NS_OK;
 }
@@ -211,83 +187,6 @@ nsSVGScriptElement::GetHref(nsIDOMSVGAnimatedString * *aHref)
   *aHref = mHref;
   NS_IF_ADDREF(*aHref);
   return NS_OK;
-}
-
-//----------------------------------------------------------------------
-// nsIScriptLoaderObserver methods
-
-// variation of this code in nsHTMLScriptElement - check if changes
-// need to be transfered when modifying
-
-/* void scriptAvailable (in nsresult aResult, in nsIScriptElement aElement , in nsIURI aURI, in PRInt32 aLineNo, in PRUint32 aScriptLength, [size_is (aScriptLength)] in wstring aScript); */
-NS_IMETHODIMP
-nsSVGScriptElement::ScriptAvailable(nsresult aResult,
-                                    nsIScriptElement *aElement,
-                                    PRBool aIsInline,
-                                    PRBool aWasPending,
-                                    nsIURI *aURI,
-                                    PRInt32 aLineNo,
-                                    const nsAString& aScript)
-{
-  if (!aIsInline && NS_FAILED(aResult)) {
-    nsCOMPtr<nsPresContext> presContext;
-    nsIDocument* doc = GetCurrentDoc();
-    if (doc) {
-      nsIPresShell *presShell = doc->GetShellAt(0);
-      if (presShell)
-        presContext = presShell->GetPresContext();
-    }
-
-    nsEventStatus status = nsEventStatus_eIgnore;
-    nsScriptErrorEvent event(PR_TRUE, NS_SCRIPT_ERROR);
-
-    event.lineNr = aLineNo;
-
-    NS_NAMED_LITERAL_STRING(errorString, "Error loading script");
-    event.errorMsg = errorString.get();
-
-    nsCAutoString spec;
-    aURI->GetSpec(spec);
-
-    NS_ConvertUTF8toUTF16 fileName(spec);
-    event.fileName = fileName.get();
-
-    nsEventDispatcher::Dispatch(NS_STATIC_CAST(nsIContent*, this), presContext,
-                                &event, nsnull, &status);
-  }
-
-  return NS_OK;
-}
-
-// variation of this code in nsHTMLScriptElement - check if changes
-// need to be transfered when modifying
-
-/* void scriptEvaluated (in nsresult aResult, in nsIScriptElement aElement); */
-NS_IMETHODIMP
-nsSVGScriptElement::ScriptEvaluated(nsresult aResult,
-                                    nsIScriptElement *aElement,
-                                    PRBool aIsInline,
-                                    PRBool aWasPending)
-{
-  nsresult rv = NS_OK;
-  if (!aIsInline) {
-    nsCOMPtr<nsPresContext> presContext;
-    nsIDocument* doc = GetCurrentDoc();
-    if (doc) {
-      nsIPresShell *presShell = doc->GetShellAt(0);
-      if (presShell)
-        presContext = presShell->GetPresContext();
-    }
-
-    nsEventStatus status = nsEventStatus_eIgnore;
-    nsEvent event(PR_TRUE,
-                  NS_SUCCEEDED(aResult) ? NS_SCRIPT_LOAD : NS_SCRIPT_ERROR);
-    event.flags |= NS_EVENT_FLAG_CANT_BUBBLE;
-    nsEventDispatcher::Dispatch(NS_STATIC_CAST(nsIContent*, this),
-                                presContext, &event, nsnull, &status);
-  }
-
-  return rv;
 }
 
 //----------------------------------------------------------------------
@@ -318,7 +217,7 @@ nsSVGScriptElement::GetScriptURI()
 void
 nsSVGScriptElement::GetScriptText(nsAString& text)
 {
-  GetContentsAsText(text);
+  nsContentUtils::GetNodeTextContent(this, PR_FALSE, text);
 }
 
 void
@@ -327,28 +226,15 @@ nsSVGScriptElement::GetScriptCharset(nsAString& charset)
   charset.Truncate();
 }
 
-void 
-nsSVGScriptElement::SetScriptLineNumber(PRUint32 aLineNumber)
-{
-  mLineNumber = aLineNumber;
-}
-
-PRUint32
-nsSVGScriptElement::GetScriptLineNumber()
-{
-  return mLineNumber;
-}
-
-// Note: The following two methods don't apply to us.
-void
-nsSVGScriptElement::SetIsMalformed()
-{
-}
+//----------------------------------------------------------------------
+// nsScriptElement methods
 
 PRBool
-nsSVGScriptElement::IsMalformed()
+nsSVGScriptElement::HasScriptContent()
 {
-  return PR_FALSE;
+  nsAutoString src;
+  mHref->GetAnimVal(src);
+  return !src.IsEmpty() || nsContentUtils::HasNonEmptyTextContent(this);
 }
 
 //----------------------------------------------------------------------
@@ -371,6 +257,13 @@ nsSVGScriptElement::DidModifySVGObservable(nsISVGValue* aObservable,
 // nsIContent methods
 
 nsresult
+nsSVGScriptElement::DoneAddingChildren(PRBool aHaveNotified)
+{
+  mDoneAddingChildren = PR_TRUE;
+  return MaybeProcessScript();
+}
+
+nsresult
 nsSVGScriptElement::BindToTree(nsIDocument* aDocument, nsIContent* aParent,
                                nsIContent* aBindingParent,
                                PRBool aCompileEventHandlers)
@@ -384,58 +277,5 @@ nsSVGScriptElement::BindToTree(nsIDocument* aDocument, nsIContent* aParent,
     MaybeProcessScript();
   }
 
-  return rv;
-}
-
-nsresult
-nsSVGScriptElement::InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
-                                  PRBool aNotify)
-{
-  nsresult rv = nsSVGScriptElementBase::InsertChildAt(aKid, aIndex, aNotify);
-  if (NS_SUCCEEDED(rv) && aNotify) {
-    MaybeProcessScript();
-  }
-
-  return rv;
-}
-
-nsresult
-nsSVGScriptElement::AppendChildTo(nsIContent* aKid, PRBool aNotify)
-{
-  nsresult rv = nsSVGScriptElementBase::AppendChildTo(aKid, aNotify);
-  if (NS_SUCCEEDED(rv) && aNotify) {
-    MaybeProcessScript();
-  }
-
-  return rv;
-}
-
-//----------------------------------------------------------------------
-// implementation helpers
-
-// variation of this code in nsHTMLScriptElement - check if changes
-// need to be transfered when modifying
-void
-nsSVGScriptElement::MaybeProcessScript()
-{
-  if (mIsEvaluated || mEvaluating || !IsInDoc()) {
-    return;
-  }
-
-  // We'll always call this to make sure that
-  // ScriptAvailable/ScriptEvaluated gets called. See bug 153600
-  nsresult rv = NS_OK;
-  nsCOMPtr<nsIScriptLoader> loader = GetOwnerDoc()->GetScriptLoader();
-  if (loader) {
-    mEvaluating = PR_TRUE;
-    rv = loader->ProcessScriptElement(this, this);
-    mEvaluating = PR_FALSE;
-  }
-
-  // But we'll only set mIsEvaluated if we did really load or evaluate
-  // something
-  if (HasAttr(kNameSpaceID_XLink, nsSVGAtoms::href) ||
-      mAttrsAndChildren.ChildCount()) {
-    mIsEvaluated = PR_TRUE;
-  }
+  return NS_OK;
 }

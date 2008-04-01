@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *   Blake Kaplan <mrbkap@gmail.com>
+ *   Robert Sayre <sayrer@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -44,14 +45,22 @@
 #include "nsIParser.h"
 #include "nsIDocument.h"
 #include "nsIDOMDocumentFragment.h"
-#include "nsIXMLContent.h"
-#include "nsHTMLAtoms.h"
+#include "nsIContent.h"
+#include "nsGkAtoms.h"
 #include "nsINodeInfo.h"
 #include "nsNodeInfoManager.h"
 #include "nsContentCreatorFunctions.h"
 #include "nsDOMError.h"
 #include "nsIConsoleService.h"
+#include "nsIScriptError.h"
 #include "nsServiceManagerUtils.h"
+#include "nsContentUtils.h"
+#include "nsIScriptSecurityManager.h"
+#include "nsNetUtil.h"
+#include "nsTHashtable.h"
+#include "nsHashKeys.h"
+#include "nsTArray.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsXMLFragmentContentSink : public nsXMLContentSink,
                                  public nsIFragmentContentSink
@@ -60,8 +69,12 @@ public:
   nsXMLFragmentContentSink(PRBool aAllContent = PR_FALSE);
   virtual ~nsXMLFragmentContentSink();
 
+  NS_DECL_AND_IMPL_ZEROING_OPERATOR_NEW
+
   // nsISupports
   NS_DECL_ISUPPORTS_INHERITED
+  NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED_NO_UNLINK(nsXMLFragmentContentSink,
+                                                     nsXMLContentSink)
 
   // nsIExpatSink
   NS_IMETHOD HandleDoctypeDecl(const nsAString & aSubset, 
@@ -76,8 +89,8 @@ public:
                                   PRInt32 aStandalone);
   NS_IMETHOD ReportError(const PRUnichar* aErrorText, 
                          const PRUnichar* aSourceText,
-                         PRInt32 aLineNumber,
-                         PRInt32 aColumnNumber);
+                         nsIScriptError *aError,
+                         PRBool *_retval);
 
   // nsIContentSink
   NS_IMETHOD WillBuildModel(void);
@@ -102,9 +115,9 @@ protected:
   virtual nsresult CreateElement(const PRUnichar** aAtts, PRUint32 aAttsCount,
                                  nsINodeInfo* aNodeInfo, PRUint32 aLineNumber,
                                  nsIContent** aResult, PRBool* aAppendContent);
-  virtual nsresult CloseElement(nsIContent* aContent, nsIContent* aParent,
-                                PRBool* aAppendContent);
-  void MaybeStartLayout();
+  virtual nsresult CloseElement(nsIContent* aContent);
+
+  virtual void MaybeStartLayout(PRBool aIgnorePendingSheets);
 
   // nsContentSink overrides
   virtual nsresult ProcessStyleLink(nsIContent* aElement,
@@ -159,9 +172,20 @@ nsXMLFragmentContentSink::~nsXMLFragmentContentSink()
 {
 }
 
-NS_IMPL_ISUPPORTS_INHERITED1(nsXMLFragmentContentSink,
-                             nsXMLContentSink,
-                             nsIFragmentContentSink)
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION_INHERITED(nsXMLFragmentContentSink)
+  NS_INTERFACE_MAP_ENTRY(nsIFragmentContentSink)
+NS_INTERFACE_MAP_END_INHERITING(nsXMLContentSink)
+
+NS_IMPL_ADDREF_INHERITED(nsXMLFragmentContentSink, nsXMLContentSink)
+NS_IMPL_RELEASE_INHERITED(nsXMLFragmentContentSink, nsXMLContentSink)
+
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsXMLFragmentContentSink)
+
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_INHERITED(nsXMLFragmentContentSink,
+                                                  nsXMLContentSink)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mTargetDocument)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mRoot)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
 
 NS_IMETHODIMP 
 nsXMLFragmentContentSink::WillBuildModel(void)
@@ -237,10 +261,7 @@ nsXMLFragmentContentSink::CreateElement(const PRUnichar** aAtts, PRUint32 aAttsC
                                 aNodeInfo, aLineNumber,
                                 aResult, aAppendContent);
 
-  // Make sure that scripts are added immediately, not on close.
-  *aAppendContent = PR_TRUE;
-
-  // However, when we aren't grabbing all of the content we, never open a doc
+  // When we aren't grabbing all of the content we, never open a doc
   // element, we run into trouble on the first element, so we don't append,
   // and simply push this onto the content stack.
   if (!mAllContent && mContentStack.Length() == 0) {
@@ -251,18 +272,14 @@ nsXMLFragmentContentSink::CreateElement(const PRUnichar** aAtts, PRUint32 aAttsC
 }
 
 nsresult
-nsXMLFragmentContentSink::CloseElement(nsIContent* aContent,
-                                       nsIContent* aParent,
-                                       PRBool* aAppendContent)
+nsXMLFragmentContentSink::CloseElement(nsIContent* aContent)
 {
   // don't do fancy stuff in nsXMLContentSink
-  *aAppendContent = PR_FALSE;
-
   return NS_OK;
 }
 
 void
-nsXMLFragmentContentSink::MaybeStartLayout()
+nsXMLFragmentContentSink::MaybeStartLayout(PRBool aIgnorePendingSheets)
 {
   return;
 }
@@ -277,6 +294,7 @@ nsXMLFragmentContentSink::HandleDoctypeDecl(const nsAString & aSubset,
                                             nsISupports* aCatalogData)
 {
   NS_NOTREACHED("fragments shouldn't have doctype declarations");
+
   return NS_OK;
 }
 
@@ -313,17 +331,15 @@ nsXMLFragmentContentSink::HandleXMLDeclaration(const PRUnichar *aVersion,
 NS_IMETHODIMP
 nsXMLFragmentContentSink::ReportError(const PRUnichar* aErrorText, 
                                       const PRUnichar* aSourceText,
-                                      PRInt32 aLineNumber,
-                                      PRInt32 aColumnNumber)
+                                      nsIScriptError *aError,
+                                      PRBool *_retval)
 {
-  mParseError = PR_TRUE;
-  // The following error reporting is copied from nsXBLContentSink::ReportError()
+  NS_PRECONDITION(aError && aSourceText && aErrorText, "Check arguments!!!");
 
-  nsCOMPtr<nsIConsoleService> consoleService =
-    do_GetService(NS_CONSOLESERVICE_CONTRACTID);
-  if (consoleService) {
-    consoleService->LogStringMessage(aErrorText);
-  }
+  // The expat driver should report the error.
+  *_retval = PR_TRUE;
+
+  mParseError = PR_TRUE;
 
 #ifdef DEBUG
   // Report the error to stderr.
@@ -435,7 +451,7 @@ nsXMLFragmentContentSink::DidBuildContent()
 
   return NS_OK;
 }
- 
+
 NS_IMETHODIMP
 nsXMLFragmentContentSink::DidProcessATokenImpl()
 {
@@ -449,3 +465,316 @@ nsXMLFragmentContentSink::IgnoreFirstContainer()
   return NS_ERROR_FAILURE;
 }
 
+
+// nsXHTMLParanoidFragmentSink
+
+// Find the whitelist of allowed elements and attributes in
+// nsContentSink.h We share it with nsHTMLParanoidFragmentSink
+
+class nsXHTMLParanoidFragmentSink : public nsXMLFragmentContentSink
+{
+public:
+  nsXHTMLParanoidFragmentSink();
+
+  static nsresult Init();
+  static void Cleanup();
+
+  // nsISupports
+  NS_DECL_ISUPPORTS_INHERITED
+  
+  // nsXMLContentSink
+  nsresult AddAttributes(const PRUnichar** aNode, nsIContent* aContent);
+
+  // nsIExpatSink
+  NS_IMETHOD HandleStartElement(const PRUnichar *aName,
+                                const PRUnichar **aAtts,
+                                PRUint32 aAttsCount, PRInt32 aIndex,
+                                PRUint32 aLineNumber);
+    
+  NS_IMETHOD HandleEndElement(const PRUnichar *aName);
+
+  NS_IMETHOD HandleComment(const PRUnichar *aName);
+
+  NS_IMETHOD HandleProcessingInstruction(const PRUnichar *aTarget, 
+                                         const PRUnichar *aData);
+
+  NS_IMETHOD HandleCDataSection(const PRUnichar *aData, 
+                                PRUint32 aLength);
+
+  NS_IMETHOD HandleCharacterData(const PRUnichar *aData,
+                                 PRUint32 aLength);
+protected:
+  PRUint32 mSkipLevel; // used when we descend into <style> or <script>
+  // Use nsTHashTable as a hash set for our whitelists
+  static nsTHashtable<nsISupportsHashKey>* sAllowedTags;
+  static nsTHashtable<nsISupportsHashKey>* sAllowedAttributes;
+};
+
+nsTHashtable<nsISupportsHashKey>* nsXHTMLParanoidFragmentSink::sAllowedTags;
+nsTHashtable<nsISupportsHashKey>* nsXHTMLParanoidFragmentSink::sAllowedAttributes;
+
+nsXHTMLParanoidFragmentSink::nsXHTMLParanoidFragmentSink():
+  nsXMLFragmentContentSink(PR_FALSE), mSkipLevel(0)
+{
+}
+
+nsresult
+nsXHTMLParanoidFragmentSink::Init()
+{
+  nsresult rv = NS_ERROR_FAILURE;
+  
+  if (sAllowedTags) {
+    return NS_OK;
+  }
+
+  sAllowedTags = new nsTHashtable<nsISupportsHashKey>();
+  if (sAllowedTags) {
+    rv = sAllowedTags->Init(80);
+    for (PRUint32 i = 0; kDefaultAllowedTags[i] && NS_SUCCEEDED(rv); i++) {
+      if (!sAllowedTags->PutEntry(*kDefaultAllowedTags[i])) {
+        rv = NS_ERROR_OUT_OF_MEMORY;
+      }
+    }
+  }
+
+  sAllowedAttributes = new nsTHashtable<nsISupportsHashKey>();
+  if (sAllowedAttributes && NS_SUCCEEDED(rv)) {
+    rv = sAllowedAttributes->Init(80);
+    for (PRUint32 i = 0;
+         kDefaultAllowedAttributes[i] && NS_SUCCEEDED(rv); i++) {
+      if (!sAllowedAttributes->PutEntry(*kDefaultAllowedAttributes[i])) {
+        rv = NS_ERROR_OUT_OF_MEMORY;
+      }
+    }
+  }
+
+  if (NS_FAILED(rv)) {
+    NS_WARNING("Failed to populate whitelist hash sets");
+    Cleanup();
+  }
+
+  return rv;
+}
+
+void
+nsXHTMLParanoidFragmentSink::Cleanup()
+{
+  if (sAllowedTags) {
+    delete sAllowedTags;
+    sAllowedTags = nsnull;
+  }
+  
+  if (sAllowedAttributes) {
+    delete sAllowedAttributes;
+    sAllowedAttributes = nsnull;
+  }
+}
+
+nsresult
+NS_NewXHTMLParanoidFragmentSink(nsIFragmentContentSink** aResult)
+{
+  nsXHTMLParanoidFragmentSink* it = new nsXHTMLParanoidFragmentSink();
+  if (!it) {
+    return NS_ERROR_OUT_OF_MEMORY;
+  }
+  nsresult rv = nsXHTMLParanoidFragmentSink::Init();
+  NS_ENSURE_SUCCESS(rv, rv);
+  NS_ADDREF(*aResult = it);
+  
+  return NS_OK;
+}
+
+void
+NS_XHTMLParanoidFragmentSinkShutdown()
+{
+  nsXHTMLParanoidFragmentSink::Cleanup();
+}
+
+NS_IMPL_ISUPPORTS_INHERITED0(nsXHTMLParanoidFragmentSink,
+                             nsXMLFragmentContentSink)
+
+nsresult
+nsXHTMLParanoidFragmentSink::AddAttributes(const PRUnichar** aAtts,
+                                           nsIContent* aContent)
+{
+  nsresult rv;
+
+  // use this to check for safe URIs in the few attributes that allow them
+  nsIScriptSecurityManager* secMan = nsContentUtils::GetSecurityManager();
+  nsCOMPtr<nsIURI> baseURI;
+  PRUint32 flags = nsIScriptSecurityManager::DISALLOW_INHERIT_PRINCIPAL;
+
+  // scrub URI attributes that point at dangerous content
+  // We have to do this here, because this is where we have a base URI,
+  // but we can't do all the scrubbing here, because other parts of the
+  // code get the attributes before this method is called.
+  nsTArray<const PRUnichar *> allowedAttrs;
+  PRInt32 nameSpaceID;
+  nsCOMPtr<nsIAtom> prefix, localName;
+  nsCOMPtr<nsINodeInfo> nodeInfo;
+  while (*aAtts) {
+    nsContentUtils::SplitExpatName(aAtts[0], getter_AddRefs(prefix),
+                                   getter_AddRefs(localName), &nameSpaceID);
+    rv = mNodeInfoManager->GetNodeInfo(localName, prefix, nameSpaceID,
+                                       getter_AddRefs(nodeInfo));
+    NS_ENSURE_SUCCESS(rv, rv);
+    // check the attributes we allow that contain URIs
+    if (IsAttrURI(nodeInfo->NameAtom())) {
+      if (!aAtts[1])
+        rv = NS_ERROR_FAILURE;
+      if (!baseURI)
+        baseURI = aContent->GetBaseURI();
+      nsCOMPtr<nsIURI> attrURI;
+      rv = NS_NewURI(getter_AddRefs(attrURI), nsDependentString(aAtts[1]),
+                     nsnull, baseURI);
+      if (NS_SUCCEEDED(rv)) {
+        rv = secMan->CheckLoadURIWithPrincipal(mTargetDocument->NodePrincipal(),
+                                               attrURI, flags);
+      }
+    }
+
+    if (NS_SUCCEEDED(rv)) {
+      allowedAttrs.AppendElement(aAtts[0]);
+      allowedAttrs.AppendElement(aAtts[1]);
+    }
+
+    aAtts += 2;
+  }
+  allowedAttrs.AppendElement((const PRUnichar*) nsnull);
+
+  return nsXMLFragmentContentSink::AddAttributes(allowedAttrs.Elements(),
+                                                 aContent);
+}
+
+NS_IMETHODIMP
+nsXHTMLParanoidFragmentSink::HandleStartElement(const PRUnichar *aName,
+                                                const PRUnichar **aAtts,
+                                                PRUint32 aAttsCount,
+                                                PRInt32 aIndex,
+                                                PRUint32 aLineNumber)
+{
+  nsresult rv;
+  PRInt32 nameSpaceID;
+  nsCOMPtr<nsIAtom> prefix, localName;
+  nsContentUtils::SplitExpatName(aName, getter_AddRefs(prefix),
+                                 getter_AddRefs(localName), &nameSpaceID);
+  
+  // If the element is not in the XHTML namespace, bounce it
+  if (nameSpaceID != kNameSpaceID_XHTML)
+    return NS_OK;
+  
+  nsCOMPtr<nsINodeInfo> nodeInfo;
+  rv = mNodeInfoManager->GetNodeInfo(localName, prefix, nameSpaceID,
+                                     getter_AddRefs(nodeInfo));
+  NS_ENSURE_SUCCESS(rv, rv);
+  
+  // bounce it if it's not on the whitelist or we're inside
+  // <script> or <style>
+  nsCOMPtr<nsIAtom> name = nodeInfo->NameAtom();
+  if (mSkipLevel != 0 ||
+      name == nsGkAtoms::script ||
+      name == nsGkAtoms::style) {
+    ++mSkipLevel; // track this so we don't spew script text
+    return NS_OK;
+  }  
+  
+  if (!sAllowedTags || !sAllowedTags->GetEntry(name))
+    return NS_OK;
+  
+  // It's an allowed element, so let's scrub the attributes
+  nsTArray<const PRUnichar *> allowedAttrs;
+  for (PRUint32 i = 0; i < aAttsCount; i += 2) {
+    nsContentUtils::SplitExpatName(aAtts[i], getter_AddRefs(prefix),
+                                   getter_AddRefs(localName), &nameSpaceID);
+    rv = mNodeInfoManager->GetNodeInfo(localName, prefix, nameSpaceID,
+                                       getter_AddRefs(nodeInfo));
+    NS_ENSURE_SUCCESS(rv, rv);
+    
+    name = nodeInfo->NameAtom();
+    // Add if it's xmlns, xml: or on the HTML whitelist
+    if (nameSpaceID == kNameSpaceID_XMLNS ||
+        nameSpaceID == kNameSpaceID_XML ||
+        (sAllowedAttributes && sAllowedAttributes->GetEntry(name))) {
+      allowedAttrs.AppendElement(aAtts[i]);
+      allowedAttrs.AppendElement(aAtts[i + 1]);
+    }
+  }
+  allowedAttrs.AppendElement((const PRUnichar*) nsnull);
+  return
+    nsXMLFragmentContentSink::HandleStartElement(aName,
+                                                 allowedAttrs.Elements(),
+                                                 allowedAttrs.Length() - 1,
+                                                 aIndex,
+                                                 aLineNumber);
+}
+
+NS_IMETHODIMP 
+nsXHTMLParanoidFragmentSink::HandleEndElement(const PRUnichar *aName)
+{
+  nsresult rv;
+  PRInt32 nameSpaceID;
+  nsCOMPtr<nsIAtom> prefix, localName;
+  nsContentUtils::SplitExpatName(aName, getter_AddRefs(prefix),
+                                 getter_AddRefs(localName), &nameSpaceID);
+  
+  // If the element is not in the XHTML namespace, bounce it
+  if (nameSpaceID != kNameSpaceID_XHTML) {
+    return NS_OK;
+  }
+  
+  nsCOMPtr<nsINodeInfo> nodeInfo;
+  rv = mNodeInfoManager->GetNodeInfo(localName, prefix, nameSpaceID,
+                                     getter_AddRefs(nodeInfo));
+  NS_ENSURE_SUCCESS(rv, rv);
+  
+  nsCOMPtr<nsIAtom> name = nodeInfo->NameAtom();
+  if (mSkipLevel != 0) {
+    --mSkipLevel;
+    return NS_OK;
+  }
+
+  if (!sAllowedTags || !sAllowedTags->GetEntry(name)) {
+    return NS_OK;
+  }
+
+  return nsXMLFragmentContentSink::HandleEndElement(aName);
+}
+
+NS_IMETHODIMP
+nsXHTMLParanoidFragmentSink::
+HandleProcessingInstruction(const PRUnichar *aTarget, 
+                            const PRUnichar *aData)
+{
+  // We don't do PIs
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXHTMLParanoidFragmentSink::HandleComment(const PRUnichar *aName)
+{
+  // We don't do comments
+  return NS_OK;
+}
+
+// We pass all character data through, unless we're inside <script>
+NS_IMETHODIMP 
+nsXHTMLParanoidFragmentSink::HandleCDataSection(const PRUnichar *aData, 
+                                                PRUint32 aLength)
+{
+  if (mSkipLevel != 0) {
+    return NS_OK;
+  }
+
+  return nsXMLFragmentContentSink::HandleCDataSection(aData, aLength);
+}
+
+NS_IMETHODIMP 
+nsXHTMLParanoidFragmentSink::HandleCharacterData(const PRUnichar *aData, 
+                                                 PRUint32 aLength)
+{
+  if (mSkipLevel != 0) {
+    return NS_OK;
+  }
+
+  return nsXMLFragmentContentSink::HandleCharacterData(aData, aLength);
+}

@@ -41,6 +41,7 @@
 #include "nsSVGValue.h"
 #include "nsWeakReference.h"
 #include "nsVoidArray.h"
+#include "nsCOMArray.h"
 #include "nsDOMError.h"
 #include "nsSVGPathDataParser.h"
 #include "nsReadableUtils.h"
@@ -51,8 +52,7 @@
 
 class nsSVGPathSegList : public nsIDOMSVGPathSegList,
                          public nsSVGValue,
-                         public nsISVGValueObserver,
-                         public nsSupportsWeakReference
+                         public nsISVGValueObserver
 {  
 protected:
   friend nsresult NS_NewSVGPathSegList(nsIDOMSVGPathSegList** result);
@@ -60,7 +60,7 @@ protected:
   nsSVGPathSegList();
   ~nsSVGPathSegList();
 //  void Init();
-  
+
 public:
   // nsISupports interface:
   NS_DECL_ISUPPORTS
@@ -83,14 +83,14 @@ public:
 
 protected:
   // implementation helpers:
-  nsIDOMSVGPathSeg* ElementAt(PRInt32 index);
-  void AppendElement(nsIDOMSVGPathSeg* aElement);
+  void AppendElement(nsSVGPathSeg* aElement);
   void RemoveElementAt(PRInt32 index);
-  void InsertElementAt(nsIDOMSVGPathSeg* aElement, PRInt32 index);
-  
-  void ReleaseSegments();
-  
-  nsVoidArray mSegments;
+  void InsertElementAt(nsSVGPathSeg* aElement, PRInt32 index);
+  void RemoveFromCurrentList(nsSVGPathSeg*);
+
+  void ReleaseSegments(PRBool aModify = PR_TRUE);
+
+  nsCOMArray<nsIDOMSVGPathSeg> mSegments;
 };
 
 
@@ -103,7 +103,11 @@ nsSVGPathSegList::nsSVGPathSegList()
 
 nsSVGPathSegList::~nsSVGPathSegList()
 {
-  ReleaseSegments();
+  PRInt32 count = mSegments.Count();
+  for (PRInt32 i = 0; i < count; ++i) {
+    nsSVGPathSeg* seg = static_cast<nsSVGPathSeg*>(mSegments.ObjectAt(i));
+    seg->SetCurrentList(nsnull);
+  }
 }
 
 //----------------------------------------------------------------------
@@ -128,33 +132,23 @@ NS_IMETHODIMP
 nsSVGPathSegList::SetValueString(const nsAString& aValue)
 {
   nsresult rv;
-
-  nsVoidArray data;
-  nsSVGPathDataParserToDOM parser(&data);
+  
+  WillModify();
+  ReleaseSegments(PR_FALSE);
+  nsSVGPathDataParserToDOM parser(&mSegments);
   rv = parser.Parse(aValue);
-  
-  if (NS_SUCCEEDED(rv)) {
-    WillModify();
-    ReleaseSegments();
-    mSegments = data;
-    PRInt32 count = mSegments.Count();
-    for (PRInt32 i=0; i<count; ++i) {
-      nsIDOMSVGPathSeg* seg = ElementAt(i);
-      nsCOMPtr<nsISVGValue> val = do_QueryInterface(seg);
-      if (val)
-        val->AddObserver(this);
-    }
-    DidModify();
+
+  PRInt32 count = mSegments.Count();
+  for (PRInt32 i=0; i<count; ++i) {
+    nsSVGPathSeg* seg = static_cast<nsSVGPathSeg*>(mSegments.ObjectAt(i));
+    seg->SetCurrentList(this);
   }
-  else {
-    NS_ERROR("path data parse error!");    
-    PRInt32 count = data.Count();
-    for (PRInt32 i=0; i<count; ++i) {
-      nsIDOMSVGPathSeg* seg = (nsIDOMSVGPathSeg*)data.ElementAt(i);
-      NS_RELEASE(seg);
-    }
+
+  if (NS_FAILED(rv)) {
+    NS_ERROR("path data parse error!");
+    ReleaseSegments(PR_FALSE);
   }
-  
+  DidModify();
   return rv;
 }
 
@@ -168,21 +162,19 @@ nsSVGPathSegList::GetValueString(nsAString& aValue)
   if (count<=0) return NS_OK;
 
   PRInt32 i = 0;
-  
+
   while (1) {
-    nsIDOMSVGPathSeg* seg = ElementAt(i);
-    nsCOMPtr<nsISVGValue> val = do_QueryInterface(seg);
-    NS_ASSERTION(val, "path segment doesn't implement required interface");
-    if (!val) continue;
+    nsSVGPathSeg* seg = static_cast<nsSVGPathSeg*>(mSegments.ObjectAt(i));
+
     nsAutoString str;
-    val->GetValueString(str);
+    seg->GetValueString(str);
     aValue.Append(str);
 
     if (++i >= count) break;
 
     aValue.AppendLiteral(" ");
   }
-  
+
   return NS_OK;
 }
 
@@ -209,10 +201,7 @@ NS_IMETHODIMP nsSVGPathSegList::Clear()
 NS_IMETHODIMP nsSVGPathSegList::Initialize(nsIDOMSVGPathSeg *newItem,
                                            nsIDOMSVGPathSeg **_retval)
 {
-  if (!newItem) {
-    *_retval = nsnull;
-    return NS_ERROR_DOM_SVG_WRONG_TYPE_ERR;
-  }
+  NS_ENSURE_NATIVE_PATH_SEG(newItem, _retval);
   Clear();
   return AppendItem(newItem, _retval);
 }
@@ -220,12 +209,12 @@ NS_IMETHODIMP nsSVGPathSegList::Initialize(nsIDOMSVGPathSeg *newItem,
 /* nsIDOMSVGPathSeg getItem (in unsigned long index); */
 NS_IMETHODIMP nsSVGPathSegList::GetItem(PRUint32 index, nsIDOMSVGPathSeg **_retval)
 {
-  if ((PRInt32)index >= mSegments.Count()) {
+  if (index >= static_cast<PRUint32>(mSegments.Count())) {
     *_retval = nsnull;
     return NS_ERROR_DOM_INDEX_SIZE_ERR;
   }
 
-  *_retval  = ElementAt(index);
+  *_retval  = mSegments.ObjectAt(index);
   NS_ADDREF(*_retval);
   return NS_OK;
 }
@@ -235,12 +224,16 @@ NS_IMETHODIMP nsSVGPathSegList::InsertItemBefore(nsIDOMSVGPathSeg *newItem,
                                                  PRUint32 index,
                                                  nsIDOMSVGPathSeg **_retval)
 {
-  // null check when implementing - this method can be used by scripts!
-  // if (!newItem)
-  //   return NS_ERROR_DOM_SVG_WRONG_TYPE_ERR;
+  NS_ENSURE_NATIVE_PATH_SEG(newItem, _retval);
 
-  NS_NOTYETIMPLEMENTED("nsSVGPathSegList::InsertItemBefore");
-  return NS_ERROR_NOT_IMPLEMENTED;
+  if (index >= static_cast<PRUint32>(mSegments.Count())) {
+    return NS_ERROR_DOM_INDEX_SIZE_ERR;
+  }
+
+  InsertElementAt(static_cast<nsSVGPathSeg*>(newItem), index);
+  NS_ADDREF(*_retval = newItem);
+
+  return NS_OK;
 }
 
 /* nsIDOMSVGPathSeg replaceItem (in nsIDOMSVGPathSeg newItem, in unsigned long index); */
@@ -248,23 +241,28 @@ NS_IMETHODIMP nsSVGPathSegList::ReplaceItem(nsIDOMSVGPathSeg *newItem,
                                             PRUint32 index,
                                             nsIDOMSVGPathSeg **_retval)
 {
-  // null check when implementing - this method can be used by scripts!
-  // if (!newItem)
-  //   return NS_ERROR_DOM_SVG_WRONG_TYPE_ERR;
+  NS_ENSURE_NATIVE_PATH_SEG(newItem, _retval);
 
-  NS_NOTYETIMPLEMENTED("nsSVGPathSegList::ReplaceItem");
-  return NS_ERROR_NOT_IMPLEMENTED;
+  if (index >= static_cast<PRUint32>(mSegments.Count())) {
+    return NS_ERROR_DOM_INDEX_SIZE_ERR;
+  }
+
+  InsertElementAt(static_cast<nsSVGPathSeg*>(newItem), index);
+  RemoveElementAt(index+1);
+  NS_ADDREF(*_retval = newItem);
+
+  return NS_OK;
 }
 
 /* nsIDOMSVGPathSeg removeItem (in unsigned long index); */
 NS_IMETHODIMP nsSVGPathSegList::RemoveItem(PRUint32 index, nsIDOMSVGPathSeg **_retval)
 {
-  if ((PRInt32)index >= mSegments.Count()) {
+  if (index >= static_cast<PRUint32>(mSegments.Count())) {
     *_retval = nsnull;
     return NS_ERROR_DOM_INDEX_SIZE_ERR;
   }
 
-  *_retval = ElementAt(index);
+  *_retval = mSegments.ObjectAt(index);
   NS_ADDREF(*_retval);
   WillModify();
   RemoveElementAt(index);
@@ -276,15 +274,9 @@ NS_IMETHODIMP nsSVGPathSegList::RemoveItem(PRUint32 index, nsIDOMSVGPathSeg **_r
 NS_IMETHODIMP nsSVGPathSegList::AppendItem(nsIDOMSVGPathSeg *newItem,
                                            nsIDOMSVGPathSeg **_retval)
 {
-  // XXX The SVG specs state that 'if newItem is already in a list, it
-  // is removed from its previous list before it is inserted into this
-  // list'. We don't do that. Should we?
-
-  *_retval = newItem;
-  if (!newItem)
-    return NS_ERROR_DOM_SVG_WRONG_TYPE_ERR;
-  AppendElement(newItem);
-  NS_ADDREF(*_retval);
+  NS_ENSURE_NATIVE_PATH_SEG(newItem, _retval);
+  NS_ADDREF(*_retval = newItem);
+  AppendElement(static_cast<nsSVGPathSeg*>(newItem));
   return NS_OK;
 }
 
@@ -296,52 +288,51 @@ NS_IMETHODIMP
 nsSVGPathSegList::WillModifySVGObservable(nsISVGValue* observable,
                                           modificationType aModType)
 {
-  WillModify(aModType);
-  return NS_OK;
+  // This method is not yet used
+
+  NS_NOTYETIMPLEMENTED("nsSVGPathSegList::WillModifySVGObservable");
+  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 NS_IMETHODIMP
 nsSVGPathSegList::DidModifySVGObservable (nsISVGValue* observable,
                                           modificationType aModType)
 {
-  DidModify(aModType);
-  return NS_OK;
+  // This method is not yet used
+
+  NS_NOTYETIMPLEMENTED("nsSVGPathSegList::DidModifySVGObservable");
+  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 //----------------------------------------------------------------------
 // Implementation helpers
 
 void
-nsSVGPathSegList::ReleaseSegments()
+nsSVGPathSegList::ReleaseSegments(PRBool aModify)
 {
-  WillModify();
+  if (aModify) {
+    WillModify();
+  }
   PRInt32 count = mSegments.Count();
   for (PRInt32 i = 0; i < count; ++i) {
-    nsIDOMSVGPathSeg* seg = ElementAt(i);
-    nsCOMPtr<nsISVGValue> val = do_QueryInterface(seg);
-    if (val)
-      val->RemoveObserver(this);
-    NS_RELEASE(seg);
+    nsSVGPathSeg* seg = static_cast<nsSVGPathSeg*>(mSegments.ObjectAt(i));
+    seg->SetCurrentList(nsnull);
   }
   mSegments.Clear();
-  DidModify();
-}
-
-nsIDOMSVGPathSeg*
-nsSVGPathSegList::ElementAt(PRInt32 index)
-{
-  return (nsIDOMSVGPathSeg*)mSegments.ElementAt(index);
+  if (aModify) {
+    DidModify();
+  }
 }
 
 void
-nsSVGPathSegList::AppendElement(nsIDOMSVGPathSeg* aElement)
+nsSVGPathSegList::AppendElement(nsSVGPathSeg* aElement)
 {
   WillModify();
-  NS_ADDREF(aElement);
-  mSegments.AppendElement((void*)aElement);
-  nsCOMPtr<nsISVGValue> val = do_QueryInterface(aElement);
-  if (val)
-    val->AddObserver(this);
+  // XXX: we should only remove an item from its current list if we
+  // successfully added it to this list
+  RemoveFromCurrentList(aElement);
+  mSegments.AppendObject(aElement);
+  aElement->SetCurrentList(this);
   DidModify();
 }
 
@@ -349,28 +340,41 @@ void
 nsSVGPathSegList::RemoveElementAt(PRInt32 index)
 {
   WillModify();
-  nsIDOMSVGPathSeg* seg = ElementAt(index);
-  NS_ASSERTION(seg, "null pathsegment");
-  nsCOMPtr<nsISVGValue> val = do_QueryInterface(seg);
-  if (val)
-    val->RemoveObserver(this);
-  mSegments.RemoveElementAt(index);
-  NS_RELEASE(seg);
+  nsSVGPathSeg* seg = static_cast<nsSVGPathSeg*>(mSegments.ObjectAt(index));
+  seg->SetCurrentList(nsnull);
+  mSegments.RemoveObjectAt(index);
   DidModify();
 }
 
 void
-nsSVGPathSegList::InsertElementAt(nsIDOMSVGPathSeg* aElement, PRInt32 index)
+nsSVGPathSegList::InsertElementAt(nsSVGPathSeg* aElement, PRInt32 index)
 {
   WillModify();
-  NS_ADDREF(aElement);
-  mSegments.InsertElementAt((void*)aElement, index);
-  nsCOMPtr<nsISVGValue> val = do_QueryInterface(aElement);
-  if (val)
-    val->AddObserver(this);
+  // XXX: we should only remove an item from its current list if we
+  // successfully added it to this list
+  RemoveFromCurrentList(aElement);
+  mSegments.InsertObjectAt(aElement, index);
+  aElement->SetCurrentList(this);
   DidModify();
 }
 
+// The SVG specs state that 'if newItem is already in a list, it
+// is removed from its previous list before it is inserted into this
+// list'.  This is a helper function to do that.
+void 
+nsSVGPathSegList::RemoveFromCurrentList(nsSVGPathSeg* aSeg)
+{
+  nsCOMPtr<nsISVGValue> currentList = aSeg->GetCurrentList();
+  if (currentList) {
+    // aSeg's current list must be cast back to a nsSVGPathSegList*
+    nsSVGPathSegList* otherSegList = static_cast<nsSVGPathSegList*>(currentList.get());
+    PRInt32 ix = otherSegList->mSegments.IndexOfObject(aSeg);
+    if (ix != -1) { 
+      otherSegList->RemoveElementAt(ix); 
+    }
+    aSeg->SetCurrentList(nsnull);
+  }
+}
 
 ////////////////////////////////////////////////////////////////////////
 // Exported creation functions:
@@ -385,9 +389,9 @@ NS_NewSVGPathSegList(nsIDOMSVGPathSegList** result)
   NS_ADDREF(pathSegList);
 
   // pathSegList->Init();
-  
+
   *result = (nsIDOMSVGPathSegList*) pathSegList;
-  
+
   return NS_OK;
 }
 

@@ -34,97 +34,17 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#include "nsSVGUseElement.h"
 #include "nsIDOMSVGGElement.h"
-#include "nsSVGAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsIDOMSVGAnimatedLength.h"
-#include "nsISVGSVGElement.h"
-#include "nsSVGCoordCtxProvider.h"
 #include "nsIDOMSVGAnimatedString.h"
 #include "nsSVGAnimatedString.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMSVGSVGElement.h"
 #include "nsIDOMSVGSymbolElement.h"
 #include "nsIDocument.h"
-#include "nsISupportsArray.h"
 #include "nsIPresShell.h"
-#include "nsIAnonymousContentCreator.h"
-#include "nsSVGGraphicElement.h"
-#include "nsIDOMSVGURIReference.h"
-#include "nsIDOMSVGUseElement.h"
-#include "nsIMutationObserver.h"
-#include "nsSVGLength2.h"
-
-#define NS_SVG_USE_ELEMENT_IMPL_CID \
-{ 0xa95c13d3, 0xc193, 0x465f, {0x81, 0xf0, 0x02, 0x6d, 0x67, 0x05, 0x54, 0x58 } }
-
-nsresult
-NS_NewSVGSVGElement(nsIContent **aResult, nsINodeInfo *aNodeInfo);
-
-typedef nsSVGGraphicElement nsSVGUseElementBase;
-
-class nsSVGUseElement : public nsSVGUseElementBase,
-                        public nsIDOMSVGURIReference,
-                        public nsIDOMSVGUseElement,
-                        public nsIMutationObserver,
-                        public nsIAnonymousContentCreator
-{
-protected:
-  friend nsresult NS_NewSVGUseElement(nsIContent **aResult,
-                                      nsINodeInfo *aNodeInfo);
-  nsSVGUseElement(nsINodeInfo *aNodeInfo);
-  virtual ~nsSVGUseElement();
-  virtual nsresult Init();
-  
-public:
-  NS_DECLARE_STATIC_IID_ACCESSOR(NS_SVG_USE_ELEMENT_IMPL_CID)
-
-  // interfaces:
-  
-  NS_DECL_ISUPPORTS_INHERITED
-  NS_DECL_NSIDOMSVGUSEELEMENT
-  NS_DECL_NSIDOMSVGURIREFERENCE
-  NS_DECL_NSIMUTATIONOBSERVER
-
-  // xxx I wish we could use virtual inheritance
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGUseElementBase::)
-  NS_FORWARD_NSIDOMELEMENT(nsSVGUseElementBase::)
-  NS_FORWARD_NSIDOMSVGELEMENT(nsSVGUseElementBase::)
-
-  // nsISVGValueObserver specialization:
-  NS_IMETHOD DidModifySVGObservable (nsISVGValue* observable,
-                                     nsISVGValue::modificationType aModType);
-
-  // nsIAnonymousContentCreator
-  NS_IMETHOD CreateAnonymousContent(nsPresContext* aPresContext,
-                                    nsISupportsArray& aAnonymousItems);
-  NS_IMETHOD CreateFrameFor(nsPresContext *aPresContext,
-                            nsIContent *aContent,
-                            nsIFrame **aFrame);
-
-  // nsSVGElement specializations:
-  virtual void DidChangeLength(PRUint8 aAttrEnum, PRBool aDoSetAttr);
-
-protected:
-
-  virtual LengthAttributesInfo GetLengthInfo();
-
-  void SyncWidthHeight(PRUint8 aAttrEnum);
-  nsIContent *LookupHref();
-  void TriggerReclone();
-  void RemoveListener();
-
-  enum { X, Y, WIDTH, HEIGHT };
-  nsSVGLength2 mLengthAttributes[4];
-  static LengthInfo sLengthInfo[4];
-
-  nsCOMPtr<nsIDOMSVGAnimatedString> mHref;
-
-  nsCOMPtr<nsIContent> mOriginal; // if we've been cloned, our "real" copy
-  nsCOMPtr<nsIContent> mClone;    // cloned tree
-  nsIContent *mSourceContent;     // weak pointer to the observed element
-};
-
-NS_DEFINE_STATIC_IID_ACCESSOR(nsSVGUseElement, NS_SVG_USE_ELEMENT_IMPL_CID)
 
 ////////////////////////////////////////////////////////////////////////
 // implementation
@@ -142,20 +62,33 @@ NS_IMPL_NS_NEW_SVG_ELEMENT(Use)
 //----------------------------------------------------------------------
 // nsISupports methods
 
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsSVGUseElement)
+NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN_INHERITED(nsSVGUseElement,
+                                                nsSVGUseElementBase)
+  NS_IMPL_CYCLE_COLLECTION_UNLINK_NSCOMPTR(mOriginal)
+  tmp->DestroyAnonymousContent();
+  tmp->RemoveListener();
+NS_IMPL_CYCLE_COLLECTION_UNLINK_END
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_INHERITED(nsSVGUseElement,
+                                                  nsSVGUseElementBase)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mOriginal)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mClone)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mSourceContent)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+
 NS_IMPL_ADDREF_INHERITED(nsSVGUseElement,nsSVGUseElementBase)
 NS_IMPL_RELEASE_INHERITED(nsSVGUseElement,nsSVGUseElementBase)
 
-NS_INTERFACE_MAP_BEGIN(nsSVGUseElement)
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION_INHERITED(nsSVGUseElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMNode)
   NS_INTERFACE_MAP_ENTRY(nsIDOMElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGURIReference)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGUseElement)
   NS_INTERFACE_MAP_ENTRY(nsIMutationObserver)
-  NS_INTERFACE_MAP_ENTRY(nsIAnonymousContentCreator)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(SVGUseElement)
   if (aIID.Equals(NS_GET_IID(nsSVGUseElement)))
-    foundInterface = NS_REINTERPRET_CAST(nsISupports*, this);
+    foundInterface = reinterpret_cast<nsISupports*>(this);
   else
 NS_INTERFACE_MAP_END_INHERITING(nsSVGUseElementBase)
 
@@ -163,7 +96,7 @@ NS_INTERFACE_MAP_END_INHERITING(nsSVGUseElementBase)
 // Implementation
 
 nsSVGUseElement::nsSVGUseElement(nsINodeInfo *aNodeInfo)
-  : nsSVGUseElementBase(aNodeInfo), mSourceContent(nsnull)
+  : nsSVGUseElementBase(aNodeInfo)
 {
 }
 
@@ -185,7 +118,7 @@ nsSVGUseElement::Init()
   {
     rv = NS_NewSVGAnimatedString(getter_AddRefs(mHref));
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = AddMappedSVGValue(nsSVGAtoms::href, mHref, kNameSpaceID_XLink);
+    rv = AddMappedSVGValue(nsGkAtoms::href, mHref, kNameSpaceID_XLink);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
@@ -196,8 +129,7 @@ nsSVGUseElement::Init()
 // nsIDOMNode methods
 
 nsresult
-nsSVGUseElement::Clone(nsINodeInfo *aNodeInfo, PRBool aDeep,
-                       nsIContent **aResult) const
+nsSVGUseElement::Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const
 {
   *aResult = nsnull;
 
@@ -206,24 +138,18 @@ nsSVGUseElement::Clone(nsINodeInfo *aNodeInfo, PRBool aDeep,
     return NS_ERROR_OUT_OF_MEMORY;
   }
 
-  nsCOMPtr<nsIContent> kungFuDeathGrip(it);
+  nsCOMPtr<nsINode> kungFuDeathGrip(it);
   nsresult rv = it->Init();
-  rv |= CopyInnerTo(it, aDeep);
+  rv |= CopyInnerTo(it);
 
   // nsSVGUseElement specific portion - record who we cloned from
-  it->mOriginal = NS_CONST_CAST(nsSVGUseElement*, this);
+  it->mOriginal = const_cast<nsSVGUseElement*>(this);
 
   if (NS_SUCCEEDED(rv)) {
     kungFuDeathGrip.swap(*aResult);
   }
 
   return rv;
-}
-
-NS_IMETHODIMP
-nsSVGUseElement::CloneNode(PRBool aDeep, nsIDOMNode **aResult)
-{
-  return nsGenericElement::CloneNode(aDeep, this, aResult);
 }
 
 //----------------------------------------------------------------------
@@ -289,9 +215,11 @@ nsSVGUseElement::DidModifySVGObservable(nsISVGValue* aObservable,
 void
 nsSVGUseElement::CharacterDataChanged(nsIDocument *aDocument,
                                       nsIContent *aContent,
-                                      PRBool aAppend)
+                                      CharacterDataChangeInfo* aInfo)
 {
-  TriggerReclone();
+  if (nsContentUtils::IsInSameAnonymousTree(this, aContent)) {
+    TriggerReclone();
+  }
 }
 
 void
@@ -299,9 +227,12 @@ nsSVGUseElement::AttributeChanged(nsIDocument *aDocument,
                                   nsIContent *aContent,
                                   PRInt32 aNameSpaceID,
                                   nsIAtom *aAttribute,
-                                  PRInt32 aModType)
+                                  PRInt32 aModType,
+                                  PRUint32 aStateMask)
 {
-  TriggerReclone();
+  if (nsContentUtils::IsInSameAnonymousTree(this, aContent)) {
+    TriggerReclone();
+  }
 }
 
 void
@@ -309,7 +240,9 @@ nsSVGUseElement::ContentAppended(nsIDocument *aDocument,
                                  nsIContent *aContainer,
                                  PRInt32 aNewIndexInContainer)
 {
-  TriggerReclone();
+  if (nsContentUtils::IsInSameAnonymousTree(this, aContainer)) {
+    TriggerReclone();
+  }
 }
 
 void
@@ -318,7 +251,9 @@ nsSVGUseElement::ContentInserted(nsIDocument *aDocument,
                                  nsIContent *aChild,
                                  PRInt32 aIndexInContainer)
 {
-  TriggerReclone();
+  if (nsContentUtils::IsInSameAnonymousTree(this, aChild)) {
+    TriggerReclone();
+  }
 }
 
 void
@@ -327,7 +262,9 @@ nsSVGUseElement::ContentRemoved(nsIDocument *aDocument,
                                 nsIContent *aChild,
                                 PRInt32 aIndexInContainer)
 {
-  TriggerReclone();
+  if (nsContentUtils::IsInSameAnonymousTree(this, aChild)) {
+    TriggerReclone();
+  }
 }
 
 void
@@ -337,11 +274,9 @@ nsSVGUseElement::NodeWillBeDestroyed(const nsINode *aNode)
 }
 
 //----------------------------------------------------------------------
-// nsIAnonymousContentCreator methods
 
-NS_IMETHODIMP
-nsSVGUseElement::CreateAnonymousContent(nsPresContext*    aPresContext,
-                                        nsISupportsArray& aAnonymousItems)
+nsIContent*
+nsSVGUseElement::CreateAnonymousContent()
 {
 #ifdef DEBUG_tor
   nsAutoString href;
@@ -354,35 +289,37 @@ nsSVGUseElement::CreateAnonymousContent(nsPresContext*    aPresContext,
   nsCOMPtr<nsIContent> targetContent = LookupHref();
 
   if (!targetContent)
-    return NS_ERROR_FAILURE;
+    return nsnull;
 
-  RemoveListener();
-  targetContent->AddMutationObserver(this);
-  mSourceContent = targetContent;
+  PRBool needAddObserver = PR_FALSE;
+  if (mSourceContent != targetContent) {
+    RemoveListener();
+    needAddObserver = PR_TRUE;
+  }
 
   // make sure target is valid type for <use>
   // QIable nsSVGGraphicsElement would eliminate enumerating all elements
   nsIAtom *tag = targetContent->Tag();
-  if (tag != nsSVGAtoms::svg &&
-      tag != nsSVGAtoms::symbol &&
-      tag != nsSVGAtoms::g &&
-      tag != nsSVGAtoms::path &&
-      tag != nsSVGAtoms::text &&
-      tag != nsSVGAtoms::rect &&
-      tag != nsSVGAtoms::circle &&
-      tag != nsSVGAtoms::ellipse &&
-      tag != nsSVGAtoms::line &&
-      tag != nsSVGAtoms::polyline &&
-      tag != nsSVGAtoms::polygon &&
-      tag != nsSVGAtoms::image &&
-      tag != nsSVGAtoms::use)
-    return NS_ERROR_FAILURE;
+  if (tag != nsGkAtoms::svg &&
+      tag != nsGkAtoms::symbol &&
+      tag != nsGkAtoms::g &&
+      tag != nsGkAtoms::path &&
+      tag != nsGkAtoms::text &&
+      tag != nsGkAtoms::rect &&
+      tag != nsGkAtoms::circle &&
+      tag != nsGkAtoms::ellipse &&
+      tag != nsGkAtoms::line &&
+      tag != nsGkAtoms::polyline &&
+      tag != nsGkAtoms::polygon &&
+      tag != nsGkAtoms::image &&
+      tag != nsGkAtoms::use)
+    return nsnull;
 
   // circular loop detection
 
   // check 1 - check if we're a document descendent of the target
   if (nsContentUtils::ContentIsDescendantOf(this, targetContent))
-    return NS_ERROR_FAILURE;
+    return nsnull;
 
   // check 2 - check if we're a clone, and if we already exist in the hierarchy
   if (this->GetParent() && mOriginal) {
@@ -397,17 +334,20 @@ nsSVGUseElement::CreateAnonymousContent(nsPresContext*    aPresContext,
                                    getter_AddRefs(useImpl));
 
         if (useImpl && useImpl->mOriginal == mOriginal)
-          return NS_ERROR_FAILURE;
+          return nsnull;
       }
     }
   }
 
-  nsCOMPtr<nsIContent> newcontent;
-  targetContent->CloneContent(mNodeInfo->NodeInfoManager(), PR_TRUE,
-                              getter_AddRefs(newcontent));
+  nsCOMPtr<nsIDOMNode> newnode;
+  nsCOMArray<nsINode> unused;
+  nsNodeUtils::Clone(targetContent, PR_TRUE, nsnull, unused,
+                     getter_AddRefs(newnode));
+
+  nsCOMPtr<nsIContent> newcontent = do_QueryInterface(newnode);
 
   if (!newcontent)
-    return NS_ERROR_FAILURE;
+    return nsnull;
 
   nsCOMPtr<nsIDOMSVGSymbolElement> symbol     = do_QueryInterface(newcontent);
   nsCOMPtr<nsIDOMSVGSVGElement>    svg        = do_QueryInterface(newcontent);
@@ -415,28 +355,28 @@ nsSVGUseElement::CreateAnonymousContent(nsPresContext*    aPresContext,
   if (symbol) {
     nsIDocument *document = GetCurrentDoc();
     if (!document)
-      return NS_ERROR_FAILURE;
+      return nsnull;
 
     nsNodeInfoManager *nodeInfoManager = document->NodeInfoManager();
     if (!nodeInfoManager)
-      return NS_ERROR_FAILURE;
+      return nsnull;
 
     nsCOMPtr<nsINodeInfo> nodeInfo;
-    nodeInfoManager->GetNodeInfo(nsSVGAtoms::svg, nsnull, kNameSpaceID_SVG,
+    nodeInfoManager->GetNodeInfo(nsGkAtoms::svg, nsnull, kNameSpaceID_SVG,
                                  getter_AddRefs(nodeInfo));
     if (!nodeInfo)
-      return NS_ERROR_FAILURE;
+      return nsnull;
 
     nsCOMPtr<nsIContent> svgNode;
     NS_NewSVGSVGElement(getter_AddRefs(svgNode), nodeInfo);
 
     if (!svgNode)
-      return NS_ERROR_FAILURE;
+      return nsnull;
     
-    if (newcontent->HasAttr(kNameSpaceID_None, nsSVGAtoms::viewBox)) {
+    if (newcontent->HasAttr(kNameSpaceID_None, nsGkAtoms::viewBox)) {
       nsAutoString viewbox;
-      newcontent->GetAttr(kNameSpaceID_None, nsSVGAtoms::viewBox, viewbox);
-      svgNode->SetAttr(kNameSpaceID_None, nsSVGAtoms::viewBox, viewbox, PR_FALSE);
+      newcontent->GetAttr(kNameSpaceID_None, nsGkAtoms::viewBox, viewbox);
+      svgNode->SetAttr(kNameSpaceID_None, nsGkAtoms::viewBox, viewbox, PR_FALSE);
     }
 
     // copy attributes
@@ -463,34 +403,32 @@ nsSVGUseElement::CreateAnonymousContent(nsPresContext*    aPresContext,
   }
 
   if (symbol || svg) {
-    if (HasAttr(kNameSpaceID_None, nsSVGAtoms::width)) {
+    if (HasAttr(kNameSpaceID_None, nsGkAtoms::width)) {
       nsAutoString width;
-      GetAttr(kNameSpaceID_None, nsSVGAtoms::width, width);
-      newcontent->SetAttr(kNameSpaceID_None, nsSVGAtoms::width, width, PR_FALSE);
+      GetAttr(kNameSpaceID_None, nsGkAtoms::width, width);
+      newcontent->SetAttr(kNameSpaceID_None, nsGkAtoms::width, width, PR_FALSE);
     }
 
-    if (HasAttr(kNameSpaceID_None, nsSVGAtoms::height)) {
+    if (HasAttr(kNameSpaceID_None, nsGkAtoms::height)) {
       nsAutoString height;
-      GetAttr(kNameSpaceID_None, nsSVGAtoms::height, height);
-      newcontent->SetAttr(kNameSpaceID_None, nsSVGAtoms::height, height, PR_FALSE);
+      GetAttr(kNameSpaceID_None, nsGkAtoms::height, height);
+      newcontent->SetAttr(kNameSpaceID_None, nsGkAtoms::height, height, PR_FALSE);
     }
   }
 
-  aAnonymousItems.AppendElement(newcontent);
+  if (needAddObserver) {
+    targetContent->AddMutationObserver(this);
+  }
+  mSourceContent = targetContent;
   mClone = newcontent;
-
-  return NS_OK;
+  return mClone;
 }
 
-NS_IMETHODIMP
-nsSVGUseElement::CreateFrameFor(nsPresContext *aPresContext,
-                                nsIContent *aContent,
-                                nsIFrame **aFrame)
+void
+nsSVGUseElement::DestroyAnonymousContent()
 {
-  *aFrame = nsnull;
-  return NS_ERROR_FAILURE;
+  nsContentUtils::DestroyAnonymousContent(&mClone);
 }
-
 
 //----------------------------------------------------------------------
 // implementation helpers
@@ -505,12 +443,12 @@ nsSVGUseElement::SyncWidthHeight(PRUint8 aAttrEnum)
     if (symbol || svg) {
       if (aAttrEnum == WIDTH) {
         nsAutoString width;
-        GetAttr(kNameSpaceID_None, nsSVGAtoms::width, width);
-        mClone->SetAttr(kNameSpaceID_None, nsSVGAtoms::width, width, PR_FALSE);
+        GetAttr(kNameSpaceID_None, nsGkAtoms::width, width);
+        mClone->SetAttr(kNameSpaceID_None, nsGkAtoms::width, width, PR_FALSE);
       } else if (aAttrEnum == HEIGHT) {
         nsAutoString height;
-        GetAttr(kNameSpaceID_None, nsSVGAtoms::height, height);
-        mClone->SetAttr(kNameSpaceID_None, nsSVGAtoms::height, height, PR_FALSE);
+        GetAttr(kNameSpaceID_None, nsGkAtoms::height, height);
+        mClone->SetAttr(kNameSpaceID_None, nsGkAtoms::height, height, PR_FALSE);
       }
     }
   }
@@ -536,7 +474,7 @@ nsSVGUseElement::TriggerReclone()
 {
   nsIDocument *doc = GetCurrentDoc();
   if (!doc) return;
-  nsIPresShell *presShell = doc->GetShellAt(0);
+  nsIPresShell *presShell = doc->GetPrimaryShell();
   if (!presShell) return;
   presShell->RecreateFramesFor(this);
 }
@@ -566,4 +504,25 @@ nsSVGUseElement::GetLengthInfo()
 {
   return LengthAttributesInfo(mLengthAttributes, sLengthInfo,
                               NS_ARRAY_LENGTH(sLengthInfo));
+}
+
+//----------------------------------------------------------------------
+// nsIContent methods
+
+NS_IMETHODIMP_(PRBool)
+nsSVGUseElement::IsAttributeMapped(const nsIAtom* name) const
+{
+  static const MappedAttributeEntry* const map[] = {
+    sFEFloodMap,
+    sFiltersMap,
+    sFontSpecificationMap,
+    sGradientStopMap,
+    sLightingEffectsMap,
+    sMarkersMap,
+    sTextContentElementsMap,
+    sViewportsMap
+  };
+
+  return FindAttributeDependence(name, map, NS_ARRAY_LENGTH(map)) ||
+    nsSVGUseElementBase::IsAttributeMapped(name);
 }

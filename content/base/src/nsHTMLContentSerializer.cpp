@@ -21,6 +21,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Ryan Jones <sciguyryan@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -55,8 +56,7 @@
 #include "nsXPIDLString.h"
 #include "nsIServiceManager.h"
 #include "nsIDocumentEncoder.h"
-#include "nsLayoutAtoms.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsIURI.h"
 #include "nsNetUtil.h"
 #include "nsEscape.h"
@@ -93,6 +93,7 @@ nsHTMLContentSerializer::nsHTMLContentSerializer()
   mInBody(PR_FALSE),
   mAddSpace(PR_FALSE),
   mMayIgnoreLineBreakSequence(PR_FALSE),
+  mIsWholeDocument(PR_FALSE),
   mInCDATA(PR_FALSE),
   mNeedLineBreaker(PR_TRUE)
 {
@@ -112,7 +113,8 @@ nsHTMLContentSerializer::~nsHTMLContentSerializer()
 
 NS_IMETHODIMP 
 nsHTMLContentSerializer::Init(PRUint32 aFlags, PRUint32 aWrapColumn,
-                              const char* aCharSet, PRBool aIsCopying)
+                              const char* aCharSet, PRBool aIsCopying,
+                              PRBool aIsWholeDocument)
 {
   mFlags = aFlags;
   if (!aWrapColumn) {
@@ -122,6 +124,7 @@ nsHTMLContentSerializer::Init(PRUint32 aFlags, PRUint32 aWrapColumn,
     mMaxColumn = aWrapColumn;
   }
 
+  mIsWholeDocument = aIsWholeDocument;
   mIsCopying = aIsCopying;
   mIsFirstChildOfOL = PR_FALSE;
   mDoFormat = (mFlags & nsIDocumentEncoder::OutputFormatted) ? PR_TRUE
@@ -145,7 +148,7 @@ nsHTMLContentSerializer::Init(PRUint32 aFlags, PRUint32 aWrapColumn,
 
   mPreLevel = 0;
 
-  mCharSet = aCharSet;
+  mCharset = aCharSet;
 
   // set up entity converter if we are going to need it
   if (mFlags & nsIDocumentEncoder::OutputEncodeW3CEntities) {
@@ -440,8 +443,8 @@ nsHTMLContentSerializer::AppendDocumentStart(nsIDOMDocument *aDocument,
 PRBool
 nsHTMLContentSerializer::IsJavaScript(nsIAtom* aAttrNameAtom, const nsAString& aValueString)
 {
-  if (aAttrNameAtom == nsHTMLAtoms::href ||
-      aAttrNameAtom == nsHTMLAtoms::src) {
+  if (aAttrNameAtom == nsGkAtoms::href ||
+      aAttrNameAtom == nsGkAtoms::src) {
     static const char kJavaScript[] = "javascript";
     PRInt32 pos = aValueString.FindChar(':');
     if (pos < (PRInt32)(sizeof kJavaScript - 1))
@@ -455,26 +458,8 @@ nsHTMLContentSerializer::IsJavaScript(nsIAtom* aAttrNameAtom, const nsAString& a
       return PR_FALSE;  
   }
 
-  PRBool result = 
-                 (aAttrNameAtom == nsLayoutAtoms::onblur)      || (aAttrNameAtom == nsLayoutAtoms::onchange)
-              || (aAttrNameAtom == nsLayoutAtoms::onclick)     || (aAttrNameAtom == nsLayoutAtoms::ondblclick)
-              || (aAttrNameAtom == nsLayoutAtoms::onfocus)     || (aAttrNameAtom == nsLayoutAtoms::onkeydown)
-              || (aAttrNameAtom == nsLayoutAtoms::onkeypress)  || (aAttrNameAtom == nsLayoutAtoms::onkeyup)
-              || (aAttrNameAtom == nsLayoutAtoms::onload)      || (aAttrNameAtom == nsLayoutAtoms::onmousedown)
-              || (aAttrNameAtom == nsLayoutAtoms::onpageshow)  || (aAttrNameAtom == nsLayoutAtoms::onpagehide)
-              || (aAttrNameAtom == nsLayoutAtoms::onmousemove) || (aAttrNameAtom == nsLayoutAtoms::onmouseout)
-              || (aAttrNameAtom == nsLayoutAtoms::onmouseover) || (aAttrNameAtom == nsLayoutAtoms::onmouseup)
-              || (aAttrNameAtom == nsLayoutAtoms::onreset)     || (aAttrNameAtom == nsLayoutAtoms::onselect)
-              || (aAttrNameAtom == nsLayoutAtoms::onsubmit)    || (aAttrNameAtom == nsLayoutAtoms::onunload)
-              || (aAttrNameAtom == nsLayoutAtoms::onabort)     || (aAttrNameAtom == nsLayoutAtoms::onerror)
-              || (aAttrNameAtom == nsLayoutAtoms::onpaint)     || (aAttrNameAtom == nsLayoutAtoms::onresize)
-              || (aAttrNameAtom == nsLayoutAtoms::onscroll)    || (aAttrNameAtom == nsLayoutAtoms::onbroadcast)
-              || (aAttrNameAtom == nsLayoutAtoms::onclose)     || (aAttrNameAtom == nsLayoutAtoms::oncontextmenu)
-              || (aAttrNameAtom == nsLayoutAtoms::oncommand)   || (aAttrNameAtom == nsLayoutAtoms::oncommandupdate)
-              || (aAttrNameAtom == nsLayoutAtoms::ondragdrop)  || (aAttrNameAtom == nsLayoutAtoms::ondragenter)
-              || (aAttrNameAtom == nsLayoutAtoms::ondragexit)  || (aAttrNameAtom == nsLayoutAtoms::ondraggesture)
-              || (aAttrNameAtom == nsLayoutAtoms::ondragover)  || (aAttrNameAtom == nsLayoutAtoms::oninput);
-  return result;
+  return nsContentUtils::IsEventAttributeName(aAttrNameAtom,
+                                              EventNameType_HTML);
 }
 
 nsresult 
@@ -482,7 +467,7 @@ nsHTMLContentSerializer::EscapeURI(const nsAString& aURI, nsAString& aEscapedURI
 {
   // URL escape %xx cannot be used in JS.
   // No escaping if the scheme is 'javascript'.
-  if (IsJavaScript(nsHTMLAtoms::href, aURI)) {
+  if (IsJavaScript(nsGkAtoms::href, aURI)) {
     aEscapedURI = aURI;
     return NS_OK;
   }
@@ -496,7 +481,7 @@ nsHTMLContentSerializer::EscapeURI(const nsAString& aURI, nsAString& aEscapedURI
   nsresult rv = NS_OK;
 
 
-  if (!mCharSet.IsEmpty() && !IsASCII(uri)) {
+  if (!mCharset.IsEmpty() && !IsASCII(uri)) {
     textToSubURI = do_GetService(NS_ITEXTTOSUBURI_CONTRACTID, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
   }
@@ -511,7 +496,7 @@ nsHTMLContentSerializer::EscapeURI(const nsAString& aURI, nsAString& aEscapedURI
   while ((end = uri.FindCharInSet("%#;/?:@&=+$,", start)) != -1) {
     part = Substring(aURI, start, (end-start));
     if (textToSubURI && !IsASCII(part)) {
-      rv = textToSubURI->ConvertAndEscape(mCharSet.get(), part.get(), getter_Copies(escapedURI));
+      rv = textToSubURI->ConvertAndEscape(mCharset.get(), part.get(), getter_Copies(escapedURI));
       NS_ENSURE_SUCCESS(rv, rv);
     }
     else {
@@ -529,7 +514,7 @@ nsHTMLContentSerializer::EscapeURI(const nsAString& aURI, nsAString& aEscapedURI
     // Escape the remaining part.
     part = Substring(aURI, start, aURI.Length()-start);
     if (textToSubURI) {
-      rv = textToSubURI->ConvertAndEscape(mCharSet.get(), part.get(), getter_Copies(escapedURI));
+      rv = textToSubURI->ConvertAndEscape(mCharset.get(), part.get(), getter_Copies(escapedURI));
       NS_ENSURE_SUCCESS(rv, rv);
     }
     else {
@@ -577,20 +562,20 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
     // Filter out special case of <br type="_moz"> or <br _moz*>,
     // used by the editor.  Bug 16988.  Yuck.
     //
-    if (aTagName == nsHTMLAtoms::br && attrName == nsHTMLAtoms::type &&
+    if (aTagName == nsGkAtoms::br && attrName == nsGkAtoms::type &&
         StringBeginsWith(valueStr, _mozStr)) {
       continue;
     }
 
-    if (mIsCopying && mIsFirstChildOfOL && (aTagName == nsHTMLAtoms::li) && 
-        (attrName == nsHTMLAtoms::value)){
+    if (mIsCopying && mIsFirstChildOfOL && (aTagName == nsGkAtoms::li) && 
+        (attrName == nsGkAtoms::value)){
       // This is handled separately in SerializeLIValueAttribute()
       continue;
     }
     PRBool isJS = IsJavaScript(attrName, valueStr);
     
-    if (((attrName == nsHTMLAtoms::href) || 
-         (attrName == nsHTMLAtoms::src))) {
+    if (((attrName == nsGkAtoms::href) || 
+         (attrName == nsGkAtoms::src))) {
       // Make all links absolute when converting only the selection:
       if (mFlags & nsIDocumentEncoder::OutputAbsoluteLinks) {
         // Would be nice to handle OBJECT and APPLET tags,
@@ -610,6 +595,18 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
       nsAutoString tempURI(valueStr);
       if (!isJS && NS_FAILED(EscapeURI(tempURI, valueStr)))
         valueStr = tempURI;
+    }
+
+    if (mIsWholeDocument && aTagName == nsGkAtoms::meta &&
+        attrName == nsGkAtoms::content) {
+      // If we're serializing a <meta http-equiv="content-type">,
+      // use the proper value, rather than what's in the document.
+      nsAutoString header;
+      aContent->GetAttr(kNameSpaceID_None, nsGkAtoms::httpEquiv, header);
+      if (header.LowerCaseEqualsLiteral("content-type")) {
+        valueStr = NS_LITERAL_STRING("text/html; charset=") +
+          NS_ConvertASCIItoUTF16(mCharset);
+      }
     }
 
     attrName->ToString(nameStr);
@@ -633,7 +630,6 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
     if (IsShorthandAttr(attrName, aTagName) && valueStr.IsEmpty()) {
       valueStr = nameStr;
     }
-    
     SerializeAttr(prefixStr, nameStr, valueStr, aStr, !isJS);
   }
 }
@@ -654,11 +650,11 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
   // indicate that this element should be pretty printed
   // even if we're not in pretty printing mode
   PRBool hasDirtyAttr = content->HasAttr(kNameSpaceID_None,
-                                         nsLayoutAtoms::mozdirty);
+                                         nsGkAtoms::mozdirty);
 
   nsIAtom *name = content->Tag();
 
-  if (name == nsHTMLAtoms::br && mPreLevel > 0
+  if (name == nsGkAtoms::br && mPreLevel > 0
       && (mFlags & nsIDocumentEncoder::OutputNoFormattingInPre)) {
     AppendToString(mLineBreak, aStr);
     mMayIgnoreLineBreakSequence = PR_TRUE;
@@ -666,7 +662,7 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
     return NS_OK;
   }
 
-  if (name == nsHTMLAtoms::body) {
+  if (name == nsGkAtoms::body) {
     mInBody = PR_TRUE;
   }
 
@@ -689,9 +685,9 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
 
   StartIndentation(name, hasDirtyAttr, aStr);
 
-  if (name == nsHTMLAtoms::pre ||
-      name == nsHTMLAtoms::script ||
-      name == nsHTMLAtoms::style) {
+  if (name == nsGkAtoms::pre ||
+      name == nsGkAtoms::script ||
+      name == nsGkAtoms::style) {
     mPreLevel++;
   }
   
@@ -713,7 +709,7 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
 
   // Need to keep track of OL and LI elements in order to get ordinal number 
   // for the LI.
-  if (mIsCopying && name == nsHTMLAtoms::ol){
+  if (mIsCopying && name == nsGkAtoms::ol){
     // We are copying and current node is an OL;
     // Store it's start attribute value in olState->startVal.
     nsAutoString start;
@@ -735,7 +731,7 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
       mOLStateStack.AppendElement(state);
   }
 
-  if (mIsCopying && name == nsHTMLAtoms::li) {
+  if (mIsCopying && name == nsGkAtoms::li) {
     mIsFirstChildOfOL = IsFirstChildOfOL(aOriginalElement);
     if (mIsFirstChildOfOL){
       // If OL is parent of this LI, serialize attributes in different manner.
@@ -755,11 +751,44 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
     mColPos = 0;
   }
 
-  if (name == nsHTMLAtoms::script ||
-      name == nsHTMLAtoms::style ||
-      name == nsHTMLAtoms::noscript ||
-      name == nsHTMLAtoms::noframes) {
+  if (name == nsGkAtoms::script ||
+      name == nsGkAtoms::style ||
+      name == nsGkAtoms::noscript ||
+      name == nsGkAtoms::noframes) {
     mInCDATA = PR_TRUE;
+  }
+
+  if (mIsWholeDocument && name == nsGkAtoms::head) {
+    // Check if there already are any content-type meta children.
+    // If there are, they will be modified to use the correct charset.
+    // If there aren't, we'll insert one here.
+    PRBool hasMeta = PR_FALSE;
+    PRUint32 i, childCount = content->GetChildCount();
+    for (i = 0; i < childCount; ++i) {
+      nsIContent* child = content->GetChildAt(i);
+      if (child->IsNodeOfType(nsINode::eHTML) &&
+          child->Tag() == nsGkAtoms::meta &&
+          child->HasAttr(kNameSpaceID_None, nsGkAtoms::content)) {
+        nsAutoString header;
+        child->GetAttr(kNameSpaceID_None, nsGkAtoms::httpEquiv, header);
+
+        printf("Header value = '%s'\n", NS_ConvertUTF16toUTF8(header).get());
+
+        if (header.LowerCaseEqualsLiteral("content-type")) {
+          hasMeta = PR_TRUE;
+          break;
+        }
+      }
+    }
+
+    if (!hasMeta) {
+      AppendToString(mLineBreak, aStr);
+      AppendToString(NS_LITERAL_STRING("<meta http-equiv=\"content-type\""),
+                     aStr);
+      AppendToString(NS_LITERAL_STRING(" content=\"text/html; charset="), aStr);
+      AppendToString(NS_ConvertASCIItoUTF16(mCharset), aStr);
+      AppendToString(NS_LITERAL_STRING("\">"), aStr);
+    }
   }
 
   return NS_OK;
@@ -777,15 +806,14 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
   if (!content) return NS_ERROR_FAILURE;
 
   PRBool hasDirtyAttr = content->HasAttr(kNameSpaceID_None,
-                                         nsLayoutAtoms::mozdirty);
+                                         nsGkAtoms::mozdirty);
 
   nsIAtom *name = content->Tag();
 
-  if (name == nsHTMLAtoms::script) {
+  if (name == nsGkAtoms::script) {
     nsCOMPtr<nsIScriptElement> script = do_QueryInterface(aElement);
-    NS_ASSERTION(script, "What kind of weird script element is this?");
 
-    if (script->IsMalformed()) {
+    if (script && script->IsMalformed()) {
       // We're looking at a malformed script tag. This means that the end tag
       // was missing in the source. Imitate that here by not serializing the end
       // tag.
@@ -793,13 +821,13 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
     }
   }
 
-  if (name == nsHTMLAtoms::pre ||
-      name == nsHTMLAtoms::script ||
-      name == nsHTMLAtoms::style) {
+  if (name == nsGkAtoms::pre ||
+      name == nsGkAtoms::script ||
+      name == nsGkAtoms::style) {
     mPreLevel--;
   }
 
-  if (mIsCopying && (name == nsHTMLAtoms::ol)){
+  if (mIsCopying && (name == nsGkAtoms::ol)){
     NS_ASSERTION((mOLStateStack.Count() > 0), "Cannot have an empty OL Stack");
     /* Though at this point we must always have an state to be deleted as all 
     the OL opening tags are supposed to push an olState object to the stack*/
@@ -812,7 +840,7 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
   
   nsIParserService* parserService = nsContentUtils::GetParserService();
 
-  if (parserService && (name != nsHTMLAtoms::style)) {
+  if (parserService && (name != nsGkAtoms::style)) {
     PRBool isContainer;
 
     parserService->IsContainer(parserService->HTMLAtomTagToId(name),
@@ -991,9 +1019,9 @@ nsHTMLContentSerializer::AppendToString(const nsAString& aStr,
           else if (val > 127 && 
                    mFlags & nsIDocumentEncoder::OutputEncodeW3CEntities &&
                    mEntityConverter) {
-            if (IS_HIGH_SURROGATE(val) &&
+            if (NS_IS_HIGH_SURROGATE(val) &&
                 c + 1 < fragmentEnd &&
-                IS_LOW_SURROGATE(*(c + 1))) {
+                NS_IS_LOW_SURROGATE(*(c + 1))) {
               PRUint32 valUTF32 = SURROGATE_TO_UCS4(val, *(++c));
               if (NS_SUCCEEDED(mEntityConverter->ConvertUTF32ToEntity(valUTF32,
                                nsIEntityConverter::entityW3C, &fullEntityText))) {
@@ -1071,14 +1099,14 @@ nsHTMLContentSerializer::LineBreakBeforeOpen(nsIAtom* aName,
     return PR_FALSE;
   }
         
-  if (aName == nsHTMLAtoms::title ||
-      aName == nsHTMLAtoms::meta  ||
-      aName == nsHTMLAtoms::link  ||
-      aName == nsHTMLAtoms::style ||
-      aName == nsHTMLAtoms::select ||
-      aName == nsHTMLAtoms::option ||
-      aName == nsHTMLAtoms::script ||
-      aName == nsHTMLAtoms::html) {
+  if (aName == nsGkAtoms::title ||
+      aName == nsGkAtoms::meta  ||
+      aName == nsGkAtoms::link  ||
+      aName == nsGkAtoms::style ||
+      aName == nsGkAtoms::select ||
+      aName == nsGkAtoms::option ||
+      aName == nsGkAtoms::script ||
+      aName == nsGkAtoms::html) {
     return PR_TRUE;
   }
   else {
@@ -1103,23 +1131,23 @@ nsHTMLContentSerializer::LineBreakAfterOpen(nsIAtom* aName,
     return PR_FALSE;
   }
 
-  if ((aName == nsHTMLAtoms::html) ||
-      (aName == nsHTMLAtoms::head) ||
-      (aName == nsHTMLAtoms::body) ||
-      (aName == nsHTMLAtoms::ul) ||
-      (aName == nsHTMLAtoms::ol) ||
-      (aName == nsHTMLAtoms::dl) ||
-      (aName == nsHTMLAtoms::table) ||
-      (aName == nsHTMLAtoms::tbody) ||
-      (aName == nsHTMLAtoms::tr) ||
-      (aName == nsHTMLAtoms::br) ||
-      (aName == nsHTMLAtoms::meta) ||
-      (aName == nsHTMLAtoms::link) ||
-      (aName == nsHTMLAtoms::script) ||
-      (aName == nsHTMLAtoms::select) ||
-      (aName == nsHTMLAtoms::map) ||
-      (aName == nsHTMLAtoms::area) ||
-      (aName == nsHTMLAtoms::style)) {
+  if ((aName == nsGkAtoms::html) ||
+      (aName == nsGkAtoms::head) ||
+      (aName == nsGkAtoms::body) ||
+      (aName == nsGkAtoms::ul) ||
+      (aName == nsGkAtoms::ol) ||
+      (aName == nsGkAtoms::dl) ||
+      (aName == nsGkAtoms::table) ||
+      (aName == nsGkAtoms::tbody) ||
+      (aName == nsGkAtoms::tr) ||
+      (aName == nsGkAtoms::br) ||
+      (aName == nsGkAtoms::meta) ||
+      (aName == nsGkAtoms::link) ||
+      (aName == nsGkAtoms::script) ||
+      (aName == nsGkAtoms::select) ||
+      (aName == nsGkAtoms::map) ||
+      (aName == nsGkAtoms::area) ||
+      (aName == nsGkAtoms::style)) {
     return PR_TRUE;
   }
 
@@ -1135,15 +1163,15 @@ nsHTMLContentSerializer::LineBreakBeforeClose(nsIAtom* aName,
     return PR_FALSE;
   }
 
-  if ((aName == nsHTMLAtoms::html) ||
-      (aName == nsHTMLAtoms::head) ||
-      (aName == nsHTMLAtoms::body) ||
-      (aName == nsHTMLAtoms::ul) ||
-      (aName == nsHTMLAtoms::ol) ||
-      (aName == nsHTMLAtoms::dl) ||
-      (aName == nsHTMLAtoms::select) ||
-      (aName == nsHTMLAtoms::table) ||
-      (aName == nsHTMLAtoms::tbody)) {
+  if ((aName == nsGkAtoms::html) ||
+      (aName == nsGkAtoms::head) ||
+      (aName == nsGkAtoms::body) ||
+      (aName == nsGkAtoms::ul) ||
+      (aName == nsGkAtoms::ol) ||
+      (aName == nsGkAtoms::dl) ||
+      (aName == nsGkAtoms::select) ||
+      (aName == nsGkAtoms::table) ||
+      (aName == nsGkAtoms::tbody)) {
     return PR_TRUE;
   }
   
@@ -1159,23 +1187,23 @@ nsHTMLContentSerializer::LineBreakAfterClose(nsIAtom* aName,
     return PR_FALSE;
   }
 
-  if ((aName == nsHTMLAtoms::html) ||
-      (aName == nsHTMLAtoms::head) ||
-      (aName == nsHTMLAtoms::body) ||
-      (aName == nsHTMLAtoms::tr) ||
-      (aName == nsHTMLAtoms::th) ||
-      (aName == nsHTMLAtoms::td) ||
-      (aName == nsHTMLAtoms::pre) ||
-      (aName == nsHTMLAtoms::title) ||
-      (aName == nsHTMLAtoms::li) ||
-      (aName == nsHTMLAtoms::dt) ||
-      (aName == nsHTMLAtoms::dd) ||
-      (aName == nsHTMLAtoms::blockquote) ||
-      (aName == nsHTMLAtoms::select) ||
-      (aName == nsHTMLAtoms::option) ||
-      (aName == nsHTMLAtoms::p) ||
-      (aName == nsHTMLAtoms::map) ||
-      (aName == nsHTMLAtoms::div)) {
+  if ((aName == nsGkAtoms::html) ||
+      (aName == nsGkAtoms::head) ||
+      (aName == nsGkAtoms::body) ||
+      (aName == nsGkAtoms::tr) ||
+      (aName == nsGkAtoms::th) ||
+      (aName == nsGkAtoms::td) ||
+      (aName == nsGkAtoms::pre) ||
+      (aName == nsGkAtoms::title) ||
+      (aName == nsGkAtoms::li) ||
+      (aName == nsGkAtoms::dt) ||
+      (aName == nsGkAtoms::dd) ||
+      (aName == nsGkAtoms::blockquote) ||
+      (aName == nsGkAtoms::select) ||
+      (aName == nsGkAtoms::option) ||
+      (aName == nsGkAtoms::p) ||
+      (aName == nsGkAtoms::map) ||
+      (aName == nsGkAtoms::div)) {
     return PR_TRUE;
   }
   else {
@@ -1202,19 +1230,19 @@ nsHTMLContentSerializer::StartIndentation(nsIAtom* aName,
     }
   }
 
-  if ((aName == nsHTMLAtoms::head) ||
-      (aName == nsHTMLAtoms::table) ||
-      (aName == nsHTMLAtoms::tr) ||
-      (aName == nsHTMLAtoms::ul) ||
-      (aName == nsHTMLAtoms::ol) ||
-      (aName == nsHTMLAtoms::dl) ||
-      (aName == nsHTMLAtoms::tbody) ||
-      (aName == nsHTMLAtoms::form) ||
-      (aName == nsHTMLAtoms::frameset) ||
-      (aName == nsHTMLAtoms::blockquote) ||
-      (aName == nsHTMLAtoms::li) ||
-      (aName == nsHTMLAtoms::dt) ||
-      (aName == nsHTMLAtoms::dd)) {
+  if ((aName == nsGkAtoms::head) ||
+      (aName == nsGkAtoms::table) ||
+      (aName == nsGkAtoms::tr) ||
+      (aName == nsGkAtoms::ul) ||
+      (aName == nsGkAtoms::ol) ||
+      (aName == nsGkAtoms::dl) ||
+      (aName == nsGkAtoms::tbody) ||
+      (aName == nsGkAtoms::form) ||
+      (aName == nsGkAtoms::frameset) ||
+      (aName == nsGkAtoms::blockquote) ||
+      (aName == nsGkAtoms::li) ||
+      (aName == nsGkAtoms::dt) ||
+      (aName == nsGkAtoms::dd)) {
     mIndent++;
   }
 }
@@ -1224,19 +1252,19 @@ nsHTMLContentSerializer::EndIndentation(nsIAtom* aName,
                                         PRBool aHasDirtyAttr,
                                         nsAString& aStr)
 {
-  if ((aName == nsHTMLAtoms::head) ||
-      (aName == nsHTMLAtoms::table) ||
-      (aName == nsHTMLAtoms::tr) ||
-      (aName == nsHTMLAtoms::ul) ||
-      (aName == nsHTMLAtoms::ol) ||
-      (aName == nsHTMLAtoms::dl) ||
-      (aName == nsHTMLAtoms::li) ||
-      (aName == nsHTMLAtoms::tbody) ||
-      (aName == nsHTMLAtoms::form) ||
-      (aName == nsHTMLAtoms::blockquote) ||
-      (aName == nsHTMLAtoms::dt) ||
-      (aName == nsHTMLAtoms::dd) ||
-      (aName == nsHTMLAtoms::frameset)) {
+  if ((aName == nsGkAtoms::head) ||
+      (aName == nsGkAtoms::table) ||
+      (aName == nsGkAtoms::tr) ||
+      (aName == nsGkAtoms::ul) ||
+      (aName == nsGkAtoms::ol) ||
+      (aName == nsGkAtoms::dl) ||
+      (aName == nsGkAtoms::li) ||
+      (aName == nsGkAtoms::tbody) ||
+      (aName == nsGkAtoms::form) ||
+      (aName == nsGkAtoms::blockquote) ||
+      (aName == nsGkAtoms::dt) ||
+      (aName == nsGkAtoms::dd) ||
+      (aName == nsGkAtoms::frameset)) {
     mIndent--;
   }
 
@@ -1280,9 +1308,8 @@ nsHTMLContentSerializer::SerializeLIValueAttribute(nsIDOMElement* aElement,
   // We are copying and we are at the "first" LI node of OL in selected range.
   // It may not be the first LI child of OL but it's first in the selected range.
   // Note that we get into this condition only once per a OL.
-  nsCOMPtr<nsIDOMNode> node = do_QueryInterface(aElement);
   PRBool found = PR_FALSE;
-  nsIDOMNode* currNode = node;
+  nsCOMPtr<nsIDOMNode> currNode = do_QueryInterface(aElement);
   nsAutoString valueStr;
   PRInt32 offset = 0;
   olState defaultOLState(0, PR_FALSE);
@@ -1315,7 +1342,9 @@ nsHTMLContentSerializer::SerializeLIValueAttribute(nsIDOMElement* aElement,
         }
       }
     }
-    currNode->GetPreviousSibling(&currNode);
+    nsCOMPtr<nsIDOMNode> tmp;
+    currNode->GetPreviousSibling(getter_AddRefs(tmp));
+    currNode.swap(tmp);
   }
   // If LI was not having "value", Set the "value" attribute for it.
   // Note that We are at the first LI in the selected range of OL.

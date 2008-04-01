@@ -130,8 +130,8 @@ nsTextFragment::operator=(const nsTextFragment& aOther)
       m1b = aOther.m1b; // This will work even if aOther is using m2b
     }
     else {
-      m2b = NS_STATIC_CAST(PRUnichar*,
-        nsMemory::Clone(aOther.m2b, aOther.mState.mLength *
+      m2b = static_cast<PRUnichar*>
+                       (nsMemory::Clone(aOther.m2b, aOther.mState.mLength *
                                     (aOther.mState.mIs2b ? sizeof(PRUnichar) : sizeof(char))));
     }
 
@@ -250,6 +250,16 @@ nsTextFragment::AppendTo(nsAString& aString) const
 }
 
 void
+nsTextFragment::AppendTo(nsAString& aString, PRInt32 aOffset, PRInt32 aLength) const
+{
+  if (mState.mIs2b) {
+    aString.Append(m2b + aOffset, aLength);
+  } else {
+    AppendASCIItoUTF16(Substring(m1b + aOffset, m1b + aOffset + aLength), aString);
+  }
+}
+
+void
 nsTextFragment::CopyTo(PRUnichar *aDest, PRInt32 aOffset, PRInt32 aCount)
 {
   NS_ASSERTION(aOffset >= 0, "Bad offset passed to nsTextFragment::CopyTo()!");
@@ -277,15 +287,12 @@ nsTextFragment::CopyTo(PRUnichar *aDest, PRInt32 aOffset, PRInt32 aCount)
 }
 
 void
-nsTextFragment::Append(const nsAString& aData)
+nsTextFragment::Append(const PRUnichar* aBuffer, PRUint32 aLength)
 {
-  PRUint32 len = aData.Length();
-  const PRUnichar* start = aData.BeginReading();
-
   // This is a common case because some callsites create a textnode
   // with a value by creating the node and then calling AppendData.
   if (mState.mLength == 0) {
-    SetTo(start, len);
+    SetTo(aBuffer, aLength);
 
     return;
   }
@@ -294,13 +301,13 @@ nsTextFragment::Append(const nsAString& aData)
 
   if (mState.mIs2b) {
     // Already a 2-byte string so the result will be too
-    PRUnichar* buff = (PRUnichar*)nsMemory::Realloc(m2b, (mState.mLength + len) * sizeof(PRUnichar));
+    PRUnichar* buff = (PRUnichar*)nsMemory::Realloc(m2b, (mState.mLength + aLength) * sizeof(PRUnichar));
     if (!buff) {
       return;
     }
     
-    memcpy(buff + mState.mLength, start, len * sizeof(PRUnichar));
-    mState.mLength += len;
+    memcpy(buff + mState.mLength, aBuffer, aLength * sizeof(PRUnichar));
+    mState.mLength += aLength;
     m2b = buff;
 
     return;
@@ -308,8 +315,8 @@ nsTextFragment::Append(const nsAString& aData)
 
   // Current string is a 1-byte string, check if the new data fits in one byte too.
 
-  const PRUnichar* ucp = start;
-  const PRUnichar* uend = ucp + len;
+  const PRUnichar* ucp = aBuffer;
+  const PRUnichar* uend = ucp + aLength;
   PRBool need2 = PR_FALSE;
   while (ucp < uend) {
     PRUnichar ch = *ucp++;
@@ -322,7 +329,7 @@ nsTextFragment::Append(const nsAString& aData)
   if (need2) {
     // The old data was 1-byte, but the new is not so we have to expand it
     // all to 2-byte
-    PRUnichar* buff = (PRUnichar*)nsMemory::Alloc((mState.mLength + len) *
+    PRUnichar* buff = (PRUnichar*)nsMemory::Alloc((mState.mLength + aLength) *
                                                   sizeof(PRUnichar));
     if (!buff) {
       return;
@@ -333,9 +340,9 @@ nsTextFragment::Append(const nsAString& aData)
       buff[i] = (unsigned char)m1b[i];
     }
     
-    memcpy(buff + mState.mLength, start, len * sizeof(PRUnichar));
+    memcpy(buff + mState.mLength, aBuffer, aLength * sizeof(PRUnichar));
 
-    mState.mLength += len;
+    mState.mLength += aLength;
     mState.mIs2b = PR_TRUE;
 
     if (mState.mInHeap) {
@@ -351,14 +358,14 @@ nsTextFragment::Append(const nsAString& aData)
   // The new and the old data is all 1-byte
   char* buff;
   if (mState.mInHeap) {
-    buff = (char*)nsMemory::Realloc(NS_CONST_CAST(char*, m1b),
-                                    (mState.mLength + len) * sizeof(char));
+    buff = (char*)nsMemory::Realloc(const_cast<char*>(m1b),
+                                    (mState.mLength + aLength) * sizeof(char));
     if (!buff) {
       return;
     }
   }
   else {
-    buff = (char*)nsMemory::Alloc((mState.mLength + len) * sizeof(char));
+    buff = (char*)nsMemory::Alloc((mState.mLength + aLength) * sizeof(char));
     if (!buff) {
       return;
     }
@@ -367,12 +374,12 @@ nsTextFragment::Append(const nsAString& aData)
     mState.mInHeap = PR_TRUE;
   }
     
-  for (PRUint32 i = 0; i < len; ++i) {
-    buff[mState.mLength + i] = (char)start[i];
+  for (PRUint32 i = 0; i < aLength; ++i) {
+    buff[mState.mLength + i] = (char)aBuffer[i];
   }
 
   m1b = buff;
-  mState.mLength += len;
+  mState.mLength += aLength;
 
 }
 
@@ -387,9 +394,9 @@ nsTextFragment::SetBidiFlag()
     while (cp < end) {
       PRUnichar ch1 = *cp++;
       PRUint32 utf32Char = ch1;
-      if (IS_HIGH_SURROGATE(ch1) &&
+      if (NS_IS_HIGH_SURROGATE(ch1) &&
           cp < end &&
-          IS_LOW_SURROGATE(*cp)) {
+          NS_IS_LOW_SURROGATE(*cp)) {
         PRUnichar ch2 = *cp++;
         utf32Char = SURROGATE_TO_UCS4(ch1, ch2);
       }

@@ -45,10 +45,6 @@ txResultTreeFragment::txResultTreeFragment(nsAutoPtr<txResultBuffer>& aBuffer)
 {
 }
 
-txResultTreeFragment::~txResultTreeFragment()
-{
-}
-
 short txResultTreeFragment::getResultType()
 {
     return RESULT_TREE_FRAGMENT;
@@ -84,21 +80,13 @@ double txResultTreeFragment::numberValue()
     return Double::toDouble(mBuffer->mStringValue);
 }
 
-nsresult txResultTreeFragment::flushToHandler(txAXMLEventHandler* aHandler)
+nsresult txResultTreeFragment::flushToHandler(txAXMLEventHandler** aHandler)
 {
     if (!mBuffer) {
         return NS_ERROR_FAILURE;
     }
 
     return mBuffer->flushToHandler(aHandler);
-}
-
-txRtfHandler::txRtfHandler()
-{
-}
-
-txRtfHandler::~txRtfHandler()
-{
 }
 
 nsresult
@@ -112,10 +100,14 @@ txRtfHandler::getAsRTF(txAExprResult** aResult)
     return NS_OK;
 }
 
-void txRtfHandler::endDocument(nsresult aResult)
+nsresult
+txRtfHandler::endDocument(nsresult aResult)
 {
+    return NS_OK;
 }
 
-void txRtfHandler::startDocument()
+nsresult
+txRtfHandler::startDocument()
 {
+    return NS_OK;
 }

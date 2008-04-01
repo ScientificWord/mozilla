@@ -46,7 +46,7 @@
 class nsIAtom;
 class nsIContent;
 class nsIDOM3EventTarget;
-class nsIDOMEventReceiver;
+class nsPIDOMEventTarget;
 class nsXBLPrototypeHandler;
 
 class nsXBLEventHandler : public nsIDOMEventListener
@@ -115,6 +115,10 @@ public:
     return mType;
   }
 
+  void SetIsBoundToChrome(PRBool aIsBoundToChrome)
+  {
+    mIsBoundToChrome = aIsBoundToChrome;
+  }
 private:
   nsXBLKeyEventHandler();
 
@@ -122,6 +126,7 @@ private:
   nsCOMPtr<nsIAtom> mEventType;
   PRUint8 mPhase;
   PRUint8 mType;
+  PRPackedBool mIsBoundToChrome;
 };
 
 nsresult

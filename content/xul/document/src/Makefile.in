@@ -51,6 +51,7 @@ REQUIRES	= xpcom \
 		  exthandler \
 		  mimetype \
 		  gfx \
+		  thebes \
 		  layout \
 		  content \
 		  widget \
@@ -62,14 +63,14 @@ REQUIRES	= xpcom \
 		  locale \
 		  view \
 		  necko \
-		  uriloader \
 		  htmlparser \
-		  lwbrk \
 		  docshell \
 		  pref \
 		  xultmpl \
 		  webshell \
 		  unicharutil \
+		  appshell \
+		  util \
 		  $(NULL)
 
 CPPSRCS		= nsXULControllers.cpp

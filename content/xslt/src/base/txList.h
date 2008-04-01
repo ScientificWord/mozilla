@@ -60,7 +60,7 @@ public:
     /**
      * txList destructor, object references will not be deleted.
     **/
-    virtual ~txList();
+    ~txList();
 
     /**
      * Returns the object located at the given index. This may
@@ -102,15 +102,6 @@ public:
      */
     void clear();
 
-    /**
-     * Replaces the Object at the given index with a new Object.
-     * If the given index is outside the list null is returned.
-     * @param aIndex  index of Object to replace.
-     * @param aObjPtr new Object to put in the list.
-     * @return the old Object pointer
-     */
-    void* replace(PRUint32 aIndex, void* aObjPtr);
-
 protected:
 
     struct ListItem {
@@ -151,11 +142,6 @@ public:
      * @param list, the txList to create an Iterator for
     **/
     txListIterator(txList* list);
-
-    /**
-     * Destructor, destroys a given instance of a txListIterator
-    **/
-    ~txListIterator();
 
     /**
      * Adds the Object pointer to the txList pointed to by this txListIterator.

@@ -41,12 +41,13 @@
 #include "txNodeSet.h"
 #include "txAtoms.h"
 #include "txIXPathContext.h"
-#include "txTokenizer.h"
+#include "nsWhitespaceTokenizer.h"
 #include "txXPathTreeWalker.h"
 #include <math.h>
 #include "txStringUtils.h"
+#include "txXMLUtils.h"
 
-struct txFunctionDescriptor
+struct txCoreFunctionDescriptor
 {
     PRInt8 mMinParams;
     PRInt8 mMaxParams;
@@ -56,7 +57,7 @@ struct txFunctionDescriptor
 
 // This must be ordered in the same order as txCoreFunctionCall::eType.
 // If you change one, change the other.
-static const txFunctionDescriptor descriptTable[] =
+static const txCoreFunctionDescriptor descriptTable[] =
 {
     { 1, 1, Expr::NUMBER_RESULT,  &txXPathAtoms::count }, // COUNT
     { 1, 1, Expr::NODESET_RESULT, &txXPathAtoms::id }, // ID
@@ -110,13 +111,11 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
     }
 
     nsresult rv = NS_OK;
-    txListIterator iter(&params);
-
     switch (mType) {
         case COUNT:
         {
             nsRefPtr<txNodeSet> nodes;
-            rv = evaluateToNodeSet((Expr*)iter.next(), aContext,
+            rv = evaluateToNodeSet(mParams[0], aContext,
                                    getter_AddRefs(nodes));
             NS_ENSURE_SUCCESS(rv, rv);
 
@@ -126,8 +125,7 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         case ID:
         {
             nsRefPtr<txAExprResult> exprResult;
-            rv = ((Expr*)iter.next())->evaluate(aContext,
-                                                getter_AddRefs(exprResult));
+            rv = mParams[0]->evaluate(aContext, getter_AddRefs(exprResult));
             NS_ENSURE_SUCCESS(rv, rv);
 
             nsRefPtr<txNodeSet> resultSet;
@@ -137,14 +135,14 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
             txXPathTreeWalker walker(aContext->getContextNode());
             
             if (exprResult->getResultType() == txAExprResult::NODESET) {
-                txNodeSet* nodes = NS_STATIC_CAST(txNodeSet*,
-                                                  NS_STATIC_CAST(txAExprResult*,
-                                                                 exprResult));
+                txNodeSet* nodes = static_cast<txNodeSet*>
+                                              (static_cast<txAExprResult*>
+                                                          (exprResult));
                 PRInt32 i;
                 for (i = 0; i < nodes->size(); ++i) {
                     nsAutoString idList;
                     txXPathNodeUtils::appendNodeValue(nodes->get(i), idList);
-                    txTokenizer tokenizer(idList);
+                    nsWhitespaceTokenizer tokenizer(idList);
                     while (tokenizer.hasMoreTokens()) {
                         if (walker.moveToElementById(tokenizer.nextToken())) {
                             resultSet->add(walker.getCurrentPosition());
@@ -155,7 +153,7 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
             else {
                 nsAutoString idList;
                 exprResult->stringValue(idList);
-                txTokenizer tokenizer(idList);
+                nsWhitespaceTokenizer tokenizer(idList);
                 while (tokenizer.hasMoreTokens()) {
                     if (walker.moveToElementById(tokenizer.nextToken())) {
                         resultSet->add(walker.getCurrentPosition());
@@ -179,8 +177,8 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         {
             // Check for optional arg
             nsRefPtr<txNodeSet> nodes;
-            if (iter.hasNext()) {
-                rv = evaluateToNodeSet((Expr*)iter.next(), aContext,
+            if (!mParams.IsEmpty()) {
+                rv = evaluateToNodeSet(mParams[0], aContext,
                                        getter_AddRefs(nodes));
                 NS_ENSURE_SUCCESS(rv, rv);
 
@@ -255,9 +253,9 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
             rv = aContext->recycler()->getStringResult(getter_AddRefs(strRes));
             NS_ENSURE_SUCCESS(rv, rv);
 
-            while (iter.hasNext()) {
-                Expr* param = NS_STATIC_CAST(Expr*, iter.next());
-                rv = param->evaluateToString(aContext, strRes->mValue);
+            PRUint32 i, len = mParams.Length();
+            for (i = 0; i < len; ++i) {
+                rv = mParams[i]->evaluateToString(aContext, strRes->mValue);
                 NS_ENSURE_SUCCESS(rv, rv);
             }
 
@@ -267,11 +265,8 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         }
         case CONTAINS:
         {
-            Expr* arg1Expr = NS_STATIC_CAST(Expr*, iter.next());
-            Expr* arg2Expr = NS_STATIC_CAST(Expr*, iter.next());
-
             nsAutoString arg2;
-            rv = arg2Expr->evaluateToString(aContext, arg2);
+            rv = mParams[1]->evaluateToString(aContext, arg2);
             NS_ENSURE_SUCCESS(rv, rv);
 
             if (arg2.IsEmpty()) {
@@ -279,7 +274,7 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
             }
             else {
                 nsAutoString arg1;
-                rv = arg1Expr->evaluateToString(aContext, arg1);
+                rv = mParams[0]->evaluateToString(aContext, arg1);
                 NS_ENSURE_SUCCESS(rv, rv);
 
                 aContext->recycler()->getBoolResult(FindInReadable(arg2, arg1),
@@ -291,9 +286,8 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         case NORMALIZE_SPACE:
         {
             nsAutoString resultStr;
-            if (iter.hasNext()) {
-                Expr* param = NS_STATIC_CAST(Expr*, iter.next());
-                rv = param->evaluateToString(aContext, resultStr);
+            if (!mParams.IsEmpty()) {
+                rv = mParams[0]->evaluateToString(aContext, resultStr);
                 NS_ENSURE_SUCCESS(rv, rv);
             }
             else {
@@ -331,11 +325,8 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         }
         case STARTS_WITH:
         {
-            Expr* arg1Expr = NS_STATIC_CAST(Expr*, iter.next());
-            Expr* arg2Expr = NS_STATIC_CAST(Expr*, iter.next());
-
             nsAutoString arg2;
-            rv = arg2Expr->evaluateToString(aContext, arg2);
+            rv = mParams[1]->evaluateToString(aContext, arg2);
             NS_ENSURE_SUCCESS(rv, rv);
 
             PRBool result;
@@ -344,7 +335,7 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
             }
             else {
                 nsAutoString arg1;
-                rv = arg1Expr->evaluateToString(aContext, arg1);
+                rv = mParams[0]->evaluateToString(aContext, arg1);
                 NS_ENSURE_SUCCESS(rv, rv);
 
                 result = StringBeginsWith(arg1, arg2);
@@ -360,9 +351,8 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
             rv = aContext->recycler()->getStringResult(getter_AddRefs(strRes));
             NS_ENSURE_SUCCESS(rv, rv);
 
-            if (iter.hasNext()) {
-                Expr* param = NS_STATIC_CAST(Expr*, iter.next());
-                rv = param->evaluateToString(aContext, strRes->mValue);
+            if (!mParams.IsEmpty()) {
+                rv = mParams[0]->evaluateToString(aContext, strRes->mValue);
                 NS_ENSURE_SUCCESS(rv, rv);
             }
             else {
@@ -377,9 +367,8 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         case STRING_LENGTH:
         {
             nsAutoString resultStr;
-            if (iter.hasNext()) {
-                Expr* arg1Expr = NS_STATIC_CAST(Expr*, iter.next());
-                rv = arg1Expr->evaluateToString(aContext, resultStr);
+            if (!mParams.IsEmpty()) {
+                rv = mParams[0]->evaluateToString(aContext, resultStr);
                 NS_ENSURE_SUCCESS(rv, rv);
             }
             else {
@@ -394,14 +383,11 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         }
         case SUBSTRING:
         {
-            Expr* param = NS_STATIC_CAST(Expr*, iter.next());
-
             nsAutoString src;
-            rv = param->evaluateToString(aContext, src);
+            rv = mParams[0]->evaluateToString(aContext, src);
             NS_ENSURE_SUCCESS(rv, rv);
 
-            double start = evaluateToNumber(NS_STATIC_CAST(Expr*, iter.next()),
-                                            aContext);
+            double start = evaluateToNumber(mParams[1], aContext);
 
             // check for NaN or +/-Inf
             if (Double::isNaN(start) ||
@@ -415,8 +401,8 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
             start = floor(start + 0.5) - 1;
 
             double end;
-            if (iter.hasNext()) {
-                end = start + evaluateToNumber((Expr*)iter.next(),
+            if (mParams.Length() == 3) {
+                end = start + evaluateToNumber(mParams[2],
                                                aContext);
                 if (Double::isNaN(end) || end < 0) {
                     aContext->recycler()->getEmptyStringResult(aResult);
@@ -448,14 +434,12 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         }
         case SUBSTRING_AFTER:
         {
-            Expr* arg1Expr = NS_STATIC_CAST(Expr*, iter.next());
             nsAutoString arg1;
-            rv = arg1Expr->evaluateToString(aContext, arg1);
+            rv = mParams[0]->evaluateToString(aContext, arg1);
             NS_ENSURE_SUCCESS(rv, rv);
 
-            Expr* arg2Expr = NS_STATIC_CAST(Expr*, iter.next());
             nsAutoString arg2;
-            rv = arg2Expr->evaluateToString(aContext, arg2);
+            rv = mParams[1]->evaluateToString(aContext, arg2);
             NS_ENSURE_SUCCESS(rv, rv);
 
             if (arg2.IsEmpty()) {
@@ -474,11 +458,8 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         }
         case SUBSTRING_BEFORE:
         {
-            Expr* arg1Expr = NS_STATIC_CAST(Expr*, iter.next());
-            Expr* arg2Expr = NS_STATIC_CAST(Expr*, iter.next());
-
             nsAutoString arg2;
-            rv = arg2Expr->evaluateToString(aContext, arg2);
+            rv = mParams[1]->evaluateToString(aContext, arg2);
             NS_ENSURE_SUCCESS(rv, rv);
 
             if (arg2.IsEmpty()) {
@@ -488,7 +469,7 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
             }
 
             nsAutoString arg1;
-            rv = arg1Expr->evaluateToString(aContext, arg1);
+            rv = mParams[0]->evaluateToString(aContext, arg1);
             NS_ENSURE_SUCCESS(rv, rv);
 
             PRInt32 idx = arg1.Find(arg2);
@@ -503,10 +484,8 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         }
         case TRANSLATE:
         {
-            Expr* arg1Expr = NS_STATIC_CAST(Expr*, iter.next());
-
             nsAutoString src;
-            rv = arg1Expr->evaluateToString(aContext, src);
+            rv = mParams[0]->evaluateToString(aContext, src);
             NS_ENSURE_SUCCESS(rv, rv);
 
             if (src.IsEmpty()) {
@@ -521,14 +500,11 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
 
             strRes->mValue.SetCapacity(src.Length());
 
-            Expr* arg2Expr = NS_STATIC_CAST(Expr*, iter.next());
-            Expr* arg3Expr = NS_STATIC_CAST(Expr*, iter.next());
-
             nsAutoString oldChars, newChars;
-            rv = arg2Expr->evaluateToString(aContext, oldChars);
+            rv = mParams[1]->evaluateToString(aContext, oldChars);
             NS_ENSURE_SUCCESS(rv, rv);
 
-            rv = arg3Expr->evaluateToString(aContext, newChars);
+            rv = mParams[2]->evaluateToString(aContext, newChars);
             NS_ENSURE_SUCCESS(rv, rv);
 
             PRUint32 i;
@@ -554,8 +530,8 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         case NUMBER:
         {
             double res;
-            if (iter.hasNext()) {
-                res = evaluateToNumber((Expr*)iter.next(), aContext);
+            if (!mParams.IsEmpty()) {
+                res = evaluateToNumber(mParams[0], aContext);
             }
             else {
                 nsAutoString resultStr;
@@ -567,7 +543,7 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         }
         case ROUND:
         {
-            double dbl = evaluateToNumber((Expr*)iter.next(), aContext);
+            double dbl = evaluateToNumber(mParams[0], aContext);
             if (!Double::isNaN(dbl) && !Double::isInfinite(dbl)) {
                 if (Double::isNeg(dbl) && dbl >= -0.5) {
                     dbl *= 0;
@@ -581,7 +557,7 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         }
         case FLOOR:
         {
-            double dbl = evaluateToNumber((Expr*)iter.next(), aContext);
+            double dbl = evaluateToNumber(mParams[0], aContext);
             if (!Double::isNaN(dbl) &&
                 !Double::isInfinite(dbl) &&
                 !(dbl == 0 && Double::isNeg(dbl))) {
@@ -592,7 +568,7 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         }
         case CEILING:
         {
-            double dbl = evaluateToNumber((Expr*)iter.next(), aContext);
+            double dbl = evaluateToNumber(mParams[0], aContext);
             if (!Double::isNaN(dbl) && !Double::isInfinite(dbl)) {
                 if (Double::isNeg(dbl) && dbl > -1) {
                     dbl *= 0;
@@ -607,7 +583,7 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         case SUM:
         {
             nsRefPtr<txNodeSet> nodes;
-            nsresult rv = evaluateToNodeSet((Expr*)iter.next(), aContext,
+            nsresult rv = evaluateToNodeSet(mParams[0], aContext,
                                             getter_AddRefs(nodes));
             NS_ENSURE_SUCCESS(rv, rv);
 
@@ -625,9 +601,8 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         
         case BOOLEAN:
         {
-            Expr* param = NS_STATIC_CAST(Expr*, iter.next());
             PRBool result;
-            nsresult rv = param->evaluateToBool(aContext, result);
+            nsresult rv = mParams[0]->evaluateToBool(aContext, result);
             NS_ENSURE_SUCCESS(rv, rv);
 
             aContext->recycler()->getBoolResult(result, aResult);
@@ -658,14 +633,14 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
             }
 
             nsAutoString arg;
-            Expr* param = NS_STATIC_CAST(Expr*, iter.next());
-            nsresult rv = param->evaluateToString(aContext, arg);
+            rv = mParams[0]->evaluateToString(aContext, arg);
             NS_ENSURE_SUCCESS(rv, rv);
 
-            PRBool result = arg.Equals(Substring(lang, 0, arg.Length()),
-                                       txCaseInsensitiveStringComparator()) &&
-                            (lang.Length() == arg.Length() ||
-                             lang.CharAt(arg.Length()) == '-');
+            PRBool result =
+                StringBeginsWith(lang, arg,
+                                 txCaseInsensitiveStringComparator()) &&
+                (lang.Length() == arg.Length() ||
+                 lang.CharAt(arg.Length()) == '-');
 
             aContext->recycler()->getBoolResult(result, aResult);
 
@@ -673,9 +648,8 @@ txCoreFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         }
         case _NOT:
         {
-            Expr* param = NS_STATIC_CAST(Expr*, iter.next());
             PRBool result;
-            nsresult rv = param->evaluateToBool(aContext, result);
+            rv = mParams[0]->evaluateToBool(aContext, result);
             NS_ENSURE_SUCCESS(rv, rv);
 
             aContext->recycler()->getBoolResult(!result, aResult);
@@ -726,7 +700,7 @@ txCoreFunctionCall::isSensitiveTo(ContextSensitivity aContext)
         }
         case ID:
         {
-            return (aContext & DOCUMENT_CONTEXT) ||
+            return (aContext & NODE_CONTEXT) ||
                    argsSensitiveTo(aContext);
         }
         case LAST:
@@ -741,7 +715,7 @@ txCoreFunctionCall::isSensitiveTo(ContextSensitivity aContext)
         case STRING_LENGTH:
         case NUMBER:
         {
-            if (params.isEmpty()) {
+            if (mParams.IsEmpty()) {
                 return !!(aContext & NODE_CONTEXT);
             }
             return argsSensitiveTo(aContext);
@@ -768,7 +742,7 @@ txCoreFunctionCall::getTypeFromAtom(nsIAtom* aName, eType& aType)
     PRUint32 i;
     for (i = 0; i < NS_ARRAY_LENGTH(descriptTable); ++i) {
         if (aName == *descriptTable[i].mName) {
-            aType = NS_STATIC_CAST(eType, i);
+            aType = static_cast<eType>(i);
 
             return PR_TRUE;
         }

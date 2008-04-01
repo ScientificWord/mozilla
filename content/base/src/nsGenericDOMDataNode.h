@@ -43,15 +43,14 @@
 #ifndef nsGenericDOMDataNode_h___
 #define nsGenericDOMDataNode_h___
 
-#include "nsITextContent.h"
 #include "nsIDOMCharacterData.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsTextFragment.h"
 #include "nsVoidArray.h"
 #include "nsDOMError.h"
 #include "nsIEventListenerManager.h"
 #include "nsGenericElement.h"
-
+#include "nsCycleCollectionParticipant.h"
 
 class nsIDOMAttr;
 class nsIDOMEventListener;
@@ -61,10 +60,10 @@ class nsIDOMText;
 class nsINodeInfo;
 class nsURI;
 
-class nsGenericDOMDataNode : public nsITextContent
+class nsGenericDOMDataNode : public nsIContent
 {
 public:
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
 
   nsGenericDOMDataNode(nsINodeInfo *aNodeInfo);
   virtual ~nsGenericDOMDataNode();
@@ -152,17 +151,6 @@ public:
                        PRBool* aReturn);
   nsresult GetBaseURI(nsAString& aURI);
 
-  /**
-   * A basic implementation of the DOM cloneNode method. Calls CloneContent to
-   * do the actual cloning of the node.
-   *
-   * @param aDeep if true all descendants will be cloned too
-   * @param aSource nsIDOMNode pointer to this node
-   * @param aResult the clone
-   */
-  nsresult CloneNode(PRBool aDeep, nsIDOMNode *aSource,
-                     nsIDOMNode **aResult) const;
-
   nsresult LookupPrefix(const nsAString& aNamespaceURI,
                         nsAString& aPrefix);
   nsresult LookupNamespaceURI(const nsAString& aNamespacePrefix,
@@ -180,23 +168,25 @@ public:
   nsresult ReplaceData(PRUint32 aOffset, PRUint32 aCount,
                        const nsAString& aArg);
 
-  // nsIDOMGCParticipant interface methods
-  virtual nsIDOMGCParticipant* GetSCCIndex();
-  virtual void AppendReachableList(nsCOMArray<nsIDOMGCParticipant>& aArray);
-
   // nsINode methods
   virtual PRUint32 GetChildCount() const;
   virtual nsIContent *GetChildAt(PRUint32 aIndex) const;
   virtual PRInt32 IndexOf(nsINode* aPossibleChild) const;
   virtual nsresult InsertChildAt(nsIContent* aKid, PRUint32 aIndex,
                                  PRBool aNotify);
-  virtual nsresult AppendChildTo(nsIContent* aKid, PRBool aNotify);
   virtual nsresult RemoveChildAt(PRUint32 aIndex, PRBool aNotify);
   virtual nsresult PreHandleEvent(nsEventChainPreVisitor& aVisitor);
   virtual nsresult PostHandleEvent(nsEventChainPostVisitor& aVisitor);
   virtual nsresult DispatchDOMEvent(nsEvent* aEvent, nsIDOMEvent* aDOMEvent,
                                     nsPresContext* aPresContext,
                                     nsEventStatus* aEventStatus);
+  virtual nsresult GetListenerManager(PRBool aCreateIfNotFound,
+                                      nsIEventListenerManager** aResult);
+  virtual nsresult AddEventListenerByIID(nsIDOMEventListener *aListener,
+                                         const nsIID& aIID);
+  virtual nsresult RemoveEventListenerByIID(nsIDOMEventListener *aListener,
+                                            const nsIID& aIID);
+  virtual nsresult GetSystemEventGroup(nsIDOMEventGroup** aGroup);
 
   // Implementation for nsIContent
   virtual nsresult BindToTree(nsIDocument* aDocument, nsIContent* aParent,
@@ -222,6 +212,20 @@ public:
   virtual PRBool HasAttr(PRInt32 aNameSpaceID, nsIAtom *aAttribute) const;
   virtual const nsAttrName* GetAttrNameAt(PRUint32 aIndex) const;
   virtual PRUint32 GetAttrCount() const;
+  virtual const nsTextFragment *GetText();
+  virtual PRUint32 TextLength();
+  virtual nsresult SetText(const PRUnichar* aBuffer, PRUint32 aLength,
+                           PRBool aNotify);
+  // Need to implement this here too to avoid hiding.
+  nsresult SetText(const nsAString& aStr, PRBool aNotify)
+  {
+    return SetText(aStr.BeginReading(), aStr.Length(), aNotify);
+  }
+  virtual nsresult AppendText(const PRUnichar* aBuffer, PRUint32 aLength,
+                              PRBool aNotify);
+  virtual PRBool TextIsOnlyWhitespace();
+  virtual void AppendTextTo(nsAString& aResult);
+  virtual void DestroyContent();
 #ifdef DEBUG
   virtual void List(FILE* out, PRInt32 aIndent) const;
   virtual void DumpContent(FILE* out, PRInt32 aIndent, PRBool aDumpAll) const;
@@ -231,15 +235,9 @@ public:
   virtual PRBool IsNodeOfType(PRUint32 aFlags) const;
 
   virtual already_AddRefed<nsIURI> GetBaseURI() const;
+  virtual PRBool IsLink(nsIURI** aURI) const;
 
   virtual PRBool MayHaveFrame() const;
-
-  /**
-   * This calls Clone to do the actual cloning so that we end up with the
-   * right class for the clone.
-   */
-  virtual nsresult CloneContent(nsNodeInfoManager *aNodeInfoManager,
-                                PRBool aDeep, nsIContent **aResult) const;
 
   virtual nsIAtom* GetID() const;
   virtual const nsAttrValue* GetClasses() const;
@@ -251,25 +249,25 @@ public:
                                               PRInt32 aModType) const;
   virtual nsIAtom *GetClassAttributeName() const;
 
-
-  // nsITextContent
-  virtual const nsTextFragment *Text();
-  virtual PRUint32 TextLength();
-  virtual void SetText(const PRUnichar* aBuffer, PRUint32 aLength,
-                       PRBool aNotify);
-  // Need to implement this here too to avoid hiding.
-  void SetText(const nsAString& aStr, PRBool aNotify)
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const
   {
-    SetText(aStr.BeginReading(), aStr.Length(), aNotify);
+    *aResult = CloneDataNode(aNodeInfo, PR_TRUE);
+    if (!*aResult) {
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
+
+    NS_ADDREF(*aResult);
+
+    return NS_OK;
   }
-  virtual PRBool IsOnlyWhitespace();
-  virtual void AppendTextTo(nsAString& aResult);
 
   //----------------------------------------
 
 #ifdef DEBUG
   void ToCString(nsAString& aBuf, PRInt32 aOffset, PRInt32 aLen) const;
 #endif
+
+  NS_DECL_CYCLE_COLLECTION_CLASS(nsGenericDOMDataNode)
 
 protected:
   /**
@@ -283,14 +281,11 @@ protected:
   class nsDataSlots : public nsINode::nsSlots
   {
   public:
-    nsDataSlots(PtrBits aFlags);
-    virtual ~nsDataSlots();
-
-    /**
-     * An object implementing nsIDOMNodeList for this content (childNodes)
-     * @see nsIDOMNodeList
-     */
-    nsRefPtr<nsChildContentList> mChildNodes;
+    nsDataSlots(PtrBits aFlags)
+      : nsINode::nsSlots(aFlags),
+        mBindingParent(nsnull)
+    {
+    }
 
     /**
      * The nearest enclosing content node with a binding that created us.
@@ -304,15 +299,19 @@ protected:
 
   nsDataSlots *GetDataSlots()
   {
-    return NS_STATIC_CAST(nsDataSlots*, GetSlots());
+    return static_cast<nsDataSlots*>(GetSlots());
   }
 
   nsDataSlots *GetExistingDataSlots() const
   {
-    return NS_STATIC_CAST(nsDataSlots*, GetExistingSlots());
+    return static_cast<nsDataSlots*>(GetExistingSlots());
   }
 
   nsresult SplitText(PRUint32 aOffset, nsIDOMText** aReturn);
+
+  nsresult SetTextInternal(PRUint32 aOffset, PRUint32 aCount,
+                           const PRUnichar* aBuffer, PRUint32 aLength,
+                           PRBool aNotify);
 
   /**
    * Method to clone this node. This needs to be overriden by all derived
@@ -322,8 +321,8 @@ protected:
    * @param aCloneText if true the text content will be cloned too
    * @return the clone
    */
-  virtual nsGenericDOMDataNode *Clone(nsINodeInfo *aNodeInfo,
-                                      PRBool aCloneText) const = 0;
+  virtual nsGenericDOMDataNode *CloneDataNode(nsINodeInfo *aNodeInfo,
+                                              PRBool aCloneText) const = 0;
 
   nsTextFragment mText;
 
@@ -341,8 +340,8 @@ private:
  *
  * Note that classes using this macro will need to implement:
  *       NS_IMETHOD GetNodeType(PRUint16* aNodeType);
- *       nsGenericDOMDataNode *Clone(nsINodeInfo *aNodeInfo,
- *                                   PRBool aCloneText) const;
+ *       nsGenericDOMDataNode *CloneDataNode(nsINodeInfo *aNodeInfo,
+ *                                           PRBool aCloneText) const;
  */
 #define NS_IMPL_NSIDOMNODE_USING_GENERIC_DOM_DATA                           \
   NS_IMETHOD GetNodeName(nsAString& aNodeName);                             \
@@ -416,9 +415,9 @@ private:
     return nsGenericDOMDataNode::IsSupported(aFeature, aVersion, aReturn);  \
   }                                                                         \
   NS_IMETHOD CloneNode(PRBool aDeep, nsIDOMNode** aReturn) {                \
-    return nsGenericDOMDataNode::CloneNode(aDeep, this, aReturn);           \
+    return nsNodeUtils::CloneNodeImpl(this, aDeep, aReturn);                \
   }                                                                         \
-  virtual nsGenericDOMDataNode *Clone(nsINodeInfo *aNodeInfo,               \
-                                      PRBool aCloneText) const;
+  virtual nsGenericDOMDataNode *CloneDataNode(nsINodeInfo *aNodeInfo,       \
+                                              PRBool aCloneText) const;
 
 #endif /* nsGenericDOMDataNode_h___ */

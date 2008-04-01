@@ -35,9 +35,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsIDOMHTMLModElement.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 
@@ -53,7 +53,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -63,6 +63,8 @@ public:
 
   // nsIDOMHTMLModElement
   NS_DECL_NSIDOMHTMLMODELEMENT
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 };
 
 
@@ -83,15 +85,15 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLModElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLModElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLModElement, nsGenericHTMLElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLModElement)
-
+NS_HTML_CONTENT_INTERFACE_TABLE_HEAD(nsHTMLModElement, nsGenericHTMLElement)
+  NS_INTERFACE_TABLE_INHERITED1(nsHTMLModElement, nsIDOMHTMLModElement)
+  NS_INTERFACE_TABLE_TO_MAP_SEGUE
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO_IF_TAG(HTMLDelElement, del)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO_IF_TAG(HTMLInsElement, ins)
 NS_HTML_CONTENT_INTERFACE_MAP_END
 
 
-NS_IMPL_DOM_CLONENODE(nsHTMLModElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLModElement)
 
 
 NS_IMPL_URI_ATTR(nsHTMLModElement, Cite, cite)

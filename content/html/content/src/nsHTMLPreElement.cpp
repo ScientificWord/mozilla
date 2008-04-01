@@ -35,9 +35,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsIDOMHTMLPreElement.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 #include "nsMappedAttributes.h"
@@ -58,7 +58,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -76,6 +76,8 @@ public:
                                 nsAttrValue& aResult);
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 };
 
 
@@ -97,13 +99,12 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLPreElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLPreElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLPreElement, nsGenericHTMLElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLPreElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLPreElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_INTERFACE_TABLE_HEAD(nsHTMLPreElement, nsGenericHTMLElement)
+  NS_INTERFACE_TABLE_INHERITED1(nsHTMLPreElement, nsIDOMHTMLPreElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLPreElement)
 
 
-NS_IMPL_DOM_CLONENODE(nsHTMLPreElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLPreElement)
 
 
 NS_IMPL_INT_ATTR(nsHTMLPreElement, Width, width)
@@ -116,10 +117,10 @@ nsHTMLPreElement::ParseAttribute(PRInt32 aNamespaceID,
                                  nsAttrValue& aResult)
 {
   if (aNamespaceID == kNameSpaceID_None) {
-    if (aAttribute == nsHTMLAtoms::cols) {
+    if (aAttribute == nsGkAtoms::cols) {
       return aResult.ParseIntWithBounds(aValue, 0);
     }
-    if (aAttribute == nsHTMLAtoms::width) {
+    if (aAttribute == nsGkAtoms::width) {
       return aResult.ParseIntWithBounds(aValue, 0);
     }
   }
@@ -132,42 +133,42 @@ static void
 MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
                       nsRuleData* aData)
 {
-  if (aData->mSID == eStyleStruct_Font) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Font)) {
     // variable
-    if (aAttributes->GetAttr(nsHTMLAtoms::variable))
+    if (aAttributes->GetAttr(nsGkAtoms::variable))
       aData->mFontData->mFamily.SetStringValue(NS_LITERAL_STRING("serif"),
                                                eCSSUnit_String);
   }
-  else if (aData->mSID == eStyleStruct_Position) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Position)) {
     if (aData->mPositionData->mWidth.GetUnit() == eCSSUnit_Null) {
       // width: int (html4 attribute == nav4 cols)
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::width);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::width);
       if (!value || value->Type() != nsAttrValue::eInteger) {
         // cols: int (nav4 attribute)
-        value = aAttributes->GetAttr(nsHTMLAtoms::cols);
+        value = aAttributes->GetAttr(nsGkAtoms::cols);
       }
 
       if (value && value->Type() == nsAttrValue::eInteger)
         aData->mPositionData->mWidth.SetFloatValue((float)value->GetIntegerValue(), eCSSUnit_Char);
     }
   }
-  else if (aData->mSID == eStyleStruct_Text) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Text)) {
     if (aData->mTextData->mWhiteSpace.GetUnit() == eCSSUnit_Null) {
       // wrap: empty
-      if (aAttributes->GetAttr(nsHTMLAtoms::wrap))
-        aData->mTextData->mWhiteSpace.SetIntValue(NS_STYLE_WHITESPACE_MOZ_PRE_WRAP, eCSSUnit_Enumerated);
+      if (aAttributes->GetAttr(nsGkAtoms::wrap))
+        aData->mTextData->mWhiteSpace.SetIntValue(NS_STYLE_WHITESPACE_PRE_WRAP, eCSSUnit_Enumerated);
 
       // width: int (html4 attribute == nav4 cols)
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::width);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::width);
       if (!value || value->Type() != nsAttrValue::eInteger) {
         // cols: int (nav4 attribute)
-        value = aAttributes->GetAttr(nsHTMLAtoms::cols);
+        value = aAttributes->GetAttr(nsGkAtoms::cols);
       }
 
       if (value && value->Type() == nsAttrValue::eInteger) {
         // Force wrap property on since we want to wrap at a width
         // boundary not just a newline.
-        aData->mTextData->mWhiteSpace.SetIntValue(NS_STYLE_WHITESPACE_MOZ_PRE_WRAP, eCSSUnit_Enumerated);
+        aData->mTextData->mWhiteSpace.SetIntValue(NS_STYLE_WHITESPACE_PRE_WRAP, eCSSUnit_Enumerated);
       }
     }
   }
@@ -179,10 +180,10 @@ NS_IMETHODIMP_(PRBool)
 nsHTMLPreElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
   static const MappedAttributeEntry attributes[] = {
-    { &nsHTMLAtoms::variable },
-    { &nsHTMLAtoms::wrap },
-    { &nsHTMLAtoms::cols },
-    { &nsHTMLAtoms::width },
+    { &nsGkAtoms::variable },
+    { &nsGkAtoms::wrap },
+    { &nsGkAtoms::cols },
+    { &nsGkAtoms::width },
     { nsnull },
   };
   

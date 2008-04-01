@@ -56,8 +56,7 @@
 #include "nsTreeRows.h"
 #include "nsTemplateRule.h"
 #include "nsTemplateMatch.h"
-#include "nsXULAtoms.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsXULContentUtils.h"
 #include "nsXULTemplateBuilder.h"
 #include "nsVoidArray.h"
@@ -95,13 +94,6 @@ protected:
     NS_NewXULTreeBuilder(nsISupports* aOuter, REFNSIID aIID, void** aResult);
 
     nsXULTreeBuilder();
-    virtual ~nsXULTreeBuilder();
-
-    /**
-     * Initialize the template builder
-     */
-    nsresult
-    InitGlobals();
 
     /**
      * Uninitialize the template builder
@@ -217,7 +209,7 @@ protected:
      */
     PRBool
     GetInsertionLocations(nsIXULTemplateResult* aResult,
-                          nsISupportsArray** aLocations);
+                          nsCOMArray<nsIContent>** aLocations);
 
     /**
      * Implement result replacement
@@ -274,15 +266,7 @@ protected:
      * The builder observers.
      */
     nsCOMPtr<nsISupportsArray> mObservers;
-    
-    // pseudo-constants
-    static PRInt32 gRefCnt;
-    static nsIRDFResource* kRDF_type;
-    static nsIRDFResource* kNC_BookmarkSeparator;
 };
-PRInt32         nsXULTreeBuilder::gRefCnt = 0;
-nsIRDFResource* nsXULTreeBuilder::kRDF_type;
-nsIRDFResource* nsXULTreeBuilder::kNC_BookmarkSeparator;
 
 //----------------------------------------------------------------------
 
@@ -311,13 +295,12 @@ NS_NewXULTreeBuilder(nsISupports* aOuter, REFNSIID aIID, void** aResult)
     return rv;
 }
 
-NS_IMPL_ADDREF(nsXULTreeBuilder)
-NS_IMPL_RELEASE(nsXULTreeBuilder)
+NS_IMPL_ADDREF_INHERITED(nsXULTreeBuilder, nsXULTemplateBuilder)
+NS_IMPL_RELEASE_INHERITED(nsXULTreeBuilder, nsXULTemplateBuilder)
 
 NS_INTERFACE_MAP_BEGIN(nsXULTreeBuilder)
   NS_INTERFACE_MAP_ENTRY(nsIXULTreeBuilder)
   NS_INTERFACE_MAP_ENTRY(nsITreeView)
-  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIXULTreeBuilder)
   NS_INTERFACE_MAP_ENTRY_DOM_CLASSINFO(XULTreeBuilder)
 NS_INTERFACE_MAP_END_INHERITING(nsXULTemplateBuilder)
 
@@ -326,33 +309,6 @@ nsXULTreeBuilder::nsXULTreeBuilder()
     : mSortDirection(eDirection_Natural)
 {
 }
-
-nsresult
-nsXULTreeBuilder::InitGlobals()
-{
-    nsresult rv = nsXULTemplateBuilder::InitGlobals();
-    if (NS_FAILED(rv))
-        return rv;
-
-    if (gRefCnt++ == 0) {
-        gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "type"), &kRDF_type);
-        gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "BookmarkSeparator"),
-                                 &kNC_BookmarkSeparator);
-    }
-
-    return rv;
-}
-
-nsXULTreeBuilder::~nsXULTreeBuilder()
-{
-    if (--gRefCnt == 0) {
-        NS_IF_RELEASE(kRDF_type);
-        NS_IF_RELEASE(kNC_BookmarkSeparator);
-    }
-
-    Uninit(PR_TRUE);
-}
-
 
 void
 nsXULTreeBuilder::Uninit(PRBool aIsFinal)
@@ -421,12 +377,12 @@ nsXULTreeBuilder::Sort(nsIDOMElement* aElement)
     if (! header)
         return NS_ERROR_FAILURE;
 
-    if (header->AttrValueIs(kNameSpaceID_None, nsXULAtoms::sortLocked,
-                            nsXULAtoms::_true, eCaseMatters))
+    if (header->AttrValueIs(kNameSpaceID_None, nsGkAtoms::sortLocked,
+                            nsGkAtoms::_true, eCaseMatters))
         return NS_OK;
 
     nsAutoString sort;
-    header->GetAttr(kNameSpaceID_None, nsXULAtoms::sort, sort);
+    header->GetAttr(kNameSpaceID_None, nsGkAtoms::sort, sort);
 
     if (sort.IsEmpty())
         return NS_OK;
@@ -436,7 +392,7 @@ nsXULTreeBuilder::Sort(nsIDOMElement* aElement)
 
     // Cycle the sort direction
     nsAutoString dir;
-    header->GetAttr(kNameSpaceID_None, nsXULAtoms::sortDirection, dir);
+    header->GetAttr(kNameSpaceID_None, nsGkAtoms::sortDirection, dir);
 
     if (dir.EqualsLiteral("ascending")) {
         dir.AssignLiteral("descending");
@@ -500,7 +456,7 @@ nsXULTreeBuilder::GetRowProperties(PRInt32 aIndex, nsISupportsArray* aProperties
     GetTemplateActionRowFor(aIndex, getter_AddRefs(row));
     if (row) {
         nsAutoString raw;
-        row->GetAttr(kNameSpaceID_None, nsXULAtoms::properties, raw);
+        row->GetAttr(kNameSpaceID_None, nsGkAtoms::properties, raw);
 
         if (!raw.IsEmpty()) {
             nsAutoString cooked;
@@ -526,7 +482,7 @@ nsXULTreeBuilder::GetCellProperties(PRInt32 aRow, nsITreeColumn* aCol, nsISuppor
     GetTemplateActionCellFor(aRow, aCol, getter_AddRefs(cell));
     if (cell) {
         nsAutoString raw;
-        cell->GetAttr(kNameSpaceID_None, nsXULAtoms::properties, raw);
+        cell->GetAttr(kNameSpaceID_None, nsGkAtoms::properties, raw);
 
         if (!raw.IsEmpty()) {
             nsAutoString cooked;
@@ -632,10 +588,11 @@ nsXULTreeBuilder::IsSeparator(PRInt32 aIndex, PRBool* aResult)
     if (aIndex < 0 || aIndex >= mRows.Count())
         return NS_ERROR_INVALID_ARG;
 
-    nsCOMPtr<nsIRDFResource> resource;
-    GetResourceFor(aIndex, getter_AddRefs(resource));
+    nsAutoString type;
+    nsTreeRows::Row& row = *(mRows[aIndex]);
+    row.mMatch->mResult->GetType(type);
 
-    mDB->HasAssertion(resource, kRDF_type, kNC_BookmarkSeparator, PR_TRUE, aResult);
+    *aResult = type.EqualsLiteral("separator");
 
     return NS_OK;
 }
@@ -710,7 +667,7 @@ nsXULTreeBuilder::GetImageSrc(PRInt32 aRow, nsITreeColumn* aCol, nsAString& aRes
     GetTemplateActionCellFor(aRow, aCol, getter_AddRefs(cell));
     if (cell) {
         nsAutoString raw;
-        cell->GetAttr(kNameSpaceID_None, nsHTMLAtoms::src, raw);
+        cell->GetAttr(kNameSpaceID_None, nsGkAtoms::src, raw);
 
         SubstituteText(mRows[aRow]->mMatch->mResult, raw, aResult);
     }
@@ -736,7 +693,7 @@ nsXULTreeBuilder::GetProgressMode(PRInt32 aRow, nsITreeColumn* aCol, PRInt32* aR
     GetTemplateActionCellFor(aRow, aCol, getter_AddRefs(cell));
     if (cell) {
         nsAutoString raw;
-        cell->GetAttr(kNameSpaceID_None, nsXULAtoms::mode, raw);
+        cell->GetAttr(kNameSpaceID_None, nsGkAtoms::mode, raw);
 
         nsAutoString mode;
         SubstituteText(mRows[aRow]->mMatch->mResult, raw, mode);
@@ -763,7 +720,7 @@ nsXULTreeBuilder::GetCellValue(PRInt32 aRow, nsITreeColumn* aCol, nsAString& aRe
     GetTemplateActionCellFor(aRow, aCol, getter_AddRefs(cell));
     if (cell) {
         nsAutoString raw;
-        cell->GetAttr(kNameSpaceID_None, nsXULAtoms::value, raw);
+        cell->GetAttr(kNameSpaceID_None, nsGkAtoms::value, raw);
 
         SubstituteText(mRows[aRow]->mMatch->mResult, raw, aResult);
     }
@@ -786,7 +743,7 @@ nsXULTreeBuilder::GetCellText(PRInt32 aRow, nsITreeColumn* aCol, nsAString& aRes
     GetTemplateActionCellFor(aRow, aCol, getter_AddRefs(cell));
     if (cell) {
         nsAutoString raw;
-        cell->GetAttr(kNameSpaceID_None, nsXULAtoms::label, raw);
+        cell->GetAttr(kNameSpaceID_None, nsGkAtoms::label, raw);
 
         SubstituteText(mRows[aRow]->mMatch->mResult, raw, aResult);
 
@@ -800,13 +757,14 @@ nsXULTreeBuilder::GetCellText(PRInt32 aRow, nsITreeColumn* aCol, nsAString& aRes
 NS_IMETHODIMP
 nsXULTreeBuilder::SetTree(nsITreeBoxObject* aTree)
 {
-    NS_PRECONDITION(mRoot, "not initialized");
-
     mBoxObject = aTree;
 
     // If this is teardown time, then we're done.
-    if (! mBoxObject)
+    if (!mBoxObject) {
+        Uninit(PR_FALSE);
         return NS_OK;
+    }
+    NS_ENSURE_TRUE(mRoot, NS_ERROR_NOT_INITIALIZED);
 
     // Is our root's principal trusted?
     PRBool isTrusted = PR_FALSE;
@@ -814,7 +772,7 @@ nsXULTreeBuilder::SetTree(nsITreeBoxObject* aTree)
     if (NS_SUCCEEDED(rv) && isTrusted) {
         // Get the datasource we intend to use to remember open state.
         nsAutoString datasourceStr;
-        mRoot->GetAttr(kNameSpaceID_None, nsXULAtoms::statedatasource, datasourceStr);
+        mRoot->GetAttr(kNameSpaceID_None, nsGkAtoms::statedatasource, datasourceStr);
 
         // since we are trusted, use the user specified datasource
         // if non specified, use localstore, which gives us
@@ -993,7 +951,7 @@ nsXULTreeBuilder::IsEditable(PRInt32 aRow, nsITreeColumn* aCol, PRBool* _retval)
     GetTemplateActionCellFor(aRow, aCol, getter_AddRefs(cell));
     if (cell) {
         nsAutoString raw;
-        cell->GetAttr(kNameSpaceID_None, nsXULAtoms::editable, raw);
+        cell->GetAttr(kNameSpaceID_None, nsGkAtoms::editable, raw);
 
         nsAutoString editable;
         SubstituteText(mRows[aRow]->mMatch->mResult, raw, editable);
@@ -1019,7 +977,7 @@ nsXULTreeBuilder::IsSelectable(PRInt32 aRow, nsITreeColumn* aCol, PRBool* _retva
     GetTemplateActionCellFor(aRow, aCol, getter_AddRefs(cell));
     if (cell) {
         nsAutoString raw;
-        cell->GetAttr(kNameSpaceID_None, nsXULAtoms::selectable, raw);
+        cell->GetAttr(kNameSpaceID_None, nsGkAtoms::selectable, raw);
 
         nsAutoString selectable;
         SubstituteText(mRows[aRow]->mMatch->mResult, raw, selectable);
@@ -1132,7 +1090,7 @@ nsXULTreeBuilder::HasGeneratedContent(nsIRDFResource* aResource,
 
 PRBool
 nsXULTreeBuilder::GetInsertionLocations(nsIXULTemplateResult* aResult,
-                                        nsISupportsArray** aLocations)
+                                        nsCOMArray<nsIContent>** aLocations)
 {
     *aLocations = nsnull;
 
@@ -1340,7 +1298,7 @@ nsXULTreeBuilder::EnsureSortVariables()
     nsCOMPtr<nsIContent> treecols;
  
     nsXULContentUtils::FindChildByTag(mRoot, kNameSpaceID_XUL,
-                                      nsXULAtoms::treecols,
+                                      nsGkAtoms::treecols,
                                       getter_AddRefs(treecols));
 
     if (!treecols)
@@ -1350,19 +1308,19 @@ nsXULTreeBuilder::EnsureSortVariables()
     for (PRUint32 i = 0; i < count; ++i) {
         nsIContent *child = treecols->GetChildAt(i);
 
-        if (child->NodeInfo()->Equals(nsXULAtoms::treecol,
+        if (child->NodeInfo()->Equals(nsGkAtoms::treecol,
                                       kNameSpaceID_XUL)) {
-            if (child->AttrValueIs(kNameSpaceID_None, nsXULAtoms::sortActive,
-                                   nsXULAtoms::_true, eCaseMatters)) {
+            if (child->AttrValueIs(kNameSpaceID_None, nsGkAtoms::sortActive,
+                                   nsGkAtoms::_true, eCaseMatters)) {
                 nsAutoString sort;
-                child->GetAttr(kNameSpaceID_None, nsXULAtoms::sort, sort);
+                child->GetAttr(kNameSpaceID_None, nsGkAtoms::sort, sort);
                 if (! sort.IsEmpty()) {
                     mSortVariable = do_GetAtom(sort);
 
                     static nsIContent::AttrValuesArray strings[] =
-                      {&nsXULAtoms::ascending, &nsXULAtoms::descending, nsnull};
+                      {&nsGkAtoms::ascending, &nsGkAtoms::descending, nsnull};
                     switch (child->FindAttrValueIn(kNameSpaceID_None,
-                                                   nsXULAtoms::sortDirection,
+                                                   nsGkAtoms::sortDirection,
                                                    strings, eCaseMatters)) {
                        case 0: mSortDirection = eDirection_Ascending; break;
                        case 1: mSortDirection = eDirection_Descending; break;
@@ -1380,9 +1338,7 @@ nsXULTreeBuilder::EnsureSortVariables()
 nsresult
 nsXULTreeBuilder::RebuildAll()
 {
-    NS_PRECONDITION(mRoot != nsnull, "not initialized");
-    if (! mRoot)
-        return NS_ERROR_NOT_INITIALIZED;
+    NS_ENSURE_TRUE(mRoot, NS_ERROR_NOT_INITIALIZED);
 
     nsCOMPtr<nsIDocument> doc = mRoot->GetDocument();
 
@@ -1412,10 +1368,11 @@ nsXULTreeBuilder::RebuildAll()
 
     // Seed the rule network with assignments for the tree row variable
     nsAutoString ref;
-    mRoot->GetAttr(kNameSpaceID_None, nsXULAtoms::ref, ref);
+    mRoot->GetAttr(kNameSpaceID_None, nsGkAtoms::ref, ref);
 
     if (! ref.IsEmpty()) {
-        rv = mQueryProcessor->TranslateRef(mDB, ref, getter_AddRefs(mRootResult));
+        rv = mQueryProcessor->TranslateRef(mDataSource, ref,
+                                           getter_AddRefs(mRootResult));
         if (NS_FAILED(rv))
             return rv;
 
@@ -1457,17 +1414,17 @@ nsXULTreeBuilder::GetTemplateActionRowFor(PRInt32 aRow, nsIContent** aResult)
 
             nsCOMPtr<nsIContent> children;
             nsXULContentUtils::FindChildByTag(action, kNameSpaceID_XUL,
-                                              nsXULAtoms::treechildren,
+                                              nsGkAtoms::treechildren,
                                               getter_AddRefs(children));
             if (children) {
                 nsCOMPtr<nsIContent> item;
                 nsXULContentUtils::FindChildByTag(children, kNameSpaceID_XUL,
-                                                  nsXULAtoms::treeitem,
+                                                  nsGkAtoms::treeitem,
                                                   getter_AddRefs(item));
                 if (item)
                     return nsXULContentUtils::FindChildByTag(item,
                                                              kNameSpaceID_XUL,
-                                                             nsXULAtoms::treerow,
+                                                             nsGkAtoms::treerow,
                                                              aResult);
             }
         }
@@ -1499,10 +1456,10 @@ nsXULTreeBuilder::GetTemplateActionCellFor(PRInt32 aRow,
         for (PRUint32 i = 0; i < count; ++i) {
             nsIContent *child = row->GetChildAt(i);
 
-            if (child->NodeInfo()->Equals(nsXULAtoms::treecell,
+            if (child->NodeInfo()->Equals(nsGkAtoms::treecell,
                                           kNameSpaceID_XUL)) {
                 if (colAtom &&
-                    child->AttrValueIs(kNameSpaceID_None, nsXULAtoms::ref,
+                    child->AttrValueIs(kNameSpaceID_None, nsGkAtoms::ref,
                                        colAtom, eCaseMatters)) {
                     *aResult = child;
                     break;
@@ -1618,7 +1575,7 @@ nsXULTreeBuilder::OpenSubtreeForQuerySet(nsTreeRows::Subtree* aSubtree,
     PRInt32 count = *aDelta;
     
     nsCOMPtr<nsISimpleEnumerator> results;
-    nsresult rv = mQueryProcessor->GenerateResults(mDB, aResult,
+    nsresult rv = mQueryProcessor->GenerateResults(mDataSource, aResult,
                                                    aQuerySet->mCompiledQuery,
                                                    getter_AddRefs(results));
     if (NS_FAILED(rv))
@@ -1628,11 +1585,15 @@ nsXULTreeBuilder::OpenSubtreeForQuerySet(nsTreeRows::Subtree* aSubtree,
     rv = results->HasMoreElements(&hasMoreResults);
 
     for (; NS_SUCCEEDED(rv) && hasMoreResults;
-           rv = results->HasMoreElements(&hasMoreResults)){
-        nsCOMPtr<nsIXULTemplateResult> nextresult;
-        rv = results->GetNext(getter_AddRefs(nextresult));
+           rv = results->HasMoreElements(&hasMoreResults)) {
+        nsCOMPtr<nsISupports> nr;
+        rv = results->GetNext(getter_AddRefs(nr));
         if (NS_FAILED(rv))
             return rv;
+
+        nsCOMPtr<nsIXULTemplateResult> nextresult = do_QueryInterface(nr);
+        if (!nextresult)
+            return NS_ERROR_UNEXPECTED;
 
         nsCOMPtr<nsIRDFResource> resultid;
         rv = GetResultResource(nextresult, getter_AddRefs(resultid));
@@ -1675,7 +1636,7 @@ nsXULTreeBuilder::OpenSubtreeForQuerySet(nsTreeRows::Subtree* aSubtree,
                     nsCOMPtr<nsIRDFResource> parentid;
                     rv = GetResultResource(iter->mMatch->mResult, getter_AddRefs(parentid));
                     if (NS_FAILED(rv)) {
-                        nsTemplateMatch::Destroy(mPool, newmatch);
+                        nsTemplateMatch::Destroy(mPool, newmatch, PR_FALSE);
                         return rv;
                     }
 
@@ -1688,7 +1649,7 @@ nsXULTreeBuilder::OpenSubtreeForQuerySet(nsTreeRows::Subtree* aSubtree,
 
             if (cyclic) {
                 NS_WARNING("tree cannot handle cyclic graphs");
-                nsTemplateMatch::Destroy(mPool, newmatch);
+                nsTemplateMatch::Destroy(mPool, newmatch, PR_FALSE);
                 continue;
             }
 
@@ -1697,7 +1658,7 @@ nsXULTreeBuilder::OpenSubtreeForQuerySet(nsTreeRows::Subtree* aSubtree,
             rv = DetermineMatchedRule(nsnull, nextresult, aQuerySet,
                                       &matchedrule, &ruleindex);
             if (NS_FAILED(rv)) {
-                nsTemplateMatch::Destroy(mPool, newmatch);
+                nsTemplateMatch::Destroy(mPool, newmatch, PR_FALSE);
                 return rv;
             }
 
@@ -1705,7 +1666,7 @@ nsXULTreeBuilder::OpenSubtreeForQuerySet(nsTreeRows::Subtree* aSubtree,
                 rv = newmatch->RuleMatched(aQuerySet, matchedrule, ruleindex,
                                            nextresult);
                 if (NS_FAILED(rv)) {
-                    nsTemplateMatch::Destroy(mPool, newmatch);
+                    nsTemplateMatch::Destroy(mPool, newmatch, PR_FALSE);
                     return rv;
                 }
 
@@ -1729,7 +1690,7 @@ nsXULTreeBuilder::OpenSubtreeForQuerySet(nsTreeRows::Subtree* aSubtree,
             prevmatch->mNext = newmatch;
         }
         else if (!mMatchMap.Put(resultid, newmatch)) {
-            nsTemplateMatch::Destroy(mPool, newmatch);
+            nsTemplateMatch::Destroy(mPool, newmatch, PR_TRUE);
             return NS_ERROR_OUT_OF_MEMORY;
         }
     }
@@ -1785,11 +1746,8 @@ nsXULTreeBuilder::RemoveMatchesFor(nsTreeRows::Subtree& subtree)
         nsTemplateMatch* existingmatch;
         if (mMatchMap.Get(id, &existingmatch)) {
             while (existingmatch) {
-                if (existingmatch->mResult)
-                    existingmatch->mResult->HasBeenRemoved();
-
                 nsTemplateMatch* nextmatch = existingmatch->mNext;
-                nsTemplateMatch::Destroy(mPool, existingmatch);
+                nsTemplateMatch::Destroy(mPool, existingmatch, PR_TRUE);
                 existingmatch = nextmatch;
             }
 
@@ -1838,13 +1796,13 @@ nsXULTreeBuilder::IsContainerOpen(nsIRDFResource* aResource, PRBool* aOpen)
 int
 nsXULTreeBuilder::Compare(const void* aLeft, const void* aRight, void* aClosure)
 {
-    nsXULTreeBuilder* self = NS_STATIC_CAST(nsXULTreeBuilder*, aClosure);
+    nsXULTreeBuilder* self = static_cast<nsXULTreeBuilder*>(aClosure);
 
-    nsTreeRows::Row* left = NS_STATIC_CAST(nsTreeRows::Row*,
-                                               NS_CONST_CAST(void*, aLeft));
+    nsTreeRows::Row* left = static_cast<nsTreeRows::Row*>
+                                       (const_cast<void*>(aLeft));
 
-    nsTreeRows::Row* right = NS_STATIC_CAST(nsTreeRows::Row*,
-                                                NS_CONST_CAST(void*, aRight));
+    nsTreeRows::Row* right = static_cast<nsTreeRows::Row*>
+                                        (const_cast<void*>(aRight));
 
     return self->CompareResults(left->mMatch->mResult, right->mMatch->mResult);
 }
@@ -1852,7 +1810,9 @@ nsXULTreeBuilder::Compare(const void* aLeft, const void* aRight, void* aClosure)
 PRInt32
 nsXULTreeBuilder::CompareResults(nsIXULTemplateResult* aLeft, nsIXULTemplateResult* aRight)
 {
-    if (mSortDirection == eDirection_Natural) {
+    // this is an extra check done for RDF queries such that results appear in
+    // the order they appear in their containing Seq
+    if (mSortDirection == eDirection_Natural && mDB) {
         // If the sort order is ``natural'', then see if the container
         // is an RDF sequence. If so, we'll try to use the ordinal
         // properties to determine order.
@@ -1884,7 +1844,7 @@ nsXULTreeBuilder::CompareResults(nsIXULTemplateResult* aLeft, nsIXULTemplateResu
             if (isSequence) {
                 // Determine the indices of the left and right elements
                 // in the container.
-                PRInt32 lindex, rindex;
+                PRInt32 lindex = 0, rindex = 0;
 
                 nsCOMPtr<nsIRDFResource> leftitem;
                 aLeft->GetResource(getter_AddRefs(leftitem));

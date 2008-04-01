@@ -52,13 +52,17 @@
 #include "nsCOMArray.h"
 #include "nsString.h"
 #include "nsAutoPtr.h"
+#include "nsGkAtoms.h"
+#include "nsTHashtable.h"
+#include "nsHashKeys.h"
 #include "nsITimer.h"
 #include "nsStubDocumentObserver.h"
 #include "nsIParserService.h"
 #include "nsIContentSink.h"
 #include "prlog.h"
 #include "nsIRequest.h"
-
+#include "nsTimer.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsIDocument;
 class nsIURI;
@@ -71,6 +75,8 @@ class nsIChannel;
 class nsIContent;
 class nsIViewManager;
 class nsNodeInfoManager;
+class nsScriptLoader;
+
 #ifdef NS_DEBUG
 
 extern PRLogModuleInfo* gContentSinkLogModuleInfo;
@@ -103,35 +109,34 @@ extern PRLogModuleInfo* gContentSinkLogModuleInfo;
 // sampling the clock too often.
 #define NS_MAX_TOKENS_DEFLECTED_IN_LOW_FREQ_MODE 200
 
-
 class nsContentSink : public nsICSSLoaderObserver,
                       public nsIScriptLoaderObserver,
                       public nsSupportsWeakReference,
                       public nsStubDocumentObserver,
                       public nsITimerCallback
 {
-  friend class DummyParserRequest;
-
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsContentSink,
+                                           nsIScriptLoaderObserver)
   NS_DECL_NSISCRIPTLOADEROBSERVER
 
     // nsITimerCallback
   NS_DECL_NSITIMERCALLBACK
 
-  
   // nsICSSLoaderObserver
   NS_IMETHOD StyleSheetLoaded(nsICSSStyleSheet* aSheet, PRBool aWasAlternate,
                               nsresult aStatus);
 
   nsresult ProcessMETATag(nsIContent* aContent);
-  // nsIContentSink impl
-  NS_IMETHOD WillInterruptImpl(void);
-  NS_IMETHOD WillResumeImpl(void);
-  NS_IMETHOD DidProcessATokenImpl(void);
-  NS_IMETHOD WillBuildModelImpl(void);
-  NS_IMETHOD DidBuildModelImpl(void);
-  NS_IMETHOD DropParserAndPerfHint(void);
-  NS_IMETHOD WillProcessTokensImpl(void);
+
+  // nsIContentSink implementation helpers
+  NS_HIDDEN_(nsresult) WillInterruptImpl(void);
+  NS_HIDDEN_(nsresult) WillResumeImpl(void);
+  NS_HIDDEN_(nsresult) DidProcessATokenImpl(void);
+  NS_HIDDEN_(void) WillBuildModelImpl(void);
+  NS_HIDDEN_(void) DidBuildModelImpl(void);
+  NS_HIDDEN_(void) DropParserAndPerfHint(void);
+  NS_HIDDEN_(nsresult) WillProcessTokensImpl(void);
 
   void NotifyAppend(nsIContent* aContent, PRUint32 aStartIndex);
 
@@ -140,7 +145,6 @@ class nsContentSink : public nsICSSLoaderObserver,
   virtual void EndUpdate(nsIDocument *aDocument, nsUpdateType aUpdateType);
 
   virtual void UpdateChildCounts() = 0;
-
 
 protected:
   nsContentSink();
@@ -165,11 +169,20 @@ protected:
                                     const nsSubstring& aType,
                                     const nsSubstring& aMedia);
 
-  void PrefetchHref(const nsAString &aHref, PRBool aExplicit);
+  void PrefetchHref(const nsAString &aHref, nsIContent *aSource,
+                    PRBool aExplicit);
+  void ProcessOfflineManifest(nsIContent *aElement);
 
-  PRBool ScrollToRef(PRBool aReallyScroll);
+  // Tries to scroll to the URI's named anchor. Once we've successfully
+  // done that, further calls to this method will be ignored.
+  void ScrollToRef();
   nsresult RefreshIfEnabled(nsIViewManager* vm);
-  void StartLayout(PRBool aIsFrameset);
+
+  // Start layout.  If aIgnorePendingSheets is true, this will happen even if
+  // we still have stylesheet loads pending.  Otherwise, we'll wait until the
+  // stylesheets are all done loading.
+  void StartLayout(PRBool aIgnorePendingSheets);
+
   PRBool IsTimeToNotify();
 
   void
@@ -193,20 +206,26 @@ protected:
     return mMaxTokenProcessingTime;
   }
 
-
   // Overridable hooks into script evaluation
   virtual void PreEvaluateScript()                            {return;}
   virtual void PostEvaluateScript(nsIScriptElement *aElement) {return;}
-  virtual nsresult FlushTags(PRBool aNotify){return NS_OK;}
 
-  virtual void TryToScrollToRef()
-  { return;
-  }
+  virtual nsresult FlushTags() = 0;
 
-  // CanInterrupt parsing related routines
-  nsresult AddDummyParserRequest(void);
-  nsresult RemoveDummyParserRequest(void);
+  // Later on we might want to make this more involved somehow
+  // (e.g. stop waiting after some timeout or whatnot).
+  PRBool WaitForPendingSheets() { return mPendingSheetCount > 0; }
 
+private:
+  // People shouldn't be allocating this class directly.  All subclasses should
+  // be allocated using a zeroing operator new.
+  void* operator new(size_t sz) CPP_THROW_NEW;  // Not to be implemented
+
+protected:
+
+  void ContinueInterruptedParsingAsync();
+  void ContinueInterruptedParsingIfEnabled();
+  void ContinueInterruptedParsing();
 
   nsCOMPtr<nsIDocument>         mDocument;
   nsCOMPtr<nsIParser>           mParser;
@@ -215,11 +234,11 @@ protected:
   nsCOMPtr<nsIDocShell>         mDocShell;
   nsCOMPtr<nsICSSLoader>        mCSSLoader;
   nsRefPtr<nsNodeInfoManager>   mNodeInfoManager;
+  nsRefPtr<nsScriptLoader>      mScriptLoader;
 
   nsCOMArray<nsIScriptElement> mScriptElements;
 
   nsCString mRef; // ScrollTo #ref
-  PRBool mNeedToBlockParser;
 
   // back off timer notification after count
   PRInt32 mBackoffCount;
@@ -228,25 +247,36 @@ protected:
   PRInt32 mNotificationInterval;
 
   // Time of last notification
+  // Note: mLastNotificationTime is only valid once mLayoutStarted is true.
   PRTime mLastNotificationTime;
 
   // Timer used for notification
   nsCOMPtr<nsITimer> mNotificationTimer;
 
+  // The number of tokens that have been processed while in the low
+  // frequency parser interrupt mode without falling through to the
+  // logic which decides whether to switch to the high frequency
+  // parser interrupt mode.
+  PRUint8 mDeflectedCount;
+
   // Do we notify based on time?
   PRPackedBool mNotifyOnTimer;
 
-  PRPackedBool mLayoutStarted;
-  PRPackedBool mScrolledToRefAlready;
-
-  PRUint8 mScriptEnabled : 1;
-  PRUint8 mFramesEnabled : 1;
+  // Have we already called BeginUpdate for this set of content changes?
+  PRUint8 mBeganUpdate : 1;
+  PRUint8 mLayoutStarted : 1;
+  PRUint8 mScrolledToRefAlready : 1;
   PRUint8 mCanInterruptParser : 1;
   PRUint8 mDynamicLowerValue : 1;
-  PRUint8 mFormOnStack : 1;
   PRUint8 mParsing : 1;
   PRUint8 mDroppedTimer : 1;
-
+  PRUint8 mInTitle : 1;
+  PRUint8 mChangeScrollPosWhenScrollingToRef : 1;
+  // If true, we deferred starting layout until sheets load
+  PRUint8 mDeferredLayoutStart : 1;
+  // If true, we deferred notifications until sheets load
+  PRUint8 mDeferredFlushTags : 1;
+  
   // -- Can interrupt parsing members --
   PRUint32 mDelayTimerStart;
 
@@ -262,21 +292,20 @@ protected:
   // sink
   PRUint32 mLastSampledUserEventTime;
 
-  // The number of tokens that have been processed while in the low
-  // frequency parser interrupt mode without falling through to the
-  // logic which decides whether to switch to the high frequency
-  // parser interrupt mode.
-  PRUint8 mDeflectedCount;
-
-  // Boolean indicating whether we've notified insertion of our root content
-  // yet.  We want to make sure to only do this once.
-  PRPackedBool mNotifiedRootInsertion;
-
   PRInt32 mInMonolithicContainer;
 
   PRInt32 mInNotification;
+  PRUint32 mUpdatesInNotification;
 
-  nsCOMPtr<nsIRequest> mDummyParserRequest;
+  PRUint32 mPendingSheetCount;
+
+  // Measures content model creation time for current document
+  MOZ_TIMER_DECLARE(mWatch)
 };
+
+// sanitizing content sink whitelists
+extern PRBool IsAttrURI(nsIAtom *aName);
+extern nsIAtom** const kDefaultAllowedTags [];
+extern nsIAtom** const kDefaultAllowedAttributes [];
 
 #endif // _nsContentSink_h_
