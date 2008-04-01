@@ -47,8 +47,7 @@ nsDOMMouseEvent::nsDOMMouseEvent(nsPresContext* aPresContext,
                                  nsInputEvent* aEvent)
   : nsDOMUIEvent(aPresContext, aEvent ? aEvent :
                  new nsMouseEvent(PR_FALSE, 0, nsnull,
-                                  nsMouseEvent::eReal)),
-    mButton(-1)
+                                  nsMouseEvent::eReal))
 {
   // There's no way to make this class' ctor allocate an nsMouseScrollEvent.
   // It's not that important, though, since a scroll event is not a real
@@ -66,13 +65,32 @@ nsDOMMouseEvent::nsDOMMouseEvent(nsPresContext* aPresContext,
   switch (mEvent->eventStructType)
   {
     case NS_MOUSE_EVENT:
-      mDetail = NS_STATIC_CAST(nsMouseEvent*, mEvent)->clickCount;
+      mDetail = static_cast<nsMouseEvent*>(mEvent)->clickCount;
       break;
     case NS_MOUSE_SCROLL_EVENT:
-      mDetail = NS_STATIC_CAST(nsMouseScrollEvent*, mEvent)->delta;
+      mDetail = static_cast<nsMouseScrollEvent*>(mEvent)->delta;
       break;
     default:
       break;
+  }
+}
+
+nsDOMMouseEvent::~nsDOMMouseEvent()
+{
+  if (mEventIsInternal) {
+    switch (mEvent->eventStructType)
+    {
+      case NS_MOUSE_EVENT:
+        delete static_cast<nsMouseEvent*>(mEvent);
+        break;
+      case NS_MOUSE_SCROLL_EVENT:
+        delete static_cast<nsMouseScrollEvent*>(mEvent);
+        break;
+      default:
+        delete mEvent;
+        break;
+    }
+    mEvent = nsnull;
   }
 }
 
@@ -99,7 +117,9 @@ nsDOMMouseEvent::InitMouseEvent(const nsAString & aType, PRBool aCanBubble, PRBo
     case NS_MOUSE_EVENT:
     case NS_MOUSE_SCROLL_EVENT:
     {
-       nsInputEvent* inputEvent = NS_STATIC_CAST(nsInputEvent*, mEvent);
+       static_cast<nsMouseEvent_base*>(mEvent)->relatedTarget = aRelatedTarget;
+       static_cast<nsMouseEvent_base*>(mEvent)->button = aButton;
+       nsInputEvent* inputEvent = static_cast<nsInputEvent*>(mEvent);
        inputEvent->isControl = aCtrlKey;
        inputEvent->isAlt = aAltKey;
        inputEvent->isShift = aShiftKey;
@@ -108,31 +128,12 @@ nsDOMMouseEvent::InitMouseEvent(const nsAString & aType, PRBool aCanBubble, PRBo
        mClientPoint.y = aClientY;
        inputEvent->refPoint.x = aScreenX;
        inputEvent->refPoint.y = aScreenY;
-       mButton = aButton;
-       // Now fix up mEvent->message, since nsDOMUIEvent::InitUIEvent
-       // doesn't have enough information to set it right.
-       // XXXbz AARGH.  No useful constants for the buttons!
-       if (mEvent->message == NS_MOUSE_LEFT_CLICK) {
-         if (mButton == 1) {  // Middle button
-           mEvent->message = NS_MOUSE_MIDDLE_CLICK;
-         }
-         else if (mButton == 2) {  // Right button
-           mEvent->message = NS_MOUSE_RIGHT_CLICK;
-         }
-       }
-       if (mEvent->message == NS_MOUSE_LEFT_DOUBLECLICK) {
-         if (mButton == 1) {  // Middle button
-           mEvent->message = NS_MOUSE_MIDDLE_DOUBLECLICK;
-         }
-         else if (mButton == 2) {  // Right button
-           mEvent->message = NS_MOUSE_RIGHT_DOUBLECLICK;
-         }
-       }
+
        if (mEvent->eventStructType == NS_MOUSE_SCROLL_EVENT) {
-         nsMouseScrollEvent* scrollEvent = NS_STATIC_CAST(nsMouseScrollEvent*, mEvent);
+         nsMouseScrollEvent* scrollEvent = static_cast<nsMouseScrollEvent*>(mEvent);
          scrollEvent->delta = aDetail;
        } else {
-         nsMouseEvent* mouseEvent = NS_STATIC_CAST(nsMouseEvent*, mEvent);
+         nsMouseEvent* mouseEvent = static_cast<nsMouseEvent*>(mEvent);
          mouseEvent->clickCount = aDetail;
        }
        break;
@@ -148,42 +149,16 @@ NS_IMETHODIMP
 nsDOMMouseEvent::GetButton(PRUint16* aButton)
 {
   NS_ENSURE_ARG_POINTER(aButton);
-  if (!mEvent || mEvent->eventStructType != NS_MOUSE_EVENT) {
-    NS_WARNING("Tried to get mouse button for null or non-mouse event!");
-    *aButton = (PRUint16)-1;
-    return NS_OK;
-  }
-
-  // If button has been set then use that instead.
-  if (mButton >= 0) {
-    *aButton = (PRUint16)mButton;
-  }
-  else {
-    switch (mEvent->message) {
-    case NS_MOUSE_LEFT_BUTTON_UP:
-    case NS_MOUSE_LEFT_BUTTON_DOWN:
-    case NS_MOUSE_LEFT_CLICK:
-    case NS_MOUSE_LEFT_DOUBLECLICK:
-      *aButton = 0;
-      break;
-    case NS_MOUSE_MIDDLE_BUTTON_UP:
-    case NS_MOUSE_MIDDLE_BUTTON_DOWN:
-    case NS_MOUSE_MIDDLE_CLICK:
-    case NS_MOUSE_MIDDLE_DOUBLECLICK:
-      *aButton = 1;
-      break;
-    case NS_MOUSE_RIGHT_BUTTON_UP:
-    case NS_MOUSE_RIGHT_BUTTON_DOWN:
-    case NS_MOUSE_RIGHT_CLICK:
-    case NS_MOUSE_RIGHT_DOUBLECLICK:
-    case NS_CONTEXTMENU:
-      *aButton = 2;
+  switch(mEvent->eventStructType)
+  {
+    case NS_MOUSE_EVENT:
+    case NS_MOUSE_SCROLL_EVENT:
+      *aButton = static_cast<nsMouseEvent_base*>(mEvent)->button;
       break;
     default:
-      // This event doesn't have a mouse button associated with it
-      *aButton = (PRUint16)0;
+      NS_WARNING("Tried to get mouse button for non-mouse event!");
+      *aButton = nsMouseEvent::eLeftButton;
       break;
-    }
   }
   return NS_OK;
 }
@@ -193,19 +168,21 @@ nsDOMMouseEvent::GetRelatedTarget(nsIDOMEventTarget** aRelatedTarget)
 {
   NS_ENSURE_ARG_POINTER(aRelatedTarget);
   *aRelatedTarget = nsnull;
-
-  if (!mPresContext) {
-    return NS_OK;
+  nsISupports* relatedTarget = nsnull;
+  switch(mEvent->eventStructType)
+  {
+    case NS_MOUSE_EVENT:
+    case NS_MOUSE_SCROLL_EVENT:
+      relatedTarget = static_cast<nsMouseEvent_base*>(mEvent)->relatedTarget;
+      break;
+    default:
+      break;
   }
 
-  nsCOMPtr<nsIContent> relatedContent;
-  mPresContext->EventStateManager()->
-    GetEventRelatedContent(getter_AddRefs(relatedContent));
-  if (!relatedContent) {
-    return NS_OK;
+  if (relatedTarget) {
+    CallQueryInterface(relatedTarget, aRelatedTarget);
   }
-
-  return CallQueryInterface(relatedContent, aRelatedTarget);
+  return NS_OK;
 }
 
 NS_METHOD nsDOMMouseEvent::GetScreenX(PRInt32* aScreenX)

@@ -47,8 +47,7 @@
 
 class nsSVGTransformList : public nsSVGValue,
                            public nsIDOMSVGTransformList,
-                           public nsISVGValueObserver,
-                           public nsSupportsWeakReference
+                           public nsISVGValueObserver
 {
 public:
   static nsresult Create(nsIDOMSVGTransformList** aResult);
@@ -81,6 +80,8 @@ public:
   // other methods:
   nsIDOMSVGTransform* ElementAt(PRInt32 index);
   PRBool AppendElement(nsIDOMSVGTransform* aElement);
+  static already_AddRefed<nsIDOMSVGMatrix>
+  GetConsolidationMatrix(nsIDOMSVGTransformList *transforms);
   
 protected:
   PRInt32 ParseParameterList(char *paramstr, float *vars, PRInt32 nvars);

@@ -57,7 +57,7 @@
 #include "nsIControllers.h"
 #include "nsICSSParser.h"
 #include "nsIDOMElement.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsIDOM3EventTarget.h"
 #include "nsIDOMXULElement.h"
 #include "nsIDOMXULMultSelectCntrlEl.h"
@@ -65,35 +65,27 @@
 #include "nsIRDFCompositeDataSource.h"
 #include "nsIRDFResource.h"
 #include "nsIScriptObjectOwner.h"
-#include "nsIBindingManager.h"
+#include "nsBindingManager.h"
 #include "nsIURI.h"
-#include "nsIXMLContent.h"
-#include "nsIXULPrototypeCache.h"
 #include "nsIXULTemplateBuilder.h"
 #include "nsIBoxObject.h"
-#include "nsIChromeEventHandler.h"
 #include "nsIXBLService.h"
 #include "nsICSSOMFactory.h"
 #include "nsLayoutCID.h"
 #include "nsAttrAndChildArray.h"
-#include "nsXULAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsAutoPtr.h"
 #include "nsGenericElement.h"
 #include "nsDOMScriptObjectHolder.h"
 
 class nsIDocument;
-class nsIRDFService;
-class nsISupportsArray;
-class nsIXULContentUtils;
-class nsIXULPrototypeDocument;
 class nsString;
-class nsVoidArray;
 class nsIDocShell;
-class nsDOMAttributeMap;
 class nsICSSStyleRule;
 
 class nsIObjectInputStream;
 class nsIObjectOutputStream;
+class nsIScriptGlobalObjectOwner;
 
 static NS_DEFINE_CID(kCSSParserCID, NS_CSSPARSER_CID);
 
@@ -116,7 +108,7 @@ class nsXULPrototypeAttribute
 {
 public:
     nsXULPrototypeAttribute()
-        : mName(nsXULAtoms::id),  // XXX this is a hack, but names have to have a value
+        : mName(nsGkAtoms::id),  // XXX this is a hack, but names have to have a value
           mEventHandler(nsnull)
     {
         XUL_PROTOTYPE_ATTRIBUTE_METER(gNumAttributes);
@@ -131,9 +123,6 @@ public:
     // containing nsXULPrototypeElement.  We would ideally use
     // nsScriptObjectHolder, but want to avoid the extra lang ID.
     void* mEventHandler;
-
-    // Containing element must tell us the langID so we can cleanup.
-    void Finalize(PRUint32 aLangID);
 
 #ifdef XUL_PROTOTYPE_ATTRIBUTE_METERING
     /**
@@ -197,11 +186,11 @@ public:
 class nsXULPrototypeNode
 {
 public:
-    enum Type { eType_Element, eType_Script, eType_Text };
+    enum Type { eType_Element, eType_Script, eType_Text, eType_PI };
 
     Type                     mType;
 
-    PRInt32                  mRefCnt;
+    nsAutoRefCnt             mRefCnt;
 
     virtual ~nsXULPrototypeNode() {}
     virtual nsresult Serialize(nsIObjectOutputStream* aStream,
@@ -228,7 +217,17 @@ public:
         if (mRefCnt == 0)
             delete this;
     }
+    /**
+     * The prototype document must call ReleaseSubtree when it is going
+     * away.  This makes the parents through the tree stop owning their
+     * children, whether or not the parent's reference count is zero.
+     * Individual elements may still own individual prototypes, but
+     * those prototypes no longer remember their children to allow them
+     * to be constructed.
+     */
     virtual void ReleaseSubtree() { Release(); }
+
+    NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_NATIVE_CLASS(nsXULPrototypeNode)
 
 protected:
     nsXULPrototypeNode(Type aType)
@@ -244,6 +243,10 @@ public:
           mChildren(nsnull),
           mNumAttributes(0),
           mAttributes(nsnull),
+          mHasIdAttribute(PR_FALSE),
+          mHasClassAttribute(PR_FALSE),
+          mHasStyleAttribute(PR_FALSE),
+          mHoldsScriptObject(PR_FALSE),
           mScriptTypeID(nsIProgrammingLanguage::UNKNOWN)
     {
         NS_LOG_ADDREF(this, 1, ClassName(), ClassSize());
@@ -251,11 +254,10 @@ public:
 
     virtual ~nsXULPrototypeElement()
     {
-        PRUint32 i;
-        for (i = 0; i < mNumAttributes; i++)
-            mAttributes[i].Finalize(mScriptTypeID);
-        delete[] mAttributes;
-        delete[] mChildren;
+        UnlinkJSObjects();
+        Unlink();
+        NS_ASSERTION(!mChildren && mNumChildren == 0,
+                     "ReleaseSubtree not called");
     }
 
 #ifdef NS_BUILD_REFCNT_LOGGING
@@ -270,6 +272,9 @@ public:
           if (mChildren[i])
             mChildren[i]->ReleaseSubtree();
         }
+        mNumChildren = 0;
+        delete[] mChildren;
+        mChildren = nsnull;
       }
 
       nsXULPrototypeNode::ReleaseSubtree();
@@ -285,6 +290,9 @@ public:
 
     nsresult SetAttrAt(PRUint32 aPos, const nsAString& aValue, nsIURI* aDocumentURI);
 
+    void UnlinkJSObjects();
+    void Unlink();
+
     PRUint32                 mNumChildren;
     nsXULPrototypeNode**     mChildren;           // [OWNER]
 
@@ -292,12 +300,17 @@ public:
 
     PRUint32                 mNumAttributes;
     nsXULPrototypeAttribute* mAttributes;         // [OWNER]
+    
+    PRPackedBool             mHasIdAttribute:1;
+    PRPackedBool             mHasClassAttribute:1;
+    PRPackedBool             mHasStyleAttribute:1;
+    PRPackedBool             mHoldsScriptObject:1;
 
     // The language ID can not be set on a per-node basis, but is tracked
     // so that the language ID from the originating root can be used
     // (eg, when a node from an overlay ends up in our document, that node
     // must use its original script language, not our document's default.
-    PRUint32                 mScriptTypeID;
+    PRUint16                 mScriptTypeID;
     static void ReleaseGlobals()
     {
         NS_IF_RELEASE(sCSSParser);
@@ -346,30 +359,54 @@ public:
     nsresult Compile(const PRUnichar* aText, PRInt32 aTextLength,
                      nsIURI* aURI, PRUint32 aLineNo,
                      nsIDocument* aDocument,
-                     nsIXULPrototypeDocument* aPrototypeDocument);
+                     nsIScriptGlobalObjectOwner* aGlobalOwner);
 
+    void UnlinkJSObjects()
+    {
+        if (mScriptObject.mObject) {
+            nsContentUtils::DropScriptObjects(mScriptObject.mLangID, this,
+                                              &NS_CYCLE_COLLECTION_NAME(nsXULPrototypeNode));
+            mScriptObject.mObject = nsnull;
+        }
+    }
+
+    void Set(nsScriptObjectHolder &aHolder)
+    {
+        NS_ASSERTION(mScriptObject.mLangID == aHolder.getScriptTypeID(),
+                     "Wrong language, this will leak the previous object.");
+
+        mScriptObject.mLangID = aHolder.getScriptTypeID();
+        Set((void*)aHolder);
+    }
+    void Set(void *aObject)
+    {
+        NS_ASSERTION(!mScriptObject.mObject, "Leaking script object.");
+
+        nsresult rv = nsContentUtils::HoldScriptObject(mScriptObject.mLangID,
+                                                       this,
+                                                       &NS_CYCLE_COLLECTION_NAME(nsXULPrototypeNode),
+                                                       aObject, PR_FALSE);
+        if (NS_SUCCEEDED(rv)) {
+            mScriptObject.mObject = aObject;
+        }
+    }
+
+    struct ScriptObjectHolder
+    {
+        ScriptObjectHolder(PRUint32 aLangID) : mLangID(aLangID),
+                                               mObject(nsnull)
+        {
+        }
+        PRUint32 mLangID;
+        void* mObject;
+    };
     nsCOMPtr<nsIURI>         mSrcURI;
     PRUint32                 mLineNo;
     PRPackedBool             mSrcLoading;
     PRPackedBool             mOutOfLine;
     nsXULDocument*           mSrcLoadWaiters;   // [OWNER] but not COMPtr
     PRUint32                 mLangVersion;
-    nsScriptObjectHolder     mScriptObject;
-
-    static void ReleaseGlobals()
-    {
-        NS_IF_RELEASE(sXULPrototypeCache);
-    }
-
-protected:
-    static nsIXULPrototypeCache* GetXULCache()
-    {
-        if (!sXULPrototypeCache)
-            CallGetService("@mozilla.org/xul/xul-prototype-cache;1", &sXULPrototypeCache);
-
-        return sXULPrototypeCache;
-    }
-    static nsIXULPrototypeCache* sXULPrototypeCache;
+    ScriptObjectHolder       mScriptObject;
 };
 
 class nsXULPrototypeText : public nsXULPrototypeNode
@@ -401,6 +438,36 @@ public:
     nsString                 mValue;
 };
 
+class nsXULPrototypePI : public nsXULPrototypeNode
+{
+public:
+    nsXULPrototypePI()
+        : nsXULPrototypeNode(eType_PI)
+    {
+        NS_LOG_ADDREF(this, 1, ClassName(), ClassSize());
+    }
+
+    virtual ~nsXULPrototypePI()
+    {
+    }
+
+#ifdef NS_BUILD_REFCNT_LOGGING
+    virtual const char* ClassName() { return "nsXULPrototypePI"; }
+    virtual PRUint32 ClassSize() { return sizeof(*this); }
+#endif
+
+    virtual nsresult Serialize(nsIObjectOutputStream* aStream,
+                               nsIScriptGlobalObject* aGlobal,
+                               const nsCOMArray<nsINodeInfo> *aNodeInfos);
+    virtual nsresult Deserialize(nsIObjectInputStream* aStream,
+                                 nsIScriptGlobalObject* aGlobal,
+                                 nsIURI* aDocumentURI,
+                                 const nsCOMArray<nsINodeInfo> *aNodeInfos);
+
+    nsString                 mTarget;
+    nsString                 mData;
+};
+
 ////////////////////////////////////////////////////////////////////////
 
 /**
@@ -411,10 +478,9 @@ public:
 
 #define XUL_ELEMENT_LAZY_STATE_OFFSET NODE_TYPE_SPECIFIC_BITS_OFFSET
 
-class nsXULElement : public nsGenericElement,
-                     public nsIDOMXULElement,
-                     public nsIScriptEventHandlerOwner,
-                     public nsIChromeEventHandler
+class nsScriptEventHandlerOwnerTearoff;
+
+class nsXULElement : public nsGenericElement, public nsIDOMXULElement
 {
 public:
     /**
@@ -443,7 +509,7 @@ public:
     static nsXULElement* FromContent(nsIContent *aContent)
     {
         if (aContent->IsNodeOfType(eXUL))
-            return NS_STATIC_CAST(nsXULElement*, aContent);
+            return static_cast<nsXULElement*>(aContent);
         return nsnull;
     }
 
@@ -470,6 +536,8 @@ public:
 
     // nsISupports
     NS_DECL_ISUPPORTS_INHERITED
+    NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED_NO_UNLINK(nsXULElement,
+                                                       nsGenericElement)
 
     // nsINode
     virtual PRUint32 GetChildCount() const;
@@ -480,12 +548,7 @@ public:
                                    PRBool aNotify);
 
     // nsIContent
-    virtual nsresult BindToTree(nsIDocument* aDocument, nsIContent* aParent,
-                                nsIContent* aBindingParent,
-                                PRBool aCompileEventHandlers);
-    virtual void UnbindFromTree(PRBool aDeep = PR_TRUE,
-                                PRBool aNullParent = PR_TRUE);
-    virtual void SetNativeAnonymous(PRBool aAnonymous);
+    virtual void UnbindFromTree(PRBool aDeep, PRBool aNullParent);
     virtual nsresult RemoveChildAt(PRUint32 aIndex, PRBool aNotify);
     virtual nsIAtom *GetIDAttributeName() const;
     virtual nsIAtom *GetClassAttributeName() const;
@@ -506,6 +569,7 @@ public:
                                PRBool aNotify);
     virtual const nsAttrName* GetAttrNameAt(PRUint32 aIndex) const;
     virtual PRUint32 GetAttrCount() const;
+    virtual void DestroyContent();
 
 #ifdef DEBUG
     virtual void List(FILE* out, PRInt32 aIndent) const;
@@ -514,22 +578,16 @@ public:
     }
 #endif
 
-    virtual nsresult RangeAdd(nsIDOMRange* aRange);
-    virtual void RangeRemove(nsIDOMRange* aRange);
-    virtual const nsVoidArray *GetRangeList() const;
     virtual void SetFocus(nsPresContext* aPresContext);
     virtual void RemoveFocus(nsPresContext* aPresContext);
+    virtual void PerformAccesskey(PRBool aKeyCausesActivation,
+                                  PRBool aIsTrustedEvent);
 
     virtual nsIContent *GetBindingParent() const;
     virtual PRBool IsNodeOfType(PRUint32 aFlags) const;
-    NS_IMETHOD GetListenerManager(PRBool aCreateIfNotFound,
-                                  nsIEventListenerManager** aResult);
     virtual PRBool IsFocusable(PRInt32 *aTabIndex = nsnull);
     virtual nsIAtom* GetID() const;
     virtual const nsAttrValue* GetClasses() const;
-
-    // nsIXMLContent
-    NS_IMETHOD MaybeTriggerAutoLink(nsIDocShell *aShell);
 
     NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
     virtual nsICSSStyleRule* GetInlineStyleRule();
@@ -546,10 +604,10 @@ public:
     void ClearLazyState(LazyState aFlags)
     { UnsetFlags(aFlags << XUL_ELEMENT_LAZY_STATE_OFFSET); }
     PRBool GetLazyState(LazyState aFlag)
-    { return GetFlags() & (aFlag << XUL_ELEMENT_LAZY_STATE_OFFSET); }
+    { return !!(GetFlags() & (aFlag << XUL_ELEMENT_LAZY_STATE_OFFSET)); }
 
     // nsIDOMNode
-    NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericElement::)
+    NS_FORWARD_NSIDOMNODE(nsGenericElement::)
 
     // nsIDOMElement
     NS_FORWARD_NSIDOMELEMENT(nsGenericElement::)
@@ -557,24 +615,27 @@ public:
     // nsIDOMXULElement
     NS_DECL_NSIDOMXULELEMENT
 
-    // nsIScriptEventHandlerOwner
-    nsresult CompileEventHandler(nsIScriptContext* aContext,
-                                 nsISupports* aTarget,
-                                 nsIAtom *aName,
-                                 const nsAString& aBody,
-                                 const char* aURL,
-                                 PRUint32 aLineNo,
-                                 nsScriptObjectHolder &aHandler);
-    nsresult GetCompiledEventHandler(nsIAtom *aName,
-                                     nsScriptObjectHolder &aHandler);
+    virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+    virtual PRInt32 IntrinsicState() const;
 
-    // nsIChromeEventHandler
-    NS_DECL_NSICHROMEEVENTHANDLER
+    nsresult GetStyle(nsIDOMCSSStyleDeclaration** aStyle);
 
+    virtual void RecompileScriptEventListeners();
+
+    // This function should ONLY be used by BindToTree implementations.
+    // The function exists solely because XUL elements store the binding
+    // parent as a member instead of in the slots, as nsGenericElement does.
+    void SetXULBindingParent(nsIContent* aBindingParent)
+    {
+      mBindingParent = aBindingParent;
+    }
 
 protected:
+    // XXX This can be removed when nsNodeUtils::CloneAndAdopt doesn't need
+    //     access to mPrototype anymore.
+    friend class nsNodeUtils;
+
     nsXULElement(nsINodeInfo* aNodeInfo);
-    virtual ~nsXULElement(void);
 
     // Implementation methods
     nsresult EnsureContentsGenerated(void) const;
@@ -589,10 +650,17 @@ protected:
 
     nsresult AddPopupListener(nsIAtom* aName);
 
-protected:
+    class nsXULSlots : public nsGenericElement::nsDOMSlots
+    {
+    public:
+       nsXULSlots(PtrBits aFlags);
+       virtual ~nsXULSlots();
+    };
+
+    virtual nsINode::nsSlots* CreateSlots();
+
     // Required fields
     nsRefPtr<nsXULPrototypeElement>     mPrototype;
-    nsCOMPtr<nsIEventListenerManager>   mListenerManager;    // [OWNER]
 
     /**
      * The nearest enclosing content node with a binding
@@ -647,7 +715,11 @@ protected:
 
     nsresult HideWindowChrome(PRBool aShouldHide);
 
+    void SetTitlebarColor(nscolor aColor);
+
     const nsAttrName* InternalGetExistingAttrNameFromQName(const nsAString& aStr) const;
+
+    void RemoveBroadcaster(const nsAString & broadcasterId);
 
 protected:
     // Internal accessor. This shadows the 'Slots', and returns
@@ -666,7 +738,8 @@ protected:
     static already_AddRefed<nsXULElement>
     Create(nsXULPrototypeElement* aPrototype, nsINodeInfo *aNodeInfo,
            PRBool aIsScriptable);
-};
 
+    friend class nsScriptEventHandlerOwnerTearoff;
+};
 
 #endif // nsXULElement_h__

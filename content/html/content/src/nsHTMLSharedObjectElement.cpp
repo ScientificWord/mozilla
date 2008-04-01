@@ -38,7 +38,7 @@
 
 #include "nsGenericHTMLElement.h"
 #include "nsObjectLoadingContent.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsDOMError.h"
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
@@ -73,7 +73,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -112,7 +112,7 @@ public:
   virtual PRBool IsFocusable(PRInt32 *aTabIndex = nsnull);
   virtual PRUint32 GetDesiredIMEState();
 
-  virtual void DoneAddingChildren(PRBool aHaveNotified);
+  virtual nsresult DoneAddingChildren(PRBool aHaveNotified);
   virtual PRBool IsDoneAddingChildren();
 
   virtual PRBool ParseAttribute(PRInt32 aNamespaceID,
@@ -122,9 +122,15 @@ public:
   virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom *aAttribute) const;
   virtual PRInt32 IntrinsicState() const;
+  virtual void DestroyContent();
 
   // nsObjectLoadingContent
   virtual PRUint32 GetCapabilities() const;
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+
+  NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED_NO_UNLINK(nsHTMLSharedObjectElement,
+                                                     nsGenericHTMLElement)
 
 private:
   /**
@@ -179,7 +185,7 @@ nsHTMLSharedObjectElement::IsDoneAddingChildren()
   return mIsDoneAddingChildren;
 }
 
-void
+nsresult
 nsHTMLSharedObjectElement::DoneAddingChildren(PRBool aHaveNotified)
 {
   if (!mIsDoneAddingChildren) {
@@ -191,34 +197,42 @@ nsHTMLSharedObjectElement::DoneAddingChildren(PRBool aHaveNotified)
       StartObjectLoad(aHaveNotified);
     }
   }
+
+  return NS_OK;
 }
+
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsHTMLSharedObjectElement)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_INHERITED(nsHTMLSharedObjectElement,
+                                                  nsGenericHTMLElement)
+  tmp->Traverse(cb);
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
 
 NS_IMPL_ADDREF_INHERITED(nsHTMLSharedObjectElement, nsGenericElement) 
 NS_IMPL_RELEASE_INHERITED(nsHTMLSharedObjectElement, nsGenericElement) 
 
-NS_HTML_CONTENT_INTERFACE_MAP_AMBIGOUS_BEGIN(nsHTMLSharedObjectElement,
-                                             nsGenericHTMLElement,
-                                             nsIDOMHTMLAppletElement)
+NS_HTML_CONTENT_CC_INTERFACE_TABLE_AMBIGUOUS_HEAD(nsHTMLSharedObjectElement,
+                                                  nsGenericHTMLElement,
+                                                  nsIDOMHTMLAppletElement)
+  NS_INTERFACE_TABLE_INHERITED8(nsHTMLSharedObjectElement,
+                                imgIDecoderObserver,
+                                nsIRequestObserver,
+                                nsIStreamListener,
+                                nsIFrameLoaderOwner,
+                                nsIObjectLoadingContent,
+                                nsIImageLoadingContent,
+                                nsIInterfaceRequestor,
+                                nsIChannelEventSink)
+  NS_INTERFACE_TABLE_TO_MAP_SEGUE
   NS_INTERFACE_MAP_ENTRY_IF_TAG(nsIDOMHTMLAppletElement, applet)
   NS_INTERFACE_MAP_ENTRY_IF_TAG(nsIDOMHTMLEmbedElement, embed)
 #ifdef MOZ_SVG
   NS_INTERFACE_MAP_ENTRY_IF_TAG(nsIDOMGetSVGDocument, embed)
 #endif
-  NS_INTERFACE_MAP_ENTRY(imgIDecoderObserver)
-  NS_INTERFACE_MAP_ENTRY(nsIRequestObserver)
-  NS_INTERFACE_MAP_ENTRY(nsIStreamListener)
-  NS_INTERFACE_MAP_ENTRY(nsIFrameLoaderOwner)
-  NS_INTERFACE_MAP_ENTRY(nsIObjectLoadingContent)
-  NS_INTERFACE_MAP_ENTRY(nsIImageLoadingContent)
-  NS_INTERFACE_MAP_ENTRY(nsIInterfaceRequestor)
-  NS_INTERFACE_MAP_ENTRY(nsIChannelEventSink)
-  NS_INTERFACE_MAP_ENTRY(nsISupportsWeakReference)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO_IF_TAG(HTMLAppletElement, applet)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO_IF_TAG(HTMLEmbedElement, embed)
 NS_HTML_CONTENT_INTERFACE_MAP_END
 
-NS_IMPL_DOM_CLONENODE_AMBIGUOUS(nsHTMLSharedObjectElement,
-                                nsIDOMHTMLAppletElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLSharedObjectElement)
 
 nsresult
 nsHTMLSharedObjectElement::BindToTree(nsIDocument *aDocument,
@@ -262,8 +276,11 @@ nsHTMLSharedObjectElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom *aName,
   // get bound after all the attributes have been set, so we'll do the
   // object load from BindToTree/DoneAddingChildren.
   // Skip the LoadObject call in that case.
-  if (aNotify && aNameSpaceID == kNameSpaceID_None &&
-      aName == URIAttrName()) {
+  // We also don't want to start loading the object when we're not yet in
+  // a document, just in case that the caller wants to set additional
+  // attributes before inserting the node into the document.
+  if (aNotify && IsInDoc() && mIsDoneAddingChildren &&
+      aNameSpaceID == kNameSpaceID_None && aName == URIAttrName()) {
     nsCAutoString type;
     GetTypeAttrValue(type);
     LoadObject(aValue, aNotify, type, PR_TRUE);
@@ -307,8 +324,8 @@ NS_IMPL_URI_ATTR(nsHTMLSharedObjectElement, CodeBase, codebase)
 NS_IMPL_STRING_ATTR(nsHTMLSharedObjectElement, Height, height)
 NS_IMPL_INT_ATTR(nsHTMLSharedObjectElement, Hspace, hspace)
 NS_IMPL_STRING_ATTR(nsHTMLSharedObjectElement, Name, name)
-NS_IMPL_STRING_ATTR(nsHTMLSharedObjectElement, Object, object)
-NS_IMPL_STRING_ATTR(nsHTMLSharedObjectElement, Src, src)
+NS_IMPL_URI_ATTR_WITH_BASE(nsHTMLSharedObjectElement, Object, object, codebase)
+NS_IMPL_URI_ATTR(nsHTMLSharedObjectElement, Src, src)
 NS_IMPL_INT_ATTR(nsHTMLSharedObjectElement, TabIndex, tabindex)
 NS_IMPL_STRING_ATTR(nsHTMLSharedObjectElement, Type, type)
 NS_IMPL_INT_ATTR(nsHTMLSharedObjectElement, Vspace, vspace)
@@ -394,17 +411,10 @@ nsHTMLSharedObjectElement::StartObjectLoad(PRBool aNotify)
 
   nsAutoString uri;
   if (!GetAttr(kNameSpaceID_None, URIAttrName(), uri)) {
-    if (mNodeInfo->Equals(nsGkAtoms::applet)) {
-      // The constructor set the type to eType_Loading; but if we have no code
-      // attribute, then we aren't really a plugin
-      Fallback(aNotify);
-    }
-    else {
-      // Be sure to call the nsIURI version if we have no attribute
-      // That handles the case where no URI is specified. An empty string would
-      // get interpreted as the page itself, instead of absence of URI.
-      LoadObject(nsnull, aNotify, type);
-    }
+    // Be sure to call the nsIURI version if we have no attribute
+    // That handles the case where no URI is specified. An empty string would
+    // get interpreted as the page itself, instead of absence of URI.
+    LoadObject(nsnull, aNotify, type);
   }
   else {
     LoadObject(uri, aNotify, type);
@@ -430,4 +440,11 @@ nsHTMLSharedObjectElement::GetCapabilities() const
   }
 
   return capabilities;
+}
+
+void
+nsHTMLSharedObjectElement::DestroyContent()
+{
+  RemovedFromDocument();
+  nsGenericHTMLElement::DestroyContent();
 }

@@ -64,6 +64,7 @@ public:
     {
         return !(*this == aNode);
     }
+    ~txXPathNode();
 
 private:
     friend class txNodeSet;
@@ -71,48 +72,82 @@ private:
     friend class txXPathNodeUtils;
     friend class txXPathTreeWalker;
 
+    txXPathNode(const txXPathNode& aNode);
+
 #ifdef TX_EXE
     txXPathNode(NodeDefinition* aNode) : mInner(aNode)
     {
     }
-    txXPathNode(const txXPathNode& aNode);
 
     NodeDefinition* mInner;
 #else
-    txXPathNode(nsIDocument* aDocument) : mDocument(aDocument),
+    txXPathNode(nsIDocument* aDocument) : mNode(aDocument),
+                                          mRefCountRoot(0),
                                           mIndex(eDocument)
     {
+        MOZ_COUNT_CTOR(txXPathNode);
     }
-    txXPathNode(nsIContent* aContent, PRUint32 aIndex = eContent)
-        : mContent(aContent),
+    txXPathNode(nsINode *aNode, PRUint32 aIndex, nsINode *aRoot)
+        : mNode(aNode),
+          mRefCountRoot(aRoot ? 1 : 0),
           mIndex(aIndex)
     {
+        MOZ_COUNT_CTOR(txXPathNode);
+        if (aRoot) {
+            NS_ADDREF(aRoot);
+        }
     }
-    txXPathNode(const txXPathNode& aNode);
+
+    static nsINode *RootOf(nsINode *aNode)
+    {
+        nsINode *ancestor, *root = aNode;
+        while ((ancestor = root->GetNodeParent())) {
+            root = ancestor;
+        }
+        return root;
+    }
+    nsINode *Root() const
+    {
+        return RootOf(mNode);
+    }
+    nsINode *GetRootToAddRef() const
+    {
+        return mRefCountRoot ? Root() : nsnull;
+    }
 
     PRBool isDocument() const
     {
         return mIndex == eDocument;
-    };
+    }
     PRBool isContent() const
     {
         return mIndex == eContent;
-    };
+    }
     PRBool isAttribute() const
     {
         return mIndex != eDocument && mIndex != eContent;
-    };
+    }
+
+    nsIContent* Content() const
+    {
+        NS_ASSERTION(isContent() || isAttribute(), "wrong type");
+        return static_cast<nsIContent*>(mNode);
+    }
+    nsIDocument* Document() const
+    {
+        NS_ASSERTION(isDocument(), "wrong type");
+        return static_cast<nsIDocument*>(mNode);
+    }
 
     enum PositionType
     {
-        eDocument = (PRUint32)-2,
-        eContent = (PRUint32)-1
+        eDocument = (1 << 30),
+        eContent = eDocument - 1
     };
-    union {
-        nsIDocument* mDocument;        // eDocument
-        nsIContent* mContent;          // eContent, eAttribute
-    };
-    PRUint32 mIndex;
+
+    nsINode* mNode;
+    PRUint32 mRefCountRoot : 1;
+    PRUint32 mIndex : 31;
 #endif
 };
 
@@ -146,6 +181,16 @@ txNamespaceManager::getNamespaceURI(const PRInt32 aID, nsAString& aResult)
 #else
     return nsContentUtils::NameSpaceManager()->
         GetNameSpaceURI(aID, aResult);
+#endif
+}
+
+inline PRBool
+txXPathNode::operator==(const txXPathNode& aNode) const
+{
+#ifdef TX_EXE
+    return (mInner == aNode.mInner);
+#else
+    return mIndex == aNode.mIndex && mNode == aNode.mNode;
 #endif
 }
 

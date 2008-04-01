@@ -45,17 +45,14 @@
 #include "nsIDOMDocumentType.h"
 #include "nsIDOMDOMImplementation.h"
 #include "nsIDOMNSDocument.h"
-#include "nsIXMLContent.h"
+#include "nsIContent.h"
 #include "nsIURI.h"
 #include "nsNetUtil.h"
 #include "nsIDocShell.h"
 #include "nsIDocShellTreeItem.h"
-#include "nsIContent.h"
-#include "nsITextContent.h"
 #include "nsIStyleSheetLinkingElement.h"
 #include "nsPresContext.h"
 #include "nsIPresShell.h"
-#include "nsIViewManager.h"
 #include "nsIDOMComment.h"
 #include "nsIDOMCDATASection.h"
 #include "nsDOMDocumentType.h"
@@ -64,9 +61,8 @@
 #include "nsCRT.h"
 #include "nsICSSLoader.h"
 #include "nsICSSStyleSheet.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsContentUtils.h"
-#include "nsLayoutAtoms.h"
 #include "nsIScriptContext.h"
 #include "nsINameSpaceManager.h"
 #include "nsIServiceManager.h"
@@ -80,7 +76,7 @@
 #include "nsGenericElement.h"
 #include "nsIWebNavigation.h"
 #include "nsIScriptElement.h"
-#include "nsIScriptLoader.h"
+#include "nsScriptLoader.h"
 #include "nsStyleLinkElement.h"
 #include "nsIImageLoadingContent.h"
 #include "nsReadableUtils.h"
@@ -90,7 +86,6 @@
 #include "nsIDOMWindowInternal.h"
 #include "nsIChannel.h"
 #include "nsIPrincipal.h"
-#include "nsXBLAtoms.h"
 #include "nsXMLPrettyPrinter.h"
 #include "nsNodeInfoManager.h"
 #include "nsContentCreatorFunctions.h"
@@ -99,11 +94,10 @@
 #include "nsContentErrors.h"
 #include "nsIDOMProcessingInstruction.h"
 #include "nsNodeUtils.h"
-#include "nsTimer.h"
 #include "nsIScriptGlobalObject.h"
+#include "nsEventDispatcher.h"
 
 #ifdef MOZ_SVG
-#include "nsSVGAtoms.h"
 #include "nsGUIEvent.h"
 #endif
 
@@ -143,17 +137,8 @@ NS_NewXMLContentSink(nsIXMLContentSink** aResult,
 }
 
 nsXMLContentSink::nsXMLContentSink()
-  : mDocElement(nsnull),
-    mText(nsnull),
-    mTextLength(0),
-    mTextSize(0),
-    mNotifyLevel(0),
-    mConstrainSize(PR_TRUE),
-    mInTitle(PR_FALSE),
+  : mConstrainSize(PR_TRUE),
     mPrettyPrintXML(PR_TRUE),
-    mPrettyPrintHasSpecialRoot(PR_FALSE),
-    mPrettyPrintHasFactoredElements(PR_FALSE),
-    mHasProcessedBase(PR_FALSE),
     mAllowAutoXLinks(PR_TRUE)
 {
 }
@@ -185,9 +170,10 @@ nsXMLContentSink::Init(nsIDocument* aDoc,
 	
   nsresult rv = nsContentSink::Init(aDoc, aURI, aContainer, aChannel);
   NS_ENSURE_SUCCESS(rv, rv);
+
   aDoc->AddObserver(this);
 
- if (!mDocShell) {
+  if (!mDocShell) {
     mPrettyPrintXML = PR_FALSE;
   }
   
@@ -199,15 +185,30 @@ nsXMLContentSink::Init(nsIDocument* aDoc,
   return NS_OK;
 }
 
-NS_IMPL_ISUPPORTS_INHERITED7(nsXMLContentSink,
-                             nsContentSink,
-                             nsIContentSink,
-                             nsIXMLContentSink,
-                             nsIExpatSink,
-                             nsITimerCallback,
-                             nsIDocumentObserver,
-                             nsIMutationObserver,
-                             nsITransformObserver)
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION_INHERITED(nsXMLContentSink)
+  NS_INTERFACE_MAP_ENTRY(nsIContentSink)
+  NS_INTERFACE_MAP_ENTRY(nsIXMLContentSink)
+  NS_INTERFACE_MAP_ENTRY(nsIExpatSink)
+  NS_INTERFACE_MAP_ENTRY(nsITimerCallback)
+  NS_INTERFACE_MAP_ENTRY(nsIDocumentObserver)
+  NS_INTERFACE_MAP_ENTRY(nsIMutationObserver)
+  NS_INTERFACE_MAP_ENTRY(nsITransformObserver)
+NS_INTERFACE_MAP_END_INHERITING(nsContentSink)
+
+NS_IMPL_ADDREF_INHERITED(nsXMLContentSink, nsContentSink)
+NS_IMPL_RELEASE_INHERITED(nsXMLContentSink, nsContentSink)
+
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsXMLContentSink)
+
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_INHERITED(nsXMLContentSink,
+                                                  nsContentSink)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mCurrentHead)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_RAWPTR(mDocElement)
+  for (PRUint32 i = 0, count = tmp->mContentStack.Length(); i < count; i++) {
+    const StackNode& node = tmp->mContentStack.ElementAt(i);
+    cb.NoteXPCOMChild(node.mContent);
+  }
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
 
 // nsIContentSink
 NS_IMETHODIMP
@@ -220,6 +221,7 @@ NS_IMETHODIMP
 nsXMLContentSink::WillBuildModel(void)
 {
   WillBuildModelImpl();
+
   // Notify document that the load is beginning
   mDocument->BeginLoad();
 
@@ -242,7 +244,6 @@ nsXMLContentSink::CanStillPrettyPrint()
          (!mPrettyPrintHasFactoredElements || mPrettyPrintHasSpecialRoot);
 }
 
-
 nsresult
 nsXMLContentSink::MaybePrettyPrint()
 {
@@ -251,6 +252,7 @@ nsXMLContentSink::MaybePrettyPrint()
 
     return NS_OK;
   }
+
   // stop observing in order to avoid crashing when replacing content
   mDocument->RemoveObserver(this);
 
@@ -263,7 +265,12 @@ nsXMLContentSink::MaybePrettyPrint()
   nsresult rv = NS_NewXMLPrettyPrinter(getter_AddRefs(printer));
   NS_ENSURE_SUCCESS(rv, rv);
 
-  return printer->PrettyPrint(mDocument);
+  PRBool isPrettyPrinting;
+  rv = printer->PrettyPrint(mDocument, &isPrettyPrinting);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  mPrettyPrinting = isPrettyPrinting;
+  return NS_OK;
 }
 
 static void
@@ -312,7 +319,7 @@ NS_IMETHODIMP
 nsXMLContentSink::DidBuildModel()
 {
   DidBuildModelImpl();
-  
+
   if (mXSLTProcessor) {
     // stop observing in order to avoid crashing when replacing content
     mDocument->RemoveObserver(this);
@@ -339,10 +346,7 @@ nsXMLContentSink::DidBuildModel()
   }
   else {
     // Kick off layout for non-XSLT transformed documents.
-    nsIScriptLoader *loader = mDocument->GetScriptLoader();
-    if (loader) {
-      loader->RemoveObserver(this);
-    }
+    mDocument->ScriptLoader()->RemoveObserver(this);
 
     if (mDocElement) {
       // Notify document observers that all the content has been stuck
@@ -351,25 +355,33 @@ nsXMLContentSink::DidBuildModel()
       // documentElement?
       NS_ASSERTION(mDocument->IndexOf(mDocElement) != -1,
                    "mDocElement not in doc?");
-
     }
 
     // Check if we want to prettyprint
     MaybePrettyPrint();
 
-    StartLayout();
-
-#if 0 /* Disable until this works for XML */
-    //  Scroll to Anchor only if the document was *not* loaded through history means. 
-    if (mDocShell) {
-      PRUint32 documentLoadType = 0;
-      mDocShell->GetLoadType(&documentLoadType);
-      ScrollToRef(!(documentLoadType & nsIDocShell::LOAD_CMD_HISTORY));
+    PRBool startLayout = PR_TRUE;
+    
+    if (mPrettyPrinting) {
+      NS_ASSERTION(!mPendingSheetCount, "Shouldn't have pending sheets here!");
+      
+      // We're pretty-printing now.  See whether we should wait up on
+      // stylesheet loads
+      if (mDocument->CSSLoader()->HasPendingLoads() &&
+          NS_SUCCEEDED(mDocument->CSSLoader()->AddObserver(this))) {
+        // wait for those sheets to load
+        startLayout = PR_FALSE;
+      }
     }
-#else
-    ScrollToRef(PR_TRUE);
-#endif
+    
+    if (startLayout) {
+      StartLayout(PR_FALSE);
+
+      ScrollToRef();
+    }
+
     mDocument->RemoveObserver(this);
+
     mDocument->EndLoad();
   }
 
@@ -379,33 +391,36 @@ nsXMLContentSink::DidBuildModel()
 }
 
 NS_IMETHODIMP
-nsXMLContentSink::OnDocumentCreated(nsIDOMDocument* aResultDocument)
+nsXMLContentSink::OnDocumentCreated(nsIDocument* aResultDocument)
 {
   NS_ENSURE_ARG(aResultDocument);
 
   nsCOMPtr<nsIContentViewer> contentViewer;
   mDocShell->GetContentViewer(getter_AddRefs(contentViewer));
   if (contentViewer) {
-    contentViewer->SetDOMDocument(aResultDocument);
+    nsCOMPtr<nsIDOMDocument> doc = do_QueryInterface(aResultDocument);
+    return contentViewer->SetDOMDocument(doc);
   }
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsXMLContentSink::OnTransformDone(nsresult aResult,
-                                  nsIDOMDocument* aResultDocument)
+                                  nsIDocument* aResultDocument)
 {
   NS_ASSERTION(NS_FAILED(aResult) || aResultDocument,
                "Don't notify about transform success without a document.");
+
+  nsCOMPtr<nsIDOMDocument> domDoc = do_QueryInterface(aResultDocument);
 
   nsCOMPtr<nsIContentViewer> contentViewer;
   mDocShell->GetContentViewer(getter_AddRefs(contentViewer));
 
   if (NS_FAILED(aResult) && contentViewer) {
     // Transform failed.
-    if (aResultDocument) {
+    if (domDoc) {
       // We have an error document.
-      contentViewer->SetDOMDocument(aResultDocument);
+      contentViewer->SetDOMDocument(domDoc);
     }
     else {
       // We don't have an error document, display the
@@ -419,13 +434,10 @@ nsXMLContentSink::OnTransformDone(nsresult aResult,
   if (NS_SUCCEEDED(aResult) || aResultDocument) {
     // Transform succeeded or it failed and we have an error
     // document to display.
-    mDocument = do_QueryInterface(aResultDocument);
+    mDocument = aResultDocument;
   }
 
-  nsIScriptLoader *loader = originalDocument->GetScriptLoader();
-  if (loader) {
-    loader->RemoveObserver(this);
-  }
+  originalDocument->ScriptLoader()->RemoveObserver(this);
 
   // Notify document observers that all the content has been stuck
   // into the document.  
@@ -442,22 +454,32 @@ nsXMLContentSink::OnTransformDone(nsresult aResult,
   }
   
   // Start the layout process
-  StartLayout();
+  StartLayout(PR_FALSE);
 
-#if 0 /* Disable until this works for XML */
-  //  Scroll to Anchor only if the document was *not* loaded through history means. 
-  PRUint32 documentLoadType = 0;
-  docShell->GetLoadType(&documentLoadType);
-  ScrollToRef(!(documentLoadType & nsIDocShell::LOAD_CMD_HISTORY));
-#else
-  ScrollToRef(PR_TRUE);
-#endif
+  ScrollToRef();
 
   originalDocument->EndLoad();
 
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsXMLContentSink::StyleSheetLoaded(nsICSSStyleSheet* aSheet,
+                                   PRBool aWasAlternate,
+                                   nsresult aStatus)
+{
+  if (!mPrettyPrinting) {
+    return nsContentSink::StyleSheetLoaded(aSheet, aWasAlternate, aStatus);
+  }
+
+  if (!mDocument->CSSLoader()->HasPendingLoads()) {
+    mDocument->CSSLoader()->RemoveObserver(this);
+    StartLayout(PR_FALSE);
+    ScrollToRef();
+  }
+
+  return NS_OK;
+}
 
 NS_IMETHODIMP
 nsXMLContentSink::WillInterrupt(void)
@@ -474,6 +496,7 @@ nsXMLContentSink::WillResume(void)
 NS_IMETHODIMP
 nsXMLContentSink::SetParser(nsIParser* aParser)
 {
+  NS_PRECONDITION(aParser, "Should have a parser here!");
   mParser = aParser;
   return NS_OK;
 }
@@ -494,16 +517,15 @@ nsXMLContentSink::CreateElement(const PRUnichar** aAtts, PRUint32 aAttsCount,
                      aNodeInfo);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  if (aNodeInfo->Equals(nsHTMLAtoms::script, kNameSpaceID_XHTML)
+  if (aNodeInfo->Equals(nsGkAtoms::script, kNameSpaceID_XHTML)
 #ifdef MOZ_SVG
-      || aNodeInfo->Equals(nsSVGAtoms::script, kNameSpaceID_SVG)
+      || aNodeInfo->Equals(nsGkAtoms::script, kNameSpaceID_SVG)
 #endif
     ) {
-    // Don't append the content to the tree until we're all
-    // done collecting its contents
+    nsCOMPtr<nsIScriptElement> sele = do_QueryInterface(content);
+    sele->SetScriptLineNumber(aLineNumber);
+    sele->WillCallDoneAddingChildren();
     mConstrainSize = PR_FALSE;
-    mScriptLineNo = aLineNumber;
-    *aAppendContent = PR_FALSE;
   }
 
   // XHTML needs some special attention
@@ -526,29 +548,29 @@ nsXMLContentSink::CreateElement(const PRUnichar** aAtts, PRUint32 aAttsCount,
     }
   }
 
-  if (aNodeInfo->Equals(nsHTMLAtoms::title, kNameSpaceID_XHTML)) {
+  if (aNodeInfo->Equals(nsGkAtoms::title, kNameSpaceID_XHTML)) {
     if (mDocument && mDocument->GetDocumentTitle().IsVoid()) {
       mInTitle = PR_TRUE; // The first title wins
     }
   }
 #ifdef MOZ_SVG
-  else if (aNodeInfo->Equals(nsSVGAtoms::title, kNameSpaceID_SVG)) {
+  else if (aNodeInfo->Equals(nsGkAtoms::title, kNameSpaceID_SVG)) {
     nsIContent* parent = GetCurrentContent();
     if (mDocument && mDocument->GetDocumentTitle().IsVoid() &&
         parent && parent == mDocElement &&
-        parent->NodeInfo()->Equals(nsSVGAtoms::svg, kNameSpaceID_SVG)) {
+        parent->NodeInfo()->Equals(nsGkAtoms::svg, kNameSpaceID_SVG)) {
       mInTitle = PR_TRUE; // The first title wins
     }
   }
 #endif // MOZ_SVG
-  else if (aNodeInfo->Equals(nsHTMLAtoms::link, kNameSpaceID_XHTML) ||
-           aNodeInfo->Equals(nsHTMLAtoms::style, kNameSpaceID_XHTML) ||
-           aNodeInfo->Equals(nsHTMLAtoms::style, kNameSpaceID_SVG)) {
+  else if (aNodeInfo->Equals(nsGkAtoms::link, kNameSpaceID_XHTML) ||
+           aNodeInfo->Equals(nsGkAtoms::style, kNameSpaceID_XHTML) ||
+           aNodeInfo->Equals(nsGkAtoms::style, kNameSpaceID_SVG)) {
     nsCOMPtr<nsIStyleSheetLinkingElement> ssle(do_QueryInterface(content));
     if (ssle) {
-      ssle->InitStyleLinkElement(mParser, PR_FALSE);
+      ssle->InitStyleLinkElement(PR_FALSE);
       ssle->SetEnableUpdates(PR_FALSE);
-      if (!aNodeInfo->Equals(nsHTMLAtoms::link, kNameSpaceID_XHTML)) {
+      if (!aNodeInfo->Equals(nsGkAtoms::link, kNameSpaceID_XHTML)) {
         ssle->SetLineNumber(aLineNumber);
       }
     }
@@ -561,22 +583,19 @@ nsXMLContentSink::CreateElement(const PRUnichar** aAtts, PRUint32 aAttsCount,
 
 
 nsresult
-nsXMLContentSink::CloseElement(nsIContent* aContent, nsIContent* aParent,
-                               PRBool* aAppendContent)
+nsXMLContentSink::CloseElement(nsIContent* aContent)
 {
   NS_ASSERTION(aContent, "missing element to close");
-
-  *aAppendContent = PR_FALSE;
 
   nsINodeInfo *nodeInfo = aContent->NodeInfo();
 
   // Some HTML nodes need DoneAddingChildren() called to initialize
   // properly (eg form state restoration).
   if ((nodeInfo->NamespaceID() == kNameSpaceID_XHTML &&
-       (nodeInfo->NameAtom() == nsHTMLAtoms::select ||
-        nodeInfo->NameAtom() == nsHTMLAtoms::textarea ||
-        nodeInfo->NameAtom() == nsHTMLAtoms::object ||
-        nodeInfo->NameAtom() == nsHTMLAtoms::applet))
+       (nodeInfo->NameAtom() == nsGkAtoms::select ||
+        nodeInfo->NameAtom() == nsGkAtoms::textarea ||
+        nodeInfo->NameAtom() == nsGkAtoms::object ||
+        nodeInfo->NameAtom() == nsGkAtoms::applet))
 #ifdef MOZ_XTF
       || nodeInfo->NamespaceID() > kNameSpaceID_LastBuiltin
 #endif
@@ -595,19 +614,39 @@ nsXMLContentSink::CloseElement(nsIContent* aContent, nsIContent* aParent,
 
   nsresult rv = NS_OK;
 
-  if (nodeInfo->Equals(nsHTMLAtoms::script, kNameSpaceID_XHTML)
+  if (nodeInfo->Equals(nsGkAtoms::script, kNameSpaceID_XHTML)
 #ifdef MOZ_SVG
-      || nodeInfo->Equals(nsSVGAtoms::script, kNameSpaceID_SVG)
+      || nodeInfo->Equals(nsGkAtoms::script, kNameSpaceID_SVG)
 #endif
     ) {
-    rv = ProcessEndSCRIPTTag(aContent, aParent);
-    *aAppendContent = PR_TRUE;
+    mConstrainSize = PR_TRUE; 
+
+    // Now tell the script that it's ready to go. This may execute the script
+    // or return NS_ERROR_HTMLPARSER_BLOCK. Or neither if the script doesn't
+    // need executing.
+    rv = aContent->DoneAddingChildren(PR_TRUE);
+
+    // If the act of insertion evaluated the script, we're fine.
+    // Else, block the parser till the script has loaded.
+    if (rv == NS_ERROR_HTMLPARSER_BLOCK) {
+      nsCOMPtr<nsIScriptElement> sele = do_QueryInterface(aContent);
+      mScriptElements.AppendObject(sele);
+    }
+
+    // If the parser got blocked, make sure to return the appropriate rv.
+    // I'm not sure if this is actually needed or not.
+    if (mParser && !mParser->IsParserEnabled()) {
+      // XXX The HTML sink doesn't call BlockParser here, why do we?
+      mParser->BlockParser();
+      rv = NS_ERROR_HTMLPARSER_BLOCK;
+    }
+
     return rv;
   }
   
-  if ((nodeInfo->Equals(nsHTMLAtoms::title, kNameSpaceID_XHTML)
+  if ((nodeInfo->Equals(nsGkAtoms::title, kNameSpaceID_XHTML)
 #ifdef MOZ_SVG
-       || nodeInfo->Equals(nsSVGAtoms::title, kNameSpaceID_SVG)
+       || nodeInfo->Equals(nsGkAtoms::title, kNameSpaceID_SVG)
 #endif // MOZ_SVG
       ) && mInTitle) {
     NS_ASSERTION(mDocument, "How did mInTitle get to be true if mDocument is null?");
@@ -617,27 +656,30 @@ nsXMLContentSink::CloseElement(nsIContent* aContent, nsIContent* aParent,
     dom_doc->SetTitle(mTitleText);
     mInTitle = PR_FALSE;
   }
-  else if (nodeInfo->Equals(nsHTMLAtoms::base, kNameSpaceID_XHTML) &&
+  else if (nodeInfo->Equals(nsGkAtoms::base, kNameSpaceID_XHTML) &&
            !mHasProcessedBase) {
     // The first base wins
     rv = ProcessBASETag(aContent);
     mHasProcessedBase = PR_TRUE;
   }
-  else if (nodeInfo->Equals(nsHTMLAtoms::meta, kNameSpaceID_XHTML) &&
+  else if (nodeInfo->Equals(nsGkAtoms::meta, kNameSpaceID_XHTML) &&
            // Need to check here to make sure this meta tag does not set
            // mPrettyPrintXML to false when we have a special root!
            (!mPrettyPrintXML || !mPrettyPrintHasSpecialRoot)) {
     rv = ProcessMETATag(aContent);
   }
-  else if (nodeInfo->Equals(nsHTMLAtoms::link, kNameSpaceID_XHTML) ||
-           nodeInfo->Equals(nsHTMLAtoms::style, kNameSpaceID_XHTML) ||
-           nodeInfo->Equals(nsHTMLAtoms::style, kNameSpaceID_SVG)) {
+  else if (nodeInfo->Equals(nsGkAtoms::link, kNameSpaceID_XHTML) ||
+           nodeInfo->Equals(nsGkAtoms::style, kNameSpaceID_XHTML) ||
+           nodeInfo->Equals(nsGkAtoms::style, kNameSpaceID_SVG)) {
     nsCOMPtr<nsIStyleSheetLinkingElement> ssle(do_QueryInterface(aContent));
     if (ssle) {
       ssle->SetEnableUpdates(PR_TRUE);
-      rv = ssle->UpdateStyleSheet(nsnull, nsnull);
-      if (rv == NS_ERROR_HTMLPARSER_BLOCK && mParser) {
-        mParser->BlockParser();
+      PRBool willNotify;
+      PRBool isAlternate;
+      rv = ssle->UpdateStyleSheet(this, &willNotify, &isAlternate);
+      if (NS_SUCCEEDED(rv) && willNotify && !isAlternate) {
+        ++mPendingSheetCount;
+        mScriptLoader->AddExecuteBlocker();
       }
     }
   }
@@ -662,7 +704,6 @@ nsXMLContentSink::AddContentAsLeaf(nsIContent *aContent)
       result = parent->AppendChildTo(aContent, PR_FALSE);
     }
   }
-
   return result;
 }
 
@@ -678,6 +719,7 @@ nsXMLContentSink::LoadXSLStyleSheet(nsIURI* aUrl)
     return NS_OK;
   }
 
+  mXSLTProcessor->Init(mDocument->NodePrincipal());
   mXSLTProcessor->SetTransformObserver(this);
 
   nsCOMPtr<nsILoadGroup> loadGroup = mDocument->GetDocumentLoadGroup();
@@ -686,8 +728,7 @@ nsXMLContentSink::LoadXSLStyleSheet(nsIURI* aUrl)
     return NS_ERROR_FAILURE;
   }
 
-  return mXSLTProcessor->LoadStyleSheet(aUrl, loadGroup,
-                                        mDocument->NodePrincipal());
+  return mXSLTProcessor->LoadStyleSheet(aUrl, loadGroup);
 }
 
 nsresult
@@ -730,19 +771,17 @@ nsXMLContentSink::ProcessStyleLink(nsIContent* aElement,
                                 nsIScriptSecurityManager::ALLOW_CHROME);
     NS_ENSURE_SUCCESS(rv, NS_OK);
 
-    rv = secMan->CheckSameOriginURI(mDocumentURI, url);
-    NS_ENSURE_SUCCESS(rv, NS_OK);
-
     // Do content policy check
     PRInt16 decision = nsIContentPolicy::ACCEPT;
     rv = NS_CheckContentLoadPolicy(nsIContentPolicy::TYPE_STYLESHEET,
                                    url,
-                                   mDocument->GetDocumentURI(),
+                                   mDocument->NodePrincipal(),
                                    aElement,
                                    type,
                                    nsnull,
                                    &decision,
-                                   nsContentUtils::GetContentPolicy());
+                                   nsContentUtils::GetContentPolicy(),
+                                   nsContentUtils::GetSecurityManager());
 
     NS_ENSURE_SUCCESS(rv, rv);
 
@@ -757,13 +796,9 @@ nsXMLContentSink::ProcessStyleLink(nsIContent* aElement,
   rv = nsContentSink::ProcessStyleLink(aElement, aHref, aAlternate,
                                        aTitle, aType, aMedia);
 
-  if (rv == NS_ERROR_HTMLPARSER_BLOCK) {
-    if (mParser) {
-      mParser->BlockParser();
-    }
-    return NS_OK;
-  }
-
+  // nsContentSink::ProcessStyleLink handles the bookkeeping here wrt
+  // pending sheets.
+  
   return rv;
 }
 
@@ -777,11 +812,11 @@ nsXMLContentSink::ProcessBASETag(nsIContent* aContent)
   if (mDocument) {
     nsAutoString value;
   
-    if (aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::target, value)) {
+    if (aContent->GetAttr(kNameSpaceID_None, nsGkAtoms::target, value)) {
       mDocument->SetBaseTarget(value);
     }
 
-    if (aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::href, value)) {
+    if (aContent->GetAttr(kNameSpaceID_None, nsGkAtoms::href, value)) {
       nsCOMPtr<nsIURI> baseURI;
       rv = NS_NewURI(getter_AddRefs(baseURI), value);
       if (NS_SUCCEEDED(rv)) {
@@ -814,30 +849,22 @@ nsXMLContentSink::GetTarget()
 }
 
 nsresult
-nsXMLContentSink::FlushText(PRBool aCreateTextNode, PRBool* aDidFlush)
+nsXMLContentSink::FlushText()
 {
-  nsresult rv = NS_OK;
-  PRBool didFlush = PR_FALSE;
-  if (0 != mTextLength) {
-    if (aCreateTextNode) {
-      nsCOMPtr<nsITextContent> textContent;
-      rv = NS_NewTextNode(getter_AddRefs(textContent), mNodeInfoManager);
-      NS_ENSURE_SUCCESS(rv, rv);
-
-      // Set the text in the text node
-      textContent->SetText(mText, mTextLength, PR_FALSE);
-
-      // Add text to its parent
-      AddContentAsLeaf(textContent);
-    }
-    mTextLength = 0;
-    didFlush = PR_TRUE;
+  if (mTextLength == 0) {
+    return NS_OK;
   }
 
-  if (nsnull != aDidFlush) {
-    *aDidFlush = didFlush;
-  }
-  return rv;
+  nsCOMPtr<nsIContent> textContent;
+  nsresult rv = NS_NewTextNode(getter_AddRefs(textContent), mNodeInfoManager);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // Set the text in the text node
+  textContent->SetText(mText, mTextLength, PR_FALSE);
+  mTextLength = 0;
+
+  // Add text to its parent
+  return AddContentAsLeaf(textContent);
 }
 
 nsIContent*
@@ -856,6 +883,7 @@ nsXMLContentSink::GetCurrentStackNode()
   NS_ASSERTION(count > 0, "Bogus Length()");
   return mContentStack[count-1];
 }
+
 
 nsresult
 nsXMLContentSink::PushContent(nsIContent *aContent)
@@ -883,55 +911,15 @@ nsXMLContentSink::PopContent()
 }
 
 void
-nsXMLContentSink::MaybeStartLayout()
+nsXMLContentSink::MaybeStartLayout(PRBool aIgnorePendingSheets)
 {
+  // XXXbz if aIgnorePendingSheets is true, what should we do when
+  // mXSLTProcessor or CanStillPrettyPrint()?
   if (mLayoutStarted || mXSLTProcessor || CanStillPrettyPrint()) {
     return;
   }
-  StartLayout();
+  StartLayout(aIgnorePendingSheets);
 }
-
-void
-nsXMLContentSink::StartLayout()
-{
-  if (mLayoutStarted) {
-    return;
-  }
-  PRBool topLevelFrameset = PR_FALSE;
-  nsCOMPtr<nsIDocShellTreeItem> docShellAsItem(do_QueryInterface(mDocShell));
-  if (docShellAsItem) {
-    nsCOMPtr<nsIDocShellTreeItem> root;
-    docShellAsItem->GetSameTypeRootTreeItem(getter_AddRefs(root));
-    if(docShellAsItem == root) {
-      topLevelFrameset = PR_TRUE;
-    }
-  }
-  
-  nsContentSink::StartLayout(topLevelFrameset);
-
-}
-
-#ifdef MOZ_MATHML
-////////////////////////////////////////////////////////////////////////
-// MathML Element Factory - temporary location for bug 132844
-// Will be factored out post 1.0
-
-nsresult
-NS_NewMathMLElement(nsIContent** aResult, nsINodeInfo* aNodeInfo)
-{
-  static const char kMathMLStyleSheetURI[] = "resource://gre/res/mathml.css";
-
-  aNodeInfo->SetIDAttributeAtom(nsHTMLAtoms::id);
-  
-  // this bit of code is to load mathml.css on demand
-  nsIDocument *doc = aNodeInfo->GetDocument();
-  if (doc)
-    doc->EnsureCatalogStyleSheet(kMathMLStyleSheetURI);
-
-  return NS_NewXMLElement(aResult, aNodeInfo);
-}
-#endif // MOZ_MATHML
-
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -946,19 +934,16 @@ nsXMLContentSink::SetDocElement(PRInt32 aNameSpaceID,
   // check for root elements that needs special handling for
   // prettyprinting
   if ((aNameSpaceID == kNameSpaceID_XBL &&
-       aTagName == nsXBLAtoms::bindings) ||
+       aTagName == nsGkAtoms::bindings) ||
       (aNameSpaceID == kNameSpaceID_XSLT &&
-       (aTagName == nsLayoutAtoms::stylesheet ||
-        aTagName == nsLayoutAtoms::transform))) {
+       (aTagName == nsGkAtoms::stylesheet ||
+        aTagName == nsGkAtoms::transform))) {
     mPrettyPrintHasSpecialRoot = PR_TRUE;
     if (mPrettyPrintXML) {
       // In this case, disable script execution, stylesheet
       // loading, and auto XLinks since we plan to prettyprint.
       mAllowAutoXLinks = PR_FALSE;
-      nsIScriptLoader* scriptLoader = mDocument->GetScriptLoader();
-      if (scriptLoader) {
-        scriptLoader->SetEnabled(PR_FALSE);
-      }
+      mDocument->ScriptLoader()->SetEnabled(PR_FALSE);
       if (mCSSLoader) {
         mCSSLoader->SetEnabled(PR_FALSE);
       }
@@ -967,7 +952,6 @@ nsXMLContentSink::SetDocElement(PRInt32 aNameSpaceID,
 
   mDocElement = aContent;
   NS_ADDREF(mDocElement);
-
   nsresult rv = mDocument->AppendChildTo(mDocElement, PR_TRUE);
   if (NS_FAILED(rv)) {
     // If we return PR_FALSE here, the caller will bail out because it won't
@@ -977,12 +961,24 @@ nsXMLContentSink::SetDocElement(PRInt32 aNameSpaceID,
   return PR_TRUE;
 }
 
-NS_IMETHODIMP 
-nsXMLContentSink::HandleStartElement(const PRUnichar *aName, 
-                                     const PRUnichar **aAtts, 
-                                     PRUint32 aAttsCount, 
-                                     PRInt32 aIndex, 
+NS_IMETHODIMP
+nsXMLContentSink::HandleStartElement(const PRUnichar *aName,
+                                     const PRUnichar **aAtts,
+                                     PRUint32 aAttsCount,
+                                     PRInt32 aIndex,
                                      PRUint32 aLineNumber)
+{
+  return HandleStartElement(aName, aAtts, aAttsCount, aIndex, aLineNumber,
+                            PR_TRUE);
+}
+
+nsresult
+nsXMLContentSink::HandleStartElement(const PRUnichar *aName,
+                                     const PRUnichar **aAtts,
+                                     PRUint32 aAttsCount,
+                                     PRInt32 aIndex,
+                                     PRUint32 aLineNumber,
+                                     PRBool aInterruptable)
 {
   NS_PRECONDITION(aIndex >= -1, "Bogus aIndex");
   NS_PRECONDITION(aAttsCount % 2 == 0, "incorrect aAttsCount");
@@ -1021,6 +1017,15 @@ nsXMLContentSink::HandleStartElement(const PRUnichar *aName,
                          getter_AddRefs(content), &appendContent);
   NS_ENSURE_SUCCESS(result, result);
 
+  // Have to do this before we push the new content on the stack... and have to
+  // do that before we set attributes, call BindToTree, etc.  Ideally we'd push
+  // on the stack inside CreateElement (which is effectively what the HTML sink
+  // does), but that's hard with all the subclass overrides going on.
+  nsCOMPtr<nsIContent> parent = GetCurrentContent();
+  
+  result = PushContent(content);
+  NS_ENSURE_SUCCESS(result, result);
+
   // Set the ID attribute atom on the node info object for this node
   // This must occur before the attributes are added so the name
   // of the id attribute is known.
@@ -1043,38 +1048,48 @@ nsXMLContentSink::HandleStartElement(const PRUnichar *aName,
   if (NS_OK == result) {
     // Store the element 
     if (!SetDocElement(nameSpaceID, localName, content) && appendContent) {
-      nsCOMPtr<nsIContent> parent = GetCurrentContent();
       NS_ENSURE_TRUE(parent, NS_ERROR_UNEXPECTED);
 
       parent->AppendChildTo(content, PR_FALSE);
     }
-
-    result = PushContent(content);
-    NS_ENSURE_SUCCESS(result, result);
   }
 
   // Some HTML nodes need DoneCreatingElement() called to initialize
   // properly (eg form state restoration).
-  if (nodeInfo->NamespaceID() == kNameSpaceID_XHTML &&
-      (nodeInfo->NameAtom() == nsHTMLAtoms::input ||
-       nodeInfo->NameAtom() == nsHTMLAtoms::button)) {
-    content->DoneCreatingElement();
+  if (nodeInfo->NamespaceID() == kNameSpaceID_XHTML) {
+    if (nodeInfo->NameAtom() == nsGkAtoms::input ||
+        nodeInfo->NameAtom() == nsGkAtoms::button) {
+      content->DoneCreatingElement();
+    } else if (nodeInfo->NameAtom() == nsGkAtoms::head && !mCurrentHead) {
+      mCurrentHead = content;
+    }
   }
 
   if (IsMonolithicContainer(nodeInfo)) {
     mInMonolithicContainer++;
   }
 
-  MaybeStartLayout();
+  if (content != mDocElement && !mCurrentHead) {
+    // This isn't the root and we're not inside an XHTML <head>.
+    // Might need to start layout
+    MaybeStartLayout(PR_FALSE);
+  }
 
-  return NS_SUCCEEDED(result) ? DidProcessATokenImpl() : result;
+  return aInterruptable && NS_SUCCEEDED(result) ? DidProcessATokenImpl() :
+                                                  result;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsXMLContentSink::HandleEndElement(const PRUnichar *aName)
 {
+  return HandleEndElement(aName, PR_TRUE);
+}
+
+nsresult
+nsXMLContentSink::HandleEndElement(const PRUnichar *aName,
+                                   PRBool aInterruptable)
+{
   nsresult result = NS_OK;
-  PRBool appendContent = PR_FALSE;
 
   // XXX Hopefully the parser will flag this before we get
   // here. If we're in the prolog or epilog, there should be
@@ -1102,38 +1117,20 @@ nsXMLContentSink::HandleEndElement(const PRUnichar *aName)
                "Wrong element being closed");
 #endif  
 
-  nsCOMPtr<nsIContent> parent = GetCurrentContent();
-  
-  result = CloseElement(content, parent, &appendContent);
-  NS_ENSURE_SUCCESS(result, result);
+  result = CloseElement(content);
 
+  if (mCurrentHead == content) {
+    mCurrentHead = nsnull;
+  }
+  
   if (mDocElement == content) {
     // XXXbz for roots that don't want to be appended on open, we
     // probably need to deal here.... (and stop appending them on open).
     mState = eXMLContentSinkState_InEpilog;
-  }
-  else if (appendContent) {
-    NS_ENSURE_TRUE(parent, NS_ERROR_UNEXPECTED);
 
-    parent->AppendChildTo(content, PR_FALSE);
+    // We might have had no occasion to start layout yet.  Do so now.
+    MaybeStartLayout(PR_FALSE);
   }
-
-  if (mNeedToBlockParser || (mParser && !mParser->IsParserEnabled())) {
-    if (mParser) mParser->BlockParser();
-    result = NS_ERROR_HTMLPARSER_BLOCK;
-  }
-
-#ifdef MOZ_SVG
-  if (content->GetNameSpaceID() == kNameSpaceID_SVG &&
-      content->HasAttr(kNameSpaceID_None, nsSVGAtoms::onload)) {
-    nsEventStatus status = nsEventStatus_eIgnore;
-    nsEvent event(PR_TRUE, NS_SVG_LOAD);
-    event.eventStructType = NS_SVG_EVENT;
-    nsIPresShell *presShell = mDocument->GetShellAt(0);
-    if (presShell)
-      presShell->HandleDOMEventWithTarget(content, &event, &status);
-  }
-#endif
 
   PRInt32 stackLen = mContentStack.Length();
   if (mNotifyLevel >= stackLen) {
@@ -1144,7 +1141,30 @@ nsXMLContentSink::HandleEndElement(const PRUnichar *aName)
   }
   DidAddContent();
 
-  return NS_SUCCEEDED(result) ? DidProcessATokenImpl() : result;
+#ifdef MOZ_SVG
+  if (content->GetNameSpaceID() == kNameSpaceID_SVG &&
+      content->HasAttr(kNameSpaceID_None, nsGkAtoms::onload)) {
+    FlushTags();
+
+    nsEvent event(PR_TRUE, NS_SVG_LOAD);
+    event.eventStructType = NS_SVG_EVENT;
+    event.flags |= NS_EVENT_FLAG_CANT_BUBBLE;
+
+    // Do we care about forcing presshell creation if it hasn't happened yet?
+    // That is, should this code flush or something?  Does it really matter?
+    // For that matter, do we really want to try getting the prescontext?  Does
+    // this event ever want one?
+    nsRefPtr<nsPresContext> ctx;
+    nsCOMPtr<nsIPresShell> shell = mDocument->GetPrimaryShell();
+    if (shell) {
+      ctx = shell->GetPresContext();
+    }
+    nsEventDispatcher::Dispatch(content, ctx, &event);
+  }
+#endif
+
+  return aInterruptable && NS_SUCCEEDED(result) ? DidProcessATokenImpl() :
+                                                  result;
 }
 
 NS_IMETHODIMP 
@@ -1155,11 +1175,8 @@ nsXMLContentSink::HandleComment(const PRUnichar *aName)
   nsCOMPtr<nsIContent> comment;
   nsresult rv = NS_NewCommentNode(getter_AddRefs(comment), mNodeInfoManager);
   if (comment) {
-    nsCOMPtr<nsIDOMComment> domComment = do_QueryInterface(comment, &rv);
-    if (domComment) {
-      domComment->AppendData(nsDependentString(aName));
+    comment->SetText(nsDependentString(aName), PR_FALSE);
     rv = AddContentAsLeaf(comment);
-    }
     DidAddContent();
   }
 
@@ -1185,11 +1202,8 @@ nsXMLContentSink::HandleCDataSection(const PRUnichar *aData,
   nsCOMPtr<nsIContent> cdata;
   nsresult rv = NS_NewXMLCDATASection(getter_AddRefs(cdata), mNodeInfoManager);
   if (cdata) {
-    nsCOMPtr<nsIDOMCDATASection> domCDATA = do_QueryInterface(cdata);
-    if (domCDATA) {
-      domCDATA->SetData(nsDependentString(aData, aLength));
+    cdata->SetText(aData, aLength, PR_FALSE);
     rv = AddContentAsLeaf(cdata);
-    }
     DidAddContent();
   }
 
@@ -1225,7 +1239,7 @@ nsXMLContentSink::HandleDoctypeDecl(const nsAString & aSubset,
     // bug 124570 - we only expect additional agent sheets for now -- ignore
     // exit codes, error are not fatal here, just that the stylesheet won't apply
     nsCOMPtr<nsIURI> uri(do_QueryInterface(aCatalogData));
-    if (uri){
+    if (uri) {
       if (mDocument) { 
         nsCAutoString str;
         nsCAutoString spec;
@@ -1239,7 +1253,7 @@ nsXMLContentSink::HandleDoctypeDecl(const nsAString & aSubset,
       mCSSLoader->LoadSheetSync(uri, PR_TRUE, getter_AddRefs(sheet));
       
 #ifdef NS_DEBUG
-      nsCAutoString uriStr;
+      nsCAutoString uriStr;      
       uri->GetSpec(uriStr);
       printf("Loading catalog stylesheet: %s ... %s\n", uriStr.get(), sheet.get() ? "Done" : "Failed");
 #endif
@@ -1259,16 +1273,23 @@ nsXMLContentSink::HandleDoctypeDecl(const nsAString & aSubset,
   return NS_SUCCEEDED(rv) ? DidProcessATokenImpl() : rv;
 }
 
-NS_IMETHODIMP 
+NS_IMETHODIMP
 nsXMLContentSink::HandleCharacterData(const PRUnichar *aData, 
                                       PRUint32 aLength)
+{
+  return HandleCharacterData(aData, aLength, PR_TRUE);
+}
+
+nsresult
+nsXMLContentSink::HandleCharacterData(const PRUnichar *aData, PRUint32 aLength,
+                                      PRBool aInterruptable)
 {
   nsresult rv = NS_OK;
   if (aData && mState != eXMLContentSinkState_InProlog &&
       mState != eXMLContentSinkState_InEpilog) {
     rv = AddText(aData, aLength);
   }
-  return NS_SUCCEEDED(rv) ? DidProcessATokenImpl() : rv;
+  return aInterruptable && NS_SUCCEEDED(rv) ? DidProcessATokenImpl() : rv;
 }
 
 NS_IMETHODIMP
@@ -1288,7 +1309,7 @@ nsXMLContentSink::HandleProcessingInstruction(const PRUnichar *aTarget,
 
   nsCOMPtr<nsIStyleSheetLinkingElement> ssle(do_QueryInterface(node));
   if (ssle) {
-    ssle->InitStyleLinkElement(mParser, PR_FALSE);
+    ssle->InitStyleLinkElement(PR_FALSE);
     ssle->SetEnableUpdates(PR_FALSE);
     mPrettyPrintXML = PR_FALSE;
   }
@@ -1298,14 +1319,22 @@ nsXMLContentSink::HandleProcessingInstruction(const PRUnichar *aTarget,
   DidAddContent();
 
   if (ssle) {
+    // This is an xml-stylesheet processing instruction... but it might not be
+    // a CSS one if the type is set to something else.
     ssle->SetEnableUpdates(PR_TRUE);
-    rv = ssle->UpdateStyleSheet(nsnull, nsnull);
-
-    if (NS_FAILED(rv)) {
-      if (rv == NS_ERROR_HTMLPARSER_BLOCK && mParser) {
-        mParser->BlockParser();
+    PRBool willNotify;
+    PRBool isAlternate;
+    rv = ssle->UpdateStyleSheet(this, &willNotify, &isAlternate);
+    NS_ENSURE_SUCCESS(rv, rv);
+    
+    if (willNotify) {
+      // Successfully started a stylesheet load
+      if (!isAlternate) {
+        ++mPendingSheetCount;
+        mScriptLoader->AddExecuteBlocker();
       }
-      return rv;
+
+      return NS_OK;
     }
   }
 
@@ -1315,6 +1344,7 @@ nsXMLContentSink::HandleProcessingInstruction(const PRUnichar *aTarget,
 
   if (mState != eXMLContentSinkState_InProlog ||
       !target.EqualsLiteral("xml-stylesheet") ||
+      type.IsEmpty()                          ||
       type.LowerCaseEqualsLiteral("text/css")) {
     return DidProcessATokenImpl();
   }
@@ -1325,7 +1355,7 @@ nsXMLContentSink::HandleProcessingInstruction(const PRUnichar *aTarget,
 
   // If there was no href, we can't do anything with this PI
   if (href.IsEmpty()) {
-    return DidProcessATokenImpl();
+      return DidProcessATokenImpl();
   }
 
   rv = ProcessStyleLink(node, href, isAlternate, title, type, media);
@@ -1368,10 +1398,14 @@ nsXMLContentSink::HandleXMLDeclaration(const PRUnichar *aVersion,
 NS_IMETHODIMP
 nsXMLContentSink::ReportError(const PRUnichar* aErrorText, 
                               const PRUnichar* aSourceText,
-                              PRInt32 aLineNumber,
-                              PRInt32 aColumnNumber)
+                              nsIScriptError *aError,
+                              PRBool *_retval)
 {
+  NS_PRECONDITION(aError && aSourceText && aErrorText, "Check arguments!!!");
   nsresult rv = NS_OK;
+
+  // The expat driver should report the error.  We're just cleaning up the mess.
+  *_retval = PR_TRUE;
   
   mPrettyPrintXML = PR_FALSE;
 
@@ -1420,29 +1454,31 @@ nsXMLContentSink::ReportError(const PRUnichar* aErrorText,
   parsererror.Append((PRUnichar)0xFFFF);
   parsererror.AppendLiteral("parsererror");
   
-  rv = HandleStartElement(parsererror.get(), noAtts, 0, -1, (PRUint32)-1);
-  NS_ENSURE_SUCCESS(rv,rv);
+  rv = HandleStartElement(parsererror.get(), noAtts, 0, -1, (PRUint32)-1,
+                          PR_FALSE);
+  NS_ENSURE_SUCCESS(rv, rv);
 
-  rv = HandleCharacterData(aErrorText, nsCRT::strlen(aErrorText));
-  NS_ENSURE_SUCCESS(rv,rv);  
+  rv = HandleCharacterData(aErrorText, nsCRT::strlen(aErrorText), PR_FALSE);
+  NS_ENSURE_SUCCESS(rv, rv);  
   
   nsAutoString sourcetext(errorNs);
   sourcetext.Append((PRUnichar)0xFFFF);
   sourcetext.AppendLiteral("sourcetext");
 
-  rv = HandleStartElement(sourcetext.get(), noAtts, 0, -1, (PRUint32)-1);
-  NS_ENSURE_SUCCESS(rv,rv);
+  rv = HandleStartElement(sourcetext.get(), noAtts, 0, -1, (PRUint32)-1,
+                          PR_FALSE);
+  NS_ENSURE_SUCCESS(rv, rv);
   
-  rv = HandleCharacterData(aSourceText, nsCRT::strlen(aSourceText));
-  NS_ENSURE_SUCCESS(rv,rv);
+  rv = HandleCharacterData(aSourceText, nsCRT::strlen(aSourceText), PR_FALSE);
+  NS_ENSURE_SUCCESS(rv, rv);
   
-  rv = HandleEndElement(sourcetext.get());
-  NS_ENSURE_SUCCESS(rv,rv); 
+  rv = HandleEndElement(sourcetext.get(), PR_FALSE);
+  NS_ENSURE_SUCCESS(rv, rv); 
   
-  rv = HandleEndElement(parsererror.get());
-  NS_ENSURE_SUCCESS(rv,rv);
-  FlushTags();
+  rv = HandleEndElement(parsererror.get(), PR_FALSE);
+  NS_ENSURE_SUCCESS(rv, rv);
 
+  FlushTags();
 
   return NS_OK;
 }
@@ -1466,15 +1502,12 @@ nsXMLContentSink::AddAttributes(const PRUnichar** aAtts,
 
   // Give autoloading links a chance to fire
   if (mDocShell && mAllowAutoXLinks) {
-    nsCOMPtr<nsIXMLContent> xmlcontent(do_QueryInterface(aContent));
-    if (xmlcontent) {
-      nsresult rv = xmlcontent->MaybeTriggerAutoLink(mDocShell);
-      if (rv == NS_XML_AUTOLINK_REPLACE ||
-          rv == NS_XML_AUTOLINK_UNDEFINED) {
-        // If we do not terminate the parse, we just keep generating link trigger
-        // events. We want to parse only up to the first replace link, and stop.
-        mParser->Terminate();
-      }
+    nsresult rv = aContent->MaybeTriggerAutoLink(mDocShell);
+    if (rv == NS_XML_AUTOLINK_REPLACE ||
+        rv == NS_XML_AUTOLINK_UNDEFINED) {
+      // If we do not terminate the parse, we just keep generating link trigger
+      // events. We want to parse only up to the first replace link, and stop.
+      mParser->Terminate();
     }
   }
 
@@ -1501,16 +1534,10 @@ nsXMLContentSink::AddText(const PRUnichar* aText,
     mTextSize = NS_ACCUMULATION_BUFFER_SIZE;
   }
 
-  const nsAString& str = Substring(aText, aText+aLength);
-
   // Copy data from string into our buffer; flush buffer when it fills up
   PRInt32 offset = 0;
-  PRBool  isLastCharCR = PR_FALSE;
   while (0 != aLength) {
     PRInt32 amount = mTextSize - mTextLength;
-    if (amount > aLength) {
-      amount = aLength;
-    }
     if (0 == amount) {
       // XSLT wants adjacent textnodes merged.
       if (mConstrainSize && !mXSLTProcessor) {
@@ -1518,52 +1545,32 @@ nsXMLContentSink::AddText(const PRUnichar* aText,
         if (NS_OK != rv) {
           return rv;
         }
+
+        amount = mTextSize - mTextLength;
       }
       else {
         mTextSize += aLength;
         mText = (PRUnichar *) PR_REALLOC(mText, sizeof(PRUnichar) * mTextSize);
         if (nsnull == mText) {
+          mTextSize = 0;
+
           return NS_ERROR_OUT_OF_MEMORY;
         }
+
+        amount = aLength;
       }
     }
-    // Line breaks should not be normalized twice. See bug 343870.
-    mTextLength +=
-      nsContentUtils::CopyNewlineNormalizedUnicodeTo(str, 
-                                                     offset, 
-                                                     &mText[mTextLength], 
-                                                     amount,
-                                                     isLastCharCR);
-    offset  += amount;
+    if (amount > aLength) {
+      amount = aLength;
+    }
+    memcpy(&mText[mTextLength], &aText[offset], sizeof(PRUnichar) * amount);
+    mTextLength += amount;
+    offset += amount;
     aLength -= amount;
   }
 
   return NS_OK;
 }
-
-nsresult
-nsXMLContentSink::ProcessEndSCRIPTTag(nsIContent* aContent,
-                                      nsIContent* aParent)
-{
-  nsresult result = NS_OK;
-
-  mConstrainSize = PR_TRUE; 
-  nsCOMPtr<nsIScriptElement> scriptElement(do_QueryInterface(aContent));
-  NS_ASSERTION(scriptElement, "null script element in XML content sink");
-
-  scriptElement->SetScriptLineNumber(mScriptLineNo);
-
-  if (!aParent || aParent->GetCurrentDoc() == mDocument) {
-    // Assume that we're going to block the parser with a script load.
-    // If it's an inline script, we'll be told otherwise in the call
-    // to our ScriptAvailable method.
-    mScriptElements.AppendObject(scriptElement);
-    mNeedToBlockParser = PR_TRUE;
-  }
-
-  return result;
-}
-
 
 void
 nsXMLContentSink::FlushPendingNotifications(mozFlushType aType)
@@ -1571,16 +1578,16 @@ nsXMLContentSink::FlushPendingNotifications(mozFlushType aType)
   // Only flush tags if we're not doing the notification ourselves
   // (since we aren't reentrant)
   if (!mInNotification) {
-    if (aType & Flush_SinkNotifications) {
+    if (aType >= Flush_ContentAndNotify) {
       FlushTags();
     }
     else {
       FlushText();
     }
-    if (aType & Flush_OnlyReflow) {
+    if (aType >= Flush_Layout) {
       // Make sure that layout has started so that the reflow flush
       // will actually happen.
-      MaybeStartLayout();
+      MaybeStartLayout(PR_TRUE);
     }
   }
 }
@@ -1597,37 +1604,52 @@ nsXMLContentSink::FlushPendingNotifications(mozFlushType aType)
 nsresult
 nsXMLContentSink::FlushTags()
 {
-  // Don't release last text node in case we need to add to it again
-  FlushText();
+  mDeferredFlushTags = PR_FALSE;
+  PRBool oldBeganUpdate = mBeganUpdate;
+  PRUint32 oldUpdates = mUpdatesInNotification;
 
+  mUpdatesInNotification = 0;
   ++mInNotification;
-  mozAutoDocUpdate updateBatch(mDocument, UPDATE_CONTENT_MODEL, PR_TRUE);
+  {
+    // Scope so we call EndUpdate before we decrease mInNotification
+    mozAutoDocUpdate updateBatch(mDocument, UPDATE_CONTENT_MODEL, PR_TRUE);
+    mBeganUpdate = PR_TRUE;
 
-  // Start from the base of the stack (growing downward) and do
-  // a notification from the node that is closest to the root of
-  // tree for any content that has been added.
+    // Don't release last text node in case we need to add to it again
+    FlushText();
 
-  PRInt32 stackPos;
-  PRInt32 stackLen = mContentStack.Length();
-  PRBool flushed = PR_FALSE;
-  PRUint32 childCount;
-  nsIContent* content;
+    // Start from the base of the stack (growing downward) and do
+    // a notification from the node that is closest to the root of
+    // tree for any content that has been added.
 
-  for (stackPos = 0; stackPos < stackLen; ++stackPos) {
-    content = mContentStack[stackPos].mContent;
-    childCount = content->GetChildCount();
+    PRInt32 stackPos;
+    PRInt32 stackLen = mContentStack.Length();
+    PRBool flushed = PR_FALSE;
+    PRUint32 childCount;
+    nsIContent* content;
 
-    if (!flushed && (mContentStack[stackPos].mNumFlushed < childCount)) {
-      NotifyAppend(content, mContentStack[stackPos].mNumFlushed);
-      flushed = PR_TRUE;
+    for (stackPos = 0; stackPos < stackLen; ++stackPos) {
+      content = mContentStack[stackPos].mContent;
+      childCount = content->GetChildCount();
+
+      if (!flushed && (mContentStack[stackPos].mNumFlushed < childCount)) {
+        NotifyAppend(content, mContentStack[stackPos].mNumFlushed);
+        flushed = PR_TRUE;
+      }
+
+      mContentStack[stackPos].mNumFlushed = childCount;
     }
-
-    mContentStack[stackPos].mNumFlushed = childCount;
+    mNotifyLevel = stackLen - 1;
   }
-  mNotifyLevel = stackLen - 1;
-
   --mInNotification;
 
+  if (mUpdatesInNotification > 1) {
+    UpdateChildCounts();
+  }
+
+  mUpdatesInNotification = oldUpdates;
+  mBeganUpdate = oldBeganUpdate;
+  
   return NS_OK;
 }
 

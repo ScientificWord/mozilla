@@ -59,10 +59,75 @@
 #include "nsCOMArray.h"
 #include "nsJSUtils.h"
 #include "nsTArray.h"
-
+#include "nsCycleCollectionParticipant.h"
+#include "nsIJSNativeInitializer.h"
+#include "nsPIDOMWindow.h"
 #include "nsIDOMLSProgressEvent.h"
+#include "nsClassHashtable.h"
+#include "nsHashKeys.h"
+#include "prclist.h"
+#include "prtime.h"
 
 class nsILoadGroup;
+
+class nsAccessControlLRUCache
+{
+  struct CacheEntry : public PRCList
+  {
+    CacheEntry(const nsACString& aKey, PRTime aValue)
+    : key(aKey), value(aValue)
+    {
+      MOZ_COUNT_CTOR(nsAccessControlLRUCache::CacheEntry);
+    }
+    
+    ~CacheEntry()
+    {
+      MOZ_COUNT_DTOR(nsAccessControlLRUCache::CacheEntry);
+    }
+    
+    nsCString key;
+    PRTime value;
+  };
+
+public:
+  nsAccessControlLRUCache()
+  {
+    MOZ_COUNT_CTOR(nsAccessControlLRUCache);
+    PR_INIT_CLIST(&mList);
+  }
+
+  ~nsAccessControlLRUCache()
+  {
+    Clear();
+    MOZ_COUNT_DTOR(nsAccessControlLRUCache);
+  }
+
+  PRBool Initialize()
+  {
+    return mTable.Init();
+  }
+
+  void GetEntry(nsIURI* aURI, nsIPrincipal* aPrincipal,
+                PRTime* _retval);
+
+  void PutEntry(nsIURI* aURI, nsIPrincipal* aPrincipal,
+                PRTime aValue);
+
+  void Clear();
+
+private:
+  PRBool GetEntryInternal(const nsACString& aKey, CacheEntry** _retval);
+
+  PR_STATIC_CALLBACK(PLDHashOperator)
+    RemoveExpiredEntries(const nsACString& aKey, nsAutoPtr<CacheEntry>& aValue,
+                         void* aUserData);
+
+  static PRBool GetCacheKey(nsIURI* aURI, nsIPrincipal* aPrincipal,
+                            nsACString& _retval);
+
+  nsClassHashtable<nsCStringHashKey, CacheEntry> mTable;
+  PRCList mList;
+};
 
 class nsXMLHttpRequest : public nsIXMLHttpRequest,
                          public nsIJSXMLHttpRequest,
@@ -72,14 +137,14 @@ class nsXMLHttpRequest : public nsIXMLHttpRequest,
                          public nsIChannelEventSink,
                          public nsIProgressEventSink,
                          public nsIInterfaceRequestor,
-                         public nsIDOMGCParticipant,
-                         public nsSupportsWeakReference
+                         public nsSupportsWeakReference,
+                         public nsIJSNativeInitializer
 {
 public:
   nsXMLHttpRequest();
   virtual ~nsXMLHttpRequest();
 
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
 
   // nsIXMLHttpRequest
   NS_DECL_NSIXMLHTTPREQUEST
@@ -115,12 +180,42 @@ public:
   // nsIInterfaceRequestor
   NS_DECL_NSIINTERFACEREQUESTOR
 
-  // nsIDOMGCParticipant
-  virtual nsIDOMGCParticipant* GetSCCIndex();
-  virtual void AppendReachableList(nsCOMArray<nsIDOMGCParticipant>& aArray);
+  // nsIJSNativeInitializer
+  NS_IMETHOD Initialize(nsISupports* aOwner, JSContext* cx, JSObject* obj,
+                       PRUint32 argc, jsval* argv);
+
+  // This is called by the factory constructor.
+  nsresult Init();
+
+  NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsXMLHttpRequest, nsIXMLHttpRequest)
+
+  static PRBool EnsureACCache()
+  {
+    if (sAccessControlCache)
+      return PR_TRUE;
+
+    nsAutoPtr<nsAccessControlLRUCache> newCache(new nsAccessControlLRUCache());
+    NS_ENSURE_TRUE(newCache, PR_FALSE);
+
+    if (newCache->Initialize()) {
+      sAccessControlCache = newCache.forget();
+      return PR_TRUE;
+    }
+
+    return PR_FALSE;
+  }
+
+  static void ShutdownACCache()
+  {
+    if (sAccessControlCache) {
+      delete sAccessControlCache;
+      sAccessControlCache = nsnull;
+    }
+  }
+
+  static nsAccessControlLRUCache* sAccessControlCache;
 
 protected:
-  typedef nsMarkedJSFunctionHolder<nsIDOMEventListener> ListenerHolder;
 
   nsresult DetectCharset(nsACString& aCharset);
   nsresult ConvertBodyToText(nsAString& aOutBuffer);
@@ -142,16 +237,14 @@ protected:
   nsresult GetLoadGroup(nsILoadGroup **aLoadGroup);
   nsIURI *GetBaseURI();
 
-  // Passing a null |event| is OK. In that case, a vanilla HTMLEvents event
-  // will be created.  If aType is non-empty, InitEvent will be called with
-  // that type.  Don't call this if we have no event listeners, since this may
+  // This creates a trusted event, which is not cancelable and doesn't
+  // bubble. Don't call this if we have no event listeners, since this may
   // use our script context, which is not set in that case.
-  nsresult CreateEvent(nsEvent* event, const nsAString& aType,
-                       nsIDOMEvent** domevent);
+  nsresult CreateEvent(const nsAString& aType, nsIDOMEvent** domevent);
 
   // Make a copy of a pair of members to be passed to NotifyEventListeners.
-  void CopyEventListeners(ListenerHolder& aListener,
-                          const nsTArray<ListenerHolder*>& aListenerArray,
+  void CopyEventListeners(nsCOMPtr<nsIDOMEventListener>& aListener,
+                          const nsCOMArray<nsIDOMEventListener>& aListenerArray,
                           nsCOMArray<nsIDOMEventListener>& aCopy);
 
   // aListeners must be a "non-live" list (i.e., addEventListener and
@@ -162,24 +255,49 @@ protected:
   void ClearEventListeners();
   already_AddRefed<nsIHttpChannel> GetCurrentHttpChannel();
 
+  /**
+   * Check if mChannel is ok for a cross-site request by making sure no
+   * inappropriate headers are set, and no username/password is set.
+   *
+   * Also updates the XML_HTTP_REQUEST_USE_XSITE_AC bit.
+   */
+  nsresult CheckChannelForCrossSiteRequest();
+
+  nsresult CheckInnerWindowCorrectness()
+  {
+    if (mOwner) {
+      NS_ASSERTION(mOwner->IsInnerWindow(), "Should have inner window here!\n");
+      nsPIDOMWindow* outer = mOwner->GetOuterWindow();
+      if (!outer || outer->GetCurrentInnerWindow() != mOwner) {
+        return NS_ERROR_FAILURE;
+      }
+    }
+    return NS_OK;
+  }
+
   nsCOMPtr<nsISupports> mContext;
+  nsCOMPtr<nsIPrincipal> mPrincipal;
   nsCOMPtr<nsIChannel> mChannel;
+  // mReadRequest is different from mChannel for multipart requests
   nsCOMPtr<nsIRequest> mReadRequest;
   nsCOMPtr<nsIDOMDocument> mDocument;
+  nsCOMPtr<nsIChannel> mACGetChannel;
 
-  nsTArray<ListenerHolder*> mLoadEventListeners;
-  nsTArray<ListenerHolder*> mErrorEventListeners;
-  nsTArray<ListenerHolder*> mProgressEventListeners;
-  nsTArray<ListenerHolder*> mUploadProgressEventListeners;
-  nsTArray<ListenerHolder*> mReadystatechangeEventListeners;
-  
+  nsCOMArray<nsIDOMEventListener> mLoadEventListeners;
+  nsCOMArray<nsIDOMEventListener> mErrorEventListeners;
+  nsCOMArray<nsIDOMEventListener> mProgressEventListeners;
+  nsCOMArray<nsIDOMEventListener> mUploadProgressEventListeners;
+  nsCOMArray<nsIDOMEventListener> mReadystatechangeEventListeners;
+
+  // These may be null (native callers or xpcshell).
   nsCOMPtr<nsIScriptContext> mScriptContext;
+  nsCOMPtr<nsPIDOMWindow>    mOwner; // Inner window.
 
-  nsMarkedJSFunctionHolder<nsIDOMEventListener> mOnLoadListener;
-  nsMarkedJSFunctionHolder<nsIDOMEventListener> mOnErrorListener;
-  nsMarkedJSFunctionHolder<nsIDOMEventListener> mOnProgressListener;
-  nsMarkedJSFunctionHolder<nsIDOMEventListener> mOnUploadProgressListener;
-  nsMarkedJSFunctionHolder<nsIDOMEventListener> mOnReadystatechangeListener;
+  nsCOMPtr<nsIDOMEventListener> mOnLoadListener;
+  nsCOMPtr<nsIDOMEventListener> mOnErrorListener;
+  nsCOMPtr<nsIDOMEventListener> mOnProgressListener;
+  nsCOMPtr<nsIDOMEventListener> mOnUploadProgressListener;
+  nsCOMPtr<nsIDOMEventListener> mOnReadystatechangeListener;
 
   nsCOMPtr<nsIStreamListener> mXMLParserStreamListener;
 
@@ -213,6 +331,10 @@ protected:
   nsCOMPtr<nsIProgressEventSink> mProgressEventSink;
 
   PRUint32 mState;
+
+  // List of potentially dangerous headers explicitly set using
+  // SetRequestHeader.
+  nsTArray<nsCString> mExtraRequestHeaders;
 };
 
 

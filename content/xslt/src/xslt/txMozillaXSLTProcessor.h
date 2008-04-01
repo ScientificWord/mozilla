@@ -40,13 +40,15 @@
 #define TRANSFRMX_TXMOZILLAXSLTPROCESSOR_H
 
 #include "nsAutoPtr.h"
-#include "nsIMutationObserver.h"
+#include "nsStubMutationObserver.h"
 #include "nsIDocumentTransformer.h"
 #include "nsIXSLTProcessor.h"
 #include "nsIXSLTProcessorObsolete.h"
 #include "nsIXSLTProcessorPrivate.h"
 #include "txExpandedNameMap.h"
 #include "txNamespaceMap.h"
+#include "nsIJSNativeInitializer.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsIDOMNode;
 class nsIPrincipal;
@@ -54,6 +56,7 @@ class nsIURI;
 class nsIXMLContentSink;
 class txStylesheet;
 class txResultRecycler;
+class txIGlobalParameter;
 
 /* bacd8ad0-552f-11d3-a9f7-000064657374 */
 #define TRANSFORMIIX_XSLT_PROCESSOR_CID   \
@@ -71,7 +74,8 @@ class txMozillaXSLTProcessor : public nsIXSLTProcessor,
                                public nsIXSLTProcessorObsolete,
                                public nsIXSLTProcessorPrivate,
                                public nsIDocumentTransformer,
-                               public nsIMutationObserver
+                               public nsStubMutationObserver,
+                               public nsIJSNativeInitializer
 {
 public:
     /**
@@ -82,10 +86,12 @@ public:
     /**
      * Default destructor for txMozillaXSLTProcessor
      */
-    virtual ~txMozillaXSLTProcessor();
+    ~txMozillaXSLTProcessor();
 
     // nsISupports interface
-    NS_DECL_ISUPPORTS
+    NS_DECL_CYCLE_COLLECTING_ISUPPORTS
+    NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(txMozillaXSLTProcessor,
+                                             nsIXSLTProcessor)
 
     // nsIXSLTProcessor interface
     NS_DECL_NSIXSLTPROCESSOR
@@ -97,11 +103,11 @@ public:
     NS_DECL_NSIXSLTPROCESSORPRIVATE
 
     // nsIDocumentTransformer interface
+    NS_IMETHOD Init(nsIPrincipal* aPrincipal);
     NS_IMETHOD SetTransformObserver(nsITransformObserver* aObserver);
-    NS_IMETHOD LoadStyleSheet(nsIURI* aUri, nsILoadGroup* aLoadGroup,
-                              nsIPrincipal* aCallerPrincipal);
+    NS_IMETHOD LoadStyleSheet(nsIURI* aUri, nsILoadGroup* aLoadGroup);
     NS_IMETHOD SetSourceContentModel(nsIDOMNode* aSource);
-    NS_IMETHOD CancelLoads() {return NS_OK;};
+    NS_IMETHOD CancelLoads() {return NS_OK;}
     NS_IMETHOD AddXSLTParamNamespace(const nsString& aPrefix,
                                      const nsString& aNamespace);
     NS_IMETHOD AddXSLTParam(const nsString& aName,
@@ -111,7 +117,12 @@ public:
                             nsIDOMNode* aContext);
 
     // nsIMutationObserver interface
-    NS_DECL_NSIMUTATIONOBSERVER
+    NS_DECL_NSIMUTATIONOBSERVER_CHARACTERDATACHANGED
+    NS_DECL_NSIMUTATIONOBSERVER_ATTRIBUTECHANGED
+    NS_DECL_NSIMUTATIONOBSERVER_CONTENTAPPENDED
+    NS_DECL_NSIMUTATIONOBSERVER_CONTENTINSERTED
+    NS_DECL_NSIMUTATIONOBSERVER_CONTENTREMOVED
+    NS_DECL_NSIMUTATIONOBSERVER_NODEWILLBEDESTROYED
 
     nsresult setStylesheet(txStylesheet* aStylesheet);
     void reportError(nsresult aResult, const PRUnichar *aErrorText,
@@ -130,6 +141,13 @@ public:
         return (mFlags & DISABLE_ALL_LOADS) != 0;
     }
 
+    // nsIJSNativeInitializer
+    NS_IMETHODIMP Initialize(nsISupports* aOwner, JSContext *cx, JSObject *obj,
+                             PRUint32 argc, jsval *argv);
+
+    static nsresult Startup();
+    static void Shutdown();
+
 private:
     nsresult DoTransform();
     void notifyError();
@@ -143,8 +161,9 @@ private:
     nsresult mTransformResult;
     nsresult mCompileResult;
     nsString mErrorText, mSourceText;
+    nsCOMPtr<nsIPrincipal> mPrincipal;
     nsCOMPtr<nsITransformObserver> mObserver;
-    txExpandedNameMap mVariables;
+    txOwningExpandedNameMap<txIGlobalParameter> mVariables;
     txNamespaceMap mParamNamespaceMap;
     nsRefPtr<txResultRecycler> mRecycler;
 
@@ -155,8 +174,9 @@ extern nsresult TX_LoadSheet(nsIURI* aUri, txMozillaXSLTProcessor* aProcessor,
                              nsILoadGroup* aLoadGroup,
                              nsIPrincipal* aCallerPrincipal);
 
-extern nsresult TX_CompileStylesheet(nsIDOMNode* aNode,
+extern nsresult TX_CompileStylesheet(nsINode* aNode,
                                      txMozillaXSLTProcessor* aProcessor,
+                                     nsIPrincipal* aCallerPrincipal,
                                      txStylesheet** aStylesheet);
 
 #endif

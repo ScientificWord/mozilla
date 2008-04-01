@@ -38,13 +38,12 @@
 #include "nsIDOMHTMLTableCaptionElem.h"
 #include "nsIDOMHTMLTableSectionElem.h"
 #include "nsCOMPtr.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsDOMError.h"
 #include "nsContentList.h"
-#include "nsGenericDOMHTMLCollection.h"
 #include "nsMappedAttributes.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 #include "nsHTMLParts.h"
@@ -70,7 +69,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -88,6 +87,11 @@ public:
   virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
 
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+
+  NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED_NO_UNLINK(nsHTMLTableElement,
+                                                     nsGenericHTMLElement)
+
 protected:
   already_AddRefed<nsIDOMHTMLTableSectionElement> GetSection(nsIAtom *aTag);
 
@@ -101,7 +105,7 @@ protected:
  * This class provides a late-bound collection of rows in a table.
  * mParent is NOT ref-counted to avoid circular references
  */
-class TableRowsCollection : public nsGenericDOMHTMLCollection 
+class TableRowsCollection : public nsIDOMHTMLCollection 
 {
 public:
   TableRowsCollection(nsHTMLTableElement *aParent);
@@ -109,12 +113,12 @@ public:
 
   nsresult Init();
 
-  NS_IMETHOD    GetLength(PRUint32* aLength);
-  NS_IMETHOD    Item(PRUint32 aIndex, nsIDOMNode** aReturn);
-  NS_IMETHOD    NamedItem(const nsAString& aName,
-                          nsIDOMNode** aReturn);
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
+  NS_DECL_NSIDOMHTMLCOLLECTION
 
   NS_IMETHOD    ParentDestroyed();
+
+  NS_DECL_CYCLE_COLLECTION_CLASS(TableRowsCollection)
 
 protected:
   // Those rows that are not in table sections
@@ -124,9 +128,8 @@ protected:
 
 
 TableRowsCollection::TableRowsCollection(nsHTMLTableElement *aParent)
-  : nsGenericDOMHTMLCollection()
+  : mParent(aParent)
 {
-  mParent = aParent;
 }
 
 TableRowsCollection::~TableRowsCollection()
@@ -137,11 +140,27 @@ TableRowsCollection::~TableRowsCollection()
   // reference for us.
 }
 
+NS_IMPL_CYCLE_COLLECTION_CLASS(TableRowsCollection)
+NS_IMPL_CYCLE_COLLECTION_UNLINK_0(TableRowsCollection)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(TableRowsCollection)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR_AMBIGUOUS(mOrphanRows,
+                                                       nsBaseContentList)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+
+NS_IMPL_CYCLE_COLLECTING_ADDREF(TableRowsCollection)
+NS_IMPL_CYCLE_COLLECTING_RELEASE(TableRowsCollection)
+
+NS_INTERFACE_TABLE_HEAD(TableRowsCollection)
+  NS_INTERFACE_TABLE1(TableRowsCollection, nsIDOMHTMLCollection)
+  NS_INTERFACE_TABLE_TO_MAP_SEGUE_CYCLE_COLLECTION(TableRowsCollection)
+  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLGenericCollection)
+NS_INTERFACE_MAP_END
+
 nsresult
 TableRowsCollection::Init()
 {
   mOrphanRows = new nsContentList(mParent,
-                                  nsHTMLAtoms::tr,
+                                  nsGkAtoms::tr,
                                   mParent->NodeInfo()->NamespaceID(),
                                   PR_FALSE);
   return mOrphanRows ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
@@ -331,18 +350,26 @@ nsHTMLTableElement::~nsHTMLTableElement()
 }
 
 
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsHTMLTableElement)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_INHERITED(nsHTMLTableElement,
+                                                  nsGenericHTMLElement)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR_AMBIGUOUS(mTBodies,
+                                                       nsBaseContentList)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mRows)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+
 NS_IMPL_ADDREF_INHERITED(nsHTMLTableElement, nsGenericElement) 
 NS_IMPL_RELEASE_INHERITED(nsHTMLTableElement, nsGenericElement) 
 
 
 // QueryInterface implementation for nsHTMLTableElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLTableElement, nsGenericHTMLElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLTableElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLTableElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_CC_INTERFACE_TABLE_HEAD(nsHTMLTableElement,
+                                        nsGenericHTMLElement)
+  NS_INTERFACE_TABLE_INHERITED1(nsHTMLTableElement, nsIDOMHTMLTableElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLTableElement)
 
 
-NS_IMPL_DOM_CLONENODE(nsHTMLTableElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLTableElement)
 
 
 // the DOM spec says border, cellpadding, cellSpacing are all "wstring"
@@ -425,7 +452,7 @@ nsHTMLTableElement::GetSection(nsIAtom *aTag)
 NS_IMETHODIMP
 nsHTMLTableElement::GetTHead(nsIDOMHTMLTableSectionElement** aValue)
 {
-  *aValue = GetSection(nsHTMLAtoms::thead).get();
+  *aValue = GetSection(nsGkAtoms::thead).get();
 
   return NS_OK;
 }
@@ -436,7 +463,7 @@ nsHTMLTableElement::SetTHead(nsIDOMHTMLTableSectionElement* aValue)
   nsCOMPtr<nsIContent> content(do_QueryInterface(aValue));
   NS_ENSURE_TRUE(content, NS_ERROR_DOM_HIERARCHY_REQUEST_ERR);
 
-  if (!content->NodeInfo()->Equals(nsHTMLAtoms::thead)) {
+  if (!content->NodeInfo()->Equals(nsGkAtoms::thead)) {
     return NS_ERROR_DOM_HIERARCHY_REQUEST_ERR;
   }
   
@@ -462,7 +489,7 @@ nsHTMLTableElement::SetTHead(nsIDOMHTMLTableSectionElement* aValue)
 NS_IMETHODIMP
 nsHTMLTableElement::GetTFoot(nsIDOMHTMLTableSectionElement** aValue)
 {
-  *aValue = GetSection(nsHTMLAtoms::tfoot).get();
+  *aValue = GetSection(nsGkAtoms::tfoot).get();
 
   return NS_OK;
 }
@@ -473,7 +500,7 @@ nsHTMLTableElement::SetTFoot(nsIDOMHTMLTableSectionElement* aValue)
   nsCOMPtr<nsIContent> content(do_QueryInterface(aValue));
   NS_ENSURE_TRUE(content, NS_ERROR_DOM_HIERARCHY_REQUEST_ERR);
 
-  if (!content->NodeInfo()->Equals(nsHTMLAtoms::tfoot)) {
+  if (!content->NodeInfo()->Equals(nsGkAtoms::tfoot)) {
     return NS_ERROR_DOM_HIERARCHY_REQUEST_ERR;
   }
   
@@ -492,7 +519,7 @@ NS_IMETHODIMP
 nsHTMLTableElement::GetRows(nsIDOMHTMLCollection** aValue)
 {
   if (!mRows) {
-    // XXX why was this here NS_ADDREF(nsHTMLAtoms::tr);
+    // XXX why was this here NS_ADDREF(nsGkAtoms::tr);
     mRows = new TableRowsCollection(this);
     NS_ENSURE_TRUE(mRows, NS_ERROR_OUT_OF_MEMORY);
 
@@ -515,7 +542,7 @@ nsHTMLTableElement::GetTBodies(nsIDOMHTMLCollection** aValue)
   if (!mTBodies) {
     // Not using NS_GetContentList because this should not be cached
     mTBodies = new nsContentList(this,
-                                 nsHTMLAtoms::tbody,
+                                 nsGkAtoms::tbody,
                                  mNodeInfo->NamespaceID(),
                                  PR_FALSE);
 
@@ -544,7 +571,7 @@ nsHTMLTableElement::CreateTHead(nsIDOMHTMLElement** aValue)
   { // create a new head rowgroup
     nsCOMPtr<nsINodeInfo> nodeInfo;
 
-    nsContentUtils::NameChanged(mNodeInfo, nsHTMLAtoms::thead,
+    nsContentUtils::NameChanged(mNodeInfo, nsGkAtoms::thead,
                                 getter_AddRefs(nodeInfo));
 
     nsCOMPtr<nsIContent> newHead = NS_NewHTMLTableSectionElement(nodeInfo);
@@ -600,7 +627,7 @@ nsHTMLTableElement::CreateTFoot(nsIDOMHTMLElement** aValue)
   else
   { // create a new foot rowgroup
     nsCOMPtr<nsINodeInfo> nodeInfo;
-    nsContentUtils::NameChanged(mNodeInfo, nsHTMLAtoms::tfoot,
+    nsContentUtils::NameChanged(mNodeInfo, nsGkAtoms::tfoot,
                                 getter_AddRefs(nodeInfo));
 
     nsCOMPtr<nsIContent> newFoot = NS_NewHTMLTableSectionElement(nodeInfo);
@@ -646,7 +673,7 @@ nsHTMLTableElement::CreateCaption(nsIDOMHTMLElement** aValue)
   else
   { // create a new head rowgroup
     nsCOMPtr<nsINodeInfo> nodeInfo;
-    nsContentUtils::NameChanged(mNodeInfo, nsHTMLAtoms::caption,
+    nsContentUtils::NameChanged(mNodeInfo, nsGkAtoms::caption,
                                 getter_AddRefs(nodeInfo));
 
     nsCOMPtr<nsIContent> newCaption = NS_NewHTMLTableCaptionElement(nodeInfo);
@@ -722,7 +749,7 @@ nsHTMLTableElement::InsertRow(PRInt32 aIndex, nsIDOMHTMLElement** aValue)
     refRow->GetParentNode(getter_AddRefs(parent));
     // create the row
     nsCOMPtr<nsINodeInfo> nodeInfo;
-    nsContentUtils::NameChanged(mNodeInfo, nsHTMLAtoms::tr,
+    nsContentUtils::NameChanged(mNodeInfo, nsGkAtoms::tr,
                                 getter_AddRefs(nodeInfo));
 
     nsCOMPtr<nsIContent> newRow = NS_NewHTMLTableRowElement(nodeInfo);
@@ -760,9 +787,9 @@ nsHTMLTableElement::InsertRow(PRInt32 aIndex, nsIDOMHTMLElement** aValue)
       nsINodeInfo *childInfo = child->NodeInfo();
       nsIAtom *localName = childInfo->NameAtom();
       if (childInfo->NamespaceID() == namespaceID &&
-          (localName == nsHTMLAtoms::thead ||
-           localName == nsHTMLAtoms::tbody ||
-           localName == nsHTMLAtoms::tfoot)) {
+          (localName == nsGkAtoms::thead ||
+           localName == nsGkAtoms::tbody ||
+           localName == nsGkAtoms::tfoot)) {
         rowGroup = do_QueryInterface(child);
         NS_ASSERTION(rowGroup, "HTML node did not QI to nsIDOMNode");
         break;
@@ -771,7 +798,7 @@ nsHTMLTableElement::InsertRow(PRInt32 aIndex, nsIDOMHTMLElement** aValue)
 
     if (!rowGroup) { // need to create a TBODY
       nsCOMPtr<nsINodeInfo> nodeInfo;
-      nsContentUtils::NameChanged(mNodeInfo, nsHTMLAtoms::tbody,
+      nsContentUtils::NameChanged(mNodeInfo, nsGkAtoms::tbody,
                                   getter_AddRefs(nodeInfo));
 
       nsCOMPtr<nsIContent> newRowGroup =
@@ -786,7 +813,7 @@ nsHTMLTableElement::InsertRow(PRInt32 aIndex, nsIDOMHTMLElement** aValue)
 
     if (rowGroup) {
       nsCOMPtr<nsINodeInfo> nodeInfo;
-      nsContentUtils::NameChanged(mNodeInfo, nsHTMLAtoms::tr,
+      nsContentUtils::NameChanged(mNodeInfo, nsGkAtoms::tr,
                                   getter_AddRefs(nodeInfo));
 
       nsCOMPtr<nsIContent> newRow = NS_NewHTMLTableRowElement(nodeInfo);
@@ -897,14 +924,14 @@ nsHTMLTableElement::ParseAttribute(PRInt32 aNamespaceID,
 {
   /* ignore summary, just a string */
   if (aNamespaceID == kNameSpaceID_None) {
-    if (aAttribute == nsHTMLAtoms::cellspacing ||
-        aAttribute == nsHTMLAtoms::cellpadding) {
-      return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
+    if (aAttribute == nsGkAtoms::cellspacing ||
+        aAttribute == nsGkAtoms::cellpadding) {
+      return aResult.ParseSpecialIntValue(aValue, PR_TRUE);
     }
-    if (aAttribute == nsHTMLAtoms::cols) {
+    if (aAttribute == nsGkAtoms::cols) {
       return aResult.ParseIntWithBounds(aValue, 0);
     }
-    if (aAttribute == nsHTMLAtoms::border) {
+    if (aAttribute == nsGkAtoms::border) {
       if (!aResult.ParseIntWithBounds(aValue, 0)) {
         // XXX this should really be NavQuirks only to allow non numeric value
         aResult.SetTo(1);
@@ -912,11 +939,11 @@ nsHTMLTableElement::ParseAttribute(PRInt32 aNamespaceID,
 
       return PR_TRUE;
     }
-    if (aAttribute == nsHTMLAtoms::height) {
-      return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
+    if (aAttribute == nsGkAtoms::height) {
+      return aResult.ParseSpecialIntValue(aValue, PR_TRUE);
     }
-    if (aAttribute == nsHTMLAtoms::width) {
-      if (aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE)) {
+    if (aAttribute == nsGkAtoms::width) {
+      if (aResult.ParseSpecialIntValue(aValue, PR_TRUE)) {
         // treat 0 width as auto
         nsAttrValue::ValueType type = aResult.Type();
         if ((type == nsAttrValue::eInteger &&
@@ -929,24 +956,24 @@ nsHTMLTableElement::ParseAttribute(PRInt32 aNamespaceID,
       return PR_TRUE;
     }
     
-    if (aAttribute == nsHTMLAtoms::align) {
+    if (aAttribute == nsGkAtoms::align) {
       return ParseTableHAlignValue(aValue, aResult);
     }
-    if (aAttribute == nsHTMLAtoms::bgcolor ||
-        aAttribute == nsHTMLAtoms::bordercolor) {
+    if (aAttribute == nsGkAtoms::bgcolor ||
+        aAttribute == nsGkAtoms::bordercolor) {
       return aResult.ParseColor(aValue, GetOwnerDoc());
     }
-    if (aAttribute == nsHTMLAtoms::frame) {
+    if (aAttribute == nsGkAtoms::frame) {
       return aResult.ParseEnumValue(aValue, kFrameTable);
     }
-    if (aAttribute == nsHTMLAtoms::layout) {
+    if (aAttribute == nsGkAtoms::layout) {
       return aResult.ParseEnumValue(aValue, kLayoutTable);
     }
-    if (aAttribute == nsHTMLAtoms::rules) {
+    if (aAttribute == nsGkAtoms::rules) {
       return aResult.ParseEnumValue(aValue, kRulesTable);
     }
-    if (aAttribute == nsHTMLAtoms::hspace ||
-        aAttribute == nsHTMLAtoms::vspace) {
+    if (aAttribute == nsGkAtoms::hspace ||
+        aAttribute == nsGkAtoms::vspace) {
       return aResult.ParseIntWithBounds(aValue, 0);
     }
   }
@@ -963,7 +990,7 @@ MapTableFrameInto(const nsMappedAttributes* aAttributes,
     return;
 
   // 0 out the sides that we want to hide based on the frame attribute
-  const nsAttrValue* frameValue = aAttributes->GetAttr(nsHTMLAtoms::frame);
+  const nsAttrValue* frameValue = aAttributes->GetAttr(nsGkAtoms::frame);
 
   if (frameValue && frameValue->Type() == nsAttrValue::eEnum) {
     // adjust the border style based on the value of frame
@@ -1047,8 +1074,8 @@ static void
 MapTableBorderInto(const nsMappedAttributes* aAttributes,
                    nsRuleData* aData, PRUint8 aBorderStyle)
 {
-  const nsAttrValue* borderValue = aAttributes->GetAttr(nsHTMLAtoms::border);
-  if (!borderValue && !aAttributes->GetAttr(nsHTMLAtoms::frame))
+  const nsAttrValue* borderValue = aAttributes->GetAttr(nsGkAtoms::border);
+  if (!borderValue && !aAttributes->GetAttr(nsGkAtoms::frame))
     return;
 
   // the absence of "border" with the presence of "frame" implies
@@ -1101,13 +1128,14 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
   // which *element* it's matching (style rules should not stop matching
   // when the display type is changed).
 
-  nsCompatibility mode = aData->mPresContext->CompatibilityMode();
+  nsPresContext* presContext = aData->mPresContext;
+  nsCompatibility mode = presContext->CompatibilityMode();
 
-  if (aData->mSID == eStyleStruct_TableBorder) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(TableBorder)) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
     if (readDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL) {
       // cellspacing 
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::cellspacing);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::cellspacing);
       if (value && value->Type() == nsAttrValue::eInteger) {
         if (aData->mTableData->mBorderSpacing.mXValue.GetUnit() == eCSSUnit_Null)
           aData->mTableData->mBorderSpacing.mXValue.SetFloatValue((float)value->GetIntegerValue(), eCSSUnit_Pixel);
@@ -1123,7 +1151,7 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
       }
     }
   } 
-  else if (aData->mSID == eStyleStruct_Table) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Table)) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
     if (readDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL) {
       MapTableBorderInto(aAttributes, aData, 0);
@@ -1131,13 +1159,13 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
       const nsAttrValue* value;
       // layout
       if (aData->mTableData->mLayout.GetUnit() == eCSSUnit_Null) {
-        value = aAttributes->GetAttr(nsHTMLAtoms::layout);
+        value = aAttributes->GetAttr(nsGkAtoms::layout);
         if (value && value->Type() == nsAttrValue::eEnum)
           aData->mTableData->mLayout.SetIntValue(value->GetEnumValue(), eCSSUnit_Enumerated);
       }
       
       // cols
-      value = aAttributes->GetAttr(nsHTMLAtoms::cols);
+      value = aAttributes->GetAttr(nsGkAtoms::cols);
       if (value) {
         if (value->Type() == nsAttrValue::eInteger) 
           aData->mTableData->mCols.SetIntValue(value->GetIntegerValue(), eCSSUnit_Integer);
@@ -1146,18 +1174,18 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
       }
 
       // rules
-      value = aAttributes->GetAttr(nsHTMLAtoms::rules);
+      value = aAttributes->GetAttr(nsGkAtoms::rules);
       if (value && value->Type() == nsAttrValue::eEnum)
         aData->mTableData->mRules.SetIntValue(value->GetEnumValue(), eCSSUnit_Enumerated);
     }
   }
-  else if (aData->mSID == eStyleStruct_Margin) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Margin)) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
   
     if (readDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL) {
       // align; Check for enumerated type (it may be another type if
       // illegal)
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::align);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::align);
 
       if (value && value->Type() == nsAttrValue::eEnum) {
         if (value->GetEnumValue() == NS_STYLE_TEXT_ALIGN_CENTER ||
@@ -1174,7 +1202,7 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
       // vspace is mapped into top and bottom margins
       // - *** Quirks Mode only ***
       if (eCompatibility_NavQuirks == mode) {
-        value = aAttributes->GetAttr(nsHTMLAtoms::hspace);
+        value = aAttributes->GetAttr(nsGkAtoms::hspace);
 
         if (value && value->Type() == nsAttrValue::eInteger) {
           nsCSSRect& margin = aData->mMarginData->mMargin;
@@ -1184,7 +1212,7 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
             margin.mRight.SetFloatValue((float)value->GetIntegerValue(), eCSSUnit_Pixel);
         }
 
-        value = aAttributes->GetAttr(nsHTMLAtoms::vspace);
+        value = aAttributes->GetAttr(nsGkAtoms::vspace);
 
         if (value && value->Type() == nsAttrValue::eInteger) {
           nsCSSRect& margin = aData->mMarginData->mMargin;
@@ -1196,10 +1224,10 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
       }
     }
   }
-  else if (aData->mSID == eStyleStruct_Padding) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Padding)) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
     if (readDisplay->mDisplay == NS_STYLE_DISPLAY_TABLE_CELL) {
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::cellpadding);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::cellpadding);
       if (value) {
         nsAttrValue::ValueType valueType = value->Type();
         if (valueType == nsAttrValue::eInteger || valueType == nsAttrValue::ePercent) {
@@ -1231,13 +1259,13 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
       }
     }
   }
-  else if (aData->mSID == eStyleStruct_Position) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Position)) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
   
     if (readDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL) {
       // width: value
       if (aData->mPositionData->mWidth.GetUnit() == eCSSUnit_Null) {
-        const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::width);
+        const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::width);
         if (value && value->Type() == nsAttrValue::eInteger) 
           aData->mPositionData->mWidth.SetFloatValue((float)value->GetIntegerValue(), eCSSUnit_Pixel);
         else if (value && value->Type() == nsAttrValue::ePercent)
@@ -1246,7 +1274,7 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
 
       // height: value
       if (aData->mPositionData->mHeight.GetUnit() == eCSSUnit_Null) {
-        const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::height);
+        const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::height);
         if (value && value->Type() == nsAttrValue::eInteger) 
           aData->mPositionData->mHeight.SetFloatValue((float)value->GetIntegerValue(), eCSSUnit_Pixel);
         else if (value && value->Type() == nsAttrValue::ePercent)
@@ -1254,13 +1282,13 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
       }
     }
   }
-  else if (aData->mSID == eStyleStruct_Visibility) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Visibility)) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
   
     if (readDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL)
       nsGenericHTMLElement::MapCommonAttributesInto(aAttributes, aData);
   }
-  else if (aData->mSID == eStyleStruct_Border) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Border)) {
     const nsStyleTableBorder* tableStyle = aData->mStyleContext->GetStyleTableBorder();
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
     if (readDisplay->mDisplay == NS_STYLE_DISPLAY_TABLE_CELL) {
@@ -1269,8 +1297,8 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
         // model. If there is a border on the table, then the mapping to
         // rules=all will take care of borders in the collapsing model.
         // But if rules="none", we don't want to do this.
-        const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::border);
-        const nsAttrValue* rulesValue = aAttributes->GetAttr(nsHTMLAtoms::rules);
+        const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::border);
+        const nsAttrValue* rulesValue = aAttributes->GetAttr(nsGkAtoms::rules);
         if ((!rulesValue || rulesValue->Type() != nsAttrValue::eEnum ||
              rulesValue->GetEnumValue() != NS_STYLE_TABLE_RULES_NONE) &&
             value &&
@@ -1286,10 +1314,7 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
           if (aData->mMarginData->mBorderWidth.mBottom.GetUnit() == eCSSUnit_Null)
             aData->mMarginData->mBorderWidth.mBottom.SetFloatValue(1.0f, eCSSUnit_Pixel);
 
-          PRUint8 borderStyle = (eCompatibility_NavQuirks == mode) 
-                                ? NS_STYLE_BORDER_STYLE_BG_INSET : NS_STYLE_BORDER_STYLE_INSET;
-          // BG_INSET results in a border color based on background colors
-          // used for NavQuirks only...
+          PRUint8 borderStyle = NS_STYLE_BORDER_STYLE_INSET;
 
           if (aData->mMarginData->mBorderStyle.mLeft.GetUnit() == eCSSUnit_Null)
             aData->mMarginData->mBorderStyle.mLeft.SetIntValue(borderStyle, eCSSUnit_Enumerated);
@@ -1303,20 +1328,12 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
       }
     }
     else {
-      // default border style is the Nav4.6 extension which uses the
-      // background color as the basis of the outset border. If the
-      // table has a transparent background then it finds the closest
-      // ancestor that has a non-transparent
-      // background. NS_STYLE_BORDER_OUTSET uses the border color of
-      // the table and if that is not set, then it uses the color.
-
-      PRUint8 borderStyle = (eCompatibility_NavQuirks == mode) 
-                            ? NS_STYLE_BORDER_STYLE_BG_OUTSET :
-                              NS_STYLE_BORDER_STYLE_OUTSET;
+      PRUint8 borderStyle = NS_STYLE_BORDER_STYLE_OUTSET;
       // bordercolor
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::bordercolor);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::bordercolor);
       nscolor color;
-      if (value && value->GetColorValue(color)) {
+      if (value && presContext->UseDocumentColors() &&
+          value->GetColorValue(color)) {
         if (aData->mMarginData->mBorderColor.mLeft.GetUnit() == eCSSUnit_Null)
           aData->mMarginData->mBorderColor.mLeft.SetColorValue(color);
         if (aData->mMarginData->mBorderColor.mRight.GetUnit() == eCSSUnit_Null)
@@ -1326,7 +1343,7 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
         if (aData->mMarginData->mBorderColor.mBottom.GetUnit() == eCSSUnit_Null)
           aData->mMarginData->mBorderColor.mBottom.SetColorValue(color);
 
-        borderStyle = NS_STYLE_BORDER_STYLE_OUTSET; // use css outset
+        borderStyle = NS_STYLE_BORDER_STYLE_SOLID; // compat, see bug 349655
       }
       else if (NS_STYLE_BORDER_COLLAPSE == tableStyle->mBorderCollapse) {
         // make the color grey
@@ -1345,7 +1362,7 @@ MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
       MapTableBorderInto(aAttributes, aData, borderStyle);
     }
   }
-  else if (aData->mSID == eStyleStruct_Background) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Background)) {
     const nsStyleDisplay* readDisplay = aData->mStyleContext->GetStyleDisplay();
   
     if (readDisplay->mDisplay != NS_STYLE_DISPLAY_TABLE_CELL)
@@ -1357,21 +1374,21 @@ NS_IMETHODIMP_(PRBool)
 nsHTMLTableElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
   static const MappedAttributeEntry attributes[] = {
-    { &nsHTMLAtoms::layout },
-    { &nsHTMLAtoms::cellpadding },
-    { &nsHTMLAtoms::cellspacing },
-    { &nsHTMLAtoms::cols },
-    { &nsHTMLAtoms::border },
-    { &nsHTMLAtoms::frame },
-    { &nsHTMLAtoms::width },
-    { &nsHTMLAtoms::height },
-    { &nsHTMLAtoms::hspace },
-    { &nsHTMLAtoms::vspace },
+    { &nsGkAtoms::layout },
+    { &nsGkAtoms::cellpadding },
+    { &nsGkAtoms::cellspacing },
+    { &nsGkAtoms::cols },
+    { &nsGkAtoms::border },
+    { &nsGkAtoms::frame },
+    { &nsGkAtoms::width },
+    { &nsGkAtoms::height },
+    { &nsGkAtoms::hspace },
+    { &nsGkAtoms::vspace },
     
-    { &nsHTMLAtoms::bordercolor },
+    { &nsGkAtoms::bordercolor },
     
-    { &nsHTMLAtoms::align },
-    { &nsHTMLAtoms::rules },
+    { &nsGkAtoms::align },
+    { &nsGkAtoms::rules },
     { nsnull }
   };
 

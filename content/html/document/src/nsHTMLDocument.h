@@ -47,9 +47,7 @@
 #include "nsIDOMHTMLCollection.h"
 #include "nsIScriptElement.h"
 #include "jsapi.h"
-#include "rdf.h"
-#include "nsRDFCID.h"
-#include "nsIRDFService.h"
+
 #include "pldhash.h"
 #include "nsIHttpChannel.h"
 #include "nsHTMLStyleSheet.h"
@@ -61,12 +59,13 @@
 
 #include "nsICommandManager.h"
 
+class nsIEditor;
+class nsIEditorDocShell;
 class nsIParser;
 class nsIURI;
 class nsIMarkupDocumentViewer;
 class nsIDocumentCharsetInfo;
 class nsICacheEntryDescriptor;
-class nsIEditingSession;
 
 class nsHTMLDocument : public nsDocument,
                        public nsIHTMLDocument,
@@ -84,7 +83,8 @@ public:
   NS_IMETHOD_(nsrefcnt) Release(void);
 
   virtual void Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup);
-  virtual void ResetToURI(nsIURI* aURI, nsILoadGroup* aLoadGroup);
+  virtual void ResetToURI(nsIURI* aURI, nsILoadGroup* aLoadGroup,
+                          nsIPrincipal* aPrincipal);
   virtual nsStyleSet::sheetType GetAttrSheetType();
 
   virtual nsresult CreateShell(nsPresContext* aContext,
@@ -109,7 +109,6 @@ public:
 
   virtual nsIDOMHTMLMapElement *GetImageMap(const nsAString& aMapName);
 
-  virtual nsCompatibility GetCompatibilityMode();
   virtual void SetCompatibilityMode(nsCompatibility aMode);
 
   virtual PRBool IsWriting()
@@ -131,22 +130,11 @@ public:
   virtual PRBool IsCaseSensitive();
 
   // nsIMutationObserver
-  virtual void ContentAppended(nsIDocument* aDocument,
-                               nsIContent* aContainer,
-                               PRInt32 aNewIndexInContainer);
-  virtual void ContentInserted(nsIDocument* aDocument,
-                               nsIContent* aContainer,
-                               nsIContent* aChild,
-                               PRInt32 aIndexInContainer);
-  virtual void ContentRemoved(nsIDocument* aDocument,
-                              nsIContent* aContainer,
-                              nsIContent* aChild,
-                              PRInt32 aIndexInContainer);
-  virtual void AttributeChanged(nsIDocument* aDocument,
-                                nsIContent* aChild,
-                                PRInt32 aNameSpaceID,
-                                nsIAtom* aAttribute,
-                                PRInt32 aModType);
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTAPPENDED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTINSERTED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTREMOVED
+  NS_DECL_NSIMUTATIONOBSERVER_ATTRIBUTECHANGED
+
   // nsIDOMDocument interface
   NS_DECL_NSIDOMDOCUMENT
 
@@ -183,14 +171,11 @@ public:
   NS_IMETHOD Writeln(const nsAString & text);
   NS_IMETHOD GetElementsByName(const nsAString & elementName,
                                nsIDOMNodeList **_retval);
+  virtual nsresult GetDocumentAllResult(const nsAString& aID,
+                                        nsISupports** aResult);
 
   // nsIDOMNSHTMLDocument interface
   NS_DECL_NSIDOMNSHTMLDOCUMENT
-
-  /*
-   * Returns true if document.domain was set for this document
-   */
-  virtual PRBool WasDomainSet();
 
   virtual nsresult ResolveName(const nsAString& aName,
                          nsIDOMHTMLFormElement *aForm,
@@ -202,6 +187,7 @@ public:
   virtual void AddedForm();
   virtual void RemovedForm();
   virtual PRInt32 GetNumFormsSynchronous();
+  virtual void TearingDownEditor(nsIEditor *aEditor);
 
   PRBool IsXHTML()
   {
@@ -215,10 +201,34 @@ public:
                               nsIContent** aResult);
 #endif
 
+  nsresult ChangeContentEditableCount(nsIContent *aElement, PRInt32 aChange);
+
+  virtual EditingState GetEditingState()
+  {
+    return mEditingState;
+  }
+
+  virtual void DisableCookieAccess()
+  {
+    mDisableCookieAccess = PR_TRUE;
+  }
+
+  virtual nsIContent* GetBodyContentExternal();
+
+  void EndUpdate(nsUpdateType aUpdateType);
+
+  NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED_NO_UNLINK(nsHTMLDocument, nsDocument)
+
+  virtual already_AddRefed<nsIParser> GetFragmentParser() {
+    return mFragmentParser.forget();
+  }
+  virtual void SetFragmentParser(nsIParser* aParser) {
+    mFragmentParser = aParser;
+  }
+
 protected:
-  nsresult GetPixelDimensions(nsIPresShell* aShell,
-                              PRInt32* aWidth,
-                              PRInt32* aHeight);
+  nsresult GetBodySize(PRInt32* aWidth,
+                       PRInt32* aHeight);
 
   nsresult RegisterNamedItems(nsIContent *aContent);
   nsresult UnregisterNamedItems(nsIContent *aContent);
@@ -233,16 +243,15 @@ protected:
   nsIContent *MatchId(nsIContent *aContent, const nsAString& aId);
 
   static PRBool MatchLinks(nsIContent *aContent, PRInt32 aNamespaceID,
-                           nsIAtom* aAtom, const nsAString& aData);
+                           nsIAtom* aAtom, void* aData);
   static PRBool MatchAnchors(nsIContent *aContent, PRInt32 aNamespaceID,
-                             nsIAtom* aAtom, const nsAString& aData);
+                             nsIAtom* aAtom, void* aData);
   static PRBool MatchNameAttribute(nsIContent* aContent, PRInt32 aNamespaceID,
-                                   nsIAtom* aAtom, const nsAString& aData);
+                                   nsIAtom* aAtom, void* aData);
 
   static void DocumentWriteTerminationFunc(nsISupports *aRef);
 
-  PRBool GetBodyContent();
-  void GetBodyElement(nsIDOMHTMLBodyElement** aBody);
+  nsIContent* GetBodyContent();
 
   void GetDomainURI(nsIURI **uri);
 
@@ -259,9 +268,7 @@ protected:
   PRInt32 GetDefaultNamespaceID() const
   {
     return mDefaultNamespaceID;
-  };
-
-  nsCompatibility mCompatMode;
+  }
 
   nsCOMArray<nsIDOMHTMLMapElement> mImageMaps;
 
@@ -292,8 +299,10 @@ protected:
                                    nsIChannel* aChannel,
                                    PRInt32& aCharsetSource,
                                    nsACString& aCharset);
-  static PRBool TryParentCharset(nsIDocumentCharsetInfo*  aDocInfo,
-                                 PRInt32& charsetSource, nsACString& aCharset);
+  // aParentDocument could be null.
+  PRBool TryParentCharset(nsIDocumentCharsetInfo*  aDocInfo,
+                          nsIDocument* aParentDocument,
+                          PRInt32& charsetSource, nsACString& aCharset);
   static PRBool UseWeakDocTypeDefault(PRInt32& aCharsetSource,
                                       nsACString& aCharset);
   static PRBool TryDefaultCharset(nsIMarkupDocumentViewer* aMarkupDV,
@@ -302,6 +311,9 @@ protected:
 
   void StartAutodetection(nsIDocShell *aDocShell, nsACString& aCharset,
                           const char* aCommand);
+
+  // Override so we can munge the charset on our wyciwyg channel as needed.
+  virtual void SetDocumentCharacterSet(const nsACString& aCharSetID);
 
   // mWriteState tracks the status of this document if the document is being
   // entirely created by script. In the normal load case, mWriteState will be
@@ -329,14 +341,9 @@ protected:
   // Load flags of the document's channel
   PRUint32 mLoadFlags;
 
-  nsCOMPtr<nsIDOMNode> mBodyContent;
-
-  /*
-   * Bug 13871: Frameset spoofing - find out if document.domain was set
-   */
-  PRPackedBool mDomainWasSet;
-
   PRPackedBool mIsFrameset;
+
+  PRPackedBool mTooDeepWriteRecursion;
 
   PRBool IdTableIsLive() const {
     // live if we've had over 63 misses
@@ -363,21 +370,16 @@ protected:
 
   nsCOMPtr<nsIWyciwygChannel> mWyciwygChannel;
 
-  void SetEnableRealTimeSpell(nsPIDOMWindow* aWindow,
-                              nsIEditingSession* aEditSession);
-
-  static int PR_CALLBACK RealTimeSpellCallback(const char* aPref, void* aContext);
-
   /* Midas implementation */
   nsresult   GetMidasCommandManager(nsICommandManager** aCommandManager);
-  PRBool     ConvertToMidasInternalCommand(const nsAString & inCommandID,
-                                           const nsAString & inParam,
-                                           nsACString& outCommandID,
-                                           nsACString& outParam,
-                                           PRBool& isBoolean,
-                                           PRBool& boolValue);
+
   nsCOMPtr<nsICommandManager> mMidasCommandManager;
-  PRBool                      mEditingIsOn;
+
+  nsresult TurnEditingOff();
+  nsresult EditingStateChanged();
+
+  PRUint32 mContentEditableCount;
+  EditingState mEditingState;
 
   nsresult   DoClipboardSecurityCheck(PRBool aPaste);
   static jsval       sCutCopyInternal_id;
@@ -388,6 +390,11 @@ protected:
   // XXXbz should this be reset if someone manually calls
   // SetContentType() on this document?
   PRInt32 mDefaultNamespaceID;
+
+  PRBool mDisableCookieAccess;
+
+  // Parser used for constructing document fragments.
+  nsCOMPtr<nsIParser> mFragmentParser;
 };
 
 #endif /* nsHTMLDocument_h___ */

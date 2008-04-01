@@ -41,6 +41,7 @@
 #include "txAtoms.h"
 #include "txLog.h"
 #include "txStylesheetCompileHandlers.h"
+#include "txStylesheetCompiler.h"
 #include "txExecutionState.h"
 #include "txExprResult.h"
 #ifdef TX_EXE
@@ -72,6 +73,10 @@ txXSLTProcessor::init()
     if (!txHandlerTable::init())
         return MB_FALSE;
 
+    extern PRBool TX_InitEXSLTFunction();
+    if (!TX_InitEXSLTFunction())
+        return MB_FALSE;
+
     return MB_TRUE;
 }
 
@@ -84,6 +89,7 @@ txXSLTProcessor::shutdown()
     txHTMLOutput::shutdown();
 #endif
 
+    txStylesheetCompilerState::shutdown();
     txHandlerTable::shutdown();
 }
 

@@ -35,9 +35,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsIDOMHTMLParagraphElement.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 #include "nsMappedAttributes.h"
@@ -57,7 +57,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -74,6 +74,8 @@ public:
                                 nsAttrValue& aResult);
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
+
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 };
 
 
@@ -95,14 +97,14 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLParagraphElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLParagraphElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLParagraphElement,
-                                    nsGenericHTMLElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLParagraphElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLParagraphElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_INTERFACE_TABLE_HEAD(nsHTMLParagraphElement,
+                                     nsGenericHTMLElement)
+  NS_INTERFACE_TABLE_INHERITED1(nsHTMLParagraphElement,
+                                nsIDOMHTMLParagraphElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLParagraphElement)
 
 
-NS_IMPL_DOM_CLONENODE(nsHTMLParagraphElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLParagraphElement)
 
 
 NS_IMPL_STRING_ATTR(nsHTMLParagraphElement, Align, align)
@@ -114,7 +116,7 @@ nsHTMLParagraphElement::ParseAttribute(PRInt32 aNamespaceID,
                                        const nsAString& aValue,
                                        nsAttrValue& aResult)
 {
-  if (aAttribute == nsHTMLAtoms::align && aNamespaceID == kNameSpaceID_None) {
+  if (aAttribute == nsGkAtoms::align && aNamespaceID == kNameSpaceID_None) {
     return ParseDivAlignValue(aValue, aResult);
   }
 

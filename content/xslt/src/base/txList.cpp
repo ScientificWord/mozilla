@@ -231,26 +231,6 @@ void txList::clear()
     itemCount  = 0;
 }
 
-void*
-txList::replace(PRUint32 aIndex, void* aObjPtr)
-{
-    PRUint32 i = 0;
-    ListItem* item = firstItem;
-    while (i < aIndex && item) {
-        item = item->nextItem;
-        ++i;
-    }
-
-    if (!item) {
-        return nsnull;
-    }
-
-    void* oldObj = item->objPtr;
-    item->objPtr = aObjPtr;
-
-    return oldObj;
-}
-
   //------------------------------------/
  //- Implementation of txListIterator -/
 //------------------------------------/
@@ -265,10 +245,6 @@ txListIterator::txListIterator(txList* list) {
    currentItem  = 0;
    atEndOfList  = MB_FALSE;
 } //-- txListIterator
-
-txListIterator::~txListIterator() {
-  //-- overrides default destructor to do nothing
-} //-- ~txListIterator
 
 /**
  * Adds the Object pointer to the txList pointed to by this txListIterator.

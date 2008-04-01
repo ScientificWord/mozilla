@@ -73,13 +73,10 @@ txKeyFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
         return NS_ERROR_XPATH_BAD_ARGUMENT_COUNT;
 
     txExecutionState* es =
-        NS_STATIC_CAST(txExecutionState*, aContext->getPrivateContext());
-
-    txListIterator iter(&params);
+        static_cast<txExecutionState*>(aContext->getPrivateContext());
 
     nsAutoString keyQName;
-    Expr* param = NS_STATIC_CAST(Expr*, iter.next());
-    nsresult rv = param->evaluateToString(aContext, keyQName);
+    nsresult rv = mParams[0]->evaluateToString(aContext, keyQName);
     NS_ENSURE_SUCCESS(rv, rv);
 
     txExpandedName keyName;
@@ -87,18 +84,18 @@ txKeyFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsRefPtr<txAExprResult> exprResult;
-    rv = ((Expr*)iter.next())->evaluate(aContext, getter_AddRefs(exprResult));
+    rv = mParams[1]->evaluate(aContext, getter_AddRefs(exprResult));
     NS_ENSURE_SUCCESS(rv, rv);
 
-    nsAutoPtr<txXPathNode> contextDoc(txXPathNodeUtils::getOwnerDocument(aContext->getContextNode()));
-    NS_ENSURE_TRUE(contextDoc, NS_ERROR_FAILURE);
+    txXPathTreeWalker walker(aContext->getContextNode());
+    walker.moveToRoot();
 
     nsRefPtr<txNodeSet> res;
     txNodeSet* nodeSet;
     if (exprResult->getResultType() == txAExprResult::NODESET &&
-        (nodeSet = NS_STATIC_CAST(txNodeSet*,
-                                  NS_STATIC_CAST(txAExprResult*,
-                                                 exprResult)))->size() > 1) {
+        (nodeSet = static_cast<txNodeSet*>
+                              (static_cast<txAExprResult*>
+                                          (exprResult)))->size() > 1) {
         rv = aContext->recycler()->getNodeSet(getter_AddRefs(res));
         NS_ENSURE_SUCCESS(rv, rv);
 
@@ -108,8 +105,8 @@ txKeyFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
             txXPathNodeUtils::appendNodeValue(nodeSet->get(i), val);
 
             nsRefPtr<txNodeSet> nodes;
-            rv = es->getKeyNodes(keyName, *contextDoc, val, i == 0,
-                                 getter_AddRefs(nodes));
+            rv = es->getKeyNodes(keyName, walker.getCurrentPosition(), val,
+                                 i == 0, getter_AddRefs(nodes));
             NS_ENSURE_SUCCESS(rv, rv);
 
             res->add(*nodes);
@@ -118,8 +115,8 @@ txKeyFunctionCall::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
     else {
         nsAutoString val;
         exprResult->stringValue(val);
-        rv = es->getKeyNodes(keyName, *contextDoc, val, PR_TRUE,
-                             getter_AddRefs(res));
+        rv = es->getKeyNodes(keyName, walker.getCurrentPosition(), val,
+                             PR_TRUE, getter_AddRefs(res));
         NS_ENSURE_SUCCESS(rv, rv);
     }
 
@@ -138,7 +135,7 @@ txKeyFunctionCall::getReturnType()
 PRBool
 txKeyFunctionCall::isSensitiveTo(ContextSensitivity aContext)
 {
-    return (aContext & DOCUMENT_CONTEXT) || argsSensitiveTo(aContext);
+    return (aContext & NODE_CONTEXT) || argsSensitiveTo(aContext);
 }
 
 #ifdef TX_TO_STRING
@@ -158,20 +155,14 @@ txKeyFunctionCall::getNameAtom(nsIAtom** aAtom)
 DHASH_WRAPPER(txKeyValueHash, txKeyValueHashEntry, txKeyValueHashKey&)
 DHASH_WRAPPER(txIndexedKeyHash, txIndexedKeyHashEntry, txIndexedKeyHashKey&)
 
-const void*
-txKeyValueHashEntry::GetKey()
-{
-    return &mKey;
-}
-
 PRBool
 txKeyValueHashEntry::MatchEntry(const void* aKey) const
 {
     const txKeyValueHashKey* key =
-        NS_STATIC_CAST(const txKeyValueHashKey*, aKey);
+        static_cast<const txKeyValueHashKey*>(aKey);
 
     return mKey.mKeyName == key->mKeyName &&
-           mKey.mDocumentIdentifier == key->mDocumentIdentifier &&
+           mKey.mRootIdentifier == key->mRootIdentifier &&
            mKey.mKeyValue.Equals(key->mKeyValue);
 }
 
@@ -179,39 +170,33 @@ PLDHashNumber
 txKeyValueHashEntry::HashKey(const void* aKey)
 {
     const txKeyValueHashKey* key =
-        NS_STATIC_CAST(const txKeyValueHashKey*, aKey);
+        static_cast<const txKeyValueHashKey*>(aKey);
 
     return key->mKeyName.mNamespaceID ^
            NS_PTR_TO_INT32(key->mKeyName.mLocalName.get()) ^
-           key->mDocumentIdentifier ^
+           key->mRootIdentifier ^
            HashString(key->mKeyValue);
-}
-
-const void*
-txIndexedKeyHashEntry::GetKey()
-{
-    return &mKey;
 }
 
 PRBool
 txIndexedKeyHashEntry::MatchEntry(const void* aKey) const
 {
     const txIndexedKeyHashKey* key =
-        NS_STATIC_CAST(const txIndexedKeyHashKey*, aKey);
+        static_cast<const txIndexedKeyHashKey*>(aKey);
 
     return mKey.mKeyName == key->mKeyName &&
-           mKey.mDocumentIdentifier == key->mDocumentIdentifier;
+           mKey.mRootIdentifier == key->mRootIdentifier;
 }
 
 PLDHashNumber
 txIndexedKeyHashEntry::HashKey(const void* aKey)
 {
     const txIndexedKeyHashKey* key =
-        NS_STATIC_CAST(const txIndexedKeyHashKey*, aKey);
+        static_cast<const txIndexedKeyHashKey*>(aKey);
 
     return key->mKeyName.mNamespaceID ^
            NS_PTR_TO_INT32(key->mKeyName.mLocalName.get()) ^
-           key->mDocumentIdentifier;
+           key->mRootIdentifier;
 }
 
 /*
@@ -220,7 +205,7 @@ txIndexedKeyHashEntry::HashKey(const void* aKey)
 
 nsresult
 txKeyHash::getKeyNodes(const txExpandedName& aKeyName,
-                       const txXPathNode& aDocument,
+                       const txXPathNode& aRoot,
                        const nsAString& aKeyValue,
                        PRBool aIndexIfNotFound,
                        txExecutionState& aEs,
@@ -231,7 +216,7 @@ txKeyHash::getKeyNodes(const txExpandedName& aKeyName,
 
     *aResult = nsnull;
 
-    PRInt32 identifier = txXPathNodeUtils::getUniqueIdentifier(aDocument);
+    PRInt32 identifier = txXPathNodeUtils::getUniqueIdentifier(aRoot);
 
     txKeyValueHashKey valueKey(aKeyName, identifier, aKeyValue);
     txKeyValueHashEntry* valueEntry = mKeyValues.GetEntry(valueKey);
@@ -269,13 +254,13 @@ txKeyHash::getKeyNodes(const txExpandedName& aKeyName,
     }
 
     // The key needs to be indexed.
-    txXSLKey* xslKey = (txXSLKey*)mKeys.get(aKeyName);
+    txXSLKey* xslKey = mKeys.get(aKeyName);
     if (!xslKey) {
         // The key didn't exist, so bail.
         return NS_ERROR_INVALID_ARG;
     }
 
-    nsresult rv = xslKey->indexDocument(aDocument, mKeyValues, aEs);
+    nsresult rv = xslKey->indexSubtreeRoot(aRoot, mKeyValues, aEs);
     NS_ENSURE_SUCCESS(rv, rv);
     
     indexEntry->mIndexed = PR_TRUE;
@@ -309,18 +294,6 @@ txKeyHash::init()
     return NS_OK;
 }
 
-/**
- * Class holding all <xsl:key>s of a particular expanded name in the
- * stylesheet.
- */
-txXSLKey::~txXSLKey()
-{
-    txListIterator iter(&mKeys);
-    Key* key;
-    while ((key = (Key*)iter.next())) {
-        delete key;
-    }
-}
 
 /**
  * Adds a match/use pair.
@@ -333,34 +306,30 @@ PRBool txXSLKey::addKey(nsAutoPtr<txPattern> aMatch, nsAutoPtr<Expr> aUse)
     if (!aMatch || !aUse)
         return PR_FALSE;
 
-    nsAutoPtr<Key> key(new Key);
+    Key* key = mKeys.AppendElement();
     if (!key)
         return PR_FALSE;
 
     key->matchPattern = aMatch;
     key->useExpr = aUse;
-    nsresult rv = mKeys.add(key);
-    NS_ENSURE_SUCCESS(rv, PR_FALSE);
-    
-    key.forget();
 
     return PR_TRUE;
 }
 
 /**
  * Indexes a document and adds it to the hash of key values
- * @param aDocument     Document to index and add
+ * @param aRoot         Subtree root to index and add
  * @param aKeyValueHash Hash to add values to
  * @param aEs           txExecutionState to use for XPath evaluation
  */
-nsresult txXSLKey::indexDocument(const txXPathNode& aDocument,
-                                 txKeyValueHash& aKeyValueHash,
-                                 txExecutionState& aEs)
+nsresult txXSLKey::indexSubtreeRoot(const txXPathNode& aRoot,
+                                    txKeyValueHash& aKeyValueHash,
+                                    txExecutionState& aEs)
 {
     txKeyValueHashKey key(mName,
-                          txXPathNodeUtils::getUniqueIdentifier(aDocument),
+                          txXPathNodeUtils::getUniqueIdentifier(aRoot),
                           EmptyString());
-    return indexTree(aDocument, key, aKeyValueHash, aEs);
+    return indexTree(aRoot, key, aKeyValueHash, aEs);
 }
 
 /**
@@ -416,26 +385,24 @@ nsresult txXSLKey::testNode(const txXPathNode& aNode,
                             txExecutionState& aEs)
 {
     nsAutoString val;
-    txListIterator iter(&mKeys);
-    while (iter.hasNext())
-    {
-        Key* key = (Key*)iter.next();
-        if (key->matchPattern->matches(aNode, &aEs)) {
+    PRUint32 currKey, numKeys = mKeys.Length();
+    for (currKey = 0; currKey < numKeys; ++currKey) {
+        if (mKeys[currKey].matchPattern->matches(aNode, &aEs)) {
             txSingleNodeContext evalContext(aNode, &aEs);
             nsresult rv = aEs.pushEvalContext(&evalContext);
             NS_ENSURE_SUCCESS(rv, rv);
 
             nsRefPtr<txAExprResult> exprResult;
-            rv = key->useExpr->evaluate(&evalContext,
-                                        getter_AddRefs(exprResult));
+            rv = mKeys[currKey].useExpr->evaluate(&evalContext,
+                                                  getter_AddRefs(exprResult));
             NS_ENSURE_SUCCESS(rv, rv);
 
             aEs.popEvalContext();
 
             if (exprResult->getResultType() == txAExprResult::NODESET) {
-                txNodeSet* res = NS_STATIC_CAST(txNodeSet*,
-                                                NS_STATIC_CAST(txAExprResult*,
-                                                               exprResult));
+                txNodeSet* res = static_cast<txNodeSet*>
+                                            (static_cast<txAExprResult*>
+                                                        (exprResult));
                 PRInt32 i;
                 for (i = 0; i < res->size(); ++i) {
                     val.Truncate();

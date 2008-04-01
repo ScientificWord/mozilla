@@ -41,10 +41,9 @@
 #include "nsAString.h"
 
 class nsIFormControl;
-class nsIDOMHTMLInputElement;
-class nsIRadioVisitor;
 class nsISimpleEnumerator;
 class nsIURI;
+template<class T> class nsTArray;
 
 #define NS_FORM_METHOD_GET  0
 #define NS_FORM_METHOD_POST 1
@@ -52,12 +51,10 @@ class nsIURI;
 #define NS_FORM_ENCTYPE_MULTIPART  1
 #define NS_FORM_ENCTYPE_TEXTPLAIN  2
 
-
-// IID for the nsIFormManager interface
+// IID for the nsIForm interface
 #define NS_IFORM_IID    \
-{ 0xb7e94510, 0x4c19, 0x11d2,  \
-  { 0x80, 0x3f, 0x0, 0x60, 0x8, 0x15, 0xa7, 0x91 } }
-
+{ 0xd4ffda0b, 0x2396, 0x4e64, \
+  {0x97, 0x5c, 0x73, 0xab, 0x56, 0x4b, 0x14, 0x77} }
 
 /**
  * This interface provides a complete set of methods dealing with
@@ -74,9 +71,11 @@ public:
    * Add an element to end of this form's list of elements
    *
    * @param aElement the element to add
+   * @param aNotify If true, send nsIDocumentObserver notifications as needed.
    * @return NS_OK if the element was successfully added
    */
-  NS_IMETHOD AddElement(nsIFormControl* aElement) = 0;
+  NS_IMETHOD AddElement(nsIFormControl* aElement,
+                        PRBool aNotify) = 0;
 
   /**    
    * Add an element to the lookup table mainted by the form.
@@ -110,9 +109,11 @@ public:
    * Remove an element from this form's list of elements
    *
    * @param aElement the element to remove
+   * @param aNotify If true, send nsIDocumentObserver notifications as needed.
    * @return NS_OK if the element was successfully removed.
    */
-  NS_IMETHOD RemoveElement(nsIFormControl* aElement) = 0;
+  NS_IMETHOD RemoveElement(nsIFormControl* aElement,
+                           PRBool aNotify) = 0;
 
   /**
    * Remove an element from the lookup table mainted by the form.
@@ -148,13 +149,6 @@ public:
   NS_IMETHOD IndexOfControl(nsIFormControl* aControl, PRInt32* aIndex) = 0;
 
   /**
-   * Get an enumeration that goes through all controls, including images and
-   * that ilk
-   * @param aEnum the enumeration [OUT]
-   */
-  NS_IMETHOD GetControlEnumerator(nsISimpleEnumerator** aEnum) = 0;
-
-  /**
    * Flag the form to know that a button or image triggered scripted form
    * submission. In that case the form will defer the submission until the
    * script handler returns and the return value is known.
@@ -184,6 +178,29 @@ public:
    */
   NS_IMETHOD GetActionURL(nsIURI** aActionURL) = 0;
 
+  /**
+   * Get the list of all the form's controls in document order.
+   * This list contains all form control elements, not just those
+   * returned by form.elements in JS. The controls in this list do
+   * not have additional references added.
+   *
+   * @param aControls Sorted list of form controls [out].
+   * @return NS_OK if the list was successfully created.
+   */
+  NS_IMETHOD GetSortedControls(nsTArray<nsIFormControl*>& aControls) const = 0;
+
+  /**
+   * Get the default submit element. If there's no default submit element,
+   * return null.
+   */
+   NS_IMETHOD_(nsIFormControl*) GetDefaultSubmitElement() const = 0;
+
+   /**
+    * Return whether there is one and only one input text control.
+    *
+    * @return Whether there is exactly one input text control.
+    */
+   NS_IMETHOD_(PRBool) HasSingleTextControl() const = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIForm, NS_IFORM_IID)

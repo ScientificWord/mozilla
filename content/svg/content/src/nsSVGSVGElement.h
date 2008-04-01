@@ -41,26 +41,38 @@
 #define __NS_SVGSVGELEMENT_H__
 
 #include "nsSVGStylableElement.h"
-#include "nsISVGSVGElement.h"
+#include "nsIDOMSVGSVGElement.h"
 #include "nsIDOMSVGFitToViewBox.h"
 #include "nsIDOMSVGLocatable.h"
 #include "nsIDOMSVGZoomAndPan.h"
-#include "nsSVGCoordCtxProvider.h"
+#include "nsIDOMSVGMatrix.h"
 #include "nsSVGLength2.h"
+#include "nsSVGEnum.h"
 
-#define QI_TO_NSSVGSVGELEMENT(base)                                           \
-  NS_STATIC_CAST(nsSVGSVGElement*,                                            \
-    NS_STATIC_CAST(nsISVGSVGElement*,                                         \
-      nsCOMPtr<nsISVGSVGElement>(do_QueryInterface(base))));
+#define QI_AND_CAST_TO_NSSVGSVGELEMENT(base)                                  \
+  (nsCOMPtr<nsIDOMSVGSVGElement>(do_QueryInterface(base)) ?                   \
+   static_cast<nsSVGSVGElement*>(base.get()) : nsnull)
 
 typedef nsSVGStylableElement nsSVGSVGElementBase;
 
+class svgFloatSize {
+public:
+  svgFloatSize(float aWidth, float aHeight)
+    : width(aWidth)
+    , height(aHeight)
+  {}
+  PRBool operator!=(const svgFloatSize& rhs) {
+    return width != rhs.width || height != rhs.height;
+  }
+  float width;
+  float height;
+};
+
 class nsSVGSVGElement : public nsSVGSVGElementBase,
-                        public nsISVGSVGElement, // : nsIDOMSVGSVGElement
+                        public nsIDOMSVGSVGElement,
                         public nsIDOMSVGFitToViewBox,
                         public nsIDOMSVGLocatable,
-                        public nsIDOMSVGZoomAndPan,
-                        public nsSVGCoordCtxProvider
+                        public nsIDOMSVGZoomAndPan
 {
   friend class nsSVGOuterSVGFrame;
   friend class nsSVGInnerSVGFrame;
@@ -73,6 +85,7 @@ protected:
   nsresult Init();
   
 public:
+
   // interfaces:
   NS_DECL_ISUPPORTS_INHERITED
   NS_DECL_NSIDOMSVGSVGELEMENT
@@ -81,24 +94,48 @@ public:
   NS_DECL_NSIDOMSVGZOOMANDPAN
   
   // xxx I wish we could use virtual inheritance
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsSVGSVGElementBase::)
+  NS_FORWARD_NSIDOMNODE(nsSVGSVGElementBase::)
   NS_FORWARD_NSIDOMELEMENT(nsSVGSVGElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGSVGElementBase::)
 
-  // nsISVGSVGElement interface:
-  NS_IMETHOD SetParentCoordCtxProvider(nsSVGCoordCtxProvider *parentCtx);
+  // helper methods for implementing SVGZoomEvent:
   NS_IMETHOD GetCurrentScaleNumber(nsIDOMSVGNumber **aResult);
-  NS_IMETHOD GetZoomAndPanEnum(nsISVGEnum **aResult);
+
+  /**
+   * For use by zoom controls to allow currentScale, currentTranslate.x and
+   * currentTranslate.y to be set by a single operation that dispatches a
+   * single SVGZoom event (instead of one SVGZoom and two SVGScroll events).
+   */
   NS_IMETHOD SetCurrentScaleTranslate(float s, float x, float y);
+
+  /**
+   * For use by pan controls to allow currentTranslate.x and currentTranslate.y
+   * to be set by a single operation that dispatches a single SVGScroll event
+   * (instead of two).
+   */
   NS_IMETHOD SetCurrentTranslate(float x, float y);
+
+  /**
+   * Record the current values of currentScale, currentTranslate.x and
+   * currentTranslate.y prior to changing the value of one of them.
+   */
   NS_IMETHOD_(void) RecordCurrentScaleTranslate();
+
+  /**
+   * Retrieve the value of currentScale, currentTranslate.x or
+   * currentTranslate.y prior to the last change made to any one of them.
+   */
   NS_IMETHOD_(float) GetPreviousTranslate_x();
   NS_IMETHOD_(float) GetPreviousTranslate_y();
   NS_IMETHOD_(float) GetPreviousScale();
-  NS_IMETHOD_(void) InvalidateViewBoxToViewport() { mViewBoxToViewportTransform = nsnull; }
 
   // nsIContent interface
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
+
+  virtual nsresult AfterSetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                                const nsAString* aValue, PRBool aNotify);
+  virtual nsresult UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
+                             PRBool aNotify);
 
   // nsISVGValueObserver
   NS_IMETHOD WillModifySVGObservable(nsISVGValue* observable,
@@ -106,16 +143,28 @@ public:
   NS_IMETHOD DidModifySVGObservable (nsISVGValue* observable,
                                      nsISVGValue::modificationType aModType);
 
-  // nsISVGContent specializations:
-  virtual nsresult UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
-                             PRBool aNotify);
-
   // nsSVGElement specializations:
   virtual void DidChangeLength(PRUint8 aAttrEnum, PRBool aDoSetAttr);
+  virtual void DidChangeEnum(PRUint8 aAttrEnum, PRBool aDoSetAttr);
+
+  // nsSVGSVGElement methods:
+  float GetLength(PRUint8 mCtxType);
+  float GetMMPerPx(PRUint8 mCtxType = 0);
+  already_AddRefed<nsIDOMSVGRect> GetCtxRect();
 
   // public helpers:
   nsresult GetViewboxToViewportTransform(nsIDOMSVGMatrix **_retval);
 
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
+
+  svgFloatSize GetViewportSize() {
+    return svgFloatSize(mViewportWidth, mViewportHeight);
+  }
+
+  void SetViewportSize(svgFloatSize& aSize) {
+    mViewportWidth  = aSize.width;
+    mViewportHeight = aSize.height;
+  }
 
 protected:
   // nsSVGElement overrides
@@ -123,6 +172,15 @@ protected:
 
   // implementation helpers:
   void GetOffsetToAncestor(nsIContent* ancestor, float &x, float &y);
+  PRBool IsRoot() {
+    NS_ASSERTION((IsInDoc() && !GetParent()) ==
+                 (GetOwnerDoc() && (GetOwnerDoc()->GetRootContent() == this)),
+                 "Can't determine if we're root");
+    return IsInDoc() && !GetParent();
+  }
+
+  // invalidate viewbox -> viewport xform & inform frames
+  void InvalidateTransformNotifyFrame();
 
   virtual LengthAttributesInfo GetLengthInfo();
 
@@ -130,15 +188,32 @@ protected:
   nsSVGLength2 mLengthAttributes[4];
   static LengthInfo sLengthInfo[4];
 
-  nsSVGCoordCtxProvider            *mCoordCtx;
+  virtual EnumAttributesInfo GetEnumInfo();
+
+  enum { ZOOMANDPAN };
+  nsSVGEnum mEnumAttributes[1];
+  static nsSVGEnumMapping sZoomAndPanMap[];
+  static EnumInfo sEnumInfo[1];
+
+  nsSVGSVGElement                  *mCoordCtx;
   nsCOMPtr<nsIDOMSVGAnimatedRect>   mViewBox;
-  nsCOMPtr<nsIDOMSVGMatrix>         mViewBoxToViewportTransform;
   nsCOMPtr<nsIDOMSVGAnimatedPreserveAspectRatio> mPreserveAspectRatio;
+
+  // The size of the rectangular SVG viewport into which we render. This is
+  // not (necessarily) the same as the content area. See:
+  //
+  //   http://www.w3.org/TR/SVG11/coords.html#ViewportSpace
+  //
+  // XXXjwatt Currently only used for outer <svg>, but maybe we could use -1 to
+  // flag this as an inner <svg> to save the overhead of GetCtx calls?
+  // XXXjwatt our frame should probably reset these when it's destroyed.
+  float mViewportWidth, mViewportHeight;
+
+  float mCoordCtxMmPerPx;
 
   // zoom and pan
   // IMPORTANT: only RecordCurrentScaleTranslate should change the "mPreviousX"
   // members below - see the comment in RecordCurrentScaleTranslate
-  nsCOMPtr<nsISVGEnum>              mZoomAndPan;
   nsCOMPtr<nsIDOMSVGPoint>          mCurrentTranslate;
   nsCOMPtr<nsIDOMSVGNumber>         mCurrentScale;
   float                             mPreviousTranslate_x;

@@ -35,9 +35,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 #include "nsIDOMHTMLBRElement.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsGenericHTMLElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
 #include "nsMappedAttributes.h"
@@ -54,7 +54,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
+  NS_FORWARD_NSIDOMNODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
   NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
@@ -71,6 +71,7 @@ public:
                                 nsAttrValue& aResult);
   NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   virtual nsMapRuleToAttributesFunc GetAttributeMappingFunction() const;
+  virtual nsresult Clone(nsINodeInfo *aNodeInfo, nsINode **aResult) const;
 };
 
 
@@ -91,13 +92,12 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLBRElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLBRElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLBRElement, nsGenericHTMLElement)
-  NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLBRElement)
-  NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLBRElement)
-NS_HTML_CONTENT_INTERFACE_MAP_END
+NS_HTML_CONTENT_INTERFACE_TABLE_HEAD(nsHTMLBRElement, nsGenericHTMLElement)
+  NS_INTERFACE_TABLE_INHERITED1(nsHTMLBRElement, nsIDOMHTMLBRElement)
+NS_HTML_CONTENT_INTERFACE_TABLE_TAIL_CLASSINFO(HTMLBRElement)
 
 
-NS_IMPL_DOM_CLONENODE(nsHTMLBRElement)
+NS_IMPL_ELEMENT_CLONE(nsHTMLBRElement)
 
 
 NS_IMPL_STRING_ATTR(nsHTMLBRElement, Clear, clear)
@@ -116,7 +116,7 @@ nsHTMLBRElement::ParseAttribute(PRInt32 aNamespaceID,
                                 const nsAString& aValue,
                                 nsAttrValue& aResult)
 {
-  if (aAttribute == nsHTMLAtoms::clear && aNamespaceID == kNameSpaceID_None) {
+  if (aAttribute == nsGkAtoms::clear && aNamespaceID == kNameSpaceID_None) {
     return aResult.ParseEnumValue(aValue, kClearTable);
   }
 
@@ -128,9 +128,9 @@ static void
 MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
                       nsRuleData* aData)
 {
-  if (aData->mSID == eStyleStruct_Display) {
+  if (aData->mSIDs & NS_STYLE_INHERIT_BIT(Display)) {
     if (aData->mDisplayData->mClear.GetUnit() == eCSSUnit_Null) {
-      const nsAttrValue* value = aAttributes->GetAttr(nsHTMLAtoms::clear);
+      const nsAttrValue* value = aAttributes->GetAttr(nsGkAtoms::clear);
       if (value && value->Type() == nsAttrValue::eEnum)
         aData->mDisplayData->mClear.SetIntValue(value->GetEnumValue(), eCSSUnit_Enumerated);
     }
@@ -143,7 +143,7 @@ NS_IMETHODIMP_(PRBool)
 nsHTMLBRElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
   static const MappedAttributeEntry attributes[] = {
-    { &nsHTMLAtoms::clear },
+    { &nsGkAtoms::clear },
     { nsnull }
   };
 

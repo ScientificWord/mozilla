@@ -50,6 +50,7 @@ REQUIRES	= xpcom \
 		  string \
 		  dom \
 		  gfx \
+		  thebes \
 		  layout \
 		  widget \
 		  view \
@@ -59,6 +60,8 @@ REQUIRES	= xpcom \
 		  webshell \
 		  necko \
 		  mimetype \
+		  exthandler \
+		  chardet \
 		  caps \
 		  lwbrk \
 		  uconv \
@@ -73,8 +76,17 @@ REQUIRES	= xpcom \
 		  prefetch \
 		  xuldoc \
 		  uriloader \
+		  rdf \
+		  xultmpl \
 		  util \
+		  appshell \
+		  shistory \
+		  editor \
 		  $(NULL)
+
+ifdef ACCESSIBILITY
+REQUIRES	+= accessibility
+endif
 
 EXPORTS		= \
 		nsAtomListUtils.h \
@@ -84,11 +96,11 @@ EXPORTS		= \
 		nsGkAtoms.h \
 		nsNodeInfoManager.h \
 		nsPropertyTable.h \
+		nsScriptLoader.h \
 		nsStubDocumentObserver.h \
 		nsStubImageDecoderObserver.h \
 		nsStubMutationObserver.h \
 		nsTextFragment.h \
-		nsTObserverArray.h \
 		$(NULL)
 
 CPPSRCS		= \
@@ -96,6 +108,7 @@ CPPSRCS		= \
 		nsAtomListUtils.cpp \
 		nsAttrAndChildArray.cpp \
 		nsAttrValue.cpp \
+		nsCCUncollectableMarker.cpp \
 		nsCommentNode.cpp \
 		nsContentAreaDragDrop.cpp \
 		nsContentIterator.cpp \
@@ -104,10 +117,12 @@ CPPSRCS		= \
 		nsContentSink.cpp \
 		nsContentUtils.cpp \
 		nsCopySupport.cpp \
+		nsCrossSiteListenerProxy.cpp \
 		nsDataDocumentContentPolicy.cpp \
 		nsDOMAttribute.cpp \
 		nsDOMAttributeMap.cpp \
 		nsDOMDocumentType.cpp \
+		nsDOMFile.cpp \
 		nsDOMLists.cpp \
 		nsDOMParser.cpp \
 		nsDOMSerializer.cpp \
@@ -116,14 +131,15 @@ CPPSRCS		= \
 		nsDocumentFragment.cpp \
 		nsFrameLoader.cpp \
 		nsGenConImageContent.cpp \
-		nsGeneratedIterator.cpp \
 		nsGenericDOMDataNode.cpp \
 		nsGenericDOMNodeList.cpp \
 		nsGenericElement.cpp \
 		nsGkAtoms.cpp \
 		nsHTMLContentSerializer.cpp \
 		nsImageLoadingContent.cpp \
+		nsLineBreaker.cpp \
 		nsLoadListenerProxy.cpp \
+		nsMappedAttributeElement.cpp \
 		nsMappedAttributes.cpp \
 		nsNameSpaceManager.cpp \
 		nsNoDataProtocolContentPolicy.cpp \
@@ -135,21 +151,24 @@ CPPSRCS		= \
 		nsPlainTextSerializer.cpp \
 		nsPropertyTable.cpp \
 		nsRange.cpp \
+		nsScriptElement.cpp \
 		nsScriptEventManager.cpp \
 		nsScriptLoader.cpp \
 		nsStubDocumentObserver.cpp \
 		nsStubImageDecoderObserver.cpp \
 		nsStubMutationObserver.cpp \
+		nsStyledElement.cpp \
 		nsStyleLinkElement.cpp \
 		nsSyncLoadService.cpp \
 		nsTextFragment.cpp \
 		nsTextNode.cpp \
-		nsTObserverArray.cpp \
 		nsTreeWalker.cpp \
 		nsXMLContentSerializer.cpp \
 		nsXMLHttpRequest.cpp \
 		nsXMLNameSpaceMap.cpp \
 		$(NULL)
+
+GQI_SRCS = contentbase.gqi
 
 # we don't want the shared lib, but we want to force the creation of a
 # static lib.
@@ -169,6 +188,7 @@ INCLUDES	+= \
 		-I$(srcdir)/../../../layout/style \
 		-I$(srcdir)/../../../dom/src/base \
 		-I$(srcdir)/../../xml/document/src \
+		-I$(topsrcdir)/xpcom/io \
 		$(NULL)
 
 DEFINES += -D_IMPL_NS_LAYOUT
