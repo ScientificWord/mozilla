@@ -45,6 +45,7 @@
 #include "nsCRT.h"
 
 #include "nsIPrefService.h"
+#include "nsIPrefLocalizedString.h"
 #include "nsIPlatformCharset.h"
 #include "nsILocalFile.h"
 
@@ -301,7 +302,7 @@ nsDefaultURIFixup::CreateFixupURI(const nsACString& aStringURI, PRUint32 aFixupF
     //
     //   no-scheme.com
     //   ftp.no-scheme.com
-    //   ftp4.no-scheme,com
+    //   ftp4.no-scheme.com
     //   no-scheme.com/query?foo=http://www.foo.com
     //
     PRInt32 schemeDelim = uriString.Find("://",0);
@@ -318,7 +319,7 @@ nsDefaultURIFixup::CreateFixupURI(const nsACString& aStringURI, PRUint32 aFixupF
         uriString.Left(hostSpec, hostPos);
 
         // insert url spec corresponding to host name
-        if (hostSpec.EqualsIgnoreCase("ftp", 3)) 
+        if (IsLikelyFTP(hostSpec))
             uriString.Assign(NS_LITERAL_CSTRING("ftp://") + uriString);
         else 
             uriString.Assign(NS_LITERAL_CSTRING("http://") + uriString);
@@ -373,7 +374,20 @@ NS_IMETHODIMP nsDefaultURIFixup::KeywordToURI(const nsACString& aKeyword,
     NS_ENSURE_STATE(mPrefBranch);
 
     nsXPIDLCString url;
-    mPrefBranch->GetCharPref("keyword.URL", getter_Copies(url));
+    nsCOMPtr<nsIPrefLocalizedString> keywordURL;
+    mPrefBranch->GetComplexValue("keyword.URL", 
+                                 NS_GET_IID(nsIPrefLocalizedString),
+                                 getter_AddRefs(keywordURL));
+
+    if (keywordURL) {
+        nsXPIDLString wurl;
+        keywordURL->GetData(getter_Copies(wurl));
+        CopyUTF16toUTF8(wurl, url);
+    } else {
+        // Fall back to a non-localized pref, for backwards compat
+        mPrefBranch->GetCharPref("keyword.URL", getter_Copies(url));
+    }
+
     // if we can't find a keyword.URL keywords won't work.
     if (url.IsEmpty())
         return NS_ERROR_NOT_AVAILABLE;
@@ -487,6 +501,44 @@ PRBool nsDefaultURIFixup::MakeAlternateURI(nsIURI *aURI)
     // Assign the new host string over the old one
     aURI->SetHost(newHost);
     return PR_TRUE;
+}
+
+/**
+ * Check if the host name starts with ftp\d*\. and it's not directly followed
+ * by the tld.
+ */
+PRBool nsDefaultURIFixup::IsLikelyFTP(const nsCString &aHostSpec)
+{
+    PRBool likelyFTP = PR_FALSE;
+    if (aHostSpec.EqualsIgnoreCase("ftp", 3)) {
+        nsACString::const_iterator iter;
+        nsACString::const_iterator end;
+        aHostSpec.BeginReading(iter);
+        aHostSpec.EndReading(end);
+        iter.advance(3); // move past the "ftp" part
+
+        while (iter != end)
+        {
+            if (*iter == '.') {
+                // now make sure the name has at least one more dot in it
+                ++iter;
+                while (iter != end)
+                {
+                    if (*iter == '.') {
+                        likelyFTP = PR_TRUE;
+                        break;
+                    }
+                    ++iter;
+                }
+                break;
+            }
+            else if (!nsCRT::IsAsciiDigit(*iter)) {
+                break;
+            }
+            ++iter;
+        }
+    }
+    return likelyFTP;
 }
 
 nsresult nsDefaultURIFixup::FileURIFixup(const nsACString& aStringURI, 
