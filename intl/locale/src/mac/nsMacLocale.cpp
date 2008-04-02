@@ -95,6 +95,7 @@ const iso_lang_map lang_list[] = {
   { "id", langIndonesian,  smRoman },
   { "iu", langInuktitut, smEthiopic },
   { "ga", langIrish, smRoman }, 
+  { "hi", langHindi, smDevanagari },
   { "it", langItalian, smRoman },
   { "ja", langJapanese, smJapanese },
   { "jw", langJavaneseRom, smRoman },
