@@ -50,13 +50,11 @@
 #include "nsIURL.h"
 #include "nsNetCID.h"
 #include "nsIStringBundle.h"
-#include "nsIPref.h"
 #include "nsReadableUtils.h"
 
 #include "nsEscape.h"
 #include "nsPIDOMWindow.h"
 #include "nsIDOMEventTarget.h"
-#include "nsIDOMEventReceiver.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsIEventListenerManager.h"
 #include "nsIDOMFocusListener.h"
@@ -75,11 +73,8 @@
 #include "nsIDOMCharacterData.h"
 #include "nsIDOMNodeList.h"
 
-#include "nsIMenuBar.h"
-#include "nsIMenu.h"
-#include "nsIMenuItem.h"
-#include "nsIMenuListener.h"
 #include "nsITimer.h"
+#include "nsXULPopupManager.h"
 
 #include "prmem.h"
 #include "prlock.h"
@@ -113,15 +108,10 @@
 
 #include "nsIMarkupDocumentViewer.h"
 
-#include "nsIMenuItem.h"
-#include "nsIDOMXULDocument.h"
-
 #if defined(XP_MACOSX)
-#include <Menus.h>
+#include "nsIMenuBar.h"
 #define USE_NATIVE_MENUS
 #endif
-
-#include "nsIPopupSetFrame.h"
 
 /* Define Class IDs */
 static NS_DEFINE_CID(kWindowCID,           NS_WINDOW_CID);
@@ -304,7 +294,7 @@ nsWebShellWindow::HandleEvent(nsGUIEvent *aEvent)
 
     aEvent->widget->GetClientData(data);
     if (data != nsnull) {
-      eventWindow = NS_REINTERPRET_CAST(nsWebShellWindow *, data);
+      eventWindow = reinterpret_cast<nsWebShellWindow *>(data);
       docShell = eventWindow->mDocShell;
     }
   }
@@ -316,12 +306,30 @@ nsWebShellWindow::HandleEvent(nsGUIEvent *aEvent)
        * client area of the window...
        */
       case NS_MOVE: {
+#ifndef XP_MACOSX
+        // Move any popups that are attached to their parents. That is, the
+        // popup moves along with the parent window when it moves. This
+        // doesn't need to happen on Mac, as Cocoa provides a nice API
+        // which does this for us.
+        nsCOMPtr<nsIMenuRollup> pm =
+          do_GetService("@mozilla.org/xul/xul-popup-manager;1");
+        if (pm)
+          pm->AdjustPopupsOnWindowChange();
+#endif
+
         // persist position, but not immediately, in case this OS is firing
         // repeated move events as the user drags the window
         eventWindow->SetPersistenceTimer(PAD_POSITION);
         break;
       }
       case NS_SIZE: {
+#ifndef XP_MACOSX
+        nsCOMPtr<nsIMenuRollup> pm =
+          do_GetService("@mozilla.org/xul/xul-popup-manager;1");
+        if (pm)
+          pm->AdjustPopupsOnWindowChange();
+#endif
+ 
         nsSizeEvent* sizeEvent = (nsSizeEvent*)aEvent;
         nsCOMPtr<nsIBaseWindow> shellAsWin(do_QueryInterface(docShell));
         shellAsWin->SetPositionAndSize(0, 0, sizeEvent->windowSize->width, 
@@ -503,7 +511,7 @@ nsWebShellWindow::HandleEvent(nsGUIEvent *aEvent)
 }
 
 #ifdef USE_NATIVE_MENUS
-static void LoadNativeMenus(nsIDOMDocument *aDOMDoc, nsIWidget *aParentWindow, nsIDocShell *aDocShell)
+static void LoadNativeMenus(nsIDOMDocument *aDOMDoc, nsIWidget *aParentWindow)
 {
   // Find the menubar tag (if there is more than one, we ignore all but
   // the first).
@@ -523,12 +531,11 @@ static void LoadNativeMenus(nsIDOMDocument *aDOMDoc, nsIWidget *aParentWindow, n
   if (!pnsMenuBar)
     return;
 
-  // set pnsMenuBar as a nsMenuListener on aParentWindow
-  nsCOMPtr<nsIMenuListener> menuListener = do_QueryInterface(pnsMenuBar);
+  pnsMenuBar->Create(aParentWindow);
 
   // fake event
   nsMenuEvent fake(PR_TRUE, 0, nsnull);
-  menuListener->MenuConstruct(fake, aParentWindow, menubarNode, aDocShell);
+  pnsMenuBar->MenuConstruct(fake, aParentWindow, menubarNode);
 }
 #endif
 
@@ -558,7 +565,7 @@ nsWebShellWindow::SetPersistenceTimer(PRUint32 aDirtyFlags)
 void
 nsWebShellWindow::FirePersistenceTimer(nsITimer *aTimer, void *aClosure)
 {
-  nsWebShellWindow *win = NS_STATIC_CAST(nsWebShellWindow *, aClosure);
+  nsWebShellWindow *win = static_cast<nsWebShellWindow *>(aClosure);
   if (!win->mSPTimerLock)
     return;
   PR_Lock(win->mSPTimerLock);
@@ -617,9 +624,7 @@ nsWebShellWindow::OnStateChange(nsIWebProgress *aProgress,
   ///////////////////////////////
   nsCOMPtr<nsIDOMDocument> menubarDOMDoc(GetNamedDOMDoc(NS_LITERAL_STRING("this"))); // XXX "this" is a small kludge for code reused
   if (menubarDOMDoc)
-  {
-    LoadNativeMenus(menubarDOMDoc, mWindow, mDocShell);
-  }
+    LoadNativeMenus(menubarDOMDoc, mWindow);
 #endif // USE_NATIVE_MENUS
 
   OnChromeLoaded();
@@ -784,8 +789,9 @@ PRBool nsWebShellWindow::ExecuteCloseHandler()
   nsCOMPtr<nsIXULWindow> kungFuDeathGrip(this);
 
   nsCOMPtr<nsPIDOMWindow> window(do_GetInterface(mDocShell));
+  nsCOMPtr<nsPIDOMEventTarget> eventTarget = do_QueryInterface(window);
 
-  if (window) {
+  if (eventTarget) {
     nsCOMPtr<nsIContentViewer> contentViewer;
     mDocShell->GetContentViewer(getter_AddRefs(contentViewer));
     nsCOMPtr<nsIDocumentViewer> docViewer(do_QueryInterface(contentViewer));
@@ -799,7 +805,7 @@ PRBool nsWebShellWindow::ExecuteCloseHandler()
                          nsMouseEvent::eReal);
 
       nsresult rv =
-        window->DispatchDOMEvent(&event, nsnull, presContext, &status);
+        eventTarget->DispatchDOMEvent(&event, nsnull, presContext, &status);
       if (NS_SUCCEEDED(rv) && status == nsEventStatus_eConsumeNoDefault)
         return PR_TRUE;
       // else fall through and return PR_FALSE

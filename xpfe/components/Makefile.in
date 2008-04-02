@@ -66,42 +66,50 @@ endif
 
 DIRS = \
         find \
+        filepicker \
+        $(NULL)
+
+ifdef MOZ_RDF
+DIRS += \
         intl \
         windowds \
         $(NULL)
+endif
 
 ifdef MOZ_HAVE_BROWSER
 DIRS += \
         directory \
         resetPref \
-        killAll \
-        filepicker \
         $(NULL)
 
 ifndef MOZ_PHOENIX
 ifndef MOZ_XULRUNNER
 DIRS += \
         related \
-        console \
-        autocomplete \
-        download-manager \
-        history \
-        sidebar \
+         \
         $(NULL)
+ # autocomplete
+ifneq ($(MOZ_BUILD_APP),camino)
+DIRS += download-manager
+endif
 ifndef MOZ_XUL_APP
 DIRS += \
+        console \
         updates \
         startup \
         alerts \
         extensions \
         $(NULL)
 endif
+ifndef MOZ_PLACES
+DIRS += history
+endif
 endif
 endif
 
 ifdef MOZ_SUITE
 ifeq ($(OS_ARCH),WINNT)
-DIRS += urlwidget winhooks
+DIRS += winhooks
 endif
 endif
 
@@ -111,17 +119,10 @@ DIRS += build
 else
 # !MOZ_HAVE_BROWSER
 
-DIRS += \
-        filepicker \
-        autocomplete \
-        console \
-        history/public \
-        bookmarks/public \
-        $(NULL)
-
-ifeq ($(OS_ARCH),WINNT)
-DIRS += winhooks
-endif
+# DIRS += \
+#        history/public \
+#        $(NULL)
+#        autocomplete \
 
 endif
 

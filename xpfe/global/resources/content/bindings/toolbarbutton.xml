@@ -69,22 +69,4 @@
       <xul:image class="toolbarbutton-icon" xbl:inherits="src=image"/>
     </content>
   </binding>
-  
-  <binding id="dropmarker">
-    <content>
-      <xul:image class="menubutton-dropmarker-icon"/>
-    </content>
-
-    <implementation implements="nsIAccessibleProvider">
-      <property name="accessible">
-        <getter>
-          <![CDATA[
-            var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
-            return accService.createXULDropmarkerAccessible(this);
-          ]]>
-        </getter>
-      </property>
-    </implementation>
-  </binding>
-    
 </bindings>

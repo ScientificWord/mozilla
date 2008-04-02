@@ -67,7 +67,8 @@
                   ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode); event.stopPropagation();"
                   ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode); event.stopPropagation();"
                   ondragexit="nsDragAndDrop.dragExit(event, this.parentNode.parentNode); event.stopPropagation();">
-          <xul:tooltip onpopupshowing="event.stopPropagation(); return this.parentNode.parentNode.parentNode.doPreview(this);" orient="vertical">
+          <xul:tooltip onpopupshowing="event.stopPropagation(); return this.parentNode.parentNode.parentNode.doPreview(this);"
+                       onpopuphiding="this.parentNode.parentNode.parentNode.resetPreview(this);" orient="vertical">
             <xul:label class="tooltip-label" crop="right"/>
             <xul:label class="tooltip-label" hidden="true"><html:canvas class="tab-tooltip-canvas"/></xul:label>
           </xul:tooltip>
@@ -83,6 +84,9 @@
             <xul:menuseparator/>
             <xul:menuitem label="&newTab.label;" accesskey="&newTab.accesskey;"
                           xbl:inherits="oncommand=onnewtab"/>
+            <xul:menuitem label="&undoCloseTab.label;" accesskey="&undoCloseTab.accesskey;" tbattr="tabbrowser-undoclosetab"
+                          oncommand="var tabbrowser = this.parentNode.parentNode.parentNode.parentNode;
+                                     tabbrowser.restoreTab(0);"/>
             <xul:menuseparator/>
             <xul:menuitem label="&bookmarkGroup.label;" accesskey="&bookmarkGroup.accesskey;"
                           tbattr="tabbrowser-multiple"
@@ -180,8 +184,9 @@
         tabbrowser: this,
         handleEvent: function handleEvent(aEvent) {
           if (aEvent.ctrlKey && aEvent.keyCode == KeyEvent.DOM_VK_F4 &&
-            this.tabbrowser.mTabBox.handleCtrlPageUpDown)
-          this.tabbrowser.removeCurrentTab();
+              this.tabbrowser.mTabBox.handleCtrlPageUpDown &&
+              this.tabbrowser.getStripVisibility())
+            this.tabbrowser.removeCurrentTab();
         }
       })]]>
       </field>
@@ -192,6 +197,12 @@
         0
       </field>
       <field name="_browsers">
+        null
+      </field>
+      <field name="savedBrowsers">
+        new Array()
+      </field>
+      <field name="referenceTab">
         null
       </field>
 
@@ -212,8 +223,13 @@
           var canvas = aPopup.lastChild.firstChild;
           canvas.parentNode.hidden = true;
 
-          if (!this.mPrefs.getBoolPref("browser.tabs.tooltippreview.enable")) {
-            label.removeAttribute("width");
+          var win = b.contentWindow;
+          var w = win.innerWidth;
+          var h = win.innerHeight;
+
+          if (!this.mPrefs.getBoolPref("browser.tabs.tooltippreview.enable") ||
+              tab == this.mCurrentTab ||
+              h == 0) {
             return true;
           }
 
@@ -225,9 +241,7 @@
           }
 
           label.width = 0;
-          var win = b.contentWindow;
-          var w = win.innerWidth;
-          var h = win.innerHeight;
+          aPopup.setAttribute("tabpreview", "true");
 
           var canvasW = this.mPrefs.getIntPref("browser.tabs.tooltippreview.width");
           var canvasH = Math.round(canvasW * h / w);
@@ -243,7 +257,10 @@
             ctx.fillRect(0, 0, canvasW, canvasH);
             var img = b.contentDocument.body.firstChild;
             var ratio = img.naturalHeight / img.naturalWidth;
-            if (ratio * canvasW > canvasH) {
+            if (img.naturalHeight <= canvasH && img.naturalWidth <= canvasW) {
+              ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight);
+            }
+            else if (ratio * canvasW > canvasH) {
               ctx.drawImage(img, 0, 0, canvasH / ratio, canvasH);
             }
             else {
@@ -257,6 +274,24 @@
             ctx.restore();
           }
           return true;
+        ]]>
+        </body>
+      </method>
+
+      <!-- XXXcst This should not be needed, but it seems that the tooltip
+           sizing is happening too early when we want to stop showing the
+           preview.  This clears the label's width early (i.e. when the
+           previous preview disappears) so that when the next tooltip appears,
+           it doesn't start with a bad size.  For now, I blame Gecko. -->
+      <method name="resetPreview">
+        <parameter name="aPopup"/>
+        <body>
+        <![CDATA[
+          var label = aPopup.firstChild;
+          // if this function is removed, these two lines need to be restored
+          // to the non-preview codepath above
+          label.removeAttribute("width");
+          aPopup.removeAttribute("tabpreview");
         ]]>
         </body>
       </method>
@@ -347,9 +382,23 @@
                 else if (this.mBrowser.contentDocument instanceof ImageDocument &&
                          this.mTabBrowser.mPrefs.getBoolPref("browser.chrome.site_icons")) {
                   var req = this.mBrowser.contentDocument.imageRequest;
-                  var sz = this.mTabBrowser.mPrefs.getIntPref("browser.chrome.image_icons.max_size");
-                  if (req && req.image.width <= sz && req.image.height <= sz)
-                    this.mTab.setAttribute("image", this.mBrowser.currentURI.spec);
+                  if (req && !(req.imageStatus & Components.interfaces.imgIRequest.STATUS_ERROR)) {
+                    try {
+                      var canvas = document.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
+                      var tabImg = document.getAnonymousElementByAttribute(this.mTab, "anonid", "tab-icon");
+                      var w = tabImg.boxObject.width;
+                      var h = tabImg.boxObject.height;
+                      canvas.width = w;
+                      canvas.height = h;
+                      var ctx = canvas.getContext('2d');
+                      ctx.drawImage(this.mBrowser.contentDocument.body.firstChild, 0, 0, w, h);
+                      this.mTab.setAttribute("image", canvas.toDataURL());
+                    } catch (e) { // non-canvas build, fall back to the old method
+                      var sz = this.mTabBrowser.mPrefs.getIntPref("browser.chrome.image_icons.max_size");
+                      if (req.image.width <= sz && req.image.height <= sz)
+                        this.mTab.setAttribute("image", this.mBrowser.currentURI.spec);
+                    }
+                  }
                 }
                 else if (this.mTabBrowser.shouldLoadFavIcon(location))
                   this.mTabBrowser.loadFavIcon(location, "image", this.mTab);
@@ -624,10 +673,14 @@
         <body>
           <![CDATA[
             this.mContextTab = document.popupNode;
-            var disabled = this.mPanelContainer.childNodes.length == 1;
+            var disabled = this.mTabs.length == 1;
             var menuItems = aPopupMenu.getElementsByAttribute("tbattr", "tabbrowser-multiple");
             for (var i = 0; i < menuItems.length; i++)
-              menuItems[i].disabled = disabled;
+              menuItems[i].setAttribute("disabled", disabled);
+
+            var undoItem = document.getAnonymousElementByAttribute(this, "tbattr", "tabbrowser-undoclosetab");
+            undoItem.setAttribute("disabled", this.savedBrowsers.length == 0);
+            undoItem.hidden = this.mPrefs.getIntPref("browser.tabs.undoclose.depth") <= 0;
           ]]>
         </body>
       </method>
@@ -673,8 +726,12 @@
                 this.mCurrentBrowser.focusedElement = document.commandDispatcher.focusedElement;
               }
 
-              if (this.mCurrentBrowser.focusedElement) {
-                // Clear focus outline before we draw on top of it
+              if (this.mCurrentBrowser.focusedElement &&
+                  this.mCurrentBrowser.focusedElement.parentNode !=
+                  this.mCurrentTab.parentNode) {
+                // Clear focus outline before we draw on top of it.
+                // Only blur the focused element if it isn't a tab, 
+                // to avoid breaking keyboard tab navigation
                 this.mCurrentBrowser.focusedElement.blur();
               }
               this.mCurrentBrowser.setAttribute("type", "content-targetable");
@@ -734,6 +791,11 @@
                   p.onStateChange(webProgress, null, nsIWebProgressListener.STATE_STOP | nsIWebProgressListener.STATE_IS_NETWORK, 0);
               }
             }
+
+            // We've selected the new tab, so go ahead and notify listeners
+            var event = document.createEvent("Events");
+            event.initEvent("TabSelect", true, false);
+            this.mCurrentTab.dispatchEvent(event);
 
             if (document.commandDispatcher.focusedElement && 
                 document.commandDispatcher.focusedElement.parentNode == 
@@ -934,28 +996,18 @@
         <parameter name="aReferrerURI"/>
         <parameter name="aCharset"/>
         <parameter name="aFocusNewTab"/>
+        <parameter name="aFlags"/>
         <body>
           <![CDATA[
             this._browsers = null; // invalidate cache
 
-            var t = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
-                                             "tab");
+            var t = this.referenceTab.cloneNode(true);
 
             var blank = (aURI == "about:blank");
 
-            if (blank)
-              t.setAttribute("label", this.mStringBundle.getString("tabs.untitled"));
-            else
+            if (!blank)
               t.setAttribute("label", aURI);
 
-            t.setAttribute("crop", "end");
-            t.className = "tabbrowser-tab";
-            t.maxWidth = 250;
-            t.minWidth = 30;
-            t.width = 0;
-            t.setAttribute("flex", "100");
-            t.setAttribute("validate", "never");
-            t.setAttribute("onerror", "this.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('image')); this.removeAttribute('image');");
             this.mTabContainer.appendChild(t);
 
             var b = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
@@ -990,11 +1042,16 @@
               t.setAttribute("afterselected", true);
 
             if (!blank) {
+              // Stop the existing about:blank load.  Otherwise, if aURI
+              // doesn't stop in-progress loads on its own, we'll get into
+              // trouble with multiple parallel loads running at once.
+              b.stop();
+
               // pretend the user typed this so it'll be available till
               // the document successfully loads
               b.userTypedValue = aURI;
 
-              b.loadURI(aURI, aReferrerURI, aCharset);
+              b.loadURIWithFlags(aURI, aFlags, aReferrerURI, aCharset);
             }
 
             if (aFocusNewTab) {
@@ -1006,6 +1063,10 @@
               // The user opened a background tab, so updateCurrentBrowser
               // won't be called.  Explicitly clear the previous tab.
               this.mPreviousTab = null;
+
+            var evt = document.createEvent("Events");
+            evt.initEvent("TabOpen", true, false);
+            t.dispatchEvent(evt);
 
             return t;
           ]]>
@@ -1071,8 +1132,78 @@
         </body>
       </method>
 
+      <method name="getUndoList">
+        <body>
+          <![CDATA[
+            var list = [];
+            for (var i = 0; i < this.savedBrowsers.length; i++) {
+              var hist = this.savedBrowsers[i].history;
+              list.push(hist.getEntryAtIndex(hist.index, false).title);
+            }
+            return list;
+          ]]>
+        </body>
+      </method>
+
+      <method name="restoreTab">
+        <parameter name="aIndex"/>
+        <body>
+          <![CDATA[
+            if (aIndex >= this.savedBrowsers.length || aIndex < 0)
+              return;
+
+            this._browsers = null;
+
+            var t = this.referenceTab.cloneNode(true);
+            var savedData = this.savedBrowsers.splice(aIndex, 1)[0];
+            var b = savedData.browser;
+            var hist = savedData.history;
+
+            this.mTabContainer.appendChild(t);
+            if (t.previousSibling.selected)
+              t.setAttribute("afterselected", true);
+
+            // navigate back to the proper page from the light page
+            b.webNavigation.goBack();
+
+            // reattach the old history
+            b.webNavigation.sessionHistory = hist;
+
+            var uniqueID = b.id;
+            t.linkedPanel = uniqueID;
+            t.linkedBrowser = b;
+
+            // Hook up the title change listener again
+            b.addEventListener("DOMTitleChanged", this.onTitleChanged, true);
+
+            // add back the filters, security first (bug 313335)
+            const nsIWebProgress = Components.interfaces.nsIWebProgress;
+            var secFlags = nsIWebProgress.NOTIFY_STATE_ALL | nsIWebProgress.NOTIFY_LOCATION | nsIWebProgress.NOTIFY_SECURITY;
+            b.webProgress.addProgressListener(b.securityUI, secFlags);
+
+            var position = this.mTabs.length - 1;
+            var tabListener = this.mTabProgressListener(t, b, false);
+            const filter = Components.classes["@mozilla.org/appshell/component/browser-status-filter;1"]
+                                     .createInstance(nsIWebProgress);
+            filter.addProgressListener(tabListener, nsIWebProgress.NOTIFY_ALL);
+            b.webProgress.addProgressListener(filter, nsIWebProgress.NOTIFY_ALL);
+            this.mTabListeners[position] = tabListener;
+            this.mTabFilters[position] = filter;
+
+            if (this.mTabs.length == 2 &&
+                !this.mTabs[0].linkedBrowser.webNavigation.sessionHistory.count)
+              this.removeTab(this.mTabs[0]); // only one tab => selected anyway
+            else {
+              this.selectedTab = t;
+              this.mStrip.collapsed = false;
+            }
+          ]]>
+        </body>
+      </method>
+
       <method name="removeTab">
         <parameter name="aTab"/>
+        <parameter name="aDisableUndo"/>
         <body>
           <![CDATA[
             this._browsers = null; // invalidate cache
@@ -1080,29 +1211,40 @@
             if (aTab.localName != "tab")
               aTab = this.mCurrentTab;
 
-            var l = this.mTabs.length;
-            if (l == 1) {
-              // hide the tab bar
-              this.mPrefs.setBoolPref("browser.tabs.forceHide", true);
-              this.mStrip.collapsed = true;
-              return;
-            }
+            var oldBrowser = aTab.linkedBrowser;
 
-            var ds = aTab.linkedBrowser.docShell;
+            var ds = oldBrowser.docShell;
 
             if (ds.contentViewer && !ds.contentViewer.permitUnload())
               return;
 
-            if (l == 2) {
+            // We're committed to closing the tab now.
+            // Dispatch a notification.
+            // We dispatch it before any teardown so that event listeners can
+            // inspect the tab that's about to close.
+            var event = document.createEvent('Events');
+            event.initEvent("TabClose", true, false);
+            aTab.dispatchEvent(event);
+
+            var l = this.mTabs.length;
+            if (l == 1) {
+              // add a new blank tab to replace the one we're about to close
+              // (this ensures that the remaining tab is as good as new)
+              this.addTab("about:blank");
+              l++;
+            }
+            else if (l == 2) {
               if (this.mPrefs.getBoolPref("browser.tabs.autoHide"))
                 this.mStrip.collapsed = true;
             }
 
             var index = this.getTabIndex(aTab);
 
+            // Remove SSL listener
+            oldBrowser.webProgress.removeProgressListener(oldBrowser.securityUI);
+
             // Remove the tab's filter and progress listener.
             const filter = this.mTabFilters[index];
-            var oldBrowser = aTab.linkedBrowser;
             oldBrowser.webProgress.removeProgressListener(filter);
             filter.removeProgressListener(this.mTabListeners[index]);
             this.mTabFilters.splice(index, 1);
@@ -1111,8 +1253,8 @@
             // Remove our title change listener
             oldBrowser.removeEventListener("DOMTitleChanged", this.onTitleChanged, true);
 
-            // We are no longer the primary content area.
-            oldBrowser.setAttribute("type", "content-targetable");
+            // We are no longer a targetable content area
+            oldBrowser.setAttribute("type", "content");
 
             // Now select the new tab before nuking the old one.
             var currentIndex = this.mTabContainer.selectedIndex;
@@ -1127,19 +1269,11 @@
             else
               newIndex = index;
 
-            // Because of the way XBL works (fields just set JS
-            // properties on the element) and the code we have in place
-            // to preserve the JS objects for any elements that have
-            // JS properties set on them, the browser element won't be
-            // destroyed until the document goes away.  So we force a
-            // cleanup ourselves.
-            oldBrowser.destroy();
-
             if (oldBrowser == this.mCurrentBrowser)
               this.mCurrentBrowser = null;
 
             // Clean up before/afterselected attributes before removing the tab
-            aTab.selected = false;
+            aTab._selected = false;
             this.mTabContainer.removeChild(aTab);
 
             // When the current tab is removed select a new tab
@@ -1154,13 +1288,58 @@
               this.mPreviousTab = null;
             }
 
-            // The pagehide event that this removal triggers is safe
-            // because the browser is no longer current at this point
-            this.mPanelContainer.removeChild(oldBrowser);
+            // Save the tab for undo.
+            // Even though we navigate to about:blank, it costs more RAM than
+            // really closing the tab.  The pref controls how far you can undo
+            var maxUndoDepth = this.mPrefs.getIntPref("browser.tabs.undoclose.depth");
+            var oldSH = oldBrowser.webNavigation.sessionHistory;
+            if (maxUndoDepth <= 0 || oldSH.count == 0 || aDisableUndo) {
+              // Undo is disabled/tab is blank.  Kill the browser for real.
+              // Because of the way XBL works (fields just set JS
+              // properties on the element) and the code we have in place
+              // to preserve the JS objects for any elements that have
+              // JS properties set on them, the browser element won't be
+              // destroyed until the document goes away.  So we force a
+              // cleanup ourselves.
+              oldBrowser.destroy();
+              this.mPanelContainer.removeChild(oldBrowser);
 
-            // Fix up the selected panel in the case the removed
-            // browser was to the left of the current browser
-            this.mTabBox.selectedPanel = this.selectedTab.linkedBrowser;
+              // Fix up the selected panel in the case the removed
+              // browser was to the left of the current browser
+              this.mTabBox.selectedPanel = this.selectedTab.linkedBrowser;
+              return;
+            } 
+
+            // preserve a pointer to the browser for undoing the close
+            // 1. save a copy of the session history (oldSH)
+            // 2. hook up a new history
+            // 3. add the last history entry from the old history the new
+            //    history so we'll be able to go back from about:blank
+            // 4. load a light URL in the browser, pushing the current page
+            //    into bfcache - allows for saving of JS modifications
+            //    and also saves RAM by allowing bfcache to evict the full page
+
+            this.savedBrowsers.unshift({browser: oldBrowser, history: oldSH});
+
+            var newSH = Components.classes["@mozilla.org/browser/shistory;1"]
+                                    .createInstance(Components.interfaces.nsISHistoryInternal);
+            oldBrowser.webNavigation.sessionHistory = newSH;
+            var entry = oldSH.getEntryAtIndex(oldSH.index, false)
+            newSH.addEntry(entry, true);
+
+            // about:blank is light
+            oldBrowser.loadURI("about:blank");
+
+            // remove overflow from the undo stack
+            if (this.savedBrowsers.length > maxUndoDepth) {
+              var deadBrowser = this.savedBrowsers.pop().browser;
+              deadBrowser.destroy();
+
+              // The pagehide event that this removal triggers is safe
+              // because the browser is no longer current at this point
+              this.mPanelContainer.removeChild(deadBrowser);
+              this.mTabBox.selectedPanel = this.selectedTab.linkedBrowser;
+            }
           ]]>
         </body>
       </method>
@@ -1168,10 +1347,10 @@
       <method name="reloadAllTabs">
         <body>
           <![CDATA[
-            var l = this.mPanelContainer.childNodes.length;
+            var l = this.mTabs.length;
             for (var i = 0; i < l; i++) {
               try {
-                this.mPanelContainer.childNodes[i].reload();
+                this.mTabs[i].linkedBrowser.reload();
               } catch (e) {
                 // ignore failure to reload so others will be reloaded
               }
@@ -1468,13 +1647,17 @@
             this.mTabFilters.splice(aDestIndex, 0, this.mTabFilters.splice(aSrcIndex, 1)[0]);
             this.mTabListeners.splice(aDestIndex, 0, this.mTabListeners.splice(aSrcIndex, 1)[0]);
 
-            this.mCurrentTab.selected = false;
+            this.mCurrentTab._selected = false;
 
             if (aDestIndex >= aSrcIndex)
               ++aDestIndex;
             var tab = this.mTabContainer.insertBefore(this.mTabs[aSrcIndex], this.mTabs.item(aDestIndex));
 
-            this.mCurrentTab.selected = true;
+            this.mCurrentTab._selected = true;
+
+            var evt = document.createEvent("UIEvents");
+            evt.initUIEvent("TabMove", true, false, window, aSrcIndex);
+            tab.dispatchEvent(evt);
 
             return tab;
           ]]>
@@ -1605,7 +1788,7 @@
         <body>
         <![CDATA[
           var oldBrowserGroup = [];
-          var oldCount = this.mPanelContainer.childNodes.length;
+          var oldCount = this.mTabs.length;
           var newCount = aGroup.length;
           var n = Math.max(oldCount, newCount);
           for (var i = 0; i < n; ++i) {
@@ -1613,7 +1796,7 @@
               var data = aGroup[i];
               if ("sessionHistory" in data) {
                 this.addTab("about:blank", null);
-                var browser = this.mPanelContainer.lastChild;
+                var browser = this.mTabContainer.lastChild.linkedBrowser;
                 // need to hold on to the listener so it won't go away
                 // addProgressListener only has a weak pointer to it
                 browser._SHListener =
@@ -1630,7 +1813,7 @@
                 sessionHistory : firstTab.linkedBrowser.sessionHistory
               }
               oldBrowserGroup.push(browserData);
-              this.removeTab(firstTab);
+              this.removeTab(firstTab, true);
             }
           }
           return oldBrowserGroup;
@@ -1904,13 +2087,25 @@
               !this.mPrefs.getBoolPref("browser.tabs.forceHide") &&
               window.toolbar.visible)
             this.mStrip.collapsed = false;
+
+          var t = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "tab");
+          t.setAttribute("label", this.mStringBundle.getString("tabs.untitled"));
+          t.setAttribute("crop", "end");
+          t.className = "tabbrowser-tab";
+          t.setAttribute("maxwidth", 250);
+          t.setAttribute("minwidth", 30);
+          t.setAttribute("width", 0);
+          t.setAttribute("flex", 100);
+          t.setAttribute("validate", "never");
+          t.setAttribute("onerror", "this.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('image')); this.removeAttribute('image');");
+          this.referenceTab = t;
         ]]>
       </constructor>
 
       <destructor>
         <![CDATA[
           for (var i = 0; i < this.mTabListeners.length; ++i) {
-            this.mPanelContainer.childNodes[i].webProgress.removeProgressListener(this.mTabFilters[i]);
+            this.browsers[i].webProgress.removeProgressListener(this.mTabFilters[i]);
             this.mTabFilters[i].removeProgressListener(this.mTabListeners[i]);
             this.mTabFilters[i] = null;
             this.mTabListeners[i] = null;

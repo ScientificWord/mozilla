@@ -15,7 +15,7 @@
       <xul:spacer class="progress-remainder" xbl:inherits="mode"/>
     </content>
     
-    <implementation implements="nsIAccessibleProvider">     
+    <implementation implements="nsIAccessibleProvider">
       <property name="label" onset="if (this.label != val) this.setAttribute('label',val); return val;"
                                       onget="return this.getAttribute('label');"/>
 
@@ -43,11 +43,10 @@
         ]]></setter>
       </property>
 
-      <property name="accessible">
+      <property name="accessibleType" readonly="true">
         <getter>
           <![CDATA[
-            var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
-            return accService.createXULProgressMeterAccessible(this);
+            return Components.interfaces.nsIAccessibleProvider.XULProgressMeter;
           ]]>
         </getter>
       </property>
@@ -70,16 +69,17 @@
           var position = -1;
           var interval = setInterval(function nextStep() {
             try {
+              var width = stack.boxObject.width >> 2;
               spacer.height = stack.boxObject.height;
-              spacer.width = stack.boxObject.width >> 2;
-              spacer.left = spacer.width * position;
-              position += 30 / (stack.boxObject.width + 600);
+              spacer.width = width;
+              spacer.left = width * position;
+              position += 15 / (width + 150);
               if (position >= 4)
                 position = -1;
             } catch (e) {
               clearInterval(interval);
             }
-          }, 10);
+          }, 20);
         ]]></body>
       </method>
 
