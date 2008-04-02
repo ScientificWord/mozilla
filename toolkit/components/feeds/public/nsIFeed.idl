@@ -1,59 +1,57 @@
 /* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
-* Version: MPL 1.1/GPL 2.0/LGPL 2.1
-*
-* The contents of this file are subject to the Mozilla Public License Version
-* 1.1 (the "License"); you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-* http://www.mozilla.org/MPL/
-*
-* Software distributed under the License is distributed on an "AS IS" basis,
-* WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
-* for the specific language governing rights and limitations under the
-* License.
-*
-* The Original Code is the Feed Processor.
-*
-* The Initial Developer of the Original Code is Google Inc.
-* Portions created by the Initial Developer are Copyright (C) 2006
-* the Initial Developer. All Rights Reserved.
-*
-* Contributor(s):
-*   Ben Goodger <beng@google.com>
-*   Robert Sayre <sayrer@gmail.com>
-*
-* Alternatively, the contents of this file may be used under the terms of
-* either the GNU General Public License Version 2 or later (the "GPL"), or
-* the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
-* in which case the provisions of the GPL or the LGPL are applicable instead
-* of those above. If you wish to allow use of your version of this file only
-* under the terms of either the GPL or the LGPL, and not to allow others to
-* use your version of this file under the terms of the MPL, indicate your
-* decision by deleting the provisions above and replace them with the notice
-* and other provisions required by the GPL or the LGPL. If you do not delete
-* the provisions above, a recipient may use your version of this file under
-* the terms of any one of the MPL, the GPL or the LGPL.
-*
-* ***** END LICENSE BLOCK ***** */
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is the Feed Processor.
+ *
+ * The Initial Developer of the Original Code is Google Inc.
+ * Portions created by the Initial Developer are Copyright (C) 2006
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Ben Goodger <beng@google.com>
+ *   Robert Sayre <sayrer@gmail.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 #include "nsIFeedContainer.idl"
 
 interface nsIArray;
-
+interface nsIFeedGenerator;
 
 /**
  * An nsIFeed represents a single Atom or RSS feed.
  */
-[scriptable, uuid(29884967-afaa-43ce-ad10-8234deebea15)]
+[scriptable, uuid(3b8aae33-80e2-4efa-99c8-a6c5b99f76ea)]
 interface nsIFeed : nsIFeedContainer
 {
   /** 
   * Uses description, subtitle, and extensions
   * to generate a summary. 
-  * 
-  * @param stripTags remove HTML if true.
   */
-  AString subtitle(in boolean stripTags);
+  attribute nsIFeedTextConstruct subtitle;
 
   // All content classifies as a "feed" - it is the transport.
   const unsigned long TYPE_FEED = 0;
@@ -82,13 +80,18 @@ interface nsIFeed : nsIFeedContainer
   * It supposedly enables some sort of interaction with an XML-RPC or
   * SOAP service.
   */
-  attribute nsIPropertyBag2 cloud;
+  attribute nsIWritablePropertyBag2 cloud;
+
+  /**
+  * Information about the software that produced the feed.
+  */
+  attribute nsIFeedGenerator generator;
 
   /**
   * An image url and some metadata (as defined by RSS2).
   *
   */
-  attribute nsIPropertyBag2 image;
+  attribute nsIWritablePropertyBag2 image;
 
   /**
   * No one really knows what textInput is for.
@@ -97,7 +100,7 @@ interface nsIFeed : nsIFeedContainer
   * <http://www.cadenhead.org/workbench/news/2894/rss-joy-textinput>
   * for more details.
   */
-  attribute nsIPropertyBag2 textInput;
+  attribute nsIWritablePropertyBag2 textInput;
 
   /**
   * Days to skip fetching. This field was supposed to designate

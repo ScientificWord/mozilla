@@ -46,40 +46,32 @@ include $(DEPTH)/config/autoconf.mk
 MODULE = autocomplete
 MODULE_NAME = tkAutoCompleteModule
 LIBRARY_NAME = tkautocomplete
-# SHORT_LIBNAME = tkautoc
+SHORT_LIBNAME = tkautoc
 IS_COMPONENT = 1
-LIBXUL_LIBRARY	= 1
 EXPORT_LIBRARY = 1
+LIBXUL_LIBRARY = 1
 
 REQUIRES =	xpcom \
-        autocomplete \
 		string \
 		dom \
 		layout \
 		unicharutil \
 		toolkitcomps \
-		widget \
-		content \
-		view \
-		gfx \
-		locale \
 		necko \
-	 	$(NULL)
+	 	$(NULL)								 
 
 CPPSRCS = nsAutoCompleteController.cpp \
           nsAutoCompleteSimpleResult.cpp \
 		  nsAutoCompleteStringArray.cpp \
-          $(NULL)
+          $(NULL)					   
 
 ifdef MOZ_MORK
 REQUIRES += mork
-CPPSRCS += nsAutoCompleteMdbResult.cpp
+CPPS += nsAutoCompleteMdbResult.cpp
 endif
 
 EXTRA_DSO_LDOPTS += \
-	$(LIBS_DIR) \
- 	$(EXTRA_DSO_LIBS) \
- 	$(MOZ_UNICHARUTIL_LIBS) \
+	$(MOZ_UNICHARUTIL_LIBS) \
 	$(MOZ_COMPONENT_LIBS) \
 	$(NULL)
 

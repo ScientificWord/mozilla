@@ -23,6 +23,8 @@
    - Contributor(s):
    -   Peter Annema <disttsc@bart.nl> (Original Author of <browser>)
    -   Peter Parente <parente@cs.unc.edu>
+   -   Christopher Thomas <cst@yecc.com>
+   -   Michael Ventnor <m.ventnor@gmail.com>
    -
    - Alternatively, the contents of this file may be used under the terms of
    - either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -38,7 +40,7 @@
    -
    - ***** END LICENSE BLOCK ***** -->
 
-<!DOCTYPE window [
+<!DOCTYPE bindings [
   <!ENTITY % findBarDTD SYSTEM "chrome://global/locale/findbar.dtd" >
   %findBarDTD;
 ]>
@@ -48,12 +50,11 @@
           xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <binding id="browser" extends="xul:browser">
-    <implementation type="application/x-javascript" implements="nsIAccessibleProvider, nsIObserver">
-      <property name="accessible">
+    <implementation type="application/javascript" implements="nsIAccessibleProvider, nsIObserver, nsIDOMEventListener">
+      <property name="accessibleType" readonly="true">
         <getter>
           <![CDATA[
-            var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
-            return accService.createOuterDocAccessible(this);
+            return Components.interfaces.nsIAccessibleProvider.OuterDoc;
           ]]>
         </getter>
       </property>
@@ -88,8 +89,15 @@
         <body>
           <![CDATA[
             var webNavigation = this.webNavigation;
-            if (webNavigation.canGoBack)
-              webNavigation.goBack();
+            if (webNavigation.canGoBack) {
+              try {
+                this.userTypedClear++;
+                webNavigation.goBack();
+              } finally {
+                if (this.userTypedClear)
+                  this.userTypedClear--;
+              }
+            }
           ]]>
         </body>
       </method>
@@ -98,8 +106,15 @@
         <body>
           <![CDATA[
             var webNavigation = this.webNavigation;
-            if (webNavigation.canGoForward)
-              webNavigation.goForward();
+            if (webNavigation.canGoForward) {
+              try {
+                this.userTypedClear++;
+                webNavigation.goForward();
+              } finally {
+                if (this.userTypedClear)
+                  this.userTypedClear--;
+              }
+            }
           ]]>
         </body>
       </method>
@@ -167,7 +182,13 @@
               }
             }
             this.mIconURL = null;
-            this.webNavigation.loadURI(aURI, aFlags, aReferrerURI, aPostData, null);
+            try {
+              this.userTypedClear++;
+              this.webNavigation.loadURI(aURI, aFlags, aReferrerURI, aPostData, null);
+            } finally {
+              if (this.userTypedClear)
+                this.userTypedClear--;
+            }
           ]]>
         </body>
       </method>
@@ -209,7 +230,13 @@
         <parameter name="aIndex"/>
         <body>
           <![CDATA[
-            this.webNavigation.gotoIndex(aIndex);
+            try {
+              this.userTypedClear++;
+              this.webNavigation.gotoIndex(aIndex);
+            } finally {
+              if (this.userTypedClear)
+                this.userTypedClear--;
+            }
           ]]>
         </body>
       </method>
@@ -222,8 +249,10 @@
                 onget="return Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefService);"
                 readonly="true"/>
 
+      <field name="_docShell">null</field>
+
       <property name="docShell"
-                onget="return this.boxObject.QueryInterface(Components.interfaces.nsIBrowserBoxObject).docShell;"
+                onget="return this._docShell || (this._docShell = this.boxObject.QueryInterface(Components.interfaces.nsIContainerBoxObject).docShell);"
                 readonly="true"/>
 
       <property name="webNavigation"
@@ -264,7 +293,7 @@
               return null;
 
             var tabBrowser = this.getTabBrowser();
-            if (tabBrowser && tabBrowser.mCurrentBrowser == this)
+            if (tabBrowser)
               return this._fastFind = tabBrowser.fastFind;
 
             if (!this.docShell)
@@ -275,14 +304,6 @@
             this._fastFind.init(this.docShell);
           }
           return this._fastFind;
-        ]]>
-        </getter>
-      </property>
-      
-      <property name="findString" readonly="true">
-        <getter>
-        <![CDATA[
-          return this.fastFind.searchString;
         ]]>
         </getter>
       </property>
@@ -323,6 +344,10 @@
                 onget="return this.contentDocument.title;"
                 readonly="true"/>
 
+      <property name="contentPrincipal"
+                onget="return this.contentDocument.nodePrincipal;"
+                readonly="true"/>
+
       <field name="mPrefs" readonly="true">
         Components.classes['@mozilla.org/preferences-service;1']
                   .getService(Components.interfaces.nsIPrefService)
@@ -346,7 +371,7 @@
                                   .getService(Components.interfaces.nsILocaleService);
             var stringBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"]
                                   .getService(Components.interfaces.nsIStringBundleService);
-            var bundleURL = "chrome://global/locale/tabbrowser.properties";
+            var bundleURL = "chrome://global/locale/browser.properties";
             this._mStrBundle = stringBundleService.createBundle(bundleURL, localeService.getApplicationLocale());
           }
           return this._mStrBundle;
@@ -433,8 +458,10 @@
             if (this.pageReport) {
               var i = 0;
               while (i < this.pageReport.length) {
-                if (this.findChildShell(this.docShell,
-                                        this.pageReport[i].requestingWindowURI))
+                // Filter out irrelevant reports.
+                if (this.pageReport[i].requestingWindow &&
+                    (this.pageReport[i].requestingWindow.document ==
+                     this.pageReport[i].requestingDocument))
                   i++;
                 else
                   this.pageReport.splice(i, 1);
@@ -456,11 +483,18 @@
               this.pageReport = null;
               this.updatePageReport();
             }
+            // Delete the feeds cache if we're hiding the topmost page
+            // (as opposed to one of its iframes).
+            if (this.feeds && aEvent.target == this.contentDocument)
+              this.feeds = null;
             if (!this.docShell || !this.fastFind)
               return;
             var tabBrowser = this.getTabBrowser();
             if (!tabBrowser || tabBrowser.mCurrentBrowser == this)
               this.fastFind.setDocShell(this.docShell);
+
+            if (this._scrollingView)
+              this._autoScrollPopup.hidePopup();
          ]]>
         </body>
       </method>
@@ -468,13 +502,9 @@
       <method name="updatePageReport">
         <body>
           <![CDATA[
-            var tabBrowser = this.getTabBrowser();
-            if (!tabBrowser || tabBrowser.mCurrentBrowser != this)
-              return;
-
             var event = document.createEvent("Events");
             event.initEvent("DOMUpdatePageReport", true, true);
-            tabBrowser.dispatchEvent(event);
+            this.dispatchEvent(event);
           ]]>
         </body>
       </method>
@@ -487,19 +517,17 @@
               this.pageReport = new Array();
             }
 
-#ifdef MOZILLA_1_8_BRANCH
-# bug 314700
-            var obj = { requestingWindowURI: evt.requestingWindowURI,
-                        popupWindowURI: evt.popupWindowURI,
-                        popupWindowFeatures: evt.popupWindowFeatures };
-#else
-            var obj = { requestingWindowURI: evt.requestingWindowURI,
+            var obj = { requestingWindow: evt.requestingWindow,
+                        // Record the current document in the requesting window
+                        // before it can change.
+                        requestingDocument: evt.requestingWindow.document,
                         popupWindowURI: evt.popupWindowURI,
                         popupWindowFeatures: evt.popupWindowFeatures,
                         popupWindowName: evt.popupWindowName };
-#endif
+
             this.pageReport.push(obj);
-            this.updatePageReport()
+            this.pageReport.reported = false;
+            this.updatePageReport();
           ]]> 
         </body>
       </method>
@@ -533,6 +561,45 @@
         </setter>
       </property>
 
+      <!--
+        This field tracks the location bar state. The value that the user typed
+        in to the location bar may not be changed while this field is zero.
+        However invoking a load will temporarily increase this field to allow
+        the location bar to be updated to the new URL.
+
+        Case 1: Anchor scroll
+          The user appends the anchor to the URL. This sets the location bar
+          into typed state, and disables changes to the location bar. The user
+          then requests the scroll. loadURIWithFlags temporarily increases the
+          flag by 1 so that the anchor scroll's location change resets the
+          location bar state.
+
+        Case 2: Interrupted load
+          The user types in and submits the URL. This triggers an asynchronous
+          network load which increases the flag by 2. (The temporary increase
+          from loadURIWithFlags is not noticeable in this case.) When the load
+          is interrupted the flag returns to zero, and the location bar stays
+          in typed state.
+
+        Case 3: New load
+          This works like case 2, but as the load is not interrupted the
+          location changes while the flag is still 2 thus resetting the
+          location bar state.
+
+        Case 4: Corrected load
+          This is a combination of case 2 and case 3, except that the original
+          load is interrupted by the new load. Normally cancelling and starting
+          a new load would reset the flag to 0 and then increase it to 2 again.
+          However both actions occur as a consequence of the loadURIWithFlags
+          invocation, which adds its temporary increase in to the mix. Since
+          the new URL would have been typed in the flag would have been reset
+          before loadURIWithFlags incremented it. The interruption resets the
+          flag to 0 and increases it to 2. Although loadURIWithFlags will
+          decrement the flag it remains at 1 thus allowing the location bar
+          state to be reset when the new load changes the location.
+          This case also applies when loading into a new browser, as this
+          interrupts the default load of about:blank.
+      -->
       <field name="userTypedClear">
         1
       </field>
@@ -569,15 +636,19 @@
         <![CDATA[
           try {
             if (!this.hasAttribute("disablehistory")) {
-              // wire up session history
-              this.webNavigation.sessionHistory = Components.classes["@mozilla.org/browser/shistory;1"].createInstance(Components.interfaces.nsISHistory);
-              var os = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
+              var os = Components.classes["@mozilla.org/observer-service;1"]
+                                 .getService(Components.interfaces.nsIObserverService);
               os.addObserver(this, "browser:purge-session-history", false);
+              // wire up session history
+              this.webNavigation.sessionHistory = 
+                      Components.classes["@mozilla.org/browser/shistory;1"]
+                                .createInstance(Components.interfaces.nsISHistory);
               // enable global history
               this.docShell.QueryInterface(Components.interfaces.nsIDocShellHistory).useGlobalHistory = true;
             }
           }
           catch (e) {
+            Components.utils.reportError(e);
           }
           try {
             this.mDragDropHandler = Components.classes["@mozilla.org:/content/content-area-dragdrop;1"].createInstance(Components.interfaces.nsIDragDropHandler);
@@ -614,9 +685,10 @@
           this.mDestroyed = true;
 
           if (!this.hasAttribute("disablehistory")) {
-            var os = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
+            var os = Components.classes["@mozilla.org/observer-service;1"]
+                               .getService(Components.interfaces.nsIObserverService);
             try {
-              os.removeObserver(this, "browser:purge-session-history", false);
+              os.removeObserver(this, "browser:purge-session-history");
             } catch (ex) {
               // It's not clear why this sometimes throws an exception.
             }
@@ -634,6 +706,11 @@
           this.removeEventListener("pageshow", this.onPageShow, true);
           this.removeEventListener("pagehide", this.onPageHide, true);
           this.removeEventListener("DOMPopupBlocked", this.onPopupBlocked, true);
+
+          if (this._autoScrollNeedsCleanup) {
+            // we polluted the global scope, so clean it up
+            this._autoScrollPopup.parentNode.removeChild(this._autoScrollPopup);
+          }
           ]]>
         </body>
       </method>
@@ -644,7 +721,7 @@
         <parameter name="aState"/>
         <body>
           <![CDATA[
-            if (aTopic != "browser:purge-session-history")
+            if (aTopic != "browser:purge-session-history" || !this.sessionHistory)
               return;
               
             // place the entry at current index at the end of the history list, so it won't get removed
@@ -658,47 +735,156 @@
             var purge = this.sessionHistory.count;
             if (this.currentURI != "about:blank")
               --purge; // Don't remove the page the user's staring at from shistory
-              
-            this.sessionHistory.PurgeHistory(purge);
+            
+            if (purge > 0)
+              this.sessionHistory.PurgeHistory(purge);
           ]]>
         </body>
       </method>
           
       <field name="_AUTOSCROLL_SPEED">3</field>
       <field name="_AUTOSCROLL_SNAP">10</field>
-      <field name="_clientFrameDoc">null</field>
-      <field name="_isScrolling">false</field>
-      <field name="_autoScrollMarkerImage">null</field>
-      <field name="_snapOn">false</field>
+      <field name="_scrollingView">null</field>
+      <field name="_autoScrollTimer">null</field>
       <field name="_startX">null</field>
       <field name="_startY">null</field>
       <field name="_screenX">null</field>
       <field name="_screenY">null</field>
+      <field name="_autoScrollPopup">null</field>
+      <field name="_autoScrollNeedsCleanup">false</field>
 
       <method name="stopScroll">
         <body>
           <![CDATA[
-            this._isScrolling = false;
-            this.removeEventListener('mousemove', this.handleMouseMove, false);            
-            if (this._autoScrollMarkerImage) {
-              this._autoScrollMarkerImage.style.display = 'none';  // seems to avoid blocking when autoscroll is initited during pageload
-              this._autoScrollMarkerImage.parentNode.removeChild(this._autoScrollMarkerImage);
+            if (this._scrollingView) {
+              this._scrollingView = null;
+              window.removeEventListener("mousemove", this, true);
+              window.removeEventListener("mousedown", this, true);
+              window.removeEventListener("mouseup", this, true);
+              window.removeEventListener("contextmenu", this, true);
+              clearInterval(this._autoScrollTimer);
             }
-            this._autoScrollMarkerImage = null;
          ]]>
        </body>
      </method>
+
+      <method name="_createAutoScrollPopup">
+        <body>
+          <![CDATA[
+            const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+            var popup = document.createElementNS(XUL_NS, "popup");
+            popup.id = "autoscroller";
+            return popup;
+          ]]>
+        </body>
+      </method>
      
+      <method name="startScroll">
+        <parameter name="event"/>
+        <body>
+          <![CDATA[
+            if (!this._autoScrollPopup) {
+              if (this.hasAttribute("autoscrollpopup")) {
+                // our creator provided a popup to share
+                this._autoScrollPopup = document.getElementById(this.getAttribute("autoscrollpopup"));
+              }
+              else {
+                // we weren't provided a popup; we have to use the global scope
+                this._autoScrollPopup = this._createAutoScrollPopup();
+                document.documentElement.appendChild(this._autoScrollPopup);
+                this._autoScrollNeedsCleanup = true;
+              }
+            }
+
+            this._autoScrollPopup.addEventListener("popuphidden", this, true);
+
+            // we need these attributes so themers don't need to create per-platform packages
+            if (screen.colorDepth > 8) { // need high color for transparency
+              // Exclude second-rate platforms
+              this._autoScrollPopup.setAttribute("transparent", !/BeOS|OS\/2|Photon/.test(navigator.appVersion));
+              // Enable translucency on Windows and Mac
+              this._autoScrollPopup.setAttribute("translucent", /Win|Mac/.test(navigator.platform));
+            }
+
+            this._scrollingView = event.originalTarget.ownerDocument.defaultView;
+            if (this._scrollingView.scrollMaxX > 0) {
+              this._autoScrollPopup.setAttribute("scrolldir", this._scrollingView.scrollMaxY > 0 ? "NSEW" : "EW");
+            }
+            else if (this._scrollingView.scrollMaxY > 0) {
+              this._autoScrollPopup.setAttribute("scrolldir", "NS");
+            }
+            else {
+              this._scrollingView = null; // abort scrolling
+              return;
+            }
+
+            document.popupNode = null;
+            this._autoScrollPopup.showPopup(document.documentElement,
+                                            event.screenX,
+                                            event.screenY,
+                                            "popup", null, null);
+            this._ignoreMouseEvents = true;
+            this._startX = event.screenX;
+            this._startY = event.screenY;
+            this._screenX = event.screenX;
+            this._screenY = event.screenY;
+
+            window.addEventListener("mousemove", this, true);
+            window.addEventListener("mousedown", this, true);
+            window.addEventListener("mouseup", this, true);
+            window.addEventListener("contextmenu", this, true);
+
+            this._scrollErrorX = 0;
+            this._scrollErrorY = 0;
+
+            this._autoScrollTimer = setInterval(function(self) { self.autoScrollLoop(); },
+                                                20, this);
+         ]]>
+       </body>
+     </method>
+
+     <method name="_roundToZero">
+       <parameter name="num"/>
+       <body>
+         <![CDATA[
+            if (num > 0)
+              return Math.floor(num);
+            return Math.ceil(num);
+         ]]>
+       </body>
+     </method>
+
+     <method name="_accelerate">
+       <parameter name="curr"/>
+       <parameter name="start"/>
+       <body>
+         <![CDATA[
+            const speed = 12;
+            var val = (curr - start) / speed;
+
+            if (val > 1)
+              return val * Math.sqrt(val) - 1;
+            if (val < -1)
+              return val * Math.sqrt(-val) + 1;
+            return 0;
+         ]]>
+       </body>
+     </method>
+
      <method name="autoScrollLoop">
        <body>
          <![CDATA[
-           if (this._isScrolling) {
-             var x = (this._screenX - this._startX) / this._AUTOSCROLL_SPEED;
-             var y = (this._screenY - this._startY) / this._AUTOSCROLL_SPEED;
+           var x = this._accelerate(this._screenX, this._startX);
+           var y = this._accelerate(this._screenY, this._startY);
 
-             this._clientFrameDoc.defaultView.scrollBy(x, y);
-             setTimeout(function foo(a) { a.autoScrollLoop() }, 20, this);
-           }
+           var desiredScrollX = this._scrollErrorX + x;
+           var actualScrollX = this._roundToZero(desiredScrollX);
+           this._scrollErrorX = (desiredScrollX - actualScrollX);
+           var desiredScrollY = this._scrollErrorY + y;
+           var actualScrollY = this._roundToZero(desiredScrollY);
+           this._scrollErrorY = (desiredScrollY - actualScrollY);
+
+           this._scrollingView.scrollBy(actualScrollX, actualScrollY);
          ]]>
        </body>
      </method>
@@ -738,64 +924,43 @@
          ]]>
        </body>
      </method>
-     <method name="showAutoscrollMarker">
-       <parameter name="evt"/>
-       <body>
-         <![CDATA[
-           var scrollCursor  = new Array("n-resize", "move",  "e-resize");
-           var scrollImages  = new Array("chrome://global/content/bindings/autoscroll_v.png",
-                                         "chrome://global/content/bindings/autoscroll_all.png",
-                                         "chrome://global/content/bindings/autoscroll_h.png");
-           var left = evt.clientX;
-           var top = evt.clientY;
 
-           var scrollType = 1;
-           if (this._clientFrameDoc.defaultView.scrollMaxY > 0) scrollType--;
-           if (this._clientFrameDoc.defaultView.scrollMaxX > 0) scrollType++;           
-           
-           var imageWidth = 28;
-           var imageHeight = 28;
-           
-           // marker
-           var el = this._clientFrameDoc.createElementNS("http://www.w3.org/1999/xhtml", "img");
-           
-           el.src = scrollImages[scrollType];         
-           el.style.position = "fixed";
-           el.style.left = left - imageWidth / 2 + "px";
-           el.style.top = top - imageHeight / 2 + "px";
-           el.style.width = imageWidth + "px";
-           el.style.height = imageHeight + "px";
-           el.style.cursor = scrollCursor[scrollType];
-           el.style.zIndex = 2147483647; //Max Int
-           el.style.borderStyle = "none";
-           el.style.padding = "0";
-           el.style.margin = "0";
-
-           this._clientFrameDoc.documentElement.appendChild(el);
-           
-           this._autoScrollMarkerImage = el;
-         ]]>
-       </body>
-     </method>
-     <method name="handleMouseMove">
+      <method name="handleEvent">
         <parameter name="aEvent"/>
         <body>
         <![CDATA[
-          this._screenX = aEvent.screenX;
-          this._screenY = aEvent.screenY;
+          if (this._scrollingView) {
+            switch(aEvent.type) {
+              case "mousemove": {
+                this._screenX = aEvent.screenX;
+                this._screenY = aEvent.screenY;
+
+                var x = this._screenX - this._startX;
+                var y = this._screenY - this._startY;
         
-          if (this._isScrolling) {
-            var x = this._screenX - this._startX;
-            var y = this._screenY - this._startY;
-        
-            if ((x > this._AUTOSCROLL_SNAP || x < -this._AUTOSCROLL_SNAP) ||
-                (y > this._AUTOSCROLL_SNAP || y < -this._AUTOSCROLL_SNAP))
-              this._snapOn = false;
+                if ((x > this._AUTOSCROLL_SNAP || x < -this._AUTOSCROLL_SNAP) ||
+                    (y > this._AUTOSCROLL_SNAP || y < -this._AUTOSCROLL_SNAP))
+                  this._ignoreMouseEvents = false;
+                break;
+              }
+              case "mouseup":
+              case "mousedown":
+              case "contextmenu": {
+                if (!this._ignoreMouseEvents)
+                  this._autoScrollPopup.hidePopup();
+                this._ignoreMouseEvents = false;
+                break;
+              }
+              case "popuphidden": {
+                this._autoScrollPopup.removeEventListener("popuphidden", this, true);
+                this.stopScroll();
+                break;
+              }
+            }
           }
         ]]>
         </body>
       </method>
-
     </implementation>
 
     <handlers>
@@ -824,8 +989,7 @@
             var buttonPressed = promptService.confirmEx(window, 
               this.mStrBundle.GetStringFromName('browsewithcaret.checkWindowTitle'), 
               this.mStrBundle.GetStringFromName('browsewithcaret.checkLabel'),
-              (promptService.BUTTON_TITLE_YES * promptService.BUTTON_POS_0) +
-              (promptService.BUTTON_TITLE_NO * promptService.BUTTON_POS_1),
+              promptService.STD_YES_NO_BUTTONS,
               null, null, null, this.mStrBundle.GetStringFromName('browsewithcaret.checkMsg'),
               checkValue);
             if (buttonPressed != 0)
@@ -846,33 +1010,15 @@
           }
         ]]>
       </handler>
-      <handler event="mouseup">
+      <handler event="mousedown" phase="capturing">
         <![CDATA[
-          if (!this.autoscrollEnabled)
-            return;
-          if (!this._snapOn)
-            this.stopScroll();
-        ]]>        
-      </handler>
-      <handler event="mousedown">
-        <![CDATA[
-          if (this._isScrolling) {
-            stopScroll();
-          } else if (event.button == 1) {
+          if (!this._scrollingView && event.button == 1) {
             if (!this.autoscrollEnabled  ||
                 this.currentURI.spec == "about:blank"|| 
                 this.isAutoscrollBlocker(event.originalTarget))
               return;
-            this.addEventListener('mousemove', this.handleMouseMove, false);
-            this._screenX = event.screenX;
-            this._screenY = event.screenY;
-            this._startX = event.screenX;
-            this._startY = event.screenY;
-            this._clientFrameDoc = event.originalTarget.ownerDocument;
-            this._isScrolling = true;
-            this._snapOn = true; 
-            this.showAutoscrollMarker(event);
-            window.setTimeout(function foo(a) { a.autoScrollLoop() }, 20, this);
+
+            this.startScroll(event);
           }
         ]]>
       </handler>

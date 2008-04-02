@@ -193,8 +193,8 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
       } 
     }
     NS_QuickSort(autosubarray, arraylength, sizeof(autosubentry), compare, nsnull);
+    isInitialized = PR_TRUE;
   }
-  isInitialized = PR_TRUE;
   return NS_OK;
 }
 
@@ -450,4 +450,16 @@ msiAutosub::GetInstance()
   return sMsiAutosub;
 }
 
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
+
+static const nsModuleComponentInfo components[] =
+{
+
+  { "Autosubstitute",
+    MSI_AUTOSUBSTITUTE_CID ,
+    MSI_AUTOSUBSTITUTE_CONTRACTID,
+    msiAutosubConstructor },
+};
+
+NS_IMPL_NSGETMODULE(tkautosub, components)
 

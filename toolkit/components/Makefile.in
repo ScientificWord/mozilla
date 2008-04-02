@@ -48,25 +48,37 @@ include $(DEPTH)/config/autoconf.mk
 ifdef MOZ_ENABLE_XREMOTE
 DIRS += remote
 endif
+DIRS += \
+        urlformatter \
+        contentprefs \
+        microformats \
+        $(NULL)
+#		autosub \
+
 
 # These component dirs are built only for XUL apps
 
 ifdef MOZ_XUL_APP
 DIRS += \
-	alerts \
+	apppicker \
 	filepicker \
 	console \
 	viewconfig \
-	$(NULL)
-ifndef MOZ_SUITE
-# XXX Suite doesn't want these just yet
-DIRS += \
 	typeaheadfind \
 	$(NULL)
-endif # MOZ_SUITE
+
+ifneq (,$(filter cocoa, $(MOZ_WIDGET_TOOLKIT)))
+TOOL_DIRS += alerts
+else
+DIRS += alerts
+endif
 
 ifdef MOZ_FEEDS
 DIRS += feeds
+endif
+
+ifdef MOZ_PLACES
+DIRS += places
 endif
 
 ifdef NS_PRINTING
@@ -84,27 +96,34 @@ DIRS +=	\
 	cookie \
 	$(NULL)
 
-ifndef MOZ_SUITE
-# XXX Suite doesn't want these just yet
 ifdef MOZ_XUL
 DIRS += \
 	autocomplete \
 	autosub \
-	history \
- 	passwordmgr	\
+	keymap \
+	arrowstate \
 	satchel \
 	$(NULL)
 endif # MOZ_XUL
+
+ifdef MOZ_SUITE
+# Suite can't use passwordmgr because mail still depends on wallet (bug 239131)
+DIRS += passwordmgr/public
+else
+DIRS += passwordmgr
+ifndef MOZ_PLACES
+DIRS +=	history
+endif # MOZ_PLACES
 endif # MOZ_SUITE
 endif # MOZ_THUNDERBIRD
 
-ifndef MOZ_SUITE
-# XXX Suite doesn't want these just yet
 ifdef MOZ_XUL
 DIRS += help
 endif
 
-ifdef MOZ_XPINSTALL
+ifndef MOZ_SUITE
+# XXX Suite doesn't want these just yet
+ifdef MOZ_RDF
 DIRS +=	downloads
 endif
 endif # MOZ_SUITE
@@ -123,8 +142,9 @@ EXTRA_PP_COMPONENTS = nsDefaultCLH.js
 
 endif # MOZ_XUL_APP
 
-ifdef MOZ_SUITE
+ifeq ($(MOZ_BUILD_APP),camino)
 DIRS += autocomplete/public
+DIRS += downloads/public
 endif
 
 include $(topsrcdir)/config/rules.mk
