@@ -79,12 +79,13 @@ private:
   // As this HTTP request depends on some original SSL socket,
   // we can use this handle to cancel the dependent HTTP request,
   // should we be asked to close the original SSL socket.
-  nsIRequest* mPendingHTTPRequest;
+  nsCOMPtr<nsIRequest> mPendingHTTPRequest;
 
   virtual void Run(void);
 
   // Called from SSL thread only
   static PRInt32 checkHandshake(PRInt32 bytesTransfered, 
+                                PRBool wasReading,
                                 PRFileDesc* fd, 
                                 nsNSSSocketInfo *socketInfo);
 
@@ -96,7 +97,18 @@ private:
   // caled from the Necko thread only.
   static PRFileDesc *getRealSSLFD(nsNSSSocketInfo *si);
 
-  
+  // Support of blocking sockets is very rudimentary.
+  // We only support it because Mozilla's LDAP code requires blocking I/O.
+  // We do not support switching the blocking mode of a socket.
+  // We require the blocking state has been set prior to the first 
+  // read/write call, and will stay that way for the remainder of the socket's lifetime.
+  // This function must be called while holding the lock.
+  // If the socket is a blocking socket, out_fd will contain the real FD, 
+  // on a non-blocking socket out_fd will be nsnull.
+  // If there is a failure in obtaining the status of the socket,
+  // the function will return PR_FAILURE.
+  static PRStatus getRealFDIfBlockingSocket_locked(nsNSSSocketInfo *si, 
+                                                   PRFileDesc *&out_fd);
 public:
   nsSSLThread();
   ~nsSSLThread();
@@ -108,11 +120,13 @@ public:
 
   static PRInt32 requestRead(nsNSSSocketInfo *si, 
                              void *buf, 
-                             PRInt32 amount);
+                             PRInt32 amount,
+                             PRIntervalTime timeout);
 
   static PRInt32 requestWrite(nsNSSSocketInfo *si, 
                               const void *buf, 
-                              PRInt32 amount);
+                              PRInt32 amount,
+                              PRIntervalTime timeout);
 
   static PRInt16 requestPoll(nsNSSSocketInfo *si, 
                              PRInt16 in_flags, 

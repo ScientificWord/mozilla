@@ -148,14 +148,18 @@ ifeq ($(OS_RELEASE),2.0)
 endif
 
 ifdef BUILD_OPT
-	OPTIMIZER	= -O2
+ifeq (11,$(ALLOW_OPT_CODE_SIZE)$(OPT_CODE_SIZE))
+	OPTIMIZER = -Os
+else
+	OPTIMIZER = -O2
+endif
 endif
 
 ifeq ($(USE_PTHREADS),1)
 OS_PTHREAD = -lpthread 
 endif
 
-OS_CFLAGS		= $(DSO_CFLAGS) $(OS_REL_CFLAGS) $(ARCHFLAG) -ansi -Wall -pipe -DLINUX -Dlinux -D_POSIX_SOURCE -D_BSD_SOURCE -DHAVE_STRERROR
+OS_CFLAGS		= $(DSO_CFLAGS) $(OS_REL_CFLAGS) $(ARCHFLAG) -ansi -Wall -Werror-implicit-function-declaration -Wno-switch -pipe -DLINUX -Dlinux -D_POSIX_SOURCE -D_BSD_SOURCE -DHAVE_STRERROR
 OS_LIBS			= $(OS_PTHREAD) -ldl -lc
 
 ifdef USE_PTHREADS
@@ -165,7 +169,7 @@ endif
 ARCH			= linux
 
 DSO_CFLAGS		= -fPIC
-DSO_LDOPTS		= -shared $(ARCHFLAG)
+DSO_LDOPTS		= -shared $(ARCHFLAG) -Wl,-z,defs
 DSO_LDFLAGS		=
 LDFLAGS			+= $(ARCHFLAG)
 

@@ -65,10 +65,12 @@
         if ("arguments" in window && window.arguments.length > 0 &&
             window.arguments[0] && window.arguments[0].doc)
         {
-          // w = window.arguments[0].doc;
-          // We don't have separate info for a frame, return null until further notice
-          // (see bug 138479)
-          return null;
+          w = window.arguments[0].doc.defaultView;
+          if (w != w.top) {
+            // We don't have separate info for a frame, return null until further notice
+            // (see bug 138479)
+            return null;
+          }
         }
         else if ("gBrowser" in window.opener)
           w = window.opener.gBrowser.contentWindow;
@@ -236,7 +238,8 @@
   ]]>
   </script>
   <tabs id="tabs">
-    <tab id="securityTab" label="&pageInfo.securityTab;"/>
+    <tab id="securityTab" label="&pageInfo.securityTab;"
+         accesskey="&pageInfo.securityTab.accesskey;"/>
   </tabs>
   <tabpanels id="tabpanels">
     <vbox id="securityPanel" flex="1">

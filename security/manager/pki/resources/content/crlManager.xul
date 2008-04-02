@@ -37,10 +37,8 @@
 
  ***** END LICENSE BLOCK ***** -->
 
-<!-- CHANGE THIS WHEN MOVING FILES -->
-<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?> 
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?> 
 
-<!-- CHANGE THIS WHEN MOVING FILES -->
 <!DOCTYPE dialog [
     <!ENTITY % prefValDTD SYSTEM "chrome://pippki/locale/pref-validation.dtd">
     %prefValDTD;
@@ -51,20 +49,17 @@
 <dialog id="crlviewer"
         title="&validation.crlmanager.label;"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-        style="width: 30em;"
+        style="width: 65ch;"
         onload="onLoad();"
-#ifndef MOZ_XUL_APP
-        buttons="help"
-#endif
-        ondialoghelp="openHelp('validation-crl-manage');"
+        buttons="accept"
+        buttonlabelaccept="&certmgr.close.label;"
         persist="screenX screenY width height">
 
   <stringbundle id="pippki_bundle" src="chrome://pippki/locale/pippki.properties"/>
   <script type="application/x-javascript" src="chrome://global/content/strres.js"/>
   <script type="application/x-javascript" src="chrome://pippki/content/crlManager.js"/>
-  <script type="application/x-javascript" src="chrome://help/content/contextHelp.js" />
 
-  <description value="&validation.crlmanager.label;"/>
+  <description value="&validation.crlmanager.description;"/>
   <separator class="thin"/>
   <tree id="crltree" style="height: 10em;"
    onselect="EnableCrlActions()" flex="1">
@@ -86,7 +81,7 @@
   </tree>
   <separator class="thin"/>
 
-  <hbox>
+  <hbox id="dialogButtons">
     <button id="deleteCrl" disabled="true"
             label="&validation.deletecrl.label;"
             accesskey="&validation.deletecrl.accesskey;"
@@ -100,12 +95,10 @@
             accesskey="&validation.updatecrl.accesskey;"
             oncommand="UpdateCRL();"/>
     <button id="importCRL" class="push"
-            label="&certmgr.restore.label;"
-            accesskey="&certmgr.restore.accesskey;"
+            label="&certmgr.restore2.label;"
+            accesskey="&certmgr.restore2.accesskey;"
             oncommand="ImportCRL();"/>
-#ifdef MOZ_SUITE
     <spacer flex="2"/>
-    <button dlgtype="help"/>
-#endif
+    <button dlgtype="accept"/>
   </hbox>
 </dialog>

@@ -36,6 +36,7 @@
 
 const nsPK11TokenDB = "@mozilla.org/security/pk11tokendb;1";
 const nsIPK11TokenDB = Components.interfaces.nsIPK11TokenDB;
+const nsIDialogParamBlock = Components.interfaces.nsIDialogParamBlock;
 
 var tokenName;
 
@@ -54,6 +55,13 @@ function resetPassword()
   var pk11db = Components.classes[nsPK11TokenDB].getService(nsIPK11TokenDB);
   var token = pk11db.findTokenByName(tokenName);
   token.reset();
+
+  try {
+    var loginManager = Components.classes["@mozilla.org/login-manager;1"].
+                       getService(Components.interfaces.nsILoginManager);
+    loginManager.removeAllLogins();
+  } catch (e) {
+  }
 
   var pref = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefService);
   if (pref) {
