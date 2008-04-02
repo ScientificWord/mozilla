@@ -65,7 +65,7 @@ nsSOAPMessage::~nsSOAPMessage()
 
 NS_IMPL_ISUPPORTS1(nsSOAPMessage, nsISOAPMessage)
 /* attribute nsIDOMDocument message; */
-NS_IMETHODIMP nsSOAPMessage::GetMessage(nsIDOMDocument * *aMessage)
+NS_IMETHODIMP nsSOAPMessage::GetMessageMoz(nsIDOMDocument * *aMessage)
 {
   NS_ENSURE_ARG_POINTER(aMessage);
   *aMessage = mMessage;
@@ -73,7 +73,7 @@ NS_IMETHODIMP nsSOAPMessage::GetMessage(nsIDOMDocument * *aMessage)
   return NS_OK;
 }
 
-NS_IMETHODIMP nsSOAPMessage::SetMessage(nsIDOMDocument * aMessage)
+NS_IMETHODIMP nsSOAPMessage::SetMessageMoz(nsIDOMDocument * aMessage)
 {
   mMessage = aMessage;
   return NS_OK;

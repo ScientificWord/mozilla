@@ -19,6 +19,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Masayuki Nakano <masayuki@d-toybox.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -35,16 +36,34 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "gfxBeOSPlatform.h"
-
-#include "nsIAtom.h"
+#include "gfxFontconfigUtils.h"
+#include "gfxPangoFonts.h"
 
 #include "gfxImageSurface.h"
 #include "gfxBeOSSurface.h"
 
-#include <fontconfig/fontconfig.h>
+gfxFontconfigUtils *gfxPlatformGtk::sFontconfigUtils = nsnull;
 
 gfxBeOSPlatform::gfxBeOSPlatform()
 {
+    if (!sFontconfigUtils)
+        sFontconfigUtils = gfxFontconfigUtils::GetFontconfigUtils();
+}
+
+gfxBeOSPlatform::~gfxBeOSPlatform()
+{
+    gfxFontconfigUtils::Shutdown();
+    sFontconfigUtils = nsnull;
+
+    gfxPangoFont::Shutdown();
+
+#if 0
+    // It would be nice to do this (although it might need to be after
+    // the cairo shutdown that happens in ~gfxPlatform).  It even looks
+    // idempotent.  But it has fatal assertions that fire if stuff is
+    // leaked, and we hit them.
+    FcFini();
+#endif
 }
 
 already_AddRefed<gfxASurface>
@@ -66,95 +85,27 @@ gfxBeOSPlatform::CreateOffscreenSurface (PRUint32 width,
     return newSurface;
 }
 
-// this is in nsFontConfigUtils.h
-extern void NS_AddLangGroup (FcPattern *aPattern, nsIAtom *aLangGroup);
-
 nsresult
 gfxBeOSPlatform::GetFontList(const nsACString& aLangGroup,
-                            const nsACString& aGenericFamily,
-                            nsStringArray& aListOfFonts)
+                             const nsACString& aGenericFamily,
+                             nsStringArray& aListOfFonts)
 {
-    FcPattern *pat = NULL;
-    FcObjectSet *os = NULL;
-    FcFontSet *fs = NULL;
-    nsresult rv = NS_ERROR_FAILURE;
+    return sFontconfigUtils->GetFontList(aLangGroup, aGenericFamily,
+                                         aListOfFonts);
+}
 
-    aListOfFonts.Clear();
+nsresult
+gfxBeOSPlatform::UpdateFontList()
+{
+    return sFontconfigUtils->UpdateFontList();
+}
 
-    PRInt32 serif = 0, sansSerif = 0, monospace = 0, nGenerics;
-
-    pat = FcPatternCreate();
-    if (!pat)
-        goto end;
-
-    os = FcObjectSetBuild(FC_FAMILY, FC_FOUNDRY, 0);
-    if (!os)
-        goto end;
-
-    // take the pattern and add the lang group to it
-    if (!aLangGroup.IsEmpty()) {
-        nsCOMPtr<nsIAtom> langAtom = do_GetAtom(aLangGroup);
-        //XXX fix me //NS_AddLangGroup(pat, langAtom);
-    }
-
-    fs = FcFontList(0, pat, os);
-    if (!fs)
-        goto end;
-
-    if (fs->nfont == 0) {
-        rv = NS_OK;
-        goto end;
-    }
-
-    // Fontconfig supports 3 generic fonts, "serif", "sans-serif", and
-    // "monospace", slightly different from CSS's 5.
-    if (aGenericFamily.IsEmpty())
-        serif = sansSerif = monospace = 1;
-    else if (aGenericFamily.EqualsLiteral("serif"))
-        serif = 1;
-    else if (aGenericFamily.EqualsLiteral("sans-serif"))
-        sansSerif = 1;
-    else if (aGenericFamily.EqualsLiteral("monospace"))
-        monospace = 1;
-    else if (aGenericFamily.EqualsLiteral("cursive") || aGenericFamily.EqualsLiteral("fantasy"))
-        serif = sansSerif = 1;
-    else
-        NS_NOTREACHED("unexpected CSS generic font family");
-    nGenerics = serif + sansSerif + monospace;
-
-    if (serif)
-        aListOfFonts.AppendString(NS_LITERAL_STRING("serif"));
-    if (sansSerif)
-        aListOfFonts.AppendString(NS_LITERAL_STRING("sans-serif"));
-    if (monospace)
-        aListOfFonts.AppendString(NS_LITERAL_STRING("monospace"));
-
-    for (int i = 0; i < fs->nfont; i++) {
-        char *family;
-
-        // if there's no family name, skip this match
-        if (FcPatternGetString (fs->fonts[i], FC_FAMILY, 0,
-                                (FcChar8 **) &family) != FcResultMatch)
-        {
-            continue;
-        }
-
-        aListOfFonts.AppendString(NS_ConvertASCIItoUTF16(nsDependentCString(family)));
-    }
-
-    aListOfFonts.Sort();
-    rv = NS_OK;
-
-  end:
-    if (NS_FAILED(rv))
-        aListOfFonts.Clear();
-
-    if (pat)
-        FcPatternDestroy(pat);
-    if (os)
-        FcObjectSetDestroy(os);
-    if (fs)
-        FcFontSetDestroy(fs);
-
-    return rv;
+nsresult
+gfxBeOSPlatform::ResolveFontName(const nsAString& aFontName,
+                                FontResolverCallback aCallback,
+                                void *aClosure,
+                                PRBool& aAborted)
+{
+    return sFontconfigUtils->ResolveFontName(aFontName, aCallback,
+                                             aClosure, aAborted);
 }

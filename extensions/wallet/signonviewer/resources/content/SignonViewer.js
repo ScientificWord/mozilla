@@ -331,6 +331,18 @@ function DeleteSignon() {
 }
 
 function DeleteAllSignons() {
+  var prompter = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                           .getService(Components.interfaces.nsIPromptService);
+
+  // Confirm the user wants to remove all passwords
+  var dummy = { value: false };
+  if (prompter.confirmEx(window,
+                         kSignonBundle.getString("removeAllPasswordsTitle"),
+                         kSignonBundle.getString("removeAllPasswordsPrompt"),
+                         prompter.STD_YES_NO_BUTTONS + prompter.BUTTON_POS_1_DEFAULT,
+                         null, null, null, null, dummy) == 1) // 1 == "No" button
+    return;
+
   DeleteAllFromTree(signonsTree, signonsTreeView,
                         signons, deletedSignons,
                         "removeSignon", "removeAllSignons");
@@ -354,7 +366,7 @@ function AskUserShowPasswords() {
   return prompter.confirmEx(window,
           null,
           kSignonBundle.getString("noMasterPasswordPrompt"),
-          prompter.BUTTON_TITLE_YES * prompter.BUTTON_POS_0 + prompter.BUTTON_TITLE_NO * prompter.BUTTON_POS_1,
+          prompter.STD_YES_NO_BUTTONS,
           null, null, null, null, dummy) == 0;    // 0=="Yes" button
 }
 

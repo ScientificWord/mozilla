@@ -38,39 +38,34 @@
 
 #include "nsXFormsActionModuleBase.h"
 #include "nsIDOMDocument.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 #include "nsCOMPtr.h"
 
 class nsXFormsSendElement : public nsXFormsActionModuleBase
 {
 public:
   nsXFormsSendElement();
-  NS_DECL_NSIXFORMSACTIONMODULEELEMENT
+  virtual nsresult HandleSingleAction(nsIDOMEvent* aEvent,
+                                      nsIXFormsActionElement *aParentAction);
 };
 
-nsXFormsSendElement::nsXFormsSendElement() {
+nsXFormsSendElement::nsXFormsSendElement()
+{
 }
 
-NS_IMETHODIMP
-nsXFormsSendElement::HandleAction(nsIDOMEvent* aEvent,
-                                  nsIXFormsActionElement *aParentAction)
+nsresult
+nsXFormsSendElement::HandleSingleAction(nsIDOMEvent* aEvent,
+                                        nsIXFormsActionElement *aParentAction)
 {
-  if (!mElement)
-    return NS_OK;
-
   NS_NAMED_LITERAL_STRING(submission, "submission");
   nsAutoString submissionID;
   mElement->GetAttribute(submission, submissionID);
   if (submissionID.IsEmpty())
     return NS_OK;
 
-  nsCOMPtr<nsIDOMDocument> doc;
-  mElement->GetOwnerDocument(getter_AddRefs(doc));
-  if (!doc)
-    return NS_OK;
-
   nsCOMPtr<nsIDOMElement> el;
-  doc->GetElementById(submissionID, getter_AddRefs(el));
+  nsXFormsUtils::GetElementByContextId(mElement, submissionID,
+                                       getter_AddRefs(el));
 
   if (!el || !nsXFormsUtils::IsXFormsElement(el, submission)) {
     const PRUnichar *strings[] = { submissionID.get(), submission.get() };

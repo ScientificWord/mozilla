@@ -36,11 +36,6 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-// This must be before any #includes to enable logging in release builds
-#ifdef MOZ_LOGGING
-#define FORCE_PR_LOG
-#endif
-
 #include "nsUICommandCollector.h"
 #include "nsMetricsService.h"
 
@@ -51,11 +46,15 @@
 #include "nsIDOMNSEvent.h"
 #include "nsIDOMXULCommandEvent.h"
 #include "nsIDOMElement.h"
-#include "nsIDOMDocument.h"
-#include "nsIDOMDocumentView.h"
-#include "nsIDOMAbstractView.h"
 #include "nsIDOMWindow.h"
 #include "nsDataHashtable.h"
+#include "nsMemory.h"
+
+const nsUICommandCollector::EventHandler nsUICommandCollector::kEvents[] = {
+  { "command", &nsUICommandCollector::HandleCommandEvent },
+  { "TabMove", &nsUICommandCollector::HandleTabMoveEvent },
+  { "popupshowing", &nsUICommandCollector::HandlePopupShowingEvent },
+};
 
 NS_IMPL_ISUPPORTS3(nsUICommandCollector, nsIObserver, nsIDOMEventListener,
                    nsIMetricsCollector)
@@ -65,25 +64,15 @@ PLDHashOperator PR_CALLBACK nsUICommandCollector::AddCommandEventListener(
 const nsIDOMWindow* key, PRUint32 windowID, void* userArg)
 {
   nsCOMPtr<nsIDOMEventTarget> windowTarget =
-    do_QueryInterface(NS_CONST_CAST(nsIDOMWindow *, key));
+    do_QueryInterface(const_cast<nsIDOMWindow *>(key));
   if (!windowTarget) {
     MS_LOG(("Error casting domeventtarget"));
     return PL_DHASH_NEXT;
   }
 
-  nsIDOMEventListener* listener = NS_STATIC_CAST(nsIDOMEventListener*,
-                                                 userArg);
-  if (!listener) {
-    MS_LOG(("no event listener in userArg"));
-    return PL_DHASH_NEXT;
-  }
-
-  nsresult rv = windowTarget->AddEventListener(NS_LITERAL_STRING("command"),
-                                               listener, PR_TRUE);
-  if (NS_FAILED(rv)) {
-    MS_LOG(("Warning: Adding event listener failed, window %p (id %d)",
-            key, windowID));
-  }
+  nsUICommandCollector* collector = static_cast<nsUICommandCollector*>
+                                               (userArg);
+  collector->AddEventListeners(windowTarget);
   return PL_DHASH_NEXT;
 }
 
@@ -92,25 +81,15 @@ PLDHashOperator PR_CALLBACK nsUICommandCollector::RemoveCommandEventListener(
 const nsIDOMWindow* key, PRUint32 windowID, void* userArg)
 {
   nsCOMPtr<nsIDOMEventTarget> windowTarget =
-    do_QueryInterface(NS_CONST_CAST(nsIDOMWindow *, key));
+    do_QueryInterface(const_cast<nsIDOMWindow *>(key));
   if (!windowTarget) {
     MS_LOG(("Error casting domeventtarget"));
     return PL_DHASH_NEXT;
   }
 
-  nsIDOMEventListener* listener = NS_STATIC_CAST(nsIDOMEventListener*,
-                                                 userArg);
-  if (!listener) {
-    MS_LOG(("no event listener in userArg"));
-    return PL_DHASH_NEXT;
-  }
-
-  nsresult rv = windowTarget->RemoveEventListener(NS_LITERAL_STRING("command"),
-                                                  listener, PR_TRUE);
-  if (NS_FAILED(rv)) {
-    MS_LOG(("Warning: Removing event listener failed, window %p (id %d)",
-            key, windowID));
-  }
+  nsUICommandCollector* collector = static_cast<nsUICommandCollector*>
+                                               (userArg);
+  collector->RemoveEventListeners(windowTarget);
   return PL_DHASH_NEXT;
 }
 
@@ -141,7 +120,7 @@ nsUICommandCollector::OnAttach()
   NS_ENSURE_STATE(ms);
 
   ms->WindowMap().EnumerateRead(AddCommandEventListener,
-                                NS_STATIC_CAST(nsIDOMEventListener*, this));
+                                static_cast<nsIDOMEventListener*>(this));
 
   return NS_OK;
 }
@@ -166,7 +145,7 @@ nsUICommandCollector::OnDetach()
   NS_ENSURE_STATE(ms);
 
   ms->WindowMap().EnumerateRead(RemoveCommandEventListener,
-    NS_STATIC_CAST(nsIDOMEventListener*, this));
+    static_cast<nsIDOMEventListener*>(this));
 
   return NS_OK;
 }
@@ -184,168 +163,365 @@ nsUICommandCollector::Observe(nsISupports *subject,
                               const PRUnichar *data)
 {
   if (strcmp(topic, "domwindowopened") == 0) {
-    // Attach a capturing command listener to the window.
-    // Use capturing instead of bubbling so that we still record
-    // the event even if propogation is canceled for some reason.
     nsCOMPtr<nsIDOMEventTarget> window = do_QueryInterface(subject);
     NS_ENSURE_STATE(window);
-
-    nsresult rv = window->AddEventListener(NS_LITERAL_STRING("command"),
-                                           this,
-                                           PR_TRUE);
-    NS_ENSURE_SUCCESS(rv, rv);
+    AddEventListeners(window);
   }
 
   return NS_OK;
 }
 
-// nsIDomEventListener
+// nsIDOMEventListener
 NS_IMETHODIMP
 nsUICommandCollector::HandleEvent(nsIDOMEvent* event)
 {
-  // First check that this is an event type that we expect
+  // First check that this is an event type that we expect.
+  // If so, call the appropriate handler method.
   nsString type;
   nsresult rv = event->GetType(type);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  if (!type.Equals(NS_LITERAL_STRING("command"))) {
-
-    MS_LOG(("UICommandCollector: Unexpected event type %s received",
-            NS_ConvertUTF16toUTF8(type).get()));
-
-    return NS_ERROR_UNEXPECTED;
-  }
-
-  // Get the source event for the command.  This will give us the original
-  // event in the case where a new event was dispatched due to a command=
-  // attribute.
-  nsCOMPtr<nsIDOMEvent> sourceEvent;
-  nsCOMPtr<nsIDOMXULCommandEvent> commandEvent = do_QueryInterface(event);
-  if (commandEvent) {  // nsIDOMXULCommandEvent is only in Gecko 1.8.1+
-    commandEvent->GetSourceEvent(getter_AddRefs(sourceEvent));
-  }
-  if (!sourceEvent) {
-    sourceEvent = event;
-  }
-
-  // Get the Original Target id - this is the target after text node
-  // retargeting.  If this id is blank it means the target is anonymous
-  // content.
-  nsCOMPtr<nsIDOMNSEvent> nsEvent = do_QueryInterface(sourceEvent);
-  NS_ENSURE_STATE(nsEvent);
-
-  nsCOMPtr<nsIDOMEventTarget> original_target;
-  nsEvent->GetOriginalTarget(getter_AddRefs(original_target));
-  NS_ENSURE_STATE(original_target);
-
-  nsCOMPtr<nsIDOMElement> origElement(do_QueryInterface(original_target));
-  nsString orig_id;
-  nsString orig_anon;
-  if (origElement) {
-    origElement->GetAttribute(NS_LITERAL_STRING("id"), orig_id);
-    origElement->GetAttribute(NS_LITERAL_STRING("anonid"), orig_anon);
-  }
-
-  // Get the target id - this is the target after all retargeting.
-  // In the case of anonymous content, the original target ID will
-  // be blank and the target ID will be set.
-  nsCOMPtr<nsIDOMEventTarget> target;
-  sourceEvent->GetTarget(getter_AddRefs(target));
-
-  nsString tar_id;
-
-  nsCOMPtr<nsIDOMElement> tarElement(do_QueryInterface(target));
-  if (tarElement) {
-    tarElement->GetAttribute(NS_LITERAL_STRING("id"), tar_id);
-  }
-
-  MS_LOG(("Original Target Id: %s, Target Id: %s, Anonid: %s",
-          NS_ConvertUTF16toUTF8(orig_id).get(),
-          NS_ConvertUTF16toUTF8(tar_id).get(),
-          NS_ConvertUTF16toUTF8(orig_anon).get()));
-
-  // If the Target Id is empty, return without logging and print an error
-  if (tar_id.IsEmpty()) {
-    MS_LOG(("Warning: skipping logging because of empty target ID"));
-    return NS_OK;
-  }
-
-  // If the Original ID (target after text node retargeting) is empty,
-  // then assume we are dealing with anonymous content.  In that case,
-  // return without logging and print an error if the anonid is empty.
-  PRBool logAnonId = PR_FALSE;
-  if (orig_id.IsEmpty()) {
-    logAnonId = PR_TRUE;
-
-    if (orig_anon.IsEmpty()) {
-      MS_LOG(("Warning: skipping logging because of empty anonid"));
-      return NS_OK;
+  for (PRUint32 i = 0; i < NS_ARRAY_LENGTH(kEvents); ++i) {
+    if (NS_ConvertASCIItoUTF16(kEvents[i].event).Equals(type)) {
+      return (this->*(kEvents[i].handler))(event);
     }
   }
 
-  // Get the window that this target is in, so that we can log the event
-  // with the appropriate window id.
-  nsCOMPtr<nsIDOMNode> targetNode = do_QueryInterface(target);
-  if (!targetNode) {
-    MS_LOG(("Warning: skipping logging because target is not a node"));
+  MS_LOG(("UICommandCollector: Unexpected event type %s received",
+          NS_ConvertUTF16toUTF8(type).get()));
+  return NS_ERROR_UNEXPECTED;
+}
+
+nsresult
+nsUICommandCollector::HandleCommandEvent(nsIDOMEvent* event)
+{
+  PRUint32 window;
+  if (NS_FAILED(GetEventWindow(event, &window))) {
     return NS_OK;
   }
 
-  nsCOMPtr<nsIDOMDocument> ownerDoc;
-  targetNode->GetOwnerDocument(getter_AddRefs(ownerDoc));
-  NS_ENSURE_STATE(ownerDoc);
+  nsString targetId, targetAnonId;
+  if (NS_FAILED(GetEventTargets(event, targetId, targetAnonId))) {
+    return NS_OK;
+  }
+  NS_ASSERTION(!targetId.IsEmpty(), "can't have an empty target id");
 
-  nsCOMPtr<nsIDOMDocumentView> docView = do_QueryInterface(ownerDoc);
-  NS_ENSURE_STATE(docView);
-
-  nsCOMPtr<nsIDOMAbstractView> absView;
-  docView->GetDefaultView(getter_AddRefs(absView));
-  NS_ENSURE_STATE(absView);
-
-  nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(absView);
-  NS_ENSURE_STATE(window);
+  nsString keyId;
+  GetEventKeyId(event, keyId);
 
   // Fill a property bag with what we want to log
   nsCOMPtr<nsIWritablePropertyBag2> properties;
   nsMetricsUtils::NewPropertyBag(getter_AddRefs(properties));
   NS_ENSURE_STATE(properties);
 
-  rv = properties->SetPropertyAsUint32(NS_LITERAL_STRING("window"),
-                                       nsMetricsService::GetWindowID(window));
+  nsresult rv;
+  rv = properties->SetPropertyAsUint32(NS_LITERAL_STRING("window"), window);
   NS_ENSURE_SUCCESS(rv, rv);
 
   rv = properties->SetPropertyAsAString(NS_LITERAL_STRING("action"),
-                                        type);
+                                        NS_LITERAL_STRING("command"));
   NS_ENSURE_SUCCESS(rv, rv);
 
-  // Get the metrics service now so we can use it to hash the ids below
-  nsMetricsService *ms = nsMetricsService::get();
-  NS_ENSURE_STATE(ms);
-
-  // Log the Target Id which will be the same as the Original Target Id
-  // unless the target is anonymous content
-  nsCString hashedTarId;
-  rv = ms->HashUTF16(tar_id, hashedTarId);
-  NS_ENSURE_SUCCESS(rv, rv);
- 
-  rv = properties->SetPropertyAsACString(NS_LITERAL_STRING("targetidhash"),
-                                        hashedTarId);
+  rv = SetHashedValue(properties, NS_LITERAL_STRING("targetidhash"), targetId);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  if (logAnonId) {
-    nsCString hashedAnonId;
-    rv = ms->HashUTF16(orig_anon, hashedAnonId);
+  if (!targetAnonId.IsEmpty()) {
+    rv = SetHashedValue(properties, NS_LITERAL_STRING("targetanonidhash"),
+                        targetAnonId);
     NS_ENSURE_SUCCESS(rv, rv);
-  
-    rv = properties->SetPropertyAsACString(
-    NS_LITERAL_STRING("targetanonidhash"), hashedAnonId);
+  }
+  if (!keyId.IsEmpty()) {
+    rv = SetHashedValue(properties, NS_LITERAL_STRING("keyidhash"), keyId);
     NS_ENSURE_SUCCESS(rv, rv);
   }
 
+  nsMetricsService *ms = nsMetricsService::get();
+  NS_ENSURE_STATE(ms);
+
+  nsCOMPtr<nsIMetricsEventItem> item;
+  ms->CreateEventItem(NS_LITERAL_STRING("uielement"), getter_AddRefs(item));
+  NS_ENSURE_STATE(item);
+  item->SetProperties(properties);
+
+  // Capture extra bookmark state onto the event if the target is a bookmark.
+  rv = LogBookmarkInfo(targetId, item);
+  NS_ENSURE_SUCCESS(rv, rv);
+
   // Actually log it
+  rv = ms->LogEvent(item);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  MS_LOG(("Successfully logged UI Event"));
+  return NS_OK;
+}
+
+nsresult
+nsUICommandCollector::HandleTabMoveEvent(nsIDOMEvent* event)
+{
+  PRUint32 window;
+  if (NS_FAILED(GetEventWindow(event, &window))) {
+    return NS_OK;
+  }
+
+  // Fill a property bag with what we want to log
+  nsCOMPtr<nsIWritablePropertyBag2> properties;
+  nsMetricsUtils::NewPropertyBag(getter_AddRefs(properties));
+  NS_ENSURE_STATE(properties);
+
+  nsresult rv;
+  rv = properties->SetPropertyAsUint32(NS_LITERAL_STRING("window"), window);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = properties->SetPropertyAsAString(NS_LITERAL_STRING("action"),
+                                        NS_LITERAL_STRING("comand"));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // TabMove events just have a dummy target id of "TabMove_Event".
+  rv = SetHashedValue(properties, NS_LITERAL_STRING("targetidhash"),
+                      NS_LITERAL_STRING("TabMove_Event"));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsMetricsService *ms = nsMetricsService::get();
+  NS_ENSURE_STATE(ms);
+
   rv = ms->LogEvent(NS_LITERAL_STRING("uielement"), properties);
   NS_ENSURE_SUCCESS(rv, rv);
 
   MS_LOG(("Successfully logged UI Event"));
+  return NS_OK;
+}
+
+nsresult
+nsUICommandCollector::HandlePopupShowingEvent(nsIDOMEvent* event)
+{
+  PRUint32 window;
+  if (NS_FAILED(GetEventWindow(event, &window))) 
+    return NS_OK;
+
+  nsString targetId, targetAnonId;
+  if (NS_FAILED(GetEventTargets(event, targetId, targetAnonId))) 
+    return NS_OK;
+
+  NS_ASSERTION(!targetId.IsEmpty(), "can't have an empty target id");
+
+  if (!targetId.Equals(NS_LITERAL_STRING("identity-popup")) && !targetId.Equals(NS_LITERAL_STRING("editBookmarkPanel"))) 
+    return NS_OK;
+
+  // Fill a property bag with what we want to log
+  nsCOMPtr<nsIWritablePropertyBag2> properties;
+  nsMetricsUtils::NewPropertyBag(getter_AddRefs(properties));
+  NS_ENSURE_STATE(properties);
+
+  nsresult rv;
+  rv = properties->SetPropertyAsUint32(NS_LITERAL_STRING("window"), window);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = properties->SetPropertyAsAString(NS_LITERAL_STRING("action"),
+                                        NS_LITERAL_STRING("popupshowing"));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = SetHashedValue(properties, NS_LITERAL_STRING("targetidhash"), targetId);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  if (!targetAnonId.IsEmpty()) 
+  {
+    rv = SetHashedValue(properties, NS_LITERAL_STRING("targetanonidhash"),
+                        targetAnonId);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+
+  nsMetricsService *ms = nsMetricsService::get();
+  NS_ENSURE_STATE(ms);
+
+  nsCOMPtr<nsIMetricsEventItem> item;
+  ms->CreateEventItem(NS_LITERAL_STRING("uielement"), getter_AddRefs(item));
+  NS_ENSURE_STATE(item);
+  item->SetProperties(properties);
+
+  // Actually log it
+  rv = ms->LogEvent(item);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  MS_LOG(("Successfully logged UI popupshowing Event"));
+  return NS_OK;
+}
+
+nsresult
+nsUICommandCollector::GetEventTargets(nsIDOMEvent *event,
+                                      nsString &targetId,
+                                      nsString &targetAnonId) const
+{
+  // This code deals with both anonymous and explicit (non-anonymous) content.
+  //
+  // For explicit content, we just return the id of the event target in
+  // targetId, and leave targetAnonId empty.  If there is no id, then
+  // we return failure.
+  //
+  // For anonymous content, we return the id of the event target (after
+  // retargeting), in targetId.  We return the anonid of the event's
+  // originalTarget in targetAnonId, so that XBL child elements can be
+  // distinguished.  If there is no anonid, then we return failure.
+  // Note that the originalTarget is set after text node retargting, but
+  // before any XBL retargeting.
+  //
+  // We assume that if the originalTarget has no id, we're dealing with
+  // anonymous content (this isn't always true, but it's good enough for what
+  // this code does).
+
+  nsCOMPtr<nsIDOMNSEvent> nsEvent = do_QueryInterface(event);
+  NS_ENSURE_STATE(nsEvent);
+
+  nsCOMPtr<nsIDOMEventTarget> originalTarget;
+  nsEvent->GetOriginalTarget(getter_AddRefs(originalTarget));
+  NS_ENSURE_STATE(originalTarget);
+
+  nsString origElementId;
+  nsCOMPtr<nsIDOMElement> origElement(do_QueryInterface(originalTarget));
+  if (origElement) {
+    origElement->GetAttribute(NS_LITERAL_STRING("id"), origElementId);
+    origElement->GetAttribute(NS_LITERAL_STRING("anonid"), targetAnonId);
+  }
+
+  nsCOMPtr<nsIDOMEventTarget> target;
+  event->GetTarget(getter_AddRefs(target));
+  NS_ENSURE_STATE(target);
+
+  nsCOMPtr<nsIDOMElement> targetElement(do_QueryInterface(target));
+  if (targetElement) {
+    targetElement->GetAttribute(NS_LITERAL_STRING("id"), targetId);
+  }
+
+  MS_LOG(("Original Target Id: %s, Original Target Anonid: %s, Target Id: %s",
+          NS_ConvertUTF16toUTF8(origElementId).get(),
+          NS_ConvertUTF16toUTF8(targetAnonId).get(),
+          NS_ConvertUTF16toUTF8(targetId).get()));
+
+  if (targetId.IsEmpty()) {
+    // There's nothing useful to log in this case -- even if we have an anonid,
+    // it's not possible to determine its position in the document.
+    MS_LOG(("Warning: skipping logging because of empty target ID"));
+    return NS_ERROR_FAILURE;
+  }
+
+  if (origElementId.IsEmpty()) {
+    // We're dealing with anonymous content, so don't continue if we didn't
+    // find an anonid.
+    if (targetAnonId.IsEmpty()) {
+      MS_LOG(("Warning: skipping logging because of empty anonid"));
+      return NS_ERROR_FAILURE;
+    }
+  } else {
+    // We're dealing with normal explicit content, so don't return an anonid.
+    targetAnonId.SetLength(0);
+  }
+
+  return NS_OK;
+}
+
+void
+nsUICommandCollector::GetEventKeyId(nsIDOMEvent *event, nsString &keyId) const
+{
+  // The source event will give us the original event in the case where a new
+  // event was dispatched due to a command= attribute.
+  nsCOMPtr<nsIDOMXULCommandEvent> commandEvent = do_QueryInterface(event);
+  if (!commandEvent) {
+    // nsIDOMXULCommandEvent is only in Gecko 1.8.1+
+    return;
+  }
+
+  nsCOMPtr<nsIDOMEvent> sourceEvent;
+  commandEvent->GetSourceEvent(getter_AddRefs(sourceEvent));
+  if (!sourceEvent) {
+    return;
+  }
+
+  nsCOMPtr<nsIDOMEventTarget> sourceEventTarget;
+  sourceEvent->GetTarget(getter_AddRefs(sourceEventTarget));
+  nsCOMPtr<nsIDOMElement> sourceElement = do_QueryInterface(sourceEventTarget);
+  if (!sourceElement) {
+    return;
+  }
+
+  nsString namespaceURI, localName;
+  sourceElement->GetNamespaceURI(namespaceURI);
+  sourceElement->GetLocalName(localName);
+  if (namespaceURI.Equals(NS_LITERAL_STRING("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul")) &&
+      localName.Equals(NS_LITERAL_STRING("key"))) {
+    sourceElement->GetAttribute(NS_LITERAL_STRING("id"), keyId);
+    MS_LOG(("Key Id: %s", NS_ConvertUTF16toUTF8(keyId).get()));
+  }
+}
+
+nsresult
+nsUICommandCollector::GetEventWindow(nsIDOMEvent *event,
+                                     PRUint32 *window) const
+{
+  nsCOMPtr<nsIDOMEventTarget> target;
+  event->GetTarget(getter_AddRefs(target));
+  nsCOMPtr<nsIDOMNode> targetNode = do_QueryInterface(target);
+  if (!targetNode) {
+    MS_LOG(("Warning: couldn't get window id because target is not a node"));
+    return NS_ERROR_FAILURE;
+  }
+
+  *window = nsMetricsUtils::FindWindowForNode(targetNode);
+  return NS_OK;
+}
+
+void
+nsUICommandCollector::AddEventListeners(nsIDOMEventTarget *window)
+{
+  for (PRUint32 i = 0; i < NS_ARRAY_LENGTH(kEvents); ++i) {
+    // Attach a capturing event listener to the window.
+    // Use capturing instead of bubbling so that we still record
+    // the event even if propagation is canceled for some reason.
+
+    // Using NS_LITERAL_STRING in const data is not allowed, so convert here.
+    // This is not performance-sensitive.
+    nsresult rv;
+    rv = window->AddEventListener(NS_ConvertASCIItoUTF16(kEvents[i].event),
+                                  this, PR_TRUE);
+    if (NS_FAILED(rv)) {
+      MS_LOG(("Couldn't add event listener %s", kEvents[i]));
+    }
+  }
+}
+
+void
+nsUICommandCollector::RemoveEventListeners(nsIDOMEventTarget *window)
+{
+  for (PRUint32 i = 0; i < NS_ARRAY_LENGTH(kEvents); ++i) {
+    // Using NS_LITERAL_STRING in const data is not allowed, so convert here.
+    // This is not performance-sensitive.
+    nsresult rv;
+    rv = window->RemoveEventListener(NS_ConvertASCIItoUTF16(kEvents[i].event),
+                                     this, PR_TRUE);
+    if (NS_FAILED(rv)) {
+      MS_LOG(("Couldn't remove event listener %s", kEvents[i]));
+    }
+  }
+}
+
+/* static */ nsresult
+nsUICommandCollector::SetHashedValue(nsIWritablePropertyBag2 *properties,
+                                     const nsString &propertyName,
+                                     const nsString &propertyValue) const
+{
+  nsMetricsService *ms = nsMetricsService::get();
+  NS_ENSURE_STATE(ms);
+
+  nsCString hashedValue;
+  nsresult rv = ms->HashUTF16(propertyValue, hashedValue);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  return properties->SetPropertyAsACString(propertyName, hashedValue);
+}
+
+nsresult
+nsUICommandCollector::LogBookmarkInfo(const nsString& id,
+                                      nsIMetricsEventItem* parentItem)
+{
+  // TODO: write me!
+  // see bug #356606
   return NS_OK;
 }

@@ -20,6 +20,10 @@
  *
  * Contributor(s):
  *   Vladimir Vukicevic <vladimir@mozilla.com>
+ *   Masayuki Nakano <masayuki@d-toybox.com>
+ *   Behdad Esfahbod <behdad@gnome.org>
+ *   Mats Palmgren <mats.palmgren@bredband.net>
+ *   Karl Tomlinson <karlt+@karlt.net>, Mozilla Corporation
  *
  * based on nsFontMetricsPango.cpp by
  *   Christopher Blizzard <blizzard@mozilla.org>
@@ -39,55 +43,60 @@
  * ***** END LICENSE BLOCK ***** */
 
 #define PANGO_ENABLE_BACKEND
-#define PANGO_ENABLE_ENGINE
-
-#ifdef XP_BEOS
-#define THEBES_USE_PANGO_CAIRO
-#endif
 
 #include "prtypes.h"
 #include "prlink.h"
 #include "gfxTypes.h"
 
+#include "nsUnicodeRange.h"
+
 #include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsServiceManagerUtils.h"
+#include "nsMathUtils.h"
 
 #include "nsVoidArray.h"
 #include "nsPromiseFlatString.h"
 
 #include "gfxContext.h"
+#include "gfxPlatformGtk.h"
 #include "gfxPangoFonts.h"
 
-#include "cairo.h"
+#include "nsCRT.h"
 
-#ifndef THEBES_USE_PANGO_CAIRO
-#include <gdk/gdk.h>
-#include <gdk/gdkx.h>
-#include <gdk/gdkpango.h>
-
-
+#include <locale.h>
 #include <freetype/tttables.h>
-#include <fontconfig/fontconfig.h>
 
-#include <pango/pango-font.h>
-#include <pango/pangoxft.h>
+#include <cairo.h>
+#include <cairo-ft.h>
 
-#include "cairo-ft.h"
-
-#include "gfxPlatformGtk.h"
-
-#else // THEBES_USE_PANGO_CAIRO
-
+#include <pango/pango.h>
 #include <pango/pangocairo.h>
+#include <pango/pangofc-fontmap.h>
 
-#endif // THEBES_USE_PANGO_CAIRO
+#include <gdk/gdkpango.h>
 
 #include <math.h>
 
 #define FLOAT_PANGO_SCALE ((gfxFloat)PANGO_SCALE)
-#define NSToCoordRound(x) (floor((x) + 0.5))
+
+#ifndef PANGO_VERSION_CHECK
+#define PANGO_VERSION_CHECK(x,y,z) 0
+#endif
+#ifndef PANGO_GLYPH_UNKNOWN_FLAG
+#define PANGO_GLYPH_UNKNOWN_FLAG ((PangoGlyph)0x10000000)
+#endif
+#ifndef PANGO_GLYPH_EMPTY
+#define PANGO_GLYPH_EMPTY           ((PangoGlyph)0)
+#endif
+// For g a PangoGlyph,
+#define IS_MISSING_GLYPH(g) ((g) & PANGO_GLYPH_UNKNOWN_FLAG)
+#define IS_EMPTY_GLYPH(g) ((g) == PANGO_GLYPH_EMPTY)
 
 static PangoLanguage *GetPangoLanguage(const nsACString& aLangGroup);
+
+/* static */ gfxPangoFontCache* gfxPangoFontCache::sPangoFontCache = nsnull;
 
 /**
  ** gfxPangoFontGroup
@@ -105,35 +114,42 @@ FFRECountHyphens (const nsAString &aFFREName)
     return h;
 }
 
-static PRBool
-IsASCIIFontName(const nsAString& aName)
-{
-    PRUint32 len = aName.Length();
-    const PRUnichar* str = aName.BeginReading();
-    for (PRUint32 i = 0; i < len; i++) {
-        /*
-         * X font names are printable ASCII, ignore others (for now)
-         */
-        if ((str[i] < 0x20) || (str[i] > 0x7E)) {
-            return PR_FALSE;
-        }
-    }
-  
-    return PR_TRUE;
-}
-
 PRBool
 gfxPangoFontGroup::FontCallback (const nsAString& fontName,
                                  const nsACString& genericName,
                                  void *closure)
 {
-    nsStringArray *sa = NS_STATIC_CAST(nsStringArray*, closure);
+    nsStringArray *sa = static_cast<nsStringArray*>(closure);
 
-    if (IsASCIIFontName(fontName) && FFRECountHyphens(fontName) < 3) {
+    // We ignore prefs that have three hypens since they are X style prefs.
+    if (genericName.Length() && FFRECountHyphens(fontName) >= 3)
+        return PR_TRUE;
+
+    if (sa->IndexOf(fontName) < 0) {
         sa->AppendString(fontName);
     }
 
     return PR_TRUE;
+}
+
+/**
+ * Look up the font in the gfxFont cache. If we don't find it, create one.
+ * In either case, add a ref, append it to the aFonts array, and return it ---
+ * except for OOM in which case we do nothing and return null.
+ */
+static already_AddRefed<gfxPangoFont>
+GetOrMakeFont(const nsAString& aName, const gfxFontStyle *aStyle)
+{
+    nsRefPtr<gfxFont> font = gfxFontCache::GetCache()->Lookup(aName, aStyle);
+    if (!font) {
+        font = new gfxPangoFont(aName, aStyle);
+        if (!font)
+            return nsnull;
+        gfxFontCache::GetCache()->AddNew(font);
+    }
+    gfxFont *f = nsnull;
+    font.swap(f);
+    return static_cast<gfxPangoFont *>(f);
 }
 
 gfxPangoFontGroup::gfxPangoFontGroup (const nsAString& families,
@@ -144,106 +160,105 @@ gfxPangoFontGroup::gfxPangoFontGroup (const nsAString& families,
 
     nsStringArray familyArray;
 
-    ForEachFont (FontCallback, &familyArray);
+    // Leave non-existing fonts in the list so that fontconfig can get the
+    // best match.
+    ForEachFontInternal(families, aStyle->langGroup, PR_TRUE, PR_FALSE,
+                        FontCallback, &familyArray);
 
-    FindGenericFontFromStyle (FontCallback, &familyArray);
-
-    // now join them up with commas again, so that pango
-    // can split them up later
-    nsString fixedFamilies;
-    for (int i = 0; i < familyArray.Count(); i++) {
-        fixedFamilies.Append(*familyArray[i]);
-        fixedFamilies.AppendLiteral(",");
+    // Construct a string suitable for fontconfig
+    nsAutoString fcFamilies;
+    if (familyArray.Count()) {
+        int i = 0;
+        while (1) {
+            fcFamilies.Append(*familyArray[i]);
+            ++i;
+            if (i >= familyArray.Count())
+                break;
+            fcFamilies.Append(NS_LITERAL_STRING(","));
+        }
     }
-    if (fixedFamilies.Length() > 0)
-      fixedFamilies.Truncate(fixedFamilies.Length() - 1); // remove final comma
+    else {
+        // XXX If there are no fonts, we should use dummy family.
+        // Pango will resolve from this.
+        // behdad: yep, looks good.
+        // printf("%s(%s)\n", NS_ConvertUTF16toUTF8(families).get(),
+        //                    aStyle->langGroup.get());
+        fcFamilies.Append(NS_LITERAL_STRING("sans-serif"));
+    }
 
-    mFonts.AppendElement(new gfxPangoFont(fixedFamilies, GetStyle()));
+    nsRefPtr<gfxPangoFont> font = GetOrMakeFont(fcFamilies, &mStyle);
+    if (font) {
+        mFonts.AppendElement(font);
+    }
 }
 
 gfxPangoFontGroup::~gfxPangoFontGroup()
 {
 }
 
-gfxTextRun*
-gfxPangoFontGroup::MakeTextRun(const nsAString& aString)
+gfxFontGroup *
+gfxPangoFontGroup::Copy(const gfxFontStyle *aStyle)
 {
-    return new gfxPangoTextRun(aString, this);
+    return new gfxPangoFontGroup(mFamilies, aStyle);
 }
 
 /**
  ** gfxPangoFont
  **/
 
-// Glue to avoid build/runtime dependencies on Pango > 1.6,
-// because we like living in 1999
-
-#ifndef THEBES_USE_PANGO_CAIRO
-static void
-(* PTR_pango_font_description_set_absolute_size)(PangoFontDescription*, double)
-    = nsnull;
-
-static void InitPangoLib()
-{
-    static PRBool initialized = PR_FALSE;
-    if (initialized)
-        return;
-    initialized = PR_TRUE;
-
-    g_type_init();
-
-    PRLibrary* lib = PR_LoadLibrary("libpango-1.0.so");
-    if (!lib)
-        return;
-
-    PTR_pango_font_description_set_absolute_size =
-        (void (*)(PangoFontDescription*, double))
-        PR_FindFunctionSymbol(lib, "pango_font_description_set_absolute_size");
-
-    // leak lib deliberately
-}
-
-static void
-MOZ_pango_font_description_set_absolute_size(PangoFontDescription *desc,
-                                             double size)
-{
-    if (PTR_pango_font_description_set_absolute_size) {
-        PTR_pango_font_description_set_absolute_size(desc, size);
-    } else {
-        pango_font_description_set_size(desc,
-                                        (gint)(size * 72.0 /
-                                               gfxPlatformGtk::DPI()));
-    }
-}
-#else
-static void InitPangoLib()
+gfxPangoFont::gfxPangoFont(const nsAString &aName,
+                           const gfxFontStyle *aFontStyle)
+    : gfxFont(aName, aFontStyle),
+      mPangoFont(nsnull), mCairoFont(nsnull),
+      mHasMetrics(PR_FALSE), mAdjustedSize(0)
 {
 }
 
-static void
-MOZ_pango_font_description_set_absolute_size(PangoFontDescription *desc, double size)
+// key for locating a gfxPangoFont corresponding to a PangoFont
+static GQuark GetFontQuark()
 {
-    pango_font_description_set_absolute_size(desc, size);
+    // Not using g_quark_from_static_string() because this module may be
+    // unloaded (which would leave a dangling pointer).  Using
+    // g_quark_from_string() instead, which creates a small shutdown leak.
+    static GQuark quark = g_quark_from_string("moz-gfxFont");
+    return quark;
 }
-#endif
 
-gfxPangoFont::gfxPangoFont(const nsAString &aName, const gfxFontStyle *aFontStyle)
-    : gfxFont(aName, aFontStyle)
+gfxPangoFont::gfxPangoFont(PangoFont *aPangoFont, const nsAString &aName,
+                           const gfxFontStyle *aFontStyle)
+    : gfxFont(aName, aFontStyle),
+      mPangoFont(aPangoFont), mCairoFont(nsnull),
+      mHasMetrics(PR_FALSE), mAdjustedSize(aFontStyle->size)
 {
-    InitPangoLib();
-
-    mPangoFontDesc = nsnull;
-    mPangoCtx = nsnull;
-    mHasMetrics = PR_FALSE;
+    g_object_ref(mPangoFont);
+    g_object_set_qdata(G_OBJECT(mPangoFont), GetFontQuark(), this);
 }
 
 gfxPangoFont::~gfxPangoFont()
 {
-    if (mPangoCtx)
-        g_object_unref(mPangoCtx);
+    if (mPangoFont) {
+        if (g_object_get_qdata(G_OBJECT(mPangoFont), GetFontQuark()) == this)
+            g_object_set_qdata(G_OBJECT(mPangoFont), GetFontQuark(), NULL);
+        g_object_unref(mPangoFont);
+    }
 
-    if (mPangoFontDesc)
-        pango_font_description_free(mPangoFontDesc);
+    if (mCairoFont)
+        cairo_scaled_font_destroy(mCairoFont);
+}
+
+/* static */ void
+gfxPangoFont::Shutdown()
+{
+    gfxPangoFontCache::Shutdown();
+
+    // This just cleans up memory used by Pango's caches and may cause an
+    // assert and crash in cairo (Bug 399556), so only do this when we care
+    // about cleaning up memory on shutdown.
+#if defined(DEBUG) || defined(NS_BUILD_REFCNT_LOGGING) || defined(NS_TRACE_MALLOC)
+    PangoFontMap *fontmap = pango_cairo_font_map_get_default ();
+    if (PANGO_IS_FC_FONT_MAP (fontmap))
+        pango_fc_font_map_shutdown (PANGO_FC_FONT_MAP (fontmap));
+#endif
 }
 
 static PangoStyle
@@ -255,6 +270,17 @@ ThebesStyleToPangoStyle (const gfxFontStyle *fs)
         return PANGO_STYLE_OBLIQUE;
 
     return PANGO_STYLE_NORMAL;
+}
+
+static PRUint8
+PangoStyleToThebesStyle (PangoStyle aPangoStyle)
+{
+    if (aPangoStyle == PANGO_STYLE_ITALIC)
+        return FONT_STYLE_ITALIC;
+    if (aPangoStyle == FONT_STYLE_OBLIQUE)
+        return FONT_STYLE_OBLIQUE;
+
+    return FONT_STYLE_NORMAL;
 }
 
 static PangoWeight
@@ -280,7 +306,7 @@ ThebesStyleToPangoWeight (const gfxFontStyle *fs)
         baseWeight = 9;
 
     /* Map from weight value to fcWeights index */
-    static int fcWeightLookup[10] = {
+    static const int fcWeightLookup[10] = {
         0, 0, 0, 0, 1, 1, 2, 3, 3, 4,
     };
 
@@ -298,80 +324,205 @@ ThebesStyleToPangoWeight (const gfxFontStyle *fs)
         fcWeight = 4;
 
     /* Map to final PANGO_WEIGHT value */
-    static int fcWeights[5] = {
+    static const int fcWeights[5] = {
         349,
-        499,
+        449,
         649,
         749,
-        999
+        900
     };
 
     return (PangoWeight)fcWeights[fcWeight];
 }
 
-void
-gfxPangoFont::RealizeFont(PRBool force)
+/* Note this doesn't check sizeAdjust */
+static PangoFontDescription *
+NewPangoFontDescription(const nsAString &aName, const gfxFontStyle *aFontStyle)
 {
-    // already realized?
-    if (!force && mPangoFontDesc)
-        return;
+    PangoFontDescription *fontDesc = pango_font_description_new();
 
-    if (mPangoCtx)
-        g_object_unref(mPangoCtx);
-    if (mPangoFontDesc)
-        pango_font_description_free(mPangoFontDesc);
+    pango_font_description_set_family(fontDesc,
+                                      NS_ConvertUTF16toUTF8(aName).get());
+    pango_font_description_set_absolute_size(fontDesc,
+                                             aFontStyle->size * PANGO_SCALE);
+    pango_font_description_set_style(fontDesc,
+                                     ThebesStyleToPangoStyle(aFontStyle));
+    pango_font_description_set_weight(fontDesc,
+                                      ThebesStyleToPangoWeight(aFontStyle));
+    return fontDesc;
+}
 
-    mPangoFontDesc = pango_font_description_new();
+/**
+ * The following gfxPangoFonts are accessed from the PangoFont, not from the
+ * gfxFontCache hash table.  The gfxFontCache hash table is keyed by desired
+ * family and style, whereas here we only know actual family and style.  There
+ * may be more than one of these fonts with the same family and style, but
+ * different PangoFont and actual font face.
+ * 
+ * The point of this is to record the exact font face for gfxTextRun glyph
+ * indices.  The style of this font does not necessarily represent the exact
+ * gfxFontStyle used to build the text run.  Notably, the language is not
+ * recorded, but is used for GetMetrics().aveCharWidth.  However, the font
+ * that should be used for aveCharWidth is gfxPangoFontGroup::GetFontAt(0),
+ * which is not constructed here.
+ */
 
-    pango_font_description_set_family(mPangoFontDesc, NS_ConvertUTF16toUTF8(mName).get());
-    MOZ_pango_font_description_set_absolute_size(mPangoFontDesc, mStyle->size * PANGO_SCALE);
-    pango_font_description_set_style(mPangoFontDesc, ThebesStyleToPangoStyle(mStyle));
-    pango_font_description_set_weight(mPangoFontDesc, ThebesStyleToPangoWeight(mStyle));
+/* static */
+already_AddRefed<gfxPangoFont>
+gfxPangoFont::GetOrMakeFont(PangoFont *aPangoFont)
+{
+    gfxPangoFont *font = static_cast<gfxPangoFont*>
+        (g_object_get_qdata(G_OBJECT(aPangoFont), GetFontQuark()));
 
-#ifndef THEBES_USE_PANGO_CAIRO
-    mPangoCtx = pango_xft_get_context(GDK_DISPLAY(), 0);
-    gdk_pango_context_set_colormap(mPangoCtx, gdk_rgb_get_cmap());
-#else
-    mPangoCtx = pango_cairo_font_map_create_context(PANGO_CAIRO_FONT_MAP(pango_cairo_font_map_get_default()));
-#endif
+    if (!font) {
+        // pango_font_describe_with_absolute_size requires Pango-1.14
+        PangoFontDescription *desc = pango_font_describe(aPangoFont);
 
-    if (!mStyle->langGroup.IsEmpty())
-        pango_context_set_language(mPangoCtx, GetPangoLanguage(mStyle->langGroup));
+        PangoFcFont *fcfont = PANGO_FC_FONT(aPangoFont);
+        double size;
+        if (FcPatternGetDouble(fcfont->font_pattern, FC_PIXEL_SIZE, 0, &size)
+            != FcResultMatch)
+            size = pango_font_description_get_size(desc) / FLOAT_PANGO_SCALE;
 
-    pango_context_set_font_description(mPangoCtx, mPangoFontDesc);
+        // Shouldn't actually need to take too much care about the correct
+        // family or style, as size is the only thing expected to be
+        // important.
+        PRUint8 style =
+            PangoStyleToThebesStyle(pango_font_description_get_style(desc));
+        PRUint16 weight = pango_font_description_get_weight(desc);
+        NS_NAMED_LITERAL_CSTRING(langGroup, "x-unicode");
+        gfxFontStyle fontStyle(style, weight, size, langGroup, 0.0,
+                               PR_TRUE, PR_FALSE);
 
-    mHasMetrics = PR_FALSE;
+        // (The PangoFontDescription owns the family string)
+        const char *family = pango_font_description_get_family(desc);
+        font = new gfxPangoFont(aPangoFont,
+                                NS_ConvertUTF8toUTF16(family), &fontStyle);
+
+        pango_font_description_free(desc);
+        if (!font)
+            return nsnull;
+
+        // Do not add this font to the gfxFontCache hash table as this may not
+        // be the PangoFont that fontconfig chooses for this style.
+    }
+    NS_ADDREF(font);
+    return font;
+}
+
+static PangoFont*
+LoadPangoFont(PangoContext *aPangoCtx, const PangoFontDescription *aPangoFontDesc)
+{
+    gfxPangoFontCache *cache = gfxPangoFontCache::GetPangoFontCache();
+    if (!cache)
+        return nsnull; // Error
+    PangoFont* pangoFont = cache->Get(aPangoFontDesc);
+    if (!pangoFont) {
+        pangoFont = pango_context_load_font(aPangoCtx, aPangoFontDesc);
+        if (pangoFont) {
+            cache->Put(aPangoFontDesc, pangoFont);
+        }
+    }
+    return pangoFont;
 }
 
 void
-gfxPangoFont::GetSize(const char *aCharString, PRUint32 aLength, gfxSize& inkSize, gfxSize& logSize)
+gfxPangoFont::RealizePangoFont()
 {
-    RealizeFont();
-
-    PangoAttrList *al = pango_attr_list_new();
-    GList *items = pango_itemize(mPangoCtx, aCharString, 0, aLength, al, NULL);
-    pango_attr_list_unref(al);
-
-    if (!items || g_list_length(items) != 1)
+    // already realized?
+    if (mPangoFont)
         return;
 
-    PangoItem *item = (PangoItem*) items->data;
+    PangoFontDescription *pangoFontDesc =
+        NewPangoFontDescription(mName, GetStyle());
+
+    PangoContext *pangoCtx = gdk_pango_context_get();
+
+    if (!GetStyle()->langGroup.IsEmpty()) {
+        PangoLanguage *lang = GetPangoLanguage(GetStyle()->langGroup);
+        if (lang)
+            pango_context_set_language(pangoCtx, lang);
+    }
+
+    mPangoFont = LoadPangoFont(pangoCtx, pangoFontDesc);
+
+    gfxFloat size = GetStyle()->size;
+    // Checking mPangoFont to avoid infinite recursion through GetCharSize
+    if (size != 0.0 && GetStyle()->sizeAdjust != 0.0 && mPangoFont) {
+        // Could try xHeight from TrueType/OpenType fonts.
+        gfxSize isz, lsz;
+        GetCharSize('x', isz, lsz);
+        if (isz.height != 0.0) {
+            gfxFloat aspect = isz.height / size;
+            size = GetStyle()->GetAdjustedSize(aspect);
+
+            pango_font_description_set_absolute_size(pangoFontDesc,
+                                                     size * PANGO_SCALE);
+            g_object_unref(mPangoFont);
+            mPangoFont = LoadPangoFont(pangoCtx, pangoFontDesc);
+        }
+    }
+
+    NS_ASSERTION(mHasMetrics == PR_FALSE, "metrics will be invalid...");
+    mAdjustedSize = size;
+    if (!g_object_get_qdata(G_OBJECT(mPangoFont), GetFontQuark()))
+        g_object_set_qdata(G_OBJECT(mPangoFont), GetFontQuark(), this);
+
+    if (pangoFontDesc)
+        pango_font_description_free(pangoFontDesc);
+    if (pangoCtx)
+        g_object_unref(pangoCtx);
+}
+
+void
+gfxPangoFont::GetCharSize(char aChar, gfxSize& aInkSize, gfxSize& aLogSize,
+                          PRUint32 *aGlyphID)
+{
+    if (NS_UNLIKELY(GetStyle()->size == 0.0)) {
+        if (aGlyphID)
+            *aGlyphID = 0;
+        aInkSize.SizeTo(0.0, 0.0);
+        aLogSize.SizeTo(0.0, 0.0);
+        return;
+    }
+
+    // XXXkt: Why not use pango_font_get_glyph_extents?  This function isn't
+    // currently being used for characters likely to involve glyph clusters.
+    // I don't think pango_shape will fallback to other fonts.
+    PangoAnalysis analysis;
+    // Initialize new fields, gravity and flags in pango 1.16
+    // (or padding in 1.14).
+    // Use memset instead of { 0 } aggregate initialization or placement new
+    // default initialization so that padding (which may have meaning in other
+    // versions) is initialized.
+    memset(&analysis, 0, sizeof(analysis));
+    analysis.font = GetPangoFont();
+    analysis.language = pango_language_from_string("en");
+    analysis.shape_engine = pango_font_find_shaper(analysis.font, analysis.language, aChar);
 
     PangoGlyphString *glstr = pango_glyph_string_new();
-    pango_shape (aCharString, aLength, &(item->analysis), glstr);
+    pango_shape (&aChar, 1, &analysis, glstr);
+
+    if (aGlyphID) {
+        *aGlyphID = 0;
+        if (glstr->num_glyphs == 1) {
+            PangoGlyph glyph = glstr->glyphs[0].glyph;
+            if (!IS_MISSING_GLYPH(glyph) && !IS_EMPTY_GLYPH(glyph)) {
+                *aGlyphID = glyph;
+            }
+        }
+    }
 
     PangoRectangle ink_rect, log_rect;
-    pango_glyph_string_extents (glstr, item->analysis.font, &ink_rect, &log_rect);
+    pango_glyph_string_extents(glstr, analysis.font, &ink_rect, &log_rect);
 
-    inkSize.width = ink_rect.width / FLOAT_PANGO_SCALE;
-    inkSize.height = ink_rect.height / FLOAT_PANGO_SCALE;
+    aInkSize.width = ink_rect.width / FLOAT_PANGO_SCALE;
+    aInkSize.height = ink_rect.height / FLOAT_PANGO_SCALE;
 
-    logSize.width = log_rect.width / FLOAT_PANGO_SCALE;
-    logSize.height = log_rect.height / FLOAT_PANGO_SCALE;
+    aLogSize.width = log_rect.width / FLOAT_PANGO_SCALE;
+    aLogSize.height = log_rect.height / FLOAT_PANGO_SCALE;
 
     pango_glyph_string_free(glstr);
-    pango_item_free(item);
-    g_list_free(items);
 }
 
 // rounding and truncation functions for a Freetype floating point number 
@@ -388,116 +539,68 @@ gfxPangoFont::GetMetrics()
     if (mHasMetrics)
         return mMetrics;
 
-    RealizeFont();
-
-    PangoAttrList *al = pango_attr_list_new();
-    GList *items = pango_itemize(mPangoCtx, "a", 0, 1, al, NULL);
-    pango_attr_list_unref(al);
-
-    if (!items || g_list_length(items) != 1)
-        return mMetrics;        // XXX error
-
-#ifndef THEBES_USE_PANGO_CAIRO
-    float val;
-
-    PangoItem *item = (PangoItem*)items->data;
-    PangoFcFont *fcfont = PANGO_FC_FONT(item->analysis.font);
-
-    XftFont *xftFont = pango_xft_font_get_font(PANGO_FONT(fcfont));
-    if (!xftFont)
-        return mMetrics;        // XXX error
-
-    FT_Face face = XftLockFace(xftFont);
-    if (!face)
-        return mMetrics;        // XXX error
-
-    int size;
-    if (FcPatternGetInteger(fcfont->font_pattern, FC_PIXEL_SIZE, 0, &size) != FcResultMatch)
-        size = 12;
-    mMetrics.emHeight = PR_MAX(1, size);
-
-    mMetrics.maxAscent = xftFont->ascent;
-    mMetrics.maxDescent = xftFont->descent;
-
-    double lineHeight = mMetrics.maxAscent + mMetrics.maxDescent;
-    mMetrics.height = lineHeight;
-
-    if (lineHeight > mMetrics.emHeight)
-        mMetrics.internalLeading = lineHeight - mMetrics.emHeight;
-    else
-        mMetrics.internalLeading = 0;
-    mMetrics.externalLeading = 0;
-
-    mMetrics.maxHeight = lineHeight;
-    mMetrics.emAscent = mMetrics.maxAscent * mMetrics.emHeight / lineHeight;
-    mMetrics.emDescent = mMetrics.emHeight - mMetrics.emAscent;
-    mMetrics.maxAdvance = xftFont->max_advance_width;
-
-    gfxSize isz, lsz;
-    GetSize(" ", 1, isz, lsz);
-    mMetrics.spaceWidth = lsz.width;
-
-    // XXX do some FcCharSetHasChar work here to make sure
-    // we have an "x"
-    GetSize("x", 1, isz, lsz);
-    mMetrics.xHeight = isz.height;
-    mMetrics.aveCharWidth = isz.width;
-
-    val = CONVERT_DESIGN_UNITS_TO_PIXELS(face->underline_position,
-                                         face->size->metrics.y_scale);
-    if (!val)
-        val = - PR_MAX(1, floor(0.1 * xftFont->height + 0.5));
-
-    mMetrics.underlineOffset = val;
-
-    val = CONVERT_DESIGN_UNITS_TO_PIXELS(face->underline_thickness,
-                                         face->size->metrics.y_scale);
-    if (!val)
-        val = floor(0.05 * xftFont->height + 0.5);
-
-    mMetrics.underlineSize = PR_MAX(1, val);
-
-    TT_OS2 *os2 = (TT_OS2 *) FT_Get_Sfnt_Table(face, ft_sfnt_os2);
-
-    if (os2 && os2->ySuperscriptYOffset) {
-        val = CONVERT_DESIGN_UNITS_TO_PIXELS(os2->ySuperscriptYOffset,
-                                             face->size->metrics.y_scale);
-        mMetrics.superscriptOffset = PR_MAX(1, val);
-    } else {
-        mMetrics.superscriptOffset = mMetrics.xHeight;
-    }
-
-    // mSubscriptOffset
-    if (os2 && os2->ySubscriptYOffset) {
-        val = CONVERT_DESIGN_UNITS_TO_PIXELS(os2->ySubscriptYOffset,
-                                             face->size->metrics.y_scale);
-        // some fonts have the incorrect sign. 
-        val = (val < 0) ? -val : val;
-        mMetrics.subscriptOffset = PR_MAX(1, val);
-    } else {
-        mMetrics.subscriptOffset = mMetrics.xHeight;
-    }
-
-    mMetrics.strikeoutOffset = mMetrics.xHeight / 2.0;
-    mMetrics.strikeoutSize = mMetrics.underlineSize;
-
-    XftUnlockFace(xftFont);
-#else
     /* pango_cairo case; try to get all the metrics from pango itself */
-    PangoItem *item = (PangoItem*)items->data;
-    PangoFont *font = item->analysis.font;
+    PangoFont *font;
+    PangoFontMetrics *pfm;
+    if (NS_LIKELY(GetStyle()->size > 0.0)) {
+        font = GetPangoFont(); // RealizePangoFont is called here.
+        PangoLanguage *lang = GetPangoLanguage(GetStyle()->langGroup);
+        // If lang is NULL, Pango will measure a string of many languages,
+        // which will require many FcFontSorts, but we don't want to go to
+        // that much trouble.
+        // pango_language_get_default() is available from Pango-1.16.
+        if (!lang)
+            lang = pango_language_from_string(setlocale(LC_CTYPE, NULL));
 
-    PangoFontMetrics *pfm = pango_font_get_metrics (font, NULL);
+        pfm = pango_font_get_metrics(font, lang);
+    } else {
+        // Don't ask pango when the font-size is zero since it causes
+        // some versions of libpango to crash (bug 404112).
+        font = NULL;
+        pfm = NULL;
+    }
+
+    if (NS_LIKELY(pfm)) {
+        mMetrics.maxAscent =
+            pango_font_metrics_get_ascent(pfm) / FLOAT_PANGO_SCALE;
+
+        mMetrics.maxDescent =
+            pango_font_metrics_get_descent(pfm) / FLOAT_PANGO_SCALE;
+
+        mMetrics.aveCharWidth =
+            pango_font_metrics_get_approximate_char_width(pfm) / FLOAT_PANGO_SCALE;
+
+        mMetrics.underlineOffset =
+            pango_font_metrics_get_underline_position(pfm) / FLOAT_PANGO_SCALE;
+
+        mMetrics.underlineSize =
+            pango_font_metrics_get_underline_thickness(pfm) / FLOAT_PANGO_SCALE;
+
+        mMetrics.strikeoutOffset =
+            pango_font_metrics_get_strikethrough_position(pfm) / FLOAT_PANGO_SCALE;
+
+        mMetrics.strikeoutSize =
+            pango_font_metrics_get_strikethrough_thickness(pfm) / FLOAT_PANGO_SCALE;
+
+        // We're going to overwrite this below if we have a FT_Face
+        // (which we normally should have...).
+        mMetrics.maxAdvance =
+            pango_font_metrics_get_approximate_char_width(pfm) / FLOAT_PANGO_SCALE;
+    } else {
+        mMetrics.maxAscent = 0.0;
+        mMetrics.maxDescent = 0.0;
+        mMetrics.aveCharWidth = 0.0;
+        mMetrics.underlineOffset = -1.0;
+        mMetrics.underlineSize = 0.0;
+        mMetrics.strikeoutOffset = 0.0;
+        mMetrics.strikeoutSize = 0.0;
+        mMetrics.maxAdvance = 0.0;
+    }
 
     // ??
-    mMetrics.emHeight = mStyle->size;
-
-    mMetrics.maxAscent = pango_font_metrics_get_ascent(pfm) / FLOAT_PANGO_SCALE;
-    mMetrics.maxDescent = pango_font_metrics_get_descent(pfm) / FLOAT_PANGO_SCALE;
+    mMetrics.emHeight = mAdjustedSize ? mAdjustedSize : GetStyle()->size;
 
     gfxFloat lineHeight = mMetrics.maxAscent + mMetrics.maxDescent;
-    mMetrics.height = lineHeight; // XXX should go away
-
     if (lineHeight > mMetrics.emHeight)
         mMetrics.externalLeading = lineHeight - mMetrics.emHeight;
     else
@@ -506,269 +609,726 @@ gfxPangoFont::GetMetrics()
 
     mMetrics.maxHeight = lineHeight;
 
-    mMetrics.emAscent = mMetrics.maxAscent * mMetrics.emHeight / lineHeight;
+    mMetrics.emAscent = lineHeight > 0.0 ?
+        mMetrics.maxAscent * mMetrics.emHeight / lineHeight : 0.0;
     mMetrics.emDescent = mMetrics.emHeight - mMetrics.emAscent;
 
-    mMetrics.maxAdvance = pango_font_metrics_get_approximate_char_width(pfm) / FLOAT_PANGO_SCALE; // XXX
-
     gfxSize isz, lsz;
-    GetSize(" ", 1, isz, lsz);
+    GetCharSize(' ', isz, lsz, &mSpaceGlyph);
     mMetrics.spaceWidth = lsz.width;
-    GetSize("x", 1, isz, lsz);
+    GetCharSize('x', isz, lsz);
     mMetrics.xHeight = isz.height;
 
-    mMetrics.aveCharWidth = pango_font_metrics_get_approximate_char_width(pfm) / FLOAT_PANGO_SCALE;
+    FT_Face face = NULL;
+    if (pfm && PANGO_IS_FC_FONT(font))
+        face = pango_fc_font_lock_face(PANGO_FC_FONT(font));
 
-    mMetrics.underlineOffset = pango_font_metrics_get_underline_position(pfm) / FLOAT_PANGO_SCALE;
-    mMetrics.underlineSize = pango_font_metrics_get_underline_thickness(pfm) / FLOAT_PANGO_SCALE;
+    if (face) {
+        mMetrics.maxAdvance = face->size->metrics.max_advance / 64.0; // 26.6
 
-    mMetrics.strikeoutOffset = pango_font_metrics_get_strikethrough_position(pfm) / FLOAT_PANGO_SCALE;
-    mMetrics.strikeoutSize = pango_font_metrics_get_strikethrough_thickness(pfm) / FLOAT_PANGO_SCALE;
+        float val;
 
-    // these are specified by the so-called OS2 SFNT info, but
-    // pango doesn't expose this to us.  This really sucks,
-    // so we just assume it's the xHeight
-    mMetrics.superscriptOffset = mMetrics.xHeight;
-    mMetrics.subscriptOffset = mMetrics.xHeight;
+        TT_OS2 *os2 = (TT_OS2 *) FT_Get_Sfnt_Table(face, ft_sfnt_os2);
+    
+        if (os2 && os2->ySuperscriptYOffset) {
+            val = CONVERT_DESIGN_UNITS_TO_PIXELS(os2->ySuperscriptYOffset,
+                                                 face->size->metrics.y_scale);
+            mMetrics.superscriptOffset = PR_MAX(1, val);
+        } else {
+            mMetrics.superscriptOffset = mMetrics.xHeight;
+        }
+    
+        if (os2 && os2->ySubscriptYOffset) {
+            val = CONVERT_DESIGN_UNITS_TO_PIXELS(os2->ySubscriptYOffset,
+                                                 face->size->metrics.y_scale);
+            // some fonts have the incorrect sign. 
+            val = (val < 0) ? -val : val;
+            mMetrics.subscriptOffset = PR_MAX(1, val);
+        } else {
+            mMetrics.subscriptOffset = mMetrics.xHeight;
+        }
 
-    pango_font_metrics_unref (pfm);
-#endif
+        pango_fc_font_unlock_face(PANGO_FC_FONT(font));
+    } else {
+        mMetrics.superscriptOffset = mMetrics.xHeight;
+        mMetrics.subscriptOffset = mMetrics.xHeight;
+    }
+
+    SanitizeMetrics(&mMetrics);
 
 #if 0
+    //    printf("font name: %s %f %f\n", NS_ConvertUTF16toUTF8(mName).get(), GetStyle()->size, mAdjustedSize);
+    //    printf ("pango font %s\n", pango_font_description_to_string (pango_font_describe (font)));
+
     fprintf (stderr, "Font: %s\n", NS_ConvertUTF16toUTF8(mName).get());
     fprintf (stderr, "    emHeight: %f emAscent: %f emDescent: %f\n", mMetrics.emHeight, mMetrics.emAscent, mMetrics.emDescent);
     fprintf (stderr, "    maxAscent: %f maxDescent: %f\n", mMetrics.maxAscent, mMetrics.maxDescent);
-    fprintf (stderr, "    height: %f internalLeading: %f externalLeading: %f\n", mMetrics.height, mMetrics.externalLeading, mMetrics.internalLeading);
+    fprintf (stderr, "    internalLeading: %f externalLeading: %f\n", mMetrics.externalLeading, mMetrics.internalLeading);
     fprintf (stderr, "    spaceWidth: %f aveCharWidth: %f xHeight: %f\n", mMetrics.spaceWidth, mMetrics.aveCharWidth, mMetrics.xHeight);
     fprintf (stderr, "    uOff: %f uSize: %f stOff: %f stSize: %f suOff: %f suSize: %f\n", mMetrics.underlineOffset, mMetrics.underlineSize, mMetrics.strikeoutOffset, mMetrics.strikeoutSize, mMetrics.superscriptOffset, mMetrics.subscriptOffset);
 #endif
+
+    if (pfm)
+        pango_font_metrics_unref(pfm);
 
     mHasMetrics = PR_TRUE;
     return mMetrics;
 }
 
+PRUint32
+gfxPangoFont::GetGlyph(const PRUint32 aChar)
+{
+    // Ensure that null character should be missing.
+    if (aChar == 0)
+        return 0;
+    return pango_fc_font_get_glyph(PANGO_FC_FONT(GetPangoFont()), aChar);
+}
 
+nsString
+gfxPangoFont::GetUniqueName()
+{
+    PangoFont *font = GetPangoFont();
+    PangoFontDescription *desc = pango_font_describe(font);
+    pango_font_description_unset_fields (desc, PANGO_FONT_MASK_SIZE);
+    char *str = pango_font_description_to_string(desc);
+    pango_font_description_free (desc);
+
+    nsString result;
+    CopyUTF8toUTF16(str, result);
+    g_free(str);
+    return result;
+}
 
 /**
- ** gfxPangoTextRun
+ ** gfxTextRun
+ * 
+ * Some serious problems:
+ *
+ * -- We draw with a font that's hinted for the CTM, but we measure with a font
+ * hinted to the identity matrix, so our "bounding metrics" may not be accurate.
+ * 
+ * -- CreateScaledFont doesn't necessarily give us the font that the Pango
+ * metrics assume.
+ * 
  **/
 
-#ifndef THEBES_USE_PANGO_CAIRO
-
-#define AUTO_GLYPHBUF_SIZE 100
-
-static gint
-DrawCairoGlyphs(gfxContext* ctx,
-                PangoFont* aFont,
-                const gfxPoint& pt,
-                PangoGlyphString* aGlyphs)
+/**
+ * We use this to append an LTR or RTL Override character to the start of the
+ * string. This forces Pango to honour our direction even if there are neutral characters
+ * in the string.
+ */
+static PRInt32 AppendDirectionalIndicatorUTF8(PRBool aIsRTL, nsACString& aString)
 {
-    PangoFcFont* fcfont = PANGO_FC_FONT(aFont);
-    cairo_font_face_t* font = cairo_ft_font_face_create_for_pattern(fcfont->font_pattern);
-    cairo_set_font_face(ctx->GetCairo(), font);
+    static const PRUnichar overrides[2][2] =
+      { { 0x202d, 0 }, { 0x202e, 0 }}; // LRO, RLO
+    AppendUTF16toUTF8(overrides[aIsRTL], aString);
+    return 3; // both overrides map to 3 bytes in UTF8
+}
+	
+gfxTextRun *
+gfxPangoFontGroup::MakeTextRun(const PRUint8 *aString, PRUint32 aLength,
+                               const Parameters *aParams, PRUint32 aFlags)
+{
+    NS_ASSERTION(aFlags & TEXT_IS_8BIT, "8bit should have been set");
+    gfxTextRun *run = gfxTextRun::Create(aParams, aString, aLength, this, aFlags);
+    if (!run)
+        return nsnull;
 
+    PRBool isRTL = run->IsRightToLeft();
+    if ((aFlags & TEXT_IS_ASCII) && !isRTL) {
+        // We don't need to send an override character here, the characters must be all LTR
+        const gchar *utf8Chars = reinterpret_cast<const gchar*>(aString);
+        InitTextRun(run, utf8Chars, aLength, 0, PR_TRUE);
+    } else {
+        // this is really gross...
+        const char *chars = reinterpret_cast<const char*>(aString);
+        NS_ConvertASCIItoUTF16 unicodeString(chars, aLength);
+        nsCAutoString utf8;
+        PRInt32 headerLen = AppendDirectionalIndicatorUTF8(isRTL, utf8);
+        AppendUTF16toUTF8(unicodeString, utf8);
+        InitTextRun(run, utf8.get(), utf8.Length(), headerLen, PR_TRUE);
+    }
+    run->FetchGlyphExtents(aParams->mContext);
+    return run;
+}
+
+#if defined(ENABLE_FAST_PATH_8BIT)
+PRBool
+gfxPangoFontGroup::CanTakeFastPath(PRUint32 aFlags)
+{
+    // Can take fast path only if OPTIMIZE_SPEED is set and IS_RTL isn't.
+    // We need to always use Pango for RTL text, in case glyph mirroring is
+    // required.
+    PRBool speed = aFlags & gfxTextRunFactory::TEXT_OPTIMIZE_SPEED;
+    PRBool isRTL = aFlags & gfxTextRunFactory::TEXT_IS_RTL;
+    return speed && !isRTL && PANGO_IS_FC_FONT(GetFontAt(0)->GetPangoFont());
+}
+#endif
+
+gfxTextRun *
+gfxPangoFontGroup::MakeTextRun(const PRUnichar *aString, PRUint32 aLength,
+                               const Parameters *aParams, PRUint32 aFlags)
+{
+    gfxTextRun *run = gfxTextRun::Create(aParams, aString, aLength, this, aFlags);
+    if (!run)
+        return nsnull;
+
+    run->RecordSurrogates(aString);
+
+    nsCAutoString utf8;
+    PRInt32 headerLen = AppendDirectionalIndicatorUTF8(run->IsRightToLeft(), utf8);
+    AppendUTF16toUTF8(Substring(aString, aString + aLength), utf8);
+    PRBool is8Bit = PR_FALSE;
+
+#if defined(ENABLE_FAST_PATH_8BIT)
+    if (CanTakeFastPath(aFlags)) {
+        PRUint32 allBits = 0;
+        PRUint32 i;
+        for (i = 0; i < aLength; ++i) {
+            allBits |= aString[i];
+        }
+        is8Bit = (allBits & 0xFF00) == 0;
+    }
+#endif
+    InitTextRun(run, utf8.get(), utf8.Length(), headerLen, is8Bit);
+    run->FetchGlyphExtents(aParams->mContext);
+    return run;
+}
+
+void
+gfxPangoFontGroup::InitTextRun(gfxTextRun *aTextRun, const gchar *aUTF8Text,
+                               PRUint32 aUTF8Length, PRUint32 aUTF8HeaderLength,
+                               PRBool aTake8BitPath)
+{
+#if defined(ENABLE_FAST_PATH_ALWAYS)
+    CreateGlyphRunsFast(aTextRun, aUTF8Text + aUTF8HeaderLength, aUTF8Length - aUTF8HeaderLength);
+#else
+#if defined(ENABLE_FAST_PATH_8BIT)
+    if (aTake8BitPath && CanTakeFastPath(aTextRun->GetFlags())) {
+        nsresult rv = CreateGlyphRunsFast(aTextRun, aUTF8Text + aUTF8HeaderLength, aUTF8Length - aUTF8HeaderLength);
+        if (NS_SUCCEEDED(rv))
+            return;
+    }
+#endif
+
+    CreateGlyphRunsItemizing(aTextRun, aUTF8Text, aUTF8Length, aUTF8HeaderLength);
+#endif
+}
+
+static cairo_scaled_font_t*
+CreateScaledFont(cairo_t *aCR, cairo_matrix_t *aCTM, PangoFont *aPangoFont)
+{
+// XXX this needs to also check that we're using system cairo
+// otherwise this causes bad problems.
+#if 0
+//#if PANGO_VERSION_CHECK(1,17,5)
+    // Lets just use pango_cairo_font_get_scaled_font() for now.  it's only
+    // available in pango 1.17.x though :(
+    return cairo_scaled_font_reference (pango_cairo_font_get_scaled_font (PANGO_CAIRO_FONT (aPangoFont)));
+#else
+    // XXX is this safe really? We should probably check the font type or something.
+    // XXX does this really create the same font that Pango used for measurement?
+    // We probably need to work harder here. We should pay particular attention
+    // to the font options.
+    PangoFcFont *fcfont = PANGO_FC_FONT(aPangoFont);
+    cairo_font_face_t *face = cairo_ft_font_face_create_for_pattern(fcfont->font_pattern);
     double size;
     if (FcPatternGetDouble(fcfont->font_pattern, FC_PIXEL_SIZE, 0, &size) != FcResultMatch)
         size = 12.0;
+    cairo_matrix_t fontMatrix;
+    FcMatrix *fcMatrix;
+    if (FcPatternGetMatrix(fcfont->font_pattern, FC_MATRIX, 0, &fcMatrix) == FcResultMatch)
+        cairo_matrix_init(&fontMatrix, fcMatrix->xx, -fcMatrix->yx, -fcMatrix->xy, fcMatrix->yy, 0, 0);
+    else
+        cairo_matrix_init_identity(&fontMatrix);
+    cairo_matrix_scale(&fontMatrix, size, size);
+    cairo_font_options_t *fontOptions = cairo_font_options_create();
+    cairo_get_font_options(aCR, fontOptions);
+    cairo_scaled_font_t *scaledFont =
+        cairo_scaled_font_create(face, &fontMatrix, aCTM, fontOptions);
+    cairo_font_options_destroy(fontOptions);
+    cairo_font_face_destroy(face);
+    NS_ASSERTION(cairo_scaled_font_status(scaledFont) == CAIRO_STATUS_SUCCESS,
+                 "Failed to create scaled font");
+    return scaledFont;
+#endif
+}
 
-    cairo_set_font_size(ctx->GetCairo(), size);
+PRBool
+gfxPangoFont::SetupCairoFont(gfxContext *aContext)
+{
+    cairo_t *cr = aContext->GetCairo();
+    cairo_matrix_t currentCTM;
+    cairo_get_matrix(cr, &currentCTM);
 
-    cairo_glyph_t autoGlyphs[AUTO_GLYPHBUF_SIZE];
-    cairo_glyph_t* glyphs = autoGlyphs;
-    if (aGlyphs->num_glyphs > AUTO_GLYPHBUF_SIZE)
-        glyphs = new cairo_glyph_t[aGlyphs->num_glyphs];
+    if (mCairoFont) {
+        // Need to validate that its CTM is OK
+        cairo_matrix_t fontCTM;
+        cairo_scaled_font_get_ctm(mCairoFont, &fontCTM);
+        if (fontCTM.xx != currentCTM.xx || fontCTM.yy != currentCTM.yy ||
+            fontCTM.xy != currentCTM.xy || fontCTM.yx != currentCTM.yx) {
+            // Just recreate it from scratch, simplest way
+            cairo_scaled_font_destroy(mCairoFont);
+            mCairoFont = nsnull;
+        }
+    }
+    if (!mCairoFont) {
+        mCairoFont = CreateScaledFont(cr, &currentCTM, GetPangoFont());
+    }
+    if (cairo_scaled_font_status(mCairoFont) != CAIRO_STATUS_SUCCESS) {
+        // Don't cairo_set_scaled_font as that would propagate the error to
+        // the cairo_t, precluding any further drawing.
+        return PR_FALSE;
+    }
+    cairo_set_scaled_font(cr, mCairoFont);
+    return PR_TRUE;
+}
 
-    PangoGlyphUnit offset = 0;
-    int num_invalid_glyphs = 0;
-    for (gint i = 0; i < aGlyphs->num_glyphs; ++i) {
-        PangoGlyphInfo* info = &aGlyphs->glyphs[i];
-        // Skip glyph when it is PANGO_GLYPH_EMPTY (0x0FFFFFFF) or has
-        // PANGO_GLYPH_UNKNOWN_FLAG (0x10000000) bit set.
-        if ((info->glyph & 0x10000000) || info->glyph == 0x0FFFFFFF) {
-            // XXX we should to render a slug for the invalid glyph instead of just skipping it
-            num_invalid_glyphs++;
+static void
+SetupClusterBoundaries(gfxTextRun* aTextRun, const gchar *aUTF8, PRUint32 aUTF8Length,
+                       PRUint32 aUTF16Offset, PangoAnalysis *aAnalysis)
+{
+    if (aTextRun->GetFlags() & gfxTextRunFactory::TEXT_IS_8BIT) {
+        // 8-bit text doesn't have clusters.
+        // XXX is this true in all languages???
+        // behdad: don't think so.  Czech for example IIRC has a
+        // 'ch' grapheme.
+        return;
+    }
+
+    // Pango says "the array of PangoLogAttr passed in must have at least N+1
+    // elements, if there are N characters in the text being broken".
+    // Could use g_utf8_strlen(aUTF8, aUTF8Length) + 1 but the memory savings
+    // may not be worth the call.
+    nsAutoTArray<PangoLogAttr,2000> buffer;
+    if (!buffer.AppendElements(aUTF8Length + 1))
+        return;
+
+    pango_break(aUTF8, aUTF8Length, aAnalysis,
+                buffer.Elements(), buffer.Length());
+
+    const gchar *p = aUTF8;
+    const gchar *end = aUTF8 + aUTF8Length;
+    const PangoLogAttr *attr = buffer.Elements();
+    gfxTextRun::CompressedGlyph g;
+    while (p < end) {
+        if (!attr->is_cursor_position) {
+            aTextRun->SetGlyphs(aUTF16Offset, g.SetComplex(PR_FALSE, PR_TRUE, 0), nsnull);
+        }
+        ++aUTF16Offset;
+        
+        gunichar ch = g_utf8_get_char(p);
+        NS_ASSERTION(ch != 0, "Shouldn't have NUL in pango_break");
+        NS_ASSERTION(!IS_SURROGATE(ch), "Shouldn't have surrogates in UTF8");
+        if (ch >= 0x10000) {
+            ++aUTF16Offset;
+        }
+        // We produced this utf8 so we don't need to worry about malformed stuff
+        p = g_utf8_next_char(p);
+        ++attr;
+    }
+}
+
+static PRInt32
+ConvertPangoToAppUnits(PRInt32 aCoordinate, PRUint32 aAppUnitsPerDevUnit)
+{
+    PRInt64 v = (PRInt64(aCoordinate)*aAppUnitsPerDevUnit + PANGO_SCALE/2)/PANGO_SCALE;
+    return PRInt32(v);
+}
+
+/**
+ * Given a run of Pango glyphs that should be treated as a single
+ * cluster/ligature, store them in the textrun at the appropriate character
+ * and set the other characters involved to be ligature/cluster continuations
+ * as appropriate.
+ */ 
+static nsresult
+SetGlyphsForCharacterGroup(const PangoGlyphInfo *aGlyphs, PRUint32 aGlyphCount,
+                           gfxTextRun *aTextRun,
+                           const gchar *aUTF8, PRUint32 aUTF8Length,
+                           PRUint32 *aUTF16Offset,
+                           PangoGlyphUnit aOverrideSpaceWidth)
+{
+    PRUint32 utf16Offset = *aUTF16Offset;
+    PRUint32 textRunLength = aTextRun->GetLength();
+    const PRUint32 appUnitsPerDevUnit = aTextRun->GetAppUnitsPerDevUnit();
+    const gfxTextRun::CompressedGlyph *charGlyphs = aTextRun->GetCharacterGlyphs();
+
+    // Override the width of a space, but only for spaces that aren't
+    // clustered with something else (like a freestanding diacritical mark)
+    PangoGlyphUnit width = aGlyphs[0].geometry.width;
+    if (aOverrideSpaceWidth && aUTF8[0] == ' ' &&
+        (utf16Offset + 1 == textRunLength ||
+         charGlyphs[utf16Offset].IsClusterStart())) {
+        width = aOverrideSpaceWidth;
+    }
+    PRInt32 advance = ConvertPangoToAppUnits(width, appUnitsPerDevUnit);
+
+    gfxTextRun::CompressedGlyph g;
+    PRBool atClusterStart = aTextRun->IsClusterStart(utf16Offset);
+    // See if we fit in the compressed area.
+    if (aGlyphCount == 1 && advance >= 0 && atClusterStart &&
+        aGlyphs[0].geometry.x_offset == 0 &&
+        aGlyphs[0].geometry.y_offset == 0 &&
+        gfxTextRun::CompressedGlyph::IsSimpleAdvance(advance) &&
+        gfxTextRun::CompressedGlyph::IsSimpleGlyphID(aGlyphs[0].glyph)) {
+        aTextRun->SetSimpleGlyph(utf16Offset,
+                                 g.SetSimpleGlyph(advance, aGlyphs[0].glyph));
+    } else {
+        nsAutoTArray<gfxTextRun::DetailedGlyph,10> detailedGlyphs;
+        if (!detailedGlyphs.AppendElements(aGlyphCount))
+            return NS_ERROR_OUT_OF_MEMORY;
+
+        PRUint32 i;
+        for (i = 0; i < aGlyphCount; ++i) {
+            gfxTextRun::DetailedGlyph *details = &detailedGlyphs[i];
+            PRUint32 j = (aTextRun->IsRightToLeft()) ? aGlyphCount - 1 - i : i; 
+            const PangoGlyphInfo &glyph = aGlyphs[j];
+            details->mGlyphID = glyph.glyph;
+            NS_ASSERTION(details->mGlyphID == glyph.glyph,
+                         "Seriously weird glyph ID detected!");
+            details->mAdvance =
+                ConvertPangoToAppUnits(glyph.geometry.width,
+                                       appUnitsPerDevUnit);
+            details->mXOffset =
+                float(glyph.geometry.x_offset)*appUnitsPerDevUnit/PANGO_SCALE;
+            details->mYOffset =
+                float(glyph.geometry.y_offset)*appUnitsPerDevUnit/PANGO_SCALE;
+        }
+        g.SetComplex(atClusterStart, PR_TRUE, aGlyphCount);
+        aTextRun->SetGlyphs(utf16Offset, g, detailedGlyphs.Elements());
+    }
+
+    // Check for ligatures and set *aUTF16Offset.
+    const gchar *p = aUTF8;
+    const gchar *end = aUTF8 + aUTF8Length;
+    while (1) {
+        // Skip the CompressedGlyph that we have added, but check if the
+        // character was supposed to be ignored. If it's supposed to be ignored,
+        // overwrite the textrun entry with an invisible missing-glyph.
+        gunichar ch = g_utf8_get_char(p);
+        NS_ASSERTION(!IS_SURROGATE(ch), "surrogates should not appear in UTF8");
+        if (ch >= 0x10000) {
+            // Skip surrogate
+            ++utf16Offset;
+        }
+        NS_ASSERTION(!gfxFontGroup::IsInvalidChar(PRUnichar(ch)),
+                     "Invalid character detected");
+        ++utf16Offset;
+
+        // We produced this UTF8 so we don't need to worry about malformed stuff
+        p = g_utf8_next_char(p);
+        if (p >= end)
+            break;
+
+        if (utf16Offset >= textRunLength) {
+            NS_ERROR("Someone has added too many glyphs!");
+            return NS_ERROR_FAILURE;
+        }
+
+        g.SetComplex(aTextRun->IsClusterStart(utf16Offset), PR_FALSE, 0);
+        aTextRun->SetGlyphs(utf16Offset, g, nsnull);
+    }
+    *aUTF16Offset = utf16Offset;
+    return NS_OK;
+}
+
+nsresult
+gfxPangoFontGroup::SetGlyphs(gfxTextRun *aTextRun, gfxPangoFont *aFont,
+                             const gchar *aUTF8, PRUint32 aUTF8Length,
+                             PRUint32 *aUTF16Offset, PangoGlyphString *aGlyphs,
+                             PangoGlyphUnit aOverrideSpaceWidth,
+                             PRBool aAbortOnMissingGlyph)
+{
+    gint numGlyphs = aGlyphs->num_glyphs;
+    PangoGlyphInfo *glyphs = aGlyphs->glyphs;
+    const gint *logClusters = aGlyphs->log_clusters;
+    // We cannot make any assumptions about the order of glyph clusters
+    // provided by pango_shape (see 375864), so we work through the UTF8 text
+    // and process the glyph clusters in logical order.
+
+    // logGlyphs is like an inverse of logClusters.  For each UTF8 byte:
+    //   >= 0 indicates that the byte is first in a cluster and
+    //        gives the position of the starting glyph for the cluster.
+    //     -1 indicates that the byte does not start a cluster.
+    nsAutoTArray<gint,2000> logGlyphs;
+    if (!logGlyphs.AppendElements(aUTF8Length + 1))
+        return NS_ERROR_OUT_OF_MEMORY;
+    PRUint32 utf8Index = 0;
+    for(; utf8Index < aUTF8Length; ++utf8Index)
+        logGlyphs[utf8Index] = -1;
+    logGlyphs[aUTF8Length] = numGlyphs;
+
+    gint lastCluster = -1; // != utf8Index
+    for (gint glyphIndex = 0; glyphIndex < numGlyphs; ++glyphIndex) {
+        gint thisCluster = logClusters[glyphIndex];
+        if (thisCluster != lastCluster) {
+            lastCluster = thisCluster;
+            NS_ASSERTION(0 <= thisCluster && thisCluster < gint(aUTF8Length),
+                         "garbage from pango_shape - this is bad");
+            logGlyphs[thisCluster] = glyphIndex;
+        }
+    }
+
+    PRUint32 utf16Offset = *aUTF16Offset;
+    PRUint32 textRunLength = aTextRun->GetLength();
+    utf8Index = 0;
+    // The next glyph cluster in logical order. 
+    gint nextGlyphClusterStart = logGlyphs[utf8Index];
+    NS_ASSERTION(nextGlyphClusterStart >= 0, "No glyphs! - NUL in string?");
+    while (utf8Index < aUTF8Length) {
+        if (utf16Offset >= textRunLength) {
+          NS_ERROR("Someone has added too many glyphs!");
+          return NS_ERROR_FAILURE;
+        }
+        gint glyphClusterStart = nextGlyphClusterStart;
+        // Find the utf8 text associated with this glyph cluster.
+        PRUint32 clusterUTF8Start = utf8Index;
+        // Check we are consistent with pango_break data.
+        NS_ASSERTION(aTextRun->GetCharacterGlyphs()->IsClusterStart(),
+                     "Glyph cluster not aligned on character cluster.");
+        do {
+            ++utf8Index;
+            nextGlyphClusterStart = logGlyphs[utf8Index];
+        } while (nextGlyphClusterStart < 0);
+        const gchar *clusterUTF8 = &aUTF8[clusterUTF8Start];
+        PRUint32 clusterUTF8Length = utf8Index - clusterUTF8Start;
+
+        PRBool haveMissingGlyph = PR_FALSE;
+        gint glyphIndex = glyphClusterStart;
+
+        // It's now unncecessary to do NUL handling here.
+        do {
+            if (IS_EMPTY_GLYPH(glyphs[glyphIndex].glyph)) {
+                // The zero width characters return empty glyph ID at
+                // shaping, we should override it.
+                glyphs[glyphIndex].glyph = aFont->GetGlyph(' ');
+                glyphs[glyphIndex].geometry.width = 0;
+            } else if (IS_MISSING_GLYPH(glyphs[glyphIndex].glyph)) {
+                // Does pango ever provide more than one glyph in the
+                // cluster if there is a missing glyph?
+                // behdad: yes
+                haveMissingGlyph = PR_TRUE;
+            }
+            glyphIndex++;
+        } while (glyphIndex < numGlyphs && 
+                 logClusters[glyphIndex] == gint(clusterUTF8Start));
+
+        if (haveMissingGlyph && aAbortOnMissingGlyph)
+            return NS_ERROR_FAILURE;
+
+        nsresult rv;
+        if (haveMissingGlyph) {
+            rv = SetMissingGlyphs(aTextRun, clusterUTF8, clusterUTF8Length,
+                             &utf16Offset);
         } else {
-            glyphs[i-num_invalid_glyphs].index = info->glyph;
-            glyphs[i-num_invalid_glyphs].x = pt.x + (offset + info->geometry.x_offset)/FLOAT_PANGO_SCALE;
-            glyphs[i-num_invalid_glyphs].y = pt.y + (info->geometry.y_offset)/FLOAT_PANGO_SCALE;
+            rv = SetGlyphsForCharacterGroup(&glyphs[glyphClusterStart],
+                                            glyphIndex - glyphClusterStart,
+                                            aTextRun,
+                                            clusterUTF8, clusterUTF8Length,
+                                            &utf16Offset, aOverrideSpaceWidth);
         }
+        NS_ENSURE_SUCCESS(rv,rv);
+    }
+    *aUTF16Offset = utf16Offset;
+    return NS_OK;
+}
 
-        offset += info->geometry.width;
+nsresult
+gfxPangoFontGroup::SetMissingGlyphs(gfxTextRun *aTextRun,
+                                    const gchar *aUTF8, PRUint32 aUTF8Length,
+                                    PRUint32 *aUTF16Offset)
+{
+    PRUint32 utf16Offset = *aUTF16Offset;
+    PRUint32 textRunLength = aTextRun->GetLength();
+    for (PRUint32 index = 0; index < aUTF8Length;) {
+        if (utf16Offset >= textRunLength) {
+            NS_ERROR("Someone has added too many glyphs!");
+            break;
+        }
+        gunichar ch = g_utf8_get_char(aUTF8 + index);
+        aTextRun->SetMissingGlyph(utf16Offset, ch);
+
+        ++utf16Offset;
+        NS_ASSERTION(!IS_SURROGATE(ch), "surrogates should not appear in UTF8");
+        if (ch >= 0x10000)
+            ++utf16Offset;
+        // We produced this UTF8 so we don't need to worry about malformed stuff
+        index = g_utf8_next_char(aUTF8 + index) - aUTF8;
     }
 
-    cairo_show_glyphs(ctx->GetCairo(), glyphs, aGlyphs->num_glyphs-num_invalid_glyphs);
-
-    if (aGlyphs->num_glyphs > AUTO_GLYPHBUF_SIZE)
-        delete [] glyphs;
-
-    cairo_font_face_destroy(font);
-
-    return offset;
-}
-#endif
-
-gfxPangoTextRun::gfxPangoTextRun(const nsAString& aString, gfxPangoFontGroup *aGroup)
-    : mString(aString), mGroup(aGroup), mPangoLayout(nsnull), mWidth(-1), mHeight(-1)
-{
+    *aUTF16Offset = utf16Offset;
+    return NS_OK;
 }
 
-gfxPangoTextRun::~gfxPangoTextRun()
+#if defined(ENABLE_FAST_PATH_8BIT) || defined(ENABLE_FAST_PATH_ALWAYS)
+nsresult
+gfxPangoFontGroup::CreateGlyphRunsFast(gfxTextRun *aTextRun,
+                                       const gchar *aUTF8, PRUint32 aUTF8Length)
 {
-    if (mPangoLayout) {
-        g_object_unref (mPangoLayout);
-        mPangoLayout = nsnull;
-    }
-}
+    const gchar *p = aUTF8;
+    gfxPangoFont *font = GetFontAt(0);
+    PangoFont *pangofont = font->GetPangoFont();
+    PangoFcFont *fcfont = PANGO_FC_FONT (pangofont);
+    PRUint32 utf16Offset = 0;
+    gfxTextRun::CompressedGlyph g;
+    const PRUint32 appUnitsPerDevUnit = aTextRun->GetAppUnitsPerDevUnit();
 
-void
-gfxPangoTextRun::EnsurePangoLayout(gfxContext *aContext)
-{
-    nsRefPtr<gfxPangoFont> pf = mGroup->GetFontAt(0);
+    aTextRun->AddGlyphRun(font, 0);
 
-    if (mPangoLayout == nsnull) {
-        NS_ConvertUTF16toUTF8 u8str(mString);
+    while (p < aUTF8 + aUTF8Length) {
+        // glib-2.12.9: "If p does not point to a valid UTF-8 encoded
+        // character, results are undefined." so it is not easy to assert that
+        // aUTF8 in fact points to UTF8 data but asserting
+        // g_unichar_validate(ch) may be mildly useful.
+        gunichar ch = g_utf8_get_char(p);
+        p = g_utf8_next_char(p);
+        
+        if (ch == 0) {
+            // treat this null byte as a missing glyph. Pango
+            // doesn't create glyphs for these, not even missing-glyphs.
+            aTextRun->SetMissingGlyph(utf16Offset, 0);
+        } else {
+            NS_ASSERTION(!IsInvalidChar(ch), "Invalid char detected");
+            FT_UInt glyph = pango_fc_font_get_glyph (fcfont, ch);
+            if (!glyph)                  // character not in font,
+                return NS_ERROR_FAILURE; // fallback to CreateGlyphRunsItemizing
 
-        mPangoLayout = pango_layout_new (pf->GetPangoContext());
-        pango_layout_set_text (mPangoLayout, u8str.Data(), u8str.Length());
+            PangoRectangle rect;
+            pango_font_get_glyph_extents (pangofont, glyph, NULL, &rect);
 
-        if (pango_layout_get_line_count(mPangoLayout) != 1) {
-            NS_WARNING("gfxPangoFonts: more than one line in layout!\n");
-        }
+            PRInt32 advance = PANGO_PIXELS (rect.width * appUnitsPerDevUnit);
+            if (advance >= 0 &&
+                gfxTextRun::CompressedGlyph::IsSimpleAdvance(advance) &&
+                gfxTextRun::CompressedGlyph::IsSimpleGlyphID(glyph)) {
+                aTextRun->SetSimpleGlyph(utf16Offset,
+                                         g.SetSimpleGlyph(advance, glyph));
+            } else {
+                gfxTextRun::DetailedGlyph details;
+                details.mGlyphID = glyph;
+                NS_ASSERTION(details.mGlyphID == glyph,
+                             "Seriously weird glyph ID detected!");
+                details.mAdvance = advance;
+                details.mXOffset = 0;
+                details.mYOffset = 0;
+                g.SetComplex(aTextRun->IsClusterStart(utf16Offset), PR_TRUE, 1);
+                aTextRun->SetGlyphs(utf16Offset, g, &details);
+            }
 
-        // fix up the space width
-        PangoLayoutLine *line = pango_layout_get_line(mPangoLayout, 0);
-        gint32 spaceWidth =
-            NSToCoordRound(pf->GetMetrics().spaceWidth * FLOAT_PANGO_SCALE);
-        for (GSList *tmpList = line->runs;
-             tmpList && tmpList->data; tmpList = tmpList->next)
-        {
-            PangoLayoutRun *layoutRun = (PangoLayoutRun *)tmpList->data;
-            for (gint i=0; i < layoutRun->glyphs->num_glyphs; i++) {
-                gint j = (gint)layoutRun->glyphs->log_clusters[i] +
-                         layoutRun->item->offset;
-                if (u8str[j] == ' ')
-                    layoutRun->glyphs->glyphs[i].geometry.width = spaceWidth;
+            NS_ASSERTION(!IS_SURROGATE(ch), "Surrogates shouldn't appear in UTF8");
+            if (ch >= 0x10000) {
+                // This character is a surrogate pair in UTF16
+                ++utf16Offset;
             }
         }
-    }
 
-#ifdef THEBES_USE_PANGO_CAIRO
-    if (aContext) {
-        pango_cairo_update_context (aContext->GetCairo(), pf->GetPangoContext());
+        ++utf16Offset;
     }
-    pango_layout_context_changed (mPangoLayout);
-#endif
+    return NS_OK;
 }
+#endif
 
-void
-gfxPangoTextRun::Draw(gfxContext *aContext, gfxPoint pt)
+void 
+gfxPangoFontGroup::CreateGlyphRunsItemizing(gfxTextRun *aTextRun,
+                                            const gchar *aUTF8, PRUint32 aUTF8Length,
+                                            PRUint32 aUTF8HeaderLen)
 {
-    gfxMatrix mat = aContext->CurrentMatrix();
 
-    // note that to make this work with pango_cairo, changing
-    // this Translate to a MoveTo makes things render in the right place.
-    // -I don't know why-.  I mean, I assume it means that the path
-    // then starts in the right place, but that makes no sense,
-    // since a translate should do the exact same thing.  Since
-    // pango-cairo is not going to be the default case, we'll
-    // just leave this in here for now and puzzle over it later.
-#ifndef THEBES_USE_PANGO_CAIRO
-    aContext->Translate(pt);
-#else
-    aContext->MoveTo(pt);
-#endif
+    PangoContext *context = gdk_pango_context_get();
 
-    // we draw only the first layout line, because
-    // we can then position by baseline (which is what pt is at);
-    // using show_layout expects top-left point.
-    EnsurePangoLayout(aContext);
-
-#if 0
-    Measure(aContext);
-    if (mWidth != -1) {
-        aContext->Save();
-        aContext->SetColor(gfxRGBA(1.0, 0.0, 0.0, 0.5));
-        aContext->NewPath();
-        aContext->Rectangle(gfxRect(0.0, -mHeight/FLOAT_PANGO_SCALE, mWidth/FLOAT_PANGO_SCALE, mHeight/FLOAT_PANGO_SCALE));
-        aContext->Fill();
-        aContext->Restore();
+    PangoFontDescription *fontDesc =
+        NewPangoFontDescription(GetFontAt(0)->GetName(), GetStyle());
+    if (GetStyle()->sizeAdjust != 0.0) {
+        gfxFloat size = 
+            static_cast<gfxPangoFont*>(GetFontAt(0))->GetAdjustedSize();
+        pango_font_description_set_absolute_size(fontDesc, size * PANGO_SCALE);
     }
-#endif
 
-    PangoLayoutLine *line = pango_layout_get_line(mPangoLayout, 0);
+    pango_context_set_font_description(context, fontDesc);
+    pango_font_description_free(fontDesc);
 
-    if (!mUTF8Spacing.IsEmpty()) {
-        gint offset = 0;
-        for (GSList *tmpList = line->runs;
-             tmpList && tmpList->data;
-             tmpList = tmpList->next)
-        {
-            PangoLayoutRun *layoutRun = (PangoLayoutRun *)tmpList->data;
-            PangoGlyphString *glyphString = layoutRun->glyphs;
-            for (gint i = 0; i < glyphString->num_glyphs; i++) {
-                PangoGlyphGeometry* geometry = &glyphString->glyphs[i].geometry;
-                geometry->x_offset = offset;
-                gint index =
-                    glyphString->log_clusters[i] + layoutRun->item->offset;
-                offset += mUTF8Spacing[index] - geometry->width;
+    PangoLanguage *lang = GetPangoLanguage(GetStyle()->langGroup);
+
+    // we should set this to null if we don't have a text language from the page...
+    // except that we almost always have something...
+    pango_context_set_language(context, lang);
+
+    PangoDirection dir = aTextRun->IsRightToLeft() ? PANGO_DIRECTION_RTL : PANGO_DIRECTION_LTR;
+    GList *items = pango_itemize_with_base_dir(context, dir, aUTF8, 0, aUTF8Length, nsnull, nsnull);
+
+    PRUint32 utf16Offset = 0;
+    PRBool isRTL = aTextRun->IsRightToLeft();
+    GList *pos = items;
+    PangoGlyphString *glyphString = pango_glyph_string_new();
+    if (!glyphString)
+        goto out; // OOM
+
+    for (; pos && pos->data; pos = pos->next) {
+        PangoItem *item = (PangoItem *)pos->data;
+        NS_ASSERTION(isRTL == item->analysis.level % 2, "RTL assumption mismatch");
+
+        PRUint32 offset = item->offset;
+        PRUint32 length = item->length;
+        if (offset < aUTF8HeaderLen) {
+            if (offset + length <= aUTF8HeaderLen)
+                continue;
+
+            length -= aUTF8HeaderLen - offset;
+            offset = aUTF8HeaderLen;
+        }
+
+        /* look up the gfxPangoFont from the PangoFont */
+        nsRefPtr<gfxPangoFont> font =
+            gfxPangoFont::GetOrMakeFont(item->analysis.font);
+
+        nsresult rv = aTextRun->AddGlyphRun(font, utf16Offset, PR_TRUE);
+        if (NS_FAILED(rv)) {
+            NS_ERROR("AddGlyphRun Failed");
+            goto out;
+        }
+
+        PRUint32 spaceWidth = NS_lround(font->GetMetrics().spaceWidth * FLOAT_PANGO_SCALE);
+
+        const gchar *p = aUTF8 + offset;
+        const gchar *end = p + length;
+        while (p < end) {
+            if (*p == 0) {
+                aTextRun->SetMissingGlyph(utf16Offset, 0);
+                ++p;
+                ++utf16Offset;
+                continue;
             }
+
+            // It's necessary to loop over pango_shape as it treats
+            // NULs as string terminators
+            const gchar *text = p;
+            do {
+                ++p;
+            } while(p < end && *p != 0);
+            gint len = p - text;
+
+            pango_shape(text, len, &item->analysis, glyphString);
+            SetupClusterBoundaries(aTextRun, text, len, utf16Offset, &item->analysis);
+            SetGlyphs(aTextRun, font, text, len, &utf16Offset, glyphString, spaceWidth, PR_FALSE);
         }
     }
 
-#ifndef THEBES_USE_PANGO_CAIRO
-    gint offset = 0;
-    for (GSList *tmpList = line->runs;
-         tmpList && tmpList->data;
-         tmpList = tmpList->next)
-    {
-        PangoLayoutRun *layoutRun = (PangoLayoutRun *)tmpList->data;
+    aTextRun->SortGlyphRuns();
 
-        offset += DrawCairoGlyphs (aContext, layoutRun->item->analysis.font,
-                                   gfxPoint(offset / FLOAT_PANGO_SCALE, 0.0),
-                                   layoutRun->glyphs);
-    }
-#else
-    pango_cairo_show_layout_line (aContext->GetCairo(), line);
-#endif
+out:
+    if (glyphString)
+        pango_glyph_string_free(glyphString);
 
-    aContext->SetMatrix(mat);
+    for (pos = items; pos; pos = pos->next)
+        pango_item_free((PangoItem *)pos->data);
+
+    if (items)
+        g_list_free(items);
+
+    g_object_unref(context);
 }
 
-gfxFloat
-gfxPangoTextRun::Measure(gfxContext *aContext)
-{
-    if (mWidth == -1) {
-        EnsurePangoLayout(aContext);
-        pango_layout_get_size (mPangoLayout, &mWidth, &mHeight);
-    }
 
-    return mWidth/FLOAT_PANGO_SCALE;
-}
-
-void
-gfxPangoTextRun::SetSpacing(const nsTArray<gfxFloat> &spacingArray)
-{
-    mSpacing = spacingArray;
-    NS_ConvertUTF16toUTF8 str(mString);
-    mUTF8Spacing.Clear();
-    const char *curChar = str.get();
-    const char *prevChar = curChar;
-    for (unsigned int i = 0; i < mString.Length(); i++) {
-        for (; prevChar + 1 < curChar; prevChar++)
-            mUTF8Spacing.AppendElement(0);
-        mUTF8Spacing.AppendElement(NSToCoordRound(mSpacing[i] * FLOAT_PANGO_SCALE));
-        if (IS_HIGH_SURROGATE(mString[i]))
-            i++;
-        prevChar = curChar;
-        curChar = g_utf8_find_next_char(curChar, NULL);
-    }
-}
-
-const nsTArray<gfxFloat> *const
-gfxPangoTextRun::GetSpacing() const
-{
-    return &mSpacing;
-}
 
 /**
  ** language group helpers
@@ -780,14 +1340,33 @@ struct MozPangoLangGroup {
 };
 
 static const MozPangoLangGroup MozPangoLangGroups[] = {
-    { "x-western",      "en" },
-    { "x-central-euro", "pl" },
-    { "x-cyrillic",     "ru" },
-    { "x-baltic",       "lv" },
-    { "x-devanagari",   "hi" },
-    { "x-tamil",        "ta" },
-    { "x-unicode",      0    },
-    { "x-user-def",     0    },
+    { "x-western",      "en"    },
+    { "x-central-euro", "pl"    },
+    { "ja",             "ja"    },
+    { "zh-TW",          "zh-tw" },
+    { "zh-CN",          "zh-cn" },
+    { "zh-HK",          "zh-hk" },
+    { "ko",             "ko"    },
+    { "x-cyrillic",     "ru"    },
+    { "x-baltic",       "lv"    },
+    { "el",             "el"    },
+    { "tr",             "tr"    },
+    { "th",             "th"    },
+    { "he",             "he"    },
+    { "ar",             "ar"    },
+    { "x-devanagari",   "hi"    },
+    { "x-tamil",        "ta"    },
+    { "x-armn",         "ar"    },
+    { "x-beng",         "bn"    },
+    { "x-ethi",         "et"    },
+    { "x-geor",         "ka"    },
+    { "x-gujr",         "gu"    },
+    { "x-guru",         "pa"    },
+    { "x-khmr",         "km"    },
+    { "x-mlym",         "ml"    },
+    { "x-cans",         "iu"    },
+    { "x-unicode",      0       },
+    { "x-user-def",     0       },
 };
 
 #define NUM_PANGO_LANG_GROUPS (sizeof (MozPangoLangGroups) / \
@@ -819,6 +1398,221 @@ GetPangoLanguage(const nsACString& cname)
     else if (langGroup->PangoLang) 
         return pango_language_from_string(langGroup->PangoLang);
 
-    return pango_language_from_string("en");
+    return nsnull;
 }
 
+// See pango-script-lang-table.h in pango.
+static const MozPangoLangGroup PangoAllLangGroup[] = {
+    { "x-western",      "aa"    },
+    { "x-cyrillic",     "ab"    },
+    { "x-western",      "af"    },
+    { "x-ethi",         "am"    },
+    { "ar",             "ar"    },
+    { "x-western",      "ast"   },
+    { "x-cyrillic",     "ava"   },
+    { "x-western",      "ay"    },
+    { "x-western",      "az"    },
+    { "x-cyrillic",     "ba"    },
+    { "x-western",      "bam"   },
+    { "x-cyrillic",     "be"    },
+    { "x-cyrillic",     "bg"    },
+    { "x-devanagari",   "bh"    },
+    { "x-devanagari",   "bho"   },
+    { "x-western",      "bi"    },
+    { "x-western",      "bin"   },
+    { "x-beng",         "bn"    },
+    { 0,                "bo"    }, // PANGO_SCRIPT_TIBETAN
+    { "x-western",      "br"    },
+    { "x-western",      "bs"    },
+    { "x-cyrillic",     "bua"   },
+    { "x-western",      "ca"    },
+    { "x-cyrillic",     "ce"    },
+    { "x-western",      "ch"    },
+    { "x-cyrillic",     "chm"   },
+    { 0,                "chr"   }, // PANGO_SCRIPT_CHEROKEE
+    { "x-western",      "co"    },
+    { "x-central-euro", "cs"    }, // PANGO_SCRIPT_LATIN
+    { "x-cyrillic",     "cu"    },
+    { "x-cyrillic",     "cv"    },
+    { "x-western",      "cy"    },
+    { "x-western",      "da"    },
+    { "x-central-euro", "de"    }, // PANGO_SCRIPT_LATIN
+    { 0,                "dz"    }, // PANGO_SCRIPT_TIBETAN
+    { "el",             "el"    },
+    { "x-western",      "en"    },
+    { "x-western",      "eo"    },
+    { "x-western",      "es"    },
+    { "x-western",      "et"    },
+    { "x-western",      "eu"    },
+    { "ar",             "fa"    },
+    { "x-western",      "fi"    },
+    { "x-western",      "fj"    },
+    { "x-western",      "fo"    },
+    { "x-western",      "fr"    },
+    { "x-western",      "ful"   },
+    { "x-western",      "fur"   },
+    { "x-western",      "fy"    },
+    { "x-western",      "ga"    },
+    { "x-western",      "gd"    },
+    { "x-ethi",         "gez"   },
+    { "x-western",      "gl"    },
+    { "x-western",      "gn"    },
+    { "x-gujr",         "gu"    },
+    { "x-western",      "gv"    },
+    { "x-western",      "ha"    },
+    { "x-western",      "haw"   },
+    { "he",             "he"    },
+    { "x-devanagari",   "hi"    },
+    { "x-western",      "ho"    },
+    { "x-central-euro", "hr"    }, // PANGO_SCRIPT_LATIN
+    { "x-western",      "hu"    },
+    { "x-armn",         "hy"    },
+    { "x-western",      "ia"    },
+    { "x-western",      "ibo"   },
+    { "x-western",      "id"    },
+    { "x-western",      "ie"    },
+    { "x-cyrillic",     "ik"    },
+    { "x-western",      "io"    },
+    { "x-western",      "is"    },
+    { "x-western",      "it"    },
+    { "x-cans",         "iu"    },
+    { "ja",             "ja"    },
+    { "x-geor",         "ka"    },
+    { "x-cyrillic",     "kaa"   },
+    { "x-western",      "ki"    },
+    { "x-cyrillic",     "kk"    },
+    { "x-western",      "kl"    },
+    { "x-khmr",         "km"    },
+    { 0,                "kn"    }, // PANGO_SCRIPT_KANNADA
+    { "ko",             "ko"    },
+    { "x-devanagari",   "kok"   },
+    { "x-devanagari",   "ks"    },
+    { "x-cyrillic",     "ku"    },
+    { "x-cyrillic",     "kum"   },
+    { "x-cyrillic",     "kv"    },
+    { "x-western",      "kw"    },
+    { "x-cyrillic",     "ky"    },
+    { "x-western",      "la"    },
+    { "x-western",      "lb"    },
+    { "x-cyrillic",     "lez"   },
+    { 0,                "lo"    }, // PANGO_SCRIPT_LAO
+    { "x-western",      "lt"    },
+    { "x-western",      "lv"    },
+    { "x-western",      "mg"    },
+    { "x-western",      "mh"    },
+    { "x-western",      "mi"    },
+    { "x-cyrillic",     "mk"    },
+    { "x-mlym",         "ml"    },
+    { 0,                "mn"    }, // PANGO_SCRIPT_MONGOLIAN
+    { "x-western",      "mo"    },
+    { "x-devanagari",   "mr"    },
+    { "x-western",      "mt"    },
+    { 0,                "my"    }, // PANGO_SCRIPT_MYANMAR
+    { "x-western",      "nb"    },
+    { "x-devanagari",   "ne"    },
+    { "x-western",      "nl"    },
+    { "x-western",      "nn"    },
+    { "x-western",      "no"    },
+    { "x-western",      "ny"    },
+    { "x-western",      "oc"    },
+    { "x-western",      "om"    },
+    { 0,                "or"    }, // PANGO_SCRIPT_ORIYA
+    { "x-cyrillic",     "os"    },
+    { "x-central-euro", "pl"    }, // PANGO_SCRIPT_LATIN
+    { "x-western",      "pt"    },
+    { "x-western",      "rm"    },
+    { "x-western",      "ro"    },
+    { "x-cyrillic",     "ru"    },
+    { "x-devanagari",   "sa"    },
+    { "x-cyrillic",     "sah"   },
+    { "x-western",      "sco"   },
+    { "x-western",      "se"    },
+    { "x-cyrillic",     "sel"   },
+    { "x-cyrillic",     "sh"    },
+    { 0,                "si"    }, // PANGO_SCRIPT_SINHALA
+    { "x-central-euro", "sk"    }, // PANGO_SCRIPT_LATIN
+    { "x-central-euro", "sl"    }, // PANGO_SCRIPT_LATIN
+    { "x-western",      "sm"    },
+    { "x-western",      "sma"   },
+    { "x-western",      "smj"   },
+    { "x-western",      "smn"   },
+    { "x-western",      "sms"   },
+    { "x-western",      "so"    },
+    { "x-western",      "sq"    },
+    { "x-cyrillic",     "sr"    },
+    { "x-western",      "sv"    },
+    { "x-western",      "sw"    },
+    { 0,                "syr"   }, // PANGO_SCRIPT_SYRIAC
+    { "x-tamil",        "ta"    },
+    { 0,                "te"    }, // PANGO_SCRIPT_TELUGU
+    { "x-cyrillic",     "tg"    },
+    { "th",             "th"    },
+    { "x-ethi",         "ti-er" },
+    { "x-ethi",         "ti-et" },
+    { "x-ethi",         "tig"   },
+    { "x-cyrillic",     "tk"    },
+    { 0,                "tl"    }, // PANGO_SCRIPT_TAGALOG
+    { "x-western",      "tn"    },
+    { "x-western",      "to"    },
+    { "x-western",      "tr"    },
+    { "x-western",      "ts"    },
+    { "x-cyrillic",     "tt"    },
+    { "x-western",      "tw"    },
+    { "x-cyrillic",     "tyv"   },
+    { "ar",             "ug"    },
+    { "x-cyrillic",     "uk"    },
+    { "ar",             "ur"    },
+    { "x-cyrillic",     "uz"    },
+    { "x-western",      "ven"   },
+    { "x-western",      "vi"    },
+    { "x-western",      "vo"    },
+    { "x-western",      "vot"   },
+    { "x-western",      "wa"    },
+    { "x-western",      "wen"   },
+    { "x-western",      "wo"    },
+    { "x-western",      "xh"    },
+    { "x-western",      "yap"   },
+    { "he",             "yi"    },
+    { "x-western",      "yo"    },
+    { "zh-CN",          "zh-cn" },
+    { "zh-HK",          "zh-hk" },
+    { "zh-HK",          "zh-mo" },
+    { "zh-CN",          "zh-sg" },
+    { "zh-TW",          "zh-tw" },
+    { "x-western",      "zu"    },
+};
+
+#define NUM_PANGO_ALL_LANG_GROUPS (G_N_ELEMENTS (PangoAllLangGroup))
+
+gfxPangoFontCache::gfxPangoFontCache()
+{
+    mPangoFonts.Init(500);
+}
+
+gfxPangoFontCache::~gfxPangoFontCache()
+{
+}
+
+void
+gfxPangoFontCache::Put(const PangoFontDescription *aFontDesc, PangoFont *aPangoFont)
+{
+    if (mPangoFonts.Count() > 5000)
+        mPangoFonts.Clear();
+    PRUint32 key = pango_font_description_hash(aFontDesc);
+    gfxPangoFontWrapper *value = new gfxPangoFontWrapper(aPangoFont);
+    if (!value)
+        return;
+    mPangoFonts.Put(key, value);
+}
+
+PangoFont*
+gfxPangoFontCache::Get(const PangoFontDescription *aFontDesc)
+{
+    PRUint32 key = pango_font_description_hash(aFontDesc);
+    gfxPangoFontWrapper *value;
+    if (!mPangoFonts.Get(key, &value))
+        return nsnull;
+    PangoFont *font = value->Get();
+    g_object_ref(font);
+    return font;
+}

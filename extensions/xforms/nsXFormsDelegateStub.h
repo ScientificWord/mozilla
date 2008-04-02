@@ -42,7 +42,7 @@
 
 #include "nsAutoPtr.h"
 #include "nsCOMPtr.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 #include "nsIDOMElement.h"
 #include "nsIDelegateInternal.h"
 #include "nsXFormsControlStub.h"
@@ -51,22 +51,16 @@
 
 class nsIAtom;
 
-/**
- * nsRepeatState is used to indicate whether the element
- * is inside \<repeat\>'s template. If it is, there is no need
- * to refresh the widget bound to the element.
- */
-enum nsRepeatState {
-  eType_Unknown,
-  eType_Template,
-  eType_GeneratedContent,
-  eType_NotApplicable
+enum nsRestrictionFlag {
+  eTypes_NoRestriction,
+  eTypes_Inclusive,
+  eTypes_Exclusive
 };
 
 /**
  * Stub implementation of the nsIXFormsDelegate interface.
  */
-class nsXFormsDelegateStub : public nsXFormsBindableControlStub,
+class nsXFormsDelegateStub : public nsXFormsControlStub,
                              public nsIDelegateInternal
 {
 public:
@@ -74,14 +68,34 @@ public:
   NS_DECL_NSIXFORMSDELEGATE
   NS_DECL_NSIDELEGATEINTERNAL
 
-  NS_IMETHOD OnCreated(nsIXTFBindableElementWrapper *aWrapper);
+  NS_IMETHOD OnCreated(nsIXTFElementWrapper *aWrapper);
   NS_IMETHOD OnDestroyed();
-  NS_IMETHOD WillChangeParent(nsIDOMElement *aNewParent);
-  NS_IMETHOD WillChangeDocument(nsIDOMDocument *aNewDocument);
+  NS_IMETHOD GetAccesskeyNode(nsIDOMAttr** aNode);
+  NS_IMETHOD PerformAccesskey();
 
   // nsIXFormsControl
   NS_IMETHOD TryFocus(PRBool* aOK);
   NS_IMETHOD Refresh();
+
+  /**
+   * This function is overridden by controls that are restricted in the
+   * datatypes that they can bind to. aTypes will be filled out and returned
+   * only if aIsAllowed is found to be PR_FALSE.
+   *
+   * @param aType          Type we are testing against
+   * @param aIsAllowed     Indicates whether control can bind to aType
+   * @param aRestriction   Output.  If eTypes_Inclusive, then the types returned
+   *                       in aTypes is the list of builtin types that this
+   *                       control can bind to.  If eTypes_Exclusive, the types
+   *                       returned in aTypes is the list of builtin types that
+   *                       this control cannot be bound to.
+   * @param aTypes         Output.  A " " delimited list of builtin types that
+   *                       the control has some restriction with, as specified
+   *                       by aRestriction.
+   */
+  NS_IMETHOD IsTypeAllowed(PRUint16 aType, PRBool *aIsAllowed,
+                           nsRestrictionFlag *aRestriction,
+                           nsAString &aTypes);
 
 #ifdef DEBUG_smaug
   virtual const char* Name()
@@ -96,21 +110,14 @@ public:
 
 
   nsXFormsDelegateStub(const nsAString& aType = EmptyString())
-    : mControlType(aType), mRepeatState(eType_Unknown) {}
+    : mControlType(aType) {}
 
 protected:
-  // This is called when XBL widget is attached to the XForms control.
-  // It checks the ancestors of the element and returns an nsRepeatState
-  // depending on the elements place in the document.
-  nsRepeatState UpdateRepeatState();
-
   // Sets/removes the moz:type attribute. The attribute can be used to detect the
   // type of the node, which is bound the the control.
   void SetMozTypeAttribute();
 
   nsString      mControlType;
-  nsRepeatState mRepeatState;
-
   /** The accessors object for this delegate */
   nsRefPtr<nsXFormsAccessors> mAccessor;
 };

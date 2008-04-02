@@ -44,6 +44,9 @@
 #include "nsXFormsUtils.h"
 #include "nsICategoryManager.h"
 #include "nsIServiceManager.h"
+#include "nsIClassInfoImpl.h"
+#include "nsXFormsXPathFunctions.h"
+#include "nsServiceManagerUtils.h"
 
 // bb0d9c8b-3096-4b66-92a0-6c1ddf80e65f
 #define NS_XFORMSUTILITYSERVICE_CID \
@@ -52,9 +55,15 @@
 #define NS_XFORMSUTILITYSERVICE_CONTRACTID \
 "@mozilla.org/xforms-utility-service;1"
 
+#define XFORMSXPATHFUNCTIONS_CID \
+{ 0x8edc8cf1, 0x69a3, 0x11d9, { 0x97, 0x91, 0x00, 0x0a, 0x95, 0xdc, 0x23, 0x4c } }
+#define XFORMSXPATHFUNCTIONS_CONTRACTID \
+"@mozilla.org/xforms-xpath-functions;1"
+
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsXFormsElementFactory)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsXFormsUtilityService)
-
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsXFormsXPathFunctions)
+NS_DECL_CLASSINFO(nsXFormsXPathFunctions)
 
 static NS_IMETHODIMP
 RegisterXFormsModule(nsIComponentManager *aCompMgr,
@@ -73,7 +82,7 @@ RegisterXFormsModule(nsIComponentManager *aCompMgr,
   if (!catman)
     return NS_ERROR_FAILURE;
 
-  nsXPIDLCString previous;
+  nsCString previous;
   nsresult rv =
     catman->AddCategoryEntry(NS_DOMNS_FEATURE_PREFIX "org.w3c.xforms.dom",
                              "1.0",
@@ -104,6 +113,8 @@ UnregisterXFormsModule(nsIComponentManager *aCompMgr,
   printf("XFORMS Module: Unregistering\n");
 #endif
 
+  nsXFormsUtils::Shutdown();
+
   nsCOMPtr<nsICategoryManager> catman =
     do_GetService(NS_CATEGORYMANAGER_CONTRACTID);
 
@@ -132,6 +143,15 @@ static const nsModuleComponentInfo components[] = {
     NS_XFORMSUTILITYSERVICE_CID,
     NS_XFORMSUTILITYSERVICE_CONTRACTID,
     nsXFormsUtilityServiceConstructor
+  },
+  { "XForms XPath extension functions",
+    XFORMSXPATHFUNCTIONS_CID,
+    XFORMSXPATHFUNCTIONS_CONTRACTID,
+    nsXFormsXPathFunctionsConstructor,
+    nsnull, nsnull, nsnull,
+    NS_CI_INTERFACE_GETTER_NAME(nsXFormsXPathFunctions),
+    nsnull,
+    &NS_CLASSINFO_NAME(nsXFormsXPathFunctions)
   }
 };
 

@@ -36,44 +36,66 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "gfxQuartzSurface.h"
+#include "gfxContext.h"
 
-#include "cairo-quartz2.h"
+#include "cairo-quartz.h"
 
-gfxQuartzSurface::gfxQuartzSurface(gfxImageFormat format,
-                                   int width, int height,
-                                   PRBool y_grows_down)
-    : mWidth(width), mHeight(height)
+gfxQuartzSurface::gfxQuartzSurface(const gfxSize& size, gfxImageFormat format,
+                                   PRBool aForPrinting)
+    : mSize(size), mForPrinting(aForPrinting)
 {
-    mCGContext = nsnull;
+    unsigned int width = (unsigned int) floor(size.width);
+    unsigned int height = (unsigned int) floor(size.height);
 
-    cairo_surface_t *surf = cairo_quartzgl_surface_create
-        ((cairo_format_t) format, width, height, y_grows_down);
+    if (!CheckSurfaceSize(gfxIntSize(width, height)))
+        return;
+
+    cairo_surface_t *surf = cairo_quartz_surface_create
+        ((cairo_format_t) format, width, height);
+
+    mCGContext = cairo_quartz_surface_get_cg_context (surf);
+
+    CGContextRetain(mCGContext);
 
     Init(surf);
 }
 
 gfxQuartzSurface::gfxQuartzSurface(CGContextRef context,
-                                   int width, int height,
-                                   PRBool y_grows_down)
-    : mCGContext(context), mWidth(width), mHeight(height)
+                                   const gfxSize& size,
+                                   PRBool aForPrinting)
+    : mCGContext(context), mSize(size), mForPrinting(aForPrinting)
 {
-    cairo_surface_t *surf = cairo_quartzgl_surface_create_for_cg_context
-        (context, width, height, y_grows_down);
-    //printf ("+++ gfxQuartzSurface[%p] %p %d %d -> %p\n", this, context, width, height, surf);
+    unsigned int width = (unsigned int) floor(size.width);
+    unsigned int height = (unsigned int) floor(size.height);
+
+    cairo_surface_t *surf = 
+        cairo_quartz_surface_create_for_cg_context(context,
+                                                   width, height);
+
+    CGContextRetain(mCGContext);
+
     Init(surf);
 }
 
-gfxQuartzSurface::gfxQuartzSurface(cairo_surface_t *csurf)
+gfxQuartzSurface::gfxQuartzSurface(cairo_surface_t *csurf,
+                                   PRBool aForPrinting) :
+    mSize(-1.0, -1.0), mForPrinting(aForPrinting)
 {
-    mWidth = -1;
-    mHeight = -1;
-    mCGContext = nsnull;
+    mCGContext = cairo_quartz_surface_get_cg_context (csurf);
+    CGContextRetain (mCGContext);
 
     Init(csurf, PR_TRUE);
 }
 
+PRInt32 gfxQuartzSurface::GetDefaultContextFlags() const
+{
+    if (mForPrinting)
+        return gfxContext::FLAG_DISABLE_SNAPPING;
+
+    return 0;
+}
+
 gfxQuartzSurface::~gfxQuartzSurface()
 {
-    //printf ("--- ~gfxQuartzSurface[%p] %p %p\n", this, CairoSurface(), mCGContext);
-    Destroy();
+    CGContextRelease(mCGContext);
 }

@@ -44,6 +44,9 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE = gfx
 LIBRARY_NAME = gkgfxthebes
+ifneq ($(OS_ARCH),WINNT)
+SHORT_LIBNAME = gkgfxthb
+endif
 EXPORT_LIBRARY = 1
 IS_COMPONENT = 1
 MODULE_NAME = nsGfxModule
@@ -52,34 +55,19 @@ LIBXUL_LIBRARY = 1
 
 REQUIRES =  xpcom \
             string \
-            cairo \
-            libpixman \
-            glitz \
             thebes \
-            gfx \
             widget \
-            intl \
             view \
             pref \
-            uconv \
             unicharutil \
-            locale \
-            necko \
-            content \
-            layout \
-            dom \
-            debug \
             imglib2 \
-            widget \
             $(ZLIB_REQUIRES) \
             $(NULL)
 
 CPPSRCS		= \
 		nsThebesDeviceContext.cpp \
-		nsThebesDrawingSurface.cpp \
 		nsThebesImage.cpp \
 		nsThebesRegion.cpp \
-		nsThebesBlender.cpp \
 		nsThebesGfxFactory.cpp \
 		nsThebesRenderingContext.cpp \
 		nsThebesFontMetrics.cpp \
@@ -102,17 +90,29 @@ ifeq ($(MOZ_WIDGET_TOOLKIT),windows)
 CPPSRCS		+= nsSystemFontsWin.cpp \
 		   $(NULL)
 
-REQUIRES        += glitzwgl
+REQUIRES	+= \
+		glitzwgl \
+		cairo \
+		$(NULL)
 
 _OS_LIBS	= usp10
 OS_LIBS		+= $(call EXPAND_LIBNAME,$(_OS_LIBS))
+
+ifdef MOZ_ENABLE_GLITZ
+OS_LIBS += opengl32.lib 
+endif
+endif
+
+ifeq ($(MOZ_WIDGET_TOOLKIT),os2)
+CPPSRCS		+= nsSystemFontsOS2.cpp \
+		   $(NULL)
 endif
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),beos)
 CPPSRCS		+= nsSystemFontsBeOS.cpp
 endif
 
-ifneq (,$(filter $(MOZ_GFX_TOOLKIT),mac cocoa))
+ifneq (,$(filter $(MOZ_WIDGET_TOOLKIT),mac cocoa))
 CPPSRCS          += nsSystemFontsMac.cpp
  ifdef MOZ_ENABLE_GLITZ
   REQUIRES         += glitzagl
@@ -120,7 +120,7 @@ CPPSRCS          += nsSystemFontsMac.cpp
  endif
 endif
 
-EXPORTS		+= nsIThebesRenderingContext.h
+EXPORTS         += nsIThebesFontMetrics.h
 
 LOCAL_INCLUDES	= \
 		-I$(srcdir)/. \
@@ -150,8 +150,9 @@ CFLAGS    += $(TK_CFLAGS)
 
 ifdef MOZ_ENABLE_GTK2
 DEFINES += -DMOZ_ENABLE_GTK2
+CXXFLAGS += $(MOZ_PANGO_CFLAGS)
 endif
 
-ifdef MOZ_ENABLE_PANGO
-CXXFLAGS += $(MOZ_PANGO_CFLAGS)
+ifeq ($(MOZ_WIDGET_TOOLKIT),os2)
+CXXFLAGS += $(CAIRO_FT_CFLAGS)
 endif

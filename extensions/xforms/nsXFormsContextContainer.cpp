@@ -36,118 +36,22 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsIXTFBindableElementWrapper.h"
-
-#include "nsCOMPtr.h"
-#include "nsAutoPtr.h"
-#include "nsString.h"
-
-#include "nsIDOM3Node.h"
+#include "nsXFormsContextContainer.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMElement.h"
-#include "nsIDOMEvent.h"
 #include "nsIDOMNSEvent.h"
 #include "nsIDOMEventTarget.h"
 #include "nsIDOMSerializer.h"
 #include "nsIDOMXPathResult.h"
 
-#include "nsXFormsControlStub.h"
 #include "nsIModelElementPrivate.h"
 #include "nsIXFormsContextControl.h"
-#include "nsIXFormsRepeatItemElement.h"
 #include "nsIXFormsRepeatElement.h"
 #include "nsXFormsUtils.h"
 
 #ifdef DEBUG
 //#define DEBUG_XF_CONTEXTCONTAINER
 #endif
-
-class nsXFormsContextContainer;
-
-class nsXFormsFocusListener : public nsIDOMEventListener {
-public:
-  nsXFormsFocusListener(nsXFormsContextContainer* aContainer)
-  : mContainer(aContainer) {}
-
-  NS_DECL_ISUPPORTS
-  NS_DECL_NSIDOMEVENTLISTENER
-  void Detach()
-  {
-    mContainer = nsnull;
-  }
-protected:
-  nsXFormsContextContainer* mContainer;
-};
-
-
-/**
- * Implementation of \<contextcontainer\>.
- * 
- * \<contextcontainer\> is a pseudo-element that is wrapped around each row in
- * an "unrolled" \<repeat\> or \<itemset\>. @see nsXFormsRepeatElement and
- * nsXFormsItemSetElement.
- *
- * @todo Support ::repeat-item and ::repeat-index pseudo-elements. (XXX)
- *       @see http://www.w3.org/TR/xforms/sliceF.html#id2645142
- *       @see http://bugzilla.mozilla.org/show_bug.cgi?id=271724
- */
-class nsXFormsContextContainer : public nsXFormsBindableControlStub,
-                                 public nsIXFormsRepeatItemElement
-{
-protected:
-  /** The handler for the focus event */
-  nsRefPtr<nsXFormsFocusListener> mFocusListener;
-
-  /** The context position for the element */
-  PRInt32 mContextPosition;
-
-  /** The context size for the element */
-  PRInt32 mContextSize;
-
-  /** Does this element have the repeat-index? */
-  PRPackedBool mHasIndex;
-
-  /** Has context changed since last bind? */
-  PRPackedBool mContextIsDirty;
-
-public:
-  nsXFormsContextContainer()
-    : mContextPosition(1), mContextSize(1), mHasIndex(PR_FALSE),
-      mContextIsDirty(PR_FALSE) {}
-
-  NS_DECL_ISUPPORTS_INHERITED
-
-  // nsIXTFElement overrides
-  NS_IMETHOD CloneState(nsIDOMElement *aElement);
-  NS_IMETHOD DocumentChanged(nsIDOMDocument *aNewDocument);
-
-  // nsIXFormsControl
-  NS_IMETHOD Bind(PRBool *aContextChanged);
-  NS_IMETHOD SetContext(nsIDOMNode *aContextNode,
-                        PRInt32     aContextPosition,
-                        PRInt32     aContextSize);
-  NS_IMETHOD GetContext(nsAString   &aModelID,
-                        nsIDOMNode **aContextNode,
-                        PRInt32     *aContextPosition,
-                        PRInt32     *aContextSize);
-  NS_IMETHOD IsEventTarget(PRBool *aOK);
-
-  // nsIXFormsRepeatItemElement
-  NS_DECL_NSIXFORMSREPEATITEMELEMENT
-
-  nsresult HandleFocus(nsIDOMEvent *aEvent);
-
-#ifdef DEBUG_smaug
-  virtual const char* Name() {
-    if (mElement) {
-      nsAutoString localName;
-      mElement->GetLocalName(localName);
-      return NS_ConvertUTF16toUTF8(localName).get();
-    }
-    return "contextcontainer(inline?)";
-  }
-#endif
-};
 
 NS_IMPL_ISUPPORTS1(nsXFormsFocusListener, nsIDOMEventListener)
 
@@ -158,7 +62,7 @@ nsXFormsFocusListener::HandleEvent(nsIDOMEvent* aEvent)
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsXFormsContextContainer,
-                             nsXFormsBindableControlStub,
+                             nsXFormsControlStub,
                              nsIXFormsRepeatItemElement)
 
 nsresult
@@ -296,10 +200,10 @@ nsXFormsContextContainer::GetContext(nsAString      &aModelID,
                                      PRInt32        *aContextPosition,
                                      PRInt32        *aContextSize)
 {
-  nsresult rv = nsXFormsBindableControlStub::GetContext(aModelID,
-                                                        aContextNode,
-                                                        aContextPosition,
-                                                        aContextSize);
+  nsresult rv = nsXFormsControlStub::GetContext(aModelID,
+                                                aContextNode,
+                                                aContextPosition,
+                                                aContextSize);
   NS_ENSURE_SUCCESS(rv, rv);
 
   *aContextPosition = mContextPosition;
@@ -360,6 +264,22 @@ nsXFormsContextContainer::GetContextPosition(PRInt32 *aContextPosition)
 {
   *aContextPosition = mContextPosition;
   return NS_OK;
+}
+
+void
+nsXFormsContextContainer::SetRepeatState(nsRepeatState aState)
+{
+  // A context container can have one of two states...eType_Unknown
+  // (uninitialized) and eType_GeneratedContent.  This assumes
+  // that one cannot be generated outside of the repeat or itemset code.
+
+  nsRepeatState state = aState;
+  if (state != eType_Unknown) {
+    state = eType_GeneratedContent;
+  }
+
+  nsXFormsControlStub::SetRepeatState(state);
+  return;
 }
 
 // Factory

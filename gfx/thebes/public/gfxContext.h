@@ -39,19 +39,17 @@
 #ifndef GFX_CONTEXT_H
 #define GFX_CONTEXT_H
 
-#include <cairo.h>
+#include "gfxTypes.h"
 
 #include "gfxASurface.h"
 #include "gfxColor.h"
 #include "gfxPoint.h"
 #include "gfxRect.h"
-#include "gfxTypes.h"
 #include "gfxMatrix.h"
 #include "gfxPattern.h"
-#include "gfxFont.h"
+#include "gfxPath.h"
 
-class gfxRegion;
-class gfxTextRun;
+typedef struct _cairo cairo_t;
 
 /**
  * This is the main class for doing actual drawing. It is initialized using
@@ -63,6 +61,9 @@ class gfxTextRun;
  * The functions like Rectangle and Arc do not do any drawing themselves.
  * When a path is drawn (stroked or filled), it is filled/stroked with a
  * pattern set by SetPattern, SetColor or SetSource.
+ *
+ * Note that the gfxContext takes coordinates in device pixels,
+ * as opposed to app units.
  */
 class THEBES_API gfxContext {
     THEBES_INLINE_DECL_REFCOUNTING(gfxContext)
@@ -95,6 +96,11 @@ public:
      * XXX this should go away at some point.
      */
     cairo_t *GetCairo() { return mCairo; }
+
+    /**
+     * Returns true if the cairo context is in an error state.
+     */
+    PRBool HasError();
 
     /**
      ** State
@@ -137,7 +143,13 @@ public:
     /**
      * Moves the pen to a new point without drawing a line.
      */
-    void MoveTo(gfxPoint pt);
+    void MoveTo(const gfxPoint& pt);
+
+    /**
+     * Creates a new subpath starting at the current point.
+     * Equivalent to MoveTo(CurrentPoint()).
+     */
+    void NewSubPath();
 
     /**
      * Returns the current point in the current path.
@@ -149,12 +161,12 @@ public:
      *
      * @see MoveTo
      */
-    void LineTo(gfxPoint pt);
+    void LineTo(const gfxPoint& pt);
 
     /**
      * Draws a quadratic Bézier curve with control points pt1, pt2 and pt3.
      */
-    void CurveTo(gfxPoint pt1, gfxPoint pt2, gfxPoint pt3);
+    void CurveTo(const gfxPoint& pt1, const gfxPoint& pt2, const gfxPoint& pt3);
 
     /**
      * Draws a clockwise arc (i.e. a circle segment).
@@ -163,7 +175,7 @@ public:
      * @param angle1 Starting angle for the segment
      * @param angle2 Ending angle
      */
-    void Arc(gfxPoint center, gfxFloat radius,
+    void Arc(const gfxPoint& center, gfxFloat radius,
              gfxFloat angle1, gfxFloat angle2);
 
     /**
@@ -174,38 +186,22 @@ public:
      * @param angle2 Ending angle
      */
 
-    void NegativeArc(gfxPoint center, gfxFloat radius,
+    void NegativeArc(const gfxPoint& center, gfxFloat radius,
                      gfxFloat angle1, gfxFloat angle2);
 
     // path helpers
     /**
      * Draws a line from start to end.
      */
-    void Line(gfxPoint start, gfxPoint end); // XXX snapToPixels option?
+    void Line(const gfxPoint& start, const gfxPoint& end); // XXX snapToPixels option?
 
     /**
      * Draws the rectangle given by rect.
      * @param snapToPixels ?
      */
-    void Rectangle(gfxRect rect, PRBool snapToPixels = PR_FALSE);
-    void Ellipse(gfxPoint center, gfxSize dimensions);
+    void Rectangle(const gfxRect& rect, PRBool snapToPixels = PR_FALSE);
+    void Ellipse(const gfxPoint& center, const gfxSize& dimensions);
     void Polygon(const gfxPoint *points, PRUint32 numPoints);
-
-    /**
-     ** Text
-     **/
-
-    /**
-     * Add the text outline to the current path.
-     */
-    // specify this in a sane way.
-    //void AddStringToPath(gfxTextRun& text);
-
-    /**
-     * Draw the text run at the current point.
-     * XXX support drawing subsections of the text run
-     */
-    void DrawText(gfxTextRun& text);
 
     /**
      ** Transformation Matrix manipulation
@@ -215,7 +211,7 @@ public:
      * Adds a translation to the current matrix. This translation takes place
      * before the previously set transformations.
      */
-    void Translate(gfxPoint pt);
+    void Translate(const gfxPoint& pt);
 
     /**
      * Adds a scale to the current matrix. This scaling takes place before the
@@ -257,39 +253,39 @@ public:
      * Converts a point from device to user coordinates using the inverse
      * transformation matrix.
      */
-    gfxPoint DeviceToUser(gfxPoint point) const;
+    gfxPoint DeviceToUser(const gfxPoint& point) const;
 
     /**
      * Converts a size from device to user coordinates. This does not apply
      * translation components of the matrix.
      */
-    gfxSize DeviceToUser(gfxSize size) const;
+    gfxSize DeviceToUser(const gfxSize& size) const;
 
     /**
      * Converts a rectangle from device to user coordinates; this has the
      * same effect as using DeviceToUser on both the rectangle's point and
      * size.
      */
-    gfxRect DeviceToUser(gfxRect rect) const;
+    gfxRect DeviceToUser(const gfxRect& rect) const;
 
     /**
      * Converts a point from user to device coordinates using the inverse
      * transformation matrix.
      */
-    gfxPoint UserToDevice(gfxPoint point) const;
+    gfxPoint UserToDevice(const gfxPoint& point) const;
 
     /**
      * Converts a size from user to device coordinates. This does not apply
      * translation components of the matrix.
      */
-    gfxSize UserToDevice(gfxSize size) const;
+    gfxSize UserToDevice(const gfxSize& size) const;
 
     /**
      * Converts a rectangle from user to device coordinates; this has the
-     * same effect as using DeviceToUser on both the rectangle's point and
+     * same effect as using UserToDevice on both the rectangle's point and
      * size.
      */
-    gfxRect UserToDevice(gfxRect rect) const;
+    gfxRect UserToDevice(const gfxRect& rect) const;
 
     /**
      * Takes the given rect and tries to align it to device pixels.  If
@@ -297,8 +293,12 @@ public:
      * be in device coordinates (already transformed by the CTM).  If it 
      * fails, the method will return PR_FALSE, and the rect will not be
      * changed.
+     *
+     * If ignoreScale is PR_TRUE, then snapping will take place even if
+     * the CTM has a scale applied.  Snapping never takes place if
+     * there is a rotation in the CTM.
      */
-    PRBool UserToDevicePixelSnapped(gfxRect& rect) const;
+    PRBool UserToDevicePixelSnapped(gfxRect& rect, PRBool ignoreScale = PR_FALSE) const;
 
     /**
      * Attempts to pixel snap the rectangle, add it to the current
@@ -319,9 +319,11 @@ public:
     void SetColor(const gfxRGBA& c);
 
     /**
-     * Uses a pattern for drawing.
+     * Gets the current color.
+     * returns PR_FALSE if there is something other than a color
+     *         set as the current source (pattern, surface, etc)
      */
-    void SetPattern(gfxPattern *pattern);
+    PRBool GetColor(gfxRGBA& c);
 
     /**
      * Uses a surface for drawing. This is a shorthand for creating a
@@ -329,7 +331,17 @@ public:
      *
      * @param offset ?
      */
-    void SetSource(gfxASurface *surface, gfxPoint offset = gfxPoint(0.0, 0.0));
+    void SetSource(gfxASurface *surface, const gfxPoint& offset = gfxPoint(0.0, 0.0));
+
+    /**
+     * Uses a pattern for drawing.
+     */
+    void SetPattern(gfxPattern *pattern);
+
+    /**
+     * Get the source pattern (solid color, normal pattern, surface, etc)
+     */
+    already_AddRefed<gfxPattern> GetPattern();
 
     /**
      ** Painting
@@ -353,7 +365,7 @@ public:
      * Shorthand for creating a pattern and calling the pattern-taking
      * variant of Mask.
      */
-    void Mask(gfxASurface *surface, gfxPoint offset = gfxPoint(0.0, 0.0));
+    void Mask(gfxASurface *surface, const gfxPoint& offset = gfxPoint(0.0, 0.0));
 
     /**
      ** Shortcuts
@@ -363,7 +375,7 @@ public:
      * Creates a new path with a rectangle from 0,0 to size.w,size.h
      * and calls cairo_fill.
      */
-    void DrawSurface(gfxASurface *surface, gfxSize size);
+    void DrawSurface(gfxASurface *surface, const gfxSize& size);
 
     /**
      ** Line Properties
@@ -418,34 +430,49 @@ public:
     gfxFloat CurrentMiterLimit() const;
 
     /**
+     ** Fill Properties
+     **/
+
+    enum FillRule {
+        FILL_RULE_WINDING,
+        FILL_RULE_EVEN_ODD
+    };
+    void SetFillRule(FillRule rule);
+    FillRule CurrentFillRule() const;
+
+    /**
      ** Operators and Rendering control
      **/
 
     // define enum for operators (clear, src, dst, etc)
     enum GraphicsOperator {
-        OPERATOR_CLEAR = CAIRO_OPERATOR_CLEAR,
-        OPERATOR_SOURCE = CAIRO_OPERATOR_SOURCE,
+        OPERATOR_CLEAR,
+        OPERATOR_SOURCE,
 
-        OPERATOR_OVER = CAIRO_OPERATOR_OVER,
-        OPERATOR_IN = CAIRO_OPERATOR_IN,
-        OPERATOR_OUT = CAIRO_OPERATOR_OUT,
-        OPERATOR_ATOP = CAIRO_OPERATOR_ATOP,
+        OPERATOR_OVER,
+        OPERATOR_IN,
+        OPERATOR_OUT,
+        OPERATOR_ATOP,
 
-        OPERATOR_DEST = CAIRO_OPERATOR_DEST,
-        OPERATOR_DEST_OVER = CAIRO_OPERATOR_DEST_OVER,
-        OPERATOR_DEST_IN = CAIRO_OPERATOR_DEST_IN,
-        OPERATOR_DEST_OUT = CAIRO_OPERATOR_DEST_OUT,
-        OPERATOR_DEST_ATOP = CAIRO_OPERATOR_DEST_ATOP,
+        OPERATOR_DEST,
+        OPERATOR_DEST_OVER,
+        OPERATOR_DEST_IN,
+        OPERATOR_DEST_OUT,
+        OPERATOR_DEST_ATOP,
 
-        OPERATOR_XOR = CAIRO_OPERATOR_XOR,
-        OPERATOR_ADD = CAIRO_OPERATOR_ADD,
-        OPERATOR_SATURATE = CAIRO_OPERATOR_SATURATE
+        OPERATOR_XOR,
+        OPERATOR_ADD,
+        OPERATOR_SATURATE
     };
     /**
      * Sets the operator used for all further drawing. The operator affects
      * how drawing something will modify the destination. For example, the
      * OVER operator will do alpha blending of source and destination, while
      * SOURCE will replace the destination with the source.
+     *
+     * Note that if the flag FLAG_SIMPLIFY_OPERATORS is set on this
+     * gfxContext, the actual operator set might change for optimization
+     * purposes.  Check the comments below around that flag.
      */
     void SetOperator(GraphicsOperator op);
     GraphicsOperator CurrentOperator() const;
@@ -482,41 +509,107 @@ public:
      * Helper functions that will create a rect path and call Clip().
      * Any current path will be destroyed by these functions!
      */
-    void Clip(gfxRect rect); // will clip to a rect
-    void Clip(const gfxRegion& region); // will clip to a region
+    void Clip(const gfxRect& rect); // will clip to a rect
 
     /**
      * This will ensure that the surface actually has its clip set.
      * Useful if you are doing native drawing.
      */
     void UpdateSurfaceClip();
-    
+
+    /**
+     * This will return the current bounds of the clip region.
+     */
+    gfxRect GetClipExtents();
+
     /**
      * Groups
      */
-    enum SurfaceContent {
-        CONTENT_COLOR = CAIRO_CONTENT_COLOR,
-        CONTENT_ALPHA = CAIRO_CONTENT_ALPHA,
-        CONTENT_COLOR_ALPHA = CAIRO_CONTENT_COLOR_ALPHA
-    };
-
-    void PushGroup(SurfaceContent content = CONTENT_COLOR_ALPHA);
+    void PushGroup(gfxASurface::gfxContentType content = gfxASurface::CONTENT_COLOR);
     already_AddRefed<gfxPattern> PopGroup();
     void PopGroupToSource();
 
     /**
-     * Printing functions
-     */
-    // XXX look and see if the arguments here should be a seperate object
-    void BeginPrinting(const nsAString& aTitle, const nsAString& aPrintToFileName);
-    void EndPrinting();
-    void AbortPrinting();
-    void BeginPage();
-    void EndPage();
+     ** Hit Testing - check if given point is in the current path
+     **/
+    PRBool PointInFill(const gfxPoint& pt);
+    PRBool PointInStroke(const gfxPoint& pt);
+
+    /**
+     ** Extents - returns user space extent of current path
+     **/
+    gfxRect GetUserPathExtent();
+    gfxRect GetUserFillExtent();
+    gfxRect GetUserStrokeExtent();
+
+    /**
+     ** Obtaining a "flattened" path - path converted to all line segments
+     **/
+    already_AddRefed<gfxFlattenedPath> GetFlattenedPath();
+
+    /**
+     ** Flags
+     **/
+
+    enum {
+        /* If this flag is set, operators other than CLEAR, SOURCE, or
+         * OVER will be converted to OVER before being sent to cairo.
+         *
+         * This is most useful with a printing surface, where
+         * operators such as ADD are used to avoid seams for on-screen
+         * display, but where such errors aren't noticable in print.
+         * This approach is currently used in border rendering.
+         *
+         * However, when printing complex renderings such as SVG,
+         * care should be taken to clear this flag.
+         */
+        FLAG_SIMPLIFY_OPERATORS = (1 << 0),
+        /**
+         * When this flag is set, snapping to device pixels is disabled.
+         * It simply never does anything.
+         */
+        FLAG_DISABLE_SNAPPING = (1 << 1)
+    };
+
+    void SetFlag(PRInt32 aFlag) { mFlags |= aFlag; }
+    void ClearFlag(PRInt32 aFlag) { mFlags &= ~aFlag; }
+    PRInt32 GetFlags() const { return mFlags; }
 
 private:
     cairo_t *mCairo;
     nsRefPtr<gfxASurface> mSurface;
+    PRInt32 mFlags;
+};
+
+
+/**
+ * Sentry helper class for functions with multiple return points that need to
+ * call Save() on a gfxContext and have Restore() called automatically on the
+ * gfxContext before they return.
+ */
+class THEBES_API gfxContextAutoSaveRestore
+{
+public:
+  gfxContextAutoSaveRestore() : mContext(nsnull) {}
+
+  gfxContextAutoSaveRestore(gfxContext *aContext) : mContext(aContext) {
+    mContext->Save();
+  }
+
+  ~gfxContextAutoSaveRestore() {
+    if (mContext) {
+      mContext->Restore();
+    }
+  }
+
+  void SetContext(gfxContext *aContext) {
+    NS_ASSERTION(!mContext, "Not going to call Restore() on some context!!!");
+    mContext = aContext;
+    mContext->Save();    
+  }
+
+private:
+  gfxContext *mContext;
 };
 
 #endif /* GFX_CONTEXT_H */

@@ -39,9 +39,9 @@
 #include "nsIXFormsSelectChild.h"
 #include "nsXFormsStubElement.h"
 #include "nsIDOMHTMLOptGroupElement.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 #include "nsCOMPtr.h"
-#include "nsIXTFBindableElementWrapper.h"
+#include "nsIXTFElementWrapper.h"
 #include "nsIDOMNodeList.h"
 #include "nsIDocument.h"
 #include "nsXFormsUtils.h"
@@ -59,9 +59,12 @@ class nsXFormsItemSetElement : public nsXFormsDelegateStub,
 public:
   NS_DECL_ISUPPORTS_INHERITED
 
-  NS_IMETHOD OnCreated(nsIXTFBindableElementWrapper *aWrapper);
+  NS_IMETHOD OnCreated(nsIXTFElementWrapper *aWrapper);
 
   // nsIXTFElement overrides
+  NS_IMETHOD WillChangeDocument(nsIDOMDocument *aNewDocument);
+  NS_IMETHOD DocumentChanged(nsIDOMDocument *aNewDocument);
+  NS_IMETHOD WillChangeParent(nsIDOMElement *aNewParent);
   NS_IMETHOD ParentChanged(nsIDOMElement *aNewParent);
   NS_IMETHOD ChildInserted(nsIDOMNode *aChild, PRUint32 aIndex);
   NS_IMETHOD ChildAppended(nsIDOMNode *aChild);
@@ -72,9 +75,25 @@ public:
   // nsIXFormsControlBase overrides
   NS_IMETHOD Bind(PRBool *aContextChanged);
   NS_IMETHOD Refresh();
+  NS_IMETHOD GetUsesSingleNodeBinding(PRBool *aUsesSNB);
 
   // nsIXFormsSelectChild
   NS_DECL_NSIXFORMSSELECTCHILD
+
+  /** The standard notification flags set on nsIXTFElement */
+  const PRUint32 kItemSetNotificationMask;
+
+  /** Constructor */
+  nsXFormsItemSetElement() :
+    kItemSetNotificationMask(nsIXTFElement::NOTIFY_WILL_CHANGE_DOCUMENT |
+                             nsIXTFElement::NOTIFY_DOCUMENT_CHANGED |
+                             nsIXTFElement::NOTIFY_WILL_CHANGE_PARENT |
+                             nsIXTFElement::NOTIFY_PARENT_CHANGED |
+                             nsIXTFElement::NOTIFY_CHILD_INSERTED |
+                             nsIXTFElement::NOTIFY_CHILD_APPENDED |
+                             nsIXTFElement::NOTIFY_WILL_REMOVE_CHILD |
+                             nsIXTFElement::NOTIFY_BEGIN_ADDING_CHILDREN)
+    {};
 };
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsXFormsItemSetElement,
@@ -82,23 +101,47 @@ NS_IMPL_ISUPPORTS_INHERITED1(nsXFormsItemSetElement,
                              nsIXFormsSelectChild)
 
 NS_IMETHODIMP
-nsXFormsItemSetElement::OnCreated(nsIXTFBindableElementWrapper *aWrapper)
+nsXFormsItemSetElement::OnCreated(nsIXTFElementWrapper *aWrapper)
 {
   nsresult rv = nsXFormsDelegateStub::OnCreated(aWrapper);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  aWrapper->SetNotificationMask(nsIXTFElement::NOTIFY_PARENT_CHANGED |
-                                nsIXTFElement::NOTIFY_CHILD_INSERTED |
-                                nsIXTFElement::NOTIFY_CHILD_APPENDED |
-                                nsIXTFElement::NOTIFY_WILL_REMOVE_CHILD |
-                                nsIXTFElement::NOTIFY_BEGIN_ADDING_CHILDREN);
+  aWrapper->SetNotificationMask(kItemSetNotificationMask);
+  return NS_OK;
+}
 
+NS_IMETHODIMP
+nsXFormsItemSetElement::WillChangeDocument(nsIDOMDocument *aNewDocument)
+{
+  SetRepeatState(eType_Unknown);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsItemSetElement::DocumentChanged(nsIDOMDocument *aNewDocument)
+{
+  nsXFormsStubElement::DocumentChanged(aNewDocument);
+
+  nsCOMPtr<nsIDOMNode> parent;
+  mElement->GetParentNode(getter_AddRefs(parent));
+  UpdateRepeatState(parent);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsItemSetElement::WillChangeParent(nsIDOMElement *aNewParent)
+{
+  SetRepeatState(eType_Unknown);
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsXFormsItemSetElement::ParentChanged(nsIDOMElement *aNewParent)
 {
+  nsXFormsStubElement::ParentChanged(aNewParent);
+
+  UpdateRepeatState(aNewParent);
+
   if (aNewParent)
     Refresh();
 
@@ -133,9 +176,10 @@ nsXFormsItemSetElement::BeginAddingChildren()
   nsCOMPtr<nsIXTFElementWrapper> wrapper = do_QueryInterface(mElement);
   NS_ASSERTION(wrapper, "huh? our element must be an xtf wrapper");
 
-  wrapper->SetNotificationMask(nsIXTFElement::NOTIFY_PARENT_CHANGED |
-                               nsIXTFElement::NOTIFY_DONE_ADDING_CHILDREN);
-
+  wrapper->SetNotificationMask(
+    kItemSetNotificationMask & ~(nsIXTFElement::NOTIFY_CHILD_INSERTED |
+                                 nsIXTFElement::NOTIFY_CHILD_APPENDED |
+                                 nsIXTFElement::NOTIFY_WILL_REMOVE_CHILD));
   return NS_OK;
 }
 
@@ -146,10 +190,7 @@ nsXFormsItemSetElement::DoneAddingChildren()
   nsCOMPtr<nsIXTFElementWrapper> wrapper = do_QueryInterface(mElement);
   NS_ASSERTION(wrapper, "huh? our element must be an xtf wrapper");
 
-  wrapper->SetNotificationMask(nsIXTFElement::NOTIFY_PARENT_CHANGED |
-                               nsIXTFElement::NOTIFY_CHILD_INSERTED |
-                               nsIXTFElement::NOTIFY_CHILD_APPENDED |
-                               nsIXTFElement::NOTIFY_WILL_REMOVE_CHILD);
+  wrapper->SetNotificationMask(kItemSetNotificationMask);
 
   // Walk our children and get their anonymous content.
   Refresh();
@@ -307,15 +348,7 @@ nsXFormsItemSetElement::Refresh()
 
     anonContent->AppendChild(itemNode, getter_AddRefs(tmpNode));
 
-    // XXX Could we get rid of the <contextcontainer>?
-    rv = domDoc->CreateElementNS(NS_LITERAL_STRING(NS_NAMESPACE_XFORMS),
-                                 NS_LITERAL_STRING("contextcontainer"),
-                                 getter_AddRefs(contextContainer));
-
-    NS_ENSURE_SUCCESS(rv, rv);
-    itemNode->AppendChild(contextContainer, getter_AddRefs(tmpNode));
-
-    nsCOMPtr<nsIXFormsContextControl> ctx(do_QueryInterface(contextContainer));
+    nsCOMPtr<nsIXFormsContextControl> ctx(do_QueryInterface(itemNode));
     if (ctx) {
       ctx->SetContext(node, i + 1, nodeCount);
     }
@@ -324,12 +357,12 @@ nsXFormsItemSetElement::Refresh()
     for (PRUint32 j = 0; j < templateNodeCount; ++j) {
       templateNodes->Item(j, getter_AddRefs(templateNode));
       templateNode->CloneNode(PR_TRUE, getter_AddRefs(cloneNode));
-      contextContainer->AppendChild(cloneNode, getter_AddRefs(templateNode));
+      itemNode->AppendChild(cloneNode, getter_AddRefs(templateNode));
     }
 
   }
 
-  // refresh parent we
+  // refresh parent so that it has a chance to reflect the changes we just made
   if (parent) {
     nsCOMPtr<nsIXFormsControlBase> control = do_QueryInterface(parent);
     if (control) {
@@ -339,6 +372,15 @@ nsXFormsItemSetElement::Refresh()
 
   return NS_OK;
 }
+
+NS_IMETHODIMP
+nsXFormsItemSetElement::GetUsesSingleNodeBinding(PRBool *aUsesSNB)
+{
+  NS_ENSURE_ARG_POINTER(aUsesSNB);
+  *aUsesSNB = PR_FALSE;
+  return NS_OK;
+}
+
 
 NS_HIDDEN_(nsresult)
 NS_NewXFormsItemSetElement(nsIXTFElement **aResult)

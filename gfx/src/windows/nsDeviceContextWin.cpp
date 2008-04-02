@@ -228,7 +228,7 @@ nsDeviceContextWin :: FindScreen ( nsIScreen** outScreen )
 {
   // now then, if we have more than one screen, we need to find which screen this
   // window is on.
-  HWND window = NS_REINTERPRET_CAST(HWND, mWidget);
+  HWND window = reinterpret_cast<HWND>(mWidget);
   if ( window ) {
     RECT globalPosition;
     ::GetWindowRect ( window, &globalPosition ); 
@@ -308,17 +308,6 @@ NS_IMETHODIMP nsDeviceContextWin :: SetCanonicalPixelScale(float aScale)
   return NS_OK;
 }
 
-
-NS_IMETHODIMP nsDeviceContextWin :: GetScrollBarDimensions(float &aWidth, float &aHeight) const
-{
-  float scale;
-  GetCanonicalPixelScale(scale);
-
-  aWidth  = ::GetSystemMetrics(SM_CXVSCROLL) * mDevUnitsToAppUnits * scale;
-  aHeight = ::GetSystemMetrics(SM_CXHSCROLL) * mDevUnitsToAppUnits * scale;
-
-  return NS_OK;
-}
 
 nsresult nsDeviceContextWin::CopyLogFontToNSFont(HDC* aHDC, const LOGFONT* ptrLogFont,
                                                  nsFont* aFont, PRBool aIsWide) const

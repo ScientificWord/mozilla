@@ -97,18 +97,11 @@ public:
   NS_IMETHOD  CreateRenderingContext(nsIView *aView, nsIRenderingContext *&aContext);
   NS_IMETHOD  CreateRenderingContext(nsIWidget *aWidget, nsIRenderingContext *&aContext);
   NS_IMETHOD  CreateRenderingContext(nsIRenderingContext *&aContext){return NS_ERROR_NOT_IMPLEMENTED;}
-  NS_IMETHOD  CreateRenderingContext(nsIDrawingSurface* aSurface, nsIRenderingContext *&aContext);
   NS_IMETHOD  CreateRenderingContextInstance(nsIRenderingContext *&aContext);
-
-  NS_IMETHOD  GetCanonicalPixelScale(float &aScale) const;
-  NS_IMETHOD  SetCanonicalPixelScale(float aScale);
 
   NS_IMETHOD  GetMetricsFor(const nsFont& aFont, nsIAtom* aLangGroup,
                             nsIFontMetrics*& aMetrics);
   NS_IMETHOD  GetMetricsFor(const nsFont& aFont, nsIFontMetrics*& aMetrics);
-
-  NS_IMETHOD  SetZoom(float aZoom);
-  NS_IMETHOD  GetZoom(float &aZoom) const;
 
   NS_IMETHOD FirstExistingFont(const nsFont& aFont, nsString& aFaceName);
 
@@ -127,19 +120,12 @@ public:
                              PRUnichar*  aPrintToFileName) { return NS_OK; }
   NS_IMETHOD AbortDocument(void) { return NS_OK; }
 
-#ifdef NS_PRINT_PREVIEW
-  NS_IMETHOD SetAltDevice(nsIDeviceContext* aAltDC);
-  NS_IMETHOD GetAltDevice(nsIDeviceContext** aAltDC) { *aAltDC = mAltDC.get(); NS_IF_ADDREF(*aAltDC); return NS_OK;}
-  NS_IMETHOD SetUseAltDC(PRUint8 aValue, PRBool aOn);
-#endif
-
   NS_IMETHOD PrepareNativeWidget(nsIWidget *aWidget, void **aOut);
   NS_IMETHOD ClearCachedSystemFonts();
 
 private:
   /* Helper methods for |CreateRenderingContext|&co. */
   nsresult InitRenderingContext(nsIRenderingContext *aContext, nsIWidget *aWindow);
-  nsresult InitRenderingContext(nsIRenderingContext *aContext, nsIDrawingSurface* aSurface);
 
 protected:
   virtual ~DeviceContextImpl();
@@ -154,14 +140,7 @@ protected:
 
   nsFontCache       *mFontCache;
   nsCOMPtr<nsIAtom> mLocaleLangGroup; // XXX temp fix for performance bug - erik
-  float             mZoom;
   nsHashtable*      mFontAliasTable;
-  float             mCPixelScale;
-
-#ifdef NS_PRINT_PREVIEW
-  nsCOMPtr<nsIDeviceContext> mAltDC;
-  PRUint8           mUseAltDC;
-#endif
 
 public:
   nsNativeWidget    mWidget;

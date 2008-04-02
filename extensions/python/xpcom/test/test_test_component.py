@@ -394,6 +394,7 @@ def test_derived_interface(c, test_flat = 0):
     test_method(c.AppendArray, ([1,2,3],), [1,2,3])
     test_method(c.AppendArray, ([1,2,3],[4,5,6]), [1,2,3,4,5,6])
 
+    test_method(c.CopyVariant, ([],), [])
     test_method(c.CopyVariant, (None,), None)
     test_method(c.CopyVariant, (1,), 1)
     test_method(c.CopyVariant, (1.0,), 1.0)
@@ -410,14 +411,17 @@ def test_derived_interface(c, test_flat = 0):
     test_method(c.CopyVariant, ((c,c),), [c,c])
     sup = c.queryInterface(xpcom.components.interfaces.nsISupports)._comobj_
     test_method(c.CopyVariant, ((sup, sup),), [sup,sup])
+    test_method(c.CopyVariant, ([1,"test"],), [1,"test"])
     test_method(c.AppendVariant, (1,2), 3)
     test_method(c.AppendVariant, ((1,2),(3,4)), 10)
     test_method(c.AppendVariant, ("bar", "foo"), "foobar")
     test_method(c.AppendVariant, (None, None), None)
 
     test_method(c.SumVariants, ([],), None)
-    # Array's dont expose their interface, so we are unable to auto-wrap
-    # variant arrays, as they aren't aware if the IID of the array
+    test_method(c.SumVariants, ([1,2,3],), 6)
+    test_method(c.SumVariants, (['foo', 'bar'],), 'foobar')
+    # We previously had trouble working out the IID of interface arrays, so
+    # had to pass an explicitly wrapped variant - let's check that still works.
     test_method(c.SumVariants, ([MakeVariant(1),MakeVariant(2),MakeVariant(3)],), 6)
     test_method(c.SumVariants, ([MakeVariant('foo'), MakeVariant('bar')],), 'foobar')
 
@@ -504,7 +508,7 @@ def test_from_js():
     data = os.popen('xpcshell "' + fname + '"').readlines()
     good = 0
     for line in data:
-        if line.strip() == "javascript successfully tested the Python test component.":
+        if line.strip() == "OK: javascript successfully tested the Python test component.":
             good = 1
     if not good:
         print "** The javascript test appeared to fail!  Test output follows **"

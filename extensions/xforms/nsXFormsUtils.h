@@ -50,6 +50,8 @@
 #include "nsIScriptError.h"
 #include "nsVoidArray.h"
 #include "nsIDOMWindowInternal.h"
+#include "nsXFormsXPathState.h"
+#include "nsXFormsDOMEvent.h"
 
 class nsIDOMElement;
 class nsIXFormsModelElement;
@@ -57,6 +59,10 @@ class nsIURI;
 class nsString;
 class nsIMutableArray;
 class nsIDOMEvent;
+class nsIDOMXPathEvaluator;
+class nsIDOMXPathExpression;
+class nsIDOMXPathNSResolver;
+class nsIXPathEvaluatorInternal;
 
 #define NS_NAMESPACE_XFORMS              "http://www.w3.org/2002/xforms"
 #define NS_NAMESPACE_XHTML               "http://www.w3.org/1999/xhtml"
@@ -66,6 +72,12 @@ class nsIDOMEvent;
 #define NS_NAMESPACE_SOAP_ENVELOPE       "http://schemas.xmlsoap.org/soap/envelope/"
 #define NS_NAMESPACE_MOZ_XFORMS_LAZY     "http://www.mozilla.org/projects/xforms/2005/lazy"
 
+#define PREF_EXPERIMENTAL_FEATURES       "xforms.enableExperimentalFeatures"
+#define PREF_WAIT_LIMIT                  "dom.max_script_run_time"
+
+#define NS_ERROR_XFORMS_CALCULATION_EXCEPTION \
+  NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_GENERAL, 3001)
+
 /**
  * Error codes
  */
@@ -74,9 +86,15 @@ class nsIDOMEvent;
 NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_GENERAL, 1)
 #define NS_OK_XFORMS_DEFERRED \
 NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_GENERAL, 2)
+#define NS_OK_XFORMS_NOTREADY \
+NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_GENERAL, 3)
 
 #define NS_ERROR_XFORMS_CALCUATION_EXCEPTION \
 NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_GENERAL, 3001)
+#define NS_ERROR_XFORMS_UNION_TYPE \
+NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_GENERAL, 3002)
+
+#define kNotFound -1
 
 /**
  * XForms event types
@@ -129,7 +147,8 @@ enum nsXFormsEvent {
   eEvent_LinkException,
   eEvent_LinkError,
   eEvent_ComputeException,
-  eEvent_MozHintOff
+  eEvent_MozHintOff,
+  eEvent_SubmitSerialize
 };
 
 struct EventData
@@ -139,7 +158,7 @@ struct EventData
   PRBool      canBubble;
 };
 
-extern const EventData sXFormsEventsEntries[42];
+extern const EventData sXFormsEventsEntries[43];
 
 // Default intrinsic state for XForms Controls
 extern const PRInt32 kDefaultIntrinsicState;
@@ -173,6 +192,12 @@ public:
     Init();
 
   /**
+   * Shutdown nsXFormsUtils.
+   */
+  static NS_HIDDEN_(nsresult)
+    Shutdown();
+
+  /**
    * Locate the model that is a parent of |aBindElement|.  This method walks
    * up the content tree looking for the containing model.
    *
@@ -198,6 +223,7 @@ public:
    * @param aContextNode      The context node for the element
    * @param aContextPosition  The context position for the element
    * @param aContextSize      The context size for the element
+   * @param aUseBindAttr      Use @bind (if present) to determine context node?
    */
   static NS_HIDDEN_(nsresult)
     GetNodeContext(nsIDOMElement           *aElement,
@@ -208,7 +234,8 @@ public:
                    nsIXFormsControl       **aParentControl,
                    nsIDOMNode             **aContextNode,
                    PRInt32                 *aContextPosition = nsnull,
-                   PRInt32                 *aContextSize = nsnull);
+                   PRInt32                 *aContextSize = nsnull,
+                   PRBool                   aUseBindAttr = PR_TRUE);
 
   /**
    * Locate the model for an element.
@@ -236,7 +263,7 @@ public:
    * and returned (addrefed) in |aModel|
    *
    * The return value is an XPathResult as returned from
-   * nsIXFormsXPathEvaluator::Evaluate().
+   * nsIDOMXPathEvaluator::Evaluate().
    */
   static NS_HIDDEN_(nsresult)
     EvaluateNodeBinding(nsIDOMElement           *aElement,
@@ -251,10 +278,17 @@ public:
                         nsCOMArray<nsIDOMNode>  *aDeps = nsnull,
                         nsStringArray           *aIndexesUsed = nsnull);
 
+  static NS_HIDDEN_(nsresult)
+    CreateExpression(nsIXPathEvaluatorInternal  *aEvaluator,
+                     const nsAString            &aExpression,
+                     nsIDOMXPathNSResolver      *aResolver,
+                     nsIXFormsXPathState        *aState,
+                     nsIDOMXPathExpression     **aResult);
+
   /**
    * Convenience method for doing XPath evaluations.  This gets a
-   * nsIXFormsXPathEvaluator from |aContextNode|'s ownerDocument, and calls
-   * nsIXFormsXPathEvaluator::Evalute using the given expression, context node,
+   * nsIDOMXPathEvaluator from |aContextNode|'s ownerDocument, and calls
+   * nsIDOMXPathEvaluator::Evaluate using the given expression, context node,
    * namespace resolver, and result type.
    */
   static NS_HIDDEN_(nsresult)
@@ -267,6 +301,18 @@ public:
                   PRInt32                 aContextSize = 1,
                   nsCOMArray<nsIDOMNode> *aSet = nsnull,
                   nsStringArray          *aIndexesUsed = nsnull);
+
+  static NS_HIDDEN_(nsresult)
+    EvaluateXPath(nsIXPathEvaluatorInternal  *aEvaluator,
+                  const nsAString            &aExpression,
+                  nsIDOMNode                 *aContextNode,
+                  nsIDOMXPathNSResolver      *aResolver,
+                  nsIXFormsXPathState        *aState,
+                  PRUint16                    aResultType,
+                  PRInt32                     aContextPosition,
+                  PRInt32                     aContextSize,
+                  nsIDOMXPathResult          *aInResult,
+                  nsIDOMXPathResult         **aResult);
 
   /**
    * Given a node in the instance data, get its string value according
@@ -293,6 +339,17 @@ public:
     GetSingleNodeBindingValue(nsIDOMElement* aElement, nsString& aValue);
 
   /**
+   * Convenience method.  Evaluates the single node binding expression for the
+   * given xforms element and then sets the resulting single node to aValue.
+   * This allows elements like xf:filename and xf:mediatype to function
+   * properly without needing the overhead of being nsIXFormsControls.
+   *
+   * Returns PR_TRUE if the evaluation and node value setting both succeeded.
+   */
+  static NS_HIDDEN_(PRBool)
+    SetSingleNodeBindingValue(nsIDOMElement *aElement, const nsAString &aValue,
+                              PRBool *aChanged);
+  /**
    * Dispatch an XForms event.  aDefaultActionEnabled is returned indicating
    * if the default action of the dispatched event was enabled.  aSrcElement
    * is passed for events targeted at models.  If the model doesn't exist, yet,
@@ -303,7 +360,8 @@ public:
   static NS_HIDDEN_(nsresult)
     DispatchEvent(nsIDOMNode* aTarget, nsXFormsEvent aEvent,
                   PRBool *aDefaultActionEnabled = nsnull,
-                  nsIDOMElement *aSrcElement = nsnull);
+                  nsIDOMElement *aSrcElement = nsnull,
+                  nsCOMArray<nsIXFormsContextInfo> *aContextInfo = nsnull);
 
   static NS_HIDDEN_(nsresult)
     DispatchDeferredEvents(nsIDOMDocument* aDocument);
@@ -367,6 +425,9 @@ public:
    * @param aContextNode      The resulting context node
    * @param aContextPosition  The resulting context position
    * @param aContextSize      The resulting context size
+   *
+   * This function may return NS_OK_XFORMS_NOTREADY if parent context containers
+   * haven't yet had a chance to bind.
    */
   static NS_HIDDEN_(nsresult) FindParentContext(nsIDOMElement           *aElement,
                                                 nsIModelElementPrivate **aModel,
@@ -441,8 +502,10 @@ public:
   /**
    * Outputs to the Error console.
    *
-   * @param aMessageName      Name of string to output, which is loaded from
-                              xforms.properties
+   * @param aMessage          If aLiteralMessage is PR_FALSE, then this is the
+   *                          name of string to output, which is loaded from
+   *                          xforms.properties.
+   *                          Otherwise this message is used 'as is'.
    * @param aParams           Optional parameters for the loaded string
    * @param aParamLength      Amount of params in aParams
    * @param aElement          If set, is used to determine and output the
@@ -450,13 +513,17 @@ public:
    * @param aContext          If set, the node is used to output what element
                               caused the error
    * @param aErrorType        Type of error in form of an nsIScriptError flag
+   * @param aLiteralMessage   If true, then message string is used literally,
+   *                          without going through xforms.properties and
+   *                          without formatting.
    */
-  static NS_HIDDEN_(void) ReportError(const nsString   &aMessageName,
+  static NS_HIDDEN_(void) ReportError(const nsAString  &aMessageName,
                                       const PRUnichar **aParams,
                                       PRUint32          aParamLength,
                                       nsIDOMNode       *aElement,
                                       nsIDOMNode       *aContext,
-                                      PRUint32          aErrorFlag = nsIScriptError::errorFlag);
+                                      PRUint32          aErrorFlag = nsIScriptError::errorFlag,
+                                      PRBool            aLiteralMessage = PR_FALSE);
 
   /**
    * Simple version of ReportError(), used when reporting without message
@@ -467,11 +534,30 @@ public:
    * @param aElement          Element to use for location and context
    * @param aErrorType        Type of error in form of an nsIScriptError flag
    */
-  static NS_HIDDEN_(void) ReportError(const nsString &aMessageName,
-                                      nsIDOMNode     *aElement = nsnull,
-                                      PRUint32        aErrorFlag = nsIScriptError::errorFlag)
+  static NS_HIDDEN_(void) ReportError(const nsAString &aMessageName,
+                                      nsIDOMNode      *aElement = nsnull,
+                                      PRUint32         aErrorFlag = nsIScriptError::errorFlag)
     {
-      nsXFormsUtils::ReportError(aMessageName, nsnull, 0, aElement, aElement, aErrorFlag);
+      nsXFormsUtils::ReportError(aMessageName, nsnull, 0, aElement, aElement, aErrorFlag, PR_FALSE);
+    }
+
+  /**
+   * Similar to ReportError(), used when reporting an error directly to the
+   * console.
+   *
+   * @param aMessage       The literal message to be displayed.  Any necessary      
+   *                       translation/string formatting needs to have been
+   *                       done already
+   * @param aElement       Element to use for location and context
+   * @param aContext       If set, the node is used to output what element
+   *                       caused the error
+   * @param aErrorType     Type of error in form of an nsIScriptError flag
+   */
+  static NS_HIDDEN_(void) ReportErrorMessage(const nsAString &aMessage,
+                                             nsIDOMNode      *aElement = nsnull,
+                                             PRUint32         aErrorFlag = nsIScriptError::errorFlag)
+    {
+      nsXFormsUtils::ReportError(aMessage, nsnull, 0, aElement, aElement, aErrorFlag, PR_TRUE);
     }
 
   /**
@@ -483,21 +569,50 @@ public:
   static NS_HIDDEN_(PRBool) IsDocumentReadyForBind(nsIDOMElement *aElement);
 
   /**
-   * Retrieve an element by id, handling (cloned) elements inside repeats.
+   * Search for an element by ID through repeat rows looking for controls in
+   * addition to looking through the regular DOM.
    *
-   * @param aDoc              The document to get element from
+   * For example, xf:dispatch dispatches an event to an element with the given
+   * ID. If the element is in a repeat, you don't want to dispatch the event to
+   * the element in the DOM since we just end up hiding it and treating it as
+   * part of the repeat template. So we use nsXFormsUtils::GetElementById to
+   * dispatch the event to the contol with that id that is in the repeat row
+   * that has the current focus (well, the repeat row that corresponds to the
+   * repeat's index). If the element with that ID isn't in a repeat, then it
+   * picks the element with that ID from the DOM. But you wouldn't want to use
+   * this call for items that you know can't be inside repeats (like instance or
+   * submission elements). So for those you should use
+   * nsXFormsUtils::GetElementByContextId.
+   *
    * @param aId               The id of the element
    * @param aOnlyXForms       Only search for XForms elements
    * @param aCaller           The caller (or rather the caller's DOM element),
                               ignored if nsnull
    * @param aElement          The element (or nsnull if not found)
    */
-  static NS_HIDDEN_(nsresult) GetElementById(nsIDOMDocument   *aDoc,
-                                             const nsAString  &aId,
+  static NS_HIDDEN_(nsresult) GetElementById(const nsAString  &aId,
                                              const PRBool      aOnlyXForms,
                                              nsIDOMElement    *aCaller,
                                              nsIDOMElement   **aElement);
-  
+
+  /**
+   * Search for an element with the given ID value. First
+   * nsIDOMDocument::getElementById() is used. If it successful then found
+   * element is returned. Second, if the given node is inside anonymous content
+   * then search is performed throughout the complete bindings chain by @anonid
+   * attribute.
+   *
+   * @param aRefNode      The node relatively of which search is performed in
+   *                      anonymous content
+   * @param aId           The @id/@anonid value to search for
+   *
+   * @return aElement     The element we found that has its ID/anonid value
+   *                      equal to aId
+   */
+  static NS_HIDDEN_(nsresult) GetElementByContextId(nsIDOMElement   *aRefNode,
+                                                    const nsAString &aId,
+                                                    nsIDOMElement   **aElement);
+
   /**
    * Shows an error dialog for fatal errors.
    *
@@ -552,6 +667,147 @@ public:
   static NS_HIDDEN_(nsresult) GetWindowFromDocument(nsIDOMDocument        *aDoc,
                                                     nsIDOMWindowInternal **aWindow);
 
+  /**
+   * Function to get the corresponding model element from a xforms node or
+   * a xforms instance data node.
+   */
+  static NS_HIDDEN_(nsresult) GetModelFromNode(nsIDOMNode *aNode,
+                                               nsIDOMNode **aResult);
+
+  /**
+   * Function to see if the given node is associated with the given model.
+   * Right now this function is only called by XPath in the case of the
+   * instance() function.
+   * The provided node can be an instance node from an instance
+   * document and thus be associated to the model in that way (model elements
+   * contain instance elements).  
+   */
+  static NS_HIDDEN_(PRBool) IsNodeAssocWithModel(nsIDOMNode *aNode,
+                                                 nsIDOMNode *aModel);
+
+  /**
+   * Function to get the instance document root for the instance element with
+   * the given id.  The instance element must be associated with the given
+   * model.
+   */
+  static NS_HIDDEN_(nsresult) GetInstanceDocumentRoot(const nsAString &aID,
+                                                      nsIDOMNode *aModelNode,
+                                                      nsIDOMNode **aResult);
+
+  /**
+   * Function to ensure that aValue is of the schema type aType.  Will basically
+   * be a forwarder to the nsISchemaValidator function of the same name.
+   */
+  static NS_HIDDEN_(PRBool) ValidateString(const nsAString &aValue,
+                                             const nsAString & aType,
+                                             const nsAString & aNamespace);
+
+  static NS_HIDDEN_(nsresult) GetRepeatIndex(nsIDOMNode *aRepeat,
+                                             PRInt32 *aIndex);
+
+  static NS_HIDDEN_(nsresult) GetMonths(const nsAString & aValue,
+                                        PRInt32 * aMonths);
+
+  static NS_HIDDEN_(nsresult) GetSeconds(const nsAString & aValue,
+                                         double * aSeconds);
+
+  static NS_HIDDEN_(nsresult) GetSecondsFromDateTime(const nsAString & aValue,
+                                                     double * aSeconds);
+
+  static NS_HIDDEN_(nsresult) GetDaysFromDateTime(const nsAString & aValue,
+                                                  PRInt32 * aDays);
+
+  /**
+   * Get the current date and time as a string.  For example,
+   * 2007-01-11T17:57:30-6:00 if UTC is not set and 2007-01-11T23:57:30Z if
+   * it is.
+   *
+   * @param aResult          The returned string
+   * @param aUTC             Should the string be expressed in UTC format or
+   *                         in the current timezone.
+   */
+  static NS_HIDDEN_(nsresult) GetTime(nsAString & aResult, PRBool aUTC = false);
+
+  /**
+   * Determine whether the given node contains an xf:itemset as a child.
+   * In valid XForms documents this should only be possible if aNode is an
+   * xf:select/1 or an xf:choices element.  This function is used primarily
+   * as a worker function for select/1's IsContentAllowed override.
+   */
+  static NS_HIDDEN_(PRBool) NodeHasItemset(nsIDOMNode *aNode);
+
+  /**
+   * Ask the user if she would like to stop the current long-running script
+   * component.  Returns PR_TRUE if yes, otherwise PR_FALSE.
+   *
+   * @param aElement           An element in the current document; used to
+   *                           find the window for the prompt
+   */
+  static NS_HIDDEN_(PRBool) AskStopWaiting(nsIDOMElement *aElement);
+
+  /**
+   * Caches the current value of the PREF_WAIT_LIMIT preference, which
+   * stores the number of seconds that a user should have to wait before she
+   * is given an opportunity to stop the busy section of the processor.  (A
+   * value of 0 indicates that the user does not want to be prompted.)
+   */
+  static NS_HIDDEN_(PRInt32) waitLimit;
+
+  /**
+   * Variable is true if the 'xforms.enableExperimentalFeatures' preference has
+   * been enabled in the browser.  We currently use this preference to surround
+   * code that implements features from future XForms specs.  Specs that have
+   * not yet reached recommendation.
+   */
+  static NS_HIDDEN_(PRBool) experimentalFeaturesEnabled;
+
+  /**
+   * Returns true if the 'xforms.enableExperimentalFeatures' preference has
+   * been enabled in the browser.  We currently use this preference to surround
+   * code that implements features from future XForms specs.  Specs that have
+   * not yet reached recommendation.
+   */
+  static NS_HIDDEN_(PRBool) ExperimentalFeaturesEnabled();
+
+  /**
+   * Same as FindCharInSet but safely uses frozen string APIs.  Compares
+   * each character in aString against each character in aSet.  If a match to
+   * one of the characters in aSet is found, the index of that character in
+   * aString is returned.
+   *
+   * @param aString             The string to search
+   * @param aSet                The list of characters to search for
+   * @param aOffset             The position to start looking from inside
+   *                            aString
+   */
+  static NS_HIDDEN_(PRInt32) FindCharInSet(const nsAString &aString,
+                                           const char      *aSet,
+                                           PRInt32          aOffset = 0);
+
+  /**
+   * Convert the line breaks in a string to CRLF.  Returns PR_FALSE if an
+   * an error occurred, otherwise returns PR_TRUE.
+   *
+   * @param aSrc                String whose line breaks need to be converted
+   *                            to CRLF
+   * @param aDest               Result string containing the converted string
+   */
+  static NS_HIDDEN_(PRBool) ConvertLineBreaks(const nsCString &aSrc,
+                                              nsCString &aDest);
+
+  /**
+   * Get a new nsIURI object based on the character set of aDoc.
+   *
+   * @param aDoc The document which character set is used when creating aURI.
+   * @param aSrc The URI string
+   * @param aURI The URI object which was created.
+   *
+   * @note aDoc must be attached to the docshell tree.
+   */
+   static NS_HIDDEN_(nsresult) GetNewURI(nsIDocument* aDoc,
+                                         const nsAString& aSrc,
+                                         nsIURI** aURI);
+
 private:
   /**
    * Do same origin checks on aBaseDocument and aTestURI. Hosts can be
@@ -582,7 +838,6 @@ private:
   static NS_HIDDEN_(PRBool) CheckContentPolicy(nsIDOMElement *aElement,
                                                nsIDocument   *aDoc,
                                                nsIURI        *aURI);
-
 };
 
 #endif

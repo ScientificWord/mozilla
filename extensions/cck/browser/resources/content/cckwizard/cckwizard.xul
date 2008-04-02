@@ -52,6 +52,7 @@
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="chrome://cckwizard/content/cckwizard.js"/>
+  <script src="chrome://cckwizard/content/search.js"/>
   <script type="application/x-javascript"   
   src="chrome://global/content/dialogOverlay.js" />
 
@@ -76,7 +77,7 @@
      </hbox>
      <hbox>
        <button label="&newConfig.label;" id="newconfig" oncommand="CreateConfig();"/>
-       <button label="&copyConfig.label;" id="copyconfig" oncommand="CopyConfig();"/>/>
+       <button label="&copyConfig.label;" id="copyconfig" oncommand="CopyConfig();"/>
        <button label="&deleteConfig.label;" id="deleteconfig" oncommand="DeleteConfig();"/>
      </hbox>
      <checkbox id="saveOnExit" label="&saveOnExit.label;" oncommand="SetSaveOnExitPref();"/>
@@ -92,7 +93,7 @@
   </vbox>
  </wizardpage>
 
- <wizardpage label="&customizeExt.label;" description="&customizeExt.description;"
+ <wizardpage label="&customizeExt.label;"
              onpageshow="initimage('iconURL','icon');"
              onpageadvanced="return (ValidateFile('iconURL') &amp;&amp; Validate('id','name','version'));">
    <grid>
@@ -215,12 +216,32 @@
         <label control="HomePageURL">&homePage.label;</label>
         <textbox id="HomePageURL" flex="1"/>
       </hbox>
+    </groupbox>
+    <groupbox>
+      <caption label="&homePageWelcome.caption;"/>
+      <description>&homePageWelcome.description;</description>
+      <hbox align="center">
+        <label control="HomePageWelcomeURL">&homePageWelcome.label;</label>
+        <textbox id="HomePageWelcomeURL" flex="1"/>
+      </hbox>
+      <hbox align="center">
+        <checkbox id="noWelcomePage" label="&noWelcomePage.label;"/>
+      </hbox>
+    </groupbox>
+    <groupbox>
+      <caption label="&homePageOverride.caption;"/>
       <description>&homePageOverride.description;</description>
       <hbox align="center">
         <label control="HomePageOverrideURL">&homePageOverride.label;</label>
         <textbox id="HomePageOverrideURL" flex="1"/>
       </hbox>
+       <hbox align="center">
+         <checkbox id="noOverridePage" label="&noOverridePage.label;"/>
+       </hbox>
     </groupbox>
+  </wizardpage>
+
+  <wizardpage label="&customizePartTwo.label;" onpageshow="initimage('LargeStillPath','LargeStill');initimage('LargeAnimPath','LargeAnim');" onpageadvanced="return ValidateFile('LargeAnimPath','LargeStillPath');">
     <groupbox>
       <caption label="&titleBar.caption;"/>
       <description>&titleBar.description;</description>
@@ -229,9 +250,6 @@
         <textbox id="CompanyName" flex="1"/>
       </hbox>
     </groupbox>
-  </wizardpage>
-
-  <wizardpage label="&customizePartTwo.label;" onpageshow="initimage('LargeStillPath','LargeStill');initimage('LargeAnimPath','LargeAnim');" onpageadvanced="return ValidateFile('LargeAnimPath','LargeStillPath');">
     <groupbox>
       <caption label="&animLogo.caption;"/>
       <description>&animLogoURL.description;</description>
@@ -301,11 +319,22 @@
   </wizardpage>
 
 
-  <wizardpage label="&customizeSearchEngines.label;">
+  <wizardpage label="&customizeSearchEngines.label;" onpageshow="RefreshDefaultSearchEngines();">
     <groupbox>
       <caption label="&engines.label;"/>
     <description>&searchEngines.description;</description>
-    <box class="ccklist" id="searchEngineList" new="onNewSearchEngine();" edit="onEditSearchEngine();"/>
+    <box class="ccklist" id="searchEngineList" new="onNewSearchEngine();" edit="onEditSearchEngine();"
+         ondelete="RefreshDefaultSearchEngines()" onmoveup="RefreshDefaultSearchEngines()" onmovedown="RefreshDefaultSearchEngines()"/>
+    <spacer />
+
+    <hbox align="center">
+      <label control="defaultSearchEngine" value="&defaultSearchEngine.label;" />
+       <menulist id="defaultSearchEngine">
+         <menupopup>
+         </menupopup>
+       </menulist>
+    </hbox>
+
     </groupbox>
   </wizardpage>
 
@@ -461,7 +490,7 @@
               </hbox>
               <hbox align="center">
                 <textbox id="Gopherproxyname" flex="1" preference="network.proxy.gopher"/>
-                <label value="&port.label;" accesskey="&gopherPort.accesskey;" control="Gopherportno"/>
+                <label value="&port.label;" control="Gopherportno"/>
                 <textbox id="Gopherportno" size="5" preference="network.proxy.gopher_port"/>
               </hbox>
             </row>
@@ -499,6 +528,11 @@
         <radio value="2" label="&autoTypeRadio.label;" accesskey="&autoTypeRadio.accesskey;" oncommand="DoEnabling();"/>
         <hbox class="indent" flex="1" align="center">
           <textbox id="autoproxyurl" flex="1" preference="network.proxy.autoconfig_url"/>
+        </hbox>
+        <radio value="5" label="&autoCCKTypeRadio.label;" accesskey="&autoCCKTypeRadio.accesskey;" oncommand="DoEnabling();"/>
+        <hbox class="indent" flex="1" align="center">
+          <textbox id="autoproxyfile" flex="1"/>
+          <button id="autoproxyfilebutton" label="&chooseFile.label;" oncommand="choosefile('autoproxyfile');"/>
         </hbox>
       </radiogroup>
     </groupbox>

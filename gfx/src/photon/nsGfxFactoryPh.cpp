@@ -45,13 +45,11 @@
 #include "nsFontMetricsPh.h"
 #include "nsRenderingContextPh.h"
 #include "nsDeviceContextSpecPh.h"
-#include "nsDeviceContextSpecFactoryP.h"
 #include "nsScreenManagerPh.h"
 #include "nsScriptableRegion.h"
 #include "nsDeviceContextPh.h"
 #include "nsPrintOptionsPh.h"
 #include "nsPrintSession.h"
-#include "nsFontList.h"
 #include "gfxImageFrame.h"
 
 // objects that just require generic constructors
@@ -63,9 +61,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsImagePh)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBlender)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsRegionPh)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDeviceContextSpecPh)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsDeviceContextSpecFactoryPh)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsFontEnumeratorPh)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsFontList)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsScreenManagerPh)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsPrinterEnumeratorPh)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsPrintOptionsPh, Init)
@@ -157,11 +153,6 @@ static const nsModuleComponentInfo components[] =
     "@mozilla.org/gfx/devicecontextspec;1",
     nsDeviceContextSpecPhConstructor },
 
-  { "Ph Device Context Spec Factory",
-    NS_DEVICE_CONTEXT_SPEC_FACTORY_CID,
-    "@mozilla.org/gfx/devicecontextspecfactory;1",
-    nsDeviceContextSpecFactoryPhConstructor },
-
   { "PrintSettings Service",
 		NS_PRINTSETTINGSSERVICE_CID,
 		"@mozilla.org/gfx/printsettings-service;1",
@@ -171,11 +162,6 @@ static const nsModuleComponentInfo components[] =
     NS_FONT_ENUMERATOR_CID,
     "@mozilla.org/gfx/fontenumerator;1",
     nsFontEnumeratorPhConstructor },
-
-	{ "Font List",
-		NS_FONTLIST_CID,
-		NS_FONTLIST_CONTRACTID,
-		nsFontListConstructor },
 
   { "Ph Screen Manager",
     NS_SCREENMANAGER_CID,

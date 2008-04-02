@@ -71,7 +71,7 @@ _cairo_int32_to_int64 (int32_t i)
     return q;
 }
 
-static const cairo_uint64_t
+static cairo_uint64_t
 _cairo_uint32s_to_uint64 (uint32_t h, uint32_t l)
 {
     cairo_uint64_t	q;
@@ -113,7 +113,7 @@ cairo_uint64_t
 _cairo_uint32x32_64_mul (uint32_t a, uint32_t b)
 {
     cairo_uint64_t  s;
-    
+
     uint16_t	ah, al, bh, bl;
     uint32_t	r0, r1, r2, r3;
 
@@ -153,7 +153,7 @@ cairo_uint64_t
 _cairo_uint64_mul (cairo_uint64_t a, cairo_uint64_t b)
 {
     cairo_uint64_t	s;
-    
+
     s = _cairo_uint32x32_64_mul (a.lo, b.lo);
     s.hi += a.lo * b.hi + a.hi * b.lo;
     return s;
@@ -262,9 +262,9 @@ _cairo_uint64_divrem (cairo_uint64_t num, cairo_uint64_t den)
     cairo_uquorem64_t	qr;
     cairo_uint64_t	bit;
     cairo_uint64_t	quo;
-    
+
     bit = _cairo_uint32_to_uint64 (1);
-    
+
     /* normalize to make den >= num, but not overflow */
     while (_cairo_uint64_lt (den, num) && (den.hi & 0x80000000) == 0)
     {
@@ -272,7 +272,7 @@ _cairo_uint64_divrem (cairo_uint64_t num, cairo_uint64_t den)
 	den = _cairo_uint64_lsl (den, 1);
     }
     quo = _cairo_uint32_to_uint64 (0);
-    
+
     /* generate quotient, one bit at a time */
     while (bit.hi | bit.lo)
     {
@@ -407,7 +407,7 @@ _cairo_uint128_sub (cairo_uint128_t a, cairo_uint128_t b)
 #define uint64_lo32(i)	((i).lo)
 #define uint64_hi32(i)	((i).hi)
 
-static const cairo_uint64_t
+static cairo_uint64_t
 uint64_lo (cairo_uint64_t i)
 {
     cairo_uint64_t  s;
@@ -417,7 +417,7 @@ uint64_lo (cairo_uint64_t i)
     return s;
 }
 
-static const cairo_uint64_t
+static cairo_uint64_t
 uint64_hi (cairo_uint64_t i)
 {
     cairo_uint64_t  s;
@@ -427,7 +427,7 @@ uint64_hi (cairo_uint64_t i)
     return s;
 }
 
-static const cairo_uint64_t
+static cairo_uint64_t
 uint64_shift32 (cairo_uint64_t i)
 {
     cairo_uint64_t  s;
@@ -476,7 +476,7 @@ _cairo_int64x64_128_mul (cairo_int64_t a, cairo_int64_t b)
     s = _cairo_uint64x64_128_mul (_cairo_int64_to_uint64(a),
 				  _cairo_int64_to_uint64(b));
     if (_cairo_int64_negative (a))
-	s.hi = _cairo_uint64_sub (s.hi, 
+	s.hi = _cairo_uint64_sub (s.hi,
 				  _cairo_int64_to_uint64 (b));
     if (_cairo_int64_negative (b))
 	s.hi = _cairo_uint64_sub (s.hi,
@@ -588,9 +588,9 @@ _cairo_uint128_divrem (cairo_uint128_t num, cairo_uint128_t den)
     cairo_uquorem128_t	qr;
     cairo_uint128_t	bit;
     cairo_uint128_t	quo;
-    
+
     bit = _cairo_uint32_to_uint128 (1);
-    
+
     /* normalize to make den >= num, but not overflow */
     while (_cairo_uint128_lt (den, num) && !_cairo_msbset64(den.hi))
     {
@@ -598,7 +598,7 @@ _cairo_uint128_divrem (cairo_uint128_t num, cairo_uint128_t den)
 	den = _cairo_uint128_lsl (den, 1);
     }
     quo = _cairo_uint32_to_uint128 (0);
-    
+
     /* generate quotient, one bit at a time */
     while (_cairo_uint128_ne (bit, _cairo_uint32_to_uint128(0)))
     {
@@ -652,6 +652,160 @@ _cairo_int128_divrem (cairo_int128_t num, cairo_int128_t den)
 	qr.rem = uqr.rem;
     if (num_neg != den_neg)
 	qr.quo = _cairo_int128_negate (uqr.quo);
+    else
+	qr.quo = uqr.quo;
+    return qr;
+}
+
+/**
+ * _cairo_uint_96by64_32x64_divrem:
+ *
+ * Compute a 32 bit quotient and 64 bit remainder of a 96 bit unsigned
+ * dividend and 64 bit divisor.  If the quotient doesn't fit into 32
+ * bits then the returned remainder is equal to the divisor, and the
+ * quotient is the largest representable 64 bit integer.  It is an
+ * error to call this function with the high 32 bits of @num being
+ * non-zero. */
+cairo_uquorem64_t
+_cairo_uint_96by64_32x64_divrem (cairo_uint128_t num,
+				 cairo_uint64_t den)
+{
+    cairo_uquorem64_t result;
+    cairo_uint64_t B = _cairo_uint32s_to_uint64 (1, 0);
+
+    /* These are the high 64 bits of the *96* bit numerator.  We're
+     * going to represent the numerator as xB + y, where x is a 64,
+     * and y is a 32 bit number. */
+    cairo_uint64_t x = _cairo_uint128_to_uint64 (_cairo_uint128_rsl(num, 32));
+
+    /* Initialise the result to indicate overflow. */
+    result.quo = _cairo_uint32s_to_uint64 (-1U, -1U);
+    result.rem = den;
+
+    /* Don't bother if the quotient is going to overflow. */
+    if (_cairo_uint64_ge (x, den)) {
+	return /* overflow */ result;
+    }
+
+    if (_cairo_uint64_lt (x, B)) {
+	/* When the final quotient is known to fit in 32 bits, then
+	 * num < 2^64 if and only if den < 2^32. */
+	return _cairo_uint64_divrem (_cairo_uint128_to_uint64 (num), den);
+    }
+    else {
+	/* Denominator is >= 2^32. the numerator is >= 2^64, and the
+	 * division won't overflow: need two divrems.  Write the
+	 * numerator and denominator as
+	 *
+	 *	num = xB + y		x : 64 bits, y : 32 bits
+	 *	den = uB + v		u, v : 32 bits
+	 */
+	uint32_t y = _cairo_uint128_to_uint32 (num);
+	uint32_t u = uint64_hi32 (den);
+	uint32_t v = _cairo_uint64_to_uint32 (den);
+
+	/* Compute a lower bound approximate quotient of num/den
+	 * from x/(u+1).  Then we have
+	 *
+	 * x	= q(u+1) + r	; q : 32 bits, r <= u : 32 bits.
+	 *
+	 * xB + y	= q(u+1)B	+ (rB+y)
+	 *		= q(uB + B + v - v) + (rB+y)
+	 *		= q(uB + v)	+ qB - qv + (rB+y)
+	 *		= q(uB + v)	+ q(B-v) + (rB+y)
+	 *
+	 * The true quotient of num/den then is q plus the
+	 * contribution of q(B-v) + (rB+y).  The main contribution
+	 * comes from the term q(B-v), with the term (rB+y) only
+	 * contributing at most one part.
+	 *
+	 * The term q(B-v) must fit into 64 bits, since q fits into 32
+	 * bits on account of being a lower bound to the true
+	 * quotient, and as B-v <= 2^32, we may safely use a single
+	 * 64/64 bit division to find its contribution. */
+
+	cairo_uquorem64_t quorem;
+	cairo_uint64_t remainder; /* will contain final remainder */
+	uint32_t quotient;	/* will contain final quotient. */
+	uint32_t q;
+	uint32_t r;
+
+	/* Approximate quotient by dividing the high 64 bits of num by
+	 * u+1. Watch out for overflow of u+1. */
+	if (u+1) {
+	    quorem = _cairo_uint64_divrem (x, _cairo_uint32_to_uint64 (u+1));
+	    q = _cairo_uint64_to_uint32 (quorem.quo);
+	    r = _cairo_uint64_to_uint32 (quorem.rem);
+	}
+	else {
+	    q = uint64_hi32 (x);
+	    r = _cairo_uint64_to_uint32 (x);
+	}
+	quotient = q;
+
+	/* Add the main term's contribution to quotient.  Note B-v =
+	 * -v as an uint32 (unless v = 0) */
+	if (v)
+	    quorem = _cairo_uint64_divrem (_cairo_uint32x32_64_mul (q, -v), den);
+	else
+	    quorem = _cairo_uint64_divrem (_cairo_uint32s_to_uint64 (q, 0), den);
+	quotient += _cairo_uint64_to_uint32 (quorem.quo);
+
+	/* Add the contribution of the subterm and start computing the
+	 * true remainder. */
+	remainder = _cairo_uint32s_to_uint64 (r, y);
+	if (_cairo_uint64_ge (remainder, den)) {
+	    remainder = _cairo_uint64_sub (remainder, den);
+	    quotient++;
+	}
+
+	/* Add the contribution of the main term's remainder. The
+	 * funky test here checks that remainder + main_rem >= den,
+	 * taking into account overflow of the addition. */
+	remainder = _cairo_uint64_add (remainder, quorem.rem);
+	if (_cairo_uint64_ge (remainder, den) ||
+	    _cairo_uint64_lt (remainder, quorem.rem))
+	{
+	    remainder = _cairo_uint64_sub (remainder, den);
+	    quotient++;
+	}
+
+	result.quo = _cairo_uint32_to_uint64 (quotient);
+	result.rem = remainder;
+    }
+    return result;
+}
+
+cairo_quorem64_t
+_cairo_int_96by64_32x64_divrem (cairo_int128_t num, cairo_int64_t den)
+{
+    int			num_neg = _cairo_int128_negative (num);
+    int			den_neg = _cairo_int64_negative (den);
+    cairo_uint64_t	nonneg_den;
+    cairo_uquorem64_t	uqr;
+    cairo_quorem64_t	qr;
+
+    if (num_neg)
+	num = _cairo_int128_negate (num);
+    if (den_neg)
+	nonneg_den = _cairo_int64_negate (den);
+    else
+	nonneg_den = den;
+
+    uqr = _cairo_uint_96by64_32x64_divrem (num, nonneg_den);
+    if (_cairo_uint64_eq (uqr.rem, nonneg_den)) {
+	/* bail on overflow. */
+	qr.quo = _cairo_uint32s_to_uint64 (0x7FFFFFFF, -1U);;
+	qr.rem = den;
+	return qr;
+    }
+
+    if (num_neg)
+	qr.rem = _cairo_int64_negate (uqr.rem);
+    else
+	qr.rem = uqr.rem;
+    if (num_neg != den_neg)
+	qr.quo = _cairo_int64_negate (uqr.quo);
     else
 	qr.quo = uqr.quo;
     return qr;

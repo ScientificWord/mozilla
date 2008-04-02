@@ -14,8 +14,7 @@
  *
  * The Original Code is Mozilla Spellchecker Component.
  *
- * The Initial Developer of the Original Code is
- * David Einstein.
+ * The Initial Developer of the Original Code is David Einstein.
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
  *
@@ -38,6 +37,15 @@
 
 #include "nsIGenericFactory.h"
 
+#ifdef MOZ_WIDGET_COCOA
+#include "mozOSXSpell.h"
+#else
+#include "mozHunspell.h"
+#ifdef MOZ_XUL_APP
+#include "mozHunspellDirProvider.h"
+#endif
+#endif
+
 #include "mozSpellChecker.h"
 #include "mozInlineSpellChecker.h"
 #include "nsTextServicesCID.h"
@@ -55,10 +63,19 @@
 { 0xa0, 0x1a, 0x66, 0x40, 0x2e, 0xa2, 0x86, 0x57} }
 
 ////////////////////////////////////////////////////////////////////////
-// Define the contructor function for the objects
+// Define the constructor function for the objects
 //
 // NOTE: This creates an instance of objects by using the default constructor
 //
+
+#ifdef MOZ_WIDGET_COCOA
+NS_GENERIC_FACTORY_CONSTRUCTOR(mozOSXSpell)
+#else
+NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(mozHunspell, Init)
+#ifdef MOZ_XUL_APP
+NS_GENERIC_FACTORY_CONSTRUCTOR(mozHunspellDirProvider)
+#endif
+#endif
 
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(mozSpellChecker, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(mozPersonalDictionary, Init)
@@ -105,10 +122,55 @@ mozInlineSpellCheckerConstructor(nsISupports *aOuter, REFNSIID aIID,
 // class name.
 //
 static nsModuleComponentInfo components[] = {
-  { NULL, NS_SPELLCHECKER_CID, NS_SPELLCHECKER_CONTRACTID, mozSpellCheckerConstructor },
-  { NULL, MOZ_PERSONALDICTIONARY_CID, MOZ_PERSONALDICTIONARY_CONTRACTID, mozPersonalDictionaryConstructor },
-  { NULL, MOZ_SPELLI18NMANAGER_CID, MOZ_SPELLI18NMANAGER_CONTRACTID, mozSpellI18NManagerConstructor },
-  { NULL, MOZ_INLINESPELLCHECKER_CID, MOZ_INLINESPELLCHECKER_CONTRACTID, mozInlineSpellCheckerConstructor }
+#ifdef MOZ_WIDGET_COCOA
+    {
+        "OSX Spell check service",
+        MOZ_OSXSPELL_CID,
+        MOZ_OSXSPELL_CONTRACTID,
+        mozOSXSpellConstructor
+    },
+#else
+    {
+        "mozHunspell",
+        MOZ_HUNSPELL_CID,
+        MOZ_HUNSPELL_CONTRACTID,
+        mozHunspellConstructor
+    },
+#ifdef MOZ_XUL_APP
+    {
+        "mozHunspellDirProvider",
+        HUNSPELLDIRPROVIDER_CID,
+        mozHunspellDirProvider::kContractID,
+        mozHunspellDirProviderConstructor,
+        mozHunspellDirProvider::Register,
+        mozHunspellDirProvider::Unregister
+    },
+#endif // MOZ_XUL_APP
+#endif // MOZ_WIDGET_COCOA
+  {
+      NULL,
+      NS_SPELLCHECKER_CID,
+      NS_SPELLCHECKER_CONTRACTID,
+      mozSpellCheckerConstructor
+  },
+  {
+      NULL,
+      MOZ_PERSONALDICTIONARY_CID,
+      MOZ_PERSONALDICTIONARY_CONTRACTID,
+      mozPersonalDictionaryConstructor
+  },
+  {
+      NULL,
+      MOZ_SPELLI18NMANAGER_CID,
+      MOZ_SPELLI18NMANAGER_CONTRACTID,
+      mozSpellI18NManagerConstructor
+  },
+  {
+      NULL,
+      MOZ_INLINESPELLCHECKER_CID,
+      MOZ_INLINESPELLCHECKER_CONTRACTID,
+      mozInlineSpellCheckerConstructor
+  }
 };
 
 ////////////////////////////////////////////////////////////////////////
