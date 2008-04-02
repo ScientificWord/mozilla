@@ -44,11 +44,9 @@
 
 #include "nsScrollbarFrame.h"
 #include "nsScrollbarButtonFrame.h"
-#include "nsXULAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsIScrollableFrame.h"
-#include "nsIView.h"
-#include "nsIViewManager.h"
-
+#include "nsIScrollbarMediator.h"
 
 //
 // NS_NewToolbarFrame
@@ -75,10 +73,6 @@ nsScrollbarFrame::Init(nsIContent* aContent,
                        nsIFrame*   aPrevInFlow)
 {
   nsresult  rv = nsBoxFrame::Init(aContent, aParent, aPrevInFlow);
-
-  CreateViewForFrame(GetPresContext(), this, GetStyleContext(), PR_TRUE);
-  nsIView* view = GetView();
-  view->GetViewManager()->SetViewContentTransparency(view, PR_TRUE);
 
   // We want to be a reflow root since we use reflows to move the
   // slider.  Any reflow inside the scrollbar frame will be a reflow to
@@ -118,6 +112,12 @@ nsScrollbarFrame::IsContainingBlock() const
   return PR_TRUE;
 }
 
+nsIAtom*
+nsScrollbarFrame::GetType() const
+{
+  return nsGkAtoms::scrollbarFrame;
+}
+
 NS_IMETHODIMP
 nsScrollbarFrame::AttributeChanged(PRInt32 aNameSpaceID,
                                    nsIAtom* aAttribute,
@@ -128,7 +128,7 @@ nsScrollbarFrame::AttributeChanged(PRInt32 aNameSpaceID,
 
   // if the current position changes, notify any nsGfxScrollFrame
   // parent we may have
-  if (aAttribute != nsXULAtoms::curpos)
+  if (aAttribute != nsGkAtoms::curpos)
     return rv;
 
   nsIFrame* parent = GetParent();
@@ -176,3 +176,33 @@ nsScrollbarFrame::HandleRelease(nsPresContext* aPresContext,
   return NS_OK;
 }
 
+void
+nsScrollbarFrame::SetScrollbarMediatorContent(nsIContent* aMediator)
+{
+  mScrollbarMediator = aMediator;
+}
+
+nsIScrollbarMediator*
+nsScrollbarFrame::GetScrollbarMediator()
+{
+  if (!mScrollbarMediator)
+    return nsnull;
+  nsIFrame* f =
+    PresContext()->PresShell()->GetPrimaryFrameFor(mScrollbarMediator);
+  if (!f)
+    return nsnull;
+
+  // check if the frame is a scroll frame. If so, get the scrollable frame
+  // inside it.
+  nsIScrollableFrame* scrollFrame;
+  CallQueryInterface(f, &scrollFrame);
+  if (scrollFrame) {
+    f = scrollFrame->GetScrolledFrame();
+    if (!f)
+      return nsnull;
+  }
+
+  nsIScrollbarMediator* sbm;
+  CallQueryInterface(f, &sbm);
+  return sbm;
+}

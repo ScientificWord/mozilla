@@ -36,12 +36,15 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-/* constants used in the nsStyleStruct data provided by nsStyleContext */
+/* constants used in the style struct data provided by nsStyleContext */
 
 #ifndef nsStyleConsts_h___
 #define nsStyleConsts_h___
 
 #include "nsFont.h"
+
+// cairo doesn't support invert
+// #define GFX_HAS_INVERT
 
 // XXX fold this into nsStyleContext and group by nsStyleXXX struct
 
@@ -53,7 +56,7 @@
 
 #define NS_FOR_CSS_SIDES(var_) for (PRInt32 var_ = 0; var_ < 4; ++var_)
 
-// {margin,padding}-{left,right}-{ltr,rtl}-source
+// {margin,border-{width,style,color},padding}-{left,right}-{ltr,rtl}-source
 #define NS_BOXPROP_SOURCE_PHYSICAL 0
 #define NS_BOXPROP_SOURCE_LOGICAL  1
 
@@ -189,7 +192,9 @@
 
 // See nsStyleColor
 #define NS_STYLE_COLOR_TRANSPARENT        0
+#ifdef GFX_HAS_INVERT
 #define NS_STYLE_COLOR_INVERT             1
+#endif
 #define NS_STYLE_COLOR_MOZ_USE_TEXT_COLOR      2
 
 // See nsStyleColor
@@ -225,6 +230,14 @@
 #define NS_STYLE_BG_ORIGIN_CONTENT        2
 
 // See nsStyleBackground
+// The parser code depends on |ing these values together.
+#define NS_STYLE_BG_POSITION_CENTER  (1<<0)
+#define NS_STYLE_BG_POSITION_TOP     (1<<1)
+#define NS_STYLE_BG_POSITION_BOTTOM  (1<<2)
+#define NS_STYLE_BG_POSITION_LEFT    (1<<3)
+#define NS_STYLE_BG_POSITION_RIGHT   (1<<4)
+
+// See nsStyleBackground
 #define NS_STYLE_BG_REPEAT_OFF                  0x00
 #define NS_STYLE_BG_REPEAT_X                    0x01
 #define NS_STYLE_BG_REPEAT_Y                    0x02
@@ -251,10 +264,7 @@
 #define NS_STYLE_BORDER_STYLE_INSET             7
 #define NS_STYLE_BORDER_STYLE_OUTSET            8
 #define NS_STYLE_BORDER_STYLE_HIDDEN            9
-#define NS_STYLE_BORDER_STYLE_BG_INSET          10
-#define NS_STYLE_BORDER_STYLE_BG_OUTSET         11
-#define NS_STYLE_BORDER_STYLE_BG_SOLID          12
-#define NS_STYLE_BORDER_STYLE_AUTO              13 // for outline-style only
+#define NS_STYLE_BORDER_STYLE_AUTO              10 // for outline-style only
 // a bit ORed onto the style for table border collapsing indicating that the style was 
 // derived from a table with its rules attribute set
 #define NS_STYLE_BORDER_STYLE_RULES_MARKER      0x10  
@@ -313,6 +323,7 @@
 #define NS_STYLE_CURSOR_NWSE_RESIZE             33
 #define NS_STYLE_CURSOR_NS_RESIZE               34
 #define NS_STYLE_CURSOR_EW_RESIZE               35
+#define NS_STYLE_CURSOR_NONE                    36
 
 // See nsStyleDisplay
 #define NS_STYLE_DIRECTION_LTR                  0
@@ -416,6 +427,16 @@
 #define NS_STYLE_FONT_PULL_DOWN_MENU						14
 #define NS_STYLE_FONT_LIST											15
 #define NS_STYLE_FONT_FIELD											16
+
+// defaults per MathML spec
+#define NS_MATHML_DEFAULT_SCRIPT_SIZE_MULTIPLIER 0.71f
+#define NS_MATHML_DEFAULT_SCRIPT_MIN_SIZE_PT 8
+
+// See nsStylePosition::mWidth, mMinWidth, mMaxWidth
+#define NS_STYLE_WIDTH_MAX_CONTENT              0
+#define NS_STYLE_WIDTH_MIN_CONTENT              1
+#define NS_STYLE_WIDTH_FIT_CONTENT              2
+#define NS_STYLE_WIDTH_AVAILABLE                3
 
 // See nsStylePosition.mPosition
 #define NS_STYLE_POSITION_STATIC                0
@@ -572,7 +593,7 @@
 #define NS_STYLE_WHITESPACE_NORMAL              0
 #define NS_STYLE_WHITESPACE_PRE                 1
 #define NS_STYLE_WHITESPACE_NOWRAP              2
-#define NS_STYLE_WHITESPACE_MOZ_PRE_WRAP        3
+#define NS_STYLE_WHITESPACE_PRE_WRAP            3
 
 // See nsStyleText
 #define NS_STYLE_UNICODE_BIDI_NORMAL            0
@@ -607,7 +628,12 @@
 #define NS_STYLE_TABLE_EMPTY_CELLS_SHOW            1
 #define NS_STYLE_TABLE_EMPTY_CELLS_SHOW_BACKGROUND 2
 
-// CAPTION_SIDE uses NS_SIDE_*
+#define NS_STYLE_CAPTION_SIDE_TOP               0
+#define NS_STYLE_CAPTION_SIDE_RIGHT             1
+#define NS_STYLE_CAPTION_SIDE_BOTTOM            2
+#define NS_STYLE_CAPTION_SIDE_LEFT              3
+#define NS_STYLE_CAPTION_SIDE_TOP_OUTSIDE       4
+#define NS_STYLE_CAPTION_SIDE_BOTTOM_OUTSIDE    5
 
 // constants for cell "scope" attribute
 #define NS_STYLE_CELL_SCOPE_ROW                 0
@@ -636,12 +662,15 @@
 #define NS_STYLE_COLUMN_COUNT_AUTO              0
 #define NS_STYLE_COLUMN_COUNT_UNLIMITED         (-1)
 
+// See nsStyleUIReset
+#define NS_STYLE_IME_MODE_AUTO                  0
+#define NS_STYLE_IME_MODE_NORMAL                1
+#define NS_STYLE_IME_MODE_ACTIVE                2
+#define NS_STYLE_IME_MODE_DISABLED              3
+#define NS_STYLE_IME_MODE_INACTIVE              4
+
 #ifdef MOZ_SVG
-// Some of our constants must map to the same values as those defined in
-// nsISVG{,Path,Glyph}GeometrySource.idl/
-// I don't want to add a dependency on the SVG module
-// everywhere by #include'ing nsISVG{,Path,Glyph}GeometrySource.h, so these consts
-// have to be kept in sync manually.
+// See nsStyleSVG
 
 // dominant-baseline
 #define NS_STYLE_DOMINANT_BASELINE_AUTO              0
@@ -658,8 +687,8 @@
 #define NS_STYLE_DOMINANT_BASELINE_TEXT_BEFORE_EDGE 11
 
 // fill-rule
-#define NS_STYLE_FILL_RULE_NONZERO              0 /* == nsISVGGeometrySource::FILL_RULE_NONZERO */
-#define NS_STYLE_FILL_RULE_EVENODD              1 /* == nsISVGGeometrySource::FILL_RULE_EVENODD */
+#define NS_STYLE_FILL_RULE_NONZERO              0
+#define NS_STYLE_FILL_RULE_EVENODD              1
 
 // pointer-events
 #define NS_STYLE_POINTER_EVENTS_NONE            0
@@ -673,21 +702,20 @@
 #define NS_STYLE_POINTER_EVENTS_ALL             8
 
 // shape-rendering
-#define NS_STYLE_SHAPE_RENDERING_AUTO               0 /* == nsISVGPathGeometrySource::SHAPE_RENDERING_AUTO */
-#define NS_STYLE_SHAPE_RENDERING_OPTIMIZESPEED      1 /* == nsISVGPathGeometrySource::SHAPE_RENDERING_OPTIMIZESPEED */
-#define NS_STYLE_SHAPE_RENDERING_CRISPEDGES         2 /* == nsISVGPathGeometrySource::SHAPE_RENDERING_CRISPEDGES */
-#define NS_STYLE_SHAPE_RENDERING_GEOMETRICPRECISION 3 /* == nsISVGPathGeometrySource::SHAPE_RENDERING_GEOMETRICPRECISION */
-
+#define NS_STYLE_SHAPE_RENDERING_AUTO               0
+#define NS_STYLE_SHAPE_RENDERING_OPTIMIZESPEED      1
+#define NS_STYLE_SHAPE_RENDERING_CRISPEDGES         2
+#define NS_STYLE_SHAPE_RENDERING_GEOMETRICPRECISION 3
 
 // stroke-linecap
-#define NS_STYLE_STROKE_LINECAP_BUTT            0 /* == nsISVGGeometrySource::STROKE_LINECAP_BUTT */
-#define NS_STYLE_STROKE_LINECAP_ROUND           1 /* == nsISVGGeometrySource::STROKE_LINECAP_ROUND */
-#define NS_STYLE_STROKE_LINECAP_SQUARE          2 /* == nsISVGGeometrySource::STROKE_LINECAP_SQUARE */
+#define NS_STYLE_STROKE_LINECAP_BUTT            0
+#define NS_STYLE_STROKE_LINECAP_ROUND           1
+#define NS_STYLE_STROKE_LINECAP_SQUARE          2
 
 // stroke-linejoin
-#define NS_STYLE_STROKE_LINEJOIN_MITER          0 /* == nsISVGGeometrySource::STROKE_LINEJOIN_MITER */
-#define NS_STYLE_STROKE_LINEJOIN_ROUND          1 /* == nsISVGGeometrySource::STROKE_LINEJOIN_ROUND */
-#define NS_STYLE_STROKE_LINEJOIN_BEVEL          2 /* == nsISVGGeometrySource::STROKE_LINEJOIN_BEVEL */
+#define NS_STYLE_STROKE_LINEJOIN_MITER          0
+#define NS_STYLE_STROKE_LINEJOIN_ROUND          1
+#define NS_STYLE_STROKE_LINEJOIN_BEVEL          2
 
 // text-anchor
 #define NS_STYLE_TEXT_ANCHOR_START              0 
@@ -695,10 +723,15 @@
 #define NS_STYLE_TEXT_ANCHOR_END                2 
 
 // text-rendering
-#define NS_STYLE_TEXT_RENDERING_AUTO               0 /* == nsISVGGlyphGeometrySource::TEXT_RENDERING_AUTO */
-#define NS_STYLE_TEXT_RENDERING_OPTIMIZESPEED      1 /* == nsISVGG.G.S.::TEXT_RENDERING_OPTIMIZESPEED */
-#define NS_STYLE_TEXT_RENDERING_OPTIMIZELEGIBILITY 2 /* == nsISVGG.G.S.::TEXT_RENDERING_OPTIMIZELEGIBILITY */
-#define NS_STYLE_TEXT_RENDERING_GEOMETRICPRECISION 3 /* == nsISVGG.G.S.::TEXT_RENDERING_GEOMETRICPRECISION */
+#define NS_STYLE_TEXT_RENDERING_AUTO               0
+#define NS_STYLE_TEXT_RENDERING_OPTIMIZESPEED      1
+#define NS_STYLE_TEXT_RENDERING_OPTIMIZELEGIBILITY 2
+#define NS_STYLE_TEXT_RENDERING_GEOMETRICPRECISION 3
+
+// color-interpolation and color-interpolation-filters
+#define NS_STYLE_COLOR_INTERPOLATION_AUTO           0
+#define NS_STYLE_COLOR_INTERPOLATION_SRGB           1
+#define NS_STYLE_COLOR_INTERPOLATION_LINEARRGB      2
 
 #endif // MOZ_SVG
 

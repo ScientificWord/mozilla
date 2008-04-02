@@ -40,6 +40,7 @@
 #include "nsIDOMSVGUseElement.h"
 #include "nsIDOMSVGTransformable.h"
 #include "nsSVGElement.h"
+#include "nsSVGUseElement.h"
 
 typedef nsSVGGFrame nsSVGUseFrameBase;
 
@@ -55,8 +56,8 @@ protected:
    // nsISupports interface:
   NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
 private:
-  NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }
-  NS_IMETHOD_(nsrefcnt) Release() { return NS_OK; }  
+  NS_IMETHOD_(nsrefcnt) AddRef() { return 1; }
+  NS_IMETHOD_(nsrefcnt) Release() { return 1; }
 
 public:
   // nsIFrame interface:
@@ -64,13 +65,15 @@ public:
                                nsIAtom*        aAttribute,
                                PRInt32         aModType);
 
+  virtual void Destroy();
+
   // nsSVGContainerFrame methods:
   virtual already_AddRefed<nsIDOMSVGMatrix> GetCanvasTM();
 
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::svgUseFrame
+   * @see nsGkAtoms::svgUseFrame
    */
   virtual nsIAtom* GetType() const;
 
@@ -82,11 +85,7 @@ public:
 #endif
 
   // nsIAnonymousContentCreator
-  NS_IMETHOD CreateAnonymousContent(nsPresContext* aPresContext,
-                                    nsISupportsArray& aAnonymousItems);
-  NS_IMETHOD CreateFrameFor(nsPresContext *aPresContext,
-                            nsIContent *aContent,
-                            nsIFrame **aFrame);
+  virtual nsresult CreateAnonymousContent(nsTArray<nsIContent*>& aElements);
 };
 
 //----------------------------------------------------------------------
@@ -95,11 +94,9 @@ public:
 nsIFrame*
 NS_NewSVGUseFrame(nsIPresShell* aPresShell, nsIContent* aContent, nsStyleContext* aContext)
 {
-  nsCOMPtr<nsIDOMSVGTransformable> transformable = do_QueryInterface(aContent);
-  if (!transformable) {
-#ifdef DEBUG
-    printf("warning: trying to construct an SVGUseFrame for a content element that doesn't support the right interfaces\n");
-#endif
+  nsCOMPtr<nsIDOMSVGUseElement> use = do_QueryInterface(aContent);
+  if (!use) {
+    NS_ERROR("Can't create frame! Content is not an SVG use!");
     return nsnull;
   }
 
@@ -109,7 +106,7 @@ NS_NewSVGUseFrame(nsIPresShell* aPresShell, nsIContent* aContent, nsStyleContext
 nsIAtom *
 nsSVGUseFrame::GetType() const
 {
-  return nsLayoutAtoms::svgUseFrame;
+  return nsGkAtoms::svgUseFrame;
 }
 
 //----------------------------------------------------------------------
@@ -133,18 +130,20 @@ nsSVGUseFrame::AttributeChanged(PRInt32         aNameSpaceID,
     // make sure our cached transform matrix gets (lazily) updated
     mCanvasTM = nsnull;
     
-    for (nsIFrame* kid = mFrames.FirstChild(); kid;
-         kid = kid->GetNextSibling()) {
-      nsISVGChildFrame* SVGFrame=nsnull;
-      kid->QueryInterface(NS_GET_IID(nsISVGChildFrame),(void**)&SVGFrame);
-      if (SVGFrame)
-        SVGFrame->NotifyCanvasTMChanged(PR_FALSE);
-    }
+    nsSVGUtils::NotifyChildrenOfSVGChange(this, TRANSFORM_CHANGED);
     return NS_OK;
   }
 
   return nsSVGUseFrameBase::AttributeChanged(aNameSpaceID,
                                              aAttribute, aModType);
+}
+
+void
+nsSVGUseFrame::Destroy()
+{
+  nsRefPtr<nsSVGUseElement> use = static_cast<nsSVGUseElement*>(mContent);
+  nsSVGUseFrameBase::Destroy();
+  use->DestroyAnonymousContent();
 }
 
 
@@ -169,7 +168,7 @@ nsSVGUseFrame::GetCanvasTM()
 
   // x and y:
   float x, y;
-  nsSVGElement *element = NS_STATIC_CAST(nsSVGElement*, mContent);
+  nsSVGElement *element = static_cast<nsSVGElement*>(mContent);
   element->GetAnimatedLengthValues(&x, &y, nsnull);
 
   nsCOMPtr<nsIDOMSVGMatrix> fini;
@@ -184,23 +183,15 @@ nsSVGUseFrame::GetCanvasTM()
 //----------------------------------------------------------------------
 // nsIAnonymousContentCreator methods:
 
-NS_IMETHODIMP
-nsSVGUseFrame::CreateAnonymousContent(nsPresContext* aPresContext,
-                                      nsISupportsArray& aAnonymousItems)
+nsresult
+nsSVGUseFrame::CreateAnonymousContent(nsTArray<nsIContent*>& aElements)
 {
-  nsCOMPtr<nsIAnonymousContentCreator> use = do_QueryInterface(mContent);
+  nsSVGUseElement *use = static_cast<nsSVGUseElement*>(mContent);
 
-  if (use)
-    return use->CreateAnonymousContent(aPresContext, aAnonymousItems);
-  else
+  nsIContent* clone = use->CreateAnonymousContent();
+  if (!clone)
     return NS_ERROR_FAILURE;
-}
-
-NS_IMETHODIMP
-nsSVGUseFrame::CreateFrameFor(nsPresContext *aPresContext,
-                              nsIContent *aContent,
-                              nsIFrame **aFrame)
-{
-  *aFrame = nsnull;
-  return NS_ERROR_FAILURE;
+  if (!aElements.AppendElement(clone))
+    return NS_ERROR_OUT_OF_MEMORY;
+  return NS_OK;
 }

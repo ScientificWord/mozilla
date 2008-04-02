@@ -42,8 +42,6 @@
 
 #include "nscore.h"
 #include "nsISupports.h"
-#include "nsReflowType.h"
-class nsHTMLReflowCommand;
 class nsIAtom;
 class nsNodeInfoManager;
 class nsIContent;
@@ -54,32 +52,33 @@ class nsIHTMLContentSink;
 class nsIFragmentContentSink;
 class nsPresContext;
 class nsStyleContext;
-class nsITextContent;
 class nsIURI;
 class nsString;
 class nsIPresShell;
 class nsIChannel;
+class nsTableColFrame;
 
 /**
  * Additional frame-state bits used by nsBlockFrame
  * See the meanings at http://www.mozilla.org/newlayout/doc/block-and-line.html
+ *
+ * NS_BLOCK_HAS_FIRST_LETTER_STYLE means that the block has first-letter style,
+ *  even if it has no actual first-letter frame among its descendants.
+ *
+ * NS_BLOCK_HAS_FIRST_LETTER_CHILD means that there is an inflow first-letter
+ *  frame among the block's descendants. If there is a floating first-letter
+ *  frame, or the block has first-letter style but has no first letter, this
+ *  bit is not set.
  */
-#define NS_BLOCK_SHRINK_WRAP                0x00100000
 #define NS_BLOCK_NO_AUTO_MARGINS            0x00200000
 #define NS_BLOCK_MARGIN_ROOT                0x00400000
 #define NS_BLOCK_SPACE_MGR                  0x00800000
 #define NS_BLOCK_HAS_FIRST_LETTER_STYLE     0x20000000
 #define NS_BLOCK_FRAME_HAS_OUTSIDE_BULLET   0x40000000
+#define NS_BLOCK_HAS_FIRST_LETTER_CHILD     0x80000000
 // These are the bits that get inherited from a block frame to its
 // next-in-flows and are not private to blocks
-#define NS_BLOCK_FLAGS_MASK                 0xF0F00000
-
-// Factory method for creating a content iterator for generated
-// content
-nsresult
-NS_NewFrameContentIterator(nsPresContext*      aPresContext,
-                           nsIFrame*            aFrame,
-                           nsIContentIterator** aIterator);
+#define NS_BLOCK_FLAGS_MASK                 0xF0E00000 
 
 // Factory methods for creating html layout objects
 
@@ -110,7 +109,7 @@ NS_NewAreaFrame(nsIPresShell* aPresShell, nsStyleContext* aContext, PRUint32 aFl
 // These AreaFrame's shrink wrap around their contents
 inline nsIFrame*
 NS_NewTableCellInnerFrame(nsIPresShell* aPresShell, nsStyleContext* aContext) {
-  return NS_NewBlockFrame(aPresShell, aContext, NS_BLOCK_SPACE_MGR|NS_BLOCK_MARGIN_ROOT);
+  return NS_NewBlockFrame(aPresShell, aContext);
 }
 
 // This type of AreaFrame is the document root, a margin root, and the
@@ -130,14 +129,14 @@ NS_NewAbsoluteItemWrapperFrame(nsIPresShell* aPresShell, nsStyleContext* aContex
 inline nsIFrame*
 NS_NewFloatingItemWrapperFrame(nsIPresShell* aPresShell, nsStyleContext* aContext) {
   return NS_NewAreaFrame(aPresShell, aContext,
-    NS_BLOCK_SPACE_MGR|NS_BLOCK_SHRINK_WRAP|NS_BLOCK_MARGIN_ROOT);
+    NS_BLOCK_SPACE_MGR|NS_BLOCK_MARGIN_ROOT);
 }
 
 // This type of AreaFrame doesn't use its own space manager and
 // doesn't shrink wrap.
 inline nsIFrame*
-NS_NewRelativeItemWrapperFrame(nsIPresShell* aPresShell, nsStyleContext* aContext) {
-  return NS_NewAreaFrame(aPresShell, aContext, 0);
+NS_NewRelativeItemWrapperFrame(nsIPresShell* aPresShell, nsStyleContext* aContext, PRUint32 aFlags) {
+  return NS_NewAreaFrame(aPresShell, aContext, aFlags);
 }
 
 nsIFrame*
@@ -239,7 +238,7 @@ nsIFrame*
 NS_NewTableFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
 nsIFrame*
 NS_NewTableCaptionFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
-nsIFrame*
+nsTableColFrame*
 NS_NewTableColFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
 nsIFrame*
 NS_NewTableColGroupFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
@@ -260,4 +259,10 @@ NS_NewHTMLFragmentContentSink(nsIFragmentContentSink** aInstancePtrResult);
 nsresult
 NS_NewHTMLFragmentContentSink2(nsIFragmentContentSink** aInstancePtrResult);
 
+// This strips all but a whitelist of elements and attributes defined
+// in nsContentSink.h
+nsresult
+NS_NewHTMLParanoidFragmentSink(nsIFragmentContentSink** aInstancePtrResult);
+void
+NS_HTMLParanoidFragmentSinkShutdown();
 #endif /* nsHTMLParts_h___ */

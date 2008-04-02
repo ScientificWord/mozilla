@@ -60,14 +60,23 @@ public:
   void PaintCanvas(nsIRenderingContext& aRenderingContext,
                    const nsRect& aDirtyRect, nsPoint aPt);
                               
+  /* get the size of the canvas's image */
+  nsSize GetCanvasSize();
+
+  virtual nscoord GetMinWidth(nsIRenderingContext *aRenderingContext);
+  virtual nscoord GetPrefWidth(nsIRenderingContext *aRenderingContext);
+  virtual nsSize GetIntrinsicRatio();
+
+  virtual nsSize ComputeSize(nsIRenderingContext *aRenderingContext,
+                             nsSize aCBSize, nscoord aAvailableWidth,
+                             nsSize aMargin, nsSize aBorder, nsSize aPadding,
+                             PRBool aShrinkWrap);
+
   NS_IMETHOD Reflow(nsPresContext*          aPresContext,
                     nsHTMLReflowMetrics&     aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
                     nsReflowStatus&          aStatus);
   
-  NS_IMETHOD CanContinueTextRun(PRBool& aContinueTextRun) const;
-
-
   NS_IMETHOD GetContentForEvent(nsPresContext* aPresContext,
                                 nsEvent* aEvent,
                                 nsIContent** aContent);
@@ -79,6 +88,12 @@ public:
 #endif
 
   virtual nsIAtom* GetType() const;
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsSplittableFrame::IsFrameOfType(aFlags & ~(nsIFrame::eReplaced));
+  }
+
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
   NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
@@ -90,7 +105,6 @@ protected:
   nscoord GetContinuationOffset(nscoord* aWidth = 0) const;
 
   nsMargin mBorderPadding;
-  nsSize mCanvasSize;
 };
 
 #endif /* nsHTMLCanvasFrame_h___ */

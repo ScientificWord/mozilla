@@ -42,10 +42,10 @@
 #include "nsBoxObject.h"
 #include "nsIFrame.h"
 #include "nsIDocument.h"
-#include "nsIBindingManager.h"
+#include "nsBindingManager.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMNodeList.h"
-#include "nsXULAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsIScrollableFrame.h"
 
 class nsListBoxObject : public nsPIListBoxObject, public nsBoxObject
@@ -55,14 +55,13 @@ public:
   NS_DECL_NSILISTBOXOBJECT
 
   // nsPIListBoxObject
-  virtual void ClearCachedListBoxBody();
-  virtual nsIListBoxObject* GetListBoxBody();
+  virtual nsIListBoxObject* GetListBoxBody(PRBool aFlush);
 
   nsListBoxObject();
-  virtual ~nsListBoxObject();
 
   // nsPIBoxObject
   virtual void Clear();
+  virtual void ClearCachedValues();
   
 protected:
   nsIListBoxObject* mListBoxBody;
@@ -75,11 +74,6 @@ nsListBoxObject::nsListBoxObject()
   : mListBoxBody(nsnull)
 {
 }
-
-nsListBoxObject::~nsListBoxObject()
-{
-}
-
 
 //////////////////////////////////////////////////////////////////////////
 //// nsIListBoxObject
@@ -94,7 +88,7 @@ nsListBoxObject::GetListboxBody(nsIListBoxObject * *aListboxBody)
 NS_IMETHODIMP
 nsListBoxObject::GetRowCount(PRInt32 *aResult)
 {
-  nsIListBoxObject* body = GetListBoxBody();
+  nsIListBoxObject* body = GetListBoxBody(PR_TRUE);
   if (body)
     return body->GetRowCount(aResult);
   return NS_OK;
@@ -103,7 +97,7 @@ nsListBoxObject::GetRowCount(PRInt32 *aResult)
 NS_IMETHODIMP
 nsListBoxObject::GetNumberOfVisibleRows(PRInt32 *aResult)
 {
-  nsIListBoxObject* body = GetListBoxBody();
+  nsIListBoxObject* body = GetListBoxBody(PR_TRUE);
   if (body)
     return body->GetNumberOfVisibleRows(aResult);
   return NS_OK;
@@ -112,7 +106,7 @@ nsListBoxObject::GetNumberOfVisibleRows(PRInt32 *aResult)
 NS_IMETHODIMP
 nsListBoxObject::GetIndexOfFirstVisibleRow(PRInt32 *aResult)
 {
-  nsIListBoxObject* body = GetListBoxBody();
+  nsIListBoxObject* body = GetListBoxBody(PR_TRUE);
   if (body)
     return body->GetIndexOfFirstVisibleRow(aResult);
   return NS_OK;
@@ -120,7 +114,7 @@ nsListBoxObject::GetIndexOfFirstVisibleRow(PRInt32 *aResult)
 
 NS_IMETHODIMP nsListBoxObject::EnsureIndexIsVisible(PRInt32 aRowIndex)
 {
-  nsIListBoxObject* body = GetListBoxBody();
+  nsIListBoxObject* body = GetListBoxBody(PR_TRUE);
   if (body)
     return body->EnsureIndexIsVisible(aRowIndex);
   return NS_OK;
@@ -129,7 +123,7 @@ NS_IMETHODIMP nsListBoxObject::EnsureIndexIsVisible(PRInt32 aRowIndex)
 NS_IMETHODIMP
 nsListBoxObject::ScrollToIndex(PRInt32 aRowIndex)
 {
-  nsIListBoxObject* body = GetListBoxBody();
+  nsIListBoxObject* body = GetListBoxBody(PR_TRUE);
   if (body)
     return body->ScrollToIndex(aRowIndex);
   return NS_OK;
@@ -138,7 +132,7 @@ nsListBoxObject::ScrollToIndex(PRInt32 aRowIndex)
 NS_IMETHODIMP
 nsListBoxObject::ScrollByLines(PRInt32 aNumLines)
 {
-  nsIListBoxObject* body = GetListBoxBody();
+  nsIListBoxObject* body = GetListBoxBody(PR_TRUE);
   if (body)
     return body->ScrollByLines(aNumLines);
   return NS_OK;
@@ -147,7 +141,7 @@ nsListBoxObject::ScrollByLines(PRInt32 aNumLines)
 NS_IMETHODIMP
 nsListBoxObject::GetItemAtIndex(PRInt32 index, nsIDOMElement **_retval)
 {
-  nsIListBoxObject* body = GetListBoxBody();
+  nsIListBoxObject* body = GetListBoxBody(PR_TRUE);
   if (body)
     return body->GetItemAtIndex(index, _retval);
   return NS_OK;
@@ -158,16 +152,10 @@ nsListBoxObject::GetIndexOfItem(nsIDOMElement* aElement, PRInt32 *aResult)
 {
   *aResult = 0;
 
-  nsIListBoxObject* body = GetListBoxBody();
+  nsIListBoxObject* body = GetListBoxBody(PR_TRUE);
   if (body)
     return body->GetIndexOfItem(aElement, aResult);
   return NS_OK;
-}
-
-void
-nsListBoxObject::ClearCachedListBoxBody()
-{
-  mListBoxBody = nsnull;
 }
 
 //////////////////////
@@ -175,7 +163,7 @@ nsListBoxObject::ClearCachedListBoxBody()
 static void
 FindBodyContent(nsIContent* aParent, nsIContent** aResult)
 {
-  if (aParent->Tag() == nsXULAtoms::listboxbody) {
+  if (aParent->Tag() == nsGkAtoms::listboxbody) {
     *aResult = aParent;
     NS_IF_ADDREF(*aResult);
   }
@@ -199,20 +187,22 @@ FindBodyContent(nsIContent* aParent, nsIContent** aResult)
 }
 
 nsIListBoxObject*
-nsListBoxObject::GetListBoxBody()
+nsListBoxObject::GetListBoxBody(PRBool aFlush)
 {
   if (mListBoxBody) {
     return mListBoxBody;
   }
 
-  nsIFrame* frame = GetFrame(PR_FALSE);
-  if (!frame)
-    return nsnull;
-
   nsIPresShell* shell = GetPresShell(PR_FALSE);
   if (!shell) {
     return nsnull;
   }
+
+  nsIFrame* frame = aFlush ? 
+                      GetFrame(PR_FALSE) /* does Flush_Frames */ :
+                      shell->GetPrimaryFrameFor(mContent);
+  if (!frame)
+    return nsnull;
 
   // Iterate over our content model children looking for the body.
   nsCOMPtr<nsIContent> content;
@@ -240,9 +230,15 @@ nsListBoxObject::GetListBoxBody()
 void
 nsListBoxObject::Clear()
 {
-  ClearCachedListBoxBody();
+  ClearCachedValues();
 
   nsBoxObject::Clear();
+}
+
+void
+nsListBoxObject::ClearCachedValues()
+{
+  mListBoxBody = nsnull;
 }
 
 // Creation Routine ///////////////////////////////////////////////////////////////////////

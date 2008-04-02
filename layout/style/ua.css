@@ -62,11 +62,11 @@
   -moz-box-sizing: border-box; /* XXX do we really want this? */
 }
 
-
 *|*::-moz-table-outer {
   display: inherit !important; /* table or inline-table */
-  margin: 0;
-  padding: 0;
+  margin: 0 ! important;
+  padding: 0 ! important;
+  border: none ! important;
   float: inherit;
   clear: inherit;
   position: inherit;
@@ -77,6 +77,8 @@
   z-index: inherit;
   page-break-before: inherit;
   page-break-after: inherit;
+  vertical-align: inherit; /* needed for inline-table */
+  line-height: inherit; /* needed for vertical-align on inline-table */
 }
 
 *|*::-moz-table-row {
@@ -117,7 +119,8 @@
 }
 
 *|*:-moz-any-link:focus {
-  outline: 1px dotted invert;
+  /* Don't specify the outline-color, we should always use initial value. */
+  outline: 1px dotted;
 }
 
 /* Miscellaneous */
@@ -125,6 +128,12 @@
 *|*::-moz-anonymous-block, *|*::-moz-cell-content {
   display: block !important;
   position: static !important;
+}
+
+*|*::-moz-xul-anonymous-block {
+  display: block ! important;
+  position: static ! important;
+  float: none ! important;
 }
 
 *|*::-moz-scrolled-content, *|*::-moz-scrolled-canvas,

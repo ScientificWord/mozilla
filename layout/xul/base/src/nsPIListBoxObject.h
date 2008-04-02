@@ -38,26 +38,21 @@
 #ifndef nsPIListBoxObject_h__
 #define nsPIListBoxObject_h__
 
+// fa9549f7-ee09-48fc-89f7-30cceee21c15
 #define NS_PILISTBOXOBJECT_IID \
-{ 0x294e0820, 0x5c40, 0x42a8, \
- { 0xb3, 0x2f, 0x6d, 0xcf, 0x05, 0xfb, 0xe1, 0xf3 } }
+{ 0xfa9549f7, 0xee09, 0x48fc, \
+  { 0x89, 0xf7, 0x30, 0xcc, 0xee, 0xe2, 0x1c, 0x15 } }
 
 #include "nsIListBoxObject.h"
 
 class nsPIListBoxObject : public nsIListBoxObject {
  public:
   NS_DECLARE_STATIC_IID_ACCESSOR(NS_PILISTBOXOBJECT_IID)
-
   /**
-   * Clear the cached list box body frame from this box object.  This should be
-   * called when the frame in question is destroyed.
-  */
-  virtual void ClearCachedListBoxBody() = 0;
-
-  /*
    * Get the list box body.  This will search for it as needed.
+   * If aFlush is PR_FALSE we don't Flush_Frames though.
    */
-  virtual nsIListBoxObject* GetListBoxBody() = 0;
+  virtual nsIListBoxObject* GetListBoxBody(PRBool aFlush) = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsPIListBoxObject, NS_PILISTBOXOBJECT_IID)

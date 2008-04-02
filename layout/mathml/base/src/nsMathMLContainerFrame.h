@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -22,6 +23,7 @@
  *   Roger B. Sidje <rbs@maths.uq.edu.au>
  *   David J. Fiddes <D.J.Fiddes@hw.ac.uk>
  *   Shyjan Mahamud <mahamud@cs.cmu.edu> (added TeX rendering rules)
+ *   Karl Tomlinson <karlt+@karlt.net>, Mozilla Corporation
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -59,22 +61,13 @@
  * to position children in various customized ways.
  */
 
-// Parameters to handle the change of font-size induced by changing the
-// scriptlevel. These are hard-coded values that match with the rules in
-// mathml.css. Note that mScriptLevel can exceed these bounds, but the
-// scaling effect on the font-size will be bounded. The following bounds can
-// be expanded provided the new corresponding rules are added in mathml.css.
-#define NS_MATHML_CSS_POSITIVE_SCRIPTLEVEL_LIMIT  +5
-#define NS_MATHML_CSS_NEGATIVE_SCRIPTLEVEL_LIMIT  -5
-#define NS_MATHML_SCRIPTSIZEMULTIPLIER             0.71f
-#define NS_MATHML_SCRIPTMINSIZE                    8
-
 // Options for the preferred size at which to stretch our stretchy children 
 #define STRETCH_CONSIDER_ACTUAL_SIZE    0x00000001 // just use our current size
 #define STRETCH_CONSIDER_EMBELLISHMENTS 0x00000002 // size calculations include embellishments
 
 class nsMathMLContainerFrame : public nsHTMLContainerFrame,
                                public nsMathMLFrame {
+  friend class nsMathMLmfencedFrame;
 public:
   nsMathMLContainerFrame(nsStyleContext* aContext) : nsHTMLContainerFrame(aContext) {}
 
@@ -97,32 +90,36 @@ public:
   NS_IMETHOD
   UpdatePresentationDataFromChildAt(PRInt32         aFirstIndex,
                                     PRInt32         aLastIndex,
-                                    PRInt32         aScriptLevelIncrement,
                                     PRUint32        aFlagsValues,
                                     PRUint32        aFlagsToUpdate)
   {
     PropagatePresentationDataFromChildAt(this, aFirstIndex, aLastIndex,
-      aScriptLevelIncrement, aFlagsValues, aFlagsToUpdate);
+      aFlagsValues, aFlagsToUpdate);
     return NS_OK;
   }
-
-  NS_IMETHOD
-  ReResolveScriptStyle(PRInt32 aParentScriptLevel)
-  {
-    PropagateScriptStyleFor(this, aParentScriptLevel);
-    return NS_OK;
-  }
+  
+  // helper to set the "increment script level" flag on the element belonging
+  // to a child frame given by aChildIndex.
+  // When this flag is set, the style system will increment the scriptlevel
+  // for the child element. This is needed for situations where the style system
+  // cannot itself determine the scriptlevel (mfrac, munder, mover, munderover).
+  // This should be called during reflow. We set the flag and if it changed,
+  // we request appropriate restyling and also queue a post-reflow callback
+  // to ensure that restyle and reflow happens immediately after the current
+  // reflow.
+  void
+  SetIncrementScriptLevel(PRInt32 aChildIndex, PRBool aIncrement);
 
   // --------------------------------------------------------------------------
   // Overloaded nsHTMLContainerFrame methods -- see documentation in nsIFrame.h
 
-  virtual nsIAtom* GetType() const;
-  virtual PRBool IsFrameOfType(PRUint32 aFlags) const;
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return !(aFlags & nsIFrame::eLineParticipant) &&
+      nsHTMLContainerFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
+  }
 
-  NS_IMETHOD
-  Init(nsIContent*      aContent,
-       nsIFrame*        aParent,
-       nsIFrame*        aPrevInFlow);
+  virtual PRIntn GetSkipSides() const { return 0; }
 
   NS_IMETHOD
   AppendFrames(nsIAtom*        aListName,
@@ -137,15 +134,30 @@ public:
   RemoveFrame(nsIAtom*        aListName,
               nsIFrame*       aOldFrame);
 
-  NS_IMETHODIMP
-  ReflowDirtyChild(nsIPresShell* aPresShell, 
-                   nsIFrame*     aChild);
+  /**
+   * Both GetMinWidth and GetPrefWidth return whatever
+   * GetIntrinsicWidth returns.
+   */
+  virtual nscoord GetMinWidth(nsIRenderingContext *aRenderingContext);
+  virtual nscoord GetPrefWidth(nsIRenderingContext *aRenderingContext);
+
+  /**
+   * Return the intrinsic width of the frame's content area.
+   */
+  virtual nscoord GetIntrinsicWidth(nsIRenderingContext *aRenderingContext);
 
   NS_IMETHOD
   Reflow(nsPresContext*          aPresContext,
          nsHTMLReflowMetrics&     aDesiredSize,
          const nsHTMLReflowState& aReflowState,
          nsReflowStatus&          aStatus);
+
+  NS_IMETHOD
+  WillReflow(nsPresContext* aPresContext)
+  {
+    mPresentationData.flags &= ~NS_MATHML_ERROR;
+    return nsHTMLContainerFrame::WillReflow(aPresContext);
+  }
 
   NS_IMETHOD
   DidReflow(nsPresContext*           aPresContext,
@@ -172,10 +184,10 @@ public:
   // 2. If the MathML frame class has cached automatic data that depends on
   //    the attribute:
   //    2a. If the automatic data to update resides only within the descendants,
-  //        we just re-layout them using ReLayoutChildren(aPresContext, this);
+  //        we just re-layout them using ReLayoutChildren(this);
   //        (e.g., this happens with <ms>).
   //    2b. If the automatic data to update affects us in some way, we ask our parent
-  //        to re-layout its children using ReLayoutChildren(aPresContext, mParent);
+  //        to re-layout its children using ReLayoutChildren(mParent);
   //        Therefore, there is an overhead here in that our siblings are re-laid
   //        too (e.g., this happens with <mstyle>, <munder>, <mover>, <munderover>). 
   NS_IMETHOD
@@ -215,13 +227,6 @@ public:
               const nsHTMLReflowState& aReflowState,
               nsReflowStatus&          aStatus);
 
-  nsresult 
-  ReflowForeignChild(nsIFrame*                aKidFrame,
-                     nsPresContext*           aPresContext,
-                     nsHTMLReflowMetrics&     aDesiredSize,
-                     const nsHTMLReflowState& aReflowState,
-                     nsReflowStatus&          aStatus);
-
   // helper to add the inter-spacing when <math> is the immediate parent.
   // Since we don't (yet) handle the root <math> element ourselves, we need to
   // take special care of the inter-frame spacing on elements for which <math>
@@ -238,26 +243,33 @@ public:
   FinalizeReflow(nsIRenderingContext& aRenderingContext,
                  nsHTMLReflowMetrics& aDesiredSize);
 
-  // helper method to facilitate getting the reflow and bounding metrics
-  // IMPORTANT: This function is only meant to be called in Place() methods 
-  // where it is assumed that the frame's rect is still acting as place holder
-  // for the frame's ascent and descent information
+  // Record metrics of a child frame for recovery through the following method
+  static void
+  SaveReflowAndBoundingMetricsFor(nsIFrame*                  aFrame,
+                                  const nsHTMLReflowMetrics& aReflowMetrics,
+                                  const nsBoundingMetrics&   aBoundingMetrics);
+
+  // helper method to facilitate getting the reflow and bounding metrics of a
+  // child frame.  The argument aMathMLFrameType, when non null, will return
+  // the 'type' of the frame, which is used to determine the inter-frame
+  // spacing.
+  // IMPORTANT: This function is only meant to be called in Place() methods as
+  // the information is available only when set up with the above method
+  // during Reflow/Stretch() and GetPrefWidth().
   static void
   GetReflowAndBoundingMetricsFor(nsIFrame*            aFrame,
                                  nsHTMLReflowMetrics& aReflowMetrics,
-                                 nsBoundingMetrics&   aBoundingMetrics);
+                                 nsBoundingMetrics&   aBoundingMetrics,
+                                 eMathMLFrameType*    aMathMLFrameType = nsnull);
 
-  // helper to let the scriptstyle re-resolution pass through
-  // a subtree that may contain non-MathML container frames
-  static void
-  PropagateScriptStyleFor(nsIFrame*       aFrame,
-                          PRInt32         aParentScriptLevel);
+  // helper method to clear metrics saved with
+  // SaveReflowAndBoundingMetricsFor() from all child frames.
+  void ClearSavedChildMetrics();
 
   // helper to let the update of presentation data pass through
   // a subtree that may contain non-MathML container frames
   static void
   PropagatePresentationDataFor(nsIFrame*       aFrame,
-                               PRInt32         aScriptLevelIncrement,
                                PRUint32        aFlagsValues,
                                PRUint32        aFlagsToUpdate);
 
@@ -265,7 +277,6 @@ public:
   PropagatePresentationDataFromChildAt(nsIFrame*       aParentFrame,
                                        PRInt32         aFirstChildIndex,
                                        PRInt32         aLastChildIndex,
-                                       PRInt32         aScriptLevelIncrement,
                                        PRUint32        aFlagsValues,
                                        PRUint32        aFlagsToUpdate);
 
@@ -292,11 +303,34 @@ public:
   // method re-builds the automatic data in the children -- not in the parent
   // frame itself (except for those particular operations that the parent frame
   // may do do its TransmitAutomaticData()). @see RebuildAutomaticDataForChildren
+  //
+  // aBits are the bits to pass to FrameNeedsReflow() when we call it.
   static nsresult
-  ReLayoutChildren(nsIFrame* aParentFrame);
+  ReLayoutChildren(nsIFrame* aParentFrame, nsFrameState aBits);
 
 protected:
-  virtual PRIntn GetSkipSides() const { return 0; }
+  // Helper method which positions child frames as an <mrow> on given baseline
+  // y = aBaseline starting from x = aOffsetX, calling FinishReflowChild()
+  // on the frames.
+  void
+  PositionRowChildFrames(nscoord aOffsetX, nscoord aBaseline);
+
+  // A variant on FinishAndStoreOverflow() that uses the union of child
+  // overflows, the frame bounds, and mBoundingMetrics to set and store the
+  // overflow.
+  void GatherAndStoreOverflow(nsHTMLReflowMetrics* aMetrics);
+
+  /**
+   * Call DidReflow() if the NS_FRAME_IN_REFLOW frame bit is set on aFirst and
+   * all its next siblings up to, but not including, aStop.
+   * aStop == nsnull meaning all next siblings with the bit set.
+   * The method does nothing if aFirst == nsnull.
+   */
+  void DidReflowChildren(nsIFrame* aFirst, nsIFrame* aStop = nsnull);
+
+private:
+  class RowChildFrameIterator;
+  friend class RowChildFrameIterator;
 };
 
 
@@ -310,7 +344,8 @@ protected:
 // Issues: If/when mathml becomes a pluggable component, the separation will be needed.
 class nsMathMLmathBlockFrame : public nsBlockFrame {
 public:
-  friend nsIFrame* NS_NewMathMLmathBlockFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
+  friend nsIFrame* NS_NewMathMLmathBlockFrame(nsIPresShell* aPresShell,
+          nsStyleContext* aContext, PRUint32 aFlags);
 
   // beware, mFrames is not set by nsBlockFrame
   // cannot use mFrames{.FirstChild()|.etc} since the block code doesn't set mFrames
@@ -318,33 +353,23 @@ public:
   SetInitialChildList(nsIAtom*        aListName,
                       nsIFrame*       aChildList)
   {
+    NS_ASSERTION(!aListName, "unexpected frame list");
     nsresult rv = nsBlockFrame::SetInitialChildList(aListName, aChildList);
     // re-resolve our subtree to set any mathml-expected data
-    nsMathMLContainerFrame::MapAttributesIntoCSS(GetPresContext(), this);
     nsMathMLContainerFrame::RebuildAutomaticDataForChildren(this);
     return rv;
-  }
-
-  NS_IMETHOD
-  Reflow(nsPresContext*          aPresContext,
-         nsHTMLReflowMetrics&     aDesiredSize,
-         const nsHTMLReflowState& aReflowState,
-         nsReflowStatus&          aStatus)
-  {
-    if (mScriptStyleChanged) {
-      mScriptStyleChanged = PR_FALSE;
-      nsMathMLContainerFrame::PropagateScriptStyleFor(this, 0);
-    }
-    return nsBlockFrame::Reflow(aPresContext, aDesiredSize, aReflowState, aStatus);
   }
 
   NS_IMETHOD
   AppendFrames(nsIAtom*        aListName,
                nsIFrame*       aFrameList)
   {
-    NS_ASSERTION(!aListName, "internal error");
+    NS_ASSERTION(!aListName || nsGkAtoms::nextBidi == aListName,
+                 "unexpected frame list");
     nsresult rv = nsBlockFrame::AppendFrames(aListName, aFrameList);
-    nsMathMLContainerFrame::ReLayoutChildren(this);
+    if (NS_LIKELY(!aListName))
+      nsMathMLContainerFrame::ReLayoutChildren(this,
+                                               NS_FRAME_HAS_DIRTY_CHILDREN);
     return rv;
   }
 
@@ -353,9 +378,12 @@ public:
                nsIFrame*       aPrevFrame,
                nsIFrame*       aFrameList)
   {
-    NS_ASSERTION(!aListName, "internal error");
+    NS_ASSERTION(!aListName || nsGkAtoms::nextBidi == aListName,
+                 "unexpected frame list");
     nsresult rv = nsBlockFrame::InsertFrames(aListName, aPrevFrame, aFrameList);
-    nsMathMLContainerFrame::ReLayoutChildren(this);
+    if (NS_LIKELY(!aListName))
+      nsMathMLContainerFrame::ReLayoutChildren(this,
+                                               NS_FRAME_HAS_DIRTY_CHILDREN);
     return rv;
   }
 
@@ -363,24 +391,26 @@ public:
   RemoveFrame(nsIAtom*        aListName,
               nsIFrame*       aOldFrame)
   {
-    NS_ASSERTION(!aListName, "internal error");
+    NS_ASSERTION(!aListName || nsGkAtoms::nextBidi == aListName,
+                 "unexpected frame list");
     nsresult rv = nsBlockFrame::RemoveFrame(aListName, aOldFrame);
-    nsMathMLContainerFrame::ReLayoutChildren(this);
+    if (NS_LIKELY(!aListName))
+      nsMathMLContainerFrame::ReLayoutChildren(this,
+                                               NS_FRAME_HAS_DIRTY_CHILDREN);
     return rv;
   }
 
-protected:
-  nsMathMLmathBlockFrame(nsStyleContext* aContext) : nsBlockFrame(aContext) {}
-  virtual ~nsMathMLmathBlockFrame() {}
-
-  NS_IMETHOD
-  DidSetStyleContext()
-  {
-    mScriptStyleChanged = PR_TRUE;
-    return nsBlockFrame::DidSetStyleContext();
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const {
+    return nsBlockFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
 
-  PRBool mScriptStyleChanged;
+protected:
+  nsMathMLmathBlockFrame(nsStyleContext* aContext) : nsBlockFrame(aContext) {
+    // We should always have a space manager.  Not that things can really try
+    // to float out of us anyway, but we need one for line layout.
+    AddStateBits(NS_BLOCK_SPACE_MGR);
+  }
+  virtual ~nsMathMLmathBlockFrame() {}
 };
 
 // --------------
@@ -393,33 +423,23 @@ public:
   SetInitialChildList(nsIAtom*        aListName,
                       nsIFrame*       aChildList)
   {
+    NS_ASSERTION(!aListName, "unexpected frame list");
     nsresult rv = nsInlineFrame::SetInitialChildList(aListName, aChildList);
     // re-resolve our subtree to set any mathml-expected data
-    nsMathMLContainerFrame::MapAttributesIntoCSS(GetPresContext(), this);
     nsMathMLContainerFrame::RebuildAutomaticDataForChildren(this);
     return rv;
-  }
-
-  NS_IMETHOD
-  Reflow(nsPresContext*          aPresContext,
-         nsHTMLReflowMetrics&     aDesiredSize,
-         const nsHTMLReflowState& aReflowState,
-         nsReflowStatus&          aStatus)
-  {
-    if (mScriptStyleChanged) {
-      mScriptStyleChanged = PR_FALSE;
-      nsMathMLContainerFrame::PropagateScriptStyleFor(this, 0);
-    }
-    return nsInlineFrame::Reflow(aPresContext, aDesiredSize, aReflowState, aStatus);
   }
 
   NS_IMETHOD
   AppendFrames(nsIAtom*        aListName,
                nsIFrame*       aFrameList)
   {
-    NS_ASSERTION(!aListName, "internal error");
+    NS_ASSERTION(!aListName || nsGkAtoms::nextBidi == aListName,
+                 "unexpected frame list");
     nsresult rv = nsInlineFrame::AppendFrames(aListName, aFrameList);
-    nsMathMLContainerFrame::ReLayoutChildren(this);
+    if (NS_LIKELY(!aListName))
+      nsMathMLContainerFrame::ReLayoutChildren(this,
+                                               NS_FRAME_HAS_DIRTY_CHILDREN);
     return rv;
   }
 
@@ -428,9 +448,12 @@ public:
                nsIFrame*       aPrevFrame,
                nsIFrame*       aFrameList)
   {
-    NS_ASSERTION(!aListName, "internal error");
+    NS_ASSERTION(!aListName || nsGkAtoms::nextBidi == aListName,
+                 "unexpected frame list");
     nsresult rv = nsInlineFrame::InsertFrames(aListName, aPrevFrame, aFrameList);
-    nsMathMLContainerFrame::ReLayoutChildren(this);
+    if (NS_LIKELY(!aListName))
+      nsMathMLContainerFrame::ReLayoutChildren(this,
+                                               NS_FRAME_HAS_DIRTY_CHILDREN);
     return rv;
   }
 
@@ -438,24 +461,22 @@ public:
   RemoveFrame(nsIAtom*        aListName,
               nsIFrame*       aOldFrame)
   {
-    NS_ASSERTION(!aListName, "internal error");
+    NS_ASSERTION(!aListName || nsGkAtoms::nextBidi == aListName,
+                 "unexpected frame list");
     nsresult rv = nsInlineFrame::RemoveFrame(aListName, aOldFrame);
-    nsMathMLContainerFrame::ReLayoutChildren(this);
+    if (NS_LIKELY(!aListName))
+      nsMathMLContainerFrame::ReLayoutChildren(this,
+                                               NS_FRAME_HAS_DIRTY_CHILDREN);
     return rv;
+  }
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const {
+    return nsInlineFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
 
 protected:
   nsMathMLmathInlineFrame(nsStyleContext* aContext) : nsInlineFrame(aContext) {}
   virtual ~nsMathMLmathInlineFrame() {}
-
-  NS_IMETHOD
-  DidSetStyleContext()
-  {
-    mScriptStyleChanged = PR_TRUE;
-    return nsInlineFrame::DidSetStyleContext();
-  }
-
-  PRBool mScriptStyleChanged;
 };
 
 #endif /* nsMathMLContainerFrame_h___ */

@@ -40,7 +40,7 @@
 #ifndef nsHTMLFrameset_h___
 #define nsHTMLFrameset_h___
 
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsHTMLContainerFrame.h"
 #include "nsColor.h"
 #include "nsIObserver.h"
@@ -148,6 +148,9 @@ public:
                     nsReflowStatus&          aStatus);
 
   virtual nsIAtom* GetType() const;
+#ifdef DEBUG
+  NS_IMETHOD GetFrameName(nsAString& aResult) const;
+#endif
 
   virtual PRBool IsLeaf() const;
   

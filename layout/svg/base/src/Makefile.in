@@ -59,14 +59,14 @@ REQUIRES	= xpcom \
 		  unicharutil \
 		  webshell \
 		  imglib2 \
-		  intl \
-		  windowwatcher \
 		  js \
 		  xpconnect \
 		  docshell \
+		  thebes \
 		  $(NULL)
 
 CPPSRCS		= \
+		nsSVGAFrame.cpp \
 		nsSVGClipPathFrame.cpp \
 		nsSVGContainerFrame.cpp \
 		nsSVGFilterFrame.cpp \
@@ -110,9 +110,6 @@ EXPORTS = \
 
 include $(topsrcdir)/config/rules.mk
 
-CFLAGS		+= $(MOZ_CAIRO_CFLAGS)
-CXXFLAGS	+= $(MOZ_CAIRO_CFLAGS)
-
 LOCAL_INCLUDES	= \
 		-I$(srcdir)/../../../base \
 		-I$(srcdir)/../../../generic \
@@ -120,7 +117,7 @@ LOCAL_INCLUDES	= \
 		-I$(srcdir)/../../../xul/base/src \
 		-I$(srcdir)/../../../../content/svg/content/src \
 		-I$(srcdir)/../../../../content/base/src \
-		-I$(topsrcdir)/layout/svg/renderer/src/cairo \
+		-I$(topsrcdir)/gfx/src/thebes \
 		$(NULL)
 
 libs::

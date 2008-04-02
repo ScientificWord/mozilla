@@ -76,16 +76,15 @@ nsGridRowLeafFrame::GetBorderAndPadding(nsMargin& aBorderAndPadding)
   if (!part)
     return rv;
     
-  nsGrid* grid = nsnull;
   PRInt32 index = 0;
-  part->GetGrid(this, &grid, &index);
+  nsGrid* grid = part->GetGrid(this, &index);
 
   if (!grid) 
     return rv;
 
-  PRInt32 isHorizontal = IsHorizontal();
+  PRBool isHorizontal = IsHorizontal();
 
-  nsBoxLayoutState state((nsPresContext*) GetPresContext());
+  nsBoxLayoutState state(PresContext());
 
   PRInt32 firstIndex = 0;
   PRInt32 lastIndex = 0;

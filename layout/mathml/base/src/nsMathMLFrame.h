@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -48,6 +49,7 @@
 #include "nsIMathMLFrame.h"
 #include "nsFrame.h"
 #include "nsCSSValue.h"
+#include "nsMathMLElement.h"
 
 class nsMathMLChar;
 
@@ -94,6 +96,8 @@ public:
     mReference = aReference;
     return NS_OK;
   }
+
+  virtual eMathMLFrameType GetMathMLFrameType();
 
   NS_IMETHOD
   Stretch(nsIRenderingContext& aRenderingContext,
@@ -146,22 +150,14 @@ public:
   }
 
   NS_IMETHOD
-  UpdatePresentationData(PRInt32         aScriptLevelIncrement,
-                         PRUint32        aFlagsValues,
+  UpdatePresentationData(PRUint32        aFlagsValues,
                          PRUint32        aFlagsToUpdate);
 
   NS_IMETHOD
   UpdatePresentationDataFromChildAt(PRInt32         aFirstIndex,
                                     PRInt32         aLastIndex,
-                                    PRInt32         aScriptLevelIncrement,
                                     PRUint32        aFlagsValues,
                                     PRUint32        aFlagsToUpdate)
-  {
-    return NS_OK;
-  }
-
-  NS_IMETHOD
-  ReResolveScriptStyle(PRInt32 aParentScriptLevel)
   {
     return NS_OK;
   }
@@ -202,6 +198,11 @@ public:
                           nsPresentationData& aPresentationData,
                           PRBool              aClimbTree = PR_TRUE);
 
+  // helper used by <mstyle> and <mtable> to see if they have a displaystyle attribute 
+  static void
+  FindAttrDisplaystyle(nsIContent*         aContent,
+                       nsPresentationData& aPresentationData);
+
   // helper to check if a content has an attribute. If content is nsnull or if
   // the attribute is not there, check if the attribute is on the mstyle hierarchy
   // @return PR_TRUE  --if attribute exists
@@ -215,8 +216,12 @@ public:
   // utilities to parse and retrieve numeric values in CSS units
   // All values are stored in twips.
   static PRBool
-  ParseNumericValue(nsString&   aString,
-                    nsCSSValue& aCSSValue);
+  ParseNumericValue(const nsString& aString,
+                    nsCSSValue&     aCSSValue) {
+    return nsMathMLElement::ParseNumericValue(aString, aCSSValue,
+            nsMathMLElement::PARSE_ALLOW_NEGATIVE |
+            nsMathMLElement::PARSE_ALLOW_UNITLESS);
+  }
 
   static nscoord 
   CalcLength(nsPresContext*   aPresContext,
@@ -227,6 +232,18 @@ public:
   ParseNamedSpaceValue(nsIFrame*   aMathMLmstyleFrame,
                        nsString&   aString,
                        nsCSSValue& aCSSValue);
+
+  static eMathMLFrameType
+  GetMathMLFrameTypeFor(nsIFrame* aFrame)
+  {
+    if (aFrame->IsFrameOfType(nsIFrame::eMathML)) {
+      nsIMathMLFrame* mathMLFrame;
+      CallQueryInterface(aFrame, &mathMLFrame);
+      if (mathMLFrame)
+        return mathMLFrame->GetMathMLFrameType();
+    }
+    return eMathMLFrameType_UNKNOWN;
+  }
 
   // estimate of the italic correction
   static void
@@ -260,7 +277,7 @@ public:
                       nscoord&        aSubDrop) 
   {
     const nsStyleFont* font = aChild->GetStyleFont();
-    nsCOMPtr<nsIFontMetrics> fm = aChild->GetPresContext()->GetMetricsFor(
+    nsCOMPtr<nsIFontMetrics> fm = aChild->PresContext()->GetMetricsFor(
                                                               font->mFont);
     GetSubDrop(fm, aSubDrop);
   }
@@ -270,7 +287,7 @@ public:
                       nscoord&        aSupDrop) 
   {
     const nsStyleFont* font = aChild->GetStyleFont();
-    nsCOMPtr<nsIFontMetrics> fm = aChild->GetPresContext()->GetMetricsFor(
+    nsCOMPtr<nsIFontMetrics> fm = aChild->PresContext()->GetMetricsFor(
                                                               font->mFont);
     GetSupDrop(fm, aSupDrop);
   }
@@ -412,16 +429,6 @@ public:
   GetAxisHeight(nsIRenderingContext& aRenderingContext, 
                 nsIFontMetrics*      aFontMetrics,
                 nscoord&             aAxisHeight);
-
-  // ================
-  // helpers to map attributes into CSS rules (work-around to bug 69409 which
-  // is not scheduled to be fixed anytime soon)
-  static PRInt32
-  MapAttributesIntoCSS(nsPresContext* aPresContext,
-                       nsIContent*     aContent);
-  static PRInt32
-  MapAttributesIntoCSS(nsPresContext* aPresContext,
-                       nsIFrame*       aFrame);
 
 protected:
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)

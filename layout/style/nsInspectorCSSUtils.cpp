@@ -43,7 +43,7 @@
 #include "nsIStyleRule.h"
 #include "nsRuleNode.h"
 #include "nsString.h"
-#include "nsLayoutAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsIDocument.h"
 #include "nsIPresShell.h"
 #include "nsAutoPtr.h"
@@ -53,6 +53,7 @@
 #include "nsXBLPrototypeBinding.h"
 #include "nsIDOMElement.h"
 #include "nsIMutableArray.h"
+#include "nsBindingManager.h"
 
 nsInspectorCSSUtils::nsInspectorCSSUtils()
 {
@@ -95,35 +96,6 @@ nsInspectorCSSUtils::IsRuleNodeRoot(nsRuleNode *aNode, PRBool *aIsRoot)
     return NS_OK;
 }
 
-NS_IMETHODIMP
-nsInspectorCSSUtils::AdjustRectForMargins(nsIFrame* aFrame, nsRect& aRect)
-{
-    const nsStyleMargin* margins = aFrame->GetStyleMargin();
-
-    // adjust coordinates for margins
-    nsStyleCoord coord;
-    if (margins->mMargin.GetTopUnit() == eStyleUnit_Coord) {
-        margins->mMargin.GetTop(coord);
-        aRect.y -= coord.GetCoordValue();
-        aRect.height += coord.GetCoordValue();
-    }
-    if (margins->mMargin.GetLeftUnit() == eStyleUnit_Coord) {
-        margins->mMargin.GetLeft(coord);
-        aRect.x -= coord.GetCoordValue();
-        aRect.width += coord.GetCoordValue();
-    }
-    if (margins->mMargin.GetRightUnit() == eStyleUnit_Coord) {
-        margins->mMargin.GetRight(coord);
-        aRect.width += coord.GetCoordValue();
-    }
-    if (margins->mMargin.GetBottomUnit() == eStyleUnit_Coord) {
-        margins->mMargin.GetBottom(coord);
-        aRect.height += coord.GetCoordValue();
-    }
-
-    return NS_OK;
-}
-
 /* static */
 nsStyleContext*
 nsInspectorCSSUtils::GetStyleContextForFrame(nsIFrame* aFrame)
@@ -137,7 +109,7 @@ nsInspectorCSSUtils::GetStyleContextForFrame(nsIFrame* aFrame)
      * frame" actually inherits style from the "inner frame" so we can
      * just move one level up in the style context hierarchy....
      */
-    if (aFrame->GetType() == nsLayoutAtoms::tableOuterFrame)
+    if (aFrame->GetType() == nsGkAtoms::tableOuterFrame)
         return styleContext->GetParent();
 
     return styleContext;
@@ -150,7 +122,7 @@ nsInspectorCSSUtils::GetStyleContextForContent(nsIContent* aContent,
                                                nsIPresShell* aPresShell)
 {
     if (!aPseudo) {
-        aPresShell->FlushPendingNotifications(Flush_StyleReresolves);
+        aPresShell->FlushPendingNotifications(Flush_Style);
         nsIFrame* frame = aPresShell->GetPrimaryFrameFor(aContent);
         if (frame) {
             nsStyleContext* result = GetStyleContextForFrame(frame);
@@ -195,7 +167,7 @@ nsInspectorCSSUtils::GetRuleNodeForContent(nsIContent* aContent,
     nsIDocument* doc = aContent->GetDocument();
     NS_ENSURE_TRUE(doc, NS_ERROR_UNEXPECTED);
 
-    nsIPresShell *presShell = doc->GetShellAt(0);
+    nsIPresShell *presShell = doc->GetPrimaryShell();
     NS_ENSURE_TRUE(presShell, NS_ERROR_UNEXPECTED);
 
     nsRefPtr<nsStyleContext> sContext =

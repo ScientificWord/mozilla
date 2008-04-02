@@ -20,6 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Mats Palmgren <mats.palmgren@bredband.net>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -45,7 +46,7 @@
 #include "nsIContent.h"
 #include "nsPresContext.h"
 #include "nsIRenderingContext.h"
-#include "nsLayoutAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsFrameManager.h"
 #include "nsDisplayList.h"
 
@@ -59,21 +60,62 @@ nsPlaceholderFrame::~nsPlaceholderFrame()
 {
 }
 
+/* virtual */ nscoord
+nsPlaceholderFrame::GetMinWidth(nsIRenderingContext *aRenderingContext)
+{
+  nscoord result = 0;
+  DISPLAY_MIN_WIDTH(this, result);
+  return result;
+}
+
+/* virtual */ nscoord
+nsPlaceholderFrame::GetPrefWidth(nsIRenderingContext *aRenderingContext)
+{
+  nscoord result = 0;
+  DISPLAY_PREF_WIDTH(this, result);
+  return result;
+}
+
+/* virtual */ void
+nsPlaceholderFrame::AddInlineMinWidth(nsIRenderingContext *aRenderingContext,
+                                      nsIFrame::InlineMinWidthData *aData)
+{
+  // Override AddInlineMinWith so that *nothing* happens.  In
+  // particular, we don't want to zero out |aData->trailingWhitespace|,
+  // since nsLineLayout skips placeholders when trimming trailing
+  // whitespace, and we don't want to set aData->skipWhitespace to
+  // false.
+
+  // ...but push floats onto the list
+  if (mOutOfFlowFrame->GetStyleDisplay()->mFloats != NS_STYLE_FLOAT_NONE)
+    aData->floats.AppendElement(mOutOfFlowFrame);
+}
+
+/* virtual */ void
+nsPlaceholderFrame::AddInlinePrefWidth(nsIRenderingContext *aRenderingContext,
+                                       nsIFrame::InlinePrefWidthData *aData)
+{
+  // Override AddInlinePrefWith so that *nothing* happens.  In
+  // particular, we don't want to zero out |aData->trailingWhitespace|,
+  // since nsLineLayout skips placeholders when trimming trailing
+  // whitespace, and we don't want to set aData->skipWhitespace to
+  // false.
+
+  // ...but push floats onto the list
+  if (mOutOfFlowFrame->GetStyleDisplay()->mFloats != NS_STYLE_FLOAT_NONE)
+    aData->floats.AppendElement(mOutOfFlowFrame);
+}
+
 NS_IMETHODIMP
 nsPlaceholderFrame::Reflow(nsPresContext*          aPresContext,
                            nsHTMLReflowMetrics&     aDesiredSize,
                            const nsHTMLReflowState& aReflowState,
                            nsReflowStatus&          aStatus)
 {
-  DO_GLOBAL_REFLOW_COUNT("nsPlaceholderFrame", aReflowState.reason);
+  DO_GLOBAL_REFLOW_COUNT("nsPlaceholderFrame");
   DISPLAY_REFLOW(aPresContext, this, aReflowState, aDesiredSize, aStatus);
   aDesiredSize.width = 0;
   aDesiredSize.height = 0;
-  aDesiredSize.ascent = 0;
-  aDesiredSize.descent = 0;
-  if (aDesiredSize.mComputeMEW) {
-    aDesiredSize.mMaxElementWidth = 0;
-  }
 
   aStatus = NS_FRAME_COMPLETE;
   NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aDesiredSize);
@@ -83,49 +125,94 @@ nsPlaceholderFrame::Reflow(nsPresContext*          aPresContext,
 void
 nsPlaceholderFrame::Destroy()
 {
-  nsIPresShell* shell = GetPresContext()->GetPresShell();
+  nsIPresShell* shell = PresContext()->GetPresShell();
   if (shell && mOutOfFlowFrame) {
     NS_ASSERTION(!shell->FrameManager()->GetPlaceholderFrameFor(mOutOfFlowFrame),
-                 "Placeholder relationship should have been torn down");
+                 "Placeholder relationship should have been torn down; see "
+                 "comments in nsPlaceholderFrame.h");
   }
 
   nsSplittableFrame::Destroy();
 }
 
+nsSplittableType
+nsPlaceholderFrame::GetSplittableType() const
+{
+  NS_ASSERTION(mOutOfFlowFrame, "GetSplittableType called at the wrong time");
+  return mOutOfFlowFrame->GetSplittableType();
+}
+
 nsIAtom*
 nsPlaceholderFrame::GetType() const
 {
-  return nsLayoutAtoms::placeholderFrame; 
+  return nsGkAtoms::placeholderFrame; 
 }
+
+/* virtual */ PRBool
+nsPlaceholderFrame::CanContinueTextRun() const
+{
+  if (!mOutOfFlowFrame) {
+    return PR_FALSE;
+  }
+  // first-letter frames can continue text runs, and placeholders for floated
+  // first-letter frames can too
+  return mOutOfFlowFrame->CanContinueTextRun();
+}
+
+NS_IMETHODIMP
+nsPlaceholderFrame::GetParentStyleContextFrame(nsPresContext* aPresContext,
+                                               nsIFrame**      aProviderFrame,
+                                               PRBool*         aIsChild)
+{
+  NS_PRECONDITION(GetParent(), "How can we not have a parent here?");
+  *aIsChild = PR_FALSE;
+
+  // Lie about our pseudo so we can step out of all anon boxes and
+  // pseudo-elements.  The other option would be to reimplement the
+  // {ib} split gunk here.
+  *aProviderFrame =
+    CorrectStyleParentFrame(GetParent(), nsGkAtoms::placeholderFrame);
+  return NS_OK;
+}
+
 
 #ifdef DEBUG
 static void
 PaintDebugPlaceholder(nsIFrame* aFrame, nsIRenderingContext* aCtx,
                       const nsRect& aDirtyRect, nsPoint aPt)
 {
-  float p2t;
-  p2t = aFrame->GetPresContext()->PixelsToTwips();
   aCtx->SetColor(NS_RGB(0, 255, 255));
-  nscoord x = NSIntPixelsToTwips(-5, p2t);
+  nscoord x = nsPresContext::CSSPixelsToAppUnits(-5);
   aCtx->FillRect(aPt.x + x, aPt.y,
-                 NSIntPixelsToTwips(13, p2t), NSIntPixelsToTwips(3, p2t));
-  nscoord y = NSIntPixelsToTwips(-10, p2t);
+                 nsPresContext::CSSPixelsToAppUnits(13), nsPresContext::CSSPixelsToAppUnits(3));
+  nscoord y = nsPresContext::CSSPixelsToAppUnits(-10);
   aCtx->FillRect(aPt.x, aPt.y + y,
-                 NSIntPixelsToTwips(3, p2t), NSIntPixelsToTwips(10, p2t));
+                 nsPresContext::CSSPixelsToAppUnits(3), nsPresContext::CSSPixelsToAppUnits(10));
 }
+#endif // DEBUG
+
+#if defined(DEBUG) || (defined(MOZ_REFLOW_PERF_DSP) && defined(MOZ_REFLOW_PERF))
 
 NS_IMETHODIMP
 nsPlaceholderFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
                                      const nsRect&           aDirtyRect,
                                      const nsDisplayListSet& aLists)
 {
+  DO_GLOBAL_REFLOW_COUNT_DSP("nsPlaceholderFrame");
+  
+#ifdef DEBUG
   if (!GetShowFrameBorders())
     return NS_OK;
   
   return aLists.Outlines()->AppendNewToTop(new (aBuilder)
       nsDisplayGeneric(this, PaintDebugPlaceholder, "DebugPlaceholder"));
+#else // DEBUG
+  return NS_OK;
+#endif // DEBUG
 }
+#endif // DEBUG || (MOZ_REFLOW_PERF_DSP && MOZ_REFLOW_PERF)
 
+#ifdef DEBUG
 NS_IMETHODIMP
 nsPlaceholderFrame::GetFrameName(nsAString& aResult) const
 {
@@ -138,7 +225,7 @@ nsPlaceholderFrame::List(FILE* out, PRInt32 aIndent) const
   IndentBy(out, aIndent);
   ListTag(out);
 #ifdef DEBUG_waterson
-  fprintf(out, " [parent=%p]", NS_STATIC_CAST(void*, mParent));
+  fprintf(out, " [parent=%p]", static_cast<void*>(mParent));
 #endif
   if (HasView()) {
     fprintf(out, " [view=%p]", (void*)GetView());
@@ -150,10 +237,10 @@ nsPlaceholderFrame::List(FILE* out, PRInt32 aIndent) const
   nsIFrame* prevInFlow = GetPrevInFlow();
   nsIFrame* nextInFlow = GetNextInFlow();
   if (nsnull != prevInFlow) {
-    fprintf(out, " prev-in-flow=%p", NS_STATIC_CAST(void*, prevInFlow));
+    fprintf(out, " prev-in-flow=%p", static_cast<void*>(prevInFlow));
   }
   if (nsnull != nextInFlow) {
-    fprintf(out, " next-in-flow=%p", NS_STATIC_CAST(void*, nextInFlow));
+    fprintf(out, " next-in-flow=%p", static_cast<void*>(nextInFlow));
   }
   if (mOutOfFlowFrame) {
     fprintf(out, " outOfFlowFrame=");

@@ -51,24 +51,23 @@
 /**
  * The nsIBoxLayout implementation for nsGridRowLeafFrame.
  */
+// XXXldb This needs a better name that indicates that it's for any grid
+// row.
 class nsGridRowLeafLayout : public nsGridRowLayout
 {
 public:
 
   friend nsresult NS_NewGridRowLeafLayout(nsIPresShell* aPresShell, nsIBoxLayout** aNewLayout);
 
-  NS_IMETHOD GetPrefSize(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
-  NS_IMETHOD GetMinSize(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
-  NS_IMETHOD GetMaxSize(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
-  NS_IMETHOD ChildBecameDirty(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aChild);
-  NS_IMETHOD BecameDirty(nsIBox* aBox, nsBoxLayoutState& aState);
-  NS_IMETHOD ChildAddedOrRemoved(nsIBox* aBox, nsBoxLayoutState& aState);
+  virtual nsSize GetPrefSize(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState);
+  virtual nsSize GetMinSize(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState);
+  virtual nsSize GetMaxSize(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState);
+  virtual void ChildAddedOrRemoved(nsIBox* aBox, nsBoxLayoutState& aState);
   NS_IMETHOD Layout(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState);
-  NS_IMETHOD CountRowsColumns(nsIBox* aBox, PRInt32& aRowCount, PRInt32& aComputedColumnCount);
-  NS_IMETHOD DirtyRows(nsIBox* aBox, nsBoxLayoutState& aState);
-  NS_IMETHOD BuildRows(nsIBox* aBox, nsGridRow* aRows, PRInt32* aCount);
-  NS_IMETHOD GetRowCount(PRInt32& aRowCount);
-  NS_IMETHOD_(Type) GetType();
+  virtual void CountRowsColumns(nsIBox* aBox, PRInt32& aRowCount, PRInt32& aComputedColumnCount);
+  virtual void DirtyRows(nsIBox* aBox, nsBoxLayoutState& aState);
+  virtual PRInt32 BuildRows(nsIBox* aBox, nsGridRow* aRows);
+  virtual Type GetType() { return eRowLeaf; }
 
 protected:
 
