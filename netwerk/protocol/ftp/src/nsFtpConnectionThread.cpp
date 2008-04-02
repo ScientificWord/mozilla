@@ -58,13 +58,14 @@
 #include "nsNetUtil.h"
 #include "nsThreadUtils.h"
 #include "nsStreamUtils.h"
+#include "nsICacheService.h"
 #include "nsIURL.h"
 #include "nsISocketTransport.h"
 #include "nsIStreamListenerTee.h"
 #include "nsIPrefService.h"
 #include "nsIPrefBranch.h"
 #include "nsIStringBundle.h"
-#include "nsCPasswordManager.h"
+#include "nsAuthInformationHolder.h"
 
 #if defined(PR_LOGGING)
 extern PRLogModuleInfo* gFTPLog;
@@ -94,7 +95,8 @@ nsFtpState::nsFtpState()
     , mRetryPass(PR_FALSE)
     , mInternalError(NS_OK)
     , mPort(21)
-    , mIPv6Checked(PR_FALSE)
+    , mAddressChecked(PR_FALSE)
+    , mServerIsIPv6(PR_FALSE)
     , mControlStatus(NS_OK)
 {
     LOG_ALWAYS(("FTP:(%x) nsFtpState created", this));
@@ -150,7 +152,7 @@ nsFtpState::OnControlDataAvailable(const char *aData, PRUint32 aDataLen)
     buffer.Append(aData, aDataLen);
 
     const char* currLine = buffer.get();
-    while (*currLine) {
+    while (*currLine && mKeepRunning) {
         PRInt32 eolLength = strcspn(currLine, CRLF);
         PRInt32 currLineLength = strlen(currLine);
 
@@ -658,51 +660,27 @@ nsFtpState::S_user() {
         usernameStr.AppendLiteral("anonymous");
     } else {
         if (mUsername.IsEmpty()) {
-            nsCOMPtr<nsIAuthPrompt> prompter;
-            mChannel->GetCallback(prompter);
+            nsCOMPtr<nsIAuthPrompt2> prompter;
+            NS_QueryAuthPrompt2(static_cast<nsIChannel*>(mChannel),
+                                getter_AddRefs(prompter));
             if (!prompter)
                 return NS_ERROR_NOT_INITIALIZED;
 
-            nsXPIDLString user, passwd;
-            nsCAutoString prePath;
-            rv = mChannel->URI()->GetPrePath(prePath);
-            if (NS_FAILED(rv))
-                return rv;
-            NS_ConvertUTF8toUTF16 prePathU(prePath);
-
-            nsCOMPtr<nsIStringBundleService> bundleService =
-                    do_GetService(NS_STRINGBUNDLE_CONTRACTID, &rv);
-            if (NS_FAILED(rv))
-                return rv;
-
-            nsCOMPtr<nsIStringBundle> bundle;
-            rv = bundleService->CreateBundle(NECKO_MSGS_URL, getter_AddRefs(bundle));
-            if (NS_FAILED(rv))
-                return rv;
-            
-            const PRUnichar *formatStrings[] = { prePathU.get() };
-            NS_NAMED_LITERAL_STRING(name, "EnterUserPasswordFor");
-
-            nsXPIDLString formattedString;
-            rv = bundle->FormatStringFromName(name.get(), formatStrings, 1,
-                                              getter_Copies(formattedString));                   
-            if (NS_FAILED(rv))
-                return rv;
+            nsRefPtr<nsAuthInformationHolder> info =
+                new nsAuthInformationHolder(nsIAuthInformation::AUTH_HOST,
+                                            EmptyString(),
+                                            EmptyCString());
 
             PRBool retval;
-            rv = prompter->PromptUsernameAndPassword(nsnull,
-                                                     formattedString,
-                                                     prePathU.get(),
-                                                     nsIAuthPrompt::SAVE_PASSWORD_PERMANENTLY,
-                                                     getter_Copies(user), 
-                                                     getter_Copies(passwd), 
-                                                     &retval);
+            rv = prompter->PromptAuth(mChannel, nsIAuthPrompt2::LEVEL_NONE,
+                                      info, &retval);
+
             // if the user canceled or didn't supply a username we want to fail
-            if (NS_FAILED(rv) || !retval || (user && !*user) )
+            if (NS_FAILED(rv) || !retval || info->User().IsEmpty())
                 return NS_ERROR_FAILURE;
 
-            mUsername = user;
-            mPassword = passwd;
+            mUsername = info->User();
+            mPassword = info->Password();
         }
         // XXX Is UTF-8 the best choice?
         AppendUTF16toUTF8(mUsername, usernameStr);
@@ -772,50 +750,30 @@ nsFtpState::S_pass() {
         }
     } else {
         if (mPassword.IsEmpty() || mRetryPass) {
-            nsCOMPtr<nsIAuthPrompt> prompter;
-            mChannel->GetCallback(prompter);
+            nsCOMPtr<nsIAuthPrompt2> prompter;
+            NS_QueryAuthPrompt2(static_cast<nsIChannel*>(mChannel),
+                                getter_AddRefs(prompter));
             if (!prompter)
                 return NS_ERROR_NOT_INITIALIZED;
 
-            nsCAutoString prePath;
-            rv = mChannel->URI()->GetPrePath(prePath);
-            if (NS_FAILED(rv))
-                return rv;
-            NS_ConvertUTF8toUTF16 prePathU(prePath);
-            
-            nsCOMPtr<nsIStringBundleService> bundleService =
-                    do_GetService(NS_STRINGBUNDLE_CONTRACTID, &rv);
-            if (NS_FAILED(rv))
-                return rv;
+            nsRefPtr<nsAuthInformationHolder> info =
+                new nsAuthInformationHolder(nsIAuthInformation::AUTH_HOST |
+                                            nsIAuthInformation::ONLY_PASSWORD,
+                                            EmptyString(),
+                                            EmptyCString());
 
-            nsCOMPtr<nsIStringBundle> bundle;
-            rv = bundleService->CreateBundle(NECKO_MSGS_URL,
-                                             getter_AddRefs(bundle));
+            info->SetUserInternal(mUsername);
 
-            const PRUnichar *formatStrings[2] = {
-                mUsername.get(), prePathU.get()
-            };
-            NS_NAMED_LITERAL_STRING(name, "EnterPasswordFor");
-
-            nsXPIDLString formattedString;
-            rv = bundle->FormatStringFromName(name.get(), formatStrings, 2,
-                                              getter_Copies(formattedString)); 
-            if (NS_FAILED(rv))
-                return rv;
-
-            nsXPIDLString passwd;
             PRBool retval;
-            rv = prompter->PromptPassword(nsnull,
-                                          formattedString,
-                                          prePathU.get(), 
-                                          nsIAuthPrompt::SAVE_PASSWORD_PERMANENTLY,
-                                          getter_Copies(passwd), &retval);
+            rv = prompter->PromptAuth(mChannel, nsIAuthPrompt2::LEVEL_NONE,
+                                      info, &retval);
+
             // we want to fail if the user canceled. Note here that if they want
             // a blank password, we will pass it along.
             if (NS_FAILED(rv) || !retval)
                 return NS_ERROR_FAILURE;
 
-            mPassword = passwd;
+            mPassword = info->Password();
         }
         // XXX Is UTF-8 the best choice?
         AppendUTF16toUTF8(mPassword, passwordStr);
@@ -844,21 +802,6 @@ nsFtpState::R_pass() {
     if (mResponseCode/100 == 5 || mResponseCode==421) {
         // There is no difference between a too-many-users error,
         // a wrong-password error, or any other sort of error
-        // So we need to tell wallet to forget the password if we had one,
-        // and error out. That will then show the error message, and the
-        // user can retry if they want to
-
-        if (!mPassword.IsEmpty()) {
-            nsCOMPtr<nsIPasswordManager> pm =
-                    do_GetService(NS_PASSWORDMANAGER_CONTRACTID);
-            if (pm) {
-                nsCAutoString prePath;
-                nsresult rv = mChannel->URI()->GetPrePath(prePath);
-                NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to get prepath");
-                if (NS_SUCCEEDED(rv))
-                    pm->RemoveUser(prePath, EmptyString());
-            }
-        }
 
         // If the login was anonymous, and it failed, try again with a username
         if (mAnonymous) {
@@ -913,7 +856,8 @@ nsFtpState::R_syst() {
             ( mResponseMsg.Find("MACOS Peter's Server") > -1) ||
             ( mResponseMsg.Find("MACOS WebSTAR FTP") > -1) ||
             ( mResponseMsg.Find("MVS") > -1) ||
-            ( mResponseMsg.Find("OS/390") > -1)) {
+            ( mResponseMsg.Find("OS/390") > -1) ||
+            ( mResponseMsg.Find("OS/400") > -1)) {
             mServerType = FTP_UNIX_TYPE;
         } else if (( mResponseMsg.Find("WIN32", PR_TRUE) > -1) ||
                    ( mResponseMsg.Find("windows", PR_TRUE) > -1)) {
@@ -1100,6 +1044,20 @@ nsFtpState::R_mdtm() {
 nsresult 
 nsFtpState::SetContentType()
 {
+    // FTP directory URLs don't always end in a slash.  Make sure they do.
+    // This check needs to be here rather than a more obvious place
+    // (e.g. LIST command processing) so that it ensures the terminating
+    // slash is appended for the new request case, as well as the case
+    // where the URL is being loaded from the cache.
+
+    if (!mPath.IsEmpty() && mPath.Last() != '/') {
+        nsCOMPtr<nsIURL> url = (do_QueryInterface(mChannel->URI()));
+        nsCAutoString filePath;
+        if(NS_SUCCEEDED(url->GetFilePath(filePath))) {
+            filePath.Append('/');
+            url->SetFilePath(filePath);
+        }
+    }
     return mChannel->SetContentType(
         NS_LITERAL_CSTRING(APPLICATION_HTTP_INDEX_FORMAT));
 }
@@ -1285,11 +1243,9 @@ nsresult
 nsFtpState::S_pasv() {
     nsresult rv;
 
-    if (mIPv6Checked == PR_FALSE) {
-        NS_ASSERTION(mIPv6ServerAddress.get() == nsnull, "already initialized");
-
-        // Find IPv6 socket address, if server is IPv6
-        mIPv6Checked = PR_TRUE;
+    if (!mAddressChecked) {
+        // Find socket address
+        mAddressChecked = PR_TRUE;
         nsITransport *controlSocket = mControlConnection->Transport();
         if (!controlSocket)
             return FTP_ERROR;
@@ -1298,20 +1254,16 @@ nsFtpState::S_pasv() {
         if (sTrans) {
             PRNetAddr addr;
             rv = sTrans->GetPeerAddr(&addr);
-            if (NS_SUCCEEDED(rv) && addr.raw.family == PR_AF_INET6 &&
-                        !PR_IsNetAddrType(&addr, PR_IpAddrV4Mapped)) {
-                const size_t size = 100;
-                mIPv6ServerAddress = new char[size];
-                if (mIPv6ServerAddress &&
-                            PR_NetAddrToString(&addr, mIPv6ServerAddress,
-                                               size) != PR_SUCCESS)
-                    mIPv6ServerAddress = nsnull;
+            if (NS_SUCCEEDED(rv)) {
+                mServerIsIPv6 = addr.raw.family == PR_AF_INET6 &&
+                                !PR_IsNetAddrType(&addr, PR_IpAddrV4Mapped);
+                PR_NetAddrToString(&addr, mServerAddress, sizeof(mServerAddress));
             }
         }
     }
 
     const char *string;
-    if (mIPv6ServerAddress) {
+    if (mServerIsIPv6) {
         string = "EPSV" CRLF;
     } else {
         string = "PASV" CRLF;
@@ -1334,8 +1286,9 @@ nsFtpState::R_pasv() {
 
     char *ptr = response;
 
-    nsCAutoString host;
-    if (mIPv6ServerAddress) {
+    // Make sure to ignore the address in the PASV response (bug 370559)
+
+    if (mServerIsIPv6) {
         // The returned string is of the form
         // text (|||ppp|)
         // Where '|' can be any single character
@@ -1393,17 +1346,7 @@ nsFtpState::R_pasv() {
             return FTP_ERROR;
 
         port = ((PRInt32) (p0<<8)) + p1;
-        host.AppendInt(h0);
-        host.Append('.');
-        host.AppendInt(h1);
-        host.Append('.');
-        host.AppendInt(h2);
-        host.Append('.');
-        host.AppendInt(h3);
     }
-
-    const char* hostStr =
-            mIPv6ServerAddress ? mIPv6ServerAddress : host.get();
 
     PRBool newDataConn = PR_TRUE;
     if (mDataTransport) {
@@ -1435,14 +1378,14 @@ nsFtpState::R_pasv() {
             do_GetService(NS_SOCKETTRANSPORTSERVICE_CONTRACTID, &rv);
         
         nsCOMPtr<nsISocketTransport> strans;
-        rv =  sts->CreateTransport(nsnull, 0, nsDependentCString(hostStr),
+        rv =  sts->CreateTransport(nsnull, 0, nsDependentCString(mServerAddress),
                                    port, mChannel->ProxyInfo(),
                                    getter_AddRefs(strans)); // the data socket
         if (NS_FAILED(rv))
             return FTP_ERROR;
         mDataTransport = strans;
         
-        LOG(("FTP:(%x) created DT (%s:%x)\n", this, hostStr, port));
+        LOG(("FTP:(%x) created DT (%s:%x)\n", this, mServerAddress, port));
         
         // hook ourself up as a proxy for status notifications
         rv = mDataTransport->SetEventSink(this, NS_GetCurrentThread());
@@ -1737,8 +1680,8 @@ nsFtpState::KillControlConnection()
 {
     mControlReadCarryOverBuf.Truncate(0);
 
-    mIPv6Checked = PR_FALSE;
-    mIPv6ServerAddress = nsnull;
+    mAddressChecked = PR_FALSE;
+    mServerIsIPv6 = PR_FALSE;
 
     // if everything went okay, save the connection. 
     // FIX: need a better way to determine if we can cache the connections.
@@ -1978,8 +1921,10 @@ nsFtpState::OnTransportStatus(nsITransport *transport, nsresult status,
     }
 
     // Ignore the progressMax value from the socket.  We know the true size of
-    // the file based on the response from our SIZE request.
-    mChannel->OnTransportStatus(nsnull, status, progress, mFileSize);
+    // the file based on the response from our SIZE request. Additionally, only
+    // report the max progress based on where we started/resumed.
+    mChannel->OnTransportStatus(nsnull, status, progress,
+                                mFileSize - mChannel->StartPos());
     return NS_OK;
 }
 

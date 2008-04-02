@@ -261,7 +261,7 @@ _PR_MD_YIELD(void)
 void
 _PR_MD_SET_PRIORITY(_MDThread *thread, PRThreadPriority newPri)
 {
-    int nativePri;
+    int nativePri = PRTYC_NOCHANGE;
     BOOL rv;
 
     if (newPri < PR_PRIORITY_FIRST) {
@@ -271,8 +271,6 @@ _PR_MD_SET_PRIORITY(_MDThread *thread, PRThreadPriority newPri)
     }
     switch (newPri) {
         case PR_PRIORITY_LOW:
-            nativePri = PRTYC_IDLETIME;
-            break;
         case PR_PRIORITY_NORMAL:
             nativePri = PRTYC_REGULAR;
             break;
@@ -285,7 +283,7 @@ _PR_MD_SET_PRIORITY(_MDThread *thread, PRThreadPriority newPri)
     rv = DosSetPriority(PRTYS_THREAD, nativePri, 0, thread->handle);
     PR_ASSERT(rv == NO_ERROR);
     if (rv != NO_ERROR) {
-	PR_LOG(_pr_thread_lm, PR_LOG_MIN,
+        PR_LOG(_pr_thread_lm, PR_LOG_MIN,
                 ("PR_SetThreadPriority: can't set thread priority\n"));
     }
     return;

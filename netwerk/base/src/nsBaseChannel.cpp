@@ -51,7 +51,7 @@ PR_STATIC_CALLBACK(PLDHashOperator)
 CopyProperties(const nsAString &key, nsIVariant *data, void *closure)
 {
   nsIWritablePropertyBag *bag =
-      NS_STATIC_CAST(nsIWritablePropertyBag *, closure);
+      static_cast<nsIWritablePropertyBag *>(closure);
 
   bag->SetProperty(key, data);
   return PL_DHASH_NEXT;
@@ -62,10 +62,14 @@ class ScopedRequestSuspender {
 public:
   ScopedRequestSuspender(nsIRequest *request)
     : mRequest(request) {
-    mRequest->Suspend();
+    if (NS_FAILED(mRequest->Suspend())) {
+      NS_WARNING("Couldn't suspend pump");
+      mRequest = nsnull;
+    }
   }
   ~ScopedRequestSuspender() {
-    mRequest->Resume();
+    if (mRequest)
+      mRequest->Resume();
   }
 private:
   nsIRequest *mRequest;
@@ -84,6 +88,7 @@ nsBaseChannel::nsBaseChannel()
   , mStatus(NS_OK)
   , mQueriedProgressSink(PR_TRUE)
   , mSynthProgressEvents(PR_FALSE)
+  , mWasOpened(PR_FALSE)
 {
   mContentType.AssignLiteral(UNKNOWN_CONTENT_TYPE);
 }
@@ -444,10 +449,13 @@ nsBaseChannel::Open(nsIInputStream **result)
 {
   NS_ENSURE_TRUE(mURI, NS_ERROR_NOT_INITIALIZED);
   NS_ENSURE_TRUE(!mPump, NS_ERROR_IN_PROGRESS);
+  NS_ENSURE_TRUE(!mWasOpened, NS_ERROR_IN_PROGRESS);
 
   nsresult rv = OpenContentStream(PR_FALSE, result);
   if (rv == NS_ERROR_NOT_IMPLEMENTED)
     return NS_ImplementChannelOpen(this, result);
+
+  mWasOpened = NS_SUCCEEDED(rv);
 
   return rv;
 }
@@ -457,12 +465,15 @@ nsBaseChannel::AsyncOpen(nsIStreamListener *listener, nsISupports *ctxt)
 {
   NS_ENSURE_TRUE(mURI, NS_ERROR_NOT_INITIALIZED);
   NS_ENSURE_TRUE(!mPump, NS_ERROR_IN_PROGRESS);
+  NS_ENSURE_TRUE(!mWasOpened, NS_ERROR_ALREADY_OPENED);
   NS_ENSURE_ARG(listener);
 
   // Ensure that this is an allowed port before proceeding.
   nsresult rv = NS_CheckPortSafety(mURI);
-  if (NS_FAILED(rv))
+  if (NS_FAILED(rv)) {
+    mCallbacks = nsnull;
     return rv;
+  }
 
   // Store the listener and context early so that OpenContentStream and the
   // stream's AsyncWait method (called by AsyncRead) can have access to them
@@ -479,10 +490,13 @@ nsBaseChannel::AsyncOpen(nsIStreamListener *listener, nsISupports *ctxt)
     mPump = nsnull;
     mListener = nsnull;
     mListenerContext = nsnull;
+    mCallbacks = nsnull;
     return rv;
   }
 
   // At this point, we are going to return success no matter what.
+
+  mWasOpened = PR_TRUE;
 
   SUSPEND_PUMP_FOR_SCOPE();
 
@@ -542,7 +556,7 @@ nsBaseChannel::GetInterface(const nsIID &iid, void **result)
 static void
 CallTypeSniffers(void *aClosure, const PRUint8 *aData, PRUint32 aCount)
 {
-  nsIChannel *chan = NS_STATIC_CAST(nsIChannel*, aClosure);
+  nsIChannel *chan = static_cast<nsIChannel*>(aClosure);
 
   const nsCOMArray<nsIContentSniffer>& sniffers =
     gIOService->GetContentSniffers();
@@ -561,7 +575,7 @@ CallTypeSniffers(void *aClosure, const PRUint8 *aData, PRUint32 aCount)
 static void
 CallUnknownTypeSniffer(void *aClosure, const PRUint8 *aData, PRUint32 aCount)
 {
-  nsIChannel *chan = NS_STATIC_CAST(nsIChannel*, aClosure);
+  nsIChannel *chan = static_cast<nsIChannel*>(aClosure);
 
   nsCOMPtr<nsIContentSniffer> sniffer =
     do_CreateInstance(NS_GENERIC_CONTENT_SNIFFER);
@@ -580,13 +594,13 @@ nsBaseChannel::OnStartRequest(nsIRequest *request, nsISupports *ctxt)
   // If our content type is unknown, then use the content type sniffer.  If the
   // sniffer is not available for some reason, then we just keep going as-is.
   if (NS_SUCCEEDED(mStatus) && mContentType.EqualsLiteral(UNKNOWN_CONTENT_TYPE)) {
-    mPump->PeekStream(CallUnknownTypeSniffer, NS_STATIC_CAST(nsIChannel*, this));
+    mPump->PeekStream(CallUnknownTypeSniffer, static_cast<nsIChannel*>(this));
   }
 
   // Now, the general type sniffers. Skip this if we have none.
   if ((mLoadFlags & LOAD_CALL_CONTENT_SNIFFERS) &&
       gIOService->GetContentSniffers().Count() != 0)
-    mPump->PeekStream(CallTypeSniffers, NS_STATIC_CAST(nsIChannel*, this));
+    mPump->PeekStream(CallTypeSniffers, static_cast<nsIChannel*>(this));
 
   SUSPEND_PUMP_FOR_SCOPE();
 

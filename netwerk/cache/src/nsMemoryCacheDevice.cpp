@@ -143,7 +143,7 @@ nsMemoryCacheDevice::GetDeviceID()
 
 
 nsCacheEntry *
-nsMemoryCacheDevice::FindEntry(nsCString * key)
+nsMemoryCacheDevice::FindEntry(nsCString * key, PRBool *collision)
 {
     nsCacheEntry * entry = mMemCacheEntries.GetEntry(key);
     if (!entry)  return nsnull;
@@ -521,7 +521,7 @@ NS_IMETHODIMP
 nsMemoryCacheDeviceInfo::GetDescription(char ** result)
 {
     NS_ENSURE_ARG_POINTER(result);
-    *result = nsCRT::strdup("Memory cache device");
+    *result = NS_strdup("Memory cache device");
     if (!*result) return NS_ERROR_OUT_OF_MEMORY;
     return NS_OK;
 }

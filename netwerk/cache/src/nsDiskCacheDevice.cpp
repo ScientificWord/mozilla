@@ -44,8 +44,6 @@
 // include files for ftruncate (or equivalent)
 #if defined(XP_UNIX) || defined(XP_BEOS)
 #include <unistd.h>
-#elif defined(XP_MAC)
-#include <Files.h>
 #elif defined(XP_WIN)
 #include <windows.h>
 #elif defined(XP_OS2)
@@ -57,12 +55,9 @@
 
 #include "prtypes.h"
 #include "prthread.h"
+#include "prbit.h"
 
-#if defined(XP_MAC)
-#include "pprio.h"
-#else
 #include "private/pprio.h"
-#endif
 
 #include "nsDiskCacheDevice.h"
 #include "nsDiskCacheEntry.h"
@@ -94,10 +89,6 @@ static const char DISK_CACHE_DEVICE_ID[] = { "disk" };
  *  Helper class for nsDiskCacheDevice.
  *
  *****************************************************************************/
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark nsDiskCacheEvictor
-#endif
 
 class nsDiskCacheEvictor : public nsDiskCacheRecordVisitor
 {
@@ -133,19 +124,16 @@ nsDiskCacheEvictor::VisitRecord(nsDiskCacheRecord *  mapRecord)
     
     if (mClientID) {
         // we're just evicting records for a specific client
-        nsDiskCacheEntry *   diskEntry = nsnull;
-        nsresult  rv = mCacheMap->ReadDiskCacheEntry(mapRecord, &diskEntry);
-        if (NS_FAILED(rv))  
+        nsDiskCacheEntry * diskEntry = mCacheMap->ReadDiskCacheEntry(mapRecord);
+        if (!diskEntry)
             return kVisitNextRecord;  // XXX or delete record?
     
         // Compare clientID's without malloc
         if ((diskEntry->mKeySize <= mClientIDSize) ||
-            (diskEntry->mKeyStart[mClientIDSize] != ':') ||
-            (memcmp(diskEntry->mKeyStart, mClientID, mClientIDSize) != 0)) {
-            delete [] (char *)diskEntry;
+            (diskEntry->Key()[mClientIDSize] != ':') ||
+            (memcmp(diskEntry->Key(), mClientID, mClientIDSize) != 0)) {
             return kVisitNextRecord;  // clientID doesn't match, skip it
         }
-        delete [] (char *)diskEntry;
     }
     
     nsDiskCacheBinding * binding = mBindery->FindActiveBinding(mapRecord->HashNumber());
@@ -167,10 +155,6 @@ nsDiskCacheEvictor::VisitRecord(nsDiskCacheRecord *  mapRecord)
 /******************************************************************************
  *  nsDiskCacheDeviceInfo
  *****************************************************************************/
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark nsDiskCacheDeviceInfo
-#endif
 
 class nsDiskCacheDeviceInfo : public nsICacheDeviceInfo {
 public:
@@ -194,7 +178,7 @@ NS_IMPL_ISUPPORTS1(nsDiskCacheDeviceInfo, nsICacheDeviceInfo)
 NS_IMETHODIMP nsDiskCacheDeviceInfo::GetDescription(char ** aDescription)
 {
     NS_ENSURE_ARG_POINTER(aDescription);
-    *aDescription = nsCRT::strdup("Disk cache device");
+    *aDescription = NS_strdup("Disk cache device");
     return *aDescription ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
 }
 
@@ -252,10 +236,6 @@ NS_IMETHODIMP nsDiskCacheDeviceInfo::GetMaximumSize(PRUint32 *aMaximumSize)
 /******************************************************************************
  *  nsDiskCache
  *****************************************************************************/
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark nsDiskCache
-#endif
 
 /**
  *  nsDiskCache::Hash(const char * key)
@@ -270,7 +250,7 @@ nsDiskCache::Hash(const char * key)
 {
     PLDHashNumber h = 0;
     for (const PRUint8* s = (PRUint8*) key; *s != '\0'; ++s)
-        h = (h >> (PL_DHASH_BITS - 4)) ^ (h << 4) ^ *s;
+        h = PR_ROTATE_LEFT32(h, 4) ^ *s;
     return (h == 0 ? ULONG_MAX : h);
 }
 
@@ -283,12 +263,6 @@ nsDiskCache::Truncate(PRFileDesc *  fd, PRUint32  newEOF)
 #if defined(XP_UNIX) || defined(XP_BEOS)
     if (ftruncate(PR_FileDesc2NativeHandle(fd), newEOF) != 0) {
         NS_ERROR("ftruncate failed");
-        return NS_ERROR_FAILURE;
-    }
-
-#elif defined(XP_MAC)
-    if (::SetEOF(PR_FileDesc2NativeHandle(fd), newEOF) != 0) {
-        NS_ERROR("SetEOF failed");
         return NS_ERROR_FAILURE;
     }
 
@@ -315,11 +289,6 @@ nsDiskCache::Truncate(PRFileDesc *  fd, PRUint32  newEOF)
 /******************************************************************************
  *  nsDiskCacheDevice
  *****************************************************************************/
-
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark nsDiskCacheDevice
-#endif
 
 nsDiskCacheDevice::nsDiskCacheDevice()
     : mCacheCapacity(0)
@@ -425,36 +394,36 @@ nsDiskCacheDevice::GetDeviceID()
  *  NOTE: called while holding the cache service lock
  */
 nsCacheEntry *
-nsDiskCacheDevice::FindEntry(nsCString * key)
+nsDiskCacheDevice::FindEntry(nsCString * key, PRBool *collision)
 {
     if (!Initialized())  return nsnull;  // NS_ERROR_NOT_INITIALIZED
-    nsresult                rv;
     nsDiskCacheRecord       record;
-    nsCacheEntry *          entry   = nsnull;
     nsDiskCacheBinding *    binding = nsnull;
     PLDHashNumber           hashNumber = nsDiskCache::Hash(key->get());
 
-#if DEBUG  /*because we shouldn't be called for active entries */
+    *collision = PR_FALSE;
+
+#if DEBUG  /* because we shouldn't be called for active entries */
     binding = mBindery.FindActiveBinding(hashNumber);
-    NS_ASSERTION(!binding, "FindEntry() called for a bound entry.");
+    NS_ASSERTION(!binding || strcmp(binding->mCacheEntry->Key()->get(), key->get()) != 0,
+                 "FindEntry() called for a bound entry.");
     binding = nsnull;
 #endif
     
     // lookup hash number in cache map
-    rv = mCacheMap.FindRecord(hashNumber, &record);
+    nsresult rv = mCacheMap.FindRecord(hashNumber, &record);
     if (NS_FAILED(rv))  return nsnull;  // XXX log error?
     
-    nsDiskCacheEntry * diskEntry;
-    rv = mCacheMap.ReadDiskCacheEntry(&record, &diskEntry);
-    if (NS_FAILED(rv))  return nsnull;
+    nsDiskCacheEntry * diskEntry = mCacheMap.ReadDiskCacheEntry(&record);
+    if (!diskEntry) return nsnull;
     
     // compare key to be sure
-    if (strcmp(diskEntry->mKeyStart, key->get()) == 0) {
-        entry = diskEntry->CreateCacheEntry(this);
+    if (strcmp(diskEntry->Key(), key->get()) != 0) {
+        *collision = PR_TRUE;
+        return nsnull;
     }
-    delete [] (char *)diskEntry;
     
-    // If we had a hash collision or CreateCacheEntry failed, return nsnull
+    nsCacheEntry * entry = diskEntry->CreateCacheEntry(this);
     if (!entry)  return nsnull;
     
     binding = mBindery.CreateBinding(entry, &record);
@@ -753,9 +722,8 @@ public:
         // XXX optimization: do we have this record in memory?
         
         // read in the entry (metadata)
-        nsDiskCacheEntry * diskEntry;
-        nsresult rv = mCacheMap->ReadDiskCacheEntry(mapRecord, &diskEntry);
-        if (NS_FAILED(rv)) {
+        nsDiskCacheEntry * diskEntry = mCacheMap->ReadDiskCacheEntry(mapRecord);
+        if (!diskEntry) {
             return kVisitNextRecord;
         }
 
@@ -767,8 +735,7 @@ public:
         nsCOMPtr<nsICacheEntryInfo> ref(entryInfo);
         
         PRBool  keepGoing;
-        rv = mVisitor->VisitEntry(DISK_CACHE_DEVICE_ID, entryInfo, &keepGoing);
-        delete [] (char *)diskEntry;
+        (void)mVisitor->VisitEntry(DISK_CACHE_DEVICE_ID, entryInfo, &keepGoing);
         return keepGoing ? kVisitNextRecord : kStopVisitingRecords;
     }
  
@@ -825,11 +792,6 @@ nsDiskCacheDevice::EvictEntries(const char * clientID)
 /**
  *  private methods
  */
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark PRIVATE METHODS
-#endif
-
 
 nsresult
 nsDiskCacheDevice::OpenDiskCache()
@@ -925,10 +887,6 @@ nsDiskCacheDevice::EvictDiskCacheEntries(PRUint32  targetCapacity)
 /**
  *  methods for prefs
  */
-#ifdef XP_MAC
-#pragma mark -
-#pragma mark PREF METHODS
-#endif
 
 void
 nsDiskCacheDevice::SetCacheParentDirectory(nsILocalFile * parentDir)

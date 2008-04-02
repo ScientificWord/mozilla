@@ -42,7 +42,6 @@
 #include "nsICookie.h"
 #include "nsICookie2.h"
 #include "nsString.h"
-#include "nsInt64.h"
 
 /** 
  * The nsCookie class is the main cookie storage medium for use within cookie
@@ -57,14 +56,9 @@
 
 class nsCookie : public nsICookie2
 {
-  // break up the NS_DECL_ISUPPORTS macro, since we use a bitfield refcount member
-  public:
-    NS_DECL_ISUPPORTS_INHERITED
-  protected:
-    NS_DECL_OWNINGTHREAD
-
   public:
     // nsISupports
+    NS_DECL_ISUPPORTS
     NS_DECL_NSICOOKIE
     NS_DECL_NSICOOKIE2
 
@@ -75,13 +69,12 @@ class nsCookie : public nsICookie2
              const char     *aHost,
              const char     *aPath,
              const char     *aEnd,
-             nsInt64         aExpiry,
-             nsInt64         aLastAccessed,
-             PRUint32        aCreationTime,
+             PRInt64         aExpiry,
+             PRInt64         aLastAccessed,
+             PRInt64         aCreationID,
              PRBool          aIsSession,
              PRBool          aIsSecure,
-             nsCookieStatus  aStatus,
-             nsCookiePolicy  aPolicy)
+             PRBool          aIsHttpOnly)
      : mNext(nsnull)
      , mName(aName)
      , mValue(aValue)
@@ -90,12 +83,10 @@ class nsCookie : public nsICookie2
      , mEnd(aEnd)
      , mExpiry(aExpiry)
      , mLastAccessed(aLastAccessed)
-     , mCreationTime(aCreationTime)
-     , mRefCnt(0)
+     , mCreationID(aCreationID)
      , mIsSession(aIsSession != PR_FALSE)
      , mIsSecure(aIsSecure != PR_FALSE)
-     , mStatus(aStatus)
-     , mPolicy(aPolicy)
+     , mIsHttpOnly(aIsHttpOnly != PR_FALSE)
     {
     }
 
@@ -106,14 +97,14 @@ class nsCookie : public nsICookie2
                              const nsACString &aValue,
                              const nsACString &aHost,
                              const nsACString &aPath,
-                             nsInt64           aExpiry,
-                             nsInt64           aLastAccessed,
+                             PRInt64           aExpiry,
+                             PRInt64           aLastAccessed,
+                             PRInt64           aCreationID,
                              PRBool            aIsSession,
                              PRBool            aIsSecure,
-                             nsCookieStatus    aStatus,
-                             nsCookiePolicy    aPolicy);
+                             PRBool            aIsHttpOnly);
 
-    virtual ~nsCookie() {};
+    virtual ~nsCookie() {}
 
     // fast (inline, non-xpcom) getters
     inline const nsDependentCString Name()  const { return nsDependentCString(mName, mValue - 1); }
@@ -121,20 +112,21 @@ class nsCookie : public nsICookie2
     inline const nsDependentCString Host()  const { return nsDependentCString(mHost, mPath - 1); }
     inline const nsDependentCString RawHost() const { return nsDependentCString(IsDomain() ? mHost + 1 : mHost, mPath - 1); }
     inline const nsDependentCString Path()  const { return nsDependentCString(mPath, mEnd); }
-    inline nsInt64 Expiry()                 const { return mExpiry; }
-    inline nsInt64 LastAccessed()           const { return mLastAccessed; }
-    inline PRUint32 CreationTime()          const { return mCreationTime; }
+    inline PRInt64 Expiry()                 const { return mExpiry; }        // in seconds
+    inline PRInt64 LastAccessed()           const { return mLastAccessed; }  // in microseconds
+    inline PRInt64 CreationID()             const { return mCreationID; }    // in microseconds
     inline PRBool IsSession()               const { return mIsSession; }
     inline PRBool IsDomain()                const { return *mHost == '.'; }
     inline PRBool IsSecure()                const { return mIsSecure; }
-    inline nsCookieStatus Status()          const { return mStatus; }
-    inline nsCookiePolicy Policy()          const { return mPolicy; }
+    inline PRBool IsHttpOnly()              const { return mIsHttpOnly; }
 
     // setters
-    inline void SetLastAccessed(nsInt64 aLastAccessed) { mLastAccessed = aLastAccessed; }
-    inline void SetExpiry(PRInt64 aExpiry)             { mExpiry = aExpiry; }
-    inline void SetIsSession(PRBool aIsSession)        { mIsSession = aIsSession; }
-    inline void SetCreationTime(PRUint32 aCT)          { mCreationTime = aCT; }
+    inline void SetExpiry(PRInt64 aExpiry)        { mExpiry = aExpiry; }
+    inline void SetLastAccessed(PRInt64 aTime)    { mLastAccessed = aTime; }
+    inline void SetIsSession(PRBool aIsSession)   { mIsSession = (PRPackedBool) aIsSession; }
+    // set the creation id manually, overriding the monotonicity checks in Create().
+    // use with caution!
+    inline void SetCreationID(PRInt64 aID)        { mCreationID = aID; }
 
     // linked list management helper
     inline nsCookie*& Next() { return mNext; }
@@ -146,20 +138,20 @@ class nsCookie : public nsICookie2
     // store a terminating null for each string, so we can hand them
     // out as nsAFlatCStrings.
 
-    nsCookie   *mNext;
-    const char *mName;
-    const char *mValue;
-    const char *mHost;
-    const char *mPath;
-    const char *mEnd;
-    nsInt64     mExpiry;
-    nsInt64     mLastAccessed;
-    PRUint32    mCreationTime;
-    PRUint32    mRefCnt    : 16;
-    PRUint32    mIsSession : 1;
-    PRUint32    mIsSecure  : 1;
-    PRUint32    mStatus    : 3;
-    PRUint32    mPolicy    : 3;
+    nsCookie    *mNext;
+    const char  *mName;
+    const char  *mValue;
+    const char  *mHost;
+    const char  *mPath;
+    const char  *mEnd;
+    PRInt64      mExpiry;
+    PRInt64      mLastAccessed;
+    // creation id is unique for each cookie and approximately represents the cookie
+    // creation time, in microseconds.
+    PRInt64      mCreationID;
+    PRPackedBool mIsSession;
+    PRPackedBool mIsSecure;
+    PRPackedBool mIsHttpOnly;
 };
 
 #endif // nsCookie_h__
