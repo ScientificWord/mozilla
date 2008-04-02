@@ -289,6 +289,12 @@ nsSelectMoveScrollCommand::DoCommandBrowseWithCaretOn(const char *aCommandName,
     rv = aSelectionController->PageMove(PR_FALSE, PR_FALSE);
   else if (!nsCRT::strcmp(aCommandName, sMovePageDownString))
     rv = aSelectionController->PageMove(PR_TRUE, PR_FALSE);
+  // cmd_ScrollPageUp/Down are used on Mac, and for the spacebar on all platforms.
+  // They do not move the caret in caret browsing mode.
+  else if (!nsCRT::strcmp(aCommandName, sScrollPageUpString))
+    rv = aSelectionController->ScrollPage(PR_FALSE);
+  else if (!nsCRT::strcmp(aCommandName, sScrollPageDownString))
+    rv = aSelectionController->ScrollPage(PR_TRUE);
   else if (!nsCRT::strcmp(aCommandName, sScrollLineUpString))
     rv = aSelectionController->LineMove(PR_FALSE, PR_FALSE);
   else if (!nsCRT::strcmp(aCommandName, sScrollLineDownString))
@@ -898,7 +904,7 @@ nsClipboardDragDropHookCommand::GetCommandStateParams(const char *aCommandName,
     NS_NEWXPCOM(theCmd, _cmdClass);                                 \
     if (!theCmd) return NS_ERROR_OUT_OF_MEMORY;                     \
     rv = inCommandTable->RegisterCommand(_cmdName,                  \
-                   NS_STATIC_CAST(nsIControllerCommand *, theCmd)); \
+                   static_cast<nsIControllerCommand *>(theCmd));    \
   }
 
 #define NS_REGISTER_FIRST_COMMAND(_cmdClass, _cmdName)              \
@@ -907,15 +913,15 @@ nsClipboardDragDropHookCommand::GetCommandStateParams(const char *aCommandName,
     NS_NEWXPCOM(theCmd, _cmdClass);                                 \
     if (!theCmd) return NS_ERROR_OUT_OF_MEMORY;                     \
     rv = inCommandTable->RegisterCommand(_cmdName,                  \
-                   NS_STATIC_CAST(nsIControllerCommand *, theCmd));
+                   static_cast<nsIControllerCommand *>(theCmd));
 
 #define NS_REGISTER_NEXT_COMMAND(_cmdClass, _cmdName)               \
     rv = inCommandTable->RegisterCommand(_cmdName,                  \
-                   NS_STATIC_CAST(nsIControllerCommand *, theCmd));
+                   static_cast<nsIControllerCommand *>(theCmd));
 
 #define NS_REGISTER_LAST_COMMAND(_cmdClass, _cmdName)               \
     rv = inCommandTable->RegisterCommand(_cmdName,                  \
-                   NS_STATIC_CAST(nsIControllerCommand *, theCmd)); \
+                   static_cast<nsIControllerCommand *>(theCmd));    \
   }
 
 

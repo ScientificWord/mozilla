@@ -57,7 +57,6 @@
 #include "nsCOMPtr.h"
 #include "nsEscape.h"
 #include "nsJSUtils.h"
-#include "nsIScriptSecurityManager.h"
 #include "nsIDOMWindow.h"
 #include "nsIDOMDocument.h"
 #include "nsIDocument.h"
@@ -224,8 +223,7 @@ nsLocation::CheckURL(nsIURI* aURI, nsIDocShellLoadInfo** aLoadInfo)
         !principal)
       return NS_ERROR_FAILURE;
     owner = do_QueryInterface(principal);
-
-    GetSourceURL(cx, getter_AddRefs(sourceURI));
+    principal->GetURI(getter_AddRefs(sourceURI));
   }
 
   // Create load info
@@ -428,18 +426,17 @@ NS_IMETHODIMP
 nsLocation::SetHash(const nsAString& aHash)
 {
   nsCOMPtr<nsIURI> uri;
-  nsresult result = NS_OK;
-
-  result = GetWritableURI(getter_AddRefs(uri));
+  nsresult rv = GetWritableURI(getter_AddRefs(uri));
 
   nsCOMPtr<nsIURL> url(do_QueryInterface(uri));
-
   if (url) {
-    url->SetRef(NS_ConvertUTF16toUTF8(aHash));
-    SetURI(url);
+    rv = url->SetRef(NS_ConvertUTF16toUTF8(aHash));
+    if (NS_SUCCEEDED(rv)) {
+      SetURI(url);
+    }
   }
 
-  return result;
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -469,16 +466,16 @@ NS_IMETHODIMP
 nsLocation::SetHost(const nsAString& aHost)
 {
   nsCOMPtr<nsIURI> uri;
-  nsresult result;
-
-  result = GetWritableURI(getter_AddRefs(uri));
+  nsresult rv = GetWritableURI(getter_AddRefs(uri));
 
   if (uri) {
-    uri->SetHostPort(NS_ConvertUTF16toUTF8(aHost));
-    SetURI(uri);
+    rv = uri->SetHostPort(NS_ConvertUTF16toUTF8(aHost));
+    if (NS_SUCCEEDED(rv)) {
+      SetURI(uri);
+    }
   }
 
-  return result;
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -508,16 +505,16 @@ NS_IMETHODIMP
 nsLocation::SetHostname(const nsAString& aHostname)
 {
   nsCOMPtr<nsIURI> uri;
-  nsresult result;
-
-  result = GetWritableURI(getter_AddRefs(uri));
+  nsresult rv = GetWritableURI(getter_AddRefs(uri));
 
   if (uri) {
-    uri->SetHost(NS_ConvertUTF16toUTF8(aHostname));
-    SetURI(uri);
+    rv = uri->SetHost(NS_ConvertUTF16toUTF8(aHostname));
+    if (NS_SUCCEEDED(rv)) {
+      SetURI(uri);
+    }
   }
 
-  return result;
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -687,16 +684,16 @@ NS_IMETHODIMP
 nsLocation::SetPathname(const nsAString& aPathname)
 {
   nsCOMPtr<nsIURI> uri;
-  nsresult result = NS_OK;
-
-  result = GetWritableURI(getter_AddRefs(uri));
+  nsresult rv = GetWritableURI(getter_AddRefs(uri));
 
   if (uri) {
-    uri->SetPath(NS_ConvertUTF16toUTF8(aPathname));
-    SetURI(uri);
+    rv = uri->SetPath(NS_ConvertUTF16toUTF8(aPathname));
+    if (NS_SUCCEEDED(rv)) {
+      SetURI(uri);
+    }
   }
 
-  return result;
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -730,9 +727,7 @@ NS_IMETHODIMP
 nsLocation::SetPort(const nsAString& aPort)
 {
   nsCOMPtr<nsIURI> uri;
-  nsresult result = NS_OK;
-
-  result = GetWritableURI(getter_AddRefs(uri));
+  nsresult rv = GetWritableURI(getter_AddRefs(uri));
 
   if (uri) {
     // perhaps use nsReadingIterators at some point?
@@ -749,11 +744,13 @@ nsLocation::SetPort(const nsAString& aPort)
       }
     }
 
-    uri->SetPort(port);
-    SetURI(uri);
+    rv = uri->SetPort(port);
+    if (NS_SUCCEEDED(rv)) {
+      SetURI(uri);
+    }
   }
 
-  return result;
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -784,16 +781,16 @@ NS_IMETHODIMP
 nsLocation::SetProtocol(const nsAString& aProtocol)
 {
   nsCOMPtr<nsIURI> uri;
-  nsresult result = NS_OK;
-
-  result = GetWritableURI(getter_AddRefs(uri));
+  nsresult rv = GetWritableURI(getter_AddRefs(uri));
 
   if (uri) {
-    uri->SetScheme(NS_ConvertUTF16toUTF8(aProtocol));
-    SetURI(uri);
+    rv = uri->SetScheme(NS_ConvertUTF16toUTF8(aProtocol));
+    if (NS_SUCCEEDED(rv)) {
+      SetURI(uri);
+    }
   }
 
-  return result;
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -826,17 +823,17 @@ NS_IMETHODIMP
 nsLocation::SetSearch(const nsAString& aSearch)
 {
   nsCOMPtr<nsIURI> uri;
-  nsresult result = NS_OK;
-
-  result = GetWritableURI(getter_AddRefs(uri));
+  nsresult rv = GetWritableURI(getter_AddRefs(uri));
 
   nsCOMPtr<nsIURL> url(do_QueryInterface(uri));
   if (url) {
-    result = url->SetQuery(NS_ConvertUTF16toUTF8(aSearch));
-    SetURI(uri);
+    rv = url->SetQuery(NS_ConvertUTF16toUTF8(aSearch));
+    if (NS_SUCCEEDED(rv)) {
+      SetURI(uri);
+    }
   }
 
-  return result;
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -870,9 +867,9 @@ nsLocation::Reload(PRBool aForceget)
 NS_IMETHODIMP
 nsLocation::Reload()
 {
-  nsCOMPtr<nsIXPCNativeCallContext> ncc;
+  nsAXPCNativeCallContext *ncc = nsnull;
   nsresult rv = nsContentUtils::XPConnect()->
-    GetCurrentNativeCallContext(getter_AddRefs(ncc));
+    GetCurrentNativeCallContext(&ncc);
   NS_ENSURE_SUCCESS(rv, rv);
 
   if (!ncc)
@@ -893,9 +890,9 @@ nsLocation::Reload()
 
     nsIPresShell *shell;
     nsPresContext *pcx;
-    if (doc && (shell = doc->GetShellAt(0)) &&
+    if (doc && (shell = doc->GetPrimaryShell()) &&
         (pcx = shell->GetPresContext())) {
-      pcx->ClearStyleDataAndReflow();
+      pcx->RebuildAllStyleData(NS_STYLE_HINT_REFLOW);
     }
 
     return NS_OK;
@@ -1024,20 +1021,6 @@ nsLocation::GetSourceBaseURL(JSContext* cx, nsIURI** sourceURL)
   nsresult rv = GetSourceDocument(cx, getter_AddRefs(doc));
   if (doc) {
     NS_IF_ADDREF(*sourceURL = doc->GetBaseURI());
-  } else {
-    *sourceURL = nsnull;
-  }
-
-  return rv;
-}
-
-nsresult
-nsLocation::GetSourceURL(JSContext* cx, nsIURI** sourceURL)
-{
-  nsCOMPtr<nsIDocument> doc;
-  nsresult rv = GetSourceDocument(cx, getter_AddRefs(doc));
-  if (doc) {
-    NS_IF_ADDREF(*sourceURL = doc->GetDocumentURI());
   } else {
     *sourceURL = nsnull;
   }
