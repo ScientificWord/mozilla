@@ -43,7 +43,6 @@ const nsIPKCS11ModuleDB = Components.interfaces.nsIPKCS11ModuleDB;
 const nsIPKCS11Slot = Components.interfaces.nsIPKCS11Slot;
 const nsIPK11Token = Components.interfaces.nsIPK11Token;
 
-
 var params;
 var tokenName="";
 var pw1;

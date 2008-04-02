@@ -46,6 +46,7 @@
 #include "nsCOMPtr.h"
 #include "nsNSSCertificate.h"
 #include "cert.h"
+#include "keyhi.h"
 #include "nsNSSCertValidity.h"
 #include "nsNSSASN1Object.h"
 #include "nsNSSComponent.h"
@@ -54,10 +55,6 @@
 #include "nsDateTimeFormatCID.h"
  
 static NS_DEFINE_CID(kNSSComponentCID, NS_NSSCOMPONENT_CID);
-
-#ifndef INET6_ADDRSTRLEN
-#define INET6_ADDRSTRLEN 46
-#endif
 
 /* Object Identifier constants */
 #define CONST_OID static const unsigned char
@@ -610,7 +607,8 @@ GetOIDText(SECItem *oid, nsINSSComponent *nssComponent, nsAString &text)
 #define SEPARATOR "\n"
 
 static nsresult
-ProcessRawBytes(nsINSSComponent *nssComponent, SECItem *data, nsAString &text)
+ProcessRawBytes(nsINSSComponent *nssComponent, SECItem *data, 
+                nsAString &text, PRBool wantHeader = PR_TRUE)
 {
   // This function is used to display some DER bytes
   // that we have not added support for decoding.
@@ -619,17 +617,19 @@ ProcessRawBytes(nsINSSComponent *nssComponent, SECItem *data, nsAString &text)
   // string.  We place a new line after 24 bytes
   // to break up extermaly long sequence of bytes.
 
-  nsAutoString bytelen, bitlen;
-  bytelen.AppendInt(data->len);
-  bitlen.AppendInt(data->len*8);
+  if (wantHeader) {
+    nsAutoString bytelen, bitlen;
+    bytelen.AppendInt(data->len);
+    bitlen.AppendInt(data->len*8);
+  
+    const PRUnichar *params[2] = {bytelen.get(), bitlen.get()};
+    nsresult rv = nssComponent->PIPBundleFormatStringFromName("CertDumpRawBytesHeader",
+                                                              params, 2, text);
+    if (NS_FAILED(rv))
+      return rv;
 
-  const PRUnichar *params[2] = {bytelen.get(), bitlen.get()};
-  nsresult rv = nssComponent->PIPBundleFormatStringFromName("CertDumpRawBytesHeader",
-                                                            params, 2, text);
-  if (NS_FAILED(rv))
-    return rv;
-
-  text.Append(NS_LITERAL_STRING(SEPARATOR).get());
+    text.Append(NS_LITERAL_STRING(SEPARATOR).get());
+  }
 
   PRUint32 i;
   char buffer[5];
@@ -745,7 +745,7 @@ ProcessKeyUsageExtension(SECItem *extData, nsAString &text,
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (keyUsage & KU_CRL_SIGN) {
-    nssComponent->GetPIPNSSBundleString("CertDumpKUCRLSign", local);
+    nssComponent->GetPIPNSSBundleString("CertDumpKUCRLSigner", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
@@ -1064,17 +1064,20 @@ ProcessGeneralName(PRArenaPool *arena,
   case certIPAddress:
     {
       char buf[INET6_ADDRSTRLEN];
+      PRStatus status = PR_FAILURE;
       PRNetAddr addr;
+      memset(&addr, 0, sizeof(addr));
       nssComponent->GetPIPNSSBundleString("CertDumpIPAddress", key);
       if (current->name.other.len == 4) {
         addr.inet.family = PR_AF_INET;
         memcpy(&addr.inet.ip, current->name.other.data, current->name.other.len);
-        PR_NetAddrToString(&addr, buf, sizeof(buf));
-        value.AssignASCII(buf);
+        status = PR_NetAddrToString(&addr, buf, sizeof(buf));
       } else if (current->name.other.len == 16) {
         addr.ipv6.family = PR_AF_INET6;
         memcpy(&addr.ipv6.ip, current->name.other.data, current->name.other.len);
-        PR_NetAddrToString(&addr, buf, sizeof(buf));
+        status = PR_NetAddrToString(&addr, buf, sizeof(buf));
+      }
+      if (status == PR_SUCCESS) {
         value.AssignASCII(buf);
       } else {
         /* invalid IP address */
@@ -1215,100 +1218,70 @@ ProcessAuthKeyId(SECItem  *extData,
   return rv;
 }
 
-enum DisplayTextForm { VisibleForm, BMPForm, UTF8Form };
-
-struct DisplayText {
-  DisplayTextForm variant;
-  SECItem value;
-};
-
-const SEC_ASN1Template DisplayTextTemplate[] = {
-    { SEC_ASN1_CHOICE,
-      offsetof(DisplayText, variant), NULL,
-      sizeof(DisplayText) },
-    { SEC_ASN1_VISIBLE_STRING, 
-      offsetof(DisplayText, value), NULL, VisibleForm },
-    { SEC_ASN1_BMP_STRING, 
-      offsetof(DisplayText, value), NULL, BMPForm },
-    { SEC_ASN1_UTF8_STRING, 
-      offsetof(DisplayText, value), NULL, UTF8Form },
-    { 0 }
-};
-
 static nsresult
 ProcessUserNotice(SECItem *der_notice,
 		  nsAString &text,
 		  nsINSSComponent *nssComponent)
 {
-  nsresult rv = NS_OK;
   CERTUserNotice *notice = NULL;
   SECItem **itemList;
-  DisplayText display;
   PRArenaPool *arena;
-  char *buf;
 
   arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
   if (!arena)
     return NS_ERROR_FAILURE;
 
   notice = CERT_DecodeUserNotice(der_notice);
-  /* XXX: currently, polcyxtn.c assumes that organization
-     is an IA5String, whereas it really ought to be a
-     choice of VisibleString, BMPString, and UTF8String.
-     So if decoding of the user notice fails, it is most likely
-     that the organization was encoded in an unexpected way.
-     Make this function return "something" in this case,
-     instead letting the decode for the entire certificate
-     fail.
-  */
   if (notice == NULL) {
-    text.Append(NS_LITERAL_STRING("<implementation limitation>"));
+    ProcessRawBytes(nssComponent, der_notice, text);
     goto finish;
   }
 
   if (notice->noticeReference.organization.len != 0) {
-    rv = ProcessIA5String(&notice->noticeReference.organization,
-			  text, nssComponent);
-    if (NS_FAILED(rv))
-      goto finish;
-
+    switch (notice->noticeReference.organization.type) {
+    case siAsciiString:
+    case siVisibleString:
+    case siUTF8String:
+      text.Append(NS_ConvertUTF8toUTF16(
+                  (const char *)notice->noticeReference.organization.data,
+                  notice->noticeReference.organization.len));
+      break;
+    case siBMPString:
+      AppendBMPtoUTF16(arena, notice->noticeReference.organization.data,
+                       notice->noticeReference.organization.len, text);
+      break;
+    default:
+      break;
+    }
+    text.Append(NS_LITERAL_STRING(" - "));
     itemList = notice->noticeReference.noticeNumbers;
     while (*itemList) {
       unsigned long number;
       char buffer[60];
-      if (SEC_ASN1DecodeInteger(*itemList, &number) != SECSuccess) {
-	rv = NS_ERROR_FAILURE;
-	goto finish;
+      if (SEC_ASN1DecodeInteger(*itemList, &number) == SECSuccess) {
+        PR_snprintf(buffer, sizeof(buffer), "#%d", number);
+        if (itemList != notice->noticeReference.noticeNumbers)
+          text.Append(NS_LITERAL_STRING(", "));
+        AppendASCIItoUTF16(buffer, text);
       }
-      PR_snprintf(buffer, sizeof(buffer), "%d ", number);
-      AppendASCIItoUTF16(buffer, text);
       itemList++;
     }
   }
   if (notice->displayText.len != 0) {
-    if (SEC_QuickDERDecodeItem(arena, &display,
-			       DisplayTextTemplate,
-			       &notice->displayText) != SECSuccess) {
-      rv = NS_ERROR_FAILURE;
-      goto finish;
-    }
-    switch (display.variant) {
-    case VisibleForm:
-      /* Need to null-terminate string before appending it. */
-      buf = (char*)PORT_ArenaAlloc(arena, display.value.len+1);
-      PORT_Memcpy(buf, display.value.data, display.value.len);
-      buf[display.value.len] = '\0';
-      text.AppendASCII(buf);
+    text.Append(NS_LITERAL_STRING(SEPARATOR));
+    text.Append(NS_LITERAL_STRING("    "));
+    switch (notice->displayText.type) {
+    case siAsciiString:
+    case siVisibleString:
+    case siUTF8String:
+      text.Append(NS_ConvertUTF8toUTF16((const char *)notice->displayText.data,
+                                        notice->displayText.len));
       break;
-    case BMPForm:
-      AppendBMPtoUTF16(arena, display.value.data, display.value.len,
+    case siBMPString:
+      AppendBMPtoUTF16(arena, notice->displayText.data, notice->displayText.len,
 		       text);
       break;
-    case UTF8Form:
-      buf = (char*)PORT_ArenaAlloc(arena, display.value.len+1);
-      PORT_Memcpy(buf, display.value.data, display.value.len);
-      buf[display.value.len] = '\0';
-      AppendUTF8toUTF16(buf, text);
+    default:
       break;
     }
   }
@@ -1316,12 +1289,13 @@ ProcessUserNotice(SECItem *der_notice,
   if (notice)
     CERT_DestroyUserNotice(notice);
   PORT_FreeArena(arena, PR_FALSE);
-  return rv;
+  return NS_OK;
 }
 
 static nsresult
 ProcessCertificatePolicies(SECItem  *extData, 
 			   nsAString &text,
+                           SECOidTag ev_oid_tag, // SEC_OID_UNKNOWN means: not EV
 			   nsINSSComponent *nssComponent)
 {
   CERTCertificatePolicies *policies;
@@ -1346,10 +1320,28 @@ ProcessCertificatePolicies(SECItem  *extData,
       GetDefaultOIDFormat(&policyInfo->policyID, local, '.');
       text.Append(local);
     }
+
+    PRBool needColon = PR_TRUE;
+    if (ev_oid_tag != SEC_OID_UNKNOWN) {
+      // This is an EV cert. Let's see if this oid is the EV oid,
+      // because we want to display the EV information string
+      // next to the correct OID.
+
+      SECOidTag oid_tag = SECOID_FindOIDTag(&policyInfo->policyID);
+      if (oid_tag == ev_oid_tag) {
+        text.Append(NS_LITERAL_STRING(":"));
+        text.Append(NS_LITERAL_STRING(SEPARATOR));
+        needColon = PR_FALSE;
+        nssComponent->GetPIPNSSBundleString("CertDumpPolicyOidEV", local);
+        text.Append(local);
+      }
+    }
+
     if (policyInfo->policyQualifiers) {
       /* Add all qualifiers on separate lines, indented */
       policyQualifiers = policyInfo->policyQualifiers;
-      text.Append(NS_LITERAL_STRING(":"));
+      if (needColon)
+        text.Append(NS_LITERAL_STRING(":"));
       text.Append(NS_LITERAL_STRING(SEPARATOR));
       while (*policyQualifiers != NULL) {
 	text.Append(NS_LITERAL_STRING("  "));
@@ -1562,7 +1554,9 @@ ProcessMSCAVersion(SECItem  *extData,
 
 static nsresult
 ProcessExtensionData(SECOidTag oidTag, SECItem *extData, 
-                     nsAString &text, nsINSSComponent *nssComponent)
+                     nsAString &text, 
+                     SECOidTag ev_oid_tag, // SEC_OID_UNKNOWN means: not EV
+                     nsINSSComponent *nssComponent)
 {
   nsresult rv;
   switch (oidTag) {
@@ -1589,7 +1583,7 @@ ProcessExtensionData(SECOidTag oidTag, SECItem *extData,
     rv = ProcessAuthKeyId(extData, text, nssComponent);
     break;
   case SEC_OID_X509_CERTIFICATE_POLICIES:
-    rv = ProcessCertificatePolicies(extData, text, nssComponent);
+    rv = ProcessCertificatePolicies(extData, text, ev_oid_tag, nssComponent);
     break;
   case SEC_OID_X509_CRL_DIST_POINTS:
     rv = ProcessCrlDistPoints(extData, text, nssComponent);
@@ -1626,10 +1620,11 @@ ProcessExtensionData(SECOidTag oidTag, SECItem *extData,
 
 static nsresult
 ProcessSingleExtension(CERTCertExtension *extension,
+                       SECOidTag ev_oid_tag, // SEC_OID_UNKNOWN means: not EV
                        nsINSSComponent *nssComponent,
                        nsIASN1PrintableItem **retExtension)
 {
-  nsAutoString text;
+  nsAutoString text, extvalue;
   GetOIDText(&extension->id, nssComponent, text);
   nsCOMPtr<nsIASN1PrintableItem>extensionItem = new nsNSSASN1PrintableItem();
   if (extensionItem == nsnull)
@@ -1648,10 +1643,13 @@ ProcessSingleExtension(CERTCertExtension *extension,
     nssComponent->GetPIPNSSBundleString("CertDumpNonCritical", text);
   }
   text.Append(NS_LITERAL_STRING(SEPARATOR).get());
-  nsresult rv = ProcessExtensionData(oidTag, &extension->value, text, 
-                                     nssComponent);
-  if (NS_FAILED(rv))
-    return rv;
+  nsresult rv = ProcessExtensionData(oidTag, &extension->value, extvalue, 
+                                     ev_oid_tag, nssComponent);
+  if (NS_FAILED(rv)) {
+    extvalue.Truncate();
+    rv = ProcessRawBytes(nssComponent, &extension->value, extvalue, PR_FALSE);
+  }
+  text.Append(extvalue);
 
   extensionItem->SetDisplayValue(text);
   *retExtension = extensionItem;
@@ -1779,18 +1777,57 @@ ProcessSubjectPublicKeyInfo(CERTSubjectPublicKeyInfo *spki,
   spkiSequence->GetASN1Objects(getter_AddRefs(asn1Objects));
   asn1Objects->AppendElement(sequenceItem, PR_FALSE);
 
-  // The subjectPublicKey field is encoded as a bit string.
-  // ProcessRawBytes expects the lenght to be in bytes, so 
-  // let's convert the lenght into a temporary SECItem.
-  SECItem data;
-  data.data = spki->subjectPublicKey.data;
-  data.len  = spki->subjectPublicKey.len / 8;
-  text.Truncate();
-  ProcessRawBytes(nssComponent, &data, text);
   nsCOMPtr<nsIASN1PrintableItem> printableItem = new nsNSSASN1PrintableItem();
   if (printableItem == nsnull)
     return NS_ERROR_OUT_OF_MEMORY;
 
+  text.Truncate();
+ 
+  SECKEYPublicKey *key = SECKEY_ExtractPublicKey(spki);
+  bool displayed = false;
+  if (key != NULL) {
+      switch (key->keyType) {
+      case rsaKey: {
+         displayed = true;
+         nsAutoString length1, length2, data1, data2;
+         length1.AppendInt(key->u.rsa.modulus.len * 8);
+         length2.AppendInt(key->u.rsa.publicExponent.len * 8);
+         ProcessRawBytes(nssComponent, &key->u.rsa.modulus, data1, 
+                         PR_FALSE);
+         ProcessRawBytes(nssComponent, &key->u.rsa.publicExponent, data2,
+                         PR_FALSE);
+         const PRUnichar *params[4] = {length1.get(), data1.get(), 
+                                       length2.get(), data2.get()};
+         nssComponent->PIPBundleFormatStringFromName("CertDumpRSATemplate",
+                                                     params, 4, text);
+         break;
+      }
+      case dhKey:
+      case dsaKey:
+      case fortezzaKey:
+      case keaKey:
+      case ecKey:
+         /* Too many parameters, to rarely used to bother displaying it */
+         break;
+      case nullKey:
+      default:
+         /* Algorithm unknown */
+         break;
+      }
+      SECKEY_DestroyPublicKey (key);
+  }
+  if (!displayed) {
+      // Algorithm unknown, display raw bytes
+      // The subjectPublicKey field is encoded as a bit string.
+      // ProcessRawBytes expects the length to be in bytes, so 
+      // let's convert the lenght into a temporary SECItem.
+      SECItem data;
+      data.data = spki->subjectPublicKey.data;
+      data.len  = spki->subjectPublicKey.len / 8;
+      ProcessRawBytes(nssComponent, &data, text);
+  
+  }
+ 
   printableItem->SetDisplayValue(text);
   nssComponent->GetPIPNSSBundleString("CertDumpSubjPubKey", text);
   printableItem->SetDisplayName(text);
@@ -1803,7 +1840,8 @@ ProcessSubjectPublicKeyInfo(CERTSubjectPublicKeyInfo *spki,
 
 static nsresult
 ProcessExtensions(CERTCertExtension **extensions, 
-                  nsIASN1Sequence *parentSequence, 
+                  nsIASN1Sequence *parentSequence,
+                  SECOidTag ev_oid_tag, // SEC_OID_UNKNOWN means: not EV
                   nsINSSComponent *nssComponent)
 {
   nsCOMPtr<nsIASN1Sequence> extensionSequence = new nsNSSASN1Sequence;
@@ -1819,7 +1857,9 @@ ProcessExtensions(CERTCertExtension **extensions,
   nsCOMPtr<nsIMutableArray> asn1Objects;
   extensionSequence->GetASN1Objects(getter_AddRefs(asn1Objects));
   for (i=0; extensions[i] != nsnull; i++) {
-    rv = ProcessSingleExtension(extensions[i], nssComponent,
+    rv = ProcessSingleExtension(extensions[i], 
+                                ev_oid_tag,
+                                nssComponent,
                                 getter_AddRefs(newExtension));
     if (NS_FAILED(rv))
       return rv;
@@ -2009,7 +2049,16 @@ nsNSSCertificate::CreateTBSCertificateASN1Struct(nsIASN1Sequence **retSequence,
 
   }
   if (mCert->extensions) {
-    rv = ProcessExtensions(mCert->extensions, sequence, nssComponent);
+    SECOidTag ev_oid_tag;
+    PRBool validEV;
+    rv = hasValidEVOidTag(ev_oid_tag, validEV);
+    if (NS_FAILED(rv))
+      return rv;
+
+    if (!validEV)
+      ev_oid_tag = SEC_OID_UNKNOWN;
+
+    rv = ProcessExtensions(mCert->extensions, sequence, ev_oid_tag, nssComponent);
     if (NS_FAILED(rv))
       return rv;
   }
@@ -2094,7 +2143,7 @@ getCertType(CERTCertificate *cert)
     return nsIX509Cert::CA_CERT;
   if (cert->emailAddr)
     return nsIX509Cert::EMAIL_CERT;
-  return nsIX509Cert::SERVER_CERT;
+  return nsIX509Cert::UNKNOWN_CERT;
 }
 
 CERTCertNicknames *
@@ -2122,7 +2171,7 @@ getNSSCertNicknamesFromCertList(CERTCertList *certList)
   NS_ConvertUTF16toUTF8 aUtf8NotYetValidString(notYetValidStringLeadingSpace);
 
   return CERT_NicknameStringsFromCertList(certList,
-                                          NS_CONST_CAST(char*, aUtf8ExpiredString.get()),
-                                          NS_CONST_CAST(char*, aUtf8NotYetValidString.get()));
+                                          const_cast<char*>(aUtf8ExpiredString.get()),
+                                          const_cast<char*>(aUtf8NotYetValidString.get()));
   
 }
