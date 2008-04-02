@@ -45,7 +45,7 @@ VPATH=@srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 ifdef MOZ_XUL_APP
-XPI_NAME               = prince
+XPI_NAME               = inspector
 # USE_EXTENSION_MANIFEST = 1
 # NO_JAR_AUTO_REG        = 1
 endif

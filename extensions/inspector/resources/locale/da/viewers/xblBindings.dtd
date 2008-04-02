@@ -36,12 +36,12 @@
 #endif
    - ***** END LICENSE BLOCK ***** -->
 
-<!ENTITY bindingContent.label      "Indhold">
-<!ENTITY bindingMethods.label      "Metoder">
-<!ENTITY bindingProperties.label   "Egenskaber">
+<!ENTITY bindingContent.label      "Inhalt">
+<!ENTITY bindingMethods.label      "Methoden">
+<!ENTITY bindingProperties.label   "Eigenschaften">
 <!ENTITY bindingGetter.label       "Getter">
 <!ENTITY bindingSetter.label       "Setter">
-<!ENTITY bindingProperty.label     "Egenskab">
-<!ENTITY bindingHandlers.label     "Handlers">
-<!ENTITY bindingResources.label    "Ressourcer">
-<!ENTITY bindingSourceCode.label   "Kildekode">
+<!ENTITY bindingProperty.label     "Eigenschaft">
+<!ENTITY bindingHandlers.label     "Handler">
+<!ENTITY bindingResources.label    "Resourcen">
+<!ENTITY bindingSourceCode.label   "Quellcode">
