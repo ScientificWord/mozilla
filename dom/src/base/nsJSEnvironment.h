@@ -42,10 +42,12 @@
 #include "nsCOMPtr.h"
 #include "jsapi.h"
 #include "nsIObserver.h"
-#include "nsIScriptSecurityManager.h"
 #include "nsIXPCScriptNotify.h"
 #include "nsITimer.h"
 #include "prtime.h"
+#include "nsCycleCollectionParticipant.h"
+#include "nsScriptNameSpaceManager.h"
+
 class nsIXPConnectJSObjectHolder;
 
 class nsJSContext : public nsIScriptContext,
@@ -56,7 +58,8 @@ public:
   nsJSContext(JSRuntime *aRuntime);
   virtual ~nsJSContext();
 
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsJSContext, nsIScriptContext)
 
   virtual PRUint32 GetScriptTypeID()
     { return nsIProgrammingLanguage::JAVASCRIPT; }
@@ -96,6 +99,7 @@ public:
                                        const char** aArgNames,
                                        const nsAString& aBody,
                                        const char *aURL, PRUint32 aLineNo,
+                                       PRUint32 aVersion,
                                        nsScriptObjectHolder &aHandler);
   virtual nsresult CallEventHandler(nsISupports* aTarget, void *aScope,
                                     void* aHandler,
@@ -114,6 +118,7 @@ public:
                                    const nsAString& aBody,
                                    const char* aURL,
                                    PRUint32 aLineNo,
+                                   PRUint32 aVersion,
                                    PRBool aShared,
                                    void** aFunctionObject);
 
@@ -135,8 +140,6 @@ public:
   virtual void GC();
 
   virtual void ScriptEvaluated(PRBool aTerminated);
-  virtual void SetOwner(nsIScriptContextOwner* owner);
-  virtual nsIScriptContextOwner *GetOwner();
   virtual nsresult SetTerminationFunction(nsScriptTerminationFunc aFunc,
                                           nsISupports* aRef);
   virtual PRBool GetScriptsEnabled();
@@ -154,7 +157,7 @@ public:
 
   virtual void WillInitializeContext();
   virtual void DidInitializeContext();
-  virtual void DidSetDocument(nsIDOMDocument *aDocdoc, void *aGlobal) {;}
+  virtual void DidSetDocument(nsISupports *aDocdoc, void *aGlobal) {;}
 
   virtual nsresult Serialize(nsIObjectOutputStream* aStream, void *aScriptObject);
   virtual nsresult Deserialize(nsIObjectInputStream* aStream,
@@ -167,9 +170,32 @@ public:
 
   NS_DECL_NSITIMERCALLBACK
 
+  static void LoadStart();
+  static void LoadEnd();
+
+  // CC does always call cycle collector and it also updates the counters
+  // that MaybeCC uses.
+  static void CC();
+
+  // MaybeCC calls cycle collector if certain conditions are fulfilled.
+  // The conditions are:
+  // - The timer related to page load (sGCTimer) must not be active.
+  // - At least NS_MIN_CC_INTERVAL milliseconds must have elapsed since the
+  //   previous cycle collector call.
+  // - Certain number of MaybeCC calls have occurred.
+  //   The number of needed MaybeCC calls depends on the aHigherProbability
+  //   parameter. If the parameter is true, probability for calling cycle
+  //   collector rises increasingly. If the parameter is all the time false,
+  //   at least NS_MAX_DELAYED_CCOLLECT MaybeCC calls are needed.
+  //   If the previous call to cycle collector did collect something,
+  //   MaybeCC works effectively as if aHigherProbability was true.
+  // @return PR_TRUE if cycle collector was called.
+  static PRBool MaybeCC(PRBool aHigherProbability);
+
+  // Calls CC() if user is currently inactive, otherwise MaybeCC(PR_TRUE)
+  static void CCIfUserInactive();
 protected:
   nsresult InitializeExternalClasses();
-  nsresult InitializeLiveConnectClasses(JSObject *aGlobalObj);
   // aHolder should be holding our global object
   nsresult FindXPCNativeWrapperClass(nsIXPConnectJSObjectHolder *aHolder);
 
@@ -181,7 +207,7 @@ protected:
 
   nsresult AddSupportsPrimitiveTojsvals(nsISupports *aArg, jsval *aArgv);
 
-  void FireGCTimer();
+  void FireGCTimer(PRBool aLoadInProgress);
 
   // given an nsISupports object (presumably an event target or some other
   // DOM object), get (or create) the JSObject wrapping it.
@@ -189,10 +215,10 @@ protected:
                                  JSObject **aRet);
 
 private:
+  void Unlink();
+
   JSContext *mContext;
   PRUint32 mNumEvaluations;
-
-  nsIScriptContextOwner* mOwner;  /* NB: weak reference, not ADDREF'd */
 
 protected:
   struct TerminationFuncHolder;
@@ -254,9 +280,8 @@ private:
   PRPackedBool mGCOnDestruction;
   PRPackedBool mProcessingScriptTag;
 
-  PRUint32 mBranchCallbackCount;
-  PRTime mBranchCallbackTime;
   PRUint32 mDefaultJSOptions;
+  PRTime mOperationCallbackTime;
 
   // mGlobalWrapperRef is used only to hold a strong reference to the
   // global object wrapper while the nsJSContext is alive. This cuts
@@ -267,8 +292,7 @@ private:
 
   static int PR_CALLBACK JSOptionChangedCallback(const char *pref, void *data);
 
-  static JSBool JS_DLL_CALLBACK DOMBranchCallback(JSContext *cx,
-                                                  JSScript *script);
+  static JSBool JS_DLL_CALLBACK DOMOperationCallback(JSContext *cx);
 };
 
 class nsIJSRuntimeService;
@@ -302,6 +326,8 @@ public:
   static void Startup();
   // Setup all the statics etc - safe to call multiple times after Startup()
   static nsresult Init();
+  // Get the NameSpaceManager, creating if necessary
+  static nsScriptNameSpaceManager* GetNameSpaceManager();
 };
 
 // An interface for fast and native conversion to/from nsIArray. If an object

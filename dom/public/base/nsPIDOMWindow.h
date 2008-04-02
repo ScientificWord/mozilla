@@ -45,10 +45,12 @@
 #include "nsIDOMXULCommandDispatcher.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMWindowInternal.h"
-#include "nsIChromeEventHandler.h"
+#include "nsPIDOMEventTarget.h"
 #include "nsIDOMDocument.h"
 #include "nsCOMPtr.h"
 #include "nsEvent.h"
+
+#define DOM_WINDOW_DESTROYED_TOPIC "dom-window-destroyed"
 
 class nsIPrincipal;
 
@@ -70,11 +72,12 @@ class nsIDocument;
 class nsIScriptTimeoutHandler;
 class nsPresContext;
 struct nsTimeout;
+class nsScriptObjectHolder;
+class nsXBLPrototypeHandler;
 
 #define NS_PIDOMWINDOW_IID \
-{ /* {D0A82BF8-969B-4092-8FE7-D885622DA5BF} */ \
-  0xd0a82bf8, 0x969b, 0x4092, \
-  { 0x8f, 0xe7, 0xd8, 0x85, 0x62, 0x2d, 0xa5, 0xbf } }
+{ 0x909852b5, 0xb9e6, 0x4d94, \
+  { 0x8d, 0xe3, 0x05, 0x16, 0x34, 0x80, 0x0b, 0x73 } }
 
 class nsPIDOMWindow : public nsIDOMWindowInternal
 {
@@ -83,15 +86,12 @@ public:
 
   virtual nsPIDOMWindow* GetPrivateRoot() = 0;
 
-  virtual nsresult GetObjectProperty(const PRUnichar* aProperty,
-                                     nsISupports** aObject) = 0;
-
   // This is private because activate/deactivate events are not part
   // of the DOM spec.
   virtual nsresult Activate() = 0;
   virtual nsresult Deactivate() = 0;
 
-  nsIChromeEventHandler* GetChromeEventHandler() const
+  nsPIDOMEventTarget* GetChromeEventHandler() const
   {
     return mChromeEventHandler;
   }
@@ -248,7 +248,14 @@ public:
     return win->mIsHandlingResizeEvent;
   }
 
+  // Tell this window who opened it.  This only has an effect if there is
+  // either no document currently in the window or if the document is the
+  // original document this window came with (an about:blank document either
+  // preloaded into it when it was created, or created by
+  // CreateAboutBlankContentViewer()).
   virtual void SetOpenerScriptPrincipal(nsIPrincipal* aPrincipal) = 0;
+  // Ask this window who opened it.
+  virtual nsIPrincipal* GetOpenerScriptPrincipal() = 0;
 
   virtual PopupControlState PushPopupControlState(PopupControlState aState,
                                                   PRBool aForce) const = 0;
@@ -268,6 +275,8 @@ public:
   // Fire any DOM notification events related to things that happened while
   // the window was frozen.
   virtual nsresult FireDelayedDOMEvents() = 0;
+
+  virtual PRBool IsFrozen() const = 0;
 
   // Add a timeout to this window.
   virtual nsresult SetTimeoutOrInterval(nsIScriptTimeoutHandler *aHandler,
@@ -307,55 +316,6 @@ public:
   }
 
   virtual PRBool WouldReuseInnerWindow(nsIDocument *aNewDocument) = 0;
-
-  /**
-   * Called before the capture phase of the event flow.
-   * This is used to create the event target chain and implementations
-   * should set the necessary members of nsEventChainPreVisitor.
-   * At least aVisitor.mCanHandle must be set,
-   * usually also aVisitor.mParentTarget if mCanHandle is PR_TRUE.
-   * First one tells that this object can handle the aVisitor.mEvent event and
-   * the latter one is the possible parent object for the event target chain.
-   * @see nsEventDispatcher.h for more documentation about aVisitor.
-   *
-   * @param aVisitor the visitor object which is used to create the
-   *                 event target chain for event dispatching.
-   *
-   * @note Only nsEventDispatcher should call this method.
-   */
-  virtual nsresult PreHandleEvent(nsEventChainPreVisitor& aVisitor) = 0;
-
-  /**
-   * Called after the bubble phase of the system event group.
-   * The default handling of the event should happen here.
-   * @param aVisitor the visitor object which is used during post handling.
-   *
-   * @see nsEventDispatcher.h for documentation about aVisitor.
-   * @note Only nsEventDispatcher should call this method.
-   */
-  virtual nsresult PostHandleEvent(nsEventChainPostVisitor& aVisitor) = 0;
-
-
-  /**
-   * Dispatch an event.
-   * @param aEvent the event that is being dispatched.
-   * @param aDOMEvent the event that is being dispatched, use if you want to
-   *                  dispatch nsIDOMEvent, not only nsEvent.
-   * @param aPresContext the current presentation context, can be nsnull.
-   * @param aEventStatus the status returned from the function, can be nsnull.
-   *
-   * @note If both aEvent and aDOMEvent are used, aEvent must be the internal
-   *       event of the aDOMEvent.
-   *
-   * If aDOMEvent is not nsnull (in which case aEvent can be nsnull) it is used
-   * for dispatching, otherwise aEvent is used.
-   *
-   * @deprecated This method is here just until all the callers outside Gecko
-   *             have been converted to use nsIDOMEventTarget::dispatchEvent.
-   */
-  virtual nsresult DispatchDOMEvent(nsEvent* aEvent, nsIDOMEvent* aDOMEvent,
-                                    nsPresContext* aPresContext,
-                                    nsEventStatus* aEventStatus) = 0;
 
   /**
    * Get the docshell in this window.
@@ -407,6 +367,25 @@ public:
   virtual void EnterModalState() = 0;
   virtual void LeaveModalState() = 0;
 
+  void SetModalContentWindow(PRBool aIsModalContentWindow)
+  {
+    mIsModalContentWindow = aIsModalContentWindow;
+  }
+
+  PRBool IsModalContentWindow() const
+  {
+    return mIsModalContentWindow;
+  }
+
+  /**
+   * Initialize window.java and window.Packages, and start LiveConnect
+   * if we're running with a non-NPRuntime enabled Java plugin.
+   */
+  virtual void InitJavaProperties() = 0;
+
+  virtual void* GetCachedXBLPrototypeHandler(nsXBLPrototypeHandler* aKey) = 0;
+  virtual void CacheXBLPrototypeHandler(nsXBLPrototypeHandler* aKey,
+                                        nsScriptObjectHolder& aHandler) = 0;
 
 protected:
   // The nsPIDOMWindow constructor. The aOuterWindow argument should
@@ -417,14 +396,15 @@ protected:
     : mFrameElement(nsnull), mDocShell(nsnull), mModalStateDepth(0),
       mRunningTimeout(nsnull), mMutationBits(0), mIsDocumentLoaded(PR_FALSE),
       mIsHandlingResizeEvent(PR_FALSE), mIsInnerWindow(aOuterWindow != nsnull),
-      mInnerWindow(nsnull), mOuterWindow(aOuterWindow)
+      mIsModalContentWindow(PR_FALSE), mInnerWindow(nsnull),
+      mOuterWindow(aOuterWindow)
   {
   }
 
   // These two variables are special in that they're set to the same
   // value on both the outer window and the current inner window. Make
   // sure you keep them in sync!
-  nsCOMPtr<nsIChromeEventHandler> mChromeEventHandler; // strong
+  nsCOMPtr<nsPIDOMEventTarget> mChromeEventHandler; // strong
   nsCOMPtr<nsIDOMDocument> mDocument; // strong
 
   // These members are only used on outer windows.
@@ -441,6 +421,10 @@ protected:
   PRPackedBool           mIsDocumentLoaded;
   PRPackedBool           mIsHandlingResizeEvent;
   PRPackedBool           mIsInnerWindow;
+
+  // This variable is used on both inner and outer windows (and they
+  // should match).
+  PRPackedBool           mIsModalContentWindow;
 
   // And these are the references between inner and outer windows.
   nsPIDOMWindow         *mInnerWindow;
