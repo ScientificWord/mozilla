@@ -44,7 +44,7 @@
 #include "nsReadableUtils.h"
 #include "nsCRT.h"
 #include "prprf.h"
-#include "nsAutoBuffer.h"
+#include "nsTArray.h"
 
 #include <ctype.h>
 
@@ -53,8 +53,9 @@
 #elif defined(XP_OS2)
 #  include "unidef.h"
 #  include "nsIOS2Locale.h"
-#elif defined(XP_MAC) || defined(XP_MACOSX)
+#elif defined(XP_MACOSX)
 #  include <Script.h>
+#  include <Carbon/Carbon.h>
 #  include "nsIMacLocale.h"
 #elif defined(XP_UNIX) || defined(XP_BEOS)
 #  include <locale.h>
@@ -94,14 +95,6 @@ static int posix_locale_category[LocaleListLength] =
 };
 #endif
 
-#ifdef XP_MACOSX
-#if !defined(__COREFOUNDATION_CFLOCALE__)
-typedef void* CFLocaleRef;
-#endif
-typedef CFLocaleRef (*fpCFLocaleCopyCurrent_type) (void);
-typedef CFStringRef (*fpCFLocaleGetIdentifier_type) (CFLocaleRef);
-#endif
-
 //
 // nsILocaleService implementation
 //
@@ -134,41 +127,12 @@ protected:
 };
 
 //
-// nsILocaleDefinition implementation
-//
-class nsLocaleDefinition: public nsILocaleDefinition {
-	friend class nsLocaleService;
-
-public:
-
-	//
-	// nsISupports
-	//
-	NS_DECL_ISUPPORTS
-
-	//
-	// nsILocaleDefintion
-	//
-	NS_IMETHOD SetLocaleCategory(const nsAString &category, const nsAString &value);
-
-protected:
-
-	nsLocaleDefinition();
-	virtual ~nsLocaleDefinition();
-
-	nsLocale*	mLocaleDefinition;
-};
-
-
-
-
-//
 // nsLocaleService methods
 //
 nsLocaleService::nsLocaleService(void) 
     : mSystemLocale(0), mApplicationLocale(0)
 {
-#if defined(XP_WIN)
+#ifdef XP_WIN
     nsCOMPtr<nsIWin32Locale> win32Converter = do_GetService(NS_WIN32LOCALE_CONTRACTID);
 
     NS_ASSERTION(win32Converter, "nsLocaleService: can't get win32 converter\n");
@@ -242,7 +206,7 @@ nsLocaleService::nsLocaleService(void)
     }  // if ( NS_SUCCEEDED )...
        
 #endif // XP_UNIX || XP_BEOS
-#if defined(XP_OS2)
+#ifdef XP_OS2
     nsCOMPtr<nsIOS2Locale> os2Converter = do_GetService(NS_OS2LOCALE_CONTRACTID);
     nsAutoString xpLocale;
     if (os2Converter) {
@@ -293,86 +257,37 @@ nsLocaleService::nsLocaleService(void)
         mSystemLocale = do_QueryInterface(resultLocale);
         mApplicationLocale = do_QueryInterface(resultLocale);
     }  // if ( NS_SUCCEEDED )...
+#endif  // XP_OS2
 
-#endif
+#ifdef XP_MACOSX
+    // Get string representation of user's current locale
+    CFLocaleRef userLocaleRef = ::CFLocaleCopyCurrent();
+    CFStringRef userLocaleStr = ::CFLocaleGetIdentifier(userLocaleRef);
+    ::CFRetain(userLocaleStr);
 
-#if defined(XP_MAC) || defined(XP_MACOSX)
-    // On MacOSX, the recommended way to get the user's current locale is to use
-    // the CFLocale APIs.  However, these are only available on 10.3 and later.
-    // So for the older systems, we have to keep using the Script Manager APIs.
-
-    static PRBool checked = PR_FALSE;
-    static fpCFLocaleCopyCurrent_type fpCFLocaleCopyCurrent = NULL;
-    static fpCFLocaleGetIdentifier_type fpCFLocaleGetIdentifier = NULL;
-
-    if (!checked)
+    nsAutoTArray<UniChar, 32> buffer;
+    int size = ::CFStringGetLength(userLocaleStr);
+    if (buffer.SetLength(size + 1))
     {
-        CFBundleRef bundle =
-            ::CFBundleGetBundleWithIdentifier(CFSTR("com.apple.Carbon"));
-        if (bundle)
-        {
-            // We dynamically load these two functions and only use them if
-            // they are available (OS 10.3+).
-            fpCFLocaleCopyCurrent = (fpCFLocaleCopyCurrent_type)
-                ::CFBundleGetFunctionPointerForName(bundle,
-                                                    CFSTR("CFLocaleCopyCurrent"));
-            fpCFLocaleGetIdentifier = (fpCFLocaleGetIdentifier_type)
-                ::CFBundleGetFunctionPointerForName(bundle,
-                                                    CFSTR("CFLocaleGetIdentifier"));
-        }
-        checked = PR_TRUE;
-    }
+        CFRange range = ::CFRangeMake(0, size);
+        ::CFStringGetCharacters(userLocaleStr, range, buffer.Elements());
+        buffer[size] = 0;
 
-    if (fpCFLocaleCopyCurrent)
-    {
-        // Get string representation of user's current locale
-        CFLocaleRef userLocaleRef = fpCFLocaleCopyCurrent();
-        CFStringRef userLocaleStr = fpCFLocaleGetIdentifier(userLocaleRef);
-        ::CFRetain(userLocaleStr);
+        // Convert the locale string to the format that Mozilla expects
+        nsAutoString xpLocale(buffer.Elements());
+        xpLocale.ReplaceChar('_', '-');
 
-        nsAutoBuffer<UniChar, 32> buffer;
-        int size = ::CFStringGetLength(userLocaleStr);
-        if (buffer.EnsureElemCapacity(size))
-        {
-            CFRange range = ::CFRangeMake(0, size);
-            ::CFStringGetCharacters(userLocaleStr, range, buffer.get());
-            buffer.get()[size] = 0;
-
-            // Convert the locale string to the format that Mozilla expects
-            nsAutoString xpLocale(buffer.get());
-            xpLocale.ReplaceChar('_', '-');
-
-            nsresult rv = NewLocale(xpLocale, getter_AddRefs(mSystemLocale));
-            if (NS_SUCCEEDED(rv)) {
-              mApplicationLocale = mSystemLocale;
-            }
-        }
-
-        ::CFRelease(userLocaleStr);
-        ::CFRelease(userLocaleRef);
-
-        NS_ASSERTION(mApplicationLocale, "Failed to create locale objects");
-    }
-    else
-    {
-        // Legacy MacOSX locale code
-        long script = GetScriptManagerVariable(smSysScript);
-        long lang = GetScriptVariable(smSystemScript,smScriptLang);
-        long region = GetScriptManagerVariable(smRegionCode);
-        nsCOMPtr<nsIMacLocale> macConverter = do_GetService(NS_MACLOCALE_CONTRACTID);
-        if (macConverter) {
-            nsresult result;
-            nsAutoString xpLocale;
-            result = macConverter->GetXPLocale((short)script,(short)lang,(short)region, xpLocale);
-            if (NS_SUCCEEDED(result)) {
-                result = NewLocale(xpLocale, getter_AddRefs(mSystemLocale));
-                if (NS_SUCCEEDED(result)) {
-                    mApplicationLocale = mSystemLocale;
-                }
-            }
+        nsresult rv = NewLocale(xpLocale, getter_AddRefs(mSystemLocale));
+        if (NS_SUCCEEDED(rv)) {
+            mApplicationLocale = mSystemLocale;
         }
     }
-#endif
+
+    ::CFRelease(userLocaleStr);
+    ::CFRelease(userLocaleRef);
+
+    NS_ASSERTION(mApplicationLocale, "Failed to create locale objects");
+#endif // XP_MACOSX
 }
 
 nsLocaleService::~nsLocaleService(void)
@@ -384,33 +299,26 @@ NS_IMPL_THREADSAFE_ISUPPORTS1(nsLocaleService, nsILocaleService)
 NS_IMETHODIMP
 nsLocaleService::NewLocale(const nsAString &aLocale, nsILocale **_retval)
 {
-	int		i;
-	nsresult result;
+    nsresult result;
 
-	*_retval = (nsILocale*)nsnull;
-	
-	nsLocale* resultLocale = new nsLocale();
-	if (!resultLocale) return NS_ERROR_OUT_OF_MEMORY;
+    *_retval = nsnull;
 
-	for(i=0;i<LocaleListLength;i++) {
-		nsString category; category.AssignWithConversion(LocaleList[i]);
-		result = resultLocale->AddCategory(category, aLocale);
-		if (NS_FAILED(result)) { delete resultLocale; return result;}
-	}
+    nsLocale* resultLocale = new nsLocale();
+    if (!resultLocale) return NS_ERROR_OUT_OF_MEMORY;
 
-	return resultLocale->QueryInterface(NS_GET_IID(nsILocale),(void**)_retval);
-}
+    for (PRInt32 i = 0; i < LocaleListLength; i++) {
+      nsString category; category.AssignWithConversion(LocaleList[i]);
+      result = resultLocale->AddCategory(category, aLocale);
+      if (NS_FAILED(result)) { delete resultLocale; return result;}
+#if (defined(XP_UNIX) && !defined(XP_MACOSX)) || defined(XP_BEOS)
+      category.AppendLiteral("##PLATFORM");
+      result = resultLocale->AddCategory(category, aLocale);
+      if (NS_FAILED(result)) { delete resultLocale; return result;}
+#endif
+    }
 
-
-NS_IMETHODIMP
-nsLocaleService::NewLocaleObject(nsILocaleDefinition *localeDefinition, nsILocale **_retval)
-{
-	if (!localeDefinition || !_retval) return NS_ERROR_INVALID_ARG;
-
-	nsLocale* new_locale = new nsLocale(NS_STATIC_CAST(nsLocaleDefinition*,localeDefinition)->mLocaleDefinition);
-	if (!new_locale) return NS_ERROR_OUT_OF_MEMORY;
-
-	return new_locale->QueryInterface(NS_GET_IID(nsILocale),(void**)_retval);
+    NS_ADDREF(*_retval = resultLocale);
+    return NS_OK;
 }
 
 
@@ -572,33 +480,4 @@ NS_NewLocaleService(nsILocaleService** result)
     return NS_ERROR_OUT_OF_MEMORY;
   NS_ADDREF(*result);
   return NS_OK;
-}
-
-
-//
-// nsLocaleDefinition methods
-//
-
-NS_IMPL_ISUPPORTS1(nsLocaleDefinition,nsILocaleDefinition)
-
-nsLocaleDefinition::nsLocaleDefinition(void)
-{
-	mLocaleDefinition = new nsLocale;
-	if (mLocaleDefinition)
-		mLocaleDefinition->AddRef();
-}
-
-nsLocaleDefinition::~nsLocaleDefinition(void)
-{
-	if (mLocaleDefinition)
-		mLocaleDefinition->Release();
-}
-
-NS_IMETHODIMP
-nsLocaleDefinition::SetLocaleCategory(const nsAString &category, const nsAString &value)
-{
-	if (mLocaleDefinition)
-		return mLocaleDefinition->AddCategory(category,value);
-	
-	return NS_ERROR_FAILURE;
 }

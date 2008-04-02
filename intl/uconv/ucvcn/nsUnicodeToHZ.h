@@ -69,13 +69,15 @@ protected:
                             char * aDest, 
                             PRInt32 * aDestLength);
 
+  NS_IMETHOD FinishNoBuff(char * aDest, PRInt32 * aDestLength);
+
   NS_IMETHOD FillInfo(PRUint32 *aInfo);
 
   NS_IMETHOD ConvertNoBuffNoErr(const PRUnichar * aSrc, PRInt32 * aSrcLength, 
                                 char * aDest, PRInt32 * aDestLength)
   {
     return NS_OK;
-  };  // just make it not abstract;
+  }  // just make it not abstract;
 
   PRUint16 mHZState;
 protected:

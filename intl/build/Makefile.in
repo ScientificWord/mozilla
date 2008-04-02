@@ -55,16 +55,10 @@ PACKAGE_VARS = MOZ_MATHML
 REQUIRES	= xpcom \
 		  string \
 		  unicharutil \
-		  chardet \
 		  uconv \
 		  lwbrk \
 		  intl \
 		  locale \
-		  htmlparser \
-		  content \
-		  widget \
-		  webshell \
-		  necko \
 		  $(NULL)
 
 CPPSRCS		= \
@@ -83,7 +77,6 @@ endif
 endif
 
 LOCAL_INCLUDES = \
-			-I$(srcdir)/../chardet/src \
 			-I$(srcdir)/../lwbrk/src \
 			-I$(srcdir)/../unicharutil/src \
 			-I$(srcdir)/../strres/src \
@@ -92,7 +85,6 @@ LOCAL_INCLUDES = \
 			$(NULL)
 
 SHARED_LIBRARY_LIBS = \
-			../chardet/src/$(LIB_PREFIX)chardet_s.$(LIB_SUFFIX) \
 			../lwbrk/src/$(LIB_PREFIX)lwbrk_s.$(LIB_SUFFIX) \
 			../unicharutil/src/$(LIB_PREFIX)ucharucomp_s.$(LIB_SUFFIX) \
 			../strres/src/$(LIB_PREFIX)strres_s.$(LIB_SUFFIX) \
@@ -113,3 +105,12 @@ endif
 
 include $(topsrcdir)/config/rules.mk
 
+ifeq ($(MOZ_WIDGET_TOOLKIT),gtk2)
+EXTRA_DSO_LDOPTS += \
+		$(MOZ_PANGO_LIBS) \
+		$(NULL)
+endif
+
+ifeq ($(MOZ_WIDGET_TOOLKIT),windows)
+OS_LIBS += $(call EXPAND_LIBNAME,usp10)
+endif
