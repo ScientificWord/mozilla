@@ -43,10 +43,10 @@
 #include "nsIDOM3Node.h"
 #include "nsMemory.h"
 #include "nsXFormsAtoms.h"
-#include "nsString.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsStringAPI.h"
+#include "nsIDOMEventTarget.h"
 #include "nsIDOMDOMImplementation.h"
-#include "nsIXTFGenericElementWrapper.h"
+#include "nsIXTFElementWrapper.h"
 #include "nsXFormsUtils.h"
 #include "nsNetUtil.h"
 
@@ -136,7 +136,7 @@ nsXFormsInstanceElement::AttributeRemoved(nsIAtom *aName)
 }
 
 NS_IMETHODIMP
-nsXFormsInstanceElement::OnCreated(nsIXTFGenericElementWrapper *aWrapper)
+nsXFormsInstanceElement::OnCreated(nsIXTFElementWrapper *aWrapper)
 {
   aWrapper->SetNotificationMask(nsIXTFElement::NOTIFY_ATTRIBUTE_SET |
                                 nsIXTFElement::NOTIFY_ATTRIBUTE_REMOVED |
@@ -364,7 +364,8 @@ nsXFormsInstanceElement::BackupOriginalDocument()
     NS_ENSURE_TRUE(instanceRoot, NS_ERROR_FAILURE);
 
     nsCOMPtr<nsIDOMNode> nodeReturn;
-    rv = instanceRoot->CloneNode(PR_TRUE, getter_AddRefs(newNode)); 
+    rv = mOriginalDocument->ImportNode(instanceRoot, PR_TRUE,
+                                       getter_AddRefs(newNode));
     if(NS_SUCCEEDED(rv)) {
       rv = mOriginalDocument->AppendChild(newNode, getter_AddRefs(nodeReturn));
       NS_WARN_IF_FALSE(NS_SUCCEEDED(rv), 
@@ -581,7 +582,7 @@ nsXFormsInstanceElement::LoadExternalInstance(const nsAString &aSrc)
     if (doc->GetProperty(nsXFormsAtoms::isInstanceDocument)) {
       /// Property exists, which means we are an instance document trying
       /// to load an external instance document. We do not allow that.
-      const nsPromiseFlatString& flat = PromiseFlatString(aSrc);
+      const nsString& flat = PromiseFlatString(aSrc);
       const PRUnichar *strings[] = { flat.get() };
       nsXFormsUtils::ReportError(NS_LITERAL_STRING("instanceInstanceLoad"),
                                  strings, 1, mElement, mElement);
@@ -591,8 +592,7 @@ nsXFormsInstanceElement::LoadExternalInstance(const nsAString &aSrc)
         nsCOMPtr<nsIDocument> newDoc = do_QueryInterface(mDocument);
 
         nsCOMPtr<nsIURI> uri;
-        NS_NewURI(getter_AddRefs(uri), aSrc,
-                  doc->GetDocumentCharacterSet().get(), doc->GetDocumentURI());
+        nsXFormsUtils::GetNewURI(doc, aSrc, getter_AddRefs(uri));
         if (uri) {
           if (nsXFormsUtils::CheckConnectionAllowed(mElement, uri)) {
             nsCOMPtr<nsILoadGroup> loadGroup;

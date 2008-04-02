@@ -77,6 +77,15 @@
         </getter>
       </property>
 
+      <property name="MOZTYPE_NS" readonly="true">
+        <getter>
+          return "http://www.mozilla.org/projects/xforms/2005/type";
+        </getter>
+      </property>
+
+      <property name="XHTML_NS" readonly="true"
+                onget="return 'http://www.w3.org/1999/xhtml';"/>
+
       <!-- Dispatch UI Event to the control itself -->
       <method name="dispatchDOMUIEvent">
         <parameter name="aType"/>
@@ -162,7 +171,8 @@
 
     <!-- private -->
       <constructor>
-        this.delegate.widgetAttached();
+        if (!this.hasAttributeNS(this.MOZTYPE_NS, "deferredrefresh"))
+          this.delegate.widgetAttached();
       </constructor>
 
       <destructor>
@@ -219,6 +229,28 @@
           return false;
         </body>
       </method>
+
+      <!-- Method is called when accesskey associated with the control is
+        activated. -->
+      <method name="performAccesskey">
+        <body>
+          this.focus();
+        </body>
+      </method>
+
+      <!-- Method is called to get current value of xforms element.
+
+        Here the method is implemented for those xforms elements that can't be
+        used to change the bound instance value.  For example, xforms:output.
+        The rest of the xforms elements should override this implementation.
+        For example, xforms:trigger returns empty string since it actually
+        hasn't value even if it has a bound.
+      -->
+      <method name="getCurrentValue">
+        <body>
+          return this.accessors.getValue();
+        </body>
+      </method>
     </implementation>
   </binding>
 
@@ -232,14 +264,44 @@
   -->
   <binding id="xformswidget-output-base"
            extends="chrome://xforms/content/xforms.xml#xformswidget-base">
-    <implementation implements="nsIXFormsUIWidget">
+    <implementation implements="nsIXFormsUIWidget, nsIAccessibleProvider">
+      <property name="accessibleType" readonly="true">
+        <getter>
+          return Components.interfaces.nsIAccessibleProvider.XFormsOuput;
+        </getter>
+      </property>
+
       <method name="refresh">
         <body>
           this.control.value = this.stringValue;
           return true;
         </body>
       </method>
+
+      <constructor>
+        this.setMediatype();
+      </constructor>
+
+      <method name="setMediatype">
+        <body>
+          if (this.hasAttribute("mediatype")) {
+            this.setAttributeNS(this.MOZTYPE_NS, "mediatype",
+                                this.getAttribute("mediatype"));
+          }
+        </body>
+      </method>
     </implementation>
+
+    <handlers>
+      <handler event="DOMAttrModified">
+      <![CDATA[
+        if (event.attrName == "mediatype" &&
+            event.relatedNode.namespaceURI == "") {
+          this.setMediatype();
+        }
+      ]]>
+      </handler>
+    </handlers>
   </binding>
 
 
@@ -255,10 +317,28 @@
   <binding id="xformswidget-label-base"
            extends="chrome://xforms/content/xforms.xml#xformswidget-base">
 
-    <implementation implements="nsIXFormsUIWidget">
+    <implementation implements="nsIXFormsUIWidget, nsIAccessibleProvider">
+      <property name="accessibleType" readonly="true">
+        <getter>
+          return Components.interfaces.nsIAccessibleProvider.XFormsLabel;
+        </getter>
+      </property>
+
       <method name="refresh">
         <body>
-          this.control.value = this.accessors.getValue();
+          // the label control hides/unhides anonymous content based on the
+          // the value we set it to.  The control assumes that if the value
+          // comes from a binding or linking attribute that the value we are
+          // setting it to will be null
+          var externalValue = this.hasAttribute("ref") ||
+                              this.hasAttribute("bind") ||
+                              this.hasAttribute("src");
+
+          if (externalValue) {
+            this.control.value = this.accessors.getValue();
+          } else {
+            this.control.value = null;
+          }
           return true;
         </body>
       </method>
@@ -268,6 +348,92 @@
 
       <property name="nodeValue" readonly="true"
                 onget="return this.control.nodeValue;"/>
+
+      <!-- Advance focus to parent form control -->
+      <method name="advanceFocusToParent">
+        <body>
+          var parent = this.parentNode;
+          if (parent.namespaceURI != this.XFORMS_NS)
+            return;
+
+          switch (parent.localName) {
+            case "input":
+              // XXX: probably we should check base type (see a bug 316691)
+              switch (parent.getAttribute("type")) {
+                case "http://www.w3.org/2001/XMLSchema#boolean":
+                  var value = parent.accessors.getValue();
+                  if (value == "true" || value == "1") {
+                    parent.accessors.setValue("false");
+                  } else {
+                    parent.accessors.setValue("true");
+                  }
+              }
+            case "secret":
+            case "textarea":
+            case "output":
+            case "upload":
+            case "range":
+            case "trigger":
+            case "submit":
+            case "select":
+            case "select1":
+              parent.focus();
+              break;
+          }
+        </body>
+      </method>
+
+    </implementation>
+
+    <handlers>
+      <handler event="click">
+        this.advanceFocusToParent();
+      </handler>
+    </handlers>
+  </binding>
+
+
+  <!-- LABEL: <ACCESKEY SUPPORT>
+    The label widget assumes successors bindings implement getElementControl()
+    method what returns the object:
+    {
+      set value(); // set "string" value
+    }
+  -->
+  <binding id="xformswidget-label-accesskey-base"
+           extends="#xformswidget-label-base">
+
+    <implementation>
+      <method name="formatWithAccesskey">
+        <parameter name="aAccesskey"/>
+        <parameter name="aTextNode"/>
+        <body>
+          var text = aTextNode.nodeValue;
+          var location = text.indexOf(aAccesskey);
+          var span = this.ownerDocument.createElementNS(this.XHTML_NS, "span");
+
+          if (location > -1) {
+            // We create a range around the character we want and surround
+            // it with an html:span.
+            var range = this.ownerDocument.createRange();
+            range.setStart(aTextNode, location);
+            range.setEnd(aTextNode, location + 1);
+
+            span.setAttribute("class", "xf-accesskey-inline");
+            range.surroundContents(span);
+          } else {
+            // If we didn't find the accesskey, append it to the end.
+            span.setAttribute("class", "xf-accesskey-appended");
+            span.textContent = aAccesskey;
+            if (aTextNode.nextSibling) {
+              aTextNode.parentNode.insertBefore(span,
+                                                aTextNode.nextSibling);
+            } else {
+              aTextNode.parentNode.appendChild(span);
+            }
+          }
+        </body>
+      </method>
     </implementation>
   </binding>
 
@@ -278,12 +444,19 @@
     {
       set disabled(); // set disabled state
       focus(); // set focus
+      activate(); // activates trigger
     }
   -->
   <binding id="xformswidget-trigger-base"
            extends="chrome://xforms/content/xforms.xml#xformswidget-base">
 
-    <implementation implements="nsIXFormsUIWidget">
+    <implementation implements="nsIXFormsUIWidget, nsIAccessibleProvider">
+      <property name="accessibleType" readonly="true">
+        <getter>
+          return Components.interfaces.nsIAccessibleProvider.XFormsTrigger;
+        </getter>
+      </property>
+
       <method name="disable">
         <parameter name="aDisable"/>
         <body>
@@ -298,6 +471,17 @@
         </body>
       </method>
 
+      <method name="performAccesskey">
+        <body>
+          this.control.activate();
+        </body>
+      </method>
+
+      <method name="getCurrentValue">
+        <body>
+          return "";
+        </body>
+      </method>
     </implementation>
   </binding>
 
@@ -337,95 +521,17 @@
 
 
   <!-- ALERT: <DEFAULT> -->
-  <binding id="inline-alert"
+  <binding id="xformswidget-alert-base"
            extends="chrome://xforms/content/xforms.xml#xformswidget-base">
-    <content>
-      <html:div anonid="container" class="-moz-xforms-message-container">
-        <html:div anonid="inlineData" style="display: inherit;">
-          <children/>
-        </html:div>
-        <html:div anonid="bindingData" style="display: inherit;"/>
-      </html:div>
-    </content>
 
     <implementation>
-
-      <field name="_inlineData">null</field>
-
-      <property name="inlineData" readonly="true">
-        <getter>
-          if (!this._inlineData) {
-            this._inlineData = document.
-              getAnonymousElementByAttribute(this, "anonid", "inlineData");
-          }
-          return this._inlineData;
-        </getter>
-      </property>
-
-      <field name="_bindingData">null</field>
-      <property name="bindingData" readonly="true">
-        <getter>
-          if (!this._bindingData) {
-            this._bindingData = document.
-              getAnonymousElementByAttribute(this, "anonid", "bindingData");
-          }
-          return this._bindingData;
-        </getter>
-      </property>
-
       <method name="refresh">
         <body>
-          if (this.accessors.hasBoundNode() ||
-              this.hasAttribute('src')) {
-            this.bindingData.textContent = this.stringValue;
-            this.inlineData.style.display = "none";
-            this.bindingData.style.display = "inherit";
-          } else {
-            this.bindingData.style.display = "none";
-            this.inlineData.style.display = "inherit";
-          }
-        </body>
-      </method>
-    </implementation>
-  </binding>
-
-
-  <!-- MESSAGE: <DEFAULT>, reusing the content of inline-alert -->
-  <binding id="ephemeral-message"
-           extends="chrome://xforms/content/xforms.xml#inline-alert">
-    <implementation implements="nsIXFormsEphemeralMessageUI">
-
-      <field name="_container">null</field>
-
-      <property name="container" readonly="true">
-        <getter>
-          if (!this._container) {
-            this._container = document.
-              getAnonymousElementByAttribute(this, "anonid", "container");
-          }
-          return this._container;
-        </getter>
-      </property>
-
-      <method name="show">
-        <parameter name="x"/>
-        <parameter name="y"/>
-        <body>
-          this.container.style.visibility = "visible";
-          this.container.style.display = "inherit";
-          this.container.style.left = x + "px";
-          this.container.style.top = y + "px";
-          return true;
-        </body>
-      </method>
-
-      <method name="hide">
-        <body>
-          this.container.style.left = "0px";
-          this.container.style.top = "0px";
-          this.container.style.visibility = "hidden";
-          this.container.style.display = "none";
-        </body>
+        <![CDATA[
+          var useInlineValue = !this.accessors.hasBoundNode() &&
+            !this.hasAttribute('src');
+          this.control.setValue(useInlineValue, this.stringValue);
+        ]]></body>
       </method>
     </implementation>
   </binding>
@@ -440,9 +546,16 @@
       focus(); // set focus
     }
   -->
-  <binding id="xformswidget-upload-base" extends="#xformswidget-base">
+  <binding id="xformswidget-upload-base"
+           extends="#xformswidget-base">
 
-    <implementation implements="nsIXFormsUIWidget, nsIXFormsUploadUIElement">
+    <implementation implements="nsIXFormsUploadUIElement, nsIAccessibleProvider">
+      <property name="accessibleType" readonly="true">
+        <getter>
+          return Components.interfaces.nsIAccessibleProvider.XFormsContainer;
+        </getter>
+      </property>
+
       <method name="refresh">
         <body>
           this.control.readonly = this.accessors.isReadonly();
@@ -453,6 +566,18 @@
         <body>
           this.control.focus();
           return true;
+        </body>
+      </method>
+
+      <method name="performAccesskey">
+        <body>
+          this.control.activate();
+        </body>
+      </method>
+
+      <method name="getCurrentValue">
+        <body>
+          return this.control.value;
         </body>
       </method>
 
@@ -471,6 +596,24 @@
         <parameter name="aString"/>
         <body>
           this.control.value = aString;
+        </body>
+      </method>
+    </implementation>
+  </binding>
+
+
+  <!-- UPLOAD: DISABLED -->
+  <binding id="xformswidget-upload-disabled-base"
+           extends="#xformswidget-upload-base">
+    <implementation>
+      <method name="getControlElement">
+        <body>
+          return {
+            get value(){ return ""; },
+            set value(val){},
+            set readonly(val){},
+            focus: function(){}
+          };
         </body>
       </method>
     </implementation>
@@ -503,6 +646,38 @@
         <children/>
       </xforms:repeat>
     </content>
+  </binding>
+
+
+  <!-- MEDIATYPE -->
+  <binding id="xformswidget-mediatype" extends="#xformswidget-base">
+    <implementation implements="nsIXFormsUIWidget">
+      <method name="refresh">
+        <body>
+          this.setMediatype();
+        </body>
+      </method>
+
+      <method name="setMediatype">
+        <body>
+        <![CDATA[
+          var parent = this.parentNode;
+          if (parent.namespaceURI == this.XFORMS_NS &&
+              parent.localName == "output" &&
+              !parent.hasAttribute("mediatype")) {
+            parent.setAttributeNS(this.MOZTYPE_NS, "mediatype",
+                                  this.stringValue);
+          }
+        ]]>
+        </body>
+      </method>
+    </implementation>
+
+    <handlers>
+      <handler event="DOMCharacterDataModified">
+        this.setMediatype();
+      </handler>
+    </handlers>
   </binding>
 
 </bindings>

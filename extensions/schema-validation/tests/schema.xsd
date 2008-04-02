@@ -29,6 +29,13 @@
     </restriction>
   </simpleType>
 
+  <simpleType name="nonNegativeInteger-test-1">
+    <restriction base='nonNegativeInteger'>
+      <totalDigits value="3" />
+      <maxInclusive value="500" />
+    </restriction>
+  </simpleType>
+
   <simpleType name="positiveInteger-test-1">
     <restriction base='positiveInteger'>
       <totalDigits value="3"/>
@@ -409,6 +416,55 @@
 
   <simpleType name="qname-test-1">
     <restriction base='QName'>
+      <maxLength value="13"/>
+      <minLength value="3"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="name-test-1">
+    <restriction base='Name'>
+      <maxLength value="13"/>
+      <minLength value="3"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="ncname-test-1">
+    <restriction base='NCName'>
+      <maxLength value="13"/>
+      <minLength value="3"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="id-test-1">
+    <restriction base='ID'>
+      <maxLength value="13"/>
+      <minLength value="3"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="idref-test-1">
+    <restriction base='IDREF'>
+      <maxLength value="13"/>
+      <minLength value="3"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="idrefs-test-1">
+    <restriction base='IDREFS'>
+      <maxLength value="13"/>
+      <minLength value="3"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="nmtoken-test-1">
+    <restriction base='NMTOKEN'>
+      <maxLength value="13"/>
+      <minLength value="3"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="nmtokens-test-1">
+    <restriction base='NMTOKENS'>
       <maxLength value="13"/>
       <minLength value="3"/>
     </restriction>
@@ -1053,6 +1109,24 @@
   </complexType>
 
   <element name="deriv-ext-restriction-1" type="test:simpleName"/>
+
+  <!-- EMPTY_CONTENT_COMPLEX -->
+  <complexType name="emptyContent">
+   <attributeGroup ref="test:attrgroup-1"/>
+   <attribute name="att1" type="string"/>
+  </complexType>
+
+  <element name="empty-complex-1" type="test:emptyContent" />
+
+  <complexType name="emptyContent2">
+   <sequence>
+     <element name="e1" type="string" minOccurs="0" />
+   </sequence>
+   <attributeGroup ref="test:attrgroup-1"/>
+   <attribute name="att1" type="string"/>
+  </complexType>
+
+  <element name="empty-complex-2" type="test:emptyContent2" />
 
 </schema>
 

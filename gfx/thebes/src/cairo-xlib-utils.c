@@ -114,7 +114,6 @@ _intersect_interval (double a_begin, double a_end, double b_begin, double b_end,
     return *out_begin < *out_end;
 }
 
-#define MAX_STATIC_CLIP_RECTANGLES 50
 static cairo_bool_t
 _get_rectangular_clip (cairo_t *cr,
                        int bounds_x, int bounds_y,
@@ -123,24 +122,31 @@ _get_rectangular_clip (cairo_t *cr,
                        XRectangle *rectangles, int max_rectangles,
                        int *num_rectangles)
 {
-    cairo_clip_rect_t clips[MAX_STATIC_CLIP_RECTANGLES];
-    int count;
+    cairo_rectangle_list_t *cliplist;
+    cairo_rectangle_t *clips;
     int i;
     double b_x = bounds_x;
     double b_y = bounds_y;
     double b_x_most = bounds_x + bounds_width;
     double b_y_most = bounds_y + bounds_height;
     int rect_count = 0;
-    
-    if (!cairo_has_clip (cr)) {
-        *need_clip = False;
-        return True;
+    cairo_bool_t retval = True;
+
+    cliplist = cairo_copy_clip_rectangle_list (cr);
+    if (cliplist->status != CAIRO_STATUS_SUCCESS) {
+        retval = False;
+        goto FINISH;
     }
 
-    if (!cairo_extract_clip_rectangles (cr, MAX_STATIC_CLIP_RECTANGLES, clips, &count))
-        return False;
+    if (cliplist->num_rectangles == 0) {
+        *num_rectangles = 0;
+        *need_clip = True;
+        goto FINISH;
+    }
 
-    for (i = 0; i < count; ++i) {
+    clips = cliplist->rectangles;
+
+    for (i = 0; i < cliplist->num_rectangles; ++i) {
         double intersect_x, intersect_y, intersect_x_most, intersect_y_most;
         
         /* the clip is always in surface backend coordinates (i.e. native backend coords) */
@@ -148,7 +154,7 @@ _get_rectangular_clip (cairo_t *cr,
             b_y >= clips[i].y && b_y_most <= clips[i].y + clips[i].height) {
             /* the bounds are entirely inside the clip region so we don't need to clip. */
             *need_clip = False;
-            return True;
+            goto FINISH;
         }
         
         if (_intersect_interval (b_x, b_x_most, clips[i].x, clips[i].x + clips[i].width,
@@ -157,14 +163,19 @@ _get_rectangular_clip (cairo_t *cr,
                                  &intersect_y, &intersect_y_most)) {
             XRectangle *rect = &rectangles[rect_count];
 
-            if (rect_count >= max_rectangles)
-              return False;
+            if (rect_count >= max_rectangles) {
+                retval = False;
+                goto FINISH;
+            }
 
             if (!_convert_coord_to_short (intersect_x, &rect->x) ||
                 !_convert_coord_to_short (intersect_y, &rect->y) ||
                 !_convert_coord_to_unsigned_short (intersect_x_most - intersect_x, &rect->width) ||
                 !_convert_coord_to_unsigned_short (intersect_y_most - intersect_y, &rect->height))
-              return False;
+            {
+                retval = False;
+                goto FINISH;
+            }
 
             ++rect_count;
         }
@@ -172,8 +183,14 @@ _get_rectangular_clip (cairo_t *cr,
   
     *need_clip = True;
     *num_rectangles = rect_count;
-    return True;
+
+FINISH:
+    cairo_rectangle_list_destroy (cliplist);
+
+    return retval;
 }
+
+#define MAX_STATIC_CLIP_RECTANGLES 50
 
 /**
  * Try the direct path.
@@ -199,6 +216,7 @@ _draw_with_xlib_direct (cairo_t *cr,
     int max_rectangles;
     Display *dpy;
     Visual *visual;
+    cairo_bool_t have_rectangular_clip;
 
     target = cairo_get_group_target (cr);
     cairo_surface_get_device_offset (target, &device_offset_x, &device_offset_y);
@@ -228,15 +246,23 @@ _draw_with_xlib_direct (cairo_t *cr,
       max_rectangles = MAX_STATIC_CLIP_RECTANGLES;
     }
     
-    /* Check that the clip is rectangular and aligned on unit boundaries */
-    if (!_get_rectangular_clip (cr,
-                                offset_x, offset_y, bounds_width, bounds_height,
-                                &needs_clip,
-                                rectangles, max_rectangles, &rect_count)) {
+    /* Check that the clip is rectangular and aligned on unit boundaries. */
+    /* Temporarily set the matrix for _get_rectangular_clip. It's basically
+       the identity matrix, but we must adjust for the fact that our
+       offset-rect is in device coordinates. */
+    cairo_identity_matrix (cr);
+    cairo_translate (cr, -device_offset_x, -device_offset_y);
+    have_rectangular_clip =
+        _get_rectangular_clip (cr,
+                               offset_x, offset_y, bounds_width, bounds_height,
+                               &needs_clip,
+                               rectangles, max_rectangles, &rect_count);
+    cairo_set_matrix (cr, &matrix);
+    if (!have_rectangular_clip) {
         CAIRO_XLIB_DRAWING_NOTE("TAKING SLOW PATH: unsupported clip\n");
         return False;
     }
-  
+
     /* Stop now if everything is clipped out */
     if (needs_clip && rect_count == 0) {
         CAIRO_XLIB_DRAWING_NOTE("TAKING FAST PATH: all clipped\n");

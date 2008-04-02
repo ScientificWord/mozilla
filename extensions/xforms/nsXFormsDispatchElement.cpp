@@ -42,27 +42,25 @@
 #include "nsIDOMEvent.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMEventTarget.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 #include "nsXFormsUtils.h"
 
 class nsXFormsDispatchElement : public nsXFormsActionModuleBase
 {
 public:
   nsXFormsDispatchElement();
-  NS_DECL_NSIXFORMSACTIONMODULEELEMENT
+  nsresult HandleSingleAction(nsIDOMEvent* aEvent,
+                              nsIXFormsActionElement *aParentAction);
 };
 
 nsXFormsDispatchElement::nsXFormsDispatchElement()
 {
 }
 
-NS_IMETHODIMP
-nsXFormsDispatchElement::HandleAction(nsIDOMEvent* aEvent,
-                                      nsIXFormsActionElement *aParentAction)
+nsresult
+nsXFormsDispatchElement::HandleSingleAction(nsIDOMEvent* aEvent,
+                                            nsIXFormsActionElement *aParentAction)
 {
-  if (!mElement)
-    return NS_OK;
-  
   nsAutoString name;
   mElement->GetAttribute(NS_LITERAL_STRING("name"), name);
   if (name.IsEmpty())
@@ -95,18 +93,17 @@ nsXFormsDispatchElement::HandleAction(nsIDOMEvent* aEvent,
       nsXFormsUtils::GetEventDefaults(name, tmp, bubbles);
   }
 
-  nsCOMPtr<nsIDOMDocument> doc;
-  mElement->GetOwnerDocument(getter_AddRefs(doc));
-  if (!doc)
-    return NS_OK;
-
   nsCOMPtr<nsIDOMElement> el;
-  nsXFormsUtils::GetElementById(doc, target, PR_FALSE, mElement,
-                                getter_AddRefs(el));
+  nsXFormsUtils::GetElementById(target, PR_FALSE, mElement, getter_AddRefs(el));
   if (!el)
     return NS_OK;
-  
+
+  nsCOMPtr<nsIDOMDocument> doc;
+  mElement->GetOwnerDocument(getter_AddRefs(doc));
   nsCOMPtr<nsIDOMDocumentEvent> docEvent = do_QueryInterface(doc);
+  if (!docEvent)
+    return NS_OK;
+
   nsCOMPtr<nsIDOMEvent> event;
   docEvent->CreateEvent(NS_LITERAL_STRING("Events"), getter_AddRefs(event));
   event->InitEvent(name, bubbles, cancelable);

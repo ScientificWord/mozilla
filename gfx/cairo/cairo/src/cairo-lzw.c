@@ -43,7 +43,7 @@ typedef struct _lzw_buf {
     int data_size;
     int num_data;
     uint32_t pending;
-    int pending_bits;
+    unsigned int pending_bits;
 } lzw_buf_t;
 
 /* An lzw_buf_t is a simple, growable chunk of memory for holding
@@ -58,7 +58,7 @@ typedef struct _lzw_buf {
  * Instead of returning failure from any functions, lzw_buf_t provides
  * a status value that the caller can query, (and should query at
  * least once when done with the object). The status value will be
- * either CAIRO_STATUS_SUCCESS or CAIRO_STATUS_NO_MEMORY;
+ * either %CAIRO_STATUS_SUCCESS or %CAIRO_STATUS_NO_MEMORY;
  */
 static void
 _lzw_buf_init (lzw_buf_t *buf, int size)
@@ -67,23 +67,22 @@ _lzw_buf_init (lzw_buf_t *buf, int size)
 	size = 16;
 
     buf->status = CAIRO_STATUS_SUCCESS;
-
-    buf->data = malloc (size);
-    if (buf->data == NULL) {
-	buf->data_size = 0;
-	buf->status = CAIRO_STATUS_NO_MEMORY;
-	return;
-    }
-
     buf->data_size = size;
     buf->num_data = 0;
     buf->pending = 0;
     buf->pending_bits = 0;
+
+    buf->data = malloc (size);
+    if (buf->data == NULL) {
+	buf->data_size = 0;
+	buf->status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
+	return;
+    }
 }
 
 /* Increase the buffer size by doubling.
  *
- * Returns CAIRO_STATUS_SUCCESS or CAIRO_STATUS_NO_MEMORY
+ * Returns %CAIRO_STATUS_SUCCESS or CAIRO_STATUS_NO_MEMORY
  */
 static cairo_status_t
 _lzw_buf_grow (lzw_buf_t *buf)
@@ -94,11 +93,15 @@ _lzw_buf_grow (lzw_buf_t *buf)
     if (buf->status)
 	return buf->status;
 
-    new_data = realloc (buf->data, new_size);
+    new_data = NULL;
+    /* check for integer overflow */
+    if (new_size / 2 == buf->data_size)
+	new_data = realloc (buf->data, new_size);
+
     if (new_data == NULL) {
 	free (buf->data);
 	buf->data_size = 0;
-	buf->status = CAIRO_STATUS_NO_MEMORY;
+	buf->status = _cairo_error (CAIRO_STATUS_NO_MEMORY);
 	return buf->status;
     }
 
@@ -110,13 +113,13 @@ _lzw_buf_grow (lzw_buf_t *buf)
 
 /* Store the lowest num_bits bits of values into buf.
  *
- * NOTE: The bits of value above size_in_bits must be 0, (so don't lie
+ * Note: The bits of value above size_in_bits must be 0, (so don't lie
  * about the size).
  *
  * See also _lzw_buf_store_pending which must be called after the last
  * call to _lzw_buf_store_bits.
  *
- * Sets buf->status to either CAIRO_STATUS_SUCCESS or CAIRO_STATUS_NO_MEMORY.
+ * Sets buf->status to either %CAIRO_STATUS_SUCCESS or %CAIRO_STATUS_NO_MEMORY.
  */
 static void
 _lzw_buf_store_bits (lzw_buf_t *buf, uint16_t value, int num_bits)
@@ -144,10 +147,10 @@ _lzw_buf_store_bits (lzw_buf_t *buf, uint16_t value, int num_bits)
 
 /* Store the last remaining pending bits into the buffer.
  *
- * NOTE: This function must be called after the last call to
+ * Note: This function must be called after the last call to
  * _lzw_buf_store_bits.
  *
- * Sets buf->status to either CAIRO_STATUS_SUCCESS or CAIRO_STATUS_NO_MEMORY.
+ * Sets buf->status to either %CAIRO_STATUS_SUCCESS or %CAIRO_STATUS_NO_MEMORY.
  */
 static void
 _lzw_buf_store_pending  (lzw_buf_t *buf)
@@ -231,11 +234,11 @@ _lzw_symbol_table_init (lzw_symbol_table_t *table)
 /* Lookup a symbol in the symbol table. The PREV and NEXT fields of
  * symbol form the key for the lookup.
  *
- * If succesful, then this function returns TRUE and slot_ret will be
+ * If successful, then this function returns %TRUE and slot_ret will be
  * left pointing at the result that will have the CODE field of
  * interest.
  *
- * If the lookup fails, then this function returns FALSE and slot_ret
+ * If the lookup fails, then this function returns %FALSE and slot_ret
  * will be pointing at the location in the table to which a new CODE
  * value should be stored along with PREV and NEXT.
  */
@@ -309,7 +312,7 @@ _lzw_symbol_table_lookup (lzw_symbol_table_t	 *table,
  * to 12 bits).
  *
  * This function returns a pointer to a newly allocated buffer holding
- * the compressed data, or NULL if an out-of-memory situation
+ * the compressed data, or %NULL if an out-of-memory situation
  * occurs.
  *
  * Notice that any one of the _lzw_buf functions called here could
@@ -335,7 +338,7 @@ _cairo_lzw_compress (unsigned char *data, unsigned long *size_in_out)
     _lzw_buf_init (&buf, *size_in_out);
 
     _lzw_symbol_table_init (&table);
-    
+
     /* The LZW header is a clear table code. */
     _lzw_buf_store_bits (&buf, LZW_CODE_CLEAR_TABLE, code_bits);
 

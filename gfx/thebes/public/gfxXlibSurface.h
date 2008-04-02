@@ -41,8 +41,8 @@
 
 #include "gfxASurface.h"
 
-#include <cairo-xlib.h>
-#include <cairo-xlib-xrender.h>
+#include <X11/extensions/Xrender.h>
+#include <X11/Xlib.h>
 
 class THEBES_API gfxXlibSurface : public gfxASurface {
 public:
@@ -52,25 +52,29 @@ public:
 
     // create a surface for the specified dpy/drawable/visual,
     // with explicitly provided width/height.
-    gfxXlibSurface(Display *dpy, Drawable drawable, Visual *visual, unsigned long width, unsigned long height);
+    gfxXlibSurface(Display *dpy, Drawable drawable, Visual *visual, const gfxIntSize& size);
 
     // create a new Pixmap on the display dpy, with
     // the root window as the parent and the default depth
     // for the default screen, and attach the given visual
-    gfxXlibSurface(Display *dpy, Visual *visual, unsigned long width, unsigned long height);
+    gfxXlibSurface(Display *dpy, Visual *visual, const gfxIntSize& size);
 
     gfxXlibSurface(Display* dpy, Drawable drawable, XRenderPictFormat *format,
-                   unsigned long width, unsigned long height);
+                   const gfxIntSize& size);
 
     gfxXlibSurface(Display* dpy, XRenderPictFormat *format,
-                   unsigned long width, unsigned long height);
+                   const gfxIntSize& size);
 
     gfxXlibSurface(cairo_surface_t *csurf);
 
     virtual ~gfxXlibSurface();
 
-    unsigned long Width() { if (mWidth == -1) DoSizeQuery(); return mWidth; }
-    unsigned long Height() { if (mHeight == -1) DoSizeQuery(); return mHeight; }
+    const gfxIntSize& GetSize() {
+        if (mSize.width == -1 || mSize.height == -1)
+            DoSizeQuery();
+
+        return mSize;
+    }
 
     Display* XDisplay() { return mDisplay; }
     Drawable XDrawable() { return mDrawable; }
@@ -90,8 +94,7 @@ protected:
 
     void DoSizeQuery();
 
-    long mWidth;
-    long mHeight;
+    gfxIntSize mSize;
 };
 
 #endif /* GFX_XLIBSURFACE_H */

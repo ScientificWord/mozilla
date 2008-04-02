@@ -60,7 +60,7 @@ NS_WD_GetElementByTagName(nsIDOMElement *parentElt, const nsAString &tagName,
     nsresult rv;
 
     nsCOMPtr<nsIDOMNodeList> list;
-    rv = parentElt->GetElementsByTagName(tagName, getter_AddRefs(list));
+    rv = parentElt->GetElementsByTagNameNS(NS_LITERAL_STRING("DAV:"), tagName, getter_AddRefs(list));
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsIDOMNode> node;
@@ -122,13 +122,13 @@ NS_WD_GetDocAndResponseListFromBuffer(const nsACString &buffer,
         parser(do_CreateInstance("@mozilla.org/xmlextras/domparser;1", &rv));
     NS_ENSURE_SUCCESS(rv, rv);
 
-    nsPromiseFlatCString flat(buffer);
+    nsCString const flat(buffer);
 
     PR_LOG(gDAVLog, 5, ("XML:\n\n%*s\n\n", flat.Length(), flat.get()));
 
     nsCOMPtr<nsIDOMDocument> doc;
-    rv = parser->ParseFromBuffer(NS_REINTERPRET_CAST(const PRUint8 *,
-                                                     flat.get()),
+    rv = parser->ParseFromBuffer(reinterpret_cast<const PRUint8 *>
+                                                 (flat.get()),
                                  flat.Length(), "text/xml",
                                  getter_AddRefs(doc));
     NS_ENSURE_SUCCESS(rv, rv);

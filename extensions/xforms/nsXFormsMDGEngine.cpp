@@ -286,7 +286,7 @@ nsXFormsMDGEngine::PrintDot(const char* aFile)
   }
   fprintf(FD, "digraph {\n");
   for (PRInt32 i = 0; i < mGraph.Count(); ++i) {
-    nsXFormsMDGNode* g = NS_STATIC_CAST(nsXFormsMDGNode*, mGraph[i]);
+    nsXFormsMDGNode* g = static_cast<nsXFormsMDGNode*>(mGraph[i]);
     if (g) {
       nsAutoString domNodeName;
       g->mContextNode->GetNodeName(domNodeName);
@@ -297,8 +297,8 @@ nsXFormsMDGEngine::PrintDot(const char* aFile)
       }
 
       for (PRInt32 j = 0; j < g->mSuc.Count(); ++j) {
-        nsXFormsMDGNode* sucnode = NS_STATIC_CAST(nsXFormsMDGNode*,
-                                                  g->mSuc[j]);
+        nsXFormsMDGNode* sucnode = static_cast<nsXFormsMDGNode*>
+                                              (g->mSuc[j]);
         if (sucnode) {
           nsAutoString sucName;
           sucnode->mContextNode->GetNodeName(sucName);
@@ -323,7 +323,7 @@ nsXFormsMDGEngine::Recalculate(nsCOMArray<nsIDOMNode> *aChangedNodes)
   NS_ENSURE_ARG(aChangedNodes);
 
 #ifdef DEBUG_XF_MDG
-  printf("nsXFormsMDGEngine::Recalculcate(aChangedNodes=|%d|)\n",
+  printf("nsXFormsMDGEngine::Recalculate(aChangedNodes=|%d|)\n",
          aChangedNodes->Count());
 #endif
 
@@ -346,24 +346,24 @@ nsXFormsMDGEngine::Recalculate(nsCOMArray<nsIDOMNode> *aChangedNodes)
   // Go through all dirty nodes in the graph
   nsXFormsMDGNode* g;
   for (PRInt32 i = 0; i < mGraph.Count(); ++i) {
-    g = NS_STATIC_CAST(nsXFormsMDGNode*, mGraph[i]);
+    g = static_cast<nsXFormsMDGNode*>(mGraph[i]);
 
     if (!g) {
-      NS_WARNING("nsXFormsMDGEngine::Calculcate(): Empty node in graph!!!");
+      NS_WARNING("nsXFormsMDGEngine::Calculate(): Empty node in graph!!!");
       continue;
     }
 
     NS_ASSERTION(g->mCount == 0,
-                 "nsXFormsMDGEngine::Calculcate(): Graph node with mCount != 0");
+                 "nsXFormsMDGEngine::Calculate(): Graph node with mCount != 0");
 
 #ifdef DEBUG_XF_MDG
     nsAutoString domNodeName;
     g->mContextNode->GetNodeName(domNodeName);
 
-    printf("\tNode #%d: This=%p, Dirty=%d, DynFunc=%d, Type=%d, Count=%d, Suc=%d, CSize=%d, CPos=%d, Next=%p, domnode=%s\n",
+    printf("\tNode #%d: This=%p, Dirty=%d, DynFunc=%d, Type=%d, Count=%d, Suc=%d, CSize=%d, CPos=%d, Next=%p, HasExpr=%d, domnode=%s\n",
            i, (void*) g, g->IsDirty(), g->mDynFunc, g->mType,
            g->mCount, g->mSuc.Count(), g->mContextSize, g->mContextPosition,
-           (void*) g->mNext, NS_ConvertUTF16toUTF8(domNodeName).get());
+           (void*) g->mNext, g->HasExpr(), NS_ConvertUTF16toUTF8(domNodeName).get());
 #endif
 
     // Ignore node if it is not dirty
@@ -380,14 +380,16 @@ nsXFormsMDGEngine::Recalculate(nsCOMArray<nsIDOMNode> *aChangedNodes)
     switch (g->mType) {
     case eModel_calculate:
       if (g->HasExpr()) {
-        nsCOMPtr<nsIDOMXPathResult> xpath_res;
+        nsCOMPtr<nsISupports> result;
         rv = g->mExpression->EvaluateWithContext(g->mContextNode,
                                                  g->mContextPosition,
                                                  g->mContextSize,
                                                  nsIDOMXPathResult::STRING_TYPE,
                                                  nsnull,
-                                                 getter_AddRefs(xpath_res));
+                                                 getter_AddRefs(result));
         NS_ENSURE_SUCCESS(rv, rv);
+
+        nsCOMPtr<nsIDOMXPathResult> xpath_res = do_QueryInterface(result);
         NS_ENSURE_STATE(xpath_res);
         
         nsAutoString nodeval;
@@ -402,9 +404,10 @@ nsXFormsMDGEngine::Recalculate(nsCOMArray<nsIDOMNode> *aChangedNodes)
           NS_ENSURE_TRUE(aChangedNodes->AppendObject(g->mContextNode),
                          NS_ERROR_FAILURE);
         }
+
+        ns->Set(eFlag_DISPATCH_VALUE_CHANGED, PR_TRUE);
       }
 
-      ns->Set(eFlag_DISPATCH_VALUE_CHANGED, PR_TRUE);
       break;
       
     case eModel_constraint:
@@ -475,7 +478,7 @@ nsXFormsMDGEngine::Recalculate(nsCOMArray<nsIDOMNode> *aChangedNodes)
     // Mark successors dirty
     nsXFormsMDGNode* sucnode;
     for (PRInt32 j = 0; j < g->mSuc.Count(); ++j) {
-      sucnode = NS_STATIC_CAST(nsXFormsMDGNode*, g->mSuc[j]);
+      sucnode = static_cast<nsXFormsMDGNode*>(g->mSuc[j]);
       if (!sucnode) {
         NS_ERROR("nsXFormsMDGEngine::Calculate(): Node has NULL successor!");
         return NS_ERROR_FAILURE;
@@ -550,10 +553,10 @@ nsXFormsMDGEngine::Rebuild()
   
   
   nsXFormsMDGNode* node;
-  while ((node = NS_STATIC_CAST(nsXFormsMDGNode*, sortedNodes.Pop()))) {
+  while ((node = static_cast<nsXFormsMDGNode*>(sortedNodes.Pop()))) {
     for (PRInt32 i = 0; i < node->mSuc.Count(); ++i) {
-      nsXFormsMDGNode* sucNode = NS_STATIC_CAST(nsXFormsMDGNode*,
-                                                node->mSuc[i]);
+      nsXFormsMDGNode* sucNode = static_cast<nsXFormsMDGNode*>
+                                            (node->mSuc[i]);
       NS_ASSERTION(sucNode, "XForms: NULL successor node");
 
       sucNode->mCount--;
@@ -672,6 +675,7 @@ nsXFormsMDGEngine::SetNodeValueInternal(nsIDOMNode       *aContextNode,
     break;
 
   case nsIDOMNode::ELEMENT_NODE:
+
     rv = aContextNode->GetFirstChild(getter_AddRefs(childNode));
     NS_ENSURE_SUCCESS(rv, rv);
 
@@ -682,19 +686,41 @@ nsXFormsMDGEngine::SetNodeValueInternal(nsIDOMNode       *aContextNode,
       PRUint16 childType;
       rv = childNode->GetNodeType(&childType);
       NS_ENSURE_SUCCESS(rv, rv);
-      
-      if (   childType == nsIDOMNode::TEXT_NODE
-          || childType == nsIDOMNode::CDATA_SECTION_NODE) {
+
+      if (childType == nsIDOMNode::TEXT_NODE ||
+          childType == nsIDOMNode::CDATA_SECTION_NODE) {
         rv = childNode->SetNodeValue(aNodeValue);
         NS_ENSURE_SUCCESS(rv, rv);
+
+        // Remove all leading text child nodes except first one (see
+        // nsXFormsUtils::GetNodeValue method for motivation).
+        nsCOMPtr<nsIDOMNode> siblingNode;
+        while (true) {
+          rv = childNode->GetNextSibling(getter_AddRefs(siblingNode));
+          NS_ENSURE_SUCCESS(rv, rv);
+          if (!siblingNode)
+            break;
+
+          rv = siblingNode->GetNodeType(&childType);
+          NS_ENSURE_SUCCESS(rv, rv);
+          if (childType != nsIDOMNode::TEXT_NODE &&
+              childType != nsIDOMNode::CDATA_SECTION_NODE) {
+            break;
+          }
+          nsCOMPtr<nsIDOMNode> stubNode;
+          rv = aContextNode->RemoveChild(siblingNode,
+                                         getter_AddRefs(stubNode));
+          NS_ENSURE_SUCCESS(rv, rv);
+        }
       } else {
         // Not a text child, create a new one
         rv = CreateNewChild(aContextNode, aNodeValue, childNode);
         NS_ENSURE_SUCCESS(rv, rv);
       }
     }
+
     break;
-          
+
   default:
     /// Unsupported nodeType
     /// @todo Should return more specific error? (XXX)
@@ -840,6 +866,10 @@ nsXFormsMDGEngine::SetNodeContent(nsIDOMNode       *aContextNode,
 
     resultNode.swap(childNode);
   }
+
+  // We already know that the contents have changed.  Mark the node so that
+  // a xforms-value-changed can be dispatched.
+  MarkNodeAsChanged(aContextNode);
 
   return NS_OK;
 }
@@ -994,7 +1024,7 @@ nsXFormsMDGEngine::AddStartNodes(nsISupports     *aKey,
          aDeque);
 #endif
 
-  nsDeque* deque = NS_STATIC_CAST(nsDeque*, aDeque);
+  nsDeque* deque = static_cast<nsDeque*>(aDeque);
   if (!deque) {
     NS_ERROR("nsXFormsMDGEngine::AddStartNodes called with NULL aDeque");
     return PL_DHASH_STOP;
@@ -1017,7 +1047,7 @@ nsXFormsMDGEngine::AndFlag(nsISupports                  *aKey,
                            nsAutoPtr<nsXFormsNodeState> &aState,
                            void                         *aMask)
 {
-  PRUint16* andMask = NS_STATIC_CAST(PRUint16*, aMask);
+  PRUint16* andMask = static_cast<PRUint16*>(aMask);
   if (!andMask) {
     return PL_DHASH_STOP;
   }
@@ -1039,7 +1069,7 @@ nsXFormsMDGEngine::BooleanExpression(nsXFormsMDGNode* aNode, PRBool& state)
   NS_ENSURE_ARG_POINTER(aNode);
   NS_ENSURE_TRUE(aNode->mExpression, NS_ERROR_FAILURE);
   
-  nsISupports* retval;
+  nsCOMPtr<nsISupports> retval;
   nsresult rv;
 
   rv = aNode->mExpression->EvaluateWithContext(aNode->mContextNode,
@@ -1047,7 +1077,7 @@ nsXFormsMDGEngine::BooleanExpression(nsXFormsMDGNode* aNode, PRBool& state)
                                                aNode->mContextSize,
                                                nsIDOMXPathResult::BOOLEAN_TYPE,
                                                nsnull,
-                                               &retval);
+                                               getter_AddRefs(retval));
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIDOMXPathResult> xpath_res = do_QueryInterface(retval);
@@ -1197,7 +1227,7 @@ nsXFormsMDGEngine::Invalidate()
 {
   nsXFormsMDGNode* g;
   for (PRInt32 i = 0; i < mGraph.Count(); ++i) {
-    g = NS_STATIC_CAST(nsXFormsMDGNode*, mGraph[i]);
+    g = static_cast<nsXFormsMDGNode*>(mGraph[i]);
     NS_ENSURE_TRUE(g, NS_ERROR_FAILURE);
     g->MarkDirty();
   }

@@ -39,15 +39,13 @@
 #include "nsSchemaDuration.h"
 
 // string includes
-#include "nsReadableUtils.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 #include "nsUnicharUtils.h"
 
 // XPCOM includes
 #include "nsMemory.h"
 #include "nsIServiceManager.h"
 #include "nsIComponentManager.h"
-#include "nsIClassInfoImpl.h"
 
 #include <stdlib.h>
 #include <math.h>
@@ -55,7 +53,7 @@
 #include "prtime.h"
 #include "plbase64.h"
 
-NS_IMPL_ISUPPORTS1_CI(nsSchemaDuration, nsISchemaDuration)
+NS_IMPL_ISUPPORTS1(nsSchemaDuration, nsISchemaDuration)
 
 nsSchemaDuration::nsSchemaDuration(PRUint32 aYears, PRUint32 aMonths,
                                    PRUint32 aDays, PRUint32 aHours,

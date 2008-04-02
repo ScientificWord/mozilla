@@ -158,6 +158,7 @@ nsPasswordManager::nsPasswordManager()
 
 nsPasswordManager::~nsPasswordManager(void)
 {
+  SI_ShutdownModule();
 }
 
 nsresult nsPasswordManager::Init()
@@ -283,6 +284,17 @@ nsPasswordManager::AddUserFull(const nsACString& aKey,
                                const nsAString& aPassword,
                                const nsAString& aUserFieldName,
                                const nsAString& aPassFieldName)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP
+nsPasswordManager::AddUserFull2(const nsACString& aKey,
+                               const nsAString& aUser,
+                               const nsAString& aPassword,
+                               const nsAString& aUserFieldName,
+                               const nsAString& aPassFieldName,
+                               const nsACString& aActionURL)
 {
   return NS_ERROR_NOT_IMPLEMENTED;
 }

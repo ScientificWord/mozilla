@@ -43,16 +43,17 @@ class nsXFormsRevalidateElement : public nsXFormsActionModuleBase
 {
 public:
   nsXFormsRevalidateElement();
-  NS_DECL_NSIXFORMSACTIONMODULEELEMENT
+  virtual nsresult HandleSingleAction(nsIDOMEvent* aEvent,
+                                      nsIXFormsActionElement *aParentAction);
 };
 
 nsXFormsRevalidateElement::nsXFormsRevalidateElement()
 {
 }
 
-NS_IMETHODIMP
-nsXFormsRevalidateElement::HandleAction(nsIDOMEvent* aEvent,
-                                        nsIXFormsActionElement *aParentAction)
+nsresult
+nsXFormsRevalidateElement::HandleSingleAction(nsIDOMEvent* aEvent,
+                                              nsIXFormsActionElement *aParentAction)
 {
   nsCOMPtr<nsIModelElementPrivate> model = nsXFormsUtils::GetModel(mElement);
   NS_ENSURE_STATE(model);

@@ -20,6 +20,7 @@
  *
  * Contributor(s):
  *   Vladimir Vukicevic <vladimir@mozilla.com>
+ *   Masayuki Nakano <masayuki@d-toybox.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -38,31 +39,70 @@
 #ifndef GFX_PANGOFONTS_H
 #define GFX_PANGOFONTS_H
 
+#include "cairo.h"
 #include "gfxTypes.h"
 #include "gfxFont.h"
 
 #include <pango/pango.h>
+
+// Control when we bypass Pango
+// Enable this to use FreeType to glyph-convert 8bit-only textruns, but use Pango
+// to shape any textruns with non-8bit characters
+// XXX
+#define ENABLE_FAST_PATH_8BIT
+// Enable this to bypass Pango shaping for all textruns.  Don't expect
+// anything other than simple Latin work though!
+//#define ENABLE_FAST_PATH_ALWAYS
+
+#include "nsDataHashtable.h"
+#include "nsClassHashtable.h"
+
+class gfxPangoTextRun;
 
 class gfxPangoFont : public gfxFont {
 public:
     gfxPangoFont (const nsAString& aName,
                   const gfxFontStyle *aFontStyle);
     virtual ~gfxPangoFont ();
+    static already_AddRefed<gfxPangoFont> GetOrMakeFont(PangoFont *aPangoFont);
+
+    static void Shutdown();
 
     virtual const gfxFont::Metrics& GetMetrics();
 
-    PangoFontDescription* GetPangoFontDescription() { RealizeFont(); return mPangoFontDesc; }
-    PangoContext* GetPangoContext() { RealizeFont(); return mPangoCtx; }
+    PangoFont *GetPangoFont() { if (!mPangoFont) RealizePangoFont(); return mPangoFont; }
+
+    // Check GetStyle()->sizeAdjust != 0.0 before calling this 
+    gfxFloat GetAdjustedSize() { if (!mPangoFont) RealizePangoFont(); return mAdjustedSize; }
+
+    PRUint32 GetGlyph(const PRUint32 aChar);
+
+    virtual nsString GetUniqueName();
+
+    // Get the glyphID of a space
+    virtual PRUint32 GetSpaceGlyph() {
+        NS_ASSERTION(GetStyle()->size != 0,
+                     "forgot to short-circuit a text run with zero-sized font?");
+        GetMetrics();
+        return mSpaceGlyph;
+    }
 
 protected:
-    PangoFontDescription *mPangoFontDesc;
-    PangoContext *mPangoCtx;
+    PangoFont *mPangoFont;
+    cairo_scaled_font_t *mCairoFont;
 
-    PRBool mHasMetrics;
-    Metrics mMetrics;
+    PRBool   mHasMetrics;
+    PRUint32 mSpaceGlyph;
+    Metrics  mMetrics;
+    gfxFloat mAdjustedSize;
 
-    void RealizeFont(PRBool force = PR_FALSE);
-    void GetSize(const char *aString, PRUint32 aLength, gfxSize& inkSize, gfxSize& logSize);
+    gfxPangoFont(PangoFont *aPangoFont, const nsAString &aName,
+                 const gfxFontStyle *aFontStyle);
+    void RealizePangoFont();
+    void GetCharSize(const char aChar, gfxSize& aInkSize, gfxSize& aLogSize,
+                     PRUint32 *aGlyphID = nsnull);
+
+    virtual PRBool SetupCairoFont(gfxContext *aContext);
 };
 
 class THEBES_API gfxPangoFontGroup : public gfxFontGroup {
@@ -71,44 +111,91 @@ public:
                        const gfxFontStyle *aStyle);
     virtual ~gfxPangoFontGroup ();
 
-    virtual gfxTextRun *MakeTextRun(const nsAString& aString);
-    virtual gfxTextRun *MakeTextRun(const nsACString& aCString) {
-        return MakeTextRun(NS_ConvertASCIItoUTF16(aCString));
-    }
+    virtual gfxFontGroup *Copy(const gfxFontStyle *aStyle);
+
+    // Create and initialize a textrun using Pango
+    virtual gfxTextRun *MakeTextRun(const PRUnichar *aString, PRUint32 aLength,
+                                    const Parameters *aParams, PRUint32 aFlags);
+    virtual gfxTextRun *MakeTextRun(const PRUint8 *aString, PRUint32 aLength,
+                                    const Parameters *aParams, PRUint32 aFlags);
 
     gfxPangoFont *GetFontAt(PRInt32 i) {
-        return NS_STATIC_CAST(gfxPangoFont*, 
-                              NS_STATIC_CAST(gfxFont*, mFonts[i]));
+        return static_cast<gfxPangoFont*>(static_cast<gfxFont*>(mFonts[i]));
     }
 
 protected:
+    // ****** Textrun glyph conversion helpers ******
+
+    /**
+     * Fill in the glyph-runs for the textrun.
+     * @param aTake8BitPath the text contains only characters below 0x100
+     * (TEXT_IS_8BIT can return false when the characters are all below 0x100
+     * but stored in UTF16 format)
+     */
+    void InitTextRun(gfxTextRun *aTextRun, const gchar *aUTF8Text,
+                     PRUint32 aUTF8Length, PRUint32 aUTF8HeaderLength,
+                     PRBool aTake8BitPath);
+
+    // Returns NS_ERROR_FAILURE if there's a missing glyph
+    nsresult SetGlyphs(gfxTextRun *aTextRun, gfxPangoFont *aFont,
+                       const gchar *aUTF8, PRUint32 aUTF8Length,
+                       PRUint32 *aUTF16Offset, PangoGlyphString *aGlyphs,
+                       PangoGlyphUnit aOverrideSpaceWidth,
+                       PRBool aAbortOnMissingGlyph);
+    nsresult SetMissingGlyphs(gfxTextRun *aTextRun,
+                              const gchar *aUTF8, PRUint32 aUTF8Length,
+                              PRUint32 *aUTF16Offset);
+    void CreateGlyphRunsItemizing(gfxTextRun *aTextRun,
+                                  const gchar *aUTF8, PRUint32 aUTF8Length,
+                                  PRUint32 aUTF8HeaderLength);
+#if defined(ENABLE_FAST_PATH_8BIT) || defined(ENABLE_FAST_PATH_ALWAYS)
+    PRBool CanTakeFastPath(PRUint32 aFlags);
+    nsresult CreateGlyphRunsFast(gfxTextRun *aTextRun,
+                                 const gchar *aUTF8, PRUint32 aUTF8Length);
+#endif
+
     static PRBool FontCallback (const nsAString& fontName,
                                 const nsACString& genericName,
                                 void *closure);
 };
 
-class THEBES_API gfxPangoTextRun : public gfxTextRun {
+class gfxPangoFontWrapper {
 public:
-    gfxPangoTextRun(const nsAString& aString, gfxPangoFontGroup *aFontGroup);
-    ~gfxPangoTextRun();
-
-    virtual void Draw(gfxContext *aContext, gfxPoint pt);
-    virtual gfxFloat Measure(gfxContext *aContext);
-
-    virtual void SetSpacing(const nsTArray<gfxFloat>& spacingArray);
-    virtual const nsTArray<gfxFloat> *const GetSpacing() const;
-
+    gfxPangoFontWrapper(PangoFont *aFont) {
+        mFont = aFont;
+        g_object_ref(mFont);
+    }
+    ~gfxPangoFontWrapper() {
+        if (mFont)
+            g_object_unref(mFont);
+    }
+    PangoFont* Get() { return mFont; }
 private:
-    nsString mString;
-    gfxPangoFontGroup *mGroup;
+    PangoFont *mFont;
+};
 
-    PangoLayout *mPangoLayout;
-    int mWidth, mHeight;
+class gfxPangoFontCache
+{
+public:
+    gfxPangoFontCache();
+    ~gfxPangoFontCache();
 
-    void EnsurePangoLayout(gfxContext *aContext = nsnull);
+    static gfxPangoFontCache* GetPangoFontCache() {
+        if (!sPangoFontCache)
+            sPangoFontCache = new gfxPangoFontCache();
+        return sPangoFontCache;
+    }
+    static void Shutdown() {
+        if (sPangoFontCache)
+            delete sPangoFontCache;
+        sPangoFontCache = nsnull;
+    }
 
-    nsTArray<gfxFloat> mSpacing;
-    nsTArray<PRInt32>  mUTF8Spacing;
+    void Put(const PangoFontDescription *aFontDesc, PangoFont *aPangoFont);
+    PangoFont* Get(const PangoFontDescription *aFontDesc);
+private:
+    static gfxPangoFontCache *sPangoFontCache;
+    nsClassHashtable<nsUint32HashKey,  gfxPangoFontWrapper> mPangoFonts;
 };
 
 #endif /* GFX_PANGOFONTS_H */

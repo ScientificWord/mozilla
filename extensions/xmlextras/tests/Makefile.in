@@ -44,10 +44,10 @@ include $(DEPTH)/config/autoconf.mk
 
 REQUIRES	= xpcom \
 		  string \
-		  xmlextras \
 		  necko \
 		  dom \
 		  content \
+		  layout \
 		  widget \
 		  $(NULL)
 

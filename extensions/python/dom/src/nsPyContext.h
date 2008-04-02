@@ -147,6 +147,7 @@ public:
                                        const nsAString& aBody,
                                        const char *aURL,
                                        PRUint32 aLineNo,
+                                       PRUint32 aVersion,
                                        nsScriptObjectHolder &aHandler);
   virtual nsresult CallEventHandler(nsISupports* aTarget, void *aScope,
                                     void* aHandler,
@@ -164,6 +165,7 @@ public:
                                    const nsAString& aBody,
                                    const char* aURL,
                                    PRUint32 aLineNo,
+                                   PRUint32 aVersion,
                                    PRBool aShared,
                                    void** aFunctionObject);
 
@@ -184,8 +186,6 @@ public:
   virtual void GC();
 
   virtual void ScriptEvaluated(PRBool aTerminated);
-  virtual void SetOwner(nsIScriptContextOwner* owner);
-  virtual nsIScriptContextOwner *GetOwner();
   virtual nsresult SetTerminationFunction(nsScriptTerminationFunc aFunc,
                                           nsISupports* aRef);
   virtual PRBool GetScriptsEnabled();
@@ -204,7 +204,7 @@ public:
 
   virtual void WillInitializeContext();
   virtual void DidInitializeContext();
-  virtual void DidSetDocument(nsIDOMDocument *aDocdoc, void *aGlobal);
+  virtual void DidSetDocument(nsISupports *aDocdoc, void *aGlobal);
 
   virtual nsresult Serialize(nsIObjectOutputStream* aStream, void *aScriptObject);
   virtual nsresult Deserialize(nsIObjectInputStream* aStream,
@@ -231,8 +231,7 @@ protected:
   PRPackedBool mScriptsEnabled;
   PRPackedBool mProcessingScriptTag;
 
-  nsIScriptContextOwner* mOwner;  /* NB: weak reference, not ADDREF'd */
-  // ditto - not ADDREF'd - but Python itself takes one!
+  // not ADDREF'd - but Python itself takes one!
   nsIScriptGlobalObject *mScriptGlobal;
 
   nsresult HandlePythonError();

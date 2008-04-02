@@ -39,15 +39,13 @@
 #include "nsCOMPtr.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMDocument.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 #include "nsIDocument.h"
 #include "nsIDOMNodeList.h"
 
 // For focus control
 #include "nsPIDOMWindow.h"
 #include "nsIFocusController.h"
-
-#include "nsIXTFXMLVisualWrapper.h"
 
 #include "nsXFormsUtils.h"
 #include "nsXFormsControlStub.h"
@@ -71,7 +69,7 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
   NS_DECL_NSIXFORMSSWITCHELEMENT
 
-  NS_IMETHOD OnCreated(nsIXTFBindableElementWrapper *aWrapper);
+  NS_IMETHOD OnCreated(nsIXTFElementWrapper *aWrapper);
   NS_IMETHOD ChildInserted(nsIDOMNode *aChild, PRUint32 aIndex);
   NS_IMETHOD ChildAppended(nsIDOMNode *aChild);
   NS_IMETHOD WillRemoveChild(PRUint32 aIndex);
@@ -120,7 +118,7 @@ NS_IMPL_ISUPPORTS_INHERITED1(nsXFormsSwitchElement,
                              nsIXFormsSwitchElement)
 
 NS_IMETHODIMP
-nsXFormsSwitchElement::OnCreated(nsIXTFBindableElementWrapper *aWrapper)
+nsXFormsSwitchElement::OnCreated(nsIXTFElementWrapper *aWrapper)
 {
   nsresult rv = nsXFormsDelegateStub::OnCreated(aWrapper);
   NS_ENSURE_SUCCESS(rv, rv);

@@ -57,8 +57,6 @@
 #include "nsIWebDAVResource.h"
 #include "nsIWebDAVListener.h"
 
-#include "nsString.h"
-
 #include "nsISupportsPrimitives.h"
 
 class OperationStreamListener : public nsIStreamListener
@@ -154,6 +152,7 @@ OperationStreamListener::OnStopRequest(nsIRequest *aRequest,
     rv = NS_WD_GetDocAndResponseListFromBuffer(mBody, getter_AddRefs(mXMLDoc),
                                                getter_AddRefs(responseList),
                                                &length);
+    NS_ENSURE_SUCCESS(rv, SignalCompletion(rv));
 
     LOG(("found %d responses", length));
     
@@ -182,8 +181,8 @@ OperationStreamListener::StreamReaderCallback(nsIInputStream *aInputStream,
                                               PRUint32 aCount,
                                               PRUint32 *aWriteCount)
 {
-    OperationStreamListener *osl = NS_STATIC_CAST(OperationStreamListener *,
-                                                  aClosure);
+    OperationStreamListener *osl = static_cast<OperationStreamListener *>
+                                              (aClosure);
     osl->mBody.Append(aRawSegment, aCount);
     *aWriteCount = aCount;
     return NS_OK;
@@ -275,12 +274,10 @@ OperationStreamListener::StatusAndHrefFromResponse(nsIDOMElement *responseElt,
     //
     NS_ENSURE_SUCCESS(rv, rv);
 
-    PRInt32 res = 0;
     NS_ConvertUTF16toUTF8 statusUTF8(statusString);
     LOG(("status: %s", statusUTF8.get()));
-    PRInt32 statusVal = nsCAutoString(Substring(statusUTF8,
-                                                8)).ToInteger(&res, 10);
-    NS_ENSURE_SUCCESS(res, (nsresult)res);
+    PRInt32 statusVal = nsCAutoString(Substring(statusUTF8, 8)).ToInteger(&rv, 10);
+    NS_ENSURE_SUCCESS(rv, rv);
     
     *statusCode = (PRUint32)statusVal;
     
@@ -359,8 +356,9 @@ PropfindStreamListener::PropertiesFromPropElt(nsIDOMElement *propElt,
         rv = node->GetLocalName(propName);
         NS_ENSURE_SUCCESS(rv, rv);
 
-        NS_ConvertUTF16toUTF8 propkey(nsStr + NS_LITERAL_STRING(" ") +
-                                      propName);
+        nsStr.Append(' ');
+        nsStr += propName;
+        NS_ConvertUTF16toUTF8 const propkey(nsStr);
         if (mOperation == nsIWebDAVOperationListener::GET_PROPERTY_NAMES) {
             LOG(("  propname: %s", propkey.get()));
             rv = props->Set(propkey.get(), nsnull);
@@ -410,8 +408,9 @@ PropfindStreamListener::ProcessResponse(nsIDOMElement *responseElt)
     LOG(("response for %s: %d", href.get(), statusCode));
 
     nsCOMPtr<nsIDOMNodeList> proplist;
-    rv = responseElt->GetElementsByTagName(NS_LITERAL_STRING("propstat"),
-                                           getter_AddRefs(proplist));
+    rv = responseElt->GetElementsByTagNameNS(NS_LITERAL_STRING("DAV:"),
+                                             NS_LITERAL_STRING("propstat"),
+                                             getter_AddRefs(proplist));
     NS_ENSURE_SUCCESS(rv, rv);
 
     PRUint32 length;

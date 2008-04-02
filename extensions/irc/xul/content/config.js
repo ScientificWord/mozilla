@@ -518,7 +518,7 @@ function PrefData(parent, name)
     
     // And those arrays... this just makes our life easier later by having 
     // a particular name for array prefs.
-    if (this.def instanceof Array)
+    if (isinstance(this.def, Array))
         this.type = "array";
     
     if (this.group == "hidden")
@@ -674,6 +674,12 @@ function pdata_loadXUL()
     {
         this.edit.setAttribute("prefobjectindex", this.parent.arrayIndex);
         this.edit.setAttribute("prefname", this.name);
+        // Associate textbox with label for accessibility.
+        if (label)
+        {
+            this.edit.id = this.manager.branchName + this.name;
+            label.setAttribute("control", this.edit.id);
+        }
     }
     
     if (!ASSERT("groups" in this.parent, "Must have called " +
@@ -1051,6 +1057,8 @@ function pwin_onLoad()
             var czWin = window.arguments[0];
             var s;
             var n, c, u;
+            this.ownerClient = czWin.client;
+            this.ownerClient.configWindow = window;
             
             /* Go nick the source window's view list. We can then show items in
              * the tree for the currently connected/shown networks, channels
@@ -1157,6 +1165,8 @@ function pwin_onLoad()
 PrefWindow.prototype.onClose =
 function pwin_onClose()
 {
+    if (this.ownerClient)
+        delete this.ownerClient.configWindow;
     if (this.loaded)
         destroyPrefs();
 }

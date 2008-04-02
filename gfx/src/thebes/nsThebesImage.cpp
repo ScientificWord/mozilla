@@ -48,13 +48,25 @@
 
 static PRBool gDisableOptimize = PR_FALSE;
 
+#ifdef XP_WIN
+static PRUint32 gTotalDDBs = 0;
+static PRUint32 gTotalDDBSize = 0;
+// only use up a maximum of 64MB in DDBs
+#define kMaxDDBSize (64*1024*1024)
+// and don't let anything in that's bigger than 4MB
+#define kMaxSingleDDBSize (4*1024*1024)
+#endif
+
 NS_IMPL_ISUPPORTS1(nsThebesImage, nsIImage)
 
 nsThebesImage::nsThebesImage()
-    : mWidth(0),
+    : mFormat(gfxImageSurface::ImageFormatRGB24),
+      mWidth(0),
       mHeight(0),
       mDecoded(0,0,0,0),
       mImageComplete(PR_FALSE),
+      mSinglePixel(PR_FALSE),
+      mFormatChanged(PR_FALSE),
       mAlphaDepth(0)
 {
     static PRBool hasCheckedOptimize = PR_FALSE;
@@ -64,6 +76,10 @@ nsThebesImage::nsThebesImage()
         }
         hasCheckedOptimize = PR_TRUE;
     }
+
+#ifdef XP_WIN
+    mIsDDBSurface = PR_FALSE;
+#endif
 }
 
 nsresult
@@ -71,6 +87,10 @@ nsThebesImage::Init(PRInt32 aWidth, PRInt32 aHeight, PRInt32 aDepth, nsMaskRequi
 {
     mWidth = aWidth;
     mHeight = aHeight;
+
+    // Reject over-wide or over-tall images.
+    if (!AllowedImageSize(aWidth, aHeight))
+        return NS_ERROR_FAILURE;
 
     gfxImageSurface::gfxImageFormat format;
     switch(aMaskRequirements)
@@ -89,7 +109,34 @@ nsThebesImage::Init(PRInt32 aWidth, PRInt32 aHeight, PRInt32 aDepth, nsMaskRequi
             break;
     }
 
-    mImageSurface = new gfxImageSurface(format, mWidth, mHeight);
+    mFormat = format;
+
+#ifdef XP_WIN
+    if (!ShouldUseImageSurfaces()) {
+        mWinSurface = new gfxWindowsSurface(gfxIntSize(mWidth, mHeight), format);
+        if (mWinSurface && mWinSurface->CairoStatus() == 0) {
+            // no error
+            mImageSurface = mWinSurface->GetImageSurface();
+        }
+    }
+
+    if (!mImageSurface)
+        mWinSurface = nsnull;
+#endif
+
+    if (!mImageSurface)
+        mImageSurface = new gfxImageSurface(gfxIntSize(mWidth, mHeight), format);
+
+    if (!mImageSurface || mImageSurface->CairoStatus()) {
+        mImageSurface = nsnull;
+        // guess
+        return NS_ERROR_OUT_OF_MEMORY;
+    }
+
+#ifdef XP_MACOSX
+    mQuartzSurface = new gfxQuartzImageSurface(mImageSurface);
+#endif
+
     mStride = mImageSurface->Stride();
 
     return NS_OK;
@@ -97,6 +144,12 @@ nsThebesImage::Init(PRInt32 aWidth, PRInt32 aHeight, PRInt32 aDepth, nsMaskRequi
 
 nsThebesImage::~nsThebesImage()
 {
+#ifdef XP_WIN
+    if (mIsDDBSurface) {
+        gTotalDDBs--;
+        gTotalDDBSize -= mWidth*mHeight*4;
+    }
+#endif
 }
 
 PRInt32
@@ -152,13 +205,17 @@ nsThebesImage::GetAlphaBits()
 PRInt32
 nsThebesImage::GetAlphaLineStride()
 {
-    return mStride;
+    return (mAlphaDepth > 0) ? mStride : 0;
 }
 
 void
 nsThebesImage::ImageUpdated(nsIDeviceContext *aContext, PRUint8 aFlags, nsRect *aUpdateRect)
 {
     mDecoded.UnionRect(mDecoded, *aUpdateRect);
+#ifdef XP_MACOSX
+    if (mQuartzSurface)
+        mQuartzSurface->Flush();
+#endif
 }
 
 PRBool
@@ -175,12 +232,125 @@ nsThebesImage::Optimize(nsIDeviceContext* aContext)
     if (gDisableOptimize)
         return NS_OK;
 
-    if (mOptSurface)
+    if (mOptSurface || mSinglePixel)
         return NS_OK;
 
-    mOptSurface = gfxPlatform::GetPlatform()->OptimizeImage(mImageSurface);
+    /* Figure out if the entire image is a constant color */
 
-    mImageSurface = nsnull;
+    // this should always be true
+    if (mStride == mWidth * 4) {
+        PRUint32 *imgData = (PRUint32*) mImageSurface->Data();
+        PRUint32 firstPixel = * (PRUint32*) imgData;
+        PRUint32 pixelCount = mWidth * mHeight + 1;
+
+        while (--pixelCount && *imgData++ == firstPixel)
+            ;
+
+        if (pixelCount == 0) {
+            // all pixels were the same
+            if (mFormat == gfxImageSurface::ImageFormatARGB32 ||
+                mFormat == gfxImageSurface::ImageFormatRGB24)
+            {
+                mSinglePixelColor = gfxRGBA
+                    (firstPixel,
+                     (mFormat == gfxImageSurface::ImageFormatRGB24 ?
+                      gfxRGBA::PACKED_XRGB :
+                      gfxRGBA::PACKED_ARGB_PREMULTIPLIED));
+
+                mSinglePixel = PR_TRUE;
+
+                // XXX we can't do this until we either teach anyone
+                // who calls GetSurface() about single-color stuff,
+                // or until we make GetSurface() create a new temporary
+                // surface to return (and that callers understand that
+                // modifying that surface won't modify the image).
+                // Current users are drag & drop and clipboard.
+#if 0
+                // blow away the older surfaces, to release data
+
+                mImageSurface = nsnull;
+                mOptSurface = nsnull;
+#ifdef XP_WIN
+                mWinSurface = nsnull;
+#endif
+#ifdef XP_MACOSX
+                mQuartzSurface = nsnull;
+#endif
+#endif
+                return NS_OK;
+            }
+        }
+
+        // if it's not RGB24/ARGB32, don't optimize, but we never hit this at the moment
+    }
+
+    // if we're being forced to use image surfaces due to
+    // resource constraints, don't try to optimize beyond same-pixel.
+    if (ShouldUseImageSurfaces())
+        return NS_OK;
+
+    mOptSurface = nsnull;
+
+#ifdef XP_WIN
+    // we need to special-case windows here, because windows has
+    // a distinction between DIB and DDB and we want to use DDBs as much
+    // as we can.
+    if (mWinSurface) {
+        // Don't do DDBs for large images; see bug 359147
+        // Note that we bother with DDBs at all because they are much faster
+        // on some systems; on others there isn't much of a speed difference
+        // between DIBs and DDBs.
+        //
+        // Originally this just limited to 1024x1024; but that still
+        // had us hitting overall total memory usage limits (which was
+        // around 220MB on my intel shared memory system with 2GB RAM
+        // and 16-128mb in use by the video card, so I can't make
+        // heads or tails out of this limit).
+        //
+        // So instead, we clamp the max size to 64MB (this limit shuld
+        // be made dynamic based on.. something.. as soon a we figure
+        // out that something) and also limit each individual image to
+        // be less than 4MB to keep very large images out of DDBs.
+
+        // assume (almost -- we don't quadword-align) worst-case size
+        PRUint32 ddbSize = mWidth * mHeight * 4;
+        if (ddbSize <= kMaxSingleDDBSize &&
+            ddbSize + gTotalDDBSize <= kMaxDDBSize)
+        {
+            nsRefPtr<gfxWindowsSurface> wsurf = mWinSurface->OptimizeToDDB(nsnull, gfxIntSize(mWidth, mHeight), mFormat);
+            if (wsurf) {
+                gTotalDDBs++;
+                gTotalDDBSize += ddbSize;
+                mIsDDBSurface = PR_TRUE;
+                mOptSurface = wsurf;
+            }
+        }
+        if (!mOptSurface && !mFormatChanged) {
+            // just use the DIB if the format has not changed
+            mOptSurface = mWinSurface;
+        }
+    }
+#endif
+
+#ifdef XP_MACOSX
+    if (mQuartzSurface) {
+        mQuartzSurface->Flush();
+        mOptSurface = mQuartzSurface;
+    }
+#endif
+
+    if (mOptSurface == nsnull)
+        mOptSurface = gfxPlatform::GetPlatform()->OptimizeImage(mImageSurface, mFormat);
+
+    if (mOptSurface) {
+        mImageSurface = nsnull;
+#ifdef XP_WIN
+        mWinSurface = nsnull;
+#endif
+#ifdef XP_MACOSX
+        mQuartzSurface = nsnull;
+#endif
+    }
 
     return NS_OK;
 }
@@ -208,20 +378,19 @@ nsThebesImage::LockImagePixels(PRBool aMaskPixels)
 {
     if (aMaskPixels)
         return NS_ERROR_NOT_IMPLEMENTED;
-    if (mOptSurface && !mImageSurface) {
+    if ((mOptSurface || mSinglePixel) && !mImageSurface) {
         // Recover the pixels
-        mImageSurface = new gfxImageSurface(gfxImageSurface::ImageFormatARGB32,
-                                            mWidth, mHeight);
-        if (!mImageSurface)
+        mImageSurface = new gfxImageSurface(gfxIntSize(mWidth, mHeight),
+                                            gfxImageSurface::ImageFormatARGB32);
+        if (!mImageSurface || mImageSurface->CairoStatus())
             return NS_ERROR_OUT_OF_MEMORY;
-        nsRefPtr<gfxContext> context = new gfxContext(mImageSurface);
-        if (!context) {
-            mImageSurface = nsnull;
-            return NS_ERROR_OUT_OF_MEMORY;
-        }
-        context->SetOperator(gfxContext::OPERATOR_SOURCE);
-        context->SetSource(mOptSurface);
-        context->Paint();
+        gfxContext context(mImageSurface);
+        context.SetOperator(gfxContext::OPERATOR_SOURCE);
+        if (mSinglePixel)
+            context.SetColor(mSinglePixelColor);
+        else
+            context.SetSource(mOptSurface);
+        context.Paint();
     }
     return NS_OK;
 }
@@ -231,166 +400,316 @@ nsThebesImage::UnlockImagePixels(PRBool aMaskPixels)
 {
     if (aMaskPixels)
         return NS_ERROR_NOT_IMPLEMENTED;
-    if (mImageSurface && mOptSurface) {
-        // Don't need the pixel data anymore
-        mImageSurface = nsnull;
-    }
+    mOptSurface = nsnull;
+#ifdef XP_MACOSX
+    if (mQuartzSurface)
+        mQuartzSurface->Flush();
+#endif
     return NS_OK;
 }
 
 /* NB: These are pixels, not twips. */
 NS_IMETHODIMP
-nsThebesImage::Draw(nsIRenderingContext &aContext, nsIDrawingSurface *aSurface,
-                    PRInt32 aX, PRInt32 aY, PRInt32 aWidth, PRInt32 aHeight)
+nsThebesImage::Draw(nsIRenderingContext &aContext,
+                    const gfxRect &aSourceRect,
+                    const gfxRect &aDestRect)
 {
-    return Draw(aContext, aSurface, 0, 0, mWidth, mHeight, aX, aY, aWidth, aHeight);
-}
+    if (NS_UNLIKELY(aDestRect.IsEmpty())) {
+        NS_ERROR("nsThebesImage::Draw zero dest size - please fix caller.");
+        return NS_OK;
+    }
 
-/* NB: These are pixels, not twips. */
-/* BUT nsRenderingContextImpl's DrawImage calls this with twips. */
-NS_IMETHODIMP
-nsThebesImage::Draw(nsIRenderingContext &aContext, nsIDrawingSurface *aSurface,
-                   PRInt32 aSX, PRInt32 aSY, PRInt32 aSWidth, PRInt32 aSHeight,
-                   PRInt32 aDX, PRInt32 aDY, PRInt32 aDWidth, PRInt32 aDHeight)
-{
-    nsThebesRenderingContext *thebesRC = NS_STATIC_CAST(nsThebesRenderingContext*, &aContext);
-    gfxContext *ctx = thebesRC->Thebes();
+    nsThebesRenderingContext *thebesRC = static_cast<nsThebesRenderingContext*>(&aContext);
+    gfxContext *ctx = thebesRC->ThebesContext();
 
 #if 0
-    fprintf (stderr, "nsThebesImage::Draw src [%d %d %d %d] dest [%d %d %d %d] tx [%f %f] dec [%d %d %d %d]\n",
-             aSX, aSY, aSWidth, aSHeight, aDX, aDY, aDWidth, aDHeight,
+    fprintf (stderr, "nsThebesImage::Draw src [%f %f %f %f] dest [%f %f %f %f] trans: [%f %f] dec: [%f %f]\n",
+             aSourceRect.pos.x, aSourceRect.pos.y, aSourceRect.size.width, aSourceRect.size.height,
+             aDestRect.pos.x, aDestRect.pos.y, aDestRect.size.width, aDestRect.size.height,
              ctx->CurrentMatrix().GetTranslation().x, ctx->CurrentMatrix().GetTranslation().y,
              mDecoded.x, mDecoded.y, mDecoded.width, mDecoded.height);
 #endif
 
-    gfxFloat xscale = gfxFloat(aDWidth) / aSWidth;
-    gfxFloat yscale = gfxFloat(aDHeight) / aSHeight;
+    if (mSinglePixel) {
+        // if a == 0, it's a noop
+        if (mSinglePixelColor.a == 0.0)
+            return NS_OK;
+
+        // otherwise
+        gfxContext::GraphicsOperator op = ctx->CurrentOperator();
+        if (op == gfxContext::OPERATOR_OVER && mSinglePixelColor.a == 1.0)
+            ctx->SetOperator(gfxContext::OPERATOR_SOURCE);
+
+        ctx->SetColor(mSinglePixelColor);
+        ctx->NewPath();
+        ctx->Rectangle(aDestRect, PR_TRUE);
+        ctx->Fill();
+        ctx->SetOperator(op);
+        return NS_OK;
+    }
+
+    gfxFloat xscale = aDestRect.size.width / aSourceRect.size.width;
+    gfxFloat yscale = aDestRect.size.height / aSourceRect.size.height;
+
+    gfxRect srcRect(aSourceRect);
+    gfxRect destRect(aDestRect);
 
     if (!GetIsImageComplete()) {
-      nsRect srcRect(aSX, aSY, aSWidth, aSHeight);
-      srcRect.IntersectRect(srcRect, mDecoded);
+      srcRect = srcRect.Intersect(gfxRect(mDecoded.x, mDecoded.y,
+                                          mDecoded.width, mDecoded.height));
 
-      aDX += (PRInt32)((srcRect.x - aSX)*xscale);
-      aDY += (PRInt32)((srcRect.y - aSY)*yscale);
+      // This happens when mDecoded.width or height is zero. bug 368427.
+      if (NS_UNLIKELY(srcRect.size.width == 0 || srcRect.size.height == 0))
+          return NS_OK;
 
-      // use '+ 1 - *scale' to get rid of rounding errors
-      aDWidth  = (PRInt32)((srcRect.width)*xscale + 1 - xscale);
-      aDHeight = (PRInt32)((srcRect.height)*yscale + 1 - yscale);
+      destRect.pos.x += (srcRect.pos.x - aSourceRect.pos.x)*xscale;
+      destRect.pos.y += (srcRect.pos.y - aSourceRect.pos.y)*yscale;
 
-      aSX = srcRect.x;
-      aSY = srcRect.y;
+      destRect.size.width  = srcRect.size.width * xscale;
+      destRect.size.height = srcRect.size.height * yscale;
     }
 
-    gfxRect dr(aDX, aDY, aDWidth, aDHeight);
-
-    gfxMatrix mat;
-    mat.Translate(gfxPoint(aSX, aSY));
-    mat.Scale(1.0/xscale, 1.0/yscale);
-
-    nsRefPtr<gfxPattern> pat = new gfxPattern(ThebesSurface());
-    pat->SetMatrix(mat);
-
-    ctx->NewPath();
-    ctx->PixelSnappedRectangleAndSetPattern(dr, pat);
-    ctx->Fill();
-
-    return NS_OK;
-}
-
-/* DrawTile is always relative to the device; never relative to the current
- * transformation matrix on the device.  This is where the IdentityMatrix() bits
- * come from.
- */
-/* NB: Still pixels! */
-NS_IMETHODIMP
-nsThebesImage::DrawTile(nsIRenderingContext &aContext,
-                        nsIDrawingSurface *aSurface,
-                        PRInt32 aSXOffset, PRInt32 aSYOffset,
-                        PRInt32 aPadX, PRInt32 aPadY,
-                        const nsRect &aTileRect)
-{
-    nsThebesRenderingContext *thebesRC = NS_STATIC_CAST(nsThebesRenderingContext*, &aContext);
-    gfxContext *ctx = thebesRC->Thebes();
-
-    if (aTileRect.width <= 0 || aTileRect.height <= 0)
+    // if either rectangle is empty now (possibly after the image complete check)
+    if (srcRect.IsEmpty() || destRect.IsEmpty())
         return NS_OK;
 
-    if (aPadX || aPadY)
-        fprintf (stderr, "Warning: nsThebesImage::DrawTile given padX(%d)/padY(%d), ignoring\n", aPadX, aPadY);
+    // Reject over-wide or over-tall images.
+    if (!AllowedImageSize(destRect.size.width + 1, destRect.size.height + 1))
+        return NS_ERROR_FAILURE;
 
-#if 0
-    fprintf (stderr, "****** nsThebesImage::DrawTile: (%d,%d [%d, %d]) -> (%d,%d,%d,%d)\n",
-             aSXOffset, aSYOffset, mWidth, mHeight,
-             aTileRect.x, aTileRect.y,
-             aTileRect.width, aTileRect.height);
-#endif
+    nsRefPtr<gfxPattern> pat;
 
-    gfxMatrix savedMatrix = ctx->CurrentMatrix();
-    PRBool reallyRepeating = PR_FALSE;
-
-    PRInt32 x0 = aTileRect.x - aSXOffset;
-    PRInt32 y0 = aTileRect.y - aSYOffset;
-
-    // Let's figure out if this really needs to repeat,
-    // or if we're just drawing a subrect
-    if (aSXOffset + aTileRect.width > mWidth ||
-        aSYOffset + aTileRect.height > mHeight)
+    /* See bug 364968 to understand the necessity of this goop; we basically
+     * have to pre-downscale any image that would fall outside of a scaled 16-bit
+     * coordinate space.
+     */
+    if (aDestRect.pos.x * (1.0 / xscale) >= 32768.0 ||
+        aDestRect.pos.y * (1.0 / yscale) >= 32768.0)
     {
-        reallyRepeating = PR_TRUE;
-    } else {
-        // nope, just drawing a subrect, so let's not set CAIRO_EXTEND_REPEAT
-        // so that we don't get screwed by image surface fallbacks due to
-        // buggy RENDER implementations
-        if (aSXOffset > mWidth)
-            aSXOffset = aSXOffset % mWidth;
-        if (aSYOffset > mHeight)
-            aSYOffset = aSYOffset % mHeight;
+        gfxIntSize dim(NS_lroundf(destRect.size.width),
+                       NS_lroundf(destRect.size.height));
+
+        // nothing to do in this case
+        if (dim.width == 0 || dim.height == 0)
+            return NS_OK;
+
+        nsRefPtr<gfxASurface> temp =
+            gfxPlatform::GetPlatform()->CreateOffscreenSurface (dim,  mFormat);
+        if (!temp || temp->CairoStatus() != 0)
+            return NS_ERROR_FAILURE;
+
+        gfxContext tempctx(temp);
+
+        gfxPattern srcpat(ThebesSurface());
+        gfxMatrix mat;
+        mat.Translate(srcRect.pos);
+        mat.Scale(1.0 / xscale, 1.0 / yscale);
+        srcpat.SetMatrix(mat);
+
+        tempctx.SetPattern(&srcpat);
+        tempctx.SetOperator(gfxContext::OPERATOR_SOURCE);
+        tempctx.NewPath();
+        tempctx.Rectangle(gfxRect(0.0, 0.0, dim.width, dim.height));
+        tempctx.Fill();
+
+        pat = new gfxPattern(temp);
+
+        srcRect.pos.x = 0.0;
+        srcRect.pos.y = 0.0;
+        srcRect.size.width = dim.width;
+        srcRect.size.height = dim.height;
+
+        xscale = 1.0;
+        yscale = 1.0;
     }
 
-    ctx->IdentityMatrix();
+    if (!pat) {
+        pat = new gfxPattern(ThebesSurface());
+    }
 
-    ctx->Translate(gfxPoint(x0, y0));
+    gfxMatrix mat;
+    mat.Translate(srcRect.pos);
+    mat.Scale(1.0/xscale, 1.0/yscale);
 
-    nsRefPtr<gfxPattern> pat = new gfxPattern(ThebesSurface());
-    if (reallyRepeating)
-        pat->SetExtend(CAIRO_EXTEND_REPEAT);
+    /* Translate the start point of the image (srcRect.pos)
+     * to coincide with the destination rectangle origin
+     */
+    mat.Translate(-destRect.pos);
+
+    pat->SetMatrix(mat);
+
+#if !defined(XP_MACOSX) && !defined(XP_WIN)
+    // See bug 324698.  This is a workaround.
+    //
+    // Set the filter to CAIRO_FILTER_FAST if we're scaling up -- otherwise,
+    // pixman's sampling will sample transparency for the outside edges and we'll
+    // get blurry edges.  CAIRO_EXTEND_PAD would also work here, if
+    // available
+    //
+    // This effectively disables smooth upscaling for images.
+    if (xscale > 1.0 || yscale > 1.0)
+        pat->SetFilter(0);
+#endif
+
+#if defined(XP_WIN)
+    // turn on EXTEND_PAD only for win32, and only when scaling;
+    // it's not implemented correctly on linux in the X server.
+    if (xscale != 1.0 || yscale != 1.0)
+        pat->SetExtend(gfxPattern::EXTEND_PAD);
+#endif
+
+    gfxContext::GraphicsOperator op = ctx->CurrentOperator();
+    if (op == gfxContext::OPERATOR_OVER && mFormat == gfxASurface::ImageFormatRGB24)
+        ctx->SetOperator(gfxContext::OPERATOR_SOURCE);
 
     ctx->NewPath();
-    ctx->Rectangle(gfxRect(aSXOffset, aSYOffset,
-                           aTileRect.width, aTileRect.height),
-                   PR_TRUE);
     ctx->SetPattern(pat);
-#if 0
-    ctx->PixelSnappedRectangleAndSetPattern(gfxRect(aSXOffset, aSYOffset,
-                                                    aTileRect.width, aTileRect.height),
-                                            pat);
-#endif
+    ctx->Rectangle(destRect);
     ctx->Fill();
 
-    ctx->SetMatrix(savedMatrix);
+    ctx->SetOperator(op);
+    ctx->SetColor(gfxRGBA(0,0,0,0));
 
     return NS_OK;
 }
 
-/* This is only used by the GIF decoder, via gfxImageFrame::DrawTo */
-NS_IMETHODIMP
-nsThebesImage::DrawToImage(nsIImage* aDstImage, PRInt32 aDX, PRInt32 aDY, PRInt32 aDWidth, PRInt32 aDHeight)
+nsresult
+nsThebesImage::ThebesDrawTile(gfxContext *thebesContext,
+                              nsIDeviceContext* dx,
+                              const gfxPoint& offset,
+                              const gfxRect& targetRect,
+                              const PRInt32 xPadding,
+                              const PRInt32 yPadding)
 {
-    nsThebesImage *dstThebesImage = NS_STATIC_CAST(nsThebesImage*, aDstImage);
+    NS_ASSERTION(xPadding >= 0 && yPadding >= 0, "negative padding");
 
-    nsRefPtr<gfxContext> dst = new gfxContext(dstThebesImage->ThebesSurface());
+    if (targetRect.size.width <= 0.0 || targetRect.size.height <= 0.0)
+        return NS_OK;
 
-    dst->NewPath();
-    // We don't use PixelSnappedRectangleAndSetPattern because if
-    // these coords aren't already pixel aligned, we've lost
-    // before we've even begun.
-    dst->Translate(gfxPoint(aDX, aDY));
-    dst->Rectangle(gfxRect(0, 0, aDWidth, aDHeight), PR_TRUE);
-    dst->Scale(double(aDWidth)/mWidth, double(aDHeight)/mHeight);
+    // don't do anything if we have a transparent pixel source
+    if (mSinglePixel && mSinglePixelColor.a == 0.0)
+        return NS_OK;
 
-    dst->SetSource(ThebesSurface());
-    dst->Paint();
+    PRBool doSnap = !(thebesContext->CurrentMatrix().HasNonTranslation());
+    PRBool hasPadding = ((xPadding != 0) || (yPadding != 0));
+
+    nsRefPtr<gfxASurface> tmpSurfaceGrip;
+
+    if (mSinglePixel && !hasPadding) {
+        thebesContext->SetColor(mSinglePixelColor);
+    } else {
+        nsRefPtr<gfxASurface> surface;
+        PRInt32 width, height;
+
+        if (hasPadding) {
+            /* Ugh we have padding; create a temporary surface that's the size of the surface + pad area,
+             * and render the image into it first.  Then we'll tile that surface. */
+            width = mWidth + xPadding;
+            height = mHeight + yPadding;
+
+            // Reject over-wide or over-tall images.
+            if (!AllowedImageSize(width, height))
+                return NS_ERROR_FAILURE;
+
+            surface = new gfxImageSurface(gfxIntSize(width, height),
+                                          gfxASurface::ImageFormatARGB32);
+            if (!surface || surface->CairoStatus()) {
+                return NS_ERROR_OUT_OF_MEMORY;
+            }
+
+            tmpSurfaceGrip = surface;
+
+            gfxContext tmpContext(surface);
+            if (mSinglePixel) {
+                tmpContext.SetColor(mSinglePixelColor);
+            } else {
+                tmpContext.SetSource(ThebesSurface());
+            }
+            tmpContext.SetOperator(gfxContext::OPERATOR_SOURCE);
+            tmpContext.Rectangle(gfxRect(0, 0, mWidth, mHeight));
+            tmpContext.Fill();
+        } else {
+            width = mWidth;
+            height = mHeight;
+            surface = ThebesSurface();
+        }
+
+        gfxMatrix patMat;
+        gfxPoint p0;
+
+        p0.x = - floor(offset.x + 0.5);
+        p0.y = - floor(offset.y + 0.5);
+        // Scale factor to account for CSS pixels; note that the offset (and 
+        // therefore p0) is in device pixels, while the width and height are in
+        // CSS pixels.
+        gfxFloat scale = gfxFloat(dx->AppUnitsPerDevPixel()) /
+                         gfxFloat(nsIDeviceContext::AppUnitsPerCSSPixel());
+        patMat.Scale(scale, scale);
+        patMat.Translate(p0);
+
+        gfxPattern pat(surface);
+        pat.SetExtend(gfxPattern::EXTEND_REPEAT);
+        pat.SetMatrix(patMat);
+
+#ifndef XP_MACOSX
+        if (scale < 1.0) {
+            // See bug 324698.  This is a workaround.  See comments
+            // by the earlier SetFilter call.
+            pat.SetFilter(0);
+        }
+#endif
+
+        thebesContext->SetPattern(&pat);
+    }
+
+    gfxContext::GraphicsOperator op = thebesContext->CurrentOperator();
+    if (op == gfxContext::OPERATOR_OVER && mFormat == gfxASurface::ImageFormatRGB24)
+        thebesContext->SetOperator(gfxContext::OPERATOR_SOURCE);
+
+    thebesContext->NewPath();
+    thebesContext->Rectangle(targetRect, doSnap);
+    thebesContext->Fill();
+
+    thebesContext->SetOperator(op);
+    thebesContext->SetColor(gfxRGBA(0,0,0,0));
 
     return NS_OK;
 }
 
+PRBool
+nsThebesImage::ShouldUseImageSurfaces()
+{
+#ifdef XP_WIN
+    static const DWORD kGDIObjectsHighWaterMark = 7000;
+
+    // at 7000 GDI objects, stop allocating normal images to make sure
+    // we never hit the 10k hard limit.
+    // GetCurrentProcess() just returns (HANDLE)-1, it's inlined afaik
+    DWORD count = GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS);
+    if (count == 0 ||
+        count > kGDIObjectsHighWaterMark)
+    {
+        // either something's broken (count == 0),
+        // or we hit our high water mark; disable
+        // image allocations for a bit.
+        return PR_TRUE;
+    }
+#endif
+
+    return PR_FALSE;
+}
+
+// A hint from the image decoders that this image has no alpha, even
+// though we created is ARGB32.  This changes our format to RGB24,
+// which in turn will cause us to Optimize() to RGB24.  Has no effect
+// after Optimize() is called, though in all cases it will be just a
+// performance win -- the pixels are still correct and have the A byte
+// set to 0xff.
+void
+nsThebesImage::SetHasNoAlpha()
+{
+    if (mFormat == gfxASurface::ImageFormatARGB32) {
+        mFormat = gfxASurface::ImageFormatRGB24;
+        mFormatChanged = PR_TRUE;
+    }
+}
