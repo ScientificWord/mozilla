@@ -47,7 +47,8 @@ nsresult nsUnicodeDecodeHelper::ConvertByTable(
                                      PRInt32 * aSrcLength, 
                                      PRUnichar * aDest, 
                                      PRInt32 * aDestLength, 
-                                     uShiftTable * aShiftTable, 
+                                     uScanClassID aScanClass,
+                                     uShiftInTable * aShiftInTable, 
                                      uMappingTable  * aMappingTable)
 {
   const char * src = aSrc;
@@ -60,13 +61,23 @@ nsresult nsUnicodeDecodeHelper::ConvertByTable(
   nsresult res = NS_OK;
 
   while ((srcLen > 0) && (dest < destEnd)) {
-    if (!uScan(aShiftTable, NULL, (PRUint8 *)src, NS_REINTERPRET_CAST(PRUint16*, &med), srcLen, 
-    (PRUint32 *)&bcr)) {
+    PRBool charFound;
+    if (aScanClass == uMultibytesCharset) {
+      NS_ASSERTION(aShiftInTable, "shift table missing");
+      charFound = uScanShift(aShiftInTable, NULL, (PRUint8 *)src,
+                             reinterpret_cast<PRUint16*>(&med), srcLen, 
+                             (PRUint32 *)&bcr);
+    } else {
+      charFound = uScan(aScanClass, NULL, (PRUint8 *)src,
+                        reinterpret_cast<PRUint16*>(&med),
+                        srcLen, (PRUint32 *)&bcr);
+    }
+    if (!charFound) {
       res = NS_OK_UDEC_MOREINPUT;
       break;
     }
 
-    if (!uMapCode((uTable*) aMappingTable, NS_STATIC_CAST(PRUint16, med), NS_REINTERPRET_CAST(PRUint16*, dest))) {
+    if (!uMapCode((uTable*) aMappingTable, static_cast<PRUint16>(med), reinterpret_cast<PRUint16*>(dest))) {
       if (med < 0x20) {
         // somehow some table miss the 0x00 - 0x20 part
         *dest = med;
@@ -95,7 +106,7 @@ nsresult nsUnicodeDecodeHelper::ConvertByMultiTable(
                                      PRInt32 * aDestLength, 
                                      PRInt32 aTableCount, 
                                      const uRange * aRangeArray, 
-                                     uShiftTable ** aShiftTable, 
+                                     uScanClassID * aScanClassArray,
                                      uMappingTable ** aMappingTable)
 {
   PRUint8 * src = (PRUint8 *)aSrc;
@@ -118,14 +129,14 @@ nsresult nsUnicodeDecodeHelper::ConvertByMultiTable(
       if ((aRangeArray[i].min <= *src) && (*src <= aRangeArray[i].max)) 
       {
         passRangeCheck = PR_TRUE;
-        if (uScan(aShiftTable[i], NULL, src, 
-                   NS_REINTERPRET_CAST(PRUint16*, &med), srcLen, 
+        if (uScan(aScanClassArray[i], NULL, src, 
+                   reinterpret_cast<PRUint16*>(&med), srcLen, 
                    (PRUint32 *)&bcr)) 
         {
           passScan = PR_TRUE;
           done = uMapCode((uTable*) aMappingTable[i], 
-                          NS_STATIC_CAST(PRUint16, med), 
-                          NS_REINTERPRET_CAST(PRUint16*, dest)); 
+                          static_cast<PRUint16>(med), 
+                          reinterpret_cast<PRUint16*>(dest)); 
         } // if (uScan ... )
       } // if Range
     } // for loop
@@ -150,8 +161,8 @@ nsresult nsUnicodeDecodeHelper::ConvertByMultiTable(
         {
           if ((aRangeArray[i].min <= *src) && (*src <= aRangeArray[i].max)) 
           {
-            if (uScan(aShiftTable[i], NULL, src, 
-                   NS_REINTERPRET_CAST(PRUint16*, &med), srcLen, 
+            if (uScan(aScanClassArray[i], NULL, src, 
+                   reinterpret_cast<PRUint16*>(&med), srcLen, 
                    (PRUint32*)&bcr)) 
             { 
                // match the patten
@@ -216,7 +227,6 @@ nsresult nsUnicodeDecodeHelper::ConvertByFastTable(
 }
 
 nsresult nsUnicodeDecodeHelper::CreateFastTable(
-                                     uShiftTable * aShiftTable, 
                                      uMappingTable  * aMappingTable,
                                      PRUnichar * aFastTable, 
                                      PRInt32 aTableSize)
@@ -229,7 +239,7 @@ nsresult nsUnicodeDecodeHelper::CreateFastTable(
   char * p = buff;
   for (PRInt32 i=0; i<aTableSize; i++) *(p++) = i;
   nsresult res = ConvertByTable(buff, &buffSize, aFastTable, &tableSize, 
-      aShiftTable, aMappingTable);
+      u1ByteCharset, nsnull, aMappingTable);
 
   delete [] buff;
   return res;

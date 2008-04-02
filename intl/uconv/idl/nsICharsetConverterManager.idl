@@ -37,7 +37,6 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsISupports.idl"
-#include "nsISupportsArray.idl"
 #include "nsIAtom.idl"
 
 %{ C++
@@ -60,7 +59,7 @@ interface nsIUTF8StringEnumerator;
 
 /**
  *
- * Here Charsets are indentified by ASCII strings. Charset alias
+ * Here Charsets are identified by ASCII strings. Charset alias
  * resolution is provided by default in most methods. "Raw"
  * versions that do not need this resolution are also provided.
  *

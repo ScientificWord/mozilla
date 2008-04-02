@@ -12,9 +12,9 @@
 
 /*
  * This file has been modified for the Mozilla/Netscape environment.
- * Modifications are distributed under the Netscape Public License and are
+ * Modifications are distributed under the mozilla.org tri-license and are
  * Copyright (C) 1998 Netscape Communications Corporation.  All Rights
- * Reserved.
+ * Reserved. See http://www.mozilla.org/MPL/
  */
 
 
@@ -111,8 +111,18 @@ typedef short JCOEF;
 #define HAVE_MMX_INTEL_MNEMONICS 
 
 /* SSE2 code appears broken for some cpus (bug 247437) */
-/* #define HAVE_SSE2_INTEL_MNEMONICS */
+#define HAVE_SSE2_INTEL_MNEMONICS
+#define HAVE_SSE2_INTRINSICS
 #endif
+
+#if defined(__GNUC__) && defined(__i386__)
+#if defined(XP_MACOSX)
+#define HAVE_SSE2_INTRINSICS
+#endif /* ! XP_MACOSX */
+#endif /* ! GNUC && i386 */
+
+/* Add support for other platforms here */
+
 
 /* Compressed datastreams are represented as arrays of JOCTET.
  * These must be EXACTLY 8 bits wide, at least once they are written to
@@ -201,6 +211,7 @@ typedef unsigned int JDIMENSION;
 
 /* Mozilla mod: make external functions be DLL-able via JRI_PUBLIC_API(),
  * and supply extern "C" for C++ users of the C-compiled IJG library.
+ * (Well, not anymore, but there's still a modification here.)
  */
 #include "prtypes.h"
 
@@ -210,15 +221,8 @@ typedef unsigned int JDIMENSION;
 #define LOCAL(type)		static type
 
 PR_BEGIN_EXTERN_C
-#ifdef MOZ_ENABLE_LIBXUL
 #define GLOBAL(type) type
 #define EXTERN(type) extern type
-#else
-/* a function referenced thru EXTERNs: */
-#define GLOBAL(type)		PR_IMPLEMENT(type)
-/* a reference to a GLOBAL function: */
-#define EXTERN(type)		PR_EXTERN(type)
-#endif
 PR_END_EXTERN_C
 
 
