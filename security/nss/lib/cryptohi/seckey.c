@@ -48,13 +48,16 @@
 #include "secdig.h"
 #include "prtime.h"
 #include "ec.h"
+#include "keyi.h"
+
+SEC_ASN1_MKSUB(SECOID_AlgorithmIDTemplate)
 
 const SEC_ASN1Template CERT_SubjectPublicKeyInfoTemplate[] = {
     { SEC_ASN1_SEQUENCE,
 	  0, NULL, sizeof(CERTSubjectPublicKeyInfo) },
-    { SEC_ASN1_INLINE,
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
 	  offsetof(CERTSubjectPublicKeyInfo,algorithm),
-	  SECOID_AlgorithmIDTemplate },
+	  SEC_ASN1_SUB(SECOID_AlgorithmIDTemplate) },
     { SEC_ASN1_BIT_STRING,
 	  offsetof(CERTSubjectPublicKeyInfo,subjectPublicKey), },
     { 0, }
@@ -499,9 +502,7 @@ seckey_UpdateCertPQGChain(CERTCertificate * subjectCert, int count)
     }
 
     /* check if the cert is self-signed */
-    rvCompare = (SECStatus)SECITEM_CompareItem(&subjectCert->derSubject,
-				    &subjectCert->derIssuer);
-    if (rvCompare == SECEqual) {
+    if (subjectCert->isRoot) {
       /* fail since cert is self-signed and has no pqg params. */
 	return SECFailure;     
     }
@@ -948,13 +949,11 @@ done:
 }
 
 
-/* Function used to determine what kind of cert we are dealing with. */
+/* Function used to make an oid tag to a key type */
 KeyType 
-CERT_GetCertKeyType (CERTSubjectPublicKeyInfo *spki) {
-    int tag;
+seckey_GetKeyType (SECOidTag tag) {
     KeyType keyType;
 
-    tag = SECOID_GetAlgorithmTag(&spki->algorithm);
     switch (tag) {
       case SEC_OID_X500_RSA_ENCRYPTION:
       case SEC_OID_PKCS1_RSA_ENCRYPTION:
@@ -983,6 +982,13 @@ CERT_GetCertKeyType (CERTSubjectPublicKeyInfo *spki) {
 	keyType = nullKey;
     }
     return keyType;
+}
+
+/* Function used to determine what kind of cert we are dealing with. */
+KeyType 
+CERT_GetCertKeyType (CERTSubjectPublicKeyInfo *spki) 
+{
+    return seckey_GetKeyType(SECOID_GetAlgorithmTag(&spki->algorithm));
 }
 
 static SECKEYPublicKey *
@@ -1447,9 +1453,10 @@ SECKEY_ECParamsToBasePointOrderLen(const SECItem *encodedParams)
 
 /* returns key strength in bytes (not bits) */
 unsigned
-SECKEY_PublicKeyStrength(SECKEYPublicKey *pubk)
+SECKEY_PublicKeyStrength(const SECKEYPublicKey *pubk)
 {
     unsigned char b0;
+    unsigned size;
 
     /* interpret modulus length as key strength... in
      * fortezza that's the public key length */
@@ -1470,11 +1477,8 @@ SECKEY_PublicKeyStrength(SECKEYPublicKey *pubk)
 	return PR_MAX(pubk->u.fortezza.KEAKey.len, pubk->u.fortezza.DSSKey.len);
     case ecKey:
 	/* Get the key size in bits and adjust */
-	if (pubk->u.ec.size == 0) {
-	    pubk->u.ec.size = 
-		SECKEY_ECParamsToKeySize(&pubk->u.ec.DEREncodedParams);
-	} 
-	return (pubk->u.ec.size + 7)/8;
+	size =	SECKEY_ECParamsToKeySize(&pubk->u.ec.DEREncodedParams);
+	return (size + 7)/8;
     default:
 	break;
     }
@@ -1484,8 +1488,9 @@ SECKEY_PublicKeyStrength(SECKEYPublicKey *pubk)
 
 /* returns key strength in bits */
 unsigned
-SECKEY_PublicKeyStrengthInBits(SECKEYPublicKey *pubk)
+SECKEY_PublicKeyStrengthInBits(const SECKEYPublicKey *pubk)
 {
+    unsigned size;
     switch (pubk->keyType) {
     case rsaKey:
     case dsaKey:
@@ -1493,11 +1498,8 @@ SECKEY_PublicKeyStrengthInBits(SECKEYPublicKey *pubk)
     case fortezzaKey:
 	return SECKEY_PublicKeyStrength(pubk) * 8; /* 1 byte = 8 bits */
     case ecKey:
-	if (pubk->u.ec.size == 0) {
-	    pubk->u.ec.size = 
-		SECKEY_ECParamsToKeySize(&pubk->u.ec.DEREncodedParams);
-	} 
-	return pubk->u.ec.size;
+	size = SECKEY_ECParamsToKeySize(&pubk->u.ec.DEREncodedParams);
+	return size;
     default:
 	break;
     }
@@ -1532,7 +1534,7 @@ SECKEY_SignatureLen(const SECKEYPublicKey *pubk)
 }
 
 SECKEYPrivateKey *
-SECKEY_CopyPrivateKey(SECKEYPrivateKey *privk)
+SECKEY_CopyPrivateKey(const SECKEYPrivateKey *privk)
 {
     SECKEYPrivateKey *copyk;
     PRArenaPool *arena;
@@ -1578,7 +1580,7 @@ fail:
 }
 
 SECKEYPublicKey *
-SECKEY_CopyPublicKey(SECKEYPublicKey *pubk)
+SECKEY_CopyPublicKey(const SECKEYPublicKey *pubk)
 {
     SECKEYPublicKey *copyk;
     PRArenaPool *arena;
@@ -1592,8 +1594,8 @@ SECKEY_CopyPublicKey(SECKEYPublicKey *pubk)
 
     copyk = (SECKEYPublicKey *) PORT_ArenaZAlloc (arena, sizeof (SECKEYPublicKey));
     if (!copyk) {
-        PORT_SetError (SEC_ERROR_NO_MEMORY);
         PORT_FreeArena (arena, PR_FALSE);
+        PORT_SetError (SEC_ERROR_NO_MEMORY);
         return NULL;
     }
 
@@ -1776,6 +1778,11 @@ SECKEY_CreateSubjectPublicKeyInfo(SECKEYPublicKey *pubk)
     CERTSubjectPublicKeyInfo *spki;
     PRArenaPool *arena;
     SECItem params = { siBuffer, NULL, 0 };
+
+    if (!pubk) {
+        PORT_SetError(SEC_ERROR_INVALID_ARGS);
+        return NULL;
+    }
 
     arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
     if (arena == NULL) {
@@ -2128,7 +2135,7 @@ SECKEY_ConvertAndDecodePublicKeyAndChallenge(char *pkacstr, char *challenge,
     sig = sd.signature;
     DER_ConvertBitString(&sig);
     rv = VFY_VerifyDataWithAlgorithmID(sd.data.data, sd.data.len, pubKey, &sig,
-     			&sd.signatureAlgorithm, NULL, wincx);
+			&(sd.signatureAlgorithm), NULL, wincx);
     if ( rv != SECSuccess ) {
 	goto loser;
     }

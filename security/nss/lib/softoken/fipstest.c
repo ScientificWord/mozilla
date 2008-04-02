@@ -47,13 +47,7 @@
 #include "secerr.h"
 
 #ifdef NSS_ENABLE_ECC
-#include "secdert.h"    /* Required for ECDSA */
 #include "ec.h"         /* Required for ECDSA */
-extern SECStatus
-EC_DecodeParams(const SECItem *encodedParams, ECParams **ecparams);
-extern SECStatus
-EC_CopyParams(PRArenaPool *arena, ECParams *dstParams,
-              const ECParams *srcParams);
 #endif
 
 
@@ -111,11 +105,14 @@ EC_CopyParams(PRArenaPool *arena, ECParams *dstParams,
 
 /* FIPS preprocessor directives for DSA.                        */
 #define FIPS_DSA_TYPE                           siBuffer
-#define FIPS_DSA_DIGEST_LENGTH                  20  /* 160-bits */
-#define FIPS_DSA_SUBPRIME_LENGTH                20  /* 160-bits */
-#define FIPS_DSA_SIGNATURE_LENGTH               40  /* 320-bits */
-#define FIPS_DSA_PRIME_LENGTH                   64  /* 512-bits */
-#define FIPS_DSA_BASE_LENGTH                    64  /* 512-bits */
+#define FIPS_DSA_DIGEST_LENGTH                  20 /*  160-bits */
+#define FIPS_DSA_SUBPRIME_LENGTH                20 /*  160-bits */
+#define FIPS_DSA_SIGNATURE_LENGTH               40 /*  320-bits */
+#define FIPS_DSA_PRIME_LENGTH                  128 /* 1024-bits */
+#define FIPS_DSA_BASE_LENGTH                   128 /* 1024-bits */
+
+/* FIPS preprocessor directives for RNG.                        */
+#define FIPS_RNG_XKEY_LENGTH                    32  /* 256-bits */
 
 static CK_RV
 sftk_fips_RC2_PowerUpSelfTest( void )
@@ -1493,49 +1490,19 @@ rsa_loser:
 }
 
 #ifdef NSS_ENABLE_ECC
+
 static CK_RV
-sftk_fips_ECDSA_PowerUpSelfTest() {
+sftk_fips_ECDSA_Test(const PRUint8 *encodedParams, 
+                     unsigned int encodedParamsLen,
+                     const PRUint8 *knownSignature, 
+                     unsigned int knownSignatureLen) {
 
-    /* ECDSA Known info for curve nistp256  */
-    static const PRUint8 ecdsa_publicValue[] = {
-                            EC_POINT_FORM_UNCOMPRESSED,
-                            0x07, 0xb1, 0xcb, 0x57, 0x20, 0xa7, 0x10, 0xd6,
-                            0x9d, 0x37, 0x4b, 0x1c, 0xdc, 0x35, 0x90, 0xff, 
-                            0x1a, 0x2d, 0x98, 0x95, 0x1b, 0x2f, 0xeb, 0x7f, 
-                            0xbb, 0x81, 0xca, 0xc0, 0x69, 0x75, 0xea, 0xc5, 
-                            0xb8, 0x03, 0xe6, 0x89, 0xe5, 0x06, 0x55, 0x22, 
-                            0x21, 0x0e, 0xcd, 0x1a, 0xf8, 0xc0, 0xd4, 0xa7, 
-                            0x8f, 0x47, 0x81, 0x1e, 0x4a, 0x81, 0xb5, 0x41, 
-                            0x3d, 0xa1, 0xf0, 0x4b, 0x65, 0xb4, 0x26, 0xe9};
-
-    static const PRUint8 ecdsa_privateValue[] = {
+    /* ECDSA Known Seed info for curves nistp256 and nistk283  */
+    static const PRUint8 ecdsa_Known_Seed[] = {
                             0x6a, 0x9b, 0xf6, 0xf7, 0xce, 0xed, 0x79, 0x11,
                             0xf0, 0xc7, 0xc8, 0x9a, 0xa5, 0xd1, 0x57, 0xb1,
                             0x7b, 0x5a, 0x3b, 0x76, 0x4e, 0x7b, 0x7c, 0xbc,
                             0xf2, 0x76, 0x1c, 0x1c, 0x7f, 0xc5, 0x53, 0x2f};
-
-    static const PRUint8 ecdsa_version[] = { 0x01 };
-
-    static const PRUint8 ecdsa_known_P256_signature[] = {
-                            0xa8, 0x6f, 0x0a, 0x04, 0x6b, 0x6c, 0x47, 0x0c,
-                            0x5a, 0xfd, 0xc6, 0x9f, 0xab, 0x65, 0x1d, 0x21,
-                            0xa5, 0x8f, 0x0d, 0xe6, 0xac, 0xaa, 0x63, 0xb6,
-                            0x7a, 0x39, 0x62, 0x4c, 0xae, 0xa1, 0x50, 0xb7,
-                            0x30, 0xa9, 0x88, 0xeb, 0x44, 0x94, 0xb7, 0x1f,
-                            0x23, 0x35, 0xe3, 0x52, 0x13, 0xd3, 0x46, 0xd0,
-                            0x54, 0xfd, 0x43, 0xdc, 0x3b, 0x7f, 0xf5, 0x60,
-                            0x92, 0xcc, 0x43, 0x67, 0x8c, 0xc5, 0xea, 0x75};
- 
-   /* ECDSA Known curve nistp256 params  */
-    static const PRUint8 knownEncodedParams[] = {
-                            0x06, 0x08, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x03,
-                            0x01, 0x07};
-
-    static const PRUint8 ecdsa_Known_Seed[] = {
-                            0xe3, 0x2f, 0x50, 0x8d, 0xde, 0xd3, 0x55, 0x74,
-                            0xe7, 0x71, 0x86, 0x76, 0x3b, 0xeb, 0x84, 0x15,
-                            0x1b, 0x49, 0xf5, 0x18, 0xe5, 0x5f, 0x84, 0x7e,
-                            0x76, 0x16, 0x14, 0x4f, 0x79, 0x4f, 0xbb, 0xd6};
 
     static const PRUint8 msg[] = {
                             "Firefox and ThunderBird are awesome!"};
@@ -1544,48 +1511,54 @@ sftk_fips_ECDSA_PowerUpSelfTest() {
     unsigned char sig[2*MAX_ECKEY_LEN];
     SECItem signature, digest;
     SECItem encodedparams;
-    ECParams *ecparams;
-    ECPrivateKey ecdsa_private_key;
+    ECParams *ecparams = NULL;
+    ECPrivateKey *ecdsa_private_key = NULL;
     ECPublicKey ecdsa_public_key;
     SECStatus ecdsaStatus = SECSuccess;
 
     /* construct the ECDSA private/public key pair */
     encodedparams.type = siBuffer;
-    encodedparams.data = (unsigned char *) knownEncodedParams;
-    encodedparams.len = sizeof knownEncodedParams;
+    encodedparams.data = (unsigned char *) encodedParams;
+    encodedparams.len = encodedParamsLen;
+    
     if (EC_DecodeParams(&encodedparams, &ecparams) != SECSuccess) {
         return( CKR_DEVICE_ERROR );
     }
 
-    ecdsa_private_key.ecParams.arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
-    if (ecdsa_private_key.ecParams.arena == NULL) {
-        PORT_FreeArena(ecparams->arena, PR_FALSE);
-        return CKR_HOST_MEMORY;
+    /* Generates a new EC key pair. The private key is a supplied
+     * random value (in seed) and the public key is the result of 
+     * performing a scalar point multiplication of that value with 
+     * the curve's base point.
+     */
+    ecdsaStatus = EC_NewKeyFromSeed(ecparams, &ecdsa_private_key, 
+                                   ecdsa_Known_Seed, 
+                                   sizeof(ecdsa_Known_Seed));
+    /* free the ecparams they are no longer needed */
+    PORT_FreeArena(ecparams->arena, PR_FALSE);
+    ecparams = NULL;
+    if (ecdsaStatus != SECSuccess) {
+        return ( CKR_DEVICE_ERROR );    
     }
 
-    ecdsaStatus = EC_CopyParams(ecdsa_private_key.ecParams.arena, 
-                                &ecdsa_private_key.ecParams, ecparams); 
-    PORT_FreeArena(ecparams->arena, PR_FALSE);
-
+    /* construct public key from private key. */
+    ecdsaStatus = EC_CopyParams(ecdsa_private_key->ecParams.arena, 
+                                &ecdsa_public_key.ecParams,
+                                &ecdsa_private_key->ecParams);
     if (ecdsaStatus != SECSuccess) {
         goto loser;
     }
-    
-    ecdsa_private_key.publicValue.type = siBuffer;
-    ecdsa_private_key.publicValue.data = (unsigned char *)ecdsa_publicValue;
-    ecdsa_private_key.publicValue.len = sizeof ecdsa_publicValue;
-    
-    ecdsa_private_key.privateValue.type = siBuffer;
-    ecdsa_private_key.privateValue.data = (unsigned char *)ecdsa_privateValue;
-    ecdsa_private_key.privateValue.len = sizeof ecdsa_privateValue;
-    
-    ecdsa_private_key.version.type = siBuffer;
-    ecdsa_private_key.version.data = (unsigned char *)ecdsa_version;
-    ecdsa_private_key.version.len = sizeof ecdsa_version;
+    ecdsa_public_key.publicValue = ecdsa_private_key->publicValue;
 
     /* validate public key value */
-    ecdsaStatus = EC_ValidatePublicKey(&ecdsa_private_key.ecParams, 
-                                       &ecdsa_private_key.publicValue);
+    ecdsaStatus = EC_ValidatePublicKey(&ecdsa_public_key.ecParams, 
+                                       &ecdsa_public_key.publicValue);
+    if (ecdsaStatus != SECSuccess) {
+        goto loser;
+    }
+
+    /* validate public key value */
+    ecdsaStatus = EC_ValidatePublicKey(&ecdsa_private_key->ecParams, 
+                                       &ecdsa_private_key->publicValue);
     if (ecdsaStatus != SECSuccess) {
         goto loser;
     }
@@ -1607,27 +1580,18 @@ sftk_fips_ECDSA_PowerUpSelfTest() {
     signature.data = sig;
     signature.len = sizeof sig;
     
-    ecdsaStatus = ECDSA_SignDigestWithSeed(&ecdsa_private_key, &signature, 
+    ecdsaStatus = ECDSA_SignDigestWithSeed(ecdsa_private_key, &signature, 
                          &digest, ecdsa_Known_Seed, sizeof ecdsa_Known_Seed);
     if (ecdsaStatus != SECSuccess) {
         goto loser;
     }
 
-    if( ( signature.len != sizeof ecdsa_known_P256_signature ) ||
-        ( PORT_Memcmp( signature.data, ecdsa_known_P256_signature,
-                   sizeof ecdsa_known_P256_signature ) != 0 ) ) {
+    if( ( signature.len != knownSignatureLen ) ||
+        ( PORT_Memcmp( signature.data, knownSignature,
+                    knownSignatureLen ) != 0 ) ) {
         ecdsaStatus = SECFailure;
         goto loser;
     }
-
-    /* construct public key from private key. */
-    ecdsaStatus = EC_CopyParams(ecdsa_private_key.ecParams.arena, 
-                                &ecdsa_public_key.ecParams,
-                                &ecdsa_private_key.ecParams);
-    if (ecdsaStatus != SECSuccess) {
-        goto loser;
-    }
-    ecdsa_public_key.publicValue = ecdsa_private_key.publicValue;
     
     /******************************************************/
     /* ECDSA Single-Round Known Answer Verification Test. */
@@ -1637,9 +1601,9 @@ sftk_fips_ECDSA_PowerUpSelfTest() {
     ecdsaStatus = ECDSA_VerifyDigest(&ecdsa_public_key, &signature, &digest);
 
 loser:
-    /* free the memory for the private */
-    if (ecdsa_private_key.ecParams.arena != NULL) {
-        PORT_FreeArena(ecdsa_private_key.ecParams.arena, PR_FALSE);
+    /* free the memory for the private key arena*/
+    if (ecdsa_private_key != NULL) {
+        PORT_FreeArena(ecdsa_private_key->ecParams.arena, PR_FALSE);
     }
 
     if (ecdsaStatus != SECSuccess) {
@@ -1647,34 +1611,113 @@ loser:
     }
     return( CKR_OK );
 }
+
+static CK_RV
+sftk_fips_ECDSA_PowerUpSelfTest() {
+
+   /* ECDSA Known curve nistp256 == SEC_OID_SECG_EC_SECP256R1 params */
+    static const PRUint8 ecdsa_known_P256_EncodedParams[] = {
+                            0x06,0x08,0x2a,0x86,0x48,0xce,0x3d,0x03,
+                            0x01,0x07};
+
+    static const PRUint8 ecdsa_known_P256_signature[] = {
+                            0x07,0xb1,0xcb,0x57,0x20,0xa7,0x10,0xd6, 
+                            0x9d,0x37,0x4b,0x1c,0xdc,0x35,0x90,0xff, 
+                            0x1a,0x2d,0x98,0x95,0x1b,0x2f,0xeb,0x7f, 
+                            0xbb,0x81,0xca,0xc0,0x69,0x75,0xea,0xc5,
+                            0x59,0x6a,0x62,0x49,0x3d,0x50,0xc9,0xe1, 
+                            0x27,0x3b,0xff,0x9b,0x13,0x66,0x67,0xdd, 
+                            0x7d,0xd1,0x0d,0x2d,0x7c,0x44,0x04,0x1b, 
+                            0x16,0x21,0x12,0xc5,0xcb,0xbd,0x9e,0x75};
+
+#ifdef NSS_ECC_MORE_THAN_SUITE_B
+    /* ECDSA Known curve nistk283 == SEC_OID_SECG_EC_SECT283K1 params */
+    static const PRUint8 ecdsa_known_K283_EncodedParams[] = {
+                            0x06,0x05,0x2b,0x81,0x04,0x00,0x10};
+                         
+    static const PRUint8 ecdsa_known_K283_signature[] = {
+                            0x00,0x45,0x88,0xc0,0x79,0x09,0x07,0xd1, 
+                            0x4e,0x88,0xe6,0xd5,0x2f,0x22,0x04,0x74, 
+                            0x35,0x24,0x65,0xe8,0x15,0xde,0x90,0x66, 
+                            0x94,0x70,0xdd,0x3a,0x14,0x70,0x02,0xd1,
+                            0xef,0x86,0xbd,0x15,0x00,0xd9,0xdc,0xfc, 
+                            0x87,0x2e,0x7c,0x99,0xe2,0xe3,0x79,0xb8, 
+                            0xd9,0x10,0x49,0x78,0x4b,0x59,0x8b,0x05, 
+                            0x77,0xec,0x6c,0xe8,0x35,0xe6,0x2e,0xa9,
+                            0xf9,0x77,0x1f,0x71,0x86,0xa5,0x4a,0xd0};
+#endif
+
+    CK_RV crv;
+
+    /* ECDSA GF(p) prime field curve test */
+    crv = sftk_fips_ECDSA_Test(ecdsa_known_P256_EncodedParams,
+                               sizeof ecdsa_known_P256_EncodedParams,
+                               ecdsa_known_P256_signature,
+                               sizeof ecdsa_known_P256_signature );
+    if (crv != CKR_OK) {
+        return( CKR_DEVICE_ERROR );
+    }
+
+#ifdef NSS_ECC_MORE_THAN_SUITE_B
+    /* ECDSA GF(2m) binary field curve test */
+    crv = sftk_fips_ECDSA_Test(ecdsa_known_K283_EncodedParams,
+                               sizeof ecdsa_known_K283_EncodedParams,
+                               ecdsa_known_K283_signature,
+                               sizeof ecdsa_known_K283_signature );
+    if (crv != CKR_OK) {
+        return( CKR_DEVICE_ERROR );
+    }
+#endif
+
+    return( CKR_OK );
+}
+
 #endif    /* NSS_ENABLE_ECC */
 
 static CK_RV
 sftk_fips_DSA_PowerUpSelfTest( void )
 {
-    /* DSA Known P (512-bits), Q (160-bits), and G (512-bits) Values. */
+    /* DSA Known P (1024-bits), Q (160-bits), and G (1024-bits) Values. */
     static const PRUint8 dsa_P[] = {
-                           0x8d,0xf2,0xa4,0x94,0x49,0x22,0x76,0xaa,
-                           0x3d,0x25,0x75,0x9b,0xb0,0x68,0x69,0xcb,
-                           0xea,0xc0,0xd8,0x3a,0xfb,0x8d,0x0c,0xf7,
-                           0xcb,0xb8,0x32,0x4f,0x0d,0x78,0x82,0xe5,
-                           0xd0,0x76,0x2f,0xc5,0xb7,0x21,0x0e,0xaf,
-                           0xc2,0xe9,0xad,0xac,0x32,0xab,0x7a,0xac,
-                           0x49,0x69,0x3d,0xfb,0xf8,0x37,0x24,0xc2,
-                           0xec,0x07,0x36,0xee,0x31,0xc8,0x02,0x91};
+         0x80,0xb0,0xd1,0x9d,0x6e,0xa4,0xf3,0x28, 
+         0x9f,0x24,0xa9,0x8a,0x49,0xd0,0x0c,0x63, 
+         0xe8,0x59,0x04,0xf9,0x89,0x4a,0x5e,0xc0, 
+         0x6d,0xd2,0x67,0x6b,0x37,0x81,0x83,0x0c,
+         0xfe,0x3a,0x8a,0xfd,0xa0,0x3b,0x08,0x91, 
+         0x1c,0xcb,0xb5,0x63,0xb0,0x1c,0x70,0xd0, 
+         0xae,0xe1,0x60,0x2e,0x12,0xeb,0x54,0xc7, 
+         0xcf,0xc6,0xcc,0xae,0x97,0x52,0x32,0x63,
+         0xd3,0xeb,0x55,0xea,0x2f,0x4c,0xd5,0xd7, 
+         0x3f,0xda,0xec,0x49,0x27,0x0b,0x14,0x56, 
+         0xc5,0x09,0xbe,0x4d,0x09,0x15,0x75,0x2b, 
+         0xa3,0x42,0x0d,0x03,0x71,0xdf,0x0f,0xf4,
+         0x0e,0xe9,0x0c,0x46,0x93,0x3d,0x3f,0xa6, 
+         0x6c,0xdb,0xca,0xe5,0xac,0x96,0xc8,0x64, 
+         0x5c,0xec,0x4b,0x35,0x65,0xfc,0xfb,0x5a, 
+         0x1b,0x04,0x1b,0xa1,0x0e,0xfd,0x88,0x15};
+        
     static const PRUint8 dsa_Q[] = {
-                           0xc7,0x73,0x21,0x8c,0x73,0x7e,0xc8,0xee,
-                           0x99,0x3b,0x4f,0x2d,0xed,0x30,0xf4,0x8e,
-                           0xda,0xce,0x91,0x5f};
+         0xad,0x22,0x59,0xdf,0xe5,0xec,0x4c,0x6e, 
+         0xf9,0x43,0xf0,0x4b,0x2d,0x50,0x51,0xc6, 
+         0x91,0x99,0x8b,0xcf};
+        
     static const PRUint8 dsa_G[] = {
-                           0x62,0x6d,0x02,0x78,0x39,0xea,0x0a,0x13,
-                           0x41,0x31,0x63,0xa5,0x5b,0x4c,0xb5,0x00,
-                           0x29,0x9d,0x55,0x22,0x95,0x6c,0xef,0xcb,
-                           0x3b,0xff,0x10,0xf3,0x99,0xce,0x2c,0x2e,
-                           0x71,0xcb,0x9d,0xe5,0xfa,0x24,0xba,0xbf,
-                           0x58,0xe5,0xb7,0x95,0x21,0x92,0x5c,0x9c,
-                           0xc4,0x2e,0x9f,0x6f,0x46,0x4b,0x08,0x8c,
-                           0xc5,0x72,0xaf,0x53,0xe6,0xd7,0x88,0x02};
+         0x78,0x6e,0xa9,0xd8,0xcd,0x4a,0x85,0xa4, 
+         0x45,0xb6,0x6e,0x5d,0x21,0x50,0x61,0xf6, 
+         0x5f,0xdf,0x5c,0x7a,0xde,0x0d,0x19,0xd3, 
+         0xc1,0x3b,0x14,0xcc,0x8e,0xed,0xdb,0x17,
+         0xb6,0xca,0xba,0x86,0xa9,0xea,0x51,0x2d, 
+         0xc1,0xa9,0x16,0xda,0xf8,0x7b,0x59,0x8a, 
+         0xdf,0xcb,0xa4,0x67,0x00,0x44,0xea,0x24, 
+         0x73,0xe5,0xcb,0x4b,0xaf,0x2a,0x31,0x25,
+         0x22,0x28,0x3f,0x16,0x10,0x82,0xf7,0xeb, 
+         0x94,0x0d,0xdd,0x09,0x22,0x14,0x08,0x79, 
+         0xba,0x11,0x0b,0xf1,0xff,0x2d,0x67,0xac, 
+         0xeb,0xb6,0x55,0x51,0x69,0x97,0xa7,0x25,
+         0x6b,0x9c,0xa0,0x9b,0xd5,0x08,0x9b,0x27, 
+         0x42,0x1c,0x7a,0x69,0x57,0xe6,0x2e,0xed, 
+         0xa9,0x5b,0x25,0xe8,0x1f,0xd2,0xed,0x1f, 
+         0xdf,0xe7,0x80,0x17,0xba,0x0d,0x4d,0x38};
 
     /* DSA Known Random Values (known random key block       is 160-bits)  */
     /*                     and (known random signature block is 160-bits). */
@@ -1688,11 +1731,11 @@ sftk_fips_DSA_PowerUpSelfTest( void )
 
     /* DSA Known Signature (320-bits). */
     static const PRUint8 dsa_known_signature[] = {
-			     0x39,0x0d,0x84,0xb1,0xf7,0x52,0x89,0xba,
-			     0xec,0x1e,0xa8,0xe2,0x00,0x8e,0x37,0x8f,
-			     0xc2,0xf5,0xf8,0x70,0x11,0xa8,0xc7,0x02,
-			     0x0e,0x75,0xcf,0x6b,0x54,0x4a,0x52,0xe8,
-			     0xd8,0x6d,0x4a,0xe8,0xee,0x56,0x8e,0x59};
+        0x25,0x7c,0x3a,0x79,0x32,0x45,0xb7,0x32, 
+        0x70,0xca,0x62,0x63,0x2b,0xf6,0x29,0x2c, 
+        0x22,0x2a,0x03,0xce,0x48,0x15,0x11,0x72, 
+        0x7b,0x7e,0xf5,0x7a,0xf3,0x10,0x3b,0xde,
+        0x34,0xc1,0x9e,0xd7,0x27,0x9e,0x77,0x38};
 
     /* DSA variables. */
     DSAPrivateKey *        dsa_private_key;
@@ -1711,12 +1754,11 @@ sftk_fips_DSA_PowerUpSelfTest( void )
     /*******************************************/
 
     /* Generate a DSA public/private key pair. */
-
     dsa_status = DSA_NewKeyFromSeed(&dsa_pqg, dsa_known_random_key_block,
                                     &dsa_private_key);
 
     if( dsa_status != SECSuccess )
-	return( CKR_HOST_MEMORY );
+        return( CKR_HOST_MEMORY );
 
     /* construct public key from private key. */
     dsa_public_key.params      = dsa_private_key->params;
@@ -1735,8 +1777,8 @@ sftk_fips_DSA_PowerUpSelfTest( void )
     /* Perform DSA signature process. */
     dsa_status = DSA_SignDigestWithSeed( dsa_private_key, 
                                          &dsa_signature_item,
-					 &dsa_digest_item,
-					 dsa_known_random_signature_block );
+                                         &dsa_digest_item,
+                                         dsa_known_random_signature_block );
 
     if( ( dsa_status != SECSuccess ) ||
         ( dsa_signature_item.len != FIPS_DSA_SIGNATURE_LENGTH ) ||
@@ -1752,7 +1794,7 @@ sftk_fips_DSA_PowerUpSelfTest( void )
     /* Perform DSA verification process. */
     dsa_status = DSA_VerifyDigest( &dsa_public_key, 
                                    &dsa_signature_item,
-				   &dsa_digest_item);
+                                   &dsa_digest_item);
     }
 
     PORT_FreeArena(dsa_private_key->params.arena, PR_TRUE);
@@ -1767,6 +1809,79 @@ sftk_fips_DSA_PowerUpSelfTest( void )
 
 }
 
+static CK_RV
+sftk_fips_RNG_PowerUpSelfTest( void )
+{
+   static const PRUint8 XKeyValue[] = {
+                     0x8d,0xf2,0xa4,0x94,0x49,0x22,0x76,0xaa,
+                     0x3d,0x25,0x75,0x9b,0xb0,0x68,0x69,0xcb,
+                     0xea,0xc0,0xd8,0x3a,0xfb,0x8d,0x0c,0xf7,
+                     0xcb,0xb8,0x32,0x4f,0x0d,0x78,0x82,0xe5};
+   static const PRUint8 XSeed[] = {
+                     0xea,0xc0,0xd8,0x3a,0xfb,0x8d,0x0c,0xf7,
+                     0xcb,0xb8,0x32,0x4f,0x0d,0x78,0x82,0xe5,
+                     0xd0,0x76,0x2f,0xc5,0xb7,0x21,0x0e,0xaf,
+                     0xc2,0xe9,0xad,0xac,0x32,0xab,0x7a,0xac};
+   static const PRUint8 Q[] = {   
+                     0x85,0x89,0x9c,0x77,0xa3,0x79,0xff,0x1a,
+                     0x86,0x6f,0x2f,0x3e,0x2e,0xf9,0x8c,0x9c,
+                     0x9d,0xef,0xeb,0xed};
+   static const PRUint8 rng_known_GENX[] = {
+                     0x65,0x48,0xe3,0xca,0xac,0x64,0x2d,0xf7,
+                     0x7b,0xd3,0x4e,0x79,0xc9,0x7d,0xa6,0xa8,
+                     0xa2,0xc2,0x1f,0x8f,0xe9,0xb9,0xd3,0xa1,
+                     0x3f,0xf7,0x0c,0xcd,0xa6,0xca,0xbf,0xce,
+                     0x84,0x0e,0xb6,0xf1,0x0d,0xbe,0xa9,0xa3};
+   static const PRUint8 rng_known_DSAX[] = {
+                     0x7a,0x86,0xf1,0x7f,0xbd,0x4e,0x6e,0xd9,
+                     0x0a,0x26,0x21,0xd0,0x19,0xcb,0x86,0x73,
+                     0x10,0x1f,0x60,0xd7};
+
+   SECStatus rng_status = SECSuccess;
+   PRUint8 GENX[2*SHA1_LENGTH];
+   PRUint8 DSAX[FIPS_DSA_SUBPRIME_LENGTH];
+   PRUint8 XKey[FIPS_RNG_XKEY_LENGTH];
+  
+   PORT_Memcpy (XKey, XKeyValue, FIPS_RNG_XKEY_LENGTH);
+   
+   /*******************************************/
+   /* Generate X with a known seed.           */
+   /*******************************************/
+   rng_status = FIPS186Change_GenerateX(XKey, XSeed, GENX);
+
+   /* Verify GENX to perform the RNG integrity check */
+   if( ( rng_status != SECSuccess ) ||
+       ( PORT_Memcmp( GENX, rng_known_GENX,
+                      (2*SHA1_LENGTH) ) != 0 ) )
+       return( CKR_DEVICE_ERROR );
+
+   /*******************************************/
+   /* Generate DSAX fow given Q.              */
+   /*******************************************/
+
+   rng_status = FIPS186Change_ReduceModQForDSA(GENX, Q, DSAX);
+
+   /* Verify DSAX to perform the RNG integrity check */
+   if( ( rng_status != SECSuccess ) ||
+       ( PORT_Memcmp( DSAX, rng_known_DSAX,
+                      (FIPS_DSA_SUBPRIME_LENGTH) ) != 0 ) )
+       return( CKR_DEVICE_ERROR );
+       
+   return( CKR_OK ); 
+}
+
+static CK_RV
+sftk_fipsSoftwareIntegrityTest(void)
+{
+    CK_RV crv = CKR_OK;
+
+    /* make sure that our check file signatures are OK */
+    if( !BLAPI_VerifySelf( NULL ) || 
+	!BLAPI_SHVerify( SOFTOKEN_LIB_NAME, (PRFuncPtr) sftk_fips_HMAC ) ) {
+	crv = CKR_DEVICE_ERROR; /* better error code? checksum error? */
+    }
+    return crv;
+}
 
 CK_RV
 sftk_fipsPowerUpSelfTest( void )
@@ -1850,6 +1965,12 @@ sftk_fipsPowerUpSelfTest( void )
 
     if( rv != CKR_OK )
         return rv;
+
+    /* RNG Power-Up SelfTest(s). */
+    rv = sftk_fips_RNG_PowerUpSelfTest();
+
+    if( rv != CKR_OK )
+        return rv;
     
 #ifdef NSS_ENABLE_ECC
     /* ECDSA Power-Up SelfTest(s). */
@@ -1858,6 +1979,12 @@ sftk_fipsPowerUpSelfTest( void )
     if( rv != CKR_OK )
         return rv;
 #endif
+
+    /* Software/Firmware Integrity Test. */
+    rv = sftk_fipsSoftwareIntegrityTest();
+
+    if( rv != CKR_OK )
+        return rv;
 
     /* Passed Power-Up SelfTest(s). */
     return( CKR_OK );

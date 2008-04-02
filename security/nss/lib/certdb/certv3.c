@@ -102,8 +102,8 @@ char *
 CERT_FindCertURLExtension(CERTCertificate *cert, int tag, int catag)
 {
     SECStatus rv;
-    SECItem urlitem;
-    SECItem baseitem;
+    SECItem urlitem = {siBuffer,0};
+    SECItem baseitem = {siBuffer,0};
     SECItem urlstringitem = {siBuffer,0};
     SECItem basestringitem = {siBuffer,0};
     PRArenaPool *arena = NULL;
@@ -121,8 +121,6 @@ CERT_FindCertURLExtension(CERTCertificate *cert, int tag, int catag)
     }
     
     hasbase = PR_FALSE;
-    urlitem.data = NULL;
-    baseitem.data = NULL;
     
     rv = cert_FindExtension(cert->extensions, tag, &urlitem);
     if ( rv == SECSuccess ) {
@@ -147,15 +145,16 @@ CERT_FindCertURLExtension(CERTCertificate *cert, int tag, int catag)
 	goto loser;
     }
 
-    rv = SEC_QuickDERDecodeItem(arena, &urlstringitem, SEC_IA5StringTemplate, 
-			    &urlitem);
+    rv = SEC_QuickDERDecodeItem(arena, &urlstringitem,
+                                SEC_ASN1_GET(SEC_IA5StringTemplate), &urlitem);
 
     if ( rv != SECSuccess ) {
 	goto loser;
     }
     if ( hasbase ) {
-	rv = SEC_QuickDERDecodeItem(arena, &basestringitem, SEC_IA5StringTemplate,
-				&baseitem);
+	rv = SEC_QuickDERDecodeItem(arena, &basestringitem,
+                                    SEC_ASN1_GET(SEC_IA5StringTemplate),
+                                    &baseitem);
 
 	if ( rv != SECSuccess ) {
 	    goto loser;
@@ -252,8 +251,8 @@ CERT_FindNSStringExtension(CERTCertificate *cert, int oidtag)
 	goto loser;
     }
 
-    rv = SEC_QuickDERDecodeItem(arena, &tmpItem, SEC_IA5StringTemplate, 
-			    &wrapperItem);
+    rv = SEC_QuickDERDecodeItem(arena, &tmpItem,
+                            SEC_ASN1_GET(SEC_IA5StringTemplate), &wrapperItem);
 
     if ( rv != SECSuccess ) {
 	goto loser;
@@ -307,7 +306,7 @@ CERT_FindSubjectKeyIDExtension(CERTCertificate *cert, SECItem *retItem)
 	PLArenaPool * tmpArena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
 	if (tmpArena) {
 	    rv = SEC_QuickDERDecodeItem(tmpArena, &decodedValue, 
-	                                SEC_OctetStringTemplate, 
+	                                SEC_ASN1_GET(SEC_OctetStringTemplate), 
 					&encodedValue);
 	    if (rv == SECSuccess) {
 	        rv = SECITEM_CopyItem(NULL, retItem, &decodedValue);

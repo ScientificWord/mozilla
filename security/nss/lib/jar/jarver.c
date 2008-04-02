@@ -40,30 +40,22 @@
  *  Jarnature Parsing & Verification
  */
 
-#define USE_MOZ_THREAD
-
+#include "nssrenam.h"
 #include "jar.h"
 #include "jarint.h"
+#include "certdb.h"
+#include "certt.h"
+#include "secpkcs7.h"
 
-#ifdef USE_MOZ_THREAD
-#include "jarevil.h"
-#endif
 /*#include "cdbhdl.h" */
 #include "secder.h"
 
 /* to use huge pointers in win16 */
 
-#if !defined(XP_WIN16)
 #define xp_HUGE_MEMCPY PORT_Memcpy
 #define xp_HUGE_STRCPY PORT_Strcpy
 #define xp_HUGE_STRLEN PORT_Strlen
 #define xp_HUGE_STRNCASECMP PORT_Strncasecmp
-#else
-#define xp_HUGE_MEMCPY hmemcpy
-int xp_HUGE_STRNCASECMP (char ZHUGEP *buf, char *key, int len);
-size_t xp_HUGE_STRLEN (char ZHUGEP *s);
-char *xp_HUGE_STRCPY (char *to, char ZHUGEP *from);
-#endif
 
 /* from certdb.h */
 #define CERTDB_USER (1<<6)
@@ -141,11 +133,8 @@ static int jar_internal_digest
 int JAR_parse_manifest 
     (JAR *jar, char ZHUGEP *raw_manifest, 
         long length, const char *path, const char *url)
-  {
-
-#if defined(XP_WIN16)
-    PORT_Assert( !IsBadHugeReadPtr(raw_manifest, length) );
-#endif
+{
+  int filename_free = 0;
 
   /* fill in the path, if supplied. This is a the location
      of the jar file on disk, if known */
@@ -155,6 +144,7 @@ int JAR_parse_manifest
     jar->filename = PORT_Strdup (path);
     if (jar->filename == NULL)
       return JAR_ERR_MEMORY;
+    filename_free = 1;
     }
 
   /* fill in the URL, if supplied. This is the place
@@ -164,7 +154,13 @@ int JAR_parse_manifest
     {
     jar->url = PORT_Strdup (url);
     if (jar->url == NULL)
+      {
+      if (filename_free)
+        {
+        PORT_Free (jar->filename);
+        }
       return JAR_ERR_MEMORY;
+      }
     }
 
   /* Determine what kind of file this is from the META-INF 
@@ -195,7 +191,7 @@ int JAR_parse_manifest
  
 int jar_parse_sig
     (JAR *jar, const char *path, char ZHUGEP *raw_manifest, long length)
-  {
+{
   JAR_Signer *signer;
   int status = JAR_ERR_ORDER;
 
@@ -209,12 +205,6 @@ int jar_parse_sig
 
   if (jar->globalmeta == NULL)
     return JAR_ERR_ORDER;
-
-#if 0
-  /* XXX Turn this on to disable multiple signers */
-  if (jar->digest == NULL)
-    return JAR_ERR_ORDER;
-#endif
 
   /* Determine whether or not this RSA file has
      has an associated SF file */
@@ -248,39 +238,9 @@ int jar_parse_sig
     return JAR_ERR_SIG;
     }
 
-#ifdef XP_WIN16
-  /*
-   * For Win16, copy the portion of the raw_buffer containing the digital 
-   * signature into another buffer...  This insures that the data will
-   * NOT cross a segment boundary.  Therefore, 
-   * jar_parse_digital_signature(...) does NOT need to deal with HUGE 
-   * pointers...
-   */
-
-    {
-    unsigned char *manifest_copy;
-
-    manifest_copy = (unsigned char *) PORT_ZAlloc (length);
-    if (manifest_copy)
-      {
-      xp_HUGE_MEMCPY (manifest_copy, raw_manifest, length);
-
-      status = jar_parse_digital_signature 
-                  (manifest_copy, signer, length, jar);
-
-      PORT_Free (manifest_copy);
-      }
-    else
-      {
-      /* out of memory */
-      return JAR_ERR_MEMORY;
-      }
-    }
-#else
   /* don't expense unneeded calloc overhead on non-win16 */
   status = jar_parse_digital_signature 
                 (raw_manifest, signer, length, jar);
-#endif
 
   return status;
   }
@@ -446,6 +406,7 @@ int jar_parse_any
     if (xp_HUGE_STRLEN (raw_manifest) >= SZ)
       {
       /* almost certainly nonsense */
+      PORT_Free (met);
       continue;
       }
 
@@ -481,6 +442,16 @@ int jar_parse_any
 
       if (!PORT_Strcasecmp (line, "SHA1-Digest") || !PORT_Strcasecmp (line, "SHA-Digest"))
         sf_sha1 = (char *) met->info;
+      }
+
+    if (type != jarTypeMF)
+      {
+      PORT_Free (met->header);
+      if (type != jarTypeSF)
+        {
+        PORT_Free (met->info);
+        }
+      PORT_Free (met);
       }
     }
 
@@ -628,10 +599,17 @@ int jar_parse_any
         /* metainfo (name, value) pair is now (line, x_info) */
 
         if ((met->header = PORT_Strdup (line)) == NULL)
+          {
+          PORT_Free (met);
           return JAR_ERR_MEMORY;
+          }
 
         if ((met->info = PORT_Strdup (x_info)) == NULL)
+          {
+          PORT_Free (met->header);
+          PORT_Free (met);
           return JAR_ERR_MEMORY;
+          }
 
         ADDITEM (jar->metainfo, jarTypeMeta, 
            x_name, met, sizeof (JAR_Metainfo));
@@ -657,7 +635,10 @@ int jar_parse_any
       PORT_Assert( binary_length == MD5_LENGTH );
 
       if (binary_length != MD5_LENGTH)
+        {
+        PORT_Free (dig);
         return JAR_ERR_CORRUPT;
+        }
 
       memcpy (dig->md5, binary_digest, MD5_LENGTH);
       dig->md5_status = jarHashPresent;
@@ -672,7 +653,10 @@ int jar_parse_any
       PORT_Assert( binary_length == SHA1_LENGTH );
 
       if (binary_length != SHA1_LENGTH)
+        {
+        PORT_Free (dig);
         return JAR_ERR_CORRUPT;
+        }
 
       memcpy (dig->sha1, binary_digest, SHA1_LENGTH);
       dig->sha1_status = jarHashPresent;
@@ -690,7 +674,10 @@ int jar_parse_any
       ADDITEM (signer->sf, jarTypeSF, x_name, dig, sizeof (JAR_Digest));
       }
     else
+      {
+      PORT_Free (dig);
       return JAR_ERR_ORDER;
+      }
 
     /* we're placing these calculated digests of manifest.mf 
        sections in a list where they can subsequently be forgotten */
@@ -823,9 +810,6 @@ static int jar_insanity_check (char ZHUGEP *data, long length)
 static int jar_parse_digital_signature 
      (char *raw_manifest, JAR_Signer *signer, long length, JAR *jar)
   {
-#if defined(XP_WIN16)
-  PORT_Assert( LOWORD(raw_manifest) + length < 0xFFFF );
-#endif
   return jar_validate_pkcs7 (jar, signer, raw_manifest, length);
   }
 
@@ -853,11 +837,7 @@ static int jar_add_cert
   if (fing == NULL)
     goto loser;
 
-#ifdef USE_MOZ_THREAD
-  fing->cert = jar_moz_dup (cert);
-#else
   fing->cert = CERT_DupCertificate (cert);
-#endif
 
   /* get the certkey */
 
@@ -1082,11 +1062,7 @@ int PR_CALLBACK JAR_cert_attribute
 
     if (certdb)
       {
-#ifdef USE_MOZ_THREAD
-      cert = jar_moz_nickname (certdb, (char*)key);
-#else
       cert = CERT_FindCertByNickname (certdb, key);
-#endif
 
       if (cert)
         {
@@ -1097,7 +1073,10 @@ int PR_CALLBACK JAR_cert_attribute
         if (*result)
           PORT_Memcpy (*result, cert->certKey.data, *length);
         else
+          {
+          JAR_close_database (certdb);
           return JAR_ERR_MEMORY;
+          }
         }
       JAR_close_database (certdb);
       }
@@ -1338,11 +1317,7 @@ static char *jar_choose_nickname (CERTCertificate *cert)
     {
     /* check for duplicate nickname */
 
-#ifdef USE_MOZ_THREAD
-    if (jar_moz_nickname (CERT_GetDefaultCertDB(), cert_cn) == NULL)
-#else
     if (CERT_FindCertByNickname (CERT_GetDefaultCertDB(), cert_cn) == NULL)
-#endif
       return cert_cn;
 
     /* Try the CN plus O */
@@ -1354,12 +1329,12 @@ static char *jar_choose_nickname (CERTCertificate *cert)
     PR_snprintf (cert_cn_o, cn_o_length, 
            "%s's %s Certificate", cert_cn, cert_o);
 
-#ifdef USE_MOZ_THREAD
-    if (jar_moz_nickname (CERT_GetDefaultCertDB(), cert_cn_o) == NULL)
-#else
     if (CERT_FindCertByNickname (CERT_GetDefaultCertDB(), cert_cn_o) == NULL)
-#endif
+      {
+      PORT_Free (cert_cn_o);
       return cert_cn;
+      }
+    PORT_Free (cert_cn_o);
     }
 
   /* If all that failed, use the ugly nickname */
@@ -1380,9 +1355,6 @@ static char *jar_choose_nickname (CERTCertificate *cert)
 char *JAR_cert_html
     (JAR *jar, int style, long keylen, void *key, int *result)
   {
-#ifdef notdef
-  char *html;
-#endif
   CERTCertificate *cert;
 
   *result = -1;
@@ -1398,16 +1370,6 @@ char *JAR_cert_html
   *result = -1;
 
    return NULL;
-
-#ifdef notdef
-  html = CERT_HTMLCertInfo (cert, /* show images */ PR_TRUE,
-		/*show issuer*/PR_TRUE);
-
-  if (html == NULL)
-    *result = -1;
-
-  return html;
-#endif
   }
 
 /*
@@ -1443,15 +1405,12 @@ extern int PR_CALLBACK JAR_stash_cert
   /* Attempt to give a name to the newish certificate */
   nickname = jar_choose_nickname (cert);
 
-#ifdef USE_MOZ_THREAD
-  newcert = jar_moz_nickname (certdb, nickname);
-#else
   newcert = CERT_FindCertByNickname (certdb, nickname);
-#endif
 
   if (newcert && newcert->isperm) 
     {
     /* already in permanant database */
+    JAR_close_database (certdb);
     return 0;
     }
 
@@ -1462,37 +1421,11 @@ extern int PR_CALLBACK JAR_stash_cert
 
   cert->dbhandle = certdb;
 
-#if 0
-  nickname = cert->subjectName;
-  if (nickname)
-    {
-    /* Not checking for a conflict here. But this should
-       be a new cert or it would have been found earlier. */
-
-    nickname = jar_cert_element (nickname, "CN=", 1);
-
-    if (SEC_CertNicknameConflict (nickname, cert->dbhandle))
-      {
-      /* conflict */
-      nickname = PORT_Realloc (&nickname, PORT_Strlen (nickname) + 3);
-
-      /* Beyond one copy, there are probably serious problems 
-         so we will stop at two rather than counting.. */
-
-      PORT_Strcat (nickname, " #2");
-      }
-    }
-#endif
-
   if (nickname != NULL)
     {
     PORT_Memset ((void *) &trust, 0, sizeof(trust));
 
-#ifdef USE_MOZ_THREAD
-    if (jar_moz_perm (cert, nickname, &trust) != SECSuccess) 
-#else
     if (CERT_AddTempCertToPerm (cert, nickname, &trust) != SECSuccess) 
-#endif
       {
       /* XXX might want to call PORT_GetError here */
       result = JAR_ERR_GENERAL;
@@ -1531,11 +1464,7 @@ void *JAR_fetch_cert (long length, void *key)
     issuerSN.serialNumber.len = length - (2 + issuerSN.derIssuer.len);
     issuerSN.serialNumber.data = &keyData[2+issuerSN.derIssuer.len];
 
-#ifdef USE_MOZ_THREAD
-    cert = jar_moz_certkey (certdb, &issuerSN);
-#else
     cert = CERT_FindCertByIssuerAndSN (certdb, &issuerSN);
-#endif
 
     JAR_close_database (certdb);
     }
@@ -1656,14 +1585,13 @@ static void jar_catch_bytes
 
 static int jar_validate_pkcs7 
      (JAR *jar, JAR_Signer *signer, char *data, long length)
-  {
-  SECItem detdig;
+{
 
   SEC_PKCS7ContentInfo *cinfo = NULL;
   SEC_PKCS7DecoderContext *dcx;
-
+  PRBool goodSig;
   int status = 0;
-  char *errstring = NULL;
+  SECItem detdig;
 
   PORT_Assert( jar != NULL && signer != NULL );
 
@@ -1719,19 +1647,13 @@ static int jar_validate_pkcs7
   detdig.len = SHA1_LENGTH;
   detdig.data = signer->digest->sha1;
 
-#ifdef USE_MOZ_THREAD
-  if (jar_moz_verify
-        (cinfo, certUsageObjectSigner, &detdig, HASH_AlgSHA1, PR_FALSE)==
-		SECSuccess)
-#else
-  if (SEC_PKCS7VerifyDetachedSignature 
-        (cinfo, certUsageObjectSigner, &detdig, HASH_AlgSHA1, PR_FALSE)==
-		PR_TRUE)
-#endif
+  goodSig = SEC_PKCS7VerifyDetachedSignature(cinfo, certUsageObjectSigner, 
+                                             &detdig, HASH_AlgSHA1, PR_FALSE);
+  jar_gather_signers (jar, signer, cinfo);
+  if (goodSig == PR_TRUE)
     {
     /* signature is valid */
     signer->valid = 0;
-    jar_gather_signers (jar, signer, cinfo);
     }
   else
     {
@@ -1742,9 +1664,6 @@ static int jar_validate_pkcs7
 
     jar->valid = status;
     signer->valid = status;
-
-    errstring = JAR_get_error (status);
-    /*XP_TRACE(("JAR signature invalid (reason %d = %s)", status, errstring));*/
     }
 
   jar->pkcs7 = PR_TRUE;
@@ -1753,7 +1672,7 @@ static int jar_validate_pkcs7
   SEC_PKCS7DestroyContentInfo (cinfo);
 
   return status;
-  }
+}
 
 /*
  *  j a r _ g a t h e r _ s i g n e r s
@@ -1831,19 +1750,6 @@ CERTCertDBHandle *JAR_open_database (void)
 
 int JAR_close_database (CERTCertDBHandle *certdb)
   {
-#ifdef notdef
-  CERTCertDBHandle *defaultdb;
-
-  /* This really just retrieves the handle, nothing more */
-  defaultdb = CERT_GetDefaultCertDB();
-
-  /* If there is no default db, it means we opened 
-     the permanent database for some reason */
-
-  if (defaultdb == NULL && certdb != NULL)
-    CERT_ClosePermCertDB (certdb);
-#endif
-
   return 0;
   }
 
@@ -1976,48 +1882,3 @@ loser:
   return JAR_ERR_MEMORY;
   }
 
-/* 
- *  W I N 1 6   s t u f f
- *
- *  These functions possibly belong in xp_mem.c, they operate 
- *  on huge string pointers for win16.
- *
- */
-
-#if defined(XP_WIN16)
-int xp_HUGE_STRNCASECMP (char ZHUGEP *buf, char *key, int len)
-  {
-  while (len--) 
-    {
-    char c1, c2;
-
-    c1 = *buf++;
-    c2 = *key++;
-
-    if (c1 >= 'a' && c1 <= 'z') c1 -= ('a' - 'A');
-    if (c2 >= 'a' && c2 <= 'z') c2 -= ('a' - 'A');
-
-    if (c1 != c2) 
-      return (c1 < c2) ? -1 : 1;
-    }
-  return 0;
-  }
-
-size_t xp_HUGE_STRLEN (char ZHUGEP *s)
-  {
-  size_t len = 0L;
-  while (*s++) len++;
-  return len;
-  }
-
-char *xp_HUGE_STRCPY (char *to, char ZHUGEP *from)
-  {
-  char *ret = to;
-
-  while (*from)
-    *to++ = *from++;
-  *to = 0;
-
-  return ret;
-  }
-#endif

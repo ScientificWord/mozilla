@@ -115,6 +115,7 @@ int ssl3CipherSuites[] = {
     TLS_DHE_DSS_WITH_AES_256_CBC_SHA, 	    	/* w */
     TLS_DHE_RSA_WITH_AES_256_CBC_SHA,       	/* x */
     TLS_RSA_WITH_AES_256_CBC_SHA,     	    	/* y */
+    SSL_RSA_WITH_NULL_SHA,			/* z */
     0
 };
 
@@ -161,6 +162,8 @@ static PRBool disableLocking  = PR_FALSE;
 static PRBool ignoreErrors    = PR_FALSE;
 
 PRIntervalTime maxInterval    = PR_INTERVAL_NO_TIMEOUT;
+
+char * progName;
 
 char * ownPasswd( PK11SlotInfo *slot, PRBool retry, void *arg)
 {
@@ -247,13 +250,6 @@ disableAllSSLCiphers(void)
 	    exit(2);
 	}
     }
-}
-
-static SECStatus
-myGoodSSLAuthCertificate(void *arg, PRFileDesc *fd, PRBool checkSig,
-		     PRBool isServer)
-{
-    return SECSuccess;
 }
 
 /* This invokes the "default" AuthCert handler in libssl.
@@ -735,11 +731,10 @@ handle_connection( PRFileDesc *ssl_sock, int tid)
 
 PRInt32 lastFullHandshakePeerID;
 
-SECStatus 
+void
 myHandshakeCallback(PRFileDesc *socket, void *arg) 
 {
     PR_AtomicSet(&lastFullHandshakePeerID, (PRInt32) arg);
-    return SECSuccess;
 }
 
 #endif
@@ -765,9 +760,9 @@ do_connects(
 
 retry:
 
-    tcp_sock = PR_NewTCPSocket();
+    tcp_sock = PR_OpenTCPSocket(addr->raw.family);
     if (tcp_sock == NULL) {
-	errExit("PR_NewTCPSocket");
+	errExit("PR_OpenTCPSocket");
     }
 
     opt.option             = PR_SockOpt_Nonblocking;
@@ -895,32 +890,6 @@ done:
     return SECSuccess;
 }
 
-/* Returns IP address for hostname as PRUint32 in Host Byte Order.
-** Since the value returned is an integer (not a string of bytes), 
-** it is inherently in Host Byte Order. 
-*/
-PRUint32
-getIPAddress(const char * hostName) 
-{
-    const unsigned char *p;
-    PRStatus	         prStatus;
-    PRUint32	         rv;
-    PRHostEnt	         prHostEnt;
-    char                 scratch[PR_NETDB_BUF_SIZE];
-
-    prStatus = PR_GetHostByName(hostName, scratch, sizeof scratch, &prHostEnt);
-    if (prStatus != PR_SUCCESS)
-	errExit("PR_GetHostByName");
-
-#undef  h_addr
-#define h_addr  h_addr_list[0]   /* address, for backward compatibility */
-
-    p = (const unsigned char *)(prHostEnt.h_addr); /* in Network Byte order */
-    FPRINTF(stderr, "strsclnt: %s -> %d.%d.%d.%d\n", hostName, 
-	    p[0], p[1], p[2], p[3]);
-    rv = (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
-    return rv;
-}
 
 typedef struct {
     PRLock* lock;
@@ -1093,16 +1062,18 @@ StressClient_GetClientAuthData(void * arg,
     }
 }
 
-#define HEXCHAR_TO_INT(c, i) \
-    if (((c) >= '0') && ((c) <= '9')) { \
-	i = (c) - '0'; \
-    } else if (((c) >= 'a') && ((c) <= 'f')) { \
-	i = (c) - 'a' + 10; \
-    } else if (((c) >= 'A') && ((c) <= 'F')) { \
-	i = (c) - 'A' + 10; \
-    } else { \
-	Usage("strsclnt"); \
-    }
+int 
+hexchar_to_int(int c) 
+{
+    if (((c) >= '0') && ((c) <= '9'))
+	return (c) - '0'; 
+    if (((c) >= 'a') && ((c) <= 'f'))
+	return (c) - 'a' + 10;
+    if (((c) >= 'A') && ((c) <= 'F'))
+	return (c) - 'A' + 10; 
+    failed_already = 1;
+    return -1;
+}
 
 void
 client_main(
@@ -1114,15 +1085,34 @@ client_main(
     PRFileDesc *model_sock	= NULL;
     int         i;
     int         rv;
-    PRUint32	ipAddress;	/* in host byte order */
+    PRStatus    status;
     PRNetAddr   addr;
 
-    /* Assemble NetAddr struct for connections. */
-    ipAddress = getIPAddress(hostName);
+    status = PR_StringToNetAddr(hostName, &addr);
+    if (status == PR_SUCCESS) {
+    	addr.inet.port = PR_htons(port);
+    } else {
+	/* Lookup host */
+	PRAddrInfo *addrInfo;
+	void       *enumPtr   = NULL;
 
-    addr.inet.family = PR_AF_INET;
-    addr.inet.port   = PR_htons(port);
-    addr.inet.ip     = PR_htonl(ipAddress);
+	addrInfo = PR_GetAddrInfoByName(hostName, PR_AF_UNSPEC, 
+	                                PR_AI_ADDRCONFIG | PR_AI_NOCANONNAME);
+	if (!addrInfo) {
+	    SECU_PrintError(progName, "error looking up host");
+	    return;
+	}
+	do {
+	    enumPtr = PR_EnumerateAddrInfo(enumPtr, addrInfo, port, &addr);
+	} while (enumPtr != NULL &&
+		 addr.raw.family != PR_AF_INET &&
+		 addr.raw.family != PR_AF_INET6);
+	PR_FreeAddrInfo(addrInfo);
+	if (enumPtr == NULL) {
+	    SECU_PrintError(progName, "error looking up host address");
+	    return;
+	}
+    }
 
     /* all suites except RSA_NULL_MD5 are enabled by Domestic Policy */
     NSS_SetDomesticPolicy();
@@ -1134,54 +1124,56 @@ client_main(
         /* disable all the ciphers, then enable the ones we want. */
         disableAllSSLCiphers();
 
-        while (0 != (ndx = *cipherString++)) {
-            int  cipher;
+        while (0 != (ndx = *cipherString)) {
+	    const char * startCipher = cipherString++;
+            int  cipher = 0;
+	    SECStatus rv;
 
 	    if (ndx == ':') {
-		int ctmp;
-
-		cipher = 0;
-		HEXCHAR_TO_INT(*cipherString, ctmp)
-		cipher |= (ctmp << 12);
-		cipherString++;
-		HEXCHAR_TO_INT(*cipherString, ctmp)
-		cipher |= (ctmp << 8);
-		cipherString++;
-		HEXCHAR_TO_INT(*cipherString, ctmp)
-		cipher |= (ctmp << 4);
-		cipherString++;
-		HEXCHAR_TO_INT(*cipherString, ctmp)
-		cipher |= ctmp;
-		cipherString++;
-	    } else {
-		const int *cptr;
-
-		if (! isalpha(ndx))
-		    Usage("strsclnt");
-		cptr = islower(ndx) ? ssl3CipherSuites : ssl2CipherSuites;
-		for (ndx &= 0x1f; (cipher = *cptr++) != 0 && --ndx > 0; ) 
-		    /* do nothing */;
-	    }
-            if (cipher > 0) {
-		SECStatus rv;
-                rv = SSL_CipherPrefSetDefault(cipher, PR_TRUE);
-		if (rv != SECSuccess) {
-		    fprintf(stderr, 
-		"strsclnt: SSL_CipherPrefSetDefault failed with value 0x%04x\n",
-			    cipher);
-		    exit(1);
+		cipher  = hexchar_to_int(*cipherString++);
+		cipher <<= 4;
+		cipher |= hexchar_to_int(*cipherString++);
+		cipher <<= 4;
+		cipher |= hexchar_to_int(*cipherString++);
+		cipher <<= 4;
+		cipher |= hexchar_to_int(*cipherString++);
+		if (cipher <= 0) {
+		    fprintf(stderr, "strsclnt: Invalid cipher value: %-5.5s\n",
+		                    startCipher);
+		    failed_already = 1;
+		    return;
 		}
-            } else {
-		Usage("strsclnt");
-            }
+	    } else {
+		if (isalpha(ndx)) {
+		    const int *cptr;
+
+		    cptr = islower(ndx) ? ssl3CipherSuites : ssl2CipherSuites;
+		    for (ndx &= 0x1f; (cipher = *cptr++) != 0 && --ndx > 0; ) 
+			/* do nothing */;
+		}
+	    	if (cipher <= 0) {
+		    fprintf(stderr, "strsclnt: Invalid cipher letter: %c\n", 
+		                    *startCipher);
+		    failed_already = 1;
+		    return;
+		}
+	    }
+	    rv = SSL_CipherPrefSetDefault(cipher, PR_TRUE);
+	    if (rv != SECSuccess) {
+		fprintf(stderr, 
+			"strsclnt: SSL_CipherPrefSetDefault(0x%04x) failed\n",
+			cipher);
+		failed_already = 1;
+		return;
+	    }
         }
     }
 
     /* configure model SSL socket. */
 
-    model_sock = PR_NewTCPSocket();
+    model_sock = PR_OpenTCPSocket(addr.raw.family);
     if (model_sock == NULL) {
-	errExit("PR_NewTCPSocket on model socket");
+	errExit("PR_OpenTCPSocket for model socket");
     }
 
     model_sock = SSL_ImportFD(NULL, model_sock);
@@ -1325,7 +1317,6 @@ main(int argc, char **argv)
     const char *         fileName    = NULL;
     char *               hostName    = NULL;
     char *               nickName    = NULL;
-    char *               progName    = NULL;
     char *               tmp         = NULL;
     char *		 passwd      = NULL;
     int                  connections = 1;
@@ -1410,6 +1401,8 @@ main(int argc, char **argv)
 
 	}
     }
+    PL_DestroyOptState(optstate);
+
     if (!hostName || status == PL_OPT_BAD)
     	Usage(progName);
 
@@ -1474,7 +1467,17 @@ main(int argc, char **argv)
     if (Cert_And_Key.key) {
 	SECKEY_DestroyPrivateKey(Cert_And_Key.key);
     }
+
     PR_DestroyLock(Cert_And_Key.lock);
+
+    if (Cert_And_Key.password) {
+        PL_strfree(Cert_And_Key.password);
+    }
+    if (Cert_And_Key.nickname) {
+        PL_strfree(Cert_And_Key.nickname);
+    }
+
+    PL_strfree(hostName);
 
     /* some final stats. */
     if (ssl3stats->hsh_sid_cache_hits + ssl3stats->hsh_sid_cache_misses +
@@ -1497,8 +1500,13 @@ main(int argc, char **argv)
     else {
 	printf("strsclnt: NoReuse - %d server certificates tested.\n",
                certsTested);
-	exitVal = (ssl3stats->hsh_sid_cache_misses != connections) ||
+        if (ssl3stats->hsh_sid_cache_hits + ssl3stats->hsh_sid_cache_misses +
+            ssl3stats->hsh_sid_cache_not_ok > 0) {
+            exitVal = (ssl3stats->hsh_sid_cache_misses != connections) ||
                 (certsTested != connections);
+        } else {                /* ssl2 connections */
+            exitVal = (certsTested != connections);
+        }
     }
 
     exitVal = ( exitVal || failed_already );

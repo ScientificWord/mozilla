@@ -112,6 +112,8 @@ SSL_IMPORT PRFileDesc *SSL_ImportFD(PRFileDesc *model, PRFileDesc *fd);
 					  /* step-down keys if needed.      */
 #define SSL_BYPASS_PKCS11              16 /* use PKCS#11 for pub key only   */
 #define SSL_NO_LOCKS                   17 /* Don't use locks for protection */
+#define SSL_ENABLE_SESSION_TICKETS     18 /* Enable TLS SessionTicket       */
+                                          /* extension (not implemented)    */
 
 #ifdef SSL_DEPRECATED_FUNCTION 
 /* Old deprecated function names */
@@ -187,7 +189,7 @@ SSL_IMPORT SECStatus SSL_ForceHandshakeWithTimeout(PRFileDesc *fd,
 ** issuer of the client's certificate (if any). Subject is the subject of
 ** the other end's certificate. The pointers can be zero if the desired
 ** data is not needed.  All strings returned by this function are owned
-** by SSL, and will be freed when the socket is closed.
+** by the caller, and need to be freed with PORT_Free.
 */
 SSL_IMPORT SECStatus SSL_SecurityStatus(PRFileDesc *fd, int *on, char **cipher,
 			                int *keySize, int *secretKeySize,
@@ -473,6 +475,37 @@ SSL_IMPORT SECStatus SSL_GetCipherSuiteInfo(PRUint16 cipherSuite,
 ** to the peer on this SSL/TLS connection, or NULL if none has been sent.
 */
 SSL_IMPORT CERTCertificate * SSL_LocalCertificate(PRFileDesc *fd);
+
+/* Test an SSL configuration to see if  SSL_BYPASS_PKCS11 can be turned on.
+** Check the key exchange algorithm for each cipher in the list to see if
+** a master secret key can be extracted after being derived with the mechanism
+** required by the protocolmask argument. If the KEA will use keys from the
+** specified cert make sure the extract operation is attempted from the slot
+** where the private key resides.
+** If MS can be extracted for all ciphers, (*pcanbypass) is set to TRUE and
+** SECSuccess is returned. In all other cases but one (*pcanbypass) is
+** set to FALSE and SECFailure is returned.
+** In that last case Derive() has been called successfully but the MS is null,
+** CanBypass sets (*pcanbypass) to FALSE and returns SECSuccess indicating the
+** arguments were all valid but the slot cannot be bypassed.
+**
+** Note: A TRUE return code from CanBypass means "Your configuration will perform
+** NO WORSE with the bypass enabled than without"; it does NOT mean that every
+** cipher suite listed will work properly with the selected protocols.
+**
+** Caveat: If export cipher suites are included in the argument list Canbypass
+** will return FALSE.
+**/
+
+/* protocol mask bits */
+#define SSL_CBP_SSL3	0x0001	        /* test SSL v3 mechanisms */
+#define SSL_CBP_TLS1_0	0x0002		/* test TLS v1.0 mechanisms */
+
+SSL_IMPORT SECStatus SSL_CanBypass(CERTCertificate *cert,
+                                   SECKEYPrivateKey *privKey,
+				   PRUint32 protocolmask,
+				   PRUint16 *ciphers, int nciphers,
+                                   PRBool *pcanbypass, void *pwArg);
 
 SEC_END_PROTOS
 

@@ -53,10 +53,14 @@
 #include "pk11func.h"
 #include "secerr.h"
 #include "nssbase.h"
+#include "pkixt.h"
+#include "pkix.h"
+#include "pkix_tools.h"
 
 #include "pki3hack.h"
 #include "certi.h"
 #include "secmodi.h"
+#include "ocspti.h"
 #include "ocspi.h"
 
 /*
@@ -124,7 +128,7 @@ nss_makeFlags(PRBool readOnly, PRBool noCertDB,
 }
 
 /*
- * statics to remember the PKCS11_ConfigurePKCS11()
+ * statics to remember the PK11_ConfigurePKCS11()
  * info.
  */
 static char * pk11_config_strings = NULL;
@@ -223,6 +227,18 @@ PK11_ConfigurePKCS11(const char *man, const char *libdes, const char *tokdes,
     pk11_password_required = pwRequired;
 
     return;
+}
+
+void PK11_UnconfigurePKCS11(void)
+{
+    if (pk11_config_strings != NULL) {
+	PR_smprintf_free(pk11_config_strings);
+        pk11_config_strings = NULL;
+    }
+    if (pk11_config_name) {
+        PORT_Free(pk11_config_name);
+        pk11_config_name = NULL;
+    }
 }
 
 static char *
@@ -385,7 +401,7 @@ nss_FindExternalRoot(const char *dbpath, const char* secmodprefix)
  * keyPrefix - prefix added to the beginning of the key database example: "
  * 			"https-server1-"
  * secmodName - name of the security module database (usually "secmod.db").
- * readOnly - Boolean: true if the databases are to be openned read only.
+ * readOnly - Boolean: true if the databases are to be opened read only.
  * nocertdb - Don't open the cert DB and key DB's, just initialize the 
  *			Volatile certdb.
  * nomoddb - Don't open the security module DB, just initialize the 
@@ -395,8 +411,8 @@ nss_FindExternalRoot(const char *dbpath, const char* secmodprefix)
  */
 
 static PRBool nss_IsInitted = PR_FALSE;
+static void* plContext = NULL;
 
-extern SECStatus secoid_Init(void);
 static SECStatus nss_InitShutdownList(void);
 
 #ifdef DEBUG
@@ -418,6 +434,8 @@ nss_Init(const char *configdir, const char *certPrefix, const char *keyPrefix,
     char *lcertPrefix = NULL;
     char *lkeyPrefix = NULL;
     char *lsecmodName = NULL;
+    PKIX_UInt32 actualMinorVersion = 0;
+    PKIX_Error *pkixError = NULL;;
 
     if (nss_IsInitted) {
 	return SECSuccess;
@@ -426,11 +444,15 @@ nss_Init(const char *configdir, const char *certPrefix, const char *keyPrefix,
     /* New option bits must not change the size of CERTCertificate. */
     PORT_Assert(sizeof(dummyCert.options) == sizeof(void *));
 
+    if (SECSuccess != cert_InitLocks()) {
+        return SECFailure;
+    }
+
     if (SECSuccess != InitCRLCache()) {
         return SECFailure;
     }
     
-    if (SECSuccess != InitOCSPGlobal()) {
+    if (SECSuccess != OCSP_InitGlobal()) {
         return SECFailure;
     }
 
@@ -487,7 +509,7 @@ loser:
     }
 
     if (rv == SECSuccess) {
-	if (secoid_Init() != SECSuccess) {
+	if (SECOID_Init() != SECSuccess) {
 	    return SECFailure;
 	}
 	if (STAN_LoadDefaultNSS3TrustDomain() != PR_SUCCESS) {
@@ -510,6 +532,22 @@ loser:
 	cert_CreateSubjectKeyIDHashTable();
 	nss_IsInitted = PR_TRUE;
     }
+
+    if (SECSuccess == rv) {
+	pkixError = PKIX_Initialize
+	    (PKIX_FALSE, PKIX_FALSE, PKIX_MAJOR_VERSION, PKIX_MINOR_VERSION,
+	    PKIX_MINOR_VERSION, &actualMinorVersion, &plContext);
+
+	if (pkixError != NULL) {
+	    rv = SECFailure;
+	} else {
+            char *ev = getenv("NSS_ENABLE_PKIX_VERIFY");
+            if (ev && ev[0]) {
+                cert_SetPKIXValidation(PR_TRUE);
+            }
+        }
+    }
+
     return rv;
 }
 
@@ -613,8 +651,8 @@ struct NSSShutdownFuncPair {
 
 static struct NSSShutdownListStr {
     PZLock		*lock;
-    int			maxFuncs;
-    int			numFuncs;
+    int			allocatedFuncs;
+    int			peakFuncs;
     struct NSSShutdownFuncPair	*funcs;
 } nssShutdownList = { 0 };
 
@@ -625,7 +663,7 @@ static int
 nss_GetShutdownEntry(NSS_ShutdownFunc sFunc, void *appData)
 {
     int count, i;
-    count = nssShutdownList.numFuncs;
+    count = nssShutdownList.peakFuncs;
     /* expect the list to be short, just do a linear search */
     for (i=0; i < count; i++) {
 	if ((nssShutdownList.funcs[i].func == sFunc) &&
@@ -658,33 +696,34 @@ NSS_RegisterShutdown(NSS_ShutdownFunc sFunc, void *appData)
 
     /* make sure we don't have a duplicate */
     i = nss_GetShutdownEntry(sFunc, appData);
-    if (i > 0) {
+    if (i >= 0) {
 	PZ_Unlock(nssShutdownList.lock);
 	PORT_SetError(SEC_ERROR_LIBRARY_FAILURE);
 	return SECFailure;
     }
     /* find an empty slot */
     i = nss_GetShutdownEntry(NULL, NULL);
-    if (i > 0) {
+    if (i >= 0) {
 	nssShutdownList.funcs[i].func = sFunc;
 	nssShutdownList.funcs[i].appData = appData;
 	PZ_Unlock(nssShutdownList.lock);
-	return SECFailure;
+	return SECSuccess;
     }
-    if (nssShutdownList.maxFuncs == nssShutdownList.numFuncs) {
+    if (nssShutdownList.allocatedFuncs == nssShutdownList.peakFuncs) {
 	struct NSSShutdownFuncPair *funcs = 
 		(struct NSSShutdownFuncPair *)PORT_Realloc
 		(nssShutdownList.funcs, 
-		(nssShutdownList.maxFuncs + NSS_SHUTDOWN_STEP) 
+		(nssShutdownList.allocatedFuncs + NSS_SHUTDOWN_STEP) 
 		*sizeof(struct NSSShutdownFuncPair));
 	if (!funcs) {
 	    return SECFailure;
 	}
 	nssShutdownList.funcs = funcs;
-	nssShutdownList.maxFuncs += NSS_SHUTDOWN_STEP;
+	nssShutdownList.allocatedFuncs += NSS_SHUTDOWN_STEP;
     }
-    nssShutdownList.funcs[nssShutdownList.numFuncs++].func = sFunc;
-    nssShutdownList.funcs[nssShutdownList.numFuncs++].appData = appData;
+    nssShutdownList.funcs[nssShutdownList.peakFuncs].func = sFunc;
+    nssShutdownList.funcs[nssShutdownList.peakFuncs].appData = appData;
+    nssShutdownList.peakFuncs++;
     PZ_Unlock(nssShutdownList.lock);
     return SECSuccess;
 }
@@ -704,7 +743,7 @@ NSS_UnregisterShutdown(NSS_ShutdownFunc sFunc, void *appData)
     PORT_Assert(nssShutdownList.lock);
     PZ_Lock(nssShutdownList.lock);
     i = nss_GetShutdownEntry(sFunc, appData);
-    if (i > 0) {
+    if (i >= 0) {
 	nssShutdownList.funcs[i].func = NULL;
 	nssShutdownList.funcs[i].appData = NULL;
     }
@@ -734,8 +773,8 @@ nss_InitShutdownList(void)
     	nssShutdownList.lock = NULL;
 	return SECFailure;
     }
-    nssShutdownList.maxFuncs = NSS_SHUTDOWN_STEP;
-    nssShutdownList.numFuncs = 0;
+    nssShutdownList.allocatedFuncs = NSS_SHUTDOWN_STEP;
+    nssShutdownList.peakFuncs = 0;
 
     return SECSuccess;
 }
@@ -747,7 +786,7 @@ nss_ShutdownShutdownList(void)
     int i;
 
     /* call all the registerd functions first */
-    for (i=0; i < nssShutdownList.numFuncs; i++) {
+    for (i=0; i < nssShutdownList.peakFuncs; i++) {
 	struct NSSShutdownFuncPair *funcPair = &nssShutdownList.funcs[i];
 	if (funcPair->func) {
 	    if ((*funcPair->func)(funcPair->appData,NULL) != SECSuccess) {
@@ -756,8 +795,8 @@ nss_ShutdownShutdownList(void)
 	}
     }
 
-    nssShutdownList.numFuncs = 0;
-    nssShutdownList.maxFuncs = 0;
+    nssShutdownList.peakFuncs = 0;
+    nssShutdownList.allocatedFuncs = 0;
     PORT_Free(nssShutdownList.funcs);
     nssShutdownList.funcs = NULL;
     if (nssShutdownList.lock) {
@@ -786,7 +825,10 @@ NSS_Shutdown(void)
     if (rv != SECSuccess) {
 	shutdownRV = SECFailure;
     }
+    cert_DestroyLocks();
     ShutdownCRLCache();
+    OCSP_ShutdownGlobal();
+    PKIX_Shutdown(plContext);
     SECOID_Shutdown();
     status = STAN_Shutdown();
     cert_DestroySubjectKeyIDHashTable();
@@ -867,5 +909,3 @@ NSS_VersionCheck(const char *importedVersion)
     }
     return PR_TRUE;
 }
-
-

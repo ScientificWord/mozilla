@@ -43,6 +43,9 @@
  * $Id$
  */
 
+#include "utilrename.h"
+#include "seccomon.h"
+
 typedef struct DERTemplateStr DERTemplate;
 
 /*
@@ -156,18 +159,5 @@ struct DERTemplateStr {
 {					  \
     (item)->len = ((item)->len + 7) >> 3; \
 }
-
-extern DERTemplate SECAnyTemplate[];
-extern DERTemplate SECBitStringTemplate[];
-extern DERTemplate SECBooleanTemplate[];
-extern DERTemplate SECIA5StringTemplate[];
-extern DERTemplate SECIntegerTemplate[];
-extern DERTemplate SECNullTemplate[];
-extern DERTemplate SECObjectIDTemplate[];
-extern DERTemplate SECOctetStringTemplate[];
-extern DERTemplate SECPrintableStringTemplate[];
-extern DERTemplate SECT61StringTemplate[];
-extern DERTemplate SECUTCTimeTemplate[];
-extern DERTemplate SECAlgorithmIDTemplate[];
 
 #endif /* _SECDERT_H_ */

@@ -375,6 +375,7 @@ VFY_VerifyDigest;
 ;+# Data objects
 ;+#
 ;+# Don't export these DATA symbols on Windows because they don't work right.
+;+# Use the SEC_ASN1_GET / SEC_ASN1_SUB / SEC_ASN1_XTRN macros to access them.
 ;;CERT_CrlTemplate DATA ;
 ;;CERT_SignedDataTemplate DATA ;
 ;;CERT_CertificateTemplate DATA ;
@@ -843,6 +844,7 @@ SECOID_AddEntry;
 ;+# Data objects
 ;+#
 ;+# Don't export these DATA symbols on Windows because they don't work right.
+;+# Use the SEC_ASN1_GET / SEC_ASN1_SUB / SEC_ASN1_XTRN macros to access them.
 ;;CERT_SequenceOfCertExtensionTemplate DATA ;
 ;;CERT_SignedCrlTemplate DATA ;
 NSS_Get_CERT_SequenceOfCertExtensionTemplate;
@@ -884,6 +886,61 @@ SEC_RegisterDefaultHttpClient;
 ;+NSS_3.11.2 {
 ;+    global:
 SECKEY_SignatureLen;
+;+    local:
+;+       *;
+;+};
+;+NSS_3.11.7 {
+;+    global:
+CERT_SetOCSPFailureMode;
+CERT_OCSPCacheSettings;
+CERT_ClearOCSPCache;
+DER_GeneralizedDayToAscii;
+DER_TimeChoiceDayToAscii;
+DER_TimeToGeneralizedTime;
+DER_TimeToGeneralizedTimeArena;
+;+    local:
+;+       *;
+;+};
+;+NSS_3.11.9 {
+;+    global:
+PK11_UnconfigurePKCS11;
+;+    local:
+;+       *;
+;+};
+;+NSS_3.12 { 	# NSS 3.12 release
+;+    global:
+CERT_CheckNameSpace;
+CERT_EncodeCertPoliciesExtension;
+CERT_EncodeInfoAccessExtension;
+CERT_EncodeInhibitAnyExtension;
+CERT_EncodeNoticeReference;
+CERT_EncodePolicyConstraintsExtension;
+CERT_EncodePolicyMappingExtension;
+CERT_EncodeSubjectKeyID;
+CERT_EncodeUserNotice;
+CERT_FindCRLEntryReasonExten;
+CERT_FindCRLNumberExten;
+CERT_FindNameConstraintsExten;
+CERT_GetValidDNSPatternsFromCert;
+CERT_SetOCSPTimeout;
+CERT_PKIXVerifyCert;
+PK11_CreateGenericObject;
+PK11_CreatePBEV2AlgorithmID;
+PK11_GenerateKeyPairWithOpFlags;
+PK11_GetAllSlotsForCert;
+PK11_GetPBECryptoMechanism;
+PK11_WriteRawAttribute;
+SECKEY_ECParamsToBasePointOrderLen;
+SECKEY_ECParamsToKeySize;
+SECMOD_DeleteModuleEx;
+SEC_GetRegisteredHttpClient;
+SEC_PKCS5IsAlgorithmPBEAlgTag;
+VFY_CreateContextDirect;
+VFY_CreateContextWithAlgorithmID;
+VFY_VerifyDataDirect;
+VFY_VerifyDataWithAlgorithmID;
+VFY_VerifyDigestDirect;
+VFY_VerifyDigestWithAlgorithmID;
 ;+    local:
 ;+       *;
 ;+};

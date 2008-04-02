@@ -182,6 +182,7 @@ struct PK11DefaultArrayEntryStr {
 #define SECMOD_AES_FLAG 	0x00002000L
 #define SECMOD_SHA256_FLAG	0x00004000L
 #define SECMOD_SHA512_FLAG	0x00008000L	/* also for SHA384 */
+#define SECMOD_CAMELLIA_FLAG 	0x00010000L /* = PUBLIC_MECH_CAMELLIA_FLAG */
 /* reserved bit for future, do not use */
 #define SECMOD_RESERVED_FLAG    0X08000000L
 #define SECMOD_FRIENDLY_FLAG	0x10000000L
@@ -190,12 +191,6 @@ struct PK11DefaultArrayEntryStr {
 /* need to make SECMOD and PK11 prefixes consistant. */
 #define PK11_OWN_PW_DEFAULTS 0x20000000L
 #define PK11_DISABLE_FLAG    0x40000000L
-
-/* FAKE PKCS #11 defines */
-#define CKM_FAKE_RANDOM       0x80000efeL
-#define CKM_INVALID_MECHANISM 0xffffffffL
-#define CKA_DIGEST            0x81000000L
-#define CKA_FLAGS_ONLY        0 /* CKA_CLASS */
 
 /*
  * PK11AttrFlags
@@ -339,7 +334,7 @@ typedef PRUint32 PK11AttrFlags;
 #define SECMOD_FIPS	2	/* internal fips module */
 
 /* default module configuration strings */
-#define SECMOD_SLOT_FLAGS "slotFlags=[RSA,DSA,DH,RC2,RC4,DES,RANDOM,SHA1,MD5,MD2,SSL,TLS,AES,SHA256,SHA512]"
+#define SECMOD_SLOT_FLAGS "slotFlags=[RSA,DSA,DH,RC2,RC4,DES,RANDOM,SHA1,MD5,MD2,SSL,TLS,AES,Camellia,SHA256,SHA512]"
 
 #define SECMOD_MAKE_NSS_FLAGS(fips,slot) \
 "Flags=internal,critical"fips" slotparams=("#slot"={"SECMOD_SLOT_FLAGS"})"
@@ -371,7 +366,15 @@ typedef enum {
     PK11_DIS_TOKEN_NOT_PRESENT = 4
 } PK11DisableReasons;
 
-/* types of PKCS #11 objects */
+/* types of PKCS #11 objects 
+ * used to identify which NSS data structure is 
+ * passed to the PK11_Raw* functions. Types map as follows:
+ *   PK11_TypeGeneric            PK11GenericObject *
+ *   PK11_TypePrivKey            SECKEYPrivateKey *
+ *   PK11_TypePubKey             SECKEYPublicKey *
+ *   PK11_TypeSymKey             PK11SymKey *
+ *   PK11_TypeCert               CERTCertificate * (currently not used).
+ */
 typedef enum {
    PK11_TypeGeneric = 0,
    PK11_TypePrivKey = 1,

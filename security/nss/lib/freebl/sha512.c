@@ -45,6 +45,7 @@
 #include "prtypes.h"	/* for PRUintXX */
 #include "secport.h"	/* for PORT_XXX */
 #include "blapi.h"
+#include "sha256.h"	/* for struct SHA256ContextStr */
 
 /* ============= Common constants and defines ======================= */
 
@@ -92,18 +93,14 @@ static const PRUint32 H256[8] = {
     0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
 };
 
-struct SHA256ContextStr {
-    union {
-	PRUint32 w[64];	    /* message schedule, input buffer, plus 48 words */
-	PRUint8  b[256];
-    } u;
-    PRUint32 h[8];		/* 8 state variables */
-    PRUint32 sizeHi,sizeLo;	/* 64-bit count of hashed bytes. */
-};
-
-#if defined(_MSC_VER) && defined(_X86_)
+#if (_MSC_VER >= 1300)
+#include <stdlib.h>
+#pragma intrinsic(_byteswap_ulong)
+#define SHA_HTONL(x) _byteswap_ulong(x)
+#define BYTESWAP4(x)  x = SHA_HTONL(x)
+#elif defined(_MSC_VER) && defined(_X86_)
 #ifndef FORCEINLINE
-#if (MSC_VER >= 1200)
+#if (_MSC_VER >= 1200)
 #define FORCEINLINE __forceinline
 #else
 #define FORCEINLINE __inline
