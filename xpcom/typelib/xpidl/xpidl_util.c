@@ -58,18 +58,6 @@ xpidl_malloc(size_t nbytes)
     return p;
 }
 
-#ifdef XP_MAC
-static char *strdup(const char *c)
-{
-	char	*newStr = malloc(strlen(c) + 1);
-	if (newStr)
-	{
-		strcpy(newStr, c);
-	}
-	return newStr;
-}
-#endif
-
 char *
 xpidl_strdup(const char *s)
 {
@@ -128,8 +116,9 @@ gboolean
 xpidl_parse_iid(nsID *id, const char *str)
 {
     PRInt32 count = 0;
-    PRInt32 n1, n2, n3[8];
-    PRInt32 n0, i;
+    PRUint32 n0, n1, n2;
+    PRUint32 n3[8];
+    PRUint32 i;
 
     XPT_ASSERT(str != NULL);
     
@@ -146,11 +135,11 @@ xpidl_parse_iid(nsID *id, const char *str)
                    &n3[0],&n3[1],&n3[2],&n3[3],
                    &n3[4],&n3[5],&n3[6],&n3[7]);
 
-    id->m0 = (PRInt32) n0;
-    id->m1 = (PRInt16) n1;
-    id->m2 = (PRInt16) n2;
+    id->m0 = n0;
+    id->m1 = (PRUint16) n1;
+    id->m2 = (PRUint16) n2;
     for (i = 0; i < 8; i++) {
-      id->m3[i] = (PRInt8) n3[i];
+      id->m3[i] = (PRUint8) n3[i];
     }
 
 #ifdef DEBUG_shaver_iid
@@ -250,6 +239,44 @@ verify_type_fits_version(IDL_tree in_tree, IDL_tree error_tree)
     return TRUE;
 }
 
+static gboolean
+IsNot_AlphaUpper(char letter)
+{
+    return letter < 'A' || letter > 'Z';
+}
+
+static gboolean
+IsNot_AlphaLower(char letter)
+{
+    return letter < 'a' || letter > 'z';
+}
+
+static gboolean
+matches_IFoo(const char* substring)
+{
+    if (substring[0] != 'I')
+        return FALSE;
+    if (IsNot_AlphaUpper(substring[1]))
+        return FALSE;
+    if (IsNot_AlphaLower(substring[2]))
+        return FALSE;
+    return TRUE;
+}
+
+static gboolean
+matches_nsIFoo(const char* attribute_name)
+{
+    if (IsNot_AlphaLower(attribute_name[0]))
+        return FALSE;
+    if (IsNot_AlphaLower(attribute_name[1]))
+        return FALSE;
+    if (matches_IFoo(attribute_name + 2))
+        return TRUE;
+    if (IsNot_AlphaLower(attribute_name[2]))
+        return FALSE;
+    return matches_IFoo(attribute_name + 3);
+}
+
 gboolean
 verify_attribute_declaration(IDL_tree attr_tree)
 {
@@ -342,6 +369,18 @@ verify_attribute_declaration(IDL_tree attr_tree)
                            "else must be marked [notxpcom] "
                            "and must be read-only\n");
             return FALSE;
+        }
+
+        /*
+         * canIGoHomeNow is a bad name for an attribute.
+         * /^[a-z]{2,3}I[A-Z][a-z]/ => bad, reserved for
+         * interface flattening.
+         */
+        if (matches_nsIFoo(IDL_IDENT(IDL_LIST(IDL_ATTR_DCL(attr_tree).
+                simple_declarations).data).str)) {
+            XPIDL_WARNING((attr_tree, IDL_WARNING1,
+                 "Naming an attribute nsIFoo causes "
+                 "problems for interface flattening"));
         }
 
         /* 
@@ -508,6 +547,7 @@ verify_method_declaration(IDL_tree method_tree)
     gboolean scriptable_interface;
     gboolean scriptable_method;
     gboolean seen_retval = FALSE;
+    gboolean hasoptional = PR_FALSE;
     const char *method_name = IDL_IDENT(IDL_OP_DCL(method_tree).ident).str;
 
     /* We don't support attributes named IID, conflicts with static GetIID 
@@ -663,6 +703,19 @@ verify_method_declaration(IDL_tree method_tree)
                                "string, wstring or native", param_name);
                 return FALSE;
             }
+        }
+
+        /*
+         * confirm that once an optional argument is used, all remaining
+         * arguments are marked as optional
+         */
+        if (IDL_tree_property_get(simple_decl, "optional") != NULL) {
+            hasoptional = PR_TRUE;
+        }
+        else if (hasoptional) {
+            IDL_tree_error(method_tree,
+                           "non-optional parameter used after one marked [optional]");
+                return FALSE;
         }
 
         /*

@@ -45,6 +45,7 @@
 #include "prdtoa.h"
 #include <math.h>
 #include "nsCRT.h"
+#include "nsCycleCollectionParticipant.h"
 
 /***************************************************************************/
 // Helpers for static convert functions...
@@ -1657,6 +1658,33 @@ nsVariant::Cleanup(nsDiscriminatedUnion* data)
     return NS_OK;
 }
 
+/* static */ void
+nsVariant::Traverse(const nsDiscriminatedUnion& data,
+                    nsCycleCollectionTraversalCallback &cb)
+{
+    switch(data.mType)
+    {
+        case nsIDataType::VTYPE_INTERFACE:
+        case nsIDataType::VTYPE_INTERFACE_IS:
+            cb.NoteXPCOMChild(data.u.iface.mInterfaceValue);
+            break;
+        case nsIDataType::VTYPE_ARRAY:
+            switch(data.u.array.mArrayType) {
+                case nsIDataType::VTYPE_INTERFACE:
+                case nsIDataType::VTYPE_INTERFACE_IS:
+                {
+                    nsISupports** p = (nsISupports**) data.u.array.mArrayValue;
+                    for(PRUint32 i = data.u.array.mArrayCount; i > 0; p++, i--)
+                        cb.NoteXPCOMChild(*p);
+                }
+                default:
+                    break;
+            }
+        default:
+            break;
+    }
+}
+
 /***************************************************************************/
 /***************************************************************************/
 // members...
@@ -2011,9 +2039,10 @@ NS_IMETHODIMP nsVariant::SetAsDOMString(const nsAString & aValue)
 {
     if(!mWritable) return NS_ERROR_OBJECT_IS_IMMUTABLE;
 
-    // A DOMString maps to an AString internally, so we can re-use
-    // SetFromAString here.
-    return nsVariant::SetFromAString(&mData, aValue);
+    DATA_SETTER_PROLOGUE((&mData));
+    if(!(mData.u.mAStringValue = new nsString(aValue)))
+        return NS_ERROR_OUT_OF_MEMORY;
+    DATA_SETTER_EPILOGUE((&mData), VTYPE_DOMSTRING);
 }
 
 /* void setAsACString (in ACString aValue); */

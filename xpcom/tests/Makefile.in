@@ -71,6 +71,8 @@ CPPSRCS		= \
 		TestServMgr.cpp \
 		TestAutoPtr.cpp \
 		TestVersionComparator.cpp \
+		TestTextFormatter.cpp \
+		TestPipe.cpp \
 		$(NULL)
 
 ifndef MOZ_ENABLE_LIBXUL
@@ -88,6 +90,13 @@ CPPSRCS += \
 		TestDeque.cpp \
 		TestStrings.cpp \
 		TestStorageStream.cpp \
+		TestExpirationTracker.cpp \
+		$(NULL)
+endif
+
+ifndef MOZILLA_INTERNAL_API
+CPPSRCS += \
+		TestStringAPI.cpp \
 		$(NULL)
 endif
 
@@ -113,6 +122,10 @@ endif
 
 ENABLE_CXX_EXCEPTIONS = 1
 
+XPCSHELL_TESTS = unit
+
+CPP_UNIT_TESTS = TestPipe
+
 include $(topsrcdir)/config/rules.mk
 
 LOCAL_INCLUDES	= \
@@ -129,3 +142,9 @@ install::
 check::
 	@echo "Running TestVersionComparator tests"
 	@$(PERL) -w $(srcdir)/TestVersionComparatorRunner.pl "$(RUN_TEST_PROGRAM) $(FINAL_TARGET)/TestVersionComparator$(BIN_SUFFIX)"
+	@echo "Running nsTextFormatter tests"
+	@$(RUN_TEST_PROGRAM) $(FINAL_TARGET)/TestTextFormatter$(BIN_SUFFIX)
+	@$(EXIT_ON_ERROR) \
+	for f in $(CPP_UNIT_TESTS); do \
+	  XPCOM_DEBUG_BREAK=stack-and-abort $(RUN_TEST_PROGRAM) $(DIST)/bin/$$f; \
+	done

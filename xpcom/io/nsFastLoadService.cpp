@@ -45,7 +45,6 @@
 #include "nsAutoLock.h"
 #include "nsCOMPtr.h"
 #include "nsFastLoadFile.h"
-#include "nsFastLoadPtr.h"
 #include "nsFastLoadService.h"
 #include "nsString.h"
 
@@ -58,8 +57,6 @@
 #include "nsISeekableStream.h"
 #include "nsISupports.h"
 
-PR_IMPLEMENT_DATA(nsIFastLoadService*) gFastLoadService_ = nsnull;
-
 NS_IMPL_THREADSAFE_ISUPPORTS1(nsFastLoadService, nsIFastLoadService)
 
 nsFastLoadService::nsFastLoadService()
@@ -67,14 +64,10 @@ nsFastLoadService::nsFastLoadService()
     mFastLoadPtrMap(nsnull),
     mDirection(0)
 {
-    NS_ASSERTION(gFastLoadService_ == nsnull, "double FastLoadService init?");
-    gFastLoadService_ = this;
 }
 
 nsFastLoadService::~nsFastLoadService()
 {
-    gFastLoadService_ = nsnull;
-
     if (mInputStream)
         mInputStream->Close();
     if (mOutputStream)
@@ -452,8 +445,8 @@ nsFastLoadService::GetFastLoadReferent(nsISupports* *aPtrAddr)
         return NS_OK;
 
     nsFastLoadPtrEntry* entry =
-        NS_STATIC_CAST(nsFastLoadPtrEntry*,
-                       PL_DHashTableOperate(mFastLoadPtrMap, aPtrAddr,
+        static_cast<nsFastLoadPtrEntry*>
+                   (PL_DHashTableOperate(mFastLoadPtrMap, aPtrAddr,
                                             PL_DHASH_LOOKUP));
     if (PL_DHASH_ENTRY_IS_FREE(entry))
         return NS_OK;
@@ -518,8 +511,8 @@ nsFastLoadService::ReadFastLoadPtr(nsIObjectInputStream* aInputStream,
     }
 
     nsFastLoadPtrEntry* entry =
-        NS_STATIC_CAST(nsFastLoadPtrEntry*,
-                       PL_DHashTableOperate(mFastLoadPtrMap, aPtrAddr,
+        static_cast<nsFastLoadPtrEntry*>
+                   (PL_DHashTableOperate(mFastLoadPtrMap, aPtrAddr,
                                             PL_DHASH_ADD));
     NS_ASSERTION(entry->mPtrAddr == nsnull, "duplicate nsFastLoadPtr?!");
 

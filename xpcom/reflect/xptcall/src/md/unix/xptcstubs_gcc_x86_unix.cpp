@@ -40,6 +40,7 @@
 #ifdef __GNUC__         /* Gnu Compiler. */
 
 #include "xptcprivate.h"
+#include "xptiprivate.h"
 #include "xptc_platforms_unixish_x86.h"
 #include "xptc_gcc_x86_unix.h"
 
@@ -52,7 +53,6 @@ PrepareAndDispatch(uint32 methodIndex, nsXPTCStubBase* self, PRUint32* args)
 
     nsXPTCMiniVariant paramBuffer[PARAM_BUFFER_COUNT];
     nsXPTCMiniVariant* dispatchParams = NULL;
-    nsIInterfaceInfo* iface_info = NULL;
     const nsXPTMethodInfo* info;
     PRUint8 paramCount;
     PRUint8 i;
@@ -60,12 +60,7 @@ PrepareAndDispatch(uint32 methodIndex, nsXPTCStubBase* self, PRUint32* args)
 
     NS_ASSERTION(self,"no self");
 
-    self->GetInterfaceInfo(&iface_info);
-    NS_ASSERTION(iface_info,"no interface info");
-
-    iface_info->GetMethodInfo(PRUint16(methodIndex), &info);
-    NS_ASSERTION(info,"no interface info");
-
+    self->mEntry->GetMethodInfo(PRUint16(methodIndex), &info);
     paramCount = info->GetParamCount();
 
     // setup variant array pointer
@@ -97,9 +92,7 @@ PrepareAndDispatch(uint32 methodIndex, nsXPTCStubBase* self, PRUint32* args)
         }
     }
 
-    result = self->CallMethod((PRUint16)methodIndex, info, dispatchParams);
-
-    NS_RELEASE(iface_info);
+    result = self->mOuter->CallMethod((PRUint16)methodIndex, info, dispatchParams);
 
     if(dispatchParams != paramBuffer)
         delete [] dispatchParams;
@@ -133,14 +126,17 @@ asm(".text\n\t" \
     ".align	2\n\t" \
     ".if	" #n " < 10\n\t" \
     ".globl	" SYMBOL_UNDERSCORE "_ZN14nsXPTCStubBase5Stub" #n "Ev\n\t" \
+    ".hidden	" SYMBOL_UNDERSCORE "_ZN14nsXPTCStubBase5Stub" #n "Ev\n\t" \
     ".type	" SYMBOL_UNDERSCORE "_ZN14nsXPTCStubBase5Stub" #n "Ev,@function\n" \
     SYMBOL_UNDERSCORE "_ZN14nsXPTCStubBase5Stub" #n "Ev:\n\t" \
     ".elseif	" #n " < 100\n\t" \
     ".globl	" SYMBOL_UNDERSCORE "_ZN14nsXPTCStubBase6Stub" #n "Ev\n\t" \
+    ".hidden	" SYMBOL_UNDERSCORE "_ZN14nsXPTCStubBase6Stub" #n "Ev\n\t" \
     ".type	" SYMBOL_UNDERSCORE "_ZN14nsXPTCStubBase6Stub" #n "Ev,@function\n" \
     SYMBOL_UNDERSCORE "_ZN14nsXPTCStubBase6Stub" #n "Ev:\n\t" \
     ".elseif    " #n " < 1000\n\t" \
     ".globl     " SYMBOL_UNDERSCORE "_ZN14nsXPTCStubBase7Stub" #n "Ev\n\t" \
+    ".hidden    " SYMBOL_UNDERSCORE "_ZN14nsXPTCStubBase7Stub" #n "Ev\n\t" \
     ".type      " SYMBOL_UNDERSCORE "_ZN14nsXPTCStubBase7Stub" #n "Ev,@function\n" \
     SYMBOL_UNDERSCORE "_ZN14nsXPTCStubBase7Stub" #n "Ev:\n\t" \
     ".else\n\t" \
@@ -160,6 +156,7 @@ asm(".text\n\t" \
 asm(".text\n\t" \
     ".align	2\n\t" \
     ".globl	" SYMBOL_UNDERSCORE "Stub" #n "__14nsXPTCStubBase\n\t" \
+    ".hidden	" SYMBOL_UNDERSCORE "Stub" #n "__14nsXPTCStubBase\n\t" \
     ".type	" SYMBOL_UNDERSCORE "Stub" #n "__14nsXPTCStubBase,@function\n" \
     SYMBOL_UNDERSCORE "Stub" #n "__14nsXPTCStubBase:\n\t" \
     "movl	$" #n ", %eax\n\t" \

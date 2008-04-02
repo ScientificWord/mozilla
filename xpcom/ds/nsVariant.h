@@ -43,6 +43,8 @@
 #include "nsStringFwd.h"
 #include "xpt_struct.h"
 
+class nsCycleCollectionTraversalCallback;
+
 /** 
  * Map the nsAUTF8String, nsUTF8String classes to the nsACString and
  * nsCString classes respectively for now.  These defines need to be removed
@@ -178,6 +180,9 @@ public:
     static nsresult SetToVoid(nsDiscriminatedUnion* data);
     static nsresult SetToEmpty(nsDiscriminatedUnion* data);
     static nsresult SetToEmptyArray(nsDiscriminatedUnion* data);
+
+    static void Traverse(const nsDiscriminatedUnion& data,
+                         nsCycleCollectionTraversalCallback &cb);
 
 private:
     ~nsVariant();

@@ -50,7 +50,14 @@ MOZILLA_INTERNAL_API = 1
 REQUIRES	= string \
 		  $(NULL)
 
-ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
+# work around bug 408258
+ifdef GNU_CC 
+ifneq ($(OS_ARCH), Darwin)
+MODULE_OPTIMIZE_FLAGS = -Os -fno-strict-aliasing
+endif
+endif
+
+ifeq ($(MOZ_WIDGET_TOOLKIT),cocoa)
 REQUIRES		+= macmorefiles
 endif
 
@@ -84,11 +91,10 @@ endif
 ifeq ($(MOZ_WIDGET_TOOLKIT),os2)
 CPPSRCS		+= nsLocalFileOS2.cpp
 else
-ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
-CPPSRCS		+= nsLocalFileOSX.cpp
+ifeq ($(MOZ_WIDGET_TOOLKIT),cocoa)
+CMMSRCS		= nsLocalFileOSX.mm
 else
 ifeq ($(MOZ_WIDGET_TOOLKIT),windows)
-CPPSRCS		+= nsWinAPIs.cpp
 CPPSRCS		+= nsLocalFileWin.cpp
 else
 CPPSRCS		+= nsLocalFileUnix.cpp
@@ -100,14 +106,12 @@ EXPORTS		= \
 		nsAppDirectoryServiceDefs.h \
 		nsDirectoryService.h \
 		nsEscape.h \
-		nsFastLoadPtr.h \
 		nsFastLoadService.h \
 		nsLinebreakConverter.h \
 		nsLocalFile.h \
 		nsMultiplexInputStream.h \
 		nsScriptableInputStream.h \
 		nsStorageStream.h \
-		nsStringIO.h \
 		nsStringStream.h \
 		nsStreamUtils.h \
 		nsNativeCharsetUtils.h \
@@ -116,15 +120,15 @@ EXPORTS		= \
 ifeq ($(MOZ_WIDGET_TOOLKIT),os2)
 EXPORTS		+= nsLocalFileOS2.h
 else
-ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
+ifeq ($(MOZ_WIDGET_TOOLKIT),cocoa)
 EXPORTS		+= nsLocalFileOSX.h
 else
 ifeq ($(MOZ_WIDGET_TOOLKIT),windows)
-EXPORTS		+= nsLocalFileWin.h nsWinAPIs.h
+EXPORTS		+= nsLocalFileWin.h
 else
 EXPORTS		+= nsLocalFileUnix.h
 endif # windows
-endif # mac
+endif # cocoa
 endif # os2
 
 XPIDLSRCS	= \
@@ -137,6 +141,7 @@ XPIDLSRCS	= \
 		nsILocalFileWin.idl \
 		nsILineInputStream.idl \
 		nsIUnicharLineInputStream.idl \
+		nsISimpleUnicharStreamFactory.idl \
 		nsIMultiplexInputStream.idl \
 		nsIObjectInputStream.idl \
 		nsIObjectOutputStream.idl \
@@ -156,9 +161,9 @@ XPIDLSRCS	= \
 ifeq ($(MOZ_WIDGET_TOOLKIT),os2)
 XPIDLSRCS	+= nsILocalFileOS2.idl
 else
-ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
+ifeq ($(MOZ_WIDGET_TOOLKIT),cocoa)
 XPIDLSRCS	+= nsILocalFileMac.idl
-endif # mac
+endif # cocoa
 endif # os2
 
 SDK_XPIDLSRCS   = \
