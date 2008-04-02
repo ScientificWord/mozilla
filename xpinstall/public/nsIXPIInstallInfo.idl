@@ -11,12 +11,12 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Mozilla XULRunner.
+ * The Original Code is Mozilla XPInstall.
  *
  * The Initial Developer of the Original Code is
- * Benjamin Smedberg <benjamin@smedbergs.us>.
+ * Dave Townsend <dtownsend@oxymoronical.com>.
  *
- * Portions created by the Initial Developer are Copyright (C) 2005
+ * Portions created by the Initial Developer are Copyright (C) 2007
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
@@ -33,25 +33,42 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
- * ***** END LICENSE BLOCK ***** */
+ * ***** END LICENSE BLOCK *****
+ */
 
-#include "nsRegisterGRE.h"
+#include "nsISupports.idl"
 
-#include <stdlib.h>
-#include <stdio.h>
+[ptr] native triggerInfoPtr(nsXPITriggerInfo);
 
-int
-RegisterXULRunner(PRBool aRegisterGlobally, nsIFile* aLocation,
-                  const GREProperty *aProperties, PRUint32 aPropertiesLen,
-                  const char *aGREMilestone)
+interface nsIDOMWindowInternal;
+interface nsIDocShell;
+interface nsIURI;
+
+/**
+ * Interface holding information about a triggered install that can be passed
+ * to and from script.
+ */
+[scriptable, uuid(5a4a775c-e452-4cf2-8ff8-d327ae24aec6)]
+interface nsIXPIInstallInfo : nsISupports
 {
-  fprintf(stderr, "Registration not implemented on this platform!\n");
-  return 1;
-}
-
-void
-UnregisterXULRunner(PRBool aUnregisterGlobally, nsIFile* aLocation,
-                    const char *aGREMilestone)
-{
-  fprintf(stderr, "Registration not implemented on this platform!\n");
-}
+  /**
+   * The install triggers supplied by the install.
+   */
+  [noscript, notxpcom] attribute triggerInfoPtr triggerInfo;
+  
+  /**
+   * The original window that initiated the install.
+   */
+  readonly attribute nsIDOMWindowInternal originatingWindow;
+  
+  /**
+   * The original URI calling the install. This is the URI that would have been
+   * checked against the whitelist if necessary.
+   */
+  readonly attribute nsIURI originatingURI;
+  
+  /**
+   * The chome type of the install.
+   */
+  readonly attribute PRUint32 chromeType;
+};

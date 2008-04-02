@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-# vim:set ts=8 sw=8 sts=8 noet:
+#! /bin/sh
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -13,14 +12,15 @@
 # for the specific language governing rights and limitations under the
 # License.
 #
-# The Original Code is the Mozilla Browser code.
+# The Original Code is the the Mozilla build system
 #
-# The Initial Developer of the Original Code is Google Inc.
-# Portions created by the Initial Developer are Copyright (C) 2005
+# The Initial Developer of the Original Code is
+# Ben Turner <mozilla@songbirdnest.com>
+#
+# Portions created by the Initial Developer are Copyright (C) 2007
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
-#  Darin Fisher <darin@meer.net>
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -36,17 +36,12 @@
 #
 # ***** END LICENSE BLOCK *****
 
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-
-<!DOCTYPE window SYSTEM "chrome://simple/locale/simple.dtd">
-
-<window
-  id    = "simple"
-  title = "&simple.title;"
-  xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script src="chrome://simple/content/simple.js"/>
-  <vbox>
-    <textbox id="textbox" value="&simple.textValue;" flex="1"/>
-    <button id="button" label="&simple.buttonLabel;" oncommand="onButtonClick();"/>
-  </vbox>
-</window>
+add_makefiles "
+xulrunner/Makefile
+xulrunner/app/Makefile
+xulrunner/app/profile/Makefile
+xulrunner/app/profile/chrome/Makefile
+xulrunner/app/profile/extensions/Makefile
+xulrunner/installer/Makefile
+xulrunner/installer/mac/Makefile
+"

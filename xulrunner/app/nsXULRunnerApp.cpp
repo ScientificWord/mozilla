@@ -45,17 +45,21 @@
 #include "nsXPCOMGlue.h"
 #include "nsRegisterGRE.h"
 #include "nsAppRunner.h"
-#include "nsINIParser.h"
 #include "nsILocalFile.h"
 #include "nsIXULAppInstall.h"
 #include "nsCOMPtr.h"
 #include "nsMemory.h"
-#include "nsBuildID.h"
+#include "nsCRTGlue.h"
 #include "nsStringAPI.h"
 #include "nsServiceManagerUtils.h"
 #include "plstr.h"
 #include "prprf.h"
 #include "prenv.h"
+#include "nsINIParser.h"
+
+#ifdef XP_WIN
+#include "nsWindowsWMain.cpp"
+#endif
 
 /**
  * Output a string to the user.  This method is really only meant to be used to
@@ -78,7 +82,7 @@ static void Output(PRBool isError, const char *fmt, ... )
     UINT flags = MB_OK;
     if (isError)
       flags |= MB_ICONERROR;
-    else 
+    else
       flags |= MB_ICONINFORMATION;
     MessageBox(NULL, msg, "XULRunner", flags);
     PR_smprintf_free(msg);
@@ -110,156 +114,46 @@ static PRBool IsArg(const char* arg, const char* s)
   return PR_FALSE;
 }
 
-/**
- * Version checking.
- */
-
-static PRUint32 geckoVersion = 0;
-
-static PRUint32 ParseVersion(const char *versionStr)
+static nsresult
+GetGREVersion(const char *argv0,
+              nsACString *aMilestone,
+              nsACString *aVersion)
 {
-  PRUint16 major, minor;
-  if (PR_sscanf(versionStr, "%hu.%hu", &major, &minor) != 2) {
-    NS_WARNING("invalid version string");
-    return 0;
-  }
+  if (aMilestone)
+    aMilestone->Assign("<Error>");
+  if (aVersion)
+    aVersion->Assign("<Error>");
 
-  return PRUint32(major) << 16 | PRUint32(minor);
-}
-
-static PRBool CheckMinVersion(const char *versionStr)
-{
-  PRUint32 v = ParseVersion(versionStr);
-  return geckoVersion >= v;
-}
-
-static PRBool CheckMaxVersion(const char *versionStr)
-{
-  PRUint32 v = ParseVersion(versionStr);
-  return geckoVersion <= v;
-}
-
-/**
- * Parse application data.
- *
- * @returns 0, if the application initialization file was parsed successfully
- *            and an appropriate Gecko runtime was found.
- *          1, if the ini file was missing required fields or an appropriate
- *            Gecko runtime wasn't found.
- *          2, if the specified ini file could not be read.
- */
-static int LoadAppData(const char* appDataFile, nsXREAppData* aResult,
-                       nsCString& vendor, nsCString& name, nsCString& version,
-                       nsCString& buildID, nsCString& appID,
-                       nsCString& copyright)
-{
-  nsresult rv;
-
-  nsCOMPtr<nsILocalFile> lf;
-  XRE_GetFileFromPath(appDataFile, getter_AddRefs(lf));
-  if (!lf)
-    return 2;
-
-  nsCOMPtr<nsIFile> appDir;
-  rv = lf->GetParent(getter_AddRefs(appDir));
+  nsCOMPtr<nsILocalFile> iniFile;
+  nsresult rv = XRE_GetBinaryPath(argv0, getter_AddRefs(iniFile));
   if (NS_FAILED(rv))
-    return 2;
+    return rv;
 
-  rv = CallQueryInterface(appDir, &aResult->directory);
-  if (NS_FAILED(rv))
-    return 2;
+  iniFile->SetNativeLeafName(NS_LITERAL_CSTRING("platform.ini"));
 
   nsINIParser parser;
-  rv = parser.Init(lf);
+  rv = parser.Init(iniFile);
   if (NS_FAILED(rv))
-    return 2;
+    return rv;
 
-  // Gecko version checking
-  //
-  // TODO: If these version checks fail, then look for a compatible XULRunner
-  //       version on the system, and launch it instead.
-
-  nsCString gkVersion;
-  rv = parser.GetString("Gecko", "MinVersion", gkVersion);
-
-  if (NS_FAILED(rv) || !CheckMinVersion(gkVersion.get())) {
-    Output(PR_TRUE, "Error: Gecko MinVersion requirement not met.\n");
-    return 1;
+  if (aMilestone) {
+    rv = parser.GetString("Build", "Milestone", *aMilestone);
+    if (NS_FAILED(rv))
+      return rv;
   }
-
-  rv = parser.GetString("Gecko", "MaxVersion", gkVersion);
-  if (NS_SUCCEEDED(rv) && !CheckMaxVersion(gkVersion.get())) {
-    Output(PR_TRUE, "Error: Gecko MaxVersion requirement not met.\n");
-    return 1;
+  if (aVersion) {
+    rv = parser.GetString("Build", "BuildID", *aVersion);
+    if (NS_FAILED(rv))
+      return rv;
   }
-
-  PRUint32 i;
-
-  // Read string-valued fields
-  const struct
-  {
-    const char *key;
-    const char **fill;
-    nsCString  *buf;
-    PRBool      required;
-  } string_fields[] = {
-    { "Vendor",    &aResult->vendor,    &vendor,    PR_FALSE },
-    { "Name",      &aResult->name,      &name,      PR_TRUE  },
-    { "Version",   &aResult->version,   &version,   PR_FALSE },
-    { "BuildID",   &aResult->buildID,   &buildID,   PR_TRUE  },
-    { "ID",        &aResult->ID,        &appID,     PR_FALSE },
-    { "Copyright", &aResult->copyright, &copyright, PR_FALSE }
-  };
-  for (i = 0; i < NS_ARRAY_LENGTH(string_fields); ++i) {
-    rv = parser.GetString("App", string_fields[i].key,
-                          *string_fields[i].buf);
-    if (NS_SUCCEEDED(rv)) {
-      *string_fields[i].fill = string_fields[i].buf->get();
-    }
-    else if (string_fields[i].required) {
-      Output(PR_TRUE, "Error: %x: No \"%s\" field.\n",
-             rv, string_fields[i].key);
-      return 1;
-    }
-  }
-
-  // Read boolean-valued fields
-  const struct {
-    const char* key;
-    PRUint32 flag;
-  } boolean_fields[] = {
-    { "EnableProfileMigrator",  NS_XRE_ENABLE_PROFILE_MIGRATOR  },
-    { "EnableExtensionManager", NS_XRE_ENABLE_EXTENSION_MANAGER }
-  };
-  char buf[6]; // large enough to hold "false"
-  aResult->flags = 0;
-  for (i = 0; i < NS_ARRAY_LENGTH(boolean_fields); ++i) {
-    rv = parser.GetString("XRE", boolean_fields[i].key, buf, sizeof(buf));
-    // accept a truncated result since we are only interested in the
-    // first character.  this is designed to allow the possibility of
-    // expanding these boolean attributes to express additional options.
-    if ((NS_SUCCEEDED(rv) || rv == NS_ERROR_LOSS_OF_SIGNIFICANT_DATA) &&
-        (buf[0] == '1' || buf[0] == 't' || buf[0] == 'T')) {
-      aResult->flags |= boolean_fields[i].flag;
-    }
-  } 
-
-#ifdef DEBUG
-  printf("---------------------------------------------------------\n");
-  printf("     Vendor %s\n", aResult->vendor);
-  printf("       Name %s\n", aResult->name);
-  printf("    Version %s\n", aResult->version);
-  printf("    BuildID %s\n", aResult->buildID);
-  printf("  Copyright %s\n", aResult->copyright);
-  printf("      Flags %08x\n", aResult->flags);
-  printf("---------------------------------------------------------\n");
-#endif
-
-  return 0;
+  return NS_OK;
 }
 
-static void Usage()
+static void Usage(const char *argv0)
 {
+    nsCAutoString milestone;
+    GetGREVersion(argv0, &milestone, nsnull);
+
     // display additional information (XXX make localizable?)
     Output(PR_FALSE,
            "Mozilla XULRunner %s\n\n"
@@ -287,7 +181,7 @@ static void Usage()
            "\n"
            "APP-OPTIONS\n"
            "  Application specific options.\n",
-           GRE_BUILD_ID);
+           milestone.get());
 }
 
 static nsresult
@@ -364,60 +258,91 @@ static const GREProperty kGREProperties[] = {
 #endif
 };
 
+class AutoAppData
+{
+public:
+  AutoAppData(nsILocalFile* aINIFile) : mAppData(nsnull) {
+    nsresult rv = XRE_CreateAppData(aINIFile, &mAppData);
+    if (NS_FAILED(rv))
+      mAppData = nsnull;
+  }
+  ~AutoAppData() {
+    if (mAppData)
+      XRE_FreeAppData(mAppData);
+  }
+
+  operator nsXREAppData*() const { return mAppData; }
+  nsXREAppData* operator -> () const { return mAppData; }
+
+private:
+  nsXREAppData* mAppData;
+};
+
 int main(int argc, char* argv[])
 {
   if (argc > 1 && (IsArg(argv[1], "h") ||
                    IsArg(argv[1], "help") ||
                    IsArg(argv[1], "?")))
   {
-    Usage();
+    Usage(argv[0]);
     return 0;
   }
 
   if (argc == 2 && (IsArg(argv[1], "v") || IsArg(argv[1], "version")))
   {
-    Output(PR_FALSE, "Mozilla XULRunner %s\n", GRE_BUILD_ID);
+    nsCAutoString milestone;
+    nsCAutoString version;
+    GetGREVersion(argv[0], &milestone, &version);
+    Output(PR_FALSE, "Mozilla XULRunner %s - %s\n",
+           milestone.get(), version.get());
     return 0;
   }
 
   if (argc > 1) {
+    nsCAutoString milestone;
+    nsresult rv = GetGREVersion(argv[0], &milestone, nsnull);
+    if (NS_FAILED(rv))
+      return 2;
+
     PRBool registerGlobal = IsArg(argv[1], "register-global");
     PRBool registerUser   = IsArg(argv[1], "register-user");
     if (registerGlobal || registerUser) {
       if (argc != 2) {
-        Usage();
+        Usage(argv[0]);
         return 1;
       }
 
       nsCOMPtr<nsIFile> regDir;
-      nsresult rv = GetXULRunnerDir(argv[0], getter_AddRefs(regDir));
+      rv = GetXULRunnerDir(argv[0], getter_AddRefs(regDir));
       if (NS_FAILED(rv))
         return 2;
 
       return RegisterXULRunner(registerGlobal, regDir,
                                kGREProperties,
-                               NS_ARRAY_LENGTH(kGREProperties)) ? 0 : 2;
+                               NS_ARRAY_LENGTH(kGREProperties),
+                               milestone.get()) ? 0 : 2;
     }
 
     registerGlobal = IsArg(argv[1], "unregister-global");
     registerUser   = IsArg(argv[1], "unregister-user");
     if (registerGlobal || registerUser) {
       if (argc != 2) {
-        Usage();
+        Usage(argv[0]);
         return 1;
       }
 
       nsCOMPtr<nsIFile> regDir;
-      nsresult rv = GetXULRunnerDir(argv[0], getter_AddRefs(regDir));
+      rv = GetXULRunnerDir(argv[0], getter_AddRefs(regDir));
       if (NS_FAILED(rv))
         return 2;
-      UnregisterXULRunner(registerGlobal, regDir);
+
+      UnregisterXULRunner(registerGlobal, regDir, milestone.get());
       return 0;
     }
 
     if (IsArg(argv[1], "find-gre")) {
       if (argc != 3) {
-        Usage();
+        Usage(argv[0]);
         return 1;
       }
 
@@ -430,9 +355,9 @@ int main(int argc, char* argv[])
         { "xulrunner", "true" }
       };
 
-      nsresult rv = GRE_GetGREPathWithProperties(&vr, 1, kProperties,
-                                                 NS_ARRAY_LENGTH(kProperties),
-                                                 path, sizeof(path));
+      rv = GRE_GetGREPathWithProperties(&vr, 1, kProperties,
+                                        NS_ARRAY_LENGTH(kProperties),
+                                        path, sizeof(path));
       if (NS_FAILED(rv))
         return 1;
 
@@ -442,17 +367,17 @@ int main(int argc, char* argv[])
 
     if (IsArg(argv[1], "gre-version")) {
       if (argc != 2) {
-        Usage();
+        Usage(argv[0]);
         return 1;
       }
 
-      printf("%s\n", GRE_BUILD_ID);
+      printf("%s\n", milestone.get());
       return 0;
     }
 
     if (IsArg(argv[1], "install-app")) {
       if (argc < 3 || argc > 5) {
-        Usage();
+        Usage(argv[0]);
         return 1;
       }
 
@@ -473,7 +398,7 @@ int main(int argc, char* argv[])
       }
 
       nsCOMPtr<nsIFile> regDir;
-      nsresult rv = GetXULRunnerDir(argv[0], getter_AddRefs(regDir));
+      rv = GetXULRunnerDir(argv[0], getter_AddRefs(regDir));
       if (NS_FAILED(rv))
         return 2;
 
@@ -481,19 +406,17 @@ int main(int argc, char* argv[])
     }
   }
 
-  geckoVersion = ParseVersion(GRE_BUILD_ID);
-
   const char *appDataFile = PR_GetEnv("XUL_APP_FILE");
 
   if (!(appDataFile && *appDataFile)) {
     if (argc < 2) {
-      Usage();
+      Usage(argv[0]);
       return 1;
     }
 
     if (IsArg(argv[1], "app")) {
       if (argc == 2) {
-        Usage();
+        Usage(argv[0]);
         return 1;
       }
       argv[1] = argv[0];
@@ -511,30 +434,18 @@ int main(int argc, char* argv[])
     PR_SetEnv(kAppEnv);
   }
 
-  nsCString vendor, name, version, buildID, appID, copyright;
+  nsCOMPtr<nsILocalFile> appDataLF;
+  nsresult rv = XRE_GetFileFromPath(appDataFile, getter_AddRefs(appDataLF));
+  if (NS_FAILED(rv)) {
+    Output(PR_TRUE, "Error: unrecognized application.ini path.\n");
+    return 2;
+  }
 
-  nsXREAppData appData = { sizeof(nsXREAppData), 0 };
+  AutoAppData appData(appDataLF);
+  if (!appData) {
+    Output(PR_TRUE, "Error: couldn't parse application.ini.\n");
+    return 2;
+  }
 
-  int rv = LoadAppData(appDataFile, &appData,
-                       vendor, name, version, buildID, appID, copyright);
-  if (!rv)
-    rv = XRE_main(argc, argv, &appData);
-  else if (rv == 2)
-    Output(PR_TRUE, "Error: Unrecognized option specified or couldn't read "
-                    "the application initialization file.\n\n"
-                    "Try `" XULRUNNER_PROGNAME " --help' for more information.\n");
-
-  NS_IF_RELEASE(appData.directory);
-
-  return rv;
+  return XRE_main(argc, argv, appData);
 }
-
-#if defined( XP_WIN ) && defined( WIN32 ) && !defined(__GNUC__)
-// We need WinMain in order to not be a console app.  This function is
-// unused if we are a console application.
-int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR args, int )
-{
-  // Do the real work.
-  return main( __argc, __argv );
-}
-#endif
