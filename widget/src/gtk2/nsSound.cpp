@@ -50,6 +50,7 @@
 #include "nsIFileURL.h"
 #include "nsNetUtil.h"
 #include "nsCOMPtr.h"
+#include "nsAutoPtr.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -74,10 +75,13 @@ typedef int (PR_CALLBACK *EsdOpenSoundType)(const char *host);
 typedef int (PR_CALLBACK *EsdCloseType)(int);
 
 /* used to play the sounds from the find symbol call */
-typedef int (PR_CALLBACK *EsdPlayStreamFallbackType)  (int, 
-                                                       int, 
-                                                       const char *, 
-                                                       const char *);
+typedef int (PR_CALLBACK *EsdPlayStreamType)  (int, 
+                                               int, 
+                                               const char *, 
+                                               const char *);
+typedef int  (PR_CALLBACK *EsdAudioOpenType)  (void);
+typedef int  (PR_CALLBACK *EsdAudioWriteType) (const void *, int);
+typedef void (PR_CALLBACK *EsdAudioCloseType) (void);
 
 NS_IMPL_ISUPPORTS2(nsSound, nsISound, nsIStreamLoaderObserver)
 
@@ -91,8 +95,9 @@ nsSound::~nsSound()
 {
     /* see above comment */
     if (esdref != -1) {
-        EsdCloseType EsdClose = (EsdCloseType) PR_FindSymbol(elib, "esd_close");
-        (*EsdClose)(esdref);
+        EsdCloseType EsdClose = (EsdCloseType) PR_FindFunctionSymbol(elib, "esd_close");
+        if (EsdClose)
+            (*EsdClose)(esdref);
         esdref = -1;
     }
 }
@@ -113,7 +118,7 @@ nsSound::Init()
     elib = PR_LoadLibrary("libesd.so.0");
     if (!elib) return NS_ERROR_FAILURE;
 
-    EsdOpenSound = (EsdOpenSoundType) PR_FindSymbol(elib, "esd_open_sound");
+    EsdOpenSound = (EsdOpenSoundType) PR_FindFunctionSymbol(elib, "esd_open_sound");
 
     if (!EsdOpenSound)
         return NS_ERROR_FAILURE;
@@ -126,6 +131,15 @@ nsSound::Init()
     mInited = PR_TRUE;
 
     return NS_OK;
+}
+
+/* static */ void
+nsSound::Shutdown()
+{
+    if (elib) {
+        PR_UnloadLibrary(elib);
+        elib = nsnull;
+    }
 }
 
 #define GET_WORD(s, i) (s[i+1] << 8) | s[i]
@@ -162,9 +176,15 @@ NS_IMETHODIMP nsSound::OnStreamComplete(nsIStreamLoader *aLoader,
     }
 
     int fd, mask = 0;
-    unsigned long samples_per_sec=0, avg_bytes_per_sec=0;
-    unsigned long rate=0;
-    unsigned short format, channels = 1, block_align, bits_per_sample=0;
+    PRUint32 samples_per_sec = 0, avg_bytes_per_sec = 0, chunk_len = 0;
+    PRUint16 format, channels = 1, bits_per_sample = 0;
+    const PRUint8 *audio = nsnull;
+    size_t audio_len = 0;
+
+    if (dataLen < 4) {
+        NS_WARNING("Sound stream too short to determine its type");
+        return NS_ERROR_FAILURE;
+    }
 
     if (memcmp(data, "RIFF", 4)) {
 #ifdef DEBUG
@@ -178,53 +198,87 @@ NS_IMETHODIMP nsSound::OnStreamComplete(nsIStreamLoader *aLoader,
         return NS_ERROR_FAILURE;
     }
 
-    PRUint32 i;
-    for (i= 0; i < dataLen; i++) {
-        if (i+3 <= dataLen) 
-            if ((data[i] == 'f') &&
-                (data[i+1] == 'm') &&
-                (data[i+2] == 't') &&
-                (data[i+3] == ' ')) {
-                i += 4;
+    PRUint32 i = 12;
+    while (i + 7 < dataLen) {
+        if (!memcmp(data + i, "fmt ", 4) && !chunk_len) {
+            i += 4;
 
-                /* length of the rest of this subblock (should be 16 for PCM data */
-                i+=4;
-    
-                format = GET_WORD(data, i);
-                i+=2;
+            /* length of the rest of this subblock (should be 16 for PCM data */
+            chunk_len = GET_DWORD(data, i);
+            i += 4;
 
-                channels = GET_WORD(data, i);
-                i+=2;
-
-                samples_per_sec = GET_DWORD(data, i);
-                i+=4;
-
-                avg_bytes_per_sec = GET_DWORD(data, i);
-                i+=4;
-
-                block_align = GET_WORD(data, i);
-                i+=2;
-
-                bits_per_sample = GET_WORD(data, i);
-                i+=2;
-
-                rate = samples_per_sec;
-
-                break;
+            if (chunk_len < 16 || i + chunk_len >= dataLen) {
+                NS_WARNING("Invalid WAV file: bad fmt chunk.");
+                return NS_ERROR_FAILURE;
             }
+
+            format = GET_WORD(data, i);
+            i += 2;
+
+            channels = GET_WORD(data, i);
+            i += 2;
+
+            samples_per_sec = GET_DWORD(data, i);
+            i += 4;
+
+            avg_bytes_per_sec = GET_DWORD(data, i);
+            i += 4;
+
+            // block align
+            i += 2;
+
+            bits_per_sample = GET_WORD(data, i);
+            i += 2;
+
+            /* we don't support WAVs with odd compression codes */
+            if (chunk_len != 16)
+                NS_WARNING("Extra format bits found in WAV. Ignoring");
+
+            i += chunk_len - 16;
+        } else if (!memcmp(data + i, "data", 4)) {
+            i += 4;
+            if (!chunk_len) {
+                NS_WARNING("Invalid WAV file: no fmt chunk found");
+                return NS_ERROR_FAILURE;
+            }
+
+            audio_len = GET_DWORD(data, i);
+            i += 4;
+
+            /* try to play truncated WAVs */
+            if (i + audio_len > dataLen)
+                audio_len = dataLen - i;
+
+            audio = data + i;
+            break;
+        } else {
+            i += 4;
+            i += GET_DWORD(data, i);
+            i += 4;
+        }
     }
+
+    if (!audio) {
+        NS_WARNING("Invalid WAV file: no data chunk found");
+        return NS_ERROR_FAILURE;
+    }
+
+    /* No audio data? well, at least the WAV was valid. */
+    if (!audio_len)
+        return NS_OK;
 
 #if 0
     printf("f: %d | c: %d | sps: %li | abps: %li | ba: %d | bps: %d | rate: %li\n",
          format, channels, samples_per_sec, avg_bytes_per_sec, block_align, bits_per_sample, rate);
 #endif
 
-    /* open up conneciton to esd */  
-    EsdPlayStreamFallbackType EsdPlayStreamFallback = 
-        (EsdPlayStreamFallbackType) PR_FindSymbol(elib, 
-                                                  "esd_play_stream_fallback");
-    // XXX what if that fails? (Bug 241738)
-  
+    /* open up connection to esd */  
+    EsdPlayStreamType EsdPlayStream = 
+        (EsdPlayStreamType) PR_FindFunctionSymbol(elib, 
+                                                  "esd_play_stream");
+    if (!EsdPlayStream)
+        return NS_ERROR_FAILURE;
+
     mask = ESD_PLAY | ESD_STREAM;
 
     if (bits_per_sample == 8)
@@ -237,37 +291,56 @@ NS_IMETHODIMP nsSound::OnStreamComplete(nsIStreamLoader *aLoader,
     else 
         mask |= ESD_STEREO;
 
-    fd = (*EsdPlayStreamFallback)(mask, rate, NULL, "mozillaSound"); 
-  
-    if (fd < 0) {
-        return NS_ERROR_FAILURE;
-    }
-
-    /* write data out */
+    nsAutoArrayPtr<PRUint8> buf;
 
     // ESD only handle little-endian data. 
     // Swap the byte order if we're on a big-endian architecture.
 #ifdef IS_BIG_ENDIAN
-    if (bits_per_sample == 8)
-        write(fd, data, dataLen);
-    else {
-        PRUint8 *buf = new PRUint8[dataLen - WAV_MIN_LENGTH];
-        // According to the wav file format, the first 44 bytes are headers.
-        // We don't really need to send them.
+    if (bits_per_sample != 8) {
+        buf = new PRUint8[audio_len];
         if (!buf)
             return NS_ERROR_OUT_OF_MEMORY;
-        for (PRUint32 j = 0; j < dataLen - WAV_MIN_LENGTH - 1; j += 2) {
-            buf[j] = data[j + WAV_MIN_LENGTH + 1];
-            buf[j + 1] = data[j + WAV_MIN_LENGTH];
+        for (PRUint32 j = 0; j + 2 < audio_len; j += 2) {
+            buf[j]     = audio[j + 1];
+            buf[j + 1] = audio[j];
         }
-        write(fd, buf, (dataLen - WAV_MIN_LENGTH));
-        delete [] buf;
+
+	audio = buf;
     }
-#else
-    write(fd, data, dataLen);
 #endif
+
+    fd = (*EsdPlayStream)(mask, samples_per_sec, NULL, "mozillaSound"); 
   
-    close(fd);
+    if (fd < 0) {
+      int *esd_audio_format = (int *) PR_FindSymbol(elib, "esd_audio_format");
+      int *esd_audio_rate = (int *) PR_FindSymbol(elib, "esd_audio_rate");
+      EsdAudioOpenType EsdAudioOpen = (EsdAudioOpenType) PR_FindFunctionSymbol(elib, "esd_audio_open");
+      EsdAudioWriteType EsdAudioWrite = (EsdAudioWriteType) PR_FindFunctionSymbol(elib, "esd_audio_write");
+      EsdAudioCloseType EsdAudioClose = (EsdAudioCloseType) PR_FindFunctionSymbol(elib, "esd_audio_close");
+
+      if (!esd_audio_format || !esd_audio_rate ||
+          !EsdAudioOpen || !EsdAudioWrite || !EsdAudioClose)
+          return NS_ERROR_FAILURE;
+
+      *esd_audio_format = mask;
+      *esd_audio_rate = samples_per_sec;
+      fd = (*EsdAudioOpen)();
+
+      if (fd < 0)
+        return NS_ERROR_FAILURE;
+
+      (*EsdAudioWrite)(audio, audio_len);
+      (*EsdAudioClose)();
+    } else {
+      while (audio_len > 0) {
+        size_t written = write(fd, audio, audio_len);
+        if (written <= 0)
+          break;
+        audio += written;
+        audio_len -= written;
+      }
+      close(fd);
+    }
 
     return NS_OK;
 }

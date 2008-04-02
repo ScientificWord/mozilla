@@ -124,3 +124,9 @@ nsScreenManagerOS2 :: GetNumberOfScreens(PRUint32 *aNumberOfScreens)
   
 } // GetNumberOfScreens
 
+NS_IMETHODIMP
+nsScreenManagerOS2 :: ScreenForNativeWidget(void *nativeWidget, nsIScreen **aScreen)
+{
+  *aScreen = CreateNewScreenObject();    // addrefs
+  return NS_OK;
+}

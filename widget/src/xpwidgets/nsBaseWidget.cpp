@@ -39,30 +39,50 @@
 #include "nsBaseWidget.h"
 #include "nsIDeviceContext.h"
 #include "nsCOMPtr.h"
-#include "nsIMenuListener.h"
-#include "nsIEnumerator.h"
 #include "nsGfxCIID.h"
 #include "nsWidgetsCID.h"
 #include "nsIFullScreen.h"
 #include "nsServiceManagerUtils.h"
 #include "nsIScreenManager.h"
 #include "nsAppDirectoryServiceDefs.h"
+#include "nsISimpleEnumerator.h"
+#include "nsIContent.h"
 
 #ifdef DEBUG
 #include "nsIServiceManager.h"
-#include "nsIPref.h"
+#include "nsIPrefService.h"
+#include "nsIPrefBranch2.h"
+#include "nsIObserver.h"
 
 static void debug_RegisterPrefCallbacks();
 
+static PRBool debug_InSecureKeyboardInputMode = PR_FALSE;
 #endif
 
 #ifdef NOISY_WIDGET_LEAKS
 static PRInt32 gNumWidgets;
 #endif
 
+nsIContent* nsBaseWidget::mLastRollup = nsnull;
+
 // nsBaseWidget
 NS_IMPL_ISUPPORTS1(nsBaseWidget, nsIWidget)
 
+
+nsAutoRollup::nsAutoRollup()
+{
+  // remember if mLastRollup was null, and only clear it upon destruction
+  // if so. This prevents recursive usage of nsAutoRollup from clearing
+  // mLastRollup when it shouldn't.
+  wasClear = !nsBaseWidget::mLastRollup;
+}
+
+nsAutoRollup::~nsAutoRollup()
+{
+  if (nsBaseWidget::mLastRollup && wasClear) {
+    NS_RELEASE(nsBaseWidget::mLastRollup);
+  }
+}
 
 //-------------------------------------------------------------------------
 //
@@ -77,7 +97,6 @@ nsBaseWidget::nsBaseWidget()
 , mToolkit(nsnull)
 , mMouseListener(nsnull)
 , mEventListener(nsnull)
-, mMenuListener(nsnull)
 , mCursor(eCursor_standard)
 , mWindowType(eWindowType_child)
 , mBorderStyle(eBorderStyle_none)
@@ -114,7 +133,6 @@ nsBaseWidget::~nsBaseWidget()
   printf("WIDGETS- = %d\n", gNumWidgets);
 #endif
 
-  NS_IF_RELEASE(mMenuListener);
   NS_IF_RELEASE(mToolkit);
   NS_IF_RELEASE(mContext);
   if (mOriginalBounds)
@@ -142,7 +160,8 @@ void nsBaseWidget::BaseCreate(nsIWidget *aParent,
     }
     else {
       if (nsnull != aParent) {
-        mToolkit = (nsIToolkit*)(aParent->GetToolkit()); // the call AddRef's, we don't have to
+        mToolkit = aParent->GetToolkit();
+        NS_IF_ADDREF(mToolkit);
       }
       // it's some top level window with no toolkit passed in.
       // Create a default toolkit with the current thread
@@ -246,7 +265,6 @@ NS_METHOD nsBaseWidget::Destroy()
   // disconnect listeners.
   NS_IF_RELEASE(mMouseListener);
   NS_IF_RELEASE(mEventListener);
-  NS_IF_RELEASE(mMenuListener);
 
   return NS_OK;
 }
@@ -342,7 +360,7 @@ NS_IMETHODIMP nsBaseWidget::SetZIndex(PRInt32 aZIndex)
   mZIndex = aZIndex;
 
   // reorder this child in its parent's list.
-  nsBaseWidget* parent = NS_STATIC_CAST(nsBaseWidget*, GetParent());
+  nsBaseWidget* parent = static_cast<nsBaseWidget*>(GetParent());
   if (parent) {
     parent->RemoveChild(this);
     // Scope sib outside the for loop so we can check it afterward
@@ -516,18 +534,13 @@ NS_IMETHODIMP nsBaseWidget::SetWindowType(nsWindowType aWindowType)
 //
 //-------------------------------------------------------------------------
 
-NS_IMETHODIMP nsBaseWidget::SetWindowTranslucency(PRBool aTranslucent) {
+NS_IMETHODIMP nsBaseWidget::SetHasTransparentBackground(PRBool aTransparent) {
   return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-NS_IMETHODIMP nsBaseWidget::GetWindowTranslucency(PRBool& aTranslucent) {
-  aTranslucent = PR_FALSE;
+NS_IMETHODIMP nsBaseWidget::GetHasTransparentBackground(PRBool& aTransparent) {
+  aTransparent = PR_FALSE;
   return NS_OK;
-}
-
-NS_IMETHODIMP nsBaseWidget::UpdateTranslucentWindowAlpha(const nsRect& aRect, PRUint8* aAlphas) {
-  NS_ASSERTION(PR_FALSE, "Window is not translucent");
-  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 //-------------------------------------------------------------------------
@@ -548,11 +561,7 @@ NS_IMETHODIMP nsBaseWidget::HideWindowChrome(PRBool aShouldHide)
 NS_IMETHODIMP nsBaseWidget::MakeFullScreen(PRBool aFullScreen)
 {
   HideWindowChrome(aFullScreen);
-  return MakeFullScreenInternal(aFullScreen);
-}
 
-nsresult nsBaseWidget::MakeFullScreenInternal(PRBool aFullScreen)
-{
   nsCOMPtr<nsIFullScreen> fullScreen = do_GetService("@mozilla.org/browser/fullscreen;1");
 
   if (aFullScreen) {
@@ -609,11 +618,9 @@ nsIRenderingContext* nsBaseWidget::GetRenderingContext()
 
   rv = mContext->CreateRenderingContextInstance(*getter_AddRefs(renderingCtx));
   if (NS_SUCCEEDED(rv)) {
-#if defined(MOZ_CAIRO_GFX)
-    rv = renderingCtx->Init(mContext, GetThebesSurface());
-#else
-    rv = renderingCtx->Init(mContext, this);
-#endif
+    gfxASurface* surface = GetThebesSurface();
+    NS_ENSURE_TRUE(surface, nsnull);
+    rv = renderingCtx->Init(mContext, surface);
     if (NS_SUCCEEDED(rv)) {
       nsIRenderingContext *ret = renderingCtx;
       /* Increment object refcount that the |ret| object is still a valid one
@@ -639,7 +646,6 @@ nsIRenderingContext* nsBaseWidget::GetRenderingContext()
 //-------------------------------------------------------------------------
 nsIToolkit* nsBaseWidget::GetToolkit()
 {
-  NS_IF_ADDREF(mToolkit);
   return mToolkit;
 }
 
@@ -651,11 +657,9 @@ nsIToolkit* nsBaseWidget::GetToolkit()
 //-------------------------------------------------------------------------
 nsIDeviceContext* nsBaseWidget::GetDeviceContext() 
 {
-  NS_IF_ADDREF(mContext);
   return mContext; 
 }
 
-#ifdef MOZ_CAIRO_GFX
 //-------------------------------------------------------------------------
 //
 // Get the thebes surface
@@ -663,15 +667,11 @@ nsIDeviceContext* nsBaseWidget::GetDeviceContext()
 //-------------------------------------------------------------------------
 gfxASurface *nsBaseWidget::GetThebesSurface()
 {
-  nsIWidget *parent = GetParent();
-  if (!parent)
-    return nsnull;
-
   // in theory we should get our parent's surface,
   // clone it, and set a device offset before returning
   return nsnull;
 }
-#endif
+
 
 //-------------------------------------------------------------------------
 //
@@ -685,8 +685,7 @@ void nsBaseWidget::OnDestroy()
   NS_IF_RELEASE(mToolkit);
 }
 
-NS_METHOD nsBaseWidget::SetWindowClass(const nsAString& aName,
-                                       const nsAString& xulWinType)
+NS_METHOD nsBaseWidget::SetWindowClass(const nsAString& xulWinType)
 {
   return NS_ERROR_NOT_IMPLEMENTED;
 }
@@ -723,23 +722,6 @@ NS_METHOD nsBaseWidget::AddEventListener(nsIEventListener * aListener)
   mEventListener = aListener;
   return NS_OK;
 }
-
-/**
-* Add a menu listener
-* This interface should only be called by the menu services manager
-* This will AddRef() the menu listener
-* This will Release() a previously set menu listener
-*
-**/
-
-NS_METHOD nsBaseWidget::AddMenuListener(nsIMenuListener * aListener)
-{
-  NS_IF_RELEASE(mMenuListener);
-  NS_IF_ADDREF(aListener);
-  mMenuListener = aListener;
-  return NS_OK;
-}
-
 
 /**
 * If the implementation of nsWindow supports borders this method MUST be overridden
@@ -844,6 +826,33 @@ nsBaseWidget::SetIcon(const nsAString&)
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsBaseWidget::BeginSecureKeyboardInput()
+{
+#ifdef DEBUG
+  NS_ASSERTION(!debug_InSecureKeyboardInputMode, "Attempting to nest call to BeginSecureKeyboardInput!");
+  debug_InSecureKeyboardInputMode = PR_TRUE;
+#endif
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsBaseWidget::EndSecureKeyboardInput()
+{
+#ifdef DEBUG
+  NS_ASSERTION(debug_InSecureKeyboardInputMode, "Calling EndSecureKeyboardInput when it hasn't been enabled!");
+  debug_InSecureKeyboardInputMode = PR_FALSE;
+#endif
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsBaseWidget::SetWindowTitlebarColor(nscolor aColor)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+
 /**
  * Modifies aFile to point at an icon file with the given name and suffix.  The
  * suffix may correspond to a file extension with leading '.' if appropriate.
@@ -911,6 +920,12 @@ nsBaseWidget::ResolveIconName(const nsAString &aIconName,
     NS_ADDREF(*aResult = file);
 }
 
+NS_IMETHODIMP 
+nsBaseWidget::BeginResizeDrag(nsGUIEvent* aEvent, PRInt32 aHorizontal, PRInt32 aVertical)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+ 
 #ifdef DEBUG
 //////////////////////////////////////////////////////////////
 //
@@ -951,8 +966,7 @@ case _value: eventName.AssignWithConversion(_name) ; break
     _ASSIGN_eventName(NS_FORM_SUBMIT,"NS_FORM_SUBMIT");
     _ASSIGN_eventName(NS_GOTFOCUS,"NS_GOTFOCUS");
     _ASSIGN_eventName(NS_IMAGE_ABORT,"NS_IMAGE_ABORT");
-    _ASSIGN_eventName(NS_IMAGE_ERROR,"NS_IMAGE_ERROR");
-    _ASSIGN_eventName(NS_IMAGE_LOAD,"NS_IMAGE_LOAD");
+    _ASSIGN_eventName(NS_LOAD_ERROR,"NS_LOAD_ERROR");
     _ASSIGN_eventName(NS_KEY_DOWN,"NS_KEY_DOWN");
     _ASSIGN_eventName(NS_KEY_PRESS,"NS_KEY_PRESS");
     _ASSIGN_eventName(NS_KEY_UP,"NS_KEY_UP");
@@ -960,21 +974,13 @@ case _value: eventName.AssignWithConversion(_name) ; break
     _ASSIGN_eventName(NS_MENU_SELECTED,"NS_MENU_SELECTED");
     _ASSIGN_eventName(NS_MOUSE_ENTER,"NS_MOUSE_ENTER");
     _ASSIGN_eventName(NS_MOUSE_EXIT,"NS_MOUSE_EXIT");
-    _ASSIGN_eventName(NS_MOUSE_LEFT_BUTTON_DOWN,"NS_MOUSE_LEFT_BTN_DOWN");
-    _ASSIGN_eventName(NS_MOUSE_LEFT_BUTTON_UP,"NS_MOUSE_LEFT_BTN_UP");
-    _ASSIGN_eventName(NS_MOUSE_LEFT_CLICK,"NS_MOUSE_LEFT_CLICK");
-    _ASSIGN_eventName(NS_MOUSE_LEFT_DOUBLECLICK,"NS_MOUSE_LEFT_DBLCLICK");
-    _ASSIGN_eventName(NS_MOUSE_MIDDLE_BUTTON_DOWN,"NS_MOUSE_MIDDLE_BTN_DOWN");
-    _ASSIGN_eventName(NS_MOUSE_MIDDLE_BUTTON_UP,"NS_MOUSE_MIDDLE_BTN_UP");
-    _ASSIGN_eventName(NS_MOUSE_MIDDLE_CLICK,"NS_MOUSE_MIDDLE_CLICK");
-    _ASSIGN_eventName(NS_MOUSE_MIDDLE_DOUBLECLICK,"NS_MOUSE_MIDDLE_DBLCLICK");
+    _ASSIGN_eventName(NS_MOUSE_BUTTON_DOWN,"NS_MOUSE_BUTTON_DOWN");
+    _ASSIGN_eventName(NS_MOUSE_BUTTON_UP,"NS_MOUSE_BUTTON_UP");
+    _ASSIGN_eventName(NS_MOUSE_CLICK,"NS_MOUSE_CLICK");
+    _ASSIGN_eventName(NS_MOUSE_DOUBLECLICK,"NS_MOUSE_DBLCLICK");
     _ASSIGN_eventName(NS_MOUSE_MOVE,"NS_MOUSE_MOVE");
-    _ASSIGN_eventName(NS_MOUSE_RIGHT_BUTTON_DOWN,"NS_MOUSE_RIGHT_BTN_DOWN");
-    _ASSIGN_eventName(NS_MOUSE_RIGHT_BUTTON_UP,"NS_MOUSE_RIGHT_BTN_UP");
-    _ASSIGN_eventName(NS_MOUSE_RIGHT_CLICK,"NS_MOUSE_RIGHT_CLICK");
-    _ASSIGN_eventName(NS_MOUSE_RIGHT_DOUBLECLICK,"NS_MOUSE_RIGHT_DBLCLICK");
     _ASSIGN_eventName(NS_MOVE,"NS_MOVE");
-    _ASSIGN_eventName(NS_PAGE_LOAD,"NS_PAGE_LOAD");
+    _ASSIGN_eventName(NS_LOAD,"NS_LOAD");
     _ASSIGN_eventName(NS_PAGE_UNLOAD,"NS_PAGE_UNLOAD");
     _ASSIGN_eventName(NS_PAINT,"NS_PAINT");
     _ASSIGN_eventName(NS_XUL_BROADCAST, "NS_XUL_BROADCAST");
@@ -1027,7 +1033,7 @@ static PRUint32 debug_NumPrefValues =
 
 
 //////////////////////////////////////////////////////////////
-static PRBool debug_GetBoolPref(nsIPref * aPrefs,const char * aPrefName)
+static PRBool debug_GetBoolPref(nsIPrefBranch * aPrefs,const char * aPrefName)
 {
   NS_ASSERTION(nsnull != aPrefName,"cmon, pref name is null.");
   NS_ASSERTION(nsnull != aPrefs,"cmon, prefs are null.");
@@ -1076,30 +1082,29 @@ static void debug_SetCachedBoolPref(const char * aPrefName,PRBool aValue)
 }
 
 //////////////////////////////////////////////////////////////
-/* static */ int PR_CALLBACK 
-debug_PrefChangedCallback(const char * name,void * closure)
+class Debug_PrefObserver : public nsIObserver {
+  public:
+    NS_DECL_ISUPPORTS
+    NS_DECL_NSIOBSERVER
+};
+
+NS_IMPL_ISUPPORTS1(Debug_PrefObserver, nsIObserver)
+
+NS_IMETHODIMP
+Debug_PrefObserver::Observe(nsISupports* subject, const char* topic,
+                            const PRUnichar* data)
 {
+  nsCOMPtr<nsIPrefBranch> branch(do_QueryInterface(subject));
+  NS_ASSERTION(branch, "must implement nsIPrefBranch");
 
-  nsIPref * prefs = nsnull;
-  
-  nsresult rv = CallGetService(NS_PREF_CONTRACTID, &prefs);
-  
-  NS_ASSERTION(NS_SUCCEEDED(rv),"Could not get prefs service.");
-  NS_ASSERTION(nsnull != prefs,"Prefs services is null.");
+  NS_ConvertUTF16toUTF8 prefName(data);
 
-  if (NS_SUCCEEDED(rv))
-  {
-    PRBool value = PR_FALSE;
-
-    prefs->GetBoolPref(name,&value);
-
-    debug_SetCachedBoolPref(name,value);
-
-    NS_RELEASE(prefs);
-  }
-
-     return 0;
+  PRBool value = PR_FALSE;
+  branch->GetBoolPref(prefName.get(), &value);
+  debug_SetCachedBoolPref(prefName.get(), value);
+  return NS_OK;
 }
+
 //////////////////////////////////////////////////////////////
 /* static */ void
 debug_RegisterPrefCallbacks()
@@ -1110,28 +1115,24 @@ debug_RegisterPrefCallbacks()
   {
     once = PR_FALSE;
 
-    nsIPref * prefs = nsnull;
-
-    nsresult rv = CallGetService(NS_PREF_CONTRACTID, &prefs);
+    nsCOMPtr<nsIPrefBranch2> prefs(do_GetService(NS_PREFSERVICE_CONTRACTID));
     
-    NS_ASSERTION(NS_SUCCEEDED(rv),"Could not get prefs service.");
-    NS_ASSERTION(nsnull != prefs,"Prefs services is null.");
+    NS_ASSERTION(prefs, "Prefs services is null.");
 
-    if (NS_SUCCEEDED(rv))
+    if (prefs)
     {
+      nsCOMPtr<nsIObserver> obs(new Debug_PrefObserver());
       for (PRUint32 i = 0; i < debug_NumPrefValues; i++)
       {
         // Initialize the pref values
         debug_PrefValues[i].value = 
           debug_GetBoolPref(prefs,debug_PrefValues[i].name);
 
-        // Register callbacks for when these change
-        prefs->RegisterCallback(debug_PrefValues[i].name,
-                    debug_PrefChangedCallback,
-                    NULL);
+        if (obs) {
+          // Register callbacks for when these change
+          prefs->AddObserver(debug_PrefValues[i].name, obs, PR_FALSE);
+        }
       }
-      
-      NS_RELEASE(prefs);
     }
   }
 }

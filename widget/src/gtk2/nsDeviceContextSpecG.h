@@ -42,15 +42,14 @@
 #include "nsIDeviceContextSpec.h"
 #include "nsIPrintSettings.h"
 #include "nsIPrintOptions.h" 
-#include "nsVoidArray.h"
 #include "nsCOMPtr.h"
-#ifdef USE_POSTSCRIPT
-#include "nsIDeviceContextSpecPS.h"
-#endif /* USE_POSTSCRIPT */
-#ifdef USE_XPRINT
-#include "nsIDeviceContextSpecXPrint.h"
-#endif /* USE_XPRINT */
+#include "nsString.h"
+
 #include "nsCRT.h" /* should be <limits.h>? */
+
+#include <gtk/gtk.h>
+#include <gtk/gtkprinter.h>
+#include <gtk/gtkprintjob.h>
 
 #define NS_PORTRAIT  0
 #define NS_LANDSCAPE 1
@@ -58,29 +57,24 @@
 typedef enum
 {
   pmInvalid = 0,
-  pmXprint,
   pmPostScript
 } PrintMethod;
 
 class nsDeviceContextSpecGTK : public nsIDeviceContextSpec
-#ifdef USE_POSTSCRIPT
-                              , public nsIDeviceContextSpecPS
-#endif /* USE_POSTSCRIPT */
-#ifdef USE_XPRINT
-                              , public nsIDeviceContextSpecXp
-#endif /* USE_XPRINT */
 {
 public:
   nsDeviceContextSpecGTK();
 
   NS_DECL_ISUPPORTS
 
-#ifdef MOZ_CAIRO_GFX
   NS_IMETHOD GetSurfaceForPrinter(gfxASurface **surface);
-#endif
 
-  NS_IMETHOD Init(nsIPrintSettings* aPS, PRBool aIsPrintPreview);
+  NS_IMETHOD Init(nsIWidget *aWidget, nsIPrintSettings* aPS, PRBool aIsPrintPreview);
   NS_IMETHOD ClosePrintManager(); 
+  NS_IMETHOD BeginDocument(PRUnichar * aTitle, PRUnichar * aPrintToFileName, PRInt32 aStartPage, PRInt32 aEndPage);
+  NS_IMETHOD EndDocument();
+  NS_IMETHOD BeginPage() { return NS_ERROR_NOT_IMPLEMENTED; }
+  NS_IMETHOD EndPage() { return NS_ERROR_NOT_IMPLEMENTED; }
 
   NS_IMETHOD GetToPrinter(PRBool &aToPrinter); 
   NS_IMETHOD GetIsPrintPreview(PRBool &aIsPPreview);
@@ -98,7 +92,6 @@ public:
   NS_IMETHOD GetUserCancelled(PRBool &aCancel);      
   NS_IMETHOD GetPrintMethod(PrintMethod &aMethod);
   static nsresult GetPrintMethod(const char *aPrinter, PrintMethod &aMethod);
-  NS_IMETHOD GetPageSizeInTwips(PRInt32 *aWidth, PRInt32 *aHeight);
   NS_IMETHOD GetPaperName(const char **aPaperName);
   NS_IMETHOD GetPlexName(const char **aPlexName);
   NS_IMETHOD GetResolutionName(const char **aResolutionName);
@@ -127,6 +120,15 @@ protected:
   float  mRight;              /* right margin */
   float  mTop;                /* top margin */
   float  mBottom;             /* bottom margin */
+
+  GtkPrintJob*      mPrintJob;
+  GtkPrinter*       mGtkPrinter;
+  GtkPrintSettings* mGtkPrintSettings;
+  GtkPageSetup*     mGtkPageSetup;
+
+  nsCString              mSpoolName;
+  nsCOMPtr<nsILocalFile> mSpoolFile;
+
 };
 
 //-------------------------------------------------------------------------

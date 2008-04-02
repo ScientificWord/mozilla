@@ -82,6 +82,7 @@ protected:
   nsWeakPtr     mSession; // Should never be touched by Clone or Assign
  
   nsMargin      mMargin;
+  nsMargin      mEdge;
   PRInt32       mPrintOptions;
 
   // scriptable data members
@@ -118,7 +119,6 @@ protected:
 
   PRBool        mPrintReversed;
   PRBool        mPrintInColor; // a false means grayscale
-  PRInt32       mPaperSize;    // see page size consts
   PRInt32       mOrientation;  // see orientation consts
   nsString      mColorspace;
   nsString      mResolutionName;
@@ -128,6 +128,7 @@ protected:
   nsXPIDLString mPrinter;
   PRBool        mPrintToFile;
   nsString      mToFileName;
+  PRInt16       mOutputFormat;
   PRPackedBool  mIsInitedFromPrinter;
   PRPackedBool  mIsInitedFromPrefs;
 

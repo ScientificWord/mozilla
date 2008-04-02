@@ -21,6 +21,8 @@
  *
  * Contributor(s):
  *   Michael Lowe <michael.lowe@bigfoot.com>
+ *   Jens Bannmann <jens.b@web.de>
+ *   Ryan Jones <sciguyryan@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -39,22 +41,98 @@
 #include "nsLookAndFeel.h"
 #include "nsXPLookAndFeel.h"
 #include <windows.h>
+#include <shellapi.h>
 #include "nsWindow.h"
 
-// Constants only found in new (98+, 2K+, XP+, etc.) Windows.
+#ifndef WINCE
+typedef HANDLE (WINAPI*OpenThemeDataPtr)(HWND hwnd, LPCWSTR pszClassList);
+typedef HRESULT (WINAPI*CloseThemeDataPtr)(HANDLE hTheme);
+typedef HRESULT (WINAPI*GetThemeColorPtr)(HANDLE hTheme, int iPartId,
+                                          int iStateId, int iPropId, OUT COLORREF* pFont);
+typedef BOOL (WINAPI*IsAppThemedPtr)(VOID);
+
+static OpenThemeDataPtr openTheme = NULL;
+static CloseThemeDataPtr closeTheme = NULL;
+static GetThemeColorPtr getThemeColor = NULL;
+static IsAppThemedPtr isAppThemed = NULL;
+
+static const char kThemeLibraryName[] = "uxtheme.dll";
+static HINSTANCE gThemeDLLInst = NULL;
+static HANDLE gMenuTheme = NULL;
+
+#define MENU_POPUPITEM 14
+
+#define MPI_NORMAL 1
+#define MPI_HOT 2
+#define MPI_DISABLED 3
+#define MPI_DISABLEDHOT 4
+
+// From tmschema.h in the Vista SDK
+#define TMT_TEXTCOLOR 3803
+
+#endif
+
+// Constants only found in new (2K+, XP+, etc.) Windows.
 #ifndef COLOR_MENUHILIGHT
 #define COLOR_MENUHILIGHT    29
 #endif
 #ifndef SPI_GETFLATMENU
 #define SPI_GETFLATMENU      0x1022
 #endif
+#ifndef SPI_GETMENUSHOWDELAY
+#define SPI_GETMENUSHOWDELAY      106
+#endif //SPI_GETMENUSHOWDELAY
+#ifndef WS_EX_LAYOUTRTL 
+#define WS_EX_LAYOUTRTL         0x00400000L // Right to left mirroring
+#endif
+
+#ifndef WINCE
+typedef UINT (CALLBACK *SHAppBarMessagePtr)(DWORD, PAPPBARDATA);
+SHAppBarMessagePtr gSHAppBarMessage = NULL;
+static HINSTANCE gShell32DLLInst = NULL;
+#endif
+
+static PRInt32 GetSystemParam(long flag, PRInt32 def)
+{
+#ifdef WINCE
+    return def;
+#else
+    DWORD value; 
+    return ::SystemParametersInfo(flag, 0, &value, 0) ? value : def;
+#endif
+}
 
 nsLookAndFeel::nsLookAndFeel() : nsXPLookAndFeel()
 {
+#ifndef WINCE
+  gShell32DLLInst = LoadLibrary("Shell32.dll");
+  if (gShell32DLLInst)
+  {
+      gSHAppBarMessage = (SHAppBarMessagePtr) GetProcAddress(gShell32DLLInst,
+                                                             "SHAppBarMessage");
+  }
+  gThemeDLLInst = LoadLibrary(kThemeLibraryName);
+  if(gThemeDLLInst)
+  {
+    openTheme = (OpenThemeDataPtr)GetProcAddress(gThemeDLLInst, "OpenThemeData");
+    closeTheme = (CloseThemeDataPtr)GetProcAddress(gThemeDLLInst, "CloseThemeData");
+    getThemeColor = (GetThemeColorPtr)GetProcAddress(gThemeDLLInst, "GetThemeColor");
+    isAppThemed = (IsAppThemedPtr)GetProcAddress(gThemeDLLInst, "IsAppThemed");
+    gMenuTheme = openTheme(NULL, L"Menu");
+  }
+#endif
 }
 
 nsLookAndFeel::~nsLookAndFeel()
 {
+#ifndef WINCE
+   if (gShell32DLLInst)
+   {
+       FreeLibrary(gShell32DLLInst);
+       gShell32DLLInst = NULL;
+       gSHAppBarMessage = NULL;
+   }
+#endif
 }
 
 nsresult nsLookAndFeel::NativeGetColor(const nsColorID aID, nscolor &aColor)
@@ -154,11 +232,51 @@ nsresult nsLookAndFeel::NativeGetColor(const nsColorID aID, nscolor &aColor)
       idx = COLOR_GRAYTEXT;
       break;
     case eColor_highlight:
+    case eColor__moz_html_cellhighlight:
     case eColor__moz_menuhover:
       idx = COLOR_HIGHLIGHT;
       break;
-    case eColor_highlighttext:
+    case eColor__moz_menubarhovertext:OSVERSIONINFOEX:
+#ifndef WINCE
+      if (GetWindowsVersion() < VISTA_VERSION || !isAppThemed())
+#endif
+      {
+        // GetSystemParam will return 0 on failure and we get non-flat as
+        // desired for Windows 2000 and sometimes on XP.
+        idx = (GetSystemParam(SPI_GETFLATMENU, 0)) ?
+                COLOR_HIGHLIGHTTEXT :
+                COLOR_MENUTEXT;
+        break;
+      }
+      // Fall through
     case eColor__moz_menuhovertext:
+#ifndef WINCE
+      if (isAppThemed && isAppThemed() && GetWindowsVersion() >= VISTA_VERSION)
+      {
+        COLORREF color;
+        HRESULT hr;
+        hr = getThemeColor(gMenuTheme, MENU_POPUPITEM, MPI_HOT, TMT_TEXTCOLOR, &color);
+        if (hr == S_OK)
+        {
+          aColor = COLOREF_2_NSRGB(color);
+          return NS_OK;
+        }
+        // Since we don't get theme changed messages, check if we lost the handle
+        else if (hr == E_HANDLE)
+        {
+          closeTheme(gMenuTheme);
+          gMenuTheme = openTheme(NULL, L"Menu");
+          // gMenuTheme shouldn't be null since it was non-null before so we
+          // are running on Vista or higher
+          getThemeColor(gMenuTheme, MENU_POPUPITEM, MPI_HOT, TMT_TEXTCOLOR, &color);
+          aColor = COLOREF_2_NSRGB(color);
+          return NS_OK;
+        }
+        // fall through to highlight case
+      }
+#endif
+    case eColor_highlighttext:
+    case eColor__moz_html_cellhighlighttext:
       idx = COLOR_HIGHLIGHTTEXT;
       break;
     case eColor_inactiveborder:
@@ -229,19 +347,6 @@ nsresult nsLookAndFeel::NativeGetColor(const nsColorID aID, nscolor &aColor)
     case eColor__moz_buttondefault:
       idx = COLOR_3DDKSHADOW;
       break;
-    case eColor__moz_menubarhovertext: {
-      BOOL isFlatMenus;
-      HRESULT rv;
-
-      // This will simply fail on Windows versions prior to XP, so we get
-      // non-flat as desired.
-      rv = ::SystemParametersInfo(SPI_GETFLATMENU, 0, &isFlatMenus, 0);
-      if (rv && isFlatMenus)
-        idx = COLOR_HIGHLIGHTTEXT; /* flat menus (XP themes and later only) */
-      else
-        idx = COLOR_MENUTEXT; /* 3d menus (pre-XP, some themes) */
-      break;
-    }
     default:
       idx = COLOR_WINDOW;
       break;
@@ -332,81 +437,19 @@ NS_IMETHODIMP nsLookAndFeel::GetMetric(const nsMetricID aID, PRInt32 & aMetric)
         aMetric = 1;
         break;
     case eMetric_SubmenuDelay:
-        {
-        static PRInt32 sSubmenuDelay = -1;
-
-        if (sSubmenuDelay == -1) {
-          HKEY key;
-          char value[100];
-          DWORD length, type;
-          LONG result;
-
-          sSubmenuDelay = 300;
-
-#ifndef WINCE
-          result = ::RegOpenKeyEx(HKEY_CURRENT_USER, 
-                   "Control Panel\\Desktop", 0, KEY_READ, &key);
-
-          if (result == ERROR_SUCCESS) {
-            length = sizeof(value);
-
-            result = ::RegQueryValueEx(key, "MenuShowDelay",
-                     NULL, &type, (LPBYTE)&value, &length);
-
-            ::RegCloseKey(key);
-
-            if (result == ERROR_SUCCESS) {
-              PRInt32 errorCode;
-              nsString str; str.AssignWithConversion(value);
-              PRInt32 submenuDelay = str.ToInteger(&errorCode);
-              if (errorCode == NS_OK) {
-                sSubmenuDelay = submenuDelay;
-              }
-            }
-          }
-#endif
-        }
-        aMetric = sSubmenuDelay;
-        }
+        // This will default to the Windows' default
+        // (400ms) on error.
+        aMetric = GetSystemParam(SPI_GETMENUSHOWDELAY, 400);
         break;
     case eMetric_MenusCanOverlapOSBar:
         // we want XUL popups to be able to overlap the task bar.
         aMetric = 1;
         break;
     case eMetric_DragFullWindow:
-        {
-        static PRInt32 sDragFullWindow = -1;
-#ifndef WINCE
-        if (sDragFullWindow == -1) {
-          HKEY key;
-          char value[100];
-          DWORD length, type;
-          LONG result;
-
-
-          result = ::RegOpenKeyEx(HKEY_CURRENT_USER, 
-                   "Control Panel\\Desktop", 0, KEY_READ, &key);
-
-          if (result == ERROR_SUCCESS) {
-            length = sizeof(value);
-
-            result = ::RegQueryValueEx(key, "DragFullWindows",
-                     NULL, &type, (LPBYTE)&value, &length);
-
-            ::RegCloseKey(key);
-
-            if (result == ERROR_SUCCESS) {
-              PRInt32 errorCode;
-              nsString str; str.AssignWithConversion(value);
-              sDragFullWindow = str.ToInteger(&errorCode);         
-            }
-          }
-        } 
-#endif
-        aMetric = sDragFullWindow ? 1 : 0;
-        }
+        // This will default to the Windows' default
+        // (on by default) on error.
+        aMetric = GetSystemParam(SPI_GETDRAGFULLWINDOWS, 1);
         break;
-
 #ifndef WINCE
     case eMetric_DragThresholdX:
         // The system metric is the number of pixels at which a drag should
@@ -424,19 +467,14 @@ NS_IMETHODIMP nsLookAndFeel::GetMetric(const nsMetricID aID, PRInt32 & aMetric)
         // The high contrast flag really means -- use this theme and don't override it.
         HIGHCONTRAST contrastThemeInfo;
         contrastThemeInfo.cbSize = sizeof(contrastThemeInfo);
-        // Need to check return from SystemParametersInfo since 
-        // SPI_GETHIGHCONTRAST is not supported on Windows NT 
-        if (SystemParametersInfo(SPI_GETHIGHCONTRAST, 0, &contrastThemeInfo, 0)) {
-          aMetric = (contrastThemeInfo.dwFlags & HCF_HIGHCONTRASTON) != 0;
-        }
-        else {
-          aMetric = 0;
-        }
+        ::SystemParametersInfo(SPI_GETHIGHCONTRAST, 0, &contrastThemeInfo, 0);
+
+        aMetric = ((contrastThemeInfo.dwFlags & HCF_HIGHCONTRASTON) != 0);
         break;
     case eMetric_IsScreenReaderActive:
-      BOOL isScreenReaderActive;
-      aMetric = SystemParametersInfo(SPI_GETSCREENREADER, 0, &isScreenReaderActive, 0) && 
-                isScreenReaderActive;
+        // This will default to the Windows' default
+        // (off by default) on error.
+        aMetric = GetSystemParam(SPI_GETSCREENREADER, 0);
       break;
 #endif
     case eMetric_ScrollArrowStyle:
@@ -460,7 +498,57 @@ NS_IMETHODIMP nsLookAndFeel::GetMetric(const nsMetricID aID, PRInt32 & aMetric)
     case eMetric_TreeScrollLinesMax:
         aMetric = 3;
         break;
+#ifndef WINCE
+    case eMetric_AlertNotificationOrigin:
+        aMetric = 0;
+        if (gSHAppBarMessage)
+        {
+          // Get task bar window handle
+          HWND shellWindow = FindWindow("Shell_TrayWnd", NULL);
 
+          if (shellWindow != NULL)
+          {
+            // Determine position
+            APPBARDATA appBarData;
+            appBarData.hWnd = shellWindow;
+            appBarData.cbSize = sizeof(appBarData);
+            if (gSHAppBarMessage(ABM_GETTASKBARPOS, &appBarData))
+            {
+              // Set alert origin as a bit field - see nsILookAndFeel.h
+              // 0 represents bottom right, sliding vertically.
+              switch(appBarData.uEdge)
+              {
+                case ABE_LEFT:
+                  aMetric = NS_ALERT_HORIZONTAL | NS_ALERT_LEFT;
+                  break;
+                case ABE_RIGHT:
+                  aMetric = NS_ALERT_HORIZONTAL;
+                  break;
+                case ABE_TOP:
+                  aMetric = NS_ALERT_TOP;
+                  // fall through for the right-to-left handling.
+                case ABE_BOTTOM:
+                  // If the task bar is right-to-left,
+                  // move the origin to the left
+                  if (::GetWindowLong(shellWindow, GWL_EXSTYLE) &
+                        WS_EX_LAYOUTRTL)
+                    aMetric |= NS_ALERT_LEFT;
+                  break;
+              }
+            }
+          }
+        }
+        break;
+#endif
+
+    case eMetric_IMERawInputUnderlineStyle:
+    case eMetric_IMEConvertedTextUnderlineStyle:
+        aMetric = NS_UNDERLINE_STYLE_DASHED;
+        break;
+    case eMetric_IMESelectedRawTextUnderlineStyle:
+    case eMetric_IMESelectedConvertedTextUnderline:
+        aMetric = NS_UNDERLINE_STYLE_NONE;
+        break;
     default:
         aMetric = 0;
         res = NS_ERROR_FAILURE;
@@ -510,6 +598,23 @@ NS_IMETHODIMP nsLookAndFeel::GetMetric(const nsMetricFloatID aID, float & aMetri
   return res;
 }
 
+/* virtual */
+PRUnichar nsLookAndFeel::GetPasswordCharacter()
+{
+  static PRUnichar passwordCharacter = 0;
+  if (!passwordCharacter) {
+    passwordCharacter = '*';
+#ifndef WINCE
+    OSVERSIONINFO osversion;
+    osversion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    ::GetVersionEx(&osversion);
+    if (osversion.dwMajorVersion > 5 ||
+        osversion.dwMajorVersion == 5 && osversion.dwMinorVersion > 0)
+      passwordCharacter = 0x25cf;
+#endif
+  }
+  return passwordCharacter;
+}
 
 #ifdef NS_DEBUG
 

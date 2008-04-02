@@ -216,9 +216,10 @@ public:
   NS_IMETHOD ResetInputState();
   NS_IMETHOD SetIMEOpenState(PRBool aState);
   NS_IMETHOD GetIMEOpenState(PRBool* aState);
-  NS_IMETHOD SetIMEEnabled(PRBool aState);
-  NS_IMETHOD GetIMEEnabled(PRBool* aState);
+  NS_IMETHOD SetIMEEnabled(PRUint32 aState);
+  NS_IMETHOD GetIMEEnabled(PRUint32* aState);
   NS_IMETHOD CancelIMEComposition();
+  NS_IMETHOD GetToggledKeyState(PRUint32 aKeyCode, PRBool* aLEDState);
 
   inline void InitEvent(nsGUIEvent& event, PRUint32 aEventType, nsPoint* aPoint = nsnull)
 		{
@@ -313,7 +314,8 @@ protected:
   void InitMouseEvent( PhPointerEvent_t * aPhButtonEvent,
                        nsWidget         * aWidget,
                        nsMouseEvent     & anEvent,
-                       PRUint32         aEventType );
+                       PRUint32         aEventType,
+                       PRInt16          aButton);
 
 
   /* Convert Photon key codes to Mozilla key codes */

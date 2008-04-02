@@ -37,7 +37,6 @@
 
 #include "nsPrintSettingsImpl.h"
 #include "nsCoord.h"
-#include "nsUnitConversion.h"
 #include "nsReadableUtils.h"
 #include "nsIPrintSession.h"
 
@@ -60,7 +59,7 @@ nsPrintSettings::nsPrintSettings() :
   mHowToEnableFrameUI(kFrameEnableNone),
   mIsCancelled(PR_FALSE),
   mPrintSilent(PR_FALSE),
-	mPrintPreview(PR_FALSE),
+  mPrintPreview(PR_FALSE),
   mShrinkToFit(PR_TRUE),
   mShowPrintProgress(PR_TRUE),
   mPrintPageDelay(500),
@@ -72,8 +71,10 @@ nsPrintSettings::nsPrintSettings() :
   mPrintReversed(PR_FALSE),
   mPrintInColor(PR_TRUE),
   mOrientation(kPortraitOrientation),
+  mDownloadFonts(PR_FALSE),
   mNumCopies(1),
   mPrintToFile(PR_FALSE),
+  mOutputFormat(kOutputFormatNative),
   mIsInitedFromPrinter(PR_FALSE),
   mIsInitedFromPrefs(PR_FALSE)
 {
@@ -81,6 +82,7 @@ nsPrintSettings::nsPrintSettings() :
   /* member initializers and constructor code */
   nscoord halfInch = NS_INCHES_TO_TWIPS(0.5);
   mMargin.SizeTo(halfInch, halfInch, halfInch, halfInch);
+  mEdge.SizeTo(0, 0, 0, 0);
 
   mPrintOptions = kPrintOddPages | kPrintEvenPages;
 
@@ -187,19 +189,6 @@ NS_IMETHODIMP nsPrintSettings::GetPrintInColor(PRBool *aPrintInColor)
 NS_IMETHODIMP nsPrintSettings::SetPrintInColor(PRBool aPrintInColor)
 {
   mPrintInColor = aPrintInColor;
-  return NS_OK;
-}
-
-/* attribute short paperSize; */
-NS_IMETHODIMP nsPrintSettings::GetPaperSize(PRInt32 *aPaperSize)
-{
-  //NS_ENSURE_ARG_POINTER(aPaperSize);
-  *aPaperSize = mPaperSize;
-  return NS_OK;
-}
-NS_IMETHODIMP nsPrintSettings::SetPaperSize(PRInt32 aPaperSize)
-{
-  mPaperSize = aPaperSize;
   return NS_OK;
 }
 
@@ -353,6 +342,19 @@ NS_IMETHODIMP nsPrintSettings::SetToFileName(const PRUnichar * aToFileName)
   return NS_OK;
 }
 
+/* attribute short outputFormat; */
+NS_IMETHODIMP nsPrintSettings::GetOutputFormat(PRInt16 *aOutputFormat)
+{
+  NS_ENSURE_ARG_POINTER(aOutputFormat);
+  *aOutputFormat = mOutputFormat;
+  return NS_OK;
+}
+NS_IMETHODIMP nsPrintSettings::SetOutputFormat(PRInt16 aOutputFormat)
+{
+  mOutputFormat = aOutputFormat;
+  return NS_OK;
+}
+
 /* attribute long printPageDelay; */
 NS_IMETHODIMP nsPrintSettings::GetPrintPageDelay(PRInt32 *aPrintPageDelay)
 {
@@ -440,6 +442,58 @@ NS_IMETHODIMP nsPrintSettings::GetMarginRight(double *aMarginRight)
 NS_IMETHODIMP nsPrintSettings::SetMarginRight(double aMarginRight)
 {
   mMargin.right = NS_INCHES_TO_TWIPS(float(aMarginRight));
+  return NS_OK;
+}
+
+/* attribute double edgeTop; */
+NS_IMETHODIMP nsPrintSettings::GetEdgeTop(double *aEdgeTop)
+{
+  NS_ENSURE_ARG_POINTER(aEdgeTop);
+  *aEdgeTop = NS_TWIPS_TO_INCHES(mEdge.top);
+  return NS_OK;
+}
+NS_IMETHODIMP nsPrintSettings::SetEdgeTop(double aEdgeTop)
+{
+  mEdge.top = NS_INCHES_TO_TWIPS(float(aEdgeTop));
+  return NS_OK;
+}
+
+/* attribute double edgeLeft; */
+NS_IMETHODIMP nsPrintSettings::GetEdgeLeft(double *aEdgeLeft)
+{
+  NS_ENSURE_ARG_POINTER(aEdgeLeft);
+  *aEdgeLeft = NS_TWIPS_TO_INCHES(mEdge.left);
+  return NS_OK;
+}
+NS_IMETHODIMP nsPrintSettings::SetEdgeLeft(double aEdgeLeft)
+{
+  mEdge.left = NS_INCHES_TO_TWIPS(float(aEdgeLeft));
+  return NS_OK;
+}
+
+/* attribute double edgeBottom; */
+NS_IMETHODIMP nsPrintSettings::GetEdgeBottom(double *aEdgeBottom)
+{
+  NS_ENSURE_ARG_POINTER(aEdgeBottom);
+  *aEdgeBottom = NS_TWIPS_TO_INCHES(mEdge.bottom);
+  return NS_OK;
+}
+NS_IMETHODIMP nsPrintSettings::SetEdgeBottom(double aEdgeBottom)
+{
+  mEdge.bottom = NS_INCHES_TO_TWIPS(float(aEdgeBottom));
+  return NS_OK;
+}
+
+/* attribute double edgeRight; */
+NS_IMETHODIMP nsPrintSettings::GetEdgeRight(double *aEdgeRight)
+{
+  NS_ENSURE_ARG_POINTER(aEdgeRight);
+  *aEdgeRight = NS_TWIPS_TO_INCHES(mEdge.right);
+  return NS_OK;
+}
+NS_IMETHODIMP nsPrintSettings::SetEdgeRight(double aEdgeRight)
+{
+  mEdge.right = NS_INCHES_TO_TWIPS(float(aEdgeRight));
   return NS_OK;
 }
 
@@ -893,6 +947,13 @@ nsPrintSettings::SetMarginInTwips(nsMargin& aMargin)
   return NS_OK;
 }
 
+NS_IMETHODIMP 
+nsPrintSettings::SetEdgeInTwips(nsMargin& aEdge)
+{
+  mEdge = aEdge;
+  return NS_OK;
+}
+
 /** ---------------------------------------------------
  *  See documentation in nsPrintOptionsImpl.h
  *	@update 6/21/00 dwc
@@ -904,12 +965,27 @@ nsPrintSettings::GetMarginInTwips(nsMargin& aMargin)
   return NS_OK;
 }
 
+NS_IMETHODIMP 
+nsPrintSettings::GetEdgeInTwips(nsMargin& aEdge)
+{
+  aEdge = mEdge;
+  return NS_OK;
+}
+
+/** ---------------------------------------------------
+ * Stub - platform-specific implementations can use this function.
+ */
+NS_IMETHODIMP
+nsPrintSettings::SetupSilentPrinting()
+{
+  return NS_OK;
+}
+
 /** ---------------------------------------------------
  *  See documentation in nsPrintOptionsImpl.h
- *	@update 6/21/00 dwc
  */
 NS_IMETHODIMP 
-nsPrintSettings::GetPageSizeInTwips(PRInt32 *aWidth, PRInt32 *aHeight)
+nsPrintSettings::GetEffectivePageSize(double *aWidth, double *aHeight)
 {
   if (mPaperSizeUnit == kPaperSizeInches) {
     *aWidth  = NS_INCHES_TO_TWIPS(float(mPaperWidth));
@@ -917,6 +993,11 @@ nsPrintSettings::GetPageSizeInTwips(PRInt32 *aWidth, PRInt32 *aHeight)
   } else {
     *aWidth  = NS_MILLIMETERS_TO_TWIPS(float(mPaperWidth));
     *aHeight = NS_MILLIMETERS_TO_TWIPS(float(mPaperHeight));
+  }
+  if (kLandscapeOrientation == mOrientation) {
+    double temp = *aWidth;
+    *aWidth = *aHeight;
+    *aHeight = temp;
   }
   return NS_OK;
 }
@@ -940,7 +1021,7 @@ nsPrintSettings::Clone(nsIPrintSettings **_retval)
 nsresult 
 nsPrintSettings::_Assign(nsIPrintSettings *aPS)
 {
-  nsPrintSettings *ps = NS_STATIC_CAST(nsPrintSettings*, aPS);
+  nsPrintSettings *ps = static_cast<nsPrintSettings*>(aPS);
   *this = *ps;
   return NS_OK;
 }
@@ -963,6 +1044,7 @@ nsPrintSettings& nsPrintSettings::operator=(const nsPrintSettings& rhs)
   mStartPageNum        = rhs.mStartPageNum;
   mEndPageNum          = rhs.mEndPageNum;
   mMargin              = rhs.mMargin;
+  mEdge                = rhs.mEdge;
   mScaling             = rhs.mScaling;
   mPrintBGColors       = rhs.mPrintBGColors;
   mPrintBGImages       = rhs.mPrintBGImages;
@@ -985,13 +1067,13 @@ nsPrintSettings& nsPrintSettings::operator=(const nsPrintSettings& rhs)
   mPaperSizeUnit       = rhs.mPaperSizeUnit;
   mPrintReversed       = rhs.mPrintReversed;
   mPrintInColor        = rhs.mPrintInColor;
-  mPaperSize           = rhs.mPaperSize;
   mOrientation         = rhs.mOrientation;
   mPrintCommand        = rhs.mPrintCommand;
   mNumCopies           = rhs.mNumCopies;
   mPrinter             = rhs.mPrinter;
   mPrintToFile         = rhs.mPrintToFile;
   mToFileName          = rhs.mToFileName;
+  mOutputFormat        = rhs.mOutputFormat;
   mPrintPageDelay      = rhs.mPrintPageDelay;
 
   for (PRInt32 i=0;i<NUM_HEAD_FOOT;i++) {
