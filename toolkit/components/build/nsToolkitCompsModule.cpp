@@ -38,6 +38,8 @@
 #include "nsIGenericFactory.h"
 #include "nsAppStartup.h"
 #include "msiAutosub.h"
+#include "msiArrowStateService.h"
+#include "msiKeyMap.h"
 #include "nsUserInfo.h"
 #include "nsXPFEComponentsCID.h"
 #include "nsToolkitCompsCID.h"
@@ -47,22 +49,30 @@
 
 #ifndef MOZ_SUITE
 // XXX Suite isn't ready to include this just yet
-#ifdef MOZ_XPINSTALL
+#ifdef MOZ_RDF
 #include "nsDownloadManager.h"
 #include "nsDownloadProxy.h"
 #endif
+#endif // MOZ_SUITE
 
 #include "nsTypeAheadFind.h"
-#endif // MOZ_SUITE
 
 #ifdef MOZ_URL_CLASSIFIER
 #include "nsUrlClassifierDBService.h"
 #include "nsUrlClassifierStreamUpdater.h"
+#include "nsUrlClassifierUtils.h"
+#include "nsUrlClassifierHashCompleter.h"
+#include "nsDocShellCID.h"
 #endif
 
 #ifdef MOZ_FEEDS
 #include "nsScriptableUnescapeHTML.h"
 #endif
+
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiArrowStateService, msiArrowStateService::GetInstance)
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiKeyMap, msiKeyMap::GetInstance)
+
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -75,26 +85,43 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsAlertsService)
 
 #ifndef MOZ_SUITE
 // XXX Suite isn't ready to include this just yet
-#ifdef MOZ_XPINSTALL
-NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsDownloadManager, Init) 
+#ifdef MOZ_RDF
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(nsDownloadManager,
+                                         nsDownloadManager::GetSingleton) 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDownloadProxy)
 #endif
-
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsTypeAheadFind)
 #endif // MOZ_SUITE
 
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsTypeAheadFind)
+
 #ifdef MOZ_URL_CLASSIFIER
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(nsUrlClassifierDBService,
-                                         nsUrlClassifierDBService::GetInstance)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsUrlClassifierStreamUpdater)
+NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsUrlClassifierUtils, Init)
+NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsUrlClassifierHashCompleter, Init)
+
+static NS_IMETHODIMP
+nsUrlClassifierDBServiceConstructor(nsISupports *aOuter, REFNSIID aIID,
+                                    void **aResult)
+{
+    nsresult rv;
+    NS_ENSURE_ARG_POINTER(aResult);
+    NS_ENSURE_NO_AGGREGATION(aOuter);
+
+    nsUrlClassifierDBService *inst = nsUrlClassifierDBService::GetInstance(&rv);
+    if (NULL == inst) {
+        return rv;
+    }
+    /* NS_ADDREF(inst); */
+    rv = inst->QueryInterface(aIID, aResult);
+    NS_RELEASE(inst);
+
+    return rv;
+}
 #endif
 
 #ifdef MOZ_FEEDS
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsScriptableUnescapeHTML)
 #endif
-
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
-
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -104,12 +131,26 @@ static const nsModuleComponentInfo components[] =
     NS_TOOLKIT_APPSTARTUP_CID,
     NS_APPSTARTUP_CONTRACTID,
     nsAppStartupConstructor },
-
+  
   { "Autosubstitute",
     MSI_AUTOSUBSTITUTE_CID ,
     MSI_AUTOSUBSTITUTE_CONTRACTID,
     msiAutosubConstructor },
-    
+
+  { 
+    "Arrow state Service",
+    MSI_ARROWSTATE_SERVICE_CID,
+    MSI_ARROWSTATE_SERVICE_CONTRACTID,
+    msiArrowStateServiceConstructor
+  },
+
+  { 
+    "Key Mapping Service",
+    MSI_KEYMAP_CID,
+    MSI_KEYMAP_CONTRACTID,
+    msiKeyMapConstructor
+  },
+ 
   { "User Info Service",
     NS_USERINFO_CID,
     NS_USERINFO_CONTRACTID,
@@ -122,7 +163,7 @@ static const nsModuleComponentInfo components[] =
 #endif
 #ifndef MOZ_SUITE
 // XXX Suite isn't ready to include this just yet
-#ifdef MOZ_XPINSTALL
+#ifdef MOZ_RDF
   { "Download Manager",
     NS_DOWNLOADMANAGER_CID,
     NS_DOWNLOADMANAGER_CONTRACTID,
@@ -132,21 +173,33 @@ static const nsModuleComponentInfo components[] =
     NS_TRANSFER_CONTRACTID,
     nsDownloadProxyConstructor },
 #endif
+#endif // MOZ_SUITE
   { "TypeAheadFind Component",
     NS_TYPEAHEADFIND_CID,
     NS_TYPEAHEADFIND_CONTRACTID,
     nsTypeAheadFindConstructor
   },
-#endif // MOZ_SUITE
 #ifdef MOZ_URL_CLASSIFIER
   { "Url Classifier DB Service",
     NS_URLCLASSIFIERDBSERVICE_CID,
     NS_URLCLASSIFIERDBSERVICE_CONTRACTID,
     nsUrlClassifierDBServiceConstructor },
+  { "Url Classifier DB Service",
+    NS_URLCLASSIFIERDBSERVICE_CID,
+    NS_URICLASSIFIERSERVICE_CONTRACTID,
+    nsUrlClassifierDBServiceConstructor },
   { "Url Classifier Stream Updater",
     NS_URLCLASSIFIERSTREAMUPDATER_CID,
     NS_URLCLASSIFIERSTREAMUPDATER_CONTRACTID,
     nsUrlClassifierStreamUpdaterConstructor },
+  { "Url Classifier Utils",
+    NS_URLCLASSIFIERUTILS_CID,
+    NS_URLCLASSIFIERUTILS_CONTRACTID,
+    nsUrlClassifierUtilsConstructor },
+  { "Url Classifier Hash Completer",
+    NS_URLCLASSIFIERHASHCOMPLETER_CID,
+    NS_URLCLASSIFIERHASHCOMPLETER_CONTRACTID,
+    nsUrlClassifierHashCompleterConstructor },
 #endif
 #ifdef MOZ_FEEDS
   { "Unescape HTML",

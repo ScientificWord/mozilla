@@ -52,7 +52,7 @@
             aPreference.dispatchEvent(event);
           }
           catch (e) {
-            dump(e);
+            Components.utils.reportError(e);
           }
         ]]>
         </body>
@@ -80,6 +80,11 @@
     <implementation>
       <constructor>
       <![CDATA[
+        // if the element has been inserted without the name attribute set,
+        // we have nothing to do here
+        if (!this.name)
+          return;
+
         this.preferences.rootBranchInternal
             .addObserver(this.name, this.preferences, false);
         // In non-instant apply mode, we must try and use the last saved state
@@ -279,12 +284,11 @@
             case "bool":
               var val = this._branch.getBoolPref(this.name);
               return this.inverted ? !val : val;
-            case "string":
-              return this._branch.getCharPref(this.name);
             case "wstring":
               return this._branch
                          .getComplexValue(this.name, Components.interfaces.nsIPrefLocalizedString)
                          .data;
+            case "string":
             case "unichar":
               return this._branch
                          .getComplexValue(this.name, Components.interfaces.nsISupportsString)
@@ -314,9 +318,6 @@
           case "bool":
             this.preferences.rootBranch.setBoolPref(this.name, this.inverted ? !val : val);
             break;
-          case "string":
-            this.preferences.rootBranch.setCharPref(this.name, val);
-            break;
           case "wstring":
             var pls = Components.classes["@mozilla.org/pref-localizedstring;1"]
                                 .createInstance(Components.interfaces.nsIPrefLocalizedString);
@@ -324,6 +325,7 @@
             this.preferences.rootBranch
                 .setComplexValue(this.name, Components.interfaces.nsIPrefLocalizedString, pls);
             break;
+          case "string":
           case "unichar":
             var iss = Components.classes["@mozilla.org/supports-string;1"]
                                 .createInstance(Components.interfaces.nsISupportsString);
@@ -373,10 +375,10 @@
               event.initEvent("syncfrompreference", true, true);
               var f = new Function ("event", 
                                     aElement.getAttribute("onsyncfrompreference"));
-              rv = f(event);
+              rv = f.call(aElement, event);
             }
             catch (e) {
-              dump(e);
+              Components.utils.reportError(e);
             }
           }
           var val = rv !== undefined ? rv : (this.instantApply ? this.valueFromPreferences : this.value);
@@ -422,12 +424,12 @@
               event.initEvent("synctopreference", true, true);
               var f = new Function ("event", 
                                     aElement.getAttribute("onsynctopreference"));
-              var rv = f(event);
+              var rv = f.call(aElement, event);
               if (rv !== undefined) 
                 return rv;
             }
             catch (e) {
-              dump(e);
+              Components.utils.reportError(e);
             }
           }
           
@@ -511,16 +513,14 @@
     <content dlgbuttons="accept,cancel" persist="lastSelected screenX screenY"
              closebuttonlabel="&preferencesCloseButton.label;"
              closebuttonaccesskey="&preferencesCloseButton.accesskey;"
-             xmlns:xhtml2="http://www.w3.org/TR/xhtml2"
-             xmlns:wairole="http://www.w3.org/2005/01/wai-rdf/GUIRoleTaxonomy#"
-             xhtml2:role="wairole:dialog"
+             role="dialog"
 #ifdef XP_WIN
              title="&preferencesDefaultTitleWin.title;">
 #else
              title="&preferencesDefaultTitleMac.title;">
 #endif
       <xul:radiogroup anonid="selector" orient="horizontal" class="paneSelector chromeclass-toolbar"
-                      xhtml2:role="wairole:list"/> <!-- Expose to accessibility APIs as a list -->
+                      role="listbox"/> <!-- Expose to accessibility APIs as a listbox -->
       <xul:hbox flex="1" class="paneDeckContainer">
         <xul:deck anonid="paneDeck" flex="1">
           <children includes="prefpane"/>
@@ -554,7 +554,6 @@
     <implementation implements="nsITimerCallback">
       <constructor>
       <![CDATA[
-        this.setAttribute("animate", !this._shouldAnimate ? "off" : "on");
         if (this.type != "child") {
           var psvc = Components.classes["@mozilla.org/preferences-service;1"]
                                .getService(Components.interfaces.nsIPrefBranch);
@@ -577,6 +576,7 @@
 #endif
           }
         }
+        this.setAttribute("animated", this._shouldAnimate ? "true" : "false");
         var panes = this.preferencePanes;
 
         var lastPane = null;
@@ -633,6 +633,8 @@
       <property name="type" onget="return this.getAttribute('type');"/>
       <property name="_paneDeck"
                 onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'paneDeck');"/>
+      <property name="_paneDeckContainer"
+                onget="return document.getAnonymousElementByAttribute(this, 'class', 'paneDeckContainer');"/>
       <property name="_selector"
                 onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'selector');"/>
       <property name="lastSelected" 
@@ -667,6 +669,9 @@
         <parameter name="aPaneElement"/>
         <body>
         <![CDATA[
+          if (!aPaneElement)
+            return;
+
           this._selector.selectedItem = document.getAnonymousElementByAttribute(this, "pane", aPaneElement.id);
           if (!aPaneElement.loaded) {
             function OverlayLoadObserver(aPane)
@@ -728,36 +733,68 @@
           if (paneTitle != "")
             document.title = paneTitle;
 #endif
+          var helpButton = document.documentElement.getButton("help");
+          if (aPaneElement.hasAttribute("helpURI"))
+            helpButton.hidden = false;
+          else
+            helpButton.hidden = true;
 
           // Find this pane's index in the deck and set the deck's 
           // selectedIndex to that value to switch to it.
           var prefpanes = this.preferencePanes;
           for (var i = 0; i < prefpanes.length; ++i) {
             if (prefpanes[i] == aPaneElement) {
-              this._paneDeck.setAttribute("selectedIndex", i);
+              this._paneDeck.selectedIndex = i;
               
               if (this.type != "child") {
+                if (aPaneElement.hasAttribute("flex") && this._shouldAnimate &&
+                    prefpanes.length > 1)
+                  aPaneElement.removeAttribute("flex");
+                // Calling sizeToContent after the first prefpane is loaded
+                // will size the windows contents so style information is
+                // available to calculate correct sizing.
+                if (!this._initialized && prefpanes.length > 1) {
+                  if (this._shouldAnimate)
+                    this.style.minHeight = 0;
+                  window.sizeToContent();
+                }
+
                 var oldPane = this.lastSelected ? document.getElementById(this.lastSelected) : this.preferencePanes[0];
                 oldPane.selected = !(aPaneElement.selected = true);
-                if (!this._initialized || oldPane.id != aPaneElement.id) {
-                  this.lastSelected = aPaneElement.id;
-                  this.currentPane = aPaneElement;
-                  if (this._shouldAnimate) {
-                    aPaneElement.style.opacity = 0.0;
-                    this.animate(oldPane, aPaneElement);
+                this.lastSelected = aPaneElement.id;
+                this.currentPane = aPaneElement;
+                this._initialized = true;
+
+                // Only animate if we've switched between prefpanes
+                if (this._shouldAnimate && oldPane.id != aPaneElement.id) {
+                  aPaneElement.style.opacity = 0.0;
+                  this.animate(oldPane, aPaneElement);
+                }
+                else if (!this._shouldAnimate && prefpanes.length > 1) {
+                  var targetHeight = parseInt(window.getComputedStyle(this._paneDeckContainer, "").height);
+                  var verticalPadding = parseInt(window.getComputedStyle(aPaneElement, "").paddingTop);
+                  verticalPadding += parseInt(window.getComputedStyle(aPaneElement, "").paddingBottom);
+                  if (aPaneElement.contentHeight > targetHeight - verticalPadding) {
+                    // To workaround the bottom border of a groupbox from being
+                    // cutoff an hbox with a class of bottomBox may enclose it.
+                    // This needs to include its padding to resize properly.
+                    // See bug 394433
+                    var bottomPadding = 0;
+                    var bottomBox = aPaneElement.getElementsByAttribute("class", "bottomBox")[0];
+                    if (bottomBox)
+                      bottomPadding = parseInt(window.getComputedStyle(bottomBox, "").paddingBottom);
+                    window.innerHeight += bottomPadding + verticalPadding + aPaneElement.contentHeight - targetHeight;
                   }
-                  this._initialized = true;
+
+                  // XXX rstrong - extend the contents of the prefpane to
+                  // prevent elements from being cutoff (see bug 349098).
+                  if (aPaneElement.contentHeight + verticalPadding < targetHeight)
+                    aPaneElement._content.style.height = targetHeight - verticalPadding + "px";
                 }
               }
               break;
             }
           }
-
-          var helpButton = document.documentElement.getButton("help");
-          if (aPaneElement.hasAttribute("helpURI"))
-            helpButton.hidden = false;
-          else
-            helpButton.hidden = true;
         ]]>
         </body>
       </method>
@@ -1243,12 +1280,11 @@
       <xul:image class="paneButtonIcon" xbl:inherits="src"/>
       <xul:label class="paneButtonLabel" xbl:inherits="value=label"/>
     </content>
-    <implementation implements="nsIAccessibleProvider">
-      <property name="accessible">
+    <implementation implements="nsIAccessible">
+      <property name="accessibleType" readonly="true">
         <getter>
           <![CDATA[
-            var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
-            return accService.createXULListitemAccessible(this);
+            return Components.interfaces.nsIAccessibleProvider.XULListitem;
           ]]>
         </getter>
       </property>

@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 
+<!DOCTYPE bindings [
+<!ENTITY % notificationDTD SYSTEM "chrome://global/locale/notification.dtd">
+%notificationDTD;
+]>
+
 <bindings id="notificationBindings"
           xmlns="http://www.mozilla.org/xbl"
           xmlns:xbl="http://www.mozilla.org/xbl"
@@ -30,7 +35,8 @@
       <field name="slideSteps">4</field>
 
       <field name="_timer">null</field>
-      <field name="_blockBox">null</field>
+      <field name="_closedNotification">null</field>
+      <field name="_blockingCanvas">null</field>
 
       <property name="notificationsHidden"
                 onget="return this.getAttribute('notificationshidden') == 'true';">
@@ -38,6 +44,7 @@
           if (val)
             this.setAttribute('notificationshidden', true);
           else this.removeAttribute('notificationshidden');
+          return val;
         </setter>
       </property>
 
@@ -74,7 +81,7 @@
             // priority. If two are equal, the existing one appears on top.
             var notifications = this.allNotifications;
             var insertPos = null;
-            for (n = notifications.length - 1; n >= 0; n--) {
+            for (var n = notifications.length - 1; n >= 0; n--) {
               if (notifications[n].priority < aPriority)
                 break;
               insertPos = notifications[n];
@@ -85,6 +92,10 @@
             newitem.setAttribute("label", aLabel);
             newitem.setAttribute("value", aValue);
             newitem.setAttribute("image", aImage);
+            if (!insertPos) {
+              newitem.style.position = "fixed";
+              newitem.style.top = "100%";
+            }
             this.insertBefore(newitem, insertPos);
 
             if (aButtons) {
@@ -107,13 +118,14 @@
             else
               newitem.type = "warning";
 
+            if (!insertPos)
+              this._showNotification(newitem, true);
+
             // Fire event for accessibility APIs
             var event = document.createEvent("Events");
             event.initEvent("AlertActive", true, true);
-            this.dispatchEvent(event);
+            newitem.dispatchEvent(event);
 
-            if (!insertPos)
-              this._showNotification(newitem, true);
             return newitem;
           ]]>
         </body>
@@ -157,21 +169,63 @@
         </body>
       </method>
 
+      <method name="removeTransientNotifications">
+        <body>
+          <![CDATA[
+            var notifications = this.allNotifications;
+            for (var n = notifications.length - 1; n >= 0; n--) {
+              var notification = notifications[n];
+              if (notification.persistence)
+                notification.persistence--;
+              else if (Date.now() > notification.timeout)
+                this.removeNotification(notification);
+            }
+          ]]>
+        </body>
+      </method>
+
       <method name="_showNotification">
         <parameter name="aNotification"/>
         <parameter name="aSlideIn"/>
         <body>
           <![CDATA[
+            if (this._timer) {
+              clearInterval(this._timer);
+              if (this.currentNotification) {
+                this.currentNotification.style.marginTop = "0px";
+                this.currentNotification.style.opacity = 1;
+              }
+              if (this._closedNotification)
+                this._closedNotification.parentNode.
+                  removeChild(this._closedNotification);
+              this._setBlockingState(this.currentNotification);
+            }
+
             var height = aNotification.boxObject.height;
             var change = height / this.slideSteps;
             if (aSlideIn) {
+              if (this.currentNotification &&
+                  this.currentNotification.boxObject.height > height)
+                height = this.currentNotification.boxObject.height;
+
+              this.currentNotification = aNotification;
+              this._closedNotification = null;
+              aNotification.style.removeProperty("position");
+              aNotification.style.removeProperty("top");
               aNotification.style.marginTop = -height + "px";
               aNotification.style.opacity = 0;
             }
             else {
               change = -change;
+              this._closedNotification = aNotification;
+              var notifications = this.allNotifications;
+              var idx = notifications.length - 2;
+              if (idx >= 0)
+                this.currentNotification = notifications[idx];
+              else
+                this.currentNotification = null;
             }
-            opacitychange = change / height;
+            var opacitychange = change / height;
 
             var self = this;
             var slide = function slideInFn()
@@ -192,7 +246,7 @@
                 done = true;
               }
               else {
-                aNotification.style.marginTop = (margin + change) + "px";
+                aNotification.style.marginTop = (margin + change).toFixed(4) + "px";
                 if (opacitychange)
                   aNotification.style.opacity =
                     Number(aNotification.style.opacity) + opacitychange;
@@ -200,20 +254,11 @@
 
               if (done) {
                 clearInterval(self._timer);
-                var newitem;
-                if (aSlideIn) {
-                  newitem = aNotification;
-                }
-                else {
-                  if (aNotification.parentNode)
-                    aNotification.parentNode.removeChild(aNotification);
-                  var notifications = self.allNotifications;
-                  var idx = notifications.length - 1;
-                  if (idx >= 0)
-                    newitem = notifications[idx];
-                }
-                if (newitem)
-                  self.currentNotification = newitem;
+                self._timer = null;
+                if (self._closedNotification)
+                  self._closedNotification.parentNode.
+                    removeChild(self._closedNotification);
+                self._setBlockingState(self.currentNotification);
               }
             }
 
@@ -222,9 +267,62 @@
         </body>
       </method>
 
+      <method name="_setBlockingState">
+        <parameter name="aNotification"/>
+        <body>
+          <![CDATA[
+            var isblock = aNotification &&
+                          aNotification.priority == this.PRIORITY_CRITICAL_BLOCK;
+            var canvas = this._blockingCanvas;
+            if (isblock) {
+              if (!canvas)
+                canvas = document.createElementNS("http://www.w3.org/1999/xhtml", "canvas");
+              const XULNS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+              var content = this.firstChild;
+              if (!content ||
+                   content.namespaceURI != XULNS ||
+                   content.localName != "browser")
+                return;
+
+              var width = content.boxObject.width;
+              var height = content.boxObject.height;
+              content.collapsed = true;
+
+              canvas.setAttribute("width", width);
+              canvas.setAttribute("height", height);
+              canvas.setAttribute("flex", "1");
+
+              this.appendChild(canvas);
+              this._blockingCanvas = canvas;
+
+              var bgcolor = "white";
+              try {
+                var prefService = Components.classes["@mozilla.org/preferences-service;1"].
+                                    getService(Components.interfaces.nsIPrefBranch);
+                bgcolor = prefService.getCharPref("browser.display.background_color");
+
+                var win = content.contentWindow;
+                var context = canvas.getContext("2d");
+                context.globalAlpha = 0.5;
+                context.drawWindow(win, win.scrollX, win.scrollY,
+                                   width, height, bgcolor);
+              }
+              catch(ex) { };
+            }
+            else if (canvas) {
+              canvas.parentNode.removeChild(canvas);
+              this._blockingCanvas = null;
+              var content = this.firstChild;
+              if (content)
+                content.collapsed = false;
+            }
+          ]]>
+        </body>
+      </method>
+
     </implementation>
   </binding>
-      
+
   <binding id="notification">
     <content>
       <xul:hbox class="notification-inner outset" flex="1" xbl:inherits="type">
@@ -236,8 +334,9 @@
           <children/>
         </xul:hbox>
         <xul:toolbarbutton ondblclick="event.stopPropagation();"
-                           class="messageCloseButton"
+                           class="messageCloseButton tabbable"
                            xbl:inherits="hidden=hideclose"
+                           tooltiptext="&closeNotification.tooltip;"
                            oncommand="document.getBindingParent(this).close();"/>
       </xul:hbox>
     </content>
@@ -245,25 +344,27 @@
       <stylesheet src="chrome://global/skin/notification.css"/>
     </resources>
     <implementation implements="nsIAccessibleProvider">
-      <property name="accessible" readonly="true">
+      <property name="accessibleType" readonly="true">
         <getter>
           <![CDATA[
-            var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
-            return accService.createXULAlertAccessible(this);
+            return Components.interfaces.nsIAccessibleProvider.XULAlert;
           ]]>
         </getter>
       </property>
 
-      <property name="label" onset="return this.setAttribute('label', val);"
+      <property name="label" onset="this.setAttribute('label', val); return val;"
                              onget="return this.getAttribute('label');"/>
-      <property name="value" onset="return this.setAttribute('value', val);"
+      <property name="value" onset="this.setAttribute('value', val); return val;"
                              onget="return this.getAttribute('value');"/>
-      <property name="image" onset="return this.setAttribute('image', val);"
+      <property name="image" onset="this.setAttribute('image', val); return val;"
                              onget="return this.getAttribute('image');"/>
-      <property name="type" onget="return this.getAttribute('type');"
-                            onset="this.setAttribute('type', val); return val;"/>
-      <property name="priority" onget="return this.getAttribute('priority');"
+      <property name="type" onset="this.setAttribute('type', val); return val;"
+                            onget="return this.getAttribute('type');"/>
+      <property name="priority" onget="return parseInt(this.getAttribute('priority')) || 0;"
                                 onset="this.setAttribute('priority', val); return val;"/>
+      <property name="persistence" onget="return parseInt(this.getAttribute('persistence')) || 0;"
+                                   onset="this.setAttribute('persistence', val); return val;"/>
+      <field name="timeout">0</field>
 
       <property name="control" readonly="true">
         <getter>
@@ -300,6 +401,7 @@
 
             var button = aEvent.target.buttonInfo;
             if (button.popup) {
+              document.popupNode = aEvent.target;
               document.getElementById(button.popup).
                 showPopup(aEvent.originalTarget, -1, -1, "popup", "bottomleft", "topleft");
               aEvent.stopPropagation();

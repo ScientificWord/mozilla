@@ -38,110 +38,44 @@
 #
 # ***** END LICENSE BLOCK *****
 
-
 /**
- * openNewTabWith: opens a new tab with the given URL.
+ * urlSecurityCheck: JavaScript wrapper for checkLoadURIWithPrincipal
+ * and checkLoadURIStrWithPrincipal.
+ * If |aPrincipal| is not allowed to link to |aURL|, this function throws with
+ * an error message.
  *
- * @param href The URL to open (as a string).
- * @param sourceURL The URL of the document from which the URL came, or null.
- *          This is used to set the referrer header and to do a security check of whether
- *          the document as allowed to reference the URL.
- *          If null, there will be no referrer header and no security check.
- * @param postData Form POST data, or null.
- * @param event The triggering event (for the purpose of determining whether to open in the background), or null
- * @param allowThirdPartyFixup if true, then we allow the URL text to be sent to third party
- * services (e.g., Google's I Feel Lucky) for interpretation. This parameter may be undefined in
- * which case it is treated as false.
- */ 
-function openNewTabWith(href, sourceURL, postData, event, allowThirdPartyFixup)
-{
-  if (sourceURL)
-    urlSecurityCheck(href, sourceURL);
-
-  var prefSvc = Components.classes["@mozilla.org/preferences-service;1"]
-                          .getService(Components.interfaces.nsIPrefService);
-  prefSvc = prefSvc.getBranch(null);
-
-  // should we open it in a new tab?
-  var loadInBackground = true;
-  try {
-    loadInBackground = prefSvc.getBoolPref("browser.tabs.loadInBackground");
-  }
-  catch(ex) {
-  }
-
-  if (event && event.shiftKey)
-    loadInBackground = !loadInBackground;
-
-  // As in openNewWindowWith(), we want to pass the charset of the
-  // current document over to a new tab. 
-  var wintype = document.documentElement.getAttribute('windowtype');
-  var originCharset;
-  if (wintype == "navigator:browser")
-    originCharset = window.content.document.characterSet;
-
-  // open link in new tab
-  var browser = top.document.getElementById("content");
-
-  var referrerURI = sourceURL ? makeURI(sourceURL) : null;
-
-  browser.loadOneTab(href, referrerURI, originCharset, postData, loadInBackground,
-                     allowThirdPartyFixup || false);
-}
-
-function openNewWindowWith(href, sourceURL, postData, allowThirdPartyFixup)
-{
-  if (sourceURL)
-    urlSecurityCheck(href, sourceURL);
-
-  // if and only if the current window is a browser window and it has a document with a character
-  // set, then extract the current charset menu setting from the current document and use it to
-  // initialize the new browser window...
-  var charsetArg = null;
-  var wintype = document.documentElement.getAttribute('windowtype');
-  if (wintype == "navigator:browser")
-    charsetArg = "charset=" + window.content.document.characterSet;
-
-  var referrerURI = sourceURL ? makeURI(sourceURL) : null;
-
-  window.openDialog(getBrowserURL(), "_blank", "chrome,all,dialog=no",
-                    href, charsetArg, referrerURI, postData, allowThirdPartyFixup);
-}
-
-/**
- * urlSecurityCheck: JavaScript wrapper for CheckLoadURI.
- * If |sourceURL| is not allowed to link to |url|, this function throws with an error message.
- *
- * @param url The URL a page has linked to.
- * @param sourceURL The URL of the document from which the URL came.
+ * @param aURL
+ *        The URL a page has linked to. This could be passed either as a string
+ *        or as a nsIURI object.
+ * @param aPrincipal
+ *        The principal of the document from which aURL came.
+ * @param aFlags
+ *        Flags to be passed to checkLoadURIStr. If undefined,
+ *        nsIScriptSecurityManager.STANDARD will be passed.
  */
-function urlSecurityCheck(url, sourceURL)
+function urlSecurityCheck(aURL, aPrincipal, aFlags)
 {
-  const nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
+  const nsIScriptSecurityManager =
+    Components.interfaces.nsIScriptSecurityManager;
   var secMan = Components.classes["@mozilla.org/scriptsecuritymanager;1"]
                          .getService(nsIScriptSecurityManager);
+  if (aFlags === undefined)
+    aFlags = nsIScriptSecurityManager.STANDARD;
+
   try {
-    secMan.checkLoadURIStr(sourceURL, url, nsIScriptSecurityManager.STANDARD);
+    if (aURL instanceof Components.interfaces.nsIURI)
+      secMan.checkLoadURIWithPrincipal(aPrincipal, aURL, aFlags);
+    else
+      secMan.checkLoadURIStrWithPrincipal(aPrincipal, aURL, aFlags);
   } catch (e) {
-    throw "Load of " + url + " from " + sourceURL + " denied.";
+    // XXXmano: dump the principal url here too
+    throw "Load of " + aURL + " denied.";
   }
 }
 
-function webPanelSecurityCheck(aSourceURL, aDestURL) {
-  var sourceURI = makeURI(aSourceURL);
-  var destURI = makeURI(aDestURL);
-
-  const nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
-  var secMan = Components.classes["@mozilla.org/scriptsecuritymanager;1"]
-                         .getService(nsIScriptSecurityManager);
-  try {
-    secMan.checkLoadURI(sourceURI, destURI, nsIScriptSecurityManager.STANDARD);
-  } catch (e) {
-    return false;
-  }
-  return true;
-}
-
+/**
+ * Determine whether or not a given focused DOMWindow is in the content area.
+ **/
 function isContentFrame(aFocusedWindow)
 {
   if (!aFocusedWindow)
@@ -150,10 +84,6 @@ function isContentFrame(aFocusedWindow)
   return (aFocusedWindow.top == window.content);
 }
 
-
-const kSaveAsType_Complete = 0;   // Save document with attached objects
-// const kSaveAsType_URL = 1;     // Save document or URL by itself
-const kSaveAsType_Text = 2;       // Save document, converting to plain text. 
 
 // Clientelle: (Make sure you don't break any of these)
 //  - File    ->  Save Page/Frame As...
@@ -169,7 +99,7 @@ const kSaveAsType_Text = 2;       // Save document, converting to plain text.
 // - An image with an extension (e.g. .jpg) in its file name, using
 //   Context->Save Image As...
 // - An image without an extension (e.g. a banner ad on cnn.com) using
-//   the above method. 
+//   the above method.
 // - A linked document using Save Link As...
 // - A linked document using Alt-click Save Link As...
 //
@@ -235,8 +165,56 @@ function saveDocument(aDocument, aSkipPrompt)
     // Failure to get a content-disposition is ok
   }
   internalSave(aDocument.location.href, aDocument, null, contentDisposition,
-               aDocument.contentType, false, null, null, aSkipPrompt);
+               aDocument.contentType, false, null, null,
+               aDocument.referrer ? makeURI(aDocument.referrer) : null,
+               aSkipPrompt);
 }
+
+function DownloadListener(win, transfer) {
+  function makeClosure(name) {
+    return function() {
+      transfer[name].apply(transfer, arguments);
+    }
+  }
+
+  this.window = win;
+
+  // Now... we need to forward all calls to our transfer
+  for (var i in transfer) {
+    if (i != "QueryInterface")
+      this[i] = makeClosure(i);
+  }
+}
+
+DownloadListener.prototype = {
+  QueryInterface: function dl_qi(aIID)
+  {
+    if (aIID.equals(Components.interfaces.nsIInterfaceRequestor) ||
+        aIID.equals(Components.interfaces.nsIWebProgressListener) ||
+        aIID.equals(Components.interfaces.nsIWebProgressListener2) ||
+        aIID.equals(Components.interfaces.nsISupports)) {
+      return this;
+    }
+    throw Components.results.NS_ERROR_NO_INTERFACE;
+  },
+
+  getInterface: function dl_gi(aIID)
+  {
+    if (aIID.equals(Components.interfaces.nsIAuthPrompt) ||
+        aIID.equals(Components.interfaces.nsIAuthPrompt2)) {
+      var ww =
+        Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+                  .getService(Components.interfaces.nsIPromptFactory);
+      return ww.getPrompt(this.window, aIID);
+    }
+
+    throw Components.results.NS_ERROR_NO_INTERFACE;
+  }
+}
+
+const kSaveAsType_Complete = 0; // Save document with attached objects.
+// const kSaveAsType_URL      = 1; // Save document or URL by itself.
+const kSaveAsType_Text     = 2; // Save document, converting to plain text.
 
 /**
  * internalSave: Used when saving a document or URL. This method:
@@ -330,7 +308,7 @@ function internalSave(aURL, aDocument, aDefaultFileName, aContentDisposition,
     source      : source,
     contentType : (!aChosenData && useSaveDocument &&
                    saveAsType == kSaveAsType_Text) ?
-                   "text/plain" : aContentType,
+                  "text/plain" : null,
     target      : fileURL,
     postData    : isDocument ? getPostData() : null,
     bypassCache : aShouldBypassCache
@@ -359,7 +337,7 @@ function internalSave(aURL, aDocument, aDefaultFileName, aContentDisposition,
       // Create the local directory into which to save associated files.
       filesFolder = file.clone();
 
-      var nameWithoutExtension = filesFolder.leafName.replace(/\.[^.]*$/, "");
+      var nameWithoutExtension = getFileBaseName(filesFolder.leafName);
       var filesFolderLeafName = getStringBundle().formatStringFromName("filesFolder",
                                                                        [nameWithoutExtension],
                                                                        1);
@@ -380,13 +358,13 @@ function internalSave(aURL, aDocument, aDefaultFileName, aContentDisposition,
     const kWrapColumn = 80;
     tr.init((aChosenData ? aChosenData.uri : fileInfo.uri),
             persistArgs.target, "", null, null, null, persist);
-    persist.progressListener = tr;
+    persist.progressListener = new DownloadListener(window, tr);
     persist.saveDocument(persistArgs.source, persistArgs.target, filesFolder,
                          persistArgs.contentType, encodingFlags, kWrapColumn);
   } else {
     tr.init((aChosenData ? aChosenData.uri : source),
             persistArgs.target, "", null, null, null, persist);
-    persist.progressListener = tr;
+    persist.progressListener = new DownloadListener(window, tr);
     persist.saveURI((aChosenData ? aChosenData.uri : source),
                     null, aReferrer, persistArgs.postData, null,
                     persistArgs.target);
@@ -463,7 +441,7 @@ function initFileInfo(aFI, aURL, aURLCharset, aDocument,
       aFI.fileBaseName = aFI.fileName;
     } else {
       aFI.fileExt = getDefaultExtension(aFI.fileName, aFI.uri, aContentType);
-      aFI.fileBaseName = getFileBaseName(aFI.fileName, aFI.fileExt);
+      aFI.fileBaseName = getFileBaseName(aFI.fileName);
     }
   } catch (e) {
   }
@@ -478,79 +456,33 @@ function getTargetFile(aFpP, aSkipPrompt)
 
   const nsILocalFile = Components.interfaces.nsILocalFile;
 
-  // ben 07/31/2003:
-  // |browser.download.defaultFolder| holds the default download folder for 
-  // all files when the user has elected to have all files automatically
-  // download to a folder. The values of |defaultFolder| can be either their
-  // desktop, their downloads folder (My Documents\My Downloads) or some other
-  // location of their choosing (which is mapped to |browser.download.dir|
-  // This pref is _unset_ when the user has elected to be asked about where
-  // to place every download - this will force the prompt to ask the user
-  // where to put saved files. 
-  var dir = null;
+  // For information on download folder preferences, see
+  // mozilla/browser/components/preferences/main.js
+  
   var useDownloadDir = prefs.getBoolPref("useDownloadDir");
+  var dir = null;
   
-  function getSpecialFolderKey(aFolderType) 
-  {
-    if (aFolderType == "Desktop")
-      return "Desk";
-    
-    if (aFolderType != "Downloads")
-      throw "ASSERTION FAILED: folder type should be 'Desktop' or 'Downloads'";
-    
-#ifdef XP_WIN
-    return "Pers";
-#else
-#ifdef XP_MACOSX
-    return "UsrDocs";
-#else
-    return "Home";
-#endif
-#endif
+  // Default to lastDir if useDownloadDir is false, and lastDir
+  // is configured and valid. Otherwise, use the user's default
+  // downloads directory configured through download prefs.
+  var dnldMgr = Components.classes["@mozilla.org/download-manager;1"]
+                          .getService(Components.interfaces.nsIDownloadManager);
+  try {                          
+    var lastDir = prefs.getComplexValue("lastDir", nsILocalFile);
+    if ((!aSkipPrompt || !useDownloadDir) && lastDir.exists())
+      dir = lastDir;
+    else
+      dir = dnldMgr.userDownloadsDirectory;
+  } catch(ex) {
+    dir = dnldMgr.userDownloadsDirectory;
   }
-  
-  function getDownloadsFolder(aFolder)
-  {
-    var fileLocator = Components.classes["@mozilla.org/file/directory_service;1"]
-                                .getService(Components.interfaces.nsIProperties);
-    
-    var dir = fileLocator.get(getSpecialFolderKey(aFolder), Components.interfaces.nsILocalFile);
-    
-    var bundle = Components.classes["@mozilla.org/intl/stringbundle;1"]
-                           .getService(Components.interfaces.nsIStringBundleService);
-    bundle = bundle.createBundle("chrome://mozapps/locale/downloads/unknownContentType.properties");
-    
-    var description = bundle.GetStringFromName("myDownloads");
-    if (aFolder != "Desktop")
-      dir.append(description);
-    
-    return dir;
-  }
-  
-  switch (prefs.getIntPref("folderList")) {
-  case 0:
-    dir = getDownloadsFolder("Desktop")
-    break;
-  case 1:
-    dir = getDownloadsFolder("Downloads");
-    break;
-  case 2:
-    dir = prefs.getComplexValue("dir", nsILocalFile);
-    break;
-  }
-  
-  if (!aSkipPrompt || !useDownloadDir || !dir) {
-    // If we're asking the user where to save the file, root the Save As...
-    // dialog on they place they last picked. 
-    try {
-      dir = prefs.getComplexValue("lastDir", nsILocalFile);
-    }
-    catch (e) {
-      // No default download location. Default to desktop. 
+
+  if (!aSkipPrompt || !useDownloadDir || !dir || (dir && !dir.exists())) {
+    if (!dir || (dir && !dir.exists())) {
+      // Default to desktop.
       var fileLocator = Components.classes["@mozilla.org/file/directory_service;1"]
                                   .getService(Components.interfaces.nsIProperties);
-      
-      dir = fileLocator.get(getSpecialFolderKey("Desktop"), nsILocalFile);
+      dir = fileLocator.get("Desk", nsILocalFile);
     }
 
     var fp = makeFilePicker();
@@ -575,11 +507,7 @@ function getTargetFile(aFpP, aSkipPrompt)
       catch (e) {
       }
     }
-  
-    fp.defaultExtension = aFpP.fileInfo.fileExt;
-    fp.defaultString = getNormalizedLeafName(aFpP.fileInfo.fileName,
-                                             aFpP.fileInfo.fileExt);
-  
+
     if (fp.show() == Components.interfaces.nsIFilePicker.returnCancel || !fp.file)
       return false;
     
@@ -710,14 +638,13 @@ function appendFiltersForContentType(aFilePicker, aContentType, aFileExtension, 
   aFilePicker.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
 }
 
-
 function getPostData()
 {
   try {
     var sessionHistory = getWebNavigation().sessionHistory;
-    var entry = sessionHistory.getEntryAtIndex(sessionHistory.index, false);
-    entry = entry.QueryInterface(Components.interfaces.nsISHEntry);
-    return entry.postData;
+    return sessionHistory.getEntryAtIndex(sessionHistory.index, false)
+                         .QueryInterface(Components.interfaces.nsISHEntry)
+                         .postData;
   }
   catch (e) {
   }
@@ -727,16 +654,16 @@ function getPostData()
 function getStringBundle()
 {
   const bundleURL = "chrome://global/locale/contentAreaCommands.properties";
-  
+
   const sbsContractID = "@mozilla.org/intl/stringbundle;1";
   const sbsIID = Components.interfaces.nsIStringBundleService;
   const sbs = Components.classes[sbsContractID].getService(sbsIID);
-  
+
   const lsContractID = "@mozilla.org/intl/nslocaleservice;1";
   const lsIID = Components.interfaces.nsILocaleService;
   const ls = Components.classes[lsContractID].getService(lsIID);
   var appLocale = ls.getApplicationLocale();
-  return sbs.createBundle(bundleURL, appLocale);    
+  return sbs.createBundle(bundleURL, appLocale);
 }
 
 function makeWebBrowserPersist()
@@ -746,6 +673,13 @@ function makeWebBrowserPersist()
   return Components.classes[persistContractID].createInstance(persistIID);
 }
 
+/**
+ * Constructs a new URI, using nsIIOService.
+ * @param aURL The URI spec.
+ * @param aOriginCharset The charset of the URI.
+ * @param aBaseURI Base URI to resolve aURL, or null.
+ * @return an nsIURI object based on aURL.
+ */
 function makeURI(aURL, aOriginCharset, aBaseURI)
 {
   var ioService = Components.classes["@mozilla.org/network/io-service;1"]
@@ -776,7 +710,7 @@ function getMIMEService()
 }
 
 // Given aFileName, find the fileName without the extension on the end.
-function getFileBaseName(aFileName, aFileExt)
+function getFileBaseName(aFileName)
 {
   // Remove the file extension from aFileName:
   return aFileName.replace(/\.[^.]*$/, "");
@@ -784,7 +718,7 @@ function getFileBaseName(aFileName, aFileExt)
 
 function getMIMETypeForURI(aURI)
 {
-  try {  
+  try {
     return getMIMEService().getTypeFromURI(aURI);
   }
   catch (e) {
@@ -903,7 +837,10 @@ function getNormalizedLeafName(aFile, aDefaultExtension)
   // Remove trailing dots and spaces on windows
   aFile = aFile.replace(/[\s.]+$/, "");
 #endif
-      
+
+  // Remove leading dots
+  aFile = aFile.replace(/^\.+/, "");
+
   // Fix up the file name we're saving to to include the default extension
   var i = aFile.lastIndexOf(".");
   if (aFile.substr(i + 1) != aDefaultExtension)
@@ -927,12 +864,12 @@ function getDefaultExtension(aFilename, aURI, aContentType)
 
   // This mirrors some code in nsExternalHelperAppService::DoContent
   // Use the filename first and then the URI if that fails
-  
+
   var mimeInfo = getMIMEInfoForType(aContentType, ext);
 
   if (ext && mimeInfo && mimeInfo.extensionExists(ext))
     return ext;
-  
+
   // Well, that failed.  Now try the extension from the URI
   var urlext;
   try {
@@ -946,13 +883,14 @@ function getDefaultExtension(aFilename, aURI, aContentType)
   }
   else {
     try {
-      return mimeInfo.primaryExtension;
+      if (mimeInfo)
+        return mimeInfo.primaryExtension;
     }
     catch (e) {
-      // Fall back on the extensions in the filename and URI for lack
-      // of anything better.
-      return ext || urlext;
     }
+    // Fall back on the extensions in the filename and URI for lack
+    // of anything better.
+    return ext || urlext;
   }
 }
 
@@ -983,4 +921,68 @@ function getCharsetforSave(aDocument)
     return document.commandDispatcher.focusedWindow.document.characterSet;
 
   return window.content.document.characterSet;
+}
+
+/**
+ * Open a URL from chrome, determining if we can handle it internally or need to
+ *  launch an external application to handle it.
+ * @param aURL The URL to be opened
+ */
+function openURL(aURL)
+{
+  var ios = Components.classes["@mozilla.org/network/io-service;1"]
+                      .getService(Components.interfaces.nsIIOService);
+  var uri = ios.newURI(aURL, null, null);
+
+  var protocolSvc = Components.classes["@mozilla.org/uriloader/external-protocol-service;1"]
+                              .getService(Components.interfaces.nsIExternalProtocolService);
+
+  if (!protocolSvc.isExposedProtocol(uri.scheme)) {
+    // If we're not a browser, use the external protocol service to load the URI.
+    protocolSvc.loadUrl(uri);
+  }
+  else {
+    var loadgroup = Components.classes["@mozilla.org/network/load-group;1"]
+                              .createInstance(Components.interfaces.nsILoadGroup);
+    var appstartup = Components.classes["@mozilla.org/toolkit/app-startup;1"]
+                               .getService(Components.interfaces.nsIAppStartup);
+
+    var loadListener = {
+      onStartRequest: function ll_start(aRequest, aContext) {
+        appstartup.enterLastWindowClosingSurvivalArea();
+      },
+      onStopRequest: function ll_stop(aRequest, aContext, aStatusCode) {
+        appstartup.exitLastWindowClosingSurvivalArea();
+      },
+      QueryInterface: function ll_QI(iid) {
+        if (iid.equals(Components.interfaces.nsISupports) ||
+            iid.equals(Components.interfaces.nsIRequestObserver) ||
+            iid.equals(Components.interfaces.nsISupportsWeakReference))
+          return this;
+        throw Components.results.NS_ERROR_NO_INTERFACE;
+      }
+    }
+    loadgroup.groupObserver = loadListener;
+
+    var uriListener = {
+      onStartURIOpen: function(uri) { return false; },
+      doContent: function(ctype, preferred, request, handler) { return false; },
+      isPreferred: function(ctype, desired) { return false; },
+      canHandleContent: function(ctype, preferred, desired) { return false; },
+      loadCookie: null,
+      parentContentListener: null,
+      getInterface: function(iid) {
+        if (iid.equals(Components.interfaces.nsIURIContentListener))
+          return this;
+        if (iid.equals(Components.interfaces.nsILoadGroup))
+          return loadgroup;
+        throw Components.results.NS_ERROR_NO_INTERFACE;
+      }
+    }
+
+    var channel = ios.newChannelFromURI(uri);
+    var uriLoader = Components.classes["@mozilla.org/uriloader;1"]
+                              .getService(Components.interfaces.nsIURILoader);
+    uriLoader.openURI(channel, true, uriListener);
+  }
 }

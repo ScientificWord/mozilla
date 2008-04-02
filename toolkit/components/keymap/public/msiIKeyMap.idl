@@ -1,0 +1,47 @@
+
+ 
+#include "nsISupports.idl"
+
+// The msiIKeyMap interface provides a service that manages key mappings which are identified by strings
+// Examples of key mappings include: 
+// Mappings of function keys to bits of JavaScript which are
+// executed when the function keys are pressed.
+// Mappings of the entire keyboard which are used for one key after being selected. Examples
+// of this are the "greek" and "symbol" mappings which are selected by Ctrl+G or Ctrl+S and 
+// which are applied to the next character.
+
+// We assume for now that there is only one file of key maps.
+// We look for the file in the user's profile area. It it is not there, we check the resource:// area.
+// When saveKeyMaps is called, we save in the user's profile area if the file has changed. Otherwise it
+// is not saved.
+
+[scriptable, uuid(39598789-5F03-4B25-9875-1019A441542E)]
+interface msiIKeyMap : nsISupports
+{
+  const unsigned short CHARACTER = 1;
+  const unsigned short SCRIPT = 2;
+  // basic routines
+  boolean loadKeyMapFile();
+  boolean mapExists( in AString mapname, out unsigned short returnType );
+  unsigned long mapKeyToCharacter ( in AString mapname, in unsigned long virtualKey,
+    in boolean altKey, in boolean ctrlKey, in boolean shiftKey, in boolean metaKey, in boolean isVirtual, out boolean reserved );
+  AString mapKeyToScript( in AString mapname, in unsigned long virtualKey,
+    in boolean altKey, in boolean ctrlKey, in boolean shiftKey, in boolean metaKey, in boolean isVirtual, out boolean reserved );
+  
+  // allow dynamic changing of maps
+  boolean addCharacterMapping( in AString mapname, in unsigned long virtualKey, 
+    in boolean altKey, in boolean ctrlKey, in boolean shiftKey, in boolean metaKey,
+    in boolean isVirtual, in unsigned long destChar );
+  boolean addScriptMapping( in AString mapname, in unsigned long virtualKey, 
+    in boolean altKey, in boolean ctrlKey, in boolean shiftKey, in boolean metaKey,
+    in boolean isVirtual, in AString theScript );
+  boolean delKeyMapping( in AString mapname, in unsigned long virtualKey,
+    in boolean altKey, in boolean ctrlKey, in boolean shiftKey, in boolean metaKey, in boolean isVirtual );
+  boolean saveKeyMaps();
+  // getTableKeys returns a sorted list (first on virtual key name, or character, then on alt, shift, etc.
+  // The format of the returned string is of the form:
+  // "F1-acsmv F2-csv F3-v a - --c"
+  // First comes the name or the character, then a hyphen and a subset of the characters a,c,s,m,v and r.
+  // The - stands for the hyphen character with no modifiers, --c stands for Ctrl+-, and -c is illegal
+  AString getTableKeys(in AString mapname);
+};
