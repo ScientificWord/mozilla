@@ -73,6 +73,8 @@
 #include "nsIObserverService.h"
 #include "nsISupportsPrimitives.h"
 #include "nsITimelineService.h"
+#include "nsFind.h"
+#include "nsDOMError.h"
 
 #if DEBUG
 #include "nsIWebNavigation.h"
@@ -84,8 +86,6 @@
 #include <Scrap.h>
 #endif
 
-
-static NS_DEFINE_IID(kRangeCID, NS_RANGE_CID);
 
 //*****************************************************************************
 // nsWebBrowserFind
@@ -151,6 +151,9 @@ NS_IMETHODIMP nsWebBrowserFind::FindNext(PRBool *outDidFind)
     }
 
     // next, look in the current frame. If found, return.
+
+    // Beware! This may flush notifications via synchronous
+    // ScrollSelectionIntoView.
     rv = SearchInFrame(searchFrame, PR_FALSE, outDidFind);
     if (NS_FAILED(rv)) return rv;
     if (*outDidFind)
@@ -199,6 +202,8 @@ NS_IMETHODIMP nsWebBrowserFind::FindNext(PRBool *outDidFind)
 
             OnStartSearchFrame(searchFrame);
 
+            // Beware! This may flush notifications via synchronous
+            // ScrollSelectionIntoView.
             rv = SearchInFrame(searchFrame, PR_FALSE, outDidFind);
             if (NS_FAILED(rv)) return rv;
             if (*outDidFind)
@@ -239,6 +244,8 @@ NS_IMETHODIMP nsWebBrowserFind::FindNext(PRBool *outDidFind)
 
         if (curItem.get() == startingItem.get())
         {
+            // Beware! This may flush notifications via synchronous
+            // ScrollSelectionIntoView.
             rv = SearchInFrame(searchFrame, PR_TRUE, outDidFind);
             if (NS_FAILED(rv)) return rv;
             if (*outDidFind)
@@ -251,6 +258,8 @@ NS_IMETHODIMP nsWebBrowserFind::FindNext(PRBool *outDidFind)
 
         OnStartSearchFrame(searchFrame);
 
+        // Beware! This may flush notifications via synchronous
+        // ScrollSelectionIntoView.
         rv = SearchInFrame(searchFrame, PR_FALSE, outDidFind);
         if (NS_FAILED(rv)) return rv;
         if (*outDidFind)
@@ -385,7 +394,7 @@ FocusElementButNotDocument(nsIDocument* aDocument, nsIContent* aContent)
   nsCOMPtr<nsIDOMElement> newFocusedElement(do_QueryInterface(aContent));
   focusController->SetFocusedElement(newFocusedElement);
 
-  nsIPresShell* presShell = aDocument->GetShellAt(0);
+  nsIPresShell* presShell = aDocument->GetPrimaryShell();
   nsIEventStateManager* esm = presShell->GetPresContext()->EventStateManager();
 
   // Temporarily set esm::mCurrentFocus so that esm::GetContentState() tells 
@@ -402,6 +411,21 @@ FocusElementButNotDocument(nsIDocument* aDocument, nsIContent* aContent)
   esm->SetFocusedContent(nsnull);
 }
 
+static PRBool
+IsInNativeAnonymousSubtree(nsIContent* aContent)
+{
+    while (aContent) {
+        nsIContent* bindingParent = aContent->GetBindingParent();
+        if (bindingParent == aContent) {
+            return PR_TRUE;
+        }
+
+        aContent = bindingParent;
+    }
+
+    return PR_FALSE;
+}
+
 void nsWebBrowserFind::SetSelectionAndScroll(nsIDOMWindow* aWindow,
                                              nsIDOMRange*  aRange)
 {
@@ -410,30 +434,33 @@ void nsWebBrowserFind::SetSelectionAndScroll(nsIDOMWindow* aWindow,
   if (!domDoc) return;
 
   nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDoc));
-  nsIPresShell* presShell = doc->GetShellAt(0);
+  nsIPresShell* presShell = doc->GetPrimaryShell();
   if (!presShell) return;
 
-  // since the match could be an anonymous textnode inside a
-  // <textarea> or text <input>, we need to get the outer frame
-  nsIFrame *frame = nsnull;
-  nsITextControlFrame *tcFrame = nsnull;
   nsCOMPtr<nsIDOMNode> node;
   aRange->GetStartContainer(getter_AddRefs(node));
   nsCOMPtr<nsIContent> content(do_QueryInterface(node));
+  nsIFrame* frame = presShell->GetPrimaryFrameFor(content);
+  if (!frame)
+      return;
+  nsCOMPtr<nsISelectionController> selCon;
+  frame->GetSelectionController(presShell->GetPresContext(),
+                                getter_AddRefs(selCon));
+  
+  // since the match could be an anonymous textnode inside a
+  // <textarea> or text <input>, we need to get the outer frame
+  nsITextControlFrame *tcFrame = nsnull;
   for ( ; content; content = content->GetParent()) {
-    if (!content->IsNativeAnonymous()) {
-      frame = presShell->GetPrimaryFrameFor(content);
-      if (!frame)
+    if (!IsInNativeAnonymousSubtree(content)) {
+      nsIFrame* f = presShell->GetPrimaryFrameFor(content);
+      if (!f)
         return;
-      CallQueryInterface(frame, &tcFrame);
+      CallQueryInterface(f, &tcFrame);
       break;
     }
   }
 
   nsCOMPtr<nsISelection> selection;
-  nsCOMPtr<nsISelectionController> selCon;
-  frame->GetSelectionController(presShell->GetPresContext(),
-                                getter_AddRefs(selCon));
 
   selCon->SetDisplaySelection(nsISelectionController::SELECTION_ON);
   selCon->GetSelection(nsISelectionController::SELECTION_NORMAL,
@@ -454,6 +481,9 @@ void nsWebBrowserFind::SetSelectionAndScroll(nsIDOMWindow* aWindow,
 
     // Scroll if necessary to make the selection visible:
     // Must be the last thing to do - bug 242056
+
+    // After ScrollSelectionIntoView(), the pending notifications might be
+    // flushed and PresShell/PresContext/Frames may be dead. See bug 418470.
     selCon->ScrollSelectionIntoView
       (nsISelectionController::SELECTION_NORMAL,
        nsISelectionController::SELECTION_FOCUS_REGION, PR_TRUE);
@@ -724,9 +754,8 @@ nsresult nsWebBrowserFind::SearchInFrame(nsIDOMWindow* aWindow,
     NS_ENSURE_SUCCESS(rv, rv);
     if (!domDoc) return NS_ERROR_FAILURE;
 
-    // Do security check, to ensure that the frame we're searching
-    // is from the same origin as the frame from which the Find is
-    // being run.
+    // Do security check, to ensure that the frame we're searching is
+    // acccessible from the frame where the Find is being run.
 
     // get a uri for the window
     nsCOMPtr<nsIDocument> theDoc = do_QueryInterface(domDoc);
@@ -736,20 +765,24 @@ nsresult nsWebBrowserFind::SearchInFrame(nsIDOMWindow* aWindow,
       do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
   
-    PRBool hasCap = PR_FALSE;
-    secMan->IsCapabilityEnabled("UniversalBrowserWrite", &hasCap);
-    if (!hasCap)
-      secMan->IsCapabilityEnabled("UniversalXPConnect", &hasCap);
+    nsCOMPtr<nsIPrincipal> subject;
+    rv = secMan->GetSubjectPrincipal(getter_AddRefs(subject));
+    NS_ENSURE_SUCCESS(rv, rv);
 
-    if (!hasCap) {
-      nsCOMPtr<nsIPrincipal> subject;
-      rv = secMan->GetSubjectPrincipal(getter_AddRefs(subject));
-      NS_ENSURE_SUCCESS(rv, rv);
-      if (subject) {
-        rv = secMan->CheckSameOriginPrincipal(subject,
-                                              theDoc->NodePrincipal());
+    if (subject) {
+        PRBool subsumes;
+        rv = subject->Subsumes(theDoc->NodePrincipal(), &subsumes);
         NS_ENSURE_SUCCESS(rv, rv);
-      }
+        if (!subsumes) {
+            PRBool hasCap = PR_FALSE;
+            secMan->IsCapabilityEnabled("UniversalBrowserWrite", &hasCap);
+            if (!hasCap) {
+                secMan->IsCapabilityEnabled("UniversalXPConnect", &hasCap);
+            }
+            if (!hasCap) {
+                return NS_ERROR_DOM_PROP_ACCESS_DENIED;
+            }
+        }
     }
 
     if (!mFind) {
@@ -771,11 +804,11 @@ nsresult nsWebBrowserFind::SearchInFrame(nsIDOMWindow* aWindow,
     GetFrameSelection(aWindow, getter_AddRefs(sel));
     NS_ENSURE_ARG_POINTER(sel);
 
-    nsCOMPtr<nsIDOMRange> searchRange (do_CreateInstance(kRangeCID));
+    nsCOMPtr<nsIDOMRange> searchRange = nsFind::CreateRange();
     NS_ENSURE_ARG_POINTER(searchRange);
-    nsCOMPtr<nsIDOMRange> startPt (do_CreateInstance(kRangeCID));
+    nsCOMPtr<nsIDOMRange> startPt  = nsFind::CreateRange();
     NS_ENSURE_ARG_POINTER(startPt);
-    nsCOMPtr<nsIDOMRange> endPt (do_CreateInstance(kRangeCID));
+    nsCOMPtr<nsIDOMRange> endPt  = nsFind::CreateRange();
     NS_ENSURE_ARG_POINTER(endPt);
 
     nsCOMPtr<nsIDOMRange> foundRange;
@@ -800,6 +833,8 @@ nsresult nsWebBrowserFind::SearchInFrame(nsIDOMWindow* aWindow,
     {
         *aDidFind = PR_TRUE;
         sel->RemoveAllRanges();
+        // Beware! This may flush notifications via synchronous
+        // ScrollSelectionIntoView.
         SetSelectionAndScroll(aWindow, foundRange);
     }
 
@@ -834,7 +869,7 @@ nsWebBrowserFind::GetFrameSelection(nsIDOMWindow* aWindow,
     if (!domDoc) return;
 
     nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDoc));
-    nsIPresShell* presShell = doc->GetShellAt(0);
+    nsIPresShell* presShell = doc->GetPrimaryShell();
     if (!presShell) return;
 
     // text input controls have their independent selection controllers
