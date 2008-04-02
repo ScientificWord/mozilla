@@ -1,9 +1,10 @@
-XPI_NAME	= prince
+
 DEPTH = ../..
 topsrcdir = @top_srcdir@
 srcdir = @srcdir@
 VPATH = @srcdir@
 
+XPI_NAME	= prince
 include $(DEPTH)/config/autoconf.mk
 
 DIRS		=  locale/en-us

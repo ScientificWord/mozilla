@@ -764,7 +764,7 @@ function msiGetControllerForCommand(command, editorElement)
 //        controller = editorElement.ownerDocument.commandDispatcher.getControllerForCommand(command);
       }
     }
-    catch(exc) {AlertWithTitle("Error in msiGetControllerForCommand!", exc);}
+    catch(exc) {dump(exc);}
   }
   return controller;
 }

@@ -1,5 +1,10 @@
 <?xml version="1.0"?>             <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xul-stylesheet href="chrome://prince/skin/MathmlOverlay.css" type="text/css"?>
+<?xul-stylesheet href="chrome://prince/skin/toolbarsoverlay.css" type="text/css"?>
+<?xml-stylesheet href="data:text/css,math[display='inline']{display:-moz-inline-box}" type="text/css"?>
+
 <!DOCTYPE overlay [
 <!ENTITY % mathmloverlaydtd SYSTEM "chrome://prince/locale/mathmlOverlay.dtd">
 %mathmloverlaydtd;
@@ -9,11 +14,6 @@
 
 <overlay id="mathmlOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xul-stylesheet href="chrome://prince/skin/MathmlOverlay.css" type="text/css"?>
-<?xul-stylesheet href="chrome://prince/skin/toolbarsoverlay.css" type="text/css"?>
-<?xml-stylesheet href="data:text/css,math[display='inline']{display:-moz-inline-box}" type="text/css"?>
 
 <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
 
