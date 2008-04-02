@@ -59,7 +59,8 @@ protected:
 
     PRLock* mLock;
 #if !defined(XP_WIN) && !defined(XP_MACOSX)
-    char mState[32];
+    char mState[128];
+    char *mSavedState;
     PRUint8 mRBytes;
 #endif
 };

@@ -102,7 +102,7 @@ private:
     {
         NS_ASSERTION(mData || !mOwned, "bad state");
         if (mOwned)
-            NS_Free(NS_CONST_CAST(char*, mData));
+            NS_Free(const_cast<char*>(mData));
 
         // We're about to get a new string; reset the offset.
         mOffset = 0;
@@ -183,7 +183,7 @@ nsStringInputStream::SetData(const char *data, PRInt32 dataLen)
     // NOTE: We do not use nsCRT::strndup here because that does not handle
     // null bytes in the middle of the given data.
  
-    char *copy = NS_STATIC_CAST(char *, NS_Alloc(dataLen));
+    char *copy = static_cast<char *>(NS_Alloc(dataLen));
     if (!copy)
         return NS_ERROR_OUT_OF_MEMORY;
     memcpy(copy, data, dataLen);
@@ -264,7 +264,7 @@ nsStringInputStream::ReadSegments(nsWriteSegmentFun writer, void *closure,
     NS_ASSERTION(mLength >= mOffset, "bad stream state");
 
     // We may be at end-of-file
-    PRUint32 maxCount = mLength - mOffset;
+    PRUint32 maxCount = LengthRemaining();
     if (maxCount == 0) {
         *result = 0;
         return NS_OK;
@@ -369,7 +369,7 @@ NS_NewByteInputStream(nsIInputStream** aStreamResult,
         rv = stream->ShareData(aStringToRead, aLength);
         break;
     case NS_ASSIGNMENT_ADOPT:
-        rv = stream->AdoptData(NS_CONST_CAST(char*, aStringToRead), aLength);
+        rv = stream->AdoptData(const_cast<char*>(aStringToRead), aLength);
         break;
     default:
         NS_ERROR("invalid assignment type");

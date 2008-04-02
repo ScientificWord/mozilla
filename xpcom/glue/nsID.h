@@ -44,6 +44,8 @@
 #include "nscore.h"
 #endif
 
+#define NSID_LENGTH 39
+
 /**
  * A "unique identifier". This is modeled after OSF DCE UUIDs.
  * @status FROZEN
@@ -51,7 +53,7 @@
 
 struct nsID {
   /**
-   * @name Indentifier values
+   * @name Identifier values
    */
 
   //@{
@@ -79,7 +81,7 @@ struct nsID {
     // See bug http://bugzilla.mozilla.org/show_bug.cgi?id=164580 for
     // details.
 
-    return (PRBool)
+    return
       ((((PRUint32*) &m0)[0] == ((PRUint32*) &other.m0)[0]) &&
        (((PRUint32*) &m0)[1] == ((PRUint32*) &other.m0)[1]) &&
        (((PRUint32*) &m0)[2] == ((PRUint32*) &other.m0)[2]) &&
@@ -92,11 +94,23 @@ struct nsID {
    */
   NS_COM_GLUE PRBool Parse(const char *aIDStr);
 
+#ifndef XPCOM_GLUE_AVOID_NSPR
   /**
    * nsID string encoder. Returns an allocated string in 
    * {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx} format. Caller should free string.
+   * YOU SHOULD ONLY USE THIS IF YOU CANNOT USE ToProvidedString() BELOW.
    */
   NS_COM_GLUE char* ToString() const;
+
+  /**
+   * nsID string encoder. Builds a string in 
+   * {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx} format, into a char[NSID_LENGTH]
+   * buffer provided by the caller (for instance, on the stack).
+   */
+  NS_COM_GLUE void ToProvidedString(char (&dest)[NSID_LENGTH]) const;
+
+#endif // XPCOM_GLUE_AVOID_NSPR
+
   //@}
 };
 
@@ -134,13 +148,23 @@ typedef nsID nsIID;
   const nsIID _name = _iidspec
 
 /**
- * A macro to build the static const IID accessor method
+ * A macro to build the static const IID accessor method. The Dummy
+ * template parameter only exists so that the kIID symbol will be linked
+ * properly (weak symbol on linux, gnu_linkonce on mac, multiple-definitions
+ * merged on windows). Dummy should always be instantiated as "int".
  */
 
 #define NS_DECLARE_STATIC_IID_ACCESSOR(the_iid)                         \
-  static const nsIID& GetIID() {static const nsIID iid = the_iid; return iid;}
+  template <class Dummy>                                                \
+  struct COMTypeInfo                                                    \
+  {                                                                     \
+    static const nsIID kIID NS_HIDDEN;                                  \
+  };                                                                    \
+  static const nsIID& GetIID() {return COMTypeInfo<int>::kIID;}
 
-#define NS_DEFINE_STATIC_IID_ACCESSOR(the_interface, the_iid)
+#define NS_DEFINE_STATIC_IID_ACCESSOR(the_interface, the_iid)           \
+  template <class Dummy>                                                \
+  const nsIID the_interface::COMTypeInfo<Dummy>::kIID NS_HIDDEN = the_iid;
 
 /**
  * A macro to build the static const CID accessor method
@@ -149,7 +173,7 @@ typedef nsID nsIID;
 #define NS_DEFINE_STATIC_CID_ACCESSOR(the_cid) \
   static const nsID& GetCID() {static const nsID cid = the_cid; return cid;}
 
-#define NS_GET_IID(T) nsCOMTypeInfo<T>::GetIID()
-#define NS_GET_TEMPLATE_IID(T) NS_GET_IID(T)
+#define NS_GET_IID(T) (::T::COMTypeInfo<int>::kIID)
+#define NS_GET_TEMPLATE_IID(T) (T::template COMTypeInfo<int>::kIID)
 
 #endif

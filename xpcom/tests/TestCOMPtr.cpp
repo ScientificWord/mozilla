@@ -155,24 +155,21 @@ IFoo::AddRef()
 nsrefcnt
 IFoo::Release()
   {
-    int wrap_message = (refcount_ == 1);
-    if ( wrap_message )
+    int newcount = --refcount_;
+    if ( newcount == 0 )
       printf(">>");
-      
-    --refcount_;
+
     printf("IFoo@%p::Release(), refcount --> %d\n",
            STATIC_CAST(void*, this), refcount_);
 
-    if ( !refcount_ )
+    if ( newcount == 0 )
       {
         printf("  delete IFoo@%p\n", STATIC_CAST(void*, this));
+        printf("<<IFoo@%p::Release()\n", STATIC_CAST(void*, this));
         delete this;
       }
 
-    if ( wrap_message )
-      printf("<<IFoo@%p::Release()\n", STATIC_CAST(void*, this));
-
-    return refcount_;
+    return newcount;
   }
 
 nsresult
@@ -630,6 +627,15 @@ main()
 
 
 		{
+    	printf("\n### setup for Test 24\n");
+			nsCOMPtr<IFoo> fooP( do_QueryInterface(new IFoo) );
+
+			printf("### Test 24: does |forget| avoid an AddRef/Release when assigning to another nsCOMPtr?\n");
+      nsCOMPtr<IFoo> fooP2( fooP.forget() );
+		}
+    printf("### End Test 24\n");
+
+		{
 			nsCOMPtr<IFoo> fooP;
 
 			AnIFooPtrPtrContext( getter_AddRefs(fooP) );
@@ -646,7 +652,7 @@ main()
 		}
 
 
-    printf("\n### Test 24: will a static |nsCOMPtr| |Release| before program termination?\n");
+    printf("\n### Test 25: will a static |nsCOMPtr| |Release| before program termination?\n");
     gFoop = do_QueryInterface(new IFoo);
     
     printf("<<main()\n");

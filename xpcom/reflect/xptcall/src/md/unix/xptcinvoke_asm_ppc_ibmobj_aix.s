@@ -1,25 +1,41 @@
- #
- # -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
- #
- # The contents of this file are subject to the Netscape Public
- # License Version 1.1 (the "License"); you may not use this file
- # except in compliance with the License. You may obtain a copy of
- # the License at http://www.mozilla.org/NPL/
- #
- # Software distributed under the License is distributed on an "AS
- # IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- # implied. See the License for the specific language governing
- # rights and limitations under the License.
- #
- # The Original Code is mozilla.org code.
- #
- # The Initial Developer of the Original Code is IBM Corporation.
- # Portions created by IBM are
- #   Copyright (C) 2004, International Business Machines Corporation.
- #   All Rights Reserved.
- #
- # Contributor(s):
- #
+#
+# -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+#
+# ***** BEGIN LICENSE BLOCK *****
+# Version: MPL 1.1/GPL 2.0/LGPL 2.1
+#
+# The contents of this file are subject to the Mozilla Public License Version
+# 1.1 (the "License"); you may not use this file except in compliance with
+# the License. You may obtain a copy of the License at
+# http://www.mozilla.org/MPL/
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+# The Original Code is mozilla.org code.
+#
+# The Initial Developer of the Original Code is
+# IBM Corporation.
+# Portions created by the Initial Developer are Copyright (C) 2004
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either the GNU General Public License Version 2 or later (the "GPL"), or
+# the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
 
 .set r0,0; .set sp,1; .set RTOC,2; .set r3,3; .set r4,4
 .set r5,5; .set r6,6; .set r7,7; .set r8,8; .set r9,9
@@ -41,24 +57,24 @@
 
 
         .rename H.10.NO_SYMBOL{PR},""
-        .rename H.18.XPTC_InvokeByIndex{TC},"XPTC_InvokeByIndex"
+        .rename H.18.NS_InvokeByIndex_P{TC},"NS_InvokeByIndex_P"
 
 
 # .text section
 
         .csect  H.10.NO_SYMBOL{PR}
-        .globl  .XPTC_InvokeByIndex
-        .globl  XPTC_InvokeByIndex{DS}
+        .globl  .NS_InvokeByIndex_P
+        .globl  NS_InvokeByIndex_P{DS}
         .extern .invoke_copy_to_stack
         .extern ._ptrgl{PR}
 
 
 #
-#   XPTC_InvokeByIndex(nsISupports* that, PRUint32 methodIndex,
+#   NS_InvokeByIndex_P(nsISupports* that, PRUint32 methodIndex,
 #                   PRUint32 paramCount, nsXPTCVariant* params)
 #
 
-.XPTC_InvokeByIndex:
+.NS_InvokeByIndex_P:
 		mflr	r0
 		stw	r31,-4(sp)
 #
@@ -128,13 +144,13 @@
 # .data section
 
         .toc                            # 0x00000038
-T.18.XPTC_InvokeByIndex:
-        .tc     H.18.XPTC_InvokeByIndex{TC},XPTC_InvokeByIndex{DS}
+T.18.NS_InvokeByIndex_P:
+        .tc     H.18.NS_InvokeByIndex_P{TC},NS_InvokeByIndex_P{DS}
 
-        .csect  XPTC_InvokeByIndex{DS}
-        .long   .XPTC_InvokeByIndex     # "\0\0\0\0"
+        .csect  NS_InvokeByIndex_P{DS}
+        .long   .NS_InvokeByIndex_P     # "\0\0\0\0"
         .long   TOC{TC0}                # "\0\0\0008"
         .long   0x00000000              # "\0\0\0\0"
-# End   csect   XPTC_InvokeByIndex{DS}
+# End   csect   NS_InvokeByIndex_P{DS}
 
 # .bss section	
