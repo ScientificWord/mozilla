@@ -48,7 +48,6 @@
 #include "nsICharsetConverterManager.h"
 #include "nsICollation.h"
 #include "nsCollationCID.h"
-#include "nsFontPackageHandler.h"
 #include "nsLocaleCID.h"
 #include "nsIGenericFactory.h"
 #include "nsILocaleService.h"
@@ -66,6 +65,7 @@
 #include "nsITimelineService.h"
 #include "nsCRT.h"
 #include "prmem.h"
+#include "nsCycleCollectionParticipant.h"
 
 //----------------------------------------------------------------------------
 // Global functions and data [declaration]
@@ -154,7 +154,8 @@ public:
  */
 class nsCharsetMenu : public nsIRDFDataSource, public nsICurrentCharsetListener
 {
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsCharsetMenu, nsIRDFDataSource)
 
 private:
   static nsIRDFResource * kNC_BrowserAutodetMenuRoot;
@@ -466,7 +467,19 @@ NS_IMETHODIMP nsCharsetMenuObserver::Observe(nsISupports *aSubject, const char *
 //----------------------------------------------------------------------------
 // Class nsCharsetMenu [implementation]
 
-NS_IMPL_ISUPPORTS2(nsCharsetMenu, nsIRDFDataSource, nsICurrentCharsetListener)
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsCharsetMenu)
+NS_IMPL_CYCLE_COLLECTION_UNLINK_0(nsCharsetMenu)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(nsCharsetMenu)
+  cb.NoteXPCOMChild(nsCharsetMenu::mInner);
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+
+NS_IMPL_CYCLE_COLLECTING_ADDREF_AMBIGUOUS(nsCharsetMenu, nsIRDFDataSource)
+NS_IMPL_CYCLE_COLLECTING_RELEASE_AMBIGUOUS(nsCharsetMenu, nsIRDFDataSource)
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsCharsetMenu)
+  NS_INTERFACE_MAP_ENTRY(nsIRDFDataSource)
+  NS_INTERFACE_MAP_ENTRY(nsICurrentCharsetListener)
+  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIRDFDataSource)
+NS_INTERFACE_MAP_END
 
 nsIRDFDataSource * nsCharsetMenu::mInner = NULL;
 nsIRDFResource * nsCharsetMenu::kNC_BrowserAutodetMenuRoot = NULL;
@@ -2062,15 +2075,10 @@ NS_IMETHODIMP nsCharsetMenu::EndUpdateBatch()
 
 // Module definitions
 
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsFontPackageHandler)
-
 static const nsModuleComponentInfo components[] = {
     { "nsCharsetMenu", NS_CHARSETMENU_CID,
       NS_RDF_DATASOURCE_CONTRACTID_PREFIX NS_CHARSETMENU_PID,
       NS_NewCharsetMenu },
-    { "nsFontPackageHandler", NS_FONTPACKAGEHANDLER_CID,
-      "@mozilla.org/locale/default-font-package-handler;1",
-      nsFontPackageHandlerConstructor },
 };
 
 NS_IMPL_NSGETMODULE(nsXPIntlModule, components)

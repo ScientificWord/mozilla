@@ -170,7 +170,7 @@
   // should always return true for click to go through
   function contentAreaClick(event) 
   {
-    if (!event.isTrusted) {
+    if (!event.isTrusted || event.getPreventDefault()) {
       return true;
     }
 
@@ -193,7 +193,6 @@
     }
 
     if (pref && !isKeyPress && event.button == 1 &&
-        !event.getPreventDefault() &&
         pref.getBoolPref("middlemouse.contentLoadURL")) {
       if (middleMousePaste(event)) {
         event.stopPropagation();
@@ -329,7 +328,7 @@
       if (event.shiftKey != (pref && pref.getBoolPref("browser.tabs.loadInBackground")))
         browser.selectedTab = tab;
     }
-    else if (tab.ownerDocument == document) {
+    else if (event.target == browser) {
       tab = browser.addTab(url);
       if (event.shiftKey != (pref && pref.getBoolPref("browser.tabs.loadInBackground")))
         browser.selectedTab = tab;

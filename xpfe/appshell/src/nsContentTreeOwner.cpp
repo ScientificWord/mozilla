@@ -118,7 +118,6 @@ NS_IMPL_RELEASE(nsContentTreeOwner)
 NS_INTERFACE_MAP_BEGIN(nsContentTreeOwner)
    NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDocShellTreeOwner)
    NS_INTERFACE_MAP_ENTRY(nsIDocShellTreeOwner)
-   NS_INTERFACE_MAP_ENTRY(nsIDocShellTreeOwner_MOZILLA_1_8_BRANCH)
    NS_INTERFACE_MAP_ENTRY(nsIBaseWindow)
    NS_INTERFACE_MAP_ENTRY(nsIWebBrowserChrome)
    NS_INTERFACE_MAP_ENTRY(nsIWebBrowserChrome2)
@@ -145,11 +144,16 @@ NS_IMETHODIMP nsContentTreeOwner::GetInterface(const nsIID& aIID, void** aSink)
   NS_ENSURE_ARG_POINTER(aSink);
   *aSink = 0;
 
-  if(aIID.Equals(NS_GET_IID(nsIPrompt)))
+  if(aIID.Equals(NS_GET_IID(nsIPrompt))) {
+    NS_ENSURE_STATE(mXULWindow);
     return mXULWindow->GetInterface(aIID, aSink);
-  if(aIID.Equals(NS_GET_IID(nsIAuthPrompt)))
+  }
+  if(aIID.Equals(NS_GET_IID(nsIAuthPrompt))) {
+    NS_ENSURE_STATE(mXULWindow);
     return mXULWindow->GetInterface(aIID, aSink);
+  }
   if (aIID.Equals(NS_GET_IID(nsIDocShellTreeItem))) {
+    NS_ENSURE_STATE(mXULWindow);
     nsCOMPtr<nsIDocShell> shell;
     mXULWindow->GetDocShell(getter_AddRefs(shell));
     if (shell)
@@ -158,6 +162,7 @@ NS_IMETHODIMP nsContentTreeOwner::GetInterface(const nsIID& aIID, void** aSink)
   }
 
   if (aIID.Equals(NS_GET_IID(nsIDOMWindow))) {
+    NS_ENSURE_STATE(mXULWindow);
     nsCOMPtr<nsIDocShellTreeItem> shell;
     mXULWindow->GetPrimaryContentShell(getter_AddRefs(shell));
     if (shell) {
@@ -168,8 +173,10 @@ NS_IMETHODIMP nsContentTreeOwner::GetInterface(const nsIID& aIID, void** aSink)
     return NS_ERROR_FAILURE;
   }
 
-  if (aIID.Equals(NS_GET_IID(nsIXULWindow)))
+  if (aIID.Equals(NS_GET_IID(nsIXULWindow))) {
+    NS_ENSURE_STATE(mXULWindow);
     return mXULWindow->QueryInterface(aIID, aSink);
+  }
 
   return QueryInterface(aIID, aSink);
 }
@@ -205,6 +212,7 @@ NS_IMETHODIMP nsContentTreeOwner::FindItemWithName(const PRUnichar* aName,
      // should just be that content shell.  Note that we don't have to worry
      // about the case when it's not targetable because it's primary -- that
      // will Just Work when we call GetPrimaryContentShell.
+     NS_ENSURE_STATE(mXULWindow);
      if (aRequestor) {
        // This better be the root item!
 #ifdef DEBUG
@@ -213,6 +221,7 @@ NS_IMETHODIMP nsContentTreeOwner::FindItemWithName(const PRUnichar* aName,
        NS_ASSERTION(SameCOMIdentity(debugRoot, aRequestor),
                     "Bogus aRequestor");
 #endif
+
        PRInt32 count = mXULWindow->mTargetableShells.Count();
        for (PRInt32 i = 0; i < count; ++i) {
          nsCOMPtr<nsIDocShellTreeItem> item =
@@ -255,7 +264,7 @@ NS_IMETHODIMP nsContentTreeOwner::FindItemWithName(const PRUnichar* aName,
        if (win) {
          PRInt32 count = win->mTargetableShells.Count();
          PRInt32 i;
-         for (i = 0; i < count; ++i) {
+         for (i = 0; i < count && !*aFoundItem; ++i) {
            nsCOMPtr<nsIDocShellTreeItem> shellAsTreeItem =
              do_QueryReferent(win->mTargetableShells[i]);
            if (shellAsTreeItem) {
@@ -293,27 +302,33 @@ NS_IMETHODIMP nsContentTreeOwner::FindItemWithName(const PRUnichar* aName,
    return NS_OK;      
 }
 
-NS_IMETHODIMP nsContentTreeOwner::ContentShellAdded(nsIDocShellTreeItem* aContentShell,
-   PRBool aPrimary, const PRUnichar* aID)
+NS_IMETHODIMP
+nsContentTreeOwner::ContentShellAdded(nsIDocShellTreeItem* aContentShell,
+                                      PRBool aPrimary, PRBool aTargetable,
+                                      const nsAString& aID)
 {
-   NS_ENSURE_STATE(mXULWindow);
-   if (aID) {
-     return mXULWindow->ContentShellAdded(aContentShell, aPrimary, PR_FALSE,
-                                          nsDependentString(aID));
-   }
+  NS_ENSURE_STATE(mXULWindow);
+  return mXULWindow->ContentShellAdded(aContentShell, aPrimary, aTargetable,
+                                       aID);
+}
 
-   return mXULWindow->ContentShellAdded(aContentShell, aPrimary, PR_FALSE,
-                                        EmptyString());
+NS_IMETHODIMP
+nsContentTreeOwner::ContentShellRemoved(nsIDocShellTreeItem* aContentShell)
+{
+  NS_ENSURE_STATE(mXULWindow);
+  return mXULWindow->ContentShellRemoved(aContentShell);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::GetPrimaryContentShell(nsIDocShellTreeItem** aShell)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->GetPrimaryContentShell(aShell);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::SizeShellTo(nsIDocShellTreeItem* aShellItem,
    PRInt32 aCX, PRInt32 aCY)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->SizeShellTo(aShellItem, aCX, aCY);
 }
 
@@ -322,6 +337,7 @@ nsContentTreeOwner::SetPersistence(PRBool aPersistPosition,
                                    PRBool aPersistSize,
                                    PRBool aPersistSizeMode)
 {
+  NS_ENSURE_STATE(mXULWindow);
   nsCOMPtr<nsIDOMElement> docShellElement;
   mXULWindow->GetWindowDOMElement(getter_AddRefs(docShellElement));
   if(!docShellElement)
@@ -390,6 +406,7 @@ nsContentTreeOwner::GetPersistence(PRBool* aPersistPosition,
                                    PRBool* aPersistSize,
                                    PRBool* aPersistSizeMode)
 {
+  NS_ENSURE_STATE(mXULWindow);
   nsCOMPtr<nsIDOMElement> docShellElement;
   mXULWindow->GetWindowDOMElement(getter_AddRefs(docShellElement));
   if(!docShellElement) 
@@ -421,6 +438,8 @@ NS_IMETHODIMP nsContentTreeOwner::SetStatusWithContext(PRUint32 aStatusType,
   // We only allow the status to be set from the primary content shell
   if (!mPrimary && aStatusType != STATUS_LINK)
     return NS_OK;
+
+  NS_ENSURE_STATE(mXULWindow);
   
   nsCOMPtr<nsIXULBrowserWindow> xulBrowserWindow;
   mXULWindow->GetXULBrowserWindow(getter_AddRefs(xulBrowserWindow));
@@ -455,7 +474,7 @@ NS_IMETHODIMP nsContentTreeOwner::SetStatus(PRUint32 aStatusType,
                                             const PRUnichar* aStatus)
 {
   return SetStatusWithContext(aStatusType,
-      aStatus ? NS_STATIC_CAST(const nsString &, nsDependentString(aStatus))
+      aStatus ? static_cast<const nsString &>(nsDependentString(aStatus))
               : EmptyString(),
       nsnull);
 }
@@ -477,11 +496,13 @@ NS_IMETHODIMP nsContentTreeOwner::GetWebBrowser(nsIWebBrowser** aWebBrowser)
 
 NS_IMETHODIMP nsContentTreeOwner::SetChromeFlags(PRUint32 aChromeFlags)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->SetChromeFlags(aChromeFlags);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::GetChromeFlags(PRUint32* aChromeFlags)
 {
+  NS_ENSURE_STATE(mXULWindow);
   return mXULWindow->GetChromeFlags(aChromeFlags);
 }
 
@@ -499,17 +520,20 @@ NS_IMETHODIMP nsContentTreeOwner::SizeBrowserTo(PRInt32 aCX, PRInt32 aCY)
 
 NS_IMETHODIMP nsContentTreeOwner::ShowAsModal()
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->ShowModal();
 }
 
 NS_IMETHODIMP nsContentTreeOwner::IsWindowModal(PRBool *_retval)
 {
+  NS_ENSURE_STATE(mXULWindow);
   *_retval = mXULWindow->mContinueModalLoop;
   return NS_OK;
 }
 
 NS_IMETHODIMP nsContentTreeOwner::ExitModalEventLoop(nsresult aStatus)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->ExitModalLoop(aStatus);   
 }
 
@@ -534,48 +558,57 @@ NS_IMETHODIMP nsContentTreeOwner::Create()
 
 NS_IMETHODIMP nsContentTreeOwner::Destroy()
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->Destroy();
 }
 
 NS_IMETHODIMP nsContentTreeOwner::SetPosition(PRInt32 aX, PRInt32 aY)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->SetPosition(aX, aY);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::GetPosition(PRInt32* aX, PRInt32* aY)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->GetPosition(aX, aY);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::SetSize(PRInt32 aCX, PRInt32 aCY, PRBool aRepaint)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->SetSize(aCX, aCY, aRepaint);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::GetSize(PRInt32* aCX, PRInt32* aCY)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->GetSize(aCX, aCY);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::SetPositionAndSize(PRInt32 aX, PRInt32 aY,
    PRInt32 aCX, PRInt32 aCY, PRBool aRepaint)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->SetPositionAndSize(aX, aY, aCX, aCY, aRepaint);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::GetPositionAndSize(PRInt32* aX, PRInt32* aY,
    PRInt32* aCX, PRInt32* aCY)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->GetPositionAndSize(aX, aY, aCX, aCY); 
 }
 
 NS_IMETHODIMP nsContentTreeOwner::Repaint(PRBool aForce)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->Repaint(aForce);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::GetParentWidget(nsIWidget** aParentWidget)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->GetParentWidget(aParentWidget);
 }
 
@@ -587,6 +620,7 @@ NS_IMETHODIMP nsContentTreeOwner::SetParentWidget(nsIWidget* aParentWidget)
 
 NS_IMETHODIMP nsContentTreeOwner::GetParentNativeWindow(nativeWindow* aParentNativeWindow)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->GetParentNativeWindow(aParentNativeWindow);
 }
 
@@ -598,37 +632,44 @@ NS_IMETHODIMP nsContentTreeOwner::SetParentNativeWindow(nativeWindow aParentNati
 
 NS_IMETHODIMP nsContentTreeOwner::GetVisibility(PRBool* aVisibility)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->GetVisibility(aVisibility);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::SetVisibility(PRBool aVisibility)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->SetVisibility(aVisibility);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::GetEnabled(PRBool *aEnabled)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->GetEnabled(aEnabled);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::SetEnabled(PRBool aEnable)
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->SetEnabled(aEnable);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::GetBlurSuppression(PRBool *aBlurSuppression)
 {
+  NS_ENSURE_STATE(mXULWindow);
   return mXULWindow->GetBlurSuppression(aBlurSuppression);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::SetBlurSuppression(PRBool aBlurSuppression)
 {
+  NS_ENSURE_STATE(mXULWindow);
   return mXULWindow->SetBlurSuppression(aBlurSuppression);
 }
 
 NS_IMETHODIMP nsContentTreeOwner::GetMainWidget(nsIWidget** aMainWidget)
 {
    NS_ENSURE_ARG_POINTER(aMainWidget);
+   NS_ENSURE_STATE(mXULWindow);
 
    *aMainWidget = mXULWindow->mWindow;
    NS_IF_ADDREF(*aMainWidget);
@@ -638,12 +679,14 @@ NS_IMETHODIMP nsContentTreeOwner::GetMainWidget(nsIWidget** aMainWidget)
 
 NS_IMETHODIMP nsContentTreeOwner::SetFocus()
 {
+   NS_ENSURE_STATE(mXULWindow);
    return mXULWindow->SetFocus();
 }
 
 NS_IMETHODIMP nsContentTreeOwner::GetTitle(PRUnichar** aTitle)
 {
    NS_ENSURE_ARG_POINTER(aTitle);
+   NS_ENSURE_STATE(mXULWindow);
 
    return mXULWindow->GetTitle(aTitle);
 }
@@ -653,6 +696,8 @@ NS_IMETHODIMP nsContentTreeOwner::SetTitle(const PRUnichar* aTitle)
    // We only allow the title to be set from the primary content shell
   if(!mPrimary || !mContentTitleSetting)
     return NS_OK;
+
+  NS_ENSURE_STATE(mXULWindow);
   
   nsAutoString   title;
   nsAutoString   docTitle(aTitle);
@@ -762,7 +807,7 @@ nsContentTreeOwner::ProvideWindow(nsIDOMWindow* aParent,
   nsCOMPtr<nsIWebNavigation> parentNav = do_GetInterface(aParent);
   nsCOMPtr<nsIDocShellTreeOwner> parentOwner = do_GetInterface(parentNav);
   NS_ASSERTION(SameCOMIdentity(parentOwner,
-                               NS_STATIC_CAST(nsIDocShellTreeOwner*, this)),
+                               static_cast<nsIDocShellTreeOwner*>(this)),
                "Parent from wrong docshell tree?");
 #endif
 
@@ -832,32 +877,11 @@ nsContentTreeOwner::ProvideWindow(nsIDOMWindow* aParent,
   }
 
   *aWindowIsNew = (containerPref != nsIBrowserDOMWindow::OPEN_CURRENTWINDOW);
-  
-  // Get a new rendering area from the browserDOMWin.  To make this
-  // safe for cases when it'll try to return an existing window or
-  // something, get it with a null URI.
+
+  // Get a new rendering area from the browserDOMWin.  We don't want
+  // to be starting any loads here, so get it with a null URI.
   return browserDOMWin->OpenURI(nsnull, aParent, containerPref,
                                 nsIBrowserDOMWindow::OPEN_NEW, aReturn);
-}
-
-//*****************************************************************************
-// nsContentTreeOwner::nsIDocShellTreeOwner_MOZILLA_1_8_BRANCH
-//*****************************************************************************   
-NS_IMETHODIMP
-nsContentTreeOwner::ContentShellAdded2(nsIDocShellTreeItem* aContentShell,
-                                       PRBool aPrimary, PRBool aTargetable,
-                                       const nsAString& aID)
-{
-  NS_ENSURE_STATE(mXULWindow);
-  return mXULWindow->ContentShellAdded(aContentShell, aPrimary, aTargetable,
-                                       aID);
-}
-
-NS_IMETHODIMP
-nsContentTreeOwner::ContentShellRemoved(nsIDocShellTreeItem* aContentShell)
-{
-  NS_ENSURE_STATE(mXULWindow);
-  return mXULWindow->ContentShellRemoved(aContentShell);
 }
 
 //*****************************************************************************

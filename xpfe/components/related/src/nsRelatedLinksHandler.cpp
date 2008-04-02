@@ -54,7 +54,8 @@
 #include "nsIURL.h"
 #include "nsNetUtil.h"
 #include "nsIInputStream.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsRDFCID.h"
 #include "nsVoidArray.h"
 #include "nsXPIDLString.h"
@@ -631,17 +632,15 @@ RelatedLinksHandlerImpl::Init()
 		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "child"),
                              &kNC_Child);
 
-		nsCOMPtr<nsIPref> prefServ(do_GetService(NS_PREF_CONTRACTID, &rv));
+		nsCOMPtr<nsIPrefBranch> prefServ(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
 		mRLServerURL = new nsString();
 		if (NS_SUCCEEDED(rv) && (prefServ))
 		{
-			char	*prefVal = nsnull;
-			if (NS_SUCCEEDED(rv = prefServ->CopyCharPref("browser.related.provider",
-				&prefVal)) && (prefVal))
+			nsXPIDLCString	prefVal;
+			if (NS_SUCCEEDED(rv = prefServ->GetCharPref("browser.related.provider",
+				getter_Copies(prefVal))) && (!prefVal.IsEmpty()))
 			{
 				mRLServerURL->AssignWithConversion(prefVal);
-				nsCRT::free(prefVal);
-				prefVal = nsnull;
 			}
 			else
 			{
@@ -658,7 +657,22 @@ RelatedLinksHandlerImpl::Init()
 
 // nsISupports interface
 
-NS_IMPL_ISUPPORTS2(RelatedLinksHandlerImpl, nsIRelatedLinksHandler, nsIRDFDataSource)
+NS_IMPL_CYCLE_COLLECTION_CLASS(RelatedLinksHandlerImpl)
+NS_IMPL_CYCLE_COLLECTION_UNLINK_0(RelatedLinksHandlerImpl)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(RelatedLinksHandlerImpl)
+    NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mInner)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+
+NS_IMPL_CYCLE_COLLECTING_ADDREF_AMBIGUOUS(RelatedLinksHandlerImpl,
+                                          nsIRelatedLinksHandler)
+NS_IMPL_CYCLE_COLLECTING_RELEASE_AMBIGUOUS(RelatedLinksHandlerImpl,
+                                           nsIRelatedLinksHandler)
+
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(RelatedLinksHandlerImpl)
+    NS_INTERFACE_MAP_ENTRY(nsIRelatedLinksHandler)
+    NS_INTERFACE_MAP_ENTRY(nsIRDFDataSource)
+    NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIRelatedLinksHandler)
+NS_INTERFACE_MAP_END
 
 // nsIRelatedLinksHandler interface
 
@@ -894,9 +908,6 @@ RelatedLinksHandlerImpl::ArcLabelsOut(nsIRDFResource *aSource,
 	rv = NS_NewISupportsArray(getter_AddRefs(array));
 	if (NS_FAILED(rv)) return rv;
 
-	nsISimpleEnumerator* result = new nsArrayEnumerator(array);
-	if (! result)	return(NS_ERROR_OUT_OF_MEMORY);
-
 	PRBool	hasValueFlag = PR_FALSE;
 	if ((aSource == kNC_RelatedLinksRoot) || 
 		(NS_SUCCEEDED(rv = mInner->HasAssertion(aSource, kRDF_type,
@@ -905,9 +916,8 @@ RelatedLinksHandlerImpl::ArcLabelsOut(nsIRDFResource *aSource,
 	{
 		array->AppendElement(kNC_Child);
 	}
-	NS_ADDREF(result);
-	*aLabels = result;
-	return(NS_OK);
+
+	return NS_NewArrayEnumerator(aLabels, array);
 }
 
 
