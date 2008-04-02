@@ -37,29 +37,28 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsBoxObject.h"
-#include "nsIBoxLayoutManager.h"
-#include "nsIBoxPaintManager.h"
+#include "nsCOMPtr.h"
 #include "nsIDocument.h"
 #include "nsIPresShell.h"
 #include "nsPresContext.h"
 #include "nsIDocument.h"
 #include "nsIContent.h"
 #include "nsIFrame.h"
-#include "nsIFrameFrame.h"
 #include "nsIDocShell.h"
 #include "nsReadableUtils.h"
-#include "nsILookAndFeel.h"
-#include "nsWidgetsCID.h"
-#include "nsIServiceManager.h"
 #include "nsIDOMClassInfo.h"
 #include "nsIView.h"
 #include "nsIWidget.h"
+#ifdef MOZ_XUL
 #include "nsIDOMXULElement.h"
+#else
+#include "nsIDOMElement.h"
+#endif
 #include "nsIFrame.h"
 #include "nsLayoutUtils.h"
-
-// Static IIDs/CIDs. Try to minimize these.
-static NS_DEFINE_CID(kLookAndFeelCID, NS_LOOKANDFEEL_CID);
+#include "nsISupportsPrimitives.h"
+#include "prtypes.h"
+#include "nsSupportsPrimitives.h"
 
 // Implementation /////////////////////////////////////////////////////////////////
 
@@ -101,49 +100,25 @@ nsBoxObject::GetElement(nsIDOMElement** aResult)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsBoxObject::GetLayoutManager(nsIBoxLayoutManager** aResult)
-{
-  *aResult = mLayoutManager;
-  NS_IF_ADDREF(*aResult);
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsBoxObject::SetLayoutManager(nsIBoxLayoutManager* aLayoutManager)
-{
-  mLayoutManager = aLayoutManager;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsBoxObject::GetPaintManager(nsIBoxPaintManager** aResult)
-{
-  *aResult = mPaintManager;
-  NS_IF_ADDREF(*aResult);
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsBoxObject::SetPaintManager(nsIBoxPaintManager* aPaintManager)
-{
-  mPaintManager = aPaintManager;
-  return NS_OK;
-}
-
 // nsPIBoxObject //////////////////////////////////////////////////////////////////////////
 
-void
+nsresult
 nsBoxObject::Init(nsIContent* aContent)
 {
   mContent = aContent;
+  return NS_OK;
 }
 
 void
 nsBoxObject::Clear()
 {
-  mPresState = nsnull;
+  mPropertyTable = nsnull;
   mContent = nsnull;
+}
+
+void
+nsBoxObject::ClearCachedValues()
+{
 }
 
 nsIFrame*
@@ -180,7 +155,7 @@ nsBoxObject::GetPresShell(PRBool aFlushLayout)
     doc->FlushPendingNotifications(Flush_Layout);
   }
 
-  return doc->GetShellAt(0);
+  return doc->GetPrimaryShell();
 }
 
 nsresult 
@@ -198,9 +173,6 @@ nsBoxObject::GetOffsetRect(nsRect& aRect)
     // Get its origin
     nsPoint origin = frame->GetPositionIgnoringScrolling();
 
-    // Get the union of all rectangles in this and continuation frames
-    nsRect rcFrame = nsLayoutUtils::GetAllInFlowBoundingRect(frame);
-        
     // Find the frame parent whose content is the document element.
     nsIContent *docElement = mContent->GetCurrentDoc()->GetRootContent();
     nsIFrame* parent = frame->GetParent();
@@ -229,29 +201,22 @@ nsBoxObject::GetOffsetRect(nsRect& aRect)
     origin.y += border->GetBorderWidth(NS_SIDE_TOP);
 
     // And subtract out the border for the parent
-    if (parent) {
-      const nsStyleBorder* parentBorder = parent->GetStyleBorder();
-      origin.x -= parentBorder->GetBorderWidth(NS_SIDE_LEFT);
-      origin.y -= parentBorder->GetBorderWidth(NS_SIDE_TOP);
-    }
+    const nsStyleBorder* parentBorder = parent->GetStyleBorder();
+    origin.x -= parentBorder->GetBorderWidth(NS_SIDE_LEFT);
+    origin.y -= parentBorder->GetBorderWidth(NS_SIDE_TOP);
 
-    // Get the Presentation Context from the Shell
-    nsIPresShell* shell = GetPresShell(PR_FALSE);
-    NS_ASSERTION(shell, "Must have shell if we have a frame!");
-    nsPresContext *context = shell->GetPresContext();
-    if (context) {
-      // Get the scale from that Presentation Context
-      float scale;
-      scale = context->TwipsToPixels();
-              
-      // Convert to pixels using that scale
-      aRect.x = NSTwipsToIntPixels(origin.x, scale);
-      aRect.y = NSTwipsToIntPixels(origin.y, scale);
-      aRect.width = NSTwipsToIntPixels(rcFrame.width, scale);
-      aRect.height = NSTwipsToIntPixels(rcFrame.height, scale);
-    }
+    aRect.x = nsPresContext::AppUnitsToIntCSSPixels(origin.x);
+    aRect.y = nsPresContext::AppUnitsToIntCSSPixels(origin.y);
+    
+    // Get the union of all rectangles in this and continuation frames.
+    // It doesn't really matter what we use as aRelativeTo here, since
+    // we only care about the size. Using 'parent' might make things
+    // a bit faster by speeding up the internal GetOffsetTo operations.
+    nsRect rcFrame = nsLayoutUtils::GetAllInFlowRectsUnion(frame, parent);
+    aRect.width = nsPresContext::AppUnitsToIntCSSPixels(rcFrame.width);
+    aRect.height = nsPresContext::AppUnitsToIntCSSPixels(rcFrame.height);
   }
- 
+
   return NS_OK;
 }
 
@@ -334,53 +299,16 @@ nsBoxObject::GetScreenY(PRInt32 *_retval)
 }
 
 NS_IMETHODIMP
-nsBoxObject::GetLookAndFeelMetric(const PRUnichar* aPropertyName, 
-                                  PRUnichar** aResult)
-{
-  nsCOMPtr<nsILookAndFeel> lookAndFeel(do_GetService(kLookAndFeelCID));
-  if (!lookAndFeel)
-    return NS_ERROR_FAILURE;
-    
-  nsAutoString property(aPropertyName);
-  if (property.LowerCaseEqualsLiteral("scrollbararrows")) {
-    PRInt32 metricResult;
-    lookAndFeel->GetMetric(nsILookAndFeel::eMetric_ScrollArrowStyle, metricResult);
-    nsAutoString result;
-    if (metricResult & nsILookAndFeel::eMetric_ScrollArrowStartBackward) {
-      result.AppendLiteral("start-backward ");
-    }
-    if (metricResult & nsILookAndFeel::eMetric_ScrollArrowStartForward) {
-      result.AppendLiteral("start-forward ");
-    }
-    if (metricResult & nsILookAndFeel::eMetric_ScrollArrowEndBackward) {
-      result.AppendLiteral("end-backward ");
-    }
-    if (metricResult & nsILookAndFeel::eMetric_ScrollArrowEndForward) {
-      result.AppendLiteral("end-forward");
-    }
-    *aResult = ToNewUnicode(result);
-  }
-  else if (property.LowerCaseEqualsLiteral("thumbstyle")) {
-    PRInt32 metricResult;
-    lookAndFeel->GetMetric(nsILookAndFeel::eMetric_ScrollSliderStyle, metricResult);
-    if ( metricResult == nsILookAndFeel::eMetric_ScrollThumbStyleNormal )
-      *aResult = ToNewUnicode(NS_LITERAL_STRING("fixed"));
-    else
-      *aResult = ToNewUnicode(NS_LITERAL_STRING("proportional"));   
-  }
-  return NS_OK;
-}
-
-NS_IMETHODIMP
 nsBoxObject::GetPropertyAsSupports(const PRUnichar* aPropertyName, nsISupports** aResult)
 {
-  if (!mPresState) {
+  NS_ENSURE_ARG(aPropertyName && *aPropertyName);
+  if (!mPropertyTable) {
     *aResult = nsnull;
     return NS_OK;
   }
-
   nsDependentString propertyName(aPropertyName);
-  return mPresState->GetStatePropertyAsSupports(propertyName, aResult); // Addref here.
+  mPropertyTable->Get(propertyName, aResult); // Addref here.
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -396,61 +324,81 @@ nsBoxObject::SetPropertyAsSupports(const PRUnichar* aPropertyName, nsISupports* 
                  "exploit you");
   }
 #endif
-
   NS_ENSURE_ARG(aPropertyName && *aPropertyName);
   
-  if (!mPresState) {
-    NS_NewPresState(getter_Transfers(mPresState));
-    NS_ENSURE_TRUE(mPresState, NS_ERROR_OUT_OF_MEMORY);
+  if (!mPropertyTable) {  
+    mPropertyTable = new nsInterfaceHashtable<nsStringHashKey,nsISupports>;  
+    if (!mPropertyTable) return NS_ERROR_OUT_OF_MEMORY;
+    if (NS_FAILED(mPropertyTable->Init(8))) {
+       mPropertyTable = nsnull;
+       return NS_ERROR_FAILURE;
+    }
   }
 
   nsDependentString propertyName(aPropertyName);
-  return mPresState->SetStatePropertyAsSupports(propertyName, aValue);
+  if (!mPropertyTable->Put(propertyName, aValue))
+    return NS_ERROR_OUT_OF_MEMORY;
+  return NS_OK;
 }
 
 NS_IMETHODIMP
 nsBoxObject::GetProperty(const PRUnichar* aPropertyName, PRUnichar** aResult)
 {
-  NS_ENSURE_ARG(aPropertyName && *aPropertyName);
-  
-  if (!mPresState) {
+  nsCOMPtr<nsISupports> data;
+  nsresult rv = GetPropertyAsSupports(aPropertyName,getter_AddRefs(data));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  if (!data) {
     *aResult = nsnull;
     return NS_OK;
   }
 
-  nsDependentString propertyName(aPropertyName);
-  nsAutoString result;
-  nsresult rv = mPresState->GetStateProperty(propertyName, result);
-  if (NS_FAILED(rv))
-    return rv;
-  *aResult = ToNewUnicode(result);
+  nsCOMPtr<nsISupportsString> supportsStr = do_QueryInterface(data);
+  if (!supportsStr) 
+    return NS_ERROR_FAILURE;
+  nsAutoString result;  
+  supportsStr->GetData(result);
+
+  *aResult = result.IsVoid() ? nsnull : ToNewUnicode(result);
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsBoxObject::SetProperty(const PRUnichar* aPropertyName, const PRUnichar* aPropertyValue)
 {
-  if (!mPresState)
-    NS_NewPresState(getter_Transfers(mPresState));
+  NS_ENSURE_ARG(aPropertyName && *aPropertyName);
 
   nsDependentString propertyName(aPropertyName);
-  nsDependentString propertyValue(aPropertyValue);
-  return mPresState->SetStateProperty(propertyName, propertyValue);
+  nsDependentString propertyValue;
+  if (aPropertyValue) {
+    propertyValue.Rebind(aPropertyValue);
+  } else {
+    propertyValue.SetIsVoid(PR_TRUE);
+  }
+  
+  nsCOMPtr<nsISupportsString> supportsStr(do_CreateInstance(NS_SUPPORTS_STRING_CONTRACTID));
+  NS_ENSURE_TRUE(supportsStr, NS_ERROR_OUT_OF_MEMORY);
+  supportsStr->SetData(propertyValue);
+
+  return SetPropertyAsSupports(aPropertyName,supportsStr);
 }
 
 NS_IMETHODIMP
 nsBoxObject::RemoveProperty(const PRUnichar* aPropertyName)
 {
-  if (!mPresState)
-    return NS_OK;
+  NS_ENSURE_ARG(aPropertyName && *aPropertyName);
+
+  if (!mPropertyTable) return NS_OK;
 
   nsDependentString propertyName(aPropertyName);
-  return mPresState->RemoveStateProperty(propertyName);
+  mPropertyTable->Remove(propertyName);
+  return NS_OK;
 }
 
 NS_IMETHODIMP 
 nsBoxObject::GetParentBox(nsIDOMElement * *aParentBox)
 {
+  *aParentBox = nsnull;
   nsIFrame* frame = GetFrame(PR_FALSE);
   if (!frame) return NS_OK;
   nsIFrame* parent = frame->GetParent();
@@ -514,6 +462,7 @@ nsresult
 nsBoxObject::GetPreviousSibling(nsIFrame* aParentFrame, nsIFrame* aFrame,
                                 nsIDOMElement** aResult)
 {
+  *aResult = nsnull;
   nsIFrame* nextFrame = aParentFrame->GetFirstChild(nsnull);
   nsIFrame* prevFrame = nsnull;
   while (nextFrame) {
@@ -529,55 +478,6 @@ nsBoxObject::GetPreviousSibling(nsIFrame* aParentFrame, nsIFrame* aFrame,
   el.swap(*aResult);
   return NS_OK;
 }
-
-nsresult
-nsBoxObject::GetDocShell(nsIDocShell** aResult)
-{
-  *aResult = nsnull;
-
-  nsIFrame *frame = GetFrame(PR_FALSE);
-
-  if (frame) {
-    nsIFrameFrame *frame_frame = nsnull;
-    CallQueryInterface(frame, &frame_frame);
-
-    if (frame_frame) {
-      // Ok, the frame for mContent is a nsIFrameFrame, it knows how
-      // to reach the docshell, so ask it...
-
-      return frame_frame->GetDocShell(aResult);
-    }
-  }
-
-  if (!mContent) {
-    return NS_OK;
-  }
-  
-  // No nsIFrameFrame available for mContent, try if there's a mapping
-  // between mContent's document to mContent's subdocument.
-
-  // XXXbz sXBL/XBL2 issue -- ownerDocument or currentDocument?
-  nsIDocument *doc = mContent->GetDocument();
-
-  if (!doc) {
-    return NS_OK;
-  }
-  
-  nsIDocument *sub_doc = doc->GetSubDocumentFor(mContent);
-
-  if (!sub_doc) {
-    return NS_OK;
-  }
-
-  nsCOMPtr<nsISupports> container = sub_doc->GetContainer();
-
-  if (!container) {
-    return NS_OK;
-  }
-
-  return CallQueryInterface(container, aResult);
-}
-
 
 // Creation Routine ///////////////////////////////////////////////////////////////////////
 

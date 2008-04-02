@@ -53,18 +53,16 @@ class nsSVGTSpanFrame : public nsSVGTSpanFrameBase,
 protected:
   nsSVGTSpanFrame(nsStyleContext* aContext) :
     nsSVGTextContainerFrame(aContext),
-    mFragmentTreeDirty(PR_FALSE), mPropagateTransform(PR_TRUE) {}
+    mPropagateTransform(PR_TRUE) {}
 
    // nsISupports interface:
   NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
 private:
-  NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }
-  NS_IMETHOD_(nsrefcnt) Release() { return NS_OK; }  
+  NS_IMETHOD_(nsrefcnt) AddRef() { return 1; }
+  NS_IMETHOD_(nsrefcnt) Release() { return 1; }
 
 public:
   // nsIFrame:
-  NS_IMETHOD  RemoveFrame(nsIAtom*        aListName,
-                          nsIFrame*       aOldFrame);
   NS_IMETHOD  AttributeChanged(PRInt32         aNameSpaceID,
                                nsIAtom*        aAttribute,
                                PRInt32         aModType);
@@ -72,7 +70,7 @@ public:
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::svgTSpanFrame
+   * @see nsGkAtoms::svgTSpanFrame
    */
   virtual nsIAtom* GetType() const;
 
@@ -85,7 +83,8 @@ public:
   // nsISVGChildFrame interface:
   NS_IMETHOD SetMatrixPropagation(PRBool aPropagate);
   NS_IMETHOD SetOverrideCTM(nsIDOMSVGMatrix *aCTM);
-  
+  virtual already_AddRefed<nsIDOMSVGMatrix> GetOverrideCTM();
+
   // nsSVGContainerFrame methods:
   virtual already_AddRefed<nsIDOMSVGMatrix> GetCanvasTM();
   
@@ -96,15 +95,10 @@ public:
   NS_IMETHOD_(PRInt32) GetCharNumAtPosition(nsIDOMSVGPoint *point);
   NS_IMETHOD_(nsISVGGlyphFragmentLeaf *) GetFirstGlyphFragment();
   NS_IMETHOD_(nsISVGGlyphFragmentLeaf *) GetNextGlyphFragment();
-  NS_IMETHOD_(PRUint32) BuildGlyphFragmentTree(PRUint32 charNum, PRBool lastBranch);
-  NS_IMETHOD_(void) NotifyMetricsSuspended();
-  NS_IMETHOD_(void) NotifyMetricsUnsuspended();
-  NS_IMETHOD_(void) NotifyGlyphFragmentTreeSuspended();
-  NS_IMETHOD_(void) NotifyGlyphFragmentTreeUnsuspended();
+  NS_IMETHOD_(void) SetWhitespaceHandling(PRUint8 aWhitespaceHandling);
 
-private:
+protected:
   nsCOMPtr<nsIDOMSVGMatrix> mOverrideCTM;
-  PRPackedBool mFragmentTreeDirty;
   PRPackedBool mPropagateTransform;
 };
 

@@ -100,12 +100,10 @@ nsGfxCheckboxControlFrame::~nsGfxCheckboxControlFrame()
 NS_IMETHODIMP
 nsGfxCheckboxControlFrame::QueryInterface(const nsIID& aIID, void** aInstancePtr)
 {
-  NS_ASSERTION(aInstancePtr, "QueryInterface requires a non-NULL destination!");
-  if ( !aInstancePtr )
-    return NS_ERROR_NULL_POINTER;
+  NS_PRECONDITION(aInstancePtr, "null out param");
 
   if (aIID.Equals(NS_GET_IID(nsICheckboxControlFrame))) {
-    *aInstancePtr = (void*) ((nsICheckboxControlFrame*) this);
+    *aInstancePtr = static_cast<nsICheckboxControlFrame*>(this);
     return NS_OK;
   }
 
@@ -118,7 +116,7 @@ NS_IMETHODIMP nsGfxCheckboxControlFrame::GetAccessible(nsIAccessible** aAccessib
   nsCOMPtr<nsIAccessibilityService> accService = do_GetService("@mozilla.org/accessibilityService;1");
 
   if (accService) {
-    return accService->CreateHTMLCheckboxAccessible(NS_STATIC_CAST(nsIFrame*, this), aAccessible);
+    return accService->CreateHTMLCheckboxAccessible(static_cast<nsIFrame*>(this), aAccessible);
   }
 
   return NS_ERROR_FAILURE;
@@ -173,7 +171,7 @@ nsGfxCheckboxControlFrame::OnChecked(nsPresContext* aPresContext,
 
 static void PaintCheckMarkFromStyle(nsIFrame* aFrame,
      nsIRenderingContext* aCtx, const nsRect& aDirtyRect, nsPoint aPt) {
-  NS_STATIC_CAST(nsGfxCheckboxControlFrame*, aFrame)
+  static_cast<nsGfxCheckboxControlFrame*>(aFrame)
     ->PaintCheckBoxFromStyle(*aCtx, aPt, aDirtyRect);
 }
 
@@ -197,7 +195,7 @@ public:
 void
 nsDisplayCheckMark::Paint(nsDisplayListBuilder* aBuilder,
      nsIRenderingContext* aCtx, const nsRect& aDirtyRect) {
-  NS_STATIC_CAST(nsGfxCheckboxControlFrame*, mFrame)->
+  static_cast<nsGfxCheckboxControlFrame*>(mFrame)->
     PaintCheckBox(*aCtx, aBuilder->ToReferenceFrame(mFrame), aDirtyRect);
 }
 
@@ -210,11 +208,8 @@ nsGfxCheckboxControlFrame::PaintCheckBox(nsIRenderingContext& aRenderingContext,
 {
   // REVIEW: moved the mAppearance test out so we avoid constructing
   // a display item if it's not needed
-  nsMargin borderPadding(0,0,0,0);
-  CalcBorderPadding(borderPadding);
-
   nsRect checkRect(aPt, mRect.Size());
-  checkRect.Deflate(borderPadding);
+  checkRect.Deflate(GetUsedBorderAndPadding());
 
   const nsStyleColor* color = GetStyleColor();
   aRenderingContext.SetColor(color->mColor);
@@ -260,6 +255,9 @@ nsGfxCheckboxControlFrame::PaintCheckBoxFromStyle(
   const nsStyleBorder* myBorder = mCheckButtonFaceStyle->GetStyleBorder();
   const nsStyleBackground* myBackground = mCheckButtonFaceStyle->GetStyleBackground();
 
+  NS_ASSERTION(myPosition->mWidth.GetUnit() == eStyleUnit_Coord &&
+               myPosition->mHeight.GetUnit() == eStyleUnit_Coord,
+               "styles for :-moz-checkbox are incorrect or author-accessible");
   nscoord width = myPosition->mWidth.GetCoordValue();
   nscoord height = myPosition->mHeight.GetCoordValue();
   // Position the button centered within the control's rectangle.
@@ -267,10 +265,10 @@ nsGfxCheckboxControlFrame::PaintCheckBoxFromStyle(
   nscoord y = (mRect.height - height) / 2;
   nsRect rect(aPt.x + x, aPt.y + y, width, height);
 
-  nsCSSRendering::PaintBackgroundWithSC(GetPresContext(), aRenderingContext,
+  nsCSSRendering::PaintBackgroundWithSC(PresContext(), aRenderingContext,
                                         this, aDirtyRect, rect, *myBackground,
                                         *myBorder, *myPadding, PR_FALSE);
-  nsCSSRendering::PaintBorder(GetPresContext(), aRenderingContext, this,
+  nsCSSRendering::PaintBorder(PresContext(), aRenderingContext, this,
                               aDirtyRect, rect, *myBorder, mCheckButtonFaceStyle, 0);
 }
 
@@ -283,4 +281,3 @@ nsGfxCheckboxControlFrame::GetCheckboxState ( )
   elem->GetChecked(&retval);
   return retval;
 }
-

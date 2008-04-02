@@ -37,66 +37,34 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+
+#include "nsTreeBoxObject.h"
 #include "nsCOMPtr.h"
-#include "nsPresContext.h"
-#include "nsIPresShell.h"
-#include "nsPITreeBoxObject.h"
-#include "nsITreeView.h"
+#include "nsIDOMXULElement.h"
+#include "nsIXULTemplateBuilder.h"
+#include "nsTreeContentView.h"
 #include "nsITreeSelection.h"
-#include "nsBoxObject.h"
-#include "nsIFrame.h"
-#include "nsIAtom.h"
-#include "nsINodeInfo.h"
-#include "nsXULAtoms.h"
 #include "nsChildIterator.h"
 #include "nsContentUtils.h"
 #include "nsDOMError.h"
+#include "nsTreeBodyFrame.h"
 
-class nsTreeBoxObject : public nsPITreeBoxObject, public nsBoxObject
-{
-public:
-  NS_DECL_ISUPPORTS_INHERITED
-  NS_DECL_NSITREEBOXOBJECT
-
-  nsTreeBoxObject();
-  ~nsTreeBoxObject();
-
-  nsITreeBoxObject* GetTreeBody();
-
-  //NS_PIBOXOBJECT interfaces
-  virtual void Clear();
-
-  // nsPITreeBoxObject
-  virtual void ClearCachedTreeBody();  
-
-protected:
-  nsITreeBoxObject* mTreeBody;
-};
-
-/* Implementation file */
-NS_IMPL_ISUPPORTS_INHERITED2(nsTreeBoxObject, nsBoxObject, nsITreeBoxObject,
-                             nsPITreeBoxObject)
-
+NS_IMPL_ISUPPORTS_INHERITED1(nsTreeBoxObject, nsBoxObject, nsITreeBoxObject)
 
 void
 nsTreeBoxObject::Clear()
 {
-  ClearCachedTreeBody();
+  ClearCachedValues();
 
   // Drop the view's ref to us.
-  NS_NAMED_LITERAL_STRING(viewString, "view");
-  nsCOMPtr<nsISupports> suppView;
-  GetPropertyAsSupports(viewString.get(), getter_AddRefs(suppView));
-  nsCOMPtr<nsITreeView> treeView(do_QueryInterface(suppView));
-  if (treeView) {
+  if (mView) {
     nsCOMPtr<nsITreeSelection> sel;
-    treeView->GetSelection(getter_AddRefs(sel));
+    mView->GetSelection(getter_AddRefs(sel));
     if (sel)
       sel->SetTree(nsnull);
-    treeView->SetTree(nsnull); // Break the circular ref between the view and us.
+    mView->SetTree(nsnull); // Break the circular ref between the view and us.
   }
-
-  SetPropertyAsSupports(viewString.get(), nsnull);
+  mView = nsnull;
 
   nsBoxObject::Clear();
 }
@@ -121,13 +89,16 @@ static void FindBodyElement(nsIContent* aParent, nsIContent** aResult)
     nsCOMPtr<nsIContent> content = *iter;
 
     nsINodeInfo *ni = content->NodeInfo();
-    if (ni->Equals(nsXULAtoms::treechildren, kNameSpaceID_XUL)) {
+    if (ni->Equals(nsGkAtoms::treechildren, kNameSpaceID_XUL)) {
       *aResult = content;
       NS_ADDREF(*aResult);
       break;
-    }
-    else if (content->IsNodeOfType(nsINode::eELEMENT) &&
-             !ni->Equals(nsXULAtoms::_template, kNameSpaceID_XUL)) {
+    } else if (ni->Equals(nsGkAtoms::tree, kNameSpaceID_XUL)) {
+      // There are nesting tree elements. Only the innermost should
+      // find the treechilren.
+      break;
+    } else if (content->IsNodeOfType(nsINode::eELEMENT) &&
+               !ni->Equals(nsGkAtoms::_template, kNameSpaceID_XUL)) {
       FindBodyElement(content, aResult);
       if (*aResult)
         break;
@@ -160,51 +131,83 @@ nsTreeBoxObject::GetTreeBody()
      return nsnull;
 
   // It's a frame. Refcounts are irrelevant.
-  CallQueryInterface(frame, &mTreeBody);
+  // Make sure that the treebodyframe, which implements nsITreeBoxObject,
+  // has a pointer to |this|.
+  nsITreeBoxObject* innerTreeBoxObject = nsnull;
+  CallQueryInterface(frame, &innerTreeBoxObject);
+  NS_ENSURE_TRUE(innerTreeBoxObject &&
+    static_cast<nsTreeBodyFrame*>(innerTreeBoxObject)->GetTreeBoxObject() ==
+    static_cast<nsITreeBoxObject*>(this), nsnull);
+
+  mTreeBody = innerTreeBoxObject;
   return mTreeBody;
 }
 
 NS_IMETHODIMP nsTreeBoxObject::GetView(nsITreeView * *aView)
 {
-  nsITreeBoxObject* body = GetTreeBody();
-  if (body)
-    return body->GetView(aView);
+  if (!mTreeBody) {
+    if (!GetTreeBody()) {
+      // Don't return an uninitialised view
+      *aView = nsnull;
+      return NS_OK;
+    }
+
+    if (mView)
+      // Our new frame needs to initialise itself
+      return mTreeBody->GetView(aView);
+  }
+  if (!mView) {
+    nsCOMPtr<nsIDOMXULElement> xulele = do_QueryInterface(mContent);
+    if (xulele) {
+      // See if there is a XUL tree builder associated with the element
+      nsCOMPtr<nsIXULTemplateBuilder> builder;
+      xulele->GetBuilder(getter_AddRefs(builder));
+      mView = do_QueryInterface(builder);
+
+      if (!mView) {
+        // No tree builder, create a tree content view.
+        nsresult rv = NS_NewTreeContentView(getter_AddRefs(mView));
+        NS_ENSURE_SUCCESS(rv, rv);
+      }
+
+      // Initialise the frame and view
+      mTreeBody->SetView(mView);
+    }
+  }
+  NS_IF_ADDREF(*aView = mView);
   return NS_OK;
+}
+
+static PRBool
+CanTrustView(nsISupports* aValue)
+{
+  // Untrusted content is only allowed to specify known-good views
+  if (nsContentUtils::IsCallerTrustedForWrite())
+    return PR_TRUE;
+  nsCOMPtr<nsINativeTreeView> nativeTreeView = do_QueryInterface(aValue);
+  if (!nativeTreeView || NS_FAILED(nativeTreeView->EnsureNative())) {
+    // XXX ERRMSG need a good error here for developers
+    return PR_FALSE;
+  }
+  return PR_TRUE;
 }
 
 NS_IMETHODIMP nsTreeBoxObject::SetView(nsITreeView * aView)
 {
-  // Untrusted content is only allowed to specify known-good views
-  if (!nsContentUtils::IsCallerTrustedForWrite()) {
-    nsCOMPtr<nsINativeTreeView> nativeTreeView = do_QueryInterface(aView);
-    if (!nativeTreeView || NS_FAILED(nativeTreeView->EnsureNative()))
-      // XXX ERRMSG need a good error here for developers
-      return NS_ERROR_DOM_SECURITY_ERR;
-  }
-
+  if (!CanTrustView(aView))
+    return NS_ERROR_DOM_SECURITY_ERR;
+  
+  mView = aView;
   nsITreeBoxObject* body = GetTreeBody();
-  if (body) {
+  if (body)
     body->SetView(aView);
-  
-    // only return if the body frame was able to store the view,
-    // else we need to cache the property below
-    nsCOMPtr<nsITreeView> view;
-    body->GetView(getter_AddRefs(view));
-    if (view)
-      return NS_OK;
-  }
-  
-  nsCOMPtr<nsISupports> suppView(do_QueryInterface(aView));
-  if (suppView)
-    SetPropertyAsSupports(NS_LITERAL_STRING("view").get(), suppView);
-  else
-    RemoveProperty(NS_LITERAL_STRING("view").get());
 
   return NS_OK;
 }
 
 NS_IMETHODIMP nsTreeBoxObject::GetFocused(PRBool* aFocused)
 {
+  *aFocused = PR_FALSE;
   nsITreeBoxObject* body = GetTreeBody();
   if (body)
     return body->GetFocused(aFocused);
@@ -221,6 +224,7 @@ NS_IMETHODIMP nsTreeBoxObject::SetFocused(PRBool aFocused)
 
 NS_IMETHODIMP nsTreeBoxObject::GetTreeBody(nsIDOMElement** aElement)
 {
+  *aElement = nsnull;
   nsITreeBoxObject* body = GetTreeBody();
   if (body) 
     return body->GetTreeBody(aElement);
@@ -229,57 +233,64 @@ NS_IMETHODIMP nsTreeBoxObject::GetTreeBody(nsIDOMElement** aElement)
 
 NS_IMETHODIMP nsTreeBoxObject::GetColumns(nsITreeColumns** aColumns)
 {
+  *aColumns = nsnull;
   nsITreeBoxObject* body = GetTreeBody();
   if (body) 
     return body->GetColumns(aColumns);
   return NS_OK;
 }
 
-NS_IMETHODIMP nsTreeBoxObject::GetRowHeight(PRInt32* _retval)
+NS_IMETHODIMP nsTreeBoxObject::GetRowHeight(PRInt32* aRowHeight)
 {
+  *aRowHeight = 0;
   nsITreeBoxObject* body = GetTreeBody();
   if (body) 
-    return body->GetRowHeight(_retval);
+    return body->GetRowHeight(aRowHeight);
   return NS_OK;
 }
 
 NS_IMETHODIMP nsTreeBoxObject::GetRowWidth(PRInt32 *aRowWidth)
 {
+  *aRowWidth = 0;
   nsITreeBoxObject* body = GetTreeBody();
   if (body) 
     return body->GetRowWidth(aRowWidth);
   return NS_OK;
 }
 
-NS_IMETHODIMP nsTreeBoxObject::GetFirstVisibleRow(PRInt32 *_retval)
+NS_IMETHODIMP nsTreeBoxObject::GetFirstVisibleRow(PRInt32 *aFirstVisibleRow)
 {
+  *aFirstVisibleRow = 0;
   nsITreeBoxObject* body = GetTreeBody();
   if (body)
-    return body->GetFirstVisibleRow(_retval);
+    return body->GetFirstVisibleRow(aFirstVisibleRow);
   return NS_OK;
 }
 
-NS_IMETHODIMP nsTreeBoxObject::GetLastVisibleRow(PRInt32 *_retval)
+NS_IMETHODIMP nsTreeBoxObject::GetLastVisibleRow(PRInt32 *aLastVisibleRow)
 {
+  *aLastVisibleRow = 0;
   nsITreeBoxObject* body = GetTreeBody();
   if (body)
-    return body->GetLastVisibleRow(_retval);
+    return body->GetLastVisibleRow(aLastVisibleRow);
   return NS_OK;
 }
 
 NS_IMETHODIMP nsTreeBoxObject::GetHorizontalPosition(PRInt32 *aHorizontalPosition)
 {
+  *aHorizontalPosition = 0;
   nsITreeBoxObject* body = GetTreeBody();
   if (body)
     return body->GetHorizontalPosition(aHorizontalPosition);
   return NS_OK;
 }
 
-NS_IMETHODIMP nsTreeBoxObject::GetPageLength(PRInt32 *_retval)
+NS_IMETHODIMP nsTreeBoxObject::GetPageLength(PRInt32 *aPageLength)
 {
+  *aPageLength = 0;
   nsITreeBoxObject* body = GetTreeBody();
   if (body)
-    return body->GetPageLength(_retval);
+    return body->GetPageLength(aPageLength);
   return NS_OK;
 }
 
@@ -404,20 +415,23 @@ NS_IMETHODIMP nsTreeBoxObject::InvalidateColumnRange(PRInt32 aStart, PRInt32 aEn
   return NS_OK;
 }
 
-NS_IMETHODIMP nsTreeBoxObject::GetRowAt(PRInt32 x, PRInt32 y, PRInt32 *_retval)
+NS_IMETHODIMP nsTreeBoxObject::GetRowAt(PRInt32 x, PRInt32 y, PRInt32 *aRow)
 {
+  *aRow = 0;
   nsITreeBoxObject* body = GetTreeBody();
   if (body)
-    return body->GetRowAt(x, y, _retval);
+    return body->GetRowAt(x, y, aRow);
   return NS_OK;
 }
 
-NS_IMETHODIMP nsTreeBoxObject::GetCellAt(PRInt32 x, PRInt32 y, PRInt32 *row, nsITreeColumn** col,
-                                         nsACString& childElt)
+NS_IMETHODIMP nsTreeBoxObject::GetCellAt(PRInt32 aX, PRInt32 aY, PRInt32 *aRow, nsITreeColumn** aCol,
+                                         nsACString& aChildElt)
 {
+  *aRow = 0;
+  *aCol = nsnull;
   nsITreeBoxObject* body = GetTreeBody();
   if (body)
-    return body->GetCellAt(x, y, row, col, childElt);
+    return body->GetCellAt(aX, aY, aRow, aCol, aChildElt);
   return NS_OK;
 }
 
@@ -425,6 +439,7 @@ NS_IMETHODIMP
 nsTreeBoxObject::GetCoordsForCellItem(PRInt32 aRow, nsITreeColumn* aCol, const nsACString& aElement, 
                                       PRInt32 *aX, PRInt32 *aY, PRInt32 *aWidth, PRInt32 *aHeight)
 {
+  *aX = *aY = *aWidth = *aHeight = 0;
   nsITreeBoxObject* body = GetTreeBody();
   if (body)
     return body->GetCoordsForCellItem(aRow, aCol, aElement, aX, aY, aWidth, aHeight);
@@ -432,11 +447,12 @@ nsTreeBoxObject::GetCoordsForCellItem(PRInt32 aRow, nsITreeColumn* aCol, const n
 }
 
 NS_IMETHODIMP
-nsTreeBoxObject::IsCellCropped(PRInt32 aRow, nsITreeColumn* aCol, PRBool *_retval)
+nsTreeBoxObject::IsCellCropped(PRInt32 aRow, nsITreeColumn* aCol, PRBool *aIsCropped)
 {  
+  *aIsCropped = PR_FALSE;
   nsITreeBoxObject* body = GetTreeBody();
   if (body)
-    return body->IsCellCropped(aRow, aCol, _retval);
+    return body->IsCellCropped(aRow, aCol, aIsCropped);
   return NS_OK;
 }
 
@@ -473,7 +489,7 @@ NS_IMETHODIMP nsTreeBoxObject::ClearStyleAndImageCaches()
 }
 
 void
-nsTreeBoxObject::ClearCachedTreeBody()
+nsTreeBoxObject::ClearCachedValues()
 {
   mTreeBody = nsnull;
 }    

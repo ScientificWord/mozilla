@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -42,7 +43,6 @@
 #include "nsCOMPtr.h"
 #include "nsFrame.h"
 #include "nsPresContext.h"
-#include "nsUnitConversion.h"
 #include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
@@ -92,7 +92,7 @@ nsMathMLmrootFrame::Init(nsIContent*      aContent,
 {
   nsresult rv = nsMathMLContainerFrame::Init(aContent, aParent, aPrevInFlow);
   
-  nsPresContext *presContext = GetPresContext();
+  nsPresContext *presContext = PresContext();
 
   // No need to tract the style context given to our MathML char. 
   // The Style System will use Get/SetAdditionalStyleContext() to keep it
@@ -111,10 +111,10 @@ nsMathMLmrootFrame::TransmitAutomaticData()
   //    The <mroot> element increments scriptlevel by 2, and sets displaystyle to
   //    "false", within index, but leaves both attributes unchanged within base.
   // 2. The TeXbook (Ch 17. p.141) says \sqrt is compressed
-  UpdatePresentationDataFromChildAt(1, 1, 2,
+  UpdatePresentationDataFromChildAt(1, 1,
     ~NS_MATHML_DISPLAYSTYLE | NS_MATHML_COMPRESSED,
      NS_MATHML_DISPLAYSTYLE | NS_MATHML_COMPRESSED);
-  UpdatePresentationDataFromChildAt(0, 0, 0,
+  UpdatePresentationDataFromChildAt(0, 0,
      NS_MATHML_COMPRESSED, NS_MATHML_COMPRESSED);
 
   return NS_OK;
@@ -160,14 +160,11 @@ nsMathMLmrootFrame::Reflow(nsPresContext*          aPresContext,
                            nsReflowStatus&          aStatus)
 {
   nsresult rv = NS_OK;
-  // ask our children to compute their bounding metrics 
-  nsHTMLReflowMetrics childDesiredSize(aDesiredSize.mComputeMEW,
-                      aDesiredSize.mFlags | NS_REFLOW_CALC_BOUNDING_METRICS);
-  nsSize availSize(aReflowState.mComputedWidth, aReflowState.mComputedHeight);
+  nsSize availSize(aReflowState.ComputedWidth(), NS_UNCONSTRAINEDSIZE);
   nsReflowStatus childStatus;
 
   aDesiredSize.width = aDesiredSize.height = 0;
-  aDesiredSize.ascent = aDesiredSize.descent = 0;
+  aDesiredSize.ascent = 0;
 
   nsBoundingMetrics bmSqr, bmBase, bmIndex;
   nsIRenderingContext& renderingContext = *aReflowState.rendContext;
@@ -178,18 +175,23 @@ nsMathMLmrootFrame::Reflow(nsPresContext*          aPresContext,
   PRInt32 count = 0;
   nsIFrame* baseFrame = nsnull;
   nsIFrame* indexFrame = nsnull;
-  nsHTMLReflowMetrics baseSize(nsnull);
-  nsHTMLReflowMetrics indexSize(nsnull);
+  nsHTMLReflowMetrics baseSize;
+  nsHTMLReflowMetrics indexSize;
   nsIFrame* childFrame = mFrames.FirstChild();
   while (childFrame) {
-    nsReflowReason reason = (childFrame->GetStateBits() & NS_FRAME_FIRST_REFLOW)
-      ? eReflowReason_Initial : aReflowState.reason;
+    // ask our children to compute their bounding metrics 
+    nsHTMLReflowMetrics childDesiredSize(aDesiredSize.mFlags
+                                         | NS_REFLOW_CALC_BOUNDING_METRICS);
     nsHTMLReflowState childReflowState(aPresContext, aReflowState,
-                                       childFrame, availSize, reason);
+                                       childFrame, availSize);
     rv = ReflowChild(childFrame, aPresContext,
                      childDesiredSize, childReflowState, childStatus);
     //NS_ASSERTION(NS_FRAME_IS_COMPLETE(childStatus), "bad status");
-    if (NS_FAILED(rv)) return rv;
+    if (NS_FAILED(rv)) {
+      // Call DidReflow() for the child frames we successfully did reflow.
+      DidReflowChildren(mFrames.FirstChild(), childFrame);
+      return rv;
+    }
     if (0 == count) {
       // base 
       baseFrame = childFrame;
@@ -205,13 +207,13 @@ nsMathMLmrootFrame::Reflow(nsPresContext*          aPresContext,
     count++;
     childFrame = childFrame->GetNextSibling();
   }
-  if (aDesiredSize.mComputeMEW) {
-    aDesiredSize.mMaxElementWidth = childDesiredSize.mMaxElementWidth;
-  }
   if (2 != count) {
     // report an error, encourage people to get their markups in order
     NS_WARNING("invalid markup");
-    return ReflowError(renderingContext, aDesiredSize);
+    rv = ReflowError(renderingContext, aDesiredSize);
+    aStatus = NS_FRAME_COMPLETE;
+    NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aDesiredSize);
+    return rv;
   }
 
   ////////////
@@ -221,6 +223,10 @@ nsMathMLmrootFrame::Reflow(nsPresContext*          aPresContext,
   nsCOMPtr<nsIFontMetrics> fm;
   renderingContext.GetFontMetrics(*getter_AddRefs(fm));
 
+  // For radical glyphs from TeX fonts and some of the radical glyphs from
+  // Mathematica fonts, the thickness of the overline can be obtained from the
+  // ascent of the glyph.  Most fonts however have radical glyphs above the
+  // baseline so no assumption can be made about the meaning of the ascent.
   nscoord ruleThickness, leading, em;
   GetRuleThickness(renderingContext, fm, ruleThickness);
 
@@ -228,7 +234,7 @@ nsMathMLmrootFrame::Reflow(nsPresContext*          aPresContext,
   renderingContext.GetBoundingMetrics(NS_LITERAL_STRING("1").get(), 1, bmOne);
 
   // get the leading to be left at the top of the resulting frame
-  // this seems more reliable than using fm->GetLeading() on suspicious fonts               
+  // this seems more reliable than using fm->GetLeading() on suspicious fonts
   GetEmHeight(fm, em);
   leading = nscoord(0.2f * em); 
 
@@ -245,6 +251,18 @@ nsMathMLmrootFrame::Reflow(nsPresContext*          aPresContext,
   if (bmOne.ascent > bmBase.ascent)
     psi += bmOne.ascent - bmBase.ascent;
 
+  // make sure that the rule appears on on screen
+  nscoord onePixel = nsPresContext::CSSPixelsToAppUnits(1);
+  if (ruleThickness < onePixel) {
+    ruleThickness = onePixel;
+  }
+
+  // adjust clearance psi to get an exact number of pixels -- this
+  // gives a nicer & uniform look on stacked radicals (bug 130282)
+  nscoord delta = psi % onePixel;
+  if (delta)
+    psi += onePixel - delta; // round up
+
   // Stretch the radical symbol to the appropriate height if it is not big enough.
   nsBoundingMetrics contSize = bmBase;
   contSize.descent = bmBase.ascent + bmBase.descent + psi;
@@ -260,35 +278,21 @@ nsMathMLmrootFrame::Reflow(nsPresContext*          aPresContext,
   // the bounding metrics of the char
   mSqrChar.GetBoundingMetrics(bmSqr);
 
-  // According to TeX, the ascent of the returned radical should be
-  // the thickness of the overline
-  ruleThickness = bmSqr.ascent;
-  // make sure that the rule appears on on screen
-  nscoord onePixel = aPresContext->IntScaledPixelsToTwips(1);
-  if (ruleThickness < onePixel) {
-    ruleThickness = onePixel;
-  }
-
-  // adjust clearance psi to get an exact number of pixels -- this
-  // gives a nicer & uniform look on stacked radicals (bug 130282)
-  nscoord delta = psi % onePixel;
-  if (delta)
-    psi += onePixel - delta; // round up
-
   // Update the desired size for the container (like msqrt, index is not yet included)
   // the baseline will be that of the base.
   mBoundingMetrics.ascent = bmBase.ascent + psi + ruleThickness;
   mBoundingMetrics.descent = 
-    PR_MAX(bmBase.descent, (bmSqr.descent - (bmBase.ascent + psi)));
+    PR_MAX(bmBase.descent,
+           (bmSqr.ascent + bmSqr.descent - mBoundingMetrics.ascent));
   mBoundingMetrics.width = bmSqr.width + bmBase.width;
   mBoundingMetrics.leftBearing = bmSqr.leftBearing;
   mBoundingMetrics.rightBearing = bmSqr.width + 
     PR_MAX(bmBase.width, bmBase.rightBearing); // take also care of the rule
 
   aDesiredSize.ascent = mBoundingMetrics.ascent + leading;
-  aDesiredSize.descent =
-    PR_MAX(baseSize.descent, (mBoundingMetrics.descent + ruleThickness));
-  aDesiredSize.height = aDesiredSize.ascent + aDesiredSize.descent;
+  aDesiredSize.height = aDesiredSize.ascent +
+    PR_MAX(baseSize.height - baseSize.ascent,
+           mBoundingMetrics.descent + ruleThickness);
   aDesiredSize.width = mBoundingMetrics.width;
 
   /////////////
@@ -306,8 +310,9 @@ nsMathMLmrootFrame::Reflow(nsPresContext*          aPresContext,
     indexClearance = 
       indexRaisedAscent - mBoundingMetrics.ascent; // excess gap introduced by a tall index 
     mBoundingMetrics.ascent = indexRaisedAscent;
+    nscoord descent = aDesiredSize.height - aDesiredSize.ascent;
     aDesiredSize.ascent = mBoundingMetrics.ascent + leading;
-    aDesiredSize.height = aDesiredSize.ascent + aDesiredSize.descent;
+    aDesiredSize.height = aDesiredSize.ascent + descent;
   }
 
   // the index is tucked in closer to the radical while making sure
@@ -364,10 +369,8 @@ nsMathMLmrootFrame::Reflow(nsPresContext*          aPresContext,
 
   aDesiredSize.width = mBoundingMetrics.width;
   aDesiredSize.mBoundingMetrics = mBoundingMetrics;
+  GatherAndStoreOverflow(&aDesiredSize);
 
-  if (aDesiredSize.mComputeMEW) {
-    aDesiredSize.mMaxElementWidth = aDesiredSize.width;
-  }
   aStatus = NS_FRAME_COMPLETE;
   NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aDesiredSize);
   return NS_OK;

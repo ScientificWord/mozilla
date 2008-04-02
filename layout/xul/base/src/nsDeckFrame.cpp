@@ -47,9 +47,8 @@
 #include "nsPresContext.h"
 #include "nsIContent.h"
 #include "nsCOMPtr.h"
-#include "nsUnitConversion.h"
 #include "nsINameSpaceManager.h"
-#include "nsXULAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsHTMLParts.h"
 #include "nsIPresShell.h"
 #include "nsCSSRendering.h"
@@ -80,14 +79,10 @@ nsDeckFrame::nsDeckFrame(nsIPresShell* aPresShell,
   SetLayoutManager(layout);
 }
 
-/**
- * Hack for deck who requires that all its children has widgets
- */
-NS_IMETHODIMP
-nsDeckFrame::ChildrenMustHaveWidgets(PRBool& aMust) const
+nsIAtom*
+nsDeckFrame::GetType() const
 {
-  aMust = PR_TRUE;
-  return NS_OK;
+  return nsGkAtoms::deckFrame;
 }
 
 NS_IMETHODIMP
@@ -99,9 +94,9 @@ nsDeckFrame::AttributeChanged(PRInt32         aNameSpaceID,
                                              aModType);
 
 
-   // if the index changed hide the old element and make the now element visible
-  if (aAttribute == nsXULAtoms::selectedIndex) {
-    IndexChanged(GetPresContext());
+   // if the index changed hide the old element and make the new element visible
+  if (aAttribute == nsGkAtoms::selectedIndex) {
+    IndexChanged(PresContext());
   }
 
   return rv;
@@ -157,16 +152,16 @@ nsDeckFrame::IndexChanged(nsPresContext* aPresContext)
   Redraw(state);
 
   // hide the currently showing box
-  nsIBox* currentBox = GetBoxAt(mIndex);
+  nsIBox* currentBox = GetSelectedBox();
   if (currentBox) // only hide if it exists
      HideBox(aPresContext, currentBox);
 
+  mIndex = index;
+
   // show the new box
-  nsIBox* newBox = GetBoxAt(index);
+  nsIBox* newBox = GetSelectedBox();
   if (newBox) // only show if it exists
      ShowBox(aPresContext, newBox);
-
-  mIndex = index;
 }
 
 PRInt32
@@ -177,7 +172,7 @@ nsDeckFrame::GetSelectedIndex()
 
   // get the index attribute
   nsAutoString value;
-  if (mContent->GetAttr(kNameSpaceID_None, nsXULAtoms::selectedIndex, value))
+  if (mContent->GetAttr(kNameSpaceID_None, nsGkAtoms::selectedIndex, value))
   {
     PRInt32 error;
 
@@ -191,11 +186,7 @@ nsDeckFrame::GetSelectedIndex()
 nsIBox* 
 nsDeckFrame::GetSelectedBox()
 {
- // ok we want to paint only the child that as at the given index
-  PRInt32 index = GetSelectedIndex();
- 
-  // get the child at that index. 
-  return GetBoxAt(index); 
+  return (mIndex >= 0) ? mFrames.FrameAt(mIndex) : nsnull; 
 }
 
 NS_IMETHODIMP
@@ -240,8 +231,7 @@ nsDeckFrame::DoLayout(nsBoxLayoutState& aState)
   nsresult rv = nsBoxFrame::DoLayout(aState);
 
   // run though each child. Hide all but the selected one
-  nsIBox* box = nsnull;
-  GetChildBox(&box);
+  nsIBox* box = GetChildBox();
 
   nscoord count = 0;
   while (box) 
@@ -252,8 +242,7 @@ nsDeckFrame::DoLayout(nsBoxLayoutState& aState)
     else
       HideBox(aState.PresContext(), box);
 
-    nsresult rv2 = box->GetNextBox(&box);
-    NS_ASSERTION(NS_SUCCEEDED(rv2), "failed to get next child");
+    box = box->GetNextBox();
     count++;
   }
 

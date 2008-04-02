@@ -58,24 +58,26 @@ class nsGrid;
  * for a grid row or column) and nsGridRowGroupLayout (the nsIBoxLayout
  * object for a grid row group or column group).
  */
+// XXXldb This needs a name that indicates that it's a base class for
+// both row and rows (row-group).
 class nsGridRowLayout : public nsSprocketLayout,
                         public nsIGridPart
 {
 public:
   NS_DECL_ISUPPORTS_INHERITED
 
-  NS_IMETHOD CastToRowGroupLayout(nsGridRowGroupLayout** aRowGroup);
-  NS_IMETHOD CastToGridLayout(nsGridLayout2** aGrid);
-  NS_IMETHOD GetGrid(nsIBox* aBox, nsGrid** aList, PRInt32* aIndex, nsGridRowLayout* aRequestor=nsnull);
-  NS_IMETHOD GetParentGridPart(nsIBox* aBox, nsIBox** aParentBox, nsIGridPart** aParentGridRow);
-  NS_IMETHOD ChildrenInserted(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aPrevBox, nsIBox* aChildList);
-  NS_IMETHOD ChildrenAppended(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aChildList);
-  NS_IMETHOD ChildrenRemoved(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aChildList);
-  NS_IMETHOD ChildrenSet(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aChildList);
-  NS_IMETHOD GetTotalMargin(nsIBox* aBox, nsMargin& aMargin, PRBool aIsHorizontal);
+  virtual nsGridRowGroupLayout* CastToRowGroupLayout() { return nsnull; }
+  virtual nsGridLayout2* CastToGridLayout() { return nsnull; }
+  virtual nsGrid* GetGrid(nsIBox* aBox, PRInt32* aIndex, nsGridRowLayout* aRequestor=nsnull);
+  virtual void GetParentGridPart(nsIBox* aBox, nsIBox** aParentBox, nsIGridPart** aParentGridRow);
+  virtual void ChildrenInserted(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aPrevBox, nsIBox* aChildList);
+  virtual void ChildrenAppended(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aChildList);
+  virtual void ChildrenRemoved(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aChildList);
+  virtual void ChildrenSet(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aChildList);
+  virtual nsMargin GetTotalMargin(nsIBox* aBox, PRBool aIsHorizontal);
 
 protected:
-  NS_IMETHOD ChildAddedOrRemoved(nsIBox* aBox, nsBoxLayoutState& aState)=0;
+  virtual void ChildAddedOrRemoved(nsIBox* aBox, nsBoxLayoutState& aState)=0;
 
   nsGridRowLayout(nsIPresShell* aShell);
 };

@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -47,8 +47,7 @@
 #include "nsCOMPtr.h"
 #include "nsIDeviceContext.h"
 #include "nsIFontMetrics.h"
-#include "nsHTMLAtoms.h"
-#include "nsXULAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsPresContext.h"
 #include "nsIRenderingContext.h"
 #include "nsStyleContext.h"
@@ -76,7 +75,6 @@ NS_NewLeafBoxFrame (nsIPresShell* aPresShell, nsStyleContext* aContext)
 nsLeafBoxFrame::nsLeafBoxFrame(nsIPresShell* aShell, nsStyleContext* aContext)
     : nsLeafFrame(aContext), mMouseThrough(unset)
 {
-    mState |= NS_FRAME_IS_BOX;
 }
 
 #ifdef DEBUG_LAYOUT
@@ -98,15 +96,15 @@ nsLeafBoxFrame::Init(
               nsIFrame*        aPrevInFlow)
 {
   nsresult  rv = nsLeafFrame::Init(aContent, aParent, aPrevInFlow);
+  NS_ENSURE_SUCCESS(rv, rv);
 
    // see if we need a widget
   if (aParent && aParent->IsBoxFrame()) {
-    PRBool needsWidget = PR_FALSE;
-    aParent->ChildrenMustHaveWidgets(needsWidget);
-    if (needsWidget) {
-        nsHTMLContainerFrame::CreateViewForFrame(this, nsnull, PR_TRUE); 
-        nsIView* view = GetView();
+    if (aParent->ChildrenMustHaveWidgets()) {
+        rv = nsHTMLContainerFrame::CreateViewForFrame(this, nsnull, PR_TRUE); 
+        NS_ENSURE_SUCCESS(rv, rv);
 
+        nsIView* view = GetView();
         if (!view->HasWidget())
            view->CreateWidget(kWidgetCID);   
     }
@@ -127,7 +125,7 @@ nsLeafBoxFrame::AttributeChanged(PRInt32 aNameSpaceID,
   nsresult rv = nsLeafFrame::AttributeChanged(aNameSpaceID, aAttribute,
                                               aModType);
 
-  if (aAttribute == nsXULAtoms::mousethrough) 
+  if (aAttribute == nsGkAtoms::mousethrough) 
     UpdateMouseThrough();
 
   return rv;
@@ -137,9 +135,9 @@ void nsLeafBoxFrame::UpdateMouseThrough()
 {
   if (mContent) {
     static nsIContent::AttrValuesArray strings[] =
-      {&nsXULAtoms::never, &nsXULAtoms::always, nsnull};
+      {&nsGkAtoms::never, &nsGkAtoms::always, nsnull};
     switch (mContent->FindAttrValueIn(kNameSpaceID_None,
-                                      nsXULAtoms::mousethrough,
+                                      nsGkAtoms::mousethrough,
                                       strings, eCaseMatters)) {
       case 0: mMouseThrough = never; break;
       case 1: mMouseThrough = always; break;
@@ -147,29 +145,21 @@ void nsLeafBoxFrame::UpdateMouseThrough()
   }
 }
 
-NS_IMETHODIMP
-nsLeafBoxFrame::GetMouseThrough(PRBool& aMouseThrough)
+PRBool
+nsLeafBoxFrame::GetMouseThrough() const
 {
   switch (mMouseThrough)
   {
     case always:
-      aMouseThrough = PR_TRUE;
-      return NS_OK;
+      return PR_TRUE;
     case never:
-      aMouseThrough = PR_FALSE;      
-      return NS_OK;
+      return PR_FALSE;
     case unset:
-    {
       if (mParent && mParent->IsBoxFrame())
-        return mParent->GetMouseThrough(aMouseThrough);
-      else {
-        aMouseThrough = PR_FALSE;      
-        return NS_OK;
-      }
-    }
+        return mParent->GetMouseThrough();
   }
 
-  return NS_ERROR_FAILURE;
+  return PR_FALSE;
 }
 
 NS_IMETHODIMP
@@ -192,24 +182,63 @@ nsLeafBoxFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
       nsDisplayEventReceiver(this));
 }
 
-NS_IMETHODIMP
-nsLeafBoxFrame::DidReflow(nsPresContext*           aPresContext,
-                          const nsHTMLReflowState*  aReflowState,
-                          nsDidReflowStatus         aStatus)
+/* virtual */ nscoord
+nsLeafBoxFrame::GetMinWidth(nsIRenderingContext *aRenderingContext)
 {
-  PRBool isDirty = mState & NS_FRAME_IS_DIRTY;
-  PRBool hasDirtyChildren = mState & NS_FRAME_HAS_DIRTY_CHILDREN;
-  nsresult rv = nsFrame::DidReflow(aPresContext, aReflowState, aStatus);
-  if (isDirty)
-    mState |= NS_FRAME_IS_DIRTY;
+  nscoord result;
+  DISPLAY_MIN_WIDTH(this, result);
+  nsBoxLayoutState state(PresContext(), aRenderingContext);
+  nsSize minSize = GetMinSize(state);
 
-  if (hasDirtyChildren)
-    mState |= NS_FRAME_HAS_DIRTY_CHILDREN;
+  // GetMinSize returns border-box width, and we want to return content
+  // width.  Since Reflow uses the reflow state's border and padding, we
+  // actually just want to subtract what GetMinSize added, which is the
+  // result of GetBorderAndPadding.
+  nsMargin bp;
+  GetBorderAndPadding(bp);
 
-  return rv;
+  result = minSize.width - bp.LeftRight();
 
+  return result;
 }
 
+/* virtual */ nscoord
+nsLeafBoxFrame::GetPrefWidth(nsIRenderingContext *aRenderingContext)
+{
+  nscoord result;
+  DISPLAY_PREF_WIDTH(this, result);
+  nsBoxLayoutState state(PresContext(), aRenderingContext);
+  nsSize prefSize = GetPrefSize(state);
+
+  // GetPrefSize returns border-box width, and we want to return content
+  // width.  Since Reflow uses the reflow state's border and padding, we
+  // actually just want to subtract what GetPrefSize added, which is the
+  // result of GetBorderAndPadding.
+  nsMargin bp;
+  GetBorderAndPadding(bp);
+
+  result = prefSize.width - bp.LeftRight();
+
+  return result;
+}
+
+nscoord
+nsLeafBoxFrame::GetIntrinsicWidth()
+{
+  // No intrinsic width
+  return 0;
+}
+
+nsSize
+nsLeafBoxFrame::ComputeAutoSize(nsIRenderingContext *aRenderingContext,
+                                nsSize aCBSize, nscoord aAvailableWidth,
+                                nsSize aMargin, nsSize aBorder,
+                                nsSize aPadding, PRBool aShrinkWrap)
+{
+  // Important: NOT calling our direct superclass here!
+  return nsFrame::ComputeAutoSize(aRenderingContext, aCBSize, aAvailableWidth,
+                                  aMargin, aBorder, aPadding, aShrinkWrap);
+}
 
 NS_IMETHODIMP
 nsLeafBoxFrame::Reflow(nsPresContext*   aPresContext,
@@ -222,10 +251,11 @@ nsLeafBoxFrame::Reflow(nsPresContext*   aPresContext,
   // class hierarchy.  If you make changes here, please keep
   // nsBoxFrame::Reflow in sync.
 
-  DO_GLOBAL_REFLOW_COUNT("nsLeafBoxFrame", aReflowState.reason);
+  DO_GLOBAL_REFLOW_COUNT("nsLeafBoxFrame");
   DISPLAY_REFLOW(aPresContext, this, aReflowState, aDesiredSize, aStatus);
 
-  NS_ASSERTION(aReflowState.mComputedWidth >=0 && aReflowState.mComputedHeight >= 0, "Computed Size < 0");
+  NS_ASSERTION(aReflowState.ComputedWidth() >=0 &&
+               aReflowState.ComputedHeight() >= 0, "Computed Size < 0");
 
 #ifdef DO_NOISY_REFLOW
   printf("\n-------------Starting LeafBoxFrame Reflow ----------------------------\n");
@@ -247,8 +277,8 @@ nsLeafBoxFrame::Reflow(nsPresContext*   aPresContext,
   
   printSize("AW", aReflowState.availableWidth);
   printSize("AH", aReflowState.availableHeight);
-  printSize("CW", aReflowState.mComputedWidth);
-  printSize("CH", aReflowState.mComputedHeight);
+  printSize("CW", aReflowState.ComputedWidth());
+  printSize("CH", aReflowState.ComputedHeight());
 
   printf(" *\n");
 
@@ -257,12 +287,9 @@ nsLeafBoxFrame::Reflow(nsPresContext*   aPresContext,
   aStatus = NS_FRAME_COMPLETE;
 
   // create the layout state
-  nsBoxLayoutState state(aPresContext, aReflowState, aDesiredSize);
+  nsBoxLayoutState state(aPresContext, aReflowState.rendContext);
 
-  // coelesce reflows if we are root.
-  state.HandleReflow(this);
-  
-  nsSize computedSize(aReflowState.mComputedWidth,aReflowState.mComputedHeight);
+  nsSize computedSize(aReflowState.ComputedWidth(),aReflowState.ComputedHeight());
 
   nsMargin m;
   m = aReflowState.mComputedBorderPadding;
@@ -270,9 +297,8 @@ nsLeafBoxFrame::Reflow(nsPresContext*   aPresContext,
   //GetBorderAndPadding(m);
 
   // this happens sometimes. So lets handle it gracefully.
-  if (aReflowState.mComputedHeight == 0) {
-    nsSize minSize(0,0);
-    GetMinSize(state, minSize);
+  if (aReflowState.ComputedHeight() == 0) {
+    nsSize minSize = GetMinSize(state);
     computedSize.height = minSize.height - m.top - m.bottom;
   }
 
@@ -280,22 +306,20 @@ nsLeafBoxFrame::Reflow(nsPresContext*   aPresContext,
 
   // if we are told to layout intrinic then get our preferred size.
   if (computedSize.width == NS_INTRINSICSIZE || computedSize.height == NS_INTRINSICSIZE) {
-     nsSize minSize(0,0);
-     nsSize maxSize(0,0);
-     GetPrefSize(state, prefSize);
-     GetMinSize(state,  minSize);
-     GetMaxSize(state,  maxSize);
-     BoundsCheck(minSize, prefSize, maxSize);
+     prefSize = GetPrefSize(state);
+     nsSize minSize = GetMinSize(state);
+     nsSize maxSize = GetMaxSize(state);
+     prefSize = BoundsCheck(minSize, prefSize, maxSize);
   }
 
   // get our desiredSize
-  if (aReflowState.mComputedWidth == NS_INTRINSICSIZE) {
+  if (aReflowState.ComputedWidth() == NS_INTRINSICSIZE) {
     computedSize.width = prefSize.width;
   } else {
     computedSize.width += m.left + m.right;
   }
 
-  if (aReflowState.mComputedHeight == NS_INTRINSICSIZE) {
+  if (aReflowState.ComputedHeight() == NS_INTRINSICSIZE) {
     computedSize.height = prefSize.height;
   } else {
     computedSize.height += m.top + m.bottom;
@@ -323,50 +347,13 @@ nsLeafBoxFrame::Reflow(nsPresContext*   aPresContext,
   Layout(state);
   
   // ok our child could have gotten bigger. So lets get its bounds
-  
-  // get the ascent
-  nscoord ascent = mRect.height;
-
-  // Only call GetAscent when not doing Initial reflow while in PP
-  // or when it is Initial reflow while in PP and a chrome doc
-  // If called again with initial reflow it crashes because the 
-  // frames are fully constructed (I think).
-  PRBool isChrome;
-  PRBool isInitialPP = nsBoxFrame::IsInitialReflowForPrintPreview(state, isChrome);
-  if (!isInitialPP || (isInitialPP && isChrome)) {
-    GetAscent(state, ascent);
-  }
-
   aDesiredSize.width  = mRect.width;
   aDesiredSize.height = mRect.height;
-  aDesiredSize.ascent = ascent;
-  aDesiredSize.descent = 0;
+  aDesiredSize.ascent = GetBoxAscent(state);
 
   // NS_FRAME_OUTSIDE_CHILDREN is set in SetBounds() above
-  if (mState & NS_FRAME_OUTSIDE_CHILDREN) {
-    nsRect* overflowArea = GetOverflowAreaProperty();
-    NS_ASSERTION(overflowArea, "Failed to set overflow area property");
-    aDesiredSize.mOverflowArea = *overflowArea;
-  }
+  aDesiredSize.mOverflowArea = GetOverflowRect();
 
-  // max sure the max element size reflects
-  // our min width
-  nscoord* maxElementWidth = state.GetMaxElementWidth();
-  if (maxElementWidth)
-  {
-     nsSize minSize(0,0);
-     GetMinSize(state,  minSize);
-
-     if (mRect.width > minSize.width) {
-       if (aReflowState.mComputedWidth == NS_INTRINSICSIZE) {
-         *maxElementWidth = minSize.width;
-       } else {
-         *maxElementWidth = mRect.width;
-       }
-     } else {
-        *maxElementWidth = mRect.width;
-     }
-  }
 #ifdef DO_NOISY_REFLOW
   {
     printf("%p ** nsLBF(done) W:%d H:%d  ", this, aDesiredSize.width, aDesiredSize.height);
@@ -391,6 +378,12 @@ nsLeafBoxFrame::GetFrameName(nsAString& aResult) const
 }
 #endif
 
+nsIAtom*
+nsLeafBoxFrame::GetType() const
+{
+  return nsGkAtoms::leafBoxFrame;
+}
+
 NS_IMETHODIMP_(nsrefcnt) 
 nsLeafBoxFrame::AddRef(void)
 {
@@ -408,62 +401,51 @@ nsLeafBoxFrame::CharacterDataChanged(nsPresContext* aPresContext,
                                      nsIContent*     aChild,
                                      PRBool          aAppend)
 {
-  NeedsRecalc();
+  MarkIntrinsicWidthsDirty();
   return nsLeafFrame::CharacterDataChanged(aPresContext, aChild, aAppend);
 }
 
-NS_IMETHODIMP
-nsLeafBoxFrame::GetPrefSize(nsBoxLayoutState& aState, nsSize& aSize)
+/* virtual */ nsSize
+nsLeafBoxFrame::GetPrefSize(nsBoxLayoutState& aState)
 {
-    return nsBox::GetPrefSize(aState, aSize);
+    return nsBox::GetPrefSize(aState);
 }
 
-NS_IMETHODIMP
-nsLeafBoxFrame::GetMinSize(nsBoxLayoutState& aState, nsSize& aSize)
+/* virtual */ nsSize
+nsLeafBoxFrame::GetMinSize(nsBoxLayoutState& aState)
 {
-    return nsBox::GetMinSize(aState, aSize);
+    return nsBox::GetMinSize(aState);
 }
 
-NS_IMETHODIMP
-nsLeafBoxFrame::GetMaxSize(nsBoxLayoutState& aState, nsSize& aSize)
+/* virtual */ nsSize
+nsLeafBoxFrame::GetMaxSize(nsBoxLayoutState& aState)
 {
-    return nsBox::GetMaxSize(aState, aSize);
+    return nsBox::GetMaxSize(aState);
 }
 
-NS_IMETHODIMP
-nsLeafBoxFrame::GetFlex(nsBoxLayoutState& aState, nscoord& aFlex)
+/* virtual */ nscoord
+nsLeafBoxFrame::GetFlex(nsBoxLayoutState& aState)
 {
-    return nsBox::GetFlex(aState, aFlex);
+    return nsBox::GetFlex(aState);
 }
 
-NS_IMETHODIMP
-nsLeafBoxFrame::GetAscent(nsBoxLayoutState& aState, nscoord& aAscent)
+/* virtual */ nscoord
+nsLeafBoxFrame::GetBoxAscent(nsBoxLayoutState& aState)
 {
-    return nsBox::GetAscent(aState, aAscent);
+    return nsBox::GetBoxAscent(aState);
 }
 
-NS_IMETHODIMP
-nsLeafBoxFrame::NeedsRecalc()
+/* virtual */ void
+nsLeafBoxFrame::MarkIntrinsicWidthsDirty()
 {
-    return nsBox::NeedsRecalc();
+  // Don't call base class method, since everything it does is within an
+  // IsBoxWrapped check.
 }
 
 NS_IMETHODIMP
 nsLeafBoxFrame::DoLayout(nsBoxLayoutState& aState)
 {
     return nsBox::DoLayout(aState);
-}
-
-PRBool
-nsLeafBoxFrame::HasStyleChange()
-{
-    return nsBox::HasStyleChange();
-}
-
-void
-nsLeafBoxFrame::SetStyleChangeFlag(PRBool aDirty)
-{
-    nsBox::SetStyleChangeFlag(aDirty);
 }
 
 PRBool

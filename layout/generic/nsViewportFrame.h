@@ -44,20 +44,10 @@
 #define nsViewportFrame_h___
 
 #include "nsContainerFrame.h"
-#include "nsLayoutAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsPresContext.h"
-#include "nsReflowPath.h"
 #include "nsIPresShell.h"
 #include "nsAbsoluteContainingBlock.h"
-
-class nsFixedContainingBlock : public nsAbsoluteContainingBlock {
-public:
-  nsFixedContainingBlock() { }          // useful for debugging
-
-  virtual ~nsFixedContainingBlock() { } // useful for debugging
-
-  virtual nsIAtom* GetChildListName() const { return nsLayoutAtoms::fixedList; }
-};
 
 /**
   * ViewportFrame is the parent of a single child - the doc root frame or a scroll frame 
@@ -67,10 +57,19 @@ public:
   */
 class ViewportFrame : public nsContainerFrame {
 public:
-  ViewportFrame(nsStyleContext* aContext) : nsContainerFrame(aContext) {}
+  typedef nsContainerFrame Super;
+
+  ViewportFrame(nsStyleContext* aContext)
+    : nsContainerFrame(aContext)
+    , mFixedContainer(nsGkAtoms::fixedList)
+  {}
   virtual ~ViewportFrame() { } // useful for debugging
 
   virtual void Destroy();
+
+  NS_IMETHOD Init(nsIContent*      aContent,
+                  nsIFrame*        aParent,
+                  nsIFrame*        asPrevInFlow);
 
   NS_IMETHOD SetInitialChildList(nsIAtom*        aListName,
                                  nsIFrame*       aChildList);
@@ -93,6 +92,8 @@ public:
                               const nsRect&           aDirtyRect,
                               const nsDisplayListSet& aLists);
 
+  virtual nscoord GetMinWidth(nsIRenderingContext *aRenderingContext);
+  virtual nscoord GetPrefWidth(nsIRenderingContext *aRenderingContext);
   NS_IMETHOD Reflow(nsPresContext*          aPresContext,
                     nsHTMLReflowMetrics&     aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
@@ -101,7 +102,7 @@ public:
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::viewportFrame
+   * @see nsGkAtoms::viewportFrame
    */
   virtual nsIAtom* GetType() const;
   
@@ -119,7 +120,9 @@ protected:
   nsPoint AdjustReflowStateForScrollbars(nsHTMLReflowState* aReflowState) const;
 
 protected:
-  nsFixedContainingBlock mFixedContainer;
+  // position: fixed content is really content which is absolutely positioned with
+  // respect to the viewport.
+  nsAbsoluteContainingBlock mFixedContainer;
 };
 
 

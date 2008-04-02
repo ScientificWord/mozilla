@@ -48,11 +48,8 @@
 #include "nsIDocShellTreeItem.h"
 #include "nsIWebNavigation.h"
 #include "nsIPresShell.h"
-#include "nsIViewManager.h"
 #include "nsIWidget.h"
 #include "nsPresContext.h"
-#include "nsXULAtoms.h"
-#include "nsHTMLAtoms.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -97,14 +94,6 @@ inLayoutUtils::GetFrameFor(nsIDOMElement* aElement, nsIPresShell* aShell)
   return aShell->GetPrimaryFrameFor(content);
 }
 
-already_AddRefed<nsIRenderingContext>
-inLayoutUtils::GetRenderingContextFor(nsIPresShell* aShell)
-{
-  nsCOMPtr<nsIWidget> widget;
-  aShell->GetViewManager()->GetWidget(getter_AddRefs(widget));
-  return widget->GetRenderingContext(); // AddRefs
-}
-
 nsIEventStateManager*
 inLayoutUtils::GetEventStateManagerFor(nsIDOMElement *aElement)
 {
@@ -119,35 +108,13 @@ inLayoutUtils::GetEventStateManagerFor(nsIDOMElement *aElement)
     return nsnull;
   }
 
-  nsIPresShell *shell = doc->GetShellAt(0);
+  nsIPresShell *shell = doc->GetPrimaryShell();
   NS_ASSERTION(shell, "No pres shell");
 
   return shell->GetPresContext()->EventStateManager();
 }
 
-nsPoint
-inLayoutUtils::GetClientOrigin(nsIFrame* aFrame)
-{
-  nsPoint result(0,0);
-  nsIView* view;
-  aFrame->GetOffsetFromView(result, &view);
-  nsIView* rootView = nsnull;
-  if (view) {
-      nsIViewManager* viewManager = view->GetViewManager();
-      NS_ASSERTION(viewManager, "View must have a viewmanager");
-      viewManager->GetRootView(rootView);
-  }
-  while (view) {
-    result += view->GetPosition();
-    if (view == rootView) {
-      break;
-    }
-    view = view->GetParent();
-  }
-  return result;
-}
-
-nsIBindingManager* 
+nsBindingManager* 
 inLayoutUtils::GetBindingManagerFor(nsIDOMNode* aNode)
 {
   nsCOMPtr<nsIDOMDocument> domdoc;

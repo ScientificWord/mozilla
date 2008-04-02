@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -38,7 +39,6 @@
 #include "nsCOMPtr.h"
 #include "nsFrame.h"
 #include "nsPresContext.h"
-#include "nsUnitConversion.h"
 #include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsINameSpaceManager.h"
@@ -55,7 +55,7 @@
 #include "nsIInterfaceRequestorUtils.h"
 #include "nsIDOMElement.h"
 
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsIDOMMouseListener.h"
 
 #include "nsMathMLmactionFrame.h"
@@ -87,9 +87,8 @@ NS_NewMathMLmactionFrame(nsIPresShell* aPresShell, nsStyleContext* aContext)
 nsMathMLmactionFrame::~nsMathMLmactionFrame()
 {
   // unregister us as a mouse event listener ...
-//  printf("maction:%p unregistering as mouse event listener ...\n", this);
-  nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(mContent));
-  receiver->RemoveEventListenerByIID(this, NS_GET_IID(nsIDOMMouseListener));
+  //  printf("maction:%p unregistering as mouse event listener ...\n", this);
+  mContent->RemoveEventListenerByIID(this, NS_GET_IID(nsIDOMMouseListener));
 }
 
 NS_IMETHODIMP
@@ -101,14 +100,13 @@ nsMathMLmactionFrame::Init(nsIContent*      aContent,
 
   // Init our local attributes
 
-  mWasRestyled = PR_FALSE;
   mChildCount = -1; // these will be updated in GetSelectedFrame()
   mSelection = 0;
   mSelectedFrame = nsnull;
   nsRefPtr<nsStyleContext> newStyleContext;
 
   mActionType = NS_MATHML_ACTION_TYPE_NONE;
-  aContent->GetAttr(kNameSpaceID_None, nsMathMLAtoms::actiontype_, value);
+  aContent->GetAttr(kNameSpaceID_None, nsGkAtoms::actiontype_, value);
   if (!value.IsEmpty()) {
     if (value.EqualsLiteral("toggle"))
       mActionType = NS_MATHML_ACTION_TYPE_TOGGLE;
@@ -138,12 +136,14 @@ nsMathMLmactionFrame::Init(nsIContent*      aContent,
         // given us the associated style. But we want to start with our default style.
 
         // So... first, remove the attribute actiontype="restyle#id"
+        // XXXbz this is pretty messed up, since this can change whether we
+        // should have a frame at all.  This really needs a better solution.
         PRBool notify = PR_FALSE; // don't trigger a reflow yet!
-        aContent->UnsetAttr(kNameSpaceID_None, nsMathMLAtoms::actiontype_, notify);
+        aContent->UnsetAttr(kNameSpaceID_None, nsGkAtoms::actiontype_, notify);
 
         // then, re-resolve our style
-        nsStyleContext* parentStyleContext = aParent->GetStyleContext();
-        newStyleContext = GetPresContext()->StyleSet()->
+        nsStyleContext* parentStyleContext = GetStyleContext()->GetParent();
+        newStyleContext = PresContext()->StyleSet()->
           ResolveStyleFor(aContent, parentStyleContext);
 
         if (!newStyleContext) 
@@ -181,7 +181,7 @@ nsMathMLmactionFrame::GetSelectedFrame()
   nsAutoString value;
   PRInt32 selection; 
 
-  mContent->GetAttr(kNameSpaceID_None, nsMathMLAtoms::selection_, value);
+  mContent->GetAttr(kNameSpaceID_None, nsGkAtoms::selection_, value);
   if (!value.IsEmpty()) {
     PRInt32 errorCode;
     selection = value.ToInteger(&errorCode);
@@ -239,8 +239,7 @@ nsMathMLmactionFrame::SetInitialChildList(nsIAtom*        aListName,
   else {
     // register us as a mouse event listener ...
     // printf("maction:%p registering as mouse event listener ...\n", this);
-    nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(mContent));
-    receiver->AddEventListenerByIID(this, NS_GET_IID(nsIDOMMouseListener));
+    mContent->AddEventListenerByIID(this, NS_GET_IID(nsIDOMMouseListener));
   }
   return rv;
 }
@@ -280,32 +279,17 @@ nsMathMLmactionFrame::Reflow(nsPresContext*          aPresContext,
   nsresult rv = NS_OK;
   aStatus = NS_FRAME_COMPLETE;
   aDesiredSize.width = aDesiredSize.height = 0;
-  aDesiredSize.ascent = aDesiredSize.descent = 0;
+  aDesiredSize.ascent = 0;
   mBoundingMetrics.Clear();
   nsIFrame* childFrame = GetSelectedFrame();
   if (childFrame) {
-    nsReflowReason reason = aReflowState.reason;
-    if (childFrame->GetStateBits() & NS_FRAME_FIRST_REFLOW)
-      reason = eReflowReason_Initial;
-    else if (mWasRestyled) {
-      mWasRestyled = PR_FALSE;
-      // If we have just been restyled, make sure to reflow our
-      // selected child with a StyleChange reflow reason so that
-      // it doesn't over-optimize its reflow. In principle we shouldn't
-      // need to do this because we posted a style changed reflow (see
-      // MouseClick() below). But that reason can be (and usually, it is)
-      // changed in the reflow chain and we don't have much control other
-      // than making sure that the right value is reset here.
-      reason = eReflowReason_StyleChange;
-    }
-
-    nsSize availSize(aReflowState.mComputedWidth, aReflowState.mComputedHeight);
+    nsSize availSize(aReflowState.ComputedWidth(), NS_UNCONSTRAINEDSIZE);
     nsHTMLReflowState childReflowState(aPresContext, aReflowState,
-                                       childFrame, availSize, reason);
+                                       childFrame, availSize);
     rv = ReflowChild(childFrame, aPresContext, aDesiredSize,
                      childReflowState, aStatus);
-    childFrame->SetRect(nsRect(aDesiredSize.descent,aDesiredSize.ascent,
-                        aDesiredSize.width,aDesiredSize.height));
+    SaveReflowAndBoundingMetricsFor(childFrame, aDesiredSize,
+                                    aDesiredSize.mBoundingMetrics);
     mBoundingMetrics = aDesiredSize.mBoundingMetrics;
   }
   FinalizeReflow(*aReflowState.rendContext, aDesiredSize);
@@ -320,13 +304,13 @@ nsMathMLmactionFrame::Place(nsIRenderingContext& aRenderingContext,
                             nsHTMLReflowMetrics& aDesiredSize)
 {
   aDesiredSize.width = aDesiredSize.height = 0;
-  aDesiredSize.ascent = aDesiredSize.descent = 0;
+  aDesiredSize.ascent = 0;
   mBoundingMetrics.Clear();
   nsIFrame* childFrame = GetSelectedFrame();
   if (childFrame) {
     GetReflowAndBoundingMetricsFor(childFrame, aDesiredSize, mBoundingMetrics);
     if (aPlaceOrigin) {
-      FinishReflowChild(childFrame, GetPresContext(), nsnull, aDesiredSize, 0, 0, 0);
+      FinishReflowChild(childFrame, PresContext(), nsnull, aDesiredSize, 0, 0, 0);
     }
     mReference.x = 0;
     mReference.y = aDesiredSize.ascent;
@@ -368,11 +352,11 @@ nsMathMLmactionFrame::MouseOver(nsIDOMEvent* aMouseEvent)
   // see if we should display a status message
   if (NS_MATHML_ACTION_TYPE_STATUSLINE == mActionType) {
     nsAutoString value;
-    mContent->GetAttr(kNameSpaceID_None, nsMathMLAtoms::actiontype_, value);
+    mContent->GetAttr(kNameSpaceID_None, nsGkAtoms::actiontype_, value);
     // expected statusline prefix (11ch)...
     if (11 < value.Length() && 0 == value.Find("statusline#")) {
       value.Cut(0, 11);
-      ShowStatus(GetPresContext(), value);
+      ShowStatus(PresContext(), value);
     }
   }
   return NS_OK;
@@ -385,7 +369,7 @@ nsMathMLmactionFrame::MouseOut(nsIDOMEvent* aMouseEvent)
   if (NS_MATHML_ACTION_TYPE_STATUSLINE == mActionType) {
     nsAutoString value;
     value.SetLength(0);
-    ShowStatus(GetPresContext(), value);
+    ShowStatus(PresContext(), value);
   }
   return NS_OK;
 }
@@ -401,10 +385,12 @@ nsMathMLmactionFrame::MouseClick(nsIDOMEvent* aMouseEvent)
       PR_snprintf(cbuf, sizeof(cbuf), "%d", selection);
       value.AssignASCII(cbuf);
       PRBool notify = PR_FALSE; // don't yet notify the document
-      mContent->SetAttr(kNameSpaceID_None, nsMathMLAtoms::selection_, value, notify);
+      mContent->SetAttr(kNameSpaceID_None, nsGkAtoms::selection_, value, notify);
 
       // Now trigger a content-changed reflow...
-      ReflowDirtyChild(GetPresContext()->PresShell(), mSelectedFrame);
+      PresContext()->PresShell()->
+        FrameNeedsReflow(mSelectedFrame, nsIPresShell::eTreeChange,
+                         NS_FRAME_IS_DIRTY);
     }
   }
   else if (NS_MATHML_ACTION_TYPE_RESTYLE == mActionType) {
@@ -412,22 +398,15 @@ nsMathMLmactionFrame::MouseClick(nsIDOMEvent* aMouseEvent)
       nsCOMPtr<nsIDOMElement> node( do_QueryInterface(mContent) );
       if (node.get()) {
         if (nsContentUtils::HasNonEmptyAttr(mContent, kNameSpaceID_None,
-                                            nsMathMLAtoms::actiontype_))
+                                            nsGkAtoms::actiontype_))
           node->RemoveAttribute(NS_LITERAL_STRING("actiontype"));
         else
           node->SetAttribute(NS_LITERAL_STRING("actiontype"), mRestyle);
 
-        // At this stage, our style sub-tree has been re-resolved
-        mWasRestyled = PR_TRUE;
-
-        // Cancel the reflow command that the change of attribute has
-        // caused, and post a style changed reflow request that is instead
-        // targeted at our selected frame
-        nsIPresShell *presShell = GetPresContext()->PresShell();
-        presShell->CancelReflowCommand(this, nsnull);
-        presShell->AppendReflowCommand(mSelectedFrame,
-				       eReflowType_StyleChanged,
-				       nsnull);
+        // Trigger a style change reflow
+        PresContext()->PresShell()->
+          FrameNeedsReflow(mSelectedFrame, nsIPresShell::eStyleChange,
+                           NS_FRAME_IS_DIRTY);
       }
     }
   }

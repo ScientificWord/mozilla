@@ -147,10 +147,14 @@ public:
                     const nsHTMLReflowState& aReflowState,
                     nsReflowStatus&          aStatus);
 
+  /* needed only because we use Reflow in a hacky way, see
+     nsTableFrame::ReflowColGroups */
+  virtual PRBool IsContainingBlock() const;
+
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::tableColGroupFrame
+   * @see nsGkAtoms::tableColGroupFrame
    */
   virtual nsIAtom* GetType() const;
 
@@ -227,8 +231,7 @@ public:
    * GetContinuousBCBorderWidth will not overwrite aBorder.left
    * see nsTablePainter about continuous borders
    */
-  void GetContinuousBCBorderWidth(float     aPixelsToTwips,
-                                  nsMargin& aBorder);
+  void GetContinuousBCBorderWidth(nsMargin& aBorder);
   /**
    * Set full border widths before collapsing with cell borders
    * @param aForSide - side to set; only accepts top and bottom
@@ -244,24 +247,6 @@ protected:
 
   /** implement abstract method on nsHTMLContainerFrame */
   virtual PRIntn GetSkipSides() const;
-
-  NS_IMETHOD IncrementalReflow(nsHTMLReflowMetrics&     aDesiredSize,
-                               const nsHTMLReflowState& aReflowState,
-                               nsReflowStatus&          aStatus);
-
-  NS_IMETHOD IR_TargetIsMe(nsHTMLReflowMetrics&     aDesiredSize,
-                           const nsHTMLReflowState& aReflowState,
-                           nsReflowStatus&          aStatus);
-
-  NS_IMETHOD IR_StyleChanged(nsHTMLReflowMetrics&     aDesiredSize,
-                             const nsHTMLReflowState& aReflowState,
-                             nsReflowStatus&          aStatus);
-
-
-  NS_IMETHOD IR_TargetIsChild(nsHTMLReflowMetrics&     aDesiredSize,
-                              const nsHTMLReflowState& aReflowState,
-                              nsReflowStatus&          aStatus,
-                              nsIFrame *               aNextFrame);
 
   // data members
   PRInt32 mColCount;

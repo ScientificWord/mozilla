@@ -103,7 +103,7 @@ public:
   NS_IMETHOD SetTotalNumPages(PRInt32 aTotal) { mTotalPages = aTotal; return NS_OK; }
 
   // Gets the dead space (the gray area) around the Print Preview Page
-  NS_IMETHOD GetDeadSpaceValue(nscoord* aValue) { *aValue = NS_INCHES_TO_TWIPS(0.25); return NS_OK; };
+  NS_IMETHOD GetDeadSpaceValue(nscoord* aValue) { *aValue = NS_INCHES_TO_TWIPS(0.25); return NS_OK; }
   
   // For Shrink To Fit
   NS_IMETHOD GetSTFPercent(float& aSTFPercent);
@@ -123,7 +123,7 @@ public:
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::sequenceFrame
+   * @see nsGkAtoms::sequenceFrame
    */
   virtual nsIAtom* GetType() const;
   
@@ -131,6 +131,9 @@ public:
   NS_IMETHOD  GetFrameName(nsAString& aResult) const;
 #endif
 
+  void PaintPageSequence(nsIRenderingContext& aRenderingContext,
+                         const nsRect&        aDirtyRect,
+                         nsPoint              aPt);
 
 protected:
   nsSimplePageSequenceFrame(nsStyleContext* aContext);
@@ -145,9 +148,6 @@ protected:
   // SharedPageData Helper methods
   void SetDateTimeStr(PRUnichar * aDateTimeStr);
   void SetPageNumberFormat(PRUnichar * aFormatStr, PRBool aForPageNumOnly);
-
-  void GetEdgePaperMarginCoord(char* aPrefName, nscoord& aCoord);
-  void GetEdgePaperMargin(nsMargin& aMargin);
 
   NS_IMETHOD_(nsrefcnt) AddRef(void) {return nsContainerFrame::AddRef();}
   NS_IMETHOD_(nsrefcnt) Release(void) {return nsContainerFrame::Release();}
@@ -174,9 +174,6 @@ protected:
 
   // I18N date formatter service which we'll want to cache locally.
   nsCOMPtr<nsIDateTimeFormat> mDateFormatter;
-
-private:
-  void CacheBackground(nsPresContext* aPresContext);
 
 };
 

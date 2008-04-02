@@ -41,24 +41,16 @@
 #include "nsHTMLParts.h"
 #include "nsHTMLContainerFrame.h"
 #include "nsCSSRendering.h"
-#include "nsIDocument.h"
-#include "nsReflowPath.h"
 #include "nsPresContext.h"
 #include "nsStyleContext.h"
-#include "nsViewsCID.h"
 #include "nsIView.h"
 #include "nsIViewManager.h"
-#include "nsIWidget.h"
-#include "nsPageFrame.h"
 #include "nsIRenderingContext.h"
 #include "nsGUIEvent.h"
-#include "nsIDOMEvent.h"
 #include "nsStyleConsts.h"
-#include "nsIViewManager.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsIEventStateManager.h"
 #include "nsIDeviceContext.h"
-#include "nsLayoutAtoms.h"
 #include "nsIPresShell.h"
 #include "nsIScrollPositionListener.h"
 #include "nsDisplayList.h"
@@ -107,6 +99,8 @@ public:
   NS_IMETHOD RemoveFrame(nsIAtom*        aListName,
                          nsIFrame*       aOldFrame);
 
+  virtual nscoord GetMinWidth(nsIRenderingContext *aRenderingContext);
+  virtual nscoord GetPrefWidth(nsIRenderingContext *aRenderingContext);
   NS_IMETHOD Reflow(nsPresContext*          aPresContext,
                     nsHTMLReflowMetrics&     aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
@@ -129,7 +123,7 @@ public:
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::canvasFrame
+   * @see nsGkAtoms::canvasFrame
    */
   virtual nsIAtom* GetType() const;
 
@@ -168,21 +162,16 @@ NS_NewCanvasFrame(nsIPresShell* aPresShell, nsStyleContext* aContext)
 NS_IMETHODIMP
 CanvasFrame::QueryInterface(const nsIID& aIID, void** aInstancePtr)
 {
-  NS_PRECONDITION(0 != aInstancePtr, "null ptr");
-  if (NULL == aInstancePtr) {
-    return NS_ERROR_NULL_POINTER;
-  }
+  NS_PRECONDITION(aInstancePtr, "null out param");
 
   if (aIID.Equals(NS_GET_IID(nsIScrollPositionListener))) {
-    *aInstancePtr = (void*) ((nsIScrollPositionListener*) this);
+    *aInstancePtr = static_cast<nsIScrollPositionListener*>(this);
     return NS_OK;
   } 
-  
   if (aIID.Equals(NS_GET_IID(nsICanvasFrame))) {
-    *aInstancePtr = (void*) ((nsICanvasFrame*) this);
+    *aInstancePtr = static_cast<nsICanvasFrame*>(this);
     return NS_OK;
   } 
-  
 
   return nsHTMLContainerFrame::QueryInterface(aIID, aInstancePtr);
 }
@@ -194,7 +183,7 @@ CanvasFrame::Init(nsIContent*      aContent,
 {
   nsresult rv = nsHTMLContainerFrame::Init(aContent, aParent, aPrevInFlow);
 
-  mViewManager = GetPresContext()->GetViewManager();
+  mViewManager = PresContext()->GetViewManager();
 
   nsIScrollableView* scrollingView = nsnull;
   mViewManager->GetRootScrollableView(&scrollingView);
@@ -256,7 +245,7 @@ CanvasFrame::SetHasFocus(PRBool aHasFocus)
 {
   if (mDoPaintFocus != aHasFocus) {
     mDoPaintFocus = aHasFocus;
-    nsIViewManager* vm = GetPresContext()->PresShell()->GetViewManager();
+    nsIViewManager* vm = PresContext()->PresShell()->GetViewManager();
     if (vm) {
       vm->UpdateAllViews(NS_VMREFRESH_NO_SYNC);
     }
@@ -287,9 +276,9 @@ CanvasFrame::AppendFrames(nsIAtom*        aListName,
 #endif
     mFrames.AppendFrame(nsnull, aFrameList);
 
-    // Generate a reflow command to reflow the newly inserted frame
-    rv = GetPresContext()->PresShell()->
-          AppendReflowCommand(this, eReflowType_ReflowDirty, nsnull);
+    rv = PresContext()->PresShell()->
+           FrameNeedsReflow(this, nsIPresShell::eTreeChange,
+                            NS_FRAME_HAS_DIRTY_CHILDREN);
   }
 
   return rv;
@@ -335,9 +324,9 @@ CanvasFrame::RemoveFrame(nsIAtom*        aListName,
     // Remove the frame and destroy it
     mFrames.DestroyFrame(aOldFrame);
 
-    // Generate a reflow command so we get reflowed
-    rv = GetPresContext()->PresShell()->
-          AppendReflowCommand(this, eReflowType_ReflowDirty, nsnull);
+    rv = PresContext()->PresShell()->
+           FrameNeedsReflow(this, nsIPresShell::eTreeChange,
+                            NS_FRAME_HAS_DIRTY_CHILDREN);
   } else {
     rv = NS_ERROR_FAILURE;
   }
@@ -372,17 +361,17 @@ public:
 
   virtual nsRect GetBounds(nsDisplayListBuilder* aBuilder)
   {
-    CanvasFrame* frame = NS_STATIC_CAST(CanvasFrame*, mFrame);
+    CanvasFrame* frame = static_cast<CanvasFrame*>(mFrame);
     return frame->CanvasArea() + aBuilder->ToReferenceFrame(mFrame);
   }
 
   virtual void Paint(nsDisplayListBuilder* aBuilder,
                      nsIRenderingContext* aCtx, const nsRect& aDirtyRect)
   {
-    CanvasFrame* frame = NS_STATIC_CAST(CanvasFrame*, mFrame);
+    CanvasFrame* frame = static_cast<CanvasFrame*>(mFrame);
     nsPoint offset = aBuilder->ToReferenceFrame(mFrame);
     nsRect bgClipRect = frame->CanvasArea() + offset;
-    nsCSSRendering::PaintBackground(mFrame->GetPresContext(), *aCtx, mFrame,
+    nsCSSRendering::PaintBackground(mFrame->PresContext(), *aCtx, mFrame,
                                     aDirtyRect,
                                     nsRect(offset, mFrame->GetSize()),
                                     *mFrame->GetStyleBorder(),
@@ -409,14 +398,14 @@ public:
   virtual nsRect GetBounds(nsDisplayListBuilder* aBuilder)
   {
     // This is an overestimate, but that's not a problem.
-    CanvasFrame* frame = NS_STATIC_CAST(CanvasFrame*, mFrame);
+    CanvasFrame* frame = static_cast<CanvasFrame*>(mFrame);
     return frame->CanvasArea() + aBuilder->ToReferenceFrame(mFrame);
   }
 
   virtual void Paint(nsDisplayListBuilder* aBuilder,
                      nsIRenderingContext* aCtx, const nsRect& aDirtyRect)
   {
-    CanvasFrame* frame = NS_STATIC_CAST(CanvasFrame*, mFrame);
+    CanvasFrame* frame = static_cast<CanvasFrame*>(mFrame);
     frame->PaintFocus(*aCtx, aBuilder->ToReferenceFrame(mFrame));
   }
 
@@ -498,9 +487,9 @@ CanvasFrame::PaintFocus(nsIRenderingContext& aRenderingContext, nsPoint aPt)
     focusRect.y += y;
   }
 
-  nsStyleOutline outlineStyle(GetPresContext());
+  nsStyleOutline outlineStyle(PresContext());
   outlineStyle.SetOutlineStyle(NS_STYLE_BORDER_STYLE_DOTTED);
-  outlineStyle.SetOutlineInvert();
+  outlineStyle.SetOutlineInitialColor();
 
  // XXX use the root frame foreground color, but should we find BODY frame
  // for HTML documents?
@@ -513,10 +502,9 @@ CanvasFrame::PaintFocus(nsIRenderingContext& aRenderingContext, nsPoint aPt)
     return;
   }
 
-  float p2t = GetPresContext()->PixelsToTwips();
   // XXX the CSS border for links is specified as 2px, but it
   // is only drawn as 1px.  Match this here.
-  nscoord onePixel = NSIntPixelsToTwips(1, p2t);
+  nscoord onePixel = nsPresContext::CSSPixelsToAppUnits(1);
 
   nsRect borderInside(focusRect.x + onePixel,
                       focusRect.y + onePixel,
@@ -531,79 +519,65 @@ CanvasFrame::PaintFocus(nsIRenderingContext& aRenderingContext, nsPoint aPt)
                                   nsnull);
 }
 
+/* virtual */ nscoord
+CanvasFrame::GetMinWidth(nsIRenderingContext *aRenderingContext)
+{
+  nscoord result;
+  DISPLAY_MIN_WIDTH(this, result);
+  if (mFrames.IsEmpty())
+    result = 0;
+  else
+    result = mFrames.FirstChild()->GetMinWidth(aRenderingContext);
+  return result;
+}
+
+/* virtual */ nscoord
+CanvasFrame::GetPrefWidth(nsIRenderingContext *aRenderingContext)
+{
+  nscoord result;
+  DISPLAY_PREF_WIDTH(this, result);
+  if (mFrames.IsEmpty())
+    result = 0;
+  else
+    result = mFrames.FirstChild()->GetPrefWidth(aRenderingContext);
+  return result;
+}
+
 NS_IMETHODIMP
 CanvasFrame::Reflow(nsPresContext*          aPresContext,
                     nsHTMLReflowMetrics&     aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
                     nsReflowStatus&          aStatus)
 {
-  DO_GLOBAL_REFLOW_COUNT("CanvasFrame", aReflowState.reason);
+  DO_GLOBAL_REFLOW_COUNT("CanvasFrame");
   DISPLAY_REFLOW(aPresContext, this, aReflowState, aDesiredSize, aStatus);
   NS_FRAME_TRACE_REFLOW_IN("CanvasFrame::Reflow");
-  //NS_PRECONDITION(!aDesiredSize.mComputeMEW, "unexpected request");
 
   // Initialize OUT parameter
   aStatus = NS_FRAME_COMPLETE;
 
-  PRBool  isStyleChange = PR_FALSE;
-  PRBool  isDirtyChildReflow = PR_FALSE;
-
-  // Check for an incremental reflow
-  if (eReflowReason_Incremental == aReflowState.reason) {
-    // See if we're the target frame
-    nsHTMLReflowCommand *command = aReflowState.path->mReflowCommand;
-    if (command) {
-      // Get the reflow type
-      switch (command->Type()) {
-      case eReflowType_ReflowDirty:
-        isDirtyChildReflow = PR_TRUE;
-        break;
-
-      case eReflowType_StyleChanged:
-        // Remember it's a style change so we can set the reflow reason below
-        isStyleChange = PR_TRUE;
-        break;
-
-      default:
-        NS_ASSERTION(PR_FALSE, "unexpected reflow command type");
-      }
-    }
-    else {
-#ifdef DEBUG
-      nsReflowPath::iterator iter = aReflowState.path->FirstChild();
-      NS_ASSERTION(*iter == mFrames.FirstChild(), "unexpected next reflow command frame");
-#endif
-    }
-  }
-
   // Reflow our one and only child frame
-  nsHTMLReflowMetrics kidDesiredSize(nsnull);
+  nsHTMLReflowMetrics kidDesiredSize;
   if (mFrames.IsEmpty()) {
     // We have no child frame, so return an empty size
     aDesiredSize.width = aDesiredSize.height = 0;
-    aDesiredSize.ascent = aDesiredSize.descent = 0;
-
   } else {
     nsIFrame* kidFrame = mFrames.FirstChild();
-
-    nsReflowReason reason;
-    if (isDirtyChildReflow) {
-      // Note: the only reason the frame would be dirty would be if it had
-      // just been inserted or appended
-      reason = eReflowReason_Initial;
-    } else if (isStyleChange) {
-      reason = eReflowReason_StyleChange;
-    } else {
-      reason = aReflowState.reason;
-    }
+    PRBool kidDirty = (kidFrame->GetStateBits() & NS_FRAME_IS_DIRTY) != 0;
 
     // We must specify an unconstrained available height, because constrained
     // is only for when we're paginated...
     nsHTMLReflowState kidReflowState(aPresContext, aReflowState, kidFrame,
                                      nsSize(aReflowState.availableWidth,
-                                            NS_UNCONSTRAINEDSIZE),
-                                     reason);
+                                            NS_UNCONSTRAINEDSIZE));
 
+    if (aReflowState.mFlags.mVResize &&
+        (kidFrame->GetStateBits() & NS_FRAME_CONTAINS_RELATIVE_HEIGHT)) {
+      // Tell our kid it's being vertically resized too.  Bit of a
+      // hack for framesets.
+      kidReflowState.mFlags.mVResize = PR_TRUE;
+    }
+    
     // Reflow the frame
     ReflowChild(kidFrame, aPresContext, kidDesiredSize, kidReflowState,
                 kidReflowState.mComputedMargin.left, kidReflowState.mComputedMargin.top,
@@ -616,7 +590,7 @@ CanvasFrame::Reflow(nsPresContext*          aPresContext,
 
     // If the child frame was just inserted, then we're responsible for making sure
     // it repaints
-    if (isDirtyChildReflow) {
+    if (kidDirty) {
       // But we have a new child, which will affect our background, so
       // invalidate our whole rect.
       // Note: Even though we request to be sized to our child's size, our
@@ -625,7 +599,8 @@ CanvasFrame::Reflow(nsPresContext*          aPresContext,
       // (0, 0). We only want to invalidate GetRect() since GetOverflowRect()
       // could also include overflow to our top and left (out of the viewport)
       // which doesn't need to be painted.
-      Invalidate(GetRect(), PR_FALSE);
+      nsIFrame* viewport = PresContext()->GetPresShell()->GetRootFrame();
+      viewport->Invalidate(nsRect(nsPoint(0, 0), viewport->GetSize()));
     }
 
     // Return our desired size (which doesn't matter)
@@ -639,9 +614,6 @@ CanvasFrame::Reflow(nsPresContext*          aPresContext,
         nsPoint(kidReflowState.mComputedMargin.left,
                 kidReflowState.mComputedMargin.top));
     FinishAndStoreOverflow(&aDesiredSize);
-
-    aDesiredSize.ascent = aDesiredSize.height;
-    aDesiredSize.descent = 0;
   }
 
   NS_FRAME_TRACE_REFLOW_OUT("CanvasFrame::Reflow", aStatus);
@@ -658,7 +630,7 @@ CanvasFrame::GetSkipSides() const
 nsIAtom*
 CanvasFrame::GetType() const
 {
-  return nsLayoutAtoms::canvasFrame;
+  return nsGkAtoms::canvasFrame;
 }
 
 NS_IMETHODIMP 

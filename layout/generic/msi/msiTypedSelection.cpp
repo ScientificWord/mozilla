@@ -126,7 +126,9 @@ msiTypedSelection::Set(nsIDOMNode *startNode, PRUint32 startOffset,
   nsIDOMNode * newNSAnchor = nsnull;  
   nsIDOMNode * newNSFocus = nsnull;
   PRUint32 newNSAnchorOffset(INVALID_OFFSET), newNSFocusOffset(INVALID_OFFSET);
-  PRBool focusBeforeAnchor = nsRange::ComparePoints(focusNode, focusOffset, anchorNode, anchorOffset) < 0;
+  nsCOMPtr<nsIRangeUtils> ru;
+  NS_NewRangeUtils(getter_AddRefs(ru));
+  PRBool focusBeforeAnchor = ru->ComparePoints(focusNode, focusOffset, anchorNode, anchorOffset) < 0;
   if (focusBeforeAnchor)
   { 
     newNSAnchor = endNode;

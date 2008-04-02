@@ -44,6 +44,7 @@
 
 #include "nsGridLayout2.h"
 #include "nsGridRowGroupLayout.h"
+#include "nsGridRow.h"
 #include "nsBox.h"
 #include "nsIScrollableFrame.h"
 #include "nsSprocketLayout.h"
@@ -82,8 +83,18 @@ nsGridLayout2::Layout(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState)
   return rv;
 }
 
-NS_IMETHODIMP
-nsGridLayout2::GetGrid(nsIBox* aBox, nsGrid** aGrid, PRInt32* aIndex, nsGridRowLayout* aRequestor)
+void
+nsGridLayout2::IntrinsicWidthsDirty(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState)
+{
+  nsStackLayout::IntrinsicWidthsDirty(aBox, aBoxLayoutState);
+  // XXXldb We really don't need to do all the work that NeedsRebuild
+  // does; we just need to mark intrinsic widths dirty on the
+  // (row/column)(s/-groups).
+  mGrid.NeedsRebuild(aBoxLayoutState);
+}
+
+nsGrid*
+nsGridLayout2::GetGrid(nsIBox* aBox, PRInt32* aIndex, nsGridRowLayout* aRequestor)
 {
   // XXX This should be set a better way!
   mGrid.SetBox(aBox);
@@ -95,15 +106,7 @@ nsGridLayout2::GetGrid(nsIBox* aBox, nsGrid** aGrid, PRInt32* aIndex, nsGridRowL
   }
 #endif
 
-  *aGrid = &mGrid;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsGridLayout2::GetParentGridPart(nsIBox* aBox, nsIBox** aParentBox, nsIGridPart** aParentGridRow)
-{
-  NS_ERROR("Should not be called");
-  return NS_ERROR_FAILURE;
+  return &mGrid;
 }
 
 void
@@ -119,228 +122,168 @@ nsGridLayout2::AddWidth(nsSize& aSize, nscoord aSize2, PRBool aIsHorizontal)
   }
 }
 
-NS_IMETHODIMP
-nsGridLayout2::GetMinSize(nsIBox* aBox, nsBoxLayoutState& aState, nsSize& aSize)
+nsSize
+nsGridLayout2::GetMinSize(nsIBox* aBox, nsBoxLayoutState& aState)
 {
-  nsresult rv = nsStackLayout::GetMinSize(aBox, aState, aSize); 
-  if (NS_FAILED(rv))
-    return rv;
+  nsSize minSize = nsStackLayout::GetMinSize(aBox, aState); 
 
   // if there are no <rows> tags that will sum up our columns,
   // sum up our columns here.
   nsSize total(0,0);
-  nsIBox* rowBox = mGrid.GetRowBox();
-  nsIBox* columnBox = mGrid.GetColumnBox();
-  if (!rowBox || !columnBox) {
-    if (!rowBox) {
+  nsIBox* rowsBox = mGrid.GetRowsBox();
+  nsIBox* columnsBox = mGrid.GetColumnsBox();
+  if (!rowsBox || !columnsBox) {
+    if (!rowsBox) {
       // max height is the sum of our rows
       PRInt32 rows = mGrid.GetRowCount();
       for (PRInt32 i=0; i < rows; i++)
       {
-        nscoord size = 0;
-        mGrid.GetMinRowHeight(aState, i, size, PR_TRUE); 
-        AddWidth(total, size, PR_FALSE); // AddHeight
+        nscoord height = mGrid.GetMinRowHeight(aState, i, PR_TRUE); 
+        AddWidth(total, height, PR_FALSE); // AddHeight
       }
     }
 
-    if (!columnBox) {
+    if (!columnsBox) {
       // max height is the sum of our rows
       PRInt32 columns = mGrid.GetColumnCount();
       for (PRInt32 i=0; i < columns; i++)
       {
-        nscoord size = 0;
-        mGrid.GetMinRowHeight(aState, i, size, PR_FALSE); // GetPrefRowWidth
-        AddWidth(total, size, PR_TRUE); // AddWidth
+        nscoord width = mGrid.GetMinRowHeight(aState, i, PR_FALSE); 
+        AddWidth(total, width, PR_TRUE); // AddWidth
       }
     }
 
     AddMargin(aBox, total);
     AddOffset(aState, aBox, total);
-    AddLargestSize(aSize, total);
+    AddLargestSize(minSize, total);
   }
   
-  return rv;
+  return minSize;
 }
 
-NS_IMETHODIMP
-nsGridLayout2::GetPrefSize(nsIBox* aBox, nsBoxLayoutState& aState, nsSize& aSize)
+nsSize
+nsGridLayout2::GetPrefSize(nsIBox* aBox, nsBoxLayoutState& aState)
 {
-  nsresult rv = nsStackLayout::GetPrefSize(aBox, aState, aSize); 
-  if (NS_FAILED(rv))
-    return rv;
+  nsSize pref = nsStackLayout::GetPrefSize(aBox, aState); 
 
   // if there are no <rows> tags that will sum up our columns,
   // sum up our columns here.
   nsSize total(0,0);
-  nsIBox* rowBox = mGrid.GetRowBox();
-  nsIBox* columnBox = mGrid.GetColumnBox();
-  if (!rowBox || !columnBox) {
-    if (!rowBox) {
+  nsIBox* rowsBox = mGrid.GetRowsBox();
+  nsIBox* columnsBox = mGrid.GetColumnsBox();
+  if (!rowsBox || !columnsBox) {
+    if (!rowsBox) {
       // max height is the sum of our rows
       PRInt32 rows = mGrid.GetRowCount();
       for (PRInt32 i=0; i < rows; i++)
       {
-        nscoord size = 0;
-        mGrid.GetPrefRowHeight(aState, i, size, PR_TRUE); 
-        AddWidth(total, size, PR_FALSE); // AddHeight
+        nscoord height = mGrid.GetPrefRowHeight(aState, i, PR_TRUE); 
+        AddWidth(total, height, PR_FALSE); // AddHeight
       }
     }
 
-    if (!columnBox) {
+    if (!columnsBox) {
       // max height is the sum of our rows
       PRInt32 columns = mGrid.GetColumnCount();
       for (PRInt32 i=0; i < columns; i++)
       {
-        nscoord size = 0;
-        mGrid.GetPrefRowHeight(aState, i, size, PR_FALSE); // GetPrefRowWidth
-        AddWidth(total, size, PR_TRUE); // AddWidth
+        nscoord width = mGrid.GetPrefRowHeight(aState, i, PR_FALSE);
+        AddWidth(total, width, PR_TRUE); // AddWidth
       }
     }
 
     AddMargin(aBox, total);
     AddOffset(aState, aBox, total);
-    AddLargestSize(aSize, total);
+    AddLargestSize(pref, total);
   }
 
-  return rv;
+  return pref;
 }
 
-NS_IMETHODIMP
-nsGridLayout2::GetMaxSize(nsIBox* aBox, nsBoxLayoutState& aState, nsSize& aSize)
+nsSize
+nsGridLayout2::GetMaxSize(nsIBox* aBox, nsBoxLayoutState& aState)
 {
-  nsresult rv = nsStackLayout::GetMaxSize(aBox, aState, aSize); 
-   if (NS_FAILED(rv))
-    return rv;
+  nsSize maxSize = nsStackLayout::GetMaxSize(aBox, aState); 
 
   // if there are no <rows> tags that will sum up our columns,
   // sum up our columns here.
   nsSize total(NS_INTRINSICSIZE, NS_INTRINSICSIZE);
-  nsIBox* rowBox = mGrid.GetRowBox();
-  nsIBox* columnBox = mGrid.GetColumnBox();
-  if (!rowBox || !columnBox) {
-    if (!rowBox) {
+  nsIBox* rowsBox = mGrid.GetRowsBox();
+  nsIBox* columnsBox = mGrid.GetColumnsBox();
+  if (!rowsBox || !columnsBox) {
+    if (!rowsBox) {
       total.height = 0;
       // max height is the sum of our rows
       PRInt32 rows = mGrid.GetRowCount();
       for (PRInt32 i=0; i < rows; i++)
       {
-        nscoord size = 0;
-        mGrid.GetMaxRowHeight(aState, i, size, PR_TRUE); 
-        AddWidth(total, size, PR_FALSE); // AddHeight
+        nscoord height = mGrid.GetMaxRowHeight(aState, i, PR_TRUE); 
+        AddWidth(total, height, PR_FALSE); // AddHeight
       }
     }
 
-    if (!columnBox) {
+    if (!columnsBox) {
       total.width = 0;
       // max height is the sum of our rows
       PRInt32 columns = mGrid.GetColumnCount();
       for (PRInt32 i=0; i < columns; i++)
       {
-        nscoord size = 0;
-        mGrid.GetMaxRowHeight(aState, i, size, PR_FALSE); // GetPrefRowWidth
-        AddWidth(total, size, PR_TRUE); // AddWidth
+        nscoord width = mGrid.GetMaxRowHeight(aState, i, PR_FALSE);
+        AddWidth(total, width, PR_TRUE); // AddWidth
       }
     }
 
     AddMargin(aBox, total);
     AddOffset(aState, aBox, total);
-    AddSmallestSize(aSize, total);
+    AddSmallestSize(maxSize, total);
   }
 
-  return rv;
+  return maxSize;
 }
 
-NS_IMETHODIMP
-nsGridLayout2::CountRowsColumns(nsIBox* aRowBox, PRInt32& aRowCount, PRInt32& aComputedColumnCount)
+PRInt32
+nsGridLayout2::BuildRows(nsIBox* aBox, nsGridRow* aRows)
 {
-  NS_ERROR("Should not be called");
-  return NS_ERROR_FAILURE;
+  if (aBox) {
+    aRows[0].Init(aBox, PR_TRUE);
+    return 1;
+  }
+  return 0;
 }
 
-NS_IMETHODIMP
-nsGridLayout2::DirtyRows(nsIBox* aBox, nsBoxLayoutState& aState)
+nsMargin
+nsGridLayout2::GetTotalMargin(nsIBox* aBox, PRBool aIsHorizontal)
 {
-  NS_ERROR("Should not be called");
-  return NS_ERROR_FAILURE;
+  nsMargin margin(0,0,0,0);
+  return margin;
 }
 
-NS_IMETHODIMP
-nsGridLayout2::BuildRows(nsIBox* aBox, nsGridRow* aRows, PRInt32* aCount)
-{
-  NS_ERROR("Should not be called");
-  return NS_ERROR_FAILURE;
-}
-
-NS_IMETHODIMP
-nsGridLayout2::CastToRowGroupLayout(nsGridRowGroupLayout** aRowGroup)
-{
-  (*aRowGroup) = nsnull;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsGridLayout2::CastToGridLayout(nsGridLayout2** aGridLayout)
-{
-  (*aGridLayout) = this;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsGridLayout2::GetTotalMargin(nsIBox* aBox, nsMargin& aMargin, PRBool aIsHorizontal)
-{
-  aMargin.left = 0;
-  aMargin.right = 0;
-  aMargin.top = 0;
-  aMargin.bottom = 0;
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsGridLayout2::GetRowCount(PRInt32& aRowCount)
-{
-  NS_ERROR("Should not be called");
-  return NS_OK;
-}
-
-NS_IMETHODIMP_(nsIGridPart::Type)
-nsGridLayout2::GetType()
-{
-  return eGrid;
-}
-
-NS_IMETHODIMP
+void
 nsGridLayout2::ChildrenInserted(nsIBox* aBox, nsBoxLayoutState& aState,
                                 nsIBox* aPrevBox, nsIBox* aChildList)
 {
   mGrid.NeedsRebuild(aState);
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsGridLayout2::ChildrenAppended(nsIBox* aBox, nsBoxLayoutState& aState,
                                 nsIBox* aChildList)
 {
   mGrid.NeedsRebuild(aState);
-  return NS_OK;
 }
 
-
-NS_IMETHODIMP
+void
 nsGridLayout2::ChildrenRemoved(nsIBox* aBox, nsBoxLayoutState& aState,
                                nsIBox* aChildList)
 {
   mGrid.NeedsRebuild(aState);
-  return NS_OK;
 }
 
-
-NS_IMETHODIMP
+void
 nsGridLayout2::ChildrenSet(nsIBox* aBox, nsBoxLayoutState& aState,
                            nsIBox* aChildList)
 {
   mGrid.NeedsRebuild(aState);
-  return NS_OK;
 }
 
 NS_IMPL_ADDREF_INHERITED(nsGridLayout2, nsStackLayout)

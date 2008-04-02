@@ -41,7 +41,7 @@
 
 #include "nsCOMPtr.h"
 #include "nsINameSpaceManager.h" 
-#include "nsXULAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsDisplayList.h"
 
 NS_IMETHODIMP_(nsrefcnt) 
@@ -71,16 +71,16 @@ nsListItemFrame::~nsListItemFrame()
 {
 }
 
-nsresult
-nsListItemFrame::GetPrefSize(nsBoxLayoutState& aState, nsSize& aSize)
+nsSize
+nsListItemFrame::GetPrefSize(nsBoxLayoutState& aState)
 {
-  nsresult rv = nsBoxFrame::GetPrefSize(aState, aSize);
-  if (NS_FAILED(rv)) return rv;
+  nsSize size = nsBoxFrame::GetPrefSize(aState);  
+  DISPLAY_PREF_SIZE(this, size);
 
   // guarantee that our preferred height doesn't exceed the standard
   // listbox row height
-  aSize.height = PR_MAX(mRect.height, aSize.height);
-  return NS_OK;
+  size.height = PR_MAX(mRect.height, size.height);
+  return size;
 }
 
 NS_IMETHODIMP
@@ -89,8 +89,8 @@ nsListItemFrame::BuildDisplayListForChildren(nsDisplayListBuilder*   aBuilder,
                                              const nsDisplayListSet& aLists)
 {
   if (aBuilder->IsForEventDelivery()) {
-    if (!mContent->AttrValueIs(kNameSpaceID_None, nsXULAtoms::allowevents,
-                               nsXULAtoms::_true, eCaseMatters))
+    if (!mContent->AttrValueIs(kNameSpaceID_None, nsGkAtoms::allowevents,
+                               nsGkAtoms::_true, eCaseMatters))
       return NS_OK;
   }
   
