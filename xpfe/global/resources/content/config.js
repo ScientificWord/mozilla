@@ -323,6 +323,17 @@ function onConfigLoad()
   gTypeStrs[nsIPrefBranch.PREF_INT] = gConfigBundle.getString("int");
   gTypeStrs[nsIPrefBranch.PREF_BOOL] = gConfigBundle.getString("bool");
 
+  var showWarning = gPrefBranch.getBoolPref("general.warnOnAboutConfig");
+
+  if (showWarning)
+    document.getElementById("warningButton").focus();
+  else
+    ShowPrefs();
+}
+
+// Unhide the warning message
+function ShowPrefs()
+{
   var prefCount = { value: 0 };
   var prefArray = gPrefBranch.getChildList("", prefCount);
 
@@ -353,15 +364,25 @@ function onConfigLoad()
   
   gPrefBranch.addObserver("", gPrefListener, false);
 
-  document.getElementById("configTree").view = view;
-  
+  var configTree = document.getElementById("configTree");
+  configTree.view = view;
+  configTree.controllers.insertControllerAt(0, configController);
+
+  document.getElementById("configDeck").setAttribute("selectedIndex", 1);
+  if (!document.getElementById("showWarningNextTime").checked)
+    gPrefBranch.setBoolPref("general.warnOnAboutConfig", false);
+
   document.getElementById("textbox").focus();
 }
 
 function onConfigUnload()
 {
-  gPrefBranch.removeObserver("", gPrefListener);
-  document.getElementById("configTree").view = null;
+  if (document.getElementById("configDeck").getAttribute("selectedIndex") == 1) {
+    gPrefBranch.removeObserver("", gPrefListener);
+    var configTree = document.getElementById("configTree");
+    configTree.view = null;
+    configTree.controllers.removeController(configController);
+  }
 }
 
 function FilterPrefs()
@@ -446,6 +467,20 @@ const gSortFunctions =
   valueCol: valueColSortFunction
 };
 
+const configController = {
+  supportsCommand: function supportsCommand(command) {
+    return command == "cmd_copy";
+  },
+  isCommandEnabled: function isCommandEnabled(command) {
+    return view.selection && view.selection.currentIndex >= 0;
+  },
+  doCommand: function doCommand(command) {
+    copyPref();
+  },
+  onEvent: function onEvent(event) {
+  }
+}
+
 function updateContextMenu()
 {
   var lockCol = PREF_IS_LOCKED;
@@ -460,6 +495,9 @@ function updateContextMenu()
     valueCol = prefRow.valueCol;
     copyDisabled = false;
   }
+
+  var copyPref = document.getElementById("copyPref");
+  copyPref.setAttribute("disabled", copyDisabled);
 
   var copyName = document.getElementById("copyName");
   copyName.setAttribute("disabled", copyDisabled);
@@ -479,6 +517,12 @@ function updateContextMenu()
   var toggleSelected = document.getElementById("toggleSelected");
   toggleSelected.setAttribute("disabled", lockCol == PREF_IS_LOCKED);
   toggleSelected.hidden = !canToggle;
+}
+
+function copyPref()
+{
+  var pref = gPrefView[view.selection.currentIndex];
+  gClipboardHelper.copyString(pref.prefCol + ';' + pref.valueCol);
 }
 
 function copyName()
@@ -570,11 +614,5 @@ function ModifyPref(entry)
   }
 
   gPrefService.savePrefFile(null);
-
-  // Fire event for accessibility
-  var event = document.createEvent('Events');
-  event.initEvent('NameChange', false, true);
-  document.getElementById("configTree").dispatchEvent(event);
-
   return true;
 }

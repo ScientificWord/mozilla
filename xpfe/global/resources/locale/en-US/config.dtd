@@ -37,6 +37,12 @@
 
 <!ENTITY window.title "about:config">
 
+<!-- about:config warning page -->
+<!ENTITY aboutWarningTitle.label "Be careful!">
+<!ENTITY aboutWarningText.label "This configuration page contains settings that keep this application working properly. Modifying these settings may cause problems such as instability, data loss, broken features, or even security vulnerabilities.">
+<!ENTITY aboutWarningButton.label "I understand and wish to continue">
+<!ENTITY aboutWarningCheckbox.label "Show this warning next time">
+
 <!ENTITY filterPrefs.label "Filter:">
 <!ENTITY filterPrefs.accesskey "I">
 <!ENTITY showAll.label "Show All">
@@ -53,8 +59,11 @@
 <!ENTITY columnChooser.tooltip "Click to select columns to display"> 
 
 <!--Context Menu-->
+<!ENTITY copyPref.key "C">
+<!ENTITY copyPref.label "Copy">
+<!ENTITY copyPref.accesskey "C">
 <!ENTITY copyName.label "Copy Name">
-<!ENTITY copyName.accesskey "C">
+<!ENTITY copyName.accesskey "N">
 <!ENTITY copyValue.label "Copy Value">
 <!ENTITY copyValue.accesskey "V">
 <!ENTITY modify.label "Modify">
@@ -64,7 +73,7 @@
 <!ENTITY reset.label "Reset">
 <!ENTITY reset.accesskey "R">
 <!ENTITY new.label "New">
-<!ENTITY new.accesskey "N">
+<!ENTITY new.accesskey "w">
 <!ENTITY string.label "String">
 <!ENTITY string.accesskey "S">
 <!ENTITY integer.label "Integer">

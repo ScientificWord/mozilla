@@ -37,35 +37,29 @@
 
 #include "nsIGenericFactory.h"
 #include "nsICategoryManager.h"
-#include "rdf.h"
+#include "nsNetUtil.h"
 #include "nsXPIDLString.h"
 #include "nsDirectoryViewer.h"
+#ifdef MOZ_RDF
+#include "rdf.h"
 #include "nsRDFCID.h"
+#endif
 
 #ifdef MOZ_SUITE
 #include "nsRelatedLinksHandlerImpl.h"
-#include "nsGlobalHistory.h"
 #include "nsDocShellCID.h"
 #include "nsDownloadManager.h"
 #include "nsDownloadProxy.h"
 
-// XXX When Suite becomes a full XUL App this section can be removed.
-#ifndef MOZ_XUL_APP
-#include "nsAppStartup.h"
-#include "nsCommandLineService.h"
-#include "nsUserInfo.h"
-#endif // !MOZ_XUL_APP
+#if !defined(MOZ_PLACES)
+#include "nsGlobalHistory.h"
+#endif
 
 #if defined(XP_WIN)
 #include "nsWindowsHooks.h"
-#include "nsUrlWidget.h"
 #endif // Windows
 
 #endif // MOZ_SUITE
-
-#ifdef ALERTS_SERVICE
-#include "nsAlertsService.h"
-#endif
 
 #if !defined(MOZ_MACBROWSER)
 #include "nsBrowserStatusFilter.h"
@@ -74,15 +68,19 @@
 #include "nsCURILoader.h"
 #include "nsXPFEComponentsCID.h"
 
+#if !defined(MOZ_PLACES)
 // {9491C382-E3C4-11D2-BDBE-0050040A9B44}
 #define NS_GLOBALHISTORY_CID \
 { 0x9491c382, 0xe3c4, 0x11d2, { 0xbd, 0xbe, 0x0, 0x50, 0x4, 0xa, 0x9b, 0x44} }
 
 #define NS_GLOBALHISTORY_DATASOURCE_CONTRACTID \
     "@mozilla.org/rdf/datasource;1?name=history"
+#endif
 
+#ifdef MOZ_RDF
 // Factory constructors
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsHTTPIndex, Init)
+#endif
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDirectoryViewerFactory)
 
 #if !defined(MOZ_MACBROWSER)
@@ -92,26 +90,18 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsBrowserInstance)
 
 #ifdef MOZ_SUITE
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(RelatedLinksHandlerImpl, Init)
-NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsGlobalHistory, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsDownloadManager, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDownloadProxy)
 
-#ifndef MOZ_XUL_APP
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsCmdLineService)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsAppStartup)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsUserInfo)
-#endif // !MOZ_XUL_APP
+#if !defined(MOZ_PLACES)
+NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsGlobalHistory, Init)
+#endif
 
 #if defined(XP_WIN)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsWindowsHooks)
-NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsUrlWidget, Init)
 #endif // Windows
 
 #endif // MOZ_SUITE
-
-#ifdef ALERTS_SERVICE
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsAlertsService)
-#endif
 
 #if (!defined(MOZ_XUL_APP)) && !defined(MOZ_MACBROWSER)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBrowserContentHandler)
@@ -156,45 +146,31 @@ static const nsModuleComponentInfo components[] = {
    { "Directory Viewer", NS_DIRECTORYVIEWERFACTORY_CID,
       "@mozilla.org/xpfe/http-index-format-factory-constructor",
       nsDirectoryViewerFactoryConstructor, RegisterProc, UnregisterProc  },
+#ifdef MOZ_RDF
     { "Directory Viewer", NS_HTTPINDEX_SERVICE_CID, NS_HTTPINDEX_SERVICE_CONTRACTID,
       nsHTTPIndexConstructor },
     { "Directory Viewer", NS_HTTPINDEX_SERVICE_CID, NS_HTTPINDEX_DATASOURCE_CONTRACTID,
       nsHTTPIndexConstructor },
+#endif
 
 #ifdef MOZ_SUITE
     { "Download Manager", NS_DOWNLOADMANAGER_CID, NS_DOWNLOADMANAGER_CONTRACTID,
       nsDownloadManagerConstructor },
     { "Download", NS_DOWNLOAD_CID, NS_TRANSFER_CONTRACTID,
       nsDownloadProxyConstructor },
+    { "Related Links Handler", NS_RELATEDLINKSHANDLER_CID, NS_RELATEDLINKSHANDLER_CONTRACTID,
+       RelatedLinksHandlerImplConstructor},
+
+#if !defined(MOZ_PLACES)
     { "Global History", NS_GLOBALHISTORY_CID, NS_GLOBALHISTORY2_CONTRACTID,
       nsGlobalHistoryConstructor },
     { "Global History", NS_GLOBALHISTORY_CID, NS_GLOBALHISTORY_DATASOURCE_CONTRACTID,
       nsGlobalHistoryConstructor },
     { "Global History", NS_GLOBALHISTORY_CID, NS_GLOBALHISTORY_AUTOCOMPLETE_CONTRACTID,
       nsGlobalHistoryConstructor },
-    { "Related Links Handler", NS_RELATEDLINKSHANDLER_CID, NS_RELATEDLINKSHANDLER_CONTRACTID,
-       RelatedLinksHandlerImplConstructor},
-#ifndef MOZ_XUL_APP
-    { "App Startup Service",
-      NS_SEAMONKEY_APPSTARTUP_CID,
-      NS_APPSTARTUP_CONTRACTID,
-      nsAppStartupConstructor
-    },
-    { "CommandLine Service",
-      NS_COMMANDLINESERVICE_CID,
-      NS_COMMANDLINESERVICE_CONTRACTID,
-      nsCmdLineServiceConstructor
-    },
-    { "User Info Service",
-      NS_USERINFO_CID,
-      NS_USERINFO_CONTRACTID,
-      nsUserInfoConstructor
-    },
-#endif // MOZ_XUL_APP
+#endif
 
 #ifdef XP_WIN
-    { NS_IURLWIDGET_CLASSNAME, NS_IURLWIDGET_CID,
-      NS_IURLWIDGET_CONTRACTID, nsUrlWidgetConstructor },
     { NS_IWINDOWSHOOKS_CLASSNAME, NS_IWINDOWSHOOKS_CID,
       NS_IWINDOWSHOOKS_CONTRACTID, nsWindowsHooksConstructor },
 #endif // XP_WIN
@@ -212,11 +188,6 @@ static const nsModuleComponentInfo components[] = {
       NS_BROWSERINSTANCE_CONTRACTID,
       nsBrowserInstanceConstructor
     },
-#endif
-
-#ifdef ALERTS_SERVICE
-    { "nsAlertsService", NS_ALERTSSERVICE_CID,
-      NS_ALERTSERVICE_CONTRACTID, nsAlertsServiceConstructor },
 #endif
 
 #if (!defined(MOZ_XUL_APP)) && !defined(MOZ_MACBROWSER)
