@@ -56,9 +56,10 @@ class nsISO2022CNToUnicode : public nsBasicDecoderSupport
 public:
   nsISO2022CNToUnicode() : 
         mState(eState_ASCII), 
-        mPlaneID(0) { };
+        mPlaneID(0),
+        mRunLength(0) { }
 
-  virtual ~nsISO2022CNToUnicode() {};
+  virtual ~nsISO2022CNToUnicode() {}
 
   NS_IMETHOD Convert(const char *aSrc, PRInt32 * aSrcLength,
      PRUnichar * aDest, PRInt32 * aDestLength) ;
@@ -68,15 +69,16 @@ public:
   {
     *aDestLength = aSrcLength;
     return NS_OK;
-  };
+  }
 
   NS_IMETHOD Reset()
   {
     mState = eState_ASCII;
     mPlaneID = 0;
+    mRunLength = 0;
 
     return NS_OK;
-  };
+  }
 
 private:
   // State Machine ID
@@ -117,6 +119,9 @@ private:
 
   // Plane number for CNS11643 code
   int mPlaneID;
+
+  // Length of non-ASCII run
+  PRUint32 mRunLength;
 
   // Decoder handler
   nsCOMPtr<nsIUnicodeDecoder> mGB2312_Decoder;

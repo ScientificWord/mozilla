@@ -69,17 +69,14 @@ CPPSRCS		= \
 		nsUnicodeToCP864i.cpp \
 		$(NULL)
 
-ifdef MOZ_EXTRA_X11CONVERTERS
-CPPSRCS		+= \
-		nsCP1046ToUnicode.cpp \
-		nsUnicodeToCP1046.cpp \
-		$(NULL)
-endif
-
 ifeq ($(OS_ARCH),OS2)
 CPPSRCS		+= \
 		nsCP869ToUnicode.cpp \
 		nsUnicodeToCP869.cpp \
+		nsCP1125ToUnicode.cpp \
+		nsUnicodeToCP1125.cpp \
+		nsCP1131ToUnicode.cpp \
+		nsUnicodeToCP1131.cpp \
 		$(NULL)
 endif
 

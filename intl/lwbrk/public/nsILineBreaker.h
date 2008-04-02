@@ -43,28 +43,53 @@
 
 #define NS_LINEBREAKER_NEED_MORE_TEXT -1
 
-// {E86B3375-BF89-11d2-B3AF-00805F8A6670}
+// {5ae68851-d9a3-49fd-9388-58586dad8044}
 #define NS_ILINEBREAKER_IID \
-{ 0xe86b3375, 0xbf89, 0x11d2, \
-    { 0xb3, 0xaf, 0x0, 0x80, 0x5f, 0x8a, 0x66, 0x70 } }
-
+{ 0x5ae68851, 0xd9a3, 0x49fd, \
+    { 0x93, 0x88, 0x58, 0x58, 0x6d, 0xad, 0x80, 0x44 } }
 
 class nsILineBreaker : public nsISupports
 {
 public:
   NS_DECLARE_STATIC_IID_ACCESSOR(NS_ILINEBREAKER_IID)
-  virtual PRBool BreakInBetween( const PRUnichar* aText1 , PRUint32 aTextLen1,
-                                 const PRUnichar* aText2 , 
-                                 PRUint32 aTextLen2) = 0;
-
   virtual PRInt32 Next( const PRUnichar* aText, PRUint32 aLen, 
                         PRUint32 aPos) = 0;
 
   virtual PRInt32 Prev( const PRUnichar* aText, PRUint32 aLen, 
                         PRUint32 aPos) = 0;
 
+  // Call this on a word with whitespace at either end. We will apply JISx4501
+  // rules to find breaks inside the word. aBreakBefore is set to the break-
+  // before status of each character; aBreakBefore[0] will always be false
+  // because we never return a break before the first character.
+  // aLength is the length of the aText array and also the length of the aBreakBefore
+  // output array.
+  virtual void GetJISx4051Breaks(const PRUnichar* aText, PRUint32 aLength,
+                                 PRPackedBool* aBreakBefore) = 0;
+  virtual void GetJISx4051Breaks(const PRUint8* aText, PRUint32 aLength,
+                                 PRPackedBool* aBreakBefore) = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsILineBreaker, NS_ILINEBREAKER_IID)
+
+static inline PRBool
+NS_IsSpace(PRUnichar u)
+{
+  return u == 0x0020 ||                  // SPACE
+         u == 0x0009 ||                  // CHARACTER TABULATION
+         u == 0x000D ||                  // CARRIAGE RETURN
+         (0x2000 <= u && u <= 0x2006) || // EN QUAD, EM QUAD, EN SPACE,
+                                         // EM SPACE, THREE-PER-EM SPACE,
+                                         // FOUR-PER-SPACE, SIX-PER-EM SPACE,
+         (0x2008 <= u && u <= 0x200B) || // PUNCTUATION SPACE, THIN SPACE,
+                                         // HAIR SPACE, ZERO WIDTH SPACE
+         u == 0x3000;                    // IDEOGRAPHIC SPACE
+}
+
+static inline PRBool
+NS_NeedsPlatformNativeHandling(PRUnichar aChar)
+{
+  return (0x0e01 <= aChar && aChar <= 0x0fff); // Thai, Lao, Tibetan
+}
 
 #endif  /* nsILineBreaker_h__ */
