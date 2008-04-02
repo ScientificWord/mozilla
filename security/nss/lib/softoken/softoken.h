@@ -147,22 +147,29 @@ SECStatus RSA_DecryptRaw(NSSLOWKEYPrivateKey *key, unsigned char *output,
  */
 extern SECStatus EC_FillParams(PRArenaPool *arena,
                                const SECItem *encodedParams, ECParams *params);
+extern SECStatus EC_DecodeParams(const SECItem *encodedParams, 
+				ECParams **ecparams);
+extern SECStatus EC_CopyParams(PRArenaPool *arena, ECParams *dstParams,
+              			const ECParams *srcParams);
 #endif
 
 
 /*
-** Prepare a buffer for DES encryption, growing to the appropriate boundary,
-** filling with the appropriate padding.
-** We add from 1 to DES_KEY_LENGTH bytes -- we *always* grow.
+** Prepare a buffer for padded CBC encryption, growing to the appropriate 
+** boundary, filling with the appropriate padding.
+**
+** blockSize must be a power of 2.
+**
+** We add from 1 to blockSize bytes -- we *always* grow.
 ** The extra bytes contain the value of the length of the padding:
 ** if we have 2 bytes of padding, then the padding is "0x02, 0x02".
 **
 ** NOTE: If arena is non-NULL, we re-allocate from there, otherwise
 ** we assume (and use) PR memory (re)allocation.
-** Maybe this belongs in util?
 */
-extern unsigned char * DES_PadBuffer(PRArenaPool *arena, unsigned char *inbuf, 
-                                     unsigned int inlen, unsigned int *outlen);
+extern unsigned char * CBC_PadBuffer(PRArenaPool *arena, unsigned char *inbuf, 
+                                     unsigned int inlen, unsigned int *outlen,
+				     int blockSize);
 
 
 /****************************************/
@@ -183,6 +190,94 @@ unsigned long sftk_MapKeySize(CK_KEY_TYPE keyType);
 extern PRBool sftk_audit_enabled;
 
 extern void sftk_LogAuditMessage(NSSAuditSeverity severity, const char *msg);
+
+extern void sftk_AuditCreateObject(CK_SESSION_HANDLE hSession,
+			CK_ATTRIBUTE_PTR pTemplate, CK_ULONG ulCount,
+			CK_OBJECT_HANDLE_PTR phObject, CK_RV rv);
+
+extern void sftk_AuditCopyObject(CK_SESSION_HANDLE hSession,
+			CK_OBJECT_HANDLE hObject,
+			CK_ATTRIBUTE_PTR pTemplate, CK_ULONG ulCount,
+			CK_OBJECT_HANDLE_PTR phNewObject, CK_RV rv);
+
+extern void sftk_AuditDestroyObject(CK_SESSION_HANDLE hSession,
+			CK_OBJECT_HANDLE hObject, CK_RV rv);
+
+extern void sftk_AuditGetObjectSize(CK_SESSION_HANDLE hSession,
+			CK_OBJECT_HANDLE hObject, CK_ULONG_PTR pulSize,
+			CK_RV rv);
+
+extern void sftk_AuditGetAttributeValue(CK_SESSION_HANDLE hSession,
+			CK_OBJECT_HANDLE hObject, CK_ATTRIBUTE_PTR pTemplate,
+			CK_ULONG ulCount, CK_RV rv);
+
+extern void sftk_AuditSetAttributeValue(CK_SESSION_HANDLE hSession,
+			CK_OBJECT_HANDLE hObject, CK_ATTRIBUTE_PTR pTemplate,
+			CK_ULONG ulCount, CK_RV rv);
+
+extern void sftk_AuditCryptInit(const char *opName,
+			CK_SESSION_HANDLE hSession,
+			CK_MECHANISM_PTR pMechanism,
+			CK_OBJECT_HANDLE hKey, CK_RV rv);
+
+extern void sftk_AuditGenerateKey(CK_SESSION_HANDLE hSession,
+			CK_MECHANISM_PTR pMechanism,
+			CK_ATTRIBUTE_PTR pTemplate, CK_ULONG ulCount,
+			CK_OBJECT_HANDLE_PTR phKey, CK_RV rv);
+
+extern void sftk_AuditGenerateKeyPair(CK_SESSION_HANDLE hSession,
+			CK_MECHANISM_PTR pMechanism,
+			CK_ATTRIBUTE_PTR pPublicKeyTemplate,
+			CK_ULONG ulPublicKeyAttributeCount,
+			CK_ATTRIBUTE_PTR pPrivateKeyTemplate,
+			CK_ULONG ulPrivateKeyAttributeCount,
+			CK_OBJECT_HANDLE_PTR phPublicKey,
+			CK_OBJECT_HANDLE_PTR phPrivateKey, CK_RV rv);
+
+extern void sftk_AuditWrapKey(CK_SESSION_HANDLE hSession,
+			CK_MECHANISM_PTR pMechanism,
+			CK_OBJECT_HANDLE hWrappingKey, CK_OBJECT_HANDLE hKey,
+			CK_BYTE_PTR pWrappedKey,
+			CK_ULONG_PTR pulWrappedKeyLen, CK_RV rv);
+
+extern void sftk_AuditUnwrapKey(CK_SESSION_HANDLE hSession,
+			CK_MECHANISM_PTR pMechanism,
+			CK_OBJECT_HANDLE hUnwrappingKey,
+			CK_BYTE_PTR pWrappedKey, CK_ULONG ulWrappedKeyLen,
+			CK_ATTRIBUTE_PTR pTemplate, CK_ULONG ulAttributeCount,
+			CK_OBJECT_HANDLE_PTR phKey, CK_RV rv);
+
+extern void sftk_AuditDeriveKey(CK_SESSION_HANDLE hSession,
+			CK_MECHANISM_PTR pMechanism,
+			CK_OBJECT_HANDLE hBaseKey,
+			CK_ATTRIBUTE_PTR pTemplate, CK_ULONG ulAttributeCount,
+			CK_OBJECT_HANDLE_PTR phKey, CK_RV rv);
+
+extern void sftk_AuditDigestKey(CK_SESSION_HANDLE hSession,
+			CK_OBJECT_HANDLE hKey, CK_RV rv);
+
+/*
+** FIPS 140-2 Error state
+*/
+extern PRBool sftk_fatalError;
+
+/*
+** macros to check for forked child after C_Initialize
+*/
+#if defined(XP_UNIX) && !defined(NO_PTHREADS)
+
+extern PRBool forked;
+
+extern void ForkedChild(void);
+
+#define CHECK_FORK() \
+    do { if (forked) return CKR_DEVICE_ERROR; } while (0)
+
+#else
+
+#define CHECK_FORK()
+
+#endif
 
 SEC_END_PROTOS
 

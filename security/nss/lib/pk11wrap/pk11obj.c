@@ -237,6 +237,8 @@ PK11_GetAttributes(PRArenaPool *arena,PK11SlotInfo *slot,
      * now allocate space to store the results.
      */
     for (i=0; i < count; i++) {
+	if (attr[i].ulValueLen == 0)
+	    continue;
 	if (arena) {
 	    attr[i].pValue = PORT_ArenaAlloc(arena,attr[i].ulValueLen);
 	    if (attr[i].pValue == NULL) {
@@ -388,7 +390,7 @@ pk11_CloseSession(PK11SlotInfo *slot,CK_SESSION_HANDLE session,PRBool owner)
 
 SECStatus
 PK11_CreateNewObject(PK11SlotInfo *slot, CK_SESSION_HANDLE session,
-				CK_ATTRIBUTE *theTemplate, int count, 
+				const CK_ATTRIBUTE *theTemplate, int count, 
 				PRBool token, CK_OBJECT_HANDLE *objectID)
 {
 	CK_SESSION_HANDLE rwsession;
@@ -951,7 +953,9 @@ PK11_UnwrapPrivKey(PK11SlotInfo *slot, PK11SymKey *wrappingKey,
 					 sizeof(cktrue)); attrs++;
     PK11_SETATTRS(attrs, CKA_SENSITIVE, sensitive ? &cktrue : &ckfalse,
 					sizeof(cktrue)); attrs++;
-    PK11_SETATTRS(attrs, CKA_LABEL, label->data, label->len); attrs++;
+    if (label && label->data) {
+	PK11_SETATTRS(attrs, CKA_LABEL, label->data, label->len); attrs++;
+    }
     PK11_SETATTRS(attrs, CKA_ID, ck_id->data, ck_id->len); attrs++;
     for (i=0; i < usageCount; i++) {
     	PK11_SETATTRS(attrs, usage[i], &cktrue, sizeof(cktrue)); attrs++;
@@ -1133,37 +1137,50 @@ PK11_WrapPrivKey(PK11SlotInfo *slot, PK11SymKey *wrappingKey,
     return SECSuccess;
 }
 
+#if 0
 /*
- * return a linked, non-circular list of generic objects. 
+ * Sample code relating to linked list returned by PK11_FindGenericObjects
+ */
+
+/*
+ * You can walk the list with the following code:
+ */
+    firstObj = PK11_FindGenericObjects(slot, objClass);
+    for (thisObj=firstObj;
+         thisObj; 
+         thisObj=PK11_GetNextGenericObject(thisObj)) {
+        /* operate on thisObj */
+    }
+/*
+ * If you want a particular object from the list...
+ */
+    firstObj = PK11_FindGenericObjects(slot, objClass);
+    for (thisObj=firstObj;
+         thisObj; 
+         thisObj=PK11_GetNextGenericObject(thisObj)) {
+   	if (isMyObj(thisObj)) {
+  	    if ( thisObj == firstObj) {
+                /* NOTE: firstObj could be NULL at this point */
+  		firstObj = PK11_GetNextGenericObject(thsObj); 
+  	    }
+  	    PK11_UnlinkGenericObject(thisObj);
+            myObj = thisObj;
+            break;
+        }
+    }
+
+    PK11_DestroyGenericObjects(firstObj);
+
+      /* use myObj */
+
+    PK11_DestroyGenericObject(myObj);
+#endif /* sample code */
+
+/*
+ * return a linked, non-circular list of generic objects.
  * If you are only interested
  * in one object, just use the first object in the list. To find the
  * rest of the list use PK11_GetNextGenericObject() to return the next object.
- *
- * You can walk the list with the following code:
- *    firstObj = PK11_FindGenericObjects(slot, objClass);
- *    for (thisObj=firstObj; thisObj; 
- *				thisObj=PK11_GetNextGenericObject(thisObj)) {
- *	/* operate on thisObj */
-/*    }
- *
- * If you want a particular object from the list...
- *    firstObj = PK11_FindGenericObjects(slot, objClass);
- *    for (thisObj=firstObj; thisObj; 
- *                             thisObj=PK11_GetNextGenericObject(thisObj)) {
- * 	if (isMyObj(thisObj)) {
- *	    if ( thisObj == firstObj) {
- *              /* NOTE: firstObj could be NULL at this point */
-/*		firstObj = PK11_GetNextGenericObject(thsObj); 
- *	    }
- *	    PK11_UnlinkGenericObject(thisObj);
- *          myObj = thisObj;
- *          break;
- *    }
- *
- *   PK11_DestroyGenericObjects(firstObj);
- *
- *    /* use myObj */
-/*   PK11_DestroyGenericObject(myObj);
  */
 PK11GenericObject *
 PK11_FindGenericObjects(PK11SlotInfo *slot, CK_OBJECT_CLASS objClass)
@@ -1187,7 +1204,9 @@ PK11_FindGenericObjects(PK11SlotInfo *slot, CK_OBJECT_CLASS objClass)
     for (i=0; i < count; i++) {
 	obj = PORT_New(PK11GenericObject);
 	if ( !obj ) {
-	    PK11_DestroyGenericObjects(firstObj);
+	    if (firstObj) {
+		PK11_DestroyGenericObjects(firstObj);
+	    }
 	    PORT_Free(objectIDs);
 	    return NULL;
 	}
@@ -1289,7 +1308,7 @@ SECStatus
 PK11_DestroyGenericObjects(PK11GenericObject *objects)
 {
     PK11GenericObject *nextObject;
-    PK11GenericObject *prevObject = objects->prev;
+    PK11GenericObject *prevObject;
  
     if (objects == NULL) {
 	return SECSuccess;
@@ -1304,9 +1323,99 @@ PK11_DestroyGenericObjects(PK11GenericObject *objects)
 	PK11_DestroyGenericObject(objects);
     }
     /* delete all the objects before it in the list */
-    for (objects = prevObject; objects;  objects = nextObject) {
+    for (objects = prevObject; objects;  objects = prevObject) {
 	prevObject = objects->prev;
 	PK11_DestroyGenericObject(objects);
+    }
+    return SECSuccess;
+}
+
+
+/*
+ * Hand Create a new object and return the Generic object for our new object.
+ */
+PK11GenericObject *
+PK11_CreateGenericObject(PK11SlotInfo *slot, const CK_ATTRIBUTE *pTemplate,
+		int count,  PRBool token)
+{
+    CK_OBJECT_HANDLE objectID;
+    PK11GenericObject *obj;
+    CK_RV crv;
+
+    PK11_EnterSlotMonitor(slot);
+    crv = PK11_CreateNewObject(slot, slot->session, pTemplate, count, 
+			       token, &objectID);
+    PK11_ExitSlotMonitor(slot);
+    if (crv != CKR_OK) {
+	PORT_SetError(PK11_MapError(crv));
+	return NULL;
+    }
+
+    obj = PORT_New(PK11GenericObject);
+    if ( !obj ) {
+	/* error set by PORT_New */
+	return NULL;
+    }
+
+    /* initialize it */	
+    obj->slot = PK11_ReferenceSlot(slot);
+    obj->objectID = objectID;
+    obj->next = NULL;
+    obj->prev = NULL;
+    return obj;
+}
+
+/*
+ * Change an attribute on a raw object
+ */
+SECStatus
+PK11_WriteRawAttribute(PK11ObjectType objType, void *objSpec, 
+				CK_ATTRIBUTE_TYPE attrType, SECItem *item)
+{
+    PK11SlotInfo *slot = NULL;
+    CK_OBJECT_HANDLE handle;
+    CK_ATTRIBUTE setTemplate;
+    CK_RV crv;
+    CK_SESSION_HANDLE rwsession;
+
+    switch (objType) {
+    case PK11_TypeGeneric:
+	slot = ((PK11GenericObject *)objSpec)->slot;
+	handle = ((PK11GenericObject *)objSpec)->objectID;
+	break;
+    case PK11_TypePrivKey:
+	slot = ((SECKEYPrivateKey *)objSpec)->pkcs11Slot;
+	handle = ((SECKEYPrivateKey *)objSpec)->pkcs11ID;
+	break;
+    case PK11_TypePubKey:
+	slot = ((SECKEYPublicKey *)objSpec)->pkcs11Slot;
+	handle = ((SECKEYPublicKey *)objSpec)->pkcs11ID;
+	break;
+    case PK11_TypeSymKey:
+	slot = ((PK11SymKey *)objSpec)->slot;
+	handle = ((PK11SymKey *)objSpec)->objectID;
+	break;
+    case PK11_TypeCert: /* don't handle cert case for now */
+    default:
+	break;
+    }
+    if (slot == NULL) {
+	PORT_SetError(SEC_ERROR_UNKNOWN_OBJECT_TYPE);
+	return SECFailure;
+    }
+
+    PK11_SETATTRS(&setTemplate, attrType, (CK_CHAR *) item->data, item->len);
+    rwsession = PK11_GetRWSession(slot);
+    if (rwsession == CK_INVALID_SESSION) {
+    	PORT_SetError(SEC_ERROR_BAD_DATA);
+    	return SECFailure;
+    }
+    crv = PK11_GETTAB(slot)->C_SetAttributeValue(rwsession, handle,
+			&setTemplate, 1);
+    PK11_RestoreROSession(slot, rwsession);
+    if (crv != CKR_OK) {
+	PORT_SetError(PK11_MapError(crv));
+	return SECFailure;
     }
     return SECSuccess;
 }
@@ -1480,7 +1589,10 @@ PK11_MatchItem(PK11SlotInfo *slot, CK_OBJECT_HANDLE searchID,
 
     if ((theTemplate[0].ulValueLen == 0) || (theTemplate[0].ulValueLen == -1)) {
 	PORT_FreeArena(arena,PR_FALSE);
-	PORT_SetError(SEC_ERROR_BAD_KEY);
+	if (matchclass == CKO_CERTIFICATE)
+	    PORT_SetError(SEC_ERROR_BAD_KEY);
+	else
+	    PORT_SetError(SEC_ERROR_NO_KEY);
 	return CK_INVALID_HANDLE;
      }
 	

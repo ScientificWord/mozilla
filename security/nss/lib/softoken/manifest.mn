@@ -37,6 +37,7 @@
 CORE_DEPTH = ../../..
 
 MODULE = nss
+DIRS = legacydb
 
 REQUIRES = dbm
 
@@ -44,8 +45,11 @@ LIBRARY_NAME = softokn
 LIBRARY_VERSION = 3
 MAPFILE = $(OBJDIR)/softokn.def
 
-DEFINES += -DSHLIB_SUFFIX=\"$(DLL_SUFFIX)\" -DSHLIB_PREFIX=\"$(DLL_PREFIX)\" -DSOFTOKEN_LIB_NAME=\"$(notdir $(SHARED_LIBRARY))\"
+DEFINES += -DSHLIB_SUFFIX=\"$(DLL_SUFFIX)\" -DSHLIB_PREFIX=\"$(DLL_PREFIX)\" -DSOFTOKEN_LIB_NAME=\"$(notdir $(SHARED_LIBRARY))\" -DSHLIB_VERSION=\"$(LIBRARY_VERSION)\"
 
+ifdef MOZILLA_CLIENT
+INCLUDES += -I$(DIST)/include/sqlite3
+endif
 
 EXPORTS = \
 	pkcs11.h \
@@ -57,37 +61,43 @@ EXPORTS = \
 	$(NULL)
 
 PRIVATE_EXPORTS = \
-	pk11pars.h \
-	pkcs11ni.h \
+	lgglue.h  \
 	lowkeyi.h \
 	lowkeyti.h \
-	pcertt.h \
+	pk11pars.h \
+	pkcs11ni.h \
 	softoken.h \
 	softoknt.h \
+	softkver.h \
+	sdb.h \
+	sftkdbt.h \
 	$(NULL)
 
 CSRCS = \
-	dbinit.c \
-	dbmshim.c \
 	ecdecode.c \
+	fipsaudt.c \
 	fipstest.c \
 	fipstokn.c \
-	keydb.c    \
-	lowcert.c  \
+	lgglue.c   \
 	lowkey.c   \
 	lowpbe.c   \
 	padbuf.c   \
-	pcertdb.c \
-	pk11db.c \
 	pkcs11.c   \
 	pkcs11c.c  \
 	pkcs11u.c  \
 	rsawrapr.c  \
+	sdb.c  \
+	sftkdb.c  \
+	sftkmod.c  \
+	sftkpars.c  \
+	sftkpwd.c  \
 	softkver.c  \
 	tlsprf.c   \
 	$(NULL)
 
-ifdef NSS_ENABLE_ECC
-DEFINES += -DNSS_ENABLE_ECC
+ifdef SQLITE_UNSAFE_THREADS
+DEFINES += -DSQLITE_UNSAFE_THREADS
 endif
 
+# This part of the code, including all sub-dirs, can be optimized for size
+export ALLOW_OPT_CODE_SIZE = 1

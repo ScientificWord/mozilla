@@ -37,6 +37,7 @@
 #ifndef __SEC_ERR_H_
 #define __SEC_ERR_H_
 
+#include "utilrename.h"
 
 #define SEC_ERROR_BASE				(-0x2000)
 #define SEC_ERROR_LIMIT				(SEC_ERROR_BASE + 1000)
@@ -206,6 +207,8 @@ SEC_ERROR_NO_EVENT                          = 	(SEC_ERROR_BASE + 152),
 SEC_ERROR_CRL_ALREADY_EXISTS                = 	(SEC_ERROR_BASE + 153),
 SEC_ERROR_NOT_INITIALIZED                   = 	(SEC_ERROR_BASE + 154),
 SEC_ERROR_TOKEN_NOT_LOGGED_IN               = 	(SEC_ERROR_BASE + 155),
+SEC_ERROR_OCSP_RESPONDER_CERT_INVALID      =	(SEC_ERROR_BASE + 156),
+SEC_ERROR_OCSP_BAD_SIGNATURE               =	(SEC_ERROR_BASE + 157),
 
 /* Add new error codes above here. */
 SEC_ERROR_END_OF_LIST 

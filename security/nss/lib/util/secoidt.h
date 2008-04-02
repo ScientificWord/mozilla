@@ -37,6 +37,9 @@
 
 #ifndef _SECOIDT_H_
 #define _SECOIDT_H_
+
+#include "utilrename.h"
+
 /*
  * secoidt.h - public data structures for ASN.1 OID functions
  *
@@ -265,7 +268,7 @@ typedef enum {
     SEC_OID_PKCS9_X509_CRL = 170,
     SEC_OID_PKCS9_FRIENDLY_NAME = 171,
     SEC_OID_PKCS9_LOCAL_KEY_ID = 172,
-    SEC_OID_PKCS12_KEY_USAGE = 173,
+    SEC_OID_BOGUS_KEY_USAGE = 173,
 
     /*Diffe Helman OIDS */
     SEC_OID_X942_DIFFIE_HELMAN_KEY = 174,
@@ -413,11 +416,40 @@ typedef enum {
     SEC_OID_ANSIX962_ECDSA_SHA256_SIGNATURE = 278,
     SEC_OID_ANSIX962_ECDSA_SHA384_SIGNATURE = 279,
     SEC_OID_ANSIX962_ECDSA_SHA512_SIGNATURE = 280,
+
+    /* More id-ce and id-pe OIDs from RFC 3280 */
+    SEC_OID_X509_HOLD_INSTRUCTION_CODE      = 281,
+    SEC_OID_X509_DELTA_CRL_INDICATOR        = 282,
+    SEC_OID_X509_ISSUING_DISTRIBUTION_POINT = 283,
+    SEC_OID_X509_CERT_ISSUER                = 284,
+    SEC_OID_X509_FRESHEST_CRL               = 285,
+    SEC_OID_X509_INHIBIT_ANY_POLICY         = 286,
+    SEC_OID_X509_SUBJECT_INFO_ACCESS        = 287,
+
+    /* Camellia OIDs (RFC3657)*/
+    SEC_OID_CAMELLIA_128_CBC                = 288,
+    SEC_OID_CAMELLIA_192_CBC                = 289,
+    SEC_OID_CAMELLIA_256_CBC                = 290,
+
+    /* PKCS 5 V2 OIDS */
+    SEC_OID_PKCS5_PBKDF2                    = 291,
+    SEC_OID_PKCS5_PBES2                     = 292,
+    SEC_OID_PKCS5_PBMAC1                    = 293,
+    SEC_OID_HMAC_SHA1                       = 294,
+    SEC_OID_HMAC_SHA224                     = 295,
+    SEC_OID_HMAC_SHA256                     = 296,
+    SEC_OID_HMAC_SHA384                     = 297,
+    SEC_OID_HMAC_SHA512                     = 298,
+
+    SEC_OID_PKIX_TIMESTAMPING               = 299,
+    SEC_OID_PKIX_CA_REPOSITORY              = 300,
+
     SEC_OID_TOTAL
 } SECOidTag;
 
 #define SEC_OID_SECG_EC_SECP192R1 SEC_OID_ANSIX962_EC_PRIME192V1
 #define SEC_OID_SECG_EC_SECP256R1 SEC_OID_ANSIX962_EC_PRIME256V1
+#define SEC_OID_PKCS12_KEY_USAGE  SEC_OID_X509_KEY_USAGE
 
 /* fake OID for DSS sign/verify */
 #define SEC_OID_SHA SEC_OID_MISS_DSS

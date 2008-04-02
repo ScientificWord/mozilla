@@ -80,7 +80,6 @@ extern SECMODModuleList *SECMOD_NewModuleListElement(void);
 extern SECMODModuleList *SECMOD_DestroyModuleListElement(SECMODModuleList *);
 extern void SECMOD_DestroyModuleList(SECMODModuleList *);
 extern SECStatus SECMOD_AddModule(SECMODModule *newModule);
-SECStatus SECMOD_DeleteModuleEx(const char * name, SECMODModule *mod, int *type, PRBool permdb);
 
 extern unsigned long SECMOD_InternaltoPubMechFlags(unsigned long internalFlags);
 extern unsigned long SECMOD_InternaltoPubCipherFlags(unsigned long internalFlags);
@@ -105,12 +104,22 @@ SECStatus PK11_UpdateSlotAttribute(PK11SlotInfo *slot,
 #define PK11_SETATTRS(x,id,v,l) (x)->type = (id); \
 		(x)->pValue=(v); (x)->ulValueLen = (l);
 SECStatus PK11_CreateNewObject(PK11SlotInfo *slot, CK_SESSION_HANDLE session,
-                               CK_ATTRIBUTE *theTemplate, int count,
+                               const CK_ATTRIBUTE *theTemplate, int count,
                                 PRBool token, CK_OBJECT_HANDLE *objectID);
 
 SECStatus pbe_PK11AlgidToParam(SECAlgorithmID *algid,SECItem *mech);
 SECStatus PBE_PK11ParamToAlgid(SECOidTag algTag, SECItem *param, 
 				PRArenaPool *arena, SECAlgorithmID *algId);
+
+PK11SymKey *pk11_TokenKeyGenWithFlagsAndKeyType(PK11SlotInfo *slot,
+	CK_MECHANISM_TYPE type, SECItem *param, CK_KEY_TYPE keyType, 
+	int keySize, SECItem *keyId, CK_FLAGS opFlags, 
+	PK11AttrFlags attrFlags, void *wincx);
+
+CK_MECHANISM_TYPE pk11_GetPBECryptoMechanism(SECAlgorithmID *algid,
+                   SECItem **param, SECItem *pwd, PRBool faulty3DES);
+
+
 
 extern void pk11sdr_Init(void);
 extern void pk11sdr_Shutdown(void);
@@ -155,6 +164,11 @@ CK_OBJECT_HANDLE pk11_FindPrivateKeyFromCertID(PK11SlotInfo *slot,
 							SECItem *keyID);
 SECKEYPrivateKey *PK11_MakePrivKey(PK11SlotInfo *slot, KeyType keyType, 
 			PRBool isTemp, CK_OBJECT_HANDLE privID, void *wincx);
+
+SECItem *pk11_GenerateNewParamWithKeyLen(CK_MECHANISM_TYPE type, int keyLen);
+SECItem *pk11_ParamFromIVWithLen(CK_MECHANISM_TYPE type, 
+				 SECItem *iv, int keyLen);
+
 SEC_END_PROTOS
 
 #endif
