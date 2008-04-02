@@ -63,12 +63,6 @@
 #endif
 #include "prlink.h"  // for PRLibrary
 
-#if defined (MOZ_WIDGET_GTK) || defined (MOZ_WIDGET_GTK2)
-#include <gtk/gtk.h>
-#elif defined (MOZ_WIDGET_XLIB)
-#include "xlibxtbin.h"
-#endif
-
 ////////////////////////////////////////////////////////////////////////
 
 class ns4xPluginStreamListener;
@@ -90,42 +84,8 @@ class ns4xPluginInstance : public nsIPluginInstance,
 public:
 
     NS_DECL_ISUPPORTS
-
-    ////////////////////////////////////////////////////////////////////////
-    // nsIPluginInstance methods
-
-    /**
-     * Actually initialize the plugin instance. This calls the 4.x <b>newp</b>
-     * callback, and may return an error (which is why it is distinct from the
-     * constructor.) If an error is returned, the caller should <i>not</i>
-     * continue to use the <b>ns4xPluginInstance</b> object.
-     */
-    NS_METHOD Initialize(nsIPluginInstancePeer* peer);
-
-    NS_IMETHOD GetPeer(nsIPluginInstancePeer* *resultingPeer);
-
-    NS_IMETHOD Start(void);
-
-    NS_IMETHOD Stop(void);
-
-    NS_IMETHOD Destroy(void);
-
-    NS_IMETHOD SetWindow(nsPluginWindow* window);
-
-    NS_IMETHOD NewStream(nsIPluginStreamListener** listener);
-
-    NS_IMETHOD Print(nsPluginPrint* platformPrint);
-
-    NS_IMETHOD GetValue(nsPluginInstanceVariable variable, void *value);
-
-    NS_IMETHOD HandleEvent(nsPluginEvent* event, PRBool* handled);
-    
-    ////////////////////////////////////////////////////////////////////////
-    // nsIScriptablePlugin methods
-
-    NS_IMETHOD GetScriptablePeer(void * *aScriptablePeer);
-
-    NS_IMETHOD GetScriptableInterface(nsIID * *aScriptableInterface);
+    NS_DECL_NSIPLUGININSTANCE
+    NS_DECL_NSISCRIPTABLEPLUGIN
 
     ////////////////////////////////////////////////////////////////////////
     // nsIPluginInstanceInternal methods
@@ -138,6 +98,8 @@ public:
     virtual void PopPopupsEnabledState();
 
     virtual PRUint16 GetPluginAPIVersion();
+
+    virtual void DefineJavaProperties();
 
     ////////////////////////////////////////////////////////////////////////
     // ns4xPluginInstance-specific methods
@@ -152,9 +114,14 @@ public:
      */
     nsresult GetCallbacks(const NPPluginFuncs ** aCallbacks);
 
-    nsresult SetWindowless(PRBool aWindowless);
+    NPError SetWindowless(PRBool aWindowless);
 
-    nsresult SetTransparent(PRBool aTransparent);
+    NPError SetTransparent(PRBool aTransparent);
+
+#ifdef XP_MACOSX
+    void SetDrawingModel(NPDrawingModel aModel);
+    NPDrawingModel GetDrawingModel();
+#endif
 
     nsresult NewNotifyStream(nsIPluginStreamListener** listener, 
                              void* notifyData, 
@@ -174,7 +141,7 @@ public:
     PRBool IsStarted(void);
 
     // cache this 4.x plugin like an XPCOM plugin
-    nsresult SetCached(PRBool aCache) { mCached = aCache; return NS_OK; };
+    nsresult SetCached(PRBool aCache) { mCached = aCache; return NS_OK; }
 
     // Non-refcounting accessor for faster access to the peer.
     nsIPluginInstancePeer *Peer()
@@ -205,21 +172,15 @@ protected:
      */
     NPPluginFuncs* fCallbacks;
 
-#if defined (MOZ_WIDGET_GTK) || defined (MOZ_WIDGET_GTK2)
-   /**
-    * Special GtkXtBin widget that encapsulates the Xt toolkit
-    * within a Gtk Application
-    */
-   GtkWidget *mXtBin;
-#elif defined (MOZ_WIDGET_XLIB)
-   xtbin *mXlibXtBin;
-#endif
-
     /**
      * The 4.x-style structure used to communicate between the plugin
      * instance and the browser.
      */
     NPP_t fNPP;
+
+#ifdef XP_MACOSX
+    NPDrawingModel mDrawingModel;
+#endif
 
     //these are used to store the windowless properties
     //which the browser will later query
@@ -228,8 +189,12 @@ protected:
     PRPackedBool  mTransparent;
     PRPackedBool  mStarted;
     PRPackedBool  mCached;
+    PRPackedBool  mIsJavaPlugin;
 
 public:
+    // True while creating the plugin, or calling NPP_SetWindow() on
+    // it.
+    PRPackedBool  mInPluginInitCall;
     PRLibrary* fLibrary;
     nsInstanceStream *mStreams;
 

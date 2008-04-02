@@ -92,8 +92,6 @@ imgRequestProxy::~imgRequestProxy()
        */
       mOwner->RemoveProxy(this, NS_OK, PR_FALSE);
     }
-
-    NS_RELEASE(mOwner);
   }
 }
 
@@ -101,6 +99,7 @@ imgRequestProxy::~imgRequestProxy()
 
 nsresult imgRequestProxy::Init(imgRequest *request, nsILoadGroup *aLoadGroup, imgIDecoderObserver *aObserver)
 {
+  NS_PRECONDITION(!mOwner && !mListener, "imgRequestProxy is already initialized");
   NS_PRECONDITION(request, "no request");
   if (!request)
     return NS_ERROR_NULL_POINTER;
@@ -108,13 +107,11 @@ nsresult imgRequestProxy::Init(imgRequest *request, nsILoadGroup *aLoadGroup, im
   LOG_SCOPE_WITH_PARAM(gImgLog, "imgRequestProxy::Init", "request", request);
 
   mOwner = request;
-  NS_ADDREF(mOwner);
-
   mListener = aObserver;
-
   mLoadGroup = aLoadGroup;
 
-  request->AddProxy(this, PR_FALSE); // Pass PR_FALSE here so that AddProxy doesn't send all the On* notifications immediatly
+  // Note: AddProxy won't send all the On* notifications immediatly
+  request->AddProxy(this);
 
   return NS_OK;
 }
@@ -127,12 +124,10 @@ nsresult imgRequestProxy::ChangeOwner(imgRequest *aNewOwner)
   // Passing false to aNotify means that mListener will still get
   // OnStopRequest, if needed.
   mOwner->RemoveProxy(this, NS_IMAGELIB_CHANGING_OWNER, PR_FALSE);
-  NS_RELEASE(mOwner);
 
   mOwner = aNewOwner;
-  NS_ADDREF(mOwner);
 
-  mOwner->AddProxy(this, PR_FALSE);
+  mOwner->AddProxy(this);
 
   return NS_OK;
 }
@@ -187,13 +182,18 @@ NS_IMETHODIMP imgRequestProxy::GetName(nsACString &aName)
 /* boolean isPending (); */
 NS_IMETHODIMP imgRequestProxy::IsPending(PRBool *_retval)
 {
-    return NS_ERROR_NOT_IMPLEMENTED;
+  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 /* readonly attribute nsresult status; */
 NS_IMETHODIMP imgRequestProxy::GetStatus(nsresult *aStatus)
 {
-    return NS_ERROR_NOT_IMPLEMENTED;
+  if (!mOwner)
+    return NS_ERROR_FAILURE;
+
+  *aStatus = mOwner->GetNetworkStatus();
+
+  return NS_OK;
 }
 
 /* void cancel (in nsresult status); */
@@ -340,6 +340,15 @@ NS_IMETHODIMP imgRequestProxy::Clone(imgIDecoderObserver* aObserver,
   mOwner->NotifyProxyListener(clone);
 
   return NS_OK;
+}
+
+/* readonly attribute nsIPrincipal imagePrincipal; */
+NS_IMETHODIMP imgRequestProxy::GetImagePrincipal(nsIPrincipal **aPrincipal)
+{
+  if (!mOwner)
+    return NS_ERROR_FAILURE;
+
+  return mOwner->GetPrincipal(aPrincipal);
 }
 
 /** nsISupportsPriority methods **/

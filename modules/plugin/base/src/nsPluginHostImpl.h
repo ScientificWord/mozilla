@@ -46,8 +46,12 @@
 #include "nsCRT.h"
 #include "nsCOMPtr.h"
 #include "prlink.h"
+#include "prclist.h"
+#include "npapi.h"
+#include "ns4xPluginInstance.h"
 
 #include "nsIPlugin.h"
+#include "nsIPluginTag.h"
 #include "nsIPluginTagInfo2.h"
 #include "nsIPluginInstancePeer2.h"
 
@@ -63,6 +67,10 @@
 #include "nsPluginNativeWindow.h"
 #include "nsIPrefBranch.h"
 #include "nsWeakReference.h"
+#include "nsThreadUtils.h"
+
+// XXX this file really doesn't think this is possible, but ...
+#include "nsIFactory.h"
 
 class ns4xPlugin;
 class nsIComponentManager;
@@ -71,19 +79,23 @@ class nsIChannel;
 class nsIRegistry;
 class nsPluginHostImpl;
 
-#define NS_PLUGIN_FLAG_ENABLED    0x0001    // is this plugin enabled?
-#define NS_PLUGIN_FLAG_OLDSCHOOL  0x0002    // is this a pre-xpcom plugin?
-#define NS_PLUGIN_FLAG_FROMCACHE  0x0004    // this plugintag info was loaded from cache
-#define NS_PLUGIN_FLAG_UNWANTED   0x0008    // this is an unwanted plugin
+#define NS_PLUGIN_FLAG_ENABLED      0x0001    // is this plugin enabled?
+#define NS_PLUGIN_FLAG_OLDSCHOOL    0x0002    // is this a pre-xpcom plugin?
+#define NS_PLUGIN_FLAG_FROMCACHE    0x0004    // this plugintag info was loaded from cache
+#define NS_PLUGIN_FLAG_UNWANTED     0x0008    // this is an unwanted plugin
+#define NS_PLUGIN_FLAG_BLOCKLISTED  0x0010    // this is a blocklisted plugin
 
 /**
  * A linked-list of plugin information that is used for
  * instantiating plugins and reflecting plugin information
  * into JavaScript.
  */
-class nsPluginTag
+class nsPluginTag : public nsIPluginTag
 {
 public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIPLUGINTAG
+
   nsPluginTag(nsPluginTag* aPluginTag);
   nsPluginTag(nsPluginInfo* aPluginInfo);
 
@@ -129,7 +141,7 @@ public:
   void RegisterWithCategoryManager(PRBool aOverrideInternalTypes,
                                    nsRegisterType aType = ePluginRegister);
 
-  nsPluginTag   *mNext;
+  nsRefPtr<nsPluginTag>   mNext;
   nsPluginHostImpl *mPluginHost;
   char          *mName;
   char          *mDescription;
@@ -141,6 +153,8 @@ public:
   nsIPlugin     *mEntryPoint;
   PRPackedBool  mCanUnloadLibrary;
   PRPackedBool  mXPConnected;
+  PRPackedBool  mIsJavaPlugin;
+  PRPackedBool  mIsNPRuntimeEnabledJavaPlugin;
   char          *mFileName;
   char          *mFullPath;
   PRInt64       mLastModifiedTime;
@@ -153,7 +167,7 @@ struct nsActivePlugin
   nsActivePlugin*        mNext;
   char*                  mURL;
   nsIPluginInstancePeer* mPeer;
-  nsPluginTag*           mPluginTag;
+  nsRefPtr<nsPluginTag>  mPluginTag;
   nsIPluginInstance*     mInstance;
   PRTime                 mllStopTime;
   PRPackedBool           mStopped;
@@ -191,7 +205,7 @@ public:
   PRUint32 getStoppedCount();
   nsActivePlugin * findOldestStopped();
   void removeAllStopped();
-  void stopRunning(nsISupportsArray* aReloadDocs);
+  void stopRunning(nsISupportsArray* aReloadDocs, nsPluginTag* aPluginTag);
   PRBool IsLastInstance(nsActivePlugin * plugin);
 };
 
@@ -212,6 +226,8 @@ public:
   NS_DECL_AND_IMPL_ZEROING_OPERATOR_NEW
 
   NS_DECL_ISUPPORTS
+
+  static const char *GetPluginName(nsIPluginInstance *aPluginInstance);
 
   //nsIPluginManager interface - the main interface nsIPlugin communicates to
 
@@ -272,139 +288,18 @@ public:
 
   //nsIPluginHost interface - used to communicate to the nsPluginInstanceOwner
 
-  NS_IMETHOD
-  Init(void);
-
-  NS_IMETHOD
-  Destroy(void);
-
-  NS_IMETHOD
-  LoadPlugins(void);
-
-  NS_IMETHOD
-  GetPluginFactory(const char *aMimeType, nsIPlugin** aPlugin);
-
-
-  NS_IMETHOD
-  InstantiatePluginForChannel(nsIChannel* aChannel,
-                              nsIPluginInstanceOwner* aOwner,
-                              nsIStreamListener** aListener);
-
-  NS_IMETHOD
-  InstantiateEmbeddedPlugin(const char *aMimeType, nsIURI* aURL, nsIPluginInstanceOwner *aOwner);
-
-  NS_IMETHOD
-  InstantiateFullPagePlugin(const char *aMimeType, nsIURI* aURI, nsIStreamListener *&aStreamListener, nsIPluginInstanceOwner *aOwner);
-
-  NS_IMETHOD
-  SetUpPluginInstance(const char *aMimeType, nsIURI *aURL, nsIPluginInstanceOwner *aOwner);
-
-  NS_IMETHOD
-  IsPluginEnabledForType(const char* aMimeType);
-
-  NS_IMETHOD
-  IsPluginEnabledForExtension(const char* aExtension, const char* &aMimeType);
-
-  NS_IMETHOD
-  GetPluginCount(PRUint32* aPluginCount);
-  
-  NS_IMETHOD
-  GetPlugins(PRUint32 aPluginCount, nsIDOMPlugin** aPluginArray);
-
-  NS_IMETHOD
-  HandleBadPlugin(PRLibrary* aLibrary, nsIPluginInstance *instance);
-
-  //nsIPluginManager2 interface - secondary methods that nsIPlugin communicates to
-
-  NS_IMETHOD
-  BeginWaitCursor(void);
-
-  NS_IMETHOD
-  EndWaitCursor(void);
-
-  NS_IMETHOD
-  SupportsURLProtocol(const char* protocol, PRBool *result);
-
-  NS_IMETHOD
-  NotifyStatusChange(nsIPlugin* plugin, nsresult errorStatus);
-  
-  NS_IMETHOD
-  FindProxyForURL(const char* url, char* *result);
-
-  NS_IMETHOD
-  RegisterWindow(nsIEventHandler* handler, nsPluginPlatformWindowRef window);
-  
-  NS_IMETHOD
-  UnregisterWindow(nsIEventHandler* handler, nsPluginPlatformWindowRef window);
-
-  NS_IMETHOD
-  AllocateMenuID(nsIEventHandler* handler, PRBool isSubmenu, PRInt16 *result);
-
-  NS_IMETHOD
-  DeallocateMenuID(nsIEventHandler* handler, PRInt16 menuID);
-
-  NS_IMETHOD
-  HasAllocatedMenuID(nsIEventHandler* handler, PRInt16 menuID, PRBool *result);
+  NS_DECL_NSIPLUGINHOST
+  NS_DECL_NSIPLUGINMANAGER2
 
   NS_IMETHOD
   ProcessNextEvent(PRBool *bEventHandled);
 
-  // nsIFactory interface, from nsIPlugin.
   // XXX not currently used?
-  NS_IMETHOD CreateInstance(nsISupports *aOuter,
-                            REFNSIID aIID,
-                            void **aResult);
-
-  NS_IMETHOD LockFactory(PRBool aLock);
-
-  // nsIFileUtilities interface
-
-  NS_IMETHOD GetProgramPath(const char* *result);
-
-  NS_IMETHOD GetTempDirPath(const char* *result);
-
-  NS_IMETHOD NewTempFileName(const char* prefix, PRUint32 bufLen, char* resultBuf);
-
-  // nsICookieStorage interface
-
-  /**
-   * Retrieves a cookie from the browser's persistent cookie store.
-   * @param inCookieURL        URL string to look up cookie with.
-   * @param inOutCookieBuffer  buffer large enough to accomodate cookie data.
-   * @param inOutCookieSize    on input, size of the cookie buffer, on output cookie's size.
-   */
-  NS_IMETHOD
-  GetCookie(const char* inCookieURL, void* inOutCookieBuffer, PRUint32& inOutCookieSize);
-  
-  /**
-   * Stores a cookie in the browser's persistent cookie store.
-   * @param inCookieURL        URL string store cookie with.
-   * @param inCookieBuffer     buffer containing cookie data.
-   * @param inCookieSize       specifies  size of cookie data.
-   */
-  NS_IMETHOD
-  SetCookie(const char* inCookieURL, const void* inCookieBuffer, PRUint32 inCookieSize);
-  
-  // Methods from nsIObserver
-  NS_IMETHOD
-  Observe(nsISupports *aSubject, const char *aTopic, const PRUnichar *someData);
-
-  // Methods from nsPIPluginHost
-  NS_IMETHOD
-  SetIsScriptableInstance(nsIPluginInstance *aPluginInstance, PRBool aScriptable);
-
-  NS_IMETHOD
-  ParsePostBufferToFixHeaders(const char *inPostData, PRUint32 inPostDataLen, 
-              char **outPostData, PRUint32 *outPostDataLen);
-  
-  NS_IMETHOD
-  CreateTmpFileToPost(const char *postDataURL, char **pTmpFileName);
-
-  NS_IMETHOD
-  NewPluginNativeWindow(nsPluginNativeWindow ** aPluginNativeWindow);
-
-  NS_IMETHOD
-  DeletePluginNativeWindow(nsPluginNativeWindow * aPluginNativeWindow);
+  NS_DECL_NSIFACTORY
+  NS_DECL_NSIFILEUTILITIES
+  NS_DECL_NSICOOKIESTORAGE
+  NS_DECL_NSIOBSERVER
+  NS_DECL_NSPIPLUGINHOST
 
   /* Called by GetURL and PostURL */
 
@@ -427,12 +322,17 @@ public:
                       nsIChannel *aGenericChannel);
 
   NS_IMETHOD
-  StopPluginInstance(nsIPluginInstance* aInstance);
-
-  NS_IMETHOD
   AddUnusedLibrary(PRLibrary * aLibrary);
 
   static nsresult GetPluginTempDir(nsIFile **aDir);
+
+  // Writes updated plugins settings to disk and unloads the plugin
+  // if it is now disabled
+  nsresult UpdatePluginInfo(nsPluginTag* aPluginTag);
+
+  // checks whether aTag is a "java" plugin tag (a tag for a plugin
+  // that does Java)
+  static PRBool IsJavaMIMEType(const char *aType);
 
 private:
   NS_IMETHOD
@@ -499,7 +399,8 @@ private:
 
   // Given a filename, returns the plugins info from our cache
   // and removes it from the cache.
-  nsPluginTag* RemoveCachedPluginsInfo(const char *filename);
+  void RemoveCachedPluginsInfo(const char *filename,
+                               nsPluginTag **result);
 
   //checks if the list already have the same plugin as given
   nsPluginTag* HaveSamePlugin(nsPluginTag * aPluginTag);
@@ -509,20 +410,9 @@ private:
   PRBool IsDuplicatePlugin(nsPluginTag * aPluginTag);
 
   // checks whether the given plugin is an unwanted Java plugin
-  // (e.g. Java is disabled, or no OJI support is compiled in)
+  // (e.g. no OJI support is compiled in)
   PRBool IsUnwantedJavaPlugin(nsPluginTag * aPluginTag);
 
-  // checks whether aTag is a "java" plugin tag (a tag for a plugin
-  // that does Java)
-  PRBool IsJavaPluginTag(nsPluginTag * aPluginTag);
-
-  // checks whether aTag is a "java" plugin tag (a tag for a plugin
-  // that does Java)
-  PRBool IsJavaMIMEType(const char *aType);
-
-  // destroys plugin info list
-  void ClearCachedPluginInfoList();
-  
   nsresult EnsurePrivateDirServiceProvider();
 
   nsresult GetPrompt(nsIPluginInstanceOwner *aOwner, nsIPrompt **aPrompt);
@@ -537,8 +427,8 @@ private:
   nsresult AddPrefObserver();
   
   char        *mPluginPath;
-  nsPluginTag *mPlugins;
-  nsPluginTag *mCachedPlugins;
+  nsRefPtr<nsPluginTag> mPlugins;
+  nsRefPtr<nsPluginTag> mCachedPlugins;
   PRPackedBool mPluginsLoaded;
   PRPackedBool mDontShowBadPluginMessage;
   PRPackedBool mIsDestroyed;
@@ -560,7 +450,9 @@ private:
 
   nsCOMPtr<nsIFile>                    mPluginRegFile;
   nsCOMPtr<nsIPrefBranch>              mPrefService;
+#ifdef XP_WIN
   nsRefPtr<nsPluginDirServiceProvider> mPrivateDirServiceProvider;
+#endif /* XP_WIN */
 
   nsWeakPtr mCurrentDocument; // weak reference, we use it to id document only
 
@@ -569,6 +461,42 @@ private:
   // We need to hold a global ptr to ourselves because we register for
   // two different CIDs for some reason...
   static nsPluginHostImpl* sInst;
+};
+
+class PluginDestructionGuard : protected PRCList
+{
+public:
+  PluginDestructionGuard(nsIPluginInstance *aInstance)
+    : mInstance(aInstance)
+  {
+    Init();
+  }
+
+  PluginDestructionGuard(NPP npp)
+    : mInstance(npp ? static_cast<ns4xPluginInstance*>(npp->ndata) : nsnull)
+  {
+    Init();
+  }
+
+  ~PluginDestructionGuard();
+
+  static PRBool DelayDestroy(nsIPluginInstance *aInstance);
+
+protected:
+  void Init()
+  {
+    NS_ASSERTION(NS_IsMainThread(), "Should be on the main thread");
+
+    mDelayedDestroy = PR_FALSE;
+
+    PR_INIT_CLIST(this);
+    PR_INSERT_BEFORE(this, &sListHead);
+  }
+
+  nsCOMPtr<nsIPluginInstance> mInstance;
+  PRBool mDelayedDestroy;
+
+  static PRCList sListHead;
 };
 
 #endif

@@ -40,6 +40,7 @@
 
 #include "nsIPluginStreamListener.h"
 #include "nsIPluginStreamInfo.h"
+#include "nsIHTTPHeaderListener.h"
 #include "nsIRequest.h"
 #include "nsITimer.h"
 #include "nsCOMPtr.h"
@@ -50,24 +51,17 @@ class ns4xPluginInstance;
 class nsI4xPluginStreamInfo;
 
 class ns4xPluginStreamListener : public nsIPluginStreamListener,
-                                 public nsITimerCallback
+                                 public nsITimerCallback,
+                                 public nsIHTTPHeaderListener
 {
 public:
   NS_DECL_ISUPPORTS
-
-  // from nsIPluginStreamListener:
-  NS_IMETHOD OnStartBinding(nsIPluginStreamInfo* pluginInfo);
-  NS_IMETHOD OnDataAvailable(nsIPluginStreamInfo* pluginInfo,
-                             nsIInputStream* input, PRUint32 length);
-  NS_IMETHOD OnFileAvailable( nsIPluginStreamInfo* pluginInfo,
-                              const char* fileName);
-  NS_IMETHOD OnStopBinding(nsIPluginStreamInfo* pluginInfo, nsresult status);
-  NS_IMETHOD GetStreamType(nsPluginStreamType *result);
-
+  NS_DECL_NSIPLUGINSTREAMLISTENER
   NS_DECL_NSITIMERCALLBACK
+  NS_DECL_NSIHTTPHEADERLISTENER
 
   // ns4xPluginStreamListener specific methods:
-  ns4xPluginStreamListener(nsIPluginInstance* inst, void* notifyData,
+  ns4xPluginStreamListener(ns4xPluginInstance* inst, void* notifyData,
                            const char* aURL);
   virtual ~ns4xPluginStreamListener();
   PRBool IsStarted();
@@ -82,6 +76,8 @@ public:
   nsresult StartDataPump();
   void StopDataPump();
 
+  PRBool PluginInitJSLoadInProgress();
+
 protected:
   void* mNotifyData;
   char* mStreamBuffer;
@@ -95,6 +91,9 @@ protected:
   PRPackedBool mStreamCleanedUp;
   PRPackedBool mCallNotify;
   PRPackedBool mIsSuspended;
+  PRPackedBool mIsPluginInitJSStream;
+  nsCString mResponseHeaders;
+  char* mResponseHeaderBuf;
 
   nsCOMPtr<nsITimer> mDataPumpTimer;
 
