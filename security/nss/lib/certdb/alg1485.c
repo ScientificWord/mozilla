@@ -38,57 +38,65 @@
 
 #include "prprf.h"
 #include "cert.h"
+#include "certi.h"
 #include "xconst.h"
 #include "genname.h"
 #include "secitem.h"
 #include "secerr.h"
 
-/* for better RFC 2253 compliance. */
-#define NSS_STRICT_RFC_2253_VALUES_ONLY 1
-
 struct NameToKind {
     const char * name;
     unsigned int maxLen; /* max bytes in UTF8 encoded string value */
     SECOidTag    kind;
+    int		 valueType;
 };
+
+/* local type for directory string--could be printable_string or utf8 */
+#define SEC_ASN1_DS SEC_ASN1_HIGH_TAG_NUMBER
 
 /* Add new entries to this table, and maybe to function CERT_ParseRFC1485AVA */
 static const struct NameToKind name2kinds[] = {
-/* keywords given in RFC 2253 */
-    { "CN",                      64, SEC_OID_AVA_COMMON_NAME              },
-    { "L",                      128, SEC_OID_AVA_LOCALITY                 },
-    { "ST",                     128, SEC_OID_AVA_STATE_OR_PROVINCE        },
-    { "O",                       64, SEC_OID_AVA_ORGANIZATION_NAME        },
-    { "OU",                      64, SEC_OID_AVA_ORGANIZATIONAL_UNIT_NAME },
-    { "C",                        2, SEC_OID_AVA_COUNTRY_NAME             },
-    { "STREET",                 128, SEC_OID_AVA_STREET_ADDRESS           },
-    { "DC",                     128, SEC_OID_AVA_DC                       },
-    { "UID",                    256, SEC_OID_RFC1274_UID                  },
+/* IANA registered type names
+   (See: http://www.iana.org/assignments/ldap-parameters) */
+    /* RFC 3280,4630 MUST SUPPORT */
+    { "CN",             64, SEC_OID_AVA_COMMON_NAME,    SEC_ASN1_DS},
+    { "ST",            128, SEC_OID_AVA_STATE_OR_PROVINCE,
+							SEC_ASN1_DS},
+    { "O",              64, SEC_OID_AVA_ORGANIZATION_NAME,
+							SEC_ASN1_DS},
+    { "OU",             64, SEC_OID_AVA_ORGANIZATIONAL_UNIT_NAME,
+                                                        SEC_ASN1_DS},
+    { "dnQualifier", 32767, SEC_OID_AVA_DN_QUALIFIER, SEC_ASN1_PRINTABLE_STRING},
+    { "C",               2, SEC_OID_AVA_COUNTRY_NAME, SEC_ASN1_PRINTABLE_STRING},
+    { "serialNumber",   64, SEC_OID_AVA_SERIAL_NUMBER,SEC_ASN1_PRINTABLE_STRING},
+    /* RFC 3280,4630 SHOULD SUPPORT */
+    { "L",             128, SEC_OID_AVA_LOCALITY,       SEC_ASN1_DS},
+    { "title",          64, SEC_OID_AVA_TITLE,          SEC_ASN1_DS},
+    { "SN",             64, SEC_OID_AVA_SURNAME,        SEC_ASN1_DS},
+    { "givenName",      64, SEC_OID_AVA_GIVEN_NAME,     SEC_ASN1_DS},
+    { "initials",       64, SEC_OID_AVA_INITIALS,       SEC_ASN1_DS},
+    { "generationQualifier",
+                        64, SEC_OID_AVA_GENERATION_QUALIFIER,
+                                                        SEC_ASN1_DS},
+    /* RFC 3280,4630 MAY SUPPORT */
+    { "DC",            128, SEC_OID_AVA_DC,             SEC_ASN1_IA5_STRING},
+    /* values from draft-ietf-ldapbis-user-schema-05 (not in RFC 3280) */
+    { "postalAddress", 128, SEC_OID_AVA_POSTAL_ADDRESS, SEC_ASN1_DS},
+    { "postalCode",     40, SEC_OID_AVA_POSTAL_CODE,    SEC_ASN1_DS},
+    { "postOfficeBox",  40, SEC_OID_AVA_POST_OFFICE_BOX,SEC_ASN1_DS},
+    { "houseIdentifier",64, SEC_OID_AVA_HOUSE_IDENTIFIER,SEC_ASN1_DS},
+    /* legacy keywords */
+    { "MAIL",          256, SEC_OID_RFC1274_MAIL,       SEC_ASN1_IA5_STRING},
+    { "UID",           256, SEC_OID_RFC1274_UID,        SEC_ASN1_DS},
+    
+/* end of IANA registered type names */
+    { "E",             128, SEC_OID_PKCS9_EMAIL_ADDRESS,SEC_ASN1_DS},
 
-#ifndef NSS_STRICT_RFC_2253_KEYWORDS_ONLY
-/* NSS legacy keywords */
-    { "dnQualifier",          32767, SEC_OID_AVA_DN_QUALIFIER             },
-    { "E",                      128, SEC_OID_PKCS9_EMAIL_ADDRESS          },
-    { "MAIL",                   256, SEC_OID_RFC1274_MAIL                 },
 
-#ifndef NSS_LEGACY_KEYWORDS_ONLY
-/* values from draft-ietf-ldapbis-user-schema-05 */
-    { "SN",                      64, SEC_OID_AVA_SURNAME                  },
-    { "serialNumber",            64, SEC_OID_AVA_SERIAL_NUMBER            },
-    { "title",                   64, SEC_OID_AVA_TITLE                    },
-    { "postalAddress",          128, SEC_OID_AVA_POSTAL_ADDRESS           },
-    { "postalCode",              40, SEC_OID_AVA_POSTAL_CODE              },
-    { "postOfficeBox",           40, SEC_OID_AVA_POST_OFFICE_BOX          },
-    { "givenName",               64, SEC_OID_AVA_GIVEN_NAME               },
-    { "initials",                64, SEC_OID_AVA_INITIALS                 },
-    { "generationQualifier",     64, SEC_OID_AVA_GENERATION_QUALIFIER     },
-    { "houseIdentifier",         64, SEC_OID_AVA_HOUSE_IDENTIFIER         },
 #if 0 /* removed.  Not yet in any IETF draft or RFC. */
-    { "pseudonym",               64, SEC_OID_AVA_PSEUDONYM                },
+    { "pseudonym",      64, SEC_OID_AVA_PSEUDONYM,      SEC_ASN1_DS},
 #endif
-#endif
-#endif
-    { 0,                        256, SEC_OID_UNKNOWN                      }
+    { 0,           256, SEC_OID_UNKNOWN                      , 0},
 };
 
 #define C_DOUBLE_QUOTE '\042'
@@ -142,21 +150,6 @@ IsPrintable(unsigned char *data, unsigned len)
 	if (!IS_PRINTABLE(ch)) {
 	    return PR_FALSE;
 	}
-    }
-    return PR_TRUE;
-}
-
-static PRBool
-Is7Bit(unsigned char *data, unsigned len)
-{
-    unsigned char ch, *end;
-
-    end = data + len;
-    while (data < end) {
-        ch = *data++;
-        if ((ch & 0x80)) {
-            return PR_FALSE;
-        }
     }
     return PR_TRUE;
 }
@@ -256,6 +249,8 @@ scanVal(char **pbp, char *endptr, char *valBuf, int valBufSize)
 		*pbp = bp;
 		return SECFailure;
 	    }
+	} else if (c == '#' && bp == *pbp) {
+	    /* ignore leading #, quotation not required for it. */
 	} else if (!isQuoted && SPECIAL_CHAR(c)) {
 	    /* unescaped special and not within quoted value */
 	    break;
@@ -307,69 +302,139 @@ scanVal(char **pbp, char *endptr, char *valBuf, int valBufSize)
     return SECSuccess;
 }
 
+static const PRInt16 x2b[256] = 
+{
+/* #0x */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #1x */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #2x */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #3x */  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, -1, -1, -1, -1, -1, -1, 
+/* #4x */ -1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #5x */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #6x */ -1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #7x */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #8x */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #9x */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #ax */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #bx */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #cx */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #dx */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #ex */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+/* #fx */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
+};
+
+/* Caller must set error code upon failure */
+static SECStatus
+hexToBin(PLArenaPool *pool, SECItem * destItem, const char * src, int len)
+{
+    PRUint8 * dest;
+
+    destItem->data = NULL; 
+    if (len <= 0 || (len & 1)) {
+	goto loser;
+    }
+    len >>= 1;
+    if (!SECITEM_AllocItem(pool, destItem, len))
+	goto loser;
+    dest = destItem->data;
+    for (; len > 0; len--, src += 2) {
+	PRInt16 bin = (x2b[(PRUint8)src[0]] << 4) | x2b[(PRUint8)src[1]]; 
+	if (bin < 0)
+	    goto loser;
+	*dest++ = (PRUint8)bin;
+    }
+    return SECSuccess;
+loser:
+    if (!pool)
+    	SECITEM_FreeItem(destItem, PR_FALSE);
+    return SECFailure;
+}
+
+
 CERTAVA *
 CERT_ParseRFC1485AVA(PRArenaPool *arena, char **pbp, char *endptr,
 		    PRBool singleAVA) 
 {
     CERTAVA *a;
     const struct NameToKind *n2k;
-    int vt;
-    int valLen;
     char *bp;
+    int       vt = -1;
+    int       valLen;
+    SECOidTag kind  = SEC_OID_UNKNOWN;
+    SECStatus rv    = SECFailure;
+    SECItem   derOid = { 0, NULL, 0 };
 
     char tagBuf[32];
     char valBuf[384];
 
+    PORT_Assert(arena);
     if (scanTag(pbp, endptr, tagBuf, sizeof(tagBuf)) == SECFailure ||
 	scanVal(pbp, endptr, valBuf, sizeof(valBuf)) == SECFailure) {
-	PORT_SetError(SEC_ERROR_INVALID_AVA);
-	return 0;
+	goto loser;
     }
 
     /* insist that if we haven't finished we've stopped on a separator */
     bp = *pbp;
     if (bp < endptr) {
 	if (singleAVA || (*bp != ',' && *bp != ';')) {
-	    PORT_SetError(SEC_ERROR_INVALID_AVA);
 	    *pbp = bp;
-	    return 0;
+	    goto loser;
 	}
 	/* ok, skip over separator */
 	bp++;
     }
     *pbp = bp;
 
-    for (n2k = name2kinds; n2k->name; n2k++) {
-	if (PORT_Strcasecmp(n2k->name, tagBuf) == 0) {
-	    valLen = PORT_Strlen(valBuf);
-	    if (n2k->kind == SEC_OID_AVA_COUNTRY_NAME) {
-		vt = SEC_ASN1_PRINTABLE_STRING;
-		if (valLen != 2) {
-		    PORT_SetError(SEC_ERROR_INVALID_AVA);
-		    return 0;
-		}
-		if (!IsPrintable((unsigned char*) valBuf, 2)) {
-		    PORT_SetError(SEC_ERROR_INVALID_AVA);
-		    return 0;
-		}
-	    } else if ((n2k->kind == SEC_OID_PKCS9_EMAIL_ADDRESS) ||
-		       (n2k->kind == SEC_OID_RFC1274_MAIL)) {
-		vt = SEC_ASN1_IA5_STRING;
-	    } else {
-		/* Hack -- for rationale see X.520 DirectoryString defn */
-		if (IsPrintable((unsigned char*)valBuf, valLen)) {
-		    vt = SEC_ASN1_PRINTABLE_STRING;
-                } else if (Is7Bit((unsigned char *)valBuf, valLen)) {
-                    vt = SEC_ASN1_T61_STRING;
-		} else {
-		    /* according to RFC3280, UTF8String is preferred encoding */
-		    vt = SEC_ASN1_UTF8_STRING;
-		}
+    /* is this a dotted decimal OID attribute type ? */
+    if (!PL_strncasecmp("oid.", tagBuf, 4)) {
+        rv = SEC_StringToOID(arena, &derOid, tagBuf, strlen(tagBuf));
+    } else {
+	for (n2k = name2kinds; n2k->name; n2k++) {
+	    SECOidData *oidrec;
+	    if (PORT_Strcasecmp(n2k->name, tagBuf) == 0) {
+		kind = n2k->kind;
+		vt   = n2k->valueType;
+		oidrec = SECOID_FindOIDByTag(kind);
+		if (oidrec == NULL)
+		    goto loser;
+		derOid = oidrec->oid;
+		break;
 	    }
-	    a = CERT_CreateAVA(arena, n2k->kind, vt, (char *) valBuf);
-	    return a;
 	}
     }
+    if (kind == SEC_OID_UNKNOWN && rv != SECSuccess) 
+	goto loser;
+
+    /* Is this a hex encoding of a DER attribute value ? */
+    if ('#' == valBuf[0]) {
+    	/* convert attribute value from hex to binary */
+	SECItem  derVal = { 0, NULL, 0};
+	valLen = PORT_Strlen(valBuf+1);
+	rv = hexToBin(arena, &derVal, valBuf + 1, valLen);
+	if (rv)
+	    goto loser;
+	a = CERT_CreateAVAFromRaw(arena, &derOid, &derVal);
+    } else {
+	if (kind == SEC_OID_UNKNOWN)
+	    goto loser;
+	valLen = PORT_Strlen(valBuf);
+	if (kind == SEC_OID_AVA_COUNTRY_NAME && valLen != 2)
+	    goto loser;
+	if (vt == SEC_ASN1_PRINTABLE_STRING &&
+	    !IsPrintable((unsigned char*) valBuf, valLen)) 
+	    goto loser;
+	if (vt == SEC_ASN1_DS) {
+	    /* RFC 4630: choose PrintableString or UTF8String */
+	    if (IsPrintable((unsigned char*) valBuf, valLen))
+		vt = SEC_ASN1_PRINTABLE_STRING;
+	    else 
+		vt = SEC_ASN1_UTF8_STRING;
+	}
+
+	a = CERT_CreateAVA(arena, kind, vt, (char *)valBuf);
+    }
+    return a;
+
+loser:
     /* matched no kind -- invalid tag */
     PORT_SetError(SEC_ERROR_INVALID_AVA);
     return 0;
@@ -394,7 +459,7 @@ ParseRFC1485Name(char *buf, int len)
     while (bp < e) {
 	ava = CERT_ParseRFC1485AVA(name->arena, &bp, e, PR_FALSE);
 	if (ava == 0) goto loser;
-	rdn = CERT_CreateRDN(name->arena, ava, 0);
+	rdn = CERT_CreateRDN(name->arena, ava, (CERTAVA *)0);
 	if (rdn == 0) goto loser;
 	rv = CERT_AddRDN(name, rdn);
 	if (rv) goto loser;
