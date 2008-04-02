@@ -100,7 +100,6 @@
 #include "nsIDocument.h"
 #include "nsIDocumentObserver.h"
 #include "nsIStreamListener.h"
-#include "nsUnitConversion.h"
 #include "nsVoidArray.h"
 
 #include "nsIDocumentViewer.h"
@@ -111,7 +110,7 @@
 #include "nsIDOMElement.h"
 #include "nsIDOMEvent.h"
 #include "nsIDOMMouseEvent.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0400

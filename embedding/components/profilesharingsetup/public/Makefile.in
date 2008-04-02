@@ -42,12 +42,19 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= profilesharingsetup
-XPIDL_MODULE	= profilesharingsetup
-GRE_MODULE	= 1
+LIBRARY_NAME	= profilesharingsetup_s
+MOZILLA_INTERNAL_API = 1
 
-XPIDLSRCS	= \
-		nsIProfileSharingSetup.idl \
-		$(NULL)
+REQUIRES	= xpcom \
+		  string \
+		  $(NULL)
+
+CPPSRCS		= nsProfileSharingSetup.cpp \
+                  $(NULL)
+
+# we don't want the shared lib, but we want to force the creation of a
+# static lib.
+FORCE_STATIC_LIB = 1
 
 include $(topsrcdir)/config/rules.mk
 

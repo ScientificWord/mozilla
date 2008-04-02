@@ -13,10 +13,10 @@
   </RDF:Description>
 
 	<RDF:Seq about="urn:mozilla:overlays">
-		<RDF:li resource="chrome://prince/content/prince.xul"/>
+		<RDF:li resource="chrome://editor/content/editor.xul"/>
 	</RDF:Seq>
 
-	<RDF:Seq about="chrome://prince/content/prince.xul">
+	<RDF:Seq about="chrome://editor/content/editor.xul">
 		<RDF:li>chrome://cascades/content/cascadesOverlay.xul</RDF:li>
 	</RDF:Seq>
 

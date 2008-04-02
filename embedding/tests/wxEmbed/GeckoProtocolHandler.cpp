@@ -218,6 +218,9 @@ NS_IMETHODIMP GeckoProtocolHandlerImpl::GetDefaultPort(PRInt32 *aDefaultPort)
 /* readonly attribute unsigned long protocolFlags; */
 NS_IMETHODIMP GeckoProtocolHandlerImpl::GetProtocolFlags(PRUint32 *aProtocolFlags)
 {
+    // XXXbz Not setting any of the protocol security flags for now, because I
+    // have no idea what this is used for.  Whoever uses it should set the
+    // flags.
     *aProtocolFlags = URI_NORELATIVE | URI_NOAUTH;
     return NS_OK;
 }
@@ -364,7 +367,7 @@ GeckoProtocolChannel::AsyncOpen(nsIStreamListener *aListener, nsISupports *aCont
         if (stricmp(scheme.get(), gCallbacks[i].mScheme.get()) == 0)
         {
             rv = gCallbacks[i].mCallback->GetData(
-                mURI, NS_STATIC_CAST(nsIChannel *,this), mContentType, &mData, &mContentLength);
+                mURI, static_cast<nsIChannel *>(this), mContentType, &mData, &mContentLength);
             if (NS_FAILED(rv)) return rv;
             
             rv = NS_NewByteInputStream(getter_AddRefs(mContentStream),

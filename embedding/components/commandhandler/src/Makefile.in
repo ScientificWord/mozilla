@@ -46,13 +46,12 @@ MODULE		= commandhandler
 REQUIRES	= string \
 		  xpcom \
 		  dom \
+		  content \
 		  widget \
-		  necko \
 		  xuldoc \
 		  caps \
 		  xpconnect \
 		  js \
-		  layout \
 		  $(NULL)
 
 LIBRARY_NAME	= commandhandler_s
