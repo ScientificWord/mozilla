@@ -59,8 +59,9 @@ const kAsyncTimeout = 1500; // 1.5 second
 
 var objectsArray = null;
 var gTimerID;
-var gDialog = {};
+var gDialog={};
 var gAsyncLoadingTimerID;
+
 // needed for commonCssProps.js
 var gHaveDocumentUrl = false;
 
@@ -69,7 +70,7 @@ var gInsertIndex = -1;
 // * dialog initialization code
 function Startup()
 {
-//  // are we in a pre-1.3 Mozilla ?
+  // are we in a pre-1.3 Mozilla ?
 //  if (typeof window.InitEditorShell == "function") {
 //    // yes, so let's get an editorshell
 //    if (!InitEditorShell())
@@ -155,7 +156,7 @@ function Startup()
   gDialog.modified = false;
   gDialog.selectedIndex = -1;
 
-  gHaveDocumentUrl = msiGetDocumentBaseUrl(null);
+  gHaveDocumentUrl = msiGetDocumentBaseUrl();
 
   // Initialize all dialog widgets here,
   // e.g., get attributes from an element for property dialog
@@ -243,9 +244,7 @@ function CleanSheetsTree(sheetsTreeChildren)
 
 function AddSheetEntryToTree(sheetsTree, ownerNode)
 {
-// <?xml-stylesheet href="resource://app/res/css/baselatex.css" type="text/css" ?>
-
-  if (ownerNode.nodeType == Node.ELEMENT_NODE || 
+  if (ownerNode.nodeType == Node.ELEMENT_NODE ||) 
     ownerNode.nodeType == Node.PROCESSING_INSTRUCTION_NODE) {
     var ownerTag  = ownerNode.nodeName.toLowerCase()
     try {
@@ -254,7 +253,7 @@ function AddSheetEntryToTree(sheetsTree, ownerNode)
     } catch(e) {}
     try {
       if (ownerTag == "style" || ownerNode.nodeType == Node.PROCESSING_INSTRUCTION_NODE
-          && ownerTag =="xml-stylesheet" ||
+           && ownerTag =="xml-stylesheet" ||
           (ownerTag == "link" && relType.indexOf("stylesheet") != -1)) {
 
         var treeitem  = document.createElementNS(XUL_NS, "treeitem");
@@ -264,6 +263,8 @@ function AddSheetEntryToTree(sheetsTree, ownerNode)
         // what kind of owner node do we have here ?
         // a style element indicates an embedded stylesheet,
         // while a link element or processing instruction indicates an external stylesheet;
+        // the case of an XML Processing Instruction is not handled, we
+        // are supposed to be in HTML 4
         var external = false;
         if (ownerTag == "style") {
           treecell.setAttribute("label", "internal stylesheet");

@@ -358,23 +358,20 @@ MozAxAutoPushJSContext::MozAxAutoPushJSContext(JSContext *cx,
                                                nsIURI * aURI)
                                      : mContext(cx), mPushResult(NS_OK)
 {
-    mContextStack = do_GetService("@mozilla.org/js/xpc/ContextStack;1");
+    nsCOMPtr<nsIJSContextStack> contextStack =
+        do_GetService("@mozilla.org/js/xpc/ContextStack;1");
 
-    if(mContextStack)
+    JSContext* currentCX;
+    if(contextStack &&
+       // Don't push if the current context is already on the stack.
+       (NS_FAILED(contextStack->Peek(&currentCX)) ||
+        cx != currentCX) )
     {
-        JSContext* currentCX;
-        if(NS_SUCCEEDED(mContextStack->Peek(&currentCX)))
+        if (NS_SUCCEEDED(contextStack->Push(cx)))
         {
-            // Is the current context already on the stack?
-            if(cx == currentCX)
-                mContextStack = nsnull;
-            else
-            {
-                mContextStack->Push(cx);
-                // Leave the reference to the mContextStack to
-                // indicate that we need to pop it in our dtor.                                               
-            }
-
+            // Leave the reference in mContextStack to
+            // indicate that we need to pop it in our dtor.
+            mContextStack.swap(contextStack);
         }
     }
 
@@ -435,7 +432,7 @@ GetPluginsContext(PluginInstanceData *pData)
 {
     nsCOMPtr<nsIDOMWindow> window;
     NPN_GetValue(pData->pPluginInstance, NPNVDOMWindow, 
-                 NS_STATIC_CAST(nsIDOMWindow **, getter_AddRefs(window)));
+                 static_cast<nsIDOMWindow **>(getter_AddRefs(window)));
 
     nsCOMPtr<nsIScriptGlobalObject> globalObject(do_QueryInterface(window));
     if (!globalObject)
@@ -446,7 +443,7 @@ GetPluginsContext(PluginInstanceData *pData)
     if (!scriptContext)
         return nsnull;
 
-    return NS_REINTERPRET_CAST(JSContext*, scriptContext->GetNativeContext());
+    return reinterpret_cast<JSContext*>(scriptContext->GetNativeContext());
 }
 
 #endif
@@ -838,7 +835,7 @@ NewControl(const char *pluginType,
             {
                 nsCOMPtr<nsIDOMElement> element;
                 NPN_GetValue(pData->pPluginInstance, NPNVDOMElement, 
-                             NS_STATIC_CAST(nsIDOMElement **, getter_AddRefs(element)));
+                             static_cast<nsIDOMElement **>(getter_AddRefs(element)));
                 if (element)
                 {
                     nsCOMPtr<nsIDOMNode> tagAsNode (do_QueryInterface(element));

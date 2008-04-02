@@ -14,7 +14,7 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Christopher Blizzard. Portions created by Christopher Blizzard are Copyright (C) Christopher Blizzard.  All Rights Reserved.
+ * Christopher Blizzard.
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
  *
@@ -255,7 +255,9 @@ main(int argc, char **argv)
   gtk_signal_connect(GTK_OBJECT(single), "new_window_orphan",
 		     GTK_SIGNAL_FUNC(new_window_orphan_cb), NULL);
 
+  gtk_moz_embed_push_startup();
   gtk_main();
+  gtk_moz_embed_pop_startup();
 }
 
 static TestGtkBrowser *
@@ -354,18 +356,11 @@ new_gtk_browser(guint32 chromeMask)
 		     FALSE, // fill
 		     0);    // padding
   // new horiz toolbar with buttons + icons
-#ifdef MOZ_WIDGET_GTK
-  browser->toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,
-				     GTK_TOOLBAR_BOTH);
-#endif /* MOZ_WIDGET_GTK */
-
-#ifdef MOZ_WIDGET_GTK2
   browser->toolbar = gtk_toolbar_new();
   gtk_toolbar_set_orientation(GTK_TOOLBAR(browser->toolbar),
 			      GTK_ORIENTATION_HORIZONTAL);
   gtk_toolbar_set_style(GTK_TOOLBAR(browser->toolbar),
 			GTK_TOOLBAR_BOTH);
-#endif /* MOZ_WIDGET_GTK2 */
 
   // add it to the hbox
   gtk_box_pack_start(GTK_BOX(browser->toolbarHBox), browser->toolbar,
@@ -417,6 +412,7 @@ new_gtk_browser(guint32 chromeMask)
 		     0);    // padding
   // create our new gtk moz embed widget
   browser->mozEmbed = gtk_moz_embed_new();
+  gtk_moz_embed_push_startup();
   // add it to the toplevel vbox
   gtk_box_pack_start(GTK_BOX(browser->topLevelVBox), browser->mozEmbed,
 		     TRUE, // expand
@@ -703,6 +699,20 @@ delete_cb(GtkWidget *widget, GdkEventAny *event, TestGtkBrowser *browser)
   return TRUE;
 }
 
+static gboolean
+idle_quit(void*)
+{
+  gtk_main_quit();
+  return FALSE;
+}
+
+static gboolean
+idle_pop(void*)
+{
+  gtk_moz_embed_pop_startup();
+  return FALSE;
+}
+
 void
 destroy_cb         (GtkWidget *widget, TestGtkBrowser *browser)
 {
@@ -713,8 +723,9 @@ destroy_cb         (GtkWidget *widget, TestGtkBrowser *browser)
   browser_list = g_list_remove_link(browser_list, tmp_list);
   if (browser->tempMessage)
     g_free(browser->tempMessage);
+  gtk_idle_add(idle_pop, NULL);
   if (num_browsers == 0)
-    gtk_main_quit();
+    gtk_idle_add (idle_quit, NULL);
 }
 
 void

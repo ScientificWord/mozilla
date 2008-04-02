@@ -56,12 +56,13 @@ NS_INTERFACE_MAP_BEGIN(nsPrintProgress)
 NS_INTERFACE_MAP_END_THREADSAFE
 
 
-nsPrintProgress::nsPrintProgress()
+nsPrintProgress::nsPrintProgress(nsIPrintSettings* aPrintSettings)
 {
   m_closeProgress = PR_FALSE;
   m_processCanceled = PR_FALSE;
   m_pendingStateFlags = -1;
   m_pendingStateValue = 0;
+  m_PrintSetting = aPrintSettings;
 }
 
 nsPrintProgress::~nsPrintProgress()
@@ -97,7 +98,7 @@ NS_IMETHODIMP nsPrintProgress::OpenProgressDialog(nsIDOMWindowInternal *parent,
       do_CreateInstance(NS_SUPPORTS_INTERFACE_POINTER_CONTRACTID, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
     
-    ifptr->SetData(NS_STATIC_CAST(nsIPrintProgress*, this));
+    ifptr->SetData(static_cast<nsIPrintProgress*>(this));
     ifptr->SetDataIID(&NS_GET_IID(nsIPrintProgress));
 
     array->AppendElement(ifptr);
@@ -143,6 +144,8 @@ NS_IMETHODIMP nsPrintProgress::GetProcessCanceledByUser(PRBool *aProcessCanceled
 }
 NS_IMETHODIMP nsPrintProgress::SetProcessCanceledByUser(PRBool aProcessCanceledByUser)
 {
+  if(m_PrintSetting)
+    m_PrintSetting->SetIsCancelled(PR_TRUE);
   m_processCanceled = aProcessCanceledByUser;
   OnStateChange(nsnull, nsnull, nsIWebProgressListener::STATE_STOP, PR_FALSE);
   return NS_OK;

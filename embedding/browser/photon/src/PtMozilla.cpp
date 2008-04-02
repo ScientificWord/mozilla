@@ -14,7 +14,7 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Christopher Blizzard. Portions created by Christopher Blizzard are Copyright (C) Christopher Blizzard.  All Rights Reserved.
+ * Christopher Blizzard.
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
  *
@@ -59,7 +59,7 @@
 #include "nsIWebBrowserPrint.h"
 #include "nsIPrintOptions.h"
 
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsIDOMEventListener.h"
 #include "nsIDOMKeyListener.h"
 #include "nsIDOMMouseListener.h"
@@ -496,7 +496,7 @@ mozilla_modify( PtWidget_t *widget, PtArg_t const *argt, PtResourceRec_t const *
 
 // get resources function
 static int 
-mozilla_get_info( PtWidget_t *widget, PtArg_t const *argt, PtResourceRec_t const *mod )
+mozilla_get_info( PtWidget_t *widget, PtArg_t *argt, PtResourceRec_t const *mod )
 {
 	PtMozillaWidget_t *moz = (PtMozillaWidget_t *) widget;
 	nsIPref *pref = moz->EmbedRef->GetPrefs();
