@@ -41,14 +41,13 @@
 #include "nsCoord.h"
 #include "nsRect.h"
 #include "nsPoint.h"
-#include <stdio.h>
 #include "nsIWidget.h"
 
 class nsIViewManager;
 class nsIScrollableView;
 class nsViewManager;
 class nsView;
-struct nsRect;
+class nsWeakView;
 
 // Enumerated type to indicate the visibility of a layer.
 // hide - the layer is not shown.
@@ -60,9 +59,10 @@ enum nsViewVisibility {
 };
 
 // IID for the nsIView interface
+// 1377A30E-99E6-42FA-9A2E-EEEC6B31B7B6
 #define NS_IVIEW_IID    \
-{ 0x658f72ee, 0x32ef, 0x4e93, \
-{ 0xb8, 0x4e, 0x5f, 0x0f, 0x8f, 0x77, 0xe4, 0x22 } }
+{ 0x1377ae0e, 0x99e6, 0x42fa, \
+{ 0x9a, 0x2e, 0xee, 0xec, 0x6b, 0x31, 0xb7, 0xb6 } }
 
 // Public view flags are defined in this file
 #define NS_VIEW_FLAGS_PUBLIC              0x00FF
@@ -71,13 +71,6 @@ enum nsViewVisibility {
 #define NS_VIEW_FLAGS_PRIVATE             0xFF00
 
 // Public view flags
-
-// The view is transparent
-#define NS_VIEW_FLAG_TRANSPARENT          0x0001
-
-// The view is always painted onto a background consisting
-// of a uniform field of opaque pixels.
-#define NS_VIEW_FLAG_UNIFORM_BACKGROUND   0x0002
 
 // Indicates that the view is using auto z-indexing
 #define NS_VIEW_FLAG_AUTO_ZINDEX          0x0004
@@ -89,6 +82,10 @@ enum nsViewVisibility {
 // displayed above z-index:auto views if this view 
 // is z-index:auto also
 #define NS_VIEW_FLAG_TOPMOST              0x0010
+
+// If set, the view disowns the widget and leaves it up
+// to other code to destroy it.
+#define NS_VIEW_DISOWNS_WIDGET             0x0020
 
 struct nsViewZIndex {
   PRBool mIsAuto;
@@ -139,7 +136,7 @@ public:
    * @result the view manager
    */
   nsIViewManager* GetViewManager() const
-  { return NS_REINTERPRET_CAST(nsIViewManager*, mViewManager); }
+  { return reinterpret_cast<nsIViewManager*>(mViewManager); }
 
   /**
    * Destroy the view.
@@ -232,56 +229,19 @@ public:
    * Called to query the parent of the view.
    * @result view's parent
    */
-  nsIView* GetParent() const { return NS_REINTERPRET_CAST(nsIView*, mParent); }
+  nsIView* GetParent() const { return reinterpret_cast<nsIView*>(mParent); }
 
   /**
    * The view's first child is the child which is earliest in document order.
    * @result first child
    */
-  nsIView* GetFirstChild() const { return NS_REINTERPRET_CAST(nsIView*, mFirstChild); }
+  nsIView* GetFirstChild() const { return reinterpret_cast<nsIView*>(mFirstChild); }
 
   /**
    * Called to query the next sibling of the view.
    * @result view's next sibling
    */
-  nsIView* GetNextSibling() const { return NS_REINTERPRET_CAST(nsIView*, mNextSibling); }
-
-  /**
-   * Note: This didn't exist in 4.0. Called to get the opacity of a view. 
-   * A value of 0.0 means completely transparent. A value of 1.0 means
-   * completely opaque.
-   * @result view's opacity value
-   */
-  float GetOpacity() const { return mOpacity; }
-
-  /**
-   * Used to ask a view if it has any areas within its bounding box
-   * that are transparent. This is not the same as opacity - opacity can
-   * be set externally, transparency is a quality of the view itself.
-   * @result Returns PR_TRUE if there are transparent areas, PR_FALSE otherwise.
-   */
-  PRBool IsTransparent() const { return (mVFlags & NS_VIEW_FLAG_TRANSPARENT) != 0; }
-
-  /**
-   * Indicate that this view is always painted onto a uniform field of
-   * pixels. Thus, even if the view is transparent, it may still be
-   * bitblit scrollable because the background that shines through
-   * does not vary with position.  Caller must ensure that the pixel
-   * field belongs to the same element as this view or some ancestor
-   * element, so that if the pixel field is in some opacity group, then
-   * this view is also in the opacity group (or some subgroup).
-   */
-  void SetHasUniformBackground(PRBool aUniform) {
-    if (aUniform) {
-      mVFlags |= NS_VIEW_FLAG_UNIFORM_BACKGROUND;
-    } else {
-      mVFlags &= ~NS_VIEW_FLAG_UNIFORM_BACKGROUND;
-    }
-  }
-
-  PRBool HasUniformBackground() {
-    return mVFlags & NS_VIEW_FLAG_UNIFORM_BACKGROUND;
-  }
+  nsIView* GetNextSibling() const { return reinterpret_cast<nsIView*>(mNextSibling); }
 
   /**
    * Set the view's link to client owned data.
@@ -321,6 +281,8 @@ public:
    * @param aWindowType is either content, UI or inherit from parent window.
    *        This is used to expose what type of window this is to 
    *        assistive technology like screen readers.
+   * @param aParentWidget alternative parent to aNative used for popups. Must
+   *        be null for non-popups.
    * @return error status
    */
   nsresult CreateWidget(const nsIID &aWindowIID,
@@ -328,7 +290,8 @@ public:
                         nsNativeWidget aNative = nsnull,
                         PRBool aEnableDragDrop = PR_TRUE,
                         PRBool aResetVisibility = PR_TRUE,
-                        nsContentType aWindowType = eContentTypeInherit);
+                        nsContentType aWindowType = eContentTypeInherit,
+                        nsIWidget* aParentWidget = nsnull);
 
   /**
    * In 4.0, the "cutout" nature of a view is queryable.
@@ -343,6 +306,14 @@ public:
    * Returns PR_TRUE if the view has a widget associated with it.
    */
   PRBool HasWidget() const { return mWindow != nsnull; }
+
+  /**
+   * If called, will make the view disown the widget and leave it up
+   * to other code to destroy it.
+   */
+  void DisownWidget() {
+    mVFlags |= NS_VIEW_DISOWNS_WIDGET;
+  }
 
 #ifdef DEBUG
   /**
@@ -361,7 +332,9 @@ public:
 
   virtual PRBool ExternalIsRoot() const;
 
+  void SetDeletionObserver(nsWeakView* aDeletionObserver);
 protected:
+  friend class nsWeakView;
   nsViewManager     *mViewManager;
   nsView            *mParent;
   nsIWidget         *mWindow;
@@ -374,10 +347,54 @@ protected:
   nsRect            mDimBounds; // relative to parent
   float             mOpacity;
   PRUint32          mVFlags;
+  nsWeakView*       mDeletionObserver;
 
   virtual ~nsIView() {}
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIView, NS_IVIEW_IID)
+
+// nsWeakViews must *not* be used in heap!
+class nsWeakView
+{
+public:
+  nsWeakView(nsIView* aView) : mPrev(nsnull), mView(aView)
+  {
+    if (mView) {
+      mView->SetDeletionObserver(this);
+    }
+  }
+
+  ~nsWeakView()
+  {
+    if (mView) {
+      NS_ASSERTION(mView->mDeletionObserver == this,
+                   "nsWeakViews deleted in wrong order!");
+      // Clear deletion observer temporarily.
+      mView->SetDeletionObserver(nsnull);
+      // Put back the previous deletion observer.
+      mView->SetDeletionObserver(mPrev);
+    }
+  }
+
+  PRBool IsAlive() { return !!mView; }
+
+  nsIView* GetView() { return mView; }
+
+  void SetPrevious(nsWeakView* aWeakView) { mPrev = aWeakView; }
+
+  void Clear()
+  {
+    if (mPrev) {
+      mPrev->Clear();
+    }
+    mView = nsnull;
+  }
+private:
+  static void* operator new(size_t) CPP_THROW_NEW { return 0; }
+  static void operator delete(void*, size_t) {}
+  nsWeakView* mPrev;
+  nsIView*    mView;
+};
 
 #endif

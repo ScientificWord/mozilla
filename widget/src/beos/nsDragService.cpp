@@ -48,7 +48,6 @@
 #include "nsVoidArray.h"
 #include "nsXPIDLString.h"
 #include "nsPrimitiveHelpers.h"
-#include "nsUnitConversion.h"
 #include "nsWidgetsCID.h"
 #include "nsCRT.h"
 
@@ -91,7 +90,7 @@ GetPrimaryFrameFor(nsIDOMNode *aDOMNode)
     nsIDocument* doc = aContent->GetCurrentDoc();
     if (nsnull == doc)
         return nsnull;
-    nsIPresShell* presShell = doc->GetShellAt(0);
+    nsIPresShell* presShell = doc->GetPrimaryShell();
     if ( nsnull == presShell) 
         return nsnull;
     return presShell->GetPrimaryFrameFor(aContent);
@@ -338,7 +337,7 @@ nsDragService::StartDragSession()
 //
 //-------------------------------------------------------------------------
 NS_IMETHODIMP
-nsDragService::EndDragSession()
+nsDragService::EndDragSession(PRBool aDoneDrag)
 {
     PR_LOG(sDragLm, PR_LOG_DEBUG, ("nsDragService::EndDragSession()"));
     //Don't reset drag info, keep it until there is a new drag, in case a negotiated drag'n'drop wants the info.
@@ -347,7 +346,7 @@ nsDragService::EndDragSession()
     //That way the dragsession is always ended when we go outside mozilla windows, but we do throw away the 
     // mSourceDocument and mSourceNode. We do hold on to the nsTransferable if it was a internal drag. 
     //ResetDragInfo();
-    return nsBaseDragService::EndDragSession();
+    return nsBaseDragService::EndDragSession(aDoneDrag);
 }
 
 //-------------------------------------------------------------------------

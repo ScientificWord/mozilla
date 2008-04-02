@@ -48,17 +48,8 @@
 #include "nsThreadUtils.h"
 #include "nsIScrollableView.h"
 #include "nsIRegion.h"
-#include "nsIBlender.h"
 #include "nsView.h"
-
-class nsIRegion;
-class nsIEvent;
-class nsISupportsArray;
-struct DisplayListElement2;
-struct DisplayZTreeNode;
-class BlendingBuffers;
-struct PLArenaPool;
-class nsHashtable;
+#include "nsIViewObserver.h"
 
 //Uncomment the following line to enable generation of viewmanager performance data.
 #ifdef MOZ_PERF_METRICS
@@ -68,28 +59,6 @@ class nsHashtable;
 #ifdef NS_VM_PERF_METRICS
 #include "nsTimer.h"
 #endif
-
-/**
-   FIXED-POSITION FRAMES AND Z-ORDERING
-
-   Fixed-position frames are special. They have TWO views. There is the "real" view, which is
-   a child of the root view for the viewport (which is the root view of the view manager).
-   There is also a "placeholder" view (of class nsZPlaceholderView) which never really
-   participates in any view operations. It is a child of the view that would have contained
-   the fixed-position element if it had not been fixed-position. The real view keeps track
-   of the placeholder view and returns the placeholder view when you call GetZParent on the
-   real view.
-
-   (Although currently all views which have a placeholder view are themselves children of the
-   root view, we don't want to depend on this. Later we might want to support views that
-   are fixed relative to some container other than the viewport.)
-
-   As we build the display list in CreateDisplayList, once we've processed the parent of
-   real views (i.e., the root), we move those real views from their current position in the
-   display list over to where their placeholder views are in the display list. This ensures that
-   views get repainted in the order they would have been repainted in the absence of
-   fixed-position frames.
- */
 
 /**
    Invalidation model:
@@ -121,28 +90,6 @@ class nsHashtable;
    view manager is the only thing keeping track of mUpdateCnt.  As a result,
    Composite() calls should also be forwarded to the root view manager.
 */
-
-class nsZPlaceholderView : public nsView
-{
-public:
-  nsZPlaceholderView(nsViewManager* aViewManager) : nsView(aViewManager) {}
-
-  void RemoveReparentedView() { mReparentedView = nsnull; }
-  void SetReparentedView(nsView* aView) { mReparentedView = aView; }
-  nsView* GetReparentedView() const { return mReparentedView; }
-
-  virtual PRBool IsZPlaceholderView() const { return PR_TRUE; }
-
-protected:
-  virtual ~nsZPlaceholderView() {
-    if (nsnull != mReparentedView) {
-      mReparentedView->SetZParent(nsnull);
-    }
-  }
-
-protected:
-  nsView   *mReparentedView;
-};
 
 class nsViewManagerEvent : public nsRunnable {
 public:
@@ -186,19 +133,14 @@ public:
   NS_IMETHOD  DispatchEvent(nsGUIEvent *aEvent, nsEventStatus* aStatus);
 
   NS_IMETHOD  GrabMouseEvents(nsIView *aView, PRBool &aResult);
-  NS_IMETHOD  GrabKeyEvents(nsIView *aView, PRBool &aresult);
 
   NS_IMETHOD  GetMouseEventGrabber(nsIView *&aView);
-  NS_IMETHOD  GetKeyEventGrabber(nsIView *&aView);
 
   NS_IMETHOD  InsertChild(nsIView *parent, nsIView *child, nsIView *sibling,
                           PRBool above);
 
   NS_IMETHOD  InsertChild(nsIView *parent, nsIView *child,
                           PRInt32 zindex);
-
-  NS_IMETHOD  InsertZPlaceholder(nsIView *parent, nsIView *child, nsIView *sibling,
-                                 PRBool above);
 
   NS_IMETHOD  RemoveChild(nsIView *parent);
 
@@ -208,19 +150,11 @@ public:
 
   NS_IMETHOD  ResizeView(nsIView *aView, const nsRect &aRect, PRBool aRepaintExposedAreaOnly = PR_FALSE);
 
-  NS_IMETHOD  SetViewChildClipRegion(nsIView *aView, const nsRegion *aRegion);
-
-  NS_IMETHOD  SetViewBitBltEnabled(nsIView *aView, PRBool aEnable);
-
-  NS_IMETHOD  SetViewCheckChildEvents(nsIView *aView, PRBool aEnable);
-
   NS_IMETHOD  SetViewFloating(nsIView *aView, PRBool aFloating);
 
   NS_IMETHOD  SetViewVisibility(nsIView *aView, nsViewVisibility aVisible);
 
   NS_IMETHOD  SetViewZIndex(nsIView *aView, PRBool aAuto, PRInt32 aZIndex, PRBool aTopMost=PR_FALSE);
-  NS_IMETHOD  SetViewContentTransparency(nsIView *aView, PRBool aTransparent);
-  NS_IMETHOD  SetViewOpacity(nsIView *aView, float aOpacity);
 
   NS_IMETHOD  SetViewObserver(nsIViewObserver *aObserver);
   NS_IMETHOD  GetViewObserver(nsIViewObserver *&aObserver);
@@ -230,34 +164,21 @@ public:
   NS_IMETHOD  DisableRefresh(void);
   NS_IMETHOD  EnableRefresh(PRUint32 aUpdateFlags);
 
-  NS_IMETHOD  BeginUpdateViewBatch(void);
+  virtual nsIViewManager* BeginUpdateViewBatch(void);
   NS_IMETHOD  EndUpdateViewBatch(PRUint32 aUpdateFlags);
 
   NS_IMETHOD  SetRootScrollableView(nsIScrollableView *aScrollable);
   NS_IMETHOD  GetRootScrollableView(nsIScrollableView **aScrollable);
 
-  NS_IMETHOD Display(nsIView *aView, nscoord aX, nscoord aY, const nsRect& aClipRect);
-
-  NS_IMETHOD RenderOffscreen(nsIView* aView, nsRect aRect, PRBool aUntrusted,
-                             PRBool aIgnoreViewportScrolling,
-                             nscolor aBackgroundColor,
-                             nsIRenderingContext** aRenderedContext);
-
-  NS_IMETHOD AddCompositeListener(nsICompositeListener *aListener);
-  NS_IMETHOD RemoveCompositeListener(nsICompositeListener *aListener);
-
   NS_IMETHOD GetWidget(nsIWidget **aWidget);
   nsIWidget* GetWidget() { return mRootView ? mRootView->GetWidget() : nsnull; }
   NS_IMETHOD ForceUpdate();
  
-  NS_IMETHOD AllowDoubleBuffering(PRBool aDoubleBuffer);
   NS_IMETHOD IsPainting(PRBool& aIsPainting);
   NS_IMETHOD SetDefaultBackgroundColor(nscolor aColor);
   NS_IMETHOD GetDefaultBackgroundColor(nscolor* aColor);
   NS_IMETHOD GetLastUserEventTime(PRUint32& aTime);
   void ProcessInvalidateEvent();
-  static PRInt32 GetViewManagerCount();
-  static const nsVoidArray* GetViewManagerArray();
   static PRUint32 gLastUserEventTime;
 
   /**
@@ -280,10 +201,43 @@ public:
   /* Update the cached RootViewManager pointer on this view manager. */
   void InvalidateHierarchy();
 
+  virtual void SuppressFocusEvents();
+  virtual void UnsuppressFocusEvents();
+
+  virtual PRBool IsFocusSuppressed()
+  {
+    return sSuppressCount > 0;
+  }
+
+  static void SetCurrentlyFocusedView(nsView *aView)
+  {
+    sCurrentlyFocusView = aView;
+  }
+  
+  static nsView* GetCurrentlyFocusedView()
+  {
+    return sCurrentlyFocusView;
+  }
+
+  static void SetViewFocusedBeforeSuppression(nsView *aView)
+  {
+    sViewFocusedBeforeSuppression = aView;
+  }
+
+  static nsView* GetViewFocusedBeforeSuppression()
+  {
+    return sViewFocusedBeforeSuppression;
+  }
+
 protected:
   virtual ~nsViewManager();
 
 private:
+
+  static nsView *sCurrentlyFocusView;
+  static nsView *sViewFocusedBeforeSuppression;
+  static PRInt32 sSuppressCount;
+
   void FlushPendingInvalidates();
   void ProcessPendingUpdates(nsView *aView, PRBool aDoInvalidate);
   void ReparentChildWidgets(nsIView* aView, nsIWidget *aNewWidget);
@@ -300,67 +254,15 @@ private:
    * Refresh aView (which must be non-null) with our default background color
    */
   void DefaultRefresh(nsView* aView, nsIRenderingContext *aContext, const nsRect* aRect);
-  PRBool BuildRenderingDisplayList(nsIView* aRootView,
-    const nsRegion& aRegion, nsVoidArray* aDisplayList, PLArenaPool &aPool,
-    PRBool aIgnoreCoveringWidgets, PRBool aIgnoreOutsideClipping,
-    nsIView* aSuppressScrolling);
   void RenderViews(nsView *aRootView, nsIRenderingContext& aRC,
-                   const nsRegion& aRegion, nsIDrawingSurface* aRCSurface);
-
-  void RenderDisplayListElement(DisplayListElement2* element,
-                                nsIRenderingContext* aRC);
-
-  void PaintView(nsView *aView, nsIRenderingContext &aRC, nscoord x, nscoord y,
-                 const nsRect &aDamageRect);
+                   const nsRegion& aRegion);
 
   void InvalidateRectDifference(nsView *aView, const nsRect& aRect, const nsRect& aCutOut, PRUint32 aUpdateFlags);
   void InvalidateHorizontalBandDifference(nsView *aView, const nsRect& aRect, const nsRect& aCutOut,
                                           PRUint32 aUpdateFlags, nscoord aY1, nscoord aY2, PRBool aInCutOut);
 
-  virtual BlendingBuffers* CreateBlendingBuffers(nsIRenderingContext *aRC, PRBool aBorrowContext,
-                                                 nsIDrawingSurface* aBorrowSurface, PRBool aNeedAlpha,
-                                                 const nsRect& aArea);
-  virtual nsIBlender* GetBlender() { return mBlender; }
-
-  void ReparentViews(DisplayZTreeNode* aNode, nsHashtable &);
-  void BuildDisplayList(nsView* aView, const nsRect& aRect, PRBool aEventProcessing,
-                        PRBool aCaptured, nsIView* aSuppressScrolling,
-                        nsVoidArray* aDisplayList, PLArenaPool &aPool);
-  void BuildEventTargetList(nsVoidArray &aTargets, nsView* aView, nsPoint aPoint,
-                            PRBool aCaptured, PLArenaPool &aPool);
-
-  PRBool CreateDisplayList(nsView *aView,
-                           DisplayZTreeNode* &aResult,
-                           nscoord aOriginX, nscoord aOriginY,
-                           nsView *aRealView, const nsRect *aDamageRect,
-                           nsView *aTopView, nscoord aX, nscoord aY,
-                           PRBool aPaintFloats, PRBool aEventProcessing,
-                           nsIView* aSuppressClip,
-                           nsHashtable&, PLArenaPool &aPool);
-  PRBool AddToDisplayList(nsView *aView,
-                          DisplayZTreeNode* &aParent, nsRect &aClipRect,
-                          nsRect& aDirtyRect, PRUint32 aFlags, nscoord aAbsX, nscoord aAbsY,
-                          PRBool aAssumeIntersection, PLArenaPool &aPool,
-                          nsIView* aStopClippingAtView);
-  void OptimizeDisplayList(const nsVoidArray* aDisplayList, const nsRegion& aDirtyRegion,
-                           nsRect& aFinalTransparentRect, nsRegion& aOpaqueRgn,
-                           PRBool aTreatUniformAsOpaque);
-
   void AddCoveringWidgetsToOpaqueRegion(nsRegion &aRgn, nsIDeviceContext* aContext,
                                         nsView* aRootView);
-
-  // Predicates
-  PRBool DoesViewHaveNativeWidget(nsView* aView);
-
-  void PauseTimer(void);
-  void RestartTimer(void);
-  void OptimizeDisplayListClipping(const nsVoidArray* aDisplayList, PRBool aHaveClip,
-                                   nsRect& aClipRect, PRInt32& aIndex,
-                                   PRBool& aAnyRendered);
-  nsRect OptimizeTranslucentRegions(const nsVoidArray& aDisplayList,
-                                    PRInt32* aIndex, nsRegion* aOpaqueRegion);
-
-  void ShowDisplayList(const nsVoidArray* aDisplayList);
 
   // Utilities
 
@@ -371,12 +273,6 @@ private:
    * a view or its kids.
    */
   void UpdateWidgetsForView(nsView* aView);
-
-  /**
-   * Returns the nearest parent view with an attached widget. Can be the
-   * same view as passed-in.
-   */
-  static nsView* GetWidgetView(nsView *aView);
 
   /**
    * Transforms a rectangle from specified view's coordinate system to
@@ -403,17 +299,6 @@ private:
    */
 
   nsresult GetVisibleRect(nsRect& aVisibleRect);
-
-  // Utilities used to size the offscreen drawing surface
-
-  /**
-   * Determine the maximum and width and height of all of the
-   * view manager's widgets.
-   *
-   * @param aMaxWidgetBounds the maximum width and height of all view managers
-   * widgets on exit.
-   */
-  void GetMaxWidgetBounds(nsRect& aMaxWidgetBounds) const;
 
   void DoSetWindowDimensions(nscoord aWidth, nscoord aHeight)
   {
@@ -466,7 +351,6 @@ public: // NOT in nsIViewManager, so private to the view module
   nsView* GetMouseEventGrabber() const {
     return RootViewManager()->mMouseGrabber;
   }
-  nsView* GetKeyEventGrabber() const { return mKeyGrabber; }
   nsViewManager* RootViewManager() const { return mRootViewManager; }
   PRBool IsRootVM() const { return this == RootViewManager(); }
 
@@ -531,10 +415,7 @@ public: // NOT in nsIViewManager, so private to the view module
   void PostPendingUpdate() { RootViewManager()->mHasPendingUpdates = PR_TRUE; }
 private:
   nsIDeviceContext  *mContext;
-  float             mTwipsToPixels;
-  float             mPixelsToTwips;
   nsIViewObserver   *mObserver;
-  nsView            *mKeyGrabber;
   nsIScrollableView *mRootScrollable;
   nscolor           mDefaultBackgroundColor;
   nsPoint           mMouseLocation; // device units, relative to mRootView
@@ -543,14 +424,11 @@ private:
   // visible again.
   nsSize            mDelayedResize;
 
-  nsCOMPtr<nsIBlender> mBlender;
-  nsISupportsArray  *mCompositeListeners;
   nsCOMPtr<nsIFactory> mRegionFactory;
   nsView            *mRootView;
   // mRootViewManager is a strong ref unless it equals |this|.  It's
   // never null (if we have no ancestors, it will be |this|).
   nsViewManager     *mRootViewManager;
-  PRPackedBool      mAllowDoubleBuffering;
 
   nsRevocableEventPtr<nsViewManagerEvent> mSynthMouseMoveEvent;
   nsRevocableEventPtr<nsViewManagerEvent> mInvalidateEvent;
