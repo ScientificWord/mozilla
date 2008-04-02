@@ -49,7 +49,6 @@
 #include "nsIDOMDocument.h"
 #include "nsIDOMEventListener.h"
 #include "nsIRDFContainerUtils.h"
-#include "nsIWebProgressListener.h"
 #include "nsIURI.h"
 #include "nsILocalFile.h"
 #include "nsRefPtrHashtable.h"
@@ -59,6 +58,7 @@
 #include "nsIProgressDialog.h"
 #include "nsIMIMEInfo.h"
 #include "nsISound.h"
+#include "nsAutoPtr.h"
  
 enum DownloadState { NOTSTARTED = -1, DOWNLOADING, FINISHED, FAILED, CANCELED };
 
@@ -123,10 +123,11 @@ public:
   nsresult Cancel();
   nsresult Suspend();
   nsresult SetDisplayName(const PRUnichar* aDisplayName);
+  nsresult SetTempFile(nsILocalFile* aTempFile);
   nsresult Resume();
   void DisplayDownloadFinishedAlert();
 
-  void SetDialogListener(nsIWebProgressListener2* aInternalListener) {
+  void SetDialogListener(nsIDownloadProgressListener* aInternalListener) {
     mDialogListener = aInternalListener;
   }
   void SetDialog(nsIProgressDialog* aDialog) {
@@ -162,17 +163,18 @@ public:
     mLastUpdate = aStartTime;
   }
 private:
-  nsDownloadManager* mDownloadManager;
+  nsRefPtr<nsDownloadManager> mDownloadManager;
 
   nsString mDisplayName;
 
   nsCOMPtr<nsIURI> mTarget;
   nsCOMPtr<nsIURI> mSource;
-  nsCOMPtr<nsIWebProgressListener2> mDialogListener;
+  nsCOMPtr<nsIDownloadProgressListener> mDialogListener;
   nsCOMPtr<nsICancelable> mCancelable;
   nsCOMPtr<nsIRequest> mRequest;
   nsCOMPtr<nsIProgressDialog> mDialog;
   nsCOMPtr<nsIMIMEInfo> mMIMEInfo;
+  nsCOMPtr<nsILocalFile> mTempFile;
   DownloadState mDownloadState;
 
   PRInt32 mPercentComplete;

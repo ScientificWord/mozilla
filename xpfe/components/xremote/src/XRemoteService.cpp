@@ -17,7 +17,7 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Christopher Blizzard <blizzard@mozilla.org>.  Portions created by Christopher Blizzard are Copyright (C) Christopher Blizzard.  All Rights Reserved.
+ * Christopher Blizzard <blizzard@mozilla.org>.
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
  *
@@ -50,7 +50,8 @@
 #include <nsIServiceManager.h>
 #include <nsString.h>
 #include <nsCRT.h>
-#include <nsIPref.h>
+#include <nsIPrefBranch.h>
+#include <nsIPrefService.h>
 #include <nsIWindowWatcher.h>
 #include <nsXPCOM.h>
 #include <nsISupportsPrimitives.h>
@@ -146,10 +147,7 @@ XRemoteService::ParseCommand(const char *aCommand, nsIDOMWindow* aWindow)
   */
 
   if (action.Equals("openurl") || action.Equals("openfile")) {
-    if (argument.IsEmpty())
-      rv = OpenURLDialog(aWindow);
-    else
-      rv = OpenURL(argument, aWindow, PR_TRUE);
+    rv = OpenURL(argument, aWindow, PR_TRUE);
   }
 
   /*
@@ -335,12 +333,11 @@ nsresult
 XRemoteService::GetBrowserLocation(char **_retval)
 {
   // get the browser chrome URL
-  nsCOMPtr<nsIPref> prefs;
-  prefs = do_GetService(NS_PREF_CONTRACTID);
+  nsCOMPtr<nsIPrefBranch> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
   if (!prefs)
     return NS_ERROR_FAILURE;
   
-  prefs->CopyCharPref("browser.chromeURL", _retval);
+  prefs->GetCharPref("browser.chromeURL", _retval);
 
   // fallback
   if (!*_retval)
@@ -353,21 +350,7 @@ nsresult
 XRemoteService::GetMailLocation(char **_retval)
 {
   // get the mail chrome URL
-  nsCOMPtr<nsIPref> prefs;
-  prefs = do_GetService(NS_PREF_CONTRACTID);
-  if (!prefs)
-    return NS_ERROR_FAILURE;
-  
-  PRInt32 retval = 0;
-  nsresult rv;
-  rv = prefs->GetIntPref("mail.pane_config", &retval);
-  if (NS_FAILED(rv))
-    return NS_ERROR_FAILURE;
-
-  if (!retval)
-    *_retval = nsCRT::strdup("chrome://messenger/content/messenger.xul");
-  else
-    *_retval = nsCRT::strdup("chrome://messenger/content/mail3PaneWindowVertLayout.xul");
+  *_retval = nsCRT::strdup("chrome://messenger/content/");
 
   return NS_OK;
   
@@ -386,12 +369,11 @@ nsresult
 XRemoteService::GetCalendarLocation(char **_retval)
 {
   // get the calendar chrome URL
-  nsCOMPtr<nsIPref> prefs;
-  prefs = do_GetService(NS_PREF_CONTRACTID);
+  nsCOMPtr<nsIPrefBranch> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
   if (!prefs)
     return NS_ERROR_FAILURE;
 
-  prefs->CopyCharPref("calendar.chromeURL", _retval);
+  prefs->GetCharPref("calendar.chromeURL", _retval);
 
   // fallback
   if (!*_retval)
@@ -547,8 +529,8 @@ XRemoteService::OpenURL(nsCString &aArgument,
     // we own it
     NS_ADDREF(listener);
     nsCOMPtr<nsISupports> listenerRef;
-    listenerRef = do_QueryInterface(NS_STATIC_CAST(nsIURIContentListener *,
-						   listener));
+    listenerRef = do_QueryInterface(static_cast<nsIURIContentListener *>
+                                               (listener));
     // now the listenerref is the only reference
     NS_RELEASE(listener);
 
@@ -642,41 +624,6 @@ XRemoteService::OpenURL(nsCString &aArgument,
 
   }
 
-  return rv;
-}
-
-nsresult
-XRemoteService::OpenURLDialog(nsIDOMWindow *aParent)
-{
-  nsresult rv;
-
-  nsIDOMWindow *finalParent = aParent;
-  nsCOMPtr<nsIDOMWindow> window;
-
-  // if there's no parent then create a new browser window to be the
-  // parent.
-  if (!finalParent) {
-    nsXPIDLCString urlString;
-    GetBrowserLocation(getter_Copies(urlString));
-    if (!urlString)
-      return NS_ERROR_FAILURE;
-    
-    rv = OpenChromeWindow(nsnull, urlString, "chrome,all,dialog=no",
-			  nsnull, getter_AddRefs(window));
-    if (NS_FAILED(rv))
-      return rv;
-
-    finalParent = window.get();
-
-  }
-
-  nsCOMPtr<nsIDOMWindow> newWindow;
-  rv = OpenChromeWindow(finalParent,
-			"chrome://communicator/content/openLocation.xul",
-			"chrome,all",
-			finalParent,
-			getter_AddRefs(newWindow));
-  
   return rv;
 }
 
