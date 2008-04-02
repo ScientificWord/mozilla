@@ -41,7 +41,6 @@ include $(CORE_DEPTH)/coreconf/UNIX.mk
 # Temporary define for the Client; to be removed when binary release is used
 #
 ifdef MOZILLA_CLIENT
-	LOCAL_THREADS_ONLY = 1
 	ifndef NS_USE_NATIVE
 		NS_USE_GCC = 1
 	endif
@@ -72,29 +71,11 @@ else
   endif
 endif
 
-#
-# The default implementation strategy for Solaris is classic nspr.
-#
-ifeq ($(USE_PTHREADS),1)
-	IMPL_STRATEGY = _PTH
-else
-	ifeq ($(LOCAL_THREADS_ONLY),1)
-		IMPL_STRATEGY = _LOCAL
-	endif
-endif
-
-#
-# Temporary define for the Client; to be removed when binary release is used
-#
-ifdef MOZILLA_CLIENT
-	IMPL_STRATEGY =
-endif
-
 DEFAULT_COMPILER = cc
 
 ifdef NS_USE_GCC
 	CC         = gcc
-	OS_CFLAGS += -Wall -Wno-format
+	OS_CFLAGS += -Wall -Wno-format -Werror-implicit-function-declaration -Wno-switch
 	CCC        = g++
 	CCC       += -Wall -Wno-format
 	ASFLAGS	  += -x assembler-with-cpp
@@ -117,18 +98,17 @@ else
 	else
 		OPTIMIZER = -xO4
 	endif
-
+	ifdef USE_TCOV
+		CC += -xprofile=tcov
+		CCC += -xprofile=tcov
+	endif
 endif
 
 INCLUDES   += -I/usr/dt/include -I/usr/openwin/include
 
 RANLIB      = echo
 CPU_ARCH    = sparc
-OS_DEFINES += -DSVR4 -DSYSV -D__svr4 -D__svr4__ -DSOLARIS
-
-ifneq ($(LOCAL_THREADS_ONLY),1)
-	OS_DEFINES		+= -D_REENTRANT
-endif
+OS_DEFINES += -DSVR4 -DSYSV -D__svr4 -D__svr4__ -DSOLARIS -D_REENTRANT
 
 # Purify doesn't like -MDupdate
 NOMD_OS_CFLAGS += $(DSO_CFLAGS) $(OS_DEFINES) $(SOL_CFLAGS)

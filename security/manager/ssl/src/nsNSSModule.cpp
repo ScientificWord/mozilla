@@ -24,6 +24,7 @@
  *   Hubbie Shaw
  *   Doug Turner <dougt@netscape.com>
  *   Brian Ryner <bryner@brianryner.com>
+ *   Kai Engert <kengert@redhat.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -69,6 +70,14 @@
 #include "nsCRLManager.h"
 #include "nsCipherInfo.h"
 #include "nsNTLMAuthModule.h"
+#include "nsStreamCipher.h"
+#include "nsKeyModule.h"
+#include "nsDataSignatureVerifier.h"
+#include "nsCertOverrideService.h"
+#include "nsRandomGenerator.h"
+#include "nsRecentBadCerts.h"
+#include "nsSSLStatus.h"
+#include "nsNSSIOLayer.h"
 
 // We must ensure that the nsNSSComponent has been loaded before
 // creating any other components.
@@ -168,6 +177,7 @@ NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsSecretDecoderRing)
 NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsPK11TokenDB)
 NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsPKCS11ModuleDB)
 NS_NSS_GENERIC_FACTORY_CONSTRUCTOR_INIT(PR_FALSE, PSMContentListener, init)
+NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsNSSCertificate)
 NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsNSSCertificateDB)
 NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsNSSCertCache)
 #ifdef MOZ_XUL
@@ -184,6 +194,16 @@ NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsCRLManager)
 NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsCipherInfoService)
 NS_NSS_GENERIC_FACTORY_CONSTRUCTOR_INIT(PR_FALSE, nsNTLMAuthModule, InitTest)
 NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsCryptoHash)
+NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsCryptoHMAC)
+NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsStreamCipher)
+NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsKeyObject)
+NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsKeyObjectFactory)
+NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsDataSignatureVerifier)
+NS_NSS_GENERIC_FACTORY_CONSTRUCTOR_INIT(PR_FALSE, nsCertOverrideService, Init)
+NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsRandomGenerator)
+NS_NSS_GENERIC_FACTORY_CONSTRUCTOR_INIT(PR_FALSE, nsRecentBadCertsService, Init)
+NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsSSLStatus)
+NS_NSS_GENERIC_FACTORY_CONSTRUCTOR(PR_FALSE, nsNSSSocketInfo)
 
 static NS_METHOD RegisterPSMContentListeners(
                       nsIComponentManager *aCompMgr,
@@ -245,6 +265,13 @@ static const nsModuleComponentInfo components[] =
   },
   
   {
+    PSM_COMPONENT_CLASSNAME,
+    NS_NSSCOMPONENT_CID,
+    NS_NSS_ERRORS_SERVICE_CONTRACTID,
+    nsNSSComponentConstructor
+  },
+  
+  {
     NS_SSLSOCKETPROVIDER_CLASSNAME,
     NS_SSLSOCKETPROVIDER_CID,
     NS_SSLSOCKETPROVIDER_CONTRACTID,
@@ -286,6 +313,13 @@ static const nsModuleComponentInfo components[] =
     PSMContentListenerConstructor
   },
 
+  {
+    "X509 Certificate",
+    NS_X509CERT_CID,
+    nsnull,
+    nsNSSCertificateConstructor
+  },
+  
   {
     "X509 Certificate Database",
     NS_X509CERTDB_CID,
@@ -364,6 +398,13 @@ static const nsModuleComponentInfo components[] =
   },
 
   {
+    NS_CRYPTO_HMAC_CLASSNAME,
+    NS_CRYPTO_HMAC_CID,
+    NS_CRYPTO_HMAC_CONTRACTID,
+    nsCryptoHMACConstructor
+  },
+
+  {
     NS_CERT_PICKER_CLASSNAME,
     NS_CERT_PICKER_CID,
     NS_CERT_PICKER_CONTRACTID,
@@ -404,6 +445,69 @@ static const nsModuleComponentInfo components[] =
     NS_NTLMAUTHMODULE_CID,
     NS_NTLMAUTHMODULE_CONTRACTID,
     nsNTLMAuthModuleConstructor
+  },
+
+  {
+    NS_STREAMCIPHER_CLASSNAME,
+    NS_STREAMCIPHER_CID,
+    NS_STREAMCIPHER_CONTRACTID,
+    nsStreamCipherConstructor
+  },
+
+  {
+    NS_KEYMODULEOBJECT_CLASSNAME,
+    NS_KEYMODULEOBJECT_CID,
+    NS_KEYMODULEOBJECT_CONTRACTID,
+    nsKeyObjectConstructor
+  },
+
+  {
+    NS_KEYMODULEOBJECTFACTORY_CLASSNAME,
+    NS_KEYMODULEOBJECTFACTORY_CID,
+    NS_KEYMODULEOBJECTFACTORY_CONTRACTID,
+    nsKeyObjectFactoryConstructor
+  },
+
+  {
+    "Signature Verifier",
+    NS_DATASIGNATUREVERIFIER_CID,
+    NS_DATASIGNATUREVERIFIER_CONTRACTID,
+    nsDataSignatureVerifierConstructor
+  },
+
+  {
+    "PSM Cert Override Settings Service",
+    NS_CERTOVERRIDE_CID,
+    NS_CERTOVERRIDE_CONTRACTID,
+    nsCertOverrideServiceConstructor
+  },
+
+  {
+    "Random Generator",
+    NS_RANDOMGENERATOR_CID,
+    NS_RANDOMGENERATOR_CONTRACTID,
+    nsRandomGeneratorConstructor
+  },
+
+  {
+    "PSM Recent Bad Certs Service",
+    NS_RECENTBADCERTS_CID,
+    NS_RECENTBADCERTS_CONTRACTID,
+    nsRecentBadCertsServiceConstructor
+  },
+
+  {
+    "SSL Status object",
+    NS_SSLSTATUS_CID,
+    nsnull,
+    nsSSLStatusConstructor
+  },
+
+  {
+    "NSS Socket Info",
+    NS_NSSSOCKETINFO_CID,
+    nsnull,
+    nsNSSSocketInfoConstructor
   }
 };
 

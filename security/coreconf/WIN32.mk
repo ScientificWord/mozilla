@@ -61,6 +61,7 @@ else
 	RANLIB       = echo
 	BSDECHO      = echo
 	RC           = rc.exe
+	MT           = mt.exe
 endif
 
 ifdef BUILD_TREE
@@ -96,7 +97,11 @@ ifdef NS_USE_GCC
     _GEN_IMPORT_LIB=-Wl,--out-implib,$(IMPORT_LIBRARY)
     DLLFLAGS  += -mno-cygwin -o $@ -shared -Wl,--export-all-symbols $(if $(IMPORT_LIBRARY),$(_GEN_IMPORT_LIB))
     ifdef BUILD_OPT
-	OPTIMIZER  += -O2
+	ifeq (11,$(ALLOW_OPT_CODE_SIZE)$(OPT_CODE_SIZE))
+		OPTIMIZER += -Os
+	else
+		OPTIMIZER += -O2
+	endif
 	DEFINES    += -UDEBUG -U_DEBUG -DNDEBUG
 	#
 	# Add symbolic information for a profiler
@@ -115,7 +120,11 @@ ifdef NS_USE_GCC
 else # !NS_USE_GCC
     ifdef BUILD_OPT
 	OS_CFLAGS  += -MD
-	OPTIMIZER  += -O2
+	ifeq (11,$(ALLOW_OPT_CODE_SIZE)$(OPT_CODE_SIZE))
+		OPTIMIZER += -O1
+	else
+		OPTIMIZER += -O2
+	endif
 	DEFINES    += -UDEBUG -U_DEBUG -DNDEBUG
 	DLLFLAGS   += -OUT:"$@"
 	#
@@ -129,6 +138,7 @@ else # !NS_USE_GCC
 	endif
 	ifneq (,$(MOZ_PROFILE)$(MOZ_DEBUG_SYMBOLS))
 		DLLFLAGS += -DEBUG -OPT:REF
+		LDFLAGS += -DEBUG -OPT:REF
 	endif
     else
 	#
@@ -148,12 +158,21 @@ else # !NS_USE_GCC
 	USERNAME   := $(subst -,_,$(USERNAME))
 	DEFINES    += -DDEBUG -D_DEBUG -UNDEBUG -DDEBUG_$(USERNAME)
 	DLLFLAGS   += -DEBUG -OUT:"$@"
+	LDFLAGS    += -DEBUG 
+ifndef MOZ_DEBUG_SYMBOLS
+	LDFLAGS    += -PDB:NONE 
+endif
 	# Purify requires /FIXED:NO when linking EXEs.
-	LDFLAGS    += -DEBUG -PDB:NONE /FIXED:NO
+	LDFLAGS    += /FIXED:NO
     endif
 endif # NS_USE_GCC
 
+ifdef USE_64
+DEFINES += -DWIN64
+else
 DEFINES += -DWIN32
+endif
+
 ifdef MAPFILE
 ifndef NS_USE_GCC
 DLLFLAGS += -DEF:$(MAPFILE)

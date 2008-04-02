@@ -49,20 +49,21 @@
 <dialog id="certDetails" 
   title="&certmgr.certdetail.title;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-#expand buttons="accept__HELP_BUTTON__"
+  buttons="accept"
   buttonlabelaccept="&certmgr.close.label;"
-  ondialoghelp="openHelp('cert_details');"
+  buttonaccesskeyaccept="&certmgr.close.accesskey;"
   onload="setWindowName();">
 
 <script type="application/x-javascript" src="chrome://global/content/strres.js"/>
 <script type="application/x-javascript" src="chrome://pippki/content/viewCertDetails.js"/>
 <script type="application/x-javascript" src="chrome://pippki/content/pippki.js"/>
-<script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
 
   <tabbox>
     <tabs>
-      <tab id="general_tab" label="&certmgr.detail.general_tab.title;"/>
-      <tab id="prettyprint_tab" label="&certmgr.detail.prettyprint_tab.title;"/>
+      <tab id="general_tab" label="&certmgr.detail.general_tab.title;"
+           accesskey="&certmgr.detail.general_tab.accesskey;"/>
+      <tab id="prettyprint_tab" label="&certmgr.detail.prettyprint_tab.title;"
+           accesskey="&certmgr.detail.prettyprint_tab.accesskey;"/>
     </tabs>
     <tabpanels>
       <vbox id="general_info"/>
