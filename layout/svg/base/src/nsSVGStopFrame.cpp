@@ -43,16 +43,20 @@
 #include "nsISVGValue.h"
 
 // This is a very simple frame whose only purpose is to capture style change
-// events and propogate them to the parent.  Most of the heavy lifting is done
+// events and propagate them to the parent.  Most of the heavy lifting is done
 // within the nsSVGGradientFrame, which is the parent for this frame
 
 typedef nsFrame  nsSVGStopFrameBase;
 
 class nsSVGStopFrame : public nsSVGStopFrameBase
 {
-public:
+  friend nsIFrame*
+  NS_NewSVGStopFrame(nsIPresShell*   aPresShell, nsIContent*     aContent,
+                     nsIFrame*       aParentFrame, nsStyleContext* aContext);
+protected:
   nsSVGStopFrame(nsStyleContext* aContext) : nsSVGStopFrameBase(aContext) {}
 
+public:
   // nsIFrame interface:
   NS_IMETHOD DidSetStyleContext();
 
@@ -66,7 +70,11 @@ public:
    * @see nsGkAtoms::svgStopFrame
    */
   virtual nsIAtom* GetType() const;
-  virtual PRBool IsFrameOfType(PRUint32 aFlags) const;
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsSVGStopFrameBase::IsFrameOfType(aFlags & ~(nsIFrame::eSVG));
+  }
 
 #ifdef DEBUG
   // nsIFrameDebug interface:
@@ -75,11 +83,6 @@ public:
     return MakeFrameName(NS_LITERAL_STRING("SVGStop"), aResult);
   }
 #endif
-
-  friend nsIFrame* NS_NewSVGStopFrame(nsIPresShell*   aPresShell,
-                                      nsIContent*     aContent,
-                                      nsIFrame*       aParentFrame,
-                                      nsStyleContext* aContext);
 };
 
 //----------------------------------------------------------------------
@@ -101,12 +104,6 @@ nsIAtom *
 nsSVGStopFrame::GetType() const
 {
   return nsGkAtoms::svgStopFrame;
-}
-
-PRBool
-nsSVGStopFrame::IsFrameOfType(PRUint32 aFlags) const
-{
-  return !(aFlags & ~nsIFrame::eSVG);
 }
 
 NS_IMETHODIMP

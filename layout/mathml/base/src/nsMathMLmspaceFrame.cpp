@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -39,7 +40,6 @@
 #include "nsCOMPtr.h"
 #include "nsFrame.h"
 #include "nsPresContext.h"
-#include "nsUnitConversion.h"
 #include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
@@ -84,7 +84,7 @@ nsMathMLmspaceFrame::ProcessAttributes(nsPresContext* aPresContext)
 
   // width 
   mWidth = 0;
-  GetAttribute(mContent, mPresentationData.mstyle, nsMathMLAtoms::width,
+  GetAttribute(mContent, mPresentationData.mstyle, nsGkAtoms::width,
                value);
   if (!value.IsEmpty()) {
     if ((ParseNumericValue(value, cssValue) ||
@@ -96,7 +96,7 @@ nsMathMLmspaceFrame::ProcessAttributes(nsPresContext* aPresContext)
 
   // height
   mHeight = 0;
-  GetAttribute(mContent, mPresentationData.mstyle, nsMathMLAtoms::height,
+  GetAttribute(mContent, mPresentationData.mstyle, nsGkAtoms::height,
                value);
   if (!value.IsEmpty()) {
     if ((ParseNumericValue(value, cssValue) ||
@@ -108,7 +108,7 @@ nsMathMLmspaceFrame::ProcessAttributes(nsPresContext* aPresContext)
 
   // depth
   mDepth = 0;
-  GetAttribute(mContent, mPresentationData.mstyle, nsMathMLAtoms::depth_,
+  GetAttribute(mContent, mPresentationData.mstyle, nsGkAtoms::depth_,
                value);
   if (!value.IsEmpty()) {
     if ((ParseNumericValue(value, cssValue) ||
@@ -135,12 +135,8 @@ nsMathMLmspaceFrame::Reflow(nsPresContext*          aPresContext,
   mBoundingMetrics.rightBearing = mWidth;
 
   aDesiredSize.ascent = mHeight;
-  aDesiredSize.descent = mDepth;
   aDesiredSize.width = mWidth;
-  aDesiredSize.height = aDesiredSize.ascent + aDesiredSize.descent;
-  if (aDesiredSize.mComputeMEW) {
-    aDesiredSize.mMaxElementWidth = aDesiredSize.width;
-  }
+  aDesiredSize.height = aDesiredSize.ascent + mDepth;
   // Also return our bounding metrics
   aDesiredSize.mBoundingMetrics = mBoundingMetrics;
 

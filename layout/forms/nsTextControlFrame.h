@@ -50,8 +50,8 @@
 #include "nsIScrollableViewProvider.h"
 #include "nsIPhonetic.h"
 #include "nsContentUtils.h"
+#include "nsDisplayList.h"
 
-class nsISupportsArray;
 class nsIEditor;
 class nsISelectionController;
 class nsTextInputSelectionImpl;
@@ -78,15 +78,24 @@ public:
 
   virtual void Destroy();
 
+  virtual nscoord GetMinWidth(nsIRenderingContext* aRenderingContext);
+  virtual nsSize ComputeAutoSize(nsIRenderingContext *aRenderingContext,
+                                 nsSize aCBSize, nscoord aAvailableWidth,
+                                 nsSize aMargin, nsSize aBorder,
+                                 nsSize aPadding, PRBool aShrinkWrap);
+
   NS_IMETHOD Reflow(nsPresContext*          aPresContext,
                     nsHTMLReflowMetrics&     aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
                     nsReflowStatus&          aStatus);
 
-  NS_IMETHOD GetPrefSize(nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
-  NS_IMETHOD GetMinSize(nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
-  NS_IMETHOD GetMaxSize(nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
-  NS_IMETHOD GetAscent(nsBoxLayoutState& aBoxLayoutState, nscoord& aAscent);
+  virtual nsSize GetPrefSize(nsBoxLayoutState& aBoxLayoutState);
+  virtual nsSize GetMinSize(nsBoxLayoutState& aBoxLayoutState);
+  virtual nsSize GetMaxSize(nsBoxLayoutState& aBoxLayoutState);
+  virtual nscoord GetBoxAscent(nsBoxLayoutState& aBoxLayoutState);
+  virtual PRBool IsCollapsed(nsBoxLayoutState& aBoxLayoutState);
+
+  DECL_DO_GLOBAL_REFLOW_COUNT_DSP(nsTextControlFrame, nsStackFrame)
 
   virtual PRBool IsLeaf() const;
   
@@ -102,16 +111,25 @@ public:
   }
 #endif
 
-  // from nsIAnonymousContentCreator
-  NS_IMETHOD CreateAnonymousContent(nsPresContext* aPresContext,
-                                    nsISupportsArray& aChildList);
-  NS_IMETHOD CreateFrameFor(nsPresContext*   aPresContext,
-                               nsIContent *      aContent,
-                               nsIFrame**        aFrame);
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    // nsStackFrame is already both of these, but that's somewhat bogus,
+    // and we really mean it.
+    return nsStackFrame::IsFrameOfType(aFlags &
+      ~(nsIFrame::eReplaced | nsIFrame::eReplacedContainsBlock));
+  }
+
+  // nsIAnonymousContentCreator
+  virtual nsresult CreateAnonymousContent(nsTArray<nsIContent*>& aElements);
+  virtual nsIFrame* CreateFrameFor(nsIContent* aContent);
   virtual void PostCreateFrames();
 
   // Utility methods to set current widget state
-  void SetValue(const nsAString& aValue);
+
+  // Be careful when using this method.
+  // Calling it may cause |this| to be deleted.
+  // In that case the method returns an error value.
+  nsresult SetValue(const nsAString& aValue);
   NS_IMETHOD SetInitialChildList(nsIAtom*        aListName,
                                  nsIFrame*       aChildList);
 
@@ -183,19 +201,22 @@ public: //for methods who access nsTextControlFrame directly
   nsresult DOMPointToOffset(nsIDOMNode* aNode, PRInt32 aNodeOffset, PRInt32 *aResult);
   nsresult OffsetToDOMPoint(PRInt32 aOffset, nsIDOMNode** aResult, PRInt32* aPosition);
 
-  void SetHasFocus(PRBool aHasFocus)
+  void SetFireChangeEventState(PRBool aNewState)
   {
-    mHasFocus = aHasFocus;
-  };
+    mFireChangeEventState = aNewState;
+  }
+
+  PRBool GetFireChangeEventState() const
+  {
+    return mFireChangeEventState;
+  }    
 
   /* called to free up native keybinding services */
   static NS_HIDDEN_(void) ShutDown();
-  
-  enum SpellcheckDefaultState {
-    SpellcheckNone = 0,
-    SpellcheckMultiLineOnly = 1,
-    SpellcheckAllTextFields = 2
-  };
+
+  // called by the focus listener
+  nsresult MaybeBeginSecureKeyboardInput();
+  void MaybeEndSecureKeyboardInput();
 
 protected:
   /**
@@ -250,15 +271,11 @@ protected:
    */
   PRInt32 GetRows();
 
-  nsresult ReflowStandard(nsPresContext*          aPresContext,
-                          nsSize&                  aDesiredSize,
-                          const nsHTMLReflowState& aReflowState,
-                          nsReflowStatus&          aStatus);
-
-  nsresult CalculateSizeStandard(nsPresContext*       aPresContext,
-                                 const nsHTMLReflowState& aReflowState,
-                                 nsSize&               aDesiredSize,
-                                 nsSize&               aMinSize);
+  // Compute our intrinsic size.  This does not include any borders, paddings,
+  // etc.  Just the size of our actual area for the text (and the scrollbars,
+  // for <textarea>).
+  nsresult CalcIntrinsicSize(nsIRenderingContext* aRenderingContext,
+                             nsSize&              aIntrinsicSize);
 
   // nsIScrollableViewProvider
   virtual nsIScrollableView* GetScrollableView();
@@ -270,28 +287,24 @@ private:
   nsresult SelectAllContents();
   nsresult SetSelectionEndPoints(PRInt32 aSelStart, PRInt32 aSelEnd);
   
-  void SetEnableRealTimeSpell(PRBool aEnabled);
-  void SyncRealTimeSpell();
-  static int PR_CALLBACK RealTimeSpellCallback(const char* aPref, void* aContext);
-
 private:
-  nsCOMPtr<nsIEditor> mEditor;
+  nsCOMPtr<nsIContent> mAnonymousDiv;
 
-  //cached sizes and states
-  nsSize       mSize;
+  nsCOMPtr<nsIEditor> mEditor;
 
   // these packed bools could instead use the high order bits on mState, saving 4 bytes 
   PRPackedBool mUseEditor;
   PRPackedBool mIsProcessing;
   PRPackedBool mNotifyOnInput;//default this to off to stop any notifications until setup is complete
   PRPackedBool mDidPreDestroy; // has PreDestroy been called
-  PRPackedBool mHasFocus;
+  // Calls to SetValue will be treated as user values (i.e. trigger onChange
+  // eventually) when mFireChangeEventState==true, this is used by nsFileControlFrame.
+  PRPackedBool mFireChangeEventState;
+  PRPackedBool mInSecureKeyboardInputMode;
 
   nsCOMPtr<nsISelectionController> mSelCon;
   nsCOMPtr<nsFrameSelection> mFrameSel;
   nsTextInputListener* mTextListener;
-  // XXX This seems unsafe; what's keeping it around?
-  nsIScrollableView *mScrollableView;
   nsString mFocusedValue;
 
 #ifdef DEBUG

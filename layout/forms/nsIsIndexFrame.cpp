@@ -41,16 +41,14 @@
 #include "prtypes.h"
 #include "nsIAtom.h"
 #include "nsPresContext.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsPresState.h"
 #include "nsWidgetsCID.h"
 #include "nsIComponentManager.h"
-#include "nsIView.h"
 #include "nsHTMLParts.h"
 #include "nsIDOMHTMLInputElement.h"
 #include "nsINameSpaceManager.h"
 #include "nsCOMPtr.h"
-#include "nsISupportsArray.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMDocument.h"
 #include "nsIDocument.h"
@@ -60,7 +58,6 @@
 #include "nsXPCOM.h"
 #include "nsISupportsPrimitives.h"
 #include "nsIComponentManager.h"
-#include "nsITextContent.h"
 #include "nsHTMLParts.h"
 #include "nsLinebreakConverter.h"
 #include "nsILinkHandler.h"
@@ -74,7 +71,7 @@
 #include "nsIDOMKeyEvent.h"
 #include "nsIFormControlFrame.h"
 #include "nsINodeInfo.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsContentCID.h"
 #include "nsNodeInfoManager.h"
 #include "nsContentCreatorFunctions.h"
@@ -89,17 +86,25 @@ NS_NewIsIndexFrame(nsIPresShell* aPresShell, nsStyleContext* aContext)
 nsIsIndexFrame::nsIsIndexFrame(nsStyleContext* aContext) :
   nsAreaFrame(aContext)
 {
-    //Shrink the area around its contents
-  SetFlags(NS_BLOCK_SHRINK_WRAP | NS_BLOCK_SPACE_MGR);
+  SetFlags(NS_BLOCK_SPACE_MGR);
 }
 
 nsIsIndexFrame::~nsIsIndexFrame()
 {
+}
+
+void
+nsIsIndexFrame::Destroy()
+{
   // remove ourself as a listener of the text control (bug 40533)
   if (mInputContent) {
-    nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(mInputContent));
-    receiver->RemoveEventListenerByIID(this, NS_GET_IID(nsIDOMKeyListener));
+    mInputContent->RemoveEventListenerByIID(this, NS_GET_IID(nsIDOMKeyListener));
+    nsContentUtils::DestroyAnonymousContent(&mInputContent);
   }
+  nsContentUtils::DestroyAnonymousContent(&mTextContent);
+  nsContentUtils::DestroyAnonymousContent(&mPreHr);
+  nsContentUtils::DestroyAnonymousContent(&mPostHr);
+  nsAreaFrame::Destroy();
 }
 
 // REVIEW: We don't need to override BuildDisplayList, nsAreaFrame will honour
@@ -116,7 +121,7 @@ nsIsIndexFrame::UpdatePromptLabel()
   // If it is zero length, set it to a default value (localized)
   nsXPIDLString prompt;
   if (mContent)
-    mContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::prompt, prompt);
+    mContent->GetAttr(kNameSpaceID_None, nsGkAtoms::prompt, prompt);
 
   if (prompt.IsEmpty()) {
     // Generate localized label.
@@ -136,7 +141,7 @@ nsIsIndexFrame::UpdatePromptLabel()
 nsresult
 nsIsIndexFrame::GetInputFrame(nsIFormControlFrame** oFrame)
 {
-  nsIPresShell *presShell = GetPresContext()->GetPresShell();
+  nsIPresShell *presShell = PresContext()->GetPresShell();
   if (!mInputContent) NS_WARNING("null content - cannot restore state");
   if (presShell && mInputContent) {
     nsIFrame *frame = presShell->GetPrimaryFrameFor(mInputContent);
@@ -177,114 +182,90 @@ nsIsIndexFrame::SetFocus(PRBool aOn, PRBool aRepaint)
   }
 }
 
-NS_IMETHODIMP
-nsIsIndexFrame::CreateAnonymousContent(nsPresContext* aPresContext,
-                                       nsISupportsArray& aChildList)
+nsresult
+nsIsIndexFrame::CreateAnonymousContent(nsTArray<nsIContent*>& aElements)
 {
-  nsresult result;
-
   // Get the node info manager (used to create hr's and input's)
   nsCOMPtr<nsIDocument> doc = mContent->GetDocument();
   nsNodeInfoManager *nimgr = doc->NodeInfoManager();
 
   // Create an hr
   nsCOMPtr<nsINodeInfo> hrInfo;
-  nimgr->GetNodeInfo(nsHTMLAtoms::hr, nsnull, kNameSpaceID_None,
+  nimgr->GetNodeInfo(nsGkAtoms::hr, nsnull, kNameSpaceID_None,
                      getter_AddRefs(hrInfo));
 
-  nsCOMPtr<nsIContent> prehr;
-  result = NS_NewHTMLElement(getter_AddRefs(prehr), hrInfo);
-  NS_ENSURE_SUCCESS(result, result);
-
-  result = aChildList.AppendElement(prehr);
+  NS_NewHTMLElement(getter_AddRefs(mPreHr), hrInfo);
+  if (!mPreHr || !aElements.AppendElement(mPreHr))
+    return NS_ERROR_OUT_OF_MEMORY;
 
   // Add a child text content node for the label
-  if (NS_SUCCEEDED(result)) {
-    nsCOMPtr<nsITextContent> labelContent;
-    NS_NewTextNode(getter_AddRefs(labelContent), nimgr);
-    if (labelContent) {
-      // set the value of the text node and add it to the child list
-      mTextContent.swap(labelContent);
-      UpdatePromptLabel();
-      aChildList.AppendElement(mTextContent);
-    }
-  }
+  NS_NewTextNode(getter_AddRefs(mTextContent), nimgr);
+  if (!mTextContent)
+    return NS_ERROR_OUT_OF_MEMORY;
+
+  // set the value of the text node and add it to the child list
+  UpdatePromptLabel();
+  if (!aElements.AppendElement(mTextContent))
+    return NS_ERROR_OUT_OF_MEMORY;
 
   // Create text input field
   nsCOMPtr<nsINodeInfo> inputInfo;
-  nimgr->GetNodeInfo(nsHTMLAtoms::input, nsnull, kNameSpaceID_None,
+  nimgr->GetNodeInfo(nsGkAtoms::input, nsnull, kNameSpaceID_None,
                      getter_AddRefs(inputInfo));
 
-  result = NS_NewHTMLElement(getter_AddRefs(mInputContent), inputInfo);
-  NS_ENSURE_SUCCESS(result, result);
+  NS_NewHTMLElement(getter_AddRefs(mInputContent), inputInfo);
+  if (!mInputContent)
+    return NS_ERROR_OUT_OF_MEMORY;
 
-  mInputContent->SetAttr(kNameSpaceID_None, nsHTMLAtoms::type, NS_LITERAL_STRING("text"), PR_FALSE);
+  mInputContent->SetAttr(kNameSpaceID_None, nsGkAtoms::type,
+                         NS_LITERAL_STRING("text"), PR_FALSE);
 
-  aChildList.AppendElement(mInputContent);
+  if (!aElements.AppendElement(mInputContent))
+    return NS_ERROR_OUT_OF_MEMORY;
 
   // Register as an event listener to submit on Enter press
-  nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(mInputContent));
-  receiver->AddEventListenerByIID(this, NS_GET_IID(nsIDOMKeyListener));
+  mInputContent->AddEventListenerByIID(this, NS_GET_IID(nsIDOMKeyListener));
 
   // Create an hr
-  nsCOMPtr<nsIContent> posthr;
-  result = NS_NewHTMLElement(getter_AddRefs(posthr), hrInfo);
-  NS_ENSURE_SUCCESS(result, result);
+  NS_NewHTMLElement(getter_AddRefs(mPostHr), hrInfo);
+  if (!mPostHr || !aElements.AppendElement(mPostHr))
+    return NS_ERROR_OUT_OF_MEMORY;
 
-  aChildList.AppendElement(posthr);
-
-  return result;
+  return NS_OK;
 }
 
 // Frames are not refcounted, no need to AddRef
 NS_IMETHODIMP
 nsIsIndexFrame::QueryInterface(const nsIID& aIID, void** aInstancePtr)
 {
-  NS_PRECONDITION(0 != aInstancePtr, "null ptr");
-  if (NULL == aInstancePtr) {
-    return NS_ERROR_NULL_POINTER;
-  } else if (aIID.Equals(NS_GET_IID(nsIAnonymousContentCreator))) {
-    *aInstancePtr = (void*)(nsIAnonymousContentCreator*) this;
-    return NS_OK;
-  } else  if (aIID.Equals(NS_GET_IID(nsIStatefulFrame))) {
-    *aInstancePtr = (void*)(nsIStatefulFrame*) this;
-    return NS_OK;
-  } else  if (aIID.Equals(NS_GET_IID(nsIDOMKeyListener))) {
-    *aInstancePtr = (void*)(nsIDOMKeyListener*) this;
+  NS_PRECONDITION(aInstancePtr, "null out param");
+
+  if (aIID.Equals(NS_GET_IID(nsIAnonymousContentCreator))) {
+    *aInstancePtr = static_cast<nsIAnonymousContentCreator*>(this);
     return NS_OK;
   }
-  return nsHTMLContainerFrame::QueryInterface(aIID, aInstancePtr);
+  if (aIID.Equals(NS_GET_IID(nsIStatefulFrame))) {
+    *aInstancePtr = static_cast<nsIStatefulFrame*>(this);
+    return NS_OK;
+  }
+  if (aIID.Equals(NS_GET_IID(nsIDOMKeyListener))) {
+    *aInstancePtr = static_cast<nsIDOMKeyListener*>(this);
+    return NS_OK;
+  }
+
+  return nsAreaFrame::QueryInterface(aIID, aInstancePtr);
 }
 
-void
-nsIsIndexFrame::ScrollIntoView(nsPresContext* aPresContext)
+nscoord
+nsIsIndexFrame::GetMinWidth(nsIRenderingContext *aRenderingContext)
 {
-  if (aPresContext) {
-    nsIPresShell *presShell = aPresContext->GetPresShell();
-    if (presShell) {
-      presShell->ScrollFrameIntoView(this,
-                   NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE,NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE);
-    }
-  }
-}
+  nscoord result;
+  DISPLAY_MIN_WIDTH(this, result);
 
-
-NS_IMETHODIMP nsIsIndexFrame::Reflow(nsPresContext*          aPresContext, 
-                                     nsHTMLReflowMetrics&     aDesiredSize,
-                                     const nsHTMLReflowState& aReflowState, 
-                                     nsReflowStatus&          aStatus)
-{
-  DO_GLOBAL_REFLOW_COUNT("nsIsIndexFrame", aReflowState.reason);
-  DISPLAY_REFLOW(aPresContext, this, aReflowState, aDesiredSize, aStatus);
-
-  // The Areaframe takes care of all our reflow 
-  // (except for when style is used to change its size?)
-  nsresult rv = nsAreaFrame::Reflow(aPresContext, aDesiredSize, aReflowState, aStatus);
-  if (aDesiredSize.mComputeMEW) {
-    aDesiredSize.SetMEWToActualWidth(aReflowState.mStylePosition->mWidth.GetUnit());
-  }
-  NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aDesiredSize);
-  return rv;
+  // Our min width is our pref width; the rest of our reflow is
+  // happily handled by nsAreaFrame
+  result = GetPrefWidth(aRenderingContext);
+  return result;
 }
 
 PRBool
@@ -299,7 +280,7 @@ nsIsIndexFrame::AttributeChanged(PRInt32         aNameSpaceID,
                                  PRInt32         aModType)
 {
   nsresult rv = NS_OK;
-  if (nsHTMLAtoms::prompt == aAttribute) {
+  if (nsGkAtoms::prompt == aAttribute) {
     rv = UpdatePromptLabel();
   } else {
     rv = nsAreaFrame::AttributeChanged(aNameSpaceID, aAttribute, aModType);
@@ -319,7 +300,7 @@ nsIsIndexFrame::KeyPress(nsIDOMEvent* aEvent)
       keyEvent->GetCharCode(&code);
     }
     if (nsIDOMKeyEvent::DOM_VK_RETURN == code) {
-      OnSubmit(GetPresContext());
+      OnSubmit(PresContext());
       aEvent->PreventDefault(); // XXX Needed?
     }
   }
@@ -342,6 +323,10 @@ nsIsIndexFrame::OnSubmit(nsPresContext* aPresContext)
 {
   if (!mContent || !mInputContent) {
     return NS_ERROR_UNEXPECTED;
+  }
+
+  if (mContent->IsEditable()) {
+    return NS_OK;
   }
 
   nsresult result = NS_OK;
@@ -440,9 +425,7 @@ nsIsIndexFrame::OnSubmit(nsPresContext* aPresContext)
 
   // Now pass on absolute url to the click handler
   if (handler) {
-    handler->OnLinkClick(mContent, eLinkVerb_Replace,
-                         uri,
-                         nsnull, nsnull);
+    handler->OnLinkClick(mContent, uri, nsnull);
   }
   return result;
 }
@@ -529,7 +512,7 @@ nsIsIndexFrame::URLEncode(const nsString& aString, nsIUnicodeEncoder* encoder, n
   
   char* outBuf = nsEscape(convertedBuf, url_XPAlphas);
   oString.AssignASCII(outBuf);
-  nsCRT::free(outBuf);
+  nsMemory::Free(outBuf);
   nsMemory::Free(convertedBuf);
 }
 

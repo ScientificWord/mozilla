@@ -51,17 +51,21 @@ REQUIRES	= xpcom \
 		  dom \
 		  content \
 		  gfx \
+		  thebes \
 		  widget \
 		  locale \
 		  view \
-		  accessibility \
 		  necko \
 		  webshell \
 		  js \
-		  xpconnect \
 		  pref \
 		  docshell \
+		  unicharutil \
 		  $(NULL)
+
+ifdef ACCESSIBILITY
+REQUIRES	+= accessibility
+endif
 
 EXPORTS		= \
 		nsITableCellLayout.h \
@@ -71,6 +75,7 @@ EXPORTS		= \
 CPPSRCS		= \
 		BasicTableLayoutStrategy.cpp \
 		FixedTableLayoutStrategy.cpp \
+		SpanningCellSorter.cpp \
 		nsCellMap.cpp \
 		nsTableCellFrame.cpp \
 		nsTableColFrame.cpp \
@@ -85,9 +90,13 @@ CPPSRCS		= \
 # we don't want the shared lib, but we want to force the creation of a static lib.
 FORCE_STATIC_LIB = 1
 
+ifdef MOZ_MOCHITEST
+DIRS  = test
+endif
+
 include $(topsrcdir)/config/rules.mk
 
-DEFINES         += -DDEBUG_TABLE_REFLOW_TIMING_off -DDEBUG_TABLE_STRATEGY_off -D_IMPL_NS_LAYOUT
+DEFINES         += -DDEBUG_TABLE_STRATEGY_off -D_IMPL_NS_LAYOUT
 
 LOCAL_INCLUDES	= \
 		-I$(srcdir)/../base \

@@ -41,30 +41,6 @@
 #include "nsIFormControlFrame.h"
 #include "nsLeafFrame.h"
 
-#define CSS_NOTSET -1
-#define ATTR_NOTSET -1
-
-#ifdef DEBUG_rods
-
-#define COMPARE_QUIRK_SIZE(__class, __navWidth, __navHeight) \
-{ \
-  float t2p;                                            \
-  t2p = aPresContext->TwipsToPixels();                  \
-  printf ("%-25s::Size=%4d,%4d %3d,%3d Nav:%3d,%3d Diffs: %3d,%3d\n",  \
-           (__class),                                   \
-           aDesiredSize.width, aDesiredSize.height,     \
-           NSToCoordRound(aDesiredSize.width * t2p),    \
-           NSToCoordRound(aDesiredSize.height * t2p),   \
-           (__navWidth),                                \
-           (__navHeight),                               \
-           NSToCoordRound(aDesiredSize.width * t2p) - (__navWidth),   \
-           NSToCoordRound(aDesiredSize.height * t2p) - (__navHeight)); \
-}
-
-#else
-#define COMPARE_QUIRK_SIZE(__class, __navWidth, __navHeight)
-#endif
-
 /** 
   * nsFormControlFrame is the base class for frames of form controls. It
   * provides a uniform way of creating widgets, resizing, and painting.
@@ -82,6 +58,12 @@ public:
     */
   nsFormControlFrame(nsStyleContext*);
 
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsLeafFrame::IsFrameOfType(aFlags &
+      ~(nsIFrame::eReplaced | nsIFrame::eReplacedContainsBlock));
+  }
+
   NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
 
   /** 
@@ -91,13 +73,6 @@ public:
   NS_IMETHOD HandleEvent(nsPresContext* aPresContext, 
                          nsGUIEvent* aEvent,
                          nsEventStatus* aEventStatus);
-
-  NS_IMETHOD SetInitialChildList(nsIAtom*        aListName,
-                                 nsIFrame*       aChildList);
-
-  NS_IMETHOD DidReflow(nsPresContext*           aPresContext,
-                       const nsHTMLReflowState*  aReflowState,
-                       nsDidReflowStatus         aStatus);
 
   /**
     * Respond to the request to resize and/or reflow
@@ -114,36 +89,11 @@ public:
 
   virtual void SetFocus(PRBool aOn = PR_TRUE, PRBool aRepaint = PR_FALSE);
 
-   /**
-    * Get the width and height of this control based on CSS 
-    * @param aPresContext the presentation context
-    * @param aSize the size that this frame wants, set by this method. values of -1 
-    * for aSize.width or aSize.height indicate unset values.
-    */
-  static void GetStyleSize(nsPresContext* aContext,
-                            const nsHTMLReflowState& aReflowState,
-                            nsSize& aSize);
-
   // nsIFormControlFrame
   virtual nsresult SetFormProperty(nsIAtom* aName, const nsAString& aValue);
 
   virtual nsresult GetFormProperty(nsIAtom* aName, nsAString& aValue) const; 
   
-  // Resize Reflow Optimization Methods
-  static void SetupCachedSizes(nsSize& aCacheSize,
-                               nscoord& aCachedAscent,
-                               nscoord& aCachedMaxElementWidth,
-                               nsHTMLReflowMetrics& aDesiredSize);
-
-  static void SkipResizeReflow(nsSize& aCacheSize,
-                               nscoord& aCachedAscent,
-                               nscoord& aCachedMaxElementWidth,
-                               nsSize& aCachedAvailableSize,
-                               nsHTMLReflowMetrics& aDesiredSize,
-                               const nsHTMLReflowState& aReflowState,
-                               nsReflowStatus& aStatus,
-                               PRBool& aBailOnWidth,
-                               PRBool& aBailOnHeight);
   // AccessKey Helper function
   static nsresult RegUnRegAccessKey(nsIFrame * aFrame, PRBool aDoReg);
 
@@ -153,27 +103,12 @@ public:
    */
   static nsresult GetScreenHeight(nsPresContext* aPresContext, nscoord& aHeight);
 
-  /**
-   * Helper method to get the absolute position of a frame
-   *
-   */
-  static nsresult GetAbsoluteFramePosition(nsPresContext* aPresContext,
-                                           nsIFrame *aFrame, 
-                                           nsRect& aAbsoluteTwipsRect, 
-                                           nsRect& aAbsolutePixelRect);
 protected:
 
   virtual ~nsFormControlFrame();
 
-  /** 
-    * Get the size that this frame would occupy without any constraints
-    * @param aPresContext the presentation context
-    * @param aDesiredSize the size desired by this frame, to be set by this method
-    * @param aMaxSize the maximum size available for this frame
-    */
-  virtual void GetDesiredSize(nsPresContext* aPresContext,
-                              const nsHTMLReflowState& aReflowState,
-                              nsHTMLReflowMetrics& aDesiredSize);
+  virtual nscoord GetIntrinsicWidth();
+  virtual nscoord GetIntrinsicHeight();
 
 //
 //-------------------------------------------------------------------------------------
@@ -187,8 +122,6 @@ protected:
     */
 
   void GetCurrentCheckState(PRBool* aState);
-
-  PRBool       mDidInit;
 
 private:
   NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }

@@ -42,41 +42,42 @@
 #include "nsFrame.h"
 #include "nsISVGChildFrame.h"
 #include "nsWeakReference.h"
-#include "nsISVGValue.h"
-#include "nsISVGValueObserver.h"
-#include "nsLayoutAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsSVGGeometryFrame.h"
+#include "gfxRect.h"
 
 class nsPresContext;
 class nsIDOMSVGMatrix;
 class nsSVGMarkerFrame;
-class nsISVGFilterFrame;
-struct nsSVGMarkerProperty;
-class nsISVGCairoCanvas;
+class nsSVGMarkerProperty;
 
 typedef nsSVGGeometryFrame nsSVGPathGeometryFrameBase;
 
-#define HITTEST_MASK_FILL 1
-#define HITTEST_MASK_STROKE 2
+#define HITTEST_MASK_FILL        0x01
+#define HITTEST_MASK_STROKE      0x02
+#define HITTEST_MASK_FORCE_TEST  0x04
 
 class nsSVGPathGeometryFrame : public nsSVGPathGeometryFrameBase,
                                public nsISVGChildFrame
 {
-public:
-  nsSVGPathGeometryFrame(nsStyleContext* aContext);
-  virtual ~nsSVGPathGeometryFrame();
+  friend nsIFrame*
+  NS_NewSVGPathGeometryFrame(nsIPresShell* aPresShell, nsIContent* aContent,
+                             nsStyleContext* aContext);
+protected:
+  nsSVGPathGeometryFrame(nsStyleContext* aContext) :
+    nsSVGPathGeometryFrameBase(aContext),
+    mPropagateTransform(PR_TRUE) {}
 
-   // nsISupports interface:
+public:
+  // nsISupports interface:
   NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
+private:
   NS_IMETHOD_(nsrefcnt) AddRef() { return 1; }
   NS_IMETHOD_(nsrefcnt) Release() { return 1; }
 
+public:
   // nsIFrame interface:
-  NS_IMETHOD
-  Init(nsIContent*      aContent,
-       nsIFrame*        aParent,
-       nsIFrame*        aPrevInFlow);
-
+  virtual void Destroy();
   NS_IMETHOD  AttributeChanged(PRInt32         aNameSpaceID,
                                nsIAtom*        aAttribute,
                                PRInt32         aModType);
@@ -86,10 +87,9 @@ public:
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::svgPathGeometryFrame
+   * @see nsGkAtoms::svgPathGeometryFrame
    */
   virtual nsIAtom* GetType() const;
-  virtual PRBool IsFrameOfType(PRUint32 aFlags) const;
 
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const
@@ -100,44 +100,48 @@ public:
 
   // nsISVGGeometrySource interface:
   NS_IMETHOD GetCanvasTM(nsIDOMSVGMatrix * *aCTM);
+  virtual nsresult UpdateGraphic(PRBool suppressInvalidation = PR_FALSE);
 
 protected:
-  // nsISVGValueObserver
-  NS_IMETHOD WillModifySVGObservable(nsISVGValue* observable,
-                                     nsISVGValue::modificationType aModType);
-  NS_IMETHOD DidModifySVGObservable (nsISVGValue* observable,
-                                     nsISVGValue::modificationType aModType);
-
   // nsISVGChildFrame interface:
-  NS_IMETHOD PaintSVG(nsISVGRendererCanvas* canvas, nsRect *aDirtyRect);
+  NS_IMETHOD PaintSVG(nsSVGRenderState *aContext, nsRect *aDirtyRect);
   NS_IMETHOD GetFrameForPointSVG(float x, float y, nsIFrame** hit);
   NS_IMETHOD_(nsRect) GetCoveredRegion();
   NS_IMETHOD UpdateCoveredRegion();
   NS_IMETHOD InitialUpdate();
-  NS_IMETHOD NotifyCanvasTMChanged(PRBool suppressInvalidation);
+  virtual void NotifySVGChanged(PRUint32 aFlags);
   NS_IMETHOD NotifyRedrawSuspended();
   NS_IMETHOD NotifyRedrawUnsuspended();
   NS_IMETHOD SetMatrixPropagation(PRBool aPropagate);
   NS_IMETHOD SetOverrideCTM(nsIDOMSVGMatrix *aCTM);
+  virtual already_AddRefed<nsIDOMSVGMatrix> GetOverrideCTM();
   NS_IMETHOD GetBBox(nsIDOMSVGRect **_retval);
   NS_IMETHOD_(PRBool) IsDisplayContainer() { return PR_FALSE; }
   NS_IMETHOD_(PRBool) HasValidCoveredRect() { return PR_TRUE; }
 
-  // nsISVGGeometrySource interface:
-  virtual nsresult UpdateGraphic(PRBool suppressInvalidation = PR_FALSE);
-  
 protected:
   virtual PRUint16 GetHittestMask();
 
 private:
-  void Render(nsISVGRendererCanvas *aCanvas);
-  void GeneratePath(cairo_t *ctx, nsISVGCairoCanvas* aCanvas);
+  void Render(nsSVGRenderState *aContext);
+  void GeneratePath(gfxContext *aContext);
+
+  /*
+   * Check for what cairo returns for the fill extents of a degenerate path
+   *
+   * @return PR_TRUE if the path is degenerate
+   */
+  static PRBool
+  IsDegeneratePath(const gfxRect& rect)
+  {
+    return (rect.X() == 0 && rect.Y() == 0 &&
+            rect.Width() == 0 && rect.Height() == 0);
+  }
 
   nsSVGMarkerProperty *GetMarkerProperty();
-  void GetMarkerFromStyle(nsSVGMarkerFrame   **aResult,
-                          nsSVGMarkerProperty *property,
-                          nsIURI              *aURI);
   void UpdateMarkerProperty();
+
+  void RemovePathProperties();
 
   nsCOMPtr<nsIDOMSVGMatrix> mOverrideCTM;
   PRPackedBool mPropagateTransform;

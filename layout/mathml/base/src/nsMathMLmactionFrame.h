@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -110,7 +111,6 @@ private:
   PRInt32         mSelection;
   nsIFrame*       mSelectedFrame;
   nsString        mRestyle;
-  PRBool          mWasRestyled;
 
   // helper to return the frame for the attribute selection="number"
   nsIFrame* 

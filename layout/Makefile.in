@@ -61,10 +61,6 @@ ifdef MOZ_MATHML
 DIRS           += mathml
 endif
 
-ifdef MOZ_XTF
-DIRS           += xtf
-endif
-
 ifdef MOZ_SVG
 DIRS           += svg
 endif
@@ -76,6 +72,8 @@ endif
 DIRS           += build
 
 ifdef ENABLE_TESTS
+TOOL_DIRS      += tools/reftest
+DIRS           += tools/pageloader
 ifndef MOZ_ENABLE_LIBXUL
 TOOL_DIRS	+= html/tests
 endif

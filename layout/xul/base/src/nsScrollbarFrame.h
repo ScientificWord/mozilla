@@ -99,9 +99,11 @@ public:
 
   virtual PRBool IsContainingBlock() const;
 
+  virtual nsIAtom* GetType() const;  
+
   // nsIScrollbarFrame
-  NS_IMETHOD SetScrollbarMediator(nsIScrollbarMediator* aMediator) { mScrollbarMediator = aMediator; return NS_OK; };
-  NS_IMETHOD GetScrollbarMediator(nsIScrollbarMediator** aResult) { *aResult = mScrollbarMediator; return NS_OK; };
+  virtual void SetScrollbarMediatorContent(nsIContent* aMediator);
+  virtual nsIScrollbarMediator* GetScrollbarMediator();
 
   // nsBox methods
 
@@ -113,8 +115,9 @@ public:
    * hide the children too.
    */
   virtual PRBool DoesClipChildren() { return PR_TRUE; }
+
 private:
-  nsIScrollbarMediator* mScrollbarMediator;
+  nsCOMPtr<nsIContent> mScrollbarMediator;
 }; // class nsScrollbarFrame
 
 #endif

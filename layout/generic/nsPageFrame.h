@@ -38,7 +38,6 @@
 #define nsPageFrame_h___
 
 #include "nsContainerFrame.h"
-#include "nsIPrintSettings.h"
 #include "nsLeafFrame.h"
 
 class nsSharedPageData;
@@ -63,7 +62,7 @@ public:
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::pageFrame
+   * @see nsGkAtoms::pageFrame
    */
   virtual nsIAtom* GetType() const;
   
@@ -84,10 +83,10 @@ public:
                                    nsPoint aPt);
   void PaintHeaderFooter(nsIRenderingContext& aRenderingContext,
                          nsPoint aPt);
-  void DrawBackground(nsIRenderingContext& aRenderingContext,
-                      const nsRect&        aDirtyRect,
-                      nsPoint              aPt);
-                      
+  void PaintPageContent(nsIRenderingContext& aRenderingContext,
+                        const nsRect&        aDirtyRect,
+                        nsPoint              aPt);
+
 protected:
   nsPageFrame(nsStyleContext* aContext);
   virtual ~nsPageFrame();
@@ -102,9 +101,7 @@ protected:
                        PRInt32              aJust,
                        const nsString&      aStr);
 
-  void DrawHeaderFooter(nsPresContext*      aPresContext,
-                        nsIRenderingContext& aRenderingContext,
-                        nsIFrame *           aFrame,
+  void DrawHeaderFooter(nsIRenderingContext& aRenderingContext,
                         nsHeaderFooterEnum   aHeaderFooter,
                         PRInt32              aJust,
                         const nsString&      sStr,
@@ -113,24 +110,19 @@ protected:
                         nscoord              aAscent,
                         nscoord              aWidth);
 
-  void DrawHeaderFooter(nsPresContext*      aPresContext,
-                        nsIRenderingContext& aRenderingContext,
-                        nsIFrame *           aFrame,
+  void DrawHeaderFooter(nsIRenderingContext& aRenderingContext,
                         nsHeaderFooterEnum   aHeaderFooter,
-                        PRInt32              aJust,
-                        const nsString&      aStr1,
-                        const nsString&      aStr2,
-                        const nsString&      aStr3,
+                        const nsString&      aStrLeft,
+                        const nsString&      aStrRight,
+                        const nsString&      aStrCenter,
                         const nsRect&        aRect,
                         nscoord              aAscent,
                         nscoord              aHeight);
 
   void ProcessSpecialCodes(const nsString& aStr, nsString& aNewStr);
 
-  nsCOMPtr<nsIPrintSettings> mPrintOptions;
   PRInt32     mPageNum;
   PRInt32     mTotNumPages;
-  nsMargin    mMargin;
 
   nsSharedPageData* mPD;
 };
@@ -150,9 +142,8 @@ class nsPageBreakFrame : public nsLeafFrame {
 
 protected:
 
-    virtual void GetDesiredSize(nsPresContext*        aPresContext,
-                              const nsHTMLReflowState& aReflowState,
-                              nsHTMLReflowMetrics&     aDesiredSize);
+  virtual nscoord GetIntrinsicWidth();
+
     PRBool mHaveReflowed;
 
     friend nsIFrame* NS_NewPageBreakFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);

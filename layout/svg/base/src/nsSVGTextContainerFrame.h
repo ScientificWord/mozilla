@@ -53,7 +53,7 @@ public:
   nsSVGTextContainerFrame(nsStyleContext* aContext) :
     nsSVGDisplayContainerFrame(aContext) {}
 
-  NS_IMETHOD_(nsSVGTextFrame *) GetTextFrame();
+  void UpdateGraphic();
   NS_IMETHOD_(already_AddRefed<nsIDOMSVGLengthList>) GetX();
   NS_IMETHOD_(already_AddRefed<nsIDOMSVGLengthList>) GetY();
   NS_IMETHOD_(already_AddRefed<nsIDOMSVGLengthList>) GetDx();
@@ -61,12 +61,17 @@ public:
   
    // nsISupports interface:
   NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
-
 private:
-  NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }
-  NS_IMETHOD_(nsrefcnt) Release() { return NS_OK; }  
+  NS_IMETHOD_(nsrefcnt) AddRef() { return 1; }
+  NS_IMETHOD_(nsrefcnt) Release() { return 1; }
 
 public:
+  // nsIFrame
+  NS_IMETHOD InsertFrames(nsIAtom*        aListName,
+                          nsIFrame*       aPrevFrame,
+                          nsIFrame*       aFrameList);
+  NS_IMETHOD RemoveFrame(nsIAtom *aListName, nsIFrame *aOldFrame);
+
   // nsISVGTextContentMetrics
   NS_IMETHOD GetNumberOfChars(PRInt32 *_retval);
   NS_IMETHOD GetComputedTextLength(float *_retval);
@@ -91,10 +96,9 @@ protected:
   GetNextGlyphFragmentChildNode(nsISVGGlyphFragmentNode *node);
 
   /*
-   * Build the glyph fragment tree
+   * Set Whitespace handling
    */
-  PRUint32
-  BuildGlyphFragmentTree(PRUint32 charNum, PRBool lastBranch);
+  void SetWhitespaceHandling();
 
   /*
    * Returns the number of characters in a string
@@ -124,6 +128,12 @@ private:
   GetGlyphFragmentAtCharNum(nsISVGGlyphFragmentNode* node,
                             PRUint32 charnum,
                             PRUint32 *offset);
+
+  /*
+   * Returns the text frame ancestor of this frame (or the frame itself
+   * if this is a text frame)
+   */
+  nsSVGTextFrame * GetTextFrame();
 };
 
 #endif

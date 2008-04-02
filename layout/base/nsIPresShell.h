@@ -59,7 +59,6 @@
 #include "nsRect.h"
 #include "nsColor.h"
 #include "nsEvent.h"
-#include "nsReflowType.h"
 #include "nsCompatibility.h"
 #include "nsFrameManagerBase.h"
 #include "mozFlushType.h"
@@ -89,21 +88,26 @@ class nsILayoutHistoryState;
 class nsIReflowCallback;
 class nsISupportsArray;
 class nsIDOMNode;
+class nsIRegion;
 class nsIStyleFrameConstruction;
 class nsIStyleSheet;
 class nsCSSFrameConstructor;
 class nsISelection;
 template<class E> class nsCOMArray;
 class nsWeakFrame;
+class nsIScrollableFrame;
+class gfxASurface;
+class gfxContext;
 
 typedef short SelectionType;
+typedef PRUint32 nsFrameState;
 
-#define NS_IPRESSHELL_IID     \
-{ 0x67880b18, 0xaf91, 0x431b, \
-  { 0x89, 0x69, 0xfa, 0xd9, 0x2b, 0x3c, 0x33, 0x32 } }
+// 228a7d67-811b-4d75-85c0-1ee22c0d2af0
+#define NS_IPRESSHELL_IID \
+{ 0x228a7d67, 0x811b, 0x4d75, \
+  { 0x85, 0xc0, 0x1e, 0xe2, 0x2c, 0x0d, 0x2a, 0xf0 } }
 
-
-// Constants uses for ScrollFrameIntoView() function
+// Constants for ScrollContentIntoView() function
 #define NS_PRESSHELL_SCROLL_TOP      0
 #define NS_PRESSHELL_SCROLL_BOTTOM   100
 #define NS_PRESSHELL_SCROLL_LEFT     0
@@ -121,16 +125,6 @@ typedef short SelectionType;
 #define VERIFY_REFLOW_REALLY_NOISY_RC 0x20
 #define VERIFY_REFLOW_INCLUDE_SPACE_MANAGER 0x40
 #define VERIFY_REFLOW_DURING_RESIZE_REFLOW  0x80
-
-#ifdef IBMBIDI // Constant for Set/Get CaretBidiLevel
-#define BIDI_LEVEL_UNDEFINED 0x80
-#endif
-
-// for PostAttributeChanged
-enum nsAttributeChangeType {
-  eChangeType_Set = 0,       // Set attribute
-  eChangeType_Remove = 1     // Remove attribute
-};
 
 /**
  * Presentation shell interface. Presentation shells are the
@@ -177,10 +171,24 @@ public:
   virtual void* AllocateFrame(size_t aSize) = 0;
   virtual void  FreeFrame(size_t aSize, void* aFreeChunk) = 0;
 
-  // Dynamic stack memory allocation
-  NS_IMETHOD PushStackMemory() = 0;
-  NS_IMETHOD PopStackMemory() = 0;
-  NS_IMETHOD AllocateStackMemory(size_t aSize, void** aResult) = 0;
+  /**
+   * Stack memory allocation:
+   *
+   * Callers who wish to allocate memory whose lifetime corresponds to
+   * the lifetime of a stack-allocated object can use this API.  The
+   * caller must use a pair of calls to PushStackMemory and
+   * PopStackMemory, such that all stack object lifetimes are either
+   * entirely between the calls or containing both calls.
+   *
+   * Then, between the calls, the caller can call AllocateStackMemory to
+   * allocate memory from an arena pool that will be freed by the call
+   * to PopStackMemory.
+   *
+   * The allocations cannot be for more than 4044 bytes.
+   */
+  virtual void PushStackMemory() = 0;
+  virtual void PopStackMemory() = 0;
+  virtual void* AllocateStackMemory(size_t aSize) = 0;
   
   nsIDocument* GetDocument() { return mDocument; }
 
@@ -197,17 +205,11 @@ public:
   }
 
   nsFrameManager* FrameManager() const {
-    return NS_REINTERPRET_CAST(nsFrameManager*,
-      &NS_CONST_CAST(nsIPresShell*, this)->mFrameManager);
+    return reinterpret_cast<nsFrameManager*>
+                           (&const_cast<nsIPresShell*>(this)->mFrameManager);
   }
 
 #endif
-
-  // These two methods are used only by viewer
-  NS_IMETHOD GetActiveAlternateStyleSheet(nsString& aSheetTitle) = 0;
-
-  NS_IMETHOD SelectAlternateStyleSheet(const nsString& aSheetTitle) = 0;
-
 
   /* Enable/disable author style level. Disabling author style disables the entire
    * author level of the cascade, including the HTML preshint level.
@@ -246,19 +248,20 @@ public:
   NS_IMETHOD SetPreferenceStyleRules(PRBool aForceReflow) = 0;
 
   /**
-   * Gather titles of all selectable (alternate and preferred) style sheets
-   * fills void array with nsString* caller must free strings
-   */
-  NS_IMETHOD ListAlternateStyleSheets(nsStringArray& aTitleList) = 0;
-
-  /**
    * FrameSelection will return the Frame based selection API.
    * You cannot go back and forth anymore with QI between nsIDOM sel and
    * nsIFrame sel.
    */
-  nsFrameSelection* FrameSelection() { return mSelection; }
+  already_AddRefed<nsFrameSelection> FrameSelection();
 
-  // Make shell be a document observer
+  /**
+   * ConstFrameSelection returns an object which methods are safe to use for
+   * example in nsIFrame code.
+   */
+  const nsFrameSelection* ConstFrameSelection() { return mSelection; }
+
+  // Make shell be a document observer.  If called after Destroy() has
+  // been called on the shell, this will be ignored.
   NS_IMETHOD BeginObservingDocument() = 0;
 
   // Make shell stop being a document observer
@@ -276,7 +279,11 @@ public:
    * object and then reflows the frame model into the specified width and
    * height.
    *
-   * The coordinates for aWidth and aHeight must be in standard nscoord's.
+   * The coordinates for aWidth and aHeight must be in standard nscoords.
+   *
+   * Callers of this method must hold a reference to this shell that
+   * is guaranteed to survive through arbitrary script execution.
+   * Calling InitialReflow can execute arbitrary script.
    */
   NS_IMETHOD InitialReflow(nscoord aWidth, nscoord aHeight) = 0;
 
@@ -303,6 +310,11 @@ public:
    */
   nsIFrame* GetRootScrollFrame() const;
 
+  /*
+   * The same as GetRootScrollFrame, but returns an nsIScrollableFrame
+   */
+  nsIScrollableFrame* GetRootScrollFrameAsScrollable() const;
+
   /**
    * Returns the page sequence frame associated with the frame hierarchy.
    * Returns NULL if not a paginated view.
@@ -320,16 +332,24 @@ public:
    * being scrolled). The primary frame is always the first-in-flow.
    *
    * In the case of absolutely positioned elements and floated elements,
-   * the primary frame is the frame that is out of the flow and not the
-   * placeholder frame.
+   * the primary frame is the placeholder frame.
    */
   virtual NS_HIDDEN_(nsIFrame*) GetPrimaryFrameFor(nsIContent* aContent) const = 0;
+
+  /**
+   * Gets the real primary frame associated with the content object.
+   *
+   * In the case of absolutely positioned elements and floated elements,
+   * the real primary frame is the frame that is out of the flow and not the
+   * placeholder frame.
+   */
+  virtual NS_HIDDEN_(nsIFrame*) GetRealPrimaryFrameFor(nsIContent* aContent) const = 0;
 
   /**
    * Returns a layout object associated with the primary frame for the content object.
    *
    * @param aContent   the content object for which we seek a layout object
-   * @param aResult    the resulting layout object as an nsISupports, if found.  Refcounted.
+   * @param aResult    the resulting layout object as an nsISupports, if found.
    */
   NS_IMETHOD GetLayoutObjectFor(nsIContent*   aContent,
                                 nsISupports** aResult) const = 0;
@@ -342,14 +362,23 @@ public:
                                     nsIFrame** aPlaceholderFrame) const = 0;
 
   /**
-   * Reflow commands
+   * Tell the pres shell that a frame needs to be marked dirty and needs
+   * Reflow.  It's OK if this is an ancestor of the frame needing reflow as
+   * long as the ancestor chain between them doesn't cross a reflow root.  The
+   * bit to add should be either NS_FRAME_IS_DIRTY or
+   * NS_FRAME_HAS_DIRTY_CHILDREN (but not both!).
    */
-  NS_IMETHOD AppendReflowCommand(nsIFrame*    aTargetFrame,
-                                 nsReflowType aReflowType,
-                                 nsIAtom*     aChildListName) = 0;
-  // XXXbz don't we need a child list name on this too?
-  NS_IMETHOD CancelReflowCommand(nsIFrame* aTargetFrame, nsReflowType* aCmdType) = 0;
-  NS_IMETHOD CancelAllReflowCommands() = 0;
+  enum IntrinsicDirty {
+    // XXXldb eResize should be renamed
+    eResize,     // don't mark any intrinsic widths dirty
+    eTreeChange, // mark intrinsic widths dirty on aFrame and its ancestors
+    eStyleChange // Do eTreeChange, plus all of aFrame's descendants
+  };
+  NS_IMETHOD FrameNeedsReflow(nsIFrame *aFrame,
+                              IntrinsicDirty aIntrinsicDirty,
+                              nsFrameState aBitToAdd) = 0;
+
+  NS_IMETHOD CancelAllPendingReflows() = 0;
 
   /**
    * Recreates the frames for a node
@@ -375,28 +404,11 @@ public:
   NS_IMETHOD FlushPendingNotifications(mozFlushType aType) = 0;
 
   /**
-   * Post a request to handle a DOM event after Reflow has finished.
+   * Callbacks will be called even if reflow itself fails for
+   * some reason.
    */
-  NS_IMETHOD PostDOMEvent(nsIContent* aContent, nsEvent* aEvent)=0;
-
-  /**
-   * Post a request to set and attribute after reflow has finished.
-   */
-  NS_IMETHOD PostAttributeChange(nsIContent* aContent,
-                                 PRInt32 aNameSpaceID, 
-                                 nsIAtom* aName,
-                                 const nsString& aValue,
-                                 PRBool aNotify,
-                                 nsAttributeChangeType aType) = 0;
-
   NS_IMETHOD PostReflowCallback(nsIReflowCallback* aCallback) = 0;
   NS_IMETHOD CancelReflowCallback(nsIReflowCallback* aCallback) = 0;
- /**
-   * Reflow batching
-   */   
-  NS_IMETHOD BeginReflowBatching() = 0;
-  NS_IMETHOD EndReflowBatching(PRBool aFlushPendingReflows) = 0;
-  NS_IMETHOD GetReflowBatchingStatus(PRBool* aIsBatching) = 0;
 
   NS_IMETHOD ClearFrameRefs(nsIFrame* aFrame) = 0;
 
@@ -418,36 +430,47 @@ public:
   NS_IMETHOD GoToAnchor(const nsAString& aAnchorName, PRBool aScroll) = 0;
 
   /**
-   * Scrolls the view of the document so that the frame is displayed at the 
-   * top of the window.
-   *
-   * @param aFrame    The frame to scroll into view
-   * @param aVPercent How to align the frame vertically. A value of 0
-   *                    (NS_PRESSHELL_SCROLL_TOP) means the frame's upper edge is
-   *                    aligned with the top edge of the visible area. A value of
-   *                    100 (NS_PRESSHELL_SCROLL_BOTTOM) means the frame's bottom
-   *                    edge is aligned with the bottom edge of the visible area.
-   *                    For values in between, the point "aVPercent" down the frame
-   *                    is placed at the point "aVPercent" down the visible area. A
-   *                    value of 50 (NS_PRESSHELL_SCROLL_CENTER) centers the frame
-   *                    vertically. A value of NS_PRESSHELL_SCROLL_ANYWHERE means move
-   *                    the frame the minimum amount necessary in order for the entire
-   *                    frame to be visible vertically (if possible)
-   * @param aHPercent How to align the frame horizontally. A value of 0
-   *                    (NS_PRESSHELL_SCROLL_LEFT) means the frame's left edge is
-   *                    aligned with the left edge of the visible area. A value of
-   *                    100 (NS_PRESSHELL_SCROLL_RIGHT) means the frame's right
-   *                    edge is aligned with the right edge of the visible area.
-   *                    For values in between, the point "aVPercent" across the frame
-   *                    is placed at the point "aVPercent" across the visible area.
-   *                    A value of 50 (NS_PRESSHELL_SCROLL_CENTER) centers the frame
-   *                    horizontally . A value of NS_PRESSHELL_SCROLL_ANYWHERE means move
-   *                    the frame the minimum amount necessary in order for the entire
-   *                    frame to be visible horizontally (if possible)
+   * Tells the presshell to scroll again to the last anchor scrolled to by
+   * GoToAnchor, if any. This scroll only happens if the scroll
+   * position has not changed since the last GoToAnchor. This is called
+   * by nsDocumentViewer::LoadComplete. This clears the last anchor
+   * scrolled to by GoToAnchor (we don't want to keep it alive if it's
+   * removed from the DOM), so don't call this more than once.
    */
-  NS_IMETHOD ScrollFrameIntoView(nsIFrame *aFrame,
-                                 PRIntn   aVPercent, 
-                                 PRIntn   aHPercent) const = 0;
+  NS_IMETHOD ScrollToAnchor() = 0;
+
+  /**
+   * Scrolls the view of the document so that the primary frame of the content
+   * is displayed at the top of the window. Layout is flushed before scrolling.
+   *
+   * @param aContent  The content object of which primary frame should be
+   *                  scrolled into view.
+   * @param aVPercent How to align the frame vertically. A value of 0
+   *                  (NS_PRESSHELL_SCROLL_TOP) means the frame's upper edge is
+   *                  aligned with the top edge of the visible area. A value of
+   *                  100 (NS_PRESSHELL_SCROLL_BOTTOM) means the frame's bottom
+   *                  edge is aligned with the bottom edge of the visible area.
+   *                  For values in between, the point "aVPercent" down the frame
+   *                  is placed at the point "aVPercent" down the visible area. A
+   *                  value of 50 (NS_PRESSHELL_SCROLL_CENTER) centers the frame
+   *                  vertically. A value of NS_PRESSHELL_SCROLL_ANYWHERE means move
+   *                  the frame the minimum amount necessary in order for the entire
+   *                  frame to be visible vertically (if possible)
+   * @param aHPercent How to align the frame horizontally. A value of 0
+   *                  (NS_PRESSHELL_SCROLL_LEFT) means the frame's left edge is
+   *                  aligned with the left edge of the visible area. A value of
+   *                  100 (NS_PRESSHELL_SCROLL_RIGHT) means the frame's right
+   *                  edge is aligned with the right edge of the visible area.
+   *                  For values in between, the point "aVPercent" across the frame
+   *                  is placed at the point "aVPercent" across the visible area.
+   *                  A value of 50 (NS_PRESSHELL_SCROLL_CENTER) centers the frame
+   *                  horizontally . A value of NS_PRESSHELL_SCROLL_ANYWHERE means move
+   *                  the frame the minimum amount necessary in order for the entire
+   *                  frame to be visible horizontally (if possible)
+   */
+  NS_IMETHOD ScrollContentIntoView(nsIContent* aContent,
+                                   PRIntn      aVPercent,
+                                   PRIntn      aHPercent) const = 0;
 
   /**
    * Suppress notification of the frame manager that frames are
@@ -489,9 +512,22 @@ public:
   NS_IMETHOD GetCaret(nsICaret **aOutCaret) = 0;
 
   /**
-   * Set the current caret to a new caret. Returns the old caret.
+   * Invalidate the caret's current position if it's outside of its frame's
+   * boundaries. This function is useful if you're batching selection
+   * notifications and might remove the caret's frame out from under it.
    */
-  virtual already_AddRefed<nsICaret> SetCaret(nsICaret *aNewCaret) = 0;
+  NS_IMETHOD_(void) MaybeInvalidateCaretPosition() = 0;
+
+  /**
+   * Set the current caret to a new caret. To undo this, call RestoreCaret.
+   */
+  virtual void SetCaret(nsICaret *aNewCaret) = 0;
+
+  /**
+   * Restore the caret to the original caret that this pres shell was created
+   * with.
+   */
+  virtual void RestoreCaret() = 0;
 
   /**
    * Should the images have borders etc.  Actual visual effects are determined
@@ -517,6 +553,7 @@ public:
 
   /**
     * Interface to dispatch events via the presshell
+    * @note The caller must have a strong reference to the PresShell.
     */
   NS_IMETHOD HandleEventWithTarget(nsEvent* aEvent,
                                    nsIFrame* aFrame,
@@ -525,6 +562,7 @@ public:
 
   /**
    * Dispatch event to content only (NOT full processing)
+   * @note The caller must have a strong reference to the PresShell.
    */
   NS_IMETHOD HandleDOMEventWithTarget(nsIContent* aTargetContent,
                                       nsEvent* aEvent,
@@ -551,49 +589,6 @@ public:
    * @param aIsReflowLocked returns PR_TRUE if reflow is locked, PR_FALSE otherwise
    */
   NS_IMETHOD IsReflowLocked(PRBool* aIsLocked) = 0;  
-
-  /**
-   * Returns a content iterator to iterate the generated content nodes.
-   * You must specify whether you want to iterate the "before" generated
-   * content or the "after" generated content. If there is no generated
-   * content of the specified type for the promary frame associated with
-   * with the content object then NULL is returned
-   */
-  enum GeneratedContentType {Before, After};
-  NS_IMETHOD GetGeneratedContentIterator(nsIContent*          aContent,
-                                         GeneratedContentType aType,
-                                         nsIContentIterator** aIterator) const = 0;
-
-
-  /**
-   * Store the nsIAnonymousContentCreator-generated anonymous
-   * content that's associated with an element. The new anonymous content
-   * is added to whatever anonymous content might already be associated with
-   * the element.
-   * @param aContent the element with which the anonymous
-   *   content is to be associated with
-   * @param aAnonymousElements an array of nsIContent
-   *   objects, or null to indicate that any anonymous
-   *   content should be dissociated from the aContent
-   */
-  NS_IMETHOD SetAnonymousContentFor(nsIContent* aContent, nsISupportsArray* aAnonymousElements) = 0;
-
-  /**
-   * Retrieve the nsIAnonymousContentCreator-generated anonymous
-   * content that's associated with an element.
-   * @param aContent the element for which to retrieve the
-   *   associated anonymous content
-   * @param aAnonymousElements an array of nsIContent objects,
-   *   or null to indicate that there are no anonymous elements
-   *   associated with aContent
-   */
-  NS_IMETHOD GetAnonymousContentFor(nsIContent* aContent, nsISupportsArray** aAnonymousElements) = 0;
-
-  /**
-   * Release all nsIAnonymousContentCreator-generated
-   * anonymous content associated with the shell.
-   */
-  NS_IMETHOD ReleaseAnonymousContent() = 0;
 
   /**
    * Called to find out if painting is suppressed for this presshell.  If it is suppressd,
@@ -643,6 +638,14 @@ public:
   virtual nsresult ReconstructFrames() = 0;
 
   /**
+   * Given aFrame, the root frame of a stacking context, find its descendant
+   * frame under the point aPt that receives a mouse event at that location,
+   * or nsnull if there is no such frame.
+   * @param aPt the point, relative to the frame origin
+   */
+  virtual nsIFrame* GetFrameForPoint(nsIFrame* aFrame, nsPoint aPt) = 0;
+
+  /**
    * See if reflow verification is enabled. To enable reflow verification add
    * "verifyreflow:1" to your NSPR_LOG_MODULES environment variable
    * (any non-zero debug level will work). Or, call SetVerifyReflowEnable
@@ -660,37 +663,17 @@ public:
    */
   static PRInt32 GetVerifyReflowFlags();
 
+  virtual nsIFrame* GetAbsoluteContainingBlock(nsIFrame* aFrame);
+
 #ifdef MOZ_REFLOW_PERF
   NS_IMETHOD DumpReflows() = 0;
-  NS_IMETHOD CountReflows(const char * aName, PRUint32 aType, nsIFrame * aFrame) = 0;
+  NS_IMETHOD CountReflows(const char * aName, nsIFrame * aFrame) = 0;
   NS_IMETHOD PaintCount(const char * aName, 
                         nsIRenderingContext* aRenderingContext, 
                         nsPresContext * aPresContext, 
                         nsIFrame * aFrame,
                         PRUint32 aColor) = 0;
   NS_IMETHOD SetPaintFrameCount(PRBool aOn) = 0;
-#endif
-
-#ifdef IBMBIDI
-  /**
-   * SetCaretBidiLevel will set the Bidi embedding level for the cursor. 0-63
-   */
-  NS_IMETHOD SetCaretBidiLevel(PRUint8 aLevel) = 0;
-
-  /**
-   * GetCaretBidiLevel will get the Bidi embedding level for the cursor. 0-63
-   */
-  NS_IMETHOD GetCaretBidiLevel(PRUint8 *aOutLevel) = 0;
-
-  /**
-   * UndefineCaretBidiLevel will set the Bidi embedding level for the cursor to an out-of-range value
-   */
-  NS_IMETHOD UndefineCaretBidiLevel(void) = 0;
-
-  /**
-   * Reconstruct and reflow frame model 
-   */
-  NS_IMETHOD BidiStyleChangeReflow(void) = 0;
 #endif
 
 #ifdef DEBUG
@@ -702,7 +685,8 @@ public:
   virtual void VerifyStyleTree() = 0;
 #endif
 
-  PRBool IsAccessibilityActive() { return mIsAccessibilityActive; }
+  static PRBool gIsAccessibilityActive;
+  static PRBool IsAccessibilityActive() { return gIsAccessibilityActive; }
 
   /**
    * Stop all active elements (plugins and the caret) in this presentation and
@@ -729,11 +713,14 @@ public:
   }
   
   /**
-   * Dump window contents into a new offscreen rendering context.
+   * Render the document into an arbitrary gfxContext
+   * Designed for getting a picture of a document or a piece of a document
+   * Note that callers will generally want to call FlushPendingNotifications
+   * to get an up-to-date view of the document
    * @param aRect is the region to capture into the offscreen buffer, in the
    * root frame's coordinate system (if aIgnoreViewportScrolling is false)
    * or in the root scrolled frame's coordinate system
-   * (if aIgnoreViewportScrolling is true)
+   * (if aIgnoreViewportScrolling is true). The coordinates are in appunits.
    * @param aUntrusted set to PR_TRUE if the contents may be passed to malicious
    * agents. E.g. we might choose not to paint the contents of sensitive widgets
    * such as the file name in a file upload widget, and we might choose not
@@ -741,18 +728,52 @@ public:
    * @param aIgnoreViewportScrolling ignore clipping/scrolling/scrollbar painting
    * due to scrolling in the viewport
    * @param aBackgroundColor a background color to render onto
-   * @param aRenderedContext gets set to a rendering context whose offscreen
-   * buffer can be locked to get the data. The buffer's size will be aRect's size.
-   * In all cases the caller must clean it up by calling
-   * cx->DestroyDrawingSurface(cx->GetDrawingSurface()).
+   * @param aRenderedContext the gfxContext to render to. We render so that
+   * one CSS pixel in the source document is rendered to one unit in the current
+   * transform.
    */
-  NS_IMETHOD RenderOffscreen(nsRect aRect, PRBool aUntrusted,
-                             PRBool aIgnoreViewportScrolling,
-                             nscolor aBackgroundColor,
-                             nsIRenderingContext** aRenderedContext) = 0;
+  NS_IMETHOD RenderDocument(const nsRect& aRect, PRBool aUntrusted,
+                            PRBool aIgnoreViewportScrolling,
+                            nscolor aBackgroundColor,
+                            gfxContext* aRenderedContext) = 0;
+
+  /**
+   * Renders a node aNode to a surface and returns it. The aRegion may be used
+   * to clip the rendering. This region is measured in device pixels from the
+   * edge of the presshell area. The aPoint, aScreenRect and aSurface
+   * arguments function in a similar manner as RenderSelection.
+   */
+  virtual already_AddRefed<gfxASurface> RenderNode(nsIDOMNode* aNode,
+                                                   nsIRegion* aRegion,
+                                                   nsPoint& aPoint,
+                                                   nsRect* aScreenRect) = 0;
+
+  /*
+   * Renders a selection to a surface and returns it. This method is primarily
+   * intended to create the drag feedback when dragging a selection.
+   *
+   * aScreenRect will be filled in with the bounding rectangle of the
+   * selection area on screen.
+   *
+   * If the area of the selection is large, the image will be scaled down.
+   * The argument aPoint is used in this case as a reference point when
+   * determining the new screen rectangle after scaling. Typically, this
+   * will be the mouse position, so that the screen rectangle is positioned
+   * such that the mouse is over the same point in the scaled image as in
+   * the original. When scaling does not occur, the mouse point isn't used
+   * as the position can be determined from the displayed frames.
+   */
+  virtual already_AddRefed<gfxASurface> RenderSelection(nsISelection* aSelection,
+                                                        nsPoint& aPoint,
+                                                        nsRect* aScreenRect) = 0;
 
   void AddWeakFrame(nsWeakFrame* aWeakFrame);
   void RemoveWeakFrame(nsWeakFrame* aWeakFrame);
+
+#ifdef NS_DEBUG
+  nsIFrame* GetDrawEventTargetFrame() { return mDrawEventTargetFrame; }
+#endif
+
 protected:
   // IMPORTANT: The ownership implicit in the following member variables
   // has been explicitly checked.  If you add any members to this class,
@@ -768,6 +789,10 @@ protected:
   nsFrameSelection*         mSelection;
   nsFrameManagerBase        mFrameManager;  // [OWNS]
   nsWeakPtr                 mForwardingContainer;
+
+#ifdef NS_DEBUG
+  nsIFrame*                 mDrawEventTargetFrame;
+#endif
 
   PRPackedBool              mStylesHaveChanged;
   PRPackedBool              mDidInitialReflow;

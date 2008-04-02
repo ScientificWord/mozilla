@@ -42,16 +42,12 @@
 #include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsPresContext.h"
-#include "nsIViewManager.h"
 #include "nsINodeInfo.h"
-#include "nsHTMLAtoms.h"
-#include "nsIView.h"
+#include "nsGkAtoms.h"
 #include "nsHTMLParts.h"
-#include "nsLayoutAtoms.h"
 
 #ifdef MOZ_XUL
 #include "nsINameSpaceManager.h"
-#include "nsXULAtoms.h"
 #include "nsIEventStateManager.h"
 #endif
 
@@ -81,7 +77,7 @@ nsAreaFrame::RegUnregAccessKey(PRBool aDoReg)
     return NS_ERROR_FAILURE;
 
   // only support accesskeys for the following elements
-  if (!mContent->NodeInfo()->Equals(nsXULAtoms::label, kNameSpaceID_XUL))
+  if (!mContent->NodeInfo()->Equals(nsGkAtoms::label, kNameSpaceID_XUL))
     return NS_OK;
 
   // To filter out <label>s without a control attribute.
@@ -89,18 +85,18 @@ nsAreaFrame::RegUnregAccessKey(PRBool aDoReg)
   // in e.g. <menu>, <menuitem>, <button>. These <label>s inherit
   // |accesskey| and would otherwise register themselves, overwriting
   // the content we really meant to be registered.
-  if (!mContent->HasAttr(kNameSpaceID_None, nsXULAtoms::control))
+  if (!mContent->HasAttr(kNameSpaceID_None, nsGkAtoms::control))
     return NS_OK;
 
   nsAutoString accessKey;
-  mContent->GetAttr(kNameSpaceID_None, nsXULAtoms::accesskey, accessKey);
+  mContent->GetAttr(kNameSpaceID_None, nsGkAtoms::accesskey, accessKey);
 
   if (accessKey.IsEmpty())
     return NS_OK;
 
   // With a valid PresContext we can get the ESM 
   // and register the access key
-  nsIEventStateManager *esm = GetPresContext()->EventStateManager();
+  nsIEventStateManager *esm = PresContext()->EventStateManager();
   nsresult rv;
 
   PRUint32 key = accessKey.First();
@@ -148,7 +144,7 @@ nsAreaFrame::AttributeChanged(PRInt32 aNameSpaceID,
 
   // If the accesskey changed, register for the new value
   // The old value has been unregistered in nsXULElement::SetAttr
-  if (aAttribute == nsXULAtoms::accesskey || aAttribute == nsXULAtoms::control)
+  if (aAttribute == nsGkAtoms::accesskey || aAttribute == nsGkAtoms::control)
     RegUnregAccessKey(PR_TRUE);
 
   return rv;
@@ -158,7 +154,7 @@ nsAreaFrame::AttributeChanged(PRInt32 aNameSpaceID,
 nsIAtom*
 nsAreaFrame::GetType() const
 {
-  return nsLayoutAtoms::areaFrame;
+  return nsGkAtoms::areaFrame;
 }
 
 /////////////////////////////////////////////////////////////////////////////

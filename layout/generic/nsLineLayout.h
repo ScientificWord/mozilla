@@ -56,6 +56,8 @@
 #include "nsBlockReflowState.h"
 #include "plarena.h"
 
+class nsBlockFrame;
+
 class nsSpaceManager;
 class nsPlaceholderFrame;
 struct nsStyleText;
@@ -65,16 +67,8 @@ public:
   nsLineLayout(nsPresContext* aPresContext,
                nsSpaceManager* aSpaceManager,
                const nsHTMLReflowState* aOuterReflowState,
-               PRBool aComputeMaxElementWidth);
+               const nsLineList::iterator* aLine);
   ~nsLineLayout();
-
-  class ArenaDeque : public nsDeque
-  {
-  public:
-    ArenaDeque() : nsDeque(nsnull) {}
-    void *operator new(size_t, PLArenaPool &pool);
-    void  operator delete(void *) {} // Dont do anything.  Its Arena memory
-  };
 
   void Init(nsBlockReflowState* aState, nscoord aMinLineHeight,
             PRInt32 aLineNumber) {
@@ -83,14 +77,6 @@ public:
     mLineNumber = aLineNumber;
   }
 
-  PRInt32 GetColumn() {
-    return mColumn;
-  }
-
-  void SetColumn(PRInt32 aNewColumn) {
-    mColumn = aNewColumn;
-  }
-  
   PRInt32 GetLineNumber() const {
     return mLineNumber;
   }
@@ -111,8 +97,8 @@ public:
                      nscoord aLeftEdge,
                      nscoord aRightEdge);
 
-  void EndSpan(nsIFrame* aFrame, nsSize& aSizeResult,
-               nscoord* aMaxElementWidth);
+  // Returns the width of the span
+  nscoord EndSpan(nsIFrame* aFrame);
 
   PRInt32 GetCurrentSpanCount() const;
 
@@ -134,14 +120,11 @@ public:
     PushFrame(aFrame);
   }
 
-  void VerticalAlignLine(nsLineBox* aLineBox,
-                         nscoord* aMaxElementWidthResult);
+  void VerticalAlignLine();
 
   PRBool TrimTrailingWhiteSpace();
 
-  PRBool HorizontalAlignFrames(nsRect& aLineBounds,
-                               PRBool aAllowJustify,
-                               PRBool aShrinkWrapWidth);
+  void HorizontalAlignFrames(nsRect& aLineBounds, PRBool aAllowJustify);
 
   /**
    * Handle all the relative positioning in the line, compute the
@@ -150,12 +133,16 @@ public:
    */
   void RelativePositionFrames(nsRect& aCombinedArea);
 
+  static void CombineTextDecorations(nsPresContext* aPresContext,
+                                     PRUint8 aDecorations,
+                                     nsIFrame* aFrame,
+                                     nsRect& aCombinedArea,
+                                     nscoord aAscentOverride = 0,
+                                     float aUnderlineSizeRatio = 1.0f);
   //----------------------------------------
 
   // Supporting methods and data for flags
 protected:
-#define LL_ENDSINWHITESPACE            0x00000001
-#define LL_UNDERSTANDSNWHITESPACE      0x00000002
 #define LL_FIRSTLETTERSTYLEOK          0x00000008
 #define LL_ISTOPOFPAGE                 0x00000010
 #define LL_UPDATEDBAND                 0x00000020
@@ -163,13 +150,10 @@ protected:
 #define LL_LASTFLOATWASLETTERFRAME     0x00000080
 #define LL_CANPLACEFLOAT               0x00000100
 #define LL_LINEENDSINBR                0x00000200
-// The "soft-break" flag differs from the "hard-break" flag of <br>. The
-// "soft-break" means that a whitespace has been trimmed at the end of the line,
-// and therefore its width has not been accounted for (this width can actually be
-// large, e.g., if a large word-spacing is set). LL should not be misled into 
-// placing something where the whitespace was trimmed. See bug 329987.
-#define LL_LINEENDSINSOFTBR            0x00000400
-#define LL_LASTFLAG                    LL_LINEENDSINSOFTBR
+#define LL_NEEDBACKUP                  0x00000400
+#define LL_INFIRSTLINE                 0x00000800
+#define LL_GOTLINEBOX                  0x00001000
+#define LL_LASTFLAG                    LL_GOTLINEBOX
 
   PRUint16 mFlags;
 
@@ -188,51 +172,17 @@ protected:
   PRBool GetFlag(PRUint32 aFlag) const
   {
     NS_ASSERTION(aFlag<=LL_LASTFLAG, "bad flag");
-    PRBool result = (mFlags & aFlag);
-    if (result) return PR_TRUE;
-    return PR_FALSE;
+    return !!(mFlags & aFlag);
   }
 
 public:
 
-  // Support methods for white-space compression and word-wrapping
-  // during line reflow
-
-  void SetEndsInWhiteSpace(PRBool aState) {
-    SetFlag(LL_ENDSINWHITESPACE, aState);
-  }
-
-  PRBool GetEndsInWhiteSpace() const {
-    return GetFlag(LL_ENDSINWHITESPACE);
-  }
-
-  void SetUnderstandsWhiteSpace(PRBool aSetting) {
-    SetFlag(LL_UNDERSTANDSNWHITESPACE, aSetting);
-  }
+  // Support methods for word-wrapping during line reflow
 
   void SetTextJustificationWeights(PRInt32 aNumSpaces, PRInt32 aNumLetters) {
     mTextJustificationNumSpaces = aNumSpaces;
     mTextJustificationNumLetters = aNumLetters;
   }
-
-  void RecordWordFrame(nsIFrame* aWordFrame) {
-    if(mWordFrames || AllocateDeque())
-      mWordFrames->Push(aWordFrame);
-  }
-
-  PRBool InWord() const {
-    return mWordFrames && 0 != mWordFrames->GetSize();
-  }
-
-  void ForgetWordFrame(nsIFrame* aFrame);
-
-  void ForgetWordFrames() {
-    if(mWordFrames) {
-      mWordFrames->Empty();
-    }
-  }
-
-  nsIFrame* FindNextText(nsPresContext* aPresContext, nsIFrame* aFrame);
 
   PRBool CanPlaceFloatNow() const;
 
@@ -248,26 +198,6 @@ public:
     SetFlag(LL_LINEENDSINBR, aOn); 
   }
 
-  PRBool GetLineEndsInSoftBR() const 
-  { 
-    return GetFlag(LL_LINEENDSINSOFTBR); 
-  }
-
-  void SetLineEndsInSoftBR(PRBool aOn) 
-  { 
-    SetFlag(LL_LINEENDSINSOFTBR, aOn); 
-  }
-
-  PRBool InStrictMode() const
-  {
-    return mCompatMode != eCompatibility_NavQuirks;
-  }
-
-  nsCompatibility GetCompatMode() const
-  {
-    return mCompatMode;
-  }
-
   //----------------------------------------
   // Inform the line-layout about the presence of a floating frame
   // XXX get rid of this: use get-frame-type?
@@ -277,6 +207,10 @@ public:
 
   PRBool AddFloat(nsPlaceholderFrame* aFrame, nsReflowStatus& aReflowStatus) {
     return mBlockRS->AddFloat(*this, aFrame, PR_FALSE, aReflowStatus);
+  }
+
+  void SetTrimmableWidth(nscoord aTrimmableWidth) {
+    mTrimmableWidth = aTrimmableWidth;
   }
 
   //----------------------------------------
@@ -289,23 +223,115 @@ public:
     SetFlag(LL_FIRSTLETTERSTYLEOK, aSetting);
   }
 
-  void SetFirstLetterFrame(nsIFrame* aFrame) {
-    mFirstLetterFrame = aFrame;
+  PRBool GetInFirstLine() const {
+    return GetFlag(LL_INFIRSTLINE);
+  }
+
+  void SetInFirstLine(PRBool aSetting) {
+    SetFlag(LL_INFIRSTLINE, aSetting);
   }
 
   //----------------------------------------
 
-  static PRBool TreatFrameAsBlock(nsIFrame* aFrame);
-
-  static PRBool IsPercentageUnitSides(const nsStyleSides* aSides);
-
-  static PRBool IsPercentageAwareReplacedElement(nsPresContext *aPresContext, 
-                                                 nsIFrame       *aFrame);
-
-
-  //----------------------------------------
-
   nsPresContext* mPresContext;
+
+  /**
+   * Record where an optional break could have been placed. During line reflow,
+   * frames containing optional break points (e.g., whitespace in text frames)
+   * can call SetLastOptionalBreakPosition to record where a break could
+   * have been made, but wasn't because we decided to place more content on
+   * the line. For non-text frames, offset 0 means
+   * before the content, offset PR_INT32_MAX means after the content.
+   * 
+   * Currently this is used to handle cases where a single word comprises
+   * multiple frames, and the first frame fits on the line but the whole word
+   * doesn't. We look back to the last optional break position and
+   * reflow the whole line again, forcing a break at that position. The last
+   * optional break position could be in a text frame or else after a frame
+   * that cannot be part of a text run, so those are the positions we record.
+   * 
+   * @param aFits set to true if the break position is within the available width.
+   * 
+   * @return PR_TRUE if we are actually reflowing with forced break position and we
+   * should break here
+   */
+  PRBool NotifyOptionalBreakPosition(nsIContent* aContent, PRInt32 aOffset,
+                                     PRBool aFits) {
+    NS_ASSERTION(!aFits || !GetFlag(LL_NEEDBACKUP),
+                  "Shouldn't be updating the break position with a break that fits after we've already flagged an overrun");
+    // Remember the last break position that fits; if there was no break that fit,
+    // just remember the first break
+    if (aFits || !mLastOptionalBreakContent) {
+      mLastOptionalBreakContent = aContent;
+      mLastOptionalBreakContentOffset = aOffset;
+    }
+    return aContent && mForceBreakContent == aContent &&
+      mForceBreakContentOffset == aOffset;
+  }
+  /**
+   * Like NotifyOptionalBreakPosition, but here it's OK for LL_NEEDBACKUP
+   * to be set, because the caller is merely pruning some saved break position(s)
+   * that are actually not feasible.
+   */
+  void RestoreSavedBreakPosition(nsIContent* aContent, PRInt32 aOffset) {
+    mLastOptionalBreakContent = aContent;
+    mLastOptionalBreakContentOffset = aOffset;
+  }
+  /**
+   * Signal that no backing up will be required after all.
+   */
+  void ClearOptionalBreakPosition() {
+    SetFlag(LL_NEEDBACKUP, PR_FALSE);
+    mLastOptionalBreakContent = nsnull;
+    mLastOptionalBreakContentOffset = -1;
+  }
+  // Retrieve last set optional break position. When this returns null, no
+  // optional break has been recorded (which means that the line can't break yet).
+  nsIContent* GetLastOptionalBreakPosition(PRInt32* aOffset) {
+    *aOffset = mLastOptionalBreakContentOffset;
+    return mLastOptionalBreakContent;
+  }
+  
+  /**
+   * Check whether frames overflowed the available width and CanPlaceFrame
+   * requested backing up to a saved break position.
+   */  
+  PRBool NeedsBackup() { return GetFlag(LL_NEEDBACKUP); }
+  
+  // Line layout may place too much content on a line, overflowing its available
+  // width. When that happens, if SetLastOptionalBreakPosition has been
+  // used to record an optional break that wasn't taken, we can reflow the line
+  // again and force the break to happen at that point (i.e., backtracking
+  // to the last choice point).
+
+  // Record that we want to break at the given content+offset (which
+  // should have been previously returned by GetLastOptionalBreakPosition
+  // from another nsLineLayout).
+  void ForceBreakAtPosition(nsIContent* aContent, PRInt32 aOffset) {
+    mForceBreakContent = aContent;
+    mForceBreakContentOffset = aOffset;
+  }
+  PRBool HaveForcedBreakPosition() { return mForceBreakContent != nsnull; }
+  PRInt32 GetForcedBreakPosition(nsIContent* aContent) {
+    return mForceBreakContent == aContent ? mForceBreakContentOffset : -1;
+  }
+
+  /**
+   * This can't be null. It usually returns a block frame but may return
+   * some other kind of frame when inline frames are reflowed in a non-block
+   * context (e.g. MathML).
+   */
+  nsIFrame* GetLineContainerFrame() const { return mBlockReflowState->frame; }
+  const nsLineList::iterator* GetLine() const {
+    return GetFlag(LL_GOTLINEBOX) ? &mLineBox : nsnull;
+  }
+  
+  /**
+   * Return the horizontal offset of the current reflowed-frame from the 
+   * edge of the line container. This is always positive, measured from
+   * the right edge for RTL blocks and from the left edge for LTR blocks.
+   */
+  nscoord GetCurrentFrameXDistanceFromBlock();
 
 protected:
   // This state is constant for a given block frame doing line layout
@@ -313,13 +339,16 @@ protected:
   const nsStyleText* mStyleText; // for the block
   const nsHTMLReflowState* mBlockReflowState;
 
+  nsIContent* mLastOptionalBreakContent;
+  nsIContent* mForceBreakContent;
+  PRInt32     mLastOptionalBreakContentOffset;
+  PRInt32     mForceBreakContentOffset;
+  
   // XXX remove this when landing bug 154892 (splitting absolute positioned frames)
   friend class nsInlineFrame;
 
   nsBlockReflowState* mBlockRS;/* XXX hack! */
-  nsCompatibility mCompatMode;
   nscoord mMinLineHeight;
-  PRPackedBool mComputeMaxElementWidth;
   PRUint8 mTextAlign;
 
   PRUint8 mPlacedFloats;
@@ -330,17 +359,13 @@ protected:
 
   // This state varies during the reflow of a line but is line
   // "global" state not span "local" state.
-  nsIFrame* mFirstLetterFrame;
   PRInt32 mLineNumber;
-  PRInt32 mColumn;
   PRInt32 mTextJustificationNumSpaces;
   PRInt32 mTextJustificationNumLetters;
 
-  nsLineBox* mLineBox;
+  nsLineList::iterator mLineBox;
 
   PRInt32 mTotalPlacedFrames;
-  ArenaDeque *mWordFrames;
-  PRBool  AllocateDeque();
 
   nscoord mTopEdge;
   nscoord mMaxTopBoxHeight;
@@ -349,6 +374,9 @@ protected:
   // Final computed line-height value after VerticalAlignFrames for
   // the block has been called.
   nscoord mFinalLineHeight;
+  
+  // Amount of trimmable whitespace width for the trailing text frame, if any
+  nscoord mTrimmableWidth;
 
   // Per-frame data recorded by the line-layout reflow logic. This
   // state is the state needed to post-process the line after reflow
@@ -372,9 +400,8 @@ protected:
     nsCSSFrameType mFrameType;
 
     // From metrics
-    nscoord mAscent, mDescent;
+    nscoord mAscent;
     nsRect mBounds;
-    nscoord mMaxElementWidth;
     nsRect mCombinedArea;
 
     // From reflow-state
@@ -395,7 +422,7 @@ protected:
 #define PFD_ISNONEMPTYTEXTFRAME         0x00000004
 #define PFD_ISNONWHITESPACETEXTFRAME    0x00000008
 #define PFD_ISLETTERFRAME               0x00000010
-#define PFD_ISSTICKY                    0x00000020
+#define PFD_RECOMPUTEOVERFLOW           0x00000020
 #define PFD_ISBULLET                    0x00000040
 #define PFD_SKIPWHENTRIMMINGWHITESPACE  0x00000080
 #define PFD_LASTFLAG                    PFD_SKIPWHENTRIMMINGWHITESPACE
@@ -418,9 +445,7 @@ protected:
     PRBool GetFlag(PRUint32 aFlag) const
     {
       NS_ASSERTION(aFlag<=PFD_LASTFLAG, "bad flag");
-      PRBool result = (mFlags & aFlag);
-      if (result) return PR_TRUE;
-      return PR_FALSE;
+      return !!(mFlags & aFlag);
     }
 
 
@@ -449,6 +474,7 @@ protected:
     PRPackedBool mChangedFrameDirection;
     PRPackedBool mZeroEffectiveSpanBox;
     PRPackedBool mContainsFloat;
+    PRPackedBool mHasNonemptyContent;
 
     nscoord mLeftEdge;
     nscoord mX;
@@ -497,8 +523,11 @@ protected:
   PRBool CanPlaceFrame(PerFrameData* pfd,
                        const nsHTMLReflowState& aReflowState,
                        PRBool aNotSafeToBreak,
+                       PRBool aFrameCanContinueTextRun,
+                       PRBool aCanRollBackBeforeFrame,
                        nsHTMLReflowMetrics& aMetrics,
-                       nsReflowStatus& aStatus);
+                       nsReflowStatus& aStatus,
+                       PRBool* aOptionalBreakAfterFits);
 
   void PlaceFrame(PerFrameData* pfd,
                   nsHTMLReflowMetrics& aMetrics);
@@ -514,7 +543,6 @@ protected:
   void RelativePositionFrames(PerSpanData* psd, nsRect& aCombinedArea);
 
   PRBool TrimTrailingWhiteSpaceIn(PerSpanData* psd, nscoord* aDeltaWidth);
-
 
   void ComputeJustificationWeights(PerSpanData* psd, PRInt32* numSpaces, PRInt32* numLetters);
 
