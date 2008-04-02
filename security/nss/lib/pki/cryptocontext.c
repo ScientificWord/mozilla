@@ -52,19 +52,8 @@ static const char CVS_ID[] = "@(#) $RCSfile$ $Revision$ $Date$";
 
 #include "pki1t.h"
 
-#ifdef PURE_STAN_BUILD
-struct NSSCryptoContextStr
-{
-    PRInt32 refCount;
-    NSSArena *arena;
-    NSSTrustDomain *td;
-    NSSToken *token;
-    nssSession *session;
-    nssCertificateStore *certStore;
-};
-#endif
-
 extern const NSSError NSS_ERROR_NOT_FOUND;
+extern const NSSError NSS_ERROR_INVALID_ARGUMENT;
 
 NSS_IMPLEMENT NSSCryptoContext *
 nssCryptoContext_Create (
@@ -142,22 +131,33 @@ NSSCryptoContext_GetTrustDomain (
     return NULL;
 }
 
-NSS_IMPLEMENT PRStatus
-NSSCryptoContext_ImportCertificate (
+
+NSS_IMPLEMENT NSSCertificate *
+NSSCryptoContext_FindOrImportCertificate (
   NSSCryptoContext *cc,
   NSSCertificate *c
 )
 {
-    PRStatus nssrv;
+    NSSCertificate *rvCert = NULL;
+
     PORT_Assert(cc->certStore);
     if (!cc->certStore) {
-	return PR_FAILURE;
+	nss_SetError(NSS_ERROR_INVALID_ARGUMENT);
+	return rvCert;
     }
-    nssrv = nssCertificateStore_Add(cc->certStore, c);
-    if (nssrv == PR_SUCCESS) {
+    rvCert = nssCertificateStore_FindOrAdd(cc->certStore, c);
+    if (rvCert == c && c->object.cryptoContext != cc) {
+	PORT_Assert(!c->object.cryptoContext);
 	c->object.cryptoContext = cc;
+    } 
+    if (rvCert) {
+	/* an NSSCertificate cannot be part of two crypto contexts
+	** simultaneously.  If this assertion fails, then there is 
+	** a serious Stan design flaw.
+	*/
+	PORT_Assert(cc == c->object.cryptoContext);
     }
-    return nssrv;
+    return rvCert;
 }
 
 NSS_IMPLEMENT NSSCertificate *
@@ -233,7 +233,7 @@ nssCryptoContext_ImportSMIMEProfile (
 NSS_IMPLEMENT NSSCertificate *
 NSSCryptoContext_FindBestCertificateByNickname (
   NSSCryptoContext *cc,
-  NSSUTF8 *name,
+  const NSSUTF8 *name,
   NSSTime *timeOpt, /* NULL for "now" */
   NSSUsage *usage,
   NSSPolicies *policiesOpt /* NULL for none */

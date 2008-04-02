@@ -159,7 +159,7 @@ static void ListCRLNames (CERTCertDBHandle *certHandle, int crlType, PRBool dele
 	    char* asciiname = NULL;
 	    CERTCertificate *cert = NULL;
 	    if (crlNode->crl && &crlNode->crl->crl.derName) {
-	        cert = CERT_FindCertByName(certHandle, 
+	        cert = CERT_FindCertByName(certHandle,
 	                                   &crlNode->crl->crl.derName);
 	        if (!cert) {
 	            SECU_PrintError(progName, "could not find signing "
@@ -351,7 +351,7 @@ FindSigningCert(CERTCertDBHandle *certHandle, CERTSignedCrl *signCrl,
 }
 
 static CERTSignedCrl*
-DuplicateModCrl(PRArenaPool *arena, CERTCertDBHandle *certHandle,
+CreateModifiedCRLCopy(PRArenaPool *arena, CERTCertDBHandle *certHandle,
                 CERTCertificate **cert, char *certNickName,
                 PRFileDesc *inFile, PRInt32 decodeOptions,
                 PRInt32 importOptions)
@@ -365,7 +365,7 @@ DuplicateModCrl(PRArenaPool *arena, CERTCertDBHandle *certHandle,
     PORT_Assert(arena != NULL && certHandle != NULL &&
                 certNickName != NULL);
     if (!arena || !certHandle || !certNickName) {
-        SECU_PrintError(progName, "DuplicateModCrl: invalid args\n");
+        SECU_PrintError(progName, "CreateModifiedCRLCopy: invalid args\n");
         return NULL;
     }
 
@@ -429,7 +429,15 @@ DuplicateModCrl(PRArenaPool *arena, CERTCertDBHandle *certHandle,
         goto loser;
     }  
 
-    signCrl->arena = arena;    
+    /* Make sure the update time is current. It can be modified later
+     * by "update <time>" command from crl generation script */
+    rv = DER_EncodeTimeChoice(arena, &signCrl->crl.lastUpdate, PR_Now());
+    if (rv != SECSuccess) {
+        SECU_PrintError(progName, "fail to encode current time\n");
+        goto loser;
+    }
+
+    signCrl->arena = arena;
 
   loser:
     SECITEM_FreeItem(&crlDER, PR_FALSE);
@@ -675,7 +683,7 @@ GenerateCRL (CERTCertDBHandle *certHandle, char *certNickName,
     }
 
     if (modifyFlag == PR_TRUE) {
-        signCrl = DuplicateModCrl(arena, certHandle, &cert, certNickName,
+        signCrl = CreateModifiedCRLCopy(arena, certHandle, &cert, certNickName,
                                          inFile, decodeOptions, importOptions);
         if (signCrl == NULL) {
             goto loser;
@@ -843,6 +851,7 @@ int main(int argc, char **argv)
     PRBool erase = PR_FALSE;
     PRInt32 i = 0;
     PRInt32 iterations = 1;
+    PRBool readonly = PR_FALSE;
 
     secuPWData  pwdata          = { PW_NONE, 0 };
 
@@ -1000,13 +1009,17 @@ int main(int argc, char **argv)
         (modifyCRL && !inFile && !nickName)) Usage (progName);
     if (!(listCRL || deleteCRL || importCRL || generateCRL ||
 	  modifyCRL || test || erase)) Usage (progName);
+
+    if (listCRL) {
+        readonly = PR_TRUE;
+    }
     
     PR_Init( PR_SYSTEM_THREAD, PR_PRIORITY_NORMAL, 1);
 
     PK11_SetPasswordFunc(SECU_GetModulePassword);
 
     secstatus = NSS_Initialize(SECU_ConfigDirectory(NULL), dbPrefix, dbPrefix,
-			       "secmod.db", 0);
+			       "secmod.db", readonly ? NSS_INIT_READONLY : 0);
     if (secstatus != SECSuccess) {
 	SECU_PrintPRandOSError(progName);
 	return -1;

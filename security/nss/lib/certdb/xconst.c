@@ -63,16 +63,17 @@ static const SEC_ASN1Template CERTIA5TypeTemplate[] = {
     { SEC_ASN1_IA5_STRING }
 };
 
+SEC_ASN1_MKSUB(SEC_GeneralizedTimeTemplate)
 
 static const SEC_ASN1Template CERTPrivateKeyUsagePeriodTemplate[] = {
     { SEC_ASN1_SEQUENCE,
       0, NULL, sizeof(CERTPrivKeyUsagePeriod) },
-    { SEC_ASN1_OPTIONAL | SEC_ASN1_CONTEXT_SPECIFIC  | 0,	
+    { SEC_ASN1_OPTIONAL | SEC_ASN1_CONTEXT_SPECIFIC  | SEC_ASN1_XTRN | 0,
 	  offsetof(CERTPrivKeyUsagePeriod, notBefore), 
-	  SEC_GeneralizedTimeTemplate},
-    { SEC_ASN1_OPTIONAL | SEC_ASN1_CONTEXT_SPECIFIC  | 1,
+	  SEC_ASN1_SUB(SEC_GeneralizedTimeTemplate) },
+    { SEC_ASN1_OPTIONAL | SEC_ASN1_CONTEXT_SPECIFIC  | SEC_ASN1_XTRN | 1,
 	  offsetof(CERTPrivKeyUsagePeriod, notAfter), 
-	  SEC_GeneralizedTimeTemplate},
+	  SEC_ASN1_SUB(SEC_GeneralizedTimeTemplate)},
     { 0, } 
 };
 
@@ -98,19 +99,16 @@ const SEC_ASN1Template CERTAuthInfoAccessTemplate[] = {
 
 
 SECStatus 
-CERT_EncodeSubjectKeyID(PRArenaPool *arena, char *value, int len, SECItem *encodedValue)
+CERT_EncodeSubjectKeyID(PRArenaPool *arena, const SECItem* srcString,
+                        SECItem *encodedValue)
 {
-    SECItem encodeContext;
     SECStatus rv = SECSuccess;
 
-
-    PORT_Memset (&encodeContext, 0, sizeof (encodeContext));
-    
-    if (value != NULL) {
-	encodeContext.data = (unsigned char *)value;
-	encodeContext.len = len;
+    if (!srcString) {
+        PORT_SetError(SEC_ERROR_INVALID_ARGS);
+        return SECFailure;
     }
-    if (SEC_ASN1EncodeItem (arena, encodedValue, &encodeContext,
+    if (SEC_ASN1EncodeItem (arena, encodedValue, srcString,
 			    CERTSubjectKeyIDTemplate) == NULL) {
 	rv = SECFailure;
     }
@@ -205,20 +203,32 @@ CERT_EncodeAltNameExtension(PRArenaPool *arena,  CERTGeneralName  *value, SECIte
 }
 
 CERTGeneralName *
-CERT_DecodeAltNameExtension(PRArenaPool *arena, SECItem *EncodedAltName)
+CERT_DecodeAltNameExtension(PRArenaPool *reqArena, SECItem *EncodedAltName)
 {
-    SECStatus              rv = SECSuccess;
+    SECStatus                  rv = SECSuccess;
     CERTAltNameEncodedContext  encodedContext;
+    SECItem*                   newEncodedAltName;
+
+    if (!reqArena) {
+        PORT_SetError(SEC_ERROR_INVALID_ARGS);
+        return NULL;
+    }
+
+    newEncodedAltName = SECITEM_ArenaDupItem(reqArena, EncodedAltName);
+    if (!newEncodedAltName) {
+        return NULL;
+    }
 
     encodedContext.encodedGenName = NULL;
     PORT_Memset(&encodedContext, 0, sizeof(CERTAltNameEncodedContext));
-    rv = SEC_ASN1DecodeItem (arena, &encodedContext, CERT_GeneralNamesTemplate,
-			     EncodedAltName);
+    rv = SEC_QuickDERDecodeItem (reqArena, &encodedContext,
+                                 CERT_GeneralNamesTemplate, newEncodedAltName);
     if (rv == SECFailure) {
 	goto loser;
     }
     if (encodedContext.encodedGenName && encodedContext.encodedGenName[0])
-	return cert_DecodeGeneralNames(arena, encodedContext.encodedGenName);
+	return cert_DecodeGeneralNames(reqArena,
+                                       encodedContext.encodedGenName);
     /* Extension contained an empty GeneralNames sequence */
     /* Treat as extension not found */
     PORT_SetError(SEC_ERROR_EXTENSION_NOT_FOUND);
@@ -248,21 +258,32 @@ CERT_DecodeNameConstraintsExtension(PRArenaPool          *arena,
 
 
 CERTAuthInfoAccess **
-CERT_DecodeAuthInfoAccessExtension(PRArenaPool *arena,
+CERT_DecodeAuthInfoAccessExtension(PRArenaPool *reqArena,
 				   SECItem     *encodedExtension)
 {
     CERTAuthInfoAccess **info = NULL;
     SECStatus rv;
     int i;
+    SECItem* newEncodedExtension;
 
-    rv = SEC_ASN1DecodeItem(arena, &info, CERTAuthInfoAccessTemplate, 
-			    encodedExtension);
+    if (!reqArena) {
+        PORT_SetError(SEC_ERROR_INVALID_ARGS);
+        return NULL;
+    }
+
+    newEncodedExtension = SECITEM_ArenaDupItem(reqArena, encodedExtension);
+    if (!newEncodedExtension) {
+        return NULL;
+    }
+
+    rv = SEC_QuickDERDecodeItem(reqArena, &info, CERTAuthInfoAccessTemplate, 
+			    newEncodedExtension);
     if (rv != SECSuccess || info == NULL) {
 	return NULL;
     }
 
     for (i = 0; info[i] != NULL; i++) {
-	info[i]->location = CERT_DecodeGeneralName(arena,
+	info[i]->location = CERT_DecodeGeneralName(reqArena,
 						   &(info[i]->derLocation),
 						   NULL);
     }
@@ -270,7 +291,7 @@ CERT_DecodeAuthInfoAccessExtension(PRArenaPool *arena,
 }
 
 SECStatus
-cert_EncodeAuthInfoAccessExtension(PRArenaPool *arena,
+CERT_EncodeInfoAccessExtension(PRArenaPool *arena,
 				   CERTAuthInfoAccess **info,
 				   SECItem *dest)
 {

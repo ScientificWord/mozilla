@@ -57,7 +57,7 @@ SEC_BEGIN_PROTOS
 
 /*
  * This function registers the HttpClient with whose functions the
- * HttpClientFcn structure have been populated as the default Http
+ * HttpClientFcn structure has been populated as the default Http
  * client.
  *
  * The function table must be a global object.
@@ -66,6 +66,44 @@ SEC_BEGIN_PROTOS
  */
 extern SECStatus
 SEC_RegisterDefaultHttpClient(const SEC_HttpClientFcn *fcnTable);
+
+/*
+ * This function obtains the HttpClient which has been registered
+ * by an earlier call to SEC_RegisterDefaultHttpClient.
+ */
+extern const SEC_HttpClientFcn *
+SEC_GetRegisteredHttpClient(void);
+
+/*
+ * Sets parameters that control NSS' internal OCSP cache.
+ * maxCacheEntries, special varlues are:
+ *   -1 disable cache
+ *   0 unlimited cache entries
+ * minimumSecondsToNextFetchAttempt:
+ *   whenever an OCSP request was attempted or completed over the network,
+ *   wait at least this number of seconds before trying to fetch again.
+ * maximumSecondsToNextFetchAttempt:
+ *   this is the maximum age of a cached response we allow, until we try
+ *   to fetch an updated response, even if the OCSP responder expects
+ *   that newer information update will not be available yet.
+ */
+extern SECStatus
+CERT_OCSPCacheSettings(PRInt32 maxCacheEntries,
+                       PRUint32 minimumSecondsToNextFetchAttempt,
+                       PRUint32 maximumSecondsToNextFetchAttempt);
+
+/*
+ * Set the desired behaviour on OCSP failures.
+ * See definition of ocspFailureMode for allowed choices.
+ */
+extern SECStatus
+CERT_SetOCSPFailureMode(SEC_OcspFailureMode ocspFailureMode);
+
+/*
+ * Removes all items currently stored in the OCSP cache.
+ */
+extern SECStatus
+CERT_ClearOCSPCache(void);
 
 /*
  * FUNCTION: CERT_EnableOCSPChecking
@@ -411,6 +449,29 @@ CERT_VerifyOCSPResponseSignature(CERTOCSPResponse *response,
  */
 extern char *
 CERT_GetOCSPAuthorityInfoAccessLocation(CERTCertificate *cert);
+
+/*
+ * FUNCTION: CERT_ParseURL
+ *   Parse the URI of a OCSP responder into hostname, port, and path.
+ * INPUTS:
+ *   const char *location
+ *     The URI to be parsed
+ * OUTPUTS:
+ *   char *pHostname
+ *     Pointer to store the hostname obtained from the URI.
+ *     This result should be freed (via PORT_Free) when no longer in use.
+ *   PRUint16 *pPort
+ *     Pointer to store the port number obtained from the URI.
+ *   char *pPath
+ *     Pointer to store the path obtained from the URI.
+ *     This result should be freed (via PORT_Free) when no longer in use.
+ * RETURN:
+ *   Returns SECSuccess when parsing was successful. Anything else means
+ *   problems were encountered.
+ *     
+ */
+extern SECStatus
+CERT_ParseURL(const char *url, char **pHostname, PRUint16 *pPort, char **pPath);
 
 /*
  * FUNCTION: CERT_CheckOCSPStatus

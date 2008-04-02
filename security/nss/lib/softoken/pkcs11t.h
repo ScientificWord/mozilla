@@ -426,6 +426,9 @@ typedef CK_ULONG          CK_KEY_TYPE;
 #define CKK_BLOWFISH        0x00000020
 #define CKK_TWOFISH         0x00000021
 
+/* Camellia is proposed for v2.20 Amendment 3 */
+#define CKK_CAMELLIA        0x00000025
+
 #define CKK_VENDOR_DEFINED  0x80000000
 
 
@@ -658,6 +661,10 @@ typedef CK_ULONG          CK_MECHANISM_TYPE;
 #define CKM_SHA384_RSA_PKCS_PSS        0x00000044
 #define CKM_SHA512_RSA_PKCS_PSS        0x00000045
 
+/* CKM_SHA224 new for v2.20 amendment 3 */
+#define CKM_SHA224_RSA_PKCS            0x00000046
+#define CKM_SHA224_RSA_PKCS_PSS        0x00000047
+
 #define CKM_RC2_KEY_GEN                0x00000100
 #define CKM_RC2_ECB                    0x00000101
 #define CKM_RC2_CBC                    0x00000102
@@ -741,6 +748,11 @@ typedef CK_ULONG          CK_MECHANISM_TYPE;
 #define CKM_SHA512_HMAC                0x00000271
 #define CKM_SHA512_HMAC_GENERAL        0x00000272
 
+/* CKM_SHA224 new for v2.20 amendment 3 */
+#define CKM_SHA224                     0x00000255
+#define CKM_SHA224_HMAC                0x00000256
+#define CKM_SHA224_HMAC_GENERAL        0x00000257
+
 /* All of the following mechanisms are new for v2.0 */
 /* Note that CAST128 and CAST5 are the same algorithm */
 #define CKM_CAST_KEY_GEN               0x00000300
@@ -811,6 +823,9 @@ typedef CK_ULONG          CK_MECHANISM_TYPE;
 #define CKM_SHA256_KEY_DERIVATION      0x00000393
 #define CKM_SHA384_KEY_DERIVATION      0x00000394
 #define CKM_SHA512_KEY_DERIVATION      0x00000395
+
+/* CKM_SHA224 new for v2.20 amendment 3 */
+#define CKM_SHA224_KEY_DERIVATION      0x00000396
 
 #define CKM_PBE_MD2_DES_CBC            0x000003A0
 #define CKM_PBE_MD5_DES_CBC            0x000003A1
@@ -908,6 +923,15 @@ typedef CK_ULONG          CK_MECHANISM_TYPE;
 #define CKM_TWOFISH_KEY_GEN            0x00001092
 #define CKM_TWOFISH_CBC                0x00001093
 
+/* Camellia is proposed for v2.20 Amendment 3 */
+#define CKM_CAMELLIA_KEY_GEN           0x00000550
+#define CKM_CAMELLIA_ECB               0x00000551
+#define CKM_CAMELLIA_CBC               0x00000552
+#define CKM_CAMELLIA_MAC               0x00000553
+#define CKM_CAMELLIA_MAC_GENERAL       0x00000554
+#define CKM_CAMELLIA_CBC_PAD           0x00000555
+#define CKM_CAMELLIA_ECB_ENCRYPT_DATA  0x00000556
+#define CKM_CAMELLIA_CBC_ENCRYPT_DATA  0x00000557
 
 /* CKM_xxx_ENCRYPT_DATA mechanisms are new for v2.20 */
 #define CKM_DES_ECB_ENCRYPT_DATA       0x00001100
@@ -1222,6 +1246,9 @@ typedef CK_RSA_PKCS_MGF_TYPE CK_PTR CK_RSA_PKCS_MGF_TYPE_PTR;
 #define CKG_MGF1_SHA256       0x00000002
 #define CKG_MGF1_SHA384       0x00000003
 #define CKG_MGF1_SHA512       0x00000004
+
+/* v2.20 amendment 3 */
+#define CKG_MGF1_SHA224	      0x00000005
 
 /* CK_RSA_PKCS_OAEP_SOURCE_TYPE is new for v2.10.
  * CK_RSA_PKCS_OAEP_SOURCE_TYPE  is used to indicate the source

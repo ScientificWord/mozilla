@@ -73,7 +73,9 @@ LIBRARY      =
 IMPORT_LIBRARY =
 PROGRAM      =
 
-EXTRA_LIBS   += $(DIST)/lib/$(LIB_PREFIX)secutil.$(LIB_SUFFIX)
+ifeq ($(OS_TARGET), SunOS)
+OS_LIBS += -lkstat
+endif
 
 ifeq (,$(filter-out WIN%,$(OS_TARGET)))
 
@@ -85,6 +87,8 @@ RESNAME = freebl.rc
 
 ifdef NS_USE_GCC
 EXTRA_SHARED_LIBS += \
+	-L$(DIST)/lib \
+	-lnssutil3 \
 	-L$(NSPR_LIB_DIR) \
 	-lplc4 \
 	-lplds4 \
@@ -92,6 +96,7 @@ EXTRA_SHARED_LIBS += \
 	$(NULL)
 else # ! NS_USE_GCC
 EXTRA_SHARED_LIBS += \
+	$(DIST)/lib/nssutil3.lib \
 	$(NSPR_LIB_DIR)/$(NSPR31_LIB_PREFIX)plc4.lib \
 	$(NSPR_LIB_DIR)/$(NSPR31_LIB_PREFIX)plds4.lib \
 	$(NSPR_LIB_DIR)/$(NSPR31_LIB_PREFIX)nspr4.lib \
@@ -101,6 +106,8 @@ endif # NS_USE_GCC
 else
 
 EXTRA_SHARED_LIBS += \
+	-L$(DIST)/lib \
+	-lnssutil3 \
 	-L$(NSPR_LIB_DIR) \
 	-lplc4 \
 	-lplds4 \

@@ -62,6 +62,9 @@
 #include <time.h>
 
 #include "plgetopt.h"
+#include "nss.h"
+#include "cert.h"
+#include "sslproto.h"
 
 #define VERSIONSTRING "$Revision$ ($Date$) $Author$"
 
@@ -143,6 +146,8 @@ int sslhexparse=0;
 int looparound=0;
 int fancy=0;
 int isV2Session=0;
+int currentcipher=0;
+int hMACsize=0;
 
 #define PR_FPUTS(x) PR_fprintf(PR_STDOUT, x )
 
@@ -342,20 +347,6 @@ const char * V2CipherString(int cs_int) {
   case 0x000045:    cs_str = "TLS/DHE-RSA/CAMELLIA128-CBC/SHA";	break;
   case 0x000046:    cs_str = "TLS/DH-ANON/CAMELLIA128-CBC/SHA";	break;
 
-  case 0x000047:    cs_str = "TLS/ECDH-ECDSA/NULL/SHA"; 	break;
-  case 0x000048:    cs_str = "TLS/ECDH-ECDSA/RC4-128/SHA";	break;
-  case 0x000049:    cs_str = "TLS/ECDH-ECDSA/DES-CBC/SHA";	break;
-  case 0x00004A:    cs_str = "TLS/ECDH-ECDSA/3DESEDE-CBC/SHA";	break;
-  case 0x00004B:    cs_str = "TLS/ECDH-ECDSA/AES128-CBC/SHA";	break;
-  case 0x00004C:    cs_str = "TLS/ECDH-ECDSA/AES256-CBC/SHA";	break;
-
-  case 0x00004D:    cs_str = "TLS/ECDH-RSA/NULL/SHA";   	break;
-  case 0x00004E:    cs_str = "TLS/ECDH-RSA/RC4-128/SHA";	break;
-  case 0x00004F:    cs_str = "TLS/ECDH-RSA/DES-CBC/SHA";	break;
-  case 0x000050:    cs_str = "TLS/ECDH-RSA/3DESEDE-CBC/SHA";	break;
-  case 0x000051:    cs_str = "TLS/ECDH-RSA/AES128-CBC/SHA";	break;
-  case 0x000052:    cs_str = "TLS/ECDH-RSA/AES256-CBC/SHA";	break;
-
   case 0x000060:    cs_str = "TLS/RSA-EXPORT1024/RC4-56/MD5";	break;
   case 0x000061:    cs_str = "TLS/RSA-EXPORT1024/RC2CBC56/MD5";	break;
   case 0x000062:    cs_str = "TLS/RSA-EXPORT1024/DES56-CBC/SHA";   break;
@@ -367,9 +358,6 @@ const char * V2CipherString(int cs_int) {
   case 0x000072:    cs_str = "TLS/DHE-DSS/3DESEDE-CBC/RMD160"; break;
   case 0x000073:    cs_str = "TLS/DHE-DSS/AES128-CBC/RMD160";  break;
   case 0x000074:    cs_str = "TLS/DHE-DSS/AES256-CBC/RMD160";  break;
-
-  case 0x000077:    cs_str = "TLS/ECDHE-ECDSA/AES128-CBC/SHA";	break;
-  case 0x000078:    cs_str = "TLS/ECDHE-RSA/AES128-CBC/SHA";	break;
 
   case 0x000079:    cs_str = "TLS/DHE-RSA/AES256-CBC/RMD160";  break;
 
@@ -463,6 +451,22 @@ const char * helloExtensionNameString(int ex_num) {
 
   return ex_name;
 }
+
+static int isNULLmac(int cs_int)
+{
+    return (cs_int == SSL_NULL_WITH_NULL_NULL); 
+}
+
+static int isNULLcipher(int cs_int)
+{
+ return ((cs_int == SSL_RSA_WITH_NULL_MD5) ||
+         (cs_int == SSL_RSA_WITH_NULL_SHA) ||
+         (cs_int == SSL_FORTEZZA_DMS_WITH_NULL_SHA) ||
+         (cs_int == TLS_ECDH_ECDSA_WITH_NULL_SHA) ||
+         (cs_int == TLS_ECDHE_ECDSA_WITH_NULL_SHA) ||
+         (cs_int == TLS_ECDH_RSA_WITH_NULL_SHA) ||
+         (cs_int == TLS_ECDHE_RSA_WITH_NULL_SHA));
+} 
 
 void partial_packet(int thispacket, int size, int needed)
 {
@@ -664,7 +668,37 @@ eosh:
 
 
 
-
+unsigned int print_hello_extension(unsigned char *  hsdata,
+				   unsigned int     length,
+				   unsigned int     pos)
+{
+  /* pretty print extensions, if any */
+  if (pos < length) {
+    int exListLen = GET_SHORT((hsdata+pos)); pos += 2;
+    PR_fprintf(PR_STDOUT,
+	       "            extensions[%d] = {\n", exListLen);
+    while (exListLen > 0 && pos < length) {
+      int exLen;
+      int exType = GET_SHORT((hsdata+pos)); pos += 2;
+      exLen = GET_SHORT((hsdata+pos)); pos += 2;
+      /* dump the extension */
+      PR_fprintf(PR_STDOUT,
+		 "              extension type %s, length [%d]",
+		 helloExtensionNameString(exType), exLen);
+      if (exLen > 0) {
+	  PR_fprintf(PR_STDOUT, " = {\n");
+	  print_hex(exLen, hsdata + pos);
+	  PR_fprintf(PR_STDOUT, "              }\n");
+      } else {
+	  PR_fprintf(PR_STDOUT, "\n");
+      }
+      pos += exLen;
+      exListLen -= 2 + exLen;
+    }
+    PR_fprintf(PR_STDOUT,"            }\n");
+  }
+  return pos;
+}
 
 
 void print_ssl3_handshake(unsigned char *tbuf, 
@@ -677,7 +711,7 @@ void print_ssl3_handshake(unsigned char *tbuf,
 
   PR_fprintf(PR_STDOUT,"   handshake {\n");
 
-  while (offset < alloclen) {
+  while (offset + hMACsize < alloclen) {
     sslh.type = tbuf[offset]; 
     sslh.length = GET_24(tbuf+offset+1);
     hsdata= &tbuf[offset+4];
@@ -701,6 +735,8 @@ void print_ssl3_handshake(unsigned char *tbuf,
 
     PR_fprintf(PR_STDOUT,"      length = %d (0x%06x)\n",sslh.length,sslh.length);
     switch (sslh.type) {
+
+    case 0: /* hello_request */ /* not much to show here. */ break;
 
     case 1: /* client hello */
       switch (sr->ver_maj)  {
@@ -760,26 +796,7 @@ void print_ssl3_handshake(unsigned char *tbuf,
 	  }
 
 	  /* pretty print extensions, if any */
-	  if (pos < sslh.length) {
-	    int exListLen = GET_SHORT((hsdata+pos)); pos += 2;
-	    PR_fprintf(PR_STDOUT,
-	               "            extensions[%d] = {\n", exListLen);
-	    while (exListLen > 0 && pos < sslh.length) {
-	      int exLen;
-	      int exType = GET_SHORT((hsdata+pos)); pos += 2;
-	      exLen = GET_SHORT((hsdata+pos)); pos += 2;
-	      /* dump the extension */
-	      PR_fprintf(PR_STDOUT,
-	                 "              extension type %s, length [%d] = {\n",
-			 helloExtensionNameString(exType), exLen);
-	      print_hex(exLen, hsdata + pos);
-	      PR_fprintf(PR_STDOUT,
-	                 "              }\n");
-              pos += exLen;
-	      exListLen -= 2 + exLen;
-	    }
-	    PR_fprintf(PR_STDOUT,"                 }\n");
-	  }
+	  pos = print_hello_extension(hsdata, sslh.length, pos);
 
 	  PR_fprintf(PR_STDOUT,"         }\n");
 	} /* end of ssl version 3 */
@@ -816,38 +833,18 @@ void print_ssl3_handshake(unsigned char *tbuf,
 	  const char *cs_str = V2CipherString(cs_int);
 	  PR_fprintf(PR_STDOUT,"            cipher_suite = (0x%04x) %s\n",
 		     cs_int, cs_str);
+	  currentcipher = cs_int;
 	  pos += 2;
 	}
 	PR_fprintf(PR_STDOUT,  "            compression method = %02x\n", 
 		   hsdata[pos++]);
 
 	/* pretty print extensions, if any */
-	if (pos < sslh.length) {
-	  int exListLen = GET_SHORT((hsdata+pos)); pos += 2;
-	  PR_fprintf(PR_STDOUT,
-		     "            extensions[%d] = {\n", exListLen);
-	  while (exListLen > 0 && pos < sslh.length) {
-	    int exLen;
-	    int exType = GET_SHORT((hsdata+pos)); pos += 2;
-	    exLen = GET_SHORT((hsdata+pos)); pos += 2;
-	    /* dump the extension */
-	    PR_fprintf(PR_STDOUT,
-		       "              extension type %s, length [%d] = {\n",
-		       helloExtensionNameString(exType), exLen);
-	    print_hex(exLen, hsdata + pos);
-	    PR_fprintf(PR_STDOUT,
-		       "              }\n");
-	    pos += exLen;
-	    exListLen -= 2 + exLen;
-	  }
-	  PR_fprintf(PR_STDOUT,"                 }\n");
-	}
+	pos = print_hello_extension(hsdata, sslh.length, pos);
 
 	PR_fprintf(PR_STDOUT,"         }\n");
       }
       break;
-
-
 
     case 11: /* certificate */
       {
@@ -895,12 +892,71 @@ void print_ssl3_handshake(unsigned char *tbuf,
       }
       break;
 
+    case 12: /* server_key_exchange */                    
+      if (sslhexparse) print_hex(sslh.length, hsdata);
+      break;
+
     case 13: /* certificate request */
-      if (sslhexparse) { 
+      { 
+	unsigned int pos = 0;
+	int w, reqLength;
+
 	PR_fprintf(PR_STDOUT,"         CertificateRequest {\n");
-        print_hex(sslh.length, hsdata);
+
+	/* pretty print requested certificate types */
+	reqLength = hsdata[pos];
+	PR_fprintf(PR_STDOUT,"            certificate types[%d] = {",
+		   reqLength);
+	for (w=0; w < reqLength; w++) {
+	  PR_fprintf(PR_STDOUT, " %02x", hsdata[pos+1+w]);
+	}
+	pos += 1 + reqLength;
+	PR_fprintf(PR_STDOUT," }\n");
+
+	/* pretty print CA names, if any */
+	if (pos < sslh.length) {
+	  int exListLen = GET_SHORT((hsdata+pos)); pos += 2;
+	  PR_fprintf(PR_STDOUT,
+		     "            certificate_authorities[%d] = {\n", 
+		     exListLen);
+	  while (exListLen > 0 && pos < sslh.length) {
+	    char *  ca_name;
+	    SECItem it;
+	    int     dnLen = GET_SHORT((hsdata+pos)); pos += 2;
+
+	    /* dump the CA name */
+	    it.type = siBuffer;
+	    it.data = hsdata + pos;
+	    it.len  = dnLen;
+	    ca_name = CERT_DerNameToAscii(&it);
+	    if (ca_name) {
+	      PR_fprintf(PR_STDOUT,"   %s\n", ca_name);
+	      PORT_Free(ca_name);
+	    } else {
+	      PR_fprintf(PR_STDOUT,
+			 "              distinguished name [%d]", dnLen);
+	      if (dnLen > 0 && sslhexparse) {
+		  PR_fprintf(PR_STDOUT, " = {\n");
+		  print_hex(dnLen, hsdata + pos);
+		  PR_fprintf(PR_STDOUT, "              }\n");
+	      } else {
+		  PR_fprintf(PR_STDOUT, "\n");
+	      }
+            }
+	    pos += dnLen;
+	    exListLen -= 2 + dnLen;
+	  }
+	  PR_fprintf(PR_STDOUT,"            }\n");
+	}
+
 	PR_fprintf(PR_STDOUT,"         }\n");
       }
+      break;
+
+    case 14: /* server_hello_done */ /* not much to show here. */ break;
+
+    case 15: /* certificate_verify */	           
+      if (sslhexparse) print_hex(sslh.length, hsdata);
       break;
 
     case 16: /* client key exchange */
@@ -911,9 +967,41 @@ void print_ssl3_handshake(unsigned char *tbuf,
       }
       break;
 
+    case 20: /* finished */			 
+      PR_fprintf(PR_STDOUT,"         Finished {\n");
+      PR_fprintf(PR_STDOUT,"            verify_data = {...}\n");
+      if (sslhexparse) print_hex(sslh.length, hsdata);
+      PR_fprintf(PR_STDOUT,"         }\n");
+
+      if (!isNULLmac(currentcipher) && !hMACsize) {
+          /* To calculate the size of MAC, we subtract the number
+           * of known bytes of message from the number of remaining
+           * bytes in the record. */
+          hMACsize = alloclen - (sslh.length + 4);
+      }
+      break;
+
+    default:
+      {
+	PR_fprintf(PR_STDOUT,"         UNKNOWN MESSAGE TYPE %d [%d] {\n",
+	                     sslh.type, sslh.length);
+	if (sslhexparse) print_hex(sslh.length, hsdata);
+	PR_fprintf(PR_STDOUT,"         }\n");
+
+      }
     }  /* end of switch sslh.type */
     offset += sslh.length + 4; /* +4 because of length (3 bytes) and type (1 byte) */
   } /* while */
+  if (hMACsize) {
+      /* at this point offset should be at the first byte of MAC */
+      if (offset + hMACsize > alloclen) {
+          PR_fprintf(PR_STDOUT,"BAD RECORD: content + MAC ends beyond "
+                     "allocated limit.\n");
+      } else {
+          PR_fprintf(PR_STDOUT,"      MAC = {...}\n");
+          if (sslhexparse) print_hex(hMACsize, hsdata);
+      }
+  }
   PR_fprintf(PR_STDOUT,"   }\n");
 }
 
@@ -1113,7 +1201,9 @@ void print_ssl(DataBufferList *s, int length, unsigned char *buffer)
       switch(sr.type) {
       case 20 : /* change_cipher_spec */
 	if (sslhexparse) print_hex(alloclen,tbuf);
-	s->isEncrypted = 1;  /* mark to say we can only dump hex form now on */
+         /* mark to say we can only dump hex form now on
+          * if it is not one on a null cipher */
+	s->isEncrypted = isNULLcipher(currentcipher) ? 0 : 1; 
 	break;
 
       case 21 : /* alert */
@@ -1165,6 +1255,18 @@ void print_ssl(DataBufferList *s, int length, unsigned char *buffer)
 	break;
 
       case 23 : /* application data */
+         if (hMACsize) {
+             print_hex(alloclen - hMACsize,tbuf);
+             PR_fprintf(PR_STDOUT,"      MAC = {...}\n");
+             if (sslhexparse) {
+                 unsigned char *offset = tbuf + (alloclen - hMACsize);
+                 print_hex(hMACsize, offset);
+             }
+         } else {
+             print_hex(alloclen,tbuf);
+         }
+         break;
+
       default:
 	print_hex(alloclen,tbuf);
 	break;
@@ -1222,8 +1324,14 @@ void print_hex(int amt, unsigned char *buf) {
   /* do we have buffer left over? */
   j = i%16;
   if (j > 0) {
-    for (k=0;k<(16-j);k++) PR_fprintf(PR_STDOUT,"   ");
-    PR_fprintf(PR_STDOUT," |%s\n",string);
+    for (k=0;k<(16-j);k++) {
+        /* print additional space after every four bytes */
+        if ((k + j)%4 == 0) {
+            PR_fprintf(PR_STDOUT," ");
+        }
+        PR_fprintf(PR_STDOUT,"   ");
+    }
+    PR_fprintf(PR_STDOUT," | %s\n",string);
   }
 }
 
@@ -1267,6 +1375,7 @@ int main(int argc,  char *argv[])
   int c_count=0;
   PLOptState *optstate;
   PLOptStatus status;
+  SECStatus   rv;
 
   optstate = PL_CreateOptState(argc,argv,"fvxhslp:");
     while ((status = PL_GetNextOpt(optstate)) == PL_OPT_OK) {
@@ -1349,6 +1458,12 @@ int main(int argc,  char *argv[])
     exit(0);
   }
 
+  rv = NSS_NoDB_Init("");
+  if (rv != SECSuccess) {
+    PR_fprintf(PR_STDERR,
+    "NSS_NoDB_Init() failed with error %d\n",PR_GetError());
+    exit(5);
+  }
 
   s_rend = PR_NewTCPSocket();
   if (!s_rend) {
@@ -1527,11 +1642,16 @@ int main(int argc,  char *argv[])
       PR_Close(s_server);
       flush_stream(&clientstream);
       flush_stream(&serverstream);
+      /* Connection is closed, so reset the current cipher */
+      currentcipher = 0;
+      /* Reset MAC size */
+      hMACsize = 0;
 
       c_count++;
       PR_fprintf(PR_STDERR,"Connection %d Complete [%s]\n", c_count,
                             get_time_string() );
     }  while (looparound); /* accept connection and process it. */
     PR_Close(s_rend);
+    NSS_Shutdown();
     return 0;
 }

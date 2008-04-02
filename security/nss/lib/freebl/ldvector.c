@@ -227,6 +227,17 @@ static const struct FREEBLVectorStr vector =
     FIPS186Change_ReduceModQForDSA,
 
     /* End of Version 3.009. */
+    Camellia_InitContext,
+    Camellia_AllocateContext,
+    Camellia_CreateContext,
+    Camellia_DestroyContext,
+    Camellia_Encrypt,
+    Camellia_Decrypt,
+
+    /* End of Version 3.010. */
+    PQG_DestroyParams,
+    PQG_DestroyVerify,
+
 };
 
 const FREEBLVector * 

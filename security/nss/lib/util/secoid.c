@@ -37,7 +37,6 @@
 
 #include "secoid.h"
 #include "pkcs11t.h"
-#include "secmodt.h"
 #include "secitem.h"
 #include "secerr.h"
 #include "plhash.h"
@@ -169,11 +168,23 @@
 #define ANSI_X962_SIGNATURE_OID ANSI_X962_OID, 0x04
 #define ANSI_X962_SPECIFY_OID   ANSI_X962_SIGNATURE_OID, 0x03
 
+/* for Camellia: iso(1) member-body(2) jisc(392)
+ *    mitsubishi(200011) isl(61) security(1) algorithm(1)
+ */
+#define MITSUBISHI_ALG 0x2a,0x83,0x08,0x8c,0x9a,0x4b,0x3d,0x01,0x01
+#define CAMELLIA_ENCRYPT_OID MITSUBISHI_ALG,1
+#define CAMELLIA_WRAP_OID    MITSUBISHI_ALG,3
+
 #define CONST_OID static const unsigned char
 
 CONST_OID md2[]        				= { DIGEST, 0x02 };
 CONST_OID md4[]        				= { DIGEST, 0x04 };
 CONST_OID md5[]        				= { DIGEST, 0x05 };
+CONST_OID hmac_sha1[]   			= { DIGEST, 7 };
+CONST_OID hmac_sha224[]				= { DIGEST, 8 };
+CONST_OID hmac_sha256[]				= { DIGEST, 9 };
+CONST_OID hmac_sha384[]				= { DIGEST, 10 };
+CONST_OID hmac_sha512[]				= { DIGEST, 11 };
 
 CONST_OID rc2cbc[]     				= { CIPHER, 0x02 };
 CONST_OID rc4[]        				= { CIPHER, 0x04 };
@@ -203,6 +214,9 @@ CONST_OID pkcs1SHA512WithRSAEncryption[] 	= { PKCS1, 13 };
 CONST_OID pkcs5PbeWithMD2AndDEScbc[]  		= { PKCS5, 0x01 };
 CONST_OID pkcs5PbeWithMD5AndDEScbc[]  		= { PKCS5, 0x03 };
 CONST_OID pkcs5PbeWithSha1AndDEScbc[] 		= { PKCS5, 0x0a };
+CONST_OID pkcs5Pbkdf2[]  			= { PKCS5, 12 };
+CONST_OID pkcs5Pbes2[]  			= { PKCS5, 13 };
+CONST_OID pkcs5Pbmac1[]				= { PKCS5, 14 };
 
 CONST_OID pkcs7[]                     		= { PKCS7 };
 CONST_OID pkcs7Data[]                 		= { PKCS7, 0x01 };
@@ -315,7 +329,7 @@ CONST_OID netscapeAOLScreenname[] 	= { NETSCAPE_NAME_COMPONENTS, 0x02 };
 CONST_OID netscapeRecoveryRequest[] 	= { NETSCAPE_CERT_SERVER_CRMF, 0x01 };
 
 
-/* Standard x.509 v3 Certificate Extensions */
+/* Standard x.509 v3 Certificate & CRL Extensions */
 CONST_OID x509SubjectDirectoryAttr[]  		= { ID_CE_OID,  9 };
 CONST_OID x509SubjectKeyID[]          		= { ID_CE_OID, 14 };
 CONST_OID x509KeyUsage[]              		= { ID_CE_OID, 15 };
@@ -323,19 +337,28 @@ CONST_OID x509PrivateKeyUsagePeriod[] 		= { ID_CE_OID, 16 };
 CONST_OID x509SubjectAltName[]        		= { ID_CE_OID, 17 };
 CONST_OID x509IssuerAltName[]         		= { ID_CE_OID, 18 };
 CONST_OID x509BasicConstraints[]      		= { ID_CE_OID, 19 };
+CONST_OID x509CRLNumber[]                    	= { ID_CE_OID, 20 };
+CONST_OID x509ReasonCode[]                   	= { ID_CE_OID, 21 };
+CONST_OID x509HoldInstructionCode[]             = { ID_CE_OID, 23 };
+CONST_OID x509InvalidDate[]                     = { ID_CE_OID, 24 };
+CONST_OID x509DeltaCRLIndicator[]               = { ID_CE_OID, 27 };
+CONST_OID x509IssuingDistributionPoint[]        = { ID_CE_OID, 28 };
+CONST_OID x509CertIssuer[]                      = { ID_CE_OID, 29 };
 CONST_OID x509NameConstraints[]       		= { ID_CE_OID, 30 };
 CONST_OID x509CRLDistPoints[]         		= { ID_CE_OID, 31 };
 CONST_OID x509CertificatePolicies[]   		= { ID_CE_OID, 32 };
 CONST_OID x509PolicyMappings[]        		= { ID_CE_OID, 33 };
-CONST_OID x509PolicyConstraints[]     		= { ID_CE_OID, 34 };
 CONST_OID x509AuthKeyID[]             		= { ID_CE_OID, 35 };
+CONST_OID x509PolicyConstraints[]     		= { ID_CE_OID, 36 };
 CONST_OID x509ExtKeyUsage[]           		= { ID_CE_OID, 37 };
-CONST_OID x509AuthInfoAccess[]        		= { PKIX_CERT_EXTENSIONS, 1 };
+CONST_OID x509FreshestCRL[]           		= { ID_CE_OID, 46 };
+CONST_OID x509InhibitAnyPolicy[]           	= { ID_CE_OID, 54 };
 
-/* Standard x.509 v3 CRL Extensions */
-CONST_OID x509CrlNumber[]                    	= { ID_CE_OID, 20};
-CONST_OID x509ReasonCode[]                   	= { ID_CE_OID, 21};
-CONST_OID x509InvalidDate[]                  	= { ID_CE_OID, 24};
+CONST_OID x509AuthInfoAccess[]        		= { PKIX_CERT_EXTENSIONS,  1 };
+CONST_OID x509SubjectInfoAccess[]               = { PKIX_CERT_EXTENSIONS, 11 };
+
+CONST_OID x509SIATimeStamping[]                 = {PKIX_ACCESS_DESCRIPTION, 0x03};
+CONST_OID x509SIACaRepository[]                 = {PKIX_ACCESS_DESCRIPTION, 0x05};
 
 /* pkcs 12 additions */
 CONST_OID pkcs12[]                           = { PKCS12 };
@@ -381,6 +404,9 @@ CONST_OID pkcs12V1CRLBag[]              	= { PKCS12_V1_BAG_IDS, 0x04 };
 CONST_OID pkcs12V1SecretBag[]           	= { PKCS12_V1_BAG_IDS, 0x05 };
 CONST_OID pkcs12V1SafeContentsBag[]     	= { PKCS12_V1_BAG_IDS, 0x06 };
 
+/* The following encoding is INCORRECT, but correcting it would create a
+ * duplicate OID in the table.  So, we will leave it alone.
+ */
 CONST_OID pkcs12KeyUsageAttr[]          	= { 2, 5, 29, 15 };
 
 CONST_OID ansix9DSASignature[]               	= { ANSI_X9_ALGORITHM, 0x01 };
@@ -450,6 +476,13 @@ CONST_OID aes256_OFB[] 				= { AES, 43 };
 CONST_OID aes256_CFB[] 				= { AES, 44 };
 #endif
 CONST_OID aes256_KEY_WRAP[]			= { AES, 45 };
+
+CONST_OID camellia128_CBC[]			= { CAMELLIA_ENCRYPT_OID, 2};
+CONST_OID camellia192_CBC[]			= { CAMELLIA_ENCRYPT_OID, 3};
+CONST_OID camellia256_CBC[]			= { CAMELLIA_ENCRYPT_OID, 4};
+CONST_OID camellia128_KEY_WRAP[]		= { CAMELLIA_WRAP_OID, 2};
+CONST_OID camellia192_KEY_WRAP[]		= { CAMELLIA_WRAP_OID, 3};
+CONST_OID camellia256_KEY_WRAP[]		= { CAMELLIA_WRAP_OID, 4};
 
 CONST_OID sha256[]                              = { SHAXXX, 1 };
 CONST_OID sha384[]                              = { SHAXXX, 2 };
@@ -538,6 +571,12 @@ CONST_OID secgECsect571r1[] = {SECG_OID, 0x27 };
 #define OD(oid,tag,desc,mech,ext) { OI(oid), tag, desc, mech, ext }
 #else
 #define OD(oid,tag,desc,mech,ext) { OI(oid), tag, 0, mech, ext }
+#endif
+
+#if defined(NSS_ALLOW_UNSUPPORTED_CRITICAL)
+#define FAKE_SUPPORTED_CERT_EXTENSION   SUPPORTED_CERT_EXTENSION
+#else
+#define FAKE_SUPPORTED_CERT_EXTENSION UNSUPPORTED_CERT_EXTENSION
 #endif
 
 /*
@@ -780,7 +819,7 @@ const static SECOidData oids[] = {
         CKM_INVALID_MECHANISM, SUPPORTED_CERT_EXTENSION ),
     OD( x509IssuerAltName, SEC_OID_X509_ISSUER_ALT_NAME, 
 	"Certificate Issuer Alt Name",
-        CKM_INVALID_MECHANISM, UNSUPPORTED_CERT_EXTENSION ),
+        CKM_INVALID_MECHANISM, FAKE_SUPPORTED_CERT_EXTENSION ),
     OD( x509BasicConstraints, SEC_OID_X509_BASIC_CONSTRAINTS, 
 	"Certificate Basic Constraints",
 	CKM_INVALID_MECHANISM, SUPPORTED_CERT_EXTENSION ),
@@ -789,16 +828,16 @@ const static SECOidData oids[] = {
 	CKM_INVALID_MECHANISM, SUPPORTED_CERT_EXTENSION ),
     OD( x509CRLDistPoints, SEC_OID_X509_CRL_DIST_POINTS, 
 	"CRL Distribution Points",
-	CKM_INVALID_MECHANISM, UNSUPPORTED_CERT_EXTENSION ),
+	CKM_INVALID_MECHANISM, FAKE_SUPPORTED_CERT_EXTENSION ),
     OD( x509CertificatePolicies, SEC_OID_X509_CERTIFICATE_POLICIES,
-	"Certificate Policies",
-        CKM_INVALID_MECHANISM, UNSUPPORTED_CERT_EXTENSION ),
+ 	"Certificate Policies",
+        CKM_INVALID_MECHANISM, SUPPORTED_CERT_EXTENSION ),
     OD( x509PolicyMappings, SEC_OID_X509_POLICY_MAPPINGS, 
-	"Certificate Policy Mappings",
-        CKM_INVALID_MECHANISM, UNSUPPORTED_CERT_EXTENSION ),
+ 	"Certificate Policy Mappings",
+        CKM_INVALID_MECHANISM, SUPPORTED_CERT_EXTENSION ),
     OD( x509PolicyConstraints, SEC_OID_X509_POLICY_CONSTRAINTS, 
-	"Certificate Policy Constraints",
-        CKM_INVALID_MECHANISM, UNSUPPORTED_CERT_EXTENSION ),
+ 	"Certificate Policy Constraints",
+        CKM_INVALID_MECHANISM, SUPPORTED_CERT_EXTENSION ),
     OD( x509AuthKeyID, SEC_OID_X509_AUTH_KEY_ID, 
 	"Certificate Authority Key Identifier",
 	CKM_INVALID_MECHANISM, SUPPORTED_CERT_EXTENSION ),
@@ -810,7 +849,7 @@ const static SECOidData oids[] = {
         CKM_INVALID_MECHANISM, SUPPORTED_CERT_EXTENSION ),
 
     /* x.509 v3 CRL extensions */
-    OD( x509CrlNumber, SEC_OID_X509_CRL_NUMBER, 
+    OD( x509CRLNumber, SEC_OID_X509_CRL_NUMBER, 
 	"CRL Number", CKM_INVALID_MECHANISM, SUPPORTED_CERT_EXTENSION ),
     OD( x509ReasonCode, SEC_OID_X509_REASON_CODE, 
 	"CRL reason code", CKM_INVALID_MECHANISM, SUPPORTED_CERT_EXTENSION ),
@@ -1075,8 +1114,8 @@ const static SECOidData oids[] = {
     OD( pkcs9LocalKeyID, SEC_OID_PKCS9_LOCAL_KEY_ID,
 	"PKCS #9 Local Key ID", 
 	CKM_INVALID_MECHANISM, INVALID_CERT_EXTENSION ), 
-    OD( pkcs12KeyUsageAttr, SEC_OID_PKCS12_KEY_USAGE,
-	"PKCS 12 Key Usage", CKM_INVALID_MECHANISM, INVALID_CERT_EXTENSION ),
+    OD( pkcs12KeyUsageAttr, SEC_OID_BOGUS_KEY_USAGE,
+	"Bogus Key Usage", CKM_INVALID_MECHANISM, INVALID_CERT_EXTENSION ),
     OD( dhPublicKey, SEC_OID_X942_DIFFIE_HELMAN_KEY,
 	"Diffie-Helman Public Key", CKM_DH_PKCS_DERIVE,
 	INVALID_CERT_EXTENSION ),
@@ -1469,6 +1508,67 @@ const static SECOidData oids[] = {
 	SEC_OID_ANSIX962_ECDSA_SHA512_SIGNATURE,
 	"X9.62 ECDSA signature with SHA512", CKM_INVALID_MECHANISM,
 	INVALID_CERT_EXTENSION ),
+
+    /* More id-ce and id-pe OIDs from RFC 3280 */
+    OD( x509HoldInstructionCode,      SEC_OID_X509_HOLD_INSTRUCTION_CODE,
+        "CRL Hold Instruction Code",  CKM_INVALID_MECHANISM,
+	UNSUPPORTED_CERT_EXTENSION ),
+    OD( x509DeltaCRLIndicator,        SEC_OID_X509_DELTA_CRL_INDICATOR,
+        "Delta CRL Indicator",        CKM_INVALID_MECHANISM,
+	FAKE_SUPPORTED_CERT_EXTENSION ),
+    OD( x509IssuingDistributionPoint, SEC_OID_X509_ISSUING_DISTRIBUTION_POINT,
+        "Issuing Distribution Point", CKM_INVALID_MECHANISM,
+	FAKE_SUPPORTED_CERT_EXTENSION ),
+    OD( x509CertIssuer,               SEC_OID_X509_CERT_ISSUER,
+        "Certificate Issuer Extension",CKM_INVALID_MECHANISM,
+	FAKE_SUPPORTED_CERT_EXTENSION ),
+    OD( x509FreshestCRL,              SEC_OID_X509_FRESHEST_CRL,
+        "Freshest CRL",               CKM_INVALID_MECHANISM,
+	UNSUPPORTED_CERT_EXTENSION ),
+    OD( x509InhibitAnyPolicy,         SEC_OID_X509_INHIBIT_ANY_POLICY,
+        "Inhibit Any Policy",         CKM_INVALID_MECHANISM,
+	FAKE_SUPPORTED_CERT_EXTENSION ),
+    OD( x509SubjectInfoAccess,        SEC_OID_X509_SUBJECT_INFO_ACCESS,
+        "Subject Info Access",        CKM_INVALID_MECHANISM,
+	UNSUPPORTED_CERT_EXTENSION ),
+
+    /* Camellia algorithm OIDs */
+    OD( camellia128_CBC, SEC_OID_CAMELLIA_128_CBC,
+	"CAMELLIA-128-CBC", CKM_CAMELLIA_CBC, INVALID_CERT_EXTENSION ),
+    OD( camellia192_CBC, SEC_OID_CAMELLIA_192_CBC,
+	"CAMELLIA-192-CBC", CKM_CAMELLIA_CBC, INVALID_CERT_EXTENSION ),
+    OD( camellia256_CBC, SEC_OID_CAMELLIA_256_CBC,
+	"CAMELLIA-256-CBC", CKM_CAMELLIA_CBC, INVALID_CERT_EXTENSION ),
+
+    /* PKCS 5 v2 OIDS */
+    OD( pkcs5Pbkdf2, SEC_OID_PKCS5_PBKDF2,
+	"PKCS #5 Password Based Key Dervive Function v2 ", 
+	CKM_PKCS5_PBKD2, INVALID_CERT_EXTENSION ),
+    OD( pkcs5Pbes2, SEC_OID_PKCS5_PBES2,
+	"PKCS #5 Password Based Encryption v2 ", 
+	CKM_INVALID_MECHANISM, INVALID_CERT_EXTENSION ),
+    OD( pkcs5Pbmac1, SEC_OID_PKCS5_PBMAC1,
+	"PKCS #5 Password Based Authentication v1 ", 
+	CKM_INVALID_MECHANISM, INVALID_CERT_EXTENSION ),
+    OD( hmac_sha1, SEC_OID_HMAC_SHA1, "HMAC SHA-1", 
+	CKM_SHA_1_HMAC, INVALID_CERT_EXTENSION ),
+    OD( hmac_sha224, SEC_OID_HMAC_SHA224, "HMAC SHA-224", 
+	CKM_SHA224_HMAC, INVALID_CERT_EXTENSION ),
+    OD( hmac_sha256, SEC_OID_HMAC_SHA256, "HMAC SHA-256", 
+	CKM_SHA256_HMAC, INVALID_CERT_EXTENSION ),
+    OD( hmac_sha384, SEC_OID_HMAC_SHA384, "HMAC SHA-384", 
+	CKM_SHA384_HMAC, INVALID_CERT_EXTENSION ),
+    OD( hmac_sha512, SEC_OID_HMAC_SHA512, "HMAC SHA-512", 
+	CKM_SHA512_HMAC, INVALID_CERT_EXTENSION ),
+
+    /* SIA extension OIDs */
+    OD( x509SIATimeStamping,          SEC_OID_PKIX_TIMESTAMPING,
+        "SIA Time Stamping",          CKM_INVALID_MECHANISM,
+	INVALID_CERT_EXTENSION ),
+    OD( x509SIACaRepository,          SEC_OID_PKIX_CA_REPOSITORY,
+        "SIA CA Repository",          CKM_INVALID_MECHANISM,
+	INVALID_CERT_EXTENSION ),
+
 };
 
 /*
@@ -1490,34 +1590,21 @@ static SECOidData ** dynOidTable;	/* not in the pool */
 static int           dynOidEntriesAllocated;
 static int           dynOidEntriesUsed;
 
-/* Creates NSSRWLock and dynOidPool, if they don't exist.
-** This function MIGHT create the lock, but not the pool, so
-** code should test for dynOidPool, not dynOidLock, when deciding
-** whether or not to call this function.
+/* Creates NSSRWLock and dynOidPool at initialization time.
 */
 static SECStatus
 secoid_InitDynOidData(void)
 {
     SECStatus   rv = SECSuccess;
-    NSSRWLock * lock;
 
-    /* This function will create the lock if it doesn't exist,
-    ** and will return the address of the lock, whether it was 
-    ** previously created, or was created by the function.
-    */
-    lock = nssRWLock_AtomicCreate(&dynOidLock, 1, "dynamic OID data");
-    if (!lock) {
+    dynOidLock = NSSRWLock_New(1, "dynamic OID data");
+    if (!dynOidLock) {
     	return SECFailure; /* Error code should already be set. */
     }
-    PORT_Assert(lock == dynOidLock);
-    NSSRWLock_LockWrite(lock);
+    dynOidPool = PORT_NewArena(2048);
     if (!dynOidPool) {
-    	dynOidPool = PORT_NewArena(2048);
-	if (!dynOidPool) {
-	    rv = SECFailure /* Error code should already be set. */;
-	}
+        rv = SECFailure /* Error code should already be set. */;
     }
-    NSSRWLock_UnlockWrite(lock);
     return rv;
 }
 
@@ -1614,8 +1701,8 @@ SECOID_AddEntry(const SECOidData * src)
 	return ret;
     }
 
-    if (!dynOidPool && secoid_InitDynOidData() != SECSuccess) {
-	/* Caller has set error code. */
+    if (!dynOidPool || !dynOidLock) {
+	PORT_SetError(SEC_ERROR_NOT_INITIALIZED);
     	return ret;
     }
 
@@ -1696,18 +1783,20 @@ secoid_HashNumber(const void *key)
 
 
 SECStatus
-secoid_Init(void)
+SECOID_Init(void)
 {
     PLHashEntry *entry;
     const SECOidData *oid;
     int i;
 
-    if (!dynOidPool && secoid_InitDynOidData() != SECSuccess) {
-    	return SECFailure;
+    if (oidhash) {
+	return SECSuccess; /* already initialized */
     }
 
-    if (oidhash) {
-	return SECSuccess;
+    if (secoid_InitDynOidData() != SECSuccess) {
+        PORT_SetError(SEC_ERROR_LIBRARY_FAILURE);
+        PORT_Assert(0); /* this function should never fail */
+    	return SECFailure;
     }
     
     oidhash = PL_NewHashTable(0, SECITEM_Hash, SECITEM_HashCompare,
@@ -1843,7 +1932,7 @@ SECOID_Shutdown(void)
     /* Have to handle the case where the lock was created, but
     ** the pool wasn't. 
     ** I'm not going to attempt to create the lock, just to protect
-    ** the destruction of data the probably isn't inisialized anyway.
+    ** the destruction of data that probably isn't initialized anyway.
     */
     if (dynOidLock) {
 	NSSRWLock_LockWrite(dynOidLock);

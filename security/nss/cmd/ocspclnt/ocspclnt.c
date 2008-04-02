@@ -61,7 +61,15 @@
 #include "ocspti.h"	/* internals for pretty-printing routines *only* */
 #endif	/* NO_PP */
 
+#if defined(_WIN32)
+#include "fcntl.h"
+#include "io.h"
+#endif
+
 #define DEFAULT_DB_DIR	"~/.netscape"
+
+/* global */
+char	*program_name;
 
 
 static void
@@ -78,18 +86,18 @@ synopsis (char *program_name)
 		"\t%s -P [-d <dir>]\n",
 		program_name);
     PR_fprintf (pr_stderr,
-		"\t%s -r <name> [-L] [-s <name>] [-d <dir>]\n",
+		"\t%s -r <name> [-a] [-L] [-s <name>] [-d <dir>]\n",
 		program_name);
     PR_fprintf (pr_stderr,
-		"\t%s -R <name> [-l <location>] [-s <name>] [-d <dir>]\n",
+		"\t%s -R <name> [-a] [-l <location>] [-s <name>] [-d <dir>]\n",
 		program_name);
     PR_fprintf (pr_stderr,
-		"\t%s -S <name> [-l <location> -t <name>]\n",
+		"\t%s -S <name> [-a] [-l <location> -t <name>]\n",
 		program_name);
     PR_fprintf (pr_stderr,
 		"\t\t [-s <name>] [-w <time>] [-d <dir>]\n");
     PR_fprintf (pr_stderr,
-		"\t%s -V <name> -u <usage> [-l <location> -t <name>]\n",
+		"\t%s -V <name> [-a] -u <usage> [-l <location> -t <name>]\n",
 		program_name);
     PR_fprintf (pr_stderr,
 		"\t\t [-s <name>] [-w <time>] [-d <dir>]\n");
@@ -132,7 +140,13 @@ long_usage (char *program_name)
     PR_fprintf (pr_stderr,
 		"  %-13s Fully verify cert \"nickname\", w/ status check\n",
 		"-V nickname");
+    PR_fprintf (pr_stderr,
+		"\n     %-10s also can be the name of the file with DER or\n"
+                "  %-13s PEM(use -a option) cert encoding\n", "nickname", "");
     PR_fprintf (pr_stderr, "Options:\n");
+    PR_fprintf (pr_stderr,
+		"  %-13s Decode input cert from PEM format. DER is default\n",
+		"-a");
     PR_fprintf (pr_stderr,
 		"  %-13s Add the service locator extension to the request\n",
 		"-L");
@@ -174,6 +188,25 @@ long_usage (char *program_name)
 		"%-17s %-25s (earlier than GMT)\n", "", "YYMMDDhhmm[ss]-hhmm");
 }
 
+#if defined(WIN32)
+/* We're going to write binary data to stdout, or read binary from stdin. 
+ * We must put stdout or stdin into O_BINARY mode or else 
+   outgoing \n's will become \r\n's, and incoming \r\n's will become \n's.
+*/
+static SECStatus
+make_file_binary(FILE * binfile)
+{
+    int smrv = _setmode(_fileno(binfile), _O_BINARY);
+    if (smrv == -1) {
+        fprintf(stderr, "%s: Cannot change stdout to binary mode.\n",
+                  program_name);
+    }
+    return smrv;
+}
+#define MAKE_FILE_BINARY make_file_binary
+#else
+#define MAKE_FILE_BINARY(file) 
+#endif
 
 /*
  * XXX This is a generic function that would probably make a good
@@ -249,22 +282,22 @@ loser:
  * is "name") and dump it out.
  */
 static SECStatus
-create_request (FILE *out_file, CERTCertDBHandle *handle, const char *cert_name,
+create_request (FILE *out_file, CERTCertDBHandle *handle, CERTCertificate *cert,
 		PRBool add_service_locator, PRBool add_acceptable_responses)
 {
-    CERTCertificate *cert = NULL;
     CERTCertList *certs = NULL;
+    CERTCertificate *myCert = NULL;
     CERTOCSPRequest *request = NULL;
     int64 now = PR_Now();
     SECItem *encoding = NULL;
     SECStatus rv = SECFailure;
 
-    if (handle == NULL || cert_name == NULL)
-	goto loser;
+    if (handle == NULL || cert == NULL)
+	return rv;
 
-    cert = CERT_FindCertByNicknameOrEmailAddr (handle, (char *) cert_name);
-    if (cert == NULL)
-	goto loser;
+    myCert = CERT_DupCertificate(cert);
+    if (myCert == NULL)
+        goto loser;
 
     /*
      * We need to create a list of one.
@@ -273,14 +306,14 @@ create_request (FILE *out_file, CERTCertDBHandle *handle, const char *cert_name,
     if (certs == NULL)
 	goto loser;
 
-    if (CERT_AddCertToListTail (certs, cert) != SECSuccess)
+    if (CERT_AddCertToListTail (certs, myCert) != SECSuccess)
 	goto loser;
 
     /*
      * Now that cert is included in the list, we need to be careful
      * that we do not try to destroy it twice.  This will prevent that.
      */
-    cert = NULL;
+    myCert = NULL;
 
     request = CERT_CreateOCSPRequest (certs, now, add_service_locator, NULL);
     if (request == NULL)
@@ -297,6 +330,7 @@ create_request (FILE *out_file, CERTCertDBHandle *handle, const char *cert_name,
     if (encoding == NULL)
 	goto loser;
 
+    MAKE_FILE_BINARY(out_file);
     if (fwrite (encoding->data, encoding->len, 1, out_file) != 1)
 	goto loser;
 
@@ -309,8 +343,8 @@ loser:
 	CERT_DestroyOCSPRequest(request);
     if (certs != NULL)
 	CERT_DestroyCertList (certs);
-    if (cert != NULL)
-	CERT_DestroyCertificate (cert);
+    if (myCert != NULL)
+	CERT_DestroyCertificate(myCert);
 
     return rv;
 }
@@ -323,23 +357,23 @@ loser:
  * via the AuthorityInfoAccess URL in the cert.
  */
 static SECStatus
-dump_response (FILE *out_file, CERTCertDBHandle *handle, const char *cert_name,
+dump_response (FILE *out_file, CERTCertDBHandle *handle, CERTCertificate *cert,
 	       const char *responder_url)
 {
-    CERTCertificate *cert = NULL;
     CERTCertList *certs = NULL;
+    CERTCertificate *myCert = NULL;
     char *loc = NULL;
     int64 now = PR_Now();
     SECItem *response = NULL;
     SECStatus rv = SECFailure;
     PRBool includeServiceLocator;
 
-    if (handle == NULL || cert_name == NULL)
-	goto loser;
+    if (handle == NULL || cert == NULL)
+	return rv;
 
-    cert = CERT_FindCertByNicknameOrEmailAddr (handle, (char *) cert_name);
-    if (cert == NULL)
-	goto loser;
+    myCert = CERT_DupCertificate(cert);
+    if (myCert == NULL)
+        goto loser;
 
     if (responder_url != NULL) {
 	loc = (char *) responder_url;
@@ -358,14 +392,14 @@ dump_response (FILE *out_file, CERTCertDBHandle *handle, const char *cert_name,
     if (certs == NULL)
 	goto loser;
 
-    if (CERT_AddCertToListTail (certs, cert) != SECSuccess)
+    if (CERT_AddCertToListTail (certs, myCert) != SECSuccess)
 	goto loser;
 
     /*
      * Now that cert is included in the list, we need to be careful
      * that we do not try to destroy it twice.  This will prevent that.
      */
-    cert = NULL;
+    myCert = NULL;
 
     response = CERT_GetEncodedOCSPResponse (NULL, certs, loc, now,
 					    includeServiceLocator,
@@ -373,6 +407,7 @@ dump_response (FILE *out_file, CERTCertDBHandle *handle, const char *cert_name,
     if (response == NULL)
 	goto loser;
 
+    MAKE_FILE_BINARY(out_file);
     if (fwrite (response->data, response->len, 1, out_file) != 1)
 	goto loser;
 
@@ -383,10 +418,10 @@ loser:
 	SECITEM_FreeItem (response, PR_TRUE);
     if (certs != NULL)
 	CERT_DestroyCertList (certs);
+    if (myCert != NULL)
+	CERT_DestroyCertificate(myCert);
     if (loc != NULL && loc != responder_url)
 	PORT_Free (loc);
-    if (cert != NULL)
-	CERT_DestroyCertificate (cert);
 
     return rv;
 }
@@ -398,16 +433,12 @@ loser:
  */
 static SECStatus
 get_cert_status (FILE *out_file, CERTCertDBHandle *handle,
-		 const char *cert_name, int64 verify_time)
+		 CERTCertificate *cert, const char *cert_name,
+                 int64 verify_time)
 {
-    CERTCertificate *cert = NULL;
     SECStatus rv = SECFailure;
 
-    if (handle == NULL || cert_name == NULL)
-	goto loser;
-
-    cert = CERT_FindCertByNicknameOrEmailAddr (handle, (char *) cert_name);
-    if (cert == NULL)
+    if (handle == NULL || cert == NULL)
 	goto loser;
 
     rv = CERT_CheckOCSPStatus (handle, cert, verify_time, NULL);
@@ -427,8 +458,6 @@ get_cert_status (FILE *out_file, CERTCertDBHandle *handle,
     rv = SECSuccess;
 
 loser:
-    if (cert != NULL)
-	CERT_DestroyCertificate (cert);
 
     return rv;
 }
@@ -440,18 +469,13 @@ loser:
  * certificate verification API and let it do all the work.
  */
 static SECStatus
-verify_cert (FILE *out_file, CERTCertDBHandle *handle, const char *cert_name,
-	     SECCertUsage cert_usage, int64 verify_time)
+verify_cert (FILE *out_file, CERTCertDBHandle *handle, CERTCertificate *cert,
+	     const char *cert_name, SECCertUsage cert_usage, int64 verify_time)
 {
-    CERTCertificate *cert = NULL;
     SECStatus rv = SECFailure;
 
-    if (handle == NULL || cert_name == NULL)
-	goto loser;
-
-    cert = CERT_FindCertByNicknameOrEmailAddr (handle, (char *) cert_name);
-    if (cert == NULL)
-	goto loser;
+    if (handle == NULL || cert == NULL)
+	return rv;
 
     rv = CERT_VerifyCert (handle, cert, PR_TRUE, cert_usage, verify_time,
 			  NULL, NULL);
@@ -470,11 +494,38 @@ verify_cert (FILE *out_file, CERTCertDBHandle *handle, const char *cert_name,
 
     rv = SECSuccess;
 
-loser:
-    if (cert != NULL)
-	CERT_DestroyCertificate (cert);
-
     return rv;
+}
+
+CERTCertificate*
+find_certificate(CERTCertDBHandle *handle, const char *name, PRBool ascii)
+{
+    CERTCertificate *cert = NULL;
+    SECItem der;
+    PRFileDesc *certFile;
+
+    if (handle == NULL || name == NULL)
+        return NULL;
+
+    if (ascii == PR_FALSE) { 
+        /* by default need to check if there is cert nick is given */
+        cert = CERT_FindCertByNicknameOrEmailAddr (handle, (char *) name);
+        if (cert != NULL)
+            return cert;
+    }
+
+    certFile = PR_Open(name, PR_RDONLY, 0);
+    if (certFile == NULL) {
+        return NULL;
+    }
+
+    if (SECU_ReadDERFromFile(&der, certFile, ascii) == SECSuccess) {
+        cert = CERT_DecodeCertFromPackage((char*)der.data, der.len);
+        SECITEM_FreeItem(&der, PR_FALSE);
+    }
+    PR_Close(certFile);
+
+    return cert;
 }
 
 
@@ -930,7 +981,6 @@ int
 main (int argc, char **argv)
 {
     int		 retval;
-    char	*program_name;
     PRFileDesc	*in_file;
     FILE	*out_file;	/* not PRFileDesc until SECU accepts it */
     int		 crequest, dresponse;
@@ -945,6 +995,8 @@ main (int argc, char **argv)
     CERTCertDBHandle *handle = NULL;
     SECCertUsage cert_usage;
     int64	 verify_time;
+    CERTCertificate *cert = NULL;
+    PRBool ascii = PR_FALSE;
 
     retval = -1;		/* what we return/exit with on error */
 
@@ -1015,6 +1067,10 @@ main (int argc, char **argv)
 	    name = optstate->value;
 	    break;
 
+	  case 'a':
+	    ascii = PR_TRUE;
+	    break;
+
 	  case 'd':
 	    db_dir = optstate->value;
 	    break;
@@ -1049,6 +1105,8 @@ main (int argc, char **argv)
 	    break;
 	}
     }
+
+    PL_DestroyOptState(optstate);
 
     if ((crequest + dresponse + prequest + presponse + ccert + vcert) != 1) {
 	PR_fprintf (PR_STDERR, "%s: must specify exactly one command\n\n",
@@ -1122,6 +1180,7 @@ main (int argc, char **argv)
     SECU_RegisterDynamicOids();
 
     if (prequest + presponse) {
+	MAKE_FILE_BINARY(stdin);
 	data = read_file_into_item (in_file, siBuffer);
 	if (data == NULL) {
 	    SECU_PrintError (program_name, "problem reading input");
@@ -1174,17 +1233,21 @@ main (int argc, char **argv)
 	    exit (-1);							\
 	}
 
+    if (name) {
+        cert = find_certificate(handle, name, ascii);
+    }
+
     if (crequest) {
 	if (signer_name != NULL) {
 	    NOTYET("-s");
 	}
-	rv = create_request (out_file, handle, name, add_service_locator,
+	rv = create_request (out_file, handle, cert, add_service_locator,
 			     add_acceptable_responses);
     } else if (dresponse) {
 	if (signer_name != NULL) {
 	    NOTYET("-s");
 	}
-	rv = dump_response (out_file, handle, name, responder_url);
+	rv = dump_response (out_file, handle, cert, responder_url);
     } else if (prequest) {
 	rv = print_request (out_file, data);
     } else if (presponse) {
@@ -1193,12 +1256,12 @@ main (int argc, char **argv)
 	if (signer_name != NULL) {
 	    NOTYET("-s");
 	}
-	rv = get_cert_status (out_file, handle, name, verify_time);
+	rv = get_cert_status (out_file, handle, cert, name, verify_time);
     } else if (vcert) {
 	if (signer_name != NULL) {
 	    NOTYET("-s");
 	}
-	rv = verify_cert (out_file, handle, name, cert_usage, verify_time);
+	rv = verify_cert (out_file, handle, cert, name, cert_usage, verify_time);
     }
 
     if (rv != SECSuccess)
@@ -1207,16 +1270,21 @@ main (int argc, char **argv)
 	retval = 0;
 
 nssdone:
+    if (cert) {
+        CERT_DestroyCertificate(cert);
+    }
+
     if (data != NULL) {
 	SECITEM_FreeItem (data, PR_TRUE);
     }
 
     if (handle != NULL) {
-	(void) CERT_DisableOCSPChecking (handle);
+ 	CERT_DisableOCSPDefaultResponder(handle);        
+ 	CERT_DisableOCSPChecking (handle);
     }
 
     if (NSS_Shutdown () != SECSuccess) {
-	exit(1);
+	retval = 1;
     }
 
 prdone:

@@ -135,6 +135,7 @@ CSRCS = \
 	des.c \
 	rijndael.c \
 	aeskeywrap.c \
+	camellia.c \
 	dh.c \
 	ec.c \
 	pqg.c \
@@ -157,17 +158,14 @@ ALL_HDRS =  \
 	ec.h \
 	loader.h \
 	rijndael.h \
+	camellia.h \
 	secmpi.h \
-	sha.h \
 	sha_fast.h \
+	sha256.h \
 	shsign.h \
 	vis_proto.h \
 	$(NULL)
 
-
-ifdef NSS_ENABLE_ECC
-DEFINES += -DNSS_ENABLE_ECC
-endif
 
 ifdef AES_GEN_TBL
 DEFINES += -DRIJNDAEL_GENERATE_TABLES
