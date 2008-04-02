@@ -76,10 +76,10 @@
 // New XML tag stuff
 #include "msiTagListManager.h"
 #include "msiIKeyMap.h"
+#include "nsTArray.h"
 
 class nsIDOMKeyEvent;
 class nsITransferable;
-class nsIDOMEventReceiver;
 class nsIDOMNSRange;
 class nsIDocumentEncoder;
 class nsIClipboard;
@@ -97,7 +97,7 @@ class nsHTMLEditor : public nsPlaintextEditor,
                      public nsIHTMLEditor,
                      public nsIHTMLObjectResizer,
                      public nsIHTMLAbsPosEditor,
-                     public nsITableEditor,        
+                     public nsITableEditor,
                      public nsIHTMLInlineTableEditor,
                      public nsIEditorStyleSheets,
                      public nsICSSLoaderObserver
@@ -369,6 +369,13 @@ public:
   NS_IMETHODIMP DeleteText(nsIDOMCharacterData *aTextNode,
                            PRUint32             aOffset,
                            PRUint32             aLength);
+  NS_IMETHOD InsertTextImpl(const nsAString& aStringToInsert, 
+                            nsCOMPtr<nsIDOMNode> *aInOutNode, 
+                            PRInt32 *aInOutOffset,
+                            nsIDOMDocument *aDoc);
+  NS_IMETHOD_(PRBool) IsModifiableNode(nsIDOMNode *aNode);
+
+  NS_IMETHOD SelectAll();
 
   /* ------------ nsICSSLoaderObserver -------------- */
   NS_IMETHOD StyleSheetLoaded(nsICSSStyleSheet*aSheet, PRBool aWasAlternate,
@@ -381,7 +388,7 @@ public:
                               PRInt32 *ioOffset, 
                               PRBool aNoEmptyNodes);
   nsCOMPtr<nsIDOMNode> FindUserSelectAllNode(nsIDOMNode *aNode);
-
+                                
   NS_IMETHOD InsertReturnImpl ( PRBool fFancy );
   NS_IMETHOD InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool fFancy);
                          
@@ -451,6 +458,13 @@ protected:
   virtual nsresult CreateEventListeners();
 
   virtual void RemoveEventListeners();
+
+  // Sets mCSSAware to correspond to aFlags. This toggles whether CSS is
+  // used to style elements in the editor. Note that the editor is only CSS
+  // aware by default in Composer and in the mail editor.
+  void UpdateForFlags(PRUint32 aFlags) {
+    mCSSAware = ((aFlags & (eEditorNoCSSMask | eEditorMailMask)) == 0);
+  }
 
   /** returns the layout object (nsIFrame in the real world) for aNode
     * @param aNode          the content to get a frame for
@@ -618,7 +632,7 @@ protected:
                                      nsIDOMNode **aTargetNode,       
                                      PRInt32 *aTargetOffset,   
                                      PRBool *aDoContinue);
-  nsresult   RelativizeURIInFragmentList(nsCOMArray<nsIDOMNode> aNodeList,
+  nsresult   RelativizeURIInFragmentList(const nsCOMArray<nsIDOMNode> &aNodeList,
                                         const nsAString &aFlavor,
                                         nsIDOMDocument *aSourceDoc,
                                         nsIDOMNode *aTargetNode);
@@ -635,7 +649,7 @@ protected:
                                         nsCOMPtr<nsIDOMNode> *outEndNode,
                                         PRInt32 *outStartOffset,
                                         PRInt32 *outEndOffset);
-  nsresult   ParseFragment(const nsAString & aStr, nsVoidArray &aTagStack,
+  nsresult   ParseFragment(const nsAString & aStr, nsTArray<nsAutoString> &aTagStack,
                            nsIDocument* aTargetDoc,
                            nsCOMPtr<nsIDOMNode> *outNode);
   nsresult   CreateListOfNodesToPaste(nsIDOMNode  *aFragmentAsNode,
@@ -644,8 +658,8 @@ protected:
                                       PRInt32 aStartOffset,
                                       nsIDOMNode *aEndNode,
                                       PRInt32 aEndOffset);
-  nsresult CreateTagStack(nsVoidArray &aTagStack, nsIDOMNode *aNode);
-  void     FreeTagStackStrings(nsVoidArray &tagStack);
+  nsresult CreateTagStack(nsTArray<nsAutoString> &aTagStack,
+                          nsIDOMNode *aNode);
   nsresult GetListAndTableParents( PRBool aEnd, 
                                    nsCOMArray<nsIDOMNode>& aListOfNodes,
                                    nsCOMArray<nsIDOMNode>& outArray);
@@ -679,7 +693,7 @@ protected:
   nsresult InsertBasicBlock(const nsAString & aBlockType);
   nsresult InsertBasicBlockNS(const nsAString & aBlockType, nsIAtom * atomNS);
   nsresult InsertStructureNS(const nsAString & aStructType, nsIAtom * atomNS);
-  
+
   /* increase/decrease the font size of selection */
   nsresult RelativeFontChange( PRInt32 aSizeChange);
   
@@ -692,7 +706,7 @@ protected:
                                      nsIDOMNode *aNode);
   nsresult RelativeFontChangeHelper( PRInt32 aSizeChange, 
                                      nsIDOMNode *aNode);
-                                     
+
   /* Scientific WorkPlace additions */  
   nsresult SetTextTagNode( nsIDOMCharacterData *aTextNode, 
                            PRInt32 aStartOffset,
@@ -778,7 +792,7 @@ protected:
                              PRBool aCheckDefaults = PR_TRUE);
   nsresult HasStyleOrIdOrClass(nsIDOMElement * aElement, PRBool *aHasStyleOrIdOrClass);
   nsresult RemoveElementIfNoStyleOrIdOrClass(nsIDOMElement * aElement, nsIAtom * aTag);
-  
+
   /** versions of some methods in nsEditor that take name spaces into account */
   PRBool CanContainTagNS(nsIDOMNode* aParent, const nsAString &aTag, nsIAtom * nsAtom);
   PRBool TagCanContainNS(const nsAString &aParentTag, nsIAtom * nsAtomParent, nsIDOMNode* aChild);
@@ -805,7 +819,7 @@ protected:
   PRPackedBool mCRInParagraphCreatesParagraph;
 
   PRPackedBool mCSSAware;
-  nsHTMLCSSUtils * mHTMLCSSUtils;
+  nsHTMLCSSUtils *mHTMLCSSUtils;
 
   // Used by GetFirstSelectedCell and GetNextSelectedCell
   PRInt32  mSelectedCellIndex;
@@ -842,6 +856,8 @@ protected:
   void     DeleteRefToAnonymousNode(nsIDOMElement* aElement,
                                     nsIContent * aParentContent,
                                     nsIPresShell* aShell);
+
+  // Returns the offset of an element's frame to its absolute containing block.
   nsresult GetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 & aY);
   nsresult GetPositionAndDimensions(nsIDOMElement * aElement,
                                     PRInt32 & aX, PRInt32 & aY,
@@ -943,7 +959,7 @@ protected:
   void     SetFinalSize(PRInt32 aX, PRInt32 aY);
   void     DeleteRefToAnonymousNode(nsIDOMNode * aNode);
   void     SetResizeIncrements(PRInt32 aX, PRInt32 aY, PRInt32 aW, PRInt32 aH, PRBool aPreserveRatio);
-  void     SetInfoIncrements(PRInt8 aX, PRInt8 aY);
+
   nsCOMPtr<nsIDOMNode> GetListParent(nsIDOMNode* aNode);
   nsCOMPtr<nsIDOMNode> GetTableParent(nsIDOMNode* aNode);
   /* ABSOLUTE POSITIONING */

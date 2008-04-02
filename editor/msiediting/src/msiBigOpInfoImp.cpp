@@ -206,7 +206,7 @@ MSI_NewBigOpInfoImp(nsIDOMNode* rawMathmlNode, PRUint32 rawOffset, msiIBigOpInfo
   msiBigOpInfoImp * boi = new msiBigOpInfoImp(rawMathmlNode, rawOffset);
   if (!boi) 
     return NS_ERROR_OUT_OF_MEMORY;
-  *aResult = NS_STATIC_CAST(msiIBigOpInfo*, boi);
+  *aResult = static_cast<msiIBigOpInfo*>(boi);
   NS_ADDREF(*aResult);
   return NS_OK;
 }

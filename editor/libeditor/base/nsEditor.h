@@ -55,19 +55,22 @@
 #include "nsIPrivateTextRange.h"
 #include "nsITransactionManager.h"
 #include "nsIComponentManager.h"
-#include "nsISupportsArray.h"
+#include "nsCOMArray.h"
+#include "nsIEditActionListener.h"
+#include "nsIEditorObserver.h"
+#include "nsIDocumentStateListener.h"
 #include "nsICSSStyleSheet.h"
 #include "nsIDOMElement.h"
 #include "nsSelectionState.h"
 #include "nsIEditorSpellCheck.h"
 #include "nsIInlineSpellChecker.h"
+#include "nsPIDOMEventTarget.h"
+#include "nsStubMutationObserver.h"
+#include "nsIViewManager.h"
 
-class nsIEditActionListener;
-class nsIDocumentStateListener;
 class nsIDOMCharacterData;
 class nsIDOMRange;
 class nsIPresShell;
-class nsIViewManager;
 class ChangeAttributeTxn;
 class CreateElementTxn;
 class InsertElementTxn;
@@ -79,15 +82,13 @@ class DeleteTextTxn;
 class SplitElementTxn;
 class JoinElementTxn;
 class EditAggregateTxn;
-class nsVoidArray;
-class nsISupportsArray;
 class nsILocale;
 class IMETextTxn;
 class AddStyleSheetTxn;
 class RemoveStyleSheetTxn;
 class nsIFile;
 class nsISelectionController;
-class nsIDOMEventReceiver;
+class nsIDOMEventTarget;
 
 #define kMOZEditorBogusNodeAttr NS_LITERAL_STRING("_moz_editor_bogus_node")
 #define kMOZEditorBogusNodeValue NS_LITERAL_STRING("TRUE")
@@ -100,7 +101,8 @@ class nsIDOMEventReceiver;
 class nsEditor : public nsIEditor,
                  public nsIEditorIMESupport,
                  public nsSupportsWeakReference,
-                 public nsIPhonetic
+                 public nsIPhonetic,
+                 public nsStubMutationObserver
 {
 public:
 
@@ -155,6 +157,9 @@ public:
   // nsIPhonetic
   NS_DECL_NSIPHONETIC
 
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTAPPENDED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTINSERTED
+  NS_DECL_NSIMUTATIONOBSERVER_CONTENTREMOVED
 
 public:
 
@@ -166,7 +171,7 @@ public:
   NS_IMETHOD InsertTextIntoTextNodeImpl(const nsAString& aStringToInsert, 
                                            nsIDOMCharacterData *aTextNode, 
                                            PRInt32 aOffset, PRBool suppressIME=PR_FALSE);
-  virtual nsresult DeleteSelectionImpl(EDirection aAction);
+  NS_IMETHOD DeleteSelectionImpl(EDirection aAction);
   NS_IMETHOD DeleteSelectionAndCreateNode(const nsAString& aTag,
                                            nsIDOMNode ** aNewNode);
 
@@ -250,11 +255,17 @@ protected:
 
 
   NS_IMETHOD CreateTxnForDeleteSelection(EDirection aAction,
-                                         EditAggregateTxn  ** aTxn);
+                                         EditAggregateTxn ** aTxn,
+                                         nsIDOMNode ** aNode,
+                                         PRInt32 *aOffset,
+                                         PRInt32 *aLength);
 
-  NS_IMETHOD CreateTxnForDeleteInsertionPoint(nsIDOMRange *aRange,
+  NS_IMETHOD CreateTxnForDeleteInsertionPoint(nsIDOMRange         *aRange, 
                                               EDirection aAction, 
-                                              EditAggregateTxn    *aTxn);
+                                              EditAggregateTxn *aTxn,
+                                              nsIDOMNode ** aNode,
+                                              PRInt32 *aOffset,
+                                              PRInt32 *aLength);
 
 
   /** create a transaction for inserting aStringToInsert into aTextNode
@@ -364,6 +375,11 @@ protected:
   // unregister and release our event listeners
   virtual void RemoveEventListeners();
 
+  /**
+   * Return true if spellchecking should be enabled for this editor.
+   */
+  PRBool GetDesiredSpellCheckState();
+
 public:
 
   /** All editor operations which alter the doc should be prefaced
@@ -380,10 +396,6 @@ public:
   nsresult PreserveSelectionAcrossActions(nsISelection *aSel);
   nsresult RestorePreservedSelection(nsISelection *aSel);
   void     StopPreservingSelection();
-
-
-  /** return the string that represents text nodes in the content tree */
-  static nsresult GetTextNodeTag(nsAString& aOutString);
 
   /** 
    * SplitNode() creates a new node identical to an existing node, and split the contents between the two nodes
@@ -521,9 +533,6 @@ public:
   /** returns PR_TRUE if aNode is a MozEditorBogus node */
   PRBool IsMozEditorBogusNode(nsIDOMNode *aNode);
 
-  /** returns PR_TRUE if content is an merely formatting whitespacce */
-  PRBool IsEmptyTextContent(nsIContent* aContent);
-
   /** counts number of editable child nodes */
   nsresult CountEditableChildren(nsIDOMNode *aNode, PRUint32 &outCount);
   
@@ -591,7 +600,7 @@ public:
                                     nsIDOMNode *aEndNode,
                                     PRInt32 aEndOffset);
 
-  already_AddRefed<nsIDOMEventReceiver> GetDOMEventReceiver();
+  already_AddRefed<nsPIDOMEventTarget> GetPIDOMEventTarget();
 
   // Fast non-refcounting editor root element accessor
   nsIDOMElement *GetRoot();
@@ -612,7 +621,16 @@ protected:
   nsWeakPtr       mSelConWeak;   // weak reference to the nsISelectionController
   nsIViewManager *mViewManager;
   PRInt32         mUpdateCount;
-  nsCOMPtr<nsIInlineSpellChecker> mInlineSpellChecker;  // used for real-time spellchecking
+  nsIViewManager::UpdateViewBatch mBatch;
+
+  // Spellchecking
+  enum Tristate {
+    eTriUnset,
+    eTriFalse,
+    eTriTrue
+  }                 mSpellcheckCheckboxState;
+  nsCOMPtr<nsIInlineSpellChecker> mInlineSpellChecker;
+
   nsCOMPtr<nsITransactionManager> mTxnMgr;
   nsWeakPtr         mPlaceHolderTxn;     // weak reference to placeholder for begin/end batch purposes
   nsIAtom          *mPlaceHolderName;    // name of placeholder transaction
@@ -625,24 +643,25 @@ protected:
   EDirection        mDirection;          // the current direction of editor action
   
   // data necessary to build IME transactions
-  nsIPrivateTextRangeList*      mIMETextRangeList; // IME special selection ranges
-  nsCOMPtr<nsIDOMCharacterData> mIMETextNode;      // current IME text node
-  PRUint32                      mIMETextOffset;    // offset in text node where IME comp string begins
-  PRUint32                      mIMEBufferLength;  // current length of IME comp string
-  PRPackedBool                  mInIMEMode;        // are we inside an IME composition?
-  PRPackedBool                  mIsIMEComposing;   // is IME in composition state?
-                                                   // This is different from mInIMEMode. see Bug 98434.
+  nsCOMPtr<nsIPrivateTextRangeList> mIMETextRangeList; // IME special selection ranges
+  nsCOMPtr<nsIDOMCharacterData>     mIMETextNode;      // current IME text node
+  PRUint32                          mIMETextOffset;    // offset in text node where IME comp string begins
+  PRUint32                          mIMEBufferLength;  // current length of IME comp string
+  PRPackedBool                      mInIMEMode;        // are we inside an IME composition?
+  PRPackedBool                      mIsIMEComposing;   // is IME in composition state?
+                                                       // This is different from mInIMEMode. see Bug 98434.
 
   PRPackedBool                  mShouldTxnSetSelection;  // turn off for conservative selection adjustment by txns
-  // various listeners
-  nsVoidArray*                  mActionListeners;  // listens to all low level actions on the doc
-  nsVoidArray*                  mEditorObservers;   // just notify once per high level change
-  nsCOMPtr<nsISupportsArray>    mDocStateListeners;// listen to overall doc state (dirty or not, just created, etc)
+  PRPackedBool                  mDidPreDestroy;    // whether PreDestroy has been called
+   // various listeners
+  nsCOMArray<nsIEditActionListener> mActionListeners;  // listens to all low level actions on the doc
+  nsCOMArray<nsIEditorObserver> mEditorObservers;  // just notify once per high level change
+  nsCOMArray<nsIDocumentStateListener> mDocStateListeners;// listen to overall doc state (dirty or not, just created, etc)
 
   PRInt8                        mDocDirtyState;		// -1 = not initialized
   nsWeakPtr        mDocWeak;  // weak reference to the nsIDOMDocument
   // The form field as an event receiver
-  nsCOMPtr<nsIDOMEventReceiver> mDOMEventReceiver;
+  nsCOMPtr<nsPIDOMEventTarget> mEventTarget;
 
   nsString* mPhonetic;
 

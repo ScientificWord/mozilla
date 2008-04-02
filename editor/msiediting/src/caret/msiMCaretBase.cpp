@@ -7,7 +7,6 @@
 #include "nsCOMPtr.h"
 #include "nsIDOMNode.h"
 #include "nsIDOMNodeList.h"
-#include "nsITextContent.h"
 #include "nsIEditor.h"
 #include "nsISelection.h"
 #include "nsIFrame.h"

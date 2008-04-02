@@ -52,6 +52,7 @@ msiTagListManager::msiTagListManager()
 
 msiTagListManager * MSI_NewTagListManager()
 {
+  return nsnull;
   msiTagListManager * pmgr = new msiTagListManager;
   NS_ADDREF(pmgr);
   return pmgr;
@@ -492,7 +493,7 @@ msiTagListManager::BuildParentTagList()
  // BBM todo: put in error checking
   if (!meditor)
     return  NS_ERROR_FAILURE;;
-  nsHTMLEditor * editor = NS_STATIC_CAST(nsHTMLEditor *,meditor);  
+  nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
   nsCOMPtr<nsIDOMElement> element;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMNode> temp;
@@ -558,7 +559,7 @@ NS_IMETHODIMP msiTagListManager::CurrentValue(const nsAString & strTagClass, nsI
   
   if (!meditor)
     return NS_ERROR_NULL_POINTER;
-  nsHTMLEditor * editor = NS_STATIC_CAST(nsHTMLEditor *, meditor);  
+  nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
   nsCOMPtr<nsIDOMElement> element;
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMNode> node2;
@@ -947,7 +948,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   nsCOMPtr<nsISelection>selection;
   rv = meditor->GetSelection(getter_AddRefs(selection));
   nsCOMPtr<nsIDOMNode> pnode;
-  nsHTMLEditor * editor = NS_STATIC_CAST(nsHTMLEditor *,meditor);  
+  nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
   editor->IsEmptyNode( firstNode, &isEmpty);
   nsCOMPtr<nsIDOMDocument> doc;
   editor->GetDocument(getter_AddRefs(doc));  

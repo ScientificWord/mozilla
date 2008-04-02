@@ -118,10 +118,10 @@ function SetupHTMLEditorCommands()
   commandTable.registerCommand("cmd_previewPdf",         msiPreviewCommand);
   commandTable.registerCommand("cmd_compileDvi",         msiCompileCommand);
   commandTable.registerCommand("cmd_compilePdf",         msiCompileCommand);
-//  commandTable.registerCommand("cmd_texttag",            nsTextTagUpdatingCommand);
-//  commandTable.registerCommand("cmd_paratag",            nsParaTagUpdatingCommand);
-//  commandTable.registerCommand("cmd_secttag",            nsSectTagUpdatingCommand);
-//  commandTable.registerCommand("cmd_othertag",           nsOtherTagUpdatingCommand);
+  commandTable.registerCommand("cmd_texttag",            nsTextTagUpdatingCommand);
+  commandTable.registerCommand("cmd_paratag",            nsParaTagUpdatingCommand);
+  commandTable.registerCommand("cmd_secttag",            nsSectTagUpdatingCommand);
+  commandTable.registerCommand("cmd_othertag",           nsOtherTagUpdatingCommand);
 }
 
 function SetupTextEditorCommands()

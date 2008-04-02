@@ -6,10 +6,10 @@
 #include "nsIDOMNode.h"
 #include "nsIDOMNodeList.h"
 #include "nsIDOMAttr.h"
+#include "nsIContent.h"
 #include "nsISelection.h"
 #include "nsCOMPtr.h"
 #include "nsIDOMText.h"
-#include "nsITextContent.h"
 #include "nsIDOMCharacterData.h"
 #include "nsString.h"
 #include "nsIDOMDocumentTraversal.h"
@@ -453,7 +453,7 @@ nsresult msiUtils::CreateMathMLLeafElement(nsIEditor * editor,
   NS_ASSERTION(character, "Trying to create leaf with character == 0");
   if (character)
   {
-    nsAutoString text(NS_STATIC_CAST(PRUnichar, character));
+    nsAutoString text(static_cast<PRUnichar>(character));
     res = CreateMathMLLeafElement(editor, text, tagType, caretPos, flags, mathmlElement);
   }    
   return res;
@@ -1746,8 +1746,8 @@ PRBool msiUtils::IsWhitespace(nsIDOMNode * node)
 {
   if (node)
   {
-    nsCOMPtr<nsITextContent> tc(do_QueryInterface(node));
-    if (tc && tc->IsOnlyWhitespace())
+    nsCOMPtr<nsIContent> tc(do_QueryInterface(node));
+    if (tc && tc->TextIsOnlyWhitespace())
       return PR_TRUE;
   }
   return PR_FALSE;    
@@ -2455,7 +2455,7 @@ nsresult msiUtils::GetNSEventFromMouseEvent(nsIDOMMouseEvent* mouseEvent,
 //  if (privateEvent)
 //     privateEvent->GetInternalNSEvent(&internalEvent);
 //  if (internalEvent && internalEvent->eventStructType == NS_MOUSE_EVENT)
-//    guiEvent = NS_STATIC_CAST(nsGUIEvent*, internalEvent);
+//    guiEvent = static_cast<nsGUIEvent*>(internalEvent);
 //  if (!guiEvent)
 //  {
 //     NS_ASSERTION(PR_FALSE, "internal event is not a guiEvent.");

@@ -42,7 +42,7 @@ public:
   // End of nsIEditor overrides
   
   // nsEditor method
-  virtual nsresult DeleteSelectionImpl(EDirection aAction);
+  NS_IMETHOD DeleteSelectionImpl(EDirection aAction);
 
 protected:
   NS_IMETHOD  InitRules();
