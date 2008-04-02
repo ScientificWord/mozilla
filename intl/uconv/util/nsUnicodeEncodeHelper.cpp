@@ -47,7 +47,8 @@ nsresult nsUnicodeEncodeHelper::ConvertByTable(
                                      PRInt32 * aSrcLength, 
                                      char * aDest, 
                                      PRInt32 * aDestLength, 
-                                     uShiftTable * aShiftTable, 
+                                     uScanClassID aScanClass,
+                                     uShiftOutTable * aShiftOutTable,
                                      uMappingTable  * aMappingTable)
 {
   const PRUnichar * src = aSrc;
@@ -60,13 +61,23 @@ nsresult nsUnicodeEncodeHelper::ConvertByTable(
   nsresult res = NS_OK;
 
   while (src < srcEnd) {
-    if (!uMapCode((uTable*) aMappingTable, NS_STATIC_CAST(PRUnichar, *(src++)), NS_REINTERPRET_CAST(PRUint16*, &med))) {
+    if (!uMapCode((uTable*) aMappingTable, static_cast<PRUnichar>(*(src++)), reinterpret_cast<PRUint16*>(&med))) {
       res = NS_ERROR_UENC_NOMAPPING;
       break;
     }
 
-    if (!uGenerate(aShiftTable, 0, med, (PRUint8 *)dest, destLen, 
-      (PRUint32 *)&bcw)) { 
+    PRBool charFound;
+    if (aScanClass == uMultibytesCharset) {
+      NS_ASSERTION(aShiftOutTable, "shift table missing");
+      charFound = uGenerateShift(aShiftOutTable, 0, med,
+                                 (PRUint8 *)dest, destLen, 
+                                 (PRUint32 *)&bcw);
+    } else {
+      charFound = uGenerate(aScanClass, 0, med,
+                            (PRUint8 *)dest, destLen, 
+                            (PRUint32 *)&bcw);
+    }
+    if (!charFound) {
       src--;
       res = NS_OK_UENC_MOREOUTPUT;
       break;
@@ -87,7 +98,8 @@ nsresult nsUnicodeEncodeHelper::ConvertByMultiTable(
                                      char * aDest, 
                                      PRInt32 * aDestLength, 
                                      PRInt32 aTableCount, 
-                                     uShiftTable ** aShiftTable, 
+                                     uScanClassID * aScanClassArray,
+                                     uShiftOutTable ** aShiftOutTable, 
                                      uMappingTable  ** aMappingTable)
 {
   const PRUnichar * src = aSrc;
@@ -102,7 +114,7 @@ nsresult nsUnicodeEncodeHelper::ConvertByMultiTable(
 
   while (src < srcEnd) {
     for (i=0; i<aTableCount; i++) 
-      if (uMapCode((uTable*) aMappingTable[i], NS_STATIC_CAST(PRUint16, *src), NS_REINTERPRET_CAST(PRUint16*, &med))) break;
+      if (uMapCode((uTable*) aMappingTable[i], static_cast<PRUint16>(*src), reinterpret_cast<PRUint16*>(&med))) break;
 
     src++;
     if (i == aTableCount) {
@@ -110,8 +122,18 @@ nsresult nsUnicodeEncodeHelper::ConvertByMultiTable(
       break;
     }
 
-    if (!uGenerate(aShiftTable[i], 0, med, (PRUint8 *)dest, destLen, 
-      (PRUint32 *)&bcw)) { 
+    PRBool charFound;
+    if (aScanClassArray[i] == uMultibytesCharset) {
+      NS_ASSERTION(aShiftOutTable[i], "shift table missing");
+      charFound = uGenerateShift(aShiftOutTable[i], 0, med,
+                                 (PRUint8 *)dest, destLen,
+                                 (PRUint32 *)&bcw);
+    }
+    else
+      charFound = uGenerate(aScanClassArray[i], 0, med,
+                            (PRUint8 *)dest, destLen, 
+                            (PRUint32 *)&bcw);
+    if (!charFound) { 
       src--;
       res = NS_OK_UENC_MOREOUTPUT;
       break;

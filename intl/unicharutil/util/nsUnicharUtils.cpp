@@ -22,6 +22,7 @@
  * Contributor(s):
  *   Alec Flett <alecf@netscape.com>
  *   Benjamin Smedberg <benjamin@smedbergs.us>
+ *   Ben Turner <mozilla@songbirdnest.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -39,180 +40,153 @@
 
 #include "nsUnicharUtils.h"
 #include "nsUnicharUtilCIID.h"
-#include "nsICaseConversion.h"
-#include "nsIServiceManager.h"
-#include "nsServiceManagerUtils.h"
-#include "nsCOMPtr.h"
-#include "nsCRTGlue.h"
-#include "nsXPCOMStrings.h"
 
-#include "nsIObserver.h"
-#include "nsIObserverService.h"
+#include "nsCRT.h"
+#include "nsICaseConversion.h"
+#include "nsServiceManagerUtils.h"
+#include "nsXPCOMStrings.h"
 
 #include <ctype.h>
 
-// global cache of the case conversion service
-static nsICaseConversion *gCaseConv = nsnull;
+static nsICaseConversion* gCaseConv = nsnull;
 
-class nsShutdownObserver : public nsIObserver
+nsICaseConversion*
+NS_GetCaseConversion()
 {
-public:
-    nsShutdownObserver() { }
-    virtual ~nsShutdownObserver() {}
-    NS_DECL_ISUPPORTS
-    
-    NS_IMETHOD Observe(nsISupports *aSubject, const char *aTopic,
-                       const PRUnichar *aData)
-    {
-        if (strcmp(aTopic, NS_XPCOM_SHUTDOWN_OBSERVER_ID)==0) {
-            NS_IF_RELEASE(gCaseConv);
-        }
-
-        return NS_OK;
-    }
-
-};
-
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsShutdownObserver, nsIObserver)
-
-static nsresult NS_InitCaseConversion() {
-    if (gCaseConv)
-      return NS_OK;
-     
+  if (!gCaseConv) {
     nsresult rv = CallGetService(NS_UNICHARUTIL_CONTRACTID, &gCaseConv);
     if (NS_FAILED(rv)) {
+      NS_ERROR("Failed to get the case conversion service!");
       gCaseConv = nsnull;
-      return rv;
     }
-
-    nsCOMPtr<nsIObserverService> obs =
-        do_GetService("@mozilla.org/observer-service;1", &rv);
- 
-     if (NS_SUCCEEDED(rv)) {
-        nsCOMPtr<nsIObserver> observer;
-        NS_NEWXPCOM(observer, nsShutdownObserver);
-        if (observer)
-            obs->AddObserver(observer, NS_XPCOM_SHUTDOWN_OBSERVER_ID,
-                             PR_FALSE);
-     }
-     
-     return NS_OK;
+  }
+  return gCaseConv;
 }
 
 void
-ToLowerCase( nsAString& aString )
-  {
-    NS_InitCaseConversion();
-    if (gCaseConv) {
-      PRUnichar *buf = aString.BeginWriting();
-      gCaseConv->ToLower(buf, buf, aString.Length());
-    }
-    else
-      NS_WARNING("No case converter: no conversion done");
+ToLowerCase(nsAString& aString)
+{
+  nsICaseConversion* caseConv = NS_GetCaseConversion();
+  if (caseConv) {
+    PRUnichar *buf = aString.BeginWriting();
+    caseConv->ToLower(buf, buf, aString.Length());
   }
+  else
+    NS_WARNING("No case converter: no conversion done");
+}
 
 void
-ToLowerCase( const nsAString& aSource, nsAString& aDest )
-  {
-    NS_InitCaseConversion();
+ToLowerCase(const nsAString& aSource,
+            nsAString& aDest)
+{
+  const PRUnichar *in;
+  PRUint32 len = NS_StringGetData(aSource, &in);
 
-    const PRUnichar *in;
-    PRUint32 len = NS_StringGetData(aSource, &in);
+  PRUnichar *out;
+  NS_StringGetMutableData(aDest, len, &out);
 
-    PRUnichar *out;
-    NS_StringGetMutableData(aDest, len, &out);
-
-    if (out && gCaseConv) {
-      gCaseConv->ToLower(in, out, len);
-    }
-    else {
-      NS_WARNING("No case converter: only copying");
-      aDest.Assign(aSource);
-    }
+  nsICaseConversion* caseConv = NS_GetCaseConversion();
+  if (out && caseConv)
+    caseConv->ToLower(in, out, len);
+  else {
+    NS_WARNING("No case converter: only copying");
+    aDest.Assign(aSource);
   }
+}
 
 void
-ToUpperCase( nsAString& aString )
-  {
-    NS_InitCaseConversion();
-    if (gCaseConv) {
-      PRUnichar *buf = aString.BeginWriting();
-      gCaseConv->ToUpper(buf, buf, aString.Length());
-    }
-    else
-      NS_WARNING("No case converter: no conversion done");
+ToUpperCase(nsAString& aString)
+{
+  nsICaseConversion* caseConv = NS_GetCaseConversion();
+  if (caseConv) {
+    PRUnichar *buf = aString.BeginWriting();
+    caseConv->ToUpper(buf, buf, aString.Length());
   }
+  else
+    NS_WARNING("No case converter: no conversion done");
+}
 
 void
-ToUpperCase( const nsAString& aSource, nsAString& aDest )
-  {
-    NS_InitCaseConversion();
+ToUpperCase(const nsAString& aSource,
+            nsAString& aDest)
+{
+  const PRUnichar *in;
+  PRUint32 len = NS_StringGetData(aSource, &in);
 
-    const PRUnichar *in;
-    PRUint32 len = NS_StringGetData(aSource, &in);
+  PRUnichar *out;
+  NS_StringGetMutableData(aDest, len, &out);
 
-    PRUnichar *out;
-    NS_StringGetMutableData(aDest, len, &out);
-
-    if (out && gCaseConv) {
-      gCaseConv->ToUpper(in, out, len);
-    }
-    else {
-      NS_WARNING("No case converter: only copying");
-      aDest.Assign(aSource);
-    }
+  nsICaseConversion* caseConv = NS_GetCaseConversion();
+  if (out && caseConv)
+    caseConv->ToUpper(in, out, len);
+  else {
+    NS_WARNING("No case converter: only copying");
+    aDest.Assign(aSource);
   }
+}
 
 #ifdef MOZILLA_INTERNAL_API
-int
-nsCaseInsensitiveStringComparator::operator()( const PRUnichar* lhs, const PRUnichar* rhs, PRUint32 aLength ) const
-  {
-      NS_InitCaseConversion();
-      PRInt32 result;
-      if (gCaseConv) {
-          gCaseConv->CaseInsensitiveCompare(lhs, rhs, aLength, &result);
-      }
-      else {
-          NS_WARNING("No case converter: using default");
-          nsDefaultStringComparator comparator;
-          result = comparator(lhs, rhs, aLength);
-      }
-      return result;
-  }
 
-int
-nsCaseInsensitiveStringComparator::operator()( PRUnichar lhs, PRUnichar rhs ) const
-  {
-      // see if they're an exact match first
-      if (lhs == rhs) return 0;
-      
-      NS_InitCaseConversion();
-
-      if (gCaseConv) {
-          gCaseConv->ToLower(lhs, &lhs);
-          gCaseConv->ToLower(rhs, &rhs);
-      } else {
-          if (lhs < 256)
-              lhs = tolower(char(lhs));
-          if (rhs < 256)
-              rhs = tolower(char(rhs));
-          NS_WARNING("No case converter: no conversion done");
-      }
-      
-      if (lhs == rhs) return 0;
-      if (lhs < rhs) return -1;
-      return 1;
-  }
-#else
 PRInt32
-CaseInsensitiveCompare(const PRUnichar *a, const PRUnichar *b, PRUint32 len)
+nsCaseInsensitiveStringComparator::operator()(const PRUnichar* lhs,
+                                              const PRUnichar* rhs,
+                                              PRUint32 aLength) const
 {
-    if (NS_FAILED(NS_InitCaseConversion()))
-        return NS_strcmp(a, b);
+  PRInt32 result;
+  nsICaseConversion* caseConv = NS_GetCaseConversion();
+  if (caseConv)
+    caseConv->CaseInsensitiveCompare(lhs, rhs, aLength, &result);
+  else {
+    NS_WARNING("No case converter: no conversion done");
+//    nsDefaultStringComparator comparator;
+//    result = comparator(lhs, rhs, aLength);
+  }
+  return result;
+}
 
-    PRInt32 result;
-    gCaseConv->CaseInsensitiveCompare(a, b, len, &result);
-    return result;
+PRInt32
+nsCaseInsensitiveStringComparator::operator()(PRUnichar lhs,
+                                              PRUnichar rhs) const
+{
+  // see if they're an exact match first
+  if (lhs == rhs)
+    return 0;
+  
+  nsICaseConversion* caseConv = NS_GetCaseConversion();
+  if (caseConv) {
+    caseConv->ToLower(lhs, &lhs);
+    caseConv->ToLower(rhs, &rhs);
+  }
+  else {
+    if (lhs < 256)
+      lhs = tolower(char(lhs));
+    if (rhs < 256)
+      rhs = tolower(char(rhs));
+    NS_WARNING("No case converter: no conversion done");
+  }
+  
+  if (lhs == rhs)
+    return 0;
+  else if (lhs < rhs)
+    return -1;
+  else
+    return 1;
+}
+
+#else // MOZILLA_INTERNAL_API
+
+PRInt32
+CaseInsensitiveCompare(const PRUnichar *a,
+                       const PRUnichar *b,
+                       PRUint32 len)
+{
+  nsICaseConversion* caseConv = NS_GetCaseConversion();
+  if (!caseConv)
+    return NS_strcmp(a, b);
+
+  PRInt32 result;
+  caseConv->CaseInsensitiveCompare(a, b, len, &result);
+  return result;
 }
 
 #endif // MOZILLA_INTERNAL_API
@@ -220,38 +194,33 @@ CaseInsensitiveCompare(const PRUnichar *a, const PRUnichar *b, PRUint32 len)
 PRUnichar
 ToLowerCase(PRUnichar aChar)
 {
-    PRUnichar result;
-    if (NS_FAILED(NS_InitCaseConversion()))
-        return aChar;
-
-    if (gCaseConv)
-        gCaseConv->ToLower(aChar, &result);
-    else {
-        NS_WARNING("No case converter: no conversion done");
-        if (aChar < 256)
-            result = tolower(char(aChar));
-        else
-            result = aChar;
-    }
-    return result;
+  PRUnichar result;
+  nsICaseConversion* caseConv = NS_GetCaseConversion();
+  if (caseConv)
+    caseConv->ToLower(aChar, &result);
+  else {
+    NS_WARNING("No case converter: no conversion done");
+    if (aChar < 256)
+      result = tolower(char(aChar));
+    else
+      result = aChar;
+  }
+  return result;
 }
 
 PRUnichar
 ToUpperCase(PRUnichar aChar)
 {
-    PRUnichar result;
-    if (NS_FAILED(NS_InitCaseConversion()))
-        return aChar;
-
-    if (gCaseConv)
-        gCaseConv->ToUpper(aChar, &result);
-    else {
-        NS_WARNING("No case converter: no conversion done");
-        if (aChar < 256)
-            result = toupper(char(aChar));
-        else
-            result = aChar;
-    }
-    return result;
+  PRUnichar result;
+  nsICaseConversion* caseConv = NS_GetCaseConversion();
+  if (caseConv)
+    caseConv->ToUpper(aChar, &result);
+  else {
+    NS_WARNING("No case converter: no conversion done");
+    if (aChar < 256)
+      result = toupper(char(aChar));
+    else
+      result = aChar;
+  }
+  return result;
 }
-

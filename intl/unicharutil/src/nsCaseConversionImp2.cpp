@@ -20,6 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Ben Turner <mozilla@songbirdnest.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -39,7 +40,6 @@
 #include "nsUUDll.h"
 #include "nsCaseConversionImp2.h"
 #include "casetable.h"
-
 
 // For gUpperToTitle 
 enum {
@@ -64,123 +64,121 @@ enum {
   
 // Size of Tables
 
-
 #define CASE_MAP_CACHE_SIZE 0x40
 #define CASE_MAP_CACHE_MASK 0x3F
 
-class nsCompressedMap {
-public:
-   nsCompressedMap(const PRUnichar *aTable, PRUint32 aSize);
-   ~nsCompressedMap();
-   PRUnichar Map(PRUnichar aChar);
-protected:
-   PRUnichar Lookup(PRUint32 l, PRUint32 m, PRUint32 r, PRUnichar aChar);
+nsCaseConversionImp2* gCaseConv = nsnull;
 
-private: 
-   const PRUnichar *mTable;
-   PRUint32 mSize;
-   PRUint32 *mCache;
-   PRUint32 mLastBase;
+struct nsCompressedMap {
+  const PRUnichar *mTable;
+  PRUint32 mSize;
+  PRUint32 mCache[CASE_MAP_CACHE_SIZE];
+  PRUint32 mLastBase;
+
+  PRUnichar Map(PRUnichar aChar)
+  {
+    // no need to worry about thread safety since cached values are
+    // not objects but primitive data types which could be 
+    // accessed in atomic operations. We need to access
+    // the whole 32 bit of cachedData at once in order to make it
+    // thread safe. Never access bits from mCache directly.
+
+    PRUint32 cachedData = mCache[aChar & CASE_MAP_CACHE_MASK];
+    if(aChar == ((cachedData >> 16) & 0x0000FFFF))
+      return (cachedData & 0x0000FFFF);
+
+    // try the last index first
+    // store into local variable so we can be thread safe
+    PRUint32 base = mLastBase; 
+    PRUnichar res = 0;
+    
+    if (( aChar <=  ((mTable[base+kSizeEveryIdx] >> 8) + 
+                  mTable[base+kLowIdx])) &&
+        ( mTable[base+kLowIdx]  <= aChar )) 
+    {
+        // Hit the last base
+        if(((mTable[base+kSizeEveryIdx] & 0x00FF) > 0) && 
+          (0 != ((aChar - mTable[base+kLowIdx]) % 
+                (mTable[base+kSizeEveryIdx] & 0x00FF))))
+        {
+          res = aChar;
+        } else {
+          res = aChar + mTable[base+kDiffIdx];
+        }
+    } else {
+        res = this->Lookup(0, (mSize/2), mSize-1, aChar);
+    }
+
+    mCache[aChar & CASE_MAP_CACHE_MASK] =
+        (((aChar << 16) & 0xFFFF0000) | (0x0000FFFF & res));
+    return res;
+  }
+
+  PRUnichar Lookup(PRUint32 l,
+                   PRUint32 m,
+                   PRUint32 r,
+                   PRUnichar aChar)
+  {
+    PRUint32 base = m*3;
+    if ( aChar >  ((mTable[base+kSizeEveryIdx] >> 8) + 
+                  mTable[base+kLowIdx])) 
+    {
+      if( l > m )
+        return aChar;
+      PRUint32 newm = (m+r+1)/2;
+      if(newm == m)
+        newm++;
+      return this->Lookup(m+1, newm , r, aChar);
+      
+    } else if ( mTable[base+kLowIdx]  > aChar ) {
+      if( r < m )
+        return aChar;
+      PRUint32 newm = (l+m-1)/2;
+      if(newm == m)
+        newm++;
+      return this->Lookup(l, newm, m-1, aChar);
+
+    } else  {
+      if(((mTable[base+kSizeEveryIdx] & 0x00FF) > 0) && 
+        (0 != ((aChar - mTable[base+kLowIdx]) % 
+                (mTable[base+kSizeEveryIdx] & 0x00FF))))
+      {
+        return aChar;
+      }
+      mLastBase = base; // cache the base
+      return aChar + mTable[base+kDiffIdx];
+    }
+  }
 };
 
-nsCompressedMap::nsCompressedMap(const PRUnichar *aTable, PRUint32 aSize)
+static nsCompressedMap gUpperMap = {
+  reinterpret_cast<const PRUnichar*>(&gToUpper[0]),
+  gToUpperItems
+};
+
+static nsCompressedMap gLowerMap = {
+  reinterpret_cast<const PRUnichar*>(&gToLower[0]),
+  gToLowerItems
+};
+
+nsCaseConversionImp2* nsCaseConversionImp2::GetInstance()
 {
-   MOZ_COUNT_CTOR(nsCompressedMap);
-   mTable = aTable;
-   mSize = aSize;
-   mLastBase = 0;
-   mCache = new PRUint32[CASE_MAP_CACHE_SIZE];
-   for(int i = 0; i < CASE_MAP_CACHE_SIZE; i++)
-      mCache[i] = 0;
+  if (!gCaseConv)
+    NS_NEWXPCOM(gCaseConv, nsCaseConversionImp2);
+  return gCaseConv;
 }
 
-nsCompressedMap::~nsCompressedMap()
+NS_IMETHODIMP_(nsrefcnt) nsCaseConversionImp2::AddRef(void)
 {
-   MOZ_COUNT_DTOR(nsCompressedMap);
-   delete[] mCache;
+  return (nsrefcnt)1;
 }
 
-PRUnichar nsCompressedMap::Map(PRUnichar aChar)
+NS_IMETHODIMP_(nsrefcnt) nsCaseConversionImp2::Release(void)
 {
-   // no need to worry thread since cached value are 
-   // not object but primitive data type which could be 
-   // accessed in atomic operation. We need to access
-   // the whole 32 bit of cachedData at once in order to make it
-   // thread safe. Never access bits from mCache dirrectly
-
-   PRUint32 cachedData = mCache[aChar & CASE_MAP_CACHE_MASK];
-   if(aChar == ((cachedData >> 16) & 0x0000FFFF))
-     return (cachedData & 0x0000FFFF);
-
-   // try the last index first
-   // store into local variable so we can be thread safe
-   PRUint32 base = mLastBase; 
-   PRUnichar res = 0;
- 
-   if (( aChar <=  ((mTable[base+kSizeEveryIdx] >> 8) + 
-                 mTable[base+kLowIdx])) &&
-       ( mTable[base+kLowIdx]  <= aChar )) 
-   {
-      // Hit the last base
-      if(((mTable[base+kSizeEveryIdx] & 0x00FF) > 0) && 
-         (0 != ((aChar - mTable[base+kLowIdx]) % 
-               (mTable[base+kSizeEveryIdx] & 0x00FF))))
-      {
-         res = aChar;
-      } else {
-         res = aChar + mTable[base+kDiffIdx];
-      }
-   } else {
-      res = this->Lookup(0, (mSize/2), mSize-1, aChar);
-   }
-
-   mCache[aChar & CASE_MAP_CACHE_MASK] =
-       (((aChar << 16) & 0xFFFF0000) | (0x0000FFFF & res));
-   return res;
+  return (nsrefcnt)1;
 }
 
-PRUnichar nsCompressedMap::Lookup(
-   PRUint32 l, PRUint32 m, PRUint32 r, PRUnichar aChar)
-{
-  PRUint32 base = m*3;
-  if ( aChar >  ((mTable[base+kSizeEveryIdx] >> 8) + 
-                 mTable[base+kLowIdx])) 
-  {
-    if( l > m )
-      return aChar;
-    PRUint32 newm = (m+r+1)/2;
-    if(newm == m)
-	   newm++;
-    return this->Lookup(m+1, newm , r, aChar);
-    
-  } else if ( mTable[base+kLowIdx]  > aChar ) {
-    if( r < m )
-      return aChar;
-    PRUint32 newm = (l+m-1)/2;
-    if(newm == m)
-	   newm++;
-	return this->Lookup(l, newm, m-1, aChar);
-
-  } else  {
-    if(((mTable[base+kSizeEveryIdx] & 0x00FF) > 0) && 
-       (0 != ((aChar - mTable[base+kLowIdx]) % 
-              (mTable[base+kSizeEveryIdx] & 0x00FF))))
-    {
-       return aChar;
-    }
-    mLastBase = base; // cache the base
-    return aChar + mTable[base+kDiffIdx];
-  }
-}
-
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsCaseConversionImp2, nsICaseConversion)
-
-static nsCompressedMap
-  gUpperMap(NS_REINTERPRET_CAST(const PRUnichar*, &gToUpper[0]),
-                                gToUpperItems);
-static nsCompressedMap
-  gLowerMap(NS_REINTERPRET_CAST(const PRUnichar*, &gToLower[0]),
-                                gToLowerItems);
+NS_IMPL_THREADSAFE_QUERY_INTERFACE1(nsCaseConversionImp2, nsICaseConversion)
 
 nsresult nsCaseConversionImp2::ToUpper(
   PRUnichar aChar, PRUnichar* aReturn
@@ -215,16 +213,13 @@ static PRUnichar FastToLower(
         return aChar + 0x0020;
      else
         return aChar;
-  } 
+  }
   else if( IS_NOCASE_CHAR(aChar)) // optimize for block which have no case
   {
-    return aChar;
-  } 
-  else
-  {
-    return gLowerMap.Map(aChar);
-  } 
-  return NS_OK;
+     return aChar;
+  }
+
+  return gLowerMap.Map(aChar);
 }
 
 nsresult nsCaseConversionImp2::ToLower(
@@ -234,6 +229,7 @@ nsresult nsCaseConversionImp2::ToLower(
   *aReturn = FastToLower(aChar);
   return NS_OK;
 }
+
 nsresult nsCaseConversionImp2::ToTitle(
   PRUnichar aChar, PRUnichar* aReturn
 )
@@ -260,8 +256,7 @@ nsresult nsCaseConversionImp2::ToTitle(
       }
     }
 
-    PRUnichar upper;
-    upper = gUpperMap.Map(aChar);
+    PRUnichar upper = gUpperMap.Map(aChar);
     
     if( 0x01C0 == ( upper & 0xFFC0)) // 0x01Cx - 0x01Fx
     {
@@ -389,12 +384,4 @@ nsCaseConversionImp2::CaseInsensitiveCompare(const PRUnichar *aLeft,
     } while (--aCount != 0);
   }
   return NS_OK;
-}
-
-nsresult NS_NewCaseConversion(nsICaseConversion** oResult)
-{
-  NS_ENSURE_ARG_POINTER(oResult);
-  NS_NEWXPCOM(*oResult, nsCaseConversionImp2);
-  NS_IF_ADDREF(*oResult);
-  return *oResult ? NS_OK :NS_ERROR_OUT_OF_MEMORY; 
 }
