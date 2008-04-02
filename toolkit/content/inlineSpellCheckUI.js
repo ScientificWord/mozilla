@@ -81,7 +81,7 @@ var InlineSpellCheckerUI = {
   {
     this.mOverMisspelling = false;
 
-    if (! this.mInlineSpellChecker)
+    if (!rangeParent || !this.mInlineSpellChecker)
       return;
 
     var selcon = this.mEditor.selectionController;
@@ -118,7 +118,7 @@ var InlineSpellCheckerUI = {
   set enabled(isEnabled)
   {
     if (this.mInlineSpellChecker)
-      this.mInlineSpellChecker.enableRealTimeSpell = isEnabled;
+      this.mEditor.setSpellcheckUserOverride(isEnabled);
   },
 
   // returns true if the given event is over a misspelled word
@@ -201,7 +201,7 @@ var InlineSpellCheckerUI = {
 
     for (var i = 0; i < list.length; i ++) {
       // get the display name for this dictionary
-      var isoStrArray = list[i].split("-");
+      isoStrArray = list[i].split("-");
       var displayName = "";
       if (this.mLanguageBundle && isoStrArray[0]) {
         try {
@@ -211,6 +211,8 @@ var InlineSpellCheckerUI = {
           try {
             displayName += " / " + this.mRegionBundle.GetStringFromName(isoStrArray[1].toLowerCase());
           } catch(e) {} // ignore region bundle errors
+          if (isoStrArray[2])
+            displayName += " (" + isoStrArray[2] + ")";
         }
       }
 
@@ -272,13 +274,16 @@ var InlineSpellCheckerUI = {
   // callback for enabling or disabling spellchecking
   toggleEnabled: function()
   {
-    this.mInlineSpellChecker.enableRealTimeSpell =
-        ! this.mInlineSpellChecker.enableRealTimeSpell;
+    this.mEditor.setSpellcheckUserOverride(!this.mInlineSpellChecker.enableRealTimeSpell);
   },
 
   // callback for adding the current misspelling to the user-defined dictionary
   addToDictionary: function()
   {
     this.mInlineSpellChecker.addWordToDictionary(this.mMisspelling);
+  },
+  ignoreWord: function()
+  {
+    this.mInlineSpellChecker.ignoreWord(this.mMisspelling);
   }
 };

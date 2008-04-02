@@ -16,6 +16,10 @@
   display: -moz-box;
 }
 
+:root {
+  text-rendering: optimizeLegibility;
+}
+
 /* hide the content and destroy the frame */
 *[hidden="true"] {
   display: none;
@@ -73,6 +77,7 @@ treechildren, treeitem, treeseparator, treerow, treecell {
 button,
 checkbox,
 colorpicker[type="button"],
+datepicker[type="grid"],
 menulist,
 radiogroup,
 tree,
@@ -110,6 +115,10 @@ button {
   -moz-binding: url("chrome://global/content/bindings/button.xml#button");
 }
 
+button[type="repeat"] {
+  -moz-binding: url("chrome://global/content/bindings/button.xml#button-repeat");
+}
+
 button[type="menu"] {
   -moz-binding: url("chrome://global/content/bindings/button.xml#menu");
 }
@@ -132,10 +141,6 @@ toolbarbutton[type="menu-button"] {
   -moz-binding: url("chrome://global/content/bindings/toolbarbutton.xml#menu-button");
 }
 
-dropmarker[type="menu-button"] {
-  -moz-binding: url("chrome://global/content/bindings/toolbarbutton.xml#dropmarker");
-}
-
 /******** browser, editor, iframe ********/
 
 browser,
@@ -146,10 +151,6 @@ iframe {
 
 browser {
   -moz-binding: url("chrome://global/content/bindings/browser.xml#browser");
-}
-
-tabbrowser {
-  -moz-binding: url("chrome://global/content/bindings/tabbrowser.xml#tabbrowser");
 }
 
 editor {
@@ -177,7 +178,6 @@ notification {
 image {
   -moz-binding: url("chrome://global/content/bindings/general.xml#image");
 }
-
 
 /********** checkbox **********/
 
@@ -237,13 +237,11 @@ toolbarseparator {
 
 toolbarspacer {
   -moz-binding: url("chrome://global/content/bindings/toolbar.xml#toolbardecoration");
-  display: inline;
 }
 
 toolbarspring {
   -moz-binding: url("chrome://global/content/bindings/toolbar.xml#toolbardecoration");
   -moz-box-flex: 1000;
-  display: inline;
 }
 
 toolbarpaletteitem {
@@ -279,7 +277,7 @@ menu.menu-iconic {
   -moz-binding: url("chrome://global/content/bindings/menu.xml#menu-iconic");
 }
 
-menu:empty {
+menubar > menu:empty {
   visibility: collapse;
 }
 
@@ -306,6 +304,17 @@ menuitem.menuitem-non-iconic {
   -moz-binding: url("chrome://global/content/bindings/menu.xml#menubutton-item");
 }
 
+%ifdef MOZ_WIDGET_GTK2
+/********* detection of system setting to use icons in menus ***********/
+menuitem:not([type]):not(:-moz-system-metric(images-in-menus)) > .menu-iconic-left {
+  visibility: hidden;
+}
+
+menu:not(:-moz-system-metric(images-in-menus)) > .menu-iconic-left {
+  visibility: hidden;
+}
+%endif
+
 /********* menuseparator ***********/
 
 menuseparator {
@@ -320,24 +329,25 @@ popup,
 menupopup {
   -moz-binding: url("chrome://global/content/bindings/popup.xml#popup");
   -moz-box-orient: vertical;
-  display: none;
+}
+
+panel {
+  -moz-binding: url("chrome://global/content/bindings/popup.xml#panel");
+  -moz-box-orient: vertical;
 }
 
 popup,
 menupopup,
+panel,
 tooltip {
-  z-index: 2147483647; 
-}
-
-menupopup[menugenerated="true"],
-popup[menugenerated="true"],
-tooltip[menugenerated="true"] {
   display: -moz-popup;
+  z-index: 2147483647; 
 }
 
 tooltip {
   -moz-binding: url("chrome://global/content/bindings/popup.xml#tooltip");
-  display: -moz-popup;
+  -moz-box-orient: vertical;
+  white-space: -moz-pre-wrap;
   margin-top: 21px;
 }
 
@@ -413,10 +423,6 @@ column {
 
 listbox {
   -moz-binding: url("chrome://global/content/bindings/listbox.xml#listbox");
-}
-
-listcols, listcol {
-  -moz-binding: url("chrome://global/content/bindings/listbox.xml#listbox-base");
 }
 
 listhead {
@@ -616,43 +622,6 @@ tab {
   -moz-box-pack: center;
 }
 
-.tabbrowser-tabs {
-  -moz-binding: url("chrome://global/content/bindings/tabbrowser.xml#tabbrowser-tabs");
-}
-
-.tabbrowser-tabs > .tabbrowser-tab {
-  -moz-binding: url("chrome://global/content/bindings/tabbrowser.xml#tabbrowser-tab");
-}
-
-.tabbrowser-tabs > .tabbrowser-tab > .tab-close-button,
-.tabs-closebutton-box > .tabs-closebutton {
-  -moz-binding: url("chrome://global/content/bindings/tabbrowser.xml#tabbrowser-close-tab-button");
-}
-
-.tab-close-button {
-  display: none;
-}
-
-.tabbrowser-tabs:not([closebuttons="noclose"]):not([closebuttons="closeatend"]) > .tabbrowser-tab[selected="true"] > .tab-close-button {
-  display: -moz-box;
-}
-
-.tabbrowser-tabs[closebuttons="alltabs"] > .tabbrowser-tab > .tab-close-button {
-  display: -moz-box;
-}
-
-.tab-close-button-placeholder {
-  display: none;
-}
-
-.tabbrowser-tabs[disablebackgroundclose="true"] > .tabbrowser-tab:not([selected="true"]) > .tab-close-button {
-  display: none;
-}
-
-.tabbrowser-tabs[disablebackgroundclose="true"]:not([closebuttons="noclose"]):not([closebuttons="closeatend"]) > .tabbrowser-tab:not([selected="true"]) .tab-close-button-placeholder {
-  display: -moz-box;  
-}
-
 tabpanels {
   -moz-binding: url("chrome://global/content/bindings/tabbox.xml#tabpanels");
   display: -moz-deck;
@@ -675,10 +644,6 @@ progressmeter {
 }
 
 /********** label **********/
-
-spacer {
-  display: inline;
-}
 
 description {
   -moz-binding: url("chrome://global/content/bindings/text.xml#text-base");
@@ -725,14 +690,21 @@ html|*.textbox-textarea {
   -moz-binding: url("chrome://global/content/bindings/textbox.xml#input-box");
 }
 
+.textbox-input-box[spellcheck="true"] {
+  -moz-binding: url("chrome://global/content/bindings/textbox.xml#input-box-spell");
+}
+
 textbox[type="timed"] {
   -moz-binding: url("chrome://global/content/bindings/textbox.xml#timed-textbox");
 }
 
+textbox[type="number"] {
+  -moz-binding: url("chrome://global/content/bindings/numberbox.xml#numberbox");
+}
+
 /********** autocomplete textbox **********/
 
-/* thunderbird and Nvu don't use the new toolkit's autocomplete widget yet....but Prince does! */
-%ifndef MOZ_MSI_PRINCE
+/* thunderbird and Nvu don't use the new toolkit's autocomplete widget yet.... */
 
 %ifdef MOZ_THUNDERBIRD
 %define AUTOCOMPLETE_OLD_STYLE
@@ -741,7 +713,6 @@ textbox[type="timed"] {
 %elifdef MOZ_SUITE
 %define AUTOCOMPLETE_OLD_STYLE
 %endif
-%endif
 
 %ifdef AUTOCOMPLETE_OLD_STYLE
 
@@ -749,7 +720,7 @@ textbox[type="autocomplete"] {
   -moz-binding: url("chrome://global/content/autocomplete.xml#autocomplete");
 }
 
-.autocomplete-result-popup {
+panel[type="autocomplete"] {
   -moz-binding: url("chrome://global/content/autocomplete.xml#autocomplete-result-popup");
 }
 
@@ -757,16 +728,8 @@ textbox[type="autocomplete"] {
   -moz-binding: url("chrome://global/content/autocomplete.xml#autocomplete-history-popup");
 }
 
-.autocomplete-tree {
-  -moz-binding: url("chrome://global/content/autocomplete.xml#autocomplete-tree");
-}
-
 .autocomplete-treebody {
   -moz-binding: url("chrome://global/content/autocomplete.xml#autocomplete-treebody");
-}
-
-.autocomplete-treerows {
-  -moz-binding: url("chrome://global/content/autocomplete.xml#autocomplete-treerows");
 }
 
 .autocomplete-history-dropmarker {
@@ -779,17 +742,37 @@ textbox[type="autocomplete"] {
   -moz-binding: url("chrome://global/content/bindings/autocomplete.xml#autocomplete");
 }
 
-popup[type="autocomplete"] {
+panel[type="autocomplete"] {
   -moz-binding: url("chrome://global/content/bindings/autocomplete.xml#autocomplete-result-popup");
-  display: -moz-popup !important;
+}
+
+panel[type="rich-autocomplete"] {
+  -moz-binding: url("chrome://global/content/bindings/autocomplete.xml#autocomplete-rich-result-popup");
 }
 
 .autocomplete-tree {
   -moz-binding: url("chrome://global/content/bindings/autocomplete.xml#autocomplete-tree");
+  -moz-user-focus: ignore;
 }
 
 .autocomplete-treebody {
   -moz-binding: url("chrome://global/content/bindings/autocomplete.xml#autocomplete-treebody");
+}
+
+.autocomplete-richlistbox {
+  -moz-binding: url("chrome://global/content/bindings/autocomplete.xml#autocomplete-richlistbox");
+  -moz-user-focus: ignore;
+  -moz-appearance: none;
+}
+
+.autocomplete-richlistbox > scrollbox {
+  overflow-x: hidden !important;
+}
+
+.autocomplete-richlistitem {
+  -moz-binding: url("chrome://global/content/bindings/autocomplete.xml#autocomplete-richlistitem");
+  -moz-box-orient: vertical;
+  overflow: -moz-hidden-unscrollable;
 }
 
 .autocomplete-treerows {
@@ -855,13 +838,14 @@ menulist[type="description"] {
 
 html|*.menulist-editable-input {
   -moz-appearance: none !important;
+  background: transparent ! important;
 }
 
 menulist > menupopup > menuitem {
   -moz-binding: url("chrome://global/content/bindings/menu.xml#menuitem-iconic-noaccel");
 }
 
-dropmarker[type="menu"] {
+dropmarker {
   -moz-binding: url("chrome://global/content/bindings/general.xml#dropmarker");
 }
 
@@ -924,6 +908,17 @@ scale {
   -moz-user-focus: normal;
 }
 
+scrollbarbutton[sbattr="scrollbar-up-top"]:not(:-moz-system-metric(scrollbar-start-backward)),
+scrollbarbutton[sbattr="scrollbar-down-top"]:not(:-moz-system-metric(scrollbar-start-forward)),
+scrollbarbutton[sbattr="scrollbar-up-bottom"]:not(:-moz-system-metric(scrollbar-end-backward)),
+scrollbarbutton[sbattr="scrollbar-down-bottom"]:not(:-moz-system-metric(scrollbar-end-forward)) {
+  display: none;
+}
+
+thumb[sbattr="scrollbar-thumb"]:-moz-system-metric(scrollbar-thumb-proportional) {
+  -moz-box-flex: 1;
+}
+
 /******** scrollbox ********/
 
 scrollbox {
@@ -976,6 +971,10 @@ spinbuttons {
   -moz-binding: url("chrome://global/content/bindings/spinbuttons.xml#spinbuttons");
 }
 
+.spinbuttons-button {
+  -moz-user-focus: ignore;
+}
+
 /********** stringbundle **********/
 
 stringbundleset {
@@ -997,10 +996,6 @@ dialog {
 
 dialogheader {
   -moz-binding: url("chrome://global/content/bindings/dialog.xml#dialogheader");
-}
-
-dialog .info-box {
-  white-space: -moz-pre-wrap;
 }
 
 /********* page ************/
@@ -1042,18 +1037,6 @@ prefwindow {
 prefpane {
   -moz-binding: url("chrome://global/content/bindings/preferences.xml#prefpane");  
   -moz-box-orient: vertical;
-  opacity: 0.0;
-}
-
-prefpane[selected="true"] {
-  opacity: 0.0;
-}
-
-prefwindow[animate="off"] > prefpane,
-prefwindow[animate="off"] > prefpane[selected="true"],
-prefwindow[type="child"] > prefpane,
-prefwindow[type="child"] > prefpane[selected="true"] {
-  opacity: 1.0;
 }
 
 prefwindow > .paneDeckContainer {
@@ -1105,10 +1088,37 @@ richlistbox {
   -moz-binding: url('chrome://global/content/bindings/richlistbox.xml#richlistbox');
   -moz-user-focus: normal;
   -moz-appearance: listbox;
+  -moz-box-orient: vertical;
 }
 
 richlistitem {
   -moz-binding: url('chrome://global/content/bindings/richlistbox.xml#richlistitem');
 }
 
-html|* [class="autocomplete-textbox"] { width:40px; }
+richlistbox > listheader {
+  -moz-box-ordinal-group: 1;
+}
+
+/********** datepicker and timepicker ********/
+
+datepicker {
+  -moz-binding: url('chrome://global/content/bindings/datetimepicker.xml#datepicker');
+}
+
+datepicker[type="popup"] {
+  -moz-binding: url('chrome://global/content/bindings/datetimepicker.xml#datepicker-popup');
+}
+
+datepicker[type="grid"] {
+  -moz-binding: url('chrome://global/content/bindings/datetimepicker.xml#datepicker-grid');
+}
+
+timepicker {
+  -moz-binding: url('chrome://global/content/bindings/datetimepicker.xml#timepicker');
+}
+
+
+/*********** findbar ************/
+findbar {
+  -moz-binding: url('chrome://global/content/bindings/findbar.xml#findbar');
+}

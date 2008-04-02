@@ -55,7 +55,7 @@
   persist="screenX screenY width height">
 
 <stringbundle id="bundle_filepicker" src="chrome://global/locale/filepicker.properties"/>
-<script type="application/x-javascript" src="chrome://global/content/filepicker.js"/>
+<script type="application/javascript" src="chrome://global/content/filepicker.js"/>
 
 <hbox align="center">
   <label value="&lookInMenuList.label;" control="lookInMenuList" accesskey="&lookInMenuList.accesskey;"/>
@@ -114,6 +114,6 @@
   <checkbox label="&showHiddenFiles.label;" oncommand="toggleShowHidden();"
             flex="1" align="left"  accesskey="&showHiddenFiles.accesskey;"/>
   <button dlgtype="cancel" icon="cancel" class="dialog-button"/>
-  <button dlgtype="accept" icon="accept" class="dialog-button"/>
+  <button dlgtype="accept" icon="open" class="dialog-button"/>
 </hbox>
 </dialog>

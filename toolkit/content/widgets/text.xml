@@ -8,11 +8,10 @@
   <!-- bound to <description>s -->
   <binding id="text-base" extends="chrome://global/content/bindings/general.xml#basecontrol">
     <implementation implements="nsIDOMXULDescriptionElement, nsIAccessibleProvider">
-      <property name="accessible">
+      <property name="accessibleType" readonly="true">
         <getter>
           <![CDATA[
-            var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
-            return accService.createXULTextAccessible(this);
+            return Components.interfaces.nsIAccessibleProvider.XULText;
           ]]>
         </getter>
       </property>
@@ -273,10 +272,7 @@
 
     <handlers>
       <handler event="click" action="if (this.disabled) return;
-                                     var controlElementID = this.getAttribute('control');
-                                     var controlElement;
-                                     if (controlElementID)
-                                       controlElement = document.getElementById(controlElementID);
+                                     var controlElement = this.labeledControlElement;
                                      if(controlElement)
                                        controlElement.focus();
                                     "/>
@@ -285,11 +281,10 @@
 
   <binding id="text-link" extends="chrome://global/content/bindings/text.xml#text-label">
     <implementation implements="nsIAccessibleProvider">
-      <property name="accessible">
+      <property name="accessibleType" readonly="true">
         <getter>
           <![CDATA[
-            var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
-            return accService.createXULLinkAccessible(this);
+            return Components.interfaces.nsIAccessibleProvider.XULLink;
           ]]>
         </getter>
       </property>
@@ -315,11 +310,15 @@
                                .getService(Components.interfaces.nsIIOService);
 
             uri = ioService.newURI(href, null, null);
-            var safeURI = ioService.newURI("about:blank", null, null);
 
+            var nullPrincipal =
+              Components.classes["@mozilla.org/nullprincipal;1"]
+                        .createInstance(Components.interfaces.nsIPrincipal);
             try {
-              secMan.checkLoadURI(safeURI, uri, nsISSM.DISALLOW_SCRIPT_OR_DATA)
-            } catch (ex) {
+              secMan.checkLoadURIWithPrincipal(nullPrincipal, uri,
+                                               nsISSM.DISALLOW_INHERIT_PRINCIPAL)
+            }
+            catch (ex) {
               var msg = "Error: Cannot open a " + uri.scheme + ": link using \
                          the text-link binding.";
               Components.utils.reportError(msg);
@@ -338,7 +337,10 @@
               return;
             }
 
-          } catch (ex) {}
+          }
+          catch (ex) {
+            Components.utils.reportError(ex);
+          }
 
           // otherwise, fall back to opening the anchor directly
           var win = window;
@@ -353,7 +355,6 @@
             win.open(href);
 
           aEvent.preventDefault();
-
         ]]>
         </body>
       </method>
@@ -367,4 +368,3 @@
   </binding>
 
 </bindings>
-

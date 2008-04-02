@@ -1,5 +1,4 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+/* Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
@@ -39,6 +38,8 @@
 
 #include "nsICategoryManager.h"
 #include "nsICommandLineHandler.h"
+#include "nsICommandLineValidator.h"
+#include "nsIClassInfoImpl.h"
 #include "nsIDOMWindow.h"
 #include "nsIFile.h"
 #include "nsISimpleEnumerator.h"
@@ -85,12 +86,16 @@ public:
 protected:
   ~nsCommandLine() { }
 
-  typedef nsresult (*EnumerateCallback)(nsICommandLineHandler* aHandler,
+  typedef nsresult (*EnumerateHandlersCallback)(nsICommandLineHandler* aHandler,
+					nsICommandLine* aThis,
+					void *aClosure);
+  typedef nsresult (*EnumerateValidatorsCallback)(nsICommandLineValidator* aValidator,
 					nsICommandLine* aThis,
 					void *aClosure);
 
   void appendArg(const char* arg);
-  nsresult EnumerateHandlers(EnumerateCallback aCallback, void *aClosure);
+  nsresult EnumerateHandlers(EnumerateHandlersCallback aCallback, void *aClosure);
+  nsresult EnumerateValidators(EnumerateValidatorsCallback aCallback, void *aClosure);
 
   nsStringArray     mArgs;
   PRUint32          mState;
@@ -107,9 +112,9 @@ nsCommandLine::nsCommandLine() :
 }
 
 
-NS_IMPL_ISUPPORTS2(nsCommandLine,
-                   nsICommandLine,
-                   nsICommandLineRunner)
+NS_IMPL_ISUPPORTS2_CI(nsCommandLine,
+                      nsICommandLine,
+                      nsICommandLineRunner)
 
 NS_IMETHODIMP
 nsCommandLine::GetLength(PRInt32 *aResult)
@@ -138,8 +143,8 @@ nsCommandLine::FindFlag(const nsAString& aFlag, PRBool aCaseSensitive, PRInt32 *
   nsDefaultStringComparator caseCmp;
   nsCaseInsensitiveStringComparator caseICmp;
   nsStringComparator& c = aCaseSensitive ?
-    NS_STATIC_CAST(nsStringComparator&, caseCmp) :
-    NS_STATIC_CAST(nsStringComparator&, caseICmp);
+    static_cast<nsStringComparator&>(caseCmp) :
+    static_cast<nsStringComparator&>(caseICmp);
 
   for (f = 0; f < mArgs.Count(); ++f) {
     const nsString &arg = *mArgs[f];
@@ -378,20 +383,17 @@ nsCommandLine::ResolveFile(const nsAString& aArgument, nsIFile* *aResult)
     // going to fail, and I haven't figured out a way to work around this without
     // the PathCombine() function, which is not available in plain win95/nt4
 
-    nsCAutoString fullPath;
-    mWorkingDir->GetNativePath(fullPath);
-
-    nsCAutoString carg;
-    NS_CopyUnicodeToNative(aArgument, carg);
+    nsAutoString fullPath;
+    mWorkingDir->GetPath(fullPath);
 
     fullPath.Append('\\');
-    fullPath.Append(carg);
+    fullPath.Append(aArgument);
 
-    char pathBuf[MAX_PATH];
-    if (!_fullpath(pathBuf, fullPath.get(), MAX_PATH))
+    WCHAR pathBuf[MAX_PATH];
+    if (!_wfullpath(pathBuf, fullPath.get(), MAX_PATH))
       return NS_ERROR_FAILURE;
 
-    rv = lf->InitWithNativePath(nsDependentCString(pathBuf));
+    rv = lf->InitWithPath(nsDependentString(pathBuf));
     if (NS_FAILED(rv)) return rv;
   }
   NS_ADDREF(*aResult = lf);
@@ -465,7 +467,11 @@ nsCommandLine::appendArg(const char* arg)
 #endif
 
   nsAutoString warg;
+#ifdef XP_WIN
+  CopyUTF8toUTF16(nsDependentCString(arg), warg);
+#else
   NS_CopyNativeToUnicode(nsDependentCString(arg), warg);
+#endif
 
   mArgs.AppendString(warg);
 }
@@ -536,7 +542,7 @@ nsCommandLine::Init(PRInt32 argc, char** argv, nsIFile* aWorkingDir,
 }
 
 nsresult
-nsCommandLine::EnumerateHandlers(EnumerateCallback aCallback, void *aClosure)
+nsCommandLine::EnumerateHandlers(EnumerateHandlersCallback aCallback, void *aClosure)
 {
   nsresult rv;
 
@@ -578,6 +584,55 @@ nsCommandLine::EnumerateHandlers(EnumerateCallback aCallback, void *aClosure)
   return rv;
 }
 
+nsresult
+nsCommandLine::EnumerateValidators(EnumerateValidatorsCallback aCallback, void *aClosure)
+{
+  nsresult rv;
+
+  nsCOMPtr<nsICategoryManager> catman
+    (do_GetService(NS_CATEGORYMANAGER_CONTRACTID));
+  NS_ENSURE_TRUE(catman, NS_ERROR_UNEXPECTED);
+
+  nsCOMPtr<nsISimpleEnumerator> entenum;
+  rv = catman->EnumerateCategory("command-line-validator",
+                                 getter_AddRefs(entenum));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIUTF8StringEnumerator> strenum (do_QueryInterface(entenum));
+  NS_ENSURE_TRUE(strenum, NS_ERROR_UNEXPECTED);
+
+  nsCAutoString entry;
+  PRBool hasMore;
+  while (NS_SUCCEEDED(strenum->HasMore(&hasMore)) && hasMore) {
+    strenum->GetNext(entry);
+
+    nsXPIDLCString contractID;
+    rv = catman->GetCategoryEntry("command-line-validator",
+				  entry.get(),
+				  getter_Copies(contractID));
+    if (!contractID)
+      continue;
+
+    nsCOMPtr<nsICommandLineValidator> clv(do_GetService(contractID.get()));
+    if (!clv)
+      continue;
+
+    rv = (aCallback)(clv, this, aClosure);
+    if (rv == NS_ERROR_ABORT)
+      break;
+
+    rv = NS_OK;
+  }
+
+  return rv;
+}
+
+static nsresult
+EnumValidate(nsICommandLineValidator* aValidator, nsICommandLine* aThis, void*)
+{
+  return aValidator->Validate(aThis);
+}  
+
 static nsresult
 EnumRun(nsICommandLineHandler* aHandler, nsICommandLine* aThis, void*)
 {
@@ -588,6 +643,10 @@ NS_IMETHODIMP
 nsCommandLine::Run()
 {
   nsresult rv;
+
+  rv = EnumerateValidators(EnumValidate, nsnull);
+  if (rv == NS_ERROR_ABORT)
+    return rv;
 
   rv = EnumerateHandlers(EnumRun, nsnull);
   if (rv == NS_ERROR_ABORT)
@@ -607,7 +666,7 @@ EnumHelp(nsICommandLineHandler* aHandler, nsICommandLine* aThis, void* aClosure)
     NS_ASSERTION(text.Length() == 0 || text.Last() == '\n',
                  "Help text from command line handlers should end in a newline.");
 
-    nsACString* totalText = NS_REINTERPRET_CAST(nsACString*, aClosure);
+    nsACString* totalText = reinterpret_cast<nsACString*>(aClosure);
     totalText->Append(text);
   }
 
@@ -623,13 +682,21 @@ nsCommandLine::GetHelpText(nsACString& aResult)
 }
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsCommandLine)
+NS_DECL_CLASSINFO(nsCommandLine)
 
 static const nsModuleComponentInfo components[] =
 {
   { "nsCommandLine",
     { 0x23bcc750, 0xdc20, 0x460b, { 0xb2, 0xd4, 0x74, 0xd8, 0xf5, 0x8d, 0x36, 0x15 } },
     "@mozilla.org/toolkit/command-line;1",
-    nsCommandLineConstructor
+    nsCommandLineConstructor,
+    nsnull,
+    nsnull,
+    nsnull,
+    NS_CI_INTERFACE_GETTER_NAME(nsCommandLine),
+    nsnull,
+    &NS_CLASSINFO_NAME(nsCommandLine),
+    0
   }
 };
 

@@ -15,16 +15,17 @@
       <xul:spacer class="progress-remainder" xbl:inherits="mode"/>
     </content>
     
-    <implementation implements="nsIAccessibleProvider">     
-      <property name="label" onset="if (this.label != val) this.setAttribute('label',val); return val;"
-                                      onget="return this.getAttribute('label');"/>
-
+    <implementation implements="nsIAccessibleProvider">
       <property name="mode" onset="if (this.mode != val) this.setAttribute('mode', val); return val;"
                             onget="return this.getAttribute('mode');"/>
 
-      <property name="value" onget="return this.getAttribute('value');">
+      <property name="value" onget="return this.getAttribute('value') || '0';">
         <setter><![CDATA[
           var p = Math.round(val);
+          if (p < 0)
+            p = 0;
+          else if (p > 100)
+            p = 100;
           var c = this.value; 
           if (p != c) {
             var delta = p - c;
@@ -39,15 +40,14 @@
             }
           }
           
-          return p;
+          return val;
         ]]></setter>
       </property>
 
-      <property name="accessible">
+      <property name="accessibleType" readonly="true">
         <getter>
           <![CDATA[
-            var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
-            return accService.createXULProgressMeterAccessible(this);
+            return Components.interfaces.nsIAccessibleProvider.XULProgressMeter;
           ]]>
         </getter>
       </property>
@@ -63,27 +63,39 @@
     </content>
 
     <implementation>
-      <method name="init">
+      <method name="_init">
         <body><![CDATA[
           var stack = document.getAnonymousElementByAttribute(this, "anonid", "stack");
           var spacer = document.getAnonymousElementByAttribute(this, "anonid", "spacer");
-          var position = -1;
+
+          var isLTR = 
+           document.defaultView.getComputedStyle(this, null).direction == "ltr";
+
+          var position = isLTR ? 4 : -1;
           var interval = setInterval(function nextStep() {
             try {
+              var width = stack.boxObject.width >> 2;
               spacer.height = stack.boxObject.height;
-              spacer.width = stack.boxObject.width >> 2;
-              spacer.left = spacer.width * position;
-              position += 30 / (stack.boxObject.width + 600);
-              if (position >= 4)
-                position = -1;
+              spacer.width = width;
+              spacer.left = width * position;
+              if (isLTR) {
+                position += 15 / (width + 150);
+                if (position >= 4)
+                  position = -1;
+              }
+              else {
+                position -= 15 / (width + 150);
+                if (position < 0)
+                  position = 4;
+              }
             } catch (e) {
               clearInterval(interval);
             }
-          }, 10);
+          }, 20);
         ]]></body>
       </method>
 
-      <constructor>this.init();</constructor>
+      <constructor>this._init();</constructor>
     </implementation>
   </binding>
 

@@ -609,3 +609,8 @@ NS_IMETHODIMP nsAutoCompleteResultStringArray::Clear()
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsAutoCompleteResultStringArray::GetImageAt(PRInt32 aIndex, nsAString& _retval)
+{
+  return NS_OK;
+}

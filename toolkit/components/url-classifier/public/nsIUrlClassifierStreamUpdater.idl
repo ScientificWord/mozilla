@@ -40,9 +40,11 @@
 #include "nsIUrlClassifierDBService.idl"
 
 /**
- * This is a class to help with the 
+ * This is a class to manage large table updates from the server.  Rather than
+ * downloading the whole update and then updating the sqlite database, we
+ * update tables as the data is streaming in.
  */
-[scriptable, uuid(45b57a99-0c1a-4096-9d16-c4766d75fbea)]
+[scriptable, uuid(1a1f8b01-4221-4897-b030-9d301b8b8cc9)]
 interface nsIUrlClassifierStreamUpdater : nsISupports
 {
   /**
@@ -54,6 +56,16 @@ interface nsIUrlClassifierStreamUpdater : nsISupports
    * Try to download updates from updateUrl.  Only one instance of this
    * runs at a time, so we return false if another instance is already
    * running.
+   * @param aRequestBody The body for the request.
+   * @param aClientKey The client key for checking the update's MAC.
+   * @param aSuccessCallback Called after a successful update.
+   * @param aUpdateErrorCallback Called for problems applying the update
+   * @param aDownloadErrorCallback Called if we get an http error or a
+   *        connection refused error.
    */
-  boolean downloadUpdates(in nsIUrlClassifierCallback c);
+  boolean downloadUpdates(in ACString aRequestBody,
+                          in ACString aClientKey,
+                          in nsIUrlClassifierCallback aSuccessCallback,
+                          in nsIUrlClassifierCallback aUpdateErrorCallback,
+                          in nsIUrlClassifierCallback aDownloadErrorCallback);
 };
