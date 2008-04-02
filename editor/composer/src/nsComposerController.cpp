@@ -48,7 +48,7 @@
     NS_NEWXPCOM(theCmd, _cmdClass);                                     \
     if (!theCmd) return NS_ERROR_OUT_OF_MEMORY;                         \
     rv = inCommandTable->RegisterCommand(_cmdName,                      \
-                       NS_STATIC_CAST(nsIControllerCommand *, theCmd)); \
+                       static_cast<nsIControllerCommand *>(theCmd));    \
   }
 
 #define NS_REGISTER_FIRST_COMMAND(_cmdClass, _cmdName)                  \
@@ -57,15 +57,15 @@
     NS_NEWXPCOM(theCmd, _cmdClass);                                     \
     if (!theCmd) return NS_ERROR_OUT_OF_MEMORY;                         \
     rv = inCommandTable->RegisterCommand(_cmdName,                      \
-                       NS_STATIC_CAST(nsIControllerCommand *, theCmd));
+                       static_cast<nsIControllerCommand *>(theCmd));
 
 #define NS_REGISTER_NEXT_COMMAND(_cmdClass, _cmdName)                   \
     rv = inCommandTable->RegisterCommand(_cmdName,                      \
-                        NS_STATIC_CAST(nsIControllerCommand *, theCmd));
+                        static_cast<nsIControllerCommand *>(theCmd));
 
 #define NS_REGISTER_LAST_COMMAND(_cmdClass, _cmdName)                   \
     rv = inCommandTable->RegisterCommand(_cmdName,                      \
-                       NS_STATIC_CAST(nsIControllerCommand *, theCmd)); \
+                       static_cast<nsIControllerCommand *>(theCmd));    \
   }
 
 #define NS_REGISTER_STYLE_COMMAND(_cmdClass, _cmdName, _styleTag)       \
@@ -73,7 +73,7 @@
     _cmdClass* theCmd = new _cmdClass(_styleTag);                       \
     if (!theCmd) return NS_ERROR_OUT_OF_MEMORY;                         \
     rv = inCommandTable->RegisterCommand(_cmdName,                      \
-                       NS_STATIC_CAST(nsIControllerCommand *, theCmd)); \
+                       static_cast<nsIControllerCommand *>(theCmd));    \
   }
   
 #define NS_REGISTER_TAG_COMMAND(_cmdClass, _cmdName, _tagName)          \
@@ -81,7 +81,7 @@
     _cmdClass* theCmd = new _cmdClass(_tagName);                        \
     if (!theCmd) return NS_ERROR_OUT_OF_MEMORY;                         \
     rv = inCommandTable->RegisterCommand(_cmdName,                      \
-                       NS_STATIC_CAST(nsIControllerCommand *, theCmd)); \
+                       static_cast<nsIControllerCommand *>(theCmd));    \
   }
   
 
@@ -124,39 +124,35 @@ nsComposerController::RegisterHTMLEditorCommands(
   NS_REGISTER_ONE_COMMAND(nsIndentCommand, "cmd_indent");
   NS_REGISTER_ONE_COMMAND(nsOutdentCommand, "cmd_outdent");
 
-  // Prince: text tags -- similar to styles, but the tag name is not hard wired
+  // Styles
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_bold", "b");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_italic", "i");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_underline", "u");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_tt", "tt");
+
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_strikethrough", "strike");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_superscript", "sup");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_subscript", "sub");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_nobreak", "nobr");
+
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_em", "em");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_strong", "strong");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_cite", "cite");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_abbr", "abbr");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_acronym", "acronym");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_code", "code");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_samp", "samp");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_var", "var");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_removeLinks", "href");
+  // swp
   NS_REGISTER_ONE_COMMAND(nsTextTagUpdatingCommand, "cmd_texttag");
   NS_REGISTER_ONE_COMMAND(nsParaTagUpdatingCommand, "cmd_paratag");
   NS_REGISTER_ONE_COMMAND(nsStructTagUpdatingCommand, "cmd_structtag");
   NS_REGISTER_ONE_COMMAND(nsOtherTagUpdatingCommand, "cmd_othertag");
 
-
-  // Styles
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_bold", "b");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_italic", "i");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_underline", "u");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_tt", "tt");
-
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_strikethrough", "strike");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_superscript", "sup");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_subscript", "sub");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_nobreak", "nobr");
-
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_em", "em");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_strong", "strong");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_cite", "cite");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_abbr", "abbr");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_acronym", "acronym");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_code", "code");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_samp", "samp");
-//  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_var", "var");
-  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_removeLinks", "href");
-
-  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_MSImathtext", "math");
-
   // lists
-  //NS_REGISTER_STYLE_COMMAND(nsListCommand,     "cmd_ol", "ol");
-  //NS_REGISTER_STYLE_COMMAND(nsListCommand,     "cmd_ul", "ul");
+  NS_REGISTER_STYLE_COMMAND(nsListCommand,     "cmd_ol", "ol");
+  NS_REGISTER_STYLE_COMMAND(nsListCommand,     "cmd_ul", "ul");
   NS_REGISTER_STYLE_COMMAND(nsListItemCommand, "cmd_dt", "dt");
   NS_REGISTER_STYLE_COMMAND(nsListItemCommand, "cmd_dd", "dd");
   NS_REGISTER_ONE_COMMAND(nsRemoveListCommand, "cmd_removeList");
@@ -172,8 +168,8 @@ nsComposerController::RegisterHTMLEditorCommands(
   NS_REGISTER_ONE_COMMAND(nsAlignCommand, "cmd_align");
   NS_REGISTER_ONE_COMMAND(nsRemoveStylesCommand, "cmd_removeStyles");
 
-//  NS_REGISTER_ONE_COMMAND(nsIncreaseFontSizeCommand, "cmd_increaseFont");
-//  NS_REGISTER_ONE_COMMAND(nsDecreaseFontSizeCommand, "cmd_decreaseFont");
+  NS_REGISTER_ONE_COMMAND(nsIncreaseFontSizeCommand, "cmd_increaseFont");
+  NS_REGISTER_ONE_COMMAND(nsDecreaseFontSizeCommand, "cmd_decreaseFont");
 
   // Insert content
   NS_REGISTER_ONE_COMMAND(nsInsertHTMLCommand, "cmd_insertHTML");
