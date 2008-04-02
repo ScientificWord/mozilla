@@ -3,8 +3,8 @@
 #ifndef eANALYZER_H
 #define eANALYZER_H
 
-#include "../../CmpTypes.h"
-#include "../fltutils.h"
+#include "CmpTypes.h"
+#include "fltutils.h"
 #include "MplWrap.h"
 #include <limits.h>
 

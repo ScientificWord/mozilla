@@ -3,7 +3,7 @@
 #ifndef BYTEARRY_H
 #define BYTEARRY_H
 
-#include "../CmpTypes.h"
+#include "CmpTypes.h"
 #include "tcistrin.h"
 
 class ByteArray 
