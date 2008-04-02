@@ -40,10 +40,9 @@
 #include "nsFrame.h"
 #include "nsWeakReference.h"
 #include "nsISVGValueObserver.h"
-#include <cairo.h>
 
 class nsSVGPaintServerFrame;
-class nsISVGRendererCanvas;
+class gfxContext;
 
 typedef nsFrame nsSVGGeometryFrameBase;
 
@@ -54,14 +53,23 @@ typedef nsFrame nsSVGGeometryFrameBase;
  * servers. */
 
 class nsSVGGeometryFrame : public nsSVGGeometryFrameBase,
-                           public nsISVGValueObserver,
-                           public nsSupportsWeakReference
+                           public nsISVGValueObserver
 {
-public:
-  nsSVGGeometryFrame(nsStyleContext *aContext);
+protected:
+  nsSVGGeometryFrame(nsStyleContext *aContext) : nsSVGGeometryFrameBase(aContext) {}
 
+public:
   // nsIFrame interface:
+  virtual void Destroy();
+  NS_IMETHOD Init(nsIContent* aContent,
+                  nsIFrame* aParent,
+                  nsIFrame* aPrevInFlow);
   NS_IMETHOD DidSetStyleContext();
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsSVGGeometryFrameBase::IsFrameOfType(aFlags & ~(nsIFrame::eSVG));
+  }
 
   // nsISupports interface:
   NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
@@ -86,31 +94,41 @@ public:
   PRBool HasFill();
   PRBool HasStroke();
 
-  // Setup/Cleanup a cairo context for filling a path
-  nsresult SetupCairoFill(nsISVGRendererCanvas *aCanvas,
-                          cairo_t *aCtx,
-                          void **aClosure);
-  void CleanupCairoFill(cairo_t *aCtx, void *aClosure);
+  /*
+   * Set up a cairo context for filling a path
+   * @return PR_FALSE to skip rendering
+   */
+  PRBool SetupCairoFill(gfxContext *aContext);
 
   // Set up a cairo context for measuring a stroked path
-  void SetupCairoStrokeGeometry(cairo_t *aCtx);
+  void SetupCairoStrokeGeometry(gfxContext *aContext);
 
-  // Setup/Cleanup a cairo context for stroking path
-  nsresult SetupCairoStroke(nsISVGRendererCanvas *aCanvas,
-                            cairo_t *aCtx,
-                            void **aClosure);
-  void CleanupCairoStroke(cairo_t *aCtx, void *aClosure);
+  // Set up a cairo context for hit testing a stroked path
+  void SetupCairoStrokeHitGeometry(gfxContext *aContext);
+
+  /*
+   * Set up a cairo context for stroking a path
+   * @return PR_FALSE to skip rendering
+   */
+  PRBool SetupCairoStroke(gfxContext *aContext);
 
 protected:
   virtual nsresult UpdateGraphic(PRBool suppressInvalidation = PR_FALSE) = 0;
 
   nsSVGPaintServerFrame *GetPaintServer(const nsStyleSVGPaint *aPaint);
 
-  NS_IMETHOD InitSVG();
-
 private:
   nsresult GetStrokeDashArray(double **arr, PRUint32 *count);
   float GetStrokeDashoffset();
+  void RemovePaintServerProperties();
+
+  // Returns opacity that should be used in rendering this primitive.
+  // In the general case the return value is just the passed opacity.
+  // If we can avoid the expense of a specified group opacity, we
+  // multiply the passed opacity by the value of the 'opacity'
+  // property, and elsewhere pretend the 'opacity' property has a
+  // value of 1.
+  float MaybeOptimizeOpacity(float aOpacity);
 };
 
 #endif // __NS_SVGGEOMETRYFRAME_H__

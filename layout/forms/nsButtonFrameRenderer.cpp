@@ -38,13 +38,13 @@
 #include "nsIRenderingContext.h"
 #include "nsCSSRendering.h"
 #include "nsPresContext.h"
-#include "nsIView.h"
-#include "nsIViewManager.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsCSSPseudoElements.h"
 #include "nsINameSpaceManager.h"
 #include "nsStyleSet.h"
 #include "nsDisplayList.h"
+#include "nsITheme.h"
+#include "nsThemeConstants.h"
 
 #define ACTIVE   "active"
 #define HOVER    "hover"
@@ -77,10 +77,10 @@ void
 nsButtonFrameRenderer::SetDisabled(PRBool aDisabled, PRBool notify)
 {
   if (aDisabled)
-    mFrame->GetContent()->SetAttr(kNameSpaceID_None, nsHTMLAtoms::disabled, EmptyString(),
+    mFrame->GetContent()->SetAttr(kNameSpaceID_None, nsGkAtoms::disabled, EmptyString(),
                                   notify);
   else
-    mFrame->GetContent()->UnsetAttr(kNameSpaceID_None, nsHTMLAtoms::disabled, notify);
+    mFrame->GetContent()->UnsetAttr(kNameSpaceID_None, nsGkAtoms::disabled, notify);
 }
 
 PRBool
@@ -88,7 +88,7 @@ nsButtonFrameRenderer::isDisabled()
 {
   // get the content
   return mFrame->GetContent()->HasAttr(kNameSpaceID_None,
-                                       nsHTMLAtoms::disabled);
+                                       nsGkAtoms::disabled);
 }
 
 class nsDisplayButtonBorderBackground : public nsDisplayItem {
@@ -103,7 +103,8 @@ public:
   }
 #endif  
   
-  virtual nsIFrame* HitTest(nsDisplayListBuilder* aBuilder, nsPoint aPt) {
+  virtual nsIFrame* HitTest(nsDisplayListBuilder* aBuilder, nsPoint aPt,
+                            HitTestState* aState) {
     return mFrame;
   }
   virtual void Paint(nsDisplayListBuilder* aBuilder, nsIRenderingContext* aCtx,
@@ -137,7 +138,7 @@ void nsDisplayButtonBorderBackground::Paint(nsDisplayListBuilder* aBuilder,
                                             const nsRect& aDirtyRect)
 {
   NS_ASSERTION(mFrame, "No frame?");
-  nsPresContext* pc = mFrame->GetPresContext();
+  nsPresContext* pc = mFrame->PresContext();
   nsRect r = nsRect(aBuilder->ToReferenceFrame(mFrame), mFrame->GetSize());
   
   // draw the border and background inside the focus and outline borders
@@ -148,12 +149,14 @@ void nsDisplayButtonForeground::Paint(nsDisplayListBuilder* aBuilder,
                                       nsIRenderingContext* aCtx,
                                       const nsRect& aDirtyRect)
 {
-  NS_ASSERTION(mFrame, "No frame?");
-  nsPresContext* pc = mFrame->GetPresContext();
-  nsRect r = nsRect(aBuilder->ToReferenceFrame(mFrame), mFrame->GetSize());
-  
-  // draw the focus and outline borders
-  mBFR->PaintOutlineAndFocusBorders(pc, *aCtx, aDirtyRect, r);
+  nsPresContext *presContext = mFrame->PresContext();
+  const nsStyleDisplay *disp = mFrame->GetStyleDisplay();
+  if (!mFrame->IsThemed(disp) ||
+      !presContext->GetTheme()->ThemeDrawsFocusForWidget(presContext, mFrame, disp->mAppearance)) {
+    // draw the focus and outline borders
+    nsRect r = nsRect(aBuilder->ToReferenceFrame(mFrame), mFrame->GetSize());
+    mBFR->PaintOutlineAndFocusBorders(presContext, *aCtx, aDirtyRect, r);
+  }
 }
 
 nsresult
@@ -175,7 +178,7 @@ nsButtonFrameRenderer::PaintOutlineAndFocusBorders(nsPresContext* aPresContext,
           const nsRect& aDirtyRect,
           const nsRect& aRect)
 {
-  // once we have all that let draw the focus if we have it. We will need to draw 2 focuses.
+  // once we have all that we'll draw the focus if we have it. We will need to draw 2 focuses,
   // the inner and the outer. This is so we can do any kind of look and feel some buttons have
   // focus on the outside like mac and motif. While others like windows have it inside (dotted line).
   // Usually only one will be specifed. But I guess you could have both if you wanted to.
@@ -229,14 +232,6 @@ nsButtonFrameRenderer::PaintBorderAndBackground(nsPresContext* aPresContext,
 
 
 void
-nsButtonFrameRenderer::GetButtonOutlineRect(const nsRect& aRect, nsRect& outlineRect)
-{
-  outlineRect = aRect;
-  outlineRect.Inflate(GetButtonOutlineBorderAndPadding());
-}
-
-
-void
 nsButtonFrameRenderer::GetButtonOuterFocusRect(const nsRect& aRect, nsRect& focusRect)
 {
   focusRect = aRect;
@@ -258,42 +253,26 @@ nsButtonFrameRenderer::GetButtonInnerFocusRect(const nsRect& aRect, nsRect& focu
   focusRect.Deflate(GetButtonInnerFocusMargin());
 }
 
-void
-nsButtonFrameRenderer::GetButtonContentRect(const nsRect& aRect, nsRect& r)
-{
-  GetButtonInnerFocusRect(aRect, r);
-  r.Deflate(GetButtonInnerFocusBorderAndPadding());
-}
-
 
 nsMargin
 nsButtonFrameRenderer::GetButtonOuterFocusBorderAndPadding()
 {
-  nsMargin focusBorderAndPadding(0,0,0,0);
+  nsMargin result(0,0,0,0);
 
   if (mOuterFocusStyle) {
-    nsStyleBorderPadding  bPad;
-    mOuterFocusStyle->GetBorderPaddingFor(bPad);
-    if (!bPad.GetBorderPadding(focusBorderAndPadding)) {
-      NS_NOTYETIMPLEMENTED("percentage border");
+    if (!mOuterFocusStyle->GetStylePadding()->GetPadding(result)) {
+      NS_NOTYETIMPLEMENTED("percentage padding");
     }
+    result += mOuterFocusStyle->GetStyleBorder()->GetBorder();
   }
 
-  return focusBorderAndPadding;
+  return result;
 }
 
 nsMargin
 nsButtonFrameRenderer::GetButtonBorderAndPadding()
 {
-  nsStyleContext* context = mFrame->GetStyleContext();
-
-  nsMargin innerFocusBorderAndPadding(0,0,0,0);
-  nsStyleBorderPadding  bPad;
-  context->GetBorderPaddingFor(bPad);
-  if (!bPad.GetBorderPadding(innerFocusBorderAndPadding)) {
-    NS_NOTYETIMPLEMENTED("percentage border");
-  }
-  return innerFocusBorderAndPadding;
+  return mFrame->GetUsedBorderAndPadding();
 }
 
 /**
@@ -305,9 +284,10 @@ nsButtonFrameRenderer::GetButtonInnerFocusMargin()
   nsMargin innerFocusMargin(0,0,0,0);
 
   if (mInnerFocusStyle) {
-    // get the outer focus border and padding
     const nsStyleMargin* margin = mInnerFocusStyle->GetStyleMargin();
-    margin->GetMargin(innerFocusMargin);
+    if (!margin->GetMargin(innerFocusMargin)) {
+      NS_NOTYETIMPLEMENTED("percentage margin");
+    }
   }
 
   return innerFocusMargin;
@@ -316,18 +296,16 @@ nsButtonFrameRenderer::GetButtonInnerFocusMargin()
 nsMargin
 nsButtonFrameRenderer::GetButtonInnerFocusBorderAndPadding()
 {
-  nsMargin innerFocusBorderAndPadding(0,0,0,0);
+  nsMargin result(0,0,0,0);
 
   if (mInnerFocusStyle) {
-    // get the outer focus border and padding
-    nsStyleBorderPadding  bPad;
-    mInnerFocusStyle->GetBorderPaddingFor(bPad);
-    if (!bPad.GetBorderPadding(innerFocusBorderAndPadding)) {
-      NS_NOTYETIMPLEMENTED("percentage border");
+    if (!mInnerFocusStyle->GetStylePadding()->GetPadding(result)) {
+      NS_NOTYETIMPLEMENTED("percentage padding");
     }
+    result += mInnerFocusStyle->GetStyleBorder()->GetBorder();
   }
 
-  return innerFocusBorderAndPadding;
+  return result;
 }
 
 nsMargin
@@ -354,7 +332,7 @@ nsButtonFrameRenderer::GetAddedButtonBorderAndPadding()
 /**
  * Call this when styles change
  */
-void 
+void
 nsButtonFrameRenderer::ReResolveStyles(nsPresContext* aPresContext)
 {
   // get all the styles

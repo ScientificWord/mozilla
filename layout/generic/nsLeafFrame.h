@@ -41,6 +41,7 @@
 #define nsLeafFrame_h___
 
 #include "nsFrame.h"
+#include "nsDisplayList.h"
 
 /**
  * Abstract class that provides simple fixed-size layout for leaf objects
@@ -55,34 +56,82 @@ public:
   NS_IMETHOD BuildDisplayList(nsDisplayListBuilder*   aBuilder,
                               const nsRect&           aDirtyRect,
                               const nsDisplayListSet& aLists) {
+    DO_GLOBAL_REFLOW_COUNT_DSP("nsLeafFrame");
     return DisplayBorderBackgroundOutline(aBuilder, aLists);
   }
+
+  /**
+   * Both GetMinWidth and GetPrefWidth will return whatever GetIntrinsicWidth
+   * returns.
+   */
+  virtual nscoord GetMinWidth(nsIRenderingContext *aRenderingContext);
+  virtual nscoord GetPrefWidth(nsIRenderingContext *aRenderingContext);
+
+  /**
+   * Our auto size is just intrinsic width and intrinsic height.
+   */
+  virtual nsSize ComputeAutoSize(nsIRenderingContext *aRenderingContext,
+                                 nsSize aCBSize, nscoord aAvailableWidth,
+                                 nsSize aMargin, nsSize aBorder,
+                                 nsSize aPadding, PRBool aShrinkWrap);
+
+  /**
+   * Reflow our frame.  This will use the computed width plus borderpadding for
+   * the desired width, and use the return value of GetIntrinsicHeight plus
+   * borderpadding for the desired height.  Ascent will be set to the height,
+   * and descent will be set to 0.
+   */
   NS_IMETHOD Reflow(nsPresContext*      aPresContext,
                     nsHTMLReflowMetrics& aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
                     nsReflowStatus&      aStatus);
+  
+  /**
+   * This method does most of the work that Reflow() above need done.
+   */
+  NS_IMETHOD DoReflow(nsPresContext*      aPresContext,
+                      nsHTMLReflowMetrics& aDesiredSize,
+                      const nsHTMLReflowState& aReflowState,
+                      nsReflowStatus&      aStatus);
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    // We don't actually contain a block, but we do always want a
+    // computed width, so tell a little white lie here.
+    return nsFrame::IsFrameOfType(aFlags & ~(nsIFrame::eReplacedContainsBlock));
+  }
 
 protected:
   nsLeafFrame(nsStyleContext* aContext) : nsFrame(aContext) {}
   virtual ~nsLeafFrame();
 
   /**
-   * Return the desired size of the frame's content area. Note that this
-   * method doesn't need to deal with padding or borders (the caller will
-   * deal with it). In addition, the ascent will be set to the height
-   * and the descent will be set to zero.
+   * Return the intrinsic width of the frame's content area. Note that this
+   * should not include borders or padding and should not depend on the applied
+   * styles.
    */
-  virtual void GetDesiredSize(nsPresContext* aPresContext,
-                              const nsHTMLReflowState& aReflowState,
-                              nsHTMLReflowMetrics& aDesiredSize) = 0;
+  virtual nscoord GetIntrinsicWidth() = 0;
+
+  /**
+   * Return the intrinsic height of the frame's content area.  This should not
+   * include border or padding.  This will only matter if the specified height
+   * is auto.  Note that subclasses must either implement this or override
+   * Reflow and ComputeAutoSize; the default Reflow and ComputeAutoSize impls
+   * call this method.
+   */
+  virtual nscoord GetIntrinsicHeight();
 
   /**
    * Subroutine to add in borders and padding
    */
-  void AddBordersAndPadding(nsPresContext* aPresContext,
-                            const nsHTMLReflowState& aReflowState,
-                            nsHTMLReflowMetrics& aDesiredSize,
-                            nsMargin& aBorderPadding);
+  void AddBordersAndPadding(const nsHTMLReflowState& aReflowState,
+                            nsHTMLReflowMetrics& aDesiredSize);
+
+  /**
+   * Set aDesiredSize to be the available size
+   */
+  void SizeToAvailSize(const nsHTMLReflowState& aReflowState,
+                       nsHTMLReflowMetrics& aDesiredSize);
 };
 
 #endif /* nsLeafFrame_h___ */

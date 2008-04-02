@@ -42,16 +42,17 @@
 
 #include "nsColor.h"
 #include "nsString.h"
-#include "nsCRT.h"
 #include "nsCoord.h"
 #include "nsCSSProperty.h"
-#include "nsUnitConversion.h"
 #include "nsIURI.h"
 #include "nsCOMPtr.h"
 #include "nsAutoPtr.h"
+#include "nsCRTGlue.h"
+#include "nsStringBuffer.h"
 
 class imgIRequest;
 class nsIDocument;
+class nsIPrincipal;
 
 enum nsCSSUnit {
   eCSSUnit_Null         = 0,      // (n/a) null unit, value is not specified
@@ -60,6 +61,9 @@ enum nsCSSUnit {
   eCSSUnit_Initial      = 3,      // (n/a) value is default UA value
   eCSSUnit_None         = 4,      // (n/a) value is none
   eCSSUnit_Normal       = 5,      // (n/a) value is normal (algorithmic, different than auto)
+  eCSSUnit_System_Font  = 6,      // (n/a) value is -moz-use-system-font
+  eCSSUnit_Dummy        = 7,      // (n/a) a fake but specified value, used
+                                  //       only in temporary values
   eCSSUnit_String       = 10,     // (PRUnichar*) a string value
   eCSSUnit_Attr         = 11,     // (PRUnichar*) a attr(string) value
   eCSSUnit_Array        = 20,     // (nsCSSValue::Array*) a list of values
@@ -69,7 +73,8 @@ enum nsCSSUnit {
   eCSSUnit_Image        = 31,     // (nsCSSValue::Image*) value
   eCSSUnit_Integer      = 50,     // (int) simple value
   eCSSUnit_Enumerated   = 51,     // (int) value has enumerated meaning
-  eCSSUnit_Color        = 80,     // (color) an RGBA value
+  eCSSUnit_EnumColor    = 80,     // (int) enumerated color (kColorKTable)
+  eCSSUnit_Color        = 81,     // (nscolor) an RGBA value
   eCSSUnit_Percent      = 90,     // (float) 1.0 == 100%) value is percentage of something
   eCSSUnit_Number       = 91,     // (float) value is numeric (usually multiplier, different behavior that percent)
 
@@ -104,9 +109,6 @@ enum nsCSSUnit {
   // Screen relative measure
   eCSSUnit_Pixel        = 900,    // (float) CSS pixel unit
 
-  // Proportional Unit (for columns in tables)
-  eCSSUnit_Proportional = 950, 
-
   // Angular units
   eCSSUnit_Degree       = 1000,    // (float) 360 per circle
   eCSSUnit_Grad         = 1001,    // (float) 400 per circle
@@ -136,22 +138,18 @@ public:
   explicit nsCSSValue(nsCSSUnit aUnit = eCSSUnit_Null)
     : mUnit(aUnit)
   {
-    NS_ASSERTION(aUnit <= eCSSUnit_Normal, "not a valueless unit");
-    if (aUnit > eCSSUnit_Normal) {
-      mUnit = eCSSUnit_Null;
-    }
-    mValue.mInt = 0;
+    NS_ASSERTION(aUnit <= eCSSUnit_System_Font, "not a valueless unit");
   }
 
   nsCSSValue(PRInt32 aValue, nsCSSUnit aUnit) NS_HIDDEN;
   nsCSSValue(float aValue, nsCSSUnit aUnit) NS_HIDDEN;
-  nsCSSValue(const nsAString& aValue, nsCSSUnit aUnit) NS_HIDDEN;
+  nsCSSValue(const nsString& aValue, nsCSSUnit aUnit) NS_HIDDEN;
   explicit nsCSSValue(nscolor aValue) NS_HIDDEN;
   nsCSSValue(Array* aArray, nsCSSUnit aUnit) NS_HIDDEN;
   explicit nsCSSValue(URL* aValue) NS_HIDDEN;
   explicit nsCSSValue(Image* aValue) NS_HIDDEN;
   nsCSSValue(const nsCSSValue& aCopy) NS_HIDDEN;
-  NS_CONSTRUCTOR_FASTCALL ~nsCSSValue() NS_HIDDEN;
+  ~nsCSSValue() { Reset(); }
 
   NS_HIDDEN_(nsCSSValue&)  operator=(const nsCSSValue& aCopy);
   NS_HIDDEN_(PRBool)      operator==(const nsCSSValue& aOther) const;
@@ -161,13 +159,13 @@ public:
     return !(*this == aOther);
   }
 
-  nsCSSUnit GetUnit() const { return mUnit; };
+  nsCSSUnit GetUnit() const { return mUnit; }
   PRBool    IsLengthUnit() const
-    { return PRBool((eCSSUnit_Inch <= mUnit) && (mUnit <= eCSSUnit_Proportional)); }
+    { return PRBool((eCSSUnit_Inch <= mUnit) && (mUnit <= eCSSUnit_Pixel)); }
   PRBool    IsFixedLengthUnit() const  
     { return PRBool((eCSSUnit_Inch <= mUnit) && (mUnit <= eCSSUnit_Cicero)); }
   PRBool    IsRelativeLengthUnit() const  
-    { return PRBool((eCSSUnit_EM <= mUnit) && (mUnit <= eCSSUnit_Proportional)); }
+    { return PRBool((eCSSUnit_EM <= mUnit) && (mUnit <= eCSSUnit_Pixel)); }
   PRBool    IsAngularUnit() const  
     { return PRBool((eCSSUnit_Degree <= mUnit) && (mUnit <= eCSSUnit_Radian)); }
   PRBool    IsFrequencyUnit() const  
@@ -177,7 +175,8 @@ public:
 
   PRInt32 GetIntValue() const
   {
-    NS_ASSERTION(mUnit == eCSSUnit_Integer || mUnit == eCSSUnit_Enumerated,
+    NS_ASSERTION(mUnit == eCSSUnit_Integer || mUnit == eCSSUnit_Enumerated ||
+                 mUnit == eCSSUnit_EnumColor,
                  "not an int value");
     return mValue.mInt;
   }
@@ -199,9 +198,8 @@ public:
     NS_ASSERTION(eCSSUnit_String <= mUnit && mUnit <= eCSSUnit_Attr,
                  "not a string value");
     aBuffer.Truncate();
-    if (nsnull != mValue.mString) {
-      aBuffer.Append(mValue.mString);
-    }
+    PRUint32 len = NS_strlen(GetBufferValue(mValue.mString));
+    mValue.mString->ToString(len, aBuffer);
     return aBuffer;
   }
 
@@ -209,7 +207,7 @@ public:
   {
     NS_ASSERTION(eCSSUnit_String <= mUnit && mUnit <= eCSSUnit_Attr,
                  "not a string value");
-    return mValue.mString;
+    return GetBufferValue(mValue.mString);
   }
 
   nscolor GetColorValue() const
@@ -233,12 +231,21 @@ public:
       mValue.mURL->mURI : mValue.mImage->mURI;
   }
 
+  URL* GetURLStructValue() const
+  {
+    // Not allowing this for Image values, because if the caller takes
+    // a ref to them they won't be able to delete them properly.
+    NS_ASSERTION(mUnit == eCSSUnit_URL, "not a URL value");
+    return mValue.mURL;
+  }
+
   const PRUnichar* GetOriginalURLValue() const
   {
     NS_ASSERTION(mUnit == eCSSUnit_URL || mUnit == eCSSUnit_Image,
                  "not a URL value");
-    return mUnit == eCSSUnit_URL ?
-      mValue.mURL->mString : mValue.mImage->mString;
+    return GetBufferValue(mUnit == eCSSUnit_URL ?
+                            mValue.mURL->mString :
+                            mValue.mImage->mString);
   }
 
   // Not making this inline because that would force us to include
@@ -250,24 +257,17 @@ public:
 
   NS_HIDDEN_(void)  Reset()  // sets to null
   {
-    if ((eCSSUnit_String <= mUnit) && (mUnit <= eCSSUnit_Attr) &&
-        (nsnull != mValue.mString)) {
-      nsCRT::free(mValue.mString);
-    } else if (eCSSUnit_Array <= mUnit && mUnit <= eCSSUnit_Counters) {
-      mValue.mArray->Release();
-    } else if (eCSSUnit_URL == mUnit) {
-      mValue.mURL->Release();
-    } else if (eCSSUnit_Image == mUnit) {
-      mValue.mImage->Release();
-    }
-    mUnit = eCSSUnit_Null;
-    mValue.mInt = 0;
+    if (mUnit != eCSSUnit_Null)
+      DoReset();
   }
+private:
+  NS_HIDDEN_(void)  DoReset();
 
+public:
   NS_HIDDEN_(void)  SetIntValue(PRInt32 aValue, nsCSSUnit aUnit);
   NS_HIDDEN_(void)  SetPercentValue(float aValue);
   NS_HIDDEN_(void)  SetFloatValue(float aValue, nsCSSUnit aUnit);
-  NS_HIDDEN_(void)  SetStringValue(const nsAString& aValue, nsCSSUnit aUnit);
+  NS_HIDDEN_(void)  SetStringValue(const nsString& aValue, nsCSSUnit aUnit);
   NS_HIDDEN_(void)  SetColorValue(nscolor aValue);
   NS_HIDDEN_(void)  SetArrayValue(nsCSSValue::Array* aArray, nsCSSUnit aUnit);
   NS_HIDDEN_(void)  SetURLValue(nsCSSValue::URL* aURI);
@@ -277,10 +277,15 @@ public:
   NS_HIDDEN_(void)  SetInitialValue();
   NS_HIDDEN_(void)  SetNoneValue();
   NS_HIDDEN_(void)  SetNormalValue();
-  NS_HIDDEN_(void)  StartImageLoad(nsIDocument* aDocument,
-                                   PRBool aIsBGImage = PR_FALSE)
+  NS_HIDDEN_(void)  SetSystemFontValue();
+  NS_HIDDEN_(void)  SetDummyValue();
+  NS_HIDDEN_(void)  StartImageLoad(nsIDocument* aDocument)
                                    const;  // Not really const, but pretending
 
+  // Returns an already addrefed buffer.  Can return null on allocation
+  // failure.
+  static nsStringBuffer* BufferFromString(const nsString& aValue);
+  
   struct Array {
 
     // return |Array| with reference count of zero
@@ -301,9 +306,9 @@ public:
     nsCSSValue& Item(PRUint16 aIndex) { return (*this)[aIndex]; }
     const nsCSSValue& Item(PRUint16 aIndex) const { return (*this)[aIndex]; }
 
-    PRUint16 Count() { return mCount; }
+    PRUint16 Count() const { return mCount; }
 
-    PRBool operator==(const Array& aOther)
+    PRBool operator==(const Array& aOther) const
     {
       if (mCount != aOther.mCount)
         return PR_FALSE;
@@ -372,39 +377,30 @@ public:
   };
 
   struct URL {
-    // Caller must delete this object immediately if the allocation of
-    // |mString| fails.
-    URL(nsIURI* aURI, const PRUnichar* aString, nsIURI* aReferrer)
-      : mURI(aURI),
-        mString(nsCRT::strdup(aString)),
-        mReferrer(aReferrer),
-        mRefCnt(0)
-    {
-      MOZ_COUNT_CTOR(nsCSSValue::URL);
-    }
+    // Methods are not inline because using an nsIPrincipal means requiring
+    // caps, which leads to REQUIRES hell, since this header is included all
+    // over.    
 
-    ~URL()
-    {
-      // null |mString| isn't valid normally, but is checked by callers
-      // of the constructor
-      if (mString)
-        nsCRT::free(mString);
-      MOZ_COUNT_DTOR(nsCSSValue::URL);
-    }
+    // aString must not be null.
+    // aOriginPrincipal must not be null.
+    URL(nsIURI* aURI, nsStringBuffer* aString, nsIURI* aReferrer,
+        nsIPrincipal* aOriginPrincipal) NS_HIDDEN;
 
-    PRBool operator==(const URL& aOther)
-    {
-      PRBool eq;
-      return nsCRT::strcmp(mString, aOther.mString) == 0 &&
-             (mURI == aOther.mURI || // handles null == null
-              (mURI && aOther.mURI &&
-               NS_SUCCEEDED(mURI->Equals(aOther.mURI, &eq)) &&
-               eq));
-    }
+    ~URL() NS_HIDDEN;
+
+    NS_HIDDEN_(PRBool) operator==(const URL& aOther) const;
+
+    // URIEquals only compares URIs and principals (unlike operator==, which
+    // also compares the original strings).  URIEquals also assumes that the
+    // mURI member of both URL objects is non-null.  Do NOT call this method
+    // unless you're sure this is the case.
+    NS_HIDDEN_(PRBool) URIEquals(const URL& aOther) const;
 
     nsCOMPtr<nsIURI> mURI; // null == invalid URL
-    PRUnichar* mString;
+    nsStringBuffer* mString; // Could use nsRefPtr, but it'd add useless
+                             // null-checks; this is never null.
     nsCOMPtr<nsIURI> mReferrer;
+    nsCOMPtr<nsIPrincipal> mOriginPrincipal;
 
     void AddRef() { ++mRefCnt; }
     void Release() { if (--mRefCnt == 0) delete this; }
@@ -416,8 +412,9 @@ public:
     // Not making the constructor and destructor inline because that would
     // force us to include imgIRequest.h, which leads to REQUIRES hell, since
     // this header is included all over.
-    Image(nsIURI* aURI, const PRUnichar* aString, nsIURI* aReferrer,
-          nsIDocument* aDocument, PRBool aIsBGImage = PR_FALSE) NS_HIDDEN;
+    // aString must not be null.
+    Image(nsIURI* aURI, nsStringBuffer* aString, nsIURI* aReferrer,
+          nsIPrincipal* aOriginPrincipal, nsIDocument* aDocument) NS_HIDDEN;
     ~Image() NS_HIDDEN;
 
     // Inherit operator== from nsCSSValue::URL
@@ -429,12 +426,19 @@ public:
     void Release() { if (--mRefCnt == 0) delete this; }
   };
 
+private:
+  static const PRUnichar* GetBufferValue(nsStringBuffer* aBuffer) {
+    return static_cast<PRUnichar*>(aBuffer->Data());
+  }
+
 protected:
   nsCSSUnit mUnit;
   union {
     PRInt32    mInt;
     float      mFloat;
-    PRUnichar* mString;
+    // Note: the capacity of the buffer may exceed the length of the string.
+    // If we're of a string type, mString is not null.
+    nsStringBuffer* mString;
     nscolor    mColor;
     Array*     mArray;
     URL*       mURL;

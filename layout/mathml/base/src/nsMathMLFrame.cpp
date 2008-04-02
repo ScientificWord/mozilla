@@ -65,6 +65,46 @@ static NS_DEFINE_CID(kCSSStyleSheetCID, NS_CSS_STYLESHEET_CID);
 
 NS_IMPL_QUERY_INTERFACE1(nsMathMLFrame, nsIMathMLFrame)
 
+eMathMLFrameType
+nsMathMLFrame::GetMathMLFrameType()
+{
+  // see if it is an embellished operator (mapped to 'Op' in TeX)
+  if (mEmbellishData.coreFrame)
+    return GetMathMLFrameTypeFor(mEmbellishData.coreFrame);
+
+  // if it has a prescribed base, fetch the type from there
+  if (mPresentationData.baseFrame)
+    return GetMathMLFrameTypeFor(mPresentationData.baseFrame);
+
+  // everything else is treated as ordinary (mapped to 'Ord' in TeX)
+  return eMathMLFrameType_Ordinary;  
+}
+
+// snippet of code used by <mstyle> and <mtable>, which are the only
+// two tags where the displaystyle attribute is allowed by the spec.
+/* static */ void
+nsMathMLFrame::FindAttrDisplaystyle(nsIContent*         aContent,
+                                    nsPresentationData& aPresentationData)
+{
+  NS_ASSERTION(aContent->Tag() == nsGkAtoms::mstyle_ ||
+               aContent->Tag() == nsGkAtoms::mtable_, "bad caller");
+  static nsIContent::AttrValuesArray strings[] =
+    {&nsGkAtoms::_false, &nsGkAtoms::_true, nsnull};
+  // see if the explicit displaystyle attribute is there
+  switch (aContent->FindAttrValueIn(kNameSpaceID_None,
+    nsGkAtoms::displaystyle_, strings, eCaseMatters)) {
+  case 0:
+    aPresentationData.flags &= ~NS_MATHML_DISPLAYSTYLE;
+    aPresentationData.flags |= NS_MATHML_EXPLICIT_DISPLAYSTYLE;
+    break;
+  case 1:
+    aPresentationData.flags |= NS_MATHML_DISPLAYSTYLE;
+    aPresentationData.flags |= NS_MATHML_EXPLICIT_DISPLAYSTYLE;
+    break;
+  }
+  // no reset if the attr isn't found. so be sure to call it on inherited flags
+}
+
 NS_IMETHODIMP
 nsMathMLFrame::InheritAutomaticData(nsIFrame* aParent) 
 {
@@ -77,13 +117,11 @@ nsMathMLFrame::InheritAutomaticData(nsIFrame* aParent)
   mPresentationData.flags = 0;
   mPresentationData.baseFrame = nsnull;
   mPresentationData.mstyle = nsnull;
-  mPresentationData.scriptLevel = 0;
 
-  // by default, just inherit the display & scriptlevel of our parent
+  // by default, just inherit the display of our parent
   nsPresentationData parentData;
   GetPresentationDataFrom(aParent, parentData);
   mPresentationData.mstyle = parentData.mstyle;
-  mPresentationData.scriptLevel = parentData.scriptLevel;
   if (NS_MATHML_IS_DISPLAYSTYLE(parentData.flags)) {
     mPresentationData.flags |= NS_MATHML_DISPLAYSTYLE;
   }
@@ -96,13 +134,11 @@ nsMathMLFrame::InheritAutomaticData(nsIFrame* aParent)
 }
 
 NS_IMETHODIMP
-nsMathMLFrame::UpdatePresentationData(PRInt32         aScriptLevelIncrement,
-                                      PRUint32        aFlagsValues,
-                                      PRUint32        aFlagsToUpdate)
+nsMathMLFrame::UpdatePresentationData(PRUint32        aFlagsValues,
+                                      PRUint32        aWhichFlags)
 {
-  mPresentationData.scriptLevel += aScriptLevelIncrement;
   // update flags that are relevant to this call
-  if (NS_MATHML_IS_DISPLAYSTYLE(aFlagsToUpdate)) {
+  if (NS_MATHML_IS_DISPLAYSTYLE(aWhichFlags)) {
     // updating the displaystyle flag is allowed
     if (NS_MATHML_IS_DISPLAYSTYLE(aFlagsValues)) {
       mPresentationData.flags |= NS_MATHML_DISPLAYSTYLE;
@@ -111,7 +147,7 @@ nsMathMLFrame::UpdatePresentationData(PRInt32         aScriptLevelIncrement,
       mPresentationData.flags &= ~NS_MATHML_DISPLAYSTYLE;
     }
   }
-  if (NS_MATHML_IS_COMPRESSED(aFlagsToUpdate)) {
+  if (NS_MATHML_IS_COMPRESSED(aWhichFlags)) {
     // updating the compression flag is allowed
     if (NS_MATHML_IS_COMPRESSED(aFlagsValues)) {
       // 'compressed' means 'prime' style in App. G, TeXbook
@@ -155,9 +191,9 @@ nsMathMLFrame::GetEmbellishDataFrom(nsIFrame*        aFrame,
   aEmbellishData.leftSpace = 0;
   aEmbellishData.rightSpace = 0;
 
-  if (aFrame) {
+  if (aFrame && aFrame->IsFrameOfType(nsIFrame::eMathML)) {
     nsIMathMLFrame* mathMLFrame;
-    aFrame->QueryInterface(NS_GET_IID(nsIMathMLFrame), (void**)&mathMLFrame);
+    CallQueryInterface(aFrame, &mathMLFrame);
     if (mathMLFrame) {
       mathMLFrame->GetEmbellishData(aEmbellishData);
     }
@@ -175,15 +211,16 @@ nsMathMLFrame::GetPresentationDataFrom(nsIFrame*           aFrame,
   aPresentationData.flags = 0;
   aPresentationData.baseFrame = nsnull;
   aPresentationData.mstyle = nsnull;
-  aPresentationData.scriptLevel = 0;
 
   nsIFrame* frame = aFrame;
   while (frame) {
-    nsIMathMLFrame* mathMLFrame;
-    frame->QueryInterface(NS_GET_IID(nsIMathMLFrame), (void**)&mathMLFrame);
-    if (mathMLFrame) {
-      mathMLFrame->GetPresentationData(aPresentationData);
-      break;
+    if (frame->IsFrameOfType(nsIFrame::eMathML)) {
+      nsIMathMLFrame* mathMLFrame;
+      CallQueryInterface(frame, &mathMLFrame);
+      if (mathMLFrame) {
+        mathMLFrame->GetPresentationData(aPresentationData);
+        break;
+      }
     }
     // stop if the caller doesn't want to lookup beyond the frame
     if (!aClimbTree) {
@@ -191,11 +228,12 @@ nsMathMLFrame::GetPresentationDataFrom(nsIFrame*           aFrame,
     }
     // stop if we reach the root <math> tag
     nsIContent* content = frame->GetContent();
-    NS_ASSERTION(content, "dangling frame without a content node");
+    NS_ASSERTION(content || !frame->GetParent(), // no assert for the root
+                 "dangling frame without a content node"); 
     if (!content)
       break;
 
-    if (content->Tag() == nsMathMLAtoms::math) {
+    if (content->Tag() == nsGkAtoms::math) {
       const nsStyleDisplay* display = frame->GetStyleDisplay();
       if (display->mDisplay == NS_STYLE_DISPLAY_BLOCK) {
         aPresentationData.flags |= NS_MATHML_DISPLAYSTYLE;
@@ -204,7 +242,8 @@ nsMathMLFrame::GetPresentationDataFrom(nsIFrame*           aFrame,
     }
     frame = frame->GetParent();
   }
-  NS_ASSERTION(frame, "bad MathML markup - could not find the top <math> element");
+  NS_WARN_IF_FALSE(frame && frame->GetContent(),
+                   "bad MathML markup - could not find the top <math> element");
 }
 
 // helper to get an attribute from the content or the surrounding <mstyle> hierarchy
@@ -232,7 +271,7 @@ nsMathMLFrame::GetAttribute(nsIContent* aContent,
 
   if (mstyleParent) {
     nsIMathMLFrame* mathMLFrame;
-    mstyleParent->QueryInterface(NS_GET_IID(nsIMathMLFrame), (void**)&mathMLFrame);
+    CallQueryInterface(mstyleParent, &mathMLFrame);
     if (mathMLFrame) {
       mathMLFrame->GetPresentationData(mstyleParentData);
     }
@@ -309,106 +348,6 @@ nsMathMLFrame::GetAxisHeight(nsIRenderingContext& aRenderingContext,
   }
 }
 
-// ================
-// Utilities for parsing and retrieving numeric values
-// All returned values are in twips.
-
-/*
-The REC says:
-  An explicit plus sign ('+') is not allowed as part of a numeric value
-  except when it is specifically listed in the syntax (as a quoted '+'  or "+"),
-
-  Units allowed
-  ID  Description
-  em  ems (font-relative unit traditionally used for horizontal lengths)
-  ex  exs (font-relative unit traditionally used for vertical lengths)
-  px  pixels, or pixel size of a "typical computer display"
-  in  inches (1 inch = 2.54 centimeters)
-  cm  centimeters
-  mm  millimeters
-  pt  points (1 point = 1/72 inch)
-  pc  picas (1 pica = 12 points)
-  %   percentage of default value
-
-Implementation here:
-  The numeric value is valid only if it is of the form [-] nnn.nnn [h/v-unit]
-*/
-
-/* static */ PRBool
-nsMathMLFrame::ParseNumericValue(nsString&   aString,
-                                 nsCSSValue& aCSSValue)
-{
-  aCSSValue.Reset();
-  aString.CompressWhitespace(); //  aString is not a const in this code...
-
-  PRInt32 stringLength = aString.Length();
-  if (!stringLength)
-    return PR_FALSE;
-
-  nsAutoString number, unit;
-
-  // see if the negative sign is there
-  PRInt32 i = 0;
-  PRUnichar c = aString[0];
-  if (c == '-') {
-    number.Append(c);
-    i++;
-
-    // skip any space after the negative sign
-    if (i < stringLength && nsCRT::IsAsciiSpace(aString[i]))
-      i++;
-  }
-
-  // Gather up characters that make up the number
-  PRBool gotDot = PR_FALSE;
-  for ( ; i < stringLength; i++) {
-    c = aString[i];
-    if (gotDot && c == '.')
-      return PR_FALSE;  // two dots encountered
-    else if (c == '.')
-      gotDot = PR_TRUE;
-    else if (!nsCRT::IsAsciiDigit(c)) {
-      aString.Right(unit, stringLength - i);
-      unit.CompressWhitespace(); // some authors leave blanks before the unit
-      break;
-    }
-    number.Append(c);
-  }
-
-  // on exit, also return a nicer string version of the value in case
-  // the caller wants it (e.g., this removes whitespace before units)
-  aString.Assign(number);
-  aString.Append(unit);
-
-  // Convert number to floating point
-  PRInt32 errorCode;
-  float floatValue = number.ToFloat(&errorCode);
-  if (errorCode)
-    return PR_FALSE;
-
-  nsCSSUnit cssUnit;
-  if (unit.IsEmpty()) {
-    cssUnit = eCSSUnit_Number; // no explicit unit, this is a number that will act as a multiplier
-  }
-  else if (unit.EqualsLiteral("%")) {
-    aCSSValue.SetPercentValue(floatValue / 100.0f);
-    return PR_TRUE;
-  }
-  else if (unit.EqualsLiteral("em")) cssUnit = eCSSUnit_EM;
-  else if (unit.EqualsLiteral("ex")) cssUnit = eCSSUnit_XHeight;
-  else if (unit.EqualsLiteral("px")) cssUnit = eCSSUnit_Pixel;
-  else if (unit.EqualsLiteral("in")) cssUnit = eCSSUnit_Inch;
-  else if (unit.EqualsLiteral("cm")) cssUnit = eCSSUnit_Centimeter;
-  else if (unit.EqualsLiteral("mm")) cssUnit = eCSSUnit_Millimeter;
-  else if (unit.EqualsLiteral("pt")) cssUnit = eCSSUnit_Point;
-  else if (unit.EqualsLiteral("pc")) cssUnit = eCSSUnit_Pica;
-  else // unexpected unit
-    return PR_FALSE;
-
-  aCSSValue.SetFloatValue(floatValue, cssUnit);
-  return PR_TRUE;
-}
-
 /* static */ nscoord
 nsMathMLFrame::CalcLength(nsPresContext*   aPresContext,
                           nsStyleContext*   aStyleContext,
@@ -417,14 +356,13 @@ nsMathMLFrame::CalcLength(nsPresContext*   aPresContext,
   NS_ASSERTION(aCSSValue.IsLengthUnit(), "not a length unit");
 
   if (aCSSValue.IsFixedLengthUnit()) {
-    return aCSSValue.GetLengthTwips();
+    return aPresContext->TwipsToAppUnits(aCSSValue.GetLengthTwips());
   }
 
   nsCSSUnit unit = aCSSValue.GetUnit();
 
   if (eCSSUnit_Pixel == unit) {
-    return NSFloatPixelsToTwips(aCSSValue.GetFloatValue(),
-                                aPresContext->ScaledPixelsToTwips());
+    return nsPresContext::CSSPixelsToAppUnits(aCSSValue.GetFloatValue());
   }
   else if (eCSSUnit_EM == unit) {
     const nsStyleFont* font = aStyleContext->GetStyleFont();
@@ -455,31 +393,31 @@ nsMathMLFrame::ParseNamedSpaceValue(nsIFrame*   aMathMLmstyleFrame,
   nsIAtom* namedspaceAtom = nsnull;
   if (aString.EqualsLiteral("veryverythinmathspace")) {
     i = 1;
-    namedspaceAtom = nsMathMLAtoms::veryverythinmathspace_;
+    namedspaceAtom = nsGkAtoms::veryverythinmathspace_;
   }
   else if (aString.EqualsLiteral("verythinmathspace")) {
     i = 2;
-    namedspaceAtom = nsMathMLAtoms::verythinmathspace_;
+    namedspaceAtom = nsGkAtoms::verythinmathspace_;
   }
   else if (aString.EqualsLiteral("thinmathspace")) {
     i = 3;
-    namedspaceAtom = nsMathMLAtoms::thinmathspace_;
+    namedspaceAtom = nsGkAtoms::thinmathspace_;
   }
   else if (aString.EqualsLiteral("mediummathspace")) {
     i = 4;
-    namedspaceAtom = nsMathMLAtoms::mediummathspace_;
+    namedspaceAtom = nsGkAtoms::mediummathspace_;
   }
   else if (aString.EqualsLiteral("thickmathspace")) {
     i = 5;
-    namedspaceAtom = nsMathMLAtoms::thickmathspace_;
+    namedspaceAtom = nsGkAtoms::thickmathspace_;
   }
   else if (aString.EqualsLiteral("verythickmathspace")) {
     i = 6;
-    namedspaceAtom = nsMathMLAtoms::verythickmathspace_;
+    namedspaceAtom = nsGkAtoms::verythickmathspace_;
   }
   else if (aString.EqualsLiteral("veryverythickmathspace")) {
     i = 7;
-    namedspaceAtom = nsMathMLAtoms::veryverythickmathspace_;
+    namedspaceAtom = nsGkAtoms::veryverythickmathspace_;
   }
 
   if (0 != i) {
@@ -518,214 +456,6 @@ nsCSSMapping {
   const nsIAtom* attrAtom;
   const char*    cssProperty;
 };
-
-static void
-GetMathMLAttributeStyleSheet(nsPresContext* aPresContext,
-                             nsIStyleSheet** aSheet)
-{
-  static const char kTitle[] = "Internal MathML/CSS Attribute Style Sheet";
-  *aSheet = nsnull;
-
-  // first, look if the attribute stylesheet is already there
-  nsStyleSet *styleSet = aPresContext->StyleSet();
-  NS_ASSERTION(styleSet, "no style set");
-
-  nsAutoString title;
-  for (PRInt32 i = styleSet->SheetCount(nsStyleSet::eAgentSheet) - 1;
-       i >= 0; --i) {
-    nsIStyleSheet *sheet = styleSet->StyleSheetAt(nsStyleSet::eAgentSheet, i);
-    nsCOMPtr<nsICSSStyleSheet> cssSheet(do_QueryInterface(sheet));
-    if (cssSheet) {
-      cssSheet->GetTitle(title);
-      if (title.Equals(NS_ConvertASCIItoUTF16(kTitle))) {
-        *aSheet = sheet;
-        NS_IF_ADDREF(*aSheet);
-        return;
-      }
-    }
-  }
-
-  // then, create a new one if it isn't yet there
-  nsCOMPtr<nsIURI> uri;
-  NS_NewURI(getter_AddRefs(uri), "about:internal-mathml-attribute-stylesheet");
-  if (!uri)
-    return;
-  nsCOMPtr<nsICSSStyleSheet> cssSheet(do_CreateInstance(kCSSStyleSheetCID));
-  if (!cssSheet)
-    return;
-  cssSheet->SetURIs(uri, uri);
-  cssSheet->SetTitle(NS_ConvertASCIItoUTF16(kTitle));
-  // all done, no further activity from the net involved, so we better do this
-  cssSheet->SetComplete();
-
-  nsCOMPtr<nsIDOMCSSStyleSheet> domSheet(do_QueryInterface(cssSheet));
-  if (domSheet) {
-    PRUint32 index;
-    domSheet->InsertRule(NS_LITERAL_STRING("@namespace url(http://www.w3.org/1998/Math/MathML);"),
-                                           0, &index);
-  }
-
-  // insert the stylesheet into the styleset without notifying observers
-  // XXX Should this be at a different level?
-  styleSet->PrependStyleSheet(nsStyleSet::eAgentSheet, cssSheet);
-  *aSheet = cssSheet;
-  NS_ADDREF(*aSheet);
-}
-
-/* static */ PRInt32
-nsMathMLFrame::MapAttributesIntoCSS(nsPresContext* aPresContext,
-                                    nsIContent*     aContent)
-{
-  // normal case, quick return if there are no attributes
-  NS_ASSERTION(aContent, "null arg");
-  PRUint32 attrCount = 0;
-  if (aContent)
-    attrCount = aContent->GetAttrCount();
-  if (!attrCount)
-    return 0;
-
-  // need to initialize here -- i.e., after registering nsMathMLAtoms
-  static const nsCSSMapping
-  kCSSMappingTable[] = {
-    {kMathMLversion2, nsMathMLAtoms::mathcolor_,      "color:"},
-    {kMathMLversion1, nsMathMLAtoms::color,           "color:"},
-    {kMathMLversion2, nsMathMLAtoms::mathsize_,       "font-size:"},
-    {kMathMLversion1, nsMathMLAtoms::fontsize_,       "font-size:"},
-    {kMathMLversion1, nsMathMLAtoms::fontfamily_,     "font-family:"},
-    {kMathMLversion2, nsMathMLAtoms::mathbackground_, "background-color:"},
-    {kMathMLversion1, nsMathMLAtoms::background,      "background-color:"},
-    {0, nsnull, nsnull}
-  };
-
-  nsCOMPtr<nsIDocument> doc;
-  nsCOMPtr<nsIStyleSheet> sheet;
-  nsCOMPtr<nsICSSStyleSheet> cssSheet;
-  nsCOMPtr<nsIDOMCSSStyleSheet> domSheet;
-
-  PRInt32 ruleCount = 0;
-  for (PRUint32 i = 0; i < attrCount; ++i) {
-    const nsAttrName* name = aContent->GetAttrNameAt(i);
-    if (name->NamespaceID() != kNameSpaceID_None)
-      continue;
-
-    nsIAtom* attrAtom = name->LocalName();
-
-    // lookup the equivalent CSS property
-    const nsCSSMapping* map = kCSSMappingTable;
-    while (map->attrAtom && map->attrAtom != attrAtom)
-      ++map;
-    if (!map->attrAtom)
-      continue;
-    nsAutoString cssProperty(NS_ConvertASCIItoUTF16(map->cssProperty));
-
-    nsAutoString attrValue;
-    aContent->GetAttr(kNameSpaceID_None, attrAtom, attrValue);
-    if (attrValue.IsEmpty())
-      continue;
-    nsAutoString escapedAttrValue;
-    nsStyleUtil::EscapeCSSString(attrValue, escapedAttrValue);
-
-    // don't add rules that are already in mathml.css
-    // (this will also clean up whitespace before units - see bug 125303)
-    if (attrAtom == nsMathMLAtoms::fontsize_ || attrAtom == nsMathMLAtoms::mathsize_) {
-      nsCSSValue cssValue;
-      nsAutoString numericValue(attrValue);
-      if (!ParseNumericValue(numericValue, cssValue))
-        continue;
-      // on exit, ParseNumericValue also returns a nicer string
-      // in which the whitespace before the unit is cleaned up 
-      cssProperty.Append(numericValue);
-    }
-    else
-      cssProperty.Append(attrValue);
-
-    nsAutoString attrName;
-    attrAtom->ToString(attrName);
-
-    // make a style rule that maps to the equivalent CSS property
-    nsAutoString cssRule;
-    cssRule.Assign(NS_LITERAL_STRING("[")  + attrName +
-                   NS_LITERAL_STRING("='") + escapedAttrValue +
-                   NS_LITERAL_STRING("']{") + cssProperty + NS_LITERAL_STRING("}"));
-
-    if (!sheet) {
-      // first time... we do this to defer the lookup up to the
-      // point where we encounter attributes that actually matter
-      doc = aContent->GetDocument();
-      if (!doc) 
-        return 0;
-      GetMathMLAttributeStyleSheet(aPresContext, getter_AddRefs(sheet));
-      if (!sheet)
-        return 0;
-      // by construction, these cannot be null at this point
-      cssSheet = do_QueryInterface(sheet);
-      domSheet = do_QueryInterface(sheet);
-      NS_ASSERTION(cssSheet && domSheet, "unexpected null pointers");
-      // we will keep the sheet orphan as we populate it. This way,
-      // observers of the document won't be notified and we avoid any troubles
-      // that may come from reconstructing the frame tree. Our rules only need
-      // a re-resolve of style data and a reflow, not a reconstruct-all...
-      sheet->SetOwningDocument(nsnull);
-    }
-
-    // check for duplicate, if a similar rule is already there, don't bother to add another one
-    nsAutoString selector;
-    selector.Assign(NS_LITERAL_STRING("*[") + attrName +
-                    NS_LITERAL_STRING("=\"") + escapedAttrValue +
-                    NS_LITERAL_STRING("\"]"));
-    PRInt32 k, count;
-    cssSheet->StyleRuleCount(count);
-    for (k = 0; k < count; ++k) {
-      nsAutoString tmpSelector;
-      nsCOMPtr<nsICSSRule> tmpRule;
-      cssSheet->GetStyleRuleAt(k, *getter_AddRefs(tmpRule));
-      nsCOMPtr<nsICSSStyleRule> tmpStyleRule = do_QueryInterface(tmpRule);
-      if (tmpStyleRule) {
-        tmpStyleRule->GetSelectorText(tmpSelector);
-        if (tmpSelector.Equals(selector)) {
-          k = -1;
-          break;
-        }
-      }
-    }
-    if (k >= 0) {
-      // insert the rule (note: when the sheet already has @namespace and
-      // friends, insert after them, e.g., at the end, otherwise it won't work)
-      // For MathML 2, insert at the end to give it precedence
-      PRInt32 pos = (map->compatibility == kMathMLversion2) ? count : 1;
-      PRUint32 index;
-      domSheet->InsertRule(cssRule, pos, &index);
-      ++ruleCount;
-    }
-  }
-  // restore the sheet to its owner
-  if (sheet) {
-    sheet->SetOwningDocument(doc);
-  }
-
-  return ruleCount;
-}
-
-/* static */ PRInt32
-nsMathMLFrame::MapAttributesIntoCSS(nsPresContext* aPresContext,
-                                    nsIFrame*       aFrame)
-{
-  PRInt32 ruleCount = MapAttributesIntoCSS(aPresContext, aFrame->GetContent());
-  if (!ruleCount)
-    return 0;
-
-  // now, re-resolve the style contexts in our subtree
-  nsFrameManager *fm = aPresContext->FrameManager();
-  nsStyleChangeList changeList;
-  fm->ComputeStyleChangeFor(aFrame, &changeList, NS_STYLE_HINT_NONE);
-#ifdef DEBUG
-  // Use the parent frame to make sure we catch in-flows and such
-  nsIFrame* parentFrame = aFrame->GetParent();
-  fm->DebugVerifyStyleTree(parentFrame ? parentFrame : aFrame);
-#endif
-
-  return ruleCount;
-}
 
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)
 class nsDisplayMathMLBoundingMetrics : public nsDisplayItem {

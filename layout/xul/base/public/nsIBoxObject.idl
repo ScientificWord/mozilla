@@ -37,18 +37,13 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsISupports.idl"
-#include "nsIBoxLayoutManager.idl"
-#include "nsIBoxPaintManager.idl"
 
 interface nsIDOMElement;
 
-[scriptable, uuid(CAABF76F-9D35-401f-BEAC-3955817C645C)]
+[scriptable, uuid(ce572460-b0f2-4650-a9e7-c53a99d3b6ad)]
 interface nsIBoxObject : nsISupports
 {
   readonly attribute nsIDOMElement element;
-
-  attribute nsIBoxLayoutManager layoutManager;
-  attribute nsIBoxPaintManager paintManager;
 
   readonly attribute long x;
   readonly attribute long y;
@@ -69,8 +64,6 @@ interface nsIBoxObject : nsISupports
   readonly attribute nsIDOMElement lastChild;
   readonly attribute nsIDOMElement nextSibling;
   readonly attribute nsIDOMElement previousSibling;
-
-  wstring getLookAndFeelMetric(in wstring propertyName);
 };
 
 %{C++

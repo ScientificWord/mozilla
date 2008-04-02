@@ -43,7 +43,6 @@
 #include "nsHTMLReflowState.h"
 #include "nsPresContext.h"
 #include "nsIPresShell.h"
-#include "nsLayoutAtoms.h"
 
 nsBlockBandData::nsBlockBandData()
   : mSpaceManager(nsnull),
@@ -93,7 +92,7 @@ nsBlockBandData::GetAvailableSpace(nscoord aY, PRBool aRelaxHeightConstraint,
   ComputeAvailSpaceRect();
   aResult = mAvailSpace;
 #ifdef REALLY_NOISY_COMPUTEAVAILSPACERECT
-  printf("nsBBD %p GetAvailableSpace(%d) returing (%d, %d, %d, %d)\n",
+  printf("nsBBD %p GetAvailableSpace(%d) returning (%d, %d, %d, %d)\n",
           this, aY, aResult.x, aResult.y, aResult.width, aResult.height);
 #endif
   return NS_OK;
@@ -184,28 +183,16 @@ nsBlockBandData::ComputeAvailSpaceRect()
     NS_PRECONDITION(mCount<=mSize, "bad state, count > size");
     for (i = 0; i < mCount; i++) {
       trapezoid = &mTrapezoids[i];
-      if (trapezoid->mState != nsBandTrapezoid::Available) {
+      if (trapezoid->mFrames) {
 #ifdef REALLY_NOISY_COMPUTEAVAILSPACERECT
-        printf("band %p checking !Avail trap %p with frame %p\n", this, trapezoid, trapezoid->mFrame);
+        printf("band %p checking !Avail trap %p with frame %p\n", this, trapezoid, trapezoid->mFrames);
 #endif
-        if (nsBandTrapezoid::OccupiedMultiple == trapezoid->mState) {
-          PRInt32 j, numFrames = trapezoid->mFrames->Count();
-          NS_ASSERTION(numFrames > 0, "bad trapezoid frame list");
-          for (j = 0; j < numFrames; j++) {
-            nsIFrame* f = (nsIFrame*) trapezoid->mFrames->ElementAt(j);
-            const nsStyleDisplay* display = f->GetStyleDisplay();
-            if (NS_STYLE_FLOAT_LEFT == display->mFloats) {
-              leftFloats++;
-            }
-            else if (NS_STYLE_FLOAT_RIGHT == display->mFloats) {
-              rightFloats++;
-              if ((nsnull == rightTrapezoid) && (i > 0)) {
-                rightTrapezoid = &mTrapezoids[i - 1];
-              }
-            }
-          }
-        } else {
-          const nsStyleDisplay* display = trapezoid->mFrame->GetStyleDisplay();
+        const nsSmallVoidArray* frames = trapezoid->mFrames;
+        const PRInt32 numFrames = frames->Count();
+        NS_ASSERTION(numFrames > 0, "bad trapezoid frame list");
+        for (PRInt32 j = 0; j < numFrames; j++) {
+          nsIFrame* f = static_cast<nsIFrame*>(frames->ElementAt(j));
+          const nsStyleDisplay* display = f->GetStyleDisplay();
           if (NS_STYLE_FLOAT_LEFT == display->mFloats) {
             leftFloats++;
           }
@@ -219,7 +206,7 @@ nsBlockBandData::ComputeAvailSpaceRect()
       }
     }
   }
-  else if (mTrapezoids[0].mState != nsBandTrapezoid::Available) {
+  else if (mTrapezoids[0].mFrames) {
     // We have a float using up all the available space
     leftFloats = 1;
   }
@@ -239,28 +226,21 @@ nsBlockBandData::ComputeAvailSpaceRect()
 
   // When there is no available space, we still need a proper X
   // coordinate to place objects that end up here anyway.
-  if (nsBandTrapezoid::Available != trapezoid->mState) {
-    if (nsBandTrapezoid::OccupiedMultiple == trapezoid->mState) {
-      // It's not clear what coordinate to use when there is no
-      // available space and the space is multiply occupied...So: If
-      // any of the floats that are a part of the trapezoid are left
-      // floats then we move over to the right edge of the
-      // unavaliable space.
-      PRInt32 j, numFrames = trapezoid->mFrames->Count();
-      NS_ASSERTION(numFrames > 0, "bad trapezoid frame list");
-      for (j = 0; j < numFrames; j++) {
-        nsIFrame* f = (nsIFrame*) trapezoid->mFrames->ElementAt(j);
-        const nsStyleDisplay* display = f->GetStyleDisplay();
-        if (NS_STYLE_FLOAT_LEFT == display->mFloats) {
-          mAvailSpace.x = mAvailSpace.XMost();
-          break;
-        }
-      }
-    }
-    else {
-      const nsStyleDisplay* display = trapezoid->mFrame->GetStyleDisplay();
+  const nsSmallVoidArray* frames = trapezoid->mFrames;
+  if (frames) {
+    // It's not clear what coordinate to use when there is no
+    // available space and the space is multiply occupied...So: If
+    // any of the floats that are a part of the trapezoid are left
+    // floats then we move over to the right edge of the
+    // unavaliable space.
+    const PRInt32 numFrames = frames->Count();
+    NS_ASSERTION(numFrames > 0, "bad trapezoid frame list");
+    for (PRInt32 j = 0; j < numFrames; j++) {
+      nsIFrame* f = static_cast<nsIFrame*>(frames->ElementAt(j));
+      const nsStyleDisplay* display = f->GetStyleDisplay();
       if (NS_STYLE_FLOAT_LEFT == display->mFloats) {
         mAvailSpace.x = mAvailSpace.XMost();
+        break;
       }
     }
     mAvailSpace.width = 0;

@@ -55,10 +55,8 @@
 
 #include "imgIContainer.h"
 
-#include "nsIViewManager.h"
-
 #include "nsStyleContext.h"
-#include "nsLayoutAtoms.h"
+#include "nsGkAtoms.h"
 
 // Paint forcing
 #include "prenv.h"
@@ -196,12 +194,10 @@ NS_IMETHODIMP nsImageLoader::FrameChanged(imgIContainer *aContainer,
   
   nsRect r(*dirtyRect);
 
-  float p2t;
-  p2t = mPresContext->PixelsToTwips();
-  r.x = NSIntPixelsToTwips(r.x, p2t);
-  r.y = NSIntPixelsToTwips(r.y, p2t);
-  r.width = NSIntPixelsToTwips(r.width, p2t);
-  r.height = NSIntPixelsToTwips(r.height, p2t);
+  r.x = nsPresContext::CSSPixelsToAppUnits(r.x);
+  r.y = nsPresContext::CSSPixelsToAppUnits(r.y);
+  r.width = nsPresContext::CSSPixelsToAppUnits(r.width);
+  r.height = nsPresContext::CSSPixelsToAppUnits(r.height);
 
   RedrawDirtyFrame(&r);
 
@@ -224,7 +220,7 @@ nsImageLoader::RedrawDirtyFrame(const nsRect* aDamageRect)
 
   nsRect bounds(nsPoint(0, 0), mFrame->GetSize());
 
-  if (mFrame->GetType() == nsLayoutAtoms::canvasFrame) {
+  if (mFrame->GetType() == nsGkAtoms::canvasFrame) {
     // The canvas's background covers the whole viewport.
     bounds = mFrame->GetOverflowRect();
   }

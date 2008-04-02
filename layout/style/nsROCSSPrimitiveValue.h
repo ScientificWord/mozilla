@@ -43,10 +43,10 @@
 #include "nsIDOMCSSPrimitiveValue.h"
 #include "nsString.h"
 #include "nsCoord.h"
-#include "nsUnitConversion.h"
 #include "nsReadableUtils.h"
 #include "nsIURI.h"
 #include "nsIAtom.h"
+#include "nsCSSKeywords.h"
 
 #include "nsCOMPtr.h"
 #include "nsDOMError.h"
@@ -65,8 +65,10 @@ public:
   NS_DECL_NSIDOMCSSVALUE
 
   // nsROCSSPrimitiveValue
-  nsROCSSPrimitiveValue(float aP2T);
+  nsROCSSPrimitiveValue(PRInt32 aAppUnitsPerInch);
   virtual ~nsROCSSPrimitiveValue();
+
+  // FIXME Many of these methods should be out-of-line.
 
   void SetNumber(float aValue)
   {
@@ -96,18 +98,16 @@ public:
     mType = CSS_PERCENTAGE;
   }
 
-  void SetTwips(nscoord aValue)
+  void SetAppUnits(nscoord aValue)
   {
     Reset();
-    mValue.mTwips = aValue;
+    mValue.mAppUnits = aValue;
     mType = CSS_PX;
   }
 
-  void SetTwips(float aValue)
+  void SetAppUnits(float aValue)
   {
-    Reset();
-    mValue.mTwips = nscoord(aValue);
-    mType = CSS_PX;
+    SetAppUnits(NSToCoordRound(aValue));
   }
 
   void SetIdent(nsIAtom* aAtom)
@@ -116,6 +116,12 @@ public:
     Reset();
     NS_ADDREF(mValue.mAtom = aAtom);
     mType = CSS_IDENT;
+  }
+
+  // FIXME More callers should use this variant.
+  void SetIdent(nsCSSKeyword aKeyword)
+  {
+    SetIdent(nsCSSKeywords::GetStringValue(aKeyword));
   }
 
   void SetIdent(const nsACString& aString)
@@ -130,24 +136,26 @@ public:
     }
   }
 
-  void SetString(const nsACString& aString)
+  // FIXME: CSS_STRING should imply a string with "" and a need for escaping.
+  void SetString(const nsACString& aString, PRUint16 aType = CSS_STRING)
   {
     Reset();
     mValue.mString = ToNewUnicode(aString);
     if (mValue.mString) {
-      mType = CSS_STRING;
+      mType = aType;
     } else {
       // XXXcaa We should probably let the caller know we are out of memory
       mType = CSS_UNKNOWN;
     }
   }
 
-  void SetString(const nsAString& aString)
+  // FIXME: CSS_STRING should imply a string with "" and a need for escaping.
+  void SetString(const nsAString& aString, PRUint16 aType = CSS_STRING)
   {
     Reset();
     mValue.mString = ToNewUnicode(aString);
     if (mValue.mString) {
-      mType = CSS_STRING;
+      mType = aType;
     } else {
       // XXXcaa We should probably let the caller know we are out of memory
       mType = CSS_UNKNOWN;
@@ -162,7 +170,7 @@ public:
     mType = CSS_URI;
   }
 
-  void SetColor(nsIDOMRGBColor* aColor)
+  void SetColor(nsDOMCSSRGBColor* aColor)
   {
     NS_PRECONDITION(aColor, "Null RGBColor being set!");
     Reset();
@@ -198,6 +206,8 @@ public:
         NS_RELEASE(mValue.mAtom);
         break;
       case CSS_STRING:
+      case CSS_ATTR:
+      case CSS_COUNTER: // FIXME: Counter should use an object
         NS_ASSERTION(mValue.mString, "Null string should never happen");
         nsMemory::Free(mValue.mString);
         mValue.mString = nsnull;
@@ -222,16 +232,16 @@ private:
   PRUint16 mType;
 
   union {
-    nscoord         mTwips;
+    nscoord         mAppUnits;
     float           mFloat;
-    nsIDOMRGBColor* mColor;
+    nsDOMCSSRGBColor* mColor;
     nsIDOMRect*     mRect;
     PRUnichar*      mString;
     nsIURI*         mURI;
-    nsIAtom*        mAtom;
+    nsIAtom*        mAtom; // FIXME use nsCSSKeyword instead
   } mValue;
   
-  float mT2P;
+  PRInt32 mAppUnitsPerInch;
 };
 
 #endif /* nsROCSSPrimitiveValue_h___ */

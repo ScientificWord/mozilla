@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -41,7 +42,6 @@
 #include "nsCOMPtr.h"
 #include "nsFrame.h"
 #include "nsPresContext.h"
-#include "nsUnitConversion.h"
 #include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
@@ -74,7 +74,7 @@ nsMathMLmsubFrame::TransmitAutomaticData()
   // The <msub> element increments scriptlevel by 1, and sets displaystyle to
   // "false", within subscript, but leaves both attributes unchanged within base.
   // 2. The TeXbook (Ch 17. p.141) says the subscript is compressed
-  UpdatePresentationDataFromChildAt(1, -1, 1,
+  UpdatePresentationDataFromChildAt(1, -1,
     ~NS_MATHML_DISPLAYSTYLE | NS_MATHML_COMPRESSED,
      NS_MATHML_DISPLAYSTYLE | NS_MATHML_COMPRESSED);
 
@@ -87,21 +87,21 @@ nsMathMLmsubFrame::Place (nsIRenderingContext& aRenderingContext,
                           nsHTMLReflowMetrics& aDesiredSize)
 {
   // extra spacing after sup/subscript
-  nscoord scriptSpace = NSFloatPointsToTwips(0.5f); // 0.5pt as in plain TeX
+  nscoord scriptSpace = PresContext()->PointsToAppUnits(0.5f); // 0.5pt as in plain TeX
 
   // check if the subscriptshift attribute is there
   nscoord subScriptShift = 0;
   nsAutoString value;
   GetAttribute(mContent, mPresentationData.mstyle,
-               nsMathMLAtoms::subscriptshift_, value);
+               nsGkAtoms::subscriptshift_, value);
   if (!value.IsEmpty()) {
     nsCSSValue cssValue;
     if (ParseNumericValue(value, cssValue) && cssValue.IsLengthUnit()) {
-      subScriptShift = CalcLength(GetPresContext(), mStyleContext, cssValue);
+      subScriptShift = CalcLength(PresContext(), mStyleContext, cssValue);
     }
   }
 
-  return nsMathMLmsubFrame::PlaceSubScript(GetPresContext(), 
+  return nsMathMLmsubFrame::PlaceSubScript(PresContext(), 
                                            aRenderingContext,
                                            aPlaceOrigin,
                                            aDesiredSize,
@@ -117,24 +117,19 @@ nsMathMLmsubFrame::PlaceSubScript (nsPresContext*      aPresContext,
                                    nsIRenderingContext& aRenderingContext,
                                    PRBool               aPlaceOrigin,
                                    nsHTMLReflowMetrics& aDesiredSize,
-                                   nsIFrame*            aFrame,
+                                   nsMathMLContainerFrame* aFrame,
                                    nscoord              aUserSubScriptShift,
                                    nscoord              aScriptSpace)
 {
-  // the caller better be a mathml frame
-  nsIMathMLFrame* mathMLFrame;
-  aFrame->QueryInterface(NS_GET_IID(nsIMathMLFrame), (void**)&mathMLFrame);
-  if (!mathMLFrame) return NS_ERROR_INVALID_ARG;
-
   // force the scriptSpace to be atleast 1 pixel 
-  aScriptSpace = PR_MAX(aPresContext->IntScaledPixelsToTwips(1), aScriptSpace);
+  aScriptSpace = PR_MAX(nsPresContext::CSSPixelsToAppUnits(1), aScriptSpace);
 
   ////////////////////////////////////
   // Get the children's desired sizes
 
   nsBoundingMetrics bmBase, bmSubScript;
-  nsHTMLReflowMetrics baseSize(nsnull);
-  nsHTMLReflowMetrics subScriptSize(nsnull);
+  nsHTMLReflowMetrics baseSize;
+  nsHTMLReflowMetrics subScriptSize;
   nsIFrame* baseFrame = aFrame->GetFirstChild(nsnull);
   nsIFrame* subScriptFrame = nsnull;
   if (baseFrame)
@@ -142,8 +137,7 @@ nsMathMLmsubFrame::PlaceSubScript (nsPresContext*      aPresContext,
   if (!baseFrame || !subScriptFrame || subScriptFrame->GetNextSibling()) {
     // report an error, encourage people to get their markups in order
     NS_WARNING("invalid markup");
-    return NS_STATIC_CAST(nsMathMLContainerFrame*, 
-                          aFrame)->ReflowError(aRenderingContext, 
+    return static_cast<nsMathMLContainerFrame*>(aFrame)->ReflowError(aRenderingContext, 
                                                aDesiredSize);
   }
   GetReflowAndBoundingMetricsFor(baseFrame, baseSize, bmBase);
@@ -195,18 +189,18 @@ nsMathMLmsubFrame::PlaceSubScript (nsPresContext*      aPresContext,
   boundingMetrics.leftBearing = bmBase.leftBearing;
   boundingMetrics.rightBearing = PR_MAX(bmBase.rightBearing, bmBase.width +
     PR_MAX(bmSubScript.width + aScriptSpace, bmSubScript.rightBearing));
-  mathMLFrame->SetBoundingMetrics (boundingMetrics);
+  aFrame->SetBoundingMetrics (boundingMetrics);
 
   // reflow metrics
   aDesiredSize.ascent = 
     PR_MAX(baseSize.ascent, subScriptSize.ascent - actualSubScriptShift);
-  aDesiredSize.descent = 
-    PR_MAX(baseSize.descent, subScriptSize.descent + actualSubScriptShift);
-  aDesiredSize.height = aDesiredSize.ascent + aDesiredSize.descent;
+  aDesiredSize.height = aDesiredSize.ascent +
+    PR_MAX(baseSize.height - baseSize.ascent,
+           subScriptSize.height - subScriptSize.ascent + actualSubScriptShift);
   aDesiredSize.width = boundingMetrics.width;
   aDesiredSize.mBoundingMetrics = boundingMetrics;
 
-  mathMLFrame->SetReference(nsPoint(0, aDesiredSize.ascent));
+  aFrame->SetReference(nsPoint(0, aDesiredSize.ascent));
 
   if (aPlaceOrigin) {
     nscoord dx, dy;

@@ -38,23 +38,42 @@
 #define NSSVGTEXTPATHFRAME_H
 
 #include "nsSVGTSpanFrame.h"
-#include "nsISVGValueObserver.h"
-#include "nsWeakReference.h"
 #include "nsIDOMSVGAnimatedString.h"
-#include "nsIDOMSVGPathSegList.h"
 #include "nsSVGLengthList.h"
+#include "nsIDOMSVGLength.h"
+#include "gfxPath.h"
+#include "nsStubMutationObserver.h"
 
-class nsSVGFlattenedPath;
+class nsSVGTextPathFrame;
+
+class nsSVGPathListener : public nsStubMutationObserver {
+public:
+  nsSVGPathListener(nsIContent *aPathElement,
+                    nsSVGTextPathFrame *aTextPathFrame);
+  ~nsSVGPathListener();
+
+  // nsISupports
+  NS_DECL_ISUPPORTS
+
+  // nsIMutationObserver
+  NS_DECL_NSIMUTATIONOBSERVER_ATTRIBUTECHANGED
+
+private:
+  nsWeakPtr mObservedPath;
+  nsSVGTextPathFrame *mTextPathFrame;
+};
 
 typedef nsSVGTSpanFrame nsSVGTextPathFrameBase;
 
-class nsSVGTextPathFrame : public nsSVGTextPathFrameBase,
-                           public nsISVGValueObserver,
-                           public nsSupportsWeakReference
+class nsSVGTextPathFrame : public nsSVGTextPathFrameBase
 {
-public:
+  friend nsIFrame*
+  NS_NewSVGTextPathFrame(nsIPresShell* aPresShell, nsIContent* aContent,
+                         nsIFrame* parentFrame, nsStyleContext* aContext);
+protected:
   nsSVGTextPathFrame(nsStyleContext* aContext) : nsSVGTextPathFrameBase(aContext) {}
 
+public:
   // nsIFrame:
   NS_IMETHOD Init(nsIContent*      aContent,
                   nsIFrame*        aParent,
@@ -65,7 +84,7 @@ public:
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::svgGFrame
+   * @see nsGkAtoms::svgGFrame
    */
   virtual nsIAtom* GetType() const;
 
@@ -76,25 +95,13 @@ public:
   }
 #endif
 
-  // nsISVGValueObserver interface:
-  NS_IMETHOD WillModifySVGObservable(nsISVGValue* observable,
-                                     nsISVGValue::modificationType aModType);
-  NS_IMETHOD DidModifySVGObservable(nsISVGValue* observable,
-                                    nsISVGValue::modificationType aModType);
-
   // nsSVGTextPathFrame methods:
-  nsSVGFlattenedPath *GetFlattenedPath();
+  already_AddRefed<gfxFlattenedPath> GetFlattenedPath();
   nsIFrame *GetPathFrame();
 
-   // nsISupports interface:
-  NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
-
-private:
-  NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }
-  NS_IMETHOD_(nsrefcnt) Release() { return NS_OK; }
-
+  gfxFloat GetStartOffset();
+  gfxFloat GetPathScale();
 protected:
-  virtual ~nsSVGTextPathFrame();
 
   NS_IMETHOD_(already_AddRefed<nsIDOMSVGLengthList>) GetX();
   NS_IMETHOD_(already_AddRefed<nsIDOMSVGLengthList>) GetY();
@@ -102,12 +109,12 @@ protected:
   NS_IMETHOD_(already_AddRefed<nsIDOMSVGLengthList>) GetDy();
 
 private:
+  already_AddRefed<gfxFlattenedPath> GetFlattenedPath(nsIFrame *path);
 
-  nsCOMPtr<nsIDOMSVGLength> mStartOffset;
   nsCOMPtr<nsIDOMSVGAnimatedString> mHref;
-  nsCOMPtr<nsIDOMSVGPathSegList> mSegments;
+  nsRefPtr<nsSVGPathListener> mPathListener;
 
-  nsCOMPtr<nsISVGLengthList> mX;
+  friend class nsSVGPathListener;
 };
 
 #endif

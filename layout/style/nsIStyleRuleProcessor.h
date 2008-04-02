@@ -78,7 +78,7 @@ struct RuleProcessorData {
   void Destroy(nsPresContext* aContext) {
     this->~RuleProcessorData();
     aContext->FreeToShell(sizeof(RuleProcessorData), this);
-  };
+  }
 
   const nsString* GetLang();
 
@@ -91,10 +91,9 @@ struct RuleProcessorData {
   nsIAtom*          mContentTag;    // if content, then content->GetTag()
   nsIAtom*          mContentID;     // if styled content, then weak reference to styledcontent->GetID()
   PRPackedBool      mIsHTMLContent; // if content, then does QI on HTMLContent, true or false
-  PRPackedBool      mIsHTMLLink;    // if content, calls nsStyleUtil::IsHTMLLink
-  PRPackedBool      mIsSimpleXLink; // if content, calls nsStyleUtil::IsSimpleXLink
-  nsCompatibility   mCompatMode;    // Possibly remove use of this in SelectorMatches?
+  PRPackedBool      mIsLink;        // if content, calls nsStyleUtil::IsHTMLLink or nsStyleUtil::IsLink
   PRPackedBool      mHasAttributes; // if content, content->GetAttrCount() > 0
+  nsCompatibility   mCompatMode;    // Possibly remove use of this in SelectorMatches?
   nsLinkState       mLinkState;     // if a link, this is the state, otherwise unknown
   PRInt32           mEventState;    // if content, eventStateMgr->GetContentState()
   PRInt32           mNameSpaceID;   // if content, content->GetNameSapce()
@@ -153,17 +152,20 @@ struct StateRuleProcessorData : public RuleProcessorData {
 
 struct AttributeRuleProcessorData : public RuleProcessorData {
   AttributeRuleProcessorData(nsPresContext* aPresContext,
-                         nsIContent* aContent,
-                         nsIAtom* aAttribute,
-                         PRInt32 aModType)
+                             nsIContent* aContent,
+                             nsIAtom* aAttribute,
+                             PRInt32 aModType,
+                             PRUint32 aStateMask)
     : RuleProcessorData(aPresContext, aContent, nsnull),
       mAttribute(aAttribute),
-      mModType(aModType)
+      mModType(aModType),
+      mStateMask(aStateMask)
   {
     NS_PRECONDITION(aContent, "null pointer");
   }
   nsIAtom* mAttribute; // |HasAttributeDependentStyle| for which attribute?
   PRInt32 mModType;    // The type of modification (see nsIDOMMutationEvent).
+  PRUint32 mStateMask; // The states that changed with the attr change.
 };
 
 

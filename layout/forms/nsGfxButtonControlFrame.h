@@ -42,7 +42,6 @@
 #include "nsHTMLButtonControlFrame.h"
 #include "nsCOMPtr.h"
 #include "nsIAnonymousContentCreator.h"
-#include "nsITextContent.h"
 
 #ifdef ACCESSIBILITY
 class nsIAccessible;
@@ -59,11 +58,7 @@ class nsGfxButtonControlFrame : public nsHTMLButtonControlFrame,
 public:
   nsGfxButtonControlFrame(nsStyleContext* aContext);
 
-     //nsIFrame
-  NS_IMETHOD Reflow(nsPresContext*          aCX,
-                    nsHTMLReflowMetrics&     aDesiredSize,
-                    const nsHTMLReflowState& aReflowState,
-                    nsReflowStatus&          aStatus);
+  virtual void Destroy();
 
   NS_IMETHOD HandleEvent(nsPresContext* aPresContext, 
                          nsGUIEvent* aEvent,
@@ -81,13 +76,14 @@ public:
 #endif
   NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
 
- 
+
   // nsIAnonymousContentCreator
-  NS_IMETHOD CreateAnonymousContent(nsPresContext* aPresContext,
-                                    nsISupportsArray& aChildList);
-  NS_IMETHOD CreateFrameFor(nsPresContext*   aPresContext,
-                            nsIContent *      aContent,
-                            nsIFrame**        aFrame);
+  virtual nsresult CreateAnonymousContent(nsTArray<nsIContent*>& aElements);
+  virtual nsIFrame* CreateFrameFor(nsIContent* aContent);
+
+  // nsIFormControlFrame
+  virtual nsresult GetFormProperty(nsIAtom* aName, nsAString& aValue) const; 
+
 
   NS_IMETHOD AttributeChanged(PRInt32         aNameSpaceID,
                               nsIAtom*        aAttribute,
@@ -95,14 +91,8 @@ public:
 
   virtual PRBool IsLeaf() const;
 
-  /**
-   * Set the suggested size of the button.
-   * @note This is NOT a virtual function, it will be called 
-   * directly on an instance of this class.
-   * @param aSize The suggested size.
-   */
-  void SetSuggestedSize(const nsSize& aSize);
-  
+  virtual nsIFrame* GetContentInsertionFrame();
+
 protected:
   nsresult GetDefaultLabel(nsXPIDLString& aLabel);
 
@@ -115,7 +105,7 @@ private:
   NS_IMETHOD_(nsrefcnt) Release() { return NS_OK; }
 
   nsSize mSuggestedSize;
-  nsCOMPtr<nsITextContent> mTextContent;
+  nsCOMPtr<nsIContent> mTextContent;
 };
 
 

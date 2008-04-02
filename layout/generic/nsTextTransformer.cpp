@@ -47,7 +47,6 @@
 #include "nsContentUtils.h"
 #include "nsIContent.h"
 #include "nsIFrame.h"
-#include "nsITextContent.h"
 #include "nsStyleConsts.h"
 #include "nsILineBreaker.h"
 #include "nsIWordBreaker.h"

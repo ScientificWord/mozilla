@@ -42,6 +42,10 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
+ifdef MOZ_MOCHITEST
+DIRS		+= tests
+endif
+
 MODULE		= layout
 XPIDL_MODULE	= layout_base
 GRE_MODULE	= 1
@@ -52,7 +56,6 @@ REQUIRES	= xpcom \
 		  string \
 		  dom \
 		  content \
-		  xul \
 		  xuldoc \
 		  gfx \
 		  widget \
@@ -72,29 +75,22 @@ REQUIRES	= xpcom \
 		  htmlparser \
 		  util \
 		  windowwatcher \
-		  accessibility \
 		  shistory \
+		  caps \
+		  thebes \
 		  $(NULL)
 
-ifdef MOZ_ENABLE_CAIRO_GFX
-REQUIRES += thebes cairo
+ifdef ACCESSIBILITY
+REQUIRES	+= accessibility
 endif
 
 XPIDLSRCS	= \
-		nsIChromeEventHandler.idl	\
 		nsIStyleSheetService.idl	\
 		$(NULL)
-
-ifndef MOZ_ENABLE_CAIRO_GFX
-XPIDLSRCS	+= \
-		nsISelectionImageService.idl	\
-		$(NULL)
-endif
 
 EXPORTS		= \
 		nsBidi.h \
 		nsBidiPresUtils.h \
-		nsBidiUtils.h \
 		nsCSSFrameConstructor.h \
 		nsChangeHint.h \
 		nsCompatibility.h \
@@ -111,7 +107,6 @@ EXPORTS		= \
 		nsIPercentHeightObserver.h  \
 		nsIPresShell.h \
 		nsIReflowCallback.h \
-		nsLayoutAtoms.h \
 		nsLayoutErrors.h \
 		nsLayoutUtils.h \
 		nsPresContext.h \
@@ -122,7 +117,6 @@ EXPORTS		= \
 		$(NULL)
 
 CPPSRCS		= \
-		nsBidiUtils.cpp \
 		nsCSSColorUtils.cpp \
 		nsCSSFrameConstructor.cpp \
 		nsCSSRendering.cpp \
@@ -131,7 +125,6 @@ CPPSRCS		= \
 		nsCounterManager.cpp \
                 nsDisplayList.cpp \
 		nsDocumentViewer.cpp \
-		nsFrameContentIterator.cpp \
 		nsFrameManager.cpp \
 		nsFrameTraversal.cpp \
 		nsGenConList.cpp \
@@ -147,6 +140,18 @@ CPPSRCS		= \
 		nsStyleSheetService.cpp \
 		msiLayoutUtils.cpp \
 		$(NULL)
+
+ifndef MOZ_XUL
+XPIDLSRCS  += \
+		nsIBoxObject.idl \
+		$(NULL)
+EXPORTS    += \
+		nsPIBoxObject.h \
+		$(NULL)
+CPPSRCS    += \
+		nsBoxObject.cpp \
+		$(NULL)
+endif
 
 ifdef IBMBIDI
 CPPSRCS		+= \
@@ -170,6 +175,8 @@ LOCAL_INCLUDES += \
 		-I$(srcdir)/../../content/events/src \
 		-I$(srcdir)/../../content/xbl/src \
 		-I$(srcdir)/../../view/src \
+		-I$(srcdir)/../../dom/src/base \
+		-I$(srcdir)/../../content/svg/content/src \
 		$(NULL)
 
 ifdef MOZ_MATHML
@@ -183,8 +190,17 @@ LOCAL_INCLUDES += \
         -I$(srcdir)/../svg/base/src
 endif
 
-ifdef MOZ_ENABLE_CAIRO_GFX
 CXXFLAGS += $(MOZ_CAIRO_CFLAGS)
-endif
 
 DEFINES += -D_IMPL_NS_LAYOUT
+
+ifndef MOZ_XUL
+nsIBoxObject.idl: %: $(topsrcdir)/layout/xul/base/public/%
+	$(INSTALL) $^ .
+nsPIBoxObject.h: %: $(topsrcdir)/layout/xul/base/public/%
+	$(INSTALL) $^ .
+nsBoxObject.cpp: %: $(topsrcdir)/layout/xul/base/src/%
+	$(INSTALL) $^ .
+
+GARBAGE    += nsIBoxObject.idl nsPIBoxObject.h nsBoxObject.cpp
+endif

@@ -45,7 +45,6 @@
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMCharacterData.h"
-#include "nsITextContent.h"
 #include "nsRuleNode.h"
 #include "nsIStyleRule.h"
 #include "nsICSSStyleRule.h"
@@ -79,10 +78,10 @@ inDOMUtils::IsIgnorableWhitespace(nsIDOMCharacterData *aDataNode,
 
   *aReturn = PR_FALSE;
 
-  nsCOMPtr<nsITextContent> textContent = do_QueryInterface(aDataNode);
-  NS_ASSERTION(textContent, "Does not implement nsITextContent!");
+  nsCOMPtr<nsIContent> content = do_QueryInterface(aDataNode);
+  NS_ASSERTION(content, "Does not implement nsIContent!");
 
-  if (!textContent->IsOnlyWhitespace()) {
+  if (!content->TextIsOnlyWhitespace()) {
     return NS_OK;
   }
 
@@ -102,12 +101,10 @@ inDOMUtils::IsIgnorableWhitespace(nsIDOMCharacterData *aDataNode,
     return NS_OK;
   }
 
-  nsCOMPtr<nsIContent> content = do_QueryInterface(aDataNode);
   nsIFrame* frame = presShell->GetPrimaryFrameFor(content);
   if (frame) {
     const nsStyleText* text = frame->GetStyleText();
-    *aReturn = text->mWhiteSpace != NS_STYLE_WHITESPACE_PRE &&
-               text->mWhiteSpace != NS_STYLE_WHITESPACE_MOZ_PRE_WRAP;
+    *aReturn = !text->WhiteSpaceIsSignificant();
   }
   else {
     // empty inter-tag text node without frame, e.g., in between <table>\n<tr>
@@ -130,13 +127,15 @@ inDOMUtils::GetParentForNode(nsIDOMNode* aNode,
     parent = inLayoutUtils::GetContainerFor(doc);
   } else if (aShowingAnonymousContent) {
     nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
-    nsCOMPtr<nsIContent> bparent;
-    nsCOMPtr<nsIBindingManager> bindingManager = inLayoutUtils::GetBindingManagerFor(aNode);
-    if (bindingManager) {
-      bindingManager->GetInsertionParent(content, getter_AddRefs(bparent));
-    }
+    if (content) {
+      nsIContent* bparent = nsnull;
+      nsRefPtr<nsBindingManager> bindingManager = inLayoutUtils::GetBindingManagerFor(aNode);
+      if (bindingManager) {
+        bparent = bindingManager->GetInsertionParent(content);
+      }
     
-    parent = do_QueryInterface(bparent);
+      parent = do_QueryInterface(bparent);
+    }
   }
   
   if (!parent) {

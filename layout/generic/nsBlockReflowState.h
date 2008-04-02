@@ -46,23 +46,22 @@
 #include "nsBlockBandData.h"
 #include "nsLineBox.h"
 #include "nsFrameList.h"
+#include "nsContainerFrame.h"
 
 class nsBlockFrame;
 
   // block reflow state flags
-#define BRS_UNCONSTRAINEDWIDTH    0x00000001
-#define BRS_UNCONSTRAINEDHEIGHT   0x00000002
-#define BRS_SHRINKWRAPWIDTH       0x00000004
-#define BRS_NEEDRESIZEREFLOW      0x00000008
-#define BRS_ISTOPMARGINROOT       0x00000020  // Is this frame a root for top/bottom margin collapsing?
-#define BRS_ISBOTTOMMARGINROOT    0x00000040
-#define BRS_APPLYTOPMARGIN        0x00000080  // See ShouldApplyTopMargin
-#define BRS_COMPUTEMAXELEMENTWIDTH 0x00000100
-#define BRS_COMPUTEMAXWIDTH       0x00000200
-#define BRS_ISFIRSTINFLOW         0x00000400
+#define BRS_UNCONSTRAINEDHEIGHT   0x00000001
+#define BRS_ISTOPMARGINROOT       0x00000002  // Is this frame a root for top/bottom margin collapsing?
+#define BRS_ISBOTTOMMARGINROOT    0x00000004
+#define BRS_APPLYTOPMARGIN        0x00000008  // See ShouldApplyTopMargin
+#define BRS_ISFIRSTINFLOW         0x00000010
 // Set when mLineAdjacentToTop is valid
-#define BRS_HAVELINEADJACENTTOTOP 0x00000800
-#define BRS_LASTFLAG              BRS_HAVELINEADJACENTTOTOP
+#define BRS_HAVELINEADJACENTTOTOP 0x00000020
+// Set when the block has the equivalent of NS_BLOCK_SPACE_MGR
+#define BRS_SPACE_MGR             0x00000040
+#define BRS_ISOVERFLOWCONTAINER   0x00000100
+#define BRS_LASTFLAG              BRS_ISOVERFLOWCONTAINER
 
 class nsBlockReflowState {
 public:
@@ -70,9 +69,17 @@ public:
                      nsPresContext* aPresContext,
                      nsBlockFrame* aFrame,
                      const nsHTMLReflowMetrics& aMetrics,
-                     PRBool aTopMarginRoot, PRBool aBottomMarginRoot);
+                     PRBool aTopMarginRoot, PRBool aBottomMarginRoot,
+                     PRBool aBlockNeedsSpaceManager);
 
   ~nsBlockReflowState();
+
+  // Set up a property on the block that points to our temporary mOverflowPlaceholders
+  // list, if that list is or could become non-empty during this reflow. Must be
+  // called after the block has done DrainOverflowLines because DrainOverflowLines
+  // can setup mOverflowPlaceholders even if the block is in unconstrained height
+  // reflow (it may have previously been reflowed with constrained height).
+  void SetupOverflowPlaceholdersProperty();
 
   /**
    * Get the available reflow space for the current y coordinate. The
@@ -102,8 +109,9 @@ public:
   PRBool PlaceBelowCurrentLineFloats(nsFloatCacheFreeList& aFloats, PRBool aForceFit);
 
   // Returns the first coordinate >= aY that clears the
-  // indicated floats.
-  nscoord ClearFloats(nscoord aY, PRUint8 aBreakType);
+  // floats indicated by aBreakType and has enough width between floats
+  // (or no floats remaining) to accomodate aReplacedWidth.
+  nscoord ClearFloats(nscoord aY, PRUint8 aBreakType, nscoord aReplacedWidth = 0);
 
   PRBool IsAdjacentWithTop() const {
     return mY ==
@@ -112,12 +120,15 @@ public:
 
   /**
    * Adjusts the border/padding to return 0 for the top if
-   * we are no the first in flow.
+   * we are not the first in flow.
    */
   nsMargin BorderPadding() const {
     nsMargin result = mReflowState.mComputedBorderPadding;
     if (!(mFlags & BRS_ISFIRSTINFLOW)) {
       result.top = 0;
+      if (mFlags & BRS_ISOVERFLOWCONTAINER) {
+        result.bottom = 0;
+      }
     }
     return result;
   }
@@ -127,15 +138,10 @@ public:
     return mReflowState.mComputedMargin;
   }
 
-  void UpdateMaxElementWidth(nscoord aMaxElementWidth);
-
-  void UpdateMaximumWidth(nscoord aMaximumWidth);
-
   // Reconstruct the previous bottom margin that goes above |aLine|.
   void ReconstructMarginAbove(nsLineList::iterator aLine);
 
   void ComputeBlockAvailSpace(nsIFrame* aFrame,
-                              nsSplittableType aSplitType,
                               const nsStyleDisplay* aDisplay,
                               nsRect& aResult);
 
@@ -196,6 +202,9 @@ public:
   // the overflow lines.
   nsFrameList mOverflowPlaceholders;
 
+  // Track child overflow continuations.
+  nsOverflowContinuationTracker mOverflowTracker;
+
   //----------------------------------------
 
   // This state is "running" state updated by the reflow of each line
@@ -216,10 +225,8 @@ public:
   nscoord mY;
 
   // The available space within the current band.
+  // (relative to the *content*-rect of the block)
   nsRect mAvailSpaceRect;
-
-  // The maximum x-most of each line
-  nscoord mKidXMost;
 
   // The combined area of all floats placed so far
   nsRect mFloatCombinedArea;
@@ -258,11 +265,6 @@ public:
   // being N^2.
   nsFloatCacheFreeList mBelowCurrentLineFloats;
 
-  nscoord mMaxElementWidth;
-
-  // maximum width includes the left border/padding but not the right
-  nscoord mMaximumWidth;
-
   nscoord mMinLineHeight;
 
   PRInt32 mLineNumber;
@@ -286,9 +288,7 @@ public:
   PRBool GetFlag(PRUint32 aFlag) const
   {
     NS_ASSERTION(aFlag<=BRS_LASTFLAG, "bad flag");
-    PRBool result = (mFlags & aFlag);
-    if (result) return PR_TRUE;
-    return PR_FALSE;
+    return !!(mFlags & aFlag);
   }
 };
 

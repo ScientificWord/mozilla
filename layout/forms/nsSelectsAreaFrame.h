@@ -44,16 +44,13 @@ class nsIContent;
  * The area frame has an additional named child list:
  * - "Absolute-list" which contains the absolutely positioned frames
  *
- * @see nsLayoutAtoms::absoluteList
+ * @see nsGkAtoms::absoluteList
  */
 class nsSelectsAreaFrame : public nsAreaFrame
 {
 public:
   friend nsIFrame* NS_NewSelectsAreaFrame(nsIPresShell* aShell, nsStyleContext* aContext, PRUint32 aFlags);
 
-  // nsISupports
-  //NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
-  
   NS_IMETHOD BuildDisplayList(nsDisplayListBuilder*   aBuilder,
                               const nsRect&           aDirtyRect,
                               const nsDisplayListSet& aLists);
@@ -62,11 +59,27 @@ public:
                                     const nsRect&           aDirtyRect,
                                     const nsDisplayListSet& aLists);
 
+  NS_IMETHOD Reflow(nsPresContext*          aCX,
+                    nsHTMLReflowMetrics&     aDesiredSize,
+                    const nsHTMLReflowState& aReflowState,
+                    nsReflowStatus&          aStatus);
+
   static PRBool IsOptionElement(nsIContent* aContent);
   static PRBool IsOptionElementFrame(nsIFrame *aFrame);
   
+  nscoord HeightOfARow() const { return mHeightOfARow; }
+  
 protected:
-  nsSelectsAreaFrame(nsStyleContext* aContext) : nsAreaFrame(aContext) {}
+  nsSelectsAreaFrame(nsStyleContext* aContext) :
+    nsAreaFrame(aContext),
+    mHeightOfARow(0)
+  {}
+
+  // We cache the height of a single row so that changes to the "size"
+  // attribute, padding, etc. can all be handled with only one reflow.  We'll
+  // have to reflow twice if someone changes our font size or something like
+  // that, so that the heights of our options will change.
+  nscoord mHeightOfARow;
 };
 
 #endif /* nsSelectsAreaFrame_h___ */

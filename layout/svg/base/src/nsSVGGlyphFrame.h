@@ -40,24 +40,29 @@
 #define __NS_SVGGLYPHFRAME_H__
 
 #include "nsSVGGeometryFrame.h"
-#include "nsISVGGlyphGeometrySource.h"
 #include "nsISVGGlyphFragmentLeaf.h"
 #include "nsISVGChildFrame.h"
+#include "gfxContext.h"
+#include "gfxFont.h"
+#include "gfxTextRunCache.h"
 
+struct nsSVGCharacterPosition;
 class nsSVGTextFrame;
+class nsSVGGlyphFrame;
 
 typedef nsSVGGeometryFrame nsSVGGlyphFrameBase;
 
 class nsSVGGlyphFrame : public nsSVGGlyphFrameBase,
-                        public nsISVGGlyphGeometrySource, // : nsISVGGlyphMetricsSource 
                         public nsISVGGlyphFragmentLeaf, // : nsISVGGlyphFragmentNode
                         public nsISVGChildFrame
 {
-protected:
   friend nsIFrame*
   NS_NewSVGGlyphFrame(nsIPresShell* aPresShell, nsIContent* aContent,
                       nsIFrame* parentFrame, nsStyleContext* aContext);
-  nsSVGGlyphFrame(nsStyleContext* aContext);
+protected:
+  nsSVGGlyphFrame(nsStyleContext* aContext)
+    : nsSVGGlyphFrameBase(aContext), 
+      mWhitespaceHandling(COMPRESS_WHITESPACE) {}
 
 public:
    // nsISupports interface:
@@ -66,11 +71,6 @@ public:
   NS_IMETHOD_(nsrefcnt) Release() { return 1; }
 
   // nsIFrame interface:
-  NS_IMETHOD
-  Init(nsIContent*      aContent,
-       nsIFrame*        aParent,
-       nsIFrame*        aPrevInFlow);
-
   NS_IMETHOD  CharacterDataChanged(nsPresContext*  aPresContext,
                                    nsIContent*     aChild,
                                    PRBool          aAppend);
@@ -87,10 +87,17 @@ public:
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::svgGlyphFrame
+   * @see nsGkAtoms::svgGlyphFrame
    */
   virtual nsIAtom* GetType() const;
-  virtual PRBool IsFrameOfType(PRUint32 aFlags) const;
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    // Set the frame state bit for text frames to mark them as replaced.
+    // XXX kipp: temporary
+
+    return nsSVGGlyphFrameBase::IsFrameOfType(aFlags & ~(nsIFrame::eReplaced));
+  }
 
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const
@@ -100,16 +107,17 @@ public:
 #endif
 
   // nsISVGChildFrame interface:
-  NS_IMETHOD PaintSVG(nsISVGRendererCanvas* canvas, nsRect *aDirtyRect);
+  NS_IMETHOD PaintSVG(nsSVGRenderState *aContext, nsRect *aDirtyRect);
   NS_IMETHOD GetFrameForPointSVG(float x, float y, nsIFrame** hit);
   NS_IMETHOD_(nsRect) GetCoveredRegion();
   NS_IMETHOD UpdateCoveredRegion();
   NS_IMETHOD InitialUpdate();
-  NS_IMETHOD NotifyCanvasTMChanged(PRBool suppressInvalidation);
+  virtual void NotifySVGChanged(PRUint32 aFlags);
   NS_IMETHOD NotifyRedrawSuspended();
   NS_IMETHOD NotifyRedrawUnsuspended();
   NS_IMETHOD SetMatrixPropagation(PRBool aPropagate) { return NS_OK; }
   NS_IMETHOD SetOverrideCTM(nsIDOMSVGMatrix *aCTM) { return NS_ERROR_FAILURE; }
+  virtual already_AddRefed<nsIDOMSVGMatrix> GetOverrideCTM() { return nsnull; }
   NS_IMETHOD GetBBox(nsIDOMSVGRect **_retval);
   NS_IMETHOD_(PRBool) IsDisplayContainer() { return PR_FALSE; }
   NS_IMETHOD_(PRBool) HasValidCoveredRect() { return PR_TRUE; }
@@ -118,15 +126,15 @@ public:
   NS_IMETHOD GetCanvasTM(nsIDOMSVGMatrix * *aCTM);
   virtual nsresult UpdateGraphic(PRBool suppressInvalidation = PR_FALSE);
 
-  // nsISVGGlyphMetricsSource interface:
-  NS_DECL_NSISVGGLYPHMETRICSSOURCE
-
-  // nsISVGGlyphGeometrySource interface:
-  NS_DECL_NSISVGGLYPHGEOMETRYSOURCE
-
   // nsISVGGlyphFragmentLeaf interface:
+  NS_IMETHOD GetStartPositionOfChar(PRUint32 charnum, nsIDOMSVGPoint **_retval);
+  NS_IMETHOD GetEndPositionOfChar(PRUint32 charnum, nsIDOMSVGPoint **_retval);
+  NS_IMETHOD GetExtentOfChar(PRUint32 charnum, nsIDOMSVGRect **_retval);
+  NS_IMETHOD GetRotationOfChar(PRUint32 charnum, float *_retval);
+  NS_IMETHOD_(float) GetBaselineOffset(PRUint16 baselineIdentifier);
+  NS_IMETHOD_(float) GetAdvance();
+
   NS_IMETHOD_(void) SetGlyphPosition(float x, float y);
-  NS_IMETHOD GetGlyphMetrics(nsISVGRendererGlyphMetrics** metrics);
   NS_IMETHOD_(nsSVGTextPathFrame*) FindTextPathParent();
   NS_IMETHOD_(PRBool) IsStartOfChunk(); // == is new absolutely positioned chunk.
   NS_IMETHOD_(void) GetAdjustedPosition(/* inout */ float &x, /* inout */ float &y);
@@ -145,23 +153,71 @@ public:
   NS_IMETHOD_(PRInt32) GetCharNumAtPosition(nsIDOMSVGPoint *point);
   NS_IMETHOD_(nsISVGGlyphFragmentLeaf *) GetFirstGlyphFragment();
   NS_IMETHOD_(nsISVGGlyphFragmentLeaf *) GetNextGlyphFragment();
-  NS_IMETHOD_(PRUint32) BuildGlyphFragmentTree(PRUint32 charNum, PRBool lastBranch);
-  NS_IMETHOD_(void) NotifyMetricsSuspended();
-  NS_IMETHOD_(void) NotifyMetricsUnsuspended();
-  NS_IMETHOD_(void) NotifyGlyphFragmentTreeSuspended();
-  NS_IMETHOD_(void) NotifyGlyphFragmentTreeUnsuspended();
-  
+  NS_IMETHOD_(void) SetWhitespaceHandling(PRUint8 aWhitespaceHandling);
+
 protected:
+  struct nsSVGCharacterPosition {
+    gfxPoint pos;
+    gfxFloat angle;
+    PRBool draw;
+  };
+
+  // VC6 does not allow the inner class to access protected members
+  // of the outer class
+  class nsSVGAutoGlyphHelperContext;
+  friend class nsSVGAutoGlyphHelperContext;
+
+  // A helper class to deal with gfxTextRuns and temporary thebes
+  // contexts.
+  class nsSVGAutoGlyphHelperContext
+  {
+  public:
+    nsSVGAutoGlyphHelperContext(nsSVGGlyphFrame *aSource,
+                                const nsString &aText)
+    {
+      Init(aSource, aText);
+    }
+
+    nsSVGAutoGlyphHelperContext(nsSVGGlyphFrame *aSource,
+                                const nsString &aText,
+                                nsSVGCharacterPosition **cp);
+
+    gfxContext *GetContext() { return mCT; }
+    gfxTextRun *GetTextRun() { return mTextRun.get(); }
+
+  private:
+    void Init(nsSVGGlyphFrame *aSource, const nsString &aText);
+
+    nsRefPtr<gfxContext>         mCT;
+    gfxTextRunCache::AutoTextRun mTextRun;
+  };
+
+  // The textrun must be released via gfxTextRunCache::AutoTextRun
+  gfxTextRun *GetTextRun(gfxContext *aCtx,
+                         const nsString &aText);
+
+  PRBool GetCharacterData(nsAString & aCharacterData);
+  nsresult GetCharacterPosition(gfxContext *aContext,
+                                const nsString &aText,
+                                nsSVGCharacterPosition **aCharacterPosition);
+
+  enum FillOrStroke { FILL, STROKE};
+
+  void LoopCharacters(gfxContext *aCtx, const nsString &aText,
+                      const nsSVGCharacterPosition *aCP,
+                      FillOrStroke aFillOrStroke);
+
   void UpdateGeometry(PRBool bRedraw, PRBool suppressInvalidation);
   void UpdateMetrics();
-  void UpdateFragmentTree();
-  nsSVGTextFrame *GetTextFrame();
-  
-  nsString mCharacterData;
-  nsCOMPtr<nsISVGRendererGlyphGeometry> mGeometry;
-  nsCOMPtr<nsISVGRendererGlyphMetrics> mMetrics;
-  float mX, mY;
-  PRPackedBool mFragmentTreeDirty;
+  PRBool ContainsPoint(float x, float y);
+  nsresult GetGlobalTransform(gfxContext *aContext);
+  nsresult GetHighlight(PRUint32 *charnum, PRUint32 *nchars,
+                        nscolor *foreground, nscolor *background);
+
+  nsRefPtr<gfxFontGroup> mFontGroup;
+  nsAutoPtr<gfxFontStyle> mFontStyle;
+  gfxPoint mPosition;
+  PRUint8 mWhitespaceHandling;
 };
 
 #endif

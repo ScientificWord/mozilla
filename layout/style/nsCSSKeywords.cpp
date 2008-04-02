@@ -41,6 +41,7 @@
 #include "nsString.h"
 #include "nsStaticNameTable.h"
 #include "nsReadableUtils.h"
+#include "nsStyleConsts.h"
 
 // required to make the symbol external, so that TestCSSPropertyLookup.cpp can link with it
 extern const char* const kCSSRawKeywords[];
@@ -116,6 +117,7 @@ const nsAFlatCString&
 nsCSSKeywords::GetStringValue(nsCSSKeyword aKeyword)
 {
   NS_ASSERTION(gKeywordTable, "no lookup table, needs addref");
+  NS_ASSERTION(0 <= aKeyword && aKeyword < eCSSKeyword_COUNT, "out of range");
   if (gKeywordTable) {
     return gKeywordTable->GetStringValue(PRInt32(aKeyword));
   } else {

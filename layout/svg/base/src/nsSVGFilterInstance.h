@@ -39,15 +39,14 @@
 
 #include "nsIDOMSVGLength.h"
 #include "nsIDOMSVGRect.h"
-#include "nsIDOMSVGAnimatedEnum.h"
-#include "nsISVGRendererSurface.h"
 #include "nsInterfaceHashtable.h"
-#include "nsDataHashtable.h"
-#include "nsISVGRenderer.h"
+#include "nsClassHashtable.h"
 #include "nsIDOMSVGFilters.h"
 #include "nsRect.h"
 #include "nsIContent.h"
 #include "nsAutoPtr.h"
+
+#include "gfxImageSurface.h"
 
 class nsSVGLength2;
 class nsSVGElement;
@@ -55,48 +54,101 @@ class nsSVGElement;
 class nsSVGFilterInstance
 {
 public:
-  float GetPrimitiveLength(nsSVGLength2 *aLength);
+  class ColorModel {
+  public:
+    enum ColorSpace { SRGB, LINEAR_RGB };
+    enum AlphaChannel { UNPREMULTIPLIED, PREMULTIPLIED };
+
+    ColorModel(ColorSpace aColorSpace, AlphaChannel aAlphaChannel) :
+      mColorSpace(aColorSpace), mAlphaChannel(aAlphaChannel) {}
+    PRBool operator==(const ColorModel& aOther) const {
+      return mColorSpace == aOther.mColorSpace &&
+             mAlphaChannel == aOther.mAlphaChannel;
+    }
+    ColorSpace   mColorSpace;
+    AlphaChannel mAlphaChannel;
+  };
+
+  float GetPrimitiveLength(nsSVGLength2 *aLength) const;
 
   void GetFilterSubregion(nsIContent *aFilter,
                           nsRect defaultRegion,
                           nsRect *result);
 
-  void GetImage(nsISVGRendererSurface **result);
-  void LookupImage(const nsAString &aName, nsISVGRendererSurface **aImage);
-  void DefineImage(const nsAString &aName, nsISVGRendererSurface *aImage);
-  void LookupRegion(const nsAString &aName, nsRect *aRect);
-  void DefineRegion(const nsAString &aName, nsRect aRect);
+  // Allocates an image surface that covers mSurfaceRect (it uses
+  // device offsets so that its origin is positioned at mSurfaceRect.TopLeft()
+  // when using cairo to draw into the surface). The surface is cleared
+  // to transparent black.
+  already_AddRefed<gfxImageSurface> GetImage();
 
-  nsSVGFilterInstance(nsISVGRenderer *aRenderer,
-                      nsSVGElement *aTarget,
+  void LookupImage(const nsAString &aName,
+                   gfxImageSurface **aImage,
+                   nsRect *aRegion,
+                   const ColorModel &aColorModel);
+  nsRect LookupImageRegion(const nsAString &aName);
+  ColorModel LookupImageColorModel(const nsAString &aName);
+  void DefineImage(const nsAString &aName,
+                   gfxImageSurface *aImage,
+                   const nsRect &aRegion,
+                   const ColorModel &aColorModel);
+  void GetFilterBox(float *x, float *y, float *width, float *height) const {
+    *x = mFilterX;
+    *y = mFilterY;
+    *width = mFilterWidth;
+    *height = mFilterHeight;
+  }
+
+  nsSVGFilterInstance(nsSVGElement *aTarget,
                       nsIDOMSVGRect *aTargetBBox,
                       float aFilterX, float aFilterY,
                       float aFilterWidth, float aFilterHeight,
                       PRUint32 aFilterResX, PRUint32 aFilterResY,
                       PRUint16 aPrimitiveUnits) :
-    mRenderer(aRenderer),
     mTarget(aTarget),
     mTargetBBox(aTargetBBox),
+    mLastImage(nsnull),
     mFilterX(aFilterX), mFilterY(aFilterY),
     mFilterWidth(aFilterWidth), mFilterHeight(aFilterHeight),
     mFilterResX(aFilterResX), mFilterResY(aFilterResY),
+    mSurfaceRect(0, 0, aFilterResX, aFilterResY),
     mPrimitiveUnits(aPrimitiveUnits) {
     mImageDictionary.Init();
-    mRegionDictionary.Init();
   }
+  
+  void SetSurfaceRect(const nsRect& aRect) { mSurfaceRect = aRect; }
+  
+  const nsRect& GetSurfaceRect() const { return mSurfaceRect; }
+  PRInt32 GetSurfaceWidth() const { return mSurfaceRect.width; }
+  PRInt32 GetSurfaceHeight() const { return mSurfaceRect.height; }
+  PRInt32 GetSurfaceStride() const { return mSurfaceStride; }
+  
+  PRUint32 GetFilterResX() const { return mFilterResX; }
+  PRUint32 GetFilterResY() const { return mFilterResY; }
 
 private:
-  nsCOMPtr<nsISVGRenderer> mRenderer;
+  class ImageEntry {
+  public:
+    ImageEntry(gfxImageSurface *aImage,
+               const nsRect &aRegion,
+               const ColorModel &aColorModel) :
+      mImage(aImage), mRegion(aRegion), mColorModel(aColorModel) {
+    }
+
+    nsRefPtr<gfxImageSurface> mImage;
+    nsRect mRegion;
+    ColorModel mColorModel;
+  };
+
+  nsClassHashtable<nsStringHashKey,ImageEntry> mImageDictionary;
   nsRefPtr<nsSVGElement> mTarget;
   nsCOMPtr<nsIDOMSVGRect> mTargetBBox;
+  ImageEntry *mLastImage;
+
   float mFilterX, mFilterY, mFilterWidth, mFilterHeight;
   PRUint32 mFilterResX, mFilterResY;
+  nsRect mSurfaceRect;
+  PRInt32 mSurfaceStride;
   PRUint16 mPrimitiveUnits;
-
-  nsInterfaceHashtable<nsStringHashKey,nsISVGRendererSurface> mImageDictionary;
-  nsDataHashtable<nsStringHashKey,nsRect> mRegionDictionary;
-  nsCOMPtr<nsISVGRendererSurface> mLastImage;
-  nsRect mLastRegion;
 };
 
 #endif

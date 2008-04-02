@@ -46,6 +46,7 @@
  * A class for managing a singly linked list of frames. Frames are
  * linked together through their next-sibling pointer.
  */
+
 class nsFrameList {
 public:
   nsFrameList() {
@@ -64,6 +65,9 @@ public:
 
   void DestroyFrames();
 
+  // Delete this and destroy all its frames
+  void Destroy();
+
   void SetFrames(nsIFrame* aFrameList) {
     mFirstChild = aFrameList;
 #ifdef DEBUG
@@ -71,6 +75,8 @@ public:
 #endif
   }
 
+  // Appends frames from aFrameList to this list. If aParent
+  // is not null, reparents the newly-added frames.
   void AppendFrames(nsIFrame* aParent, nsIFrame* aFrameList);
 
   void AppendFrames(nsIFrame* aParent, nsFrameList& aFrameList) {
@@ -84,12 +90,14 @@ public:
   // from the sibling list. This will return PR_FALSE if aFrame is
   // nsnull or if aFrame is not in the list. The second frame is
   // a hint for the prev-sibling of aFrame; if the hint is correct,
-  // then this is O(1) time.
+  // then this is O(1) time. If successfully removed, the child's
+  // NextSibling pointer is cleared.
   PRBool RemoveFrame(nsIFrame* aFrame, nsIFrame* aPrevSiblingHint = nsnull);
 
   // Remove the first child from the list. The caller is assumed to be
   // holding a reference to the first child. This call is equivalent
-  // in behavior to calling RemoveFrame(FirstChild()).
+  // in behavior to calling RemoveFrame(FirstChild()). If successfully
+  // removed the first child's NextSibling pointer is cleared.
   PRBool RemoveFirstChild();
 
   // Take aFrame out of the frame list and then destroy it. This also
@@ -97,10 +105,17 @@ public:
   // PR_FALSE if aFrame is nsnull or if aFrame is not in the list.
   PRBool DestroyFrame(nsIFrame* aFrame);
 
+  // Inserts aNewFrame right after aPrevSibling, or prepends to
+  // list if aPrevSibling is null. If aParent is not null, also
+  // reparents newly-added frame. Note that this method always
+  // sets the frame's nextSibling pointer.
   void InsertFrame(nsIFrame* aParent,
                    nsIFrame* aPrevSibling,
                    nsIFrame* aNewFrame);
 
+  // Inserts aFrameList right after aPrevSibling, or prepends to
+  // list if aPrevSibling is null. If aParent is not null, also
+  // reparents newly-added frame.
   void InsertFrames(nsIFrame* aParent,
                     nsIFrame* aPrevSibling,
                     nsIFrame* aFrameList);
@@ -121,10 +136,6 @@ public:
    */
   void SortByContentOrder();
 
-  nsIFrame* PullFrame(nsIFrame* aParent,
-                      nsIFrame* aLastChild,
-                      nsFrameList& aFromList);
-
   nsIFrame* FirstChild() const {
     return mFirstChild;
   }
@@ -142,6 +153,7 @@ public:
   }
 
   PRBool ContainsFrame(const nsIFrame* aFrame) const;
+  PRBool ContainsFrameBefore(const nsIFrame* aFrame, const nsIFrame* aEnd) const;
 
   PRInt32 GetLength() const;
 

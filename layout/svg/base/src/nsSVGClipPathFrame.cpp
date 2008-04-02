@@ -38,73 +38,11 @@
 #include "nsIDocument.h"
 #include "nsIDOMSVGClipPathElement.h"
 #include "nsSVGClipPathFrame.h"
-#include "nsISVGRendererCanvas.h"
-#include "nsIDOMSVGAnimatedEnum.h"
-#include "nsISVGRendererSurface.h"
-#include "nsSVGContainerFrame.h"
-#include "nsSVGAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsSVGUtils.h"
-#include "nsSVGGraphicElement.h"
-
-typedef nsSVGContainerFrame nsSVGClipPathFrameBase;
-
-class nsSVGClipPathFrame : public nsSVGClipPathFrameBase,
-                           public nsISVGClipPathFrame
-{
-  friend nsIFrame*
-  NS_NewSVGClipPathFrame(nsIPresShell* aPresShell, nsIContent* aContent, nsStyleContext* aContext);
-
-  virtual ~nsSVGClipPathFrame();
-  NS_IMETHOD InitSVG();
-
- public:
-  nsSVGClipPathFrame(nsStyleContext* aContext) : nsSVGClipPathFrameBase(aContext) {}
-
-  // nsISupports interface:
-  NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
-  NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }
-  NS_IMETHOD_(nsrefcnt) Release() { return NS_OK; }
-
-  // nsISVGClipPathFrame interface:
-  NS_IMETHOD ClipPaint(nsISVGRendererCanvas* canvas,
-                       nsISVGRendererSurface* aClipSurface,
-                       nsISVGChildFrame* aParent,
-                       nsCOMPtr<nsIDOMSVGMatrix> aMatrix);
-
-  NS_IMETHOD ClipHitTest(nsISVGChildFrame* aParent,
-                         nsCOMPtr<nsIDOMSVGMatrix> aMatrix,
-                         float aX, float aY, PRBool *aHit);
-
-  NS_IMETHOD IsTrivial(PRBool *aTrivial);
-
-  /**
-   * Get the "type" of the frame
-   *
-   * @see nsLayoutAtoms::svgClipPathFrame
-   */
-  virtual nsIAtom* GetType() const;
-
-#ifdef DEBUG
-  NS_IMETHOD GetFrameName(nsAString& aResult) const
-  {
-    return MakeFrameName(NS_LITERAL_STRING("SVGClipPath"), aResult);
-  }
-#endif
-
- private:
-  nsISVGChildFrame *mClipParent;
-  nsCOMPtr<nsIDOMSVGMatrix> mClipParentMatrix;
-
-  // nsSVGContainerFrame methods:
-  virtual already_AddRefed<nsIDOMSVGMatrix> GetCanvasTM();
-
-  // recursion prevention flag
-  PRPackedBool mInUse;
-};
-
-NS_INTERFACE_MAP_BEGIN(nsSVGClipPathFrame)
-  NS_INTERFACE_MAP_ENTRY(nsISVGClipPathFrame)
-NS_INTERFACE_MAP_END_INHERITING(nsSVGClipPathFrameBase)
+#include "nsSVGClipPathElement.h"
+#include "gfxContext.h"
+#include "nsIDOMSVGRect.h"
 
 //----------------------------------------------------------------------
 // Implementation
@@ -112,69 +50,32 @@ NS_INTERFACE_MAP_END_INHERITING(nsSVGClipPathFrameBase)
 nsIFrame*
 NS_NewSVGClipPathFrame(nsIPresShell* aPresShell, nsIContent* aContent, nsStyleContext* aContext)
 {
-  nsCOMPtr<nsIDOMSVGTransformable> transformable = do_QueryInterface(aContent);
-  if (!transformable) {
-#ifdef DEBUG
-    printf("warning: trying to construct an SVGClipPathFrame for a content element that doesn't support the right interfaces\n");
-#endif
+  nsCOMPtr<nsIDOMSVGClipPathElement> clipPath = do_QueryInterface(aContent);
+  if (!clipPath) {
+    NS_ERROR("Can't create frame! Content is not an SVG clipPath!");
     return nsnull;
   }
 
   return new (aPresShell) nsSVGClipPathFrame(aContext);
 }
 
+nsIContent *
+NS_GetSVGClipPathElement(nsIURI *aURI, nsIContent *aContent)
+{
+  nsIContent* content = nsContentUtils::GetReferencedElement(aURI, aContent);
+
+  nsCOMPtr<nsIDOMSVGClipPathElement> clipPath = do_QueryInterface(content);
+
+  if (clipPath)
+    return content;
+
+  return nsnull;
+}
+
 nsresult
-NS_GetSVGClipPathFrame(nsISVGClipPathFrame **aResult,
-                       nsIURI *aURI, nsIContent *aContent)
-{
-  *aResult = nsnull;
-
-  // Get the PresShell
-  nsIDocument *myDoc = aContent->GetCurrentDoc();
-  if (!myDoc) {
-    NS_WARNING("No document for this content!");
-    return NS_ERROR_FAILURE;
-  }
-  nsIPresShell *presShell = myDoc->GetShellAt(0);
-  if (!presShell) {
-    NS_WARNING("no presshell");
-    return NS_ERROR_FAILURE;
-  }
-
-  // Find the referenced frame
-  nsIFrame *cpframe;
-  if (!NS_SUCCEEDED(nsSVGUtils::GetReferencedFrame(&cpframe, aURI, aContent, presShell)))
-    return NS_ERROR_FAILURE;
-
-  nsIAtom* frameType = cpframe->GetType();
-  if (frameType != nsLayoutAtoms::svgClipPathFrame)
-    return NS_ERROR_FAILURE;
-
-  *aResult = (nsSVGClipPathFrame *)cpframe;
-  return NS_OK;
-}
-
-nsSVGClipPathFrame::~nsSVGClipPathFrame()
-{
-}
-
-NS_IMETHODIMP
-nsSVGClipPathFrame::InitSVG()
-{
-  nsresult rv = nsSVGClipPathFrameBase::InitSVG();
-  if (NS_FAILED(rv))
-    return rv;
-
-  mClipParentMatrix = NULL;
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsSVGClipPathFrame::ClipPaint(nsISVGRendererCanvas* canvas,
-                              nsISVGRendererSurface* aClipSurface,
+nsSVGClipPathFrame::ClipPaint(nsSVGRenderState* aContext,
                               nsISVGChildFrame* aParent,
-                              nsCOMPtr<nsIDOMSVGMatrix> aMatrix)
+                              nsIDOMSVGMatrix *aMatrix)
 {
   // If the flag is set when we get here, it means this clipPath frame
   // has already been used painting the current clip, and the document
@@ -183,63 +84,50 @@ nsSVGClipPathFrame::ClipPaint(nsISVGRendererCanvas* canvas,
     NS_WARNING("Clip loop detected!");
     return NS_OK;
   }
-  mInUse = PR_TRUE;
-
-  nsRect dirty;
-  nsresult rv;
+  AutoClipPathReferencer clipRef(this);
 
   mClipParent = aParent,
   mClipParentMatrix = aMatrix;
 
-  PRBool isTrivial;
-  IsTrivial(&isTrivial);
+  PRBool isTrivial = IsTrivial();
 
-  if (isTrivial)
-    rv = canvas->SetRenderMode(nsISVGRendererCanvas::SVG_RENDER_MODE_CLIP);
-  else {
-    rv = canvas->SetRenderMode(nsISVGRendererCanvas::SVG_RENDER_MODE_CLIP_MASK);
-
-    canvas->PushSurface(aClipSurface, PR_TRUE);
-  }
-
-  if (NS_FAILED(rv))
-    return NS_ERROR_FAILURE;
+  nsAutoSVGRenderMode mode(aContext,
+                           isTrivial ? nsSVGRenderState::CLIP
+                                     : nsSVGRenderState::CLIP_MASK);
 
   for (nsIFrame* kid = mFrames.FirstChild(); kid;
        kid = kid->GetNextSibling()) {
     nsISVGChildFrame* SVGFrame = nsnull;
     CallQueryInterface(kid, &SVGFrame);
     if (SVGFrame) {
-      SVGFrame->NotifyCanvasTMChanged(PR_TRUE);
-      SVGFrame->PaintSVG(canvas, nsnull);
+      // The CTM of each frame referencing us can be different.
+      SVGFrame->NotifySVGChanged(nsISVGChildFrame::SUPPRESS_INVALIDATION | 
+                                 nsISVGChildFrame::TRANSFORM_CHANGED);
+      SVGFrame->PaintSVG(aContext, nsnull);
     }
   }
 
-  if (!isTrivial)
-    canvas->PopSurface();
-
-  canvas->SetRenderMode(nsISVGRendererCanvas::SVG_RENDER_MODE_NORMAL);
-
-  mInUse = PR_FALSE;
+  if (isTrivial) {
+    aContext->GetGfxContext()->Clip();
+    aContext->GetGfxContext()->NewPath();
+  }
 
   return NS_OK;
 }
 
-NS_IMETHODIMP
+PRBool
 nsSVGClipPathFrame::ClipHitTest(nsISVGChildFrame* aParent,
-                                nsCOMPtr<nsIDOMSVGMatrix> aMatrix,
-                                float aX, float aY, PRBool *aHit)
+                                nsIDOMSVGMatrix *aMatrix,
+                                float aX, float aY)
 {
-  *aHit = PR_FALSE;
-
   // If the flag is set when we get here, it means this clipPath frame
   // has already been used in hit testing against the current clip,
   // and the document has a clip reference loop.
   if (mInUse) {
     NS_WARNING("Clip loop detected!");
-    return NS_OK;
+    return PR_FALSE;
   }
-  mInUse = PR_TRUE;
+  AutoClipPathReferencer clipRef(this);
 
   nsRect dirty;
   mClipParent = aParent,
@@ -247,33 +135,26 @@ nsSVGClipPathFrame::ClipHitTest(nsISVGChildFrame* aParent,
 
   for (nsIFrame* kid = mFrames.FirstChild(); kid;
        kid = kid->GetNextSibling()) {
-    nsISVGChildFrame* SVGFrame=nsnull;
-    kid->QueryInterface(NS_GET_IID(nsISVGChildFrame),(void**)&SVGFrame);
+    nsISVGChildFrame* SVGFrame = nsnull;
+    CallQueryInterface(kid, &SVGFrame);
     if (SVGFrame) {
       // Notify the child frame that we may be working with a
       // different transform, so it can update its covered region
       // (used to shortcut hit testing).
-      SVGFrame->NotifyCanvasTMChanged(PR_FALSE);
+      SVGFrame->NotifySVGChanged(nsISVGChildFrame::TRANSFORM_CHANGED);
 
       nsIFrame *temp = nsnull;
       nsresult rv = SVGFrame->GetFrameForPointSVG(aX, aY, &temp);
-      if (NS_SUCCEEDED(rv) && temp) {
-        *aHit = PR_TRUE;
-        mInUse = PR_FALSE;
-        return NS_OK;
-      }
+      if (NS_SUCCEEDED(rv) && temp)
+        return PR_TRUE;
     }
   }
-
-  mInUse = PR_FALSE;
-
-  return NS_OK;
+  return PR_FALSE;
 }
 
-NS_IMETHODIMP
-nsSVGClipPathFrame::IsTrivial(PRBool *aTrivial)
+PRBool
+nsSVGClipPathFrame::IsTrivial()
 {
-  *aTrivial = PR_TRUE;
   PRBool foundChild = PR_FALSE;
 
   for (nsIFrame* kid = mFrames.FirstChild(); kid;
@@ -284,21 +165,18 @@ nsSVGClipPathFrame::IsTrivial(PRBool *aTrivial)
     if (svgChild) {
       // We consider a non-trivial clipPath to be one containing
       // either more than one svg child and/or a svg container
-      if (foundChild || svgChild->IsDisplayContainer()) {
-        *aTrivial = PR_FALSE;
-        return NS_OK;
-      }
+      if (foundChild || svgChild->IsDisplayContainer())
+        return PR_FALSE;
       foundChild = PR_TRUE;
     }
   }
-
-  return NS_OK;
+  return PR_TRUE;
 }
 
 nsIAtom *
 nsSVGClipPathFrame::GetType() const
 {
-  return nsLayoutAtoms::svgClipPathFrame;
+  return nsGkAtoms::svgClipPathFrame;
 }
 
 already_AddRefed<nsIDOMSVGMatrix>
@@ -306,9 +184,10 @@ nsSVGClipPathFrame::GetCanvasTM()
 {
   NS_ASSERTION(mClipParentMatrix, "null parent matrix");
 
-  nsSVGGraphicElement *element =
-    NS_STATIC_CAST(nsSVGGraphicElement*, mContent);
-  nsCOMPtr<nsIDOMSVGMatrix> localTM = element->GetLocalTransformMatrix();
+  nsSVGClipPathElement *clipPath = static_cast<nsSVGClipPathElement*>
+                                              (mContent);
+
+  nsCOMPtr<nsIDOMSVGMatrix> localTM = clipPath->GetLocalTransformMatrix();
 
   nsCOMPtr<nsIDOMSVGMatrix> canvasTM;
 
@@ -317,33 +196,7 @@ nsSVGClipPathFrame::GetCanvasTM()
   else
     canvasTM = mClipParentMatrix;
 
-  /* object bounding box? */
-  PRUint16 units;
-  nsCOMPtr<nsIDOMSVGClipPathElement> path = do_QueryInterface(mContent);
-  nsCOMPtr<nsIDOMSVGAnimatedEnumeration> aEnum;
-  path->GetClipPathUnits(getter_AddRefs(aEnum));
-  aEnum->GetAnimVal(&units);
-  
-  if (mClipParent &&
-      units == nsIDOMSVGClipPathElement::SVG_CPUNITS_OBJECTBOUNDINGBOX) {
-    nsCOMPtr<nsIDOMSVGRect> rect;
-    nsresult rv = mClipParent->GetBBox(getter_AddRefs(rect));
-
-    if (NS_SUCCEEDED(rv)) {
-      float minx, miny, width, height;
-      rect->GetX(&minx);
-      rect->GetY(&miny);
-      rect->GetWidth(&width);
-      rect->GetHeight(&height);
-
-      nsCOMPtr<nsIDOMSVGMatrix> tmp, fini;
-      canvasTM->Translate(minx, miny, getter_AddRefs(tmp));
-      tmp->ScaleNonUniform(width, height, getter_AddRefs(fini));
-      canvasTM = fini;
-    }
-  }
-
-  nsIDOMSVGMatrix* retval = canvasTM.get();
-  NS_IF_ADDREF(retval);
-  return retval;
+  return nsSVGUtils::AdjustMatrixForUnits(canvasTM,
+                                          &clipPath->mEnumAttributes[nsSVGClipPathElement::CLIPPATHUNITS],
+                                          mClipParent);
 }

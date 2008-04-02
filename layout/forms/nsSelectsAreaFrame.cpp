@@ -56,21 +56,6 @@ NS_NewSelectsAreaFrame(nsIPresShell* aShell, nsStyleContext* aContext, PRUint32 
   return it;
 }
 
-/*NS_IMETHODIMP
-nsSelectsAreaFrame::QueryInterface(const nsIID& aIID, void** aInstancePtr)
-{
-  if (NULL == aInstancePtr) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  if (aIID.Equals(kAreaFrameIID)) {
-    nsIAreaFrame* tmp = (nsIAreaFrame*)this;
-    *aInstancePtr = (void*)tmp;
-    return NS_OK;
-  }
-  return nsAreaFrame::QueryInterface(aIID, aInstancePtr);
-}
-*/
-
 //---------------------------------------------------------
 PRBool 
 nsSelectsAreaFrame::IsOptionElement(nsIContent* aContent)
@@ -109,7 +94,8 @@ public:
     : nsDisplayWrapList(aFrame, aItem) {}
   nsDisplayOptionEventGrabber(nsIFrame* aFrame, nsDisplayList* aList)
     : nsDisplayWrapList(aFrame, aList) {}
-  virtual nsIFrame* HitTest(nsDisplayListBuilder* aBuilder, nsPoint aPt);
+  virtual nsIFrame* HitTest(nsDisplayListBuilder* aBuilder, nsPoint aPt,
+                            HitTestState* aState);
   NS_DISPLAY_DECL_NAME("OptionEventGrabber")
 
   virtual nsDisplayWrapList* WrapWithClone(nsDisplayListBuilder* aBuilder,
@@ -117,9 +103,9 @@ public:
 };
 
 nsIFrame* nsDisplayOptionEventGrabber::HitTest(nsDisplayListBuilder* aBuilder,
-    nsPoint aPt)
+    nsPoint aPt, HitTestState* aState)
 {
-  nsIFrame* frame = mList.HitTest(aBuilder, aPt);
+  nsIFrame* frame = mList.HitTest(aBuilder, aPt, aState);
 
   if (frame) {
     nsIFrame* selectedFrame = frame;
@@ -161,8 +147,8 @@ static nsListControlFrame* GetEnclosingListFrame(nsIFrame* aSelectsAreaFrame)
 {
   nsIFrame* frame = aSelectsAreaFrame->GetParent();
   while (frame) {
-    if (frame->GetType() == nsLayoutAtoms::listControlFrame)
-      return NS_STATIC_CAST(nsListControlFrame*, frame);
+    if (frame->GetType() == nsGkAtoms::listControlFrame)
+      return static_cast<nsListControlFrame*>(frame);
     frame = frame->GetParent();
   }
   return nsnull;
@@ -228,4 +214,52 @@ nsSelectsAreaFrame::BuildDisplayListInternal(nsDisplayListBuilder*   aBuilder,
   }
   
   return NS_OK;
+}
+
+NS_IMETHODIMP 
+nsSelectsAreaFrame::Reflow(nsPresContext*           aPresContext, 
+                           nsHTMLReflowMetrics&     aDesiredSize,
+                           const nsHTMLReflowState& aReflowState, 
+                           nsReflowStatus&          aStatus)
+{
+  nsListControlFrame* list = GetEnclosingListFrame(this);
+  NS_ASSERTION(list,
+               "Must have an nsListControlFrame!  Frame constructor is "
+               "broken");
+  
+  PRBool isInDropdownMode = list->IsInDropDownMode();
+  
+  // See similar logic in nsListControlFrame::Reflow and
+  // nsListControlFrame::ReflowAsDropdown.  We need to match it here.
+  nscoord oldHeight;
+  if (isInDropdownMode) {
+    // Store the height now in case it changes during
+    // nsAreaFrame::Reflow for some odd reason.
+    if (!(GetStateBits() & NS_FRAME_FIRST_REFLOW)) {
+      oldHeight = GetSize().height;
+    } else {
+      oldHeight = NS_UNCONSTRAINEDSIZE;
+    }
+  }
+  
+  nsresult rv = nsAreaFrame::Reflow(aPresContext, aDesiredSize,
+                                    aReflowState, aStatus);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // Check whether we need to suppress scrolbar updates.  We want to do that if
+  // we're in a possible first pass and our height of a row has changed.
+  if (list->MightNeedSecondPass()) {
+    nscoord newHeightOfARow = list->CalcHeightOfARow();
+    // We'll need a second pass if our height of a row changed.  For
+    // comboboxes, we'll also need it if our height changed.  If we're going
+    // to do a second pass, suppress scrollbar updates for this pass.
+    if (newHeightOfARow != mHeightOfARow ||
+        (isInDropdownMode && (oldHeight != aDesiredSize.height ||
+                              oldHeight != GetSize().height))) {
+      mHeightOfARow = newHeightOfARow;
+      list->SetSuppressScrollbarUpdate(PR_TRUE);
+    }
+  }
+
+  return rv;
 }

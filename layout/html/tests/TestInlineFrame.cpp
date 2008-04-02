@@ -39,7 +39,7 @@
 #include "nsCRT.h"
 #include "nsHTMLParts.h"
 #include "nsIDocument.h"
-#include "..\..\..\content\base\src\nsDocument.h"
+#include "nsDocument.h"
 #include "nsHTMLTagContent.h"
 #include "nsCoord.h"
 #include "nsSplittableFrame.h"

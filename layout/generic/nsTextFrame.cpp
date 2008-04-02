@@ -81,7 +81,6 @@
 #include "nsDisplayList.h"
 #include "nsFrame.h"
 #include "nsTextTransformer.h"
-#include "nsITextContent.h"
 
 #include "nsTextFragment.h"
 #include "nsHTMLAtoms.h"

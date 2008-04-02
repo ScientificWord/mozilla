@@ -45,8 +45,7 @@
 #include "nsImageBoxFrame.h"
 #include "nsIDeviceContext.h"
 #include "nsIFontMetrics.h"
-#include "nsHTMLAtoms.h"
-#include "nsXULAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsCOMPtr.h"
@@ -60,9 +59,6 @@
 #include "nsIRenderingContext.h"
 #include "nsIPresShell.h"
 #include "nsIImage.h"
-#include "nsIWidget.h"
-#include "nsHTMLAtoms.h"
-#include "nsLayoutAtoms.h"
 #include "nsIDocument.h"
 #include "nsIHTMLDocument.h"
 #include "nsStyleConsts.h"
@@ -70,8 +66,6 @@
 #include "nsILinkHandler.h"
 #include "nsIURL.h"
 #include "nsILoadGroup.h"
-#include "nsIView.h"
-#include "nsIViewManager.h"
 #include "nsHTMLContainerFrame.h"
 #include "prprf.h"
 #include "nsIFontMetrics.h"
@@ -119,7 +113,7 @@ nsImageBoxFrameEvent::Run()
     return NS_OK;
   }
 
-  nsIPresShell *pres_shell = doc->GetShellAt(0);
+  nsIPresShell *pres_shell = doc->GetPrimaryShell();
   if (!pres_shell) {
     return NS_OK;
   }
@@ -148,7 +142,7 @@ nsImageBoxFrameEvent::Run()
 void
 FireImageDOMEvent(nsIContent* aContent, PRUint32 aMessage)
 {
-  NS_ASSERTION(aMessage == NS_IMAGE_LOAD || aMessage == NS_IMAGE_ERROR,
+  NS_ASSERTION(aMessage == NS_LOAD || aMessage == NS_LOAD_ERROR,
                "invalid message");
 
   nsCOMPtr<nsIRunnable> event = new nsImageBoxFrameEvent(aContent, aMessage);
@@ -175,12 +169,12 @@ nsImageBoxFrame::AttributeChanged(PRInt32 aNameSpaceID,
   nsresult rv = nsLeafBoxFrame::AttributeChanged(aNameSpaceID, aAttribute,
                                                  aModType);
 
-  if (aAttribute == nsHTMLAtoms::src) {
+  if (aAttribute == nsGkAtoms::src) {
     UpdateImage();
-    nsBoxLayoutState state(GetPresContext());
-    MarkDirty(state);
+    PresContext()->PresShell()->
+      FrameNeedsReflow(this, nsIPresShell::eStyleChange, NS_FRAME_IS_DIRTY);
   }
-  else if (aAttribute == nsXULAtoms::validate)
+  else if (aAttribute == nsGkAtoms::validate)
     UpdateLoadFlags();
 
   return rv;
@@ -193,7 +187,7 @@ nsImageBoxFrame::nsImageBoxFrame(nsIPresShell* aShell, nsStyleContext* aContext)
   mIntrinsicSize(0,0),
   mLoadFlags(nsIRequest::LOAD_NORMAL)
 {
-  NeedsRecalc();
+  MarkIntrinsicWidthsDirty();
 }
 
 nsImageBoxFrame::~nsImageBoxFrame()
@@ -201,11 +195,11 @@ nsImageBoxFrame::~nsImageBoxFrame()
 }
 
 
-NS_IMETHODIMP
-nsImageBoxFrame::NeedsRecalc()
+/* virtual */ void
+nsImageBoxFrame::MarkIntrinsicWidthsDirty()
 {
   SizeNeedsRecalc(mImageSize);
-  return NS_OK;
+  nsLeafBoxFrame::MarkIntrinsicWidthsDirty();
 }
 
 void
@@ -216,7 +210,7 @@ nsImageBoxFrame::Destroy()
     mImageRequest->Cancel(NS_ERROR_FAILURE);
 
   if (mListener)
-    NS_REINTERPRET_CAST(nsImageBoxListener*, mListener.get())->SetFrame(nsnull); // set the frame to null so we don't send messages to a dead object.
+    reinterpret_cast<nsImageBoxListener*>(mListener.get())->SetFrame(nsnull); // set the frame to null so we don't send messages to a dead object.
 
   nsLeafBoxFrame::Destroy();
 }
@@ -256,7 +250,7 @@ nsImageBoxFrame::UpdateImage()
 
   // get the new image src
   nsAutoString src;
-  mContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::src, src);
+  mContent->GetAttr(kNameSpaceID_None, nsGkAtoms::src, src);
   mUseSrcAttr = !src.IsEmpty();
   if (mUseSrcAttr) {
     nsIDocument* doc = mContent->GetDocument();
@@ -271,9 +265,10 @@ nsImageBoxFrame::UpdateImage()
                                               doc,
                                               baseURI);
 
-    if (uri && nsContentUtils::CanLoadImage(uri, mContent, doc)) {
-      nsContentUtils::LoadImage(uri, doc, doc->GetDocumentURI(),
-                                mListener, mLoadFlags,
+    if (uri && nsContentUtils::CanLoadImage(uri, mContent, doc,
+                                            mContent->NodePrincipal())) {
+      nsContentUtils::LoadImage(uri, doc, mContent->NodePrincipal(),
+                                doc->GetDocumentURI(), mListener, mLoadFlags,
                                 getter_AddRefs(mImageRequest));
     }
   } else {
@@ -300,8 +295,8 @@ void
 nsImageBoxFrame::UpdateLoadFlags()
 {
   static nsIContent::AttrValuesArray strings[] =
-    {&nsXULAtoms::always, &nsXULAtoms::never, nsnull};
-  switch (mContent->FindAttrValueIn(kNameSpaceID_None, nsXULAtoms::validate,
+    {&nsGkAtoms::always, &nsGkAtoms::never, nsnull};
+  switch (mContent->FindAttrValueIn(kNameSpaceID_None, nsGkAtoms::validate,
                                     strings, eCaseMatters)) {
     case 0:
       mLoadFlags = nsIRequest::VALIDATE_ALWAYS;
@@ -336,7 +331,7 @@ public:
 void nsDisplayXULImage::Paint(nsDisplayListBuilder* aBuilder,
      nsIRenderingContext* aCtx, const nsRect& aDirtyRect)
 {
-  NS_STATIC_CAST(nsImageBoxFrame*, mFrame)->
+  static_cast<nsImageBoxFrame*>(mFrame)->
     PaintImage(*aCtx, aDirtyRect, aBuilder->ToReferenceFrame(mFrame));
 }
 
@@ -374,7 +369,8 @@ nsImageBoxFrame::PaintImage(nsIRenderingContext& aRenderingContext,
     return;
 
   // don't draw if the image is not dirty
-  if (!aDirtyRect.Intersects(rect))
+  nsRect dirty;
+  if (!dirty.IntersectRect(aDirtyRect, rect))
     return;
 
   nsCOMPtr<imgIContainer> imgCon;
@@ -382,30 +378,8 @@ nsImageBoxFrame::PaintImage(nsIRenderingContext& aRenderingContext,
 
   if (imgCon) {
     PRBool hasSubRect = !mUseSrcAttr && (mSubRect.width > 0 || mSubRect.height > 0);
-    PRBool sizeMatch = hasSubRect ? 
-                       mSubRect.width == rect.width && mSubRect.height == rect.height :
-                       mImageSize.width == rect.width && mImageSize.height == rect.height;
-
-    if (sizeMatch) {
-      nsRect dest(rect);
-        
-      if (hasSubRect)
-        rect = mSubRect;
-      else {
-        rect.x = 0;
-        rect.y = 0;
-      }
-
-      // XXXdwh do dirty rect intersection like the HTML image frame does,
-      // so that we don't always repaint the entire image!
-      aRenderingContext.DrawImage(imgCon, rect, dest);
-    }
-    else {
-      nsRect src(0, 0, mImageSize.width, mImageSize.height);
-      if (hasSubRect)
-        src = mSubRect;
-      aRenderingContext.DrawImage(imgCon, src, rect);
-    }
+    nsLayoutUtils::DrawImage(&aRenderingContext, imgCon,
+                             rect, dirty, hasSubRect ? &mSubRect : nsnull);
   }
 }
 
@@ -463,55 +437,48 @@ nsImageBoxFrame::GetImageSize()
 /**
  * Ok return our dimensions
  */
-NS_IMETHODIMP
-nsImageBoxFrame::GetPrefSize(nsBoxLayoutState& aState, nsSize& aSize)
-{
-  if (DoesNeedRecalc(mImageSize)) {
-     GetImageSize();
-  }
-
-  if (!mUseSrcAttr && (mSubRect.width > 0 || mSubRect.height > 0))
-    aSize = nsSize(mSubRect.width, mSubRect.height);
-  else
-    aSize = mImageSize;
-  AddBorderAndPadding(aSize);
-  AddInset(aSize);
-  nsIBox::AddCSSPrefSize(aState, this, aSize);
-
-  nsSize minSize(0,0);
-  nsSize maxSize(0,0);
-  GetMinSize(aState, minSize);
-  GetMaxSize(aState, maxSize);
-
-  BoundsCheck(minSize, aSize, maxSize);
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageBoxFrame::GetMinSize(nsBoxLayoutState& aState, nsSize& aSize)
-{
-  // An image can always scale down to (0,0).
-  aSize.width = aSize.height = 0;
-  AddBorderAndPadding(aSize);
-  AddInset(aSize);
-  nsIBox::AddCSSMinSize(aState, this, aSize);
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageBoxFrame::GetAscent(nsBoxLayoutState& aState, nscoord& aCoord)
+nsSize
+nsImageBoxFrame::GetPrefSize(nsBoxLayoutState& aState)
 {
   nsSize size(0,0);
-  GetPrefSize(aState, size);
-  aCoord = size.height;
-  return NS_OK;
+  DISPLAY_PREF_SIZE(this, size);
+  if (DoesNeedRecalc(mImageSize))
+     GetImageSize();
+
+  if (!mUseSrcAttr && (mSubRect.width > 0 || mSubRect.height > 0))
+    size = nsSize(mSubRect.width, mSubRect.height);
+  else
+    size = mImageSize;
+  AddBorderAndPadding(size);
+  nsIBox::AddCSSPrefSize(aState, this, size);
+
+  nsSize minSize = GetMinSize(aState);
+  nsSize maxSize = GetMaxSize(aState);  
+
+  return BoundsCheck(minSize, size, maxSize);
+}
+
+nsSize
+nsImageBoxFrame::GetMinSize(nsBoxLayoutState& aState)
+{
+  // An image can always scale down to (0,0).
+  nsSize size(0,0);
+  DISPLAY_MIN_SIZE(this, size);
+  AddBorderAndPadding(size);
+  nsIBox::AddCSSMinSize(aState, this, size);
+  return size;
+}
+
+nscoord
+nsImageBoxFrame::GetBoxAscent(nsBoxLayoutState& aState)
+{
+  return GetPrefSize(aState).height;
 }
 
 nsIAtom*
 nsImageBoxFrame::GetType() const
 {
-  return nsLayoutAtoms::imageBoxFrame;
+  return nsGkAtoms::imageBoxFrame;
 }
 
 #ifdef DEBUG
@@ -535,13 +502,13 @@ NS_IMETHODIMP nsImageBoxFrame::OnStartContainer(imgIRequest *request,
   image->GetWidth(&w);
   image->GetHeight(&h);
 
-  nsPresContext* presContext = GetPresContext();
-  float p2t = presContext->PixelsToTwips();
+  mIntrinsicSize.SizeTo(nsPresContext::CSSPixelsToAppUnits(w),
+                        nsPresContext::CSSPixelsToAppUnits(h));
 
-  mIntrinsicSize.SizeTo(NSIntPixelsToTwips(w, p2t), NSIntPixelsToTwips(h, p2t));
-
-  nsBoxLayoutState state(presContext);
-  this->MarkDirty(state);
+  if (!(GetStateBits() & NS_FRAME_FIRST_REFLOW)) {
+    PresContext()->PresShell()->
+      FrameNeedsReflow(this, nsIPresShell::eStyleChange, NS_FRAME_IS_DIRTY);
+  }
 
   return NS_OK;
 }
@@ -549,7 +516,7 @@ NS_IMETHODIMP nsImageBoxFrame::OnStartContainer(imgIRequest *request,
 NS_IMETHODIMP nsImageBoxFrame::OnStopContainer(imgIRequest *request,
                                                imgIContainer *image)
 {
-  nsBoxLayoutState state(GetPresContext());
+  nsBoxLayoutState state(PresContext());
   this->Redraw(state);
 
   return NS_OK;
@@ -561,13 +528,13 @@ NS_IMETHODIMP nsImageBoxFrame::OnStopDecode(imgIRequest *request,
 {
   if (NS_SUCCEEDED(aStatus))
     // Fire an onload DOM event.
-    FireImageDOMEvent(mContent, NS_IMAGE_LOAD);
+    FireImageDOMEvent(mContent, NS_LOAD);
   else {
     // Fire an onerror DOM event.
     mIntrinsicSize.SizeTo(0, 0);
-    nsBoxLayoutState state(GetPresContext());
-    MarkDirty(state);
-    FireImageDOMEvent(mContent, NS_IMAGE_ERROR);
+    PresContext()->PresShell()->
+      FrameNeedsReflow(this, nsIPresShell::eStyleChange, NS_FRAME_IS_DIRTY);
+    FireImageDOMEvent(mContent, NS_LOAD_ERROR);
   }
 
   return NS_OK;
@@ -577,7 +544,7 @@ NS_IMETHODIMP nsImageBoxFrame::FrameChanged(imgIContainer *container,
                                             gfxIImageFrame *newframe,
                                             nsRect * dirtyRect)
 {
-  nsBoxLayoutState state(GetPresContext());
+  nsBoxLayoutState state(PresContext());
   this->Redraw(state);
 
   return NS_OK;

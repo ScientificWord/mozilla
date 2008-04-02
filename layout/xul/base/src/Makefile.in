@@ -51,8 +51,8 @@ REQUIRES	= xpcom \
 		  dom \
 		  locale \
 		  content \
-		  xul \
 		  gfx \
+		  thebes \
 		  widget \
 		  view \
 		  docshell \
@@ -64,6 +64,7 @@ REQUIRES	= xpcom \
 		  unicharutil \
 		  xpconnect \
 		  js \
+		  xultmpl \
 		  $(NULL)
 
 ifdef MOZ_ENABLE_CANVAS
@@ -93,7 +94,6 @@ CPPSRCS		= \
 		nsScrollbarButtonFrame.cpp \
 		nsButtonBoxFrame.cpp \
 		nsSliderFrame.cpp \
-		nsNativeScrollbarFrame.cpp \
 		nsRepeatService.cpp \
 		nsXULTooltipListener.cpp \
 		$(NULL)
@@ -101,9 +101,7 @@ CPPSRCS		= \
 ifdef MOZ_XUL
 CPPSRCS		+= \
 		nsScrollBoxObject.cpp \
-		nsBrowserBoxObject.cpp \
-		nsIFrameBoxObject.cpp \
-		nsEditorBoxObject.cpp \
+		nsContainerBoxObject.cpp \
 		nsMenuBoxObject.cpp \
 		nsPopupBoxObject.cpp \
 		nsListBoxObject.cpp \
@@ -121,14 +119,13 @@ CPPSRCS		+= \
 		nsMenuFrame.cpp \
 		nsMenuBarFrame.cpp \
 		nsMenuBarListener.cpp \
-		nsMenuListener.cpp \
-		nsMenuDismissalListener.cpp \
 		nsPopupSetFrame.cpp \
 		nsTitleBarFrame.cpp \
 		nsResizerFrame.cpp \
 		nsListBoxBodyFrame.cpp \
 		nsListItemFrame.cpp \
 		nsListBoxLayout.cpp \
+		nsXULPopupManager.cpp \
 		$(NULL)
 
 endif
@@ -143,6 +140,7 @@ include $(topsrcdir)/config/rules.mk
 LOCAL_INCLUDES	= \
 		-I$(srcdir) \
 		-I$(srcdir)/../../../base \
+		-I$(srcdir)/../../../../content/events/src \
 		-I$(srcdir)/../../../generic \
 		-I$(srcdir)/../../../style \
 		$(NULL)

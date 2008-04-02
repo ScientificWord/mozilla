@@ -47,8 +47,6 @@
 #include "nsPresContext.h"
 #include "nsCOMPtr.h"
 #include "nsIContent.h"
-#include "nsIViewManager.h"
-#include "nsIView.h"
 #include "nsIPresShell.h"
 #include "nsHTMLContainerFrame.h"
 #include "nsIFrame.h"
@@ -61,8 +59,7 @@ nsBoxLayout::nsBoxLayout()
 void
 nsBoxLayout::GetParentLayout(nsIBox* aBox, nsIBoxLayout** aParent)
 {
-  nsIBox* parent = nsnull;
-  aBox->GetParentBox(&parent);
+  nsIBox* parent = aBox->GetParentBox();
   if (parent)
   {
     parent->GetLayoutManager(aParent);
@@ -90,64 +87,37 @@ nsBoxLayout::AddMargin(nsSize& aSize, const nsMargin& aMargin)
   nsBox::AddMargin(aSize, aMargin);
 }
 
-void
-nsBoxLayout::AddInset(nsIBox* aBox, nsSize& aSize)
+nsSize
+nsBoxLayout::GetPrefSize(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState)
 {
-  nsBox::AddInset(aBox, aSize);
+  nsSize pref (0, 0);
+  AddBorderAndPadding(aBox, pref);
+
+  return pref;
 }
 
-NS_IMETHODIMP
-nsBoxLayout::GetFlex(nsIBox* aBox, nsBoxLayoutState& aState, nscoord& aFlex)
+nsSize
+nsBoxLayout::GetMinSize(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState)
 {
-  return aBox->GetFlex(aState, aFlex);
+  nsSize minSize (0,0);
+  AddBorderAndPadding(aBox, minSize);
+  return minSize;
 }
 
-
-NS_IMETHODIMP
-nsBoxLayout::IsCollapsed(nsIBox* aBox, nsBoxLayoutState& aState, PRBool& aCollapsed)
+nsSize
+nsBoxLayout::GetMaxSize(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState)
 {
-  return aBox->IsCollapsed(aState, aCollapsed);
-}
-
-NS_IMETHODIMP
-nsBoxLayout::GetPrefSize(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState, nsSize& aSize)
-{
-  aSize.width = 0;
-  aSize.height = 0;
-  AddBorderAndPadding(aBox, aSize);
-  AddInset(aBox, aSize);
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsBoxLayout::GetMinSize(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState, nsSize& aSize)
-{
-  aSize.width = 0;
-  aSize.height = 0;
-  AddBorderAndPadding(aBox, aSize);
-  AddInset(aBox, aSize);
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsBoxLayout::GetMaxSize(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState, nsSize& aSize)
-{
-  aSize.width = NS_INTRINSICSIZE;
-  aSize.height = NS_INTRINSICSIZE;
-  AddBorderAndPadding(aBox, aSize);
-  AddInset(aBox, aSize);
-  return NS_OK;
+  //AddBorderAndPadding () never changes maxSize (NS_INTRINSICSIZE)
+  //AddBorderAndPadding(aBox, maxSize);
+  return nsSize (NS_INTRINSICSIZE,NS_INTRINSICSIZE);
 }
 
 
-NS_IMETHODIMP
-nsBoxLayout::GetAscent(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState, nscoord& aAscent)
+nscoord
+nsBoxLayout::GetAscent(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState)
 {
-  aAscent = 0;
-  return NS_OK;
+  return 0;
 }
-
 
 NS_IMETHODIMP
 nsBoxLayout::Layout(nsIBox* aBox, nsBoxLayoutState& aBoxLayoutState)
@@ -175,40 +145,29 @@ nsBoxLayout::AddSmallestSize(nsSize& aSize, const nsSize& aSize2)
      aSize.height = aSize2.height;
 }
 
-NS_IMETHODIMP
+void
 nsBoxLayout::ChildrenInserted(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aPrevBox, nsIBox* aChildList)
 {
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsBoxLayout::ChildrenAppended(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aChildList)
 {
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsBoxLayout::ChildrenRemoved(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aChildList)
 {
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsBoxLayout::ChildrenSet(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aChildList)
 {
-  return NS_OK;
 }
 
-NS_IMETHODIMP
-nsBoxLayout::ChildBecameDirty(nsIBox* aBox, nsBoxLayoutState& aState, nsIBox* aChild)
+void
+nsBoxLayout::IntrinsicWidthsDirty(nsIBox* aBox, nsBoxLayoutState& aState)
 {
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsBoxLayout::BecameDirty(nsIBox* aBox, nsBoxLayoutState& aState)
-{
-  return NS_OK;
 }
 
 // nsISupports

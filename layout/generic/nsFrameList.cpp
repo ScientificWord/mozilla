@@ -46,10 +46,17 @@
 
 #ifdef IBMBIDI
 #include "nsCOMPtr.h"
-#include "nsLayoutAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsILineIterator.h"
 #include "nsBidiPresUtils.h"
 #endif // IBMBIDI
+
+void
+nsFrameList::Destroy()
+{
+  DestroyFrames();
+  delete this;
+}
 
 void
 nsFrameList::DestroyFrames()
@@ -248,37 +255,6 @@ nsFrameList::Split(nsIFrame* aAfterFrame, nsIFrame** aNextFrameResult)
 }
 
 nsIFrame*
-nsFrameList::PullFrame(nsIFrame* aParent,
-                       nsIFrame* aLastChild,
-                       nsFrameList& aFromList)
-{
-  NS_PRECONDITION(nsnull != aParent, "null ptr");
-
-  nsIFrame* pulledFrame = nsnull;
-  if (nsnull != aParent) {
-    pulledFrame = aFromList.FirstChild();
-    if (nsnull != pulledFrame) {
-      // Take frame off old list
-      aFromList.RemoveFirstChild();
-
-      // Put it on the end of this list
-      if (nsnull == aLastChild) {
-        NS_ASSERTION(nsnull == mFirstChild, "bad aLastChild");
-        mFirstChild = pulledFrame;
-      }
-      else {
-        aLastChild->SetNextSibling(pulledFrame);
-      }
-      pulledFrame->SetParent(aParent);
-    }
-  }
-#ifdef DEBUG
-  CheckForLoops();
-#endif
-  return pulledFrame;
-}
-
-nsIFrame*
 nsFrameList::LastChild() const
 {
   nsIFrame* frame = mFirstChild;
@@ -320,6 +296,23 @@ nsFrameList::ContainsFrame(const nsIFrame* aFrame) const
   return PR_FALSE;
 }
 
+PRBool
+nsFrameList::ContainsFrameBefore(const nsIFrame* aFrame, const nsIFrame* aEnd) const
+{
+  NS_PRECONDITION(nsnull != aFrame, "null ptr");
+  nsIFrame* frame = mFirstChild;
+  while (frame) {
+    if (frame == aEnd) {
+      return PR_FALSE;
+    }
+    if (frame == aFrame) {
+      return PR_TRUE;
+    }
+    frame = frame->GetNextSibling();
+  }
+  return PR_FALSE;
+}
+
 PRInt32
 nsFrameList::GetLength() const
 {
@@ -335,8 +328,8 @@ nsFrameList::GetLength() const
 static int PR_CALLBACK CompareByContentOrder(const void* aF1, const void* aF2,
                                              void* aDummy)
 {
-  const nsIFrame* f1 = NS_STATIC_CAST(const nsIFrame*, aF1);
-  const nsIFrame* f2 = NS_STATIC_CAST(const nsIFrame*, aF2);
+  const nsIFrame* f1 = static_cast<const nsIFrame*>(aF1);
+  const nsIFrame* f2 = static_cast<const nsIFrame*>(aF2);
   if (f1->GetContent() != f2->GetContent()) {
     return nsLayoutUtils::CompareTreePosition(f1->GetContent(), f2->GetContent());
   }
@@ -375,9 +368,9 @@ nsFrameList::SortByContentOrder()
     array.AppendElement(f);
   }
   array.Sort(CompareByContentOrder, nsnull);
-  f = mFirstChild = NS_STATIC_CAST(nsIFrame*, array.FastElementAt(0));
+  f = mFirstChild = static_cast<nsIFrame*>(array.FastElementAt(0));
   for (PRInt32 i = 1; i < array.Count(); ++i) {
-    nsIFrame* ff = NS_STATIC_CAST(nsIFrame*, array.FastElementAt(i));
+    nsIFrame* ff = static_cast<nsIFrame*>(array.FastElementAt(i));
     f->SetNextSibling(ff);
     f = ff;
   }
@@ -433,7 +426,7 @@ nsFrameList::List(FILE* out) const
 nsIFrame*
 nsFrameList::GetPrevVisualFor(nsIFrame* aFrame) const
 {
-  nsILineIterator* iter;
+  nsCOMPtr<nsILineIterator> iter;
 
   if (!mFirstChild)
     return nsnull;
@@ -442,21 +435,32 @@ nsFrameList::GetPrevVisualFor(nsIFrame* aFrame) const
   if (!parent)
     return aFrame ? GetPrevSiblingFor(aFrame) : LastChild();
 
-  nsBidiLevel baseLevel = nsBidiPresUtils::GetFrameBaseLevel(mFirstChild);
-  
-  nsresult result = parent->QueryInterface(NS_GET_IID(nsILineIterator), (void**)&iter);
+  nsBidiLevel baseLevel = nsBidiPresUtils::GetFrameBaseLevel(mFirstChild);  
+  nsBidiPresUtils* bidiUtils = mFirstChild->PresContext()->GetBidiUtils();
+
+  nsresult result = parent->QueryInterface(NS_GET_IID(nsILineIterator), getter_AddRefs(iter));
   if (NS_FAILED(result) || !iter) { 
-    // If the parent is not a block frame, just get the next or prev sibling, depending on block and frame direction.
-    nsBidiLevel frameEmbeddingLevel = nsBidiPresUtils::GetFrameEmbeddingLevel(mFirstChild);
-    if ((frameEmbeddingLevel & 1) == (baseLevel & 1)) {
-      return aFrame ? GetPrevSiblingFor(aFrame) : LastChild();
+    // Parent is not a block Frame
+    if (parent->GetType() == nsGkAtoms::lineFrame) {
+      // Line frames are not bidi-splittable, so need to consider bidi reordering
+      if (baseLevel == NSBIDI_LTR) {
+        return bidiUtils->GetFrameToLeftOf(aFrame, mFirstChild, -1);
+      } else { // RTL
+        return bidiUtils->GetFrameToRightOf(aFrame, mFirstChild, -1);
+      }
     } else {
-      return aFrame ? aFrame->GetNextSibling() : mFirstChild;
-    }    
+      // Just get the next or prev sibling, depending on block and frame direction.
+      nsBidiLevel frameEmbeddingLevel = nsBidiPresUtils::GetFrameEmbeddingLevel(mFirstChild);
+      if ((frameEmbeddingLevel & 1) == (baseLevel & 1)) {
+        return aFrame ? GetPrevSiblingFor(aFrame) : LastChild();
+      } else {
+        return aFrame ? aFrame->GetNextSibling() : mFirstChild;
+      }    
+    }
   }
 
-  // Otherwise use the LineIterator to find the previous visual sibling on this line,
-  // or the last one on the previous line.
+  // Parent is a block frame, so use the LineIterator to find the previous visual 
+  // sibling on this line, or the last one on the previous line.
 
   PRInt32 thisLine;
   if (aFrame) {
@@ -466,9 +470,7 @@ nsFrameList::GetPrevVisualFor(nsIFrame* aFrame) const
   } else {
     iter->GetNumLines(&thisLine);
   }
-  
-  nsBidiPresUtils* bidiUtils = mFirstChild->GetPresContext()->GetBidiUtils();
-  
+
   nsIFrame* frame = nsnull;
   nsIFrame* firstFrameOnLine;
   PRInt32 numFramesOnLine;
@@ -501,7 +503,7 @@ nsFrameList::GetPrevVisualFor(nsIFrame* aFrame) const
 nsIFrame*
 nsFrameList::GetNextVisualFor(nsIFrame* aFrame) const
 {
-  nsILineIterator* iter;
+  nsCOMPtr<nsILineIterator> iter;
 
   if (!mFirstChild)
     return nsnull;
@@ -511,20 +513,31 @@ nsFrameList::GetNextVisualFor(nsIFrame* aFrame) const
     return aFrame ? GetPrevSiblingFor(aFrame) : mFirstChild;
 
   nsBidiLevel baseLevel = nsBidiPresUtils::GetFrameBaseLevel(mFirstChild);
+  nsBidiPresUtils* bidiUtils = mFirstChild->PresContext()->GetBidiUtils();
   
-  nsresult result = parent->QueryInterface(NS_GET_IID(nsILineIterator), (void**)&iter);
-  if (NS_FAILED(result) || !iter) {
-    // If the parent is not a block frame, just get the next or prev sibling, depending on block and frame direction.
-    nsBidiLevel frameEmbeddingLevel = nsBidiPresUtils::GetFrameEmbeddingLevel(mFirstChild);
-    if ((frameEmbeddingLevel & 1) == (baseLevel & 1)) {
-      return aFrame ? aFrame->GetNextSibling() : mFirstChild;
+  nsresult result = parent->QueryInterface(NS_GET_IID(nsILineIterator), getter_AddRefs(iter));
+  if (NS_FAILED(result) || !iter) { 
+    // Parent is not a block Frame
+    if (parent->GetType() == nsGkAtoms::lineFrame) {
+      // Line frames are not bidi-splittable, so need to consider bidi reordering
+      if (baseLevel == NSBIDI_LTR) {
+        return bidiUtils->GetFrameToRightOf(aFrame, mFirstChild, -1);
+      } else { // RTL
+        return bidiUtils->GetFrameToLeftOf(aFrame, mFirstChild, -1);
+      }
     } else {
-      return aFrame ? GetPrevSiblingFor(aFrame) : LastChild();
-    }    
+      // Just get the next or prev sibling, depending on block and frame direction.
+      nsBidiLevel frameEmbeddingLevel = nsBidiPresUtils::GetFrameEmbeddingLevel(mFirstChild);
+      if ((frameEmbeddingLevel & 1) == (baseLevel & 1)) {
+        return aFrame ? aFrame->GetNextSibling() : mFirstChild;
+      } else {
+        return aFrame ? GetPrevSiblingFor(aFrame) : LastChild();
+      }
+    }
   }
 
-  // Otherwise use the LineIterator to find the next visual sibling on this line,
-  // or the first one on the next line.
+  // Parent is a block frame, so use the LineIterator to find the next visual 
+  // sibling on this line, or the first one on the next line.
   
   PRInt32 thisLine;
   if (aFrame) {
@@ -534,9 +547,7 @@ nsFrameList::GetNextVisualFor(nsIFrame* aFrame) const
   } else {
     thisLine = -1;
   }
-  
-  nsBidiPresUtils* bidiUtils = mFirstChild->GetPresContext()->GetBidiUtils();
-  
+
   nsIFrame* frame = nsnull;
   nsIFrame* firstFrameOnLine;
   PRInt32 numFramesOnLine;
