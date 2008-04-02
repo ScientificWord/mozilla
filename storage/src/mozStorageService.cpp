@@ -23,6 +23,7 @@
  * Contributor(s):
  *   Vladimir Vukicevic <vladimir.vukicevic@oracle.com>
  *   Brett Wilson <brettw@gmail.com>
+ *   Shawn Wilsher <me@shawnwilsher.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -45,48 +46,40 @@
 #include "plstr.h"
 
 #include "sqlite3.h"
-#include "sqlite3file.h"
 
-NS_IMPL_THREADSAFE_ISUPPORTS2(mozStorageService, mozIStorageService, nsIObserver)
+NS_IMPL_THREADSAFE_ISUPPORTS1(mozStorageService, mozIStorageService)
 
-// XXX this sucks that we have to pull in nsIFile and all that
-// just to use NS_GetSpecialDirectory
+mozStorageService *mozStorageService::gStorageService = nsnull;
 
-static const char kShutdownMessage[] = "xpcom-shutdown-threads";
-
-mozStorageService::mozStorageService()
+mozStorageService *
+mozStorageService::GetSingleton()
 {
+    if (gStorageService) {
+        NS_ADDREF(gStorageService);
+        return gStorageService;
+    }
     
+    gStorageService = new mozStorageService();
+    if (gStorageService) {
+        NS_ADDREF(gStorageService);
+        if (NS_FAILED(gStorageService->Init()))
+            NS_RELEASE(gStorageService);
+    }
+    
+    return gStorageService;
 }
 
 mozStorageService::~mozStorageService()
 {
-    FreeLocks();
+    gStorageService = nsnull;
 }
 
 nsresult
 mozStorageService::Init()
 {
-    // The service must be initialized on the main thread. The
-    // InitStorageAsyncIO function creates a thread which is joined with the
-    // main thread during shutdown. If the thread is created from a random
-    // thread, we'll join to the wrong parent.
-    NS_ENSURE_STATE(NS_IsMainThread());
-
     // this makes multiple connections to the same database share the same pager
     // cache.
     sqlite3_enable_shared_cache(1);
-
-    nsresult rv;
-    nsCOMPtr<nsIObserverService> observerService = 
-            do_GetService("@mozilla.org/observer-service;1", &rv);
-    NS_ENSURE_SUCCESS(rv, rv);
-
-    rv = InitStorageAsyncIO();
-    NS_ENSURE_SUCCESS(rv, rv);
-
-    rv = observerService->AddObserver(this, kShutdownMessage, PR_FALSE);
-    NS_ENSURE_SUCCESS(rv, rv);
 
     return NS_OK;
 }
@@ -122,14 +115,13 @@ mozStorageService::OpenSpecialDatabase(const char *aStorageKey, mozIStorageConne
     }
 
     mozStorageConnection *msc = new mozStorageConnection(this);
-    if (! msc)
+    if (!msc)
         return NS_ERROR_OUT_OF_MEMORY;
-    nsCOMPtr<mozIStorageConnection> conn = msc;
-    rv = msc->Initialize (storageFile);
-    if (NS_FAILED(rv)) return rv;
 
-    *_retval = conn;
-    NS_ADDREF(*_retval);
+    rv = msc->Initialize (storageFile);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    NS_ADDREF(*_retval = msc);
     return NS_OK;
 }
 
@@ -140,25 +132,39 @@ mozStorageService::OpenDatabase(nsIFile *aDatabaseFile, mozIStorageConnection **
     nsresult rv;
 
     mozStorageConnection *msc = new mozStorageConnection(this);
-    if (! msc)
+    if (!msc)
         return NS_ERROR_OUT_OF_MEMORY;
-    nsCOMPtr<mozIStorageConnection> conn = msc;
-    rv = msc->Initialize (aDatabaseFile);
-    if (NS_FAILED(rv)) return rv;
 
-    *_retval = conn;
-    NS_ADDREF(*_retval);
+    // We want to return a valid connection regardless if it succeeded or not so
+    // that consumers can backup the database if it failed.
+    (void)msc->Initialize(aDatabaseFile);
+    NS_ADDREF(*_retval = msc);
+
     return NS_OK;
 }
 
+/* mozIStorageConnection openUnsharedDatabase(in nsIFile aDatabaseFile); */
 NS_IMETHODIMP
-mozStorageService::Observe(nsISupports *aSubject, const char *aTopic,
-                           const PRUnichar *aData)
+mozStorageService::OpenUnsharedDatabase(nsIFile *aDatabaseFile, mozIStorageConnection **_retval)
 {
     nsresult rv;
-    if (nsCRT::strcmp(aTopic, kShutdownMessage) == 0) {
-        rv = FinishAsyncIO();
-        NS_ENSURE_SUCCESS(rv, rv);
-    }
+
+    mozStorageConnection *msc = new mozStorageConnection(this);
+    if (!msc)
+        return NS_ERROR_OUT_OF_MEMORY;
+
+    // Initialize the connection, temporarily turning off shared caches so the
+    // new connection gets its own cache.  Database connections are assigned
+    // caches when they are opened, and they retain those caches for their
+    // lifetimes, unaffected by changes to the shared caches setting, so we can
+    // disable shared caches temporarily while we initialize the new connection
+    // without affecting the caches currently in use by other connections.
+    // We want to return a valid connection regardless if it succeeded or not so
+    // that consumers can backup the database if it failed.
+    sqlite3_enable_shared_cache(0);
+    (void)msc->Initialize(aDatabaseFile);
+    sqlite3_enable_shared_cache(1);
+    NS_ADDREF(*_retval = msc);
+
     return NS_OK;
 }
