@@ -38,10 +38,6 @@
 static const char CVS_ID[] = "@(#) $RCSfile$ $Revision$ $Date$";
 #endif /* DEBUG */
 
-#ifndef NSS_3_4_CODE
-#define NSS_3_4_CODE
-#endif /* NSS_3_4_CODE */
-
 #ifndef PKIT_H
 #include "pkit.h"
 #endif /* PKIT_H */
@@ -68,6 +64,9 @@ nssSession_ImportNSS3Session(NSSArena *arenaOpt,
 {
     nssSession *rvSession;
     rvSession = nss_ZNEW(arenaOpt, nssSession);
+    if (!rvSession) {
+        return NULL;
+    }
     rvSession->handle = session;
     rvSession->lock = lock;
     rvSession->ownLock = PR_FALSE;
@@ -105,7 +104,7 @@ nssSlot_CreateSession
          * 3. If the module is thread safe and we are using a new
          *    session, no higher-level lock has been locked and we
          *    would need a lock for the new session.  However, the
-         *    NSS_3_4_CODE usage of the session is that it is always
+         *    current usage of the session is that it is always
          *    used and destroyed within the same function and never
          *    shared with another thread.
          * So the session is either already protected by another
@@ -197,6 +196,10 @@ nssToken_CreateFromPK11SlotInfo(NSSTrustDomain *td, PK11SlotInfo *nss3slot)
     /* Grab the token name from the PKCS#11 fixed-length buffer */
     rvToken->base.name = nssUTF8_Duplicate(nss3slot->token_name,td->arena);
     rvToken->slot = nssSlot_CreateFromPK11SlotInfo(td, nss3slot);
+    if (!rvToken->slot) {
+        nssArena_Destroy(arena);
+        return (NSSToken *)NULL;
+    }
     rvToken->slot->token = rvToken;
     rvToken->defaultSession->slot = rvToken->slot;
     return rvToken;

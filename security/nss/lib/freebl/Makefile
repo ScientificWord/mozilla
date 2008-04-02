@@ -88,6 +88,7 @@ ifeq ($(OS_TARGET),OSF1)
 endif
 
 ifeq (,$(filter-out WINNT WIN95,$(OS_TARGET)))  #omits WIN16 and WINCE
+ifndef USE_64
 ifdef NS_USE_GCC
 # Ideally, we want to use assembler
 #     ASFILES  = mpi_x86.s
@@ -104,6 +105,7 @@ else
     ifdef BUILD_OPT
 	OPTIMIZER += -Ox  # maximum optimization for freebl
     endif
+endif
 endif
 endif
 
@@ -192,7 +194,7 @@ endif
 # to bind the blapi function references in FREEBLVector vector
 # (ldvector.c) to the blapi functions defined in the freebl
 # shared libraries.
-ifeq (,$(filter-out BSD_OS FreeBSD Linux NetBSD, $(OS_TARGET)))
+ifeq (,$(filter-out BSD_OS FreeBSD Linux NetBSD OpenBSD, $(OS_TARGET)))
     MKSHLIB += -Wl,-Bsymbolic
 endif
 
@@ -274,7 +276,10 @@ ifeq ($(CPU_ARCH),sparc)
 	    # no FPU (non-VIS cpus).
 	    # These flags were suggested by the compiler group for building
 	    # with SunStudio 10.
- 	    SOL_CFLAGS += -xO4 -xtarget=generic
+	    ifdef BUILD_OPT
+                SOL_CFLAGS += -xO4
+	    endif
+ 	    SOL_CFLAGS += -xtarget=generic
 	    ARCHFLAG = -xarch=v8plus
 	    SOLARIS_AS_FLAGS = -xarch=v8plus -K PIC
 	endif
@@ -283,17 +288,23 @@ ifeq ($(CPU_ARCH),sparc)
 	    # 32-bit ABI, it uses FPU code, and 32-bit word size.
 	    # these flags were determined by running cc -### -fast and copying
 	    # the generated flag settings
-	    SOL_CFLAGS += -D__MATHERR_ERRNO_DONTCARE -fns -fsimple=2 -fsingle
-	    SOL_CFLAGS += -xalias_level=basic -xbuiltin=%all
-	    SOL_CFLAGS += $(FPU_TARGET_OPTIMIZER) -xdepend
-	    SOL_CFLAGS += -xlibmil -xmemalign=8s -xO5
+	    SOL_CFLAGS += -fsingle -xmemalign=8s
+	    ifdef BUILD_OPT
+                SOL_CFLAGS += -D__MATHERR_ERRNO_DONTCARE -fsimple=1
+                SOL_CFLAGS += -xalias_level=basic -xbuiltin=%all
+                SOL_CFLAGS += $(FPU_TARGET_OPTIMIZER) -xdepend
+                SOL_CFLAGS += -xlibmil -xO5
+	    endif
 	    ARCHFLAG = -xarch=v8plusa
 	    SOLARIS_AS_FLAGS = -xarch=v8plusa -K PIC
 	endif
 	ifdef USE_ABI64_INT
 	    # this builds for Sparc v9a pure 64-bit architecture,
 	    # no FPU (non-VIS cpus). For building with SunStudio 10.
- 	    SOL_CFLAGS += -xO4 -xtarget=generic
+	    ifdef BUILD_OPT
+                SOL_CFLAGS += -xO4
+	    endif
+ 	    SOL_CFLAGS += -xtarget=generic
 	    ARCHFLAG = -xarch=v9
 	    SOLARIS_AS_FLAGS = -xarch=v9 -K PIC
 	endif
@@ -301,10 +312,13 @@ ifeq ($(CPU_ARCH),sparc)
 	    # this builds for Sparc v9a pure 64-bit architecture
 	    # It uses floating point, and 32-bit word size.
 	    # See comment for USE_ABI32_FPU.
-	    SOL_CFLAGS += -D__MATHERR_ERRNO_DONTCARE -fns -fsimple=2 -fsingle
-	    SOL_CFLAGS += -xalias_level=basic -xbuiltin=%all
-	    SOL_CFLAGS += $(FPU_TARGET_OPTIMIZER) -xdepend
-	    SOL_CFLAGS += -xlibmil -xmemalign=8s -xO5
+	    SOL_CFLAGS += -fsingle -xmemalign=8s
+	    ifdef BUILD_OPT
+                SOL_CFLAGS += -D__MATHERR_ERRNO_DONTCARE -fsimple=1
+                SOL_CFLAGS += -xalias_level=basic -xbuiltin=%all
+                SOL_CFLAGS += $(FPU_TARGET_OPTIMIZER) -xdepend
+                SOL_CFLAGS += -xlibmil -xO5
+	    endif
 	    ARCHFLAG = -xarch=v9a
 	    SOLARIS_AS_FLAGS = -xarch=v9a -K PIC
 	endif
@@ -366,7 +380,7 @@ else
  	    MPCPU_SRCS =
 	endif
 	DEFINES += -DNSS_BEVAND_ARCFOUR -DMPI_AMD64 -DMP_ASSEMBLY_MULTIPLY
-	DEFINES += -DNSS_USE_COMBA
+	DEFINES += -DNSS_USE_COMBA -DMP_CHAR_STORE_SLOW -DMP_IS_LITTLE_ENDIAN
 	MPI_SRCS += mpi_amd64.c
     else
 	# Solaris x86
@@ -554,14 +568,6 @@ endif
 endif  # FREEBL_CHILD_BUILD
 
 
-# Bugzilla Bug 209827: disable optimization to work around what appears
-# to be a VACPP optimizer bug.
-ifdef XP_OS2_VACPP
-$(OBJDIR)/alg2268.obj: alg2268.c
-	@$(MAKE_OBJDIR)
-	$(CC) -Fo$@ -c $(filter-out /O+, $(CFLAGS)) $(call abspath,$<)
-endif
-
 # Bugzilla Bug 333917: the non-x86 code in desblapi.c seems to violate
 # ANSI C's strict aliasing rules.
 ifeq ($(OS_TARGET),Linux)
@@ -569,7 +575,7 @@ ifneq ($(CPU_ARCH),x86)
 $(OBJDIR)/$(PROG_PREFIX)desblapi$(OBJ_SUFFIX): desblapi.c
 	@$(MAKE_OBJDIR)
 ifdef NEED_ABSOLUTE_PATH
-	$(CC) -o $@ -c $(CFLAGS) -fno-strict-aliasing $(call abspath,$<)
+	$(CC) -o $@ -c $(CFLAGS) -fno-strict-aliasing $(call core_abspath,$<)
 else
 	$(CC) -o $@ -c $(CFLAGS) -fno-strict-aliasing $<
 endif

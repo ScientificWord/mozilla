@@ -42,12 +42,14 @@
 #include "pk12util.h"
 #include "nss.h"
 #include "secport.h"
+#include "secpkcs5.h"
 #include "certdb.h"
 
 #define PKCS12_IN_BUFFER_SIZE	200
 
 static char *progName;
 PRBool pk12_debugging = PR_FALSE;
+PRBool dumpRawFile;
 
 PRIntn pk12uErrno = 0;
 
@@ -55,16 +57,19 @@ static void
 Usage(char *progName)
 {
 #define FPS PR_fprintf(PR_STDERR,
-    FPS "Usage:	 %s -i importfile [-d certdir] [-P dbprefix] [-h tokenname]\n",
+    FPS "Usage:	 %s -i importfile [-d certdir] [-P dbprefix] [-h tokenname] [-v]\n",
 				 progName);
     FPS "\t\t [-k slotpwfile | -K slotpw] [-w p12filepwfile | -W p12filepw]\n");
-    FPS "\t\t [-v]\n");
-    FPS "Usage:	 %s -l listfile [-d certdir] [-P dbprefix] [-h tokenname]\n",
+
+    FPS "Usage:	 %s -l listfile [-d certdir] [-P dbprefix] [-h tokenname] [-r]\n",
 				 progName);
     FPS "\t\t [-k slotpwfile | -K slotpw] [-w p12filepwfile | -W p12filepw]\n");
-    FPS "Usage:	 %s -o exportfile -n certname [-d certdir] [-P dbprefix]\n", progName);
+
+    FPS "Usage:	 %s -o exportfile -n certname [-d certdir] [-P dbprefix] [-v]\n", 
+        progName);
+    FPS "\t\t [-c key_cipher] [-C cert_cipher] [-k key_leng]\n");
     FPS "\t\t [-k slotpwfile | -K slotpw] [-w p12filepwfile | -W p12filepw]\n");
-    FPS "\t\t [-v]\n");
+
     exit(PK12UERR_USAGE);
 }
 
@@ -142,30 +147,40 @@ p12u_InitContext(PRBool fileImport, char *filename)
 SECItem *
 P12U_NicknameCollisionCallback(SECItem *old_nick, PRBool *cancel, void *wincx)
 {
-    if(cancel == NULL) {
-      pk12uErrno = PK12UERR_USER_CANCELLED;
-      return NULL;
+    char           *nick     = NULL;
+    SECItem        *ret_nick = NULL;
+    CERTCertificate* cert    = (CERTCertificate*)wincx;
+
+    if (!cancel || !cert) {
+	pk12uErrno = PK12UERR_USER_CANCELLED;
+	return NULL;
     }
 
     if (!old_nick)
-      fprintf(stdout, "pk12util: no nickname for cert...not handled\n");
+	fprintf(stdout, "pk12util: no nickname for cert in PKCS12 file.\n");
 
+#if 0
     /* XXX not handled yet  */
     *cancel = PR_TRUE;
     return NULL;
 
-#if 0
-    char *nick = NULL;
-    SECItem *ret_nick = NULL;
+#else
 
-    nick = strdup( DEFAULT_CERT_NICKNAME );
+    nick = CERT_MakeCANickname(cert); 
+    if (!nick) {
+    	return NULL;
+    }
 
-    if(old_nick && !PORT_Strcmp((char *)old_nick->data, nick)) {
+    if(old_nick && old_nick->data && old_nick->len &&
+       PORT_Strlen(nick) == old_nick->len &&
+       !PORT_Strncmp((char *)old_nick->data, nick, old_nick->len)) {
 	PORT_Free(nick);
+	PORT_SetError(SEC_ERROR_IO);
 	return NULL;
     }
 
-    ret_nick = (SECItem *)PORT_ZAlloc(sizeof(SECItem));
+    fprintf(stdout, "pk12util: using nickname: %s\n", nick);
+    ret_nick = PORT_ZNew(SECItem);
     if(ret_nick == NULL) {
 	PORT_Free(nick);
 	return NULL;
@@ -282,23 +297,33 @@ P12U_UnicodeConversion(PRArenaPool *arena, SECItem *dest, SECItem *src,
 SECItem *
 P12U_GetP12FilePassword(PRBool confirmPw, secuPWData *p12FilePw)
 {
-    char *p0 = NULL, *p1 = NULL;
+    char *p0 = NULL;
     SECItem *pwItem = NULL;
 
     if (p12FilePw == NULL || p12FilePw->source == PW_NONE) {
+	char *p1 = NULL;
+	int   rc;
 	for (;;) {
 	    p0 = SECU_GetPasswordString(NULL,
 					"Enter password for PKCS12 file: ");
-	    if (!confirmPw)
+	    if (!confirmPw || p0 == NULL)
 		break;
 	    p1 = SECU_GetPasswordString(NULL, "Re-enter password: ");
-	    if (PL_strcmp(p0, p1) == 0)
+	    if (p1 == NULL) {
+		PORT_ZFree(p0, PL_strlen(p0));
+		p0 = NULL;
 		break;
+	    }
+	    rc = PL_strcmp(p0, p1);
+	    PORT_ZFree(p1, PL_strlen(p1));
+	    if (rc == 0)
+		break;
+	    PORT_ZFree(p0, PL_strlen(p0));
 	}
     } else if (p12FilePw->source == PW_FROMFILE) {
 	p0 = SECU_FilePasswd(NULL, PR_FALSE, p12FilePw->data);
     } else { /* Plaintext */
-	p0 = p12FilePw->data;
+	p0 = PORT_Strdup(p12FilePw->data);
     }
 
     if (p0 == NULL) {
@@ -307,11 +332,7 @@ P12U_GetP12FilePassword(PRBool confirmPw, secuPWData *p12FilePw)
     pwItem = SECITEM_AllocItem(NULL, NULL, PL_strlen(p0) + 1);
     memcpy(pwItem->data, p0, pwItem->len);
 
-    PORT_Memset(p0, 0, PL_strlen(p0));
-    PORT_Free(p0);
-
-    PORT_Memset(p1, 0, PL_strlen(p1));
-    PORT_Free(p1);
+    PORT_ZFree(p0, PL_strlen(p0));
 
     return pwItem;
 }
@@ -474,7 +495,6 @@ P12U_ImportPKCS12Object(char *in_file, PK11SlotInfo *slot,
     SEC_PKCS12DecoderContext *p12dcx = NULL;
     SECItem uniPwitem = { 0 };
     SECStatus rv = SECFailure;
-    int error;
 
     rv = P12U_InitSlot(slot, slotPw);
     if (rv != SECSuccess) {
@@ -574,7 +594,8 @@ p12u_WriteToExportFile(void *arg, const char *buf, unsigned long len)
 
 void
 P12U_ExportPKCS12Object(char *nn, char *outfile, PK11SlotInfo *inSlot,
-			secuPWData *slotPw, secuPWData *p12FilePw)
+		SECOidTag cipher, SECOidTag certCipher, 
+		secuPWData *slotPw, secuPWData *p12FilePw)
 {
     SEC_PKCS12ExportContext *p12ecx = NULL;
     SEC_PKCS12SafeInfo *keySafe = NULL, *certSafe = NULL;
@@ -599,7 +620,8 @@ P12U_ExportPKCS12Object(char *nn, char *outfile, PK11SlotInfo *inSlot,
 
     if ((SECSuccess != CERT_FilterCertListForUserCerts(certlist)) ||
         CERT_LIST_EMPTY(certlist)) {
-        SECU_PrintError(progName,"no user certs from given nickname");
+        PR_fprintf(PR_STDERR, "%s: no user certs from given nickname\n",
+                   progName);
         pk12uErrno = PK12UERR_FINDCERTBYNN;
         goto loser;
     }
@@ -657,11 +679,11 @@ P12U_ExportPKCS12Object(char *nn, char *outfile, PK11SlotInfo *inSlot,
         }
     
         keySafe = SEC_PKCS12CreateUnencryptedSafe(p12ecx);
-        if(/*!SEC_PKCS12IsEncryptionAllowed() || */ PK11_IsFIPS()) {
+        if(certCipher == SEC_OID_UNKNOWN) {
             certSafe = keySafe;
         } else {
-            certSafe = SEC_PKCS12CreatePasswordPrivSafe(p12ecx, pwitem,
-                SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_40_BIT_RC2_CBC);
+            certSafe = 
+		SEC_PKCS12CreatePasswordPrivSafe(p12ecx, pwitem, certCipher);
         }
     
         if(!certSafe || !keySafe) {
@@ -671,8 +693,7 @@ P12U_ExportPKCS12Object(char *nn, char *outfile, PK11SlotInfo *inSlot,
         }
     
         if(SEC_PKCS12AddCertAndKey(p12ecx, certSafe, NULL, cert,
-            CERT_GetDefaultCertDB(), keySafe, NULL, PR_TRUE, pwitem,
-            SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_3KEY_TRIPLE_DES_CBC)
+            CERT_GetDefaultCertDB(), keySafe, NULL, PR_TRUE, pwitem, cipher)
             != SECSuccess) {
                 SECU_PrintError(progName,"add cert and key failed");
                 pk12uErrno = PK12UERR_ADDCERTKEY;
@@ -705,12 +726,6 @@ loser:
         certlist = NULL;
     }    
 
-    if (slotPw)
-        PR_Free(slotPw->data);
-
-    if (p12FilePw)
-        PR_Free(p12FilePw->data);
-
     p12u_DestroyContext(&p12cxt, PR_TRUE);
     if(pwitem) {
         SECITEM_ZfreeItem(pwitem, PR_TRUE);
@@ -728,7 +743,6 @@ P12U_ListPKCS12File(char *in_file, PK11SlotInfo *slot,
     SECItem uniPwitem = { 0 };
     SECStatus rv = SECFailure;
     const SEC_PKCS12DecoderItem *dip;
-    int error;
 
     p12dcx = p12U_ReadPKCS12File(&uniPwitem, in_file, slot, slotPw,
                              p12FilePw);
@@ -743,12 +757,27 @@ P12U_ListPKCS12File(char *in_file, PK11SlotInfo *slot,
 	SECU_PrintError(progName,"PKCS12 decode iterate bags failed");
 	pk12uErrno = PK12UERR_DECODEIMPTBAGS;
         rv = SECFailure;
-    }
-    else {
+    } else {
+	int fileCounter = 0;
         while (SEC_PKCS12DecoderIterateNext(p12dcx, &dip) == SECSuccess) {
             switch (dip->type) {
                 case SEC_OID_PKCS12_V1_CERT_BAG_ID:
                     printf("Certificate");
+		    if (dumpRawFile) {
+			PRFileDesc * fd;
+			char fileName[20];
+			sprintf(fileName, "file%04d.der", ++fileCounter);
+			fd = PR_Open(fileName,
+				     PR_CREATE_FILE | PR_RDWR | PR_TRUNCATE,
+				     0600);
+			if (!fd) {
+			    SECU_PrintError(progName,
+			                    "Cannot create output file");
+			} else {
+			    PR_Write(fd, dip->der->data, dip->der->len);
+			    PR_Close(fd);
+			}
+		    } else 
                     if (SECU_PrintSignedData(stdout, dip->der,
                             (dip->hasKey) ? "(has private key)" : "",
                              0, SECU_PrintCertificate) != 0) {
@@ -758,6 +787,10 @@ P12U_ListPKCS12File(char *in_file, PK11SlotInfo *slot,
                         printf("    Friendly Name: %s\n\n",
                                 dip->friendlyName->data);
                     }
+		    if (dip->shroudAlg) {
+			SECU_PrintAlgorithmID(stdout, dip->shroudAlg,
+						 "Encryption algorithm",1);
+		    }
                     break;
                 case SEC_OID_PKCS12_V1_KEY_BAG_ID:
                 case SEC_OID_PKCS12_V1_PKCS8_SHROUDED_KEY_BAG_ID:
@@ -769,6 +802,10 @@ P12U_ListPKCS12File(char *in_file, PK11SlotInfo *slot,
                         printf("    Friendly Name: %s\n\n",
                                 dip->friendlyName->data);
                     }
+		    if (dip->shroudAlg) {
+			SECU_PrintAlgorithmID(stdout, dip->shroudAlg,
+						 "Encryption algorithm",1);
+		    }
                     break;
                 default:
                     printf("unknown bag type(%d): %s\n\n", dip->type,
@@ -790,6 +827,54 @@ loser:
     }
     
     return rv;
+}
+
+/*
+ * use the oid table description to map a user input string to a particular
+ * oid.
+ */
+SECOidTag
+PKCS12U_MapCipherFromString(char *cipherString, int keyLen)
+{
+    SECOidTag tag;
+    SECOidData *oid;
+    SECOidTag cipher;
+
+    /* future enhancement: accept dotted oid spec? */
+
+    /* future enhancement: provide 'friendlier' typed in names for
+     * pbe mechanisms.
+     */
+
+    /* look for the oid tag by Description */
+    cipher = SEC_OID_UNKNOWN;
+    for (tag=1;  (oid=SECOID_FindOIDByTag(tag)) != NULL ; tag++) {
+	/* only interested in oids that we actually understand */
+	if (oid->mechanism == CKM_INVALID_MECHANISM) {
+	    continue;
+	}
+	if (PORT_Strcasecmp(oid->desc, cipherString) != 0) {
+	    continue;
+	}
+	/* we found a match... get the PBE version of this
+	 * cipher... */
+	if (!SEC_PKCS5IsAlgorithmPBEAlgTag(tag)) {
+	    cipher = SEC_PKCS5GetPBEAlgorithm(tag, keyLen);
+	    /* no eqivalent PKCS5/PKCS12 cipher, use the raw
+	     * encryption tag we got and pass it directly in,
+	     * pkcs12 will use the pkcsv5 mechanism */
+	    if (cipher == SEC_OID_PKCS5_PBES2) {
+		cipher = tag;
+	    } else if (cipher == SEC_OID_PKCS5_PBMAC1) {
+		/* make sure we have not macing ciphers here */
+		cipher = SEC_OID_UNKNOWN;
+	    }
+	} else {
+		cipher = tag;
+	}
+	break;
+    }
+    return cipher;
 }
 
 static void
@@ -840,10 +925,15 @@ enum {
     opt_List,
     opt_Nickname,
     opt_Export,
+    opt_Raw,
     opt_P12FilePWFile,
     opt_P12FilePW,
     opt_DBPrefix,
-    opt_Debug
+    opt_Debug,
+    opt_Cipher,
+    opt_CertCipher,
+    opt_KeyLength,
+    opt_CertKeyLength
 };
 
 static secuCommandFlag pk12util_options[] =
@@ -856,10 +946,15 @@ static secuCommandFlag pk12util_options[] =
     { /* opt_List              */ 'l', PR_TRUE,  0, PR_FALSE },
     { /* opt_Nickname	       */ 'n', PR_TRUE,	 0, PR_FALSE },
     { /* opt_Export	       */ 'o', PR_TRUE,	 0, PR_FALSE },
+    { /* opt_Raw   	       */ 'r', PR_FALSE, 0, PR_FALSE },
     { /* opt_P12FilePWFile     */ 'w', PR_TRUE,	 0, PR_FALSE },
     { /* opt_P12FilePW	       */ 'W', PR_TRUE,	 0, PR_FALSE },
     { /* opt_DBPrefix	       */ 'P', PR_TRUE,	 0, PR_FALSE },
-    { /* opt_Debug	       */ 'v', PR_FALSE, 0, PR_FALSE }
+    { /* opt_Debug	       */ 'v', PR_FALSE, 0, PR_FALSE },
+    { /* opt_Cipher	       */ 'c', PR_TRUE,  0, PR_FALSE },
+    { /* opt_CertCipher	       */ 'C', PR_TRUE,  0, PR_FALSE },
+    { /* opt_KeyLength	       */ 'k', PR_TRUE,  0, PR_FALSE },
+    { /* opt_CertKeyLength     */ 'K', PR_TRUE,  0, PR_FALSE }
 };
 
 int
@@ -873,6 +968,11 @@ main(int argc, char **argv)
     char *export_file = NULL;
     char *dbprefix = "";
     SECStatus rv;
+    SECOidTag cipher = 
+            SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_3KEY_TRIPLE_DES_CBC;
+    SECOidTag certCipher;
+    int keyLen = 0;
+    int certKeyLen = 0;
 
     secuCommand pk12util;
     pk12util.numCommands = 0;
@@ -934,6 +1034,16 @@ main(int argc, char **argv)
     if (pk12util.options[opt_DBPrefix].activated) {
     	dbprefix = pk12util.options[opt_DBPrefix].arg;
     }
+    if (pk12util.options[opt_Raw].activated) {
+    	dumpRawFile = PR_TRUE;
+    }
+    if (pk12util.options[opt_KeyLength].activated) {
+    	keyLen = atoi(pk12util.options[opt_KeyLength].arg);
+    }
+    if (pk12util.options[opt_CertKeyLength].activated) {
+    	certKeyLen = atoi(pk12util.options[opt_CertKeyLength].arg);
+    }
+		
     P12U_Init(SECU_ConfigDirectory(NULL), dbprefix,
                 pk12util.options[opt_List].activated);
 
@@ -948,13 +1058,49 @@ main(int argc, char **argv)
 	goto done;
     }
 
+    if (pk12util.options[opt_Cipher].activated) {
+	char *cipherString = pk12util.options[opt_Cipher].arg;
+
+	cipher = PKCS12U_MapCipherFromString(cipherString, keyLen);
+	/* We only want encryption PBE's. make sure we don't have
+	 * any MAC pbes */
+	if (cipher == SEC_OID_UNKNOWN) {
+	    PORT_SetError(SEC_ERROR_INVALID_ALGORITHM);
+	    SECU_PrintError(progName, "Algorithm: \"%s\"", cipherString);
+	    pk12uErrno = PK12UERR_INVALIDALGORITHM;
+	    goto done;
+	}
+    }
+
+    certCipher = PK11_IsFIPS() ? SEC_OID_UNKNOWN :
+                SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_40_BIT_RC2_CBC;
+    if (pk12util.options[opt_CertCipher].activated) {
+	char *cipherString = pk12util.options[opt_CertCipher].arg;
+
+	if (PORT_Strcasecmp(cipherString, "none") == 0) {
+	    certCipher = SEC_OID_UNKNOWN;
+	} else {
+	    certCipher = PKCS12U_MapCipherFromString(cipherString, certKeyLen);
+	    /* If the user requested a cipher and we didn't find it, then
+	     * don't just silently not encrypt. */
+	    if (cipher == SEC_OID_UNKNOWN) {
+		PORT_SetError(SEC_ERROR_INVALID_ALGORITHM);
+		SECU_PrintError(progName, "Algorithm: \"%s\"", cipherString);
+		pk12uErrno = PK12UERR_INVALIDALGORITHM;
+		goto done;
+	    }
+	}
+    }
+	   
+
     if (pk12util.options[opt_Import].activated) {
-	P12U_ImportPKCS12Object(import_file, slot, &slotPw,
+	P12U_ImportPKCS12Object(import_file, slot,  &slotPw,
 					   &p12FilePw);
 
     } else if (pk12util.options[opt_Export].activated) {
 	P12U_ExportPKCS12Object(pk12util.options[opt_Nickname].arg,
-				export_file, slot, &slotPw, &p12FilePw);
+			export_file, slot, cipher, certCipher, 
+			&slotPw, &p12FilePw);
         
     } else if (pk12util.options[opt_List].activated) {
 	P12U_ListPKCS12File(import_file, slot, &slotPw, &p12FilePw);
@@ -965,6 +1111,10 @@ main(int argc, char **argv)
     }
 
 done:
+    if (slotPw.data != NULL)
+	PORT_ZFree(slotPw.data, PL_strlen(slotPw.data));
+    if (p12FilePw.data != NULL)
+	PORT_ZFree(p12FilePw.data, PL_strlen(p12FilePw.data));
     if (slot) PK11_FreeSlot(slot);
     if (NSS_Shutdown() != SECSuccess) {
 	pk12uErrno = 1;

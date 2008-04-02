@@ -43,8 +43,10 @@
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
-#include <assert.h>
 #include "secrng.h"
+#include "secerr.h"
+#include "prerror.h"
+#include "prthread.h"
 
 size_t RNG_FileUpdate(const char *fileName, size_t limit);
 
@@ -79,6 +81,108 @@ static size_t CopyLowBits(void *dst, size_t dstlen, void *src, size_t srclen)
     }
     return dstlen;
 }
+
+#ifdef SOLARIS
+
+#include <kstat.h>
+
+static const PRUint32 entropy_buf_len = 4096; /* buffer up to 4 KB */
+
+/* Buffer entropy data, and feed it to the RNG, entropy_buf_len bytes at a time.
+ * Returns error if RNG_RandomUpdate fails. Also increments *total_fed
+ * by the number of bytes successfully buffered.
+ */
+static SECStatus BufferEntropy(char* inbuf, PRUint32 inlen,
+                                char* entropy_buf, PRUint32* entropy_buffered,
+                                PRUint32* total_fed)
+{
+    PRUint32 tocopy = 0;
+    PRUint32 avail = 0;
+    SECStatus rv = SECSuccess;
+
+    while (inlen) {
+        avail = entropy_buf_len - *entropy_buffered;
+        if (!avail) {
+            /* Buffer is full, time to feed it to the RNG. */
+            rv = RNG_RandomUpdate(entropy_buf, entropy_buf_len);
+            if (SECSuccess != rv) {
+                break;
+            }
+            *entropy_buffered = 0;
+            avail = entropy_buf_len;
+        }
+        tocopy = PR_MIN(avail, inlen);
+        memcpy(entropy_buf + *entropy_buffered, inbuf, tocopy);
+        *entropy_buffered += tocopy;
+        inlen -= tocopy;
+        inbuf += tocopy;
+        *total_fed += tocopy;
+    }
+    return rv;
+}
+
+/* Feed kernel statistics structures and ks_data field to the RNG.
+ * Returns status as well as the number of bytes successfully fed to the RNG.
+ */
+static SECStatus RNG_kstat(PRUint32* fed)
+{
+    kstat_ctl_t*    kc = NULL;
+    kstat_t*        ksp = NULL;
+    PRUint32        entropy_buffered = 0;
+    char*           entropy_buf = NULL;
+    SECStatus       rv = SECSuccess;
+
+    PORT_Assert(fed);
+    if (!fed) {
+        return SECFailure;
+    }
+    *fed = 0;
+
+    kc = kstat_open();
+    PORT_Assert(kc);
+    if (!kc) {
+        return SECFailure;
+    }
+    entropy_buf = (char*) PORT_Alloc(entropy_buf_len);
+    PORT_Assert(entropy_buf);
+    if (entropy_buf) {
+        for (ksp = kc->kc_chain; ksp != NULL; ksp = ksp->ks_next) {
+            if (-1 == kstat_read(kc, ksp, NULL)) {
+                /* missing data from a single kstat shouldn't be fatal */
+                continue;
+            }
+            rv = BufferEntropy((char*)ksp, sizeof(kstat_t),
+                                    entropy_buf, &entropy_buffered,
+                                    fed);
+            if (SECSuccess != rv) {
+                break;
+            }
+
+            if (ksp->ks_data && ksp->ks_data_size>0 && ksp->ks_ndata>0) {
+                rv = BufferEntropy((char*)ksp->ks_data, ksp->ks_data_size,
+                                        entropy_buf, &entropy_buffered,
+                                        fed);
+                if (SECSuccess != rv) {
+                    break;
+                }
+            }
+        }
+        if (SECSuccess == rv && entropy_buffered) {
+            /* Buffer is not empty, time to feed it to the RNG */
+            rv = RNG_RandomUpdate(entropy_buf, entropy_buffered);
+        }
+        PORT_Free(entropy_buf);
+    } else {
+        rv = SECFailure;
+    }
+    if (kstat_close(kc)) {
+        PORT_Assert(0);
+        rv = SECFailure;
+    }
+    return rv;
+}
+
+#endif
 
 #if defined(SCO) || defined(UNIXWARE) || defined(BSDI) || defined(FREEBSD) \
     || defined(NETBSD) || defined(NTO) || defined(DARWIN) || defined(OPENBSD)
@@ -277,7 +381,7 @@ GiveSystemInfo(void)
 #endif /* IBM R2 */
 
 #if defined(LINUX)
-#include <linux/kernel.h>
+#include <sys/sysinfo.h>
 
 static size_t
 GetHighResClock(void *buf, size_t maxbytes)
@@ -288,14 +392,10 @@ GetHighResClock(void *buf, size_t maxbytes)
 static void
 GiveSystemInfo(void)
 {
-    /* XXX sysinfo() does not seem be implemented anywhwere */
-#if 0
     struct sysinfo si;
-    char hn[2000];
     if (sysinfo(&si) == 0) {
 	RNG_RandomUpdate(&si, sizeof(si));
     }
-#endif
 }
 #endif /* LINUX */
 
@@ -676,6 +776,13 @@ safe_popen(char *cmd)
     if (pipe(p) < 0)
 	return 0;
 
+    fp = fdopen(p[0], "r");
+    if (fp == 0) {
+	close(p[0]);
+	close(p[1]);
+	return 0;
+    }
+
     /* Setup signals so that SIGCHLD is ignored as we want to do waitpid */
     newact.sa_handler = SIG_DFL;
     newact.sa_flags = 0;
@@ -684,8 +791,10 @@ safe_popen(char *cmd)
 
     pid = fork();
     switch (pid) {
+      int ndesc;
+
       case -1:
-	close(p[0]);
+	fclose(fp); /* this closes p[0], the fd associated with fp */
 	close(p[1]);
 	sigaction (SIGCHLD, &oldact, NULL);
 	return 0;
@@ -694,11 +803,15 @@ safe_popen(char *cmd)
 	/* dup write-side of pipe to stderr and stdout */
 	if (p[1] != 1) dup2(p[1], 1);
 	if (p[1] != 2) dup2(p[1], 2);
-	close(0);
-        {
-            int ndesc = getdtablesize();
-            for (fd = PR_MIN(65536, ndesc); --fd > 2; close(fd));
-        }
+
+	/* 
+	 * close the other file descriptors, except stdin which we
+	 * try reassociating with /dev/null, first (bug 174993)
+	 */
+	if (!freopen("/dev/null", "r", stdin))
+	    close(0);
+	ndesc = getdtablesize();
+	for (fd = PR_MIN(65536, ndesc); --fd > 2; close(fd));
 
 	/* clean up environment in the child process */
 	putenv("PATH=/bin:/usr/bin:/sbin:/usr/sbin:/etc:/usr/etc");
@@ -727,12 +840,6 @@ safe_popen(char *cmd)
 
       default:
 	close(p[1]);
-	fp = fdopen(p[0], "r");
-	if (fp == 0) {
-	    close(p[0]);
-	    sigaction (SIGCHLD, &oldact, NULL);
-	    return 0;
-	}
 	break;
     }
 
@@ -745,25 +852,29 @@ static int
 safe_pclose(FILE *fp)
 {
     pid_t pid;
-    int count, status;
+    int status = -1, rv;
 
     if ((pid = safe_popen_pid) == 0)
 	return -1;
     safe_popen_pid = 0;
 
+    fclose(fp);
+
+    /* yield the processor so the child gets some time to exit normally */
+    PR_Sleep(PR_INTERVAL_NO_WAIT);
+
     /* if the child hasn't exited, kill it -- we're done with its output */
-    count = 0;
-    while (waitpid(pid, &status, WNOHANG) == 0) {
-    	if (kill(pid, SIGKILL) < 0 && errno == ESRCH)
-	    break;
-	if (++count == 1000)
-	    break;
+    while ((rv = waitpid(pid, &status, WNOHANG)) == -1 && errno == EINTR)
+	;
+    if (rv == 0) {
+	kill(pid, SIGKILL);
+	while ((rv = waitpid(pid, &status, 0)) == -1 && errno == EINTR)
+	    ;
     }
 
     /* Reset SIGCHLD signal hander before returning */
     sigaction(SIGCHLD, &oldact, NULL);
 
-    fclose(fp);
     return status;
 }
 
@@ -773,6 +884,11 @@ safe_pclose(FILE *fp)
 #ifdef DARWIN
 #include <crt_externs.h>
 #endif
+
+/* Fork netstat to collect its output by default. Do not unset this unless
+ * another source of entropy is available
+ */
+#define DO_NETSTAT 1
 
 void RNG_SystemInfoForRNG(void)
 {
@@ -806,15 +922,6 @@ void RNG_SystemInfoForRNG(void)
     };
 #endif
 
-#ifdef DO_PS
-For now it is considered that it is too expensive to run the ps command
-for the small amount of entropy it provides.
-#if defined(__sun) && (!defined(__svr4) && !defined(SVR4)) || defined(bsdi) || defined(LINUX)
-    static char ps_cmd[] = "ps aux";
-#else
-    static char ps_cmd[] = "ps -el";
-#endif
-#endif /* DO_PS */
 #if defined(BSDI)
     static char netstat_ni_cmd[] = "netstat -nis";
 #else
@@ -842,13 +949,13 @@ for the small amount of entropy it provides.
     }
 
     /* Give in system information */
-    if (gethostname(buf, sizeof(buf)) > 0) {
+    if (gethostname(buf, sizeof(buf)) == 0) {
 	RNG_RandomUpdate(buf, strlen(buf));
     }
     GiveSystemInfo();
 
     /* grab some data from system's PRNG before any other files. */
-    bytes = RNG_FileUpdate("/dev/urandom", 1024);
+    bytes = RNG_FileUpdate("/dev/urandom", SYSTEM_RNG_SEED_COUNT);
 
     /* If the user points us to a random file, pass it through the rng */
     randfile = getenv("NSRANDFILE");
@@ -865,27 +972,47 @@ for the small amount of entropy it provides.
  * in a pthreads environment.  Therefore, we call safe_popen last and on
  * BSD/OS we do not call safe_popen when we succeeded in getting data
  * from /dev/urandom.
+ *
+ * Bug 174993: LINUX provides /dev/urandom, don't fork netstat
+ * if data has been gathered successfully
  */
 
-#ifdef BSDI
+#if defined(BSDI) || defined(LINUX)
     if (bytes)
         return;
 #endif
 
-#ifdef DO_PS
-    fp = safe_popen(ps_cmd);
-    if (fp != NULL) {
-	while ((bytes = fread(buf, 1, sizeof(buf), fp)) > 0)
-	    RNG_RandomUpdate(buf, bytes);
-	safe_pclose(fp);
+#ifdef SOLARIS
+
+/*
+ * On Solaris, NSS may be initialized automatically from libldap in
+ * applications that are unaware of the use of NSS. safe_popen forks, and
+ * sometimes creates issues with some applications' pthread_atfork handlers.
+ * We always have /dev/urandom on Solaris 9 and above as an entropy source,
+ * and for Solaris 8 we have the libkstat interface, so we don't need to
+ * fork netstat.
+ */
+
+#undef DO_NETSTAT
+    if (!bytes) {
+        /* On Solaris 8, /dev/urandom isn't available, so we use libkstat. */
+        PRUint32 kstat_bytes = 0;
+        if (SECSuccess != RNG_kstat(&kstat_bytes)) {
+            PORT_Assert(0);
+        }
+        bytes += kstat_bytes;
+        PORT_Assert(bytes);
     }
 #endif
+
+#ifdef DO_NETSTAT
     fp = safe_popen(netstat_ni_cmd);
     if (fp != NULL) {
 	while ((bytes = fread(buf, 1, sizeof(buf), fp)) > 0)
 	    RNG_RandomUpdate(buf, bytes);
 	safe_pclose(fp);
     }
+#endif
 
 }
 #else
@@ -996,4 +1123,32 @@ size_t RNG_FileUpdate(const char *fileName, size_t limit)
 void RNG_FileForRNG(const char *fileName)
 {
     RNG_FileUpdate(fileName, TOTAL_FILE_LIMIT);
+}
+
+size_t RNG_SystemRNG(void *dest, size_t maxLen)
+{
+    FILE *file;
+    size_t bytes;
+    size_t fileBytes = 0;
+    unsigned char *buffer = dest;
+
+    file = fopen("/dev/urandom", "r");
+    if (file == NULL) {
+	PORT_SetError(PR_NOT_IMPLEMENTED_ERROR);
+	return fileBytes;
+    }
+    while (maxLen > fileBytes) {
+	bytes = maxLen - fileBytes;
+	bytes = fread(buffer, 1, bytes, file);
+	if (bytes == 0) 
+	    break;
+	fileBytes += bytes;
+	buffer += bytes;
+    }
+    fclose(file);
+    if (fileBytes != maxLen) {
+	PORT_SetError(SEC_ERROR_NEED_RANDOM);  /* system RNG failed */
+	fileBytes = 0;
+    }
+    return fileBytes;
 }

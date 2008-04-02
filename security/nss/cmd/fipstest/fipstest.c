@@ -49,7 +49,6 @@
 #include "hasht.h"
 #include "lowkeyi.h"
 #include "softoken.h"
-#include "pqgutil.h"
 
 #if 0
 #include "../../lib/freebl/mpi/mpi.h"
@@ -73,7 +72,7 @@ EC_CopyParams(PRArenaPool *arena, ECParams *dstParams,
 #define PQG_TEST_SEED_BYTES           20
 
 SECStatus
-hex_from_2char(const char *c2, unsigned char *byteval)
+hex_to_byteval(const char *c2, unsigned char *byteval)
 {
     int i;
     unsigned char offset;
@@ -96,7 +95,7 @@ hex_from_2char(const char *c2, unsigned char *byteval)
 }
 
 SECStatus
-char2_from_hex(unsigned char byteval, char *c2, char a)
+byteval_to_hex(unsigned char byteval, char *c2, char a)
 {
     int i;
     unsigned char offset;
@@ -116,7 +115,7 @@ to_hex_str(char *str, const unsigned char *buf, unsigned int len)
 {
     unsigned int i;
     for (i=0; i<len; i++) {
-	char2_from_hex(buf[i], &str[2*i], 'a');
+	byteval_to_hex(buf[i], &str[2*i], 'a');
     }
     str[2*len] = '\0';
 }
@@ -126,7 +125,7 @@ to_hex_str_cap(char *str, const unsigned char *buf, unsigned int len)
 {
     unsigned int i;
     for (i=0; i<len; i++) {
-	char2_from_hex(buf[i], &str[2*i], 'A');
+	byteval_to_hex(buf[i], &str[2*i], 'A');
     }
     str[2*len] = '\0';
 }
@@ -174,11 +173,11 @@ from_hex_str(unsigned char *buf, unsigned int len, const char *str)
 		char tmp[2];
 		tmp[0] = '0';
 		tmp[1] = str[j];
-		hex_from_2char(tmp, &buf[i]);
+		hex_to_byteval(tmp, &buf[i]);
 		j++;
 	    }
 	} else {
-	    hex_from_2char(&str[j], &buf[i]);
+	    hex_to_byteval(&str[j], &buf[i]);
 	    j += 2;
 	}
     }
@@ -381,7 +380,7 @@ tdea_kat_mmt(char *reqfn)
                     i++;
                 }
                 for (j=0; isxdigit(buf[i]); i+=2,j++) {
-                    hex_from_2char(&buf[i], &key[j]);
+                    hex_to_byteval(&buf[i], &key[j]);
                     key[j+8] = key[j];
                     key[j+16] = key[j];
                 }
@@ -396,7 +395,7 @@ tdea_kat_mmt(char *reqfn)
                     i++;
                 }
                 for (j=0; isxdigit(buf[i]); i+=2,j++) {
-                    hex_from_2char(&buf[i], &key[j]);
+                    hex_to_byteval(&buf[i], &key[j]);
                 }
                 fputs(buf, resp);
                 continue;
@@ -408,7 +407,7 @@ tdea_kat_mmt(char *reqfn)
                     i++;
                 }
                 for (j=8; isxdigit(buf[i]); i+=2,j++) {
-                    hex_from_2char(&buf[i], &key[j]);
+                    hex_to_byteval(&buf[i], &key[j]);
                 }
                 fputs(buf, resp);
                 continue;
@@ -420,7 +419,7 @@ tdea_kat_mmt(char *reqfn)
                     i++;
                 }
                 for (j=16; isxdigit(buf[i]); i+=2,j++) {
-                    hex_from_2char(&buf[i], &key[j]);
+                    hex_to_byteval(&buf[i], &key[j]);
                 }
                 fputs(buf, resp);
                 continue;
@@ -435,7 +434,7 @@ tdea_kat_mmt(char *reqfn)
                 i++;
             }
             for (j=0; j<sizeof iv; i+=2,j++) {
-                hex_from_2char(&buf[i], &iv[j]);
+                hex_to_byteval(&buf[i], &iv[j]);
             }
             fputs(buf, resp);
             continue;
@@ -452,7 +451,7 @@ tdea_kat_mmt(char *reqfn)
                 i++;
             }
             for (j=0; isxdigit(buf[i]); i+=2,j++) {
-                hex_from_2char(&buf[i], &plaintext[j]);
+                hex_to_byteval(&buf[i], &plaintext[j]);
             }
             plaintextlen = j;
             rv = tdea_encrypt_buf(mode, key,
@@ -482,7 +481,7 @@ tdea_kat_mmt(char *reqfn)
                 i++;
             }
             for (j=0; isxdigit(buf[i]); i+=2,j++) {
-                hex_from_2char(&buf[i], &ciphertext[j]);
+                hex_to_byteval(&buf[i], &ciphertext[j]);
             }
             ciphertextlen = j;
  
@@ -801,7 +800,7 @@ tdea_mct(int mode, char *reqfn)
                 i++;
             }
             for (j=0; isxdigit(buf[i]); i+=2,j++) {
-                hex_from_2char(&buf[i], &key[j]);
+                hex_to_byteval(&buf[i], &key[j]);
             }
             continue;
         }
@@ -812,7 +811,7 @@ tdea_mct(int mode, char *reqfn)
                 i++;
             }
             for (j=8; isxdigit(buf[i]); i+=2,j++) {
-                hex_from_2char(&buf[i], &key[j]);
+                hex_to_byteval(&buf[i], &key[j]);
             }
             continue;
         }
@@ -823,7 +822,7 @@ tdea_mct(int mode, char *reqfn)
                 i++;
             }
             for (j=16; isxdigit(buf[i]); i+=2,j++) {
-                hex_from_2char(&buf[i], &key[j]);
+                hex_to_byteval(&buf[i], &key[j]);
             }
             continue;
         }
@@ -835,7 +834,7 @@ tdea_mct(int mode, char *reqfn)
                 i++;
             }
             for (j=0; j<sizeof iv; i+=2,j++) {
-                hex_from_2char(&buf[i], &iv[j]);
+                hex_to_byteval(&buf[i], &iv[j]);
             }
             continue;
         }
@@ -853,7 +852,7 @@ tdea_mct(int mode, char *reqfn)
                 i++;
             }
             for (j=0; j<sizeof plaintext; i+=2,j++) {
-                hex_from_2char(&buf[i], &plaintext[j]);
+                hex_to_byteval(&buf[i], &plaintext[j]);
             }                                     
 
             /* do the Monte Carlo test */
@@ -876,7 +875,7 @@ tdea_mct(int mode, char *reqfn)
                 i++;
             }
             for (j=0; isxdigit(buf[i]); i+=2,j++) {
-                hex_from_2char(&buf[i], &ciphertext[j]);
+                hex_to_byteval(&buf[i], &ciphertext[j]);
             }
             
             /* do the Monte Carlo test */
@@ -1080,7 +1079,7 @@ aes_kat_mmt(char *reqfn)
 		i++;
 	    }
 	    for (j=0; isxdigit(buf[i]); i+=2,j++) {
-		hex_from_2char(&buf[i], &key[j]);
+		hex_to_byteval(&buf[i], &key[j]);
 	    }
 	    keysize = j;
 	    fputs(buf, aesresp);
@@ -1094,7 +1093,7 @@ aes_kat_mmt(char *reqfn)
 		i++;
 	    }
 	    for (j=0; j<sizeof iv; i+=2,j++) {
-		hex_from_2char(&buf[i], &iv[j]);
+		hex_to_byteval(&buf[i], &iv[j]);
 	    }
 	    fputs(buf, aesresp);
 	    continue;
@@ -1111,7 +1110,7 @@ aes_kat_mmt(char *reqfn)
 		i++;
 	    }
 	    for (j=0; isxdigit(buf[i]); i+=2,j++) {
-		hex_from_2char(&buf[i], &plaintext[j]);
+		hex_to_byteval(&buf[i], &plaintext[j]);
 	    }
 	    plaintextlen = j;
 
@@ -1142,7 +1141,7 @@ aes_kat_mmt(char *reqfn)
 		i++;
 	    }
 	    for (j=0; isxdigit(buf[i]); i+=2,j++) {
-		hex_from_2char(&buf[i], &ciphertext[j]);
+		hex_to_byteval(&buf[i], &ciphertext[j]);
 	    }
 	    ciphertextlen = j;
 
@@ -1278,7 +1277,7 @@ aes_ecb_mct(char *reqfn)
 		i++;
 	    }
 	    for (j=0; isxdigit(buf[i]); i+=2,j++) {
-		hex_from_2char(&buf[i], &key[j]);
+		hex_to_byteval(&buf[i], &key[j]);
 	    }
 	    keysize = j;
 	    continue;
@@ -1295,7 +1294,7 @@ aes_ecb_mct(char *reqfn)
 		i++;
 	    }
 	    for (j=0; j<sizeof plaintext; i+=2,j++) {
-		hex_from_2char(&buf[i], &plaintext[j]);
+		hex_to_byteval(&buf[i], &plaintext[j]);
 	    }
 
 	    for (i=0; i<100; i++) {
@@ -1393,7 +1392,7 @@ aes_ecb_mct(char *reqfn)
 		i++;
 	    }
 	    for (j=0; isxdigit(buf[i]); i+=2,j++) {
-		hex_from_2char(&buf[i], &ciphertext[j]);
+		hex_to_byteval(&buf[i], &ciphertext[j]);
 	    }
 
 	    for (i=0; i<100; i++) {
@@ -1563,7 +1562,7 @@ aes_cbc_mct(char *reqfn)
 		i++;
 	    }
 	    for (j=0; isxdigit(buf[i]); i+=2,j++) {
-		hex_from_2char(&buf[i], &key[j]);
+		hex_to_byteval(&buf[i], &key[j]);
 	    }
 	    keysize = j;
 	    continue;
@@ -1576,7 +1575,7 @@ aes_cbc_mct(char *reqfn)
 		i++;
 	    }
 	    for (j=0; j<sizeof iv; i+=2,j++) {
-		hex_from_2char(&buf[i], &iv[j]);
+		hex_to_byteval(&buf[i], &iv[j]);
 	    }
 	    continue;
 	}
@@ -1592,7 +1591,7 @@ aes_cbc_mct(char *reqfn)
 		i++;
 	    }
 	    for (j=0; j<sizeof plaintext; i+=2,j++) {
-		hex_from_2char(&buf[i], &plaintext[j]);
+		hex_to_byteval(&buf[i], &plaintext[j]);
 	    }
 
 	    for (i=0; i<100; i++) {
@@ -1704,7 +1703,7 @@ aes_cbc_mct(char *reqfn)
 		i++;
 	    }
 	    for (j=0; isxdigit(buf[i]); i+=2,j++) {
-		hex_from_2char(&buf[i], &ciphertext[j]);
+		hex_to_byteval(&buf[i], &ciphertext[j]);
 	    }
 
 	    for (i=0; i<100; i++) {
@@ -2308,7 +2307,7 @@ ecdsa_siggen_test(char *reqfn)
 		i++;
 	    }
 	    for (j=0; isxdigit(buf[i]); i+=2,j++) {
-		hex_from_2char(&buf[i], &msg[j]);
+		hex_to_byteval(&buf[i], &msg[j]);
 	    }
 	    msglen = j;
 	    if (SHA1_HashBuf(sha1, msg, msglen) != SECSuccess) {
@@ -2472,7 +2471,7 @@ ecdsa_sigver_test(char *reqfn)
 		i++;
 	    }
 	    for (j=0; isxdigit(buf[i]); i+=2,j++) {
-		hex_from_2char(&buf[i], &msg[j]);
+		hex_to_byteval(&buf[i], &msg[j]);
 	    }
 	    msglen = j;
 	    if (SHA1_HashBuf(sha1, msg, msglen) != SECSuccess) {
@@ -2614,7 +2613,7 @@ rng_vst(char *reqfn)
 		i++;
 	    }
 	    for (j=0; j<sizeof Q; i+=2,j++) {
-		hex_from_2char(&buf[i], &Q[j]);
+		hex_to_byteval(&buf[i], &Q[j]);
 	    }
 	    fputs(buf, rngresp);
 	    hasQ = PR_TRUE;
@@ -2649,7 +2648,7 @@ rng_vst(char *reqfn)
 		i++;
 	    }
 	    for (j=0; j<b/8; i+=2,j++) {
-		hex_from_2char(&buf[i], &XKey[j]);
+		hex_to_byteval(&buf[i], &XKey[j]);
 	    }
 	    fputs(buf, rngresp);
 	    continue;
@@ -2661,7 +2660,7 @@ rng_vst(char *reqfn)
 		i++;
 	    }
 	    for (j=0; j<b/8; i+=2,j++) {
-		hex_from_2char(&buf[i], &XSeed[j]);
+		hex_to_byteval(&buf[i], &XSeed[j]);
 	    }
 	    fputs(buf, rngresp);
 
@@ -2737,7 +2736,7 @@ rng_mct(char *reqfn)
 		i++;
 	    }
 	    for (j=0; j<sizeof Q; i+=2,j++) {
-		hex_from_2char(&buf[i], &Q[j]);
+		hex_to_byteval(&buf[i], &Q[j]);
 	    }
 	    fputs(buf, rngresp);
 	    hasQ = PR_TRUE;
@@ -2772,7 +2771,7 @@ rng_mct(char *reqfn)
 		i++;
 	    }
 	    for (j=0; j<b/8; i+=2,j++) {
-		hex_from_2char(&buf[i], &XKey[j]);
+		hex_to_byteval(&buf[i], &XKey[j]);
 	    }
 	    fputs(buf, rngresp);
 	    continue;
@@ -2785,7 +2784,7 @@ rng_mct(char *reqfn)
 		i++;
 	    }
 	    for (j=0; j<b/8; i+=2,j++) {
-		hex_from_2char(&buf[i], &XSeed[j]);
+		hex_to_byteval(&buf[i], &XSeed[j]);
 	    }
 	    fputs(buf, rngresp);
 
@@ -2916,8 +2915,8 @@ void sha_test(char *reqfn)
     unsigned char seed[HASH_LENGTH_MAX];   /* max size of seed 64 bytes */
     unsigned char MD[HASH_LENGTH_MAX];     /* message digest */
 
-    FILE *req;       /* input stream from the REQUEST file */
-    FILE *resp;      /* output stream to the RESPONSE file */
+    FILE *req = NULL;  /* input stream from the REQUEST file */
+    FILE *resp;        /* output stream to the RESPONSE file */
 
     buf = PORT_ZAlloc(bufSize);
     if (buf == NULL) {
@@ -2959,6 +2958,11 @@ void sha_test(char *reqfn)
                 msg = NULL;
             }
             msgLen = atoi(&buf[i]); /* in bits */
+            if (msgLen%8 != 0) {
+                fprintf(stderr, "SHA tests are incorrectly configured for "
+                    "BIT oriented implementations\n");
+                goto loser;
+            }
             msgLen = msgLen/8; /* convert to bytes */
             fputs(buf, resp);
             msg = PORT_ZAlloc(msgLen);
@@ -2974,7 +2978,7 @@ void sha_test(char *reqfn)
                 i++;
             }
             for (j=0; j< msgLen; i+=2,j++) {
-                hex_from_2char(&buf[i], &msg[j]);
+                hex_to_byteval(&buf[i], &msg[j]);
             }
            fputs(buf, resp);
            /* calculate the Message Digest */ 
@@ -2998,7 +3002,7 @@ void sha_test(char *reqfn)
                 i++;
             }
             for (j=0; j<sizeof seed; i+=2,j++) {
-                hex_from_2char(&buf[i], &seed[j]);
+                hex_to_byteval(&buf[i], &seed[j]);
             }                                     
 
             fputs(buf, resp);
@@ -3013,7 +3017,9 @@ void sha_test(char *reqfn)
         }
     }
 loser:
-    fclose(req);
+    if (req) {
+        fclose(req);
+    }  
     if (buf) {
         PORT_ZFree(buf, bufSize);
     }
@@ -3088,8 +3094,8 @@ void hmac_test(char *reqfn)
     unsigned char HMAC[HASH_LENGTH_MAX];  /* computed HMAC */
     HASH_HashType hash_alg;       /* HMAC type */
 
-    FILE *req;       /* input stream from the REQUEST file */
-    FILE *resp;      /* output stream to the RESPONSE file */
+    FILE *req = NULL;  /* input stream from the REQUEST file */
+    FILE *resp;        /* output stream to the RESPONSE file */
 
     buf = PORT_ZAlloc(bufSize);
     if (buf == NULL) {
@@ -3164,7 +3170,7 @@ void hmac_test(char *reqfn)
                 i++;
             }
             for (j=0; j< keyLen; i+=2,j++) {
-                hex_from_2char(&buf[i], &key[j]);
+                hex_to_byteval(&buf[i], &key[j]);
             }
            fputs(buf, resp);
         }
@@ -3185,7 +3191,7 @@ void hmac_test(char *reqfn)
                 i++;
             }
             for (j=0; j< msgLen; i+=2,j++) {
-                hex_from_2char(&buf[i], &msg[j]);
+                hex_to_byteval(&buf[i], &msg[j]);
             }
            fputs(buf, resp);
            /* calculate the HMAC and output */ 
@@ -3201,7 +3207,9 @@ void hmac_test(char *reqfn)
         }
     }
 loser:
-    fclose(req);
+    if (req) {
+        fclose(req);
+    }
     if (buf) {
         PORT_ZFree(buf, bufSize);
     }
@@ -3397,7 +3405,7 @@ dsa_pqgver_test(char *reqfn)
                 i++;
             }
             for (j=0; j< pqg.prime.len; i+=2,j++) {
-                hex_from_2char(&buf[i], &pqg.prime.data[j]);
+                hex_to_byteval(&buf[i], &pqg.prime.data[j]);
             }
 
             fputs(buf, dsaresp);
@@ -3411,7 +3419,7 @@ dsa_pqgver_test(char *reqfn)
                 i++;
             }
             for (j=0; j< pqg.subPrime.len; i+=2,j++) {
-                hex_from_2char(&buf[i], &pqg.subPrime.data[j]);
+                hex_to_byteval(&buf[i], &pqg.subPrime.data[j]);
             }
 
             fputs(buf, dsaresp);
@@ -3425,7 +3433,7 @@ dsa_pqgver_test(char *reqfn)
                 i++;
             }
             for (j=0; j< pqg.base.len; i+=2,j++) {
-                hex_from_2char(&buf[i], &pqg.base.data[j]);
+                hex_to_byteval(&buf[i], &pqg.base.data[j]);
             }
 
             fputs(buf, dsaresp);
@@ -3439,7 +3447,7 @@ dsa_pqgver_test(char *reqfn)
                 i++;
             }
             for (j=0; j< vfy.seed.len; i+=2,j++) {
-                hex_from_2char(&buf[i], &vfy.seed.data[j]);
+                hex_to_byteval(&buf[i], &vfy.seed.data[j]);
             }
 
             fputs(buf, dsaresp);
@@ -3466,7 +3474,7 @@ dsa_pqgver_test(char *reqfn)
                 i++;
             }
             for (j=0; j< vfy.h.len; i+=2,j++) {
-                hex_from_2char(&buf[i], &vfy.h.data[j]);
+                hex_to_byteval(&buf[i], &vfy.h.data[j]);
             }
             fputs(buf, dsaresp);
 
@@ -3716,7 +3724,7 @@ dsa_siggen_test(char *reqfn)
                 i++;
             }
             for (j=0; isxdigit(buf[i]); i+=2,j++) {
-                hex_from_2char(&buf[i], &msg[j]);
+                hex_to_byteval(&buf[i], &msg[j]);
             }
             if (SHA1_HashBuf(sha1, msg, j) != SECSuccess) {
                  fprintf(dsaresp, "ERROR: Unable to generate SHA1 digest");
@@ -3848,7 +3856,7 @@ dsa_sigver_test(char *reqfn)
             }
             memset(pubkey.params.prime.data, 0, pubkey.params.prime.len);
             for (j=0; j< pubkey.params.prime.len; i+=2,j++) {
-                hex_from_2char(&buf[i], &pubkey.params.prime.data[j]);
+                hex_to_byteval(&buf[i], &pubkey.params.prime.data[j]);
             }
 
             fputs(buf, dsaresp);
@@ -3863,7 +3871,7 @@ dsa_sigver_test(char *reqfn)
             }
             memset(pubkey.params.subPrime.data, 0, pubkey.params.subPrime.len);
             for (j=0; j< pubkey.params.subPrime.len; i+=2,j++) {
-                hex_from_2char(&buf[i], &pubkey.params.subPrime.data[j]);
+                hex_to_byteval(&buf[i], &pubkey.params.subPrime.data[j]);
             }
 
             fputs(buf, dsaresp);
@@ -3878,7 +3886,7 @@ dsa_sigver_test(char *reqfn)
             }
             memset(pubkey.params.base.data, 0, pubkey.params.base.len);
             for (j=0; j< pubkey.params.base.len; i+=2,j++) {
-                hex_from_2char(&buf[i], &pubkey.params.base.data[j]);
+                hex_to_byteval(&buf[i], &pubkey.params.base.data[j]);
             }
 
             fputs(buf, dsaresp);
@@ -3895,7 +3903,7 @@ dsa_sigver_test(char *reqfn)
                 i++;
             }
             for (j=0; isxdigit(buf[i]); i+=2,j++) {
-                hex_from_2char(&buf[i], &msg[j]);
+                hex_to_byteval(&buf[i], &msg[j]);
             }
             if (SHA1_HashBuf(sha1, msg, j) != SECSuccess) {
                 fprintf(dsaresp, "ERROR: Unable to generate SHA1 digest");
@@ -3914,7 +3922,7 @@ dsa_sigver_test(char *reqfn)
             }
             memset(pubkey.publicValue.data, 0, pubkey.params.subPrime.len);
             for (j=0; j< pubkey.publicValue.len; i+=2,j++) {
-                hex_from_2char(&buf[i], &pubkey.publicValue.data[j]);
+                hex_to_byteval(&buf[i], &pubkey.publicValue.data[j]);
             }
 
             fputs(buf, dsaresp);
@@ -3929,7 +3937,7 @@ dsa_sigver_test(char *reqfn)
                 i++;
             }
             for (j=0; j< DSA_SUBPRIME_LEN; i+=2,j++) {
-                hex_from_2char(&buf[i], &sig[j]);
+                hex_to_byteval(&buf[i], &sig[j]);
             }
 
             fputs(buf, dsaresp);
@@ -3943,7 +3951,7 @@ dsa_sigver_test(char *reqfn)
                 i++;
             }
             for (j=DSA_SUBPRIME_LEN; j< DSA_SIGNATURE_LEN; i+=2,j++) {
-                hex_from_2char(&buf[i], &sig[j]);
+                hex_to_byteval(&buf[i], &sig[j]);
             }
             fputs(buf, dsaresp);
 
@@ -4132,7 +4140,7 @@ rsa_siggen_test(char *reqfn)
                 i++;
             }
             for (j=0; isxdigit(buf[i]) && j < sizeof(msg); i+=2,j++) {
-                hex_from_2char(&buf[i], &msg[j]);
+                hex_to_byteval(&buf[i], &msg[j]);
             }
 
             if (shaAlg == HASH_AlgSHA1) {
@@ -4337,7 +4345,7 @@ rsa_sigver_test(char *reqfn)
             }
             /* skip leading zero's */
             while (isxdigit(buf[i])) {
-                hex_from_2char(&buf[i], &t);
+                hex_to_byteval(&buf[i], &t);
                 if (t == 0) {
                     i+=2;
                 } else break;
@@ -4345,7 +4353,7 @@ rsa_sigver_test(char *reqfn)
         
             /* get the exponent */
             for (j=0; isxdigit(buf[i]) && j < sizeof data; i+=2,j++) {
-                hex_from_2char(&buf[i], &data[j]);
+                hex_to_byteval(&buf[i], &data[j]);
             }
 
             if (j == 0) { j = 1; }  /* to handle 1 byte length exponents */
@@ -4376,7 +4384,7 @@ rsa_sigver_test(char *reqfn)
             }
 
             for (j=0; isxdigit(buf[i]) && j < sizeof msg; i+=2,j++) {
-                hex_from_2char(&buf[i], &msg[j]);
+                hex_to_byteval(&buf[i], &msg[j]);
             }
 
             if (shaAlg == HASH_AlgSHA1) {
@@ -4435,7 +4443,7 @@ rsa_sigver_test(char *reqfn)
             }
 
             for (j=0; isxdigit(buf[i]) && j < sizeof signature; i+=2,j++) {
-                hex_from_2char(&buf[i], &signature[j]);
+                hex_to_byteval(&buf[i], &signature[j]);
             }
 
             signatureLength = j;

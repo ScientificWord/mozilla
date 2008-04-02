@@ -44,6 +44,7 @@
 #ifndef _CIFERFAM_H_
 #define _CIFERFAM_H_
 
+#include "utilrename.h"
 /* Cipher Suite "Families" */
 #define CIPHER_FAMILY_PKCS12			"PKCS12"
 #define CIPHER_FAMILY_SMIME			"SMIME"
@@ -62,7 +63,7 @@
 /*
  * Note that it is assumed that the cipher number itself can be used
  * as a bit position in a mask, and that mask is currently 32 bits wide.
- * So, if you want to add a cipher that is greater than 0033, secmime.c
+ * So, if you want to add a cipher that is greater than 0037, secmime.c
  * needs to be made smarter at the same time.
  */
 #define	SMIME_RC2_CBC_40		(CIPHER_FAMILYID_SMIME | 0001)
@@ -70,6 +71,7 @@
 #define	SMIME_RC2_CBC_128		(CIPHER_FAMILYID_SMIME | 0003)
 #define	SMIME_DES_CBC_56		(CIPHER_FAMILYID_SMIME | 0011)
 #define	SMIME_DES_EDE3_168		(CIPHER_FAMILYID_SMIME | 0012)
+#define	SMIME_AES_CBC_128		(CIPHER_FAMILYID_SMIME | 0013)
 #define	SMIME_RC5PAD_64_16_40		(CIPHER_FAMILYID_SMIME | 0021)
 #define	SMIME_RC5PAD_64_16_64		(CIPHER_FAMILYID_SMIME | 0022)
 #define	SMIME_RC5PAD_64_16_128		(CIPHER_FAMILYID_SMIME | 0023)

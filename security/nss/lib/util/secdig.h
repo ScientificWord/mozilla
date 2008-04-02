@@ -41,6 +41,7 @@
 #ifndef _SECDIG_H_
 #define _SECDIG_H_
 
+#include "utilrename.h"
 #include "secdigt.h"
 
 #include "seccomon.h"
@@ -53,9 +54,6 @@ SEC_BEGIN_PROTOS
 extern const SEC_ASN1Template sgn_DigestInfoTemplate[];
 
 SEC_ASN1_CHOOSER_DECLARE(sgn_DigestInfoTemplate)
-
-extern DERTemplate SGNDigestInfoTemplate[];
-
 
 /****************************************/
 /*

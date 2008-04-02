@@ -45,21 +45,35 @@
 
 SEC_BEGIN_PROTOS
 
+/* The private macro _NSS_ECC_STRING is for NSS internal use only. */
+#ifdef NSS_ENABLE_ECC
+#ifdef NSS_ECC_MORE_THAN_SUITE_B
+#define _NSS_ECC_STRING " Extended ECC"
+#else
+#define _NSS_ECC_STRING " Basic ECC"
+#endif
+#else
+#define _NSS_ECC_STRING ""
+#endif
+
+/* The private macro _NSS_CUSTOMIZED is for NSS internal use only. */
+#if defined(NSS_ALLOW_UNSUPPORTED_CRITICAL)
+#define _NSS_CUSTOMIZED " (Customized build)"
+#else
+#define _NSS_CUSTOMIZED 
+#endif
+
 /*
  * NSS's major version, minor version, patch level, and whether
  * this is a beta release.
  *
  * The format of the version string should be
- *     "<major version>.<minor version>[.<patch level>] [<Beta>]"
+ *     "<major version>.<minor version>[.<patch level>][ <ECC>][ <Beta>]"
  */
-#ifdef NSS_ENABLE_ECC
-#define NSS_VERSION  "3.11.2 ECC Beta"
-#else
-#define NSS_VERSION  "3.11.2 Beta"
-#endif
+#define NSS_VERSION  "3.12" _NSS_ECC_STRING " Beta" _NSS_CUSTOMIZED
 #define NSS_VMAJOR   3
-#define NSS_VMINOR   11
-#define NSS_VPATCH   2
+#define NSS_VMINOR   12
+#define NSS_VPATCH   0
 #define NSS_BETA     PR_TRUE
 
 /*
