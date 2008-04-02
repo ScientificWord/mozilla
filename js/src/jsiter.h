@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
- * vim: set ts=8 sw=4 et tw=80:
+ * vim: set ts=8 sw=4 et tw=78:
  *
  * ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1 *
@@ -39,69 +39,83 @@
 
 #ifndef jsiter_h___
 #define jsiter_h___
+
 /*
  * JavaScript iterators.
  */
 #include "jsprvtd.h"
 #include "jspubtd.h"
 
-#define JSITER_FOREACH  0x1     /* return [key, value] pair rather than key */
-#define JSITER_COMPAT   0x2     /* compatibility flag for old XDR'd bytecode */
-#define JSITER_HIDDEN   0x4     /* internal iterator hidden from user view */
-#define JSITER_KEYVALUE 0x8     /* destructuring for-in wants [key, value] */
+JS_BEGIN_EXTERN_C
 
-extern JSBool
-js_NewNativeIterator(JSContext *cx, JSObject *obj, uintN flags, jsval *vp);
+#define JSITER_ENUMERATE  0x1   /* for-in compatible hidden default iterator */
+#define JSITER_FOREACH    0x2   /* return [key, value] pair rather than key */
+#define JSITER_KEYVALUE   0x4   /* destructuring for-in wants [key, value] */
 
-extern uintN
-js_GetNativeIteratorFlags(JSContext *cx, JSObject *iterobj);
+/*
+ * Convert the value stored in *vp to its iteration object. The flags should
+ * contain JSITER_ENUMERATE if js_ValueToIterator is called when enumerating
+ * for-in semantics are required, and when the caller can guarantee that the
+ * iterator will never be exposed to scripts.
+ */
+extern JS_FRIEND_API(JSBool)
+js_ValueToIterator(JSContext *cx, uintN flags, jsval *vp);
 
+extern JS_FRIEND_API(JSBool)
+js_CloseIterator(JSContext *cx, jsval v);
+
+/*
+ * Given iterobj, call iterobj.next().  If the iterator stopped, set *rval to
+ * JSVAL_HOLE. Otherwise set it to the result of the next call.
+ */
+extern JS_FRIEND_API(JSBool)
+js_CallIteratorNext(JSContext *cx, JSObject *iterobj, jsval *rval);
+
+/*
+ * Close iterobj, whose class must be js_IteratorClass.
+ */
 extern void
 js_CloseNativeIterator(JSContext *cx, JSObject *iterobj);
 
-extern void
-js_CloseIteratorState(JSContext *cx, JSObject *iterobj);
-
 extern JSBool
-js_DefaultIterator(JSContext *cx, JSObject *obj, uintN argc, jsval *argv,
-                   jsval *rval);
+js_ThrowStopIteration(JSContext *cx);
 
-extern JSObject *
-js_ValueToIterator(JSContext *cx, jsval v, uintN flags);
+#if JS_HAS_GENERATORS
 
 /*
- * Given iterobj, call iterobj.next().
- *
- * If idp is non-null, we are enumerating an iterable other than iterobj using
- * a for-in or for-each-in loop, so we must return the id of the property being
- * enumerated for shadowing and deleted-property checks.  In this case, *rval
- * will be either the key or the value from a [key, value] pair returned by the
- * iterator, depending on whether for-in or for-each-in is being used.
- *
- * But if idp is null, then we are iterating iterobj itself -- the iterator is
- * the right operand of 'in' in the for-in or for-each-in loop -- and we should
- * pass its return value back unchanged.
+ * Generator state codes.
  */
-extern JSBool
-js_CallIteratorNext(JSContext *cx, JSObject *iterobj, uintN flags,
-                    jsid *idp, jsval *rval);
+typedef enum JSGeneratorState {
+    JSGEN_NEWBORN,  /* not yet started */
+    JSGEN_OPEN,     /* started by a .next() or .send(undefined) call */
+    JSGEN_RUNNING,  /* currently executing via .next(), etc., call */
+    JSGEN_CLOSING,  /* close method is doing asynchronous return */
+    JSGEN_CLOSED    /* closed, cannot be started or closed again */
+} JSGeneratorState;
 
-#define VALUE_IS_STOP_ITERATION(cx,v)                                         \
-    (!JSVAL_IS_PRIMITIVE(v) &&                                                \
-     OBJ_GET_CLASS(cx, JSVAL_TO_OBJECT(v)) == &js_StopIterationClass)
+struct JSGenerator {
+    JSObject            *obj;
+    JSGeneratorState    state;
+    JSStackFrame        frame;
+    JSArena             arena;
+    jsval               stack[1];
+};
 
-extern JSBool
-js_ThrowStopIteration(JSContext *cx, JSObject *obj);
+#define FRAME_TO_GENERATOR(fp) \
+    ((JSGenerator *) ((uint8 *)(fp) - offsetof(JSGenerator, frame)))
 
 extern JSObject *
 js_NewGenerator(JSContext *cx, JSStackFrame *fp);
 
-extern JSExtendedClass  js_GeneratorClass;
+#endif
+
+extern JSClass          js_GeneratorClass;
 extern JSClass          js_IteratorClass;
 extern JSClass          js_StopIterationClass;
-extern JSClass          js_GeneratorExitClass;
 
 extern JSObject *
 js_InitIteratorClasses(JSContext *cx, JSObject *obj);
+
+JS_END_EXTERN_C
 
 #endif /* jsiter_h___ */

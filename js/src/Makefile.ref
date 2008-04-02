@@ -82,9 +82,16 @@ endif
 #
 # XCFLAGS may be set in the environment or on the gmake command line
 #
+#CFLAGS += -DDEBUG -DDEBUG_brendan -DJS_ARENAMETER -DJS_HASHMETER -DJS_DUMP_PROPTREE_STATS -DJS_DUMP_SCOPE_METERS -DJS_SCOPE_DEPTH_METER -DJS_BASIC_STATS
 CFLAGS          += $(OPTIMIZER) $(OS_CFLAGS) $(DEFINES) $(INCLUDES) $(XCFLAGS)
 
 LDFLAGS		= $(XLDFLAGS)
+
+ifdef MOZ_SHARK
+DEFINES += -DMOZ_SHARK
+CFLAGS += -F/System/Library/PrivateFrameworks
+LDFLAGS += -F/System/Library/PrivateFrameworks -framework CHUD
+endif
 
 ifndef NO_LIBM
 LDFLAGS += -lm
@@ -92,27 +99,13 @@ endif
 
 # Prevent floating point errors caused by VC++ optimizations
 ifeq ($(OS_ARCH),WINNT)
-#CFLAGS += -Op
-endif # WINNT
-
-#
-# Ask perl what flags it was built with, so we can build js with similar flags
-# and link properly.  Viva gmake.
-#
-ifdef JS_PERLCONNECT
-DEFINES += -DPERLCONNECT -D_GNU_SOURCE
-
-PERLCFLAGS := $(shell perl -MExtUtils::Embed -e ccopts)
-PERLLDFLAGS := $(shell perl -MExtUtils::Embed -e ldopts)
-
-# perl erroneously reports compiler flag -rdynamic (interpreted by ld
-# as -r) when it really meant -export-dynamic.
-PERLLDFLAGS := $(subst -rdynamic,-export-dynamic,$(PERLLDFLAGS))
-
-CFLAGS += $(PERLCFLAGS)
-#LDFLAGS += $(PERLLDFLAGS) #PH removed this assgnment
-INCLUDES += -I. #needed for perlconnect/jsperl.c
+_MSC_VER = $(shell $(CC) 2>&1 | sed -n 's/.*Compiler Version \([0-9]*\)\.\([0-9]*\).*/\1\2/p')
+ifeq (,$(filter-out 1200 1300 1310,$(_MSC_VER)))
+CFLAGS += -Op
+else
+CFLAGS += -fp:precise
 endif
+endif # WINNT
 
 #
 #	Server-related changes :
@@ -172,7 +165,6 @@ JS_HFILES =		\
 	jsdtoa.h	\
 	jshash.h	\
 	jslong.h	\
-	jsosdep.h	\
 	jstypes.h	\
 	jsprvtd.h	\
 	jspubtd.h	\
@@ -254,10 +246,6 @@ ifdef JS_LIVECONNECT
 DIRS      += liveconnect
 endif
 
-ifdef JS_PERLCONNECT
-JS_CFILES += perlconnect/jsperl.c
-endif
-
 ifdef JS_HAS_FILE_OBJECT
 JS_CFILES += jsfile.c
 JS_HFILES += jsfile.h
@@ -275,9 +263,6 @@ else
 LIBRARY = $(OBJDIR)/libjs.a
 SHARED_LIBRARY = $(OBJDIR)/libjs.$(SO_SUFFIX)
 PROGRAM = $(OBJDIR)/js
-ifdef JS_PERLCONNECT
-PROG_LIBS += $(PERLLDFLAGS)
-endif
 endif
 
 include rules.mk
