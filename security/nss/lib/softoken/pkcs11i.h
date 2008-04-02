@@ -44,7 +44,8 @@
 #include "secoidt.h"
 #include "lowkeyti.h"
 #include "pkcs11t.h"
-#include "pcertt.h"
+
+#include "sftkdbt.h"
 
 
 /* 
@@ -88,15 +89,15 @@
  * NSS is a shared library.
  */
 #define SPACE_ATTRIBUTE_HASH_SIZE 32 
-#define SPACE_TOKEN_OBJECT_HASH_SIZE 32
+#define SPACE_SESSION_OBJECT_HASH_SIZE 32
 #define SPACE_SESSION_HASH_SIZE 32
 #define TIME_ATTRIBUTE_HASH_SIZE 32
-#define TIME_TOKEN_OBJECT_HASH_SIZE 1024
+#define TIME_SESSION_OBJECT_HASH_SIZE 1024
 #define TIME_SESSION_HASH_SIZE 1024
 #define MAX_OBJECT_LIST_SIZE 800  
 				  /* how many objects to keep on the free list
 				   * before we start freeing them */
-#define MAX_KEY_LEN 256
+#define MAX_KEY_LEN 256 	  /* maximum symmetric key length in bytes */
 
 #define MULTIACCESS "multiaccess:"
 
@@ -135,6 +136,7 @@ typedef struct SFTKSearchResultsStr SFTKSearchResults;
 typedef struct SFTKHashVerifyInfoStr SFTKHashVerifyInfo;
 typedef struct SFTKHashSignInfoStr SFTKHashSignInfo;
 typedef struct SFTKSSLMACInfoStr SFTKSSLMACInfo;
+typedef struct SFTKItemTemplateStr SFTKItemTemplate;
 
 /* define function pointer typdefs for pointer tables */
 typedef void (*SFTKDestroy)(void *, PRBool);
@@ -319,8 +321,9 @@ struct SFTKSessionStr {
  *
  * The array of sessionLock's protect the session hash table (head[])
  * as well as the reference count of session objects in that bucket
- * (head[]->refCount),  objectLock protects all elements of the token
- * object hash table (tokObjects[], tokenIDCount, and tokenHashTable),
+ * (head[]->refCount),  objectLock protects all elements of the slot's
+ * object hash tables (sessObjHashTable[] and tokObjHashTable), and
+ * sessionObjectHandleCount.
  * slotLock protects the remaining protected elements:
  * password, isLoggedIn, ssoLoggedIn, and sessionCount,
  * and pwCheckLock serializes the key database password checks in
@@ -347,7 +350,6 @@ struct SFTKSlotStr {
     unsigned long	sessionLockMask;	/* invariant */
     PZLock		*objectLock;		/* invariant */
     PRLock		*pwCheckLock;		/* invariant */
-    SECItem		*password;		/* variable - reset */
     PRBool		present;		/* variable -set */
     PRBool		hasTokens;		/* per load */
     PRBool		isLoggedIn;		/* variable - reset */
@@ -356,8 +358,8 @@ struct SFTKSlotStr {
     PRBool		DB_loaded;		/* per load */
     PRBool		readOnly;		/* per load */
     PRBool		optimizeSpace;		/* invariant */
-    NSSLOWCERTCertDBHandle *certDB;		/* per load */
-    NSSLOWKEYDBHandle	*keyDB;			/* per load */
+    SFTKDBHandle	*certDB;		/* per load */
+    SFTKDBHandle	*keyDB;			/* per load */
     int			minimumPinLen;		/* per load */
     PRInt32		sessionIDCount;		/* atomically incremented */
                                         	/* (preserved) */
@@ -366,11 +368,11 @@ struct SFTKSlotStr {
     int			sessionCount;           /* variable - reset */
     PRInt32             rwSessionCount;    	/* set by atomic operations */
                                           	/* (reset) */
-    int			tokenIDCount;      	/* variable - perserved */
+    int			sessionObjectHandleCount;/* variable - perserved */
     int			index;			/* invariant */
-    PLHashTable		*tokenHashTable;	/* invariant */
-    SFTKObject		**tokObjects;		/* variable - reset */
-    unsigned int	tokObjHashSize;		/* invariant */
+    PLHashTable		*tokObjHashTable;	/* invariant */
+    SFTKObject		**sessObjHashTable;	/* variable - reset */
+    unsigned int	sessObjHashSize;	/* invariant */
     SFTKSession		**head;			/* variable -reset */
     unsigned int	sessHashSize;		/* invariant */
     char		tokDescription[33];	/* per load */
@@ -401,6 +403,21 @@ struct SFTKSSLMACInfoStr {
     unsigned char	key[MAX_KEY_LEN];
     unsigned int	keySize;
 };
+
+/*
+ * Template based on SECItems, suitable for passing as arrays
+ */
+struct SFTKItemTemplateStr {
+    CK_ATTRIBUTE_TYPE	type;
+    SECItem		*item;
+};
+
+/* macro for setting SFTKTemplates. */
+#define SFTK_SET_ITEM_TEMPLATE(templ, count, itemPtr, attr) \
+   templ[count].type = attr; \
+   templ[count].item = itemPtr
+
+#define SFTK_MAX_ITEM_TEMPLATE 10
 
 /*
  * session handle modifiers
@@ -556,7 +573,7 @@ typedef struct sftk_parametersStr {
 SEC_BEGIN_PROTOS
 
 /* shared functions between pkcs11.c and fipstokn.c */
-extern int nsf_init;
+extern PRBool nsf_init;
 extern CK_RV nsc_CommonInitialize(CK_VOID_PTR pReserved, PRBool isFIPS);
 extern CK_RV nsc_CommonFinalize(CK_VOID_PTR pReserved, PRBool isFIPS);
 extern CK_RV nsc_CommonGetSlotList(CK_BBOOL tokPresent, 
@@ -580,6 +597,8 @@ extern CK_RV sftk_AddAttributeType(SFTKObject *object, CK_ATTRIBUTE_TYPE type,
 				  CK_ULONG length);
 extern CK_RV sftk_Attribute2SecItem(PLArenaPool *arena, SECItem *item,
 				    SFTKObject *object, CK_ATTRIBUTE_TYPE type);
+extern CK_RV sftk_MultipleAttribute2SecItem(PLArenaPool *arena, 
+		SFTKObject *object, SFTKItemTemplate *templ, int count);
 extern unsigned int sftk_GetLengthInBits(unsigned char *buf,
 							 unsigned int bufLen);
 extern CK_RV sftk_ConstrainAttribute(SFTKObject *object, 
@@ -649,52 +668,12 @@ extern void sftk_FormatDESKey(unsigned char *key, int length);
 extern PRBool sftk_CheckDESKey(unsigned char *key);
 extern PRBool sftk_IsWeakKey(unsigned char *key,CK_KEY_TYPE key_type);
 
-extern CK_RV secmod_parseParameters(char *param, sftk_parameters *parsed,
-								PRBool isFIPS);
-extern void secmod_freeParams(sftk_parameters *params);
-extern char *secmod_getSecmodName(char *params, char **domain, 
-						char **filename, PRBool *rw);
-extern char ** secmod_ReadPermDB(const char *domain, const char *filename, 
-			const char *dbname, char *params, PRBool rw);
-extern SECStatus secmod_DeletePermDB(const char *domain, const char *filename,
-			const char *dbname, char *args, PRBool rw);
-extern SECStatus secmod_AddPermDB(const char *domain, const char *filename,
-			const char *dbname, char *module, PRBool rw);
-extern SECStatus secmod_ReleasePermDBData(const char *domain, 
-	const char *filename, const char *dbname, char **specList, PRBool rw);
 /* mechanism allows this operation */
 extern CK_RV sftk_MechAllowsOperation(CK_MECHANISM_TYPE type, CK_ATTRIBUTE_TYPE op);
-/*
- * OK there are now lots of options here, lets go through them all:
- *
- * configdir - base directory where all the cert, key, and module datbases live.
- * certPrefix - prefix added to the beginning of the cert database example: "
- *                      "https-server1-"
- * keyPrefix - prefix added to the beginning of the key database example: "
- *                      "https-server1-"
- * secmodName - name of the security module database (usually "secmod.db").
- * readOnly - Boolean: true if the databases are to be openned read only.
- * nocertdb - Don't open the cert DB and key DB's, just initialize the
- *                      Volatile certdb.
- * nomoddb - Don't open the security module DB, just initialize the
- *                      PKCS #11 module.
- * forceOpen - Continue to force initializations even if the databases cannot
- *                      be opened.
- */
-CK_RV sftk_DBInit(const char *configdir, const char *certPrefix,
-	 	const char *keyPrefix, PRBool readOnly, PRBool noCertDB, 
-		PRBool noKeyDB, PRBool forceOpen, 
-		NSSLOWCERTCertDBHandle **certDB, NSSLOWKEYDBHandle **keyDB);
-NSSLOWCERTCertDBHandle *sftk_getCertDB(SFTKSlot *slot);
-NSSLOWKEYDBHandle *sftk_getKeyDB(SFTKSlot *slot);
-void sftk_freeCertDB(NSSLOWCERTCertDBHandle *certHandle);
-void sftk_freeKeyDB(NSSLOWKEYDBHandle *keyHandle);
 
 /* helper function which calls nsslowkey_FindKeyByPublicKey after safely
  * acquiring a reference to the keydb from the slot */
 NSSLOWKEYPrivateKey *sftk_FindKeyByPublicKey(SFTKSlot *slot, SECItem *dbKey);
-
-const char *sftk_EvaluateConfigDir(const char *configdir, char **domain);
 
 /*
  * narrow objects
@@ -708,10 +687,6 @@ SFTKTokenObject * sftk_narrowToTokenObject(SFTKObject *);
 void sftk_addHandle(SFTKSearchResults *search, CK_OBJECT_HANDLE handle);
 PRBool sftk_poisonHandle(SFTKSlot *slot, SECItem *dbkey, 
 						CK_OBJECT_HANDLE handle);
-PRBool sftk_tokenMatch(SFTKSlot *slot, SECItem *dbKey, CK_OBJECT_HANDLE class,
-                                        CK_ATTRIBUTE_PTR theTemplate,int count);
-CK_OBJECT_HANDLE sftk_mkHandle(SFTKSlot *slot, 
-					SECItem *dbKey, CK_OBJECT_HANDLE class);
 SFTKObject * sftk_NewTokenObject(SFTKSlot *slot, SECItem *dbKey, 
 						CK_OBJECT_HANDLE handle);
 SFTKTokenObject *sftk_convertSessionToToken(SFTKObject *so);

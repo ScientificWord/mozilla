@@ -266,7 +266,7 @@ sec_pkcs12_decoder_init_new_safe_bag(sec_PKCS12SafeContentsContext
 					    2 * sizeof(sec_PKCS12SafeBag *));
     }
     if(!p12dcx->safeBags) {
-	p12dcx->errorValue = SEC_ERROR_NO_MEMORY;
+	p12dcx->errorValue = PORT_GetError();
 	goto loser;
     }
 
@@ -274,14 +274,14 @@ sec_pkcs12_decoder_init_new_safe_bag(sec_PKCS12SafeContentsContext
      * in the safeContentsCtx.
      */
     p12dcx->safeBags[p12dcx->safeBagCount] = 
+    safeContentsCtx->currentSafeBag = 
         (sec_PKCS12SafeBag*)PORT_ArenaZAlloc(p12dcx->arena,
 					     sizeof(sec_PKCS12SafeBag));
-    safeContentsCtx->currentSafeBag = p12dcx->safeBags[p12dcx->safeBagCount];
-    p12dcx->safeBags[++p12dcx->safeBagCount] = NULL;
     if(!safeContentsCtx->currentSafeBag) {
-	p12dcx->errorValue = SEC_ERROR_NO_MEMORY;
+	p12dcx->errorValue = PORT_GetError();
 	goto loser;
     }
+    p12dcx->safeBags[++p12dcx->safeBagCount] = NULL;
 
     safeContentsCtx->currentSafeBag->slot = safeContentsCtx->p12dcx->slot;
     safeContentsCtx->currentSafeBag->pwitem = safeContentsCtx->p12dcx->pwitem;
@@ -335,7 +335,7 @@ sec_pkcs12_decoder_safe_bag_update(void *arg, const char *data,
 
     rv = SEC_ASN1DecoderUpdate(safeContentsCtx->currentSafeBagDcx, data, len);
     if(rv != SECSuccess) {
-	p12dcx->errorValue = SEC_ERROR_NO_MEMORY;
+	p12dcx->errorValue = PORT_GetError();
 	goto loser;
     }
 
@@ -489,7 +489,7 @@ sec_pkcs12_decoder_safe_contents_notify(void *arg, PRBool before,
 						safeContentsCtx->currentSafeBag,
 						sec_PKCS12SafeBagTemplate);
 	if(!safeContentsCtx->currentSafeBagDcx) {
-	    p12dcx->errorValue = SEC_ERROR_NO_MEMORY;
+	    p12dcx->errorValue = PORT_GetError();
 	    goto loser;
 	}
 
@@ -554,23 +554,21 @@ sec_pkcs12_decoder_safe_contents_init_decode(SEC_PKCS12DecoderContext *p12dcx,
 				sizeof(sec_PKCS12SafeContentsContext *));
     }
     if(!p12dcx->safeContentsList) {
-	p12dcx->errorValue = SEC_ERROR_NO_MEMORY;
+	p12dcx->errorValue = PORT_GetError();
 	goto loser;
     }
 
-    p12dcx->safeContentsList[p12dcx->safeContentsCnt] = 
+    p12dcx->safeContentsList[p12dcx->safeContentsCnt] = safeContentsCtx = 
         (sec_PKCS12SafeContentsContext*)PORT_ArenaZAlloc(
 					p12dcx->arena,
 					sizeof(sec_PKCS12SafeContentsContext));
-    p12dcx->safeContentsList[p12dcx->safeContentsCnt+1] = NULL;
     if(!p12dcx->safeContentsList[p12dcx->safeContentsCnt]) {
-	p12dcx->errorValue = SEC_ERROR_NO_MEMORY;
+	p12dcx->errorValue = PORT_GetError();
 	goto loser;
     }
+    p12dcx->safeContentsList[++p12dcx->safeContentsCnt] = NULL;
 
     /* set up the state variables */
-    safeContentsCtx = p12dcx->safeContentsList[p12dcx->safeContentsCnt];
-    p12dcx->safeContentsCnt++;
     safeContentsCtx->p12dcx = p12dcx;
     safeContentsCtx->arena = p12dcx->arena;
 
@@ -589,7 +587,7 @@ sec_pkcs12_decoder_safe_contents_init_decode(SEC_PKCS12DecoderContext *p12dcx,
 					theTemplate);
 	
     if(!safeContentsCtx->safeContentsDcx) {
-	p12dcx->errorValue = SEC_ERROR_NO_MEMORY;
+	p12dcx->errorValue = PORT_GetError();
 	goto loser;
     }
 
@@ -631,7 +629,8 @@ sec_pkcs12_decoder_nested_safe_contents_update(void *arg, const char *buf,
 
     /* check for an error */
     if(!safeContentsCtx || !safeContentsCtx->p12dcx 
-			|| safeContentsCtx->p12dcx->error) {
+			|| safeContentsCtx->p12dcx->error
+			|| !safeContentsCtx->safeContentsDcx) {
 	return;
     }
 
@@ -644,7 +643,7 @@ sec_pkcs12_decoder_nested_safe_contents_update(void *arg, const char *buf,
     p12dcx = safeContentsCtx->p12dcx;
     rv = SEC_ASN1DecoderUpdate(safeContentsCtx->safeContentsDcx, buf, len);
     if(rv != SECSuccess) {
-	p12dcx->errorValue = SEC_ERROR_NO_MEMORY;
+	p12dcx->errorValue = PORT_GetError();
 	goto loser;
     }
 
@@ -727,7 +726,8 @@ sec_pkcs12_decoder_safe_contents_callback(void *arg, const char *buf,
 
     /* check for error */  
     if(!safeContentsCtx || !safeContentsCtx->p12dcx 
-		|| safeContentsCtx->p12dcx->error) {
+		|| safeContentsCtx->p12dcx->error
+		|| !safeContentsCtx->safeContentsDcx) {
 	return;
     }
     p12dcx = safeContentsCtx->p12dcx;
@@ -821,7 +821,6 @@ sec_pkcs12_decoder_asafes_notify(void *arg, PRBool before, void *dest,
 	    }
 	    p12dcx->currentASafeP7Dcx = NULL;
 	}
-	p12dcx->currentASafeP7Dcx = NULL;
     }
 
 
@@ -851,7 +850,8 @@ sec_pkcs12_decoder_asafes_callback(void *arg, const char *buf,
     /* update the context */
     rv = SEC_ASN1DecoderUpdate(p12dcx->aSafeDcx, buf, len);
     if(rv != SECSuccess) {
-	p12dcx->error = (PRBool)SEC_ERROR_NO_MEMORY;
+	p12dcx->errorValue = PORT_GetError();
+	p12dcx->error = PR_TRUE;
 	goto loser;
     }
 
@@ -890,7 +890,7 @@ sec_pkcs12_decode_start_asafes_cinfo(SEC_PKCS12DecoderContext *p12dcx)
     					&p12dcx->authSafe,
     					sec_PKCS12AuthenticatedSafeTemplate);
     if(!p12dcx->aSafeDcx) {
-	p12dcx->errorValue = SEC_ERROR_NO_MEMORY;
+	p12dcx->errorValue = PORT_GetError();
    	goto loser;
     }
 
@@ -903,7 +903,7 @@ sec_pkcs12_decode_start_asafes_cinfo(SEC_PKCS12DecoderContext *p12dcx)
     				sec_pkcs12_decoder_asafes_callback, p12dcx,
     				p12dcx->pwfn, p12dcx->pwfnarg, NULL, NULL, NULL);
     if(!p12dcx->aSafeP7Dcx) {
-	p12dcx->errorValue = SEC_ERROR_NO_MEMORY;
+	p12dcx->errorValue = PORT_GetError();
 	goto loser;
     }
   
@@ -1181,15 +1181,13 @@ SEC_PKCS12DecoderStart(SECItem *pwitem, PK11SlotInfo *slot, void *wincx,
 
     arena = PORT_NewArena(2048); /* different size? */
     if(!arena) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
-	return NULL;
+	return NULL;	/* error is already set */
     }
 
     /* allocate the decoder context and set the state variables */
     p12dcx = (SEC_PKCS12DecoderContext*)PORT_ArenaZAlloc(arena, sizeof(SEC_PKCS12DecoderContext));
     if(!p12dcx) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
-	goto loser;
+	goto loser;	/* error is already set */
     }
 
     if (!dOpen && !dClose && !dRead && !dWrite && !dArg) {
@@ -1221,7 +1219,6 @@ SEC_PKCS12DecoderStart(SECItem *pwitem, PK11SlotInfo *slot, void *wincx,
     p12dcx->pfxDcx = SEC_ASN1DecoderStart(p12dcx->arena, &p12dcx->pfx,
     					  sec_PKCS12PFXItemTemplate);
     if(!p12dcx->pfxDcx) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY); 
 	PK11_FreeSlot(p12dcx->slot);
 	goto loser;
     }
@@ -1278,6 +1275,7 @@ SEC_PKCS12DecoderUpdate(SEC_PKCS12DecoderContext *p12dcx,
     SECStatus rv;
 
     if(!p12dcx || p12dcx->error) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
@@ -1460,7 +1458,12 @@ SEC_PKCS12DecoderVerify(SEC_PKCS12DecoderContext *p12dcx)
     SECStatus rv = SECSuccess;
 
     /* make sure that no errors have occured... */
-    if(!p12dcx || p12dcx->error) {
+    if(!p12dcx) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
+	return SECFailure;
+    }
+    if(p12dcx->error) {
+	/* error code is already set! PORT_SetError(p12dcx->errorValue); */
 	return SECFailure;
     }
 
@@ -1479,8 +1482,6 @@ SEC_PKCS12DecoderVerify(SEC_PKCS12DecoderContext *p12dcx)
 				&p12dcx->pfx.encodedMacData);
 	if(rv == SECSuccess) {
 	    return sec_pkcs12_decoder_verify_mac(p12dcx);
-	} else {
-	    PORT_SetError(SEC_ERROR_NO_MEMORY);
 	}
     } else {
 	if(SEC_PKCS7VerifySignature(p12dcx->aSafeCinfo, certUsageEmailSigner,
@@ -1507,6 +1508,7 @@ void
 SEC_PKCS12DecoderFinish(SEC_PKCS12DecoderContext *p12dcx)
 {
     if(!p12dcx) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return;
     }
 
@@ -1560,12 +1562,12 @@ sec_pkcs12_decoder_set_attribute_value(sec_PKCS12SafeBag *bag,
     SECOidData *oid;
 
     if(!bag || !attrValue) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
     oid = SECOID_FindOIDByTag(attributeType);
     if(!oid) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return SECFailure;
     }
 
@@ -1581,21 +1583,18 @@ sec_pkcs12_decoder_set_attribute_value(sec_PKCS12SafeBag *bag,
     }
 
     if(!bag->attribs) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return SECFailure;
     }
 
     bag->attribs[i] = (sec_PKCS12Attribute*)PORT_ArenaZAlloc(bag->arena, 
 						  sizeof(sec_PKCS12Attribute));
     if(!bag->attribs) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return SECFailure;
     }
 
     bag->attribs[i]->attrValue = (SECItem**)PORT_ArenaZAlloc(bag->arena, 
 						  sizeof(SECItem *) * 2);
     if(!bag->attribs[i]->attrValue) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return SECFailure;
     }
 
@@ -1605,7 +1604,6 @@ sec_pkcs12_decoder_set_attribute_value(sec_PKCS12SafeBag *bag,
 
     if(SECITEM_CopyItem(bag->arena, &bag->attribs[i]->attrType, &oid->oid)
 			!= SECSuccess) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return SECFailure;
     }
 
@@ -1619,6 +1617,7 @@ sec_pkcs12_get_attribute_value(sec_PKCS12SafeBag *bag,
     int i = 0;
 
     if(!bag->attribs) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
@@ -1677,8 +1676,7 @@ sec_pkcs12_get_nickname(sec_PKCS12SafeBag *bag)
     SECItem *src, *dest;
 
     if(!bag) {
-	bag->problem = PR_TRUE;
-	bag->error = SEC_ERROR_NO_MEMORY;
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
@@ -1718,6 +1716,7 @@ sec_pkcs12_set_nickname(sec_PKCS12SafeBag *bag, SECItem *name)
     SECOidData *oid = SECOID_FindOIDByTag(SEC_OID_PKCS9_FRIENDLY_NAME);
 
     if(!bag || !bag->arena || !name) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 	
@@ -1748,12 +1747,14 @@ sec_pkcs12_set_nickname(sec_PKCS12SafeBag *bag, SECItem *name)
 	    if(SECOID_FindOIDTag(&bag->attribs[i]->attrType)
 			== SEC_OID_PKCS9_FRIENDLY_NAME) {
 		attr = bag->attribs[i];
-		goto have_attrib;
-		
+		break;
 	    }
 	    i++;
 	}
 	if(!attr) {
+	    if(!oid) {
+		goto loser;
+	    }
 	    bag->attribs = (sec_PKCS12Attribute **)PORT_ArenaGrow(bag->arena, 
 								  bag->attribs,
 					(i+1) * sizeof(sec_PKCS12Attribute *),
@@ -1775,7 +1776,7 @@ sec_pkcs12_set_nickname(sec_PKCS12SafeBag *bag, SECItem *name)
 	    }
 	}
     }
-have_attrib:
+
     PORT_Assert(attr);
     if(!attr->attrValue) {
 	attr->attrValue = (SECItem **)PORT_ArenaZAlloc(bag->arena, 
@@ -1801,7 +1802,7 @@ have_attrib:
 
 loser:
     bag->problem = PR_TRUE;
-    bag->error = SEC_ERROR_NO_MEMORY;
+    bag->error = PORT_GetError();
     return SECFailure;
 }
 	
@@ -1812,6 +1813,7 @@ sec_pkcs12_get_key_info(sec_PKCS12SafeBag *key)
     SECKEYPrivateKeyInfo *pki = NULL;
 
     if(!key) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
@@ -1831,40 +1833,21 @@ sec_pkcs12_get_key_info(sec_PKCS12SafeBag *key)
     }
 
     while(pki->attributes[i]) {
-	SECItem *attrValue = NULL;
+	SECOidTag tag = SECOID_FindOIDTag(&pki->attributes[i]->attrType);
 
-	if(SECOID_FindOIDTag(&pki->attributes[i]->attrType) == 
-			SEC_OID_PKCS9_LOCAL_KEY_ID) {
-	    attrValue = sec_pkcs12_get_attribute_value(key, 
-						 SEC_OID_PKCS9_LOCAL_KEY_ID);
+	if (tag == SEC_OID_PKCS9_LOCAL_KEY_ID ||
+	    tag == SEC_OID_PKCS9_FRIENDLY_NAME) {
+	    SECItem *attrValue = sec_pkcs12_get_attribute_value(key, tag);
 	    if(!attrValue) {
-		if(sec_pkcs12_decoder_set_attribute_value(key, 
-					SEC_OID_PKCS9_LOCAL_KEY_ID,
+		if(sec_pkcs12_decoder_set_attribute_value(key, tag,
 					pki->attributes[i]->attrValue[0])
 					!= SECSuccess) {
 		    key->problem = PR_TRUE;
-		    key->error = SEC_ERROR_NO_MEMORY;
+		    key->error = PORT_GetError();
 		    return SECFailure;
 		}
 	    }
 	}
-
-	if(SECOID_FindOIDTag(&pki->attributes[i]->attrType) == 
-			SEC_OID_PKCS9_FRIENDLY_NAME) {
-	    attrValue = sec_pkcs12_get_attribute_value(key, 
-						SEC_OID_PKCS9_FRIENDLY_NAME);
-	    if(!attrValue) {
-		if(sec_pkcs12_decoder_set_attribute_value(key, 
-					SEC_OID_PKCS9_FRIENDLY_NAME,
-					pki->attributes[i]->attrValue[0])
-					!= SECSuccess) {
-		    key->problem = PR_TRUE;
-		    key->error = SEC_ERROR_NO_MEMORY;
-		    return SECFailure;
-		}
-	    }
-	}
-
 	i++;
     }
 
@@ -1882,6 +1865,7 @@ sec_pkcs12_get_nickname_for_cert(sec_PKCS12SafeBag *cert,
     SECItem *nickname;
 
     if(!cert) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
@@ -1895,11 +1879,7 @@ sec_pkcs12_get_nickname_for_cert(sec_PKCS12SafeBag *cert,
 	
         if(nickname && sec_pkcs12_set_nickname(cert, nickname)
 			!= SECSuccess) {
-	    cert->error = SEC_ERROR_NO_MEMORY;
-	    cert->problem = PR_TRUE;
-	    if(nickname) { 
-		SECITEM_ZfreeItem(nickname, PR_TRUE);
-	    }
+	    SECITEM_ZfreeItem(nickname, PR_TRUE);
 	    return NULL;
 	}
     }
@@ -1915,19 +1895,18 @@ sec_pkcs12_set_nickname_for_cert(sec_PKCS12SafeBag *cert,
 				 void *wincx)
 {
     if(!nickname || !cert) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
     if(sec_pkcs12_set_nickname(cert, nickname) != SECSuccess) {
-	cert->error = SEC_ERROR_NO_MEMORY;
-	cert->problem = PR_TRUE;
 	return SECFailure;
     }
 
     if(key) {
 	if(sec_pkcs12_set_nickname(key, nickname) != SECSuccess) {
-	    cert->error = SEC_ERROR_NO_MEMORY;
 	    cert->problem = PR_TRUE;
+	    cert->error   = key->error;
 	    return SECFailure;
 	}
     }
@@ -1940,6 +1919,7 @@ static SECItem *
 sec_pkcs12_get_der_cert(sec_PKCS12SafeBag *cert) 
 {
     if(!cert) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
@@ -1980,6 +1960,7 @@ gatherNicknames(CERTCertificate *cert, void *arg)
     unsigned int i;
 
     if(!cert || !nickArg || nickArg->error) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
@@ -1995,7 +1976,8 @@ gatherNicknames(CERTCertificate *cert, void *arg)
 
 	/* nicknames have been encountered, but there is no list -- bad */
 	if(!nickArg->nickList) {
-	    nickArg->error = SEC_ERROR_NO_MEMORY;
+	    nickArg->error = SEC_ERROR_INVALID_ARGS;
+	    PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	    return SECFailure;
 	}
 
@@ -2025,14 +2007,14 @@ gatherNicknames(CERTCertificate *cert, void *arg)
     nickArg->nickList[nickArg->nNicks] = 
         (SECItem *)PORT_ArenaZAlloc(nickArg->arena, sizeof(SECItem));
     if(!nickArg->nickList[nickArg->nNicks]) {
-	nickArg->error = SEC_ERROR_NO_MEMORY;
+	nickArg->error = PORT_GetError();
 	return SECFailure;
     }
     
 
     if(SECITEM_CopyItem(nickArg->arena, nickArg->nickList[nickArg->nNicks],
 			&tempNick) != SECSuccess) {
-	nickArg->error = SEC_ERROR_NO_MEMORY;
+	nickArg->error = PORT_GetError();
 	return SECFailure;
     }
 
@@ -2054,6 +2036,7 @@ sec_pkcs12_get_existing_nick_for_dn(sec_PKCS12SafeBag *cert, void *wincx)
     CERTCertificate *tempCert;
 
     if(!cert) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
@@ -2130,6 +2113,7 @@ countCertificate(CERTCertificate *cert, void *arg)
     unsigned int *nCerts = (unsigned int *)arg;
 
     if(!cert || !arg) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
@@ -2143,15 +2127,14 @@ sec_pkcs12_certs_for_nickname_exist(SECItem *nickname, PK11SlotInfo *slot)
     unsigned int nCerts = 0;
 
     if(!nickname || !slot) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return PR_TRUE;
     }
 
     /* we want to check the local database first if we are importing to it */
     PK11_TraverseCertsForNicknameInSlot(nickname, slot, countCertificate, 
 					(void *)&nCerts);
-    if(nCerts) return PR_TRUE;
-
-    return PR_FALSE;
+    return (PRBool)(nCerts != 0);
 }
 
 /* validate cert nickname such that there is a one-to-one relation
@@ -2172,18 +2155,21 @@ sec_pkcs12_validate_cert_nickname(sec_PKCS12SafeBag *cert,
     SECItem *newNickname = NULL;
 
     if(!cert || !cert->hasKey) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return;
     }
 
     if(!nicknameCb) {
 	cert->problem = PR_TRUE;
-	cert->error = SEC_ERROR_NO_MEMORY;
+	cert->error = SEC_ERROR_INVALID_ARGS;
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return;
     }
 
     if(cert->hasKey && !key) {
 	cert->problem = PR_TRUE;
-	cert->error = SEC_ERROR_NO_MEMORY;
+	cert->error = SEC_ERROR_INVALID_ARGS;
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return;
     }
 
@@ -2200,11 +2186,7 @@ sec_pkcs12_validate_cert_nickname(sec_PKCS12SafeBag *cert,
      * this dn.  set the nicks in the p12 bags and finish.
      */
     if(existingDNNick) {
-	if(sec_pkcs12_set_nickname_for_cert(cert, key, existingDNNick, wincx)
-			!= SECSuccess) {
-	    cert->problem = PR_TRUE;
-	    cert->error = SEC_ERROR_NO_MEMORY;
-	}
+	sec_pkcs12_set_nickname_for_cert(cert, key, existingDNNick, wincx);
 	goto loser;
     }
 
@@ -2226,20 +2208,16 @@ sec_pkcs12_validate_cert_nickname(sec_PKCS12SafeBag *cert,
      */
     setNickname = PR_FALSE;
     while(1) {
-	if(certNickname && certNickname->data) {
-	    /* we will use the nickname so long as no other certs have the
-	     * same nickname.  and the nickname is not NULL.
-	     */		
-	    if(!sec_pkcs12_certs_for_nickname_exist(certNickname, cert->slot)) {
-		if(setNickname) {
-		    if(sec_pkcs12_set_nickname_for_cert(cert, key, certNickname,
-					wincx) != SECSuccess) {
-			cert->problem = PR_TRUE;
-			cert->error = SEC_ERROR_NO_MEMORY;
-		    }
-		}
-		goto loser;
+	/* we will use the nickname so long as no other certs have the
+	 * same nickname.  and the nickname is not NULL.
+	 */		
+	if (certNickname && certNickname->data &&
+	    !sec_pkcs12_certs_for_nickname_exist(certNickname, cert->slot)) {
+	    if (setNickname) {
+		sec_pkcs12_set_nickname_for_cert(cert, key, certNickname,
+				    wincx);
 	    }
+	    break;
 	}
 
 	setNickname = PR_FALSE;
@@ -2247,13 +2225,13 @@ sec_pkcs12_validate_cert_nickname(sec_PKCS12SafeBag *cert,
 	if(cancel) {
 	    cert->problem = PR_TRUE;
 	    cert->error = SEC_ERROR_USER_CANCELLED;
-	    goto loser;
+	    break;
 	}
 
 	if(!newNickname) {
 	    cert->problem = PR_TRUE;
-	    cert->error = SEC_ERROR_NO_MEMORY;
-	    goto loser;
+	    cert->error = PORT_GetError();
+	    break;
 	}
 
 	/* at this point we have a new nickname, if we have an existing
@@ -2289,15 +2267,17 @@ sec_pkcs12_validate_cert(sec_PKCS12SafeBag *cert,
     CERTCertificate *leafCert;
 
     if(!cert) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return;
     }
     
     cert->validated = PR_TRUE;
 
     if(!nicknameCb) {
-	cert->problem = PR_TRUE;
-	cert->error = SEC_ERROR_NO_MEMORY;
 	cert->noInstall = PR_TRUE;
+	cert->problem = PR_TRUE;
+	cert->error   = SEC_ERROR_INVALID_ARGS;
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return;
     }
 
@@ -2318,13 +2298,13 @@ sec_pkcs12_validate_cert(sec_PKCS12SafeBag *cert,
     if(!leafCert) {
 	cert->noInstall = PR_TRUE;
 	cert->problem = PR_TRUE;
-	cert->error = SEC_ERROR_NO_MEMORY;
+	cert->error = PORT_GetError();
 	return;
     }
 
-    CERT_DestroyCertificate(leafCert);
+    sec_pkcs12_validate_cert_nickname(cert, key, nicknameCb, (void *)leafCert);
 
-    sec_pkcs12_validate_cert_nickname(cert, key, nicknameCb, wincx);
+    CERT_DestroyCertificate(leafCert);
 }
 
 static void
@@ -2335,6 +2315,7 @@ sec_pkcs12_validate_key_by_cert(sec_PKCS12SafeBag *cert, sec_PKCS12SafeBag *key,
     SECKEYPrivateKey *privk;
 
     if(!key) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return;
     }
 
@@ -2352,7 +2333,7 @@ sec_pkcs12_validate_key_by_cert(sec_PKCS12SafeBag *cert, sec_PKCS12SafeBag *key,
     if(!leafCert) {
 	key->problem = PR_TRUE;
 	key->noInstall = PR_TRUE;
-	key->error = SEC_ERROR_NO_MEMORY;
+	key->error = PORT_GetError();
 	return;
     }
 
@@ -2378,6 +2359,7 @@ sec_pkcs12_add_cert(sec_PKCS12SafeBag *cert, PRBool keyExists, void *wincx)
     SECStatus rv;
 
     if(!cert) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
@@ -2431,14 +2413,22 @@ sec_pkcs12_add_cert(sec_PKCS12SafeBag *cert, PRBool keyExists, void *wincx)
     return rv;
 }
 
+static SECItem *
+sec_pkcs12_get_public_value_and_type(SECKEYPublicKey *pubKey, KeyType *type);
+
 static SECStatus
-sec_pkcs12_add_key(sec_PKCS12SafeBag *key, SECItem *publicValue, 
-			KeyType keyType, unsigned int keyUsage, void *wincx)
+sec_pkcs12_add_key(sec_PKCS12SafeBag *key, SECKEYPublicKey *pubKey, 
+		   unsigned int keyUsage, 
+		   SECItem *nickName, void *wincx)
 {
     SECStatus rv;
-    SECItem *nickName;
+    SECItem *publicValue = NULL;
+    KeyType keyType;
 
-    if(!key) {
+    /* We should always have values for "key" and "pubKey"
+       so they can be dereferenced later. */
+    if(!key || !pubKey) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
@@ -2446,7 +2436,13 @@ sec_pkcs12_add_key(sec_PKCS12SafeBag *key, SECItem *publicValue,
 	return SECSuccess;
     }
 
-    nickName = sec_pkcs12_get_nickname(key);
+    /* get the value and type from the public key */
+    publicValue = sec_pkcs12_get_public_value_and_type(pubKey, &keyType);
+    if (!publicValue) {
+	key->error = SEC_ERROR_PKCS12_UNABLE_TO_IMPORT_KEY;
+	key->problem = PR_TRUE;
+	return SECFailure;
+    }
 
     switch(SECOID_FindOIDTag(&key->safeBagType))
     {
@@ -2472,61 +2468,81 @@ sec_pkcs12_add_key(sec_PKCS12SafeBag *key, SECItem *publicValue,
 	    return SECFailure;
     }
 
-    key->installed = PR_TRUE;
-
-    if(nickName) {
-	SECITEM_ZfreeItem(nickName, PR_TRUE);
-    }
-					
     if(rv != SECSuccess) {
 	key->error = SEC_ERROR_PKCS12_UNABLE_TO_IMPORT_KEY;
 	key->problem = PR_TRUE;
     } else {
+	/* try to import the public key. Failure to do so is not fatal,
+	 * not all tokens can store the public key */
+	if (pubKey) {
+	    PK11_ImportPublicKey(key->slot, pubKey, PR_TRUE);
+	}
 	key->installed = PR_TRUE;
     }
 
     return rv;
 }
 
+/* 
+ * The correctness of the code in this file ABSOLUTELY REQUIRES 
+ * that ALL BAGs share a single common arena.  
+ *
+ * This function allocates the bag list from the arena of whatever bag 
+ * happens to be passed to it.  Each time a new bag is handed to it,
+ * it grows (resizes) the arena of the bag that was handed to it.  
+ * If the bags have different arenas, it will grow the wrong arena.
+ *
+ * Worse, if the bags had separate arenas, then while destroying the bags 
+ * in a bag list, when the bag whose arena contained the bag list was 
+ * destroyed, the baglist itself would be destroyed, making it difficult 
+ * or impossible to continue to destroy the bags in the destroyed list.
+ */
 static SECStatus
 sec_pkcs12_add_item_to_bag_list(sec_PKCS12SafeBag ***bagList, 
 				sec_PKCS12SafeBag *bag)
 {
+    sec_PKCS12SafeBag **newBagList = NULL;
     int i = 0;
 
     if(!bagList || !bag) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
     if(!(*bagList)) {
-	(*bagList) = (sec_PKCS12SafeBag **)PORT_ArenaZAlloc(bag->arena, 
+	newBagList = (sec_PKCS12SafeBag **)PORT_ArenaZAlloc(bag->arena, 
 				      sizeof(sec_PKCS12SafeBag *) * 2);
     } else {
-	while((*bagList)[i]) i++;
-	(*bagList) = (sec_PKCS12SafeBag **)PORT_ArenaGrow(bag->arena, *bagList,
+	while((*bagList)[i]) 
+	    i++;
+	newBagList = (sec_PKCS12SafeBag **)PORT_ArenaGrow(bag->arena, 
+	                        *bagList,
 				sizeof(sec_PKCS12SafeBag *) * (i + 1),
 				sizeof(sec_PKCS12SafeBag *) * (i + 2));
     }
 
-    if(!(*bagList)) {
+    if(!newBagList) {
 	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return SECFailure;
     }
 
-    (*bagList)[i] = bag;
-    (*bagList)[i+1] = NULL;
+    newBagList[i]   = bag;
+    newBagList[i+1] = NULL;
+    *bagList = newBagList;
 
     return SECSuccess;
 }
 
 static sec_PKCS12SafeBag **
-sec_pkcs12_find_certs_for_key(sec_PKCS12SafeBag **safeBags, sec_PKCS12SafeBag *key ) 
+sec_pkcs12_find_certs_for_key(sec_PKCS12SafeBag **safeBags, 
+                              sec_PKCS12SafeBag *key ) 
 {
     sec_PKCS12SafeBag **certList = NULL;
     SECItem *keyId;
     int i;
 
     if(!safeBags || !safeBags[0]) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
@@ -2535,9 +2551,7 @@ sec_pkcs12_find_certs_for_key(sec_PKCS12SafeBag **safeBags, sec_PKCS12SafeBag *k
 	return NULL;
     }
 
-    i = 0;
-    certList = NULL;
-    while(safeBags[i]) {
+    for (i = 0; safeBags[i]; i++) {
 	if(SECOID_FindOIDTag(&(safeBags[i]->safeBagType)) 
 				== SEC_OID_PKCS12_V1_CERT_BAG_ID) {
 	    SECItem *certKeyId = sec_pkcs12_get_attribute_value(safeBags[i],
@@ -2547,11 +2561,15 @@ sec_pkcs12_find_certs_for_key(sec_PKCS12SafeBag **safeBags, sec_PKCS12SafeBag *k
 				== SECEqual)) {
 		if(sec_pkcs12_add_item_to_bag_list(&certList, safeBags[i])
 				!= SECSuccess) {
+		    /* This would leak the partial list of safeBags,
+		     * but that list is allocated from the arena of 
+		     * one of the safebags, and will be destroyed when 
+		     * that arena is destroyed.  So this is not a real leak.
+		     */
 		    return NULL;
 		}
 	    }
 	}
-	i++;
     }
 
     return certList;
@@ -2565,24 +2583,25 @@ SEC_PKCS12DecoderGetCerts(SEC_PKCS12DecoderContext *p12dcx)
     int i;
 
     if (!p12dcx || !p12dcx->safeBags || !p12dcx->safeBags[0]) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
     safeBags = p12dcx->safeBags;
-    i = 0;
     certList = CERT_NewCertList();
 
     if (certList == NULL) {
 	 return NULL;
     }
 
-    while(safeBags[i]) {
+    for (i = 0; safeBags[i]; i++) {
 	if (SECOID_FindOIDTag(&(safeBags[i]->safeBagType)) 
 				== SEC_OID_PKCS12_V1_CERT_BAG_ID) {
 		SECItem *derCert = sec_pkcs12_get_der_cert(safeBags[i]) ;
 		CERTCertificate *tempCert = NULL;
 
-		if (derCert == NULL) continue;
+		if (derCert == NULL) 
+		    continue;
     		tempCert=CERT_NewTempCertificate(CERT_GetDefaultCertDB(),
 		                                 derCert, NULL, 
 		                                 PR_FALSE, PR_TRUE);
@@ -2592,7 +2611,9 @@ SEC_PKCS12DecoderGetCerts(SEC_PKCS12DecoderContext *p12dcx)
 		}
 		SECITEM_FreeItem(derCert,PR_TRUE);
 	}
-	i++;
+	/* fixed an infinite loop here, by ensuring that i gets incremented
+	 * if derCert is NULL above.
+	 */
     }
 
     return certList;
@@ -2605,29 +2626,35 @@ sec_pkcs12_get_key_bags(sec_PKCS12SafeBag **safeBags)
     SECOidTag bagType;
 
     if(!safeBags || !safeBags[0]) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
-    i = 0;
-    while(safeBags[i]) {
+    for (i = 0; safeBags[i]; i++) {
 	bagType = SECOID_FindOIDTag(&(safeBags[i]->safeBagType));
 	switch(bagType) {
 	    case SEC_OID_PKCS12_V1_KEY_BAG_ID:
 	    case SEC_OID_PKCS12_V1_PKCS8_SHROUDED_KEY_BAG_ID:
 		if(sec_pkcs12_add_item_to_bag_list(&keyList, safeBags[i])
 				!= SECSuccess) {
+		    /* This would leak, except that keyList is allocated
+		     * from the arena shared by all the safeBags.
+		     */
 		    return NULL;
 		}
 		break;
 	    default:
 		break;
 	}
-	i++;
     }
 
     return keyList;
 }
 
+/* This function takes two passes over the bags, validating them 
+ * The two passes are intended to mirror exactly the two passes in 
+ * sec_pkcs12_install_bags.  But they don't. :(
+ */
 static SECStatus 
 sec_pkcs12_validate_bags(sec_PKCS12SafeBag **safeBags, 
 			 SEC_PKCS12NicknameCollisionCallback nicknameCb,
@@ -2637,6 +2664,7 @@ sec_pkcs12_validate_bags(sec_PKCS12SafeBag **safeBags,
     int i;
 
     if(!safeBags || !nicknameCb) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
@@ -2644,72 +2672,72 @@ sec_pkcs12_validate_bags(sec_PKCS12SafeBag **safeBags,
 	return SECSuccess;
     }
 
+    /* First pass.  Find all the key bags.  
+     * Find the matching cert(s) for each key.  
+     */
     keyList = sec_pkcs12_get_key_bags(safeBags);
     if(keyList) {
-	i = 0;
+	for (i = 0; keyList[i]; ++i) {
+	    sec_PKCS12SafeBag *key = keyList[i];
+	    sec_PKCS12SafeBag **certList = 
+			    sec_pkcs12_find_certs_for_key(safeBags, key);
 
-	while(keyList[i]) {
-	    sec_PKCS12SafeBag **certList = sec_pkcs12_find_certs_for_key(
-							safeBags, keyList[i]);
 	    if(certList) {
-		int j = 0;
+		int j;
 
-		if(SECOID_FindOIDTag(&(keyList[i]->safeBagType)) == 
+		if(SECOID_FindOIDTag(&(key->safeBagType)) == 
 					SEC_OID_PKCS12_V1_KEY_BAG_ID) {
 		    /* if it is an unencrypted private key then make sure
 		     * the attributes are propageted to the appropriate 
 		     * level 
 		     */
-		    if(sec_pkcs12_get_key_info(keyList[i]) != SECSuccess) {
-			keyList[i]->problem = PR_TRUE;
-			keyList[i]->error = SEC_ERROR_NO_MEMORY;
+		    if(sec_pkcs12_get_key_info(key) != SECSuccess) {
 			return SECFailure;
-		     }
+		    }
 		}
 	
-		sec_pkcs12_validate_key_by_cert(certList[0], keyList[i], wincx);
-		while(certList[j]) {
-		    certList[j]->hasKey = PR_TRUE;
-		    if(keyList[i]->problem) {
-			certList[j]->problem = PR_TRUE;
-			certList[j]->error = keyList[i]->error;
-		    } else {
-			sec_pkcs12_validate_cert(certList[j], keyList[i],
-						 nicknameCb, wincx);
-			if(certList[j]->problem) {
-			    keyList[i]->problem = certList[j]->problem;
-			    keyList[i]->error = certList[j]->error;
-			}
+		sec_pkcs12_validate_key_by_cert(certList[0], key, wincx);
+		for (j = 0; certList[j]; ++j) {
+		    sec_PKCS12SafeBag *cert = certList[j];
+		    cert->hasKey = PR_TRUE;
+		    if(key->problem) {
+			cert->problem = PR_TRUE;
+			cert->error   = key->error;
+			continue;
+		    } 
+		    sec_pkcs12_validate_cert(cert, key, nicknameCb, wincx);
+		    if(cert->problem) {
+			key->problem = cert->problem;
+			key->error   = cert->error;
 		    }
-		    j++;
 		}
 	    }
-
-	    i++;
 	}
     }
 
-    i = 0;
-    while(safeBags[i]) {
-	if(!safeBags[i]->validated) {
-	    SECOidTag bagType = SECOID_FindOIDTag(&safeBags[i]->safeBagType);
+    /* Now take a second pass over the safebags and mark for installation any 
+     * certs that were neither installed nor disqualified by the first pass.
+     */
+    for (i = 0; safeBags[i]; ++i) {
+	sec_PKCS12SafeBag *bag = safeBags[i];
+
+	if(!bag->validated) {
+	    SECOidTag bagType = SECOID_FindOIDTag(&bag->safeBagType);
 
 	    switch(bagType) {
-		case SEC_OID_PKCS12_V1_CERT_BAG_ID:
-		    sec_pkcs12_validate_cert(safeBags[i], NULL, nicknameCb, 
-					     wincx);
-		    break;
-		case SEC_OID_PKCS12_V1_KEY_BAG_ID:
-		case SEC_OID_PKCS12_V1_PKCS8_SHROUDED_KEY_BAG_ID:
-		    safeBags[i]->noInstall = PR_TRUE;
-		    safeBags[i]->problem = PR_TRUE;	
-		    safeBags[i]->error = SEC_ERROR_PKCS12_UNABLE_TO_IMPORT_KEY;
-		    break;
-		default:
-		    safeBags[i]->noInstall = PR_TRUE;
+	    case SEC_OID_PKCS12_V1_CERT_BAG_ID:
+		sec_pkcs12_validate_cert(bag, NULL, nicknameCb, wincx);
+		break;
+	    case SEC_OID_PKCS12_V1_KEY_BAG_ID:
+	    case SEC_OID_PKCS12_V1_PKCS8_SHROUDED_KEY_BAG_ID:
+		bag->noInstall = PR_TRUE;
+		bag->problem = PR_TRUE;	
+		bag->error = SEC_ERROR_PKCS12_UNABLE_TO_IMPORT_KEY;
+		break;
+	    default:
+		bag->noInstall = PR_TRUE;
 	    }
 	}
-	i++;
     }
 
     return SECSuccess;
@@ -2722,6 +2750,7 @@ SEC_PKCS12DecoderValidateBags(SEC_PKCS12DecoderContext *p12dcx,
     SECStatus rv;
     int i, noInstallCnt, probCnt, bagCnt, errorVal = 0;
     if(!p12dcx || p12dcx->error || !p12dcx->safeBags) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
@@ -2734,7 +2763,8 @@ SEC_PKCS12DecoderValidateBags(SEC_PKCS12DecoderContext *p12dcx,
     i = 0;
     while(p12dcx->safeBags[i]) {
 	bagCnt++;
-	if(p12dcx->safeBags[i]->noInstall) noInstallCnt++;
+	if(p12dcx->safeBags[i]->noInstall) 
+	    noInstallCnt++;
 	if(p12dcx->safeBags[i]->problem) {
 	    probCnt++;
 	    errorVal = p12dcx->safeBags[i]->error;
@@ -2742,10 +2772,14 @@ SEC_PKCS12DecoderValidateBags(SEC_PKCS12DecoderContext *p12dcx,
 	i++;
     }
 
-    if(bagCnt == noInstallCnt) {
-	PORT_SetError(SEC_ERROR_PKCS12_DUPLICATE_DATA);
-	return SECFailure;
-    }
+    /* formerly was erroneous code here that assumed that if all bags
+     * failed to import, then the problem was duplicated data; 
+     * that is, it assume that the problem must be that the file had
+     * previously been successfully imported.  But importing a 
+     * previously imported file causes NO ERRORS at all, and this 
+     * false assumption caused real errors to be hidden behind false
+     * errors about duplicated data.
+     */
 
     if(probCnt) {
 	PORT_SetError(errorVal);
@@ -2755,20 +2789,20 @@ SEC_PKCS12DecoderValidateBags(SEC_PKCS12DecoderContext *p12dcx,
     return rv;
 }
 
-static SECItem *
-sec_pkcs12_get_public_value_and_type(sec_PKCS12SafeBag *certBag,
-					KeyType *type, unsigned int *usage)
+
+static SECKEYPublicKey *
+sec_pkcs12_get_public_key_and_usage(sec_PKCS12SafeBag *certBag,
+					 unsigned int *usage)
 {
     SECKEYPublicKey *pubKey = NULL;
     CERTCertificate *cert = NULL;
-    SECItem *pubValue;
 
-    *type = nullKey;
-    *usage = 0;
-
-    if(!certBag) {
+    if(!certBag || !usage) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
+
+    *usage = 0;
 
     cert = CERT_DecodeDERCertificate(
 	 &certBag->safeBagContent.certBag->value.x509Cert, PR_FALSE, NULL);
@@ -2779,41 +2813,54 @@ sec_pkcs12_get_public_value_and_type(sec_PKCS12SafeBag *certBag,
     *usage = cert->keyUsage;
     pubKey = CERT_ExtractPublicKey(cert);
     CERT_DestroyCertificate(cert);
-    if(!pubKey) {
+    return pubKey;
+}
+
+static SECItem *
+sec_pkcs12_get_public_value_and_type(SECKEYPublicKey *pubKey,
+					KeyType *type)
+{
+    SECItem *pubValue = NULL;
+
+    if(!type || !pubKey) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
     *type = pubKey->keyType;
     switch(pubKey->keyType) {
 	case dsaKey:
-	    pubValue = SECITEM_DupItem(&pubKey->u.dsa.publicValue);
+	    pubValue = &pubKey->u.dsa.publicValue;
 	    break;
 	case dhKey:
-	    pubValue = SECITEM_DupItem(&pubKey->u.dh.publicValue);
+	    pubValue = &pubKey->u.dh.publicValue;
 	    break;
 	case rsaKey:
-	    pubValue = SECITEM_DupItem(&pubKey->u.rsa.modulus);
+	    pubValue = &pubKey->u.rsa.modulus;
 	    break;
         case ecKey:
-	    pubValue = SECITEM_DupItem(&pubKey->u.ec.publicValue);
+	    pubValue = &pubKey->u.ec.publicValue;
 	    break;
 	default:
 	    pubValue = NULL;
     }
 
-    SECKEY_DestroyPublicKey(pubKey);
-
     return pubValue;
 }
 
+/* This function takes two passes over the bags, installing them in the
+ * desired slot.  The two passes are intended to mirror exactly the 
+ * two passes in sec_pkcs12_validate_bags.
+ */
 static SECStatus 
-sec_pkcs12_install_bags(sec_PKCS12SafeBag **safeBags, 
-			void *wincx)
+sec_pkcs12_install_bags(sec_PKCS12SafeBag **safeBags, void *wincx)
 {
-    sec_PKCS12SafeBag **keyList, **certList;
+    sec_PKCS12SafeBag **keyList;
     int i;
+    int failedKeys = 0;
 
     if(!safeBags) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
@@ -2821,89 +2868,114 @@ sec_pkcs12_install_bags(sec_PKCS12SafeBag **safeBags,
 	return SECSuccess;
     }
 
+    /* First pass.  Find all the key bags. 
+     * Try to install them, and any certs associated with them.  
+     */
     keyList = sec_pkcs12_get_key_bags(safeBags);
     if(keyList) {
-	i = 0;
-
-	while(keyList[i]) {
+	for (i = 0; keyList[i]; i++) {
 	    SECStatus rv;
-	    SECItem *publicValue = NULL;
-	    KeyType keyType;
+	    SECKEYPublicKey *pubKey = NULL;
+	    SECItem *nickName    = NULL;
+	    sec_PKCS12SafeBag *key = keyList[i];
+	    sec_PKCS12SafeBag **certList;
 	    unsigned int keyUsage;
 
-	    if(keyList[i]->problem) {
-		goto next_key_bag;
+	    if(key->problem) {
+		++failedKeys;
+		continue;
 	    }
 
-	    certList = sec_pkcs12_find_certs_for_key(safeBags,
-						     keyList[i]);
-	    if(certList) {
-		publicValue = sec_pkcs12_get_public_value_and_type(certList[0],
-							&keyType, &keyUsage);
+	    certList = sec_pkcs12_find_certs_for_key(safeBags, key);
+	    if(certList && certList[0]) {
+		pubKey = sec_pkcs12_get_public_key_and_usage(certList[0],
+					&keyUsage);
+		/* use the cert's nickname, if it has one, else use the 
+		 * key's nickname, else fail.
+		 */
+		nickName = sec_pkcs12_get_nickname_for_cert(certList[0], 
+		                                            key, wincx);
+	    } else {
+		nickName = sec_pkcs12_get_nickname(key);
 	    }
-	    rv = sec_pkcs12_add_key(keyList[i], publicValue, keyType, keyUsage,
-									wincx);
-	    if(publicValue) {
-		SECITEM_FreeItem(publicValue, PR_TRUE);
+	    if (!nickName) {
+		key->error = SEC_ERROR_BAD_NICKNAME;
+		key->problem = PR_TRUE;
+		rv = SECFailure;
+	    } else if (!pubKey) {
+                key->error = SEC_ERROR_PKCS12_UNABLE_TO_IMPORT_KEY;
+		key->problem = PR_TRUE;
+                rv = SECFailure;
+	    } else {
+		rv = sec_pkcs12_add_key(key, pubKey, keyUsage, nickName, wincx);
+            }
+	    if (pubKey) {
+		SECKEY_DestroyPublicKey(pubKey);
+		pubKey = NULL;
+	    }
+	    if (nickName) {
+		SECITEM_FreeItem(nickName, PR_TRUE);
+		nickName = NULL;
 	    }
 	    if(rv != SECSuccess) {
-		PORT_SetError(keyList[i]->error);
-		return SECFailure;
+		PORT_SetError(key->error);
+		++failedKeys;
 	    }
 
 	    if(certList) {
-		int j = 0;
+		int j;
 
-		while(certList[j]) {
+		for (j = 0; certList[j]; j++) {
+		    sec_PKCS12SafeBag *cert = certList[j];
 		    SECStatus certRv;
 
+		    if (!cert)
+		    	continue;
 		    if(rv != SECSuccess) {
-			certList[j]->problem = keyList[i]->problem;
-			certList[j]->error = keyList[i]->error;	
-			certList[j]->noInstall = PR_TRUE;
-			goto next_cert_bag;
+			cert->problem = key->problem;
+			cert->error   = key->error;	
+			cert->noInstall = PR_TRUE;
+			continue;
 		    }
 
-		    certRv = sec_pkcs12_add_cert(certList[j], 
-						 certList[j]->hasKey, wincx);
+		    certRv = sec_pkcs12_add_cert(cert, cert->hasKey, wincx);
 		    if(certRv != SECSuccess) {
-			keyList[i]->problem = certList[j]->problem;
-			keyList[i]->error = certList[j]->error;
-			PORT_SetError(certList[j]->error);
+			key->problem = cert->problem;
+			key->error   = cert->error;
+			PORT_SetError(cert->error);
 			return SECFailure;
 		    }
-next_cert_bag:
-		    j++;
 		}
 	    }
-
-next_key_bag:
-	    i++;
 	}
     }
+    if (failedKeys)
+    	return SECFailure;
 
-    i = 0;
-    while(safeBags[i]) {
-	if(!safeBags[i]->installed) {
+    /* Now take a second pass over the safebags and install any certs 
+     * that were neither installed nor disqualified by the first pass.
+     */
+    for (i = 0; safeBags[i]; i++) {
+	sec_PKCS12SafeBag *bag = safeBags[i];
+
+	if (!bag->installed && !bag->problem && !bag->noInstall) {
 	    SECStatus rv;
-	    SECOidTag bagType = SECOID_FindOIDTag(&(safeBags[i]->safeBagType));
+	    SECOidTag bagType = SECOID_FindOIDTag(&(bag->safeBagType));
 
 	    switch(bagType) {
-		case SEC_OID_PKCS12_V1_CERT_BAG_ID:
-		    rv = sec_pkcs12_add_cert(safeBags[i], safeBags[i]->hasKey,
-					     wincx);
-		    if(rv != SECSuccess) {
-			PORT_SetError(safeBags[i]->error);
-			return SECFailure;
-		    }
-		    break;
-		case SEC_OID_PKCS12_V1_KEY_BAG_ID:
-		case SEC_OID_PKCS12_V1_PKCS8_SHROUDED_KEY_BAG_ID:
-		default:
-		    break;
+	    case SEC_OID_PKCS12_V1_CERT_BAG_ID:
+		rv = sec_pkcs12_add_cert(bag, bag->hasKey, wincx);
+		if(rv != SECSuccess) {
+		    PORT_SetError(bag->error);
+		    return SECFailure;
+		}
+		break;
+	    case SEC_OID_PKCS12_V1_KEY_BAG_ID:
+	    case SEC_OID_PKCS12_V1_PKCS8_SHROUDED_KEY_BAG_ID:
+	    default:
+		break;
 	    }
 	}
-	i++;
     }
 
     return SECSuccess;
@@ -2913,6 +2985,7 @@ SECStatus
 SEC_PKCS12DecoderImportBags(SEC_PKCS12DecoderContext *p12dcx)
 {
     if(!p12dcx || p12dcx->error) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
@@ -3003,11 +3076,15 @@ SEC_PKCS12DecoderIterateNext(SEC_PKCS12DecoderContext *p12dcx,
     if (p12dcx->decitem.type != 0 && p12dcx->decitem.der != NULL) {
         SECITEM_FreeItem(p12dcx->decitem.der, PR_TRUE);
     }
+    if (p12dcx->decitem.shroudAlg != NULL) {
+        SECOID_DestroyAlgorithmID(p12dcx->decitem.shroudAlg, PR_TRUE);
+    }
     if (p12dcx->decitem.friendlyName != NULL) {
         SECITEM_FreeItem(p12dcx->decitem.friendlyName, PR_TRUE);
     }
     p12dcx->decitem.type = 0;
     p12dcx->decitem.der = NULL;
+    p12dcx->decitem.shroudAlg = NULL;
     p12dcx->decitem.friendlyName = NULL;
     p12dcx->decitem.hasKey = PR_FALSE;
     *ipp = NULL;
@@ -3028,8 +3105,13 @@ SEC_PKCS12DecoderIterateNext(SEC_PKCS12DecoderContext *p12dcx,
                 p12dcx->decitem.friendlyName = sec_pkcs12_get_friendlyName(bag);
                 p12dcx->decitem.hasKey = sec_pkcs12_bagHasKey(p12dcx, bag);
                 break;
-            case SEC_OID_PKCS12_V1_KEY_BAG_ID:
             case SEC_OID_PKCS12_V1_PKCS8_SHROUDED_KEY_BAG_ID:
+                p12dcx->decitem.shroudAlg = PORT_ZNew(SECAlgorithmID);
+		if (p12dcx->decitem.shroudAlg) {
+		    SECOID_CopyAlgorithmID(NULL, p12dcx->decitem.shroudAlg,
+			&bag->safeBagContent.pkcs8ShroudedKeyBag->algorithm);
+		}
+            case SEC_OID_PKCS12_V1_KEY_BAG_ID:
                 p12dcx->decitem.friendlyName = sec_pkcs12_get_friendlyName(bag);
                 break;
             default:
@@ -3053,6 +3135,7 @@ sec_pkcs12_decoder_append_bag_to_context(SEC_PKCS12DecoderContext *p12dcx,
 					 sec_PKCS12SafeBag *bag)
 {
     if(!p12dcx || p12dcx->error) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
@@ -3088,6 +3171,7 @@ sec_pkcs12_decoder_convert_old_key(SEC_PKCS12DecoderContext *p12dcx,
     SECItem *keyID, *nickName, *newNickName;
 
     if(!p12dcx || p12dcx->error || !key) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
@@ -3095,7 +3179,6 @@ sec_pkcs12_decoder_convert_old_key(SEC_PKCS12DecoderContext *p12dcx,
     keyBag = (sec_PKCS12SafeBag *)PORT_ArenaZAlloc(p12dcx->arena, 
 						   sizeof(sec_PKCS12SafeBag));
     if(!keyBag || !newNickName) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return NULL;
     }
 
@@ -3110,13 +3193,11 @@ sec_pkcs12_decoder_convert_old_key(SEC_PKCS12DecoderContext *p12dcx,
 			 SEC_OID_PKCS12_V1_KEY_BAG_ID;
     oid = SECOID_FindOIDByTag(keyTag);
     if(!oid) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return NULL;
     }
 
     if(SECITEM_CopyItem(p12dcx->arena, &keyBag->safeBagType, &oid->oid) 
 			!= SECSuccess) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return NULL;
     }
 
@@ -3146,7 +3227,6 @@ sec_pkcs12_decoder_convert_old_key(SEC_PKCS12DecoderContext *p12dcx,
 	    if(nickName->data[0] && nickName->data[1]) {
 		if(!sec_pkcs12_convert_item_to_unicode(p12dcx->arena, newNickName, 
 					nickName, PR_FALSE, PR_FALSE, PR_TRUE)) {
-		    PORT_SetError(SEC_ERROR_NO_MEMORY);
 		    return NULL;
 		}
 		nickName = newNickName;
@@ -3162,7 +3242,6 @@ sec_pkcs12_decoder_convert_old_key(SEC_PKCS12DecoderContext *p12dcx,
 	} else {
 	    if(!sec_pkcs12_convert_item_to_unicode(p12dcx->arena, newNickName, 
 					nickName, PR_FALSE, PR_FALSE, PR_TRUE)) {
-		PORT_SetError(SEC_ERROR_NO_MEMORY);
 		return NULL;
 	    }
 	    nickName = newNickName;
@@ -3194,12 +3273,12 @@ sec_pkcs12_decoder_create_cert(SEC_PKCS12DecoderContext *p12dcx,
     SECStatus rv;
 
     if(!p12dcx || p12dcx->error || !derCert) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
     keyId = (SECItem *)PORT_ArenaZAlloc(p12dcx->arena, sizeof(SECItem));
     if(!keyId) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return NULL;
     }
 
@@ -3220,7 +3299,6 @@ sec_pkcs12_decoder_create_cert(SEC_PKCS12DecoderContext *p12dcx,
 						    sizeof(sec_PKCS12SafeBag));
     if(!certBag || !oid || (SECITEM_CopyItem(p12dcx->arena, 
 			&certBag->safeBagType, &oid->oid) != SECSuccess)) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return NULL;
     }
 
@@ -3238,14 +3316,12 @@ sec_pkcs12_decoder_create_cert(SEC_PKCS12DecoderContext *p12dcx,
 			(SECITEM_CopyItem(p12dcx->arena, 
 				 &certBag->safeBagContent.certBag->bagID,
 				 &oid->oid) != SECSuccess)) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return NULL;
     }
       
     if(SECITEM_CopyItem(p12dcx->arena, 
 			 &(certBag->safeBagContent.certBag->value.x509Cert),
 			 derCert) != SECSuccess) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return NULL;
     }
 
@@ -3266,6 +3342,7 @@ sec_pkcs12_decoder_convert_old_cert(SEC_PKCS12DecoderContext *p12dcx,
     int i, j;
 
     if(!p12dcx || p12dcx->error || !oldCert) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
@@ -3280,7 +3357,6 @@ sec_pkcs12_decoder_convert_old_cert(SEC_PKCS12DecoderContext *p12dcx,
     certList = (sec_PKCS12SafeBag **)PORT_ArenaZAlloc(p12dcx->arena, 
 				(i + 1) * sizeof(sec_PKCS12SafeBag *));
     if(!certList) {
-	PORT_SetError(SEC_ERROR_NO_MEMORY);
 	return NULL;
     }
 
@@ -3377,6 +3453,7 @@ sec_pkcs12_decoder_convert_old_safe_to_bags(SEC_PKCS12DecoderContext *p12dcx,
     SECStatus rv;
 
     if(!p12dcx || p12dcx->error) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return SECFailure;
     }
 
@@ -3442,10 +3519,12 @@ sec_PKCS12ConvertOldSafeToNew(PRArenaPool *arena, PK11SlotInfo *slot,
     SEC_PKCS12DecoderContext *p12dcx;
 
     if(!arena || !slot || !pwitem) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 
     if(!safe && !baggage) {
+	PORT_SetError(SEC_ERROR_INVALID_ARGS);
 	return NULL;
     }
 

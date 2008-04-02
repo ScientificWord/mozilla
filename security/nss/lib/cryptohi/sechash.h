@@ -56,7 +56,7 @@ extern unsigned int  HASH_ResultLenByOidTag(SECOidTag hashOid);
 extern SECStatus     HASH_HashBuf(HASH_HashType type,
 				 unsigned char *dest,
 				 unsigned char *src,
-				 uint32 src_len);
+				 PRUint32 src_len);
 
 extern HASHContext * HASH_Create(HASH_HashType type);
 
@@ -80,6 +80,8 @@ extern const SECHashObject * HASH_GetHashObject(HASH_HashType type);
 extern const SECHashObject * HASH_GetHashObjectByOidTag(SECOidTag hashOid);
 
 extern HASH_HashType HASH_GetHashTypeByOidTag(SECOidTag hashOid);
+extern SECOidTag HASH_GetHashOidTagByHMACOidTag(SECOidTag hmacOid);
+extern SECOidTag HASH_GetHMACOidTagByHashOidTag(SECOidTag hashOid);
 
 SEC_END_PROTOS
 

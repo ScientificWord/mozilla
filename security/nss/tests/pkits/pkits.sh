@@ -110,12 +110,12 @@ pkits_init()
   echo "crls" $crls
 
   echo nss > ${PKITSdb}/pw
-  certutil -N -d ${PKITSdb} -f ${PKITSdb}/pw
+  ${BINDIR}/certutil -N -d ${PKITSdb} -f ${PKITSdb}/pw
 
-  certutil -A -n TrustAnchorRootCertificate -t "C,C,C" -i \
+  ${BINDIR}/certutil -A -n TrustAnchorRootCertificate -t "C,C,C" -i \
       $certs/TrustAnchorRootCertificate.crt -d $PKITSdb
   if [ "$NSS_NO_PKITS_CRLS" -ne 1 ]; then
-    crlutil -I -i $crls/TrustAnchorRootCRL.crl -d ${PKITSdb}
+    ${BINDIR}/crlutil -I -i $crls/TrustAnchorRootCRL.crl -d ${PKITSdb}
   else
     html  "<H3>NO CRLs are being used.</H3>"
     pkits_log "NO CRLs are being used."
@@ -163,16 +163,16 @@ break_table()
 pkits()
 {
   echo "vfychain -d $PKITSdb -u 4 $*"
-  vfychain -d $PKITSdb -u 4 $* > ${PKITSDIR}/cmdout.txt 2>&1
+  ${BINDIR}/vfychain -d $PKITSdb -u 4 $* > ${PKITSDIR}/cmdout.txt 2>&1
   RET=$?
   RET=$(expr $RET + $(grep -c ERROR ${PKITSDIR}/cmdout.txt))
   cat ${PKITSDIR}/cmdout.txt
 
   if [ "$RET" -ne 0 ]; then
-      html_failed "<TR><TD>${VFY_ACTION} ($RET) "
+      html_failed "${VFY_ACTION} ($RET) "
       pkits_log "ERROR: ${VFY_ACTION} failed $RET"
   else
-      html_passed "<TR><TD>${VFY_ACTION}"
+      html_passed "${VFY_ACTION}"
       pkits_log "SUCCESS: ${VFY_ACTION} returned as expected $RET"
   fi
 
@@ -187,16 +187,16 @@ pkits()
 pkitsn()
 {
   echo "vfychain -d $PKITSdb -u 4 $*"
-  vfychain -d $PKITSdb -u 4 $* > ${PKITSDIR}/cmdout.txt 2>&1
+  ${BINDIR}/vfychain -d $PKITSdb -u 4 $* > ${PKITSDIR}/cmdout.txt 2>&1
   RET=$?
   RET=$(expr $RET + $(grep -c ERROR ${PKITSDIR}/cmdout.txt))
   cat ${PKITSDIR}/cmdout.txt
 
   if [ "$RET" -eq 0 ]; then
-      html_failed "<TR><TD>${VFY_ACTION} ($RET) "
+      html_failed "${VFY_ACTION} ($RET) "
       pkits_log "ERROR: ${VFY_ACTION} failed $RET"
   else
-      html_passed "<TR><TD>${VFY_ACTION} ($RET) "
+      html_passed "${VFY_ACTION} ($RET) "
       pkits_log "SUCCESS: ${VFY_ACTION} returned as expected $RET"
   fi
   return $RET
@@ -210,12 +210,12 @@ crlImport()
 {
   if [ "$NSS_NO_PKITS_CRLS" -ne 1 ]; then
     echo "crlutil -d $PKITSdb -I -i $crls/$*"
-    crlutil -d ${PKITSdb} -I -i $crls/$* > ${PKITSDIR}/cmdout.txt 2>&1
+    ${BINDIR}/crlutil -d ${PKITSdb} -I -i $crls/$* > ${PKITSDIR}/cmdout.txt 2>&1
     RET=$?
     cat ${PKITSDIR}/cmdout.txt
 
     if [ "$RET" -ne 0 ]; then
-	html_failed "<TR><TD>${VFY_ACTION} ($RET) "
+	html_failed "${VFY_ACTION} ($RET) "
 	pkits_log "ERROR: ${VFY_ACTION} failed $RET"
     fi
   fi
@@ -230,15 +230,15 @@ crlImportn()
   RET=0
   if [ "$NSS_NO_PKITS_CRLS" -ne 1 ]; then
     echo "crlutil -d $PKITSdb -I -i $crls/$*"
-    crlutil -d ${PKITSdb} -I -i $crls/$* > ${PKITSDIR}/cmdout.txt 2>&1
+    ${BINDIR}/crlutil -d ${PKITSdb} -I -i $crls/$* > ${PKITSDIR}/cmdout.txt 2>&1
     RET=$?
     cat ${PKITSDIR}/cmdout.txt
 
     if [ "$RET" -eq 0 ]; then
-	html_failed "<TR><TD>${VFY_ACTION} ($RET) "
+	html_failed "${VFY_ACTION} ($RET) "
 	pkits_log "ERROR: ${VFY_ACTION} failed $RET"
     else
-	html_passed "<TR><TD>${VFY_ACTION} ($RET) "
+	html_passed "${VFY_ACTION} ($RET) "
 	pkits_log "SUCCESS: ${VFY_ACTION} returned as expected $RET"
     fi
   fi
@@ -255,23 +255,23 @@ delete()
 {
   if [ "$NSS_NO_PKITS_CRLS" -ne 1 ]; then
       echo "crlutil -d $PKITSdb -D -n $*"
-      crlutil -d ${PKITSdb} -D -n $* > ${PKITSDIR}/cmdout.txt 2>&1
+      ${BINDIR}/crlutil -d ${PKITSdb} -D -n $* > ${PKITSDIR}/cmdout.txt 2>&1
       RET=$?
       cat ${PKITSDIR}/cmdout.txt
 
       if [ "$RET" -ne 0 ]; then
-	  html_failed "<TR><TD>${VFY_ACTION} ($RET) "
+	  html_failed "${VFY_ACTION} ($RET) "
 	  pkits_log "ERROR: ${VFY_ACTION} failed $RET"
       fi
   fi
 
   echo "certutil -d $PKITSdb -D -n $*"
-  certutil -d $PKITSdb -D -n $* > ${PKITSDIR}/cmdout.txt 2>&1
+  ${BINDIR}/certutil -d $PKITSdb -D -n $* > ${PKITSDIR}/cmdout.txt 2>&1
   RET=$?
   cat ${PKITSDIR}/cmdout.txt
 
   if [ "$RET" -ne 0 ]; then
-      html_failed "<TR><TD>${VFY_ACTION} ($RET) "
+      html_failed "${VFY_ACTION} ($RET) "
       pkits_log "ERROR: ${VFY_ACTION} failed $RET"
   fi
 }
@@ -283,12 +283,12 @@ delete()
 certImport()
 {
   echo "certutil -d $PKITSdb -A -t \",,\" -n $* -i $certs/$*.crt"
-  certutil -d $PKITSdb -A -t ",," -n $* -i $certs/$*.crt > ${PKITSDIR}/cmdout.txt 2>&1
+  ${BINDIR}/certutil -d $PKITSdb -A -t ",," -n $* -i $certs/$*.crt > ${PKITSDIR}/cmdout.txt 2>&1
   RET=$?
   cat ${PKITSDIR}/cmdout.txt
 
   if [ "$RET" -ne 0 ]; then
-      html_failed "<TR><TD>${VFY_ACTION} ($RET) "
+      html_failed "${VFY_ACTION} ($RET) "
       pkits_log "ERROR: ${VFY_ACTION} failed $RET"
   fi
 }
@@ -302,15 +302,15 @@ certImportn()
   RET=0
   if [ "$NSS_NO_PKITS_CRLS" -ne 1 ]; then
     echo "certutil -d $PKITSdb -A -t \",,\" -n $* -i $certs/$*.crt"
-    certutil -d $PKITSdb -A -t ",," -n $* -i $certs/$*.crt > ${PKITSDIR}/cmdout.txt 2>&1
+    ${BINDIR}/certutil -d $PKITSdb -A -t ",," -n $* -i $certs/$*.crt > ${PKITSDIR}/cmdout.txt 2>&1
     RET=$?
     cat ${PKITSDIR}/cmdout.txt
 
     if [ "$RET" -eq 0 ]; then
-	html_failed "<TR><TD>${VFY_ACTION} ($RET) "
+	html_failed "${VFY_ACTION} ($RET) "
 	pkits_log "ERROR: ${VFY_ACTION} failed $RET"
     else
-	html_passed "<TR><TD>${VFY_ACTION} ($RET) "
+	html_passed "${VFY_ACTION} ($RET) "
 	pkits_log "SUCCESS: ${VFY_ACTION} returned as expected $RET"
     fi
   fi
@@ -2063,3 +2063,4 @@ fi
 pkits_NameConstraints | tee -a $PKITS_LOG
 pkits_PvtCertExtensions | tee -a $PKITS_LOG
 pkits_cleanup
+

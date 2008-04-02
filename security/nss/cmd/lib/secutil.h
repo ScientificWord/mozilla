@@ -92,6 +92,16 @@ typedef struct {
 */
 SECStatus SECU_ChangePW(PK11SlotInfo *slot, char *passwd, char *pwFile);
 
+/*
+** Change a password on a token, or initialize a token with a password
+** if it does not already have one.
+** In this function, you can specify both the old and new passwords
+** as either a string or file. NOTE: any you don't specify will
+** be prompted for
+*/
+SECStatus SECU_ChangePW2(PK11SlotInfo *slot, char *oldPass, char *newPass,
+                        char *oldPwFile, char *newPwFile);
+
 /*  These were stolen from the old sec.h... */
 /*
 ** Check a password for legitimacy. Passwords must be at least 8
@@ -168,11 +178,24 @@ extern void SECU_PrintSystemError(char *progName, char *msg, ...);
 /* Return informative error string */
 extern const char * SECU_Strerror(PRErrorCode errNum);
 
-/* print information about cert verification failure */
+/* revalidate the cert and print information about cert verification
+ * failure at time == now */
 extern void
 SECU_printCertProblems(FILE *outfile, CERTCertDBHandle *handle, 
 	CERTCertificate *cert, PRBool checksig, 
 	SECCertificateUsage certUsage, void *pinArg, PRBool verbose);
+
+/* revalidate the cert and print information about cert verification
+ * failure at specified time */
+extern void
+SECU_printCertProblemsOnDate(FILE *outfile, CERTCertDBHandle *handle, 
+	CERTCertificate *cert, PRBool checksig, SECCertificateUsage certUsage, 
+	void *pinArg, PRBool verbose, PRTime datetime);
+
+/* print out CERTVerifyLog info. */
+extern void
+SECU_displayVerifyLog(FILE *outfile, CERTVerifyLog *log,
+                      PRBool verbose);
 
 /* Read the contents of a file into a SECItem */
 extern SECStatus SECU_FileToItem(SECItem *dst, PRFileDesc *src);
@@ -242,10 +265,14 @@ extern int SECU_PrintCertificateRequest(FILE *out, SECItem *der, char *m,
 extern int SECU_PrintCertificate(FILE *out, SECItem *der, char *m, int level);
 
 /* print trust flags on a cert */
-extern void SECU_PrintTrustFlags(FILE *out, CERTCertTrust *trust, char *m, int level);
+extern void SECU_PrintTrustFlags(FILE *out, CERTCertTrust *trust, char *m, 
+                                 int level);
 
-/* Dump contents of public key */
-extern int SECU_PrintPublicKey(FILE *out, SECItem *der, char *m, int level);
+/* Dump contents of an RSA public key */
+extern int SECU_PrintRSAPublicKey(FILE *out, SECItem *der, char *m, int level);
+
+extern int SECU_PrintSubjectPublicKeyInfo(FILE *out, SECItem *der, char *m, 
+                                          int level);
 
 #ifdef HAVE_EPV_TEMPLATE
 /* Dump contents of private key */
@@ -266,6 +293,11 @@ extern SECStatus SECU_PKCS11Init(PRBool readOnly);
 /* Dump contents of signed data */
 extern int SECU_PrintSignedData(FILE *out, SECItem *der, char *m, int level,
 				SECU_PPFunc inner);
+
+/* Print cert data and its trust flags */
+extern SECStatus SEC_PrintCertificateAndTrust(CERTCertificate *cert,
+                                              const char *label,
+                                              CERTCertTrust *trust);
 
 extern int SECU_PrintCrl(FILE *out, SECItem *der, char *m, int level);
 
@@ -289,8 +321,6 @@ extern void SECU_PrintName(FILE *out, CERTName *name, char *msg, int level);
 extern SECKEYLowPublicKey *SECU_ConvHighToLow(SECKEYPublicKey *pubHighKey);
 #endif
 
-extern SECItem *SECU_GetPBEPassword(void *arg);
-
 extern char *SECU_GetModulePassword(PK11SlotInfo *slot, PRBool retry, void *arg);
 
 extern SECStatus DER_PrettyPrint(FILE *out, SECItem *it, PRBool raw);
@@ -309,7 +339,7 @@ extern SECOidTag SECU_StringToSignatureAlgTag(const char *alg);
  * encodes with base64 and exports to file if ascii flag is set
  * and file is not NULL. */
 extern SECStatus SECU_StoreCRL(PK11SlotInfo *slot, SECItem *derCrl,
-                               PRFileDesc *outFile, int ascii, char *url);
+                               PRFileDesc *outFile, PRBool ascii, char *url);
 
 
 /*
@@ -369,6 +399,14 @@ SECU_EncodeAndAddExtensionValue(PRArenaPool *arena, void *extHandle,
                                 void *value, PRBool criticality, int extenType, 
                                 EXTEN_EXT_VALUE_ENCODER EncodeValueFn);
 
+/* Caller ensures that dst is at least item->len*2+1 bytes long */
+void
+SECU_SECItemToHex(const SECItem * item, char * dst);
+
+/* Requires 0x prefix. Case-insensitive. Will do in-place replacement if
+ * successful */
+SECStatus
+SECU_SECItemHexStringToBinary(SECItem* srcdest);
 
 /*
  *
@@ -382,6 +420,7 @@ typedef struct {
     PRBool needsArg;
     char *arg;
     PRBool activated;
+    char *longform;
 } secuCommandFlag;
 
 /*  A full array of command/option flags  */
@@ -396,9 +435,10 @@ typedef struct
 
 /*  fill the "arg" and "activated" fields for each flag  */
 SECStatus 
-SECU_ParseCommandLine(int argc, char **argv, char *progName, secuCommand *cmd);
+SECU_ParseCommandLine(int argc, char **argv, char *progName,
+		      const secuCommand *cmd);
 char *
-SECU_GetOptionArg(secuCommand *cmd, int optionNum);
+SECU_GetOptionArg(const secuCommand *cmd, int optionNum);
 
 /*
  *

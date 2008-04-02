@@ -53,7 +53,7 @@ RESNAME = $(LIBRARY_NAME).rc
 ifdef NS_USE_GCC
 EXTRA_SHARED_LIBS += \
 	-L$(DIST)/lib \
-	-lsoftokn3 \
+	-lnssutil3 \
 	-L$(NSPR_LIB_DIR) \
 	-lplc4 \
 	-lplds4 \
@@ -61,7 +61,7 @@ EXTRA_SHARED_LIBS += \
 	$(NULL)
 else # ! NS_USE_GCC
 EXTRA_SHARED_LIBS += \
-	$(DIST)/lib/softokn3.lib \
+	$(DIST)/lib/nssutil3.lib \
 	$(NSPR_LIB_DIR)/$(NSPR31_LIB_PREFIX)plc4.lib \
 	$(NSPR_LIB_DIR)/$(NSPR31_LIB_PREFIX)plds4.lib \
 	$(NSPR_LIB_DIR)/$(NSPR31_LIB_PREFIX)nspr4.lib \
@@ -74,7 +74,7 @@ else
 # $(EXTRA_SHARED_LIBS) come before $(OS_LIBS), except on AIX.
 EXTRA_SHARED_LIBS += \
 	-L$(DIST)/lib \
-	-lsoftokn3 \
+	-lnssutil3 \
 	-L$(NSPR_LIB_DIR) \
 	-lplc4 \
 	-lplds4 \
@@ -90,10 +90,20 @@ SHARED_LIBRARY_LIBS = \
 	$(DIST)/lib/$(LIB_PREFIX)cryptohi.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)pk11wrap.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)certdb.$(LIB_SUFFIX) \
-	$(DIST)/lib/$(LIB_PREFIX)secutil.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)nsspki.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)nssdev.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)nssb.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)certsel.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)checker.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)params.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)results.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)top.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)util.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)crlsel.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)store.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)pki.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)system.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)module.$(LIB_SUFFIX) \
 	$(NULL)
 
 SHARED_LIBRARY_DIRS = \
@@ -101,11 +111,25 @@ SHARED_LIBRARY_DIRS = \
 	../cryptohi \
 	../pk11wrap \
 	../certdb \
-	../util \
 	../pki \
 	../dev \
 	../base \
+	../libpkix/pkix/certsel \
+	../libpkix/pkix/checker \
+	../libpkix/pkix/params \
+	../libpkix/pkix/results \
+	../libpkix/pkix/top \
+	../libpkix/pkix/util \
+	../libpkix/pkix/crlsel \
+	../libpkix/pkix/store \
+	../libpkix/pkix_pl_nss/pki \
+	../libpkix/pkix_pl_nss/system \
+	../libpkix/pkix_pl_nss/module \
 	$(NULL)
+
+ifeq ($(OS_ARCH), Darwin)
+EXTRA_SHARED_LIBS += -dylib_file @executable_path/libsqlite3.dylib:$(DIST)/lib/libsqlite3.dylib
+endif
 
 
 ifeq ($(OS_TARGET),SunOS)
@@ -122,6 +146,14 @@ MKSHLIB += -R '$$ORIGIN'
 endif
 endif
 
+ifeq ($(OS_ARCH), HP-UX) 
+ifneq ($(OS_TEST), ia64)
+# pa-risc
+ifeq ($(USE_64), 1)
+MKSHLIB += +b '$$ORIGIN'
+endif
+endif
+endif
 
 ifeq (,$(filter-out WINNT WIN95,$(OS_TARGET)))
 ifndef NS_USE_GCC

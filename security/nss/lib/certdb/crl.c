@@ -103,12 +103,15 @@ static const SEC_ASN1Template cert_KrlEntryTemplate[] = {
     { 0 }
 };
 
+SEC_ASN1_MKSUB(SECOID_AlgorithmIDTemplate)
+SEC_ASN1_MKSUB(CERT_TimeChoiceTemplate)
+
 static const SEC_ASN1Template cert_KrlTemplate[] = {
     { SEC_ASN1_SEQUENCE,
 	  0, NULL, sizeof(CERTCrl) },
-    { SEC_ASN1_INLINE,
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
 	  offsetof(CERTCrl,signatureAlg),
-	  SECOID_AlgorithmIDTemplate },
+	  SEC_ASN1_SUB(SECOID_AlgorithmIDTemplate) },
     { SEC_ASN1_SAVE,
 	  offsetof(CERTCrl,derName) },
     { SEC_ASN1_INLINE,
@@ -132,9 +135,9 @@ static const SEC_ASN1Template cert_SignedKrlTemplate[] = {
     { SEC_ASN1_INLINE,
 	  offsetof(CERTSignedCrl,crl),
 	  cert_KrlTemplate },
-    { SEC_ASN1_INLINE,
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
 	  offsetof(CERTSignedCrl,signatureWrap.signatureAlgorithm),
-	  SECOID_AlgorithmIDTemplate },
+	  SEC_ASN1_SUB(SECOID_AlgorithmIDTemplate) },
     { SEC_ASN1_BIT_STRING,
 	  offsetof(CERTSignedCrl,signatureWrap.signature) },
     { 0 }
@@ -155,8 +158,9 @@ static const SEC_ASN1Template cert_CrlEntryTemplate[] = {
 	  0, NULL, sizeof(CERTCrlEntry) },
     { SEC_ASN1_INTEGER,
 	  offsetof(CERTCrlEntry,serialNumber) },
-    { SEC_ASN1_INLINE,
-	  offsetof(CERTCrlEntry,revocationDate), CERT_TimeChoiceTemplate },
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
+	  offsetof(CERTCrlEntry,revocationDate),
+          SEC_ASN1_SUB(CERT_TimeChoiceTemplate) },
     { SEC_ASN1_OPTIONAL | SEC_ASN1_SEQUENCE_OF,
 	  offsetof(CERTCrlEntry, extensions),
 	  SEC_CERTExtensionTemplate},
@@ -167,18 +171,20 @@ const SEC_ASN1Template CERT_CrlTemplate[] = {
     { SEC_ASN1_SEQUENCE,
 	  0, NULL, sizeof(CERTCrl) },
     { SEC_ASN1_INTEGER | SEC_ASN1_OPTIONAL, offsetof (CERTCrl, version) },
-    { SEC_ASN1_INLINE,
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
 	  offsetof(CERTCrl,signatureAlg),
-	  SECOID_AlgorithmIDTemplate },
+	  SEC_ASN1_SUB(SECOID_AlgorithmIDTemplate)},
     { SEC_ASN1_SAVE,
 	  offsetof(CERTCrl,derName) },
     { SEC_ASN1_INLINE,
 	  offsetof(CERTCrl,name),
 	  CERT_NameTemplate },
-    { SEC_ASN1_INLINE,
-	  offsetof(CERTCrl,lastUpdate), CERT_TimeChoiceTemplate },
-    { SEC_ASN1_INLINE | SEC_ASN1_OPTIONAL,
-	  offsetof(CERTCrl,nextUpdate), CERT_TimeChoiceTemplate },
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
+	  offsetof(CERTCrl,lastUpdate),
+          SEC_ASN1_SUB(CERT_TimeChoiceTemplate) },
+    { SEC_ASN1_INLINE | SEC_ASN1_OPTIONAL | SEC_ASN1_XTRN,
+	  offsetof(CERTCrl,nextUpdate),
+          SEC_ASN1_SUB(CERT_TimeChoiceTemplate) },
     { SEC_ASN1_OPTIONAL | SEC_ASN1_SEQUENCE_OF,
 	  offsetof(CERTCrl,entries),
 	  cert_CrlEntryTemplate },
@@ -193,18 +199,20 @@ const SEC_ASN1Template CERT_CrlTemplateNoEntries[] = {
     { SEC_ASN1_SEQUENCE,
 	  0, NULL, sizeof(CERTCrl) },
     { SEC_ASN1_INTEGER | SEC_ASN1_OPTIONAL, offsetof (CERTCrl, version) },
-    { SEC_ASN1_INLINE,
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
 	  offsetof(CERTCrl,signatureAlg),
-	  SECOID_AlgorithmIDTemplate },
+	  SEC_ASN1_SUB(SECOID_AlgorithmIDTemplate) },
     { SEC_ASN1_SAVE,
 	  offsetof(CERTCrl,derName) },
     { SEC_ASN1_INLINE,
 	  offsetof(CERTCrl,name),
 	  CERT_NameTemplate },
-    { SEC_ASN1_INLINE,
-	  offsetof(CERTCrl,lastUpdate), CERT_TimeChoiceTemplate },
-    { SEC_ASN1_INLINE | SEC_ASN1_OPTIONAL,
-	  offsetof(CERTCrl,nextUpdate), CERT_TimeChoiceTemplate },
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
+	  offsetof(CERTCrl,lastUpdate),
+          SEC_ASN1_SUB(CERT_TimeChoiceTemplate) },
+    { SEC_ASN1_INLINE | SEC_ASN1_OPTIONAL | SEC_ASN1_XTRN,
+	  offsetof(CERTCrl,nextUpdate),
+          SEC_ASN1_SUB(CERT_TimeChoiceTemplate) },
     { SEC_ASN1_OPTIONAL | SEC_ASN1_SEQUENCE_OF |
       SEC_ASN1_SKIP }, /* skip entries */
     { SEC_ASN1_OPTIONAL | SEC_ASN1_CONSTRUCTED | SEC_ASN1_CONTEXT_SPECIFIC |
@@ -220,10 +228,12 @@ const SEC_ASN1Template CERT_CrlTemplateEntriesOnly[] = {
     { SEC_ASN1_SKIP | SEC_ASN1_INTEGER | SEC_ASN1_OPTIONAL },
     { SEC_ASN1_SKIP },
     { SEC_ASN1_SKIP },
-    { SEC_ASN1_SKIP | SEC_ASN1_INLINE,
-        offsetof(CERTCrl,lastUpdate), CERT_TimeChoiceTemplate },
-    { SEC_ASN1_SKIP | SEC_ASN1_INLINE | SEC_ASN1_OPTIONAL,
-        offsetof(CERTCrl,nextUpdate), CERT_TimeChoiceTemplate },
+    { SEC_ASN1_SKIP | SEC_ASN1_INLINE | SEC_ASN1_XTRN,
+        offsetof(CERTCrl,lastUpdate),
+        SEC_ASN1_SUB(CERT_TimeChoiceTemplate) },
+    { SEC_ASN1_SKIP | SEC_ASN1_INLINE | SEC_ASN1_OPTIONAL | SEC_ASN1_XTRN,
+        offsetof(CERTCrl,nextUpdate),
+        SEC_ASN1_SUB(CERT_TimeChoiceTemplate) },
     { SEC_ASN1_OPTIONAL | SEC_ASN1_SEQUENCE_OF,
 	  offsetof(CERTCrl,entries),
 	  cert_CrlEntryTemplate }, /* decode entries */
@@ -239,9 +249,9 @@ const SEC_ASN1Template CERT_SignedCrlTemplate[] = {
     { SEC_ASN1_INLINE,
 	  offsetof(CERTSignedCrl,crl),
 	  CERT_CrlTemplate },
-    { SEC_ASN1_INLINE,
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN ,
 	  offsetof(CERTSignedCrl,signatureWrap.signatureAlgorithm),
-	  SECOID_AlgorithmIDTemplate },
+	  SEC_ASN1_SUB(SECOID_AlgorithmIDTemplate) },
     { SEC_ASN1_BIT_STRING,
 	  offsetof(CERTSignedCrl,signatureWrap.signature) },
     { 0 }
@@ -255,9 +265,9 @@ static const SEC_ASN1Template cert_SignedCrlTemplateNoEntries[] = {
     { SEC_ASN1_INLINE,
 	  offsetof(CERTSignedCrl,crl),
 	  CERT_CrlTemplateNoEntries },
-    { SEC_ASN1_INLINE,
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
 	  offsetof(CERTSignedCrl,signatureWrap.signatureAlgorithm),
-	  SECOID_AlgorithmIDTemplate },
+	  SEC_ASN1_SUB(SECOID_AlgorithmIDTemplate) },
     { SEC_ASN1_BIT_STRING,
 	  offsetof(CERTSignedCrl,signatureWrap.signature) },
     { 0 }
@@ -381,23 +391,32 @@ CERT_KeyFromDERCrl(PRArenaPool *arena, SECItem *derCrl, SECItem *key)
     SECStatus rv;
     CERTSignedData sd;
     CERTCrlKey crlkey;
+    PRArenaPool* myArena;
 
+    if (!arena) {
+        /* arena needed for QuickDER */
+        myArena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    } else {
+        myArena = arena;
+    }
     PORT_Memset (&sd, 0, sizeof (sd));
-    rv = SEC_ASN1DecodeItem (arena, &sd, CERT_SignedDataTemplate, derCrl);
-    if (rv != SECSuccess) {
-	return rv;
+    rv = SEC_QuickDERDecodeItem (myArena, &sd, CERT_SignedDataTemplate, derCrl);
+    if (SECSuccess == rv) {
+        PORT_Memset (&crlkey, 0, sizeof (crlkey));
+        rv = SEC_QuickDERDecodeItem(myArena, &crlkey, cert_CrlKeyTemplate, &sd.data);
     }
 
-    PORT_Memset (&crlkey, 0, sizeof (crlkey));
-    rv = SEC_ASN1DecodeItem(arena, &crlkey, cert_CrlKeyTemplate, &sd.data);
-    if (rv != SECSuccess) {
-	return rv;
+    /* make a copy so the data doesn't point to memory inside derCrl, which
+       may be temporary */
+    if (SECSuccess == rv) {
+        rv = SECITEM_CopyItem(arena, key, &crlkey.derName);
     }
 
-    key->len =  crlkey.derName.len;
-    key->data = crlkey.derName.data;
+    if (myArena != arena) {
+        PORT_FreeArena(myArena, PR_FALSE);
+    }
 
-    return(SECSuccess);
+    return rv;
 }
 
 #define GetOpaqueCRLFields(x) ((OpaqueCRLFields*)x->opaque)
@@ -463,13 +482,21 @@ CERT_DecodeDERCrlWithFlags(PRArenaPool *narena, SECItem *derSignedCrl,
     SECStatus rv;
     OpaqueCRLFields* extended = NULL;
     const SEC_ASN1Template* crlTemplate = CERT_SignedCrlTemplate;
+    PRInt32 testOptions = options;
 
-    if (!derSignedCrl ||
-        ( (options & CRL_DECODE_ADOPT_HEAP_DER) && /* adopting DER requires
-                                                      not copying it */
-          (!(options & CRL_DECODE_DONT_COPY_DER))
-        )
-       ) {
+    PORT_Assert(derSignedCrl);
+    if (!derSignedCrl) {
+        PORT_SetError(SEC_ERROR_INVALID_ARGS);
+        return NULL;
+    }
+
+    /* Adopting DER requires not copying it.  Code that sets ADOPT flag 
+     * but doesn't set DONT_COPY probably doesn't know What it is doing.  
+     * That condition is a programming error in the caller.
+     */
+    testOptions &= (CRL_DECODE_ADOPT_HEAP_DER | CRL_DECODE_DONT_COPY_DER);
+    PORT_Assert(testOptions != CRL_DECODE_ADOPT_HEAP_DER);
+    if (testOptions == CRL_DECODE_ADOPT_HEAP_DER) {
         PORT_SetError(SEC_ERROR_INVALID_ARGS);
         return NULL;
     }
@@ -570,9 +597,13 @@ CERT_DecodeDERCrlWithFlags(PRArenaPool *narena, SECItem *derSignedCrl,
     
 loser:
     if (options & CRL_DECODE_KEEP_BAD_CRL) {
-        extended->decodingError = PR_TRUE;
-        crl->referenceCount = 1;
-        return(crl);
+        if (extended) {
+            extended->decodingError = PR_TRUE;
+        }
+        if (crl) {
+            crl->referenceCount = 1;
+            return(crl);
+        }
     }
 
     if ((narena == NULL) && arena ) {
@@ -597,8 +628,9 @@ CERT_DecodeDERCrl(PRArenaPool *narena, SECItem *derSignedCrl, int type)
  *  caching stuff used by certificates....?
  * return values :
  *
- * SECSuccess means we got a valid DER CRL (passed in "decoded"), or no CRL at
- * all
+ * SECSuccess means we got a valid decodable DER CRL, or no CRL at all.
+ * Caller may distinguish those cases by the value returned in "decoded".
+ * When DER CRL is not found, error code will be SEC_ERROR_CRL_NOT_FOUND.
  *
  * SECFailure means we got a fatal error - most likely, we found a CRL,
  * and it failed decoding, or there was an out of memory error. Do NOT ignore
@@ -616,7 +648,6 @@ SEC_FindCrlByKeyOnSlot(PK11SlotInfo *slot, SECItem *crlKey, int type,
     SECItem *derCrl = NULL;
     CK_OBJECT_HANDLE crlHandle = 0;
     char *url = NULL;
-    int nsserror;
 
     PORT_Assert(decoded);
     if (!decoded) {
@@ -624,15 +655,12 @@ SEC_FindCrlByKeyOnSlot(PK11SlotInfo *slot, SECItem *crlKey, int type,
         return SECFailure;
     }
 
-    /* XXX it would be really useful to be able to fetch the CRL directly into
-       an arena. This would avoid a copy later on in the decode step */
-    PORT_SetError(0);
     derCrl = PK11_FindCrlByName(&slot, &crlHandle, crlKey, type, &url);
     if (derCrl == NULL) {
 	/* if we had a problem other than the CRL just didn't exist, return
 	 * a failure to the upper level */
-	nsserror = PORT_GetError();
-	if ((nsserror != 0) && (nsserror != SEC_ERROR_CRL_NOT_FOUND)) {
+	int nsserror = PORT_GetError();
+	if (nsserror != SEC_ERROR_CRL_NOT_FOUND) {
 	    rv = SECFailure;
 	}
 	goto loser;
@@ -640,15 +668,16 @@ SEC_FindCrlByKeyOnSlot(PK11SlotInfo *slot, SECItem *crlKey, int type,
     PORT_Assert(crlHandle != CK_INVALID_HANDLE);
     /* PK11_FindCrlByName obtained a slot reference. */
     
-    if (!(decodeoptions & CRL_DECODE_DONT_COPY_DER) ) {
-        /* force adoption of the DER from the heap - this will cause it to be
-           automatically freed when SEC_DestroyCrl is invoked */
-        decodeoptions |= CRL_DECODE_ADOPT_HEAP_DER;
-    }
+    /* derCRL is a fresh HEAP copy made for us by PK11_FindCrlByName.
+       Force adoption of the DER CRL from the heap - this will cause it 
+       to be automatically freed when SEC_DestroyCrl is invoked */
+    decodeoptions |= (CRL_DECODE_ADOPT_HEAP_DER | CRL_DECODE_DONT_COPY_DER);
+
     crl = CERT_DecodeDERCrlWithFlags(NULL, derCrl, type, decodeoptions);
     if (crl) {
         crl->slot = slot;
         slot = NULL; /* adopt it */
+	derCrl = NULL; /* adopted by the crl struct */
         crl->pkcs11ID = crlHandle;
         if (url) {
             crl->url = PORT_ArenaStrdup(crl->arena,url);
@@ -667,10 +696,7 @@ SEC_FindCrlByKeyOnSlot(PK11SlotInfo *slot, SECItem *crlKey, int type,
 
 loser:
     if (derCrl) {
-        /* destroy the DER if it was copied to the CRL */
-        if (crl && (!(decodeoptions & CRL_DECODE_DONT_COPY_DER)) ) {
-            SECITEM_FreeItem(derCrl, PR_TRUE);
-        }
+	SECITEM_FreeItem(derCrl, PR_TRUE);
     }
 
     *decoded = crl;
@@ -678,7 +704,6 @@ loser:
     return rv;
 }
 
-SECStatus SEC_DestroyCrl(CERTSignedCrl *crl);
 
 CERTSignedCrl *
 crl_storeCRL (PK11SlotInfo *slot,char *url,
@@ -687,15 +712,15 @@ crl_storeCRL (PK11SlotInfo *slot,char *url,
     CERTSignedCrl *oldCrl = NULL, *crl = NULL;
     PRBool deleteOldCrl = PR_FALSE;
     CK_OBJECT_HANDLE crlHandle = CK_INVALID_HANDLE;
+    SECStatus rv;
 
     PORT_Assert(newCrl);
     PORT_Assert(derCrl);
 
     /* we can't use the cache here because we must look in the same
        token */
-    SEC_FindCrlByKeyOnSlot(slot, &newCrl->crl.derName, type,
+    rv = SEC_FindCrlByKeyOnSlot(slot, &newCrl->crl.derName, type,
                                 &oldCrl, CRL_DECODE_SKIP_ENTRIES);
-
     /* if there is an old crl on the token, make sure the one we are
        installing is newer. If not, exit out, otherwise delete the
        old crl.
@@ -914,13 +939,16 @@ static SECStatus DPCache_Destroy(CRLDPCache* cache);
 
 /* add a new CRL object to the dynamic array of CRLs of the DPCache, and
    returns the cached CRL object . Needs write access to DPCache. */
-static SECStatus DPCache_AddCRL(CRLDPCache* cache, CachedCrl* crl, PRBool* added);
+static SECStatus DPCache_AddCRL(CRLDPCache* cache, CachedCrl* crl,
+                                PRBool* added);
 
 /* fetch the CRL for this DP from the PKCS#11 tokens */
-static SECStatus DPCache_FetchFromTokens(CRLDPCache* cache, PRTime vfdate, void* wincx);
+static SECStatus DPCache_FetchFromTokens(CRLDPCache* cache, PRTime vfdate,
+                                         void* wincx);
 
 /* check if a particular SN is in the CRL cache and return its entry */
-static SECStatus DPCache_Lookup(CRLDPCache* cache, SECItem* sn, CERTCrlEntry** returned);
+static SECStatus DPCache_Lookup(CRLDPCache* cache, SECItem* sn,
+                                CERTCrlEntry** returned);
 
 /* update the content of the CRL cache, including fetching of CRLs, and
    reprocessing with specified issuer and date */
@@ -945,8 +973,9 @@ static SECStatus IssuerCache_Create(CRLIssuerCache** returned,
 SECStatus IssuerCache_Destroy(CRLIssuerCache* cache);
 
 /* add a DPCache to the issuer cache */
-static SECStatus IssuerCache_AddDP(CRLIssuerCache* cache, CERTCertificate* issuer,
-                            SECItem* subject, SECItem* dp, CRLDPCache** newdpc);
+static SECStatus IssuerCache_AddDP(CRLIssuerCache* cache,
+                                   CERTCertificate* issuer, SECItem* subject,
+                                   SECItem* dp, CRLDPCache** newdpc);
 
 /* get a particular DPCache object from an IssuerCache */
 static CRLDPCache* IssuerCache_GetDPCache(CRLIssuerCache* cache, SECItem* dp);
@@ -1657,11 +1686,36 @@ static SECStatus DPCache_FetchFromTokens(CRLDPCache* cache, PRTime vfdate,
     return rv;
 }
 
+static SECStatus CachedCrl_GetEntry(CachedCrl* crl, SECItem* sn,
+                                    CERTCrlEntry** returned)
+{
+    CERTCrlEntry* acrlEntry;
+     
+    PORT_Assert(crl);
+    PORT_Assert(crl->entries);
+    PORT_Assert(sn);
+    PORT_Assert(returned);
+    if (!crl || !sn || !returned || !crl->entries)
+    {
+        PORT_SetError(SEC_ERROR_INVALID_ARGS);
+        return SECFailure;
+    }
+    acrlEntry = PL_HashTableLookup(crl->entries, (void*)sn);
+    if (acrlEntry)
+    {
+        *returned = acrlEntry;
+    }
+    else
+    {
+        *returned = NULL;
+    }
+    return SECSuccess;
+}
+
 /* check if a particular SN is in the CRL cache and return its entry */
 static SECStatus DPCache_Lookup(CRLDPCache* cache, SECItem* sn,
                                 CERTCrlEntry** returned)
 {
-    CERTCrlEntry* acrlEntry = NULL;
     if (!cache || !sn || !returned)
     {
         PORT_SetError(SEC_ERROR_INVALID_ARGS);
@@ -1681,18 +1735,7 @@ static SECStatus DPCache_Lookup(CRLDPCache* cache, SECItem* sn,
         *returned = NULL;
         return SECSuccess;
     }
-    PORT_Assert(cache->selected->entries);
-    if (!cache->selected->entries)
-    {
-        return SECFailure;
-    }
-    /* XXX should probably use CachedCrl accessor function here */
-    acrlEntry = PL_HashTableLookup(cache->selected->entries, (void*)sn);
-    if (acrlEntry)
-    {
-        *returned = acrlEntry;
-    }
-    return SECSuccess;
+    return CachedCrl_GetEntry(cache->selected, sn, returned);
 }
 
 #if defined(DPC_RWLOCK)
@@ -2067,14 +2110,9 @@ static SECStatus DPCache_SelectCRL(CRLDPCache* cache)
 
     if (cache->invalid)
     {
-        /* cache is in an invalid state, so destroy it */
+        /* cache is in an invalid state, so reset it */
         if (cache->selected)
         {
-            if (SECSuccess != CachedCrl_Depopulate(cache->selected))
-            {
-                PORT_Assert(0);
-                return SECFailure;
-            }
             cache->selected = NULL;
         }
         /* also sort the CRLs imperfectly */
@@ -2093,15 +2131,6 @@ static SECStatus DPCache_SelectCRL(CRLDPCache* cache)
     
         /* and populate the cache */
         if (SECSuccess != CachedCrl_Populate(selected))
-        {
-            return SECFailure;
-        }
-    }
-
-    /* free the old CRL cache, if it's for a different CRL */
-    if (cache->selected && cache->selected != selected)
-    {
-        if (SECSuccess != CachedCrl_Depopulate(cache->selected))
         {
             return SECFailure;
         }
@@ -2346,9 +2375,9 @@ static CRLDPCache* IssuerCache_GetDPCache(CRLIssuerCache* cache, SECItem* dp)
 /* get a DPCache object for the given issuer subject and dp
    Automatically creates the cache object if it doesn't exist yet.
    */
-static SECStatus AcquireDPCache(CERTCertificate* issuer, SECItem* subject,
-                                SECItem* dp, int64 t, void* wincx,
-                                CRLDPCache** dpcache, PRBool* writeLocked)
+SECStatus AcquireDPCache(CERTCertificate* issuer, SECItem* subject,
+                         SECItem* dp, PRTime t, void* wincx,
+                         CRLDPCache** dpcache, PRBool* writeLocked)
 {
     SECStatus rv = SECSuccess;
     CRLIssuerCache* issuercache = NULL;
@@ -2517,7 +2546,7 @@ static SECStatus AcquireDPCache(CERTCertificate* issuer, SECItem* subject,
 }
 
 /* unlock access to the DPCache */
-static void ReleaseDPCache(CRLDPCache* dpcache, PRBool writeLocked)
+void ReleaseDPCache(CRLDPCache* dpcache, PRBool writeLocked)
 {
     if (!dpcache)
     {
@@ -2541,7 +2570,7 @@ static void ReleaseDPCache(CRLDPCache* dpcache, PRBool writeLocked)
 /* check CRL revocation status of given certificate and issuer */
 SECStatus
 CERT_CheckCRL(CERTCertificate* cert, CERTCertificate* issuer, SECItem* dp,
-              int64 t, void* wincx)
+              PRTime t, void* wincx)
 {
     PRBool lockedwrite = PR_FALSE;
     SECStatus rv = SECSuccess;
@@ -2574,7 +2603,7 @@ CERT_CheckCRL(CERTCertificate* cert, CERTCertificate* issuer, SECItem* dp,
             /* check the time if we have one */
             if (entry->revocationDate.data && entry->revocationDate.len)
             {
-                int64 revocationDate = 0;
+                PRTime revocationDate = 0;
                 if (SECSuccess == DER_DecodeTimeChoice(&revocationDate,
                                                &entry->revocationDate))
                 {
@@ -2878,6 +2907,7 @@ static SECStatus CachedCrl_Populate(CachedCrl* crlobject)
     rv = CERT_CompleteCRLDecodeEntries(crlobject->crl);
     if (SECSuccess != rv)
     {
+        crlobject->unbuildable = PR_TRUE; /* don't try to build this again */
         return SECFailure;
     }
 
@@ -3003,5 +3033,94 @@ static SECStatus CachedCrl_Compare(CachedCrl* a, CachedCrl* b, PRBool* isDupe,
     return SECSuccess;
 }
 
+/* this function assumes the caller holds a read lock on the DPCache */
+SECStatus DPCache_GetAllCRLs(CRLDPCache* dpc, PRArenaPool* arena,
+                             CERTSignedCrl*** crls, PRUint16* status)
+{
+    CERTSignedCrl** allcrls;
+    PRUint32 index;
+    if (!dpc || !crls || !status)
+    {
+        PORT_SetError(SEC_ERROR_INVALID_ARGS);
+        return SECFailure;
+    }
 
+    *status = dpc->invalid;
+    *crls = NULL;
+    if (!dpc->ncrls)
+    {
+        /* no CRLs to return */
+        return SECSuccess;
+    }
+    allcrls = PORT_ArenaZNewArray(arena, CERTSignedCrl*, dpc->ncrls +1);
+    if (!allcrls)
+    {
+        return SECFailure;
+    }
+    for (index=0; index < dpc->ncrls ; index ++) {
+        CachedCrl* cachedcrl = dpc->crls[index];
+        if (!cachedcrl || !cachedcrl->crl)
+        {
+            PORT_Assert(0); /* this should never happen */
+            continue;
+        }
+        allcrls[index] = SEC_DupCrl(cachedcrl->crl);
+    }
+    *crls = allcrls;
+    return SECSuccess;
+}
+
+static CachedCrl* DPCache_FindCRL(CRLDPCache* cache, CERTSignedCrl* crl)
+{
+    PRUint32 index;
+    CachedCrl* cachedcrl = NULL;
+    for (index=0; index < cache->ncrls ; index ++) {
+        cachedcrl = cache->crls[index];
+        if (!cachedcrl || !cachedcrl->crl)
+        {
+            PORT_Assert(0); /* this should never happen */
+            continue;
+        }
+        if (cachedcrl->crl == crl) {
+            break;
+        }
+    }
+    return cachedcrl;
+}
+
+/* this function assumes the caller holds a lock on the DPCache */
+SECStatus DPCache_GetCRLEntry(CRLDPCache* cache, PRBool readlocked,
+                              CERTSignedCrl* crl, SECItem* sn,
+                              CERTCrlEntry** returned)
+{
+    CachedCrl* cachedcrl = NULL;
+    if (!cache || !crl || !sn || !returned)
+    {
+        PORT_Assert(0);
+        PORT_SetError(SEC_ERROR_INVALID_ARGS);
+        return SECFailure;
+    }
+    *returned = NULL;
+    /* first, we need to find the CachedCrl* that matches this CERTSignedCRL */
+    cachedcrl = DPCache_FindCRL(cache, crl);
+    if (!cachedcrl) {
+        PORT_SetError(SEC_ERROR_CRL_NOT_FOUND);
+        return SECFailure;
+    }
+
+    if (cachedcrl->unbuildable) {
+        /* this CRL could not be fully decoded */
+        PORT_SetError(SEC_ERROR_BAD_DER);
+        return SECFailure;
+    }
+    /* now, make sure it has a hash table. Otherwise, we'll need to build one */
+    if (!cachedcrl->entries || !cachedcrl->prebuffer) {
+        DPCache_LockWrite();
+        CachedCrl_Populate(cachedcrl);
+        DPCache_UnlockWrite();
+    }
+
+    /* finally, get the CRL entry */       
+    return CachedCrl_GetEntry(cachedcrl, sn, returned);
+}
 

@@ -58,6 +58,7 @@
 #define PUBLIC_MECH_AES_FLAG         0x00002000ul
 #define PUBLIC_MECH_SHA256_FLAG      0x00004000ul
 #define PUBLIC_MECH_SHA512_FLAG      0x00008000ul
+#define PUBLIC_MECH_CAMELLIA_FLAG    0x00010000ul
 
 #define PUBLIC_MECH_RANDOM_FLAG      0x08000000ul
 #define PUBLIC_MECH_FRIENDLY_FLAG    0x10000000ul
@@ -120,6 +121,10 @@ extern void SECMOD_ReleaseReadLock(SECMODListLock *);
 /* Operate on modules by name */
 extern SECMODModule *SECMOD_FindModule(const char *name);
 extern SECStatus SECMOD_DeleteModule(const char *name, int *type);
+extern SECStatus SECMOD_DeleteModuleEx(const char * name, 
+                                       SECMODModule *mod, 
+                                       int *type, 
+                                       PRBool permdb);
 extern SECStatus SECMOD_DeleteInternalModule(const char *name);
 extern PRBool SECMOD_CanDeleteInternalModule(void);
 extern SECStatus SECMOD_AddNewModule(const char* moduleName, 

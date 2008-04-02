@@ -54,10 +54,6 @@
 #include <process.h>	/* for getpid() */
 #endif
 
-#ifdef XP_OS2_VACPP
-#include <Process.h>	/* for getpid() */
-#endif
-
 #include <signal.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -190,6 +186,7 @@ Usage(const char *progName)
 "-S means disable SSL v2\n"
 "-3 means disable SSL v3\n"
 "-B bypasses the PKCS11 layer for SSL encryption and MACing\n"
+"-q checks for bypassability\n"
 "-D means disable Nagle delays in TCP\n"
 "-E means disable export ciphersuites and SSL step down key gen\n"
 "-T means disable TLS\n"
@@ -659,6 +656,7 @@ PRBool hasSidCache     = PR_FALSE;
 PRBool disableStepDown = PR_FALSE;
 PRBool bypassPKCS11    = PR_FALSE;
 PRBool disableLocking  = PR_FALSE;
+PRBool testbypass      = PR_FALSE;
 
 static const char stopCmd[] = { "GET /stop " };
 static const char getCmd[]  = { "GET " };
@@ -671,6 +669,17 @@ static const char outHeader[] = {
     "\r\n"
 };
 static const char crlCacheErr[]  = { "CRL ReCache Error: " };
+
+PRUint16 cipherlist[100];
+int nciphers;
+
+void
+savecipher(int c)
+{
+    if (nciphers < sizeof cipherlist / sizeof (cipherlist[0]))
+	cipherlist[nciphers++] = (PRUint16)c;
+}
+
 
 #ifdef FULL_DUPLEX_CAPABLE
 
@@ -1673,9 +1682,10 @@ main(int argc, char **argv)
     PLOptStatus          status;
     PRThread             *loggerThread;
     PRBool               debugCache = PR_FALSE; /* bug 90518 */
-    char*                certPrefix = "";
-
-
+    char                 emptyString[] = { "" };
+    char*                certPrefix = emptyString;
+    PRUint32		 protos = 0;
+ 
     tmp = strrchr(argv[0], '/');
     tmp = tmp ? tmp + 1 : argv[0];
     progName = strrchr(tmp, '\\');
@@ -1687,7 +1697,7 @@ main(int argc, char **argv)
     ** numbers, then capital letters, then lower case, alphabetical. 
     */
     optstate = PL_CreateOptState(argc, argv, 
-    	"2:3BC:DEL:M:NP:RSTbc:d:e:f:hi:lmn:op:rst:vw:xy");
+        "2:3BC:DEL:M:NP:RSTbc:d:e:f:hi:lmn:op:qrst:vw:xy");
     while ((status = PL_GetNextOpt(optstate)) == PL_OPT_OK) {
 	++optionsFound;
 	switch(optstate->option) {
@@ -1728,15 +1738,15 @@ main(int argc, char **argv)
 
 	case 'b': bindOnly = PR_TRUE; break;
 
-	case 'c': cipherString = strdup(optstate->value); break;
+	case 'c': cipherString = PORT_Strdup(optstate->value); break;
 
 	case 'd': dir = optstate->value; break;
 
 #ifdef NSS_ENABLE_ECC
-	case 'e': ecNickName = strdup(optstate->value); break;
+	case 'e': ecNickName = PORT_Strdup(optstate->value); break;
 #endif /* NSS_ENABLE_ECC */
 
-	case 'f': fNickName = strdup(optstate->value); break;
+	case 'f': fNickName = PORT_Strdup(optstate->value); break;
 
 	case 'h': Usage(progName); exit(0); break;
 
@@ -1746,13 +1756,15 @@ main(int argc, char **argv)
 
 	case 'm': useModelSocket = PR_TRUE; break;
 
-        case 'n': nickName = strdup(optstate->value); break;
+	case 'n': nickName = PORT_Strdup(optstate->value); break;
 
-        case 'P': certPrefix = strdup(optstate->value); break;
+	case 'P': certPrefix = PORT_Strdup(optstate->value); break;
 
 	case 'o': MakeCertOK = 1; break;
 
 	case 'p': port = PORT_Atoi(optstate->value); break;
+
+	case 'q': testbypass = PR_TRUE; break;
 
 	case 'r': ++requestCert; break;
 
@@ -1766,7 +1778,7 @@ main(int argc, char **argv)
 
 	case 'v': verbose++; break;
 
-	case 'w': passwd = strdup(optstate->value); break;
+	case 'w': passwd = PORT_Strdup(optstate->value); break;
 
 	case 'x': useExportPolicy = PR_TRUE; break;
 
@@ -1807,10 +1819,11 @@ main(int argc, char **argv)
     }
 
     if ((nickName == NULL) && (fNickName == NULL) 
-#ifdef NSS_ENABLE_ECC
+ #ifdef NSS_ENABLE_ECC
 						&& (ecNickName == NULL)
-#endif
+ #endif
     ) {
+
 	fprintf(stderr, "Required arg '-n' (rsa nickname) not supplied.\n");
 	fprintf(stderr, "Run '%s -h' for usage information.\n", progName);
         exit(6);
@@ -1925,6 +1938,7 @@ main(int argc, char **argv)
 
     /* all the SSL2 and SSL3 cipher suites are enabled by default. */
     if (cipherString) {
+    	char *cstringSaved = cipherString;
     	int ndx;
 
 	/* disable all the ciphers, then enable the ones we want. */
@@ -1972,6 +1986,21 @@ main(int argc, char **argv)
 		exit(9);
 	    }
 	}
+	PORT_Free(cstringSaved);
+    }
+
+    if (testbypass) {
+	const PRUint16 *cipherSuites = SSL_ImplementedCiphers;
+	int             i            = SSL_NumImplementedCiphers;
+	PRBool		enabled;
+
+	for (i=0; i < SSL_NumImplementedCiphers; i++, cipherSuites++) {
+	    if (SSL_CipherPrefGetDefault(*cipherSuites, &enabled) == SECSuccess
+				    && enabled)
+		savecipher(*cipherSuites);		    
+	}
+	protos = (disableTLS ? 0 : SSL_CBP_TLS1_0) +
+		 (disableSSL3 ? 0 : SSL_CBP_SSL3);
     }
 
     if (nickName) {
@@ -1986,6 +2015,16 @@ main(int argc, char **argv)
 	            nickName);
 	    exit(11);
 	}
+	if (testbypass) {
+	    PRBool bypassOK;
+	    if (SSL_CanBypass(cert[kt_rsa], privKey[kt_rsa], protos, cipherlist, 
+	                      nciphers, &bypassOK, passwd) != SECSuccess) {
+		SECU_PrintError(progName, "Bypass test failed %s\n", nickName);
+		exit(14);
+	    }
+	    fprintf(stderr, "selfserv: %s can%s bypass\n", nickName,
+		    bypassOK ? "" : "not");
+	}
     }
     if (fNickName) {
 	cert[kt_fortezza] = PK11_FindCertFromNickname(fNickName, NULL);
@@ -1997,17 +2036,35 @@ main(int argc, char **argv)
     }
 #ifdef NSS_ENABLE_ECC
     if (ecNickName) {
-	cert[kt_ecdh] = PK11_FindCertFromNickname(ecNickName, NULL);
+	cert[kt_ecdh] = PK11_FindCertFromNickname(ecNickName, passwd);
 	if (cert[kt_ecdh] == NULL) {
 	    fprintf(stderr, "selfserv: Can't find certificate %s\n",
 		    ecNickName);
 	    exit(13);
 	}
-	privKey[kt_ecdh] = PK11_FindKeyByAnyCert(cert[kt_ecdh], NULL);
+	privKey[kt_ecdh] = PK11_FindKeyByAnyCert(cert[kt_ecdh], passwd);
+	if (privKey[kt_ecdh] == NULL) {
+	    fprintf(stderr, "selfserv: Can't find Private Key for cert %s\n", 
+	            ecNickName);
+	    exit(11);
+	}	    
+	if (testbypass) {
+	    PRBool bypassOK;
+	    if (SSL_CanBypass(cert[kt_ecdh], privKey[kt_ecdh], protos, cipherlist,
+			      nciphers, &bypassOK, passwd) != SECSuccess) {
+		SECU_PrintError(progName, "Bypass test failed %s\n", ecNickName);
+		exit(15);
+	    }
+	    fprintf(stderr, "selfserv: %s can%s bypass\n", ecNickName,
+		    bypassOK ? "" : "not");
+       }
     }
 #endif /* NSS_ENABLE_ECC */
 
-    /* allocate the array of thread slots, and launch the worker threads. */
+    if (testbypass)
+	goto cleanup;
+
+/* allocate the array of thread slots, and launch the worker threads. */
     rv = launch_threads(&jobLoop, 0, 0, requestCert, useLocalThreads);
 
     if (rv == SECSuccess && logStats) {
@@ -2027,6 +2084,7 @@ main(int argc, char **argv)
 
     VLOG(("selfserv: server_thread: exiting"));
 
+cleanup:
     {
 	int i;
 	for (i=0; i<kt_kea_size; i++) {
@@ -2043,8 +2101,23 @@ main(int argc, char **argv)
 	nss_DumpCertificateCacheInfo();
     }
 
-    free(nickName);
-    free(passwd);
+    if (nickName) {
+        PORT_Free(nickName);
+    }
+    if (passwd) {
+        PORT_Free(passwd);
+    }
+    if (certPrefix && certPrefix != emptyString) {                            
+        PORT_Free(certPrefix);
+    }
+    if (fNickName) {
+        PORT_Free(fNickName);
+    }
+ #ifdef NSS_ENABLE_ECC
+    if (ecNickName) {
+        PORT_Free(ecNickName);
+    }
+ #endif
 
     if (hasSidCache) {
 	SSL_ShutdownServerSessionIDCache();

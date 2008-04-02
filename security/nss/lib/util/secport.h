@@ -43,6 +43,8 @@
 #ifndef _SECPORT_H_
 #define _SECPORT_H_
 
+#include "utilrename.h"
+
 /*
  * define XP_MAC, XP_WIN, XP_BEOS, or XP_UNIX, in case they are not defined
  * by anyone else
@@ -137,12 +139,11 @@ extern void *PORT_ArenaGrow(PLArenaPool *arena, void *ptr,
 			    size_t oldsize, size_t newsize);
 extern void *PORT_ArenaMark(PLArenaPool *arena);
 extern void PORT_ArenaRelease(PLArenaPool *arena, void *mark);
+extern void PORT_ArenaZRelease(PLArenaPool *arena, void *mark);
 extern void PORT_ArenaUnmark(PLArenaPool *arena, void *mark);
 extern char *PORT_ArenaStrdup(PLArenaPool *arena, const char *str);
 
-#ifdef __cplusplus
-}
-#endif
+SEC_END_PROTOS
 
 #define PORT_Assert PR_ASSERT
 #define PORT_ZNew(type) (type*)PORT_ZAlloc(sizeof(type))
@@ -200,9 +201,7 @@ typedef PRBool (PR_CALLBACK * PORTCharConversionFunc) (PRBool toUnicode,
 			unsigned char *outBuf, unsigned int maxOutBufLen,
 			unsigned int *outBufLen);
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+SEC_BEGIN_PROTOS
 
 void PORT_SetUCS4_UTF8ConversionFunction(PORTCharConversionFunc convFunc);
 void PORT_SetUCS2_ASCIIConversionFunction(PORTCharConversionWSwapFunc convFunc);
