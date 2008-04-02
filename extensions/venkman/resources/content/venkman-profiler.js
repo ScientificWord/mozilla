@@ -41,6 +41,7 @@ function initProfiler ()
 {
     var prefs =
         [
+         ["profile.forceScriptLoad", false],
          ["profile.template.xml", "chrome://venkman/locale/profile.xml.tpl"],
          ["profile.template.html", "chrome://venkman/locale/profile.html.tpl"],
          ["profile.template.csv", "chrome://venkman/locale/profile.csv.tpl"],
@@ -60,9 +61,11 @@ function ProfileReport (reportTemplate, file, rangeList, scriptInstanceList)
     this.scriptInstanceList = scriptInstanceList;
     this.key = "total";
 
-    // Escape bad characters for HTML and XML profiles.
+    // Escape bad characters for HTML, XML and CSV profiles.
     if (/\.(html|xml)\.tpl$/.test(this.reportTemplate.__url__))
         this.escape = safeHTML;
+    else if (/\.csv\.tpl$/.test(this.reportTemplate.__url__))
+        this.escape = safeCSV;
     else
         this.escape = function _nop_escape(s) { return s };
 }
@@ -230,8 +233,7 @@ function pro_rptinst (profileReport, scriptInstance, sectionData)
         var summary = summaryList[i];
         var rangeData;
         
-        while (summary.key &&
-               rangeIndex < finalRangeIndex &&
+        while (rangeIndex <= finalRangeIndex &&
                summary.key < rangeList[rangeIndex])
         {
             ++rangeIndex;
@@ -247,8 +249,8 @@ function pro_rptinst (profileReport, scriptInstance, sectionData)
 
             var maxRange = (rangeIndex > 0 ?
                             rangeList[rangeIndex - 1] : summary.key);
-            var minRange = (rangeIndex < finalRangeIndex ? 
-                            rangeList[rangeIndex + 1] : summary.key);
+            var minRange = (rangeIndex <= finalRangeIndex ? 
+                            rangeList[rangeIndex] : summary.key);
             K = MAX_WIDTH / maxRange;
 
             rangeData = {
@@ -359,7 +361,7 @@ function pro_rptall (profileReport)
             {
                 ++sectionCount;
                 console.status = getMsg(MSN_PROFILE_SAVING, [i, last]);
-                setTimeout (generateReportChunk, 10, i);                
+                setTimeout (generateReportChunk, 10, i);
             }
             else
             {
@@ -385,7 +387,29 @@ function pro_rptall (profileReport)
     var length = profileReport.scriptInstanceList.length;
     var last = length - 1;
 
-    generateReportChunk (0);
+    // If the user asks for it, load all scripts so we can guess function names
+    if (console.prefs["profile.forceScriptLoad"])
+    {
+        function loadedScript(status)
+        {
+            if (++scriptsLoaded == length)
+                generateReportChunk(0);
+        };
+
+        var scriptsLoaded = 0;
+        for (var j = 0; j < length; j++)
+        {
+            var src = profileReport.scriptInstanceList[j].sourceText;
+            if (!src.isLoaded)
+                src.loadSource(loadedScript);
+            else
+                ++scriptsLoaded;
+        }
+    }
+    else
+    {
+        generateReportChunk(0);
+    }
 }
 
 console.profiler.loadTemplate =

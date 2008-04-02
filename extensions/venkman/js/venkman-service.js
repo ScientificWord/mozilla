@@ -89,7 +89,8 @@ function openDebuggerWindow(args)
     var ass = Components.classes[ASS_CONTRACTID].getService(nsIAppShellService);
     var window = ass.hiddenDOMWindow;
     window.openDialog("chrome://venkman/content/venkman.xul", "_blank",
-                      "chrome,menubar,toolbar,resizable,dialog=no", args);
+                      "chrome,menubar,toolbar,status,resizable,dialog=no",
+                      args);
 }
 
 function safeHTML(str)
@@ -277,8 +278,12 @@ function JSDProtocolHandler()
 
 JSDProtocolHandler.prototype.scheme = "x-jsd";
 JSDProtocolHandler.prototype.defaultPort = JSD_DEFAULT_PORT;
-JSDProtocolHandler.prototype.protocolFlags = nsIProtocolHandler.URI_NORELATIVE ||
+JSDProtocolHandler.prototype.protocolFlags = nsIProtocolHandler.URI_NORELATIVE |
                                              nsIProtocolHandler.URI_NOAUTH;
+if ("URI_DANGEROUS_TO_LOAD" in nsIProtocolHandler) {
+  JSDProtocolHandler.prototype.protocolFlags |=
+      nsIProtocolHandler.URI_DANGEROUS_TO_LOAD;
+}
 
 JSDProtocolHandler.prototype.allowPort =
 function jsdph_allowport (aPort, aScheme)

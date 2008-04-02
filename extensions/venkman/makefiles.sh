@@ -1,4 +1,4 @@
-#
+#! /bin/sh
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -12,15 +12,15 @@
 # for the specific language governing rights and limitations under the
 # License.
 #
-# The Original Code is The JavaScript Debugger.
+# The Original Code is Mozilla Build System
 #
 # The Initial Developer of the Original Code is
-# Netscape Communications Corporation.
-# Portions created by the Initial Developer are Copyright (C) 1998
+# Ben Turner <mozilla@songbirdnest.com>
+#
+# Portions created by the Initial Developer are Copyright (C) 2007
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
-#   Robert Ginda, <rginda@netscape.com>, original author
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -36,22 +36,8 @@
 #
 # ***** END LICENSE BLOCK *****
 
-DEPTH		= ../../..
-topsrcdir	= @top_srcdir@
-srcdir		= @srcdir@
-VPATH		= @srcdir@
-
-include $(DEPTH)/config/autoconf.mk
-
-VENKMAN_VERSION=$(shell cat $(srcdir)/../version.txt)
-
-XPI_NAME = venkman
-USE_EXTENSION_MANIFEST = 1
-NO_JAR_AUTO_REG = 1
-INSTALL_EXTENSION_ID = {f13b157f-b174-47e7-a34d-4815ddfdfeb8}
-XPI_PKGNAME = venkman-$(VENKMAN_VERSION)
-
-DEFINES += -DVENKMAN_VERSION=$(VENKMAN_VERSION)
-
-include $(topsrcdir)/config/rules.mk
-
+add_makefiles "
+  extensions/venkman/Makefile
+  extensions/venkman/locales/Makefile
+  extensions/venkman/resources/Makefile
+"
