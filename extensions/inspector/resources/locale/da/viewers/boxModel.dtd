@@ -36,8 +36,8 @@
 #endif
    - ***** END LICENSE BLOCK ***** -->
 
-<!ENTITY boxPosition.label "Placering">
-<!ENTITY boxDimension.label "Størrelse">
-<!ENTITY boxMargin.label "Margen">
-<!ENTITY boxBorder.label "Ramme">
-<!ENTITY boxPadding.label "Udfyldelse">
+<!ENTITY boxPosition.label "Position">
+<!ENTITY boxDimension.label "Dimensionen">
+<!ENTITY boxMargin.label "Außenabstand">
+<!ENTITY boxBorder.label "Rahmen">
+<!ENTITY boxPadding.label "Innenabstand">
