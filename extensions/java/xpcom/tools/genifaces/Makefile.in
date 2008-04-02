@@ -1,3 +1,4 @@
+#
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -11,15 +12,14 @@
 # for the specific language governing rights and limitations under the
 # License.
 #
-# The Original Code is Java XPCOM Bindings.
+# The Original Code is mozilla.org code.
 #
 # The Initial Developer of the Original Code is
-# IBM Corporation.
-# Portions created by the Initial Developer are Copyright (C) 2005
-# IBM Corporation. All Rights Reserved.
+# Netscape Communications Corporation.
+# Portions created by the Initial Developer are Copyright (C) 1998
+# the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
-#   Javier Pedemonte (jhpedemonte@gmail.com)
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -42,23 +42,71 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-MODULE = javaxpcom
+MODULE		= javaxpcom
+PROGRAM		= java_xpidl$(BIN_SUFFIX)
+INTERNAL_TOOLS	= 1
 
 REQUIRES = \
-			xpcom \
-			string \
-			necko \
-			$(NULL)
+	xpcom \
+	$(NULL)
 
-CPPSRCS = GenerateJavaInterfaces.cpp
+# glib and libIDL link against the non-debug msvcrt
+MOZ_NO_DEBUG_RTL=1
 
-SIMPLE_PROGRAMS	= GenerateJavaInterfaces$(BIN_SUFFIX)
-
-LIBS		+= \
-		$(LIBS_DIR) \
-		$(DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
-		$(MOZ_COMPONENT_LIBS) \
+CSRCS		= \
+		xpidl.c \
+		xpidl_idl.c \
+		xpidl_util.c \
+		xpidl_header.c \
+		xpidl_typelib.c \
+		xpidl_doc.c \
+		xpidl_java.c \
 		$(NULL)
+
+SDK_BINARY     =           \
+		$(PROGRAM) \
+		$(NULL)
+
+ifdef CROSS_COMPILE
+HOST_PROGRAM	= host_xpidl$(HOST_BIN_SUFFIX)
+HOST_CSRCS	= $(CSRCS)
+endif
 
 include $(topsrcdir)/config/rules.mk
 
+CFLAGS		+= $(LIBIDL_CFLAGS)
+
+# Compile directly against the static lib, so we can use xpidl during the build
+# without the shared library path being set.
+ifeq (WINNT,$(OS_ARCH))
+DEFINES		+= -DEXPORT_XPT_API
+ifndef GNU_CC
+LDFLAGS		+= -SUBSYSTEM:CONSOLE -NODEFAULTLIB:MSVCRTD
+endif
+endif
+
+# Tell the $(PROGRAM) target that we need to be recompiled when libxpt changes.
+LIBS		= $(DIST)/lib/$(LIB_PREFIX)xpt.$(LIB_SUFFIX) $(LIBIDL_LIBS)
+EXTRA_DEPS	= $(wildcard $(DIST)/lib/$(LIB_PREFIX)xpt.*)
+
+ifdef CROSS_COMPILE
+HOST_CFLAGS	+= $(HOST_LIBIDL_CFLAGS)
+HOST_LIBS	= $(DIST)/host/lib/libhostxpt.$(LIB_SUFFIX) $(HOST_LIBIDL_LIBS)
+HOST_EXTRA_DEPS	= $(wildcard $(DIST)/host/lib/libhostxpt.*)
+
+ifdef HOST_NSPR_MDCPUCFG
+HOST_CFLAGS	+= -DMDCPUCFG=$(HOST_NSPR_MDCPUCFG)
+endif
+endif
+
+ifdef MACOS_SDK_DIR
+# xpidl is for the build host, pull out the cross-compilation stuff
+NEXT_ROOT=
+OS_CFLAGS := $(shell echo $(OS_CFLAGS)|sed -E -e "s%((-I|-isystem )$(MACOS_SDK_DIR)/usr/(include|lib/gcc)[^ ]*)|-F$(MACOS_SDK_DIR)(/System)?/Library/Frameworks[^ ]*|-nostdinc[^ ]*|-isysroot $(MACOS_SDK_DIR)%%g")
+OS_CFLAGS := $(patsubst -I$(MACOS_SDK_DIR)%,-I%,$(OS_CFLAGS))
+OS_LIBS := $(patsubst -L$(MACOS_SDK_DIR)/usr/lib%,,$(OS_LIBS))
+LDFLAGS := $(shell echo $(LDFLAGS)|sed -E -e "s%-Wl,-syslibroot,$(MACOS_SDK_DIR)%%g")
+endif
+
+export::
+	@$(MAKE) libs

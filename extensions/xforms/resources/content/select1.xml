@@ -42,43 +42,91 @@
    xmlns:html="http://www.w3.org/1999/xhtml"
    xmlns:xbl="http://www.mozilla.org/xbl"
    xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-   xmlns:xforms="http://www.w3.org/2002/xforms">
+   xmlns:xforms="http://www.w3.org/2002/xforms"
+   xmlns:mozType="http://www.mozilla.org/projects/xforms/2005/type">
 
   <!-- select1 -->
   <binding id="xformswidget-select1"
            extends="chrome://xforms/content/xforms.xml#xformswidget-base">
-    
+
     <!-- The strange indentation is because of the whitespace nodes.-->
     <content>
       <children includes="label|hint"/>
-      <html:div class="-moz-xforms-select1-popup" anonid="popup"
+      <html:span class="-moz-select1-container"
+                 anonid="container"><html:input
+                 class="-moz-xforms-select1-input xf-value"
+                 anonid="control"
+                 xbl:inherits="tabindex"
+                 onfocus="this.parentNode.parentNode.dispatchDOMUIEvent('DOMFocusIn')"
+                 onblur="this.parentNode.parentNode.handleBlur(); this.parentNode.parentNode.dispatchDOMUIEvent('DOMFocusOut');"
+                 onclick="this.parentNode.parentNode.handleControlClick();"
+                 onkeypress="this.parentNode.parentNode.handleKeyPress(event);"
+                 oninput="this.parentNode.parentNode.handleInput();"
+      /><html:input mozType:dropmarker="true"
+                    type="button"
+                    anonid="dropmarker"
+                    onmousedown="this.parentNode.parentNode.shouldHandleBlur = false;"
+                    onmouseup="this.parentNode.parentNode.shouldHandleBlur = true;"
+                    onclick="this.parentNode.parentNode.togglePopup();
+                             this.previousSibling.focus();"
+        /></html:span>
+      <html:div mozType:comboboxpopup="true" anonid="popup"
                 onmouseover="this.parentNode.shouldHandleBlur = false;
                              this.parentNode.mouseOver(event);"
                 onmouseup="this.parentNode.mouseUp(event);"
                 onmouseout="this.parentNode.shouldHandleBlur = true;">
         <children/>
       </html:div>
-      <html:span class="-moz-select1-container"
-                 anonid="container"><html:input
-                 class="-moz-xforms-select1-input xf-value"
-                 anonid="control"
-                 xbl:inherits="accesskey"
-                 onfocus="this.parentNode.parentNode.dispatchDOMUIEvent('DOMFocusIn')"
-                 onblur="this.parentNode.parentNode.handleBlur(); this.parentNode.parentNode.dispatchDOMUIEvent('DOMFocusOut');"
-                 onclick="this.parentNode.parentNode.handleControlClick();"
-                 onkeypress="this.parentNode.parentNode.handleKeyPress(event);"
-                 onkeyup="this.parentNode.parentNode.handleKeyUp(event);"
-      /><html:input class="-moz-xforms-select1-dropdown"
-                    type="button"
-                    anonid="dropmarker"
-                    tabindex="-1"
-                    onmousedown="this.parentNode.parentNode.shouldHandleBlur = false;"
-                    onmouseup="this.parentNode.parentNode.shouldHandleBlur = true;"
-                    onclick="this.parentNode.parentNode.togglePopup();
-                             this.previousSibling.focus();"
-        /></html:span></content>
+    </content>
 
-    <implementation implements="nsIXFormsUIWidget">
+    <implementation implements="nsIXFormsNSSelect1Element, nsIXFormsNSEditableElement, nsIXFormsComboboxUIWidget, nsIAccessibleProvider">
+
+      <!-- nsIXFormsNSEditableElement -->
+      <property name="editor" readonly="true"
+                onget="return this.selectionOpen ? this.inputField.editor : null;"/>
+
+    <!-- nsIXFormsNSSelect1Element -->
+      <property name="selectedItem">
+        <getter>
+          return this._selected;
+        </getter>
+        <setter>
+          if (this._selected == val)
+            return;
+
+          if (this._selected)
+            this._selected.setActive(false);
+
+          this._selected =
+            val.QueryInterface(Components.interfaces.nsIXFormsItemElement);
+          if (this._selected) {
+            this._selected.setActive(true);
+            this.updateInputField();
+            this._handleSelection(true);
+          }
+        </setter>
+      </property>
+
+      <!-- nsIXFormsComboboxUIWidget -->
+      <property name="open">
+        <getter>
+          return this.popupOpen;
+        </getter>
+        <setter>
+          if (val)
+            this.showPopup();
+          else
+            this.hidePopup();
+        </setter>
+      </property>
+
+      <!-- nsIAccessibleProvider -->
+      <property name="accessibleType" readonly="true">
+        <getter>
+          return Components.interfaces.nsIAccessibleProvider.XFormsSelectCombobox;
+        </getter>
+      </property>
+
       <field name="_inputField">null</field>
       <field name="_dropMarker">null</field>
       <field name="_popup">null</field>
@@ -160,6 +208,12 @@
           if (this._selected) {
             // Remove extra white space characters from the beginning of the label.
             this.inputField.value = this._selected.labelText.replace(/^[\s\n]+/, "");
+
+            // Fire 'ValueChange' event. This event is used by accessible
+            // module.
+            var event = this.ownerDocument.createEvent("Events");
+            event.initEvent("ValueChange", false, false);
+            this.dispatchEvent(event);
           }
           ]]>
         </body>
@@ -169,11 +223,17 @@
         <parameter name="aEvent"/>
         <body>
           <![CDATA[
-          if (this.selectionOpen && !this._selected && this.incremental) {
-            this._handleSelection(false);
-          } else {
-            this.togglePopup();
+          if (this.selectionOpen) {
+            if (!this._selected && this.incremental) {
+              this._handleSelection(false);
+              return;
+            }
+            if (this.popupOpen) {
+              this.hidePopup();
+            }
+            return;
           }
+          this.togglePopup();
           ]]>
         </body>
       </method>
@@ -183,7 +243,9 @@
         <body>
           <![CDATA[
             var key = aEvent.keyCode;
-            if (key == aEvent.DOM_VK_RETURN || key == aEvent.DOM_VK_ENTER) {
+            if (key == aEvent.DOM_VK_RETURN || key == aEvent.DOM_VK_ENTER ||
+                key == aEvent.DOM_VK_F4 || aEvent.altKey &&
+                (key == aEvent.DOM_VK_UP || key == aEvent.DOM_VK_DOWN)) {
               var open = this.popupOpen;
               this.togglePopup();
               if (open && this._selected) {
@@ -194,8 +256,14 @@
                   this.dispatchSelectEvents();
                 }
               }
-            } else if (key == aEvent.DOM_VK_UP ||
-                       key == aEvent.DOM_VK_DOWN) {
+              if (aEvent.altKey && (key == aEvent.DOM_VK_UP ||
+                  key == aEvent.DOM_VK_DOWN)) {
+                aEvent.preventDefault();
+              }
+            } else if (key == aEvent.DOM_VK_UP || key == aEvent.DOM_VK_DOWN) {
+              if (this.selectionOpen && !this.popupOpen) {
+                this.togglePopup();
+              }
               this.internalScroll(aEvent.keyCode == aEvent.DOM_VK_DOWN);
               if (this._selected && this.popupOpen) {
                 var el = this._selected.QueryInterface(Components.interfaces.nsIDOMElement);
@@ -210,6 +278,7 @@
                 }
                 this._handleSelection(true);
               }
+              aEvent.preventDefault();
             } else if (key == aEvent.DOM_VK_TAB) {
               // Hiding popup when user uses keyboard to focus out
               // from <select1>. No need to update the value of the control
@@ -223,34 +292,36 @@
                   this._selected.setActive(true);
                 }
               }
+            } else if (aEvent.charCode && !this.selectionOpen) {
+              // Cache sequence of last pressed keys and search it in value of
+              // xforms:label inside xforms:item elements.
+              var currtime = new Date().valueOf();
+              var char = String.fromCharCode(aEvent.charCode);
+              if (currtime - this.searchKeypressTime <= 1000)
+                this.searchValue += char;
+              else
+                this.searchValue = char;
+
+              this.selectItemByLabel(this.searchValue);
+              this.searchKeypressTime = currtime;
             }
             return true;
           ]]>
         </body>
       </method>
 
-      <method name="handleKeyUp">
-        <parameter name="aEvent"/>
+      <field name="searchValue">""</field>
+      <field name="searchKeypressTime">0</field>
+
+      <method name="handleInput">
         <body>
           <![CDATA[
-            // These events are handled in handleKeyPress...
-            if (aEvent.keyCode == aEvent.DOM_VK_RETURN ||
-                aEvent.keyCode == aEvent.DOM_VK_ENTER ||
-                aEvent.keyCode == aEvent.DOM_VK_UP ||
-                aEvent.keyCode == aEvent.DOM_VK_DOWN) {
-              return true;
+            if (this._selected) {
+              this._selected.setActive(false);
+              this._selected = null;
             }
-
-            // ..other key events are handled in keyUp, because otherwise
-            // this.inputField.value doesn't show the just updated value.
-            if (this.selectionOpen) {
-              if (this._selected) {
-                this._selected.setActive(false);
-                this._selected = null;
-              }
-              if (this.incremental) {
-                this._handleSelection(false);
-              }
+            if (this.incremental) {
+              this._handleSelection(false);
             }
 
             return true;
@@ -348,7 +419,7 @@
                   node.localName == "label") {
                 label = node;
                 break;
-              }       
+              }
               node = node.nextSibling;
             }
 
@@ -372,17 +443,10 @@
               if (nextItem) {
                 this._selected = nextItem;
                 this._selected.setActive(true);
-                this.updateInputField();
+                if (!this.selectionOpen)
+                  this.updateInputField();
               }
               return true;
-            }
-
-            if (!aDown && this.selectionOpen) {
-              if (this._selected) {
-                this._selected.setActive(false);
-                this._selected = null;
-              }
-              this.inputField.value = "";
             }
           ]]>
         </body>
@@ -450,13 +514,6 @@
         </body>
       </method>
 
-      <method name="hidePopup">
-        <body>
-          this.popup.style.visibility = "hidden";
-          this.popupOpen = false;
-        </body>
-      </method>
-
       <method name="refreshWidth">
         <body>
           <![CDATA[
@@ -481,86 +538,101 @@
         </body>
       </method>
 
+      <method name="hidePopup">
+        <body>
+          this.popup.style.visibility = "hidden";
+          this.popupOpen = false;
+        </body>
+      </method>
+
+      <method name="showPopup">
+        <body>
+        <![CDATA[
+          if (this.popupOpen || this.accessors.isReadonly())
+            return;
+
+          // Calculating the size and position of the popup.
+          var style = "";
+          var containerBox = document.getBoxObjectFor(this.container);
+          var x;
+          var y;
+          var adjust = 0;
+          var absolute = false;
+          var absoluteOffsetY = 0;
+          var p = this.container.offsetParent;
+          var compStyle =
+            document.defaultView.getComputedStyle(p, null);
+          if (compStyle.getPropertyValue("position") != "absolute" &&
+              compStyle.getPropertyValue("position") != "relative") {
+            adjust = document.documentElement.offsetTop;
+            x = containerBox.x;
+            y = containerBox.y;
+          } else {
+            absolute = true;
+            x = this.container.offsetLeft;
+            y = this.container.offsetTop;
+            absoluteOffsetY = y;
+            while (p) {
+              absoluteOffsetY += p.offsetTop;
+              p = p.offsetParent;
+            }
+          }
+
+          var h = containerBox.height;
+          var w = containerBox.width;
+          var targetY = y + h;
+          this.popup.style.maxHeight = "none";
+          var popupBox = document.getBoxObjectFor(this.popup);
+          var popupHeight = popupBox.height;
+          var pY = window.pageYOffset;
+          var iH = window.innerHeight;
+          var belowSelect = absolute
+            ? (iH - (absoluteOffsetY + h) - h)
+            : (iH - (y - pY + h - adjust) - h);
+
+          if (belowSelect < popupHeight) {
+            if ((y - pY) > popupHeight) {
+              targetY = y - popupHeight;
+            } else if (belowSelect < (y - pY)) {
+              style = style + "max-height:" + (y - pY - adjust) + "px;";
+              targetY = pY + adjust;
+            } else {
+              style = style + "max-height:" + belowSelect + "px;";
+            }
+          }
+          style = style + "left:" + x + "px;";
+          style = style + "top:" + targetY + "px;";
+
+          style = style + "width:";
+          if (this.selectionOpen) {
+            style = style + w + "px;";
+          } else if (this._width < 0) {
+            style = style + "auto;"
+          } else {
+            style = style + this._width + "px;";
+          }
+
+          style = style + "visibility:visible;";
+          this.popup.setAttribute("style", style);
+          this.popupOpen = true;
+          this._tmpSelected = this._selected;
+
+          if (this._selected) {
+            var el = this._selected.QueryInterface(Components.interfaces.nsIDOMElement);
+            if ("scrollIntoView" in el) {
+              el.scrollIntoView(false);
+            }
+          }
+        ]]>
+        </body>
+      </method>
+
       <method name="togglePopup">
         <body>
-          <![CDATA[
-          if (!this.popupOpen && !this.accessors.isReadonly()) {
-            // Calculating the size and position of the popup.
-            var style = "";
-            var containerBox = document.getBoxObjectFor(this.container);
-            var x;
-            var y;
-            var adjust = 0;
-            var absolute = false;
-            var absoluteOffsetY = 0;
-            var p = this.container.offsetParent;
-            var compStyle =
-              document.defaultView.getComputedStyle(p, null);
-            if (compStyle.getPropertyValue("position") != "absolute") {
-              adjust = document.documentElement.offsetTop;
-              x = containerBox.x;
-              y = containerBox.y;
-            } else {
-              absolute = true;
-              x = this.container.offsetLeft;
-              y = this.container.offsetTop;
-              absoluteOffsetY = y;
-              while (p) {
-                absoluteOffsetY += p.offsetTop;
-                p = p.offsetParent;
-              }
-            }
-
-            var h = containerBox.height;
-            var w = containerBox.width;
-            var targetY = y + h;
-            this.popup.style.maxHeight = "none";
-            var popupBox = document.getBoxObjectFor(this.popup);
-            var popupHeight = popupBox.height;
-            var pY = window.pageYOffset;
-            var iH = window.innerHeight;
-            var belowSelect = absolute
-              ? (iH - (absoluteOffsetY + h) - h)
-              : (iH - (y - pY + h - adjust) - h);
-
-            if (belowSelect < popupHeight) {
-              if ((y - pY) > popupHeight) {
-                targetY = y - popupHeight;
-              } else if (belowSelect < (y - pY)) {
-                style = style + "max-height:" + (y - pY - adjust) + "px;";
-                targetY = pY + adjust;
-              } else {
-                style = style + "max-height:" + belowSelect + "px;";
-              }
-            }
-            style = style + "left:" + x + "px;";
-            style = style + "top:" + targetY + "px;";
-
-            style = style + "width:";
-            if (this.selectionOpen) {
-              style = style + w + "px;";
-            } else if (this._width < 0) {
-              style = style + "auto;"
-            } else {
-              style = style + this._width + "px;";
-            }
-
-            style = style + "visibility:visible;";
-            this.popup.setAttribute("style", style);
-            this.popupOpen = true;
-            this._tmpSelected = this._selected;
-
-            if (this._selected) {
-              var el = this._selected.QueryInterface(Components.interfaces.nsIDOMElement);
-              if ("scrollIntoView" in el) {
-                el.scrollIntoView(false);
-              }
-            }
-          } else {
+          if (!this.popupOpen)
+            this.showPopup();
+          else
             this.hidePopup();
-            return;
-          }
-          ]]>
         </body>
       </method>
 
@@ -707,6 +779,68 @@
         <body>
           this.inputField.focus();
           return true;
+        </body>
+      </method>
+
+      <method name="getCurrentValue">
+        <body>
+          throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
+        </body>
+      </method>
+
+      <method name="selectItemByLabel">
+        <parameter name="aValue"/>
+        <parameter name="aContextNode"/>
+        <body>
+        <![CDATA[
+          var item =
+            this.searchItemByLabel(new RegExp("^" + aValue, "i"), this);
+
+          if (this._selected) {
+            this._selected.setActive(false);
+            this._selected = null;
+          }
+          this._selected = item;
+          if (this._selected) {
+            this._selected.setActive(true);
+            this.updateInputField();
+          }
+        ]]>
+        </body>
+      </method>
+
+      <method name="searchItemByLabel">
+        <parameter name="aExp"/>
+        <parameter name="aContextNode"/>
+        <body>
+        <![CDATA[
+          for (var child = aContextNode.firstChild; child;
+               child = child.nextSibling) {
+            if (child.namespaceURI != this.XFORMS_NS)
+              continue;
+
+            switch (child.localName) {
+              case "item":
+                child = child.
+                  QueryInterface(Components.interfaces.nsIXFormsItemElement);
+                if (child.labelText.search(aExp) != -1) {
+                  return child;
+                }
+                break;
+              case "choices":
+                var item = this.searchItemByLabel(aExp, child);
+                if (item)
+                  return item;
+                break;
+              case "itemset":
+                var item =
+                  this.searchItemByLabel(aExp, child.anonymousItemSetContent);
+                if (item)
+                  return item;
+                break;
+            }
+          }
+        ]]>
         </body>
       </method>
 
@@ -926,8 +1060,6 @@
             this._outOfRange = false;
             this.accessors.setInRange(true);
           }
-
-          }
           ]]>
         </body>
       </method>
@@ -960,14 +1092,12 @@
 
           var elm = aElement;
 
-          // per http://www.w3.org/TR/2005/PER-xforms-20051006/index-all.html#evt-select
-          // we send the event to the itemset if it is a parent.
-          if (elm.parentNode && elm.parentNode.localName == "itemset")
-            elm = elm.parentNode;
+          // per errata for XForms 1.0 second edition, we send the event to the
+          // item, even if it is contained in an itemset
 
           elm.dispatchEvent(ev);
           return true;
-	]]>
+        ]]>
         </body>
       </method>
 
@@ -998,16 +1128,18 @@
           if (!contentEnvelope) {
             return null;
           }
+          var contentDocument = contentEnvelope.ownerDocument;
 
           if (contentEnvelope.nodeType == Node.ELEMENT_NODE) { 
             var contentNode = null;
             if (this._selected.isCopyItem) {
               var copyNode = this._selected.copyNode;
               if (copyNode) {
-                contentNode = copyNode.cloneNode(true);
+                contentNode = contentDocument.importNode(copyNode, true);
               }
             } else {
-              contentNode = document.createTextNode(this._selected.value);
+              contentNode =
+                contentDocument.createTextNode(this._selected.value);
             }
 
             contentEnvelope.appendChild(contentNode);
@@ -1028,30 +1160,21 @@
         </body>
       </method>
     </implementation>
-  </binding>
 
-  <binding id="xformswidget-itemset"
-           extends="chrome://xforms/content/xforms.xml#xformswidget-base">
-    <content>
-      <html:div style="display:none;">
-        <children/>
-      </html:div>
-      <html:div anonid="insertion"/>
-    </content>
-
-    <implementation implements="nsIXFormsItemSetUIElement">
-      <field name="_anonymousItemSetContent">null</field>
-
-      <property name="anonymousItemSetContent" readonly="true">
-        <getter>
-          if (!this._anonymousItemSetContent) {
-            this._anonymousItemSetContent =
-              document.getAnonymousElementByAttribute(this, "anonid", "insertion");
+    <handlers>
+      <handler event="keypress" keycode="VK_ESCAPE">
+        if (this.popupOpen) {
+          this.hidePopup();
+          if (this._selected)
+            this._selected.setActive(false);
+            this._selected = this._tmpSelected;
+            this._tmpSelected = null;
+            if (this._selected)
+              this._selected.setActive(true);
           }
-          return this._anonymousItemSetContent;
-        </getter>
-      </property>
-    </implementation>
+        }
+      </handler>
+    </handlers>
   </binding>
 
 
@@ -1064,7 +1187,13 @@
       </html:div>
     </content>
 
-    <implementation>
+    <implementation implements="nsIAccessibleProvider">
+      <property name="accessibleType" readonly="true">
+        <getter>
+          return Components.interfaces.nsIAccessibleProvider.XFormsItemCombobox;
+        </getter>
+      </property>
+
       <field name="_content">null</field>
       <property name="content" readonly="true">
         <getter>
@@ -1089,6 +1218,66 @@
           }
         </body>
       </method>
+
+      <property name="parentControl" readonly="true">
+        <getter>
+        <![CDATA[
+          if (!this._parentControl) {
+            var parent = this.parentNode;
+            for (; parent; parent = parent.parentNode) {
+              if (parent.namespaceURI == this.XFORMS_NS &&
+                  (parent.localName == "select" ||
+                   parent.localName == "select1"))
+                break;
+            }
+            this._parentControl = parent;
+          }
+          return this._parentControl;
+        ]]>
+        </getter>
+      </property>
+
+      <method name="refreshParentControl">
+        <parameter name="aTarget"/>
+        <parameter name="aInsert"/>
+        <body>
+        <![CDATA[
+          var parentControl = this.parentControl;
+          if (!parentControl)
+            return;
+
+          // if the currently selected item is going away (i.e. due to an
+          // itemset rebuilding) then the select1 needs to forget about it
+          if (!aInsert) {
+            if (aTarget.namespaceURI == this.XFORMS_NS &&
+                aTarget.localName == "item") {
+              if (aTarget == parentControl._selected) {
+                parentControl._selected = null;
+              }
+            }
+          }
+
+          var parent = aTarget.parentNode;
+          for (; parent; parent = parent.parentNode) {
+            if (parent.namespaceURI == this.XFORMS_NS &&
+                parent.localName == "label") {
+              parentControl.refreshWidth();
+              return;
+            }
+          }
+        ]]>
+        </body>
+      </method>
+
+      <property name="XFORMS_NS" readonly="true"
+                onget="return 'http://www.w3.org/2002/xforms';"/>
     </implementation>
+
+    <handlers>
+      <handler event="DOMNodeInserted"
+               action="refreshParentControl(event.originalTarget, true);"/>
+      <handler event="DOMNodeRemoved"
+               action="refreshParentControl(event.originalTarget, false);"/>
+    </handlers>
   </binding>
 </bindings>

@@ -41,7 +41,7 @@
 
 #include "nsSchemaValidatorUtils.h"
 #include "nsISchemaValidator.h"
-#include "nsISchema.h"
+#include "nsISVSchema.h"
 #include "nsCOMPtr.h"
 #include "nsCOMArray.h"
 #include "nsIAtom.h"
@@ -58,6 +58,8 @@
 #define NS_ERROR_SCHEMAVALIDATOR_NO_TYPE_FOUND         NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_SCHEMA, 3)
 #define NS_ERROR_SCHEMAVALIDATOR_TYPE_NOT_FOUND        NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_SCHEMA, 4)
 
+#define kNotFound -1
+
 class nsSchemaValidator : public nsISchemaValidator
 {
 public:
@@ -71,30 +73,30 @@ private:
 
   // methods dealing with simpletypes
   nsresult ValidateSimpletype(const nsAString & aNodeValue,
-                              nsISchemaSimpleType *aSchemaSimpleType,
+                              nsISVSchemaSimpleType *aSchemaSimpleType,
                               PRBool *aResult);
   nsresult ValidateDerivedSimpletype(const nsAString & aNodeValue,
                                      nsSchemaDerivedSimpleType *aDerived,
                                      PRBool *aResult);
 
   nsresult ValidateRestrictionSimpletype(const nsAString & aNodeValue,
-                                         nsISchemaSimpleType *aSchemaSimpleType,
+                                         nsISVSchemaSimpleType *aSchemaSimpleType,
                                          PRBool *aResult);
   nsresult ValidateDerivedBuiltinType(const nsAString & aNodeValue,
                                       nsSchemaDerivedSimpleType *aDerived,
                                       PRBool *aResult);
 
   nsresult ValidateBuiltinType(const nsAString & aNodeValue,
-                               nsISchemaSimpleType *aSchemaSimpleType,
+                               nsISVSchemaSimpleType *aSchemaSimpleType,
                                PRBool *aResult);
 
   nsresult ValidateListSimpletype(const nsAString & aNodeValue,
-                                  nsISchemaSimpleType *aSchemaSimpleType,
+                                  nsISVSchemaSimpleType *aSchemaSimpleType,
                                   nsSchemaDerivedSimpleType *aDerived,
                                   PRBool *aResult);
 
   nsresult ValidateUnionSimpletype(const nsAString & aNodeValue,
-                                   nsISchemaSimpleType *aSchemaSimpleType,
+                                   nsISVSchemaSimpleType *aSchemaSimpleType,
                                    PRBool *aResult);
   nsresult ValidateDerivedUnionSimpletype(const nsAString & aNodeValue,
                                           nsSchemaDerivedSimpleType *aDerived,
@@ -292,60 +294,65 @@ private:
   PRBool IsValidSchemaQName(const nsAString & aString);
 
   // helper methods
-  void DumpBaseType(nsISchemaBuiltinType *aBuiltInType);
+  void DumpBaseType(nsISVSchemaBuiltinType *aBuiltInType);
 
   // methods dealing with complextypes
   nsresult ValidateComplextype(nsIDOMNode *aNode,
-                               nsISchemaComplexType *aSchemaComplexType,
+                               nsISVSchemaComplexType *aSchemaComplexType,
                                PRBool *aResult);
 
   nsresult ValidateComplexModelElement(nsIDOMNode *aNode,
-                                       nsISchemaComplexType *aSchemaComplexType,
+                                       nsISVSchemaComplexType *aSchemaComplexType,
                                        PRBool *aResult);
 
+  nsresult ValidateComplexModelEmpty(nsIDOMNode    *aNode,
+                              nsISVSchemaComplexType *aSchemaComplexType,
+                              PRBool               *aResult);
+
   nsresult ValidateComplexModelSimple(nsIDOMNode *aNode,
-                                      nsISchemaComplexType *aSchemaComplexType,
+                                      nsISVSchemaComplexType *aSchemaComplexType,
                                       PRBool *aResult);
 
   nsresult ValidateComplexModelGroup(nsIDOMNode* aNode,
-                                     nsISchemaModelGroup *aSchemaModelGroup,
+                                     nsISVSchemaModelGroup *aSchemaModelGroup,
                                      nsIDOMNode **aLeftOvers, PRBool *aResult);
 
   nsresult ValidateComplexSequence(nsIDOMNode *aStartNode,
-                                   nsISchemaModelGroup *aSchemaModelGroup,
+                                   nsISVSchemaModelGroup *aSchemaModelGroup,
                                    nsIDOMNode **aLeftOvers, PRBool *aNotFound,
-                                   PRBool *aResult);
+                                   PRBool *aResult, PRUint32 *aValidatedNodes);
 
   nsresult ValidateComplexParticle(nsIDOMNode* aNode,
-                                   nsISchemaParticle *aSchemaParticle,
+                                   nsISVSchemaParticle *aSchemaParticle,
                                    nsIDOMNode **aLeftOvers, PRBool *aNotFound,
                                    PRBool *aResult);
 
   nsresult ValidateComplexElement(nsIDOMNode* aNode,
-                                  nsISchemaParticle *aSchemaParticle,
+                                  nsISVSchemaParticle *aSchemaParticle,
                                   PRBool *aResult);
 
   nsresult ValidateComplexChoice(nsIDOMNode* aStartNode,
-                                 nsISchemaModelGroup *aSchemaModelGroup,
+                                 nsISVSchemaModelGroup *aSchemaModelGroup,
                                  nsIDOMNode **aLeftOvers, PRBool *aNotFound,
                                  PRBool *aResult);
 
   nsresult ValidateComplexAll(nsIDOMNode* aStartNode,
-                              nsISchemaModelGroup *aSchemaModelGroup,
+                              nsISVSchemaModelGroup *aSchemaModelGroup,
                               nsIDOMNode **aLeftOvers, PRBool *aNotFound,
                               PRBool *aResult);
 
   nsresult ValidateAttributeComponent(nsIDOMNode* aNode,
-                                      nsISchemaAttributeComponent *aAttrComp,
+                                      nsISVSchemaAttributeComponent *aAttrComp,
                                       PRUint32 *aFoundAttrCount, PRBool *aResult);
-  nsresult ValidateSchemaAttribute(nsIDOMNode* aNode, nsISchemaAttribute *aAttr,
+  nsresult ValidateSchemaAttribute(nsIDOMNode* aNode, nsISVSchemaAttribute *aAttr,
                                    const nsAString & aAttrName,
                                    PRUint32 *aFoundAttrCount, PRBool *aResult);
   nsresult ValidateSchemaAttributeGroup(nsIDOMNode* aNode,
-                                        nsISchemaAttributeGroup *aAttr,
+                                        nsISVSchemaAttributeGroup *aAttr,
                                         const nsAString & aAttrName,
                                         PRUint32 *aFoundAttrCount,
                                         PRBool *aResult);
+  nsresult GetElementXsiType(nsIDOMNode* aNode, nsISVSchemaType** aType);
 
 static void
 ReleaseObject(void    *aObject,
@@ -353,11 +360,11 @@ ReleaseObject(void    *aObject,
               void    *aPropertyValue,
               void    *aData)
 {
-  NS_STATIC_CAST(nsISupports *, aPropertyValue)->Release();
+  static_cast<nsISupports *>(aPropertyValue)->Release();
 }
 
 protected:
-  nsCOMPtr<nsISchemaCollection> mSchema;
+  nsCOMPtr<nsISVSchemaCollection> mSchema;
   PRBool mForceInvalid;
 };
 

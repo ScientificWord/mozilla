@@ -56,12 +56,11 @@ REQUIRES	= xpcom \
 		  string \
 		  necko \
 		  dom \
-		  widget \
-		  content \
 		  pref \
 		  windowwatcher \
 		  docshell \
 		  appshell \
+		  storage \
 		  $(NULL)
 
 CPPSRCS		= \

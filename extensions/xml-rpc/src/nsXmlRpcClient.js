@@ -165,7 +165,8 @@ nsXmlRpcClient.prototype = {
 
         debug('Request: ' + requestBody);
 
-        this.xmlhttp = new XMLHttpRequest();
+        this.xmlhttp = Components.classes[XMLHTTPREQUEST_CONTRACTID]
+            .createInstance(Components.interfaces.nsIXMLHttpRequest);
         if (this._useAuth) {
             this.xmlhttp.open('POST', this._serverUrl, true,
                               this._username, this._password);

@@ -52,6 +52,7 @@
 #include "nsIComponentRegistrar.h"
 #include "nsIConsoleService.h"
 #include "nsDirectoryServiceDefs.h"
+#include "nsDirectoryServiceUtils.h"
 
 #include "nsILocalFile.h"
 #include "nsTraceRefcntImpl.h"
@@ -143,7 +144,7 @@ PyXPCOMMethod_XPTI_GetInterfaceInfoManager(PyObject *self, PyObject *args)
 }
 
 static PyObject *
-PyXPCOMMethod_XPTC_InvokeByIndex(PyObject *self, PyObject *args)
+PyXPCOMMethod_NS_InvokeByIndex(PyObject *self, PyObject *args)
 {
 	PyObject *obIS, *obParams;
 	nsCOMPtr<nsISupports> pis;
@@ -181,7 +182,7 @@ PyXPCOMMethod_XPTC_InvokeByIndex(PyObject *self, PyObject *args)
 
 	nsresult r;
 	Py_BEGIN_ALLOW_THREADS;
-	r = XPTC_InvokeByIndex(pis, index, arg_helper.m_num_array, arg_helper.m_var_array);
+	r = NS_InvokeByIndex(pis, index, arg_helper.m_num_array, arg_helper.m_var_array);
 	Py_END_ALLOW_THREADS;
 	if ( NS_FAILED(r) )
 		return PyXPCOM_BuildPyException(r);
@@ -434,7 +435,7 @@ static struct PyMethodDef xpcom_methods[]=
 	{"GetComponentManager", PyXPCOMMethod_GetComponentManager, 1},
 	{"GetComponentRegistrar", PyXPCOMMethod_GetComponentRegistrar, 1},
 	{"XPTI_GetInterfaceInfoManager", PyXPCOMMethod_XPTI_GetInterfaceInfoManager, 1},
-	{"XPTC_InvokeByIndex", PyXPCOMMethod_XPTC_InvokeByIndex, 1},
+	{"NS_InvokeByIndex", PyXPCOMMethod_NS_InvokeByIndex, 1},
 	{"GetServiceManager", PyXPCOMMethod_GetServiceManager, 1},
 	{"IID", PyXPCOMMethod_IID, 1}, // IID is wrong - deprecated - not just IID, but CID, etc. 
 	{"ID", PyXPCOMMethod_IID, 1}, // This is the official name.
@@ -475,10 +476,10 @@ static PRBool EnsureXPCOM()
 {
 	static PRBool bHaveInitXPCOM = PR_FALSE;
 	if (!bHaveInitXPCOM) {
-		// xpcom appears to assert if already initialized
-		// Is there an official way to determine this?
-		// Been through lots of iterations - but getting the
-		// app directories appears to work.
+		// xpcom appears to assert if already initialized, but there
+		// is no official way to determine this!  Sadly though,
+		// apparently this problem is not real ;) See bug 38671.
+		// For now, getting the app directories appears to work.
 		nsCOMPtr<nsIFile> file;
 		if (NS_FAILED(NS_GetSpecialDirectory(NS_GRE_DIR, getter_AddRefs(file)))) {
 			// not already initialized.
@@ -503,16 +504,7 @@ static PRBool EnsureXPCOM()
 
 			nsCOMPtr<nsILocalFile> ns_bin_dir;
 			NS_ConvertASCIItoUTF16 strLandmark(landmark);
-#ifdef NS_BUILD_REFCNT_LOGGING
-			// In an interesting chicken-and-egg problem, we
-			// throw assertions in creating the nsILocalFile
-			// we need to pass to InitXPCOM!
-			nsTraceRefcntImpl::SetActivityIsLegal(PR_TRUE);
-#endif
 			NS_NewLocalFile(strLandmark, PR_FALSE, getter_AddRefs(ns_bin_dir));
-#ifdef NS_BUILD_REFCNT_LOGGING
-			nsTraceRefcntImpl::SetActivityIsLegal(PR_FALSE);
-#endif
 			nsresult rv = NS_InitXPCOM2(nsnull, ns_bin_dir, nsnull);
 #else
 			// Elsewhere, Mozilla can find it itself (we hope!)

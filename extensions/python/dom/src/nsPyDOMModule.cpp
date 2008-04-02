@@ -49,7 +49,7 @@
 #include "nsIAtomService.h"
 #include "nsIEventListenerManager.h"
 #include "nsIScriptTimeoutHandler.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsPIDOMEventTarget.h"
 #include "nsIArray.h"
 #include "jscntxt.h"
 #include "nsPIDOMWindow.h"
@@ -303,17 +303,25 @@ static PyObject *PyAddScriptEventListener(PyObject *self, PyObject *args)
         return NULL;
 
     // The receiver, to get the manager.
-    nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(target));
-    if (!receiver) return PyXPCOM_BuildPyException(NS_ERROR_UNEXPECTED);
+    nsCOMPtr<nsPIDOMEventTarget> piTarget(do_QueryInterface(target));
+    if (!piTarget) return PyXPCOM_BuildPyException(NS_ERROR_UNEXPECTED);
 
     nsCOMPtr<nsIEventListenerManager> manager;
-    receiver->GetListenerManager(PR_TRUE, getter_AddRefs(manager));
+    piTarget->GetListenerManager(PR_TRUE, getter_AddRefs(manager));
     if (!manager) return PyXPCOM_BuildPyException(NS_ERROR_UNEXPECTED);
 
-    nsCOMPtr<nsIAtom> atom(do_GetAtom(nsDependentCString(name)));
-    if (!atom) return PyXPCOM_BuildPyException(NS_ERROR_UNEXPECTED);
-
+    // avoid do_GetAtom - its not part of the XPCOM glue.
     nsresult rv;
+    nsCOMPtr<nsIAtomService> atomService =
+                  do_GetService(NS_ATOMSERVICE_CONTRACTID, &rv);
+    if (NS_FAILED(rv))
+        return PyXPCOM_BuildPyException(rv);
+
+    nsCOMPtr<nsIAtom> atom;
+    rv = atomService->GetAtomUTF8(name, getter_AddRefs(atom));
+    if (NS_FAILED(rv))
+        return PyXPCOM_BuildPyException(rv);
+
     Py_BEGIN_ALLOW_THREADS
     rv = manager->AddScriptEventListener(target, atom, body, lang, defer,
                                          untrusted);
@@ -366,17 +374,24 @@ static PyObject *PyRegisterScriptEventListener(PyObject *self, PyObject *args)
         target = win->GetCurrentInnerWindow();
     }
     // The receiver, to get the manager.
-    nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(target));
-    if (!receiver) return PyXPCOM_BuildPyException(NS_ERROR_UNEXPECTED);
+    nsCOMPtr<nsPIDOMEventTarget> piTarget(do_QueryInterface(target));
+    if (!piTarget) return PyXPCOM_BuildPyException(NS_ERROR_UNEXPECTED);
 
     nsCOMPtr<nsIEventListenerManager> manager;
-    receiver->GetListenerManager(PR_TRUE, getter_AddRefs(manager));
+    piTarget->GetListenerManager(PR_TRUE, getter_AddRefs(manager));
     if (!manager) return PyXPCOM_BuildPyException(NS_ERROR_UNEXPECTED);
 
-    nsCOMPtr<nsIAtom> atom(do_GetAtom(nsDependentCString(name)));
-    if (!atom) return PyXPCOM_BuildPyException(NS_ERROR_UNEXPECTED);
-
     nsresult rv;
+    nsCOMPtr<nsIAtomService> atomService =
+                  do_GetService(NS_ATOMSERVICE_CONTRACTID, &rv);
+    if (NS_FAILED(rv))
+        return PyXPCOM_BuildPyException(rv);
+
+    nsCOMPtr<nsIAtom> atom;
+    rv = atomService->GetAtomUTF8(name, getter_AddRefs(atom));
+    if (NS_FAILED(rv))
+        return PyXPCOM_BuildPyException(rv);
+
     Py_BEGIN_ALLOW_THREADS
     rv = manager->RegisterScriptEventListener(scriptContext, obScope,
                                               target, atom);
@@ -430,17 +445,24 @@ static PyObject *PyCompileScriptEventListener(PyObject *self, PyObject *args)
         target = win->GetCurrentInnerWindow();
     }
     // The receiver, to get the manager.
-    nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(target));
-    if (!receiver) return PyXPCOM_BuildPyException(NS_ERROR_UNEXPECTED);
+    nsCOMPtr<nsPIDOMEventTarget> piTarget(do_QueryInterface(target));
+    if (!piTarget) return PyXPCOM_BuildPyException(NS_ERROR_UNEXPECTED);
 
     nsCOMPtr<nsIEventListenerManager> manager;
-    receiver->GetListenerManager(PR_TRUE, getter_AddRefs(manager));
+    piTarget->GetListenerManager(PR_TRUE, getter_AddRefs(manager));
     if (!manager) return PyXPCOM_BuildPyException(NS_ERROR_UNEXPECTED);
 
-    nsCOMPtr<nsIAtom> atom(do_GetAtom(nsDependentCString(name)));
-    if (!atom) return PyXPCOM_BuildPyException(NS_ERROR_UNEXPECTED);
-
     nsresult rv;
+    nsCOMPtr<nsIAtomService> atomService =
+                  do_GetService(NS_ATOMSERVICE_CONTRACTID, &rv);
+    if (NS_FAILED(rv))
+        return PyXPCOM_BuildPyException(rv);
+
+    nsCOMPtr<nsIAtom> atom;
+    rv = atomService->GetAtomUTF8(name, getter_AddRefs(atom));
+    if (NS_FAILED(rv))
+        return PyXPCOM_BuildPyException(rv);
+
     PRBool didCompile;
     Py_BEGIN_ALLOW_THREADS
     rv = manager->CompileScriptEventListener(scriptContext, obScope,

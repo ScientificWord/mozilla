@@ -38,16 +38,48 @@
 #ifndef GFX_POINT_H
 #define GFX_POINT_H
 
-#include <math.h>
+#include "nsMathUtils.h"
 
 #include "gfxTypes.h"
+
+/*
+ * gfxSize and gfxIntSize -- please keep their member functions in sync.
+ * also note: gfxIntSize may be replaced by nsIntSize at some point...
+ */
+struct THEBES_API gfxIntSize {
+    PRInt32 width, height;
+
+    gfxIntSize() {}
+    gfxIntSize(PRInt32 _width, PRInt32 _height) : width(_width), height(_height) {}
+
+    void SizeTo(PRInt32 _width, PRInt32 _height) {width = _width; height = _height;}
+
+    int operator==(const gfxIntSize& s) const {
+        return ((width == s.width) && (height == s.height));
+    }
+    int operator!=(const gfxIntSize& s) const {
+        return ((width != s.width) || (height != s.height));
+    }
+    gfxIntSize operator+(const gfxIntSize& s) const {
+        return gfxIntSize(width + s.width, height + s.height);
+    }
+    gfxIntSize operator-() const {
+        return gfxIntSize(- width, - height);
+    }
+    gfxIntSize operator*(const PRInt32 v) const {
+        return gfxIntSize(width * v, height * v);
+    }
+    gfxIntSize operator/(const PRInt32 v) const {
+        return gfxIntSize(width / v, height / v);
+    }
+};
 
 struct THEBES_API gfxSize {
     gfxFloat width, height;
 
     gfxSize() {}
-    gfxSize(const gfxSize& s) : width(s.width), height(s.height) {}
     gfxSize(gfxFloat _width, gfxFloat _height) : width(_width), height(_height) {}
+    gfxSize(const gfxIntSize& size) : width(size.width), height(size.height) {}
 
     void SizeTo(gfxFloat _width, gfxFloat _height) {width = _width; height = _height;}
 
@@ -70,6 +102,8 @@ struct THEBES_API gfxSize {
         return gfxSize(width / v, height / v);
     }
 };
+
+
 
 struct THEBES_API gfxPoint {
     gfxFloat x, y;
@@ -107,9 +141,14 @@ struct THEBES_API gfxPoint {
     gfxPoint operator/(const gfxFloat v) const {
         return gfxPoint(x / v, y / v);
     }
-    gfxPoint& round() {
-        x = ::floor(x + 0.5);
-        y = ::floor(y + 0.5);
+    // Round() is *not* rounding to nearest integer if the values are negative.
+    // They are always rounding as floor(n + 0.5).
+    // See https://bugzilla.mozilla.org/show_bug.cgi?id=410748#c14
+    // And if you need similar method which is using NS_round(), you should
+    // create new |RoundAwayFromZero()| method.
+    gfxPoint& Round() {
+        x = NS_floor(x + 0.5);
+        y = NS_floor(y + 0.5);
         return *this;
     }
 };

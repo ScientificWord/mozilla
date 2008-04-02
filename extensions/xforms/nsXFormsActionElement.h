@@ -44,12 +44,13 @@
 #include "nsDataHashtable.h"
 #include "nsXFormsStubElement.h"
 
-class nsIXTFBindableElementWrapper;
+class nsIXTFElementWrapper;
 
-class nsXFormsActionElement : public nsXFormsBindableStub,
+class nsXFormsActionElement : public nsXFormsStubElement,
                               public nsIXFormsActionElement,
                               public nsIXFormsActionModuleElement,
-                              public nsIDOMEventListener
+                              public nsIDOMEventListener,
+                              public nsXFormsActionModuleHelper
 {
 public:
   nsXFormsActionElement();
@@ -57,13 +58,22 @@ public:
   NS_DECL_NSIDOMEVENTLISTENER
   NS_DECL_NSIXFORMSACTIONELEMENT
   NS_DECL_NSIXFORMSACTIONMODULEELEMENT
-  NS_IMETHOD OnCreated(nsIXTFBindableElementWrapper* aWrapper);
+  NS_IMETHOD OnCreated(nsIXTFElementWrapper *aWrapper);
   NS_IMETHOD OnDestroyed();
+  NS_IMETHOD WillChangeDocument(nsIDOMDocument *aNewDocument);
+  NS_IMETHOD DocumentChanged(nsIDOMDocument *aNewDocument);
+  NS_IMETHOD WillChangeParent(nsIDOMElement *aNewParent);
+  NS_IMETHOD ParentChanged(nsIDOMElement *aNewParent);
+
+  virtual nsIDOMElement* GetElement() { return mElement; }
+  virtual nsresult HandleSingleAction(nsIDOMEvent* aEvent,
+                                      nsIXFormsActionElement* aParentAction);
 private:
   nsIDOMElement*                                mElement;
   nsCOMPtr<nsIXFormsActionElement>              mParentAction;
   nsDataHashtable<nsISupportsHashKey, PRUint32> mDeferredUpdates;
 };
+
 
 #endif
 

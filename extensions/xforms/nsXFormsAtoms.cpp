@@ -36,6 +36,8 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#include "nsIAtomService.h"
+#include "nsServiceManagerUtils.h"
 #include "nsXFormsAtoms.h"
 #include "nsMemory.h"
 
@@ -68,7 +70,13 @@ nsIAtom* nsXFormsAtoms::externalMessagesProperty;
 nsIAtom* nsXFormsAtoms::deferredEventListProperty;
 nsIAtom* nsXFormsAtoms::attrBased;
 
-const nsStaticAtom nsXFormsAtoms::Atoms_info[] = {
+nsIAtom* nsXFormsAtoms::choices;
+nsIAtom* nsXFormsAtoms::item;
+nsIAtom* nsXFormsAtoms::itemset;
+nsIAtom* nsXFormsAtoms::select;
+nsIAtom* nsXFormsAtoms::select1;
+
+const nsXFormsStaticAtom nsXFormsAtoms::Atoms_info[] = {
   { "src",                      &nsXFormsAtoms::src },
   { "bind",                     &nsXFormsAtoms::bind },
   { "type",                     &nsXFormsAtoms::type },
@@ -96,11 +104,28 @@ const nsStaticAtom nsXFormsAtoms::Atoms_info[] = {
   { "instanceDocumentOwner",    &nsXFormsAtoms::instanceDocumentOwner },
   { "ExternalMessagesProperty", &nsXFormsAtoms::externalMessagesProperty },
   { "DeferredEventListProperty",&nsXFormsAtoms::deferredEventListProperty },
-  { "attrBased",                &nsXFormsAtoms::attrBased }
+  { "attrBased",                &nsXFormsAtoms::attrBased },
+
+  { "choices",                  &nsXFormsAtoms::choices },
+  { "item",                     &nsXFormsAtoms::item },
+  { "itemset",                  &nsXFormsAtoms::itemset },
+  { "select",                   &nsXFormsAtoms::select },
+  { "select1",                  &nsXFormsAtoms::select1 }
 };
 
 void
 nsXFormsAtoms::InitAtoms()
 {
-  NS_RegisterStaticAtoms(Atoms_info, NS_ARRAY_LENGTH(Atoms_info));
+  PRUint32 numAtoms = NS_ARRAY_LENGTH(Atoms_info);
+
+  nsCOMPtr<nsIAtomService> atomServ =
+    do_GetService(NS_ATOMSERVICE_CONTRACTID);
+  if (!atomServ) {
+    return;
+  }
+
+  for (PRUint32 i = 0; i < numAtoms; ++i) {
+    atomServ->GetPermanentAtomUTF8(Atoms_info[i].mString,
+                                   Atoms_info[i].mAtom);
+  }
 }

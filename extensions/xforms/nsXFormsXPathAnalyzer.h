@@ -42,12 +42,13 @@
 #include "nsCOMArray.h"
 #include "nsXFormsXPathNode.h"
 #include "nsIDOMNSXPathExpression.h"
-#include "nsIXFormsXPathEvaluator.h"
+#include "nsIXPathEvaluatorInternal.h"
 #include "nsIDOMXPathNSResolver.h"
 #include "nsIDOMNode.h"
 #include "nsCOMPtr.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 #include "nsVoidArray.h"
+#include "nsIXFormsXPathState.h"
 
 /**
  * This class analyzes an XPath Expression parse tree (nsXFormsXPathNode), and
@@ -58,8 +59,9 @@
  */
 class nsXFormsXPathAnalyzer {
 private:
-  nsCOMPtr<nsIXFormsXPathEvaluator>    mEvaluator;
-  nsCOMPtr<nsIDOMNode>                 mResolver;
+  nsCOMPtr<nsIXPathEvaluatorInternal> mEvaluator;
+  nsCOMPtr<nsIDOMXPathNSResolver>     mResolver;
+  nsCOMPtr<nsIXFormsXPathState>       mState;
 
   nsCOMArray<nsIDOMNode>              *mCurSet;
   nsCOMPtr<nsIDOMNSXPathExpression>    mCurExpression;
@@ -74,8 +76,9 @@ private:
                               PRBool                   aCollect = PR_FALSE);
 
 public:
-  nsXFormsXPathAnalyzer(nsIXFormsXPathEvaluator  *aEvaluator,
-                        nsIDOMNode               *aResolver);
+  nsXFormsXPathAnalyzer(nsIXPathEvaluatorInternal *aEvaluator,
+                        nsIDOMXPathNSResolver     *aResolver,
+                        nsIXFormsXPathState       *aState);
   ~nsXFormsXPathAnalyzer();
   
   nsresult Analyze(nsIDOMNode                *aContextNode,

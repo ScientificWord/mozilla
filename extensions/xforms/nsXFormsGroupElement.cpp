@@ -37,7 +37,7 @@
  * ***** END LICENSE BLOCK ***** */
 #include "nsAutoPtr.h"
 #include "nsCOMPtr.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 
 #include "nsIDOM3Node.h"
 #include "nsIDOMElement.h"
@@ -46,9 +46,6 @@
 #include "nsIDOMEventTarget.h"
 #include "nsIDOMXPathResult.h"
 #include "nsIDOMHTMLDivElement.h"
-
-#include "nsIXTFXMLVisual.h"
-#include "nsIXTFXMLVisualWrapper.h"
 
 #include "nsXFormsControlStub.h"
 #include "nsIModelElementPrivate.h"

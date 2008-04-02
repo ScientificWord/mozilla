@@ -133,12 +133,18 @@ function stock_initOutputWindow(newClient, newView, newClickHandler)
     updateMotifSettings();
 
     var output = document.getElementById("output");
-    output.appendChild(view.messages);
+    output.appendChild(adoptNode(view.messages));
 
     if (view.TYPE in headers)
     {
         header = cacheNodes(headers[view.TYPE].prefix,
                             headers[view.TYPE].fields);
+        // Turn off accessibility announcements: they're useless as all these
+        // changes are in the "log" as well, normally.
+        // We're setting the attribute here instead of in the HTML to cope with
+        // custom output windows and so we set it only on the Right header
+        // for this view.
+        header["container"].setAttribute("aria-live", "off");
         header.update = headers[view.TYPE].update;
     }
 
@@ -291,6 +297,11 @@ function getMotifSettings()
     return rv;
 }
 
+function adoptNode(node)
+{
+    return client.adoptNode(node, document);
+}
+
 function setText(field, text, checkCondition)
 {
     if (!header[field].firstChild)
@@ -439,8 +450,11 @@ function updateChannel()
         {
             var data = getObjectDetails(view);
             data.dontLogURLs = true;
+            var mailto = client.prefs["munger.mailto"];
+            client.munger.getRule(".mailto").enabled = mailto;
             var nodes = client.munger.munge(view.topic, null, data);
-            header["topicnodes"].appendChild(nodes);
+            client.munger.getRule(".mailto").enabled = false;
+            header["topicnodes"].appendChild(adoptNode(nodes));
         }
         else
         {
@@ -479,7 +493,7 @@ function updateUser()
         var data = getObjectDetails(view);
         data.dontLogURLs = true;
         var nodes = client.munger.munge(view.desc, null, data);
-        header["descnodes"].appendChild(nodes);
+        header["descnodes"].appendChild(adoptNode(nodes));
     }
     else
     {
@@ -499,7 +513,7 @@ function updateDCCChat()
 
 function updateDCCFile()
 {
-    var pcent = Math.floor(100 * view.position / view.size);
+    var pcent = view.progress;
     
     setText("file", view.filename);
     setText("progress", getMsg(MSG_DCCFILE_PROGRESS,

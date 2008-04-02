@@ -36,19 +36,14 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-// This must be before any #includes to enable logging in release builds
-#ifdef MOZ_LOGGING
-#define FORCE_PR_LOG
-#endif
-
 #include "nsLoadCollector.h"
-#include "nsWindowCollector.h"
 #include "nsMetricsService.h"
 #include "nsCOMPtr.h"
 #include "nsCURILoader.h"
 #include "nsIServiceManager.h"
 #include "nsIWebProgress.h"
 #include "nsIDocShell.h"
+#include "nsIDocShellTreeItem.h"
 #include "nsIChannel.h"
 #include "nsIDOMWindow.h"
 #include "nsIInterfaceRequestorUtils.h"
@@ -358,13 +353,19 @@ nsLoadCollector::OnStateChange(nsIWebProgress *webProgress,
         return NS_ERROR_UNEXPECTED;
       }
 
-      // If this was a load of a chrome document, hash the URL of the document
-      // so it can be identified.
+      nsCOMPtr<nsIDocShellTreeItem> item = do_QueryInterface(docShell);
+      NS_ENSURE_STATE(item);
+      PRBool subframe = nsMetricsUtils::IsSubframe(item);
+      if (subframe) {
+        rv = props->SetPropertyAsBool(NS_LITERAL_STRING("subframe"), PR_TRUE);
+        NS_ENSURE_SUCCESS(rv, rv);
+      }
 
       nsMetricsService *ms = nsMetricsService::get();
       DocumentEntry docEntry;
       if (!mDocumentMap.Get(doc, &docEntry)) {
         docEntry.docID = mNextDocID++;
+        docEntry.subframe = subframe;
 
         if (!ms->WindowMap().Get(window, &docEntry.windowID)) {
           MS_LOG(("Window not in the window map"));
@@ -379,6 +380,9 @@ nsLoadCollector::OnStateChange(nsIWebProgress *webProgress,
       rv = props->SetPropertyAsUint32(NS_LITERAL_STRING("docid"),
                                       docEntry.docID);
       NS_ENSURE_SUCCESS(rv, rv);
+
+      // If this was a load of a chrome document, hash the URL of the document
+      // so it can be identified.
 
       nsCOMPtr<nsIChannel> channel = do_QueryInterface(request);
       if (channel) {
@@ -471,8 +475,8 @@ nsLoadCollector::OnAttach()
 nsLoadCollector::RemoveDocumentFromMap(const nsIDocument *document,
                                        DocumentEntry &entry, void *userData)
 {
-  nsIDocument *mutable_doc = NS_CONST_CAST(nsIDocument*, document);
-  mutable_doc->RemoveObserver(NS_STATIC_CAST(nsLoadCollector*, userData));
+  nsIDocument *mutable_doc = const_cast<nsIDocument*>(document);
+  mutable_doc->RemoveObserver(static_cast<nsLoadCollector*>(userData));
   return PL_DHASH_REMOVE;
 }
 
@@ -520,8 +524,9 @@ nsLoadCollector::EndUpdate(nsIDocument *document, nsUpdateType updateType)
 }
 
 void
-nsLoadCollector::DocumentWillBeDestroyed(nsIDocument *document)
+nsLoadCollector::NodeWillBeDestroyed(const nsINode *node)
 {
+  const nsIDocument* document = static_cast<const nsIDocument*>(node);
   // Look up the document to get its id.
   DocumentEntry entry;
   if (!mDocumentMap.Get(document, &entry)) {
@@ -541,6 +546,9 @@ nsLoadCollector::DocumentWillBeDestroyed(nsIDocument *document)
                                NS_LITERAL_CSTRING("destroy"));
   props->SetPropertyAsUint32(NS_LITERAL_STRING("docid"), entry.docID);
   props->SetPropertyAsUint32(NS_LITERAL_STRING("window"), entry.windowID);
+  if (entry.subframe) {
+    props->SetPropertyAsBool(NS_LITERAL_STRING("subframe"), PR_TRUE);
+  }
 
   MemUsage mu;
   if (GetMemUsage(&mu)) {

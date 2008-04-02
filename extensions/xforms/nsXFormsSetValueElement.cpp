@@ -51,20 +51,18 @@ class nsXFormsSetValueElement : public nsXFormsActionModuleBase
 {
 public:
   nsXFormsSetValueElement();
-  NS_DECL_NSIXFORMSACTIONMODULEELEMENT
+  virtual nsresult HandleSingleAction(nsIDOMEvent* aEvent,
+                                      nsIXFormsActionElement *aParentAction);
 };
 
 nsXFormsSetValueElement::nsXFormsSetValueElement()
 {
 }
 
-NS_IMETHODIMP
-nsXFormsSetValueElement::HandleAction(nsIDOMEvent* aEvent,
-                                      nsIXFormsActionElement *aParentAction)
+nsresult
+nsXFormsSetValueElement::HandleSingleAction(nsIDOMEvent            *aEvent,
+                                            nsIXFormsActionElement *aParentAction)
 {
-  if (!mElement)
-    return NS_OK;
-  
   nsCOMPtr<nsIModelElementPrivate> modelPriv;
   nsCOMPtr<nsIDOMNode> singleNode;
   PRBool succeeded =

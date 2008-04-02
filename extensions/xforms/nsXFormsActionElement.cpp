@@ -42,7 +42,7 @@
 #include "nsIDOMDocument.h"
 #include "nsIDOMEvent.h"
 #include "nsIDOMElement.h"
-#include "nsIXTFBindableElementWrapper.h"
+#include "nsIXTFElementWrapper.h"
 
 #define DEFERRED_REBUILD     0x01
 #define DEFERRED_RECALCULATE 0x02
@@ -53,19 +53,19 @@ nsXFormsActionElement::nsXFormsActionElement() : mElement(nsnull)
 {
 }
 
-NS_IMPL_ADDREF_INHERITED(nsXFormsActionElement, nsXFormsBindableStub)
-NS_IMPL_RELEASE_INHERITED(nsXFormsActionElement, nsXFormsBindableStub)
+NS_IMPL_ADDREF_INHERITED(nsXFormsActionElement, nsXFormsStubElement)
+NS_IMPL_RELEASE_INHERITED(nsXFormsActionElement, nsXFormsStubElement)
 
 NS_INTERFACE_MAP_BEGIN(nsXFormsActionElement)
   NS_INTERFACE_MAP_ENTRY(nsIXFormsActionModuleElement)
   NS_INTERFACE_MAP_ENTRY(nsIXFormsActionElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMEventListener)
-NS_INTERFACE_MAP_END_INHERITING(nsXFormsBindableStub)
+NS_INTERFACE_MAP_END_INHERITING(nsXFormsStubElement)
 
 NS_IMETHODIMP
-nsXFormsActionElement::OnCreated(nsIXTFBindableElementWrapper* aWrapper)
+nsXFormsActionElement::OnCreated(nsIXTFElementWrapper* aWrapper)
 {
-  nsresult rv = nsXFormsBindableStub::OnCreated(aWrapper);
+  nsresult rv = nsXFormsStubElement::OnCreated(aWrapper);
   NS_ENSURE_SUCCESS(rv, rv);
 
   // It's ok to keep a weak pointer to mElement.  mElement will have an
@@ -75,6 +75,12 @@ nsXFormsActionElement::OnCreated(nsIXTFBindableElementWrapper* aWrapper)
   aWrapper->GetElementNode(getter_AddRefs(node));
   mElement = node;
   NS_ASSERTION(mElement, "Wrapper is not an nsIDOMElement, we'll crash soon");
+
+  aWrapper->SetNotificationMask(nsIXTFElement::NOTIFY_WILL_CHANGE_DOCUMENT |
+                                nsIXTFElement::NOTIFY_WILL_CHANGE_PARENT |
+                                nsIXTFElement::NOTIFY_DOCUMENT_CHANGED |
+                                nsIXTFElement::NOTIFY_PARENT_CHANGED);
+
   return NS_OK;
 }
 
@@ -86,8 +92,45 @@ nsXFormsActionElement::OnDestroyed() {
 }
 
 NS_IMETHODIMP
+nsXFormsActionElement::WillChangeParent(nsIDOMElement *aNewParent)
+{
+  SetRepeatState(eType_Unknown);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsActionElement::ParentChanged(nsIDOMElement *aNewParent)
+{
+  nsXFormsStubElement::ParentChanged(aNewParent);
+  UpdateRepeatState(aNewParent);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsActionElement::WillChangeDocument(nsIDOMDocument *aNewDocument)
+{
+  SetRepeatState(eType_Unknown);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsActionElement::DocumentChanged(nsIDOMDocument *aNewDocument)
+{
+  nsXFormsStubElement::DocumentChanged(aNewDocument);
+
+  nsCOMPtr<nsIDOMNode> parent;
+  mElement->GetParentNode(getter_AddRefs(parent));
+  UpdateRepeatState(parent);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 nsXFormsActionElement::HandleEvent(nsIDOMEvent* aEvent)
 {
+  if (GetRepeatState() == eType_Template) {
+    return NS_OK;
+  }
+
   return nsXFormsUtils::EventHandlingAllowed(aEvent, mElement) ?
            HandleAction(aEvent, nsnull) : NS_OK;
 }
@@ -97,8 +140,8 @@ PR_STATIC_CALLBACK(PLDHashOperator) DoDeferredActions(nsISupports * aModel,
                                                       void * data)
 {
   if (aModel && aDeferred) {
-    nsCOMPtr<nsIModelElementPrivate> model =
-      NS_STATIC_CAST(nsIModelElementPrivate*, aModel);
+    nsCOMPtr<nsIModelElementPrivate> model(do_QueryInterface(aModel));
+
     if (aDeferred & DEFERRED_REBUILD)
       model->RequestRebuild();
     if (aDeferred & DEFERRED_RECALCULATE)
@@ -113,12 +156,15 @@ PR_STATIC_CALLBACK(PLDHashOperator) DoDeferredActions(nsISupports * aModel,
 
 NS_IMETHODIMP
 nsXFormsActionElement::HandleAction(nsIDOMEvent* aEvent,
-                                    nsIXFormsActionElement *aParentAction)
+                                    nsIXFormsActionElement* aParentAction)
 {
-  if (!mElement) {
-    return NS_OK;
-  }
+  return nsXFormsActionModuleBase::DoHandleAction(this, aEvent, aParentAction);
+}
 
+nsresult
+nsXFormsActionElement::HandleSingleAction(nsIDOMEvent* aEvent,
+                                          nsIXFormsActionElement *aParentAction)
+{
   if (!mDeferredUpdates.IsInitialized()) {
     NS_ENSURE_TRUE(mDeferredUpdates.Init(), NS_ERROR_OUT_OF_MEMORY);
   } else {
@@ -159,13 +205,20 @@ nsXFormsActionElement::SetRebuild(nsIModelElementPrivate* aModel,
   }
 
   PRUint32 deferred = 0;
-  mDeferredUpdates.Get(aModel, &deferred);
+
+  // It is possible that QI's to an interface that isn't nsISupports (like
+  // nsIModelElementPrivate) could produce different values even from the same
+  // model element.  So we'll convert the model to nsISupports before querying
+  // it or storing it via hashtable.
+  nsCOMPtr<nsISupports> temp(do_QueryInterface(aModel));
+  mDeferredUpdates.Get(temp, &deferred);
   if (aEnable) {
     deferred |= DEFERRED_REBUILD;
   } else {
     deferred &= ~DEFERRED_REBUILD;
   }
-  mDeferredUpdates.Put(aModel, deferred);
+  
+  mDeferredUpdates.Put(temp, deferred);
   return NS_OK;
 }
 
@@ -178,13 +231,19 @@ nsXFormsActionElement::SetRecalculate(nsIModelElementPrivate* aModel,
   }
 
   PRUint32 deferred = 0;
-  mDeferredUpdates.Get(aModel, &deferred);
+
+  // It is possible that QI's to an interface that isn't nsISupports (like
+  // nsIModelElementPrivate) could produce different values even from the same
+  // model element.  So we'll convert the model to nsISupports before querying
+  // it or storing it via hashtable.
+  nsCOMPtr<nsISupports> temp(do_QueryInterface(aModel));
+  mDeferredUpdates.Get(temp, &deferred);
   if (aEnable) {
     deferred |= DEFERRED_RECALCULATE;
   } else {
     deferred &= ~DEFERRED_RECALCULATE;
   }
-  mDeferredUpdates.Put(aModel, deferred);
+  mDeferredUpdates.Put(temp, deferred);
   return NS_OK;
 }
 
@@ -197,13 +256,19 @@ nsXFormsActionElement::SetRevalidate(nsIModelElementPrivate* aModel,
   }
 
   PRUint32 deferred = 0;
-  mDeferredUpdates.Get(aModel, &deferred);
+
+  // It is possible that QI's to an interface that isn't nsISupports (like
+  // nsIModelElementPrivate) could produce different values even from the same
+  // model element.  So we'll convert the model to nsISupports before querying
+  // it or storing it via hashtable.
+  nsCOMPtr<nsISupports> temp(do_QueryInterface(aModel));
+  mDeferredUpdates.Get(temp, &deferred);
   if (aEnable) {
     deferred |= DEFERRED_REVALIDATE;
   } else {
     deferred &= ~DEFERRED_REVALIDATE;
   }
-  mDeferredUpdates.Put(aModel, deferred);
+  mDeferredUpdates.Put(temp, deferred);
   return NS_OK;
 }
 
@@ -216,13 +281,26 @@ nsXFormsActionElement::SetRefresh(nsIModelElementPrivate* aModel,
   }
 
   PRUint32 deferred = 0;
-  mDeferredUpdates.Get(aModel, &deferred);
+
+  // It is possible that QI's to an interface that isn't nsISupports (like
+  // nsIModelElementPrivate) could produce different values even from the same
+  // model element.  So we'll convert the model to nsISupports before querying
+  // it or storing it via hashtable.
+  nsCOMPtr<nsISupports> temp(do_QueryInterface(aModel));
+  mDeferredUpdates.Get(temp, &deferred);
   if (aEnable) {
     deferred |= DEFERRED_REFRESH;
   } else {
     deferred &= ~DEFERRED_REFRESH;
   }
-  mDeferredUpdates.Put(aModel, deferred);
+  mDeferredUpdates.Put(temp, deferred);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsActionElement::GetCurrentEvent(nsIDOMEvent** aEvent)
+{
+  NS_IF_ADDREF(*aEvent = mCurrentEvent);
   return NS_OK;
 }
 

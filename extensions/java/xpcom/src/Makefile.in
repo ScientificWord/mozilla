@@ -37,7 +37,7 @@
 DEPTH		= ../../../..
 topsrcdir	= @top_srcdir@
 srcdir		= @srcdir@
-VPATH		= @srcdir@ ; @srcdir@/..
+VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
@@ -64,69 +64,56 @@ CPPSRCS		= \
 		nsJavaXPCOMBindingUtils.cpp \
 		$(NULL)
 
-JARFILE = javaxpcom.jar
-JARFILE_SRC = $(patsubst %.jar,%-src.jar,$(JARFILE))
-
-JAVA_SRCS = \
-		$(srcdir)/../XPCOMJavaProxy.java \
-		$(srcdir)/../XPCOMJavaProxyBase.java \
-		$(srcdir)/GREImpl.java \
-		$(srcdir)/XPCOMImpl.java \
-		$(srcdir)/JavaXPCOMMethods.java \
-		$(NULL)
+ifeq ($(OS_ARCH),Darwin)
+CMMSRCS = MacJawt.mm
+endif
 
 LOCAL_INCLUDES	= -I$(JAVA_INCLUDE_PATH)
 
 ifeq ($(OS_ARCH),WINNT)
 LOCAL_INCLUDES += -I$(JAVA_INCLUDE_PATH)/win32
 else
+ifeq ($(OS_ARCH),OS2)
+LOCAL_INCLUDES += -I$(JAVA_INCLUDE_PATH)/OS2
+else
+ifeq ($(OS_ARCH),Darwin)
+LOCAL_INCLUDES += -I/System/Library/Frameworks/CoreFoundation.framework/Headers
+else
 LOCAL_INCLUDES += -I$(JAVA_INCLUDE_PATH)/linux
 endif
+endif
+endif
 
-# necessary until we do 'cvs move' to put files in correct directories
-LOCAL_INCLUDES += -I$(srcdir)
+# Don't set JAVA_LIBRARY_NAME, since we don't want to build during 'libs'
+# stage, but rather when explicitly called.
+#JAVA_LIBRARY_NAME = javaxpcom
+JARFILE = javaxpcom.jar
 
-GARBAGE += $(JARFILE) $(JARFILE_SRC) java.files .done
-GARBAGE_DIRS += _javagen org
+PACKAGE_DIR = org/mozilla/xpcom/internal
+
+JAVA_SRCS = \
+		$(PACKAGE_DIR)/XPCOMJavaProxy.java \
+		$(PACKAGE_DIR)/XPCOMJavaProxyBase.java \
+		$(PACKAGE_DIR)/MozillaImpl.java \
+		$(PACKAGE_DIR)/GREImpl.java \
+		$(PACKAGE_DIR)/XPCOMImpl.java \
+		$(PACKAGE_DIR)/JavaXPCOMMethods.java \
+		$(NULL)
+
+JAVA_CLASSPATH = \
+	../interfaces/MozillaInterfaces.jar \
+	../interfaces/MozillaGlue.jar \
+	$(NULL)
+
+GARBAGE += $(JARFILE)
 
 include $(topsrcdir)/config/rules.mk
 
-ifeq ($(OS_ARCH),WINNT)
-RUN =
-SEP = ;
-else
-RUN = $(DIST)/bin/run-mozilla.sh
-SEP = :
-endif
+$(JARFILE): $(addprefix $(_JAVA_DIR)/,$(JAVA_SRCS:.java=.class)) Makefile Makefile.in
+	$(JAR) cf $@ -C $(_JAVA_DIR) .
 
-_javagen/org/mozilla/xpcom/internal/.iface_done: $(JAVA_SRCS)
-	@if test ! -d _javagen/org/mozilla/xpcom/internal; then \
-		touch .done; \
-		$(INSTALL) -m 644 .done _javagen/org/mozilla/xpcom/internal; \
-	fi
-	@echo Copying Java source files
-	@$(INSTALL) -m 644 $(JAVA_SRCS) \
-			_javagen/org/mozilla/xpcom/internal
-	@touch $@
+jar-libs:: $(JARFILE)
+	$(INSTALL) $(IFLAGS1) $(JARFILE) $(FINAL_TARGET)
 
-# Using the temporary "java.files" avoids an "argument list too long"
-# error on Windows when using *.java
-org/mozilla/xpcom/internal/.class_done: _javagen/org/mozilla/xpcom/internal/.iface_done
-	@echo Compiling Java implementation classes
-	find _javagen -name "*.java" > java.files
-	$(JAVAC) $(JAVAC_FLAGS) \
-	  -classpath ".$(SEP)../interfaces/MozillaInterfaces.jar" \
-	  -d . -sourcepath _javagen @java.files
-	@touch $@
-
-$(JARFILE): org/mozilla/xpcom/internal/.class_done Makefile
-	$(JAR) cf $@ org
-
-$(JARFILE_SRC): $(JARFILE)
-	$(JAR) cf $@ -C _javagen org
-
-#libs:: $(JARFILE)
-#	$(INSTALL) $(IFLAGS1) $^ $(DIST)/bin
-jarfile:: $(JARFILE) $(JARFILE_SRC)
-	$(INSTALL) $(IFLAGS1) $^ $(DIST)/bin
-
+jar-install:: $(JARFILE)
+	$(SYSINSTALL) $(IFLAGS2) $(JARFILE) $(DESTDIR)$(mozappdir)

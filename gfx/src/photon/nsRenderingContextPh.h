@@ -38,7 +38,6 @@
 #define nsRenderingContextPh_h___
 
 #include "nsRenderingContextImpl.h"
-#include "nsUnitConversion.h"
 #include "nsFont.h"
 #include "nsIFontMetrics.h"
 #include "nsPoint.h"
@@ -150,7 +149,7 @@ public:
 	 inline
    NS_IMETHODIMP CopyClipRegion(nsIRegion &aRegion)
 		{ if( !mClipRegion ) return NS_ERROR_FAILURE;
-			aRegion.SetTo(*NS_STATIC_CAST(nsIRegion*, mClipRegion));
+			aRegion.SetTo(*static_cast<nsIRegion*>(mClipRegion));
 			return NS_OK;
 		}
 

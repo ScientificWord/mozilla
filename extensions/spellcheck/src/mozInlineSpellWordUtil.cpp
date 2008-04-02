@@ -36,10 +36,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "cattable.h"
 #include "mozInlineSpellWordUtil.h"
 #include "nsDebug.h"
 #include "nsIAtom.h"
+#include "nsComponentManagerUtils.h"
 #include "nsIDOMCSSStyleDeclaration.h"
 #include "nsIDOMDocumentView.h"
 #include "nsIDOMElement.h"
@@ -48,7 +48,8 @@
 #include "nsIEditor.h"
 #include "nsIDOMNode.h"
 #include "nsIDOMHTMLBRElement.h"
-
+#include "nsUnicharUtilCIID.h"
+#include "nsServiceManagerUtils.h"
 
 // IsIgnorableCharacter
 //
@@ -61,6 +62,17 @@ inline PRBool IsIgnorableCharacter(PRUnichar ch)
           ch == 0x1806);  // MONGOLIAN TODO SOFT HYPHEN
 }
 
+// IsConditionalPunctuation
+//
+//    Some characters (like apostrophes) require characters on each side to be
+//    part of a word, and are otherwise punctuation.
+
+inline PRBool IsConditionalPunctuation(PRUnichar ch)
+{
+  return (ch == '\'' ||
+          ch == 0x2019); // RIGHT SINGLE QUOTATION MARK
+}
+
 // mozInlineSpellWordUtil::Init
 
 nsresult
@@ -68,8 +80,15 @@ mozInlineSpellWordUtil::Init(nsWeakPtr aWeakEditor)
 {
   nsresult rv;
 
+  mCategories = do_GetService(NS_UNICHARCATEGORY_CONTRACTID, &rv);
+  if (NS_FAILED(rv))
+    return rv;
+  
+  // getting the editor can fail commonly because the editor was detached, so
+  // don't assert
   nsCOMPtr<nsIEditor> editor = do_QueryReferent(aWeakEditor, &rv);
-  NS_ENSURE_SUCCESS(rv, rv);
+  if (NS_FAILED(rv))
+    return rv;
 
   nsCOMPtr<nsIDOMDocument> domDoc;
   rv = editor->GetDocument(getter_AddRefs(domDoc));
@@ -140,7 +159,7 @@ FindNextNode(nsIDOMNode* aNode, nsIDOMNode* aRoot,
     }
     
     aNode->GetParentNode(getter_AddRefs(next));
-    if (next == aRoot)
+    if (next == aRoot || ! next)
       return nsnull;
     aNode = next;
     
@@ -220,17 +239,6 @@ mozInlineSpellWordUtil::SetEnd(nsIDOMNode* aEndNode, PRInt32 aEndOffset)
   }
   mSoftEnd = NodeOffset(aEndNode, aEndOffset);
   return NS_OK;
-}
-
-
-// mozInlineSpellWordUtil::ExpandFor
-
-nsresult
-mozInlineSpellWordUtil::ExpandFor(nsIDOMNode* aBeginNode, PRInt32 aBeginOffset,
-                                  nsIDOMNode* aEndNode, PRInt32 aEndOffset)
-{
-  // InvalidateWords();
-  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 nsresult
@@ -525,7 +533,7 @@ static void
 CheckLeavingBreakElement(nsIDOMNode* aNode, void* aClosure)
 {
   CheckLeavingBreakElementClosure* cl =
-    NS_STATIC_CAST(CheckLeavingBreakElementClosure*, aClosure);
+    static_cast<CheckLeavingBreakElementClosure*>(aClosure);
   if (!cl->mLeftBreakElement && IsBreakElement(cl->mDocView, aNode)) {
     cl->mLeftBreakElement = PR_TRUE;
   }
@@ -791,14 +799,16 @@ enum CharClass {
 // Encapsulates DOM-word to real-word splitting
 struct WordSplitState
 {
+  mozInlineSpellWordUtil*    mWordUtil;
   const nsDependentSubstring mDOMWordText;
   PRInt32                    mDOMWordOffset;
   CharClass                  mCurCharClass;
-  
-  WordSplitState(const nsString& aString, PRInt32 aStart, PRInt32 aLen)
-    : mDOMWordText(aString, aStart, aLen), mDOMWordOffset(0),
-      mCurCharClass(CHAR_CLASS_END_OF_INPUT) {}
-  
+
+  WordSplitState(mozInlineSpellWordUtil* aWordUtil,
+                 const nsString& aString, PRInt32 aStart, PRInt32 aLen)
+    : mWordUtil(aWordUtil), mDOMWordText(aString, aStart, aLen),
+      mDOMWordOffset(0), mCurCharClass(CHAR_CLASS_END_OF_INPUT) {}
+
   CharClass ClassifyCharacter(PRInt32 aIndex, PRBool aRecurse) const;
   void Advance();
   void AdvanceThroughSeparators();
@@ -828,28 +838,20 @@ WordSplitState::ClassifyCharacter(PRInt32 aIndex, PRBool aRecurse) const
 
   // this will classify the character, we want to treat "ignorable" characters
   // such as soft hyphens as word characters.
-  PRInt32 charCategory = GetCat(mDOMWordText[aIndex]);
-  if (charCategory == 5 || IsIgnorableCharacter(mDOMWordText[aIndex]))
+  nsIUGenCategory::nsUGenCategory
+    charCategory = mWordUtil->GetCategories()->Get(PRUint32(mDOMWordText[aIndex]));
+  if (charCategory == nsIUGenCategory::kLetter ||
+      IsIgnorableCharacter(mDOMWordText[aIndex]))
     return CHAR_CLASS_WORD;
 
-  // all other whitespace chars, control chars, and most punctuation (with
-  // several exceptions) are word separators. These exceptions are for
-  // characters that can be considered part of a word if it is surrounded by
-  // word characters
-  if ((isspace(mDOMWordText[aIndex]) || mDOMWordText[aIndex] < ' ' ||
-       ispunct(mDOMWordText[aIndex]))
-      && mDOMWordText[aIndex] != '\'')
-    return CHAR_CLASS_SEPARATOR;
-
-  // For punctuation excluded from the above:
-  // If punctuation is surrounded immediately on both sides by word characters
-  // it also counts as a word character.
-  if (ispunct(mDOMWordText[aIndex])) {
+  // If conditional punctuation is surrounded immediately on both sides by word
+  // characters it also counts as a word character.
+  if (IsConditionalPunctuation(mDOMWordText[aIndex])) {
     if (!aRecurse) {
       // not allowed to look around, this punctuation counts like a separator
       return CHAR_CLASS_SEPARATOR;
     }
-    
+
     // check the left-hand character
     if (aIndex == 0)
       return CHAR_CLASS_SEPARATOR;
@@ -865,6 +867,13 @@ WordSplitState::ClassifyCharacter(PRInt32 aIndex, PRBool aRecurse) const
     // char on either side is a word, this counts as a word
     return CHAR_CLASS_WORD;
   }
+
+  // all other punctuation
+  if (charCategory == nsIUGenCategory::kSeparator ||
+      charCategory == nsIUGenCategory::kOther ||
+      charCategory == nsIUGenCategory::kPunctuation ||
+      charCategory == nsIUGenCategory::kSymbol)
+    return CHAR_CLASS_SEPARATOR;
 
   // any other character counts as a word
   return CHAR_CLASS_WORD;
@@ -920,10 +929,11 @@ WordSplitState::FindSpecialWord()
   //
   // Also look for periods, this tells us if we want to run the URL finder.
   PRBool foundDot = PR_FALSE;
+  PRInt32 firstColon = -1;
   for (i = mDOMWordOffset;
        i < PRInt32(mDOMWordText.Length()); i ++) {
     if (mDOMWordText[i] == '@') {
-      // only accept this if there are unambigous word characters (don't bother
+      // only accept this if there are unambiguous word characters (don't bother
       // recursing to disambiguate apostrophes) on each side. This prevents
       // classifying, e.g. "@home" as an email address
 
@@ -933,51 +943,46 @@ WordSplitState::FindSpecialWord()
       // symbol, but when you type another letter "fhsgfh@g" that first word
       // need to be unmarked misspelled. It doesn't do this. it only checks the
       // current position for potentially removing a spelling range.
-      //if (i > 0 && ClassifyCharacter(i - 1, PR_FALSE) == CHAR_CLASS_WORD &&
-      //    i < (PRInt32)mDOMWordText.Length() - 1 &&
-      //    ClassifyCharacter(i + 1, PR_FALSE) == CHAR_CLASS_WORD)
+      if (i > 0 && ClassifyCharacter(i - 1, PR_FALSE) == CHAR_CLASS_WORD &&
+          i < (PRInt32)mDOMWordText.Length() - 1 &&
+          ClassifyCharacter(i + 1, PR_FALSE) == CHAR_CLASS_WORD)
 
       return mDOMWordText.Length() - mDOMWordOffset;
-    } 
-    if (mDOMWordText[i] == '.' && ! foundDot &&
+    } else if (mDOMWordText[i] == '.' && ! foundDot &&
         i > 0 && i < (PRInt32)mDOMWordText.Length() - 1) {
       // we found a period not at the end, we should check harder for URLs
       foundDot = PR_TRUE;
+    } else if (mDOMWordText[i] == ':' && firstColon < 0) {
+      firstColon = i;
     }
   }
 
-  // Search for URLs
-  /*
-  THIS CODE DOES NOT WORK YET - crashes
+  // If the first colon is followed by a slash, consider it a URL
+  // This will catch things like asdf://foo.com
+  if (firstColon >= 0 && firstColon < (PRInt32)mDOMWordText.Length() - 1 &&
+      mDOMWordText[firstColon + 1] == '/') {
+    return mDOMWordText.Length() - mDOMWordOffset;
+  }
 
-  It also has the same problem as email addresses above.
-  FIXME: what we should do is always check the full DOM word. This will make
-  it work properly.
-
-  if (foundDot) {
-    printf("Checking for URL\n");
-    if (! mURLDetector) {
-      // lazily create the URL detector
-      nsresult rv;
-      mURLDetector = do_CreateInstance(MOZ_TXTTOHTMLCONV_CONTRACTID, &rv);
-      if (NS_FAILED(rv))
-        return -1;
-    }
-    PRInt32 urlStart = -1, urlEnd = -1;
-    printf("Checking string %s       = %s\n",
-           NS_ConvertUTF16toUTF8(mDOMWordText).get(),
-           NS_ConvertUTF16toUTF8(Substring(mDOMWordText, state.mDOMWordOffset)));
-    mURLDetector->FindURLInPlaintext(mDOMWordText.get(), state.mDOMWordOffset,
-                                     mDOMWordText.Length() - state.mDOMWordOffset,
-                                     &urlStart, &urlEnd);
-    if (urlStart == 0 && urlEnd > 0) {
-      NS_ASSERTION(state.mDOMWordOffset + urlEnd < (PRInt32)mDOMWordText.Length(),
-                   "URL out of bounds");
-      return urlEnd - state.mDOMWordOffset;
+  // Check the text before the first colon against some known protocols. It
+  // is impossible to check against all protocols, especially since you can
+  // plug in new protocols. We also don't want to waste time here checking
+  // against a lot of obscure protocols.
+  if (firstColon > mDOMWordOffset) {
+    nsString protocol(Substring(mDOMWordText, mDOMWordOffset,
+                      firstColon - mDOMWordOffset));
+    if (protocol.EqualsIgnoreCase("http") ||
+        protocol.EqualsIgnoreCase("https") ||
+        protocol.EqualsIgnoreCase("news") ||
+        protocol.EqualsIgnoreCase("ftp") ||
+        protocol.EqualsIgnoreCase("file") ||
+        protocol.EqualsIgnoreCase("javascript") ||
+        protocol.EqualsIgnoreCase("ftp")) {
+      return mDOMWordText.Length() - mDOMWordOffset;
     }
   }
-  */
 
+  // not anything special
   return -1;
 }
 
@@ -990,7 +995,8 @@ WordSplitState::ShouldSkipWord(PRInt32 aStart, PRInt32 aLength)
 
   // check to see if the word contains a digit
   for (PRInt32 i = aStart; i < last; i ++) {
-    char ch = mDOMWordText[i];
+    PRUnichar ch = mDOMWordText[i];
+    // XXX Shouldn't this be something a lot more complex, Unicode-based?
     if (ch >= '0' && ch <= '9')
       return PR_TRUE;
   }
@@ -1004,7 +1010,7 @@ WordSplitState::ShouldSkipWord(PRInt32 aStart, PRInt32 aLength)
 void
 mozInlineSpellWordUtil::SplitDOMWord(PRInt32 aStart, PRInt32 aEnd)
 {
-  WordSplitState state(mSoftText, aStart, aEnd - aStart);
+  WordSplitState state(this, mSoftText, aStart, aEnd - aStart);
   state.mCurCharClass = state.ClassifyCharacter(0, PR_TRUE);
 
   while (state.mCurCharClass != CHAR_CLASS_END_OF_INPUT) {
