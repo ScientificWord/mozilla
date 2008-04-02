@@ -48,6 +48,7 @@
 #include "nsIObserver.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMWindow.h"
+#include "nsIDOMHTMLFormElement.h"
 #include "nsIStringBundle.h"
 #include "nsISecureBrowserUI.h"
 #include "nsIDocShell.h"
@@ -87,12 +88,12 @@ public:
   NS_DECL_NSIOBSERVER
   NS_DECL_NSISSLSTATUSPROVIDER
 
-  NS_IMETHOD Notify(nsIContent* formNode, nsIDOMWindowInternal* window,
+  NS_IMETHOD Notify(nsIDOMHTMLFormElement* formNode, nsIDOMWindowInternal* window,
                     nsIURI *actionURL, PRBool* cancelSubmit);
   
 protected:
   
-  nsCOMPtr<nsIDOMWindow> mWindow;
+  nsWeakPtr mWindow;
   nsCOMPtr<nsIStringBundle> mStringBundle;
   nsCOMPtr<nsIURI> mCurrentURI;
   nsCOMPtr<nsISecurityEventSink> mToplevelEventSink;
@@ -105,10 +106,12 @@ protected:
     lis_high_security
   };
 
-  lockIconState mPreviousSecurityState;
+  lockIconState mNotifiedSecurityState;
+  PRBool mNotifiedToplevelIsEV;
 
   void ResetStateTracking();
   PRUint32 mNewToplevelSecurityState;
+  PRPackedBool mNewToplevelIsEV;
   PRPackedBool mNewToplevelSecurityStateKnown;
   PRPackedBool mIsViewSource;
 
@@ -120,6 +123,7 @@ protected:
   PRInt32 mSubRequestsBrokenSecurity;
   PRInt32 mSubRequestsNoSecurity;
 
+  nsresult MapInternalToExternalState(PRUint32* aState, lockIconState lock, PRBool ev);
   nsresult UpdateSecurityState(nsIRequest* aRequest);
   nsresult EvaluateAndUpdateSecurityState(nsIRequest *aRequest);
   void UpdateSubrequestMembers(nsIRequest *aRequest);

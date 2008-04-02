@@ -69,11 +69,12 @@ else
     CCC = aCC
 endif
 
-OS_CFLAGS += $(ARCHFLAG) -DHPUX11
+#
+# To use the true pthread (kernel thread) library on HP-UX
+# 11.x, we should define _POSIX_C_SOURCE to be 199506L.
+# The _REENTRANT macro is deprecated.
+#
+
+OS_CFLAGS += $(ARCHFLAG) -DHPUX11 -D_POSIX_C_SOURCE=199506L
 OS_LIBS   += -lpthread -lm -lrt
-#ifeq ($(USE_64), 1)
-#OS_LIBS   += -ldl
-#else
-#OS_LIBS   += -ldld
-#endif
 HPUX11	= 1

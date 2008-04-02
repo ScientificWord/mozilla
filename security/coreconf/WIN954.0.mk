@@ -47,7 +47,11 @@ ifeq ($(CPU_ARCH), x386)
 ifndef NS_USE_GCC
 	OS_CFLAGS += -W3 -nologo
 endif
+ifdef USE_64
+	DEFINES += -D_AMD64_
+else
 	DEFINES += -D_X86_
+endif
 else 
 	ifeq ($(CPU_ARCH), MIPS)
 		#OS_CFLAGS += -W3 -nologo
@@ -68,3 +72,6 @@ ifndef MOZ_DEBUG_SYMBOLS
 endif
 endif
 DEFINES += -DWIN95
+
+# WINNT uses the lib prefix, Win95 and WinCE don't
+NSPR31_LIB_PREFIX = $(NULL)
