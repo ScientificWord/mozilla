@@ -21,6 +21,7 @@
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
+#   Shawn Wilsher <me@shawnwilsher.com>
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -49,7 +50,7 @@ CPPSRCS += \
 	nsDllMain.cpp \
 	$(NULL)
 
-RESFILE = xulrunner.res
+RCINCLUDE = xulrunner.rc
 
 ifndef MOZ_NATIVE_ZLIB
 CPPSRCS += dlldeps-zlib.cpp
@@ -76,17 +77,29 @@ CPPSRCS += dlldeps-zlib.cpp
 DEFINES += -DZLIB_INTERNAL
 endif
 
+ifdef MOZ_ENABLE_LIBXUL
+RESFILE = xulrunos2.res
+RCFLAGS += -i $(topsrcdir)/widget/src/os2
+endif
+
 LOCAL_INCLUDES += -I$(topsrcdir)/widget/src/os2
 endif
 
 # dependent libraries
 STATIC_LIBS += \
 	xpcom_core \
-	mozreg_s \
 	ucvutil_s \
 	gkgfx \
 	gfxshared_s \
 	$(NULL)
+
+#ifndef MOZ_EMBEDDING_LEVEL_DEFAULT
+ifdef MOZ_XPINSTALL
+STATIC_LIBS += \
+	mozreg_s \
+	$(NULL)
+endif
+#endif
 
 # component libraries
 COMPONENT_LIBS += \
@@ -94,30 +107,31 @@ COMPONENT_LIBS += \
 	necko \
 	uconv \
 	i18n \
+	chardet \
 	jar$(VERSION_NUMBER) \
 	pref \
 	caps \
-	rdf \
 	htmlpars \
 	imglib2 \
 	gklayout \
-	xmlextras \
 	docshell \
 	embedcomponents \
 	webbrwsr \
-	editor \
 	nsappshell \
 	txmgr \
 	chrome \
-	windowds \
-	intlapp \
 	commandlines \
 	toolkitcomps \
 	pipboot \
 	pipnss \
-    msiediting \
 	$(NULL)
 
+ifdef MOZ_XMLEXTRAS
+COMPONENT_LIBS += \
+	xmlextras \
+	$(NULL)
+endif
+  
 ifdef MOZ_PLUGINS
 DEFINES += -DMOZ_PLUGINS
 COMPONENT_LIBS += \
@@ -131,6 +145,18 @@ COMPONENT_LIBS += \
 	mozfind \
 	appcomps \
 	$(NULL)
+endif
+
+ifdef MOZ_XUL
+ifdef MOZ_ENABLE_GTK2
+COMPONENT_LIBS += \
+        unixproxy \
+        $(NULL)
+endif
+endif
+
+ifdef MOZ_PERF_METRICS
+EXTRA_DSO_LIBS  += mozutil_s
 endif
 
 ifdef MOZ_XPINSTALL
@@ -177,61 +203,65 @@ DEFINES += -DMOZ_UNIVERSALCHARDET
 endif
 
 ifndef MOZ_PLAINTEXT_EDITOR_ONLY
-COMPONENT_LIBS += composer
-else
+COMPONENT_LIBS += msiediting composer
+else										  
 DEFINES += -DMOZ_PLAINTEXT_EDITOR_ONLY
 endif
 
+ifdef MOZ_RDF
+COMPONENT_LIBS += \
+	rdf \
+	$(NULL)
+ifdef MOZ_XPFE_COMPONENTS
+COMPONENT_LIBS += \
+	windowds \
+	intlapp \
+	$(NULL)
+endif
+endif
+
 ifeq (,$(filter beos os2 mac photon cocoa windows,$(MOZ_WIDGET_TOOLKIT)))
+ifdef MOZ_XUL
+ifdef MOZ_XPFE_COMPONENTS
 COMPONENT_LIBS += fileview
 DEFINES += -DMOZ_FILEVIEW
 endif
+endif
+endif
+
+ifdef MOZ_STORAGE
+COMPONENT_LIBS += storagecomps
+EXTRA_DSO_LDOPTS += $(SQLITE_LIBS)
+endif
 
 ifdef MOZ_PLACES
-COMPONENT_LIBS += storagecomps
 STATIC_LIBS += morkreader_s
+
+COMPONENT_LIBS += \
+	places \
+	$(NULL)
 else
 ifdef MOZ_MORK
+ifdef MOZ_XUL
 COMPONENT_LIBS += \
 	mork \
 	tkhstory \
 	$(NULL)
 endif
 endif
+endif
 
 ifdef MOZ_XUL
 COMPONENT_LIBS += \
 	tkautocomplete \
+	tkautosub \
 	satchel \
 	pippki \
 	$(NULL)
 endif
 
-ifeq ($(OS_ARCH),WINNT)
-COMPONENT_LIBS += intlcmpt
-endif
-
 ifdef MOZ_MATHML
 COMPONENT_LIBS += ucvmath
-endif
-
-ifneq (,$(filter xlib,$(MOZ_WIDGET_TOOLKIT))$(MOZ_ENABLE_XLIB)$(MOZ_ENABLE_XPRINT))
-STATIC_LIBS += xlibrgb
-endif
-
-ifdef MOZ_ENABLE_XPRINT
-DEFINES += -DMOZ_ENABLE_XPRINT
-STATIC_LIBS += xprintutil
-COMPONENTS_LIBS += gfxxprint
-endif
-
-ifdef MOZ_ENABLE_XLIB
-STATIC_LIBS += xlibxtbin
-endif
-
-ifdef MOZ_ENABLE_GTK
-STATIC_LIBS += gtksuperwin
-COMPONENT_LIBS += widget_gtk
 endif
 
 ifdef MOZ_ENABLE_GTK2
@@ -241,7 +271,7 @@ COMPONENT_LIBS += system-pref
 endif
 endif
 
-ifneq (,$(MOZ_ENABLE_GTK)$(MOZ_ENABLE_GTK2))
+ifdef MOZ_ENABLE_GTK2
 STATIC_LIBS += gtkxtbin
 endif
 
@@ -253,48 +283,17 @@ endif
 ifdef MOZ_ENABLE_POSTSCRIPT
 DEFINES += -DMOZ_ENABLE_POSTSCRIPT
 STATIC_LIBS += gfxpsshar
-COMPONENT_LIBS += gfxps
 endif
+
 ifneq (,$(filter icon,$(MOZ_IMG_DECODERS)))
-ifndef MOZ_ENABLE_GNOMEUI
+ifndef MOZ_ENABLE_GTK2
 DEFINES += -DICON_DECODER
 COMPONENT_LIBS += imgicon
 endif
 endif
 
-ifdef MOZ_ENABLE_CAIRO_GFX
 STATIC_LIBS += thebes
 COMPONENT_LIBS += gkgfxthebes
-
-else # Platform-specific GFX layer
-  ifeq (windows,$(MOZ_GFX_TOOLKIT))
-  COMPONENT_LIBS += gkgfxwin
-  endif
-  ifeq (beos,$(MOZ_GFX_TOOLKIT))
-  COMPONENT_LIBS += gfx_beos
-  endif
-  ifeq (os2,$(MOZ_GFX_TOOLKIT))
-  COMPONENT_LIBS += gfx_os2
-  endif
-  ifneq (,$(filter mac cocoa,$(MOZ_GFX_TOOLKIT)))
-  COMPONENT_LIBS += gfx_mac
-  endif
-  ifeq (qt,$(MOZ_GFX_TOOLKIT))
-  COMPONENT_LIBS += widget_qt
-  endif
-  ifneq (,$(filter gtk gtk2,$(MOZ_GFX_TOOLKIT)))
-  COMPONENT_LIBS += gfx_gtk
-  endif
-  ifdef MOZ_ENABLE_QT
-  COMPONENT_LIBS += gfx_qt
-  endif
-  ifdef MOZ_ENABLE_XLIB
-  COMPONENT_LIBS += gfx_xlib
-  endif
-  ifdef MOZ_ENABLE_PHOTON
-  COMPONENT_LIBS += gfx_photon
-  endif
-endif
 
 ifeq (windows,$(MOZ_WIDGET_TOOLKIT))
 COMPONENT_LIBS += gkwidget
@@ -308,13 +307,7 @@ endif
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 COMPONENT_LIBS += widget_mac
 endif
-ifeq (qt,$(MOZ_WIDGET_TOOLKIT))
-COMPONENT_LIBS += widget_qt
-endif
 
-ifdef MOZ_ENABLE_XLIB
-COMPONENT_LIBS += widget_xlib
-endif
 ifdef MOZ_ENABLE_PHOTON
 COMPONENT_LIBS += widget_photon
 endif
@@ -332,10 +325,24 @@ ifdef MOZ_ENABLE_XREMOTE
 COMPONENT_LIBS += remoteservice
 endif
 
+ifdef MOZ_SPELLCHECK
+DEFINES += -DMOZ_SPELLCHECK
+COMPONENT_LIBS += spellchecker
+endif
+
+ifdef MOZ_ZIPWRITER
+DEFINES += -DMOZ_ZIPWRITER
+COMPONENT_LIBS += zipwriter
+endif
+
+ifneq (,$(filter layout-debug,$(MOZ_EXTENSIONS)))
+COMPONENT_LIBS += gkdebug
+endif
+
 ifdef GC_LEAK_DETECTOR
 EXTRA_DSO_LIBS += boehm
 endif
 
 ifdef NS_TRACE_MALLOC
-EXTRA_DSO_LIBS += tracemalloc
+STATIC_LIBS += tracemalloc
 endif

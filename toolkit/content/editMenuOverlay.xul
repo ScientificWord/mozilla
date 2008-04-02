@@ -6,7 +6,7 @@
 <overlay id="editMenuOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script type="application/x-javascript" src="chrome://global/content/editMenuOverlay.js"/>
+  <script type="application/javascript" src="chrome://global/content/editMenuOverlay.js"/>
 
   <commandset id="editMenuCommands">
     <commandset id="editMenuCommandSetAll" commandupdater="true" events="focus,select"
@@ -22,6 +22,7 @@
     <command id="cmd_paste" oncommand="goDoCommand('cmd_paste')"/>
     <command id="cmd_delete" oncommand="goDoCommand('cmd_delete')"/>
     <command id="cmd_selectAll" oncommand="goDoCommand('cmd_selectAll')"/>
+    <command id="cmd_switchTextDirection" oncommand="goDoCommand('cmd_switchTextDirection');"/>
   </commandset>
 
   <!-- These key nodes are here only for show. The real bindings come from

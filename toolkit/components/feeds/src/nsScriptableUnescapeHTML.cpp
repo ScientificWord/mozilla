@@ -35,14 +35,13 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsString.h"
-#include "nsCRT.h"
-#include "nsISupportsArray.h"
 #include "nsIComponentManager.h"
 #include "nsCOMPtr.h"
 #include "nsXPCOM.h"
 #include "nsISupportsPrimitives.h"
 #include "nsXPIDLString.h"
-
+#include "nsScriptLoader.h"
+#include "nsEscape.h"
 #include "nsIParser.h"
 #include "nsIDTD.h"
 #include "nsNetCID.h"
@@ -52,9 +51,24 @@
 #include "nsIContentSink.h"
 #include "nsIHTMLToTextSink.h"
 #include "nsIDocumentEncoder.h"
-
+#include "nsIDOMDocumentFragment.h"
+#include "nsIFragmentContentSink.h"
+#include "nsIDOMDocument.h"
+#include "nsIDOMNodeList.h"
+#include "nsIDOMNode.h"
+#include "nsIDOMElement.h"
+#include "nsIDocument.h"
+#include "nsIContent.h"
+#include "nsAttrName.h"
+#include "nsHTMLParts.h"
+#include "nsContentCID.h"
 #include "nsIScriptableUnescapeHTML.h"
 #include "nsScriptableUnescapeHTML.h"
+#include "nsAutoPtr.h"
+
+#define XHTML_DIV_TAG "div xmlns=\"http://www.w3.org/1999/xhtml\""
+#define HTML_BODY_TAG "BODY"
+#define HTML_BASE_TAG "BASE"
 
 NS_IMPL_ISUPPORTS1(nsScriptableUnescapeHTML, nsIScriptableUnescapeHTML)
 
@@ -72,8 +86,7 @@ nsScriptableUnescapeHTML::Unescape(const nsAString & aFromStr,
   aToStr.SetLength(0);
   nsresult rv;
   nsCOMPtr<nsIParser> parser = do_CreateInstance(kCParserCID, &rv);
-  if ( !parser )
-    return rv;
+  if (NS_FAILED(rv)) return rv;
 
   // convert it!
   nsCOMPtr<nsIContentSink> sink;
@@ -95,5 +108,105 @@ nsScriptableUnescapeHTML::Unescape(const nsAString & aFromStr,
   return NS_OK;
 }
 
+// The feed version of nsContentUtils::CreateContextualFragment It
+// creates a fragment, but doesn't go to all the effort to preserve
+// context like innerHTML does, because feed DOMs shouldn't have that.
+NS_IMETHODIMP
+nsScriptableUnescapeHTML::ParseFragment(const nsAString &aFragment,
+                                        PRBool aIsXML,
+                                        nsIURI* aBaseURI,
+                                        nsIDOMElement* aContextElement,
+                                        nsIDOMDocumentFragment** aReturn)
+{
+  NS_ENSURE_ARG(aContextElement);
+  *aReturn = nsnull;
 
-     
+  nsresult rv;
+  nsCOMPtr<nsIParser> parser = do_CreateInstance(kCParserCID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIDocument> document;
+  nsCOMPtr<nsIDOMDocument> domDocument;
+  nsCOMPtr<nsIDOMNode> contextNode;
+  contextNode = do_QueryInterface(aContextElement);
+  contextNode->GetOwnerDocument(getter_AddRefs(domDocument));
+  document = do_QueryInterface(domDocument);
+  NS_ENSURE_TRUE(document, NS_ERROR_NOT_AVAILABLE);
+
+  // stop scripts
+  nsRefPtr<nsScriptLoader> loader;
+  PRBool scripts_enabled = PR_FALSE;
+  if (document) {
+    loader = document->ScriptLoader();
+    scripts_enabled = loader->GetEnabled();
+  }
+  if (scripts_enabled) {
+    loader->SetEnabled(PR_FALSE);
+  }
+
+  // Wrap things in a div or body for parsing, but it won't show up in
+  // the fragment.
+  nsAutoTArray<nsAutoString, 2> tagStack;
+  nsCAutoString base, spec;
+  if (aIsXML) {
+    // XHTML
+    if (aBaseURI) {
+      base.Append(NS_LITERAL_CSTRING(XHTML_DIV_TAG));
+      base.Append(NS_LITERAL_CSTRING(" xml:base=\""));
+      aBaseURI->GetSpec(spec);
+      // nsEscapeHTML is good enough, because we only need to get
+      // quotes, ampersands, and angle brackets
+      char* escapedSpec = nsEscapeHTML(spec.get());
+      if (escapedSpec)
+        base += escapedSpec;
+      NS_Free(escapedSpec);
+      base.Append(NS_LITERAL_CSTRING("\""));
+      tagStack.AppendElement(NS_ConvertUTF8toUTF16(base));
+    }  else {
+      tagStack.AppendElement(NS_LITERAL_STRING(XHTML_DIV_TAG));
+    }
+  } else {
+    // HTML
+    tagStack.AppendElement(NS_LITERAL_STRING(HTML_BODY_TAG));
+    if (aBaseURI) {
+      base.Append(NS_LITERAL_CSTRING((HTML_BASE_TAG)));
+      base.Append(NS_LITERAL_CSTRING(" href=\""));
+      aBaseURI->GetSpec(spec);
+      base = base + spec;
+      base.Append(NS_LITERAL_CSTRING("\""));
+      tagStack.AppendElement(NS_ConvertUTF8toUTF16(base));
+    }
+  }
+
+  if (NS_SUCCEEDED(rv)) {
+    nsCAutoString contentType;
+    nsDTDMode mode;
+    nsCOMPtr<nsIFragmentContentSink> sink;
+    if (aIsXML) {
+      mode = eDTDMode_full_standards;
+      contentType = NS_LITERAL_CSTRING("application/xhtml+xml");
+      sink = do_CreateInstance(NS_XHTMLPARANOIDFRAGMENTSINK_CONTRACTID);
+    } else {
+      mode = eDTDMode_fragment;
+      contentType = NS_LITERAL_CSTRING("text/html");
+      sink = do_CreateInstance(NS_HTMLPARANOIDFRAGMENTSINK_CONTRACTID);
+    }
+    if (sink) {
+      sink->SetTargetDocument(document);
+      nsCOMPtr<nsIContentSink> contentsink(do_QueryInterface(sink));
+      parser->SetContentSink(contentsink);
+      rv = parser->ParseFragment(aFragment, nsnull, tagStack,
+                                 aIsXML, contentType, mode);
+      if (NS_SUCCEEDED(rv))
+        rv = sink->GetFragment(aReturn);
+
+    } else {
+      rv = NS_ERROR_FAILURE;
+    }
+  }
+
+  if (scripts_enabled)
+      loader->SetEnabled(PR_TRUE);
+  
+  return rv;
+}

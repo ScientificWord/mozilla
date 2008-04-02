@@ -1,38 +1,38 @@
-/* ***** BEGIN LICENSE BLOCK *****
- * Version: MPL 1.1/GPL 2.0/LGPL 2.1
- *
- * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS" basis,
- * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- * for the specific language governing rights and limitations under the
- * License.
- *
- * The Original Code is Google Safe Browsing.
- *
- * The Initial Developer of the Original Code is Google Inc.
- * Portions created by the Initial Developer are Copyright (C) 2006
- * the Initial Developer. All Rights Reserved.
- *
- * Contributor(s):
- *   Fritz Schneider <fritz@google.com> (original author)
- *
- * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or
- * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- * in which case the provisions of the GPL or the LGPL are applicable instead
- * of those above. If you wish to allow use of your version of this file only
- * under the terms of either the GPL or the LGPL, and not to allow others to
- * use your version of this file under the terms of the MPL, indicate your
- * decision by deleting the provisions above and replace them with the notice
- * and other provisions required by the GPL or the LGPL. If you do not delete
- * the provisions above, a recipient may use your version of this file under
- * the terms of any one of the MPL, the GPL or the LGPL.
- *
- * ***** END LICENSE BLOCK ***** */
+# ***** BEGIN LICENSE BLOCK *****
+# Version: MPL 1.1/GPL 2.0/LGPL 2.1
+#
+# The contents of this file are subject to the Mozilla Public License Version
+# 1.1 (the "License"); you may not use this file except in compliance with
+# the License. You may obtain a copy of the License at
+# http://www.mozilla.org/MPL/
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+# The Original Code is Google Safe Browsing.
+#
+# The Initial Developer of the Original Code is Google Inc.
+# Portions created by the Initial Developer are Copyright (C) 2006
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   Fritz Schneider <fritz@google.com> (original author)
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either the GNU General Public License Version 2 or later (the "GPL"), or
+# the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK *****
 
 
 // A very thin wrapper around nsICryptoHash. It's not strictly
@@ -54,11 +54,7 @@
  */
 function G_CryptoHasher() {
   this.debugZone = "cryptohasher";
-  this.decoder_ = new G_Base64();
-  this.hasher_ = Cc["@mozilla.org/security/hash;1"]
-                 .createInstance(Ci.nsICryptoHash);
-
-  this.initialized_ = false;
+  this.hasher_ = null;
 }
 
 G_CryptoHasher.algorithms = {
@@ -86,24 +82,25 @@ G_CryptoHasher.prototype.init = function(algorithm) {
   if (!validAlgorithm)
     throw new Error("Invalid algorithm: " + algorithm);
 
-  this.initialized_ = true;
+  this.hasher_ = Cc["@mozilla.org/security/hash;1"]
+                 .createInstance(Ci.nsICryptoHash);
   this.hasher_.init(algorithm);
 }
 
 /**
  * Update the hash's internal state with input given in a string. Can be
- * called multiple times for incrementeal hash updates. Note that this function
- * is slllloooowww since it uses the a javascript implementation to convert the
- * string to an array. If you need something faster, use updateFromStream() with
- * an XPCOM stream.
+ * called multiple times for incrementeal hash updates.
  *
  * @param input String containing data to hash.
  */ 
 G_CryptoHasher.prototype.updateFromString = function(input) {
-  if (!this.initialized_)
+  if (!this.hasher_)
     throw new Error("You must initialize the hasher first!");
 
-  this.hasher_.update(this.decoder_.arrayifyString(input), input.length);
+  var stream = Cc['@mozilla.org/io/string-input-stream;1']
+               .createInstance(Ci.nsIStringInputStream);
+  stream.setData(input, input.length);
+  this.updateFromStream(stream);
 }
 
 /**
@@ -113,7 +110,7 @@ G_CryptoHasher.prototype.updateFromString = function(input) {
  * @param input Array containing data to hash.
  */ 
 G_CryptoHasher.prototype.updateFromArray = function(input) {
-  if (!this.initialized_)
+  if (!this.hasher_)
     throw new Error("You must initialize the hasher first!");
 
   this.hasher_.update(input, input.length);
@@ -124,24 +121,29 @@ G_CryptoHasher.prototype.updateFromArray = function(input) {
  * called multiple times from incremental hash updates.
  */
 G_CryptoHasher.prototype.updateFromStream = function(stream) {
-  if (!this.initialized_)
+  if (!this.hasher_)
     throw new Error("You must initialize the hasher first!");
 
-  this.hasher_.updateFromStream(stream, stream.available());
+  if (stream.available())
+    this.hasher_.updateFromStream(stream, stream.available());
 }
 
 /**
  * @returns The hash value as a string (sequence of 8-bit values)
  */ 
 G_CryptoHasher.prototype.digestRaw = function() {
-  return this.hasher_.finish(false /* not b64 encoded */);
+  var digest = this.hasher_.finish(false /* not b64 encoded */);
+  this.hasher_ = null;
+  return digest;
 }
 
 /**
  * @returns The hash value as a base64-encoded string
  */ 
 G_CryptoHasher.prototype.digestBase64 = function() {
-  return this.hasher_.finish(true /* b64 encoded */);
+  var digest = this.hasher_.finish(true /* b64 encoded */);
+  this.hasher_ = null;
+  return digest;
 }
 
 /**

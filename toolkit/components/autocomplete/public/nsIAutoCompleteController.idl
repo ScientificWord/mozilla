@@ -41,7 +41,7 @@
 
 interface nsIAutoCompleteInput;
 
-[scriptable, uuid(8E62F092-DD82-4748-BAB3-8898C7C881A1)]
+[scriptable, uuid(6F08D134-8536-4B28-B456-D150FBAA66A9)]
 interface nsIAutoCompleteController : nsISupports
 {
   /*
@@ -52,18 +52,6 @@ interface nsIAutoCompleteController : nsISupports
   const unsigned short STATUS_COMPLETE_NO_MATCH = 3;
   const unsigned short STATUS_COMPLETE_MATCH = 4;
 
-  /*
-   * Possible key navigation values
-   */
-  const unsigned short KEY_UP = 1;
-  const unsigned short KEY_DOWN = 2;
-  const unsigned short KEY_LEFT = 3;
-  const unsigned short KEY_RIGHT = 4;
-  const unsigned short KEY_PAGE_UP = 5;
-  const unsigned short KEY_PAGE_DOWN = 6;
-  const unsigned short KEY_HOME = 7;
-  const unsigned short KEY_END = 8;
-  
   /*
    * The input widget that is currently being controlled.
    */
@@ -84,6 +72,11 @@ interface nsIAutoCompleteController : nsISupports
    */
   void startSearch(in AString searchString);
 
+  /* 
+   * Stop all asynchronous searches
+   */
+  void stopSearch();
+
   /*
    * Notify the controller that the user has changed text in the textbox.  This includes all
    * means of changing the text value, including typing a character, backspacing, deleting, or
@@ -92,11 +85,14 @@ interface nsIAutoCompleteController : nsISupports
   void handleText(in boolean aIgnoreSelection);
 
   /*
-   * Notify the controller that the user wishes to enter the current text
+   * Notify the controller that the user wishes to enter the current text. If
+   * aIsPopupSelection is true, then a selection was made from the popup, so
+   * fill this value into the input field before continuing. If false, just
+   * use the current value of the input field.
    *
    * @return True if the controller wishes to prevent event propagation and default event
    */
-  boolean handleEnter();
+  boolean handleEnter(in boolean aIsPopupSelection);
 
   /*
    * Notify the controller that the user wishes to revert autocomplete
@@ -126,7 +122,7 @@ interface nsIAutoCompleteController : nsISupports
    *
    * @return True if the controller wishes to prevent event propagation and default event
    */
-  boolean handleKeyNavigation(in unsigned short key);
+  boolean handleKeyNavigation(in unsigned long key);
 
   /*
    * Notify the controller that the user chose to delete the current
@@ -150,13 +146,12 @@ interface nsIAutoCompleteController : nsISupports
   AString getStyleAt(in long index);
 
   /*
-   * Set the current search string, but don't start searching
+   * Get the url of the image of the result at a given index in the last completed search
    */
-  void setSearchString(in AString aSearchString);
+  AString getImageAt(in long index);
 
   /*
-   * Attach or Detach rollup-listener
+   * Get / set the current search string.  Note, setting will not start searching
    */
-  void attachRollupListener();
-  void detachRollupListener();
+  attribute AString searchString;
 };
