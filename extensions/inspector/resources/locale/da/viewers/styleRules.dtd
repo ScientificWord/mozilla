@@ -36,21 +36,21 @@
 #endif
    - ***** END LICENSE BLOCK ***** -->
 
-<!ENTITY miFindCSSRules.label "Find CSS regler...">
-<!ENTITY miFindCSSRules.accesskey "F">
+<!ENTITY miFindCSSRules.label "CSS-Regeln suchen…">
+<!ENTITY miFindCSSRules.accesskey "C">
 
-<!ENTITY newRules.label "Ny">
-<!ENTITY deleteSelectedRules.label "Slet">
-<!ENTITY disableSelectedRules.label "Deaktiver">
-<!ENTITY openSelectedFileInEditor.label "Åbn fil i editor">
+<!ENTITY newRules.label "Neu">
+<!ENTITY deleteSelectedRules.label "Löschen">
+<!ENTITY disableSelectedRules.label "Deaktivieren">
+<!ENTITY openSelectedFileInEditor.label "Datei im Editor öffnen">
 
 <!-- LOCALIZATION NOTE: DO NOT LOCALIZE "!important" since it is a CSS API -->
-<!ENTITY toggleSelectedImportant.label "Tænd/sluk !important">
+<!ENTITY toggleSelectedImportant.label "!important ein/ausschalten">
 
-<!ENTITY styleRule.label "Regl">
-<!ENTITY styleRuleURI.label "Fil">
-<!ENTITY styleRuleLineNumber.label "Linje">
+<!ENTITY styleRule.label "Regel">
+<!ENTITY styleRuleURI.label "Datei">
+<!ENTITY styleRuleLineNumber.label "Zeile">
 
-<!ENTITY styleRulePropPriority.label "Prioritet">
-<!ENTITY styleRulePropName.label "Egenskab">
-<!ENTITY styleRulePropValue.label "Værdi">
+<!ENTITY styleRulePropPriority.label "Priorität">
+<!ENTITY styleRulePropName.label "Eigenschaft">
+<!ENTITY styleRulePropValue.label "Wert">
