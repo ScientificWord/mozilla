@@ -43,11 +43,11 @@
 #define TOKEN_DELIMITERS NS_LITERAL_STRING("\t\r\n ").get()
 
 // nsISupports methods
-NS_IMPL_THREADSAFE_ISUPPORTS4(nsTXTToHTMLConv,
-                              nsIStreamConverter,
-                              nsITXTToHTMLConv,
-                              nsIRequestObserver,
-                              nsIStreamListener)
+NS_IMPL_ISUPPORTS4(nsTXTToHTMLConv,
+                   nsIStreamConverter,
+                   nsITXTToHTMLConv,
+                   nsIRequestObserver,
+                   nsIStreamListener)
 
 
 // nsIStreamConverter methods
@@ -91,6 +91,11 @@ nsTXTToHTMLConv::OnStartRequest(nsIRequest* request, nsISupports *aContext)
     // else, assume there is a channel somewhere that knows what it is doing!
 
     nsresult rv = mListener->OnStartRequest(request, aContext);
+    if (NS_FAILED(rv)) return rv;
+
+    // The request may have been canceled, and if that happens, we want to
+    // suppress calls to OnDataAvailable.
+    request->GetStatus(&rv);
     if (NS_FAILED(rv)) return rv;
 
     nsCOMPtr<nsIInputStream> inputData;

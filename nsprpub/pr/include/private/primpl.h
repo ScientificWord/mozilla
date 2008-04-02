@@ -1745,12 +1745,10 @@ struct PRFilePrivate {
                          * append mode.  See Bugzilla 4090, 276330. */
 #endif
     _MDFileDesc md;
-#ifdef _PR_STRICT_ADDR_LEN
-    PRUint16 af;        /* If the platform requires passing the exact
-                         * length of the sockaddr structure for the
-                         * address family of the socket to socket
-                         * functions like accept(), we need to save
-                         * the address family of the socket. */
+#ifdef _PR_NEED_SECRET_AF
+    PRUint16 af;        /* If the platform's implementation of accept()
+                         * requires knowing the address family of the 
+			 * socket, we save the address family here. */
 #endif
 };
 
@@ -1792,16 +1790,19 @@ extern void _PR_InitLinker(void);
 extern void _PR_InitAtomic(void);
 extern void _PR_InitCPUs(void);
 extern void _PR_InitDtoa(void);
+extern void _PR_InitTime(void);
 extern void _PR_InitMW(void);
 extern void _PR_InitRWLocks(void);
 extern void _PR_NotifyCondVar(PRCondVar *cvar, PRThread *me);
 extern void _PR_CleanupThread(PRThread *thread);
 extern void _PR_CleanupCallOnce(void);
 extern void _PR_CleanupMW(void);
+extern void _PR_CleanupTime(void);
 extern void _PR_CleanupDtoa(void);
 extern void _PR_ShutdownLinker(void);
 extern void _PR_CleanupEnv(void);
 extern void _PR_CleanupIO(void);
+extern void _PR_CleanupCMon(void);
 extern void _PR_CleanupNet(void);
 extern void _PR_CleanupLayerCache(void);
 extern void _PR_CleanupStacks(void);

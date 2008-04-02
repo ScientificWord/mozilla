@@ -1,5 +1,7 @@
 // This file tests channel event sinks (bug 315598 et al)
 
+do_import_script("netwerk/test/httpserver/httpd.js");
+
 const sinkCID = Components.ID("{14aa4b81-e266-45cb-88f8-89595dece114}");
 const sinkContract = "@mozilla.org/network/unittest/channeleventsink;1";
 
@@ -81,6 +83,8 @@ var listener = {
   onStopRequest: function test_onStopR(request, ctx, status) {
     if (this._iteration <= 2)
       run_test_continued();
+    else
+      httpserv.stop();
     do_test_finished();
   },
 
@@ -96,8 +100,13 @@ function makeChan(url) {
   return chan;
 }
 
+var httpserv = null;
+
 function run_test() {
-  start_server(4444);
+  httpserv = new nsHttpServer();
+  httpserv.registerPathHandler("/redirect", redirect);
+  httpserv.registerPathHandler("/redirectfile", redirectfile);
+  httpserv.start(4444);
 
   Components.manager.nsIComponentRegistrar.registerFactory(sinkCID,
     "Unit test Event sink", sinkContract, eventsink);
@@ -137,3 +146,25 @@ function run_test_continued() {
   do_test_pending();
 }
 
+// PATHS
+
+// /redirect
+function redirect(metadata, response) {
+  response.setStatusLine(metadata.httpVersion, 301, "Moved Permanently");
+  response.setHeader("Location",
+                     "http://localhost:" + metadata.port + "/",
+                     false);
+
+  var body = "Moved\n";
+  response.bodyOutputStream.write(body, body.length);
+}
+
+// /redirectfile
+function redirectfile(metadata, response) {
+  response.setStatusLine(metadata.httpVersion, 301, "Moved Permanently");
+  response.setHeader("Content-Type", "text/plain", false);
+  response.setHeader("Location", "file:///etc/", false);
+
+  var body = "Attempted to move to a file URI, but failed.\n";
+  response.bodyOutputStream.write(body, body.length);
+}

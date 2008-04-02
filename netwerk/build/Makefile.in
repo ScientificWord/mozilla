@@ -56,18 +56,15 @@ ifdef ENABLE_TESTS
 PACKAGE_FILE += necko-tests.pkg
 endif
 
-# caps is needed for nsICryptoHash
 REQUIRES	= xpcom \
 		  string \
 		  nkcache \
 		  pref \
 		  mimetype \
-		  util \
 		  locale \
 		  intl \
 		  uconv \
 		  unicharutil \
-		  caps \
 		  $(ZLIB_REQUIRES) \
 		  $(NULL)
 
@@ -114,10 +111,6 @@ SHARED_LIBRARY_LIBS += \
 		../cookie/src/$(LIB_PREFIX)neckocookie_s.$(LIB_SUFFIX) \
                 $(NULL)
 LOCAL_INCLUDES	+= -I$(srcdir)/../cookie/src
-endif
-
-ifdef MOZ_PERF_METRICS
-EXTRA_DSO_LIBS	+= mozutil_s
 endif
 
 EXTRA_DSO_LDOPTS = \

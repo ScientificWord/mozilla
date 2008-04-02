@@ -199,6 +199,13 @@ PRFileDesc *fd;
 	if (fd != NULL) {
 		_PR_MD_MAKE_NONBLOCK(fd);
 		_PR_MD_INIT_FD_INHERITABLE(fd, PR_TRUE);
+#ifdef _PR_NEED_SECRET_AF
+		/* this means we can only import IPv4 sockets here.
+		 * but this is what the function in ptio.c does.
+		 * We need a way to import IPv6 sockets, too.
+		 */
+		fd->secret->af = AF_INET;
+#endif
 	} else
 		_PR_MD_CLOSE_SOCKET(osfd);
 	return(fd);
@@ -513,6 +520,9 @@ PRIntervalTime timeout)
 #ifdef _PR_INET6
 		if (AF_INET6 == addr->raw.family)
         	addr->raw.family = PR_AF_INET6;
+#endif
+#ifdef _PR_NEED_SECRET_AF
+		fd2->secret->af = fd->secret->af;
 #endif
 	}
 	return fd2;
@@ -944,6 +954,9 @@ PRIntervalTime timeout)
 			if (AF_INET6 == *raddr->raw.family)
         		*raddr->raw.family = PR_AF_INET6;
 #endif
+#ifdef _PR_NEED_SECRET_AF
+			(*nd)->secret->af = sd->secret->af;
+#endif
 		}
 	}
 	return rv;
@@ -994,6 +1007,9 @@ void *callbackArg)
 #ifdef _PR_INET6
 			if (AF_INET6 == *raddr->raw.family)
         		*raddr->raw.family = PR_AF_INET6;
+#endif
+#ifdef _PR_NEED_SECRET_AF
+			(*nd)->secret->af = sd->secret->af;
 #endif
 		}
 	}
@@ -1251,7 +1267,7 @@ PR_EXTERN(PRStatus) _pr_push_ipv6toipv4_layer(PRFileDesc *fd);
 
 #if defined(_PR_INET6_PROBE)
 
-PR_EXTERN(PRBool) _pr_ipv6_is_present;
+extern PRBool _pr_ipv6_is_present(void);
 
 PR_IMPLEMENT(PRBool) _pr_test_ipv6_socket()
 {
@@ -1286,12 +1302,8 @@ PR_IMPLEMENT(PRFileDesc*) PR_Socket(PRInt32 domain, PRInt32 type, PRInt32 proto)
 	}
 
 #if defined(_PR_INET6_PROBE)
-	if (PR_AF_INET6 == domain) {
-		if (_pr_ipv6_is_present == PR_FALSE) 
-			domain = AF_INET;
-		else
-			domain = AF_INET6;
-	}
+	if (PR_AF_INET6 == domain)
+		domain = _pr_ipv6_is_present() ? AF_INET6 : AF_INET;
 #elif defined(_PR_INET6)
 	if (PR_AF_INET6 == domain)
 		domain = AF_INET6;
@@ -1313,6 +1325,9 @@ PR_IMPLEMENT(PRFileDesc*) PR_Socket(PRInt32 domain, PRInt32 type, PRInt32 proto)
 	if (fd != NULL) {
 		_PR_MD_MAKE_NONBLOCK(fd);
 		_PR_MD_INIT_FD_INHERITABLE(fd, PR_FALSE);
+#ifdef _PR_NEED_SECRET_AF
+		fd->secret->af = domain;
+#endif
 #if defined(_PR_INET6_PROBE) || !defined(_PR_INET6)
 		/*
 		 * For platforms with no support for IPv6 

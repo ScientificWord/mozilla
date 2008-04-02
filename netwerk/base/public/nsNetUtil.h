@@ -85,14 +85,18 @@
 #include "nsInterfaceRequestorAgg.h"
 #include "nsInt64.h"
 #include "nsINetUtil.h"
+#include "nsIAuthPrompt.h"
+#include "nsIAuthPrompt2.h"
+#include "nsIAuthPromptAdapterFactory.h"
 #include "nsComponentManagerUtils.h"
 #include "nsServiceManagerUtils.h"
 #include "nsINestedURI.h"
 #include "nsIMutable.h"
+#include "nsIPropertyBag2.h"
+#include "nsIIDNService.h"
 #ifdef MOZILLA_INTERNAL_API
 #include "nsAString.h"
 #endif
-
 // Helper, to simplify getting the I/O service.
 inline const nsGetServiceByContractIDWithError
 do_GetIOService(nsresult* error = 0)
@@ -199,7 +203,8 @@ NS_OpenURI(nsIInputStream       **result,
            nsIIOService          *ioService = nsnull,     // pass in nsIIOService to optimize callers
            nsILoadGroup          *loadGroup = nsnull,
            nsIInterfaceRequestor *callbacks = nsnull,
-           PRUint32               loadFlags = nsIRequest::LOAD_NORMAL)
+           PRUint32               loadFlags = nsIRequest::LOAD_NORMAL,
+           nsIChannel           **channelOut = nsnull)
 {
     nsresult rv;
     nsCOMPtr<nsIChannel> channel;
@@ -208,8 +213,13 @@ NS_OpenURI(nsIInputStream       **result,
     if (NS_SUCCEEDED(rv)) {
         nsIInputStream *stream;
         rv = channel->Open(&stream);
-        if (NS_SUCCEEDED(rv))
+        if (NS_SUCCEEDED(rv)) {
             *result = stream;
+            if (channelOut) {
+                *channelOut = nsnull;
+                channel.swap(*channelOut);
+            }
+        }
     }
     return rv;
 }
@@ -229,25 +239,6 @@ NS_OpenURI(nsIStreamListener     *listener,
                        loadGroup, callbacks, loadFlags);
     if (NS_SUCCEEDED(rv))
         rv = channel->AsyncOpen(listener, context);
-    return rv;
-}
-
-inline nsresult
-NS_MakeAbsoluteURI(nsACString       &result,
-                   const nsACString &spec, 
-                   nsIURI           *baseURI, 
-                   nsIIOService     *unused = nsnull)
-{
-    nsresult rv;
-    if (!baseURI) {
-        NS_WARNING("It doesn't make sense to not supply a base URI");
-        result = spec;
-        rv = NS_OK;
-    }
-    else if (spec.IsEmpty())
-        rv = baseURI->GetSpec(result);
-    else
-        rv = baseURI->Resolve(spec, result);
     return rv;
 }
 #ifdef MOZILLA_INTERNAL_API
@@ -285,6 +276,26 @@ NS_MakeAbsoluteURIWithDocPath(nsACString       &result,
     return rv;
 }
 #endif
+
+
+inline nsresult
+NS_MakeAbsoluteURI(nsACString       &result,
+                   const nsACString &spec, 
+                   nsIURI           *baseURI, 
+                   nsIIOService     *unused = nsnull)
+{
+    nsresult rv;
+    if (!baseURI) {
+        NS_WARNING("It doesn't make sense to not supply a base URI");
+        result = spec;
+        rv = NS_OK;
+    }
+    else if (spec.IsEmpty())
+        rv = baseURI->GetSpec(result);
+    else
+        rv = baseURI->Resolve(spec, result);
+    return rv;
+}
 
 inline nsresult
 NS_MakeAbsoluteURI(char        **result,
@@ -325,6 +336,74 @@ NS_MakeAbsoluteURI(nsAString       &result,
             CopyUTF8toUTF16(resultBuf, result);
     }
     return rv;
+}
+
+/**
+ * This function is a helper function to get a scheme's default port.
+ */
+inline PRInt32
+NS_GetDefaultPort(const char *scheme,
+                  nsIIOService* ioService = nsnull)
+{
+  nsresult rv;
+
+  nsCOMPtr<nsIIOService> grip;
+  net_EnsureIOService(&ioService, grip);
+  if (!ioService)
+      return -1;
+ 
+  nsCOMPtr<nsIProtocolHandler> handler;
+  rv = ioService->GetProtocolHandler(scheme, getter_AddRefs(handler));
+  if (NS_FAILED(rv))
+    return -1;
+  PRInt32 port;
+  rv = handler->GetDefaultPort(&port);
+  return NS_SUCCEEDED(rv) ? port : -1;
+}
+
+/**
+ * This function is a helper function to apply the ToAscii conversion
+ * to a string
+ */
+inline PRBool
+NS_StringToACE(const nsACString &idn, nsACString &result)
+{
+  nsCOMPtr<nsIIDNService> idnSrv = do_GetService(NS_IDNSERVICE_CONTRACTID);
+  if (!idnSrv)
+    return PR_FALSE;
+  nsresult rv = idnSrv->ConvertUTF8toACE(idn, result);
+  if (NS_FAILED(rv))
+    return PR_FALSE;
+  
+  return PR_TRUE;
+}
+
+/**
+ * This function is a helper function to get a protocol's default port if the
+ * URI does not specify a port explicitly. Returns -1 if this protocol has no
+ * concept of ports or if there was an error getting the port.
+ */
+inline PRInt32
+NS_GetRealPort(nsIURI* aURI,
+               nsIIOService* ioService = nsnull)     // pass in nsIIOService to optimize callers
+{
+    PRInt32 port;
+    nsresult rv = aURI->GetPort(&port);
+    if (NS_FAILED(rv))
+        return -1;
+
+    if (port != -1)
+        return port; // explicitly specified
+
+    // Otherwise, we have to get the default port from the protocol handler
+
+    // Need the scheme first
+    nsCAutoString scheme;
+    rv = aURI->GetScheme(scheme);
+    if (NS_FAILED(rv))
+        return -1;
+
+    return NS_GetDefaultPort(scheme.get());
 }
 
 inline nsresult
@@ -460,15 +539,13 @@ NS_NewDownloader(nsIStreamListener   **result,
 
 inline nsresult
 NS_NewStreamLoader(nsIStreamLoader        **result,
-                   nsIChannel              *channel,
-                   nsIStreamLoaderObserver *observer,
-                   nsISupports             *context)
+                   nsIStreamLoaderObserver *observer)
 {
     nsresult rv;
     nsCOMPtr<nsIStreamLoader> loader =
         do_CreateInstance(NS_STREAMLOADER_CONTRACTID, &rv);
     if (NS_SUCCEEDED(rv)) {
-        rv = loader->Init(channel, observer, context);
+        rv = loader->Init(observer);
         if (NS_SUCCEEDED(rv)) {
             *result = nsnull;
             loader.swap(*result);
@@ -499,23 +576,23 @@ NS_NewStreamLoader(nsIStreamLoader        **result,
         nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(channel));
         if (httpChannel)
             httpChannel->SetReferrer(referrer);
-        rv = NS_NewStreamLoader(result, channel, observer, context);
+        rv = NS_NewStreamLoader(result, observer);
+        if (NS_SUCCEEDED(rv))
+          rv = channel->AsyncOpen(*result, context);
     }
     return rv;
 }
 
 inline nsresult
 NS_NewUnicharStreamLoader(nsIUnicharStreamLoader        **result,
-                          nsIChannel                     *channel,
                           nsIUnicharStreamLoaderObserver *observer,
-                          nsISupports                    *context     = nsnull,
                           PRUint32                        segmentSize = nsIUnicharStreamLoader::DEFAULT_SEGMENT_SIZE)
 {
     nsresult rv;
     nsCOMPtr<nsIUnicharStreamLoader> loader =
         do_CreateInstance(NS_UNICHARSTREAMLOADER_CONTRACTID, &rv);
     if (NS_SUCCEEDED(rv)) {
-        rv = loader->Init(channel, observer, context, segmentSize);
+        rv = loader->Init(observer, segmentSize);
         if (NS_SUCCEEDED(rv)) {
             *result = nsnull;
             loader.swap(*result);
@@ -690,6 +767,45 @@ NS_GetURLSpecFromFile(nsIFile      *file,
     return rv;
 }
 
+/**
+ * Obtains the referrer for a given channel.  This first tries to obtain the
+ * referrer from the property docshell.internalReferrer, and if that doesn't
+ * work and the channel is an nsIHTTPChannel, we check it's referrer property.
+ *
+ * @returns NS_ERROR_NOT_AVAILABLE if no referrer is available.
+ */
+inline nsresult
+NS_GetReferrerFromChannel(nsIChannel *channel,
+                          nsIURI **referrer)
+{
+    nsresult rv = NS_ERROR_NOT_AVAILABLE;
+    *referrer = nsnull;
+
+    nsCOMPtr<nsIPropertyBag2> props(do_QueryInterface(channel));
+    if (props) {
+      // We have to check for a property on a property bag because the
+      // referrer may be empty for security reasons (for example, when loading
+      // an http page with an https referrer).
+      rv = props->GetPropertyAsInterface(NS_LITERAL_STRING("docshell.internalReferrer"),
+                                         NS_GET_IID(nsIURI),
+                                         reinterpret_cast<void **>(referrer));
+      if (NS_FAILED(rv))
+        *referrer = nsnull;
+    }
+
+    // if that didn't work, we can still try to get the referrer from the
+    // nsIHttpChannel (if we can QI to it)
+    if (!(*referrer)) {
+      nsCOMPtr<nsIHttpChannel> chan(do_QueryInterface(channel));
+      if (chan) {
+        rv = chan->GetReferrer(referrer);
+        if (NS_FAILED(rv))
+          *referrer = nsnull;
+      }
+    }
+    return rv;
+}
+
 #ifdef MOZILLA_INTERNAL_API
 inline nsresult
 NS_ExamineForProxy(const char    *scheme,
@@ -740,6 +856,25 @@ NS_ParseContentType(const nsACString &rawContentType,
     if (NS_SUCCEEDED(rv) && hadCharset)
         contentCharset = charset;
     return rv;
+}
+
+inline nsresult
+NS_ExtractCharsetFromContentType(const nsACString &rawContentType,
+                                 nsCString        &contentCharset,
+                                 PRBool           *hadCharset,
+                                 PRInt32          *charsetStart,
+                                 PRInt32          *charsetEnd)
+{
+    // contentCharset is left untouched if not present in rawContentType
+    nsresult rv;
+    nsCOMPtr<nsINetUtil> util = do_GetIOService(&rv);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    return util->ExtractCharsetFromContentType(rawContentType,
+                                               contentCharset,
+                                               charsetStart,
+                                               charsetEnd,
+                                               hadCharset);
 }
 
 inline nsresult
@@ -877,6 +1012,33 @@ NS_NewBufferedOutputStream(nsIOutputStream **result,
             NS_ADDREF(*result = out);  // cannot use nsCOMPtr::swap
     }
     return rv;
+}
+
+/**
+ * Attempts to buffer a given output stream.  If this fails, it returns the
+ * passed-in output stream.
+ *
+ * @param aOutputStream
+ *        The output stream we want to buffer.  This cannot be null.
+ * @param aBufferSize
+ *        The size of the buffer for the buffered output stream.
+ * @returns an nsIOutputStream that is buffered with the specified buffer size,
+ *          or is aOutputStream if creating the new buffered stream failed.
+ */
+inline already_AddRefed<nsIOutputStream>
+NS_BufferOutputStream(nsIOutputStream *aOutputStream,
+                      PRUint32 aBufferSize)
+{
+    NS_ASSERTION(aOutputStream, "No output stream given!");
+
+    nsCOMPtr<nsIOutputStream> bos;
+    nsresult rv = NS_NewBufferedOutputStream(getter_AddRefs(bos), aOutputStream,
+                                             aBufferSize);
+    if (NS_SUCCEEDED(rv))
+        return bos.forget();
+
+    NS_ADDREF(aOutputStream);
+    return aOutputStream;
 }
 
 // returns an input stream compatible with nsIUploadChannel::SetUploadStream()
@@ -1021,6 +1183,78 @@ NS_QueryNotificationCallbacks(nsIInterfaceRequestor  *callbacks,
     }
 }
 
+/**
+ * Wraps an nsIAuthPrompt so that it can be used as an nsIAuthPrompt2. This
+ * method is provided mainly for use by other methods in this file.
+ *
+ * *aAuthPrompt2 should be set to null before calling this function.
+ */
+inline void
+NS_WrapAuthPrompt(nsIAuthPrompt *aAuthPrompt, nsIAuthPrompt2** aAuthPrompt2)
+{
+    nsCOMPtr<nsIAuthPromptAdapterFactory> factory =
+        do_GetService(NS_AUTHPROMPT_ADAPTER_FACTORY_CONTRACTID);
+    if (!factory)
+        return;
+
+    NS_WARNING("Using deprecated nsIAuthPrompt");
+    factory->CreateAdapter(aAuthPrompt, aAuthPrompt2);
+}
+
+/**
+ * Gets an auth prompt from an interface requestor. This takes care of wrapping
+ * an nsIAuthPrompt so that it can be used as an nsIAuthPrompt2.
+ */
+inline void
+NS_QueryAuthPrompt2(nsIInterfaceRequestor  *aCallbacks,
+                    nsIAuthPrompt2        **aAuthPrompt)
+{
+    CallGetInterface(aCallbacks, aAuthPrompt);
+    if (*aAuthPrompt)
+        return;
+
+    // Maybe only nsIAuthPrompt is provided and we have to wrap it.
+    nsCOMPtr<nsIAuthPrompt> prompt(do_GetInterface(aCallbacks));
+    if (!prompt)
+        return;
+
+    NS_WrapAuthPrompt(prompt, aAuthPrompt);
+}
+
+/**
+ * Gets an nsIAuthPrompt2 from a channel. Use this instead of
+ * NS_QueryNotificationCallbacks for better backwards compatibility.
+ */
+inline void
+NS_QueryAuthPrompt2(nsIChannel      *aChannel,
+                    nsIAuthPrompt2 **aAuthPrompt)
+{
+    *aAuthPrompt = nsnull;
+
+    // We want to use any auth prompt we can find on the channel's callbacks,
+    // and if that fails use the loadgroup's prompt (if any)
+    // Therefore, we can't just use NS_QueryNotificationCallbacks, because
+    // that would prefer a loadgroup's nsIAuthPrompt2 over a channel's
+    // nsIAuthPrompt.
+    nsCOMPtr<nsIInterfaceRequestor> callbacks;
+    aChannel->GetNotificationCallbacks(getter_AddRefs(callbacks));
+    if (callbacks) {
+        NS_QueryAuthPrompt2(callbacks, aAuthPrompt);
+        if (*aAuthPrompt)
+            return;
+    }
+
+    nsCOMPtr<nsILoadGroup> group;
+    aChannel->GetLoadGroup(getter_AddRefs(group));
+    if (!group)
+        return;
+
+    group->GetNotificationCallbacks(getter_AddRefs(callbacks));
+    if (!callbacks)
+        return;
+    NS_QueryAuthPrompt2(callbacks, aAuthPrompt);
+}
+
 /* template helper */
 template <class T> inline void
 NS_QueryNotificationCallbacks(nsIInterfaceRequestor *callbacks,
@@ -1094,14 +1328,19 @@ NS_DoImplGetInnermostURI(nsINestedURI* nestedURI, nsIURI** result)
     nsresult rv = nestedURI->GetInnerURI(getter_AddRefs(inner));
     NS_ENSURE_SUCCESS(rv, rv);
 
+    // We may need to loop here until we reach the innermost
+    // URI.
     nsCOMPtr<nsINestedURI> nestedInner(do_QueryInterface(inner));
-    if (!nestedInner) {
-        // Found the innermost one
-        inner.swap(*result);
-        return NS_OK;
+    while (nestedInner) {
+        rv = nestedInner->GetInnerURI(getter_AddRefs(inner));
+        NS_ENSURE_SUCCESS(rv, rv);
+        nestedInner = do_QueryInterface(inner);
     }
 
-    return NS_DoImplGetInnermostURI(nestedInner, result);
+    // Found the innermost one if we reach here.
+    inner.swap(*result);
+
+    return rv;
 }
 
 inline nsresult
@@ -1216,6 +1455,28 @@ NS_GetInnermostURI(nsIURI *uri)
     }
 
     return uri;
+}
+
+/**
+ * Get the "final" URI for a channel.  This is either the same as GetURI or
+ * GetOriginalURI, depending on whether this channel has
+ * nsIChanel::LOAD_REPLACE set.  For channels without that flag set, the final
+ * URI is the original URI, while for ones with the flag the final URI is the
+ * channel URI.
+ */
+inline nsresult
+NS_GetFinalChannelURI(nsIChannel* channel, nsIURI** uri)
+{
+    *uri = nsnull;
+    nsLoadFlags loadFlags = 0;
+    nsresult rv = channel->GetLoadFlags(&loadFlags);
+    NS_ENSURE_SUCCESS(rv, rv);
+    
+    if (loadFlags & nsIChannel::LOAD_REPLACE) {
+        return channel->GetURI(uri);
+    }
+    
+    return channel->GetOriginalURI(uri);
 }
 
 #endif // !nsNetUtil_h__

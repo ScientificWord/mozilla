@@ -35,6 +35,11 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+/*
+ * This file is used by not only Linux but also other glibc systems
+ * such as GNU/Hurd and GNU/k*BSD.
+ */
+
 #ifndef nspr_linux_defs_h___
 #define nspr_linux_defs_h___
 
@@ -90,6 +95,10 @@
 #define HAVE_DLL
 #define USE_DLFCN
 
+#ifdef __FreeBSD_kernel__
+#define _PR_HAVE_SOCKADDR_LEN
+#endif
+
 #if defined(__i386__)
 #define _PR_HAVE_ATOMIC_OPS
 #define _MD_INIT_ATOMIC()
@@ -127,6 +136,19 @@ extern PRInt32 _PR_x86_64_AtomicAdd(PRInt32 *ptr, PRInt32 val);
 #define _MD_ATOMIC_ADD                _PR_x86_64_AtomicAdd
 extern PRInt32 _PR_x86_64_AtomicSet(PRInt32 *val, PRInt32 newval);
 #define _MD_ATOMIC_SET                _PR_x86_64_AtomicSet
+#endif
+
+#if defined(__powerpc__) && !defined(__powerpc64__)
+#define _PR_HAVE_ATOMIC_OPS
+#define _MD_INIT_ATOMIC()
+extern PRInt32 _PR_ppc_AtomicIncrement(PRInt32 *val);
+#define _MD_ATOMIC_INCREMENT          _PR_ppc_AtomicIncrement
+extern PRInt32 _PR_ppc_AtomicDecrement(PRInt32 *val);
+#define _MD_ATOMIC_DECREMENT          _PR_ppc_AtomicDecrement
+extern PRInt32 _PR_ppc_AtomicAdd(PRInt32 *ptr, PRInt32 val);
+#define _MD_ATOMIC_ADD                _PR_ppc_AtomicAdd
+extern PRInt32 _PR_ppc_AtomicSet(PRInt32 *val, PRInt32 newval);
+#define _MD_ATOMIC_SET                _PR_ppc_AtomicSet
 #endif
 
 #if defined(__alpha)

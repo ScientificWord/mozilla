@@ -51,6 +51,7 @@
 #include "nsDirectoryServiceDefs.h"
 #include "nsNetUtil.h"
 #include "nsURLHelper.h"
+#include "nsEscape.h"
 
 static NS_DEFINE_CID(kResURLCID, NS_RESURL_CID);
 
@@ -208,7 +209,9 @@ nsResProtocolHandler::GetDefaultPort(PRInt32 *result)
 NS_IMETHODIMP
 nsResProtocolHandler::GetProtocolFlags(PRUint32 *result)
 {
-    *result = URI_STD;
+    // XXXbz Is this really true for all resource: URIs?  Could we
+    // somehow give different flags to some of them?
+    *result = URI_STD | URI_IS_UI_RESOURCE;
     return NS_OK;
 }
 
@@ -332,12 +335,19 @@ nsResProtocolHandler::ResolveURI(nsIURI *uri, nsACString &result)
     if (filepath.FindChar(':') != -1)
         return NS_ERROR_MALFORMED_URI;
 
-    nsCOMPtr<nsIURI> baseURI;
-    rv = GetSubstitution(host, getter_AddRefs(baseURI));
-    if (NS_FAILED(rv)) return rv;
+    NS_UnescapeURL(filepath);
+    if (filepath.FindChar('\\') != -1)
+        return NS_ERROR_MALFORMED_URI;
 
     const char *p = path.get() + 1; // path always starts with a slash
     NS_ASSERTION(*(p-1) == '/', "Path did not begin with a slash!");
+
+    if (*p == '/')
+        return NS_ERROR_MALFORMED_URI;
+
+    nsCOMPtr<nsIURI> baseURI;
+    rv = GetSubstitution(host, getter_AddRefs(baseURI));
+    if (NS_FAILED(rv)) return rv;
 
     rv = baseURI->Resolve(nsDependentCString(p, path.Length()-1), result);
 

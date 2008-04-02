@@ -69,6 +69,8 @@
 /* newer ws2tcpip.h provides these */
 #ifndef AI_CANONNAME
 #define AI_CANONNAME 0x2
+#define AI_NUMERICHOST 0x4
+#define NI_NUMERICHOST 0x02
 struct addrinfo {
     int ai_flags;
     int ai_family;
@@ -284,6 +286,8 @@ extern PRBool _pr_useUnicode;
 #endif /* MOZ_UNICODE */
 
 /* --- Socket IO stuff --- */
+extern void _PR_MD_InitSockets(void);
+extern void _PR_MD_CleanupSockets(void);
 #define _MD_EACCES                WSAEACCES
 #define _MD_EADDRINUSE            WSAEADDRINUSE
 #define _MD_EADDRNOTAVAIL         WSAEADDRNOTAVAIL

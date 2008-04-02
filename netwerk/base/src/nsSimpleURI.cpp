@@ -81,13 +81,13 @@ nsSimpleURI::AggregatedQueryInterface(const nsIID& aIID, void** aInstancePtr)
         *aInstancePtr = InnerObject();
     } else if (aIID.Equals(kThisSimpleURIImplementationCID) || // used by Equals
                aIID.Equals(NS_GET_IID(nsIURI))) {
-        *aInstancePtr = NS_STATIC_CAST(nsIURI*, this);
+        *aInstancePtr = static_cast<nsIURI*>(this);
     } else if (aIID.Equals(NS_GET_IID(nsISerializable))) {
-        *aInstancePtr = NS_STATIC_CAST(nsISerializable*, this);
+        *aInstancePtr = static_cast<nsISerializable*>(this);
     } else if (aIID.Equals(NS_GET_IID(nsIClassInfo))) {
-        *aInstancePtr = NS_STATIC_CAST(nsIClassInfo*, this);
+        *aInstancePtr = static_cast<nsIClassInfo*>(this);
     } else if (aIID.Equals(NS_GET_IID(nsIMutable))) {
-        *aInstancePtr = NS_STATIC_CAST(nsIMutable*, this);
+        *aInstancePtr = static_cast<nsIMutable*>(this);
     } else {
         *aInstancePtr = nsnull;
         return NS_NOINTERFACE;
@@ -165,7 +165,7 @@ nsSimpleURI::SetSpec(const nsACString &aSpec)
     NS_EscapeURL(specPtr, specLen, esc_OnlyNonASCII|esc_AlwaysCopy, spec);
 
     PRInt32 pos = spec.FindChar(':');
-    if (pos == -1)
+    if (pos == -1 || !net_IsValidScheme(spec.get(), pos))
         return NS_ERROR_MALFORMED_URI;
 
     mScheme.Truncate();
@@ -193,7 +193,13 @@ NS_IMETHODIMP
 nsSimpleURI::SetScheme(const nsACString &scheme)
 {
     NS_ENSURE_STATE(mMutable);
-    
+
+    const nsPromiseFlatCString &flat = PromiseFlatCString(scheme);
+    if (!net_IsValidScheme(flat)) {
+        NS_ERROR("the given url scheme contains invalid characters");
+        return NS_ERROR_MALFORMED_URI;
+    }
+
     mScheme = scheme;
     ToLowerCase(mScheme);
     return NS_OK;

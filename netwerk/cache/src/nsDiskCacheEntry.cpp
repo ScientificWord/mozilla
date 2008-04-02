@@ -46,6 +46,8 @@
 
 #include "nsCache.h"
 
+#include "nsISerializable.h"
+#include "nsSerializationHelper.h"
 
 /******************************************************************************
  *  nsDiskCacheEntry
@@ -60,7 +62,7 @@ nsCacheEntry *
 nsDiskCacheEntry::CreateCacheEntry(nsCacheDevice *  device)
 {
     nsCacheEntry * entry = nsnull;
-    nsresult       rv = nsCacheEntry::Create(mKeyStart,
+    nsresult       rv = nsCacheEntry::Create(Key(),
                                              nsICache::STREAM_BASED,
                                              nsICache::STORE_ON_DISK,
                                              device,
@@ -75,55 +77,21 @@ nsDiskCacheEntry::CreateCacheEntry(nsCacheDevice *  device)
     // XXX why does nsCacheService have to fill out device in BindEntry()?
     entry->SetDataSize(mDataSize);
     
-    rv = entry->UnflattenMetaData(&mKeyStart[mKeySize], mMetaDataSize);
+    rv = entry->UnflattenMetaData(MetaData(), mMetaDataSize);
     if (NS_FAILED(rv)) {
         delete entry;
         return nsnull;
     }
-    
-    return entry;                      
-}
 
-/**
- *  CreateDiskCacheEntry(nsCacheEntry * entry)
- *
- *  Prepare an nsCacheEntry for writing to disk
- */
-nsDiskCacheEntry *
-CreateDiskCacheEntry(nsDiskCacheBinding *  binding,
-                     PRUint32 * aSize)
-{
-    nsCacheEntry * entry = binding->mCacheEntry;
-    if (!entry)  return nsnull;
-    
-    PRUint32  keySize  = entry->Key()->Length() + 1;
-    PRUint32  metaSize = entry->MetaDataSize();
-    PRUint32  size     = sizeof(nsDiskCacheEntry) + keySize + metaSize;
-    
-    if (aSize) *aSize = size;
-    
-    nsDiskCacheEntry * diskEntry = (nsDiskCacheEntry *)new char[size];
-    if (!diskEntry)  return nsnull;
-    
-    diskEntry->mHeaderVersion   = nsDiskCache::kCurrentVersion;
-    diskEntry->mMetaLocation    = binding->mRecord.MetaLocation();
-    diskEntry->mFetchCount      = entry->FetchCount();
-    diskEntry->mLastFetched     = entry->LastFetched();
-    diskEntry->mLastModified    = entry->LastModified();
-    diskEntry->mExpirationTime  = entry->ExpirationTime();
-    diskEntry->mDataSize        = entry->DataSize();
-    diskEntry->mKeySize         = keySize;
-    diskEntry->mMetaDataSize    = metaSize;
-    
-    memcpy(diskEntry->mKeyStart, entry->Key()->get(),keySize);
-    
-    nsresult rv = entry->FlattenMetaData(&diskEntry->mKeyStart[keySize], metaSize);
-    if (NS_FAILED(rv)) {
-        delete [] (char *)diskEntry;
-        return nsnull;
+    // Restore security info, if present
+    const char* info = entry->GetMetaDataElement("security-info");
+    if (info) {
+        nsCOMPtr<nsISupports> infoObj;
+        NS_DeserializeObject(nsDependentCString(info), getter_AddRefs(infoObj));
+        entry->SetSecurityInfo(infoObj);
     }
-        
-    return  diskEntry;
+
+    return entry;                      
 }
 
 
@@ -136,21 +104,21 @@ NS_IMPL_ISUPPORTS1(nsDiskCacheEntryInfo, nsICacheEntryInfo)
 NS_IMETHODIMP nsDiskCacheEntryInfo::GetClientID(char ** clientID)
 {
     NS_ENSURE_ARG_POINTER(clientID);
-    return ClientIDFromCacheKey(nsDependentCString(mDiskEntry->mKeyStart), clientID);
+    return ClientIDFromCacheKey(nsDependentCString(mDiskEntry->Key()), clientID);
 }
 
 extern const char DISK_CACHE_DEVICE_ID[];
 NS_IMETHODIMP nsDiskCacheEntryInfo::GetDeviceID(char ** deviceID)
 {
     NS_ENSURE_ARG_POINTER(deviceID);
-    *deviceID = nsCRT::strdup(mDeviceID);
+    *deviceID = NS_strdup(mDeviceID);
     return *deviceID ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
 }
 
 
 NS_IMETHODIMP nsDiskCacheEntryInfo::GetKey(nsACString &clientKey)
 {
-    return ClientKeyFromCacheKey(nsDependentCString(mDiskEntry->mKeyStart), clientKey);
+    return ClientKeyFromCacheKey(nsDependentCString(mDiskEntry->Key()), clientKey);
 }
 
 NS_IMETHODIMP nsDiskCacheEntryInfo::GetFetchCount(PRInt32 *aFetchCount)

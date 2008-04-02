@@ -43,12 +43,16 @@
 
 #include "nsBaseChannel.h"
 #include "nsIProxyInfo.h"
+#include "nsIProxiedChannel.h"
 
-class nsGopherChannel : public nsBaseChannel {
+class nsGopherChannel : public nsBaseChannel, public nsIProxiedChannel {
 public:
     nsGopherChannel(nsIURI *uri, nsIProxyInfo *pi) : mProxyInfo(pi) {
         SetURI(uri);
     }
+
+    NS_DECL_ISUPPORTS_INHERITED
+    NS_DECL_NSIPROXIEDCHANNEL
 
     nsIProxyInfo *ProxyInfo() { return mProxyInfo; }
 
