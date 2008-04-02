@@ -44,17 +44,19 @@
 #include "nsIDOMSVGAnimatedString.h"
 #include "nsIDOMSVGMatrix.h"
 #include "nsSVGPaintServerFrame.h"
+#include "gfxMatrix.h"
 
 class nsIDOMSVGAnimatedPreserveAspectRatio;
 class nsIFrame;
 class nsSVGLength2;
 class nsSVGElement;
+class gfxContext;
+class gfxASurface;
 
 typedef nsSVGPaintServerFrame  nsSVGPatternFrameBase;
 
 class nsSVGPatternFrame : public nsSVGPatternFrameBase,
-                          public nsISVGValueObserver,
-                          public nsSupportsWeakReference
+                          public nsISVGValueObserver
 {
 public:
   friend nsIFrame* NS_NewSVGPatternFrame(nsIPresShell* aPresShell, 
@@ -63,24 +65,23 @@ public:
 
   nsSVGPatternFrame(nsStyleContext* aContext) : nsSVGPatternFrameBase(aContext) {}
 
-  nsresult PaintPattern(nsISVGRendererCanvas *canvas,
-			nsISVGRendererSurface **surface,
-			nsIDOMSVGMatrix **patternMatrix,
-			nsSVGGeometryFrame *aSource);
+  nsresult PaintPattern(gfxASurface **surface,
+                        gfxMatrix *patternMatrix,
+                        nsSVGGeometryFrame *aSource,
+                        float aGraphicOpacity);
 
   // nsSVGPaintServerFrame methods:
-  virtual nsresult SetupPaintServer(nsISVGRendererCanvas *aCanvas,
-                                    cairo_t *aCtx,
-                                    nsSVGGeometryFrame *aSource,
-                                    float aOpacity,
-                                    void **aClosure);
-  virtual void CleanupPaintServer(cairo_t *aCtx, void *aClosure);
+  virtual PRBool SetupPaintServer(gfxContext *aContext,
+                                  nsSVGGeometryFrame *aSource,
+                                  float aGraphicOpacity);
 
   // nsISupports interface:
   NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
-  NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }
-  NS_IMETHOD_(nsrefcnt) Release() { return NS_OK; }
+private:
+  NS_IMETHOD_(nsrefcnt) AddRef() { return 1; }
+  NS_IMETHOD_(nsrefcnt) Release() { return 1; }
 
+public:
   // nsISVGValueObserver interface:
   NS_IMETHOD WillModifySVGObservable(nsISVGValue* observable, 
                                      nsISVGValue::modificationType aModType);
@@ -100,7 +101,7 @@ public:
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::svgPatternFrame
+   * @see nsGkAtoms::svgPatternFrame
    */
   virtual nsIAtom* GetType() const;
 
@@ -113,6 +114,9 @@ public:
 #endif // DEBUG
 
 protected:
+  nsSVGPatternFrame(nsStyleContext* aContext,
+                    nsIDOMSVGURIReference *aRef);
+
   virtual ~nsSVGPatternFrame();
 
   // Internal methods for handling referenced patterns
@@ -126,20 +130,22 @@ protected:
 
   PRUint16 GetPatternUnits();
   PRUint16 GetPatternContentUnits();
-  nsresult GetPatternTransform(nsIDOMSVGMatrix **retval);
+  gfxMatrix GetPatternTransform();
 
   NS_IMETHOD GetPreserveAspectRatio(nsIDOMSVGAnimatedPreserveAspectRatio 
                                                      **aPreserveAspectRatio);
   NS_IMETHOD GetPatternFirstChild(nsIFrame **kid);
   NS_IMETHOD GetViewBox(nsIDOMSVGRect * *aMatrix);
-  nsresult   GetPatternRect(nsIDOMSVGRect **patternRect, nsIDOMSVGRect *bbox, 
+  nsresult   GetPatternRect(nsIDOMSVGRect **patternRect,
+                            nsIDOMSVGRect *bbox,
+                            nsIDOMSVGMatrix *callerCTM,
                             nsSVGElement *content);
-  nsresult   GetPatternMatrix(nsIDOMSVGMatrix **aCTM, 
-                              nsIDOMSVGRect *bbox,
+  gfxMatrix  GetPatternMatrix(nsIDOMSVGRect *bbox,
+                              nsIDOMSVGRect *callerBBox,
                               nsIDOMSVGMatrix *callerCTM);
-  nsresult   ConstructCTM(nsIDOMSVGMatrix **ctm, nsIDOMSVGRect *callerBBox);
-  nsresult   CreateSurface(nsISVGRendererSurface **aSurface,
-                           nsIDOMSVGRect *bbox);
+  nsresult   ConstructCTM(nsIDOMSVGMatrix **ctm,
+                          nsIDOMSVGRect *callerBBox,
+                          nsIDOMSVGMatrix *callerCTM);
   nsresult   GetCallerGeometry(nsIDOMSVGMatrix **aCTM, 
                                nsIDOMSVGRect **aBBox,
                                nsSVGElement **aContent, 
@@ -147,8 +153,8 @@ protected:
 
 private:
   // this is a *temporary* reference to the frame of the element currently
-  // referencing our pattern.  This must be termporary because different
-  // referencing frames will all reference this one fram
+  // referencing our pattern.  This must be temporary because different
+  // referencing frames will all reference this one frame
   nsSVGGeometryFrame                     *mSource;
   nsCOMPtr<nsIDOMSVGMatrix>               mCTM;
 

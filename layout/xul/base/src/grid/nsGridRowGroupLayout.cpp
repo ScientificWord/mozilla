@@ -72,18 +72,15 @@ nsGridRowGroupLayout::~nsGridRowGroupLayout()
 {
 }
 
-NS_IMETHODIMP
+void
 nsGridRowGroupLayout::ChildAddedOrRemoved(nsIBox* aBox, nsBoxLayoutState& aState)
 {
-  nsGrid* grid = nsnull;
   PRInt32 index = 0;
-  GetGrid(aBox, &grid, &index);
-  PRInt32 isHorizontal = IsHorizontal(aBox);
+  nsGrid* grid = GetGrid(aBox, &index);
+  PRBool isHorizontal = IsHorizontal(aBox);
 
   if (grid)
     grid->RowAddedOrRemoved(aState, index, isHorizontal);
-
-  return NS_OK;
 }
 
 void
@@ -97,10 +94,10 @@ nsGridRowGroupLayout::AddWidth(nsSize& aSize, nscoord aSize2, PRBool aIsHorizont
     size += aSize2;
 }
 
-NS_IMETHODIMP
-nsGridRowGroupLayout::GetPrefSize(nsIBox* aBox, nsBoxLayoutState& aState, nsSize& aSize)
+nsSize
+nsGridRowGroupLayout::GetPrefSize(nsIBox* aBox, nsBoxLayoutState& aState)
 { 
-  nsresult rv = nsGridRowLayout::GetPrefSize(aBox, aState, aSize); 
+  nsSize vpref = nsGridRowLayout::GetPrefSize(aBox, aState); 
 
 
  /* It is possible that we could have some extra columns. This is when less columns in XUL were 
@@ -110,94 +107,91 @@ nsGridRowGroupLayout::GetPrefSize(nsIBox* aBox, nsBoxLayoutState& aState, nsSize
   * as well.
   */
 
-  nsGrid* grid = nsnull;
   PRInt32 index = 0;
-  GetGrid(aBox, &grid, &index);
+  nsGrid* grid = GetGrid(aBox, &index);
 
   if (grid) 
   {
     // make sure we add in extra columns sizes as well
-    PRInt32 isHorizontal = IsHorizontal(aBox);
+    PRBool isHorizontal = IsHorizontal(aBox);
     PRInt32 extraColumns = grid->GetExtraColumnCount(isHorizontal);
     PRInt32 start = grid->GetColumnCount(isHorizontal) - grid->GetExtraColumnCount(isHorizontal);
     for (PRInt32 i=0; i < extraColumns; i++)
     {
-      nscoord size = 0;
-      grid->GetPrefRowHeight(aState, i+start, size, !isHorizontal); // GetPrefColumnWidth
+      nscoord pref =
+        grid->GetPrefRowHeight(aState, i+start, !isHorizontal); // GetPrefColumnWidth
 
-      AddWidth(aSize, size, isHorizontal);
+      AddWidth(vpref, pref, isHorizontal);
     }
   }
 
-  return rv;
+  return vpref;
 }
 
-NS_IMETHODIMP
-nsGridRowGroupLayout::GetMaxSize(nsIBox* aBox, nsBoxLayoutState& aState, nsSize& aSize)
+nsSize
+nsGridRowGroupLayout::GetMaxSize(nsIBox* aBox, nsBoxLayoutState& aState)
 {
- nsresult rv = nsGridRowLayout::GetMaxSize(aBox, aState, aSize); 
+ nsSize maxSize = nsGridRowLayout::GetMaxSize(aBox, aState); 
 
-  nsGrid* grid = nsnull;
   PRInt32 index = 0;
-  GetGrid(aBox, &grid, &index);
+  nsGrid* grid = GetGrid(aBox, &index);
 
   if (grid) 
   {
     // make sure we add in extra columns sizes as well
-    PRInt32 isHorizontal = IsHorizontal(aBox);
+    PRBool isHorizontal = IsHorizontal(aBox);
     PRInt32 extraColumns = grid->GetExtraColumnCount(isHorizontal);
     PRInt32 start = grid->GetColumnCount(isHorizontal) - grid->GetExtraColumnCount(isHorizontal);
     for (PRInt32 i=0; i < extraColumns; i++)
     {
-      nscoord size = 0;
-      grid->GetMaxRowHeight(aState, i+start, size, !isHorizontal); // GetMaxColumnWidth
+      nscoord max =
+        grid->GetMaxRowHeight(aState, i+start, !isHorizontal); // GetMaxColumnWidth
 
-      AddWidth(aSize, size, isHorizontal);
+      AddWidth(maxSize, max, isHorizontal);
     }
   }
 
-
-  return rv;
+  return maxSize;
 }
 
-NS_IMETHODIMP
-nsGridRowGroupLayout::GetMinSize(nsIBox* aBox, nsBoxLayoutState& aState, nsSize& aSize)
+nsSize
+nsGridRowGroupLayout::GetMinSize(nsIBox* aBox, nsBoxLayoutState& aState)
 {
- nsresult rv = nsGridRowLayout::GetMinSize(aBox, aState, aSize); 
+  nsSize minSize = nsGridRowLayout::GetMinSize(aBox, aState); 
 
-  nsGrid* grid = nsnull;
   PRInt32 index = 0;
-  GetGrid(aBox, &grid, &index);
+  nsGrid* grid = GetGrid(aBox, &index);
 
   if (grid) 
   {
     // make sure we add in extra columns sizes as well
-    PRInt32 isHorizontal = IsHorizontal(aBox);
+    PRBool isHorizontal = IsHorizontal(aBox);
     PRInt32 extraColumns = grid->GetExtraColumnCount(isHorizontal);
     PRInt32 start = grid->GetColumnCount(isHorizontal) - grid->GetExtraColumnCount(isHorizontal);
     for (PRInt32 i=0; i < extraColumns; i++)
     {
-      nscoord size = 0;
-      grid->GetMinRowHeight(aState, i+start, size, !isHorizontal); // GetMinColumnWidth
-
-      AddWidth(aSize, size, isHorizontal);
+      nscoord min = 
+        grid->GetMinRowHeight(aState, i+start, !isHorizontal); // GetMinColumnWidth
+      AddWidth(minSize, min, isHorizontal);
     }
   }
 
-  return rv;
+  return minSize;
 }
 
 /*
  * Run down through our children dirtying them recursively.
  */
-NS_IMETHODIMP
+void
 nsGridRowGroupLayout::DirtyRows(nsIBox* aBox, nsBoxLayoutState& aState)
 {
   if (aBox) {
     // mark us dirty
-    aBox->MarkDirty(aState);
-    nsIBox* child = nsnull;
-    aBox->GetChildBox(&child); 
+    // XXXldb We probably don't want to walk up the ancestor chain
+    // calling MarkIntrinsicWidthsDirty for every row group.
+    aState.PresShell()->FrameNeedsReflow(aBox, nsIPresShell::eTreeChange,
+                                         NS_FRAME_IS_DIRTY);
+    nsIBox* child = aBox->GetChildBox();
 
     while(child) {
 
@@ -206,33 +200,26 @@ nsGridRowGroupLayout::DirtyRows(nsIBox* aBox, nsBoxLayoutState& aState)
 
       // walk into other monuments
       nsCOMPtr<nsIBoxLayout> layout;
-      // deepChild might be null if child is a scrollframe around a non-box.
-      // But in that case there's nothing to do here, really.
-      if (deepChild) {
-        deepChild->GetLayoutManager(getter_AddRefs(layout));
-      }
+      deepChild->GetLayoutManager(getter_AddRefs(layout));
       if (layout) {
         nsCOMPtr<nsIGridPart> monument( do_QueryInterface(layout) );
         if (monument) 
           monument->DirtyRows(deepChild, aState);
       }
 
-      child->GetNextBox(&child);
+      child = child->GetNextBox();
     }
   }
-
-  return NS_OK;
 }
 
 
-NS_IMETHODIMP
+void
 nsGridRowGroupLayout::CountRowsColumns(nsIBox* aBox, PRInt32& aRowCount, PRInt32& aComputedColumnCount)
 {
   if (aBox) {
     PRInt32 startCount = aRowCount;
 
-    nsIBox* child = nsnull;
-    aBox->GetChildBox(&child); 
+    nsIBox* child = aBox->GetChildBox();
 
     while(child) {
       
@@ -240,23 +227,18 @@ nsGridRowGroupLayout::CountRowsColumns(nsIBox* aBox, PRInt32& aRowCount, PRInt32
       nsIBox* deepChild = nsGrid::GetScrolledBox(child);
 
       nsCOMPtr<nsIBoxLayout> layout;
-      // deepChild might be null if child is a scrollframe around a non-box.
-      // But in that case I guess we can count this as a single grid row.  Or
-      // something.
-      if (deepChild) {
-        deepChild->GetLayoutManager(getter_AddRefs(layout));
-      }
+      deepChild->GetLayoutManager(getter_AddRefs(layout));
       if (layout) {
         nsCOMPtr<nsIGridPart> monument( do_QueryInterface(layout) );
         if (monument) {
           monument->CountRowsColumns(deepChild, aRowCount, aComputedColumnCount);
-          child->GetNextBox(&child);
+          child = child->GetNextBox();
           deepChild = child;
           continue;
         }
       }
 
-      child->GetNextBox(&child);
+      child = child->GetNextBox();
 
       // if not a monument. Then count it. It will be a bogus row
       aRowCount++;
@@ -264,34 +246,19 @@ nsGridRowGroupLayout::CountRowsColumns(nsIBox* aBox, PRInt32& aRowCount, PRInt32
 
     mRowCount = aRowCount - startCount;
   }
-
-  return NS_OK;
 }
 
-NS_IMETHODIMP
-nsGridRowGroupLayout::GetRowCount(PRInt32& aRowCount)
-{
-  aRowCount = mRowCount;
-  return NS_OK;
-}
-
-NS_IMETHODIMP_(nsIGridPart::Type)
-nsGridRowGroupLayout::GetType()
-{
-  return eRowGroup;
-}
 
 /**
  * Fill out the given row structure recursively
  */
-NS_IMETHODIMP
-nsGridRowGroupLayout::BuildRows(nsIBox* aBox, nsGridRow* aRows, PRInt32* aCount)
+PRInt32 
+nsGridRowGroupLayout::BuildRows(nsIBox* aBox, nsGridRow* aRows)
 { 
   PRInt32 rowCount = 0;
 
   if (aBox) {
-    nsIBox* child = nsnull;
-    aBox->GetChildBox(&child); 
+    nsIBox* child = aBox->GetChildBox();
 
     while(child) {
       
@@ -299,18 +266,12 @@ nsGridRowGroupLayout::BuildRows(nsIBox* aBox, nsGridRow* aRows, PRInt32* aCount)
       nsIBox* deepChild = nsGrid::GetScrolledBox(child);
 
       nsCOMPtr<nsIBoxLayout> layout;
-      // deepChild might be null if child is a scrollframe around a non-box.
-      // But in that case there's nothing special that needs doing there.
-      if (deepChild) {
-        deepChild->GetLayoutManager(getter_AddRefs(layout));
-      }
+      deepChild->GetLayoutManager(getter_AddRefs(layout));
       if (layout) {
         nsCOMPtr<nsIGridPart> monument( do_QueryInterface(layout) );
         if (monument) {
-          PRInt32 count = 0;
-          monument->BuildRows(deepChild, &aRows[rowCount], &count);
-          rowCount += count;
-          child->GetNextBox(&child);
+          rowCount += monument->BuildRows(deepChild, &aRows[rowCount]);
+          child = child->GetNextBox();
           deepChild = child;
           continue;
         }
@@ -318,31 +279,22 @@ nsGridRowGroupLayout::BuildRows(nsIBox* aBox, nsGridRow* aRows, PRInt32* aCount)
 
       aRows[rowCount].Init(child, PR_TRUE);
 
-      child->GetNextBox(&child);
+      child = child->GetNextBox();
 
       // if not a monument. Then count it. It will be a bogus row
       rowCount++;
     }
   }
 
-  *aCount = rowCount;
-
-  return NS_OK;
+  return rowCount;
 }
 
-NS_IMETHODIMP
-nsGridRowGroupLayout::CastToRowGroupLayout(nsGridRowGroupLayout** aRowGroup)
-{
-  (*aRowGroup) = this;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsGridRowGroupLayout::GetTotalMargin(nsIBox* aBox, nsMargin& aMargin, PRBool aIsHorizontal)
+nsMargin
+nsGridRowGroupLayout::GetTotalMargin(nsIBox* aBox, PRBool aIsHorizontal)
 {
   // group have border and padding added to the total margin
 
-  nsresult rv = nsGridRowLayout::GetTotalMargin(aBox, aMargin, aIsHorizontal);
+  nsMargin margin = nsGridRowLayout::GetTotalMargin(aBox, aIsHorizontal);
   
   // make sure we have the scrollframe on the outside if it has one.
   // that's where the border is.
@@ -351,13 +303,9 @@ nsGridRowGroupLayout::GetTotalMargin(nsIBox* aBox, nsMargin& aMargin, PRBool aIs
   // add our border/padding to it
   nsMargin borderPadding(0,0,0,0);
   aBox->GetBorderAndPadding(borderPadding);
+  margin += borderPadding;
 
-  aMargin += borderPadding;
-  aBox->GetInset(borderPadding);
-
-  aMargin += borderPadding;
-
-  return rv;
+  return margin;
 }
 
 

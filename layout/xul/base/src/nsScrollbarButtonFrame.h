@@ -47,11 +47,11 @@
 
 #include "nsButtonBoxFrame.h"
 #include "nsITimer.h"
+#include "nsRepeatService.h"
 
 class nsSliderFrame;
 
-class nsScrollbarButtonFrame : public nsButtonBoxFrame, 
-                               public nsITimerCallback
+class nsScrollbarButtonFrame : public nsButtonBoxFrame
 {
 public:
   nsScrollbarButtonFrame(nsIPresShell* aPresShell, nsStyleContext* aContext):
@@ -60,7 +60,7 @@ public:
   // Overrides
   virtual void Destroy();
 
-  friend nsIFrame* NS_NewScrollBarButtonFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
+  friend nsIFrame* NS_NewScrollbarButtonFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
 
   NS_IMETHOD HandleEvent(nsPresContext* aPresContext, 
                          nsGUIEvent* aEvent,
@@ -70,7 +70,7 @@ public:
                                   nsIAtom* atom, nsIFrame* start, nsIFrame*& result);
   static nsresult GetParentWithTag(nsIAtom* atom, nsIFrame* start, nsIFrame*& result);
 
-  NS_IMETHOD HandlePress(nsPresContext* aPresContext,
+  PRBool HandleButtonPress(nsPresContext* aPresContext,
                          nsGUIEvent *    aEvent,
                          nsEventStatus*  aEventStatus);
 
@@ -86,21 +86,22 @@ public:
                            nsGUIEvent *    aEvent,
                            nsEventStatus*  aEventStatus);
 
-  NS_DECL_NSITIMERCALLBACK
-
-  NS_IMETHOD QueryInterface(REFNSIID aIID, void** aInstancePtr);
-  NS_IMETHOD_(nsrefcnt) AddRef(void) { return NS_OK; }
-  NS_IMETHOD_(nsrefcnt) Release(void) { return NS_OK; }
-
-
 protected:
   virtual void MouseClicked(nsPresContext* aPresContext, nsGUIEvent* aEvent);
-  virtual void MouseClicked();
+  void DoButtonAction(PRBool aSmoothScroll);
 
+  void StartRepeat() {
+    nsRepeatService::GetInstance()->Start(Notify, this);
+  }
+  void StopRepeat() {
+    nsRepeatService::GetInstance()->Stop(Notify, this);
+  }
+  void Notify();
+  static void Notify(void* aData) {
+    static_cast<nsScrollbarButtonFrame*>(aData)->Notify();
+  }
   
-}; // class nsTabFrame
-
-
+  PRInt32 mIncrement;  
+};
 
 #endif
-

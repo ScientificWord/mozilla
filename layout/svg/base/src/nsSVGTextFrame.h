@@ -40,41 +40,33 @@
 #define NS_SVGTEXTFRAME_H
 
 #include "nsSVGTextContainerFrame.h"
-#include "nsISVGValueObserver.h"
-#include "nsWeakReference.h"
 
 typedef nsSVGTextContainerFrame nsSVGTextFrameBase;
 
-class nsSVGTextFrame : public nsSVGTextFrameBase,
-                       public nsISVGValueObserver,
-                       public nsSupportsWeakReference
+class nsSVGTextFrame : public nsSVGTextFrameBase
 {
   friend nsIFrame*
   NS_NewSVGTextFrame(nsIPresShell* aPresShell, nsIContent* aContent, nsStyleContext* aContext);
 protected:
-  nsSVGTextFrame(nsStyleContext* aContext);
-
-   // nsISupports interface:
-  NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
-private:
-  NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }
-  NS_IMETHOD_(nsrefcnt) Release() { return NS_OK; }  
+  nsSVGTextFrame(nsStyleContext* aContext)
+    : nsSVGTextFrameBase(aContext),
+      mMetricsState(unsuspended),
+      mPropagateTransform(PR_TRUE),
+      mPositioningDirty(PR_FALSE) {}
 
 public:
   // nsIFrame:
-  NS_IMETHOD  RemoveFrame(nsIAtom*        aListName,
-                          nsIFrame*       aOldFrame);
-  
+  NS_IMETHOD  SetInitialChildList(nsIAtom*  aListName,
+                                  nsIFrame* aChildList);
   NS_IMETHOD  AttributeChanged(PRInt32         aNameSpaceID,
                                nsIAtom*        aAttribute,
                                PRInt32         aModType);
-
   NS_IMETHOD DidSetStyleContext();
 
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::svgTextFrame
+   * @see nsGkAtoms::svgTextFrame
    */
   virtual nsIAtom* GetType() const;
 
@@ -85,19 +77,11 @@ public:
   }
 #endif
 
-  // nsISVGValueObserver
-  NS_IMETHOD WillModifySVGObservable(nsISVGValue* observable,
-                                     nsISVGValue::modificationType aModType);
-  NS_IMETHOD DidModifySVGObservable (nsISVGValue* observable,
-                                     nsISVGValue::modificationType aModType);
-
-  // nsISupportsWeakReference
-  // implementation inherited from nsSupportsWeakReference
-  
   // nsISVGChildFrame interface:
   NS_IMETHOD SetMatrixPropagation(PRBool aPropagate);
   NS_IMETHOD SetOverrideCTM(nsIDOMSVGMatrix *aCTM);
-  NS_IMETHOD NotifyCanvasTMChanged(PRBool suppressInvalidation);
+  virtual already_AddRefed<nsIDOMSVGMatrix> GetOverrideCTM();
+  virtual void NotifySVGChanged(PRUint32 aFlags);
   NS_IMETHOD NotifyRedrawSuspended();
   NS_IMETHOD NotifyRedrawUnsuspended();
   NS_IMETHOD GetBBox(nsIDOMSVGRect **_retval);
@@ -115,27 +99,18 @@ public:
   NS_IMETHOD GetRotationOfChar(PRUint32 charnum, float *_retval);
   NS_IMETHOD GetCharNumAtPosition(nsIDOMSVGPoint *point, PRInt32 *_retval);
 
-  void NotifyGlyphMetricsChange(nsISVGGlyphFragmentNode* caller);
-  void NotifyGlyphFragmentTreeChange(nsISVGGlyphFragmentNode* caller);
-  PRBool IsMetricsSuspended();
-  PRBool IsGlyphFragmentTreeSuspended();
+  // nsSVGTextFrame
+  void NotifyGlyphMetricsChange();
 
 private:
-  void EnsureFragmentTreeUpToDate();
-  void UpdateFragmentTree();
   void UpdateGlyphPositioning();
 
   nsCOMPtr<nsIDOMSVGMatrix> mCanvasTM;
   nsCOMPtr<nsIDOMSVGMatrix> mOverrideCTM;
 
-  enum UpdateState{
-    unsuspended,
-    suspended,
-    updating};
-  UpdateState mFragmentTreeState;
+  enum UpdateState { unsuspended, suspended };
   UpdateState mMetricsState;
 
-  PRPackedBool mFragmentTreeDirty;
   PRPackedBool mPropagateTransform;
   PRPackedBool mPositioningDirty;
 };

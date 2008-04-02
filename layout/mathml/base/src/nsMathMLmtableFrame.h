@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -59,30 +60,16 @@ public:
   InheritAutomaticData(nsIFrame* aParent);
 
   NS_IMETHOD
+  UpdatePresentationData(PRUint32 aFlagsValues,
+                         PRUint32 aWhichFlags);
+
+  NS_IMETHOD
   UpdatePresentationDataFromChildAt(PRInt32         aFirstIndex,
                                     PRInt32         aLastIndex,
-                                    PRInt32         aScriptLevelIncrement,
                                     PRUint32        aFlagsValues,
-                                    PRUint32        aFlagsToUpdate)
-  {
-    nsMathMLContainerFrame::PropagatePresentationDataFromChildAt(this,
-      aFirstIndex, aLastIndex, aScriptLevelIncrement, aFlagsValues, aFlagsToUpdate);
-    return NS_OK;
-  }
-
-  NS_IMETHOD
-  ReResolveScriptStyle(PRInt32 aParentScriptLevel)
-  {
-    nsMathMLContainerFrame::PropagateScriptStyleFor(this, aParentScriptLevel);
-    return NS_OK;
-  }
+                                    PRUint32        aWhichFlags);
 
   // overloaded nsTableOuterFrame methods
-
-  NS_IMETHOD
-  Init(nsIContent*      aContent,
-       nsIFrame*        aParent,
-       nsIFrame*        aPrevInFlow);
 
   NS_IMETHOD
   Reflow(nsPresContext*          aPresContext,
@@ -90,7 +77,15 @@ public:
          const nsHTMLReflowState& aReflowState,
          nsReflowStatus&          aStatus);
 
-  virtual PRBool IsFrameOfType(PRUint32 aFlags) const;
+  NS_IMETHOD
+  AttributeChanged(PRInt32  aNameSpaceID,
+                   nsIAtom* aAttribute,
+                   PRInt32  aModType);
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsTableOuterFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
+  }
 
 protected:
   nsMathMLmtableOuterFrame(nsStyleContext* aContext) : nsTableOuterFrame(aContext) {}
@@ -106,6 +101,128 @@ protected:
 
 // --------------
 
+class nsMathMLmtableFrame : public nsTableFrame
+{
+public:
+  friend nsIFrame* NS_NewMathMLmtableFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
+
+  NS_DECL_ISUPPORTS_INHERITED
+
+  // Overloaded nsTableFrame methods
+
+  NS_IMETHOD
+  SetInitialChildList(nsIAtom*  aListName,
+                      nsIFrame* aChildList);
+
+  NS_IMETHOD
+  AppendFrames(nsIAtom*  aListName,
+               nsIFrame* aFrameList)
+  {
+    nsresult rv = nsTableFrame::AppendFrames(aListName, aFrameList);
+    RestyleTable();
+    return rv;
+  }
+
+  NS_IMETHOD
+  InsertFrames(nsIAtom*  aListName,
+               nsIFrame* aPrevFrame,
+               nsIFrame* aFrameList)
+  {
+    nsresult rv = nsTableFrame::InsertFrames(aListName, aPrevFrame, aFrameList);
+    RestyleTable();
+    return rv;
+  }
+
+  NS_IMETHOD
+  RemoveFrame(nsIAtom*  aListName,
+              nsIFrame* aOldFrame)
+  {
+    nsresult rv = nsTableFrame::RemoveFrame(aListName, aOldFrame);
+    RestyleTable();
+    return rv;
+  }
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsTableFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
+  }
+
+  // helper to restyle and reflow the table when a row is changed -- since MathML
+  // attributes are inter-dependent and row/colspan can affect the table, it is
+  // safer (albeit grossly suboptimal) to just relayout the whole thing.
+  void RestyleTable();
+
+protected:
+  nsMathMLmtableFrame(nsStyleContext* aContext) : nsTableFrame(aContext) {}
+  virtual ~nsMathMLmtableFrame();
+}; // class nsMathMLmtableFrame
+
+// --------------
+
+class nsMathMLmtrFrame : public nsTableRowFrame
+{
+public:
+  friend nsIFrame* NS_NewMathMLmtrFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
+
+  NS_DECL_ISUPPORTS_INHERITED
+
+  // overloaded nsTableRowFrame methods
+
+  NS_IMETHOD
+  AttributeChanged(PRInt32  aNameSpaceID,
+                   nsIAtom* aAttribute,
+                   PRInt32  aModType);
+
+  NS_IMETHOD
+  AppendFrames(nsIAtom*  aListName,
+               nsIFrame* aFrameList)
+  {
+    nsresult rv = nsTableRowFrame::AppendFrames(aListName, aFrameList);
+    RestyleTable();
+    return rv;
+  }
+
+  NS_IMETHOD
+  InsertFrames(nsIAtom*  aListName,
+               nsIFrame* aPrevFrame,
+               nsIFrame* aFrameList)
+  {
+    nsresult rv = nsTableRowFrame::InsertFrames(aListName, aPrevFrame, aFrameList);
+    RestyleTable();
+    return rv;
+  }
+
+  NS_IMETHOD
+  RemoveFrame(nsIAtom*  aListName,
+              nsIFrame* aOldFrame)
+  {
+    nsresult rv = nsTableRowFrame::RemoveFrame(aListName, aOldFrame);
+    RestyleTable();
+    return rv;
+  }
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsTableRowFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
+  }
+
+  // helper to restyle and reflow the table -- @see nsMathMLmtableFrame.
+  void RestyleTable()
+  {
+    nsTableFrame* tableFrame = nsTableFrame::GetTableFrame(this);
+    if (tableFrame && tableFrame->IsFrameOfType(nsIFrame::eMathML)) {
+      // relayout the table
+      ((nsMathMLmtableFrame*)tableFrame)->RestyleTable();
+    }
+  }
+
+protected:
+  nsMathMLmtrFrame(nsStyleContext* aContext) : nsTableRowFrame(aContext) {}
+  virtual ~nsMathMLmtrFrame();
+}; // class nsMathMLmtrFrame
+
+// --------------
+
 class nsMathMLmtdFrame : public nsTableCellFrame
 {
 public:
@@ -114,9 +231,18 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // overloaded nsTableCellFrame methods
+
+  NS_IMETHOD
+  AttributeChanged(PRInt32  aNameSpaceID,
+                   nsIAtom* aAttribute,
+                   PRInt32  aModType);
+
   virtual PRInt32 GetRowSpan();
   virtual PRInt32 GetColSpan();
-  virtual PRBool IsFrameOfType(PRUint32 aFlags) const;
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsTableCellFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
+  }
 
 protected:
   nsMathMLmtdFrame(nsStyleContext* aContext) : nsTableCellFrame(aContext) {}
@@ -137,19 +263,11 @@ public:
   NS_IMETHOD
   UpdatePresentationDataFromChildAt(PRInt32         aFirstIndex,
                                     PRInt32         aLastIndex,
-                                    PRInt32         aScriptLevelIncrement,
                                     PRUint32        aFlagsValues,
                                     PRUint32        aFlagsToUpdate)
   {
     nsMathMLContainerFrame::PropagatePresentationDataFromChildAt(this,
-      aFirstIndex, aLastIndex, aScriptLevelIncrement, aFlagsValues, aFlagsToUpdate);
-    return NS_OK;
-  }
-
-  NS_IMETHOD
-  ReResolveScriptStyle(PRInt32 aParentScriptLevel)
-  {
-    nsMathMLContainerFrame::PropagateScriptStyleFor(this, aParentScriptLevel);
+      aFirstIndex, aLastIndex, aFlagsValues, aFlagsToUpdate);
     return NS_OK;
   }
 
@@ -165,7 +283,11 @@ public:
          nsHTMLReflowMetrics&     aDesiredSize,
          const nsHTMLReflowState& aReflowState,
          nsReflowStatus&          aStatus);
-  virtual PRBool IsFrameOfType(PRUint32 aFlags) const;
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsBlockFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
+  }
 
 protected:
   nsMathMLmtdInnerFrame(nsStyleContext* aContext) : nsBlockFrame(aContext) {}

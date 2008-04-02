@@ -38,16 +38,17 @@
 
 #include "nsCOMPtr.h"
 #include "nsTreeColFrame.h"
-#include "nsXULAtoms.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsIContent.h"
 #include "nsStyleContext.h"
 #include "nsINameSpaceManager.h" 
 #include "nsIDOMNSDocument.h"
 #include "nsIDocument.h"
 #include "nsIBoxObject.h"
+#include "nsTreeBoxObject.h"
 #include "nsIDOMElement.h"
 #include "nsITreeBoxObject.h"
+#include "nsITreeColumns.h"
 #include "nsIDOMXULTreeElement.h"
 #include "nsDisplayList.h"
 
@@ -92,17 +93,14 @@ nsTreeColFrame::Init(nsIContent*      aContent,
                      nsIFrame*        aPrevInFlow)
 {
   nsresult rv = nsBoxFrame::Init(aContent, aParent, aPrevInFlow);
-  EnsureColumns();
-  if (mColumns)
-    mColumns->InvalidateColumns();
+  InvalidateColumns();
   return rv;
 }
 
 void                                                                
 nsTreeColFrame::Destroy()                          
 {
-  if (mColumns)
-    mColumns->InvalidateColumns();
+  InvalidateColumns(PR_FALSE);
   nsBoxFrame::Destroy();
 }
 
@@ -117,22 +115,23 @@ public:
   }
 #endif
 
-  virtual nsIFrame* HitTest(nsDisplayListBuilder* aBuilder, nsPoint aPt);
+  virtual nsIFrame* HitTest(nsDisplayListBuilder* aBuilder, nsPoint aPt,
+                            HitTestState* aState);
   NS_DISPLAY_DECL_NAME("XULTreeColSplitterTarget")
 };
 
 nsIFrame* 
 nsDisplayXULTreeColSplitterTarget::HitTest(nsDisplayListBuilder* aBuilder,
-                                           nsPoint aPt)
+                                           nsPoint aPt, HitTestState* aState)
 {
   nsPoint pt = aPt - aBuilder->ToReferenceFrame(mFrame);
-  // If we are in either the first 2 pixels or the last 2 pixels, we're going to
+  // If we are in either the first 4 pixels or the last 4 pixels, we're going to
   // do something really strange.  Check for an adjacent splitter.
   PRBool left = PR_FALSE;
   PRBool right = PR_FALSE;
-  if (mFrame->GetSize().width - 60 < pt.x)
+  if (mFrame->GetSize().width - nsPresContext::CSSPixelsToAppUnits(4) <= pt.x)
     right = PR_TRUE;
-  else if (60 > pt.x)
+  else if (nsPresContext::CSSPixelsToAppUnits(4) > pt.x)
     left = PR_TRUE;
 
   if (left || right) {
@@ -144,7 +143,7 @@ nsDisplayXULTreeColSplitterTarget::HitTest(nsDisplayListBuilder* aBuilder,
     else
       child = mFrame->GetNextSibling();
 
-    if (child && child->GetContent()->NodeInfo()->Equals(nsXULAtoms::splitter,
+    if (child && child->GetContent()->NodeInfo()->Equals(nsGkAtoms::splitter,
                                                          kNameSpaceID_XUL)) {
       return child;
     }
@@ -180,48 +179,66 @@ nsTreeColFrame::AttributeChanged(PRInt32 aNameSpaceID,
   nsresult rv = nsBoxFrame::AttributeChanged(aNameSpaceID, aAttribute,
                                              aModType);
 
-  if (aAttribute == nsXULAtoms::ordinal || aAttribute == nsXULAtoms::primary) {
-    EnsureColumns();
-    if (mColumns)
-      mColumns->InvalidateColumns();
+  if (aAttribute == nsGkAtoms::ordinal || aAttribute == nsGkAtoms::primary) {
+    InvalidateColumns();
   }
 
   return rv;
 }
 
-NS_IMETHODIMP
+void
 nsTreeColFrame::SetBounds(nsBoxLayoutState& aBoxLayoutState,
                           const nsRect& aRect,
                           PRBool aRemoveOverflowArea) {
   nscoord oldWidth = mRect.width;
 
-  nsresult rv = nsBoxFrame::SetBounds(aBoxLayoutState, aRect,
-                                      aRemoveOverflowArea);
+  nsBoxFrame::SetBounds(aBoxLayoutState, aRect, aRemoveOverflowArea);
   if (mRect.width != oldWidth) {
-    EnsureColumns();
-    if (mColumns) {
-      nsCOMPtr<nsITreeBoxObject> tree;
-      mColumns->GetTree(getter_AddRefs(tree));
-      if (tree)
-        tree->Invalidate();
+    nsITreeBoxObject* treeBoxObject = GetTreeBoxObject();
+    if (treeBoxObject) {
+      treeBoxObject->Invalidate();
     }
   }
-  return rv;
+}
+
+nsITreeBoxObject*
+nsTreeColFrame::GetTreeBoxObject()
+{
+  nsITreeBoxObject* result = nsnull;
+
+  nsIContent* parent = mContent->GetParent();
+  if (parent) {
+    nsIContent* grandParent = parent->GetParent();
+    nsCOMPtr<nsIDOMXULElement> treeElement = do_QueryInterface(grandParent);
+    if (treeElement) {
+      nsCOMPtr<nsIBoxObject> boxObject;
+      treeElement->GetBoxObject(getter_AddRefs(boxObject));
+
+      nsCOMPtr<nsITreeBoxObject> treeBoxObject = do_QueryInterface(boxObject);
+      result = treeBoxObject.get();
+    }
+  }
+  return result;
 }
 
 void
-nsTreeColFrame::EnsureColumns()
+nsTreeColFrame::InvalidateColumns(PRBool aCanWalkFrameTree)
 {
-  if (!mColumns) {
-    // Get our parent node.
-    nsIContent* parent = mContent->GetParent();
-    if (parent) {
-      nsIContent* grandParent = parent->GetParent();
-      if (grandParent) {
-        nsCOMPtr<nsIDOMXULTreeElement> treeElement = do_QueryInterface(grandParent);
-        if (treeElement)
-          treeElement->GetColumns(getter_AddRefs(mColumns));
+  nsITreeBoxObject* treeBoxObject = GetTreeBoxObject();
+  if (treeBoxObject) {
+    nsCOMPtr<nsITreeColumns> columns;
+
+    if (aCanWalkFrameTree) {
+      treeBoxObject->GetColumns(getter_AddRefs(columns));
+    } else {
+      nsITreeBoxObject* body =
+        static_cast<nsTreeBoxObject*>(treeBoxObject)->GetCachedTreeBody();
+      if (body) {
+        body->GetColumns(getter_AddRefs(columns));
       }
     }
+
+    if (columns)
+      columns->InvalidateColumns();
   }
 }

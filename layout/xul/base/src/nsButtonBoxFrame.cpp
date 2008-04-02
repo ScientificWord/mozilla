@@ -43,13 +43,12 @@
 #include "nsIDOMDocument.h"
 #include "nsIDOMNodeList.h"
 #include "nsIDOMXULButtonElement.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsINameSpaceManager.h"
 #include "nsPresContext.h"
 #include "nsIPresShell.h"
 #include "nsGUIEvent.h"
 #include "nsIEventStateManager.h"
-#include "nsXULAtoms.h"
 #include "nsIDOMElement.h"
 #include "nsDisplayList.h"
 
@@ -63,13 +62,6 @@ NS_NewButtonBoxFrame (nsIPresShell* aPresShell, nsStyleContext* aContext)
 {
   return new (aPresShell) nsButtonBoxFrame(aPresShell, aContext);
 } // NS_NewXULButtonFrame
-
-NS_IMETHODIMP
-nsButtonBoxFrame::GetMouseThrough(PRBool& aMouseThrough)
-{
-  aMouseThrough = PR_FALSE;
-  return NS_OK;
-}
 
 NS_IMETHODIMP
 nsButtonBoxFrame::BuildDisplayListForChildren(nsDisplayListBuilder*   aBuilder,
@@ -133,8 +125,10 @@ nsButtonBoxFrame::HandleEvent(nsPresContext* aPresContext,
       }
       break;
 
-    case NS_MOUSE_LEFT_CLICK:
-      MouseClicked(aPresContext, aEvent);
+    case NS_MOUSE_CLICK:
+      if (NS_IS_MOUSE_LEFT_CLICK(aEvent)) {
+        MouseClicked(aPresContext, aEvent);
+      }
       break;
   }
 
@@ -145,8 +139,8 @@ void
 nsButtonBoxFrame::DoMouseClick(nsGUIEvent* aEvent, PRBool aTrustEvent) 
 {
   // Don't execute if we're disabled.
-  if (mContent->AttrValueIs(kNameSpaceID_None, nsHTMLAtoms::disabled,
-                            nsHTMLAtoms::_true, eCaseMatters))
+  if (mContent->AttrValueIs(kNameSpaceID_None, nsGkAtoms::disabled,
+                            nsGkAtoms::_true, eCaseMatters))
     return;
 
   // Execute the oncommand event handler.
@@ -161,9 +155,8 @@ nsButtonBoxFrame::DoMouseClick(nsGUIEvent* aEvent, PRBool aTrustEvent)
   }
 
   // Have the content handle the event, propagating it according to normal DOM rules.
-  nsIPresShell *shell = GetPresContext()->GetPresShell();
+  nsCOMPtr<nsIPresShell> shell = PresContext()->GetPresShell();
   if (shell) {
     shell->HandleDOMEventWithTarget(mContent, &event, &status);
-    // shell may no longer be alive, don't use it here unless you keep a ref
   }
 }

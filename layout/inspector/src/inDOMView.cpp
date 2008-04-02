@@ -52,10 +52,16 @@
 #include "nsIDOMDocument.h"
 #include "nsIDOMNamedNodeMap.h"
 #include "nsIDOMMutationEvent.h"
-#include "nsIBindingManager.h"
+#include "nsBindingManager.h"
+#include "nsINameSpaceManager.h"
 #include "nsIDocument.h"
 #include "nsIServiceManager.h"
 #include "nsITreeColumns.h"
+
+#ifdef ACCESSIBILITY
+#include "nsIAccessible.h"
+#include "nsIAccessibilityService.h"
+#endif
 
 ////////////////////////////////////////////////////////////////////////
 // inDOMViewNode
@@ -63,7 +69,7 @@
 class inDOMViewNode
 {
 public:
-  inDOMViewNode() {};
+  inDOMViewNode() {}
   inDOMViewNode(nsIDOMNode* aNode);
   ~inDOMViewNode();
 
@@ -113,11 +119,13 @@ nsIAtom* inDOMView::kDocumentNodeAtom = nsnull;
 nsIAtom* inDOMView::kDocumentTypeNodeAtom = nsnull;
 nsIAtom* inDOMView::kDocumentFragmentNodeAtom = nsnull;
 nsIAtom* inDOMView::kNotationNodeAtom = nsnull;
+nsIAtom* inDOMView::kAccessibleNodeAtom = nsnull;
 
 inDOMView::inDOMView() :
   mShowAnonymous(PR_FALSE),
   mShowSubDocuments(PR_FALSE),
   mShowWhitespaceNodes(PR_TRUE),
+  mShowAccessibleNodes(PR_FALSE),
   mWhatToShow(nsIDOMNodeFilter::SHOW_ALL)
 {
 }
@@ -140,7 +148,8 @@ inDOMView::~inDOMView()
   {"DOCUMENT_NODE", &inDOMView::kDocumentNodeAtom},
   {"DOCUMENT_TYPE_NODE", &inDOMView::kDocumentTypeNodeAtom},
   {"DOCUMENT_FRAGMENT_NODE", &inDOMView::kDocumentFragmentNodeAtom},
-  {"NOTATION_NODE", &inDOMView::kNotationNodeAtom}
+  {"NOTATION_NODE", &inDOMView::kNotationNodeAtom},
+  {"ACCESSIBLE_NODE", &inDOMView::kAccessibleNodeAtom}
 };
 
 /* static */ void
@@ -280,6 +289,20 @@ inDOMView::SetShowWhitespaceNodes(PRBool aShowWhitespaceNodes)
 }
 
 NS_IMETHODIMP
+inDOMView::GetShowAccessibleNodes(PRBool *aShowAccessibleNodes)
+{
+  *aShowAccessibleNodes = mShowAccessibleNodes;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+inDOMView::SetShowAccessibleNodes(PRBool aShowAccessibleNodes)
+{
+  mShowAccessibleNodes = aShowAccessibleNodes;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 inDOMView::GetWhatToShow(PRUint32 *aWhatToShow)
 {
   *aWhatToShow = mWhatToShow;
@@ -370,6 +393,22 @@ inDOMView::GetCellProperties(PRInt32 row, nsITreeColumn* col, nsISupportsArray *
       properties->AppendElement(kNotationNodeAtom);
       break;
   }
+
+#ifdef ACCESSIBILITY
+  if (mShowAccessibleNodes) {
+    nsCOMPtr<nsIAccessibilityService> accService(
+      do_GetService("@mozilla.org/accessibilityService;1"));
+    NS_ENSURE_TRUE(accService, NS_ERROR_FAILURE);
+
+    nsCOMPtr<nsIAccessible> accessible;
+    nsresult rv =
+      accService->GetAttachedAccessibleFor(node->node,
+                                           getter_AddRefs(accessible));
+    if (NS_SUCCEEDED(rv) && accessible)
+      properties->AppendElement(kAccessibleNodeAtom);
+  }
+#endif
+
   return NS_OK;
 }
 
@@ -663,7 +702,7 @@ inDOMView::NodeWillBeDestroyed(const nsINode* aNode)
 void
 inDOMView::AttributeChanged(nsIDocument *aDocument, nsIContent* aContent,
                             PRInt32 aNameSpaceID, nsIAtom* aAttribute,
-                            PRInt32 aModType)
+                            PRInt32 aModType, PRUint32 aStateMask)
 {
   if (!mTree) {
     return;
@@ -679,14 +718,35 @@ inDOMView::AttributeChanged(nsIDocument *aDocument, nsIContent* aContent,
   nsCOMPtr<nsIDOMAttr> domAttr;
   nsAutoString attrStr;
   aAttribute->ToString(attrStr);
-  el->GetAttributeNode(attrStr, getter_AddRefs(domAttr));
+  if (aNameSpaceID) {
+    nsCOMPtr<nsINameSpaceManager> nsm =
+      do_GetService(NS_NAMESPACEMANAGER_CONTRACTID);
+    if (!nsm) {
+      // we can't find out which attribute we want :(
+      return;
+    }
+    nsString attrNS;
+    nsresult rv = nsm->GetNameSpaceURI(aNameSpaceID, attrNS);
+    if (NS_FAILED(rv)) {
+      return;
+    }
+    (void)el->GetAttributeNodeNS(attrNS, attrStr, getter_AddRefs(domAttr));
+  } else {
+    (void)el->GetAttributeNode(attrStr, getter_AddRefs(domAttr));
+  }
 
   if (aModType == nsIDOMMutationEvent::MODIFICATION) {
     // No fancy stuff here, just invalidate the changed row
+    if (!domAttr) {
+      return;
+    }
     PRInt32 row = 0;
     NodeToRow(domAttr, &row);
     mTree->InvalidateRange(row, row);
   } else if (aModType == nsIDOMMutationEvent::ADDITION) {
+    if (!domAttr) {
+      return;
+    }
     // get the number of attributes on this content node
     nsCOMPtr<nsIDOMNamedNodeMap> attrs;
     content->GetAttributes(getter_AddRefs(attrs));
@@ -696,18 +756,19 @@ inDOMView::AttributeChanged(nsIDocument *aDocument, nsIContent* aContent,
     inDOMViewNode* contentNode = nsnull;
     PRInt32 contentRow;
     PRInt32 attrRow;
-    if (NS_FAILED(NodeToRow(content, &contentRow))) {
-      return;
-    }
-    RowToNode(contentRow, &contentNode);
-    if (!contentRow || !contentNode->isOpen) {
-      return;
-    }
-    if (mRootNode == content) {
+    if (mRootNode == content &&
+        !(mWhatToShow & nsIDOMNodeFilter::SHOW_ELEMENT)) {
       // if this view has a root node but is not displaying it,
       // it is ok to act as if the changed attribute is on the root.
       attrRow = attrCount - 1;
     } else {
+      if (NS_FAILED(NodeToRow(content, &contentRow))) {
+        return;
+      }
+      RowToNode(contentRow, &contentNode);
+      if (!contentNode->isOpen) {
+        return;
+      }
       attrRow = contentRow + attrCount;
     }
 
@@ -788,13 +849,6 @@ inDOMView::ContentAppended(nsIDocument *aDocument,
     ContentInserted(aDocument, aContainer, child, aNewIndexInContainer);
     ++aNewIndexInContainer;
   }
-}
-
-void
-inDOMView::CharacterDataChanged(nsIDocument *aDocument,
-                                nsIContent* aContent,
-                                PRBool aAppend)
-{
 }
 
 void
@@ -907,7 +961,8 @@ inDOMView::ContentRemoved(nsIDocument *aDocument, nsIContent* aContainer, nsICon
   RemoveLink(oldNode);
   RemoveNode(row);
 
-  if (aContainer->GetChildCount() == 0) {
+  nsINode* container = NODE_FROM(aContainer, aDocument);
+  if (container->GetChildCount() == 0) {
     // Fix up the parent
     parentNode->isContainer = PR_FALSE;
     parentNode->isOpen = PR_FALSE;
@@ -1184,6 +1239,7 @@ inDOMView::GetLastDescendantOf(inDOMViewNode* aNode, PRInt32 aRow, PRInt32* aRes
 nsresult
 inDOMView::GetChildNodesFor(nsIDOMNode* aNode, nsCOMArray<nsIDOMNode>& aResult)
 {
+  NS_ENSURE_ARG(aNode);
   // Need to do this test to prevent unfortunate NYI assertion
   // on nsXULAttribute::GetChildNodes
   nsCOMPtr<nsIDOMAttr> attr = do_QueryInterface(aNode);
@@ -1203,7 +1259,7 @@ inDOMView::GetChildNodesFor(nsIDOMNode* aNode, nsCOMArray<nsIDOMNode>& aResult)
       if (mShowAnonymous) {
         nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
         if (content) {
-          nsCOMPtr<nsIBindingManager> bindingManager = inLayoutUtils::GetBindingManagerFor(aNode);
+          nsRefPtr<nsBindingManager> bindingManager = inLayoutUtils::GetBindingManagerFor(aNode);
           if (bindingManager) {
             bindingManager->GetAnonymousNodesFor(content, getter_AddRefs(kids));
             if (!kids) {
@@ -1252,7 +1308,7 @@ inDOMView::AppendKidsToArray(nsIDOMNodeList* aKids,
   PRUint16 nodeType = 0;
 
   // Try and get DOM Utils in case we don't have one yet.
-  if (mShowWhitespaceNodes && !mDOMUtils) {
+  if (!mShowWhitespaceNodes && !mDOMUtils) {
     mDOMUtils = do_CreateInstance("@mozilla.org/inspector/dom-utils;1");
   }
 

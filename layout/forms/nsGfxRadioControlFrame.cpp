@@ -65,12 +65,10 @@ nsGfxRadioControlFrame::~nsGfxRadioControlFrame()
 NS_IMETHODIMP
 nsGfxRadioControlFrame::QueryInterface(const nsIID& aIID, void** aInstancePtr)
 {
-  NS_PRECONDITION(0 != aInstancePtr, "null ptr");
-  if (NULL == aInstancePtr) {
-    return NS_ERROR_NULL_POINTER;
-  }
+  NS_PRECONDITION(aInstancePtr, "null out param");
+
   if (aIID.Equals(NS_GET_IID(nsIRadioControlFrame))) {
-    *aInstancePtr = (void*) ((nsIRadioControlFrame*) this);
+    *aInstancePtr = static_cast<nsIRadioControlFrame*>(this);
     return NS_OK;
   }
 
@@ -83,7 +81,7 @@ NS_IMETHODIMP nsGfxRadioControlFrame::GetAccessible(nsIAccessible** aAccessible)
   nsCOMPtr<nsIAccessibilityService> accService = do_GetService("@mozilla.org/accessibilityService;1");
 
   if (accService) {
-    return accService->CreateHTMLRadioButtonAccessible(NS_STATIC_CAST(nsIFrame*, this), aAccessible);
+    return accService->CreateHTMLRadioButtonAccessible(static_cast<nsIFrame*>(this), aAccessible);
   }
 
   return NS_ERROR_FAILURE;
@@ -135,6 +133,9 @@ nsGfxRadioControlFrame::PaintRadioButtonFromStyle(
   const nsStylePadding* myPadding = mRadioButtonFaceStyle->GetStylePadding();
   const nsStylePosition* myPosition = mRadioButtonFaceStyle->GetStylePosition();
 
+  NS_ASSERTION(myPosition->mWidth.GetUnit() == eStyleUnit_Coord &&
+               myPosition->mHeight.GetUnit() == eStyleUnit_Coord,
+               "styles for :-moz-radio are incorrect or author-accessible");
   nscoord width = myPosition->mWidth.GetCoordValue();
   nscoord height = myPosition->mHeight.GetCoordValue();
   // Position the button centered within the radio control's rectangle.
@@ -150,7 +151,7 @@ nsGfxRadioControlFrame::PaintRadioButtonFromStyle(
   // doesn't draw a round enough circle.
   nsStyleBackground tmpColor     = *myColor;
   tmpColor.mBackgroundColor = color->mColor;
-  nsPresContext* pc = GetPresContext();
+  nsPresContext* pc = PresContext();
   nsCSSRendering::PaintBackgroundWithSC(pc, aRenderingContext,
                                         this, aDirtyRect, rect,
                                         tmpColor, *myBorder, *myPadding, PR_FALSE);
@@ -178,7 +179,7 @@ public:
 void
 nsDisplayRadioButtonFromStyle::Paint(nsDisplayListBuilder* aBuilder,
      nsIRenderingContext* aCtx, const nsRect& aDirtyRect) {
-  NS_STATIC_CAST(nsGfxRadioControlFrame*, mFrame)->
+  static_cast<nsGfxRadioControlFrame*>(mFrame)->
     PaintRadioButtonFromStyle(*aCtx, aBuilder->ToReferenceFrame(mFrame), aDirtyRect);
 }
 

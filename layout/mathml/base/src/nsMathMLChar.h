@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -21,6 +22,7 @@
  * Contributor(s):
  *   Roger B. Sidje <rbs@maths.uq.edu.au>
  *   Shyjan Mahamud <mahamud@cs.cmu.edu>
+ *   Karl Tomlinson <karlt+@karlt.net>, Mozilla Corporation
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -59,9 +61,17 @@ struct nsGlyphCode {
   PRUnichar code; 
   PRInt32   font;
 
-  // conversion operator to just return the code point that we generally want
-  operator PRUnichar () {
-    return code;
+  PRBool Exists() const
+  {
+    return (code != 0);
+  }
+  PRBool operator==(const nsGlyphCode& other) const
+  {
+    return other.code == code && other.font == font;
+  }
+  PRBool operator!=(const nsGlyphCode& other) const
+  {
+    return ! operator==(other);
   }
 };
 
@@ -204,32 +214,55 @@ private:
   nsStyleContext*    mStyleContext;
   nsGlyphTable*      mGlyphTable;
   nsGlyphCode        mGlyph;
+  // mFamily is non-empty when the family for the current size is different
+  // from the family in the nsStyleContext.
+  nsString           mFamily;
 
   // helper methods
+  PRBool
+  TryVariants(nsPresContext*       aPresContext,
+              nsIRenderingContext& aRenderingContext,
+              nsGlyphTable*        aGlyphTable,
+              nscoord              aTargetSize,
+              PRUint32             aStretchHint,
+              const nsAString&     aFamilies);
+
+  PRBool
+  TryParts(nsPresContext*       aPresContext,
+           nsIRenderingContext& aRenderingContext,
+           nsGlyphTable*        aGlyphTable,
+           nscoord              aTargetSize,
+           PRUint32             aStretchHint,
+           const nsAString&     aFamilies);
+
+  static PRBool
+  StretchResolverCallback (const nsAString& aFamily, void *aData);
+
+  static PRBool
+  StretchEnumCallback(const nsString& aFamily, PRBool aGeneric, void *aData);
+
   nsresult
-  ComposeChildren(nsPresContext*      aPresContext,
+  ComposeChildren(nsPresContext*       aPresContext,
                   nsIRenderingContext& aRenderingContext,
                   nsGlyphTable*        aGlyphTable,
-                  nsBoundingMetrics&   aContainerSize,
+                  nscoord              aTargetSize,
                   nsBoundingMetrics&   aCompositeSize,
                   PRUint32             aStretchHint);
 
-  static nsresult
-  PaintVertically(nsPresContext*      aPresContext,
+  nsresult
+  PaintVertically(nsPresContext*       aPresContext,
                   nsIRenderingContext& aRenderingContext,
                   nsFont&              aFont,
                   nsStyleContext*      aStyleContext,
                   nsGlyphTable*        aGlyphTable,
-                  nsMathMLChar*        aChar,
                   nsRect&              aRect);
 
-  static nsresult
-  PaintHorizontally(nsPresContext*      aPresContext,
+  nsresult
+  PaintHorizontally(nsPresContext*       aPresContext,
                     nsIRenderingContext& aRenderingContext,
                     nsFont&              aFont,
                     nsStyleContext*      aStyleContext,
                     nsGlyphTable*        aGlyphTable,
-                    nsMathMLChar*        aChar,
                     nsRect&              aRect);
 };
 

@@ -41,7 +41,7 @@
 #include "nsHTMLParts.h"
 #include "nsCOMPtr.h"
 #include "nsIServiceManager.h"
-#include "nsLayoutAtoms.h"
+#include "nsGkAtoms.h"
 
 #include "nsHTMLCanvasFrame.h"
 #include "nsICanvasElement.h"
@@ -59,13 +59,71 @@ nsHTMLCanvasFrame::~nsHTMLCanvasFrame()
 {
 }
 
-// We really want a PR_MINMAX to go along with PR_MIN/PR_MAX
-#define MINMAX(_value,_min,_max) \
-    ((_value) < (_min)           \
-     ? (_min)                    \
-     : ((_value) > (_max)        \
-        ? (_max)                 \
-        : (_value)))
+nsSize
+nsHTMLCanvasFrame::GetCanvasSize()
+{
+  PRUint32 w, h;
+  nsresult rv;
+  nsCOMPtr<nsICanvasElement> canvas(do_QueryInterface(GetContent()));
+  if (canvas) {
+    rv = canvas->GetSize(&w, &h);
+  } else {
+    rv = NS_ERROR_NULL_POINTER;
+  }
+
+  if (NS_FAILED(rv)) {
+    NS_NOTREACHED("couldn't get canvas size");
+    h = w = 1;
+  }
+
+  return nsSize(w, h);
+}
+
+/* virtual */ nscoord
+nsHTMLCanvasFrame::GetMinWidth(nsIRenderingContext *aRenderingContext)
+{
+  // XXX The caller doesn't account for constraints of the height,
+  // min-height, and max-height properties.
+  nscoord result = nsPresContext::CSSPixelsToAppUnits(GetCanvasSize().width);
+  DISPLAY_MIN_WIDTH(this, result);
+  return result;
+}
+
+/* virtual */ nscoord
+nsHTMLCanvasFrame::GetPrefWidth(nsIRenderingContext *aRenderingContext)
+{
+  // XXX The caller doesn't account for constraints of the height,
+  // min-height, and max-height properties.
+  nscoord result = nsPresContext::CSSPixelsToAppUnits(GetCanvasSize().width);
+  DISPLAY_PREF_WIDTH(this, result);
+  return result;
+}
+
+/* virtual */ nsSize
+nsHTMLCanvasFrame::GetIntrinsicRatio()
+{
+  return GetCanvasSize();
+}
+
+/* virtual */ nsSize
+nsHTMLCanvasFrame::ComputeSize(nsIRenderingContext *aRenderingContext,
+                               nsSize aCBSize, nscoord aAvailableWidth,
+                               nsSize aMargin, nsSize aBorder, nsSize aPadding,
+                               PRBool aShrinkWrap)
+{
+  nsSize size = GetCanvasSize();
+
+  IntrinsicSize intrinsicSize;
+  intrinsicSize.width.SetCoordValue(nsPresContext::CSSPixelsToAppUnits(size.width));
+  intrinsicSize.height.SetCoordValue(nsPresContext::CSSPixelsToAppUnits(size.height));
+
+  nsSize& intrinsicRatio = size; // won't actually be used
+
+  return nsLayoutUtils::ComputeSizeWithIntrinsicDimensions(
+                            aRenderingContext, this,
+                            intrinsicSize, intrinsicRatio, aCBSize,
+                            aMargin, aBorder, aPadding);
+}
 
 NS_IMETHODIMP
 nsHTMLCanvasFrame::Reflow(nsPresContext*           aPresContext,
@@ -73,7 +131,7 @@ nsHTMLCanvasFrame::Reflow(nsPresContext*           aPresContext,
                           const nsHTMLReflowState& aReflowState,
                           nsReflowStatus&          aStatus)
 {
-  DO_GLOBAL_REFLOW_COUNT("nsHTMLCanvasFrame", aReflowState.reason);
+  DO_GLOBAL_REFLOW_COUNT("nsHTMLCanvasFrame");
   DISPLAY_REFLOW(aPresContext, this, aReflowState, aMetrics, aStatus);
   NS_FRAME_TRACE(NS_FRAME_TRACE_CALLS,
                   ("enter nsHTMLCanvasFrame::Reflow: availSize=%d,%d",
@@ -83,30 +141,8 @@ nsHTMLCanvasFrame::Reflow(nsPresContext*           aPresContext,
 
   aStatus = NS_FRAME_COMPLETE;
 
-  nsCOMPtr<nsICanvasElement> canvas(do_QueryInterface(GetContent()));
-  NS_ENSURE_TRUE(canvas, NS_ERROR_FAILURE);
-
-  PRUint32 w, h;
-  nsresult rv = canvas->GetSize (&w, &h);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  float p2t = GetPresContext()->PixelsToTwips();
-
-  mCanvasSize.SizeTo(NSIntPixelsToTwips(w, p2t), NSIntPixelsToTwips(h, p2t));
-
-  if (aReflowState.mComputedWidth == NS_INTRINSICSIZE)
-    aMetrics.width = mCanvasSize.width;
-  else
-    aMetrics.width = aReflowState.mComputedWidth;
-
-  if (aReflowState.mComputedHeight == NS_INTRINSICSIZE)
-    aMetrics.height = mCanvasSize.height;
-  else
-    aMetrics.height = aReflowState.mComputedHeight;
-
-  // clamp
-  aMetrics.height = MINMAX(aMetrics.height, aReflowState.mComputedMinHeight, aReflowState.mComputedMaxHeight);
-  aMetrics.width = MINMAX(aMetrics.width, aReflowState.mComputedMinWidth, aReflowState.mComputedMaxWidth);
+  aMetrics.width = aReflowState.ComputedWidth();
+  aMetrics.height = aReflowState.ComputedHeight();
 
   // stash this away so we can compute our inner area later
   mBorderPadding   = aReflowState.mComputedBorderPadding;
@@ -120,16 +156,6 @@ nsHTMLCanvasFrame::Reflow(nsPresContext*           aPresContext,
     aMetrics.height = PR_MAX(0, aMetrics.height);
   }
 
-  aMetrics.ascent  = aMetrics.height;
-  aMetrics.descent = 0;
-
-  if (aMetrics.mComputeMEW) {
-    aMetrics.SetMEWToActualWidth(aReflowState.mStylePosition->mWidth.GetUnit());
-  }
-  
-  if (aMetrics.mFlags & NS_REFLOW_CALC_MAX_WIDTH) {
-    aMetrics.mMaximumWidth = aMetrics.width;
-  }
   aMetrics.mOverflowArea.SetRect(0, 0, aMetrics.width, aMetrics.height);
   FinishAndStoreOverflow(&aMetrics);
 
@@ -167,22 +193,26 @@ nsHTMLCanvasFrame::PaintCanvas(nsIRenderingContext& aRenderingContext,
   if (!canvas)
     return;
 
-  float t2p = GetPresContext()->TwipsToPixels();
-  float p2t = GetPresContext()->PixelsToTwips();
+  // anything to do?
+  if (inner.width == 0 || inner.height == 0)
+    return;
+
+  nsSize canvasSize = GetCanvasSize();
+  nsSize sizeAppUnits(PresContext()->DevPixelsToAppUnits(canvasSize.width),
+                      PresContext()->DevPixelsToAppUnits(canvasSize.height));
 
   // XXXvlad clip to aDirtyRect!
 
-  if (inner.width != mCanvasSize.width ||
-      inner.height != mCanvasSize.height)
+  if (inner.Size() != sizeAppUnits)
   {
-    float sx = inner.width / (float) mCanvasSize.width;
-    float sy = inner.height / (float) mCanvasSize.height;
+    float sx = inner.width / (float) sizeAppUnits.width;
+    float sy = inner.height / (float) sizeAppUnits.height;
 
     aRenderingContext.PushState();
     aRenderingContext.Translate(inner.x, inner.y);
     aRenderingContext.Scale(sx, sy);
 
-    canvas->RenderContexts(&aRenderingContext);
+    canvas->RenderContexts(aRenderingContext.ThebesContext());
 
     aRenderingContext.PopState();
   } else {
@@ -191,7 +221,7 @@ nsHTMLCanvasFrame::PaintCanvas(nsIRenderingContext& aRenderingContext,
     aRenderingContext.PushState();
     aRenderingContext.Translate(inner.x, inner.y);
 
-    canvas->RenderContexts(&aRenderingContext);
+    canvas->RenderContexts(aRenderingContext.ThebesContext());
 
     aRenderingContext.PopState();
   }
@@ -200,7 +230,7 @@ nsHTMLCanvasFrame::PaintCanvas(nsIRenderingContext& aRenderingContext,
 static void PaintCanvas(nsIFrame* aFrame, nsIRenderingContext* aCtx,
                         const nsRect& aDirtyRect, nsPoint aPt)
 {
-  NS_STATIC_CAST(nsHTMLCanvasFrame*, aFrame)->PaintCanvas(*aCtx, aDirtyRect, aPt);
+  static_cast<nsHTMLCanvasFrame*>(aFrame)->PaintCanvas(*aCtx, aDirtyRect, aPt);
 }
 
 NS_IMETHODIMP
@@ -222,20 +252,6 @@ nsHTMLCanvasFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
                                  nsISelectionDisplay::DISPLAY_IMAGES);
 }
 
-NS_IMETHODIMP
-nsHTMLCanvasFrame::CanContinueTextRun(PRBool& aContinueTextRun) const
-{
-  // stolen from nsImageFrame.cpp
-  // images really CAN continue text runs, but the textFrame needs to be 
-  // educated before we can indicate that it can. For now, we handle the fixing up 
-  // of max element widths in nsLineLayout::VerticalAlignFrames, but hopefully
-  // this can be eliminated and the textFrame can be convinced to handle inlines
-  // that take up space in text runs.
-
-  aContinueTextRun = PR_FALSE;
-  return NS_OK;
-}
-
 NS_IMETHODIMP  
 nsHTMLCanvasFrame::GetContentForEvent(nsPresContext* aPresContext,
                                       nsEvent* aEvent,
@@ -250,7 +266,7 @@ nsHTMLCanvasFrame::GetContentForEvent(nsPresContext* aPresContext,
 nsIAtom*
 nsHTMLCanvasFrame::GetType() const
 {
-  return nsLayoutAtoms::HTMLCanvasFrame;
+  return nsGkAtoms::HTMLCanvasFrame;
 }
 
 // get the offset into the content area of the image where aImg starts if it is a continuation.

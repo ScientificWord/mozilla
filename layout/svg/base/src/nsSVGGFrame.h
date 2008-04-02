@@ -40,25 +40,22 @@
 #define NSSVGGFRAME_H
 
 #include "nsSVGContainerFrame.h"
-#include "nsISVGValueObserver.h"
-#include "nsWeakReference.h"
 
 typedef nsSVGDisplayContainerFrame nsSVGGFrameBase;
 
-class nsISVGFilterFrame;
-
-class nsSVGGFrame : public nsSVGGFrameBase,
-                    public nsISVGValueObserver,
-                    public nsSupportsWeakReference
+class nsSVGGFrame : public nsSVGGFrameBase
 {
-public:
+  friend nsIFrame*
+  NS_NewSVGGFrame(nsIPresShell* aPresShell, nsIContent* aContent, nsStyleContext* aContext);
+protected:
   nsSVGGFrame(nsStyleContext* aContext) :
     nsSVGGFrameBase(aContext), mPropagateTransform(PR_TRUE) {}
 
+public:
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::svgGFrame
+   * @see nsGkAtoms::svgGFrame
    */
   virtual nsIAtom* GetType() const;
 
@@ -69,15 +66,6 @@ public:
   }
 #endif
 
-protected:
-   // nsISupports interface:
-  NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
-  NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }
-  NS_IMETHOD_(nsrefcnt) Release() { return NS_OK; }  
-
-  friend nsIFrame*
-  NS_NewSVGGFrame(nsIPresShell* aPresShell, nsIContent* aContent, nsStyleContext* aContext);
-
   // nsIFrame interface:
   NS_IMETHOD DidSetStyleContext();
   NS_IMETHOD AttributeChanged(PRInt32         aNameSpaceID,
@@ -85,18 +73,13 @@ protected:
                               PRInt32         aModType);
 
   // nsISVGChildFrame interface:
-  NS_IMETHOD NotifyCanvasTMChanged(PRBool suppressInvalidation);
+  virtual void NotifySVGChanged(PRUint32 aFlags);
   NS_IMETHOD SetMatrixPropagation(PRBool aPropagate);
   NS_IMETHOD SetOverrideCTM(nsIDOMSVGMatrix *aCTM);
+  virtual already_AddRefed<nsIDOMSVGMatrix> GetOverrideCTM();
 
   // nsSVGContainerFrame methods:
   virtual already_AddRefed<nsIDOMSVGMatrix> GetCanvasTM();
-
-  // nsISVGValueObserver
-  NS_IMETHOD WillModifySVGObservable (nsISVGValue* observable,
-                                     nsISVGValue::modificationType aModType);
-  NS_IMETHOD DidModifySVGObservable (nsISVGValue* observable,
-                                     nsISVGValue::modificationType aModType);
 
   nsCOMPtr<nsIDOMSVGMatrix> mCanvasTM;
   nsCOMPtr<nsIDOMSVGMatrix> mOverrideCTM;

@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -42,7 +43,6 @@
 #include "nsCOMPtr.h"
 #include "nsFrame.h"
 #include "nsPresContext.h"
-#include "nsUnitConversion.h"
 #include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsINameSpaceManager.h"
@@ -71,11 +71,11 @@ nsMathMLmunderoverFrame::AttributeChanged(PRInt32         aNameSpaceID,
                                           nsIAtom*        aAttribute,
                                           PRInt32         aModType)
 {
-  if (nsMathMLAtoms::accent_ == aAttribute ||
-      nsMathMLAtoms::accentunder_ == aAttribute) {
+  if (nsGkAtoms::accent_ == aAttribute ||
+      nsGkAtoms::accentunder_ == aAttribute) {
     // When we have automatic data to update within ourselves, we ask our
     // parent to re-layout its children
-    return ReLayoutChildren(mParent);
+    return ReLayoutChildren(mParent, NS_FRAME_IS_DIRTY);
   }
 
   return nsMathMLContainerFrame::
@@ -83,12 +83,10 @@ nsMathMLmunderoverFrame::AttributeChanged(PRInt32         aNameSpaceID,
 }
 
 NS_IMETHODIMP
-nsMathMLmunderoverFrame::UpdatePresentationData(PRInt32         aScriptLevelIncrement,
-                                                PRUint32        aFlagsValues,
+nsMathMLmunderoverFrame::UpdatePresentationData(PRUint32        aFlagsValues,
                                                 PRUint32        aFlagsToUpdate)
 {
-  nsMathMLContainerFrame::UpdatePresentationData(aScriptLevelIncrement,
-    aFlagsValues, aFlagsToUpdate);
+  nsMathMLContainerFrame::UpdatePresentationData(aFlagsValues, aFlagsToUpdate);
   // disable the stretch-all flag if we are going to act like a subscript-superscript pair
   if ( NS_MATHML_EMBELLISH_IS_MOVABLELIMITS(mEmbellishData.flags) &&
       !NS_MATHML_IS_DISPLAYSTYLE(mPresentationData.flags)) {
@@ -103,7 +101,6 @@ nsMathMLmunderoverFrame::UpdatePresentationData(PRInt32         aScriptLevelIncr
 NS_IMETHODIMP
 nsMathMLmunderoverFrame::UpdatePresentationDataFromChildAt(PRInt32         aFirstIndex,
                                                            PRInt32         aLastIndex,
-                                                           PRInt32         aScriptLevelIncrement,
                                                            PRUint32        aFlagsValues,
                                                            PRUint32        aFlagsToUpdate)
 {
@@ -132,8 +129,7 @@ nsMathMLmunderoverFrame::UpdatePresentationDataFromChildAt(PRInt32         aFirs
         aFlagsToUpdate &= ~NS_MATHML_DISPLAYSTYLE;
         aFlagsValues &= ~NS_MATHML_DISPLAYSTYLE;
       }
-      PropagatePresentationDataFor(childFrame,
-        aScriptLevelIncrement, aFlagsValues, aFlagsToUpdate);
+      PropagatePresentationDataFor(childFrame, aFlagsValues, aFlagsToUpdate);
     }
     index++;
     childFrame = childFrame->GetNextSibling();
@@ -197,10 +193,10 @@ nsMathMLmunderoverFrame::TransmitAutomaticData()
     mEmbellishData.flags &= ~NS_MATHML_EMBELLISH_ACCENTUNDER;
 
   static nsIContent::AttrValuesArray strings[] =
-    {&nsMathMLAtoms::_true, &nsMathMLAtoms::_false, nsnull};
+    {&nsGkAtoms::_true, &nsGkAtoms::_false, nsnull};
 
   // if we have an accentunder attribute, it overrides what the underscript said
-  switch (mContent->FindAttrValueIn(kNameSpaceID_None, nsMathMLAtoms::accentunder_,
+  switch (mContent->FindAttrValueIn(kNameSpaceID_None, nsGkAtoms::accentunder_,
                                     strings, eCaseMatters)) {
     case 0: mEmbellishData.flags |= NS_MATHML_EMBELLISH_ACCENTUNDER; break;
     case 1: mEmbellishData.flags &= ~NS_MATHML_EMBELLISH_ACCENTUNDER; break;
@@ -215,7 +211,7 @@ nsMathMLmunderoverFrame::TransmitAutomaticData()
     mEmbellishData.flags &= ~NS_MATHML_EMBELLISH_ACCENTOVER;
 
   // if we have an accent attribute, it overrides what the overscript said
-  switch (mContent->FindAttrValueIn(kNameSpaceID_None, nsMathMLAtoms::accent_,
+  switch (mContent->FindAttrValueIn(kNameSpaceID_None, nsGkAtoms::accent_,
                                     strings, eCaseMatters)) {
     case 0: mEmbellishData.flags |= NS_MATHML_EMBELLISH_ACCENTOVER; break;
     case 1: mEmbellishData.flags &= ~NS_MATHML_EMBELLISH_ACCENTOVER; break;
@@ -242,11 +238,10 @@ nsMathMLmunderoverFrame::TransmitAutomaticData()
      that math accents and \overline change uncramped styles to their
      cramped counterparts.
   */
-  PRInt32 increment = NS_MATHML_EMBELLISH_IS_ACCENTOVER(mEmbellishData.flags)
-    ? 0 : 1;
   PRUint32 compress = NS_MATHML_EMBELLISH_IS_ACCENTOVER(mEmbellishData.flags)
     ? NS_MATHML_COMPRESSED : 0;
-  PropagatePresentationDataFor(overscriptFrame, increment,
+  SetIncrementScriptLevel(2, !NS_MATHML_EMBELLISH_IS_ACCENTOVER(mEmbellishData.flags));
+  PropagatePresentationDataFor(overscriptFrame,
     ~NS_MATHML_DISPLAYSTYLE | compress,
      NS_MATHML_DISPLAYSTYLE | compress);
 
@@ -254,9 +249,8 @@ nsMathMLmunderoverFrame::TransmitAutomaticData()
      The TeXBook treats 'under' like a subscript, so p.141 or Rule 13a 
      say it should be compressed
   */
-  increment = NS_MATHML_EMBELLISH_IS_ACCENTUNDER(mEmbellishData.flags)
-    ? 0 : 1;
-  PropagatePresentationDataFor(underscriptFrame, increment,
+  SetIncrementScriptLevel(1, !NS_MATHML_EMBELLISH_IS_ACCENTUNDER(mEmbellishData.flags));
+  PropagatePresentationDataFor(underscriptFrame,
     ~NS_MATHML_DISPLAYSTYLE | NS_MATHML_COMPRESSED,
      NS_MATHML_DISPLAYSTYLE | NS_MATHML_COMPRESSED);
 
@@ -290,20 +284,20 @@ nsMathMLmunderoverFrame::Place(nsIRenderingContext& aRenderingContext,
   if ( NS_MATHML_EMBELLISH_IS_MOVABLELIMITS(mEmbellishData.flags) &&
       !NS_MATHML_IS_DISPLAYSTYLE(mPresentationData.flags)) {
     // place like sub-superscript pair
-    return nsMathMLmsubsupFrame::PlaceSubSupScript(GetPresContext(),
+    return nsMathMLmsubsupFrame::PlaceSubSupScript(PresContext(),
                                                    aRenderingContext,
                                                    aPlaceOrigin,
                                                    aDesiredSize,
-                                                   this);
+                                                   this, 0, 0, PresContext()->PointsToAppUnits(0.5f));
   }
 
   ////////////////////////////////////
   // Get the children's desired sizes
 
   nsBoundingMetrics bmBase, bmUnder, bmOver;
-  nsHTMLReflowMetrics baseSize (nsnull);
-  nsHTMLReflowMetrics underSize (nsnull);
-  nsHTMLReflowMetrics overSize (nsnull);
+  nsHTMLReflowMetrics baseSize;
+  nsHTMLReflowMetrics underSize;
+  nsHTMLReflowMetrics overSize;
   nsIFrame* overFrame = nsnull;
   nsIFrame* underFrame = nsnull;
   nsIFrame* baseFrame = mFrames.FirstChild();
@@ -320,7 +314,7 @@ nsMathMLmunderoverFrame::Place(nsIRenderingContext& aRenderingContext,
   GetReflowAndBoundingMetricsFor(underFrame, underSize, bmUnder);
   GetReflowAndBoundingMetricsFor(overFrame, overSize, bmOver);
 
-  nscoord onePixel = GetPresContext()->IntScaledPixelsToTwips(1);
+  nscoord onePixel = nsPresContext::CSSPixelsToAppUnits(1);
 
   ////////////////////
   // Place Children
@@ -464,10 +458,10 @@ nsMathMLmunderoverFrame::Place(nsIRenderingContext& aRenderingContext,
     PR_MAX(dxAnonymousBase + bmAnonymousBase.rightBearing, dxUnder + bmUnder.rightBearing);
 
   aDesiredSize.ascent = ascentAnonymousBase;
-  aDesiredSize.descent = 
+  aDesiredSize.height = aDesiredSize.ascent +
     PR_MAX(mBoundingMetrics.descent + underDelta2,
-           bmAnonymousBase.descent + underDelta1 + bmUnder.ascent + underSize.descent);
-  aDesiredSize.height = aDesiredSize.ascent + aDesiredSize.descent;
+           bmAnonymousBase.descent + underDelta1 + bmUnder.ascent +
+             underSize.height - underSize.ascent);
   aDesiredSize.width = mBoundingMetrics.width;
   aDesiredSize.mBoundingMetrics = mBoundingMetrics;
 
@@ -478,13 +472,13 @@ nsMathMLmunderoverFrame::Place(nsIRenderingContext& aRenderingContext,
     nscoord dy;
     // place overscript
     dy = aDesiredSize.ascent - mBoundingMetrics.ascent + bmOver.ascent - overSize.ascent;
-    FinishReflowChild (overFrame, GetPresContext(), nsnull, overSize, dxOver, dy, 0);
+    FinishReflowChild (overFrame, PresContext(), nsnull, overSize, dxOver, dy, 0);
     // place base
     dy = aDesiredSize.ascent - baseSize.ascent;
-    FinishReflowChild (baseFrame, GetPresContext(), nsnull, baseSize, dxBase, dy, 0);
+    FinishReflowChild (baseFrame, PresContext(), nsnull, baseSize, dxBase, dy, 0);
     // place underscript
     dy = aDesiredSize.ascent + mBoundingMetrics.descent - bmUnder.descent - underSize.ascent;
-    FinishReflowChild (underFrame, GetPresContext(), nsnull, underSize, dxUnder, dy, 0);
+    FinishReflowChild (underFrame, PresContext(), nsnull, underSize, dxUnder, dy, 0);
   }
   return NS_OK;
 }

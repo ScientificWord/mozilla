@@ -68,6 +68,8 @@ public:
   NS_IMETHOD Init(nsIContent* aContent,
                   nsIFrame* aParent,
                   nsIFrame* aPrevInFlow);
+  virtual nscoord GetMinWidth(nsIRenderingContext *aRenderingContext);
+  virtual nscoord GetPrefWidth(nsIRenderingContext *aRenderingContext);
   NS_IMETHOD Reflow(nsPresContext* aPresContext,
                     nsHTMLReflowMetrics& aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
@@ -89,6 +91,12 @@ public:
                           nsEventStatus* aEventStatus);
 
   virtual nsIAtom* GetType() const;
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsObjectFrameSuper::IsFrameOfType(aFlags & ~(nsIFrame::eReplaced));
+  }
+
   virtual PRBool SupportsVisibilityHidden() { return PR_FALSE; }
   virtual PRBool NeedsView() { return PR_TRUE; }
   virtual nsresult CreateWidgetForView(nsIView* aView);
@@ -99,17 +107,27 @@ public:
 
   virtual void Destroy();
 
+  NS_IMETHOD DidSetStyleContext();
+
   NS_IMETHOD GetPluginInstance(nsIPluginInstance*& aPluginInstance);
   virtual nsresult Instantiate(nsIChannel* aChannel, nsIStreamListener** aStreamListener);
   virtual nsresult Instantiate(const char* aMimeType, nsIURI* aURI);
+  virtual void TryNotifyContentObjectWrapper();
   virtual void StopPlugin();
 
+  /*
+   * Stop a plugin instance. If aDelayedStop is true, the plugin will
+   * be stopped at a later point when it's safe to do so (i.e. not
+   * while destroying the frame tree). Delayed stopping is only
+   * implemented on Win32 for now.
+   */
+  void StopPluginInternal(PRBool aDelayedStop);
 
   /* fail on any requests to get a cursor from us because plugins set their own! see bug 118877 */
   NS_IMETHOD GetCursor(const nsPoint& aPoint, nsIFrame::Cursor& aCursor) 
   {
     return NS_ERROR_NOT_IMPLEMENTED;
-  };
+  }
 
   // accessibility support
 #ifdef ACCESSIBILITY
@@ -131,7 +149,7 @@ protected:
   NS_IMETHOD_(nsrefcnt) AddRef(void);
   NS_IMETHOD_(nsrefcnt) Release(void);
 
-  nsObjectFrame(nsStyleContext* aContext) : nsObjectFrameSuper(aContext) {}
+  nsObjectFrame(nsStyleContext* aContext);
   virtual ~nsObjectFrame();
 
   // NOTE:  This frame class does not inherit from |nsLeafFrame|, so
@@ -150,6 +168,11 @@ protected:
    */
   void FixupWindow(const nsSize& aSize);
 
+  /**
+   * Sets up the plugin window and calls SetWindow on the plugin.
+   */
+  void CallSetWindow();
+
   PRBool IsFocusable(PRInt32 *aTabIndex = nsnull, PRBool aWithMouse = PR_FALSE);
 
   // check attributes and optionally CSS to see if we should display anything
@@ -167,14 +190,13 @@ protected:
 
   friend class nsPluginInstanceOwner;
 private:
-  nsPluginInstanceOwner *mInstanceOwner;
+  nsRefPtr<nsPluginInstanceOwner> mInstanceOwner;
   nsRect                mWindowlessRect;
 
-#ifdef DEBUG
   // For assertions that make it easier to determine if a crash is due
-  // to the underlying problem described in bug 136927.
+  // to the underlying problem described in bug 136927, and to prevent
+  // reentry into instantiation.
   PRBool mInstantiating;
-#endif
 };
 
 

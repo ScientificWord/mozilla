@@ -41,6 +41,7 @@
 #include "nsLeafBoxFrame.h"
 
 class nsAccessKeyInfo;
+class nsAsyncAccesskeyUpdate;
 
 typedef nsLeafBoxFrame nsTextBoxFrameSuper;
 class nsTextBoxFrame : public nsTextBoxFrameSuper
@@ -48,11 +49,11 @@ class nsTextBoxFrame : public nsTextBoxFrameSuper
 public:
 
   // nsIBox
-  NS_IMETHOD GetPrefSize(nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
-  NS_IMETHOD GetMinSize(nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
-  NS_IMETHOD GetAscent(nsBoxLayoutState& aBoxLayoutState, nscoord& aAscent);
+  virtual nsSize GetPrefSize(nsBoxLayoutState& aBoxLayoutState);
+  virtual nsSize GetMinSize(nsBoxLayoutState& aBoxLayoutState);
+  virtual nscoord GetBoxAscent(nsBoxLayoutState& aBoxLayoutState);
   NS_IMETHOD DoLayout(nsBoxLayoutState& aBoxLayoutState);
-  NS_IMETHOD NeedsRecalc();
+  virtual void MarkIntrinsicWidthsDirty();
 
   enum CroppingStyle { CropNone, CropLeft, CropRight, CropCenter };
 
@@ -87,7 +88,10 @@ public:
                   nsPoint              aPt);
 
 protected:
-
+  friend class nsAsyncAccesskeyUpdate;
+  // Should be called only by nsAsyncAccesskeyUpdate.
+  // Returns PR_TRUE if accesskey was updated.
+  PRBool UpdateAccesskey(nsWeakFrame& aWeakThis);
   void UpdateAccessTitle();
   void UpdateAccessIndex();
 
@@ -125,7 +129,8 @@ private:
   nsString mAccessKey;
   nscoord mTitleWidth;
   nsAccessKeyInfo* mAccessKeyInfo;
-  PRBool mNeedsRecalc;
+  PRPackedBool mNeedsRecalc;
+  PRPackedBool mNeedsReflowCallback;
   nsSize mTextSize;
   nscoord mAscent;
 

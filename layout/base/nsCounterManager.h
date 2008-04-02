@@ -167,13 +167,13 @@ struct nsCounterChangeNode : public nsCounterNode {
 inline nsCounterUseNode* nsCounterNode::UseNode()
 {
     NS_ASSERTION(mType == USE, "wrong type");
-    return NS_STATIC_CAST(nsCounterUseNode*, this);
+    return static_cast<nsCounterUseNode*>(this);
 }
 
 inline nsCounterChangeNode* nsCounterNode::ChangeNode()
 {
     NS_ASSERTION(mType == INCREMENT || mType == RESET, "wrong type");
-    return NS_STATIC_CAST(nsCounterChangeNode*, this);
+    return static_cast<nsCounterChangeNode*>(this);
 }
 
 inline void nsCounterNode::Calc(nsCounterList* aList)
@@ -186,22 +186,28 @@ inline void nsCounterNode::Calc(nsCounterList* aList)
 
 class nsCounterList : public nsGenConList {
 public:
-    nsCounterList() : nsGenConList() {}
+    nsCounterList() : nsGenConList(),
+                      mDirty(PR_FALSE)
+    {}
 
     void Insert(nsCounterNode* aNode) {
         nsGenConList::Insert(aNode);
-        SetScope(aNode);
+        // Don't SetScope if we're dirty -- we'll reset all the scopes anyway,
+        // and we can't usefully compute scopes right now.
+        if (NS_LIKELY(!IsDirty())) {
+            SetScope(aNode);
+        }
     }
 
     nsCounterNode* First() {
-        return NS_STATIC_CAST(nsCounterNode*, mFirstNode);
+        return static_cast<nsCounterNode*>(mFirstNode);
     }
 
     static nsCounterNode* Next(nsCounterNode* aNode) {
-        return NS_STATIC_CAST(nsCounterNode*, nsGenConList::Next(aNode));
+        return static_cast<nsCounterNode*>(nsGenConList::Next(aNode));
     }
     static nsCounterNode* Prev(nsCounterNode* aNode) {
-        return NS_STATIC_CAST(nsCounterNode*, nsGenConList::Prev(aNode));
+        return static_cast<nsCounterNode*>(nsGenConList::Prev(aNode));
     }
 
     static PRInt32 ValueBefore(nsCounterNode* aNode) {
