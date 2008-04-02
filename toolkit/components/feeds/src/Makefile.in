@@ -52,7 +52,7 @@ REQUIRES	= \
 		xpcom \
 		necko \
 		string \
-		js \
+		widget \
 		dom \
 		htmlparser \
 		content \

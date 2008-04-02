@@ -161,6 +161,12 @@ nsAutoCompleteMdbResult::GetStyleAt(PRInt32 aIndex, nsAString & _retval)
   return NS_ERROR_NOT_IMPLEMENTED;
 }
 
+NS_IMETHODIMP
+nsAutoCompleteMdbResult::GetImageAt(PRInt32 aIndex, nsAString & _retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
 ////////////////////////////////////////////////////////////////////////
 //// nsIAutoCompleteBaseResult
 
@@ -290,7 +296,7 @@ nsAutoCompleteMdbResult::GetRowValue(nsIMdbRow *aRow, mdb_column aCol, nsAString
           return NS_ERROR_OUT_OF_MEMORY;
         SwapBytes(swapval, (const PRUnichar *)yarn.mYarn_Buf, len);
         aValue.Assign(swapval, len);
-        delete swapval;
+        delete[] swapval;
       }
       else
         aValue.Assign((const PRUnichar *)yarn.mYarn_Buf, len);

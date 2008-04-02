@@ -15,8 +15,8 @@
 # The Original Code is mozilla.org code.
 #
 # The Initial Developer of the Original Code is
-# Netscape Communications Corporation.
-# Portions created by the Initial Developer are Copyright (C) 1998
+# Google, Inc.
+# Portions created by the Initial Developer are Copyright (C) 2007
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
@@ -40,8 +40,48 @@ DEPTH     = ../../../..
 topsrcdir = @top_srcdir@
 srcdir    = @srcdir@
 VPATH     = @srcdir@
+relativesrcdir  = toolkit/components/url-classifier/tests
 
 include $(DEPTH)/config/autoconf.mk
 
+MODULE = test_url-classifier
+
+MOZILLA_INTERNAL_API = 1
+
+REQUIRES = \
+	string \
+	url-classifier \
+	xpcom \
+	necko \
+	$(NULL)
+
+# xpcshell tests
+XPCSHELL_TESTS=unit
+
+# simple c++ tests (no xpcom)
+CPPSRCS = \
+	TestUrlClassifierUtils.cpp \
+	$(NULL)
+
+SIMPLE_PROGRAMS = $(CPPSRCS:.cpp=$(BIN_SUFFIX))
+
+LOCAL_INCLUDES = \
+	-I$(srcdir)/../src \
+	-I$(srcdir)/../public \
+	$(NULL)
+
+LIBS = \
+	../src/$(LIB_PREFIX)urlclassifier_s.$(LIB_SUFFIX) \
+	$(MOZ_COMPONENT_LIBS) \
+	$(XPCOM_LIBS) \
+	$(NSPR_LIBS) \
+	$(NULL)
+
 include $(topsrcdir)/config/rules.mk
 
+check::
+	@echo Running tests...
+	@$(EXIT_ON_ERROR) \
+	for f in $(SIMPLE_PROGRAMS); do \
+	  $(RUN_TEST_PROGRAM) $(DIST)/bin/$$f; \
+  done

@@ -124,16 +124,9 @@ function commonDialogOnLoad()
   }
 
   // display the main text
-  var messageText = gCommonDialogParam.GetString(0);
-  var messageParent = document.getElementById("info.box");
-  var messageParagraphs = messageText.split("\n");
-
-  for (var i = 0; i < messageParagraphs.length; i++) {
-    var descriptionNode = document.createElement("description");
-    var text = document.createTextNode(messageParagraphs[i]);
-    descriptionNode.appendChild(text);
-    messageParent.appendChild(descriptionNode);
-  }
+  // XXX the substr(0, 10000) part is a workaround for bug 317334
+  var croppedMessage = gCommonDialogParam.GetString(0).substr(0, 10000);
+  setElementText("info.body", croppedMessage, true);
 
   setElementText("info.header", gCommonDialogParam.GetString(3), true);
 
@@ -269,9 +262,7 @@ function setElementText(aElementID, aValue, aChildNodeFlag)
 function setCheckbox(aChkMsg, aChkValue)
 {
   if (aChkMsg) {
-    // XXX Would love to use hidden instead of collapsed, but the checkbox
-    // fails to size itself properly when I do this.
-    document.getElementById("checkboxContainer").removeAttribute("collapsed");
+    unHideElementById("checkboxContainer");
     
     var checkboxElement = document.getElementById("checkbox");
     setLabelForNode(checkboxElement, aChkMsg);

@@ -39,7 +39,6 @@
 # ***** END LICENSE BLOCK *****
 
 <?xml-stylesheet href="chrome://help/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://global/skin/findBar.css" type="text/css"?>
 
 <?xul-overlay href="chrome://help/content/helpContextOverlay.xul"?>
 <!DOCTYPE window [
@@ -47,8 +46,6 @@
     %brandDTD;
     <!ENTITY % helpDTD SYSTEM "chrome://help/locale/help.dtd">
     %helpDTD;
-    <!ENTITY % findBarDTD SYSTEM "chrome://global/locale/findbar.dtd" >
-    %findBarDTD;
     <!ENTITY % globalDTD SYSTEM "chrome://global/locale/global.dtd">
     %globalDTD;
 ]>
@@ -58,9 +55,6 @@
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         width="700"
         height="550"
-#ifdef XP_MACOSX
-#define HELP_ALWAYS_RAISED_TOGGLE
-#endif
 #ifdef XP_WIN
 #define HELP_ALWAYS_RAISED_TOGGLE
 #endif
@@ -70,16 +64,13 @@
         persist="width height screenX screenY"
 #endif
         onload="init();"
-        onunload="gFindBar.uninitFindBar(); window.XULBrowserWindow.destroy();">
+        onunload="window.XULBrowserWindow.destroy();">
 
-  <script type="application/x-javascript" src="chrome://help/content/help.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/findBar.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/viewZoomOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
+  <script type="application/javascript" src="chrome://help/content/help.js"/>
+  <script type="application/javascript" src="chrome://global/content/nsDragAndDrop.js"/>
+  <script type="application/javascript" src="chrome://global/content/viewZoomOverlay.js"/>
+  <script type="application/javascript" src="chrome://global/content/globalOverlay.js"/>
 
-  <stringbundle id="bundle_findBar" src="chrome://global/locale/findbar.properties"/>
-    
   <menupopup id="backMenu" position="after_start"
              onpopupshowing="return createBackMenu(event);"
              oncommand="gotoHistoryIndex(event);"/>
@@ -100,11 +91,15 @@
     <command id="Help:Forward" oncommand="goForward();" observes="canGoForward"/>
     <command id="Help:ToggleSidebar" oncommand="toggleSidebar();"/>
     <command id="cmd_closeWindow" oncommand="close();"/>
-    <command id="cmd_textZoomReduce" oncommand="ZoomManager.prototype.getInstance().reduce();"/>
-    <command id="cmd_textZoomEnlarge" oncommand="ZoomManager.prototype.getInstance().enlarge();"/>
-    <command id="cmd_find" oncommand="gFindBar.onFindCmd();"/>
-    <command id="cmd_findAgain" oncommand="gFindBar.onFindAgainCmd();"/>
-    <command id="cmd_findPrevious" oncommand="gFindBar.onFindPreviousCmd();"/>
+    <command id="cmd_fullZoomReduce" oncommand="ZoomManager.reduce();"/>
+    <command id="cmd_fullZoomEnlarge" oncommand="ZoomManager.enlarge();"/>
+    <command id="cmd_fullZoomReset" oncommand="ZoomManager.reset();"/>
+    <command id="cmd_find"
+             oncommand="document.getElementById('FindToolbar').onFindCommand();"/>
+    <command id="cmd_findAgain"
+             oncommand="document.getElementById('FindToolbar').onFindAgainCommand(false);"/>
+    <command id="cmd_findPrevious"
+             oncommand="document.getElementById('FindToolbar').onFindAgainCommand(true);"/>
     <command id="cmd_copy" oncommand="goDoCommand('cmd_copy')" disabled="true"/>
     <command id="cmd_selectAll" oncommand="goDoCommand('cmd_selectAll')"/>
   </commandset>
@@ -134,14 +129,14 @@
          command="cmd_closeWindow" modifiers="accel"/>
     <key id="key_closeSearchSidebar" keycode="VK_ESCAPE"
          oncommand="hideSearchSidebar(event)"/>
-    <key id="key_textZoomEnlarge" key="&textZoomEnlargeCmd.commandkey;"
-         command="cmd_textZoomEnlarge" modifiers="accel"/>
-    <key id="key_textZoomEnlarge2" key="&textZoomEnlargeCmd.commandkey2;"
-         command="cmd_textZoomEnlarge" modifiers="accel"/>
-    <key id="key_textZoomReduce" key="&textZoomReduceCmd.commandkey;"
-         command="cmd_textZoomReduce" modifiers="accel"/>
-    <key id="key_textZoomReset" key="&textZoomResetCmd.commandkey;"
-         oncommand="ZoomManager.prototype.getInstance().reset();" modifiers="accel"/>
+    <key id="key_fullZoomEnlarge" key="&fullZoomEnlargeCmd.commandkey;"
+         command="cmd_fullZoomEnlarge" modifiers="accel"/>
+    <key id="key_fullZoomEnlarge2" key="&fullZoomEnlargeCmd.commandkey2;"
+         command="cmd_fullZoomEnlarge" modifiers="accel"/>
+    <key id="key_fullZoomReduce" key="&fullZoomReduceCmd.commandkey;"
+         command="cmd_fullZoomReduce" modifiers="accel"/>
+    <key id="key_fullZoomReset" key="&fullZoomResetCmd.commandkey;"
+         command="cmd_fullZoomReset" modifiers="accel"/>
     <key id="key_focusSearch" key="&helpSearch.commandkey;"
          oncommand="focusSearch()" modifiers="accel"/>
 
@@ -154,7 +149,7 @@
 
   <vbox flex="1">
     <toolbox id="help-toolbox" class="toolbox-top">
-      <toolbar id="HelpToolbar" class="chromeclass-toolbar">
+      <toolbar id="HelpToolbar" class="chromeclass-toolbar" chromedir="&locale.dir;">
         <toolbarbutton id="help-back-button" type="menu-button"
                        label="&backButton.label;"
                        oncommand="if (event.target == this) goBack(); else gotoHistoryIndex(event);"
@@ -211,12 +206,10 @@
                           object="?subheadings"/>
                   <member container="?subheadings"
                           child="?subheading"/>
+                  <triple subject="?subheading"
+                          predicate="http://home.netscape.com/NC-rdf#name"
+                          object="?name"/>
                 </conditions>
-                <bindings>
-                  <binding subject="?subheading"
-                           predicate="http://home.netscape.com/NC-rdf#name"
-                           object="?name"/>
-                </bindings>
                 <action>
                   <treechildren>
                     <treeitem uri="?subheading">
@@ -237,7 +230,9 @@
         <vbox id="help-search-sidebar" hidden="true" flex="1">
           <sidebarheader align="center">
             <label id="help-search-sidebar-header" flex="1" crop="end" value="&searchtab.label;"/>
-            <toolbarbutton id="find-closebutton"  oncommand="hideSearchSidebar();"/>
+            <toolbarbutton id="search-sidebar-closebutton"
+                           tooltiptext="&searchClose.tooltip;"
+                           oncommand="hideSearchSidebar();"/>
           </sidebarheader>
           <tree id="help-search-tree" class="focusring"
                 flex="1" hidecolumnpicker="true"
@@ -310,7 +305,7 @@
         <browser context="contentAreaContextMenu"
                  type="content-primary" id="help-content"
                  src="about:blank" flex="1"/>
-#include ../../typeaheadfind/content/findBar.inc
+        <findbar id="FindToolbar" browserid="help-content"/>
       </vbox>
     </hbox>
   </vbox>
