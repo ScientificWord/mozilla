@@ -85,7 +85,7 @@ MSI_NewMrowEditingImp(nsIDOMNode* mathmlNode, msiIMrowEditing** aResult)
   if (!imp) 
     return NS_ERROR_OUT_OF_MEMORY;
 
-  *aResult = NS_STATIC_CAST(msiIMrowEditing*, imp);
+  *aResult = static_cast<msiIMrowEditing*>(imp);
   NS_ADDREF(*aResult);
   
   return NS_OK;

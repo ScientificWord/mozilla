@@ -57,7 +57,6 @@
 #include "nsIDOMNodeList.h"
 
 #include "nsIDOMEventTarget.h"
-#include "nsIDOMEventReceiver.h"
 
 #include "nsIPrefBranch.h"
 #include "nsIPrefService.h"
@@ -107,7 +106,7 @@ nsHTMLEditor::GetAbsolutelyPositionedSelectionContainer(nsIDOMElement **_retval)
   nsCOMPtr<nsIDOMNode> node = do_QueryInterface(element);
   nsCOMPtr<nsIDOMNode> resultNode;
 
-  do {
+  while (!resultNode && !nsEditor::NodeIsType(node, nsEditProperty::html)) {
     res = mHTMLCSSUtils->GetComputedProperty(node, nsEditProperty::cssPosition,
                                              positionStr);
     if (NS_FAILED(res)) return res;
@@ -119,8 +118,7 @@ nsHTMLEditor::GetAbsolutelyPositionedSelectionContainer(nsIDOMElement **_retval)
       if (NS_FAILED(res)) return res;
       node.swap(parentNode);
     }
-  } while (!resultNode &&
-           !nsEditor::NodeIsType(node, nsEditProperty::html));
+  }
 
   element = do_QueryInterface(resultNode ); 
   *_retval = element;
@@ -316,16 +314,16 @@ nsHTMLEditor::HideGrabber()
   nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
   if (!ps) return NS_ERROR_NOT_INITIALIZED;
 
-  // get the root content node.
+  nsCOMPtr<nsIDOMNode> parentNode;
+  res = mGrabber->GetParentNode(getter_AddRefs(parentNode));
+  NS_ENSURE_SUCCESS(res, res);
 
-  nsIDOMElement *rootElement = GetRoot();
+  nsCOMPtr<nsIContent> parentContent = do_QueryInterface(parentNode);
+  if (!parentContent) return NS_ERROR_NULL_POINTER;
 
-  nsCOMPtr<nsIContent> rootContent = do_QueryInterface(rootElement);
-  if (!rootContent) return NS_ERROR_NULL_POINTER;
-
-  DeleteRefToAnonymousNode(mGrabber, rootContent, ps);
+  DeleteRefToAnonymousNode(mGrabber, parentContent, ps);
   mGrabber = nsnull;
-  DeleteRefToAnonymousNode(mPositioningShadow, rootContent, ps);
+  DeleteRefToAnonymousNode(mPositioningShadow, parentContent, ps);
   mPositioningShadow = nsnull;
 
   return NS_OK;
@@ -347,11 +345,13 @@ nsHTMLEditor::ShowGrabberOnElement(nsIDOMElement * aElement)
   // first, let's keep track of that element...
   mAbsolutelyPositionedObject = aElement;
 
-  nsIDOMElement *rootElement = GetRoot();
-  if (!rootElement)   return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<nsIDOMNode> parentNode;
+  res = aElement->GetParentNode(getter_AddRefs(parentNode));
+  NS_ENSURE_SUCCESS(res, res);
 
-  res = CreateGrabber(rootElement, getter_AddRefs(mGrabber));
-  if (NS_FAILED(res)) return res;
+  res = CreateGrabber(parentNode, getter_AddRefs(mGrabber));
+  NS_ENSURE_SUCCESS(res, res);
+
   // and set its position
   return RefreshGrabber();
 }
@@ -359,16 +359,17 @@ nsHTMLEditor::ShowGrabberOnElement(nsIDOMElement * aElement)
 nsresult
 nsHTMLEditor::StartMoving(nsIDOMElement *aHandle)
 {
-  nsIDOMElement *rootElement = GetRoot();
-  if (!rootElement)   return NS_ERROR_NULL_POINTER;
+  nsCOMPtr<nsIDOMNode> parentNode;
+  nsresult res = mGrabber->GetParentNode(getter_AddRefs(parentNode));
+  NS_ENSURE_SUCCESS(res, res);
 
   // now, let's create the resizing shadow
-  nsresult result = CreateShadow(getter_AddRefs(mPositioningShadow),
-                                 rootElement, mAbsolutelyPositionedObject);
-  if (NS_FAILED(result)) return result;
-  result = SetShadowPosition(mPositioningShadow, mAbsolutelyPositionedObject,
+  res = CreateShadow(getter_AddRefs(mPositioningShadow),
+                                 parentNode, mAbsolutelyPositionedObject);
+  NS_ENSURE_SUCCESS(res,res);
+  res = SetShadowPosition(mPositioningShadow, mAbsolutelyPositionedObject,
                              mPositionedObjectX, mPositionedObjectY);
-  if (NS_FAILED(result)) return result;
+  NS_ENSURE_SUCCESS(res,res);
 
   // make the shadow appear
   mPositioningShadow->RemoveAttribute(NS_LITERAL_STRING("class"));
@@ -382,7 +383,7 @@ nsHTMLEditor::StartMoving(nsIDOMElement *aHandle)
                                       mPositionedObjectHeight);
 
   mIsMoving = PR_TRUE;
-  return result;
+  return res;
 }
 
 void
@@ -403,11 +404,11 @@ nsHTMLEditor::GrabberClicked()
     mMouseMotionListenerP = new ResizerMouseMotionListener(this);
     if (!mMouseMotionListenerP) {return NS_ERROR_NULL_POINTER;}
 
-    nsCOMPtr<nsIDOMEventReceiver> erP = GetDOMEventReceiver();
-    NS_ENSURE_TRUE(erP, NS_ERROR_FAILURE);
+    nsCOMPtr<nsPIDOMEventTarget> piTarget = GetPIDOMEventTarget();
+    NS_ENSURE_TRUE(piTarget, NS_ERROR_FAILURE);
 
-    res = erP->AddEventListenerByIID(mMouseMotionListenerP,
-                                     NS_GET_IID(nsIDOMMouseMotionListener));
+    res = piTarget->AddEventListenerByIID(mMouseMotionListenerP,
+                                          NS_GET_IID(nsIDOMMouseMotionListener));
     NS_ASSERTION(NS_SUCCEEDED(res),
                  "failed to register mouse motion listener");
   }
@@ -422,35 +423,42 @@ nsHTMLEditor::EndMoving()
     nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
     if (!ps) return NS_ERROR_NOT_INITIALIZED;
 
-    // get the root content node.
+    nsCOMPtr<nsIDOMNode> parentNode;
+    nsresult res = mGrabber->GetParentNode(getter_AddRefs(parentNode));
+    NS_ENSURE_SUCCESS(res, res);
 
-    nsIDOMElement *rootElement = GetRoot();
+    nsCOMPtr<nsIContent> parentContent( do_QueryInterface(parentNode) );
+    if (!parentContent) return NS_ERROR_FAILURE;
 
-    nsCOMPtr<nsIContent> rootContent( do_QueryInterface(rootElement) );
-    if (!rootContent) return NS_ERROR_FAILURE;
+    DeleteRefToAnonymousNode(mPositioningShadow, parentContent, ps);
 
-    DeleteRefToAnonymousNode(mPositioningShadow, rootContent, ps);
     mPositioningShadow = nsnull;
   }
-  nsCOMPtr<nsIDOMEventReceiver> erP = GetDOMEventReceiver();
+  nsCOMPtr<nsPIDOMEventTarget> piTarget = GetPIDOMEventTarget();
 
-  if (erP && mMouseMotionListenerP) {
+  if (piTarget && mMouseMotionListenerP) {
 #ifdef DEBUG
     nsresult res =
 #endif
-    erP->RemoveEventListenerByIID(mMouseMotionListenerP, NS_GET_IID(nsIDOMMouseMotionListener));
+    piTarget->RemoveEventListenerByIID(mMouseMotionListenerP,
+                                       NS_GET_IID(nsIDOMMouseMotionListener));
     NS_ASSERTION(NS_SUCCEEDED(res), "failed to remove mouse motion listener");
   }
   mMouseMotionListenerP = nsnull;
 
-  return NS_OK;
+  mGrabberClicked = PR_FALSE;
+  mIsMoving = PR_FALSE;
+  nsCOMPtr<nsISelection> selection;
+  GetSelection(getter_AddRefs(selection));
+  if (!selection) {
+    return NS_ERROR_NOT_INITIALIZED;
+  }
+  return CheckSelectionStateForAnonymousButtons(selection);
 }
 nsresult
 nsHTMLEditor::SetFinalPosition(PRInt32 aX, PRInt32 aY)
 {
   nsresult res = EndMoving();
-  mGrabberClicked = PR_FALSE;
-  mIsMoving = PR_FALSE;
   if (NS_FAILED(res)) return res;
 
   // we have now to set the new width and height of the resized object

@@ -47,7 +47,7 @@
 #include "nsIDOMNodeList.h"
 #include "nsIDOMDocument.h"
 #include "nsIDocument.h"
-#include "nsIDOMEventReceiver.h" 
+#include "nsIDOMEventTarget.h" 
 #include "nsIDOM3EventTarget.h" 
 #include "nsIDOMKeyEvent.h"
 #include "nsIDOMMouseListener.h"
@@ -78,10 +78,12 @@
 #include "nsContentCID.h"
 #include "nsAOLCiter.h"
 #include "nsInternetCiter.h"
+#include "nsEventDispatcher.h"
 
 // Drag & Drop, Clipboard
 #include "nsIClipboard.h"
 #include "nsITransferable.h"
+#include "nsCopySupport.h"
 
 // prototype for rules creation shortcut
 nsresult NS_NewTextEditRules(nsIEditRules** aInstancePtrResult);
@@ -95,6 +97,11 @@ nsPlaintextEditor::nsPlaintextEditor()
 , mMaxTextLength(-1)
 , mInitTriggerCounter(0)
 , mNewlineHandling(nsIPlaintextEditor::eNewlinesPasteToFirst)
+#ifdef XP_WIN
+, mCaretStyle(1)
+#else
+, mCaretStyle(0)
+#endif
 {
 } 
 
@@ -137,11 +144,19 @@ NS_IMETHODIMP nsPlaintextEditor::Init(nsIDOMDocument *aDoc,
     res = nsEditor::Init(aDoc, aPresShell, aRoot, aSelCon, aFlags);
   }
 
-  // check the "single line editor newline handling" pref
+  // check the "single line editor newline handling"
+  // and "caret behaviour in selection" prefs
   nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
   if (prefBranch)
+  {
     prefBranch->GetIntPref("editor.singleLine.pasteNewlines",
                            &mNewlineHandling);
+    prefBranch->GetIntPref("layout.selection.caret_style", &mCaretStyle);
+#ifdef XP_WIN
+    if (mCaretStyle == 0)
+      mCaretStyle = 1;
+#endif
+  }
 
   if (NS_FAILED(rulesRes)) return rulesRes;
   return res;
@@ -287,16 +302,17 @@ nsPlaintextEditor::CreateEventListeners()
                                       this);
   }
 
+  nsCOMPtr<nsIPresShell> presShell = do_QueryReferent(mPresShellWeak);
   if (!mDragListenerP) {
     // get a drag listener
-    nsCOMPtr<nsIPresShell> presShell = do_QueryReferent(mPresShellWeak);
     rv |= NS_NewEditorDragListener(getter_AddRefs(mDragListenerP), presShell,
                                    this);
   }
 
   if (!mFocusListenerP) {
     // get a focus listener
-    rv |= NS_NewEditorFocusListener(getter_AddRefs(mFocusListenerP), this);
+    rv |= NS_NewEditorFocusListener(getter_AddRefs(mFocusListenerP),
+                                    this, presShell);
   }
 
   return rv;
@@ -630,41 +646,59 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
   nsAutoPlaceHolderBatch batch(this, gDeleteTxnName);
   nsAutoRules beginRulesSniffing(this, kOpDeleteSelection, aAction);
 
+  // pre-process
+  nsCOMPtr<nsISelection> selection;
+  result = GetSelection(getter_AddRefs(selection));
+  if (NS_FAILED(result)) return result;
+  if (!selection) return NS_ERROR_NULL_POINTER;
+
+  // If there is an existing selection when an extended delete is requested,
+  //  platforms that use "caret-style" caret positioning collapse the
+  //  selection to the  start and then create a new selection.
+  //  Platforms that use "selection-style" caret positioning just delete the
+  //  existing selection without extending it.
+  PRBool bCollapsed;
+  result  = selection->GetIsCollapsed(&bCollapsed);
+  if (NS_FAILED(result)) return result;
+  if (!bCollapsed &&
+      (aAction == eNextWord || aAction == ePreviousWord ||
+       aAction == eToBeginningOfLine || aAction == eToEndOfLine))
+    if (mCaretStyle == 1)
+    {
+      result = selection->CollapseToStart();
+      if (NS_FAILED(result)) return result;
+    }
+    else
+    { 
+      aAction = eNone;
+    }
+
   // If it's one of these modes,
   // we have to extend the selection first.
   // This needs to happen inside selection batching,
   // otherwise the deleted text is autocopied to the clipboard.
   if (aAction == eNextWord || aAction == ePreviousWord
+      || (aAction == eNext && bCollapsed)
       || aAction == eToBeginningOfLine || aAction == eToEndOfLine)
   {
-    if (!mPresShellWeak) return NS_ERROR_NOT_INITIALIZED;
-    nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
-    if (!ps) return NS_ERROR_NOT_INITIALIZED;
-
-    PRUint8 caretBidiLevel;
-    result = ps->GetCaretBidiLevel(&caretBidiLevel);
-    if (NS_FAILED(result)) return result;
-    
     nsCOMPtr<nsISelectionController> selCont (do_QueryReferent(mSelConWeak));
     if (!selCont)
       return NS_ERROR_NO_INTERFACE;
 
     switch (aAction)
     {
-        // if caret has odd Bidi level, i.e. text is right-to-left,
-        // reverse the effect of ePreviousWord and eNextWord
         case eNextWord:
-          result = (caretBidiLevel & 1) ?
-                   selCont->WordMove(PR_FALSE, PR_TRUE) :
-                   selCont->WordMove(PR_TRUE, PR_TRUE);
+          result = selCont->WordExtendForDelete(PR_TRUE);
           // DeleteSelectionImpl doesn't handle these actions
           // because it's inside batching, so don't confuse it:
           aAction = eNone;
           break;
         case ePreviousWord:
-          result = (caretBidiLevel & 1) ?
-                   selCont->WordMove(PR_TRUE, PR_TRUE) :
-                   selCont->WordMove(PR_FALSE, PR_TRUE);
+          result = selCont->WordExtendForDelete(PR_FALSE);
+          aAction = eNone;
+          break;
+        case eNext:
+          result = selCont->CharacterExtendForDelete();
           aAction = eNone;
           break;
         case eToBeginningOfLine:
@@ -682,12 +716,6 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
     }
     NS_ENSURE_SUCCESS(result, result);
   }
-
-  // pre-process
-  nsCOMPtr<nsISelection> selection;
-  result = GetSelection(getter_AddRefs(selection));
-  if (NS_FAILED(result)) return result;
-  if (!selection) return NS_ERROR_NULL_POINTER;
 
   nsTextRulesInfo ruleInfo(nsTextEditRules::kDeleteSelection);
   ruleInfo.collapsedAction = aAction;
@@ -764,6 +792,13 @@ NS_IMETHODIMP nsPlaintextEditor::InsertLineBreak()
   if (NS_FAILED(res)) return res;
   if (!selection) return NS_ERROR_NULL_POINTER;
 
+  // Batching the selection and moving nodes out from under the caret causes
+  // caret turds. Ask the shell to invalidate the caret now to avoid the turds.
+  nsCOMPtr<nsIPresShell> shell;
+  res = GetPresShell(getter_AddRefs(shell));
+  if (NS_FAILED(res)) return res;
+  shell->MaybeInvalidateCaretPosition();
+
   nsTextRulesInfo ruleInfo(nsTextEditRules::kInsertBreak);
   PRBool cancel, handled;
   res = mRules->WillDoAction(selection, &ruleInfo, &cancel, &handled);
@@ -837,7 +872,7 @@ nsPlaintextEditor::BeginComposition(nsTextEventReply* aReply)
   if(mFlags & nsIPlaintextEditor::eEditorPasswordMask)  {
     if (mRules) {
       nsIEditRules *p = mRules.get();
-      nsTextEditRules *textEditRules = NS_STATIC_CAST(nsTextEditRules *, p);
+      nsTextEditRules *textEditRules = static_cast<nsTextEditRules *>(p);
       textEditRules->ResetIMETextPWBuf();
     }
     else  {
@@ -952,7 +987,7 @@ static void CutStyle(const char* stylename, nsString& styleValue)
 NS_IMETHODIMP 
 nsPlaintextEditor::SetWrapWidth(PRInt32 aWrapColumn)
 {
-  mWrapColumn = aWrapColumn;
+  SetWrapColumn(aWrapColumn);
 
   // Make sure we're a plaintext editor, otherwise we shouldn't
   // do the rest of this.
@@ -1009,16 +1044,23 @@ nsPlaintextEditor::SetWrapWidth(PRInt32 aWrapColumn)
   // and now we're ready to set the new whitespace/wrapping style.
   if (aWrapColumn > 0 && !mWrapToWindow)        // Wrap to a fixed column
   {
-    styleValue.AppendLiteral("white-space: -moz-pre-wrap; width: ");
+    styleValue.AppendLiteral("white-space: pre-wrap; width: ");
     styleValue.AppendInt(aWrapColumn);
     styleValue.AppendLiteral("ch;");
   }
   else if (mWrapToWindow || aWrapColumn == 0)
-    styleValue.AppendLiteral("white-space: -moz-pre-wrap;");
+    styleValue.AppendLiteral("white-space: pre-wrap;");
   else
     styleValue.AppendLiteral("white-space: pre;");
 
   return rootElement->SetAttribute(styleName, styleValue);
+}
+
+NS_IMETHODIMP 
+nsPlaintextEditor::SetWrapColumn(PRInt32 aWrapColumn)
+{
+  mWrapColumn = aWrapColumn;
+  return NS_OK;
 }
 
 //
@@ -1098,53 +1140,122 @@ nsPlaintextEditor::Redo(PRUint32 aCount)
   return result;
 }
 
-NS_IMETHODIMP nsPlaintextEditor::Cut()
+nsresult nsPlaintextEditor::GetClipboardEventTarget(nsIDOMNode** aEventTarget)
 {
+  NS_ENSURE_ARG_POINTER(aEventTarget);
+  *aEventTarget = nsnull;
+
   nsCOMPtr<nsISelection> selection;
   nsresult res = GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(res))
     return res;
 
+  return nsCopySupport::GetClipboardEventTarget(selection, aEventTarget);
+}
+
+nsresult nsPlaintextEditor::FireClipboardEvent(PRUint32 msg,
+                                               PRBool* aPreventDefault)
+{
+  *aPreventDefault = PR_FALSE;
+
+  nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
+  if (!ps)
+    return NS_ERROR_NOT_INITIALIZED;
+
+  // Unsafe to fire event during reflow (bug 396108)
+  PRBool isReflowing = PR_TRUE;
+  nsresult rv = ps->IsReflowLocked(&isReflowing);
+  if (NS_FAILED(rv) || isReflowing)
+    return NS_OK;
+
+  nsCOMPtr<nsIDOMNode> eventTarget;
+  rv = GetClipboardEventTarget(getter_AddRefs(eventTarget));
+  if (NS_FAILED(rv))
+    // On failure to get event target, just forget about it and don't fire.
+    return NS_OK;
+
+  nsEventStatus status = nsEventStatus_eIgnore;
+  nsEvent evt(PR_TRUE, msg);
+  nsEventDispatcher::Dispatch(eventTarget, ps->GetPresContext(), &evt,
+                              nsnull, &status);
+  // if event handler return'd false (PreventDefault)
+  if (status == nsEventStatus_eConsumeNoDefault)
+    *aPreventDefault = PR_TRUE;
+
+  // Did the event handler cause the editor to be destroyed? (ie. the input
+  // element was removed from the document)  Don't proceed with command,
+  // could crash, definitely does during paste.
+  if (mDidPreDestroy)
+    return NS_ERROR_NOT_INITIALIZED;
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsPlaintextEditor::Cut()
+{
+  PRBool preventDefault;
+  nsresult rv = FireClipboardEvent(NS_CUT, &preventDefault);
+  if (NS_FAILED(rv) || preventDefault)
+    return rv;
+
+  nsCOMPtr<nsISelection> selection;
+  rv = GetSelection(getter_AddRefs(selection));
+  if (NS_FAILED(rv))
+    return rv;
+
   PRBool isCollapsed;
   if (NS_SUCCEEDED(selection->GetIsCollapsed(&isCollapsed)) && isCollapsed)
     return NS_OK;  // just return ok so no JS error is thrown
 
-  res = Copy();
-  if (NS_SUCCEEDED(res))
-    res = DeleteSelection(eNone);
-  return res;
+  // ps should be guaranteed by FireClipboardEvent not failing
+  nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
+  rv = ps->DoCopy();
+  if (NS_SUCCEEDED(rv))
+    rv = DeleteSelection(eNone);
+  return rv;
 }
 
 NS_IMETHODIMP nsPlaintextEditor::CanCut(PRBool *aCanCut)
 {
-  nsresult res = CanCopy(aCanCut);
-  if (NS_FAILED(res)) return res;
+  NS_ENSURE_ARG_POINTER(aCanCut);
+  *aCanCut = PR_FALSE;
+
+  nsCOMPtr<nsISelection> selection;
+  nsresult rv = GetSelection(getter_AddRefs(selection));
+  if (NS_FAILED(rv)) return rv;
     
-  *aCanCut = *aCanCut && IsModifiable();
+  PRBool isCollapsed;
+  rv = selection->GetIsCollapsed(&isCollapsed);
+  if (NS_FAILED(rv)) return rv;
+
+  *aCanCut = !isCollapsed && IsModifiable();
   return NS_OK;
 }
 
 NS_IMETHODIMP nsPlaintextEditor::Copy()
 {
-  if (!mPresShellWeak) return NS_ERROR_NOT_INITIALIZED;
+  PRBool preventDefault;
+  nsresult rv = FireClipboardEvent(NS_COPY, &preventDefault);
+  if (NS_FAILED(rv) || preventDefault)
+    return rv;
+
+  // ps should be guaranteed by FireClipboardEvent not failing
   nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
-  if (!ps) return NS_ERROR_NOT_INITIALIZED;
   return ps->DoCopy();
 }
 
 NS_IMETHODIMP nsPlaintextEditor::CanCopy(PRBool *aCanCopy)
 {
-  if (!aCanCopy)
-    return NS_ERROR_NULL_POINTER;
+  NS_ENSURE_ARG_POINTER(aCanCopy);
   *aCanCopy = PR_FALSE;
-  
+
   nsCOMPtr<nsISelection> selection;
-  nsresult res = GetSelection(getter_AddRefs(selection));
-  if (NS_FAILED(res)) return res;
+  nsresult rv = GetSelection(getter_AddRefs(selection));
+  if (NS_FAILED(rv)) return rv;
     
   PRBool isCollapsed;
-  res = selection->GetIsCollapsed(&isCollapsed);
-  if (NS_FAILED(res)) return res;
+  rv = selection->GetIsCollapsed(&isCollapsed);
+  if (NS_FAILED(rv)) return rv;
 
   *aCanCopy = !isCollapsed;
   return NS_OK;
@@ -1203,13 +1314,7 @@ nsPlaintextEditor::GetAndInitDocEncoder(const nsAString& aFormatType,
     NS_ENSURE_TRUE(rootElement, NS_ERROR_FAILURE);
     if (!nsTextEditUtils::IsBody(rootElement))
     {
-      nsCOMPtr<nsIDOMRange> range (do_CreateInstance("@mozilla.org/content/range;1", &rv));
-      NS_ENSURE_SUCCESS(rv, rv);
-
-      rv = range->SelectNodeContents(rootElement);
-      NS_ENSURE_SUCCESS(rv, rv);
-
-      rv = docEncoder->SetRange(range);
+      rv = docEncoder->SetContainerNode(rootElement);
       NS_ENSURE_SUCCESS(rv, rv);
     }
   }
@@ -1342,7 +1447,7 @@ nsPlaintextEditor::PasteAsQuotation(PRInt32 aSelectionType)
         rv = InsertAsQuotation(stuffToPaste, 0);
       }
     }
-    nsCRT::free(flav);
+    NS_Free(flav);
   }
 
   return rv;

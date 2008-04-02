@@ -3,11 +3,11 @@
 #include "nsString.h"
 #include "nsIDOMNamedNodeMap.h"
 #include "nsIDOMAttr.h"
-#include "nsITextContent.h"
 #include "nsIDOMNode.h"
 #include "nsIDOMText.h"
 #include "nsIDOMCharacterData.h"
 #include "nsIArray.h"
+#include "nsIContent.h"
 
 #include "msiEditingManager.h"
 #include "msiInputbox.h"
@@ -963,7 +963,7 @@ nsresult msiEditingManager::DetermineParentLeftRight(nsIDOMNode * node,
         PRUint32 index(0);
         PRUint32 textlen(0);
         msiUtils::GetIndexOfChildInParent(node, index);
-        nsCOMPtr<nsITextContent> text(do_QueryInterface(node));
+        nsCOMPtr<nsIContent> text(do_QueryInterface(node));
         if (text)
           textlen = text->TextLength();
         if (0 < offset && offset < textlen)
@@ -1037,8 +1037,8 @@ msiEditingManager::GetMathMLNodeAndTypeFromNode(nsIDOMNode * rawNode, PRUint32 r
     { 
       if (text)
       { 
-        nsCOMPtr<nsITextContent> tc(do_QueryInterface(text));
-        if (tc && tc->IsOnlyWhitespace())
+        nsCOMPtr<nsIContent> tc(do_QueryInterface(text));
+        if (tc && tc->TextIsOnlyWhitespace())
         {
           rv = msiIMathMLEditingBC::MSI_WHITESPACE; 
           mathmlNode = rawNode;

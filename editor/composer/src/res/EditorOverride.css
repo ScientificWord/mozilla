@@ -35,6 +35,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+*|* {
+  -moz-user-modify: read-write;
+}
+
 /* Styles to alter look of things in the Editor content window 
  *  that should NOT be removed when we display in completely WYSIWYG 
  *  "Browser Preview" mode.
@@ -63,7 +67,6 @@ a[name]:-moz-only-whitespace {
 
 a:visited, a:active {
   cursor: text;
-  color : inherit;
 }
 
 /* Prevent clicking on links from going to link */

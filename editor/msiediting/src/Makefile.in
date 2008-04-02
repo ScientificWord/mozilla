@@ -44,7 +44,6 @@ REQUIRES  = xpcom \
 
 CPPSRCS    = \
     msiEditingManager.cpp \
-    msiEditingManagerFactory.cpp \
     msiMEditingBase.cpp \
     msiUtils.cpp \
     msiCoalesceUtils.cpp \
