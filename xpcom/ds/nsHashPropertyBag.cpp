@@ -88,6 +88,22 @@ nsHashPropertyBag::Init()
 }
 
 NS_IMETHODIMP
+nsHashPropertyBag::HasKey(const nsAString& name, PRBool *aResult)
+{
+    *aResult = mPropertyHash.Get(name, nsnull);
+
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsHashPropertyBag::Get(const nsAString& name, nsIVariant* *_retval)
+{
+    mPropertyHash.Get(name, _retval);
+
+    return NS_OK;
+}
+
+NS_IMETHODIMP
 nsHashPropertyBag::GetProperty(const nsAString& name, nsIVariant* *_retval)
 {
     PRBool isFound = mPropertyHash.Get(name, _retval);
@@ -168,7 +184,7 @@ PropertyHashToArrayFunc (const nsAString &aKey,
                          void *userArg)
 {
     nsIMutableArray *propertyArray =
-        NS_STATIC_CAST(nsIMutableArray *, userArg);
+        static_cast<nsIMutableArray *>(userArg);
     nsSimpleProperty *sprop = new nsSimpleProperty(aKey, aData);
     propertyArray->AppendElement(sprop, PR_FALSE);
     return PL_DHASH_NEXT;
@@ -178,8 +194,6 @@ PropertyHashToArrayFunc (const nsAString &aKey,
 NS_IMETHODIMP
 nsHashPropertyBag::GetEnumerator(nsISimpleEnumerator* *_retval)
 {
-    nsresult rv;
-
     nsCOMPtr<nsIMutableArray> propertyArray = new nsArray();
     if (!propertyArray)
         return NS_ERROR_OUT_OF_MEMORY;

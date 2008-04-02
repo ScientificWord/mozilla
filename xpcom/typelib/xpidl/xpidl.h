@@ -49,11 +49,7 @@
 #include <glib.h>
 #include <string.h> /* After glib.h to avoid warnings about shadowing 'index'. */
 
-#ifndef XP_MAC
 #include <libIDL/IDL.h>
-#else
-#include <IDL.h>
-#endif
 
 #include <xpt_struct.h>
 
@@ -128,6 +124,7 @@ typedef struct IncludePathEntry {
 
 struct TreeState {
     FILE             *file;
+    char             *filename;
     /* Maybe supplied by -o. Not related to (g_)basename from string.h or glib */
     char             *basename;
     IDL_ns           ns;
@@ -135,6 +132,13 @@ struct TreeState {
     GSList           *base_includes;
     nodeHandler      *dispatch;
     void             *priv;     /* mode-private data */
+};
+
+struct java_priv_data {
+    GHashTable *typedefTable;
+    GHashTable *keywords;
+    char       *filename;
+    GHashTable *nonIDLIfaces;
 };
 
 /*

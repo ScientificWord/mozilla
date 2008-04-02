@@ -274,9 +274,7 @@
 #define XPCOM_API(type) IMPORT_XPCOM_API(type)
 #endif
 
-#if 0
-/* This will become #ifdef MOZ_ENABLE_LIBXUL when various in-tree code is
-   fixed up. See bug 305949 */
+#ifdef MOZ_ENABLE_LIBXUL
 #define NS_COM
 #elif defined(_IMPL_NS_COM)
 #define NS_COM NS_EXPORT
@@ -398,7 +396,7 @@ typedef PRUint32 nsrefcnt;
 #define __PRUNICHAR__
   /* For now, don't use wchar_t on Unix because it breaks the Netscape
    * commercial build.  When this is fixed there will be no need for the
-   * |NS_REINTERPRET_CAST| in nsLiteralString.h either.
+   * |reinterpret_cast| in nsLiteralString.h either.
    */
   #if defined(HAVE_CPP_2BYTE_WCHAR_T) && defined(NS_WIN32)
     typedef wchar_t PRUnichar;
@@ -425,60 +423,6 @@ typedef PRUint32 nsrefcnt;
   #define NS_SPECIALIZE_TEMPLATE
 #endif
 
-/* unix and beos now determine this automatically */
-#if ! defined XP_UNIX && ! defined XP_BEOS && !defined(XP_OS2)
-#ifndef HAVE_CPP_NEW_CASTS
-#define HAVE_CPP_NEW_CASTS 1 /* we'll be optimistic. */
-#endif
-#endif
-
-#if defined(HAVE_CPP_NEW_CASTS)
-#define NS_STATIC_CAST(__type, __ptr)      static_cast< __type >(__ptr)
-#define NS_CONST_CAST(__type, __ptr)       const_cast< __type >(__ptr)
-
-#define NS_REINTERPRET_POINTER_CAST(__type, __ptr)    reinterpret_cast< __type >(__ptr)
-#define NS_REINTERPRET_NONPOINTER_CAST(__type, __obj) reinterpret_cast< __type >(__obj)
-#define NS_REINTERPRET_CAST(__type, __expr)           reinterpret_cast< __type >(__expr)
-
-#else
-#define NS_STATIC_CAST(__type, __ptr)      ((__type)(__ptr))
-#define NS_CONST_CAST(__type, __ptr)       ((__type)(__ptr))
-
-#define NS_REINTERPRET_POINTER_CAST(__type, __ptr)     ((__type)((void*)(__ptr)))
-#define NS_REINTERPRET_NONPOINTER_CAST(__type, __obj)  ((__type)(__obj))
-
-  /* Note: the following is only appropriate for pointers. */
-#define NS_REINTERPRET_CAST(__type, __expr)            NS_REINTERPRET_POINTER_CAST(__type, __expr)
-  /*
-    Why cast to a |void*| first?  Well, when old-style casting from
-    a pointer to a base to a pointer to a derived class, the cast will be
-    ambiguous if the source pointer type appears multiple times in the
-    destination, e.g.,
-    
-      class Base {};
-      class Derived : public Base, public Base {};
-      
-      void foo( Base* b )
-        {
-          ((Derived*)b)->some_derived_member ... // Error: Ambiguous, expand from which |Base|?
-        }
-
-    an old-style cast (like |static_cast|) will change the pointer, but
-    here, doesn't know how.  The cast to |void*| prevents it from thinking
-    it needs to expand the original pointer.
-
-    The cost is, |NS_REINTERPRET_CAST| is no longer appropriate for non-pointer
-    conversions.  Also, mis-applying |NS_REINTERPRET_CAST| to cast |this| to something
-    will still expand the pointer to the outer object in standards complying compilers.
-  */
-
-  /*
-    No sense in making an NS_DYNAMIC_CAST() macro: you can't duplicate
-    the semantics. So if you want to dynamic_cast, then just use it
-    "straight", no macro.
-  */
-#endif
- 
 /* 
  * Use these macros to do 64bit safe pointer conversions.
  */
@@ -505,14 +449,26 @@ typedef PRUint32 nsrefcnt;
  *    ... non-expected code path ...
  *  }
  *
+ * These macros are guaranteed to always return 0 or 1.
+ * The NS_FAILED/NS_SUCCEEDED macros depends on this.
+ * @return 0 or 1
  */
 
 #if defined(__GNUC__) && (__GNUC__ > 2)
-#define NS_LIKELY(x)    (__builtin_expect((x), 1))
-#define NS_UNLIKELY(x)  (__builtin_expect((x), 0))
+#define NS_LIKELY(x)    (__builtin_expect(!!(x), 1))
+#define NS_UNLIKELY(x)  (__builtin_expect(!!(x), 0))
 #else
-#define NS_LIKELY(x)    (x)
-#define NS_UNLIKELY(x)  (x)
+#define NS_LIKELY(x)    (!!(x))
+#define NS_UNLIKELY(x)  (!!(x))
+#endif
+
+ /*
+  * If we're being linked as standalone glue, we don't want a dynamic dependency
+  * on NSPR libs, so we skip the debug thread-safety checks, and we cannot use
+  * the THREADSAFE_ISUPPORTS macros.
+  */
+#if defined(XPCOM_GLUE) && !defined(XPCOM_GLUE_USE_NSPR)
+#define XPCOM_GLUE_AVOID_NSPR
 #endif
 
 #endif /* nscore_h___ */

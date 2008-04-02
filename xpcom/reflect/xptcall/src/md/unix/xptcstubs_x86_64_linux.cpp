@@ -39,6 +39,7 @@
 // Implement shared vtbl methods.
 
 #include "xptcprivate.h"
+#include "xptiprivate.h"
 
 // The Linux/x86-64 ABI passes the first 6 integer parameters and the
 // first 8 floating point parameters in registers (rdi, rsi, rdx, rcx,
@@ -65,7 +66,6 @@ PrepareAndDispatch(nsXPTCStubBase * self, PRUint32 methodIndex,
 {
     nsXPTCMiniVariant paramBuffer[PARAM_BUFFER_COUNT];
     nsXPTCMiniVariant* dispatchParams = NULL;
-    nsIInterfaceInfo* iface_info = NULL;
     const nsXPTMethodInfo* info;
     PRUint32 paramCount;
     PRUint32 i;
@@ -73,12 +73,7 @@ PrepareAndDispatch(nsXPTCStubBase * self, PRUint32 methodIndex,
 
     NS_ASSERTION(self,"no self");
 
-    self->GetInterfaceInfo(&iface_info);
-    NS_ASSERTION(iface_info,"no interface info");
-    if (!iface_info)
-        return NS_ERROR_UNEXPECTED;
-
-    iface_info->GetMethodInfo(PRUint16(methodIndex), &info);
+    self->mEntry->GetMethodInfo(PRUint16(methodIndex), &info);
     NS_ASSERTION(info,"no method info");
     if (!info)
         return NS_ERROR_UNEXPECTED;
@@ -153,9 +148,7 @@ PrepareAndDispatch(nsXPTCStubBase * self, PRUint32 methodIndex,
         }
     }
 
-    result = self->CallMethod((PRUint16) methodIndex, info, dispatchParams);
-
-    NS_RELEASE(iface_info);
+    result = self->mOuter->CallMethod((PRUint16) methodIndex, info, dispatchParams);
 
     if (dispatchParams != paramBuffer)
         delete [] dispatchParams;
@@ -170,14 +163,17 @@ asm(".section	\".text\"\n\t" \
     ".align	2\n\t" \
     ".if	" #n " < 10\n\t" \
     ".globl	_ZN14nsXPTCStubBase5Stub" #n "Ev\n\t" \
+    ".hidden	_ZN14nsXPTCStubBase5Stub" #n "Ev\n\t" \
     ".type	_ZN14nsXPTCStubBase5Stub" #n "Ev,@function\n" \
     "_ZN14nsXPTCStubBase5Stub" #n "Ev:\n\t" \
     ".elseif	" #n " < 100\n\t" \
     ".globl	_ZN14nsXPTCStubBase6Stub" #n "Ev\n\t" \
+    ".hidden	_ZN14nsXPTCStubBase6Stub" #n "Ev\n\t" \
     ".type	_ZN14nsXPTCStubBase6Stub" #n "Ev,@function\n" \
     "_ZN14nsXPTCStubBase6Stub" #n "Ev:\n\t" \
     ".elseif    " #n " < 1000\n\t" \
     ".globl     _ZN14nsXPTCStubBase7Stub" #n "Ev\n\t" \
+    ".hidden    _ZN14nsXPTCStubBase7Stub" #n "Ev\n\t" \
     ".type      _ZN14nsXPTCStubBase7Stub" #n "Ev,@function\n" \
     "_ZN14nsXPTCStubBase7Stub" #n "Ev:\n\t" \
     ".else\n\t" \

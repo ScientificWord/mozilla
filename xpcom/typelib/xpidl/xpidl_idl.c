@@ -41,10 +41,7 @@
  */
 
 #include "xpidl.h"
-
-#ifdef XP_MAC
-#include <stat.h>
-#endif
+#include <limits.h>
 
 static gboolean parsed_empty_file;
 
@@ -65,10 +62,6 @@ xpidl_process_node(TreeState *state)
     return TRUE;
 }
 
-#if defined(XP_MAC) && defined(XPIDL_PLUGIN)
-extern void mac_warning(const char* warning_message);
-#endif
-
 static int
 msg_callback(int level, int num, int line, const char *file,
              const char *message)
@@ -88,11 +81,7 @@ msg_callback(int level, int num, int line, const char *file,
         file = "<unknown file>";
     warning_message = g_strdup_printf("%s:%d: %s\n", file, line, message);
 
-#if defined(XP_MAC) && defined(XPIDL_PLUGIN)
-    mac_warning(warning_message);
-#else
     fputs(warning_message, stderr);
-#endif
 
     g_free(warning_message);
     return 1;
@@ -158,10 +147,6 @@ fopen_from_includes(char **filename, const char *mode,
     return NULL;
 }
 
-#if defined(XP_MAC) && defined(XPIDL_PLUGIN)
-extern FILE* mac_fopen(const char* filename, const char *mode);
-#endif
-
 static input_data *
 new_input_data(char **filename, IncludePathEntry *include_path)
 {
@@ -170,14 +155,8 @@ new_input_data(char **filename, IncludePathEntry *include_path)
     char *buffer = NULL;
     size_t offset = 0;
     size_t buffer_size;
-#ifdef XP_MAC
-    size_t i;
-#endif
 
-#if defined(XP_MAC) && defined(XPIDL_PLUGIN)
-    /* on Mac, fopen knows how to find files. */
-    inputfile = fopen(*filename, "r");
-#elif defined(XP_OS2) || defined(XP_WIN32)
+#if defined(XP_OS2) || defined(XP_WIN32)
     /*
      * if filename is fully qualified (starts with driver letter), then
      * just call fopen();  else, go with fopen_from_includes()
@@ -192,20 +171,6 @@ new_input_data(char **filename, IncludePathEntry *include_path)
 
     if (!inputfile)
         return NULL;
-
-#ifdef XP_MAC
-    {
-        struct stat input_stat;
-        if (fstat(fileno(inputfile), &input_stat))
-            return NULL;
-        buffer = malloc(input_stat.st_size + 1);
-        if (!buffer)
-            return NULL;
-        offset = fread(buffer, 1, input_stat.st_size, inputfile);
-        if (ferror(inputfile))
-            return NULL;
-    }
-#else
     /*
      * Rather than try to keep track of many different varieties of state
      * around the boundaries of a circular buffer, we just read in the entire
@@ -228,20 +193,8 @@ new_input_data(char **filename, IncludePathEntry *include_path)
         }
         offset += just_read;
     }
-#endif
 
     fclose(inputfile);
-
-#ifdef XP_MAC
-    /*
-     * libIDL doesn't speak '\r' properly - always make sure lines end with
-     * '\n'.
-     */
-    for (i = 0; i < offset; i++) {
-        if (buffer[i] == '\r')
-            buffer[i] = '\n';
-    }
-#endif
 
     new_data = xpidl_malloc(sizeof (struct input_data));
     new_data->point = new_data->buf = buffer;
@@ -765,12 +718,17 @@ xpidl_process_idl(char *filename, IncludePathEntry *include_path,
             real_outname = g_strdup_printf("%s.%s", out_basename, mode->suffix);
         }
 
-        /* Use binary write for typelib mode */
-        fopen_mode = (strcmp(mode->mode, "typelib")) ? "w" : "wb";
-        state.file = fopen(real_outname, fopen_mode);
-        if (!state.file) {
-            perror("error opening output file");
-            return 0;
+        /* don't create/open file here for Java */
+        if (strcmp(mode->mode, "java") == 0) {
+            state.filename = real_outname;
+        } else {
+            /* Use binary write for typelib mode */
+            fopen_mode = (strcmp(mode->mode, "typelib")) ? "w" : "wb";
+            state.file = fopen(real_outname, fopen_mode);
+            if (!state.file) {
+                perror("error opening output file");
+                return 0;
+            }
         }
     } else {
         state.file = stdout;
@@ -784,8 +742,11 @@ xpidl_process_idl(char *filename, IncludePathEntry *include_path,
     if (emitter->emit_epilog)
         emitter->emit_epilog(&state);
 
-    if (state.file != stdout)
-        fclose(state.file);
+    if (strcmp(mode->mode, "java") != 0) {
+        if (state.file != stdout)
+            fclose(state.file);
+    }
+
     free(state.basename);
     free(outname);
     g_hash_table_foreach(callback_state.already_included, free_ghash_key, NULL);
@@ -797,16 +758,18 @@ xpidl_process_idl(char *filename, IncludePathEntry *include_path,
     if (top)
         IDL_tree_free(top);
 
-    if (real_outname != NULL) {
-        /*
-         * Delete partial output file on failure.  (Mac does this in the plugin
-         * driver code, if the compiler returns failure.)
-         */
+    if (strcmp(mode->mode, "java") != 0) {
+        if (real_outname != NULL) {
+            /*
+             * Delete partial output file on failure.  (Mac does this in the
+             * plugin driver code, if the compiler returns failure.)
+             */
 #if defined(XP_UNIX) || defined(XP_WIN)
-        if (!ok)
-            unlink(real_outname);
+            if (!ok)
+                unlink(real_outname);
 #endif
-        g_free(real_outname);
+            g_free(real_outname);
+        }
     }
 
     return ok;

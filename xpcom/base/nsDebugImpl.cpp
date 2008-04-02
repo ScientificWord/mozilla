@@ -182,7 +182,8 @@ enum nsAssertBehavior {
   NS_ASSERT_SUSPEND,
   NS_ASSERT_STACK,
   NS_ASSERT_TRAP,
-  NS_ASSERT_ABORT
+  NS_ASSERT_ABORT,
+  NS_ASSERT_STACK_AND_ABORT
 };
 
 static nsAssertBehavior GetAssertBehavior()
@@ -215,6 +216,9 @@ static nsAssertBehavior GetAssertBehavior()
 
    if (!strcmp(assertString, "trap") || !strcmp(assertString, "break"))
      return gAssertBehavior = NS_ASSERT_TRAP;
+
+   if (!strcmp(assertString, "stack-and-abort"))
+     return gAssertBehavior = NS_ASSERT_STACK_AND_ABORT;
 
    fprintf(stderr, "Unrecognized value of XPCOM_DEBUG_BREAK\n");
    return gAssertBehavior;
@@ -342,6 +346,10 @@ NS_DebugBreak(PRUint32 aSeverity, const char *aStr, const char *aExpr,
      nsTraceRefcntImpl::WalkTheStack(stderr);
      return;
 
+   case NS_ASSERT_STACK_AND_ABORT:
+     nsTraceRefcntImpl::WalkTheStack(stderr);
+     // Fall through to abort
+
    case NS_ASSERT_ABORT:
      Abort(buf.buffer);
      return;
@@ -416,6 +424,7 @@ Break(const char *aMsg)
       WaitForSingleObject(pi.hProcess, INFINITE);
       GetExitCodeProcess(pi.hProcess, &code);
       CloseHandle(pi.hProcess);
+      CloseHandle(pi.hThread);
     }
 
     switch(code) {
@@ -477,7 +486,7 @@ nsDebugImpl::Create(nsISupports* outer, const nsIID& aIID, void* *aInstancePtr)
 {
   NS_ENSURE_NO_AGGREGATION(outer);
 
-  return NS_CONST_CAST(nsDebugImpl*, &kImpl)->
+  return const_cast<nsDebugImpl*>(&kImpl)->
     QueryInterface(aIID, aInstancePtr);
 }
 

@@ -44,8 +44,8 @@ NS_TableDrivenQI(void* aThis, const QITableEntry* entries,
   while (entries->iid) {
     if (aIID.Equals(*entries->iid)) {
       nsISupports* r =
-        NS_REINTERPRET_CAST(nsISupports*,
-          NS_REINTERPRET_CAST(char*, aThis) + entries->offset);
+        reinterpret_cast<nsISupports*>
+                        (reinterpret_cast<char*>(aThis) + entries->offset);
       NS_ADDREF(r);
       *aInstancePtr = r;
       return NS_OK;
@@ -54,5 +54,6 @@ NS_TableDrivenQI(void* aThis, const QITableEntry* entries,
     ++entries;
   }
 
+  *aInstancePtr = nsnull;
   return NS_ERROR_NO_INTERFACE;
 }

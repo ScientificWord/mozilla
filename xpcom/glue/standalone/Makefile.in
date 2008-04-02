@@ -59,7 +59,7 @@ LOCAL_INCLUDES	= \
 ifeq (Darwin,$(OS_ARCH))
 LINKSRC = nsGlueLinkingOSX.cpp
 endif
-ifeq (WINNT,$(OS_ARCH))
+ifneq (,$(filter WINNT WINCE,$(OS_ARCH)))
 LINKSRC = nsGlueLinkingWin.cpp
 endif
 ifneq (,$(filter AIX DragonFly FreeBSD Linux NetBSD OpenBSD SunOS,$(OS_ARCH)))
@@ -67,6 +67,9 @@ LINKSRC = nsGlueLinkingDlopen.cpp
 endif
 ifeq (OS2,$(OS_ARCH))
 LINKSRC = nsGlueLinkingOS2.cpp
+endif
+ifeq (BeOS,$(OS_ARCH))
+LINKSRC = nsGlueLinkingBeOS.cpp
 endif
 
 ifndef LINKSRC
@@ -80,8 +83,8 @@ CSRCS		= \
 
 CPPSRCS		= \
 		$(XPCOM_GLUE_SRC_LCPPSRCS)   \
+		nsStringAPI.cpp              \
 		nsXPCOMGlue.cpp              \
-		nsGREDirServiceProvider.cpp  \
 		$(LINKSRC)                   \
 		$(NULL)
 
@@ -99,13 +102,27 @@ FORCE_STATIC_LIB = 1
 # Force use of PIC
 FORCE_USE_PIC	= 1
 
+# Pretend we're statically linking the CRT, even though we might not be: this
+# avoids "msvcrp" and assembly dependencies from creeping into the directives
+# for this library on Windows.
+USE_STATIC_LIBS = 1
+
 GARBAGE         += $(XPCOM_GLUE_SRC_LCSRCS) $(XPCOM_GLUE_SRC_LCPPSRCS) $(wildcard *.$(OBJ_SUFFIX))
 
 SRCS_IN_OBJDIR	= 1
 
 include $(topsrcdir)/config/rules.mk
 
-export:: $(XPCOM_GLUE_SRC_CSRCS) $(XPCOM_GLUE_SRC_CPPSRCS)
+ifdef _MSC_VER
+# Don't include directives about which CRT to use
+OS_COMPILE_CXXFLAGS += -Zl
+OS_COMPILE_CFLAGS += -Zl
+DEFINES += -D_USE_ANSI_CPP
+endif
+
+export:: $(XPCOM_GLUE_SRC_CSRCS) $(XPCOM_GLUE_SRC_CPPSRCS) $(topsrcdir)/xpcom/glue/nsStringAPI.cpp
 	$(INSTALL) $^ .
+
+GARBAGE += nsStringAPI.cpp
 
 DEFINES		+= -DXPCOM_GLUE
