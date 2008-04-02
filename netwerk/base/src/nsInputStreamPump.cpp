@@ -1,4 +1,5 @@
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* vim:set ts=4 sts=4 sw=4 et cin: */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -119,20 +120,26 @@ CallPeekFunc(nsIInputStream *aInStream, void *aClosure,
   NS_ASSERTION(aToOffset == 0, "Called more than once?");
   NS_ASSERTION(aCount > 0, "Called without data?");
 
-  PeekData* data = NS_STATIC_CAST(PeekData*, aClosure);
+  PeekData* data = static_cast<PeekData*>(aClosure);
   data->mFunc(data->mClosure,
-              NS_REINTERPRET_CAST(const PRUint8*, aFromSegment), aCount);
+              reinterpret_cast<const PRUint8*>(aFromSegment), aCount);
   return NS_BINDING_ABORTED;
 }
 
-void
+nsresult
 nsInputStreamPump::PeekStream(PeekSegmentFun callback, void* closure)
 {
   NS_ASSERTION(mAsyncStream, "PeekStream called without stream");
+
+  // See if the pipe is closed by checking the return of Available.
+  PRUint32 dummy;
+  nsresult rv = mAsyncStream->Available(&dummy);
+  if (NS_FAILED(rv))
+    return rv;
+
   PeekData data(callback, closure);
-  PRUint32 read;
-  mAsyncStream->ReadSegments(CallPeekFunc, &data, NET_DEFAULT_SEGMENT_SIZE,
-                             &read);
+  return mAsyncStream->ReadSegments(CallPeekFunc, &data,
+                                    NET_DEFAULT_SEGMENT_SIZE, &dummy);
 }
 
 nsresult
@@ -206,8 +213,12 @@ nsInputStreamPump::Cancel(nsresult status)
     // close input stream
     if (mAsyncStream) {
         mAsyncStream->CloseWithStatus(status);
-        mSuspendCount = 0; // un-suspend
-        EnsureWaiting();
+        if (mSuspendCount == 0)
+            EnsureWaiting();
+        // Otherwise, EnsureWaiting will be called by Resume().
+        // Note that while suspended, OnInputStreamReady will
+        // not do anything, and also note that calling asyncWait
+        // on a closed stream works and will dispatch an event immediately.
     }
     return NS_OK;
 }
@@ -288,8 +299,7 @@ NS_IMETHODIMP
 nsInputStreamPump::AsyncRead(nsIStreamListener *listener, nsISupports *ctxt)
 {
     NS_ENSURE_TRUE(mState == STATE_IDLE, NS_ERROR_IN_PROGRESS);
-
-    nsresult rv;
+    NS_ENSURE_ARG_POINTER(listener);
 
     //
     // OK, we need to use the stream transport service if
@@ -299,7 +309,7 @@ nsInputStreamPump::AsyncRead(nsIStreamListener *listener, nsISupports *ctxt)
     //
 
     PRBool nonBlocking;
-    rv = mStream->IsNonBlocking(&nonBlocking);
+    nsresult rv = mStream->IsNonBlocking(&nonBlocking);
     if (NS_FAILED(rv)) return rv;
 
     if (nonBlocking) {

@@ -59,10 +59,10 @@
 #include "nsGopherDirListingConv.h"
 
 // nsISupports implementation
-NS_IMPL_THREADSAFE_ISUPPORTS3(nsGopherDirListingConv,
-                              nsIStreamConverter,
-                              nsIStreamListener,
-                              nsIRequestObserver)
+NS_IMPL_ISUPPORTS3(nsGopherDirListingConv,
+                   nsIStreamConverter,
+                   nsIStreamListener,
+                   nsIRequestObserver)
 
 // nsIStreamConverter implementation
 
@@ -240,7 +240,7 @@ nsGopherDirListingConv::DigestBufferLines(char* aBuffer, nsCAutoString& aString)
                     return nsnull;
                 }
                 desc = escName;
-                nsCRT::free(escName);
+                NS_Free(escName);
                 PL_strfree(descStr);
             } else {
                 desc = "%20";
@@ -260,7 +260,7 @@ nsGopherDirListingConv::DigestBufferLines(char* aBuffer, nsCAutoString& aString)
                 return nsnull;
             }
             selector = escName;
-            nsCRT::free(escName);
+            NS_Free(escName);
             PL_strfree(sel);
             line = tabPos+1;
             tabPos = PL_strchr(line,'\t');

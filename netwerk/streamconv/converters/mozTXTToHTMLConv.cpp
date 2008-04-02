@@ -1,37 +1,24 @@
 /* -*- Mode: C; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
- * 
- * The "License" shall be the Mozilla Public License Version 1.1, except
- * Sections 6.2 and 11, but with the addition of the below defined Section 14.
- * You may obtain a copy of the Mozilla Public License Version 1.1 at
- * <http://www.mozilla.org/MPL/>. The contents of this file are subject to the
- * License; you may not use this file except in compliance with the License.
- * 
- * Section 14: MISCELLANEOUS.
- * This License represents the complete agreement concerning subject matter
- * hereof. If any provision of this License is held to be unenforceable, such
- * provision shall be reformed only to the extent necessary to make it
- * enforceable. This License shall be governed by German law provisions. Any
- * litigation relating to this License shall be subject to German jurisdiction.
- * 
- * Once Covered Code has been published under a particular version of the
- * License, You may always continue to use it under the terms of that version.
- + The Initial Developer and no one else has the right to modify the terms
- * applicable to Covered Code created under this License.
- * (End of Section 14)
- * 
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- * 
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
  * The Original Code is the Mozilla Text to HTML converter code.
- * 
+ *
  * The Initial Developer of the Original Code is
  * Ben Bucksch <http://www.bucksch.org>.
- * Portions created by Ben Bucksch are Copyright
- * (C) 1999, 2000 Ben Bucksch. All Rights Reserved.
- * 
+ * Portions created by the Initial Developer are Copyright (C) 1999, 2000
+ * the Initial Developer. All Rights Reserved.
+ *
  * Contributor(s):
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -263,6 +250,7 @@ mozTXTToHTMLConv::FindURLStart(const PRUnichar * aInString, PRInt32 aInLength,
     // This disallows non-ascii-characters for email.
     // Currently correct, but revisit later after standards changed.
     PRBool isEmail = aInString[pos] == (PRUnichar)'@';
+    // These chars mark the start of the URL
     for (; i >= 0
              && aInString[PRUint32(i)] != '>' && aInString[PRUint32(i)] != '<'
              && aInString[PRUint32(i)] != '"' && aInString[PRUint32(i)] != '\''
@@ -320,22 +308,34 @@ mozTXTToHTMLConv::FindURLEnd(const PRUnichar * aInString, PRInt32 aInStringLengt
   case abbreviated:
   {
     PRUint32 i = pos + 1;
-    // This disallows non-ascii-characters for email.
-    // Currently correct, but revisit later after standards changed.
     PRBool isEmail = aInString[pos] == (PRUnichar)'@';
-    for (; PRInt32(i) < aInStringLength
-             && aInString[i] != '>' && aInString[i] != '<'
-             && aInString[i] != '"' && aInString[i] != '\''
-             && aInString[i] != '`'
-             && aInString[i] != '}' && aInString[i] != ']'
-             && aInString[i] != ')' && aInString[i] != '|'
-             && !IsSpace(aInString[i])
-             && (!isEmail || nsCRT::IsAscii(aInString[i]))
-         ; i++)
-      ;
+    PRBool haveOpeningBracket = PR_FALSE;
+    for (; PRInt32(i) < aInStringLength; i++)
+    {
+      // These chars mark the end of the URL
+      if (aInString[i] == '>' || aInString[i] == '<' ||
+          aInString[i] == '"' || aInString[i] == '`' ||
+          aInString[i] == '}' || aInString[i] == ']' ||
+          aInString[i] == '{' || aInString[i] == '[' ||
+          aInString[i] == '|' ||
+          (aInString[i] == ')' && !haveOpeningBracket) ||
+          IsSpace(aInString[i])    )
+          break;
+      // Disallow non-ascii-characters for email.
+      // Currently correct, but revisit later after standards changed.
+      if (isEmail && (
+            aInString[i] == '(' || aInString[i] == '\'' ||
+            !nsCRT::IsAscii(aInString[i])       ))
+          break;
+      if (aInString[i] == '(')
+        haveOpeningBracket = PR_TRUE;
+    }
+    // These chars are allowed in the middle of the URL, but not at end.
+    // Technically they are, but are used in normal text after the URL.
     while (--i > pos && (
              aInString[i] == '.' || aInString[i] == ',' || aInString[i] == ';' ||
-             aInString[i] == '!' || aInString[i] == '?' || aInString[i] == '-'
+             aInString[i] == '!' || aInString[i] == '?' || aInString[i] == '-' ||
+             aInString[i] == '\''
              ))
         ;
     if (i > pos)
@@ -480,10 +480,10 @@ NS_IMETHODIMP mozTXTToHTMLConv::FindURLInPlaintext(const PRUnichar * aInString, 
 {
   // call FindURL on the passed in string
   nsAutoString outputHTML; // we'll ignore the generated output HTML
-  
+
   *aStartPos = -1;
   *aEndPos = -1;
-  
+
   FindURL(aInString, aInLength, aPos, kURLs, outputHTML, *aStartPos, *aEndPos);
 
   return NS_OK;
@@ -768,8 +768,6 @@ PRBool
 mozTXTToHTMLConv::GlyphHit(const PRUnichar * aInString, PRInt32 aInLength, PRBool col0,
          nsString& aOutputString, PRInt32& glyphTextLen)
 {
-  MOZ_TIMER_START(mGlyphHitTimer);
-
   PRUnichar text0 = aInString[0]; 
   PRUnichar text1 = aInString[1];
   PRUnichar firstChar = (col0 ? text0 : text1);
@@ -875,7 +873,7 @@ mozTXTToHTMLConv::GlyphHit(const PRUnichar * aInString, PRInt32 aInLength, PRBoo
           
           SmilyHit(aInString, aInLength, bArg,
                    ">:-o",
-                   "moz-smiley-yell", // yell
+                   "moz-smiley-s10", // yell
                    outputHTML, glyphTextLen) ||
         
           SmilyHit(aInString, aInLength, bArg,
@@ -911,7 +909,6 @@ mozTXTToHTMLConv::GlyphHit(const PRUnichar * aInString, PRInt32 aInLength, PRBoo
     )
     {
         aOutputString.Append(outputHTML);
-        MOZ_TIMER_STOP(mGlyphHitTimer);
         return PR_TRUE;
     }
     i++;
@@ -920,7 +917,6 @@ mozTXTToHTMLConv::GlyphHit(const PRUnichar * aInString, PRInt32 aInLength, PRBoo
   {
       aOutputString.AppendLiteral("<span class='moz-txt-formfeed'></span>");
       glyphTextLen = 1;
-      MOZ_TIMER_STOP(mGlyphHitTimer);
       return PR_TRUE;
   }
   if (text0 == '+' || text1 == '+')
@@ -931,7 +927,6 @@ mozTXTToHTMLConv::GlyphHit(const PRUnichar * aInString, PRInt32 aInLength, PRBoo
     {
       aOutputString.AppendLiteral(" &plusmn;");
       glyphTextLen = 4;
-      MOZ_TIMER_STOP(mGlyphHitTimer);
       return PR_TRUE;
     }
     if (col0 && ItMatchesDelimited(aInString, aInLength,
@@ -940,7 +935,6 @@ mozTXTToHTMLConv::GlyphHit(const PRUnichar * aInString, PRInt32 aInLength, PRBoo
     {
       aOutputString.AppendLiteral("&plusmn;");
       glyphTextLen = 3;
-      MOZ_TIMER_STOP(mGlyphHitTimer);
       return PR_TRUE;
     }
   }
@@ -976,7 +970,6 @@ mozTXTToHTMLConv::GlyphHit(const PRUnichar * aInString, PRInt32 aInLength, PRBoo
 
     if (delimPos < aInLength && nsCRT::IsAsciiAlpha(aInString[delimPos]))
     {
-      MOZ_TIMER_STOP(mGlyphHitTimer);
       return PR_FALSE;
     }
 
@@ -989,7 +982,6 @@ mozTXTToHTMLConv::GlyphHit(const PRUnichar * aInString, PRInt32 aInLength, PRBoo
     aOutputString.AppendLiteral("</sup>");
 
     glyphTextLen = delimPos /* - 1 + 1 */ ;
-    MOZ_TIMER_STOP(mGlyphHitTimer);
     return PR_TRUE;
   }
   /*
@@ -1005,7 +997,6 @@ mozTXTToHTMLConv::GlyphHit(const PRUnichar * aInString, PRInt32 aInLength, PRBoo
     3/4    &frac34;  dito
     1/2    &frac12;  similar
   */
-  MOZ_TIMER_STOP(mGlyphHitTimer);
   return PR_FALSE;
 }
 
@@ -1015,23 +1006,10 @@ mozTXTToHTMLConv::GlyphHit(const PRUnichar * aInString, PRInt32 aInLength, PRBoo
 
 mozTXTToHTMLConv::mozTXTToHTMLConv()
 {
-  MOZ_TIMER_RESET(mScanTXTTimer);
-  MOZ_TIMER_RESET(mGlyphHitTimer);
-  MOZ_TIMER_RESET(mTotalMimeTime);
-  MOZ_TIMER_START(mTotalMimeTime);
 }
 
 mozTXTToHTMLConv::~mozTXTToHTMLConv() 
 {
-  MOZ_TIMER_STOP(mTotalMimeTime);
-  MOZ_TIMER_DEBUGLOG(("MIME Total Processing Time: "));
-  MOZ_TIMER_PRINT(mTotalMimeTime);
-  
-  MOZ_TIMER_DEBUGLOG(("mozTXTToHTMLConv::ScanTXT(): "));
-  MOZ_TIMER_PRINT(mScanTXTTimer);
-
-  MOZ_TIMER_DEBUGLOG(("mozTXTToHTMLConv::GlyphHit(): "));
-  MOZ_TIMER_PRINT(mGlyphHitTimer);
 }
 
 NS_IMPL_ISUPPORTS1(mozTXTToHTMLConv, mozITXTToHTMLConv)
@@ -1102,11 +1080,9 @@ mozTXTToHTMLConv::CiteLevelTXT(const PRUnichar *line,
 void
 mozTXTToHTMLConv::ScanTXT(const PRUnichar * aInString, PRInt32 aInStringLength, PRUint32 whattodo, nsString& aOutString)
 {
-  PRBool doURLs = whattodo & kURLs;
-  PRBool doGlyphSubstitution = whattodo & kGlyphSubstitution;
-  PRBool doStructPhrase = whattodo & kStructPhrase;
-
-  MOZ_TIMER_START(mScanTXTTimer);
+  PRBool doURLs = 0 != (whattodo & kURLs);
+  PRBool doGlyphSubstitution = 0 != (whattodo & kGlyphSubstitution);
+  PRBool doStructPhrase = 0 != (whattodo & kStructPhrase);
 
   PRUint32 structPhrase_strong = 0;  // Number of currently open tags
   PRUint32 structPhrase_underline = 0;
@@ -1226,8 +1202,6 @@ mozTXTToHTMLConv::ScanTXT(const PRUnichar * aInString, PRInt32 aInStringLength, 
       break;
     }
   }
-
-  MOZ_TIMER_STOP(mScanTXTTimer);
 }
 
 void

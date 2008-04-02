@@ -38,13 +38,12 @@
 #ifndef nsStreamLoader_h__
 #define nsStreamLoader_h__
 
+#include "nsIRequest.h"
 #include "nsIStreamLoader.h"
-#include "nsIStreamListener.h"
 #include "nsCOMPtr.h"
 #include "nsString.h"
 
-class nsStreamLoader : public nsIStreamLoader,
-                       public nsIStreamListener
+class nsStreamLoader : public nsIStreamLoader
 {
 public:
   NS_DECL_ISUPPORTS

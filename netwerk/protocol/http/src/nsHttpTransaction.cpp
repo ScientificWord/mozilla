@@ -44,7 +44,9 @@
 #include "nsHttpRequestHead.h"
 #include "nsHttpResponseHead.h"
 #include "nsHttpChunkedDecoder.h"
+#include "nsNetSegmentUtils.h"
 #include "nsTransportUtils.h"
+#include "nsNetUtil.h"
 #include "nsProxyRelease.h"
 #include "nsIOService.h"
 #include "nsAutoLock.h"
@@ -266,7 +268,12 @@ nsHttpTransaction::Init(PRUint8 caps,
         rv = multi->AppendStream(requestBody);
         if (NS_FAILED(rv)) return rv;
 
-        mRequestStream = multi;
+        // wrap the multiplexed input stream with a buffered input stream, so
+        // that we write data in the largest chunks possible.  this is actually
+        // necessary to workaround some common server bugs (see bug 137155).
+        rv = NS_NewBufferedInputStream(getter_AddRefs(mRequestStream), multi,
+                                       NET_DEFAULT_SEGMENT_SIZE);
+        if (NS_FAILED(rv)) return rv;
     }
     else
         mRequestStream = headers;
@@ -346,7 +353,7 @@ nsHttpTransaction::OnTransportStatus(nsresult status, PRUint64 progress)
         mActivityDistributor->ObserveActivity(
             mChannel,
             NS_HTTP_ACTIVITY_TYPE_SOCKET_TRANSPORT,
-            NS_STATIC_CAST(PRUint32, status),
+            static_cast<PRUint32>(status),
             LL_ZERO,
             progress,
             EmptyCString());
@@ -479,7 +486,7 @@ nsHttpTransaction::WritePipeSegment(nsIOutputStream *stream,
     if (NS_FAILED(rv))
         trans->Close(rv);
 
-    return rv; // failure code only stops WriteSegments; it is not propogated.
+    return rv; // failure code only stops WriteSegments; it is not propagated.
 }
 
 nsresult
@@ -533,7 +540,7 @@ nsHttpTransaction::Close(nsresult reason)
                 NS_HTTP_ACTIVITY_TYPE_HTTP_TRANSACTION,
                 NS_HTTP_ACTIVITY_SUBTYPE_RESPONSE_COMPLETE,
                 LL_ZERO,
-                NS_STATIC_CAST(PRUint64, mContentRead.mValue),
+                static_cast<PRUint64>(mContentRead.mValue),
                 EmptyCString());
 
         // report that this transaction is closing
@@ -757,7 +764,7 @@ nsHttpTransaction::ParseHead(char *buf,
     }
     // otherwise we can assume that we don't have a HTTP/0.9 response.
 
-    while ((eol = NS_STATIC_CAST(char *, memchr(buf, '\n', count - *countRead))) != nsnull) {
+    while ((eol = static_cast<char *>(memchr(buf, '\n', count - *countRead))) != nsnull) {
         // found line in range [buf:eol]
         len = eol - buf + 1;
 
@@ -950,7 +957,7 @@ nsHttpTransaction::HandleContent(char *buf,
                 NS_HTTP_ACTIVITY_TYPE_HTTP_TRANSACTION,
                 NS_HTTP_ACTIVITY_SUBTYPE_RESPONSE_COMPLETE,
                 LL_ZERO,
-                NS_STATIC_CAST(PRUint64, mContentRead.mValue),
+                static_cast<PRUint64>(mContentRead.mValue),
                 EmptyCString());
     }
 

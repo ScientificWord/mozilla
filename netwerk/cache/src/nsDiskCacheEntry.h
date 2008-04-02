@@ -60,12 +60,19 @@ struct nsDiskCacheEntry {
     PRUint32        mDataSize;
     PRUint32        mKeySize;       // includes terminating null byte
     PRUint32        mMetaDataSize;  // includes terminating null byte
-    char            mKeyStart[1];   // start of key data
-    //              mMetaDataStart = mKeyStart[mKeySize];
+    // followed by key data (mKeySize bytes)
+    // followed by meta data (mMetaDataSize bytes)
 
-    PRUint32        Size()    { return offsetof(nsDiskCacheEntry,mKeyStart) + 
+    PRUint32        Size()    { return sizeof(nsDiskCacheEntry) + 
                                     mKeySize + mMetaDataSize;
                               }
+
+    char*           Key()     { return reinterpret_cast<char*const>(this) + 
+                                    sizeof(nsDiskCacheEntry);
+                              }
+
+    char*           MetaData()
+                              { return Key() + mKeySize; }
 
     nsCacheEntry *  CreateCacheEntry(nsCacheDevice *  device);
 
@@ -100,10 +107,6 @@ struct nsDiskCacheEntry {
     }
 };
 
-nsDiskCacheEntry *  CreateDiskCacheEntry(nsDiskCacheBinding *  binding,
-                                         PRUint32 * size);
-
-
 
 /******************************************************************************
  *  nsDiskCacheEntryInfo
@@ -121,7 +124,7 @@ public:
 
     virtual ~nsDiskCacheEntryInfo() {}
     
-    const char* Key() { return mDiskEntry->mKeyStart; }
+    const char* Key() { return mDiskEntry->Key(); }
     
 private:
     const char *        mDeviceID;
