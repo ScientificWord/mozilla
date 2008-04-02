@@ -50,28 +50,12 @@ static const char CVS_ID[] = "@(#) $RCSfile$ $Revision$ $Date$";
 #include "pki1t.h"
 #endif /* PKI1T_H */
 
-#ifdef NSS_3_4_CODE
 #include "cert.h"
 #include "pki3hack.h"
-#endif
 
 #include "nssrwlk.h"
 
 #define NSSTRUSTDOMAIN_DEFAULT_CACHE_SIZE 32
-
-#ifdef PURE_STAN_BUILD
-struct NSSTrustDomainStr {
-    PRInt32 refCount;
-    NSSArena *arena;
-    NSSCallback *defaultCallback;
-    struct {
-	nssSlotList *forCerts;
-	nssSlotList *forCiphers;
-	nssSlotList *forTrust;
-    } slots;
-    nssCertificateCache *cache;
-};
-#endif
 
 extern const NSSError NSS_ERROR_NOT_FOUND;
 
@@ -103,9 +87,7 @@ NSSTrustDomain_Create (
     nssTrustDomain_InitializeCache(rvTD, NSSTRUSTDOMAIN_DEFAULT_CACHE_SIZE);
     rvTD->arena = arena;
     rvTD->refCount = 1;
-#ifdef NSS_3_4_CODE
     rvTD->statusConfig = NULL;
-#endif
     return rvTD;
 loser:
     if (rvTD && rvTD->tokensLock) {
@@ -134,13 +116,22 @@ NSSTrustDomain_Destroy (
 	/* Destroy each token in the list of tokens */
 	if (td->tokens) {
 	    nssListIterator_Destroy(td->tokens);
+	    td->tokens = NULL;
+	}
+	if (td->tokenList) {
 	    nssList_Clear(td->tokenList, token_destructor);
 	    nssList_Destroy(td->tokenList);
+	    td->tokenList = NULL;
 	}
 	NSSRWLock_Destroy(td->tokensLock);
+	td->tokensLock = NULL;
 	status = nssTrustDomain_DestroyCache(td);
 	if (status == PR_FAILURE) {
 	    return status;
+	}
+	if (td->statusConfig) {
+	    td->statusConfig->statusDestroy(td->statusConfig);
+	    td->statusConfig = NULL;
 	}
 	/* Destroy the trust domain */
 	nssArena_Destroy(td->arena);
@@ -439,7 +430,7 @@ get_certs_from_list(nssList *list)
 NSS_IMPLEMENT NSSCertificate **
 nssTrustDomain_FindCertificatesByNickname (
   NSSTrustDomain *td,
-  NSSUTF8 *name,
+  const NSSUTF8 *name,
   NSSCertificate *rvOpt[],
   PRUint32 maximumOpt, /* 0 for no max */
   NSSArena *arenaOpt
@@ -551,7 +542,7 @@ NSSTrustDomain_FindCertificatesByNickname (
 NSS_IMPLEMENT NSSCertificate *
 nssTrustDomain_FindBestCertificateByNickname (
   NSSTrustDomain *td,
-  NSSUTF8 *name,
+  const NSSUTF8 *name,
   NSSTime *timeOpt,
   NSSUsage *usage,
   NSSPolicies *policiesOpt
@@ -576,7 +567,7 @@ nssTrustDomain_FindBestCertificateByNickname (
 NSS_IMPLEMENT NSSCertificate *
 NSSTrustDomain_FindBestCertificateByNickname (
   NSSTrustDomain *td,
-  NSSUTF8 *name,
+  const NSSUTF8 *name,
   NSSTime *timeOpt,
   NSSUsage *usage,
   NSSPolicies *policiesOpt
@@ -1217,7 +1208,7 @@ nssTrustDomain_FindTrustForCertificate (
 	                                      nssTokenSearchType_TokenOnly);
 	    if (to) {
 		if (!pkio) {
-		    pkio = nssPKIObject_Create(NULL, to, td, NULL);
+		    pkio = nssPKIObject_Create(NULL, to, td, NULL, nssPKILock);
 		    if (!pkio) {
 			nssToken_Destroy(token);
 			nssCryptokiObject_Destroy(to);

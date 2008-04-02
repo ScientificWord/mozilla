@@ -43,6 +43,7 @@ DEFINES += -DNSPR20
 MODULE = nss 
 
 CSRCS = \
+	certext.c \
 	certutil.c \
 	keystuff.c \
 	$(NULL)
@@ -52,9 +53,5 @@ CSRCS = \
 REQUIRES = dbm seccmd
 
 PROGRAM = certutil
-
-ifdef NSS_ENABLE_ECC
-DEFINES += -DNSS_ENABLE_ECC
-endif
 
 #USE_STATIC_LIBS = 1

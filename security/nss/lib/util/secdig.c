@@ -41,36 +41,6 @@
 #include "secerr.h"
 
 /*
- * XXX OLD Template.  Once all uses have been switched over to new one,
- * remove this.
- */
-DERTemplate SGNDigestInfoTemplate[] = {
-    { DER_SEQUENCE,
-	  0, NULL, sizeof(SGNDigestInfo) },
-    { DER_INLINE,
-	  offsetof(SGNDigestInfo,digestAlgorithm),
-	  SECAlgorithmIDTemplate, },
-    { DER_OCTET_STRING,
-	  offsetof(SGNDigestInfo,digest), },
-    { 0, }
-};
-
-/* XXX See comment below about SGN_DecodeDigestInfo -- keep this static! */
-/* XXX Changed from static -- need to change name? */
-const SEC_ASN1Template sgn_DigestInfoTemplate[] = {
-    { SEC_ASN1_SEQUENCE,
-	  0, NULL, sizeof(SGNDigestInfo) },
-    { SEC_ASN1_INLINE,
-	  offsetof(SGNDigestInfo,digestAlgorithm),
-	  SECOID_AlgorithmIDTemplate },
-    { SEC_ASN1_OCTET_STRING,
-	  offsetof(SGNDigestInfo,digest) },
-    { 0 }
-};
-
-SEC_ASN1_CHOOSER_IMPLEMENT(sgn_DigestInfoTemplate)
-
-/*
  * XXX Want to have a SGN_DecodeDigestInfo, like:
  *	SGNDigestInfo *SGN_DecodeDigestInfo(SECItem *didata);
  * that creates a pool and allocates from it and decodes didata into
@@ -166,21 +136,26 @@ SGN_DecodeDigestInfo(SECItem *didata)
     PRArenaPool *arena;
     SGNDigestInfo *di;
     SECStatus rv = SECFailure;
+    SECItem      diCopy   = {siBuffer, NULL, 0};
 
     arena = PORT_NewArena(SEC_ASN1_DEFAULT_ARENA_SIZE);
     if(arena == NULL)
 	return NULL;
 
+    rv = SECITEM_CopyItem(arena, &diCopy, didata);
+    if (rv != SECSuccess) {
+	PORT_FreeArena(arena, PR_FALSE);
+    	return NULL;
+    }
+
     di = (SGNDigestInfo *)PORT_ArenaZAlloc(arena, sizeof(SGNDigestInfo));
-    if(di != NULL)
-    {
+    if (di != NULL) {
 	di->arena = arena;
-	rv = SEC_ASN1DecodeItem(arena, di, sgn_DigestInfoTemplate, didata);
+	rv = SEC_QuickDERDecodeItem(arena, di, sgn_DigestInfoTemplate, &diCopy);
     }
 	
-    if((di == NULL) || (rv != SECSuccess))
-    {
-	PORT_FreeArena(arena, PR_TRUE);
+    if ((di == NULL) || (rv != SECSuccess)) {
+	PORT_FreeArena(arena, PR_FALSE);
 	di = NULL;
     }
 
