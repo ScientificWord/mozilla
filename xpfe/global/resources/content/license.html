@@ -1,5 +1,40 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" 
                       "http://www.w3.org/TR/html4/strict.dtd">
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is mozilla.org code.
+   -
+   - The Initial Developer of the Original Code is
+   - Gervase Markham.
+   - Portions created by the Initial Developer are Copyright (C) 2006
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the GPL or the LGPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
 
 <html lang="en">
   <head>
@@ -91,22 +126,23 @@
     <div class="correctme">
     
     <p>Official <b>binaries</b> of this product released by the 
-    <a href="http://www.mozilla.com/">Mozilla Corporation</a>
+    <a href="http://www.mozilla.org/">Mozilla Foundation</a>
     are made available under 
-    <a href="http://www.mozilla.org/foundation/EULA/">the corresponding 
+    <a href="http://www.mozilla.org/legal/eula/">the corresponding 
     EULA</a>.</p>
     
-    <p>All<sup><a id="exceptions-link" href="about:license#exceptions">*</a></sup> 
-       of the <b>source code</b> to this product is available under
-       licenses which are both 
+    <p>Except as described
+       <a id="exceptions-link" href="about:license#exceptions">here</a>, all 
+       of the <b>source code</b> to this product is 
+       <a href="http://developer.mozilla.org/en/docs/Mozilla_Source_Code_Via_CVS">available</a> 
+       under licenses which are both 
        <a href="http://www.gnu.org/philosophy/free-sw.html">free</a> and 
        <a href="http://www.opensource.org/docs/definition.php">open source</a>.
-       Most is available under the Mozilla Public License (MPL). 
-       A subset of that 
-       body of code is additionally available under the GNU General Public 
-       License and the GNU Lesser General Public License. If the code has 
-       multiple licenses, you may choose which set of license terms you wish 
-       to follow.
+       Most is available under any one of the following:
+       the Mozilla Public License (MPL), the GNU General Public 
+       License (GPL) and the GNU Lesser General Public License (LGPL).
+       That is, you may copy and distribute such software according to the 
+       terms of any one of those three licenses.
     </p>
 
     <ul>
@@ -120,24 +156,27 @@
       <li><a href="about:license#lgpl">GNU Lesser General Public License</a></li>
     </ul>
     
-    <p>The remainder which is not under the MPL is available under one of
-       a variety of more permissive licenses. Those which require reproduction 
-       of the license text in the distribution are given below. (Note: it is 
-       not necessarily the case that your copy of this product will contain
-       code covered by every one of the licenses listed here).
+    <p>The remainder of the software which is not under the MPL/LGPL/GPL 
+       tri-license is available under one of
+       a variety of more permissive licenses. Those that require reproduction 
+       of the license text in the distribution are given below. 
+       (Note: your copy of this product may not contain code covered by one 
+       or more of the licenses listed here, depending on the exact product 
+       and version you choose.)
     </p>
     
     <ul>
       <li><a href="about:license#apple-mozilla">Apple/Mozilla NPRuntime License</a></li>
+      <li><a href="about:license#breakpad">Breakpad License</a></li>
       <li><a href="about:license#bspatch">bspatch License</a></li>
       <li><a href="about:license#cairo">Cairo Licenses</a></li>      
       <li><a href="about:license#expat">Expat License</a></li>
+      <li><a href="about:license#growl">Growl License</a></li>
       <li><a href="about:license#jpnic">Japan Network Information Centre License</a></li>
       <li><a href="about:license#jep">Java Embedding Plugin License</a></li>
-      <li><a href="about:license#myspell">Myspell License</a></li>
       <li><a href="about:license#openvision">OpenVision License</a></li>
+      <li><a href="about:license#sparkle">Sparkle License</a></li>
       <li><a href="about:license#ucal">University of California License</a></li>      
-      <li><a href="about:license#xregion">xregion License</a></li>
     </ul>
     
     <ul>      
@@ -699,51 +738,234 @@ under either the MPL or the [___] License."
     </p>
     
     <p>
-<!-- This list created from the entire Mozilla source tree on 2006-03-30.
+<!-- This list created from the entire Mozilla source tree on 2007-05-30.
      It was created using a modified version of the "relic" script in
      tools/relic, along with the make-id-list script in the same directory. -->    
-Aaron Leventhal, ActiveState Tool Corp, Akkana Peck, Alex Fritze, Alexa
-Internet, Alexander J. Vincent, Alexander Surkov, Andreas Otte, Andreas
-Premstaller, Andrew Thompson, ArentJan Banck, Asaf Romano, Axel Hecht, Ben
-Bucksch, Ben Goodger, Benjamin Smedberg, Bernd Mielke, Blake Ross, Boris
-Zbarsky, Bradley Baetz, Brendan Eich, Brian Bober, Brian Ryner, Brian Stell,
-Bruce Davidson, Bruno Haible, Calum Robinson, Cedric Chantepie, Chiaki
-Koufugata, Chris McAfee, Christian Biesinger, Christopher A. Aillon, Christopher
-Blizzard, Christopher Hoess, Christopher S. Charabaruk, Christopher Seawood,
-Collabnet, Conrad Carlen, Crocodile Clips Ltd, Cyrus Patel, Dainis Jonitis,
-Daniel Brooks, Daniel Glazman, Daniel Kouril, Daniel Witte, Dantifer Dang, Darin
-Fisher, Dave Liebreich, David Bienvenu, David Bradley, David Einstein, David
-Hyatt, Deogtae Kim, Digital Creations 2 Inc, Doron Rosenberg, Doug Turner, Elika
-J. Etemad, Eric Belhaire, Eric Hodel, Esben Mose Hansen, Frank Sch&ouml;nheit,
-Fredrik Holmqvist, Gavin Sharp, Geocast Network Systems, Geoff Beier, Gervase
-Markham, Giorgio Maone, Google Inc, Heriot-Watt University, Hewlett-Packard
-Company, H&aring;kan Waara, i-DNS.net International, Ian Hickson, Ian Oeschger, IBM
-Corporation, Igor Bukanov, InnoTek Systemberatung GmbH, Intel Corporation, James
-L. Nance, James Ross, Jamie Zawinski, Jan Varga, Jason Barnabe, Jeff Tsai,
-Jefferson Software Inc, Joe Hewitt, Joey Minta, John B. Keiser, John C. Griggs,
-John Fairhurst, John Wolfe, Jonas Sicking, Jonathan Watt, Josh Aas, Josh Soref,
-Jungshik Shin, Jussi Kukkonen, Keith Visco, Ken Herron, Kevin Gerich, Kipp E.B.
-Hickman, L. David Baron, Leif Hedstrom, Lixto GmbH, Makoto Kato, Marco
-Manfredini, Marco Pesenti Gritti, Mark Hammond, Mark Mentovai, Markus G. Kuhn,
-Matt Judy, Michael J. Fromberger, Michal Ceresna, Michel C. C. Buijsman, Michiel
-van Leeuwen, Mike Connor, Mike Pinkerton, Mike Potter, Mike Shaver, Mozdev
-Group, Mozilla Corporation, Mozilla Foundation, Naoki Hotta, Neil Deakin, Neil
-Rashbrook, Nelson B. Bolyard, Netscape Communications Corporation, New
-Dimensions Consulting, Novell Inc, OEone Corporation, Olli Pettay, Oracle
-Corporation, Owen Taylor, Paul Ashford, Paul Kocher of Cryptography Research,
-Paul Sandoz, Peter Annema, Peter Hartshorn, Peter Van der Beken, Pierre Chanial,
-Prachi Gauriar, R.J. Keller, Rajiv Dayal, Ramalingam Saravanan, Red Hat Inc,
-Rich Megginson, Rich Salz, Richard C. Swift, Richard L. Walsh, Richard
-Verhoeven, Rick Gessner, Robert Accettura, Robert G. Ginda, Robert John
-Churchill, Robert Kaiser, Robert Marshall, Robert O'Callahan, Robert Sayre,
-Roland Mainz, RSA Security Inc, Rusty Lynch, Ryan Cassin, Samphan Raruenrom,
-Scooter Morris, Scott MacGregor, Sergei Dolgov, Seth Spitzer, Shy Shalom,
-Silverstone Interactive, Simmule Turner, Simon Fraser, Simon Montagu, Simon
-Paquet, Simon Wilkinson, Srilatha Moturi, Stephen Horlander, Steve Swanson,
-Stuart Parmenter, Sun Microsystems Inc, The MITRE Corporation, the mozilla.org
-SeaMonkey project, The sqlite Project, The University of Queensland, Tim
-Copperfield, Tomas M&uuml;ller, Vincent B&eacute;ron, Vladimir Vukicevic, Wolfgang
-Rosenauer, YAMASHITA Makoto, Zack Rusin and Zero-Knowledge Systems.
+
+Aaron Leventhal,
+Aaron Schulman,
+ActiveState Tool Corp,
+Akkana Peck,
+Alex Fritze,
+Alexa Internet,
+Alexander J. Vincent,
+Alexander Surkov,
+Andreas Otte,
+Andreas Premstaller,
+Andrew Thompson,
+ArentJan Banck,
+Asaf Romano,
+Axel Hecht,
+Ben Bucksch,
+Ben Goodger,
+Ben Turner,
+Benjamin Smedberg,
+Bernd Mielke,
+Blake Ross,
+Boris Zbarsky,
+Bradley Baetz,
+Brendan Eich,
+Brian Bober,
+Brian Ryner,
+Brian Stell,
+Bruce Davidson,
+Bruno Haible,
+Calum Robinson,
+Cedric Chantepie,
+Chiaki Koufugata,
+Chris McAfee,
+Christian Biesinger,
+Christopher A. Aillon,
+Christopher Blizzard,
+Christopher Hoess,
+Christopher Seawood,
+Collabnet,
+Conrad Carlen,
+Crocodile Clips Ltd,
+Cyrus Patel,
+Dainis Jonitis,
+Dan Mosedale,
+Daniel Brooks,
+Daniel Glazman,
+Daniel Kouril,
+Daniel Witte,
+Dantifer Dang,
+Darin Fisher,
+Dave Liebreich,
+David Bienvenu,
+David Bradley,
+David Einstein,
+David Hyatt,
+David P. Caldwell,
+Deogtae Kim,
+Dietrich Ayala,
+Digital Creations 2 Inc,
+Disruptive Innovations SARL,
+Doron Rosenberg,
+Doug Turner,
+Elika J. Etemad,
+Eric Belhaire,
+Eric Hodel,
+Esben Mose Hansen,
+Florian QUEZE,
+Frank Sch&ouml;nheit,
+Fredrik Holmqvist,
+Gavin Sharp,
+Geocast Network Systems,
+Geoff Beier,
+Gervase Markham,
+Gijs Kruitbosch,
+Giorgio Maone,
+Google Inc,
+H&aring;kan Waara,
+Heriot-Watt University,
+Hewlett-Packard Company,
+i-DNS.net International,
+Ian Hickson,
+Ian Oeschger,
+IBM Corporation,
+Igor Bukanov,
+InnoTek Systemberatung GmbH,
+Intel Corporation,
+James L. Nance,
+James Ross,
+Jamie Zawinski,
+Jan Varga,
+Jason Barnabe,
+Jean-Francois Ducarroz,
+Jeff Tsai,
+Jeff Walden,
+Jefferson Software Inc,
+Joe Hewitt,
+Joey Minta,
+John B. Keiser,
+John C. Griggs,
+John Fairhurst,
+John Wolfe,
+Jonas Sicking,
+Jonathan Watt,
+Josh Aas,
+Josh Soref,
+Juan Lang,
+Jungshik Shin,
+Jussi Kukkonen,
+Karsten D&uuml;sterloh,
+Keith Visco,
+Ken Herron,
+Kevin Gerich,
+Kipp E.B. Hickman,
+L. David Baron,
+Leif Hedstrom,
+Lixto GmbH,
+Makoto Kato,
+Marc Bevand,
+Marcio S. Galli,
+Marco Manfredini,
+Marco Pesenti Gritti,
+Mark Banner,
+Mark Hammond,
+Mark Mentovai,
+Markus G. Kuhn,
+Matt Judy,
+Matthew Willis,
+Merle Sterling,
+Michael J. Fromberger,
+Michal Ceresna,
+Michel C. C. Buijsman,
+Michiel van Leeuwen,
+Mike Connor,
+Mike Pinkerton,
+Mike Potter,
+Mike Shaver,
+MITRE Corporation,
+Mozdev Group,
+Mozilla Corporation,
+Mozilla Foundation,
+Mozilla Japan,
+Naoki Hotta,
+Neil Deakin,
+Neil Rashbrook,
+Nelson B. Bolyard,
+Netscape Communications Corporation,
+New Dimensions Consulting,
+Nick Kreeger,
+Nickolay Ponomarev,
+Novell Inc,
+NTT,
+OEone Corporation,
+Oleg Romashin,
+Olli Pettay,
+Oracle Corporation,
+Paul Ashford,
+Paul Kocher,
+Paul Sandoz,
+Paul Tomlin,
+Peter Annema,
+Peter Van der Beken,
+Peter Weilbacher,
+Phil Ringnalda,
+Philipp Kewisch,
+Pierre Chanial,
+Prachi Gauriar,
+Qualcomm Inc,
+R.J. Keller,
+Rajiv Dayal,
+Ramalingam Saravanan,
+Red Hat Inc,
+Rich Megginson,
+Rich Salz,
+Richard C. Swift,
+Richard L. Walsh,
+Richard Verhoeven,
+Rick Gessner,
+Robert Accettura,
+Robert G. Ginda,
+Robert John Churchill,
+Robert Kaiser,
+Robert Longson,
+Robert Marshall,
+Robert O'Callahan,
+Robert Sayre,
+Robert Strong,
+Roland Mainz,
+RSA Security Inc,
+Rusty Lynch,
+Ryan Cassin,
+Samphan Raruenrom,
+Scooter Morris,
+Scott MacGregor,
+Sergei Dolgov,
+Seth Spitzer,
+Shawn Wilsher,
+Shy Shalom,
+Silverstone Interactive,
+Simdesk Technologies Inc,
+Simmule Turner,
+Simon B&uuml;nzli,
+Simon Fraser,
+Simon Montagu,
+Simon Paquet,
+Simon Wilkinson,
+Sqlite Project,
+Srilatha Moturi,
+Stefan Sitter,
+Stephen Horlander,
+Steve Swanson,
+Stuart Morgan,
+Stuart Parmenter,
+Sun Microsystems Inc,
+Ted Mielczarek,
+Theppitak Karoonboonyanan,
+Tim Copperfield,
+timeless,
+Tomas M&uuml;ller,
+University of Queensland,
+Vincent B&eacute;ron,
+Vladimir Vukicevic,
+Wolfgang Rosenauer,
+YAMASHITA Makoto,
+Zack Rusin,
+Zero-Knowledge Systems.
     </p>
 
     <hr>
@@ -1679,6 +1901,44 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 </pre>
 
+    <hr>
+
+    <h1><a name="breakpad"></a>Breakpad License</h1>
+
+    <p class="correctme">This license applies to files in the directory 
+    <span class="path">toolkit/crashreporter/google-breakpad/</span>.</p>
+
+<pre>
+Copyright (c) 2006, Google Inc.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+    * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+    * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</pre>
+
 
     <hr>
 
@@ -1806,6 +2066,46 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <hr>
 
+    <h1><a name="growl"></a>Growl License</h1>
+
+    <p class="correctme">This license applies to certain files in the directory
+    <span class="path">toolkit/components/alerts/src/mac/growl/</span> and
+    <span class="path">camino/src/extensions/</span>. (This code only ships in 
+    the Mac OS X version of the product.)
+
+<pre>
+Copyright (c) The Growl Project, 2004-2007
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+3. Neither the name of Growl nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</pre>
+
+
+    <hr>
+
     <h1><a name="jpnic"></a>Japan Network Information Center License</h1>
 
     <p class="correctme">This license applies to certain files in the 
@@ -1889,48 +2189,6 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
     <hr>
 
-    <h1><a name="myspell"></a>Myspell License</h1>
-
-    <p class="correctme">This license applies to certain files in the directory 
-    <span class="path">extensions/spellcheck/myspell/src/</span>.</p>
-
-<pre>
-Copyright 2002 Kevin B. Hendricks, Stratford, Ontario, Canada
-And Contributors.  All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-
-3. All modifications to the source code must be clearly marked as
-   such.  Binary redistributions based on modified source code
-   must be clearly marked as modified versions in the documentation
-   and/or other materials provided with the distribution.
-
-THIS SOFTWARE IS PROVIDED BY KEVIN B. HENDRICKS AND CONTRIBUTORS 
-``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
-FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL 
-KEVIN B. HENDRICKS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
-BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-SUCH DAMAGE.
-</pre>
-
-
-    <hr>
-
     <h1><a name="openvision"></a>OpenVision License</h1>
 
     <p class="correctme">This license applies to the file 
@@ -1956,6 +2214,36 @@ CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
 USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
+</pre>
+
+
+    <hr>
+
+    <h1><a name="sparkle"></a>Sparkle License</h1>
+
+    <p class="correctme">This license applies to certain files in the directory
+    <span class="path">camino/sparkle/</span>. (This code only ships in the
+    in the Camino browser or products based on it.)</p>
+
+<pre>
+Copyright (c) 2006 Andy Matuschak
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 </pre>
 
 
@@ -2007,42 +2295,15 @@ SUCH DAMAGE.
 
     <hr>
 
-    <h1><a name="xregion"></a>xregion License</h1>
-
-    <p class="correctme">This license applies to the files 
-    <span class="path">gfx/src/xlib/xregion.h</span> and 
-    <span class="path">gfx/src/gtk/xregion.h</span>.
-    </p>
-
-<pre>
-Copyright 1987 by Digital Equipment Corporation, Maynard, Massachusetts,
-and the Massachusetts Institute of Technology, Cambridge, Massachusetts.
-
-                        All Rights Reserved
-
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
-provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
-supporting documentation, and that the names of Digital or MIT not be
-used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
-
-DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
-ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
-DIGITAL BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR
-ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
-ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
-SOFTWARE.
-</pre>
-
-    <hr>
-
     <h1><a name="other-notices"></a>Other Required Notices</h1>
 
-    <p>This software is based in part on the work of the Independent 
-    JPEG Group.</p>
+    <ul>
+      <li>This software is based in part on the work of the Independent 
+          JPEG Group.</li>
+      <li>Portions of the OS/2 version of this software are copyright
+          &copy;1996-2002 <a href="http://www.freetype.org/">The FreeType Project</a>.
+          All rights reserved.</li>
+    </ul>
 
 
     <hr>
@@ -2068,15 +2329,19 @@ SOFTWARE.
     
     <h3><a name="exceptions"></a>* Exceptions</h3>
     
-    <p class="correctme">The following code/data under non-free licenses 
-      may be part of this product, depending on how it was compiled:
+    <p class="correctme">
+    Depending on how it was compiled, your product distribution and version 
+    may include the following portions which are not available under the 
+    above terms:
     </p>
     
     <ul>
       <li>The Talkback crash-reporting module (Copyright &copy;1998-2005
           SupportSoft, Inc. All Rights Reserved.)
-      <li>Some image files containing trademarked logos (Copyright &copy;2004-2006
-          The Mozilla Foundation. All Rights Reserved.)
+      <li>Image files containing the trademarks and logos of the Mozilla
+          Foundation, which may not be reproduced without permission. 
+          (Copyright &copy;2004-2008 The Mozilla Foundation. 
+          All Rights Reserved.)
     </ul>  
     
     <p class="correctme"><a href="about:license#top">Return to top</a>.</p>

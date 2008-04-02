@@ -7,11 +7,10 @@
 
   <binding id="button-base" extends="chrome://global/content/bindings/general.xml#basetext">
     <implementation implements="nsIDOMXULButtonElement, nsIAccessibleProvider">
-      <property name="accessible">
+      <property name="accessibleType" readonly="true">
         <getter>
           <![CDATA[
-            var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
-            return accService.createXULButtonAccessible(this);
+            return Components.interfaces.nsIAccessibleProvider.XULButton;
           ]]>
         </getter>
       </property>
@@ -144,12 +143,26 @@
       <handler event="keypress">
       <![CDATA[
         if (event.keyCode == KeyEvent.DOM_VK_UP ||
-            event.keyCode == KeyEvent.DOM_VK_LEFT)
-          return window.document.commandDispatcher.rewindFocus();
+            (event.keyCode == KeyEvent.DOM_VK_LEFT &&
+              document.defaultView.getComputedStyle(this.parentNode, "")
+                      .direction == "ltr") ||
+            (event.keyCode == KeyEvent.DOM_VK_RIGHT &&
+              document.defaultView.getComputedStyle(this.parentNode, "")
+                      .direction == "rtl")) {
+          window.document.commandDispatcher.rewindFocus();
+          return;
+        }
 
         if (event.keyCode == KeyEvent.DOM_VK_DOWN ||
-            event.keyCode == KeyEvent.DOM_VK_RIGHT)
-          return window.document.commandDispatcher.advanceFocus();
+            (event.keyCode == KeyEvent.DOM_VK_RIGHT &&
+              document.defaultView.getComputedStyle(this.parentNode, "")
+                      .direction == "ltr") ||
+            (event.keyCode == KeyEvent.DOM_VK_LEFT &&
+              document.defaultView.getComputedStyle(this.parentNode, "")
+                      .direction == "rtl")) {
+          window.document.commandDispatcher.advanceFocus();
+          return;
+        }
 
         if (event.keyCode || event.charCode <= 32 || event.altKey || 
             event.ctrlKey || event.metaKey)
@@ -333,5 +346,8 @@
       <xul:image class="button-image-icon" xbl:inherits="src=image"/>
     </content>
   </binding>
+
+  <binding id="button-repeat" display="xul:autorepeatbutton"
+           extends="chrome://global/content/bindings/button.xml#button"/>
   
 </bindings>
